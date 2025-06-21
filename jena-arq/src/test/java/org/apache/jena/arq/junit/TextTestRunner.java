@@ -22,10 +22,10 @@ import java.util.function.Function;
 
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
-import org.junit.runner.Runner;
 
 import org.apache.jena.arq.junit.manifest.Manifest;
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
+import org.apache.jena.arq.junit.runners.RunnerOneManifest;
 import org.apache.jena.arq.junit.runners.SetupManifests;
 import org.apache.jena.atlas.junit.TextListenerLong;
 import org.apache.jena.sparql.expr.E_Function;
@@ -40,7 +40,8 @@ public class TextTestRunner {
 
     public static void runOne(EarlReport report, String manifestFile, Function<ManifestEntry, Runnable> testMaker) {
         Manifest manifest = Manifest.parse(manifestFile);
-        Runner top = SetupManifests.build(report, manifest, testMaker, null);
+        RunnerOneManifest top = SetupManifests.build(report, manifest, testMaker, null);
+        int countManifests = top.getManifestCount();
 
         NodeValue.VerboseWarnings = false ;
         E_Function.WarnOnUnknownFunction = false ;
@@ -50,11 +51,14 @@ public class TextTestRunner {
 
         // Count includes the manifest itself.
         JUnitCore junitCore = new JUnitCore();
-        junitCore.addListener(new TextListenerLong(System.out));
+        junitCore.addListener(new TextListenerLong(System.out, countManifests));
         //junit.addListener(new TextListenerDots(System.out));
+
         Result result = junitCore.run(top);
-        System.out.println("Run: "+result.getRunCount());
-        System.out.println("Failures: "+result.getFailureCount());
+
+        System.out.println("Tests run: "+(result.getRunCount()-countManifests));
+        System.out.println("Failures:  "+result.getFailureCount());
+        System.out.println("Manifests: "+top.getManifestCount());
     }
 }
 

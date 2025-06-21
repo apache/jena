@@ -192,6 +192,7 @@ public class rdftests extends CmdGeneral
     static void oneManifest(String testManifest) {
         TextTestRunner.runOne(testManifest, testMaker());
     }
+
     static void oneManifestEarl(EarlReport report, String testManifest) {
         TextTestRunner.runOne(report, testManifest, testMaker());
     }

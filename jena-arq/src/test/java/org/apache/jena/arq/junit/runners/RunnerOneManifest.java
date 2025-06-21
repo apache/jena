@@ -31,6 +31,7 @@ public class RunnerOneManifest extends Runner {
     private Description description;
     private List<Runner> tests = new ArrayList<>();
     private Manifest manifest;
+    private int manifestCount = -1;
 
     public RunnerOneManifest(Manifest manifest, Description description) {
         this.manifest = manifest;
@@ -53,5 +54,13 @@ public class RunnerOneManifest extends Runner {
     public void add(Runner runner) {
         description.addChild(runner.getDescription());
         tests.add(runner);
+    }
+
+    public int getManifestCount() {
+        return this.manifestCount;
+    }
+
+    public void setManifestCount(int manifestCount) {
+        this.manifestCount = manifestCount;
     }
 }
