@@ -224,6 +224,20 @@ public class ExprLib
         return NodeValue.makeNode(n);
     }
 
+    /**
+     * Go from an expression to a node.
+     * If the argument cannot be converted to a node then an {@link IllegalArgumentException} is raised.
+     */
+    public static Node exprToNode(Expr e) {
+        if (e.isConstant()) {
+            return e.getConstant().asNode();
+        } else if (e.isVariable()) {
+            return e.getExprVar().asVar();
+        } else {
+            throw new IllegalArgumentException("Cannot convert Expression to Node: " + e);
+        }
+    }
+
     public static Expr rewriteTriple(Triple t) {
         Expr e1 = nodeToExpr(t.getSubject());
         Expr e2 = nodeToExpr(t.getPredicate());

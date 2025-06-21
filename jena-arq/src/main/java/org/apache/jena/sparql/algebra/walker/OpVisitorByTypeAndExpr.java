@@ -94,6 +94,9 @@ public interface OpVisitorByTypeAndExpr extends OpVisitor
 
     @Override
     public default void visit(OpPropFunc opPropFunc) {
+        visitExpr(opPropFunc.getObjectArgs().asExprList());
+        visitExpr(opPropFunc.getSubjectArgs().asExprList());
+        // visitExpr(new ExprList(ExprLib.nodeToExpr(opPropFunc.getProperty())));
         visit1(opPropFunc);
     }
 
