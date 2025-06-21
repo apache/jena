@@ -22,16 +22,19 @@ import java.io.PrintStream ;
 
 import org.junit.internal.TextListener ;
 import org.junit.runner.Description ;
+import org.junit.runner.Result;
 import org.junit.runner.notification.Failure ;
 
 /** JUnit4 test listener that prints one line per test */
 public class TextListenerLong extends TextListener
 {
     private PrintStream out ;
+    private int manifestCount;
 
-    public TextListenerLong(PrintStream writer) {
+    public TextListenerLong(PrintStream writer, int manifestCount) {
         super(writer) ;
         this.out = writer ;
+        this.manifestCount = manifestCount;
     }
 
     @Override
@@ -60,4 +63,31 @@ public class TextListenerLong extends TextListener
         //out.print(each.getTrimmedTrace());
     }
 
+    // TextListener does not expose getWriter()
+    private PrintStream getWriter() {
+        return this.out;
+    }
+
+    @Override
+    protected void printFooter(Result result) {
+        //super.printFooter(result);
+
+        int testCount = result.getRunCount();
+        // Adjust for manifests.
+        if ( manifestCount > 0 )
+            testCount = testCount - manifestCount;
+
+        // Copied from super, modified to count tests, not manifests.
+        if (result.wasSuccessful()) {
+            getWriter().println();
+            getWriter().print("OK");
+            getWriter().println(" (" + testCount + " test" + (testCount == 1 ? "" : "s") + ")");
+
+        } else {
+            getWriter().println();
+            getWriter().println("FAILURES!!!");
+            getWriter().println("Tests run: " + testCount + ",  Failures: " + result.getFailureCount());
+        }
+        getWriter().println();
+    }
 }

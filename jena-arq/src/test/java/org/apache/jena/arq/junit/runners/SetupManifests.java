@@ -41,21 +41,32 @@ public class SetupManifests {
     /*package*/ static boolean PrintManifests = false;
     /*package*/ static IndentedWriter out = IndentedWriter.stdout;
 
+    private static class ManifestStructure {
+        int manifestCount = 0 ;
+    }
+
     /**
      * Do one level of tests. test are {@link Runnable Runnables} that each succeed or fail with an exception.
      */
-    public static Runner build(EarlReport report, Manifest manifest, Function<ManifestEntry, Runnable> maker, String prefix) {
-        return buildForManifest(report, manifest, maker, prefix);
+    public static RunnerOneManifest build(EarlReport report, Manifest manifest, Function<ManifestEntry, Runnable> maker, String prefix) {
+        ManifestStructure mStruct = new ManifestStructure();
+        RunnerOneManifest top = buildForManifest(mStruct, report, manifest, maker, prefix);
+        top.setManifestCount(mStruct.manifestCount);
+        return top;
     }
 
     /**
      * Do one level of tests, recurse into sub-levels.
      * A test is a {@link Runnable} that succeeds or fails with an exception.
      */
-    private static RunnerOneManifest buildForManifest(EarlReport report, Manifest manifest, Function<ManifestEntry, Runnable> maker, String prefix) {
+    private static RunnerOneManifest buildForManifest(ManifestStructure mStruct, EarlReport report, Manifest manifest, Function<ManifestEntry, Runnable> maker, String prefix) {
         Description description = Description.createSuiteDescription(manifest.getName());
         if ( PrintManifests )
             out.println(manifest.getFileName()+" :: "+manifest.getName());
+
+        // Count - adjust later reporting
+        mStruct.manifestCount++;
+
         RunnerOneManifest thisLevel = new RunnerOneManifest(manifest, description);
 
         Iterator<String> sub = manifest.includedManifests();
@@ -65,7 +76,7 @@ public class SetupManifests {
 
             String mf = sub.next();
             Manifest manifestSub = Manifest.parse(mf);
-            Runner runner = buildForManifest(report, manifestSub, maker, prefix);
+            Runner runner = buildForManifest(mStruct, report, manifestSub, maker, prefix);
             thisLevel.add(runner);
             if ( PrintManifests )
                 out.decIndent();
