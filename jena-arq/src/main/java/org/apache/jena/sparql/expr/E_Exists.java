@@ -20,12 +20,9 @@ package org.apache.jena.sparql.expr;
 
 import org.apache.jena.sparql.algebra.Algebra ;
 import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.core.Substitute ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.graph.NodeTransform;
-import org.apache.jena.sparql.graph.NodeTransformLib ;
 import org.apache.jena.sparql.sse.Tags ;
 import org.apache.jena.sparql.syntax.Element ;
 
@@ -46,15 +43,8 @@ public class E_Exists extends ExprFunctionOp
     }
 
     @Override
-    public Expr copySubstitute(Binding binding) {
-        Op op2 = Substitute.substitute(getGraphPattern(), binding) ;
-        return new E_Exists(getElement(), op2) ;
-    }
-
-    @Override
-    public Expr applyNodeTransform(NodeTransform nodeTransform) {
-        Op op2 = NodeTransformLib.transform(nodeTransform, getGraphPattern()) ;
-        return new E_Exists(getElement(), op2) ;
+    protected Expr copy(Element elt, Op op) {
+        return new E_Exists(elt, op) ;
     }
 
     @Override
@@ -74,17 +64,17 @@ public class E_Exists extends ExprFunctionOp
         if ( this == other ) return true ;
         if ( ! ( other instanceof E_Exists ) )
             return false ;
-        
+
         E_Exists ex = (E_Exists)other ;
         if ( bySyntax )
             return this.getElement().equals(ex.getElement()) ;
         else
             return this.getGraphPattern().equals(ex.getGraphPattern()) ;
     }
-    
+
     @Override
     public ExprFunctionOp copy(ExprList args, Op x) { return new E_Exists(x) ; }
-    
+
     @Override
     public ExprFunctionOp copy(ExprList args, Element elPattern) { return new E_Exists(elPattern) ; }
 
