@@ -267,7 +267,6 @@ public abstract class OntIndividualImpl extends OntObjectImpl implements OntIndi
      * <p>
      * for notations see <a href="https://www.w3.org/TR/owl2-quick-reference/">OWL2 Quick Refs</a>
      */
-    @SuppressWarnings("javadoc")
     public static class AnonymousImpl extends OntIndividualImpl implements Anonymous {
 
         public AnonymousImpl(Node n, EnhGraph m) {

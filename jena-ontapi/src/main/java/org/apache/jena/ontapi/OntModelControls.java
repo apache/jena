@@ -131,7 +131,6 @@ public enum OntModelControls {
      * {@link OntClass.Named#addDisjointUnion(OntClass...) OntClass.Named#addDisjointUnion(OntClass...)},
      * will throw {@link OntJenaException.Unsupported OntJenaException.Unsupported} exception.
      */
-    @SuppressWarnings("javadoc")
     USE_OWL2_NAMED_CLASS_DISJOINT_UNION_FEATURE,
     /**
      * Controls {@link OWL2#disjointWith owl:disjointWith} functionality.

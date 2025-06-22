@@ -69,7 +69,6 @@ public abstract class OntDisjointImpl<O extends OntObject> extends OntObjectImpl
      * @return {@link Individuals}
      * @see <a href="https://www.w3.org/TR/owl2-quick-reference/#Additional_Vocabulary_in_OWL_2_RDF_Syntax">4.2 Additional Vocabulary in OWL 2 RDF Syntax</a>
      */
-    @SuppressWarnings("javadoc")
     public static Individuals createDifferentIndividuals(OntGraphModelImpl model, Stream<OntIndividual> individuals) {
         Property membersPredicate = OntGraphModelImpl.configValue(model, OntModelControls.USE_OWL1_DISTINCT_MEMBERS_PREDICATE_FEATURE) ?
                 OWL2.distinctMembers :
