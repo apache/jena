@@ -438,8 +438,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *            Node to append
      */
     public void appendNode(Node n) {
-        SerializationContext context = new SerializationContext(this.prefixes);
-        context.setBaseIRI(this.baseUri);
+        SerializationContext context = new SerializationContext(this.prefixes, this.baseUri);
         this.cmd.append(this.stringForNode(n, context));
     }
 
@@ -1393,8 +1392,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
         Pattern p;
 
         // Go ahead and inject Variable Parameters
-        SerializationContext context = new SerializationContext(this.prefixes);
-        context.setBaseIRI(this.baseUri);
+        SerializationContext context = new SerializationContext(this.prefixes, this.baseUri);
         for (String var : this.params.keySet()) {
             Node n = this.params.get(var);
             if (n == null) {

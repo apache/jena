@@ -18,140 +18,116 @@
 
 package org.apache.jena.sparql.serializer;
 
-import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.sparql.core.Prologue ;
-import org.apache.jena.sparql.util.NodeToLabelMap ;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.sparql.core.Prologue;
+import org.apache.jena.sparql.util.NodeToLabelMap;
 
 /** Information needed to serialize things */
 
-public class SerializationContext
-{
-    // ?? Interface : WriterContext
-    
-    private Prologue prologue ;
-    private NodeToLabelMap bNodeMap ;
+public class SerializationContext {
+    private Prologue prologue;
+    private NodeToLabelMap bNodeMap;
     private boolean usePlainLiterals = true;
-    
-    public SerializationContext(SerializationContext cxt)
-    {
-        prologue = cxt.prologue ;
-        bNodeMap = cxt.bNodeMap ;
+
+    public SerializationContext(SerializationContext cxt) {
+        prologue = cxt.prologue;
+        bNodeMap = cxt.bNodeMap;
     }
 
-    public SerializationContext(Prologue prologue)
-    {
-        this(prologue, null) ;
-    }
-    
-    public SerializationContext(PrefixMapping prefixMap)
-    {
-        this(new Prologue(prefixMap)) ;
+    public SerializationContext(SerializationContext cxt, NodeToLabelMap bMap) {
+        prologue = cxt.prologue;
+        bNodeMap = bMap;
     }
 
-    public SerializationContext()
-    {
-        this((Prologue)null, null) ;
+    public SerializationContext(Prologue prologue) {
+        this(prologue, null);
     }
 
-    public SerializationContext(PrefixMapping prefixMap, NodeToLabelMap bMap)
-    {
-        this(new Prologue(prefixMap), bMap) ;
+    public SerializationContext(PrefixMapping prefixMap) {
+        this(new Prologue(prefixMap));
     }
-    
-    public SerializationContext(Prologue prologue, NodeToLabelMap bMap)
-    {
-        this.prologue = prologue ;
+
+    public SerializationContext(PrefixMapping prefixMap, String baseURI) {
+        this(new Prologue(prefixMap));
+        this.setBaseIRI(baseURI);
+    }
+
+
+    public SerializationContext() {
+        this((Prologue)null, null);
+    }
+
+    public SerializationContext(PrefixMapping prefixMap, NodeToLabelMap bMap) {
+        this(new Prologue(prefixMap), bMap);
+    }
+
+    public SerializationContext(Prologue prologue, NodeToLabelMap bMap) {
+        this.prologue = prologue;
         if ( this.prologue == null )
-            this.prologue = new Prologue() ;
-        
-        bNodeMap = bMap ;
+            this.prologue = new Prologue();
+
+        bNodeMap = bMap;
         if ( bMap == null )
-            bNodeMap = new NodeToLabelMap("b", false) ;
+            bNodeMap = new NodeToLabelMap("b", false);
     }
-    
-    public SerializationContext(boolean usePlainLiterals)
-    {
-    	this((Prologue)null, null, usePlainLiterals);
+
+    public SerializationContext(boolean usePlainLiterals) {
+        this((Prologue)null, null, usePlainLiterals);
     }
-    
-    public SerializationContext(PrefixMapping prefixMap, boolean usePlainLiterals)
-    {
-    	this(new Prologue(prefixMap), null);
-    	this.usePlainLiterals = usePlainLiterals;
+
+    public SerializationContext(PrefixMapping prefixMap, boolean usePlainLiterals) {
+        this(new Prologue(prefixMap), null);
+        this.usePlainLiterals = usePlainLiterals;
     }
-    
-    public SerializationContext(PrefixMapping prefixMap, NodeToLabelMap bMap, boolean usePlainLiterals)
-    {
-    	this(new Prologue(prefixMap), bMap);
-    	this.usePlainLiterals = usePlainLiterals;
+
+    public SerializationContext(PrefixMapping prefixMap, NodeToLabelMap bMap, boolean usePlainLiterals) {
+        this(new Prologue(prefixMap), bMap);
+        this.usePlainLiterals = usePlainLiterals;
     }
-    
-    public SerializationContext(Prologue prologue, boolean usePlainLiterals)
-    {
-    	this(prologue, null, usePlainLiterals);
+
+    public SerializationContext(Prologue prologue, boolean usePlainLiterals) {
+        this(prologue, null, usePlainLiterals);
     }
-    
-    public SerializationContext(Prologue prologue, NodeToLabelMap bMap, boolean usePlainLiterals)
-    {
-    	this(prologue, bMap);
-    	this.usePlainLiterals = usePlainLiterals;
+
+    public SerializationContext(Prologue prologue, NodeToLabelMap bMap, boolean usePlainLiterals) {
+        this(prologue, bMap);
+        this.usePlainLiterals = usePlainLiterals;
     }
-    
-    /**
-     * @return Returns the bNodeMap.
-     */
-    public NodeToLabelMap getBNodeMap()
-    {
+
+    public NodeToLabelMap getBNodeMap() {
         return bNodeMap;
     }
-    
-    /**
-     * @param nodeMap The bNodeMap to set.
-     */
-    public void setBNodeMap(NodeToLabelMap nodeMap)
-    {
-        bNodeMap = nodeMap;
-    }
-    
-    /**
-     * @return Returns the prefixMap.
-     */
-    public PrefixMapping getPrefixMapping()
-    {
+
+    public PrefixMapping getPrefixMapping() {
         return prologue.getPrefixMapping();
     }
-    
-    /**
-     * @param prefixMap The prefixMap to set.
-     */
-    public void setPrefixMapping(PrefixMapping prefixMap)
-    {
-        prologue.setPrefixMapping(prefixMap) ;
-    }
-    
-    /** @param baseIRI Set the base IRI */
-    public void setBaseIRI(String baseIRI) { prologue.setBaseURI(baseIRI) ; }
-    
-    public String getBaseIRI() { return prologue.getBaseURI() ; }
 
-    public Prologue getPrologue()
-    {
-        return prologue ;
+    /** @param baseIRI Set the base IRI */
+    private void setBaseIRI(String baseIRI) {
+        prologue.setBaseURI(baseIRI);
     }
-    
-    /**
-     * Gets whether Plain Literal forms should be used for appropriate typed literals (booleans, integers, decimals and doubles)
-     */
-    public boolean getUsePlainLiterals()
-    {
-    	return usePlainLiterals;
+
+    public String getBaseIRI() {
+        return prologue.getBaseURI();
     }
-    
+
+    public Prologue getPrologue() {
+        return prologue;
+    }
+
     /**
-     * Sets whether Plain Literal forms should be used for appropriate typed literals (booleans, integers, decimals and doubles)
+     * Gets whether Plain Literal forms should be used for appropriate typed literals
+     * (booleans, integers, decimals and doubles)
      */
-    public void setUsePlainLiterals(boolean usePlainLiterals)
-    {
-    	this.usePlainLiterals = usePlainLiterals;
+    public boolean getUsePlainLiterals() {
+        return usePlainLiterals;
+    }
+
+    /**
+     * Sets whether Plain Literal forms should be used for appropriate typed literals
+     * (booleans, integers, decimals and doubles)
+     */
+    public void setUsePlainLiterals(boolean usePlainLiterals) {
+        this.usePlainLiterals = usePlainLiterals;
     }
 }
