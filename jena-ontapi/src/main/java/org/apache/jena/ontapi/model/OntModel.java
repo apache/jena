@@ -236,7 +236,6 @@ public interface OntModel extends Model,
      * @return {@link OntEntity} or {@code null}
      * @see #fetchOntEntity(Class, String)
      */
-    @SuppressWarnings("javadoc")
     <E extends OntEntity> E getOntEntity(Class<E> type, String uri);
 
     /**

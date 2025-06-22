@@ -36,7 +36,7 @@ import java.util.function.Consumer;
  *
  * @param <E> the type of the array elements
  */
-@SuppressWarnings("javadoc")
+@SuppressWarnings("all")
 public class SparseArrayIndexedIterator<E> extends NiceIterator<FastHashSet.IndexedKey<E>> implements Iterator<FastHashSet.IndexedKey<E>> {
 
     private final E[] entries;

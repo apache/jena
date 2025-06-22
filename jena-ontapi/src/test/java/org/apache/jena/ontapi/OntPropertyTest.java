@@ -50,7 +50,6 @@ import static org.apache.jena.ontapi.TestModelFactory.NS;
  * {@link OntRelationalProperty},
  * {@link OntAnnotationProperty}.
  */
-@SuppressWarnings("javadoc")
 public class OntPropertyTest {
 
     @Test

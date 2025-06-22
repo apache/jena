@@ -28,7 +28,6 @@ import org.apache.jena.ontapi.model.OntDataProperty;
 import org.apache.jena.ontapi.model.OntDataRange;
 import org.apache.jena.ontapi.model.OntObjectProperty;
 
-@SuppressWarnings("javadoc")
 class TestOntPersonalities {
     /**
      * OWL2 Personality, that has default settings and does not care about the owl-entities "punnings"

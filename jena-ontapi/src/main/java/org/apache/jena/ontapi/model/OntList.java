@@ -61,7 +61,6 @@ import java.util.stream.Stream;
  * @param <E> the type of {@link RDFNode rdf-node}s in this list
  * @see RDFNodeList
  */
-@SuppressWarnings("javadoc")
 public interface OntList<E extends RDFNode> extends RDFNodeList<E>, OntResource {
 
     /**

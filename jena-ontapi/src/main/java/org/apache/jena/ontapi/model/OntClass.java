@@ -235,7 +235,6 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
      * @return {@link OntList} of {@link OntRelationalProperty}s
      * @see #addHasKey(Collection, Collection)
      */
-    @SuppressWarnings("javadoc")
     OntList<OntRelationalProperty> createHasKey(Collection<OntObjectProperty> objectProperties,
                                                 Collection<OntDataProperty> dataProperties);
 
@@ -1027,7 +1026,6 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
          * @see #addDisjointUnionOfStatement(OntClass...)
          * @see #removeDisjointUnion(Resource)
          */
-        @SuppressWarnings("javadoc")
         OntList<OntClass> createDisjointUnion(Collection<OntClass> classes);
 
         /**

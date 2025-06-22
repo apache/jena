@@ -1634,7 +1634,6 @@ public abstract class OntClassImpl extends OntObjectImpl implements OntClass {
     /**
      * Base for all {@link Restriction} impls.
      */
-    @SuppressWarnings("javadoc")
     public static class RestrictionImpl extends OntClassImpl implements Restriction {
 
         public RestrictionImpl(Node n, EnhGraph m) {
