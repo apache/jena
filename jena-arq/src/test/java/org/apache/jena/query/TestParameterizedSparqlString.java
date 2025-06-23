@@ -1674,7 +1674,6 @@ public class TestParameterizedSparqlString {
         queryStr.asQuery();
     }
 
-
     @Test
     public void test_param_string_non_injection_03() {
         String prefixes="PREFIX : <http://purl.bdrc.io/ontology/core/>\n" +
@@ -1982,8 +1981,7 @@ public class TestParameterizedSparqlString {
 
         String exp = "SELECT * WHERE { VALUES ?o {(\"test\")} ?s ?p ?o }";
         String res = pss.toString();
-        //System.out.println("Exp: " + exp);
-        //System.out.println("Res: " + res);
+
         Assert.assertEquals(exp, res);
     }
 
@@ -1996,8 +1994,20 @@ public class TestParameterizedSparqlString {
 
         String exp = "SELECT * WHERE { VALUES $o {(\"test\")} $s $p $o }";
         String res = pss.toString();
-        //System.out.println("Exp: " + exp);
-        //System.out.println("Res: " + res);
+
+        Assert.assertEquals(exp, res);
+    }
+
+    @Test
+    public void test_set_values_undef() {
+        // Tests a single value being added using '$' variable syntax - always adding parenthesis.
+        String str = "SELECT * WHERE { VALUES $o {$objs} $s $p $o }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        pss.setValues("objs", pss.undef());
+
+        String exp = "SELECT * WHERE { VALUES $o {(UNDEF)} $s $p $o }";
+        String res = pss.toString();
+
         Assert.assertEquals(exp, res);
     }
 
@@ -2010,8 +2020,7 @@ public class TestParameterizedSparqlString {
 
         String exp = "SELECT * WHERE { ?o {?objs} ?s ?p ?o }";
         String res = pss.toString();
-        //System.out.println("Exp: " + exp);
-        //System.out.println("Res: " + res);
+
         Assert.assertEquals(exp, res);
     }
 
@@ -2024,8 +2033,7 @@ public class TestParameterizedSparqlString {
 
         String exp = "SELECT * WHERE { VALUES ?o ?objs ?s ?p ?o }";
         String res = pss.toString();
-        //System.out.println("Exp: " + exp);
-        //System.out.println("Res: " + res);
+
         Assert.assertEquals(exp, res);
     }
 
@@ -2038,8 +2046,7 @@ public class TestParameterizedSparqlString {
 
         String exp = "SELECT * WHERE { VALUES ?o {?objs} ?s ?p ?o }";
         String res = pss.toString();
-        //System.out.println("Exp: " + exp);
-        //System.out.println("Res: " + res);
+
         Assert.assertEquals(exp, res);
     }
 
@@ -2055,8 +2062,7 @@ public class TestParameterizedSparqlString {
 
         String exp = "SELECT * WHERE { VALUES (?o) {(\"obj_A\") (\"obj_B\")} ?s ?p ?o }";
         String res = pss.toString();
-        //System.out.println("Exp: " + exp);
-        //System.out.println("Res: " + res);
+
         Assert.assertEquals(exp, res);
     }
 
@@ -2071,8 +2077,6 @@ public class TestParameterizedSparqlString {
         String exp = "SELECT * WHERE { VALUES (?o) {} ?s ?p ?o }";
         String res = pss.toString();
 
-        //System.out.println("Exp: " + exp);
-        //System.out.println("Res: " + res);
         Assert.assertEquals(exp, res);
     }
 
@@ -2088,8 +2092,23 @@ public class TestParameterizedSparqlString {
 
         String exp = "SELECT * WHERE { VALUES (?p ?o) {(<http://example.org/prop_A> \"obj_A\")} ?s ?p ?o }";
         String res = pss.toString();
-        //System.out.println("Exp: " + exp);
-        //System.out.println("Res: " + res);
+
+        Assert.assertEquals(exp, res);
+    }
+
+    @Test
+    public void test_set_values_multiple_variables_including_undef() {
+        // Tests two values for same variable.
+        String str = "SELECT * WHERE { VALUES (?p ?o) {?vars} ?s ?p ?o }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(str);
+        List<RDFNode> vars = new ArrayList<>();
+        vars.add(ResourceFactory.createProperty("http://example.org/prop_A"));
+        vars.add(pss.undef());
+        pss.setValues("vars", vars);
+
+        String exp = "SELECT * WHERE { VALUES (?p ?o) {(<http://example.org/prop_A> UNDEF)} ?s ?p ?o }";
+        String res = pss.toString();
+
         Assert.assertEquals(exp, res);
     }
 
@@ -2133,13 +2152,13 @@ public class TestParameterizedSparqlString {
 
         List<RDFNode> props = new ArrayList<>();
         props.add(ResourceFactory.createProperty("http://example.org/prop_A"));
+        props.add(pss.undef());
         props.add(ResourceFactory.createProperty("http://example.org/prop_B"));
         pss.setValues("props", props);
 
-        String exp = "SELECT * WHERE { VALUES ?p {(<http://example.org/prop_A>) (<http://example.org/prop_B>)} VALUES ?o {(\"obj_A\") (\"obj_B\")} ?s ?p ?o }";
+        String exp = "SELECT * WHERE { VALUES ?p {(<http://example.org/prop_A>) (UNDEF) (<http://example.org/prop_B>)} VALUES ?o {(\"obj_A\") (\"obj_B\")} ?s ?p ?o }";
         String res = pss.toString();
-        //System.out.println("Exp: " + exp);
-        //System.out.println("Res: " + res);
+
         Assert.assertEquals(exp, res);
     }
 
@@ -2164,8 +2183,7 @@ public class TestParameterizedSparqlString {
 
         String exp = "SELECT * WHERE { VALUES (?p ?o) {(<http://example.org/prop_A> \"obj_A\") (<http://example.org/prop_B> \"obj_B\")} ?s ?p ?o }";
         String res = pss.toString();
-        //System.out.println("Exp: " + exp);
-        //System.out.println("Res: " + res);
+
         Assert.assertEquals(exp, res);
     }
 
@@ -2188,8 +2206,6 @@ public class TestParameterizedSparqlString {
         String[] res = ParameterizedSparqlString.extractTargetVars(cmd, valueName);
         String[] exp = new String[]{"o"};
 
-        //System.out.println("Exp: " + String.join(",", exp));
-        //System.out.println("Res: " + String.join(",", res));
         Assert.assertArrayEquals(exp, res);
     }
 
@@ -2201,8 +2217,6 @@ public class TestParameterizedSparqlString {
         String[] res = ParameterizedSparqlString.extractTargetVars(cmd, valueName);
         String[] exp = new String[]{"p", "o"};
 
-        ///System.out.println("Exp: " + String.join(",", exp));
-        //System.out.println("Res: " + String.join(",", res));
         Assert.assertArrayEquals(exp, res);
     }
 
@@ -2214,8 +2228,6 @@ public class TestParameterizedSparqlString {
         String[] res = ParameterizedSparqlString.extractTargetVars(cmd, valueName);
         String[] exp = new String[]{"o"};
 
-        //System.out.println("Exp: " + String.join(",", exp));
-        //System.out.println("Res: " + String.join(",", res));
         Assert.assertArrayEquals(exp, res);
     }
 
@@ -2227,8 +2239,6 @@ public class TestParameterizedSparqlString {
         String[] res = ParameterizedSparqlString.extractTargetVars(cmd, valueName);
         String[] exp = new String[]{};
 
-        //System.out.println("Exp: " + String.join(",", exp));
-        //System.out.println("Res: " + String.join(",", res));
         Assert.assertArrayEquals(exp, res);
     }
 
@@ -2240,8 +2250,6 @@ public class TestParameterizedSparqlString {
         String[] res = ParameterizedSparqlString.extractTargetVars(cmd, valueName);
         String[] exp = new String[]{};
 
-        //System.out.println("Exp: " + String.join(",", exp));
-        //System.out.println("Res: " + String.join(",", res));
         Assert.assertArrayEquals(exp, res);
     }
 
@@ -2253,8 +2261,6 @@ public class TestParameterizedSparqlString {
         String[] res = ParameterizedSparqlString.extractTargetVars(cmd, valueName);
         String[] exp = new String[]{};
 
-        //System.out.println("Exp: " + String.join(",", exp));
-        //System.out.println("Res: " + String.join(",", res));
         Assert.assertArrayEquals(exp, res);
     }
 
@@ -2266,8 +2272,6 @@ public class TestParameterizedSparqlString {
         String[] res = ParameterizedSparqlString.extractTargetVars(cmd, valueName);
         String[] exp = new String[]{};
 
-        //System.out.println("Exp: " + String.join(",", exp));
-        //System.out.println("Res: " + String.join(",", res));
         Assert.assertArrayEquals(exp, res);
     }
 
@@ -2279,8 +2283,6 @@ public class TestParameterizedSparqlString {
         String[] res = ParameterizedSparqlString.extractTargetVars(cmd, valueName);
         String[] exp = new String[]{};
 
-        //System.out.println("Exp: " + String.join(",", exp));
-        //System.out.println("Res: " + String.join(",", res));
         Assert.assertArrayEquals(exp, res);
     }
 
@@ -2292,9 +2294,6 @@ public class TestParameterizedSparqlString {
         String[] res = ParameterizedSparqlString.extractTargetVars(cmd, valueName);
         String[] exp = new String[]{};
 
-        //System.out.println("Exp: " + String.join(",", exp));
-        //System.out.println("Res: " + String.join(",", res));
         Assert.assertArrayEquals(exp, res);
     }
-
 }

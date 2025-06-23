@@ -120,7 +120,7 @@ import org.apache.jena.update.UpdateRequest;
  * While this class was in part designed to prevent SPARQL injection it is by no
  * means foolproof because it works purely at the textual level. The current
  * version of the code addresses some possible attack vectors that the
- * developers have identified but we do not claim to be sufficiently devious to
+ * developers have identified, but we do not claim to be sufficiently devious to
  * have thought of and prevented every possible attack vector.
  * </p>
  * <p>
@@ -134,7 +134,10 @@ import org.apache.jena.update.UpdateRequest;
  */
 public class ParameterizedSparqlString implements PrefixMapping {
 
+    private static final Node UNDEF = NodeFactory.createURI("urn:x-arq:undef");
+
     private Model model = ModelFactory.createDefaultModel();
+    private final RDFNode undef = model.wrapAsResource(UNDEF);
 
     private StringBuilder cmd = new StringBuilder();
     private String baseUri;
@@ -624,6 +627,16 @@ public class ParameterizedSparqlString implements PrefixMapping {
      */
     public String getBaseUri() {
         return this.baseUri;
+    }
+
+    /**
+     * Gets a special {@link RDFNode} value that can be used with the various {@link #setValues(Map)}-like methods to
+     * inject the {@code UNDEF} keyword into a parameterised {@code VALUES} clause.
+     *
+     * @return Special undefined node value
+     */
+    public RDFNode undef() {
+        return this.undef;
     }
 
     /**
@@ -1290,7 +1303,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
         Pattern p = Pattern.compile("\"[?$]" + var + "\"|'[?$]" + var + "'");
 
         if (p.matcher(command).find() && n.isLiteral()) {
-            throw new ARQException("Command string is vunerable to injection attack, variable ?" + var
+            throw new ARQException("Command string is vulnerable to injection attack, variable ?" + var
                     + " appears surrounded directly by quotes and is bound to a literal which provides a SPARQL injection attack vector");
         }
 
@@ -1305,7 +1318,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
             if (n.isLiteral()) {
                 if (delims.isInsideLiteral(posMatch.start(1), posMatch.end(1))) {
-                    throw new ARQException("Command string is vunerable to injection attack, variable ?" + var
+                    throw new ARQException("Command string is vulnerable to injection attack, variable ?" + var
                             + " appears inside of a literal and is bound to a literal which provides a SPARQL injection attack vector");
                 }
             }
@@ -1336,7 +1349,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
         // Check each occurrence of the variable for safety
         if (n.isLiteral()) {
             if (delims.isInsideLiteral(position, position)) {
-                throw new ARQException("Command string is vunerable to injection attack, a positional paramter (index "
+                throw new ARQException("Command string is vulnerable to injection attack, a positional parameter (index "
                         + index
                         + ") appears inside of a literal and is bound to a literal which provides a SPARQL injection attack vector");
             }
@@ -1358,6 +1371,10 @@ public class ParameterizedSparqlString implements PrefixMapping {
     }
 
     protected final String stringForNode(Node n, SerializationContext context) {
+        if (n == UNDEF) {
+            return "UNDEF";
+        }
+
         String str = FmtUtils.stringForNode(n, context);
         if (n.isLiteral() && str.contains("'")) {
             // Should escape ' to avoid a possible injection vulnerability
@@ -1369,7 +1386,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
     /**
      * <p>
      * This method is where the actual work happens, the original command text
-     * is always preserved and we just generated a temporary command string by
+     * is always preserved, and we just generate a temporary command string by
      * prepending the defined Base URI and namespace prefixes at the start of
      * the command and injecting the set parameters into a copy of that base
      * command string and return the resulting command.
@@ -1849,7 +1866,10 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * See setRowValues to assign multiple values to multiple variables.<br>
      * Using "valueName" with list(prop_A, obj_A) on query "VALUES (?p ?o)
      * {?valueName}" * would produce "VALUES (?p ?o) {(prop_A obj_A)}".
-     *
+     * <p>
+     * Note that if you want to inject the SPARQL keyword {@code UNDEF} for any of the values then you
+     * <strong>MUST</strong> use the special {@link #undef()} value in the items parameter as appropriate.
+     * </p>
      *
      * @param valueName
      * @param items
@@ -1871,6 +1891,10 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Assign a VALUES valueName with a single item.<br>
      * Using "valueName" with Literal obj_A on query "VALUES ?o {?valueName}"
      * would produce * "VALUES ?o {obj_A}".
+     * <p>
+     * Note that if you want to inject the SPARQL keyword {@code UNDEF} for the value then you <strong>MUST</strong> use
+     * the special {@link #undef()} value as the item parameter.
+     * </p>
      *
      * @param valueName
      * @param item
@@ -1880,10 +1904,14 @@ public class ParameterizedSparqlString implements PrefixMapping {
     }
 
     /**
-     * ** Sets a map of VALUES valueNames and their items.<br>
+     * Sets a map of VALUES valueNames and their items.<br>
      * Can be used to assign multiple values to a single variable or single
      * value to multiple variables (if using a List) in the SPARQL query.<br>
      * See setRowValues to assign multiple values to multiple variables.
+     * <p>
+     * Note that if you want to inject the SPARQL keyword {@code UNDEF} for any of the values then you
+     * <strong>MUST</strong> use the special {@link #undef()} value in the itemsMap parameter as appropriate.
+     * </p>
      *
      * @param itemsMap
      */
@@ -1896,6 +1924,10 @@ public class ParameterizedSparqlString implements PrefixMapping {
      * Using "valuesName" with list(list(prop_A, obj_A), list(prop_B, obj_B)) on
      * query "VALUES (?p ?o) {?valuesName}" would produce "VALUES (?p ?o)
      * {(prop_A obj_A) * (prop_B obj_B)}".
+     * <p>
+     * Note that if you want to inject the SPARQL keyword {@code UNDEF} for any of the values then you
+     * <strong>MUST</strong> use the special {@link #undef()} value in the rowItems parameter as appropriate.
+     * </p>
      *
      * @param valueName
      * @param rowItems
@@ -2008,8 +2040,6 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
         /**
          * Tidy up valueName if doesn't start with a ? or $.
-         *
-         * @param valueName
          * @return
          */
         private String createTarget() {
