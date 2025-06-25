@@ -175,4 +175,8 @@ public class Prefixes {
         prefixMap.getMapping().forEach((p,u)->sj.add(format("  %-8s <%s>", p+":", u)));
         return sj.toString();
     }
+
+    public static PrefixMap emptyPrefixMap() {
+        return PrefixMapZero.empty;
+    }
 }
