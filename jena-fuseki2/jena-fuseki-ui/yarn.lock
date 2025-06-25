@@ -2615,9 +2615,9 @@ concat-map@0.0.1:
   integrity sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==
 
 concurrently@^9.0.0:
-  version "9.1.2"
-  resolved "https://registry.yarnpkg.com/concurrently/-/concurrently-9.1.2.tgz#22d9109296961eaee773e12bfb1ce9a66bc9836c"
-  integrity sha512-H9MWcoPsYddwbOGM6difjVwVZHl63nwMEwDJG/L7VGtuaJhb12h2caPG2tVPWs7emuYix252iGfqOyrz1GczTQ==
+  version "9.2.0"
+  resolved "https://registry.yarnpkg.com/concurrently/-/concurrently-9.2.0.tgz#233e3892ceb0b5db9fd49e9c8c739737a7b638b5"
+  integrity sha512-IsB/fiXTupmagMW4MNp2lx2cdSN2FfZq78vF90LBB+zZHArbIQZjQtzXCiXnvTxCZSvXanTqFLWBjw2UkLx1SQ==
   dependencies:
     chalk "^4.1.2"
     lodash "^4.17.21"
