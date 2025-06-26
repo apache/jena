@@ -151,8 +151,8 @@ verStr = stripQuotes(t.image) ;
       jj_consume_token(-1);
       throw new ParseException();
     }
-checkString(verStr, t.beginLine, t.beginColumn) ;
-      verStr = unescapeStr(verStr,  t.beginLine, t.beginColumn) ;
+verStr = unescapeStr(verStr, t.beginLine, t.beginColumn) ;
+      checkRDFString(verStr, t.beginLine, t.beginColumn) ;
       {if ("" != null) return verStr ;}
     throw new Error("Missing return statement in function");
 }
@@ -658,8 +658,7 @@ lex = stripQuotes3(t.image) ;
       jj_consume_token(-1);
       throw new ParseException();
     }
-checkString(lex, t.beginLine, t.beginColumn) ;
-      lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
+lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
       {if ("" != null) return lex ;}
     throw new Error("Missing return statement in function");
 }

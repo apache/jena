@@ -25,13 +25,37 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.system.*;
 
+/**
+ * Manage parsers used for tests, separate from the overall system setup.
+ */
 public class ParseForTest {
 
     public static void parse(StreamRDF destination, String uri, Lang lang, boolean ignoreWarnings) {
         parse(destination, uri, uri, lang, ignoreWarnings);
     }
 
-    public static Map<Lang, ReaderRIOTFactory> alternativeReaderFactories = new ConcurrentHashMap<>();
+    /**
+     * Map of {@link Lang} to {@link ReaderRIOTFactory} that is consulted before
+     * defaulting to the standard system parser.
+     */
+    private static Map<Lang, ReaderRIOTFactory> alternativeReaderFactories = new ConcurrentHashMap<>();
+
+    /**
+     * Add an alternative language implementation to
+     * {@link #alternativeReaderFactories} map. This map of {@link Lang} to
+     * {@link ReaderRIOTFactory} is consulted before defaulting to the standard
+     * system parser.
+     */
+    public static void registerAlternative(Lang lang, ReaderRIOTFactory factory) {
+        alternativeReaderFactories.put(lang, factory);
+    }
+
+    /**
+     * Remove an registration of an alternative for {@link Lang}.
+     */
+    public static void unregisterAlternative(Lang lang) {
+        alternativeReaderFactories.remove(lang);
+    }
 
     public static void parse(StreamRDF destination, String uri, String base, Lang lang, boolean ignoreWarnings) {
 
