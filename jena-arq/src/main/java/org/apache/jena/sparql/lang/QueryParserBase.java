@@ -212,12 +212,20 @@ public class QueryParserBase {
         return NodeFactory.createLiteral(lex, lang, dt);
     }
 
-    // Because of Java (Java strings have surrogate pairs) we only detect singleton surrogates.
-    protected void checkString(String string, int line, int column) {
+    /**
+     * Apply any checks for "RDF String" to a string that has already had escape processing applied.
+     * An RDF String is a sequence of codepoints in the range U+0000 to U+10FFFF, excluding surrogates.
+     * Because this is java, we test for no non-paired surrogates.
+     * A surrogate pair is high-low.
+     */
+    protected static void checkRDFString(String string, int line, int column) {
         // Checks for bare surrogate pairs.
         for ( int i = 0; i < string.length(); i++ ) {
             // Not "codePointAt" which does surrogate processing.
             char ch = string.charAt(i);
+
+            if ( ! Character.isValidCodePoint(ch) )
+                throw new QueryParseException(String.format("Illegal code point in \\U sequence value: 0x%08X", ch), line, column);
 
             // Check surrogate pairs are in pairs. Pairs are high-low.
             if ( Character.isLowSurrogate(ch) )
@@ -369,7 +377,7 @@ public class QueryParserBase {
         iriStr = stripQuotes(iriStr);
         iriStr = unescapeUnicode(iriStr, line, column);
         // Check for Unicode surrogates
-        checkString(iriStr, line, column);
+        checkRDFString(iriStr, line, column);
         return resolveIRI(iriStr, line, column);
     }
 
