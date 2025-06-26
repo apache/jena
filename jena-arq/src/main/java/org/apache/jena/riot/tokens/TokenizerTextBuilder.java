@@ -129,6 +129,6 @@ public class TokenizerTextBuilder {
             throw new IllegalStateException("No data source");
         }
 
-        return TokenizerText.internal(pr, singleLineMode, !utf8, errHandler);
+        return TokenizerText.internal(pr, singleLineMode, errHandler);
     }
 }

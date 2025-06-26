@@ -1352,6 +1352,135 @@ public class TestTokenizerText {
         assertFalse(tokenizer.hasNext());
     }
 
+    // U+D800-U+DBFF is a high surrogate (first part of a pair)
+    // U+DC00-U+DFFF is a low surrogate (second part of a pair)
+    // so D800-DC00 is legal.
+
+    @Test public void turtle_surrogate_pair_01() {
+        // escaped high, escaped low
+        surrogate("'\\ud800\\udc00'");
+    }
+
+    @Test public void turtle_surrogate_pair_02() {
+        // escaped high, raw low
+        surrogate("'\\ud800\udc00'");
+    }
+
+    // Compilation failure - illegal escape character
+//    @Test public void turtle_surrogate_pair_03() {
+//        // raw high, escaped low
+//        surrogate("'\ud800\\udc00'");
+//    }
+
+    @Test public void turtle_surrogate_pair_04() {
+        // raw high, raw low
+        surrogate("'\ud800\udc00'");
+    }
+
+    @Test public void turtle_surrogate_pair_05() {
+        // escaped high, escaped low
+        surrogate("'a\\ud800\\udc00x'");
+    }
+
+    @Test public void turtle_surrogate_pair_06() {
+        // escaped high, raw low
+        surrogate("'z\\ud800\udc00'z");
+    }
+
+    // Compilation failure - illegal escape character
+//    @Test public void turtle_surrogate_pair_07() {
+//        // raw high, escaped low
+//        surrogate("'a\ud800\\udc00'z");
+//    }
+
+    @Test public void turtle_surrogate_pair_08() {
+        // raw high, raw low
+        surrogate("'a\ud800\udc00'z");
+    }
+
+    @Test (expected=RiotParseException.class)
+    public void turtle_bad_surrogate_01() {
+        surrogate("'\\ud800'");
+    }
+
+    @Test (expected=RiotParseException.class)
+    public void turtle_bad_surrogate_02() {
+        surrogate("'a\\ud800z'");
+    }
+
+    @Test (expected=RiotParseException.class)
+    public void turtle_bad_surrogate_03() {
+        surrogate("'\\udfff'");
+    }
+
+    @Test (expected=RiotParseException.class)
+    public void turtle_bad_surrogate_04() {
+        surrogate("'a\\udfffz'");
+    }
+
+    @Test (expected=RiotParseException.class)
+    public void turtle_bad_surrogate_05() {
+        surrogate("'\\U0000d800'");
+    }
+
+    @Test (expected=RiotParseException.class)
+    public void turtle_bad_surrogate_06() {
+        surrogate("'a\\U0000d800z'");
+    }
+
+    @Test (expected=RiotParseException.class)
+    public void turtle_bad_surrogate_07() {
+        surrogate("'\\U0000dfff'");
+    }
+
+    @Test (expected=RiotParseException.class)
+    public void turtle_bad_surrogate_08() {
+        surrogate("'a\\U0000dfffz'");
+    }
+
+    @Test (expected=RiotParseException.class)
+    public void turtle_bad_surrogate_09() {
+        // Wrong way round: low-high
+        surrogate("'\\uc800\\ud800'");
+    }
+
+    @Test (expected=RiotParseException.class)
+    public void turtle_bad_surrogate_10() {
+        // Wrong way round: low-high
+        surrogate("'a\\uc800\\ud800z'");
+    }
+
+    // Compilation failure - illegal escape character
+//    @Test (expected=RiotParseException.class)
+//    public void turtle_bad_surrogate_11() {
+//        // raw low - escaped high
+//        surrogate("'\ud800\\ud800'");
+//    }
+//
+//    @Test (expected=RiotParseException.class)
+//    public void turtle_bad_surrogate_12() {
+//        // raw low - escaped high
+//        surrogate("'a\ud800\\ud800z'");
+//    }
+
+    @Test (expected=RiotParseException.class)
+    public void turtle_bad_surrogate_13() {
+        // escaped low - raw high
+        surrogate("'\\uc800\ud800'");
+    }
+
+    @Test (expected=RiotParseException.class)
+    public void turtle_bad_surrogate_14() {
+        // escaped low - raw high
+        surrogate("'a\\uc800\ud800z'");
+    }
+
+    private void surrogate(String string) {
+        Tokenizer tokenizer = tokenizer(string);
+        tokenizer.hasNext();
+        tokenizer.next();
+    }
+
     @Test
     public void token_rdf_star_reified_1() {
         Tokenizer tokenizer = tokenizer("<<");

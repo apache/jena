@@ -80,12 +80,8 @@ public class TestNodec
     @Test public void nodec_lit_22()    { test ("''^^<>"); }
 
     // Bad Unicode.
-    static private final String binaryStr1  = "abc\uD800xyz";    // A single surrogate, without it's pair.
-    static private final String binaryStr2  = "\uD800";          // A single surrogate, without it's pair.
-    static private final String binaryStr3  = "\u0000";          // A zero character
+    static private final String binaryStr3  = "\u0000";                 // A zero character
 
-    @Test public void nodec_lit_30()    { test ("'"+binaryStr1+"'"); }
-    @Test public void nodec_lit_31()    { test ("'"+binaryStr2+"'"); }
     @Test public void nodec_lit_32()    { test ("'"+binaryStr3+"'"); }
 
     @Test public void nodec_lit_33()    { test("'\uFFFD'"); }
