@@ -70,7 +70,7 @@ public class TestQueryParser {
 
     @Test
     public void syntax_unicode_surrogate_pair_by_unicode_escape() {
-        // Allow - because Java strings may have surrogate pairs so we allow then in unicode escapes if paired.
+        // Allow - because Java strings may have surrogate pairs so we allow them in unicode escapes if paired.
         testParse("SELECT * { ?s ?p '\\uD801\\uDC37'}");
 
 //        QueryParseException ex = assertThrows(QueryParseException.class,  ()->testParse("SELECT * { ?s ?p '\\uD801\\uDC37'}"));
