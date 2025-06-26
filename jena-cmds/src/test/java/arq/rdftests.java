@@ -28,6 +28,7 @@ import org.apache.jena.Jena;
 import org.apache.jena.arq.junit.SurpressedTest;
 import org.apache.jena.arq.junit.TextTestRunner;
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
+import org.apache.jena.arq.junit.riot.ParseForTest;
 import org.apache.jena.arq.junit.riot.RiotTests;
 import org.apache.jena.arq.junit.riot.VocabLangRDF;
 import org.apache.jena.arq.junit.sparql.SparqlTests;
@@ -46,10 +47,8 @@ import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.RIOT;
-import org.apache.jena.riot.SysRIOT;
+import org.apache.jena.riot.*;
+import org.apache.jena.riot.lang.extra.TurtleJCC;
 import org.apache.jena.sparql.expr.E_Function;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.junit.EarlReport;
@@ -94,9 +93,11 @@ public class rdftests extends CmdGeneral
     protected ArgDecl    strictDecl        = new ArgDecl(ArgDecl.NoValue, "strict");
     protected boolean    cmdStrictMode     = false;
 
-    protected ArgDecl    arqDecl           = new ArgDecl(ArgDecl.NoValue, "arq");
+    // Use the alternative Turtle parser which is JavaCC based.
+    protected ArgDecl    useTTLjcc         = new ArgDecl(ArgDecl.NoValue, "ttljcc");
+    protected ArgDecl    useARQ            = new ArgDecl(ArgDecl.NoValue, "arq");
     // Run with ".rq" as ARQ extended syntax.
-    protected boolean    arqAsNormal       = false;
+    protected boolean    argAsNormal       = false;
 
     protected ArgDecl    earlDecl          = new ArgDecl(ArgDecl.NoValue, "earl");
     protected boolean    createEarlReport  = false;
@@ -114,9 +115,11 @@ public class rdftests extends CmdGeneral
         super.modVersion.addClass(Jena.class);
         getUsage().startCategory("Tests (execute test manifest)");
         getUsage().addUsage("<manifest>", "run the tests specified in the given manifest");
-        add(arqDecl, "--arq",       "Operate with ARQ syntax");
-        add(strictDecl, "--strict", "Operate in strict mode (no extensions of any kind)");
-        add(earlDecl, "--earl", "create EARL report");
+
+        add(useARQ,       "--arq",     "Operate with ARQ syntax");
+        add(useTTLjcc,    "--ttljcc",  "Use the alternative Turtle parser in tests");
+        add(strictDecl,   "--strict",  "Operate in strict mode (no extensions of any kind)");
+        add(earlDecl,     "--earl",    "Create EARL report");
         addModule(modContext);
     }
 
@@ -134,11 +137,14 @@ public class rdftests extends CmdGeneral
         cmdStrictMode = super.hasArg(strictDecl);
         if ( contains(baseDecl) )
             baseURI = super.getValue(baseDecl);
-        arqAsNormal = contains(arqDecl);
+        if ( contains(useTTLjcc) )
+            ParseForTest.registerAlternative(Lang.TURTLE, TurtleJCC.factory);
+        argAsNormal = contains(useARQ);
     }
 
     @Override
     protected void exec() {
+
         NodeValue.VerboseWarnings = false;
         E_Function.WarnOnUnknownFunction = false;
         EarlReport report = new EarlReport(systemURI);
@@ -152,7 +158,7 @@ public class rdftests extends CmdGeneral
             QueryEvalTest.compareResultSetsByValue = false;
         }
 
-        if ( arqAsNormal )
+        if ( argAsNormal )
             SparqlTests.defaultForSyntaxTests = Syntax.syntaxARQ;
         else
             SparqlTests.defaultForSyntaxTests = Syntax.syntaxSPARQL_12;

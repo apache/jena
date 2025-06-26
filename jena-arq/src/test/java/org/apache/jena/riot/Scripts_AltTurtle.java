@@ -38,7 +38,7 @@ import org.junit.runner.RunWith ;
 
     // rdf-tests CG
     "testing/rdf-tests-cg/turtle/manifest.ttl"
-    
+
     // [rdf-star CG] RDF star CG tests. No longer valid
 //    "testing/rdf-star-cg/turtle/syntax/manifest.ttl",
 //    "testing/rdf-star-cg/turtle/eval/manifest.ttl"
@@ -52,11 +52,11 @@ public class Scripts_AltTurtle
         JenaSystem.init();
         // Register language and parser factory.
         TurtleJCC.register();
-        ParseForTest.alternativeReaderFactories.put(Lang.TURTLE, TurtleJCC.factory);
+        ParseForTest.registerAlternative(Lang.TURTLE, TurtleJCC.factory);
     }
 
     @AfterClass public static void afterClass() {
-        ParseForTest.alternativeReaderFactories.remove(Lang.TURTLE);
+        ParseForTest.unregisterAlternative(Lang.TURTLE);
     }
 }
 

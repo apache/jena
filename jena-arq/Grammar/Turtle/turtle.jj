@@ -108,10 +108,10 @@ String VersionSpecificer() : {  Token t; String verStr; }
 //   | t = <STRING_LITERAL_LONG2> { verStr = stripQuotes3(t.image) ; }
   )
     {
-      checkString(verStr, t.beginLine, t.beginColumn) ;
-      verStr = unescapeStr(verStr,  t.beginLine, t.beginColumn) ;
+      verStr = unescapeStr(verStr, t.beginLine, t.beginColumn) ;
+      checkRDFString(verStr, t.beginLine, t.beginColumn) ;
       return verStr ;
-    }  
+    } 
 }
 
 void DirectiveOld() : { Token t ; Token t2 ; String iri ; String verStr ; }
@@ -302,7 +302,6 @@ String String() : { Token t ; String lex ; }
   | t = <STRING_LITERAL_LONG2> { lex = stripQuotes3(t.image) ; }
   )
     {
-      checkString(lex, t.beginLine, t.beginColumn) ;
       lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
       return lex ;
     }
