@@ -43,9 +43,12 @@ public final class TokenizerText implements Tokenizer
     // do the check later in the parsing process. In case a need arises, the code
     // remains, all compiled away by "if ( false )" (javac does not generate any
     // bytecodes and even if it it did, JIT will remove dead branches).
-    private static final boolean Checking = false;
+    private static final boolean CHECKING = false;
     // Optional checker.
     private final TokenChecker checker = null;
+
+    // Whether to check for legal RDF strings (no ill formed use of surrogates)
+    private static final boolean CHECK_RDFSTRING = true;
 
     // Workspace for building token images.
     // Reusing a StringBuilder is faster than allocating a fresh one each time.
@@ -55,8 +58,6 @@ public final class TokenizerText implements Tokenizer
     private final PeekReader reader;
     // Whether whitespace between tokens includes newlines (in various forms).
     private final boolean singleLineMode;
-    // Indicator. The PeekReader should throw java.nio.charset.MalformedInputException
-    private final boolean isASCII;
     // The code assumes that errors throw exception and so stop parsing.
     private final ErrorHandler errorHandler;
 
@@ -67,15 +68,14 @@ public final class TokenizerText implements Tokenizer
 
     public static Tokenizer fromString(String string) { return create().fromString(string).build(); }
 
-    /*package*/ static TokenizerText internal(PeekReader reader, boolean singleLineMode, boolean isASCII, ErrorHandler errorHandler) {
-        return new TokenizerText(reader, singleLineMode, isASCII, errorHandler);
+    /*package*/ static TokenizerText internal(PeekReader reader, boolean singleLineMode, ErrorHandler errorHandler) {
+        return new TokenizerText(reader, singleLineMode, errorHandler);
     }
 
-    private TokenizerText(PeekReader reader, boolean singleLineMode, boolean isASCII, ErrorHandler errorHandler) {
+    private TokenizerText(PeekReader reader, boolean singleLineMode, ErrorHandler errorHandler) {
         this.reader = Objects.requireNonNull(reader, "PeekReader");
         this.singleLineMode = singleLineMode;
         this.errorHandler = Objects.requireNonNull(errorHandler, "ErrorHandler");
-        this.isASCII = isASCII;
     }
 
     @Override
@@ -183,7 +183,7 @@ public final class TokenizerText implements Tokenizer
                 // '<' not '<<'
                 token.setImage(readIRI());
                 token.setType(TokenType.IRI);
-                if ( Checking )
+                if ( CHECKING )
                     checkURI(token.getImage());
                 return token;
             }
@@ -215,7 +215,7 @@ public final class TokenizerText implements Tokenizer
                 int ch3 = reader.peekChar();
                 if ( ch3 == ch ) {
                     reader.readChar();     // Read potential third quote.
-                    token.setImage(readStringQuote3(ch, false));
+                    token.setImage(readStringQuote3(ch));
                     StringType st = (ch == CH_QUOTE1) ? StringType.LONG_STRING1 : StringType.LONG_STRING2;
                     token.setStringType(st);
                 } else {
@@ -224,8 +224,7 @@ public final class TokenizerText implements Tokenizer
                     // No need to pushback characters as we know the lexical
                     // form is the empty string.
                     // if ( ch2 != EOF ) reader.pushbackChar(ch2);
-                    // if ( ch1 != EOF ) reader.pushbackChar(ch1); // Must be
-                    // '' or ""
+                    // if ( ch1 != EOF ) reader.pushbackChar(ch1);
                     token.setImage("");
                     StringType st = (ch == CH_QUOTE1) ? StringType.STRING1 : StringType.STRING2;
                     token.setStringType(st);
@@ -251,7 +250,7 @@ public final class TokenizerText implements Tokenizer
                 mainToken.setSubToken1(token);
                 mainToken.setImage2(langTag());
                 token = mainToken;
-                if ( Checking )
+                if ( CHECKING )
                     checkLiteralLang(token.getImage(), token.getImage2());
             } else if ( reader.peekChar() == '^' ) {
                 expect("^^");
@@ -276,11 +275,11 @@ public final class TokenizerText implements Tokenizer
                 mainToken.setType(TokenType.LITERAL_DT);
 
                 token = mainToken;
-                if ( Checking )
+                if ( CHECKING )
                     checkLiteralDT(token.getImage(), subToken);
             } else {
                 // Was a simple string.
-                if ( Checking )
+                if ( CHECKING )
                     checkString(token.getImage());
             }
             return token;
@@ -293,7 +292,7 @@ public final class TokenizerText implements Tokenizer
                 reader.readChar();
                 token.setImage(readBlankNodeLabel());
                 token.setType(TokenType.BNODE);
-                if ( Checking ) checkBlankNode(token.getImage());
+                if ( CHECKING ) checkBlankNode(token.getImage());
                 return token;
             }
             token.setType(TokenType.UNDERSCORE);
@@ -306,7 +305,7 @@ public final class TokenizerText implements Tokenizer
             reader.readChar();
             token.setType(TokenType.DIRECTIVE);
             token.setImage(readWord(false));
-            if ( Checking )
+            if ( CHECKING )
                 checkDirective(token.getImage());
             return token;
         }
@@ -317,7 +316,7 @@ public final class TokenizerText implements Tokenizer
             token.setType(TokenType.VAR);
             // Character set?
             token.setImage(readVarName());
-            if ( Checking )
+            if ( CHECKING )
                 checkVariable(token.getImage());
             return token;
         }
@@ -336,7 +335,7 @@ public final class TokenizerText implements Tokenizer
                     reader.pushbackChar(CH_DOT);
                     boolean charactersConsumed = readNumber(CH_ZERO, false);
                     if ( charactersConsumed ) {
-                        if ( Checking )
+                        if ( CHECKING )
                             checkNumber(token.getImage(), token.getImage2());
                         return token;
                     }
@@ -517,7 +516,7 @@ public final class TokenizerText implements Tokenizer
 
         readPrefixedNameOrKeyword(token);
 
-        if ( Checking ) checkKeyword(token.getImage());
+        if ( CHECKING ) checkKeyword(token.getImage());
         return token;
     }
 
@@ -539,17 +538,14 @@ public final class TokenizerText implements Tokenizer
                     fatal("Broken IRI (CR): %s", stringBuilder.toString()); return null;
                 case CH_GT:
                     // Done!
-                    return stringBuilder.toString();
+                    String str = stringBuilder.toString();
+                    if ( CHECK_RDFSTRING )
+                        checkRDFString(str);
+                    return str;
                 case CH_RSLASH:
-                    if ( VeryVeryLaxIRI )
-                        // Includes unicode escapes and also \n etc
-                        ch = readLiteralEscape();
-                    else
-                        // NORMAL
-                        ch = readUnicodeEscape();
+                    ch = readUnicodeEscape();
                     // Don't check legality of ch (strict syntax at this point).
-                    // That does not mean it is a good idea to bypass checking.
-                    // Bad characters will lead to trouble elsewhere.
+                    // IRI parsing will catch errors.
                     break;
                 case CH_LT:
                     // Probably a corrupt file so treat as fatal.
@@ -558,7 +554,7 @@ public final class TokenizerText implements Tokenizer
                     error("Bad character in IRI (tab character): <%s[tab]...>", stringBuilder.toString()); break;
                 case '{': case '}': case '"': case '|': case '^': case '`' :
                     if ( ! VeryVeryLaxIRI )
-                        warning("Illegal character in IRI (codepoint 0x%02X, '%c'): <%s[%c]...>", ch, (char)ch, stringBuilder.toString(), (char)ch);
+                        warning("Illegal character in IRI (codepoint U+%04X, '%c'): <%s[%c]...>", ch, (char)ch, stringBuilder.toString(), (char)ch);
                     break;
                 case SPC:
                     if ( ! AllowSpacesInIRI )
@@ -578,21 +574,6 @@ public final class TokenizerText implements Tokenizer
         }
     }
 
-    // Read a unicode escape : does not allow \\ bypass
-    private final int readUnicodeEscape() {
-        int ch = reader.readChar();
-        if ( ch == EOF )
-            fatal("Broken escape sequence");
-
-        switch (ch) {
-            case 'u': return readUnicode4Escape();
-            case 'U': return readUnicode8Escape();
-            default:
-                fatal("Illegal unicode escape sequence value: \\%c (0x%02X)", ch, ch);
-        }
-        return 0;
-    }
-
     private void readPrefixedNameOrKeyword(Token token) {
         long posn = reader.getPosition();
         String prefixPart = readPrefixPart(); // Prefix part or keyword
@@ -604,7 +585,7 @@ public final class TokenizerText implements Tokenizer
             token.setType(TokenType.PREFIXED_NAME);
             String ln = readLocalPart(); // Local part
             token.setImage2(ln);
-            if ( Checking )
+            if ( CHECKING )
                 checkPrefixedName(token.getImage(), token.getImage2());
         }
 
@@ -613,7 +594,7 @@ public final class TokenizerText implements Tokenizer
         if ( posn == reader.getPosition() )
             fatal("Failed to find a prefix name or keyword: %c(%d;0x%04X)", ch, ch, ch);
 
-        if ( Checking )
+        if ( CHECKING )
             checkKeyword(token.getImage());
     }
 
@@ -759,40 +740,64 @@ public final class TokenizerText implements Tokenizer
     }
 
     // Process PLX (percent or character escape for a prefixed name)
-    private void processPLX(int ch)
-    {
-        if ( ch == CH_PERCENT )
-        {
+    private void processPLX(int ch) {
+        if ( ch == CH_PERCENT ) {
             insertCodepointDirect(stringBuilder, ch);
 
             ch = reader.peekChar();
-            if ( ! isHexChar(ch) )
-                fatal("Not a hex character: '%c'",ch);
+            if ( !isHexChar(ch) )
+                fatal("Not a hex character: '%c'", ch);
             insertCodepointDirect(stringBuilder, ch);
             reader.readChar();
 
             ch = reader.peekChar();
-            if ( ! isHexChar(ch) )
-                fatal("Not a hex character: '%c'",ch);
+            if ( !isHexChar(ch) )
+                fatal("Not a hex character: '%c'", ch);
             insertCodepointDirect(stringBuilder, ch);
             reader.readChar();
-        }
-        else if ( ch == CH_RSLASH )
-        {
+        } else if ( ch == CH_RSLASH ) {
             ch = readCharEscape();
             insertCodepoint(stringBuilder, ch);
-        }
-        else
+        } else
             throw new ARQInternalErrorException("Not a '\\' or a '%' character");
     }
 
+    /**
+     * Apply any checks for "RDF String" to a string that has already had escape processing applied.
+     * An RDF String is a sequence of codepoints in the range U+0000 to U+10FFFF, excluding surrogates.
+     * Because this is java, we test for no non-paired surrogates.
+     * A surrogate pair is high-low.
+     * This check is performed in readIRI, readStrignQuote1, and readStringQuote3
+     */
+    private void checkRDFString(String string) {
+        for ( int i = 0 ; i < string.length() ; i++ ) {
+            // Not "codePointAt" which does surrogate processing.
+            char ch = string.charAt(i);
+
+            if ( ! Character.isValidCodePoint(ch) )
+                warning("Illegal code point in \\U sequence value: 0x%08X", ch);
+
+            // Check surrogate pairs are pairs.
+            if ( Character.isHighSurrogate(ch) ) {
+                i++;
+                if ( i == string.length() )
+                    fatal("Bad surrogate pair (end of string)");
+                char ch1 = string.charAt(i);
+                if ( ! Character.isLowSurrogate(ch1) ) {
+                    fatal("Bad surrogate pair (high surrogate not followed by low surrogate)");
+                }
+            } else if ( Character.isLowSurrogate(ch) ) {
+                fatal("Bad surrogate pair (low surrogate not preceded by a high surrogate)");
+            }
+        }
+    }
+
     // Get characters between two markers.
-    // strEscapes may be processed
+    // String escapes are processed.
     private String readStringQuote1(int startCh, int endCh) {
-        // Position at start of string.
+        // Assumes the 1 character starting delimiter has been read.
+        // Reads the terminating delimiter.
         stringBuilder.setLength(0);
-        // Assumes first delimiter char read already.
-        // Reads terminating delimiter
 
         for (;;) {
             int ch = reader.readChar();
@@ -805,9 +810,13 @@ public final class TokenizerText implements Tokenizer
                 warning("Unicode non-character U+%04X in string", ch);
             if ( ch == EOF )
                 fatal("Broken token: %s", stringBuilder.toString());
-            else if ( ch == endCh )
-                return stringBuilder.toString();
-            else if ( ch == NL )
+            else if ( ch == endCh ) {
+                // Done!
+                String str = stringBuilder.toString();
+                if ( CHECK_RDFSTRING )
+                    checkRDFString(str);
+                return str;
+            } else if ( ch == NL )
                 fatal("Broken token (newline in string)", stringBuilder.toString());
             else if ( ch == CR )
                 fatal("Broken token (carriage return in string)", stringBuilder.toString());
@@ -823,7 +832,9 @@ public final class TokenizerText implements Tokenizer
         }
     }
 
-    private String readStringQuote3(int quoteChar, boolean endNL) {
+    private String readStringQuote3(int quoteChar) {
+        // Assumes the 3 character starting delimiter has been read.
+        // Reads the terminating delimiter.
         stringBuilder.setLength(0);
         for (;;) {
             int ch = reader.readChar();
@@ -833,13 +844,15 @@ public final class TokenizerText implements Tokenizer
                     warning("Unicode replacement character U+FFFD in string");
             }
             if ( ch == EOF ) {
-                if ( endNL )
-                    return stringBuilder.toString();
                 fatal("Broken long string");
-            }
-            else if ( ch == quoteChar ) {
-                if ( threeQuotes(quoteChar) )
-                    return stringBuilder.toString();
+            } else if ( ch == quoteChar ) {
+                if ( threeQuotes(quoteChar) ) {
+                    String str = stringBuilder.toString();
+                    if ( CHECK_RDFSTRING )
+                        checkRDFString(str);
+                    return str;
+                }
+                // quote, not triple. It is a normal character.
             } else if ( ch == CH_RSLASH )
                 ch = readLiteralEscape();
             insertCodepoint(stringBuilder, ch);
@@ -1249,64 +1262,22 @@ public final class TokenizerText implements Tokenizer
         return reader.getLineNum();
     }
 
-    // ---- Routines to check tokens
-
-    private void checkBlankNode(String blankNodeLabel) {
-        if ( checker != null )
-            checker.checkBlankNode(blankNodeLabel);
-    }
-
-    private void checkLiteralLang(String lexicalForm, String langTag) {
-        if ( checker != null )
-            checker.checkLiteralLang(lexicalForm, langTag);
-    }
-
-    private void checkLiteralDT(String lexicalForm, Token datatype) {
-        if ( checker != null )
-            checker.checkLiteralDT(lexicalForm, datatype);
-    }
-
-    private void checkString(String string) {
-        if ( checker != null )
-            checker.checkString(string);
-    }
-
-    private void checkURI(String uriStr) {
-        if ( checker != null )
-            checker.checkURI(uriStr);
-    }
-
-    private void checkNumber(String image, String datatype) {
-        if ( checker != null )
-            checker.checkNumber(image, datatype);
-    }
-
-    private void checkVariable(String tokenImage) {
-        if ( checker != null )
-            checker.checkVariable(tokenImage);
-    }
-
-    private void checkDirective(String directive) {
-        if ( checker != null )
-            checker.checkDirective(directive);
-    }
-
-    private void checkKeyword(String tokenImage) {
-        if ( checker != null )
-            checker.checkKeyword(tokenImage);
-    }
-
-    private void checkPrefixedName(String tokenImage, String tokenImage2) {
-        if ( checker != null )
-            checker.checkPrefixedName(tokenImage, tokenImage2);
-    }
-
-    private void checkControl(int code) {
-        if ( checker != null )
-            checker.checkControl(code);
-    }
-
     // ---- Escape sequences
+
+    // Read a unicode escape : does not allow \\ bypass
+    private final int readUnicodeEscape() {
+        int ch = reader.readChar();
+        if ( ch == EOF )
+            fatal("Broken escape sequence");
+
+        switch (ch) {
+            case 'u': return readUnicode4Escape();
+            case 'U': return readUnicode8Escape();
+            default:
+                fatal("Illegal unicode escape sequence value: \\%c (0x%02X)", ch, ch);
+        }
+        return 0;
+    }
 
     private final int readLiteralEscape() {
         int c = reader.readChar();
@@ -1325,7 +1296,7 @@ public final class TokenizerText implements Tokenizer
             case 'u':   return readUnicode4Escape();
             case 'U':   return readUnicode8Escape();
             default:
-                fatal("Illegal escape sequence value: %c (0x%02X)", c, c);
+                fatal("Illegal escape sequence value: %c (0x%02X)",c , c);
                 return 0;
         }
     }
@@ -1356,8 +1327,8 @@ public final class TokenizerText implements Tokenizer
 
     private final int readUnicode8Escape() {
         int ch8 = readHexSequence(8);
-        if ( ch8 > Character.MAX_CODE_POINT )
-            fatal("Illegal code point in \\U sequence value: 0x%08X", ch8);
+        if ( ! Character.isValidCodePoint(ch8) )
+            fatal("Illegal code point from \\U sequence value: 0x%08X", ch8);
         return ch8;
     }
 
@@ -1427,5 +1398,62 @@ public final class TokenizerText implements Tokenizer
         // We require that errors cause the tokenizer to stop so in case the
         // provided error handler does not, we throw an exception.
         throw new RiotParseException(message, line, col);
+    }
+
+    // ---- Routines to check tokens
+
+    private void checkBlankNode(String blankNodeLabel) {
+        if ( checker != null )
+            checker.checkBlankNode(blankNodeLabel);
+    }
+
+    private void checkLiteralLang(String lexicalForm, String langTag) {
+        if ( checker != null )
+            checker.checkLiteralLang(lexicalForm, langTag);
+    }
+
+    private void checkLiteralDT(String lexicalForm, Token datatype) {
+        if ( checker != null )
+            checker.checkLiteralDT(lexicalForm, datatype);
+    }
+
+    private void checkString(String string) {
+        if ( checker != null )
+            checker.checkString(string);
+    }
+
+    private void checkURI(String uriStr) {
+        if ( checker != null )
+            checker.checkURI(uriStr);
+    }
+
+    private void checkNumber(String image, String datatype) {
+        if ( checker != null )
+            checker.checkNumber(image, datatype);
+    }
+
+    private void checkVariable(String tokenImage) {
+        if ( checker != null )
+            checker.checkVariable(tokenImage);
+    }
+
+    private void checkDirective(String directive) {
+        if ( checker != null )
+            checker.checkDirective(directive);
+    }
+
+    private void checkKeyword(String tokenImage) {
+        if ( checker != null )
+            checker.checkKeyword(tokenImage);
+    }
+
+    private void checkPrefixedName(String tokenImage, String tokenImage2) {
+        if ( checker != null )
+            checker.checkPrefixedName(tokenImage, tokenImage2);
+    }
+
+    private void checkControl(int code) {
+        if ( checker != null )
+            checker.checkControl(code);
     }
 }
