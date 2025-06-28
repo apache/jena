@@ -1356,46 +1356,140 @@ public class TestTokenizerText {
     // U+DC00-U+DFFF is a low surrogate (second part of a pair)
     // so D800-DC00 is legal.
 
-    @Test public void turtle_surrogate_pair_01() {
+    @Test public void turtle_surrogate_pair_esc_esc_01() {
         // escaped high, escaped low
         surrogate("'\\ud800\\udc00'");
     }
 
-    @Test public void turtle_surrogate_pair_02() {
+    @Test public void turtle_surrogate_pair_esc_esc_02() {
+        // escaped high, escaped low
+        surrogate("'''\\ud800\\udc00'''");
+    }
+
+    @Test public void turtle_surrogate_pair_esc_esc_03() {
+        // escaped high, escaped low
+        surrogate("<\\ud800\\udc00>");
+    }
+
+    @Test public void turtle_surrogate_pair_esc_raw_01() {
         // escaped high, raw low
         surrogate("'\\ud800\udc00'");
     }
 
+    @Test public void turtle_surrogate_pair_esc_raw_02() {
+        // escaped high, raw low
+        surrogate("'''\\ud800\udc00'''");
+    }
+    @Test public void turtle_surrogate_pair_esc_raw_03() {
+        // escaped high, raw low
+        surrogate("<\\ud800\udc00>");
+    }
+    @Test public void turtle_surrogate_pair_esc_raw_04() {
+        // escaped high, raw low
+        surrogate("_:b\ud800\udc00");
+    }
+
     // Compilation failure - illegal escape character
-//    @Test public void turtle_surrogate_pair_03() {
+//    @Test public void turtle_surrogate_pair_raw_esc_01() {
 //        // raw high, escaped low
 //        surrogate("'\ud800\\udc00'");
 //    }
 
-    @Test public void turtle_surrogate_pair_04() {
+    @Test public void turtle_surrogate_pair_raw_raw_01() {
         // raw high, raw low
         surrogate("'\ud800\udc00'");
     }
 
-    @Test public void turtle_surrogate_pair_05() {
+    @Test public void turtle_surrogate_pair_raw_raw_02() {
+        // raw high, raw low
+        surrogate("'''\ud800\udc00'''");
+    }
+
+    @Test public void turtle_surrogate_pair_raw_raw_03() {
+        // raw high, raw low
+        surrogate("<\ud800\udc00>");
+    }
+
+    // Blank nodes label allow unicode but not unicode escapes.
+    @Test public void turtle_surrogate_pair_raw_raw_04() {
+        // raw high, raw low
+        surrogate("_:b\ud800\udc00");
+    }
+
+    @Test public void turtle_surrogate_pair_raw_raw_05() {
+        // escaped high, escaped low
+        surrogate("ns:\ud800\udc00");
+    }
+
+    @Test public void turtle_surrogate_pair_raw_raw_06() {
+        // escaped high, escaped low
+        surrogate("\ud800\udc00:local");
+    }
+
+    @Test public void turtle_surrogate_pair_esc_esc_internal_01() {
         // escaped high, escaped low
         surrogate("'a\\ud800\\udc00x'");
     }
 
-    @Test public void turtle_surrogate_pair_06() {
+    @Test public void turtle_surrogate_pair_esc_esc_internal_02() {
+        // escaped high, escaped low
+        surrogate("'''a\\ud800\\udc00x'''");
+    }
+
+    @Test public void turtle_surrogate_pair_esc_esc_internal_03() {
+        // escaped high, escaped low
+        surrogate("<a\\ud800\\udc00x>");
+    }
+
+    @Test public void turtle_surrogate_pair_esc_raw_internal_01() {
         // escaped high, raw low
-        surrogate("'z\\ud800\udc00'z");
+        surrogate("'z\\ud800\udc00z'");
+    }
+
+    @Test public void turtle_surrogate_pair_esc_raw_internal_02() {
+        // escaped high, raw low
+        surrogate("'''z\\ud800\udc00z'''");
+    }
+
+    @Test public void turtle_surrogate_pair_esc_raw_internal_03() {
+        // escaped high, raw low
+        surrogate("<z\\ud800\udc00z>");
     }
 
     // Compilation failure - illegal escape character
-//    @Test public void turtle_surrogate_pair_07() {
+//    @Test public void turtle_surrogate_pair_raw_esc() {
 //        // raw high, escaped low
 //        surrogate("'a\ud800\\udc00'z");
 //    }
 
-    @Test public void turtle_surrogate_pair_08() {
+    @Test public void turtle_surrogate_pair_raw_raw_internal_01() {
         // raw high, raw low
-        surrogate("'a\ud800\udc00'z");
+        surrogate("'a\ud800\udc00z'");
+    }
+
+    @Test public void turtle_surrogate_pair_raw_raw_internal_02() {
+        // raw high, raw low
+        surrogate("'''a\ud800\udc00z'''");
+    }
+
+    @Test public void turtle_surrogate_pair_raw_raw_internal_03() {
+        // raw high, raw low
+        surrogate("<a\ud800\udc00z>");
+    }
+
+    @Test public void turtle_surrogate_pair_raw_raw_internal_04() {
+        // raw high, raw low
+        surrogate("_:ba\ud800\udc00z");
+    }
+
+    @Test public void turtle_surrogate_pair_raw_raw__internal05() {
+        // escaped high, escaped low
+        surrogate("ns:x\ud800\udc00y");
+    }
+
+    @Test public void turtle_surrogate_pair_raw_raw__internal06() {
+        // escaped high, escaped low
+        surrogate("x\ud800\udc00y:local");
     }
 
     @Test (expected=RiotParseException.class)
@@ -1404,8 +1498,23 @@ public class TestTokenizerText {
     }
 
     @Test (expected=RiotParseException.class)
+    public void turtle_bad_surrogate_01a() {
+        surrogate("'''\\ud800''''");
+    }
+
+    @Test (expected=RiotParseException.class)
     public void turtle_bad_surrogate_02() {
         surrogate("'a\\ud800z'");
+    }
+
+    @Test (expected=RiotParseException.class)
+    public void turtle_bad_surrogate_02a() {
+        surrogate("'''a\\ud800z'''");
+    }
+
+    @Test (expected=RiotParseException.class)
+    public void turtle_bad_surrogate_02b() {
+        surrogate("<a\\ud800z>");
     }
 
     @Test (expected=RiotParseException.class)
@@ -1477,8 +1586,9 @@ public class TestTokenizerText {
 
     private void surrogate(String string) {
         Tokenizer tokenizer = tokenizer(string);
-        tokenizer.hasNext();
+        assertTrue(tokenizer.hasNext());
         tokenizer.next();
+        assertFalse(tokenizer.hasNext());
     }
 
     @Test
