@@ -128,8 +128,10 @@
 <script>
 import Menu from '@/components/dataset/Menu.vue'
 import TableListing from '@/components/dataset/TableListing.vue'
-import CodeMirror from 'codemirror'
-import 'codemirror/mode/turtle/turtle'
+import { EditorView, keymap, lineNumbers } from '@codemirror/view'
+import { defaultKeymap, history, historyKeymap } from '@codemirror/commands'
+import { syntaxHighlighting, defaultHighlightStyle } from '@codemirror/language'
+import { turtle } from 'codemirror-lang-turtle'
 import {
   faTimes,
   faCheck
@@ -143,6 +145,26 @@ import { displayError, displayNotification } from '@/utils'
 library.add(faTimes, faCheck)
 
 const MAX_EDITABLE_SIZE = 10000
+
+/**
+ * In CodeMirror 5, the static CodeMirror.fromTextArea was used in Jena UI to
+ * sync an area in the page to the CodeMirror editor. That was removed in the
+ * 6.x release, https://codemirror.net/docs/migration/.
+ *
+ * @param textarea
+ * @param extensions
+ * @returns {EditorView}
+ */
+function editorFromTextArea(textarea, extensions) {
+  const view = new EditorView({doc: textarea.value, extensions})
+  textarea.parentNode.insertBefore(view.dom, textarea)
+  textarea.style.display = "none"
+  if (textarea.form) textarea.form.addEventListener("submit", () => {
+    textarea.value = view.state.doc.toString()
+  })
+  return view
+}
+
 
 export default {
   name: 'DatasetEdit',
@@ -182,9 +204,13 @@ export default {
       content: '',
       code: '',
       cmOptions: {
-        mode: 'text/turtle',
-        lineNumbers: true
-        // readOnly: 'nocursor'
+        extensions: [
+          lineNumbers(),
+          history(),
+          turtle(),
+          syntaxHighlighting(defaultHighlightStyle),
+          keymap.of([...defaultKeymap, ...historyKeymap])
+        ]
       }
     }
   },
@@ -218,9 +244,9 @@ export default {
     services (newVal) {
       if (newVal && newVal['gsp-rw'] && Object.keys(newVal['gsp-rw']).length > 0) {
         const element = this.$refs['graph-editor']
-        this.codemirrorEditor = CodeMirror.fromTextArea(element, this.cmOptions)
-        this.codemirrorEditor.on('change', cm => {
-          this.content = cm.getValue()
+        this.codemirrorEditor = editorFromTextArea(element, this.cmOptions.extensions)
+        EditorView.updateListener.of(v => {
+          this.content = v.getValue()
         })
       }
     }
@@ -232,10 +258,13 @@ export default {
 
   methods: {
     codeChanged (newVal) {
-      const scrollInfo = this.codemirrorEditor.getScrollInfo()
-      this.codemirrorEditor.setValue(newVal)
-      this.content = newVal
-      this.codemirrorEditor.scrollTo(scrollInfo.left, scrollInfo.top)
+      this.codemirrorEditor.dispatch({
+        changes: {
+          from: 0,
+          to: this.codemirrorEditor.state.doc.length,
+          insert: newVal
+        }
+      })
     },
     listCurrentGraphs: async function () {
       this.loadingGraphs = true
@@ -296,7 +325,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-@import '~codemirror';
-</style>
