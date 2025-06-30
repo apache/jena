@@ -31,6 +31,7 @@ import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.syntax.Element ;
 import org.apache.jena.sparql.system.SinkQuadBracedOutput;
 import org.apache.jena.sparql.util.FmtUtils ;
+import org.apache.jena.sparql.util.NodeToLabelMap;
 import org.apache.jena.sparql.util.NodeToLabelMapBNode ;
 
 public class UpdateWriterVisitor implements UpdateVisitor {
@@ -249,9 +250,9 @@ public class UpdateWriterVisitor implements UpdateVisitor {
     }
 
     protected FormatterElement prepareElementFormatter() {
-        SerializationContext sCxt1 = new SerializationContext(sCxt);
         // The label prefix is different to the template writer just for clarity.
-        sCxt1.setBNodeMap(new NodeToLabelMapBNode("x", false));
+        NodeToLabelMap map2 = new NodeToLabelMapBNode("x", false);
+        SerializationContext sCxt1 = new SerializationContext(sCxt, map2);
         return new FormatterElement(out, sCxt1);
     }
 }

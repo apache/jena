@@ -105,7 +105,6 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
      * @see #propertyChains()
      * @see #findPropertyChain(RDFNode)
      */
-    @SuppressWarnings("javadoc")
     OntList<OntObjectProperty> createPropertyChain(Collection<OntObjectProperty> properties);
 
     /**

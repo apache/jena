@@ -38,7 +38,7 @@ import java.util.function.Consumer;
  *
  * @param <E> the type of the array elements
  */
-@SuppressWarnings("javadoc")
+@SuppressWarnings("all")
 public class SparseArrayIndexedSpliterator<E> implements Spliterator<FastHashSet.IndexedKey<E>> {
 
     private final E[] entries;

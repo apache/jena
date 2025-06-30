@@ -85,6 +85,7 @@ public class LangParserBase {
     }
 
     protected Node createURI(String iriStr, int line, int column) {
+        checkRDFString(iriStr, line, column);
         return profile.createURI(iriStr, line, column);
     }
 
@@ -97,13 +98,29 @@ public class LangParserBase {
     }
 
     protected Node createListNode(int line, int column) {
-        return  createBNode(line, column);
+        return createBNode(line, column);
     }
 
+    /** @deprecated Use {@link #checkRDFString}. */
+    @Deprecated(forRemoval=true)
     protected void checkString(String string, int line, int column) {
+        checkRDFString(string, line, column);
+    }
+
+    /**
+     * Apply any checks for "RDF String" to a string that has already had escape processing applied.
+     * An RDF String is a sequence of codepoints in the range U+0000 to U+10FFFF, excluding surrogates.
+     * Because this is java, we test for no non-paired surrogates.
+     * A surrogate pair is high-low.
+     */
+    protected static void checkRDFString(String string, int line, int column) {
         for ( int i = 0 ; i < string.length() ; i++ ) {
             // Not "codePointAt" which does surrogate processing.
             char ch = string.charAt(i);
+
+            if ( ! Character.isValidCodePoint(ch) )
+                throw new RiotParseException(String.format("Illegal code point in \\U sequence value: 0x%08X", ch), line, column);
+
             // Check surrogate pairs are pairs.
             if ( Character.isHighSurrogate(ch) ) {
                 i++;
@@ -170,6 +187,7 @@ public class LangParserBase {
     protected String resolveQuotedIRI(String iriStr, int line, int column) {
         iriStr = LangParserLib.stripQuotes(iriStr);
         iriStr = unescapeIRI(iriStr);
+        checkRDFString(iriStr, line, column);
         // Check
         if ( iriStr.contains("<") || iriStr.contains(">") )
             throw new RiotParseException("Illegal character '<' or '>' in IRI: '"+iriStr+"'", line, column);

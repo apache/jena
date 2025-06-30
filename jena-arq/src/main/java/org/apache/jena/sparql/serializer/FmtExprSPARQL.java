@@ -58,7 +58,7 @@ public class FmtExprSPARQL {
         SerializationContext context;
 
         public FmtExprARQVisitor(IndentedWriter writer, PrefixMapping pmap) {
-            this(writer, new SerializationContext(pmap, null));
+            this(writer, new SerializationContext(pmap));
         }
 
         public FmtExprARQVisitor(IndentedWriter writer, SerializationContext cxt) {

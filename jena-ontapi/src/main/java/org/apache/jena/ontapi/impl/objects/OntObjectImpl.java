@@ -260,7 +260,6 @@ public class OntObjectImpl extends ResourceImpl implements OntObject {
      * that an {@code OntObject} can be also a {@code Literal}
      * (but in only single case when it is {@link OntSWRL.DArg}).
      */
-    @SuppressWarnings("javadoc")
     @Override
     public <X extends RDFNode> X getAs(Class<X> type) {
         return getNodeAs(this, type);

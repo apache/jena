@@ -128,8 +128,8 @@ version = stripQuotes(t.image) ;
       jj_consume_token(-1);
       throw new ParseException();
     }
-checkString(version, t.beginLine, t.beginColumn) ;
-      version = unescapeStr(version, t.beginLine, t.beginColumn) ;
+version = unescapeStr(version, t.beginLine, t.beginColumn) ;
+      checkRDFString(version, t.beginLine, t.beginColumn) ;
       {if ("" != null) return version;}
     throw new Error("Missing return statement in function");
 }
@@ -5889,7 +5889,7 @@ lex = stripQuotes3(t.image) ;
       throw new ParseException();
     }
 lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
-      checkString(lex, t.beginLine, t.beginColumn) ;
+      checkRDFString(lex, t.beginLine, t.beginColumn) ;
       {if ("" != null) return lex ;}
     throw new Error("Missing return statement in function");
 }

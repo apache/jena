@@ -188,8 +188,8 @@ String VersionSpecifier() : { Token t ; String version ; }
     | t = <STRING_LITERAL2> { version = stripQuotes(t.image) ; }
     )
     {
-      checkString(version, t.beginLine, t.beginColumn) ;
       version = unescapeStr(version,  t.beginLine, t.beginColumn) ;
+      checkRDFString(version,  t.beginLine, t.beginColumn) ;
       return version;
     }
 }
@@ -2631,7 +2631,7 @@ String String() : { Token t ; String lex ; }
   | t = <STRING_LITERAL_LONG2> { lex = stripQuotes3(t.image) ; }
   )
     { lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
-      checkString(lex, t.beginLine, t.beginColumn) ;
+      checkRDFString(lex,  t.beginLine, t.beginColumn) ;
       return lex ;
     }
 }

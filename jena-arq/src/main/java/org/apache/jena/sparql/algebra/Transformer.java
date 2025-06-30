@@ -18,16 +18,15 @@
 
 package org.apache.jena.sparql.algebra;
 
-import org.apache.jena.sparql.algebra.op.OpService ;
-import org.apache.jena.sparql.algebra.walker.ApplyTransformVisitor ;
-import org.apache.jena.sparql.algebra.walker.Walker ;
-import org.apache.jena.sparql.expr.ExprTransform ;
-import org.apache.jena.sparql.expr.ExprTransformCopy ;
+import org.apache.jena.sparql.algebra.op.OpService;
+import org.apache.jena.sparql.algebra.walker.ApplyTransformVisitor;
+import org.apache.jena.sparql.algebra.walker.Walker;
+import org.apache.jena.sparql.expr.ExprTransform;
+import org.apache.jena.sparql.expr.ExprTransformCopy;
 
 /** A bottom-top application of a transformation of SPARQL algebra */
 public class Transformer
 {
-
     private static Transformer singleton = new Transformer();
 
     /** Get the current transformer */
@@ -38,61 +37,61 @@ public class Transformer
 
     /** Transform an algebra expression */
     public static Op transform(Transform transform, Op op)
-    { return get().transformation(transform, op, null, null) ; }
+    { return get().transformation(transform, op, null, null); }
 
     /** Transform an algebra expression and the expressions */
     public static Op transform(Transform transform, ExprTransform exprTransform, Op op)
-    { return get().transformation(transform, exprTransform, op, null, null) ; }
+    { return get().transformation(transform, exprTransform, op, null, null); }
 
     /**
      * Transformation with specific Transform and default ExprTransform (apply transform
      * inside pattern expressions like NOT EXISTS)
      */
     public static Op transform(Transform transform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor) {
-        return get().transformation(transform, op, beforeVisitor, afterVisitor) ;
+        return get().transformation(transform, op, beforeVisitor, afterVisitor);
     }
 
     /** Transformation with specific Transform and ExprTransform applied */
     public static Op transform(Transform transform, ExprTransform exprTransform, Op op,
                                OpVisitor beforeVisitor, OpVisitor afterVisitor) {
-        return get().transformation(transform, exprTransform, op, beforeVisitor, afterVisitor) ;
+        return get().transformation(transform, exprTransform, op, beforeVisitor, afterVisitor);
     }
 
     /** Transform an algebra expression except skip (leave alone) any OpService nodes */
     public static Op transformSkipService(Transform transform, Op op) {
-        return transformSkipService(transform, null, op, null, null) ;
+        return transformSkipService(transform, null, op, null, null);
     }
 
     /** Transform an algebra expression except skip (leave alone) any OpService nodes */
     public static Op transformSkipService(Transform transform, ExprTransform exprTransform, Op op) {
-        return transformSkipService(transform, exprTransform, op, null, null) ;
+        return transformSkipService(transform, exprTransform, op, null, null);
     }
 
     /** Transform an algebra expression except skip (leave alone) any OpService nodes */
     public static Op transformSkipService(Transform opTransform, ExprTransform exprTransform, Op op,
                                           OpVisitor beforeVisitor, OpVisitor afterVisitor) {
         if ( opTransform == null )
-            opTransform = new TransformCopy() ;
+            opTransform = new TransformCopy();
         if ( exprTransform == null )
-            exprTransform = new ExprTransformCopy() ;
-        Transform transform2 = new TransformSkipService(opTransform) ;
-        transform2 = opTransform ;
-        ApplyTransformVisitor atv = new ApplyTransformVisitor(transform2, exprTransform, false, beforeVisitor, afterVisitor) ;
-        return Walker.transformSkipService(op, atv, beforeVisitor, afterVisitor) ;
+            exprTransform = new ExprTransformCopy();
+        Transform transform2 = new TransformSkipService(opTransform);
+        transform2 = opTransform;
+        ApplyTransformVisitor atv = new ApplyTransformVisitor(transform2, exprTransform, false, beforeVisitor, afterVisitor);
+        return Walker.transformSkipService(op, atv, beforeVisitor, afterVisitor);
     }
 
     // To allow subclassing this class, we use a singleton pattern
     // and these protected methods.
     protected Op transformation(Transform transform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor) {
-        return transformation(transform, null, op, beforeVisitor, afterVisitor) ;
+        return transformation(transform, null, op, beforeVisitor, afterVisitor);
     }
 
     protected Op transformation(Transform transform, ExprTransform exprTransform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor) {
-        return transformation$(transform, exprTransform, op, beforeVisitor, afterVisitor) ;
+        return transformation$(transform, exprTransform, op, beforeVisitor, afterVisitor);
     }
 
     private Op transformation$(Transform transform, ExprTransform exprTransform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor) {
-        return Walker.transform(op, transform, exprTransform, beforeVisitor, afterVisitor) ;
+        return Walker.transform(op, transform, exprTransform, beforeVisitor, afterVisitor);
     }
 
     // --------------------------------
@@ -103,11 +102,11 @@ public class Transformer
     {
         public TransformSkipService(Transform transform)
         {
-            super(transform) ;
+            super(transform);
         }
 
         @Override
         public Op transform(OpService opService, Op subOp)
-        { return opService ; }
+        { return opService; }
     }
 }

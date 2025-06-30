@@ -94,7 +94,6 @@ public class OntModels {
      * @return {@link OntIndividual.Anonymous}
      * @throws OntJenaException if the node cannot be present as anonymous individual
      */
-    @SuppressWarnings("javadoc")
     public static OntIndividual.Anonymous asAnonymousIndividual(RDFNode inModel) {
         return OntIndividualImpl.createAnonymousIndividual(inModel);
     }

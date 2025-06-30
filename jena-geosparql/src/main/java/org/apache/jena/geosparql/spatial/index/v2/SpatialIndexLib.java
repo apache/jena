@@ -274,7 +274,7 @@ public class SpatialIndexLib {
                 // If NOT in replace mode, add all graph-indexes from the previous index
                 if (isEffectiveUpdate) {
                     // Copy the old index into a new one.
-                    SpatialIndexPerGraph oldIndex = (SpatialIndexPerGraph)rawOldIndex;
+                    SpatialIndexPerGraph oldIndex = rawOldIndex;
                     if (oldIndex != null) {
                         Map<Node, STRtree> oldTreeMap = oldIndex.getIndex().getTreeMap();
 

@@ -245,7 +245,6 @@ public class OntSimpleClassImpl extends OntObjectImpl implements OntClass {
      * In jena OWL1, class expressions, such as {@link OntClass.ComplementOf}
      * can also be named.
      */
-    @SuppressWarnings("javadoc")
     public static class NamedImpl extends OntSimpleClassImpl implements OntClass.Named {
 
         public NamedImpl(Node n, EnhGraph eg) {
