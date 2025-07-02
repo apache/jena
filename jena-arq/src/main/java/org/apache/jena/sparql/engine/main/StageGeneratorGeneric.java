@@ -37,8 +37,9 @@ import org.apache.jena.sparql.mgt.Explain ;
  * Generic - always works - StageGenerator.
  */
 public class StageGeneratorGeneric implements StageGenerator {
-    public StageGeneratorGeneric() {}
     private static final ReorderTransformation reorderFixed = ReorderLib.fixed() ;
+
+    public StageGeneratorGeneric() {}
 
     @Override
     public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt) {

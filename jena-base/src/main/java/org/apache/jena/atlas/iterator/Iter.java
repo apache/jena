@@ -79,7 +79,7 @@ public class Iter<T> implements IteratorCloseable<T> {
 
     // ---- Special iterators.
 
-    /** @deprecated Sue {@link #singletonIterator} */
+    /** @deprecated Use {@link #singletonIterator} */
     @Deprecated
     public static <T> Iterator<T> singleton(T item) {
         return singletonIterator(item);
