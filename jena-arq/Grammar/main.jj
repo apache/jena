@@ -2947,11 +2947,11 @@ TOKEN :
 | < DECIMAL: (<DIGITS>)? "." <DIGITS> >
 | < DOUBLE:   // Required exponent.
       (
-        (["0"-"9"])+ "." (["0"-"9"])* <EXPONENT>
-        | "." (["0"-"9"])+ (<EXPONENT>)
-        | (["0"-"9"])+ <EXPONENT>
-      )
+        ( (["0"-"9"])+ ("." (["0"-"9"])* )? )
+        | ( "." (["0"-"9"])+ )
+      ) <EXPONENT>
       >
+| < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
 
 | < INTEGER_POSITIVE: <PLUS> <INTEGER> >
 | < DECIMAL_POSITIVE: <PLUS> <DECIMAL> >
@@ -2961,7 +2961,6 @@ TOKEN :
 | < DECIMAL_NEGATIVE: <MINUS> <DECIMAL> >
 | < DOUBLE_NEGATIVE:  <MINUS> <DOUBLE> >
 
-| < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
 | < #QUOTE_3D: "\"\"\"">
 | < #QUOTE_3S: "'''">
 | <ECHAR: "\\" ( "t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'") >
