@@ -158,7 +158,7 @@ public class ExecutionContext implements FunctionEnv
     /**
      * ExecutionContext for normal execution over a graph.
      */
-    public static ExecutionContext createForGraph(Graph graph,  Context cxt) {
+    public static ExecutionContext createForGraph(Graph graph, Context cxt) {
         DatasetGraph dsg = (graph == null) ? null : DatasetGraphFactory.wrap(graph);
         return create(dsg, graph, cxt);
     }

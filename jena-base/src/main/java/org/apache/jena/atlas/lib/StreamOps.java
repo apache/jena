@@ -78,7 +78,6 @@ public class StreamOps {
         return stream.toList().stream();
     }
 
-
     /** Print immediate, noting empty streams */
     public static <X> Stream<X> debug(Stream<X> stream) {
         List<X> elts = stream.toList();
