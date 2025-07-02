@@ -20,9 +20,8 @@
 
 <INTEGER>	::= [0-9]+
 <DECIMAL>   ::= ( [0-9]* '.' [0-9]+ )
-
-// Required exponent
-<DOUBLE> ::= [0-9]+ '.' [0-9]* <EXPONENT> | '.' ([0-9])+ <EXPONENT> | ([0-9])+ <EXPONENT>
+<DOUBLE> ::= ( ([0-9]+ ('.'[0-9]*)? ) | ( '.' ([0-9])+ ) ) <EXPONENT>
+<#EXPONENT>  ::= [eE] [+-]? [0-9]+
 
 <INTEGER_POSITIVE> ::= <PLUS> <INTEGER>
 <DECIMAL_POSITIVE> ::= <PLUS> <DECIMAL>
@@ -32,7 +31,6 @@
 <DECIMAL_NEGATIVE> ::= <MINUS> <DECIMAL>
 <DOUBLE_NEGATIVE>  ::= <MINUS> <DOUBLE>
 
-<#EXPONENT>  ::= [eE] [+-]? [0-9]+
 
 <STRING_LITERAL1> ::= "'" ( ([^#x27#x5C#xA#xD]) | <ECHAR> )* "'"
 <STRING_LITERAL2> ::= '"' ( ([^#x22#x5C#xA#xD]) | <ECHAR> )* '"'

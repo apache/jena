@@ -349,19 +349,19 @@ public interface ARQParserConstants {
   /** RegularExpression Id. */
   int DOUBLE = 174;
   /** RegularExpression Id. */
-  int INTEGER_POSITIVE = 175;
+  int EXPONENT = 175;
   /** RegularExpression Id. */
-  int DECIMAL_POSITIVE = 176;
+  int INTEGER_POSITIVE = 176;
   /** RegularExpression Id. */
-  int DOUBLE_POSITIVE = 177;
+  int DECIMAL_POSITIVE = 177;
   /** RegularExpression Id. */
-  int INTEGER_NEGATIVE = 178;
+  int DOUBLE_POSITIVE = 178;
   /** RegularExpression Id. */
-  int DECIMAL_NEGATIVE = 179;
+  int INTEGER_NEGATIVE = 179;
   /** RegularExpression Id. */
-  int DOUBLE_NEGATIVE = 180;
+  int DECIMAL_NEGATIVE = 180;
   /** RegularExpression Id. */
-  int EXPONENT = 181;
+  int DOUBLE_NEGATIVE = 181;
   /** RegularExpression Id. */
   int QUOTE_3D = 182;
   /** RegularExpression Id. */
@@ -663,13 +663,13 @@ public interface ARQParserConstants {
     "<INTEGER>",
     "<DECIMAL>",
     "<DOUBLE>",
+    "<EXPONENT>",
     "<INTEGER_POSITIVE>",
     "<DECIMAL_POSITIVE>",
     "<DOUBLE_POSITIVE>",
     "<INTEGER_NEGATIVE>",
     "<DECIMAL_NEGATIVE>",
     "<DOUBLE_NEGATIVE>",
-    "<EXPONENT>",
     "\"\\\"\\\"\\\"\"",
     "\"\\\'\\\'\\\'\"",
     "<ECHAR>",

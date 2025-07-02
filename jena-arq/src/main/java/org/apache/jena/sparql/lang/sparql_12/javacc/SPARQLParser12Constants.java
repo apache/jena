@@ -303,19 +303,19 @@ public interface SPARQLParser12Constants {
   /** RegularExpression Id. */
   int DOUBLE = 151;
   /** RegularExpression Id. */
-  int INTEGER_POSITIVE = 152;
+  int EXPONENT = 152;
   /** RegularExpression Id. */
-  int DECIMAL_POSITIVE = 153;
+  int INTEGER_POSITIVE = 153;
   /** RegularExpression Id. */
-  int DOUBLE_POSITIVE = 154;
+  int DECIMAL_POSITIVE = 154;
   /** RegularExpression Id. */
-  int INTEGER_NEGATIVE = 155;
+  int DOUBLE_POSITIVE = 155;
   /** RegularExpression Id. */
-  int DECIMAL_NEGATIVE = 156;
+  int INTEGER_NEGATIVE = 156;
   /** RegularExpression Id. */
-  int DOUBLE_NEGATIVE = 157;
+  int DECIMAL_NEGATIVE = 157;
   /** RegularExpression Id. */
-  int EXPONENT = 158;
+  int DOUBLE_NEGATIVE = 158;
   /** RegularExpression Id. */
   int QUOTE_3D = 159;
   /** RegularExpression Id. */
@@ -590,13 +590,13 @@ public interface SPARQLParser12Constants {
     "<INTEGER>",
     "<DECIMAL>",
     "<DOUBLE>",
+    "<EXPONENT>",
     "<INTEGER_POSITIVE>",
     "<DECIMAL_POSITIVE>",
     "<DOUBLE_POSITIVE>",
     "<INTEGER_NEGATIVE>",
     "<DECIMAL_NEGATIVE>",
     "<DOUBLE_NEGATIVE>",
-    "<EXPONENT>",
     "\"\\\"\\\"\\\"\"",
     "\"\\\'\\\'\\\'\"",
     "<ECHAR>",
