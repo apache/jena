@@ -53,20 +53,24 @@ public class SolverRX3 {
                 // No RDF-star : direct to data.
                 return matchData(chain, tPattern, execCxt);
         }
-        return rdfStarTripleSub(chain, tPattern, execCxt);
+        return rdfStarTripleMatch(chain, tPattern, execCxt);
     }
 
-    private static Iterator<Binding> rdfStarTripleSub(Iterator<Binding> input, Triple tPattern, ExecutionContext execCxt) {
-        Iterator<Binding> matches = Iter.flatMap(input, binding->rdfStarTripleSub(binding, tPattern, execCxt));
+    private static Iterator<Binding> rdfStarTripleMatch(Iterator<Binding> input, Triple tPattern, ExecutionContext execCxt) {
+        Graph graph = execCxt.getActiveGraph();
+        Iterator<Binding> matches = Iter.flatMap(input, binding->match(graph, binding, tPattern));
         return matches;
     }
 
-    private static Iterator<Binding> rdfStarTripleSub(Binding input, Triple xPattern, ExecutionContext execCxt) {
-        Triple tPattern = Substitute.substitute(xPattern, input);
+    /**
+     * General graph access, including triple terms.
+     * Given a graph and a binding, return an iterator of matches for a pattern (triple with {@link Var}).
+     */
+    public static Iterator<Binding> match(Graph graph, Binding input, Triple pattern) {
+        Triple tPattern = Substitute.substitute(pattern, input);
         Node s = nodeTopLevel(tPattern.getSubject());
         Node p = nodeTopLevel(tPattern.getPredicate());
         Node o = nodeTopLevel(tPattern.getObject());
-        Graph graph = execCxt.getActiveGraph();
         ExtendedIterator<Triple> graphIter = graph.find(s, p, o);
         ExtendedIterator<Binding> matched = graphIter.mapWith(tData->matchTriple(input, tData, tPattern)).filterDrop(Objects::isNull);
         return matched;
