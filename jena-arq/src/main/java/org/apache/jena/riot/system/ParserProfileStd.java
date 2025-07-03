@@ -29,6 +29,7 @@ import org.apache.jena.irix.IRIxResolver;
 import org.apache.jena.irix.RelativeIRIException;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.RiotException;
+import org.apache.jena.riot.RiotParseException;
 import org.apache.jena.riot.tokens.Token;
 import org.apache.jena.riot.tokens.TokenType;
 import org.apache.jena.sparql.core.Quad;
@@ -226,8 +227,10 @@ public class ParserProfileStd implements ParserProfile {
 
     @Override
     public Node createLangDirLiteral(String lexical, String langTag, String direction, long line, long col) {
-        if ( ! TextDirection.isValid(direction) )
-            throw new RiotException("Invalid base direction: '"+direction+"'. Must be 'ltr' or 'rtl'");
+        if ( ! TextDirection.isValid(direction) ) {
+            errorHandler.error("Invalid base direction: '"+direction+"'. Must be 'ltr' or 'rtl'", line, col);
+            throw new RiotException("Bad base direction: "+direction);
+        }
         if ( checking )
             Checker.checkLiteral(lexical, langTag, direction, null, errorHandler, line, col);
         return factory.createLangDirLiteral(lexical, langTag, direction);
