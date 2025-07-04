@@ -33,10 +33,10 @@ public class TestExprLib
     @Test public void safeEqualityNot_01()      { testSafeEquality("123", false) ;}
     @Test public void safeEqualityNot_02()      { testSafeEquality("?x != <y>", false) ;}
     @Test public void safeEqualityNot_03()      { testSafeEquality("<x> = <y>", false) ;}
-    
+
     @Test public void safeSameTerm_01()         { testSafeEquality("sameTerm(?x, <x>)", true) ;}
     @Test public void safeSameTerm_02()         { testSafeEquality("sameTerm(<x>, ?x)", true) ;}
-    
+
     @Test public void safeSameTerm_03()         { testSafeEquality("sameTerm(?x, 'xyz')", false, true, true) ;}
     @Test public void safeSameTerm_04()         { testSafeEquality("sameTerm(?x, 'xyz')", true, false, false) ;}
 
@@ -51,10 +51,10 @@ public class TestExprLib
 
     @Test public void safeSameTerm_11()         { testSafeEquality("sameTerm(?x, 'foo'^^<http://example>)", true, false, false) ;}
     @Test public void safeSameTerm_12()         { testSafeEquality("sameTerm(?x, 'foo'^^<http://example>)", true, true, true) ;}
-    
+
     @Test public void safeEquality_01()         { testSafeEquality("?x = <x>", true) ;}
     @Test public void safeEquality_02()         { testSafeEquality("<x> = ?x", true) ;}
-    
+
     @Test public void safeEquality_03()         { testSafeEquality("?x = 'xyz'", true, true, true) ;}
     @Test public void safeEquality_04()         { testSafeEquality("?x = 'xyz'", false, false, true) ;}
 
@@ -69,17 +69,24 @@ public class TestExprLib
 
     @Test public void safeEquality_11()         { testSafeEquality("?x = 'foo'^^<http://example>", true, false, false) ;}
     @Test public void safeEquality_12()         { testSafeEquality("?x = 'foo'^^<http://example>", true, true, true) ;}
-    
+
     private static void testSafeEquality(String string, boolean b)
     {
         Expr expr = ExprUtils.parse(string) ;
         Assert.assertEquals(string, b, ExprLib.isAssignmentSafeEquality(expr)) ;
     }
-    
+
     private static void testSafeEquality(String string, boolean b, boolean graphString, boolean graphNumber)
     {
         Expr expr = ExprUtils.parse(string) ;
         Assert.assertEquals(string, b, ExprLib.isAssignmentSafeEquality(expr, graphString, graphNumber)) ;
     }
 
+    /** E_Functions with different function IRIs must not be equals. */
+    @Test
+    public void test_E_Function_equals() {
+        Expr a = ExprUtils.parse("<http://www.opengis.net/def/function/geosparql/sfIntersects>(?a, ?b)");
+        Expr b = ExprUtils.parse("<http://www.opengis.net/def/function/geosparql/sfContains>(?a, ?b)");
+        Assert.assertNotEquals(a, b);
+    }
 }

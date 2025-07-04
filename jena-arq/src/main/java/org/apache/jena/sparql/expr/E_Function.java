@@ -31,6 +31,7 @@ import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.FmtUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 /** SPARQL filter function */
 public class E_Function extends ExprFunctionN
@@ -123,5 +124,16 @@ public class E_Function extends ExprFunctionN
     @Override
     public Expr copy(ExprList newArgs) {
         return new E_Function(getFunctionIRI(), newArgs) ;
+    }
+
+    @Override
+    public boolean equals(Expr other, boolean bySyntax) {
+        return super.equals(other, bySyntax) &&
+            Objects.equals(getFunctionIRI(), ((E_Function)other).getFunctionIRI());
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode() * Objects.hash(getFunctionIRI());
     }
 }
