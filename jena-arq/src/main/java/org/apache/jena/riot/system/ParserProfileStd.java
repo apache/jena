@@ -29,7 +29,6 @@ import org.apache.jena.irix.IRIxResolver;
 import org.apache.jena.irix.RelativeIRIException;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.RiotException;
-import org.apache.jena.riot.RiotParseException;
 import org.apache.jena.riot.tokens.Token;
 import org.apache.jena.riot.tokens.TokenType;
 import org.apache.jena.sparql.core.Quad;
