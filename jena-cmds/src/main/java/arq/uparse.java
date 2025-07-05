@@ -40,13 +40,16 @@ import org.apache.jena.util.FileUtils ;
 
 public class uparse extends CmdARQ
 {
-    protected static final ArgDecl fileArg          = new ArgDecl(ArgDecl.HasValue, "file", "update") ;
-    protected static final ArgDecl syntaxArg        = new ArgDecl(ArgDecl.HasValue, "syntax", "syn") ;
+    protected static final ArgDecl argFile          = new ArgDecl(ArgDecl.HasValue, "file", "update") ;
+    protected static final ArgDecl argSyntax        = new ArgDecl(ArgDecl.HasValue, "syntax", "syn") ;
+    protected static final ArgDecl argBase          = new ArgDecl(ArgDecl.HasValue, "base") ;
     protected static final ArgDecl argDeclPrint     = new ArgDecl(ArgDecl.HasValue, "print") ;
     protected static final ArgDecl argDeclFixup     = new ArgDecl(ArgDecl.NoValue, "fixup") ;
 
     List<String> requestFiles = null ;
     protected Syntax updateSyntax = null ;
+    protected String baseURI = null;
+    protected boolean fixup = false;
     private boolean printUpdate = false ;
     private boolean printNone  = false ;
 
@@ -55,27 +58,27 @@ public class uparse extends CmdARQ
 
     protected uparse(String[] argv) {
         super(argv) ;
-        super.add(fileArg,      "--file=FILE",      "Update commands to parse") ;
-        super.add(syntaxArg,    "--syntax=name",    "Update syntax") ;
+        super.add(argFile,      "--file=FILE",      "Update commands to parse") ;
+        super.add(argSyntax,    "--syntax=name",    "Update syntax") ;
+        super.add(argBase,      "--base=IRI",       "Base URI");
         super.add(argDeclPrint, "--print",          "Print in various forms [update, none]") ;
         super.add(argDeclFixup, "--fixup",          "Convert undeclared prefix names to URIs") ;
     }
 
     @Override
     protected void processModulesAndArgs() {
-        requestFiles = getValues(fileArg) ;
+        requestFiles = getValues(argFile) ;
         super.processModulesAndArgs() ;
         if ( super.cmdStrictMode )
-            updateSyntax = Syntax.syntaxSPARQL_11 ;
+            updateSyntax = Syntax.syntaxSPARQL_12 ;
 
-        if ( contains(argDeclFixup) )
-            // Fixup undeclared prefix names.
-            ARQ.set(ARQ.fixupUndefinedPrefixes, true);
+        if ( super.contains(argDeclFixup) )
+            fixup = true;
 
         // Set syntax
-        if ( super.contains(syntaxArg) ) {
+        if ( super.contains(argSyntax) ) {
             // short name
-            String s = super.getValue(syntaxArg) ;
+            String s = super.getValue(argSyntax) ;
             Syntax syn = Syntax.lookup(s) ;
             if ( syn == null )
                 super.cmdError("Unrecognized syntax: " + s + " ; Choices are: arq, sparql, sparql10, sparql11)") ;
@@ -91,6 +94,9 @@ public class uparse extends CmdARQ
                 throw new CmdException("Not a recognized print form: " + arg + " : Choices are: update, none" );
         }
 
+        if ( super.contains(argBase) )
+            baseURI = super.getValue(argBase);
+
         if ( !printUpdate && ! printNone )
             printUpdate = true ;
     }
@@ -103,6 +109,11 @@ public class uparse extends CmdARQ
 
     @Override
     protected void exec() {
+        if ( fixup )
+            // Fixup undeclared prefix names.
+            ARQ.set(ARQ.fixupUndefinedPrefixes, true);
+
+
         for ( String filename : requestFiles ) {
             Syntax syntax = updateSyntax;
             if ( syntax == null )
@@ -138,7 +149,7 @@ public class uparse extends CmdARQ
     private void execOne(String updateString, Syntax syntax) {
         UpdateRequest req;
         try {
-            req = UpdateFactory.create(updateString, syntax);
+            req = UpdateFactory.create(updateString, baseURI, syntax);
         } catch (QueryParseException ex) {
             System.err.print("Parse error: ");
             System.err.println(ex.getMessage());
@@ -169,7 +180,6 @@ public class uparse extends CmdARQ
         public UpdateCheckException(String msg) { super(msg) ; }
         public UpdateCheckException(String msg, Throwable cause) { super(msg, cause) ; }
     }
-
 
     public static void checkUpdate(UpdateRequest req, Syntax syntax) {
         IndentedLineBuffer w = new IndentedLineBuffer() ;
