@@ -43,6 +43,8 @@ public class ElementGroup extends Element {
         ensureBGP().addTriple(t);
     }
 
+    /** @deprecated Use {@link #addElement} */
+    @Deprecated(forRemoval = true)
     public void addElementFilter(ElementFilter el) {
         addElement(el);
     }
