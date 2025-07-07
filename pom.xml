@@ -67,7 +67,7 @@
     <ver.jakarta.json>2.0.1</ver.jakarta.json>
 
     <!-- These two must be in-step -->
-    <ver.jetty>12.0.22</ver.jetty>
+    <ver.jetty>12.0.23</ver.jetty>
     <ver.jakarta-servlet>6.1.0</ver.jakarta-servlet>
 
     <!--
@@ -104,7 +104,7 @@
 
     <!-- Testing -->
     <ver.junit4>4.13.2</ver.junit4>
-    <ver.junit5>5.13.2</ver.junit5>
+    <ver.junit5>5.13.3</ver.junit5>
     <ver.junit5-platform>1.10.2</ver.junit5-platform>
  
     <ver.mockito>5.18.0</ver.mockito>
