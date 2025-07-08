@@ -48,7 +48,7 @@ public class IsoAlgRows {
         return iout;
     }
 
-    public static boolean isIsomorphic(RowSet rowset1, RowSet rowset2, BNodeIso.Match matching) {
+    public static boolean isomorphic(RowSet rowset1, RowSet rowset2, BNodeIso.Match matching) {
         Objects.requireNonNull(rowset1);
         Objects.requireNonNull(rowset2);
         if ( rowset1 == rowset2 )
@@ -66,7 +66,7 @@ public class IsoAlgRows {
         return matcher(rows1, rows2, matching);
     }
 
-    public static boolean isIsomorphic(List<Binding> list1, List<Binding> list2, BNodeIso.Match matching) {
+    public static boolean isomorphic(List<Binding> list1, List<Binding> list2, BNodeIso.Match matching) {
         if ( list1.size() != list2.size() )
             return false;
         return matcher(list1, list2, matching);

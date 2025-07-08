@@ -41,62 +41,6 @@ import org.apache.jena.sparql.util.NodeUtils;
  */
 public class IsoAlgTuple {
 
-//    /** Record the IsoMapping of a node. This is a one-way linked list. */
-//    private static class IsoMapping {
-//        final Node     node1;
-//        final Node     node2;
-//        final IsoMapping  parent;
-//
-//        static final IsoMapping rootIsoMapping = new Mapping(null, null, null);
-//
-//        Mapping(IsoMapping parent, Node node1, Node node2) {
-//            super();
-//            this.parent = parent;
-//            this.node1 = node1;
-//            this.node2 = node2;
-//        }
-//
-//        boolean mapped(Node node) {
-//            return map(node) != null;
-//        }
-//
-//        Node map(Node node) {
-//            IsoMapping IsoMapping = this;
-//            while (IsoMapping != rootMapping) {
-//                if ( mapping.node1.equals(node) )
-//                    return mapping.node2;
-//                IsoMapping = mapping.parent;
-//            }
-//            return null;
-//        }
-//
-//        boolean reverseMapped(Node node) {
-//            return reverseMap(node) != null;
-//        }
-//
-//        Node reverseMap(Node node) {
-//            IsoMapping IsoMapping = this;
-//            while (IsoMapping != rootMapping) {
-//                if ( mapping.node2.equals(node) )
-//                    return mapping.node1;
-//                IsoMapping = mapping.parent;
-//            }
-//            return null;
-//        }
-//
-//        @Override
-//        public String toString() {
-//            StringBuilder sbuff = new StringBuilder();
-//            IsoMapping IsoMapping = this;
-//            while (IsoMapping != rootMapping) {
-//                sbuff.append("{" + mapping.node1 + " => " + mapping.node2 + "}");
-//                IsoMapping = mapping.parent;
-//            }
-//            sbuff.append("{}");
-//            return sbuff.toString();
-//        }
-//    }
-
     private record Possibility(Tuple<Node> tuple, IsoMapping mapping) {
         @Override
         public String toString() {
