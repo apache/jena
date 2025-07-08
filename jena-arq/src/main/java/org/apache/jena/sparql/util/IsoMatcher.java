@@ -33,7 +33,6 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.util.iso.IsoAlgRows;
 import org.apache.jena.sparql.util.iso.IsoAlgTuple;
-import org.apache.jena.util.iterator.ExtendedIterator;
 
 /**
  * Simple isomorphism testing for on unordered collections.
@@ -48,22 +47,29 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 public class IsoMatcher
 {
     /** Graph isomorphism */
-    public static boolean isomorphic(Graph g1, Graph g2) {
-        List<Tuple<Node>> x1 = tuplesTriples(g1.find());
-        List<Tuple<Node>> x2 = tuplesTriples(g2.find());
-        return isomorphic(x1, x2, NodeUtils.sameRdfTerm);
+    public static boolean isomorphic(Graph graph1, Graph graph2) {
+        List<Tuple<Node>> x1 = tuplesTriples(graph1.find());
+        List<Tuple<Node>> x2 = tuplesTriples(graph2.find());
+        return isomorphicTuples(x1, x2, NodeUtils.sameRdfTerm);
     }
 
     /** Dataset isomorphism */
     public static boolean isomorphic(DatasetGraph dsg1, DatasetGraph dsg2) {
         List<Tuple<Node>> x1 = tuplesQuads(dsg1.find());
         List<Tuple<Node>> x2 = tuplesQuads(dsg2.find());
-        return isomorphic(x1, x2, NodeUtils.sameRdfTerm);
+        return isomorphicTuples(x1, x2, NodeUtils.sameRdfTerm);
+    }
+
+    /** Collection of triples isomorphism */
+    public static boolean isomorphic(Collection<Triple> triples1, Collection<Triple> triples2) {
+        List<Tuple<Node>> x1 = tuplesTriples(triples1.iterator());
+        List<Tuple<Node>> x2 = tuplesTriples(triples2.iterator());
+        return isomorphicTuples(x1, x2, NodeUtils.sameRdfTerm);
     }
 
     /** Collection of tuples isomorphism */
-    public static boolean isomorphic(Collection<Tuple<Node>> x1, Collection<Tuple<Node>> x2) {
-        return isomorphic(x1, x2, NodeUtils.sameRdfTerm);
+    public static boolean isomorphicTuples(Collection<Tuple<Node>> x1, Collection<Tuple<Node>> x2) {
+        return isomorphicTuples(x1, x2, NodeUtils.sameRdfTerm);
     }
 
     /** Helper - convert to {@code List<Tuple<Node>>} */
@@ -72,18 +78,18 @@ public class IsoMatcher
     }
 
     /** Helper - convert to {@code List<Tuple<Node>>} */
-    private static List<Tuple<Node>> tuplesTriples(ExtendedIterator<Triple> iter) {
+    private static List<Tuple<Node>> tuplesTriples(Iterator<Triple> iter) {
         try {
             return Iter.iter(iter).map(t->tuple(t.getSubject(), t.getPredicate(), t.getObject())).toList();
         }
-        finally { iter.close(); }
+        finally { Iter.close(iter); }
     }
 
     /** Collection of tuples isomorphism, with choice of when two nodes are "equal".
      * See also {@link IsoAlgTuple#isIsomorphic(Collection, Collection, org.apache.jena.sparql.util.Iso.Mappable, EqualityTest)}
      * for isomorphisms testing for more than just blank nodes.
      */
-    private static boolean isomorphic(Collection<Tuple<Node>> x1, Collection<Tuple<Node>> x2, EqualityTest nodeTest) {
+    private static boolean isomorphicTuples(Collection<Tuple<Node>> x1, Collection<Tuple<Node>> x2, EqualityTest nodeTest) {
         return IsoAlgTuple.isIsomorphic(x1, x2, nodeTest);
     }
 }

@@ -257,7 +257,7 @@ public class TestIsoMatcher
     }
 
     private void test$(List<Tuple<Node>> t1, List<Tuple<Node>> t2, boolean iso) {
-        boolean b = IsoMatcher.isomorphic(t1, t2);
+        boolean b = IsoMatcher.isomorphicTuples(t1, t2);
         if ( b != iso ) {
             System.out.println("====");
             System.out.println(t1);
@@ -286,7 +286,7 @@ public class TestIsoMatcher
         Collection<Tuple<Node>> x1 = Collections.singletonList(TupleFactory.create1(n1));
         Collection<Tuple<Node>> x2 = Collections.singletonList(TupleFactory.create1(n2));
 
-        boolean b = IsoMatcher.isomorphic(x1, x2);
+        boolean b = IsoMatcher.isomorphicTuples(x1, x2);
         if ( b != expected ) {
             System.out.println("====");
             System.out.println(n1);
