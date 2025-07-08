@@ -59,7 +59,7 @@ public class ResultsCompare {
 
     /** See {@link #equalsByValue(ResultSet, ResultSet)} */
     public static boolean equalsByValue(RowSet rs1, RowSet rs2) {
-        return IsoAlgRows.isIsomorphic(rs1, rs2, BNodeIso.Match.BNODES_VALUE);
+        return IsoAlgRows.isomorphic(rs1, rs2, BNodeIso.Match.BNODES_VALUE);
     }
 
     /**
@@ -90,12 +90,12 @@ public class ResultsCompare {
      * @return true if they are equivalent
      */
     public static boolean equalsByTerm(RowSet rs1, RowSet rs2) {
-        return IsoAlgRows.isIsomorphic(rs1, rs2, BNodeIso.Match.BNODES_TERM);
+        return IsoAlgRows.isomorphic(rs1, rs2, BNodeIso.Match.BNODES_TERM);
     }
 
     /** Compare two list - unordered */
     public static boolean equalsByTerm(List<Binding> list1, List<Binding> list2) {
-        return IsoAlgRows.isIsomorphic(list1, list2, BNodeIso.Match.BNODES_TERM);
+        return IsoAlgRows.isomorphic(list1, list2, BNodeIso.Match.BNODES_TERM);
     }
 
     /**
