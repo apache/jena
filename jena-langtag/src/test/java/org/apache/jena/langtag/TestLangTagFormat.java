@@ -18,38 +18,39 @@
 
 package org.apache.jena.langtag;
 
-import java.util.ArrayList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
 
-// JUnit4
-// Junit5 is missing @ParameterizedClass which may arrive eventually
-@RunWith(Parameterized.class)
+@ParameterizedClass
+@MethodSource("provideArgs")
 public class TestLangTagFormat {
+
 
     private static Function<String, String> formatter1 = (s)-> LangTagRFC5646.create(s).str();
     private static Function<String, String> formatter2 = (s)-> LangTags.basicFormat(s);
 
-    @Parameters(name = "{index}: {0}")
-    public static Iterable<Object[]> data() {
-        List<Object[]> x = new ArrayList<>() ;
-
-        x.add(new Object[] {"LangTagRFC5646", formatter1});
-        x.add(new Object[] {"LangTagOps", formatter2});
-        return x ;
+    private record ArgPair(String name, Function<String, String> formatter) {}
+    private static Stream<ArgPair> provideArgs() {
+        return List.of
+                (new ArgPair("LangTagRFC5646", formatter1),
+                 new ArgPair("LangTagOps", formatter2)
+                ).stream();
     }
 
     private final String formatterName;
     private final Function<String, String> formatter;
 
-    public TestLangTagFormat(String name, Function<String, String> formatter) {
-        this.formatterName = name;
-        this.formatter = formatter;
+    public TestLangTagFormat(@SuppressWarnings("exports") ArgPair args) {
+      this.formatterName = args.name;
+      this.formatter = args.formatter;
+
     }
 
     @Test public void testBasicFormat01() { test("de", "de"); }
@@ -137,6 +138,6 @@ public class TestLangTagFormat {
     private void test(String langString, String expected) {
         String result = formatter.apply(langString);
         // JUnit4 argument order.
-        org.junit.Assert.assertEquals(formatterName+"("+langString+"): ", expected, result);
+        assertEquals(expected, result, ()->formatterName+"("+langString+")");
     }
 }

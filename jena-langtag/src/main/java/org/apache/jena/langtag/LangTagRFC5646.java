@@ -34,56 +34,52 @@ import java.util.Set;
  * <a href="https://www.rfc-editor.org/info/rfc5646">RFC 5646: Tags for Identifying Languages</a>
  * </p>
  */
-public final  class LangTagRFC5646 implements LangTag{
-    // The language tag as given.
-    private final String langTagString;
-
-    // Grandfathered
-    private boolean isGrandfathered = false;
-    // Private use of the whole Language-Tag
-    private boolean isPrivateUseLanguage = false;
-
-    /* Formatting: https://datatracker.ietf.org/doc/html/rfc5646#section-2.1.1
-     *
-     * All subtags, including extension and private use subtags,
-     * use lowercase letters with two exceptions: two-letter
-     * and four-letter subtags that neither appear at the start of the tag
-     * nor occur after singletons.  Such two-letter subtags are all
-     * uppercase (as in the tags "en-CA-x-ca" or "sgn-BE-FR") and four-
-     * letter subtags are titlecase (as in the tag "az-Latn-x-latn").
-     *
-     * See str()
-     */
-
-    // Helpers
-    private enum CaseRule { TITLE, LOWER, UPPER }
-    private enum CharSet { ALPHA, ALPHANUM }
+public final class LangTagRFC5646 implements LangTag {
 
     public static LangTag create(String string) {
         LangTagRFC5646 langtag = parser(string);
         return langtag;
     }
 
+    // The language tag as given.
+    private final String langTagString;
+
+    /* Formatting: https://datatracker.ietf.org/doc/html/rfc5646#section-2.1.1
+    *
+    * All subtags, including extension and private use subtags,
+    * use lowercase letters with two exceptions: two-letter
+    * and four-letter subtags that neither appear at the start of the tag
+    * nor occur after singletons.  Such two-letter subtags are all
+    * uppercase (as in the tags "en-CA-x-ca" or "sgn-BE-FR") and four-
+    * letter subtags are titlecase (as in the tag "az-Latn-x-latn").
+    *
+    * See str()
+    */
+
+    private final boolean isGrandfathered;
+    // Private use of the whole Language-Tag
+    private final boolean isPrivateUseLanguage;
+
     // Start/Finish indexes, excluding the initial '-'
-    private int language0 = -1 ;
-    private int language1 = -1 ;
+    private final int language0;
+    private final int language1;
 
-    private int script0 = -1 ;
-    private int script1 = -1 ;
+    private final int script0;
+    private final int script1;
 
-    private int region0 = -1 ;
-    private int region1 = -1 ;
+    private final int region0;
+    private final int region1;
 
-    private int variant0 = -1 ;
-    private int variant1 = -1 ;
+    private final int variant0;
+    private final int variant1;
 
     // All extensions.
-    private int extension0 = -1 ;
-    private int extension1 = -1 ;
+    private final int extension0;
+    private final int extension1;
 
     // Private use sub tag (not private use of the whole language tag, which starts "x-").
-    private int privateuse0 = -1 ;
-    private int privateuse1 = -1 ;
+    private final int privateuse0;
+    private final int privateuse1;
 
     @Override
     public String getLanguage() {
@@ -232,12 +228,64 @@ public final  class LangTagRFC5646 implements LangTag{
     }
 
     private static LangTagRFC5646 parser(String string) {
+        LangTagRFC5646 langtag = new Builder().parse(string).build();
+        return langtag;
+    }
 
+    // Builder helps tidy the code.
+    // It allowing the LangTagRFC5646 object to have final fields.
+    // It means there is one place calling the constructor with its many arguments.
+
+    private static class Builder {
+        // All members of LangTagRFC
+        String langTagString = null;
+        boolean isGrandfathered = false;
+        boolean isPrivateUseLanguage = false;
+        int language0 = -1;
+        int language1 = -1;
+        int script0 = -1;
+        int script1 = -1;
+        int region0 = -1;
+        int region1 = -1;
+        int variant0 = -1;
+        int variant1 = -1;
+        int extension0 = -1;
+        int extension1 = -1;
+        int privateuse0 = -1;
+        int privateuse1 = -1;
+
+        Builder() {}
+
+        private Builder parse(String string) {
+            final Builder builder = this;
+            LangTagRFC5646.parse(builder, string);
+            return this;
+        }
+
+        private LangTagRFC5646 build() {
+            return new LangTagRFC5646(langTagString, language0, language1,
+                                      script0, script1, region0, region1, variant0, variant1,
+                                      extension0, extension1, privateuse0, privateuse1,
+                                      isGrandfathered, isPrivateUseLanguage);
+        }
+    }
+
+    // Helpers
+    private enum CaseRule { TITLE, LOWER, UPPER }
+    private enum CharRange { ALPHA, ALPHANUM }
+
+    // The whole of function 'parse' is enclosed in formatter:off
+    // @formatter:off
+    static void parse(Builder builder, String string) {
         // A segment is a sequence of A2ZN characters separated by '-'.
 
-        LangTagRFC5646 langtag = new LangTagRFC5646(string);
+        builder.langTagString = string;
         final int N = string.length();
-        // @formatter:off
+
+        //        Language-Tag  = langtag             ; normal language tags
+        //                      / privateuse          ; private use tag
+        //                      / grandfathered       ; grandfathered tags
+
         //         langtag       = language
         //                         ["-" script]
         //                         ["-" region]
@@ -273,7 +321,6 @@ public final  class LangTagRFC5646 implements LangTag{
         //                       / %x79-7A             ; y - z
         //
         //         privateuse    = "x" 1*("-" (1*8alphanum))
-        // @formatter:on
 
         if ( N == 0 )
             InternalLangTag.error("Empty string");
@@ -297,22 +344,22 @@ public final  class LangTagRFC5646 implements LangTag{
             // variant of "en-GB", each of them, in its entirety,
             // represents a language.
             //
-            langtag.language0 = 0;
-            langtag.language1 = N;
-            langtag.isGrandfathered = true;
+            builder.language0 = 0;
+            builder.language1 = N;
+            builder.isGrandfathered = true;
             // Exception.
             if ( string.equalsIgnoreCase("en-GB-oed") ) {
                 // "oed" is "Oxford English Dictionary spelling"
                 // Better is the replacement "en-GB-oxendict"
-                langtag.language0 = 0;
-                langtag.language1 = 2;
-                langtag.region0 = 3;
-                langtag.region1 = 5;
+                builder.language0 = 0;
+                builder.language1 = 2;
+                builder.region0 = 3;
+                builder.region1 = 5;
                 // Non-standard variant.
-                langtag.variant0 = 6;
-                langtag.variant1 = N;
+                builder.variant0 = 6;
+                builder.variant1 = N;
             }
-            return langtag;
+            return;
         }
 
         // -- language
@@ -335,15 +382,15 @@ public final  class LangTagRFC5646 implements LangTag{
                    the country of Switzerland (or any other value in the IANA
                    registry) unless there is a private agreement in place to do so.
                    See Section 4.6.
-                */
-                langtag.isPrivateUseLanguage = true;
+                 */
+                builder.isPrivateUseLanguage = true;
                 int idxPrivateUseStart = 0;
-                int idxPrivateUseEnd = maybeSubtags(string, N, idxPrivateUseStart+segLen, 1, 8);
-                langtag.privateuse0 = idxPrivateUseStart;
-                langtag.privateuse1 = idxPrivateUseEnd;
-                if ( langtag.privateuse1 < N )
-                    InternalLangTag.error("Trailing characters in private langtag: '%s'", string.substring(langtag.privateuse1));
-                return langtag;
+                int idxPrivateUseEnd = maybeSubtags(string, N, idxPrivateUseStart+segLen, CharRange.ALPHANUM, 1, 8);
+                builder.privateuse0 = idxPrivateUseStart;
+                builder.privateuse1 = idxPrivateUseEnd;
+                if ( builder.privateuse1 < N )
+                    InternalLangTag.error("Trailing characters in private langtag: '%s'", string.substring(builder.privateuse1));
+                return;
             }
             // else
             InternalLangTag.error("Language part is 1 character: it must be 2-3 characters (4-8 reserved for future use), \"x-\", or a recognized grandfathered tag");
@@ -354,43 +401,43 @@ public final  class LangTagRFC5646 implements LangTag{
 
         if ( idx2 < 0 ) {
             // language only.
-            langtag.language0 = 0;
-            langtag.language1 = N;
-            InternalLangTag.checkAlpha(string, N, langtag.language0, langtag.language1);
-            return langtag;
+            builder.language0 = 0;
+            builder.language1 = N;
+            InternalLangTag.checkAlpha(string, N, builder.language0, builder.language1);
+            return;
         }
 
         if ( idx == idx2 )
             InternalLangTag.error("Can not find the language subtag: '%s'", string);
 
-        langtag.language0 = idx;
+        builder.language0 = idx;
 
         if ( segLen == 2 || segLen == 3 ) {
-            // -- Language extension subtags/
+            // -- Language extension subtags
 //            language      = 2*3ALPHA            ; shortest ISO 639 code
 //                            ["-" extlang]
 //            extlang       = 3ALPHA              ; selected ISO 639 codes
 //                            *2("-" 3ALPHA)      ; permanently reserved
             int extStart = idx+segLen;
-            InternalLangTag.checkAlpha(string, N, langtag.language0, extStart);
+            InternalLangTag.checkAlpha(string, N, builder.language0, extStart);
             // Extensions are 1 to 3 3ALPHA subtags
-            int extEnd = maybeSubtags(string, N, extStart, 3, 3);
+            int extEnd = maybeSubtags(string, N, extStart, CharRange.ALPHA, 3, 3);
             if ( extEnd > extStart ) {
                 idx2 = extEnd;
-                InternalLangTag.checkAlphaMinus(string, N, extStart, langtag.language1);
+                InternalLangTag.checkAlphaMinus(string, N, extStart, builder.language1);
             }
         } else if ( segLen >= 4 && segLen <= 8 ) {
             //                       / 4ALPHA              ; or reserved for future use
             //                       / 5*8ALPHA            ; or registered language subtag
             // Dubious.
-            InternalLangTag.checkAlpha(string, N, langtag.language0, idx2);
+            InternalLangTag.checkAlpha(string, N, builder.language0, idx2);
         } else {
             InternalLangTag.error("Language too long (2-3 characters, 4-8 reserved for future use)");
         }
 
-        langtag.language1 = idx2;
+        builder.language1 = idx2;
         // Info
-        noteSegment("language", string, langtag.language0, langtag.language1);
+        noteSegment("language", string, builder.language0, builder.language1);
 
         // Move on - next subtag
         idx = segmentNextStart(N, idx, idx2);
@@ -407,10 +454,10 @@ public final  class LangTagRFC5646 implements LangTag{
             int start = idx;
             int finish = idx+segLen;
 
-            langtag.script0 = idx;
-            langtag.script1 = idx+segLen;
-            InternalLangTag.checkAlpha(string, N, langtag.script0, langtag.script1);
-            noteSegment("script", string, langtag.script0, langtag.script1);
+            builder.script0 = idx;
+            builder.script1 = idx+segLen;
+            InternalLangTag.checkAlpha(string, N, builder.script0, builder.script1);
+            noteSegment("script", string, builder.script0, builder.script1);
 
             // Move on.
             idx = segmentNextStart(N, idx, idx2);
@@ -424,13 +471,13 @@ public final  class LangTagRFC5646 implements LangTag{
         //               / 3DIGIT              ; UN M.49 code
         if ( segLen == 2 || segLen == 3 ) {
             // Region
-            langtag.region0 = idx;
-            langtag.region1 = idx+segLen;
+            builder.region0 = idx;
+            builder.region1 = idx+segLen;
             if ( segLen == 2 )
-                InternalLangTag.checkAlpha(string, N, langtag.region0, langtag.region1);
+                InternalLangTag.checkAlpha(string, N, builder.region0, builder.region1);
             else
-                InternalLangTag.checkDigits(string, N, langtag.region0, langtag.region1);
-            noteSegment("region", string, langtag.region0, langtag.region1);
+                InternalLangTag.checkDigits(string, N, builder.region0, builder.region1);
+            noteSegment("region", string, builder.region0, builder.region1);
 
             // Move on.
             idx = segmentNextStart(N, idx, idx2);
@@ -445,11 +492,11 @@ public final  class LangTagRFC5646 implements LangTag{
         for ( ;; ) {
             if ( segLen >= 5 && segLen <= 8) {
                 // variant 5*8alphanum
-                if ( langtag.variant0 == -1 )
-                    langtag.variant0 = idx;
-                langtag.variant1 = idx+segLen;
-                InternalLangTag.checkAlphaNum(string, N, idx, langtag.variant1);
-                noteSegment("variant", string, langtag.variant0, langtag.variant1);
+                if ( builder.variant0 == -1 )
+                    builder.variant0 = idx;
+                builder.variant1 = idx+segLen;
+                InternalLangTag.checkAlphaNum(string, N, idx, builder.variant1);
+                noteSegment("variant", string, builder.variant0, builder.variant1);
                 // Move on.
                 idx = segmentNextStart(N, idx, idx2);
                 idx2 = segmentNextFinish(string, N, idx);
@@ -462,11 +509,11 @@ public final  class LangTagRFC5646 implements LangTag{
                 // DIGIT 3alphanum
                 char ch = string.charAt(idx);
                 if ( ch >= '0' || ch <= '9' ) {
-                    if ( langtag.variant0 == -1 )
-                        langtag.variant0 = idx;
-                    langtag.variant1 = idx+segLen;
-                    InternalLangTag.checkAlphaNum(string, N, idx, langtag.variant1);
-                    noteSegment("variant", string, langtag.variant0, langtag.variant1);
+                    if ( builder.variant0 == -1 )
+                        builder.variant0 = idx;
+                    builder.variant1 = idx+segLen;
+                    InternalLangTag.checkAlphaNum(string, N, idx, builder.variant1);
+                    noteSegment("variant", string, builder.variant0, builder.variant1);
                 }
                 // Move on.
                 idx = segmentNextStart(N, idx, idx2);
@@ -498,12 +545,12 @@ public final  class LangTagRFC5646 implements LangTag{
                     InternalLangTag.error("Duplicate extension singleton: '"+singleton+"'");
             }
 
-            if ( langtag.extension0 == -1 )
-                langtag.extension0 = idx;
+            if ( builder.extension0 == -1 )
+                builder.extension0 = idx;
             // Extension.
             // 2*8 alphanum
             int idxExtStart = idx+segLen;
-            int idxEndExtra = maybeSubtags(string, N, idxExtStart, 2, 8);
+            int idxEndExtra = maybeSubtags(string, N, idxExtStart, CharRange.ALPHANUM, 2, 8);
 
             // Expecting at least one subtag.
             if ( idxExtStart == idxEndExtra )
@@ -511,10 +558,10 @@ public final  class LangTagRFC5646 implements LangTag{
 
             if ( idxEndExtra > idxExtStart )
                 idx2 = idxEndExtra;
-            langtag.extension1 = idx2;
-            InternalLangTag.checkAlphaNumMinus(string, N, langtag.extension0, langtag.extension1);
+            builder.extension1 = idx2;
+            InternalLangTag.checkAlphaNumMinus(string, N, builder.extension0, builder.extension1);
 
-            noteSegment("extension", string, langtag.extension0, langtag.extension1);
+            noteSegment("extension", string, builder.extension0, builder.extension1);
             // Move on.
             idx = segmentNextStart(N, idx, idx2);
             idx2 = segmentNextFinish(string, N, idx);
@@ -525,10 +572,10 @@ public final  class LangTagRFC5646 implements LangTag{
 
         // ---- private use
         if ( inPrivateUseSubtag ) {
-            langtag.privateuse0 = idx;
+            builder.privateuse0 = idx;
             // privateuse    = "x" 1*("-" (1*8alphanum))
             int idxPrivateUseStart = idx+segLen;
-            int idxPrivateUseEnd = maybeSubtags(string, N, idxPrivateUseStart, 1, 8);
+            int idxPrivateUseEnd = maybeSubtags(string, N, idxPrivateUseStart, CharRange.ALPHANUM, 1, 8);
 
             // Expecting at least one subtag.
             if ( idxPrivateUseStart == idxPrivateUseEnd )
@@ -536,10 +583,10 @@ public final  class LangTagRFC5646 implements LangTag{
 
             if ( idxPrivateUseEnd > idxPrivateUseStart )
                 idx2 = idxPrivateUseEnd;
-            langtag.privateuse1 = idx2;
-            InternalLangTag.checkAlphaNumMinus(string, N, langtag.privateuse0, langtag.privateuse1);
+            builder.privateuse1 = idx2;
+            InternalLangTag.checkAlphaNumMinus(string, N, builder.privateuse0, builder.privateuse1);
 
-            noteSegment("private use", string, langtag.privateuse0, langtag.privateuse1);
+            noteSegment("private use", string, builder.privateuse0, builder.privateuse1);
             // Private use runs to end of string. But do checking.
             // Move on.
             idx = segmentNextStart(N, idx, idx2);
@@ -557,12 +604,8 @@ public final  class LangTagRFC5646 implements LangTag{
             InternalLangTag.error("Trailing characters: '%s'", string.substring(idx));
         if ( idx2 >= 0 )
             InternalLangTag.error("Bad string: '%s'", string);
-        return langtag;
     }
-
-    private LangTagRFC5646(String string) {
-        this.langTagString = string;
-    }
+    // @formatter:on
 
     private LangTagRFC5646(String string,
                            int language0, int language1,
@@ -571,13 +614,17 @@ public final  class LangTagRFC5646 implements LangTag{
                            int variant0, int variant1,
                            int extension0, int extension1,
                            int privateuse0, int privateuse1,
-                           boolean isGrandfathered) {
+                           boolean isGrandfathered,
+                           boolean isPrivateUseLanguage) {
         this.langTagString = string;
         this.isGrandfathered = isGrandfathered;
+        this.isPrivateUseLanguage = isPrivateUseLanguage;
         this.language0 = language0;
         this.language1 = language1;
         this.script0 = script0;
         this.script1 = script1;
+        this.region0 = region0;
+        this.region1 = region1;
         this.variant0 = variant0;
         this.variant1 = variant1;
         this.extension0 = extension0;
@@ -587,7 +634,7 @@ public final  class LangTagRFC5646 implements LangTag{
     }
 
     /** Zero or more subtags, each between min and max length. */
-    private static int maybeSubtags(String string, int N, int idxStart, int min, int max) {
+    private static int maybeSubtags(String string, int N, int idxStart, CharRange charRange, int min, int max) {
         // Looking at the '-' or end of string.
         int numExt = 0;
         int count = 0;
@@ -597,7 +644,7 @@ public final  class LangTagRFC5646 implements LangTag{
             char ch = string.charAt(x);
             if ( ch != '-' )
                 break;
-            int x1 = maybeOneSubtag(string, N, x+1, min, max);
+            int x1 = maybeOneSubtag(string, N, x+1, charRange, min, max);
             if ( x1 <= 0 )
                 break;
             if ( x1 == N ) {
@@ -613,18 +660,23 @@ public final  class LangTagRFC5646 implements LangTag{
      * Peek for a segment between min and max in length.
      * The initial  "-" has been read.
      */
-    private static int maybeOneSubtag(String string, int N, int idxStart, int min, int max) {
+    private static int maybeOneSubtag(String string, int N, int idxStart, CharRange charRange, int min, int max) {
         int idx = idxStart;
         if ( idx >= N )
             return -1;
         int idx2 = segmentNextFinish(string, N, idx);
         int segLen = segmentLength(N, idx, idx2);
         if ( segLen == 0 )
-            InternalLangTag.error("Bad langtag. Found '--'");
+            InternalLangTag.error("Bad builder. Found '--'");
 
         if ( segLen < min || segLen > max )
             return -1;
-        if ( ! InternalLangTag.isAlpha(string, idxStart, idxStart+segLen) )
+        boolean valid =
+            switch (charRange) {
+                case ALPHA -> InternalLangTag.isAlpha(string, idxStart, idxStart+segLen);
+                case ALPHANUM -> InternalLangTag.isAlphaNum(string, idxStart, idxStart+segLen);
+            };
+        if ( !valid )
             return -1;
         return idxStart+segLen;
     }
