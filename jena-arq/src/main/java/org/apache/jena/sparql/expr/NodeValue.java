@@ -592,14 +592,13 @@ public abstract class NodeValue extends ExprNode
         LiteralLabel lit = node.getLiteral();
 
         // This includes type testing
-        //if ( ! lit.getDatatype().isValidLiteral(lit) )
+        // if ( ! lit.getDatatype().isValidLiteral(lit) )
+
         // Use this - already calculated when the node is formed.
-        if ( !lit.isWellFormed() )
-        {
-            if ( NodeValue.VerboseWarnings )
-            {
-                String tmp =  FmtUtils.stringForNode(node);
-                Log.warn(NodeValue.class, "Datatype format exception: "+tmp);
+        if ( !lit.isWellFormed() ) {
+            if ( NodeValue.VerboseWarnings ) {
+                String tmp = FmtUtils.stringForNode(node);
+                Log.warn(NodeValue.class, "Datatype format exception: " + tmp);
             }
             // Invalid lexical form.
             return new NodeValueNode(node);
