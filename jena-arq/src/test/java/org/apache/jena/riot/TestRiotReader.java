@@ -18,18 +18,19 @@
 
 package org.apache.jena.riot;
 
-import static org.junit.Assert.assertEquals ;
-import static org.junit.Assert.assertFalse ;
-import static org.junit.Assert.assertNotNull ;
-import static org.junit.Assert.assertTrue ;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.ByteArrayInputStream ;
-import java.util.Iterator ;
+import java.io.ByteArrayInputStream;
+import java.util.Iterator;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.Bytes;
-import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.graph.Triple ;
-import org.junit.Test ;
+import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.graph.Triple;
 
 @SuppressWarnings("removal")
 public class TestRiotReader {
@@ -67,7 +68,7 @@ public class TestRiotReader {
                 "  <rdf:Description rdf:about=\"http://example/s\">" ,
                 "     <j.0:p rdf:resource=\"http://example/o\"/>" ,
                 "   </rdf:Description>" ,
-                "</rdf:RDF>") ;
+                "</rdf:RDF>");
         //@formatter:on
 
         Iterator<Triple> it = RDFDataMgr.createIteratorTriples(new ByteArrayInputStream(Bytes.asUTF8bytes(x)),

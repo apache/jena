@@ -18,16 +18,18 @@
 
 package org.apache.jena.riot;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.CharArrayWriter;
 import java.io.Writer;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.sparql.sse.SSE;
-import org.junit.Test;
 
 public class TestRDFWriter {
     private static Graph graph = SSE.parseGraph("(graph (:s :p :o))");
@@ -55,19 +57,22 @@ public class TestRDFWriter {
     }
 
 
-    @Test(expected=RiotException.class)
+    @Test
     public void rdfwriter_no_source() {
-        // No source
-        RDFWriter.create().build();
+        assertThrows(RiotException.class,()->
+            // No source
+            RDFWriter.create().build()
+        );
     }
 
-    @Test(expected=RiotException.class)
+    @Test
     public void rdfwriter_no_syntax() {
-        String s =
+        assertThrows(RiotException.class,()->
             RDFWriter.create()
                 // No syntax
                 .source(graph)
-                .asString();
+                .asString()
+            );
     }
 
     @Test public void rdfwriter_output_1() {

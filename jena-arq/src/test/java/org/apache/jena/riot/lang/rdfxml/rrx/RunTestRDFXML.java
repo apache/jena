@@ -19,9 +19,9 @@
 package org.apache.jena.riot.lang.rdfxml.rrx;
 
 import static java.lang.String.format;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -212,13 +212,11 @@ public class RunTestRDFXML {
         return testfilesAbs;
     }
 
-    static List<Object[]> makeTestSetup(List<String> testfiles, String label) {
-        List<Object[]> x = new ArrayList<>();
-        for ( String fn : testfiles ) {
-            //System.out.println(fn);
-            x.add(new Object[] {label, fn});
-        }
-        return x;
+
+    static List<RRX_TestFileArgs> makeTestSetup(String label, ReaderRIOTFactory rdfxmlFactory,  List<String> testfiles) {
+        return testfiles.stream()
+                .map(fn->new RRX_TestFileArgs(label, fn, rdfxmlFactory))
+                .toList();
     }
 
     static class ErrorHandlerCollector implements ErrorHandler {
@@ -450,11 +448,11 @@ public class RunTestRDFXML {
     /** Counts check of an error handler */
     private static void checkErrorHandler(String testLabel, ErrorHandlerCollector errorHandler, int countWarnings, int countErrors, int countFatals) {
         if ( countFatals >= 0 )
-            assertEquals("Fatal message counts different", countFatals, errorHandler.fatals.size());
+            assertEquals(countFatals, errorHandler.fatals.size(), "Fatal message counts different");
         if ( countErrors >= 0 )
-            assertEquals("Error message counts different", countErrors, errorHandler.errors.size());
+            assertEquals(countErrors, errorHandler.errors.size(), "Error message counts different");
         if ( countWarnings >= 0 )
-            assertEquals("Warning message counts different", countWarnings, errorHandler.warnings.size());
+            assertEquals(countWarnings, errorHandler.warnings.size(), "Warning message counts different");
     }
 
     /** Parse one file using a reader of the give factory */

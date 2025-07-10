@@ -17,15 +17,15 @@
  */
 
 package org.apache.jena.sparql.core;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.ListUtils;
@@ -38,7 +38,6 @@ import org.apache.jena.shared.DeleteDeniedException;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
-import org.junit.Test;
 
 /** Test basic operations on a DatasetGraph
  *
@@ -494,15 +493,21 @@ public abstract class AbstractDatasetGraphTests
         assertTrue(b);
     }
 
-    @Test(expected=AddDeniedException.class) public void updateUnionGraph_1() {
+    @Test
+    public void updateUnionGraph_1() {
         DatasetGraph dsg = emptyDataset();
         Quad quad = SSE.parseQuad("(quad :g :s :p :o)");
-        dsg.add(Quad.unionGraph, quad.getSubject(), quad.getPredicate(), quad.getObject());
+        assertThrows(AddDeniedException.class, ()->
+            dsg.add(Quad.unionGraph, quad.getSubject(), quad.getPredicate(), quad.getObject())
+            );
     }
 
-    @Test(expected=DeleteDeniedException.class) public void updateUnionGraph_2() {
+    @Test
+    public void updateUnionGraph_2() {
         DatasetGraph dsg = emptyDataset();
         Quad quad = SSE.parseQuad("(quad :g :s :p :o)");
-        dsg.delete(Quad.unionGraph, quad.getSubject(), quad.getPredicate(), quad.getObject());
+        assertThrows(DeleteDeniedException.class, ()->
+            dsg.delete(Quad.unionGraph, quad.getSubject(), quad.getPredicate(), quad.getObject())
+            );
     }
 }

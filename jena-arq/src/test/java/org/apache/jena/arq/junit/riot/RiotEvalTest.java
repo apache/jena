@@ -18,8 +18,8 @@
 
 package org.apache.jena.arq.junit.riot;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
 import org.apache.jena.graph.Graph;
@@ -108,7 +108,7 @@ public class RiotEvalTest implements Runnable {
                 RDFDataMgr.write(System.out, results, Lang.TURTLE);
                 System.out.println("--------");
             }
-            assertTrue("Graphs not isomorphic", b);
+            assertTrue(b, "Graphs not isomorphic");
         } catch (RiotException ex) {
             if ( expectLegalSyntax )
                 throw ex;
@@ -152,7 +152,7 @@ public class RiotEvalTest implements Runnable {
                 System.out.println("--------");
             }
 
-            assertTrue("Datasets not isomorphic", b);
+            assertTrue(b, "Datasets not isomorphic");
         } catch (RiotException ex) {
             if ( expectLegalSyntax )
                 throw ex;

@@ -18,24 +18,27 @@
 
 package org.apache.jena.sparql.core;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.sse.SSE ;
-import static org.junit.Assert.*  ;
-import org.junit.Test ;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TestDatasetGraphCopyAdd extends AbstractDatasetGraphTests 
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.sse.SSE;
+
+public class TestDatasetGraphCopyAdd extends AbstractDatasetGraphTests
 {
     @Override
-    protected DatasetGraph emptyDataset() { return DatasetGraphFactory.create() ; }
-    
+    protected DatasetGraph emptyDataset() { return DatasetGraphFactory.create(); }
+
     @Test public void copyAdd_01() {
-        Graph graph = SSE.parseGraph("(graph (:s :p :o))") ;
-        Node g = SSE.parseNode(":g") ;
-        DatasetGraph dsg = emptyDataset() ;
+        Graph graph = SSE.parseGraph("(graph (:s :p :o))");
+        Node g = SSE.parseNode(":g");
+        DatasetGraph dsg = emptyDataset();
         dsg.addGraph(g, graph);
-        graph.clear(); 
-        assertTrue(graph.isEmpty()) ;
-        assertFalse(dsg.getGraph(g).isEmpty()) ;
+        graph.clear();
+        assertTrue(graph.isEmpty());
+        assertFalse(dsg.getGraph(g).isEmpty());
     }
 }

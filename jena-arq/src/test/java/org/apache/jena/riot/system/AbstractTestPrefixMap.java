@@ -18,10 +18,11 @@
 
 package org.apache.jena.riot.system;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.Pair;
-import org.junit.Test ;
 
 /**
  * Abstract tests for {@link PrefixMap} implementations
@@ -306,7 +307,7 @@ public abstract class AbstractTestPrefixMap {
     private void pmTestAbbrev(PrefixMap pm, String iriStr, String...expected) {
         Pair<String, String> p = pm.abbrev(iriStr);
         if ( expected.length == 0 ) {
-            assertNull("expected no abbrev for " + iriStr, p);
+            assertNull(p, ()->"expected no abbrev for " + iriStr);
             return;
         }
         assertNotNull(p);
@@ -331,7 +332,7 @@ public abstract class AbstractTestPrefixMap {
     private void pmTestAbbreviate(PrefixMap pm, String iriStr, String...expected) {
         String x = pm.abbreviate(iriStr);
         if ( expected.length == 0 ) {
-            assertNull("expected no abbreviation for " + iriStr, x);
+            assertNull(x, ()->"expected no abbreviation for " + iriStr);
             return;
         }
         assertNotNull(x);

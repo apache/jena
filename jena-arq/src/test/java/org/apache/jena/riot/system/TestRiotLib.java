@@ -18,22 +18,22 @@
 
 package org.apache.jena.riot.system;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.riot.writer.DirectiveStyle;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 
 public class TestRiotLib {
 
     private PrefixMap prefixMap;
 
-    @Before
+    @BeforeEach
     public void setupMaps() {
         // Mappings from requirement JENA-1262
         this.prefixMap = new PrefixMapStd();
@@ -81,7 +81,7 @@ public class TestRiotLib {
         IndentedLineBuffer writer = new IndentedLineBuffer();
         RiotLib.writePrefixes(writer, prefixMap, DirectiveStyle.KEYWORD);
         String result = writer.asString();
-        Assert.assertEquals(expectedNewStyle, result);
+        assertEquals(expectedNewStyle, result);
     }
 
     @Test
@@ -89,7 +89,7 @@ public class TestRiotLib {
         IndentedLineBuffer writer = new IndentedLineBuffer();
         RiotLib.writePrefixes(writer, prefixMap, DirectiveStyle.AT);
         String result = writer.asString();
-        Assert.assertEquals(expectedOldStyle, result);
+        assertEquals(expectedOldStyle, result);
     }
 
     @Test

@@ -18,8 +18,10 @@
 
 package org.apache.jena.rdfs;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.graph.Node;
@@ -31,7 +33,6 @@ import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sys.JenaSystem;
-import org.junit.Test;
 
 public class TestAssemblerRDFS {
 
@@ -70,7 +71,7 @@ public class TestAssemblerRDFS {
         String qs = PREFIXES+queryString;
         Query query = QueryFactory.create(qs);
         try ( QueryExecution qExec = QueryExecutionFactory.create(query, dataset) ) {
-            assertTrue(pattern+" -- ", qExec.execAsk());
+            assertTrue(qExec.execAsk(), ()->pattern+" -- ");
         }
     }
 
@@ -82,12 +83,12 @@ public class TestAssemblerRDFS {
 
         try ( QueryExecution qExec = QueryExecutionFactory.create(query, dataset) ) {
             ResultSet rs = qExec.execSelect();
-            assertTrue("Result is zero rows", rs.hasNext());
+            assertTrue(rs.hasNext(), ()->"Result is zero rows");
             Binding binding = rs.nextBinding();
-            assertTrue("Result not one row", ! rs.hasNext());
+            assertTrue(! rs.hasNext(), ()->"Result not one row");
             Node n = binding.get(Var.alloc("C"));
             int actual = NodeValue.makeNode(n).getInteger().intValue();
-            assertEquals("count "+pattern+" -- ", expected, actual);
+            assertEquals(expected, actual, ()->"count "+pattern+" -- ");
         }
     }
 }

@@ -18,24 +18,24 @@
 
 package org.apache.jena.riot.writer;
 
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.RDFDataMgr;
 
 public class AbstractWriterTest
 {
-    static String DIR = "testing/RIOT/Writer" ;
+    static String DIR = "testing/RIOT/Writer";
     
     static Dataset readDataset(String filename) {
-        String fn = DIR + "/" + filename ;
-        Dataset ds = RDFDataMgr.loadDataset(fn) ;
-        return ds ;
+        String fn = DIR + "/" + filename;
+        Dataset ds = RDFDataMgr.loadDataset(fn);
+        return ds;
     }
     
     static Model readModel(String filename) {
-        String fn = DIR + "/" + filename ;
-        Model m = RDFDataMgr.loadModel(fn) ;
-        return m ;
+        String fn = DIR + "/" + filename;
+        Model m = RDFDataMgr.loadModel(fn);
+        return m;
     }
 }
 

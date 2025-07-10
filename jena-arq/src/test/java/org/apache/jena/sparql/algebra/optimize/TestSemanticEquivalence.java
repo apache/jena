@@ -18,29 +18,34 @@
 
 package org.apache.jena.sparql.algebra.optimize;
 
-import java.util.ArrayList ;
-import java.util.List ;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.query.* ;
-import org.apache.jena.sparql.algebra.Algebra ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.OpVars ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.ResultSetStream ;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.engine.main.QueryEngineMain ;
-import org.apache.jena.sparql.resultset.ResultsCompare ;
-import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.sparql.util.Symbol ;
-import org.junit.AfterClass ;
-import org.junit.Assert ;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.query.*;
+import org.apache.jena.sparql.algebra.Algebra;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpVars;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.ResultSetStream;
+import org.apache.jena.sparql.engine.binding.BindingFactory;
+import org.apache.jena.sparql.engine.main.QueryEngineMain;
+import org.apache.jena.sparql.resultset.ResultsCompare;
+import org.apache.jena.sparql.sse.SSE;
+import org.apache.jena.sparql.util.Symbol;
 
 /**
  * Tests for verifying that a query returns the same results both with and
@@ -51,7 +56,7 @@ public class TestSemanticEquivalence {
 
     private static Dataset implJoin;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         // Dataset for implicit join tests
         implJoin = DatasetFactory.createTxnMem();
@@ -73,7 +78,7 @@ public class TestSemanticEquivalence {
         //dsg.add(Quad.defaultGraphNodeGenerated, a, pSelf, a);
     }
 
-    @AfterClass
+    @AfterAll
     public static void teardown() {
         if (implJoin != null) {
             implJoin.close();
@@ -81,8 +86,8 @@ public class TestSemanticEquivalence {
         }
 
         // Currently these optimizations are off by default
-        Assert.assertFalse(ARQ.isFalse(ARQ.optFilterImplicitJoin));
-        Assert.assertFalse(ARQ.isFalse(ARQ.optImplicitLeftJoin));
+        assertFalse(ARQ.isFalse(ARQ.optFilterImplicitJoin));
+        assertFalse(ARQ.isFalse(ARQ.optImplicitLeftJoin));
     }
 
     @Test
@@ -171,7 +176,7 @@ public class TestSemanticEquivalence {
         Query q = QueryFactory.create(queryStr);
 
         if (!q.isSelectType())
-            Assert.fail("Only SELECT queries are testable with this method");
+            fail("Only SELECT queries are testable with this method");
 
         Op op = Algebra.compile(q);
         // Track current state
@@ -181,7 +186,7 @@ public class TestSemanticEquivalence {
         try {
             // Run first without optimization
             ARQ.set(opt, false);
-            ResultSetRewindable rs ;
+            ResultSetRewindable rs;
             try(QueryExecution qe = QueryExecutionFactory.create(q, ds)) {
                 rs = ResultSetFactory.makeRewindable(qe.execSelect());
                 if (expected != rs.size()) {
@@ -189,12 +194,12 @@ public class TestSemanticEquivalence {
                     ResultSetFormatter.out(System.out, rs);
                     rs.reset();
                 }
-                Assert.assertEquals(expected, rs.size());
+                assertEquals(expected, rs.size());
             }
 
             // Run with optimization
             ARQ.set(opt, true);
-            ResultSetRewindable rsOpt ;
+            ResultSetRewindable rsOpt;
             try(QueryExecution qeOpt = QueryExecutionFactory.create(q, ds)) {
                     rsOpt = ResultSetFactory.makeRewindable(qeOpt.execSelect());
                 if (expected != rsOpt.size()) {
@@ -202,9 +207,9 @@ public class TestSemanticEquivalence {
                     ResultSetFormatter.out(System.out, rsOpt);
                     rsOpt.reset();
                 }
-                Assert.assertEquals(expected, rsOpt.size());
+                assertEquals(expected, rsOpt.size());
             }
-            Assert.assertTrue(ResultsCompare.equalsByTerm(rs, rsOpt));
+            assertTrue(ResultsCompare.equalsByTerm(rs, rsOpt));
         } finally {
             // Restore previous state
             if (isEnabled) {
@@ -252,7 +257,7 @@ public class TestSemanticEquivalence {
                 ResultSetFormatter.out(System.out, rs);
                 rs.reset();
             }
-            Assert.assertEquals(expected, rs.size());
+            assertEquals(expected, rs.size());
             iter.close();
 
             // Run with optimization
@@ -265,10 +270,10 @@ public class TestSemanticEquivalence {
                 ResultSetFormatter.out(System.out, rsOpt);
                 rsOpt.reset();
             }
-            Assert.assertEquals(expected, rsOpt.size());
+            assertEquals(expected, rsOpt.size());
             iterOpt.close();
 
-            Assert.assertTrue(ResultsCompare.equalsByTerm(rs, rsOpt));
+            assertTrue(ResultsCompare.equalsByTerm(rs, rsOpt));
         } finally {
             // Restore previous state
             if (isEnabled) {

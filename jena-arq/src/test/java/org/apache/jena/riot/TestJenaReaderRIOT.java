@@ -18,85 +18,87 @@
 
 package org.apache.jena.riot;
 
-import static org.junit.Assert.assertTrue;
 
-import java.io.FileInputStream ;
-import java.io.IOException ;
-import java.io.StringReader ;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.StringReader;
 import java.nio.file.Path;
 
-import org.apache.jena.atlas.lib.IRILib ;
-import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.atlas.web.TypedInputStream ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.riot.adapters.RDFReaderFactoryRIOT ;
-import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.util.FileUtils ;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.atlas.lib.IRILib;
+import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.atlas.web.TypedInputStream;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.riot.adapters.RDFReaderFactoryRIOT;
+import org.apache.jena.sparql.util.Context;
+import org.apache.jena.util.FileUtils;
 
 /* Test of integration with Jena via model.read.
  * Also tests triples format reading of RDFDataMgr */
 public class TestJenaReaderRIOT
 {
-    private static final String directory = "testing/RIOT/Reader" ;
+    private static final String directory = "testing/RIOT/Reader";
 
-    private static Context context = new Context() ;
+    private static Context context = new Context();
 
-    @Test public void read_01() { jenaread("D.nt") ; }
-    @Test public void read_02() { jenaread("D.ttl") ; }
-    @Test public void read_03() { jenaread("D.rdf") ; }
-    @Test public void read_04() { jenaread("D.rdf") ; }
-    @Test public void read_05() { jenaread("D.rj") ; }
-    @Test public void read_06() { jenaread("D.jsonld") ; }
+    @Test public void read_01() { jenaread("D.nt"); }
+    @Test public void read_02() { jenaread("D.ttl"); }
+    @Test public void read_03() { jenaread("D.rdf"); }
+    @Test public void read_04() { jenaread("D.rdf"); }
+    @Test public void read_05() { jenaread("D.rj"); }
+    @Test public void read_06() { jenaread("D.jsonld"); }
 
-    @Test public void read_11() { jenaread("D.nt",   "N-TRIPLES") ; }
-    @Test public void read_12() { jenaread("D.ttl",  "TTL") ; }
-    @Test public void read_13() { jenaread("D.rdf",  "RDF/XML") ; }
-    @Test public void read_14() { jenaread("D.rdf",  "RDF/XML-ABBREV") ; }
-    @Test public void read_15() { jenaread("D.rj", "RDF/JSON") ; }
-    @Test public void read_16() { jenaread("D.jsonld", "JSON-LD") ; }
+    @Test public void read_11() { jenaread("D.nt",   "N-TRIPLES"); }
+    @Test public void read_12() { jenaread("D.ttl",  "TTL"); }
+    @Test public void read_13() { jenaread("D.rdf",  "RDF/XML"); }
+    @Test public void read_14() { jenaread("D.rdf",  "RDF/XML-ABBREV"); }
+    @Test public void read_15() { jenaread("D.rj", "RDF/JSON"); }
+    @Test public void read_16() { jenaread("D.jsonld", "JSON-LD"); }
 
-    @Test public void read_21a() { jenaread("D-nt",  "N-TRIPLES") ; }
-    @Test public void read_21b() { jenaread("D-nt",  "NTRIPLES") ; }
-    @Test public void read_21c() { jenaread("D-nt",  "NT") ; }
-    @Test public void read_21d() { jenaread("D-nt",  "N-Triples") ; }
+    @Test public void read_21a() { jenaread("D-nt",  "N-TRIPLES"); }
+    @Test public void read_21b() { jenaread("D-nt",  "NTRIPLES"); }
+    @Test public void read_21c() { jenaread("D-nt",  "NT"); }
+    @Test public void read_21d() { jenaread("D-nt",  "N-Triples"); }
 
-    @Test public void read_22a() { jenaread("D-ttl", "TURTLE") ; }
-    @Test public void read_22b() { jenaread("D-ttl", "TTL") ; }
+    @Test public void read_22a() { jenaread("D-ttl", "TURTLE"); }
+    @Test public void read_22b() { jenaread("D-ttl", "TTL"); }
 
-    @Test public void read_23a()  { jenaread("D-rdf", "RDF/XML") ; }
-    @Test public void read_23b()  { jenaread("D-rdf", "RDFXML") ; }
-    @Test public void read_24()   { jenaread("D-json", "RDF/JSON") ; }
+    @Test public void read_23a()  { jenaread("D-rdf", "RDF/XML"); }
+    @Test public void read_23b()  { jenaread("D-rdf", "RDFXML"); }
+    @Test public void read_24()   { jenaread("D-json", "RDF/JSON"); }
 
     @Test public void read_30()
     {
         {
             TypedInputStream in = RDFDataMgr.open(filename("D-not-TTL.ttl") );
-            Model m0 = ModelFactory.createDefaultModel() ;
-            RDFDataMgr.read(m0, in, RDFLanguages.RDFXML) ;
+            Model m0 = ModelFactory.createDefaultModel();
+            RDFDataMgr.read(m0, in, RDFLanguages.RDFXML);
         }
 
         TypedInputStream in1 = RDFDataMgr.open(filename("D-not-TTL.ttl") );
-        Model m1 = ModelFactory.createDefaultModel() ;
-        m1.read(in1, null, "RDF/XML") ;
+        Model m1 = ModelFactory.createDefaultModel();
+        m1.read(in1, null, "RDF/XML");
     }
 
     // test read from StringReader..
     @Test public void read_StringReader_31()
     {
-        String x = "<s> <p> <p> ." ;
+        String x = "<s> <p> <p> .";
 
         {
-            StringReader s = new StringReader(x) ;
-            Model m = ModelFactory.createDefaultModel() ;
-            RDFDataMgr.read(m, s, null, RDFLanguages.NTRIPLES) ;
+            StringReader s = new StringReader(x);
+            Model m = ModelFactory.createDefaultModel();
+            RDFDataMgr.read(m, s, null, RDFLanguages.NTRIPLES);
         }
 
-        StringReader s1 = new StringReader("<s> <p> <p> .") ;
-        Model m1 = ModelFactory.createDefaultModel() ;
-        m1.read(s1, null, "N-TRIPLES") ;
+        StringReader s1 = new StringReader("<s> <p> <p> .");
+        Model m1 = ModelFactory.createDefaultModel();
+        m1.read(s1, null, "N-TRIPLES");
     }
 
     @Test public void read_StringReader_32()
@@ -108,82 +110,82 @@ public class TestJenaReaderRIOT
             "  <rdf:Description rdf:about=\"http://example/s\">" ,
             "     <j.0:p rdf:resource=\"http://example/o\"/>" ,
             "   </rdf:Description>" ,
-            "</rdf:RDF>") ;
+            "</rdf:RDF>");
         {
-            StringReader s = new StringReader(x) ;
-            Model m = ModelFactory.createDefaultModel() ;
-            RDFDataMgr.read(m, s, null, RDFLanguages.RDFXML) ;
+            StringReader s = new StringReader(x);
+            Model m = ModelFactory.createDefaultModel();
+            RDFDataMgr.read(m, s, null, RDFLanguages.RDFXML);
         }
-        StringReader s1 = new StringReader(x) ;
-        Model m = ModelFactory.createDefaultModel() ;
-        m.read(s1, null, "RDF/XML") ;
+        StringReader s1 = new StringReader(x);
+        Model m = ModelFactory.createDefaultModel();
+        m.read(s1, null, "RDF/XML");
     }
 
     // Stream opening is hardwired into jena!
     @Test public void read_base_1()
-    { jenaread("D-no-base.ttl", "TTL", "http://baseuri/") ; }
+    { jenaread("D-no-base.ttl", "TTL", "http://baseuri/"); }
 
     @Test public void read_input_1() throws IOException
-    { jenaread_stream("D.ttl", "TTL") ; }
+    { jenaread_stream("D.ttl", "TTL"); }
 
     @Test public void read_input_2() throws IOException
-    { jenaread_stream("D.rdf", "RDF/XML") ; }
+    { jenaread_stream("D.rdf", "RDF/XML"); }
 
-    private static final String plainRelFnTTL = directory+"/D.ttl" ;
-    private static final String plainRelFnRDFXML = directory+"/D.rdf" ;
+    private static final String plainRelFnTTL = directory+"/D.ttl";
+    private static final String plainRelFnRDFXML = directory+"/D.rdf";
 
     // Ways to pass in the filename.
     // The RDF/XML path is slightly different so test it as well.
 
     @Test public void read_url_1() {
-        modelRead(plainRelFnTTL) ;
+        modelRead(plainRelFnTTL);
     }
 
     @Test public void read_url_1x() {
-        modelRead(plainRelFnRDFXML) ;
+        modelRead(plainRelFnRDFXML);
     }
 
     @Test public void read_url_2() {
-        modelRead("file:"+plainRelFnTTL) ;
+        modelRead("file:"+plainRelFnTTL);
     }
 
     @Test public void read_url_2x() {
-        modelRead("file:"+plainRelFnRDFXML) ;
+        modelRead("file:"+plainRelFnRDFXML);
     }
 
     @Test public void read_url_3() {
-        String cwd = Path.of(".").toAbsolutePath().normalize().toString() ;
-        modelRead("file:"+cwd+"/"+plainRelFnTTL) ;
+        String cwd = Path.of(".").toAbsolutePath().normalize().toString();
+        modelRead("file:"+cwd+"/"+plainRelFnTTL);
     }
 
     @Test public void read_url_3x() {
-        String cwd = Path.of(".").toAbsolutePath().normalize().toString() ;
-        modelRead("file:"+cwd+"/"+plainRelFnRDFXML) ;
+        String cwd = Path.of(".").toAbsolutePath().normalize().toString();
+        modelRead("file:"+cwd+"/"+plainRelFnRDFXML);
     }
 
     @Test public void read_url_4() {
-        String cwd = Path.of(".").toAbsolutePath().normalize().toString() ;
-        String fn = "file:"+cwd+"/"+plainRelFnTTL ;
-        String fn2 = IRILib.filenameToIRI(fn) ;
-        modelRead(fn2) ;
+        String cwd = Path.of(".").toAbsolutePath().normalize().toString();
+        String fn = "file:"+cwd+"/"+plainRelFnTTL;
+        String fn2 = IRILib.filenameToIRI(fn);
+        modelRead(fn2);
     }
 
     @Test public void read_url_4x() {
-        String cwd = Path.of(".").toAbsolutePath().normalize().toString() ;
-        String fn = "file:"+cwd+"/"+plainRelFnRDFXML ;
-        String fn2 = IRILib.filenameToIRI(fn) ;
-        modelRead(fn2) ;
+        String cwd = Path.of(".").toAbsolutePath().normalize().toString();
+        String fn = "file:"+cwd+"/"+plainRelFnRDFXML;
+        String fn2 = IRILib.filenameToIRI(fn);
+        modelRead(fn2);
     }
 
     private static Model modelRead(String fn) {
         Model m = ModelFactory.createDefaultModel();
-        m.read(fn) ;
-        return m ;
+        m.read(fn);
+        return m;
     }
 
     // -----------------------------------------
 
-    private static String filename(String filename) { return directory+"/"+filename ; }
+    private static String filename(String filename) { return directory+"/"+filename; }
 
     private static void jenaread_stream(String filename, String lang) throws IOException {
         filename = filename(filename);
@@ -240,21 +242,21 @@ public class TestJenaReaderRIOT
     }
 
     private static void jenaread(String dataurl, String lang, String base) {
-        dataurl = filename(dataurl) ;
-        Model m1 = ModelFactory.createDefaultModel() ;
-        Model m2 = ModelFactory.createDefaultModel() ;
+        dataurl = filename(dataurl);
+        Model m1 = ModelFactory.createDefaultModel();
+        Model m2 = ModelFactory.createDefaultModel();
 
         // This call
-        RDFDataMgr.read(m1, dataurl, base, RDFLanguages.nameToLang(lang)) ;
+        RDFDataMgr.read(m1, dataurl, base, RDFLanguages.nameToLang(lang));
         // should be an implementation of:
-        m2.read("file:"+dataurl, base, lang) ;
-        assertTrue(m1.size() != 0 ) ;
-        assertTrue(m2.size() != 0 ) ;
-        assertTrue(m1.isIsomorphicWith(m2)) ;
+        m2.read("file:"+dataurl, base, lang);
+        assertTrue(m1.size() != 0 );
+        assertTrue(m2.size() != 0 );
+        assertTrue(m1.isIsomorphicWith(m2));
         // and check base processing ...
-        Resource s = m1.listStatements().next().getSubject() ;
-        assertTrue(s.getURI().startsWith("http://")) ;
-        assertTrue(s.getURI().equals("http://baseuri/s")) ;
+        Resource s = m1.listStatements().next().getSubject();
+        assertTrue(s.getURI().startsWith("http://"));
+        assertTrue(s.getURI().equals("http://baseuri/s"));
     }
 }
 

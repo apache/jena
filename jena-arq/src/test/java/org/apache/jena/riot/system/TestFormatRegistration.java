@@ -19,76 +19,76 @@
 
 package org.apache.jena.riot.system;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.RDFWriterRegistry;
-import org.junit.Test ;
-// Test system integration / registration
-import org.junit.runner.RunWith ;
-import org.junit.runners.Parameterized ;
-import org.junit.runners.Parameterized.Parameters ;
 
-
-@RunWith(Parameterized.class)
+@ParameterizedClass
+@MethodSource("provideArgs")
 public class TestFormatRegistration
 {
-    @Parameters(name = "{0} -- {1} {2} {3}")
-    public static Iterable<Object[]> data() {
-        List<Object[]> x = new ArrayList<>() ;
-        add("NULL",     x, RDFFormat.RDFNULL,           false, false)  ;
-        add("RDFXML",   x, RDFFormat.RDFXML,            true, false) ;
-        add("RDFXML",   x, RDFFormat.RDFXML_ABBREV,     true, false) ;
-        add("RDFXML",   x, RDFFormat.RDFXML_PLAIN,     true, false) ;
-        add("RDFXML",   x, RDFFormat.RDFXML_PLAIN,     true, false) ;
+    public static Stream<Arguments> provideArgs() {
+        List<Arguments> x = new ArrayList<>();
+        add(x, "NULL",     RDFFormat.RDFNULL,           false, false);
+        add(x, "RDFXML",   RDFFormat.RDFXML,            true, false);
+        add(x, "RDFXML",   RDFFormat.RDFXML_ABBREV,     true, false);
+        add(x, "RDFXML",   RDFFormat.RDFXML_PLAIN,      true, false);
+        add(x, "RDFXML",   RDFFormat.RDFXML_PLAIN,      true, false);
 
-        add("NTRIPLES", x, RDFFormat.NTRIPLES,   true, false) ;
-        add("NT",       x, RDFFormat.NT,         true, false) ;
-        add("TURTLE",   x, RDFFormat.TURTLE,     true, false) ;
-        add("TTL",      x, RDFFormat.TTL,        true, false) ;
-        add("JSONLD",   x, RDFFormat.JSONLD,     true, true) ;
-        add("RDFJSON",  x, RDFFormat.RDFJSON,    true, false) ;
-        add("NQUADS",   x, RDFFormat.NQUADS,     true, true) ;
-        add("NQ",       x, RDFFormat.NQ,         true, true) ;
-        add("TRIG",     x, RDFFormat.TRIG,       true, true) ;
-        add("TRIX",     x, RDFFormat.TRIX,       true, true) ;
+        add(x, "NTRIPLES", RDFFormat.NTRIPLES,          true, false);
+        add(x, "NT",       RDFFormat.NT,                true, false);
+        add(x, "TURTLE",   RDFFormat.TURTLE,            true, false);
+        add(x, "TTL",      RDFFormat.TTL,               true, false);
+        add(x, "JSONLD",   RDFFormat.JSONLD,            true, true);
+        add(x, "RDFJSON",  RDFFormat.RDFJSON,           true, false);
+        add(x, "NQUADS",   RDFFormat.NQUADS,            true, true);
+        add(x, "NQ",       RDFFormat.NQ,                true, true);
+        add(x, "TRIG",     RDFFormat.TRIG,              true, true);
+        add(x, "TRIX",     RDFFormat.TRIX,              true, true);
 
-        add("PB RDF",   x, RDFFormat.RDF_PROTO, true, true) ;
-        add("PB RDF",   x, RDFFormat.RDF_PROTO_VALUES, true, true) ;
+        add(x, "PB RDF",   RDFFormat.RDF_PROTO,         true, true);
+        add(x, "PB RDF",   RDFFormat.RDF_PROTO_VALUES,  true, true);
 
-        add("TRDF",     x, RDFFormat.RDF_THRIFT, true, true) ;
-        add("TRDF",     x, RDFFormat.RDF_THRIFT_VALUES, true, true) ;
-        return x ;
+        add(x, "TRDF",     RDFFormat.RDF_THRIFT,        true, true);
+        add(x, "TRDF",     RDFFormat.RDF_THRIFT_VALUES, true, true);
+        return x.stream();
     }
 
-    private static void add(String name, List<Object[]> x, RDFFormat format, boolean istriples, boolean isquads) {
-        x.add(new Object[] {name, format, istriples , isquads }) ;
+    private static void add(List<Arguments> x, String name, RDFFormat format, boolean istriples, boolean isquads) {
+        x.add(Arguments.of(name, format, istriples , isquads));
     }
 
-    private String name ;
-    private RDFFormat format ;
-    private boolean istriples ;
-    private boolean isquads ;
+    private String name;
+    private RDFFormat format;
+    private boolean istriples;
+    private boolean isquads;
 
     public TestFormatRegistration(String name, RDFFormat format, boolean istriples, boolean isquads) {
-        this.name = name ;
-        this.format = format ;
-        this.istriples = istriples ;
-        this.isquads = isquads ;
+        this.name = name;
+        this.format = format;
+        this.istriples = istriples;
+        this.isquads = isquads;
     }
 
     @Test public void jenaSystem_write_1() {
-        assertTrue(RDFWriterRegistry.contains(format)) ;
+        assertTrue(RDFWriterRegistry.contains(format));
     }
 
     @Test public void jenaSystem_write_2() {
-        assertTrue(RDFWriterRegistry.registeredGraphFormats().contains(format)) ;
-        if ( istriples ) assertNotNull(RDFWriterRegistry.getWriterGraphFactory(format)) ;
-        if ( isquads )   assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(format)) ;
+        assertTrue(RDFWriterRegistry.registeredGraphFormats().contains(format));
+        if ( istriples ) assertNotNull(RDFWriterRegistry.getWriterGraphFactory(format));
+        if ( isquads )   assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(format));
     }
 
   @Test public void xjenaSystem_write_3() {

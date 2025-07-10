@@ -18,14 +18,15 @@
 
 package org.apache.jena.http.auth;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Map;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.web.AuthScheme;
-import org.junit.Test;
 
 public class TestAuthHeaderParser {
 

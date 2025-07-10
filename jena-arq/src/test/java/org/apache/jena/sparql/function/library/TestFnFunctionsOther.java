@@ -19,12 +19,14 @@
 package org.apache.jena.sparql.function.library;
 
 import static org.apache.jena.sparql.expr.LibTestExpr.test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.expr.ExprException ;
-import org.apache.jena.sparql.expr.VariableNotBoundException ;
-import org.apache.jena.sys.JenaSystem ;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.ExprException;
+import org.apache.jena.sparql.expr.VariableNotBoundException;
+import org.apache.jena.sys.JenaSystem;
 
 /** "Other" functions */
 public class TestFnFunctionsOther {
@@ -36,35 +38,35 @@ public class TestFnFunctionsOther {
     }
 
     // Under-arity
-    @Test(expected=ExprEvalException.class)
+    @Test
     public void apply_2() {
-        test("fn:apply(math:sqrt)", "3.0e0");
+        assertThrows(ExprEvalException.class,()-> test("fn:apply(math:sqrt)", "3.0e0") );
     }
 
     // Over-arity
-    @Test(expected=ExprEvalException.class)
+    @Test
     public void apply_3() {
-        test("fn:apply(math:sqrt, 9, 10)", "3.0e0");
+        assertThrows(ExprEvalException.class,()-> test("fn:apply(math:sqrt, 9, 10)", "3.0e0") );
     }
 
     // Not a URI.
-    @Test(expected=ExprEvalException.class)
+    @Test
     public void apply_4() {
-        test("fn:apply('bicycle', 9, 10)", "3.0e0");
+        assertThrows(ExprEvalException.class,()-> test("fn:apply('bicycle', 9, 10)", "3.0e0") );
     }
 
-    @Test(expected=VariableNotBoundException.class)
+    @Test
     public void apply_5() {
-        test("fn:apply(?var)", "3.0e0");
+        assertThrows(VariableNotBoundException.class,()-> test("fn:apply(?var)", "3.0e0") );
     }
 
-    @Test(expected=ExprEvalException.class)
+    @Test
     public void apply_6() {
-        test("fn:apply(<x:unregistered>)", "false");
+        assertThrows(ExprEvalException.class,()-> test("fn:apply(<x:unregistered>)", "false") );
     }
 
-    @Test(expected=ExprException.class)
+    @Test
     public void apply_7() {
-        test("fn:apply()", "false");
+        assertThrows(ExprException.class,()-> test("fn:apply()", "false") );
     }
 }

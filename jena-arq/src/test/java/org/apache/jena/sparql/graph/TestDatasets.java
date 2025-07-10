@@ -18,32 +18,38 @@
 
 package org.apache.jena.sparql.graph;
 
-import java.util.ArrayList ;
-import java.util.Arrays ;
-import java.util.Collection ;
-import java.util.List ;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.apache.jena.atlas.lib.Creator ;
-import org.apache.jena.query.* ;
-import org.apache.jena.sparql.core.DatasetGraph ;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import org.apache.jena.atlas.lib.Creator;
+import org.apache.jena.query.*;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.exec.UpdateExec;
-import org.apache.jena.update.UpdateFactory ;
-import org.apache.jena.update.UpdateRequest ;
-import org.junit.Assert ;
-import org.junit.Before ;
-import org.junit.Test ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Parameterized ;
-import org.junit.runners.Parameterized.Parameters ;
+import org.apache.jena.update.UpdateFactory;
+import org.apache.jena.update.UpdateRequest;
 
-@RunWith(Parameterized.class)
+@ParameterizedClass(name="{index}: {0}")
+@MethodSource("provideArgs")
 public class TestDatasets {
-    @Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> data() {
-        Creator<Dataset> datasetGeneralMaker = ()-> DatasetFactory.createGeneral() ;
-        Creator<Dataset> datasetTxnMemMaker = ()-> DatasetFactory.createTxnMem() ;
-        return Arrays.asList(new Object[][] { { "General",  datasetGeneralMaker },
-                                              { "TxnMem",   datasetTxnMemMaker} });
+
+    private static Stream<Arguments> provideArgs() {
+        Creator<Dataset> datasetGeneralMaker = ()-> DatasetFactory.createGeneral();
+        Creator<Dataset> datasetTxnMemMaker = ()-> DatasetFactory.createTxnMem();
+        List<Arguments> x = List.of
+                (Arguments.of( "General",  datasetGeneralMaker ),
+                 Arguments.of( "TxnMem",   datasetTxnMemMaker )
+                );
+        return x.stream();
     }
 
 	private static final String data = "INSERT DATA { <ex:default> <ex:default> <ex:default>.\n"
@@ -53,19 +59,20 @@ public class TestDatasets {
 									   + "}";
 
     private final Creator<Dataset> maker;
-	private final Dataset ds;
-	private final DatasetGraph dsg;
+	private final Dataset testDataset;
+	private final DatasetGraph testDsg;
 
 	public TestDatasets(String name, Creator<Dataset> maker) {
-	    this.maker = maker ;
-        this.ds = maker.create() ;
-        this.dsg = ds.asDatasetGraph() ;
+	    this.maker = maker;
+        this.testDataset = maker.create();
+        this.testDsg = testDataset.asDatasetGraph();
 	}
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		UpdateRequest up = UpdateFactory.create(TestDatasets.data);
-		UpdateExec.newBuilder().update(up).dataset(dsg).execute();
+
+		UpdateExec.newBuilder().update(up).dataset(testDsg).execute();
 	}
 
 	private void test(String query, String[] expected, int expectedCount) {
@@ -73,7 +80,7 @@ public class TestDatasets {
 		Query q = QueryFactory.create(query);
 
 		//Then execute the query
-		QueryExecution exec = QueryExecutionFactory.create(q, ds);
+		QueryExecution exec = QueryExecutionFactory.create(q, testDataset);
 
 		ResultSet results = exec.execSelect();
 		List<String> found = new ArrayList<>();
@@ -91,7 +98,7 @@ public class TestDatasets {
 			dump(expectedCount, count, expected, found);
 			dumped = true;
 		}
-		Assert.assertEquals(expectedCount, count);
+		assertEquals(expectedCount, count);
 		for (String e : expected) {
 			if (!found.contains(e)) {
 				if (!dumped) {
@@ -99,7 +106,7 @@ public class TestDatasets {
 					dump(expectedCount, count, expected, found);
 					dumped = true;
 				}
-				Assert.fail("Did not find expected result " + e);
+				fail("Did not find expected result " + e);
 			}
 		}
 	}

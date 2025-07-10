@@ -18,10 +18,14 @@
 
 package org.apache.jena.system;
 
-import static org.junit.Assert.*;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.riot.system.Prefixes;
-import org.junit.Test;
 
 public class TestPrefixes {
 
@@ -57,10 +61,10 @@ public class TestPrefixes {
 
     @Test public void prefixes_bad_06() { bad("ex:"); }
 
-    @Test(expected=NullPointerException.class)
-    public void prefixes_bad_NPE() { bad(null); }
-
-    // ----
+    @Test
+    public void prefixes_bad_NPE() {
+        assertThrows(NullPointerException.class, ()->bad(null));
+    }
 
     private static void good(String string) {
         assertTrue(Prefixes.isLegalPrefix(string));

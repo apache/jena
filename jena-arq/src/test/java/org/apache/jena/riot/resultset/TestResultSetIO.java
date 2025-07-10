@@ -18,48 +18,50 @@
 
 package org.apache.jena.riot.resultset;
 
-import static org.apache.jena.riot.resultset.ResultSetLang.* ;
-import static org.junit.Assert.assertTrue;
+import static org.apache.jena.riot.resultset.ResultSetLang.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.ByteArrayInputStream ;
-import java.io.ByteArrayOutputStream ;
-import java.util.ArrayList ;
-import java.util.Collection ;
-import java.util.List ;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
-import org.junit.Before ;
-import org.junit.Test ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Parameterized ;
-import org.junit.runners.Parameterized.Parameters ;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.Parameter;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.query.ResultSet ;
-import org.apache.jena.query.ResultSetFactory ;
-import org.apache.jena.query.ResultSetRewindable ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.ResultSetMgr ;
-import org.apache.jena.sparql.resultset.ResultsCompare ;
-import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFactory;
+import org.apache.jena.query.ResultSetRewindable;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.ResultSetMgr;
+import org.apache.jena.sparql.resultset.ResultsCompare;
+import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.sse.builders.BuilderRowSet;
 
-@RunWith(Parameterized.class)
+@ParameterizedClass
+@MethodSource("provideArgs")
 public class TestResultSetIO {
-    @Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> data() {
+
+    private static Stream<Arguments> provideArgs() {
         Lang[] langs = { RS_XML
                        , RS_JSON
                        , RS_CSV
                        , RS_TSV
                        , RS_Thrift
                        , RS_Protobuf
-        } ;
+        };
 
-        List<Object[]> x = new ArrayList<>() ;
+        List<Arguments> x = new ArrayList<>();
         for ( Lang lang : langs ) {
-            x.add(new Object[]{ "test:"+lang.getName(), lang } ) ;
+            x.add(Arguments.of(lang));
         }
-        return x ;
+        return x.stream();
     }
 
     static String rsStr = StrUtils.strjoinNL
@@ -74,42 +76,39 @@ public class TestResultSetIO {
         ,"   (row (?x 'abc'@en))"
         ,"   (row (?x 'abc'))"
         ,")"
-        ) ;
+        );
 
-    static ResultSetRewindable test_rs = ResultSetFactory.makeRewindable(BuilderRowSet.build(SSE.parse(rsStr))) ;
+    static ResultSetRewindable test_rs = ResultSetFactory.makeRewindable(BuilderRowSet.build(SSE.parse(rsStr)));
 
-    private final Lang lang ;
-    @Before public void beforetest() { test_rs.reset() ; }
+    @BeforeEach public void beforeTest() { test_rs.reset(); }
 
-    public TestResultSetIO(String name, Lang lang) {
-        this.lang = lang ;
-    }
+    @Parameter private Lang lang;
 
     @Test public void test_resultset_01() {
         // write(data)-read-compare
-        ByteArrayOutputStream out1 = new ByteArrayOutputStream() ;
-        ResultSetMgr.write(out1, test_rs, lang) ;
+        ByteArrayOutputStream out1 = new ByteArrayOutputStream();
+        ResultSetMgr.write(out1, test_rs, lang);
         test_rs.reset();
 
-        ByteArrayInputStream in = new ByteArrayInputStream(out1.toByteArray()) ;
+        ByteArrayInputStream in = new ByteArrayInputStream(out1.toByteArray());
 
-        ResultSet rs = ResultSetMgr.read(in, lang) ;
-        ResultSetRewindable rsw = ResultSetFactory.makeRewindable(rs) ;
+        ResultSet rs = ResultSetMgr.read(in, lang);
+        ResultSetRewindable rsw = ResultSetFactory.makeRewindable(rs);
         if ( ! lang.equals(RS_CSV) ) {
             // CSV is not faithful
-            assertTrue(ResultsCompare.equalsByTerm(test_rs, rsw)) ;
+            assertTrue(ResultsCompare.equalsByTerm(test_rs, rsw));
         }
 
         rsw.reset();
         test_rs.reset();
 
-        ByteArrayOutputStream out2 = new ByteArrayOutputStream() ;
+        ByteArrayOutputStream out2 = new ByteArrayOutputStream();
         // Round trip the output from above - write(rsw)-read-compare
-        ResultSetMgr.write(out2, rsw, lang) ;
+        ResultSetMgr.write(out2, rsw, lang);
         rsw.reset();
-        in = new ByteArrayInputStream(out2.toByteArray()) ;
-        ResultSet rs2 = ResultSetMgr.read(in, lang) ;
-        assertTrue(ResultsCompare.equalsByTerm(rsw, rs2)) ;
+        in = new ByteArrayInputStream(out2.toByteArray());
+        ResultSet rs2 = ResultSetMgr.read(in, lang);
+        assertTrue(ResultsCompare.equalsByTerm(rsw, rs2));
     }
 }
 

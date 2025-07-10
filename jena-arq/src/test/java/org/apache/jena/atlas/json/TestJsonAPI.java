@@ -18,10 +18,11 @@
 
 package org.apache.jena.atlas.json;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-import org.junit.Test ;
-
+import org.junit.jupiter.api.Test;
 
 public class TestJsonAPI
 {
@@ -29,14 +30,14 @@ public class TestJsonAPI
         JsonObject obj = JSON.parse("{ key1: 'str1' , key2: [ 1 , 2 ] }") ;
         assertEquals(2, obj.size());
     }
-    
+
     @Test public void jsonAPI_02() {
         JsonObject obj = JSON.parse("{ key1: 'str1' , key2: [ 1 , 2 ] }") ;
         JsonObject obj2 = (JsonObject)JSON.copy(obj);
         assertNotSame(obj, obj2);
         assertEquals(obj, obj2);
     }
-    
+
     @Test public void jsonAPI_03() {
         JsonValue jv1 = JSON.parseAny("2") ;
         JsonValue jv2 = JSON.copy(jv1);

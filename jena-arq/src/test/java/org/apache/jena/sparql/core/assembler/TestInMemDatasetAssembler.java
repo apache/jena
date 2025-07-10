@@ -18,8 +18,8 @@
 
 package org.apache.jena.sparql.core.assembler;
 
-import static org.apache.jena.assembler.JA.MemoryModel ;
-import static org.apache.jena.assembler.JA.data ;
+import static org.apache.jena.assembler.JA.MemoryModel;
+import static org.apache.jena.assembler.JA.data;
 import static org.apache.jena.assembler.Mode.DEFAULT;
 import static org.apache.jena.rdf.model.ModelFactory.createDefaultModel;
 import static org.apache.jena.riot.Lang.NQUADS;
@@ -28,9 +28,10 @@ import static org.apache.jena.riot.RDFFormat.NTRIPLES;
 import static org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab.pGraphName;
 import static org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab.pNamedGraph;
 import static org.apache.jena.vocabulary.RDF.type;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -40,9 +41,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Iterator;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import org.apache.jena.assembler.JA ;
+import org.apache.jena.assembler.JA;
 import org.apache.jena.assembler.exceptions.CannotConstructException;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.graph.Node;
@@ -70,8 +71,8 @@ public class TestInMemDatasetAssembler {
     }
 
     private Dataset assemble(final Resource example) {
-        Model model = example.getModel() ;
-        model.setNsPrefix("ja", JA.getURI()) ;
+        Model model = example.getModel();
+        model.setNsPrefix("ja", JA.getURI());
         final InMemDatasetAssembler testAssembler = new InMemDatasetAssembler();
         return testAssembler.open(testAssembler, example, DEFAULT);
     }
@@ -80,9 +81,9 @@ public class TestInMemDatasetAssembler {
     public void emptyDataset() {
         final Model model = createDefaultModel();
         final Resource empty = model.createResource("test:empty");
-        empty.addProperty(type, DatasetAssemblerVocab.tDatasetTxnMem) ;
-        Dataset dataset = assemble(empty) ;
-        assertFalse(dataset.asDatasetGraph().find().hasNext()) ;
+        empty.addProperty(type, DatasetAssemblerVocab.tDatasetTxnMem);
+        Dataset dataset = assemble(empty);
+        assertFalse(dataset.asDatasetGraph().find().hasNext());
     }
 
     @Test
@@ -166,7 +167,7 @@ public class TestInMemDatasetAssembler {
 
         Model assemblerModel = createDefaultModel();
         Resource simpleExample2 = assemblerModel.createResource("test:simpleExample2");
-        simpleExample2.addProperty(type, DatasetAssemblerVocab.tDatasetTxnMem) ;
+        simpleExample2.addProperty(type, DatasetAssemblerVocab.tDatasetTxnMem);
         simpleExample2.addProperty(data, dataFileName);
 
         final Dataset dataset = assemble(simpleExample2);
@@ -174,10 +175,10 @@ public class TestInMemDatasetAssembler {
         assertTrue(IsoMatcher.isomorphic(dsgData, dataset.asDatasetGraph()));
     }
 
-    @Test(expected = CannotConstructException.class)
+    @Test
     public void wrongKindOfAssemblerDefinition() {
         final Model model = createDefaultModel();
         final Resource badExample = model.createResource("test:badExample");
-        assemble(badExample);
+        assertThrows(CannotConstructException.class, ()->assemble(badExample));
     }
 }

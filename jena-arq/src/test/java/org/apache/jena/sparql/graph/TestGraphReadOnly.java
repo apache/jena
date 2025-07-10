@@ -18,67 +18,70 @@
 
 package org.apache.jena.sparql.graph;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.shared.AddDeniedException;
 import org.apache.jena.shared.DeleteDeniedException;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.sse.SSE;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class TestGraphReadOnly {
 
     private static Graph baseGraph;
     private static Triple triple;
 
-    @BeforeClass public static void beforeClass() {
+    @BeforeAll public static void beforeClass() {
         baseGraph = GraphFactory.createDefaultGraph();
         triple = SSE.parseTriple("(:s :p :o)");
         baseGraph.getPrefixMapping().setNsPrefix("ex", "http://example/");
     }
 
-    @Test(expected=AddDeniedException.class)
+    @Test
     public void read_only_add() {
         Graph graph = new GraphReadOnly(baseGraph);
-        graph.add(triple);
+        assertThrows(AddDeniedException.class,()-> graph.add(triple) );
     }
 
-    @Test(expected=DeleteDeniedException.class)
+    @Test
     public void read_only_delete() {
         Graph graph = new GraphReadOnly(baseGraph);
-        graph.delete(triple);
+        assertThrows(DeleteDeniedException.class,()-> graph.delete(triple) );
     }
 
-    @Test(expected=JenaException.class)
+    @Test
     public void read_only_remove() {
         Graph graph = new GraphReadOnly(baseGraph);
-        graph.remove(null, null, null);
+        assertThrows(JenaException.class,()-> graph.remove(null, null, null) );
     }
 
-    @Test(expected=JenaException.class)
+    @Test
     public void read_only_clear() {
         Graph graph = new GraphReadOnly(baseGraph);
-        graph.clear();
+        assertThrows(JenaException.class,()-> graph.clear() );
     }
 
-    @Test(expected=JenaException.class)
+    @Test
     public void read_only_prefixmapping_set() {
         Graph graph = new GraphReadOnly(baseGraph);
         // Does not matter that it is alread defined.
-        graph.getPrefixMapping().setNsPrefix("ex", "http://example/");
+        assertThrows(JenaException.class,()-> graph.getPrefixMapping().setNsPrefix("ex", "http://example/") );
     }
 
-    @Test(expected=JenaException.class)
+    @Test
     public void read_only_prefixmapping_remove() {
         Graph graph = new GraphReadOnly(baseGraph);
-        graph.getPrefixMapping().removeNsPrefix("empty");
+        assertThrows(JenaException.class,()-> graph.getPrefixMapping().removeNsPrefix("empty") );
     }
 
-    @Test(expected=JenaException.class)
+    @Test
     public void read_only_prefixmapping_clear() {
         Graph graph = new GraphReadOnly(baseGraph);
         // Does not matter that it is alread defined.
-        graph.getPrefixMapping().clearNsPrefixMap();
+        assertThrows(JenaException.class,()-> graph.getPrefixMapping().clearNsPrefixMap() );
     }
 }

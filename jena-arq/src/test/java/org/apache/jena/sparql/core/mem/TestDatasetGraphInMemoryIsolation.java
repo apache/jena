@@ -18,13 +18,13 @@
 
 package org.apache.jena.sparql.core.mem;
 
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.transaction.AbstractTestTransactionIsolation ;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.transaction.AbstractTestTransactionIsolation;
 
 public class TestDatasetGraphInMemoryIsolation extends AbstractTestTransactionIsolation {
 
     @Override
     protected DatasetGraph create() {
-        return new DatasetGraphInMemory() ;
+        return new DatasetGraphInMemory();
     }
 }

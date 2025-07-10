@@ -19,41 +19,41 @@
 package org.apache.jena.sparql.algebra;
 
 import static org.apache.jena.query.Syntax.syntaxARQ;
-import static org.junit.Assert.assertEquals ;
-import static org.junit.Assert.assertFalse ;
-import static org.junit.Assert.assertTrue ;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Map ;
+import java.util.Map;
 
-import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.query.Query ;
-import org.apache.jena.query.QueryFactory ;
-import org.apache.jena.query.Syntax ;
-import org.apache.jena.sparql.sse.SSE ;
-import org.junit.Assert ;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.Syntax;
+import org.apache.jena.sparql.sse.SSE;
 
 /**
  * Tests for {@link OpAsQuery}
  */
 public class TestOpAsQuery {
 
-    @Test public void testBasic01()  { test_roundTripQuery("SELECT * { }") ; }
-    @Test public void testBasic02()  { test_roundTripQuery("SELECT * { ?s ?p ?o }") ; }
-    @Test public void testBasic03()  { test_roundTripQuery("SELECT * { ?s ?p ?o . ?o ?q ?x }") ; }
+    @Test public void testBasic01()  { test_roundTripQuery("SELECT * { }"); }
+    @Test public void testBasic02()  { test_roundTripQuery("SELECT * { ?s ?p ?o }"); }
+    @Test public void testBasic03()  { test_roundTripQuery("SELECT * { ?s ?p ?o . ?o ?q ?x }"); }
 
-    @Test public void testFilter01() { test_roundTripQuery("SELECT * { ?s ?p ?o FILTER(?o > 5) }") ; }
-    @Test public void testFilter02() { test_roundTripQuery("SELECT ?s { ?s ?p ?o FILTER(?o > 5) }") ; }
+    @Test public void testFilter01() { test_roundTripQuery("SELECT * { ?s ?p ?o FILTER(?o > 5) }"); }
+    @Test public void testFilter02() { test_roundTripQuery("SELECT ?s { ?s ?p ?o FILTER(?o > 5) }"); }
 
     // Keeps the empty group.
     @Test public void testFilter03() { test_roundTripQuery("SELECT * { FILTER(?o>5) }", "SELECT * { {} FILTER(?o>5) }"); }
     @Test public void testFilter04() { test_roundTripQuery("SELECT * { {} FILTER(?o>5) }"); }
 
     // 01, 02: Same algebra.
-    @Test public void testBind01() { test_roundTripQuery("SELECT ?s (?o + 5 AS ?B) { ?s ?p ?o }") ; }
-    @Test public void testBind02() { test_roundTripAlegbra("SELECT ?o ?B  { ?s ?p ?o BIND (?o + 5 AS ?B) }") ; }
+    @Test public void testBind01() { test_roundTripQuery("SELECT ?s (?o + 5 AS ?B) { ?s ?p ?o }"); }
+    @Test public void testBind02() { test_roundTripAlegbra("SELECT ?o ?B  { ?s ?p ?o BIND (?o + 5 AS ?B) }"); }
     // No project
-    @Test public void testBind03() { test_roundTripQuery("SELECT * { ?s ?p ?o BIND (?o + 5 AS ?B)  }") ; }
+    @Test public void testBind03() { test_roundTripQuery("SELECT * { ?s ?p ?o BIND (?o + 5 AS ?B)  }"); }
 
     // Over-nested. The "BIND(?o+1..." in inside a {}.
     @Test public void testBind04() {
@@ -93,17 +93,17 @@ public class TestOpAsQuery {
     @Test public void testAssign2() { test_roundTripQuery("SELECT * { GRAPH ?g { LET(?x := 'x') LET(?y := 'y') } }", syntaxARQ); }
 
     @Test public void testOptional01()
-    { test_roundTripQuery("SELECT * WHERE { ?s ?p ?o OPTIONAL { ?s ?q ?z FILTER (?foo) } }") ; }
+    { test_roundTripQuery("SELECT * WHERE { ?s ?p ?o OPTIONAL { ?s ?q ?z FILTER (?foo) } }"); }
 
     // Double {{...}} matter here in SPARQL.
     @Test public void testOptional02()
-    { test_roundTripQuery("SELECT * WHERE { ?s ?p ?o OPTIONAL { { ?s ?q ?z FILTER (?foo) } } }") ; }
+    { test_roundTripQuery("SELECT * WHERE { ?s ?p ?o OPTIONAL { { ?s ?q ?z FILTER (?foo) } } }"); }
 
     @Test public void testOptional03()
-    { test_roundTripQuery("SELECT * WHERE { ?s ?p ?o OPTIONAL { ?s ?p1 ?o1 } OPTIONAL { ?s ?p2 ?o2 } } ") ; }
+    { test_roundTripQuery("SELECT * WHERE { ?s ?p ?o OPTIONAL { ?s ?p1 ?o1 } OPTIONAL { ?s ?p2 ?o2 } } "); }
 
     @Test public void testOptional04()
-    { test_roundTripQuery("SELECT * WHERE { ?s ?p ?o OPTIONAL { ?s ?p1 ?o1 } OPTIONAL { ?s ?p2 ?o2 } OPTIONAL { ?s ?p3 ?o3 }} ") ; }
+    { test_roundTripQuery("SELECT * WHERE { ?s ?p ?o OPTIONAL { ?s ?p1 ?o1 } OPTIONAL { ?s ?p2 ?o2 } OPTIONAL { ?s ?p3 ?o3 }} "); }
 
     @Test public void testOptional05()
     { test_roundTripQuery("SELECT * { GRAPH ?g { OPTIONAL { ?s ?p ?o } } }"); }
@@ -133,7 +133,7 @@ public class TestOpAsQuery {
 
     @Test
     public void testDoubleCount() {
-        Query[] result = test_roundTripQuery("select (count(?s) as ?sc) (count(?p) as ?pc) { ?s ?p ?o }") ;
+        Query[] result = test_roundTripQuery("select (count(?s) as ?sc) (count(?p) as ?pc) { ?s ?p ?o }");
         assertEquals(2, result[1].getResultVars().size());
         assertTrue(result[1].getResultVars().contains("sc"));
         assertTrue(result[1].getResultVars().contains("pc"));
@@ -187,19 +187,19 @@ public class TestOpAsQuery {
     { test_roundTripQuery("SELECT * { ?s ?p ?o BIND(?o+1 AS ?a1) } ORDER BY ?s"); }
 
     @Test public void testSubQuery_01()
-    { test_roundTripQuery("SELECT ?s { SELECT (count(*) as ?cp) { ?s ?p ?o } }") ; }
+    { test_roundTripQuery("SELECT ?s { SELECT (count(*) as ?cp) { ?s ?p ?o } }"); }
 
     @Test public void testSubQuery_02()
-    { test_roundTripQuery("SELECT ?s { ?s ?p ?o { SELECT (count(*) as ?cp) { ?s ?p ?o } }}") ; }
+    { test_roundTripQuery("SELECT ?s { ?s ?p ?o { SELECT (count(*) as ?cp) { ?s ?p ?o } }}"); }
 
     @Test public void testSubQuery_03()
-    { test_roundTripQuery("SELECT ?s { { SELECT (count(*) as ?cp) { ?s ?p ?o } } ?s ?p ?o }") ; }
+    { test_roundTripQuery("SELECT ?s { { SELECT (count(*) as ?cp) { ?s ?p ?o } } ?s ?p ?o }"); }
 
     @Test public void testSubQuery_04()
-    { test_roundTripQuery("SELECT * WHERE { ?s ?p ?o . BIND(?o AS ?x) }") ; }
+    { test_roundTripQuery("SELECT * WHERE { ?s ?p ?o . BIND(?o AS ?x) }"); }
 
     @Test public void testSubQuery_05()
-    { test_roundTripQuery("SELECT (?o AS ?x) WHERE { ?s ?p ?o .}") ; }
+    { test_roundTripQuery("SELECT (?o AS ?x) WHERE { ?s ?p ?o .}"); }
 
     @Test
     public void testProject1() {
@@ -290,10 +290,10 @@ public class TestOpAsQuery {
                  "SELECT ?yearmonth ( count(?document) as ?total )",
                  "{" ,
                  "    ?document a :Document;",
-                 "   :documentDateOfCreation ?date ;",
+                 "   :documentDateOfCreation ?date;",
                  "   :documentType \"exam results\" ." ,
                  "    BIND( mylib:DateFormat( xsd:string(?date), \"yyyy-MM\" ) as ?yearmonth )",
-                "} group by ?yearmonth") ;
+                "} group by ?yearmonth");
         test_roundTripQuery(query);
     }
 
@@ -320,13 +320,13 @@ public class TestOpAsQuery {
         String query = "SELECT ?s ?x WHERE { { SELECT ?s ?p WHERE { ?s ?p ?o } } { SELECT ?x WHERE { ?x ?p ?o } } }";
         // The second inner sub-query is specially fixed up  in OpJoin processing.
         // Not all cases of sub-query have unnecessary {} removed.
-        test_roundTripQuery(query) ;
+        test_roundTripQuery(query);
     }
 
     @Test
     public void testSubQuery3() {
         String query = "SELECT * WHERE { { SELECT ?s ?p WHERE { ?s ?p ?o } } { SELECT ?x WHERE { ?x ?p ?o } } }";
-        test_roundTripQuery(query) ;
+        test_roundTripQuery(query);
     }
 
     @Test
@@ -383,7 +383,7 @@ public class TestOpAsQuery {
                                           "    } LIMIT 1",
                                           "}");
 
-        test_roundTripQuery(query) ;
+        test_roundTripQuery(query);
     }
 
     @Test
@@ -431,26 +431,26 @@ public class TestOpAsQuery {
 
     @Test
     public void testPathExpressions1() {
-        String query = "PREFIX : <http://example/> SELECT * { ?s :p* ?o . ?x :r 123 . }" ;
+        String query = "PREFIX : <http://example/> SELECT * { ?s :p* ?o . ?x :r 123 . }";
         test_roundTripQuery(query);
     }
 
     @Test
     public void testPathExpressions2() {
-        String query = "PREFIX : <http://example/> SELECT * { ?s :p*/:q ?o . ?x :r 123 . }" ;
+        String query = "PREFIX : <http://example/> SELECT * { ?s :p*/:q ?o . ?x :r 123 . }";
         test_roundTripQuery(query);
     }
 
     @Test
     public void testMinus01() {
-        test_roundTripQuery("PREFIX : <http://example/> SELECT * { ?s :p ?o MINUS { ?s :q ?v .FILTER(?v<5) } }") ;
+        test_roundTripQuery("PREFIX : <http://example/> SELECT * { ?s :p ?o MINUS { ?s :q ?v .FILTER(?v<5) } }");
     }
 
     @Test
     public void testMinus02() {
         // query gains a level of {} but the meaning is the same.
-        String query = "PREFIX : <http://example/> SELECT * { ?s :p ?o OPTIONAL { ?s :x ?2 } MINUS { ?s :q ?v .FILTER(?v<5) } }" ;
-        test_roundTripAlegbra(query) ;
+        String query = "PREFIX : <http://example/> SELECT * { ?s :p ?o OPTIONAL { ?s :x ?2 } MINUS { ?s :q ?v .FILTER(?v<5) } }";
+        test_roundTripAlegbra(query);
     }
 
     // Implicit empty group
@@ -587,14 +587,14 @@ public class TestOpAsQuery {
 
     @Test
     public void testTable1() {
-        String query = "SELECT * WHERE { ?x ?p ?z . VALUES ?y { } }" ;
+        String query = "SELECT * WHERE { ?x ?p ?z . VALUES ?y { } }";
         test_roundTripQuery(query);
     }
 
     @Test
     public void testTable2() {
         // JENA-1468 : op to string and back.
-        String qs = "SELECT * WHERE { ?x ?p ?z . VALUES ?y { } }" ;
+        String qs = "SELECT * WHERE { ?x ?p ?z . VALUES ?y { } }";
         Query query = QueryFactory.create(qs);
         Op op = Algebra.compile(query);
         String x = op.toString();
@@ -606,36 +606,36 @@ public class TestOpAsQuery {
 
     @Test
     public void testValues1() {
-        String query = "SELECT  * { VALUES ?x {1 2} ?s ?p ?x }" ;
-        test_roundTripQuery(query) ;
+        String query = "SELECT  * { VALUES ?x {1 2} ?s ?p ?x }";
+        test_roundTripQuery(query);
     }
 
     @Test
     public void testValues2() {
-        String query = "SELECT  * { ?s ?p ?x  VALUES ?x {1 2} }" ;
-        test_roundTripQuery(query) ;
+        String query = "SELECT  * { ?s ?p ?x  VALUES ?x {1 2} }";
+        test_roundTripQuery(query);
     }
 
     // Algebra to query : optimization cases OpAsQuery can handle.
 
     @Test
     public void testAlgebra01() {
-        String opStr = "(sequence (bgp (?s1 ?p1 ?o1)) (bgp (?s2 ?p2 ?o2)) )" ;
-        String query = "SELECT * { ?s1 ?p1 ?o1. ?s2 ?p2 ?o2}" ;
+        String opStr = "(sequence (bgp (?s1 ?p1 ?o1)) (bgp (?s2 ?p2 ?o2)) )";
+        String query = "SELECT * { ?s1 ?p1 ?o1. ?s2 ?p2 ?o2}";
         test_AlgebraToQuery(opStr, query);
     }
 
     @Test
     public void testAlgebra02() {
-        String opStr = "(sequence (bgp (?s1 ?p1 ?o1)) (path ?x (path* :p) ?z) )" ;
-        String query = "PREFIX : <http://example/> SELECT * { ?s1 ?p1 ?o1. ?x :p* ?z}" ;
+        String opStr = "(sequence (bgp (?s1 ?p1 ?o1)) (path ?x (path* :p) ?z) )";
+        String query = "PREFIX : <http://example/> SELECT * { ?s1 ?p1 ?o1. ?x :p* ?z}";
         test_AlgebraToQuery(opStr, query);
     }
 
     @Test
     public void testAlgebra03() {
-        String opStr = "(sequence  (path ?x (path* :p) ?z) (bgp (?s1 ?p1 ?o1)) )" ;
-        String query = "PREFIX : <http://example/> SELECT * { ?x :p* ?z . ?s1 ?p1 ?o1. }" ;
+        String opStr = "(sequence  (path ?x (path* :p) ?z) (bgp (?s1 ?p1 ?o1)) )";
+        String query = "PREFIX : <http://example/> SELECT * { ?x :p* ?z . ?s1 ?p1 ?o1. }";
         test_AlgebraToQuery(opStr, query);
     }
 
@@ -662,18 +662,18 @@ public class TestOpAsQuery {
     /** query->algebra->OpAsQuery->query->algebra */
     private static Query[] test_roundTripQuery(String query, Syntax syntax) {
         // [original, outcome]
-        Query[] r = queryToQuery(query, syntax) ;
+        Query[] r = queryToQuery(query, syntax);
         Query input = r[0];
         Query outcome = r[1];
-        stripNamespacesAndBase(input) ;
-        stripNamespacesAndBase(outcome) ;
+        stripNamespacesAndBase(input);
+        stripNamespacesAndBase(outcome);
         // Check it can be translated to algebra.
         Op op1 = Algebra.compile(input);
         Op op2 = Algebra.compile(outcome);
         // Oops - breaks testModifiersOnSubQuery2 (REDUCED lost but DISTINCT is OK).
         assertEquals(op1, op2);
         assertEquals(input, outcome);
-        return r ;
+        return r;
     }
 
     // Variation where the outcome query may be a different syntax structure
@@ -692,22 +692,22 @@ public class TestOpAsQuery {
     private static void test_roundTripQuery(String query, String outcome, Syntax syntax) {
         // This must also be true.
         test_roundTripAlegbra(query, syntax);
-        Query[] r = queryToQuery(query, syntax) ;
+        Query[] r = queryToQuery(query, syntax);
         Query orig = r[0];
         Query output = r[1];
         // Parse expected.
         Query q2 = QueryFactory.create(outcome, syntax);
-        stripNamespacesAndBase(orig) ;
-        stripNamespacesAndBase(output) ;
-        stripNamespacesAndBase(q2) ;
-        assertEquals(q2, output) ;
+        stripNamespacesAndBase(orig);
+        stripNamespacesAndBase(output);
+        stripNamespacesAndBase(q2);
+        assertEquals(q2, output);
     }
 
     // Test via quads
     private static Query[] test_roundTripQueryQuads(String query) {
-        Query[] r = roundTripQueryQuad(query) ;
-        assertEquals(r[0], r[1]) ;
-        return r ;
+        Query[] r = roundTripQueryQuad(query);
+        assertEquals(r[0], r[1]);
+        return r;
     }
 
     // Compare A1 and A2 where
@@ -724,16 +724,16 @@ public class TestOpAsQuery {
         // i.e. the queries should remain semantically equivalent
         Op a1 = Algebra.compile(r[0]);
         Op a2 = Algebra.compile(r[1]);
-        Assert.assertEquals(a1, a2);
+        assertEquals(a1, a2);
     }
 
     /** algebra, including cases like (sequence) ->OpAsQuery->query */
     private static void test_AlgebraToQuery(String input, String expected) {
-        Op op = SSE.parseOp(input) ;
+        Op op = SSE.parseOp(input);
         Query orig = QueryFactory.create(expected, Syntax.syntaxSPARQL_11);
-        stripNamespacesAndBase(orig) ;
+        stripNamespacesAndBase(orig);
         Query got = OpAsQuery.asQuery(op);
-        Assert.assertEquals(orig, got) ;
+        assertEquals(orig, got);
     }
 
     // Support functions, not tests.

@@ -18,12 +18,21 @@
 
 package org.apache.jena.sparql.core;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.Parameter;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.Creator;
@@ -33,27 +42,24 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Tests for API access via DatasetGraphFiltered
  */
-@RunWith(Parameterized.class)
+@ParameterizedClass(name="{index}: DatasetGraph={0}")
+@MethodSource("provideArgs")
 public class TestDatasetGraphFilteredView {
-    @Parameters(name = "{index}: {0}")
-    public static Iterable<Object[]> data() {
+
+    private static Stream<Arguments> provideArgs() {
         Creator<DatasetGraph> c1 = DatasetGraphFactory::create;
-        Object[] obj1 = { "General", c1 };
         Creator<DatasetGraph> c2 = DatasetGraphFactory::createTxnMem;
-        Object[] obj2 = { "TIM", c2 };
-        return Arrays.asList(obj1, obj2);
+        List<Arguments> x = List.of
+                (Arguments.of("General", c1),
+                 Arguments.of("TIM", c2)
+                        );
+        return x.stream();
     }
 
-    final DatasetGraph basedsg;
-    
     private static String dataStr = StrUtils.strjoinNL
         ("PREFIX : <http://test/>"
             ,""
@@ -64,40 +70,56 @@ public class TestDatasetGraphFilteredView {
             ,":g4 { :s4 :p 4 , '04' , '004', '0004' }"
             );
 
-    public static Node s0 = SSE.parseNode("<http://test/s0>"); 
-    public static Node s1 = SSE.parseNode("<http://test/s1>"); 
-    public static Node s2 = SSE.parseNode("<http://test/s2>"); 
-    public static Node s3 = SSE.parseNode("<http://test/s3>"); 
-    public static Node s4 = SSE.parseNode("<http://test/s4>"); 
+    public static Node s0 = SSE.parseNode("<http://test/s0>");
+    public static Node s1 = SSE.parseNode("<http://test/s1>");
+    public static Node s2 = SSE.parseNode("<http://test/s2>");
+    public static Node s3 = SSE.parseNode("<http://test/s3>");
+    public static Node s4 = SSE.parseNode("<http://test/s4>");
 
-    public static Node g1 = SSE.parseNode("<http://test/g1>"); 
-    public static Node g2 = SSE.parseNode("<http://test/g2>"); 
-    public static Node g3 = SSE.parseNode("<http://test/g3>"); 
-    public static Node g4 = SSE.parseNode("<http://test/g4>"); 
+    public static Node g1 = SSE.parseNode("<http://test/g1>");
+    public static Node g2 = SSE.parseNode("<http://test/g2>");
+    public static Node g3 = SSE.parseNode("<http://test/g3>");
+    public static Node g4 = SSE.parseNode("<http://test/g4>");
 
     public static void addTestData(DatasetGraph dsg) {
         Txn.executeWrite(dsg, ()->{
             RDFParser.create().fromString(dataStr).lang(Lang.TRIG).parse(dsg);
         });
     }
-    
-    public TestDatasetGraphFilteredView(String name, Creator<DatasetGraph> source) {
+
+    private DatasetGraph basedsg;
+    private DatasetGraph basedsg() {
+        return basedsg;
+    }
+
+    @BeforeEach
+    void setup() {
         basedsg = source.create();
         addTestData(basedsg);
     }
-    
+
+    @Parameter(0)
+    String name;
+    @Parameter(1)
+    Creator<DatasetGraph> source;
+
+//    public TestDatasetGraphFilteredView(String name, Creator<DatasetGraph> source) {
+//        basedsg = source.create();
+//        addTestData(basedsg);
+//    }
+
     @Test public void filtered1() {
         Predicate<Quad> filter = x->true;
-        Txn.executeRead(basedsg, ()->{
-            DatasetGraph dsg = new DatasetGraphFilteredView(basedsg, filter, Iter.toList(basedsg.listGraphNodes()));
-            assertSame(basedsg, dsg);
+        Txn.executeRead(basedsg(),()->{
+            DatasetGraph dsg = new DatasetGraphFilteredView(basedsg(),filter, Iter.toList(basedsg().listGraphNodes()));
+            assertSame(basedsg(),dsg);
         });
     }
 
     @Test public void filtered2() {
         Predicate<Quad> filter = x->x.getGraph().equals(g2);
-        Txn.executeRead(basedsg, ()->{
-            DatasetGraph dsg = new DatasetGraphFilteredView(basedsg, filter, Collections.singleton(g1));
+        Txn.executeRead(basedsg(),()->{
+            DatasetGraph dsg = new DatasetGraphFilteredView(basedsg(),filter, Collections.singleton(g1));
             long x0 = Iter.count(dsg.find(null, null, null, null));
             assertEquals(2,x0);
             long x1 = Iter.count(dsg.find(g2, null, null, null));
@@ -112,8 +134,8 @@ public class TestDatasetGraphFilteredView {
 
     @Test public void filtered3() {
         Predicate<Quad> filter = x->x.getSubject().equals(s2);
-        Txn.executeRead(basedsg, ()->{
-            DatasetGraph dsg = new DatasetGraphFilteredView(basedsg, filter, Collections.singleton(g1));
+        Txn.executeRead(basedsg(),()->{
+            DatasetGraph dsg = new DatasetGraphFilteredView(basedsg(),filter, Collections.singleton(g1));
             long x0 = Iter.count(dsg.find(null, null, null, null));
             assertEquals(2,x0);
             long x1 = Iter.count(dsg.find(g2, null, null, null));
@@ -125,11 +147,11 @@ public class TestDatasetGraphFilteredView {
             assertEquals(1, dsg.size());
         });
     }
-    
+
     @Test public void filtered4() {
         Predicate<Quad> filter = x->x.getSubject().equals(s2);
-        Txn.executeRead(basedsg, ()->{
-            DatasetGraph dsg = new DatasetGraphFilteredView(basedsg, filter, Arrays.asList(g1, g2));
+        Txn.executeRead(basedsg(),()->{
+            DatasetGraph dsg = new DatasetGraphFilteredView(basedsg(),filter, Arrays.asList(g1, g2));
             long x0 = Iter.count(dsg.find(null, null, null, null));
             assertEquals(2,x0);
             long x1 = Iter.count(dsg.find(g2, null, null, null));
@@ -141,11 +163,11 @@ public class TestDatasetGraphFilteredView {
             assertEquals(2, dsg.size());
         });
     }
-    
+
     @Test public void filtered5() {
-        Predicate<Quad> filter = x-> x.getSubject().equals(s2) || x.getSubject().equals(s1);  
-        Txn.executeRead(basedsg, ()->{
-            DatasetGraph dsg = new DatasetGraphFilteredView(basedsg, filter, Arrays.asList(g1, g2));
+        Predicate<Quad> filter = x-> x.getSubject().equals(s2) || x.getSubject().equals(s1);
+        Txn.executeRead(basedsg(),()->{
+            DatasetGraph dsg = new DatasetGraphFilteredView(basedsg(),filter, Arrays.asList(g1, g2));
             long x0 = Iter.count(dsg.find(null, null, null, null));
             assertEquals(3,x0);
             long x1 = Iter.count(dsg.find(g2, null, null, null));
@@ -158,5 +180,5 @@ public class TestDatasetGraphFilteredView {
         Set<Quad> quads2 = Iter.toSet(dsg2.find());
         assertEquals(quads1, quads2);
     }
-    
+
 }

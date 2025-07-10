@@ -16,7 +16,11 @@
  * limitations under the License.
  */
 
-package org.apache.jena.rdf12.basic;
+package org.apache.jena.rdf12.parse;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
@@ -25,7 +29,6 @@ import org.apache.jena.riot.system.ErrorHandler;
 import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
-import org.junit.Test;
 
 /**
  * Basic parsing tests of RDF-star constructs for N-Quads
@@ -45,17 +48,21 @@ public class TestNQuadsStarParse {
 
     @Test public void parse_nq_good_5()    { parse("_:b <x:p> <<(_:b <x:p> _:o)>> _:g . "); }
 
-    @Test(expected=RiotException.class)
-    public void parse_nq_bad_1()           { parse("<<<x:s> <x:p> <x:o>>> <x:q> <x:z> . "); }
+    @Test
+    public void parse_nq_bad_1()           { parseException("<<<x:s> <x:p> <x:o>>> <x:q> <x:z> . "); }
 
-    @Test(expected=RiotException.class)
-    public void parse_nq_bad_2()           { parse("<<(<x:s> <x:p> <x:o>)>> <x:q> 'ABC' . "); }
+    @Test
+    public void parse_nq_bad_2()           { parseException("<<(<x:s> <x:p> <x:o>)>> <x:q> 'ABC' . "); }
 
-    @Test(expected=RiotException.class)
-    public void parse_nq_bad_3()           { parse("<x:s> <<(<x:s> <x:p> <x:o>)>> <x:o> <http://example/g> . "); }
+    @Test
+    public void parse_nq_bad_3()           { parseException("<x:s> <<(<x:s> <x:p> <x:o>)>> <x:o> <http://example/g> . "); }
 
-    @Test(expected=RiotException.class)
-    public void parse_nq_bad_4()           { parse("<x:s> <x:p> <x:o> <<(<x:gs> <x:gp> <x:go> )>> . "); }
+    @Test
+    public void parse_nq_bad_4()           { parseException("<x:s> <x:p> <x:o> <<(<x:gs> <x:gp> <x:go> )>> . "); }
+
+    private void parseException(String string) {
+        assertThrows(RiotException.class, ()->parse(string));
+    }
 
     private void parse(String string) {
         RDFParser.fromString(string, Lang.NQUADS).errorHandler(silent).parse(sink);

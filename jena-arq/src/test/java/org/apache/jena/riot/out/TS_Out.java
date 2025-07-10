@@ -19,11 +19,11 @@
 package org.apache.jena.riot.out;
 
 import org.apache.jena.riot.out.quoted.TestQuotedURIInternal;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses({
     TestOutputQuotedString.class
     , TestOutputQuotedURI.class
     , TestQuotedURIInternal.class

@@ -26,7 +26,7 @@ import org.apache.jena.riot.lang.extra.TurtleJCC;
 import org.apache.jena.sys.JenaSystem;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.runner.RunWith ;
+import org.junit.runner.RunWith;
 
 /** Execute turtle test with alt parser. */
 

@@ -18,12 +18,13 @@
 
 package org.apache.jena.sparql.algebra.optimize;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.Transformer;
 import org.apache.jena.sparql.sse.SSE;
-import org.junit.Test;
 
 public class TestTransformMergeBGPs
 {

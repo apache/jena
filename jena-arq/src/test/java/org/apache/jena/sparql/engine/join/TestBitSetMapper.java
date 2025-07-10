@@ -18,15 +18,17 @@
 
 package org.apache.jena.sparql.engine.join;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.sse.SSE;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class TestBitSetMapper {
 
@@ -75,6 +77,6 @@ public class TestBitSetMapper {
         List<Var> expectedVars = Var.varList(expectedVarNames);
         List<Var> actualVars = BitSetMapper.toList(joinKey, bitSet);
 
-        Assert.assertEquals(expectedVars, actualVars);
+        assertEquals(expectedVars, actualVars);
     }
 }

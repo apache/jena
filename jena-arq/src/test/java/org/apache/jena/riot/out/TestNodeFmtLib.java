@@ -18,17 +18,17 @@
 
 package org.apache.jena.riot.out;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
 
-import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
-import org.apache.jena.sparql.util.NodeFactoryExtra ;
+import org.apache.jena.sparql.util.NodeFactoryExtra;
 import org.apache.jena.sys.JenaSystem;
-import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.vocabulary.RDF;
 
 public class TestNodeFmtLib
 {
@@ -39,53 +39,53 @@ public class TestNodeFmtLib
 
     // BNode labels.
 
-    @Test public void encode_01() { testenc("abc", "Babc") ; }
-    @Test public void encode_02() { testenc("-", "BX2D") ; }
-    @Test public void encode_03() { testenc("abc:def-ghi", "BabcX3AdefX2Dghi") ; }
-    @Test public void encode_04() { testenc("01X", "B01XX") ; }
-    @Test public void encode_05() { testenc("-X", "BX2DXX") ; }
+    @Test public void encode_01() { testenc("abc", "Babc"); }
+    @Test public void encode_02() { testenc("-", "BX2D"); }
+    @Test public void encode_03() { testenc("abc:def-ghi", "BabcX3AdefX2Dghi"); }
+    @Test public void encode_04() { testenc("01X", "B01XX"); }
+    @Test public void encode_05() { testenc("-X", "BX2DXX"); }
 
-    @Test public void rt_01() {  testencdec("a") ; }
-    @Test public void rt_02() {  testencdec("") ; }
-    @Test public void rt_03() {  testencdec("abc") ; }
-    @Test public void rt_04() {  testencdec("000") ; }
-    @Test public void rt_05() {  testencdec("-000") ; }
-    @Test public void rt_06() {  testencdec("X-") ; }
-    @Test public void rt_07() {  testencdec("-123:456:xyz") ; }
+    @Test public void rt_01() {  testencdec("a"); }
+    @Test public void rt_02() {  testencdec(""); }
+    @Test public void rt_03() {  testencdec("abc"); }
+    @Test public void rt_04() {  testencdec("000"); }
+    @Test public void rt_05() {  testencdec("-000"); }
+    @Test public void rt_06() {  testencdec("X-"); }
+    @Test public void rt_07() {  testencdec("-123:456:xyz"); }
 
     private void testenc(String input, String expected)
     {
-        String x = NodeFmtLib.encodeBNodeLabel(input) ;
-        assertEquals(expected, x) ;
+        String x = NodeFmtLib.encodeBNodeLabel(input);
+        assertEquals(expected, x);
     }
 
     private void testencdec(String input)
     {
-        String x = NodeFmtLib.encodeBNodeLabel(input) ;
-        String y = NodeFmtLib.decodeBNodeLabel(x) ;
-        assertEquals(input, y) ;
+        String x = NodeFmtLib.encodeBNodeLabel(input);
+        String y = NodeFmtLib.decodeBNodeLabel(x);
+        assertEquals(input, y);
     }
 
-    @Test public void fmtNode_00() { testNT ("<a>", "<a>") ; }
+    @Test public void fmtNode_00() { testNT ("<a>", "<a>"); }
 
-    @Test public void fmtNode_11() { testNT ("<"+RDF.getURI()+"type>", "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>") ; }
-    @Test public void fmtNode_12() { testNT ("'123'^^xsd:integer", "\"123\"^^<http://www.w3.org/2001/XMLSchema#integer>") ; }
-    @Test public void fmtNode_13() { testNT ("'abc'^^xsd:integer", "\"abc\"^^<http://www.w3.org/2001/XMLSchema#integer>") ; }
+    @Test public void fmtNode_11() { testNT ("<"+RDF.getURI()+"type>", "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>"); }
+    @Test public void fmtNode_12() { testNT ("'123'^^xsd:integer", "\"123\"^^<http://www.w3.org/2001/XMLSchema#integer>"); }
+    @Test public void fmtNode_13() { testNT ("'abc'^^xsd:integer", "\"abc\"^^<http://www.w3.org/2001/XMLSchema#integer>"); }
 
     // NB - Not 'a' which is position sensitive.
-    @Test public void fmtNode_21() { testTTL ("<"+RDF.getURI()+"type>", "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>") ; }
-    @Test public void fmtNode_22() { testTTL ("'123'^^xsd:integer", "123") ; }
-    @Test public void fmtNode_23() { testTTL ("'abc'^^xsd:integer", "\"abc\"^^<http://www.w3.org/2001/XMLSchema#integer>") ; }
+    @Test public void fmtNode_21() { testTTL ("<"+RDF.getURI()+"type>", "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>"); }
+    @Test public void fmtNode_22() { testTTL ("'123'^^xsd:integer", "123"); }
+    @Test public void fmtNode_23() { testTTL ("'abc'^^xsd:integer", "\"abc\"^^<http://www.w3.org/2001/XMLSchema#integer>"); }
 
-    @Test public void fmtNode_31() { testDisplay ("<"+RDF.getURI()+"type>", "rdf:type") ; }
-    @Test public void fmtNode_32() { testDisplay ("'123'^^xsd:integer", "123") ; }
-    @Test public void fmtNode_33() { testDisplay ("'abc'^^xsd:integer", "\"abc\"^^xsd:integer") ; }
+    @Test public void fmtNode_31() { testDisplay ("<"+RDF.getURI()+"type>", "rdf:type"); }
+    @Test public void fmtNode_32() { testDisplay ("'123'^^xsd:integer", "123"); }
+    @Test public void fmtNode_33() { testDisplay ("'abc'^^xsd:integer", "\"abc\"^^xsd:integer"); }
 
     private static void testNT(String node, String output)
-    { testNT(NodeFactoryExtra.parseNode(node) , output) ; }
+    { testNT(NodeFactoryExtra.parseNode(node) , output); }
 
     private static void testTTL(String node, String output)
-    { testTTL(NodeFactoryExtra.parseNode(node) , output) ; }
+    { testTTL(NodeFactoryExtra.parseNode(node) , output); }
 
 
     private static void testNT(Node node, String output) {
@@ -99,12 +99,12 @@ public class TestNodeFmtLib
     }
 
     private static void testDisplay(String node, String output)
-    { testDisplay(NodeFactoryExtra.parseNode(node) , output) ; }
+    { testDisplay(NodeFactoryExtra.parseNode(node) , output); }
 
     private static void testDisplay(Node node, String output)
     {
-        String x = NodeFmtLib.displayStr(node) ;
-        assertEquals(output, x) ;
+        String x = NodeFmtLib.displayStr(node);
+        assertEquals(output, x);
     }
 
     @Test

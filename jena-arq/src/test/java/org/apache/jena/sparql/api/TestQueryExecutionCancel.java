@@ -18,32 +18,31 @@
 
 package org.apache.jena.sparql.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.query.* ;
-import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.query.*;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property ;
-import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
@@ -55,108 +54,104 @@ import org.apache.jena.sparql.exec.QueryExecBuilder;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase0;
 import org.apache.jena.sparql.function.FunctionEnv;
-import org.apache.jena.sparql.function.FunctionRegistry ;
-import org.apache.jena.sparql.function.library.wait ;
-import org.apache.jena.sparql.graph.GraphFactory ;
+import org.apache.jena.sparql.function.FunctionRegistry;
+import org.apache.jena.sparql.function.library.wait;
+import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
-import org.junit.AfterClass ;
-import org.junit.Assert;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
 
 public class TestQueryExecutionCancel {
 
-    private static final String ns = "http://example/ns#" ;
+    private static final String ns = "http://example/ns#";
 
-    static Model m = GraphFactory.makeJenaDefaultModel() ;
-    static Resource r1 = m.createResource() ;
-    static Property p1 = m.createProperty(ns+"p1") ;
-    static Property p2 = m.createProperty(ns+"p2") ;
-    static Property p3 = m.createProperty(ns+"p3") ;
+    static Model m = GraphFactory.makeJenaDefaultModel();
+    static Resource r1 = m.createResource();
+    static Property p1 = m.createProperty(ns+"p1");
+    static Property p2 = m.createProperty(ns+"p2");
+    static Property p3 = m.createProperty(ns+"p3");
     static  {
-        m.add(r1, p1, "x1") ;
-        m.add(r1, p2, "X2") ; // NB Capital
-        m.add(r1, p3, "y1") ;
+        m.add(r1, p1, "x1");
+        m.add(r1, p2, "X2"); // NB Capital
+        m.add(r1, p3, "y1");
     }
 
-    @BeforeClass public static void beforeClass() { FunctionRegistry.get().put(ns + "wait", wait.class) ; }
-    @AfterClass  public static void afterClass() { FunctionRegistry.get().remove(ns + "wait") ; }
+    @BeforeAll public static void beforeClass() { FunctionRegistry.get().put(ns + "wait", wait.class); }
+    //@AfterAll  public static void afterClass() { FunctionRegistry.get().remove(ns + "wait"); }
 
-    @Test(expected=QueryCancelledException.class)
+    @Test
     public void test_Cancel_API_1()
     {
-        try(QueryExecution qExec = makeQExec("SELECT * {?s ?p ?o}")) {
-            ResultSet rs = qExec.execSelect() ;
-            assertTrue(rs.hasNext()) ;
+		try(QueryExecution qExec = makeQExec("SELECT * {?s ?p ?o}")) {
+            ResultSet rs = qExec.execSelect();
+            assertTrue(rs.hasNext());
             qExec.abort();
-            assertTrue(rs.hasNext()) ;
-            rs.nextSolution();
-            assertFalse("Results not expected after cancel.", rs.hasNext()) ;
+			assertThrows(QueryCancelledException.class,
+						 ()-> rs.nextSolution(),
+						 ()->"Results not expected after cancel.");
         }
     }
 
-    @Test(expected=QueryCancelledException.class)
+    @Test
     public void test_Cancel_API_2()
     {
         try(QueryExecution qExec = makeQExec("PREFIX ex: <" + ns + "> SELECT * {?s ?p ?o . FILTER ex:wait(100) }")) {
-            ResultSet rs = qExec.execSelect() ;
-            assertTrue(rs.hasNext()) ;
+            ResultSet rs = qExec.execSelect();
+            assertTrue(rs.hasNext());
             qExec.abort();
-            assertTrue(rs.hasNext()) ;
-            rs.nextSolution();
-            assertFalse("Results not expected after cancel.", rs.hasNext()) ;
+            assertThrows(QueryCancelledException.class,
+						 ()-> rs.hasNext(),
+						 ()->"Results not expected after cancel.");
         }
     }
 
     @Test public void test_Cancel_API_3() throws InterruptedException
     {
         // Don't qExec.close on this thread.
-        QueryExecution qExec = makeQExec("PREFIX ex: <" + ns + "> SELECT * { ?s ?p ?o . FILTER ex:wait(100) }") ;
+        QueryExecution qExec = makeQExec("PREFIX ex: <" + ns + "> SELECT * { ?s ?p ?o . FILTER ex:wait(100) }");
         CancelThreadRunner thread = new CancelThreadRunner(qExec);
         thread.start();
-        synchronized (qExec) { qExec.wait() ; }
-        synchronized (qExec) { qExec.abort() ;}
-        synchronized (qExec) { qExec.notify() ; }
-        assertEquals (1, thread.getCount()) ;
+        synchronized (qExec) { qExec.wait(); }
+        synchronized (qExec) { qExec.abort();}
+        synchronized (qExec) { qExec.notify(); }
+        assertEquals (1, thread.getCount());
     }
 
     @Test public void test_Cancel_API_4() throws InterruptedException
     {
         // Don't qExec.close on this thread.
-        QueryExecution qExec = makeQExec("PREFIX ex: <" + ns + "> SELECT * { ?s ?p ?o } ORDER BY ex:wait(100)") ;
+        QueryExecution qExec = makeQExec("PREFIX ex: <" + ns + "> SELECT * { ?s ?p ?o } ORDER BY ex:wait(100)");
         CancelThreadRunner thread = new CancelThreadRunner(qExec);
         thread.start();
-        synchronized (qExec) { qExec.wait() ; }
+        synchronized (qExec) { qExec.wait(); }
         synchronized (qExec) { qExec.abort(); }
-        synchronized (qExec) { qExec.notify() ; }
-        assertEquals (1, thread.getCount()) ;
+        synchronized (qExec) { qExec.notify(); }
+        assertEquals (1, thread.getCount());
     }
 
-    @Test(expected = QueryCancelledException.class)
+    @Test
     public void test_Cancel_API_5() {
         try (QueryExecution qe = QueryExecutionFactory.create("SELECT * { ?s ?p ?o }", m)) {
             qe.abort();
-            ResultSetFormatter.consume(qe.execSelect());
+			assertThrows(QueryCancelledException.class, ()-> ResultSetFormatter.consume(qe.execSelect()));
         }
     }
 
     private QueryExecution makeQExec(String queryString)
     {
-        Query q = QueryFactory.create(queryString) ;
-        QueryExecution qExec = QueryExecutionFactory.create(q, m) ;
-        return qExec ;
+        Query q = QueryFactory.create(queryString);
+        QueryExecution qExec = QueryExecutionFactory.create(q, m);
+        return qExec;
     }
 
     class CancelThreadRunner extends Thread
     {
-        private QueryExecution qExec = null ;
-        private int count = 0 ;
+        private QueryExecution qExec = null;
+        private int count = 0;
 
         public CancelThreadRunner(QueryExecution qExec)
         {
-            this.qExec = qExec ;
+            this.qExec = qExec;
         }
 
         @Override
@@ -164,24 +159,24 @@ public class TestQueryExecutionCancel {
         {
             try
             {
-                ResultSet rs = qExec.execSelect() ;
+                ResultSet rs = qExec.execSelect();
                 while ( rs.hasNext() )
                 {
-                    rs.nextSolution() ;
-                    count++ ;
-                    synchronized (qExec) { qExec.notify() ; }
-                    synchronized (qExec) { qExec.wait() ; }
+                    rs.nextSolution();
+                    count++;
+                    synchronized (qExec) { qExec.notify(); }
+                    synchronized (qExec) { qExec.wait(); }
                 }
             }
             catch (QueryCancelledException e) {}
             catch (InterruptedException e) {
                 e.printStackTrace();
-            } finally { qExec.close() ; }
+            } finally { qExec.close(); }
         }
 
         public int getCount()
         {
-            return count ;
+            return count;
         }
     }
 
@@ -248,7 +243,7 @@ public class TestQueryExecutionCancel {
         try (QueryExec qe = QueryExec.dataset(dsg).query("SELECT (<urn:cancelSignal>() AS ?foobar) { }")
                 .set(ARQConstants.registryFunctions, fnReg)
                 .build()) {
-            Assert.assertEquals(1, ResultSetFormatter.consume(ResultSet.adapt(qe.select())));
+            assertEquals(1, ResultSetFormatter.consume(ResultSet.adapt(qe.select())));
         }
     }
 
@@ -260,7 +255,7 @@ public class TestQueryExecutionCancel {
         FunctionRegistry fnReg = registerCancelSignalFunction(new FunctionRegistry());
         FunctionRegistry.set(cxt, fnReg);
         try (QueryExec qe = QueryExec.dataset(dsg).query("SELECT (<urn:cancelSignal>() AS ?foobar) { }").context(cxt).build()) {
-            Assert.assertEquals(1, ResultSetFormatter.consume(ResultSet.adapt(qe.select())));
+            assertEquals(1, ResultSetFormatter.consume(ResultSet.adapt(qe.select())));
         }
     }
 
@@ -336,13 +331,15 @@ public class TestQueryExecutionCancel {
 
     /** Test that creates iterators over a billion result rows and attempts to cancel them.
      *  If this test hangs then it is likely that something went wrong in the cancellation machinery. */
-    @Test(timeout = 10000)
+    @Test
+    @Timeout(value = 10000, unit=TimeUnit.MILLISECONDS)
     public void test_cancel_concurrent_1() {
         // Create a query that creates 3 cross joins - resulting in one billion result rows.
         test_cancel_concurrent("SELECT * { ?a ?b ?c . ?d ?e ?f . ?g ?h ?i . }");
     }
 
-    @Test(timeout = 10000)
+    @Test
+    @Timeout(value = 10000, unit=TimeUnit.MILLISECONDS)
     public void test_cancel_concurrent_2() {
         // Create a query that creates 3 cross joins - resulting in one billion result rows.
         // Tests against additional operators, namely UNION and BIND.
@@ -411,7 +408,7 @@ public class TestQueryExecutionCancel {
                             // Unexpected exception - print out the stack trace
                             e.printStackTrace();
                         }
-                        Assert.assertEquals(QueryCancelledException.class, cause.getClass());
+                        assertEquals(QueryCancelledException.class, cause.getClass());
 
                         boolean hasOpenIterators = Arrays.stream(cause.getSuppressed())
                                 .anyMatch(x -> x instanceof OpenIteratorException);

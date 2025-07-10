@@ -18,7 +18,10 @@
 
 package org.apache.jena.sparql.expr;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.sparql.algebra.Algebra;
 import org.apache.jena.sparql.algebra.Op;
@@ -28,8 +31,6 @@ import org.apache.jena.sparql.graph.NodeTransform;
 import org.apache.jena.sparql.graph.NodeTransformLib;
 import org.apache.jena.sparql.syntax.Element;
 import org.apache.jena.sparql.util.ExprUtils;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class TestExprFunctionOp_NodeTransform {
     private NodeTransform nt = node -> node instanceof Var v
@@ -62,7 +63,7 @@ public class TestExprFunctionOp_NodeTransform {
 
         assertEquals(e2, e3);
         if (!e2.equalsBySyntax(e3)) {
-            Assert.fail("Objects differ by syntax: " + e2 + " != " + e3);
+            fail("Objects differ by syntax: " + e2 + " != " + e3);
         }
     }
 
@@ -75,7 +76,7 @@ public class TestExprFunctionOp_NodeTransform {
             Element elt = op.getElement();
             Op actual = op.getGraphPattern();
             Op expected = Algebra.compile(elt);
-            Assert.assertEquals(expected, actual);
+            assertEquals(expected, actual);
         }
     }
 }

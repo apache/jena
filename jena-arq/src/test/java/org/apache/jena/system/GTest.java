@@ -18,13 +18,15 @@
 
 package org.apache.jena.system;
 
+import static org.apache.jena.testing_framework.GraphHelper.triple;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.lib.Copyable;
 import org.apache.jena.mem.GraphMem;
 import org.apache.jena.mem2.GraphMem2Fast;
-import org.junit.Test;
-
-import static org.apache.jena.testing_framework.GraphHelper.triple;
-import static org.junit.Assert.*;
 
 @SuppressWarnings("deprecation")
 public class GTest {

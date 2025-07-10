@@ -17,23 +17,24 @@
  */
 package org.apache.jena.riot.system;
 
-import static org.junit.Assert.assertEquals ;
-import static org.junit.Assert.assertNotEquals ;
-import static org.junit.Assert.fail ;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.apache.jena.rdf.model.RDFWriterF ;
-import org.apache.jena.rdf.model.impl.RDFWriterFImpl ;
-import org.apache.jena.riot.IO_Jena ;
-import org.apache.jena.riot.adapters.RDFWriterRIOT ;
-import org.apache.jena.shared.NoWriterForLangException ;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.rdf.model.RDFWriterF;
+import org.apache.jena.rdf.model.impl.RDFWriterFImpl;
+import org.apache.jena.riot.IO_Jena;
+import org.apache.jena.riot.adapters.RDFWriterRIOT;
+import org.apache.jena.shared.NoWriterForLangException;
 
 public class TestIO_JenaWriters {
 
-    @BeforeClass public static void beforeClass() { }
-    @AfterClass public static void afterClass()   { IO_Jena.wireIntoJena(); }
+    @BeforeAll public static void beforeClass() { }
+    @AfterAll public static void afterClass()   { IO_Jena.wireIntoJena(); }
 
     @Test
     public void testWireIntoJena() {
@@ -75,9 +76,9 @@ public class TestIO_JenaWriters {
 //        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("Turtle").getClass());
 //        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("TTL").getClass());
 
-        try { writerF.getWriter("NT"); fail("Exception expected") ; } catch (NoWriterForLangException ex) {}
-        try { writerF.getWriter("RDF/JSON") ; fail("Exception expected") ; } catch (NoWriterForLangException ex) {}
-        try { writerF.getWriter("RDFJSON"); fail("Exception expected") ; } catch (NoWriterForLangException ex) {}
+        try { writerF.getWriter("NT"); fail("Exception expected"); } catch (NoWriterForLangException ex) {}
+        try { writerF.getWriter("RDF/JSON"); fail("Exception expected"); } catch (NoWriterForLangException ex) {}
+        try { writerF.getWriter("RDFJSON"); fail("Exception expected"); } catch (NoWriterForLangException ex) {}
         IO_Jena.wireIntoJena();
     }
 

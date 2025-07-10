@@ -17,7 +17,9 @@
  */
 
 package org.apache.jena.sparql.expr;
-import static org.junit.Assert.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.function.Predicate;
 
@@ -45,7 +47,7 @@ public class LibTestExpr {
     public static void testExpr(String exprExpected, String expectedResult) {
         NodeValue actual = eval(exprExpected);
         NodeValue expected = eval(expectedResult);
-        assertEquals(exprExpected, expected, actual);
+        assertEquals(expected, actual, ()->exprExpected);
     }
 
     public static Expr parse(String exprString) {
@@ -74,11 +76,11 @@ public class LibTestExpr {
 
     /** SSE syntax */
     public static void testSSE(String functionExprStr, String exprStrExpected) {
-        Expr expected = SSE.parseExpr(exprStrExpected) ;
+        Expr expected = SSE.parseExpr(exprStrExpected);
         NodeValue vExpected = expected.eval(null, LibTestExpr.createTest());
-        Expr actual = SSE.parseExpr(functionExprStr) ;
+        Expr actual = SSE.parseExpr(functionExprStr);
         NodeValue vActual = expected.eval(null, LibTestExpr.createTest());
-        assertTrue("Expected = " + expected + " : Actual = " + actual, sameValueSameDatatype(vExpected, vActual));
+        assertTrue(sameValueSameDatatype(vExpected, vActual), ()->"Expected = " + expected + " : Actual = " + actual);
     }
 
     public static void test(String exprString, Node result) {
@@ -89,7 +91,7 @@ public class LibTestExpr {
     public static void test(String exprStr, NodeValue expected) {
         Expr expr = parse(exprStr);
         NodeValue actual = expr.eval(null, LibTestExpr.createTest());
-        assertTrue("Expected = " + expected + " : Actual = " + actual, sameValueSameDatatype(expected, actual));
+        assertTrue(sameValueSameDatatype(expected, actual), ()->"Expected = " + expected + " : Actual = " + actual);
     }
 
     public static void testIsNaN(String exprStr) {
@@ -99,7 +101,7 @@ public class LibTestExpr {
     public static void testSameObject(String exprStr, NodeValue expected) {
         Expr expr = parse(exprStr);
         NodeValue actual = expr.eval(null, LibTestExpr.createTest());
-        assertTrue("Expected = " + expected + " : Actual = " + actual, expected.equals(actual));
+        assertTrue(expected.equals(actual), ()->"Expected = " + expected + " : Actual = " + actual);
     }
 
     private static boolean sameValueSameDatatype(NodeValue nv1, NodeValue nv2) {
@@ -120,7 +122,7 @@ public class LibTestExpr {
     public static void test(String exprStr, Predicate<NodeValue> test) {
         Expr expr = parse(exprStr);
         NodeValue r = expr.eval(null, LibTestExpr.createTest());
-        assertTrue(exprStr, test.test(r));
+        assertTrue(test.test(r), ()->exprStr);
     }
 
     public static void testDouble(String exprString, String result, double delta) {
@@ -142,25 +144,25 @@ public class LibTestExpr {
     public static void testDouble(String exprString, double expected, double delta) {
         Expr expr = ExprUtils.parse(exprString, pmap);
         NodeValue actual = expr.eval(null, new FunctionEnvBase());
-        assertTrue("Not a double: "+actual, actual.isDouble() );
+        assertTrue(actual.isDouble(), ()->"Not a double: "+actual);
         double result = actual.getDouble();
 
         // Because Java floating point calculations are woefully imprecise we
         // are in many cases simply testing that the differences between the
         // values are within a given delta
         if ( Double.isInfinite(expected) ) {
-            assertTrue("Expected INF: Got "+result, Double.isInfinite(result));
+            assertTrue(Double.isInfinite(result), ()->"Expected INF: Got "+result);
             return;
         }
 
         if ( Double.isNaN(expected) ) {
-            assertTrue("Expected NaN: Got "+result, Double.isNaN(result));
+            assertTrue(Double.isNaN(result),()->"Expected NaN: Got "+result);
             return;
         }
 
         double difference = Math.abs(result - expected);
-        assertTrue("Values not within given delta " + delta + ": Expected = " + expected + " : Actual = " + actual,
-                difference <= delta);
+        assertTrue(difference <= delta,
+                ()->"Values not within given delta " + delta + ": Expected = " + expected + " : Actual = " + actual);
     }
 
 

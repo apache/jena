@@ -21,14 +21,13 @@ package org.apache.jena.rdf12;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
-import org.apache.jena.rdf12.basic.TS_RDFStar_Basic;
+import org.apache.jena.rdf12.parse.TS_RDFStar_Parse;
 
 // Currently, RDF1.2 and SPARQL 1.2 specific tests.
 // Split sometime / replace with scripted tests.
 @Suite
 @SelectClasses({
-    // Old - to be removed.
-    TS_RDFStar_Basic.class,
+    TS_RDFStar_Parse.class,
 
     TestRDF12LangSyntax.class,
     TestSPARQL12Syntax.class,

@@ -18,15 +18,14 @@
 
 package org.apache.jena.sparql.core.mem;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * Tests for in-memory Dataset and its default implementation.
  */
-@RunWith(Suite.class)
-@SuiteClasses({
+@Suite
+@SelectClasses({
     TestQuadTableForms.class,
     TestTripleTableForms.class,
     TestHexTable.class,

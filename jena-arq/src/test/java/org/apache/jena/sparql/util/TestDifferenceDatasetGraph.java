@@ -19,13 +19,16 @@
 package org.apache.jena.sparql.util;
 
 import static org.apache.jena.sparql.sse.SSE.parseGraph;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.apache.jena.graph.*;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
-import org.junit.Test;
 
 public class TestDifferenceDatasetGraph extends AbstractTestDyadicDatasetGraph {
 

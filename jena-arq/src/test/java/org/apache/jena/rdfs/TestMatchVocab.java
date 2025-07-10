@@ -20,12 +20,12 @@ package org.apache.jena.rdfs;
 
 import static org.apache.jena.rdfs.LibTestRDFS.findInGraph;
 import static org.apache.jena.rdfs.LibTestRDFS.node;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.PrintStream;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.ListUtils;
 import org.apache.jena.graph.Graph;
@@ -96,7 +96,7 @@ public class TestMatchVocab {
             LibTestRDFS.printDiff(out, expected, actual);
         }
 
-        Assert.assertTrue(label, b);
+        assertTrue(b, ()->label);
     }
 
     private List<Triple> match(Node s, Node p, Node o) {

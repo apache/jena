@@ -22,7 +22,10 @@ import static org.apache.jena.sparql.expr.Expr.CMP_EQUAL;
 import static org.apache.jena.sparql.expr.Expr.CMP_INDETERMINATE;
 import static org.apache.jena.sparql.expr.Expr.CMP_LESS;
 import static org.apache.jena.sparql.expr.Expr.CMP_UNEQUAL;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.system.PrefixMap;
@@ -30,7 +33,6 @@ import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.sparql.sse.SSE;
-import org.junit.Test;
 
 /**
  * Comparison tests - not sorting
@@ -42,16 +44,28 @@ public class TestComparison {
 
     @Test public void compare_02() { compare("<x:p1>", "<x:p2>", CMP_UNEQUAL); }
 
-    @Test(expected=ExprNotComparableException.class)
-    public void compare_03() { compare("'abc'@en", "<x:p1>", CMP_INDETERMINATE); }
+    @Test
+    public void compare_03() {
+        assertThrows(ExprNotComparableException.class, ()->
+            compare("'abc'@en", "<x:p1>", CMP_INDETERMINATE)
+            );
+    }
 
-    @Test(expected=ExprNotComparableException.class)
-    public void compare_04() { compare("'abc'@en", "'abc'", CMP_INDETERMINATE); }
+    @Test
+    public void compare_04() {
+        assertThrows(ExprNotComparableException.class, ()->
+            compare("'abc'@en", "'abc'", CMP_INDETERMINATE)
+            );
+    }
 
     @Test public void compare_dt_01() { compare("'2022'^^xsd:gYear", "'2023'^^xsd:gYear", CMP_LESS); }
 
-    @Test(expected=ExprNotComparableException.class)
-    public void compare_dt_02() { compare("'2005-10-14Z'^^xsd:date", "'2005-10-14T14:09:43Z'^^xsd:dateTime", CMP_LESS); }
+    @Test
+    public void compare_dt_02() {
+        assertThrows(ExprNotComparableException.class, ()->
+            compare("'2005-10-14Z'^^xsd:date", "'2005-10-14T14:09:43Z'^^xsd:dateTime", CMP_LESS)
+            );
+    }
 
     @Test public void compare_duration_01() { compare("'PT0S'^^xsd:duration", "'PT1S'^^xsd:duration", CMP_LESS); }
     @Test public void compare_duration_02() { compare("'PT0S'^^xsd:duration", "'P0Y'^^xsd:duration", CMP_INDETERMINATE); }
@@ -69,40 +83,6 @@ public class TestComparison {
             throw ex;
         }
     }
-
-//    // Development support.
-//    private static void compare(String string1, String string2) {
-//        compare(nodeValue(string1), nodeValue(string2));
-//    }
-//
-//    private static void compare(NodeValue nv1, NodeValue nv2) {
-//        System.out.println("== Always");
-//        try {
-//            if ( true ) throw new RuntimeException("Switch to sorting branch");
-//            int cmp = -99;
-//            //int cmp = NodeValueCmp.compareAlways(nv1, nv2);
-//            System.out.printf("%s   %s :: %s\n", compStr(cmp), nvStr(nv1), nvStr(nv2));
-//        } catch (ExprNotComparableException ex) {
-//            System.out.printf("Not   %s :: %s\n", nvStr(nv1), nvStr(nv2));
-//            System.out.println("ExprNotComparableException: "+ex.getMessage());
-//        } catch (ExprEvalException ex) {
-//            System.out.printf("Err   %s :: %s\n", nvStr(nv1), nvStr(nv2));
-//        }
-//
-//        System.out.println("== Value");
-//        try {
-//            if ( true ) throw new RuntimeException("Switch to sorting branch");
-//            //int cmp2 = NodeValueCmp.compareByValue(nv1, nv2);
-//            int cmp2 = -99;
-//            System.out.printf("%s   %s :: %s\n", compStr(cmp2), nvStr(nv1), nvStr(nv2));
-//        } catch (ExprNotComparableException ex) {
-//            System.out.printf("Not   %s :: %s\n", nvStr(nv1), nvStr(nv2));
-//            System.out.println("ExprNotComparableException: "+ex.getMessage());
-//        } catch (ExprEvalException ex) {
-//            System.out.printf("Err   %s :: %s\n", nvStr(nv1), nvStr(nv2));
-//        }
-//        System.out.println();
-//    }
 
     private static PrefixMap prefixMap = PrefixMapFactory.create(PrefixMapping.Standard);
     private static SerializationContext sCxt = new SerializationContext(PrefixMapping.Standard);

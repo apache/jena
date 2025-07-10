@@ -18,9 +18,10 @@
 
 package org.apache.jena.sparql.resultset;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -30,9 +31,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.graph.Node;
@@ -58,13 +59,13 @@ public class TestResultSet {
         JenaSystem.init();
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         // Disable warnings these tests will produce
         ResultSetPeeking.warnOnSyncErrors = false;
     }
 
-    @AfterClass
+    @AfterAll
     public static void teardown() {
         // Re-enable warnings
         ResultSetPeeking.warnOnSyncErrors = true;
@@ -193,7 +194,7 @@ public class TestResultSet {
     @Test
     public void test_RS_10() {
         ResultSet rs = ResultSetFactory.load(DIR + "output.srx");
-        for ( ; rs.hasNext() ; rs.next() ) {}
+        for (; rs.hasNext(); rs.next() ) {}
         // We should be able to call hasNext() as many times as we want!
         assertFalse(rs.hasNext());
     }
@@ -208,10 +209,10 @@ public class TestResultSet {
     }
 
     // JENA-1563: xml:lang= and incompatible datatype
-    @Test(expected = ResultSetException.class)
+    @Test
     public void rs_xmllang_datatype_2() {
         // Bad: datatype is not rdf:langString (it is xsd:string in the test data)
-        ResultSetFactory.load(DIR + "rs-xmllang-datatype-2.srj");
+        assertThrows(ResultSetException.class,()-> ResultSetFactory.load(DIR + "rs-xmllang-datatype-2.srj") );
     }
 
     // Explicit (unnecessary) datatype=xsd:string
@@ -342,7 +343,7 @@ public class TestResultSet {
         assertFalse(rs.hasNext());
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void test_RS_peeking_2() {
         ResultSetPeekable rs = makePeekable("x", NodeFactory.createURI("tag:local"));
         assertTrue(rs.hasNext());
@@ -356,7 +357,7 @@ public class TestResultSet {
         assertFalse(rs.hasNext());
 
         // Peeking beyond end of results throws an error
-        rs.peek();
+        assertThrows(NoSuchElementException.class,()-> rs.peek() );
     }
 
     @Test
@@ -374,7 +375,7 @@ public class TestResultSet {
         assertFalse(rs.hasNext());
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void test_RS_peeking_4() {
         // Expect that a rewindable result set will be peekable
         ResultSetPeekable rs = (ResultSetPeekable)makeRewindable("x", NodeFactory.createURI("tag:local"));
@@ -389,7 +390,7 @@ public class TestResultSet {
         assertFalse(rs.hasNext());
 
         // Peeking beyond end of results throws an error
-        rs.peek();
+        assertThrows(NoSuchElementException.class,()-> rs.peek() );
     }
 
     @Test
@@ -449,7 +450,7 @@ public class TestResultSet {
         assertTrue(rs.hasNext());
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void test_RS_peeking_8() {
         // Peeking may fail if someone moves backwards in the result set
         // If we had moved past the first item this should be an error
@@ -464,10 +465,9 @@ public class TestResultSet {
         // Reset the inner result set independently
         inner.reset();
 
-        // Since we moved the underlying result set backwards and had moved somewhere
-        // we
-        // are now in an illegal state
-        rs.hasNext();
+        // Since we moved the underlying result set backwards and had
+		// moved somewhere we are now in an illegal state
+        assertThrows(IllegalStateException.class,()-> rs.hasNext() );
     }
 
     @Test

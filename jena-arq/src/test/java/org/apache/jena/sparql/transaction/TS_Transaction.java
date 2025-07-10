@@ -18,12 +18,11 @@
 
 package org.apache.jena.sparql.transaction;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.junit.runners.Suite.SuiteClasses ;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+@Suite
+@SelectClasses({
 
-@RunWith(Suite.class)
-@SuiteClasses( {
     TestTransactionSupport.class
 })
 

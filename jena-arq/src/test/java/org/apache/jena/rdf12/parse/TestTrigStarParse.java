@@ -16,7 +16,11 @@
  * limitations under the License.
  */
 
-package org.apache.jena.rdf12.basic;
+package org.apache.jena.rdf12.parse;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
@@ -25,7 +29,7 @@ import org.apache.jena.riot.system.ErrorHandler;
 import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
-import org.junit.Test;
+
 
 /**
  * Test parsing of RDF-star constructs for TriG.
@@ -53,11 +57,15 @@ public class TestTrigStarParse {
 
     @Test public void parse_trig_good_reifiedTriple_20()   { parse(":a :p <<:s :p <<:x :r :z >>>> . "); }
 
-    @Test(expected=RiotException.class)
-    public void parse_trig_bad_1()           { parse("GRAPH <<(:s :p :o)>> {} "); }
+    @Test
+    public void parse_trig_bad_1()           { parseException("GRAPH <<(:s :p :o)>> {} "); }
 
-    @Test(expected=RiotException.class)
-    public void parse_trig_bad_2()           { parse("<<(:s :p :o)>> { :s :p :o } "); }
+    @Test
+    public void parse_trig_bad_2()           { parseException("<<(:s :p :o)>> { :s :p :o } "); }
+
+    private void parseException(String string) {
+        assertThrows(RiotException.class, ()->parse(string));
+    }
 
     private void parse(String string) {
         string = "PREFIX : <http://example/>\n"+string;

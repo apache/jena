@@ -18,7 +18,9 @@
 
 package org.apache.jena.sparql.expr;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.system.PrefixMap;
@@ -26,7 +28,6 @@ import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.sparql.sse.SSE;
-import org.junit.Test;
 
 /** Testing sort ordering.
  * See also {@link TestComparison} and {@link TestOrdering}.
@@ -251,7 +252,7 @@ public class TestSortOrdering {
         }
 
         return ( isLE(x12) && isLE(x23) && isLE(x13) ) ||
-               ( isGE(x12) && isGE(x23) && isGE(x13) ) ;
+               ( isGE(x12) && isGE(x23) && isGE(x13) );
     }
 
     private static boolean isLE(NodeValue nv1, NodeValue nv2) {
@@ -263,11 +264,11 @@ public class TestSortOrdering {
     }
 
     private static boolean isLE(int x) {
-        return ( Expr.CMP_EQUAL == x ) || ( Expr.CMP_LESS == x ) ;
+        return ( Expr.CMP_EQUAL == x ) || ( Expr.CMP_LESS == x );
     }
 
     private static boolean isGE(int x) {
-        return ( Expr.CMP_EQUAL == x )|| ( Expr.CMP_GREATER == x ) ;
+        return ( Expr.CMP_EQUAL == x )|| ( Expr.CMP_GREATER == x );
     }
 
     public static NodeValue nodeValue(String str) {

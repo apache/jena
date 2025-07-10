@@ -19,14 +19,14 @@
 package org.apache.jena.sparql.util.iso;
 
 import static org.apache.jena.atlas.lib.tuple.TupleFactory.tuple;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.tuple.Tuple;
@@ -68,15 +68,15 @@ public class TestIsoMatcher
 
     @Test public void iso_graph_06() { testGraph("(_:a <p> _:a)",
                                                    "(_:b <p> _:b)",
-                                           true) ; }
+                                           true); }
 
     @Test public void iso_graph_07() { testGraph("(_:a1 <p> _:a2)",
                                                  "(_:bb <p> _:bb)",
-                                                 false) ; }
+                                                 false); }
 
     @Test public void iso_graph_10() { testGraph("(_:a _:a _:a)",
                                                  "(_:b _:b _:b)",
-                                                 true) ; }
+                                                 true); }
 
     @Test public void iso_graph_11() { testGraph("(_:a _:a _:a)",
                                                  "(_:z _:b _:b)",
@@ -84,43 +84,43 @@ public class TestIsoMatcher
 
     @Test public void iso_graph_12() { testGraph("(_:a _:a _:a)",
                                                  "(_:b _:z _:b)",
-                                                 false) ; }
+                                                 false); }
 
     @Test public void iso_graph_13() { testGraph("(_:a _:a _:a)",
                                                  "(_:b _:b _:z)",
-                                                 false) ; }
+                                                 false); }
 
     @Test public void iso_graph_14() { testGraph("(_:a _:a _:b)",
                                                  "(_:b _:b _:z)",
-                                                 true) ; }
+                                                 true); }
 
     @Test public void iso_graph_15() { testGraph("(_:a _:x _:a)",
                                                  "(_:b _:z _:b)",
-                                                 true) ; }
+                                                 true); }
 
     @Test public void iso_graph_16() { testGraph("(_:x _:a _:a)",
                                                  "(_:z _:b _:b)",
-                                                 true) ; }
+                                                 true); }
 
     @Test public void iso_graph_20() { testGraph("(<x> <p> _:a) (<z> <p> _:a)",
                                                  "(<x> <p> _:b) (<z> <p> _:b)",
-                                                 true) ; }
+                                                 true); }
 
     @Test public void iso_graph_21() { testGraph("(<x> <p> _:a1) (<z> <p> _:a2)",
                                                  "(<x> <p> _:b) (<z> <p> _:b)",
-                                                 false) ; }
+                                                 false); }
 
     @Test public void iso_graph_22() { testGraph("(_:a <p> _:a) (<s> <q> _:a)",
                                                  "(_:b <p> _:b) (<s> <q> _:b)",
-                                                 true) ; }
+                                                 true); }
 
     @Test public void iso_graph_23() { testGraph("(_:a <p> _:a) (<s> <q> _:a)",
                                                  "(_:b <p> _:b) (<s> <q> _:c)",
-                                                 false) ; }
+                                                 false); }
 
     @Test public void iso_graph_24() { testGraph("(_:a <p> _:a) (<s> <q> _:a) (_:b <q> _:b)",
                                                  "(_:b <p> _:b) (<s> <q> _:b) (_:b <q> _:b)",
-                                                 false) ; }
+                                                 false); }
 
     @Test public void iso_graph_30() { testGraphVar("(?A :p1 ?B)  (?B :p2 ?A)",
                                                     "(?A :p1 ?B1) (?A :p2 ?B1)",
@@ -201,12 +201,12 @@ public class TestIsoMatcher
 
     @Test public void iso_dsg_50() { testDSG("(graph (_:a <p> _:a)) (graph <g> (<s> <q> _:a))" ,
                                          "(graph (_:a <p> _:a)) (graph <g> (<s> <q> _:a))" ,
-                                         true) ; }
+                                         true); }
 
     // Graphs separately isomorphic.
     @Test public void iso_dsg_51() { testDSG("(graph (_:a <p> _:a)) (graph <g> (<s> <q> _:a))" ,
                                          "(graph (_:a <p> _:a)) (graph <g> (<s> <q> _:b))" ,
-                                         false) ; }
+                                         false); }
 
     @Test public void iso_dsg_52() { testDSG("(:g <<( <<( _:a :p :o )>> :q1 :z1)>> :q2 :z2)",
                                              "(:g <<( <<( _:a :p :o )>> :q1 :z1)>> :q2 :z2)",

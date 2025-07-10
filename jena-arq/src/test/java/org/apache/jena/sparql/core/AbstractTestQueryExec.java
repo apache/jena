@@ -18,33 +18,29 @@
 
 package org.apache.jena.sparql.core;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QueryFactory;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.query.ResultSetFormatter;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.query.*;
 
 /** Test cases that operate on the query execution level (whole query). */
 public abstract class AbstractTestQueryExec {
-    protected abstract Dataset createDataset() ;
-    protected abstract void releaseDataset(Dataset ds) ;
+    protected abstract Dataset createDataset();
+    protected abstract void releaseDataset(Dataset ds);
 
-    protected Dataset  dataset ;
+    protected Dataset  dataset;
 
-    @Before public void before()
-    {
-        dataset = createDataset() ;
+    @BeforeEach
+    public void before() {
+        dataset = createDataset();
     }
 
-    @After public void after() {
-        releaseDataset(dataset) ;
+    @AfterEach
+    public void after() {
+        releaseDataset(dataset);
     }
 
     /* join skew tests based on unbound values. See also: AbstractTestInnerJoin */
@@ -67,12 +63,11 @@ public abstract class AbstractTestQueryExec {
      *
      * This method has package visibility because it is also called from {@link AbstractTestDynamicDataset}.
      */
-    static void testCount(String queryString, int expected, Dataset ds)
-    {
-        Query query = QueryFactory.create(queryString) ;
-        QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
-        ResultSet rs = qExec.execSelect() ;
-        int n = ResultSetFormatter.consume(rs) ;
-        assertEquals(expected, n) ;
+    static void testCount(String queryString, int expected, Dataset ds) {
+        Query query = QueryFactory.create(queryString);
+        QueryExecution qExec = QueryExecutionFactory.create(query, ds);
+        ResultSet rs = qExec.execSelect();
+        int n = ResultSetFormatter.consume(rs);
+        assertEquals(expected, n);
     }
 }

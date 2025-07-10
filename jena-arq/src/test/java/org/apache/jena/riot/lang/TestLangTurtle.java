@@ -21,15 +21,18 @@ package org.apache.jena.riot.lang;
 import static org.apache.jena.riot.system.ErrorHandlerFactory.errorHandlerNoLogging;
 import static org.apache.jena.riot.system.ErrorHandlerFactory.getDefaultErrorHandler;
 import static org.apache.jena.riot.system.ErrorHandlerFactory.setDefaultErrorHandler;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 
 import java.io.StringReader;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
@@ -115,13 +118,13 @@ public class TestLangTurtle
     }
 
     private static ErrorHandler errorhandler = null;
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         errorhandler = getDefaultErrorHandler();
         setDefaultErrorHandler(errorHandlerNoLogging);
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         setDefaultErrorHandler(errorhandler);
     }
@@ -142,41 +145,49 @@ public class TestLangTurtle
     @Test
     public void triple()                { parse("<s> <p> <o> ."); }
 
-    @Test(expected=ExFatal.class)
-    public void errorJunk_1()           { parse("<p>"); }
+    private <T extends Throwable> T parseException(Class<T> exClass, String... strings) {
+        return assertThrowsExactly(exClass, ()->parse(strings));
+    }
 
-    @Test(expected=ExFatal.class)
-    public void errorJunk_2()           { parse("<r> <p>"); }
+    private <T extends Throwable> T parseException(Class<T> exClass, Executable action) {
+        return assertThrows(exClass, action);
+    }
 
-    @Test(expected=ExFatal.class)
-    public void errorNoPrefixDef()      { parse("x:p <p> 'q' ."); }
+    @Test
+    public void errorJunk_1()           { parseException(ExFatal.class, "<p>"); }
 
-    @Test(expected=ExFatal.class)
-    public void errorNoPrefixDefDT()    { parse("<p> <p> 'q'^^x:foo ."); }
+    @Test
+    public void errorJunk_2()           { parseException(ExFatal.class, "<r> <p>"); }
 
-    @Test(expected=ExFatal.class)
-    public void errorBadDatatype()      { parse("<p> <p> 'q'^^."); }
+    @Test
+    public void errorNoPrefixDef()      { parseException(ExFatal.class, "x:p <p> 'q' ."); }
 
-    @Test(expected=ExError.class)
-    public void errorBadURI_1()         { parse("<http://example/a b> <http://example/p> 123 ."); }
+    @Test
+    public void errorNoPrefixDefDT()    { parseException(ExFatal.class, "<p> <p> 'q'^^x:foo ."); }
 
-    @Test(expected=ExWarning.class)
+    @Test
+    public void errorBadDatatype()      { parseException(ExFatal.class, "<p> <p> 'q'^^."); }
+
+    @Test
+    public void errorBadURI_1()         { parseException(ExError.class, "<http://example/a b> <http://example/p> 123 ."); }
+
+    @Test
     // Passes tokenization but fails IRI parsing.
-    public void errorBadURI_2()         { parse("<http://example/a%XAb> <http://example/p> 123 ."); }
+    public void errorBadURI_2()         { parseException(ExWarning.class, "<http://example/a%XAb> <http://example/p> 123 ."); }
 
     // Bad URIs
-    @Test (expected=ExError.class)
-    public void errorBadURI_3()         { parse("@prefix ex:  <bad iri> .  ex:s ex:p 123 "); }
+    @Test
+    public void errorBadURI_3()         { parseException(ExError.class, "@prefix ex:  <bad iri> .  ex:s ex:p 123 "); }
 
-    @Test (expected=ExError.class)
-    public void errorBadURI_4()         { parse("<x> <p> 'number'^^<bad uri> "); }
+    @Test
+    public void errorBadURI_4()         { parseException(ExError.class, "<x> <p> 'number'^^<bad uri> "); }
 
     // Structural errors.
-    @Test (expected=ExFatal.class)
-    public void errorBadList_1()        { parse("<x> <p> ("); }
+    @Test
+    public void errorBadList_1()        { parseException(ExFatal.class, "<x> <p> ("); }
 
-    @Test (expected=ExFatal.class)
-    public void errorBadList_2()        { parse("<x> <p> ( <z>"); }
+    @Test
+    public void errorBadList_2()        { parseException(ExFatal.class, "<x> <p> ( <z>"); }
 
     @Test
     public void turtle_01() {
@@ -221,16 +232,16 @@ public class TestLangTurtle
         assertEquals(1, graph.size());
     }
 
-    @Test (expected=ExFatal.class)
+    @Test
     public void turtle_rdf12_04() {
         // Triple term as subject
-        Graph graph = parse(PREFIXES, "<<( :s :p :o )>> :q :z ");
+        parseException(ExFatal.class, PREFIXES, "<<( :s :p :o )>> :q :z ");
     }
 
-    @Test (expected=ExFatal.class)
+    @Test
     public void turtle_rdf12_05() {
         // Triple term as subject
-        Graph graph = parse(PREFIXES, ":a <<( :s :p :o )>> :b :c");
+        parseException(ExFatal.class, PREFIXES, ":a <<( :s :p :o )>> :b :c");
     }
 
     @Test
@@ -252,19 +263,19 @@ public class TestLangTurtle
         parseOneTriple("@version \"1.2\" . <x:s> <x:p> 123 . ");
     }
 
-    @Test (expected=ExFatal.class)
+    @Test
     public void turtle_rdf12_bad_11() {
-        parseOneTriple("VERSION '1.2' . <x:s> <x:p> 123 . ");
+        parseException(ExFatal.class, ()->parseOneTriple("VERSION '1.2' . <x:s> <x:p> 123 . "));
     }
 
-    @Test (expected=ExFatal.class)
+    @Test
     public void turtle_rdf12_bad_12() {
-        parseOneTriple("VERSION '''1.2''' <x:s> <x:p> 123 . ");
+        parseException(ExFatal.class, ()->parseOneTriple("VERSION '''1.2''' <x:s> <x:p> 123 . "));
     }
 
-    @Test (expected=ExFatal.class)
+    @Test
     public void turtle_rdf12_bad_13() {
-        parseOneTriple("@version \"\"\"1.2\"\"\" <x:s> <x:p> 123 . ");
+        parseException(ExFatal.class, ()->parseOneTriple("@version \"\"\"1.2\"\"\" <x:s> <x:p> 123 . "));
     }
 
     // U+D800-U+DBFF is a high surrogate (first part of a pair)
@@ -292,48 +303,48 @@ public class TestLangTurtle
         parseOneTriple("<x:s> <x:p> '\ud800\udc00' . ");
     }
 
-    @Test (expected=ExFatal.class)
+    @Test
     public void turtle_bad_surrogate_1() {
-        parseOneTriple("<x:s> <x:p> '\\ud800' . ");
+        parseException(ExFatal.class, ()->parseOneTriple("<x:s> <x:p> '\\ud800' . "));
     }
 
-    @Test (expected=ExFatal.class)
+    @Test
     public void turtle_bad_surrogate_2() {
-        parseOneTriple("<x:s> <x:p> '\\udfff' . ");
+        parseException(ExFatal.class, ()->parseOneTriple("<x:s> <x:p> '\\udfff' . "));
     }
-    @Test (expected=ExFatal.class)
+    @Test
     public void turtle_bad_surrogate_3() {
-        parseOneTriple("<x:s> <x:p> '\\U0000d800' . ");
+        parseException(ExFatal.class, ()->parseOneTriple("<x:s> <x:p> '\\U0000d800' . "));
     }
 
-    @Test (expected=ExFatal.class)
+    @Test
     public void turtle_bad_surrogate_4() {
-        parseOneTriple("<x:s> <x:p> '\\U0000dfff' . ");
+        parseException(ExFatal.class, ()->parseOneTriple("<x:s> <x:p> '\\U0000dfff' . "));
     }
 
-    @Test (expected=ExFatal.class)
+    @Test
     public void turtle_bad_surrogate_5() {
         // Wrong way round: low-high
-        parseOneTriple("<x:s> <x:p> '\\uc800\\ud800' . ");
+        parseException(ExFatal.class, ()->parseOneTriple("<x:s> <x:p> '\\uc800\\ud800' . "));
     }
 
     // Compilation failure. Can't write \ud800
-//    @Test (expected=ExFatal.class)
+//    @Test
 //    public void turtle_bad_surrogate_6() {
 //        // raw low - escaped high
-//        parseOneTriple("<x:s> <x:p> '\ud800\\ud800' . ");
+//        parseException(ExFatal.class, ()->parseOneTriple("<x:s> <x:p> '\ud800\\ud800' . ");
 //    }
 
-    @Test (expected=ExFatal.class)
+    @Test
     public void turtle_bad_surrogate_7() {
         // escaped low - raw high
-        parseOneTriple("<x:s> <x:p> '\\uc800\ud800' . ");
+        parseException(ExFatal.class, ()->parseOneTriple("<x:s> <x:p> '\\uc800\ud800' . "));
     }
 
     // No Formulae. Not trig.
-    @Test (expected=ExFatal.class)
-    public void turtle_50()     { parse("@prefix ex:  <http://example/> .  { ex:s ex:p 123 . } "); }
+    @Test
+    public void turtle_50()     { parseException(ExFatal.class, "@prefix ex:  <http://example/> .  { ex:s ex:p 123 . } "); }
 
-    @Test (expected=ExWarning.class)
-    public void turtle_60()     { parse("@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> . <x> <p> 'number'^^xsd:byte }"); }
+    @Test
+    public void turtle_60()     { parseException(ExWarning.class, "@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> . <x> <p> 'number'^^xsd:byte }"); }
 }

@@ -18,82 +18,78 @@
 
 package org.apache.jena.atlas.event;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
 
+public class TestEvent {
+    EventType ev1 = new EventType("1");
+    EventType ev2 = new EventType("2");
 
-public class TestEvent
-{
-    EventType ev1 = new EventType("1") ;
-    EventType ev2 = new EventType("2") ;
-    
-    static class EventListenerLogger implements EventListener
-    {
-        public int eventCount = 0 ;
-        public Object dest = null ;
-        public Event event = null ;
-        
+    static class EventListenerLogger implements EventListener {
+        public int eventCount = 0;
+        public Object dest = null;
+        public Event event = null;
+
         @Override
-        public void event(Object dest, Event event)
-        {
-            eventCount++ ;
-            this.dest = dest ;
-            this.event = event ;
+        public void event(Object dest, Event event) {
+            eventCount++;
+            this.dest = dest;
+            this.event = event;
         }
     }
-    
-    @Test public void event1()
-    {
-        EventListenerLogger listener = new EventListenerLogger() ;
-        Object obj = new Object() ;
-        Object arg = new String("arg") ;
-        
-        assertEquals(0, listener.eventCount) ;
-        EventManager.register(obj, ev1, listener) ;
-        EventManager.send(obj, new Event(ev1, arg)) ;
 
-        assertEquals(1, listener.eventCount) ;
-        assertEquals(ev1, listener.event.getType()) ;
-        assertEquals(arg, listener.event.getArgument()) ;
+    @Test
+    public void event1() {
+        EventListenerLogger listener = new EventListenerLogger();
+        Object obj = new Object();
+        Object arg = new String("arg");
+
+        assertEquals(0, listener.eventCount);
+        EventManager.register(obj, ev1, listener);
+        EventManager.send(obj, new Event(ev1, arg));
+
+        assertEquals(1, listener.eventCount);
+        assertEquals(ev1, listener.event.getType());
+        assertEquals(arg, listener.event.getArgument());
     }
 
-    @Test public void event2()
-    {
-        EventListenerLogger listener = new EventListenerLogger() ;
-        Object obj = new Object() ;
-        Object arg = new String("arg") ;
-        
-        assertEquals(0, listener.eventCount) ;
-        EventManager.register(obj, ev1, listener) ;
-        
-        EventManager.send(obj, new Event(ev1, arg)) ;
-        assertEquals(1, listener.eventCount) ;
-        
-        EventManager.send(obj, new Event(ev2, arg)) ;
-        assertEquals(1, listener.eventCount) ;
-        
-        EventManager.send(obj, new Event(ev1, arg)) ;
-        assertEquals(2, listener.eventCount) ;
-        
-        assertEquals(ev1, listener.event.getType()) ;
-        assertEquals(arg, listener.event.getArgument()) ;
+    @Test
+    public void event2() {
+        EventListenerLogger listener = new EventListenerLogger();
+        Object obj = new Object();
+        Object arg = new String("arg");
+
+        assertEquals(0, listener.eventCount);
+        EventManager.register(obj, ev1, listener);
+
+        EventManager.send(obj, new Event(ev1, arg));
+        assertEquals(1, listener.eventCount);
+
+        EventManager.send(obj, new Event(ev2, arg));
+        assertEquals(1, listener.eventCount);
+
+        EventManager.send(obj, new Event(ev1, arg));
+        assertEquals(2, listener.eventCount);
+
+        assertEquals(ev1, listener.event.getType());
+        assertEquals(arg, listener.event.getArgument());
     }
-    
-    @Test public void event3()
-    {
-        EventListenerLogger listener = new EventListenerLogger() ;
-        Object obj = new Object() ;
-        
-        EventManager.send(obj, new Event(ev1, "foo")) ;
-        assertEquals(0, listener.eventCount) ;
-        
-        EventManager.register(obj, ev1, listener) ;
-        EventManager.send(obj, new Event(ev1, "foo")) ;
-        assertEquals(1, listener.eventCount) ;
-        
-        EventManager.unregister(obj, ev1, listener) ;
-        EventManager.send(obj, new Event(ev1, "foo")) ;
-        assertEquals(1, listener.eventCount) ;
+
+    @Test
+    public void event3() {
+        EventListenerLogger listener = new EventListenerLogger();
+        Object obj = new Object();
+
+        EventManager.send(obj, new Event(ev1, "foo"));
+        assertEquals(0, listener.eventCount);
+
+        EventManager.register(obj, ev1, listener);
+        EventManager.send(obj, new Event(ev1, "foo"));
+        assertEquals(1, listener.eventCount);
+
+        EventManager.unregister(obj, ev1, listener);
+        EventManager.send(obj, new Event(ev1, "foo"));
+        assertEquals(1, listener.eventCount);
     }
 }

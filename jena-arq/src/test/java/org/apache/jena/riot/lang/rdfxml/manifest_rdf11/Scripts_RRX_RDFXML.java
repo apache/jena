@@ -18,20 +18,20 @@
 
 package org.apache.jena.riot.lang.rdfxml.manifest_rdf11;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * Run all the parsers on the rdf-test CG RDF/XML manifest files (RDF 1.1).
  * Files in "testing/RIOT/rdf11-xml/".
  */
-@RunWith(Suite.class)
-@SuiteClasses( {
-    TestManifest_RDF11_ARP1.class,
-    TestManifest_RDF11_RRX_SAX.class,
-    TestManifest_RDF11_RRX_StAXsr.class,
-    TestManifest_RDF11_RRX_StAXev.class
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+@Suite
+@SelectClasses({
+    // These are JUnit4
+    Manifest_RDF11_ARP1.class,
+    Manifest_RDF11_RRX_SAX.class,
+    Manifest_RDF11_RRX_StAXsr.class,
+    Manifest_RDF11_RRX_StAXev.class
 })
 
 public class Scripts_RRX_RDFXML {}

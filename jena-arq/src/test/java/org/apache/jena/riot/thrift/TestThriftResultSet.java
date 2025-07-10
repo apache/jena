@@ -18,24 +18,25 @@
 
 package org.apache.jena.riot.thrift;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import java.io.ByteArrayInputStream ;
-import java.io.ByteArrayOutputStream ;
-import java.io.IOException ;
-import java.io.InputStream ;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
-import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.query.ResultSet ;
-import org.apache.jena.query.ResultSetFactory ;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFactory;
 import org.apache.jena.query.ResultSetFormatter;
-import org.apache.jena.query.ResultSetRewindable ;
+import org.apache.jena.query.ResultSetRewindable;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.sparql.exec.RowSet;
-import org.apache.jena.sparql.resultset.ResultsCompare ;
-import org.apache.jena.sparql.sse.SSE ;
-import org.junit.Test ;
+import org.apache.jena.sparql.resultset.ResultsCompare;
+import org.apache.jena.sparql.sse.SSE;
 
 public class TestThriftResultSet {
     // Only datatypes that transmitted perfectly.
@@ -48,69 +49,69 @@ public class TestThriftResultSet {
          , "   (row)"
          , "   (row (?x 2) (?y 10))"
          , ")"
-         ) ;
+         );
 
     static ResultSetRewindable rs1 = make
         ("(resultset (?x ?y)"
          , "   (row (?x 1) (?y 3))"
          , "   (row (?x 1) (?y 'a'))"
          , ")"
-         ) ;
+         );
     static ResultSetRewindable rs2 = make
         ("(resultset (?x ?y)"
          , "   (row (?x 1) (?y 'a'))"
          , "   (row (?x 1) (?y 3))"
          , ")"
-         ) ;
+         );
 
-    @Test public void resultSet_01() { test(rs0) ; }
+    @Test public void resultSet_01() { test(rs0); }
 
     @Test public void resultSet_02() {
-        ResultSetRewindable r1 = test(rs1) ;
+        ResultSetRewindable r1 = test(rs1);
         // not reordered
         r1.reset();
-        rs2.reset() ;
-        assertFalse(ResultsCompare.equalsByTermAndOrder(r1, rs2)) ;
-        rs2.reset() ;
+        rs2.reset();
+        assertFalse(ResultsCompare.equalsByTermAndOrder(r1, rs2));
+        rs2.reset();
     }
 
     @Test public void resultSet_03() {
-        ResultSetRewindable r2 = test(rs2) ;
+        ResultSetRewindable r2 = test(rs2);
         // not reordered
         r2.reset();
-        rs1.reset() ;
-        assertFalse(ResultsCompare.equalsByTermAndOrder(r2, rs1)) ;
-        rs1.reset() ;
+        rs1.reset();
+        assertFalse(ResultsCompare.equalsByTermAndOrder(r2, rs1));
+        rs1.reset();
     }
 
     private static ResultSetRewindable test(ResultSetRewindable resultSet) {
         resultSet.reset();
-        ByteArrayOutputStream out = new ByteArrayOutputStream() ;
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
         ResultSetFormatter.output(out, resultSet, ResultSetLang.RS_Thrift);
         resultSet.reset();
 
-        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
-        RowSet rs$ = ThriftRDF.readRowSet(in) ;
-        ResultSetRewindable resultSet2 = ResultSetFactory.makeRewindable(rs$) ;
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+        RowSet rs$ = ThriftRDF.readRowSet(in);
+        ResultSetRewindable resultSet2 = ResultSetFactory.makeRewindable(rs$);
         // Includes bnode labels.
-        ResultsCompare.equalsExact(resultSet, resultSet2) ;
+        ResultsCompare.equalsExact(resultSet, resultSet2);
         resultSet.reset();
         resultSet2.reset();
-        return resultSet2 ;
+        return resultSet2;
     }
 
     private static ResultSetRewindable make(String ... strings) {
-        String s = StrUtils.strjoinNL(strings) ;
+        String s = StrUtils.strjoinNL(strings);
         return ResultSetFactory.makeRewindable(SSE.parseRowSet(s));
     }
 
-    private static final String DIR = TS_RDFThrift.TestingDir ;
+    private static final String DIR = TS_RDFThrift.TestingDir;
 
     @Test public void resultSet_10() {
         try (InputStream in = IO.openFile(DIR+"/results-1.srj")) {
-            ResultSet rs = ResultSetFactory.fromJSON(in) ;
-            test(ResultSetFactory.copyResults(rs)) ;
-        } catch (IOException ex) { IO.exception(ex) ; }
+            ResultSet rs = ResultSetFactory.fromJSON(in);
+            test(ResultSetFactory.copyResults(rs));
+        } catch (IOException ex) { IO.exception(ex); }
     }
 }
 

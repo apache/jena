@@ -18,7 +18,9 @@
 
 package org.apache.jena.sparql.algebra;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Query;
@@ -27,7 +29,6 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.graph.NodeTransform;
 import org.apache.jena.sparql.graph.NodeTransformLib;
 import org.apache.jena.sparql.sse.SSE;
-import org.junit.Test;
 
 /** Tests of node transformation : {@link NodeTransformLib}. */
 public class TestNodeTransform {

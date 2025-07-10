@@ -18,12 +18,15 @@
 
 package org.apache.jena.sparql.modify;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.Bytes;
@@ -43,7 +46,6 @@ import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.syntax.Element;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
 import org.apache.jena.update.UpdateAction;
-import org.junit.Test;
 
 public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
 {
@@ -159,7 +161,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
         UpdateDeleteWhere delete = new UpdateDeleteWhere(acc);
         acc.addTriple(SSE.parseTriple("(?s ?p ?o)"));
         UpdateAction.execute(delete, gStore);
-        assertTrue("Not empty", graphEmpty(gStore.getDefaultGraph()));
+        assertTrue(graphEmpty(gStore.getDefaultGraph()), ()->"Not empty");
     }
 
     @Test
@@ -199,7 +201,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
         modify.getDeleteAcc().addQuad(SSE.parseQuad("(<http://example/graph> ?s <http://example/p> 2007 )"));
         UpdateAction.execute(modify, gStore);
 
-        assertTrue("Not empty", graphEmpty(gStore.getGraph(graphIRI)));
+        assertTrue(graphEmpty(gStore.getGraph(graphIRI)), ()->"Not empty");
         assertFalse(graphEmpty(gStore.getDefaultGraph()));
     }
 
@@ -399,9 +401,9 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
         assertEquals(0, gStore.getDefaultGraph().size());
     }
 
-    @Test(expected = QueryException.class)
+    @Test
     public void testUpdateBad1() {
-        testBad("bad-1.ru", 1);
+        assertThrows(QueryException.class, ()-> testBad("bad-1.ru", 1));
     }
 
     @Test
@@ -415,6 +417,8 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
     }
 
     private void testBad(String file, int expectedSize) {
+        // Bad queries may throw an exception or do a
+        // partial update (e.g. a template generates literals as subjects).
         DatasetGraph gStore = getEmptyDatasetGraph();
         script(gStore, file);
         assertEquals(expectedSize, countQuads(gStore));

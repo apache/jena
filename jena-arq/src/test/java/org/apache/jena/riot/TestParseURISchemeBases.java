@@ -17,7 +17,7 @@
 
 package org.apache.jena.riot;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -25,11 +25,12 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.ResourceFactory.Interface;
 import org.apache.jena.vocabulary.RDFS;
-import org.junit.Test;
 
 /**
  * Tests for parsing RDF in various formats using various URI schemes from
@@ -95,7 +96,7 @@ public class TestParseURISchemeBases {
      */
     private InputStream load(String f) throws IOException {
         Path file = DIR.resolve(f);
-        assertTrue("Can't find " + file, Files.isRegularFile(file));
+        assertTrue(Files.isRegularFile(file), ()->"Can't find " + file);
         // Read in memory to avoid keeping the file open in case test fails on Windows
         byte[] content = Files.readAllBytes(file);
         return new ByteArrayInputStream(content);
@@ -125,216 +126,216 @@ public class TestParseURISchemeBases {
     @Test
     public void appBaseRDF() throws Exception {
         Model m = readModel("app-base.rdf", Lang.RDFXML);
-        assertTrue("Can't find statement", m.contains(expectedStatement(APP_BASE)));
+        assertTrue(m.contains(expectedStatement(APP_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void appBaseTTL() throws Exception {
         Model m = readModel("app-base.ttl", Lang.TURTLE);
-        assertTrue("Can't find statement", m.contains(expectedStatement(APP_BASE)));
+        assertTrue(m.contains(expectedStatement(APP_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void appRDF() throws Exception {
         Model m = readModel("app.rdf", Lang.RDFXML);
-        assertTrue("Can't find statement", m.contains(expectedStatement(APP_BASE)));
+        assertTrue(m.contains(expectedStatement(APP_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void appRelRDF() throws Exception {
         Model m = readModel("rel.rdf", APP_BASE + "nested/", Lang.RDFXML);
-        assertTrue("Can't find statement", m.contains(expectedStatement(APP_BASE)));
+        assertTrue(m.contains(expectedStatement(APP_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void appRelTTL() throws Exception {
         Model m = readModel("rel.ttl", APP_BASE + "nested/", Lang.TURTLE);
-        assertTrue("Can't find statement", m.contains(expectedStatement(APP_BASE)));
+        assertTrue(m.contains(expectedStatement(APP_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void appTTL() throws Exception {
         Model m = readModel("app.ttl", Lang.TURTLE);
-        assertTrue("Can't find statement", m.contains(expectedStatement(APP_BASE)));
+        assertTrue(m.contains(expectedStatement(APP_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void exampleRDF() throws Exception {
         Model m = readModel("example.rdf", Lang.RDFXML);
-        assertTrue("Can't find statement", m.contains(expectedStatement(EXAMPLE_BASE)));
+        assertTrue(m.contains(expectedStatement(EXAMPLE_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void exampleRelRDF() throws Exception {
         Model m = readModel("rel.rdf", EXAMPLE_BASE + "nested/", Lang.RDFXML);
-        assertTrue("Can't find statement", m.contains(expectedStatement(EXAMPLE_BASE)));
+        assertTrue(m.contains(expectedStatement(EXAMPLE_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void exampleRelTTL() throws Exception {
         Model m = readModel("rel.ttl", EXAMPLE_BASE + "nested/", Lang.TURTLE);
-        assertTrue("Can't find statement", m.contains(expectedStatement(EXAMPLE_BASE)));
+        assertTrue(m.contains(expectedStatement(EXAMPLE_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void exampleTTL() throws Exception {
         Model m = readModel("example.ttl", Lang.TURTLE);
-        assertTrue("Can't find statement", m.contains(expectedStatement(EXAMPLE_BASE)));
+        assertTrue(m.contains(expectedStatement(EXAMPLE_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void fileRDF() throws Exception {
         Model m = readModel("file.rdf", "file:///", Lang.RDFXML);
-        assertTrue("Can't find statement", m.contains(expectedStatement(FILE_BASE)));
+        assertTrue(m.contains(expectedStatement(FILE_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void fileRelRDF() throws Exception {
         Model m = readModel("rel.rdf", FILE_BASE + "nested/", Lang.RDFXML);
-        assertTrue("Can't find statement", m.contains(expectedStatement(FILE_BASE)));
+        assertTrue(m.contains(expectedStatement(FILE_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void fileRelTTL() throws Exception {
         Model m = readModel("rel.ttl", FILE_BASE + "nested/", Lang.TURTLE);
-        assertTrue("Can't find statement", m.contains(expectedStatement(FILE_BASE)));
+        assertTrue(m.contains(expectedStatement(FILE_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void fileTTL() throws Exception {
         Model m = readModel("file.ttl", "file:///", Lang.TURTLE);
-        assertTrue("Can't find statement", m.contains(expectedStatement(FILE_BASE)));
+        assertTrue(m.contains(expectedStatement(FILE_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void fileBaseRDF() throws Exception {
         Model m = readModel("file-base.rdf", Lang.RDFXML);
-        assertTrue("Can't find statement", m.contains(expectedStatement(FILE_BASE)));
+        assertTrue(m.contains(expectedStatement(FILE_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void fileBaseTTL() throws Exception {
         Model m = readModel("file-base.ttl", "file:///", Lang.TURTLE);
-        assertTrue("Can't find statement", m.contains(expectedStatement(FILE_BASE)));
+        assertTrue(m.contains(expectedStatement(FILE_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void httpRDF() throws Exception {
         Model m = readModel("http.rdf", Lang.RDFXML);
-        assertTrue("Can't find statement", m.contains(expectedStatement(HTTP_BASE)));
+        assertTrue(m.contains(expectedStatement(HTTP_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void httpBaseRDF() throws Exception {
         Model m = readModel("http-base.rdf", Lang.RDFXML);
-        assertTrue("Can't find statement", m.contains(expectedStatement(HTTP_BASE)));
+        assertTrue(m.contains(expectedStatement(HTTP_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void httpBaseTTL() throws Exception {
         Model m = readModel("http-base.ttl", Lang.TURTLE);
-        assertTrue("Can't find statement", m.contains(expectedStatement(HTTP_BASE)));
+        assertTrue(m.contains(expectedStatement(HTTP_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void httpRelRDF() throws Exception {
         Model m = readModel("rel.rdf", HTTP_BASE + "nested/", Lang.RDFXML);
-        assertTrue("Can't find statement", m.contains(expectedStatement(HTTP_BASE)));
+        assertTrue(m.contains(expectedStatement(HTTP_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void httpRelTTL() throws Exception {
         Model m = readModel("rel.ttl", HTTP_BASE + "nested/", Lang.TURTLE);
-        assertTrue("Can't find statement", m.contains(expectedStatement(HTTP_BASE)));
+        assertTrue(m.contains(expectedStatement(HTTP_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void httpTTL() throws Exception {
         Model m = readModel("http.ttl", Lang.TURTLE);
-        assertTrue("Can't find statement", m.contains(expectedStatement(HTTP_BASE)));
+        assertTrue(m.contains(expectedStatement(HTTP_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void jenaRDF() throws Exception {
         Model m = readModel("jena.rdf", Lang.RDFXML);
-        assertTrue("Can't find statement", m.contains(expectedStatement(JENA_BASE)));
+        assertTrue(m.contains(expectedStatement(JENA_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void jenaRelRDF() throws Exception {
         Model m = readModel("rel.rdf", JENA_BASE + "nested/", Lang.RDFXML);
-        assertTrue("Can't find statement", m.contains(expectedStatement(JENA_BASE)));
+        assertTrue(m.contains(expectedStatement(JENA_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void jenaRelTTL() throws Exception {
         Model m = readModel("rel.ttl", JENA_BASE + "nested/", Lang.TURTLE);
-        assertTrue("Can't find statement", m.contains(expectedStatement(JENA_BASE)));
+        assertTrue(m.contains(expectedStatement(JENA_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void jenaTTL() throws Exception {
         Model m = readModel("jena.ttl", Lang.TURTLE);
-        assertTrue("Can't find statement", m.contains(expectedStatement(JENA_BASE)));
+        assertTrue(m.contains(expectedStatement(JENA_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void sshBaseRDF() throws Exception {
         Model m = readModel("ssh-base.rdf", Lang.RDFXML);
-        assertTrue("Can't find statement", m.contains(expectedStatement(SSH_BASE)));
+        assertTrue(m.contains(expectedStatement(SSH_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void sshBaseTTL() throws Exception {
         Model m = readModel("ssh-base.ttl", Lang.TURTLE);
-        assertTrue("Can't find statement", m.contains(expectedStatement(SSH_BASE)));
+        assertTrue(m.contains(expectedStatement(SSH_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void sshRDF() throws Exception {
         Model m = readModel("ssh.rdf", Lang.RDFXML);
-        assertTrue("Can't find statement", m.contains(expectedStatement(SSH_BASE)));
+        assertTrue(m.contains(expectedStatement(SSH_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void sshRelRDF() throws Exception {
         Model m = readModel("rel.rdf", SSH_BASE + "nested/", Lang.RDFXML);
-        assertTrue("Can't find statement", m.contains(expectedStatement(SSH_BASE)));
+        assertTrue(m.contains(expectedStatement(SSH_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void sshRelTTL() throws Exception {
         Model m = readModel("rel.ttl", SSH_BASE + "nested/", Lang.TURTLE);
-        assertTrue("Can't find statement", m.contains(expectedStatement(SSH_BASE)));
+        assertTrue(m.contains(expectedStatement(SSH_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void sshTTL() throws Exception {
         Model m = readModel("ssh.ttl", Lang.TURTLE);
-        assertTrue("Can't find statement", m.contains(expectedStatement(SSH_BASE)));
+        assertTrue(m.contains(expectedStatement(SSH_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void xMadeupRDF() throws Exception {
         Model m = readModel("x-madeup.rdf", Lang.RDFXML);
-        assertTrue("Can't find statement", m.contains(expectedStatement(X_MADEUP_BASE)));
+        assertTrue(m.contains(expectedStatement(X_MADEUP_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void xMadeupRelRDF() throws Exception {
         Model m = readModel("rel.rdf", X_MADEUP_BASE + "nested/", Lang.RDFXML);
-        assertTrue("Can't find statement", m.contains(expectedStatement(X_MADEUP_BASE)));
+        assertTrue(m.contains(expectedStatement(X_MADEUP_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void xMadeupRelTTL() throws Exception {
         Model m = readModel("rel.ttl", X_MADEUP_BASE + "nested/", Lang.TURTLE);
-        assertTrue("Can't find statement", m.contains(expectedStatement(X_MADEUP_BASE)));
+        assertTrue(m.contains(expectedStatement(X_MADEUP_BASE)), ()->"Can't find statement");
     }
 
     @Test
     public void xMadeupTTL() throws Exception {
         Model m = readModel("x-madeup.ttl", Lang.TURTLE);
-        assertTrue("Can't find statement", m.contains(expectedStatement(X_MADEUP_BASE)));
+        assertTrue(m.contains(expectedStatement(X_MADEUP_BASE)), ()->"Can't find statement");
     }
 }

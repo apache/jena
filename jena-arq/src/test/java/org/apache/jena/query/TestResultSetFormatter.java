@@ -17,18 +17,19 @@
  */
 package org.apache.jena.query;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Iterator;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.rdf.model.*;
-import org.junit.Test;
 
 /**
  * Tests for the {@link ResultSetFormatter}.

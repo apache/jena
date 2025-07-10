@@ -18,14 +18,15 @@
 
 package org.apache.jena.system;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.riot.system.PrefixLib;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.PrefixMapFactory;
-import org.junit.Test;
 
 public class TestPrefixLib {
     private PrefixMap create() {

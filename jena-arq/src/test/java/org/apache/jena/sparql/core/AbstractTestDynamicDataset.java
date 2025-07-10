@@ -18,114 +18,116 @@
 
 package org.apache.jena.sparql.core;
 
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.query.* ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.sparql.sse.SSE ;
-import org.junit.After ;
-import org.junit.Before ;
-import org.junit.Test ;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.query.*;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.sparql.sse.SSE;
 
-import static org.apache.jena.sparql.core.AbstractTestQueryExec.testCount ;
+import static org.apache.jena.sparql.core.AbstractTestQueryExec.testCount;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public abstract class AbstractTestDynamicDataset
 {
-    protected abstract Dataset createDataset() ;
-    protected abstract void releaseDataset(Dataset ds) ;
-    protected Dataset  dataset ;
+    protected abstract Dataset createDataset();
+    protected abstract void releaseDataset(Dataset ds);
+    protected Dataset  dataset;
 
-    @Before public void before()
-    {
-        dataset = createDataset() ;
+    @BeforeEach
+    public void before() {
+        dataset = createDataset();
         // Named graphs
         for ( int i = 0 ; i < 5 ; i++ )
-            addGraph(dataset, i) ;
+            addGraph(dataset, i);
         // Default model.
-        Model m = dataset.getDefaultModel() ;
-        Triple t1 = SSE.parseTriple("(<uri:x> <uri:p> 0)") ;
-        Triple t2 = SSE.parseTriple("(<uri:y> <uri:q> 'ABC')") ;
-        Triple t3 = SSE.parseTriple("(<uri:z> <uri:property> 'DEF')") ;
-        m.getGraph().add(t1) ;
-        m.getGraph().add(t2) ;
-        m.getGraph().add(t3) ;
+        Model m = dataset.getDefaultModel();
+        Triple t1 = SSE.parseTriple("(<uri:x> <uri:p> 0)");
+        Triple t2 = SSE.parseTriple("(<uri:y> <uri:q> 'ABC')");
+        Triple t3 = SSE.parseTriple("(<uri:z> <uri:property> 'DEF')");
+        m.getGraph().add(t1);
+        m.getGraph().add(t2);
+        m.getGraph().add(t3);
     }
 
-    @After public void after() {
-        releaseDataset(dataset) ;
+    @AfterEach
+    public void after() {
+        releaseDataset(dataset);
     }
 
     private static void addGraph(Dataset dataset, int i)
     {
         // Not a very interesting model
-        String x = "graph:"+i ;
-        Model m = dataset.getNamedModel(x) ;
-        Triple t1 = SSE.parseTriple("(<uri:x> <uri:p> "+i+")") ;
-        Triple t2 = SSE.parseTriple("(<uri:y> <uri:q> 'ABC')") ;
-        m.getGraph().add(t1) ;
-        m.getGraph().add(t2) ;
+        String x = "graph:"+i;
+        Model m = dataset.getNamedModel(x);
+        Triple t1 = SSE.parseTriple("(<uri:x> <uri:p> "+i+")");
+        Triple t2 = SSE.parseTriple("(<uri:y> <uri:q> 'ABC')");
+        m.getGraph().add(t1);
+        m.getGraph().add(t2);
     }
 
-    @Test public void dynamic01()    { testCount("SELECT * {?s ?p ?o}", 3, dataset) ; }
+    @Test public void dynamic01()    { testCount("SELECT * {?s ?p ?o}", 3, dataset); }
 
-    @Test public void dynamic02()    { testCount("SELECT ?g { GRAPH ?g {} }", 5, dataset) ; }
+    @Test public void dynamic02()    { testCount("SELECT ?g { GRAPH ?g {} }", 5, dataset); }
 
-    @Test public void dynamic03()    { testCount("SELECT * FROM <graph:1> {?s <uri:p> ?o}", 1, dataset) ; }
+    @Test public void dynamic03()    { testCount("SELECT * FROM <graph:1> {?s <uri:p> ?o}", 1, dataset); }
 
-    @Test public void dynamic04()    { testCount("SELECT * FROM <graph:1> { GRAPH ?g { ?s ?p ?o} }", 0, dataset) ; }
+    @Test public void dynamic04()    { testCount("SELECT * FROM <graph:1> { GRAPH ?g { ?s ?p ?o} }", 0, dataset); }
 
-    @Test public void dynamic05()    { testCount("SELECT * FROM <graph:1> FROM <graph:2> {?s <uri:p> ?o}", 2, dataset) ; }
+    @Test public void dynamic05()    { testCount("SELECT * FROM <graph:1> FROM <graph:2> {?s <uri:p> ?o}", 2, dataset); }
 
     // Duplicate surpression
-    @Test public void dynamic06()    { testCount("SELECT ?s FROM <graph:1> FROM <graph:2> {?s <uri:q> ?o}", 1, dataset) ; }
+    @Test public void dynamic06()    { testCount("SELECT ?s FROM <graph:1> FROM <graph:2> {?s <uri:q> ?o}", 1, dataset); }
 
-    @Test public void dynamic07()    { testCount("SELECT ?s FROM NAMED <graph:1> {?s <uri:q> ?o}", 0, dataset) ; }
+    @Test public void dynamic07()    { testCount("SELECT ?s FROM NAMED <graph:1> {?s <uri:q> ?o}", 0, dataset); }
 
-    @Test public void dynamic08()    { testCount("SELECT ?s FROM <graph:2> FROM NAMED <graph:1> {?s <uri:q> ?o}", 1, dataset) ; }
+    @Test public void dynamic08()    { testCount("SELECT ?s FROM <graph:2> FROM NAMED <graph:1> {?s <uri:q> ?o}", 1, dataset); }
 
     @Test public void dynamic09()    { testCount("SELECT * "+
                                                 "FROM <graph:1> FROM <graph:2> "+
                                                 "FROM NAMED <graph:3> FROM NAMED <graph:4> "+
                                                 "{ GRAPH ?g { ?s <uri:q> ?o }}",
-                                                2, dataset) ;
+                                                2, dataset);
                                     }
 
     @Test public void dynamic10()    { testCount("SELECT * "+
                                                 "FROM <graph:1> FROM <graph:2>"+
                                                 "FROM NAMED <graph:3> FROM NAMED <graph:4> "+
                                                 "{ GRAPH ?g { ?s <uri:q> ?o }}",
-                                                2, dataset) ;
+                                                2, dataset);
                                     }
 
     @Test public void dynamic11()    { testCount("SELECT * "+
                                                 "FROM <x:unknown>"+
                                                 "{ GRAPH ?g { ?s <uri:q> ?o }}",
-                                                0, dataset) ;
+                                                0, dataset);
                                     }
 
     @Test public void dynamic12()    { testCount("SELECT * "+
                                                  "FROM  <graph:1>"+
                                                  "{ GRAPH ?g { }}",
-                                                 0, dataset) ;
+                                                 0, dataset);
                                      }
 
     @Test public void dynamic13()    { testCount("SELECT * "+
                                                  "FROM NAMED <graph:1>"+
                                                  "{ GRAPH ?g { }}",
-                                                 1, dataset) ;
+                                                 1, dataset);
                                      }
 
     @Test public void dynamic14()    { testCount("SELECT * "+
                                                  "FROM NAMED <graph:1> FROM NAMED <graph:2>"+
                                                  "FROM <graph:3> "+
                                                  "{ GRAPH ?g { }}",
-                                                 2, dataset) ;
+                                                 2, dataset);
                                      }
 
     // -- Union graph.
 
     // No FROM <union> the underlying dataset.
     @Test public void dynamic_union_1() {
-        testCount("SELECT * FROM <urn:x-arq:UnionGraph> { ?s <uri:p> ?o }", 5, dataset) ;
+        testCount("SELECT * FROM <urn:x-arq:UnionGraph> { ?s <uri:p> ?o }", 5, dataset);
     }
 
     // Should be able to see two graphs in the union.

@@ -18,8 +18,10 @@
 
 package org.apache.jena.riot.lang.rdfxml.rrx;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.riot.ReaderRIOTFactory;
-import org.junit.Test;
+
 
 // Eventually a  manifests?
 
@@ -30,20 +32,20 @@ import org.junit.Test;
  */
 
 public abstract class AbstractTestRDFXML_RRX {
-
-    private final String testLabel;
     private final String implName;
-    private final ReaderRIOTFactory factory;
+    private final String testLabel;
     private final String filename;
+    private final ReaderRIOTFactory factory;
 
-    public AbstractTestRDFXML_RRX(String testLabel, ReaderRIOTFactory factory, String implName, String filename) {
-        this.testLabel = testLabel;
+    public AbstractTestRDFXML_RRX(RRX_TestFileArgs args, String implName) {
         this.implName = implName;
-        this.factory = factory;
-        this.filename = filename;
+        this.testLabel = args.label();
+        this.filename = args.filename();
+        this.factory = args.factory();
     }
 
-    @Test public void test() {
+    @Test
+    public void test() {
         RunTestRDFXML.runTestCompareARP(testLabel, factory, implName, filename);
     }
 }

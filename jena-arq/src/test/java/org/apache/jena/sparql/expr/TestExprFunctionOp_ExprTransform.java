@@ -18,13 +18,14 @@
 
 package org.apache.jena.sparql.expr;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.sparql.algebra.walker.Walker;
 import org.apache.jena.sparql.expr.TestExprFunctionOp_NodeTransform.ExprFunctionOpValidator;
 import org.apache.jena.sparql.util.ExprUtils;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class TestExprFunctionOp_ExprTransform {
     private ExprTransform et = new ExprTransformCopy()
@@ -59,9 +60,9 @@ public class TestExprFunctionOp_ExprTransform {
         Walker.walk(e2, opVisitor);
         Walker.walk(e3, opVisitor);
 
-        assertEquals(e2, e3) ;
+        assertEquals(e2, e3);
         if (!e2.equalsBySyntax(e3)) {
-            Assert.fail("Objects differ by syntax: " + e2 + " != " + e3);
+            fail("Objects differ by syntax: " + e2 + " != " + e3);
         }
     }
 }

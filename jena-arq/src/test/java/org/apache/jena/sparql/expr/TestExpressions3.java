@@ -18,15 +18,16 @@
 
 package org.apache.jena.sparql.expr;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.sse.Item ;
-import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.sparql.sse.builders.BuilderBinding ;
-import org.apache.jena.sparql.util.ExprUtils ;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.sse.Item;
+import org.apache.jena.sparql.sse.SSE;
+import org.apache.jena.sparql.sse.builders.BuilderBinding;
+import org.apache.jena.sparql.util.ExprUtils;
 
 /** Expression evaluation involving bindings.
 * @see TestExpressions
@@ -37,38 +38,38 @@ import org.junit.Test ;
 */
 public class TestExpressions3
 {
-    @Test public void bound_01()       { eval("BOUND(?x)", "(?x 1)", true) ; }
-    @Test public void bound_02()       { eval("BOUND(?x)", "(?y 1)", false) ; }
-    @Test public void bound_03()       { evalExpr("(bound 1)", "(?y 1)", true) ; }
-    @Test public void bound_04()       { evalExpr("(bound 1)", "()", true) ; }
-    @Test public void bound_05()       { evalExpr("(bound ?x)", "(?y 1)", false) ; }
-    @Test public void bound_06()       { evalExpr("(bound ?x)", "(?x 1)", true) ; }
-    @Test public void bound_07()       { evalExpr("(bound (+ ?x 1))", "(?y 1)", false) ; }
-    @Test public void bound_08()       { evalExpr("(bound (+ ?y 1))", "(?y 1)", true) ; }
+    @Test public void bound_01()       { eval("BOUND(?x)", "(?x 1)", true); }
+    @Test public void bound_02()       { eval("BOUND(?x)", "(?y 1)", false); }
+    @Test public void bound_03()       { evalExpr("(bound 1)", "(?y 1)", true); }
+    @Test public void bound_04()       { evalExpr("(bound 1)", "()", true); }
+    @Test public void bound_05()       { evalExpr("(bound ?x)", "(?y 1)", false); }
+    @Test public void bound_06()       { evalExpr("(bound ?x)", "(?x 1)", true); }
+    @Test public void bound_07()       { evalExpr("(bound (+ ?x 1))", "(?y 1)", false); }
+    @Test public void bound_08()       { evalExpr("(bound (+ ?y 1))", "(?y 1)", true); }
 
     // From SPARQL syntax
     private static void eval(String string, String bindingStr, boolean expected) {
-        Binding binding = binding(bindingStr) ;
-        Expr expr = ExprUtils.parse(string) ;
-        NodeValue nv = expr.eval(binding, LibTestExpr.createTest()) ;
-        boolean b = XSDFuncOp.effectiveBooleanValue(nv) ;
-        assertEquals(string, expected, b) ;
+        Binding binding = binding(bindingStr);
+        Expr expr = ExprUtils.parse(string);
+        NodeValue nv = expr.eval(binding, LibTestExpr.createTest());
+        boolean b = XSDFuncOp.effectiveBooleanValue(nv);
+        assertEquals(expected, b, ()->"Input="+string);
     }
 
     // From algebra/SSE
     private static void evalExpr(String exprString, String bindingStr, boolean expected) {
-        Binding binding = binding(bindingStr) ;
-        Expr expr = SSE.parseExpr(exprString) ;
-        NodeValue nv = expr.eval(binding, LibTestExpr.createTest()) ;
-        boolean b = XSDFuncOp.effectiveBooleanValue(nv) ;
-        assertEquals(exprString, expected, b) ;
+        Binding binding = binding(bindingStr);
+        Expr expr = SSE.parseExpr(exprString);
+        NodeValue nv = expr.eval(binding, LibTestExpr.createTest());
+        boolean b = XSDFuncOp.effectiveBooleanValue(nv);
+        assertEquals(expected, b, ()->"Input="+exprString);
     }
 
     private static Binding binding(String bindingStr) {
         if ( bindingStr == null || bindingStr.matches("\\s*\\(\\s*\\)\\s*") )
-            return null ;
-        Item item = SSE.parse("(binding "+bindingStr+")") ;
-        Binding binding = BuilderBinding.build(item) ;
-        return binding ;
+            return null;
+        Item item = SSE.parse("(binding "+bindingStr+")");
+        Binding binding = BuilderBinding.build(item);
+        return binding;
     }
 }

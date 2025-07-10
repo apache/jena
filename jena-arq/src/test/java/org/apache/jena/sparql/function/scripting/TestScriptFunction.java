@@ -18,12 +18,20 @@
 
 package org.apache.jena.sparql.function.scripting;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.Parameter;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.query.ARQ;
@@ -31,61 +39,69 @@ import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.exec.QueryExec;
-import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.ExprException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.Context;
-import org.junit.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
-@RunWith(Parameterized.class)
+@ParameterizedClass(name="{index}: {0}")
+@MethodSource("provideArgs")
 public class TestScriptFunction {
-    private static Context ctx = ARQ.getContext();
-
-    private String language;
-    private String library;
-    private String functions;
-
-    @BeforeClass public static void enableScripting() {
-        System.setProperty(ARQ.systemPropertyScripting, "true");
-    }
-
-    @AfterClass public static void disableScripting() {
-        System.clearProperty(ARQ.systemPropertyScripting);
-    }
-
-    /*package*/ static String DIR = "testing/ARQ/Scripting";
 
     // Python, by having jython on the classpath, worked.
     // Support removed at the end of Jena4.
     //
     // Javascript has been more widely used.
-    // Python  hasn't seen much take up, if any.
+    // Python hasn't seen much take up, if any.
     // Any scripting language support must be careful of security issues.
 
-    @Parameterized.Parameters(name="{0}")
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                { "js", DIR+"/test-library.js"
-                      , "function toCamelCase(str) { return str.split(' ').map(cc).join('');}\n"
-                      + "function ucFirst(word)    { return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();}\n"
-                      + "function lcFirst(word)    { return word.toLowerCase(); }\n"
-                      + "function cc(word,index)   { return (index == 0) ? lcFirst(word) : ucFirst(word); }\n" }
-//                , {"python", DIR+"/test-library.py"
-//                        , "def toCamelCase(str):\n"
-//                        + "  return ''.join([cc(word, index) for index, word in enumerate(str.split(' '))])\n"
-//                        + "def ucFirst(word):\n"
-//                        + "  return word[0].upper() + word[1:].lower()\n"
-//                        + "def lcFirst(word):\n"
-//                        + "  return word.lower()\n"
-//                        + "def cc(word,index):\n"
-//                        + "  if index == 0:\n"
-//                        + "    return lcFirst(word)\n"
-//                        + "  return ucFirst(word)\n" }
-        });
+
+    private static Stream<Arguments> provideArgs() {
+
+        String functionsJS = """
+                function toCamelCase(str) { return str.split(' ').map(cc).join('');}
+                function ucFirst(word)    { return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();}\
+                function lcFirst(word)    { return word.toLowerCase(); }
+                function cc(word,index)   { return (index == 0) ? lcFirst(word) : ucFirst(word); }
+                """;
+
+//        String functionsPython = """
+//                def toCamelCase(str):
+//                  return ''.join([cc(word, index) for index, word in enumerate(str.split(' '))])
+//                def ucFirst(word):
+//                  return word[0].upper() + word[1:].lower()
+//                def lcFirst(word):
+//                  return word.lower()
+//                def cc(word,index):
+//                  if index == 0:
+//                    return lcFirst(word)
+//                  return ucFirst(word)
+//                 """;
+
+        List<Arguments> x = List.of(Arguments.of("js", DIR + "/test-library.js", functionsJS)
+                                   //, Arguments.of("python", DIR + "/test-library.py", functionsPython)
+                                   );
+        return x.stream();
     }
+    private static Context ctx = ARQ.getContext();
+
+    @Parameter(0)
+    String language;
+    @Parameter(1)
+    String library;
+    @Parameter(2)
+    String functions;
+
+    @BeforeAll public static void enableScripting() {
+        System.setProperty(ARQ.systemPropertyScripting, "true");
+    }
+
+    @AfterAll public static void disableScripting() {
+        System.clearProperty(ARQ.systemPropertyScripting);
+    }
+
+    /*package*/ static String DIR = "testing/ARQ/Scripting";
+
 
     // Script library functions (JS and Python)
     private static String[] testLibFunctions = {
@@ -106,19 +122,13 @@ public class TestScriptFunction {
     /*package*/ static String testLibAllow = String.join(",", testLibFunctions);
     private static Context context = new Context().set(ARQ.symCustomFunctionScriptAllowList, testLibAllow);
 
-    public TestScriptFunction(String language, String library, String functions) {
-        this.language = language;
-        this.library = library;
-        this.functions = functions;
-    }
-
-    @Before
+    @BeforeEach
     public void setup() {
         ctx.set(ScriptLangSymbols.scriptLibrary(language), library);
         ctx.set(ScriptLangSymbols.scriptFunctions(language), functions);
     }
 
-    @After
+    @AfterEach
     public void teardown() {
         ctx.unset(ScriptLangSymbols.scriptFunctions(language));
         ctx.unset(ScriptLangSymbols.scriptLibrary(language));
@@ -149,14 +159,14 @@ public class TestScriptFunction {
         assertDatatype(nv, XSDDatatype.XSDdouble);
     }
 
-    @Test(expected= ExprEvalException.class)
+    @Test
     public void script_dt_undef() {
-        NodeValue nv = eval("rtnUndef");
+        assertThrows(ExprException.class, ()-> eval("rtnUndef") );
     }
 
-    @Test(expected=ExprEvalException.class)
+    @Test
     public void script_dt_null() {
-        NodeValue nv = eval("rtnNull");
+        assertThrows(ExprException.class, ()->  eval("rtnNull") );
     }
 
 //    @Test public void script_dt_symbol() {
@@ -235,15 +245,15 @@ public class TestScriptFunction {
         assertEquals(nv.asNode().getLiteralDatatype(), xsdDatatype);
     }
 
-    @Test(expected=ExprException.class)
+    @Test
     public void script_err_1() {
-        NodeValue nv = eval("no_such_function");
+        assertThrows(ExprException.class, ()-> eval("no_such_function") );
     }
 
     // Wrong number of argument is OK in JavaScript - "null" return becomes ExprEvalException.
-    @Test(expected=ExprEvalException.class)
+    @Test
     public void script_err_2() {
-        NodeValue nv = eval("identity");
+        assertThrows(ExprException.class, ()-> eval("identity") );
     }
 
     @Test
@@ -267,12 +277,12 @@ public class TestScriptFunction {
         assertEquals(nvx, nv);
     }
 
-    @Test(expected=ScriptDenyException.class)
+    @Test
     public void script_sparql_bad_1() {
         Query query = QueryFactory.read(DIR+"/js-query-5.rq");
         QueryExec qExec = QueryExec.dataset(DatasetGraphFactory.empty()).query(query).build();
         // Exception happens here during query build time, which is the start of execution.
-        qExec.select();
+        assertThrows(ScriptDenyException.class, ()-> qExec.select());
     }
 
     @Test
@@ -297,19 +307,17 @@ public class TestScriptFunction {
         }
     }
 
-    @Test(expected=ExprException.class)
+    @Test
     public void scripting_not_enabled_1() {
         execScriptable(null, ()->{
-            NodeValue nv = eval("identity", "1");
-            assertNotNull(nv);
+            assertThrows(ExprException.class, ()-> eval("identity", "1") );
         });
     }
 
-    @Test(expected=ExprException.class)
+    @Test
     public void scripting_not_enabled_2() {
         execScriptable("false", ()->{
-            NodeValue nv = eval("identity", "1");
-            assertNotNull(nv);
+            assertThrows(ExprException.class, ()-> eval("identity", "1") );
         });
     }
 
@@ -323,7 +331,7 @@ public class TestScriptFunction {
 
     private NodeValue eval(String fn, String ...args) {
         NodeValue[] nvs = new NodeValue[args.length];
-        for ( int i = 0 ; i < args.length ; i++ ) {
+        for ( int i = 0; i < args.length; i++ ) {
             nvs[i] = nv(args[i]);
         }
         ScriptFunction f = new ScriptFunction();

@@ -16,97 +16,99 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core ;
+package org.apache.jena.sparql.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.apache.jena.sparql.ARQException ;
-import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.sparql.util.Symbol ;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.sparql.ARQException;
+import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.Symbol;
 
 public class TestContext {
-    static Symbol p1 = Symbol.create("p1") ;
-    static Symbol p2 = Symbol.create("p2") ;
+    static Symbol p1 = Symbol.create("p1");
+    static Symbol p2 = Symbol.create("p2");
 
     @Test
     public void testCxt1() {
-        Context cxt = new Context() ;
+        Context cxt = new Context();
     }
 
     @Test
     public void testCxt2() {
-        Context cxt = new Context() ;
-        assertTrue("Defined in empty context", !cxt.isDefined(p1)) ;
-        cxt.set(p1, "v") ;
-        assertTrue("Not defined after .set", cxt.isDefined(p1)) ;
-        Object v = cxt.get(p1) ;
-        assertSame("Not the same", "v", v) ;
+        Context cxt = new Context();
+        assertTrue(!cxt.isDefined(p1), ()->"Defined in empty context");
+        cxt.set(p1, "v");
+        assertTrue(cxt.isDefined(p1), ()->"Not defined after .set");
+        Object v = cxt.get(p1);
+        assertSame("v", v, ()->"Not the same");
     }
 
     @Test
     public void testCxt3() {
-        Context cxt = new Context() ;
-        cxt.set(p1, "v") ;
-        cxt.setIfUndef(p1, "w") ;
-        Object v = cxt.get(p1) ;
-        assertSame("Not as first set", "v", v) ;
+        Context cxt = new Context();
+        cxt.set(p1, "v");
+        cxt.setIfUndef(p1, "w");
+        Object v = cxt.get(p1);
+        assertSame("v", v, ()->"Not as first set");
     }
 
     @Test
     public void testCxt4() {
-        Context cxt = new Context() ;
-        cxt.set(p1, "true") ;
-        assertTrue("Not true", cxt.isTrue(p1)) ;
-        assertTrue("Not true or undef", cxt.isTrueOrUndef(p1)) ;
+        Context cxt = new Context();
+        cxt.set(p1, "true");
+        assertTrue(cxt.isTrue(p1), ()->"Not true");
+        assertTrue(cxt.isTrueOrUndef(p1), ()->"Not true or undef");
 
-        assertTrue("Not false or undef", cxt.isFalseOrUndef(p2)) ;
-        assertTrue("False when undef", !cxt.isFalse(p2)) ;
+        assertTrue(cxt.isFalseOrUndef(p2), ()->"Not false or undef");
+        assertTrue(!cxt.isFalse(p2), ()->"False when undef");
     }
 
     @Test
     public void testCxt5() {
-        Context cxt = new Context() ;
-        cxt.set(p1, "false") ;
-        assertTrue("Not false", cxt.isFalse(p1)) ;
-        assertTrue("Not false or undef", cxt.isFalseOrUndef(p1)) ;
+        Context cxt = new Context();
+        cxt.set(p1, "false");
+        assertTrue(cxt.isFalse(p1), ()->"Not false");
+        assertTrue(cxt.isFalseOrUndef(p1), ()->"Not false or undef");
     }
 
     @Test
     public void testCxt6() {
-        Context cxt = new Context() ;
-        cxt.setTrue(p1) ;
-        assertTrue("Not true", cxt.isTrue(p1)) ;
-        String x = cxt.getAsString(p1) ;
-        assertEquals("Not string 'true'", "true", x) ;
+        Context cxt = new Context();
+        cxt.setTrue(p1);
+        assertTrue(cxt.isTrue(p1), ()->"Not true");
+        String x = cxt.getAsString(p1);
+        assertEquals("true", x,()->"Not string 'true'");
     }
 
     @Test
     public void testCxt7() {
-        Context cxt = new Context() ;
-        assertEquals(-1, cxt.getInt(p1, -1)) ;
-        cxt.set(p1, 1) ;
-        int x = cxt.getInt(p1, -1) ;
-        assertEquals(1, x) ;
+        Context cxt = new Context();
+        assertEquals(-1, cxt.getInt(p1, -1));
+        cxt.set(p1, 1);
+        int x = cxt.getInt(p1, -1);
+        assertEquals(1, x);
     }
-    
+
     @Test
     public void testCxt8() {
-        Context cxt = new Context() ;
-        assertEquals(-1L, cxt.getLong(p1, -1L)) ;
-        cxt.set(p1, 1L) ;
-        long x = cxt.getLong(p1, -2L) ;
-        assertEquals(1L, x) ;
+        Context cxt = new Context();
+        assertEquals(-1L, cxt.getLong(p1, -1L));
+        cxt.set(p1, 1L);
+        long x = cxt.getLong(p1, -2L);
+        assertEquals(1L, x);
     }
-    
-    @Test(expected=ARQException.class)
+
+    @Test
     public void testCxt9() {
-        Context cxt = new Context() ;
-        assertEquals(-1L, cxt.getLong(p1, -1L)) ;
-        cxt.set(p1, 1L) ;
+        Context cxt = new Context();
+        assertEquals(-1L, cxt.getLong(p1, -1L));
+        cxt.set(p1, 1L);
         // Bad. Long for Integer.
-        cxt.getInt(p1, -2) ;
+        assertThrows(ARQException.class, ()->cxt.getInt(p1, -2));
     }
 }

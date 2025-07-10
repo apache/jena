@@ -18,36 +18,38 @@
 
 package org.apache.jena.riot.writer;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.*;
 import org.apache.jena.sparql.graph.GraphFactory;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
-/** Tests for Turtle (and Trig) */
-@RunWith(Parameterized.class)
+@ParameterizedClass
+@MethodSource("provideArgs")
 public class TestTrigWriter {
-    @Parameters(name = "{index}: {0}")
-    public static Iterable<Object[]> data() {
-        List<Object[]> x = new ArrayList<>() ;
-        x.add(new Object[]{"Turtle", RDFFormat.TURTLE});
-        x.add(new Object[]{"Turtle/Pretty", RDFFormat.TURTLE_PRETTY});
-        x.add(new Object[]{"Turtle/Blocks", RDFFormat.TURTLE_BLOCKS});
-        x.add(new Object[]{"Turtle/Flat", RDFFormat.TURTLE_FLAT});
-        x.add(new Object[]{"Turtle/Long", RDFFormat.TURTLE_LONG});
-        x.add(new Object[]{"Trig", RDFFormat.TRIG});
-        x.add(new Object[]{"Trig/Pretty", RDFFormat.TRIG_PRETTY});
-        x.add(new Object[]{"Trig/Blocks", RDFFormat.TRIG_BLOCKS});
-        x.add(new Object[]{"Trig/Flat", RDFFormat.TRIG_FLAT});
-        x.add(new Object[]{"Trig/Long", RDFFormat.TRIG_LONG});
-        return x ;
+
+    private static Stream<Arguments> provideArgs() {
+        List<Arguments> x = List.of
+                (Arguments.of("Turtle", RDFFormat.TURTLE),
+                 Arguments.of("Turtle/Pretty", RDFFormat.TURTLE_PRETTY),
+                 Arguments.of("Turtle/Blocks", RDFFormat.TURTLE_BLOCKS),
+                 Arguments.of("Turtle/Flat", RDFFormat.TURTLE_FLAT),
+                 Arguments.of("Turtle/Long", RDFFormat.TURTLE_LONG),
+                 Arguments.of("Trig", RDFFormat.TRIG),
+                 Arguments.of("Trig/Pretty", RDFFormat.TRIG_PRETTY),
+                 Arguments.of("Trig/Blocks", RDFFormat.TRIG_BLOCKS),
+                 Arguments.of("Trig/Flat", RDFFormat.TRIG_FLAT),
+                 Arguments.of("Trig/Long", RDFFormat.TRIG_LONG)
+                        );
+        return x.stream();
     }
 
     private static String DIR = "testing/RIOT/Writer/";

@@ -18,26 +18,28 @@
 
 package org.apache.jena.sparql.negation;
 
-import java.io.StringReader ;
-import java.util.Arrays ;
-import java.util.Collection ;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.query.* ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.junit.AfterClass ;
-import org.junit.Assert ;
-import org.junit.Test ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Parameterized ;
-import org.junit.runners.Parameterized.Parameters ;
+import java.io.StringReader;
+import java.util.List;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.query.*;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 
 /**
  * Tests for calculating graph deltas using SPARQL
- * 
  */
-@RunWith(Parameterized.class)
+@ParameterizedClass(name="{index}: {0}")
+@MethodSource("provideArgs")
 public class TestGraphDeltas {
 
     private static final String testData = StrUtils.strjoinNL("<http://r1> <http://r1> <http://r1> .",
@@ -65,7 +67,7 @@ public class TestGraphDeltas {
          "    GRAPH <http://b> { ?s ?p ?o }",
          "  }",
          "}");
-    
+
     private static final String OptionalSameTermQuery1 = StrUtils.strjoinNL
         ("SELECT *",
          "{",
@@ -107,42 +109,46 @@ public class TestGraphDeltas {
          "}");
 
 
-    @AfterClass
+    @AfterAll
     public static void afterTests() {
         ARQ.getContext().set(ARQ.optimization, true);
     }
 
-    static boolean[] $enabled = new boolean[] { true }, $disabled = new boolean[] { false };
+    enum Optimizer { ENABLED , DISABLED }
 
     /**
      * Data for parameters
      */
-    @Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { { $enabled }, { $disabled } });
-    }
+
+    private static Stream<Arguments> provideArgs() {
+         List<Arguments> x = List.of(
+                Arguments.of( Optimizer.ENABLED ),
+                Arguments.of( Optimizer.DISABLED )
+                    );
+        return x.stream();
+        }
 
     /**
      * Creates new tests
-     * 
+     *
      * @param optimized
      *            Whether to enable the ARQ optimizer
      */
-    public TestGraphDeltas(boolean[] optimized) {
-        ARQ.getContext().set(ARQ.optimization, optimized[0]);
+    public TestGraphDeltas(Optimizer optimized) {
+        ARQ.getContext().set(ARQ.optimization, optimized==Optimizer.ENABLED);
     }
 
     private void testQuery(Dataset ds, String query, String queryName, int differences) {
         try(QueryExecution qe = QueryExecutionFactory.create(query, ds)) {
             ResultSetRewindable results = ResultSetFactory.makeRewindable(qe.execSelect());
-            Assert.assertEquals(queryName + " gave incorrect results", differences, results.size());
+            assertEquals(differences, results.size(), ()->queryName + " gave incorrect results");
         }
     }
 
     /**
      * Tests the delta queries which calculate deltas correctly i.e. finds
      * triples in {@code a} which are not present in {@code b}
-     * 
+     *
      * @param a
      *            Model A
      * @param b
@@ -202,7 +208,7 @@ public class TestGraphDeltas {
         a.read(new StringReader(testData), null, "TTL");
         b.read(new StringReader(testData2), null, "TTL");
         b.removeAll(b.createResource("http://r1"), null, null);
-        Assert.assertEquals(1, b.size());
+        assertEquals(1, b.size());
 
         this.testDeltas(a, b, 1);
         this.testDeltas(b, a, 0);

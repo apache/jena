@@ -18,10 +18,11 @@
 
 package org.apache.jena.riot.web;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.riot.WebContent;
-import org.junit.Test;
 
 public class TestWebContent {
 
@@ -58,6 +59,6 @@ public class TestWebContent {
 
     private void testCanonicalise(String input, String expected) {
         String canonical = WebContent.contentTypeCanonical(input);
-        Assert.assertEquals(expected, canonical);
+        assertEquals(expected, canonical);
     }
 }

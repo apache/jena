@@ -20,9 +20,12 @@ package org.apache.jena.sparql.util.compose;
 
 import static org.apache.jena.rdf.model.ModelFactory.createModelForGraph;
 import static org.apache.jena.sparql.sse.SSE.parseGraph;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
@@ -30,7 +33,6 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
-import org.junit.Test;
 
 public abstract class AbstractTestDatasetCollector {
 
@@ -52,11 +54,13 @@ public abstract class AbstractTestDatasetCollector {
         assertTrue(collected.isEmpty());
     }
 
-    @Test(expected=NullPointerException.class)
+    @Test
     public void noNullDatasetsAllowed() {
-        Stream.<Dataset>builder().add(null).build().collect(testInstance());
+        assertThrows(NullPointerException.class, ()->
+            Stream.<Dataset>builder().add(null).build().collect(testInstance())
+            );
     }
-    
+
     @Test
     public void collectingOneDatasetGivesThatDataset() {
         Graph graph = parseGraph("(graph (triple <s1> <p1> <o1> ))");
@@ -73,7 +77,7 @@ public abstract class AbstractTestDatasetCollector {
         dataset1.listNames().forEachRemaining(graphName ->
             assertGraphsAreIsomorphic(dataset1.getNamedModel(graphName), dataset2.getNamedModel(graphName)));
     }
-    
+
     protected static void assertGraphsAreIsomorphic(Model graph1, Model graph2) {
         assertTrue(graph1.isIsomorphicWith(graph2));
     }

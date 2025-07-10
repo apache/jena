@@ -16,21 +16,21 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core.mem ;
+package org.apache.jena.sparql.core.mem;
 
-import org.apache.jena.sparql.JenaTransactionException ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.transaction.AbstractTestTransPromote ;
+import org.apache.jena.sparql.JenaTransactionException;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.transaction.AbstractTestTransPromote;
 
 /** Tests for transactions that start read and then promote to write -- TIM */
 public class TestDatasetGraphInMemoryPromote extends AbstractTestTransPromote {
     public TestDatasetGraphInMemoryPromote() {
-        super(getLoggers()) ;
+        super(getLoggers());
     }
 
     @Override
     protected DatasetGraph create() {
-        return new DatasetGraphInMemory() ;
+        return new DatasetGraphInMemory();
     }
 
     private static String[] getLoggers() {
@@ -39,6 +39,6 @@ public class TestDatasetGraphInMemoryPromote extends AbstractTestTransPromote {
 
     @Override
     protected Class<JenaTransactionException> getTransactionExceptionClass() {
-        return JenaTransactionException.class ;
+        return JenaTransactionException.class;
     }
 }

@@ -20,46 +20,46 @@ package org.apache.jena.sparql;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.platform.suite.api.SelectClasses;
-import org.junit.platform.suite.api.Suite;
 
 import org.apache.jena.query.TS_Query;
 import org.apache.jena.rdf12.TS_RDF12;
-import org.apache.jena.sparql.algebra.TS_Algebra ;
-import org.apache.jena.sparql.algebra.optimize.TS_Optimization ;
-import org.apache.jena.sparql.api.TS_API ;
-import org.apache.jena.sparql.core.TS_Core ;
-import org.apache.jena.sparql.core.assembler.TS_Assembler ;
-import org.apache.jena.sparql.core.mem.TS_DatasetTxnMem ;
-import org.apache.jena.sparql.engine.TS_Engine ;
-import org.apache.jena.sparql.engine.binding.TS_EngineBinding ;
+import org.apache.jena.sparql.algebra.TS_Algebra;
+import org.apache.jena.sparql.algebra.optimize.TS_Optimization;
+import org.apache.jena.sparql.api.TS_API;
+import org.apache.jena.sparql.core.TS_SparqlCore;
+import org.apache.jena.sparql.core.assembler.TS_Assembler;
+import org.apache.jena.sparql.core.mem.TS_DatasetTxnMem;
+import org.apache.jena.sparql.engine.TS_Engine;
+import org.apache.jena.sparql.engine.binding.TS_EngineBinding;
 import org.apache.jena.sparql.engine.index.TS_Minus;
 import org.apache.jena.sparql.engine.iterator.TS_QueryIterators;
-import org.apache.jena.sparql.engine.join.TS_Join ;
+import org.apache.jena.sparql.engine.join.TS_Join;
 import org.apache.jena.sparql.exec.TS_ExecSPARQL;
-import org.apache.jena.sparql.expr.E_Function ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.TS_Expr ;
-import org.apache.jena.sparql.function.library.TS_LibraryFunctions ;
+import org.apache.jena.sparql.expr.E_Function;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.TS_Expr;
+import org.apache.jena.sparql.function.library.TS_LibraryFunctions;
 import org.apache.jena.sparql.function.scripting.TS_FunctionScripting;
-import org.apache.jena.sparql.function.user.TS_UserFunctions ;
-import org.apache.jena.sparql.graph.TS_Graph ;
-import org.apache.jena.sparql.lang.TS_LangSPARQL ;
+import org.apache.jena.sparql.function.user.TS_UserFunctions;
+import org.apache.jena.sparql.graph.TS_Graph;
+import org.apache.jena.sparql.lang.TS_LangSPARQL;
 import org.apache.jena.sparql.lib.TS_SparqlLib;
-import org.apache.jena.sparql.modify.TS_Update ;
-import org.apache.jena.sparql.negation.TS_Negation ;
-import org.apache.jena.sparql.path.TS_Path ;
-import org.apache.jena.sparql.pfunction.library.TS_PFunction ;
-import org.apache.jena.sparql.resultset.TS_ResultSet ;
-import org.apache.jena.sparql.solver.TS_Solver ;
+import org.apache.jena.sparql.modify.TS_Update;
+import org.apache.jena.sparql.negation.TS_Negation;
+import org.apache.jena.sparql.path.TS_Path;
+import org.apache.jena.sparql.pfunction.library.TS_PFunction;
+import org.apache.jena.sparql.resultset.TS_ResultSet;
+import org.apache.jena.sparql.solver.TS_Solver;
 import org.apache.jena.sparql.sse.TS_SSE;
-import org.apache.jena.sparql.syntax.TS_Syntax ;
-import org.apache.jena.sparql.transaction.TS_Transaction ;
+import org.apache.jena.sparql.syntax.TS_Syntax;
+import org.apache.jena.sparql.transaction.TS_Transaction;
 import org.apache.jena.sparql.util.TS_DyadicDatasetGraphs;
-import org.apache.jena.sparql.util.TS_Util ;
+import org.apache.jena.sparql.util.TS_Util;
 import org.apache.jena.sparql.util.compose.TS_DatasetCollectors;
-import org.apache.jena.sparql.util.iso.TS_Iso ;
+import org.apache.jena.sparql.util.iso.TS_Iso;
 
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 @Suite
 @SelectClasses({
 
@@ -91,7 +91,7 @@ import org.apache.jena.sparql.util.iso.TS_Iso ;
     , TS_Syntax.class
     , TS_API.class
     , TS_ExecSPARQL.class
-    , TS_Core.class
+    , TS_SparqlCore.class
     , TS_Assembler.class
     , TS_DatasetTxnMem.class
     , TS_Path.class

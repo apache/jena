@@ -18,15 +18,17 @@
 
 package org.apache.jena.sparql.engine.binding;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.sparql.engine.binding.itr.Itr;
-import org.junit.Test;
 
 public class TestItr {
 
@@ -69,12 +71,12 @@ public class TestItr {
         assertFalse(iter.hasNext());
     }
 
-    @Test(expected=NoSuchElementException.class)
+    @Test
     public void itr_no_next() {
         Iterator<String> iter = Itr.iter1("A");
         assertTrue(iter.hasNext());
         assertEquals("A", iter.next());
-        iter.next();
+        assertThrows(NoSuchElementException.class,()->iter.next());
     }
 
 }

@@ -18,10 +18,11 @@
 
 package org.apache.jena.rdf12;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.sparql.resultset.ResultsReader;
-import org.junit.Test;
 
 /**
  * Odds and ends for SPARQL*.
