@@ -271,6 +271,6 @@ public class RDFFormat {
     public String toString() {
         if ( variant == null )
             return lang.getName() ;
-        return lang.getName() + "/" + variant ;
+        return lang.getName() + "_" + variant ;
     }
 }
