@@ -43,12 +43,27 @@ public class TestLangTag {
     @Test public void test_lang_basic_09() { testRFC5646("de-CH-w-extend", "de-CH-w-extend", "de", null, "CH", null, "w-extend"); }
     @Test public void test_lang_basic_10() { testRFC5646("de-CH-w-extend-extend", "de-CH-w-extend-extend", "de", null, "CH", null, "w-extend-extend"); }
 
+    //String langString, String formatted, String lang, String script, String region, String variant, String extension)
+
+    // Alignment : region is 3 num, variant is 5-8 num.
+    @Test public void test_lang_basic_11() { testRFC5646("en-123", "en-123", "en", null, "123", null, null); }
+    @Test public void test_lang_basic_12() { testRFC5646("en-12345", "en-12345", "en", null, null, "12345", null); }
+    @Test public void test_lang_basic_13() { testRFC5646("en-123-12345678", "en-123-12345678", "en", null, "123", "12345678", null); }
+    // Extension is "s-XX" (2 to 8).
+    @Test public void test_lang_basic_14() { testRFC5646("en-s-12", "en-s-12", "en", null, null, null, "s-12"); }
+    @Test public void test_lang_basic_15() { testRFC5646("en-s-12345678", "en-s-12345678", "en", null, null, null, "s-12345678"); }
+
     @Test public void test_lang_basic_20() { testPrivateUse("de-CH-x-phonebk-morech", "de-CH-x-phonebk-morech", "de", null, "CH", null, null, "x-phonebk-morech"); }
-    // Private use language tag. No language!
+    // Private use language tag.
     @Test public void test_lang_basic_21() { testPrivateUse("x-private", "x-private", null, null, null, null, null, "x-private"); }
+    // Private use subtag.
     @Test public void test_lang_basic_22() { testPrivateUse("az-Latn-x-latn", "az-Latn-x-latn", "az", "Latn", null, null, null, "x-latn"); }
     @Test public void test_lang_basic_23() { testPrivateUse("sss-x-y", "sss-x-y", "sss", null, null, null, null, "x-y"); }
+    @Test public void test_lang_basic_24() { testPrivateUse("sss-x-1", "sss-x-1", "sss", null, null, null, null, "x-1"); }
+    @Test public void test_lang_basic_25() { testPrivateUse("sss-x-12345678", "sss-x-12345678", "sss", null, null, null, null, "x-12345678"); }
 
+    // Private use language: not language, only a private use section.
+    @Test public void test_lang_basic_26() { testPrivateUse("x-12345678", "x-12345678", null, null, null, null, null, "x-12345678"); }
 
     // 4 chars reserved
     // 5-8 characters
@@ -73,6 +88,8 @@ public class TestLangTag {
     @Test public void test_lang_bad_21() { testBad("abcdefghz"); }
     @Test public void test_lang_bad_22() { testBad("en-abcdefghz"); }
     @Test public void test_lang_bad_23() { testBad("en-Latn-x-abcdefghz"); }
+    @Test public void test_lang_bad_24() { testBad("en-123456789"); }
+
 
     // Bad extension
     @Test public void test_lang_bad_31() { testBad("sss-d"); }
@@ -84,6 +101,7 @@ public class TestLangTag {
     @Test public void test_lang_bad_45() { testBad("sss-x"); }
     @Test public void test_lang_bad_46() { testBad("sss-x-"); }
     @Test public void test_lang_bad_47() { testBad("sss-x-part-"); }
+    @Test public void test_lang_bad_48() { testBad("sss-x-part-Q12345678"); }
 
     @Test public void test_lang_bad_repeated_extension() {
         // "en-a-bbb-a-ccc" is invalid because the subtag 'a' appears twice.

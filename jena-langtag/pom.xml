@@ -54,16 +54,6 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- 
-         Needed for @Parameterized test suite
-         JUnit5 will eventually have @ParameterizedClass. 
-    -->
-    <dependency>
-      <groupId>org.junit.vintage</groupId>
-      <artifactId>junit-vintage-engine</artifactId>
-      <scope>test</scope>
-    </dependency>
-
   </dependencies>
 
   <build>

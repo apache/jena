@@ -123,6 +123,15 @@ class InternalLangTag {
         return true;
     }
 
+    static boolean isAlphaNum(String string, int start, int end) {
+        for ( int i = start ; i < end ; i++ ) {
+            char ch = string.charAt(i);
+            if ( ! isAlphaNum(ch) )
+                return false;
+        }
+        return true;
+    }
+
     static void checkAlphaMinus(String string, int N, int start, int end) {
         for ( int i = start ; i < end ; i++ ) {
             char ch = string.charAt(i);
@@ -147,7 +156,7 @@ class InternalLangTag {
         }
     }
 
-    /*package*/ static String str(char ch) {
+    static String str(char ch) {
         return String.format("'%s' U+%04X", Character.valueOf(ch), (int)ch);
     }
 
@@ -157,6 +166,10 @@ class InternalLangTag {
 
     static boolean isNum(char ch) {
         return ( ch >= '0' && ch <= '9' );
+    }
+
+    static boolean isAlphaNum(char ch) {
+        return isAlpha(ch) || isNum(ch);
     }
 
     static boolean isMinus(char ch) {
