@@ -221,6 +221,13 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
             String value = e.getValue();
             String already = this.getPrefixFor(value);
             if ( already == null ) {
+                try {
+                    checkURI(value);
+                } catch(IRIException ex) {
+                    // If it is a bad URI, skip don't use it.
+                    // j.N may be generated.
+                    continue;
+                }
                 this.setNsPrefix(model.getNsURIPrefix(value), value);
                 if ( writingAllModelPrefixNamespaces ) {
                     this.addNameSpace(value);

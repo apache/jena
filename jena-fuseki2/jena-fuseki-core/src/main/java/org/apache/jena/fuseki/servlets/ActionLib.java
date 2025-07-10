@@ -338,7 +338,7 @@ public class ActionLib {
      * One of {@code lang} and {@code fmt} maybe null and will be calculated.
      * {@code actualContentType} maybe null in which case the standard content type for the syntax is used.
      */
-    private static void writeResponse(HttpAction action, BiConsumer<OutputStream, RDFFormat> writeAction,RDFFormat fmt, String actualContentType) {
+    private static void writeResponse(HttpAction action, BiConsumer<OutputStream, RDFFormat> writeAction, RDFFormat fmt, String actualContentType) {
         String ct = actualContentType;
         Lang lang = fmt.getLang();
         if ( ct == null )
@@ -356,7 +356,7 @@ public class ActionLib {
                     writeAction.accept(bout, fmt);
                     bytes = bout.toByteArray();
                 } catch (JenaException ex) {
-                    // Problems formatting.
+                    // Problems formatting in RDF/XML.
                     action.log.warn(format("[%d] Failed to produce %s: %s", action.id, lang.getLabel(), ex.getMessage()));
                     ServletOps.error(HttpSC.NOT_ACCEPTABLE_406);
                     return;
