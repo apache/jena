@@ -55,8 +55,7 @@ public class IRIs {
 
     /**
      * Check a string is valid syntax for an IRI,
-     * is an absolute IRI (resolve if necessary)
-     * and normalize (e.g. remove "./.." and "/../").
+     * is an absolute IRI (resolve if necessary).
      */
     static public String checkEx(String iriStr) {
         Objects.requireNonNull(iriStr);
