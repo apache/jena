@@ -25,11 +25,11 @@ import org.apache.jena.sys.JenaSystem;
 /**
  * Jena core test suite.
  */
-public class TestPackage_core extends TestCase {
+public class JenaCoreTestAll extends TestCase {
 
     static public TestSuite suite() {
         JenaSystem.init();
-        // Include old Turtle parser - not up-to-date but enouhg to read test input files
+        // Include old Turtle parser - not up-to-date but enough to read test input files
         RDFReaderFImpl.alternative(new X_RDFReaderF());
 
         TestSuite ts = new TestSuite() ;
