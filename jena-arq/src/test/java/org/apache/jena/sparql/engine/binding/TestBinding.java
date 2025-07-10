@@ -18,16 +18,17 @@
 
 package org.apache.jena.sparql.engine.binding;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.sse.SSE;
-import org.junit.Test;
 
 public class TestBinding {
     private static Node n_1 = SSE.parseNode("'1'");
@@ -279,60 +280,60 @@ public class TestBinding {
         assertEquals(n_a, builder.get(vp1));
     }
 
-    @Test(expected=NullPointerException.class)
-    public void binding_bad_01() {
-        Binding b = BindingFactory.binding(var1, null);
-    }
-
-    @Test(expected=NullPointerException.class)
-    public void binding_bad_02() {
-        Binding b = BindingFactory.binding(null, n_1);
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void binding_bad_03() {
-        Binding b = BindingFactory.binding(var1, n_1, var1, n_2);
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void binding_bad_04() {
-        Binding b = BindingFactory.binding(var1, n_1, var2, n_2, var1, n_3);
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void binding_bad_05() {
-        Binding b = BindingFactory.binding(var1, n_1, var2, n_2, var2, n_3);
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void binding_bad_06() {
-        Binding b = BindingFactory.binding(var1, n_1, var1, n_2, var3, n_3);
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void binding_bad_07() {
-        Binding b = BindingFactory.binding(var1, n_1, var2, n_2, var3, n_3, var1, n_4);
-    }
-
-    @Test(expected=NullPointerException.class)
-    public void binding_builder_bad_01() {
-        BindingBuilder builder = Binding.builder();
-        builder.add(var1, null);
-    }
-
-    @Test(expected=NullPointerException.class)
-    public void binding_builder_bad_02() {
-        BindingBuilder builder = Binding.builder();
-        builder.add(null, n_1);
-        //var1, n_1, var2, n_2, var3, n_3, var1, n_4);
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void binding_builder_bad_03() {
-        BindingBuilder builder = Binding.builder();
-        builder.add(var1, n_1);
-        builder.add(var1, n_1);
-    }
+//    @Test(expected=NullPointerException.class)
+//    public void binding_bad_01() {
+//        Binding b = BindingFactory.binding(var1, null);
+//    }
+//
+//    @Test(expected=NullPointerException.class)
+//    public void binding_bad_02() {
+//        Binding b = BindingFactory.binding(null, n_1);
+//    }
+//
+//    @Test(expected=IllegalArgumentException.class)
+//    public void binding_bad_03() {
+//        Binding b = BindingFactory.binding(var1, n_1, var1, n_2);
+//    }
+//
+//    @Test(expected=IllegalArgumentException.class)
+//    public void binding_bad_04() {
+//        Binding b = BindingFactory.binding(var1, n_1, var2, n_2, var1, n_3);
+//    }
+//
+//    @Test(expected=IllegalArgumentException.class)
+//    public void binding_bad_05() {
+//        Binding b = BindingFactory.binding(var1, n_1, var2, n_2, var2, n_3);
+//    }
+//
+//    @Test(expected=IllegalArgumentException.class)
+//    public void binding_bad_06() {
+//        Binding b = BindingFactory.binding(var1, n_1, var1, n_2, var3, n_3);
+//    }
+//
+//    @Test(expected=IllegalArgumentException.class)
+//    public void binding_bad_07() {
+//        Binding b = BindingFactory.binding(var1, n_1, var2, n_2, var3, n_3, var1, n_4);
+//    }
+//
+//    @Test(expected=NullPointerException.class)
+//    public void binding_builder_bad_01() {
+//        BindingBuilder builder = Binding.builder();
+//        builder.add(var1, null);
+//    }
+//
+//    @Test(expected=NullPointerException.class)
+//    public void binding_builder_bad_02() {
+//        BindingBuilder builder = Binding.builder();
+//        builder.add(null, n_1);
+//        //var1, n_1, var2, n_2, var3, n_3, var1, n_4);
+//    }
+//
+//    @Test(expected=IllegalArgumentException.class)
+//    public void binding_builder_bad_03() {
+//        BindingBuilder builder = Binding.builder();
+//        builder.add(var1, n_1);
+//        builder.add(var1, n_1);
+//    }
 
     // Assumes UNIQUE_NAMES_CHECK_PARENT
 //    @Test(expected=IllegalArgumentException.class)

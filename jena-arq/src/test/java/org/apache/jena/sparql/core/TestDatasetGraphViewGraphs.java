@@ -18,66 +18,63 @@
 
 package org.apache.jena.sparql.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.sse.SSE ;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.sse.SSE;
+
 
 /** Directly call the view mechanism */
 public class TestDatasetGraphViewGraphs extends AbstractTestGraphOverDatasetGraph
 {
     @Override
-    protected DatasetGraph createBaseDSG() { return DatasetGraphFactory.create() ; }
-    
-    @Override
-    protected Graph makeDefaultGraph(DatasetGraph dsg)
-    {
-        return GraphView.createDefaultGraph(dsg) ;
-    }
+    protected DatasetGraph createBaseDSG() { return DatasetGraphFactory.create(); }
 
     @Override
-    protected Graph makeNamedGraph(DatasetGraph dsg, Node gn)
-    {
-        return GraphView.createNamedGraph(dsg, gn) ;
-    }
-    
-    @Test public void graphDSG_basic_1()
-    {
-        Graph g = makeDefaultGraph(baseDSG) ;
-        assertTrue(g instanceof GraphView) ;
-        GraphView gv = (GraphView)g ;
-        assertEquals(baseDSG, gv.getDataset()) ; 
-        assertEquals(null, gv.getGraphName()) ;
-    }
-    
-    @Test public void graphDSG_basic_2()
-    {
-        Node gn1 = SSE.parseNode("<g1>") ;
-        Graph g = makeNamedGraph(baseDSG, gn1) ;
-        assertTrue(g instanceof GraphView) ;
-        GraphView gv = (GraphView)g ;
-        assertEquals(baseDSG, gv.getDataset()) ; 
-        assertEquals(gn1, gv.getGraphName()) ;
-    }
-    
-    @Test public void graphDSG_view_union_2()
-    {
-        Graph g = GraphView.createUnionGraph(baseDSG) ;
-        assertTrue(g instanceof GraphView) ;
-        long x = Iter.count(g.find(null,null,null)) ;
-        assertEquals(2, x) ;
-    }
-    
-    @Test public void graphDSG_view_union_3()
-    {
-        Graph g = GraphView.createUnionGraph(baseDSG) ;
-        assertEquals(2, g.size()) ;
+    protected Graph makeDefaultGraph(DatasetGraph dsg) {
+        return GraphView.createDefaultGraph(dsg);
     }
 
+    @Override
+    protected Graph makeNamedGraph(DatasetGraph dsg, Node gn) {
+        return GraphView.createNamedGraph(dsg, gn);
+    }
 
+    @Test
+    public void graphDSG_basic_1() {
+        Graph g = makeDefaultGraph(baseDSG);
+        assertTrue(g instanceof GraphView);
+        GraphView gv = (GraphView)g;
+        assertEquals(baseDSG, gv.getDataset());
+        assertEquals(null, gv.getGraphName());
+    }
 
+    @Test
+    public void graphDSG_basic_2() {
+        Node gn1 = SSE.parseNode("<g1>");
+        Graph g = makeNamedGraph(baseDSG, gn1);
+        assertTrue(g instanceof GraphView);
+        GraphView gv = (GraphView)g;
+        assertEquals(baseDSG, gv.getDataset());
+        assertEquals(gn1, gv.getGraphName());
+    }
+
+    @Test
+    public void graphDSG_view_union_2() {
+        Graph g = GraphView.createUnionGraph(baseDSG);
+        assertTrue(g instanceof GraphView);
+        long x = Iter.count(g.find(null, null, null));
+        assertEquals(2, x);
+    }
+
+    @Test
+    public void graphDSG_view_union_3() {
+        Graph g = GraphView.createUnionGraph(baseDSG);
+        assertEquals(2, g.size());
+    }
 }

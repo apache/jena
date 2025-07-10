@@ -18,6 +18,17 @@
 
 package org.apache.jena.sparql.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.engine.ExecutionContext;
@@ -36,18 +47,12 @@ import org.apache.jena.sparql.service.ServiceExecutorRegistry;
 import org.apache.jena.sparql.service.bulk.ChainingServiceExecutorBulk;
 import org.apache.jena.sparql.service.single.ChainingServiceExecutor;
 import org.apache.jena.sys.JenaSystem;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * To test utility {@link ContextUtils} methods.
  */
 public class TestContextUtils {
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         JenaSystem.init();
     }
@@ -99,31 +104,31 @@ public class TestContextUtils {
         givenContext.put(ARQConstants.registryServiceExecutors, givenServiceExecutorRegistry);
 
         Context actualContext = ContextUtils.copyWithRegistries(givenContext);
-        Assert.assertNotNull(actualContext);
-        Assert.assertNotSame(givenContext, actualContext);
+        assertNotNull(actualContext);
+        assertNotSame(givenContext, actualContext);
 
         PropertyFunctionRegistry actualPFunctionRegistry = PropertyFunctionRegistry.get(actualContext);
         FunctionRegistry actualFunctionRegistry = FunctionRegistry.get(actualContext);
         ServiceExecutorRegistry actualServiceExecutorRegistry = ServiceExecutorRegistry.get(actualContext);
 
-        Assert.assertNotNull(actualPFunctionRegistry);
-        Assert.assertNotNull(actualFunctionRegistry);
-        Assert.assertNotNull(actualServiceExecutorRegistry);
+        assertNotNull(actualPFunctionRegistry);
+        assertNotNull(actualFunctionRegistry);
+        assertNotNull(actualServiceExecutorRegistry);
 
-        Assert.assertNotSame(givenFunctionRegistry, actualFunctionRegistry);
-        Assert.assertNotSame(givenPFunctionRegistry, actualPFunctionRegistry);
-        Assert.assertNotSame(givenServiceExecutorRegistry, actualServiceExecutorRegistry);
+        assertNotSame(givenFunctionRegistry, actualFunctionRegistry);
+        assertNotSame(givenPFunctionRegistry, actualPFunctionRegistry);
+        assertNotSame(givenServiceExecutorRegistry, actualServiceExecutorRegistry);
 
         List<FunctionFactory> actualFunctionFactories = new ArrayList<>();
         actualFunctionRegistry.keys().forEachRemaining(k -> actualFunctionFactories.add(actualFunctionRegistry.get(k)));
         List<PropertyFunctionFactory> actualPFunctionFactories = new ArrayList<>();
         actualPFunctionRegistry.keys().forEachRemaining(k -> actualPFunctionFactories.add(actualPFunctionRegistry.get(k)));
 
-        Assert.assertSame(givenPFunctionFactory, actualPFunctionRegistry.get("y"));
-        Assert.assertSame(givenFunctionFactory, actualFunctionRegistry.get("x"));
-        Assert.assertEquals(List.of(givenPFunctionFactory), actualPFunctionFactories);
-        Assert.assertEquals(List.of(givenFunctionFactory), actualFunctionFactories);
-        Assert.assertEquals(List.of(givenServiceExecutionFactory), actualServiceExecutorRegistry.getBulkChain());
-        Assert.assertEquals(List.of(givenChainingServiceExecutor), actualServiceExecutorRegistry.getSingleChain());
+        assertSame(givenPFunctionFactory, actualPFunctionRegistry.get("y"));
+        assertSame(givenFunctionFactory, actualFunctionRegistry.get("x"));
+        assertEquals(List.of(givenPFunctionFactory), actualPFunctionFactories);
+        assertEquals(List.of(givenFunctionFactory), actualFunctionFactories);
+        assertEquals(List.of(givenServiceExecutionFactory), actualServiceExecutorRegistry.getBulkChain());
+        assertEquals(List.of(givenChainingServiceExecutor), actualServiceExecutorRegistry.getSingleChain());
     }
 }

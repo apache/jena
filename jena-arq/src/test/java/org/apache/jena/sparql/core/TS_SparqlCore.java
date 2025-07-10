@@ -18,11 +18,11 @@
 
 package org.apache.jena.sparql.core;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses({
     TestContext.class
     , TestDatasetGraphMem.class
     , TestDatasetGraphMemTriplesQuads.class
@@ -43,9 +43,9 @@ import org.junit.runners.Suite ;
     , TestSpecialGraphNames.class
 
     , TestDatasetGraphFilteredView.class
-    , TestSpecials.class
+    , TestSpecialDatasets.class
     , TestDatasetMisc.class
 })
 
-public class TS_Core
+public class TS_SparqlCore
 {}

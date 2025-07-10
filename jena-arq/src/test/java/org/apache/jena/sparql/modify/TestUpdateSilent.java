@@ -1,3 +1,4 @@
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,12 +19,15 @@
 
 package org.apache.jena.sparql.modify;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphOne;
 import org.apache.jena.sparql.exec.UpdateExec;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.update.UpdateException;
-import org.junit.Test;
 
 /**
  * Tests of SILENT. The tests are written to work against {@link DatasetGraphOne}
@@ -43,9 +47,10 @@ public class TestUpdateSilent {
         UpdateExec.dataset(dataset).update(updateRequest).build().execute();
     }
 
-    @Test(expected = UpdateException.class)
+    @Test
     public void LOAD_toNonExistingGraph() {
-        test("LOAD <file:testing/Update/empty.nt> INTO GRAPH <http://example/no-such-graph>");
+        assertThrows(UpdateException.class,
+                     ()-> test("LOAD <file:testing/Update/empty.nt> INTO GRAPH <http://example/no-such-graph>"));
     }
 
     @Test
@@ -54,9 +59,9 @@ public class TestUpdateSilent {
     }
 
 
-    @Test(expected = UpdateException.class)
+    @Test
     public void CLEAR_nonExistingGraph() {
-        test("CLEAR GRAPH <http://example/no-such-graph>");
+        assertThrows(UpdateException.class,()-> test("CLEAR GRAPH <http://example/no-such-graph>") );
     }
 
     @Test
@@ -64,10 +69,10 @@ public class TestUpdateSilent {
         test("CLEAR SILENT GRAPH <http://example/no-such-graph>");
     }
 
-    @Test(expected = UpdateException.class)
+    @Test
     public void CREATE_nonExistingGraph() {
         //The target is DatasetGraphOne which does not provide named graphs.
-        test("CREATE GRAPH <file:testing/Update/empty.nt>");
+        assertThrows(UpdateException.class,()-> test("CREATE GRAPH <file:testing/Update/empty.nt>") );
     }
 
     @Test
@@ -86,9 +91,9 @@ public class TestUpdateSilent {
         test("DROP SILENT GRAPH <http://example/no-such-graph>");
     }
 
-    @Test(expected = UpdateException.class)
+    @Test
     public void COPY_toNonExistingGraph() {
-        test("COPY DEFAULT TO <http://example/no-such-graph>");
+        assertThrows(UpdateException.class,()-> test("COPY DEFAULT TO <http://example/no-such-graph>") );
     }
 
     @Test
@@ -96,9 +101,9 @@ public class TestUpdateSilent {
         test("COPY SILENT DEFAULT TO <http://example/no-such-graph>");
     }
 
-    @Test(expected = UpdateException.class)
+    @Test
     public void COPY_fromNonExistingGraph() {
-        test("COPY <http://example/no-such-graph> TO DEFAULT");
+        assertThrows(UpdateException.class,()-> test("COPY <http://example/no-such-graph> TO DEFAULT") );
     }
 
     @Test
@@ -106,9 +111,9 @@ public class TestUpdateSilent {
         test("COPY SILENT <http://example/no-such-graph> TO DEFAULT");
     }
 
-    @Test(expected = UpdateException.class)
+    @Test
     public void MOVE_toNonExistingGraph_isError() {
-        test("MOVE DEFAULT TO <http://example/no-such-graph>");
+        assertThrows(UpdateException.class,()-> test("MOVE DEFAULT TO <http://example/no-such-graph>") );
     }
 
     @Test
@@ -116,9 +121,9 @@ public class TestUpdateSilent {
         test("MOVE SILENT DEFAULT TO <http://example/no-such-graph>");
     }
 
-    @Test(expected = UpdateException.class)
+    @Test
     public void MOVE_fromNonExistingGraph() {
-        test("MOVE <http://example/no-such-graph> TO DEFAULT");
+        assertThrows(UpdateException.class,()-> test("MOVE <http://example/no-such-graph> TO DEFAULT") );
     }
 
     @Test
@@ -126,9 +131,9 @@ public class TestUpdateSilent {
         test("MOVE SILENT <http://example/no-such-graph> TO DEFAULT");
     }
 
-    @Test(expected = UpdateException.class)
+    @Test
     public void ADD_toNonExistingGraph() {
-        test("ADD DEFAULT TO <http://example/no-such-graph>");
+        assertThrows(UpdateException.class,()-> test("ADD DEFAULT TO <http://example/no-such-graph>") );
     }
 
     @Test
@@ -136,9 +141,9 @@ public class TestUpdateSilent {
         test("ADD SILENT DEFAULT TO <http://example/no-such-graph>");
     }
 
-    @Test(expected = UpdateException.class)
+    @Test
     public void ADD_fromNonExistingGraph() {
-        test("ADD <http://example/no-such-graph> TO DEFAULT");
+        assertThrows(UpdateException.class,()-> test("ADD <http://example/no-such-graph> TO DEFAULT") );
     }
 
     @Test

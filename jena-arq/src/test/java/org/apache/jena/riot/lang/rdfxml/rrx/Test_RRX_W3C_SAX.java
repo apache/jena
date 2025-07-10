@@ -19,29 +19,30 @@
 package org.apache.jena.riot.lang.rdfxml.rrx;
 
 import java.util.List;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import org.apache.jena.riot.ReaderRIOTFactory;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Run over all files found by a deep walk of the directory tree.
  */
 
-@RunWith(Parameterized.class)
+@ParameterizedClass
+@MethodSource("provideArgs")
 public class Test_RRX_W3C_SAX extends AbstractTestRDFXML_RRX {
 
     private static ReaderRIOTFactory rdfxmlSAXfactory = ReaderRDFXML_SAX.factory;
     private static String implLabel = "SAX";
 
-    @Parameters(name = "{index}: {0} {1}")
-    public static Iterable<Object[]> data() {
+    private static Stream<RRX_TestFileArgs> provideArgs() {
         List<String> testfiles = RunTestRDFXML.w3cTestFiles();
-        return RunTestRDFXML.makeTestSetup(testfiles, implLabel);
+        return RunTestRDFXML.makeTestSetup(implLabel, rdfxmlSAXfactory, testfiles).stream();
     }
 
-    public Test_RRX_W3C_SAX(String label, String filename) {
-        super(label, rdfxmlSAXfactory, implLabel, filename);
+    public Test_RRX_W3C_SAX(RRX_TestFileArgs args) {
+        super(args, implLabel);
     }
 }

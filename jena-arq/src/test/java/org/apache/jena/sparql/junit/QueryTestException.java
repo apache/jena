@@ -24,8 +24,8 @@ package org.apache.jena.sparql.junit;
 
 public class QueryTestException extends RuntimeException
 {
-    public QueryTestException() { super() ; }
-    public QueryTestException(Throwable cause) { super(cause) ; }
-    public QueryTestException(String msg) { super(msg) ; }
-    public QueryTestException(String msg, Throwable cause) { super(msg, cause) ; }
+    public QueryTestException() { super(); }
+    public QueryTestException(Throwable cause) { super(cause); }
+    public QueryTestException(String msg) { super(msg); }
+    public QueryTestException(String msg, Throwable cause) { super(msg, cause); }
 }

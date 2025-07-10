@@ -18,62 +18,66 @@
 
 package org.apache.jena.riot.lang;
 
-import java.io.InputStream ;
-import java.util.Arrays ;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFParser ;
-import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.system.ErrorHandler ;
-import org.apache.jena.riot.system.ErrorHandlerFactory ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.riot.system.StreamRDFLib ;
-import org.junit.Test ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Parameterized ;
-import org.junit.runners.Parameterized.Parameter ;
-import org.junit.runners.Parameterized.Parameters ;
+import java.io.InputStream;
+import java.util.List;
+import java.util.stream.Stream;
 
-@RunWith(Parameterized.class)
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.Parameter;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import org.apache.jena.atlas.io.IO;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFParser;
+import org.apache.jena.riot.RiotException;
+import org.apache.jena.riot.system.ErrorHandler;
+import org.apache.jena.riot.system.ErrorHandlerFactory;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.system.StreamRDFLib;
+
+@ParameterizedClass
+@MethodSource("provideArgs")
 public class TestTriXBad {
 
-    static String DIR = "testing/RIOT/Lang/TriX" ;
+    static String DIR = "testing/RIOT/Lang/TriX";
 
-    @Parameters(name="{0}")
-    public static Iterable<Object[]> data() {
-              return Arrays.asList(new Object[][] {
-                  { DIR+"/trix-bad-01.trix" } ,
-                  { DIR+"/trix-bad-02.trix" } ,
-                  { DIR+"/trix-bad-03.trix" } ,
-                  { DIR+"/trix-bad-04.trix" } ,
-                  { DIR+"/trix-bad-05.trix" } ,
-                  { DIR+"/trix-bad-06.trix" } ,
-                  { DIR+"/trix-bad-07.trix" } ,
-                  { DIR+"/trix-bad-08.trix" } ,
-                  { DIR+"/trix-bad-09.trix" } ,
+    private static Stream<Arguments> provideArgs() {
+        List<Arguments> x = List.of
+                (Arguments.of(DIR+"/trix-bad-01.trix"),
+                 Arguments.of(DIR+"/trix-bad-02.trix"),
+                 Arguments.of(DIR+"/trix-bad-03.trix"),
+                 Arguments.of(DIR+"/trix-bad-04.trix"),
+                 Arguments.of(DIR+"/trix-bad-05.trix"),
+                 Arguments.of(DIR+"/trix-bad-06.trix"),
+                 Arguments.of(DIR+"/trix-bad-07.trix"),
+                 Arguments.of(DIR+"/trix-bad-08.trix"),
+                 Arguments.of(DIR+"/trix-bad-09.trix"),
 
-                  { DIR+"/trix-star-bad-triple-term-1.trix" },
-                  { DIR+"/trix-star-bad-triple-term-2.trix" },
-                  { DIR+"/trix-star-bad-triple-term-3.trix" },
-                  { DIR+"/trix-star-bad-triple-term-4.trix" },
-                  });
+                 Arguments.of(DIR+"/trix-star-bad-triple-term-1.trix" ),
+                 Arguments.of(DIR+"/trix-star-bad-triple-term-2.trix" ),
+                 Arguments.of(DIR+"/trix-star-bad-triple-term-3.trix" ),
+                 Arguments.of(DIR+"/trix-star-bad-triple-term-4.trix" )
+                        );
+        return x.stream();
     }
 
     @Parameter(0)
     public String fInput;
 
-    @Test(expected=RiotException.class)
+    @Test
     public void trix_bad() {
-        ErrorHandler err = ErrorHandlerFactory.getDefaultErrorHandler() ;
+        ErrorHandler err = ErrorHandlerFactory.getDefaultErrorHandler();
         try {
-            ErrorHandlerFactory.setDefaultErrorHandler(ErrorHandlerFactory.errorHandlerSimple()) ;
-            InputStream in = IO.openFile(fInput) ;
-            StreamRDF sink = StreamRDFLib.sinkNull() ;
-            RDFParser.source(in).lang(Lang.TRIX).parse(sink);
+            ErrorHandlerFactory.setDefaultErrorHandler(ErrorHandlerFactory.errorHandlerSimple());
+            InputStream in = IO.openFile(fInput);
+            StreamRDF sink = StreamRDFLib.sinkNull();
+            assertThrows(RiotException.class, ()->RDFParser.source(in).lang(Lang.TRIX).parse(sink));
         } finally {
-            ErrorHandlerFactory.setDefaultErrorHandler(err) ;
+            ErrorHandlerFactory.setDefaultErrorHandler(err);
         }
     }
 }

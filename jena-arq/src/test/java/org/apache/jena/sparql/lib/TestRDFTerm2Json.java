@@ -18,40 +18,41 @@
 
 package org.apache.jena.sparql.lib;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.math.BigDecimal;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.json.*;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.sse.SSE;
-import org.junit.Test;
 
 public class TestRDFTerm2Json {
-    
+
     @Test public void n2j_1() { test("'abc'", new JsonString("abc")); }
 
     @Test public void n2j_2() { test("<http://jena.apache.org/>", new JsonString("http://jena.apache.org/")); }
-    
+
     @Test public void n2j_3() { test("123", JsonNumber.value(123)); }
 
     @Test public void n2j_4() { test("123.0", JsonNumber.value(new BigDecimal("123.0"))); }
-    
+
     @Test public void n2j_5() { test("123e0", JsonNumber.value(/*(double)*/123e0)); }
 
     @Test public void n2j_6() { test("'123e0'^^xsd:float", JsonNumber.value((float)123.0)); }
 
     @Test public void n2j_7() { test("true", new JsonBoolean(true)); }
-    
-    @Test public void n2j_8() { test("'text'@en", new JsonString("text")) ; }
 
-    @Test public void n2j_9() { assertEquals(JsonNull.instance, RDFTerm2Json.fromNode(null)) ; }
+    @Test public void n2j_8() { test("'text'@en", new JsonString("text")); }
 
-    
+    @Test public void n2j_9() { assertEquals(JsonNull.instance, RDFTerm2Json.fromNode(null)); }
+
+
     private void test(String nodeStr, JsonValue expected) {
         Node n = SSE.parseNode(nodeStr);
         JsonValue jv = RDFTerm2Json.fromNode(n);
         assertEquals(expected, jv);
     }
-    
+
 }

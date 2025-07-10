@@ -18,6 +18,16 @@
 
 package org.apache.jena.sparql.modify;
 
+import static org.apache.jena.atlas.lib.StrUtils.strjoinNL;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -39,153 +49,136 @@ import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
-
-import static org.apache.jena.atlas.lib.StrUtils.strjoinNL;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
 
 // Most of the testing of SPARQL Update is scripts and uses the SPARQL-WG test suite.
 // Here are a few additional tests
 public class TestUpdateOperations
 {
-    private static final String DIR = "testing/Update" ;
-    private DatasetGraph graphStore() { return DatasetGraphFactory.create() ; }
-    private Node gName = SSE.parseNode("<http://example/g>") ;
+    private static final String DIR = "testing/Update";
+    private DatasetGraph graphStore() { return DatasetGraphFactory.create(); }
+    private Node gName = SSE.parseNode("<http://example/g>");
 
     private static ErrorHandler eh;
 
     // Silence parser output.
-    @BeforeClass public static void beforeClass() {
+    @BeforeAll public static void beforeClass() {
         eh = ErrorHandlerFactory.getDefaultErrorHandler();
         ErrorHandler silent = ErrorHandlerFactory.errorHandlerStrictSilent();
         ErrorHandlerFactory.setDefaultErrorHandler(silent);
     }
 
-    @AfterClass public static void afterClass() {
+    @AfterAll public static void afterClass() {
         ErrorHandlerFactory.setDefaultErrorHandler(eh);
     }
 
     @Test public void load1() {
-        DatasetGraph gs = graphStore() ;
-        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D.nt>") ;
-        UpdateAction.execute(req, gs) ;
-        assertEquals(1, gs.getDefaultGraph().size()) ;
-        assertFalse( gs.listGraphNodes().hasNext()) ;
+        DatasetGraph gs = graphStore();
+        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D.nt>");
+        UpdateAction.execute(req, gs);
+        assertEquals(1, gs.getDefaultGraph().size());
+        assertFalse( gs.listGraphNodes().hasNext());
     }
 
     @Test public void load2() {
-        DatasetGraph gs = graphStore() ;
-        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D.nt> INTO GRAPH <"+gName.getURI()+">") ;
-        UpdateAction.execute(req, gs) ;
+        DatasetGraph gs = graphStore();
+        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D.nt> INTO GRAPH <"+gName.getURI()+">");
+        UpdateAction.execute(req, gs);
     }
 
     // Quad loading
 
     @Test public void load3() {
-        DatasetGraph gs = graphStore() ;
-        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D.nq>") ;
-        UpdateAction.execute(req, gs) ;
-        assertEquals(0, gs.getDefaultGraph().size()) ;
-        gs.containsGraph(NodeFactory.createURI("http://example/")) ;
-        assertEquals(1, gs.getGraph(gName).size()) ;
+        DatasetGraph gs = graphStore();
+        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D.nq>");
+        UpdateAction.execute(req, gs);
+        assertEquals(0, gs.getDefaultGraph().size());
+        gs.containsGraph(NodeFactory.createURI("http://example/"));
+        assertEquals(1, gs.getGraph(gName).size());
     }
 
     // Bad: loading quads into a named graph
-    @Test(expected=UpdateException.class)
+    @Test
     public void load4() {
-        DatasetGraph gs = graphStore() ;
-        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D.nq> INTO GRAPH <"+gName.getURI()+">") ;
-        UpdateAction.execute(req, gs) ;
+        DatasetGraph gs = graphStore();
+        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D.nq> INTO GRAPH <"+gName.getURI()+">");
+        assertThrows(UpdateException.class,()-> UpdateAction.execute(req, gs) );
     }
 
     @Test public void load5() {
-        DatasetGraph gs = graphStore() ;
-        UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D.nq> INTO GRAPH <"+gName.getURI()+">") ;
-        UpdateAction.execute(req, gs) ;
-        assertEquals(0, Iter.count(gs.find())) ;
+        DatasetGraph gs = graphStore();
+        UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D.nq> INTO GRAPH <"+gName.getURI()+">");
+        UpdateAction.execute(req, gs);
+        assertEquals(0, Iter.count(gs.find()));
     }
 
-    @Test(expected=UpdateException.class)
+    @Test
     public void load6() {
-        DatasetGraph gs = graphStore() ;
-        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D-bad.nq>") ;
-        UpdateAction.execute(req, gs) ;
-        assertEquals(0, Iter.count(gs.find())) ;
+        DatasetGraph gs = graphStore();
+        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D-bad.nq>");
+        assertThrows(UpdateException.class,()-> UpdateAction.execute(req, gs));
     }
 
     @Test public void load7() {
-        DatasetGraph gs = graphStore() ;
-        UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D-bad.nq>") ;
-        UpdateAction.execute(req, gs) ;
-        assertEquals(0, Iter.count(gs.find())) ;
+        DatasetGraph gs = graphStore();
+        UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D-bad.nq>");
+        UpdateAction.execute(req, gs);
+        assertEquals(0, Iter.count(gs.find()));
     }
 
-    @Test(expected=UpdateException.class)
+    @Test
     public void load8() {
-        DatasetGraph gs = graphStore() ;
-        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D-bad.nt> INTO GRAPH <"+gName.getURI()+">") ;
-        UpdateAction.execute(req, gs) ;
-        assertEquals(0, Iter.count(gs.find())) ;
+        DatasetGraph gs = graphStore();
+        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D-bad.nt> INTO GRAPH <"+gName.getURI()+">");
+        assertThrows(UpdateException.class,()-> UpdateAction.execute(req, gs));
     }
 
     @Test public void load9() {
-        DatasetGraph gs = graphStore() ;
-        UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D-bad.nt> INTO GRAPH <"+gName.getURI()+">") ;
-        UpdateAction.execute(req, gs) ;
-        assertEquals(0, Iter.count(gs.find())) ;
+        DatasetGraph gs = graphStore();
+        UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D-bad.nt> INTO GRAPH <"+gName.getURI()+">");
+        UpdateAction.execute(req, gs);
+        assertEquals(0, Iter.count(gs.find()));
     }
 
-    @Test(expected=UpdateException.class)
+    @Test
     public void load10() {
-        DatasetGraph gs = graphStore() ;
-        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D-quads.nt> INTO GRAPH <"+gName.getURI()+">") ;
-        UpdateAction.execute(req, gs) ;
-        assertEquals(0, Iter.count(gs.find())) ;
+        DatasetGraph gs = graphStore();
+        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D-quads.nt> INTO GRAPH <"+gName.getURI()+">");
+        assertThrows(UpdateException.class,()-> UpdateAction.execute(req, gs));
     }
 
     @Test public void load11() {
-        DatasetGraph gs = graphStore() ;
-        UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D-quads.nt> INTO GRAPH <"+gName.getURI()+">") ;
-        UpdateAction.execute(req, gs) ;
-        assertEquals(0, Iter.count(gs.find())) ;
+        DatasetGraph gs = graphStore();
+        UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D-quads.nt> INTO GRAPH <"+gName.getURI()+">");
+        UpdateAction.execute(req, gs);
+        assertEquals(0, Iter.count(gs.find()));
     }
 
-    @Test(expected=UpdateException.class)
+    @Test
     public void load12() {
-        DatasetGraph gs = graphStore() ;
-        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D-not-found.nt>") ;
-        UpdateAction.execute(req, gs) ;
-        assertEquals(0, Iter.count(gs.find())) ;
+        DatasetGraph gs = graphStore();
+        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D-not-found.nt>");
+        assertThrows(UpdateException.class,()-> UpdateAction.execute(req, gs));
     }
 
     @Test public void load13() {
-        DatasetGraph gs = graphStore() ;
-        UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D-not-found.nt>") ;
-        UpdateAction.execute(req, gs) ;
-        assertEquals(0, Iter.count(gs.find())) ;
+        DatasetGraph gs = graphStore();
+        UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D-not-found.nt>");
+        UpdateAction.execute(req, gs);
+        assertEquals(0, Iter.count(gs.find()));
     }
 
-    @Test(expected=UpdateException.class)
+    @Test
     public void load14() {
-        DatasetGraph gs = graphStore() ;
-        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D-not-found.nt> INTO GRAPH <"+gName.getURI()+">") ;
-        UpdateAction.execute(req, gs) ;
-        assertEquals(0, Iter.count(gs.find())) ;
+        DatasetGraph gs = graphStore();
+        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D-not-found.nt> INTO GRAPH <"+gName.getURI()+">");
+        assertThrows(UpdateException.class,()-> UpdateAction.execute(req, gs));
     }
 
     @Test public void load15() {
-        DatasetGraph gs = graphStore() ;
-        UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D-not-found.nt> INTO GRAPH <"+gName.getURI()+">") ;
-        UpdateAction.execute(req, gs) ;
-        assertEquals(0, Iter.count(gs.find())) ;
+        DatasetGraph gs = graphStore();
+        UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D-not-found.nt> INTO GRAPH <"+gName.getURI()+">");
+        UpdateAction.execute(req, gs);
+        assertEquals(0, Iter.count(gs.find()));
     }
 
     @Test public void insert_where_01() {
@@ -204,34 +197,34 @@ public class TestUpdateOperations
 
     // Check constant and template quads
     @Test public void delete_insert_where_01() {
-        DatasetGraph dsg0 = DatasetGraphFactory.create() ;
-        UpdateRequest req = UpdateFactory.create("INSERT DATA { <x> <p> 2 . <z> <q> 2 . <z> <q> 3 . }") ;
+        DatasetGraph dsg0 = DatasetGraphFactory.create();
+        UpdateRequest req = UpdateFactory.create("INSERT DATA { <x> <p> 2 . <z> <q> 2 . <z> <q> 3 . }");
         UpdateAction.execute(req, dsg0);
-        assertEquals(3, dsg0.getDefaultGraph().size()) ;
+        assertEquals(3, dsg0.getDefaultGraph().size());
 
-        AtomicLong counterIns = new AtomicLong(0) ;
-        AtomicLong counterDel = new AtomicLong(0) ;
+        AtomicLong counterIns = new AtomicLong(0);
+        AtomicLong counterDel = new AtomicLong(0);
         DatasetGraph dsg = new DatasetGraphWrapper(dsg0) {
             @Override
             public void add(Quad quad) {
-                counterIns.incrementAndGet() ;
-                super.add(quad) ;
+                counterIns.incrementAndGet();
+                super.add(quad);
             }
 
             @Override
             public void delete(Quad quad) {
-                counterDel.incrementAndGet() ;
-                super.delete(quad) ;
+                counterDel.incrementAndGet();
+                super.delete(quad);
             }
-        } ;
+        };
 
         // WHERE clause doubles the effect.
-        String s = "DELETE { ?x <p> 2 . <z> <q> 2 } INSERT { ?x <p> 1 . <x> <q> 1  } WHERE { ?x <p> ?o {} UNION {} }" ;
-        req = UpdateFactory.create(s) ;
+        String s = "DELETE { ?x <p> 2 . <z> <q> 2 } INSERT { ?x <p> 1 . <x> <q> 1  } WHERE { ?x <p> ?o {} UNION {} }";
+        req = UpdateFactory.create(s);
         UpdateAction.execute(req, dsg);
-        assertEquals(3, counterIns.get()) ;   // 3 : 1 constant, 2 from template.
-        assertEquals(3, counterIns.get()) ;
-        assertEquals(3, dsg.getDefaultGraph().size()) ;
+        assertEquals(3, counterIns.get());   // 3 : 1 constant, 2 from template.
+        assertEquals(3, counterIns.get());
+        assertEquals(3, dsg.getDefaultGraph().size());
     }
 
     // Ensure that the IRI function in UpdateRequests considers the BASE IRI - https://github.com/apache/jena/issues/1272
@@ -262,7 +255,7 @@ public class TestUpdateOperations
 
         Node s1 = NodeFactory.createURI("http://www.example.org/base1/s");
         Node s2 = NodeFactory.createURI("http://www.example.org/base2/s");
-        assertNotEquals("Bad test: different triples are equals", s1, s2);
+        assertNotEquals(s1, s2, ()->"Bad test: different triples are equals");
         Triple expected1 = Triple.create(s1, s1, s1);
         Triple expected2 = Triple.create(s2, s2, s2);
         assertTrue(triples.contains(expected1));

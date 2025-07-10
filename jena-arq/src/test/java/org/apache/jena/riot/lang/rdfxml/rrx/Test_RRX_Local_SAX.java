@@ -19,28 +19,29 @@
 package org.apache.jena.riot.lang.rdfxml.rrx;
 
 import java.util.List;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import org.apache.jena.riot.ReaderRIOTFactory;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Local basic testing to make sure the general parsing is OK in addition to running the W3C Test Suite.
  */
-@RunWith(Parameterized.class)
+@ParameterizedClass
+@MethodSource("provideArgs")
 public class Test_RRX_Local_SAX extends AbstractTestRDFXML_RRX {
 
     private static ReaderRIOTFactory rdfxmlSAXfactory = ReaderRDFXML_SAX.factory;
     private static String implLabel = "SAX";
 
-    @Parameters(name = "{index}: {0} {1}")
-    public static Iterable<Object[]> data() {
+    private static Stream<RRX_TestFileArgs> provideArgs() {
         List<String> testfiles = RunTestRDFXML.localTestFiles();
-        return RunTestRDFXML.makeTestSetup(testfiles, implLabel);
+        return RunTestRDFXML.makeTestSetup(implLabel, rdfxmlSAXfactory, testfiles).stream();
     }
 
-    public Test_RRX_Local_SAX(String label, String filename) {
-        super(label, rdfxmlSAXfactory, implLabel, filename);
+    public Test_RRX_Local_SAX(RRX_TestFileArgs args) {
+        super(args, implLabel);
     }
 }

@@ -18,12 +18,13 @@
 
 package org.apache.jena.sparql.graph;
 
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.DatasetFactory ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphFactory ;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 
 /** Test the test for datasets and graphs */
 public class TestGraphsMem extends GraphsTests
@@ -32,13 +33,13 @@ public class TestGraphsMem extends GraphsTests
     @Override
     protected Dataset createDataset()
     {
-        DatasetGraph dsg = DatasetGraphFactory.create() ;
-        dsg.addGraph(NodeFactory.createURI(graph1), GraphFactory.createDefaultGraph()) ;
-        dsg.addGraph(NodeFactory.createURI(graph2), GraphFactory.createDefaultGraph()) ;
-        dsg.addGraph(NodeFactory.createURI(graph3), GraphFactory.createDefaultGraph()) ;
-        return DatasetFactory.wrap(dsg) ;
+        DatasetGraph dsg = DatasetGraphFactory.create();
+        dsg.addGraph(NodeFactory.createURI(graph1), GraphFactory.createDefaultGraph());
+        dsg.addGraph(NodeFactory.createURI(graph2), GraphFactory.createDefaultGraph());
+        dsg.addGraph(NodeFactory.createURI(graph3), GraphFactory.createDefaultGraph());
+        return DatasetFactory.wrap(dsg);
     }
-    
+
     @Override
     @Test public void graph4() {}           // Quad.unionGraph
 
@@ -47,23 +48,23 @@ public class TestGraphsMem extends GraphsTests
 
     @Override
     @Test public void graph6() {}           // defaultGraphNodeGenerated
-    
+
     @Override
     @Test public void graph_api4() {}       // Quad.unionGraph
-    
+
     @Override
     @Test public void graph_api5() {}       // defaultGraphIRI
-    
+
     @Override
     @Test public void graph_api6() {}       // defaultGraphNodeGenerated
-    
+
     @Override
     @Test public void graph_count4() {}       // Quad.unionGraph
-    
+
     @Override
     @Test public void graph_count5() {}       // defaultGraphIRI
-    
+
     @Override
     @Test public void graph_count6() {}       // defaultGraphNodeGenerated
-    
+
 }

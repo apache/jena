@@ -16,20 +16,8 @@
  * limitations under the License.
  */
 
-package org.apache.jena.rdf12.basic;
+package org.apache.jena.riot.lang.rdfxml.rrx;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.apache.jena.riot.ReaderRIOTFactory;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    // Old basic tests,
-    // ** To be removed.
-    TestNQuadsStarParse.class,
-    TestNTriplesStarParse.class,
-    TestTrigStarParse.class,
-    TestTurtleStarParse.class,
-    TestSPARQL12Parse.class
-})
-public class TS_RDFStar_Basic {
-}
+record RRX_TestFileArgs(String label, String filename, ReaderRIOTFactory factory) {}

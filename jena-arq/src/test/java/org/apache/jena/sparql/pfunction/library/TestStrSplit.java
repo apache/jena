@@ -18,13 +18,15 @@
 
 package org.apache.jena.sparql.pfunction.library;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -34,14 +36,13 @@ import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.sparql.core.Var;
-import org.junit.Test;
 
 public class TestStrSplit {
-	private final static String prologue = 
+	private final static String prologue =
 			"PREFIX apf: <http://jena.apache.org/ARQ/property#>\n";
-	
+
 	private QueryExecution qe;
-	
+
 	@Test public void shouldThrowQBEIfSubjectIsList() {
 		assertQueryBuildException("SELECT ?x { (?x) apf:strSplit ('foo' ';') }");
 	}
@@ -59,19 +60,19 @@ public class TestStrSplit {
 	@Test public void shouldNotErrorOnSimpleQuery() {
 		query("SELECT ?x { ?x apf:strSplit ('foo' ';') }");
 		qe.execSelect();
-		// No exception -- pass 
+		// No exception -- pass
 	}
 
 	@Test public void literalInputNonMatchingRegex() {
 		query("SELECT ?x { ?x apf:strSplit ('foo' ';') }");
 		assertAllX("foo");
 	}
-	
+
 	@Test public void emptyStringInputNonMatchingRegex() {
 		query("SELECT ?x { ?x apf:strSplit ('' ';') }");
 		assertAllX("");
 	}
-	
+
 	@Test public void literalInputMatchingRegex() {
 		query("SELECT ?x { ?x apf:strSplit ('foo;bar' ';') }");
 		assertAllX("foo", "bar");
@@ -86,7 +87,7 @@ public class TestStrSplit {
 		query("SELECT ?x { ?x apf:strSplit (?unbound ';') }");
 		assertNoResults();
 	}
-	
+
 	@Test public void boundVariableRegex() {
 		query("SELECT ?x { BIND (';' AS ?regex) ?x apf:strSplit ('foo;bar' ?regex) }");
 		assertAllX("foo", "bar");
@@ -126,10 +127,10 @@ public class TestStrSplit {
 			// pass
 		}
 	}
-	
+
 	private void query(String queryString) {
 		qe = QueryExecutionFactory.create(
-				prologue + queryString, 
+				prologue + queryString,
 				ModelFactory.createDefaultModel());
 	}
 
@@ -151,7 +152,7 @@ public class TestStrSplit {
 	private void assertNoResults() {
 		assertFalse(qe.execSelect().hasNext());
 	}
-	
+
 	private void assertAsk(boolean expected) {
 		assertEquals(expected, qe.execAsk());
 	}

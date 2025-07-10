@@ -18,28 +18,30 @@
 
 package org.apache.jena.riot.system;
 
-import static org.junit.Assert. * ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.riot.lang.LabelToNode ;
-import org.junit.Test ;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.graph.Node;
+import org.apache.jena.riot.lang.LabelToNode;
 
 public class TestFactoryRDFCaching extends TestFactoryRDF {
- 
+
     public TestFactoryRDFCaching() {
-        super.factory = new FactoryRDFCaching(100, LabelToNode.createUseLabelAsGiven()) ;
+        super.factory = new FactoryRDFCaching(100, LabelToNode.createUseLabelAsGiven());
     }
-    
+
     @Test public void factory_cache_01() {
-        Node n1 = factory.createStringLiteral("") ;
-        Node n2 = factory.createStringLiteral("") ;
-        assertSame(n1, n2); 
+        Node n1 = factory.createStringLiteral("");
+        Node n2 = factory.createStringLiteral("");
+        assertSame(n1, n2);
     }
-    
+
     @Test public void factory_cache_02() {
-        Node n1 = factory.createURI("http://test/n1") ;
-        Node n2 = factory.createURI("http://test/n2") ;
-        Node n3 = factory.createURI("http://test/n1") ;
-        assertSame(n1, n3); 
+        Node n1 = factory.createURI("http://test/n1");
+        Node n2 = factory.createURI("http://test/n2");
+        Node n3 = factory.createURI("http://test/n1");
+        assertSame(n1, n3);
     }
 }
 

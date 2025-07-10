@@ -18,66 +18,67 @@
 
 package org.apache.jena.riot.stream;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File ;
+import java.io.File;
 
-import org.apache.jena.atlas.web.TypedInputStream ;
-import org.apache.jena.riot.WebContent ;
-import org.apache.jena.riot.system.stream.LocatorFile ;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
 
-public class TestLocators 
+import org.apache.jena.atlas.web.TypedInputStream;
+import org.apache.jena.riot.WebContent;
+import org.apache.jena.riot.system.stream.LocatorFile;
+
+public class TestLocators
 {
-    public static final String testingDir = "testing/RIOT/Files/" ;
-    
+    public static final String testingDir = "testing/RIOT/Files/";
+
     @Test public void locatorFile_01()
     {
-        LocatorFile loc = new LocatorFile() ;
-        assertTrue(loc.exists("pom.xml")) ;
-        assertTrue(loc.exists(testingDir+"data.ttl")) ;
-        assertFalse(loc.exists("IDoNotExist")) ;
+        LocatorFile loc = new LocatorFile();
+        assertTrue(loc.exists("pom.xml"));
+        assertTrue(loc.exists(testingDir+"data.ttl"));
+        assertFalse(loc.exists("IDoNotExist"));
     }
-    
+
     @Test public void locatorFile_02()
     {
-        LocatorFile loc = new LocatorFile(".") ;
-        assertTrue(loc.exists("pom.xml")) ;
-        assertTrue(loc.exists(testingDir+"data.ttl")) ;
-        assertFalse(loc.exists("IDoNotExist")) ;
+        LocatorFile loc = new LocatorFile(".");
+        assertTrue(loc.exists("pom.xml"));
+        assertTrue(loc.exists(testingDir+"data.ttl"));
+        assertFalse(loc.exists("IDoNotExist"));
     }
 
     @Test public void locatorFile_03()
     {
-        String dir = new File(".").getAbsolutePath() ;
-        LocatorFile loc = new LocatorFile(dir) ;
-        assertTrue(loc.exists("pom.xml")) ;
-        assertFalse(loc.exists("IDoNotExist")) ;
+        String dir = new File(".").getAbsolutePath();
+        LocatorFile loc = new LocatorFile(dir);
+        assertTrue(loc.exists("pom.xml"));
+        assertFalse(loc.exists("IDoNotExist"));
     }
-    
+
     @Test public void locatorFile_04()
     {
-        String dir = new File("src").getAbsolutePath() ;
-        LocatorFile loc = new LocatorFile(dir) ;
-        
-        assertFalse(loc.exists("pom.xml")) ;
-        assertTrue(loc.exists("main")) ;
-        assertFalse(loc.exists(testingDir+"data.ttl")) ;
-        assertTrue(loc.exists("../pom.xml")) ;
-        assertFalse(loc.exists("/../"+testingDir+"data.ttl")) ;
+        String dir = new File("src").getAbsolutePath();
+        LocatorFile loc = new LocatorFile(dir);
+
+        assertFalse(loc.exists("pom.xml"));
+        assertTrue(loc.exists("main"));
+        assertFalse(loc.exists(testingDir+"data.ttl"));
+        assertTrue(loc.exists("../pom.xml"));
+        assertFalse(loc.exists("/../"+testingDir+"data.ttl"));
     }
-    
+
     @Test public void locatorFile_05()
     {
-        LocatorFile loc = new LocatorFile() ;
-        TypedInputStream ts = loc.open(testingDir+"data.ttl") ;
-        assertTrue("Not equal: "+WebContent.contentTypeTurtle+" != "+ts.getMediaType(), 
-                   WebContent.contentTypeTurtle.equalsIgnoreCase(ts.getContentType())) ;
+        LocatorFile loc = new LocatorFile();
+        TypedInputStream ts = loc.open(testingDir+"data.ttl");
+        assertTrue(WebContent.contentTypeTurtle.equalsIgnoreCase(ts.getContentType()),
+                   () -> "Not equal: " + WebContent.contentTypeTurtle + " != " + ts.getMediaType());
     }
 
     // TypedStream
-    
+
     @Test public void locatorURL_01() {}
 
     @Test public void locatorZip_01() {}

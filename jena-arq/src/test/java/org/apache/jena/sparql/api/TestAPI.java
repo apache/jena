@@ -18,6 +18,13 @@
 
 package org.apache.jena.sparql.api;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Iterator;
+import java.util.Set;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.json.JsonObject;
@@ -25,28 +32,8 @@ import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QueryFactory;
-import org.apache.jena.query.QueryParseException;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.QuerySolutionMap;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.query.ResultSetCloseable;
-import org.apache.jena.query.ResultSetFactory;
-import org.apache.jena.query.ResultSetFormatter;
-import org.apache.jena.query.Syntax;
-import org.apache.jena.rdf.model.AnonId;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.query.*;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
@@ -54,38 +41,27 @@ import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.util.IsoMatcher;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
-import org.junit.Test;
-
-import java.util.Iterator;
-import java.util.Set;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 
 public class TestAPI
 {
-    private static final String ns = "http://example/ns#" ;
+    private static final String ns = "http://example/ns#";
 
-    static Model m = GraphFactory.makeJenaDefaultModel() ;
-    static Resource r1 = m.createResource() ;
-    static Property p1 = m.createProperty(ns+"p1") ;
-    static Property p2 = m.createProperty(ns+"p2") ;
-    static Property p3 = m.createProperty(ns+"p3") ;
-    static Model dft = GraphFactory.makeJenaDefaultModel() ;
-    static Resource s = dft.createResource(ns+"s") ;
-    static Property p = dft.createProperty(ns+"p") ;
-    static Resource o = dft.createResource(ns+"o") ;
-    static Resource g1 = dft.createResource(ns+"g1") ;
+    static Model m = GraphFactory.makeJenaDefaultModel();
+    static Resource r1 = m.createResource();
+    static Property p1 = m.createProperty(ns+"p1");
+    static Property p2 = m.createProperty(ns+"p2");
+    static Property p3 = m.createProperty(ns+"p3");
+    static Model dft = GraphFactory.makeJenaDefaultModel();
+    static Resource s = dft.createResource(ns+"s");
+    static Property p = dft.createProperty(ns+"p");
+    static Resource o = dft.createResource(ns+"o");
+    static Resource g1 = dft.createResource(ns+"g1");
     static Dataset d = null;
     static  {
-        m.add(r1, p1, "x1") ;
-        m.add(r1, p2, "X2") ; // NB Capital
-        m.add(r1, p3, "y1") ;
-        dft.add(s, p, o) ;
+        m.add(r1, p1, "x1");
+        m.add(r1, p2, "X2"); // NB Capital
+        m.add(r1, p3, "y1");
+        dft.add(s, p, o);
         d = DatasetFactory.create(dft);
         d.addNamedModel(g1.getURI(), m);
     }
@@ -93,33 +69,33 @@ public class TestAPI
     @SuppressWarnings("removal")
     @Test public void testInitialBindingsConstruct1()
     {
-        QuerySolutionMap init = new QuerySolutionMap() ;
+        QuerySolutionMap init = new QuerySolutionMap();
         init.add("z", m.createLiteral("zzz"));
         String qs = "CONSTRUCT {?s ?p ?z} {?s ?p 'x1'}";
         try ( QueryExecution qExec = QueryExecution.model(m)
                 .query(qs)
                 .initialBinding(init)
                 .build() ) {
-            Model r = qExec.execConstruct() ;
-            assertTrue("Empty model", r.size() > 0 ) ;
-            Property p1 = m.createProperty(ns+"p1") ;
-            assertTrue("Empty model", r.contains(null,p1, init.get("z"))) ;
+            Model r = qExec.execConstruct();
+            assertTrue(r.size() > 0 , ()->"Empty model");
+            Property p1 = m.createProperty(ns+"p1");
+            assertTrue(r.contains(null,p1, init.get("z")), ()->"Empty model");
         }
     }
 
     @SuppressWarnings("removal")
     @Test public void testInitialBindingsConstruct2()
     {
-        QuerySolutionMap init = new QuerySolutionMap() ;
+        QuerySolutionMap init = new QuerySolutionMap();
         init.add("o", m.createLiteral("x1"));
         String qs = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
         try ( QueryExecution qExec = QueryExecution.model(m).query(qs)
                 .initialBinding(init)
                 .build() ) {
-            Model r = qExec.execConstruct() ;
-            assertTrue("Empty model", r.size() > 0 ) ;
-            Property p1 = m.createProperty(ns+"p1") ;
-            assertTrue("Empty model", r.contains(null, p1, init.get("x1"))) ;
+            Model r = qExec.execConstruct();
+            assertTrue(r.size() > 0 , ()->"Empty model");
+            Property p1 = m.createProperty(ns+"p1");
+            assertTrue(r.contains(null, p1, init.get("x1")), ()->"Empty model");
         }
     }
 
@@ -146,73 +122,73 @@ public class TestAPI
         String qs = "SELECT * {?s ?p ?o}";
         try ( QueryExecution qExec = QueryExecution.model(m).query(qs)
                 .build() ) {
-            ResultSet rs = qExec.execSelect() ;
-            assertTrue("No results", rs.hasNext()) ;
-            QuerySolution qSoln = rs.nextSolution() ;
-            Resource qr = qSoln.getResource("s") ;
-            //assertSame("Not the same model as queried", qr.getModel(), m) ;
-            Set<Statement> s1 = qr.getModel().listStatements().toSet() ;
-            Set<Statement> s2 = m.listStatements().toSet() ;
-            assertEquals(s1,s2) ;
+            ResultSet rs = qExec.execSelect();
+            assertTrue(rs.hasNext(), ()->"No results");
+            QuerySolution qSoln = rs.nextSolution();
+            Resource qr = qSoln.getResource("s");
+            //assertSame("Not the same model as queried", qr.getModel(), m);
+            Set<Statement> s1 = qr.getModel().listStatements().toSet();
+            Set<Statement> s2 = m.listStatements().toSet();
+            assertEquals(s1,s2);
         }
     }
 
     @Test public void testInitialBindings0()
     {
-        QuerySolutionMap smap1 = new QuerySolutionMap() ;
-        QuerySolutionMap smap2 = new QuerySolutionMap() ;
+        QuerySolutionMap smap1 = new QuerySolutionMap();
+        QuerySolutionMap smap2 = new QuerySolutionMap();
         smap1.add("o", m.createLiteral("y1"));
-        smap2.addAll(smap1) ;
-        assertTrue(smap2.contains("o")) ;
-        smap2.clear() ;
-        assertFalse(smap2.contains("o")) ;
-        assertTrue(smap1.contains("o")) ;
+        smap2.addAll(smap1);
+        assertTrue(smap2.contains("o"));
+        smap2.clear();
+        assertFalse(smap2.contains("o"));
+        assertTrue(smap1.contains("o"));
 
-        QuerySolutionMap smap3 = new QuerySolutionMap() ;
-        smap2.addAll((QuerySolution)smap1) ;
-        assertTrue(smap2.contains("o")) ;
+        QuerySolutionMap smap3 = new QuerySolutionMap();
+        smap2.addAll((QuerySolution)smap1);
+        assertTrue(smap2.contains("o"));
     }
 
     @SuppressWarnings("removal")
     @Test public void testInitialBindings1()
     {
-        QuerySolutionMap init = new QuerySolutionMap() ;
+        QuerySolutionMap init = new QuerySolutionMap();
         init.add("o", m.createLiteral("y1"));
         String qs = "SELECT * {?s ?p ?o}";
         try ( QueryExecution qExec = QueryExecution.model(m).query(qs)
                 .initialBinding(init)
                 .build() ) {
-            int count = queryAndCount(qExec) ;
-            assertEquals("Initial binding didn't restrict query properly", 1, count) ;
+            int count = queryAndCount(qExec);
+            assertEquals(1, count, ()->"Initial binding didn't restrict query properly");
         }
     }
 
     @SuppressWarnings("removal")
     @Test public void testInitialBindings2()
     {
-        QuerySolutionMap init = new QuerySolutionMap() ;
+        QuerySolutionMap init = new QuerySolutionMap();
         init.add("z", m.createLiteral("zzz"));
         String qs = "SELECT * {?s ?p ?o}";
         try ( QueryExecution qExec = QueryExecution.model(m).query(qs)
                 .initialBinding(init)
                 .build() ) {
-            int count = queryAndCount(qExec) ;
-            assertEquals("Initial binding restricted query improperly", 3, count) ;
+            int count = queryAndCount(qExec);
+            assertEquals(3, count, "Initial binding restricted query improperly");
         }
     }
 
     @SuppressWarnings("removal")
     @Test public void testInitialBindings3()
     {
-        QuerySolutionMap init = new QuerySolutionMap() ;
+        QuerySolutionMap init = new QuerySolutionMap();
         init.add("z", m.createLiteral("zzz"));
         String qs = "SELECT * {?s ?p 'x1'}";
         try ( QueryExecution qExec = QueryExecution.model(m).query(qs)
                 .initialBinding(init)
                 .build() ) {
-            ResultSet rs = qExec.execSelect() ;
-            QuerySolution qSoln= rs.nextSolution() ;
-            assertTrue("Initial setting not set correctly now", qSoln.getLiteral("z").getLexicalForm().equals("zzz")) ;
+            ResultSet rs = qExec.execSelect();
+            QuerySolution qSoln= rs.nextSolution();
+            assertTrue(qSoln.getLiteral("z").getLexicalForm().equals("zzz"), ()->"Initial setting not set correctly now");
         }
     }
 
@@ -307,32 +283,32 @@ public class TestAPI
     @Test public void testReuseQueryObject1()
     {
         String queryString = "SELECT * {?s ?p ?o}";
-        Query q = QueryFactory.create(queryString) ;
+        Query q = QueryFactory.create(queryString);
 
-        QueryExecution qExec = QueryExecutionFactory.create(q, m) ;
-        int count = queryAndCount(qExec) ;
-        assertEquals(3, count) ;
+        QueryExecution qExec = QueryExecutionFactory.create(q, m);
+        int count = queryAndCount(qExec);
+        assertEquals(3, count);
 
-        qExec = QueryExecutionFactory.create(q, m) ;
-        count = queryAndCount(qExec) ;
-        assertEquals(3, count) ;
+        qExec = QueryExecutionFactory.create(q, m);
+        count = queryAndCount(qExec);
+        assertEquals(3, count);
     }
 
     @Test public void testReuseQueryObject2()
     {
         String queryString = "SELECT (count(?o) AS ?c) {?s ?p ?o} GROUP BY ?s";
-        Query q = QueryFactory.create(queryString) ;
+        Query q = QueryFactory.create(queryString);
 
         try(QueryExecution qExec = QueryExecutionFactory.create(q, m)) {
-            ResultSet rs = qExec.execSelect() ;
-            QuerySolution qs = rs.nextSolution() ;
-            assertEquals(3, qs.getLiteral("c").getInt()) ;
+            ResultSet rs = qExec.execSelect();
+            QuerySolution qs = rs.nextSolution();
+            assertEquals(3, qs.getLiteral("c").getInt());
         }
 
         try(QueryExecution qExec = QueryExecutionFactory.create(q, m)) {
-            ResultSet rs = qExec.execSelect() ;
-            QuerySolution qs = rs.nextSolution() ;
-            assertEquals(3, qs.getLiteral("c").getInt()) ;
+            ResultSet rs = qExec.execSelect();
+            QuerySolution qs = rs.nextSolution();
+            assertEquals(3, qs.getLiteral("c").getInt());
         }
     }
 
@@ -368,17 +344,17 @@ public class TestAPI
 //    // Check the number of results
 //    private void XexecRegexTest(int expected, String queryString)
 //    {
-//        Object b = ARQ.getContext().get(ARQ.enableRegexConstraintsOpt) ;
+//        Object b = ARQ.getContext().get(ARQ.enableRegexConstraintsOpt);
 //        try {
-//            ARQ.getContext().set(ARQ.enableRegexConstraintsOpt, "false") ;
-//            int count1 = queryAndCount(queryString) ;
-//            ARQ.getContext().set(ARQ.enableRegexConstraintsOpt, "true") ;
-//            int count2 = queryAndCount(queryString) ;
-//            assertEquals("Different number of results", count1, count2) ;
+//            ARQ.getContext().set(ARQ.enableRegexConstraintsOpt, "false");
+//            int count1 = queryAndCount(queryString);
+//            ARQ.getContext().set(ARQ.enableRegexConstraintsOpt, "true");
+//            int count2 = queryAndCount(queryString);
+//            assertEquals("Different number of results", count1, count2);
 //            if ( expected >= 0 )
-//                assertEquals("Unexpected number of results", expected, count1) ;
+//                assertEquals("Unexpected number of results", expected, count1);
 //        } finally {
-//            ARQ.getContext().set(ARQ.enableRegexConstraintsOpt, b) ;
+//            ARQ.getContext().set(ARQ.enableRegexConstraintsOpt, b);
 //        }
 //    }
 
@@ -471,13 +447,13 @@ public class TestAPI
         String queryString = "PREFIX : <http://example/> CONSTRUCT { :s :p :o GRAPH _:a { :s :p :o1 } } WHERE { }";
         Query q = QueryFactory.create(queryString, Syntax.syntaxARQ);
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
-        Dataset ds = qExec.execConstructDataset() ;
-        assertEquals(1, Iter.count(ds.asDatasetGraph().listGraphNodes())) ;
+        Dataset ds = qExec.execConstructDataset();
+        assertEquals(1, Iter.count(ds.asDatasetGraph().listGraphNodes()));
         Node n = ds.asDatasetGraph().listGraphNodes().next();
         assertTrue(n.isBlank());
-        Graph g = ds.asDatasetGraph().getGraph(n) ;
-        assertNotNull(g) ;
-        assertFalse(g.isEmpty()) ;
+        Graph g = ds.asDatasetGraph().getGraph(n);
+        assertNotNull(g);
+        assertFalse(g.isEmpty());
    }
 
     // Allow duplicated quads in execConstructQuads()
@@ -615,15 +591,18 @@ public class TestAPI
         }
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void testResultSetCloseableBad() {
         String queryString = "ASK { ?s ?p ?o. }";
         Query q = QueryFactory.create(queryString);
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
-        try (ResultSetCloseable rs = ResultSetFactory.closeableResultSet(qExec) ) {
-            int x = ResultSetFormatter.consume(rs);
-            assertEquals(1,x);
-        }
+
+        assertThrows(QueryException.class, ()-> {
+            try (ResultSetCloseable rs = ResultSetFactory.closeableResultSet(qExec) ) {
+                // No consume
+                int x = ResultSetFormatter.consume(rs);
+            }
+        });
     }
 
     private int queryAndCount(String queryString) {

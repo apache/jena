@@ -18,53 +18,54 @@
 
 package org.apache.jena.riot.writer;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.Parameter;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.riot.*;
 import org.apache.jena.sparql.util.IsoMatcher;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
-@RunWith(Parameterized.class)
-public class TestRiotWriterDataset extends AbstractWriterTest
-{
-    @Parameters(name = "{index}: {0}")
-    public static Iterable<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-            { RDFFormat.RDFNULL }
-            , { RDFFormat.TRIG }
-            , { RDFFormat.TRIG_PRETTY }
-            , { RDFFormat.TRIG_BLOCKS }
-            , { RDFFormat.TRIG_FLAT }
-            , { RDFFormat.JSONLD }
-            , { RDFFormat.JSONLD_PRETTY }
-            , { RDFFormat.JSONLD_FLAT }
-            , { RDFFormat.NQUADS}
-            , { RDFFormat.NQUADS_UTF8}
-            , { RDFFormat.NQUADS_ASCII}
-            , { RDFFormat.RDF_PROTO }
-            , { RDFFormat.RDF_PROTO_VALUES }
-            , { RDFFormat.RDF_THRIFT }
-            , { RDFFormat.RDF_THRIFT_VALUES }
-            , { RDFFormat.TRIX }
-        });
+@ParameterizedClass
+@MethodSource("provideArgs")
+public class TestRiotWriterDataset extends AbstractWriterTest {
+
+    private static Stream<Arguments> provideArgs() {
+        List<Arguments> x = List.of
+                (Arguments.of(RDFFormat.RDFNULL),
+                 Arguments.of(RDFFormat.TRIG),
+                 Arguments.of(RDFFormat.TRIG_PRETTY),
+                 Arguments.of(RDFFormat.TRIG_BLOCKS),
+                 Arguments.of(RDFFormat.TRIG_FLAT),
+                 Arguments.of(RDFFormat.JSONLD),
+                 Arguments.of(RDFFormat.JSONLD_PRETTY),
+                 Arguments.of(RDFFormat.JSONLD_FLAT),
+                 Arguments.of(RDFFormat.NQUADS),
+                 Arguments.of(RDFFormat.NQUADS_UTF8),
+                 Arguments.of(RDFFormat.NQUADS_ASCII),
+                 Arguments.of(RDFFormat.RDF_PROTO),
+                 Arguments.of(RDFFormat.RDF_PROTO_VALUES),
+                 Arguments.of(RDFFormat.RDF_THRIFT),
+                 Arguments.of(RDFFormat.RDF_THRIFT_VALUES),
+                 Arguments.of(RDFFormat.TRIX)
+                        );
+        return x.stream();
     }
 
+    @Parameter
     private RDFFormat format;
-
-    public TestRiotWriterDataset(RDFFormat format) {
-        this.format = format;
-    }
 
     private static boolean isJsonLDJava(RDFFormat format) {
         return Lang.JSONLD.equals(format.getLang());
@@ -129,9 +130,7 @@ public class TestRiotWriterDataset extends AbstractWriterTest
             RDFDataMgr.write(System.out, ds2.asDatasetGraph(), Lang.NQUADS );
             System.out.println("-------------");
         }
-
-        assertTrue("Datasets are not isomorphic", b);
-        //**** Test ds2 iso ds
+        assertTrue(b, "Datasets are not isomorphic");
     }
 }
 

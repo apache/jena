@@ -18,12 +18,11 @@
 
 package org.apache.jena.riot.lang.rdfxml.converted_legacy;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@SuiteClasses( {
+@Suite
+@SelectClasses({
     TestAPR1_W3C_WG.class,
     TestARP1_W3C_Pending.class,
     TestARP1_Local.class

@@ -18,23 +18,25 @@
 
 package org.apache.jena.riot.lang;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class TestCollectorStream {
 
     private List<Triple> writeTriples(StreamRDF out, int size) {
         List<Triple> results = new ArrayList<>();
         out.start();
-        for ( int i = 1 ; i <= size ; i++ ) {
+        for ( int i = 1; i <= size; i++ ) {
             Triple t = Triple.create(NodeFactory.createBlankNode(), NodeFactory.createURI("http://predicate"), NodeFactoryExtra.intToNode(i));
             out.triple(t);
             results.add(t);
@@ -47,13 +49,13 @@ public class TestCollectorStream {
     public void test_streamed_triples() {
         CollectorStreamRDF out = new CollectorStreamRDF();
         List<Triple> expected = writeTriples(out, 10);
-        Assert.assertEquals(expected, out.getTriples());
+        assertEquals(expected, out.getTriples());
     }
 
     private List<Quad> writeQuads(StreamRDF out, int size) {
         List<Quad> results = new ArrayList<>();
         out.start();
-        for ( int i = 1 ; i <= size ; i++ ) {
+        for ( int i = 1; i <= size; i++ ) {
             Quad q = new Quad(NodeFactory.createURI("http://graph"), NodeFactory.createBlankNode(),
                               NodeFactory.createURI("http://predicate"), NodeFactoryExtra.intToNode(i));
             out.quad(q);
@@ -67,6 +69,6 @@ public class TestCollectorStream {
     public void test_streamed_quads() {
         CollectorStreamRDF out = new CollectorStreamRDF();
         List<Quad> expected = writeQuads(out, 10);
-        Assert.assertEquals(expected, out.getQuads());
+        assertEquals(expected, out.getQuads());
     }
 }

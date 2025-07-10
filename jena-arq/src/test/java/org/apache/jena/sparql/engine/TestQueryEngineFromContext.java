@@ -18,16 +18,17 @@
 
 package org.apache.jena.sparql.engine;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.Collections;
 import java.util.Iterator;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.ResultSetFormatter;
+import org.apache.jena.query.*;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphMap;
 import org.apache.jena.sparql.core.Quad;
@@ -35,8 +36,6 @@ import org.apache.jena.sparql.engine.main.QC;
 import org.apache.jena.sparql.engine.main.QueryEngineMainQuad;
 import org.apache.jena.sparql.engine.main.solver.OpExecutorQuads;
 import org.apache.jena.sparql.util.Context;
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * The default query engine evaluates GRAPH ?g { ?s ?p ?o } with
@@ -65,14 +64,15 @@ public class TestQueryEngineFromContext {
         }
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testWithDefaultQueryEngine() {
         DatasetGraph testSetup = new DatasetGraphForTesting();
         Dataset ds = DatasetFactory.wrap(testSetup);
 
         try (QueryExecution qe = QueryExecutionFactory.create("SELECT * { GRAPH ?g { ?s ?p ?o } }", ds)) {
             // Expected to fail with default query engine
-            ResultSetFormatter.consume(qe.execSelect());
+            assertThrows(UnsupportedOperationException.class,
+                         ()->ResultSetFormatter.consume(qe.execSelect()));
         }
     }
 
@@ -92,7 +92,7 @@ public class TestQueryEngineFromContext {
 
 
             int rows = ResultSetFormatter.consume(qe.execSelect());
-            Assert.assertEquals(1, rows);
+            assertEquals(1, rows);
         }
     }
 

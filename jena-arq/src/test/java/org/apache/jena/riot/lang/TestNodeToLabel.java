@@ -18,98 +18,96 @@
 
 package org.apache.jena.riot.lang;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.util.ArrayList ;
-import java.util.List ;
+import java.util.List;
+import java.util.stream.Stream;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.riot.out.NodeToLabel ;
-import org.apache.jena.riot.system.SyntaxLabels ;
-import org.junit.Test ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Parameterized ;
-import org.junit.runners.Parameterized.Parameters ;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.Parameter;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
-public class TestNodeToLabel
-{
-    public interface NodeToLabelFactory { public NodeToLabel create() ; }
-    
-    @Parameters(name = "{index}: {0}")
-    public static Iterable<Object[]> data() {
-        List<Object[]> x = new ArrayList<>() ;
-        
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.riot.out.NodeToLabel;
+import org.apache.jena.riot.system.SyntaxLabels;
+
+@ParameterizedClass
+@MethodSource("provideArgs")
+public class TestNodeToLabel {
+
+    public interface NodeToLabelFactory { public NodeToLabel create(); }
+
+    private static Stream<Arguments> provideArgs() {
+
         NodeToLabelFactory f0 = new NodeToLabelFactory() {
-            @Override public NodeToLabel create() { return SyntaxLabels.createNodeToLabel() ; }
-            @Override public String toString() { return "SyntaxLabels.createNodeToLabel" ; }
-        } ;
+            @Override public NodeToLabel create() { return SyntaxLabels.createNodeToLabel(); }
+            @Override public String toString() { return "SyntaxLabels.createNodeToLabel"; }
+        };
         NodeToLabelFactory f1 = new NodeToLabelFactory() {
-            @Override public NodeToLabel create() { return NodeToLabel.createBNodeByIRI() ; }
-            @Override public String toString() { return "NodeToLabel.createBNodeByIRI()" ; }
-        } ;
+            @Override public NodeToLabel create() { return NodeToLabel.createBNodeByIRI(); }
+            @Override public String toString() { return "NodeToLabel.createBNodeByIRI()"; }
+        };
         NodeToLabelFactory f2 = new NodeToLabelFactory() {
-            @Override public NodeToLabel create() { return NodeToLabel.createBNodeByLabelAsGiven() ; }
-            @Override public String toString() { return "NodeToLabel.createBNodeByLabelAsGiven()" ; }
-        } ;
+            @Override public NodeToLabel create() { return NodeToLabel.createBNodeByLabelAsGiven(); }
+            @Override public String toString() { return "NodeToLabel.createBNodeByLabelAsGiven()"; }
+        };
         NodeToLabelFactory f3 = new NodeToLabelFactory() {
-            @Override public NodeToLabel create() { return NodeToLabel.createBNodeByLabelEncoded() ; }
-            @Override public String toString() { return "NodeToLabel.createBNodeByLabelEncoded()" ; }
-        } ;
+            @Override public NodeToLabel create() { return NodeToLabel.createBNodeByLabelEncoded(); }
+            @Override public String toString() { return "NodeToLabel.createBNodeByLabelEncoded()"; }
+        };
         NodeToLabelFactory f4 = new NodeToLabelFactory() {
-            @Override public NodeToLabel create() { return NodeToLabel.labelByInternal() ; }
-            @Override public String toString() { return "NodeToLabel.labelByInternal()" ; }
-        } ;
+            @Override public NodeToLabel create() { return NodeToLabel.labelByInternal(); }
+            @Override public String toString() { return "NodeToLabel.labelByInternal()"; }
+        };
 
-        x.add(new Object[]{f0}) ;
-        x.add(new Object[]{f1}) ;
-        x.add(new Object[]{f2}) ;
-        x.add(new Object[]{f3}) ;
-        x.add(new Object[]{f4}) ;
-        return x ; 
+        var x = List.of
+                (Arguments.of(f0),
+                 Arguments.of(f1),
+                 Arguments.of(f2),
+                 Arguments.of(f3),
+                 Arguments.of(f4)
+                        );
+        return x.stream();
     }
 
-    private NodeToLabelFactory factory ;
+    @Parameter
+    private NodeToLabelFactory factory;
 
-    public TestNodeToLabel(NodeToLabelFactory factory) 
-    {
-        this.factory = factory ;
-    }
-    
-    @Test public void node2label_01()
-    {
-        NodeToLabel mapper = factory.create() ;
-        String x1 = mapper.create() ;
-        String x2 = mapper.create() ;
-        assertNotNull(x1) ;
-        assertNotNull(x2) ;
-        assertNotEquals(x1, x2) ;
+    @Test
+    public void node2label_01() {
+        NodeToLabel mapper = factory.create();
+        String x1 = mapper.create();
+        String x2 = mapper.create();
+        assertNotNull(x1);
+        assertNotNull(x2);
+        assertNotEquals(x1, x2);
     }
 
-    @Test public void node2label_02()
-    {
-        NodeToLabel mapper = factory.create() ;
-        Node x = NodeFactory.createBlankNode() ;
-        String s1 = mapper.get(null, x) ;
-        String s2 = mapper.get(null, x) ;
-        assertNotNull(s1) ;
-        assertNotNull(s2) ;
-        assertEquals(s1, s2) ;
+    @Test
+    public void node2label_02() {
+        NodeToLabel mapper = factory.create();
+        Node x = NodeFactory.createBlankNode();
+        String s1 = mapper.get(null, x);
+        String s2 = mapper.get(null, x);
+        assertNotNull(s1);
+        assertNotNull(s2);
+        assertEquals(s1, s2);
     }
 
-    @Test public void node2label_03()
-    {
-        NodeToLabel mapper = factory.create() ;
-        Node x1 = NodeFactory.createBlankNode() ;
-        Node x2 = NodeFactory.createBlankNode() ;
-        String s1 = mapper.get(null, x1) ;
-        String s2 = mapper.get(null, x2) ;
-        assertNotNull(s1) ;
-        assertNotNull(s2) ;
-        assertNotEquals(s1, s2) ;
+    @Test
+    public void node2label_03() {
+        NodeToLabel mapper = factory.create();
+        Node x1 = NodeFactory.createBlankNode();
+        Node x2 = NodeFactory.createBlankNode();
+        String s1 = mapper.get(null, x1);
+        String s2 = mapper.get(null, x2);
+        assertNotNull(s1);
+        assertNotNull(s2);
+        assertNotEquals(s1, s2);
     }
 }
-

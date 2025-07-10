@@ -18,27 +18,27 @@
 
 package org.apache.jena.sparql.core;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.graph.GraphOps ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.graph.GraphOps;
 
 /** This is the test suite run over a regular DatasetGraph to check compatibility */
 public class TestDatasetGraphsRegular extends AbstractTestGraphOverDatasetGraph
 {
     @Override
-    protected DatasetGraph createBaseDSG() { return DatasetGraphFactory.create() ; }
+    protected DatasetGraph createBaseDSG() { return DatasetGraphFactory.create(); }
     
     @Override
     protected Graph makeNamedGraph(DatasetGraph dsg, Node gn)
     {
         // Knowns about getting special graphs.
-        return GraphOps.getGraph(dsg, gn) ;
+        return GraphOps.getGraph(dsg, gn);
     }
 
     @Override
     protected Graph makeDefaultGraph(DatasetGraph dsg)
     {
-        return  dsg.getDefaultGraph() ;
+        return  dsg.getDefaultGraph();
     }
 
 }

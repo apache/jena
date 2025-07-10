@@ -19,14 +19,17 @@
 package org.apache.jena.sparql.util;
 
 import static org.apache.jena.sparql.sse.SSE.parseGraph;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.apache.jena.graph.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class TestUnionDatasetGraph extends AbstractTestDyadicDatasetGraph {
 
@@ -50,7 +53,7 @@ public class TestUnionDatasetGraph extends AbstractTestDyadicDatasetGraph {
         assertEquals(2, dsg.size());
         assertTrue(g1.isIsomorphicWith(dsg.getGraph(graphName1)));
         assertTrue(g2.isIsomorphicWith(dsg.getGraph(graphName2)));
-        g1.find().mapWith(dsg.getDefaultGraph()::contains).forEachRemaining(Assert::assertTrue);
-        g2.find().mapWith(dsg.getDefaultGraph()::contains).forEachRemaining(Assert::assertTrue);
+        g1.find().mapWith(dsg.getDefaultGraph()::contains).forEachRemaining(Assertions::assertTrue);
+        g2.find().mapWith(dsg.getDefaultGraph()::contains).forEachRemaining(Assertions::assertTrue);
     }
 }

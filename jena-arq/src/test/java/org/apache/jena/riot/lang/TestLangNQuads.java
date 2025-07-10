@@ -18,13 +18,17 @@
 
 package org.apache.jena.riot.lang;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.system.ParserProfile;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.tokens.Tokenizer;
+import org.apache.jena.sparql.core.DatasetGraph;
 
 /** Test of syntax by a quads parser (does not include node validitiy checking) */
 
@@ -32,35 +36,41 @@ public class TestLangNQuads extends AbstractTestLangNTuples
 {
     @Override
     protected Lang getLang() {
-        return Lang.NQUADS ;
+        return Lang.NQUADS;
     }
+
+    @Override
+    protected LangRIOT createLangRIOT(Tokenizer tokenizer, StreamRDF sink, ParserProfile profile) {
+        return IteratorParsers.createParserNQuads(tokenizer, sink, profile);
+    }
+
 
     @Test
     public void quad_1() {
-        parseCount("<x> <p> <s> <g> .");
+        parseCount("<http://example/x> <http://example/p> <http://example/s> <http://example/g> .");
     }
 
-    @Test(expected = ExFatal.class)
+    @Test
     public void quad_2() {
-        parseCount("<x> <p> <s> <g>"); // No trailing DOT
+        parseException(ExFatal.class, "<http://example/x> <http://example/p> <http://example/s> <http://example/g>"); // No trailing DOT
     }
 
-    @Test(expected = ExFatal.class)
-    public void nq_only_1_no_tuple5() {
-        parseCount("<x> <p> <s> <g> <c> .");
+    @Test
+    public void nq_only_1_no_tuples() {
+        parseException(ExFatal.class, "<http://example/x> <http://example/p> <http://example/s> <http://example/g> <http://example/c> .");
     }
 
-    @Test(expected = ExFatal.class)
+    @Test
     public void nq_only_2_no_base() {
-        parseCount("@base <http://example/> . <x> <p> <s> .");
+        parseException(ExFatal.class, "@base <http://example/> . <http://example/x> <http://example/p> <http://example/s> .");
     }
 
     @Test
     public void dataset_1() {
-        // This must parse to <g>
-        DatasetGraph dsg = ParserTests.parser().fromString("<x> <p> <s> <g> .").lang(Lang.NQUADS).toDatasetGraph();
+        // This must parse to <http://example/g>
+        DatasetGraph dsg = ParserTests.parser().fromString("<http://example/x> <http://example/p> <http://example/s> <http://example/g> .").lang(Lang.NQUADS).toDatasetGraph();
         assertEquals(1, dsg.size());
-        assertEquals(1, dsg.getGraph(NodeFactory.createURI("g")).size());
+        assertEquals(1, dsg.getGraph(NodeFactory.createURI("http://example/g")).size());
         assertEquals(0, dsg.getDefaultGraph().size());
     }
 }

@@ -20,16 +20,16 @@ package org.apache.jena.sparql.core;
 
 import static org.apache.jena.system.G.nullAsAny;
 
-import java.util.* ;
+import java.util.*;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.graph.impl.GraphBase ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.impl.GraphBase;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.PrefixMapStd;
-import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.WrappedIterator ;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.util.iterator.WrappedIterator;
 
 /** Very simple, non-scalable DatasetGraph implementation
  * of a triples+quads style for testing the {@link DatasetGraphTriplesQuads}
@@ -37,8 +37,8 @@ import org.apache.jena.util.iterator.WrappedIterator ;
  */
 public class DatasetGraphSimpleMem extends DatasetGraphTriplesQuads implements TransactionalNotSupportedMixin
 {
-    private MiniSet<Triple> triples = new MiniSet<>() ;
-    private MiniSet<Quad> quads = new MiniSet<>() ;
+    private MiniSet<Triple> triples = new MiniSet<>();
+    private MiniSet<Quad> quads = new MiniSet<>();
     private PrefixMap prefixes = new PrefixMapStd();
 
     /** Simple abstraction of a Set */
@@ -198,7 +198,7 @@ public class DatasetGraphSimpleMem extends DatasetGraphTriplesQuads implements T
             List<Triple> results = new ArrayList<>();
 
             Iterator<Quad> iter = findNG(graphName, m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject());
-            for ( ; iter.hasNext() ; )
+            for (; iter.hasNext(); )
                 results.add(iter.next().asTriple());
             return WrappedIterator.create(results.iterator());
         }

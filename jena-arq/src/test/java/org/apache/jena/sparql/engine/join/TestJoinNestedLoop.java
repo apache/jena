@@ -18,15 +18,15 @@
 
 package org.apache.jena.sparql.engine.join;
 
-import org.apache.jena.sparql.algebra.Table ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.expr.ExprList ;
+import org.apache.jena.sparql.algebra.Table;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.expr.ExprList;
 
 public class TestJoinNestedLoop extends AbstractTestInnerJoin {
 
     @Override
     public QueryIterator join(JoinKey joinKey, Table left, Table right, ExprList conditions) {
-        return Join.nestedLoopJoin(left.iterator(null), right.iterator(null), null) ;
+        return Join.nestedLoopJoin(left.iterator(null), right.iterator(null), null);
     }
 
 }

@@ -18,21 +18,18 @@
 
 package org.apache.jena.sparql.function.library;
 import static org.apache.jena.sparql.expr.LibTestExpr.test;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.query.ARQ;
-import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.expr.ExprEvalException;
-import org.apache.jena.sparql.expr.LibTestExpr;
-import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.*;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
 import org.apache.jena.sparql.util.ExprUtils;
-import org.apache.jena.sys.JenaSystem ;
-import org.junit.Test ;
 
 public class TestFnFunctionsDateTimeDuration {
-    static { JenaSystem.init(); }
 
     @Test
     public void datetime_1() {
@@ -54,22 +51,31 @@ public class TestFnFunctionsDateTimeDuration {
         test("fn:dateTime('2017-09-14+01:00'^^xsd:date, '10:11:23+01:00'^^xsd:time) = '2017-09-14T10:11:23+01:00'^^xsd:dateTime");
     }
 
-    @Test(expected=ExprEvalException.class)
+    @Test
     public void datetime_5() {
         // Incompatible timezones.
-        test("fn:dateTime('2017-09-14+09:00'^^xsd:date, '10:11:23+01:00'^^xsd:time) = '2017-09-14T10:11:23+01:00'^^xsd:dateTime");
+        assertThrows(ExprEvalException.class,
+					 ()-> test("fn:dateTime('2017-09-14+09:00'^^xsd:date, '10:11:23+01:00'^^xsd:time) = '2017-09-14T10:11:23+01:00'^^xsd:dateTime") );
     }
 
-    @Test(expected=ExprEvalException.class)
+    @Test
     public void datetime_6() {
         // Bad date
-        test("fn:dateTime('xyz', '10:11:23+01:00'^^xsd:time) = '2017-09-14T10:11:23+01:00'^^xsd:dateTime");
+        assertThrows(ExprEvalException.class,
+					 ()-> test("fn:dateTime('xyz', '10:11:23+01:00'^^xsd:time) = '2017-09-14T10:11:23+01:00'^^xsd:dateTime") );
     }
 
-    @Test(expected=ExprEvalException.class)
+    @Test
     public void datetime_7() {
-        // Bad time
-        test("fn:dateTime('2017-09-14+09:00', 'now'^^xsd:time) = '2017-09-14T10:11:23+01:00'^^xsd:dateTime");
+        // Bad time: 'now'^^xsd:time
+        boolean systemValue = NodeValue.VerboseWarnings;
+        NodeValue.VerboseWarnings = false;
+        try {
+            assertThrows(ExprEvalException.class,
+                         ()-> test("fn:dateTime('2017-09-14+09:00', 'now'^^xsd:time) = '2017-09-14T10:11:23+01:00'^^xsd:dateTime") );
+        } finally {
+            NodeValue.VerboseWarnings = systemValue;
+        }
     }
 
     @Test public void fromDateTime() {
@@ -129,12 +135,16 @@ public class TestFnFunctionsDateTimeDuration {
     }
 
     private static void testException(String exprStr) {
-
-        Expr expr = ExprUtils.parse(exprStr) ;
+        boolean systemWarnFlag = E_Function.WarnOnUnknownFunction;
+        Expr expr = ExprUtils.parse(exprStr);
         try {
-            NodeValue rExpected = expr.eval(null, LibTestExpr.createTest()) ;
+            E_Function.WarnOnUnknownFunction = false;
+            // Possible warning.
+            NodeValue rExpected = expr.eval(null, LibTestExpr.createTest());
             fail("Expected exception: "+exprStr);
-        } catch ( ExprEvalException ex) {}
+        } catch ( ExprEvalException ex) {
+        } finally { E_Function.WarnOnUnknownFunction = systemWarnFlag; }
+
     }
 
     @Test public void exprAdjustDatetimeToTz_01(){
@@ -202,7 +212,7 @@ public class TestFnFunctionsDateTimeDuration {
     @Test public void exprAdjustTimeToTz_06() { test("fn:adjust-time-to-timezone('10:00:00-07:00'^^xsd:time,'')",NodeValue.makeNode("10:00:00",XSDDatatype.XSDtime));}
 
     @Test public void exprAdjustTimeToTz_07() { test("fn:adjust-time-to-timezone('10:00:00-07:00'^^xsd:time,'PT10H'^^xsd:dayTimeDuration)",NodeValue.makeNode("03:00:00+10:00",XSDDatatype.XSDtime));}
-    //@Test public void exprStrJoin()      { test("fn:string-join('a', 'b')", NodeValue.makeString("ab")) ; }
+    //@Test public void exprStrJoin()      { test("fn:string-join('a', 'b')", NodeValue.makeString("ab")); }
 
     @Test public void localTimezone_1() { test("fn:implicit-timezone()", nv->nv.isDayTimeDuration()); }
 

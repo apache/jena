@@ -18,17 +18,18 @@
 
 package org.apache.jena.sparql.graph;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.NoSuchElementException;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.util.iterator.ExtendedIterator;
-import org.junit.Test;
 
 public class TestGraphTxn {
 

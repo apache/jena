@@ -20,15 +20,15 @@ package org.apache.jena.sparql.core.mem;
 
 import static java.util.stream.Collectors.toSet;
 import static org.apache.jena.sparql.core.mem.AbstractTestTupleTable.allWildcardQuery;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public abstract class AbstractTestTupleTableForms<TableForm extends Predicate<Set<TupleSlot>>> {
 

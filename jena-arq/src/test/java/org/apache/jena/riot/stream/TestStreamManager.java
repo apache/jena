@@ -18,122 +18,133 @@
 
 package org.apache.jena.riot.stream;
 
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.io.File ;
+import java.io.File;
 
-import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.web.TypedInputStream ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RiotNotFoundException ;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.web.TypedInputStream;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RiotNotFoundException;
 import org.apache.jena.riot.SysRIOT;
-import org.apache.jena.riot.system.stream.LocatorFile ;
-import org.apache.jena.riot.system.stream.LocatorHTTP ;
-import org.apache.jena.riot.system.stream.StreamManager ;
-import org.apache.jena.sparql.util.Context ;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
+import org.apache.jena.riot.system.stream.LocatorFile;
+import org.apache.jena.riot.system.stream.LocatorHTTP;
+import org.apache.jena.riot.system.stream.StreamManager;
+import org.apache.jena.sparql.util.Context;
 
 public class TestStreamManager
 {
-    private static final String directory = "testing/RIOT/StreamManager" ;
-    private static final String absDirectory = new File(directory).getAbsolutePath() ;
+    private static final String directory = "testing/RIOT/StreamManager";
+    private static final String absDirectory = new File(directory).getAbsolutePath();
 
-    private static StreamManager streamMgrDir ;
-    private static StreamManager streamMgrHere ;
-    private static StreamManager streamMgrNull ;
-    private static StreamManager streamMgrStd ;
+    private static StreamManager streamMgrDir;
+    private static StreamManager streamMgrHere;
+    private static StreamManager streamMgrNull;
+    private static StreamManager streamMgrStd;
 
-    @BeforeClass static public void beforeClass()
+    @BeforeAll static public void beforeClass()
     {
-        streamMgrStd = StreamManager.get() ;
-        streamMgrDir = new StreamManager() ;
+        streamMgrStd = StreamManager.get();
+        streamMgrDir = new StreamManager();
         // Not current directory.
-        streamMgrDir.addLocator(new LocatorFile(directory)) ;
-        streamMgrDir.addLocator(new LocatorHTTP()) ;
+        streamMgrDir.addLocator(new LocatorFile(directory));
+        streamMgrDir.addLocator(new LocatorHTTP());
 
-        streamMgrHere = new StreamManager() ;
+        streamMgrHere = new StreamManager();
         // Not current directory.
-        streamMgrHere.addLocator(new LocatorFile()) ;
-        streamMgrHere.addLocator(new LocatorHTTP()) ;
+        streamMgrHere.addLocator(new LocatorFile());
+        streamMgrHere.addLocator(new LocatorHTTP());
 
-        streamMgrNull = new StreamManager() ;
+        streamMgrNull = new StreamManager();
     }
 
-    @AfterClass static public void afterClass()
+    @AfterAll static public void afterClass()
     {
-        StreamManager.setGlobal(streamMgrStd) ;
+        StreamManager.setGlobal(streamMgrStd);
     }
 
     private static Context context(StreamManager streamMgr)
     {
-        Context context = new Context() ;
-        context.put(SysRIOT.sysStreamManager, streamMgr) ;
-        return context ;
+        Context context = new Context();
+        context.put(SysRIOT.sysStreamManager, streamMgr);
+        return context;
     }
 
-    @Test public void fm_open_01()  { open(streamMgrNull, directory+"/D.ttl", context(streamMgrHere)) ; }
-    @Test public void fm_open_02()  { open(streamMgrHere, directory+"/D.ttl", null) ; }
+    @Test public void fm_open_01()  { open(streamMgrNull, directory+"/D.ttl", context(streamMgrHere)); }
+    @Test public void fm_open_02()  { open(streamMgrHere, directory+"/D.ttl", null); }
 
-    @Test public void fm_open_03()  { open(streamMgrNull,  "D.ttl", context(streamMgrDir)) ; }
-    @Test public void fm_open_04()  { open(streamMgrDir, "D.ttl", null) ; }
+    @Test public void fm_open_03()  { open(streamMgrNull,  "D.ttl", context(streamMgrDir)); }
+    @Test public void fm_open_04()  { open(streamMgrDir, "D.ttl", null); }
 
-    @Test public void fm_open_05()  { open(streamMgrHere, "file:"+directory+"/D.ttl", context(streamMgrHere)) ; }
-    @Test public void fm_open_06()  { open(streamMgrHere, "file:"+directory+"/D.ttl", null) ; }
+    @Test public void fm_open_05()  { open(streamMgrHere, "file:"+directory+"/D.ttl", context(streamMgrHere)); }
+    @Test public void fm_open_06()  { open(streamMgrHere, "file:"+directory+"/D.ttl", null); }
 
-    @Test public void fm_open_07()  { open(streamMgrHere, "file:D.ttl", context(streamMgrDir)) ; }
-    @Test public void fm_open_08()  { open(streamMgrDir, "file:D.ttl", null) ; }
+    @Test public void fm_open_07()  { open(streamMgrHere, "file:D.ttl", context(streamMgrDir)); }
+    @Test public void fm_open_08()  { open(streamMgrDir, "file:D.ttl", null); }
 
-    @Test public void fm_open_09()  { open(streamMgrHere, absDirectory+"/D.ttl", null) ; }
-    @Test public void fm_open_10()  { open(streamMgrDir,  absDirectory+"/D.ttl", null) ; }
-    @Test public void fm_open_11()  { open(streamMgrDir,  "file://"+absDirectory+"/D.ttl", null) ; }
-    @Test public void fm_open_12()  { open(streamMgrHere, "file://"+absDirectory+"/D.ttl", null) ; }
+    @Test public void fm_open_09()  { open(streamMgrHere, absDirectory+"/D.ttl", null); }
+    @Test public void fm_open_10()  { open(streamMgrDir,  absDirectory+"/D.ttl", null); }
+    @Test public void fm_open_11()  { open(streamMgrDir,  "file://"+absDirectory+"/D.ttl", null); }
+    @Test public void fm_open_12()  { open(streamMgrHere, "file://"+absDirectory+"/D.ttl", null); }
 
-    @Test (expected=RiotNotFoundException.class)
-    public void fm_open_20()        { open(null, "nosuchfile", context(streamMgrDir)) ; }
-    @Test (expected=RiotNotFoundException.class)
-    public void fm_open_21()        { open(streamMgrHere, "nosuchfile", null) ; }
+    @Test
+    public void fm_open_20() {
+        assertThrows(RiotNotFoundException.class, ()->
+            open(null, "nosuchfile", context(streamMgrDir))
+        );
+    }
 
-    @Test public void fm_read_01()  { read("D.nt") ; }
-    @Test public void fm_read_02()  { read("D.ttl") ; }
-    @Test public void fm_read_03()  { read("D.rdf") ; }
-    @Test public void fm_read_04()  { read("D.rj") ; }
-    @Test public void fm_read_05()  { read("D.jsonld") ; }
+    @Test
+    public void fm_open_21() {
+        assertThrows(RiotNotFoundException.class, ()->
+            open(streamMgrHere, "nosuchfile", null)
+        );
+    }
 
-    @Test public void fm_read_11()  { read("file:D.nt") ; }
-    @Test public void fm_read_12()  { read("file:D.ttl") ; }
-    @Test public void fm_read_13()  { read("file:D.rdf") ; }
-    @Test public void fm_read_14()  { read("file:D.rj") ; }
-    @Test public void fm_read_15()  { read("file:D.jsonld") ; }
+    @Test public void fm_read_01()  { read("D.nt"); }
+    @Test public void fm_read_02()  { read("D.ttl"); }
+    @Test public void fm_read_03()  { read("D.rdf"); }
+    @Test public void fm_read_04()  { read("D.rj"); }
+    @Test public void fm_read_05()  { read("D.jsonld"); }
+
+    @Test public void fm_read_11()  { read("file:D.nt"); }
+    @Test public void fm_read_12()  { read("file:D.ttl"); }
+    @Test public void fm_read_13()  { read("file:D.rdf"); }
+    @Test public void fm_read_14()  { read("file:D.rj"); }
+    @Test public void fm_read_15()  { read("file:D.jsonld"); }
 
     // TriG
     // NQuads
 
     private static void open(StreamManager streamMgr, String dataName, Context context)
     {
-        StreamManager.setGlobal(streamMgr) ;
+        StreamManager.setGlobal(streamMgr);
         try {
             TypedInputStream in = RDFDataMgr.open(dataName, StreamManager.get(context));
-            assertNotNull(in) ;
-            IO.close(in) ;
+            assertNotNull(in);
+            IO.close(in);
         } finally {
-            StreamManager.setGlobal(streamMgrStd) ;
+            StreamManager.setGlobal(streamMgrStd);
         }
     }
 
     private static void read(String dataName)
     {
         try {
-            StreamManager.setGlobal(streamMgrDir) ;
-            Model m = ModelFactory.createDefaultModel() ;
-            RDFDataMgr.read(m, dataName) ;
-            assertNotEquals("Read "+dataName, 0, m.size()) ;
+            StreamManager.setGlobal(streamMgrDir);
+            Model m = ModelFactory.createDefaultModel();
+            RDFDataMgr.read(m, dataName);
+            assertNotEquals(0, m.size(),()->"Read "+dataName);
         } finally {
-            StreamManager.setGlobal(streamMgrStd) ;
+            StreamManager.setGlobal(streamMgrStd);
         }
     }
 }

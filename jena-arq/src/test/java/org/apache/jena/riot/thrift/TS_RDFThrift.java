@@ -18,20 +18,20 @@
 
 package org.apache.jena.riot.thrift;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses({
     TestThriftTerm.class
     , TestThriftSetup.class
     , TestThriftStreamRDF.class
     , TestThriftResultSet.class
     //, TestPatchThrift.class
-    
+
 } )
 
 public class TS_RDFThrift {
-    public static final String TestingDir = "testing/RIOT/RDF-Thrift" ;
+    public static final String TestingDir = "testing/RIOT/RDF-Thrift";
 }
 

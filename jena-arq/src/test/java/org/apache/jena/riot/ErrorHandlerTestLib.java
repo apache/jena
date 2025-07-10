@@ -18,19 +18,19 @@
 
 package org.apache.jena.riot;
 
-import java.util.ArrayList ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.jena.riot.system.ErrorHandler ;
+import org.apache.jena.riot.system.ErrorHandler;
 
 /** Error handler to convert anything to an exception */
 public class ErrorHandlerTestLib
 {
-    public static class ExFatal extends RuntimeException { ExFatal(String msg) { super(msg) ; } }
+    public static class ExFatal extends RuntimeException { ExFatal(String msg) { super(msg); } }
 
-    public static class ExError extends RuntimeException { ExError(String msg) { super(msg) ; } }
+    public static class ExError extends RuntimeException { ExError(String msg) { super(msg); } }
 
-    public static class ExWarning extends RuntimeException { ExWarning(String msg) { super(msg) ; } }
+    public static class ExWarning extends RuntimeException { ExWarning(String msg) { super(msg); } }
 
     public static class ErrorHandlerEx implements ErrorHandler
     {
@@ -38,33 +38,33 @@ public class ErrorHandlerTestLib
 
         @Override
         public void warning(String message, long line, long col)
-        { throw new ExWarning(message) ; }
+        { throw new ExWarning(message); }
 
         @Override
         public void error(String message, long line, long col)
-        { throw new ExError(message) ; }
+        { throw new ExError(message); }
 
         @Override
         public void fatal(String message, long line, long col)
-        { throw new ExFatal(message) ; }
+        { throw new ExFatal(message); }
     }
 
     // Error handler that records messages
     public static class ErrorHandlerMsg implements ErrorHandler
     {
-        public List<String> msgs = new ArrayList<>() ;
+        public List<String> msgs = new ArrayList<>();
 
         @Override
         public void warning(String message, long line, long col)
-        { msgs.add(message) ; }
+        { msgs.add(message); }
 
         @Override
         public void error(String message, long line, long col)
-        { msgs.add(message) ; }
+        { msgs.add(message); }
 
         @Override
         public void fatal(String message, long line, long col)
-        { msgs.add(message) ; throw new ExFatal(message) ; }
+        { msgs.add(message); throw new ExFatal(message); }
     }
 
 }

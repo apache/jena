@@ -18,29 +18,26 @@
 
 package org.apache.jena.riot;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for the {@link RDFParserRegistry}
- *
  */
 public class TestParserRegistry {
-
     @Test
     public void parser_registry_is_triples() {
-        Assert.assertTrue(RDFParserRegistry.isTriples(RDFLanguages.N3));
-        Assert.assertTrue(RDFParserRegistry.isTriples(RDFLanguages.NTRIPLES));
-        Assert.assertTrue(RDFParserRegistry.isTriples(RDFLanguages.TURTLE));
-        Assert.assertTrue(RDFParserRegistry.isTriples(RDFLanguages.RDFXML));
-        Assert.assertTrue(RDFParserRegistry.isTriples(RDFLanguages.RDFJSON));
-    }
-    
-    @Test
-    public void parser_registry_is_quads() {
-        Assert.assertTrue(RDFParserRegistry.isQuads(RDFLanguages.NQUADS));
-        Assert.assertTrue(RDFParserRegistry.isQuads(RDFLanguages.TRIG));
+        assertTrue(RDFParserRegistry.isTriples(RDFLanguages.N3));
+        assertTrue(RDFParserRegistry.isTriples(RDFLanguages.NTRIPLES));
+        assertTrue(RDFParserRegistry.isTriples(RDFLanguages.TURTLE));
+        assertTrue(RDFParserRegistry.isTriples(RDFLanguages.RDFXML));
+        assertTrue(RDFParserRegistry.isTriples(RDFLanguages.RDFJSON));
     }
 
+    @Test
+    public void parser_registry_is_quads() {
+        assertTrue(RDFParserRegistry.isQuads(RDFLanguages.NQUADS));
+        assertTrue(RDFParserRegistry.isQuads(RDFLanguages.TRIG));
+    }
 }

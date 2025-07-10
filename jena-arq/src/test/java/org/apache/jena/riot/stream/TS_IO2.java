@@ -18,12 +18,11 @@
 
 package org.apache.jena.riot.stream;
 
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses({
       TestStreamManager.class
     , TestLocationMapper.class
     , TestLocators.class

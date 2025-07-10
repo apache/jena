@@ -18,11 +18,11 @@
 
 package org.apache.jena.sparql.core;
 
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.DatasetFactory ;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory;
 
 public class TestDatasetGeneral extends AbstractTestDataset 
 {
     @Override
-    protected Dataset createDataset() { return DatasetFactory.createGeneral() ; }
+    protected Dataset createDataset() { return DatasetFactory.createGeneral(); }
 }

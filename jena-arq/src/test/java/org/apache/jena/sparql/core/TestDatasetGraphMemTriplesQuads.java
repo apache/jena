@@ -24,7 +24,7 @@ public class TestDatasetGraphMemTriplesQuads extends AbstractDatasetGraphTests
     @Override
     protected DatasetGraph emptyDataset()
     {
-        return new DatasetGraphSimpleMem() ;
+        return new DatasetGraphSimpleMem();
     }
 }    
 

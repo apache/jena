@@ -18,10 +18,14 @@
 
 package org.apache.jena.sparql;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.StrUtils;
-import org.apache.jena.query.*;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.exec.QueryExec;
@@ -30,7 +34,6 @@ import org.apache.jena.sparql.exec.RowSetRewindable;
 import org.apache.jena.sparql.resultset.ResultsCompare;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
-import org.junit.Test;
 
 /** Tests about things discovered over time. */
 public abstract class AbstractTestAdditional {
@@ -78,6 +81,6 @@ public abstract class AbstractTestAdditional {
             System.out.println();
             RowSetOps.out(System.out, rsGot);
         }
-        assertTrue("result sets different", b);
+        assertTrue(b, ()->"result sets different");
     }
 }

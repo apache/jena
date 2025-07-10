@@ -18,10 +18,11 @@
 
 package org.apache.jena.sparql.algebra.optimize;
 
-import org.apache.jena.atlas.lib.StrUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.sse.SSE;
 
@@ -47,11 +48,11 @@ public class TestTransformEliminateAssignments {
         // Check results
         if (output == null) {
             // No transformation.
-            Assert.assertEquals(original, actual);
+            assertEquals(original, actual);
         } else {
             // Transformation expected
             Op expected = SSE.parseOp(StrUtils.strjoinNL(output));
-            Assert.assertEquals(expected, actual);
+            assertEquals(expected, actual);
         }
     }
 
@@ -486,7 +487,7 @@ public class TestTransformEliminateAssignments {
 //             "                         (extend (?x true)",
 //             "                           (table unit))))",
 //             "    (table unit)))");
-//             ;
+//            ;
 //        //@formatter:on
 //    }
 //
@@ -536,7 +537,7 @@ public class TestTransformEliminateAssignments {
                      "  (filter (exists",
                      "            (filter  ?x (table unit)))",
                      "    (extend (?x true)",
-                     "      (table unit))))") ;
+                     "      (table unit))))");
         //@formatter:on
     }
 
@@ -574,7 +575,7 @@ public class TestTransformEliminateAssignments {
             "(project (?y)",
             "  (filter (exists (filter true (table unit)))",
             "     (table unit)",
-            "))") ;
+            "))");
 
         //@formatter:on
     }

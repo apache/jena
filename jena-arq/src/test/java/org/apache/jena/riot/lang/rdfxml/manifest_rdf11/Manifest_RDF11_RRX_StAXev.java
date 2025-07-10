@@ -36,7 +36,7 @@ import org.junit.runner.RunWith;
     "testing/RIOT/rdf11-xml/manifest.ttl"
 })
 
-public class TestManifest_RDF11_RRX_StAXev {
+public class Manifest_RDF11_RRX_StAXev {
 
     static ReaderRIOTFactory systemReaderfactory;
     @BeforeClass

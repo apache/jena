@@ -18,13 +18,14 @@
 
 package org.apache.jena.sparql.expr.nodevalue;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.expr.NodeValue;
-import org.junit.Test;
 
 /**
  * Tests for {@link NodeValueSortKey}.

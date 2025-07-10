@@ -18,7 +18,9 @@
 
 package org.apache.jena.riot.system;
 
-import org.junit.Test ;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Test the other {@link PrefixMap} implementations.
@@ -26,29 +28,29 @@ import org.junit.Test ;
  */
 public class TestPrefixMapOther
 {
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void other_01() {
-        PrefixMap pmap = PrefixMapFactory.create();
-        pmap = PrefixMapFactory.unmodifiablePrefixMap(pmap);
-        pmap.add("foo", "bar");
+        PrefixMap pmap0 = PrefixMapFactory.create();
+        PrefixMap pmap = PrefixMapFactory.unmodifiablePrefixMap(pmap0);
+        assertThrows(UnsupportedOperationException.class, ()->pmap.add("foo", "bar"));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void other_02() {
-        PrefixMap pmap = PrefixMapFactory.create();
-        pmap = PrefixMapFactory.unmodifiablePrefixMap(pmap);
-        pmap.getMapping().put("ex", "http://example/");
+        PrefixMap pmap0 = PrefixMapFactory.create();
+        PrefixMap pmap = PrefixMapFactory.unmodifiablePrefixMap(pmap0);
+        assertThrows(UnsupportedOperationException.class, ()->pmap.getMapping().put("ex", "http://example/"));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void other_10() {
         PrefixMap pmap = PrefixMapFactory.emptyPrefixMap();
-        pmap.add("foo", "bar");
+        assertThrows(UnsupportedOperationException.class, ()->pmap.add("foo", "bar"));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void other_11() {
         PrefixMap pmap = PrefixMapFactory.emptyPrefixMap();
-        pmap.getMapping().put("ex", "http://example/");
+        assertThrows(UnsupportedOperationException.class, ()->pmap.getMapping().put("ex", "http://example/"));
     }
 }

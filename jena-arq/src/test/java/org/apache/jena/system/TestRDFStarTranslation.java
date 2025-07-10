@@ -18,12 +18,14 @@
 
 package org.apache.jena.system;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.function.Function;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.graph.Graph;
@@ -33,7 +35,6 @@ import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.IsoMatcher;
 import org.apache.jena.vocabulary.RDF;
-import org.junit.Test;
 
 public class TestRDFStarTranslation {
 
@@ -175,7 +176,7 @@ public class TestRDFStarTranslation {
         Graph g1 = RDFStar.encodeAsRDF(graph);
         testNoTripleTerms(g1);
         //RDFDataMgr.write(System.out, g1, RDFFormat.TURTLE_BLOCKS);
-        assertEquals("Encoded", expectedSize, g1.size());
+        assertEquals(expectedSize, g1.size(), ()->"Encoded size");
 
         // Check there is the expected reification.
         Node reif = getReif.apply(g1);

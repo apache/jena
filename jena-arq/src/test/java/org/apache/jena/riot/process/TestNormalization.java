@@ -18,7 +18,7 @@
 
 package org.apache.jena.riot.process;
 
-import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Node;
 import org.apache.jena.riot.process.normalize.NormalizeRDFTerms;
 
 public class TestNormalization extends AbstractTestNormalization {

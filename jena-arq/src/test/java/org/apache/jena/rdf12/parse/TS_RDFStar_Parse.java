@@ -16,6 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.jena.rdf12;
+package org.apache.jena.rdf12.parse;
 
-enum TEST { GOOD, BAD }
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+
+@Suite
+@SelectClasses({
+    // Old basic tests,
+    // ** To be removed.
+    TestNQuadsStarParse.class,
+    TestNTriplesStarParse.class,
+    TestTrigStarParse.class,
+    TestTurtleStarParse.class,
+    TestSPARQL12Parse.class
+})
+public class TS_RDFStar_Parse {
+}

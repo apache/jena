@@ -18,11 +18,12 @@
 
 package org.apache.jena.sparql.lang;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.query.QueryParseException;
-import org.junit.Test;
 
 public class TestUnescape
 {
@@ -53,17 +54,11 @@ public class TestUnescape
     @Test public void testEscUni18() { execTest("x\\t\\n\\r", "x\t\n\r"); }
 
     private void execTestFail(String input) {
-        try {
-            String s = QueryParserBase.unescapeStr(input);
-            fail("Unescaping succeeded on " + input + " producing <<"+s+">>");
-        }
-        catch (QueryParseException ex) {
-            return;
-        }
+        assertThrows(QueryParseException.class, ()->QueryParserBase.unescapeStr(input));
     }
 
     private void execTest(String input, String outcome) {
         String result = QueryParserBase.unescapeStr(input);
-        assertEquals("Unescaped string does not match (" + input + ")", outcome, result);
+        assertEquals(outcome, result, ()->"Unescaped string does not match (" + input + ")");
     }
 }

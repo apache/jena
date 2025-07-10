@@ -18,10 +18,10 @@
 
 package org.apache.jena.system;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -29,6 +29,8 @@ import java.io.StringWriter;
 import com.apicatalog.rdf.RdfDataset;
 import com.apicatalog.rdf.io.RdfWriter;
 import com.apicatalog.rdf.io.error.RdfWriterException;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.graph.NodeFactory;
@@ -39,7 +41,6 @@ import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.IsoMatcher;
-import org.junit.Test;
 
 public class TestJenaTitanium {
 

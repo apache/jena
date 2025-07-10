@@ -18,10 +18,12 @@
 
 package org.apache.jena.riot.lang;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.rdf.model.Model;
@@ -32,7 +34,6 @@ import org.apache.jena.riot.RDFParserBuilder;
 import org.apache.jena.riot.SysRIOT;
 import org.apache.jena.riot.lang.rdfxml.RRX;
 import org.apache.jena.riot.system.ErrorHandlerFactory;
-import org.junit.Test;
 
 /**
  * Tests for setting reader properties - specific to ARP1.

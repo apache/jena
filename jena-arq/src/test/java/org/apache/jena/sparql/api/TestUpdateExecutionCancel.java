@@ -18,16 +18,17 @@
 
 package org.apache.jena.sparql.api;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Graph;
@@ -47,8 +48,6 @@ import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateProcessor;
 import org.apache.jena.update.UpdateRequest;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class TestUpdateExecutionCancel {
 
@@ -62,7 +61,7 @@ public class TestUpdateExecutionCancel {
                 .set(ARQConstants.registryFunctions, fnReg)
                 .build();
         ue.execute();
-        Assert.assertEquals(1, Iter.count(dsg.find()));
+        assertEquals(1, Iter.count(dsg.find()));
     }
 
     /** Set cancel signal function via {@link UpdateExecBuilder#context(Context)}. */
@@ -77,7 +76,7 @@ public class TestUpdateExecutionCancel {
                 .context(cxt)
                 .build();
         ue.execute();
-        Assert.assertEquals(1, Iter.count(dsg.find()));
+        assertEquals(1, Iter.count(dsg.find()));
     }
 
     /** Set cancel signal function via {@link UpdateExec#getContext()}. */
@@ -91,26 +90,31 @@ public class TestUpdateExecutionCancel {
         FunctionRegistry fnReg = TestQueryExecutionCancel.registerCancelSignalFunction(new FunctionRegistry());
         FunctionRegistry.set(cxt, fnReg);
         ue.execute();
-        Assert.assertEquals(1, Iter.count(dsg.find()));
+        assertEquals(1, Iter.count(dsg.find()));
     }
 
-    @Test(expected = QueryCancelledException.class, timeout = 5000)
+    @Test
+    @Timeout(value=5000, unit=TimeUnit.MILLISECONDS)
     public void test_update_cancel_1() {
         Graph graph = TestQueryExecutionCancel.createTestGraph();
         // Create an insert whose WHERE clause creates 3 cross joins a 1000 triples/bindings.
         // This would result in one billion result rows.
-        UpdateExec
-            .dataset(graph)
-            // No-op delete followed by insert indirectly tests that timeout is applied to overall update request.
-            .update("DELETE { <s> <p> <o> } WHERE { ?a ?b ?c } ; INSERT { <s> <p> <o> } WHERE { ?a ?b ?c . ?d ?e ?f . ?g ?h ?i . }")
-            .timeout(50, TimeUnit.MILLISECONDS)
-            .build()
-            .execute();
+
+        assertThrows(QueryCancelledException.class,()->
+            UpdateExec
+                .dataset(graph)
+                // No-op delete followed by insert indirectly tests that timeout is applied to overall update request.
+                .update("DELETE { <s> <p> <o> } WHERE { ?a ?b ?c }; INSERT { <s> <p> <o> } WHERE { ?a ?b ?c . ?d ?e ?f . ?g ?h ?i . }")
+                .timeout(50, TimeUnit.MILLISECONDS)
+                .build()
+                .execute()
+                );
     }
 
     /** Test that creates iterators over a billion result rows and attempts to cancel them.
      *  If this test hangs then it is likely that something went wrong in the cancellation machinery. */
-    @Test(timeout = 10000)
+    @Test
+    @Timeout(value=10000, unit=TimeUnit.MILLISECONDS)
     public void test_cancel_concurrent_1() {
         int maxCancelDelayInMillis = 100;
 
@@ -162,7 +166,7 @@ public class TestUpdateExecutionCancel {
                             // Unexpected exception - print out the stack trace
                             e.printStackTrace();
                         }
-                        Assert.assertEquals(QueryCancelledException.class, cause.getClass());
+                        assertEquals(QueryCancelledException.class, cause.getClass());
                     } catch (InterruptedException e) {
                         // Ignored
                     } finally {

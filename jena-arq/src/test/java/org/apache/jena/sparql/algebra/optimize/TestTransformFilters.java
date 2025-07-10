@@ -18,13 +18,16 @@
 
 package org.apache.jena.sparql.algebra.optimize;
 
-import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.algebra.TransformCopy ;
+import static org.apache.jena.sparql.algebra.optimize.TransformTests.check;
+import static org.apache.jena.sparql.algebra.optimize.TransformTests.testOp;
+
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.Transform;
+import org.apache.jena.sparql.algebra.TransformCopy;
 import org.apache.jena.sparql.algebra.op.OpTable;
-import org.junit.Test;
-import static org.apache.jena.sparql.algebra.optimize.TransformTests.*;
 
 /** Tests of transforms related to filters */
 public class TestTransformFilters

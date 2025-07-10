@@ -18,19 +18,21 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import java.util.List ;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.sparql.util.Context ;
-import org.junit.Test;
+import org.apache.jena.sparql.util.Context;
 
 public class TestDataBagDistinctOrder  {
-    
-    /** JENA-1771 - interaction of sort and DISTINCT when spilling. */ 
+
+    /** JENA-1771 - interaction of sort and DISTINCT when spilling. */
     @Test
     public void distinctOrderSpill_1() {
         String qs = StrUtils.strjoinNL
@@ -49,7 +51,7 @@ public class TestDataBagDistinctOrder  {
 
         List<QuerySolution> x = ResultSetFormatter.toList(qExec.execSelect());
         List<Integer> z = x.stream().map(qsoln->qsoln.getLiteral("v").getInt()).toList();
-        for ( int i = 0 ; i < z.size()-1; i++ ) {
+        for ( int i = 0; i < z.size()-1; i++ ) {
             int v1 = z.get(i);
             int v2 = z.get(i+1);
             if ( v2 < v1 )

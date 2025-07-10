@@ -18,13 +18,13 @@
 
 package org.apache.jena.atlas.data;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File ;
 import java.util.*;
 
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;

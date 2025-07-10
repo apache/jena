@@ -18,28 +18,30 @@
 
 package org.apache.jena.system;
 
-import static org.junit.Assert.* ;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.concurrent.atomic.AtomicLong ;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.sparql.core.Transactional ;
 import org.apache.jena.sparql.core.TransactionalLock ;
-import org.junit.Test ;
 
 /** Lifecycle tests - apply tests to a provided Transactional
- *  but modify separate state.   
+ *  but modify separate state.
  */
 public class TestTxnLifecycle {
     private AtomicLong counter = new AtomicLong(0) ;
 
     // Not MR+SW (See TestTxn for fully transactional tests)
     private Transactional trans = TransactionalLock.createMRSW() ;
- 
+
     @Test public void txn_lifecycle_01() {
         Txn.executeRead(trans, ()->{}) ;
     }
-    
+
     @Test public void txn_lifecycle_02() {
         Txn.executeWrite(trans, ()->{}) ;
     }
@@ -53,7 +55,7 @@ public class TestTxnLifecycle {
         int x = Txn.calculateWrite(trans, ()->5) ;
         assertEquals(5,x) ;
     }
-    
+
     @Test public void txn_lifecycle_05() {
         int x = Txn.calculateWrite(trans, ()-> {
             // Continues outer transaction.
@@ -61,16 +63,17 @@ public class TestTxnLifecycle {
         });
         assertEquals(56,x) ;
     }
-    
-    @Test(expected=JenaTransactionException.class)
+
+    @Test
     public void txn_lifecycle_05a() {
-        int x = Txn.calculateRead(trans, ()-> {
-            // Does not continue outer transaction.
-            return Txn.calculateWrite(trans, ()->56) ;
+        assertThrows(JenaTransactionException.class, () -> {
+            int x = Txn.calculateRead(trans, () -> {
+                // Does not continue outer transaction.
+                return Txn.calculateWrite(trans, () -> 56);
+            });
         });
-        assertEquals(56,x) ;
     }
-    
+
     @Test
     public void txn_lifecycle_05b() {
         int x = Txn.calculateWrite(trans, ()-> {
@@ -79,84 +82,87 @@ public class TestTxnLifecycle {
         assertEquals(56,x) ;
     }
 
-    
-    @Test(expected=ExceptionFromTest.class)
+
+    @Test
     public void txn_lifecycle_06() {
-        int x = Txn.calculateWrite(trans, ()-> {
-            Txn.calculateWrite(trans, ()-> {throw new ExceptionFromTest() ; }) ;
-            return 45 ;
+        assertThrows(ExceptionFromTest.class, () -> {
+            int x = Txn.calculateWrite(trans, () -> {
+                Txn.calculateWrite(trans, () -> {
+                    throw new ExceptionFromTest();
+                });
+                return 45;
+            });
         });
-        fail("Should not be here!") ;
     }
-    
-    
+
+
     @Test public void txn_lifecycle_07() {
-        Txn.executeWrite(trans, ()->trans.commit()) ; 
+        Txn.executeWrite(trans, ()->trans.commit()) ;
     }
-    
+
     @Test public void txn_lifecycle_08() {
-        Txn.executeWrite(trans, ()->trans.abort()) ; 
+        Txn.executeWrite(trans, ()->trans.abort()) ;
     }
-    
+
     @Test public void txn_lifecycle_09() {
-        Txn.executeRead(trans, ()->trans.commit()) ; 
+        Txn.executeRead(trans, ()->trans.commit()) ;
     }
     @Test public void txn_lifecycle_10() {
-        Txn.executeRead(trans, ()->trans.abort()) ; 
+        Txn.executeRead(trans, ()->trans.abort()) ;
     }
 
     static void async(Runnable runnable) {
         Thread thread = new Thread(runnable);
-        thread.start(); 
+        thread.start();
     }
-    
+
     static void debug(String message) {
         //System.out.println(message) ;
     }
-    
+
     // Tests of isolation. Hard.
-    
+
     // Is this a real test?
 //    @Test public void txn_lifecycle_isolation_01() {
 //        Semaphore semaStep = new Semaphore(0) ;
 //        Semaphore sema = new Semaphore(0) ;
-//        
+//
 //        counter.set(15) ;
 //        long x1 = counter.get() ;
-//        
+//
 //        Runnable r = ()->{
 //            Txn.executeWrite(trans, ()->{
 //                debug("Thread 1");
 //                // Start step.
 //                semaStep.release();
-//                
+//
 //                debug("Thread 2");
-//                //Wait for test 
+//                //Wait for test
 //                sema.acquireUninterruptibly();
-//                
+//
 //                debug("Thread 3");
 //                // Make a change.
 //                counter.incrementAndGet() ;
-//                
+//
 //                debug("Thread 4");
 //                // End step.
 //                semaStep.release();
-//                
+//
 //                debug("Thread 5");
 //                // End change.
 //                sema.release();
-//                
+//
 //                debug("Thread 6");
 //            });
 //        } ;
-//        
+//
 //        long x2 = counter.get() ;
 //        assertEquals("x2", x1, x2) ;
 //
 //        debug("Main 1");
 //
 //        // Run!
-//        async(r) ; 
+//        async(r) ;
 //
 //        debug("Main 2");
 //

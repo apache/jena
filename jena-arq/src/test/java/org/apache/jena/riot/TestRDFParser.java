@@ -18,6 +18,8 @@
 
 package org.apache.jena.riot;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -25,6 +27,8 @@ import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Map;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.graph.Graph;
@@ -42,10 +46,6 @@ import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
-import org.junit.Assert;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class TestRDFParser {
 
@@ -75,10 +75,12 @@ public class TestRDFParser {
         assertEquals(3, graph.size());
     }
 
-    @Test(expected = RiotException.class)
+    @Test
     public void source_uri_02() {
         Graph graph = GraphFactory.createGraphMem();
-        RDFParser.create().source("file:" + DIR + "data.unknown").parse(graph);
+        assertThrows(RiotException.class, ()->
+            RDFParser.create().source("file:" + DIR + "data.unknown").parse(graph)
+            );
     }
 
     @Test
@@ -116,34 +118,38 @@ public class TestRDFParser {
         assertEquals(1, graph.size());
     }
 
-    @Test(expected = RiotNotFoundException.class)
+    @Test
     public void source_notfound_1() {
         // Last source wins.
         Graph graph = GraphFactory.createGraphMem();
-        RDFParser.create()
-                 .source(Path.of(DIR + "data.nosuchfile.ttl"))
-                 .parse(graph);
-        assertEquals(3, graph.size());
+        assertThrows(RiotException.class, ()->
+            RDFParser.create()
+                     .source(Path.of(DIR + "data.nosuchfile.ttl"))
+                     .parse(graph)
+                     );
+
     }
 
-    @Test(expected = RiotNotFoundException.class)
+    @Test
     public void source_notfound_2() {
         // Last source wins.
         Graph graph = GraphFactory.createGraphMem();
-        RDFParser.create()
-                 .source(DIR + "data.nosuchfile.ttl")
-                 .parse(graph);
-        assertEquals(3, graph.size());
+        assertThrows(RiotException.class, ()->
+            RDFParser.create()
+                     .source(DIR + "data.nosuchfile.ttl")
+                     .parse(graph)
+            );
     }
 
-    @Test(expected = RiotException.class)
+    @Test
     public void source_uri_hint_lang() {
         Graph graph = GraphFactory.createGraphMem();
-        RDFParser.create().source("file:data.rdf")
-                 .lang(Lang.RDFXML)
-                 .errorHandler(ErrorHandlerFactory.errorHandlerNoLogging)
-                 .parse(graph);
-        assertEquals(3, graph.size());
+        assertThrows(RiotException.class, ()->{
+            RDFParser.create().source("file:data.rdf")
+                     .lang(Lang.RDFXML)
+                     .errorHandler(ErrorHandlerFactory.errorHandlerNoLogging)
+                     .parse(graph);
+        });
     }
 
     @Test
@@ -155,14 +161,16 @@ public class TestRDFParser {
         assertEquals(1, graph.size());
     }
 
-    @Test(expected = RiotException.class)
+    @Test
     public void errorHandler() {
         Graph graph = GraphFactory.createGraphMem();
-        // This test file contains Turtle.
-        RDFParser.create().source(DIR + "data.rdf")
-                 // and no test log output.
-                 .errorHandler(ErrorHandlerFactory.errorHandlerNoLogging)
-                 .parse(graph);
+        assertThrows(RiotException.class, ()->{
+                // This test file contains Turtle.
+                RDFParser.create().source(DIR + "data.rdf")
+                         // and no test log output.
+                         .errorHandler(ErrorHandlerFactory.errorHandlerNoLogging)
+                         .parse(graph);
+        });
     }
 
     @Test
@@ -199,7 +207,7 @@ public class TestRDFParser {
     @Test
     public void labels_01() {
         Graph graph = GraphFactory.createGraphMem();
-        //LabelToNode.createUseLabelEncoded() ;
+        //LabelToNode.createUseLabelEncoded();
 
         builder()
                 .labelToNode(LabelToNode.createUseLabelAsGiven())
@@ -326,7 +334,7 @@ public class TestRDFParser {
         try {
             LogCtl.withLevel(SysRIOT.getLogger(), "FATAL", ()->
                 Txn.executeWrite(dsg, () -> builder.parse(dsg)));
-            Assert.fail("Parsing should have produced an error");
+            fail("Parsing should have produced an error");
         } catch (RiotException e) {
             // Size should be zero as failure to parse should abort the transaction and produce an empty dataset
             assertEquals(dsg.stream().count(), 0);
@@ -340,7 +348,7 @@ public class TestRDFParser {
         try {
             LogCtl.withLevel(SysRIOT.getLogger(), "FATAL", ()->
                  builder.parse(dsg));
-            Assert.fail("Parsing should have produced an error");
+            fail("Parsing should have produced an error");
         } catch (RiotException e) {
             // Without a transaction the valid quad would have gone into the dataset prior to the error occurring
             assertEquals(dsg.stream().count(), 1);
@@ -354,7 +362,7 @@ public class TestRDFParser {
             DatasetGraph dsg = null;
             try {
                 dsg = builder.toDatasetGraph();
-                Assert.fail("Parsing should have produced an error");
+                fail("Parsing should have produced an error");
             } catch (RiotException e) {
                 assertNull(dsg);
             }

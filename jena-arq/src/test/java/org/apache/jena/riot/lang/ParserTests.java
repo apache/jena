@@ -18,11 +18,11 @@
 
 package org.apache.jena.riot.lang;
 
-import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
-import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx;
+import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RDFParserBuilder;
-import org.apache.jena.riot.system.StreamRDFLib ;
+import org.apache.jena.riot.system.StreamRDFLib;
 
 /** Helper code for RIOT language parsing tests. */
 class ParserTests {
@@ -40,9 +40,9 @@ class ParserTests {
 
     /** Parse for a language - convert errors.wranigns to ErrorHandlerEx */
     static long parseCount(Lang lang, String string) {
-        StreamRDFCounting dest = StreamRDFLib.count() ;
+        StreamRDFCounting dest = StreamRDFLib.count();
         parser().fromString(string).lang(lang).parse(dest);
-        return dest.count() ;
+        return dest.count();
     }
 }
 

@@ -18,11 +18,16 @@
 
 package org.apache.jena.riot.lang;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringReader;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.rdf.model.Model;
@@ -35,7 +40,6 @@ import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.riot.tokens.Tokenizer;
 import org.apache.jena.riot.tokens.TokenizerText;
-import org.junit.Test;
 
 public class TestLangRdfJson {
     @SuppressWarnings("deprecation")
@@ -335,129 +339,134 @@ public class TestLangRdfJson {
         assertTrue(m.isIsomorphicWith(m2));
     }
 
-    @Test(expected = ExFatal.class)
+    @Test
     public void rdfjson_invalid_empty_string() {
         String s = "";
-        parseCount(s);
+        parseException(ExFatal.class, ()->parseCount(s));
     }
 
-    @Test(expected = ExFatal.class)
+    @Test
     public void rdfjson_invalid_unterminated_graph() {
         String s = "{ \"http://example.org/subject\" : { \"http://example.org/predicate\" : [ { \"type\" : \"uri\" , \"value\" : \"http://example.org/object\" } ] } ";
-        parseCount(s);
+        parseException(ExFatal.class, ()->parseCount(s));
     }
 
-    @Test(expected = ExFatal.class)
+    @Test
     public void rdfjson_invalid_missing_colon_after_subject() {
         String s = "{ \"http://example.org/subject\"  { \"http://example.org/predicate\" : [ { \"type\" : \"uri\" , \"value\" : \"http://example.org/object\" } ] } }";
-        parseCount(s);
+        parseException(ExFatal.class, ()->parseCount(s));
     }
 
-    @Test(expected = ExFatal.class)
+    @Test
     public void rdfjson_invalid_missing_colon_after_predicate() {
         String s = "{ \"http://example.org/subject\" : { \"http://example.org/predicate\"  [ { \"type\" : \"uri\" , \"value\" : \"http://example.org/object\" } ] } }";
-        parseCount(s);
+        parseException(ExFatal.class, ()->parseCount(s));
     }
 
-    @Test(expected = ExFatal.class)
+    @Test
     public void rdfjson_invalid_missing_colon_in_object() {
         String s = "{ \"http://example.org/subject\" : { \"http://example.org/predicate\" : [ { \"type\"  \"uri\" , \"value\" : \"http://example.org/object\" } ] } }";
-        parseCount(s);
+        parseException(ExFatal.class, ()->parseCount(s));
     }
 
-    @Test(expected = ExFatal.class)
+    @Test
     public void rdfjson_invalid_unterminated_predicateobjectlist_object() {
         String s = "{ \"http://example.org/subject\" : { \"http://example.org/predicate\" : [ { \"type\" : \"uri\" , \"value\" : \"http://example.org/object\" } ]";
-        parseCount(s);
+        parseException(ExFatal.class, ()->parseCount(s));
     }
 
-    @Test(expected = ExFatal.class)
+    @Test
     public void rdfjson_invalid_unterminated_objectlist_array() {
         String s = "{ \"http://example.org/subject\" : { \"http://example.org/predicate\" : [ { \"type\" : \"uri\" , \"value\" : \"http://example.org/object\" } } }";
-        parseCount(s);
+        parseException(ExFatal.class, ()->parseCount(s));
     }
 
-    @Test(expected = ExFatal.class)
+    @Test
     public void rdfjson_invalid_unterminated_object_object() {
         String s = "{ \"http://example.org/subject\" : { \"http://example.org/predicate\" : [ { \"type\" : \"uri\" , \"value\" : \"http://example.org/object\"";
-        parseCount(s);
+        parseException(ExFatal.class, ()->parseCount(s));
     }
 
-    @Test(expected = ExFatal.class)
+    @Test
     public void rdfjson_invalid_trailing_comma_in_object() {
         String s = "{ \"http://example.org/subject\" : { \"http://example.org/predicate\" : [ { \"type\" : \"uri\" , \"value\" : \"http://example.org/object\" , } ] } }";
-        parseCount(s);
+        parseException(ExFatal.class, ()->parseCount(s));
     }
 
-    @Test(expected = ExFatal.class)
+    @Test
     public void rdfjson_invalid_trailing_comma_after_subject() {
         String s = "{ \"http://example.org/subject\" : { \"http://example.org/predicate\" : [ { \"type\" : \"uri\" , \"value\" : \"http://example.org/object\" } ] } , }";
-        parseCount(s);
+        parseException(ExFatal.class, ()->parseCount(s));
     }
 
-    @Test(expected = ExFatal.class)
+    @Test
     public void rdfjson_invalid_trailing_comma_after_predicate() {
         String s = "{ \"http://example.org/subject\" : { \"http://example.org/predicate\" : [ { \"type\" : \"uri\" , \"value\" : \"http://example.org/object\" } ] , } }";
-        parseCount(s);
+        parseException(ExFatal.class, ()->parseCount(s));
     }
 
-    @Test(expected = ExFatal.class)
+    @Test
     public void rdfjson_invalid_property_names_in_object() {
         String s = "{ \"http://example.org/subject\" : { \"http://example.org/predicate\" : [ { \"name\" : \"value\" } ] } }";
-        parseCount(s);
+        parseException(ExFatal.class, ()->parseCount(s));
     }
 
-    @Test(expected = ExFatal.class)
+    @Test
     public void rdfjson_invalid_lang_and_datatype_in_object() {
         String s = "{ \"http://example.org/subject\" : { \"http://example.org/predicate\" : [ { \"type\" : \"literal\" , \"value\" : \"some text\" , \"lang\" : \"en\" , \"datatype\" : \"http://example.org/datatype\" } ] } }";
-        parseCount(s);
+        parseException(ExFatal.class, ()->parseCount(s));
     }
 
-    @Test(expected = ExFatal.class)
+    @Test
     public void rdfjson_invalid_lang_and_datatype_in_object2() {
         String s = "{ \"http://example.org/subject\" : { \"http://example.org/predicate\" : [ { \"type\" : \"literal\" , \"value\" : \"some text\" , \"datatype\" : \"http://example.org/datatype\" , \"lang\" : \"en\" } ] } }";
-        parseCount(s);
+        parseException(ExFatal.class, ()->parseCount(s));
     }
 
-    @Test(expected = ExFatal.class)
+    @Test
     public void rdfjson_invalid_repeated_property_type_in_object() {
         String s = "{ \"http://example.org/subject\" : { \"http://example.org/predicate\" : [ { \"type\" : \"uri\" , \"type\" : \"uri\" , \"value\" : \"http://example.org/object\" } ] } }";
-        parseCount(s);
+        parseException(ExFatal.class, ()->parseCount(s));
     }
 
-    @Test(expected = ExFatal.class)
+    @Test
     public void rdfjson_invalid_repeated_property_value_in_object() {
         String s = "{ \"http://example.org/subject\" : { \"http://example.org/predicate\" : [ { \"type\" : \"uri\" , \"value\" : \"http://example.org/object\" , \"value\" : \"http://example.org/object\" } ] } }";
-        parseCount(s);
+        parseException(ExFatal.class, ()->parseCount(s));
     }
 
-    @Test(expected = ExFatal.class)
+    @Test
     public void rdfjson_invalid_value_type_in_object() {
         String s = "{ \"http://example.org/subject\" : { \"http://example.org/predicate\" : [ { \"type\" : \"other\" , \"value\" : \"http://example.org/object\" } ] } }";
-        parseCount(s);
+        parseException(ExFatal.class, ()->parseCount(s));
     }
 
-    @Test(expected = ExFatal.class)
+    @Test
     public void rdfjson_invalid_array_toplevel() {
         String s = "[]";
-        parseCount(s);
+        parseException(ExFatal.class, ()->parseCount(s));
     }
 
-    @Test(expected = ExFatal.class)
+    @Test
     public void rdfjson_invalid_trailing_content() {
         String s = "{}{}";
-        parseCount(s);
+        parseException(ExFatal.class, ()->parseCount(s));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void rdfjson_invalid_tokenizer() {
         byte b[] = StrUtils.asUTF8bytes("");
         ByteArrayInputStream in = new ByteArrayInputStream(b);
         Tokenizer tokenizer = TokenizerText.create().source(in).build();
         StreamRDFCounting sink = StreamRDFLib.count();
         // IllegalArgumentException - not a TokenizerJSON.
-        LangRDFJSON x = new LangRDFJSON(tokenizer, RiotLib.dftProfile(), sink);
+        assertThrows(IllegalArgumentException.class, ()->new LangRDFJSON(tokenizer, RiotLib.dftProfile(), sink));
     }
+
+    private <T extends Throwable> T parseException(Class<T> exClass, Executable action) {
+        return assertThrowsExactly(exClass, action);
+    }
+
 
     private long parseCount(String string) {
         return ParserTests.parseCount(Lang.RDFJSON, string);

@@ -240,18 +240,18 @@ public class TestQuerySyntaxTransform
         Query qExpected = QueryFactory.create(PREFIX+output);
 
         Map<String, RDFNode> map = Map.of(varStr, fromString(valStr));
-        Query qTrans = QueryTransformOps.queryReplaceVars(q1, map) ;
-        assertEquals(qExpected, qTrans) ;
+        Query qTrans = QueryTransformOps.queryReplaceVars(q1, map);
+        assertEquals(qExpected, qTrans);
     }
 
     private void testQueryModel(String input, String output, String varStr1, String valStr1, String varStr2, String valStr2) {
-        Query q1 = QueryFactory.create(PREFIX+input) ;
-        Query qExpected = QueryFactory.create(PREFIX+output) ;
+        Query q1 = QueryFactory.create(PREFIX+input);
+        Query qExpected = QueryFactory.create(PREFIX+output);
 
         Map<String, RDFNode> map = Map.of(varStr1, fromString(valStr1), varStr2, fromString(valStr2));
 
-        Query qTrans = QueryTransformOps.queryReplaceVars(q1, map) ;
-        assertEquals(qExpected, qTrans) ;
+        Query qTrans = QueryTransformOps.queryReplaceVars(q1, map);
+        assertEquals(qExpected, qTrans);
 
     }
 

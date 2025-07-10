@@ -18,40 +18,41 @@
 
 package org.apache.jena.atlas.json;
 
-import static org.apache.jena.atlas.json.LibJsonTest.read ;
-import static org.apache.jena.atlas.json.LibJsonTest.writeRead ;
-import org.junit.Test ;
+import static org.apache.jena.atlas.json.LibJsonTest.read;
+import static org.apache.jena.atlas.json.LibJsonTest.writeRead;
 
-/** Tests that are of extensions of JSON */ 
-public class TestJsonExt
-{
-    // The Jena JSON parser is more liberal than strict JSON to make embedding easier.
+import org.junit.jupiter.api.Test;
+
+/** Tests that are of extensions of JSON */
+public class TestJsonExt {
+    // The Jena JSON parser is more liberal than strict JSON to make embedding
+    // easier.
     // * Keys do not need quotes
     // * Strings can use ''
-    
+
     // -------- Non-standard things.
-    
-    @Test public void js_value_ext_1()
-    { 
-        read("'abc'", new JsonString("abc")) ;
-    }
-    
-    @Test public void js_value_ext_2()
-    { 
-        read("'''abc'''", new JsonString("abc")) ;
+
+    @Test
+    public void js_value_ext_1() {
+        read("'abc'", new JsonString("abc"));
     }
 
-    @Test public void js_value_ext_3()
-    { 
-        read("\"\"\"abc\"\"\"", new JsonString("abc")) ;
+    @Test
+    public void js_value_ext_2() {
+        read("'''abc'''", new JsonString("abc"));
     }
-    
-    @Test public void js_map_ext_1()
-    { 
-        JsonObject obj = new JsonObject() ;
-        obj.put("abc", JsonNumber.value(123)) ;
-        writeRead(obj) ;
+
+    @Test
+    public void js_value_ext_3() {
+        read("\"\"\"abc\"\"\"", new JsonString("abc"));
+    }
+
+    @Test
+    public void js_map_ext_1() {
+        JsonObject obj = new JsonObject();
+        obj.put("abc", JsonNumber.value(123));
+        writeRead(obj);
         // Use of key.
-        read("{abc: 123}", obj) ;
+        read("{abc: 123}", obj);
     }
 }

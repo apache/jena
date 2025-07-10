@@ -16,14 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.modify ;
+package org.apache.jena.sparql.modify;
 
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 
 public class TestUpdateGraphMgtTxnMem extends AbstractTestUpdateGraphMgt {
     @Override
     protected DatasetGraph getEmptyDatasetGraph() {
-        return DatasetGraphFactory.createTxnMem() ;
+        return DatasetGraphFactory.createTxnMem();
     }
 }

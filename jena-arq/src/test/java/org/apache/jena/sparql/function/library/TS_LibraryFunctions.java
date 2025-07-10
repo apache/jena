@@ -18,16 +18,16 @@
 
 package org.apache.jena.sparql.function.library;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+
 import org.apache.jena.sparql.expr.E_Function;
 import org.apache.jena.sparql.expr.NodeValue;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.junit.runners.Suite.SuiteClasses ;
 
-@RunWith(Suite.class)
-@SuiteClasses( {
+@Suite
+@SelectClasses({
     TestFnFunctionsBoolean.class
     , TestFnFunctionsString.class
     , TestFnFunctionsNumeric.class
@@ -38,20 +38,20 @@ import org.junit.runners.Suite.SuiteClasses ;
 })
 public class TS_LibraryFunctions {
     // Expected warnings off.
-    private static boolean bVerboseWarnings ;
-    private static boolean bWarnOnUnknownFunction ;
+    private static boolean bVerboseWarnings;
+    private static boolean bWarnOnUnknownFunction;
 
-    @BeforeClass public static void beforeClass()
+    @BeforeAll public static void beforeClass()
     {
-        bVerboseWarnings = NodeValue.VerboseWarnings ;
-        bWarnOnUnknownFunction = E_Function.WarnOnUnknownFunction ;
-        NodeValue.VerboseWarnings = false ;
-        E_Function.WarnOnUnknownFunction = false ;
+        bVerboseWarnings = NodeValue.VerboseWarnings;
+        bWarnOnUnknownFunction = E_Function.WarnOnUnknownFunction;
+        NodeValue.VerboseWarnings = false;
+        E_Function.WarnOnUnknownFunction = false;
     }
 
-    @AfterClass public static void afterClass()
+    @AfterAll public static void afterClass()
     {
-        NodeValue.VerboseWarnings = bVerboseWarnings ;
-        E_Function.WarnOnUnknownFunction = bWarnOnUnknownFunction ;
+        NodeValue.VerboseWarnings = bVerboseWarnings;
+        E_Function.WarnOnUnknownFunction = bWarnOnUnknownFunction;
     }
 }

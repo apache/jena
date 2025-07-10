@@ -18,10 +18,9 @@
 
 package org.apache.jena.sparql.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
@@ -35,7 +34,6 @@ import org.apache.jena.sparql.graph.GraphSink;
 import org.apache.jena.sparql.graph.GraphZero;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
-import org.junit.Test;
 
 /** Tests for
  * {@link DatasetGraphZero},
@@ -45,7 +43,7 @@ import org.junit.Test;
  * {@link GraphZero} and
  * {@link GraphSink}
 */
-public class TestSpecials {
+public class TestSpecialDatasets {
 
     private static Quad quad = SSE.parseQuad("(:g :s :p :o)");
     private static Triple triple = SSE.parseTriple("(:s :p :o)");
@@ -66,40 +64,40 @@ public class TestSpecials {
         assertNull(dsg.getGraph(gn));
     }
 
-    @Test(expected=UnsupportedOperationException.class)
+    @Test
     public void zero_add_1() {
         DatasetGraph dsg = DatasetGraphZero.create();
-        dsg.add(quad);
+        assertThrows(UnsupportedOperationException.class,()-> dsg.add(quad) );
     }
 
-    @Test(expected=UnsupportedOperationException.class)
+    @Test
     public void zero_add_2() {
         DatasetGraph dsg = DatasetGraphZero.create();
-        dsg.getDefaultGraph().add(triple);
+        assertThrows(UnsupportedOperationException.class,()-> dsg.getDefaultGraph().add(triple) );
     }
 
-    @Test(expected=UnsupportedOperationException.class)
+    @Test
     public void zero_add_3() {
         DatasetGraph dsg = DatasetGraphZero.create();
-        dsg.addGraph(gn, GraphFactory.createGraphMem());
+        assertThrows(UnsupportedOperationException.class,()-> dsg.addGraph(gn, GraphFactory.createGraphMem()) );
     }
 
-    @Test(expected=UnsupportedOperationException.class)
+    @Test
     public void zero_delete_1() {
         DatasetGraph dsg = DatasetGraphZero.create();
-        dsg.delete(quad);
+        assertThrows(UnsupportedOperationException.class,()-> dsg.delete(quad) );
     }
 
-    @Test(expected=UnsupportedOperationException.class)
+    @Test
     public void zero_delete_2() {
         DatasetGraph dsg = DatasetGraphZero.create();
-        dsg.getDefaultGraph().delete(triple);
+        assertThrows(UnsupportedOperationException.class,()-> dsg.getDefaultGraph().delete(triple) );
     }
 
-    @Test(expected=UnsupportedOperationException.class)
+    @Test
     public void zero_delete_3() {
         DatasetGraph dsg = DatasetGraphZero.create();
-        dsg.deleteAny(Node.ANY, Node.ANY, Node.ANY, Node.ANY);
+        assertThrows(UnsupportedOperationException.class,()-> dsg.deleteAny(Node.ANY, Node.ANY, Node.ANY, Node.ANY) );
     }
 
     @Test public void zero_txn_1() {
@@ -108,25 +106,25 @@ public class TestSpecials {
         Txn.executeWrite(dsg, ()->{});
     }
 
-    @Test(expected=JenaTransactionException.class)
+    @Test
     public void zero_txn_2() {
         DatasetGraph dsg = DatasetGraphZero.create();
         dsg.begin(ReadWrite.READ);
-        dsg.begin(ReadWrite.READ);
+        assertThrows(JenaTransactionException.class,()-> dsg.begin(ReadWrite.READ) );
     }
 
-    @Test(expected=JenaTransactionException.class)
+    @Test
     public void zero_txn_3() {
         DatasetGraph dsg = DatasetGraphZero.create();
-        dsg.commit();
+        assertThrows(JenaTransactionException.class,()-> dsg.commit() );
     }
 
-    @Test(expected=JenaTransactionException.class)
+    @Test
     public void zero_txn_4() {
         DatasetGraph dsg = DatasetGraphZero.create();
         dsg.begin(ReadWrite.WRITE);
         dsg.commit();
-        dsg.commit();
+        assertThrows(JenaTransactionException.class,()-> dsg.commit() );
     }
 
     @Test public void zero_graph_txn_1() {
@@ -143,31 +141,31 @@ public class TestSpecials {
         h.abort();
     }
 
-    @Test(expected=JenaException.class)
+    @Test
     public void zero_graph_txn_3() {
         DatasetGraph dsg = DatasetGraphZero.create();
         Graph g = dsg.getDefaultGraph();
         TransactionHandler h = g.getTransactionHandler();
         h.begin();
-        h.begin();
+        assertThrows(JenaException.class,()-> h.begin() );
     }
 
-    @Test(expected=JenaException.class)
+    @Test
     public void zero_graph_txn_4() {
         DatasetGraph dsg = DatasetGraphZero.create();
         Graph g = dsg.getDefaultGraph();
         TransactionHandler h = g.getTransactionHandler();
         h.begin();
         h.commit();
-        h.abort();
+        assertThrows(JenaException.class,()-> h.abort() );
     }
 
-    @Test(expected=JenaException.class)
+    @Test
     public void zero_graph_txn_5() {
         DatasetGraph dsg = DatasetGraphZero.create();
         Graph g = dsg.getDefaultGraph();
         TransactionHandler h = g.getTransactionHandler();
-        h.commit();
+        assertThrows(JenaException.class,()-> h.commit() );
     }
 
     // -- sink
@@ -223,25 +221,25 @@ public class TestSpecials {
         Txn.executeWrite(dsg, ()->{});
     }
 
-    @Test(expected=JenaTransactionException.class)
+    @Test
     public void sink_txn_2() {
         DatasetGraph dsg = DatasetGraphSink.create();
         dsg.begin(ReadWrite.READ);
-        dsg.begin(ReadWrite.READ);
+        assertThrows(JenaTransactionException.class,()-> dsg.begin(ReadWrite.READ) );
     }
 
-    @Test(expected=JenaTransactionException.class)
+    @Test
     public void sink_txn_3() {
         DatasetGraph dsg = DatasetGraphSink.create();
-        dsg.commit();
+        assertThrows(JenaTransactionException.class,()-> dsg.commit() );
     }
 
-    @Test(expected=JenaTransactionException.class)
+    @Test
     public void sink_txn_4() {
         DatasetGraph dsg = DatasetGraphSink.create();
         dsg.begin(ReadWrite.WRITE);
         dsg.commit();
-        dsg.commit();
+        assertThrows(JenaTransactionException.class,()-> dsg.commit() );
     }
 
     @Test public void sink_graph_txn_1() {
@@ -259,30 +257,30 @@ public class TestSpecials {
         h.abort();
     }
 
-    @Test(expected=JenaException.class)
+    @Test
     public void sink_graph_txn_3() {
         DatasetGraph dsg = DatasetGraphSink.create();
         Graph g = dsg.getDefaultGraph();
         TransactionHandler h = g.getTransactionHandler();
         h.begin();
-        h.begin();
+        assertThrows(JenaException.class,()-> h.begin() );
     }
 
-    @Test(expected=JenaException.class)
+    @Test
     public void sink_graph_txn_4() {
         DatasetGraph dsg = DatasetGraphSink.create();
         Graph g = dsg.getDefaultGraph();
         TransactionHandler h = g.getTransactionHandler();
         h.begin();
         h.commit();
-        h.abort();
+        assertThrows(JenaException.class,()-> h.abort() );
     }
 
-    @Test(expected=JenaException.class)
+    @Test
     public void sink_graph_txn_5() {
         DatasetGraph dsg = DatasetGraphSink.create();
         Graph g = dsg.getDefaultGraph();
         TransactionHandler h = g.getTransactionHandler();
-        h.commit();
+        assertThrows(JenaException.class,()-> h.commit() );
     }
 }

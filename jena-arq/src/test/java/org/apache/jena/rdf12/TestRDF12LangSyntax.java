@@ -46,7 +46,7 @@ public class TestRDF12LangSyntax {
     // -- The tests
 
     // Details of a test entry - it may contain information relevant to only some kinds of test.
-    record OneTest(String label, TEST testType,  Lang[] langs, String str) {};
+    record OneTest(String label, Outcome testType,  Lang[] langs, String str) {};
 
     static String PREFIXES = """
             PREFIX  :     <http://example/>
@@ -60,28 +60,28 @@ public class TestRDF12LangSyntax {
     private static Lang[] langsNQuads = { Lang.NQ };
 
     // -- Shorthand functions
-    private static OneTest testTurtle(String label, TEST testType, String str) {
+    private static OneTest testTurtle(String label, Outcome testType, String str) {
         String turtleText = PREFIXES + str;
         return testLangs(label, testType, langsTurtle, turtleText);
     }
 
-    private static OneTest testTriG(String label, TEST testType, String str) {
+    private static OneTest testTriG(String label, Outcome testType, String str) {
         String text = PREFIXES + str;
         return testLangs(label, testType, langsTriG, text);
     }
 
 
-    private static OneTest testNTriples(String label, TEST testType, String str) {
+    private static OneTest testNTriples(String label, Outcome testType, String str) {
         return testLangs(label, testType, langsNTriples, str);
     }
 
-    private static OneTest testNQuads(String label, TEST testType, String str) {
+    private static OneTest testNQuads(String label, Outcome testType, String str) {
         return testLangs(label, testType, langsNQuads, str);
     }
 
     // -- Shorthand functions
 
-    private static OneTest testLangs(String label, TEST testType, Lang[] langs, String str) {
+    private static OneTest testLangs(String label, Outcome testType, Lang[] langs, String str) {
         return new OneTest(label, testType, langs, str);
     }
 
@@ -97,82 +97,82 @@ public class TestRDF12LangSyntax {
     private static Stream<OneTest> turtleTests() {
         return Stream.of(
                  // Triple terms
-                 testTurtle("tt1", TEST.GOOD, ":s :o <<( :x :y :z )>>. "),
-                 testTurtle("tt2", TEST.GOOD, ":s :o <<( :x :y <<( :x1 :y1 :z1 )>> )>>. "),
+                 testTurtle("tt1", Outcome.GOOD, ":s :o <<( :x :y :z )>>. "),
+                 testTurtle("tt2", Outcome.GOOD, ":s :o <<( :x :y <<( :x1 :y1 :z1 )>> )>>. "),
 
                  // Reified triple declarations.
-                 testTurtle("ReifierTripleDecl_1", TEST.GOOD, "<< :s :p :o >> ."),
-                 testTurtle("ReifierTripleDecl_2", TEST.GOOD, "<< <<:s :p :o >> :p1 :o1 >> ."),
-                 testTurtle("ReifierTripleDecl_3", TEST.GOOD, "<< :s1 :p1 << :s :p :o >> >> ."),
-                 testTurtle("ReifierTripleDecl_4", TEST.GOOD, "<< :s :p :o ~:r >> ."),
-                 testTurtle("ReifierTripleDecl_5", TEST.GOOD, "<< :s :p :o ~_:b >> ."),
-                 testTurtle("ReifierTripleDecl_6", TEST.GOOD, "<< :s :p :o ~ >> ."),
-                 testTurtle("ReifierTripleDecl_7", TEST.GOOD, "<< :s :p :o ~[] >> ."),
+                 testTurtle("ReifierTripleDecl_1", Outcome.GOOD, "<< :s :p :o >> ."),
+                 testTurtle("ReifierTripleDecl_2", Outcome.GOOD, "<< <<:s :p :o >> :p1 :o1 >> ."),
+                 testTurtle("ReifierTripleDecl_3", Outcome.GOOD, "<< :s1 :p1 << :s :p :o >> >> ."),
+                 testTurtle("ReifierTripleDecl_4", Outcome.GOOD, "<< :s :p :o ~:r >> ."),
+                 testTurtle("ReifierTripleDecl_5", Outcome.GOOD, "<< :s :p :o ~_:b >> ."),
+                 testTurtle("ReifierTripleDecl_6", Outcome.GOOD, "<< :s :p :o ~ >> ."),
+                 testTurtle("ReifierTripleDecl_7", Outcome.GOOD, "<< :s :p :o ~[] >> ."),
 
-                 testTurtle("ReifierTripleDecl_bad_1", TEST.BAD, "<< :s :p :o ~ :r1 :r2 >> ."),
-                 testTurtle("ReifierTripleDecl_bad_1", TEST.BAD, "<< :s :p :o ~ :r1 ~:r2 >> ."),
+                 testTurtle("ReifierTripleDecl_bad_1", Outcome.BAD, "<< :s :p :o ~ :r1 :r2 >> ."),
+                 testTurtle("ReifierTripleDecl_bad_1", Outcome.BAD, "<< :s :p :o ~ :r1 ~:r2 >> ."),
 
                  // Reified triple
-                 testTurtle("ReifiedTriple_1", TEST.GOOD, "<<:s :p :o >> :q :z ."),
-                 testTurtle("ReifiedTriple_2", TEST.GOOD, ":a :b << :s :p :o >> ."),
-                 testTurtle("ReifiedTriple_3", TEST.GOOD, "<< << :s :p :o >> :p1 :o1 >> :q :z ."),
-                 testTurtle("ReifiedTriple_4", TEST.GOOD, "<< :s0 :p0 <<:s :p :o >>  >> :q :z ."),
+                 testTurtle("ReifiedTriple_1", Outcome.GOOD, "<<:s :p :o >> :q :z ."),
+                 testTurtle("ReifiedTriple_2", Outcome.GOOD, ":a :b << :s :p :o >> ."),
+                 testTurtle("ReifiedTriple_3", Outcome.GOOD, "<< << :s :p :o >> :p1 :o1 >> :q :z ."),
+                 testTurtle("ReifiedTriple_4", Outcome.GOOD, "<< :s0 :p0 <<:s :p :o >>  >> :q :z ."),
 
                  // Reified triple with reifier
-                 testTurtle("ReifiedTriple_5", TEST.GOOD, "<< :s :p :o ~_:b >> :q :z ."),
-                 testTurtle("ReifiedTriple_6", TEST.GOOD, "<< :s :p :o ~ >> :q :z ."),
-                 testTurtle("ReifiedTriple_7", TEST.GOOD, "<< <<:s :p :o ~ :r1 >> :p1 :o1 ~:r2>> ."),
-                 testTurtle("ReifiedTriple_8", TEST.BAD, "<< :s :p :o ~ :r1 :r2 >> :q :z ."),
+                 testTurtle("ReifiedTriple_5", Outcome.GOOD, "<< :s :p :o ~_:b >> :q :z ."),
+                 testTurtle("ReifiedTriple_6", Outcome.GOOD, "<< :s :p :o ~ >> :q :z ."),
+                 testTurtle("ReifiedTriple_7", Outcome.GOOD, "<< <<:s :p :o ~ :r1 >> :p1 :o1 ~:r2>> ."),
+                 testTurtle("ReifiedTriple_8", Outcome.BAD, "<< :s :p :o ~ :r1 :r2 >> :q :z ."),
 
                  // Annotations
-                 testTurtle("ann1", TEST.GOOD, ":x :y :z ~:r ."),
-                 testTurtle("ann2", TEST.GOOD, ":s :p :o {| :q :z |} ."),
-                 testTurtle("ann3", TEST.GOOD, ":s :p :o ~:r1 {| :q :z |} ."),
-                 testTurtle("ann4", TEST.GOOD, ":x :y :z ~:r1 ~:r2 ."),
-                 testTurtle("ann5", TEST.GOOD, ":s :p :o {| :q :z |} {| :q1 :z1 |} ."),
-                 testTurtle("ann6", TEST.GOOD, ":s :p :o ~:r1 ~:r2 {| :q :z |} ."),
-                 testTurtle("ann7", TEST.GOOD, ":s :p :o ~:r1 ~:r2 {| :q :z |} {| :q1 :z1 |} ."),
-                 testTurtle("ann8", TEST.GOOD, ":s :p :o ~:r1 ~:r2 {| :q :z |} {| :q1 :z1 |} ~:r3 ~:r4  ."),
+                 testTurtle("ann1", Outcome.GOOD, ":x :y :z ~:r ."),
+                 testTurtle("ann2", Outcome.GOOD, ":s :p :o {| :q :z |} ."),
+                 testTurtle("ann3", Outcome.GOOD, ":s :p :o ~:r1 {| :q :z |} ."),
+                 testTurtle("ann4", Outcome.GOOD, ":x :y :z ~:r1 ~:r2 ."),
+                 testTurtle("ann5", Outcome.GOOD, ":s :p :o {| :q :z |} {| :q1 :z1 |} ."),
+                 testTurtle("ann6", Outcome.GOOD, ":s :p :o ~:r1 ~:r2 {| :q :z |} ."),
+                 testTurtle("ann7", Outcome.GOOD, ":s :p :o ~:r1 ~:r2 {| :q :z |} {| :q1 :z1 |} ."),
+                 testTurtle("ann8", Outcome.GOOD, ":s :p :o ~:r1 ~:r2 {| :q :z |} {| :q1 :z1 |} ~:r3 ~:r4  ."),
 
                  // With spec fix.
-                 testTurtle("Turtle Bad Reification 1", TEST.BAD, "<< :s :p ( 1 2 3 ) >> . "),
-                 testTurtle("Turtle Bad Reification 2", TEST.BAD, "<< ( 1 2 3 ) :p :o >> . "),
-                 testTurtle("Turtle Bad Reification 3", TEST.BAD, "<< :s :p [ :y :z ] >> . "),
+                 testTurtle("Turtle Bad Reification 1", Outcome.BAD, "<< :s :p ( 1 2 3 ) >> . "),
+                 testTurtle("Turtle Bad Reification 2", Outcome.BAD, "<< ( 1 2 3 ) :p :o >> . "),
+                 testTurtle("Turtle Bad Reification 3", Outcome.BAD, "<< :s :p [ :y :z ] >> . "),
 
                  // Old syntax, not legal.
-                 testTurtle("OldReifierSyntax_1", TEST.BAD, ":s :p :o | :r ."),
-                 testTurtle("OldReifierSyntax_2", TEST.BAD, "<< :s :p :o | :r >> ."),
+                 testTurtle("OldReifierSyntax_1", Outcome.BAD, ":s :p :o | :r ."),
+                 testTurtle("OldReifierSyntax_2", Outcome.BAD, "<< :s :p :o | :r >> ."),
 
                  // Test direction
-                 testTurtle("Turtle Text dir 1", TEST.GOOD, "<http://example/s> <http://example/p> \"abc\"@en--ltr ."),
-                 testTurtle("Turtle Text dir bad 1", TEST.BAD, "<http://example/s> <http://example/p> \"abc\"@en-en--LTR ."),
-                 testTurtle("Turtle Text dir bad 2", TEST.BAD, "<http://example/s> <http://example/p> \"abc\"@en-en--ABC ."),
-                 testTurtle("Turtle Text dir bad 3", TEST.BAD, "\"abc\"@en--ltr <http://example/q> <http://example/o> .")
+                 testTurtle("Turtle Text dir 1", Outcome.GOOD, "<http://example/s> <http://example/p> \"abc\"@en--ltr ."),
+                 testTurtle("Turtle Text dir bad 1", Outcome.BAD, "<http://example/s> <http://example/p> \"abc\"@en-en--LTR ."),
+                 testTurtle("Turtle Text dir bad 2", Outcome.BAD, "<http://example/s> <http://example/p> \"abc\"@en-en--ABC ."),
+                 testTurtle("Turtle Text dir bad 3", Outcome.BAD, "\"abc\"@en--ltr <http://example/q> <http://example/o> .")
                  );
     }
 
     private static Stream<OneTest> trigTests() {
         return Stream.of(
-                 testTriG("TriG graph 1" , TEST.GOOD, "GRAPH <http://example/g> {  << :s :p :o >> .}"),
-                 testTriG("TriG graph 2" , TEST.GOOD, "<http://example/g> {  << :s :p :o >> .}"),
-                 testTriG("TriG graph bad 1" , TEST.BAD, "GRAPH <<( :x :y :z )>>. {  :s :p :o  .}"),
-                 testTriG("TriG graph bad 2" , TEST.BAD, "<<( :x :y :z )>>. {  :s :p :o  .}")
+                 testTriG("TriG graph 1" , Outcome.GOOD, "GRAPH <http://example/g> {  << :s :p :o >> .}"),
+                 testTriG("TriG graph 2" , Outcome.GOOD, "<http://example/g> {  << :s :p :o >> .}"),
+                 testTriG("TriG graph bad 1" , Outcome.BAD, "GRAPH <<( :x :y :z )>>. {  :s :p :o  .}"),
+                 testTriG("TriG graph bad 2" , Outcome.BAD, "<<( :x :y :z )>>. {  :s :p :o  .}")
                 );
     }
 
     private static Stream<OneTest> ntuplesTests() {
         return Stream.of(
-                 testNTriples("NT TripleTerm 1", TEST.GOOD, "<http://example/s> <http://example/p> <<( <http://example/s> <http://example/p> <http://example/s> )>> ."),
-                 testNTriples("NT TripleTerm 2", TEST.BAD, "<<( <http://example/s> <http://example/p> <http://example/s> )>> <http://example/q> <http://example/o> ."),
+                 testNTriples("NT TripleTerm 1", Outcome.GOOD, "<http://example/s> <http://example/p> <<( <http://example/s> <http://example/p> <http://example/s> )>> ."),
+                 testNTriples("NT TripleTerm 2", Outcome.BAD, "<<( <http://example/s> <http://example/p> <http://example/s> )>> <http://example/q> <http://example/o> ."),
 
-                 testNTriples("NT Text dir 1", TEST.GOOD, "<http://example/s> <http://example/p> \"abc\"@en--ltr ."),
-                 testNTriples("NT Text dir bad 1", TEST.BAD, "<http://example/s> <http://example/p> \"abc\"@en-en--LTR ."),
-                 testNTriples("NT Text dir bad 2", TEST.BAD, "<http://example/s> <http://example/p> \"abc\"@en-en--ABC ."),
-                 testNTriples("NT Text dir bad 3", TEST.BAD, "\"abc\"@en--ltr <http://example/q> <http://example/o> ."),
+                 testNTriples("NT Text dir 1", Outcome.GOOD, "<http://example/s> <http://example/p> \"abc\"@en--ltr ."),
+                 testNTriples("NT Text dir bad 1", Outcome.BAD, "<http://example/s> <http://example/p> \"abc\"@en-en--LTR ."),
+                 testNTriples("NT Text dir bad 2", Outcome.BAD, "<http://example/s> <http://example/p> \"abc\"@en-en--ABC ."),
+                 testNTriples("NT Text dir bad 3", Outcome.BAD, "\"abc\"@en--ltr <http://example/q> <http://example/o> ."),
 
-                 testNQuads("NQ 1", TEST.GOOD,
+                 testNQuads("NQ 1", Outcome.GOOD,
                          "<http://example/s> <http://example/p> <<( <http://example/s> <http://example/p> <http://example/o> )>> <http://example/g> ."),
-                 testNQuads("NQ 1", TEST.BAD,
+                 testNQuads("NQ 1", Outcome.BAD,
                          "<http://example/s> <http://example/p> <http://example/s>  <<( <http://example/g1> <http://example/g2> <http://example/g3> )>> .")
                 );
     }
@@ -198,12 +198,12 @@ public class TestRDF12LangSyntax {
     }
 
     @TestParsers
-    public void parseLang12(String label, TEST testType, String str, Lang lang) {
+    public void parseLang12(String label, Outcome testType, String str, Lang lang) {
         testLangParse(testType, label, str, lang, false);
     }
 
     // Syntax test for one lang
-    private static void testLangParse(TEST testType, String label, String turtleText, Lang lang, boolean verbose) {
+    private static void testLangParse(Outcome testType, String label, String turtleText, Lang lang, boolean verbose) {
         try {
             if ( !verbose ) {
                 if ( RDFLanguages.isQuads(lang) ) {
@@ -216,14 +216,14 @@ public class TestRDF12LangSyntax {
                 StreamRDF dest = StreamRDFWriter.getWriterStream(System.out, RDFFormat.TURTLE_FLAT);
                 RDFParser.fromString(turtleText, TurtleJCC.TTLJCC).parse(dest);
             }
-            if ( testType == TEST.BAD ) {
+            if ( testType == Outcome.BAD ) {
                 if ( !verbose )
                     printString(label, lang, turtleText);
                 fail("Expected failure", null);
             }
             return;
         } catch (RiotException ex) {
-            if ( testType == TEST.BAD )
+            if ( testType == Outcome.BAD )
                 // Expected.
                 return;
             printString(label, lang, turtleText);
@@ -231,7 +231,7 @@ public class TestRDF12LangSyntax {
             System.out.println("**** "+exMsg);
             throw ex;
         } catch (JenaException ex) {
-            if ( testType == TEST.BAD )
+            if ( testType == Outcome.BAD )
                 // Expected.
                 return;
             printString(label, lang, turtleText);
@@ -254,7 +254,7 @@ public class TestRDF12LangSyntax {
     // JUnit source for @TestOutput (Turtle: eval and compare both parsers)
     static Stream<Arguments> allOutputTests() {
         //Only Turtle
-        return turtleTests().filter(item-> item.testType == TEST.GOOD).map(item->outputTestArgs(item));
+        return turtleTests().filter(item-> item.testType == Outcome.GOOD).map(item->outputTestArgs(item));
     }
 
     // Arguments for one output test

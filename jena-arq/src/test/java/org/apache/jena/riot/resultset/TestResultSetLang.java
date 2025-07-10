@@ -18,7 +18,7 @@
 
 package org.apache.jena.riot.resultset;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.stream.Stream;
 
@@ -40,7 +40,7 @@ public class TestResultSetLang {
     @MethodSource("provideLangs")
     void registrationResultSetLang(Lang rsLang, String label) {
         boolean b = ResultSetLang.isRegistered(rsLang);
-        assertTrue(label+" : not registered", b);
+        assertTrue(b, label+" : not registered");
     }
 
     private static Stream<Arguments> provideLangs() {

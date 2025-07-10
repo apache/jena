@@ -34,7 +34,7 @@ public abstract class AbstractTestTripleTable extends AbstractTestTupleTable<Tri
 
 	private static final Triple testTriple = Triple.create(sampleNode, sampleNode, sampleNode);
 	private static final Set<Set<TupleSlot>> queryPatternSet =
-	        Lib.powerSet( Set.of( TupleSlot.SUBJECT, TupleSlot.PREDICATE, TupleSlot.OBJECT)) ;
+	        Lib.powerSet( Set.of( TupleSlot.SUBJECT, TupleSlot.PREDICATE, TupleSlot.OBJECT));
 
 	@Override
 	protected Triple testTuple() {
