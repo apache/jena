@@ -18,18 +18,20 @@
 
 package org.apache.jena.dboe.transaction;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.concurrent.Semaphore;
 
-import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.system.Txn;
-import org.apache.jena.system.ThreadAction;
-import org.apache.jena.system.ThreadTxn;
-import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
-import org.apache.jena.query.ReadWrite;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import org.apache.jena.dboe.base.file.Location;
+import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
+import org.apache.jena.query.ReadWrite;
+import org.apache.jena.system.ThreadAction;
+import org.apache.jena.system.ThreadTxn;
+import org.apache.jena.system.Txn;
 
 public class TestThreadingTransactions {
     static final long InitValue = 3;
@@ -54,7 +56,7 @@ public class TestThreadingTransactions {
 
     void read(String label, TransactionalInteger trans, long expected) {
         long x = trans.get();
-        Assert.assertEquals(label, expected, x);
+        assertEquals(label, expected, x);
     }
 
     ThreadAction threadRead(String label, TransactionalInteger trans, long expectedValue) {
