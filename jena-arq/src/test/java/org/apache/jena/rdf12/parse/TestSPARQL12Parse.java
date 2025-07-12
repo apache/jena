@@ -16,14 +16,17 @@
  * limitations under the License.
  */
 
-package org.apache.jena.rdf12.basic;
+package org.apache.jena.rdf12.parse;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.graph.Triple;
@@ -38,7 +41,6 @@ import org.apache.jena.sparql.algebra.op.OpBGP;
 import org.apache.jena.sparql.core.BasicPattern;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.vocabulary.RDF;
-import org.junit.Test;
 
 // RDF Star CG tests, converted to SPARQL 1.2
 
@@ -64,9 +66,10 @@ public class TestSPARQL12Parse {
         Query query = parse(string);
 
         List<String> vars = query.getResultVars();
-        assertEquals("Wrong number of variables: "+Arrays.asList(varNames)+" : query: "+vars, varNames.length, vars.size());
+        assertEquals(varNames.length, vars.size(),
+                     ()->"Wrong number of variables: "+Arrays.asList(varNames)+" : query: "+vars);
         for ( String v : varNames )
-            assertTrue("Expected variable ?"+v, vars.contains(v));
+            assertTrue(vars.contains(v), ()->"Expected variable ?"+v);
     }
 
     @Test public void parse_good_1()    { parse("{ << :s :p :o >> :q 456 }"); }
@@ -131,14 +134,20 @@ public class TestSPARQL12Parse {
         return t ;
     }
 
+    @Test
+    public void reifier_declaration() {
+        parse("{ <<:s :p :o>> }");
+    }
 
     @Test
-    public void reifier_declaration()           { parse("{ <<:s :p :o>> }"); }
+    public void parse_bad_2() {
+        assertThrows(QueryParseException.class,
+                     () -> parse("{ ?X << :s :p 123 >> ?Z }"));
+    }
 
-    @Test(expected=QueryParseException.class)
-    public void parse_bad_2()           { parse("{ ?X << :s :p 123 >> ?Z }"); }
-
-    @Test(expected=QueryParseException.class)
-    public void parse_bad_3()           { parse("{ << :subject << :s :p 12 >> :object >> :q 123 }"); }
-
+    @Test
+    public void parse_bad_3() {
+        assertThrows(QueryParseException.class,
+                     () -> parse("{ << :subject << :s :p 12 >> :object >> :q 123 }"));
+    }
 }

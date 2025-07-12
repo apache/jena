@@ -19,14 +19,16 @@
 package org.apache.jena.sparql.function.library;
 
 import static org.apache.jena.sparql.expr.LibTestExpr.test;
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.LinkedList;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.NodeValue;
-import org.junit.Test;
 
 /**
  * Tests for {@link collation}.
@@ -61,14 +63,13 @@ public class TestFnFunctionsCollation {
         test("fn:collation-key('foo', 'en') = 'Zm9vQGVu'^^xsd:base64Binary");
     }
 
-    @Test(expected = ExprEvalException.class)
+    @Test
     public void collationKey_2() {
-        test("fn:collation-key('foo', 22) = 'Zm9vQGVu'^^xsd:base64Binary");
+        assertThrows(ExprEvalException.class,()-> test("fn:collation-key('foo', 22) = 'Zm9vQGVu'^^xsd:base64Binary") );
     }
 
-    @Test(expected = ExprEvalException.class)
+    @Test
     public void collationKey_3() {
-        test("fn:collation-key(<x:bar>, 'en') = 'Zm9vQGVu'^^xsd:base64Binary");
+        assertThrows(ExprEvalException.class,()-> test("fn:collation-key(<x:bar>, 'en') = 'Zm9vQGVu'^^xsd:base64Binary") );
     }
-
 }

@@ -32,8 +32,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.graph.Triple;
-import org.junit.Test;
 
 public class TestTripleTableForms extends AbstractTestTupleTableForms<TripleTableForm> {
 

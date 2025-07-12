@@ -18,12 +18,13 @@
 
 package org.apache.jena.riot.lang;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.riot.system.RiotLib ;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.graph.Node;
+import org.apache.jena.riot.system.RiotLib;
 
 /**
  * IRI-related tests for thing other that RFC IRI parsing and processing.
@@ -32,15 +33,15 @@ public class TestIRI
 {
     @Test public void bNodeIRI_1()
     {
-        Node n = RiotLib.createIRIorBNode("_:abc") ;
-        assertTrue(n.isBlank()) ;
-        assertEquals("abc", n.getBlankNodeLabel()) ;
+        Node n = RiotLib.createIRIorBNode("_:abc");
+        assertTrue(n.isBlank());
+        assertEquals("abc", n.getBlankNodeLabel());
     }
 
     @Test public void bNodeIRI_2()
     {
-        Node n = RiotLib.createIRIorBNode("abc") ;
-        assertTrue(n.isURI()) ;
-        assertEquals("abc", n.getURI()) ;
+        Node n = RiotLib.createIRIorBNode("abc");
+        assertTrue(n.isURI());
+        assertEquals("abc", n.getURI());
     }
 }

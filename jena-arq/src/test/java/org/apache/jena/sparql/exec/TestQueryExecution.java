@@ -20,10 +20,11 @@ package org.apache.jena.sparql.exec;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.sparql.algebra.Table;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.sse.SSE;
-import org.junit.Test;
 
 /** Miscellaneous tests, e.g. from reports. */
 public class TestQueryExecution {

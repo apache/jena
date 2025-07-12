@@ -18,17 +18,21 @@
 
 package org.apache.jena.sparql.engine.join;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
 import org.apache.jena.sparql.sse.SSE;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class TestMultiHashProbeTable {
     // Binding examples taken from TestVarFinder2
@@ -40,14 +44,12 @@ public class TestMultiHashProbeTable {
     private static Binding match_x3    = SSE.parseBinding("(row (?x 3))");
     private static Binding match_x3y2  = SSE.parseBinding("(row (?x 3) (?y 2))");
 
-    // TODO Parameterize with different initial join keys including null
-
     /** Ensure that further updates are rejected after the first lookup. */
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void test01() {
         MultiHashProbeTable table = new MultiHashProbeTable(null, null);
         table.getCandidates(row0);
-        table.put(row_xy);
+        assertThrows(IllegalStateException.class, ()->table.put(row_xy) );
     }
 
     /** Runs the lookup process repeatedly to check for any non-deterministic behavior,
@@ -74,19 +76,19 @@ public class TestMultiHashProbeTable {
         Set<Binding> givenRowSet = new LinkedHashSet<>(givenRowList);
 
         // Sanity check of the input data - this test case does not deal with duplicates
-        Assert.assertEquals(givenRowList.size(), givenRowSet.size());
+        assertEquals(givenRowList.size(), givenRowSet.size());
 
         MultiHashProbeTable table = new MultiHashProbeTable(null, null);
         givenRowSet.forEach(table::put);
         table.doFinalize();
 
         // We expect only a table for the initial empty join key
-        Assert.assertEquals(Set.of(JoinKey.empty()), table.getIndexesByJoinKeys().keySet());
+        assertEquals(Set.of(JoinKey.empty()), table.getIndexesByJoinKeys().keySet());
 
         // Lookup with empty row should match all 4 rows
         // (We don't test whether implementations preserve order)
         Set<Binding> matchedRows = Iter.toSet(table.getCandidates(row0));
-        Assert.assertEquals(givenRowSet, matchedRows);
+        assertEquals(givenRowSet, matchedRows);
 
         JoinKey emptyKey = JoinKey.empty();
         JoinKey xKey = JoinKey.create("x");
@@ -96,55 +98,55 @@ public class TestMultiHashProbeTable {
         {
             // Lookup should match all rows without y
             Set<Binding> actual = Iter.toSet(table.getCandidates(match_x3));
-            Assert.assertEquals(Set.of(row_y, row0), actual);
+            assertEquals(Set.of(row_y, row0), actual);
 
             // The indexes map is not a live-view
             Map<JoinKey, JoinIndex> indexes = table.getIndexesByJoinKeys();
 
             // There should now be an additional index on x
-            Assert.assertEquals(Set.of(emptyKey, xKey),
+            assertEquals(Set.of(emptyKey, xKey),
                     table.getIndexesByJoinKeys().keySet());
 
             JoinIndex xIndex = indexes.get(xKey);
 
             // Main table should contain all bindings
-            Assert.assertEquals(givenRowSet,
+            assertEquals(givenRowSet,
                     Iter.toSet(xIndex.getMainTable().getCandidates(BindingFactory.empty())));
 
             // There should not be a skew table
-            Assert.assertTrue(xIndex.getSkewTables().isEmpty());
+            assertTrue(xIndex.getSkewTables().isEmpty());
         }
 
         {
             // Lookup with join key (x, y) which does not match rows with x
             Set<Binding> actual = Iter.toSet(table.getCandidates(match_x3y2));
-            Assert.assertEquals(Set.of(row_y, row0), actual);
+            assertEquals(Set.of(row_y, row0), actual);
 
             // There should now be an additional index on y
-            Assert.assertEquals(Set.of(emptyKey, xKey, xyKey),
+            assertEquals(Set.of(emptyKey, xKey, xyKey),
                     table.getIndexesByJoinKeys().keySet());
 
             // The indexes map is not a live-view
             Map<JoinKey, JoinIndex> indexes = table.getIndexesByJoinKeys();
 
             // There should now be an additional index on [?x, ?y]
-            Assert.assertEquals(Set.of(emptyKey, xKey, xyKey),
+            assertEquals(Set.of(emptyKey, xKey, xyKey),
                     table.getIndexesByJoinKeys().keySet());
 
             JoinIndex xyIndex = indexes.get(xyKey);
 
             // Main table should contain all bindings that either bind xy or neither
-            Assert.assertEquals(Set.of(row_xy, row0),
+            assertEquals(Set.of(row_xy, row0),
                     Iter.toSet(xyIndex.getMainTable().getCandidates(BindingFactory.empty())));
 
             // There should be skew tables for the bindings with only ?x and only ?y.
             // Beware: Skew tables are created for all cached bindings that bind fewer variables than
             // the lookup binding - they don't depend on the lookup binding's values.
             Map<JoinKey, HashProbeTable> skewTables = xyIndex.getSkewTablesByJoinKey();
-            Assert.assertEquals(Set.of(xKey, yKey), skewTables.keySet());
+            assertEquals(Set.of(xKey, yKey), skewTables.keySet());
 
-            Assert.assertEquals(Set.of(row_x), Iter.toSet(skewTables.get(xKey).values()));
-            Assert.assertEquals(Set.of(row_y), Iter.toSet(skewTables.get(yKey).values()));
+            assertEquals(Set.of(row_x), Iter.toSet(skewTables.get(xKey).values()));
+            assertEquals(Set.of(row_y), Iter.toSet(skewTables.get(yKey).values()));
         }
     }
 }

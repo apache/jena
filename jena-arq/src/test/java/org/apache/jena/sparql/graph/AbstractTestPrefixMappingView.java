@@ -18,95 +18,96 @@
 
 package org.apache.jena.sparql.graph;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.apache.jena.shared.PrefixMapping ;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.shared.PrefixMapping;
 
 /** Tests, for when the prefix mapping of the graph it comes from its view */
 public abstract class AbstractTestPrefixMappingView
 {
-    static final String defaultPrefixURI  = "" ;
+    static final String defaultPrefixURI  = "";
 
     /** Create a fresh PrefixMapping */
-    protected abstract PrefixMapping create() ;
+    protected abstract PrefixMapping create();
     /** Create a fresh view over the same storage as last create() */
-    protected abstract PrefixMapping view() ;
+    protected abstract PrefixMapping view();
 
     @Test public void prefix1()
     {
-        PrefixMapping pmap = create() ;
+        PrefixMapping pmap = create();
     }
 
     @Test public void prefix2()
     {
-        PrefixMapping pmap = create() ;
-        pmap.setNsPrefix("ex", "http://example/") ;
-        assertNotNull(pmap.getNsPrefixURI("ex")) ;
+        PrefixMapping pmap = create();
+        pmap.setNsPrefix("ex", "http://example/");
+        assertNotNull(pmap.getNsPrefixURI("ex"));
     }
 
     @Test public void prefix3()
     {
-        String uri = "http://example/" ;
-        PrefixMapping pmap = create() ;
-        pmap.setNsPrefix("ex", uri) ;
+        String uri = "http://example/";
+        PrefixMapping pmap = create();
+        pmap.setNsPrefix("ex", uri);
 
         // Create a second view onto the same storage.
 
-        PrefixMapping pmap2 = view() ;
-        String x = pmap2.getNsPrefixURI("ex") ;
+        PrefixMapping pmap2 = view();
+        String x = pmap2.getNsPrefixURI("ex");
 
-        assertNotNull(x) ;
-        assertEquals(uri,x) ;
+        assertNotNull(x);
+        assertEquals(uri,x);
     }
 
     @Test public void prefix4()
     {
-        String uri = "http://example/" ;
-        PrefixMapping pmap = create() ;
-        pmap.setNsPrefix("ex", uri) ;
+        String uri = "http://example/";
+        PrefixMapping pmap = create();
+        pmap.setNsPrefix("ex", uri);
 
-        assertEquals("ex", pmap.getNsURIPrefix("http://example/")) ;
+        assertEquals("ex", pmap.getNsURIPrefix("http://example/"));
     }
 
     @Test public void prefix5()
     {
-        String uri = "http://example/" ;
-        PrefixMapping pmap = create() ;
-        pmap.setNsPrefix("ex", uri) ;
+        String uri = "http://example/";
+        PrefixMapping pmap = create();
+        pmap.setNsPrefix("ex", uri);
 
-        assertEquals(uri+"foo", pmap.expandPrefix("ex:foo")) ;
+        assertEquals(uri+"foo", pmap.expandPrefix("ex:foo"));
     }
 
     @Test public void prefix6()
     {
-        String uri = "http://example/" ;
-        PrefixMapping pmap = create() ;
-        pmap.setNsPrefix("ex", uri) ;
+        String uri = "http://example/";
+        PrefixMapping pmap = create();
+        pmap.setNsPrefix("ex", uri);
 
-        assertEquals("ex:foo", pmap.qnameFor("http://example/foo")) ;
+        assertEquals("ex:foo", pmap.qnameFor("http://example/foo"));
     }
 
     @Test public void prefix7()
     {
-        String uri1 = "http://example/" ;
-        String uri2 = "http://example/ns#" ;
+        String uri1 = "http://example/";
+        String uri2 = "http://example/ns#";
 
-        PrefixMapping pmap = create() ;
-        pmap.setNsPrefix("ex1", uri1) ;
-        pmap.setNsPrefix("ex2", uri2) ;
-        assertEquals("ex2:foo", pmap.qnameFor("http://example/ns#foo")) ;
+        PrefixMapping pmap = create();
+        pmap.setNsPrefix("ex1", uri1);
+        pmap.setNsPrefix("ex2", uri2);
+        assertEquals("ex2:foo", pmap.qnameFor("http://example/ns#foo"));
     }
 
     @Test public void prefix8()
     {
-        PrefixMapping pmap = create() ;
-        String x = "scheme:i_do_not_exist" ;
+        PrefixMapping pmap = create();
+        String x = "scheme:i_do_not_exist";
 
-        assertEquals(x, pmap.expandPrefix(x)) ;
+        assertEquals(x, pmap.expandPrefix(x));
         // Call again - used to cause problems.
-        assertEquals(x, pmap.expandPrefix(x)) ;
+        assertEquals(x, pmap.expandPrefix(x));
     }
 
 }

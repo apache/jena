@@ -29,6 +29,7 @@ import static org.apache.jena.dboe.test.RecordLib.toIntList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertFalse;
 
 import java.util.*;
 
@@ -37,7 +38,6 @@ import org.apache.jena.dboe.base.record.Record;
 import org.apache.jena.dboe.index.Index;
 import org.apache.jena.dboe.index.RangeIndex;
 import org.apache.jena.dboe.test.RecordLib;
-import org.junit.Assert;
 
 public class IndexTestLib {
 
@@ -191,7 +191,7 @@ public class IndexTestLib {
 
         List<Record> x = intToRecord(vals, RecordLib.TestRecordLength);
         for ( Record r : x )
-            Assert.assertFalse(index.contains(r));
+            assertFalse(index.contains(r));
         long size2 = index.size();
 
         assertEquals(size1 - count, size2);

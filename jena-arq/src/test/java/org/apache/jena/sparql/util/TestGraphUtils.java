@@ -18,7 +18,10 @@
 
 package org.apache.jena.sparql.util;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.rdf.model.Model;
@@ -28,7 +31,6 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.util.graph.GraphUtils;
-import org.junit.Test;
 
 public class TestGraphUtils {
 
@@ -68,9 +70,9 @@ public class TestGraphUtils {
         assertEquals("PT1S", x);
     }
 
-    @Test(expected = JenaException.class)
+    @Test
     public void string_datatype_2() {
-        String x = GraphUtils.getStringValue(r2, p2, XSDDatatype.XSDdouble);
-        assertEquals("PT1S", x);
+        // Wrong datatype.
+        assertThrows(JenaException.class, ()->GraphUtils.getStringValue(r2, p2, XSDDatatype.XSDdouble));
     }
 }

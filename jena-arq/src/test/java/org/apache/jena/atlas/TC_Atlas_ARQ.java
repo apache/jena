@@ -23,17 +23,17 @@ import org.apache.jena.atlas.data.TS_Data ;
 import org.apache.jena.atlas.event.TS_Event ;
 import org.apache.jena.atlas.json.TS_JSON ;
 import org.apache.jena.atlas.web.TS_Altas_Web ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses({
     TS_Event.class
     , TS_JSON.class
     , TS_Data.class
     , TS_Altas_Web.class
     , TS_CSVParser.class
-}) 
+})
 
 public class TC_Atlas_ARQ
 {}

@@ -18,14 +18,17 @@
 
 package org.apache.jena.sparql.algebra;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.sparql.algebra.table.TableBuilder;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class TestTableBuilder {
     @Test public void table_builder_01() {
@@ -34,22 +37,22 @@ public class TestTableBuilder {
 
         TableBuilder builder = TableFactory.builder();
         Table actualT1 = builder.addRowsAndVars(expectedT1.rows()).build();
-        Assert.assertEquals(expectedT1, actualT1);
+        assertEquals(expectedT1, actualT1);
 
         // Mutating the builder must not affect the tables created from it.
         Binding b = BindingFactory.binding(Var.alloc("c"), NodeFactoryExtra.intToNode(3));
         builder.addRowAndVars(b);
         Table actualT2 = builder.build();
 
-        Assert.assertEquals(expectedT1, actualT1);
-        Assert.assertEquals(expectedT2, actualT2);
+        assertEquals(expectedT1, actualT1);
+        assertEquals(expectedT2, actualT2);
 
         builder.reset();
 
-        Assert.assertEquals(expectedT1, actualT1);
-        Assert.assertEquals(expectedT2, actualT2);
-        Assert.assertTrue(builder.snapshotVars().isEmpty());
-        Assert.assertTrue(builder.snapshotRows().isEmpty());
+        assertEquals(expectedT1, actualT1);
+        assertEquals(expectedT2, actualT2);
+        assertTrue(builder.snapshotVars().isEmpty());
+        assertTrue(builder.snapshotRows().isEmpty());
     }
 }
 

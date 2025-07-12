@@ -18,212 +18,213 @@
 
 package org.apache.jena.sparql.solver;
 
-import static org.apache.jena.sparql.solver.SolverLibTest.bgp ;
-import static org.apache.jena.sparql.solver.SolverLibTest.matcher ;
-import static org.apache.jena.sparql.solver.SolverLibTest.triple ;
-import static org.junit.Assert.assertEquals;
+import static org.apache.jena.sparql.solver.SolverLibTest.bgp;
+import static org.apache.jena.sparql.solver.SolverLibTest.matcher;
+import static org.apache.jena.sparql.solver.SolverLibTest.triple;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.core.BasicPattern ;
-import org.apache.jena.sparql.engine.optimizer.StatsMatcher ;
-import org.apache.jena.sparql.engine.optimizer.reorder.* ;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.core.BasicPattern;
+import org.apache.jena.sparql.engine.optimizer.StatsMatcher;
+import org.apache.jena.sparql.engine.optimizer.reorder.*;
 
 public class TestReorder
 {
 
     @Test public void match_01()
     {
-        StatsMatcher matcher = matcher("((:x :p ANY) 5)") ;
-        Triple t = triple("(:x :p ?v)") ;
-        double d = matcher.match(t) ;
-        assertEquals(5.0, d, 0) ;
+        StatsMatcher matcher = matcher("((:x :p ANY) 5)");
+        Triple t = triple("(:x :p ?v)");
+        double d = matcher.match(t);
+        assertEquals(5.0, d, 0);
     }
-    
+
     @Test public void match_02()
     {
-        StatsMatcher matcher = matcher("((:x :p ANY) 5)") ;
-        Triple t = triple("(:x :q ?v)") ;   // No match
-        double d = matcher.match(t) ;
-        assertEquals(-1, d, 0) ;
+        StatsMatcher matcher = matcher("((:x :p ANY) 5)");
+        Triple t = triple("(:x :q ?v)");   // No match
+        double d = matcher.match(t);
+        assertEquals(-1, d, 0);
     }
-    
+
     @Test public void match_03()
     {
-        StatsMatcher matcher = matcher("((:x :p VAR) 5)") ;
-        Triple t = triple("(:x :p ?v)") ;
-        double d = matcher.match(t) ;
-        assertEquals(5, d, 0) ;
+        StatsMatcher matcher = matcher("((:x :p VAR) 5)");
+        Triple t = triple("(:x :p ?v)");
+        double d = matcher.match(t);
+        assertEquals(5, d, 0);
     }
-    
+
     @Test public void match_04()
     {
-        StatsMatcher matcher = matcher("((TERM :p VAR) 5)") ;
-        Triple t = triple("(:x :p ?v)") ;
-        double d = matcher.match(t) ;
-        assertEquals(5, d, 0) ;
+        StatsMatcher matcher = matcher("((TERM :p VAR) 5)");
+        Triple t = triple("(:x :p ?v)");
+        double d = matcher.match(t);
+        assertEquals(5, d, 0);
     }
-    
+
     @Test public void match_05()
     {
-        StatsMatcher matcher = matcher("((URI :p VAR) 5)") ;
-        Triple t = triple("(:x :p ?v)") ;
-        double d = matcher.match(t) ;
-        assertEquals(5, d, 0) ;
+        StatsMatcher matcher = matcher("((URI :p VAR) 5)");
+        Triple t = triple("(:x :p ?v)");
+        double d = matcher.match(t);
+        assertEquals(5, d, 0);
     }
-    
+
     @Test public void match_06()
     {
-        StatsMatcher matcher = matcher("((LITERAL :p VAR) 5)") ;
-        Triple t = triple("(:x :p ?v)") ;   // No match
-        double d = matcher.match(t) ;
-        assertEquals(-1, d, 0) ;
+        StatsMatcher matcher = matcher("((LITERAL :p VAR) 5)");
+        Triple t = triple("(:x :p ?v)");   // No match
+        double d = matcher.match(t);
+        assertEquals(-1, d, 0);
     }
 
     @Test public void match_07()
     {
-        StatsMatcher matcher = matcher("((BNODE :p VAR) 5)") ;
-        Triple t = triple("(_:a :p ?v)") ;
-        double d = matcher.match(t) ;
-        assertEquals(5, d, 0) ;
+        StatsMatcher matcher = matcher("((BNODE :p VAR) 5)");
+        Triple t = triple("(_:a :p ?v)");
+        double d = matcher.match(t);
+        assertEquals(5, d, 0);
     }
 
     @Test public void match_08()
     {
-        StatsMatcher matcher = matcher("((VAR :p LITERAL) 5)") ;
-        Triple t = triple("(?x :p ?v)") ;   // No match
-        double d = matcher.match(t) ;
-        assertEquals(-1, d, 0) ;
+        StatsMatcher matcher = matcher("((VAR :p LITERAL) 5)");
+        Triple t = triple("(?x :p ?v)");   // No match
+        double d = matcher.match(t);
+        assertEquals(-1, d, 0);
     }
 
     @Test public void match_09()
     {
-        StatsMatcher matcher = matcher("((VAR :p LITERAL) 5)") ;
-        Triple t = triple("(?x :p 1913)") ;
-        double d = matcher.match(t) ;
-        assertEquals(5, d, 0) ;
+        StatsMatcher matcher = matcher("((VAR :p LITERAL) 5)");
+        Triple t = triple("(?x :p 1913)");
+        double d = matcher.match(t);
+        assertEquals(5, d, 0);
     }
 
-    // Test first match wins. 
+    // Test first match wins.
     @Test public void match_10()
     {
-        StatsMatcher matcher = matcher("((VAR :p LITERAL) 5) ((VAR :p ANY) 10)") ;
-        Triple t = triple("(?x :p 1913)") ;
-        double d = matcher.match(t) ;
-        assertEquals(5, d, 0) ;
+        StatsMatcher matcher = matcher("((VAR :p LITERAL) 5) ((VAR :p ANY) 10)");
+        Triple t = triple("(?x :p 1913)");
+        double d = matcher.match(t);
+        assertEquals(5, d, 0);
     }
 
     @Test public void match_11()
     {
-        StatsMatcher matcher = matcher("((VAR :p ANY) 10) ((VAR :p LITERAL) 5)") ;
-        Triple t = triple("(?x :p 1913)") ;
-        double d = matcher.match(t) ;
-        assertEquals(10, d, 0) ;
+        StatsMatcher matcher = matcher("((VAR :p ANY) 10) ((VAR :p LITERAL) 5)");
+        Triple t = triple("(?x :p 1913)");
+        double d = matcher.match(t);
+        assertEquals(10, d, 0);
     }
 
     // Abbreviated forms.
     @Test public void match_20()
     {
-        StatsMatcher matcher = matcher("(:p 10) ") ;
-        Triple t = triple("(?x :p ?v)") ;
-        double d = matcher.match(t) ;
-        assertEquals(10, d, 0) ;
-        
+        StatsMatcher matcher = matcher("(:p 10) ");
+        Triple t = triple("(?x :p ?v)");
+        double d = matcher.match(t);
+        assertEquals(10, d, 0);
+
     }
-    
+
     @Test public void match_21()
     {
-        StatsMatcher matcher = matcher("(:p 10) ") ;
-        Triple t = triple("(?x :p 1913)") ;
-        double d = matcher.match(t) ;
-        assertEquals(StatsMatcher.weightPO_small, d, 0) ;
+        StatsMatcher matcher = matcher("(:p 10) ");
+        Triple t = triple("(?x :p 1913)");
+        double d = matcher.match(t);
+        assertEquals(StatsMatcher.weightPO_small, d, 0);
     }
-    
+
     @Test public void match_22()
     {
-        StatsMatcher matcher = matcher("(:p 11)") ;
-        Triple t = triple("(:x :p 1913)") ;
-        double d = matcher.match(t) ;
-        assertEquals(1, d, 0) ;
+        StatsMatcher matcher = matcher("(:p 11)");
+        Triple t = triple("(:x :p 1913)");
+        double d = matcher.match(t);
+        assertEquals(1, d, 0);
     }
 
     @Test public void match_23()
     {
-        StatsMatcher matcher = matcher("(:p 11)") ;
-        Triple t = triple("(:x ?p 1913)") ; // No match.
-        double d = matcher.match(t) ;
-        assertEquals(-1, d, 0) ;
+        StatsMatcher matcher = matcher("(:p 11)");
+        Triple t = triple("(:x ?p 1913)"); // No match.
+        double d = matcher.match(t);
+        assertEquals(-1, d, 0);
     }
 
     @Test public void match_24()
     {
-        StatsMatcher matcher = matcher("(:p 11) (TERM 12)") ;
-        Triple t = triple("(?x :q ?v)") ;
-        double d = matcher.match(t) ;
-        assertEquals(12, d, 0) ;
+        StatsMatcher matcher = matcher("(:p 11) (TERM 12)");
+        Triple t = triple("(?x :q ?v)");
+        double d = matcher.match(t);
+        assertEquals(12, d, 0);
     }
-    
+
     // Bounds abbreviation rules.
-    @Test 
+    @Test
     public void match_25()
     {
-        StatsMatcher matcher = matcher("(:p 3) (other 1)") ;
-        Triple t = triple("(?x :p ?v)") ;
-        double d = matcher.match(t) ;
-        assertEquals(3, d, 0) ;
+        StatsMatcher matcher = matcher("(:p 3) (other 1)");
+        Triple t = triple("(?x :p ?v)");
+        double d = matcher.match(t);
+        assertEquals(3, d, 0);
     }
-    
-    @Test 
+
+    @Test
     public void match_26()
     {
-        StatsMatcher matcher = matcher("(:pp 3) (other 1)") ;
-        Triple t = triple("(:x :p ?v)") ;
-        double d = matcher.match(t) ;
-        assertEquals(1, d, 0) ;
+        StatsMatcher matcher = matcher("(:pp 3) (other 1)");
+        Triple t = triple("(:x :p ?v)");
+        double d = matcher.match(t);
+        assertEquals(1, d, 0);
     }
 
     // Bounds abbreviation rules.
     @Test public void match_27()
     {
-        StatsMatcher matcher = matcher("(:p 200) (TERM 2)") ;
-        Triple t = triple("(?x :q :v)") ;
-        double d = matcher.match(t) ;
-        assertEquals(2, d, 0) ;
+        StatsMatcher matcher = matcher("(:p 200) (TERM 2)");
+        Triple t = triple("(?x :q :v)");
+        double d = matcher.match(t);
+        assertEquals(2, d, 0);
     }
 
-    @Test public void reorderIndexes1() 
-    { 
-        ReorderProc proc = new ReorderProcIndexes(new int[]{0,1}) ;
-        BasicPattern bgp = bgp("(bgp (:x :p ?v) (:x :q ?w))") ; 
-        BasicPattern bgp2 = proc.reorder(bgp) ;
-        assertEquals(bgp, bgp2) ;
+    @Test public void reorderIndexes1()
+    {
+        ReorderProc proc = new ReorderProcIndexes(new int[]{0,1});
+        BasicPattern bgp = bgp("(bgp (:x :p ?v) (:x :q ?w))");
+        BasicPattern bgp2 = proc.reorder(bgp);
+        assertEquals(bgp, bgp2);
     }
-    
-    @Test public void reorderIndexes2() 
-    { 
-        ReorderProc proc = new ReorderProcIndexes(new int[]{1,0}) ;
-        BasicPattern bgp1 = bgp("(bgp (:x :p ?v) (:x :q ?w))") ; 
-        BasicPattern bgp2 = bgp("(bgp (:x :q ?w) (:x :p ?v))") ; 
-        BasicPattern bgp3 = proc.reorder(bgp1) ;
-        assertEquals(bgp2, bgp3) ;
+
+    @Test public void reorderIndexes2()
+    {
+        ReorderProc proc = new ReorderProcIndexes(new int[]{1,0});
+        BasicPattern bgp1 = bgp("(bgp (:x :p ?v) (:x :q ?w))");
+        BasicPattern bgp2 = bgp("(bgp (:x :q ?w) (:x :p ?v))");
+        BasicPattern bgp3 = proc.reorder(bgp1);
+        assertEquals(bgp2, bgp3);
     }
-    
+
     @Test public void stats_01()
     {
-        StatsMatcher m = matcher("((:x :p ANY) 5)") ;
-        ReorderTransformation transform = new ReorderWeighted(m) ;
-        BasicPattern bgp = bgp("(bgp)") ;
-        BasicPattern bgp2 = transform.reorder(bgp) ;
-        assertEquals(bgp2, bgp) ;
+        StatsMatcher m = matcher("((:x :p ANY) 5)");
+        ReorderTransformation transform = new ReorderWeighted(m);
+        BasicPattern bgp = bgp("(bgp)");
+        BasicPattern bgp2 = transform.reorder(bgp);
+        assertEquals(bgp2, bgp);
     }
-    
-    
+
+
     @Test public void stats_dft_01()
     {
-        ReorderTransformation transform = ReorderLib.fixed() ;
-        BasicPattern bgp = bgp("(bgp)") ;
-        BasicPattern bgp2 = transform.reorder(bgp) ;
-        assertEquals(bgp2, bgp) ;
+        ReorderTransformation transform = ReorderLib.fixed();
+        BasicPattern bgp = bgp("(bgp)");
+        BasicPattern bgp2 = transform.reorder(bgp);
+        assertEquals(bgp2, bgp);
     }
-  
+
 }

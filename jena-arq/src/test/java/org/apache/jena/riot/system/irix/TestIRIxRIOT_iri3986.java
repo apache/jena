@@ -18,7 +18,7 @@
 
 package org.apache.jena.riot.system.irix;
 
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 
 import org.apache.jena.iri3986.provider.IRIProvider3986;
 import org.apache.jena.iri3986.provider.JenaSeveritySettings;
@@ -34,14 +34,12 @@ public class TestIRIxRIOT_iri3986 extends AbstractTestIRIxRIOT_system {
 
     private static final IRIProvider testProvider = new IRIProvider3986();
 
-
-
     @Override
     protected IRIProvider getProviderForTest() {
         return testProvider;
     }
 
-    @BeforeClass public static void beforeClass() {
+    @BeforeAll public static void beforeClass() {
         Violations.setSystemSeverityMap(JenaSeveritySettings.jenaSystemSettings());
     }
 }

@@ -20,7 +20,7 @@ package org.apache.jena.tdb2.store;
 
 import java.util.Iterator;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.dboe.base.file.Location;
@@ -156,7 +156,7 @@ public class DatasetGraphTDB extends DatasetGraphStorage
         // If we are using a Graph based index i.e. Graph is the first part of the record then we can use a more
         // efficient distinct implementation that only needs to remember the most recently seen graph name
         // findAll() always uses the first index for the tuple table hence the assumption in the following test
-        boolean usingGraphBasedIndex = StringUtils.startsWith(quads.getTupleTable().getIndex(0).getName(), "G");
+        boolean usingGraphBasedIndex = Strings.CS.startsWith(quads.getTupleTable().getIndex(0).getName(), "G");
         Iterator<NodeId> graphNodeIds = Iter.iter(x).map(t -> t.get(0));
         Iterator<NodeId> distinctGraphNodeIds
                 = usingGraphBasedIndex ? Iter.distinctAdjacent(graphNodeIds) : Iter.distinct(graphNodeIds);

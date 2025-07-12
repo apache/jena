@@ -18,15 +18,22 @@
 
 package org.apache.jena.riot.lang.rdfxml.rrx;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import org.apache.commons.collections4.SetUtils;
 import org.apache.jena.atlas.io.IO;
@@ -34,12 +41,10 @@ import org.apache.jena.atlas.io.IOX;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.lang.rdfxml.RRX;
 import org.apache.jena.riot.lang.rdfxml.rrx.RunTestRDFXML.ErrorHandlerCollector;
-import org.apache.jena.riot.system.*;
-import org.junit.AfterClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.apache.jena.riot.system.ParserProfile;
+import org.apache.jena.riot.system.RiotLib;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.system.StreamRDFWriter;
 
 /**
  * Additional tests for RRX:
@@ -50,26 +55,29 @@ import org.junit.runners.Parameterized.Parameters;
  * </ul>
  */
 
-@RunWith(Parameterized.class)
+@ParameterizedClass
+@MethodSource("provideArgs")
 public class TestRRX {
 
     private static String DIR = "testing/RIOT/rrx-files/";
 
-    @Parameters(name = "{index}: {0} {1}")
-    public static Iterable<Object[]> data() {
-        List<Object[]> x = new ArrayList<>();
-        x.add(new Object[] {"SAX", RRX.RDFXML_SAX});
-        x.add(new Object[] {"StAXsr", RRX.RDFXML_StAX_sr});
-        x.add(new Object[] {"StAXev", RRX.RDFXML_StAX_ev});
-        return x;
+    private record TestArgs(String label, Lang lang) {}
+
+    private static Stream<TestArgs> provideArgs() {
+        List<TestArgs> x = List.of
+                (new TestArgs("SAX", RRX.RDFXML_SAX),
+                 new TestArgs("StAXsr", RRX.RDFXML_StAX_sr),
+                 new TestArgs("StAXev", RRX.RDFXML_StAX_ev)
+                );
+        return x.stream();
     }
 
     private String label;
     private Lang lang;
 
-    public TestRRX(String label, Lang lang) {
-        this.label = label;
-        this.lang = lang;
+    public TestRRX(TestArgs args) {
+        this.label = args.label;
+        this.lang = args.lang;
     }
 
     private static Set<String> processedFiles = new HashSet<>();
@@ -79,10 +87,10 @@ public class TestRRX {
 
     /** Check all files in the were touched */
 
-    @AfterClass public static void checkFiles() {
+    @AfterAll public static void checkFiles() {
         // This can break when running single tests.
         Set<String> fsFiles = localTestFiles();
-        if ( fsFiles.size() !=  processedFiles.size()) {
+        if ( fsFiles.size() != processedFiles.size()) {
             System.out.flush();
             System.err.flush();
             Set<String> missed = SetUtils.difference(fsFiles, processedFiles);
@@ -129,16 +137,16 @@ public class TestRRX {
         noBase("base-none.rdf");
     }
 
-    @Test(expected=RiotException.class)
+    @Test
     public void bare_needed() {
         // Call with no base; a base is needed => exception.
-        noBase("base-external-needed.rdf");
+        assertThrows(RiotException.class, ()->noBase("base-external-needed.rdf"));
     }
 
-    @Test(expected=RiotException.class)
+    @Test
     public void base_inner_1() {
         // Call with no base; xml:base is relative in the data.
-        noBase("base-inner.rdf");
+        assertThrows(RiotException.class, ()->noBase("base-inner.rdf"));
     }
 
     public void base_inner_2() {

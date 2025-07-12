@@ -18,8 +18,10 @@
 
 package org.apache.jena.sparql.exec;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.query.Query;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
@@ -27,8 +29,6 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
-import org.junit.Test;
-
 
 public class TestQueryExecDataset {
     // Most QueryExec testing gets tested via QueryExecution usage

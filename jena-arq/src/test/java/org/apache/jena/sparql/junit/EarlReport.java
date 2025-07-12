@@ -18,16 +18,16 @@
 
 package org.apache.jena.sparql.junit;
 
-import org.apache.jena.atlas.lib.DateTimeUtils ;
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.sparql.vocabulary.DOAP ;
-import org.apache.jena.sparql.vocabulary.EARL ;
-import org.apache.jena.sparql.vocabulary.FOAF ;
-import org.apache.jena.vocabulary.DC ;
-import org.apache.jena.vocabulary.DCTerms ;
-import org.apache.jena.vocabulary.RDF ;
-import org.apache.jena.vocabulary.XSD ;
+import org.apache.jena.atlas.lib.DateTimeUtils;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.sparql.vocabulary.DOAP;
+import org.apache.jena.sparql.vocabulary.EARL;
+import org.apache.jena.sparql.vocabulary.FOAF;
+import org.apache.jena.vocabulary.DC;
+import org.apache.jena.vocabulary.DCTerms;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.XSD;
 
 public class EarlReport
 {
@@ -40,31 +40,31 @@ public class EarlReport
                  rdf:type earl:TestResult;
                  earl:outcome earl:passed ];
          earl:subject <thingBeingTested>;
-         earl:test <testPerformed> ;
+         earl:test <testPerformed>;
          earl:mode .... ].
      */
 
-    private Model earl = null ;
+    private Model earl = null;
 
     private Resource system;
 
     public EarlReport(String systemURI)
     {
-        earl = ModelFactory.createDefaultModel() ;
+        earl = ModelFactory.createDefaultModel();
 
-        earl.setNsPrefix("earl", EARL.getURI()) ;
-        earl.setNsPrefix("foaf", FOAF.getURI()) ;
-        earl.setNsPrefix("rdf", RDF.getURI()) ;
-        earl.setNsPrefix("dc", DC.getURI()) ;
-        earl.setNsPrefix("dct", DCTerms.getURI()) ;
-        earl.setNsPrefix("doap", DOAP.getURI()) ;
-        earl.setNsPrefix("xsd", XSD.getURI()) ;
+        earl.setNsPrefix("earl", EARL.getURI());
+        earl.setNsPrefix("foaf", FOAF.getURI());
+        earl.setNsPrefix("rdf", RDF.getURI());
+        earl.setNsPrefix("dc", DC.getURI());
+        earl.setNsPrefix("dct", DCTerms.getURI());
+        earl.setNsPrefix("doap", DOAP.getURI());
+        earl.setNsPrefix("xsd", XSD.getURI());
         earl.setNsPrefix("rdft", "http://www.w3.org/ns/rdftest#");
         // Utils.
-        system = (systemURI == null ) ? earl.createResource() : earl.createResource(systemURI) ;
+        system = (systemURI == null ) ? earl.createResource() : earl.createResource(systemURI);
     }
 
-    public Resource getSystem() { return system ; }
+    public Resource getSystem() { return system; }
 
     public void success(String testURI) {
         createAssertionResult(testURI, EARL.passed);
@@ -108,7 +108,7 @@ public class EarlReport
         return earl.createResource(EARL.TestResult).addProperty(EARL.outcome, outcome).addProperty(DC.date, now);
     }
 
-    public Model getModel() { return earl ; }
+    public Model getModel() { return earl; }
 
-    public Model getDescription() { return earl ; }
+    public Model getDescription() { return earl; }
 }

@@ -25,24 +25,6 @@ import org.junit.platform.suite.api.Suite;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.AfterAll;
 
-
-// JUnit 4
-//import org.junit.AfterClass;
-//import org.junit.BeforeClass;
-//import org.junit.runner.RunWith;
-//import org.junit.runners.Suite;
-//@RunWith(Suite.class)
-//@Suite.SuiteClasses( {
-
-//JUnit 5
-//import org.junit.platform.suite.api.SelectClasses;
-//import org.junit.platform.suite.api.Suite;
-//import org.junit.jupiter.api.BeforeAll;
-//import org.junit.jupiter.api.AfterAll;
-//
-//@Suite
-//@SelectClasses({
-
 import org.apache.jena.atlas.TC_Atlas_ARQ;
 import org.apache.jena.atlas.legacy.BaseTest2;
 import org.apache.jena.external.Scripts_LangSuiteCG;

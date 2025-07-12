@@ -16,7 +16,11 @@
  * limitations under the License.
  */
 
-package org.apache.jena.rdf12.basic;
+package org.apache.jena.rdf12.parse;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
@@ -26,7 +30,6 @@ import org.apache.jena.riot.system.ErrorHandler;
 import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
-import org.junit.Test;
 
 /**
  * Test parsing of RDF-star constructs for Turtle.
@@ -51,19 +54,23 @@ public class TestTurtleStarParse {
     @Test public void parse_turtle_good_20()   { parse(":a :p <<:s :p <<:x :r :z >>>> . "); }
 
     // Reified triple declarations.
-    public void parse_turtle_bad_1()           { parse("<<:s :p :o>> . "); }
+    public void parse_turtle_good_30()           { parse("<<:s :p :o>> . "); }
 
     // Triple Terms.
     @Test public void parse_turtle_good_50()   { parse(":a :p <<(:s :p <<(:x :r :z )>>)>> . "); }
 
-    @Test(expected=RiotException.class)
-    public void parse_turtle_bad_2()           { parse("<<(:s :p :o )>> :q 1 . "); }
+    @Test
+    public void parse_turtle_bad_2()           { parseException("<<(:s :p :o )>> :q 1 . "); }
 
-    @Test(expected=RiotException.class)
-    public void parse_turtle_bad_3()           { parse(":s :q <<:s :p (3) >> . "); }
+    @Test
+    public void parse_turtle_bad_3()           { parseException(":s :q <<:s :p (3) >> . "); }
 
-    @Test(expected=RiotException.class)
-    public void parse_turtle_bad_4()           { parse(":s :p <<( 3 :q :t >> . "); }
+    @Test
+    public void parse_turtle_bad_4()           { parseException(":s :p <<( 3 :q :t >> . "); }
+
+    private void parseException(String string) {
+        assertThrows(RiotException.class, ()->parse(string));
+    }
 
     private void parse(String string) {
         string = "PREFIX : <http://example/>\n"+string;

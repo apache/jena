@@ -18,9 +18,11 @@
 
 package org.apache.jena.sparql.modify;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -30,7 +32,6 @@ import org.apache.jena.sparql.exec.UpdateExec;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
-import org.junit.Test;
 
 public class TestUpdateBuild {
 

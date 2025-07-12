@@ -18,111 +18,105 @@
 
 package org.apache.jena.riot.system;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList ;
-import java.util.List ;
+import java.util.List;
+import java.util.stream.Stream;
 
-import org.apache.jena.riot.* ;
-import org.junit.Test ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Parameterized ;
-import org.junit.runners.Parameterized.Parameters ;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.Parameter;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.RDFParserRegistry;
+import org.apache.jena.riot.RDFWriterRegistry;
 
-@RunWith(Parameterized.class)
-public class TestLangRegistration
-{
-    @Parameters(name = "{0} -- {1} {2} {3}")
-    public static Iterable<Object[]> data() {
-        List<Object[]> x = new ArrayList<>() ;
-        add("NULL",     x, Lang.RDFNULL,    true, true)  ;
-        add("RDFXML",   x, Lang.RDFXML,     true, false) ;
-        add("NTRIPLES", x, Lang.NTRIPLES,   true, false) ;
-        add("NT",       x, Lang.NT,         true, false) ;
-        add("N3",       x, Lang.N3,         true, false) ;
-        add("TURTLE",   x, Lang.TURTLE,     true, false) ;
-        add("TTL",      x, Lang.TTL,        true, false) ;
-        add("JSONLD",   x, Lang.JSONLD,     true, true) ;
-        add("RDFJSON",  x, Lang.RDFJSON,    true, false) ;
-        add("NQUADS",   x, Lang.NQUADS,     false, true) ;
-        add("NQ",       x, Lang.NQ,         false, true) ;
-        add("TRIG",     x, Lang.TRIG,       false, true) ;
-        add("TRIX",     x, Lang.TRIX,       true, true) ;
-        add("PB RDF",   x, Lang.RDFPROTO,   true, true) ;
-        add("TRDF",     x, Lang.RDFTHRIFT,  true, true) ;
-        return x ;
+@ParameterizedClass
+@MethodSource("provideArgs")
+public class TestLangRegistration {
+
+    private static Stream<Arguments> provideArgs() {
+        List<Arguments> x = List.of
+                (Arguments.of("NULL",     Lang.RDFNULL,    true, true),
+                 Arguments.of("RDFXML",   Lang.RDFXML,     true, false),
+                 Arguments.of("NTRIPLES", Lang.NTRIPLES,   true, false),
+                 Arguments.of("NT",       Lang.NT,         true, false),
+                 Arguments.of("N3",       Lang.N3,         true, false),
+                 Arguments.of("TURTLE",   Lang.TURTLE,     true, false),
+                 Arguments.of("TTL",      Lang.TTL,        true, false),
+                 Arguments.of("JSONLD",   Lang.JSONLD,     true, true),
+                 Arguments.of("RDFJSON",  Lang.RDFJSON,    true, false),
+                 Arguments.of("NQUADS",   Lang.NQUADS,     false, true),
+                 Arguments.of("NQ",       Lang.NQ,         false, true),
+                 Arguments.of("TRIG",     Lang.TRIG,       false, true),
+                 Arguments.of("TRIX",     Lang.TRIX,       true, true),
+                 Arguments.of("PB RDF",   Lang.RDFPROTO,   true, true),
+                 Arguments.of("TRDF",     Lang.RDFTHRIFT,  true, true)
+                        );
+        return x.stream();
     }
 
-    private static void add(String name, List<Object[]> x, Lang lang, boolean istriples, boolean isquads) {
-        x.add(new Object[] {name, lang, istriples , isquads }) ;
-    }
-
-    private String name ;
-    private Lang lang ;
-    private boolean istriples ;
-    private boolean isquads ;
-
-    public TestLangRegistration(String name, Lang lang, boolean istriples, boolean isquads) {
-        this.name = name ;
-        this.lang = lang ;
-        this.istriples = istriples ;
-        this.isquads = isquads ;
-    }
+    @Parameter(0) private String name;
+    @Parameter(1) private Lang lang;
+    @Parameter(2) private boolean istriples;
+    @Parameter(3) private boolean isquads;
 
     @Test public void jenaSystem_read_1() {
-        assertTrue(RDFLanguages.isRegistered(lang)) ;
+        assertTrue(RDFLanguages.isRegistered(lang));
         if ( istriples )
-            assertTrue(RDFLanguages.isTriples(lang)) ;
+            assertTrue(RDFLanguages.isTriples(lang));
         else
-            assertFalse(RDFLanguages.isTriples(lang)) ;
+            assertFalse(RDFLanguages.isTriples(lang));
         if (isquads )
-            assertTrue(RDFLanguages.isQuads(lang)) ;
+            assertTrue(RDFLanguages.isQuads(lang));
         else
-            assertFalse(RDFLanguages.isQuads(lang)) ;
+            assertFalse(RDFLanguages.isQuads(lang));
     }
 
     @Test public void jenaSystem_read_2() {
         if ( ! Lang.RDFNULL.equals(lang) ) {
             assertTrue(RDFParserRegistry.isRegistered(lang));
-            assertNotNull(RDFParserRegistry.getFactory(lang)) ;
+            assertNotNull(RDFParserRegistry.getFactory(lang));
         }
     }
 
     @Test public void jenaSystem_write_1() {
-        assertTrue(RDFWriterRegistry.contains(lang)) ;
+        assertTrue(RDFWriterRegistry.contains(lang));
     }
 
     @Test public void jenaSystem_write_2() {
-        if ( istriples ) assertNotNull(RDFWriterRegistry.getWriterGraphFactory(lang)) ;
-        if ( isquads )   assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(lang)) ;
-        assertNotNull(RDFWriterRegistry.defaultSerialization(lang)) ;
+        if ( istriples ) assertNotNull(RDFWriterRegistry.getWriterGraphFactory(lang));
+        if ( isquads )   assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(lang));
+        assertNotNull(RDFWriterRegistry.defaultSerialization(lang));
     }
 
 //    @Test public void jenaSystem_write_3() {
 //
-//        assertEquals(jsonldFmt1, RDFWriterRegistry.defaultSerialization(JSONLD)) ;
+//        assertEquals(jsonldFmt1, RDFWriterRegistry.defaultSerialization(JSONLD));
 //
-//        assertNotNull(RDFWriterRegistry.getWriterGraphFactory(jsonldFmt1)) ;
-//        assertNotNull(RDFWriterRegistry.getWriterGraphFactory(jsonldFmt2)) ;
+//        assertNotNull(RDFWriterRegistry.getWriterGraphFactory(jsonldFmt1));
+//        assertNotNull(RDFWriterRegistry.getWriterGraphFactory(jsonldFmt2));
 //
-//        assertTrue(RDFWriterRegistry.registeredGraphFormats().contains(jsonldFmt1)) ;
-//        assertTrue(RDFWriterRegistry.registeredGraphFormats().contains(jsonldFmt2)) ;
+//        assertTrue(RDFWriterRegistry.registeredGraphFormats().contains(jsonldFmt1));
+//        assertTrue(RDFWriterRegistry.registeredGraphFormats().contains(jsonldFmt2));
 //
-//        assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(jsonldFmt1)) ;
-//        assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(jsonldFmt2)) ;
+//        assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(jsonldFmt1));
+//        assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(jsonldFmt2));
 //
-//        assertTrue(RDFWriterRegistry.registeredDatasetFormats().contains(jsonldFmt1)) ;
-//        assertTrue(RDFWriterRegistry.registeredDatasetFormats().contains(jsonldFmt2)) ;
+//        assertTrue(RDFWriterRegistry.registeredDatasetFormats().contains(jsonldFmt1));
+//        assertTrue(RDFWriterRegistry.registeredDatasetFormats().contains(jsonldFmt2));
 //    }
 //
 //    @Test public void jenaSystem_write_4() {
-//        assertNotNull(RDFDataMgr.createGraphWriter(jsonldFmt1)) ;
-//        assertNotNull(RDFDataMgr.createGraphWriter(jsonldFmt2)) ;
-//        assertNotNull(RDFDataMgr.createDatasetWriter(jsonldFmt1)) ;
-//        assertNotNull(RDFDataMgr.createDatasetWriter(jsonldFmt2)) ;
+//        assertNotNull(RDFDataMgr.createGraphWriter(jsonldFmt1));
+//        assertNotNull(RDFDataMgr.createGraphWriter(jsonldFmt2));
+//        assertNotNull(RDFDataMgr.createDatasetWriter(jsonldFmt1));
+//        assertNotNull(RDFDataMgr.createDatasetWriter(jsonldFmt2));
 //    }
 }
 

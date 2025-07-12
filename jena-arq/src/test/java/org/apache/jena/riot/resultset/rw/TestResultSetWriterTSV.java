@@ -21,14 +21,15 @@ package org.apache.jena.riot.resultset.rw;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.ByteArrayOutputStream;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.resultset.ResultSetWriter;
 import org.apache.jena.riot.resultset.ResultSetWriterRegistry;
-import org.junit.Test;
 
 public class TestResultSetWriterTSV {
 

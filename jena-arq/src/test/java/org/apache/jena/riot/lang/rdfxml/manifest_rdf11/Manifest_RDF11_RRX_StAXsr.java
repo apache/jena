@@ -16,39 +16,39 @@
  * limitations under the License.
  */
 
-package org.apache.jena.arq.examples;
+package org.apache.jena.riot.lang.rdfxml.manifest_rdf11;
 
 import org.apache.jena.arq.junit.manifest.Manifests;
 import org.apache.jena.arq.junit.runners.Label;
-import org.apache.jena.arq.junit.runners.RunnerSPARQL;
-import org.apache.jena.sparql.expr.E_Function;
-import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.arq.junit.runners.RunnerRIOT;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFParserRegistry;
+import org.apache.jena.riot.ReaderRIOTFactory;
+import org.apache.jena.riot.lang.rdfxml.rrx_stax_sr.ReaderRDFXML_StAX_SR;
+import org.apache.jena.sys.JenaSystem;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
-@RunWith(RunnerSPARQL.class)
-@Label("Examples")
+@RunWith(RunnerRIOT.class)
+@Label("RRX RRX-StAX-sr RDF 1.1 rdf11-xml")
 @Manifests({
-    "testing/ARQ/Examples/manifest.ttl"
+    "testing/RIOT/rdf11-xml/manifest.ttl"
 })
-public class TC_Examples
-{
-    private static boolean bVerboseWarnings;
-    private static boolean bWarnOnUnknownFunction;
 
+public class Manifest_RDF11_RRX_StAXsr {
+
+    static ReaderRIOTFactory systemReaderfactory;
     @BeforeClass
     public static void beforeClass() {
-        bVerboseWarnings = NodeValue.VerboseWarnings;
-        bWarnOnUnknownFunction = E_Function.WarnOnUnknownFunction;
-        NodeValue.VerboseWarnings = false;
-        E_Function.WarnOnUnknownFunction = false;
+        JenaSystem.init();;
+        systemReaderfactory = RDFParserRegistry.getFactory(Lang.RDFXML);
+        RDFParserRegistry.registerLangTriples(Lang.RDFXML, ReaderRDFXML_StAX_SR.factory);
     }
 
     @AfterClass
     public static void afterClass() {
-        NodeValue.VerboseWarnings = bVerboseWarnings;
-        E_Function.WarnOnUnknownFunction = bWarnOnUnknownFunction;
+        if ( systemReaderfactory != null )
+            RDFParserRegistry.registerLangTriples(Lang.RDFXML, systemReaderfactory);
     }
-
 }

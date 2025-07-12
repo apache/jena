@@ -18,9 +18,11 @@
 
 package org.apache.jena.sparql.pfunction.library;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.ARQ;
@@ -36,7 +38,6 @@ import org.apache.jena.sparql.pfunction.PropertyFunction;
 import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sys.JenaSystem;
-import org.junit.Test;
 
 public class TestCustomPropertyFunction {
 

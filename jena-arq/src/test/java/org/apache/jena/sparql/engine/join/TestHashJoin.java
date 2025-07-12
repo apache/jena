@@ -18,13 +18,13 @@
 
 package org.apache.jena.sparql.engine.join;
 
-import org.apache.jena.sparql.algebra.Table ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.expr.ExprList ;
+import org.apache.jena.sparql.algebra.Table;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.expr.ExprList;
 
 public class TestHashJoin extends AbstractTestInnerJoin {
     @Override
     public QueryIterator join(JoinKey joinKey, Table left, Table right, ExprList conditions) {
-        return Join.hashJoin(joinKey, left.iterator(null), right.iterator(null), null) ;
+        return Join.hashJoin(joinKey, left.iterator(null), right.iterator(null), null);
     }
 }

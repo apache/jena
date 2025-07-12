@@ -18,22 +18,24 @@
 
 package org.apache.jena.sparql.algebra.optimize;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.lib.StrUtils;
-import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.OpLib;
-import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.algebra.Transformer ;
-import org.apache.jena.sparql.algebra.op.OpExtend ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.core.VarExprList ;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueInteger ;
-import org.apache.jena.sparql.sse.SSE ;
-import org.junit.Assert;
-import org.junit.Test;
+import org.apache.jena.sparql.algebra.Transform;
+import org.apache.jena.sparql.algebra.Transformer;
+import org.apache.jena.sparql.algebra.op.OpExtend;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.core.VarExprList;
+import org.apache.jena.sparql.expr.nodevalue.NodeValueInteger;
+import org.apache.jena.sparql.sse.SSE;
 
 /**
  * Tests for {@code TransformPromoteTableEmpty}
- * 
+ *
  */
 public class TestTransformPromoteTableEmpty {
 
@@ -122,25 +124,25 @@ public class TestTransformPromoteTableEmpty {
         // Table empty on both sides allows the whole thing to be eliminated
         test("(union (table empty) (table empty))", t_promote, "(table empty)");
     }
-    
+
     @Test
     public void promote_table_empty_union_04() {
         // Promotion should percolate upwards
         test("(union (union (table unit) (table empty)) (union (table empty) (table unit)))", t_promote, "(union (table unit) (table unit))");
     }
-    
+
     @Test
     public void promote_table_empty_union_05() {
         // Promotion should percolate upwards
         test("(union (union (table empty) (table empty)) (union (table empty) (table empty)))", t_promote, "(table empty)");
     }
-    
+
     @Test
     public void promote_table_empty_minus_01() {
         // If RHS is table empty the minus can be eliminated and the LHS is kept
         test("(minus (table unit) (table empty))", t_promote, "(table unit)");
     }
-    
+
     @Test
     public void promote_table_empty_minus_02() {
         // If LHS is table empty the entire thing can be eliminated
@@ -156,11 +158,11 @@ public class TestTransformPromoteTableEmpty {
         Op opOptimized = Transformer.transform(transform, input);
         if (output == null) {
             // No transformation.
-            Assert.assertEquals(input, opOptimized);
+            assertEquals(input, opOptimized);
             return;
         }
 
         Op op3 = SSE.parseOp(StrUtils.strjoinNL(output));
-        Assert.assertEquals(op3, opOptimized);
+        assertEquals(op3, opOptimized);
     }
 }

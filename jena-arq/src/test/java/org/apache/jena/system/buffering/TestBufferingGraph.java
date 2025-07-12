@@ -18,12 +18,17 @@
 
 package org.apache.jena.system.buffering;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import org.apache.jena.atlas.lib.Creator;
 import org.apache.jena.graph.Graph;
@@ -32,30 +37,26 @@ import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.G;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
-@RunWith(Parameterized.class)
+@ParameterizedClass
+@MethodSource("provideArgs")
 public class TestBufferingGraph {
 
-    @Parameters(name = "{index}: {0}")
-    public static Iterable<Object[]> data() {
-        List<Object[]> x = new ArrayList<>() ;
+    public static Stream<Arguments> provideArgs() {
         Function<Graph, BufferingGraph> buffering = BufferingGraph::new;
         Creator<Graph> base1 = ()->GraphFactory.createGraphMem();
         Creator<Graph> base2 = ()->DatasetGraphFactory.createTxnMem().getDefaultGraph();
-        // [BUFFERING]
         //Creator<Graph> base3 = ()->TDBFactory.createDatasetGraph().getDefaultGraph();
         //Creator<Graph> base4 = ()->DatabaseMgr.createDatasetGraph().getDefaultGraph();
 
-        x.add(new Object[] {"Graph", base1, buffering});
-        x.add(new Object[] {"GraphView(TIM)", base2, buffering});
+        List<Arguments> x = List.of
+                (Arguments.of("Graph", base1, buffering),
+                 Arguments.of("GraphView(TIM)", base2, buffering)
+                 );
         // [BUFFERING]
-        //x.add(new Object[] {"GraphView(TDB2)", base3, buffering});
-        //x.add(new Object[] {"GraphView(TDB1)", base4, buffering});
-        return x ;
+        //Arguments.of("GraphView(TDB2)", base3, buffering);
+        //Arguments.of("GraphView(TDB1)", base4, buffering);
+        return x.stream() ;
     }
 
     private final Graph base;

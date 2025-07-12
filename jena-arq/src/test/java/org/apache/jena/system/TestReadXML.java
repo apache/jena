@@ -18,19 +18,20 @@
 
 package org.apache.jena.system;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.query.ResultSetFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.util.JenaXMLInput;
-import org.junit.Test;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
@@ -69,9 +70,7 @@ public class TestReadXML {
     @Test public void stax_setup() {
         XMLInputFactory xf = XMLInputFactory.newInstance() ;
         JenaXMLInput.initXMLInputFactory(xf);
-        assertEquals("XMLInputFactory.SUPPORT_DTD",
-                     Boolean.FALSE, xf.getProperty(XMLInputFactory.SUPPORT_DTD));
-
+        assertEquals(Boolean.FALSE, xf.getProperty(XMLInputFactory.SUPPORT_DTD), ()->"XMLInputFactory.SUPPORT_DTD");
 
         String name = xf.getClass().getName();
         boolean isWoodstox = name.startsWith("com.ctc.wstx.stax.");
@@ -83,11 +82,11 @@ public class TestReadXML {
             // Java19. Setting ACCESS_EXTERNAL_DTD to "" now returns "" whereas it was returning null.
             Object obj = xf.getProperty(XMLConstants.ACCESS_EXTERNAL_DTD);
             boolean noAccessExternalDTD = ( (obj == null) || ((obj instanceof String) && ((String)obj).isEmpty()) );
-            assertTrue("XMLConstants.ACCESS_EXTERNAL_DTD", noAccessExternalDTD);
+            assertTrue(noAccessExternalDTD, ()->"XMLConstants.ACCESS_EXTERNAL_DTD");
         }
 
-        assertEquals("javax.xml.stream.isSupportingExternalEntities",
-                     Boolean.FALSE,xf.getProperty("javax.xml.stream.isSupportingExternalEntities"));
+        assertEquals(Boolean.FALSE,xf.getProperty("javax.xml.stream.isSupportingExternalEntities"),
+                     ()->"javax.xml.stream.isSupportingExternalEntities");
     }
 
     @Test public void srx_dtd_http() {

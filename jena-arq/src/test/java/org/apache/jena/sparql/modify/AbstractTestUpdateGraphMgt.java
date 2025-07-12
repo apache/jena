@@ -18,9 +18,11 @@
 
 package org.apache.jena.sparql.modify;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -35,7 +37,6 @@ import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.update.Update;
 import org.apache.jena.update.UpdateAction;
 import org.apache.jena.update.UpdateException;
-import org.junit.Test;
 
 public abstract class AbstractTestUpdateGraphMgt extends AbstractTestUpdateBase
 {
@@ -98,7 +99,7 @@ public abstract class AbstractTestUpdateGraphMgt extends AbstractTestUpdateBase
         DatasetGraph gStore = getEmptyDatasetGraph();
         script(gStore, "create-1.ru");
         // JENA-1068
-// assertTrue(gStore.containsGraph(graphIRI)) ;
+// assertTrue(gStore.containsGraph(graphIRI));
         assertTrue(graphEmpty(gStore.getGraph(graphIRI)));
     }
 

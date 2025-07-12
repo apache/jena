@@ -18,14 +18,15 @@
 
 package org.apache.jena.sparql.engine;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonValue;
 import org.apache.jena.query.*;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphZero;
-import org.junit.Test;
 
 public class TestJsonEval {
 
@@ -69,8 +70,8 @@ public class TestJsonEval {
         DatasetGraph dsg = DatasetGraphZero.create();
         Dataset ds = DatasetFactory.wrap(dsg);
         try ( QueryExecution qExec = QueryExecutionFactory.create(query, ds) ) {
-            JsonValue jvGot = qExec.execJson() ;
-            JsonValue jvExpected = JSON.parseAny(jsonExpected) ;
+            JsonValue jvGot = qExec.execJson();
+            JsonValue jvExpected = JSON.parseAny(jsonExpected);
             assertEquals(jvExpected, jvGot);
         }
     }

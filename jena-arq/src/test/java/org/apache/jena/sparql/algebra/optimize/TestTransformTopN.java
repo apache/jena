@@ -20,9 +20,10 @@ package org.apache.jena.sparql.algebra.optimize;
 
 import static org.apache.jena.sparql.algebra.optimize.TransformTests.testOp;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.sparql.algebra.Transform;
-import org.junit.Test;
 
 public class TestTransformTopN {
     public TestTransformTopN() {}

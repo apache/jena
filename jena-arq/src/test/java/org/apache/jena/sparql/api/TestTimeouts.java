@@ -18,44 +18,47 @@
 
 package org.apache.jena.sparql.api;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.sparql.engine.Timeouts;
 import org.apache.jena.sparql.engine.Timeouts.Timeout;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class TestTimeouts {
     @Test
     public void testUnset() {
         Timeout timeout = roundtrip(Timeout.UNSET);
         String str = Timeouts.toString(timeout);
-        Assert.assertNull(str);
+        assertNull(str);
     }
 
     @Test
     public void testInitialTimeout() {
         Timeout timeout = roundtrip(new Timeout(6, -1));
         String str = Timeouts.toString(timeout);
-        Assert.assertEquals("6,-1", str);
+        assertEquals("6,-1", str);
     }
 
     @Test
     public void testOverallTimeout() {
         Timeout timeout = roundtrip(new Timeout(-1, 6));
         String str = Timeouts.toString(timeout);
-        Assert.assertEquals("6", str);
+        assertEquals("6", str);
     }
 
     @Test
     public void testInitialAndOverallTimeout() {
         Timeout timeout = roundtrip(new Timeout(6, 6));
         String str = Timeouts.toString(timeout);
-        Assert.assertEquals("6,6", str);
+        assertEquals("6,6", str);
     }
 
     public static Timeout roundtrip(Timeout timeout) {
         Object obj = Timeouts.toContextValue(timeout);
         Timeout result = Timeouts.parseTimeout(obj);
-        Assert.assertEquals(timeout, result);
+        assertEquals(timeout, result);
         return result;
     }
 }

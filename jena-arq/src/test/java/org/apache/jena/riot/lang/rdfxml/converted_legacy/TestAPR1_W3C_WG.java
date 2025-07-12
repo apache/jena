@@ -22,7 +22,7 @@ import static org.apache.jena.riot.lang.rdfxml.converted_legacy.LibTestARP1.nega
 import static org.apache.jena.riot.lang.rdfxml.converted_legacy.LibTestARP1.positiveTest;
 import static org.apache.jena.riot.lang.rdfxml.converted_legacy.LibTestARP1.warningTest;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * The ARP test suite run on a local legacy copy of the RDF 1.0 WG test suite

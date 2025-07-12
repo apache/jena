@@ -21,6 +21,6 @@ package org.apache.jena.sparql.core;
 public class TestDatasetGraphBaseFind_Mem extends AbstractDatasetGraphFind {
     @Override
     public DatasetGraph create() {
-        return DatasetGraphFactory.create() ;
+        return DatasetGraphFactory.create();
     }
 }

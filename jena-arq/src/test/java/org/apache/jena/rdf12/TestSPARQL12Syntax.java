@@ -170,21 +170,21 @@ public class TestSPARQL12Syntax {
      * The fragment is wrapped in prefixes and {@code "SELECT * "}.
      */
     private void testSyntaxFragmentBad(String queryFragment) {
-        assertThrows(QueryParseException.class, ()->execFragment(TEST.BAD, null, queryFragment, false));
+        assertThrows(QueryParseException.class, ()->execFragment(Outcome.BAD, null, queryFragment, false));
     }
 
     /** Test a query fragment. The fragment is wrapped in prefixes and {@code "SELECT * "}. */
     private void testSyntaxFragment(String queryFragment) {
-        execFragment(TEST.GOOD, null, queryFragment, false);
+        execFragment(Outcome.GOOD, null, queryFragment, false);
     }
 
     /** Test a complete query string. Prefixes are prepended.*/
     private void testSyntaxQuery(String queryString) {
         String qs = PREFIXES+"\n"+queryString;
-        testSPARQLSyntax(TEST.GOOD, null, qs, false);
+        testSPARQLSyntax(Outcome.GOOD, null, qs, false);
     }
 
-    private void execFragment(TEST testType, String label, String queryFragment, boolean verbose) {
+    private void execFragment(Outcome testType, String label, String queryFragment, boolean verbose) {
         String qs = PREFIXES+"\nSELECT * "+queryFragment+"\n";
         testSPARQLSyntax(testType, label, qs, verbose);
     }

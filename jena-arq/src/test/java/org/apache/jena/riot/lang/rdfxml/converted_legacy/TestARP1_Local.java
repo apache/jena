@@ -20,7 +20,7 @@ package org.apache.jena.riot.lang.rdfxml.converted_legacy;
 
 import static org.apache.jena.riot.lang.rdfxml.converted_legacy.LibTestARP1.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests from the jena-core ARP test suite, local tests.

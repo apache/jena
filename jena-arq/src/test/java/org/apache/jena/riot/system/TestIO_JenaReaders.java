@@ -17,22 +17,23 @@
  */
 package org.apache.jena.riot.system;
 
-import static org.junit.Assert.assertEquals ;
-import static org.junit.Assert.assertNotEquals ;
-import static org.junit.Assert.fail ;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.apache.jena.rdf.model.RDFReaderF ;
-import org.apache.jena.rdf.model.impl.RDFReaderFImpl ;
-import org.apache.jena.riot.IO_Jena ;
-import org.apache.jena.riot.adapters.RDFReaderRIOT ;
-import org.apache.jena.shared.NoReaderForLangException ;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.rdf.model.RDFReaderF;
+import org.apache.jena.rdf.model.impl.RDFReaderFImpl;
+import org.apache.jena.riot.IO_Jena;
+import org.apache.jena.riot.adapters.RDFReaderRIOT;
+import org.apache.jena.shared.NoReaderForLangException;
 
 public class TestIO_JenaReaders {
-    @BeforeClass public static void beforeClass() { }
-    @AfterClass public static void afterClass()   { IO_Jena.wireIntoJena(); }
+    @BeforeAll public static void beforeClass() { }
+    @AfterAll public static void afterClass()   { IO_Jena.wireIntoJena(); }
 
     @Test
     public void wireIntoJena() {
@@ -67,9 +68,9 @@ public class TestIO_JenaReaders {
         assertNotEquals(RDFReaderRIOT.class, readerF.getReader("N-Triples").getClass());
         assertNotEquals(RDFReaderRIOT.class, readerF.getReader("N-TRIPLE").getClass());
 
-        try { readerF.getReader("NT")      ; fail("Exception expected") ; } catch (NoReaderForLangException e) {}
-        try { readerF.getReader("JSON_LD") ; fail("Exception expected") ; } catch (NoReaderForLangException e) {}
-        try { readerF.getReader("RDF/JSON"); fail("Exception expected") ; } catch (NoReaderForLangException e) {}
+        try { readerF.getReader("NT")     ; fail("Exception expected"); } catch (NoReaderForLangException e) {}
+        try { readerF.getReader("JSON_LD"); fail("Exception expected"); } catch (NoReaderForLangException e) {}
+        try { readerF.getReader("RDF/JSON"); fail("Exception expected"); } catch (NoReaderForLangException e) {}
 
         IO_Jena.wireIntoJena();
     }

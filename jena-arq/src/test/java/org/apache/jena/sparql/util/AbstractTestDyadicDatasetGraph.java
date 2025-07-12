@@ -19,10 +19,9 @@
 package org.apache.jena.sparql.util;
 
 import static org.apache.jena.sparql.core.DatasetGraphFactory.createTxnMem;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -31,7 +30,6 @@ import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphZero;
-import org.junit.Test;
 
 public abstract class AbstractTestDyadicDatasetGraph {
 
@@ -41,94 +39,111 @@ public abstract class AbstractTestDyadicDatasetGraph {
         return testInstance(createTxnMem(), createTxnMem(), Context.emptyContext());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void nullDatasetGraphsNotAllowed() {
-        testInstance(null, null, Context.emptyContext());
+		assertThrows(NullPointerException.class,
+					 ()-> testInstance(null, null, Context.emptyContext()));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void nullContextNotAllowed() {
-        testInstance(DatasetGraphZero.create(), DatasetGraphZero.create(), null);
+		assertThrows(NullPointerException.class,
+					 ()-> testInstance(DatasetGraphZero.create(), DatasetGraphZero.create(), null));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void noAddingQuads() {
-        emptyDsg().add(null);
+		assertThrows(UnsupportedOperationException.class,
+					 ()-> emptyDsg().add(null));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void noAddingQuads2() {
-        emptyDsg().add(null, null, null, null);
+		assertThrows(UnsupportedOperationException.class,
+					 ()-> emptyDsg().add(null, null, null, null));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void noDeletingQuads() {
-        emptyDsg().delete(null);
+		assertThrows(UnsupportedOperationException.class,
+					 ()-> emptyDsg().delete(null));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void noDeletingQuads2() {
-        emptyDsg().delete(null, null, null, null);
+		assertThrows(UnsupportedOperationException.class,
+					 ()-> emptyDsg().delete(null, null, null, null));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void noDeletingAnyQuads() {
-        emptyDsg().deleteAny(null, null, null, null);
+		assertThrows(UnsupportedOperationException.class,
+					 ()-> emptyDsg().deleteAny(null, null, null, null));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void noAddingGraphs() {
-        emptyDsg().addGraph(null, null);
+		assertThrows(UnsupportedOperationException.class,
+					 ()-> emptyDsg().addGraph(null, null));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void noDeletingGraphs() {
-        emptyDsg().removeGraph(null);
+		assertThrows(UnsupportedOperationException.class,
+					 ()-> emptyDsg().removeGraph(null));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void noClearing() {
-        emptyDsg().clear();
+		assertThrows(UnsupportedOperationException.class,
+					 ()-> emptyDsg().clear());
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void noAddingToDefaultGraph() {
-        emptyDsg().getDefaultGraph().add(null);
+		assertThrows(UnsupportedOperationException.class,
+					 ()-> emptyDsg().getDefaultGraph().add(null));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void noDeletingFromDefaultGraph() {
-        emptyDsg().getDefaultGraph().delete(null);
+		assertThrows(UnsupportedOperationException.class,
+					 ()-> emptyDsg().getDefaultGraph().delete(null));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void noAddingToANamedGraph() {
         Node graphName = NodeFactory.createBlankNode();
-        emptyDsg().getGraph(graphName).add(null);
+        assertThrows(UnsupportedOperationException.class,
+					 ()-> emptyDsg().getGraph(graphName).add(null));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void noDeletingFromANamedGraph() {
-        Node graphName = NodeFactory.createBlankNode();
-        emptyDsg().getGraph(graphName).delete(null);
+		Node graphName = NodeFactory.createBlankNode();
+		assertThrows(UnsupportedOperationException.class,
+					 ()->   emptyDsg().getGraph(graphName).delete(null));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void noClearingDefaultGraph() {
-        emptyDsg().getDefaultGraph().clear();
+		assertThrows(UnsupportedOperationException.class,
+					 ()-> emptyDsg().getDefaultGraph().clear());
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void noClearingANamedGraph() {
+    @Test
+    public void noClearingNamedGraph() {
         Node graphName = NodeFactory.createBlankNode();
-        emptyDsg().getGraph(graphName).clear();
+        assertThrows(UnsupportedOperationException.class, ()->
+            emptyDsg().getGraph(graphName).clear());
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void noRemovingFromANamedGraph() {
+    @Test
+    public void noRemovingFromNamedGraph() {
         Node graphName = NodeFactory.createBlankNode();
-        emptyDsg().getGraph(graphName)
-        .remove(null, null, null);
+        assertThrows(UnsupportedOperationException.class, ()->
+            emptyDsg().getGraph(graphName)
+            .remove(null, null, null));
     }
 
     // Read lifecycle.
@@ -162,24 +177,28 @@ public abstract class AbstractTestDyadicDatasetGraph {
         dsg.end();
     }
 
-    @Test(expected = JenaTransactionException.class)
+    @Test
     public void noWriting1() {
-        emptyDsg().begin(ReadWrite.WRITE);
+		assertThrows(JenaTransactionException.class,
+					 ()-> emptyDsg().begin(ReadWrite.WRITE));
     }
 
-    @Test(expected = JenaTransactionException.class)
+    @Test
     public void noWriting2() {
-        emptyDsg().begin(TxnType.WRITE);
+		assertThrows(JenaTransactionException.class,
+					 ()-> emptyDsg().begin(TxnType.WRITE));
     }
 
-    @Test(expected = JenaTransactionException.class)
+    @Test
     public void noWriting3() {
-        emptyDsg().begin(TxnType.READ_PROMOTE);
+		assertThrows(JenaTransactionException.class,
+					 ()-> emptyDsg().begin(TxnType.READ_PROMOTE));
     }
 
-    @Test(expected = JenaTransactionException.class)
+    @Test
     public void noWriting4() {
-        emptyDsg().begin(TxnType.READ_COMMITTED_PROMOTE);
+		assertThrows(JenaTransactionException.class,
+					 ()-> emptyDsg().begin(TxnType.READ_COMMITTED_PROMOTE));
     }
 
     @Test

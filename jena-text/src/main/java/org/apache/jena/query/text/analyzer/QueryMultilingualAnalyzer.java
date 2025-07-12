@@ -24,7 +24,7 @@ import org.apache.lucene.analysis.DelegatingAnalyzerWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** 
+/**
  * Lucene Analyzer implementation that delegates to a language-specific
  * Analyzer based on a field name suffix: e.g. field="label_en" will use
  * an EnglishAnalyzer.
@@ -53,7 +53,7 @@ public class QueryMultilingualAnalyzer extends DelegatingAnalyzerWrapper {
      * is used to retrieve the analyzer to use regardless of the tag on the
      * fieldName. If no langTag is supplied then the tag on fieldName is
      * used to retrieve the analyzer as with the MultilingualAnalyzer
-     * 
+     *
      * @param fieldName
      * @return the analyzer to use in the search
      */
@@ -62,9 +62,9 @@ public class QueryMultilingualAnalyzer extends DelegatingAnalyzerWrapper {
         if (idx == -1) { // not language-specific, e.g. "label"
             return defaultAnalyzer;
         }
-        String lang = ObjectUtils.defaultIfNull(langTag, fieldName.substring(idx+1));
+        String lang = ObjectUtils.getIfNull(langTag, fieldName.substring(idx+1));
         Analyzer analyzer = Util.getLocalizedAnalyzer(lang);
-        analyzer = ObjectUtils.defaultIfNull(analyzer, defaultAnalyzer);
+        analyzer = ObjectUtils.getIfNull(analyzer, defaultAnalyzer);
         log.trace("getWrappedAnalyzer langTag: {}, fieldName: {}, analyzer: {}", langTag, fieldName, analyzer);
         return analyzer;
     }

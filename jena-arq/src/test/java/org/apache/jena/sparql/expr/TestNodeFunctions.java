@@ -18,9 +18,9 @@
 
 package org.apache.jena.sparql.expr;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
@@ -84,20 +84,22 @@ public class TestNodeFunctions {
         assertTrue(NodeFunctions.rdfTermEquals(n1, n2));
     }
 
-    @Test(expected=ExprEvalException.class)
+    @Test
     public void testRDFtermEquals3() {
         // Unextended - not known to be same (no language tag support).
         Node n1 = NodeFactory.createLiteralString("xyz");
         Node n2 = NodeFactory.createLiteralLang("xyz", "en");
-        NodeFunctions.rdfTermEquals(n1, n2);
+        assertThrows(ExprEvalException.class,
+                     ()-> NodeFunctions.rdfTermEquals(n1, n2) );
     }
 
-    @Test(expected=ExprEvalException.class)
+    @Test
     public void testRDFtermEquals4() {
         // Unextended - not known to be same.
         Node n1 = NodeFactory.createLiteralDT("123", XSDDatatype.XSDinteger);
         Node n2 = NodeFactory.createLiteralDT("456", XSDDatatype.XSDinteger);
-        assertTrue(NodeFunctions.rdfTermEquals(n1, n2));
+        assertThrows(ExprEvalException.class,
+                     ()-> assertTrue(NodeFunctions.rdfTermEquals(n1, n2)) );
     }
 
     @Test
@@ -114,19 +116,20 @@ public class TestNodeFunctions {
         assertFalse(NodeFunctions.rdfTermEquals(n1, n2));
     }
 
-    @Test(expected=ExprEvalException.class)
+    @Test
     public void testRDFtermEquals7() {
         Node n1 = SSE.parseNode("<<(:s :p <<(:a :b 'abc')>>)>>");
         Node n2 = SSE.parseNode("<<(:s :p <<(:a :b 123)>>)>>");
-        NodeFunctions.rdfTermEquals(n1, n2);
+        assertThrows(ExprEvalException.class,
+                     ()-> NodeFunctions.rdfTermEquals(n1, n2) );
     }
 
-    @Test(expected=ExprEvalException.class)
+    @Test
     public void testRDFtermEquals8() {
         Node n1 = SSE.parseNode("<<(:s :p 123)>>");
         Node n2 = SSE.parseNode("<<(:s :p 'xyz')>>");
-        assertFalse(NodeFunctions.rdfTermEquals(n1, n2));
-        assertFalse(NodeFunctions.rdfTermEquals(n2, n1));
+        assertThrows(ExprEvalException.class,
+                     ()-> assertFalse(NodeFunctions.rdfTermEquals(n2, n1)) );
     }
 
     @Test
@@ -215,16 +218,18 @@ public class TestNodeFunctions {
         assertEquals(e, r);
     }
 
-    @Test(expected=ExprTypeException.class)
+    @Test
     public void testDatatype5() {
         NodeValue nv = NodeValue.makeNode(NodeFactory.createURI("http://example"));
-        NodeValue r = NodeFunctions.datatype(nv);
+        assertThrows(ExprTypeException.class,
+                     ()-> NodeFunctions.datatype(nv) );
     }
 
-    @Test(expected=ExprTypeException.class)
+    @Test
     public void testDatatype6() {
         NodeValue nv = NodeValue.makeNode(NodeFactory.createBlankNode());
-        NodeValue r = NodeFunctions.datatype(nv);
+        assertThrows(ExprTypeException.class,
+                     ()-> NodeFunctions.datatype(nv) );
     }
 
     @Test public void testLang1() {
@@ -254,12 +259,12 @@ public class TestNodeFunctions {
         assertEquals(e, r);
     }
 
-    @Test(expected=ExprTypeException.class)
+    @Test
     public void testLang5() {
         NodeValue nv = NodeValue.makeNode(NodeFactory.createURI("http://example/"));
-        NodeValue r = NodeFunctions.lang(nv);
+        assertThrows(ExprTypeException.class,
+                     ()-> NodeFunctions.lang(nv) );
     }
-
 
     @Test public void testDirLang1() {
         Node n = NodeFactory.createLiteralDirLang("abc",  "en", TextDirection.LTR);

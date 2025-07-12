@@ -18,14 +18,13 @@
 
 package org.apache.jena.riot.adapters;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses({
       TestFileManager.class
 })
-
 
 public class TS_RIOTAdapters
 {}

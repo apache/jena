@@ -21,14 +21,15 @@ package org.apache.jena.sparql.util.compose;
 import static org.apache.jena.graph.NodeFactory.createBlankNode;
 import static org.apache.jena.rdf.model.ModelFactory.createModelForGraph;
 import static org.apache.jena.sparql.sse.SSE.parseGraph;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
-import org.junit.Test;
 
 public class TestIntersectionDatasetCollector extends AbstractTestDatasetCollector {
 
@@ -51,10 +52,10 @@ public class TestIntersectionDatasetCollector extends AbstractTestDatasetCollect
         final String graphName3 = createBlankNode().toString();
         ds1.addNamedModel(graphName3, m3);
         ds2.addNamedModel(graphName3, m3);
-        
+
         final Stream<Dataset> stream = Stream.<Dataset>builder().add(ds1).add(ds2).build();
         Dataset ds = stream.collect(testInstance());
-        
+
         assertTrue(ds.getDefaultModel().isEmpty());
         assertTrue(ds.getNamedModel(graphName1).isEmpty());
         assertTrue(ds.getNamedModel(graphName2).isEmpty());

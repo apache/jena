@@ -18,40 +18,42 @@
 
 package org.apache.jena.sparql.core;
 
-import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.sparql.sse.SSE ;
-import static org.junit.Assert.*  ;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
 
-public class TestDatasetGraphLink extends AbstractDatasetGraphTests 
+import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.sparql.sse.SSE;
+
+public class TestDatasetGraphLink extends AbstractDatasetGraphTests
 {
     @Override
-    protected DatasetGraph emptyDataset() { return DatasetGraphFactory.createGeneral() ; }
+    protected DatasetGraph emptyDataset() { return DatasetGraphFactory.createGeneral(); }
 
     // Change the graph after adding should affect the linked graph.
     // c.f. TestDatasetGraphCopyAdd.copyAdd_01
     @Test public void linkAdd_01() {
-        Graph graph = SSE.parseGraph("(graph (:s :p :o))") ;
-        Node g = SSE.parseNode(":g") ;
-        DatasetGraph dsg = emptyDataset() ;
+        Graph graph = SSE.parseGraph("(graph (:s :p :o))");
+        Node g = SSE.parseNode(":g");
+        DatasetGraph dsg = emptyDataset();
         dsg.addGraph(g, graph);
-        graph.clear(); 
-        assertTrue(graph.isEmpty()) ;
-        assertTrue(dsg.getGraph(g).isEmpty()) ;
+        graph.clear();
+        assertTrue(graph.isEmpty());
+        assertTrue(dsg.getGraph(g).isEmpty());
     }
-    
+
     // Empty graphs are visiable.
     @Override
     @Test public void emptyGraph_1() { }
-    @Test public void emptyGraph_1_link() { 
-        DatasetGraph dsg = emptyDataset() ;
-        Node gn = NodeFactory.createURI("http://example/g") ;
+    @Test public void emptyGraph_1_link() {
+        DatasetGraph dsg = emptyDataset();
+        Node gn = NodeFactory.createURI("http://example/g");
         Quad q = SSE.parseQuad("(:g :s :p :o)");
         dsg.add(q);
         List<Node> nodes1 = Iter.toList(dsg.listGraphNodes());
@@ -66,13 +68,13 @@ public class TestDatasetGraphLink extends AbstractDatasetGraphTests
     @Override
     @Test public void emptyGraph_2() { }
     @Test public void emptyGraph_2_link() {
-        DatasetGraph dsg = emptyDataset() ;
-        Node gn = NodeFactory.createURI("http://example/g") ;
+        DatasetGraph dsg = emptyDataset();
+        Node gn = NodeFactory.createURI("http://example/g");
         Quad q = SSE.parseQuad("(:g :s :p :o)");
-        
+
         dsg.add(q);
         assertTrue(dsg.containsGraph(gn));
-        
+
         // Variation on emptyGraph_2
         dsg.delete(q);
         assertTrue(dsg.containsGraph(gn));

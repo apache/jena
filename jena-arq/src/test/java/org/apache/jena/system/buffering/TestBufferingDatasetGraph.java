@@ -18,12 +18,18 @@
 
 package org.apache.jena.system.buffering;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import org.apache.jena.atlas.lib.Creator;
 import org.apache.jena.sparql.JenaTransactionException;
@@ -31,18 +37,13 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
-@RunWith(Parameterized.class)
+
+@ParameterizedClass
+@MethodSource("provideArgs")
 public class TestBufferingDatasetGraph {
 
-    @Parameters(name = "{index}: {0}")
-    public static Iterable<Object[]> data() {
-        List<Object[]> x = new ArrayList<>() ;
-
+    public static Stream<Arguments> provideArgs() {
         Creator<DatasetGraph> baseMem = ()->DatasetGraphFactory.createTxnMem();
         //Creator<DatasetGraph> baseTDB1 = ()->TDBFactory.createDatasetGraph();
         //Creator<DatasetGraph> baseTDB2 = ()->DatabaseMgr.createDatasetGraph();
@@ -52,18 +53,16 @@ public class TestBufferingDatasetGraph {
 
         // Quads needs the txn machinery from normal.
 
-        x.add(new Object[] {"DatasetGraphBuffering(TIM)", baseMem, buffering});
-        //x.add(new Object[] {"DatasetGraphBuffering(TIM) Quads", baseMem, bufferingQuads});
-
-        // [BUFFERING]
-
+        List<Arguments> x = List.of
+                (Arguments.of("DatasetGraphBuffering(TIM)", baseMem, buffering)
+                 //Arguments.of("DatasetGraphBuffering(TIM) Quads", baseMem, bufferingQuads)
 //        x.add(new Object[] {"DatasetGraphBuffering(TDB1)", baseTDB1, buffering});
 //        //x.add(new Object[] {"DatasetGraphBuffering(TDB1) Quads", baseTDB1, bufferingQuads});
 //
 //        x.add(new Object[] {"DatasetGraphBuffering(TDB2)", baseTDB2, buffering});
 //        //x.add(new Object[] {"DatasetGraphBuffering(TDB2) Quads", baseTDB2, bufferingQuads});
-
-        return x ;
+                        );
+        return x.stream() ;
     }
 
     private final DatasetGraph base;
@@ -169,15 +168,14 @@ public class TestBufferingDatasetGraph {
         });
     }
 
-    @Test(expected=JenaTransactionException.class)
+    @Test
     public void buffered_4() {
         Quad q1 = SSE.parseQuad("(:g :s :p 1)");
         Quad q2 = SSE.parseQuad("(:g :s :p 2)");
 
-        // Not promotable. Read then attempt to update.
         base.executeRead(()->{
             buffered.add(q2);
-            buffered.flush();
+            assertThrows(JenaTransactionException.class, ()->buffered.flush());
         });
     }
 

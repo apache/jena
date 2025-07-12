@@ -18,12 +18,14 @@
 
 package org.apache.jena.riot.protobuf;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.StrUtils;
@@ -37,7 +39,6 @@ import org.apache.jena.sparql.resultset.ResultsCompare;
 import org.apache.jena.sparql.sse.Item;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.sse.builders.BuilderRowSet;
-import org.junit.Test;
 
 public class TestProtobufResultSet {
     // Only datatypes that are transmitted perfectly.
@@ -51,7 +52,7 @@ public class TestProtobufResultSet {
          , "   (row (?x 2) (?y 10))"
          , "   (row (?x 2) (?y <<(_:a :p :o)>>))"
          , ")"
-         ) ;
+         );
 
     static ResultSetRewindable rs1 = make
         ("(resultset (?x ?y)"
@@ -59,64 +60,64 @@ public class TestProtobufResultSet {
          , "   (row (?x 1) (?y 'a'))"
          , "   (row (?x 2) (?y <<(:s :p :o)>>))"
          , ")"
-         ) ;
+         );
     static ResultSetRewindable rs2 = make
         ("(resultset (?x ?y)"
          , "   (row (?x 1) (?y 'a'))"
          , "   (row (?x 2) (?y <<(:s :p :o)>>))"
          , "   (row (?x 1) (?y 3))"
          , ")"
-         ) ;
+         );
 
-    @Test public void resultSet_01() { test(rs0) ; }
+    @Test public void resultSet_01() { test(rs0); }
 
     @Test public void resultSet_02() {
-        ResultSetRewindable r1 = test(rs1) ;
+        ResultSetRewindable r1 = test(rs1);
         // not reordered
         r1.reset();
-        rs2.reset() ;
-        assertFalse(ResultsCompare.equalsByTermAndOrder(r1, rs2)) ;
-        rs2.reset() ;
+        rs2.reset();
+        assertFalse(ResultsCompare.equalsByTermAndOrder(r1, rs2));
+        rs2.reset();
     }
 
     @Test public void resultSet_03() {
-        ResultSetRewindable r2 = test(rs2) ;
+        ResultSetRewindable r2 = test(rs2);
         // not reordered
         r2.reset();
-        rs1.reset() ;
-        assertFalse(ResultsCompare.equalsByTermAndOrder(r2, rs1)) ;
-        rs1.reset() ;
+        rs1.reset();
+        assertFalse(ResultsCompare.equalsByTermAndOrder(r2, rs1));
+        rs1.reset();
     }
 
     private static ResultSetRewindable test(ResultSetRewindable resultSet) {
         resultSet.reset();
-        ByteArrayOutputStream out = new ByteArrayOutputStream() ;
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
         ResultSetFormatter.output(out, resultSet, ResultSetLang.RS_Protobuf);
         resultSet.reset();
 
-        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
-        RowSet rs$ = ProtobufRDF.readRowSet(in) ;
-        ResultSetRewindable resultSet2 = ResultSetFactory.makeRewindable(rs$) ;
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+        RowSet rs$ = ProtobufRDF.readRowSet(in);
+        ResultSetRewindable resultSet2 = ResultSetFactory.makeRewindable(rs$);
         // Includes bnode labels.
-        ResultsCompare.equalsExact(resultSet, resultSet2) ;
+        ResultsCompare.equalsExact(resultSet, resultSet2);
         resultSet.reset();
         resultSet2.reset();
-        return resultSet2 ;
+        return resultSet2;
     }
 
     private static ResultSetRewindable make(String ... strings) {
-        String s = StrUtils.strjoinNL(strings) ;
-        Item item = SSE.parse(s) ;
-        ResultSetRewindable rs = ResultSetFactory.makeRewindable(BuilderRowSet.build(item)) ;
-        return rs ;
+        String s = StrUtils.strjoinNL(strings);
+        Item item = SSE.parse(s);
+        ResultSetRewindable rs = ResultSetFactory.makeRewindable(BuilderRowSet.build(item));
+        return rs;
     }
 
-    private static final String DIR = TS_RDFProtobuf.TestingDir ;
+    private static final String DIR = TS_RDFProtobuf.TestingDir;
 
     @Test public void resultSet_10() {
         try (InputStream in = IO.openFile(DIR+"/results-1.srj")) {
-            ResultSet rs = ResultSetFactory.fromJSON(in) ;
-            test(ResultSetFactory.copyResults(rs)) ;
-        } catch (IOException ex) { IO.exception(ex) ; }
+            ResultSet rs = ResultSetFactory.fromJSON(in);
+            test(ResultSetFactory.copyResults(rs));
+        } catch (IOException ex) { IO.exception(ex); }
     }
 }

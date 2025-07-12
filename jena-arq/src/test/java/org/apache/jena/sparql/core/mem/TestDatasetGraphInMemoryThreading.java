@@ -18,19 +18,21 @@
 
 package org.apache.jena.sparql.core.mem;
 
-import static org.apache.jena.graph.NodeFactory.createBlankNode ;
-import static org.apache.jena.query.ReadWrite.READ ;
-import static org.apache.jena.query.ReadWrite.WRITE ;
-import static org.awaitility.Awaitility.await ;
-import static org.junit.Assert.*;
-import static org.slf4j.LoggerFactory.getLogger ;
+import static org.apache.jena.graph.NodeFactory.createBlankNode;
+import static org.apache.jena.query.ReadWrite.READ;
+import static org.apache.jena.query.ReadWrite.WRITE;
+import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.slf4j.LoggerFactory.getLogger;
 
-import java.util.concurrent.atomic.AtomicBoolean ;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
 
-import org.apache.jena.sparql.core.Quad ;
-import org.slf4j.Logger ;
+import org.apache.jena.sparql.core.Quad;
+import org.slf4j.Logger;
 
 public class TestDatasetGraphInMemoryThreading {
 
@@ -157,6 +159,6 @@ public class TestDatasetGraphInMemoryThreading {
 		dsg.abort();
 		dsg.end(); // release the write lock to competitor
 		await().untilTrue(writeLockCaptured);
-		assertTrue("Lock was not handed over to waiting thread!", writeLockCaptured.get());
+		assertTrue(writeLockCaptured.get(), "Lock was not handed over to waiting thread!");
 	}
 }

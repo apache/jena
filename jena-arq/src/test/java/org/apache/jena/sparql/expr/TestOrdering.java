@@ -18,14 +18,15 @@
 
 package org.apache.jena.sparql.expr;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.NodeCmp;
-import org.junit.Test;
 
 /**
  * See also {@link TestComparison} and {@link TestSortOrdering}.
@@ -61,9 +62,9 @@ public class TestOrdering {
     @Test
     public void testComp_2_3() {
         int x = NodeValue.compareAlways(nvInt2, nvInt3);
-        assertTrue("2 should be value-less than 3", Expr.CMP_LESS == x);
+        assertTrue(Expr.CMP_LESS == x, ()->"2 should be value-less than 3");
         int y = NodeCmp.compareRDFTerms(nInt2, nInt3);
-        assertTrue("2 should be strict-less than 3", Expr.CMP_LESS == y);
+        assertTrue(Expr.CMP_LESS == y, ()->"2 should be strict-less than 3");
     }
 
     @Test
@@ -71,8 +72,8 @@ public class TestOrdering {
         int x = NodeValue.compareAlways(nvInt3, nvStr3);
         int y = NodeCmp.compareRDFTerms(nInt3, nStr3);
 
-        assertTrue("3 should be compareAlways greater than \"3\"", Expr.CMP_GREATER == x);
-        assertTrue("3 should be syntactic-greater than to \"3\"", Expr.CMP_GREATER == y);
+        assertTrue(Expr.CMP_GREATER == x, ()->"3 should be compareAlways greater than \"3\"");
+        assertTrue(Expr.CMP_GREATER == y, ()->"3 should be syntactic-greater than to \"3\"");
     }
 
     @Test
@@ -80,8 +81,8 @@ public class TestOrdering {
         int x = NodeValue.compareAlways(nvInt03, nvStr3);
         int y = NodeCmp.compareRDFTerms(nInt03, nStr3);
 
-        assertTrue("03 (typed) comes after string \"3\" (simple string)", Expr.CMP_GREATER == x);
-        assertTrue("03 should be syntactic-less than to \"3\"", Expr.CMP_GREATER == y);
+        assertTrue(Expr.CMP_GREATER == x, ()->"03 (typed) comes after string \"3\" (simple string)");
+        assertTrue(Expr.CMP_GREATER == y, ()->"03 should be syntactic-less than to \"3\"");
     }
 
     // Compare things of different types.
@@ -89,36 +90,36 @@ public class TestOrdering {
     public void testComp_int_double_1() {
         int x = NodeValue.compareAlways(nvInt10, nvDouble9);
         int y = NodeCmp.compareRDFTerms(nInt10, nDouble9);
-        assertTrue("Int 10 less than double 9", Expr.CMP_GREATER == x);
-        assertTrue("Int 10 less than double 9 in syntactic compare", Expr.CMP_LESS == y);
+        assertTrue(Expr.CMP_GREATER == x, ()->"Int 10 less than double 9");
+        assertTrue(Expr.CMP_LESS == y, ()->"Int 10 less than double 9 in syntactic compare");
     }
 
     @Test
     public void testComp_byte_double_1() {
         int x = NodeValue.compareAlways(nvByte10, nvDouble9);
         int y = NodeCmp.compareRDFTerms(nByte10, nDouble9);
-        assertTrue("Byte 10 less than double 9", Expr.CMP_GREATER == x);
-        assertTrue("Byte 10 greater than double 9 in non-value compare (dataype URIs compare)", Expr.CMP_LESS == y);
+        assertTrue(Expr.CMP_GREATER == x, ()->"Byte 10 less than double 9");
+        assertTrue(Expr.CMP_LESS == y, ()->"Byte 10 greater than double 9 in non-value compare (dataype URIs compare)");
     }
 
     @Test
     public void testComp_int_float_1() {
         int x = NodeValue.compareAlways(nvInt10, nvFloat8);
         int y = NodeCmp.compareRDFTerms(nInt10, nFloat8);
-        assertTrue("Int 10 less than float 8", Expr.CMP_GREATER == x);
-        assertTrue("Int 10 less than float 8 in syntatic compare", Expr.CMP_LESS == y);
+        assertTrue(Expr.CMP_GREATER == x, ()->"Int 10 less than float 8");
+        assertTrue(Expr.CMP_LESS == y, ()->"Int 10 less than float 8 in syntatic compare");
     }
 
     @Test
     public void testComp_int_posint_1() {
         int x = NodeValue.compareAlways(nvInt9, nvPosInt9);
-        assertTrue("Int 9 should be not equals to positive integer 9", Expr.CMP_EQUAL != x);
+        assertTrue(Expr.CMP_EQUAL != x, ()->"Int 9 should be not equals to positive integer 9");
     }
 
     @Test
     public void testComp_int_posint_2() {
         int x = NodeValue.compareAlways(nvInt10, nvPosInt9);
-        assertTrue("Int 10 not greater than positive integer 9", Expr.CMP_GREATER == x);
+        assertTrue(Expr.CMP_GREATER == x, ()->"Int 10 not greater than positive integer 9");
     }
 
     @Test
@@ -167,7 +168,7 @@ public class TestOrdering {
         NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteralString("abc"));
 
         int x = NodeCmp.compareRDFTerms(nv1.asNode(), nv2.asNode());
-        assertTrue("Lang tags should sort after plain literal", Expr.CMP_GREATER == x);
+        assertTrue(Expr.CMP_GREATER == x, ()->"Lang tags should sort after plain literal");
     }
 
     @Test
@@ -177,7 +178,7 @@ public class TestOrdering {
 
         // Jena5: same langtag (there are the same RDF term)
         int x = NodeCmp.compareRDFTerms(nv1.asNode(), nv2.asNode());
-        assertTrue("Lang tags should sort by case", Expr.CMP_EQUAL == x);
+        assertTrue(Expr.CMP_EQUAL == x, ()->"Lang tags should sort by case");
     }
 
     @Test
@@ -186,9 +187,9 @@ public class TestOrdering {
         NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteralLang("abc", "EN"));
 
         int x = NodeValue.compareAlways(nv1, nv2);
-        assertTrue("Lang nodes should sort by lexical if tags value-same", Expr.CMP_LESS == x);
+        assertTrue(Expr.CMP_LESS == x, ()->"Lang nodes should sort by lexical if tags value-same");
         int y = NodeCmp.compareRDFTerms(nv1.asNode(), nv2.asNode());
-        assertTrue("Lang nodes should sort by case (syntactically)", Expr.CMP_LESS == y);
+        assertTrue(Expr.CMP_LESS == y, ()->"Lang nodes should sort by case (syntactically)");
     }
 
     @Test
@@ -197,9 +198,9 @@ public class TestOrdering {
         NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteralLang("abc", "en"));
 
         int x = NodeValue.compareAlways(nv1, nv2);
-        assertTrue("Lang nodes should sort by lexical if tags the same", Expr.CMP_LESS == x);
+        assertTrue(Expr.CMP_LESS == x, ()->"Lang nodes should sort by lexical if tags the same");
         int y = NodeCmp.compareRDFTerms(nv1.asNode(), nv2.asNode());
-        assertTrue("Lang nodes should sort by lexical form if lang tags the same", Expr.CMP_LESS == x);
+        assertTrue(Expr.CMP_LESS == x, ()->"Lang nodes should sort by lexical form if lang tags the same");
     }
 
     @Test
@@ -208,7 +209,7 @@ public class TestOrdering {
         NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteralLang("xyz", "en"));
 
         int x = NodeValue.compareAlways(nv1, nv2);
-        assertTrue("Lang nodes should sort by lexical form if one is plain", Expr.CMP_LESS == x);
+        assertTrue(Expr.CMP_LESS == x, ()->"Lang nodes should sort by lexical form if one is plain");
         int y = NodeCmp.compareRDFTerms(nv1.asNode(), nv2.asNode());
         assertTrue(Expr.CMP_LESS == x);
     }
@@ -219,7 +220,7 @@ public class TestOrdering {
         NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteralLang("abc", "en"));
 
         int x = NodeValue.compareAlways(nv1, nv2);
-        assertTrue("Lang nodes should sort by language before lexical form", Expr.CMP_LESS == x);
+        assertTrue(Expr.CMP_LESS == x, ()->"Lang nodes should sort by language before lexical form");
         int y = NodeCmp.compareRDFTerms(nv1.asNode(), nv2.asNode());
         assertTrue(Expr.CMP_LESS == x);
     }
@@ -230,7 +231,7 @@ public class TestOrdering {
         NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteralLang("abc", "en"));
 
         int x = NodeValue.compareAlways(nv1, nv2);
-        assertTrue("Lang nodes should sort by language before lexical form", Expr.CMP_LESS == x);
+        assertTrue(Expr.CMP_LESS == x, ()->"Lang nodes should sort by language before lexical form");
         int y = NodeCmp.compareRDFTerms(nv1.asNode(), nv2.asNode());
         assertTrue(Expr.CMP_LESS == x);
     }
@@ -241,7 +242,7 @@ public class TestOrdering {
         NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteralLang("xyz", "en"));
 
         int x = NodeValue.compareAlways(nv1, nv2);
-        assertTrue("Lang nodes should sort by lexical form if other is XSD string", Expr.CMP_LESS == x);
+        assertTrue(Expr.CMP_LESS == x, ()->"Lang nodes should sort by lexical form if other is XSD string");
         int y = NodeCmp.compareRDFTerms(nv1.asNode(), nv2.asNode());
         assertTrue(Expr.CMP_LESS == x);
     }
@@ -252,7 +253,7 @@ public class TestOrdering {
         NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteralLang("abc", "en"));
         // xsd:string (RDF 1.1) is a simple string and before @en.
         int x = NodeValue.compareAlways(nv1, nv2);
-        assertTrue("Lang nodes should sort by lexical form if other is XSD string", Expr.CMP_LESS == x);
+        assertTrue(Expr.CMP_LESS == x, ()->"Lang nodes should sort by lexical form if other is XSD string");
         int y = NodeCmp.compareRDFTerms(nv1.asNode(), nv2.asNode());
         assertTrue(Expr.CMP_LESS == x);
     }
@@ -263,7 +264,7 @@ public class TestOrdering {
         Node y = NodeFactory.createVariable("x");
 
         int res = NodeCmp.compareRDFTerms(x, y);
-        assertTrue("Variable nodes should sort by variable names", Expr.CMP_EQUAL == res);
+        assertTrue(Expr.CMP_EQUAL == res, ()->"Variable nodes should sort by variable names");
     }
 
     @Test
@@ -272,9 +273,9 @@ public class TestOrdering {
         Node y = NodeFactory.createVariable("y");
 
         int res = NodeCmp.compareRDFTerms(x, y);
-        assertTrue("Variable nodes should sort by variable names", Expr.CMP_LESS == res);
+        assertTrue(Expr.CMP_LESS == res, ()->"Variable nodes should sort by variable names");
         res = NodeCmp.compareRDFTerms(y, x);
-        assertTrue("Variable nodes should sort by variable names", Expr.CMP_GREATER == res);
+        assertTrue(Expr.CMP_GREATER == res, ()->"Variable nodes should sort by variable names");
     }
 
     @Test
@@ -283,9 +284,9 @@ public class TestOrdering {
         Node y = NodeFactory.createBlankNode();
 
         int res = NodeCmp.compareRDFTerms(x, y);
-        assertTrue("Variable nodes should be less than blank nodes", Expr.CMP_LESS == res);
+        assertTrue(Expr.CMP_LESS == res, ()->"Variable nodes should be less than blank nodes");
         res = NodeCmp.compareRDFTerms(y, x);
-        assertTrue("Variable nodes should be less than blank nodes", Expr.CMP_GREATER == res);
+        assertTrue(Expr.CMP_GREATER == res, ()->"Variable nodes should be less than blank nodes");
     }
 
     @Test
@@ -294,9 +295,9 @@ public class TestOrdering {
         Node y = NodeFactory.createURI("http://uri");
 
         int res = NodeCmp.compareRDFTerms(x, y);
-        assertTrue("Variable nodes should be less than URI nodes", Expr.CMP_LESS == res);
+        assertTrue(Expr.CMP_LESS == res, ()->"Variable nodes should be less than URI nodes");
         res = NodeCmp.compareRDFTerms(y, x);
-        assertTrue("Variable nodes should be less than URI nodes", Expr.CMP_GREATER == res);
+        assertTrue(Expr.CMP_GREATER == res, ()->"Variable nodes should be less than URI nodes");
     }
 
     @Test
@@ -305,9 +306,9 @@ public class TestOrdering {
         Node y = NodeFactory.createLiteralString("test");
 
         int res = NodeCmp.compareRDFTerms(x, y);
-        assertTrue("Variable nodes should be less than literal nodes", Expr.CMP_LESS == res);
+        assertTrue(Expr.CMP_LESS == res, ()->"Variable nodes should be less than literal nodes");
         res = NodeCmp.compareRDFTerms(y, x);
-        assertTrue("Variable nodes should be less than literal nodes", Expr.CMP_GREATER == res);
+        assertTrue(Expr.CMP_GREATER == res, ()->"Variable nodes should be less than literal nodes");
     }
 
     @Test

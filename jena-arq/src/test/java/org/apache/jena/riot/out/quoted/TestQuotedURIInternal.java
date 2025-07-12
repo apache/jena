@@ -18,15 +18,17 @@
 
 package org.apache.jena.riot.out.quoted;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.function.BiConsumer;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.io.AWriter;
 import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.out.TestOutputQuotedURI;
-import org.junit.Test;
 
 /**
  * Tests for the different options in QuoteURI.
@@ -87,9 +89,11 @@ public class TestQuotedURIInternal {
         testQuotedURI("http://example/abc{}def", "http://example/abc%7B%7Ddef", QuotedURI::writePercentEncodedeBadChars);
     }
 
-    @Test(expected=RiotException.class)
+    @Test
     public void write_uri_71() {
-        testQuotedURI("http://example/abc def", "http://example/abc", QuotedURI::writeExceptionOnBadChar);
+        assertThrows(RiotException.class, ()->
+            testQuotedURI("http://example/abc def", "http://example/abc", QuotedURI::writeExceptionOnBadChar)
+        );
     }
 
     private static void testQuotedURI(String input, String expected, BiConsumer<AWriter, String> quoteOperation) {

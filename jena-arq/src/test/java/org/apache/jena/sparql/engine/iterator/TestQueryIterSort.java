@@ -18,18 +18,15 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.data.DataBagExaminer;
 import org.apache.jena.atlas.io.IndentedWriter;
@@ -59,7 +56,7 @@ public class TestQueryIterSort {
     private BindingComparator comparator;
     private CallbackIterator iterator;
 
-    @Before
+    @BeforeEach
     public void setup() {
         random = new Random();
         Var[] vars = new Var[]{
@@ -71,7 +68,7 @@ public class TestQueryIterSort {
             // @formatter:on
         };
         unsorted = new ArrayList<>();
-        for ( int i = 0 ; i < 500 ; i++ ) {
+        for ( int i = 0; i < 500; i++ ) {
             unsorted.add(randomBinding(vars));
         }
 
@@ -135,7 +132,7 @@ public class TestQueryIterSort {
         ExecutionContext ec = createExecutionContext(context);
         QueryIterSort qis = new QueryIterSort(iterator, comparator, ec);
         qis.close();
-        assertTrue("source iterator should have been closed", iterator.isClosed());
+        assertTrue(iterator.isClosed(), "source iterator should have been closed");
     }
 
     @Test
@@ -146,7 +143,7 @@ public class TestQueryIterSort {
         QueryIterSort qis = new QueryIterSort(iterator, comparator, ec);
         while (qis.hasNext())
             qis.next();
-        assertTrue("source iterator should have been closed", iterator.isClosed());
+        assertTrue(iterator.isClosed(), "source iterator should have been closed");
     }
 
     @Test
@@ -159,7 +156,7 @@ public class TestQueryIterSort {
                 qis.next();
             fail("query should have been cancelled by trigger");
         } catch (QueryCancelledException q) {
-            assertTrue("source iterator should have been closed", iterator.isClosed());
+            assertTrue(iterator.isClosed(), "source iterator should have been closed");
         }
     }
 
@@ -187,7 +184,7 @@ public class TestQueryIterSort {
         qIter.close();
     }
 
-    @Test(expected = QueryCancelledException.class)
+    @Test
     public void testCancelInterruptsInitialisation() {
 
         assertEquals(0, iterator.getReturnedElementCount());
@@ -198,8 +195,10 @@ public class TestQueryIterSort {
         try {
             assertEquals(0, iterator.getReturnedElementCount());
             assertEquals(0, DataBagExaminer.countTemporaryFiles(qIter.db));
+
             qIter.cancel();
-            qIter.hasNext();  // throws a QueryCancelledException
+            assertThrows(QueryCancelledException.class, ()->qIter.hasNext() ) ;
+
         } finally {
             assertTrue(iterator.isCanceled());
             assertEquals(0, iterator.getReturnedElementCount());
@@ -208,36 +207,39 @@ public class TestQueryIterSort {
         }
 
         assertEquals(0, DataBagExaminer.countTemporaryFiles(qIter.db));
+
     }
 
-    @Test(expected = QueryCancelledException.class)
+    @Test
     public void testCancelInterruptsExternalSortAfterStartingIteration() {
         assertEquals(0, iterator.getReturnedElementCount());
         Context context = new Context();
         context.set(ARQ.spillToDiskThreshold, 10L);
         ExecutionContext executionContext = createExecutionContext(context);
         QueryIterSort qIter = new QueryIterSort(iterator, comparator, executionContext);
-        try {
-            assertEquals(0, iterator.getReturnedElementCount());
-            assertEquals(0, DataBagExaminer.countTemporaryFiles(qIter.db));
-            qIter.hasNext();  // throws a QueryCancelledException
-        } catch (QueryCancelledException e) {
-            // expected
-            assertEquals(26, iterator.getReturnedElementCount());
-            // This is zero because QueryIteratorBase will call close() before
-            // throwing the QueryCancelledException.
-            // It does this as a failsafe in case the user doesn't close the
-            // QueryIterator themselves.
-            assertEquals(0, DataBagExaminer.countTemporaryFiles(qIter.db));
-            throw e;
-        } finally {
-            qIter.close();
-        }
 
+        assertThrows(QueryCancelledException.class, ()->{
+            try {
+                assertEquals(0, iterator.getReturnedElementCount());
+                assertEquals(0, DataBagExaminer.countTemporaryFiles(qIter.db));
+                qIter.hasNext();  // throws a QueryCancelledException
+            } catch (QueryCancelledException e) {
+                // expected
+                assertEquals(26, iterator.getReturnedElementCount());
+                // This is zero because QueryIteratorBase will call close() before
+                // throwing the QueryCancelledException.
+                // It does this as a failsafe in case the user doesn't close the
+                // QueryIterator themselves.
+                assertEquals(0, DataBagExaminer.countTemporaryFiles(qIter.db));
+                throw e;
+            } finally {
+                qIter.close();
+            }
+        });
         assertEquals(0, DataBagExaminer.countTemporaryFiles(qIter.db));
     }
 
-    @Test(expected = QueryCancelledException.class)
+    @Test
     public void testCancelInterruptsExternalSortAtStartOfIteration() {
         iterator = new CallbackIterator(unsorted.iterator(), 25, null);
         iterator.setCallback(() -> {});
@@ -251,10 +253,12 @@ public class TestQueryIterSort {
             assertEquals(49, DataBagExaminer.countTemporaryFiles(qIter.db));
             assertNotNull(qIter.next());
             assertTrue(qIter.hasNext());
+
             qIter.cancel();
-            qIter.hasNext();  // throws a QueryCancelledException
+            assertThrows(QueryCancelledException.class, ()->qIter.hasNext());
+
         } finally {
-            // assertTrue(iterator.isCanceled()) ;
+            // assertTrue(iterator.isCanceled());
             assertEquals(500, iterator.getReturnedElementCount());
             assertEquals(0, DataBagExaminer.countTemporaryFiles(qIter.db));
             qIter.close();
@@ -308,7 +312,7 @@ public class TestQueryIterSort {
 
     private String randomString(int length) {
         StringBuilder builder = new StringBuilder();
-        for ( int i = 0 ; i < length ; i++ ) {
+        for ( int i = 0; i < length; i++ ) {
             builder.append(LETTERS.charAt(random.nextInt(LETTERS.length())));
         }
         return builder.toString();

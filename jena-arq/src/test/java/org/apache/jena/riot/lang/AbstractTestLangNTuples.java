@@ -18,29 +18,31 @@
 
 package org.apache.jena.riot.lang;
 
-import static org.apache.jena.riot.system.ErrorHandlerFactory.errorHandlerNoLogging ;
-import static org.apache.jena.riot.system.ErrorHandlerFactory.getDefaultErrorHandler ;
-import static org.apache.jena.riot.system.ErrorHandlerFactory.setDefaultErrorHandler ;
-import static org.junit.Assert.assertEquals;
+import static org.apache.jena.riot.system.ErrorHandlerFactory.errorHandlerNoLogging;
+import static org.apache.jena.riot.system.ErrorHandlerFactory.getDefaultErrorHandler;
+import static org.apache.jena.riot.system.ErrorHandlerFactory.setDefaultErrorHandler;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.io.ByteArrayInputStream ;
+import java.io.ByteArrayInputStream;
 
-import org.apache.jena.atlas.lib.CharSpace ;
-import org.apache.jena.atlas.lib.StrUtils ;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.atlas.lib.CharSpace;
+import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExError;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning;
-import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RIOT;
 import org.apache.jena.riot.system.*;
-import org.apache.jena.riot.tokens.TokenizerTextBuilder;
-import org.apache.jena.riot.tokens.Tokenizer ;
+import org.apache.jena.riot.tokens.Tokenizer;
 import org.apache.jena.riot.tokens.TokenizerText;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
+import org.apache.jena.riot.tokens.TokenizerTextBuilder;
 
 /** Test of syntax by a tuples parser (does not include node validity checking) */
 abstract public class AbstractTestLangNTuples
@@ -49,13 +51,13 @@ abstract public class AbstractTestLangNTuples
 
     private static ErrorHandler errorhandler = null;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         errorhandler = getDefaultErrorHandler();
         setDefaultErrorHandler(errorHandlerNoLogging);
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         setDefaultErrorHandler(errorhandler);
     }
@@ -68,97 +70,96 @@ abstract public class AbstractTestLangNTuples
 
     @Test
     public void tuple_1() {
-        long count = parseCount("<x> <y> <z>.");
+        long count = parseCount("<http://example/x> <http://example/y> <http://example/z>.");
         assertEquals(1, count);
     }
 
     @Test
     public void tuple_2() {
-        long count = parseCount("<x> <y> \"z\".");
+        long count = parseCount("<http://example/x> <http://example/y> \"z\".");
         assertEquals(1, count);
     }
 
     @Test
     public void tuple_3() {
-        long count = parseCount("<x> <y> <z>. <x> <y> <z>.");
+        long count = parseCount("<http://example/x> <http://example/y> <http://example/z>. <http://example/x> <http://example/y> <http://example/z>.");
         assertEquals(2, count);
     }
 
     @Test
     public void tuple_4() {
-        long count = parseCount("<x> <y> \"123\"^^<int>.");
+        long count = parseCount("<http://example/x> <http://example/y> \"123\"^^<int>.");
         assertEquals(1, count);
     }
 
     @Test
     public void tuple_5() {
-        long count = parseCount("<x> <y> \"123\"@lang.");
+        long count = parseCount("<http://example/x> <http://example/y> \"123\"@lang.");
         assertEquals(1, count);
     }
 
     // Test parse errors interface.
-    @Test(expected = ExFatal.class)
+    @Test
     public void tuple_bad_01() {
-        parseCount("<x> <y> <z>");          // No DOT
+        parseException(ExFatal.class, "<http://example/x> <http://example/p> <http://example/z>");          // No DOT
     }
 
-    @Test(expected = ExFatal.class)
+    @Test
     public void tuple_bad_02() {
-        parseCount("<x> _:a <z> .");        // Bad predicate
+        parseException(ExFatal.class, "<http://example/x> _:a <http://example/z> .");        // Bad predicate
     }
 
-    @Test(expected = ExFatal.class)
+    @Test
     public void tuple_bad_03() {
-        parseCount("<x> \"p\" <z> .");      // Bad predicate
+        parseException(ExFatal.class, "<http://example/x> \"p\" <http://example/z> .");      // Bad predicate
     }
 
-    @Test(expected = ExFatal.class)
-    public void tuple_bad_4() {
-        parseCount("\"x\" <p> <z> .");      // Bad subject
+    @Test
+    public void tuple_bad_04() {
+        parseException(ExFatal.class, "\"x\" <http://example/p> <http://example/z> .");      // Bad subject -- fatal -- syntax error.
     }
 
-    @Test(expected = ExFatal.class)
-    public void tuple_bad_5() {
-        parseCount("<x> <p> ?var .");        // No variables
+    @Test
+    public void tuple_bad_05() {
+        parseException(ExFatal.class, "<http://example/x> <http://example/p> ?var .");        // No variables
     }
 
-    @Test(expected = ExFatal.class)
+    @Test
     public void tuple_bad_6() {
-        parseCount("<x> <p> 123 .");        // No abbreviations.
+        parseException(ExFatal.class, "<http://example/x> <http://example/p> 123 .");        // No abbreviations.
     }
 
-    @Test(expected = ExFatal.class)
+    @Test
     public void tuple_bad_7() {
-        parseCount("<x> <p> x:y .");        // No prefixed names
+        parseException(ExFatal.class, "<http://example/x> <http://example/p> x:y .");        // No prefixed names
     }
 
-    // Bad terms - but accepted by default.
-    @Test(expected = ExError.class)
+    @Test
     public void tuple_bad_10() {
-        parseCount("<x> <p> <bad uri> .");
+        parseException(ExFatal.class, "<http://example/x> <http://example/p> <http://example/bad uri> .");
     }
 
     // Bad terms (value range) - but legal syntax
     @Test
     public void tuple_bad_11() {
-        parseCount("<x> <p> \"9000\"^^<http://www.w3.org/2001/XMLSchema#byte> .");
+        parseCount("<http://example/x> <http://example/p> \"9000\"^^<http://www.w3.org/2001/XMLSchema#byte> .");
     }
 
     // Bad - relative URI.
-    @Test(expected = ExError.class)
+    @Test
     public void tuple_bad_21() {
-        parseCheck("<x> <p> <z> .");
+        parseException(ExError.class, "<http://example/x> <p> <http://example/z> .");
     }
 
     // Bad terms
-    @Test(expected = ExFatal.class)
+    @Test
     public void tuple_bad_22() {
-        parseCheck("<http://example/x> <http://example/p> \"abc\"^^<http://example/bad uri> .");
+        parseException(ExFatal.class, "<http://example/x> <http://example/p> \"abc\"^^<http://example/bad uri> .");
     }
 
-    @Test(expected = ExWarning.class)
+    @Test
     public void tuple_bad_23() {
-        parseCheck("<http://example/x> <http://example/p> \"9000\"^^<http://www.w3.org/2001/XMLSchema#byte> .");
+        parseException(ExWarning.class, "<http://example/x> <http://example/p> \"9000\"^^<http://www.w3.org/2001/XMLSchema#byte> .");
     }
 
     // ASCII vs UTF-8
@@ -193,15 +194,21 @@ abstract public class AbstractTestLangNTuples
         Tokenizer tokenizer = TokenizerText.create()
                 .source(in)
                 .errorHandler(ErrorHandlerFactory.errorHandlerExceptionOnError())
-                .build() ;
+                .build();
         return tokenizer;
     }
+
+    protected <T extends Throwable> T parseException(Class<T> exClass, String string) {
+        return assertThrows(exClass, ()->parseCheck(string));
+    }
+
+    protected abstract LangRIOT createLangRIOT(Tokenizer tokenizer, StreamRDF sink, ParserProfile profile);
 
     final protected void parseCheck(String... strings) {
         String string = String.join("\n", strings);
         Tokenizer tokenizer = tokenizer(string);
         StreamRDFCounting sink = StreamRDFLib.count();
-        LangRIOT x = IteratorParsers.createParserNQuads(tokenizer, sink, parserProfile(new ErrorHandlerEx()));
+        LangRIOT x = createLangRIOT(tokenizer, sink, parserProfile(new ErrorHandlerEx()));
         x.parse();
     }
 
@@ -209,7 +216,7 @@ abstract public class AbstractTestLangNTuples
         String string = String.join("\n", strings);
         Tokenizer tokenizer = tokenizer(charSpace, string);
         StreamRDFCounting sink = StreamRDFLib.count();
-        LangRIOT x = IteratorParsers.createParserNTriples(tokenizer, sink, parserProfile(new ErrorHandlerEx()));
+        LangRIOT x = createLangRIOT(tokenizer, sink, parserProfile(new ErrorHandlerEx()));
         x.parse();
         return sink.count();
     }
@@ -221,7 +228,7 @@ abstract public class AbstractTestLangNTuples
                                     IRIs.absoluteResolver(),
                                     PrefixMapFactory.emptyPrefixMap(),
                                     RIOT.getContext().copy(),
-                                    true, false) ;
+                                    true, false);
     }
 
     protected abstract Lang getLang();

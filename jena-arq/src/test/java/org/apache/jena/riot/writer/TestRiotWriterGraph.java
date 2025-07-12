@@ -18,78 +18,77 @@
 
 package org.apache.jena.riot.writer;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.Parameter;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.*;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
-@RunWith(Parameterized.class)
-public class TestRiotWriterGraph extends AbstractWriterTest
-{
-    @Parameters(name = "{index}: {0}")
-    public static Iterable<Object[]> data() {
-        return Arrays.asList(new Object[][] {
+@ParameterizedClass
+@MethodSource("provideArgs")
+public class TestRiotWriterGraph extends AbstractWriterTest {
 
-            { RDFFormat.RDFNULL }
+    private static Stream<Arguments> provideArgs() {
+        List<Arguments> x = List.of
+                (Arguments.of(RDFFormat.RDFNULL),
 
-            , { RDFFormat.NTRIPLES_UTF8 }
-            , { RDFFormat.NTRIPLES_ASCII }
-            , { RDFFormat.NTRIPLES }
-            , { RDFFormat.TURTLE }
-            , { RDFFormat.TURTLE_PRETTY }
-            , { RDFFormat.TURTLE_BLOCKS }
-            , { RDFFormat.TURTLE_FLAT }
-            , { RDFFormat.TURTLE_LONG }
-            , { RDFFormat.RDFXML }
-            , { RDFFormat.RDFXML_PRETTY }
-            , { RDFFormat.RDFXML_PLAIN }
+                 Arguments.of(RDFFormat.NTRIPLES_UTF8),
+                 Arguments.of(RDFFormat.NTRIPLES_ASCII),
+                 Arguments.of(RDFFormat.NTRIPLES),
+                 Arguments.of(RDFFormat.TURTLE),
+                 Arguments.of(RDFFormat.TURTLE_PRETTY),
+                 Arguments.of(RDFFormat.TURTLE_BLOCKS),
+                 Arguments.of(RDFFormat.TURTLE_FLAT),
+                 Arguments.of(RDFFormat.TURTLE_LONG),
+                 Arguments.of(RDFFormat.RDFXML),
+                 Arguments.of(RDFFormat.RDFXML_PRETTY),
+                 Arguments.of(RDFFormat.RDFXML_PLAIN),
 
-            , { RDFFormat.JSONLD }
-            , { RDFFormat.JSONLD_PRETTY }
-            , { RDFFormat.JSONLD_FLAT }
+                 Arguments.of(RDFFormat.JSONLD),
+                 Arguments.of(RDFFormat.JSONLD_PRETTY),
+                 Arguments.of(RDFFormat.JSONLD_FLAT),
 
-            , { RDFFormat.JSONLD11 }
-            , { RDFFormat.JSONLD11_PRETTY }
-            , { RDFFormat.JSONLD11_FLAT }
+                 Arguments.of(RDFFormat.JSONLD11),
+                 Arguments.of(RDFFormat.JSONLD11_PRETTY),
+                 Arguments.of(RDFFormat.JSONLD11_FLAT),
 
-            , { RDFFormat.RDFJSON }
+                 Arguments.of(RDFFormat.RDFJSON),
 
-            , { RDFFormat.TRIG }
-            , { RDFFormat.TRIG_PRETTY }
-            , { RDFFormat.TRIG_BLOCKS }
-            , { RDFFormat.TRIG_FLAT }
-            , { RDFFormat.TRIG_LONG }
-            , { RDFFormat.NQUADS_UTF8}
-            , { RDFFormat.NQUADS_ASCII}
-            , { RDFFormat.NQUADS}
+                 Arguments.of(RDFFormat.TRIG),
+                 Arguments.of(RDFFormat.TRIG_PRETTY),
+                 Arguments.of(RDFFormat.TRIG_BLOCKS),
+                 Arguments.of(RDFFormat.TRIG_FLAT),
+                 Arguments.of(RDFFormat.TRIG_LONG),
+                 Arguments.of(RDFFormat.NQUADS_UTF8),
+                 Arguments.of(RDFFormat.NQUADS_ASCII),
+                 Arguments.of(RDFFormat.NQUADS),
 
-            , { RDFFormat.RDF_PROTO }
-            , { RDFFormat.RDF_PROTO_VALUES }
-            , { RDFFormat.RDF_THRIFT }
-            , { RDFFormat.RDF_THRIFT_VALUES }
+                 Arguments.of(RDFFormat.RDF_PROTO),
+                 Arguments.of(RDFFormat.RDF_PROTO_VALUES),
+                 Arguments.of(RDFFormat.RDF_THRIFT),
+                 Arguments.of(RDFFormat.RDF_THRIFT_VALUES),
 
-            , { RDFFormat.TRIX }
-        });
+                 Arguments.of(RDFFormat.TRIX)
+            );
+            return x.stream();
     }
 
+    @Parameter
     private RDFFormat format;
-
-    public TestRiotWriterGraph(RDFFormat format)
-    {
-        this.format = format;
-    }
 
     @Test public void writer00() { test("writer-rt-00.ttl"); }
     @Test public void writer01() { test("writer-rt-01.ttl"); }
@@ -167,7 +166,7 @@ public class TestRiotWriterGraph extends AbstractWriterTest
             System.out.println("---");
         }
 
-        assertTrue("Did not round-trip file=" + filename + " / format=" + format, b);
+        assertTrue(b, ()->"Did not round-trip file=" + filename + " / format=" + format);
     }
 }
 

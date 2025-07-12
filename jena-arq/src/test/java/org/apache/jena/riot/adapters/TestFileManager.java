@@ -18,221 +18,220 @@
 
 package org.apache.jena.riot.adapters;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.InputStream ;
+import java.io.InputStream;
 
-import org.apache.jena.ontology.Individual ;
-import org.apache.jena.ontology.OntModel ;
-import org.apache.jena.ontology.OntModelSpec ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.atlas.io.IO;
+import org.apache.jena.ontology.Individual;
+import org.apache.jena.ontology.OntModel;
+import org.apache.jena.ontology.OntModelSpec;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.stream.TestLocationMapper;
 import org.apache.jena.riot.system.stream.StreamManager;
-import org.apache.jena.shared.NotFoundException ;
-import org.apache.jena.util.FileManager ;
-import org.apache.jena.util.LocationMapper ;
-import org.junit.Test ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.apache.jena.shared.NotFoundException;
+import org.apache.jena.util.FileManager;
+import org.apache.jena.util.LocationMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("deprecation")
 public class TestFileManager
 {
-    static Logger log = LoggerFactory.getLogger(TestFileManager.class) ;
-    public static final String testingDir = "testing/RIOT/FileManager" ;
-    static final String filename = "fmgr-test-file" ; 
-    static final String filenameNonExistent = "fmgr-test-file-1421" ;
-    static final String fileModel = "foo.ttl" ;
-    static final String zipname = testingDir+"/fmgr-test.zip" ;
-    
+    static Logger log = LoggerFactory.getLogger(TestFileManager.class);
+    public static final String testingDir = "testing/RIOT/FileManager";
+    static final String filename = "fmgr-test-file";
+    static final String filenameNonExistent = "fmgr-test-file-1421";
+    static final String fileModel = "foo.ttl";
+    static final String zipname = testingDir+"/fmgr-test.zip";
+
     @Test public void testFileManagerFileLocator() {
         FileManager fileManager = FileManager.create();
-        fileManager.addLocatorFile() ;
-        InputStream in = fileManager.open(testingDir+"/"+filename) ;
-        assertNotNull(in) ;
-        closeInputStream(in) ;
+        fileManager.addLocatorFile();
+        InputStream in = fileManager.open(testingDir+"/"+filename);
+        assertNotNull(in);
+        closeInputStream(in);
     }
 
     @Test public void testFileManagerFileLocatorWithDir() {
-        FileManager fileManager = FileManager.create() ;
-        fileManager.addLocatorFile(testingDir) ;
-        InputStream in = fileManager.open(filename) ;
-        assertNotNull(in) ;
-        closeInputStream(in) ;
+        FileManager fileManager = FileManager.create();
+        fileManager.addLocatorFile(testingDir);
+        InputStream in = fileManager.open(filename);
+        assertNotNull(in);
+        closeInputStream(in);
     }
 
     @Test public void testFileManagerNoFile() {
-        FileManager fileManager = FileManager.create() ;
-        fileManager.addLocatorFile() ;
+        FileManager fileManager = FileManager.create();
+        fileManager.addLocatorFile();
         try {
             // Tests either way round - exception or a null return.
-            InputStream in = fileManager.open(filenameNonExistent) ;
-            closeInputStream(in) ;
-            assertNull("Found non-existant file: "+filenameNonExistent, in) ;
+            InputStream in = fileManager.open(filenameNonExistent);
+            closeInputStream(in);
+            assertNull(in, ()->"Found non-existant file: "+filenameNonExistent);
         } catch (NotFoundException ex) {}
     }
-    
-    @Test(expected = NotFoundException.class)
+
+    @Test
     public void testFileManagerNoFile2() {
-        FileManager fileManager = FileManager.create() ;
-        fileManager.addLocatorFile() ;
-        fileManager.readModelInternal(ModelFactory.createDefaultModel(), filenameNonExistent);
+        FileManager fileManager = FileManager.create();
+        fileManager.addLocatorFile();
+        assertThrows(NotFoundException.class, ()->fileManager.readModelInternal(ModelFactory.createDefaultModel(), filenameNonExistent));
     }
-    
-    @Test(expected = NotFoundException.class)
+
+    @Test
     public void testFileManagerNoFile3() {
-        FileManager fileManager = new AdapterFileManager(new StreamManager(), new org.apache.jena.riot.system.stream.LocationMapper()) ;
-        fileManager.addLocatorFile() ;
-        fileManager.readModelInternal(ModelFactory.createDefaultModel(), filenameNonExistent);
+        FileManager fileManager = new AdapterFileManager(new StreamManager(), new org.apache.jena.riot.system.stream.LocationMapper());
+        fileManager.addLocatorFile();
+        assertThrows(NotFoundException.class, ()->fileManager.readModelInternal(ModelFactory.createDefaultModel(), filenameNonExistent));
     }
-    
+
     @Test public void testFileManagerLocatorClassLoader() {
-        FileManager fileManager = FileManager.create() ;
-        fileManager.addLocatorClassLoader(fileManager.getClass().getClassLoader()) ;
-        InputStream in = fileManager.open("java/lang/String.class") ;
-        assertNotNull(in) ;
-        closeInputStream(in) ;
+        FileManager fileManager = FileManager.create();
+        fileManager.addLocatorClassLoader(fileManager.getClass().getClassLoader());
+        InputStream in = fileManager.open("java/lang/String.class");
+        assertNotNull(in);
+        closeInputStream(in);
     }
 
     @Test public void testFileManagerLocatorClassLoaderNotFound() {
-        FileManager fileManager = FileManager.create() ;
-        fileManager.addLocatorClassLoader(fileManager.getClass().getClassLoader()) ;
+        FileManager fileManager = FileManager.create();
+        fileManager.addLocatorClassLoader(fileManager.getClass().getClassLoader());
         try {
-            InputStream in = fileManager.open("not/java/lang/String.class") ;
-            closeInputStream(in) ;
-            assertNull("Found non-existant class", in) ;
+            InputStream in = fileManager.open("not/java/lang/String.class");
+            closeInputStream(in);
+            assertNull(in, ()->"Found non-existant class");
         } catch (NotFoundException ex) {}
     }
 
     @Test public void testFileManagerLocatorZip() {
-        FileManager fileManager = FileManager.create() ;
+        FileManager fileManager = FileManager.create();
         try {
-            fileManager.addLocatorZip(zipname) ;
+            fileManager.addLocatorZip(zipname);
         } catch (Exception ex)
         {
-           fail("Failed to create a filemanager and add a zip locator") ;
+           fail("Failed to create a filemanager and add a zip locator");
         }
-        InputStream in = fileManager.open(filename) ;
-        assertNotNull(in) ;
-        closeInputStream(in) ;
+        InputStream in = fileManager.open(filename);
+        assertNotNull(in);
+        closeInputStream(in);
     }
 
     @Test public void testFileManagerLocatorZipNonFound() {
-        FileManager fileManager = FileManager.create() ;
+        FileManager fileManager = FileManager.create();
         try {
-            fileManager.addLocatorZip(zipname) ;
+            fileManager.addLocatorZip(zipname);
         } catch (Exception ex)
-        { fail("Failed to create a filemanager and add a zip locator") ; }
+        { fail("Failed to create a filemanager and add a zip locator"); }
         try {
-            InputStream in = fileManager.open(filenameNonExistent) ;
-            closeInputStream(in) ;
-            assertNull("Found non-existant zip file member", in) ;
+            InputStream in = fileManager.open(filenameNonExistent);
+            closeInputStream(in);
+            assertNull(in, ()->"Found non-existant zip file member");
         } catch (NotFoundException ex) {}
     }
-    
+
     @Test public void testFileManagerClone() {
-        FileManager fileManager1 = FileManager.create() ;
-        FileManager fileManager2 = fileManager1.clone() ;
-        
+        FileManager fileManager1 = FileManager.create();
+        FileManager fileManager2 = fileManager1.clone();
+
         // Should not affect fileManager2
-        fileManager1.addLocatorFile() ;
+        fileManager1.addLocatorFile();
         {
-            InputStream in = fileManager1.open(testingDir+"/"+filename) ;
-            assertNotNull(in) ;
-            closeInputStream(in) ;
+            InputStream in = fileManager1.open(testingDir+"/"+filename);
+            assertNotNull(in);
+            closeInputStream(in);
         }
         // Should not work.
         try {
-            InputStream in = fileManager2.open(testingDir+"/"+filename) ;
-            closeInputStream(in) ;
-            assertNull("Found file via wrong FileManager", in) ;
+            InputStream in = fileManager2.open(testingDir+"/"+filename);
+            closeInputStream(in);
+            assertNull(in, ()->"Found file via wrong FileManager");
         } catch (NotFoundException ex) {}
     }
-    
+
     @Test public void testFileManagerReadOntModel() {
-        OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM) ;
-        FileManager.getInternal().readModelInternal(model, testingDir+"/data.ttl") ;
+        OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
+        FileManager.getInternal().readModelInternal(model, testingDir+"/data.ttl");
         // Check
-        Individual ind = model.getIndividual("http://example.com/individual") ;
-        String t = ind.getOntClass().getURI() ;
-        assertEquals("http://example.com/T", t) ;
-        long c1 = model.size() ;
-        
+        Individual ind = model.getIndividual("http://example.com/individual");
+        String t = ind.getOntClass().getURI();
+        assertEquals("http://example.com/T", t);
+        long c1 = model.size();
+
         model.loadImports();
 
-        long c2 = model.size() ;
-        assertEquals(c1,c2) ;
+        long c2 = model.size();
+        assertEquals(c1,c2);
     }
 
-    
+
     @Test public void testLocationMappingURLtoFileOpen() {
-        LocationMapper locMap = new LocationMapper(TestLocationMapper.mapping) ;
-        FileManager fileManager = FileManager.create(locMap) ;
-        fileManager.addLocatorFile() ;
-        InputStream in = fileManager.open("http://example.org/file") ;
-        assertNotNull(in) ;
-        closeInputStream(in) ;
+        LocationMapper locMap = new LocationMapper(TestLocationMapper.mapping);
+        FileManager fileManager = FileManager.create(locMap);
+        fileManager.addLocatorFile();
+        InputStream in = fileManager.open("http://example.org/file");
+        assertNotNull(in);
+        closeInputStream(in);
     }
 
     @Test public void testLocationMappingURLtoFileOpenNotFound() {
-        LocationMapper locMap = new LocationMapper(TestLocationMapper.mapping) ;
-        FileManager fileManager = FileManager.create(locMap) ;
-        fileManager.addLocatorClassLoader(fileManager.getClass().getClassLoader()) ;
+        LocationMapper locMap = new LocationMapper(TestLocationMapper.mapping);
+        FileManager fileManager = FileManager.create(locMap);
+        fileManager.addLocatorClassLoader(fileManager.getClass().getClassLoader());
         try {
-            InputStream in = fileManager.open("http://example.org/file") ;
-            closeInputStream(in) ;
-            assertNull("Found nont-existant URL", null) ;
+            InputStream in = fileManager.open("http://example.org/file");
+            assertNull(in, "Found non-existant URL");
+            closeInputStream(in);
         } catch (NotFoundException ex) {}
     }
 
     @Test public void testCache1() {
-        FileManager fileManager = FileManager.create() ;
-        fileManager.addLocatorFile(testingDir) ;
-        Model m1 = fileManager.loadModelInternal(fileModel) ;
-        Model m2 = fileManager.loadModelInternal(fileModel) ;
-        assertNotSame(m1, m2) ;
+        FileManager fileManager = FileManager.create();
+        fileManager.addLocatorFile(testingDir);
+        Model m1 = fileManager.loadModelInternal(fileModel);
+        Model m2 = fileManager.loadModelInternal(fileModel);
+        assertNotSame(m1, m2);
     }
-    
-    @Test public void testCache2() {
-        FileManager.setGlobalFileManager(AdapterFileManager.get()) ;
-        
-        FileManager fileManager = FileManager.getInternal() ;
-        fileManager.addLocatorFile(testingDir) ;
-        fileManager.setModelCaching(true) ;
-        Model m1 = fileManager.loadModelInternal(fileModel) ;
-        Model m2 = fileManager.loadModelInternal(fileModel) ;
-        assertSame(m1, m2) ;
-    }
-    
-    @Test public void testCache3() {
-        FileManager fileManager = FileManager.getInternal() ;
-        fileManager.addLocatorFile(testingDir) ;
-        fileManager.setModelCaching(true) ;
-        Model m1 = fileManager.loadModelInternal(fileModel) ;
-        Model m2 = fileManager.loadModelInternal(fileModel) ;
-        assertSame(m1, m2) ;
-        
-        fileManager.removeCacheModel(fileModel) ;
-        Model m3 = fileManager.loadModelInternal(fileModel) ;
-        assertNotSame(m1, m3) ;
-        
-        fileManager.resetCache() ;
-        Model m4 = fileManager.loadModelInternal(fileModel) ;
-        Model m5 = fileManager.loadModelInternal(fileModel) ;
 
-        assertSame(m4, m5) ;
-        assertNotSame(m1, m4) ;
-        assertNotSame(m3, m4) ;
+    @Test public void testCache2() {
+        FileManager.setGlobalFileManager(AdapterFileManager.get());
+
+        FileManager fileManager = FileManager.getInternal();
+        fileManager.addLocatorFile(testingDir);
+        fileManager.setModelCaching(true);
+        Model m1 = fileManager.loadModelInternal(fileModel);
+        Model m2 = fileManager.loadModelInternal(fileModel);
+        assertSame(m1, m2);
     }
-    
+
+    @Test public void testCache3() {
+        FileManager fileManager = FileManager.getInternal();
+        fileManager.addLocatorFile(testingDir);
+        fileManager.setModelCaching(true);
+        Model m1 = fileManager.loadModelInternal(fileModel);
+        Model m2 = fileManager.loadModelInternal(fileModel);
+        assertSame(m1, m2);
+
+        fileManager.removeCacheModel(fileModel);
+        Model m3 = fileManager.loadModelInternal(fileModel);
+        assertNotSame(m1, m3);
+
+        fileManager.resetCache();
+        Model m4 = fileManager.loadModelInternal(fileModel);
+        Model m5 = fileManager.loadModelInternal(fileModel);
+
+        assertSame(m4, m5);
+        assertNotSame(m1, m4);
+        assertNotSame(m3, m4);
+    }
+
     // -------- Helpers
-    
+
     private void closeInputStream(InputStream in) {
-        try {
-            if ( in != null )
-                in.close();
-        }
-        catch (Exception ex) {}
+        if ( in != null )
+            IO.close(in);
     }
 }

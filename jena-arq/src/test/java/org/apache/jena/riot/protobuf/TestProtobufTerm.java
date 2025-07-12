@@ -18,11 +18,13 @@
 
 package org.apache.jena.riot.protobuf;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
@@ -40,7 +42,6 @@ import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.XSD;
-import org.junit.Test;
 
 public class TestProtobufTerm {
     static { JenaSystem.init(); }
@@ -429,4 +430,3 @@ public class TestProtobufTerm {
         return rt;
     }
 }
-

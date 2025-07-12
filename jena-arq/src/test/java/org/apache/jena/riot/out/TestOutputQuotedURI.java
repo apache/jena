@@ -18,14 +18,15 @@
 
 package org.apache.jena.riot.out;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.riot.SysRIOT;
 import org.apache.jena.riot.out.quoted.QuotedURI;
 import org.apache.jena.riot.out.quoted.TestQuotedURIInternal;
-import org.junit.Test;
 
 /**
  * Tests for URI output.

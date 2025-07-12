@@ -18,9 +18,11 @@
 
 package org.apache.jena.sparql.engine.index;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.ListUtils;
@@ -35,13 +37,12 @@ import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingRoot;
 import org.apache.jena.sparql.engine.main.QueryEngineMain;
 import org.apache.jena.sparql.engine.ref.QueryEngineRef;
-import org.junit.Test;
 
 // More tests for MINUS (JENA-1633)
 public class TestMinus {
     // These tests evaluate the query twice, once with the ref engine and once with the
-    // main engine. These two engines have completely different evaluation code.    
-    
+    // main engine. These two engines have completely different evaluation code.
+
     // Need multi row left test case.
     @Test
     public void minus_x1() {
@@ -73,12 +74,12 @@ public class TestMinus {
             );
         test(x2);
     }
-    
+
     @Test
     public void minus_x3() {
         String x3 = StrUtils.strjoinNL
             ("SELECT ?x ?undef {"
-            ,"  VALUES ( ?x ) { ( 3 ) }"            
+            ,"  VALUES ( ?x ) { ( 3 ) }"
             //Not mentioned:  ?undef
             ,"  MINUS {"
             ,"     BIND(2 AS ?x)"
@@ -88,9 +89,9 @@ public class TestMinus {
             );
         test(x3);
      }
-    
+
     private static DatasetGraph dsgzero = DatasetGraphZero.create();
-    
+
     private void test(String queryStr) {
         Query ast = QueryFactory.create(queryStr);
         List<Binding> x1 = exec(queryStr, QueryEngineRef.getFactory());
@@ -100,9 +101,9 @@ public class TestMinus {
 //            System.out.println("Ref:  "+x1);
 //            System.out.println("Main: "+x2);
 //        }
-        assertTrue("Ref != main", b);
+        assertTrue(b, ()->"Ref != main");
     }
-    
+
     private static List<Binding> exec(String queryStr, QueryEngineFactory factory) {
         Query ast = QueryFactory.create(queryStr);
         return Iter.toList(factory.create(ast, dsgzero, BindingRoot.create(), ARQ.getContext()).iterator());

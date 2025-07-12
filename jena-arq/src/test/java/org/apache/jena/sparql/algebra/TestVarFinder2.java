@@ -18,18 +18,19 @@
 
 package org.apache.jena.sparql.algebra;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import java.util.Set ;
+import java.util.Set;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.sparql.algebra.op.OpTable;
 import org.apache.jena.sparql.algebra.table.TableN;
-import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.engine.main.VarFinder ;
-import org.apache.jena.sparql.sse.SSE ;
-import org.junit.Test ;
+import org.apache.jena.sparql.engine.main.VarFinder;
+import org.apache.jena.sparql.sse.SSE;
 
 public class TestVarFinder2
 {

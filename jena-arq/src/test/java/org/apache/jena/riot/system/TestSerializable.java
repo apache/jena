@@ -18,12 +18,15 @@
 
 package org.apache.jena.riot.system;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.*;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -32,15 +35,13 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sys.JenaSystem;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class TestSerializable {
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
-        JenaSystem.init();    
+        JenaSystem.init();
     }
-    
+
     private static <X> X roundTrip(X n) throws IOException, ClassNotFoundException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(out);
@@ -63,7 +64,7 @@ public class TestSerializable {
         assertTrue(n1.isURI());
         assertEquals(n, n1);
     }
-    
+
     @Test
     public void serialize_node_02() throws Exception {
         Node n = SSE.parseNode("123");
@@ -71,7 +72,7 @@ public class TestSerializable {
         assertTrue(n1.isLiteral());
         assertEquals(n, n1);
     }
-    
+
     @Test
     public void serialize_node_03() throws Exception {
         Node n = SSE.parseNode("_:b");
@@ -87,14 +88,14 @@ public class TestSerializable {
         assertEquals(n, n1);
         assertSame(n, n1);
     }
-    
+
     @Test
     public void serialize_node_05() throws Exception {
         Var v = Var.alloc("X");
         Var v1 = roundTrip(v);
         assertEquals(v, v1);
     }
-    
+
     @Test
     public void serialize_node_06() throws Exception {
         Node v = NodeFactory.createVariable("Foo");
@@ -108,7 +109,7 @@ public class TestSerializable {
         Triple t1 = roundTrip(t);
         assertEquals(t, t1);
     }
-    
+
     @Test
     public void serialize_triple_02() throws Exception {
         Triple t = SSE.parseTriple("(:x :x :x)");

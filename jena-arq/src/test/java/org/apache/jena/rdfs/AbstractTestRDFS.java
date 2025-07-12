@@ -22,24 +22,24 @@ import static org.apache.jena.rdfs.LibTestRDFS.node;
 import static org.apache.jena.rdfs.engine.ConstRDFS.rdfType;
 import static org.apache.jena.rdfs.engine.ConstRDFS.rdfsSubClassOf;
 import static org.apache.jena.rdfs.engine.ConstRDFS.rdfsSubPropertyOf;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.PrintStream;
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.ListUtils;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.junit.Assert;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
 
 /**
  *  Testing based on a graph under test ({@link #getTestGraph()}) and a reference graph
  * ({@link #getReferenceGraph()}) that is assumed to return the correct answers.
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+//@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public abstract class AbstractTestRDFS {
     private static PrintStream out = System.err;
 
@@ -162,7 +162,7 @@ public abstract class AbstractTestRDFS {
             LibTestRDFS.printDiff(out, expected, actual);
         }
 
-        Assert.assertTrue(getTestLabel(), b);
+        assertTrue(b,()->getTestLabel());
     }
 
     private void testContains(Node s, Node p, Node o) {
@@ -175,7 +175,7 @@ public abstract class AbstractTestRDFS {
         // Do test graph "contains" by contains.
         boolean actual = LibTestRDFS.containsInGraph(getTestGraph(), s, p, o);
 
-        Assert.assertEquals(getTestLabel(), expected, actual);
+        assertEquals(expected, actual, ()->getTestLabel());
     }
 
     /** Indicate whether the vocabulary is visible in the answers */

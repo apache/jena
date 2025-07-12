@@ -18,22 +18,27 @@
 
 package org.apache.jena.riot.lang;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.StringReader ;
+import java.io.StringReader;
 
-import org.apache.jena.atlas.lib.CharSpace ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.sparql.sse.SSE ;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.atlas.lib.CharSpace;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.system.ParserProfile;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.tokens.Tokenizer;
+import org.apache.jena.sparql.sse.SSE;
 
 /** Test of syntax by a triples parser (does not include node validity checking) */
 
@@ -43,12 +48,18 @@ public class TestLangNTriples extends AbstractTestLangNTuples
 
     @Override
     protected Lang getLang() {
-        return Lang.NTRIPLES ;
+        return Lang.NTRIPLES;
+    }
+
+
+    @Override
+    protected LangRIOT createLangRIOT(Tokenizer tokenizer, StreamRDF sink, ParserProfile profile) {
+        return IteratorParsers.createParserNTriples(tokenizer, sink, profile);
     }
 
     @Test
     public void nt_reader_twice() {
-        String s = "_:a <p> 'foo' . ";
+        String s = "_:a <http://example/p> 'foo' . ";
         StringReader r = new StringReader(s);
         Model m = ModelFactory.createDefaultModel();
 
@@ -66,33 +77,33 @@ public class TestLangNTriples extends AbstractTestLangNTuples
 
     @Test
     public void nt_model_1() {
-        String input = "<x> <p> \"abc-\\u00E9\". ";
+        String input = "<http://example/x> <http://example/p> \"abc-\\u00E9\". ";
         Model m1 = ParserTests.parser().fromString(input).lang(Lang.NTRIPLES).toModel();
         assertEquals(1, m1.size());
         Model m2 = ParserTests.parser().fromString(input).lang(Lang.NTRIPLES).toModel();
         assertTrue(m1.isIsomorphicWith(m2));
 
-        Graph g1 = SSE.parseGraph("(graph (triple <x> <p> \"abc-é\"))");
+        Graph g1 = SSE.parseGraph("(graph (triple <http://example/x> <http://example/p> \"abc-é\"))");
         assertTrue(g1.isIsomorphicWith(m1.getGraph()));
     }
 
-    @Test(expected = ExFatal.class)
+    @Test
     public void nt_only_no_quads() {
-        parseCount("<x> <p> <s> <g> .");
+        parseException(ExFatal.class, "<http://example/x> <http://example/p> <http://example/s> <http://example/g> .");
     }
 
-    @Test(expected = ExFatal.class)
+    @Test
     public void nt_only_no_base() {
-        parseCount("BASE <http://example/>  <x> <p> <s> .");
+        parseException(ExFatal.class, "BASE <http://example/>  <http://example/x> <http://example/p> <http://example/s> .");
     }
 
     @Test
     public void nt_only_5() {
-        parseCount("<x> <p> \"é\" .");
+        parseCount("<http://example/x> <http://example/p> \"é\" .");
     }
 
-    @Test(expected = ExFatal.class)
+    @Test
     public void nt_ascii() {
-        parseCount(CharSpace.ASCII, "<scheme:x> <scheme:p> <scheme:é> .");
+        assertThrows(ExFatal.class, ()->parseCount(CharSpace.ASCII, "<scheme:x> <scheme:p> <scheme:é> ."));
     }
 }

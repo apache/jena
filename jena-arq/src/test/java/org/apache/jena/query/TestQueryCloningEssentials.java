@@ -17,23 +17,26 @@
  */
 package org.apache.jena.query;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.jena.sparql.expr.E_Function;
 import org.apache.jena.sparql.expr.NodeValue;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
-@RunWith(Parameterized.class)
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+@ParameterizedClass
+@MethodSource("generateTestParams")
 public class TestQueryCloningEssentials {
 
     public static Query slowClone(Query query) {
@@ -51,12 +54,12 @@ public class TestQueryCloningEssentials {
     public static Query checkedClone(Query query) {
         Query expected = slowClone(query);
         Query actual = query.cloneQuery();
-        Assert.assertEquals(query, actual);
-        Assert.assertEquals(expected, actual);
+        assertEquals(query, actual);
+        assertEquals(expected, actual);
 
         // Check that the cloned query is OK.
         Query again = slowClone(actual);
-        Assert.assertEquals(query, again);
+        assertEquals(query, again);
 
         return actual;
     }
@@ -87,15 +90,13 @@ public class TestQueryCloningEssentials {
         silenceWarnings(()->checkedClone(query));
     }
 
-    @Parameters(name = "Query.clone {0}")
-    public static Collection<Object[]> generateTestParams() throws Exception
-    {
+    static Stream<Arguments> generateTestParams() throws IOException {
         List<String> exclusions = List.of(/* no exclusions as all test cases work */);
 
         Path startPath = Path.of("./testing/ARQ").toAbsolutePath().normalize();
         PathMatcher pathMatcher = startPath.getFileSystem().getPathMatcher("glob:**/*.rq");
 
-        List<Object[]> testParams = new ArrayList<>();
+        List<Arguments> testParams = new ArrayList<>();
         Files.walkFileTree(startPath, new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
@@ -108,7 +109,8 @@ public class TestQueryCloningEssentials {
                         try {
                             silenceWarnings(()->{
                                 Query query = QueryFactory.create(queryStr);
-                                testParams.add(new Object[] {file, query});
+                                Arguments args = Arguments.of(file, query);
+                                testParams.add(args);
                             });
                         } catch(Exception e) {
                             // Silently ignore queries that fail to parse
@@ -118,7 +120,6 @@ public class TestQueryCloningEssentials {
                 return FileVisitResult.CONTINUE;
             }
         });
-
-        return testParams;
+        return testParams.stream();
     }
 }

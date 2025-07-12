@@ -21,11 +21,11 @@ package org.apache.jena.riot.lang.rdfxml;
 import org.apache.jena.riot.lang.rdfxml.converted_legacy.TS_ConvertedARP1;
 import org.apache.jena.riot.lang.rdfxml.manifest_rdf11.Scripts_RRX_RDFXML;
 import org.apache.jena.riot.lang.rdfxml.rrx.TS_RRX;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses({
     // Local tests, extensions and error reports.
     TS_RRX.class,
 

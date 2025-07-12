@@ -27,27 +27,27 @@ import org.apache.jena.sparql.core.Quad;
 
 public class CatchParserOutput implements StreamRDF
 {
-    public List<Triple>      triples     = new ArrayList<>() ;
-    public List<Quad>        quads       = new ArrayList<>() ;
-    public List<Pair<String,String>>     prefixes     = new ArrayList<>() ;
-    public List<String>     bases       = new ArrayList<>() ;
-    public List<String>     versions    = new ArrayList<>() ;
+    public List<Triple>      triples     = new ArrayList<>();
+    public List<Quad>        quads       = new ArrayList<>();
+    public List<Pair<String,String>>     prefixes     = new ArrayList<>();
+    public List<String>     bases       = new ArrayList<>();
+    public List<String>     versions    = new ArrayList<>();
 
-    public int startCalled = 0 ;
+    public int startCalled = 0;
 
-    public int finishCalled = 0 ;
+    public int finishCalled = 0;
 
-    @Override public void start()   { startCalled++ ; }
+    @Override public void start()   { startCalled++; }
 
-    @Override public void triple(Triple triple)     { triples.add(triple) ; }
+    @Override public void triple(Triple triple)     { triples.add(triple); }
 
-    @Override public void quad(Quad quad)           { quads.add(quad) ; }
+    @Override public void quad(Quad quad)           { quads.add(quad); }
 
-    @Override public void base(String base)         { bases.add(base) ; }
+    @Override public void base(String base)         { bases.add(base); }
 
-    @Override public void prefix(String prefix, String iri) { prefixes.add(Pair.create(prefix, iri)) ; }
+    @Override public void prefix(String prefix, String iri) { prefixes.add(Pair.create(prefix, iri)); }
 
     @Override public void version(String version)   { versions.add(version); }
 
-    @Override public void finish()  { finishCalled++ ; }
+    @Override public void finish()  { finishCalled++; }
 }

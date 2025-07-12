@@ -19,7 +19,7 @@
 package org.apache.jena.riot.lang;
 
 import static org.apache.jena.riot.Lang.JSONLD11;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URI;
 
@@ -31,7 +31,7 @@ import com.apicatalog.jsonld.loader.DocumentLoader;
 import com.apicatalog.jsonld.loader.DocumentLoaderOptions;
 import com.apicatalog.jsonld.loader.HttpLoader;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
@@ -57,7 +57,7 @@ public class TestLangJsonLD_DocLoader {
         parser.parse(sink);
 
         // Check called at least once.
-        assertTrue("Custom DocumentLoader wasn't called to handle loading", TestDocumentLoader.COUNTER > 0 );
+        assertTrue(TestDocumentLoader.COUNTER > 0, ()->"Custom DocumentLoader wasn't called to handle loading");
     }
 
     private final Context setupContext() {

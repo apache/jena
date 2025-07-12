@@ -19,7 +19,13 @@
 package org.apache.jena.sparql.algebra.optimize;
 
 import static org.apache.jena.atlas.lib.StrUtils.strjoinNL;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.ARQException;
@@ -34,9 +40,6 @@ import org.apache.jena.sparql.path.PathCompiler;
 import org.apache.jena.sparql.path.PathParser;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.Context;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class TestTransformPathFlatten {
     private static String pre = "(prefix ((: <http://example/>))";
@@ -50,13 +53,13 @@ public class TestTransformPathFlatten {
      */
     private static boolean debug = false;
 
-    @BeforeClass public static void beforeClass() {
+    @BeforeAll public static void beforeClass() {
         prologue = new Prologue();
         prologue.getPrefixMapping().setNsPrefix("", "http://example/");
     }
 
 
-    @Before public void before() {
+    @BeforeEach public void before() {
         // Reset the variable allocators before each test, otherwise the expected test outputs won't match
         PathCompiler.resetForTest();
         TransformPathFlattenAlgebra.resetForTest();
@@ -417,32 +420,36 @@ public class TestTransformPathFlatten {
         testAlgebraTransform(op1, expected);
     }
 
-    @Test(expected = ARQException.class) public void pathFlatten_n_to_m_08() {
+    @Test
+    public void pathFlatten_n_to_m_08() {
         // Illegal path, should be caught long before it reaches the algebra stage but
         // can be constructed by using lower level APIs
         Op op1 = path(":T1", ":p{3,2}", "?x");
-        testDefaultTransform(op1, null);
+        assertThrowsExactly(ARQException.class, ()->testDefaultTransform(op1, null));
     }
 
-    @Test(expected = ARQException.class) public void pathFlatten_n_to_m_08_algebra() {
+    @Test
+    public void pathFlatten_n_to_m_08_algebra() {
         // Illegal path, should be caught long before it reaches the algebra stage but
         // can be constructed by using lower level APIs
         Op op1 = path(":T1", ":p{3,2}", "?x");
-        testAlgebraTransform(op1, null);
+        assertThrows(ARQException.class, ()->testAlgebraTransform(op1, null));
     }
 
-    @Test(expected = ARQException.class) public void pathFlatten_n_to_m_09() {
+    @Test
+    public void pathFlatten_n_to_m_09() {
         // Illegal path, should be caught long before it reaches the algebra stage but
         // can be constructed by using lower level APIs
         Op op1 = path(":T1", ":p{3,0}", "?x");
-        testDefaultTransform(op1, null);
+        assertThrows(ARQException.class, ()->testDefaultTransform(op1, null));
     }
 
-    @Test(expected = ARQException.class) public void pathFlatten_n_to_m_09_algebra() {
+    @Test
+    public void pathFlatten_n_to_m_09_algebra() {
         // Illegal path, should be caught long before it reaches the algebra stage but
         // can be constructed by using lower level APIs
         Op op1 = path(":T1", ":p{3,0}", "?x");
-        testAlgebraTransform(op1, null);
+        assertThrowsExactly(ARQException.class, ()->testAlgebraTransform(op1, null));
     }
 
     private static Op path(String s, String pathStr, String o) {

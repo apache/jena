@@ -18,11 +18,14 @@
 
 package org.apache.jena.sparql.core;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.sse.SSE;
-import org.junit.Test;
-import static org.junit.Assert.*; 
 
 public class TestGraphView {
 
@@ -32,7 +35,7 @@ public class TestGraphView {
         assertTrue(graph instanceof GraphView);
         assertTrue(graph.getTransactionHandler().transactionsSupported());
     }
-    
+
     @Test public void graphDSG_view_txn_2() {
         DatasetGraph dsg = DatasetGraphFactory.createGeneral();
         // NOT dsg.getDefaultGraph()
@@ -40,11 +43,11 @@ public class TestGraphView {
         assertTrue( graph instanceof GraphView );
         assertFalse(graph.getTransactionHandler().transactionsSupported());
     }
-    
+
     @Test public void graphDSG_view_txn_3() {
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
         Graph graph = dsg.getDefaultGraph();
-        Triple triple = SSE.parseTriple("(<s> <p> 0)") ;
+        Triple triple = SSE.parseTriple("(<s> <p> 0)");
         assertFalse(graph.contains(triple));
         graph.getTransactionHandler().execute(()->graph.add(triple) );
         graph.getTransactionHandler().execute(()->assertTrue(graph.contains(triple)) );

@@ -27,16 +27,16 @@ import org.apache.jena.query.Syntax;
 
 class LibTestSPARQL12 {
 
-    static void testSPARQLSyntax(TEST testType, String label, String queryString, boolean verbose) {
+    static void testSPARQLSyntax(Outcome testType, String label, String queryString, boolean verbose) {
         try {
             QueryFactory.create(queryString, Syntax.syntaxSPARQL_12);
-            if ( testType == TEST.BAD )
+            if ( testType == Outcome.BAD )
                 fail("Expected failure");
             if ( verbose )
                 printString(label, queryString);
             return;
         } catch( QueryParseException ex) {
-            if ( testType == TEST.BAD )
+            if ( testType == Outcome.BAD )
                 throw ex;
             if ( verbose )
                 printString(label, queryString);

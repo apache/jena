@@ -18,13 +18,15 @@
 
 package org.apache.jena.rdfs;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
@@ -36,7 +38,6 @@ import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFOps;
 import org.apache.jena.sparql.graph.NodeConst;
 import org.apache.jena.sparql.sse.SSE;
-import org.junit.Test;
 
 /**
  * Stream machinery tests.

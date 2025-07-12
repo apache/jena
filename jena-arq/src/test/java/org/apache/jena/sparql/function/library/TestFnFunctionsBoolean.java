@@ -18,27 +18,28 @@
 
 package org.apache.jena.sparql.function.library;
 
+import static org.apache.jena.sparql.expr.LibTestExpr.test;
 import static org.apache.jena.sparql.expr.NodeValue.FALSE;
 import static org.apache.jena.sparql.expr.NodeValue.TRUE;
-import static org.apache.jena.sparql.expr.LibTestExpr.test;
 
-import org.apache.jena.sys.JenaSystem ;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.sys.JenaSystem;
 
 public class TestFnFunctionsBoolean {
 
     static { JenaSystem.init(); }
 
-    @Test public void exprBoolean1()    { test("fn:boolean('')", FALSE) ; }
-    @Test public void exprBoolean2()    { test("fn:boolean(0)", FALSE) ; }
-    @Test public void exprBoolean3()    { test("fn:boolean(''^^xsd:string)", FALSE) ; }
+    @Test public void exprBoolean1()    { test("fn:boolean('')", FALSE); }
+    @Test public void exprBoolean2()    { test("fn:boolean(0)", FALSE); }
+    @Test public void exprBoolean3()    { test("fn:boolean(''^^xsd:string)", FALSE); }
 
-    @Test public void exprBoolean4()    { test("fn:boolean('X')", TRUE) ; }
-    @Test public void exprBoolean5()    { test("fn:boolean('X'^^xsd:string)", TRUE) ; }
-    @Test public void exprBoolean6()    { test("fn:boolean(1)", TRUE) ; }
+    @Test public void exprBoolean4()    { test("fn:boolean('X')", TRUE); }
+    @Test public void exprBoolean5()    { test("fn:boolean('X'^^xsd:string)", TRUE); }
+    @Test public void exprBoolean6()    { test("fn:boolean(1)", TRUE); }
 
-    @Test public void exprBoolean7()    { test("fn:not('')", TRUE) ; }
-    @Test public void exprBoolean8()    { test("fn:not('X')", FALSE) ; }
-    @Test public void exprBoolean9()    { test("fn:not(1)", FALSE) ; }
-    @Test public void exprBoolean10()   { test("fn:not(0)", TRUE) ; }
+    @Test public void exprBoolean7()    { test("fn:not('')", TRUE); }
+    @Test public void exprBoolean8()    { test("fn:not('X')", FALSE); }
+    @Test public void exprBoolean9()    { test("fn:not(1)", FALSE); }
+    @Test public void exprBoolean10()   { test("fn:not(0)", TRUE); }
 }

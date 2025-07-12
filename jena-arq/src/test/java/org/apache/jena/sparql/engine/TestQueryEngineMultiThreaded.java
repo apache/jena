@@ -18,22 +18,23 @@
 
 package org.apache.jena.sparql.engine;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.lib.StrUtils;
-import org.apache.jena.query.* ;
-import org.apache.jena.rdf.model.InfModel ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.reasoner.Reasoner ;
-import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory ;
-import org.apache.jena.shared.Lock ;
-import org.apache.jena.vocabulary.ReasonerVocabulary ;
-import org.junit.Test;
+import org.apache.jena.query.*;
+import org.apache.jena.rdf.model.InfModel;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.reasoner.Reasoner;
+import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
+import org.apache.jena.shared.Lock;
+import org.apache.jena.vocabulary.ReasonerVocabulary;
 
 /**
  * Tests for multi-threaded query execution
@@ -177,8 +178,8 @@ public class TestQueryEngineMultiThreaded {
         Query query = QueryFactory.create(sparql);
         try(QueryExecution queryExec = QueryExecutionFactory.create(query, model)) {
             model.enterCriticalSection(lock);
-            try { return queryExec.execConstruct() ; }
-            finally { model.leaveCriticalSection() ; }
+            try { return queryExec.execConstruct(); }
+            finally { model.leaveCriticalSection(); }
         }
     }
 

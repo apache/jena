@@ -18,69 +18,58 @@
 
 package org.apache.jena.sparql.transaction;
 
-import java.util.ArrayList ;
-import java.util.List ;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.apache.jena.atlas.lib.Creator ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import java.util.List;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.Parameter;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import org.apache.jena.atlas.lib.Creator;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.DatasetGraphSink;
 import org.apache.jena.sparql.core.DatasetGraphZero;
-import org.apache.jena.sparql.graph.GraphFactory ;
-import org.junit.Assert ;
-import org.junit.Test ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Parameterized ;
-import org.junit.runners.Parameterized.Parameters ;
+import org.apache.jena.sparql.graph.GraphFactory;
 
 /** "supports" for various DatasetGraph implementations */
-@RunWith(Parameterized.class)
+
+@ParameterizedClass(name="{index}: {0}")
+@MethodSource("provideArgs")
 public class TestTransactionSupport {
-    
-    @Parameters(name = "{index}: {0}")
-    public static Iterable<Object[]> data() {
-        List<Object[]> x = new ArrayList<>() ;
-        x.add(new Object[] {"createTxnMem", 
-            (Creator<DatasetGraph>)()->DatasetGraphFactory.createTxnMem(),
-            true, true}) ;
-        x.add(new Object[] {"createGeneral",
-            (Creator<DatasetGraph>)()->DatasetGraphFactory.createGeneral(),
-            true, false}) ;
-        x.add(new Object[] {"create",
-            (Creator<DatasetGraph>)()->DatasetGraphFactory.create(),
-            true, false}) ;
-        x.add(new Object[] {"wrap(Graph)" ,
-            (Creator<DatasetGraph>)()->DatasetGraphFactory.wrap(GraphFactory.createDefaultGraph()),
-            true, false}) ;
-        x.add(new Object[] {"zero" ,
-            (Creator<DatasetGraph>)()->DatasetGraphZero.create(),
-            true, true}) ;
-        x.add(new Object[] {"sink" ,
-            (Creator<DatasetGraph>)()->DatasetGraphSink.create(),
-            true, true}) ;
-        x.add(new Object[] {"create(Graph)",
-            (Creator<DatasetGraph>)()->DatasetGraphFactory.create(GraphFactory.createDefaultGraph()),
-            true, false}) ;
-        return x ;
+    private static Stream<Arguments> provideArgs() {
+        List<Arguments> x = List.of
+                (Arguments.of("createTxnMem", (Creator<DatasetGraph>)()->DatasetGraphFactory.createTxnMem(), true, true),
+                 Arguments.of("createGeneral",  (Creator<DatasetGraph>)()->DatasetGraphFactory.createGeneral(), true, false),
+                 Arguments.of("create", (Creator<DatasetGraph>)()->DatasetGraphFactory.create(),  true, false),
+                 Arguments.of("wrap(Graph)",(Creator<DatasetGraph>)()->DatasetGraphFactory.wrap(GraphFactory.createDefaultGraph()),true, false),
+                 Arguments.of("zero" ,(Creator<DatasetGraph>)()->DatasetGraphZero.create(),true, true),
+                 Arguments.of("sink" ,(Creator<DatasetGraph>)()->DatasetGraphSink.create(),true, true),
+                 Arguments.of("create(Graph)", (Creator<DatasetGraph>)()->DatasetGraphFactory.create(GraphFactory.createDefaultGraph()), true, false)
+                        );
+        return x.stream();
     }
 
-    private final Creator<DatasetGraph> maker;
-    private final boolean supportsTxn;
-    private final boolean supportsAbort;
-    
-    public TestTransactionSupport(String name, Creator<DatasetGraph> maker, boolean supportsTxn, boolean supportsAbort) {
-        this.maker = maker ;
-        this.supportsTxn = supportsTxn ;
-        this.supportsAbort = supportsAbort ;
-    }
-    
+    @Parameter(0)
+    String name;
+    @Parameter(1)
+    Creator<DatasetGraph> maker;
+    @Parameter(2)
+    boolean supportsTxn;
+    @Parameter(3)
+    boolean supportsAbort;
+
     @Test public void txn_support() {
-        DatasetGraph dsg = maker.create() ;
-        test(dsg, supportsTxn, supportsAbort) ;
+        DatasetGraph dsg = maker.create();
+        test(dsg, supportsTxn, supportsAbort);
     }
 
     private static void test(DatasetGraph dsg, boolean supportsTxn, boolean supportsAbort) {
-        Assert.assertEquals("supports",         supportsTxn,    dsg.supportsTransactions()) ;
-        Assert.assertEquals("supportsAbort",    supportsAbort,  dsg.supportsTransactionAbort()) ;
+        assertEquals(supportsTxn,    dsg.supportsTransactions(),      ()->"supports");
+        assertEquals( supportsAbort, dsg.supportsTransactionAbort(),  ()->"supportsAbort");
     }
 }

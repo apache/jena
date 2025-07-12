@@ -18,21 +18,26 @@
 
 package org.apache.jena.sparql.function.user;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.expr.* ;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueBoolean ;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueDouble ;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueInteger ;
-import org.apache.jena.sparql.sse.builders.SSE_ExprBuildException ;
-import org.apache.jena.sparql.util.NodeFactoryExtra ;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.BindingFactory;
+import org.apache.jena.sparql.expr.*;
+import org.apache.jena.sparql.expr.nodevalue.NodeValueBoolean;
+import org.apache.jena.sparql.expr.nodevalue.NodeValueDouble;
+import org.apache.jena.sparql.expr.nodevalue.NodeValueInteger;
+import org.apache.jena.sparql.sse.builders.SSE_ExprBuildException;
+import org.apache.jena.sparql.util.NodeFactoryExtra;
 
 /**
  * Test for checking that functions are appropriately expanded when supplied with actual arguments
@@ -40,13 +45,13 @@ import org.junit.Test;
  */
 public class TestFunctionExpansion {
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         UserDefinedFunctionFactory.getFactory().clear();
         UserDefinedFunctionFactory.getFactory().setPreserveDependencies(false);
     }
 
-    @AfterClass
+    @AfterAll
     public static void teardown() {
         UserDefinedFunctionFactory.getFactory().clear();
         UserDefinedFunctionFactory.getFactory().setPreserveDependencies(false);
@@ -61,9 +66,9 @@ public class TestFunctionExpansion {
         f.build("http://example/simple", new ExprList(new NodeValueBoolean(true)));
 
         Expr actual = f.getActualExpr();
-        Assert.assertFalse(e.equals(actual));
-        Assert.assertEquals(0, actual.getVarsMentioned().size());
-        Assert.assertEquals(new NodeValueBoolean(true), actual);
+        assertFalse(e.equals(actual));
+        assertEquals(0, actual.getVarsMentioned().size());
+        assertEquals(new NodeValueBoolean(true), actual);
     }
 
     @Test
@@ -75,9 +80,9 @@ public class TestFunctionExpansion {
         f.build("http://example/square", new ExprList(new NodeValueInteger(3)));
 
         Expr actual = f.getActualExpr();
-        Assert.assertFalse(e.equals(actual));
-        Assert.assertEquals(0, actual.getVarsMentioned().size());
-        Assert.assertEquals(new E_Multiply(new NodeValueInteger(3), new NodeValueInteger(3)), actual);
+        assertFalse(e.equals(actual));
+        assertEquals(0, actual.getVarsMentioned().size());
+        assertEquals(new E_Multiply(new NodeValueInteger(3), new NodeValueInteger(3)), actual);
     }
 
     @Test
@@ -95,9 +100,9 @@ public class TestFunctionExpansion {
         f.build("http://example/square", args);
 
         Expr actual = f.getActualExpr();
-        Assert.assertFalse(e.equals(actual));
-        Assert.assertEquals(0, actual.getVarsMentioned().size());
-        Assert.assertEquals(new E_Multiply(new NodeValueInteger(3), new NodeValueInteger(4)), actual);
+        assertFalse(e.equals(actual));
+        assertEquals(0, actual.getVarsMentioned().size());
+        assertEquals(new E_Multiply(new NodeValueInteger(3), new NodeValueInteger(4)), actual);
     }
 
     @Test
@@ -112,11 +117,11 @@ public class TestFunctionExpansion {
 
         UserDefinedFunctionDefinition def = UserDefinedFunctionFactory.getFactory().get("http://example/cube");
         Expr base = def.getBaseExpr();
-        Assert.assertTrue(base instanceof E_Multiply);
+        assertTrue(base instanceof E_Multiply);
         E_Multiply m = (E_Multiply)base;
-        Assert.assertTrue(m.getArg1() instanceof E_Multiply);
-        Assert.assertTrue(m.getArg2() instanceof ExprVar);
-        Assert.assertEquals(1, base.getVarsMentioned().size());
+        assertTrue(m.getArg1() instanceof E_Multiply);
+        assertTrue(m.getArg2() instanceof ExprVar);
+        assertEquals(1, base.getVarsMentioned().size());
     }
 
     @Test
@@ -131,11 +136,11 @@ public class TestFunctionExpansion {
 
         UserDefinedFunctionDefinition def = UserDefinedFunctionFactory.getFactory().get("http://example/cube");
         Expr base = def.getBaseExpr();
-        Assert.assertTrue(base instanceof E_Multiply);
+        assertTrue(base instanceof E_Multiply);
         E_Multiply m = (E_Multiply)base;
-        Assert.assertTrue(m.getArg1() instanceof E_Multiply);
-        Assert.assertTrue(m.getArg2() instanceof ExprVar);
-        Assert.assertEquals(1, base.getVarsMentioned().size());
+        assertTrue(m.getArg1() instanceof E_Multiply);
+        assertTrue(m.getArg2() instanceof ExprVar);
+        assertEquals(1, base.getVarsMentioned().size());
     }
 
     @Test
@@ -155,10 +160,10 @@ public class TestFunctionExpansion {
 
         UserDefinedFunctionDefinition def = UserDefinedFunctionFactory.getFactory().get("http://example/test");
         Expr base = def.getBaseExpr();
-        Assert.assertTrue(base instanceof E_Subtract);
+        assertTrue(base instanceof E_Subtract);
         E_Subtract subtract = (E_Subtract)base;
-        Assert.assertTrue(subtract.getArg1() instanceof NodeValueInteger);
-        Assert.assertTrue(subtract.getArg2() instanceof NodeValueDouble);
+        assertTrue(subtract.getArg1() instanceof NodeValueInteger);
+        assertTrue(subtract.getArg2() instanceof NodeValueDouble);
     }
 
     @Test
@@ -178,10 +183,10 @@ public class TestFunctionExpansion {
 
         UserDefinedFunctionDefinition def = UserDefinedFunctionFactory.getFactory().get("http://example/test");
         Expr base = def.getBaseExpr();
-        Assert.assertTrue(base instanceof E_Subtract);
+        assertTrue(base instanceof E_Subtract);
         E_Subtract subtract = (E_Subtract)base;
-        Assert.assertTrue(subtract.getArg1() instanceof NodeValueDouble);
-        Assert.assertTrue(subtract.getArg2() instanceof NodeValueInteger);
+        assertTrue(subtract.getArg1() instanceof NodeValueDouble);
+        assertTrue(subtract.getArg2() instanceof NodeValueInteger);
     }
 
     @Test
@@ -204,12 +209,12 @@ public class TestFunctionExpansion {
 
         UserDefinedFunctionDefinition def = UserDefinedFunctionFactory.getFactory().get("http://example/test");
         Expr base = def.getBaseExpr();
-        Assert.assertTrue(base instanceof E_Subtract);
+        assertTrue(base instanceof E_Subtract);
         E_Subtract subtract = (E_Subtract)base;
-        Assert.assertTrue(subtract.getArg1() instanceof ExprVar);
-        Assert.assertTrue(subtract.getArg2() instanceof ExprVar);
-        Assert.assertEquals(subtract.getArg1().getVarName(), "a");
-        Assert.assertEquals(subtract.getArg2().getVarName(), "b");
+        assertTrue(subtract.getArg1() instanceof ExprVar);
+        assertTrue(subtract.getArg2() instanceof ExprVar);
+        assertEquals(subtract.getArg1().getVarName(), "a");
+        assertEquals(subtract.getArg2().getVarName(), "b");
     }
 
     @Test
@@ -232,12 +237,12 @@ public class TestFunctionExpansion {
 
         UserDefinedFunctionDefinition def = UserDefinedFunctionFactory.getFactory().get("http://example/test");
         Expr base = def.getBaseExpr();
-        Assert.assertTrue(base instanceof E_Subtract);
+        assertTrue(base instanceof E_Subtract);
         E_Subtract subtract = (E_Subtract)base;
-        Assert.assertTrue(subtract.getArg1() instanceof ExprVar);
-        Assert.assertTrue(subtract.getArg2() instanceof ExprVar);
-        Assert.assertEquals(subtract.getArg1().getVarName(), "b");
-        Assert.assertEquals(subtract.getArg2().getVarName(), "a");
+        assertTrue(subtract.getArg1() instanceof ExprVar);
+        assertTrue(subtract.getArg2() instanceof ExprVar);
+        assertEquals(subtract.getArg1().getVarName(), "b");
+        assertEquals(subtract.getArg2().getVarName(), "a");
     }
 
     @Test
@@ -255,12 +260,12 @@ public class TestFunctionExpansion {
 
         UserDefinedFunctionDefinition def = UserDefinedFunctionFactory.getFactory().get("http://example/add");
         Expr base = def.getBaseExpr();
-        Assert.assertTrue(base instanceof E_Add);
+        assertTrue(base instanceof E_Add);
         E_Add actual = (E_Add)base;
-        Assert.assertTrue(actual.getArg1() instanceof ExprVar);
-        Assert.assertTrue(actual.getArg2() instanceof ExprVar);
-        Assert.assertEquals("x", actual.getArg1().getVarName());
-        Assert.assertEquals("y", actual.getArg2().getVarName());
+        assertTrue(actual.getArg1() instanceof ExprVar);
+        assertTrue(actual.getArg2() instanceof ExprVar);
+        assertEquals("x", actual.getArg1().getVarName());
+        assertEquals("y", actual.getArg2().getVarName());
     }
 
     @Test
@@ -278,12 +283,12 @@ public class TestFunctionExpansion {
 
         UserDefinedFunctionDefinition def = UserDefinedFunctionFactory.getFactory().get("http://example/add");
         Expr base = def.getBaseExpr();
-        Assert.assertTrue(base instanceof E_Add);
+        assertTrue(base instanceof E_Add);
         E_Add actual = (E_Add)base;
-        Assert.assertTrue(actual.getArg1() instanceof ExprVar);
-        Assert.assertTrue(actual.getArg2() instanceof ExprVar);
-        Assert.assertEquals("y", actual.getArg1().getVarName());
-        Assert.assertEquals("y", actual.getArg2().getVarName());
+        assertTrue(actual.getArg1() instanceof ExprVar);
+        assertTrue(actual.getArg2() instanceof ExprVar);
+        assertEquals("y", actual.getArg1().getVarName());
+        assertEquals("y", actual.getArg2().getVarName());
     }
 
     @Test
@@ -306,12 +311,12 @@ public class TestFunctionExpansion {
 
         UserDefinedFunctionDefinition def = UserDefinedFunctionFactory.getFactory().get("http://example/test");
         Expr base = def.getBaseExpr();
-        Assert.assertTrue(base instanceof E_Subtract);
+        assertTrue(base instanceof E_Subtract);
         E_Subtract subtract = (E_Subtract)base;
-        Assert.assertTrue(subtract.getArg1() instanceof ExprVar);
-        Assert.assertTrue(subtract.getArg2() instanceof ExprVar);
-        Assert.assertEquals(subtract.getArg1().getVarName(), "a");
-        Assert.assertEquals(subtract.getArg2().getVarName(), "a");
+        assertTrue(subtract.getArg1() instanceof ExprVar);
+        assertTrue(subtract.getArg2() instanceof ExprVar);
+        assertEquals(subtract.getArg1().getVarName(), "a");
+        assertEquals(subtract.getArg2().getVarName(), "a");
     }
 
     @Test
@@ -330,7 +335,7 @@ public class TestFunctionExpansion {
 
         Expr actual = f.getActualExpr();
         NodeValue result = actual.eval(BindingFactory.empty(), LibTestExpr.createTest());
-        Assert.assertEquals(8, NodeFactoryExtra.nodeToInt(result.asNode()));
+        assertEquals(8, NodeFactoryExtra.nodeToInt(result.asNode()));
 
         //Change the definition of the function we depend on
         //This has no effect with preserveDependencies set to false (the default) since we fully expanded the call to the dependent
@@ -341,10 +346,10 @@ public class TestFunctionExpansion {
 
         actual = f.getActualExpr();
         result = actual.eval(BindingFactory.empty(), LibTestExpr.createTest());
-        Assert.assertEquals(8, NodeFactoryExtra.nodeToInt(result.asNode()));
+        assertEquals(8, NodeFactoryExtra.nodeToInt(result.asNode()));
     }
 
-    @Test(expected=SSE_ExprBuildException.class)
+    @Test
     public void test_function_expansion_bad_01() {
         List<Var> args = new ArrayList<>();
         args.add(Var.alloc("x"));
@@ -352,16 +357,18 @@ public class TestFunctionExpansion {
         Expr add = new E_Add(new ExprVar("x"), new ExprVar("y"));
 
         //It's an error to use a variable which is not mentioned in the argument list
-        UserDefinedFunctionFactory.getFactory().add("http://example/add", add, new ArrayList<Var>());
+        assertThrows(SSE_ExprBuildException.class, ()->
+            UserDefinedFunctionFactory.getFactory().add("http://example/add", add, new ArrayList<Var>()));
     }
 
-    @Test(expected=SSE_ExprBuildException.class)
+    @Test
     public void test_function_expansion_bad_02() {
         Expr single = new ExprVar("x");
         UserDefinedFunctionFactory.getFactory().add("http://example/single", single, new ArrayList<>(single.getVarsMentioned()));
 
         //It's an error to use a variable which is not mentioned in the argument list, even in a call to a dependent function
         Expr test = new E_Function("http://example/single", new ExprList(new ExprVar("x")));
-        UserDefinedFunctionFactory.getFactory().add("http://example/test", test, new ArrayList<Var>());
+        assertThrows(SSE_ExprBuildException.class, ()->
+            UserDefinedFunctionFactory.getFactory().add("http://example/test", test, new ArrayList<Var>()));
     }
 }

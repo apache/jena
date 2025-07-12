@@ -18,8 +18,11 @@
 
 package org.apache.jena.sparql.expr;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.shared.PrefixMapping;
@@ -28,7 +31,6 @@ import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.ExprUtils;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
 import org.apache.jena.sys.JenaSystem;
-import org.junit.Test;
 
 /**
  * Tests for TRIPLE, SUBJECT, PREDICATE, OBJECT, isTRIPLE
@@ -43,9 +45,9 @@ public class TestTripleTermFunctions {
         assertNotNull(r);
     }
 
-    @Test(expected=ExprEvalException.class)
+    @Test
     public void tripleTermKW_Create2() {
-        eval("triple(:s1, 'bc', :o1)");
+        assertThrows(ExprEvalException.class, ()-> eval("triple(:s1, 'bc', :o1)") );
     }
 
     @Test
@@ -78,9 +80,9 @@ public class TestTripleTermFunctions {
         assertNotNull(r);
     }
 
-    @Test(expected=ExprEvalException.class)
+    @Test
     public void tripleTermURI_Create2() {
-        eval("afn:triple(:s1, 'bc', :o1)");
+        assertThrows(ExprEvalException.class, ()-> eval("afn:triple(:s1, 'bc', :o1)") );
     }
 
     @Test

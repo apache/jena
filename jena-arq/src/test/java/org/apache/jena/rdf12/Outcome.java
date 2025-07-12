@@ -16,16 +16,6 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.lang;
+package org.apache.jena.rdf12;
 
-import org.junit.platform.suite.api.SelectClasses;
-import org.junit.platform.suite.api.Suite;
-
-@Suite
-@SelectClasses({
-    TestUnescape.class ,
-    TestVarScope.class
-})
-
-public class TS_LangSPARQL
-{}
+enum Outcome { GOOD, BAD }

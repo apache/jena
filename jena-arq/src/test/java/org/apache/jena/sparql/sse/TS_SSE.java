@@ -18,15 +18,14 @@
 
 package org.apache.jena.sparql.sse;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.junit.runners.Suite.SuiteClasses ;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@SuiteClasses( { 
+@Suite
+@SelectClasses({
     TestSSE_Basic.class ,
     TestSSE_Forms.class ,
-    TestSSE_Builder.class 
+    TestSSE_Builder.class
 })
 public class TS_SSE
 { }

@@ -20,10 +20,12 @@ package org.apache.jena.sparql.expr;
 
 import static org.apache.jena.sparql.expr.LibTestExpr.test;
 import static org.apache.jena.sparql.expr.LibTestExpr.testSSE;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sys.JenaSystem;
-import org.junit.Test;
 
 public class TestExpressions4 {
 
@@ -34,10 +36,12 @@ public class TestExpressions4 {
                           "'2022-12-21T05:05:07-10:00'^^xsd:dateTime"));
     }
 
-    @Test(expected=ExprEvalException.class)
+    @Test
     public void adjust_fn_2() {
-        strict(()->test("fn:adjust-dateTime-to-timezone(xsd:date('2022-12-21'), '-PT10H'^^xsd:duration)",
-                        "'2022-12-21-10:00'^^xsd:date"));
+		assertThrows(ExprEvalException.class, ()-> {
+		    strict(()->test("fn:adjust-dateTime-to-timezone(xsd:date('2022-12-21'), '-PT10H'^^xsd:duration)",
+		                    "'2022-12-21-10:00'^^xsd:date"));
+		});
     }
 
     @Test public void adjust_fn_3() {
@@ -77,12 +81,12 @@ public class TestExpressions4 {
     @Test public void idiv_17() { test("IDIV(3.1E1 , 6)", "5"); }
     @Test public void idiv_18() { test("IDIV(3.1E1 , 7)", "4"); }
 
-    @Test(expected = ExprEvalException.class)
-    public void idiv_20() { test("IDIV(3 , 0)", "4"); }
-    @Test(expected = ExprEvalException.class)
-    public void idiv_21() { test("IDIV(3.1 , 0.0)", "4"); }
-    @Test(expected = ExprEvalException.class)
-    public void idiv_22() { test("IDIV(3.1E1 , 0e0)", "4"); }
+    @Test
+    public void idiv_20() { assertThrows(ExprEvalException.class, ()-> test("IDIV(3 , 0)", "4") ); }
+    @Test
+    public void idiv_21() { assertThrows(ExprEvalException.class, ()-> test("IDIV(3.1 , 0.0)", "4") ); }
+    @Test
+    public void idiv_22() { assertThrows(ExprEvalException.class, ()-> test("IDIV(3.1E1 , 0e0)", "4") ); }
 
     // ---- op:numeric-mod
     // Operator, function and fn:function, op:function forms.
@@ -108,11 +112,11 @@ public class TestExpressions4 {
     @Test public void mod_18() { test("MOD(-7.0 , -2.0)", "-1.0"); }
     @Test public void mod_19() { test("MOD(-7e0 , -2e0)", "-1.0e0"); }
 
-    @Test(expected = ExprEvalException.class)
-    public void mod_20() { test("MOD(123 , 0)", "3"); }
-    @Test(expected = ExprEvalException.class)
-    public void mod_21() { test("MOD(12.3 , 0.0)", "3.0"); }
-    @Test(expected = ExprEvalException.class)
-    public void mod_22() { test("MOD(1.23E2 , 0.0e0)", "3.0E0"); }
+    @Test
+    public void mod_20() { assertThrows(ExprEvalException.class, ()-> test("MOD(123 , 0)", "3") ); }
+    @Test
+    public void mod_21() { assertThrows(ExprEvalException.class, ()-> test("MOD(12.3 , 0.0)", "3.0") ); }
+    @Test
+    public void mod_22() { assertThrows(ExprEvalException.class, ()-> test("MOD(1.23E2 , 0.0e0)", "3.0E0") ); }
 
 }

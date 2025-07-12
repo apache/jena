@@ -21,9 +21,9 @@ package org.apache.jena.sparql;
 import org.apache.jena.arq.junit.manifest.Manifests;
 import org.apache.jena.arq.junit.runners.Label;
 import org.apache.jena.arq.junit.runners.RunnerSPARQL;
-import org.apache.jena.sparql.engine.ref.QueryEngineRef ;
-import org.apache.jena.sparql.expr.E_Function ;
-import org.apache.jena.sparql.expr.NodeValue ;
+import org.apache.jena.sparql.engine.ref.QueryEngineRef;
+import org.apache.jena.sparql.expr.E_Function;
+import org.apache.jena.sparql.expr.NodeValue;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -38,15 +38,15 @@ public class Scripts_RefEngine
 {
     @BeforeClass
     public static void beforeClass() {
-        NodeValue.VerboseWarnings = false ;
-        E_Function.WarnOnUnknownFunction = false ;
-        QueryEngineRef.register() ;
+        NodeValue.VerboseWarnings = false;
+        E_Function.WarnOnUnknownFunction = false;
+        QueryEngineRef.register();
     }
 
     @AfterClass
     public static void afterClass() {
         NodeValue.VerboseWarnings = true;
         E_Function.WarnOnUnknownFunction = true;
-        QueryEngineRef.unregister() ;
+        QueryEngineRef.unregister();
     }
 }

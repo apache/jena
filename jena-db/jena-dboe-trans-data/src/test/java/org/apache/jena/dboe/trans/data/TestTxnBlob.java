@@ -24,7 +24,6 @@ import static org.junit.Assert.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -74,7 +73,7 @@ public class TestTxnBlob {
             String s = transBlob.getString();
             result.set(s);
         }).run();
-        Assert.assertEquals(expected, result.get());
+        assertEquals(expected, result.get());
     }
 
     // testing with real files in TestTransBlobPersistent
@@ -97,7 +96,7 @@ public class TestTxnBlob {
         transactional.begin(ReadWrite.WRITE);
         transBlob.setString(str2);
 
-        // Difefrent therad and transaction.
+        // Different therad and transaction.
         threadRead(str1);
 
         transactional.commit();
@@ -118,7 +117,7 @@ public class TestTxnBlob {
         // Start now.
         ThreadAction tt = ThreadTxn.threadTxnRead(transactional, ()-> {
             String sr = transBlob.getString();
-            Assert.assertEquals(str1, sr);
+            assertEquals(str1, sr);
         });
 
         write(transactional, transBlob, str2);

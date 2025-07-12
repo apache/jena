@@ -18,15 +18,19 @@
 
 package org.apache.jena.sparql.function.user;
 
-import java.util.ArrayList ;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.apache.jena.sparql.expr.E_Multiply ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprVar ;
-import org.junit.AfterClass ;
-import org.junit.Assert ;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
+import java.util.ArrayList;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.sparql.expr.E_Multiply;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprVar;
 
 /**
  * Tests for the {@link UserDefinedFunctionFactory}
@@ -34,12 +38,12 @@ import org.junit.Test ;
  */
 public class TestUserDefinedFunctionFactory {
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         UserDefinedFunctionFactory.getFactory().clear();
     }
 
-    @AfterClass
+    @AfterAll
     public static void teardown() {
         UserDefinedFunctionFactory.getFactory().clear();
     }
@@ -47,15 +51,15 @@ public class TestUserDefinedFunctionFactory {
     @Test
     public void test_user_defined_function_factory_instance() {
         UserDefinedFunctionFactory factory = UserDefinedFunctionFactory.getFactory();
-        Assert.assertNotNull(factory);
+        assertNotNull(factory);
     }
 
     @Test
     public void test_user_defined_function_factory_add_01() {
         Expr e = new E_Multiply(new ExprVar("x"), new ExprVar("x"));
         UserDefinedFunctionFactory.getFactory().add("http://example/square", e, new ArrayList<>(e.getVarsMentioned()));
-        Assert.assertTrue(UserDefinedFunctionFactory.getFactory().isRegistered("http://example/square"));
-        Assert.assertEquals(e, UserDefinedFunctionFactory.getFactory().get("http://example/square").getBaseExpr());
+        assertTrue(UserDefinedFunctionFactory.getFactory().isRegistered("http://example/square"));
+        assertEquals(e, UserDefinedFunctionFactory.getFactory().get("http://example/square").getBaseExpr());
     }
 
     @Test
@@ -64,12 +68,12 @@ public class TestUserDefinedFunctionFactory {
         Expr e2 = new E_Multiply(new ExprVar("y"), new ExprVar("y"));
 
         UserDefinedFunctionFactory.getFactory().add("http://example/square", e1, new ArrayList<>(e1.getVarsMentioned()));
-        Assert.assertTrue(UserDefinedFunctionFactory.getFactory().isRegistered("http://example/square"));
-        Assert.assertEquals(e1, UserDefinedFunctionFactory.getFactory().get("http://example/square").getBaseExpr());
+        assertTrue(UserDefinedFunctionFactory.getFactory().isRegistered("http://example/square"));
+        assertEquals(e1, UserDefinedFunctionFactory.getFactory().get("http://example/square").getBaseExpr());
 
         UserDefinedFunctionFactory.getFactory().add("http://example/square", e2, new ArrayList<>(e2.getVarsMentioned()));
-        Assert.assertTrue(UserDefinedFunctionFactory.getFactory().isRegistered("http://example/square"));
-        Assert.assertEquals(e2, UserDefinedFunctionFactory.getFactory().get("http://example/square").getBaseExpr());
+        assertTrue(UserDefinedFunctionFactory.getFactory().isRegistered("http://example/square"));
+        assertEquals(e2, UserDefinedFunctionFactory.getFactory().get("http://example/square").getBaseExpr());
     }
 
     @Test
@@ -79,7 +83,7 @@ public class TestUserDefinedFunctionFactory {
         //Instead of registering the pre-built expression register using a string for the expression
         UserDefinedFunctionFactory.getFactory().add("http://example/square", "?x * ?x", new ArrayList<>(e.getVarsMentioned()));
 
-        Assert.assertTrue(UserDefinedFunctionFactory.getFactory().isRegistered("http://example/square"));
-        Assert.assertEquals(e, UserDefinedFunctionFactory.getFactory().get("http://example/square").getBaseExpr());
+        assertTrue(UserDefinedFunctionFactory.getFactory().isRegistered("http://example/square"));
+        assertEquals(e, UserDefinedFunctionFactory.getFactory().get("http://example/square").getBaseExpr());
     }
 }

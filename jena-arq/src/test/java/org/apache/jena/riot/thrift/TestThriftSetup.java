@@ -18,39 +18,40 @@
 
 package org.apache.jena.riot.thrift;
 
-import static org.apache.jena.riot.RDFLanguages.RDFTHRIFT ;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.apache.jena.riot.RDFLanguages.RDFTHRIFT;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.apache.jena.riot.* ;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.riot.*;
 
 public class TestThriftSetup {
 
     @Test public void setup_01() {
-        assertTrue(RDFLanguages.isRegistered(RDFTHRIFT)) ;
+        assertTrue(RDFLanguages.isRegistered(RDFTHRIFT));
     }
 
     @Test public void setup_02() {
-        Lang lang = RDFLanguages.filenameToLang("data.rt") ;
-        assertEquals(lang, RDFTHRIFT) ;
+        Lang lang = RDFLanguages.filenameToLang("data.rt");
+        assertEquals(lang, RDFTHRIFT);
     }
 
     @Test public void setup_03() {
-        assertTrue(RDFParserRegistry.isQuads(RDFTHRIFT)) ;
-        assertTrue(RDFParserRegistry.isTriples(RDFTHRIFT)) ;
+        assertTrue(RDFParserRegistry.isQuads(RDFTHRIFT));
+        assertTrue(RDFParserRegistry.isTriples(RDFTHRIFT));
         assertTrue(RDFParserRegistry.isRegistered(RDFTHRIFT));
-        assertNotNull(RDFParserRegistry.getFactory(RDFTHRIFT)) ;
+        assertNotNull(RDFParserRegistry.getFactory(RDFTHRIFT));
     }
 
     @Test public void setup_04() {
-        assertTrue(RDFWriterRegistry.contains(RDFTHRIFT)) ;
-        assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(RDFTHRIFT)) ;
-        assertTrue(RDFWriterRegistry.contains(RDFFormat.RDF_THRIFT)) ;
-        assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(RDFFormat.RDF_THRIFT)) ;
-        assertTrue(RDFWriterRegistry.contains(RDFFormat.RDF_THRIFT_VALUES)) ;
-        assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(RDFFormat.RDF_THRIFT_VALUES)) ;
+        assertTrue(RDFWriterRegistry.contains(RDFTHRIFT));
+        assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(RDFTHRIFT));
+        assertTrue(RDFWriterRegistry.contains(RDFFormat.RDF_THRIFT));
+        assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(RDFFormat.RDF_THRIFT));
+        assertTrue(RDFWriterRegistry.contains(RDFFormat.RDF_THRIFT_VALUES));
+        assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(RDFFormat.RDF_THRIFT_VALUES));
     }
 }
 

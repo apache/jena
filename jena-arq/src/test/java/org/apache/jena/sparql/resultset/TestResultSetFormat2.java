@@ -18,26 +18,27 @@
 
 package org.apache.jena.sparql.resultset;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.lib.StrUtils;
-import org.apache.jena.query.ResultSet ;
-import org.apache.jena.query.ResultSetFactory ;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFactory;
 import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.riot.ResultSetMgr;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.rowset.rw.RowSetReaderJSONStreaming;
 import org.apache.jena.riot.rowset.rw.RowSetReaderTSV;
 import org.apache.jena.riot.rowset.rw.rs_json.Severity;
-import org.apache.jena.sparql.ARQException ;
+import org.apache.jena.sparql.ARQException;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sys.JenaSystem;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class TestResultSetFormat2 {
 
@@ -218,98 +219,98 @@ public class TestResultSetFormat2 {
         parseTSVAsBoolean(x, false);
     }
 
-    @Test(expected = ResultSetException.class)
+    @Test
     public void resultset_bad_tsv_01() {
         // Two vars, row of 3 values.
         String x = "?x\t?y\n'a'\t'b'\t'c'";
-        parseTSV(x);
+        assertThrows(ResultSetException.class,()-> parseTSV(x) );
     }
 
-    @Test(expected = ResultSetException.class)
+    @Test
     public void resultset_bad_tsv_02() {
         // Two vars, row of 1 value only.
         String x = "?x\t?y\n'a'";
-        parseTSV(x);
+        assertThrows(ResultSetException.class,()-> parseTSV(x) );
     }
 
-    @Test(expected = ARQException.class)
+    @Test
     public void resultset_bad_tsv_03() {
         // No input
-        parseTSV("");
+        assertThrows(ARQException.class,()-> parseTSV("") );
     }
 
-    @Test(expected = ResultSetException.class)
+    @Test
     public void resultset_bad_tsv_04() {
         // Two vars but a completely empty row (should contain a tab)
         String x = "?x\t?y\n\n";
-        parseTSV(x);
+        assertThrows(ResultSetException.class,()-> parseTSV(x) );
     }
 
     // various values - broken
 
-    @Test(expected = ResultSetException.class)
+    @Test
     public void resultset_bad_tsv_05() {
         String x = "?x\n<http://example/";
-        parseTSV(x);
+		assertThrows(ResultSetException.class,()-> parseTSV(x) );
     }
 
-    @Test(expected = ResultSetException.class)
+    @Test
     public void resultset_bad_tsv_06() {
         String x = "?x\n<http://example/ white space >";
-        parseTSV(x);
+        assertThrows(ResultSetException.class,()-> parseTSV(x) );
     }
 
-    @Test(expected = ResultSetException.class)
+    @Test
     public void resultset_bad_tsv_07() {
         String x = "?x\n<<<<http://example/>>>>";
-        parseTSV(x);
+        assertThrows(ResultSetException.class,()-> parseTSV(x) );
     }
 
-    @Test(expected = ResultSetException.class)
+    @Test
     public void resultset_bad_tsv_08() {
         String x = "?x\n_:abc def";
-        parseTSV(x);
+        assertThrows(ResultSetException.class,()-> parseTSV(x) );
     }
 
-    @Test(expected = ResultSetException.class)
+    @Test
     public void resultset_bad_tsv_09() {
         String x = "x\n<http://example.com>";
-        parseTSV(x);
+        assertThrows(ResultSetException.class,()-> parseTSV(x) );
     }
 
-    @Test(expected = ARQException.class)
+    @Test
     public void resultset_bad_tsv_boolean_01() {
         // Not in allowed set of true yes false no
         String x = "?_askResults\nblah";
-        parseTSVAsBoolean(x, false);
+        assertThrows(ARQException.class,()-> parseTSVAsBoolean(x, false) );
     }
 
-    @Test(expected = ARQException.class)
+    @Test
     public void resultset_bad_tsv_boolean_02() {
         // Missing header
         String x = "true";
-        parseTSVAsBoolean(x, false);
+        assertThrows(ARQException.class,()-> parseTSVAsBoolean(x, false) );
     }
 
-    @Test(expected = ARQException.class)
+    @Test
     public void resultset_bad_tsv_boolean_03() {
         // Missing boolean
         String x = "?_askResult\n";
-        parseTSVAsBoolean(x, false);
+        assertThrows(ARQException.class,()-> parseTSVAsBoolean(x, false) );
     }
 
-    @Test(expected = ARQException.class)
+    @Test
     public void resultset_bad_tsv_boolean_04() {
         // A normal result set header
         String x = "?x\n";
-        parseTSVAsBoolean(x, false);
+        assertThrows(ARQException.class,()-> parseTSVAsBoolean(x, false) );
     }
 
-    @Test(expected = ARQException.class)
+    @Test
     public void resultset_bad_tsv_boolean_05() {
         // A normal result set header
         String x = "?x\t?y\n";
-        parseTSVAsBoolean(x, false);
+        assertThrows(ARQException.class,()-> parseTSVAsBoolean(x, false) );
     }
 
     @Test
@@ -343,7 +344,7 @@ public class TestResultSetFormat2 {
         parseJSON(input);
     }
 
-    @Test(expected = ResultSetException.class)
+    @Test
     public void resultset_json_02() {
         //@formatter:off
         String input = StrUtils.strjoinNL("{\"head\":{\"vars\":[\"s\"]},",
@@ -359,23 +360,21 @@ public class TestResultSetFormat2 {
         //@formatter:on
 
         // No value for URI is illegal
-        parseJSON(input);
+        assertThrows( ResultSetException.class,()->parseJSON(input));
     }
 
-    @Test(expected = ResultSetException.class)
+    @Test
     public void resultset_json_03() {
         String input = "{\"head\":{\"vars\":[\"s\"]}}";
-
         // Missing results is illegal
-        parseJSON(input);
+        assertThrows( ResultSetException.class,()->parseJSON(input));
     }
 
-    @Test(expected = ResultSetException.class)
+    @Test
     public void resultset_json_04() {
         String input = "{\"results\":{}}";
-
         // Missing head is illegal
-        parseJSON(input);
+        assertThrows(ResultSetException.class,()->parseJSON(input));
     }
 
     @Test
@@ -409,10 +408,10 @@ public class TestResultSetFormat2 {
                                           "}");
         //@formatter:on
         ResultSet rs = resultSetFromJSON(input, null);
-        Assert.assertEquals(Arrays.asList("c"), rs.getResultVars());
+        assertEquals(Arrays.asList("c"), rs.getResultVars());
     }
 
-    public static ResultSet resultset_json_07_data(Context cxt) {
+    public static ResultSet exec_resultset_json_07_data(Context cxt) {
         //@formatter:off
         String input = StrUtils.strjoinNL("{",
                                           "  \"results\": {",
@@ -435,27 +434,22 @@ public class TestResultSetFormat2 {
         return resultSetFromJSON(input, cxt);
     }
 
-    @Test(expected = ResultSetException.class)
+    @Test
     public void resultset_json_07a_repeated_results() {
-        ResultSet rs = resultset_json_07_data(null);
-
         // Fail upon trying to access the 'head' which encounters the repeated
         // 'results' key.
-        // The following line is there for documentation/robustness.
-        // Actually the involved ResultSet.adapt() already invokes
-        // RowSet.getResultVars() eagerly
-        rs.getResultVars();
+        assertThrows(ResultSetException.class, ()->exec_resultset_json_07_data(null));
     }
 
     @Test
     public void resultset_json_07b_repeated_results() {
         Context cxt = new Context();
         cxt.set(RowSetReaderJSONStreaming.rsJsonSeverityInvalidatedResults, Severity.IGNORE);
-        ResultSet rs = resultset_json_07_data(cxt);
+        ResultSet rs = exec_resultset_json_07_data(cxt);
         // In contrast to 07a retrieving the header should work
-        Assert.assertEquals(Arrays.asList("b"), rs.getResultVars());
+        assertEquals(Arrays.asList("b"), rs.getResultVars());
         // Ignoring the error should give 5 bindings and not log a warning during testing
-        Assert.assertEquals(5, ResultSetFormatter.consume(rs));
+        assertEquals(5, ResultSetFormatter.consume(rs));
     }
 
     public static ResultSet resultset_json_08_data(Context cxt) {
@@ -476,13 +470,13 @@ public class TestResultSetFormat2 {
         return resultSetFromJSON(input, cxt);
     }
 
-    @Test(expected = ResultSetException.class)
+    @Test
     public void resultset_json_08a_repeated_results() {
         ResultSet rs = resultset_json_08_data(null);
         // Scanning for the first head should work
-        Assert.assertEquals(Arrays.asList("b"), rs.getResultVars());
+        assertEquals(Arrays.asList("b"), rs.getResultVars());
         // Expected to fail on last 'head' because it invalidates the seen head
-        ResultSetFormatter.consume(rs);
+        assertThrows(ResultSetException.class,()->ResultSetFormatter.consume(rs));
     }
 
     @Test
@@ -490,9 +484,9 @@ public class TestResultSetFormat2 {
         Context cxt = new Context();
         cxt.set(RowSetReaderJSONStreaming.rsJsonSeverityInvalidatedHead, Severity.IGNORE);
         ResultSet rs = resultset_json_08_data(cxt);
-        Assert.assertEquals(Arrays.asList("b"), rs.getResultVars());
+        assertEquals(Arrays.asList("b"), rs.getResultVars());
         // Ignoring the error should give 3 bindings and not log a warning during testing
-        Assert.assertEquals(3, ResultSetFormatter.consume(rs));
+        assertEquals(3, ResultSetFormatter.consume(rs));
     }
 
     private void parseTSV(String x) {

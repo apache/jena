@@ -18,75 +18,78 @@
 
 package org.apache.jena.riot.lang;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
-import org.apache.jena.graph.Node ;
-import org.junit.Test ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Parameterized ;
-import org.junit.runners.Parameterized.Parameters ;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
-public class TestBlankNodeAllocator
-{
-    public interface Factory { public BlankNodeAllocator create() ; }
-    
-    @Parameters(name = "{index}: {0}")
-    public static Iterable<Object[]> data() {
-        List<Object[]> x = new ArrayList<>() ;
+import org.apache.jena.graph.Node;
+
+@ParameterizedClass
+@MethodSource("provideArgs")
+public class TestBlankNodeAllocator {
+
+    public interface Factory { public BlankNodeAllocator create(); }
+
+    public static Stream<Arguments> provideArgs() {
+        List<Object[]> x = new ArrayList<>();
         Factory fSeededHashAlloc = new Factory() {
-            @Override public BlankNodeAllocator create() { return new BlankNodeAllocatorHash() ; }
-            @Override public String toString() { return "SeededHash" ; }
-        } ;
+            @Override public BlankNodeAllocator create() { return new BlankNodeAllocatorHash(); }
+            @Override public String toString() { return "SeededHash"; }
+        };
 
         Factory fUIDAlloc = new Factory() {
-            @Override public BlankNodeAllocator create() { return new BlankNodeAllocatorGlobal() ; }
-            @Override public String toString() { return "UID" ; }
-        } ;
-
-        x.add(new Object[]{fSeededHashAlloc}) ;
-        x.add(new Object[]{fUIDAlloc}) ;
-        return x ; 
+            @Override public BlankNodeAllocator create() { return new BlankNodeAllocatorGlobal(); }
+            @Override public String toString() { return "UID"; }
+        };
+        List<Arguments> args = List.of
+                (Arguments.of(fSeededHashAlloc),
+                 Arguments.of(fUIDAlloc)
+                );
+        return args.stream();
     }
 
-    private Factory factory ;
-    
-    public TestBlankNodeAllocator(Factory factory) { this.factory = factory ; }
-    
+    private Factory factory;
+
+    public TestBlankNodeAllocator(Factory factory) { this.factory = factory; }
+
     @Test public void alloc_01()
     {
-        BlankNodeAllocator alloc = factory.create() ;
-        Node n = alloc.create() ;
-        assertTrue(n.isBlank()) ;
+        BlankNodeAllocator alloc = factory.create();
+        Node n = alloc.create();
+        assertTrue(n.isBlank());
     }
-    
+
     @Test public void alloc_02()
     {
-        BlankNodeAllocator alloc = factory.create() ;
-        Node n1 = alloc.create() ;
-        Node n2 = alloc.create() ;
-        assertNotEquals(n1, n2) ;
+        BlankNodeAllocator alloc = factory.create();
+        Node n1 = alloc.create();
+        Node n2 = alloc.create();
+        assertNotEquals(n1, n2);
     }
-    
+
     @Test public void alloc_03()
     {
-        BlankNodeAllocator alloc = factory.create() ;
-        Node n1 = alloc.alloc("foo") ;
-        Node n2 = alloc.alloc("foo") ;
-        assertEquals(n1, n2) ;
+        BlankNodeAllocator alloc = factory.create();
+        Node n1 = alloc.alloc("foo");
+        Node n2 = alloc.alloc("foo");
+        assertEquals(n1, n2);
     }
-    
+
     @Test public void alloc_04()
     {
-        BlankNodeAllocator alloc = factory.create() ;
-        Node n1 = alloc.alloc("foo") ;
-        Node n2 = alloc.alloc("bar") ;
-        assertNotEquals(n1, n2) ;
+        BlankNodeAllocator alloc = factory.create();
+        Node n1 = alloc.alloc("foo");
+        Node n2 = alloc.alloc("bar");
+        assertNotEquals(n1, n2);
     }
 }
 

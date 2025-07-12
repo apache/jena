@@ -18,9 +18,7 @@
 
 package org.apache.jena.riot.system;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -37,19 +35,14 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.iterator.IteratorCloseable;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFFormat;
-import org.apache.jena.riot.RDFParser;
-import org.apache.jena.riot.RDFParserBuilder;
-import org.apache.jena.riot.RiotException;
-import org.apache.jena.riot.RiotNotFoundException;
+import org.apache.jena.riot.*;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.util.IsoMatcher;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class TestAsyncParser {
 
@@ -58,14 +51,14 @@ public class TestAsyncParser {
     @Test public void async_parse_1() { test(DIR+"empty.ttl"); }
     @Test public void async_parse_2() { test(DIR+"data.ttl"); }
 
-    @Test(expected = RiotException.class)
+    @Test
     public void async_parse_3() {
-        test(DIR + "bad-data.ttl");
+        assertThrows(RiotException.class, ()->test(DIR + "bad-data.ttl"));
     }
 
-    @Test(expected = RiotNotFoundException.class)
+    @Test
     public void async_parse_4() {
-        test(DIR + "no-suchfile.ttl");
+        assertThrows(RiotException.class, ()->test(DIR + "no-suchfile.ttl"));
     }
 
     @Test
@@ -124,8 +117,8 @@ public class TestAsyncParser {
                 sink.finish();
             } catch (Exception e) {
                 // Expected to fail with FailingOutputStream's error message
-                Assert.assertNotNull("Unexpected exception: " + e, e.getCause());
-                Assert.assertEquals(FailingOutputStream.ERROR_MSG, e.getCause().getMessage());
+                assertNotNull(e.getCause(),()->"Unexpected exception: " + e);
+                assertEquals(FailingOutputStream.ERROR_MSG, e.getCause().getMessage());
                 continue;
             }
             throw new RuntimeException("Parsing unexpectedly succeeded");
@@ -134,9 +127,8 @@ public class TestAsyncParser {
         int threadCountDifference = Math.abs(afterThreadCount - beforeThreadCount);
         int maxAllowedThreadCountDifference = 5;
 
-        Assert.assertTrue("Cancelling RDF parsing resulted in too many dangling threads ("
-                + threadCountDifference + ")",
-                threadCountDifference <= maxAllowedThreadCountDifference);
+        assertTrue(threadCountDifference <= maxAllowedThreadCountDifference,
+                    ()->"Cancelling RDF parsing resulted in too many dangling threads (" + threadCountDifference + ")");
     }
 
     /** Tests to ensure threads are not piling up when repeatedly canceling parsers */
@@ -165,9 +157,8 @@ public class TestAsyncParser {
         // the number of created parser threads
         int maxAllowedThreadCountDifference = 5;
 
-        Assert.assertTrue("Cancelling RDF parsing resulted in too many dangling threads ("
-                + threadCountDifference + ")",
-                threadCountDifference <= maxAllowedThreadCountDifference);
+        assertTrue(threadCountDifference <= maxAllowedThreadCountDifference,
+                    ()->"Cancelling RDF parsing resulted in too many dangling threads (" + threadCountDifference + ")");
     }
 
     /** A test that checks that only a limited number of bytes is read when using a small chunk size*/
@@ -179,7 +170,7 @@ public class TestAsyncParser {
                 .setChunkSize(100).streamTriples().limit(expectedLimit)) {
             // s.forEach(t -> System.out.println("Triple: " + t));
             long actualLimit = s.count();
-            Assert.assertEquals(expectedLimit, actualLimit);
+            assertEquals(expectedLimit, actualLimit);
         }
 
         long pos = channel.position();
@@ -190,7 +181,7 @@ public class TestAsyncParser {
         // - The close action clears the queue and aborts on the next chunk -> 60K.
         // In order to give room for implementation changes and to account for possible buffering in the parser
         // the value tested against here is about twice as large
-        Assert.assertTrue("Too many bytes consumed from input stream (" + pos + ")", pos < 120_000);
+        assertTrue(pos < 120_000, "Too many bytes consumed from input stream (" + pos + ")");
     }
 
     /** This test first creates some 'good' data for reference and then appends some 'bad' data in order
@@ -214,7 +205,7 @@ public class TestAsyncParser {
 
         // Validate parser on the good data
         int expectedGoodEventCount = 5;
-        Assert.assertEquals(expected.size(), expectedGoodEventCount);
+        assertEquals(expected.size(), expectedGoodEventCount);
 
         // Append some bad data
         String badInputStr = sb.append("parse error").toString();
@@ -225,9 +216,9 @@ public class TestAsyncParser {
                     .setChunkSize(chunkSize)
                     .streamElements()) {
                 List<EltStreamRDF> actual = s.toList();
-                Assert.assertEquals(expectedGoodEventCount + 1, actual.size());
-                Assert.assertEquals(expected, actual.subList(0, expectedGoodEventCount));
-                Assert.assertTrue(actual.get(actual.size() - 1).isException());
+                assertEquals(expectedGoodEventCount + 1, actual.size());
+                assertEquals(expected, actual.subList(0, expectedGoodEventCount));
+                assertTrue(actual.get(actual.size() - 1).isException());
             }
         }
     }
@@ -253,17 +244,17 @@ public class TestAsyncParser {
         }
 
         // Check that only the expected number of elements were dispatched
-        Assert.assertEquals(expectedSize, actual.size());
+        assertEquals(expectedSize, actual.size());
 
         // The payload of the last element must be an exception, all others must be triples
         for (int i = 0; i < expectedSize; ++i) {
             boolean isLastItem = i + 1 == expectedSize;
             EltStreamRDF elt = actual.get(i);
             if (isLastItem) {
-                Assert.assertTrue("Last element expected to be an exception", elt.isException());
-                Assert.assertEquals(expectedErrorMsg, elt.exception().getMessage());
+                assertTrue(elt.isException(),()->"Last element expected to be an exception");
+                assertEquals(expectedErrorMsg, elt.exception().getMessage());
             } else {
-                Assert.assertTrue("Non-last element expected to be a triple", elt.isTriple());
+                assertTrue(elt.isTriple(), ()->"Non-last element expected to be a triple");
             }
         }
 

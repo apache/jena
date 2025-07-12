@@ -24,25 +24,26 @@ import org.apache.jena.arq.junit.runners.RunnerRIOT;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParserRegistry;
 import org.apache.jena.riot.ReaderRIOTFactory;
-import org.apache.jena.riot.lang.rdfxml.rrx.ReaderRDFXML_SAX;
+import org.apache.jena.riot.lang.rdfxml.ReaderRDFXML_ARP1;
+import org.apache.jena.sys.JenaSystem;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 @RunWith(RunnerRIOT.class)
-@Label("RRX SAX RDF 1.1 rdf11-xml")
+@Label("ARP1 RDF 1.1 rdf11-xml")
 @Manifests({
     "testing/RIOT/rdf11-xml/manifest.ttl"
 })
 
-public class TestManifest_RDF11_RRX_SAX {
+public class Manifest_RDF11_ARP1 {
     private static ReaderRIOTFactory systemReaderfactory;
 
     @BeforeClass
     public static void beforeClass() {
+        JenaSystem.init();;
         systemReaderfactory = RDFParserRegistry.getFactory(Lang.RDFXML);
-        // Register test parser.
-        RDFParserRegistry.registerLangTriples(Lang.RDFXML, ReaderRDFXML_SAX.factory);
+        RDFParserRegistry.registerLangTriples(Lang.RDFXML, ReaderRDFXML_ARP1.factory);
     }
 
     @AfterClass

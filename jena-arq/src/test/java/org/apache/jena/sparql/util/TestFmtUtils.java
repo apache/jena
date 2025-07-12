@@ -1,30 +1,30 @@
 
-package org.apache.jena.sparql.util ;
+package org.apache.jena.sparql.util;
 
-import static org.apache.jena.sparql.util.FmtUtils.stringForQuad ;
-import static org.apache.jena.sparql.util.FmtUtils.stringForRDFNode ;
-import static org.apache.jena.sparql.util.FmtUtils.stringForTriple ;
-import static org.junit.Assert.assertEquals ;
+import static org.apache.jena.sparql.util.FmtUtils.stringForQuad;
+import static org.apache.jena.sparql.util.FmtUtils.stringForRDFNode;
+import static org.apache.jena.sparql.util.FmtUtils.stringForTriple;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.ByteArrayOutputStream ;
+import java.io.ByteArrayOutputStream;
 
-import org.apache.jena.atlas.io.IndentedLineBuffer ;
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.graph.Node_Literal ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.rdf.model.impl.LiteralImpl ;
-import org.apache.jena.rdf.model.impl.ResourceImpl ;
-import org.apache.jena.shared.JenaException;
-import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.shared.impl.PrefixMappingImpl ;
-import org.apache.jena.sparql.core.BasicPattern ;
-import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.sparql.sse.SSE ;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.atlas.io.IndentedLineBuffer;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Node_Literal;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.rdf.model.impl.LiteralImpl;
+import org.apache.jena.rdf.model.impl.ResourceImpl;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.shared.impl.PrefixMappingImpl;
+import org.apache.jena.sparql.core.BasicPattern;
+import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.serializer.SerializationContext;
+import org.apache.jena.sparql.sse.SSE;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -48,121 +48,121 @@ public class TestFmtUtils
 {
     @Test
     public void stringForTripleEncoding() {
-        assertEquals("<n1> <n2> \"l3\"", stringForTriple(getTriple())) ;
+        assertEquals("<n1> <n2> \"l3\"", stringForTriple(getTriple()));
     }
 
     @Test
     public void stringForTriple_WithPrefixMapping() {
-        assertEquals("zz:abs <n2> \"l3\"", stringForTriple(getPrefixedTriple(), getPrefixMapping())) ;
+        assertEquals("zz:abs <n2> \"l3\"", stringForTriple(getPrefixedTriple(), getPrefixMapping()));
     }
 
     @Test
     public void stringForQuadEncoding() {
-        Node n1 = NodeFactory.createURI("q1") ;
+        Node n1 = NodeFactory.createURI("q1");
 
-        Quad quad = new Quad(n1, getTriple()) ;
-        assertEquals("<q1> <n1> <n2> \"l3\"", stringForQuad(quad)) ;
+        Quad quad = new Quad(n1, getTriple());
+        assertEquals("<q1> <n1> <n2> \"l3\"", stringForQuad(quad));
 
     }
 
     @Test
     public void stringForQuad_WithPrefixMapping() {
-        Node n1 = NodeFactory.createURI("q1") ;
+        Node n1 = NodeFactory.createURI("q1");
 
-        Quad quad = new Quad(n1, getPrefixedTriple()) ;
-        assertEquals("<q1> zz:abs <n2> \"l3\"", stringForQuad(quad, getPrefixMapping())) ;
+        Quad quad = new Quad(n1, getPrefixedTriple());
+        assertEquals("<q1> zz:abs <n2> \"l3\"", stringForQuad(quad, getPrefixMapping()));
     }
 
     @Test
     public void formatPattern_2_triples() {
-        BasicPattern basicPattern = new BasicPattern() ;
-        basicPattern.add(getTriple()) ;
-        basicPattern.add(getTriple2()) ;
-        ByteArrayOutputStream os = new ByteArrayOutputStream() ;
+        BasicPattern basicPattern = new BasicPattern();
+        basicPattern.add(getTriple());
+        basicPattern.add(getTriple2());
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
         try(IndentedWriter iw = new IndentedWriter(os)) {
-            SerializationContext sc = new SerializationContext() ;
-            FmtUtils.formatPattern(iw, basicPattern, sc) ;
+            SerializationContext sc = new SerializationContext();
+            FmtUtils.formatPattern(iw, basicPattern, sc);
         }
-        assertEquals("<n1> <n2> \"l3\" .\n" + "<nb1> <nb2> \"lb3\" .", new String(os.toByteArray())) ;
+        assertEquals("<n1> <n2> \"l3\" .\n" + "<nb1> <nb2> \"lb3\" .", new String(os.toByteArray()));
     }
 
     @Test
     public void stringForObject_misc_versions() {
-        assertEquals("<<null>>", FmtUtils.stringForObject(null)) ;
-        assertEquals("<n1>", FmtUtils.stringForObject(new LiteralImpl(aNode(), null))) ;
-        assertEquals("<nzz1>", FmtUtils.stringForObject(new ResourceImpl(NodeFactory.createURI("nzz1"), null))) ;
-        assertEquals("abc", FmtUtils.stringForObject("abc")) ;
+        assertEquals("<<null>>", FmtUtils.stringForObject(null));
+        assertEquals("<n1>", FmtUtils.stringForObject(new LiteralImpl(aNode(), null)));
+        assertEquals("<nzz1>", FmtUtils.stringForObject(new ResourceImpl(NodeFactory.createURI("nzz1"), null)));
+        assertEquals("abc", FmtUtils.stringForObject("abc"));
     }
 
     @Test
     public void stringForRDFNode_literal() {
-        assertEquals("<n1>", stringForRDFNode(new LiteralImpl(aNode(), null))) ;
+        assertEquals("<n1>", stringForRDFNode(new LiteralImpl(aNode(), null)));
     }
 
-    @Test(expected = JenaException.class)
+    @Test
     public void stringLiteral() {
-        Node_Literal nl = (Node_Literal)NodeFactory.createLiteral("abc", "no", new XSDDatatype("string")) ;
-        assertEquals("\"abc\"@no", FmtUtils.stringForLiteral(nl, getContext())) ;
+        Node_Literal nl = (Node_Literal)NodeFactory.createLiteralLang("abc", "no");
+        assertEquals("\"abc\"@no", FmtUtils.stringForLiteral(nl, getContext()));
     }
 
     @Test
     public void integerLiteral() {
-        Node_Literal nl = (Node_Literal)NodeFactory.createLiteralDT("2", new XSDDatatype("int")) ;
-        assertEquals("\"2\"^^<http://www.w3.org/2001/XMLSchema#int>", FmtUtils.stringForLiteral(nl, getContext())) ;
+        Node_Literal nl = (Node_Literal)NodeFactory.createLiteralDT("2", new XSDDatatype("int"));
+        assertEquals("\"2\"^^<http://www.w3.org/2001/XMLSchema#int>", FmtUtils.stringForLiteral(nl, getContext()));
     }
 
     @Test
     public void doubleLiteral() {
-        Node_Literal nl = (Node_Literal)NodeFactory.createLiteralDT("2.1e2", new XSDDatatype("double")) ;
-        assertEquals("2.1e2", FmtUtils.stringForLiteral(nl, getContext())) ;
+        Node_Literal nl = (Node_Literal)NodeFactory.createLiteralDT("2.1e2", new XSDDatatype("double"));
+        assertEquals("2.1e2", FmtUtils.stringForLiteral(nl, getContext()));
     }
 
     @Test
     public void decimalLiteral() {
-        Node_Literal nl = (Node_Literal)NodeFactory.createLiteralDT("2.4", new XSDDatatype("decimal")) ;
-        assertEquals("2.4", FmtUtils.stringForLiteral(nl, getContext())) ;
+        Node_Literal nl = (Node_Literal)NodeFactory.createLiteralDT("2.4", new XSDDatatype("decimal"));
+        assertEquals("2.4", FmtUtils.stringForLiteral(nl, getContext()));
     }
 
     @Test
     public void booleanLiteral() {
-        Node_Literal nl = (Node_Literal)NodeFactory.createLiteralDT("false", new XSDDatatype("boolean")) ;
-        assertEquals("false", FmtUtils.stringForLiteral(nl, getContext())) ;
+        Node_Literal nl = (Node_Literal)NodeFactory.createLiteralDT("false", new XSDDatatype("boolean"));
+        assertEquals("false", FmtUtils.stringForLiteral(nl, getContext()));
     }
 
     @Test
     public void stringForRDFNode_resource() {
-        final ResourceImpl rdfNod = new ResourceImpl(aUriRemappableNode(), null) ;
-        assertEquals("zz:abs", stringForRDFNode(rdfNod, getContext())) ;
+        final ResourceImpl rdfNod = new ResourceImpl(aUriRemappableNode(), null);
+        assertEquals("zz:abs", stringForRDFNode(rdfNod, getContext()));
     }
 
     @Test
     public void anonNode1() {
         FmtUtils.resetBNodeLabels();
-        assertEquals("_:b0", FmtUtils.stringForNode(NodeFactory.createBlankNode())) ;
+        assertEquals("_:b0", FmtUtils.stringForNode(NodeFactory.createBlankNode()));
     }
 
     @Test
     public void anonNode2() {
         FmtUtils.resetBNodeLabels();
-        assertEquals("_:b0", FmtUtils.stringForNode(NodeFactory.createBlankNode())) ;
-        assertEquals("_:b1", FmtUtils.stringForNode(NodeFactory.createBlankNode())) ;
-        assertEquals("_:b2", FmtUtils.stringForNode(NodeFactory.createBlankNode())) ;
+        assertEquals("_:b0", FmtUtils.stringForNode(NodeFactory.createBlankNode()));
+        assertEquals("_:b1", FmtUtils.stringForNode(NodeFactory.createBlankNode()));
+        assertEquals("_:b2", FmtUtils.stringForNode(NodeFactory.createBlankNode()));
     }
 
     @Test
     public void variableNode() {
-        assertEquals("?tt", FmtUtils.stringForNode(NodeFactory.createVariable("tt"))) ;
+        assertEquals("?tt", FmtUtils.stringForNode(NodeFactory.createVariable("tt")));
     }
 
     @Test
     public void anyNode() {
-        assertEquals("ANY", FmtUtils.stringForNode(Node.ANY)) ;
+        assertEquals("ANY", FmtUtils.stringForNode(Node.ANY));
     }
 
     @Test
     public void testStringForURI() {
-        final String s = FmtUtils.stringForURI("zz:ü_fe-zz") ;
-        assertEquals("<zz:ü_fe-zz>", s) ;
+        final String s = FmtUtils.stringForURI("zz:ü_fe-zz");
+        assertEquals("<zz:ü_fe-zz>", s);
 
     }
 
@@ -175,69 +175,69 @@ public class TestFmtUtils
 
     @Test
     public void testStringEsc() {
-        assertEquals("\\\\\\r\\n", FmtUtils.stringEsc("\\\r\n")) ;
+        assertEquals("\\\\\\r\\n", FmtUtils.stringEsc("\\\r\n"));
     }
 
     @Test
     public void stringForString() {
-        assertEquals("\"a\\rbt\"", FmtUtils.stringForString("a\rbt")) ;
+        assertEquals("\"a\\rbt\"", FmtUtils.stringForString("a\rbt"));
     }
 
     @Test
     public void testFormatBGP_1() {
-        IndentedLineBuffer b = new IndentedLineBuffer() ;
-        BasicPattern bgp = SSE.parseBGP("(prefix ((zz: <"+aUri+">)) (bgp (zz:s zz:p zz:o)))") ;
-        FmtUtils.formatPattern(b, bgp, getContext()) ;
-        assertEquals("zz:s zz:p zz:o .", b.toString()) ;
+        IndentedLineBuffer b = new IndentedLineBuffer();
+        BasicPattern bgp = SSE.parseBGP("(prefix ((zz: <"+aUri+">)) (bgp (zz:s zz:p zz:o)))");
+        FmtUtils.formatPattern(b, bgp, getContext());
+        assertEquals("zz:s zz:p zz:o .", b.toString());
     }
 
     @Test
     public void testFormatBGP_2() {
-        IndentedLineBuffer b = new IndentedLineBuffer() ;
-        BasicPattern bgp = SSE.parseBGP("(prefix ((zz: <"+aUri+">)) (bgp (zz:s zz:p zz:o) (zz:s zz:p 123) ))") ;
-        FmtUtils.formatPattern(b, bgp, getContext()) ;
-        assertEquals("zz:s zz:p zz:o .\nzz:s zz:p 123 .", b.toString()) ;
+        IndentedLineBuffer b = new IndentedLineBuffer();
+        BasicPattern bgp = SSE.parseBGP("(prefix ((zz: <"+aUri+">)) (bgp (zz:s zz:p zz:o) (zz:s zz:p 123) ))");
+        FmtUtils.formatPattern(b, bgp, getContext());
+        assertEquals("zz:s zz:p zz:o .\nzz:s zz:p 123 .", b.toString());
     }
 
     private Triple getTriple() {
-        Node n1 = aNode() ;
-        Node n2 = NodeFactory.createURI("n2") ;
-        Node l3 = NodeFactory.createLiteralString("l3") ;
-        return Triple.create(n1, n2, l3) ;
+        Node n1 = aNode();
+        Node n2 = NodeFactory.createURI("n2");
+        Node l3 = NodeFactory.createLiteralString("l3");
+        return Triple.create(n1, n2, l3);
     }
 
     private Node aNode() {
-        return NodeFactory.createURI("n1") ;
+        return NodeFactory.createURI("n1");
     }
 
     private Triple getTriple2() {
-        Node n1 = NodeFactory.createURI("nb1") ;
-        Node n2 = NodeFactory.createURI("nb2") ;
-        Node l3 = NodeFactory.createLiteralString("lb3") ;
-        return Triple.create(n1, n2, l3) ;
+        Node n1 = NodeFactory.createURI("nb1");
+        Node n2 = NodeFactory.createURI("nb2");
+        Node l3 = NodeFactory.createLiteralString("lb3");
+        return Triple.create(n1, n2, l3);
     }
 
     private Triple getPrefixedTriple() {
-        Node n1 = aUriRemappableNode() ;
-        Node n2 = NodeFactory.createURI("n2") ;
-        Node l3 = NodeFactory.createLiteralString("l3") ;
+        Node n1 = aUriRemappableNode();
+        Node n2 = NodeFactory.createURI("n2");
+        Node l3 = NodeFactory.createLiteralString("l3");
 
-        return Triple.create(n1, n2, l3) ;
+        return Triple.create(n1, n2, l3);
     }
 
     private Node aUriRemappableNode() {
-        return NodeFactory.createURI(aUri + "abs") ;
+        return NodeFactory.createURI(aUri + "abs");
     }
 
     private PrefixMapping getPrefixMapping() {
-        PrefixMapping pmap = new PrefixMappingImpl() ;
-        pmap.setNsPrefix("zz", aUri) ;
-        return pmap ;
+        PrefixMapping pmap = new PrefixMappingImpl();
+        pmap.setNsPrefix("zz", aUri);
+        return pmap;
     }
 
-    public static final String aUri = "http://www.zz.org/xx#" ;
+    public static final String aUri = "http://www.zz.org/xx#";
 
     private SerializationContext getContext() {
-        return new SerializationContext(getPrefixMapping()) ;
+        return new SerializationContext(getPrefixMapping());
     }
 }

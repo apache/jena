@@ -18,13 +18,15 @@
 
 package org.apache.jena.sparql.algebra.optimize;
 
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.TransformCopy ;
-import org.apache.jena.sparql.algebra.Transformer ;
-import org.apache.jena.sparql.expr.ExprTransform ;
-import org.apache.jena.sparql.sse.SSE ;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.TransformCopy;
+import org.apache.jena.sparql.algebra.Transformer;
+import org.apache.jena.sparql.expr.ExprTransform;
+import org.apache.jena.sparql.sse.SSE;
 
 /**
  * Tests for the {@link ExprTransformConstantFold}
@@ -43,7 +45,7 @@ public class TestTransformConstantFolding {
 
         Op opOptimized = Transformer.transform(new TransformCopy(), transform, opOrig);
 
-        Assert.assertEquals(opExpected, opOptimized);
+        assertEquals(opExpected, opOptimized);
     }
 
     @Test
@@ -85,7 +87,7 @@ public class TestTransformConstantFolding {
         // so could be removed entirely but isn't currently
         testNoTransform("(extend (?x (coalesce (/ 1 0) 0)) (table unit))", transform);
     }
-    
+
     @Test
     public void constant_fold_extend_08() {
         // Zero argument functions should not be treated as constants
@@ -94,63 +96,63 @@ public class TestTransformConstantFolding {
         testNoTransform("(extend (?x (uuid)))", transform);
         testNoTransform("(extend (?x (struuid)))", transform);
     }
-    
+
     @Test
     public void constant_fold_filter_01() {
         test("(filter (exprlist (+ 1 2)) (table unit))", "(filter (exprlist 3) (table unit))", transform);
     }
-    
+
     @Test
     public void constant_fold_filter_02() {
         test("(filter (exprlist (+ (+ 1 2) 3)) (table unit))", "(filter (exprlist 6) (table unit))", transform);
     }
-    
+
     @Test
     public void constant_fold_filter_03() {
         test("(filter (exprlist (/ 1 2)) (table unit))", "(filter (exprlist 0.5) (table unit))", transform);
     }
-    
+
     @Test
     public void constant_fold_filter_04() {
         // When an error occurs we don't fold
         testNoTransform("(filter (exprlist (/ 1 0)) (table unit))", transform);
     }
-    
+
     @Test
     public void constant_fold_filter_05() {
         test("(filter (exprlist (abs -1)) (table unit))", "(filter (exprlist 1) (table unit))", transform);
     }
-    
+
     @Test
     public void constant_fold_filter_06() {
         test("(filter (regex 'something' 'thing') (table unit))", "(filter (exprlist true) (table unit))", transform);
     }
-    
+
     @Test
     public void constant_fold_filter_07() {
         testNoTransform("(filter (exprlist (coalesce (/ 1 0) 0)) (table unit))", transform);
     }
-    
+
     @Test
     public void constant_fold_filter_08() {
         test("(filter (exists (filter (exprlist (+ 1 2)) (table unit))) (table unit))", "(filter (exists (filter (exprlist 3) (table unit))) (table unit))", transform);
     }
-    
+
     @Test
     public void constant_fold_filter_09() {
         test("(filter (exprlist (= ?x (+ 1 2))) (table unit))", "(filter (exprlist (= ?x 3)) (table unit))", transform);
     }
-    
+
     @Test
     public void constant_fold_filter_10() {
         test("(filter (exprlist (+ 1 (* (+ 5 6 ) (+ 8 9)))) (table unit))", "(filter (exprlist 188) (table unit))", transform);
     }
-    
+
     @Test
     public void constant_fold_filter_11() {
         test("(filter (exprlist (* ?y (+ (* ?x 4) (* ?z 6 )))) (table unit))", null, transform);
     }
-    
+
     @Test
     public void constant_fold_filter_12() {
         // Zero argument functions should not be treated as constants
@@ -159,12 +161,12 @@ public class TestTransformConstantFolding {
         testNoTransform("(filter (exprlist (uuid)) (table unit))", transform);
         testNoTransform("(filter (exprlist (struuid)) (table unit))", transform);
     }
-    
+
     @Test
     public void constant_fold_group_01() {
         test("(project (?count) (extend ((?count ?.0)) (group () ((?.0 (count (+ 1 2)))) (table unit))))", "(project (?count) (extend ((?count ?.0)) (group () ((?.0 (count 3))) (table unit))))", transform);
     }
-    
+
     @Test
     public void constant_fold_leftjoin_01() {
         test("(leftjoin (table unit) (table unit) (+ 1 2))", "(leftjoin (table unit) (table unit) (exprlist 3))", transform);

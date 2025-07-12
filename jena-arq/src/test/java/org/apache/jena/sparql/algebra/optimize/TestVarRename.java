@@ -18,10 +18,12 @@
 
 package org.apache.jena.sparql.algebra.optimize;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
@@ -31,15 +33,9 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.Rename;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.sse.SSE;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
 
 public class TestVarRename
 {
-    @Rule public TestName name = new TestName();
-
     @Test public void rename_01() { rename("(bgp (<s> <p> <o>))", "(bgp (<s> <p> <o>))", true); }
     @Test public void rename_02() { rename("(bgp (<s> ?p <o>))", "(bgp (<s> ?/p <o>))", true); }
     @Test public void rename_03() { rename("(bgp (?s ?p <o>))", "(bgp (?s ?/p <o>))", true, "s"); }
@@ -121,7 +117,7 @@ public class TestVarRename
     @Test public void query_rename_02()
     {
         String queryString =
-            "SELECT ?x { ?s ?p ?o . { SELECT ?v { ?x ?y ?v {SELECT * { ?a ?y ?w }}} LIMIT 50 } }" ;
+            "SELECT ?x { ?s ?p ?o . { SELECT ?v { ?x ?y ?v {SELECT * { ?a ?y ?w }}} LIMIT 50 } }";
         String opExpectedString = """
             (project (?x)
               (join
@@ -167,7 +163,7 @@ public class TestVarRename
 
     @Test public void query_rename_05()
     {
-        String queryString = "SELECT ?v { ?s ?p ?o . { SELECT ?v { ?x ?y ?v {SELECT ?w { ?a ?y ?w }}} LIMIT 50 } }"   ;
+        String queryString = "SELECT ?v { ?s ?p ?o . { SELECT ?v { ?x ?y ?v {SELECT ?w { ?a ?y ?w }}} LIMIT 50 } }"  ;
         String opExpectedString = """
             (project (?v)
               (join
@@ -201,7 +197,7 @@ public class TestVarRename
 
     @Test public void query_rename_07()
     {
-        String queryString = "SELECT * { ?s ?p ?o . { SELECT ?w { ?x ?y ?v }}}" ;
+        String queryString = "SELECT * { ?s ?p ?o . { SELECT ?w { ?x ?y ?v }}}";
         String opExpectedString = """
                 (join
                   (bgp (triple ?s ?p ?o))
@@ -271,7 +267,7 @@ public class TestVarRename
         Op expected = SSE.parseOp(expectedStr);
         Op transformed = TransformScopeRename.transform(orig);
 
-        Assert.assertEquals(transformed, expected);
+        assertEquals(transformed, expected);
     }
 
     // JENA-1275
@@ -304,7 +300,7 @@ public class TestVarRename
 
         Op transformed = TransformScopeRename.transform(orig);
 
-        Assert.assertEquals(transformed, expected);
+        assertEquals(transformed, expected);
     }
 
     @Test public void renameExpr_01() {
@@ -412,7 +408,7 @@ public class TestVarRename
         Op opActual = Rename.renameVars(opOrig, constant);
 
         if ( DEV && !opExpected.equals(opActual) ) {
-            System.err.println("**** Test: " + name.getMethodName());
+            System.err.println("**** Test:");
             System.err.println("::Expected::");
             System.err.print(opExpected);
             System.err.println("::Got::");
@@ -438,7 +434,7 @@ public class TestVarRename
         Expr exprActual = Rename.renameVars(exOrig, s);
 
         if ( DEV && ! exExpected.equals(exprActual) ) {
-            System.err.println("**** Test: "+name.getMethodName());
+            System.err.println("**** Test:");
             System.err.println("::Expected::");
             System.err.println(exExpected);
             System.err.println("::Got::");

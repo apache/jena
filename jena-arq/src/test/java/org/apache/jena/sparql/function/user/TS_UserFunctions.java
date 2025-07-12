@@ -18,31 +18,31 @@
 
 package org.apache.jena.sparql.function.user;
 
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.junit.runners.Suite.SuiteClasses ;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@SuiteClasses( {
+@Suite
+@SelectClasses({
+
     TestUserDefinedFunctionFactory.class,
     TestFunctionExpansion.class,
     TestFunctionNonExpansion.class,
     TestUserFunctionsInSparql.class
 })
 public class TS_UserFunctions {
-	
+
 	//Expected warnings off
 	private static boolean bWarnOnUnusedVar;
-	
-	@BeforeClass
+
+	@BeforeAll
 	public static void setup() {
 		bWarnOnUnusedVar = UserDefinedFunctionDefinition.warnOnUnusedVariable;
 		UserDefinedFunctionDefinition.warnOnUnusedVariable = false;
 	}
-	
-	@AfterClass
+
+	@AfterAll
 	public static void teardown() {
 		UserDefinedFunctionDefinition.warnOnUnusedVariable = bWarnOnUnusedVar;
 	}

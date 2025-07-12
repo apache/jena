@@ -18,70 +18,71 @@
 
 package org.apache.jena.system;
 
-import static org.junit.Assert.assertEquals ;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
 
 public class TestTxnThread {
 
-    TxnCounter counter = new TxnCounter(0) ; 
-    
+    TxnCounter counter = new TxnCounter(0) ;
+
     // Tests for thread transactions.
-    
+
     @Test public void txnThread_1() {
         ThreadAction t = ThreadTxn.threadTxnRead(counter, ()->{}) ;
         t.run();
     }
-    
+
     @Test public void txnThread_2() {
         ThreadAction t = ThreadTxn.threadTxnWrite(counter, ()-> fail("")) ;
     }
 
-    @Test(expected=AssertionError.class)
+    @Test
     public void txnThread_3() {
-        ThreadAction t = ThreadTxn.threadTxnWrite(counter, ()-> fail("")) ;
-        t.run() ;
+        assertThrows(AssertionError.class, () -> {
+            ThreadAction t = ThreadTxn.threadTxnWrite(counter, () -> fail(""));
+            t.run();
+        });
     }
 
     @Test public void txnThread_10() {
-        long x1 = counter.get() ;  
+        long x1 = counter.get() ;
         ThreadAction t = ThreadTxn.threadTxnWrite(counter, ()->{ counter.inc() ;}) ;
         long x2 = counter.get() ;
-        assertEquals("x2", x1, x2) ;
+        assertEquals(x1, x2, ()->"x2") ;
         t.run() ;
         long x3 = counter.get() ;
-        assertEquals("x3", x1+1, x3) ;
+        assertEquals(x1+1, x3, ()->"x3") ;
     }
-    
+
     @Test public void txnThread_11() {
-        long x1 = counter.get() ;  
+        long x1 = counter.get() ;
         Txn.executeWrite(counter, ()->{
             counter.inc();
             // Read the "before" state
-            ThreadAction t = ThreadTxn.threadTxnRead(counter, ()->{ 
-                long z1 = counter.get() ; 
-                assertEquals("Thread read", x1, z1) ;
+            ThreadAction t = ThreadTxn.threadTxnRead(counter, ()->{
+                long z1 = counter.get() ;
+                assertEquals(x1, z1, ()->"Thread read") ;
             }) ;
             counter.inc();
-            t.run(); 
+            t.run();
         }) ;
         long x2 = counter.get() ;
-        assertEquals("after", x1+2, x2) ;
+        assertEquals(x1+2, x2, ()->"after") ;
     }
 
     @Test public void txnThread_12() {
-        long x1 = counter.get() ;  
+        long x1 = counter.get() ;
         ThreadAction t = ThreadTxn.threadTxnRead(counter, () -> {
             long z1 = counter.get() ;
-            assertEquals("Thread", x1, z1) ;
+            assertEquals(x1, z1, ()->"Thread") ;
         }) ;
         Txn.executeWrite(counter, ()->counter.inc()) ;
         t.run() ;
         long x2 = counter.get() ;
-        assertEquals("after", x1+1, x2) ;
+        assertEquals(x1+1, x2, ()->"after");
     }
-
 }
 
- 

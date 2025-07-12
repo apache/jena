@@ -18,16 +18,19 @@
 
 package org.apache.jena.sparql.function.user;
 
-import java.util.ArrayList ;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.expr.* ;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueInteger ;
-import org.apache.jena.sparql.util.NodeFactoryExtra ;
-import org.junit.AfterClass ;
-import org.junit.Assert ;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
+import java.util.ArrayList;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.sparql.engine.binding.BindingFactory;
+import org.apache.jena.sparql.expr.*;
+import org.apache.jena.sparql.expr.nodevalue.NodeValueInteger;
+import org.apache.jena.sparql.util.NodeFactoryExtra;
 
 /**
  * Tests which check that functions are not expanded when {@link UserDefinedFunctionFactory#setPreserveDependencies(boolean)} is set to true
@@ -35,13 +38,13 @@ import org.junit.Test ;
  */
 public class TestFunctionNonExpansion {
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         UserDefinedFunctionFactory.getFactory().clear();
         UserDefinedFunctionFactory.getFactory().setPreserveDependencies(true);
     }
 
-    @AfterClass
+    @AfterAll
     public static void teardown() {
         UserDefinedFunctionFactory.getFactory().clear();
         UserDefinedFunctionFactory.getFactory().setPreserveDependencies(false);
@@ -58,13 +61,13 @@ public class TestFunctionNonExpansion {
 
         UserDefinedFunctionDefinition def = UserDefinedFunctionFactory.getFactory().get("http://example/cube");
         Expr base = def.getBaseExpr();
-        Assert.assertTrue(base instanceof E_Multiply);
+        assertTrue(base instanceof E_Multiply);
         E_Multiply multiply = (E_Multiply)base;
-        Assert.assertTrue(multiply.getArg1() instanceof E_Function);
-        Assert.assertTrue(multiply.getArg2() instanceof ExprVar);
+        assertTrue(multiply.getArg1() instanceof E_Function);
+        assertTrue(multiply.getArg2() instanceof ExprVar);
         E_Function lhs = (E_Function)multiply.getArg1();
-        Assert.assertEquals("http://example/square", lhs.getFunctionIRI());
-        Assert.assertEquals(1, base.getVarsMentioned().size());
+        assertEquals("http://example/square", lhs.getFunctionIRI());
+        assertEquals(1, base.getVarsMentioned().size());
     }
 
     @Test
@@ -82,7 +85,7 @@ public class TestFunctionNonExpansion {
 
         Expr actual = f.getActualExpr();
         NodeValue result = actual.eval(BindingFactory.empty(), LibTestExpr.createTest());
-        Assert.assertEquals(8, NodeFactoryExtra.nodeToInt(result.asNode()));
+        assertEquals(8, NodeFactoryExtra.nodeToInt(result.asNode()));
 
         //Change the definition of the function we depend on
         square = new ExprVar("x");
@@ -91,6 +94,6 @@ public class TestFunctionNonExpansion {
 
         actual = f.getActualExpr();
         result = actual.eval(BindingFactory.empty(), LibTestExpr.createTest());
-        Assert.assertEquals(4, NodeFactoryExtra.nodeToInt(result.asNode()));
+        assertEquals(4, NodeFactoryExtra.nodeToInt(result.asNode()));
     }
 }

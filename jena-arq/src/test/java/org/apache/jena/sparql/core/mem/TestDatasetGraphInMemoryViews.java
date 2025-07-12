@@ -18,9 +18,9 @@
 
 package org.apache.jena.sparql.core.mem;
 
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphFactory ;
-import org.apache.jena.sparql.core.TestDatasetGraphViewGraphs ;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.apache.jena.sparql.core.TestDatasetGraphViewGraphs;
 
 public class TestDatasetGraphInMemoryViews extends TestDatasetGraphViewGraphs {
 

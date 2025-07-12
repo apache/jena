@@ -18,17 +18,18 @@
 
 package org.apache.jena.sparql.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.*;
-import org.junit.Test;
 
 /** Basic testing of the Dataset API */
 public abstract class AbstractTestDataset
@@ -110,26 +111,28 @@ public abstract class AbstractTestDataset
         String graphName = "http://example/";
         Dataset ds = createDataset();
         ds.addNamedModel(graphName, model1);
-        assertFalse("Dataset should not be empty after a named graph has been added!", ds.isEmpty());
+        assertFalse(ds.isEmpty(), "Dataset should not be empty after a named graph has been added!");
     }
 
     @Test public void dataset_07() {
         String graphName = "http://example/";
         Dataset ds = createDataset();
         ds.addNamedModel(graphName, model1);
-        assertTrue("Named graph not found", ds.containsNamedModel(graphName));
+        assertTrue(ds.containsNamedModel(graphName), ()->"Named graph not found");
     }
 
     // Even if empty, union and named default graph exist (sort of).
 
     @Test public void dataset_08() {
         Dataset ds = createDataset();
-        assertTrue("Union named graph not found", ds.containsNamedModel(Quad.unionGraph.getURI()));
+        assertTrue(ds.containsNamedModel(Quad.unionGraph.getURI()),
+                   ()->"Union named graph not found");
     }
 
     @Test public void dataset_09() {
         Dataset ds = createDataset();
-        assertTrue("Default graph not found using '<"+Quad.defaultGraphIRI.getURI()+">'", ds.containsNamedModel(Quad.defaultGraphIRI.getURI()));
+        assertTrue(ds.containsNamedModel(Quad.defaultGraphIRI.getURI()),
+                   ()->"Default graph not found using '<"+Quad.defaultGraphIRI.getURI()+">'");
     }
 
     @Test public void dataset_10() {

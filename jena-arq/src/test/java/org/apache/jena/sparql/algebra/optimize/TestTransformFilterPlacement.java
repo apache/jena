@@ -16,98 +16,100 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.algebra.optimize ;
+package org.apache.jena.sparql.algebra.optimize;
 
-import java.util.Objects ;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.algebra.Transformer ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.pfunction.PropFuncArg ;
-import org.apache.jena.sparql.pfunction.PropertyFunction ;
-import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry ;
-import org.apache.jena.sparql.procedure.Procedure ;
-import org.apache.jena.sparql.procedure.ProcedureBase ;
-import org.apache.jena.sparql.procedure.ProcedureRegistry ;
-import org.apache.jena.sparql.sse.SSE ;
-import org.junit.Assert ;
-import org.junit.Test ;
+import java.util.Objects;
+
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.Transform;
+import org.apache.jena.sparql.algebra.Transformer;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.pfunction.PropFuncArg;
+import org.apache.jena.sparql.pfunction.PropertyFunction;
+import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry;
+import org.apache.jena.sparql.procedure.Procedure;
+import org.apache.jena.sparql.procedure.ProcedureBase;
+import org.apache.jena.sparql.procedure.ProcedureRegistry;
+import org.apache.jena.sparql.sse.SSE;
 
 public class TestTransformFilterPlacement {
 
     // ** Filter
 
     @Test public void place_bgp_01() {
-        test("(filter (= ?x 1) (bgp ( ?s ?p ?x)))", "(filter (= ?x 1) (bgp ( ?s ?p ?x)))") ;
+        test("(filter (= ?x 1) (bgp ( ?s ?p ?x)))", "(filter (= ?x 1) (bgp ( ?s ?p ?x)))");
     }
 
     @Test public void place_bgp_02() {
         test("(filter (= ?x 1) (bgp (?s ?p ?x) (?s1 ?p1 ?x1) ))",
-             "(sequence (filter (= ?x 1) (bgp ( ?s ?p ?x))) (bgp (?s1 ?p1 ?x1)))") ;
+             "(sequence (filter (= ?x 1) (bgp ( ?s ?p ?x))) (bgp (?s1 ?p1 ?x1)))");
     }
 
     @Test public void place_bgp_03() {
         test("(filter (= ?x 1) (bgp (?s ?p ?x) (?s1 ?p1 ?x) ))",
-             "(sequence (filter (= ?x 1) (bgp ( ?s ?p ?x))) (bgp (?s1 ?p1 ?x)))") ;
+             "(sequence (filter (= ?x 1) (bgp ( ?s ?p ?x))) (bgp (?s1 ?p1 ?x)))");
     }
 
     @Test public void place_bgp_03a() {
         testNoBGP("(filter (= ?x 1) (bgp (?s ?p ?x) (?s1 ?p1 ?x) ))",
-             null) ;
+             null);
     }
 
     @Test public void place_bgp_04() {
         test("(filter (= ?XX 1) (bgp (?s ?p ?x) (?s1 ?p1 ?XX) ))",
-             "(filter (= ?XX 1) (bgp (?s ?p ?x) (?s1 ?p1 ?XX) ))") ;
+             "(filter (= ?XX 1) (bgp (?s ?p ?x) (?s1 ?p1 ?XX) ))");
         // and not
         // "(sequence (bgp (?s ?p ?x)) (filter (= ?XX 1) (?s1 ?p1 ?XX)) )"
     }
 
     @Test public void place_bgp_05() {
         test("(filter (= ?x 123) (bgp (?s ?p ?x) (?s ?p ?x1) (?s ?p ?x2)) )",
-             "(sequence (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?x1) (?s ?p ?x2)) )") ;
+             "(sequence (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?x1) (?s ?p ?x2)) )");
     }
 
     @Test public void place_bgp_05a() {
         // Won't push and break up the BGP
         testNoBGP("(filter (= ?x 123) (bgp (?s ?p ?x) (?s ?p ?x1) (?s ?p ?x2)) )",
-                null) ;
+                null);
     }
 
     @Test public void place_bgp_06() {
-        testNoChange("(filter (isURI ?g) (quadpattern (?g ?s ?p ?o) ))") ;
+        testNoChange("(filter (isURI ?g) (quadpattern (?g ?s ?p ?o) ))");
 
     }
 
     @Test public void place_bgp_06a() {
         testNoBGP("(filter (isURI ?g) (quadpattern (?g ?s ?p ?o) ))",
-             null) ;
+             null);
     }
 
     @Test public void place_bgp_07() {
         test("(filter (isURI ?g) (quadpattern (?g ?s ?p ?o1) (?g ?s ?p ?o2) ))",
-             "(sequence  (filter (isURI ?g) (quadpattern (?g ?s ?p ?o1) ))  (quadpattern (?g ?s ?p ?o2)) )") ;
+             "(sequence  (filter (isURI ?g) (quadpattern (?g ?s ?p ?o1) ))  (quadpattern (?g ?s ?p ?o2)) )");
     }
 
     @Test public void place_bgp_07a() {
         testNoBGP("(filter (isURI ?g) (quadpattern (?g ?s ?p ?o1) (?g ?s ?p ?o2) ))",
-                  null) ;
+                  null);
     }
 
     @Test public void place_bgp_08() {
         test("(filter (exprlist (isURI ?g) (= ?o2 123)) (quadpattern (?g ?s ?p ?o1) (?g ?s ?p ?o2) (?g ?s ?p ?o3) ))",
-             "(sequence (filter (= ?o2 123) (sequence (filter (isURI ?g) (quadpattern (?g ?s ?p ?o1))) (quadpattern (?g ?s ?p ?o2)))) (quadpattern (?g ?s ?p ?o3)) )") ;
+             "(sequence (filter (= ?o2 123) (sequence (filter (isURI ?g) (quadpattern (?g ?s ?p ?o1))) (quadpattern (?g ?s ?p ?o2)))) (quadpattern (?g ?s ?p ?o3)) )");
     }
 
     @Test public void place_bgp_08a() {
         testNoBGP("(filter (exprlist (isURI ?g) (= ?o2 123)) (quadpattern (?g ?s ?p ?o1) (?g ?s ?p ?o2) (?g ?s ?p ?o3) ))",
-                  null) ;
+                  null);
     }
 
     @Test public void place_bgp_50() {
@@ -164,20 +166,20 @@ public class TestTransformFilterPlacement {
 
     @Test public void place_no_match_01() {
         // Unbound
-        testNoChange("(filter (= ?x ?unbound) (bgp (?s ?p ?x)))") ;
+        testNoChange("(filter (= ?x ?unbound) (bgp (?s ?p ?x)))");
     }
 
     @Test public void place_no_match_02() {
-        testNoChange("(filter (= ?x ?unbound) (bgp (?s ?p ?x) (?s ?p ?x)))") ;
+        testNoChange("(filter (= ?x ?unbound) (bgp (?s ?p ?x) (?s ?p ?x)))");
     }
 
     @Test public void place_no_match_03() {
-        testNoChange("(filter (= ?x ?unbound) (bgp (?s ?p ?x) (?s1 ?p1 ?XX)))") ;
+        testNoChange("(filter (= ?x ?unbound) (bgp (?s ?p ?x) (?s1 ?p1 ?XX)))");
     }
 
     @Test public void place_sequence_01() {
         test("(filter (= ?x 123) (sequence (bgp (?s ?p ?x)) (bgp (?s ?p ?z)) ))",
-             "(sequence (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?z)) )") ;
+             "(sequence (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?z)) )");
     }
 
     @Test public void place_sequence_02() {
@@ -185,68 +187,68 @@ public class TestTransformFilterPlacement {
         // LHS.  The RHS can't introduce ?x because it would not be a legal sequence
         // if, for example, it had a BIND in it.
         test("(filter (= ?x 123) (sequence (bgp (?s ?p ?x)) (bgp (?s ?p ?x)) ))",
-             "(sequence (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?x)) )") ;
+             "(sequence (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?x)) )");
     }
 
     @Test public void place_sequence_03() {
         test("(filter (= ?x 123) (sequence  (bgp (?s ?p ?x)) (bgp (?s ?p ?x1)) (bgp (?s ?p ?x2)) ))",
-             "(sequence (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?x1)) (bgp (?s ?p ?x2)) )") ;
+             "(sequence (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?x1)) (bgp (?s ?p ?x2)) )");
     }
 
     @Test public void place_sequence_04() {
         test("(filter (= ?x 123) (sequence (bgp (?s ?p ?x1)) (bgp (?s ?p ?x)) (bgp (?s ?p ?x2)) ))",
-             "(sequence (bgp (?s ?p ?x1)) (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?x2)) )") ;
+             "(sequence (bgp (?s ?p ?x1)) (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?x2)) )");
     }
 
     @Test public void place_sequence_04a() {
         testNoBGP("(filter (= ?x 123) (sequence (bgp (?s ?p ?x1)) (bgp (?s ?p ?x)) (bgp (?s ?p ?x2)) ))",
-                "(sequence (bgp (?s ?p ?x1)) (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?x2)))") ;
+                "(sequence (bgp (?s ?p ?x1)) (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?x2)))");
     }
 
     @Test public void place_sequence_05() {
         test("(filter (= ?x 123) (sequence (bgp (?s ?p ?x) (?s ?p ?x1)) (bgp (?s ?p ?x2)) ))",
-            "(sequence (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?x1)) (bgp (?s ?p ?x2)) )") ;
+            "(sequence (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?x1)) (bgp (?s ?p ?x2)) )");
     }
 
     @Test public void place_sequence_05a() {
         testNoBGP("(filter (= ?x 123) (sequence (bgp (?s ?p ?x) (?s ?p ?x1)) (bgp (?s ?p ?x2)) ))",
-                "(sequence (filter (= ?x 123) (bgp (?s ?p ?x) (?s ?p ?x1))) (bgp (?s ?p ?x2)))") ;
+                "(sequence (filter (= ?x 123) (bgp (?s ?p ?x) (?s ?p ?x1))) (bgp (?s ?p ?x2)))");
     }
 
 
     @Test public void place_sequence_06() {
         test("(filter (= ?x 123) (sequence (bgp (?s ?p ?x1) (?s ?p ?x2)) (bgp (?s ?p ?x)) ))",
-             "(sequence (bgp (?s ?p ?x1) (?s ?p ?x2)) (filter (= ?x 123) (bgp (?s ?p ?x))) )") ;
+             "(sequence (bgp (?s ?p ?x1) (?s ?p ?x2)) (filter (= ?x 123) (bgp (?s ?p ?x))) )");
     }
 
     @Test public void place_sequence_07() {
-        testNoChange("(filter (= ?A 123) (sequence (bgp (?s ?p ?x)) (bgp (?s ?p ?z)) ))") ;
+        testNoChange("(filter (= ?A 123) (sequence (bgp (?s ?p ?x)) (bgp (?s ?p ?z)) ))");
     }
 
     @Test public void place_sequence_08() {
-        testNoChange("(sequence (bgp (?s ?p ?x)) (filter (= ?z 123) (bgp (?s ?p ?z))) )") ;
+        testNoChange("(sequence (bgp (?s ?p ?x)) (filter (= ?z 123) (bgp (?s ?p ?z))) )");
     }
 
     @Test public void place_sequence_09() {
         test("(filter (= ?x 123) (sequence (bgp (?s ?p ?x1) (?s ?p ?x)) (bgp (?s ?p ?x2)) ))",
-             "(sequence (filter (= ?x 123) (bgp (?s ?p ?x1) (?s ?p ?x))) (bgp (?s ?p ?x2)) )") ;
+             "(sequence (filter (= ?x 123) (bgp (?s ?p ?x1) (?s ?p ?x))) (bgp (?s ?p ?x2)) )");
     }
 
     @Test public void place_sequence_09a() {
         testNoBGP("(filter (= ?x 123) (sequence (bgp (?s ?p ?x1) (?s ?p ?x)) (bgp (?s ?p ?x2)) ))",
-                "(sequence (filter (= ?x 123) (bgp (?s ?p ?x1) (?s ?p ?x))) (bgp (?s ?p ?x2)) )") ;
+                "(sequence (filter (= ?x 123) (bgp (?s ?p ?x1) (?s ?p ?x))) (bgp (?s ?p ?x2)) )");
     }
 
     // Join : one sided push.
     @Test public void place_join_01() {
         test("(filter (= ?x 123) (join (bgp (?s ?p ?x)) (bgp (?s ?p ?z)) ))",
-             "(join (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?z)) )") ;
+             "(join (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?z)) )");
     }
 
     // Join : two side push
     @Test public void place_join_02() {
         test("(filter (= ?x 123) (join (bgp (?s ?p ?x)) (bgp (?s ?p ?x)) ))",
-             "(join  (filter (= ?x 123) (bgp (?s ?p ?x))) (filter (= ?x 123) (bgp (?s ?p ?x))) )") ;
+             "(join  (filter (= ?x 123) (bgp (?s ?p ?x))) (filter (= ?x 123) (bgp (?s ?p ?x))) )");
     }
 
     @Test public void place_join_03() {
@@ -254,7 +256,7 @@ public class TestTransformFilterPlacement {
             ("(filter ((= 13 14) (> ?o1 12) (< ?o 56) (< (+ ?o ?o1) 999))",
              "   (join",
              "      (bgp (triple ?s ?p ?o))" ,
-             "      (bgp (triple ?s ?p1 ?o1))))") ;
+             "      (bgp (triple ?s ?p1 ?o1))))");
 
         // Everything pushed down once.
         String y = StrUtils.strjoinNL
@@ -263,7 +265,7 @@ public class TestTransformFilterPlacement {
              "    (filter ((= 13 14) (< ?o 56))",
              "      (bgp (triple ?s ?p ?o)))",
              "    (filter ((= 13 14) (> ?o1 12))",
-             "      (bgp (triple ?s ?p1 ?o1)))))") ;
+             "      (bgp (triple ?s ?p1 ?o1)))))");
         // Recursive push in - causes (= 13 14) to go into BGP
         String y1 = StrUtils.strjoinNL
             ("(filter (< (+ ?o ?o1) 999)",
@@ -278,128 +280,128 @@ public class TestTransformFilterPlacement {
              "      (filter (= 13 14)",
              "        (table unit))",
              "      (bgp (triple ?s ?p1 ?o1))))",
-             "   ))") ;
-        test(x, y1) ;
+             "   ))");
+        test(x, y1);
     }
 
 
     @Test public void place_conditional_01() {
         test("(filter (= ?x 123) (conditional (bgp (?s ?p ?x)) (bgp (?s ?p ?z)) ))",
-             "(conditional (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?z)) )") ;
+             "(conditional (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?z)) )");
     }
 
     @Test public void place_conditional_02() {
         test("(filter (= ?z 123) (conditional (bgp (?s ?p ?x)) (bgp (?s ?p ?z)) ))",
-             "(filter (= ?z 123) (conditional (bgp (?s ?p ?x)) (bgp (?s ?p ?z)) ))") ;
+             "(filter (= ?z 123) (conditional (bgp (?s ?p ?x)) (bgp (?s ?p ?z)) ))");
     }
 
     @Test public void place_conditional_03() {
         test("(filter (= ?x 123) (conditional (bgp (?s ?p ?x)) (bgp (?s ?p ?x)) ))",
-             "(conditional (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?x)) )") ;
+             "(conditional (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?x)) )");
     }
 
     @Test public void place_leftjoin_01() {
         // conditional
         test("(filter (= ?x 123) (leftjoin (bgp (?s ?p ?x)) (bgp (?s ?p ?z)) ))",
-             "(leftjoin (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?z)) )") ;
+             "(leftjoin (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?z)) )");
     }
 
     @Test public void place_leftjoin_02() {
         // conditional
         test("(filter (= ?z 123) (leftjoin (bgp (?s ?p ?x)) (bgp (?s ?p ?z)) ))",
-             "(filter (= ?z 123) (leftjoin (bgp (?s ?p ?x)) (bgp (?s ?p ?z)) ))") ;
+             "(filter (= ?z 123) (leftjoin (bgp (?s ?p ?x)) (bgp (?s ?p ?z)) ))");
     }
 
     @Test public void place_leftjoin_03() {
         // conditional
         test("(filter (= ?x 123) (leftjoin (bgp (?s ?p ?x)) (bgp (?s ?p ?x)) ))",
-             "(leftjoin (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?x)) )") ;
+             "(leftjoin (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?x)) )");
     }
 
     @Test public void place_project_01() {
         test("(filter (= ?x 123) (project (?x) (bgp (?s ?p ?x)) ))",
-             "(project (?x) (filter (= ?x 123) (bgp (?s ?p ?x)) ))") ;
+             "(project (?x) (filter (= ?x 123) (bgp (?s ?p ?x)) ))");
     }
 
     @Test public void place_project_02() {
-        testNoChange("(filter (= ?x 123) (project (?s) (bgp (?s ?p ?x)) ))") ;
+        testNoChange("(filter (= ?x 123) (project (?s) (bgp (?s ?p ?x)) ))");
     }
 
     @Test public void place_project_03() {
         test("(filter (= ?x 123) (project (?x) (bgp (?s ?p ?x) (?s ?p ?z) ) ))",
-             "(project (?x) (sequence (filter (= ?x 123) (bgp (?s ?p ?x)) ) (bgp (?s ?p ?z))) )") ;
+             "(project (?x) (sequence (filter (= ?x 123) (bgp (?s ?p ?x)) ) (bgp (?s ?p ?z))) )");
     }
 
     @Test public void place_distinct_01() {
         test("(filter (= ?x 123) (distinct (bgp (?s ?p ?x)) ))",
-             "(distinct (filter (= ?x 123) (bgp (?s ?p ?x)) ))") ;
+             "(distinct (filter (= ?x 123) (bgp (?s ?p ?x)) ))");
     }
 
     @Test public void place_distinct_02() {
         test("(filter (= ?x 123) (distinct (bgp (?s ?p ?o)) ))",
-             null) ;
+             null);
     }
 
     @Test public void place_distinct_03() {
         test("(filter (= ?x 123) (distinct (extend ((?x 123)) (bgp (?s ?p ?o)) )))",
-             "(distinct (filter (= ?x 123) (extend ((?x 123)) (bgp (?s ?p ?o)) )))") ;
+             "(distinct (filter (= ?x 123) (extend ((?x 123)) (bgp (?s ?p ?o)) )))");
     }
 
     @Test public void place_distinct_04() {
         test("(filter ((= ?o 456) (= ?z 987)) (distinct (bgp (?s ?p ?o) )))",
-             "(filter (= ?z 987) (distinct (filter (= ?o 456) (bgp (?s ?p ?o) ))))") ;
+             "(filter (= ?z 987) (distinct (filter (= ?o 456) (bgp (?s ?p ?o) ))))");
     }
 
     @Test public void place_reduced_01() {
         test("(filter (= ?x 123) (reduced (bgp (?s ?p ?x)) ))",
-             "(reduced (filter (= ?x 123) (bgp (?s ?p ?x)) ))") ;
+             "(reduced (filter (= ?x 123) (bgp (?s ?p ?x)) ))");
     }
 
     @Test public void place_reduced_02() {
         test("(filter (= ?x 123) (reduced (bgp (?s ?p ?o)) ))",
-             null) ;
+             null);
     }
 
     @Test public void place_reduced_04() {
         test("(filter ((= ?o 456) (= ?z 987)) (reduced (bgp (?s ?p ?o) )))",
-             "(filter (= ?z 987) (reduced (filter (= ?o 456) (bgp (?s ?p ?o) ))))") ;
+             "(filter (= ?z 987) (reduced (filter (= ?o 456) (bgp (?s ?p ?o) ))))");
     }
 
     @Test public void place_reduced_03() {
         test("(filter (= ?x 123) (reduced (extend ((?x 123)) (bgp (?s ?p ?o)) )))",
-             "(reduced (filter (= ?x 123) (extend ((?x 123)) (bgp (?s ?p ?o)) )))") ;
+             "(reduced (filter (= ?x 123) (extend ((?x 123)) (bgp (?s ?p ?o)) )))");
     }
 
     @Test public void place_extend_01() {
         test("(filter (= ?x 123) (extend ((?z 123)) (bgp (?s ?p ?x)) ))",
-             "(extend ((?z 123)) (filter (= ?x 123) (bgp (?s ?p ?x)) ))") ;
+             "(extend ((?z 123)) (filter (= ?x 123) (bgp (?s ?p ?x)) ))");
     }
 
     @Test public void place_extend_02() {
         test("(filter ((= ?x1 123) (= ?x2 456)) (extend (?z 789) (bgp (?s ?p ?x1)) ))",
-             "(filter (= ?x2 456) (extend (?z 789) (filter (= ?x1 123) (bgp (?s ?p ?x1)) )))") ;
+             "(filter (= ?x2 456) (extend (?z 789) (filter (= ?x1 123) (bgp (?s ?p ?x1)) )))");
     }
 
     @Test public void place_extend_03() { // Blocked
         test("(filter (= ?x 123) (extend ((?x 123)) (bgp (?s ?p ?z)) ))",
-             null) ;
+             null);
     }
 
     @Test public void place_extend_04() {
         test("(filter (= ?x 123) (extend ((?x1 123)) (filter (< ?x 456) (bgp (?s ?p ?x) (?s ?p ?z))) ))",
-             "(extend (?x1 123) (sequence (filter ((= ?x 123) (< ?x 456)) (bgp (?s ?p ?x))) (bgp (?s ?p ?z))) )") ;
+             "(extend (?x1 123) (sequence (filter ((= ?x 123) (< ?x 456)) (bgp (?s ?p ?x))) (bgp (?s ?p ?z))) )");
     }
 
     @Test public void place_extend_05() {
         // Filter further out than one place.
     	test("(filter (= ?z 1) (sequence (extend (?x1 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?z))))",
-    	     "(sequence (extend (?x1 123) (bgp (?s ?p ?x))) (filter (= ?z 1) (bgp (?s ?p ?z)) ))") ;
+    	     "(sequence (extend (?x1 123) (bgp (?s ?p ?x))) (filter (= ?z 1) (bgp (?s ?p ?z)) ))");
     }
 
     @Test public void place_extend_06() {
         // Filter further out than one place.
         test("(filter (= ?z 1) (join (extend (?x1 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?z))))" ,
-             "(join (extend (?x1 123) (bgp (?s ?p ?x))) (filter (= ?z 1) (bgp (?s ?p ?z))) )") ;
+             "(join (extend (?x1 123) (bgp (?s ?p ?x))) (filter (= ?z 1) (bgp (?s ?p ?z))) )");
     }
 
     @Test public void place_extend_07() {
@@ -411,7 +413,7 @@ public class TestTransformFilterPlacement {
              ,"    (extend ((?s 1))"
              ,"      (table (vars ?s1)"
              ,"        (row [?s1 1])"
-             ,"))))") ;
+             ,"))))");
         String x2 = StrUtils.strjoinNL
             ("(filter (= ?w 6)"
             ,"  (extend ((?w 2))"
@@ -420,8 +422,8 @@ public class TestTransformFilterPlacement {
             ,"        (filter (= ?s1 7)"
             ,"          (table (vars ?s1)"
             ,"            (row [?s1 1])"
-            ,"          ))))))") ;
-        test(x1, x2) ;
+            ,"          ))))))");
+        test(x1, x2);
     }
 
     @Test public void place_extend_08() {
@@ -437,7 +439,7 @@ public class TestTransformFilterPlacement {
              ,"            (table (vars ?s1)"
              ,"              (row [?s1 1])"
              ,")))))))"
-             ) ;
+             );
         String x2 = StrUtils.strjoinNL
             ("(filter (= ?w 'W')"
             ,"  (extend ((?w 2))"
@@ -452,48 +454,48 @@ public class TestTransformFilterPlacement {
             ,"                    (table (vars ?s1)"
             ,"                      (row [?s1 1])"
             ,"                    )))))))))))"
-            ) ;
-        test(x1, x2) ;
+            );
+        test(x1, x2);
     }
 
     @Test public void place_assign_01() {
         test("(filter (= ?x 123) (assign ((?z 123)) (bgp (?s ?p ?x)) ))",
-             "(assign ((?z 123)) (filter (= ?x 123) (bgp (?s ?p ?x)) ))") ;
+             "(assign ((?z 123)) (filter (= ?x 123) (bgp (?s ?p ?x)) ))");
     }
 
     @Test public void place_assign_02() {
         test("(filter ((= ?x1 123) (= ?x2 456)) (assign (?z 789) (bgp (?s ?p ?x1)) ))",
              "(filter (= ?x2 456) (assign (?z 789) (filter (= ?x1 123) (bgp (?s ?p ?x1)) )))"
-             ) ;
+             );
 
     }
 
     @Test public void place_assign_03() { // Blocked
         test("(filter (= ?x 123) (assign ((?x 123)) (bgp (?s ?p ?z)) ))",
-             null) ;
+             null);
     }
 
     @Test public void place_assign_04() {
         // Caution - OpFilter equality is sensitive to the order of expressions
         test("(filter (= ?x 123) (assign ((?x1 123)) (filter (< ?x 456) (bgp (?s ?p ?x) (?s ?p ?z))) ))",
-             "(assign (?x1 123) (sequence (filter ((= ?x 123) (< ?x 456)) (bgp (?s ?p ?x))) (bgp (?s ?p ?z))) )") ;
+             "(assign (?x1 123) (sequence (filter ((= ?x 123) (< ?x 456)) (bgp (?s ?p ?x))) (bgp (?s ?p ?z))) )");
     }
 
     @Test public void place_assign_05() {
         // Even with No BGP we can still wrap a BGP without breaking it
         testNoBGP("(filter (= ?x 123) (assign ((?z 123)) (bgp (?s ?p ?x)) ))",
-             "(assign ((?z 123)) (filter (= ?x 123) (bgp (?s ?p ?x)) ))") ;
+             "(assign ((?z 123)) (filter (= ?x 123) (bgp (?s ?p ?x)) ))");
     }
 
     @Test public void place_assign_06() {
         test("(filter (= ?x 123) (assign ((?z 123)) (bgp (?s ?p ?x) (?s ?p ?x1) )))",
-             "(assign ((?z 123)) (sequence (filter (= ?x 123) (bgp (?s ?p ?x)) ) (bgp (?s ?p ?x1)) ) )") ;
+             "(assign ((?z 123)) (sequence (filter (= ?x 123) (bgp (?s ?p ?x)) ) (bgp (?s ?p ?x1)) ) )");
     }
 
     @Test public void place_assign_06a() {
         // With No BGP we won't break up the BGP but we will still push the filter down
         testNoBGP("(filter (= ?x 123) (assign ((?z 123)) (bgp (?s ?p ?x) (?s ?p ?x1) )))",
-                  "(assign ((?z 123)) (filter (= ?x 123) (bgp (?s ?p ?x) (?s ?p ?x1)) ) )") ;
+                  "(assign ((?z 123)) (filter (= ?x 123) (bgp (?s ?p ?x) (?s ?p ?x1)) ) )");
     }
 
     @Test public void place_assign_07() {
@@ -505,7 +507,7 @@ public class TestTransformFilterPlacement {
              ,"    (assign ((?s 1))"
              ,"      (table (vars ?s1)"
              ,"        (row [?s1 1])"
-             ,"))))") ;
+             ,"))))");
         String x2 = StrUtils.strjoinNL
             ("(filter (= ?w 6)"
             ,"  (assign ((?w 2))"
@@ -514,8 +516,8 @@ public class TestTransformFilterPlacement {
             ,"        (filter (= ?s1 7)"
             ,"          (table (vars ?s1)"
             ,"            (row [?s1 1])"
-            ,"          ))))))") ;
-        test(x1, x2) ;
+            ,"          ))))))");
+        test(x1, x2);
     }
 
     @Test public void place_assign_08() {
@@ -531,7 +533,7 @@ public class TestTransformFilterPlacement {
              ,"            (table (vars ?s1)"
              ,"              (row [?s1 1])"
              ,")))))))"
-             ) ;
+             );
         String x2 = StrUtils.strjoinNL
             ("(filter (= ?w 'W')"
             ,"  (assign ((?w 2))"
@@ -546,18 +548,18 @@ public class TestTransformFilterPlacement {
             ,"                    (table (vars ?s1)"
             ,"                      (row [?s1 1])"
             ,"                    )))))))))))"
-            ) ;
-        test(x1, x2) ;
+            );
+        test(x1, x2);
     }
 
     @Test public void place_filter_01() {
         test("(filter (= ?x 123) (filter (= ?y 456) (bgp (?s ?p ?x) (?s ?p ?y)) ))" ,
-             "(filter (= ?y 456) (sequence (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?y)) ))" ) ;
+             "(filter (= ?y 456) (sequence (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?y)) ))" );
     }
 
     @Test public void place_filter_02() {
         test("(filter (= ?x 123) (filter (= ?y 456) (bgp (?s ?p ?x) (?s ?p ?y) (?s ?p ?z) )))" ,
-             "(sequence (filter (= ?y 456) (sequence (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?y)))) (bgp (?s ?p ?z)))") ;
+             "(sequence (filter (= ?y 456) (sequence (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?y)))) (bgp (?s ?p ?z)))");
     }
 
     // JENA-881
@@ -568,15 +570,15 @@ public class TestTransformFilterPlacement {
             ,"    (table empty)"
             ,"    (filter (= ?z 3)"
             ,"      (table unit))))"
-            ) ;
+            );
         String x2 = StrUtils.strjoinNL
             ("(union"
             ,"  (filter true"
             ,"    (table empty))"
             ,"  (filter (exprlist true (= ?z 3))"
             ,"    (table unit)))"
-            ) ;
-        test(x1, x2) ;
+            );
+        test(x1, x2);
     }
     // JENA-881
     @Test public void place_filter_04() {
@@ -587,15 +589,15 @@ public class TestTransformFilterPlacement {
             ,"      (table unit))"
             ,"    (filter (!= ?z 3)"
             ,"      (table unit))))"
-            ) ;
+            );
         String x2 = StrUtils.strjoinNL
             ("(union"
             ,"  (filter (exprlist true false)"
             ,"    (table unit))"
             ,"  (filter (exprlist true (!= ?z 3))"
             ,"    (table unit)))"
-                ) ;
-        test(x1, x2) ;
+                );
+        test(x1, x2);
     }
     // JENA-881
     @Test public void place_filter_05() {
@@ -605,21 +607,21 @@ public class TestTransformFilterPlacement {
             ,"    (filter (= ?y 3)"
             ,"      (table unit))"
             ,"    (bgp (triple ?s ?p ?z))))"
-            ) ;
+            );
         String x2 = StrUtils.strjoinNL
             ("(sequence"
             ,"  (filter (= ?y 3)"
             ,"    (table unit))"
             ,"  (filter (= ?z 3)"
             ,"    (bgp (triple ?s ?p ?z))))"
-            ) ;
-        test(x1, x2) ;
+            );
+        test(x1, x2);
     }
 
     @Test public void place_union_01() {
         test("(filter (= ?x 123) (union (bgp (?s ?p ?x) (?s ?p ?y)) (bgp (?s ?p ?z)  (?s1 ?p1 ?x)) ))",
              "(union  (sequence (filter (= ?x 123) (bgp (?s ?p ?x))) (bgp (?s ?p ?y))) "+
-                      "(filter (= ?x 123) (bgp (?s ?p ?z)  (?s1 ?p1 ?x)) ))") ;
+                      "(filter (= ?x 123) (bgp (?s ?p ?z)  (?s1 ?p1 ?x)) ))");
     }
 
     @Test public void place_union_02() {
@@ -629,7 +631,7 @@ public class TestTransformFilterPlacement {
             , "    (bgp (triple ?s ?p ?o))"
             ,"     (filter 0 (table unit))"
             ,"))"
-            ) ;
+            );
         String out = StrUtils.strjoinNL
              ("(union"
              ,"  (sequence"
@@ -638,7 +640,7 @@ public class TestTransformFilterPlacement {
              ,"  (filter (exprlist 1 0) (table unit))"
              ,")"
              );
-        test(in, out) ;
+        test(in, out);
     }
 
     @Test public void place_union_02a() {
@@ -648,14 +650,14 @@ public class TestTransformFilterPlacement {
             , "    (bgp (triple ?s ?p ?o))"
             ,"     (filter 0 (table unit))"
             ,"))"
-            ) ;
+            );
         String out = StrUtils.strjoinNL
             ("(union"
             ,"  (filter 1 (bgp (triple ?s ?p ?o)))"
             ,"  (filter (exprlist 1 0) (table unit))"
             ,")"
             );
-        testNoBGP(in, out) ;
+        testNoBGP(in, out);
     }
 
     @Test public void place_union_03() {
@@ -668,7 +670,7 @@ public class TestTransformFilterPlacement {
             ,"        (filter 0 (table unit))"
             ,"    ))"
             ,"))"
-            ) ;
+            );
         String out = StrUtils.strjoinNL
              ("(slice _ 1"
              ,"  (project (?s ?p ?o)"
@@ -680,7 +682,7 @@ public class TestTransformFilterPlacement {
              ,"        (table unit))"
              ,     ")"
              ,"))");
-        test(in, out) ;
+        test(in, out);
     }
 
     @Test public void place_union_03a() {
@@ -693,7 +695,7 @@ public class TestTransformFilterPlacement {
             ,"        (filter 0 (table unit))"
             ,"    ))"
             ,"))"
-            ) ;
+            );
         String out = StrUtils.strjoinNL
             ("(slice _ 1"
             ,"  (project (?s ?p ?o)"
@@ -702,7 +704,7 @@ public class TestTransformFilterPlacement {
             ,"      (filter (exprlist 1 0) (table unit))"
             ,     ")"
             ,"))");
-        testNoBGP(in, out) ;
+        testNoBGP(in, out);
     }
 
     // Union - push outer filters into each arm.
@@ -713,7 +715,7 @@ public class TestTransformFilterPlacement {
             ,"    (bgp (triple ?s ?p ?o))"
             ,"    (filter (!= 0 0)"
             ,"      (table unit))))"
-             ) ;
+             );
       String out = StrUtils.strjoinNL
           ("(union"
            ,"  (sequence"
@@ -722,8 +724,8 @@ public class TestTransformFilterPlacement {
            ,"    (bgp (triple ?s ?p ?o)))"
            ,"  (filter (exprlist (= 1 1) (!= 0 0))"
            ,"   (table unit)))"
-              ) ;
-        test ( in, out ) ;
+              );
+        test ( in, out );
     }
 
     @Test public void place_union_04a() {
@@ -733,15 +735,15 @@ public class TestTransformFilterPlacement {
             ,"        (bgp (triple ?s ?p ?o))"
             ,"        (filter (!= 0 0)"
             ,"          (table unit))))"
-             ) ;
+             );
         String out = StrUtils.strjoinNL
             ("(union"
             ,"   (filter (= 1 1)"
             ,"     (bgp (triple ?s ?p ?o)))"
             ,"   (filter (exprlist (= 1 1) (!= 0 0))"
             ,"     (table unit)))"
-            ) ;
-        testNoBGP ( in, out ) ;
+            );
+        testNoBGP ( in, out );
     }
 
     // Unrelated filter
@@ -752,9 +754,9 @@ public class TestTransformFilterPlacement {
             ,"    (bgp (triple ?s ?p ?o))"
             ,"    (bgp (triple ?s ?p ?o))"
             ,"))"
-             ) ;
-        String out = in ;
-        test( in, out ) ;
+             );
+        String out = in;
+        test( in, out );
     }
 
     // Unrelated filter
@@ -765,9 +767,9 @@ public class TestTransformFilterPlacement {
             ,"    (bgp (triple ?s ?p ?o))"
             ,"    (bgp (triple ?s ?p ?o))"
             ,"))"
-             ) ;
-        String out = in ;
-        testNoBGP( in, out ) ;
+             );
+        String out = in;
+        testNoBGP( in, out );
     }
 
     // Filter in one arm but not the other.
@@ -779,15 +781,15 @@ public class TestTransformFilterPlacement {
             ,"    (bgp (triple ?s ?p ?o))"
             ,"    (bgp (triple ?s ?p ?x))"
             ,"))"
-             ) ;
+             );
         String out = StrUtils.strjoinNL
             ("(filter (= ?x 1)"
             ,"  (union"
             ,"    (bgp (triple ?s ?p ?o))"
             ,"    (filter (= ?x 1) (bgp (triple ?s ?p ?x)))"
             ,"))"
-             ) ;
-        test( in, out ) ;
+             );
+        test( in, out );
     }
 
     // Filter in one arm but not the other
@@ -798,15 +800,15 @@ public class TestTransformFilterPlacement {
             ,"    (bgp (triple ?s ?p ?x))"
             ,"    (bgp (triple ?s ?p ?o))"
             ,"))"
-             ) ;
+             );
         String out = StrUtils.strjoinNL
             ("(filter (= ?x 1)"
             ,"  (union"
             ,"    (filter (= ?x 1) (bgp (triple ?s ?p ?x)))"
             ,"    (bgp (triple ?s ?p ?o))"
             ,"))"
-             ) ;
-        test( in, out ) ;
+             );
+        test( in, out );
     }
 
     // JENA-1235
@@ -818,7 +820,7 @@ public class TestTransformFilterPlacement {
              ,"    (bgp (?var2 :p1 ?var4) (?var2 :p2 ?var3))"
              ,"    (bgp (?var2 :p3 ?var4) (?var2 :p4 ?var3))"
              ,"    ))"
-             ) ;
+             );
 
         String out = StrUtils.strjoinNL
             ("(filter (!= ?VAR 123)"
@@ -831,8 +833,8 @@ public class TestTransformFilterPlacement {
             ,"        (filter (regex ?var4 'pat1')"
             ,"          (bgp (triple ?var2 :p3 ?var4)))"
             ,"        (bgp (triple ?var2 :p4 ?var3)))))"
-                ) ;
-        test( in, out ) ;
+                );
+        test( in, out );
     }
 
     // Push in, push and wrap, wrap.
@@ -845,7 +847,7 @@ public class TestTransformFilterPlacement {
              ,"    (bgp (?var2 :p4 ?var3) (?var2 :p3 ?var4))"
              ,"    (bgp (?var2 :p4 ?var9))"
              ,"    ))"
-             ) ;
+             );
         String out = StrUtils.strjoinNL
             ("(filter (!= ?VAR 123)"
             ,"  (disjunction"
@@ -860,11 +862,11 @@ public class TestTransformFilterPlacement {
             ,"      ))"
             ,"    (filter (regex ?var4 'pat1')"
             ,"      (bgp (triple ?var2 :p4 ?var9)))))"
-             ) ;
-        test( in, out ) ;
+             );
+        test( in, out );
     }
 
-    private static String propertyFunctionURI = "http://example/PF" ;
+    private static String propertyFunctionURI = "http://example/PF";
     // Dummy property
     private static PropertyFunction dummyPropertyFunction = new PropertyFunction() {
         @Override
@@ -881,17 +883,17 @@ public class TestTransformFilterPlacement {
         try {
             action.run();
         } finally {
-            PropertyFunctionRegistry.get().remove(propertyFunctionURI) ;
+            PropertyFunctionRegistry.get().remove(propertyFunctionURI);
         }
     }
 
     @Test public void place_property_functions_01() {
         // No filter.
         test_property_function(()->{
-            String in = "(propfunc :PF ?pfSubjArg (?pfObjArg1 ?pfObjArg2) (bgp(?s ?p ?o)))" ;
-            String out = in ;
-            test( in, out ) ;
-        }) ;
+            String in = "(propfunc :PF ?pfSubjArg (?pfObjArg1 ?pfObjArg2) (bgp(?s ?p ?o)))";
+            String out = in;
+            test( in, out );
+        });
     }
 
     @Test public void place_property_functions_02() {
@@ -901,16 +903,16 @@ public class TestTransformFilterPlacement {
                 ,"    (propfunc :PF ?pfSubjArg (?pfObjArg1 ?pfObjArg2)"
                 ,"       (bgp (?s ?p ?o))"
                 ,"    ))"
-                 ) ;
+                 );
             String out = StrUtils.strjoinNL
                 ("(filter (= ?x 1)"
                 ,"  (propfunc :PF ?pfSubjArg (?pfObjArg1 ?pfObjArg2)"
                 ,"    (filter (= ?o 9)"
                 ,"      (bgp (triple ?s ?p ?o))"
                 ,"    )))"
-                ) ;
-            test( in, out ) ;
-        }) ;
+                );
+            test( in, out );
+        });
     }
 
     @Test public void place_property_functions_02a() {
@@ -920,10 +922,10 @@ public class TestTransformFilterPlacement {
                 ,"    (propfunc :PF ?pfSubjArg (?pfObjArg1 ?pfObjArg2)"
                 ,"       (bgp (?s ?p ?o))"
                 ,"    ))"
-                 ) ;
-            String out = in ;
-            test( in, out ) ;
-        }) ;
+                 );
+            String out = in;
+            test( in, out );
+        });
     }
 
     @Test public void place_property_functions_02b() {
@@ -933,15 +935,15 @@ public class TestTransformFilterPlacement {
                 ,"    (propfunc :PF ?pfSubjArg (?pfObjArg1 ?pfObjArg2)"
                 ,"       (bgp (?s ?p ?o))"
                 ,"    ))"
-                 ) ;
+                 );
             String out = StrUtils.strjoinNL
                 ("(propfunc :PF ?pfSubjArg (?pfObjArg1 ?pfObjArg2)"
                 ,"  (filter (= ?o 9)"
                 ,"   (bgp (triple ?s ?p ?o))"
                 ,"  ))"
-                ) ;
-            test( in, out ) ;
-        }) ;
+                );
+            test( in, out );
+        });
     }
 
     @Test public void place_property_functions_03() {
@@ -951,16 +953,16 @@ public class TestTransformFilterPlacement {
                 ,"    (propfunc :PF ?pfSubjArg (?pfObjArg1 ?pfObjArg2)"
                 ,"       (bgp (?s ?p ?o))"
                 ,"    ))"
-                 ) ;
+                 );
             String out = StrUtils.strjoinNL
                 ("(filter (= ?pfSubjArg 1)"
                 ,"  (propfunc :PF ?pfSubjArg (?pfObjArg1 ?pfObjArg2)"
                 ,"    (filter (= ?o 9)"
                 ,"      (bgp (triple ?s ?p ?o))"
                 ,"    )))"
-                ) ;
-            test( in, out ) ;
-        }) ;
+                );
+            test( in, out );
+        });
     }
 
     @Test public void place_property_functions_04() {
@@ -970,19 +972,19 @@ public class TestTransformFilterPlacement {
                 ,"    (propfunc :PF ?pfSubjArg (?pfObjArg1 ?pfObjArg2)"
                 ,"       (bgp (?s ?p ?o))"
                 ,"    ))"
-                 ) ;
+                 );
             String out = StrUtils.strjoinNL
                 ("(filter (= ?pfObjArg 1)"
                 ,"  (propfunc :PF ?pfSubjArg (?pfObjArg1 ?pfObjArg2)"
                 ,"    (filter (= ?o 9)"
                 ,"      (bgp (triple ?s ?p ?o))"
                 ,"    )))"
-                ) ;
-            test( in, out ) ;
-        }) ;
+                );
+            test( in, out );
+        });
     }
 
-    private static String procedureURI = "http://example/PROC" ;
+    private static String procedureURI = "http://example/PROC";
     // Dummy procedure
     private static Procedure dummyProcedure = new ProcedureBase() {
         @Override
@@ -996,16 +998,16 @@ public class TestTransformFilterPlacement {
         try {
             action.run();
         } finally {
-            ProcedureRegistry.get().remove(procedureURI) ;
+            ProcedureRegistry.get().remove(procedureURI);
         }
     }
 
     @Test public void place_procedure_01() {
         test_procedure(()->{
-            String in = "(proc :PROC ((+ ?arg1 111) (?arg2)) (bgp (?s ?p ?o)))" ;
-            String out = in ;
-            test( in, out ) ;
-        }) ;
+            String in = "(proc :PROC ((+ ?arg1 111) (?arg2)) (bgp (?s ?p ?o)))";
+            String out = in;
+            test( in, out );
+        });
     }
 
     @Test public void place_procedure_02() {
@@ -1015,15 +1017,15 @@ public class TestTransformFilterPlacement {
                 ,"   (proc :PROC ((+ ?arg1 111) (?arg2))"
                 ,"      (bgp (?s ?p ?o))"
                 ,"   ))"
-                ) ;
+                );
             String out = StrUtils.strjoinNL
                 ("(proc :PROC ((+ ?arg1 111) (?arg2))"
                 ,"  (filter (= ?o 9)"
                 ,"    (bgp (?s ?p ?o))"
                 ,"   ))"
-                ) ;
-            test( in, out ) ;
-        }) ;
+                );
+            test( in, out );
+        });
     }
 
     @Test public void place_procedure_03() {
@@ -1033,10 +1035,10 @@ public class TestTransformFilterPlacement {
                 ,"   (proc :PROC ((+ ?arg1 111) (?arg2))"
                 ,"      (bgp (?s ?p ?o))"
                 ,"   ))"
-                ) ;
-            String out = in ;
-            test( in, out ) ;
-        }) ;
+                );
+            String out = in;
+            test( in, out );
+        });
     }
 
     @Test public void place_procedure_04() {
@@ -1046,10 +1048,10 @@ public class TestTransformFilterPlacement {
                 ,"   (proc :PROC ((+ ?arg1 111) (?arg2))"
                 ,"      (bgp (?s ?p ?o))"
                 ,"   ))"
-                ) ;
-            String out = in ;
-            test( in, out ) ;
-        }) ;
+                );
+            String out = in;
+            test( in, out );
+        });
     }
 
     @Test public void place_procedure_05() {
@@ -1059,101 +1061,101 @@ public class TestTransformFilterPlacement {
                 ,"   (proc :PROC ((+ ?arg1 111) (?arg2))"
                 ,"      (bgp (?s ?p ?o))"
                 ,"   ))"
-                ) ;
+                );
             String out = StrUtils.strjoinNL
                 ("(filter ((= ?x 9) (= ?arg2 19))"
                 ,"   (proc :PROC ((+ ?arg1 111) (?arg2))"
                 ,"     (filter (= ?o 11)"
                 ,"       (bgp (?s ?p ?o))"
                 ,"     )))"
-                ) ;
-            test( in, out ) ;
-        }) ;
+                );
+            test( in, out );
+        });
     }
 
     @Test public void nondeterministic_functions_01() {
-        testNoChange("(filter (= ?x (rand)) (bgp (?s ?p ?x) (?s1 ?p1 ?x)))") ;
+        testNoChange("(filter (= ?x (rand)) (bgp (?s ?p ?x) (?s1 ?p1 ?x)))");
     }
 
     @Test public void nondeterministic_functions_02() {
-        testNoChange("(filter (= ?x (bnode)) (bgp (?s ?p ?x) (?s1 ?p1 ?x)))") ;
+        testNoChange("(filter (= ?x (bnode)) (bgp (?s ?p ?x) (?s1 ?p1 ?x)))");
     }
 
     @Test public void nondeterministic_functions_03() {
-        testNoChange("(filter (= ?x (struuid)) (bgp (?s ?p ?x) (?s1 ?p1 ?x)))") ;
+        testNoChange("(filter (= ?x (struuid)) (bgp (?s ?p ?x) (?s1 ?p1 ?x)))");
     }
 
     @Test public void nondeterministic_functions_04() {
-        testNoChange("(filter (= ?x (uuid)) (bgp (?s ?p ?x) (?s1 ?p1 ?x)))") ;
+        testNoChange("(filter (= ?x (uuid)) (bgp (?s ?p ?x) (?s1 ?p1 ?x)))");
     }
 
     // NOW() is safe.
     @Test public void nondeterministic_functions_05() {
         test("(filter (= ?x (now)) (bgp (?s ?p ?x) (?s1 ?p1 ?x)))",
-             "(sequence  (filter (= ?x (now)) (bgp (?s ?p ?x) ))  (bgp (?s1 ?p1 ?x)) )") ;
+             "(sequence  (filter (= ?x (now)) (bgp (?s ?p ?x) ))  (bgp (?s1 ?p1 ?x)) )");
     }
 
     @Test public void nondeterministic_functions_06() {
         String in = StrUtils.strjoinNL
             ("(filter ( (!= ?x ?s) (= ?x (rand)) )"
             ,"   (bgp (?s ?p ?x) (?s1 ?p1 ?x))"
-            ,")") ;
+            ,")");
         String out = StrUtils.strjoinNL
             ("(filter (= ?x (rand)) "
             ,"  (sequence"
             ,"     (filter (!= ?x ?s) (bgp (?s ?p ?x)))"
             ,"     (bgp (?s1 ?p1 ?x))"
             ,"))"
-            ) ;
-        test(in,out) ;
+            );
+        test(in,out);
     }
 
     @Test public void nondeterministic_functions_07() {
         String in = StrUtils.strjoinNL
             ("(filter ( (!= ?x ?s) (|| ?x (rand)) )"
             ,"   (bgp (?s ?p ?x) (?s1 ?p1 ?x))"
-            ,")") ;
+            ,")");
         String out = StrUtils.strjoinNL
             ("(filter (|| ?x (rand)) "
             ,"  (sequence"
             ,"     (filter (!= ?x ?s) (bgp (?s ?p ?x)))"
             ,"     (bgp (?s1 ?p1 ?x))"
             ,"))"
-            ) ;
-        test(in,out) ;
+            );
+        test(in,out);
     }
 
 
     public static void testNoChange(String input) {
-        test(input, null) ;
+        test(input, null);
     }
 
     public static void test(String input, String output) {
-        test$(input, output, true) ;
+        test$(input, output, true);
     }
 
     public static void testNoBGP(String input , String output) {
-        test$(input, output, false) ;
+        test$(input, output, false);
     }
 
     public static void test$(String input, String output, boolean includeBGPs) {
-        Transform t_placement = new TransformFilterPlacement(includeBGPs) ;
-        Op op1 = SSE.parseOp(input) ;
-        Op op2 = Transformer.transform(t_placement, op1) ;
+        Transform t_placement = new TransformFilterPlacement(includeBGPs);
+        Op op1 = SSE.parseOp(input);
+        Op op2 = Transformer.transform(t_placement, op1);
 
         if ( output == null ) {
             // No transformation.
-            Assert.assertEquals(op1, op2) ;
-            return ;
+            assertEquals(op1, op2);
+            return;
         }
 
-        Op op3 = SSE.parseOp(output) ;
+        Op op3 = SSE.parseOp(output);
         if ( ! Objects.equals(op2,  op3) ) {
-            System.out.println("Expected:") ;
+            System.out.println("Expected:");
             System.out.println(op3);
-            System.out.println("Got:") ;
+            System.out.println("Got:");
             System.out.println(op2);
         }
-        Assert.assertEquals(op3, op2) ;
+        assertEquals(op3, op2);
     }
 }

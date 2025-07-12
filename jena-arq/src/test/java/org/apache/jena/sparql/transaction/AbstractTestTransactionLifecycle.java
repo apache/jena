@@ -18,16 +18,15 @@
 
 package org.apache.jena.sparql.transaction;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.query.Dataset;
@@ -35,7 +34,6 @@ import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.sparql.core.Transactional.Promote;
-import org.junit.Test;
 
 /**
  * Dataset transaction lifecycle.
@@ -268,7 +266,7 @@ public abstract class AbstractTestTransactionLifecycle
         boolean b1 = ds.promote(promoteMode);
         assertEquals(succeeds, b1);
         boolean b2 = ds.promote(promoteMode);
-        assertEquals("Try same promote again", b1, b2);
+        assertEquals(b1, b2, ()->"Try same promote again");
         ds.commit();
         ds.end();
     }
@@ -380,48 +378,57 @@ public abstract class AbstractTestTransactionLifecycle
     // test : abort
     // Permit explain .end() - the case of "end" when not sure:  begin...end.end.
 
-    @Test(expected=JenaTransactionException.class)
     public void transaction_err_nontxn_commit_1() {
         Dataset ds = create();
-        ds.commit();
+        assertThrows(JenaTransactionException.class, () -> {
+            ds.commit();
+        });
     }
 
-    @Test(expected=JenaTransactionException.class)
+    @Test
     public void transaction_err_nontxn_commit_2() {
         Dataset ds = create();
         ds.begin(TxnType.READ);
         ds.end();
-        ds.commit();
+        assertThrows(JenaTransactionException.class, () -> {
+            ds.commit();
+        });
     }
 
-    @Test(expected=JenaTransactionException.class)
+    @Test
     public void transaction_err_nontxn_commit_3() {
         Dataset ds = create();
         ds.begin(TxnType.WRITE);
-        ds.end();
-        ds.commit();
+        assertThrows(JenaTransactionException.class, () -> {
+            ds.end();
+        });
     }
 
-    @Test(expected=JenaTransactionException.class)
+    @Test
     public void transaction_err_nontxn_abort_1() {
         Dataset ds = create();
-        ds.abort();
+        assertThrows(JenaTransactionException.class, () -> {
+            ds.abort();
+        });
     }
 
-    @Test(expected=JenaTransactionException.class)
+    @Test
     public void transaction_err_nontxn_abort_2() {
         Dataset ds = create();
         ds.begin(TxnType.READ);
         ds.end();
-        ds.abort();
+        assertThrows(JenaTransactionException.class, () -> {
+            ds.abort();
+        });
     }
 
-    @Test(expected=JenaTransactionException.class)
+    @Test
     public void transaction_err_nontxn_abort_3() {
         Dataset ds = create();
         ds.begin(TxnType.WRITE);
-        ds.end();
-        ds.abort();
+        assertThrows(JenaTransactionException.class, () -> {
+            ds.end();
+        });
     }
 
     @Test
@@ -574,7 +581,7 @@ public abstract class AbstractTestTransactionLifecycle
                     // The W threads will take the sleep serially.
                     Lib.sleep(500);
                     long x1 = counter.get();
-                    assertEquals("Two writers in the transaction", x, x1);
+                    assertEquals(x, x1, ()->"Two writers in the transaction");
                     ds.commit();
                     return true;
                 }

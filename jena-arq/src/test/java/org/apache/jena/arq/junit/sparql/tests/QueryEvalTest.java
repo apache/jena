@@ -19,9 +19,9 @@
 package org.apache.jena.arq.junit.sparql.tests;
 
 import static org.apache.jena.arq.junit.sparql.tests.SparqlTestLib.setupFailure;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -229,7 +229,7 @@ public class QueryEvalTest implements Runnable {
             int nExpected = ResultSetFormatter.consume(resultsExpected);
             resultsActual.reset();
             resultsExpected.reset();
-            assertEquals("CSV: Different number of rows", nExpected, nActual);
+            assertEquals(nExpected, nActual, ()->"CSV: Different number of rows");
             boolean b = resultSetEquivalent(query, resultsExpected, resultsActual);
             if ( !b )
                 System.out.println("Manual check of CSV results required: " + testItem.getName());
@@ -244,7 +244,7 @@ public class QueryEvalTest implements Runnable {
             boolean b2 = resultSetEquivalent(query, resultsExpected, resultsActual);
             printFailedResultSetTest(query, qe, resultsExpected, resultsActual);
         }
-        assertTrue("Results do not match", b);
+        assertTrue(b, ()->"Results do not match");
 
         return;
     }
@@ -366,7 +366,7 @@ public class QueryEvalTest implements Runnable {
         if ( results != null ) {
             if ( results.isBoolean() ) {
                 boolean b = results.getBooleanResult();
-                assertEquals("ASK test results do not match", b, result);
+                assertEquals(b, result, ()->"ASK test results do not match");
             } else {
                 Model resultsAsModel = results.getModel();
                 StmtIterator sIter = results.getModel().listStatements(null, RDF.type, ResultSetGraphVocab.ResultSet);
@@ -380,7 +380,7 @@ public class QueryEvalTest implements Runnable {
 
                 boolean x = r.getRequiredProperty(p).getBoolean();
                 if ( x != result )
-                    assertEquals("ASK test results do not match", x, result);
+                    assertEquals(x, result, ()->"ASK test results do not match");
             }
         }
         return;

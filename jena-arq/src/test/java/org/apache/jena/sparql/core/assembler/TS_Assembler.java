@@ -18,10 +18,11 @@
 
 package org.apache.jena.sparql.core.assembler;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@SuiteClasses({ TestInMemDatasetAssembler.class })
+@Suite
+@SelectClasses({
+    TestInMemDatasetAssembler.class
+    })
 public class TS_Assembler {}

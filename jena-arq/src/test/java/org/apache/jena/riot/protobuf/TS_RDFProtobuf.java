@@ -18,11 +18,11 @@
 
 package org.apache.jena.riot.protobuf;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses({
     TestProtobufTerm.class
     , TestProtobufSetup.class
     , TestProtobufStreamRDF.class
@@ -31,6 +31,6 @@ import org.junit.runners.Suite ;
 } )
 
 public class TS_RDFProtobuf {
-    public static final String TestingDir = "testing/RIOT/RDF-Protobuf" ;
+    public static final String TestingDir = "testing/RIOT/RDF-Protobuf";
 }
 

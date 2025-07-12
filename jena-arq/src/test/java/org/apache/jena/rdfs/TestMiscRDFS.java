@@ -20,9 +20,11 @@ package org.apache.jena.rdfs;
 
 import static org.apache.jena.rdfs.engine.ConstRDFS.ANY;
 import static org.apache.jena.rdfs.engine.ConstRDFS.rdfType;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Graph;
@@ -33,7 +35,6 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.G;
-import org.junit.Test;
 
 /**
  * Specific detailed tests.

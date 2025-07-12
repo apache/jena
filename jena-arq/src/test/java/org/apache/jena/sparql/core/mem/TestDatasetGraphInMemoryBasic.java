@@ -18,54 +18,55 @@
 
 package org.apache.jena.sparql.core.mem;
 
-import static java.lang.System.err ;
-import static org.apache.jena.atlas.iterator.Iter.anyMatch ;
-import static org.apache.jena.atlas.iterator.Iter.iter ;
-import static org.apache.jena.graph.Node.ANY ;
-import static org.apache.jena.graph.NodeFactory.createBlankNode ;
-import static org.apache.jena.graph.NodeFactory.createURI ;
-import static org.apache.jena.sparql.core.Quad.unionGraph ;
-import static org.apache.jena.sparql.graph.GraphFactory.createGraphMem ;
-import static org.apache.jena.sparql.sse.SSE.parseNode ;
-import static org.apache.jena.sparql.sse.SSE.parseQuad ;
-import static org.apache.jena.sparql.sse.SSE.parseTriple ;
-import static org.junit.Assert.assertEquals ;
-import static org.junit.Assert.assertFalse ;
-import static org.junit.Assert.assertNotNull ;
-import static org.junit.Assert.assertTrue ;
+import static java.lang.System.err;
+import static org.apache.jena.atlas.iterator.Iter.anyMatch;
+import static org.apache.jena.atlas.iterator.Iter.iter;
+import static org.apache.jena.graph.Node.ANY;
+import static org.apache.jena.graph.NodeFactory.createBlankNode;
+import static org.apache.jena.graph.NodeFactory.createURI;
+import static org.apache.jena.sparql.core.Quad.unionGraph;
+import static org.apache.jena.sparql.graph.GraphFactory.createGraphMem;
+import static org.apache.jena.sparql.sse.SSE.parseNode;
+import static org.apache.jena.sparql.sse.SSE.parseQuad;
+import static org.apache.jena.sparql.sse.SSE.parseTriple;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Iterator ;
+import java.util.Iterator;
 
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.DatasetFactory ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.sparql.core.AbstractDatasetGraphTests ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphFactory ;
-import org.apache.jena.sparql.core.Quad ;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.sparql.core.AbstractDatasetGraphTests;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.apache.jena.sparql.core.Quad;
 
 public class TestDatasetGraphInMemoryBasic extends AbstractDatasetGraphTests {
 
 	@Test
 	public void orderingOfNodesFromFindIsCorrect() {
-		final DatasetGraph dsg = DatasetGraphFactory.createTxnMem() ;
+		final DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
 
-        final Node p = parseNode(":p") ;
+        final Node p = parseNode(":p");
         final Triple triple = parseTriple("(:s :p :o)");
 		dsg.getDefaultGraph().add(triple);
-        final Iterator<Triple> iter = dsg.getDefaultGraph().find(null, p, null) ;
+        final Iterator<Triple> iter = dsg.getDefaultGraph().find(null, p, null);
         assertTrue(anyMatch(iter, triple::equals));
 
 
-        final Node p1 = parseNode(":p1") ;
+        final Node p1 = parseNode(":p1");
         final Quad quad = parseQuad("(:g1 :s1 :p1 :o1)");
-		dsg.add(quad) ;
+		dsg.add(quad);
 
-        final Iterator<Quad> iter2 = dsg.find(null, null, p1, null) ;
+        final Iterator<Quad> iter2 = dsg.find(null, null, p1, null);
 
         assertTrue(anyMatch(iter2, quad::equals));
         Iter.print(err,iter2);
@@ -113,12 +114,12 @@ public class TestDatasetGraphInMemoryBasic extends AbstractDatasetGraphTests {
         final Node o = createURI("http://example/o");
         dsg.add(g, s, p, o);
         Iterator<Node> graphNodes = dsg.listGraphNodes();
-        assertTrue("Missing named graph!", graphNodes.hasNext());
-        assertEquals("Wrong graph name!", g, graphNodes.next());
-        assertFalse("Too many named graphs!", graphNodes.hasNext());
+        assertTrue(graphNodes.hasNext(), "Missing named graph!");
+        assertEquals(g, graphNodes.next(), "Wrong graph name!");
+        assertFalse(graphNodes.hasNext(), "Too many named graphs!");
         dsg.delete(g, s, p, o);
         graphNodes = dsg.listGraphNodes();
-        assertFalse("Too many named graphs!", graphNodes.hasNext());
+        assertFalse(graphNodes.hasNext(), "Too many named graphs!");
     }
 
     @Test

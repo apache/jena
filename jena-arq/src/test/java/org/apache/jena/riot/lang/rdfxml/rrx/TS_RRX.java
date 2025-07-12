@@ -18,12 +18,11 @@
 
 package org.apache.jena.riot.lang.rdfxml.rrx;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@SuiteClasses( {
+@Suite
+@SelectClasses( {
     // Local file comparison tests
     Test_RRX_Local_SAX.class,
     Test_RRX_Local_StAXev.class,

@@ -18,16 +18,16 @@
 
 package org.apache.jena.sparql.engine.join;
 
-import org.apache.jena.sparql.algebra.Table ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.ref.TableJoin ;
-import org.apache.jena.sparql.expr.ExprList ;
+import org.apache.jena.sparql.algebra.Table;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.ref.TableJoin;
+import org.apache.jena.sparql.expr.ExprList;
 
 public class TestLeftJoinSimple extends AbstractTestLeftJoin {
 
     @Override
     public QueryIterator join(JoinKey joinKey, Table left, Table right, ExprList conditions) {
-        return TableJoin.leftJoin(left.iterator(null), right, conditions, null) ;
+        return TableJoin.leftJoin(left.iterator(null), right, conditions, null);
     }
 }
 

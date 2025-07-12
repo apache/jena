@@ -33,7 +33,7 @@ public class ResultSetCloseable extends ResultSetOnClose implements AutoCloseabl
      */
     public static ResultSetCloseable closeableResultSet(QueryExecution queryExecution) {
         if ( queryExecution.getQuery() != null && ! queryExecution.getQuery().isSelectType() )
-            throw new IllegalArgumentException("Not an execution for a SELECT query");
+            throw new QueryException("Not an execution for a SELECT query");
         return new ResultSetCloseable(queryExecution.execSelect(), queryExecution) ;
     }
 

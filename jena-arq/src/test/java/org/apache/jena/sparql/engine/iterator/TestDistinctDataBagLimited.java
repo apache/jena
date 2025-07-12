@@ -18,20 +18,20 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import java.util.List ;
+import java.util.List;
 
-import org.apache.jena.query.ARQ ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.query.ARQ;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.util.Context;
 
 public class TestDistinctDataBagLimited extends AbstractTestDistinctReduced {
 
     @Override
     protected QueryIterator createQueryIter(List<Binding> data) {
-        QueryIterator qIter = QueryIterPlainWrapper.create(data.iterator()) ;
-        Context cxt = new Context() ;
+        QueryIterator qIter = QueryIterPlainWrapper.create(data.iterator());
+        Context cxt = new Context();
         cxt.set(ARQ.spillToDiskThreshold, 2L);
         return new QueryIterDistinct(qIter, null, ExecutionContext.create(cxt));
     }

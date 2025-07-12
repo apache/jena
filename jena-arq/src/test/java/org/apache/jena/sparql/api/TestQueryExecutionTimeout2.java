@@ -18,26 +18,27 @@
 
 package org.apache.jena.sparql.api;
 
-import static org.apache.jena.atlas.lib.Lib.sleep ;
-import static org.junit.Assume.assumeFalse;
+import static org.apache.jena.atlas.lib.Lib.sleep;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.util.concurrent.TimeUnit;
 import java.util.stream.LongStream;
 
-import org.apache.jena.base.Sys ;
-import org.apache.jena.graph.Graph ;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+
+import org.apache.jena.base.Sys;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.impl.GraphBase;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.query.QueryCancelledException;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.query.ResultSetFormatter;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphFactory ;
-import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.query.*;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.join.AbstractIterHashJoin;
 import org.apache.jena.sparql.engine.main.solver.StageMatchTriple;
 import org.apache.jena.sparql.exec.QueryExec;
@@ -46,9 +47,6 @@ import org.apache.jena.sparql.exec.RowSetOps;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.NiceIterator;
 import org.apache.jena.util.iterator.WrappedIterator;
-import org.junit.Assert ;
-import org.junit.Before;
-import org.junit.Test ;
 
 public class TestQueryExecutionTimeout2
 {
@@ -56,15 +54,15 @@ public class TestQueryExecutionTimeout2
 
     static private String prefix =
             "PREFIX f:       <http://example/ns#>\n"+
-            "PREFIX afn:     <http://jena.apache.org/ARQ/function#>\n" ;
+            "PREFIX afn:     <http://jena.apache.org/ARQ/function#>\n";
     static Graph                g   = TestQueryExecutionTimeout1.makeGraph(10);
-    static DatasetGraph         dsg = DatasetGraphFactory.wrap(g) ;
-    static Dataset              ds  = DatasetFactory.wrap(dsg) ;
+    static DatasetGraph         dsg = DatasetGraphFactory.wrap(g);
+    static Dataset              ds  = DatasetFactory.wrap(dsg);
 
     // Loaded CI.
     private static boolean mayBeErratic = Sys.isWindows || Sys.isMacOS;
 
-    @Before public void beforeTest() {
+    @BeforeEach public void beforeTest() {
         // These timeout test do not work reliably on MacOS in GH actions so for now
         // they are skipped. It looks like the server machines are heavily loaded and
         // as a result very long (10's seconds) pauses happen.
@@ -72,20 +70,20 @@ public class TestQueryExecutionTimeout2
         assumeFalse(Sys.isMacOS);
     }
 
-    @Test public void timeout_30()  { test2(200, 20, timeout(50, 250), true) ; }
-    @Test public void timeout_31()  { test2(200, 100, 20, false) ; }
+    @Test public void timeout_30()  { test2(200, 20, timeout(50, 250), true); }
+    @Test public void timeout_31()  { test2(200, 100, 20, false); }
 
     // Make sure it isn't timeout1 - delay longer than timeout1
-    @Test public void timeout_32()  { test2(100, 500, 200, false) ; }
-    @Test public void timeout_33()  { test2(150, -1,  200, false) ; }
+    @Test public void timeout_32()  { test2(100, 500, 200, false); }
+    @Test public void timeout_33()  { test2(150, -1,  200, false); }
 
-    @Test public void timeout_34()  { test2(10, 40, timeout(100, 250), true) ; }
+    @Test public void timeout_34()  { test2(10, 40, timeout(100, 250), true); }
 
-    @Test public void timeout_35()  { test2(-1, 20, timeout(50, 250), true) ; }
-    @Test public void timeout_36()  { test2(-1, 200, 20, false) ; }
+    @Test public void timeout_35()  { test2(-1, 20, timeout(50, 250), true); }
+    @Test public void timeout_36()  { test2(-1, 200, 20, false); }
 
-    @Test public void timeout_37()  { test2(200, 200, 50, false) ; }
-    @Test public void timeout_38()  { test2(200, -1, 50, false) ; }
+    @Test public void timeout_37()  { test2(200, 200, 50, false); }
+    @Test public void timeout_38()  { test2(200, -1, 50, false); }
 
     private static void test2(long timeout1, long timeout2, int delay, boolean exceptionExpected)
     {
@@ -95,21 +93,21 @@ public class TestQueryExecutionTimeout2
                 .initialTimeout(timeout1, TimeUnit.MILLISECONDS)
                 .overallTimeout(timeout2, TimeUnit.MILLISECONDS)
                 .build()) {
-            ResultSet rs = qExec.execSelect() ;
+            ResultSet rs = qExec.execSelect();
             // ... wait for first binding.
             try {
-                Binding b1 = rs.nextBinding() ;
+                Binding b1 = rs.nextBinding();
             } catch (QueryCancelledException ex) {
-                Assert.fail("QueryCancelledException not expected at start");
+                fail("QueryCancelledException not expected at start");
                 return;
             }
 
             // ... then a possible timeout.
-            sleep(delay) ;
+            sleep(delay);
             if ( exceptionExpected )
-                exceptionExpected(rs) ;
+                exceptionExpected(rs);
             else
-                noException(rs) ;
+                noException(rs);
         }
     }
 
@@ -120,12 +118,12 @@ public class TestQueryExecutionTimeout2
     private static void exceptionExpected(ResultSet rs) {
         try {
             ResultSetFormatter.consume(rs);
-            Assert.fail("QueryCancelledException expected");
+            fail("QueryCancelledException expected");
         } catch (QueryCancelledException ex) {}
     }
 
     private int timeout(int time1, int time2) {
-        return mayBeErratic ? time2 : time1 ;
+        return mayBeErratic ? time2 : time1;
     }
 
     /**
@@ -133,7 +131,8 @@ public class TestQueryExecutionTimeout2
      * {@link AbstractIterHashJoin} used to eagerly populate a hash probe table on iterator construction,
      * while {@link QueryExecDataset} held a lock that prevented async abort while the iterator was being constructed.
      */
-    @Test(timeout = 5000, expected = QueryCancelledException.class)
+    @Test
+    @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
     public void test_timeout_hashJoin() {
         // A very large virtual graph.
         Graph graph = new GraphBase() {
@@ -170,12 +169,12 @@ public class TestQueryExecutionTimeout2
                   { BIND('x' AS ?x) }
             }
             """).build()) {
-            RowSetOps.count(qe.select());
+            assertThrows(QueryCancelledException.class, ()-> RowSetOps.count(qe.select()));
         }
     }
 
     /** Test to ensure timeouts are considered in {@link StageMatchTriple} when producing only empty joins from a large set of triples. */
-    @Test(expected = QueryCancelledException.class)
+    @Test
     public void test_timeout_stageMatchTriple() {
         // A very large virtual graph that never matches a concrete subject.
         Graph graph = new GraphBase() {
@@ -202,7 +201,7 @@ public class TestQueryExecutionTimeout2
                 ?c <urn:p> ?e .
             }
             """).build()) {
-            RowSetOps.count(qe.select());
+            assertThrows(QueryCancelledException.class, ()-> RowSetOps.count(qe.select()));
         }
     }
 }

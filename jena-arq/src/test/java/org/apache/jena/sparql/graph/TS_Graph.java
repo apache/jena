@@ -18,12 +18,12 @@
 
 package org.apache.jena.sparql.graph;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-	  TestDatasets.class
+@Suite
+@SelectClasses({
+    TestDatasets.class
     , TestGraphsMem.class
     , TestGraphUnionRead.class
     , TestGraphTxn.class

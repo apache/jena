@@ -17,7 +17,12 @@
  */
 package org.apache.jena.query;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.Var;
@@ -27,8 +32,6 @@ import org.apache.jena.sparql.syntax.ElementGroup;
 import org.apache.jena.sparql.syntax.ElementPathBlock;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
 import org.apache.jena.vocabulary.RDF;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class TestQueryCloningCornerCases {
 
@@ -53,21 +56,21 @@ public class TestQueryCloningCornerCases {
             ElementPathBlock elt = (ElementPathBlock)((ElementGroup)cloneOfClone.getQueryPattern()).get(0);
             elt.addTriple(Triple.create(RDF.Nodes.type, RDF.Nodes.type, RDF.Nodes.Property));
 
-            Assert.assertNotEquals(elt, query);
+            assertNotEquals(elt, query);
         }
 
         // After modifying the clone of a clone the initial clone must match the original query
-        Assert.assertEquals(query, clone);
+        assertEquals(query, clone);
 
         // Modification of the value block must not change the original query
         {
             Query cloneOfClone = clone.cloneQuery();
             ElementData elt = (ElementData)((ElementGroup)cloneOfClone.getQueryPattern()).get(1);
             elt.getRows().add(BindingFactory.empty());
-            Assert.assertNotEquals(query, cloneOfClone);
+            assertNotEquals(query, cloneOfClone);
         }
 
-        Assert.assertEquals(query, clone);
+        assertEquals(query, clone);
     }
 
     @Test
@@ -78,13 +81,13 @@ public class TestQueryCloningCornerCases {
 
         // Modifying a clone's value data block must not affect that of the original query.
         Query clone = TestQueryCloningEssentials.checkedClone(query);
-        Assert.assertEquals(query.getValuesData(), clone.getValuesData());
+        assertEquals(query.getValuesData(), clone.getValuesData());
 
         Var x = Var.alloc("x");
         clone.setValuesDataBlock(
             List.of(x),
             List.of(BindingFactory.binding(x, NodeFactoryExtra.intToNode(1))));
 
-        Assert.assertNotEquals(query.getValuesData(), clone.getValuesData());
+        assertNotEquals(query.getValuesData(), clone.getValuesData());
     }
 }

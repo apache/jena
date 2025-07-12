@@ -18,12 +18,13 @@
 
 package org.apache.jena.rdfs;
 
+import org.junit.jupiter.api.BeforeAll;
+
 import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.riot.system.StreamRDFOps;
 import org.apache.jena.sparql.graph.GraphFactory;
-import org.junit.BeforeClass;
 
 /**
  * Test of RDFS.
@@ -34,7 +35,7 @@ public class TestStreamRDFS_MaterializedSplit extends AbstractTestGraphRDFS {
 
     private static Graph testGraphMaterialized;
 
-    @BeforeClass public static void setupHere() {
+    @BeforeAll public static void setupHere() {
         testGraphMaterialized = GraphFactory.createDefaultGraph();
         SetupRDFS setup = RDFSFactory.setupRDFS(vocab);
         StreamRDF stream = StreamRDFLib.graph(testGraphMaterialized);

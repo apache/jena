@@ -18,14 +18,15 @@
 
 package org.apache.jena.sparql.expr;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.expr.nodevalue.NodeValueOps;
 import org.apache.jena.vocabulary.RDF;
-
-import org.junit.Test;
 
 public class TestNodeValueOps {
 
@@ -47,12 +48,11 @@ public class TestNodeValueOps {
         assertEquals( "abc", n.getLiteralLexicalForm());
     }
 
-    @Test(expected=ExprEvalException.class)
+    @Test
     public void testCheckAndGetStringLiteral4() {
         // The form "abc"^^rdf:langString (no lang tag) is not derived from xsd:string.
         NodeValue nv = NodeValue.makeNode("abc", RDF.dtLangString);
-        Node n = NodeValueOps.checkAndGetStringLiteral("Test", nv);
-        assertEquals( "abc", n.getLiteralLexicalForm());
+        assertThrows(ExprEvalException.class, ()->NodeValueOps.checkAndGetStringLiteral("Test", nv));
     }
 
     // ** Addition
@@ -122,19 +122,19 @@ public class TestNodeValueOps {
     }
 
     // Bad mixes
-    @Test(expected = ExprEvalException.class)
+    @Test
     public void nv_add_50() {
-        testAdd("'12'", "13");
+		assertThrows(ExprEvalException.class, ()-> testAdd("'12'", "13"));
     }
 
-    @Test(expected = ExprEvalException.class)
+    @Test
     public void nv_add_51() {
-        testAdd("'12'", "'PT1H'^^xsd:duration");
+        assertThrows(ExprEvalException.class, ()-> testAdd("'12'", "'PT1H'^^xsd:duration") );
     }
 
-    @Test(expected = ExprEvalException.class)
+    @Test
     public void nv_add_52() {
-        testAdd("'2012-04-05'^^xsd:date", "'2012-04-05'^^xsd:date");
+        assertThrows(ExprEvalException.class, ()-> testAdd("'2012-04-05'^^xsd:date", "'2012-04-05'^^xsd:date"));
     }
 
     // ** Subtraction
@@ -197,9 +197,9 @@ public class TestNodeValueOps {
     }
     // Date/time - date/time
 
-    @Test(expected = ExprEvalException.class)
+    @Test
     public void nv_sub_50() {
-        testSub("'12'", "'13'");
+		assertThrows(ExprEvalException.class, ()-> testSub("'12'", "'13'") );
     }
 
     // ** Multiplication
@@ -262,40 +262,42 @@ public class TestNodeValueOps {
         testDiv("'P2Y8M'^^xsd:yearMonthDuration", "0.1", "'P20Y80M'^^xsd:duration");
     }
 
-    @Test(expected = ExprEvalException.class)
+    @Test
     public void nv_div_dur_bad_1() {
         // Year-month divided by day-time
-        testDiv("'P2Y8M'^^xsd:yearMonthDuration", "'PT12H10M'^^xsd:duration");
+        assertThrows(ExprEvalException.class, ()->
+        testDiv("'P2Y8M'^^xsd:yearMonthDuration", "'PT12H10M'^^xsd:duration"));
     }
 
-    @Test(expected = ExprEvalException.class)
+    @Test
     public void nv_div_dur_bad_2() {
-        // day-time divided by year-month.
-        testDiv("'PT12H10M'^^xsd:duration", "'P2Y8M'^^xsd:duration");
+     // day-time divided by year-month
+        assertThrows(ExprEvalException.class, ()->
+        testDiv("'PT12H10M'^^xsd:duration", "'P2Y8M'^^xsd:duration"));
     }
 
-    @Test(expected = ExprEvalException.class)
+    @Test
     public void nv_div_dur_bad_3() {
-        // day-time divided by year-month.
-        testDiv("'PT12H10M'^^xsd:duration", "0");
+     // day-time divided by year-month
+        assertThrows(ExprEvalException.class, ()-> testDiv("'PT12H10M'^^xsd:duration", "0"));
     }
 
-    @Test(expected = ExprEvalException.class)
+    @Test
     public void nv_div_dur_bad_4() {
-        // day-time divided by year-month.
-        testDiv("'P1Y'^^xsd:duration", "0");
+     // day-time divided by year-month
+        assertThrows(ExprEvalException.class, ()->testDiv("'P1Y'^^xsd:duration", "0"));
     }
 
-    @Test(expected = ExprEvalException.class)
+    @Test
     public void nv_div_dur_bad_5() {
-        // day-time divided by zero interval.
-        testDiv("'PT1H'^^xsd:duration", "'PT0S'^^xsd:duration");
+        // day-time divided by zero interval
+        assertThrows(ExprEvalException.class, ()-> testDiv("'PT1H'^^xsd:duration", "'PT0S'^^xsd:duration"));
     }
 
-    @Test(expected = ExprEvalException.class)
+    @Test
     public void nv_div_dur_bad_6() {
-        // year-month divided by zero interval.
-        testDiv("'P1Y'^^xsd:duration", "'P0Y'^^xsd:duration");
+        // year-month divided by zero interval
+        assertThrows(ExprEvalException.class, ()-> testDiv("'P1Y'^^xsd:duration", "'P0Y'^^xsd:duration"));
     }
 
     // == Workers

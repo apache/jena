@@ -23,7 +23,7 @@ import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.dboe.base.record.Record;
 import org.apache.jena.dboe.base.record.RecordFactory;
 import org.apache.jena.dboe.test.RecordLib;
-import org.junit.Assert;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -122,21 +122,21 @@ public class TestBPTreeDistinctKeys extends TestBPTreeModes {
     public void bptree_distinct_by_key_bad_01() {
         BPlusTree bpt = makeRangeIndex(this.treeOrder, 0);
         Iterator<Record> iter = bpt.distinctByKeyPrefix(0);
-        Assert.assertFalse(iter.hasNext());
+        assertFalse(iter.hasNext());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void bptree_distinct_by_key_bad_02() {
         BPlusTree bpt = makeRangeIndex(this.treeOrder, 0);
         Iterator<Record> iter = bpt.distinctByKeyPrefix(6);
-        Assert.assertFalse(iter.hasNext());
+        assertFalse(iter.hasNext());
     }
 
     @Test
     public void bptree_distinct_by_key_01() {
         BPlusTree bpt = makeRangeIndex(this.treeOrder, 0);
         Iterator<Record> iter = bpt.distinctByKeyPrefix(1);
-        Assert.assertFalse(iter.hasNext());
+        assertFalse(iter.hasNext());
     }
 
     @Test
@@ -309,11 +309,11 @@ public class TestBPTreeDistinctKeys extends TestBPTreeModes {
         for (int i = 0; i < expected.size(); i++) {
             if (i >= actual.size()) {
                 dumpOnFailure(bpt, null);
-                Assert.fail("Missing key at Index " + i + ", expected " + expected.get(i));
+                fail("Missing key at Index " + i + ", expected " + expected.get(i));
             }
             if ((int) actual.get(i) != expected.get(i)) {
                 dumpOnFailure(bpt, bpt.getRecordFactory().create(Bytes.packInt(expected.get(i))));
-                Assert.fail("Actual key at Index " + i + " is incorrect (" + actual.get(
+                fail("Actual key at Index " + i + " is incorrect (" + actual.get(
                         i) + "), expected " + expected.get(i));
             }
         }

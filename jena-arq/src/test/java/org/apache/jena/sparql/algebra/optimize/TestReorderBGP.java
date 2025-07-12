@@ -20,9 +20,10 @@ package org.apache.jena.sparql.algebra.optimize;
 
 import static org.apache.jena.sparql.algebra.optimize.TransformTests.testOp;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.sparql.algebra.Transform;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib;
-import org.junit.Test;
 
 /** Test BGP reordering using the fixed reordering algorithm */
 public class TestReorderBGP {

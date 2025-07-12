@@ -18,7 +18,9 @@
 
 package org.apache.jena.sparql.path;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.graph.Graph;
@@ -28,8 +30,6 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.sparql.exec.*;
 import org.apache.jena.sparql.resultset.ResultsCompare;
-
-import org.junit.Test;
 
 /** Path tests using queries. */
 public class TestPathQuery {

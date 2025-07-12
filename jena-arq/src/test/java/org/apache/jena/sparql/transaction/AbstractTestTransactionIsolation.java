@@ -18,34 +18,35 @@
 
 package org.apache.jena.sparql.transaction;
 
-import static org.apache.jena.query.ReadWrite.WRITE ;
+import static org.apache.jena.query.ReadWrite.WRITE;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.system.ThreadAction ;
-import org.apache.jena.system.ThreadTxn ;
-import org.junit.Assert ;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.sse.SSE;
+import org.apache.jena.system.ThreadAction;
+import org.apache.jena.system.ThreadTxn;
 
 /** Isolation tests */
 public abstract class AbstractTestTransactionIsolation {
-    
-    protected abstract DatasetGraph create() ; 
-    static Quad q1 = SSE.parseQuad("(_ :s :p 111)") ;
-    
+
+    protected abstract DatasetGraph create();
+    static Quad q1 = SSE.parseQuad("(_ :s :p 111)");
+
     @Test
     public void isolation_01() {
         // Start a read transaction on another thread.
         // The transaction has begin() by the time threadTxnRead
         // returns but the action of the ThreadTxn is not triggered
         // until other.run() is called.
-        DatasetGraph dsg = create() ;
-        ThreadAction other = ThreadTxn.threadTxnRead(dsg, ()-> Assert.assertTrue(dsg.isEmpty()) ) ;
-        dsg.begin(WRITE) ;
-        dsg.add(q1) ;
-        dsg.commit() ;
-        dsg.end() ;
-        other.run() ;
+        DatasetGraph dsg = create();
+        ThreadAction other = ThreadTxn.threadTxnRead(dsg, ()-> assertTrue(dsg.isEmpty()) );
+        dsg.begin(WRITE);
+        dsg.add(q1);
+        dsg.commit();
+        dsg.end();
+        other.run();
     }
 }

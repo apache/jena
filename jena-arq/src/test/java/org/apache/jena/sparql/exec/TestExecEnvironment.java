@@ -18,14 +18,16 @@
 
 package org.apache.jena.sparql.exec;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.concurrent.TimeUnit;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionDatasetBuilder;
 import org.apache.jena.query.QueryExecutionFactory;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class TestExecEnvironment {
 
@@ -34,7 +36,7 @@ public class TestExecEnvironment {
     public void testQueryExecAdapter() {
         try (QueryExecution qExec = QueryExecutionFactory.create("SELECT * { ?s ?p ?o }", DatasetFactory.empty())) {
             QueryExec qe  = QueryExecAdapter.adapt(qExec);
-            Assert.assertNotNull(qe);
+            assertNotNull(qe);
         }
     }
 

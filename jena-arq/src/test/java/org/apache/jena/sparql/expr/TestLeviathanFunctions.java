@@ -18,28 +18,30 @@
 
 package org.apache.jena.sparql.expr;
 
-import static org.apache.jena.sparql.expr.LibTestExpr.test ;
-import static org.apache.jena.sparql.expr.LibTestExpr.testDouble ;
-import static org.apache.jena.sparql.expr.LibTestExpr.testError ;
-import static org.junit.Assert.assertTrue;
+import static org.apache.jena.sparql.expr.LibTestExpr.test;
+import static org.apache.jena.sparql.expr.LibTestExpr.testDouble;
+import static org.apache.jena.sparql.expr.LibTestExpr.testError;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.apache.jena.sparql.util.NodeFactoryExtra ;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.sparql.util.NodeFactoryExtra;
 
 public class TestLeviathanFunctions {
 
     private static final double DELTA = 0.0000000001d;
     static boolean warnOnBadLexicalForms = true;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         warnOnBadLexicalForms = NodeValue.VerboseWarnings;
         NodeValue.VerboseWarnings = false;
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         NodeValue.VerboseWarnings = warnOnBadLexicalForms;
     }
@@ -109,14 +111,14 @@ public class TestLeviathanFunctions {
         LibTestExpr.test("lfn:factorial(5)", "120");
     }
 
-    @Test(expected = ExprEvalException.class)
+    @Test
     public void factorial_05() {
-        testError("lfn:factorial(-1)");
+        assertThrows(ExprEvalException.class, ()->testError("lfn:factorial(-1)"));
     }
 
-    @Test(expected = ExprEvalException.class)
+    @Test
     public void factorial_06() {
-        testError("lfn:factorial(5.4)");
+        assertThrows(ExprEvalException.class, ()->testError("lfn:factorial(5.4)"));
     }
 
     @Test

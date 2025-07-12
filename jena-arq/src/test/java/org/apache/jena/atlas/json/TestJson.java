@@ -18,82 +18,83 @@
 
 package org.apache.jena.atlas.json;
 
-import static org.apache.jena.atlas.json.LibJsonTest.read ;
-import org.junit.Test ;
+import static org.apache.jena.atlas.json.LibJsonTest.read;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class TestJson
-{
+import org.junit.jupiter.api.Test;
+
+public class TestJson {
     @Test
     public void js_value_1() {
-        read("\"abc\"", new JsonString("abc")) ;
+        read("\"abc\"", new JsonString("abc"));
     }
 
     @Test
     public void js_value_2() {
-        read("123", JsonNumber.value(123)) ;
+        read("123", JsonNumber.value(123));
     }
 
     @Test
     public void js_value_3() {
-        read("true", new JsonBoolean(true)) ;
+        read("true", new JsonBoolean(true));
     }
 
     @Test
     public void js_value_4() {
-        read("{}", new JsonObject()) ;
+        read("{}", new JsonObject());
     }
 
     @Test
     public void js_value_5() {
-        JsonObject obj = new JsonObject() ;
-        obj.put("a", JsonNumber.value(123)) ;
-        read("{ \"a\": 123 }", obj) ;
+        JsonObject obj = new JsonObject();
+        obj.put("a", JsonNumber.value(123));
+        read("{ \"a\": 123 }", obj);
     }
 
     @Test
     public void js_value_6() {
-        JsonArray array = new JsonArray() ;
-        read("[ ]", array) ;
+        JsonArray array = new JsonArray();
+        read("[ ]", array);
     }
 
     @Test
     public void js_value_7() {
-        JsonArray array = new JsonArray() ;
-        array.add(JsonNumber.value(123)) ;
-        read("[ 123 ]", array) ;
+        JsonArray array = new JsonArray();
+        array.add(JsonNumber.value(123));
+        read("[ 123 ]", array);
     }
 
     @Test
     public void js_value_8() {
-        JsonObject obj = new JsonObject() ;
-        JsonArray array = new JsonArray() ;
-        array.add(JsonNumber.value(123)) ;
-        obj.put("a", array) ;
-        read("{ \"a\" : [ 123 ] }", obj) ;
+        JsonObject obj = new JsonObject();
+        JsonArray array = new JsonArray();
+        array.add(JsonNumber.value(123));
+        obj.put("a", array);
+        read("{ \"a\" : [ 123 ] }", obj);
     }
 
-    @Test(expected = JsonParseException.class)
+    @Test
     public void js_value_9() {
-        JSON.parse("[1 2 3]") ;
+        assertThrows(JsonParseException.class, ()->JSON.parse("[1 2 3]"));
     }
 
-    @Test(expected = JsonParseException.class)
+    @Test
     public void js_value_10() {
-        JSON.parse("1") ;
+        assertThrows(JsonParseException.class, ()->JSON.parse("1"));
     }
 
-    @Test(expected = JsonParseException.class)
+    @Test
     public void js_value_11() {
-        JSON.parse("\"foo\"") ;
+        assertThrows(JsonParseException.class, ()->JSON.parse("\"foo\""));
     }
 
     @Test()
     public void js_value_12() {
-        JSON.parse("{}") ;
+        JSON.parse("{}");
     }
 
     @Test
     public void js_value_13() {
-        read("\"abc\\bd\"", new JsonString("abc\bd")) ;
+        read("\"abc\\bd\"", new JsonString("abc\bd"));
     }
 }

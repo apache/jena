@@ -18,13 +18,13 @@
 
 package org.apache.jena.sparql.core.mem;
 
-import org.apache.jena.sparql.core.AbstractDatasetGraphFind ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.sparql.core.AbstractDatasetGraphFind;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 
 public class TestDatasetGraphInMemoryFind extends AbstractDatasetGraphFind {
     @Override
     public DatasetGraph create() {
-        return DatasetGraphFactory.createTxnMem() ;
+        return DatasetGraphFactory.createTxnMem();
     }
 }

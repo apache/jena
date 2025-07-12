@@ -18,10 +18,12 @@
 
 package org.apache.jena.riot.writer;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonObject;
@@ -34,7 +36,7 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.sse.SSE;
-import org.junit.Test;
+
 
 public class TestRDFJSON {
     @Test
@@ -74,7 +76,7 @@ public class TestRDFJSON {
               "(<s> <p> 1)" ,
               "(<s> <p> 2)" ,
               "(<s1> <p> 2)" ,
-              "))") ;
+              "))");
         // @formatter:on
     }
 
@@ -86,7 +88,7 @@ public class TestRDFJSON {
               "(_:a <p> 1)" ,
               "(_:a <p> 2)" ,
               "(_:b <p> 3)" ,
-              "))") ;
+              "))");
         // @formatter:on
     }
 
@@ -98,7 +100,7 @@ public class TestRDFJSON {
              ,"(<s> <p> _:abc)"
              ,"(<s> <p> 2)"
              ,"(<s1> <p> _:abc)"
-             ,"))") ;
+             ,"))");
         // @formatter:on
     }
 
@@ -110,7 +112,7 @@ public class TestRDFJSON {
             , "  (<s> <p> <http://example.org/abc>)"
             , "  (<s> <p> 2)"
             , "  (<s1> <p> <http://example.org/abc>)"
-            , "))") ;
+            , "))");
         // @formatter:on
     }
 
@@ -121,7 +123,7 @@ public class TestRDFJSON {
         test("(base <http://example/> (graph ",
              "(_:s <p> <http://example.org/abc>)" ,
              "(<http://example.org/abc> <p> _:s)" ,
-             "))") ;
+             "))");
         // @formatter:on
     }
 

@@ -18,44 +18,45 @@
 
 package org.apache.jena.riot.system;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.riot.lang.StreamRDFCounting ;
-import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.sse.SSE ;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.graph.Triple;
+import org.apache.jena.riot.lang.StreamRDFCounting;
+import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.sse.SSE;
 
 public class TestStreamRDF {
-    private static Triple triple1 = SSE.parseTriple("(<s> <p> <o>)") ;
-    private static Quad quad1 = SSE.parseQuad("(<g> <s> <p> <o>)") ;
-    
-    
+    private static Triple triple1 = SSE.parseTriple("(<s> <p> <o>)");
+    private static Quad quad1 = SSE.parseQuad("(<g> <s> <p> <o>)");
+
+
     @Test public void stream_count_01() {
-        StreamRDFCounting stream = StreamRDFLib.count() ;
+        StreamRDFCounting stream = StreamRDFLib.count();
         stream.start();
-        assertEquals(0, stream.count()) ;
-        stream.triple(triple1) ;
-        assertEquals(1, stream.count()) ;
-        stream.triple(triple1) ;
-        assertEquals(2, stream.count()) ;
-        stream.finish() ;
-        
-        assertEquals(2, stream.count()) ;
-        assertEquals(2, stream.countTriples()) ;
-        assertEquals(0, stream.countQuads()) ;
+        assertEquals(0, stream.count());
+        stream.triple(triple1);
+        assertEquals(1, stream.count());
+        stream.triple(triple1);
+        assertEquals(2, stream.count());
+        stream.finish();
+
+        assertEquals(2, stream.count());
+        assertEquals(2, stream.countTriples());
+        assertEquals(0, stream.countQuads());
     }
-    
+
     @Test public void stream_count_02() {
-        StreamRDFCounting stream = StreamRDFLib.count() ;
+        StreamRDFCounting stream = StreamRDFLib.count();
         stream.start();
-        stream.triple(triple1) ;
-        stream.quad(quad1) ;
-        
-        assertEquals(2, stream.count()) ;
-        assertEquals(1, stream.countTriples()) ;
-        assertEquals(1, stream.countQuads()) ;
-        
+        stream.triple(triple1);
+        stream.quad(quad1);
+
+        assertEquals(2, stream.count());
+        assertEquals(1, stream.countTriples());
+        assertEquals(1, stream.countQuads());
+
         stream.finish();
     }
 }

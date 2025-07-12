@@ -18,7 +18,9 @@
 
 package org.apache.jena.sparql.algebra;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.sparql.algebra.op.OpTable;
@@ -27,7 +29,6 @@ import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
 import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.sparql.sse.writers.WriterOp;
-import org.junit.Test ;
 
 public class TestTable {
     @Test public void table_01() {

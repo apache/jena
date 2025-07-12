@@ -18,11 +18,13 @@
 
 package org.apache.jena.atlas.data;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File ;
 import java.util.*;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
@@ -32,10 +34,11 @@ import org.apache.jena.query.QueryCancelledException ;
 import org.apache.jena.query.SortCondition ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.*;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
+import org.apache.jena.sparql.engine.binding.BindingComparator;
 import org.apache.jena.sparql.expr.ExprVar ;
 import org.apache.jena.sparql.system.SerializationFactoryFinder;
-import org.junit.Test ;
 
 public class TestSortedDataBag
 {

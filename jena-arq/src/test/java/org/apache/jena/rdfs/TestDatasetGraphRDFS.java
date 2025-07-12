@@ -22,14 +22,17 @@ import static org.apache.jena.atlas.iterator.Iter.iter;
 import static org.apache.jena.graph.Node.ANY;
 import static org.apache.jena.rdfs.LibTestRDFS.node;
 import static org.apache.jena.rdfs.engine.ConstRDFS.rdfType;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.Lib;
@@ -40,8 +43,6 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
  * Tests of {@link DatasetGraphRDFS}.
@@ -54,7 +55,7 @@ public class TestDatasetGraphRDFS {
     private static PrintStream out = System.out;
     private static DatasetGraphRDFS dsg;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         String x = StrUtils.strjoinNL
                 ("(dataset"
@@ -65,7 +66,6 @@ public class TestDatasetGraphRDFS {
         DatasetGraph dsgBase = SSE.parseDatasetGraph(x);
         Graph schema = SSE.parseGraph("(graph (:A rdfs:subClassOf :B))");
         dsg = (DatasetGraphRDFS)RDFSFactory.datasetRDFS(dsgBase, schema);
-
     }
 
     @Test public void dsg_access_1() {
@@ -134,7 +134,7 @@ public class TestDatasetGraphRDFS {
 
     private void testContains(Node g, Node s, Node p, Node o, boolean expected) {
         boolean actual = dsg.contains(g, s, p, o);
-        assertEquals("Contains: e="+expected+", a="+actual, expected, actual);
+        assertEquals(expected, actual, "Contains: e="+expected+", a="+actual);
     }
 
     private List<Quad> test(Node g, Node s, Node p, Node o) {

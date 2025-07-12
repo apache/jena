@@ -18,111 +18,112 @@
 
 package org.apache.jena.riot.lang;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.riot.system.SyntaxLabels ;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.riot.system.SyntaxLabels;
 
 public class TestNodeAllocator
 {
-    static Node gragh1 = NodeFactory.createURI("g1") ;
-    static Node gragh2 = NodeFactory.createURI("g2") ;
-    
+    static Node gragh1 = NodeFactory.createURI("g1");
+    static Node gragh2 = NodeFactory.createURI("g2");
+
     // ---- Glaobl default policy needed for RDF parsing
     @Test public void allocOneScope1()
     {
-        LabelToNode alloc = SyntaxLabels.createLabelToNode() ;
-        Node b1 = alloc.get(gragh1, "xyz" ) ;
-        Node b2 = alloc.get(gragh1, "xyz" ) ;
+        LabelToNode alloc = SyntaxLabels.createLabelToNode();
+        Node b1 = alloc.get(gragh1, "xyz" );
+        Node b2 = alloc.get(gragh1, "xyz" );
         // SAME
-        assertEquals(b1,b2) ;
+        assertEquals(b1,b2);
     }
-    
+
     @Test public void allocOneScope2()
     {
-        LabelToNode alloc = SyntaxLabels.createLabelToNode() ;
-        Node b1 = alloc.get(gragh1, "xyz" ) ;
-        Node b2 = alloc.get(gragh1, "123" ) ;
+        LabelToNode alloc = SyntaxLabels.createLabelToNode();
+        Node b1 = alloc.get(gragh1, "xyz" );
+        Node b2 = alloc.get(gragh1, "123" );
         // DIFFERENT
-        assertNotEquals(b1,b2) ;
+        assertNotEquals(b1,b2);
     }
 
     @Test public void allocOneScope3()
     {
-        LabelToNode alloc = SyntaxLabels.createLabelToNode() ;
-        Node b1 = alloc.get(gragh1, "xyz" ) ;
-        Node b2 = alloc.get(gragh2, "xyz" ) ;
+        LabelToNode alloc = SyntaxLabels.createLabelToNode();
+        Node b1 = alloc.get(gragh1, "xyz" );
+        Node b2 = alloc.get(gragh2, "xyz" );
         // SAME
-        assertEquals(b1,b2) ;
+        assertEquals(b1,b2);
     }
-    
+
     @Test public void allocOneScope4()
     {
-        LabelToNode alloc = SyntaxLabels.createLabelToNode() ;
-        Node b1 = alloc.get(null,   "xyz" ) ;
-        Node b2 = alloc.get(gragh2, "xyz" ) ;
+        LabelToNode alloc = SyntaxLabels.createLabelToNode();
+        Node b1 = alloc.get(null,   "xyz" );
+        Node b2 = alloc.get(gragh2, "xyz" );
         // SAME
-        assertEquals(b1,b2) ;
+        assertEquals(b1,b2);
     }
-    
+
     @Test public void allocOneScope5()
     {
-        LabelToNode alloc = SyntaxLabels.createLabelToNode() ;
-        Node b1 = alloc.get(null, "xyz" ) ;
-        Node b2 = alloc.get(null, "xyz" ) ;
+        LabelToNode alloc = SyntaxLabels.createLabelToNode();
+        Node b1 = alloc.get(null, "xyz" );
+        Node b2 = alloc.get(null, "xyz" );
         // SAME
-        assertEquals(b1,b2) ;
+        assertEquals(b1,b2);
     }
-    
+
     // ---- Graph Scope
     @Test public void allocGraphScope1()
     {
-        LabelToNode alloc = LabelToNode.createScopeByGraph() ;
-        Node b1 = alloc.get(gragh1, "xyz" ) ;
-        Node b2 = alloc.get(gragh1, "xyz" ) ;
+        LabelToNode alloc = LabelToNode.createScopeByGraph();
+        Node b1 = alloc.get(gragh1, "xyz" );
+        Node b2 = alloc.get(gragh1, "xyz" );
         // SAME
-        assertEquals(b1,b2) ;
-        assertSame(b1,b2) ;
+        assertEquals(b1,b2);
+        assertSame(b1,b2);
     }
-    
+
     @Test public void allocGraphScope2()
     {
-        LabelToNode alloc = LabelToNode.createScopeByGraph() ;
-        Node b1 = alloc.get(gragh1, "xyz" ) ;
-        Node b2 = alloc.get(gragh1, "123" ) ;
+        LabelToNode alloc = LabelToNode.createScopeByGraph();
+        Node b1 = alloc.get(gragh1, "xyz" );
+        Node b2 = alloc.get(gragh1, "123" );
         // DIFFERENT
-        assertNotEquals(b1,b2) ;
+        assertNotEquals(b1,b2);
     }
 
     @Test public void allocGraphScope3()
     {
-        LabelToNode alloc = LabelToNode.createScopeByGraph() ;
-        Node b1 = alloc.get(gragh1, "xyz" ) ;
-        Node b2 = alloc.get(gragh2, "xyz" ) ;
+        LabelToNode alloc = LabelToNode.createScopeByGraph();
+        Node b1 = alloc.get(gragh1, "xyz" );
+        Node b2 = alloc.get(gragh2, "xyz" );
         // DIFFERENT
-        assertNotEquals(b1,b2) ;
+        assertNotEquals(b1,b2);
     }
-    
+
     @Test public void allocGraphScope4()
     {
-        LabelToNode alloc = SyntaxLabels.createLabelToNode() ;
-        Node b1 = alloc.get(null,   "xyz" ) ;
-        Node b2 = alloc.get(gragh2, "xyz" ) ;
+        LabelToNode alloc = SyntaxLabels.createLabelToNode();
+        Node b1 = alloc.get(null,   "xyz" );
+        Node b2 = alloc.get(gragh2, "xyz" );
         // DIFFERENT
-        assertEquals(b1,b2) ;
+        assertEquals(b1,b2);
     }
-    
+
     @Test public void allocGraphScope5()
     {
-        LabelToNode alloc = SyntaxLabels.createLabelToNode() ;
-        Node b1 = alloc.get(null, "xyz" ) ;
-        Node b2 = alloc.get(null, "xyz" ) ;
+        LabelToNode alloc = SyntaxLabels.createLabelToNode();
+        Node b1 = alloc.get(null, "xyz" );
+        Node b2 = alloc.get(null, "xyz" );
         // SAME
-        assertEquals(b1,b2) ;
+        assertEquals(b1,b2);
     }
 
 }

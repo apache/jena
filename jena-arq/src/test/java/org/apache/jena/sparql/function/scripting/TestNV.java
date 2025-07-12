@@ -18,14 +18,15 @@
 
 package org.apache.jena.sparql.function.scripting;
 
-import org.apache.jena.sparql.expr.NodeValue;
-import org.apache.jena.sparql.sse.SSE;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigInteger;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.sse.SSE;
 
 public class TestNV {
 
@@ -33,12 +34,12 @@ public class TestNV {
     @Test public void nv_2() { test("true"); }
     @Test public void nv_3() { test("123"); }
     @Test public void nv_4() { test("123.5e0"); }
-    
+
     // No conversion to JS - becomes an NV.
     @Test public void nv_5() { test("'2018-01-06T17:56:41.293+00:00'^^xsd:dateTime"); }
     @Test public void nv_6() { test("<http://jena.apache.org/>"); }
     @Test public void nv_7() { test("_:abc123"); }
-    
+
     @Test public void nv_10() {
         NodeValue nodeValue = nv("'abc'");
         NV nv = new NV(nodeValue);
@@ -67,7 +68,7 @@ public class TestNV {
         NodeValue nodeValue = NV.toNodeValue(new BigInteger(largeInteger).doubleValue());
         NV nv = new NV(nodeValue);
         assertEquals(largeInteger, nv.getValue());
-        assertTrue("is a number", nv.isNumber());
+        assertTrue(nv.isNumber(), "is not a number");
     }
 
     private void test(String str) {
@@ -78,6 +79,6 @@ public class TestNV {
     }
 
     private static NodeValue nv(String str) {
-        return NodeValue.makeNode(SSE.parseNode(str)); 
+        return NodeValue.makeNode(SSE.parseNode(str));
     }
 }

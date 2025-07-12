@@ -18,7 +18,7 @@
 
 package org.apache.jena.arq.junit.sparql.tests;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList ;
 import java.util.List ;
@@ -76,7 +76,7 @@ public class UpdateEvalTest implements Runnable
             System.out.println("----------------------------------------") ;
         }
 
-        assertTrue("Datasets are different", b) ;
+        assertTrue(b, "Datasets are different") ;
     }
 
     private static boolean datasetSame(Dataset ds1, Dataset ds2, boolean verbose)

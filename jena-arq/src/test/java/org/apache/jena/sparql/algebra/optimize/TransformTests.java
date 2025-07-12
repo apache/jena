@@ -18,7 +18,7 @@
 
 package org.apache.jena.sparql.algebra.optimize;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Objects;
 
@@ -30,7 +30,6 @@ import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.Transform;
 import org.apache.jena.sparql.algebra.Transformer;
 import org.apache.jena.sparql.sse.SSE;
-import org.junit.Assert;
 
 public class TransformTests {
 
@@ -57,12 +56,12 @@ public class TransformTests {
         Op op2 = Transformer.transform(transform, op1);
         if ( output == null ) {
             // No transformation.
-            Assert.assertEquals(op1, op2);
+            assertEquals(op1, op2);
             return;
         }
 
         Op op3 = SSE.parseOp(StrUtils.strjoinNL(output));
-        Assert.assertEquals(op3, op2);
+        assertEquals(op3, op2);
     }
 
     static void check(String queryString, String opExpectedString) {
@@ -71,7 +70,7 @@ public class TransformTests {
         Op opQuery = Algebra.compile(query);
         Op op1 = Algebra.compile(query);   // Safe copy
         check(opQuery, opExpectedString);
-        assertEquals("Modification of input during optimization", op1, opQuery);
+        assertEquals(op1, opQuery, ()->"Modification of input during optimization");
     }
 
     private static void check(Op opToOptimize, String opExpectedString) {
@@ -108,7 +107,7 @@ public class TransformTests {
             optimized = Transformer.transform(additionalOptimizer, optimized);
         Op opExpected = SSE.parseOp(opExpectedString != null ? opExpectedString : algString);
         assertEquals(opExpected, optimized);
-        assertEquals("Modification of input during optimization", algebra1, algebra);
+        assertEquals(algebra1, algebra, ()->"Modification of input during optimization");
     }
 
     static void checkAlgebra(String algString, String opExpectedString) {

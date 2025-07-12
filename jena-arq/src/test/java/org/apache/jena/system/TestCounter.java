@@ -18,16 +18,19 @@
 
 package org.apache.jena.system;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
+
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.JenaTransactionException ;
-import org.junit.Test ;
-
-import static org.junit.Assert.* ;
 
 // TestTxn also tests counters.
 public class TestCounter {
     private TxnCounter counter = new TxnCounter(0) ;
-    
+
     @Test
     public void counter_lifecycle_1() {
         counter.begin(ReadWrite.WRITE) ;
@@ -55,14 +58,14 @@ public class TestCounter {
         counter.commit() ;
         counter.end() ;
     }
-    
+
     @Test
     public void counter_lifecycle_5() {
         counter.begin(ReadWrite.READ) ;
         counter.abort() ;
         counter.end() ;
     }
-    
+
     @Test
     public void counter_lifecycle_6() {
         counter.end() ;
@@ -72,20 +75,20 @@ public class TestCounter {
     public void counter_01() {
         assertEquals(0, counter.get());
         assertEquals(0, counter.value());
-        
+
         counter.begin(ReadWrite.WRITE) ;
-        
+
         assertEquals(0, counter.get());
         assertEquals(0, counter.value());
-        
+
         counter.inc() ;
         long x = counter.get() ;
         assertEquals(1, counter.get());
         assertEquals(0, counter.value());
-        
+
         counter.commit();
         assertEquals(1, counter.value());
-        
+
         counter.end() ;
         assertEquals(1, counter.value());
     }
@@ -94,51 +97,54 @@ public class TestCounter {
     public void counter_02() {
         assertEquals(0, counter.get());
         assertEquals(0, counter.value());
-        
+
         counter.begin(ReadWrite.WRITE) ;
-        
+
         assertEquals(0, counter.get());
         assertEquals(0, counter.value());
-        
+
         counter.inc() ;
         long x = counter.get() ;
         assertEquals(1, counter.get());
         assertEquals(0, counter.value());
-        
+
         counter.abort();
         assertEquals(0, counter.value());
         counter.end() ;
         assertEquals(0, counter.value());
     }
 
-    @Test(expected=JenaTransactionException.class)
+    @Test
     public void counter_bad_01() {
-        counter.inc() ;
+        txnException(()->counter.inc()) ;
     }
 
-    @Test(expected=JenaTransactionException.class)
+    @Test
     public void counter_bad_02() {
         counter.begin(ReadWrite.WRITE) ;
-        counter.end() ;
+        txnException(()->counter.end());
     }
 
-    @Test(expected=JenaTransactionException.class)
+    @Test
     public void counter_bad_03() {
         counter.begin(ReadWrite.READ) ;
-        counter.inc() ;
+        txnException(()->counter.inc());
     }
 
-    @Test(expected=JenaTransactionException.class)
+    @Test
     public void counter_bad_04() {
         counter.begin(ReadWrite.READ) ;
         counter.end() ;
-        counter.commit() ;
+        txnException(()->counter.commit());
     }
 
-    @Test(expected=JenaTransactionException.class)
+    @Test
     public void counter_bad_05() {
         counter.begin(ReadWrite.WRITE) ;
-        counter.end() ;
-        counter.commit() ;
+        txnException(()->counter.end());
+    }
+
+    private static void txnException(Executable action) {
+        assertThrows(JenaTransactionException.class, action);
     }
 }

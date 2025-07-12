@@ -19,38 +19,39 @@
 package org.apache.jena.riot.protobuf;
 
 import static org.apache.jena.riot.Lang.RDFPROTO;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.riot.*;
-import org.junit.Test;
 
 public class TestProtobufSetup {
 
     @Test public void setup_01() {
-        assertTrue(RDFLanguages.isRegistered(RDFPROTO)) ;
+        assertTrue(RDFLanguages.isRegistered(RDFPROTO));
     }
 
     @Test public void setup_02() {
-        Lang lang = RDFLanguages.filenameToLang("data.rpb") ;
-        assertEquals(lang, RDFPROTO) ;
+        Lang lang = RDFLanguages.filenameToLang("data.rpb");
+        assertEquals(lang, RDFPROTO);
     }
 
     @Test public void setup_03() {
-        assertTrue(RDFParserRegistry.isQuads(RDFPROTO)) ;
-        assertTrue(RDFParserRegistry.isTriples(RDFPROTO)) ;
+        assertTrue(RDFParserRegistry.isQuads(RDFPROTO));
+        assertTrue(RDFParserRegistry.isTriples(RDFPROTO));
         assertTrue(RDFParserRegistry.isRegistered(RDFPROTO));
-        assertNotNull(RDFParserRegistry.getFactory(RDFPROTO)) ;
+        assertNotNull(RDFParserRegistry.getFactory(RDFPROTO));
     }
 
     @Test public void setup_04() {
-        assertTrue(RDFWriterRegistry.contains(RDFPROTO)) ;
-        assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(RDFPROTO)) ;
-        assertTrue(RDFWriterRegistry.contains(RDFFormat.RDF_PROTO)) ;
-        assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(RDFFormat.RDF_PROTO)) ;
-        assertTrue(RDFWriterRegistry.contains(RDFFormat.RDF_PROTO_VALUES)) ;
-        assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(RDFFormat.RDF_PROTO_VALUES)) ;
+        assertTrue(RDFWriterRegistry.contains(RDFPROTO));
+        assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(RDFPROTO));
+        assertTrue(RDFWriterRegistry.contains(RDFFormat.RDF_PROTO));
+        assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(RDFFormat.RDF_PROTO));
+        assertTrue(RDFWriterRegistry.contains(RDFFormat.RDF_PROTO_VALUES));
+        assertNotNull(RDFWriterRegistry.getWriterDatasetFactory(RDFFormat.RDF_PROTO_VALUES));
     }
 }
 

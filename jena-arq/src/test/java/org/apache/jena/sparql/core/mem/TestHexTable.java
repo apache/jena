@@ -21,16 +21,20 @@ package org.apache.jena.sparql.core.mem;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.jena.graph.Node.ANY;
 import static org.apache.jena.graph.NodeFactory.createBlankNode;
-import static org.apache.jena.sparql.core.mem.TupleSlot.*;
+import static org.apache.jena.sparql.core.mem.TupleSlot.GRAPH;
+import static org.apache.jena.sparql.core.mem.TupleSlot.OBJECT;
+import static org.apache.jena.sparql.core.mem.TupleSlot.PREDICATE;
+import static org.apache.jena.sparql.core.mem.TupleSlot.SUBJECT;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.Quad;
-import org.junit.Test;
-import static org.junit.Assert.* ;
 
 public class TestHexTable extends AbstractTestQuadTable {
 

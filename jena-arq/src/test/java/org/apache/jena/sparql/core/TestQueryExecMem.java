@@ -18,42 +18,41 @@
 
 package org.apache.jena.sparql.core;
 
-import java.util.Arrays ;
-import java.util.Collection ;
+import java.util.List;
+import java.util.stream.Stream;
 
-import org.apache.jena.atlas.lib.Creator ;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.DatasetFactory ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Parameterized ;
-import org.junit.runners.Parameterized.Parameters ;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
-public class TestQueryExecMem extends AbstractTestQueryExec
-{
-    @Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> data() {
-        Creator<Dataset> datasetGeneralMaker = ()-> DatasetFactory.createGeneral() ;
-        Creator<Dataset> datasetTxnMemMaker = ()-> DatasetFactory.createTxnMem() ;
-        return Arrays.asList(new Object[][] {
-            { "General",  datasetGeneralMaker },
-            { "TxnMem",   datasetTxnMemMaker} });
+import org.apache.jena.atlas.lib.Creator;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory;
+
+@ParameterizedClass(name="{index}: {0}")
+@MethodSource("provideArgs")
+public class TestQueryExecMem extends AbstractTestQueryExec {
+    private static Stream<Arguments> provideArgs() {
+        Creator<Dataset> datasetGeneralMaker = () -> DatasetFactory.createGeneral();
+        Creator<Dataset> datasetTxnMemMaker = () -> DatasetFactory.createTxnMem();
+        List<Arguments> x = List.of
+                (Arguments.of("General", datasetGeneralMaker),
+                 Arguments.of("TxnMem", datasetTxnMemMaker) );
+        return x.stream();
     }
 
     private final Creator<Dataset> maker;
 
     public TestQueryExecMem(String name, Creator<Dataset> maker) {
-        this.maker = maker ;
+        this.maker = maker;
     }
 
     @Override
-    protected Dataset createDataset()
-    {
-        return maker.create() ;
+    protected Dataset createDataset() {
+        return maker.create();
     }
 
     @Override
     protected void releaseDataset(Dataset ds) {}
-
 }
 

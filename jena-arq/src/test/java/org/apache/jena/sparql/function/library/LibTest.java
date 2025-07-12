@@ -18,40 +18,40 @@
 
 package org.apache.jena.sparql.function.library;
 
-import static org.junit.Assert.assertEquals ;
-import static org.junit.Assert.assertTrue ;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.function.Predicate;
 
-import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.sparql.ARQConstants ;
-import org.apache.jena.sparql.expr.Expr ;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.sparql.ARQConstants;
+import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.LibTestExpr;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.util.ExprUtils ;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.util.ExprUtils;
 
 public class LibTest {
-    private static PrefixMapping pmap = ARQConstants.getGlobalPrefixMap() ;
+    private static PrefixMapping pmap = ARQConstants.getGlobalPrefixMap();
 
     static void test(String string) {
         test(string, "true");
     }
 
     static void test(String exprStr, NodeValue result) {
-        Expr expr = ExprUtils.parse(exprStr) ;
-        NodeValue r = expr.eval(null, LibTestExpr.createTest()) ;
-        assertEquals(result, r) ;
+        Expr expr = ExprUtils.parse(exprStr);
+        NodeValue r = expr.eval(null, LibTestExpr.createTest());
+        assertEquals(result, r);
     }
 
     static void test(String exprStr, String exprStrExpected) {
-        Expr expr = ExprUtils.parse(exprStrExpected) ;
-        NodeValue rExpected = expr.eval(null, LibTestExpr.createTest()) ;
-        test(exprStr, rExpected) ;
+        Expr expr = ExprUtils.parse(exprStrExpected);
+        NodeValue rExpected = expr.eval(null, LibTestExpr.createTest());
+        test(exprStr, rExpected);
     }
     
     static void test(String exprStr, Predicate<NodeValue> test) {
-        Expr expr = ExprUtils.parse(exprStr) ;
-        NodeValue r = expr.eval(null, LibTestExpr.createTest()) ;
-        assertTrue(exprStr, test.test(r));
+        Expr expr = ExprUtils.parse(exprStr);
+        NodeValue r = expr.eval(null, LibTestExpr.createTest());
+        assertTrue(test.test(r), exprStr);
     }
 }
