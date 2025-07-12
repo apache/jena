@@ -18,17 +18,20 @@
 
 package org.apache.jena.fuseki.access;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.Test;
+
+/** Test a controlled Dataset with access by TDB filter or general DatasetGraphFiltered. */
+
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.Creator;
@@ -50,33 +53,28 @@ import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.TDB2;
 
-/** Test a controlled Dataset with access by TDB filter or general DatasetGraphFiltered. */
-@RunWith(Parameterized.class)
+@ParameterizedClass(name="{index}: {0}")
+@MethodSource("provideArgs")
 public class TestSecurityFilterLocal {
-    @Parameters(name = "{index}: {0}")
-    public static Iterable<Object[]> data() {
-        // By filtering on the TDB database
-        @SuppressWarnings("removal")
+
+    @SuppressWarnings("removal")
+    private static Stream<Arguments> provideArgs() {
         Creator<DatasetGraph> c1 = TDB1Factory::createDatasetGraph;
         Creator<DatasetGraph> c2 = DatabaseMgr::createDatasetGraph;
         Creator<DatasetGraph> c3 = DatasetGraphFactory::createTxnMem;
         Creator<DatasetGraph> c4 = DatasetGraphFactory::create;
 
-        Object[] obj1 = { "TDB/db", c1, true};
-        Object[] obj2 = { "TDB2/db", c2, true };
+        List<Arguments> x = List.of
+                (Arguments.of("TDB1/db", c1, true),
+                    Arguments.of("TDB2/db", c2, true),
 
-        // By adding the general, but slower, DatasetGraphFilter
-        Object[] obj3 = { "TDB/filtered", c1, false };
-        Object[] obj4 = { "TDB2/filtered", c2, false };
-        Object[] obj5 = { "TIM/filtered", c3, false };
-        Object[] obj6 = { "Plain/filtered", c4, false };
-
-        List<Object[]> x = new ArrayList<>();
-        return Arrays.asList(obj1, obj2, obj3, obj4, obj5, obj6);
-//        x.add(obj1);
-//        x.add(obj3);
-//        x.add(obj5);
-//        return x;
+                // By adding the general, but slower, DatasetGraphFilter
+                Arguments.of("TDB/filtered", c1, false),
+                Arguments.of("TDB2/filtered", c2, false),
+                Arguments.of("TIM/filtered", c3, false),
+                Arguments.of("Plain/filtered", c4, false)
+        );
+        return x.stream();
     }
 
     private final DatasetGraph testdsg;
