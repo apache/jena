@@ -24,7 +24,7 @@ import org.apache.lucene.analysis.DelegatingAnalyzerWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** 
+/**
  * Lucene Analyzer implementation that delegates to a language-specific
  * Analyzer based on a field name suffix: e.g. field="label_en" will use
  * an EnglishAnalyzer.
@@ -48,8 +48,8 @@ public class IndexingMultilingualAnalyzer extends DelegatingAnalyzerWrapper {
         }
         String lang = fieldName.substring(idx+1);
         Analyzer analyzer = Util.getIndexAnalyzer(lang);
-        analyzer = ObjectUtils.defaultIfNull(analyzer, Util.getLocalizedAnalyzer(lang));
-        analyzer = ObjectUtils.defaultIfNull(analyzer, defaultAnalyzer);
+        analyzer = ObjectUtils.getIfNull(analyzer, Util.getLocalizedAnalyzer(lang));
+        analyzer = ObjectUtils.getIfNull(analyzer, defaultAnalyzer);
         log.trace("getWrappedAnalyzer fieldName: {}, analyzer: {}", fieldName, analyzer);
         return analyzer;
     }
