@@ -18,16 +18,14 @@
 
 package org.apache.jena.fuseki.access;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+@Suite
+@SelectClasses({
     // Much of testing can only be done with a running server.
     // These integration test are in jena-fuseki-main:org.apache.jena.fuseki.main.access
     TestSecurityFilterLocal.class
     , TestSecurityRegistry.class
 })
 
-public class TS_Access {
-}
+public class TS_Access {}

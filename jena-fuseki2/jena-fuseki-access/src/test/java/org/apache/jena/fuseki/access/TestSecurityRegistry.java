@@ -18,13 +18,15 @@
 
 package org.apache.jena.fuseki.access;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sys.JenaSystem;
-import org.junit.Test;
 
 /** Test parsing of assemblers with security aspects */
 public class TestSecurityRegistry {
