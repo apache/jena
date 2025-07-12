@@ -89,7 +89,7 @@
 
     <ver.commons-io>2.19.0</ver.commons-io>
     <ver.commons-cli>1.7.0</ver.commons-cli>
-    <ver.commons-lang3>3.17.0</ver.commons-lang3>
+    <ver.commons-lang3>3.18.0</ver.commons-lang3>
     <ver.commons-rdf>0.5.0</ver.commons-rdf>
     <ver.commons-csv>1.14.0</ver.commons-csv>
     <ver.commons-codec>1.18.0</ver.commons-codec>
