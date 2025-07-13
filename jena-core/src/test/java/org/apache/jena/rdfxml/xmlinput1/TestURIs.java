@@ -31,7 +31,7 @@ import org.apache.jena.irix.IRIx;
 
 public class TestURIs
 	extends TestCase {
-    // TODO: not for 2.3 relative/absolute tests
+
 	static public Test suite() {
 		TestSuite suite = new TestSuite(TestURIs.class.getCanonicalName());
 		suite.addTest(new TestURIs("testNoDomain"));
