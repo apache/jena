@@ -29,7 +29,7 @@ import org.apache.commons.lang3.concurrent.BasicThreadFactory ;
  */
 public class AlarmClock {
     // A ThreadFactory that creates daemons
-    private static ThreadFactory threadFactory = new BasicThreadFactory.Builder()
+    private static ThreadFactory threadFactory = BasicThreadFactory.builder()
         .daemon(true)
         .namingPattern("alarm-clock-%d")
         //.uncaughtExceptionHandler(null)

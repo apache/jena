@@ -18,8 +18,6 @@
 
 package org.apache.jena.util;
 
-import static org.apache.commons.lang3.StringUtils.startsWithIgnoreCase;
-
 import java.io.* ;
 import java.net.URL ;
 import java.nio.charset.Charset ;
@@ -29,6 +27,7 @@ import java.nio.file.Path;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.WrappedIOException ;
@@ -241,7 +240,7 @@ public class FileUtils
      *
      */
     private static String pathname(String filename) {
-        if ( !startsWithIgnoreCase(filename, "http:") && !startsWithIgnoreCase(filename, "https:") )
+        if ( !Strings.CI.startsWith(filename, "http:") && !Strings.CI.startsWith(filename, "https:") )
             return filename;
         return StringUtils.substringBefore(filename, "?");
     }
