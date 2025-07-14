@@ -1634,13 +1634,13 @@ public class IRI3986 implements IRI {
                         if ( port == 80 )
                             schemeReport(this, Issue.http_omit_well_known_port, scheme, "Default port 80 should be omitted");
                         else if ( port < 1024 && port != 80 )
-                            schemeReport(this, Issue.http_port_not_advised, scheme, "HTTP ports under 1024 should only be 80, not "+port);
+                            schemeReport(this, Issue.http_port_not_advised, scheme, "An HTTP port under 1024 should only be 80, not "+port);
                         break;
                     case HTTPS :
                         if ( port == 443 )
                             schemeReport(this, Issue.http_omit_well_known_port, scheme, "Default port 443 should be omitted");
                         else if ( port < 1024 && port != 443 )
-                            schemeReport(this, Issue.http_port_not_advised, scheme, "HTTPS ports under 1024 should only be 443, not "+port);
+                            schemeReport(this, Issue.http_port_not_advised, scheme, "An HTTPS ports under 1024 should only be 443, not "+port);
                         break;
                     default :
                         throw new IllegalStateException();
