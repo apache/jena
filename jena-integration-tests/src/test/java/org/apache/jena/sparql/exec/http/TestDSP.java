@@ -26,41 +26,52 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
 
-import org.apache.jena.fuseki.main.ConfigureTests;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.http.HttpOp;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.util.IsoMatcher;
-import org.apache.jena.test.conn.EnvTest;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class TestDSP {
 
     static String DIR = "testing/RDFLink/";
 
-    private static EnvTest env;
-    @BeforeClass public static void beforeClass() {
-        env = EnvTest.create("/ds");
+    private FusekiServer server = null;
+    private final String dsName = "/data";
+    private final boolean verbose = false;
+
+
+    @Before public void makeServer() {
+        DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
+        server = FusekiServer.create()
+                .verbose(verbose)
+                .enablePing(true)
+                //.addServlet(data, holder)
+                .add(dsName, dsg)
+                .build()
+                .start();
     }
 
-    @Before public void before() {
-        env.clear();
+    @After public void releaseServer() {
+        if ( server != null )
+            server.stop();
     }
 
-    @AfterClass public static void afterClass() {
-        if ( ConfigureTests.CloseTestServers )
-            EnvTest.stop(env);
+
+    private String url(String path) {
+        return server.datasetURL(path);
     }
 
-    private String url(String path) { return env.datasetPath(path); }
-
-    // Test DSP against the dataset itself.
-    static String dspServiceURL()   { return env.datasetPath("/"); }
+    // GSP endpoint
+    private String dspServiceURL() {
+        return url(dsName);
+    }
 
     static DatasetGraph dataset = makeDatasetGraph();
     static DatasetGraph makeDatasetGraph() {
@@ -89,13 +100,13 @@ public class TestDSP {
     public void dsp_clear_01() {
         // DELETE on the GSP endpoint would be the default graph.
         // DELETE on the dataset endpoint is not supported by Fuseki - this does "CLER ALL"
-        DSP.service(env.datasetURL()).clear();
+        DSP.service(dspServiceURL()).clear();
     }
 
     @Test
     public void dsp_clear_02() {
         DSP.service(dspServiceURL()).POST(dataset);
-        DSP.service(env.datasetURL()).clear();
+        DSP.service(dspServiceURL()).clear();
         DatasetGraph dsg = DSP.service(dspServiceURL()).GET();
         assertFalse(dsg.find().hasNext());
     }
