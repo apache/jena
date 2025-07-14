@@ -21,12 +21,12 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>5.5.0</version>
+    <version>5.6.0-SNAPSHOT</version>
   </parent>
 
   <name>Apache Jena - Benchmark Suite</name>
   <artifactId>jena-benchmarks</artifactId>
-  <version>5.5.0</version>
+  <version>5.6.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <description>Suite with different benchmarks.
