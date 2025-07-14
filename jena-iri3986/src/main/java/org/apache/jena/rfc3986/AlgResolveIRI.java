@@ -189,9 +189,14 @@ public class AlgResolveIRI {
             return "";
         if ( path.equals("/") )
             return "/";
+        // String.split -- "Trailing empty strings are not included in the results."
         String[] segments = path.split("/");
-
         int N = segments.length;
+        if ( N == 0 ) {
+            // If the path is two or more "/" and nothing else, then no segments.
+            return path;
+        }
+
         boolean initialSlash = segments[0].isEmpty();
         boolean trailingSlash = false;
         // Trailing slash if it isn't the initial "/" and it ends in "/" or "/." or "/.."

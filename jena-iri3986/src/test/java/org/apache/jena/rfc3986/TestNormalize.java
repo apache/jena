@@ -40,6 +40,11 @@ public class TestNormalize {
     @Test public void normalize_14() { testNormalize("http://host/foobar?q=s%74", "http://host/foobar?q=st"); }
     @Test public void normalize_15() { testNormalize("http://host/foobar#%7E", "http://host/foobar#~"); }
 
+    @Test public void normalize_21() { testNormalize("http://host/foobar///", "http://host/foobar/"); }
+    @Test public void normalize_22() { testNormalize("http://host//", "http://host//"); }
+    @Test public void normalize_23() { testNormalize("http://host//..", "http://host/"); }
+    @Test public void normalize_24() { testNormalize("http://host/abc//..", "http://host/abc/"); }
+
     private void testNormalize(String input, String expected) {
         IRI3986 iri = RFC3986.create(input);
         IRI3986 iri2 = iri.normalize();
