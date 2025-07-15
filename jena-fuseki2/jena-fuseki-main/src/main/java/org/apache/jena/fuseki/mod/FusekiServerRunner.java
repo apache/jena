@@ -40,11 +40,14 @@ import org.apache.jena.fuseki.mod.ui.FMod_UI;
 public class FusekiServerRunner {
 
     public static void main(String... args) {
-        //runAsync(args).join();
-        prepareFusekiMain();
+        prepareFusekiServerConstruct();
         FusekiMain.run(args);
+        // Does not return.
     }
 
+    /**
+     * Run {@link FusekiServer} with {@link FusekiModules} as given by {@link #serverModules()}.
+     */
     public static FusekiServer runAsync(String... args) {
         FusekiServer server = construct(args);
         try {
@@ -64,15 +67,18 @@ public class FusekiServerRunner {
         }
     }
 
+    /**
+     * Build but do not start, a {@link FusekiServer} with {@link FusekiModules} as given by {@link #serverModules()}.
+     */
     public static FusekiServer construct(String... args) {
-        prepareFusekiMain();
+        prepareFusekiServerConstruct();
         // Make server
         FusekiServer server = FusekiServer.construct(args);
         resetFusekiMain();
         return server;
     }
 
-    private static void prepareFusekiMain() {
+    private static void prepareFusekiServerConstruct() {
         String fusekiBase = Lib.getenv(FusekiServerCtl.envFusekiBase);
         if ( fusekiBase == null )
             fusekiBase = FusekiServerCtl.dftFusekiBase;
