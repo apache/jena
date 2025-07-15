@@ -1491,7 +1491,7 @@ public class IRI3986 implements IRI {
         // See also rfc7230#section-2.7.1
 
         if ( hasUserInfo() ) {
-            schemeReport(this,  Issue.iri_user_info_present, URIScheme.GENERAL, "Deprectaed; user info");
+            schemeReport(this,  Issue.iri_user_info_present, URIScheme.GENERAL, "Use of user info is deprecated");
             int idx = contains(iriStr, ':',  userinfo0, userinfo1);
             if ( idx >= 0 && idx < userinfo1-1 )
                 schemeReport(this,  Issue.iri_password, URIScheme.GENERAL, "Non-empty password");
