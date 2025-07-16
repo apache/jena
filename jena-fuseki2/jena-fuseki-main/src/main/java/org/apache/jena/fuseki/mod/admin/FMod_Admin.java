@@ -22,7 +22,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.SetUtils;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.ArgModuleGeneral;
@@ -145,21 +148,32 @@ public class FMod_Admin implements FusekiModule {
         String configDir = FusekiServerCtl.dirConfiguration.toString();
         List<DataAccessPoint> directoryDatabases = FusekiConfig.readConfigurationDirectory(configDir);
 
+        // Check there are no collisions between the command line (datasetNames)
+        // and existing configurations.
         if ( directoryDatabases.isEmpty() && datasetNames.isEmpty() )
             FmtLog.info(LOG, "No databases: dir=%s", configDir);
         else {
+            if ( ! datasetNames.isEmpty() ) {
+                // Check no clashes of command line and configuration
+                Set<String> directoryDatabasesNames = directoryDatabases.stream().map(dap->dap.getName()).collect(Collectors.toSet());
+                Set<String> both = SetUtils.intersection(datasetNames, directoryDatabasesNames);
+                if ( ! both.isEmpty() ) {
+                    StringJoiner sj = new StringJoiner(", ");
+                    both.forEach(sj::add);
+                    String dups = sj.toString();
+                    //both.forEach(dbName -> FmtLog.error(LOG, "Duplicate database '%s' (command line and existing configuration)", dbName));
+                    throw new FusekiConfigException("Duplicate database entries for "+dups);
+                }
+            }
+            // Now log information
             datasetNames.forEach(n->FmtLog.info(Fuseki.configLog, "Database: %s", n));
             directoryDatabases.forEach(dap -> FmtLog.info(Fuseki.configLog, "Database: %s", dap.getName()));
         }
 
         directoryDatabases.forEach(db -> {
             String dbName = db.getName();
-            if ( datasetNames.contains(dbName) ) {
-                FmtLog.warn(LOG, "Database '%s' already added to the Fuseki server builder", dbName);
-                // ?? builder.remove(dbName);
-            }
+            // Names have been checked for uniqueness.
             builder.add(dbName, db.getDataService());
-            // ** builder.add(DataAccessPoint);
         });
 
         // Modify the server to include the admin operations.

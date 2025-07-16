@@ -113,7 +113,7 @@ public class TestAdminAddDatasetTemplate extends FusekiServerPerTestClass {
         badAddDataserverRequest("//bad_10");
     }
 
-    //@Test 
+    @Test
     public void noOverwriteExistingConfigFile() {
         withServer(server->{
             try {
