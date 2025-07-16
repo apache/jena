@@ -32,7 +32,7 @@ import org.apache.jena.sparql.graph.NodeTransform;
 public class ExprVar extends ExprNode
 {
     // AKA ExprFunction0
-    protected Var varNode = null;
+    protected final Var varNode;
 
     public ExprVar(String name) { varNode = Var.alloc(name); }
 
