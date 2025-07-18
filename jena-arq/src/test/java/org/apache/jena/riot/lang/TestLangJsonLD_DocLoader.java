@@ -19,12 +19,15 @@
 package org.apache.jena.riot.lang;
 
 import static org.apache.jena.riot.Lang.JSONLD11;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URI;
 
 import com.apicatalog.jsonld.JsonLdError;
 import com.apicatalog.jsonld.JsonLdOptions;
+import com.apicatalog.jsonld.context.cache.Cache;
+import com.apicatalog.jsonld.context.cache.LruCache;
 import com.apicatalog.jsonld.document.Document;
 import com.apicatalog.jsonld.document.JsonDocument;
 import com.apicatalog.jsonld.loader.DocumentLoader;
@@ -48,33 +51,68 @@ public class TestLangJsonLD_DocLoader {
 
     @Test
     public void testGetJsonLdOptions() {
+        TestDocumentLoader loader = new TestDocumentLoader();
+        Context context = setupContext(loader, false);
+
         StreamRDF sink = StreamRDFLib.sinkNull();
         RDFParser parser = RDFParserBuilder.create()
-                .context(setupContext())
+                .context(context)
                 .lang(JSONLD11)
                 .fromString(CONTENT)
                 .build();
         parser.parse(sink);
 
-        // Check called at least once.
-        assertTrue(TestDocumentLoader.COUNTER > 0, ()->"Custom DocumentLoader wasn't called to handle loading");
+        int count1 = loader.COUNTER;
+
+        // By observation, it's actually called twice
+        assertTrue(count1 >= 1 , ()->"Custom DocumentLoader wasn't called to handle loading");
+
+        parser.parse(sink);
+        int count2 = loader.COUNTER;
+        assertTrue(count2 > count1 , ()->"Custom DocumentLoader wasn't called during second parser run");
     }
 
-    private final Context setupContext() {
+    @Test
+    public void testGetJsonLdOptionsWithCache() {
         TestDocumentLoader loader = new TestDocumentLoader();
+        Context context = setupContext(loader, true);
+
+        StreamRDF sink = StreamRDFLib.sinkNull();
+        RDFParser parser = RDFParserBuilder.create()
+                .context(context)
+                .lang(JSONLD11)
+                .fromString(CONTENT)
+                .build();
+
+        parser.parse(sink);
+        int count1 = loader.COUNTER;
+
+        assertEquals(1, count1, ()->"Custom DocumentLoader wasn't called to handle loading");
+
+        parser.parse(sink);
+        int count2 = loader.COUNTER;
+
+        assertTrue(count2 == count1 , ()->"Custom DocumentCache wasn't used during second parser run");
+    }
+
+    private final Context setupContext(TestDocumentLoader docLoader, boolean withCache) {
         JsonLdOptions opts = new JsonLdOptions();
 
-        opts.setDocumentLoader(loader);
+        opts.setDocumentLoader(docLoader);
+
+        if ( withCache ) {
+            Cache<String, Document> documentCache = new LruCache<>(256);
+            opts.setDocumentCache(documentCache);
+        }
 
         Context context = new Context();
         context.set(LangJSONLD11.JSONLD_OPTIONS, opts);
-
         return context;
     }
 
     private final static class TestDocumentLoader implements DocumentLoader {
 
-        public static int COUNTER = 0;
+        public int COUNTER = 0;
 
         @Override
         public Document loadDocument(URI url, DocumentLoaderOptions options) throws JsonLdError {
