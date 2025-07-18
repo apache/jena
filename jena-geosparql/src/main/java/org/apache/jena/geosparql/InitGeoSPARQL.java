@@ -18,7 +18,10 @@
 
 package org.apache.jena.geosparql;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.jena.assembler.Assembler;
+import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.atlas.logging.LogCtlJUL;
 import org.apache.jena.geosparql.assembler.GeoAssembler;
 import org.apache.jena.geosparql.assembler.VocabGeoSPARQL;
@@ -52,9 +55,13 @@ public class InitGeoSPARQL implements JenaSubsystemLifecycle {
             LogCtlJUL.routeJULtoSLF4J();
             JenaSystem.logLifecycle("InitGeoSPARQL - start");
             GeometryDatatype.registerDatatypes();
-            // Logs "SIS_DATA is not set"
-            GeoSPARQLConfig.loadFunctions();
+
+            // Logs "SIS_DATA is not set" on "org.apache.sis.system"
+            Logger SIS_SystemLogger = LoggerFactory.getLogger("org.apache.sis.system");
+            LogCtl.withLevel(SIS_SystemLogger, "ERROR", ()->GeoSPARQLConfig.loadFunctions());
+
             Assembler assembler = new GeoAssembler();
+
             AssemblerUtils.registerDataset(VocabGeoSPARQL.tGeoDataset,    assembler);
             AssemblerUtils.registerDataset(VocabGeoSPARQL.tGeoDatasetAlt, assembler);
             JenaSystem.logLifecycle("InitGeoSPARQL - finish");
