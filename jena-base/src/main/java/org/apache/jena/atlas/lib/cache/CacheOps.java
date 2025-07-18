@@ -46,11 +46,7 @@ class CacheOps {
     public static <K,V> V getOrFill(Cache<K,V> cache, K key, Function<K,V> function) {
         V value = cache.getIfPresent(key) ;
         if ( value == null ) {
-            try { value = function.apply(key) ; }
-            catch (RuntimeException ex) { throw ex; }
-            catch (Exception e) {
-                throw new AtlasException("Exception on cache fill", e) ;
-            }
+            value = function.apply(key) ;
             if ( value != null )
                 cache.put(key, value) ;
         }

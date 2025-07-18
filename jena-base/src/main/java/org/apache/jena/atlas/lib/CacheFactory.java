@@ -88,6 +88,14 @@ public class CacheFactory {
         return new Cache1<>() ;
     }
 
+    /*
+     * Create a lightweight LRU cache.
+     * This cache is not thread-safe.
+     */
+    public static <Key, Value> Cache<Key, Value> createPlainCache(int size) {
+        return new CachePlainLRU<>(size) ;
+    }
+
     /**
      * Create set-cache, rather than a map-cache.
      * The cache is thread-safe for single operations.
