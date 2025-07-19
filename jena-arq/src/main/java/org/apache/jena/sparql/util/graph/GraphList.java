@@ -40,6 +40,36 @@ import org.apache.jena.vocabulary.RDF;
 
 public class GraphList
 {
+    public static List<Node> members(GNode gnode) {
+        List<Node> x = new ArrayList<>();
+        members(gnode, x);
+        return x;
+    }
+
+    public static void members(GNode gnode, final Collection<Node> acc) {
+        if ( !isListNode(gnode) )
+            return;
+
+        while (!listEnd(gnode)) {
+            Node n = car(gnode);
+            if ( n != null )
+                acc.add(n);
+            gnode = next(gnode);
+        }
+    }
+
+    public static int length(GNode gnode) {
+        if ( !isListNode(gnode) )
+            return -1;
+
+        int len = 0;
+        while (!listEnd(gnode)) {
+            len++;
+            gnode = next(gnode);
+        }
+        return len;
+    }
+
     // ----------------------
     /** Starting at a list element, find the heads of lists it is in */
     public static List<Node> listFromMember(GNode gnode)
@@ -142,41 +172,6 @@ public class GraphList
 
     private static boolean isAny(Node x) {
         return x == null || Node.ANY.equals(x);
-    }
-
-    public static List<Node> members(GNode gnode)
-    {
-        List<Node> x = new ArrayList<>();
-        members(gnode, x);
-        return x;
-    }
-
-    public static void members(GNode gnode, final Collection<Node> acc)
-    {
-        if ( ! isListNode(gnode) )
-            return;
-
-        while( ! listEnd(gnode) )
-        {
-            Node n = car(gnode);
-            if ( n != null )
-                acc.add(n);
-            gnode = next(gnode);
-        }
-    }
-
-    public static int length(GNode gnode)
-    {
-        if ( ! isListNode(gnode) )
-            return -1;
-
-        int len = 0;
-        while ( ! listEnd(gnode) )
-        {
-            len++;
-            gnode = next(gnode);
-        }
-        return len;
     }
 
     public static int occurs(GNode gnode, Node item)

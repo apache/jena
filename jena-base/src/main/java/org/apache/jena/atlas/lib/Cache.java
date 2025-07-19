@@ -76,7 +76,7 @@ public interface Cache<Key, Value>
      * @return Returns either the existing value or the calculated value.
      *         If callable is called and returns null, then null is returned.
      */
-    public Value get(Key key, Function<Key, Value> callable) ;
+    public Value get(Key key, Function<Key, Value> function) ;
 
     /**
      * Insert into the cache

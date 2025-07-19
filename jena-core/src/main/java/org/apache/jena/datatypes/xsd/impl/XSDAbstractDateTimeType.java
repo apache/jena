@@ -35,35 +35,35 @@ public class XSDAbstractDateTimeType extends XSDDatatype {
     public XSDAbstractDateTimeType(String typename) {
         super(typename);
     }
-     
+
     /**
      * Compares two instances of values of the given datatype.
-     * This ignores lang tags and just uses the java.lang.Number 
+     * This ignores lang tags and just uses the java.lang.Number
      * equality.
      */
     @Override
     public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
        return value1.getValue().equals(value2.getValue());
     }
-    
+
     /** Mask to indicate whether year is present */
     public static final short YEAR_MASK = 0x1;
-    
+
     /** Mask to indicate whether month is present */
     public static final short MONTH_MASK = 0x2;
-    
+
     /** Mask to indicate whether day is present */
     public static final short DAY_MASK = 0x4;
-    
+
     /** Mask to indicate whether time is present */
     public static final short TIME_MASK = 0x8;
-    
+
     /** Mask to indicate all date/time are present */
     public static final short FULL_MASK = 0xf;
-    
-    
+
+
 //  --------------------------------------------------------------------
-//  This code is adapated from Xerces 2.6.0 AbstractDateTimeDV.    
+//  This code is adapated from Xerces 2.6.0 AbstractDateTimeDV.
 //  Copyright (c) 1999-2003 The Apache Software Foundation.  All rights
 //  reserved.
 //  --------------------------------------------------------------------
@@ -71,7 +71,7 @@ public class XSDAbstractDateTimeType extends XSDDatatype {
      //define constants
      protected final static int CY = 0,  M = 1, D = 2, h = 3,
      m = 4, s = 5, ms = 6, msscale=8, utc=7, hh=0, mm=1;
-        
+
      //size for all objects must have the same fields:
      //CCYY, MM, DD, h, m, s, ms + timeZone
      protected final static int TOTAL_SIZE = 9;
@@ -81,7 +81,6 @@ public class XSDAbstractDateTimeType extends XSDDatatype {
      protected final static int YEAR=2000;
      protected final static int MONTH=01;
      protected final static int DAY = 15;
-
 
      /**
       * Parses time hh:mm:ss.sss and time zone if any
@@ -117,7 +116,7 @@ public class XSDAbstractDateTimeType extends XSDDatatype {
 
          if (stop == end)
              return;
-        
+
          //get miliseconds (ms)
          start = stop;
          int millisec = buffer.charAt(start) == '.' ? start : -1;
@@ -284,7 +283,7 @@ public class XSDAbstractDateTimeType extends XSDDatatype {
      public static final boolean isDigit(char ch) {
          return ch >= '0' && ch <= '9';
      }
-    
+
      // if the character is in the range 0x30 ~ 0x39, return its int value (0~9),
      // otherwise, return -1
      public static final int getDigit(char ch) {
@@ -397,7 +396,7 @@ public class XSDAbstractDateTimeType extends XSDDatatype {
          append(message, (char)date[utc], 0);
          return message.toString();
      }
-    
+
      /** Append the fraction time part of a date/time vector to
       * a string buffer.
       */
@@ -412,7 +411,7 @@ public class XSDAbstractDateTimeType extends XSDDatatype {
          while (trunc > 0 && msString.charAt(trunc-1) == '0') trunc --;
          buff.append(msString.substring(0, trunc));
      }
-     
+
      protected void append(StringBuilder message, int value, int nch) {
          if (value < 0) {
              message.append('-');
@@ -438,15 +437,15 @@ public class XSDAbstractDateTimeType extends XSDDatatype {
          }
      }
 
-    
+
 //  --------------------------------------------------------------------
-//  End of code is adapated from Xerces 2.6.0 AbstractDateTimeDV.    
+//  End of code is adapated from Xerces 2.6.0 AbstractDateTimeDV.
 //  --------------------------------------------------------------------
-     
+
      /**
      * Normalization. If the value is narrower than the current data type
      * (e.g. value is xsd:date but the time is xsd:datetime) returns
-     * the narrower type for the literal. 
+     * the narrower type for the literal.
      * If the type is narrower than the value then it may normalize
      * the value (e.g. set the mask of an XSDDateTime)
      * Currently only used to narrow gener XSDDateTime objects

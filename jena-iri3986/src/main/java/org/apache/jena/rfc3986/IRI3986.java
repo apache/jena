@@ -1491,7 +1491,7 @@ public class IRI3986 implements IRI {
         // See also rfc7230#section-2.7.1
 
         if ( hasUserInfo() ) {
-            schemeReport(this,  Issue.iri_user_info_present, URIScheme.GENERAL, "Deprectaed; user info");
+            schemeReport(this,  Issue.iri_user_info_present, URIScheme.GENERAL, "Use of user info is deprecated");
             int idx = contains(iriStr, ':',  userinfo0, userinfo1);
             if ( idx >= 0 && idx < userinfo1-1 )
                 schemeReport(this,  Issue.iri_password, URIScheme.GENERAL, "Non-empty password");
@@ -1634,13 +1634,13 @@ public class IRI3986 implements IRI {
                         if ( port == 80 )
                             schemeReport(this, Issue.http_omit_well_known_port, scheme, "Default port 80 should be omitted");
                         else if ( port < 1024 && port != 80 )
-                            schemeReport(this, Issue.http_port_not_advised, scheme, "HTTP ports under 1024 should only be 80, not "+port);
+                            schemeReport(this, Issue.http_port_not_advised, scheme, "An HTTP port under 1024 should only be 80, not "+port);
                         break;
                     case HTTPS :
                         if ( port == 443 )
                             schemeReport(this, Issue.http_omit_well_known_port, scheme, "Default port 443 should be omitted");
                         else if ( port < 1024 && port != 443 )
-                            schemeReport(this, Issue.http_port_not_advised, scheme, "HTTPS ports under 1024 should only be 443, not "+port);
+                            schemeReport(this, Issue.http_port_not_advised, scheme, "An HTTPS ports under 1024 should only be 443, not "+port);
                         break;
                     default :
                         throw new IllegalStateException();

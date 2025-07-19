@@ -247,7 +247,7 @@ public class ActionDatasets extends ActionContainerItem {
                 // Keep a persistent copy with a globally unique name.
                 // This is not used for anything other than being "for the record".
                 systemFileCopy = FusekiServerCtl.dirSystemFileArea.resolve(uuid.toString()).toString();
-                RDFWriter.source(model).lang(Lang.TURTLE).output(systemFileCopy);
+                RDFWriter.source(modelFromRequest).lang(Lang.TURTLE).output(systemFileCopy);
 
                 // ----
                 action.log.info(format("[%d] Create database : name = %s", action.id, datasetPath));
@@ -267,8 +267,8 @@ public class ActionDatasets extends ActionContainerItem {
                 }
                 dataAccessPoint.getDataService().setEndpointProcessors(action.getOperationRegistry());
 
-                // Write to configuration directory.
-                RDFWriter.source(model).lang(Lang.TURTLE).output(configFile);
+                // Write to configuration directory (without assembler additional details).
+                RDFWriter.source(modelFromRequest).lang(Lang.TURTLE).output(configFile);
 
                 if ( ! datasetPath.equals(dataAccessPoint.getName()) )
                     FmtLog.warn(action.log, "Inconsistent names: datasetPath = %s; DataAccessPoint name = %s", datasetPath, dataAccessPoint);

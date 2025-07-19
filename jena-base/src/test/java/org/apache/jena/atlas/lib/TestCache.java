@@ -37,114 +37,103 @@ import org.junit.runners.Parameterized.Parameters ;
 public class TestCache
 {
     // Tests do not apply to cache1.
-    private static interface CacheMaker<K,V> { Cache<K,V> make(int size) ; String name() ; } 
+    private static interface CacheMaker<K,V> { Cache<K,V> make(int size) ; }
 
-    private static CacheMaker<Integer, Integer> simple = 
-        new CacheMaker<Integer, Integer>()
-        { 
-        @Override
-        public Cache<Integer, Integer> make(int size) { return CacheFactory.createSimpleCache(size) ; }
-        @Override
-        public String name() { return "Simple" ; } 
-        } 
-    ;
+    private static CacheMaker<Integer, Integer> oneSlot = (int size)->CacheFactory.createOneSlotCache();
+    private static CacheMaker<Integer, Integer> simple = (int size)->CacheFactory.createSimpleCache(size);
+    private static CacheMaker<Integer, Integer> standard = (int size)->CacheFactory.createCache(size);
+    private static CacheMaker<Integer, Integer> plainLRU = (int size)->CacheFactory.createCache(size);
 
-    private static CacheMaker<Integer, Integer> standard = 
-        new CacheMaker<Integer, Integer>()
-        {
-        @Override
-        public Cache<Integer, Integer> make(int size) { return CacheFactory.createCache(size) ; }
-        @Override
-        public String name() { return "Standard" ; } 
-        }
-    ;
-
-    @Parameters
+    @Parameters(name="{0}")
     public static Collection<Object[]> cacheMakers()
     {
-        return Arrays.asList(new Object[][] {
-            { simple , 10 }
-            , { simple , 2 } 
-            , { simple , 1 }
-            , { standard , 10 }
-            , { standard , 2 }
-            , { standard , 1 }
-        } ) ; 
+        return Arrays.asList(new Object[][]
+                { { "Simple(10)", simple , 10 }
+                , { "Simple(2)", simple , 2 }
+                , { "Simple(1)" , simple ,1 }
+                , { "Plain(10)", plainLRU , 10 }
+                , { "Plain(2)", plainLRU , 2 }
+                , { "Plain(1)" , plainLRU ,1 }
+                , { "Standard(10)" , standard, 10 }
+                , { "Standard(2)"  , standard, 2 }
+                , { "Standard(1)"  , standard, 1 }
+                , { "SingleSlot"  , oneSlot, 1 }
+                } ) ;
     }
 
-    Cache<Integer, Integer> cache ;
-    CacheMaker<Integer,Integer> cacheMaker ;
-    int size ;
-    
-    
-    public TestCache(CacheMaker<Integer,Integer> cacheMaker, int size)
-    {
-        this.cacheMaker = cacheMaker ;
-        this.size = size ;
-        
+    Cache<Integer, Integer> cache;
+    CacheMaker<Integer, Integer> cacheMaker;
+    int size;
+
+    public TestCache(String name, CacheMaker<Integer, Integer> cacheMaker, int size) {
+        this.cacheMaker = cacheMaker;
+        this.size = size;
     }
-    
-    @Before public void before() { cache = cacheMaker.make(size) ; }
-    
-    @Test public void cache_00()
-    {
-        assertEquals(0, cache.size()) ;
-        assertTrue(cache.isEmpty()) ;
+
+    @Before
+    public void before() {
+        cache = cacheMaker.make(size);
     }
-    
-    @Test public void cache_01()
-    {
-        Integer x = cache.getIfPresent(7) ;
-        cache.put(7, 7) ;
-        assertEquals(1, cache.size()) ;
-        assertNull(x) ;
-        assertTrue(cache.containsKey(7)) ;
-        assertEquals(Integer.valueOf(7), cache.getIfPresent(7)) ;
+
+    @Test
+    public void cache_00() {
+        assertEquals(0, cache.size());
+        assertTrue(cache.isEmpty());
     }
-    
-    @Test public void cache_02()
-    {
-        cache.put(7, 7) ;
-        cache.put(8, 8) ;
+
+    @Test
+    public void cache_01() {
+        Integer x = cache.getIfPresent(7);
+        cache.put(7, 7);
+        assertEquals(1, cache.size());
+        assertNull(x);
+        assertTrue(cache.containsKey(7));
+        assertEquals(Integer.valueOf(7), cache.getIfPresent(7));
+    }
+
+    @Test
+    public void cache_02() {
+        cache.put(7, 7);
+        cache.put(8, 8);
         // Not true for Cache1.
         if ( size > 2 )
-            assertEquals(2, cache.size()) ;
+            assertEquals(2, cache.size());
         if ( size > 2 )
-            assertTrue(cache.containsKey(7)) ;
-        
+            assertTrue(cache.containsKey(7));
+
         if ( size > 2 )
-            assertEquals(Integer.valueOf(7), cache.getIfPresent(7)) ;
-        
-        assertTrue(cache.containsKey(8)) ;
-        assertEquals(Integer.valueOf(8), cache.getIfPresent(8)) ;
+            assertEquals(Integer.valueOf(7), cache.getIfPresent(7));
+
+        assertTrue(cache.containsKey(8));
+        assertEquals(Integer.valueOf(8), cache.getIfPresent(8));
     }
-    
-    @Test public void cache_03()
-    {
-        cache.put(7, 7) ;
-        Integer x1 = cache.getIfPresent(7) ;
-        cache.put(7, 18) ;
-        assertEquals(1, cache.size()) ;
-        assertEquals(7, x1.intValue()) ;
-        assertTrue(cache.containsKey(7)) ;
-        assertEquals(Integer.valueOf(18), cache.getIfPresent(7)) ;
+
+    @Test
+    public void cache_03() {
+        cache.put(7, 7);
+        Integer x1 = cache.getIfPresent(7);
+        cache.put(7, 18);
+        assertEquals(1, cache.size());
+        assertEquals(7, x1.intValue());
+        assertTrue(cache.containsKey(7));
+        assertEquals(Integer.valueOf(18), cache.getIfPresent(7));
     }
-    
-    @Test public void cache_04()
-    {
-        cache.clear() ;
-        cache.put(7, 77) ;
-        List<Integer> x = Iter.toList(cache.keys()) ;
-        assertEquals(1, x.size()) ;
-        assertEquals(Integer.valueOf(7), x.get(0)) ;
+
+    @Test
+    public void cache_04() {
+        cache.clear();
+        cache.put(7, 77);
+        List<Integer> x = Iter.toList(cache.keys());
+        assertEquals(1, x.size());
+        assertEquals(Integer.valueOf(7), x.get(0));
     }
-    
-    @Test public void cache_05()
-    {
-        cache.clear() ;
-        cache.put(7, 77) ;
-        cache.clear() ;
-        assertEquals(0, cache.size()) ; 
-        assertTrue(cache.isEmpty()) ;
+
+    @Test
+    public void cache_05() {
+        cache.clear();
+        cache.put(7, 77);
+        cache.clear();
+        assertEquals(0, cache.size());
+        assertTrue(cache.isEmpty());
     }
 }

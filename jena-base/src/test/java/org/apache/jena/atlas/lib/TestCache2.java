@@ -25,9 +25,8 @@ import org.junit.Test;
 
 // Non-parameterized tests
 public class TestCache2 {
-    // Cache1
     @Test
-    public void cache_10() {
+    public void cache_oneSlot() {
         Cache<Integer, String> cache = CacheFactory.createOneSlotCache();
         String str = cache.getIfPresent(1);
         assertNull(str);
@@ -51,7 +50,7 @@ public class TestCache2 {
     @Test
     public void cacheGetter_1() {
         Cache<Integer, String> cache = CacheFactory.createCache(2);
-        String str = cache.get(1, k->k.toString());
+        String str = cache.get(1, k -> k.toString());
         assertEquals("1", str);
     }
 
@@ -59,9 +58,9 @@ public class TestCache2 {
     @Test
     public void cacheGetter_2() {
         Cache<Integer, String> cache = CacheFactory.createCache(2);
-        String str1 = cache.get(1, k->k.toString());
-        String str2 = cache.get(2, k->k.toString());
-        String str3 = cache.get(3, k->k.toString());
+        String str1 = cache.get(1, k -> k.toString());
+        String str2 = cache.get(2, k -> k.toString());
+        String str3 = cache.get(3, k -> k.toString());
         assertEquals("1", str1);
         assertEquals("2", str2);
         assertEquals("3", str3);
@@ -70,4 +69,18 @@ public class TestCache2 {
         assertEquals("10", str1);
     }
 
+    // Cache + getters
+    @Test
+    public void cacheGetter_3() {
+        Cache<Integer, String> cache = CacheFactory.createPlainCache(2);
+        String str1 = cache.get(1, k -> k.toString());
+        String str2 = cache.get(2, k -> k.toString());
+        String str3 = cache.get(3, k -> k.toString());
+        assertEquals("1", str1);
+        assertEquals("2", str2);
+        assertEquals("3", str3);
+        cache.put(1, "10");
+        str1 = cache.getIfPresent(1);
+        assertEquals("10", str1);
+    }
 }

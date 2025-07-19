@@ -73,7 +73,7 @@ public class EnvTest {
         return create(dsName, null);
     }
 
-    public static EnvTest create(String dsName, DatasetGraph dsg) {
+    private static EnvTest create(String dsName, DatasetGraph dsg) {
         return new EnvTest(dsName, dsg, null, null);
     }
 

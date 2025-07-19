@@ -490,6 +490,16 @@ public class G {
         return GraphList.members(gNode);
     }
 
+    /** Return a the length of an RDF list. */
+    public static int listLength(Graph graph, Node node) {
+        Objects.requireNonNull(graph, "graph");
+        Objects.requireNonNull(node, "node");
+        GNode gNode = GNode.create(graph, node);
+        if ( ! GraphList.isListNode(gNode) )
+            return -1;
+        return GraphList.length(gNode);
+    }
+
     /**
      * Return a java list where the {@code node} is an RDF list of nodes or a single
      * node (returned a singleton list).
