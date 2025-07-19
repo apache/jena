@@ -25,6 +25,7 @@ import org.apache.jena.riot.Lang;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -61,5 +62,12 @@ public class RDFIOTestUtils {
         } catch (IOException e) {
             throw new IllegalStateException();
         }
+    }
+
+    public static Model readStringAsModel(String content, String lang) {
+        var r = new StringReader(content);
+        var m = ModelFactory.createDefaultModel();
+        m.read(r, null, lang);
+        return m;
     }
 }

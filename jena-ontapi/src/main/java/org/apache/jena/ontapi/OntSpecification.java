@@ -57,78 +57,6 @@ import java.util.Objects;
 @SuppressWarnings("ClassCanBeRecord")
 public class OntSpecification {
 
-    private static final OntPersonality OWL2_FULL_PERSONALITY =
-            OntPersonalities.OWL2_ONT_PERSONALITY()
-                    .setBuiltins(OntPersonalities.OWL2_FULL_BUILTINS)
-                    .setReserved(OntPersonalities.OWL2_RESERVED)
-                    .setPunnings(OntPersonalities.OWL_NO_PUNNINGS)
-                    .setConfig(OntConfigs.OWL2_CONFIG)
-                    .build();
-
-    private static final OntPersonality OWL2_DL_PERSONALITY =
-            OntPersonalities.OWL2_ONT_PERSONALITY()
-                    .setBuiltins(OntPersonalities.OWL2_FULL_BUILTINS)
-                    .setReserved(OntPersonalities.OWL2_RESERVED)
-                    .setPunnings(OntPersonalities.OWL_DL2_PUNNINGS)
-                    .setConfig(OntConfigs.OWL2_CONFIG)
-                    .build();
-
-    private static final OntPersonality OWL2_EL_PERSONALITY =
-            OntPersonalities.OWL2_EL_ONT_PERSONALITY()
-                    .setBuiltins(OntPersonalities.OWL2_EL_BUILTINS)
-                    .setReserved(OntPersonalities.OWL2_RESERVED)
-                    .setPunnings(OntPersonalities.OWL_DL2_PUNNINGS)
-                    .setConfig(OntConfigs.OWL2_EL_CONFIG)
-                    .build();
-
-    private static final OntPersonality OWL2_QL_PERSONALITY =
-            OntPersonalities.OWL2_QL_ONT_PERSONALITY()
-                    .setBuiltins(OntPersonalities.OWL2_QL_BUILTINS)
-                    .setReserved(OntPersonalities.OWL2_RESERVED)
-                    .setPunnings(OntPersonalities.OWL_DL2_PUNNINGS)
-                    .setConfig(OntConfigs.OWL2_QL_CONFIG)
-                    .build();
-
-    private static final OntPersonality OWL2_RL_PERSONALITY =
-            OntPersonalities.OWL2_RL_ONT_PERSONALITY()
-                    .setBuiltins(OntPersonalities.OWL2_RL_BUILTINS)
-                    .setReserved(OntPersonalities.OWL2_RESERVED)
-                    .setPunnings(OntPersonalities.OWL_DL2_PUNNINGS)
-                    .setConfig(OntConfigs.OWL2_RL_CONFIG)
-                    .build();
-
-    private static final OntPersonality OWL1_DL_PERSONALITY =
-            OntPersonalities.OWL1_ONT_PERSONALITY()
-                    .setBuiltins(OntPersonalities.OWL1_FULL_BUILTINS)
-                    .setReserved(OntPersonalities.OWL1_RESERVED)
-                    .setPunnings(OntPersonalities.OWL_DL1_PUNNINGS)
-                    .setConfig(OntConfigs.OWL1_CONFIG)
-                    .build();
-
-    private static final OntPersonality OWL1_FULL_PERSONALITY =
-            OntPersonalities.OWL1_ONT_PERSONALITY()
-                    .setBuiltins(OntPersonalities.OWL1_FULL_BUILTINS)
-                    .setReserved(OntPersonalities.OWL1_RESERVED)
-                    .setPunnings(OntPersonalities.OWL_NO_PUNNINGS)
-                    .setConfig(OntConfigs.OWL1_CONFIG)
-                    .build();
-
-    private static final OntPersonality OWL1_LITE_PERSONALITY =
-            OntPersonalities.OWL1_LITE_ONT_PERSONALITY()
-                    .setBuiltins(OntPersonalities.OWL1_LITE_BUILTINS)
-                    .setReserved(OntPersonalities.OWL1_RESERVED)
-                    .setPunnings(OntPersonalities.OWL_DL1_PUNNINGS)
-                    .setConfig(OntConfigs.OWL1_LITE_CONFIG)
-                    .build();
-
-    private static final OntPersonality RDFS_PERSONALITY =
-            OntPersonalities.RDFS_ONT_PERSONALITY()
-                    .setBuiltins(OntPersonalities.RDFS_BUILTINS)
-                    .setReserved(OntPersonalities.RDFS_RESERVED)
-                    .setPunnings(OntPersonalities.OWL_NO_PUNNINGS)
-                    .setConfig(OntConfigs.RDFS_CONFIG)
-                    .build();
-
     /*
      * *****************************************************************************************************************
      * OWL 2 DL
@@ -157,7 +85,7 @@ public class OntSpecification {
      * that are stored in memory and do no additional entailment reasoning.
      */
     public static final OntSpecification OWL2_DL_MEM = new OntSpecification(
-            OWL2_DL_PERSONALITY, null
+            OntPersonalities.OWL2_DL_PERSONALITY, null
     );
 
     /**
@@ -165,7 +93,7 @@ public class OntSpecification {
      * that are stored in memory and use the RDFS inferencer for additional entailments.
      */
     public static final OntSpecification OWL2_DL_MEM_RDFS_INF = new OntSpecification(
-            OWL2_DL_PERSONALITY, RDFSRuleReasonerFactory.theInstance()
+            OntPersonalities.OWL2_DL_PERSONALITY, RDFSRuleReasonerFactory.theInstance()
     );
 
     /**
@@ -173,7 +101,7 @@ public class OntSpecification {
      * that are stored in memory and use the transitive inferencer for additional entailments.
      */
     public static final OntSpecification OWL2_DL_MEM_TRANS_INF = new OntSpecification(
-            OWL2_DL_PERSONALITY, TransitiveReasonerFactory.theInstance()
+            OntPersonalities.OWL2_DL_PERSONALITY, TransitiveReasonerFactory.theInstance()
     );
 
     /**
@@ -181,7 +109,7 @@ public class OntSpecification {
      * that are stored in memory and use the OWL rules inference engine for additional entailments.
      */
     public static final OntSpecification OWL2_DL_MEM_RULES_INF = new OntSpecification(
-            OWL2_DL_PERSONALITY, OWLFBRuleReasonerFactory.theInstance()
+            OntPersonalities.OWL2_DL_PERSONALITY, OWLFBRuleReasonerFactory.theInstance()
     );
 
     /*
@@ -195,21 +123,21 @@ public class OntSpecification {
      * Full support for the OWL v2 specification.
      */
     public static final OntSpecification OWL2_FULL_MEM = new OntSpecification(
-            OWL2_FULL_PERSONALITY, null
+            OntPersonalities.OWL2_FULL_PERSONALITY, null
     );
 
     /**
      * A specification for OWL2 models that are stored in memory and use the RDFS inferencer for additional entailments.
      */
     public static final OntSpecification OWL2_FULL_MEM_RDFS_INF = new OntSpecification(
-            OWL2_FULL_PERSONALITY, RDFSRuleReasonerFactory.theInstance()
+            OntPersonalities.OWL2_FULL_PERSONALITY, RDFSRuleReasonerFactory.theInstance()
     );
 
     /**
      * A specification for OWL2 models that are stored in memory and use the transitive inferencer for additional entailments.
      */
     public static final OntSpecification OWL2_FULL_MEM_TRANS_INF = new OntSpecification(
-            OWL2_FULL_PERSONALITY, TransitiveReasonerFactory.theInstance()
+            OntPersonalities.OWL2_FULL_PERSONALITY, TransitiveReasonerFactory.theInstance()
     );
 
     /**
@@ -217,7 +145,7 @@ public class OntSpecification {
      * that are stored in memory and use the OWL rules inference engine for additional entailments.
      */
     public static final OntSpecification OWL2_FULL_MEM_RULES_INF = new OntSpecification(
-            OWL2_FULL_PERSONALITY, OWLFBRuleReasonerFactory.theInstance()
+            OntPersonalities.OWL2_FULL_PERSONALITY, OWLFBRuleReasonerFactory.theInstance()
     );
 
     /**
@@ -225,7 +153,7 @@ public class OntSpecification {
      * that are stored in memory and use the micro OWL rules inference engine for additional entailments.
      */
     public static final OntSpecification OWL2_FULL_MEM_MICRO_RULES_INF = new OntSpecification(
-            OWL2_FULL_PERSONALITY, OWLMicroReasonerFactory.theInstance()
+            OntPersonalities.OWL2_FULL_PERSONALITY, OWLMicroReasonerFactory.theInstance()
     );
 
     /**
@@ -233,7 +161,7 @@ public class OntSpecification {
      * that are stored in memory and use the mini OWL rules inference engine for additional entailments.
      */
     public static final OntSpecification OWL2_FULL_MEM_MINI_RULES_INF = new OntSpecification(
-            OWL2_FULL_PERSONALITY, OWLMiniReasonerFactory.theInstance()
+            OntPersonalities.OWL2_FULL_PERSONALITY, OWLMiniReasonerFactory.theInstance()
     );
 
     /*
@@ -246,7 +174,7 @@ public class OntSpecification {
      * A specification for OWL2 EL Ontology models that are stored in memory and do no additional entailment reasoning.
      */
     public static final OntSpecification OWL2_EL_MEM = new OntSpecification(
-            OWL2_EL_PERSONALITY, null
+            OntPersonalities.OWL2_EL_PERSONALITY, null
     );
 
     /**
@@ -254,7 +182,7 @@ public class OntSpecification {
      * and use the RDFS inferencer for additional entailments.
      */
     public static final OntSpecification OWL2_EL_MEM_RDFS_INF = new OntSpecification(
-            OWL2_EL_PERSONALITY, RDFSRuleReasonerFactory.theInstance()
+            OntPersonalities.OWL2_EL_PERSONALITY, RDFSRuleReasonerFactory.theInstance()
     );
 
     /**
@@ -262,7 +190,7 @@ public class OntSpecification {
      * and use the transitive inferencer for additional entailments.
      */
     public static final OntSpecification OWL2_EL_MEM_TRANS_INF = new OntSpecification(
-            OWL2_EL_PERSONALITY, TransitiveReasonerFactory.theInstance()
+            OntPersonalities.OWL2_EL_PERSONALITY, TransitiveReasonerFactory.theInstance()
     );
 
     /**
@@ -270,7 +198,7 @@ public class OntSpecification {
      * that are stored in memory and use the OWL rules inference engine for additional entailments.
      */
     public static final OntSpecification OWL2_EL_MEM_RULES_INF = new OntSpecification(
-            OWL2_EL_PERSONALITY, OWLFBRuleReasonerFactory.theInstance()
+            OntPersonalities.OWL2_EL_PERSONALITY, OWLFBRuleReasonerFactory.theInstance()
     );
 
     /*
@@ -283,7 +211,7 @@ public class OntSpecification {
      * A specification for OWL2 QL Ontology models that are stored in memory and do no additional entailment reasoning.
      */
     public static final OntSpecification OWL2_QL_MEM = new OntSpecification(
-            OWL2_QL_PERSONALITY, null
+            OntPersonalities.OWL2_QL_PERSONALITY, null
     );
 
     /**
@@ -291,7 +219,7 @@ public class OntSpecification {
      * and use the RDFS inferencer for additional entailments.
      */
     public static final OntSpecification OWL2_QL_MEM_RDFS_INF = new OntSpecification(
-            OWL2_QL_PERSONALITY, RDFSRuleReasonerFactory.theInstance()
+            OntPersonalities.OWL2_QL_PERSONALITY, RDFSRuleReasonerFactory.theInstance()
     );
 
     /**
@@ -299,7 +227,7 @@ public class OntSpecification {
      * and use the transitive inferencer for additional entailments.
      */
     public static final OntSpecification OWL2_QL_MEM_TRANS_INF = new OntSpecification(
-            OWL2_QL_PERSONALITY, TransitiveReasonerFactory.theInstance()
+            OntPersonalities.OWL2_QL_PERSONALITY, TransitiveReasonerFactory.theInstance()
     );
 
     /**
@@ -307,7 +235,7 @@ public class OntSpecification {
      * that are stored in memory and use the OWL rules inference engine for additional entailments.
      */
     public static final OntSpecification OWL2_QL_MEM_RULES_INF = new OntSpecification(
-            OWL2_QL_PERSONALITY, OWLFBRuleReasonerFactory.theInstance()
+            OntPersonalities.OWL2_QL_PERSONALITY, OWLFBRuleReasonerFactory.theInstance()
     );
 
     /*
@@ -320,7 +248,7 @@ public class OntSpecification {
      * A specification for OWL2 RL Ontology models that are stored in memory and do no additional entailment reasoning.
      */
     public static final OntSpecification OWL2_RL_MEM = new OntSpecification(
-            OWL2_RL_PERSONALITY, null
+            OntPersonalities.OWL2_RL_PERSONALITY, null
     );
 
     /**
@@ -328,7 +256,7 @@ public class OntSpecification {
      * and use the RDFS inferencer for additional entailments.
      */
     public static final OntSpecification OWL2_RL_MEM_RDFS_INF = new OntSpecification(
-            OWL2_RL_PERSONALITY, RDFSRuleReasonerFactory.theInstance()
+            OntPersonalities.OWL2_RL_PERSONALITY, RDFSRuleReasonerFactory.theInstance()
     );
 
     /**
@@ -336,7 +264,7 @@ public class OntSpecification {
      * and use the transitive inferencer for additional entailments.
      */
     public static final OntSpecification OWL2_RL_MEM_TRANS_INF = new OntSpecification(
-            OWL2_RL_PERSONALITY, TransitiveReasonerFactory.theInstance()
+            OntPersonalities.OWL2_RL_PERSONALITY, TransitiveReasonerFactory.theInstance()
     );
 
     /**
@@ -344,7 +272,7 @@ public class OntSpecification {
      * that are stored in memory and use the OWL rules inference engine for additional entailments.
      */
     public static final OntSpecification OWL2_RL_MEM_RULES_INF = new OntSpecification(
-            OWL2_RL_PERSONALITY, OWLFBRuleReasonerFactory.theInstance()
+            OntPersonalities.OWL2_RL_PERSONALITY, OWLFBRuleReasonerFactory.theInstance()
     );
 
     /*
@@ -359,7 +287,7 @@ public class OntSpecification {
      * Supposed to be a replacement for the original legacy Jena interpretation of OWL DL v1.1 specification.
      */
     public static final OntSpecification OWL1_DL_MEM = new OntSpecification(
-            OWL1_DL_PERSONALITY, null
+            OntPersonalities.OWL1_DL_PERSONALITY, null
     );
 
     /**
@@ -368,7 +296,7 @@ public class OntSpecification {
      * Supposed to be a replacement for the original legacy Jena interpretation of OWL v1.1 specification.
      */
     public static final OntSpecification OWL1_DL_MEM_RDFS_INF = new OntSpecification(
-            OWL1_DL_PERSONALITY, RDFSRuleReasonerFactory.theInstance()
+            OntPersonalities.OWL1_DL_PERSONALITY, RDFSRuleReasonerFactory.theInstance()
     );
 
     /**
@@ -377,7 +305,7 @@ public class OntSpecification {
      * Supposed to be a replacement for the original legacy Jena interpretation of OWL v1.1 specification.
      */
     public static final OntSpecification OWL1_DL_MEM_TRANS_INF = new OntSpecification(
-            OWL1_DL_PERSONALITY, TransitiveReasonerFactory.theInstance()
+            OntPersonalities.OWL1_DL_PERSONALITY, TransitiveReasonerFactory.theInstance()
     );
 
     /**
@@ -386,7 +314,7 @@ public class OntSpecification {
      * Supposed to be a replacement for the original legacy Jena interpretation of OWL v1.1 specification.
      */
     public static final OntSpecification OWL1_DL_MEM_RULES_INF = new OntSpecification(
-            OWL1_DL_PERSONALITY, OWLFBRuleReasonerFactory.theInstance()
+            OntPersonalities.OWL1_DL_PERSONALITY, OWLFBRuleReasonerFactory.theInstance()
     );
 
     /*
@@ -401,7 +329,7 @@ public class OntSpecification {
      * Supposed to be a replacement for the original legacy Jena interpretation of OWL v1.1 specification.
      */
     public static final OntSpecification OWL1_FULL_MEM = new OntSpecification(
-            OWL1_FULL_PERSONALITY, null
+            OntPersonalities.OWL1_FULL_PERSONALITY, null
     );
 
     /**
@@ -410,7 +338,7 @@ public class OntSpecification {
      * Supposed to be a replacement for the original legacy Jena interpretation of OWL v1.1 specification.
      */
     public static final OntSpecification OWL1_FULL_MEM_RDFS_INF = new OntSpecification(
-            OWL1_FULL_PERSONALITY, RDFSRuleReasonerFactory.theInstance()
+            OntPersonalities.OWL1_FULL_PERSONALITY, RDFSRuleReasonerFactory.theInstance()
     );
 
     /**
@@ -419,7 +347,7 @@ public class OntSpecification {
      * Supposed to be a replacement for the original legacy Jena interpretation of OWL v1.1 specification.
      */
     public static final OntSpecification OWL1_FULL_MEM_TRANS_INF = new OntSpecification(
-            OWL1_FULL_PERSONALITY, TransitiveReasonerFactory.theInstance()
+            OntPersonalities.OWL1_FULL_PERSONALITY, TransitiveReasonerFactory.theInstance()
     );
 
     /**
@@ -428,7 +356,7 @@ public class OntSpecification {
      * Supposed to be a replacement for the original legacy Jena interpretation of OWL v1.1 specification.
      */
     public static final OntSpecification OWL1_FULL_MEM_RULES_INF = new OntSpecification(
-            OWL1_FULL_PERSONALITY, OWLFBRuleReasonerFactory.theInstance()
+            OntPersonalities.OWL1_FULL_PERSONALITY, OWLFBRuleReasonerFactory.theInstance()
     );
 
     /**
@@ -437,7 +365,7 @@ public class OntSpecification {
      * Supposed to be a replacement for the original legacy Jena interpretation of OWL v1.1 specification.
      */
     public static final OntSpecification OWL1_FULL_MEM_MICRO_RULES_INF = new OntSpecification(
-            OWL1_FULL_PERSONALITY, OWLMicroReasonerFactory.theInstance()
+            OntPersonalities.OWL1_FULL_PERSONALITY, OWLMicroReasonerFactory.theInstance()
     );
 
     /**
@@ -446,7 +374,7 @@ public class OntSpecification {
      * Supposed to be a replacement for the original legacy Jena interpretation of OWL v1.1 specification.
      */
     public static final OntSpecification OWL1_FULL_MEM_MINI_RULES_INF = new OntSpecification(
-            OWL1_FULL_PERSONALITY, OWLMiniReasonerFactory.theInstance()
+            OntPersonalities.OWL1_FULL_PERSONALITY, OWLMiniReasonerFactory.theInstance()
     );
 
     /*
@@ -461,7 +389,7 @@ public class OntSpecification {
      * Supposed to be a replacement for the original legacy Jena interpretation of OWL v1 Lite specification.
      */
     public static final OntSpecification OWL1_LITE_MEM = new OntSpecification(
-            OWL1_LITE_PERSONALITY, null
+            OntPersonalities.OWL1_LITE_PERSONALITY, null
     );
 
     /**
@@ -470,7 +398,7 @@ public class OntSpecification {
      * Supposed to be a replacement for the original legacy Jena interpretation of OWL v1 Lite specification.
      */
     public static final OntSpecification OWL1_LITE_MEM_RDFS_INF = new OntSpecification(
-            OWL1_LITE_PERSONALITY, RDFSRuleReasonerFactory.theInstance()
+            OntPersonalities.OWL1_LITE_PERSONALITY, RDFSRuleReasonerFactory.theInstance()
     );
 
     /**
@@ -479,7 +407,7 @@ public class OntSpecification {
      * Supposed to be a replacement for the original legacy Jena interpretation of OWL v1 Lite specification.
      */
     public static final OntSpecification OWL1_LITE_MEM_TRANS_INF = new OntSpecification(
-            OWL1_LITE_PERSONALITY, TransitiveReasonerFactory.theInstance()
+            OntPersonalities.OWL1_LITE_PERSONALITY, TransitiveReasonerFactory.theInstance()
     );
 
     /**
@@ -488,7 +416,7 @@ public class OntSpecification {
      * Supposed to be a replacement for the original legacy Jena interpretation of OWL v1 Lite specification.
      */
     public static final OntSpecification OWL1_LITE_MEM_RULES_INF = new OntSpecification(
-            OWL1_LITE_PERSONALITY, OWLFBRuleReasonerFactory.theInstance()
+            OntPersonalities.OWL1_LITE_PERSONALITY, OWLFBRuleReasonerFactory.theInstance()
     );
 
     /*
@@ -502,7 +430,7 @@ public class OntSpecification {
      * Supposed to be a replacement for the original legacy Jena interpretation of RDFS specification.
      */
     public static final OntSpecification RDFS_MEM = new OntSpecification(
-            RDFS_PERSONALITY, null
+            OntPersonalities.RDFS_PERSONALITY, null
     );
 
     /**
@@ -511,7 +439,7 @@ public class OntSpecification {
      * Supposed to be a replacement for the original legacy Jena interpretation of RDFS specification.
      */
     public static final OntSpecification RDFS_MEM_RDFS_INF = new OntSpecification(
-            RDFS_PERSONALITY, RDFSRuleReasonerFactory.theInstance()
+            OntPersonalities.RDFS_PERSONALITY, RDFSRuleReasonerFactory.theInstance()
     );
 
     /**
@@ -520,7 +448,7 @@ public class OntSpecification {
      * Supposed to be a replacement for the original legacy Jena interpretation of RDFS specification.
      */
     public static final OntSpecification RDFS_MEM_TRANS_INF = new OntSpecification(
-            RDFS_PERSONALITY, TransitiveReasonerFactory.theInstance()
+            OntPersonalities.RDFS_PERSONALITY, TransitiveReasonerFactory.theInstance()
     );
 
 

@@ -135,8 +135,20 @@ public class OntUnionGraphRepository {
      * @param node {@link Node} graph's ontology name ({@code owl:Ontology} or {@code owl:versionIRI}).
      * @return boolean
      */
-    public boolean contains(Node node) {
-        return repository.contains(node.toString());
+    public boolean hasGraph(Node node) {
+        Objects.requireNonNull(node);
+        if (repository.contains(node.toString())) {
+            return true;
+        }
+        return repository.ids().toList().stream().anyMatch(id -> {
+            var g = repository.get(id);
+            var header = Graphs.findOntologyNameNode(g).orElse(null);
+            if (Objects.equals(header, node)) {
+                repository.put(header.toString(), g);
+                return true;
+            }
+            return false;
+        });
     }
 
     /**
