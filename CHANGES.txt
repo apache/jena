@@ -1,3 +1,53 @@
+==== Apache Jena 5.5.0
+Released: 2025-07-18
+Issues: https://s.apache.org/jena-5.5.0-issues
+Announcement:
+https://lists.apache.org/thread/9dtbh9j30qh03bbgj4j27htx7fdbmyy8
+
+== RDF 1.2
+
+There is a Model API class StatementTerm for RDF 1.2 triple terms.
+This change reflects the W3C Working Groups decision. It is only permitted 
+in the only in the object position. Unlike the work of the RDF-star CG, 
+triple terms are not valid in the subject position.
+Most application code will be using reifiers : Model.createReifier
+
+== Fuseki/TDB2
+
+There is a fix to release database files promptly on deletion.
+This includes after compaction.
+https://github.com/apache/jena/issues/3240
+
+== Preparation for Jena 6.0.0
+
+In preparation for a future Jena 6.0.0, the 5.5.0 release has code deprecations
+indicating methods, classes and modules that are planned for removal.
+
+== Contributions
+
+@ebremer
+GH-2411: Command line improvements (arq)
+Issue #2411, PR #3216
+
+Aklakan
++ Add GeoSPARQL to jena-fuseki-server
+ https://github.com/apache/jena/issues/3026
+ https://github.com/apache/jena/pull/3027
+
++ Fixed ExprUtils.eval raising exception because of null dataset.
+
++ Support for uploading compressed data with GSP and SPARQL
+  https://github.com/apache/jena/issues/3258
+  https://github.com/apache/jena/pull/3266
+
+@fpotier
+GH-3221 Fix SchemaDO._abstract URI
+
+Kengo Seki / @sekikn
+Fix DBpedia examples
+https://github.com/apache/jena/pull/3252
+
+
 ==== Apache Jena 5.4.0
 Released: 2025-04-27
 Issues: https://s.apache.org/jena-5.4.0-issues
