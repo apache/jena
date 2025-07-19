@@ -674,4 +674,18 @@ public class OntUnionGraphRepositoryTest {
                 repo2.graphs().collect(Collectors.toSet()));
     }
 
+    @Test
+    public void testLoadRealModelWithMappingDifferentFromIri() {
+        var documentPath = "pizza.ttl";
+        var repository = GraphRepository.createGraphDocumentRepositoryMem();
+        repository.addMapping(
+                "XXXX",
+                documentPath);
+        var m = OntModelFactory.getModelOrNull(
+                "http://www.co-ode.org/ontologies/pizza/pizza.owl",
+                OntSpecification.OWL2_DL_MEM_BUILTIN_RDFS_INF,
+                repository);
+        Assertions.assertNotNull(m.getOntClass("http://www.co-ode.org/ontologies/pizza/pizza.owl#VegetarianTopping"));
+    }
+
 }
