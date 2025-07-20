@@ -18,10 +18,11 @@
 
 package org.apache.jena.atlas.lib;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.Set;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestPowerSet {
     @Test
@@ -59,6 +60,6 @@ public class TestPowerSet {
 
     private void test(Set<String> input, Set<Set<String>> expected) {
         Set<Set<String>> result = Lib.powerSet(input);
-        Assert.assertEquals(expected, result);
+        assertEquals(expected, result);
     }
 }

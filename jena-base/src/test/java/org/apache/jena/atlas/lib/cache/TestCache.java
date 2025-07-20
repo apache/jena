@@ -16,24 +16,27 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas.lib;
+package org.apache.jena.atlas.lib.cache;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Arrays ;
-import java.util.Collection ;
 import java.util.List ;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.junit.Before ;
-import org.junit.Test ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Parameterized ;
-import org.junit.runners.Parameterized.Parameters ;
+import org.apache.jena.atlas.lib.Cache;
+import org.apache.jena.atlas.lib.CacheFactory;
 
-@RunWith(Parameterized.class)
+@ParameterizedClass(name="{index}: {0}")
+@MethodSource("provideArgs")
 public class TestCache
 {
     // Tests do not apply to cache1.
@@ -44,21 +47,20 @@ public class TestCache
     private static CacheMaker<Integer, Integer> standard = (int size)->CacheFactory.createCache(size);
     private static CacheMaker<Integer, Integer> plainLRU = (int size)->CacheFactory.createCache(size);
 
-    @Parameters(name="{0}")
-    public static Collection<Object[]> cacheMakers()
-    {
-        return Arrays.asList(new Object[][]
-                { { "Simple(10)", simple , 10 }
-                , { "Simple(2)", simple , 2 }
-                , { "Simple(1)" , simple ,1 }
-                , { "Plain(10)", plainLRU , 10 }
-                , { "Plain(2)", plainLRU , 2 }
-                , { "Plain(1)" , plainLRU ,1 }
-                , { "Standard(10)" , standard, 10 }
-                , { "Standard(2)"  , standard, 2 }
-                , { "Standard(1)"  , standard, 1 }
-                , { "SingleSlot"  , oneSlot, 1 }
-                } ) ;
+    private static Stream<Arguments> provideArgs() {
+        List<Arguments> x = List.of
+                (Arguments.of("Simple(10)", simple , 10)
+                 , Arguments.of( "Simple(2)", simple , 2)
+                 , Arguments.of( "Simple(1)" , simple ,1)
+                 , Arguments.of( "Plain(10)", plainLRU , 10)
+                 , Arguments.of( "Plain(2)", plainLRU , 2)
+                 , Arguments.of( "Plain(1)" , plainLRU , 1)
+                 , Arguments.of( "Standard(10)" , standard, 10)
+                 , Arguments.of( "Standard(2)"  , standard, 2)
+                 , Arguments.of( "Standard(1)"  , standard, 1)
+                 , Arguments.of( "SingleSlot"  , oneSlot, 1)
+                        );
+        return x.stream();
     }
 
     Cache<Integer, Integer> cache;
@@ -70,7 +72,7 @@ public class TestCache
         this.size = size;
     }
 
-    @Before
+    @BeforeEach
     public void before() {
         cache = cacheMaker.make(size);
     }

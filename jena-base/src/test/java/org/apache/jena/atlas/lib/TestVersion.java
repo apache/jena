@@ -18,18 +18,18 @@
 
 package org.apache.jena.atlas.lib;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestVersion {
     @Test public void version_01() {
         // This can not be a Jena class (jar probably does not exist during tests)
         Optional<String> x = Version.versionForClass(org.slf4j.Logger.class);
-        assertNotNull("Optional<String> version info is null", x);
-        assertTrue("Version info is null", x.isPresent());
+        assertNotNull(x, ()->"Optional<String> version info is null");
+        assertTrue(x.isPresent(), ()->"Version info is null");
     }
 }

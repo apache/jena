@@ -18,14 +18,14 @@
 
 package org.apache.jena.atlas.io;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.jena.atlas.lib.Bytes;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestInputStreamBuffered {
     @Test

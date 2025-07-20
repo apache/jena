@@ -18,13 +18,13 @@
 
 package org.apache.jena.atlas.iterator;
 
-import static org.junit.Assert.assertEquals ;
+import static org.junit.jupiter.api.Assertions.assertEquals ;
 
 import java.util.Arrays ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.junit.Test ;
+import org.junit.jupiter.api.Test ;
 
 public class TestIteratorTruncate {
     @Test public void iter_truncate_00() { 

@@ -18,76 +18,77 @@
 
 package org.apache.jena.atlas.iterator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.ArrayList ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
 
-public class TestPushbackIterator
-{
+public class TestPushbackIterator {
 
-    static List<String> data = new ArrayList<>() ;
+    static List<String> data = new ArrayList<>();
     static {
-        data.add("a") ;
-        data.add("b") ;
-        data.add("c") ;
+        data.add("a");
+        data.add("b");
+        data.add("c");
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void pushback01() { new PushbackIterator<String>(null) ; }
-    
-    @Test public void pushback02()
-    { 
-        PushbackIterator<String> iter = new PushbackIterator<>(data.iterator()) ;
-        assertEquals("a", iter.next()) ;
-        assertEquals("b", iter.next()) ;
-        assertEquals("c", iter.next()) ;
-        assertFalse(iter.hasNext()) ;
-    }
-    
-    @Test public void pushback03()
-    { 
-        PushbackIterator<String> iter = new PushbackIterator<>(data.iterator()) ;
-        iter.pushback("x") ;
-        assertEquals("x", iter.next()) ;
-        assertEquals("a", iter.next()) ;
-        assertEquals(2, Iter.count(iter)) ;
-    }
-    
-    @Test public void pushback04()
-    { 
-        PushbackIterator<String> iter = new PushbackIterator<>(data.iterator()) ;
-        assertEquals("a", iter.next()) ;
-        iter.pushback("x") ;
-        assertEquals("x", iter.next()) ;
-        assertEquals("b", iter.next()) ;
-        assertEquals(1, Iter.count(iter)) ;
-    }
-    
-    @Test public void pushback05()
-    { 
-        PushbackIterator<String> iter = new PushbackIterator<>(data.iterator()) ;
-        assertEquals("a", iter.next()) ;
-        iter.pushback("x") ;
-        iter.pushback("y") ;
-        assertEquals("y", iter.next()) ;
-        assertEquals("x", iter.next()) ;
-        assertEquals("b", iter.next()) ;
-        assertEquals(1, Iter.count(iter)) ;
-    }
-    
-    @Test public void pushback06()
-    { 
-        PushbackIterator<String> iter = new PushbackIterator<>(data.iterator()) ;
-        assertEquals(3, Iter.count(iter)) ;
-        iter.pushback("x") ;
-        iter.pushback("y") ;
-        assertEquals("y", iter.next()) ;
-        assertEquals("x", iter.next()) ;
-        assertFalse(iter.hasNext()) ;
+    @Test
+    public void pushback01() {
+        assertThrows(IllegalArgumentException.class, () -> new PushbackIterator<String>(null));
     }
 
+    @Test
+    public void pushback02() {
+        PushbackIterator<String> iter = new PushbackIterator<>(data.iterator());
+        assertEquals("a", iter.next());
+        assertEquals("b", iter.next());
+        assertEquals("c", iter.next());
+        assertFalse(iter.hasNext());
+    }
+
+    @Test
+    public void pushback03() {
+        PushbackIterator<String> iter = new PushbackIterator<>(data.iterator());
+        iter.pushback("x");
+        assertEquals("x", iter.next());
+        assertEquals("a", iter.next());
+        assertEquals(2, Iter.count(iter));
+    }
+
+    @Test
+    public void pushback04() {
+        PushbackIterator<String> iter = new PushbackIterator<>(data.iterator());
+        assertEquals("a", iter.next());
+        iter.pushback("x");
+        assertEquals("x", iter.next());
+        assertEquals("b", iter.next());
+        assertEquals(1, Iter.count(iter));
+    }
+
+    @Test
+    public void pushback05() {
+        PushbackIterator<String> iter = new PushbackIterator<>(data.iterator());
+        assertEquals("a", iter.next());
+        iter.pushback("x");
+        iter.pushback("y");
+        assertEquals("y", iter.next());
+        assertEquals("x", iter.next());
+        assertEquals("b", iter.next());
+        assertEquals(1, Iter.count(iter));
+    }
+
+    @Test
+    public void pushback06() {
+        PushbackIterator<String> iter = new PushbackIterator<>(data.iterator());
+        assertEquals(3, Iter.count(iter));
+        iter.pushback("x");
+        iter.pushback("y");
+        assertEquals("y", iter.next());
+        assertEquals("x", iter.next());
+        assertFalse(iter.hasNext());
+    }
 }

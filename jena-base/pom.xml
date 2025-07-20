@@ -101,11 +101,24 @@
       <artifactId>collection</artifactId>
     </dependency>
 
-     <dependency>
-       <groupId>org.junit.vintage</groupId>
-       <artifactId>junit-vintage-engine</artifactId>
-       <scope>test</scope>
-     </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-suite-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <!-- Only used by the atlas.junit.package -->
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>

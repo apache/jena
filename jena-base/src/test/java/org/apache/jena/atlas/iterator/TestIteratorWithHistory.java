@@ -18,70 +18,67 @@
 
 package org.apache.jena.atlas.iterator;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.Arrays ;
-import java.util.List ;
+import java.util.Arrays;
+import java.util.List;
 
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
 
-public class TestIteratorWithHistory
-{
-    @Test public void iterHistory_01()
-    {
-        IteratorWithHistory<String> iter = createHistory(1, "a", "b", "c") ;
-        assertEquals(0, iter.currentSize()) ;
-        assertEquals(null, iter.getPrevious(0)) ;
-    }
-    
-    @Test public void iterHistory_02()
-    {
-        IteratorWithHistory<String> iter = createHistory(1, "a", "b", "c") ;
-        assertEquals("a", iter.next()) ;
-        assertEquals(1, iter.currentSize()) ;
-    }
-
-    @Test public void iterHistory_03()
-    {
-        IteratorWithHistory<String> iter = createHistory(2, "a", "b", "c") ;
-        assertEquals("a", iter.next()) ;
-        assertEquals("b", iter.next()) ;
-        assertEquals(2, iter.currentSize()) ;
-        assertEquals("b", iter.getPrevious(0)) ;
-        assertEquals("a", iter.getPrevious(1)) ;
-    }
-
-    @Test(expected=IndexOutOfBoundsException.class)
-    public void iterHistory_04()
-    {
-        IteratorWithHistory<String> iter = createHistory(2, "a", "b", "c") ;
-        iter.getPrevious(2) ;
-    }
-    
+public class TestIteratorWithHistory {
     @Test
-    public void iterHistory_05()
-    {
-        IteratorWithHistory<String> iter = createHistory(2, "a", "b", "c") ;
-        assertEquals("a", iter.next()) ;
-        assertEquals("a", iter.getPrevious(0)) ;
-        assertEquals(1, iter.currentSize()) ;
-        
-        assertEquals("b", iter.next()) ;
-        assertEquals("b", iter.getPrevious(0)) ;
-        assertEquals("a", iter.getPrevious(1)) ;
-        assertEquals(2, iter.currentSize()) ;
-        
-        assertEquals("c", iter.next()) ;
-        assertEquals(2, iter.currentSize()) ;
-        assertEquals("c", iter.getPrevious(0)) ;
-        assertEquals("b", iter.getPrevious(1)) ;
+    public void iterHistory_01() {
+        IteratorWithHistory<String> iter = createHistory(1, "a", "b", "c");
+        assertEquals(0, iter.currentSize());
+        assertEquals(null, iter.getPrevious(0));
     }
 
-    private static IteratorWithHistory<String> createHistory(int N, String... strings)
-    {
-        List<String> data = Arrays.asList(strings) ;
-        IteratorWithHistory<String> iter = new IteratorWithHistory<>(data.iterator(), N) ;
-        return iter ;
+    @Test
+    public void iterHistory_02() {
+        IteratorWithHistory<String> iter = createHistory(1, "a", "b", "c");
+        assertEquals("a", iter.next());
+        assertEquals(1, iter.currentSize());
+    }
+
+    @Test
+    public void iterHistory_03() {
+        IteratorWithHistory<String> iter = createHistory(2, "a", "b", "c");
+        assertEquals("a", iter.next());
+        assertEquals("b", iter.next());
+        assertEquals(2, iter.currentSize());
+        assertEquals("b", iter.getPrevious(0));
+        assertEquals("a", iter.getPrevious(1));
+    }
+
+    @Test
+    public void iterHistory_04() {
+        IteratorWithHistory<String> iter = createHistory(2, "a", "b", "c");
+        assertThrows(IndexOutOfBoundsException.class, () -> iter.getPrevious(2));
+    }
+
+    @Test
+    public void iterHistory_05() {
+        IteratorWithHistory<String> iter = createHistory(2, "a", "b", "c");
+        assertEquals("a", iter.next());
+        assertEquals("a", iter.getPrevious(0));
+        assertEquals(1, iter.currentSize());
+
+        assertEquals("b", iter.next());
+        assertEquals("b", iter.getPrevious(0));
+        assertEquals("a", iter.getPrevious(1));
+        assertEquals(2, iter.currentSize());
+
+        assertEquals("c", iter.next());
+        assertEquals(2, iter.currentSize());
+        assertEquals("c", iter.getPrevious(0));
+        assertEquals("b", iter.getPrevious(1));
+    }
+
+    private static IteratorWithHistory<String> createHistory(int N, String...strings) {
+        List<String> data = Arrays.asList(strings);
+        IteratorWithHistory<String> iter = new IteratorWithHistory<>(data.iterator(), N);
+        return iter;
     }
 
 }

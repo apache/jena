@@ -23,7 +23,7 @@ import java.io.StringWriter;
 import org.apache.jena.atlas.io.AWriter;
 import org.apache.jena.atlas.io.IO;
 import org.junit.Assert ;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test ;
 
 // Testing is a bit light here but the RDF term output and
 // the language level output covers the ground as well.

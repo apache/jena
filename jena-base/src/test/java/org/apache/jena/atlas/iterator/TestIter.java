@@ -18,9 +18,9 @@
 
 package org.apache.jena.atlas.iterator;
 
-import static org.junit.Assert.assertEquals ;
-import static org.junit.Assert.assertFalse ;
-import static org.junit.Assert.assertTrue ;
+import static org.junit.jupiter.api.Assertions.assertEquals ;
+import static org.junit.jupiter.api.Assertions.assertFalse ;
+import static org.junit.jupiter.api.Assertions.assertTrue ;
 
 import java.util.* ;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -29,7 +29,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.Test ;
+import org.junit.jupiter.api.Test ;
 
 public class TestIter
 {

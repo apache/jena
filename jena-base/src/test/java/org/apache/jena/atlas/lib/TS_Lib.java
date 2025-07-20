@@ -19,15 +19,17 @@
 package org.apache.jena.atlas.lib;
 
 
+import org.apache.jena.atlas.lib.cache.TestCache;
+import org.apache.jena.atlas.lib.cache.TestCache2;
 import org.apache.jena.atlas.lib.cache.TestCacheSimple;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
 
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 /**
  * Tests for the Atlas lib package
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses({
     TestBaseLib.class
     , TestAlg.class
     , TestBitsLong.class

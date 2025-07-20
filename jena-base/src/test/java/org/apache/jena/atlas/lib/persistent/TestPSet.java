@@ -19,11 +19,11 @@
 package org.apache.jena.atlas.lib.persistent;
 
 import static java.util.stream.Collectors.toSet;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestPSet {
 
