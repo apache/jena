@@ -18,18 +18,20 @@
 
 package org.apache.jena.atlas.junit ;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.List ;
 
 import org.apache.jena.atlas.lib.ListUtils ;
-import org.junit.Assert ;
 
 public class AssertExtra {
     public static void assertEqualsIgnoreCase(String a, String b) {
-        Assert.assertTrue(a.equalsIgnoreCase(b)) ;
+        assertTrue(a.equalsIgnoreCase(b)) ;
     }
 
-    public static void assertEqualsIgnoreCase(String msg, String a, String b) {
-        Assert.assertTrue(msg, a.equalsIgnoreCase(b));
+    public static void assertEqualsIgnoreCase(String a, String b, String msg) {
+        assertTrue(a.equalsIgnoreCase(b), ()->msg);
     }
 
     public static <T> void assertEqualsUnordered(List<T> list1, List<T> list2) {
@@ -38,7 +40,7 @@ public class AssertExtra {
 
     public static <T> void assertEqualsUnordered(String msg, List<T> list1, List<T> list2) {
         if ( ! ListUtils.equalsUnordered(list1, list2) )
-            Assert.fail(msg(msg, list1, list2)) ;
+            fail(msg(msg, list1, list2)) ;
     }
 
     private static <T> String msg(String msg, List<T> list1, List<T> list2) {

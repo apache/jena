@@ -18,9 +18,11 @@
 
 package org.apache.jena.atlas.lib.persistent;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ TestPSet.class, TestPMap.class })
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+@Suite
+@SelectClasses({
+    TestPSet.class,
+    TestPMap.class
+})
 public class TS_Persistent {}

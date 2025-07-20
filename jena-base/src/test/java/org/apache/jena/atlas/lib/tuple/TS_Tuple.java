@@ -18,11 +18,11 @@
 
 package org.apache.jena.atlas.lib.tuple;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses({
     TestTuple.class
     , TestTupleMap.class
 })

@@ -18,40 +18,36 @@
 
 package org.apache.jena.atlas.iterator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays ;
-import java.util.Collection ;
 import java.util.Iterator ;
 import java.util.List ;
+import java.util.stream.Stream;
 
-import org.junit.Test ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Parameterized ;
-import org.junit.runners.Parameterized.Parameters ;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
+@ParameterizedClass(name="{index}: {0}")
+@MethodSource("provideArgs")
 
-public class TestIteratorSlotted
-{
-    @Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> implementations() {
-        IterFactory factory1 = new IterFactory() {
-            @Override
-            public IteratorSlotted<String> create(String... array) {
-                return new IterStr1(array) ;
-            }} ;  
-        IterFactory factory2 = new IterFactory() {
-                @Override
-                public IteratorSlotted<String> create(String... array) {
-                    return new IterStr2(array) ;
-                }} ;  
-        return Arrays.asList(new Object[][] { {"hasMore accurate", factory1}, {"hasMore always true", factory2} }) ;
+public class TestIteratorSlotted {
+
+    private static Stream<Arguments> provideArgs() {
+        IterFactory factory1 = array->new IterStr1(array) ;
+        IterFactory factory2 = array->new IterStr2(array) ;
+        List<Arguments> x = List.of
+                ( Arguments.of("hasMore accurate", factory1)
+                , Arguments.of("hasMore always true", factory2)
+        );
+        return x.stream();
     }
-    
+
     /** Accurate hasMore */
     static class IterStr1 extends IteratorSlotted<String>
     {
@@ -73,7 +69,7 @@ public class TestIteratorSlotted
             return iter.hasNext() ;
         }
     }
-    
+
     /** hasMore is always true, returns null in moveToNext */
     static class IterStr2 extends IteratorSlotted<String>
     {
@@ -97,23 +93,22 @@ public class TestIteratorSlotted
             return true ;
         }
     }
-    
 
     interface IterFactory { IteratorSlotted<String> create(String...array) ; }
-    
+
 
     private IterFactory factory ;
-    
+
     public TestIteratorSlotted(String name, IterFactory factory) {
         this.factory = factory ;
     }
-    
+
     @Test public void iter_01()
     {
         IteratorSlotted<String> iter = factory.create() ;
         assertFalse(iter.hasNext()) ;
     }
-    
+
     @Test public void iter_02()
     {
         IteratorSlotted<String> iter = factory.create("A") ;
@@ -124,7 +119,7 @@ public class TestIteratorSlotted
         assertFalse(iter.hasNext()) ;
         assertNull(iter.peek()) ;
     }
-    
+
     @Test public void iter_03()
     {
         IteratorSlotted<String> iter = factory.create("A", "B") ;
@@ -135,6 +130,6 @@ public class TestIteratorSlotted
         assertEquals("B", iter.next()) ;
         assertFalse(iter.hasNext()) ;
     }
-    
-    
+
+
 }

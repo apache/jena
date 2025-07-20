@@ -17,13 +17,13 @@
  */
 package org.apache.jena.atlas.lib;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestDateTimeUtils {
 

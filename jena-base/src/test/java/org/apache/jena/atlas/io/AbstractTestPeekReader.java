@@ -18,10 +18,10 @@
 
 package org.apache.jena.atlas.io;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public abstract class AbstractTestPeekReader {
     static int INIT_LINE = PeekReader.INIT_LINE;
@@ -31,8 +31,8 @@ public abstract class AbstractTestPeekReader {
 
     @Test
     public void read0() {
-        assertEquals("Init line", 1, INIT_LINE);
-        assertEquals("Init col", 1, INIT_COL);
+        assertEquals(1, INIT_LINE, ()->"Init line");
+        assertEquals(1, INIT_COL, ()->"Init col");
     }
 
     @Test
@@ -191,8 +191,8 @@ public abstract class AbstractTestPeekReader {
     }
 
     private static void checkLineCol(PeekReader r, long lineNum, long colNum) {
-        assertEquals("Line", lineNum, r.getLineNum());
-        assertEquals("Column", colNum, r.getColNum());
+        assertEquals(lineNum, r.getLineNum(), ()->"Line");
+        assertEquals(colNum, r.getColNum(), ()->"Column");
     }
 
     private void position(String contents) {
@@ -222,8 +222,8 @@ public abstract class AbstractTestPeekReader {
     private static void contains(PeekReader r, String contents) {
         for ( int i = 0 ; i < contents.length() ; i++ ) {
             int x = r.readChar();
-            assertEquals("\"" + contents + "\" -- Index " + i + " Expected:'" + contents.charAt(i) + "' Got: '" + (char)x + "'",
-                         contents.charAt(i), x);
+            assertEquals(contents.charAt(i), x,
+                         "\"" + contents + "\" -- Index " + i + " Expected:'" + contents.charAt(i) + "' Got: '" + (char)x + "'");
         }
         assertTrue(r.eof());
     }

@@ -18,8 +18,8 @@
 
 package org.apache.jena.atlas.io;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -31,7 +31,7 @@ import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
 
 import org.apache.jena.atlas.lib.Chars;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestStreamUTF8 {
     static Charset utf8 = Chars.charsetUTF8;

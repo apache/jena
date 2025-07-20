@@ -18,12 +18,13 @@
 
 package org.apache.jena.atlas.lib;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.jena.atlas.AtlasException;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test ;
 
 public class TestStrUtils
 {
@@ -70,10 +71,10 @@ public class TestStrUtils
     @Test public void enc10() { testDecode("_EC_82_AC_EC_9A_A9_5F_EC_84_A4_EB_AA_85_EC_84_9C", "사용_설명서"); }
     @Test public void enc11() { testDecode("_41", "A"); }
 
-    @Test(expected=AtlasException.class) public void enc20() { testDecode("_4", null); }
-    @Test(expected=AtlasException.class) public void enc21() { testDecode("_", null); }
-    @Test(expected=AtlasException.class) public void enc22() { testDecode("_X1", null); }
-    @Test(expected=AtlasException.class) public void enc23() { testDecode("_1X", null); }
+    @Test public void enc20() { assertThrows(AtlasException.class, ()->testDecode("_4", null)); }
+    @Test public void enc21() { assertThrows(AtlasException.class, ()->testDecode("_", null)); }
+    @Test public void enc22() { assertThrows(AtlasException.class, ()->testDecode("_X1", null)); }
+    @Test public void enc23() { assertThrows(AtlasException.class, ()->testDecode("_1X", null)); }
 
     @Test public void lastChar01() { testLastChar("abc",  'c'); }
     @Test public void lastChar02() { testLastChar(".",  '.'); }

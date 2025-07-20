@@ -18,9 +18,6 @@
 
 package org.apache.jena.atlas;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-
 import org.apache.jena.atlas.io.TS_IO ;
 import org.apache.jena.atlas.iterator.TS_Iterator ;
 import org.apache.jena.atlas.lib.TS_Lib ;
@@ -28,8 +25,10 @@ import org.apache.jena.atlas.lib.persistent.TS_Persistent;
 import org.apache.jena.atlas.lib.tuple.TS_Tuple ;
 import org.apache.jena.atlas.net.TS_Net;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+@Suite
+@SelectClasses({
     // Library
       TS_Lib.class
     , TS_Tuple.class

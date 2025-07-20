@@ -20,10 +20,12 @@ package org.apache.jena.atlas.lib.cache;
 
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.IntStream.rangeClosed;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.Cache;
-import org.junit.Test;
+
 
 /**
  * Tests of CacheSimple
@@ -43,7 +45,7 @@ public class TestCacheSimple {
             .boxed()
             .collect(toMap(k -> k, v -> 1))
             .forEach(testCache::put);
-        assertEquals("Test cache failed to maintain fixed size!", maxSize, testCache.size());
+        assertEquals(maxSize, testCache.size(), ()->"Test cache failed to maintain fixed size!");
     }
 
     @Test
@@ -55,9 +57,10 @@ public class TestCacheSimple {
         final Cache<Integer, Object> testCache = new CacheSimple<>(5);
         testCache.put(key, value1);
         testCache.put(key, value2);
-        assertEquals("Wrong size", 1, testCache.size());
-        assertEquals("Wrong slot contents", value2, testCache.getIfPresent(key));
+        assertEquals(1, testCache.size(), ()->"Wrong size");
+        assertEquals(value2, testCache.getIfPresent(key), ()->"Wrong slot contents");
     }
+
 
     @Test
     public void testSameHash() {
@@ -67,8 +70,8 @@ public class TestCacheSimple {
         assertNotEquals(key1, key2);
         Cache<CompoundKey, Integer> cache = new CacheSimple<>(10);
         cache.put(key1, 1);
-        assertTrue("Same key, expected to be in cache", cache.containsKey(key1));
-        assertFalse("Keys with same hash code should not be considered equal", cache.containsKey(key2));
+        assertTrue(cache.containsKey(key1), ()->"Same key, expected to be in cache");
+        assertFalse(cache.containsKey(key2), ()->"Keys with same hash code should not be considered equal");
     }
 
     @Test
@@ -79,7 +82,7 @@ public class TestCacheSimple {
         assertEquals(key1, key2);
         Cache<CompoundKey, Integer> cache = new CacheSimple<>(10);
         cache.put(key1, 1);
-        assertTrue("Equal key, expected to be found", cache.containsKey(key2));
+        assertTrue(cache.containsKey(key2), ()->"Equal key, expected to be found");
     }
 
     @Test
@@ -159,23 +162,21 @@ public class TestCacheSimple {
         Cache<String, String> cache = new CacheSimple<>(10);
         assertEquals(0, cache.size());
 
-        {
-            final var key = "key0";
-            final var value = "value0";
+        final var key = "key0";
+        final var value = "value0";
 
-            cache.put(key, value);
+        cache.put(key, value);
 
-            assertTrue(cache.containsKey(key));
-            assertEquals(value, cache.getIfPresent(key));
-            assertEquals(1, cache.size());
+        assertTrue(cache.containsKey(key));
+        assertEquals(value, cache.getIfPresent(key));
+        assertEquals(1, cache.size());
 
-            //removing entry by writing null value
-            cache.put(key, null);
+        //removing entry by writing null value
+        cache.put(key, null);
 
-            assertEquals(0, cache.size());
-            assertFalse(cache.containsKey(key));
-            assertNull(value, cache.getIfPresent(key));
-        }
+        assertEquals(0, cache.size());
+        assertFalse(cache.containsKey(key));
+        assertNull(cache.getIfPresent(key), ()->value);
     }
 
     @Test
@@ -183,29 +184,27 @@ public class TestCacheSimple {
         Cache<String, String> cache = new CacheSimple<>(10);
         assertEquals(0, cache.size());
 
-        {
-            final var key = "key0";
-            final var value = "value0";
+        final var key = "key0";
+        final var value = "value0";
 
-            //trying to remove non-existing key
-            cache.remove(key);
-            assertEquals(0, cache.size());
-            assertFalse(cache.containsKey(key));
-            assertNull(value, cache.getIfPresent(key));
+        //trying to remove non-existing key
+        cache.remove(key);
+        assertEquals(0, cache.size());
+        assertFalse(cache.containsKey(key));
+        assertNull(cache.getIfPresent(key), ()->value);
 
-            cache.put(key, value);
+        cache.put(key, value);
 
-            assertTrue(cache.containsKey(key));
-            assertEquals(value, cache.getIfPresent(key));
-            assertEquals(1, cache.size());
+        assertTrue(cache.containsKey(key));
+        assertEquals(value, cache.getIfPresent(key));
+        assertEquals(1, cache.size());
 
-            //removing entry by writing null value
-            cache.remove(key);
+        //removing entry by writing null value
+        cache.remove(key);
 
-            assertEquals(0, cache.size());
-            assertFalse(cache.containsKey(key));
-            assertNull(value, cache.getIfPresent(key));
-        }
+        assertEquals(0, cache.size());
+        assertFalse(cache.containsKey(key));
+        assertNull(cache.getIfPresent(key), ()->value);
     }
 
     @Test

@@ -18,16 +18,16 @@
 
 package org.apache.jena.atlas.iterator;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays ;
 import java.util.List ;
 
-import org.junit.Test ;
+import org.junit.jupiter.api.Test ;
 
 public class TestIteratorWithBuffer
 {
-
     @Test public void iterBuffer_01()
     {
         IteratorWithBuffer<String> iter = createBuffered(1, "a", "b", "c") ;
@@ -55,11 +55,11 @@ public class TestIteratorWithBuffer
         assertEquals("a", iter.peek(0)) ;
         assertEquals("b", iter.peek(1)) ;
         assertEquals("a", iter.next()) ;
-        
+
         assertEquals("b", iter.peek(0)) ;
         assertEquals("c", iter.peek(1)) ;
         assertEquals("b", iter.next()) ;
-        
+
         assertEquals("c", iter.peek(0)) ;
         assertEquals(null, iter.peek(1)) ;
         assertEquals("c", iter.next()) ;
@@ -72,11 +72,11 @@ public class TestIteratorWithBuffer
         assertEquals(null, iter.peek(0)) ;
     }
 
-    @Test(expected=IndexOutOfBoundsException.class)
+    @Test
     public void iterBuffer_04()
     {
         IteratorWithBuffer<String> iter = createBuffered(0, "a") ;
-        assertEquals(null, iter.peek(0)) ;
+        assertThrows(IndexOutOfBoundsException.class, ()->iter.peek(0)) ;
     }
 
     @Test public void iterBuffer_05()

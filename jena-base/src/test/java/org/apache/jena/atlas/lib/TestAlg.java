@@ -18,13 +18,13 @@
 
 package org.apache.jena.atlas.lib;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.ByteBuffer ;
 import java.nio.ByteOrder ;
 import java.nio.IntBuffer ;
 
-import org.junit.Test ;
+import org.junit.jupiter.api.Test ;
 
 public class TestAlg
 {

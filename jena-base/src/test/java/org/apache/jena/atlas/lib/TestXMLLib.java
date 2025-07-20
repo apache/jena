@@ -18,8 +18,9 @@
 
 package org.apache.jena.atlas.lib;
 
-import org.junit.Assert ;
-import org.junit.Test ;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test ;
 
 /** XML related functionality */
 public class TestXMLLib
@@ -32,15 +33,15 @@ public class TestXMLLib
     @Test public void ws_collapse_06()  { test("", "") ; }
     @Test public void ws_collapse_07()  { test(" ", "") ; }
     @Test public void ws_collapse_08()  { test(" \t\t\t\t\t\t\t   ", "") ; }
-    
+
     // String.trim : "Returns a copy of the string, with leading and trailing whitespace omitted."
-    // but later says it trims anything <= 0x20.  There are lots of control characters in x01-x1F. 
-    // We only want to trim \n \r \t and space. 
-    
+    // but later says it trims anything <= 0x20.  There are lots of control characters in x01-x1F.
+    // We only want to trim \n \r \t and space.
+
     private static void test(String str1, String str2)
     {
         String result = XMLLib.WScollapse(str1) ;
-        Assert.assertEquals(str2, result) ;
+        assertEquals(str2, result) ;
     }
 
 }

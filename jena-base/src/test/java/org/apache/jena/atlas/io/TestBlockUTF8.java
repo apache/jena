@@ -18,9 +18,9 @@
 
 package org.apache.jena.atlas.io;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -34,7 +34,7 @@ import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
 
 import org.apache.jena.atlas.lib.Chars;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestBlockUTF8
 {
@@ -120,7 +120,7 @@ public class TestBlockUTF8
         BlockUTF8.fromChars(cb, bb);
         bb.flip();
 
-        assertTrue("Bytes", sameBytes(bytes, bb));
+        assertTrue(sameBytes(bytes, bb), ()->"Bytes");
         // From bytes.
         CharBuffer cb2 = allocCB.allocate(N);
         BlockUTF8.toChars(bb, cb2);
@@ -185,7 +185,7 @@ public class TestBlockUTF8
           ByteBuffer bytes2 = allocBB.allocate(bytes.capacity());
           BlockUTF8.fromChars(cb, bytes2);
           bytes2.flip();
-          assertTrue("Chars", sameBytes(bytes, bytes2));
+          assertTrue(sameBytes(bytes, bytes2), ()->"Chars");
       }
 
       static void testBinary(byte[] binary, CharBuffer chars) {
@@ -194,7 +194,7 @@ public class TestBlockUTF8
           CharBuffer cb = CharBuffer.allocate(N);
           BlockUTF8.toChars(bytes, cb);
           cb.flip();
-          assertTrue("Binary", sameChars(chars, cb));
+          assertTrue(sameChars(chars, cb), ()->"Binary");
       }
 
       static void testBinary(byte[] binary) {
@@ -213,7 +213,7 @@ public class TestBlockUTF8
           BlockUTF8.fromChars(cb, bytes2);
           bytes2.flip();
           sameBytes(bytes, bytes2);
-          assertTrue("Binary", sameBytes(ByteBuffer.wrap(expected), bytes2));
+          assertTrue(sameBytes(ByteBuffer.wrap(expected), bytes2), ()->"Binary");
       }
 
       // Does not move position.

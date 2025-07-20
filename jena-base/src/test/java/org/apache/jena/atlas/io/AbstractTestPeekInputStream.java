@@ -18,10 +18,10 @@
 
 package org.apache.jena.atlas.io;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public abstract class AbstractTestPeekInputStream {
     static int INIT_LINE = PeekInputStream.INIT_LINE;
@@ -31,8 +31,8 @@ public abstract class AbstractTestPeekInputStream {
 
     @Test
     public void read0() {
-        assertEquals("Init line", 1, INIT_LINE);
-        assertEquals("Init col", 1, INIT_COL);
+        assertEquals(1, INIT_LINE, ()->"Init line");
+        assertEquals(1, INIT_COL, ()->"Init col");
     }
 
     @Test
@@ -191,8 +191,8 @@ public abstract class AbstractTestPeekInputStream {
     }
 
     private static void checkLineCol(PeekInputStream in, long lineNum, long colNum) {
-        assertEquals("Line", lineNum, in.getLineNum());
-        assertEquals("Column", colNum, in.getColNum());
+        assertEquals(lineNum, in.getLineNum(), ()->"Line");
+        assertEquals(colNum, in.getColNum(), ()->"Column");
     }
 
     private void position(String contents) {
@@ -222,8 +222,8 @@ public abstract class AbstractTestPeekInputStream {
     private static void contains(PeekInputStream in, String contents) {
         for ( int i = 0 ; i < contents.length() ; i++ ) {
             int x = in.readByte();
-            assertEquals("\"" + contents + "\" -- Index " + i + " Expected:'" + contents.charAt(i) + "' Got: '" + (char)x + "'",
-                         contents.charAt(i), x);
+            assertEquals(contents.charAt(i), x,
+                         "\"" + contents + "\" -- Index " + i + " Expected:'" + contents.charAt(i) + "' Got: '" + (char)x + "'");
         }
         assertTrue(in.eof());
     }
