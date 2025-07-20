@@ -18,6 +18,8 @@
 
 package org.apache.jena.fuseki.mod.geosparql;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -25,12 +27,14 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Predicate;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
 import org.apache.jena.geosparql.spatial.index.v2.GeometryGenerator;
 import org.apache.jena.geosparql.spatial.index.v2.GeometryGenerator.GeometryType;
-import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexPerGraph;
 import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexLib;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexPerGraph;
 import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexerComputation;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
@@ -38,8 +42,6 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
-import org.junit.Assert;
-import org.junit.Test;
 import org.locationtech.jts.geom.Envelope;
 
 /** Test cases that check for whether the correct graphs are indexed - also when a user is only authorized to a certain subset of graphs. */
@@ -112,7 +114,7 @@ public class TestSpatialIndexerTasks {
         SpatialIndexPerGraph spatialIndex = updateSpatialIndex(dsg, null, SRS_URI.DEFAULT_WKT_CRS84, updateGraphs);
 
         Set<Node> indexedGraphNodes = spatialIndex.getIndex().getTreeMap().keySet();
-        Assert.assertEquals(allGraphs, indexedGraphNodes);
+        assertEquals(allGraphs, indexedGraphNodes);
     }
 
     @Test
@@ -125,7 +127,7 @@ public class TestSpatialIndexerTasks {
         SpatialIndexPerGraph spatialIndex = replaceSpatialIndex(dsg, null, SRS_URI.DEFAULT_WKT_CRS84, expectedGraphSet);
 
         Set<Node> actualGraphSet = spatialIndex.getIndex().getTreeMap().keySet();
-        Assert.assertEquals(expectedGraphSet, actualGraphSet);
+        assertEquals(expectedGraphSet, actualGraphSet);
     }
 
     @Test
@@ -139,7 +141,7 @@ public class TestSpatialIndexerTasks {
         SpatialIndexPerGraph spatialIndex = clean(dsg, null);
         Set<Node> actual = spatialIndex.getIndex().getTreeMap().keySet();
         Set<Node> expected = Set.of(dg, g4);;
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -155,7 +157,7 @@ public class TestSpatialIndexerTasks {
         SpatialIndexPerGraph spatialIndex = updateSpatialIndex(dsg, authorizedGraph::contains, SRS_URI.DEFAULT_WKT_CRS84, updateGraphs);
 
         Set<Node> indexedGraphNodes = spatialIndex.getIndex().getTreeMap().keySet();
-        Assert.assertEquals(allGraphs, indexedGraphNodes);
+        assertEquals(allGraphs, indexedGraphNodes);
     }
 
     @Test
@@ -173,7 +175,7 @@ public class TestSpatialIndexerTasks {
         SpatialIndexPerGraph spatialIndex = replaceSpatialIndex(dsg, authorizedGraphs::contains, SRS_URI.DEFAULT_WKT_CRS84, replaceGraphs);
 
         Set<Node> indexedGraphNodes = spatialIndex.getIndex().getTreeMap().keySet();
-        Assert.assertEquals(expectedGraphs, indexedGraphNodes);
+        assertEquals(expectedGraphs, indexedGraphNodes);
     }
 
     @Test
@@ -189,7 +191,7 @@ public class TestSpatialIndexerTasks {
         SpatialIndexPerGraph spatialIndex = clean(dsg, authorizedGraphs::contains);
         Set<Node> actual = spatialIndex.getIndex().getTreeMap().keySet();
         Set<Node> expected = Set.of(dg, g1, g2, g3);
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -204,6 +206,6 @@ public class TestSpatialIndexerTasks {
         SpatialIndexPerGraph spatialIndex = clean(dsg, authorizedGraphs::contains);
         Set<Node> actual = spatialIndex.getIndex().getTreeMap().keySet();
         Set<Node> expected = Set.of(dg, g1, g2, g4);
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 }

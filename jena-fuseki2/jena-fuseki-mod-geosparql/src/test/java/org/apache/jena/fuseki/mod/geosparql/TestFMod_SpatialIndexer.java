@@ -18,12 +18,20 @@
 
 package org.apache.jena.fuseki.mod.geosparql;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.IOException;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.cmds.FusekiMain;
@@ -38,11 +46,6 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.locationtech.jts.geom.Envelope;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -52,16 +55,14 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
-
 /**
  * Test cases that interact with the spatial indexer web UI via Selenium.
  *
- * This class is currently set to "ignore" because it requires local browser.
+ * This class is currently set to "disabled" because it requires a local browser.
  * Although, a headless Chrome should be started automatically,
  * this step turns out to not yet work reliable across all environments.
  */
-@Ignore
+@Disabled
 public class TestFMod_SpatialIndexer {
     private WebDriver driver;
     private JavascriptExecutor js;
@@ -71,7 +72,7 @@ public class TestFMod_SpatialIndexer {
     private SpatialIndex spatialIndex;
     private Node graphName1 = NodeFactory.createURI("http://www.example.org/graph1");
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException, SpatialIndexException {
         dsg = DatasetGraphFactory.create();
         setupTestData(dsg);
@@ -126,8 +127,8 @@ public class TestFMod_SpatialIndexer {
         WebElement button = driver.findElement(By.id("apply-action"));
         button.click();
         awaitEvent();
-        Assert.assertEquals(1, spatialIndex.query(queryEnvelope, Quad.defaultGraphIRI).size());
-        Assert.assertEquals(2, spatialIndex.query(queryEnvelope, graphName1).size());
+        assertEquals(1, spatialIndex.query(queryEnvelope, Quad.defaultGraphIRI).size());
+        assertEquals(2, spatialIndex.query(queryEnvelope, graphName1).size());
         clearLastEvent();
 
         // Remove the named graph and update the index.
@@ -143,7 +144,7 @@ public class TestFMod_SpatialIndexer {
         try (Stream<?> s = Iter.asStream(dsg.listGraphNodes())) {
             numGraphsInDataset = s.count() + 1; // Add one for the default graph.
         }
-        Assert.assertEquals(numGraphsInIndex, numGraphsInDataset);
+        assertEquals(numGraphsInIndex, numGraphsInDataset);
         clearLastEvent();
     }
 
@@ -159,7 +160,7 @@ public class TestFMod_SpatialIndexer {
         js.executeScript("window.lastEvent = null");
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         if (driver != null) {
             driver.quit();
