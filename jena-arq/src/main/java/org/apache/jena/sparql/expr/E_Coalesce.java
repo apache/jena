@@ -37,9 +37,15 @@ public class E_Coalesce extends ExprFunctionN {
     @Override
     public NodeValue evalSpecial(Binding binding, FunctionEnv env) {
         for ( Expr expr : super.getArgs() ) {
+            if(expr.isVariable() && (binding == null || !binding.contains(expr.asVar()))) {
+                // If the expression is a variable and no binding is provided,
+                // we skip it as it cannot be evaluated.
+                // COALESCE(?X, ...) is a common usage pattern and this check
+                // avoids creating an exception for each unbound variable.
+                continue;
+            }
             try {
-                NodeValue nv = expr.eval(binding, env);
-                return nv;
+                return expr.eval(binding, env);
             } catch (ExprEvalException ex) {}
         }
         throw new ExprEvalException("COALESCE: no value");

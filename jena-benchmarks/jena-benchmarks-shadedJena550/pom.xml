@@ -24,9 +24,9 @@
         <version>5.6.0-SNAPSHOT</version>
     </parent>
 
-    <name>Apache Jena - Benchmarks Shaded Jena 5.1.0</name>
-    <artifactId>jena-benchmarks-shadedJena510</artifactId>
-    <description>Shaded Apache Jena 5.1.0 for regression benchmarks</description>
+    <name>Apache Jena - Benchmarks Shaded Jena 5.5.0</name>
+    <artifactId>jena-benchmarks-shadedJena550</artifactId>
+    <description>Shaded Apache Jena 5.5.0 for regression benchmarks</description>
     <packaging>jar</packaging>
 
     <url>https://jena.apache.org/</url>
@@ -45,7 +45,7 @@
 
     <properties>
         <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
-        <automatic.module.name>org.apache.jena.benchmarks.shadedJena510</automatic.module.name>
+        <automatic.module.name>org.apache.jena.benchmarks.shadedJena550</automatic.module.name>
         <maven.test.skip>true</maven.test.skip>
         <scope>test</scope>
     </properties>
@@ -54,27 +54,32 @@
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-base</artifactId>
-            <version>5.1.0</version>
+            <version>5.5.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-iri</artifactId>
-            <version>5.1.0</version>
+            <version>5.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-iri3986</artifactId>
+            <version>5.5.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-core</artifactId>
-            <version>5.1.0</version>
+            <version>5.5.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-arq</artifactId>
-            <version>5.1.0</version>
+            <version>5.5.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-geosparql</artifactId>
-            <version>5.1.0</version>
+            <version>5.5.0</version>
         </dependency>
     </dependencies>
 
@@ -106,7 +111,7 @@
                             <relocations>
                                 <relocation>
                                     <pattern>org.apache.jena</pattern>
-                                    <shadedPattern>org.apache.shadedJena510</shadedPattern>
+                                    <shadedPattern>org.apache.shadedJena550</shadedPattern>
                                 </relocation>
                             </relocations>
                             <filters>
