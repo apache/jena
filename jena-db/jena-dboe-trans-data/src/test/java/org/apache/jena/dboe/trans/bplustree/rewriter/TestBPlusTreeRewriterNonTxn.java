@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.dboe.base.block.BlockMgr;
@@ -48,8 +48,8 @@ public class TestBPlusTreeRewriterNonTxn {
 
     // The BPlusTreeRewriter works directly on storage.
     static boolean b;
-    @BeforeClass public static void beforeClass()   { b = BlockMgrFactory.AddTracker; BlockMgrFactory.AddTracker = false ; }
-    @AfterClass  public static void afterClass()    { BlockMgrFactory.AddTracker = b ;}
+    @BeforeAll public static void beforeClass()   { b = BlockMgrFactory.AddTracker; BlockMgrFactory.AddTracker = false ; }
+    @AfterAll  public static void afterClass()    { BlockMgrFactory.AddTracker = b ;}
 
     @Test public void bpt_rewrite_01()  { runTest(2, 0); }
     @Test public void bpt_rewrite_02()  { runTest(3, 0); }

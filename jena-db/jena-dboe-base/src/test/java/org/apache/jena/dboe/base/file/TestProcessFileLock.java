@@ -18,37 +18,32 @@
 
 package org.apache.jena.dboe.base.file;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
-import org.apache.jena.atlas.io.IO;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
 import org.apache.jena.dboe.sys.Names;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
 public class TestProcessFileLock {
 
     private String lockfile;
 
-    //Using a per-test rule is "doubly-safe" because we clear the process state.
-    @Rule
-    public TemporaryFolder tempFolder = new TemporaryFolder();
+    @TempDir Path tempDir;
 
-    @Before public void beforeTest() {
+    @BeforeEach public void beforeTest() {
+        Path tmp = tempDir.resolve(Names.TDB_LOCK_FILE);
+        lockfile = tmp.toAbsolutePath().toString();
         try {
-            File f = tempFolder.newFile(Names.TDB_LOCK_FILE);
-            lockfile = f.getCanonicalPath();
-        }
-        catch (IOException e) {
-            IO.exception(e);
+            Files.createFile(tmp);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -80,25 +75,26 @@ public class TestProcessFileLock {
         assertFalse(lock.isLockedHere());
     }
 
-    @Test(expected=AlreadyLocked.class)
+    @Test
     public void process_lock_5() {
         ProcessFileLock lock = ProcessFileLock.create(lockfile);
         lock.lockEx();
-        lock.lockEx();
+        assertThrows(AlreadyLocked.class, ()->lock.lockEx());
     }
 
-    @Test(expected=AlreadyLocked.class)
+    @Test
     public void process_lock_6() {
         ProcessFileLock lock = ProcessFileLock.create(lockfile);
         lock.lockEx();
-        boolean b = lock.tryLock();
-        assertFalse(b);
+        // Held by this process => exception
+        assertThrows(AlreadyLocked.class, ()->lock.tryLock());
     }
 
-    @Test(expected=AlreadyLocked.class)
+    @Test
     public void process_lock_7() {
         ProcessFileLock lock = ProcessFileLock.create(lockfile);
         lock.tryLock();
-        lock.tryLock();
+        // Held by this process => exception
+        assertThrows(AlreadyLocked.class, ()->lock.tryLock());
     }
 }

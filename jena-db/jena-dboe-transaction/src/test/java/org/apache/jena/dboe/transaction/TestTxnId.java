@@ -18,15 +18,16 @@
 
 package org.apache.jena.dboe.transaction;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.dboe.transaction.txn.TxnId;
 import org.apache.jena.dboe.transaction.txn.TxnIdFactory;
 import org.apache.jena.dboe.transaction.txn.TxnIdSimple;
-import org.junit.Test;
 
 public class TestTxnId {
     @Test public void txnId_1() {

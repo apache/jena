@@ -18,10 +18,14 @@
 
 package org.apache.jena.dboe.transaction;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.ThreadLib;
 import org.apache.jena.dboe.base.file.Location;
@@ -33,53 +37,56 @@ import org.apache.jena.query.TxnType;
 import org.apache.jena.system.ThreadAction;
 import org.apache.jena.system.ThreadTxn;
 import org.apache.jena.system.Txn;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 public class TestTransactionCoordinatorControl {
     // The problem with these tests is the need for Lib.sleep as a way to ensure
-    // async threads run if they can.  And we are sometimes testing for "they can't".
+    // async threads run if they can. And we are sometimes testing for "they can't".
 
     static final long InitValue = 3;
     private TransactionCoordinator txnMgr;
     protected Transactional unit;
 
-    @Before public void init() {
+    @BeforeEach
+    public void init() {
         txnMgr = TransactionCoordinator.create(Location.mem());
         unit = new TransactionalBase(txnMgr);
         txnMgr.start();
     }
 
-    @After public void after() {
+    @AfterEach
+    public void after() {
         txnMgr.shutdown();
     }
 
-    @Test public void txn_coord_disable_writers_1() {
+    @Test
+    public void txn_coord_disable_writers_1() {
         AtomicInteger counter1 = new AtomicInteger(0);
         AtomicInteger counter2 = new AtomicInteger(0);
 
         txnMgr.blockWriters();
-        ThreadAction threadTxn1 = ThreadTxn.threadTxnRead(unit, ()->counter1.incrementAndGet());
+        ThreadAction threadTxn1 = ThreadTxn.threadTxnRead(unit, () -> counter1.incrementAndGet());
         threadTxn1.run();
         assertEquals(1, counter1.get());
     }
 
-    @Test public void txn_coord_disable_writers_2() {
+    @Test
+    public void txn_coord_disable_writers_2() {
         txnMgr.blockWriters();
-        Transaction txn = ThreadLib.syncCallThread(()->txnMgr.begin(TxnType.WRITE, false));
+        Transaction txn = ThreadLib.syncCallThread(() -> txnMgr.begin(TxnType.WRITE, false));
         assertNull(txn);
         txnMgr.enableWriters();
-        Transaction txn2 = ThreadLib.syncCallThread(()-> {
+        Transaction txn2 = ThreadLib.syncCallThread(() -> {
             Transaction txn1 = txnMgr.begin(TxnType.WRITE, false);
             assertNotNull(txn1);
-            txn1.abort(); txn1.end();
+            txn1.abort();
+            txn1.end();
             return txn1;
         });
         assertNotNull(txn2);
     }
 
-    @Test public void txn_coord_disable_writers_3() {
+    @Test
+    public void txn_coord_disable_writers_3() {
         txnMgr.blockWriters();
         Transaction txn = ThreadLib.syncCallThread(() -> {
             Transaction tx = txnMgr.begin(TxnType.READ, false);
@@ -103,11 +110,11 @@ public class TestTransactionCoordinatorControl {
         assertNotNull(txn2);
     }
 
-    @Test(expected=TransactionException.class)
+    @Test
     public void txn_coord_disable_writers_4() {
         txnMgr.blockWriters();
         txnMgr.enableWriters();
-        txnMgr.enableWriters();
+        assertThrows(TransactionException.class, ()->txnMgr.enableWriters());
     }
 
     @Test
@@ -118,9 +125,10 @@ public class TestTransactionCoordinatorControl {
         txnMgr.enableWriters();
     }
 
-    @Test public void txn_coord_exclusive_1() {
+    @Test
+    public void txn_coord_exclusive_1() {
         txnMgr.startExclusiveMode();
-        ThreadLib.syncOtherThread(()->{
+        ThreadLib.syncOtherThread(() -> {
             Transaction txn1 = txnMgr.begin(TxnType.WRITE, false);
             assertNull(txn1);
             Transaction txn2 = txnMgr.begin(TxnType.READ, false);
@@ -128,20 +136,23 @@ public class TestTransactionCoordinatorControl {
         });
 
         txnMgr.finishExclusiveMode();
-        ThreadLib.syncOtherThread(()->{
+        ThreadLib.syncOtherThread(() -> {
             Transaction txn1 = txnMgr.begin(TxnType.WRITE, false);
             assertNotNull(txn1);
             Transaction txn2 = txnMgr.begin(TxnType.READ, false);
             assertNotNull(txn2);
-            txn1.commit(); txn1.end();
-            txn2.commit(); txn2.end();
+            txn1.commit();
+            txn1.end();
+            txn2.commit();
+            txn2.end();
         });
     }
 
-    @Test public void txn_coord_exclusive_2() {
+    @Test
+    public void txn_coord_exclusive_2() {
         AtomicInteger counter1 = new AtomicInteger(0);
         Semaphore finalSema = new Semaphore(0);
-        ThreadAction ttxn = ThreadTxn.threadTxnWrite(unit, ()->{
+        ThreadAction ttxn = ThreadTxn.threadTxnWrite(unit, () -> {
             counter1.incrementAndGet();
         });
         boolean b = txnMgr.tryExclusiveMode(false);
@@ -149,7 +160,7 @@ public class TestTransactionCoordinatorControl {
         assertEquals(0, counter1.get());
         ttxn.run(); // Now run thread
         assertEquals(1, counter1.get());
-        Txn.executeWrite(unit, ()->{});
+        Txn.executeWrite(unit, () -> {});
         b = txnMgr.tryExclusiveMode(false);
         assertTrue(b);
     }
@@ -160,31 +171,31 @@ public class TestTransactionCoordinatorControl {
         // And again in after().
     }
 
-    @Test(expected=TransactionException.class)
+    // TransactionException.class
+
+    @Test
     public void txn_coord_shutdown_2() {
         Transaction txn = txnMgr.begin(TxnType.READ);
         txnMgr.shutdown(true);
-        txn.commit();
+        assertThrows(TransactionException.class, ()->txn.commit());
     }
 
-    @Test(expected=TransactionException.class)
+    @Test
     public void txn_coord_shutdown_3() {
         Transaction txn = txnMgr.begin(TxnType.WRITE);
         txnMgr.shutdown(true);
-        txn.commit();
+        assertThrows(TransactionException.class, ()->txn.commit());
     }
 
-    @Test(expected=TransactionException.class)
+    @Test
     public void txn_coord_shutdown_4() {
         txnMgr.shutdown(true);
-        txnMgr.begin(TxnType.READ);
+        assertThrows(TransactionException.class, ()->txnMgr.begin(TxnType.READ));
     }
 
-
-    @Test(expected=TransactionException.class)
+    @Test
     public void txn_coord_shutdown_5() {
         txnMgr.shutdown(true);
-        txnMgr.begin(TxnType.READ);
+        assertThrows(TransactionException.class, ()->txnMgr.begin(TxnType.READ));
     }
 }
-

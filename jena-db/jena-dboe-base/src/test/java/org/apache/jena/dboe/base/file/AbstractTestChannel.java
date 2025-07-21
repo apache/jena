@@ -18,20 +18,22 @@
 
 package org.apache.jena.dboe.base.file;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.nio.ByteBuffer;
 
-import static org.junit.Assert.*;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public abstract class AbstractTestChannel
 {
     protected abstract BufferChannel open();
 
     private BufferChannel store;
-    @Before public void before() { store = open(); }
-    @After  public void after()  { store.close(); }
+    @BeforeEach public void before() { store = open(); }
+    @AfterEach  public void after()  { store.close(); }
 
     static final int blkSize = 100;
 

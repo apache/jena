@@ -18,6 +18,13 @@
 
 package org.apache.jena.dboe.trans.bplustree;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.*;
+
 import org.apache.jena.dboe.base.block.BlockMgr;
 import org.apache.jena.dboe.base.block.BlockMgrFactory;
 import org.apache.jena.dboe.base.buffer.RecordBuffer;
@@ -27,10 +34,6 @@ import org.apache.jena.dboe.base.recordbuffer.RecordBufferPage;
 import org.apache.jena.dboe.base.recordbuffer.RecordBufferPageMgr;
 import org.apache.jena.dboe.sys.SystemIndex;
 import org.apache.jena.dboe.test.RecordLib;
-
-import static org.junit.Assert.*;
-
-import org.junit.*;
 
 public class TestBPTreeRecordsNonTxn {
     static private boolean             oldNullOut;
@@ -42,7 +45,7 @@ public class TestBPTreeRecordsNonTxn {
     static private BlockMgr            blkMgrRecords;
     static private RecordBufferPageMgr recordBufferPageMgr;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         oldNullOut = SystemIndex.getNullOut();
         SystemIndex.setNullOut(true);
@@ -61,18 +64,18 @@ public class TestBPTreeRecordsNonTxn {
         BPT.promoteDuplicateRecords = true;
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         SystemIndex.setNullOut(oldNullOut);
         BPT.forcePromoteModes = false;
     }
 
-    @Before
+    @BeforeEach
     public void before() {
         blkMgrRecords.beginUpdate();
     }
 
-    @After
+    @AfterEach
     public void after() {
         blkMgrRecords.endUpdate();
     }
@@ -210,7 +213,8 @@ public class TestBPTreeRecordsNonTxn {
 
         Record r = bpr1.shiftRight(bpr2, null);
 
-        assertTrue(r + " != " + RecordLib.intToRecord(10), Record.keyEQ(r, RecordLib.intToRecord(10)));
+        assertTrue(Record.keyEQ(r, RecordLib.intToRecord(10)),
+                   ()-> r + " != " + RecordLib.intToRecord(10));
         contains(bpr1, 10);
         contains(bpr2, 20, 99);
         bpr1.release();

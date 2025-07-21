@@ -18,16 +18,17 @@
 
 package org.apache.jena.dboe.transaction;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.transaction.txn.*;
 import org.apache.jena.dboe.transaction.txn.journal.Journal;
-import org.junit.After;
-import org.junit.Before;
 
 public abstract class AbstractTestTxn {
     protected TransactionCoordinator txnMgr;
@@ -36,7 +37,7 @@ public abstract class AbstractTestTxn {
     protected TransMonitor monitor  = new TransMonitor(ComponentId.allocLocal());
     protected Transactional unit;
 
-    @Before public void setup() {
+    @BeforeEach public void setup() {
         Journal jrnl = Journal.create(Location.mem());
         List<TransactionalComponent> cg = Arrays.asList
             (counter1, new TransactionalComponentWrapper(counter2), monitor);
@@ -45,7 +46,7 @@ public abstract class AbstractTestTxn {
         txnMgr.start();
     }
 
-    @After public void clearup() {
+    @AfterEach public void clearup() {
         // Some test that expect exceptions leave active transactions around.
         txnMgr.shutdown(true);
     }

@@ -18,12 +18,14 @@
 
 package org.apache.jena.dboe.base.block;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.nio.ByteBuffer;
 
-import org.junit.AfterClass;
-import static org.junit.Assert.*;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class TestBlockMgrTracked
 {
@@ -31,13 +33,13 @@ public class TestBlockMgrTracked
 
     static boolean b;
 
-    @BeforeClass
+    @BeforeAll
     static public void beforeClass() {
         b = BlockMgrTracker.verbose;
         BlockMgrTracker.verbose = false;
     }
 
-    @AfterClass
+    @AfterAll
     static public void afterClass() {
         BlockMgrTracker.verbose = b;
     }
@@ -94,39 +96,37 @@ public class TestBlockMgrTracked
         mgr.endRead();
     }
 
-    @Test(expected=BlockException.class)
+    @Test
     public void track_03() {
         BlockMgr mgr = setup();
         write(mgr, 1234);
         write(mgr, 5678);
 
         mgr.beginRead();
-        Block b0 = mgr.getWrite(0);
-        mgr.endRead();
+        assertThrows(BlockException.class, ()->mgr.getWrite(0));
     }
 
-    @Test(expected=BlockException.class)
+    @Test
     public void track_04() {
         BlockMgr mgr = setup();
         write(mgr, 1234);
         mgr.beginRead();
         Block b0 = mgr.getRead(0);
-        mgr.promote(b0);
-        mgr.endRead();
+        assertThrows(BlockException.class, ()->mgr.promote(b0));
     }
 
-    @Test(expected=BlockException.class)
+    @Test
     public void track_05() {
         BlockMgr mgr = setup();
         mgr.beginRead();
-        mgr.endUpdate();
+        assertThrows(BlockException.class, ()->mgr.endUpdate());
     }
 
-    @Test(expected=BlockException.class)
+    @Test
     public void track_06() {
         BlockMgr mgr = setup();
         mgr.beginUpdate();
-        mgr.endRead();
+        assertThrows(BlockException.class, ()->mgr.endRead());
     }
 
 }

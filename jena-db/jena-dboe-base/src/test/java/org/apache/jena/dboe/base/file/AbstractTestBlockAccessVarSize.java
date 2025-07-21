@@ -18,13 +18,12 @@
 
 package org.apache.jena.dboe.base.file;
 
-import static org.apache.jena.dboe.test.BufferTestLib.*;
+import static org.apache.jena.dboe.test.BufferTestLib.sameValue;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.dboe.base.block.Block;
-
-import static org.junit.Assert.assertNotSame;
-
-import org.junit.Test;
 
 public abstract class AbstractTestBlockAccessVarSize extends AbstractTestBlockAccessFixedSize
 {

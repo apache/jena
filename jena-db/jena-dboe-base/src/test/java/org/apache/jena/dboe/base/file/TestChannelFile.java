@@ -18,15 +18,16 @@
 
 package org.apache.jena.dboe.base.file;
 
+import org.junit.jupiter.api.AfterAll;
+
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.dboe.ConfigTestDBOE;
-import org.junit.AfterClass;
 
 public class TestChannelFile extends AbstractTestChannel
 {
     static String filename = ConfigTestDBOE.getTestingDir()+"/test-storage";
 
-    @AfterClass public static void cleanup() { FileOps.deleteSilent(filename); }
+    @AfterAll public static void cleanup() { FileOps.deleteSilent(filename); }
 
     @Override
     protected BufferChannel open() {

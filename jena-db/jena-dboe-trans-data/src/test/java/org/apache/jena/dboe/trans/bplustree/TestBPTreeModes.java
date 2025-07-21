@@ -18,36 +18,37 @@
 
 package org.apache.jena.dboe.trans.bplustree;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
 
-/** Run the B+Tree algorithm tests but for each combination of explicit
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+
+/**
+ * Run the B+Tree algorithm tests but for each combination of explicit
  * write-in-place / always copy modes.
  */
-@RunWith(Parameterized.class)
+@ParameterizedClass(name="Node dup={0}, Record dup={1}")
+@MethodSource("provideArgs")
 public class TestBPTreeModes extends TestBPlusTreeNonTxn
 {
-
-    @Parameters(name="Node dup={0}, Record dup={1}")
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][]{
-            {true, true},
-            {true, false},
-            {false, true},
-            {false, false}
-            });
+    private static Stream<Arguments> provideArgs() {
+        List<Arguments> x = List.of
+                (Arguments.of(true, true),
+                 Arguments.of(true, false),
+                 Arguments.of(false, true),
+                 Arguments.of(false, false));
+        return x.stream();
     }
 
     public TestBPTreeModes(boolean nodeMode, boolean recordsMode) {
-
         BPT.promoteDuplicateNodes = nodeMode;
         BPT.promoteDuplicateRecords = recordsMode;
     }
@@ -55,23 +56,22 @@ public class TestBPTreeModes extends TestBPlusTreeNonTxn
     boolean modeAtStartNodes;
     boolean modeAtStartRecords;
 
-    @BeforeClass public static void setupSuite() {
+    @BeforeAll public static void setupSuite() {
         BPT.forcePromoteModes = true;
     }
 
-    @AfterClass public static void resetSuite() {
+    @AfterAll public static void resetSuite() {
         BPT.forcePromoteModes = false;
     }
 
-    @Before public void setModes() {
+    @BeforeEach public void setModes() {
         BPT.forcePromoteModes = true;
         modeAtStartNodes = BPT.promoteDuplicateNodes;
         modeAtStartRecords = BPT.promoteDuplicateRecords;
     }
 
-    @After public void resetModes() {
+    @AfterEach public void resetModes() {
         BPT.promoteDuplicateNodes = modeAtStartNodes;
         BPT.promoteDuplicateRecords = modeAtStartRecords;
     }
-
 }

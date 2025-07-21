@@ -22,23 +22,22 @@ import static org.apache.jena.dboe.index.testlib.IndexTestLib.testDelete;
 import static org.apache.jena.dboe.index.testlib.IndexTestLib.testIndexContents;
 import static org.apache.jena.dboe.index.testlib.IndexTestLib.testInsert;
 import static org.apache.jena.dboe.test.RecordLib.intToRecord;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.dboe.base.record.Record;
 import org.apache.jena.dboe.index.Index;
 import org.apache.jena.dboe.test.RecordLib;
-import org.junit.After ;
-import org.junit.Test ;
-
-//import org.apache.jena.tdb.base.record.RecordLib;
 
 public abstract class AbstractTestIndex
 {
-    Index index = null;
+    protected Index index = null;
 
-    @After public void afterTest() {
+    @AfterEach public void afterTest() {
         if ( index != null )
             index.close();
         index = null;

@@ -18,11 +18,11 @@
 
 package org.apache.jena.dboe.base.recordfile;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.dboe.base.block.BlockMgr;
 import org.apache.jena.dboe.base.block.BlockMgrFactory;
@@ -42,12 +42,12 @@ public class TestRecordBufferPage
     static RecordFactory factory = new RecordFactory(2, 0);
 
     static boolean originalNullOut;
-    @BeforeClass static public void beforeClass() {
+    @BeforeAll static public void beforeClass() {
         originalNullOut = SystemIndex.getNullOut();
         SystemIndex.setNullOut(true);
     }
 
-    @AfterClass static public void afterClass() {
+    @AfterAll static public void afterClass() {
         SystemIndex.setNullOut(originalNullOut);
     }
 

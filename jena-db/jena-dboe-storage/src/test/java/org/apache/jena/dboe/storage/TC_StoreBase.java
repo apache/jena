@@ -20,11 +20,11 @@ package org.apache.jena.dboe.storage;
 
 import org.apache.jena.dboe.storage.prefixes.TS_Prefixes;
 import org.apache.jena.dboe.storage.storage.TS_Storage;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses({
     TS_Storage.class,
     TS_Prefixes.class
 })

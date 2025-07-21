@@ -18,9 +18,11 @@
 
 package org.apache.jena.dboe.trans.bplustree;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.index.testlib.IndexTestLib;
@@ -56,7 +58,7 @@ public class TestBPlusTreeTxn {
             IndexTestLib.add(bpt, 1, 2, 3, 4);
         } );
         int outerRootIdx2 = bpt.getRootId();
-        assertNotEquals("After txn", outerRootIdx1, outerRootIdx2);
+        assertNotEquals(outerRootIdx1, outerRootIdx2, "After txn");
     }
 
     // Commit - only the first changes the root.
@@ -66,16 +68,16 @@ public class TestBPlusTreeTxn {
         Transactional thing = transactional(bpt);
         Txn.executeWrite(thing, () -> {
             int rootIdx1 = bpt.getRootId();
-            assertEquals("Inside txn (1)", outerRootIdx1, rootIdx1);
+            assertEquals(outerRootIdx1, rootIdx1, "Inside txn (1)");
             IndexTestLib.add(bpt, 1);
             int rootIdx2 = bpt.getRootId();
-            assertNotEquals("Inside txn (2)", rootIdx1, rootIdx2);
+            assertNotEquals(rootIdx1, rootIdx2, "Inside txn (2)");
             IndexTestLib.add(bpt, 2, 3, 4);
             int rootIdx3 = bpt.getRootId();
-            assertEquals("Inside txn (3)", rootIdx2, rootIdx3);
+            assertEquals(rootIdx2, rootIdx3, "Inside txn (3)");
         } );
         int outerRootIdx2 = bpt.getRootId();
-        assertNotEquals("After txn", outerRootIdx1, outerRootIdx2);
+        assertNotEquals(outerRootIdx1, outerRootIdx2, "After txn");
     }
 
     // Abort
@@ -88,7 +90,7 @@ public class TestBPlusTreeTxn {
         thing.abort();
         thing.end();
         int outerRootIdx2 = bpt.getRootId();
-        assertEquals("After txn", outerRootIdx1, outerRootIdx2);
+        assertEquals(outerRootIdx1, outerRootIdx2, "After txn");
     }
 
     // Two transactions
@@ -100,13 +102,13 @@ public class TestBPlusTreeTxn {
             IndexTestLib.add(bpt, 1, 2, 3, 4);
         } );
         int outerRootIdx2 = bpt.getRootId();
-        assertNotEquals("After txn(1)", outerRootIdx1, outerRootIdx2);
+        assertNotEquals(outerRootIdx1, outerRootIdx2, "After txn(1)");
         Txn.executeWrite(thing, () -> {
             IndexTestLib.add(bpt, 5, 6);
         } );
         int outerRootIdx3 = bpt.getRootId();
-        assertNotEquals("After txn (2)", outerRootIdx1, outerRootIdx3);
-        assertNotEquals("After txn (3)", outerRootIdx2, outerRootIdx3);
+        assertNotEquals(outerRootIdx1, outerRootIdx3, "After txn (2)");
+        assertNotEquals(outerRootIdx2, outerRootIdx3, "After txn (3)");
     }
 
     // Two transactions, second an insert no-op.
@@ -120,13 +122,13 @@ public class TestBPlusTreeTxn {
             IndexTestLib.add(bpt, 1, 2, 3);
         } );
         int outerRootIdx2 = bpt.getRootId();
-        assertNotEquals("After txn(1)", outerRootIdx1, outerRootIdx2);
+        assertNotEquals(outerRootIdx1, outerRootIdx2, "After txn(1)");
         Txn.executeWrite(thing, () -> {
             IndexTestLib.add(bpt, 1, 2);
         } );
         int outerRootIdx3 = bpt.getRootId();
-        assertNotEquals("After txn (2)", outerRootIdx1, outerRootIdx3);
-        assertEquals("After txn (3)", outerRootIdx2, outerRootIdx3);
+        assertNotEquals(outerRootIdx1, outerRootIdx3, "After txn (2)");
+        assertEquals(outerRootIdx2, outerRootIdx3, "After txn (3)");
     }
 
     // Two transactions, second a delete no-op.
@@ -139,13 +141,13 @@ public class TestBPlusTreeTxn {
             IndexTestLib.add(bpt, 1, 2, 3);
         } );
         int outerRootIdx2 = bpt.getRootId();
-        assertNotEquals("After txn(1)", outerRootIdx1, outerRootIdx2);
+        assertNotEquals(outerRootIdx1, outerRootIdx2, "After txn(1)");
         Txn.executeWrite(thing, () -> {
             IndexTestLib.delete(bpt, 5, 6);
         } );
         int outerRootIdx3 = bpt.getRootId();
-        assertNotEquals("After txn (2)", outerRootIdx1, outerRootIdx3);
-        assertEquals("After txn (3)", outerRootIdx2, outerRootIdx3);
+        assertNotEquals(outerRootIdx1, outerRootIdx3, "After txn (2)");
+        assertEquals(outerRootIdx2, outerRootIdx3, "After txn (3)");
     }
 
     // Two trees

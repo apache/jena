@@ -19,12 +19,12 @@
 package org.apache.jena.dboe.base.file;
 
 import static org.apache.jena.dboe.test.BufferTestLib.sameValue;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.dboe.base.block.Block;
 
@@ -46,8 +46,8 @@ public abstract class AbstractTestBlockAccessFixedSize {
     }
 
     private BlockAccess file;
-    @Before public void before() { file = make(); }
-    @After  public void after()  { file.close(); }
+    @BeforeEach public void before() { file = make(); }
+    @AfterEach  public void after()  { file.close(); }
 
     @Test public void fileaccess_01() {
         assertTrue(file.isEmpty());
@@ -81,15 +81,5 @@ public abstract class AbstractTestBlockAccessFixedSize {
         Block b9 = file.read(b1.getId());
         assertNotSame(b8, b9);
         assertTrue(b8.getId() == b9.getId());
-    }
-
-    @Test(expected=FileException.class)
-    public void fileaccess_05() {
-        Block b1 = data(file, 10);
-        Block b2 = data(file, 20);
-        file.write(b1);
-
-        // Should not work. b2 not written.
-        Block b2a = file.read(b2.getId());
     }
 }

@@ -18,6 +18,11 @@
 
 package org.apache.jena.dboe;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.dboe.base.block.FileMode;
 import org.apache.jena.dboe.base.block.TS_Block;
@@ -26,13 +31,9 @@ import org.apache.jena.dboe.base.file.TS_File;
 import org.apache.jena.dboe.base.record.TS_Record;
 import org.apache.jena.dboe.base.recordfile.TS_RecordFile;
 import org.apache.jena.dboe.sys.SystemIndex;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses({
     TS_Block.class
     , TS_File.class
     , TS_Buffer.class
@@ -48,12 +49,12 @@ public class TC_DBOE_IO {
             SystemIndex.setFileMode(FileMode.direct);
     }
 
-    @BeforeClass static public void beforeClass() {
+    @BeforeAll static public void beforeClass() {
         level = LogCtl.getLevel("org.apache.jena.tdb.info");
         LogCtl.setLevel("org.apache.jena.tdb.info", "WARN");
     }
 
-    @AfterClass static public void afterClass() {
+    @AfterAll static public void afterClass() {
         LogCtl.setLevel("org.apache.jena.tdb.info", level);
     }
 }

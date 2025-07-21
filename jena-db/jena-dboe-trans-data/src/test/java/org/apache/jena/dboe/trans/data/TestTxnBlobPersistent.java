@@ -18,37 +18,39 @@
 
 package org.apache.jena.dboe.trans.data;
 
-import org.apache.jena.util.FileUtils;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.dboe.base.file.BufferChannel;
 import org.apache.jena.dboe.base.file.BufferChannelFile;
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.system.Txn;
 import org.apache.jena.dboe.transaction.Transactional;
 import org.apache.jena.dboe.transaction.TransactionalFactory;
 import org.apache.jena.dboe.transaction.txn.ComponentId;
 import org.apache.jena.dboe.transaction.txn.journal.Journal;
-
-import static org.junit.Assert.*;
-
-import org.junit.*;
+import org.apache.jena.system.Txn;
+import org.apache.jena.util.FileUtils;
 
 public class TestTxnBlobPersistent {
     private final static String DIR  = "target/blobtest";
     private final static String JRNL = DIR+"/journal.jrnl";
     private final static String DATA = DIR+"/blob.data";
 
-    @BeforeClass public static void beforeClass() {
+    @BeforeAll public static void beforeClass() {
         FileOps.ensureDir(DIR);
     }
 
-    @Before public void before() {
+    @BeforeEach public void before() {
         FileOps.deleteSilent(JRNL);
         FileOps.deleteSilent(DATA);
     }
 
-    @AfterClass public static void afterClass() {
+    @AfterAll public static void afterClass() {
         FileOps.deleteSilent(JRNL);
         FileOps.deleteSilent(DATA);
     }

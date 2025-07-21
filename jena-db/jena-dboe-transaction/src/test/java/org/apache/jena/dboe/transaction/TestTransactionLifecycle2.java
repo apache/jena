@@ -18,9 +18,13 @@
 
 package org.apache.jena.dboe.transaction;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.concurrent.atomic.AtomicReference;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.ThreadLib;
 import org.apache.jena.dboe.base.file.Location;
@@ -30,9 +34,6 @@ import org.apache.jena.dboe.transaction.txn.TransactionException;
 import org.apache.jena.dboe.transaction.txn.journal.Journal;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * Details tests of the transaction lifecycle in one JVM
@@ -43,13 +44,13 @@ public class TestTransactionLifecycle2 {
     // org.junit.rules.ExternalResource ?
     protected TransactionCoordinator txnMgr;
 
-    @Before public void setup() {
+    @BeforeEach public void setup() {
         Journal jrnl = Journal.create(Location.mem());
         txnMgr = new TransactionCoordinator(jrnl);
         txnMgr.start();
     }
 
-    @After public void clearup() {
+    @AfterEach public void clearup() {
         txnMgr.shutdown();
     }
 
@@ -64,10 +65,10 @@ public class TestTransactionLifecycle2 {
         checkClear();
     }
 
-    @Test(expected=TransactionException.class)
+    @Test
     public void txn_direct_02() {
         Transaction txn1 = txnMgr.begin(TxnType.WRITE);
-        txn1.end();
+        assertThrows(TransactionException.class, ()->txn1.end());
         checkClear();
     }
 
@@ -203,11 +204,11 @@ public class TestTransactionLifecycle2 {
         checkClear();
     }
 
-    @Test(expected=TransactionException.class)
+    @Test
     public void txn_promote_4() {
         Transaction txn1 = txnMgr.begin(TxnType.READ);
         txn1.end();
-        txn1.promote();
+        assertThrows(TransactionException.class, ()->txn1.promote());
     }
 
     //Not a @Test

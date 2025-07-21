@@ -25,12 +25,15 @@ import static org.apache.jena.dboe.index.testlib.IndexTestLib.testInsertDelete;
 import static org.apache.jena.dboe.test.RecordLib.intToRecord;
 import static org.apache.jena.dboe.test.RecordLib.r;
 import static org.apache.jena.dboe.test.RecordLib.toIntList;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.dboe.base.record.Record;
 import org.apache.jena.dboe.index.RangeIndex;

@@ -18,10 +18,11 @@
 
 package org.apache.jena.dboe.transaction;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.query.ReadWrite;
-import org.junit.Test;
 
 public class TestTransactionCoordinator extends AbstractTestTxn {
     @Test public void txn_coord_read_1() {

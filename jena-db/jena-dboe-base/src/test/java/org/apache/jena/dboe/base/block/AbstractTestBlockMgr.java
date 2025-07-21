@@ -18,26 +18,28 @@
 
 package org.apache.jena.dboe.base.block;
 
+import static org.apache.jena.atlas.lib.ByteBufferLib.fill;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.nio.ByteBuffer;
 
-import static org.apache.jena.atlas.lib.ByteBufferLib.fill;
-import static org.junit.Assert.*;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public abstract class AbstractTestBlockMgr {
     static final public int BlkSize  = 256;
 
     protected BlockMgr      blockMgr = null;
 
-    @Before
+    @BeforeEach
     public void before() {
         blockMgr = make();
         blockMgr.beginUpdate();
     }
 
-    @After
+    @AfterEach
     public void after() {
         if ( blockMgr != null ) {
             blockMgr.endUpdate();
@@ -48,10 +50,10 @@ public abstract class AbstractTestBlockMgr {
     @Test
     public void file01() {
         long x = blockMgr.allocLimit();
-        assertTrue("First allocLimit : " + x, x >= 0);
+        assertTrue(x >= 0, ()->"First allocLimit : " + x);
         // Assume no recycling.
         Block block = blockMgr.allocate(BlkSize);
-        assertTrue("Block inside allocate boundary", block.getId() >= x);
+        assertTrue(block.getId() >= x, ()->"Block inside allocate boundary");
         ByteBuffer bb = block.getByteBuffer();
         fill(bb, (byte)1);
         blockMgr.write(block);
@@ -127,6 +129,6 @@ public abstract class AbstractTestBlockMgr {
 
     protected static void contains(ByteBuffer bb, byte fillValue) {
         for ( int i = 0; i < bb.limit() ; i++ )
-            assertEquals("Index: " + i, bb.get(i), fillValue);
+            assertEquals(bb.get(i), fillValue, "Index: " + i);
     }
 }
