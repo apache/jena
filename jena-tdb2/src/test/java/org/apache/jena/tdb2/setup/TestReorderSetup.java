@@ -18,11 +18,14 @@
 
 package org.apache.jena.tdb2.setup;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+
+import org.junit.jupiter.api.*;
 
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.base.Sys;
@@ -34,7 +37,6 @@ import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
 import org.apache.jena.tdb2.sys.SystemTDB;
 import org.apache.jena.tdb2.sys.TDBInternal;
-import org.junit.*;
 
 public class TestReorderSetup {
 
@@ -42,42 +44,42 @@ public class TestReorderSetup {
     // The TC_TDB2 collection runs with reorder=none
     private static ReorderTransformation envReorder = SystemTDB.getDefaultReorderTransform();
 
-    @BeforeClass public static void beforeClass() {
+    @BeforeAll public static void beforeClass() {
         envReorder = SystemTDB.getDefaultReorderTransform();
         SystemTDB.setDefaultReorderTransform(ReorderLib.fixed());
     }
 
-    @AfterClass public static void afterClass() {
+    @AfterAll public static void afterClass() {
         SystemTDB.setDefaultReorderTransform(envReorder);
     }
 
-    @Before public void before() {
+    @BeforeEach public void before() {
         FileOps.ensureDir(DIR);
         FileOps.clearAll(DIR);
         FileOps.ensureDir(DIR+"/Data-0001");
     }
 
-    @After public void after() {
+    @AfterEach public void after() {
         FileOps.clearAll(DIR);
     }
 
     @Test public void reorder_setup_1() {
-        Assume.assumeFalse(Sys.isWindows);
+        assumeFalse(Sys.isWindows);
         test(()->{}, ReorderLib.fixed().getClass());
     }
 
     @Test public void reorder_setup_2() {
-        Assume.assumeFalse(Sys.isWindows);
+        assumeFalse(Sys.isWindows);
         test(()->touchFile(DIR+"/none.opt"), ReorderLib.identity().getClass());
     }
 
     @Test public void reorder_setup_3() {
-        Assume.assumeFalse(Sys.isWindows);
+        assumeFalse(Sys.isWindows);
         test(()-> touchFile(DIR+"/Data-0001/none.opt"), ReorderLib.identity().getClass());
     }
 
     @Test public void reorder_setup_4() {
-        Assume.assumeFalse(Sys.isWindows);
+        assumeFalse(Sys.isWindows);
         test(()-> {
             touchFile(DIR+"/Data-0001/none.opt");
             touchFile(DIR+"/fixed.opt");
@@ -85,7 +87,7 @@ public class TestReorderSetup {
     }
 
     @Test public void reorder_setup_5() {
-        Assume.assumeFalse(Sys.isWindows);
+        assumeFalse(Sys.isWindows);
         test(()-> {
             touchFile(DIR+"/Data-0001/fixed.opt");
             touchFile(DIR+"/none.opt");

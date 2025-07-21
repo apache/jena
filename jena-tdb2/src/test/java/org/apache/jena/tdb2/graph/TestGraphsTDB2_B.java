@@ -18,23 +18,24 @@
 
 package org.apache.jena.tdb2.graph;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.TDB2Factory;
 import org.apache.jena.tdb2.sys.TDBInternal;
-import org.junit.After;
-import org.junit.Before;
 
 public class TestGraphsTDB2_B extends AbstractTestGraphsTDB2
 {
     // Transactional.
-    @Before
+    @BeforeEach
     public void before() {
         getDataset().begin(ReadWrite.READ);
     }
 
-    @After
+    @AfterEach
     public void after() {
         getDataset().end();
         TDBInternal.expel(getDataset().asDatasetGraph());

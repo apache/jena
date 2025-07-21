@@ -25,7 +25,7 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
 import org.apache.jena.tdb2.store.NodeId;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestNodeIdInline
 {

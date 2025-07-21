@@ -22,6 +22,10 @@ import java.io.ByteArrayOutputStream;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.lib.ThreadLib;
@@ -33,9 +37,6 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.sys.TDBInternal;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /** Misc tests for TDB2. */
 public class TestTDB2 {
@@ -43,13 +44,13 @@ public class TestTDB2 {
     static String DIR1 = "target/tdb-testing/DB_1";
     static String DIR2 = "target/tdb-testing/DB_2";
 
-    @BeforeClass public static void beforeClass() {
+    @BeforeAll public static void beforeClass() {
         FileOps.ensureDir(DIR1);
         FileOps.ensureDir(DIR2);
     }
-    
-    @AfterClass public static void afterClass() {
-        try { 
+
+    @AfterAll public static void afterClass() {
+        try {
             FileOps.clearAll(DIR1);
             FileOps.clearAll(DIR2);
             FileOps.deleteSilent(DIR1);
@@ -69,17 +70,17 @@ public class TestTDB2 {
         Quad q2 = SSE.parseQuad("(:g1 :s :p 123)");
         testAbort(DIR1, q1, q2);
     }
-    
+
     @Test public void abort2() {
         Quad q1 = SSE.parseQuad("(:g :s :p :o)");
         // Two terms different.
         Quad q2 = SSE.parseQuad("(:g1 :s :p1 123)");
         testAbort(DIR2, q1, q2);
     }
-        
+
     private void testAbort(String DIR, Quad q1, Quad q2) {
         DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(DIR);
-        
+
         // Abort.
         dsg.begin(TxnType.WRITE);
         dsg.add(q1);
@@ -101,21 +102,21 @@ public class TestTDB2 {
     private static void output(DatasetGraph dsg) {
         Txn.executeRead(dsg, ()->RDFDataMgr.write(new ByteArrayOutputStream(),  dsg, Lang.NQUADS));
     }
-    
-    //JENA-1817: Two W txn, where the second queues on entry.  
+
+    //JENA-1817: Two W txn, where the second queues on entry.
     @Test public void multiple_writers() {
         Quad q1 = SSE.parseQuad("(:g :s :p :o1)");
         Quad q2 = SSE.parseQuad("(:g :s :p :o2)");
         DatasetGraph dsg = DatabaseMgr.createDatasetGraph();
-        
+
         // Test controls
         Semaphore sema =  new Semaphore(0);
         Semaphore semaTestFinished =  new Semaphore(0);
-        
+
         // Setup writers.
         Runnable r1 = ()->{
             Txn.executeWrite(dsg,  ()->{
-                // Allow thread 2 run and try to enter the W txn 
+                // Allow thread 2 run and try to enter the W txn
                 sema.release(1);
                 dsg.add(q1);
                 // Gives thread2 a chance to enter (can't do this by lock).
@@ -125,7 +126,7 @@ public class TestTDB2 {
             // Finished.
             semaTestFinished.release(1);
         };
-        
+
         Runnable r2 = ()->{
             acquire(sema,1);
             // Thread 1 is now inside its W txn.
@@ -134,13 +135,13 @@ public class TestTDB2 {
         };
         ThreadLib.async(r2);
         ThreadLib.async(r1);
-        
-        // Trigger writers. 
+
+        // Trigger writers.
         sema.release(2);
         // Wait until test threads have finished
         acquire(semaTestFinished, 2);
     }
-    
+
     private static void acquire(Semaphore semaphore, int permits) {
         try {
             boolean b = semaphore.tryAcquire(permits, 1000, TimeUnit.MILLISECONDS);

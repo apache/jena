@@ -18,13 +18,14 @@
 
 package org.apache.jena.tdb2.store;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.sparql.core.AbstractDatasetGraphTests;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb2.sys.StoreConnection;
-import org.junit.After;
-import org.junit.Before;
 
 public class TestStorageDatasetGraphTests extends AbstractDatasetGraphTests {
 
@@ -37,12 +38,12 @@ public class TestStorageDatasetGraphTests extends AbstractDatasetGraphTests {
 
     }
 
-    @Before public void before() {
+    @BeforeEach public void before() {
         currentDSG = TDB2StorageBuilder.build(location);
         currentDSG.begin(ReadWrite.WRITE);
     }
 
-    @After public void after() {
+    @AfterEach public void after() {
         currentDSG.abort();
         currentDSG.end();
         StoreConnection.internalExpel(location, true);

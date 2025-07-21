@@ -18,38 +18,40 @@
 
 package org.apache.jena.tdb2.loader;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb2.loader.main.LoaderPlans;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Test of loading using {@link LoaderFactory} operations.
  */
-@RunWith(Parameterized.class)
+@ParameterizedClass(name="{index}: {0}")
+@MethodSource("provideArgs")
 public class TestLoaderStdSetups extends AbstractTestLoader {
 
-    @Parameters(name = "{index}: {0}")
-    public static Iterable<Object[]> data() {
-        List<Object[]> x = new ArrayList<>();
+    private static Stream<Arguments> provideArgs() {
         BiFunction<DatasetGraph, Node, DataLoader> basic =      (dsg, gn)->LoaderFactory.basicLoader(dsg, gn, output);
         BiFunction<DatasetGraph, Node, DataLoader> phased =     (dsg, gn)->LoaderFactory.phasedLoader(dsg, gn, output);
         BiFunction<DatasetGraph, Node, DataLoader> sequential = (dsg, gn)->LoaderFactory.sequentialLoader(dsg, gn, output);
         BiFunction<DatasetGraph, Node, DataLoader> parallel =   (dsg, gn)->LoaderFactory.parallelLoader(dsg, gn, output);
         BiFunction<DatasetGraph, Node, DataLoader> light =      (dsg, gn)->LoaderFactory.createLoader(LoaderPlans.loaderPlanLight, dsg, gn, output);
 
-        x.add(new Object[]{"Basic loader",      basic});
-        x.add(new Object[]{"Phased loader",     phased});
-        x.add(new Object[]{"Sequential loader", sequential});
-        x.add(new Object[]{"Parallel loader",   parallel});
-        x.add(new Object[]{"Light loader",      light});
-        return x;
+        List<Arguments> x = List.of
+                (Arguments.of("Basic loader",      basic),
+                 Arguments.of("Phased loader",     phased),
+                 Arguments.of("Sequential loader", sequential),
+                 Arguments.of("Parallel loader",   parallel),
+                 Arguments.of("Light loader",      light)
+        );
+        return x.stream();
     }
 
     public TestLoaderStdSetups(String name, BiFunction<DatasetGraph, Node, DataLoader> maker) {

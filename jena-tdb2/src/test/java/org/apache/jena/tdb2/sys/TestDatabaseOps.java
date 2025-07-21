@@ -23,6 +23,11 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.nio.file.Path;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.atlas.lib.FileOps;
@@ -34,10 +39,6 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.DatabaseMgr;
-import org.junit.After;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
 /** Test DatabaseOp - the compaction tests are in {@link TestDatabaseCompact}. */
 public class TestDatabaseOps
@@ -56,17 +57,17 @@ public class TestDatabaseOps
         FileOps.ensureDir(testingDirBackup);
     }
 
-    @After
+    @AfterEach
     public void after() {
         TDBInternal.reset();
         FileUtils.deleteQuietly(testingDirBackupFile);
     }
 
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder(testingDirBackupFile);
+    @TempDir
+    public Path tempDir;
 
     @Test public void backup_1() {
-        Location dir = Location.create(folder.getRoot().getPath());
+        Location dir = Location.create(tempDir);
         DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(dir);
         Txn.executeWrite(dsg, ()-> {
             dsg.add(quad2);

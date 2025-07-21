@@ -55,7 +55,7 @@ public class TL {
         TDBInternal.expel(dataset);
     }
 
-    // Or use these for @Before, @After style.
+    // Or use these for @BeforeEach, @AfterEach style.
 
     public static Location cleanLocation() {
         // To avoid the problems on MS Windows where memory mapped files

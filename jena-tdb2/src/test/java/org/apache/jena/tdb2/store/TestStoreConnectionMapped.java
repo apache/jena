@@ -18,27 +18,28 @@
 
 package org.apache.jena.tdb2.store;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+
 import org.apache.jena.dboe.base.block.FileMode;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.tdb2.ConfigTest;
-import org.apache.jena.tdb2.sys.SystemTDB;
 import org.apache.jena.tdb2.sys.LibTestOps;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.apache.jena.tdb2.sys.SystemTDB;
 
 /** Slow tests - complete cleaning of disk areas each time */
 public class TestStoreConnectionMapped extends AbstractTestStoreConnectionBasics
 {
     static FileMode mode;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClassFileMode()
     {
         mode = SystemTDB.fileMode();
         LibTestOps.setFileMode(FileMode.mapped);
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClassFileMode()
     {
         LibTestOps.setFileMode(mode);

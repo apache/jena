@@ -22,7 +22,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.store.DatasetGraphSwitchable;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.Timeout;
 
 public class TestTransactionalSystemControl {

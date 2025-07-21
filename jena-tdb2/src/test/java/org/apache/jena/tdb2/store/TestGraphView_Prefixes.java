@@ -32,7 +32,7 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.sys.TDBInternal;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestGraphView_Prefixes {
 

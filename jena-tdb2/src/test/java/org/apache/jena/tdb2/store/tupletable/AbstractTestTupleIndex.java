@@ -28,7 +28,7 @@ import org.apache.jena.atlas.iterator.Iter;
 import static org.junit.Assert.*;
 import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.tdb2.store.NodeId;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /** Test TupleIndexes (general) */
 public abstract class AbstractTestTupleIndex

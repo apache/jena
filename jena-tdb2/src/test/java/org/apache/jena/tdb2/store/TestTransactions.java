@@ -18,10 +18,15 @@
 
 package org.apache.jena.tdb2.store;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.StringReader;
 import java.util.Iterator;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.StrUtils;
@@ -37,9 +42,6 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.TDB2Factory;
 import org.apache.jena.tdb2.sys.TDBInternal;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 /** Transactions and store connections - extended tests assuming the
  * basics work. Hence these tests use memory databases.
@@ -78,12 +80,12 @@ public class TestTransactions
     Dataset dataset;
     Location location;
 
-    @Before public void before() {
+    @BeforeEach public void before() {
         location = Location.mem();
         dataset = TDB2Factory.connectDataset(location);
     }
 
-    @After public void after() {
+    @AfterEach public void after() {
         dataset.close();
         TDBInternal.expel(dataset.asDatasetGraph());
     }
@@ -114,7 +116,7 @@ public class TestTransactions
         });
     }
 
-    // Iterators and trasnaxction scope.
+    // Iterators and transaction scope.
 
     private void load(String data) {
         Txn.executeWrite(dataset, ()->{
@@ -131,52 +133,48 @@ public class TestTransactions
         dataset.end();
     }
 
-    @Test(expected=TransactionException.class)
+    @Test
     public void iterator_02() {
         load(data2);
 
         dataset.begin(TxnType.READ);
         Iterator<Quad> iter = dataset.asDatasetGraph().find();
         dataset.end();
-        Quad q = iter.next();
-        System.err.println("iterator_02: Unexpected: "+q);
+        assertThrows(TransactionException.class, ()->iter.next());
     }
 
-    @Test(expected=TransactionException.class)
+    @Test
     public void iterator_03() {
         load(data2);
 
         dataset.begin(TxnType.READ);
         Iterator<Quad> iter = TDBInternal.getDatasetGraphTDB(dataset).find();
         dataset.end();
-        Quad q = iter.next();
-        System.err.println("iterator_03: Unexpected: "+q);
+        assertThrows(TransactionException.class, ()->iter.next());
     }
 
-    @Test(expected=TransactionException.class)
+    @Test
     public void iterator_04() {
         load(data2);
         Iterator<Statement> iter = Txn.calculateRead(dataset, ()->dataset.getDefaultModel().listStatements());
-        Statement q = iter.next();
-        System.err.println("iterator_04: Unexpected: "+q);
+        assertThrows(TransactionException.class, ()->iter.next());
     }
 
-    @Test(expected=TransactionException.class)
+    @Test
     public void iterator_05() {
         load(data2);
         Iterator<Statement> iter = Txn.calculateWrite(dataset, ()->dataset.getDefaultModel().listStatements());
-        iter.next();
+        assertThrows(TransactionException.class, ()->iter.next());
     }
 
-    @Test(expected=TransactionException.class)
+    @Test
     public void iterator_06() {
         load(data2);
-
         Iterator<Quad> iter = Txn.calculateRead(dataset, ()->dataset.asDatasetGraph().find());
 
         dataset.begin(TxnType.READ);
-        iter.next();
-        dataset.end();
+        assertThrows(TransactionException.class, ()->iter.next());
+        //dataset.end();
     }
 }
 

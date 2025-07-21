@@ -18,11 +18,15 @@
 
 package org.apache.jena.tdb2.loader;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.function.BiFunction;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.logging.LogCtl;
@@ -38,13 +42,10 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.IsoMatcher;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.system.Txn;
+import org.apache.jena.system.progress.MonitorOutput;
 import org.apache.jena.system.progress.MonitorOutputs;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.TDB2;
-import org.apache.jena.system.progress.MonitorOutput;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 public abstract class AbstractTestLoader {
     static { JenaSystem.init(); }
@@ -86,13 +87,13 @@ public abstract class AbstractTestLoader {
 
     private static final Node gn  = NodeFactory.createURI("http://example/g");
 
-    @BeforeClass
+    @BeforeAll
     static public void beforeClass() {
         LogCtl.disable(ARQ.logExecName);
         //LogCtl.disable(TDB2.logLoaderName);
     }
 
-    @AfterClass
+    @AfterAll
     static public void afterClass() {
         LogCtl.enable(ARQ.logExecName);
         LogCtl.enable(TDB2.logLoaderName);
@@ -157,7 +158,7 @@ public abstract class AbstractTestLoader {
         RDFDataMgr.read(dsg1, DIR + "data-2.nt");
         Txn.executeRead(dsg, ()->{
             boolean b = IsoMatcher.isomorphic(dsg1, dsg);
-            assertTrue("Not isomorphic", b);
+            assertTrue(b, ()->"Not isomorphic");
         });
     }
 

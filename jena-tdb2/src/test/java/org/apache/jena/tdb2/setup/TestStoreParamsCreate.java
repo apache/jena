@@ -18,10 +18,14 @@
 
 package org.apache.jena.tdb2.setup;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.dboe.base.file.Location;
@@ -32,9 +36,6 @@ import org.apache.jena.tdb2.params.StoreParamsCodec;
 import org.apache.jena.tdb2.sys.DatabaseConnection;
 import org.apache.jena.tdb2.sys.DatabaseOps;
 import org.apache.jena.tdb2.sys.TDBInternal;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * This test suite uses on-disk structures, does a lot of clean/create/sync
@@ -73,12 +74,12 @@ public class TestStoreParamsCreate {
         }
     }
 
-    @Before public void initTestEnv() {
+    @BeforeEach public void initTestEnv() {
         TDBInternal.reset();
         FileOps.clearAll(locContainer.getDirectoryPath());
     }
 
-    @After public void clearTestEnv() {
+    @AfterEach public void clearTestEnv() {
         TDBInternal.reset();
         FileOps.clearAll(locContainer.getDirectoryPath());
     }
@@ -86,16 +87,16 @@ public class TestStoreParamsCreate {
     @Test public void params_create_01() {
         dbConnection = DatabaseConnection.connectCreate(locContainer);
         // Check.  Default setup, no params.
-        assertTrue("DB directory", Files.exists(dbContainer));
-        assertFalse("Config file unexpectedly found (container)", Files.exists(cfgContainer));
-        assertFalse("Config file unexpectedly found (storage)", Files.exists(cfgStorage));
+        assertTrue(Files.exists(dbContainer), ()->"DB directory");
+        assertFalse(Files.exists(cfgContainer), ()->"Config file unexpectedly found (container)");
+        assertFalse(Files.exists(cfgStorage), ()->"Config file unexpectedly found (storage)");
     }
 
     @Test public void params_create_02() {
         dbConnection = DatabaseConnection.connectCreate(locContainer, pApp, null);
         // Check.  Custom setup.
-        assertTrue("DB directory", Files.exists(dbContainer));
-        assertTrue("Config file not found", Files.exists(cfgContainer));
+        assertTrue(Files.exists(dbContainer), ()->"DB directory");
+        assertTrue(Files.exists(cfgContainer), "Config file not found");
         StoreParams pLoc = StoreParamsCodec.read(locContainer);
         assertTrue(StoreParams.sameValues(pLoc, pApp));
     }

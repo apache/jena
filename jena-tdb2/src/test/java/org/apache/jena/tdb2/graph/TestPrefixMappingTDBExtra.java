@@ -21,6 +21,10 @@ package org.apache.jena.tdb2.graph;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.shared.PrefixMapping;
@@ -29,21 +33,18 @@ import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.ConfigTest;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.sys.TDBInternal;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 public class TestPrefixMappingTDBExtra
 {
-    @Before
+    @BeforeEach
     public void before() { TDBInternal.reset(); ConfigTest.deleteTestingDir(); }
 
-    @After
+    @AfterEach
     public void after() {
         TDBInternal.reset();
         ConfigTest.deleteTestingDir();
     }
-    
+
     // Persistent.
     @Test
     public void persistent1() {
@@ -75,7 +76,7 @@ public class TestPrefixMappingTDBExtra
             PrefixMapping pmap2 = dsg.getDefaultGraph().getPrefixMapping();
             assertEquals("http://foo/", pmap2.getNsPrefixURI("x"));
         });
-        
+
     }
 
 }

@@ -18,9 +18,15 @@
 
 package org.apache.jena.tdb2.assembler;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.assembler.JA;
 import org.apache.jena.assembler.exceptions.AssemblerException;
-import static org.junit.Assert.*;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.query.Dataset;
@@ -32,10 +38,6 @@ import org.apache.jena.tdb2.ConfigTest;
 import org.apache.jena.tdb2.store.DatasetGraphSwitchable;
 import org.apache.jena.tdb2.store.GraphViewSwitchable;
 import org.apache.jena.tdb2.sys.TDBInternal;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class TestTDBAssembler
 {
@@ -43,19 +45,19 @@ public class TestTDBAssembler
     static String dirAssem      = null;
     static final String dirDB   = ConfigTest.getTestingDir()+"/DB";
 
-    @BeforeClass
+    @BeforeAll
     static public void beforeClass() {
         dirAssem = ConfigTest.getTestingDataRoot() + "/Assembler";
         FileOps.ensureDir(dirDB);
     }
 
-    @Before
+    @BeforeEach
     public void before() {
         TDBInternal.reset();
         FileOps.clearDirectory(dirDB);
     }
 
-    @AfterClass
+    @AfterAll
     static public void afterClass() {
         TDBInternal.reset();
         FileOps.clearDirectory(dirDB);

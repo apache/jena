@@ -25,7 +25,7 @@ import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb2.ConfigTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestDatabaseConnection {
 
