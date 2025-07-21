@@ -18,7 +18,11 @@
 
 package org.apache.jena.tdb2.store;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.query.ReadWrite;
@@ -27,9 +31,6 @@ import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.sys.StoreConnection;
 import org.apache.jena.tdb2.sys.TDBInternal;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 /** StoreConnection and transactions - basic wiring.
  *  These tests are slow on rotational disk.
@@ -53,13 +54,13 @@ public abstract class AbstractTestStoreConnectionBasics
 
     protected abstract Location getLocation();
 
-    @Before public void before()
+    @BeforeEach public void before()
     {
         TDBInternal.reset();
         location = getLocation();
     }
 
-    @After public void after() { TDBInternal.reset(); }
+    @AfterEach public void after() { TDBInternal.reset(); }
 
     @Test
     public void store_01()

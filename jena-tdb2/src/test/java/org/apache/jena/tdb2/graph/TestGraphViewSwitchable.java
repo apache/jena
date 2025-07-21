@@ -26,7 +26,7 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestGraphViewSwitchable {
     private DatasetGraph dsg = DatabaseMgr.createDatasetGraph();

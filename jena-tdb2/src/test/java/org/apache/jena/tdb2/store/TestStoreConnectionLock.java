@@ -18,26 +18,31 @@
 
 package org.apache.jena.tdb2.store;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+
+import java.nio.file.Path;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import org.apache.jena.dboe.base.file.AlreadyLocked;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.base.file.ProcessFileLock;
 import org.apache.jena.tdb2.sys.StoreConnection;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
 /**
  * Tests for {@link ProcessFileLock} in conjunction with {@link StoreConnection}s
  */
 public class TestStoreConnectionLock {
-    @Rule
-    public TemporaryFolder tempDir = new TemporaryFolder();
+    @TempDir
+    public Path tempDir;
 
     @Test
     public void lock_store_connection_01() {
-        Location dir = Location.create(tempDir.getRoot().getAbsolutePath());
+        Location dir = Location.create(tempDir);
         ProcessFileLock lock = StoreConnection.lockForLocation(dir);
         assertFalse(lock.isLockedHere());
 
@@ -50,12 +55,12 @@ public class TestStoreConnectionLock {
         assertFalse(lock.isLockedHere());
     }
 
-    @Test(expected=AlreadyLocked.class)
+    @Test
     public void lock_store_connection_02() {
-        Location dir = Location.create(tempDir.getRoot().getAbsolutePath());
+        Location dir = Location.create(tempDir);
         ProcessFileLock lock = StoreConnection.lockForLocation(dir);
         lock.lockEx();
-        StoreConnection sConn = StoreConnection.connectCreate(dir);
+        assertThrows(AlreadyLocked.class, ()->StoreConnection.connectCreate(dir));
     }
 //        Location dir = Location.create(tempDir.getRoot().getAbsolutePath());
 //        // Creating a StoreConnection on the location will obtain the lock

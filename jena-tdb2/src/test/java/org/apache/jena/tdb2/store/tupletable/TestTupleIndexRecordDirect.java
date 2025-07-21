@@ -36,7 +36,7 @@ import org.apache.jena.tdb2.junit.BuildTestLib;
 import org.apache.jena.tdb2.params.StoreParams;
 import org.apache.jena.tdb2.store.NodeId;
 import org.apache.jena.tdb2.sys.SystemTDB;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestTupleIndexRecordDirect
 {

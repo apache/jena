@@ -35,7 +35,7 @@ import org.apache.jena.tdb2.store.NodeId;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable;
 import org.apache.jena.tdb2.sys.TDBInternal;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestStats {
     static DatasetGraphTDB dsg = TDBInternal.getDatasetGraphTDB(TL.createTestDatasetGraphMem());

@@ -18,22 +18,23 @@
 
 package org.apache.jena.tdb2.graph;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation;
 import org.apache.jena.sparql.graph.GraphsTests;
 import org.apache.jena.tdb2.sys.SystemTDB;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 
 public abstract class AbstractTestGraphsTDB2 extends GraphsTests
 {
     private static ReorderTransformation reorder ;
 
-    @BeforeClass public static void setupClass()
+    @BeforeAll public static void setupClass()
     {
         reorder = SystemTDB.getDefaultReorderTransform();
         SystemTDB.setDefaultReorderTransform(ReorderLib.identity());
     }
 
-    @AfterClass public static void afterClass() {  SystemTDB.setDefaultReorderTransform(reorder); }
+    @AfterAll public static void afterClass() {  SystemTDB.setDefaultReorderTransform(reorder); }
 }

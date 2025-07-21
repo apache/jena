@@ -20,8 +20,8 @@ package org.apache.jena.tdb2.sys;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
@@ -45,7 +45,7 @@ public class TestNormalizedTermsTDB2 {
     private static Node p = SSE.parseNode(":p");
 
     static DatasetGraph dsg = DatabaseMgr.createDatasetGraph();
-    @Before public void beforeTest() {
+    @BeforeEach public void beforeTest() {
         dsg.executeWrite(()->dsg.clear());
     }
 

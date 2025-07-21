@@ -18,32 +18,33 @@
 
 package org.apache.jena.tdb2.graph;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+
 import org.apache.jena.query.TxnType;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.graph.AbstractTestPrefixMappingView;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.sys.TDBInternal;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 
 public class TestPrefixMappingTDB2 extends AbstractTestPrefixMappingView
 {
     static DatasetGraph dsg = null;
     static PrefixMapping last = null;
 
-    @BeforeClass public static void beforeClass() { }
-    @AfterClass  public static void afterClass()  { TDBInternal.reset(); }
+    @BeforeAll public static void beforeClass() { }
+    @AfterAll  public static void afterClass()  { TDBInternal.reset(); }
 
-    @Before
+    @BeforeEach
     public void before() {
         dsg = createTestingMem();
         dsg.begin(TxnType.READ_PROMOTE);
     }
 
-    @After
+    @AfterEach
     public void after() {
         dsg.commit();
         dsg.end();

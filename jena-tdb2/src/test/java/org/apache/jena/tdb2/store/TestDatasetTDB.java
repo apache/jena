@@ -18,7 +18,13 @@
 
 package org.apache.jena.tdb2.store;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -31,9 +37,6 @@ import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.tdb2.TDB2;
 import org.apache.jena.tdb2.junit.TL;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 /** Tests of datasets, prefixes, special URIs etc (see also {@link org.apache.jena.sparql.graph.GraphsTests} */
 public class TestDatasetTDB
@@ -44,12 +47,12 @@ public class TestDatasetTDB
 
     private Dataset dataset;
 
-    @Before public void before() {
+    @BeforeEach public void before() {
         dataset = TL.createTestDatasetMem();
         dataset.begin(ReadWrite.WRITE);
     }
 
-    @After public void after() {
+    @AfterEach public void after() {
         dataset.abort();
         dataset.end();
         TL.expel(dataset);

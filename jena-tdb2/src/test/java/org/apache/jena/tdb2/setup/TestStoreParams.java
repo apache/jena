@@ -18,6 +18,10 @@
 
 package org.apache.jena.tdb2.setup;
 
+import static org.junit.Assert.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.dboe.base.block.FileMode;
@@ -25,9 +29,6 @@ import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.params.StoreParams;
 import org.apache.jena.tdb2.params.StoreParamsBuilder;
 import org.apache.jena.tdb2.params.StoreParamsCodec;
-
-import static org.junit.Assert.*;
-import org.junit.Test;
 
 public class TestStoreParams {
 
@@ -107,13 +108,11 @@ public class TestStoreParams {
         assertArrayEquals(expected, params.getTripleIndexes());
     }
 
-    @Test(expected=TDBException.class)
+    @Test
     public void store_params_14() {
         String xs = "{ \"tdb.triples_indexes\" : [ \"POS\" , \"PSO\"] } "; // Misspelt.
         JsonObject x = JSON.parse(xs);
-        StoreParams params = StoreParamsCodec.decode(x);
-        String[] expected =  { "POS" , "PSO" };
-        assertArrayEquals(expected, params.getTripleIndexes());
+        assertThrows(TDBException.class, ()-> StoreParamsCodec.decode(x) );
     }
 
     // Check that setting gets recorded and propagated.

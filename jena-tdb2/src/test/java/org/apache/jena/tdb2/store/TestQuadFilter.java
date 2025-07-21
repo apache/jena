@@ -35,7 +35,7 @@ import org.apache.jena.tdb2.TDB2Factory;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.sys.SystemTDB;
 import org.apache.jena.tdb2.sys.TDBInternal;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestQuadFilter
 {

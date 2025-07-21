@@ -22,7 +22,7 @@ import static org.apache.jena.tdb2.lib.NodeLib.hash;
 import static org.junit.Assert.*;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestNodeLib
 {

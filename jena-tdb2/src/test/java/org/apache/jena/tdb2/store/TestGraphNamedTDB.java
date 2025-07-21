@@ -18,6 +18,9 @@
 
 package org.apache.jena.tdb2.store;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
@@ -25,8 +28,6 @@ import org.apache.jena.query.ReadWrite;
 import org.apache.jena.sparql.graph.AbstractTestGraphAddDelete;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
 import org.apache.jena.tdb2.junit.TL;
-import org.junit.After;
-import org.junit.Before;
 
 /** Programmatic tests on persistent graph */
 public class TestGraphNamedTDB extends AbstractTestGraphAddDelete
@@ -35,14 +36,14 @@ public class TestGraphNamedTDB extends AbstractTestGraphAddDelete
     private Dataset dataset;
     private Graph   graph;
 
-    @Before
+    @BeforeEach
     public void before() {
         dataset = TL.createTestDatasetMem();
         dataset.begin(ReadWrite.WRITE);
         graph = dataset.asDatasetGraph().getGraph(graphNode);
     }
 
-    @After
+    @AfterEach
     public void after() {
         dataset.abort();
         dataset.end();

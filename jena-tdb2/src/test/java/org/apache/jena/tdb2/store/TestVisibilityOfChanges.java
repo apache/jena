@@ -18,6 +18,14 @@
 
 package org.apache.jena.tdb2.store;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Resource;
@@ -25,21 +33,16 @@ import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.TDB2Factory;
 import org.apache.jena.vocabulary.RDFS;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class TestVisibilityOfChanges {
     private Dataset dataset;
 
-    @Before
+    @BeforeEach
     public void before() {
         dataset = TDB2Factory.connectDataset(Location.mem());
     }
 
-    @After
+    @AfterEach
     public void after() {
         dataset.close();
     }
@@ -52,11 +55,11 @@ public class TestVisibilityOfChanges {
             dataset.getDefaultModel().add(resource, RDFS.label, "I exist!");
             assertTrue(dataset.getDefaultModel().containsResource(resource));
             rinseCache();
-            assertTrue("A newly created resource should be visible within the write transaction",
-                    dataset.getDefaultModel().containsResource(resource));
+            assertTrue(dataset.getDefaultModel().containsResource(resource),
+                       ()->"A newly created resource should be visible within the write transaction");
         });
-        assertTrue("A newly created resource should be visible after commit",
-                Txn.calculateRead(dataset, () -> dataset.getDefaultModel().containsResource(resource)));
+        assertTrue(Txn.calculateRead(dataset, () -> dataset.getDefaultModel().containsResource(resource)),
+                   ()->"A newly created resource should be visible after commit");
     }
 
     @Test
@@ -67,11 +70,10 @@ public class TestVisibilityOfChanges {
             dataset.getDefaultModel().add(resource, RDFS.label, "I exist!");
             rinseCache();
             executeAndWait(() -> Txn.executeRead(dataset, () -> dataset.getDefaultModel().containsResource(resource)));
-            assertTrue("A read transaction should not pollute the nonPresent cache if there's a write transaction",
-                    dataset.getDefaultModel().containsResource(resource));
+            assertTrue(dataset.getDefaultModel().containsResource(resource),
+                       ()->"A read transaction should not pollute the nonPresent cache if there's a write transaction");
         });
     }
-
 
     private void rinseCache() {
         int cacheSize = 2000;

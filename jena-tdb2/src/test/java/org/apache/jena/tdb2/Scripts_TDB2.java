@@ -18,6 +18,10 @@
 
 package org.apache.jena.tdb2;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+
 import org.apache.jena.arq.junit.manifest.Manifests;
 import org.apache.jena.arq.junit.manifest.Prefix;
 import org.apache.jena.arq.junit.runners.Label;
@@ -25,9 +29,6 @@ import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.expr.E_Function;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.tdb2.junit.RunnerSPARQL_TDB2;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
 
 @RunWith(RunnerSPARQL_TDB2.class)
 @Label("SPARQL [TDB2]")

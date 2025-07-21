@@ -26,7 +26,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
 import org.apache.jena.tdb2.junit.TL;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /** Testing persistence  */
 public class TestDatasetTDBPersist

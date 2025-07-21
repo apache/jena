@@ -29,7 +29,7 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.tdb2.sys.TDBInternal;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /** Test of TDB2Factory - the Dataset level API to TDB2 **/
 public class TestTDBFactory

@@ -18,22 +18,26 @@
 
 package org.apache.jena.tdb2.graph;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.sparql.core.AbstractDatasetGraphTests;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb2.junit.TL;
-import org.junit.After;
-import org.junit.Before;
 
 // Quad tests
 public class TestDatasetGraphTDB2 extends AbstractDatasetGraphTests
 {
     DatasetGraph dsg = TL.createTestDatasetGraphMem();
-    @Before public void before() {
+
+    @BeforeEach
+    public void before() {
         dsg.begin(ReadWrite.WRITE);
     }
 
-    @After public void after() {
+    @AfterEach
+    public void after() {
         dsg.abort();
         dsg.end();
         TL.expel(dsg);

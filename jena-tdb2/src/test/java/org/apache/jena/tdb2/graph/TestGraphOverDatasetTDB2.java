@@ -18,19 +18,20 @@
 
 package org.apache.jena.tdb2.graph;
 
+import org.junit.jupiter.api.AfterEach;
+
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.sparql.core.AbstractTestGraphOverDatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb2.junit.TL;
-import org.junit.After;
 
 /** This is the view-graph test suite run over a TDB DatasetGraph to check compatibility */
 public class TestGraphOverDatasetTDB2 extends AbstractTestGraphOverDatasetGraph
 {
     DatasetGraph dsg = null;
-    @After public void after2() {
+    @AfterEach public void after2() {
         if ( dsg == null )
             return;
         dsg.abort();

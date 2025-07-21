@@ -31,7 +31,7 @@ import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.tdb2.TDB2;
 import org.apache.jena.tdb2.TDB2Factory;
 import org.apache.jena.update.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test SPARQL

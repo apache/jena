@@ -26,7 +26,7 @@ import org.apache.jena.tdb2.ConfigTest;
 import org.apache.jena.tdb2.params.StoreParams;
 import org.apache.jena.tdb2.params.StoreParamsCodec;
 import org.apache.jena.tdb2.params.StoreParamsFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /** This test suite uses on-disk structures and can be slow */
 public class TestStoreParamsChoose {

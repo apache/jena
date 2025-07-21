@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
@@ -54,7 +54,7 @@ public class TestSolverTDB {
     static Dataset dataset = null;
     static PrefixMapping pmap = null;
 
-    @BeforeClass
+    @BeforeAll
     static public void beforeClass() {
         dataset = TL.createTestDatasetMem();
         dataset.begin(ReadWrite.WRITE);
@@ -64,7 +64,7 @@ public class TestSolverTDB {
         pmap.setNsPrefix("", "http://example/");
     }
 
-    @AfterClass
+    @AfterAll
     static public void afterClass() {
         dataset.abort();
         TL.expel(dataset);

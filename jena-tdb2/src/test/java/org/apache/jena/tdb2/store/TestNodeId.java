@@ -18,15 +18,16 @@
 
 package org.apache.jena.tdb2.store;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.nio.ByteBuffer;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.BitsLong;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
-import org.junit.Test;
 
 public class TestNodeId
 {
