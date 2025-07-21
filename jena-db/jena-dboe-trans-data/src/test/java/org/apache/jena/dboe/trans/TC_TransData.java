@@ -21,11 +21,11 @@ package org.apache.jena.dboe.trans;
 import org.apache.jena.dboe.trans.bplustree.TS_TxnBPTree;
 import org.apache.jena.dboe.trans.data.TS_TransactionalData;
 import org.apache.jena.dboe.trans.recovery.TestRecovery;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses({
     TS_TransactionalData.class
     , TS_TxnBPTree.class
     , TestRecovery.class

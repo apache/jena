@@ -18,24 +18,27 @@
 
 package org.apache.jena.dboe.base.buffer;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.ByteBuffer;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.dboe.sys.SystemIndex;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class TestPtrBuffer
 {
     static boolean originalNullOut;
-    @BeforeClass static public void beforeClass() {
+    @BeforeAll static public void beforeClass() {
         originalNullOut = SystemIndex.getNullOut();
         SystemIndex.setNullOut(true);
     }
 
-    @AfterClass static public void afterClass() {
+    @AfterAll static public void afterClass() {
         SystemIndex.setNullOut(originalNullOut);
     }
 
@@ -113,26 +116,26 @@ public class TestPtrBuffer
         contains(pb, 2, 4, -1, 6);
     }
 
-    // Errors - IllegalArgumentException
-    @Test(expected=BufferException.class)
+    // Errors - BufferException
+    @Test
     public void ptrbuffer09() {
         PtrBuffer pb = make(4,5);
         contains(pb, 2, 4, 6, 8);
-        pb.shiftDown(4);
+        assertThrows(BufferException.class, ()->pb.shiftDown(4));
     }
 
-    @Test(expected=BufferException.class)
+    @Test
     public void ptrbuffer10() {
         PtrBuffer pb = make(4,5);
         contains(pb, 2, 4, 6, 8);
-        pb.shiftUp(4);
+        assertThrows(BufferException.class, ()->pb.shiftUp(4));
     }
 
-    @Test(expected=BufferException.class)
+    @Test
     public void ptrbuffer11() {
         PtrBuffer pb = make(5,5);
         contains(pb, 2, 4, 6, 8, 10);
-        pb.add(12);
+        assertThrows(BufferException.class, ()->pb.add(12));
     }
 
     // Copy, duplicate, clear
@@ -269,12 +272,12 @@ public class TestPtrBuffer
 
     // ---- Support
     private static void contains(PtrBuffer pb, int... vals) {
-        assertEquals("Length mismatch: ", vals.length, pb.size());
+        assertEquals(vals.length, pb.size(), ()->"Length mismatch");
         for ( int i = 0; i < vals.length ; i++ )
             if ( vals[i] == -1 )
                 assertTrue(pb.isClear(i)) ;
             else
-                assertEquals("Value mismatch: ", vals[i], pb.get(i));
+                assertEquals(vals[i], pb.get(i), "Value mismatch");
     }
 
     // Make : 2,4,6,8, ..

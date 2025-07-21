@@ -18,8 +18,13 @@
 
 package org.apache.jena.dboe.transaction;
 
-import static org.junit.Assert.*;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.dboe.transaction.txn.TransactionException;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
@@ -112,34 +117,34 @@ public class TestTransactionLifecycle extends AbstractTestTxn {
         checkClear();
     }
 
-    @Test(expected=TransactionException.class)
+    @Test
     public void txn_begin_read_begin_read() {
         unit.begin(TxnType.READ);
-        unit.begin(TxnType.READ);
+        assertThrows(TransactionException.class, ()->unit.begin(TxnType.READ));
     }
 
-    @Test(expected=TransactionException.class)
+    @Test
     public void txn_begin_read_begin_write() {
         unit.begin(TxnType.READ);
-        unit.begin(TxnType.WRITE);
+        assertThrows(TransactionException.class, ()->unit.begin(TxnType.WRITE));
     }
 
-    @Test(expected=TransactionException.class)
+    @Test
     public void txn_begin_write_begin_read() {
         unit.begin(TxnType.WRITE);
-        unit.begin(TxnType.READ);
+        assertThrows(TransactionException.class, ()->unit.begin(TxnType.READ));
     }
 
-    @Test(expected=TransactionException.class)
+    @Test
     public void txn_begin_write_begin_write() {
         unit.begin(TxnType.WRITE);
-        unit.begin(TxnType.WRITE);
+        assertThrows(TransactionException.class, ()->unit.begin(TxnType.WRITE));
     }
 
-    @Test(expected=TransactionException.class)
+    @Test
     public void txn_write_begin_end() {
         unit.begin(TxnType.WRITE);
-        unit.end();
+        assertThrows(TransactionException.class, ()->unit.end());
         checkClear();
     }
 

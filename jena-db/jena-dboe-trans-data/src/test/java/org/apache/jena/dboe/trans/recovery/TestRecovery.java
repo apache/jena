@@ -18,12 +18,20 @@
 
 package org.apache.jena.dboe.trans.recovery;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.rules.TemporaryFolder;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.FileOps;
@@ -38,8 +46,6 @@ import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.dboe.transaction.txn.journal.Journal;
 import org.apache.jena.dboe.transaction.txn.journal.JournalEntry;
 import org.apache.jena.dboe.transaction.txn.journal.JournalEntryType;
-import org.junit.*;
-import org.junit.rules.TemporaryFolder;
 
 // We need something to recover io order to test recovery.
 
@@ -54,15 +60,15 @@ public class TestRecovery {
     private String data2;
     private static String loggerLevel;
 
-    @BeforeClass public static void beforeClass() {
+    @BeforeAll public static void beforeClass() {
         loggerLevel = LogCtl.getLevel(SysDB.syslog);
         LogCtl.setLevel(SysDB.syslog, "WARNING");
     }
-    @AfterClass public static void afterClass() {
+    @AfterAll public static void afterClass() {
         LogCtl.setLevel(SysDB.syslog, loggerLevel);
     }
 
-    @Before public void before() {
+    @BeforeEach public void before() {
         journal  = dir.getRoot().getAbsolutePath() + "/journal.jrnl";
         data  = dir.getRoot().getAbsolutePath() + "/blob.data";
         data1 = dir.getRoot().getAbsolutePath() + "/blob.data-1";
@@ -74,7 +80,7 @@ public class TestRecovery {
         FileOps.deleteSilent(data2);
     }
 
-    @After public void after() {
+    @AfterEach public void after() {
         FileOps.deleteSilent(journal);
         FileOps.deleteSilent(data);
     }

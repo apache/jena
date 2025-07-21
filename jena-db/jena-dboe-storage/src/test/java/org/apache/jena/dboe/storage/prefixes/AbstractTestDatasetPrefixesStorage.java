@@ -18,17 +18,18 @@
 
 package org.apache.jena.dboe.storage.prefixes;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.dboe.storage.StoragePrefixes;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.riot.system.PrefixEntry;
-import org.junit.Test;
 
 public abstract class AbstractTestDatasetPrefixesStorage
 {

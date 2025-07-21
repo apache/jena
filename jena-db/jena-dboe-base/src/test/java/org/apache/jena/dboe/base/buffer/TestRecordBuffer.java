@@ -20,30 +20,33 @@ package org.apache.jena.dboe.base.buffer;
 
 import static org.apache.jena.dboe.test.RecordLib.intToRecord;
 import static org.apache.jena.dboe.test.RecordLib.r;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Iterator;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.dboe.base.record.Record;
 import org.apache.jena.dboe.base.record.RecordFactory;
 import org.apache.jena.dboe.sys.SystemIndex;
 import org.apache.jena.dboe.test.RecordLib;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class TestRecordBuffer
 {
     static RecordFactory recordFactory = new RecordFactory(RecordLib.TestRecordLength, 0);
 
     static boolean originalNullOut;
-    @BeforeClass static public void beforeClass() {
+    @BeforeAll static public void beforeClass() {
         originalNullOut = SystemIndex.getNullOut();
         SystemIndex.setNullOut(true);
     }
 
-    @AfterClass static public void afterClass() {
+    @AfterAll static public void afterClass() {
         SystemIndex.setNullOut(originalNullOut);
     }
 
@@ -138,25 +141,25 @@ public class TestRecordBuffer
 
     // Errors
 
-    @Test(expected=BufferException.class)
+    @Test
     public void recBuffer09() {
         RecordBuffer rb = make(4,5);
         contains(rb, 2, 4, 6, 8);
-        rb.shiftDown(4);
+        assertThrows(BufferException.class, ()->rb.shiftDown(4));
     }
 
-    @Test(expected=BufferException.class)
+    @Test
     public void recBuffer10() {
         RecordBuffer rb = make(4,5);
         contains(rb, 2, 4, 6, 8);
-        rb.shiftUp(4);
+        assertThrows(BufferException.class, ()->rb.shiftUp(4));
     }
 
-    @Test(expected=BufferException.class)
+    @Test
     public void recBuffer11() {
         RecordBuffer rb = make(5,5);
         contains(rb, 2, 4, 6, 8, 10);
-        rb.add(r(12));
+        assertThrows(BufferException.class, ()->rb.add(r(12)));
     }
 
     // Copy, duplicate, clear
@@ -269,7 +272,7 @@ public class TestRecordBuffer
 
     // ---- Support
     private static void contains(RecordBuffer rb, int... vals) {
-        assertEquals("Length mismatch: ", vals.length, rb.size());
+        assertEquals(vals.length, rb.size(), "Length mismatch: ");
 
         for ( int i = 0; i < vals.length ; i++ )
             if ( vals[i] == -1 )
@@ -278,17 +281,17 @@ public class TestRecordBuffer
                 Record r = RecordLib.intToRecord(vals[i]);
                 Record r2 = rb.get(i);
                 int x = RecordLib.recordToInt(r2);
-                assertEquals("Value mismatch: ", vals[i], x);
+                assertEquals(vals[i], x, "Value mismatch: ");
             }
     }
 
     private static void same(Iterator<Record> iter, int... vals) {
         List<Integer> list = RecordLib.toIntList(iter);
-        assertEquals("Length mismatch: ", vals.length, list.size());
+        assertEquals(vals.length, list.size(), "Length mismatch: ");
 
         for ( int i = 0; i < vals.length ; i++ ) {
             int x = list.get(i);
-            assertEquals("Value mismatch: ", vals[i], x);
+            assertEquals(vals[i], x, "Value mismatch: ");
             }
     }
 

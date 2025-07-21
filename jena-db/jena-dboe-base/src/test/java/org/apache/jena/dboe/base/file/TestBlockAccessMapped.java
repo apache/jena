@@ -18,9 +18,10 @@
 
 package org.apache.jena.dboe.base.file;
 
+import org.junit.jupiter.api.AfterAll;
+
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.dboe.ConfigTestDBOE;
-import org.junit.AfterClass;
 
 public class TestBlockAccessMapped extends AbstractTestBlockAccessFixedSize
 {
@@ -31,7 +32,7 @@ public class TestBlockAccessMapped extends AbstractTestBlockAccessFixedSize
         super(BlockSize);
     }
 
-    @AfterClass public static void cleanup() { FileOps.deleteSilent(filename); }
+    @AfterAll public static void cleanup() { FileOps.deleteSilent(filename); }
 
     static int counter = 0;
 

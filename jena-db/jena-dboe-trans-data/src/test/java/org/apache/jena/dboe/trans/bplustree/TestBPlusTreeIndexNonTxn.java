@@ -18,13 +18,14 @@
 
 package org.apache.jena.dboe.trans.bplustree;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.dboe.base.block.BlockMgr;
 import org.apache.jena.dboe.index.testlib.AbstractTestIndex;
 import org.apache.jena.dboe.sys.SystemIndex;
 import org.apache.jena.dboe.test.RecordLib;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 
 /** Run the tests in default settings for a tree in "non-transactional" mode */
 public class TestBPlusTreeIndexNonTxn extends AbstractTestIndex {
@@ -33,14 +34,14 @@ public class TestBPlusTreeIndexNonTxn extends AbstractTestIndex {
     static boolean addLogger  = false ;
 
     static boolean originalNullOut;
-    @BeforeClass
+    @BeforeAll
     static public void beforeClass() {
         BPT.CheckingNode = true;
         originalNullOut = SystemIndex.getNullOut();
         SystemIndex.setNullOut(true);
     }
 
-    @AfterClass
+    @AfterAll
     static public void afterClass() {
         SystemIndex.setNullOut(originalNullOut);
     }

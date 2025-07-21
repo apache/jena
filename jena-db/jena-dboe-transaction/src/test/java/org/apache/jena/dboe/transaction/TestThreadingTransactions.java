@@ -18,13 +18,13 @@
 
 package org.apache.jena.dboe.transaction;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.concurrent.Semaphore;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
@@ -37,13 +37,13 @@ public class TestThreadingTransactions {
     static final long InitValue = 3;
     private TransactionalInteger transInt;
 
-    @Before public void init() {
+    @BeforeEach public void init() {
         TransactionCoordinator coord = TransactionCoordinator.create(Location.mem());
         transInt = new TransactionalInteger(coord, InitValue);
         coord.start();
     }
 
-    @After public void after() {
+    @AfterEach public void after() {
         transInt.getTxnMgr().shutdown(true);
     }
 
@@ -56,7 +56,7 @@ public class TestThreadingTransactions {
 
     void read(String label, TransactionalInteger trans, long expected) {
         long x = trans.get();
-        assertEquals(label, expected, x);
+        assertEquals(expected, x, ()->label);
     }
 
     ThreadAction threadRead(String label, TransactionalInteger trans, long expectedValue) {

@@ -18,17 +18,14 @@
 
 package org.apache.jena.dboe.transaction;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.ByteBufferLib;
 import org.apache.jena.dboe.base.file.Location;
@@ -37,7 +34,6 @@ import org.apache.jena.dboe.transaction.txn.ComponentIds;
 import org.apache.jena.dboe.transaction.txn.journal.Journal;
 import org.apache.jena.dboe.transaction.txn.journal.JournalEntry;
 import org.apache.jena.dboe.transaction.txn.journal.JournalEntryType;
-import org.junit.Test;
 
 /** Journal tests spearate from the transaction coordinator */
 public class TestJournal {

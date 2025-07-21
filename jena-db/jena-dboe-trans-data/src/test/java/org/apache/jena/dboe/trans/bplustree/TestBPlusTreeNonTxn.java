@@ -25,14 +25,15 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.dboe.base.block.BlockMgr;
 import org.apache.jena.dboe.base.record.Record;
 import org.apache.jena.dboe.index.testlib.AbstractTestRangeIndex;
 import org.apache.jena.dboe.sys.SystemIndex;
 import org.apache.jena.dboe.test.RecordLib;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 
 /** Run the tests in default settings for a tree in "non-transactional" mode */
 public class TestBPlusTreeNonTxn extends AbstractTestRangeIndex {
@@ -47,14 +48,14 @@ public class TestBPlusTreeNonTxn extends AbstractTestRangeIndex {
     static boolean addLogger  = false ;
 
     static boolean originalNullOut;
-    @BeforeClass
+    @BeforeAll
     static public void beforeClass() {
         BPT.CheckingNode = true;
         originalNullOut = SystemIndex.getNullOut();
         SystemIndex.setNullOut(true);
     }
 
-    @AfterClass
+    @AfterAll
     static public void afterClass() {
         SystemIndex.setNullOut(originalNullOut);
     }

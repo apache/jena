@@ -18,12 +18,16 @@
 
 package org.apache.jena.dboe.base.file;
 
-import org.apache.jena.atlas.lib.StrUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.atlas.lib.StrUtils;
 
 public abstract class AbstractTestBinaryDataFile {
     private BinaryDataFile file;
@@ -37,13 +41,13 @@ public abstract class AbstractTestBinaryDataFile {
         file.close();
     }
 
-    @Before public void before() {
+    @BeforeEach public void before() {
         file = createBinaryDataFile();
         file.open();
         file.truncate(0);
     }
 
-    @After public void after() {
+    @AfterEach public void after() {
         releaseBinaryDataFile(file);
     }
 

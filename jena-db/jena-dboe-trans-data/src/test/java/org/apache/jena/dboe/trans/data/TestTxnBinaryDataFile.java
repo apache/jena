@@ -22,18 +22,19 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
 import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.dboe.base.file.*;
-import org.apache.jena.system.Txn;
 import org.apache.jena.dboe.transaction.Transactional;
 import org.apache.jena.dboe.transaction.TransactionalFactory;
 import org.apache.jena.dboe.transaction.txn.ComponentId;
 import org.apache.jena.dboe.transaction.txn.journal.Journal;
 import org.apache.jena.system.ThreadTxn;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.apache.jena.system.Txn;
 
 public class TestTxnBinaryDataFile {
     private Journal journal;
@@ -41,7 +42,7 @@ public class TestTxnBinaryDataFile {
     private TransBinaryDataFile transBinData;
     private Transactional transactional;
 
-    @Before public void before() {
+    @BeforeEach public void before() {
         journal = Journal.create(Location.mem());
         baseBinData = new BinaryDataFileMem();
         BufferChannel chan = FileFactory.createBufferChannelMem();
@@ -51,7 +52,7 @@ public class TestTxnBinaryDataFile {
         transactional = TransactionalFactory.createTransactional(journal, transBinData);
     }
 
-    @After public void after() { }
+    @AfterEach public void after() { }
 
 //    private static ByteBuffer str2bb(String x) {
 //        byte[] d = StrUtils.asUTF8bytes(x);

@@ -18,16 +18,16 @@
 
 package org.apache.jena.dboe.base.file;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.dboe.ConfigTestDBOE;
 import org.apache.jena.dboe.sys.Names;
@@ -37,7 +37,7 @@ public class TestMetaFile
     String testfile = null;
     String testfileMeta = null;
 
-    @Before public void before() {
+    @BeforeEach public void before() {
         testfile = ConfigTestDBOE.getTestingDir()+"/file";
         testfileMeta = ConfigTestDBOE.getTestingDir()+"/file."+Names.extMeta;
         File f = new File(testfileMeta);
@@ -65,7 +65,7 @@ public class TestMetaFile
 
     // Test MetaBase
 
-    @After public void afterClass()
+    @AfterEach public void afterClass()
     { clear(); }
 
     private void clear() {

@@ -17,14 +17,16 @@
  */
 
 package org.apache.jena.dboe.transaction;
-import static org.junit.Assert.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.ByteBuffer;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.dboe.base.file.BufferChannel;
 import org.apache.jena.dboe.base.file.FileFactory;
 import org.apache.jena.dboe.transaction.txn.StateMgrDataIdx;
-import org.junit.Test;
 
 public class TestStateMgrData {
 

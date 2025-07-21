@@ -18,12 +18,15 @@
 
 package org.apache.jena.dboe.base.file;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.RuntimeIOException;
-import org.junit.Test;
 
-import static org.junit.Assert.*;
-
-// Additional tests that do not want the @Before/@After of AbstractTestBinaryDataFile
+// Additional tests that do not want the @BeforeEach/@AfterEach of AbstractTestBinaryDataFile
 public class TestBinaryDataRAFInitial  {
     public static String FILE = TS_File.FILE;
     private BinaryDataFileRandomAccess file;
@@ -37,20 +40,20 @@ public class TestBinaryDataRAFInitial  {
         assertFalse(file.isOpen());
     }
 
-    @Test (expected=RuntimeIOException.class)
+    @Test
     public void open_02() {
         file = new BinaryDataFileRandomAccess(FILE);
         file.open();
         file.close();
-        file.sync();
+        assertThrows(RuntimeIOException.class, ()->file.sync());
     }
 
-    @Test (expected=RuntimeIOException.class)
+    @Test
     public void open_03() {
         file = new BinaryDataFileRandomAccess(FILE);
         file.open();
         file.close();
-        file.truncate(0);
+        assertThrows(RuntimeIOException.class, ()->file.truncate(0));
     }
 
 }

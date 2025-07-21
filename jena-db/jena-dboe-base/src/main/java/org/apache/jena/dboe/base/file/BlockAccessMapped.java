@@ -75,7 +75,7 @@ public class BlockAccessMapped extends BlockAccessBase
     @Override
     public Block allocate(int blkSize) {
         if ( blkSize > 0 && blkSize != this.blockSize )
-            throw new FileException("Fixed blocksize only: request= "+blkSize+"fixed size="+this.blockSize);
+            throw new FileException("Fixed blocksize only: request= "+blkSize+" fixed size="+this.blockSize);
         int id = allocateId();
         ByteBuffer bb = getByteBuffer(id);
         bb.position(0);

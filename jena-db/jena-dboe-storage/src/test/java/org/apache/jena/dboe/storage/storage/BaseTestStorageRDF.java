@@ -18,26 +18,27 @@
 
 package org.apache.jena.dboe.storage.storage;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Iterator;
 import java.util.stream.Stream;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.dboe.storage.StorageRDF;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
-import org.junit.Before;
-import org.junit.Test;
 
 public abstract class BaseTestStorageRDF {
 
     private StorageRDF storage;
 
     protected abstract StorageRDF create();
-    @Before public void before() {
+    @BeforeEach public void before() {
         this.storage = create();
     }
 
@@ -50,16 +51,16 @@ public abstract class BaseTestStorageRDF {
 
     @Test public void storage_empty_01() {
         boolean b1 = isEmpty(storage.find(null, null, null));
-        assertTrue("triples", b1);
+        assertTrue(b1, "triples");
         boolean b2 = isEmpty(storage.find(null, null, null, null));
-        assertTrue("quads", b2);
+        assertTrue(b2, "quads");
     }
 
     @Test public void storage_empty_02() {
         boolean b1 = isEmpty(storage.find(null, null, null));
-        assertTrue("findDftGraph", b1);
+        assertTrue(b1, "findDftGraph");
         boolean b2 = isEmpty(storage.findUnionGraph(null, null, null));
-        assertTrue("findUnionGraph", b2);
+        assertTrue(b2, "findUnionGraph");
     }
 
     @Test public void storage_triples_01() {
@@ -86,16 +87,16 @@ public abstract class BaseTestStorageRDF {
 
     @Test public void storage_empty_01_stream() {
         boolean b1 = isEmpty(storage.stream(null, null, null));
-        assertTrue("triples", b1);
+        assertTrue(b1, "triples");
         boolean b2 = isEmpty(storage.stream(null, null, null, null));
-        assertTrue("quads", b2);
+        assertTrue(b2, "quads");
     }
 
     @Test public void storage_empty_02_stream() {
         boolean b1 = isEmpty(storage.stream(null, null, null));
-        assertTrue("findDftGraph", b1);
+        assertTrue(b1, "findDftGraph");
         boolean b2 = isEmpty(storage.streamUnionGraph(null, null, null));
-        assertTrue("findUnionGraph", b2);
+        assertTrue(b2, "findUnionGraph");
     }
 
     @Test public void storage_triples_01_stream() {

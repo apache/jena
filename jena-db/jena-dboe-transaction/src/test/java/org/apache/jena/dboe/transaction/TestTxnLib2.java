@@ -18,16 +18,16 @@
 
 package org.apache.jena.dboe.transaction;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.system.Txn;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
-
-import static org.junit.Assert.*;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.apache.jena.system.Txn;
 
 /** Unusual ways to do things.
  *  Rather than a TransactionalComponent,
@@ -38,13 +38,13 @@ public class TestTxnLib2 {
     private final long InitValue = 7;
     TransactionalInteger integer;
 
-    @Before public void setup() {
+    @BeforeEach public void setup() {
         TransactionCoordinator coord = TransactionCoordinator.create(Location.mem());
         integer = new TransactionalInteger(coord, InitValue);
         coord.start();
     }
 
-    @After public void clearup() {
+    @AfterEach public void clearup() {
         integer.shutdown();
     }
 

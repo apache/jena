@@ -18,20 +18,23 @@
 
 package org.apache.jena.dboe.transaction;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.system.Txn;
 import org.apache.jena.dboe.transaction.txn.*;
 import org.apache.jena.dboe.transaction.txn.journal.Journal;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.system.ThreadAction;
 import org.apache.jena.system.ThreadTxn;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.apache.jena.system.Txn;
 
 /** Tests of changing the thread state ... carefully */
 public class TestTxnSwitching {
@@ -46,10 +49,10 @@ public class TestTxnSwitching {
         txnMgr.start();
     }
 
-    @Before public void setup() {
+    @BeforeEach public void setup() {
     }
 
-    @After public void clearup() {
+    @AfterEach public void clearup() {
     }
 
     @Test public void txnSwitch_01() {
@@ -175,19 +178,17 @@ public class TestTxnSwitching {
     }
 
     // Some error cases.
-    @Test(expected=TransactionException.class)
+    @Test
     public void txnSwitch_10() {
         transactional.begin(ReadWrite.READ);
         TransactionCoordinatorState txnState = transactional.detach();
         transactional.attach(txnState);
-        transactional.attach(txnState);
+        assertThrows(TransactionException.class, ()->transactional.attach(txnState));
     }
-    @Test(expected=TransactionException.class)
+    @Test
     public void txnSwitch_11() {
         transactional.begin(ReadWrite.READ);
         TransactionCoordinatorState txnState1 = transactional.detach();
-        TransactionCoordinatorState txnState2 = transactional.detach();
+        assertThrows(TransactionException.class, ()->transactional.detach());
     }
-
 }
-

@@ -18,12 +18,12 @@
 
 package org.apache.jena.dboe.storage.storage;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    // Most testing happens via the dataset tests run on dataset built out of StorageRDF. 
+@Suite
+@SelectClasses({
+    // Most testing happens via the dataset tests run on dataset built out of StorageRDF.
     TestStorageSimple.class
     , TestDatasetGraphStorageTests.class
     , TestDatasetGraphStorageFindTests.class

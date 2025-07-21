@@ -19,13 +19,13 @@
 package org.apache.jena.dboe.trans.data;
 
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 import org.apache.jena.dboe.base.file.BufferChannel;
 import org.apache.jena.dboe.base.file.BufferChannelMem;
@@ -44,7 +44,7 @@ public class TestTxnBlob {
     private TransBlob       transBlob;
     private Transactional   transactional;
 
-    @Before public void before() {
+    @BeforeEach public void before() {
         journal = Journal.create(Location.mem());
 
         BufferChannel chan = BufferChannelMem.create("TestTransBlob");
@@ -53,7 +53,7 @@ public class TestTxnBlob {
         transactional = TransactionalFactory.createTransactional(journal, transBlob);
     }
 
-    @After public void after() { }
+    @AfterEach public void after() { }
 
     public static void write(Transactional transactional, TransBlob transBlob, String data) {
         Txn.executeWrite(transactional, ()->{
