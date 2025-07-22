@@ -128,7 +128,7 @@ public abstract class IRIx {
      * <a href="https://tools.ietf.org/html/rfc2396">RFC 2396</a>
      * where an absolute URI means "has scheme".
      * <p>
-     * In RDF data it is a
+     * In RDF data, it is a
      * <a href="https://www.w3.org/TR/rdf11-concepts/#section-IRIs">useful concept</a>.
      * It is either an absolute URI, but if it is hierarchical, it must have a host.
      * <p>
