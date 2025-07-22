@@ -33,10 +33,7 @@ import com.apicatalog.rdf.RdfDataset;
 import com.apicatalog.rdf.api.RdfConsumerException;
 import com.apicatalog.rdf.api.RdfQuadConsumer;
 
-import jakarta.json.JsonObject;
-import jakarta.json.JsonString;
-import jakarta.json.JsonStructure;
-import jakarta.json.JsonValue;
+import jakarta.json.*;
 import jakarta.json.stream.JsonLocation;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.ContentType;
@@ -44,6 +41,7 @@ import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.irix.IRIs;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.ReaderRIOT;
 import org.apache.jena.riot.RiotException;
@@ -106,7 +104,6 @@ public class LangJSONLD11 implements ReaderRIOT {
             Document document = JsonDocument.of(in);
             read(document, baseURI, output, context);
         } catch (JsonLdError ex) {
-            ex.printStackTrace();
             handleJsonLdError(ex);
         } catch (Exception ex) {
             errorHandler.error(ex.getMessage(), -1, -1);
@@ -131,7 +128,7 @@ public class LangJSONLD11 implements ReaderRIOT {
      * JSON-LD does not define prefixes.
      * <p>
      * The use of "prefix:localname" happens for any definition of "prefix" in the
-     * {@literal @context} even if intended for a URI e.g a property.
+     * {@literal @context} even if intended for a URI e.g. a property.
      * </p>
      * <p>
      * We could extract any {"key" : "value"} from the context but we add a
@@ -141,54 +138,80 @@ public class LangJSONLD11 implements ReaderRIOT {
      * <p>
      * In addition, {@literal @vocab} becomes prefix "".
      * </p>
+     * <p>
+     * The code assumes the structure is well-formed - it passed JSON-LD parsing by Titanium.
+     * </p>
      */
     private static void extractPrefixes(Document document, BiConsumer<String, String> action) {
         try {
-            JsonStructure js = document.getJsonContent().orElseThrow();
-            switch (js.getValueType()) {
-            case ARRAY:
-                extractPrefixes(js, action);
-                break;
-            case OBJECT:
-                JsonValue jv = js.asJsonObject().get(Keywords.CONTEXT);
-                extractPrefixes(jv, action);
-                break;
-            default:
-                break;
-            }
+
+            JsonStructure jsonStructure = document.getJsonContent().orElse(null);
+            if ( jsonStructure == null )
+                return;
+            extractPrefixesValue(jsonStructure, action);
         } catch (Throwable ex) {
             Log.warn(LangJSONLD11.class, "Unexpected problem while extracting prefixes: " + ex.getMessage(), ex);
         }
     }
 
-    private static void extractPrefixes(JsonValue jsonValue, BiConsumer<String, String> action) {
-        if (jsonValue == null)
-            return;
-        // JSON-LD 1.1 section 9.4
+    /**
+     * <a href="https://www.w3.org/TR/json-ld11/#graph-objects">JSON-LD 1.1 section 9.4 Graph Objects</a>.
+     * Assume the structure is well-fromed - it passed JSON-LD parsing by Titanium.
+     */
+    private static void extractPrefixesValue(JsonValue jsonValue, BiConsumer<String, String> action) {
         switch (jsonValue.getValueType()) {
-        case ARRAY:
-            jsonValue.asJsonArray().forEach(jv -> extractPrefixes(jv, action));
-            break;
-        case OBJECT:
-            extractPrefixesCxtDefn(jsonValue.asJsonObject(), action);
-            break;
-        case NULL:
-            break;      // We are only interested in prefixes
-        case STRING:
-            break;      // We are only interested in prefixes
-        default:
-            break;
+            case ARRAY -> extractPrefixesArray(jsonValue.asJsonArray(), action);
+            case OBJECT -> extractPrefixesObject(jsonValue.asJsonObject(), action);
+            default->{}
         }
     }
 
-    private static void extractPrefixesCxtDefn(JsonObject jCxt, BiConsumer<String, String> action) {
+    private static void extractPrefixesArray(JsonArray jsonArray, BiConsumer<String, String> action) {
+        jsonArray.forEach(jv -> extractPrefixesValue(jv, action));
+    }
+
+    /**
+    * <a href="https://www.w3.org/TR/json-ld11/#graph-objects">JSON-LD 1.1 section 9.4 Graph Objects</a>.
+    */
+    private static void extractPrefixesObject(JsonObject jsonObject, BiConsumer<String, String> action) {
+        JsonValue contextValue = jsonObject.get(Keywords.CONTEXT);
+        if ( contextValue == null )
+            return;
+        // If the graph object contains the @context key, its value MUST be null, an IRI reference, a context definition, or an array composed of any of these.
+        switch (contextValue.getValueType()) {
+            // Assuming the contextValue is valid (Titanium parsed it).
+            case ARRAY -> extractPrefixesContextArray(contextValue.asJsonArray(), action);
+            case OBJECT -> extractPrefixesContextDefinition(contextValue.asJsonObject(), action);
+            // URI or null.
+            default -> {}
+        }
+    }
+
+    // @context [ ]
+    private static void extractPrefixesContextArray(JsonArray jsonArray, BiConsumer<String, String> action) {
+        jsonArray.forEach(cxtArrayEntry -> {
+            switch (cxtArrayEntry.getValueType()) {
+                case OBJECT -> extractPrefixesContextDefinition(cxtArrayEntry.asJsonObject(), action);
+                // URI or null.
+                default -> {}
+            }
+        });
+    }
+
+    /**
+     * Extract prefixes from a context definition.
+     * <p>
+     * "A context definition defines a local context in a node object."
+     */
+    private static void extractPrefixesContextDefinition(JsonObject jCxt, BiConsumer<String, String> action) {
+        // Assume the local context is valid.
         Set<String> keys = jCxt.keySet();
         keys.stream().forEach(k -> {
             // "@vocab" : "uri"
             // "shortName" : "uri"
             // "shortName" : { "@type":"@id" , "@id": "uri" } -- presumed to be a single property aliases, not a prefix.
-            JsonValue jvx = jCxt.get(k);
-            if (JsonValue.ValueType.STRING != jvx.getValueType())
+            JsonValue jValue = jCxt.get(k);
+            if (JsonValue.ValueType.STRING != jValue.getValueType())
                 return;
             String prefix = k;
             if (Keywords.VOCAB.equals(k))
@@ -197,9 +220,10 @@ public class LangJSONLD11 implements ReaderRIOT {
                 // Keyword, not @vocab.
                 return;
             // Pragmatic filter: URI ends in "#" or "/" or ":"
-            String uri = JsonString.class.cast(jvx).getString();
+            String uri = JsonString.class.cast(jValue).getString();
             if (uri.endsWith("#") || uri.endsWith("/") || uri.endsWith(":")) {
-                action.accept(prefix, uri);
+                if ( IRIs.check(uri) )
+                    action.accept(prefix, uri);
                 return;
             }
         });
