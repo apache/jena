@@ -43,6 +43,7 @@ import org.apache.jena.riot.lang.rdfxml.TC_RIOT_RDFXML;
 
     , TestLangJsonLD.class
     , TestLangJsonLD_DocLoader.class
+    , TestLangJsonLD_prefixes.class
 
     , TestRDFXML_ReaderProperties.class
     , TestTriXReader.class
@@ -51,6 +52,7 @@ import org.apache.jena.riot.lang.rdfxml.TC_RIOT_RDFXML;
     // Thrift is done in the "thrift" package
     , TestParserFactory.class
     , TestCollectorStream.class
+
     , TC_RIOT_RDFXML.class
 })
 
