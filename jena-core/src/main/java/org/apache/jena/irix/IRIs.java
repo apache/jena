@@ -44,7 +44,7 @@ public class IRIs {
         return iri;
     }
 
-    /** Check a string is valid syntax for an IRI (absolute or relative) */
+    /** Check a string is valid syntax for an IRI and is valid for use in RDF. */
     static public boolean check(String iriStr) {
         Objects.requireNonNull(iriStr);
         try {
