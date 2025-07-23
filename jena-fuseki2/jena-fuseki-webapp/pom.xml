@@ -89,18 +89,6 @@
       <groupId>org.apache.shiro</groupId>
       <artifactId>shiro-jakarta-ee</artifactId>
       <classifier>jakarta</classifier>
-      <exclusions>
-        <exclusion>
-          <groupId>org.omnifaces</groupId>
-          <artifactId>omnifaces</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <!-- Include omnifaces -->
-    <dependency>
-      <groupId>org.omnifaces</groupId>
-      <artifactId>omnifaces</artifactId>
-      <version>${ver.omnifaces}</version>
     </dependency>
 
     <!-- frontend assets (HTML, JS, CSS, images, etc.) -->
