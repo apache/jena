@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
-    "@fortawesome/free-solid-svg-icons": "^6.4.2",
+    "@fortawesome/free-solid-svg-icons": "^7.0.0",
     "@fortawesome/vue-fontawesome": "^3.0.3",
     "@popperjs/core": "^2.11.8",
     "@vue/compat": "^3.5.16",
