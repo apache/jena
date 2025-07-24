@@ -60,7 +60,7 @@ import org.apache.jena.rdf.model.Seq;
  * <pre>
  * prefix xsd:        &lt;http://www.w3.org/2001/XMLSchema#&gt;
  *
- * &lt;&gt; ja:loadClass    "org.apache.jena.security.SecuredAssembler" .
+ * &lt;&gt; ja:loadClass    "org.apache.jena.permissions.SecuredAssembler" .
  *
  * sec:Model rdfs:subClassOf ja:NamedModel .
  *
