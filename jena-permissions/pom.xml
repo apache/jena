@@ -23,7 +23,7 @@
 
   <name>Apache Jena - Security Permissions</name>
   <description>Security Permissions wrapper around Jena RDF implementation.</description>
-  <url>https://jena.apache.org/documentation/security</url>
+  <url>https://jena.apache.org/documentation/permissions</url>
   <inceptionYear>2012</inceptionYear>
 
   <parent>
@@ -101,7 +101,7 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
           <doclint>none</doclint>
-          <excludePackageNames>org.apache.jena.security.example:org.apache.jena.security.example.*</excludePackageNames>
+          <excludePackageNames>org.apache.jena.permissions.example:org.apache.jena.permissions.example.*</excludePackageNames>
           <tags>
             <tag>
               <name>sec.graph</name>
@@ -131,7 +131,7 @@
             </manifestEntries>
           </archive>
           <excludes>
-            <exclude>org/apache/jena/security/example/**</exclude>
+            <exclude>org/apache/jena/permissions/example/**</exclude>
           </excludes>
         </configuration>
         <executions>
@@ -154,7 +154,7 @@
                 <include>../src/example/**</include>
                 <include>../src/example</include>
                 <include>META-INF/**</include>
-                <include>org/apache/jena/security/example/**</include>
+                <include>org/apache/jena/permissions/example/**</include>
               </includes>
               <excludes>
                 <exclude>META-INF/DEPENDENCIES</exclude>
