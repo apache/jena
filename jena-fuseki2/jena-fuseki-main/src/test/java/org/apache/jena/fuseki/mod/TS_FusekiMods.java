@@ -18,11 +18,12 @@
 
 package org.apache.jena.fuseki.mod;
 
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+
 import org.apache.jena.fuseki.mod.admin.TSMod_Admin;
 import org.apache.jena.fuseki.mod.metrics.TestModPrometheus;
 import org.apache.jena.fuseki.mod.shiro.TestModShiro;
-import org.junit.platform.suite.api.SelectClasses;
-import org.junit.platform.suite.api.Suite;
 
 @Suite
 @SelectClasses({
@@ -36,8 +37,7 @@ import org.junit.platform.suite.api.Suite;
     // Shiro
     TestModShiro.class,
 
-    // Whole server
-    TestFusekiServer.class
+    // Integrated server tested in TS_FusekiServer.class
 })
 public class TS_FusekiMods {
     public TS_FusekiMods() {}

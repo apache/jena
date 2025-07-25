@@ -16,18 +16,15 @@
  * limitations under the License.
  */
 
-package fuseki;
+package org.apache.jena.fuseki.server;
 
-import org.apache.jena.fuseki.main.FusekiMainRunner;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-/**
- * Run FusekiMain.
- * @deprecated Use {@link FusekiMainRunner#run}.
- */
-@Deprecated(forRemoval = true)
-public class run {
-    public static void main (String... args) {
-        // This does FusekiLogging.setLogging
-        FusekiMainRunner.run(args);
-    }
-}
+@Suite
+@SelectClasses({
+    TestFusekiServer.class,
+    TestFusekiServerCmd.class
+})
+
+public class TS_FusekiServer {}

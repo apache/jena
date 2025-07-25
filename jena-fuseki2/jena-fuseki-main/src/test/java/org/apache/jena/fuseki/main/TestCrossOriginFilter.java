@@ -75,7 +75,7 @@ public class TestCrossOriginFilter {
     }
 
     private static FusekiServer server(String ...args) {
-        return FusekiServer.construct(args);
+        return FusekiMainRunner.construct(args);
     }
 
     private static void executeWithServer(FusekiServer server, String datasetName, Consumer<String> action) {
@@ -88,7 +88,7 @@ public class TestCrossOriginFilter {
 
     @Test
     public void test_corsWithOrigin() {
-        FusekiServer server = FusekiServer.construct("-v", "--port=0", "--mem", "/ds");
+        FusekiServer server = FusekiMainRunner.construct("-v", "--port=0", "--mem", "/ds");
         executeWithServer(server, "/ds", URL->{
             // Default responses.
             String originString = "https://test.example.org/";
@@ -121,7 +121,7 @@ public class TestCrossOriginFilter {
 
     @Test
     public void test_corsLocalhost() {
-        FusekiServer server = FusekiServer.construct("-v", "--port=0", "--mem", "/ds");
+        FusekiServer server = FusekiMainRunner.construct("-v", "--port=0", "--mem", "/ds");
         executeWithServer(server, "/ds", URL->{
             HttpResponse<InputStream> response = httpOptions(URL,
                                                             //"Host", "test.example.com"

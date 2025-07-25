@@ -18,102 +18,38 @@
 
 package org.apache.jena.fuseki.mod;
 
-import java.net.BindException;
-
-import org.apache.jena.atlas.lib.FileOps;
-import org.apache.jena.atlas.lib.Lib;
-import org.apache.jena.cmd.CmdGeneral;
-import org.apache.jena.fuseki.Fuseki;
-import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.main.FusekiServer;
-import org.apache.jena.fuseki.main.cmds.FusekiMain;
-import org.apache.jena.fuseki.main.cmds.ServerArgs;
-import org.apache.jena.fuseki.main.sys.FusekiModule;
 import org.apache.jena.fuseki.main.sys.FusekiModules;
-import org.apache.jena.fuseki.main.sys.FusekiServerArgsCustomiser;
-import org.apache.jena.fuseki.mgt.FusekiServerCtl;
-import org.apache.jena.fuseki.mod.admin.FMod_Admin;
-import org.apache.jena.fuseki.mod.prometheus.FMod_Prometheus;
-import org.apache.jena.fuseki.mod.shiro.FMod_Shiro;
-import org.apache.jena.fuseki.mod.ui.FMod_UI;
 
+/**
+ *  @deprecated Use from new locations
+ */
+@Deprecated(forRemoval = true)
 public class FusekiServerRunner {
-
-    public static void main(String... args) {
-        prepareFusekiServerConstruct();
-        FusekiMain.run(args);
-        // Does not return.
-    }
 
     /**
      * Run {@link FusekiServer} with {@link FusekiModules} as given by {@link #serverModules()}.
+     *  @deprecated Use from new location {@link org.apache.jena.fuseki.server.FusekiServerRunner#runASync}.
      */
+    @Deprecated(forRemoval = true)
     public static FusekiServer runAsync(String... args) {
-        FusekiServer server = construct(args);
-        try {
-            return server.start();
-        } catch (FusekiException ex) {
-            if ( ex.getCause() instanceof BindException ) {
-//                if ( serverArgs.jettyConfigFile == null )
-//                    Fuseki.serverLog.error("Failed to start server: "+ex.getCause().getMessage()+ ": port="+serverArgs.port);
-//                else
-//                    Fuseki.serverLog.error("Failed to start server: "+ex.getCause().getMessage()+ ": port in use");
-                Fuseki.serverLog.error("Failed to start server: "+ex.getCause().getMessage()+ ": port in use");
-                System.exit(1);
-            }
-            throw ex;
-        } catch (Exception ex) {
-            throw new FusekiException("Failed to start server: " + ex.getMessage(), ex);
-        }
+        return org.apache.jena.fuseki.server.FusekiServerRunner.runAsync(args);
     }
 
     /**
      * Build but do not start, a {@link FusekiServer} with {@link FusekiModules} as given by {@link #serverModules()}.
+     *  @deprecated Use from new location {@link org.apache.jena.fuseki.server.FusekiServerRunner#construct}.
      */
+    @Deprecated(forRemoval = true)
     public static FusekiServer construct(String... args) {
-        prepareFusekiServerConstruct();
-        // Make server
-        FusekiServer server = FusekiServer.construct(args);
-        resetFusekiMain();
-        return server;
+        return org.apache.jena.fuseki.server.FusekiServerRunner.construct(args);
     }
 
-    private static void prepareFusekiServerConstruct() {
-        String fusekiBase = Lib.getenv(FusekiServerCtl.envFusekiBase);
-        if ( fusekiBase == null )
-            fusekiBase = FusekiServerCtl.dftFusekiBase;
-        FileOps.ensureDir(fusekiBase);
-
-        FusekiModules serverModules = serverModules();
-
-        // Adjust the default settings of ServerArgs
-        FusekiServerArgsCustomiser initializeServerArgs = new FusekiServerArgsCustomiser() {
-            @Override
-            public void serverArgsModify(CmdGeneral fusekiCmd, ServerArgs serverArgs) {
-                serverArgs.allowEmpty = true;
-                serverArgs.fusekiModules = serverModules;
-            }
-        };
-
-        FusekiMain.resetCustomisers();
-        FusekiMain.addCustomiser(initializeServerArgs);
-        // They can also modify the argument processing.
-        serverModules.forEach(FusekiMain::addCustomiser);
-    }
-
-    private static void resetFusekiMain() {
-        FusekiMain.resetCustomisers();
-    }
-
-    /** A use-once {@link FusekiModules} for the full-featured Fuseki server. */
+    /**
+     * @deprecated Use from new location {@link org.apache.jena.fuseki.server.FusekiServerModules#serverModules}.
+     */
+    @Deprecated(forRemoval = true)
     public static FusekiModules serverModules() {
-        // Modules may have state that is carried across the build steps or used for reload.
-        FusekiModule fmodShiro = FMod_Shiro.create();
-        FusekiModule fmodAdmin = FMod_Admin.create();
-        FusekiModule fmodUI = FMod_UI.create();
-        FusekiModule fmodPrometheus = FMod_Prometheus.create();
-
-        FusekiModules serverModules = FusekiModules.create(fmodAdmin, fmodUI, fmodShiro, fmodPrometheus);
-        return serverModules;
+        return org.apache.jena.fuseki.mod.FusekiServerModules.serverModules();
     }
 }

@@ -70,12 +70,8 @@ public class FMod_Shiro implements FusekiModule {
         return new FMod_Shiro();
     }
 
-    // Assumes the whole system is "Shiro".
-    // No setup?
-
     public static final Logger shiroConfigLog = LoggerFactory.getLogger(Fuseki.PATH + ".Shiro");
 
-    private static List<String> defaultIniFileLocations = List.of("file:shiro.ini", "file:/etc/fuseki/shiro.ini");
     private static List<String> iniFileLocations = null;
 
     private static ArgDecl argShiroIni = new ArgDecl(true, "shiro", "shiro-ini");
