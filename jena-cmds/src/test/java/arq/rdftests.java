@@ -258,7 +258,6 @@ public class rdftests extends CmdGeneral
                     .addProperty(FOAF.name, "Apache Jena Community")
                     .addProperty(FOAF.homepage, homepage);
 
-
         model.add(system, DC.creator, who);
         model.add(system, RDF.type, DOAP.Project);
         model.add(system, DOAP.name, name);
