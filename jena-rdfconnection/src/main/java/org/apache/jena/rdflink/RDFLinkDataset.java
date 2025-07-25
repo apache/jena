@@ -42,10 +42,10 @@ import org.apache.jena.sparql.exec.QueryExecApp;
 import org.apache.jena.sparql.exec.QueryExecBuilder;
 import org.apache.jena.sparql.exec.UpdateExec;
 import org.apache.jena.sparql.exec.UpdateExecBuilder;
-import org.apache.jena.sparql.exec.UpdateExecDatasetBuilder;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.graph.GraphReadOnly;
 import org.apache.jena.system.Txn;
+import org.apache.jena.update.Update;
 import org.apache.jena.update.UpdateRequest;
 
 /**
@@ -104,6 +104,12 @@ public class RDFLinkDataset implements RDFLink {
     @Override
     public UpdateExecBuilder newUpdate() {
         return UpdateExec.dataset(dataset);
+    }
+
+    @Override
+    public void update(Update update) {
+        checkOpen();
+        Txn.executeWrite(dataset, ()->newUpdate().update(update).execute());
     }
 
     @Override

@@ -404,7 +404,7 @@ public interface RDFLink extends
      */
     @Override
     public default void update(Update update) {
-        update(new UpdateRequest(update));
+        newUpdate().update(update).execute();
     }
 
     /**
@@ -412,7 +412,9 @@ public interface RDFLink extends
      * @param update
      */
     @Override
-    public void update(UpdateRequest update);
+    public default void update(UpdateRequest update) {
+        newUpdate().update(update).execute();
+    }
 
     /**
      * Execute a SPARQL Update.
@@ -420,8 +422,7 @@ public interface RDFLink extends
      */
     @Override
     public default void update(String updateString) {
-        update(UpdateFactory.create(updateString));
-        // newUpdate().update(updateString).execute();
+        newUpdate().update(updateString).execute();
     }
 
     /** Fetch the default graph.
