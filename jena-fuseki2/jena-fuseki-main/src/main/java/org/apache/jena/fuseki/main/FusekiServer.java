@@ -118,9 +118,11 @@ public class FusekiServer {
     /**
      * Construct a Fuseki server from command line arguments.
      * The return server has not been started.
+     * @deprecated Use {@link FusekiMainRunner#construct} or {@link FusekiServerRunner#construct} 
      */
+    @Deprecated
     static public FusekiServer construct(String... args) {
-        return FusekiMain.build(args);
+        return FusekiMainRunner.construct(args);
     }
 
     /** Construct a Fuseki server for one dataset.
@@ -420,9 +422,17 @@ public class FusekiServer {
         } catch (Exception e) { throw new FusekiException(e); }
     }
 
-    /** Wait for the server to exit. This call is blocking. */
+    /**
+     * Wait for the server to exit.
+     * This call starts the server if it has not already been started.
+     * This call is blocking and does not return unless there is an error.
+     */
     public void join() {
-        try { server.join(); }
+        try {
+            if ( ! server.isStarted() && ! server.isStarting() )
+                server.start();
+            server.join(); }
+        catch (FusekiException e) { throw e; }
         catch (Exception e) { throw new FusekiException(e); }
     }
 

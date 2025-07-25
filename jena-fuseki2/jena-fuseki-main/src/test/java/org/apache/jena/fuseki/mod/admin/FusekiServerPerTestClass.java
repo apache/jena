@@ -23,6 +23,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.fuseki.Fuseki;
@@ -30,14 +33,12 @@ import org.apache.jena.fuseki.ctl.ActionSleep;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.sys.FusekiModules;
 import org.apache.jena.fuseki.mgt.FusekiServerCtl;
-import org.apache.jena.fuseki.mod.FusekiServerRunner;
+import org.apache.jena.fuseki.mod.FusekiServerModules;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.awaitility.Awaitility;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 
 /**
  * Framework for running tests on a Fuseki server, with a single server for all tests.
@@ -88,7 +89,7 @@ public class FusekiServerPerTestClass {
 
     // For the one-per-class setup, include the usual modules for jena-fuseki-server.
     private static FusekiModules modulesSetup() {
-        return FusekiServerRunner.serverModules();
+        return FusekiServerModules.serverModules();
     }
 
     private static FusekiServer createServerForTest() {

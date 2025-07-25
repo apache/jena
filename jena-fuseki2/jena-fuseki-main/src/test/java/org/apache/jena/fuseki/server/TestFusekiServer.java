@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.mod;
+package org.apache.jena.fuseki.server;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
@@ -29,6 +29,7 @@ import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.cmds.FusekiMain;
 import org.apache.jena.fuseki.main.sys.FusekiModules;
 import org.apache.jena.fuseki.mgt.FusekiServerCtl;
+import org.apache.jena.fuseki.mod.FusekiServerModules;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.http.HttpOp;
 
@@ -71,7 +72,7 @@ public class TestFusekiServer {
         String runBase = serverBase+"2";
         setup(runBase);
         // Build-run programmatically.
-        FusekiModules serverModules = FusekiServerRunner.serverModules();
+        FusekiModules serverModules = FusekiServerModules.serverModules();
         FusekiServer server = FusekiServer.create().port(0).fusekiModules(serverModules).build();
         server.start();
         try {

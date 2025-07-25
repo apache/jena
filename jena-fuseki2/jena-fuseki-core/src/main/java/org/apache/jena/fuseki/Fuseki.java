@@ -169,23 +169,21 @@ public class Fuseki {
     public static final String        compactLogName    = PATH + ".Compact";
     public static final Logger        compactLog        = LoggerFactory.getLogger(compactLogName);;
 
-    /** Instance of log for config server messages.
-     * This is the global default used to set attribute
-     * in each server created.
-     */
-    public static boolean             verboseLogging    = false;
-
-    // Servlet context attribute names,
-
+    // Servlet context attribute names used by the core engine.
+    // Also in FusekiServerCtl for Fuseki server
     public static final String attrVerbose                 = "org.apache.jena.fuseki:verbose";
     public static final String attrNameRegistry            = "org.apache.jena.fuseki:DataAccessPointRegistry";
     public static final String attrOperationRegistry       = "org.apache.jena.fuseki:OperationRegistry";
+    public static final String attrMetricsProvider         = "org.apache.jena.fuseki:MetricsProvider";
+
+    // Use by jena-fuseki-access
     public static final String attrAuthorizationService    = "org.apache.jena.fuseki:AuthorizationService";
-    // The Fuseki Server
+
+    // Servlet context attribute names used by Fuseki Server.
+    // The server (so we can go from servlet context, available in request, to the server.
     public static final String attrFusekiServer            = "org.apache.jena.fuseki:Server";
     // The FusekiServerCtl object for the admin area; may be null
     public static final String attrFusekiServerCtl         = "org.apache.jena.fuseki:ServerCtl";
-    public static final String attrMetricsProvider         = "org.apache.jena.fuseki:MetricsProvider";
 
     public static void setVerbose(ServletContext cxt, boolean verbose) {
         cxt.setAttribute(attrVerbose, Boolean.valueOf(verbose));

@@ -325,7 +325,7 @@ public class TestConfigFile {
     // Several types of Model.
     // Requires that the configuration file has had the assembler registrations added correctly.
     @Test public void setupDatasetOfModels() {
-        FusekiServer server = FusekiServer.construct("--port=0", "--conf", DIR+"configOfModels.ttl");
+        FusekiServer server = FusekiMainRunner.construct("--port=0", "--conf", DIR+"configOfModels.ttl");
         server.start();
         server.stop();
     }

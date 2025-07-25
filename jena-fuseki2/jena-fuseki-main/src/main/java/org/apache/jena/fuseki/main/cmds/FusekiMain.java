@@ -28,6 +28,8 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import arq.cmdline.CmdARQ;
+import arq.cmdline.ModDatasetAssembler;
 import org.apache.jena.assembler.exceptions.AssemblerException;
 import org.apache.jena.atlas.io.IOX;
 import org.apache.jena.atlas.lib.FileOps;
@@ -51,9 +53,6 @@ import org.apache.jena.riot.RDFParser;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sys.JenaSystem;
 import org.slf4j.Logger;
-
-import arq.cmdline.CmdARQ;
-import arq.cmdline.ModDatasetAssembler;
 
 public class FusekiMain extends CmdARQ {
 

@@ -25,8 +25,6 @@ import org.apache.jena.fuseki.main.cmds.FusekiMain;
 import org.apache.jena.fuseki.main.cmds.ServerArgs;
 import org.apache.jena.rdf.model.Model;
 
-
-
 /**
  * Interface to implement for extending the CLI argument parsing portion of a
  * {@link FusekiServer}.
@@ -46,16 +44,16 @@ import org.apache.jena.rdf.model.Model;
  *   {@link FusekiAutoModule#start()} or from Java application code.
  * </li>
  * <li>
- *    {@link #serverArgsModify} &mdash; Register or modify the argument setup to be
+ *    {@link #serverArgsModify} &ndash; Register or modify the argument setup to be
  *     used to parse the command line.
  * </li>
  * <li>
- *   {@link #serverArgsPrepare} &mdash; Called after parsing the command line and
+ *   {@link #serverArgsPrepare} &ndash; Called after parsing the command line and
  *   recoding the command line settings in {@link ServerArgs}. Customisers can record
  *   argument values and flags.
  * </li>
  * <li>
- *   {@link #serverArgsBuilder} &mdash; Called after the {@link ServerArgs} have
+ *   {@link #serverArgsBuilder} &ndash; Called after the {@link ServerArgs} have
  *   been used to construct a server builder.
  * </li>
  * </ul>
@@ -76,7 +74,7 @@ public interface FusekiServerArgsCustomiser {
      * The server construction is aborted.
      *
      * @param fusekiCmd Fuseki Main command line arguments
-     * @param serverArgs Intial setting before command line processing.
+     * @param serverArgs Initial setting before command line processing.
      */
     public default void serverArgsModify(CmdGeneral fusekiCmd, ServerArgs serverArgs) { }
 

@@ -21,13 +21,12 @@ package org.apache.jena.fuseki.cmd;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.sparql.core.DatasetGraph;
 
 /** Dataset setup (command line, config file) for a dataset (or several if config file) */
 public class FusekiArgs {
     public boolean quiet = false;
-    public boolean verbose = Fuseki.verboseLogging;
+    public boolean verbose = false;
 
     // Priority order : --conf, templated
     // through the command line processing should not allow --conf and a templated /dataset.

@@ -18,10 +18,12 @@
 
 package org.apache.jena.fuseki.main.cmds;
 
-import org.apache.jena.fuseki.mod.FusekiServerRunner;
+import org.apache.jena.fuseki.main.sys.FusekiModule;
+import org.apache.jena.fuseki.server.FusekiServerRunner;
 import org.apache.jena.fuseki.system.FusekiLogging;
 
-/** Fuseki command that runs a Fuseki server with the admin UI.
+/**
+ * Fuseki command that runs a Fuseki server with the admin UI and other {@link FusekiModule FusekiModules}.
  * <p>
  * Use {@code --conf=} for multiple datasets and specific service names.
  * <p>
@@ -45,7 +47,7 @@ public class FusekiServerCmd {
      * syntax but not start it.
      */
     static public void main(String... args) {
-        FusekiServerRunner.main(args);
+        FusekiServerRunner.construct(args).join();
     }
 }
 
