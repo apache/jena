@@ -18,9 +18,11 @@
 
 package org.apache.jena.sparql.expr;
 
-/** Exception for a dynamic evaluation exception.
- *  The current solution is likely to be rejected.
- *  See also QueryFatalException which aborts the whole query execution. */
+/**
+ * Exception for a dynamic evaluation exception.
+ * The current solution is likely to be rejected.
+ * See also QueryFatalException which aborts the whole query execution.
+ */
 
 public class ExprEvalException extends ExprException
 {
@@ -29,7 +31,7 @@ public class ExprEvalException extends ExprException
     // need the stack trace.
 
     @Override public Throwable fillInStackTrace() { return this ; }
-    
+
     public ExprEvalException() { super() ; }
     public ExprEvalException(Throwable cause) { super(cause) ; }
     public ExprEvalException(String msg) { super(msg) ; }

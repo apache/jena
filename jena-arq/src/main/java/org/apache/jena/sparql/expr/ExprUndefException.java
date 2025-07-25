@@ -20,12 +20,9 @@ package org.apache.jena.sparql.expr;
 
 /** Exception for an undefined expression (including unbound variable) */
 
-public class ExprUndefException extends ExprEvalException
-{
+public class ExprUndefException extends ExprEvalException {
     public ExprUndefException() { super() ; }
     public ExprUndefException(Throwable cause) { super(cause) ; }
     public ExprUndefException(String msg) { super(msg) ; }
     public ExprUndefException(String msg, Throwable cause) { super(msg, cause) ; }
-
-    private static final long serialVersionUID = 1L; // Unused
 }

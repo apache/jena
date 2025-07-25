@@ -299,7 +299,7 @@ public class XSDFuncOp
         return NodeValue.booleanReturn(!b);
     }
 
-    /** @deprecated Renamed as {@link effectiveBooleanValueAsNodeValue}. */
+    /** @deprecated Renamed as {@link #effectiveBooleanValueAsNodeValue}. */
     @Deprecated(forRemoval = true)
     public static NodeValue booleanEffectiveValueAsNodeValue(NodeValue nv) {
         return effectiveBooleanValueAsNodeValue(nv);
@@ -312,7 +312,7 @@ public class XSDFuncOp
         return NodeValue.booleanReturn(effectiveBooleanValue(nv));
     }
 
-    /** @deprecated Renamed as {@link effectiveBooleanValue}. */
+    /** @deprecated Renamed as {@link #effectiveBooleanValue}. */
     @Deprecated(forRemoval = true)
     public static boolean booleanEffectiveValue(NodeValue nv) {
         return effectiveBooleanValue(nv);
