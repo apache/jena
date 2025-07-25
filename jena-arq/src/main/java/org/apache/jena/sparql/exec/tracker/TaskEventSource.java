@@ -42,7 +42,6 @@ public class TaskEventSource {
         return () -> listenersByType.remove(listener);
     }
 
-
     protected void advertiseStateChange(BasicTaskExec task) {
         for (TaskListener<BasicTaskExec> listener : listenersByType.values()) {
             try {

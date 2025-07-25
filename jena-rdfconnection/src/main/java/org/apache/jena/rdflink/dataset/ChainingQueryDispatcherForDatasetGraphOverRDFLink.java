@@ -58,21 +58,27 @@ public class ChainingQueryDispatcherForDatasetGraphOverRDFLink
 
     private static QueryExecBuilder newQuery(DatasetGraphOverRDFLink d, Binding binding, Context requestCxt) {
         RDFLink link = d.newLink();
-        QueryExecBuilder r = link.newQuery().context(requestCxt);
+        try {
+            QueryExecBuilder qeBuilder = link.newQuery().context(requestCxt);
 
-        if (binding != null) {
-            r.substitution(binding);
+            if (binding != null) {
+                qeBuilder.substitution(binding);
+            }
+
+            Boolean parseCheck = SparqlDispatcherRegistry.getParseCheck(requestCxt);
+            if (parseCheck != null) {
+                qeBuilder.parseCheck(parseCheck);
+            }
+
+            Timeout timeout = Timeouts.extractQueryTimeout(requestCxt);
+            applyTimeouts(qeBuilder, timeout);
+
+            return new QueryExecBuilderWrapperCloseLink(qeBuilder, link);
+        } catch (Throwable t) {
+            link.close();
+            t.addSuppressed(new RuntimeException("Failed to build query execution builder."));
+            throw t;
         }
-
-        Boolean parseCheck = SparqlDispatcherRegistry.getParseCheck(requestCxt);
-        if (parseCheck != null) {
-            r.parseCheck(parseCheck);
-        }
-
-        Timeout timeout = Timeouts.extractQueryTimeout(requestCxt);
-        applyTimeouts(r, timeout);
-
-        return new QueryExecBuilderWrapperCloseLink(r, link);
     }
 
     private static void applyTimeouts(QueryExecMod mod, Timeout t) {
@@ -98,8 +104,14 @@ public class ChainingQueryDispatcherForDatasetGraphOverRDFLink
 
         @Override
         public QueryExec build() {
-            QueryExec core = super.build();
-            return new QueryExecCloseLink(core, link);
+            try {
+                QueryExec core = super.build();
+                return new QueryExecCloseLink(core, link);
+            } catch (Throwable t) {
+                link.close();
+                t.addSuppressed(new RuntimeException("Failed to build query execution."));
+                throw t;
+            }
         }
     }
 

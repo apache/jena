@@ -36,7 +36,7 @@ public class TestRDFConnectionToDatasetGraphOverRDFLink extends AbstractTestRDFC
 
         DatasetGraph frontendDsg = new DatasetGraphOverRDFLink() {
             @Override
-            protected RDFLink newLink() {
+            public RDFLink newLink() {
                 return RDFLink.connect(backendDsg);
             }
         };

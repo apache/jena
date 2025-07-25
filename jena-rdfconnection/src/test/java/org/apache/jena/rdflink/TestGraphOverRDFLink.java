@@ -28,7 +28,6 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.RowSet;
-import org.junit.Test;
 
 /** TODO Get rid of dependency to external service. */
 public class TestGraphOverRDFLink {
@@ -36,7 +35,7 @@ public class TestGraphOverRDFLink {
     public void test() throws InterruptedException {
         DatasetGraph dsg = new DatasetGraphOverRDFLink() {
             @Override
-            protected RDFLink newLink() {
+            public RDFLink newLink() {
                 RDFLink base = RDFLinkHTTP.newBuilder()
                     // .destination("http://linkedgeodata.org/sparql")
                     .destination("http://dbpedia.org/sparql")

@@ -37,11 +37,7 @@ import org.apache.jena.sparql.ARQException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.DatasetGraphReadOnly;
-import org.apache.jena.sparql.exec.QueryExec;
-import org.apache.jena.sparql.exec.QueryExecApp;
-import org.apache.jena.sparql.exec.QueryExecBuilder;
-import org.apache.jena.sparql.exec.UpdateExec;
-import org.apache.jena.sparql.exec.UpdateExecBuilder;
+import org.apache.jena.sparql.exec.*;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.graph.GraphReadOnly;
 import org.apache.jena.system.Txn;
@@ -81,9 +77,8 @@ public class RDFLinkDataset implements RDFLink {
     @Override
     public QueryExec query(Query query) {
         checkOpen();
-        //return QueryExec.newBuilder().dataset(dataset).query(query).build();
         // Delayed.
-        return QueryExecApp.create(QueryExec.dataset(dataset).query(query),
+        return QueryExecApp.create(newQuery().query(query),
                                    dataset,
                                    query,
                                    null);

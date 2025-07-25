@@ -354,7 +354,9 @@ public interface RDFLink extends
      * @return QueryExecution
      */
     @Override
-    public QueryExec query(Query query);
+    default public QueryExec query(Query query) {
+        return newQuery().query(query).build();
+    }
 
     /**
      * Setup a SPARQL query execution.

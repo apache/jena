@@ -86,7 +86,7 @@ public class DatasetAssemblerHTTP extends DatasetAssembler
 
         DatasetGraph dsg = new DatasetGraphOverRDFLink() {
             @Override
-            protected RDFLink newLink() {
+            public RDFLink newLink() {
                 RDFLink link = RDFLinkHTTP.newBuilder()
                         .queryEndpoint(q)
                         .updateEndpoint(u)

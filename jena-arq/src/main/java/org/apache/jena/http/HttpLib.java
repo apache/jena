@@ -605,8 +605,8 @@ public class HttpLib {
      * @return HttpResponse
      */    /*package*/ static <X> CompletableFuture<HttpResponse<X>> executeAsync(HttpClient httpClient, HttpRequest httpRequest, BodyHandler<X> bodyHandler) {
         // To run with no jena-supplied authentication handling.
-//        if ( false )
-//            return executeJDK(httpClient, httpRequest, bodyHandler);
+        if ( false )
+            return executeJDKAsync(httpClient, httpRequest, bodyHandler);
         URI uri = httpRequest.uri();
         URI key = null;
 

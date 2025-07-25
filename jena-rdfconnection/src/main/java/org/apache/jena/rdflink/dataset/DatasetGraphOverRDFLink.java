@@ -80,7 +80,7 @@ public abstract class DatasetGraphOverRDFLink
     private Transactional transactional = TransactionalNull.create();
 
     /** This method must be implemented. */
-    protected abstract RDFLink newLink();
+    public abstract RDFLink newLink();
 
     public DatasetGraphOverRDFLink() {
         initContext();

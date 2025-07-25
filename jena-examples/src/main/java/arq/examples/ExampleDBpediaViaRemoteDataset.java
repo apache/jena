@@ -23,7 +23,7 @@ public class ExampleDBpediaViaRemoteDataset {
 
         DatasetGraph dsg = new DatasetGraphOverRDFLink() {
             @Override
-            protected RDFLink newLink() {
+            public RDFLink newLink() {
                 RDFLink base = RDFLinkHTTP.newBuilder()
                     .destination("http://dbpedia.org/sparql")
                     .build();
