@@ -155,8 +155,8 @@ public abstract class QueryExecWrapper
         try {
             T result = supplier.get();
             return result;
-        } catch(Exception e) {
-            onException(e);
+        } catch(Throwable e) {
+            onThrowable(e);
             e.addSuppressed(new RuntimeException("Error encountered."));
             throw e;
         }
@@ -168,6 +168,6 @@ public abstract class QueryExecWrapper
     protected void afterExec() {
     }
 
-    protected void onException(Exception e) {
+    protected void onThrowable(Throwable e) {
     }
 }
