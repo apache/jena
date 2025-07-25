@@ -210,8 +210,7 @@ public class DocumentGraphRepository implements GraphRepository {
      *
      * @return distinct {@code Stream} of {@link Graph}s
      */
-    @Override
-    public Stream<Graph> graphs() {
+    public Stream<Graph> loadedGraphs() {
         return sourceToGraph.values().stream();
     }
 
