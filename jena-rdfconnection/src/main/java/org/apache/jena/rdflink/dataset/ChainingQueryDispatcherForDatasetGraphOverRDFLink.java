@@ -30,9 +30,7 @@ import org.apache.jena.sparql.engine.dispatch.QueryDispatcher;
 import org.apache.jena.sparql.engine.dispatch.SparqlDispatcherRegistry;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.QueryExecBuilder;
-import org.apache.jena.sparql.exec.QueryExecBuilderWrapper;
 import org.apache.jena.sparql.exec.QueryExecMod;
-import org.apache.jena.sparql.exec.tracker.QueryExecWrapper;
 import org.apache.jena.sparql.util.Context;
 
 public class ChainingQueryDispatcherForDatasetGraphOverRDFLink
@@ -88,49 +86,6 @@ public class ChainingQueryDispatcherForDatasetGraphOverRDFLink
             }
             if (t.hasOverallTimeout()) {
                 mod.overallTimeout(t.overallTimeout().amount(), t.overallTimeout().unit());
-            }
-        }
-    }
-
-    private static class QueryExecBuilderWrapperCloseLink
-        extends QueryExecBuilderWrapper<QueryExecBuilder, QueryExecBuilder> {
-
-        protected RDFLink link;
-
-        public QueryExecBuilderWrapperCloseLink(QueryExecBuilder delegate, RDFLink link) {
-            super(delegate);
-            this.link = link;
-        }
-
-        @Override
-        public QueryExec build() {
-            try {
-                QueryExec core = super.build();
-                return new QueryExecCloseLink(core, link);
-            } catch (Throwable t) {
-                link.close();
-                t.addSuppressed(new RuntimeException("Failed to build query execution."));
-                throw t;
-            }
-        }
-    }
-
-    private static class QueryExecCloseLink
-        extends QueryExecWrapper
-    {
-        protected RDFLink link;
-
-        public QueryExecCloseLink(QueryExec delegate, RDFLink link) {
-            super(delegate);
-            this.link = link;
-        }
-
-        @Override
-        public void close() {
-            try {
-                super.close();
-            } finally {
-                link.close();
             }
         }
     }

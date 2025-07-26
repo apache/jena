@@ -16,14 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.rdflink.dataset;
+package org.apache.jena.sparql.engine.dispatch;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.rdflink.RDFLink;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFOps;
 import org.apache.jena.riot.system.StreamRDFWrapper;
@@ -36,10 +36,10 @@ import org.apache.jena.update.UpdateRequest;
 /**
  * {@link StreamRDF} that writes to an {@link RDFLink}.
  */
-/* package */ class StreamRDFToRDFLink implements StreamRDF {
+/* package */ class StreamRDFToUpdateRequest implements StreamRDF {
     public static final int DFT_BUFFER_SIZE = 1000;
 
-    private RDFLink link;
+    private Consumer<UpdateRequest> sink;
     private int bufferSize;
     private PrefixMapping prefixes;
     private QuadDataAcc quadAcc = new QuadDataAcc();
@@ -49,21 +49,21 @@ import org.apache.jena.update.UpdateRequest;
      *
      * @param link the link to talk to.
      */
-    public StreamRDFToRDFLink(RDFLink link) {
-        this(link, null);
+    public StreamRDFToUpdateRequest(Consumer<UpdateRequest> sink) {
+        this(sink, null);
     }
 
-    public StreamRDFToRDFLink(RDFLink link, PrefixMapping prefixes) {
-        this(link, prefixes, DFT_BUFFER_SIZE);
+    public StreamRDFToUpdateRequest(Consumer<UpdateRequest> sink, PrefixMapping prefixes) {
+        this(sink, prefixes, DFT_BUFFER_SIZE);
     }
 
-    public StreamRDFToRDFLink(RDFLink connection, PrefixMapping prefixes, int bufferSize) {
+    public StreamRDFToUpdateRequest(Consumer<UpdateRequest> sink, PrefixMapping prefixes, int bufferSize) {
         super();
         if (bufferSize < 1) {
             throw new IllegalArgumentException("Buffer size must be at least 1");
         }
 
-        this.link = Objects.requireNonNull(connection);
+        this.sink = Objects.requireNonNull(sink);
         this.prefixes = prefixes;
         this.bufferSize = bufferSize;
     }
@@ -81,13 +81,18 @@ import org.apache.jena.update.UpdateRequest;
      * Flushes the buffer to the connection.
      */
     private void flush() {
-        UpdateRequest updateRequest = new UpdateRequest(new UpdateDataInsert(quadAcc));
-        if (prefixes != null) {
-            updateRequest.setPrefixMapping(prefixes);
+        if (!quadAcc.getQuads().isEmpty()) {
+            UpdateRequest updateRequest = new UpdateRequest(new UpdateDataInsert(quadAcc));
+            if (prefixes != null) {
+                updateRequest.setPrefixMapping(prefixes);
+            }
+            try {
+                sink.accept(updateRequest);
+            } finally {
+                quadAcc.close();
+            }
+            quadAcc = new QuadDataAcc();
         }
-        quadAcc = new QuadDataAcc();
-        link.update(updateRequest);
-        quadAcc.close();
     }
 
     @Override
@@ -125,6 +130,7 @@ import org.apache.jena.update.UpdateRequest;
     @Override
     public void finish() {
         flush();
+        quadAcc.close();
     }
 
     // ----- Utils; move to StreamRDFOps? -----

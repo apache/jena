@@ -18,38 +18,30 @@
 
 package org.apache.jena.rdflink.dataset;
 
-import org.apache.jena.query.Query;
 import org.apache.jena.rdflink.RDFLink;
-import org.apache.jena.sparql.engine.dispatch.DatasetGraphOverSparql;
 import org.apache.jena.sparql.exec.QueryExec;
-import org.apache.jena.update.UpdateRequest;
+import org.apache.jena.sparql.exec.QueryExecBuilder;
+import org.apache.jena.sparql.exec.QueryExecBuilderWrapper;
 
-/**
- * DatasetGraph implementation that implements all methods
- * against an RDFLink.
- * All returned iterators are backed by a fresh RDFLink instance.
- * The iterators must be closed to free the resources.
- */
-public abstract class DatasetGraphOverRDFLink
-    extends DatasetGraphOverSparql
-{
-    /** This method must be implemented. */
-    public abstract RDFLink newLink();
+public class QueryExecBuilderWrapperCloseLink
+    extends QueryExecBuilderWrapper<QueryExecBuilder, QueryExecBuilder> {
 
-    public DatasetGraphOverRDFLink() {
-        initContext();
+    protected RDFLink link;
+
+    public QueryExecBuilderWrapperCloseLink(QueryExecBuilder delegate, RDFLink link) {
+        super(delegate);
+        this.link = link;
     }
 
     @Override
-    protected QueryExec query(Query query) {
-        RDFLink link = newLink();
-        QueryExec base = link.query(query);
-        QueryExec result = new QueryExecWrapperCloseLink(base, link);
-        return result;
-    }
-
-    @Override
-    protected void execUpdate(UpdateRequest update) {
-        new UpdateExecDeferred(this::newLink, null, null, update, null).execute();
+    public QueryExec build() {
+        try {
+            QueryExec core = super.build();
+            return new QueryExecWrapperCloseLink(core, link);
+        } catch (Throwable t) {
+            link.close();
+            t.addSuppressed(new RuntimeException("Failed to build query execution."));
+            throw t;
+        }
     }
 }

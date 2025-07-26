@@ -16,40 +16,32 @@
  * limitations under the License.
  */
 
-package org.apache.jena.rdflink.dataset;
+package org.apache.jena.sparql.core;
 
 import org.apache.jena.query.Query;
-import org.apache.jena.rdflink.RDFLink;
 import org.apache.jena.sparql.engine.dispatch.DatasetGraphOverSparql;
 import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.sparql.exec.UpdateExec;
 import org.apache.jena.update.UpdateRequest;
 
-/**
- * DatasetGraph implementation that implements all methods
- * against an RDFLink.
- * All returned iterators are backed by a fresh RDFLink instance.
- * The iterators must be closed to free the resources.
- */
-public abstract class DatasetGraphOverRDFLink
-    extends DatasetGraphOverSparql
-{
-    /** This method must be implemented. */
-    public abstract RDFLink newLink();
-
-    public DatasetGraphOverRDFLink() {
-        initContext();
-    }
+public class TestDatasetGraphOverSparql extends AbstractDatasetGraphTests {
 
     @Override
-    protected QueryExec query(Query query) {
-        RDFLink link = newLink();
-        QueryExec base = link.query(query);
-        QueryExec result = new QueryExecWrapperCloseLink(base, link);
-        return result;
-    }
+    protected DatasetGraph emptyDataset() {
+        DatasetGraph backend = DatasetGraphFactory.create();
 
-    @Override
-    protected void execUpdate(UpdateRequest update) {
-        new UpdateExecDeferred(this::newLink, null, null, update, null).execute();
+        DatasetGraph frontend = new DatasetGraphOverSparql() {
+            @Override
+            protected void execUpdate(UpdateRequest update) {
+                UpdateExec.dataset(backend).update(update).execute();
+            }
+
+            @Override
+            protected QueryExec query(Query query) {
+                return QueryExec.dataset(backend).query(query).build();
+            }
+        };
+
+        return frontend;
     }
 }
