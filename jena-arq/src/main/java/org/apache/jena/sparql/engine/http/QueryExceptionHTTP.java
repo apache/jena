@@ -49,7 +49,7 @@ public class QueryExceptionHTTP extends QueryException
             return new QueryExceptionHTTP(responseCode, responseLine, httpEx);
         } else if (httpEx.getMessage() != null) {
             // Some non-HTTP error with a valid message e.g. Socket Communications failed, IO error
-            return new QueryExceptionHTTP(responseCode, "Unexpected error making the query: " + httpEx.getMessage(), httpEx);
+            return new QueryExceptionHTTP(responseCode, "Unexpected error making the query: " + httpEx.getMessage() + ". Cause: " + httpEx.getCause(), httpEx);
         } else if (httpEx.getCause() != null) {
             // Some other error with a cause e.g. Socket Communications failed, IO error
             return new QueryExceptionHTTP(responseCode, "Unexpected error making the query, see cause for further details", httpEx);
