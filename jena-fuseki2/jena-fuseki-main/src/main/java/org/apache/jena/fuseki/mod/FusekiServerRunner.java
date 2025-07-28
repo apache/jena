@@ -29,7 +29,7 @@ public class FusekiServerRunner {
 
     /**
      * Run {@link FusekiServer} with {@link FusekiModules} as given by {@link #serverModules()}.
-     *  @deprecated Use from new location {@link org.apache.jena.fuseki.server.FusekiServerRunner#runASync}.
+     *  @deprecated Use from new location {@link org.apache.jena.fuseki.server.FusekiServerRunner#runAsync}.
      */
     @Deprecated(forRemoval = true)
     public static FusekiServer runAsync(String... args) {
@@ -46,7 +46,7 @@ public class FusekiServerRunner {
     }
 
     /**
-     * @deprecated Use from new location {@link org.apache.jena.fuseki.server.FusekiServerModules#serverModules}.
+     * @deprecated Use from new location {@link FusekiServerModules#serverModules}.
      */
     @Deprecated(forRemoval = true)
     public static FusekiModules serverModules() {
