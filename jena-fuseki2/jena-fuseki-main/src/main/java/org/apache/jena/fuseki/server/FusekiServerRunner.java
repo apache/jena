@@ -38,13 +38,13 @@ import org.apache.jena.fuseki.mod.FusekiServerModules;
  * Functions for building and runner a {@link FusekiServer} configured from command line arguments
  * and system {@link FusekiModules}.
  *
- * @see {@link FusekiMainRunner} for similar functionality except without the configuring with {@link FusekiModules}.
+ * @see FusekiMainRunner for similar functionality except without the configuring with {@link FusekiModules}.
  */
 public class FusekiServerRunner {
 
     /**
-     * Run {@link FusekiServer} with {@link FusekiModules} as given by {@link #serverModules()}.
-     * @param Command line arguments.
+     * Run {@link FusekiServer} with {@link FusekiModules} as given by {@link FusekiServerModules#serverModules()}.
+     * @param args Command line arguments.
      * @return Return the running server.
      */
     public static FusekiServer runAsync(String... args) {
@@ -63,7 +63,7 @@ public class FusekiServerRunner {
     }
 
     /**
-     * Run {@link FusekiServer} with {@link FusekiModules} as given by {@link #serverModules()}.
+     * Run {@link FusekiServer} with {@link FusekiModules} as given by {@link FusekiServerModules#serverModules()}.
      * This function does not return.
      */
     public static void run(String... args) {
@@ -72,7 +72,7 @@ public class FusekiServerRunner {
     }
 
     /**
-     * Build but do not start, a {@link FusekiServer} with {@link FusekiModules} as given by {@link #serverModules()}.
+     * Build but do not start, a {@link FusekiServer} with {@link FusekiModules} as given by {@link FusekiServerModules#serverModules()}.
      */
     public static FusekiServer construct(String... args) {
         FusekiServer.Builder builder = builder(args);
@@ -80,7 +80,7 @@ public class FusekiServerRunner {
     }
 
     /**
-     * Create a {@link FusekiServer.Builder} that has the FusekiServer with
+     * Create a {@code FusekiServer.Builder} that has the FusekiServer with
      * server modules setup and the command line args processed.
      */
     public static FusekiServer.Builder builder(String... args) {

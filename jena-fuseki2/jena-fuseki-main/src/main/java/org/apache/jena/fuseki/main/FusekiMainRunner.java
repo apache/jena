@@ -24,17 +24,18 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.main.cmds.FusekiMain;
 import org.apache.jena.fuseki.main.sys.FusekiModules;
+import org.apache.jena.fuseki.server.FusekiServerRunner;
 
 /**
  * Functions for building and runner a {@link FusekiServer} configured from command line arguments.
  *
- * @see {@link FusekiServerRunner0} for similar functionality except it is also initialized with {@link FusekiModules} as well.
+ * @see FusekiServerRunner for similar functionality except it is also initialized with {@link FusekiModules} as well.
  */
 public class FusekiMainRunner {
 
     /**
      * Run a plain {@link FusekiServer}.
-     * @param Command line arguments.
+     * @param args line arguments.
      * @return Return the running server.
      */
     public static FusekiServer runAsync(String... args) {

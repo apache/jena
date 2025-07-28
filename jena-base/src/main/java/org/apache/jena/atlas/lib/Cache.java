@@ -69,7 +69,7 @@ public interface Cache<Key, Value>
      * Get from cache; if not present, call the {@link Function}
      * to fill the cache slot. This operation should be atomic.
      * @param key The key, for which the value should be returned or calculated. The key must not be null.
-     * @param callable If the cache does not contain the key, the callable is called to calculate a value.
+     * @param function If the cache does not contain the key, the callable is called to calculate a value.
      *                 If the callable returns null, the key is not associated with hat value,
      *                 as nulls are not accepted as values.
      *                 The callable must not be null.
