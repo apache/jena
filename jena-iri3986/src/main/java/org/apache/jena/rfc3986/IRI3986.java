@@ -408,10 +408,12 @@ public class IRI3986 implements IRI {
 
     @Override
     public String path() {
+        // Assigning to a object member is atomic and even if two part/assignment
+        // overlap, they are the same value-equals string.
         if ( hasPath() && path == null )
             path = part(iriStr, path0, path1);
         if ( path == null )
-            return "";
+            path = "";
         return path;
     }
 
@@ -511,8 +513,6 @@ public class IRI3986 implements IRI {
 
     /**
      * Don't make the parts during parsing but wait until needed, if at all.
-     * Assigning to a object member is atomic and even if two part/assignment
-     * overlap, they are the same value-equals string.
      */
     private static String part(String str, int start, int finish) {
         if ( start >= 0 ) {
@@ -743,7 +743,7 @@ public class IRI3986 implements IRI {
 //        if ( strictResolver && ! this.hasScheme() )
 //            return other;
         // Be lax - don't require base to have scheme.
-        // Rel path resolves against rel path.
+        // Relative path resolves against relative path.
         /* 5.2.2. Transform References */
         IRI3986 iri = AlgResolveIRI.resolve(this, other);
         if ( iri != other )
@@ -1510,21 +1510,6 @@ public class IRI3986 implements IRI {
             if ( containsUppercase(iriStr, host0, host1) )
                 schemeReport(this, Issue.iri_host_not_lowercase, URIScheme.GENERAL, "Host name should be lowercase");
         }
-
-        // Done HTTP/HTTPS
-//        if ( hasHost() ) {
-//            String host = host();
-//            if ( containsUppercase(host) ) {
-//                schemeReport(this, Issue.iri_host_not_lowercase, URIScheme.GENERAL, "Host name includes uppercase characters: '"+host+"'");
-//            }
-//        }
-
-        // Done HTTP/HTTPS
-//        if ( hasUserInfo() ) {
-//            schemeReport(this, Issue.iri_user_info_present, URIScheme.GENERAL, "userinfo (e.g. user:password) in authority section");
-//            if ( userInfo().contains(":") )
-//                schemeReport(this, Issue.iri_user_password, scheme, "userinfo contains password in authority section");
-//        }
 
         // RFC 3986 section 2.1
         /* If two URIs differ only in the case of hexadecimal digits used in
