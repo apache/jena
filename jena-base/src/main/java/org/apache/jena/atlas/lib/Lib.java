@@ -181,6 +181,15 @@ public class Lib
         System.getProperties().setProperty(sysPropName, value);
     }
 
+    /**
+     * Remove the system property.
+     * The process environment variables are immutable.).
+     * {@link #getenv(String)} looks in the system properties as well as the process environment variables.
+     */
+    public static void unsetenv(String sysPropName) {
+        System.getProperties().remove(sysPropName);
+    }
+
     /** Test whether a property (environment variable or system property) is true. */
     public static boolean isPropertyOrEnvVarSetToTrue(String name) {
         return isPropertyOrEnvVarSetToTrue(name, name);

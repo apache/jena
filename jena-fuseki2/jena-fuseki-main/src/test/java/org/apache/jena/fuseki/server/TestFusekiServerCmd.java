@@ -25,7 +25,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -42,19 +41,14 @@ import org.apache.jena.sparql.exec.http.Params;
  */
 public class TestFusekiServerCmd {
 
-    static String basearea = "target/run";
-    static {
-        Lib.setenv("FUSEKI_BASE", basearea);
-    }
+    private static String FUSEKI_BASE = FusekiServerCtl.envFusekiBase;
+
+    private static String basearea = "target/run";
 
     private static void deleteFusekiDir() throws IOException {
         File file = new File(basearea);
         if ( file.exists() )
             FileUtils.deleteDirectory(file);
-    }
-
-    @BeforeAll static void beforeAll() throws IOException {
-        deleteFusekiDir();
     }
 
     @BeforeEach void setup() throws IOException {
@@ -68,6 +62,8 @@ public class TestFusekiServerCmd {
     static void clearUp() throws IOException {
         deleteFusekiDir();
         FusekiServerCtl.clearUpSystemState();
+        // Put back the FUSEKI_BASE setting.
+        Lib.setenv(FUSEKI_BASE, basearea);
     }
 
     @Test public void plainStart() {
@@ -80,7 +76,6 @@ public class TestFusekiServerCmd {
         // Create a persistent configuration.
 
         String dbName = "/ds93" ;
-
         FusekiServer server0 = FusekiServerRunner.construct();
         server0.start();
         addDataset(server0, dbName);
@@ -105,7 +100,7 @@ public class TestFusekiServerCmd {
         String actionDataset = serverURL+"$/datasets";
         String datasetURL = server.datasetURL(dbName);
         Params params = Params.create().add("dbName", dbName).add("dbType", "mem");
-        // Use the template form of adding a dataset.s
+        // Use the template form of adding a dataset.
         HttpOp.httpPostForm(actionDataset, params);
     }
 
