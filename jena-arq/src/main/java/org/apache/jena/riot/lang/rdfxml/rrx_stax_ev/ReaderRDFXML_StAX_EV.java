@@ -54,8 +54,6 @@ public class ReaderRDFXML_StAX_EV implements ReaderRIOT
     private static final XMLInputFactory xmlInputFactory = SysRRX.createXMLInputFactory();
     private final ParserProfile parserProfile;
 
-    public static boolean TRACE = false;
-
     public ReaderRDFXML_StAX_EV(ParserProfile parserProfile) {
         this.parserProfile = parserProfile;
     }
