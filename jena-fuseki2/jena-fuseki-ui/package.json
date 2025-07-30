@@ -53,7 +53,7 @@
     "@vue/test-utils": "^2.4.1",
     "babel-loader": "^10",
     "concurrently": "^9.0.0",
-    "cross-env": "^7.0.3",
+    "cross-env": "^10.0.0",
     "cypress": "^14.4.1",
     "cypress-vite": "^1.4.2",
     "eslint": "^8.52.0",
