@@ -384,8 +384,8 @@ public class FusekiServerCtl {
 
     /** Running a full-features server sets some global state. Clear this up. (mainly for tests.)*/
     public static void clearUpSystemState() {
-        System.getProperties().remove(FusekiServerCtl.envFusekiShiro);
-        System.getProperties().remove(FusekiServerCtl.envFusekiBase);
+        Lib.unsetenv(FusekiServerCtl.envFusekiShiro);
+        Lib.unsetenv(FusekiServerCtl.envFusekiBase);
         FusekiMain.resetCustomisers();
     }
 
