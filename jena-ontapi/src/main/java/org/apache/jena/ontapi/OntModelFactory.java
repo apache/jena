@@ -342,7 +342,7 @@ public class OntModelFactory {
                 OntModelFactory::createUnionGraph,
                 n -> createOntGraph(n, repository),
                 /*ignoreUnresolvedImports*/ true);
-        if (!ontUnionGraphRepository.contains(name)) {
+        if (!ontUnionGraphRepository.hasGraph(name)) {
             return null;
         }
         UnionGraph union = ontUnionGraphRepository.get(name);

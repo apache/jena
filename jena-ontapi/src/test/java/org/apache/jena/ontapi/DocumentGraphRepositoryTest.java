@@ -52,7 +52,7 @@ public class DocumentGraphRepositoryTest {
         Assertions.assertFalse(((UnionGraph) g1).hasSubGraph());
         Graph g2 = repository.get("builtins-owl.rdf");
         Assertions.assertSame(g1, g2);
-        Assertions.assertEquals(List.of(g1), repository.graphs().toList());
+        Assertions.assertEquals(List.of(g1), repository.loadedGraphs().toList());
 
         Graph g3 = repository.get("X");
         Assertions.assertEquals(163, g3.size());
@@ -60,7 +60,7 @@ public class DocumentGraphRepositoryTest {
         Assertions.assertFalse(((UnionGraph) g3).hasSubGraph());
         Graph g4 = repository.get("builtins-rdfs.rdf");
         Assertions.assertSame(g3, g4);
-        Assertions.assertEquals(Set.of(g1, g3), repository.graphs().collect(Collectors.toSet()));
+        Assertions.assertEquals(Set.of(g1, g3), repository.loadedGraphs().collect(Collectors.toSet()));
 
         Assertions.assertEquals(
                 List.of("X", "Y", "builtins-owl.rdf", "builtins-rdfs.rdf", "http://www.w3.org/2002/07/owl#"),

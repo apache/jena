@@ -573,6 +573,78 @@ public class OntPersonalities {
             .add(OntDisjoint.Individuals.class, OWL1ObjectFactories.DIFFERENT_INDIVIDUALS_DISJOINT)
             .add(OntDisjoint.class, OWL1ObjectFactories.ANY_DISJOINT);
 
+    public static final OntPersonality OWL2_FULL_PERSONALITY =
+            OWL2_ONT_PERSONALITY()
+                    .setBuiltins(OWL2_FULL_BUILTINS)
+                    .setReserved(OWL2_RESERVED)
+                    .setPunnings(OWL_NO_PUNNINGS)
+                    .setConfig(OntConfigs.OWL2_CONFIG)
+                    .build();
+
+    public static final OntPersonality OWL2_DL_PERSONALITY =
+            OWL2_ONT_PERSONALITY()
+                    .setBuiltins(OWL2_FULL_BUILTINS)
+                    .setReserved(OWL2_RESERVED)
+                    .setPunnings(OWL_DL2_PUNNINGS)
+                    .setConfig(OntConfigs.OWL2_CONFIG)
+                    .build();
+
+    public static final OntPersonality OWL2_EL_PERSONALITY =
+            OWL2_EL_ONT_PERSONALITY()
+                    .setBuiltins(OWL2_EL_BUILTINS)
+                    .setReserved(OWL2_RESERVED)
+                    .setPunnings(OWL_DL2_PUNNINGS)
+                    .setConfig(OntConfigs.OWL2_EL_CONFIG)
+                    .build();
+
+    public static final OntPersonality OWL2_QL_PERSONALITY =
+            OWL2_QL_ONT_PERSONALITY()
+                    .setBuiltins(OWL2_QL_BUILTINS)
+                    .setReserved(OWL2_RESERVED)
+                    .setPunnings(OWL_DL2_PUNNINGS)
+                    .setConfig(OntConfigs.OWL2_QL_CONFIG)
+                    .build();
+
+    public static final OntPersonality OWL2_RL_PERSONALITY =
+            OWL2_RL_ONT_PERSONALITY()
+                    .setBuiltins(OWL2_RL_BUILTINS)
+                    .setReserved(OWL2_RESERVED)
+                    .setPunnings(OWL_DL2_PUNNINGS)
+                    .setConfig(OntConfigs.OWL2_RL_CONFIG)
+                    .build();
+
+    public static final OntPersonality OWL1_DL_PERSONALITY =
+            OWL1_ONT_PERSONALITY()
+                    .setBuiltins(OWL1_FULL_BUILTINS)
+                    .setReserved(OWL1_RESERVED)
+                    .setPunnings(OWL_DL1_PUNNINGS)
+                    .setConfig(OntConfigs.OWL1_CONFIG)
+                    .build();
+
+    public static final OntPersonality OWL1_FULL_PERSONALITY =
+            OWL1_ONT_PERSONALITY()
+                    .setBuiltins(OWL1_FULL_BUILTINS)
+                    .setReserved(OWL1_RESERVED)
+                    .setPunnings(OWL_NO_PUNNINGS)
+                    .setConfig(OntConfigs.OWL1_CONFIG)
+                    .build();
+
+    public static final OntPersonality OWL1_LITE_PERSONALITY =
+            OWL1_LITE_ONT_PERSONALITY()
+                    .setBuiltins(OWL1_LITE_BUILTINS)
+                    .setReserved(OWL1_RESERVED)
+                    .setPunnings(OWL_DL1_PUNNINGS)
+                    .setConfig(OntConfigs.OWL1_LITE_CONFIG)
+                    .build();
+
+    public static final OntPersonality RDFS_PERSONALITY =
+            RDFS_ONT_PERSONALITY()
+                    .setBuiltins(RDFS_BUILTINS)
+                    .setReserved(RDFS_RESERVED)
+                    .setPunnings(OWL_NO_PUNNINGS)
+                    .setConfig(OntConfigs.RDFS_CONFIG)
+                    .build();
+
     /**
      * Creates (mutable) {@link OntObjectPersonalityBuilder} for RDFS Ontologies.
      *
@@ -592,8 +664,7 @@ public class OntPersonalities {
      * @return {@link OntObjectPersonalityBuilder}
      */
     public static OntObjectPersonalityBuilder OWL2_ONT_PERSONALITY() {
-        return OWL2_OBJECT_FACTORIES
-                .copy()
+        return OWL2_OBJECT_FACTORIES.copy()
                 .setBuiltins(OntPersonalities.OWL2_FULL_BUILTINS)
                 .setReserved(OntPersonalities.OWL2_RESERVED)
                 .setPunnings(OntPersonalities.OWL_NO_PUNNINGS)

@@ -18,12 +18,21 @@
 
 package org.apache.jena.ontapi.sys;
 
+import org.apache.jena.assembler.Assembler;
+import org.apache.jena.ontapi.assemblers.DocumentGraphRepositoryAssembler;
+import org.apache.jena.ontapi.assemblers.OA;
+import org.apache.jena.ontapi.assemblers.OntModelAssembler;
+import org.apache.jena.ontapi.assemblers.OntReasonerFactoryAssembler;
+import org.apache.jena.ontapi.assemblers.OntRuleSetAssembler;
+import org.apache.jena.ontapi.assemblers.OntSpecificationAssembler;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sys.JenaSubsystemLifecycle;
 
 public class InitOntAPI implements JenaSubsystemLifecycle {
 
     @Override
     public void start() {
+        Initializer.init();
     }
 
     @Override
@@ -33,5 +42,25 @@ public class InitOntAPI implements JenaSubsystemLifecycle {
     @Override
     public int level() {
         return 15;
+    }
+
+    private static class Initializer {
+        static volatile boolean initialized = false;
+
+        static void init() {
+            if (initialized)
+                return;
+            synchronized (Initializer.class) {
+                if (initialized)
+                    return;
+                initialized = true;
+                AssemblerUtils.init();
+                Assembler.general().implementWith(OA.DocumentGraphRepository, new DocumentGraphRepositoryAssembler());
+                Assembler.general().implementWith(OA.OntSpecification, new OntSpecificationAssembler());
+                Assembler.general().implementWith(OA.ReasonerFactory, new OntReasonerFactoryAssembler());
+                Assembler.general().implementWith(OA.RuleSet, new OntRuleSetAssembler());
+                Assembler.general().implementWith(OA.OntModel, new OntModelAssembler());
+            }
+        }
     }
 }
