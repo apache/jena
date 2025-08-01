@@ -72,10 +72,13 @@ public class TestRDFNodes extends AbstractModelTestBase {
 
     public void testIsResource() {
         final Model m = ModelHelper.modelWithStatements(this, "");
+        Statement stmt = ModelHelper.statement("S P O");
+        StatementTerm tripleTerm = m.createStatementTerm(stmt);
         Assert.assertEquals(true, m.createResource("eh:/foo").isResource());
         Assert.assertEquals(true, m.createResource().isResource());
         Assert.assertEquals(false, m.createTypedLiteral(17).isResource());
         Assert.assertEquals(false, m.createTypedLiteral("hello").isResource());
+        Assert.assertEquals(false, tripleTerm.isResource());
     }
 
     public void testIsURIResource() {
@@ -84,6 +87,28 @@ public class TestRDFNodes extends AbstractModelTestBase {
         Assert.assertEquals(false, m.createResource().isURIResource());
         Assert.assertEquals(false, m.createTypedLiteral(17).isURIResource());
         Assert.assertEquals(false, m.createTypedLiteral("hello").isURIResource());
+    }
+
+    public void testIsStatementTerm1() {
+        final Model m = ModelHelper.modelWithStatements(this, "");
+        Statement stmt = ModelHelper.statement("S P O");
+        StatementTerm tripleTerm = m.createStatementTerm(stmt);
+        Assert.assertEquals(false, m.createResource("eh:/foo").isStatementTerm());
+        Assert.assertEquals(false, m.createResource().isStatementTerm());
+        Assert.assertEquals(false, m.createTypedLiteral(17).isStatementTerm());
+        Assert.assertEquals(false, m.createTypedLiteral("hello").isStatementTerm());
+        Assert.assertEquals(true, tripleTerm.isStatementTerm());
+    }
+
+    public void testIsStatementTerm2() {
+        final Model m = ModelHelper.modelWithStatements(this, "");
+        Statement stmt = ModelHelper.statement("S P O");
+        StatementTerm tripleTerm = m.createStatementTerm(stmt);
+        Assert.assertEquals(false, tripleTerm.isAnon());
+        Assert.assertEquals(false, tripleTerm.isURIResource());
+        Assert.assertEquals(false, tripleTerm.isLiteral());
+        Assert.assertEquals(false, tripleTerm.isResource());
+        Assert.assertEquals(true, tripleTerm.isStatementTerm());
     }
 
     public void testLiteralAsResourceThrows() {
