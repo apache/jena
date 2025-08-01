@@ -35,33 +35,27 @@ public interface RDFNode extends FrontsNode {
     public String toString();
 
     /**
-     * Answer true iff this RDFNode is an anonymous resource. Useful for one-off
-     * tests: see also visitWith() for making literal/anon/URI choices.
+     * Answer true iff this RDFNode is an anonymous resource.
      */
     public boolean isAnon();
 
     /**
-     * Answer true iff this RDFNode is a literal resource. Useful for one-off tests:
-     * see also visitWith() for making literal/anon/URI choices.
+     * Answer true iff this RDFNode is a literal resource.
      */
     public boolean isLiteral();
 
     /**
-     * Answer true iff this RDFNode is an named resource. Useful for one-off tests:
-     * see also visitWith() for making literal/anon/URI choices.
+     * Answer true iff this RDFNode is an named resource.
      */
     public boolean isURIResource();
 
     /**
-     * Answer true iff this RDFNode is a URI resource or an anonymous resource or a
-     * statement term (ie is not a literal). Useful for one-off tests: see also
-     * visitWith() for making literal/anon/URI choices.
+     * Answer true iff this RDFNode is a URI resource or an anonymous resource.
      */
     public boolean isResource();
 
     /**
-     * Answer true iff this RDFNode is a resource representing an RDF-star triple
-     * term.
+     * Answer true iff this RDFNode is a resource representing a triple term.
      */
     public boolean isStatementTerm();
 

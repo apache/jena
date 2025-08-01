@@ -19,7 +19,7 @@
 package org.apache.jena.rdf.model;
 
 /**
- * The Jena Model abstraction of a RDF 1.2 triple term.
+ * The Jena Model abstraction of an RDF 1.2 triple term.
  */
 public interface StatementTerm extends RDFNode {
 
