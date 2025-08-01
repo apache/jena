@@ -104,7 +104,6 @@
     <!-- Testing -->
     <ver.junit4>4.13.2</ver.junit4>
     <ver.junit5>5.13.4</ver.junit5>
-    <ver.junit5-platform>1.10.2</ver.junit5-platform>
  
     <ver.mockito>5.18.0</ver.mockito>
     <ver.awaitility>4.3.0</ver.awaitility>
