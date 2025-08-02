@@ -18,7 +18,12 @@
 
 package org.apache.jena.sparql.exec.http;
 
-import static org.apache.jena.http.HttpLib.*;
+import static org.apache.jena.http.HttpLib.acceptHeader;
+import static org.apache.jena.http.HttpLib.contentTypeHeader;
+import static org.apache.jena.http.HttpLib.dft;
+import static org.apache.jena.http.HttpLib.finish;
+import static org.apache.jena.http.HttpLib.requestURL;
+import static org.apache.jena.http.HttpLib.responseHeader;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -28,7 +33,13 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.atlas.RuntimeIOException;
@@ -44,10 +55,25 @@ import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.MediaType;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.http.AsyncHttpRDF;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.http.HttpLib;
-import org.apache.jena.query.*;
-import org.apache.jena.riot.*;
+import org.apache.jena.query.ARQ;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryCancelledException;
+import org.apache.jena.query.QueryException;
+import org.apache.jena.query.QueryExecException;
+import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.QueryParseException;
+import org.apache.jena.query.QueryType;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.Syntax;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.ResultSetMgr;
+import org.apache.jena.riot.RiotException;
+import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.resultset.ResultSetReaderRegistry;
 import org.apache.jena.riot.web.HttpNames;
@@ -112,12 +138,19 @@ public class QueryExecHTTP implements QueryExec {
 
     // Received content type
     private String httpResponseContentType = null;
-    // Releasing HTTP input streams is important. We remember this for SELECT result
-    // set streaming, and will close it when the execution is closed
-    private volatile InputStream retainedConnection = null;
 
     private HttpClient httpClient = HttpEnv.getDftHttpClient();
     private Map<String, String> httpHeaders;
+
+    // ----- Cancellation -----
+
+    private volatile boolean isAborted = false;
+    private final Object abortLock = new Object();
+    private volatile CompletableFuture<HttpResponse<InputStream>> future = null;
+
+    // Releasing HTTP input streams is important. We remember this for SELECT result
+    // set streaming, and will close it when the execution is closed
+    private volatile InputStream retainedConnection = null;
 
     public QueryExecHTTP(String serviceURL, Query query, String queryString, int urlLimit,
                          HttpClient httpClient, Map<String, String> httpHeaders, Params params, Context context,
@@ -171,7 +204,7 @@ public class QueryExecHTTP implements QueryExec {
 
         HttpRequest request = effectiveHttpRequest(thisAcceptHeader);
         HttpResponse<InputStream> response = executeQuery(request);
-        InputStream in = HttpLib.getInputStream(response);
+        InputStream in = trackInputStream(response);
         // Don't assume the endpoint actually gives back the content type we asked for
         String actualContentType = responseHeader(response, HttpNames.hContentType);
 
@@ -217,7 +250,7 @@ public class QueryExecHTTP implements QueryExec {
         String thisAcceptHeader = dft(appProvidedAcceptHeader, askAcceptHeader);
         HttpRequest request = effectiveHttpRequest(thisAcceptHeader);
         HttpResponse<InputStream> response = executeQuery(request);
-        InputStream in = HttpLib.getInputStream(response);
+        InputStream in = trackInputStream(response);
 
         String actualContentType = responseHeader(response, HttpNames.hContentType);
         httpResponseContentType = actualContentType;
@@ -356,7 +389,7 @@ public class QueryExecHTTP implements QueryExec {
         String thisAcceptHeader = dft(appProvidedAcceptHeader, contentType);
         HttpRequest request = effectiveHttpRequest(thisAcceptHeader);
         HttpResponse<InputStream> response = executeQuery(request);
-        InputStream in = HttpLib.getInputStream(response);
+        InputStream in = trackInputStream(response);
 
         // Don't assume the endpoint actually gives back the content type we asked for
         String actualContentType = responseHeader(response, HttpNames.hContentType);
@@ -384,7 +417,7 @@ public class QueryExecHTTP implements QueryExec {
         String thisAcceptHeader = dft(appProvidedAcceptHeader, WebContent.contentTypeJSON);
         HttpRequest request = effectiveHttpRequest(thisAcceptHeader);
         HttpResponse<InputStream> response = executeQuery(request);
-        InputStream in = HttpLib.getInputStream(response);
+        InputStream in = trackInputStream(response);
         try {
             return JSON.parseAny(in).getAsArray();
         } finally { finish(in); }
@@ -543,9 +576,21 @@ public class QueryExecHTTP implements QueryExec {
      * Use {@link HttpLib#getInputStream} to access the body.
      */
     private HttpResponse<InputStream> executeQuery(HttpRequest request) {
-        logQuery(queryString, request);
+        if (isClosed()) {
+            throw new RuntimeException("Already closed");
+        }
+
         try {
-            HttpResponse<InputStream> response = execute(httpClient, request);
+            synchronized (abortLock) {
+                // Don't execute if already aborted.
+                if (isAborted) {
+                    throw new QueryCancelledException();
+                }
+
+                logQuery(queryString, request);
+                future = HttpLib.executeAsync(httpClient, request);
+            }
+            HttpResponse<InputStream> response = AsyncHttpRDF.getOrElseThrow(future);
             HttpLib.handleHttpStatusCode(response);
             return response;
         } catch (HttpException httpEx) {
@@ -623,22 +668,61 @@ public class QueryExecHTTP implements QueryExec {
     /**
      * Cancel query evaluation
      */
-    public void cancel() {
-        closed = true;
-    }
+//    public void cancel() {
+//        closed = true;
+//        abort();
+//    }
 
     @Override
     public void abort() {
-        try {
-            close();
-        } catch (Exception ex) {
-            Log.warn(this, "Error during abort", ex);
+        if (!isAborted) {
+            synchronized (abortLock) {
+                if (!isAborted) {
+                    isAborted = true;
+                    try {
+                        cancelAll();
+                    } catch (Exception ex) {
+                        Log.warn(this, "Error during abort", ex);
+                    }
+                }
+            }
         }
     }
 
-    @Override
-    public void close() {
-        closed = true;
+    private void cancelAll() {
+        cancelFuture();
+        closeRetainedConnection();
+    }
+
+    private InputStream trackInputStream(HttpResponse<InputStream> httpResponse) {
+        InputStream in = HttpLib.getInputStream(httpResponse);
+        trackInputStream(in);
+        return in;
+    }
+
+    private InputStream trackInputStream(InputStream in) {
+        synchronized (abortLock) {
+            if (isAborted) {
+                try {
+                    in.close();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+                throw new QueryCancelledException();
+            } else {
+                this.retainedConnection = in;
+            }
+        }
+        return in;
+    }
+
+    private void cancelFuture() {
+        if (future != null) {
+            future.cancel(true);
+        }
+    }
+
+    private void closeRetainedConnection() {
         if (retainedConnection != null) {
             try {
                 // This call may take a long time if the response has not been consumed
@@ -656,6 +740,12 @@ public class QueryExecHTTP implements QueryExec {
                 retainedConnection = null;
             }
         }
+    }
+
+    @Override
+    public void close() {
+        closed = true;
+        cancelAll();
     }
 
     @Override

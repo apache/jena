@@ -161,8 +161,10 @@ public class AsyncHttpRDF {
         } catch (CompletionException ex) {
             if ( ex.getCause() != null ) {
                 Throwable cause = ex.getCause();
-                if ( cause instanceof RuntimeException )
+                if ( cause instanceof RuntimeException ) {
+                    cause.addSuppressed(new RuntimeException("Passed through here."));
                     throw (RuntimeException)cause;
+                }
                 if ( cause instanceof IOException ) {
                     IOException iox = (IOException)cause;
                     // Rather than an HTTP exception, bad authentication becomes IOException("too many authentication attempts");
@@ -173,9 +175,11 @@ public class AsyncHttpRDF {
                     IO.exception((IOException)cause);
                 }
             }
+            ex.addSuppressed(new RuntimeException("Passed through here."));
             throw ex;
         }
     }
+
 
     /**
      * MUST consume or close the input stream
