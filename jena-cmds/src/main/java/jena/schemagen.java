@@ -76,6 +76,7 @@ import static org.apache.jena.atlas.logging.LogCtl.setLogging;
  * Designed to be highly flexible and customisable.
  * </p>
  */
+@SuppressWarnings("removal")
 public class schemagen {
 
     static { setLogging(); }
