@@ -26,13 +26,18 @@ package org.apache.jena.rdf.model.impl;
 import java.util.*;
 import java.util.function.Function;
 
-import org.apache.jena.enhanced.* ;
-import org.apache.jena.graph.* ;
-import org.apache.jena.ontology.* ;
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.enhanced.EnhNode;
+import org.apache.jena.enhanced.Implementation;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.ontology.OntModel;
+import org.apache.jena.ontology.Profile;
 import org.apache.jena.rdf.model.* ;
-import org.apache.jena.shared.* ;
-import org.apache.jena.util.iterator.* ;
-import org.apache.jena.vocabulary.* ;
+import org.apache.jena.shared.JenaException;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.util.iterator.NiceIterator;
+import org.apache.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,19 +61,25 @@ public class RDFListImpl
     /**
      * A factory for generating RDFList facets from nodes in enhanced graphs.
      */
-    @SuppressWarnings("hiding")
+    @SuppressWarnings({"hiding", "removal"})
     public static Implementation factory = new Implementation() {
+        // The machinery does not seem to do anything.
+        // Temporarily retained for reference (Jena 5.6.0)
+        private static final boolean OntListVocabulary = false;
+
         @Override public EnhNode wrap( Node n, EnhGraph eg ) {
             if (canWrap( n, eg )) {
                 RDFListImpl impl = new RDFListImpl( n, eg );
 
-                // pass on the vocabulary terms, if available
-                if (eg instanceof OntModel) {
-                    Profile prof = ((OntModel) eg).getProfile();
-                    impl.m_listFirst = prof.FIRST();
-                    impl.m_listRest = prof.REST();
-                    impl.m_listNil = prof.NIL();
-                    impl.m_listType = prof.LIST();
+                if ( false ) {
+                    // pass on the vocabulary terms, if available
+                    if (eg instanceof OntModel ontModel) {
+                        Profile prof = ontModel.getProfile();
+                        impl.m_listFirst = prof.FIRST();
+                        impl.m_listRest = prof.REST();
+                        impl.m_listNil = prof.NIL();
+                        impl.m_listType = prof.LIST();
+                    }
                 }
 
                 return impl;
@@ -86,11 +97,13 @@ public class RDFListImpl
             Resource rest = RDF.rest;
             Resource nil = RDF.nil;
 
-            if (eg instanceof OntModel) {
-                Profile prof = ((OntModel) eg).getProfile();
-                first = prof.FIRST();
-                rest = prof.REST();
-                nil = prof.NIL();
+            if ( false ) {
+                if (eg instanceof OntModel ontModel) {
+                    Profile prof = ontModel.getProfile();
+                    first = prof.FIRST();
+                    rest = prof.REST();
+                    nil = prof.NIL();
+                }
             }
 
             // node will support being an RDFList facet if it has rdf:type rdf:List, is nil, or is in the domain of a list property
