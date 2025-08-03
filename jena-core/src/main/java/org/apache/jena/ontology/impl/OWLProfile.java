@@ -73,6 +73,7 @@ import java.util.Set;
  * Ontology language profile implementation for the Full variant of the OWL 2002/07 language.
  * </p>
  */
+@SuppressWarnings("removal")
 public class OWLProfile
     extends AbstractProfile
 {

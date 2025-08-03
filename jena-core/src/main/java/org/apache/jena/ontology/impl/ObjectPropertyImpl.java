@@ -39,6 +39,7 @@ import org.apache.jena.util.iterator.WrappedIterator ;
  * Implementation of the object property abstraction
  * </p>
  */
+@SuppressWarnings("removal")
 public class ObjectPropertyImpl
     extends OntPropertyImpl
     implements ObjectProperty

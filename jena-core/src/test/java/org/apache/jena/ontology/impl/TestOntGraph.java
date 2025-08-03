@@ -32,11 +32,12 @@ public class TestOntGraph extends AbstractTestGraph
     {
     public TestOntGraph( String name )
         { super( name ); }
-        
+
     public static TestSuite suite()
         { return new TestSuite( TestOntGraph.class ); }
 
     @Override
+    @SuppressWarnings("removal")
     public Graph getNewGraph()
         { return ModelFactory.createOntologyModel().getGraph(); }
     }

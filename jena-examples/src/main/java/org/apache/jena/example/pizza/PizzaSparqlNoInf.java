@@ -37,9 +37,7 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDFS;
 
-/**
- * <p>TODO class comment</p>
- */
+@SuppressWarnings("removal")
 public class PizzaSparqlNoInf extends Base
 {
     /***********************************/

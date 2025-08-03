@@ -69,6 +69,7 @@ import java.util.Map;
  * abstractions' unit tests.
  * </p>
  */
+@SuppressWarnings("removal")
 public class TestOntModel
     extends ModelTestBase
 {

@@ -35,6 +35,7 @@ import org.apache.jena.ontology.* ;
  * Implementation of the transitive property abstraction
  * </p>
  */
+@SuppressWarnings("removal")
 public class TransitivePropertyImpl
     extends ObjectPropertyImpl
     implements TransitiveProperty

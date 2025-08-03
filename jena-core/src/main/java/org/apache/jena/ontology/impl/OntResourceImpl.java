@@ -91,6 +91,7 @@ import java.util.function.Predicate;
  * resources.
  * </p>
  */
+@SuppressWarnings("removal")
 public class OntResourceImpl
     extends ResourceImpl
     implements OntResource

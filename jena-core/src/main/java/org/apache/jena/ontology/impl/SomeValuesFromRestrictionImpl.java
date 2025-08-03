@@ -35,6 +35,7 @@ import org.apache.jena.rdf.model.Resource ;
  * Implementation of the someValuesFrom restriction abstraction.
  * </p>
  */
+@SuppressWarnings("removal")
 public class SomeValuesFromRestrictionImpl
     extends RestrictionImpl
     implements SomeValuesFromRestriction
