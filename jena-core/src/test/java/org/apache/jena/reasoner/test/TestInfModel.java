@@ -28,29 +28,30 @@ import org.apache.jena.util.PrintUtil ;
 import org.apache.jena.vocabulary.RDFS ;
 
 /**
- * Test machinery in InfModel which is not associated with any 
+ * Test machinery in InfModel which is not associated with any
  * particular reasoner.
  */
 
 public class TestInfModel extends TestCase {
     /**
      * Boilerplate for junit
-     */ 
+     */
     public TestInfModel( String name ) {
-        super( name ); 
+        super( name );
     }
-    
+
     /**
      * Boilerplate for junit.
      * This is its own test suite
      */
     public static TestSuite suite() {
         return new TestSuite(TestInfModel.class);
-    }  
+    }
 
     /**
      * Check interface extensions which had an earlier bug with null handling
      */
+    @SuppressWarnings("removal")
     public void testListWithPosits() {
         String NS = PrintUtil.egNS;
         Model data = ModelFactory.createDefaultModel();
@@ -67,7 +68,7 @@ public class TestInfModel extends TestCase {
                     data.createStatement(c1, RDFS.subClassOf, c3),
                     data.createStatement(c1, RDFS.subClassOf, c1)
                 });
-        
+
         OntModel om = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM_RDFS_INF, data);
         TestUtil.assertIteratorValues(this, om.listStatements(c1, RDFS.subClassOf, null, premise),
                 new Object[] {
