@@ -26,19 +26,20 @@ import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.vocabulary.* ;
 
 /**
-    Test that restriction inference works even when the restriction isn't given an 
+    Test that restriction inference works even when the restriction isn't given an
     explicit type (ie we're not caught in a forward rule -> backward rule
     layering problem).
 */
+@SuppressWarnings("removal")
 public class TestRestrictionsDontNeedTyping extends ModelTestBase
     {
-    
+
     public static TestSuite suite() {
-        return new TestSuite( TestRestrictionsDontNeedTyping.class ); 
-    } 
-    
+        return new TestSuite( TestRestrictionsDontNeedTyping.class );
+    }
+
     static final Property ANY = null;
-    
+
     public TestRestrictionsDontNeedTyping( String name )
         { super( name ); }
 
@@ -51,7 +52,7 @@ public class TestRestrictionsDontNeedTyping extends ModelTestBase
     public void testAllValuesFromMicroRules()
         {
         /* micro doesn't support this anyway */
-        // testAllValuesFrom( OntModelSpec.OWL_MEM_MICRO_RULE_INF ); 
+        // testAllValuesFrom( OntModelSpec.OWL_MEM_MICRO_RULE_INF );
         }
 
     private void testAllValuesFrom( OntModelSpec owlSpec )
@@ -60,7 +61,7 @@ public class TestRestrictionsDontNeedTyping extends ModelTestBase
         OntModel ont = ModelFactory.createOntologyModel( owlSpec, m );
         assertTrue( ont.contains( resource( "t" ), RDF.type, resource( "T" ) ) );
         }
-    
+
     public void testSomeValuesFromMiniRules()
         { testSomeValuesFrom( OntModelSpec.OWL_MEM_MINI_RULE_INF ); }
 
@@ -76,13 +77,13 @@ public class TestRestrictionsDontNeedTyping extends ModelTestBase
         OntModel ont = ModelFactory.createOntologyModel( owlSpec, m );
         assertTrue( ont.contains( resource( "X" ), RDF.type, resource( "V" ) ) );
         }
-    
+
     public void testCardinalityFullRules()
         { testCardinality( OntModelSpec.OWL_MEM_RULE_INF ); }
-    
+
 //    public void testCardinalityMiniRules()
 //        { testCardinality( OntModelSpec.OWL_MEM_MINI_RULE_INF ); }
-//    
+//
 //    public void testCardinalityMicroRules()
 //        { testCardinality( OntModelSpec.OWL_MEM_MICRO_RULE_INF ); }
 
@@ -92,9 +93,9 @@ public class TestRestrictionsDontNeedTyping extends ModelTestBase
         OntModel ont = ModelFactory.createOntologyModel( owlSpec, m );
         assertEquals( 1, ont.listStatements( resource( "X" ), property( "P" ), ANY ).toList().size() );
         }
-    
+
     Model model( String statements )
-        { 
+        {
         Model result = ModelFactory.createDefaultModel();
         result.setNsPrefixes( PrefixMapping.Extended );
         return modelAdd( result, statements );
