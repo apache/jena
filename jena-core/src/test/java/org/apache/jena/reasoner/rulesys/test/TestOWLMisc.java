@@ -49,6 +49,7 @@ import java.util.Iterator;
  * Misc. tests of the OWL rule engine configurations which
  * have arisen from bug reports or user questions.
  */
+@SuppressWarnings("removal")
 public class TestOWLMisc extends TestCase  {
 
     /**

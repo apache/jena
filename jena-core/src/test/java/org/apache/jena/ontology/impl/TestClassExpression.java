@@ -37,6 +37,7 @@ import org.apache.jena.vocabulary.* ;
  * Unit tests for OntClass and other class expressions.
  * </p>
  */
+@SuppressWarnings("removal")
 public class TestClassExpression
     extends OntTestBase
 {

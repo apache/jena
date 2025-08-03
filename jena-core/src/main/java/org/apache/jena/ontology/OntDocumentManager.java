@@ -59,7 +59,7 @@ import org.slf4j.LoggerFactory ;
  * dm.setFileManager( FileManager.get() );
  * </pre>
  */
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"deprecation", "removal"})
 public class OntDocumentManager
 {
     // @SuppressWarnings - FileManager model caching.

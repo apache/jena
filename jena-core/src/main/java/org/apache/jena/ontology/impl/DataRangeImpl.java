@@ -66,6 +66,7 @@ public class DataRangeImpl
         }
 
         @Override
+        @SuppressWarnings("removal")
         public boolean canWrap( Node node, EnhGraph eg ) {
             // node will support being an DataRange facet if it has rdf:type owl:Datarange and is a bNode
             Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;

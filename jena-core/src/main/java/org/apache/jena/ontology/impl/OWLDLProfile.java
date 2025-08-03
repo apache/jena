@@ -104,6 +104,7 @@ public class OWLDLProfile
     // Internal implementation methods
     //////////////////////////////////
 
+    @SuppressWarnings("removal")
     protected static Object[][] s_supportsCheckData = new Object[][] {
             // Resource (key),              check method
             {  AllDifferent.class,          new SupportsCheck() {
@@ -278,7 +279,7 @@ public class OWLDLProfile
             {  Individual.class,    new SupportsCheck() {
                 @Override
                 public boolean doCheck( Node n, EnhGraph g ) {
-                    if ( n.isURI() || n.isBlank() ) { 
+                    if ( n.isURI() || n.isBlank() ) {
                         return !hasType( n, g, new Resource[] {RDFS.Class, RDF.Property, OWL.Class,
                                                                OWL.ObjectProperty, OWL.DatatypeProperty, OWL.TransitiveProperty,
                                                                OWL.FunctionalProperty, OWL.InverseFunctionalProperty} );

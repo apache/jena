@@ -66,6 +66,7 @@ public class MaxCardinalityQRestrictionImpl
     };
 
 
+    @SuppressWarnings("removal")
     public static boolean isMaxCardinalityQRestriction( Node node, EnhGraph eg )
         {
         // node will support being a QualifiedRestriction facet if it has rdf:type owl:Restriction or equivalent

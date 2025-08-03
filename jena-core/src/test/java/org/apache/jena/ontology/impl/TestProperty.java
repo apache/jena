@@ -40,6 +40,7 @@ import org.apache.jena.vocabulary.RDF ;
  * Unit test cases for the OntProperty class
  * </p>
  */
+@SuppressWarnings("removal")
 public class TestProperty
     extends OntTestBase
 {

@@ -35,6 +35,7 @@ import org.apache.jena.reasoner.test.TestUtil ;
  * Unit-tests for frame-like views of OWL and RDFS-classes, especially listDeclaredProperties
  * </p>
  */
+@SuppressWarnings("removal")
 public class TestFrameView
     extends TestCase
 {
@@ -165,9 +166,9 @@ public class TestFrameView
         System.gc();
         System.gc();
         Runtime r = Runtime.getRuntime();
-        System.out.println( getName() + 
-                            " memory = " + r.freeMemory() + 
-                            ", alloc = " + r.totalMemory() + 
+        System.out.println( getName() +
+                            " memory = " + r.freeMemory() +
+                            ", alloc = " + r.totalMemory() +
                             ", % = " + Math.round( 100.0 * (double) r.freeMemory() / (double) r.totalMemory() ));
         */
         mInf.close();
@@ -175,7 +176,7 @@ public class TestFrameView
         mNoInf.close();
         mNoInf = null;
     }
-    
+
     // OntClass.listDeclaredProperties() tests ...
 
     public void testLDP_noinfA_nodirect() {

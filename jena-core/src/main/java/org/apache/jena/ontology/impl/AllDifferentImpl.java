@@ -65,6 +65,7 @@ public class AllDifferentImpl
         }
 
         @Override
+        @SuppressWarnings("removal")
         public boolean canWrap( Node node, EnhGraph eg ) {
             // node will support being an AllDifferent facet if it has rdf:type owl:AllDifferent or equivalent
             Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;

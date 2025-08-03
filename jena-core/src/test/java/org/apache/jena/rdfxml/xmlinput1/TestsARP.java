@@ -106,7 +106,6 @@ public class TestsARP extends TestCase implements RDFErrorHandler, ARPErrorNumbe
 
 	public void testWineDefaultNS() throws IOException {
 		testWineNS(createMemModel());
-		testWineNS(ModelFactory.createOntologyModel());
 	}
 
     private void testWineNS(Model m) throws FileNotFoundException, IOException {
