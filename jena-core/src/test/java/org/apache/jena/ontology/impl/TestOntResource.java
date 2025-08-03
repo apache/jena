@@ -38,7 +38,8 @@ import org.apache.jena.vocabulary.RDF ;
  * Unit test cases for ontology resources
  * </p>
  */
-public class TestResource extends OntTestBase
+@SuppressWarnings("removal")
+public class TestOntResource extends OntTestBase
 {
     // Constants
     //////////////////////////////////
@@ -54,10 +55,10 @@ public class TestResource extends OntTestBase
     //////////////////////////////////
 
     static public TestSuite suite() {
-        return new TestResource( "TestResource" );
+        return new TestOntResource( "TestResource" );
     }
 
-    public TestResource( String name ) {
+    public TestOntResource( String name ) {
         super( name );
     }
 

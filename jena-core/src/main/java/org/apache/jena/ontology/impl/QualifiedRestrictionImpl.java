@@ -66,6 +66,7 @@ public class QualifiedRestrictionImpl
             { return isValidQualifiedRestriction( node, eg ); }
     };
 
+    @SuppressWarnings("removal")
     private static boolean isValidQualifiedRestriction( Node node, EnhGraph eg )
         {
         // node will support being a QualifiedRestriction facet if it has rdf:type owl:Restriction or equivalent

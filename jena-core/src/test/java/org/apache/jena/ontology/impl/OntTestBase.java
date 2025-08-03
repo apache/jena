@@ -36,6 +36,7 @@ import org.apache.jena.reasoner.test.TestUtil ;
  * Generic test case for ontology unit testing
  * </p>
  */
+@SuppressWarnings("removal")
 public abstract class OntTestBase
     extends TestSuite
 {

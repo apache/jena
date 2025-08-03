@@ -21,6 +21,7 @@ package org.apache.jena.assembler.test;
 import org.apache.jena.ontology.* ;
 import org.apache.jena.rdf.model.* ;
 
+@SuppressWarnings("removal")
 public class TestOntModelAcceptance extends AssemblerTestBase
     {
     public TestOntModelAcceptance( String name )
