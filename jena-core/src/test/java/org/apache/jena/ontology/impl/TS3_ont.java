@@ -25,14 +25,14 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     TestOntGraph.class,
-    TestResource.class,
+    TestOntResource.class,
     TestAxioms.class,
     TestClassExpression.class,
     TestOntDocumentManager.class,
     TestOntology.class,
     TestProperty.class,
     TestListSyntaxCategories.class,
-    TestCreate.class,
+    TestCreateInOntModel.class,
     TestIndividual.class,
     TestAllDifferent.class,
     TestOntModelSpec.class,

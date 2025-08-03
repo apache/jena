@@ -35,6 +35,7 @@ import org.apache.jena.ontology.* ;
  * Implementation of the symmetric property abstraction
  * </p>
  */
+@SuppressWarnings("removal")
 public class SymmetricPropertyImpl
     extends ObjectPropertyImpl
     implements SymmetricProperty

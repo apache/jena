@@ -53,6 +53,7 @@ public interface OntResource
      * answer null.</p>
      * @return The ont model that this resource is attached to, or null.
      */
+    @SuppressWarnings("removal")
     public OntModel getOntModel();
 
     /**

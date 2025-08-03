@@ -69,6 +69,7 @@ import java.util.Set;
  * Implementation of the ontology abstraction representing ontology classes.
  * </p>
  */
+@SuppressWarnings("removal")
 public class OntClassImpl
     extends OntResourceImpl
     implements OntClass

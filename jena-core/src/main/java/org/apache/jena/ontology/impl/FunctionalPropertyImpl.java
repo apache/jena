@@ -63,6 +63,7 @@ public class FunctionalPropertyImpl
         }
 
         @Override
+        @SuppressWarnings("removal")
         public boolean canWrap( Node node, EnhGraph eg ) {
             // node will support being an FunctionalProperty facet if it has rdf:type owl:FunctionalProperty or equivalent
             Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;

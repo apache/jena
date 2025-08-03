@@ -46,6 +46,7 @@ import java.util.Iterator;
  * Unit tests for ontology individuals
  * </p>
  */
+@SuppressWarnings("removal")
 public class TestIndividual
     extends OntTestBase
 {

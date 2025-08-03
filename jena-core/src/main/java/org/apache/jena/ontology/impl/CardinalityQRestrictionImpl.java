@@ -65,6 +65,7 @@ public class CardinalityQRestrictionImpl
             { return isCardinalityQRestriction( node, eg ); }
     };
 
+    @SuppressWarnings("removal")
     public static boolean isCardinalityQRestriction( Node node, EnhGraph eg ) {
         // node will support being a QualifiedRestriction facet if it has rdf:type owl:Restriction or equivalent
         Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;

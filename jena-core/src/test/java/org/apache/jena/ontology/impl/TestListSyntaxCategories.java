@@ -20,7 +20,6 @@
 ///////////////
 package org.apache.jena.ontology.impl;
 
-
 // Imports
 ///////////////
 
@@ -55,13 +54,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-
-
 /**
  * <p>
  * Unit tests for listXXX methods on ontmodel
  * </p>
  */
+@SuppressWarnings("removal")
 public class TestListSyntaxCategories
     extends TestCase
 {

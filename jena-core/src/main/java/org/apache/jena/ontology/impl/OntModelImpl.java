@@ -64,6 +64,7 @@ import org.slf4j.LoggerFactory ;
  * and similar languages.
  * </p>
  */
+@SuppressWarnings("removal")
 public class OntModelImpl extends ModelCom implements OntModel
 {
     // Constants

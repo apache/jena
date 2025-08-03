@@ -27,12 +27,13 @@ import org.apache.jena.assembler.assemblers.* ;
 import org.apache.jena.ontology.* ;
 import org.apache.jena.rdf.model.* ;
 
+@SuppressWarnings("removal")
 public class TestOntModelAssembler extends AssemblerTestBase
     {
     public TestOntModelAssembler( String name )
         { super( name ); }
 
-    public static TestSuite suite() 
+    public static TestSuite suite()
         {
         TestSuite result = new TestSuite();
         result.addTestSuite( TestOntModelAssembler.class );
@@ -45,8 +46,8 @@ public class TestOntModelAssembler extends AssemblerTestBase
 
     public void testOntModelAssemblerType()
         { testDemandsMinimalType( new OntModelAssembler(), JA.OntModel );  }
-    
-    protected static void addParameterisedTests( TestSuite result ) 
+
+    protected static void addParameterisedTests( TestSuite result )
         {
         Field [] fields = OntModelSpec.class.getFields();
             for ( Field f : fields )
@@ -64,20 +65,20 @@ public class TestOntModelAssembler extends AssemblerTestBase
                     }
                 }
             }
-        }    
-    
+        }
+
     protected static Test createTest( final OntModelSpec spec, final String name )
         {
         return new TestOntModelAssembler( name )
             {
             @Override
             public void runBare()
-                { 
+                {
                 Assembler a = new OntModelAssembler();
                 Model m = (Model) a.open( new FixedObjectAssembler( spec ), resourceInModel( "x rdf:type ja:OntModel; x ja:ontModelSpec ja:" + name ) );
                 assertInstanceOf( OntModel.class, m );
                 OntModel om = (OntModel) m;
-                assertSame( spec, om.getSpecification() ); 
+                assertSame( spec, om.getSpecification() );
                 }
             };
         }
@@ -90,7 +91,7 @@ public class TestOntModelAssembler extends AssemblerTestBase
         OntModel om = (OntModel) m;
         assertSame( OntModelSpec.OWL_MEM_RDFS_INF, om.getSpecification() );
         }
-    
+
     public void testBaseModel()
         {
         final Model baseModel = model( "a P b" );
@@ -99,9 +100,9 @@ public class TestOntModelAssembler extends AssemblerTestBase
             {
             @Override
             protected Model openEmptyModel( Assembler a, Resource root, Mode irrelevant )
-                { 
+                {
                 assertEquals( resource( "y" ), root );
-                return baseModel;  
+                return baseModel;
                 }
             };
         Object m = a.open( aa, resourceInModel( "x rdf:type ja:OntModel; x ja:baseModel y" ) );
@@ -109,7 +110,7 @@ public class TestOntModelAssembler extends AssemblerTestBase
         OntModel om = (OntModel) m;
         assertSame( baseModel.getGraph(), om.getBaseModel().getGraph() );
         }
-    
+
     public void testSubModels()
         {
         final Model baseModel = model( "a P b" );
@@ -118,9 +119,9 @@ public class TestOntModelAssembler extends AssemblerTestBase
             {
             @Override
             protected Model openEmptyModel( Assembler a, Resource root, Mode irrelevant )
-                { 
+                {
                 assertEquals( resource( "y" ), root );
-                return baseModel;  
+                return baseModel;
                 }
             };
         Object m = a.open( aa, resourceInModel( "x rdf:type ja:OntModel; x ja:subModel y" ) );
@@ -130,7 +131,7 @@ public class TestOntModelAssembler extends AssemblerTestBase
         assertEquals( 1, subModels.size() );
         assertSame( baseModel.getGraph(), subModels.get( 0 ).getBaseModel().getGraph() );
         }
-    
+
     public void testDefaultDocumentManager()
         {
         Assembler a = new OntModelAssembler();
@@ -138,7 +139,7 @@ public class TestOntModelAssembler extends AssemblerTestBase
         OntModel om = (OntModel) a.openModel( root );
         assertSame( OntDocumentManager.getInstance(), om.getDocumentManager() );
         }
-    
+
     public void testUsesOntModelSpec()
         {
         Assembler a = new OntModelAssembler();

@@ -62,6 +62,7 @@ public class AnnotationPropertyImpl
         }
 
         @Override
+        @SuppressWarnings("removal")
         public boolean canWrap( Node node, EnhGraph eg ) {
             // node will support being an AnnotationProperty facet if it has rdf:type owl:AnnotationProperty or equivalent
             Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;

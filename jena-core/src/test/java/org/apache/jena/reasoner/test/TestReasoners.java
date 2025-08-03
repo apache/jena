@@ -59,8 +59,8 @@ import junit.framework.TestSuite;
 /**
  * Test cases for transitive reasoner (includes some early RDFS reasoner checks)
  */
+@SuppressWarnings("removal")
 public class TestReasoners extends TestCase {
-
     /**
      * Boilerplate for junit
      */

@@ -43,6 +43,7 @@ import org.apache.jena.shared.JenaException ;
  * <a href="http://tech.groups.yahoo.com/group/jena-dev">Jena support email list</a>.
  * </p>
  */
+@SuppressWarnings("removal")
 public class OntTools
 {
     // Constants

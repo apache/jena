@@ -66,7 +66,8 @@ import org.apache.jena.vocabulary.OWL;
  * Unit test cases for creating values in ontology models
  * </p>
  */
-public class TestCreate
+@SuppressWarnings("removal")
+public class TestCreateInOntModel
     extends TestCase
 {
     // Constants
@@ -398,7 +399,7 @@ public class TestCreate
     // Constructors
     //////////////////////////////////
 
-    public TestCreate( String name ) {
+    public TestCreateInOntModel( String name ) {
         super( name );
     }
 

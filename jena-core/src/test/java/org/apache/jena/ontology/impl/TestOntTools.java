@@ -44,6 +44,7 @@ import java.util.function.Predicate;
  * Unit tests for experimental ontology tools class.
  * </p>
  */
+@SuppressWarnings("removal")
 public class TestOntTools
     extends TestCase
 {

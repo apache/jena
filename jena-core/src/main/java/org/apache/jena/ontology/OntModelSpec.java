@@ -49,7 +49,9 @@ import java.util.Objects;
  * Encapsulates a description of the components of an ontology model, including the
  * storage scheme, reasoner and language profile.
  * </p>
+ * @deprecated Use org.apache.jena.ontapi.
  */
+@Deprecated(forRemoval = true)
 public class OntModelSpec {
     // Constants
     //////////////////////////////////

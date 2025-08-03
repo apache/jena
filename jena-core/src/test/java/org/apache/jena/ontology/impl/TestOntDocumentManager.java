@@ -62,6 +62,7 @@ import java.util.Set;
  * Unit tests for document manager
  * </p>
  */
+@SuppressWarnings("removal")
 public class TestOntDocumentManager
     extends TestCase
 {

@@ -31,7 +31,7 @@ import org.apache.jena.vocabulary.ReasonerVocabulary;
  * Factory class for creating blank instances of the OWL Reasoner.
  * <p>
  * The reasoner can be configured using three properties (set as
- * properties of the base reasonder URI in a configuration model). These are:
+ * properties of the base reasoner URI in a configuration model). These are:
  * <ul>
  * <li><b>derivationLogging</b> - if set to true this causes all derivations to
  * be recorded in an internal data structure for replay through the {@link org.apache.jena.reasoner.InfGraph#getDerivation getDerivation}
@@ -41,26 +41,26 @@ import org.apache.jena.vocabulary.ReasonerVocabulary;
  * </ul>
  */
 public class OWLFBRuleReasonerFactory implements ReasonerFactory {
-    
+
     /** Single global instance of this factory */
     private static ReasonerFactory theInstance = new OWLFBRuleReasonerFactory();
-    
+
     /** Static URI for this reasoner type */
     public static final String URI = "http://jena.hpl.hp.com/2003/OWLFBRuleReasoner";
-    
+
     /** Cache of the capabilities description */
     protected Model capabilities;
-    
+
     /**
      * Return the single global instance of this factory
      */
     public static ReasonerFactory theInstance() {
         return theInstance;
     }
-    
+
     /**
      * Constructor method that builds an instance of the associated Reasoner
-     * @param configuration a set of arbitrary configuration information to be 
+     * @param configuration a set of arbitrary configuration information to be
      * passed the reasoner encoded within an RDF graph
      */
     @Override
@@ -78,7 +78,7 @@ public class OWLFBRuleReasonerFactory implements ReasonerFactory {
         }
         return reasoner;
     }
-   
+
     /**
      * Return a description of the capabilities of this reasoner encoded in
      * RDF. This method is normally called by the ReasonerRegistry which caches
@@ -117,12 +117,12 @@ public class OWLFBRuleReasonerFactory implements ReasonerFactory {
                 .addProperty(ReasonerVocabulary.supportsP, OWL.sameAs )
                 .addProperty(ReasonerVocabulary.supportsP, OWL.differentFrom )
                 .addProperty(ReasonerVocabulary.supportsP, OWL.disjointWith )
-                
+
                 .addProperty(ReasonerVocabulary.versionP, "0.1");
         }
         return capabilities;
     }
-    
+
     /**
      * Return the URI labelling this type of reasoner
      */
@@ -130,5 +130,5 @@ public class OWLFBRuleReasonerFactory implements ReasonerFactory {
     public String getURI() {
         return URI;
     }
-    
+
 }

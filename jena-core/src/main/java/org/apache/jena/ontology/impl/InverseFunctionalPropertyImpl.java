@@ -63,6 +63,7 @@ public class InverseFunctionalPropertyImpl
         }
 
         @Override
+        @SuppressWarnings("removal")
         public boolean canWrap( Node node, EnhGraph eg ) {
             // node will support being an InverseFunctionalProperty facet if it has rdf:type owl:InverseFunctionalProperty or equivalent
             Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;

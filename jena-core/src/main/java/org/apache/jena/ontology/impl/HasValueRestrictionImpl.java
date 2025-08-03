@@ -24,10 +24,13 @@ package org.apache.jena.ontology.impl;
 
 // Imports
 ///////////////
-import org.apache.jena.enhanced.* ;
-import org.apache.jena.graph.* ;
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.enhanced.EnhNode;
+import org.apache.jena.enhanced.Implementation;
+import org.apache.jena.graph.Node;
 import org.apache.jena.ontology.* ;
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.RDFNode;
 
 
 /**
@@ -63,6 +66,7 @@ public class HasValueRestrictionImpl
         }
 
         @Override
+        @SuppressWarnings("removal")
         public boolean canWrap( Node node, EnhGraph eg ) {
             // node will support being a HasValueRestriction facet if it has rdf:type owl:Restriction or equivalent
             // and the combination of owl:onProperty and owl:hasValue (or equivalents)
