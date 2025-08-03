@@ -36,6 +36,7 @@ import org.apache.jena.shared.NotFoundException ;
     unless the root is ja:SPOO for some constant SPOO of OntModelSpec,
     in which case the defaults are taken from there.
 */
+@Deprecated(forRemoval=true)
 public class OntModelSpecAssembler extends AssemblerBase implements Assembler
 {
     @Override
@@ -53,7 +54,7 @@ public class OntModelSpecAssembler extends AssemblerBase implements Assembler
         if (source != null) spec.setImportModelGetter( source );
         return spec;
         }
-    
+
     private ModelGetter getModelSource( Assembler a, Resource root )
         {
         Resource source = getUniqueResource( root, JA.importSource );
@@ -74,7 +75,7 @@ public class OntModelSpecAssembler extends AssemblerBase implements Assembler
         if (ru != null) return ReasonerFactoryAssembler.getReasonerFactoryByURL( root, ru );
         return rf == null ? null : (ReasonerFactory) a.open( rf );
         }
-    
+
     private OntDocumentManager getDocumentManager( Assembler a, Resource root )
         {
         Resource dm = getUniqueResource( root, JA.documentManager );
@@ -101,7 +102,7 @@ public class OntModelSpecAssembler extends AssemblerBase implements Assembler
             return like == null ? DEFAULT : getRequiredOntModelSpecField( like.getLocalName() );
             }
         }
-    
+
     private OntModelSpec getRequiredOntModelSpecField( String name )
         {
         OntModelSpec result = getOntModelSpecField( name );
@@ -115,15 +116,15 @@ public class OntModelSpecAssembler extends AssemblerBase implements Assembler
     */
     public static OntModelSpec getOntModelSpecField( String name )
         {
-        try 
-            { 
+        try
+            {
             Class<OntModelSpec> omc = OntModelSpec.class;
-            Field f = omc.getField( name ); 
+            Field f = omc.getField( name );
             int mods = f.getModifiers();
-            if (f.getType() == omc && isConstant( mods )) 
-                return (OntModelSpec) f.get( null );            
+            if (f.getType() == omc && isConstant( mods ))
+                return (OntModelSpec) f.get( null );
             }
-        catch (Exception e) 
+        catch (Exception e)
             {}
         return null;
         }

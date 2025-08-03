@@ -86,6 +86,7 @@ import java.util.Set;
 /**
  * Unit tests for reported bugs in the rule system.
  */
+@SuppressWarnings("removal")
 public class TestRuleSystemBugs extends TestCase {
 
     /**

@@ -77,6 +77,8 @@ public interface Assembler {
 
     public static final Assembler infModel = ConstAssembler.infModel();
 
+    /** @deprecated Use org.apache.hena.ontapi */
+    @Deprecated(forRemoval=true)
     public static final Assembler ontModel = ConstAssembler.ontModel();
 
     public static final Assembler reasonerFactory = ConstAssembler.reasonerFactory();
@@ -87,6 +89,8 @@ public interface Assembler {
 
     public static final Assembler unionModel = ConstAssembler.unionModel();
 
+    /** @deprecated Use org.apache.hena.ontapi */
+    @Deprecated(forRemoval=true)
     public static final Assembler ontModelSpec = ConstAssembler.ontModelSpec();
 
     public static final Assembler ruleSet = ConstAssembler.ruleSet();
