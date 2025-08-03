@@ -24,6 +24,7 @@ import java.lang.management.ThreadMXBean ;
 import java.util.concurrent.ExecutorService ;
 import java.util.concurrent.Executors ;
 
+import org.apache.jena.atlas.lib.Creator;
 import org.apache.jena.ontology.OntClass ;
 import org.apache.jena.ontology.OntModel ;
 import org.apache.jena.ontology.OntModelSpec ;
@@ -40,7 +41,7 @@ import junit.framework.TestSuite ;
 
 /**
  * Test for deadlock and concurrency problems in rule engines.
- * 
+ *
  * <p>Test inspired by suggestions from Timm Linder</p>
  */
 public class ConcurrencyTest  extends TestCase {
@@ -48,52 +49,50 @@ public class ConcurrencyTest  extends TestCase {
     // For routine jena tests we do minimal exercise here, otherwise too slow
     // If problems crop up then switch to full tests
     final static boolean FULL_TEST = false;
-    
+
     // Number of class instances to create in the model under test
     final static int MODEL_SIZE = FULL_TEST ? 100 : 10;
-    
+
     // Number of threads to create in the tests
     final static int NUM_THREADS = FULL_TEST ? 50 : 20;
-    
+
     // Length of time to run the threads under test, in ms
     final static int TEST_LENGTH = FULL_TEST ? 3000 : 20;
-    
+
     // Number of times to run the test cycle
     final static int NUM_RUNS = FULL_TEST ? 30 : 3;
-    
+
     /**
      * Boilerplate for junit
-     */ 
+     */
     public ConcurrencyTest( String name ) {
-        super( name ); 
+        super( name );
     }
-    
+
     /**
      * Boilerplate for junit.
      * This is its own test suite
      */
     public static TestSuite suite() {
-        return new TestSuite( ConcurrencyTest.class ); 
-    }  
-    
-    private interface ModelCreator {
-        public OntModel createModel();
+        return new TestSuite( ConcurrencyTest.class );
     }
 
-    private void runConcurrencyTest(ModelCreator modelCreator, String runId) throws InterruptedException  {
+    @SuppressWarnings("removal")
+    private void runConcurrencyTest(Creator<OntModel> modelCreator, String runId) throws InterruptedException  {
         try {
             for(int i = 0; i < NUM_RUNS; ++i) {
-                doTestConcurrency(modelCreator.createModel());
+                doTestConcurrency(modelCreator.create());
             }
         } catch (JenaException e ) {
             assertTrue(e.getMessage(), false);
         }
     }
 
+    @SuppressWarnings("removal")
     private void doTestConcurrency(final OntModel model) throws InterruptedException {
         // initialize the model
         final String NS = PrintUtil.egNS;
-        
+
         model.enterCriticalSection(Lock.WRITE);
         final OntClass Top = model.createClass(NS + "Top");
         for (int i = 0; i < MODEL_SIZE; i++) {
@@ -112,19 +111,19 @@ public class ConcurrencyTest  extends TestCase {
                 while(System.currentTimeMillis() - runStartedAt < TEST_LENGTH)
                 {
                     Thread.yield();
-                    
+
                     model.enterCriticalSection(Lock.READ);
                     try {
                         // Iterate over all statements
                         StmtIterator it = model.listStatements();
-                        
+
 //                        // Debug
 //                        List<Statement> s = it.toList();
 //                        it = new StmtIteratorImpl(s.iterator()) ;
-                        
+
                         while(it.hasNext()) it.nextStatement();
                         it.close();
-                        
+
                         // Check number of instances of Top class
                         int count = 0;
                         ExtendedIterator<OntResource> ei = (ExtendedIterator<OntResource>) Top.listInstances();
@@ -142,22 +141,22 @@ public class ConcurrencyTest  extends TestCase {
                 }
             }
         }
-        
+
         // Start the threads
         ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS);
         for(int i = 0; i < NUM_THREADS; ++i) {
             executorService.submit(new QueryExecutingRunnable());
         }
-        
+
         // Wait for threads to finish
         executorService.shutdown(); // this will *not* terminate any threads currently running
         Thread.sleep(TEST_LENGTH + 50);
-        
+
         // Possibly in deadlock, wait a little longer to be sure
         for(int i = 0; i < 50 && !executorService.isTerminated(); i++) {
             Thread.sleep(20);
         }
-        
+
         if(!executorService.isTerminated()) {
             /* uncomment this block to perform deadlock checking, only on java 1.6 */
             // Check for deadlock
@@ -165,16 +164,16 @@ public class ConcurrencyTest  extends TestCase {
             long[] ids = tmx.findDeadlockedThreads();
             if (ids != null) {
                 ThreadInfo[] infos = tmx.getThreadInfo(ids, true, true);
-                
+
                 System.err.println("*** Deadlocked threads");
                 for (ThreadInfo ti : infos) {
-                    System.err.println("Thread \"" + ti.getThreadName() + "\" id=" + ti.getThreadId() + " " 
+                    System.err.println("Thread \"" + ti.getThreadName() + "\" id=" + ti.getThreadId() + " "
                             + ti.getThreadState().toString());
                     System.err.println("Lock name: " + ti.getLockName() + " owned by \""
                             + ti.getLockOwnerName() + "\" id=" + ti.getLockOwnerId());
                     System.err.println("\nStack trace:");
                     for(StackTraceElement st : ti.getStackTrace())
-                        System.err.println("   " + st.getClassName() + "." + st.getMethodName() 
+                        System.err.println("   " + st.getClassName() + "." + st.getMethodName()
                                 + " (" + st.getFileName() + ":" + st.getLineNumber() + ")" );
                     System.err.println();
                 }
@@ -184,12 +183,10 @@ public class ConcurrencyTest  extends TestCase {
             assertTrue("Failed to terminate execution", false);
         }
     }
-    
+
+    @SuppressWarnings("removal")
     public void testWithOWLMemMicroRuleInfModel() throws InterruptedException {
-        runConcurrencyTest(new ModelCreator() { @Override
-        public OntModel createModel() {
-            return ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF);
-        }}, "OWL_MEM_MICRO_RULE_INF");
+        runConcurrencyTest( ()->ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF),
+                            "OWL_MEM_MICRO_RULE_INF");
     }
-    
 }

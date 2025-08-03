@@ -32,15 +32,16 @@ public class TestInfPrefixMapping extends ModelTestBase
     {
     public TestInfPrefixMapping( String name )
         { super( name ); }
-    
+
     public static TestSuite suite()
         { return new TestSuite( TestInfPrefixMapping.class ); }
-    
+
+    @SuppressWarnings("removal")
     private InfGraph getInfGraph()
         {
         return (InfGraph) ModelFactory.createOntologyModel().getGraph();
         }
-    
+
     public void testInfGraph()
         {
         InfGraph ig = getInfGraph();

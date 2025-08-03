@@ -24,6 +24,7 @@ import org.apache.jena.assembler.* ;
 import org.apache.jena.ontology.* ;
 import org.apache.jena.rdf.model.* ;
 
+@Deprecated(forRemoval=true)
 public class OntModelAssembler extends InfModelAssembler implements Assembler
     {
     @Override public Model openEmptyModel( Assembler a, Resource root, Mode mode )

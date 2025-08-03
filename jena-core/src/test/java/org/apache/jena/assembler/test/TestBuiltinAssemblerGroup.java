@@ -31,6 +31,7 @@ public class TestBuiltinAssemblerGroup extends AssemblerTestBase
     @Override protected Class<? extends Assembler> getAssemblerClass()
         { return null; }
 
+    @SuppressWarnings("removal")
     public void testGeneralRegistration()
         {
         assertAssemblerClass( JA.DefaultModel, DefaultModelAssembler.class );
@@ -48,6 +49,7 @@ public class TestBuiltinAssemblerGroup extends AssemblerTestBase
         assertAssemblerClass( JA.UnionModel, UnionModelAssembler.class );
         }
 
+    @SuppressWarnings("removal")
     public void testVariables()
         {
         assertInstanceOf( DefaultModelAssembler.class, Assembler.defaultModel );

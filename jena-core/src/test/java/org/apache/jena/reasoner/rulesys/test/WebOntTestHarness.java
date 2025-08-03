@@ -446,6 +446,7 @@ public class WebOntTestHarness {
      * Load the premises or conclusions for the test, optional performing
      * import processing.
      */
+    @SuppressWarnings("removal")
     public Model getDoc(Resource test, Property docType, boolean processImports) throws IOException {
         if (processImports) {
             Model result = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, null);
