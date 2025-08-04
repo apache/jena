@@ -135,7 +135,7 @@ public class HttpLib {
 
     /**
      * Get the InputStream from an HttpResponse, handling possible compression settings.
-     * The application must consume or close the {@code InputStream} (see {@link #finish(InputStream)}).
+     * The application must consume or close the {@code InputStream} (see {@link #finishInputStream(InputStream)}).
      * Closing the InputStream may close the HTTP connection.
      * Assumes the status code has been handled e.g. {@link #handleHttpStatusCode} has been called.
      */
@@ -238,7 +238,7 @@ public class HttpLib {
      */
     public static void handleResponseNoBody(HttpResponse<InputStream> response) {
         handleHttpStatusCode(response);
-        finish(response);
+        finishResponse(response);
     }
 
     /**
@@ -265,8 +265,11 @@ public class HttpLib {
         }
         try {
             return IO.readWholeFileAsUTF8(input);
-        } catch (RuntimeIOException e) { throw new HttpException(e); }
-        finally { IO.close(input); }
+        } catch (RuntimeIOException e) {
+            throw new HttpException(e);
+        } finally {
+            finishInputStream(input);
+        }
     }
 
     /**
@@ -307,18 +310,18 @@ public class HttpLib {
      * {@code close} may close the underlying HTTP connection.
      *  See {@link BodySubscribers#ofInputStream()}.
      */
-    private static void finish(HttpResponse<InputStream> response) {
+    public static void finishResponse(HttpResponse<InputStream> response) {
         InputStream input = response.body();
         if ( input == null )
             return;
-        finish(input);
+        finishInputStream(input);
     }
 
     /** Read to end of {@link InputStream}.
      *  {@code close} may close the underlying HTTP connection.
      *  See {@link BodySubscribers#ofInputStream()}.
      */
-    public static void finish(InputStream input) {
+    public static void finishInputStream(InputStream input) {
         consumeAndClose(input);
     }
 

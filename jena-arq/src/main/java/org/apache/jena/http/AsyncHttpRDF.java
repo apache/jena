@@ -136,7 +136,13 @@ public class AsyncHttpRDF {
         CompletableFuture<HttpResponse<InputStream>> cf = asyncGetToInput(httpClient, url, modifier);
         Transactional transact = ( _transactional == null ) ? TransactionalNull.create() : _transactional;
         return cf.thenApply(httpResponse->{
-            transact.executeWrite(()->HttpRDF.httpResponseToStreamRDF(url, httpResponse, dest));
+            transact.executeWrite(()->{
+                try {
+                    HttpRDF.httpResponseToStreamRDF(url, httpResponse, dest);
+                } finally {
+                    HttpLib.finishResponse(httpResponse);
+                }
+            });
             return null;
         });
     }

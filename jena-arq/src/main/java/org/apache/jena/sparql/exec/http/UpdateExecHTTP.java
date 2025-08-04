@@ -141,9 +141,12 @@ public class UpdateExecHTTP implements UpdateExec {
         HttpRequest request = builder.POST(body).build();
         logUpdate(updateString, request);
         HttpResponse<InputStream> response = HttpLib.execute(httpClient, request);
+        // Consumes and closes the input stream.
         return HttpLib.handleResponseRtnString(response, this::setRetainedConnection);
     }
 
+    // abort() may be called while waiting for the remote update to complete.
+    // Capture the input stream (from HttpLib.handleResponseRtnString)
     private void setRetainedConnection(InputStream in) {
         synchronized (cancelSignal) {
             retainedConnection = in;
@@ -155,8 +158,10 @@ public class UpdateExecHTTP implements UpdateExec {
 
     private static void logUpdate(String updateString, HttpRequest request) {}
 
-    /** Best effort that tries to close an underlying HTTP connection.
-     *  May still hang waiting for the HTTP request to complete. */
+    /**
+     * Best effort that tries to close an underlying HTTP connection.
+     * May still hang waiting for the HTTP request to complete.
+     */
     @Override
     public void abort() {
         cancelSignal.set(true);
@@ -164,7 +169,7 @@ public class UpdateExecHTTP implements UpdateExec {
             try {
                 InputStream in = retainedConnection;
                 if (in != null) {
-                    in.close();
+                    HttpLib.finishInputStream(in);
                     retainedConnection = null;
                 }
             } catch (Exception ex) {
