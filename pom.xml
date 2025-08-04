@@ -92,7 +92,7 @@
     <ver.commons-rdf>0.5.0</ver.commons-rdf>
     <ver.commons-csv>1.14.0</ver.commons-csv>
     <ver.commons-codec>1.19.0</ver.commons-codec>
-    <ver.commons-compress>1.27.1</ver.commons-compress>
+    <ver.commons-compress>1.28.0</ver.commons-compress>
     <ver.commons-collections>4.5.0</ver.commons-collections>
     <ver.commons-fileupload>2.0.0-M4</ver.commons-fileupload>
 
