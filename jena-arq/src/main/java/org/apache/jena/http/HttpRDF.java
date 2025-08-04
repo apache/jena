@@ -149,13 +149,13 @@ public class HttpRDF {
             throw ex;
         } finally {
             // Even if parsing finished, it is possible we only read part of the input stream (e.g. RDF/XML).
-            finish(in);
+            finishInputStream(in);
         }
     }
 
     /**
      * MUST consume or close the input stream
-     * @see HttpLib#finish(HttpResponse)
+     * @see HttpLib#finishResponse(HttpResponse)
      */
     private static HttpResponse<InputStream> execGetToInput(HttpClient client, String url, Consumer<HttpRequest.Builder> modifier) {
         Objects.requireNonNull(client);

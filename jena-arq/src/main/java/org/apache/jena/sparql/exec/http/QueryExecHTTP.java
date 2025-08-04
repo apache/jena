@@ -241,10 +241,13 @@ public class QueryExecHTTP implements QueryExec {
         if (lang == null) {
             raiseException("Endpoint returned Content-Type: " + actualContentType + " which is not supported for ASK queries", request, response, in);
         }
-        boolean result = ResultSetMgr.readBoolean(in, lang);
-        finish(in);
-        return result;
-    }
+        try {
+            boolean result = ResultSetMgr.readBoolean(in, lang);
+            return result;
+        } finally {
+            finishInputStream(in);
+        }
+   }
 
     private String removeCharset(String contentType) {
         if ( contentType == null )
@@ -307,9 +310,8 @@ public class QueryExecHTTP implements QueryExec {
         Lang lang = p.getRight();
         try {
             RDFDataMgr.read(graph, in, lang);
-        } catch (RiotException ex) {
-            finish(in);
-            throw ex;
+        } finally {
+            finishInputStream(in);
         }
         return graph;
     }
@@ -320,9 +322,8 @@ public class QueryExecHTTP implements QueryExec {
         Lang lang = p.getRight();
         try {
             RDFDataMgr.read(dataset, in, lang);
-        } catch (RiotException ex) {
-            finish(in);
-            throw ex;
+        } finally {
+            finishInputStream(in);
         }
         return dataset;
     }
@@ -387,7 +388,7 @@ public class QueryExecHTTP implements QueryExec {
         InputStream in = HttpLib.getInputStream(response);
         try {
             return JSON.parseAny(in).getAsArray();
-        } finally { finish(in); }
+        } finally { finishInputStream(in); }
     }
 
     @Override
