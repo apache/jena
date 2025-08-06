@@ -21,7 +21,7 @@
     "serve:offline": "cross-env FUSEKI_PORT=\"${FUSEKI_PORT:=3030}\" PORT=\"${PORT:=8080}\" concurrently --names 'SERVER,CLIENT' --prefix-colors 'yellow,blue' --success 'first' --kill-others 'yarn run serve:fuseki' 'yarn wait-on http://localhost:${FUSEKI_PORT}/$/ping && yarn run dev'"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.4.2",
+    "@fortawesome/fontawesome-svg-core": "^7.0.0",
     "@fortawesome/free-solid-svg-icons": "^7.0.0",
     "@fortawesome/vue-fontawesome": "^3.0.3",
     "@popperjs/core": "^2.11.8",
