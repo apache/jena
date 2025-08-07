@@ -41,6 +41,23 @@ public class TestURISchemes {
     @Test public void general_percent_05() { schemeViolation("http://host%AA/ab%FFdef", null, Issue.iri_host_not_lowercase); }
     @Test public void general_percent_06() { schemeViolation("http://host%aa/ab%aa123", null, Issue.iri_percent_not_uppercase); }
 
+    @Test public void general_dot_segments_01() { schemeViolation("http://example/abc/../def/", null, Issue.iri_bad_dot_segments); }
+    @Test public void general_dot_segments_02() { schemeViolation("jena://example/abc/../def/", null, Issue.iri_bad_dot_segments); }
+    @Test public void general_dot_segments_03() { schemeViolation("http://example/.", null, Issue.iri_bad_dot_segments); }
+    @Test public void general_dot_segments_04() { schemeViolation("http://example/./", null, Issue.iri_bad_dot_segments); }
+
+    @Test public void general_dot_segments_05() { schemeViolation("http:/..", null, Issue.iri_bad_dot_segments, Issue.http_no_host); }
+    @Test public void general_dot_segments_06() { schemeViolation("http:/.", null, Issue.iri_bad_dot_segments, Issue.http_no_host); }
+    @Test public void general_dot_segments_07() { good("./abcd"); }
+    @Test public void general_dot_segments_08() { good("../abcd"); }
+    @Test public void general_dot_segments_09() { good("../../abcd"); }
+    @Test public void general_dot_segments_10() { good("./../abcd"); }
+    @Test public void general_dot_segments_11() { schemeViolation("../../abcd/..", null, Issue.iri_bad_dot_segments); }
+    @Test public void general_dot_segments_12() { schemeViolation("../../abcd/.", null, Issue.iri_bad_dot_segments); }
+    @Test public void general_dot_segments_13() { good("http://host/pa.th/"); }
+    @Test public void general_dot_segments_14() { good("http://host/.path/"); }
+    @Test public void general_dot_segments_15() { good("http://host/path./"); }
+
     // == http:, https:
     @Test public void scheme_http_empty_host_1() { schemeViolation("http:///abc",  URIScheme.HTTP, Issue.http_empty_host); }
     @Test public void scheme_http_empty_host_2() { schemeViolation("https:///abc", URIScheme.HTTPS, Issue.http_empty_host); }

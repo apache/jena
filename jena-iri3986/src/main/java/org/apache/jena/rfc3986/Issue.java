@@ -28,6 +28,7 @@ public enum Issue {
     iri_password,
     iri_bad_ipv4_address,
     iri_bad_ipv6_address,
+    iri_bad_dot_segments,   // Not at the start of a relative IRI.
 
     // Scheme
     iri_scheme_name_is_not_lowercase,

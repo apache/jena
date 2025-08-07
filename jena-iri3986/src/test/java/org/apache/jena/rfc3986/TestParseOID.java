@@ -18,8 +18,8 @@
 
 package org.apache.jena.rfc3986;
 
-import static org.apache.jena.rfc3986.LibTestURI.test3986;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.apache.jena.rfc3986.LibTestURI.test3986;
 
 import org.junit.jupiter.api.Test;
 

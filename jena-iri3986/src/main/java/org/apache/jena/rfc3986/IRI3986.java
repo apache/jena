@@ -1518,6 +1518,21 @@ public class IRI3986 implements IRI {
          * percent- encodings.
          */
         checkPercent();
+
+        /*
+         * The path segments "." and "..", also known as dot-segments, are
+         * defined for relative reference within the path name hierarchy.  They
+         * are intended for use at the beginning of a relative-path reference
+         * (Section 4.2) to indicate relative position within the hierarchical
+         * tree of names.
+         * https://datatracker.ietf.org/doc/html/rfc3986#section-3.3
+         */
+        if ( hasPath() ) {
+            boolean good = LibParseIRI.checkDotSegments(iriStr, path0,  path1);
+            if ( ! good ) {
+                schemeReport(this, Issue.iri_bad_dot_segments, URIScheme.GENERAL, "Dot segments should only appear at the start of a relative IRI");
+            }
+        }
     }
 
     private void checkPercent() {
