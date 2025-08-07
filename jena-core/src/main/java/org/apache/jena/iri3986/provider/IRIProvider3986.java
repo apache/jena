@@ -36,6 +36,8 @@ public class IRIProvider3986 implements IRIProvider {
      */
     public IRIProvider3986() { }
 
+    // Adjust severities (fatal/error/warning/ignore) JenaSeveritySettings
+
     public static class IRIx3986 extends IRIx {
         private final IRI3986 iri;
         private IRIx3986(String iriStr, IRI3986 iri) {
@@ -212,12 +214,12 @@ public class IRIProvider3986 implements IRIProvider {
 //            }
             Severity severity = severityMap.get(issue);
             if ( isStrict ) {
-                switch(severity ) {
+                switch( severity ) {
                     case INVALID, ERROR -> throw new IRIException(v.message());
                     case WARNING, IGNORE -> {}
                 }
             } else {
-                switch(severity ) {
+                switch( severity ) {
                     case INVALID -> throw new IRIException(v.message());
                     case ERROR, WARNING, IGNORE -> {}
                 }
@@ -248,6 +250,4 @@ public class IRIProvider3986 implements IRIProvider {
     public String toString() {
         return this.getClass().getSimpleName();
     }
-
-    // Severity tables.
 }

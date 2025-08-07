@@ -85,6 +85,7 @@ class Issues {
         entry(issueGroups, Issue.iri_password,                      IssueGroup.GENERAL);
         entry(issueGroups, Issue.iri_bad_ipv4_address,              IssueGroup.GENERAL);
         entry(issueGroups, Issue.iri_bad_ipv6_address,              IssueGroup.GENERAL);
+        entry(issueGroups, Issue.iri_bad_dot_segments,              IssueGroup.GENERAL);
 
         // Scheme
         entry(issueGroups, Issue.iri_scheme_name_is_not_lowercase,  IssueGroup.GENERAL);
