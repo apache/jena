@@ -20,6 +20,7 @@ package org.apache.jena.rfc3986;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+
 import org.junit.jupiter.api.Test;
 
 /** Building IRIs from components. */

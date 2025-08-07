@@ -66,6 +66,7 @@ public class Violations {
         SeverityMap.setSeverity(severityMap, Issue.iri_password,                      Severity.ERROR);
         SeverityMap.setSeverity(severityMap, Issue.iri_bad_ipv4_address,              Severity.WARNING);
         SeverityMap.setSeverity(severityMap, Issue.iri_bad_ipv6_address,              Severity.WARNING);
+        SeverityMap.setSeverity(severityMap, Issue.iri_bad_dot_segments,              Severity.WARNING);
 
         // Scheme
         SeverityMap.setSeverity(severityMap, Issue.iri_scheme_name_is_not_lowercase,  Severity.WARNING);
