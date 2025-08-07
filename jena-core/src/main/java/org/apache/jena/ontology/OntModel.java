@@ -67,7 +67,9 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
  * may result in a runtime exception, though the typical behaviour is that such
  * calls will be silently ignored.
  * </p>
+ * @deprecated Use org.apache.jena.ontapi.
  */
+@Deprecated(forRemoval = true)
 public interface OntModel
     extends InfModel
 {
@@ -1514,7 +1516,6 @@ public interface OntModel
      * @param writer A writer to which the XML will be written
      * @return this model
      */
-    @SuppressWarnings("deprecation")
     @Override
     public Model write( Writer writer ) ;
 

@@ -63,6 +63,7 @@ public class IndividualImpl
         }
 
         @Override
+        @SuppressWarnings("removal")
         public boolean canWrap( Node node, EnhGraph eg ) {
             // node will support being an Individual facet if it is a URI node or bNode
             Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;

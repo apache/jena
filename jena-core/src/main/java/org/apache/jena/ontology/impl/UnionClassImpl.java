@@ -62,6 +62,7 @@ public class UnionClassImpl
         }
 
         @Override
+        @SuppressWarnings("removal")
         public boolean canWrap( Node node, EnhGraph eg ) {
             // node will support being an UnionClass facet if it has rdf:type owl:Class and an owl:unionOf statement (or equivalents)
             Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;

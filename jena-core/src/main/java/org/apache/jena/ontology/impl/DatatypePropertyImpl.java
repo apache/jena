@@ -63,6 +63,7 @@ public class DatatypePropertyImpl
         }
 
         @Override
+        @SuppressWarnings("removal")
         public boolean canWrap( Node node, EnhGraph eg ) {
             // node will support being an DatatypeProperty facet if it has rdf:type owl:DatatypeProperty or equivalent
             Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;

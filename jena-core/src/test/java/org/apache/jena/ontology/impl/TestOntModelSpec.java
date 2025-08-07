@@ -21,6 +21,7 @@ package org.apache.jena.ontology.impl;
 import org.apache.jena.ontology.OntModelSpec ;
 import org.apache.jena.rdf.model.test.ModelTestBase ;
 
+@SuppressWarnings("removal")
 public class TestOntModelSpec extends ModelTestBase
     {
     public TestOntModelSpec( String name )
@@ -46,17 +47,17 @@ public class TestOntModelSpec extends ModelTestBase
         testEqualityAndDifference( OntModelSpec.RDFS_MEM_TRANS_INF );
         testEqualityAndDifference( OntModelSpec.RDFS_MEM_RDFS_INF );
         }
-    
+
     private void testEqualityAndDifference( OntModelSpec os )
         {
         assertEquals( os, new OntModelSpec( os ) );
         }
-    
+
     public void testAssembleRoot()
         {
         // TODO OntModelSpec.assemble( Resource root )
         }
-    
+
     public void testAssembleModel()
         {
         // TODO OntModelSpec.assemble( Model model )

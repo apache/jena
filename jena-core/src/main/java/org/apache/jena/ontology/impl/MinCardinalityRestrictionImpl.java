@@ -62,6 +62,7 @@ public class MinCardinalityRestrictionImpl
         }
 
         @Override
+        @SuppressWarnings("removal")
         public boolean canWrap( Node node, EnhGraph eg ) {
             // node will support being a MinCardinalityRestriction facet if it has rdf:type owl:Restriction or equivalent
             // and the combination of owl:onProperty and owl:cardinality (or equivalents)
