@@ -45,6 +45,7 @@ public class JenaSeveritySettings {
         SeverityMap.setSeverity(severityMap, Issue.iri_password,                      Severity.ERROR);
         SeverityMap.setSeverity(severityMap, Issue.iri_bad_ipv4_address,              Severity.WARNING);
         SeverityMap.setSeverity(severityMap, Issue.iri_bad_ipv6_address,              Severity.WARNING);
+        SeverityMap.setSeverity(severityMap, Issue.iri_bad_dot_segments,              Severity.WARNING);
 
         // Scheme
         SeverityMap.setSeverity(severityMap, Issue.iri_scheme_name_is_not_lowercase,  Severity.WARNING);
@@ -85,6 +86,7 @@ public class JenaSeveritySettings {
         SeverityMap.setSeverity(severityMap, Issue.oid_bad_syntax,                    Severity.ERROR);
         SeverityMap.setSeverity(severityMap, Issue.oid_scheme_not_registered,         Severity.WARNING);
 
+        // Performs a completeness check.
         return SeverityMap.create("Jena settings", severityMap);
     }
 }
