@@ -42,6 +42,7 @@ import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphWrapper;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
 
@@ -54,7 +55,7 @@ import org.apache.jena.sparql.sse.SSE;
 public class TestDatasetGraphRDFS {
 
     private static PrintStream out = System.out;
-    private static DatasetGraphRDFS dsg;
+    private static DatasetGraphWrapper dsg;
 
     @BeforeAll
     public static void beforeClass() {
@@ -66,7 +67,7 @@ public class TestDatasetGraphRDFS {
                 );
         DatasetGraph dsgBase = SSE.parseDatasetGraph(x);
         Graph schema = SSE.parseGraph("(graph (:A rdfs:subClassOf :B))");
-        dsg = (DatasetGraphRDFS)RDFSFactory.datasetRDFS(dsgBase, schema);
+        dsg = (DatasetGraphWrapper)RDFSFactory.datasetRDFS(dsgBase, schema);
     }
 
     @Test public void dsg_access_1() {

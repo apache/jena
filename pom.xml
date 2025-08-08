@@ -89,6 +89,7 @@
     <ver.commons-io>2.20.0</ver.commons-io>
     <ver.commons-cli>1.7.0</ver.commons-cli>
     <ver.commons-lang3>3.19.0</ver.commons-lang3>
+    <ver.commons-math4>4.0-beta1</ver.commons-math4>
     <ver.commons-rdf>0.5.0</ver.commons-rdf>
     <ver.commons-csv>1.14.1</ver.commons-csv>
     <ver.commons-codec>1.19.0</ver.commons-codec>
@@ -104,7 +105,7 @@
     <!-- Testing -->
     <ver.junit4>4.13.2</ver.junit4>
     <ver.junit>6.0.0</ver.junit>
- 
+
     <ver.mockito>5.20.0</ver.mockito>
     <ver.awaitility>4.3.0</ver.awaitility>
 
@@ -419,6 +420,12 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
         <version>${ver.commons-lang3}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-math4-legacy</artifactId>
+        <version>${ver.commons-math4}</version>
       </dependency>
 
       <dependency>
@@ -948,7 +955,7 @@
             <release>${java.version}</release>
             <compilerArgs>
               <arg>-proc:none</arg>
-              <!-- 
+              <!--
                    In preparation for Jena6, silence deprecation=removal warnings.
                    There are many.
                    Remove Xlint setting at or after Jena6.
