@@ -114,11 +114,11 @@ public class IteratorConcat<T> implements IteratorCloseable<T> {
     @Override
     public void close() {
         //iterators.forEach(Iter::close);
-        // Earlier iterators already closed
+        // Earlier iterators already closed. Handle case where hasNext has never been called.
+        if (idx == -1) idx = 0;
         for ( int i = idx ; i < iterators.size() ; i++ ) {
             Iterator<T> iter = iterators.get(idx);
             Iter.close(iter);
         }
-
     }
 }

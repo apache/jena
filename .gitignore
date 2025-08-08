@@ -45,3 +45,7 @@ hs_err_*
 
 # Fuseki file area
 run/
+
+# Benchmark JSON results
+jena-benchmarks/jena-benchmarks-jmh/*.json
+

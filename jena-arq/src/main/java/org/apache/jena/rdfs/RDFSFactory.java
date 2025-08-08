@@ -18,8 +18,12 @@
 
 package org.apache.jena.rdfs;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.rdfs.engine.MapperX;
+import org.apache.jena.rdfs.setup.BaseSetupRDFS;
+import org.apache.jena.rdfs.setup.ConfigRDFS;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.util.NodeUtils;
@@ -56,18 +60,28 @@ public class RDFSFactory {
     /** Create an RDFS inference dataset. */
     public static DatasetGraph datasetRDFS(DatasetGraph data, Graph vocab ) {
         SetupRDFS setup = setupRDFS(vocab);
-        return new DatasetGraphRDFS(data, setup);
+        return datasetRDFS(data, setup);
     }
 
     /** Create an RDFS inference dataset. */
     public static Dataset datasetRDFS(Dataset data, Graph vocab ) {
         SetupRDFS setup = setupRDFS(vocab);
-        return DatasetFactory.wrap(new DatasetGraphRDFS(data.asDatasetGraph(), setup));
+        return DatasetFactory.wrap(datasetRDFS(data.asDatasetGraph(), setup));
     }
 
     /** Create an {@link SetupRDFS} */
     public static SetupRDFS setupRDFS(Graph vocab) {
         return new SetupRDFS(vocab);
+    }
+
+    /** Create a {@link ConfigRDFS} via a {@link MapperX}. */
+    public static <X> ConfigRDFS<X> setupRDFS(Graph vocab, MapperX<X, ?> mapper) {
+        return new BaseSetupRDFS<>(vocab) {
+            @Override
+            protected X fromNode(Node node) {
+                return mapper.fromNode(node);
+            }
+        };
     }
 
     /** Stream expand data based on a separate vocabulary */

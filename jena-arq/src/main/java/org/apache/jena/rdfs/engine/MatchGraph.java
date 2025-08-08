@@ -18,36 +18,38 @@
 
 package org.apache.jena.rdfs.engine;
 
+import java.util.Objects;
 import java.util.stream.Stream;
 
-import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.rdfs.setup.ConfigRDFS;
-import org.apache.jena.util.iterator.ExtendedIterator;
 
 /**
- * Find in one graph.
+ * A {@link Match} view over a {@link Graph}.
+ * This class is final. Use {@link MatchWrapper} to modify match behavior.
  */
-public class InfFindTriple extends MatchRDFS<Node, Triple> {
+public final class MatchGraph
+    implements Match<Node, Triple>
+{
+    private Graph base;
 
-    private final Graph graph;
+    public MatchGraph(Graph base) {
+        super();
+        this.base = Objects.requireNonNull(base);
+    }
 
-    public InfFindTriple(ConfigRDFS<Node> setup, Graph graph) {
-        super(setup, Mappers.mapperTriple());
-        this.graph = graph;
+    public Graph getGraph() {
+        return base;
     }
 
     @Override
-    public Stream<Triple> sourceFind(Node s, Node p, Node o) {
-        ExtendedIterator<Triple> iter = graph.find(s,p,o);
-        Stream<Triple> stream = Iter.asStream(iter);
-        return stream;
+    public Stream<Triple> match(Node s, Node p, Node o) {
+        return base.stream(s, p, o);
     }
 
     @Override
-    protected boolean sourceContains(Node s, Node p, Node o) {
-        return graph.contains(s, p, o);
+    public MapperX<Node, Triple> getMapper() {
+        return Mappers.mapperTriple();
     }
 }

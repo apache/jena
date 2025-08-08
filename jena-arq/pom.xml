@@ -45,7 +45,7 @@
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-    </dependency>    
+    </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -71,12 +71,12 @@
       <artifactId>jakarta.json</artifactId>
     </dependency>
     <!-- End Titanium JSON-LD 1.1 -->
-    
+
     <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
     </dependency>
-      
+
     <dependency>
       <groupId>org.apache.thrift</groupId>
       <artifactId>libthrift</artifactId>
@@ -124,6 +124,11 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-math4-legacy</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -139,7 +144,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
       </plugin>
-      
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -172,11 +177,11 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <executions> 
+        <executions>
           <execution>
-            <id>attach-sources-test</id> 
+            <id>attach-sources-test</id>
             <goals>
-              <goal>test-jar-no-fork</goal> 
+              <goal>test-jar-no-fork</goal>
             </goals>
           </execution>
         </executions>

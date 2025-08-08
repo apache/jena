@@ -308,7 +308,7 @@ public abstract class BaseSetupRDFS<X> implements ConfigRDFS<X>{
 
     private static <X> void put(Map<X, Set<X>> multimap, X n1, X n2) {
         if ( !multimap.containsKey(n1) )
-            multimap.put(n1, new HashSet<X>());
+            multimap.put(n1, new HashSet<>());
         multimap.get(n1).add(n2);
     }
 

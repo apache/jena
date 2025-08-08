@@ -20,34 +20,27 @@ package org.apache.jena.rdfs.engine;
 
 import java.util.stream.Stream;
 
-import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
-import org.apache.jena.rdfs.setup.ConfigRDFS;
-import org.apache.jena.util.iterator.ExtendedIterator;
+public class MatchWrapper<X, T, D extends Match<X, T>>
+    implements Match<X, T>
+{
+    protected D delegate;
 
-/**
- * Find in one graph.
- */
-public class InfFindTriple extends MatchRDFS<Node, Triple> {
+    public MatchWrapper(D delegate) {
+        super();
+        this.delegate = delegate;
+    }
 
-    private final Graph graph;
-
-    public InfFindTriple(ConfigRDFS<Node> setup, Graph graph) {
-        super(setup, Mappers.mapperTriple());
-        this.graph = graph;
+    public D getDelegate() {
+        return delegate;
     }
 
     @Override
-    public Stream<Triple> sourceFind(Node s, Node p, Node o) {
-        ExtendedIterator<Triple> iter = graph.find(s,p,o);
-        Stream<Triple> stream = Iter.asStream(iter);
-        return stream;
+    public Stream<T> match(X s, X p, X o) {
+        return getDelegate().match(s, p, o);
     }
 
     @Override
-    protected boolean sourceContains(Node s, Node p, Node o) {
-        return graph.contains(s, p, o);
+    public MapperX<X, T> getMapper() {
+        return getDelegate().getMapper();
     }
 }

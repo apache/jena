@@ -18,7 +18,8 @@
 
 package org.apache.jena.rdfs.engine;
 
-import static org.apache.jena.rdfs.engine.ConstRDFS.*;
+import static org.apache.jena.rdfs.engine.ConstRDFS.rdfType;
+import static org.apache.jena.rdfs.engine.ConstRDFS.rdfsSubClassOf;
 
 import java.util.Set;
 import java.util.stream.Stream;
@@ -53,7 +54,6 @@ public class GraphIncRDFS extends GraphRDFS {
                 .filter(type->!setup.getSubClassHierarchy().keySet().contains(type))
                 .map(type->Triple.create(type, rdfsSubClassOf, type))
                 );
-
     }
 
     @Override
@@ -71,6 +71,11 @@ public class GraphIncRDFS extends GraphRDFS {
 
         ExtendedIterator<Triple> iter = WrappedIterator.ofStream(stream);
         return iter;
+    }
+
+    @Override
+    public boolean contains(Node s, Node p, Node o) {
+        return vocab.contains(s, p, o) || super.contains(s, p, o);
     }
 
     private Stream<Triple> extras(Node s, Node p, Node o) {
