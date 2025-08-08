@@ -26,7 +26,6 @@ import org.apache.jena.assembler.Assembler;
 import org.apache.jena.assembler.exceptions.AssemblerException;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdfs.DatasetGraphRDFS;
 import org.apache.jena.rdfs.RDFSFactory;
 import org.apache.jena.rdfs.SetupRDFS;
 import org.apache.jena.riot.RDFDataMgr;
@@ -50,7 +49,7 @@ public class DatasetRDFSAssembler extends NamedDatasetAssembler {
     /**
      * <pre>
      * &lt;#rdfsDS&gt; rdf:type ja:DatasetRDFS ;
-     *      ja:rdfs "vocab.ttl";
+     *      ja:rdfsSchema "vocab.ttl";
      *      ja:dataset &lt;#baseDS&gt; ;
      *      .
      *
@@ -58,7 +57,6 @@ public class DatasetRDFSAssembler extends NamedDatasetAssembler {
      *     ja:name "TIM database"  # optional: this is need if the base database is accessed directly.
      *     ja:data "data1.trig";
      *     ## ja:data "data2.trig";
-     *
      *     .
      * </pre>
      */
@@ -76,7 +74,7 @@ public class DatasetRDFSAssembler extends NamedDatasetAssembler {
 
         Graph schema = RDFDataMgr.loadGraph(schemaFile);
         SetupRDFS setup = RDFSFactory.setupRDFS(schema);
-        DatasetGraph dsg = new DatasetGraphRDFS(base, setup);
+        DatasetGraph dsg = RDFSFactory.datasetRDFS(base, setup);
         AssemblerUtils.mergeContext(root, dsg.getContext());
         return dsg;
     }

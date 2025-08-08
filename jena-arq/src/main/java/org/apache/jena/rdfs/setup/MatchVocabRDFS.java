@@ -31,6 +31,8 @@ import java.util.stream.Stream;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.rdfs.engine.MapperX;
+import org.apache.jena.rdfs.engine.Mappers;
 import org.apache.jena.rdfs.engine.Match;
 
 /**
@@ -111,5 +113,10 @@ public class MatchVocabRDFS implements Match<Node, Triple>{
         return map.entrySet()
                 .stream()
                 .flatMap( e->e.getValue().stream().map(obj->Triple.create(e.getKey(), p, obj)) );
+    }
+
+    @Override
+    public MapperX<Node, Triple> getMapper() {
+        return Mappers.mapperTriple();
     }
 }

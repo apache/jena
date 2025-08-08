@@ -19,6 +19,8 @@
 package org.apache.jena.rdfs.engine;
 
 import org.apache.jena.atlas.lib.tuple.Tuple;
+import org.apache.jena.atlas.lib.tuple.Tuple3;
+import org.apache.jena.atlas.lib.tuple.TupleFactory;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.Quad;
@@ -42,6 +44,7 @@ public class Mappers {
         @Override public Node subject(Triple triple)    { return triple.getSubject(); }
         @Override public Node predicate(Triple triple)  { return triple.getPredicate(); }
         @Override public Node object(Triple triple)     { return triple.getObject(); }
+        @Override public Triple tuple(Node s, Node p, Node o) { return Triple.create(s, p, o); }
     }
 
     private static class MapperQuad implements MapperX<Node, Quad> {
@@ -52,6 +55,7 @@ public class Mappers {
         @Override public Node subject(Quad quad)    { return quad.getSubject(); }
         @Override public Node predicate(Quad quad)  { return quad.getPredicate(); }
         @Override public Node object(Quad quad)     { return quad.getObject(); }
+        @Override public Quad tuple(Node s, Node p, Node o) { return Quad.create(graph, s, p, o); }
     }
 
     private static class MapperTuple implements MapperX<Node, Tuple<Node>> {
@@ -60,6 +64,7 @@ public class Mappers {
         @Override public Node subject(Tuple<Node> tuple)    { return offset(tuple, 0); }
         @Override public Node predicate(Tuple<Node> tuple)  { return offset(tuple, 1); }
         @Override public Node object(Tuple<Node> tuple)     { return offset(tuple, 2); }
+        @Override public Tuple3<Node> tuple(Node s, Node p, Node o) { return TupleFactory.create3(s, p, o); }
 
         private static Node offset(Tuple<Node> tuple, int i) {
             int idx = ( tuple.len() == 3 ) ? i : i+1;

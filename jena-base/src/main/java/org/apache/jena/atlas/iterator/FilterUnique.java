@@ -29,5 +29,4 @@ public class FilterUnique<T> implements Predicate<T> {
     public boolean test(T item) {
         return seen.add(item);
     }
-
 }

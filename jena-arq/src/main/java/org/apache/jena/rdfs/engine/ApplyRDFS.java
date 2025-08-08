@@ -129,10 +129,12 @@ public class ApplyRDFS<X, T> extends CxtInf<X,T>{
                 return;
         }
         Set<X> x = setup.getRange(p);
-        x.forEach(c -> {
-            derive(o, rdfType, c, out);
-            subClass(o, rdfType, c, out);
-        });
+        if (!mapper.isLiteral(o)) {
+            x.forEach(c -> {
+                derive(o, rdfType, c, out);
+                subClass(o, rdfType, c, out);
+            });
+        }
     }
 }
 
