@@ -22,6 +22,9 @@ import java.util.Objects;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.jena.sparql.exec.tracker.BasicTaskExec;
+import org.apache.jena.sparql.exec.tracker.TaskListener;
+import org.apache.jena.sparql.exec.tracker.TaskState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +35,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class TaskThread
     extends Thread
-    implements BasicTask
+    implements BasicTaskExec
 {
     private static final Logger logger = LoggerFactory.getLogger(TaskThread.class);
 
@@ -40,7 +43,7 @@ public abstract class TaskThread
     private Object cancelLock = new Object();
 
     private TaskState state = TaskState.CREATED;
-    private TaskListener<BasicTask> taskListener;
+    private TaskListener<BasicTaskExec> taskListener;
 
     // protected List<BiConsumer<? super T, Throwable>> completionHandlers = new ArrayList<>();
 
@@ -74,11 +77,11 @@ public abstract class TaskThread
         }
     }
 
-    public TaskThread(String label, TaskListener<BasicTask> taskListener) {
+    public TaskThread(String label, TaskListener<BasicTaskExec> taskListener) {
         this(label, taskListener, new AtomicBoolean());
     }
 
-    public TaskThread(String label, TaskListener<BasicTask> taskListener, AtomicBoolean requestingCancel) {
+    public TaskThread(String label, TaskListener<BasicTaskExec> taskListener, AtomicBoolean requestingCancel) {
         super();
         this.label = label;
         this.taskListener = taskListener;
@@ -114,7 +117,7 @@ public abstract class TaskThread
     }
 
     @Override
-    public long getEndTime() {
+    public long getFinishTime() {
         return endTime;
     }
 
@@ -182,7 +185,7 @@ public abstract class TaskThread
             this.throwable = new CancellationException();
             updateState(TaskState.TERMINATED);
         } else {
-            updateState(TaskState.ABORTING);
+            updateState(TaskState.TERMINATING);
             this.interrupt();
         }
     }
