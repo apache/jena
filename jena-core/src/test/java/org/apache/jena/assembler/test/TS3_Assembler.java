@@ -21,10 +21,9 @@ package org.apache.jena.assembler.test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    // Convert t0 JUnit4
+    // Convert to JUnit5
     TestMode.class,
 
     // JUnit3

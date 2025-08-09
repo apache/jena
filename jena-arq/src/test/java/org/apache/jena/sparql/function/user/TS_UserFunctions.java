@@ -18,8 +18,8 @@
 
 package org.apache.jena.sparql.function.user;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.platform.suite.api.AfterSuite;
+import org.junit.platform.suite.api.BeforeSuite;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
@@ -36,13 +36,13 @@ public class TS_UserFunctions {
 	//Expected warnings off
 	private static boolean bWarnOnUnusedVar;
 
-	@BeforeAll
+	@BeforeSuite
 	public static void setup() {
 		bWarnOnUnusedVar = UserDefinedFunctionDefinition.warnOnUnusedVariable;
 		UserDefinedFunctionDefinition.warnOnUnusedVariable = false;
 	}
 
-	@AfterAll
+	@AfterSuite
 	public static void teardown() {
 		UserDefinedFunctionDefinition.warnOnUnusedVariable = bWarnOnUnusedVar;
 	}
