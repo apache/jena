@@ -18,8 +18,8 @@
 
 package org.apache.jena.sparql.function.scripting;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.platform.suite.api.AfterSuite;
+import org.junit.platform.suite.api.BeforeSuite;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
@@ -34,13 +34,13 @@ import org.apache.jena.sparql.expr.E_Function;
 public class TS_FunctionScripting {
     static boolean b = false;
 
-    @BeforeAll
+    @BeforeSuite
     public static void beforeClass() {
         b = E_Function.WarnOnUnknownFunction;
         E_Function.WarnOnUnknownFunction = false;
     }
 
-    @AfterAll
+    @AfterSuite
     public static void afterClass() {
         E_Function.WarnOnUnknownFunction = b;
     }

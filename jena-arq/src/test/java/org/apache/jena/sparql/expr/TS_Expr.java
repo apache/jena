@@ -18,8 +18,8 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.platform.suite.api.AfterSuite;
+import org.junit.platform.suite.api.BeforeSuite;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
@@ -61,14 +61,14 @@ public class TS_Expr
     private static boolean bVerboseWarnings;
     private static boolean bWarnOnUnknownFunction;
 
-    @BeforeAll public static void beforeClass() {
+    @BeforeSuite public static void beforeClass() {
         bVerboseWarnings = NodeValue.VerboseWarnings;
         bWarnOnUnknownFunction = E_Function.WarnOnUnknownFunction;
         NodeValue.VerboseWarnings = false;
         E_Function.WarnOnUnknownFunction = false;
     }
 
-    @AfterAll public static void afterClass() {
+    @AfterSuite public static void afterClass() {
         NodeValue.VerboseWarnings = bVerboseWarnings;
         E_Function.WarnOnUnknownFunction = bWarnOnUnknownFunction;
     }
