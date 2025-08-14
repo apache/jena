@@ -19,10 +19,14 @@
 package org.apache.jena.sparql.expr;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.ExprUtils;
 
 
@@ -73,16 +77,16 @@ public class TestExprLib
     @Test public void safeEquality_11()         { testSafeEquality("?x = 'foo'^^<http://example>", true, false, false);}
     @Test public void safeEquality_12()         { testSafeEquality("?x = 'foo'^^<http://example>", true, true, true);}
 
-    private static void testSafeEquality(String string, boolean b)
-    {
+    private static void testSafeEquality(String string, boolean result) {
         Expr expr = ExprUtils.parse(string);
-        assertEquals(b, ExprLib.isAssignmentSafeEquality(expr), ()->"Input="+string);
+        assertEquals(result, ExprLib.isAssignmentSafeEquality(expr), () -> "Input=" + string);
     }
 
-    private static void testSafeEquality(String string, boolean b, boolean graphString, boolean graphNumber)
-    {
+    private static void testSafeEquality(String string, boolean result,
+                                         boolean graphHasStringEquality, boolean graphHasNumercialValueEquality) {
         Expr expr = ExprUtils.parse(string);
-        assertEquals(b, ExprLib.isAssignmentSafeEquality(expr, graphString, graphNumber), ()->"Input="+string);
+        assertEquals(result, ExprLib.isAssignmentSafeEquality(expr, graphHasStringEquality, graphHasNumercialValueEquality),
+                     () -> "Input=" + string);
     }
 
     /** E_Functions with different function IRIs must not be equals. */
@@ -91,5 +95,42 @@ public class TestExprLib
         Expr a = ExprUtils.parse("<http://www.opengis.net/def/function/geosparql/sfIntersects>(?a, ?b)");
         Expr b = ExprUtils.parse("<http://www.opengis.net/def/function/geosparql/sfContains>(?a, ?b)");
         assertNotEquals(a, b);
+    }
+
+    private static PrefixMapping prefixMap = SSE.getPrefixMapRead();
+
+    @Test
+    public void nodeToExpr_01() {
+        String string = ":s";
+        Expr expr = ExprUtils.parse(string, prefixMap);
+        assertTrue(expr.isConstant());
+    }
+
+    @Test
+    public void nodeToExpr_02() {
+        String string = "<<( :s :p :o )>>";
+        Expr expr = ExprUtils.parse(string, prefixMap);
+        assertTrue(expr.isConstant());
+    }
+
+    @Test
+    public void nodeToExpr_03() {
+        String string = "<<( :s :p <<( :x :y :z )>> )>>";
+        Expr expr = ExprUtils.parse(string, prefixMap);
+        assertTrue(expr.isConstant());
+    }
+
+    @Test
+    public void nodeToExpr_04() {
+        String string = "<<( :s :p ?var )>>";
+        Expr expr = ExprUtils.parse(string, prefixMap);
+        assertFalse(expr.isConstant());
+    }
+
+    @Test
+    public void nodeToExpr_05() {
+        String string = "<<( :s :p <<( :x :y ?var )>> )>>";
+        Expr expr = ExprUtils.parse(string, prefixMap);
+        assertFalse(expr.isConstant());
     }
 }

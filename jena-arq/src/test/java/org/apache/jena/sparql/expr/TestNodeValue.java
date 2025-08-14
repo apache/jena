@@ -45,18 +45,6 @@ import org.apache.jena.sparql.util.NodeFactoryExtra;
  */
 public class TestNodeValue
 {
-
-//
-//static void assertTrue(boolean b, String msg) {}
-//static void assertFalse(boolean b, String msg) {}
-//static void assertEquals(Object a,  Object b, String msg) {}
-//
-//static void assertTrue(boolean b) {}
-//static void assertFalse(boolean b) {}
-//static void assertEquals(Object a, Object b) {}
-//
-
-
     static final double doubleAccuracy = 0.00000001d;
     static boolean warningSetting;
 
@@ -1274,5 +1262,29 @@ public class TestNodeValue
         NodeValue nv2 = NodeValue.makeNode(n2);
         int x = NodeValue.compareAlways(nv1, nv2);
         assertEquals(Expr.CMP_GREATER, x);
+    }
+
+    @Test
+    public void testBadNodeValue1() {
+        assertThrows(ExprException.class, ()-> {
+            Node n = SSE.parseNode("?variable");
+            NodeValue.makeNode(n);
+        });
+    }
+
+    @Test
+    public void testBadNodeValue2() {
+        assertThrows(ExprException.class, ()-> {
+            Node n = SSE.parseNode("<<(:s :p ?variable)>>");
+            NodeValue.makeNode(n);
+        });
+    }
+
+    @Test
+    public void testBadNodeValue3() {
+        assertThrows(ExprException.class, ()-> {
+            Node n = SSE.parseNode("<<( :s :p <<( :x :y ?variable )>> )>>");
+            NodeValue.makeNode(n);
+        });
     }
 }

@@ -20,7 +20,8 @@ package org.apache.jena.sparql.expr;
 
 import static javax.xml.datatype.DatatypeConstants.*;
 import static org.apache.jena.datatypes.xsd.XSDDatatype.*;
-import static org.apache.jena.sparql.expr.ValueSpace.*;
+import static org.apache.jena.sparql.expr.ValueSpace.VSPACE_DIFFERENT;
+import static org.apache.jena.sparql.expr.ValueSpace.VSPACE_UNKNOWN;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -563,8 +564,15 @@ public abstract class NodeValue extends ExprNode
     // ---- Setting : used when a node is used to make a NodeValue
 
     private static NodeValue nodeToNodeValue(Node node) {
-        if ( node.isVariable() )
-            Log.warn(NodeValue.class, "Variable passed to NodeValue.nodeToNodeValue");
+        if ( ! node.isConcrete() ) {
+            String msg;
+            if ( node.isVariable() )
+                throw new ExprException("Variable passed to NodeValue.nodeToNodeValue: "+node);
+            if ( node.isTripleTerm() )
+                throw new ExprException("Triple term with a variable passed to NodeValue.nodeToNodeValue: "+node);
+            // Should not happen.
+            throw new ExprException("Node is not a constant");
+        }
 
         if ( ! node.isLiteral() )
             // Not a literal - no value to extract
