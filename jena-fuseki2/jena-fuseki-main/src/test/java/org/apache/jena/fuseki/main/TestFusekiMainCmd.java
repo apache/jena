@@ -26,6 +26,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.web.TypedInputStream;
@@ -34,8 +37,6 @@ import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.http.HttpOp;
 import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.rdfconnection.RDFConnection;
-import org.junit.After;
-import org.junit.jupiter.api.Test;
 
 /**
  * Test Fuseki Main command line.
@@ -63,7 +64,7 @@ public class TestFusekiMainCmd {
         serverURL = "http://localhost:"+port;
     }
 
-    @After public void after() {
+    @AfterEach public void after() {
         if ( server != null )
             server.stop();
     }

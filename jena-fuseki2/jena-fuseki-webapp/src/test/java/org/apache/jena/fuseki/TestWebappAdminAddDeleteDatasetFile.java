@@ -28,6 +28,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -41,13 +42,18 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.AssumptionViolatedException;
+import org.junit.Before;
+import org.junit.jupiter.api.Test;
+
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.json.JsonValue;
-import org.apache.jena.atlas.junit.AssertExtra;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.atlas.web.HttpException;
@@ -60,11 +66,6 @@ import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.web.HttpSC;
 import org.awaitility.Awaitility;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.AssumptionViolatedException;
-import org.junit.Before;
-import org.junit.jupiter.api.Test;
 
 /** Tests of the admin functionality */
 public class TestWebappAdminAddDeleteDatasetFile extends AbstractFusekiWebappTest {
@@ -453,7 +454,7 @@ public class TestWebappAdminAddDeleteDatasetFile extends AbstractFusekiWebappTes
         if ( dsName.startsWith("/") )
             dsName = dsName.substring(1);
         try (TypedInputStream in = httpGet(ServerCtl.urlRoot() + "$/" + opDatasets + "/" + dsName)) {
-            AssertExtra.assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType());
+            assertEqualsContentType(WebContent.contentTypeJSON, in.getContentType());
             JsonValue v = JSON.parse(in);
             return v;
         }
@@ -659,14 +660,14 @@ public class TestWebappAdminAddDeleteDatasetFile extends AbstractFusekiWebappTes
 
     private static JsonValue execGetJSON(String url) {
         try ( TypedInputStream in = httpGet(url) ) {
-            AssertExtra.assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType());
+            assertEqualsContentType(WebContent.contentTypeJSON, in.getContentType());
             return JSON.parse(in);
         }
     }
 
     private static JsonValue execPostJSON(String url) {
         try ( TypedInputStream in = httpPostStream(url, null, null, null) ) {
-            AssertExtra.assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType());
+            assertEqualsContentType(WebContent.contentTypeJSON, in.getContentType());
             return JSON.parse(in);
         }
     }
@@ -675,5 +676,15 @@ public class TestWebappAdminAddDeleteDatasetFile extends AbstractFusekiWebappTes
         try ( QueryExecution qExec = conn.query("SELECT (count(*) AS ?C) { ?s ?p ?o }")) {
             return qExec.execSelect().next().getLiteral("C").getInt();
         }
+    }
+
+    /** Expect two strings to be non-null and be {@link String#equalsIgnoreCase} */
+    protected static void assertEqualsContentType(String expected, String actual) {
+        if ( expected == null && actual == null )
+            return;
+        if ( expected == null || actual == null )
+            fail("Expected: "+expected+" Got: "+actual);
+        if ( ! expected.equalsIgnoreCase(actual) )
+            fail("Expected: "+expected+" Got: "+actual);
     }
 }

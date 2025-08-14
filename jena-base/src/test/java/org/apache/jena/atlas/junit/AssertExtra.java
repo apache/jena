@@ -18,29 +18,27 @@
 
 package org.apache.jena.atlas.junit ;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List ;
+import java.util.function.Supplier;
 
 import org.apache.jena.atlas.lib.ListUtils ;
 
 public class AssertExtra {
-    public static void assertEqualsIgnoreCase(String a, String b) {
-        assertTrue(a.equalsIgnoreCase(b)) ;
-    }
-
-    public static void assertEqualsIgnoreCase(String a, String b, String msg) {
-        assertTrue(a.equalsIgnoreCase(b), ()->msg);
-    }
 
     public static <T> void assertEqualsUnordered(List<T> list1, List<T> list2) {
-        assertEqualsUnordered(null, list1, list2) ;
+        assertEqualsUnordered(list1, list2, (Supplier<String>)null);
     }
 
-    public static <T> void assertEqualsUnordered(String msg, List<T> list1, List<T> list2) {
+    public static <T> void assertEqualsUnordered(List<T> list1, List<T> list2, String msg) {
+        assertEqualsUnordered(list1, list2, ()->msg);
+    }
+
+    public static <T> void assertEqualsUnordered(List<T> list1, List<T> list2, Supplier<String> msg) {
+        String x = (msg == null) ? null : msg.get();
         if ( ! ListUtils.equalsUnordered(list1, list2) )
-            fail(msg(msg, list1, list2)) ;
+            fail(msg(x, list1, list2)) ;
     }
 
     private static <T> String msg(String msg, List<T> list1, List<T> list2) {

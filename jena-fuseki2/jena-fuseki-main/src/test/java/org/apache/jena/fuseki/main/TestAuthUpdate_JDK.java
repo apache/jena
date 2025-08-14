@@ -27,11 +27,11 @@ import org.apache.jena.sparql.exec.http.UpdateExecutionHTTP;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateExecution;
 import org.apache.jena.update.UpdateRequest;
-import org.junit.FixMethodOrder;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.TestMethodOrder;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestAuthUpdate_JDK extends AbstractTestAuth_JDK {
     @Test
     public void update_jdk_auth_01() {

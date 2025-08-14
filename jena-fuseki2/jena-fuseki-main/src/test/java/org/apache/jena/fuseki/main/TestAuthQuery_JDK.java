@@ -18,18 +18,19 @@
 
 package org.apache.jena.fuseki.main;
 
-import static org.apache.jena.fuseki.test.HttpTest.*;
+import static org.apache.jena.fuseki.test.HttpTest.expectQuery401;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URI;
 
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
 import org.apache.jena.http.auth.AuthEnv;
 import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
-import org.junit.Assert;
-import org.junit.FixMethodOrder;
-import org.junit.jupiter.api.Test;
-import org.junit.runners.MethodSorters;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestAuthQuery_JDK extends AbstractTestAuth_JDK {
     @Test
     public void query_auth_jdk_01_no_auth() {
@@ -51,7 +52,7 @@ public class TestAuthQuery_JDK extends AbstractTestAuth_JDK {
         // Auth credentials for valid user with correct password
         QueryExecutionHTTP qe = withAuthJDK(QueryExecutionHTTP.create().endpoint(databaseURL()).query("ASK { }"),
                                               "user", "password");
-        Assert.assertTrue(qe.execAsk());
+        assertTrue(qe.execAsk());
     }
 
     @Test
@@ -62,7 +63,7 @@ public class TestAuthQuery_JDK extends AbstractTestAuth_JDK {
         URI uri = URI.create(dsURL);
         AuthEnv.get().registerUsernamePassword(uri, "user", "password");
         try {
-            Assert.assertTrue(qe.execAsk());
+            assertTrue(qe.execAsk());
         } finally {
             AuthEnv.get().unregisterUsernamePassword(uri);
         }
@@ -76,7 +77,7 @@ public class TestAuthQuery_JDK extends AbstractTestAuth_JDK {
         URI uri = URI.create(dsURL);
         AuthEnv.get().registerUsernamePassword(uri, "user", "password");
         try {
-            Assert.assertTrue(qe.execAsk());
+            assertTrue(qe.execAsk());
         } finally {
             AuthEnv.get().unregisterUsernamePassword(uri);
         }

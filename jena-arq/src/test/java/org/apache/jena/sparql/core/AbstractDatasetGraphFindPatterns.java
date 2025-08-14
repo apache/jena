@@ -92,7 +92,7 @@ public abstract class AbstractDatasetGraphFindPatterns {
         assertNotNull(quads1, ()->"find()");
         List<Quad> quads2 = toList(dsg.find(null, null, null, null));
         assertNotNull(quads2, ()->"find(null,null,null,null)");
-        AssertExtra.assertEqualsUnordered("find()", quads1, quads2);
+        AssertExtra.assertEqualsUnordered(quads1, quads2, "find()");
     }
 
     @Test public void find_pattern_gspo() {
@@ -100,49 +100,49 @@ public abstract class AbstractDatasetGraphFindPatterns {
         List<Quad> quads1 = toList(dsg.find(node(":g"), node(":s"), node(":p"), node(":o")));
         assertNotNull(quads1, "find(g,s,p,o)");
         List<Quad> quads2 = Arrays.asList(q);
-        AssertExtra.assertEqualsUnordered("find(gspo)", quads1, quads2);
+        AssertExtra.assertEqualsUnordered(quads1, quads2, "find(gspo)");
     }
 
     @Test public void find_pattern_g() {
         DatasetGraph dsg = create(dataPattern);
         List<Quad> quads1 = Iter.toList(dsg.find(node(":gx"), null, null, null));
         List<Quad> quads2 = Arrays.asList(q_g, q_gs, q_gp, q_go, q_gsp, q_gso, q_gpo, q_gspo);
-        AssertExtra.assertEqualsUnordered("find(g)", quads1, quads2);
+        AssertExtra.assertEqualsUnordered(quads1, quads2, "find(g)");
     }
 
     @Test public void find_pattern_s() {
         DatasetGraph dsg = create(dataPattern);
         List<Quad> quads1 =  Iter.toList(dsg.find(null, node(":sx"), null, null));
         List<Quad> quads2 = Arrays.asList(q_s, q_gs, q_sp, q_so, q_gsp, q_gso, q_spo, q_gspo);
-        AssertExtra.assertEqualsUnordered("find(s)", quads1, quads2);
+        AssertExtra.assertEqualsUnordered(quads1, quads2, "find(s)");
     }
 
     @Test public void find_pattern_p() {
         DatasetGraph dsg = create(dataPattern);
         List<Quad> quads1 =  Iter.toList(dsg.find(null, null, node(":px"), null));
         List<Quad> quads2 = Arrays.asList(q_p, q_gp, q_sp, q_po, q_gsp, q_gpo, q_spo, q_gspo);
-        AssertExtra.assertEqualsUnordered("find(p)", quads1, quads2);
+        AssertExtra.assertEqualsUnordered(quads1, quads2, "find(p)");
     }
 
     @Test public void find_pattern_o() {
         DatasetGraph dsg = create(dataPattern);
         List<Quad> quads1 =  Iter.toList(dsg.find(null, null, null, node(":ox")));
         List<Quad> quads2 = Arrays.asList(q_o, q_go, q_so, q_po, q_gpo, q_gso, q_spo, q_gspo);
-        AssertExtra.assertEqualsUnordered("find(o)", quads1, quads2);
+        AssertExtra.assertEqualsUnordered(quads1, quads2, "find(o)");
     }
 
     @Test public void find_pattern_gs() {
         DatasetGraph dsg = create(dataPattern);
         List<Quad> quads1 =  Iter.toList(dsg.find(node(":gx"), node(":sx"), null, null));
         List<Quad> quads2 = Arrays.asList(q_gs, q_gsp, q_gso, q_gspo);
-        AssertExtra.assertEqualsUnordered("find(gs)", quads1, quads2);
+        AssertExtra.assertEqualsUnordered(quads1, quads2, "find(gs)");
     }
 
     @Test public void find_pattern_gp() {
         DatasetGraph dsg = create(dataPattern);
         List<Quad> quads1 =  Iter.toList(dsg.find(node(":gx"), null, node(":px"), null));
         List<Quad> quads2 = Arrays.asList(q_gp, q_gsp, q_gpo, q_gspo);
-        AssertExtra.assertEqualsUnordered("find(gp)", quads1, quads2);
+        AssertExtra.assertEqualsUnordered(quads1, quads2, "find(gp)");
     }
 
 
@@ -150,54 +150,54 @@ public abstract class AbstractDatasetGraphFindPatterns {
         DatasetGraph dsg = create(dataPattern);
         List<Quad> quads1 =  Iter.toList(dsg.find(node(":gx"), null, null, node(":ox")));
         List<Quad> quads2 = Arrays.asList(q_go, q_gpo, q_gso, q_gspo);
-        AssertExtra.assertEqualsUnordered("find(go)", quads1, quads2);
+        AssertExtra.assertEqualsUnordered(quads1, quads2, "find(go)");
     }
 
     @Test public void find_pattern_sp() {
         DatasetGraph dsg = create(dataPattern);
         List<Quad> quads1 =  Iter.toList(dsg.find(null, node(":sx"), node(":px"), null));
         List<Quad> quads2 = Arrays.asList(q_sp, q_gsp, q_spo, q_gspo);
-        AssertExtra.assertEqualsUnordered("find(sp)", quads1, quads2);
+        AssertExtra.assertEqualsUnordered(quads1, quads2, "find(sp)");
     }
 
     @Test public void find_pattern_so() {
         DatasetGraph dsg = create(dataPattern);
         List<Quad> quads1 =  Iter.toList(dsg.find(null, node(":sx"), null, node(":ox")));
         List<Quad> quads2 = Arrays.asList(q_so, q_gso, q_spo, q_gspo);
-        AssertExtra.assertEqualsUnordered("find(so)", quads1, quads2);
+        AssertExtra.assertEqualsUnordered(quads1, quads2, "find(so)");
     }
 
     @Test public void find_pattern_po() {
         DatasetGraph dsg = create(dataPattern);
         List<Quad> quads1 =  Iter.toList(dsg.find(null, null, node(":px"), node(":ox")));
         List<Quad> quads2 = Arrays.asList(q_po, q_gpo, q_spo, q_gspo);
-        AssertExtra.assertEqualsUnordered("find(po)", quads1, quads2);
+        AssertExtra.assertEqualsUnordered(quads1, quads2, "find(po)");
     }
 
     @Test public void find_pattern_gsp() {
         DatasetGraph dsg = create(dataPattern);
         List<Quad> quads1 =  Iter.toList(dsg.find(node(":gx"), node(":sx"), node(":px"), null));
         List<Quad> quads2 = Arrays.asList(q_gsp, q_gspo);
-        AssertExtra.assertEqualsUnordered("find(gsp)", quads1, quads2);
+        AssertExtra.assertEqualsUnordered(quads1, quads2, "find(gsp)");
 
     }
     @Test public void find_pattern_gpo() {
         DatasetGraph dsg = create(dataPattern);
         List<Quad> quads1 =  Iter.toList(dsg.find(node(":gx"), null, node(":px"), node(":ox")));
         List<Quad> quads2 = Arrays.asList(q_gpo, q_gspo);
-        AssertExtra.assertEqualsUnordered("find(gpo)", quads1, quads2);
+        AssertExtra.assertEqualsUnordered(quads1, quads2, "find(gpo)");
 
     }
     @Test public void find_pattern_gso() {
         DatasetGraph dsg = create(dataPattern);
         List<Quad> quads1 =  Iter.toList(dsg.find(node(":gx"), null, node(":px"), node(":ox")));
         List<Quad> quads2 = Arrays.asList(q_gpo, q_gspo);
-        AssertExtra.assertEqualsUnordered("find(gso)", quads1, quads2);
+        AssertExtra.assertEqualsUnordered(quads1, quads2, "find(gso)");
     }
     @Test public void find_pattern_spo() {
         DatasetGraph dsg = create(dataPattern);
         List<Quad> quads1 =  Iter.toList(dsg.find(null, node(":sx"), node(":px"), node(":ox")));
         List<Quad> quads2 = Arrays.asList(q_spo, q_gspo);
-        AssertExtra.assertEqualsUnordered("find(spo)", quads1, quads2);
+        AssertExtra.assertEqualsUnordered(quads1, quads2, "find(spo)");
     }
 }
