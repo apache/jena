@@ -128,7 +128,7 @@ public class FusekiServerPerTestClass {
     }
 
     /** Expect two strings to be non-null and be {@link String#equalsIgnoreCase} */
-    protected static void assertEqualsContectType(String expected, String actual) {
+    protected static void assertEqualsContentType(String expected, String actual) {
         if ( expected == null && actual == null )
             return;
         if ( expected == null || actual == null )

@@ -37,12 +37,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.json.JsonValue;
-import org.apache.jena.atlas.junit.AssertExtra;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.atlas.web.HttpException;
@@ -54,10 +58,6 @@ import org.apache.jena.fuseki.test.HttpTest;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.web.HttpSC;
 import org.awaitility.Awaitility;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 
 /** Tests of the admin functionality */
 public class TestWebappAdmin extends AbstractFusekiWebappTest {
@@ -299,7 +299,7 @@ public class TestWebappAdmin extends AbstractFusekiWebappTest {
         if ( dsName.startsWith("/") )
             dsName = dsName.substring(1);
         try (TypedInputStream in = httpGet(ServerCtl.urlRoot() + "$/" + opDatasets + "/" + dsName)) {
-            AssertExtra.assertEqualsIgnoreCase(WebContent.contentTypeJSON, in.getContentType());
+            assertEqualsContentType(WebContent.contentTypeJSON, in.getContentType());
             JsonValue v = JSON.parse(in);
             return v;
         }
@@ -442,6 +442,16 @@ public class TestWebappAdmin extends AbstractFusekiWebappTest {
         assertNotNull(obj.get("ds.services"));
         assertNotNull(obj.get("ds.state"));
         assertTrue(obj.get("ds.services").isArray());
+    }
+
+    /** Expect two strings to be non-null and be {@link String#equalsIgnoreCase} */
+    protected static void assertEqualsContentType(String expected, String actual) {
+        if ( expected == null && actual == null )
+            return;
+        if ( expected == null || actual == null )
+            fail("Expected: "+expected+" Got: "+actual);
+        if ( ! expected.equalsIgnoreCase(actual) )
+            fail("Expected: "+expected+" Got: "+actual);
     }
 }
 

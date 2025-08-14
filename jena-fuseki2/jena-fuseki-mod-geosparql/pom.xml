@@ -48,13 +48,6 @@
       <!-- Note: the 'bundle' profile sets this dependency's scope to 'provided'. -->
     </dependency>
 
-    <!-- Testing -->
-    <dependency>
-      <groupId>org.junit.vintage</groupId>
-      <artifactId>junit-vintage-engine</artifactId>
-      <scope>test</scope>
-    </dependency>
-
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>

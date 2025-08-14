@@ -23,7 +23,7 @@ package org.apache.jena.sparql.expr;
  * That is, it isn't really a function.
  * <p>
  * A function returns the same result value when called with the same arguments.
- * Some "functions" do not obey this condition on functions; they look like functions but aren't.
+ * Some "functions" do not obey this condition on functions; they look like functions but they aren't.
  * RAND, BNODE, UUID, STRUUID
  * <p>
  * There are also "functional forms" that have special evaluation rule. These return the same value when given the same arguments.

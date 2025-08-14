@@ -27,12 +27,14 @@ import static org.apache.jena.http.HttpOp.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.jena.atlas.io.IO;
@@ -49,8 +51,6 @@ import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.fuseki.test.HttpTest;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 
 /**
  *  Tests of the admin functionality adding and deleting datasets dynamically.
@@ -94,7 +94,7 @@ public class TestAdminDatabaseOps extends FusekiServerPerTest {
 
             // Check a backup was created
             try ( TypedInputStream in = httpGet(server.serverURL()+"$/"+opListBackups) ) {
-                assertEqualsContectType(WebContent.contentTypeJSON, in.getContentType());
+                assertEqualsContentType(WebContent.contentTypeJSON, in.getContentType());
                 JsonValue v = JSON.parseAny(in);
                 assertNotNull(v.getAsObject().get("backups"));
                 JsonArray a = v.getAsObject().get("backups").getAsArray();
@@ -119,7 +119,7 @@ public class TestAdminDatabaseOps extends FusekiServerPerTest {
     @Test public void list_backups_1() {
         withServer(server -> {
             try ( TypedInputStream in = httpGet(server.serverURL()+"$/"+opListBackups) ) {
-                assertEqualsContectType(WebContent.contentTypeJSON, in.getContentType());
+                assertEqualsContentType(WebContent.contentTypeJSON, in.getContentType());
                 JsonValue v = JSON.parseAny(in);
                 assertNotNull(v.getAsObject().get("backups"));
             }
@@ -283,7 +283,7 @@ public class TestAdminDatabaseOps extends FusekiServerPerTest {
         if ( dsName.startsWith("/") )
             dsName = dsName.substring(1);
         try (TypedInputStream in = httpGet(server.serverURL() + "$/" + opDatasets + "/" + dsName)) {
-            assertEqualsContectType(WebContent.contentTypeJSON, in.getContentType());
+            assertEqualsContentType(WebContent.contentTypeJSON, in.getContentType());
             JsonValue v = JSON.parse(in);
             return v;
         }
@@ -444,7 +444,7 @@ public class TestAdminDatabaseOps extends FusekiServerPerTest {
 
     private JsonValue execGetJSON(String url) {
         try ( TypedInputStream in = httpGet(url) ) {
-            assertEqualsContectType(WebContent.contentTypeJSON, in.getContentType());
+            assertEqualsContentType(WebContent.contentTypeJSON, in.getContentType());
             return JSON.parse(in);
         }
     }
@@ -467,18 +467,8 @@ public class TestAdminDatabaseOps extends FusekiServerPerTest {
 
     private JsonValue execPostJSON(String url) {
         try ( TypedInputStream in = httpPostStream(url, null, null, null) ) {
-            assertEqualsContectType(WebContent.contentTypeJSON, in.getContentType());
+            assertEqualsContentType(WebContent.contentTypeJSON, in.getContentType());
             return JSON.parse(in);
         }
-    }
-
-    /** Expect two string to be non-null and be {@link String#equalsIgnoreCase} */
-    private static void assertEqualsContentType(String expected, String actual) {
-        if ( expected == null && actual == null )
-            return;
-        if ( expected == null || actual == null )
-            fail("Expected: "+expected+" Got: "+actual);
-        if ( ! expected.equalsIgnoreCase(actual) )
-            fail("Expected: "+expected+" Got: "+actual);
     }
 }

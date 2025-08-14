@@ -185,7 +185,6 @@ public class QueryTestItem
     }
 
     private String _getName() {
-
         Statement s = testResource.getProperty(TestManifest.name) ;
         String ln = s.getSubject().getLocalName();
         if ( s == null )
