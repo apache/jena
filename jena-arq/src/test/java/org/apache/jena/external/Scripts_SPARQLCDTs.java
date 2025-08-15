@@ -18,9 +18,9 @@
 
 package org.apache.jena.external;
 
-import org.apache.jena.arq.junit.manifest.Manifests;
-import org.apache.jena.arq.junit.runners.Label;
-import org.apache.jena.arq.junit.runners.RunnerSPARQL;
+import org.apache.jena.arq.junit4.manifest.Manifests;
+import org.apache.jena.arq.junit4.runners.Label;
+import org.apache.jena.arq.junit4.runners.RunnerSPARQL;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

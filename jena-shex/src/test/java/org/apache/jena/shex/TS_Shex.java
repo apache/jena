@@ -35,12 +35,12 @@ public class TS_Shex {
     // Too later the runners have setup by now.
 //    private static boolean oldValue = false;
 //
-//    @BeforeSuite public static void beforeAll() {
+//    @BeforeClass public static void beforeAll() {
 //        oldValue = SysShex.STRICT;
 //        SysShex.STRICT = true;
 //    }
 //
-//    @AfterSuite public static void afterAll() {
+//    @AfterClass public static void afterAll() {
 //        SysShex.STRICT = oldValue;
 //    }
 }

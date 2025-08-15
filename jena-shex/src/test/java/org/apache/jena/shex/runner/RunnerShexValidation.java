@@ -18,8 +18,9 @@
 
 package org.apache.jena.shex.runner;
 
-import org.apache.jena.arq.junit.runners.AbstractRunnerOfTests;
 import org.junit.runners.model.InitializationError;
+
+import org.apache.jena.arq.junit4.runners.AbstractRunnerOfTests;
 
 public class RunnerShexValidation extends AbstractRunnerOfTests {
     public RunnerShexValidation(Class<? > klass) throws InitializationError {

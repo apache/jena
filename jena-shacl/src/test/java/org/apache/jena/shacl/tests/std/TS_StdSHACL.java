@@ -29,6 +29,6 @@ import org.junit.runners.Suite;
 } )
 
 public class TS_StdSHACL {
-//    @BeforeSuite public static void beforeClass() {}
-//    @AfterSuite public static void afterClass() {}
+//    @BeforeClass public static void beforeClass() {}
+//    @AfterClass public static void afterClass() {}
 }

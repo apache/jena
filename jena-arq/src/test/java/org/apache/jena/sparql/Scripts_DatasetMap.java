@@ -18,16 +18,17 @@
 
 package org.apache.jena.sparql;
 
-import org.apache.jena.arq.junit.manifest.Manifests;
-import org.apache.jena.arq.junit.manifest.Prefix;
-import org.apache.jena.arq.junit.runners.Label;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+
+import org.apache.jena.arq.junit4.manifest.Manifests;
+import org.apache.jena.arq.junit4.manifest.Prefix;
+import org.apache.jena.arq.junit4.runners.Label;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.expr.E_Function;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.junit.RunnerSPARQL_DatasetMap;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
 
 @RunWith(RunnerSPARQL_DatasetMap.class)
 @Label("SPARQL [dataset Map]")

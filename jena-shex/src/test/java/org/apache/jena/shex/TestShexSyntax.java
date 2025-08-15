@@ -18,8 +18,8 @@
 
 package org.apache.jena.shex;
 
-import org.apache.jena.arq.junit.runners.Directories;
-import org.apache.jena.arq.junit.runners.Label;
+import org.apache.jena.arq.junit4.runners.Directories;
+import org.apache.jena.arq.junit4.runners.Label;
 import org.apache.jena.shex.runner.RunnerShexSyntax;
 import org.junit.runner.RunWith;
 

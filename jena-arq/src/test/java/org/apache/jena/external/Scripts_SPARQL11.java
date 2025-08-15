@@ -18,10 +18,11 @@
 
 package org.apache.jena.external;
 
-import org.apache.jena.arq.junit.manifest.Manifests;
-import org.apache.jena.arq.junit.runners.Label;
-import org.apache.jena.arq.junit.runners.RunnerSPARQL;
 import org.junit.runner.RunWith;
+
+import org.apache.jena.arq.junit4.manifest.Manifests;
+import org.apache.jena.arq.junit4.runners.Label;
+import org.apache.jena.arq.junit4.runners.RunnerSPARQL;
 
 /**
  * The test suite for SPARQL 1.1 (the second SPARQL working group) approved tests, as
