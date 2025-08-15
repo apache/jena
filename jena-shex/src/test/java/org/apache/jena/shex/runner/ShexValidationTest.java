@@ -23,7 +23,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 import java.util.List;
-import org.apache.jena.arq.junit.manifest.ManifestEntry;
+
+import org.apache.jena.arq.junit4.manifest.ManifestEntry;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.atlas.lib.InternalErrorException;

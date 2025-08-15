@@ -18,10 +18,11 @@
 
 package org.apache.jena.external;
 
-import org.apache.jena.arq.junit.manifest.Manifests;
-import org.apache.jena.arq.junit.runners.Label;
-import org.apache.jena.arq.junit.runners.RunnerRIOT;
 import org.junit.runner.RunWith ;
+
+import org.apache.jena.arq.junit4.manifest.Manifests;
+import org.apache.jena.arq.junit4.runners.Label;
+import org.apache.jena.arq.junit4.runners.RunnerRIOT;
 
 /** rdf-tests-cg, RDF languages. See testing/README.md for any modifications. */
 @RunWith(RunnerRIOT.class)

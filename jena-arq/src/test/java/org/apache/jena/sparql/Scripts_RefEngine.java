@@ -18,9 +18,9 @@
 
 package org.apache.jena.sparql;
 
-import org.apache.jena.arq.junit.manifest.Manifests;
-import org.apache.jena.arq.junit.runners.Label;
-import org.apache.jena.arq.junit.runners.RunnerSPARQL;
+import org.apache.jena.arq.junit4.manifest.Manifests;
+import org.apache.jena.arq.junit4.runners.Label;
+import org.apache.jena.arq.junit4.runners.RunnerSPARQL;
 import org.apache.jena.sparql.engine.ref.QueryEngineRef;
 import org.apache.jena.sparql.expr.E_Function;
 import org.apache.jena.sparql.expr.NodeValue;

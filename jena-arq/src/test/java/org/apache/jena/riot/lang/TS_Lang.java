@@ -18,8 +18,8 @@
 
 package org.apache.jena.riot.lang;
 
-import org.junit.platform.suite.api.AfterSuite;
-import org.junit.platform.suite.api.BeforeSuite;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
@@ -58,7 +58,7 @@ import org.apache.jena.riot.lang.rdfxml.TC_RIOT_RDFXML;
 
 public class TS_Lang
 {
-    @BeforeSuite public static void beforeClass()   { BaseTest2.setTestLogging(); }
-    @AfterSuite public static void afterClass()     { BaseTest2.unsetTestLogging(); }
+    @BeforeAll public static void beforeClass()   { BaseTest2.setTestLogging(); }
+    @AfterAll public static void afterClass()     { BaseTest2.unsetTestLogging(); }
 }
 

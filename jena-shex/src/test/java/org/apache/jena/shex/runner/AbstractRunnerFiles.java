@@ -29,8 +29,8 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.jena.arq.junit.runners.Directories;
-import org.apache.jena.arq.junit.runners.RunnerOneTest;
+import org.apache.jena.arq.junit4.runners.Directories;
+import org.apache.jena.arq.junit4.runners.RunnerOneTest;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;

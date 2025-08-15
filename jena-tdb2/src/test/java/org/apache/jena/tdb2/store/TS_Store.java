@@ -18,8 +18,8 @@
 
 package org.apache.jena.tdb2.store;
 
-import org.junit.platform.suite.api.AfterSuite;
-import org.junit.platform.suite.api.BeforeSuite;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
@@ -54,13 +54,13 @@ public class TS_Store
 {
     static FileMode mode;
 
-    @BeforeSuite
+    @BeforeAll
     public static void beforeClass()
     {
         mode = SystemTDB.fileMode();
     }
 
-    @AfterSuite
+    @AfterAll
     public static void afterClass()
     {
         if ( ! SystemTDB.fileMode().equals(mode) )

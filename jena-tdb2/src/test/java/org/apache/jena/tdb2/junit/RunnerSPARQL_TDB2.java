@@ -20,9 +20,9 @@ package org.apache.jena.tdb2.junit;
 
 import java.util.function.Function;
 
-import org.apache.jena.arq.junit.manifest.ManifestEntry;
-import org.apache.jena.arq.junit.runners.AbstractRunnerOfTests;
-import org.apache.jena.arq.junit.sparql.SparqlTests;
+import org.apache.jena.arq.junit4.manifest.ManifestEntry;
+import org.apache.jena.arq.junit4.runners.AbstractRunnerOfTests;
+import org.apache.jena.arq.junit4.sparql.SparqlTests;
 import org.apache.jena.atlas.lib.Creator;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.tdb2.TDB2Factory;

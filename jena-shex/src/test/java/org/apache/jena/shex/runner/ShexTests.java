@@ -19,10 +19,11 @@
 package org.apache.jena.shex.runner;
 
 import java.util.*;
-import org.apache.jena.arq.junit.manifest.Manifest;
-import org.apache.jena.arq.junit.manifest.ManifestEntry;
-import org.apache.jena.arq.junit.manifest.Prefix;
-import org.apache.jena.arq.junit.runners.Label;
+
+import org.apache.jena.arq.junit4.manifest.Manifest;
+import org.apache.jena.arq.junit4.manifest.ManifestEntry;
+import org.apache.jena.arq.junit4.manifest.Prefix;
+import org.apache.jena.arq.junit4.runners.Label;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.logging.Log;

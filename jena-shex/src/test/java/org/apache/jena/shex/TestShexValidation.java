@@ -18,8 +18,8 @@
 
 package org.apache.jena.shex;
 
-import org.apache.jena.arq.junit.manifest.Manifests;
-import org.apache.jena.arq.junit.runners.Label;
+import org.apache.jena.arq.junit4.manifest.Manifests;
+import org.apache.jena.arq.junit4.runners.Label;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.riot.SysRIOT;
 import org.apache.jena.shex.runner.RunnerShexValidation;
