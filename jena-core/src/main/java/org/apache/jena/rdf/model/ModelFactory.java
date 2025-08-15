@@ -86,11 +86,13 @@ public class ModelFactory extends ModelFactoryBase
     }
 
     /**
-        Answer a ModelMaker that constructs memory-based Models that do
-        not persist past JVM termination.
-
-        @return a ModelMaker that constructs memory-based models
-    */
+     * Answer a ModelMaker that constructs memory-based Models that do not persist
+     * past JVM termination.
+     *
+     * @return a ModelMaker that constructs memory-based models
+     * @deprecated Use org.apache.jena.ontapi.
+     */
+    @Deprecated(forRemoval = true)
     public static ModelMaker createMemModelMaker() {
         return new ModelMakerImpl(new SimpleGraphMaker());
     }
@@ -181,7 +183,10 @@ public class ModelFactory extends ModelFactoryBase
      * @return A new ontology model
      * @see OntModelSpec#getDefaultSpec
      * @see #createOntologyModel(OntModelSpec, Model)
+     *
+     * @deprecated Use org.apache.jena.ontapi.
      */
+    @Deprecated(forRemoval = true)
     public static OntModel createOntologyModel() {
         return createOntologyModel( ProfileRegistry.OWL_LANG );
     }
@@ -232,7 +237,9 @@ public class ModelFactory extends ModelFactoryBase
      * @param languageURI The URI specifying the ontology language we want to process
      * @return A new ontology model
      * @see OntModelSpec#getDefaultSpec
+     * @deprecated Use org.apache.jena.ontapi.
      */
+    @Deprecated(forRemoval = true)
     public static OntModel createOntologyModel( String languageURI ) {
         return createOntologyModel( OntModelSpec.getDefaultSpec( languageURI ), null );
     }
@@ -252,7 +259,9 @@ public class ModelFactory extends ModelFactoryBase
      * @param base The base model, which contains the contents of the ontology to be processed
      * @return A new ontology model
      * @see OntModelSpec
+     * @deprecated Use org.apache.jena.ontapi.
      */
+    @Deprecated(forRemoval = true)
     public static OntModel createOntologyModel( OntModelSpec spec, ModelMaker maker, Model base ) {
         OntModelSpec _spec = new OntModelSpec( spec );
         _spec.setImportModelMaker( maker );
@@ -271,7 +280,9 @@ public class ModelFactory extends ModelFactoryBase
      * @param base An existing model to treat as an ontology model, or null.
      * @return A new ontology model
      * @see OntModelSpec
+     * @deprecated Use org.apache.jena.ontapi.
      */
+    @Deprecated(forRemoval = true)
     public static OntModel createOntologyModel( OntModelSpec spec, Model base ) {
         return new OntModelImpl( spec, base );
     }
@@ -279,7 +290,9 @@ public class ModelFactory extends ModelFactoryBase
     /**
      * Answer a new ontology model constructed according to the specification, which includes
      * a ModelMaker which will create the necessary base model.
-    */
+     * @deprecated Use org.apache.jena.ontapi.
+     */
+    @Deprecated(forRemoval = true)
     public static OntModel createOntologyModel(OntModelSpec spec) {
         return new OntModelImpl(spec);
     }

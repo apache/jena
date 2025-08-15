@@ -42,6 +42,7 @@ import junit.framework.TestCase;
  * Unit tests on ont models with reasoning
  * </p>
  */
+@SuppressWarnings("removal")
 public class TestOntReasoning
     extends TestCase
 {

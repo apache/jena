@@ -31,6 +31,7 @@ import org.apache.jena.reasoner.* ;
 import org.apache.jena.reasoner.rulesys.* ;
 import org.apache.jena.shared.CannotCreateException ;
 
+@SuppressWarnings("removal")
 public class TestOntModelSpecAssembler extends AssemblerTestBase
     {
     public TestOntModelSpecAssembler( String name )
@@ -41,7 +42,7 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase
 
     public void testOntModelSpecAssemblerType()
         { testDemandsMinimalType( new OntModelSpecAssembler(), JA.OntModelSpec );  }
-    
+
     public static TestSuite suite()
         {
         TestSuite result = new TestSuite();
@@ -49,8 +50,8 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase
         addParameterisedTests( result );
         return result;
         }
-    
-    protected static void addParameterisedTests( TestSuite result ) 
+
+    protected static void addParameterisedTests( TestSuite result )
         {
         Field [] fields = OntModelSpec.class.getFields();
             for ( Field f : fields )
@@ -68,8 +69,8 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase
                     }
                 }
             }
-        }    
-    
+        }
+
     protected void testBuiltinSpec( OntModelSpec ontModelSpec, String specName )
         {
         testBuiltinSpecAsRootName( ontModelSpec, specName );
@@ -87,7 +88,7 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase
         Resource root = resourceInModel( JA.getURI() + specName + " rdf:type ja:OntModelSpec" );
         assertEquals( ontModelSpec, new OntModelSpecAssembler().open( root ) );
         }
-    
+
     protected static Test createTest( final OntModelSpec spec, final String name )
         {
         return new TestOntModelSpecAssembler( name )
@@ -97,16 +98,16 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase
                 { testBuiltinSpec( spec, name ); }
             };
         }
-    
+
     public void testOntModelSpecVocabulary()
         {
         assertDomain( JA.OntModelSpec, JA.ontLanguage );
         assertDomain( JA.OntModelSpec, JA.documentManager );
         assertDomain( JA.OntModelSpec, JA.likeBuiltinSpec );
         }
-    
-    public void testCreateFreshDocumentManager() 
-        { 
+
+    public void testCreateFreshDocumentManager()
+        {
         Assembler a = new OntModelSpecAssembler();
         Resource root = resourceInModel( "x rdf:type ja:OntModelSpec; x ja:documentManager y" );
         OntDocumentManager dm = new OntDocumentManager();
@@ -114,7 +115,7 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase
         OntModelSpec om = (OntModelSpec) a.open( mock, root );
         assertSame( dm, om.getDocumentManager() );
         }
-    
+
     public void testUseSpecifiedReasoner()
         {
         Assembler a = new OntModelSpecAssembler();
@@ -124,7 +125,7 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase
         OntModelSpec om = (OntModelSpec) a.open( mock, root );
         assertSame( rf, om.getReasonerFactory() );
         }
-    
+
     public void testUseSpecifiedImpliedReasoner()
         {
         testUsedSpecifiedImpliedReasoner( OWLFBRuleReasonerFactory.URI );
@@ -140,7 +141,7 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase
         OntModelSpec om = (OntModelSpec) a.open( mock, root );
         assertSame( rf, om.getReasonerFactory() );
         }
-    
+
     public void testDetectsClashingImpliedAndExplicitReasoners()
         {
         Assembler a = new OntModelSpecAssembler();
@@ -149,7 +150,7 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase
         try { a.open( mock, root ); fail( "should detect reasoner clash" ); }
         catch (ReasonerClashException e) { pass(); }
         }
-    
+
     public void testUseSpecifiedLanguage()
         {
         testSpecifiedLanguage( ProfileRegistry.OWL_DL_LANG );
@@ -165,12 +166,12 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase
         OntModelSpec om = (OntModelSpec) a.open( root );
         assertEquals( lang, om.getLanguage() );
         }
-    
+
     public void testSpecifiedModelGetter()
         {
         Assembler a = new OntModelSpecAssembler();
-        ModelGetter getter = new ModelGetter() 
-            { 
+        ModelGetter getter = new ModelGetter()
+            {
             @Override
             public Model getModel( String URL ) { return null; }
 

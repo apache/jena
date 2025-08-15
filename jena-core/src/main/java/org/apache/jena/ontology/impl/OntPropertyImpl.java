@@ -37,6 +37,7 @@ import org.apache.jena.util.iterator.* ;
  * Implementation of the abstraction representing a general ontology property.
  * </p>
  */
+@SuppressWarnings("removal")
 public class OntPropertyImpl
     extends OntResourceImpl
     implements OntProperty

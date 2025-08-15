@@ -63,6 +63,7 @@ public class AllValuesFromRestrictionImpl
         }
 
         @Override
+        @SuppressWarnings("removal")
         public boolean canWrap( Node node, EnhGraph eg ) {
             // node will support being a AllValuesFromRestriction facet if it has rdf:type owl:Restriction or equivalent
             // and the combination of owl:onProperty and owl:allValuesFrom (or equivalents)
@@ -116,6 +117,7 @@ public class AllValuesFromRestrictionImpl
      * @exception ProfileException If the {@link Profile#ALL_VALUES_FROM()} property is not supported in the current language profile.
      */
     @Override
+    @SuppressWarnings("removal")
     public Resource getAllValuesFrom() {
         checkProfile( getProfile().ALL_VALUES_FROM(), "ALL_VALUES_FROM" );
         Resource r = (Resource) getRequiredProperty( getProfile().ALL_VALUES_FROM() ).getObject();

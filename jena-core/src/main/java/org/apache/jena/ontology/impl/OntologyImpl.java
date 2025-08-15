@@ -36,6 +36,7 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
  * meta-data about whole ontologies.
  * </p>
  */
+@SuppressWarnings("removal")
 public class OntologyImpl
     extends OntResourceImpl
     implements Ontology

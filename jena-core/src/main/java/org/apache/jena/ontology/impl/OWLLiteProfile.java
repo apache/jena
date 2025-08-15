@@ -139,6 +139,7 @@ public class OWLLiteProfile
             },
             {  AnnotationProperty.class,    new SupportsCheck() {
                 @Override
+                @SuppressWarnings("removal")
                 public boolean doCheck( Node n, EnhGraph g ) {
                     for (Iterator<Resource> i = ((OntModel) g).getProfile().getAnnotationProperties();  i.hasNext(); ) {
                         if (i.next().asNode().equals( n )) {

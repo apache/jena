@@ -34,19 +34,20 @@ public class TestInfGraph extends AbstractTestGraph
     {
     public TestInfGraph( String name )
         { super( name ); }
-    
+
     public static TestSuite suite()
         { return new TestSuite( TestInfGraph.class ); }
-    
+
+    @SuppressWarnings("removal")
     private InfGraph getInfGraph()
         {
         return (InfGraph) ModelFactory.createOntologyModel().getGraph();
         }
-    
+
     @Override
     public Graph getNewGraph()
         { return getInfGraph(); }
-    
+
     public void testInfGraph()
         {
         InfGraph ig = getInfGraph();

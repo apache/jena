@@ -43,6 +43,7 @@ import org.apache.jena.vocabulary.RDFS;
  * {@link TestClassExpression}
  * </p>
  */
+@SuppressWarnings("removal")
 public class TestOntClass
     extends ModelTestBase
 {

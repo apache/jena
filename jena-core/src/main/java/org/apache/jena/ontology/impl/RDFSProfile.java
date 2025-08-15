@@ -236,6 +236,7 @@ public class RDFSProfile
      * viewed according to the facet resource <code>res</code>
      */
     @Override
+    @SuppressWarnings("removal")
     public <T> boolean isSupported( Node n, EnhGraph g, Class<T> type ) {
         if (g instanceof OntModel) {
             OntModel m = (OntModel) g;

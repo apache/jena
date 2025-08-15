@@ -65,6 +65,7 @@ public class MinCardinalityQRestrictionImpl
             { return isMinCardinalityQRestriction( node, eg ); }
     };
 
+    @SuppressWarnings("removal")
     public static boolean isMinCardinalityQRestriction( Node node, EnhGraph eg )
         {
         // node will support being a QualifiedRestriction facet if it has rdf:type owl:Restriction or equivalent
