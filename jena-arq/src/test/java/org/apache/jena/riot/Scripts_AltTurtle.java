@@ -18,45 +18,80 @@
 
 package org.apache.jena.riot;
 
-import org.apache.jena.arq.junit4.manifest.Manifests;
-import org.apache.jena.arq.junit4.riot.ParseForTest;
-import org.apache.jena.arq.junit4.runners.Label;
-import org.apache.jena.arq.junit4.runners.RunnerRIOT;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.*;
+
+import org.apache.jena.arq.junit5.ScriptsLib;
+import org.apache.jena.arq.junit5.riot.ParsingStepForTest;
 import org.apache.jena.riot.lang.extra.TurtleJCC;
 import org.apache.jena.sys.JenaSystem;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
 
 /** Execute turtle test with alt parser. */
+public class Scripts_AltTurtle {
 
-@RunWith(RunnerRIOT.class)
-@Label("RIOT-TurtleJCC Scripts")
-@Manifests({
-    "testing/RIOT/Lang/TurtleStd/manifest.ttl",
-    "testing/RIOT/Lang/Turtle2/manifest.ttl",
+    @TestFactory
+    @DisplayName("Scripts AltTurtle TurtleStd")
+    public Stream<DynamicNode> testFactory1() {
+        return ScriptsLib.manifestTestFactoryRIOT("testing/RIOT/Lang/TurtleStd/manifest.ttl");
+    }
 
-    // rdf-tests CG
-    "testing/rdf-tests-cg/turtle/manifest.ttl"
+    @TestFactory
+    @DisplayName("Scripts AltTurtle Extra Turtle")
+    public Stream<DynamicNode> testFactory2() {
+        return ScriptsLib.manifestTestFactoryRIOT("testing/RIOT/Lang/Turtle2/manifest.ttl");
+    }
 
-    // [rdf-star CG] RDF star CG tests. No longer valid
-//    "testing/rdf-star-cg/turtle/syntax/manifest.ttl",
-//    "testing/rdf-star-cg/turtle/eval/manifest.ttl"
-})
+    @TestFactory
+    @DisplayName("Scripts AltTurtle rdf-tests")
+    public Stream<DynamicNode> testFactory3() {
+        return ScriptsLib.manifestTestFactoryRIOT("testing/rdf-tests-cg/turtle/manifest.ttl");
+    }
 
-public class Scripts_AltTurtle
-{
     // Switch parsers!
+    // This needs to be capture during test build time.
     // ParseForTest is the wrapper code to parse test input.
-    @BeforeClass public static void beforeClass() {
+
+    @BeforeAll public static void beforeClass() {
         JenaSystem.init();
         // Register language and parser factory.
         TurtleJCC.register();
-        ParseForTest.registerAlternative(Lang.TURTLE, TurtleJCC.factory);
+        ParsingStepForTest.registerAlternative(Lang.TURTLE, TurtleJCC.factory);
     }
 
-    @AfterClass public static void afterClass() {
-        ParseForTest.unregisterAlternative(Lang.TURTLE);
+    @AfterAll public static void afterClass() {
+        ParsingStepForTest.unregisterAlternative(Lang.TURTLE);
     }
 }
+
+
+//@RunWith(RunnerRIOT.class)
+//@Label("RIOT-TurtleJCC Scripts")
+//@Manifests({
+//    "testing/RIOT/Lang/TurtleStd/manifest.ttl",
+//    "testing/RIOT/Lang/Turtle2/manifest.ttl",
+//
+//    // rdf-tests CG
+//    "testing/rdf-tests-cg/turtle/manifest.ttl"
+//
+//    // [rdf-star CG] RDF star CG tests. No longer valid
+////    "testing/rdf-star-cg/turtle/syntax/manifest.ttl",
+////    "testing/rdf-star-cg/turtle/eval/manifest.ttl"
+//})
+//
+//public class Scripts_AltTurtle
+//{
+//    // Switch parsers!
+//    // ParseForTest is the wrapper code to parse test input.
+//    @BeforeClass public static void beforeClass() {
+//        JenaSystem.init();
+//        // Register language and parser factory.
+//        TurtleJCC.register();
+//        ParseForTest.registerAlternative(Lang.TURTLE, TurtleJCC.factory);
+//    }
+//
+//    @AfterClass public static void afterClass() {
+//        ParseForTest.unregisterAlternative(Lang.TURTLE);
+//    }
+//}
 

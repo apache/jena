@@ -49,7 +49,7 @@ public class RunTestRDFXML {
 
     /**
      * The RDF/XML tests from rdf-tests CG
-     * These are also run from {@link org.apache.jena.riot.lang.rdfxml.manifest_rdf11.Scripts_RRX_RDFXML}.
+     * These are also run from {@link org.apache.jena.riot.lang.rdfxml.Scripts_RRX_RDFXML}.
      * Here, the exact warnings and errors are checked.
      */
     static List<String> w3cTestFiles() {

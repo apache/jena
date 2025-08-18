@@ -18,20 +18,30 @@
 
 package org.apache.jena.riot;
 
-import org.junit.runner.RunWith;
+import java.util.stream.Stream;
 
-import org.apache.jena.arq.junit4.manifest.Manifests;
-import org.apache.jena.arq.junit4.runners.Label;
-import org.apache.jena.arq.junit4.runners.RunnerRIOT;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicNode;
+import org.junit.jupiter.api.TestFactory;
+import org.apache.jena.arq.junit5.ScriptsLib;
 
 /** The test suites - these are driven by a manifest file and use external files for tests */
 
-@RunWith(RunnerRIOT.class)
-@Label("RIOT Scripts")
-@Manifests({
-    "testing/RIOT/Lang/manifest-all.ttl"
-})
+public class Scripts_LangSuite {
 
-public class Scripts_LangSuite
-{}
+    @TestFactory
+    @DisplayName("RIOT Scripts")
+    public Stream<DynamicNode> testFactory() {
+        return ScriptsLib.manifestTestFactoryRIOT("testing/RIOT/Lang/manifest-all.ttl");
+    }
+}
+
+//@RunWith(RunnerRIOT.class)
+//@Label("RIOT Scripts")
+//@Manifests({
+//    "testing/RIOT/Lang/manifest-all.ttl"
+//})
+//
+//public class Scripts_LangSuite
+//{}
 

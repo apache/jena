@@ -18,17 +18,19 @@
 
 package org.apache.jena.external;
 
-import org.junit.runner.RunWith ;
+import java.util.stream.Stream;
 
-import org.apache.jena.arq.junit4.manifest.Manifests;
-import org.apache.jena.arq.junit4.runners.Label;
-import org.apache.jena.arq.junit4.runners.RunnerRIOT;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicNode;
+import org.junit.jupiter.api.TestFactory;
+
+import org.apache.jena.arq.junit5.ScriptsLib;
 
 /** rdf-tests-cg, RDF languages. See testing/README.md for any modifications. */
-@RunWith(RunnerRIOT.class)
-@Label("rdf-tests CG - RDF languages")
-@Manifests({
-    "testing/rdf-tests-cg/manifest-lang.ttl"
-})
-
-public class Scripts_LangSuiteCG {}
+public class Scripts_LangSuiteCG {
+    @TestFactory
+    @DisplayName("rdf-tests CG - RDF languages")
+    public Stream<DynamicNode> testFactory() {
+        return ScriptsLib.manifestTestFactory("testing/rdf-tests-cg/manifest-lang.ttl");
+    }
+}
