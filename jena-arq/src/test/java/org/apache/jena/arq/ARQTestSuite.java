@@ -19,16 +19,16 @@
 package org.apache.jena.arq;
 
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.AfterAll;
 
 import org.apache.jena.atlas.TC_Atlas_ARQ;
 import org.apache.jena.atlas.legacy.BaseTest2;
 import org.apache.jena.external.Scripts_LangSuiteCG;
 import org.apache.jena.external.Scripts_SPARQL11;
+import org.apache.jena.external.Scripts_SPARQLCDTs;
 import org.apache.jena.http.auth.TS_HttpAuth;
 import org.apache.jena.rdfs.TS_InfRdfs;
 import org.apache.jena.riot.Scripts_AltTurtle;
@@ -80,7 +80,12 @@ import org.apache.jena.util.TS_UtilsARQ;
 
     Scripts_TIM.class,
     Scripts_DatasetMap.class,
-    Scripts_DatasetMapLink.class
+    Scripts_DatasetMapLink.class,
+
+    Scripts_SPARQLCDTs.class
+
+
+
     // [rdf-star CG] tests - no longer valid
 
     // Only runs when src-examples is a source folder, which it isn't in the build.
