@@ -42,6 +42,10 @@ public enum TextDirection {
         return direction;
     }
 
+    /**
+     * TextDirection for a valid label ('ltr or 'rtl').
+     * This function throws an exception on a wrong label.
+     */
     public static TextDirection create(String label) {
         Objects.requireNonNull(label);
         return switch (label) {
@@ -53,7 +57,11 @@ public enum TextDirection {
         };
     }
 
-    // Null works better if the code wants to give a context-sensitive error message.
+    /**
+     * TextDirection for a valid label ('ltr or 'rtl').
+     * This function returns null for an invalid label.
+     * The calling code is expected to give a context-sensitive error message if null is returned.
+     */
     public static TextDirection createOrNull(String label) {
         Objects.requireNonNull(label);
         return switch (label) {
