@@ -54,6 +54,7 @@ public class SparqlTests {
         // Syntax to use for tests where the file extension .rq/.ru applies.
         Syntax querySyntax11 = querySyntax;
         Syntax updateSyntax11 = querySyntax;
+        Syntax querySyntax12 = querySyntax;
 
         if ( querySyntax != null ) {
             if ( ! querySyntax.equals(Syntax.syntaxARQ) &&
@@ -72,8 +73,8 @@ public class SparqlTests {
             return new QuerySyntaxTest(entry, querySyntax, true);
         if ( equalsType(testType, TestManifest_11.PositiveSyntaxTest11) )
             return new QuerySyntaxTest(entry, querySyntax11, true);
-//        if ( equalsType(testType, TestManifest_12.PositiveSyntaxTest12) )
-//            return new QuerySyntaxTest(entry, querySyntax12, true);
+        if ( equalsType(testType, TestManifest_12.PositiveSyntaxTest12) )
+            return new QuerySyntaxTest(entry, querySyntax12, true);
         if ( equalsType(testType, TestManifestX.PositiveSyntaxTestARQ) )
             return new QuerySyntaxTest(entry, Syntax.syntaxARQ, true);
 

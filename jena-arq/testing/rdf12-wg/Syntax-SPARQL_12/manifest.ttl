@@ -25,10 +25,9 @@
     rdfs:comment "Syntax tests Syntax SPARQL 1.2" ;
     mf:entries
     (
-(
-:test_1
-:test_2
-) .
+    :test_1
+    :test_2
+    ) .
 
 :test_1 rdf:type   mf:PositiveSyntaxTest12 ;
    dawgt:approval dawgt:NotClassified ;

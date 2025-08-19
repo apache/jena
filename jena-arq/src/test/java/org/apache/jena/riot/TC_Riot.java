@@ -55,7 +55,8 @@ import org.apache.jena.riot.writer.TS_RiotWriter;
     , TS_RDFProtobuf.class
     , TS_RDFThrift.class
     , TS_RowSetRIOT.class
-    //Scripted parser tests in ARQTestSuite.
+
+    // Scripted parser tests in ARQTestSuite.
 })
 
 public class TC_Riot

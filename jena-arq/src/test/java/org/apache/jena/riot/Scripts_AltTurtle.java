@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.*;
 
-import org.apache.jena.arq.junit5.ScriptsLib;
+import org.apache.jena.arq.junit5.Scripts;
 import org.apache.jena.arq.junit5.riot.ParsingStepForTest;
 import org.apache.jena.riot.lang.extra.TurtleJCC;
 import org.apache.jena.sys.JenaSystem;
@@ -33,19 +33,19 @@ public class Scripts_AltTurtle {
     @TestFactory
     @DisplayName("Scripts AltTurtle TurtleStd")
     public Stream<DynamicNode> testFactory1() {
-        return ScriptsLib.manifestTestFactoryRIOT("testing/RIOT/Lang/TurtleStd/manifest.ttl");
+        return Scripts.manifestTestFactoryRIOT("testing/RIOT/Lang/TurtleStd/manifest.ttl");
     }
 
     @TestFactory
     @DisplayName("Scripts AltTurtle Extra Turtle")
     public Stream<DynamicNode> testFactory2() {
-        return ScriptsLib.manifestTestFactoryRIOT("testing/RIOT/Lang/Turtle2/manifest.ttl");
+        return Scripts.manifestTestFactoryRIOT("testing/RIOT/Lang/Turtle2/manifest.ttl");
     }
 
     @TestFactory
     @DisplayName("Scripts AltTurtle rdf-tests")
     public Stream<DynamicNode> testFactory3() {
-        return ScriptsLib.manifestTestFactoryRIOT("testing/rdf-tests-cg/turtle/manifest.ttl");
+        return Scripts.manifestTestFactoryRIOT("testing/rdf-tests-cg/turtle/manifest.ttl");
     }
 
     // Switch parsers!
@@ -63,35 +63,3 @@ public class Scripts_AltTurtle {
         ParsingStepForTest.unregisterAlternative(Lang.TURTLE);
     }
 }
-
-
-//@RunWith(RunnerRIOT.class)
-//@Label("RIOT-TurtleJCC Scripts")
-//@Manifests({
-//    "testing/RIOT/Lang/TurtleStd/manifest.ttl",
-//    "testing/RIOT/Lang/Turtle2/manifest.ttl",
-//
-//    // rdf-tests CG
-//    "testing/rdf-tests-cg/turtle/manifest.ttl"
-//
-//    // [rdf-star CG] RDF star CG tests. No longer valid
-////    "testing/rdf-star-cg/turtle/syntax/manifest.ttl",
-////    "testing/rdf-star-cg/turtle/eval/manifest.ttl"
-//})
-//
-//public class Scripts_AltTurtle
-//{
-//    // Switch parsers!
-//    // ParseForTest is the wrapper code to parse test input.
-//    @BeforeClass public static void beforeClass() {
-//        JenaSystem.init();
-//        // Register language and parser factory.
-//        TurtleJCC.register();
-//        ParseForTest.registerAlternative(Lang.TURTLE, TurtleJCC.factory);
-//    }
-//
-//    @AfterClass public static void afterClass() {
-//        ParseForTest.unregisterAlternative(Lang.TURTLE);
-//    }
-//}
-

@@ -28,8 +28,9 @@ import org.apache.jena.arq.junit5.sparql.SparqlTests;
 import org.apache.jena.graph.Node;
 
 /**
- * Manage a number of test generators so the TestFactory does not need to know the
- * kind of the tests
+ * Manage a number of test makes so a {@code TestFactory} does not need to know the
+ * kind of the tests. Making tests using {@link #testMaker} tries each registered
+ * test maker until one return non-null.
  */
 public class RunnableTestMaker {
 

@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.*;
 
-import org.apache.jena.arq.junit5.ScriptsLib;
+import org.apache.jena.arq.junit5.Scripts;
 import org.apache.jena.arq.junit5.riot.ParsingStepForTest;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.ReaderRIOTFactory;
@@ -76,7 +76,7 @@ public class Scripts_RRX_RDFXML {
     /*package*/ static Stream<DynamicNode> withAltParserFactory(Lang lang, ReaderRIOTFactory factory, String filename) {
         ParsingStepForTest.registerAlternative(lang, factory);
         try {
-        return ScriptsLib.manifestTestFactoryRIOT("testing/RIOT/rdf11-xml/manifest.ttl");
+        return Scripts.manifestTestFactoryRIOT("testing/RIOT/rdf11-xml/manifest.ttl");
         } finally {
             ParsingStepForTest.unregisterAlternative(lang);
         }
