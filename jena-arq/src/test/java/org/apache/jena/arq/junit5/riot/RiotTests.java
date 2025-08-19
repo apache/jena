@@ -175,6 +175,8 @@ public class RiotTests
     }
 
     private static String rebase(Node input, String baseIRI) {
+        if ( input.isBlank() )
+            return baseIRI;
         String inputURI = input.getURI();
         if ( baseIRI == null )
             return inputURI;

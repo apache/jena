@@ -18,33 +18,27 @@
 
 package org.apache.jena.sparql.function.scripting;
 
-import org.apache.jena.arq.junit4.manifest.Manifests;
-import org.apache.jena.arq.junit4.runners.Label;
-import org.apache.jena.arq.junit4.runners.RunnerSPARQL;
+import java.util.stream.Stream;
+
+import org.junit.After;
+import org.junit.jupiter.api.*;
+
+import org.apache.jena.arq.junit5.Scripts;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.util.Context;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
 
-@RunWith(RunnerSPARQL.class)
-@Label("SPARQL-JS")
-@Manifests({
-    "testing/ARQ/Scripting/manifest.ttl"
-})
-
-public class TestSPARQL_Scripting {
+public class Manifest_SPARQL_Scripting {
     static final String JS_LIB_FILE = "testing/ARQ/Scripting/test-library.js";
 
-    @BeforeClass public static void enableScripting() {
+    @BeforeAll public static void enableScripting() {
         System.setProperty(ARQ.systemPropertyScripting, "true");
     }
 
-    @AfterClass public static void disbleScripting() {
+    @After public static void disbleScripting() {
         System.clearProperty(ARQ.systemPropertyScripting);
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setupJS() {
         Context cxt = ARQ.getContext();
         cxt.set(ARQ.symJavaScriptLibFile, JS_LIB_FILE);
@@ -55,10 +49,17 @@ public class TestSPARQL_Scripting {
         ScriptFunction.clearEngineCache();
     }
 
-    @AfterClass
+    @AfterAll
     public static void unsetupJS() {
         Context cxt = ARQ.getContext();
         cxt.remove(ARQ.symJavaScriptLibFile);
         cxt.remove(ARQ.symJavaScriptFunctions);
     }
+
+    @TestFactory
+    @DisplayName("SPARQl-JS")
+    public Stream<DynamicNode> testFactory_JS() {
+        return Scripts.manifestTestFactorySPARQL("testing/ARQ/Scripting/manifest.ttl");
+    }
+
 }

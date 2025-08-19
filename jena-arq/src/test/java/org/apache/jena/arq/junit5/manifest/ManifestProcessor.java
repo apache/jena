@@ -33,7 +33,6 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.vocabulary.VocabTestQuery;
 import org.apache.jena.system.G;
 
-
 /**
  * Manifest to JUnit5 using {@link DynamicNode}.
  * <p>
@@ -49,18 +48,18 @@ public class ManifestProcessor {
     private static int counterTest = 0;
     private static int counterContainer = 0;
 
-    public static Stream<DynamicNode> testFactory(String filename, EntryToTest entryToTest) {
-        DynamicContainer tests = ManifestProcessor.buildFrom(filename, entryToTest);
+    public static Stream<DynamicNode> testFactory(String filename, String namePrefix, EntryToTest entryToTest) {
+        DynamicContainer tests = ManifestProcessor.buildFrom(filename, namePrefix, entryToTest);
         return Stream.of(tests);
     }
 
-    public static DynamicContainer buildFrom(String filename, EntryToTest entryToTest) {
+    public static DynamicContainer buildFrom(String filename, String namePrefix, EntryToTest entryToTest) {
         Set<Path> visited = new HashSet<>();
-        return build(filename, entryToTest, visited);
+        return build(filename, namePrefix, entryToTest, visited);
     }
 
     // "visited" is a safety measure to detect loops in included manifests files.
-    private static DynamicContainer build(String filename, EntryToTest entryToTest, Set<Path> visited) {
+    private static DynamicContainer build(String filename, String namePrefix, EntryToTest entryToTest, Set<Path> visited) {
         int x = ++counterContainer;
         Path path =  Path.of(filename).toAbsolutePath();
         if ( visited.contains(path) )
@@ -68,10 +67,10 @@ public class ManifestProcessor {
         visited.add(path);
 
         Manifest manifest = Manifest.parse(filename);
-        List<DynamicContainer> subManifests = buildSubManifests(manifest, entryToTest, visited);
+        List<DynamicContainer> subManifests = buildSubManifests(manifest, namePrefix, entryToTest, visited);
 
         // One test seems to be treated differently. test runs, but name does not show up.
-        List<DynamicTest> tests = buildTests(manifest, entryToTest);
+        List<DynamicTest> tests = buildTests(manifest, namePrefix, entryToTest);
 
 
         List<DynamicNode> children = new ArrayList<>();
@@ -81,7 +80,7 @@ public class ManifestProcessor {
         if ( tests.size() == 1 ) {
             // Otherwise JUnit5 only shows the container name. (this maybe an Eclipse thing)
             DynamicTest test = tests.get(0);
-            DynamicContainer here =  DynamicContainer.dynamicContainer(test.getDisplayName(), tests);
+            DynamicContainer here = DynamicContainer.dynamicContainer(test.getDisplayName(), tests);
             children.add(here);
         } else {
             children.addAll(tests);
@@ -98,14 +97,14 @@ public class ManifestProcessor {
         }
     }
 
-    private static List<DynamicTest> buildTests(Manifest manifest, EntryToTest entryToTest) {
+    private static List<DynamicTest> buildTests(Manifest manifest, String namePrefix, EntryToTest entryToTest) {
         List<ManifestEntry> entries = manifest.entries();
         Function<ManifestEntry, DynamicTest> mapper = entry->{
             try {
                 Executable test = entryToTest.apply(entry);
                 if ( test == null )
                     return null;
-                String displayName = prepareTestLabel(entry, null);
+                String displayName = prepareTestLabel(entry, namePrefix);
                 int x = ++counterTest;
                 //displayName = "["+x+"] "+displayName;
                 DynamicTest dynTest = DynamicTest.dynamicTest(displayName, test);
@@ -123,20 +122,20 @@ public class ManifestProcessor {
         return dyntests;
     }
 
-    private static List<DynamicContainer> buildSubManifests(Manifest manifest, EntryToTest entryToTest, Set<Path> visited) {
+    private static List<DynamicContainer> buildSubManifests(Manifest manifest, String namePrefix, EntryToTest entryToTest, Set<Path> visited) {
         Iterator<String> iterIncludedFiles = manifest.includedManifests();
         List<DynamicContainer> subs = new ArrayList<>();
         iterIncludedFiles.forEachRemaining(filename -> {
-            DynamicContainer d1 = build(filename, entryToTest, visited);
+            DynamicContainer d1 = build(filename, namePrefix, entryToTest, visited);
             subs.add(d1);
         });
         return subs;
     }
 
-    private static String prepareTestLabel(ManifestEntry entry, String prefix) {
+    private static String prepareTestLabel(ManifestEntry entry, String namePrefix) {
         String label = fixupName(entry.getName());
-        if ( prefix != null )
-            label = prefix+label;
+        if ( namePrefix != null )
+            label = namePrefix+label;
 
         // action URI or action -> qt:query
         String str = null;

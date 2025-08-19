@@ -117,11 +117,10 @@
     </dependency>
 
     <!--
-        The vintage engine is only needed for custom runners
-        for manifest driven tests. These are in Script_*. 
-        
-        The RRX manifest-driven tests are in Manifest_*, 
-        and collected into Scripts_RRX_RDFXML.
+        The vintage engine is only needed for
+        the JUnit4 custom runners for manifest driven tests.
+        ARQ does not now use JUnit4 but this remains while
+        downstream modules have JUnit4 runners.
     -->
     <dependency>
       <groupId>org.junit.vintage</groupId>

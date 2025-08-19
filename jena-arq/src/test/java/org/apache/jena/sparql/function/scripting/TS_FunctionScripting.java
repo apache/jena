@@ -29,7 +29,7 @@ import org.apache.jena.sparql.expr.E_Function;
 @SelectClasses({
         TestNV.class,
         TestScriptFunction.class,
-        TestSPARQL_Scripting.class
+        Manifest_SPARQL_Scripting.class
 })
 public class TS_FunctionScripting {
     static boolean b = false;

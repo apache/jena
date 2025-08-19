@@ -18,74 +18,45 @@
 
 package org.apache.jena.tdb2;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
-import org.apache.jena.arq.junit4.manifest.Manifests;
-import org.apache.jena.arq.junit4.manifest.Prefix;
-import org.apache.jena.arq.junit4.runners.Label;
+import org.junit.jupiter.api.*;
+
+import org.apache.jena.arq.junit5.Scripts;
+import org.apache.jena.arq.junit5.manifest.ManifestEntry;
+import org.apache.jena.arq.junit5.sparql.SparqlTests;
+import org.apache.jena.atlas.lib.Creator;
 import org.apache.jena.query.ARQ;
+import org.apache.jena.query.Dataset;
 import org.apache.jena.sparql.expr.E_Function;
 import org.apache.jena.sparql.expr.NodeValue;
-import org.apache.jena.tdb2.junit.RunnerSPARQL_TDB2;
-
-// Needs testgenerator
-
-
-//import java.util.stream.Stream;
-//import java.util.stream.StreamSupport;
-//
-//import org.junit.jupiter.api.*;
-//
-//import org.apache.jena.arq.junit5.ScriptsLib;
-//import org.apache.jena.arq.junit5.manifest.ManifestProcessor;
-//import org.apache.jena.query.ARQ;
-//import org.apache.jena.sparql.expr.E_Function;
-//import org.apache.jena.sparql.expr.NodeValue;
-//
-//public class Scripts_TDB2
-//{
-//    @BeforeAll static public void beforeClass() {
-//        ARQ.setNormalMode();
-//        NodeValue.VerboseWarnings = false;
-//        E_Function.WarnOnUnknownFunction = false;
-//    }
-//
-//    @AfterAll static public void afterClass() {
-//        NodeValue.VerboseWarnings = true;
-//        E_Function.WarnOnUnknownFunction = true;
-//    }
-//
-//    @TestFactory
-//    @DisplayName("TDB2")
-//    public Stream<DynamicNode> testFactory(){
-//        Stream<DynamicNode> s1 = ScriptsLib.manifestTestFactory("testing/manifest.ttl");
-//        Stream<DynamicNode> s2 = ScriptsLib.manifestTestFactory("../jena-arq/testing/rdf-star-cg/sparql/eval/manifest.ttl");
-//        return Stream.concat(s1, s2);
-//    }
-//}
-
-@RunWith(RunnerSPARQL_TDB2.class)
-@Label("SPARQL [TDB2]")
-@Prefix("TDB2-")
-@Manifests
-({
-    "testing/manifest.ttl"
-    // RDF-star CG tests - no longer valid
-    // ,"../jena-arq/testing/rdf-star-cg/sparql/eval/manifest.ttl"
-})
 
 public class Scripts_TDB2
 {
-    @BeforeClass static public void beforeClass() {
+    @BeforeAll static public void beforeClass() {
         ARQ.setNormalMode();
         NodeValue.VerboseWarnings = false;
         E_Function.WarnOnUnknownFunction = false;
     }
 
-    @AfterClass static public void afterClass() {
+    @AfterAll static public void afterClass() {
         NodeValue.VerboseWarnings = true;
         E_Function.WarnOnUnknownFunction = true;
+    }
+
+    @TestFactory
+    @DisplayName("TDB2")
+    public Stream<DynamicNode> testFactory(){
+        Creator<Dataset> creator = ()->TDB2Factory.createDataset();
+        Function<ManifestEntry, Runnable> testMaker = (manifestEntry) -> SparqlTests.makeSPARQLTestExecOnly(manifestEntry, creator);
+        return Scripts.manifestTestFactory("testing/manifest.ttl", "TDB2-", testMaker);
+    }
+
+    private static Function<ManifestEntry, Runnable> testMaker() {
+        Creator<Dataset> creator = ()->TDB2Factory.createDataset();
+        return
+            (manifestEntry) ->
+                SparqlTests.makeSPARQLTestExecOnly(manifestEntry, creator);
     }
 }

@@ -16,40 +16,38 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql;
+package org.apache.jena.arq.examples;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
+import java.util.stream.Stream;
 
-import org.apache.jena.arq.junit4.manifest.Manifests;
-import org.apache.jena.arq.junit4.manifest.Prefix;
-import org.apache.jena.arq.junit4.runners.Label;
-import org.apache.jena.query.ARQ;
+import org.junit.jupiter.api.*;
+
+import org.apache.jena.arq.junit5.Scripts;
 import org.apache.jena.sparql.expr.E_Function;
 import org.apache.jena.sparql.expr.NodeValue;
-import org.apache.jena.sparql.junit.RunnerSPARQL_DatasetMap;
 
-@RunWith(RunnerSPARQL_DatasetMap.class)
-@Label("SPARQL [dataset Map]")
-@Prefix("DS_Map-")
-@Manifests
-({
-    "testing/ARQ/manifest-arq.ttl"
-    // [rdf-star CG]
-    //, "testing/rdf-star-cg/sparql/eval/manifest.ttl"
-})
+public class Manifest_Examples {
+    private static boolean bVerboseWarnings;
+    private static boolean bWarnOnUnknownFunction;
 
-public class Scripts_DatasetMap
-{
-    @BeforeClass static public void beforeClass() {
-        ARQ.setNormalMode();
+    @BeforeAll
+    public static void beforeClass() {
+        bVerboseWarnings = NodeValue.VerboseWarnings;
+        bWarnOnUnknownFunction = E_Function.WarnOnUnknownFunction;
         NodeValue.VerboseWarnings = false;
         E_Function.WarnOnUnknownFunction = false;
     }
 
-    @AfterClass static public void afterClass() {
-        NodeValue.VerboseWarnings = true;
-        E_Function.WarnOnUnknownFunction = true;
+    @AfterAll
+    public static void afterClass() {
+        NodeValue.VerboseWarnings = bVerboseWarnings;
+        E_Function.WarnOnUnknownFunction = bWarnOnUnknownFunction;
     }
+
+    @TestFactory
+    @DisplayName("ARQ Examples")
+    public Stream<DynamicNode> testFactory_ARQ_Examples() {
+        return Scripts.manifestTestFactory("testing/ARQ/Examples/manifest.ttl", Scripts.testMakerSPARQL);
+    }
+
 }
