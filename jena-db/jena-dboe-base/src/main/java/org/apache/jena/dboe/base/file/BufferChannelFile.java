@@ -21,6 +21,7 @@ package org.apache.jena.dboe.base.file;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.Path;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.dboe.sys.FileLib;
@@ -28,6 +29,11 @@ import org.apache.jena.dboe.sys.FileLib;
 public class BufferChannelFile implements BufferChannel {
     private String      filename;
     private FileChannel file;
+
+    /** Create a BufferChannelFile */
+    public static BufferChannel create(Path path) {
+        return create(path.toString());
+    }
 
     /** Create a BufferChannelFile */
     public static BufferChannelFile create(String filename) {

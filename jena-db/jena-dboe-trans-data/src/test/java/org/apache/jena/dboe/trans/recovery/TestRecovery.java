@@ -23,18 +23,16 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.nio.ByteBuffer;
+import java.nio.file.Path;
 import java.util.Arrays;
 
-import org.junit.Rule;
-import org.junit.Test;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import org.apache.jena.atlas.io.IO;
-import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.dboe.base.file.BufferChannel;
 import org.apache.jena.dboe.base.file.BufferChannelFile;
@@ -51,13 +49,11 @@ import org.apache.jena.dboe.transaction.txn.journal.JournalEntryType;
 
 public class TestRecovery {
 
-    @Rule
-    public TemporaryFolder dir = new TemporaryFolder();
+    @TempDir
+    public Path dir;
 
-    private String journal;
-    private String data;
-    private String data1;
-    private String data2;
+    private Path journal;
+    private Path data;
     private static String loggerLevel;
 
     @BeforeAll public static void beforeClass() {
@@ -69,20 +65,8 @@ public class TestRecovery {
     }
 
     @BeforeEach public void before() {
-        journal  = dir.getRoot().getAbsolutePath() + "/journal.jrnl";
-        data  = dir.getRoot().getAbsolutePath() + "/blob.data";
-        data1 = dir.getRoot().getAbsolutePath() + "/blob.data-1";
-        data2 = dir.getRoot().getAbsolutePath() + "/blob.data-2";
-        FileOps.ensureDir(dir.getRoot().getAbsolutePath());
-        FileOps.deleteSilent(journal);
-        FileOps.deleteSilent(data);
-        FileOps.deleteSilent(data1);
-        FileOps.deleteSilent(data2);
-    }
-
-    @AfterEach public void after() {
-        FileOps.deleteSilent(journal);
-        FileOps.deleteSilent(data);
+        journal  = dir.resolve("journal.jrnl");
+        data  = dir.resolve("blob.data");
     }
 
     // Fake journal recovery.
@@ -92,15 +76,17 @@ public class TestRecovery {
 //        ComponentIdRegistry registry = new ComponentIdRegistry();
 //        registry.register(cid, "Blob", 1);
 
+
+        Location location = Location.create(journal);
+
         // Write out a journal.
         {
-            Journal journal = Journal.create(Location.create(dir.getRoot().getAbsolutePath()));
+            Journal journal = Journal.create(location);
             journal.write(JournalEntryType.REDO, cid, IO.stringToByteBuffer(str));
             journal.writeJournal(JournalEntry.COMMIT);
             journal.close();
         }
 
-        Location location = Location.create(dir.getRoot().getAbsolutePath());
         TransactionCoordinator coord = TransactionCoordinator.create(location);
         BufferChannel chan = BufferChannelFile.create(data);
         TransBlob tBlob = new TransBlob(cid, chan);
@@ -120,16 +106,18 @@ public class TestRecovery {
         ComponentId cid1 = ComponentId.allocLocal();
         ComponentId cid2 = ComponentId.allocLocal();
 
+        Location location = Location.create(journal);
+
         // Write out a journal for two components.
         {
-            Journal journal = Journal.create(Location.create(dir.getRoot().getAbsolutePath()));
+            Journal journal = Journal.create(location);
             journal.write(JournalEntryType.REDO, cid1, IO.stringToByteBuffer(str1));
             journal.write(JournalEntryType.REDO, cid2, IO.stringToByteBuffer(str2));
             journal.writeJournal(JournalEntry.COMMIT);
             journal.close();
         }
 
-        Journal journal = Journal.create(Location.create(dir.getRoot().getAbsolutePath()));
+        Journal journal = Journal.create(location);
         BufferChannel chan = BufferChannelFile.create(data);
         TransBlob tBlob1 = new TransBlob(cid1, chan);
         TransBlob tBlob2 = new TransBlob(cid2, chan);

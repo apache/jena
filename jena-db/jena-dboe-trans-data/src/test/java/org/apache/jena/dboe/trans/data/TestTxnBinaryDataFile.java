@@ -18,13 +18,13 @@
 
 package org.apache.jena.dboe.trans.data;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.atlas.lib.StrUtils;
@@ -101,7 +101,7 @@ public class TestTxnBinaryDataFile {
         String str2 = "$";
         long x1 = writeOne(transactional, transBinData, str1);
         long x2 = writeOne(transactional, transBinData, str2);
-        assertNotEquals("("+x1+","+x2+")", x1, x2);
+        assertNotEquals(x1, x2, ()->"("+x1+","+x2+")");
 
         String out2 = readOne(transactional, transBinData, x2);
         String out1 = readOne(transactional, transBinData, x1);
