@@ -18,110 +18,110 @@
 
 package org.apache.jena.rdfconnection;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestLibRDFConn {
-    
+
     @Test public void service_url_01() {
-        testServiceName(null, "XYZ", "XYZ"); 
+        testServiceName(null, "XYZ", "XYZ");
     }
-    
+
     @Test public void service_url_02() {
-        testServiceName("http://example/", "XYZ", "http://example/XYZ"); 
+        testServiceName("http://example/", "XYZ", "http://example/XYZ");
     }
 
     @Test public void service_url_03() {
-        testServiceName("http://example/abc", "XYZ", "http://example/abc/XYZ"); 
+        testServiceName("http://example/abc", "XYZ", "http://example/abc/XYZ");
     }
 
     @Test public void service_url_04() {
-        testServiceName("http://example/abc/", "XYZ", "http://example/abc/XYZ"); 
+        testServiceName("http://example/abc/", "XYZ", "http://example/abc/XYZ");
     }
-    
+
     @Test public void service_url_05() {
-        testServiceName("http://example/abc?param=value", "XYZ", "http://example/abc/XYZ?param=value"); 
+        testServiceName("http://example/abc?param=value", "XYZ", "http://example/abc/XYZ?param=value");
     }
 
     @Test public void service_url_06() {
-        testServiceName("http://example/dataset", "http://other/abc/", "http://other/abc/"); 
+        testServiceName("http://example/dataset", "http://other/abc/", "http://other/abc/");
     }
 
     @Test public void service_url_07() {
-        testServiceName("http://example/dataset", "http://example/abc/XYZ?param=value", "http://example/abc/XYZ?param=value"); 
+        testServiceName("http://example/dataset", "http://example/abc/XYZ?param=value", "http://example/abc/XYZ?param=value");
     }
-    
+
     private static void testServiceName(String destination, String service, String expected) {
         String x = LibRDFConn.formServiceURL(destination, service);
         assertEquals(expected, x);
     }
-    
-    // Assumes service name constructed correctly (see above). 
-    
+
+    // Assumes service name constructed correctly (see above).
+
     @Test public void gsp_url_01() {
-        testGSP("http://example/", null, "http://example/?default");  
+        testGSP("http://example/", null, "http://example/?default");
     }
 
     @Test public void gsp_url_02() {
-        testGSP("http://example/", "default", "http://example/?default");  
+        testGSP("http://example/", "default", "http://example/?default");
     }
 
     @Test public void gsp_url_03() {
-        testGSP("http://example/dataset", null, "http://example/dataset?default");  
+        testGSP("http://example/dataset", null, "http://example/dataset?default");
     }
 
     @Test public void gsp_url_04() {
-        testGSP("http://example/dataset", "default", "http://example/dataset?default");  
+        testGSP("http://example/dataset", "default", "http://example/dataset?default");
     }
-    
+
     @Test public void gsp_url_05() {
-        testGSP("http://example/dataset?param=value", "default", "http://example/dataset?param=value&default");  
+        testGSP("http://example/dataset?param=value", "default", "http://example/dataset?param=value&default");
     }
-    
+
     @Test public void gsp_url_06() {
-        testGSP("http://example/?param=value", "default", "http://example/?param=value&default");  
+        testGSP("http://example/?param=value", "default", "http://example/?param=value&default");
     }
 
     @Test public void gsp_url_07() {
-        testGSP("http://example/dataset?param=value", "default", "http://example/dataset?param=value&default");  
+        testGSP("http://example/dataset?param=value", "default", "http://example/dataset?param=value&default");
     }
-    
+
     @Test public void gsp_url_08() {
-        testGSP("http://example/dataset/?param=value", "default", "http://example/dataset/?param=value&default");  
+        testGSP("http://example/dataset/?param=value", "default", "http://example/dataset/?param=value&default");
     }
 
     @Test public void gsp_url_11() {
-        testGSP("http://example/dataset", "name", "http://example/dataset?graph=name");  
+        testGSP("http://example/dataset", "name", "http://example/dataset?graph=name");
     }
 
     @Test public void gsp_url_12() {
-        testGSP("http://example/", "name", "http://example/?graph=name");  
+        testGSP("http://example/", "name", "http://example/?graph=name");
     }
-    
+
     @Test public void gsp_url_13() {
-        testGSP("http://example/dataset/", "name", "http://example/dataset/?graph=name");  
+        testGSP("http://example/dataset/", "name", "http://example/dataset/?graph=name");
     }
 
     @Test public void gsp_url_20() {
-        testGSP("http://example/dataset?param=value", null, "http://example/dataset?param=value&default");  
+        testGSP("http://example/dataset?param=value", null, "http://example/dataset?param=value&default");
     }
 
     @Test public void gsp_url_21() {
-        testGSP("http://example/?param=value", null, "http://example/?param=value&default");  
+        testGSP("http://example/?param=value", null, "http://example/?param=value&default");
     }
 
     @Test public void gsp_url_16() {
-        testGSP("http://example/dataset?param=value", "name", "http://example/dataset?param=value&graph=name");  
+        testGSP("http://example/dataset?param=value", "name", "http://example/dataset?param=value&graph=name");
     }
 
     @Test public void gsp_url_17() {
-        testGSP("http://example/?param=value", "name", "http://example/?param=value&graph=name");  
+        testGSP("http://example/?param=value", "name", "http://example/?param=value&graph=name");
     }
 
     private void testGSP(String gsp, String graphName, String expected) {
         String x = LibRDFConn.urlForGraph(gsp, graphName);
         assertEquals(expected, x);
     }
-    
+
 }
