@@ -18,7 +18,9 @@
 
 package org.apache.jena.rdfpatch;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Triple;
 import org.apache.jena.rdfpatch.changes.PatchSummary;
@@ -30,9 +32,6 @@ import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 public class TestRDFChangesCancel {
 
@@ -44,10 +43,6 @@ public class TestRDFChangesCancel {
         DatasetGraph dsg0 = DatasetGraphFactory.createTxnMem();
         dsg = new DatasetGraphChanges(dsg0, c);
     }
-
-    @Before public void beforeTest() { }
-
-    @After public void afterTest() { }
 
     private static Quad quad1 = SSE.parseQuad("(:g _:s <p> 1)");
     private static Quad quad2 = SSE.parseQuad("(:g _:s <p> 2)");
@@ -104,8 +99,8 @@ public class TestRDFChangesCancel {
     }
 
     private static void testCounters(PatchSummary s, long dataAddCount, long prefixAddCount) {
-        assertEquals("dataAddCount",   dataAddCount,   s.getCountAddData());
-        assertEquals("prefixAddCount", prefixAddCount, s.getCountAddPrefix());
+        assertEquals(dataAddCount,   s.getCountAddData(),   ()->"dataAddCount");
+        assertEquals(prefixAddCount, s.getCountAddPrefix(), ()->"prefixAddCount");
     }
 
 }

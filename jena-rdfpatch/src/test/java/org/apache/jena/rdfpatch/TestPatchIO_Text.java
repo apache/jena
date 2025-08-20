@@ -22,10 +22,11 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.riot.system.ErrorHandler;
 import org.apache.jena.riot.system.ErrorHandlerFactory;
-import org.junit.Test;
 
 public class TestPatchIO_Text extends AbstractTestPatchIO {
 

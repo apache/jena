@@ -18,9 +18,9 @@
 
 package org.apache.jena.rdfpatch.filelog;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -31,41 +31,43 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.rdfpatch.filelog.rotate.ManagedOutput;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
-@RunWith(Parameterized.class)
+@ParameterizedClass(name="{index}: {0}")
+@MethodSource("provideArgs")
 public class TestRotate
 {
     static { LogCtl.setJavaLogging(); }
 
-    @Parameters(name="Policy={0}")
-    public static Collection<Object[]> data()
-    {
-        List<Object[]> params = new ArrayList<>();
+
+    private static Stream<Arguments> provideArgs() {
+        List<Arguments> params = new ArrayList<>();
         for ( FilePolicy p : FilePolicy.values() ) {
-            Object[] x = {p, false};
-            params.add(x);
+            Arguments args = Arguments.of(p, false);
+            params.add(args);
         }
-        return params;
+        return params.stream();
     }
+
 
     private final FilePolicy policy;
     private final boolean includesBaseName;
 
     private static Path DIR = Paths.get("target/filelog");
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         FileOps.ensureDir(DIR.toString());
         FileOps.clearAll(DIR.toString());
@@ -86,19 +88,19 @@ public class TestRotate
     private static void assertExists(String filename) {
         Path p = Paths.get(filename);
         boolean b = Files.exists(p);
-        assertTrue("File does not exist: "+p, b);
+        assertTrue(b, ()->"File does not exist: "+p);
     }
 
     private static void assertNotExists(String filename) {
         Path p = Paths.get(filename);
         boolean b = Files.exists(p);
-        assertFalse("File exists: "+p, b);
+        assertFalse(b, ()->"File exists: "+p);
     }
 
     private static void assertExists(Path dir, String filename) {
         Path p = dir.resolve(filename);
         boolean b = Files.exists(p);
-        assertTrue("File does not exist: "+p, b);
+        assertTrue(b, ()->"File does not exist: "+p);
     }
 
     public TestRotate(FilePolicy policy, Boolean includesBaseName) {
