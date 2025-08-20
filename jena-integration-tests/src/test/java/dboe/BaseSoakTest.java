@@ -18,103 +18,103 @@
 
 package dboe;
 
-import java.util.List ;
+import java.util.List;
 
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.atlas.lib.RandomLib ;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.atlas.lib.RandomLib;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.cmd.CmdGeneral;
 
 public abstract class BaseSoakTest extends CmdGeneral {
 
-    protected final int MinOrder = 2 ;
-    protected final int MinSize  = 1 ;
-    protected int       MaxOrder = -1 ;
-    protected int       MaxSize  = -1 ;
-    protected int       NumTest  = -1 ;
+    protected final int MinOrder = 2;
+    protected final int MinSize  = 1;
+    protected int       MaxOrder = -1;
+    protected int       MaxSize  = -1;
+    protected int       NumTest  = -1;
     
     protected BaseSoakTest(String[] argv) {
-        super(argv) ;
+        super(argv);
     }
 
-    protected abstract void before() ;
-    protected abstract void after() ;
+    protected abstract void before();
+    protected abstract void after();
 
     @Override
     protected String getSummary() {
-        return "Usage: "+Lib.className(this)+" maxOrder maxSize NumTests" ;
+        return "Usage: "+Lib.className(this)+" maxOrder maxSize NumTests";
     }
 
     @Override
     protected void processModulesAndArgs() {
-        List<String> args = super.getPositional() ;
+        List<String> args = super.getPositional();
         if ( args.size() != 3 )
-            throw new CmdException("Usage: maxOrder maxSize NumTests") ;
+            throw new CmdException("Usage: maxOrder maxSize NumTests");
         
-        try { MaxOrder = Integer.parseInt(args.get(0)) ; }
+        try { MaxOrder = Integer.parseInt(args.get(0)); }
         catch (NumberFormatException ex)
-        { throw new CmdException("Bad number for MaxOrder") ; }
+        { throw new CmdException("Bad number for MaxOrder"); }
 
-        try { MaxSize = Integer.parseInt(args.get(1)) ; }
+        try { MaxSize = Integer.parseInt(args.get(1)); }
         catch (NumberFormatException ex)
-        { throw new CmdException("Bad number for MaxSize") ; }
+        { throw new CmdException("Bad number for MaxSize"); }
 
-        try { NumTest = Integer.parseInt(args.get(2)) ; }
+        try { NumTest = Integer.parseInt(args.get(2)); }
         catch (NumberFormatException ex)
-        { throw new CmdException("Bad number for NumTest") ; }
+        { throw new CmdException("Bad number for NumTest"); }
     }
 
     @Override
     protected void exec() {
-        int successes   = 0 ;
-        int failures    = 0 ;
+        int successes   = 0;
+        int failures    = 0;
 
         // Number of dots.
-        int numOnLine = 50 ;
-        int testsPerTick ;
+        int numOnLine = 50;
+        int testsPerTick;
         if ( NumTest < 20 )
-            testsPerTick = 5 ;
+            testsPerTick = 5;
         else if ( NumTest < 200 )
-            testsPerTick = 50 ;
+            testsPerTick = 50;
         else 
-            testsPerTick = 500 ;
+            testsPerTick = 500;
         
         
         // ---- Format for line counter.
-        int numLines = (int)Math.ceil( ((double)NumTest) / (testsPerTick * numOnLine) ) ;
+        int numLines = (int)Math.ceil( ((double)NumTest) / (testsPerTick * numOnLine) );
         // Start of last line.
-        int z = (numLines-1)*(testsPerTick * numOnLine) ;
-        int digits = 1 ;
+        int z = (numLines-1)*(testsPerTick * numOnLine);
+        int digits = 1;
         if ( z > 0 )
             digits = 1+(int)Math.floor(Math.log10(z));
-        String format = "[%"+digits+"d] " ;
+        String format = "[%"+digits+"d] ";
 
-        System.out.printf("TEST : %,d tests : Max Order=%d  Max Items=%,d [tests per tick=%d]\n", NumTest, MaxOrder, MaxSize, testsPerTick) ;
+        System.out.printf("TEST : %,d tests : Max Order=%d  Max Items=%,d [tests per tick=%d]\n", NumTest, MaxOrder, MaxSize, testsPerTick);
         
-        before() ;
+        before();
         
-        int testCount = 1 ;
+        int testCount = 1;
         
-        for ( testCount = 1 ; testCount <= NumTest ; testCount++ ) {
+        for ( testCount = 1; testCount <= NumTest; testCount++ ) {
             if ( testCount % testsPerTick == 0 )
-                System.out.print(".") ;
+                System.out.print(".");
             if ( testCount % (testsPerTick * numOnLine) == 0 )
-                System.out.println("") ;
+                System.out.println("");
             if ( testCount % (testsPerTick * numOnLine) == 1 )
-                System.out.printf(format, testCount-1) ;
+                System.out.printf(format, testCount-1);
 
-            int idx = testCount - 1 ;
-            int order = ( MinOrder == MaxOrder ) ? MinOrder : MinOrder + RandomLib.random.nextInt(MaxOrder-MinOrder) ;
-            int size =  ( MinSize  == MaxSize  ) ? MinSize :  MinSize  + RandomLib.random.nextInt(MaxSize-MinSize) ;            try {
-                //System.out.printf("TEST : %,d : Order=%-2d : Size=%d\n", testCount, order, size) ;
-                runOneTest(testCount, order, size) ;
-                successes++ ;
+            int idx = testCount - 1;
+            int order = ( MinOrder == MaxOrder ) ? MinOrder : MinOrder + RandomLib.random.nextInt(MaxOrder-MinOrder);
+            int size =  ( MinSize  == MaxSize  ) ? MinSize :  MinSize  + RandomLib.random.nextInt(MaxSize-MinSize);            try {
+                //System.out.printf("TEST : %,d : Order=%-2d : Size=%d\n", testCount, order, size);
+                runOneTest(testCount, order, size);
+                successes++;
             }
             catch (AssertionError | RuntimeException ex) {
-                System.err.printf("-- Fail: (order=%d, size=%d)\n", order, size) ;
-                ex.printStackTrace(System.err) ;
-                System.err.printf("--------------------------\n") ;
-                failures++ ;
+                System.err.printf("-- Fail: (order=%d, size=%d)\n", order, size);
+                ex.printStackTrace(System.err);
+                System.err.printf("--------------------------\n");
+                failures++;
             }
         }
         
@@ -122,17 +122,17 @@ public abstract class BaseSoakTest extends CmdGeneral {
         if ( (testCount-1) % (testsPerTick*numOnLine) != 0 )
             System.out.println();
             
-        after() ;
-        System.err.flush() ;
-        System.out.flush() ;
-        System.out.printf("DONE : %,d tests : Success=%,d ; Failures=%,d\n", NumTest, successes, failures);
+        after();
+        System.err.flush();
+        System.out.flush();
+        System.out.printf("DONE : %,d tests : Success=%,d; Failures=%,d\n", NumTest, successes, failures);
     }
 
-    protected abstract void runOneTest(int testCount, int order, int size, boolean debug) ;
+    protected abstract void runOneTest(int testCount, int order, int size, boolean debug);
 
-    protected abstract void runOneTest(int testCount, int order, int size) ;
+    protected abstract void runOneTest(int testCount, int order, int size);
 
     @Override
-    protected String getCommandName() { return Lib.className(this) ; } 
+    protected String getCommandName() { return Lib.className(this); } 
 }
 

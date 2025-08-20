@@ -18,11 +18,13 @@
 
 package org.apache.jena.test.rdfconnection;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.*;
 import org.apache.jena.query.Query;
@@ -42,36 +44,35 @@ import org.apache.jena.sparql.syntax.ElementPathBlock;
 import org.apache.jena.update.Update;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
-import org.junit.Test;
 
 /* Tests that blanknodes work over RDFConnectionFuseki
  * This consists of testing each of the necessary components,
- * and then a test of a connection itself.  
+ * and then a test of a connection itself.
  */
 
 public class TestBlankNodeBinary {
-    private static Node n(String str) { return SSE.parseNode(str) ; }
-    
+    private static Node n(String str) { return SSE.parseNode(str); }
+
     // Check RDF Thrift round-trips blank nodes.
     @Test public void binaryThrift() {
         Triple t = Triple.create(n(":s"), n(":p"), NodeFactory.createBlankNode("ABCD"));
-        Node obj = t.getObject(); 
+        Node obj = t.getObject();
         Graph graph = GraphMemFactory.createDefaultGraph();
         graph.add(t);
-        
+
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         RDFDataMgr.write(bout, graph, Lang.RDFTHRIFT);
-        
+
         ByteArrayInputStream bin = new ByteArrayInputStream(bout.toByteArray());
         Graph graph1 = GraphMemFactory.createDefaultGraph();
         RDFDataMgr.read(graph1, bin, Lang.RDFTHRIFT);
-        
+
         Node obj1 = graph1.find().next().getObject();
         assertEquals(obj, obj1);
         assertTrue(obj1.isBlank());
-        assertEquals(obj.getBlankNodeLabel(), obj1.getBlankNodeLabel());  
+        assertEquals(obj.getBlankNodeLabel(), obj1.getBlankNodeLabel());
     }
-    
+
     // Check SPARQL parsing.
     @Test public void bNodeSPARQL_Query_1() {
         String qs = "SELECT * { ?s ?p <_:ABC>}";
@@ -80,16 +81,16 @@ public class TestBlankNodeBinary {
         ElementPathBlock epb = (ElementPathBlock)el;
         TriplePath tp = epb.getPattern().get(0);
         Triple t = tp.asTriple();
-        assertEquals("ABC", t.getObject().getBlankNodeLabel());  
+        assertEquals("ABC", t.getObject().getBlankNodeLabel());
     }
-    
+
     @Test public void bNodeSPARQL_Query_2() {
         String qs = "SELECT * { ?s ?p <_:BCD>}";
         Query query = QueryFactory.create(qs);
         Op op = Algebra.compile(query);
         BasicPattern bp = ((OpBGP)op).getPattern();
         Triple t = bp.get(0);
-        assertEquals("BCD", t.getObject().getBlankNodeLabel());  
+        assertEquals("BCD", t.getObject().getBlankNodeLabel());
     }
 
     @Test public void bNodeSPARQL_Update_1() {

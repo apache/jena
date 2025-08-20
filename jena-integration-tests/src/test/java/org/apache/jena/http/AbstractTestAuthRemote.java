@@ -19,9 +19,11 @@
 package org.apache.jena.http;
 
 import static org.apache.jena.fuseki.test.HttpTest.expect401;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.net.URI;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.http.auth.AuthEnv;
@@ -30,7 +32,6 @@ import org.apache.jena.query.QueryFactory;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.http.GSP;
 import org.apache.jena.sparql.exec.http.QueryExecHTTP;
-import org.junit.Test;
 
 /**
  * Covers the AuthEnv/Lib challenge response code
@@ -38,7 +39,7 @@ import org.junit.Test;
  */
 public abstract class AbstractTestAuthRemote {
 
-    protected abstract String endpoint() ;
+    protected abstract String endpoint();
     protected abstract URI endpointURI();
     protected abstract String user();
     protected abstract String password();

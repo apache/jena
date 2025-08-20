@@ -18,6 +18,13 @@
 
 package org.apache.jena.sparql.exec.http;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.query.ARQ;
 import org.apache.jena.query.QueryDeniedException;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -25,10 +32,6 @@ import org.apache.jena.sparql.core.DatasetGraphZero;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.test.conn.EnvTest;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /** Test Service enable/disable */
 public class TestServiceOnOff {
@@ -39,18 +42,18 @@ public class TestServiceOnOff {
     // Local dataset for execution of SERVICE.
     private static final DatasetGraph localDataset() {return DatasetGraphZero.create(); }
 
-    @BeforeClass public static void beforeClass() {
+    @BeforeAll public static void beforeClass() {
         //FusekiLogging.setLogging();
         env = EnvTest.create("/ds");
         SERVICE = env.datasetURL();
         QUERY = "ASK { SERVICE <"+SERVICE+"> {} }";
     }
 
-    @Before public void before() {
+    @BeforeEach public void before() {
         env.clear();
     }
 
-    @AfterClass public static void afterClass() {
+    @AfterAll public static void afterClass() {
         EnvTest.stop(env);
     }
 
@@ -63,31 +66,39 @@ public class TestServiceOnOff {
         });
     }
 
-    @Test(expected=QueryDeniedException.class)
+    @Test
     public void service_allowed_2() {
         run_preserveGlobalAllowed(true, ()->{
-            service_systemSettings(true, false, ()->exec(localDataset()));
+            assertThrows(QueryDeniedException.class, ()->{
+                service_systemSettings(true, false, ()->exec(localDataset()));
+            });
         });
     }
 
-    @Test(expected=QueryDeniedException.class)
+    @Test
     public void service_notAllowed_1() {
         run_preserveGlobalAllowed(false, ()->{
-            service_systemSettings(true, false, ()->exec(localDataset()));
+            assertThrows(QueryDeniedException.class, ()->{
+                service_systemSettings(true, false, ()->exec(localDataset()));
+            });
         });
     }
 
-    @Test(expected=QueryDeniedException.class)
+    @Test
     public void service_notAllowed_2() {
         run_preserveGlobalAllowed(false, ()->{
-            service_systemSettings(false, true, ()->exec(localDataset()));
+            assertThrows(QueryDeniedException.class, ()->{
+                service_systemSettings(false, true, ()->exec(localDataset()));
+            });
         });
     }
 
     // -- Test setting the system context
-    @Test(expected=QueryDeniedException.class)
+    @Test
     public void service_query_global_context_disabled() {
-        service_systemSettings(true, false, ()->exec(localDataset()));
+        assertThrows(QueryDeniedException.class, ()->{
+            service_systemSettings(true, false, ()->exec(localDataset()));
+        });
     }
 
     @Test
@@ -95,9 +106,11 @@ public class TestServiceOnOff {
         service_systemSettings(true, null, ()->exec(localDataset()));
     }
 
-    @Test(expected=QueryDeniedException.class)
+    @Test
     public void service_query_global_default_disabled() {
-        service_systemSettings(false, null, ()->exec(localDataset()));
+        assertThrows(QueryDeniedException.class, ()->{
+            service_systemSettings(false, null, ()->exec(localDataset()));
+        });
     }
 
     // -- Test setting the dataset context
@@ -109,11 +122,13 @@ public class TestServiceOnOff {
 
     }
 
-    @Test(expected=QueryDeniedException.class)
+    @Test
     public void service_query_local_dataset_disabled() {
         DatasetGraph localdsg = localDataset();
         localdsg.getContext().set(ARQ.httpServiceAllowed, false);
-        service_systemSettings(true, true, ()->exec(localdsg));
+        assertThrows(QueryDeniedException.class, ()->{
+            service_systemSettings(true, true, ()->exec(localdsg));
+        });
     }
 
     @Test public void service_query_global_context_enabled() {
@@ -130,12 +145,14 @@ public class TestServiceOnOff {
         });
     }
 
-    @Test(expected=QueryDeniedException.class)
+    @Test
     public void service_queryExecCxt_disabled() {
         service_systemSettings(true, null, ()->{
             Context context = Context.create().set(ARQ.httpServiceAllowed, false);
             try ( QueryExec qExec = QueryExec.dataset(localDataset()).query(QUERY).context(context).build() ) {
-                qExec.ask();
+                assertThrows(QueryDeniedException.class, ()->{
+                    qExec.ask();
+                });
             }
         });
     }

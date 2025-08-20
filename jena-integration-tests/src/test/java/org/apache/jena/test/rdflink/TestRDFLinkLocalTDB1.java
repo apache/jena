@@ -29,12 +29,12 @@ import org.apache.jena.tdb1.TDB1Factory;
 public class TestRDFLinkLocalTDB1 extends AbstractTestRDFLink {
 
     @Override
-    protected boolean supportsAbort() { return true ; }
+    protected boolean supportsAbort() { return true; }
 
     @Override
     protected RDFLink link() {
-        DatasetGraph dsg = TDB1Factory.createDatasetGraph() ;
-        return RDFLinkFactory.connect(dsg, Isolation.COPY) ;
+        DatasetGraph dsg = TDB1Factory.createDatasetGraph();
+        return RDFLinkFactory.connect(dsg, Isolation.COPY);
     }
 }
 

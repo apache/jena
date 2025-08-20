@@ -18,36 +18,42 @@
 
 package org.apache.jena.http;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import java.io.IOException;
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.SocketAddress;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.util.List;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.RDFParserBuilder;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.test.conn.EnvTest;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.net.*;
-import java.net.http.HttpClient;
-import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class TestHttpRDFParserBuilder {
     // The HttpRDF machinery (much of which is package visible) get tested by other
     // subsystems built on top of HttpRDF. This test suite is for the public API.
     private static EnvTest env;
-    @BeforeClass public static void beforeClass() {
+    @BeforeAll public static void beforeClass() {
         env = EnvTest.create("/ds");
     }
 
-    @Before public void before() {
+    @BeforeEach public void before() {
         env.clear();
     }
 
-    @AfterClass public static void afterClass() {
+    @AfterAll public static void afterClass() {
         EnvTest.stop(env);
     }
 
@@ -95,6 +101,6 @@ public class TestHttpRDFParserBuilder {
                 .build();
         builder.parse(graph2);
         assertTrue(graph1.isIsomorphicWith(graph2));
-        assertTrue("ProxySelector in custom HttpClient has not been called.", proxyHasBeenCalled[0]);
+        assertTrue(proxyHasBeenCalled[0], ()->"ProxySelector in custom HttpClient has not been called.");
     }
 }

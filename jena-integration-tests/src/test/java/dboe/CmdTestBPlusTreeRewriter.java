@@ -26,24 +26,24 @@ import org.apache.jena.dboe.trans.bplustree.rewriter.TestBPlusTreeRewriterNonTxn
 public class CmdTestBPlusTreeRewriter extends BaseSoakTest
 {
     static public void main(String... argv) {
-        new CmdTestBPlusTreeRewriter(argv).mainRun() ;
+        new CmdTestBPlusTreeRewriter(argv).mainRun();
     }
 
     protected CmdTestBPlusTreeRewriter(String[] argv) {
-        super(argv) ;
+        super(argv);
     }
     
-    static int KeySize     = 4 ;
-    static int ValueSize   = 8 ;
+    static int KeySize     = 4;
+    static int ValueSize   = 8;
     
     @Override
     protected void before() {
-        SystemIndex.setNullOut(true) ;
+        SystemIndex.setNullOut(true);
         // Forced mode
         if ( false ) {
-            BPT.forcePromoteModes = true ;
-            BPT.promoteDuplicateNodes = true ;
-            BPT.promoteDuplicateRecords  = true ;
+            BPT.forcePromoteModes = true;
+            BPT.promoteDuplicateNodes = true;
+            BPT.promoteDuplicateRecords  = true;
         }
         if ( false ) {
             // Transactions.
@@ -55,13 +55,13 @@ public class CmdTestBPlusTreeRewriter extends BaseSoakTest
 
     @Override
     protected void runOneTest(int testCount, int order, int size, boolean debug) {
-        runOneTest(testCount, order, size) ;
+        runOneTest(testCount, order, size);
     }
 
     @Override
     protected void runOneTest(int testCount, int order, int size) {
-        RecordFactory recordFactory = new RecordFactory(KeySize, ValueSize) ;
-        TestBPlusTreeRewriterNonTxn.runOneTest(order, size, recordFactory, false) ;
+        RecordFactory recordFactory = new RecordFactory(KeySize, ValueSize);
+        TestBPlusTreeRewriterNonTxn.runOneTest(order, size, recordFactory, false);
     }
 
 }

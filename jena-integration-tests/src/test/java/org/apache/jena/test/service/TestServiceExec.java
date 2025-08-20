@@ -18,7 +18,12 @@
 
 package org.apache.jena.test.service;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.logging.LogCtl;
@@ -31,14 +36,11 @@ import org.apache.jena.sparql.exec.http.CtlService;
 import org.apache.jena.sparql.service.single.ServiceExecutorHttp;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.Context;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class TestServiceExec {
     // ---- Enable service
-    @BeforeClass public static void enableAllowServiceExecution() { CtlService.enableAllowServiceExecution(); }
-    @AfterClass public static void resetAllowServiceExecution() { CtlService.resetAllowServiceExecution(); }
+    @BeforeAll public static void enableAllowServiceExecution() { CtlService.enableAllowServiceExecution(); }
+    @AfterAll public static void resetAllowServiceExecution() { CtlService.resetAllowServiceExecution(); }
     public static Context minimalContext() { return CtlService.minimalContext(); }
     // ----
 
@@ -46,7 +48,7 @@ public class TestServiceExec {
     public static String testDB;
     private static DatasetGraph emptyLocal = DatasetGraphFactory.create();
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         DatasetGraph dsg = SSE.parseDatasetGraph("(dataset (graph (:s :p 1) (:s :p 2) (:s :p 3) ) )");
         server = FusekiServer.create().add("/ds", dsg).port(0).build();
@@ -69,13 +71,14 @@ public class TestServiceExec {
         }
     }
 
-    @Test(expected=QueryExceptionHTTP.class)
+    @Test
     public void service_exec_2() {
         Query query = QueryFactory.create("SELECT * { SERVICE <"+testDB+"/junk> { ?s ?p ?o} }");
         try ( QueryExecution qExec = QueryExecutionFactory.create(query, emptyLocal) ) {
             ResultSet rs = qExec.execSelect();
-            long x = Iter.count(rs);
-            assertEquals(3, x);
+            assertThrows(QueryExceptionHTTP.class, ()->{
+                Iter.count(rs);
+            });
         }
     }
 

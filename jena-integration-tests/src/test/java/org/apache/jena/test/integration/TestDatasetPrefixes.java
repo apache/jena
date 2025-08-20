@@ -18,19 +18,26 @@
 
 package org.apache.jena.test.integration;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
+
+/**
+ * Test of dataset prefixes.
+ * See {@code AbstractTestPrefixMap} for tests of prefix maps in general.
+ */
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import org.apache.jena.atlas.lib.Creator;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.Prefixes;
-import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
@@ -41,40 +48,27 @@ import org.apache.jena.system.Txn;
 import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb1.transaction.TDBTransactionException;
 import org.apache.jena.tdb2.DatabaseMgr;
-import org.junit.Assume;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
-// Tests go simple -> complex
-// Does not matter as to their execution, it does help pinpoint what has broken.
-/**
- * Test of dataset prefixes.
- * See {@code AbstractTestPrefixMap} for tests of prefix maps in general.
- */
+@ParameterizedClass(name="{index}: {0}")
+@MethodSource("provideArgs")
 
-@FixMethodOrder(MethodSorters.JVM)
-@RunWith(Parameterized.class)
 public class TestDatasetPrefixes {
 
-    @Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> data(){
+    private static Stream<Arguments> provideArgs() {
         Creator<DatasetGraph> c1 = ()->DatasetGraphFactory.createTxnMem();
         @SuppressWarnings("removal")
         Creator<DatasetGraph> c2 = ()->TDB1Factory.createDatasetGraph();
         Creator<DatasetGraph> c3 = ()->DatabaseMgr.createDatasetGraph();
         Creator<DatasetGraph> c4 = ()->new DatasetGraphMap();     //DatasetGraphFactory.create();
         Creator<DatasetGraph> c5 = ()->new DatasetGraphMapLink(GraphFactory.createDefaultGraph()); //DatasetGraphFactory.createGeneral();
-
-        Object[] x1 = { "TIM",  c1 , false, true, true };
-        Object[] x2 = { "TDB1", c2 , true, true, true };
-        Object[] x3 = { "TDB2", c3 , true, true, true };
-        Object[] x4 = { "Map",  c4 , false, false, false };
-        Object[] x5 = { "MapLink", c5 , false, false, false };
-        return Arrays.asList(x1, x2, x3, x4,x5);
+        List<Arguments> x = List.of(
+                Arguments.of("TIM",  c1 , false, true, true),
+                Arguments.of("TDB1", c2 , true, true, true ),
+                Arguments.of("TDB2", c3 , true, true, true ),
+                Arguments.of("Map",  c4 , false, false, false),
+                Arguments.of("MapLink", c5 , false, false, false)
+                );
+        return x.stream();
     }
 
     private final Creator<DatasetGraph> cdsg;
@@ -155,7 +149,7 @@ public class TestDatasetPrefixes {
 
     @Test
     public void dsg_prefixes_basic_5() {
-        Assume.assumeTrue(unifiedPrefixMaps);
+        assumeTrue(unifiedPrefixMaps);
         DatasetGraph dsg = create();
         Txn.executeWrite(dsg, () -> {
             PrefixMap pmap = dsg.prefixes();
@@ -189,28 +183,31 @@ public class TestDatasetPrefixes {
     }
 
     // Legacy: TDBTransactionException is not under JenaTransactionException.
-    @Test(expected = JenaException.class)
+    @Test
     public void dsg_prefixes_txn_2() {
-        Assume.assumeTrue(txnIsolation);
+        assumeTrue(txnIsolation);
         DatasetGraph dsg = create();
         Txn.executeRead(dsg, () -> {
             PrefixMap pmap = dsg.prefixes();
-            try {
-                // Write inside read.
-                // TIM prefixes are standalone, MRSW so they are thread safe but not tied to the TIM transaction lifecycle.
-                // No Isolation.
-                pmap.add("ex", "http://example/2");
-            } catch (JenaTransactionException | TDBTransactionException ex) {
-                throw ex;
-            }
+            assertThrows(JenaTransactionException.class, ()->{
+                try {
+                    // Write inside read.
+                    // TIM prefixes are standalone, MRSW so they are thread safe but not tied to the TIM transaction lifecycle.
+                    // No Isolation.
+                    pmap.add("ex", "http://example/2");
+                } catch (JenaTransactionException | TDBTransactionException ex) {
+                    // TDBTransactionException (TDB1) is not under JenaTransactionException.
+                    throw new JenaTransactionException(ex);
+                }
+            });
         });
     }
 
     @Test
     public void dsg_prefixes_txn_3() {
-        Assume.assumeTrue(supportsPromote);
+        assumeTrue(supportsPromote);
         DatasetGraph dsg = create();
-        Assume.assumeTrue(dsg.supportsTransactionAbort());
+        assumeTrue(dsg.supportsTransactionAbort());
         Txn.exec(dsg, TxnType.READ_PROMOTE, () -> {
             PrefixMap pmap = dsg.prefixes();
             pmap.add("ex", "http://example/2");
@@ -219,7 +216,7 @@ public class TestDatasetPrefixes {
 
     @Test
     public void dsg_prefixes_txn_4() {
-        Assume.assumeTrue(txnIsolation);
+        assumeTrue(txnIsolation);
         DatasetGraph dsg = create();
         Txn.executeWrite(dsg, () -> {
             PrefixMap pmap = dsg.prefixes();

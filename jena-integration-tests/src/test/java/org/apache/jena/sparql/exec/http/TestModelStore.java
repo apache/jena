@@ -20,17 +20,14 @@ package org.apache.jena.sparql.exec.http;
 
 import static org.apache.jena.fuseki.test.HttpTest.expect400;
 import static org.apache.jena.fuseki.test.HttpTest.expect404;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.StringReader;
 
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.http.HttpOp;
@@ -52,15 +49,15 @@ public class TestModelStore {
     static String DIR = "testing/RDFLink/";
 
     private static EnvTest env;
-    @BeforeClass public static void beforeClass() {
+    @BeforeAll public static void beforeClass() {
         env = EnvTest.create("/ds");
     }
 
-    @Before public void before() {
+    @BeforeEach public void before() {
         env.clear();
     }
 
-    @AfterClass public static void afterClass() {
+    @AfterAll public static void afterClass() {
         EnvTest.stop(env);
     }
 
@@ -100,40 +97,17 @@ public class TestModelStore {
         assertTrue(graph.isIsomorphicWith(m));
     }
 
-    @Test(expected=HttpException.class)
+    @Test
     public void gsp_bad_put_01() {
         // No .defaultGraph
-        ModelStore.service(gspServiceURL()).PUT(graph);
+        assertThrows(HttpException.class, ()->ModelStore.service(gspServiceURL()).PUT(graph));
     }
 
-    @Test(expected=HttpException.class)
+    @Test
     public void gsp_bad_get_err_02() {
         // No .defaultGraph
-        ModelStore.service(gspServiceURL()).GET();
+        assertThrows(HttpException.class, ()->ModelStore.service(gspServiceURL()).GET());
     }
-
-    // Moved to TestModelStore2
-
-//    @Test public void gsp_post_get_ct_01() {
-//        String graphName = "http://example/graph";
-//        ModelStore.service(gspServiceURL())
-//            .namedGraph(graphName)
-//            .POST(graph);
-//        Model m1 = ModelStore.service(gspServiceURL())
-//            .defaultGraph()
-//            .acceptHeader("application/rdf+xml")
-//            .GET();
-//        assertNotNull(m1);
-//        assertTrue(m1.isEmpty());
-//
-//        Model m2 = ModelStore.service(gspServiceURL())
-//            .namedGraph(graphName)
-//            .acceptHeader("application/rdf+xml")
-//            .GET();
-//        assertNotNull(m2);
-//        assertFalse(m2.isEmpty());
-//        assertTrue(graph.isIsomorphicWith(m2));
-//    }
 
     @Test public void gsp_put_get_ct_02() {
         ModelStore.service(gspServiceURL())

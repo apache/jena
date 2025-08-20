@@ -21,6 +21,10 @@ package org.apache.jena.http;
 import java.net.URI;
 import java.util.Objects;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.auth.Auth;
@@ -31,9 +35,6 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.security.UserStore;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 
 public class TestAuthBasicRemote extends AbstractTestAuthRemote {
     private static String user = "user";
@@ -63,11 +64,11 @@ public class TestAuthBasicRemote extends AbstractTestAuthRemote {
         return password;
     }
 
-    @BeforeClass public static void beforeClass() {
+    @BeforeAll public static void beforeClass() {
         server = server("/ds", DatasetGraphFactory.createTxnMem(), user, password);
     }
 
-    @After
+    @AfterEach
     public void afterTest() {
         AuthEnv.get().clearAuthEnv();
     }
@@ -94,12 +95,7 @@ public class TestAuthBasicRemote extends AbstractTestAuthRemote {
         return server;
     }
 
-    //@Before public void before() {}
-    @After public void after() {
-        AuthEnv.get().unregisterUsernamePassword(dsEndpointURI);
-    }
-
-    @AfterClass public static void afterClass() {
+    @AfterAll public static void afterClass() {
         dsEndpoint = null;
         dsEndpointURI = null;
         if ( server == null )

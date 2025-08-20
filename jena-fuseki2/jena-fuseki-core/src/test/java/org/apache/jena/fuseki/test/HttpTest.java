@@ -18,6 +18,7 @@
 
 package org.apache.jena.fuseki.test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.Assertions;
@@ -78,10 +79,10 @@ public class HttpTest {
             fail("Expected HttpException "+expectedStatusCode);
         } catch (QueryExceptionHTTP ex) {
             if ( expectedStatusCode > 0 )
-                Assertions.assertEquals(expectedStatusCode, ex.getStatusCode(), ex.getMessage()+" ::");
+                assertEquals(expectedStatusCode, ex.getStatusCode(), ex.getMessage()+" ::");
         } catch (HttpException ex) {
             if ( expectedStatusCode > 0 )
-                Assertions.assertEquals(expectedStatusCode, ex.getStatusCode(), ex.getMessage()+" ::");
+                assertEquals(expectedStatusCode, ex.getStatusCode(), ex.getMessage()+" ::");
         }
     }
 

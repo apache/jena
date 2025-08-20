@@ -19,16 +19,16 @@
 package org.apache.jena.sparql.exec.http;
 
 import static org.apache.jena.fuseki.test.HttpTest.expect404;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.StringReader;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.http.HttpOp;
@@ -47,7 +47,7 @@ public class TestDSP {
     private final boolean verbose = false;
 
 
-    @Before public void makeServer() {
+    @BeforeEach public void makeServer() {
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
         server = FusekiServer.create()
                 .verbose(verbose)
@@ -58,7 +58,7 @@ public class TestDSP {
                 .start();
     }
 
-    @After public void releaseServer() {
+    @AfterEach public void releaseServer() {
         if ( server != null )
             server.stop();
     }

@@ -18,8 +18,10 @@
 
 package org.apache.jena.test.rdfconnection;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.main.FusekiServer;
@@ -34,7 +36,6 @@ import org.apache.jena.rdfconnection.RDFConnectionRemoteBuilder;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.sse.SSE;
-import org.junit.Test;
 
 /* Tests that blanknodes work over RDFConnectionFuseki
  * This consists of testing each of the necessary components,
@@ -42,7 +43,7 @@ import org.junit.Test;
  */
 
 public class TestRDFConnectionFusekiBinary {
-    private static Node n(String str) { return SSE.parseNode(str) ; }
+    private static Node n(String str) { return SSE.parseNode(str); }
 
     @Test public void rdfconnection_fuseki_1() {
         // Tests all run, in order, on one connection.
@@ -54,7 +55,7 @@ public class TestRDFConnectionFusekiBinary {
         int PORT = WebLib.choosePort();
         FusekiServer server = createFusekiServer(PORT).build().start();
         try {
-            String dsURL = "http://localhost:"+PORT+"/ds" ;
+            String dsURL = "http://localhost:"+PORT+"/ds";
             assertTrue(HttpLib.isFuseki(dsURL));
 
             RDFConnectionRemoteBuilder builder = RDFConnectionFuseki.create().destination(dsURL);
@@ -78,12 +79,12 @@ public class TestRDFConnectionFusekiBinary {
                 }
 
                 try (QueryExecution qExec = conn.query("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o . FILTER (sameTerm(?o, <_:b3456>)) }")){
-                    Model model2 = qExec.execConstruct() ;
+                    Model model2 = qExec.execConstruct();
                     checkModel(model2, "b3456");
                 }
 
                 try(QueryExecution qExec = conn.query("DESCRIBE ?s WHERE { ?s ?p <_:b3456>}")){
-                    Model model2 = qExec.execConstruct() ;
+                    Model model2 = qExec.execConstruct();
                     checkModel(model2, "b3456");
                 }
 
@@ -119,6 +120,6 @@ public class TestRDFConnectionFusekiBinary {
                 //.setStaticFileBase("/home/afs/ASF/jena-fuseki-cmds/sparqler")
                 .add("/ds", dsg)
                 //.setVerbose(true)
-                ;
+               ;
     }
 }

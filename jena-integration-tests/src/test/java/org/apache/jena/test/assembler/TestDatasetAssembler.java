@@ -18,9 +18,12 @@
 
 package org.apache.jena.test.assembler;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.assembler.exceptions.AssemblerException;
 import org.apache.jena.query.ARQ;
@@ -36,7 +39,6 @@ import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.system.Txn;
-import org.junit.Test;
 
 /**
  * Tests of building datasets with assemblers.
@@ -98,10 +100,11 @@ public class TestDatasetAssembler {
         readIt(ds);
     }
 
-    @Test(expected=AssemblerException.class)
+    @Test
     public void dsg1_bad_1() {
-        Dataset ds = (Dataset)AssemblerUtils.build(DIR+"assem_dsg1_bad_1.ttl", DatasetAssemblerVocab.tDatasetOne);
-        assertNotNull(ds);
+        assertThrows(AssemblerException.class, ()->{
+            Dataset ds = (Dataset)AssemblerUtils.build(DIR+"assem_dsg1_bad_1.ttl", DatasetAssemblerVocab.tDatasetOne);
+        });
     }
 
     @Test public void dsg1_tdb1() {

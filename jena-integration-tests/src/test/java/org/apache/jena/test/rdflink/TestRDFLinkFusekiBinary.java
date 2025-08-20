@@ -18,8 +18,10 @@
 
 package org.apache.jena.test.rdflink;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.graph.Graph;
@@ -34,13 +36,12 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.sse.SSE;
-import org.junit.Test;
 
 /* Tests that blank nodes work over RDFLinkFuseki.
  */
 
 public class TestRDFLinkFusekiBinary {
-    private static Node n(String str) { return SSE.parseNode(str) ; }
+    private static Node n(String str) { return SSE.parseNode(str); }
 
     @Test public void rdflink_fuseki_1() {
         // Tests all run, in order, on one connection.
@@ -51,7 +52,7 @@ public class TestRDFLinkFusekiBinary {
         FusekiServer server = createFusekiServer().build().start();
         int port = server.getPort();
         try {
-            String dsURL = "http://localhost:"+port+"/ds" ;
+            String dsURL = "http://localhost:"+port+"/ds";
             assertTrue(HttpLib.isFuseki(dsURL));
 
             RDFLinkHTTPBuilder builder = RDFLinkFuseki.newBuilder().destination(dsURL);
@@ -116,6 +117,6 @@ public class TestRDFLinkFusekiBinary {
                 //.setStaticFileBase("/home/afs/ASF/jena-fuseki-cmds/sparqler")
                 .add("/ds", dsg)
                 //.setVerbose(true)
-                ;
+               ;
     }
 }

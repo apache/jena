@@ -18,7 +18,7 @@
 
 package org.apache.jena.sparql.exec.http;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.net.SocketException;
 import java.net.UnknownHostException;
@@ -29,12 +29,17 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.fuseki.Fuseki;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.http.sys.HttpRequestModifier;
 import org.apache.jena.http.sys.RegistryRequestModifier;
@@ -44,8 +49,8 @@ import org.apache.jena.rdflink.RDFLinkFactory;
 import org.apache.jena.sparql.algebra.Algebra;
 import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.op.OpBGP;
-import org.apache.jena.sparql.algebra.op.OpService ;
-import org.apache.jena.sparql.core.BasicPattern ;
+import org.apache.jena.sparql.algebra.op.OpService;
+import org.apache.jena.sparql.core.BasicPattern;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphZero;
 import org.apache.jena.sparql.engine.QueryIterator;
@@ -62,13 +67,23 @@ import org.apache.jena.sparql.syntax.ElementService;
 import org.apache.jena.sparql.syntax.ElementTriplesBlock;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.test.conn.EnvTest;
-import org.junit.*;
 
 /** Test Service implementation code -- Service.exec */
 public class TestService {
     // ---- Enable service
-    @BeforeClass public static void enableAllowServiceExecution() { CtlService.enableAllowServiceExecution(); }
-    @AfterClass public static void resetAllowServiceExecution() { CtlService.resetAllowServiceExecution(); }
+    @BeforeAll
+    public static void enableAllowServiceExecution() {
+        CtlService.enableAllowServiceExecution();
+        env = EnvTest.create("/ds");
+        SERVICE = env.datasetURL();
+    }
+
+    @AfterAll
+    public static void resetAllowServiceExecution() {
+        EnvTest.stop(env);
+        CtlService.resetAllowServiceExecution();
+    }
+
     public static Context minimalContext() { return CtlService.minimalContext(); }
     // ----
 
@@ -119,18 +134,8 @@ public class TestService {
     static String logLevelQueryIterService = LogCtl.getLevel(ServiceExecutorRegistry.class);
     static String logLevelFuseki = LogCtl.getLevel(Fuseki.class);
 
-    @BeforeClass public static void beforeClass() {
-        //FusekiLogging.setLogging();
-        env = EnvTest.create("/ds");
-        SERVICE = env.datasetURL();
-    }
-
-    @Before public void before() {
+    @BeforeEach public void before() {
         env.clear();
-    }
-
-    @AfterClass public static void afterClass() {
-        EnvTest.stop(env);
     }
 
     private static Element subElt = null;
@@ -264,13 +269,13 @@ public class TestService {
         OpService opService = new OpService(serviceNode, new OpBGP(basicPattern), false);
         try {
             Service.exec(opService, context);
-            Assert.fail("Expected QueryExceptionHTTP");
+            fail("Expected QueryExceptionHTTP");
         } catch (QueryExceptionHTTP expected) {
-            Throwable thrown = expected.getCause() ;
+            Throwable thrown = expected.getCause();
             if ( thrown instanceof SocketException || thrown instanceof HttpConnectTimeoutException || thrown instanceof UnknownHostException )  {
                 // expected
             } else {
-                Assert.fail(String.format("Expected SocketException or HttpConnectTimeoutException, instead got: %s %s",
+                fail(String.format("Expected SocketException or HttpConnectTimeoutException, instead got: %s %s",
                                           thrown.getClass().getName(),
                                           thrown.getMessage()));
             }
@@ -356,7 +361,7 @@ public class TestService {
                 assertEquals(1, x);
             }
         }
-        assertEquals("Modifier did not run", 1, COUNTER.get());
+        assertEquals(1, COUNTER.get(), ()->"Modifier did not run");
     }
 
     @Test public void service_query_modified_registry() {
@@ -382,11 +387,11 @@ public class TestService {
                 assertEquals(1, x);
             }
         });
-        assertEquals("Modifier did not run", 1, COUNTER.get());
+        assertEquals(1, COUNTER.get(), ()->"Modifier did not run");
     }
 
 
-    @Test(expected=QueryExceptionHTTP.class)
+    @Test
     public void service_query_bad_no_service() {
         DatasetGraph dsg = env.dsg();
         dsg.executeWrite(()->dsg.add(SSE.parseQuad("(_ :s :p :o)")));
@@ -400,13 +405,12 @@ public class TestService {
             try ( QueryExec qExec = link.query(queryString) ) {
                 RowSet rs = qExec.select();
                 // Should go on execution.
-                rs.hasNext();
-                fail("Should not get here");
+                assertThrows(QueryExceptionHTTP.class, ()->rs.hasNext());
             }
         }
     }
 
-    @Test(expected=QueryExceptionHTTP.class)
+    @Test
     public void service_query_bad_no_dataset() {
         DatasetGraph dsg = env.dsg();
         dsg.executeWrite(()->dsg.add(SSE.parseQuad("(_ :s :p :o)")));
@@ -420,14 +424,15 @@ public class TestService {
             try ( QueryExec qExec = link.query(queryString) ) {
                 // Where it should go wrong.
                 RowSet rs = qExec.select();
-                // Should go on execution.
-                rs.hasNext();
-                fail("Should not get here");
+                // Where it should go wrong.
+                assertThrows(QueryExceptionHTTP.class, ()->{
+                    rs.hasNext();
+                });
             }
         }
     }
 
-    @Test(expected=QueryExceptionHTTP.class)
+    @Test
     public void service_query_bad_3() {
         DatasetGraph dsg = env.dsg();
         dsg.executeWrite(()->dsg.add(SSE.parseQuad("(_ :s :p :o)")));
@@ -439,11 +444,11 @@ public class TestService {
         // Connect to local, unused, permanently empty dataset
         try ( RDFLink link = RDFLinkFactory.connect(localDataset()) ) {
             try ( QueryExec qExec = link.query(queryString) ) {
-                // Where it should go wrong.
                 RowSet rs = qExec.select();
-                // Should go on execution.
-                rs.hasNext();
-                fail("Should not get here");
+                // Where it should go wrong.
+                assertThrows(QueryExceptionHTTP.class, ()->{
+                    rs.hasNext();
+                });
             }
         }
     }

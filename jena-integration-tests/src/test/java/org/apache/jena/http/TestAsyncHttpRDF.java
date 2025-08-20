@@ -18,8 +18,13 @@
 
 package org.apache.jena.http;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Graph;
@@ -29,16 +34,13 @@ import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.test.conn.EnvTest;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class TestAsyncHttpRDF {
 
     static String data[] = { "(_ :s :p :o)", "(:g1 :s :p 1)", "(:g2 :s :p 2)"};
     private static EnvTest env;
-    @BeforeClass public static void beforeClass() {
+
+    @BeforeAll public static void beforeClass() {
         env = EnvTest.create("/ds");
         DatasetGraph dsg = env.dsg();
         dsg.executeWrite(()->{
@@ -47,9 +49,7 @@ public class TestAsyncHttpRDF {
         });
     }
 
-    @Before public void before() {}
-
-    @AfterClass public static void afterClass() {
+    @AfterAll public static void afterClass() {
         EnvTest.stop(env);
     }
 

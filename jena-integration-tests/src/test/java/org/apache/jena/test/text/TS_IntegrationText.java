@@ -16,26 +16,13 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.exec.http;
+package org.apache.jena.test.text;
 
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
 @Suite
 @SelectClasses({
-    TestGSP.class
-    , TestDSP.class
-    , TestModelStore.class
-    //, TestModelStore2.class
-    , TestQueryExecHTTP.class
-    , TestQueryExecCleanServer.class
-    , TestUpdateExecHTTP.class
-    , TestServiceOnOff.class
-    , TestServiceFunctions.class
-    , TestService.class
-    , TestService2.class
-    , TestServiceAuth.class
-    , TestSetupHTTP.class
-    })
-
-public class TS_SparqlExecHttp { }
+    TestTextTDB2Compact.class
+})
+public class TS_IntegrationText {}

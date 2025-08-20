@@ -18,8 +18,10 @@
 
 package org.apache.jena.test.text;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.io.IOX;
 import org.apache.jena.atlas.json.JSON;
@@ -35,7 +37,6 @@ import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.exec.RowSetOps;
 import org.apache.jena.sparql.exec.http.GSP;
 import org.apache.jena.sys.JenaSystem;
-import org.junit.Test;
 
 /** A test of running TDB2 compaction on the storage of a text dataset. */
 public class TestTextTDB2Compact {
@@ -79,7 +80,7 @@ public class TestTextTDB2Compact {
             int attempts = 50;
             int interval = 50;
 
-            for( ; x < attempts; x++) {
+            for(; x < attempts; x++) {
                 String str1 = HttpOp.httpGetString(serverURL+"/$/tasks/"+taskId);
                 JsonObject obj1 = JSON.parse(str1);
                 if ( obj1.hasKey("success") )

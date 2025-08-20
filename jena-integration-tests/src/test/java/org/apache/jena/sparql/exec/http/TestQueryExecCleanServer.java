@@ -20,9 +20,14 @@ package org.apache.jena.sparql.exec.http;
 
 import static org.apache.jena.atlas.lib.StrUtils.strjoinNL;
 import static org.apache.jena.sparql.sse.SSE.parseQuad;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.concurrent.TimeUnit;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.logging.LogCtl;
@@ -32,9 +37,6 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * Tests for {@link QueryExecHTTP} with no authentication.
@@ -54,7 +56,7 @@ public class TestQueryExecCleanServer {
 
     private String serverFusekiLogLevel = null;
 
-    @Before public void before() {
+    @BeforeEach public void before() {
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
         dsg.add(q0);
         dsg.add(q1);
@@ -73,7 +75,7 @@ public class TestQueryExecCleanServer {
         LogCtl.setLevel(Fuseki.actionLog, "Error");
     }
 
-    @After public void after() {
+    @AfterEach public void after() {
         server.stop();
         if ( serverFusekiLogLevel != null )
             LogCtl.setLevel(Fuseki.actionLog, serverFusekiLogLevel);
@@ -84,7 +86,7 @@ public class TestQueryExecCleanServer {
     // This test means the server will see "broken connection".
     // The test suite will restore logging on exit.
     // It can't be done here because the server does not see the broken connection immediately.
-    @Test(expected=QueryExceptionHTTP.class)
+    @Test
     public void query_timeout_1() {
         LogCtl.set(Fuseki.actionLog, "error");
         String queryString = strjoinNL
@@ -99,8 +101,10 @@ public class TestQueryExecCleanServer {
                                             // Short!
                                             .timeout(10, TimeUnit.MILLISECONDS)
                                             .build() ) {
-            long x = Iter.count(qExec.select());
-            assertEquals(2, x);
+            assertThrows(QueryExceptionHTTP.class, ()->{
+                long x = Iter.count(qExec.select());
+                assertEquals(2, x);
+            });
         }
     }
 }

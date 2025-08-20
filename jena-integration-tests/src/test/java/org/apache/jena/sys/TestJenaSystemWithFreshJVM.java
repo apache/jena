@@ -17,9 +17,13 @@
  */
 package org.apache.jena.sys;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.util.concurrent.TimeUnit;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.rdfconnection.RDFConnectionFuseki;
-import org.junit.Assert;
-import org.junit.Test;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.Scope;
@@ -28,8 +32,6 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 import org.openjdk.jmh.runner.options.TimeValue;
 import org.openjdk.jmh.runner.options.VerboseMode;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * This test is not a benchmark but a test to ensure that the test methods from {@link TestJenaSystem} are executed
@@ -93,6 +95,6 @@ public class TestJenaSystemWithFreshJVM {
                 .timeout(TimeValue.seconds(6)) // 6 seconds should be enough, even on slow machines
                 .build();
         var results = new Runner(opt).run();
-        Assert.assertNotNull(results);
+        assertNotNull(results);
     }
 }

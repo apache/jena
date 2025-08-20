@@ -18,11 +18,13 @@
 
 package org.apache.jena.http;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.*;
 import org.apache.jena.query.Query;
@@ -42,7 +44,6 @@ import org.apache.jena.sparql.syntax.ElementPathBlock;
 import org.apache.jena.update.Update;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
-import org.junit.Test;
 
 /*
  * Tests that blank nodes work over RDFLinkFuseki
@@ -51,7 +52,7 @@ import org.junit.Test;
  */
 
 public class TestBlankNodeBinary {
-    private static Node n(String str) { return SSE.parseNode(str) ; }
+    private static Node n(String str) { return SSE.parseNode(str); }
 
     // Check RDF Thrift round-trips blank nodes.
     @Test public void binaryThrift() {
