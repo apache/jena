@@ -176,10 +176,14 @@ public class ValidationReport {
         }
 
         public void addReportEntry(String message, Shape shape, Node focusNode, Path path, Node valueNode, Constraint constraint) {
-            addReportEntryW(message, shape, null, focusNode, path, valueNode, constraint);
+            addReportEntry(message, shape, focusNode, path, valueNode, constraint, null);
         }
 
-        private void addReportEntryW(String message, Shape shape, Triple triple, Node focusNode, Path path, Node valueNode, Constraint constraint) {
+        public void addReportEntry(String message, Shape shape, Node focusNode, Path path, Node valueNode, Constraint constraint, Node sourceConstraint) {
+            addReportEntryW(message, shape, null, focusNode, path, valueNode, constraint, sourceConstraint);
+        }
+
+        private void addReportEntryW(String message, Shape shape, Triple triple, Node focusNode, Path path, Node valueNode, Constraint constraint, Node sourceConstraint) {
             Collection<Node> messages;
 
             if ( shape.getMessages() != null && ! shape.getMessages().isEmpty() )
@@ -193,6 +197,7 @@ public class ValidationReport {
                 .severity(shape.getSeverity())
                 .source(shape.getShapeNode())
                 .constraint(constraint)
+                .sourceConstraint(sourceConstraint)
                 //.detail(null)
                 .value(valueNode)
                 .triple(triple)

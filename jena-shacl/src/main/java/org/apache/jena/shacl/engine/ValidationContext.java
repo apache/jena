@@ -99,10 +99,15 @@ public class ValidationContext {
     }
 
     public void reportEntry(String message, Shape shape, Node focusNode, Path path, Node valueNode, Constraint constraint) {
+        reportEntry(message, shape, focusNode, path, valueNode, constraint, null);
+    }
+
+    public void reportEntry(String message, Shape shape, Node focusNode, Path path, Node valueNode, Constraint constraint, Node sourceConstraint) {
+        // SHACL 1.0 - sourceConstraint is SPARQL specific.
         if ( verbose )
             System.out.println("Validation report entry");
         seenValidationReportEntry = true;
-        validationReportBuilder.addReportEntry(message, shape, focusNode, path, valueNode, constraint);
+        validationReportBuilder.addReportEntry(message, shape, focusNode, path, valueNode, constraint, sourceConstraint);
     }
 
     public ValidationReport generateReport() {

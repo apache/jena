@@ -37,7 +37,7 @@ public class TestShaclSparqlWG {
     public static Collection<Object[]> data() throws Exception {
         String manifest = "src/test/files/std/sparql/manifest.ttl";
 
-        // The W3C WG tests for  SPARQL-based Constraints is made up of:
+        // The W3C WG tests for SPARQL-based Constraints is made up of:
         //String manifest = "src/test/files/std/sparql/property/manifest.ttl";
         //String manifest = "src/test/files/std/sparql/pre-binding/manifest.ttl";
         //String manifest = "src/test/files/std/sparql/node/manifest.ttl";
