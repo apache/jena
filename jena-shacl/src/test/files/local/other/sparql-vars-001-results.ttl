@@ -12,6 +12,7 @@ PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
                  sh:resultMessage              "Property-value pair (<http://example/p1> 1) found";
                  sh:resultPath                 :p1;
                  sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraint           <http://jena.apache.org/test/shape#PropertyValueShape>;        
                  sh:sourceConstraintComponent  sh:SPARQLConstraintComponent;
                  sh:sourceShape                <shape#PropertyValueShape>;
                  sh:value                      1

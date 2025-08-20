@@ -80,24 +80,25 @@ public class ReportEntry {
         return new ReportEntry();
     }
 
-//        sh:result    [ a                             sh:ValidationResult ;
-//            sh:focusNode                  ex:x ;
-//            sh:resultMessage              "Value does not have class http://example/ns#T" ;
-//            sh:resultSeverity             sh:Violation ;
-//            sh:sourceConstraintComponent  sh:ClassConstraintComponent ;
-//            sh:sourceShape                shx:class_T ;
-//            sh:value                      ex:x
-//          ]
 //    sh:result [
-//               a sh:ValidationResult ;
-//               sh:resultSeverity sh:Violation ;
-//               sh:focusNode ex:Bob ;
-//               sh:resultPath ex:age ;
-//               sh:value "twenty two" ;
-//               sh:resultMessage "ex:age expects a literal of datatype xsd:integer." ;
-//               sh:sourceConstraintComponent sh:DatatypeConstraintComponent ;
-//               sh:sourceShape ex:PersonShape-age ;
-//           ]
+//        a                             sh:ValidationResult ;
+//        sh:focusNode                  ex:x ;
+//        sh:resultMessage              "Value does not have class http://example/ns#T" ;
+//        sh:resultSeverity             sh:Violation ;
+//        sh:sourceConstraintComponent  sh:ClassConstraintComponent ;
+//        sh:sourceShape                shx:class_T ;
+//        sh:value                      ex:x
+//    ]
+//    sh:result [
+//        a                             sh:ValidationResult ;
+//        sh:resultSeverity             sh:Violation ;
+//        sh:focusNode                  ex:Bob ;
+//        sh:resultPath                 ex:age ;
+//        sh:value                      "twenty two" ;
+//        sh:resultMessage              "ex:age expects a literal of datatype xsd:integer." ;
+//        sh:sourceConstraintComponent  sh:DatatypeConstraintComponent ;
+//        sh:sourceShape ex:PersonShape-age ;
+//    ]
 
     public Node focusNode() { return focusNode; }
 

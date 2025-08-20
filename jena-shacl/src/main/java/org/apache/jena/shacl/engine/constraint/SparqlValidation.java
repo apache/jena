@@ -184,7 +184,7 @@ import org.apache.jena.sparql.util.ModelUtils;
             final Node finalValue = value;
             vCxt.notifyValidationListener(() ->
                 new ConstraintEvaluatedOnSinglePathNodeEvent(vCxt, shape, focusNode, reportConstraint, finalRPath, finalValue, false));
-            vCxt.reportEntry(msg, shape, focusNode, rPath, value, reportConstraint);
+            vCxt.reportEntry(msg, shape, focusNode, rPath, value, reportConstraint, /*sh:sourceConstaint*/shape.getShapeNode());
         }
         return false;
     }
