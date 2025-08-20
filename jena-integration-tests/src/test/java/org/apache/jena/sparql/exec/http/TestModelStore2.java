@@ -18,16 +18,16 @@
 
 package org.apache.jena.sparql.exec.http;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.StringReader;
 
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
@@ -47,15 +47,15 @@ public class TestModelStore2 {
     static String DIR = "testing/RDFLink/";
 
     private static EnvTest env;
-    @BeforeClass public static void beforeClass() {
+    @BeforeAll public static void beforeClass() {
         env = EnvTest.create("/ds");
     }
 
-    @Before public void before() {
+    @BeforeEach public void before() {
         env.clear();
     }
 
-    @AfterClass public static void afterClass() {
+    @AfterAll public static void afterClass() {
         EnvTest.stop(env);
     }
 

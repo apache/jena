@@ -29,12 +29,12 @@ import org.apache.jena.sparql.util.Context;
 public class CtlService {
     public static Object systemContextAllowedSetting = null;
 
-    /*@BeforeClass*/ public static void enableAllowServiceExecution() {
+    /*@BeforeAll*/ public static void enableAllowServiceExecution() {
         systemContextAllowedSetting = Fuseki.getContext().get(ARQ.httpServiceAllowed);
         ARQ.getContext().set(ARQ.httpServiceAllowed, "true");
     }
 
-    /*@AfterClass*/ public static void resetAllowServiceExecution() {
+    /*@AfterAll*/ public static void resetAllowServiceExecution() {
         ARQ.getContext().set(ARQ.httpServiceAllowed, systemContextAllowedSetting);
     }
 
@@ -45,8 +45,8 @@ public class CtlService {
 
     // ---- Add to a test suite
 //    // ---- Enable service
-//    @BeforeClass public static void enableAllowServiceExecution() { CtlService.enableAllowServiceExecution(); }
-//    @AfterClass public static void resetAllowServiceExecution() { CtlService.resetAllowServiceExecution(); }
+//    @BeforeAll public static void enableAllowServiceExecution() { CtlService.enableAllowServiceExecution(); }
+//    @AfterAll public static void resetAllowServiceExecution() { CtlService.resetAllowServiceExecution(); }
 //    /** Minimal context that allows SERVICE execution */
 //    public static Context minimalContext() { return CtlService.minimalContext() }
 //    // ----

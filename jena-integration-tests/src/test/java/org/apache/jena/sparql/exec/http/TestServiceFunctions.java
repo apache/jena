@@ -18,10 +18,12 @@
 
 package org.apache.jena.sparql.exec.http;
 
-import static org.junit.Assert.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.logging.LogCtl;
-import org.junit.Test;
 
 public class TestServiceFunctions {
     @Test public void service_timeout_1() {

@@ -21,49 +21,50 @@ package org.apache.jena.sparql.exec.http;
 import java.net.http.HttpClient;
 import java.time.Duration;
 
-import org.apache.jena.fuseki.main.FusekiServer ;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.rdflink.RDFLink;
 import org.apache.jena.rdflink.RDFLinkHTTP;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFFormat;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.sse.SSE;
-import org.apache.jena.system.Txn ;
-import org.junit.AfterClass ;
-import org.junit.Before ;
-import org.junit.BeforeClass ;
-import org.junit.Test;
+import org.apache.jena.system.Txn;
 
 public class TestSetupHTTP  {
-    private static FusekiServer server ;
-    private static DatasetGraph serverdsg = DatasetGraphFactory.createTxnMem() ;
+    private static FusekiServer server;
+    private static DatasetGraph serverdsg = DatasetGraphFactory.createTxnMem();
     private static HttpClient httpClient;
     private static String URL;
     // ---- Test data.
     private static Graph g = SSE.parseGraph("(graph (:s :p :o))");
     private static DatasetGraph dsg = SSE.parseDatasetGraph("(dataset (:g :s :p 123))");
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         server = FusekiServer.create().loopback(true)
             .port(0)
             .add("/ds", serverdsg)
-            .start() ;
+            .start();
         URL = "http://localhost:"+server.getPort()+"/ds";
         httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(10))
                 .build();
     }
 
-    @Before
+    @BeforeEach
     public void beforeTest() {
         // Clear server
-        Txn.executeWrite(serverdsg, ()->serverdsg.clear()) ;
+        Txn.executeWrite(serverdsg, ()->serverdsg.clear());
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         server.stop();
     }

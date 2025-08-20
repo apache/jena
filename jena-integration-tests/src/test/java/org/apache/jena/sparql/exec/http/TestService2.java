@@ -18,12 +18,18 @@
 
 package org.apache.jena.sparql.exec.http;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.http.sys.HttpRequestModifier;
 import org.apache.jena.http.sys.RegistryRequestModifier;
@@ -36,16 +42,12 @@ import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.test.conn.EnvTest;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /** Most tests of SERVICE */
 public class TestService2 {
     // ---- Enable service
-    @BeforeClass public static void enableAllowServiceExecution() { CtlService.enableAllowServiceExecution(); }
-    @AfterClass public static void resetAllowServiceExecution() { CtlService.resetAllowServiceExecution(); }
+    @BeforeAll public static void enableAllowServiceExecution() { CtlService.enableAllowServiceExecution(); }
+    @AfterAll public static void resetAllowServiceExecution() { CtlService.resetAllowServiceExecution(); }
     public static Context minimalContext() { return CtlService.minimalContext(); }
     // ----
 
@@ -54,18 +56,18 @@ public class TestService2 {
     // Local dataset for execution of SERVICE. Can be used to carry a context.
     private static final DatasetGraph localDataset() {return DatasetGraphZero.create(); }
 
-    @BeforeClass public static void beforeClass() {
+    @BeforeAll public static void beforeClass() {
         // Also edit src/test/resources/log4j2.properties to get logging output.
         // FusekiLogging.setLogging();
         env = EnvTest.create("/ds");
         SERVICE = env.datasetURL();
     }
 
-    @Before public void before() {
+    @BeforeEach public void before() {
         env.clear();
     }
 
-    @AfterClass public static void afterClass() {
+    @AfterAll public static void afterClass() {
         EnvTest.stop(env);
     }
 
@@ -78,11 +80,19 @@ public class TestService2 {
     @Test public void service_send_mode_str_1() { serviceSendMode("GET"); }
     @Test public void service_send_mode_str_2() { serviceSendMode("POST"); }
 
-    @Test(expected=QueryExecException.class)
-    public void service_send_mode_str_3() { serviceSendMode("JUNK"); }
+    @Test
+    public void service_send_mode_str_3() {
+        assertThrows(QueryExecException.class, ()->
+            serviceSendMode("JUNK")
+        );
+    }
 
-    @Test(expected=QueryExecException.class)
-    public void service_send_mode_str_4() { serviceSendMode(""); }
+    @Test
+    public void service_send_mode_str_4() {
+        assertThrows(QueryExecException.class, ()->
+            serviceSendMode("")
+            );
+    }
 
     @Test public void service_send_mode_str_10() { serviceSendMode(QuerySendMode.asGetAlways.name()); }
     @Test public void service_send_mode_str_11() { serviceSendMode(QuerySendMode.asGetWithLimitBody.name()); }

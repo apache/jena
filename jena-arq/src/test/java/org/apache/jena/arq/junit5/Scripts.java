@@ -39,7 +39,7 @@ public class Scripts {
     public static Function<ManifestEntry, Runnable> testMakerRIOT = RiotTests::makeRIOTTest;
 
     static RunnableTestMaker runnableGenerator = RunnableTestMaker.std();
-    static Function<ManifestEntry, Runnable> testMaker = runnableGenerator.testMaker();
+    public static Function<ManifestEntry, Runnable> testMaker() { return runnableGenerator.testMaker(); }
 
     public static Stream<DynamicNode> manifestTestFactory(String filename, String namePrefix, Function<ManifestEntry, Runnable> testMaker) {
         // When does this happen?
@@ -65,7 +65,7 @@ public class Scripts {
 
     /** Make tests, tries both SPARQL and RIOT test types. */
     public static Stream<DynamicNode> manifestTestFactory(String filename, String namePrefix) {
-        return manifestTestFactory(filename, namePrefix, testMaker);
+        return manifestTestFactory(filename, namePrefix, testMaker());
     }
 
     /** Specifically SPARQL tests */

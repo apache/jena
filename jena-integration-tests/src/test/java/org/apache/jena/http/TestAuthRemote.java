@@ -19,8 +19,13 @@
 package org.apache.jena.http;
 
 import static org.apache.jena.fuseki.test.HttpTest.expect401;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
@@ -41,9 +46,6 @@ import org.apache.jena.sparql.exec.http.UpdateExecHTTP;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.test.conn.EnvTest;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * This is more than just RDFLinkRemote - it covers the components
@@ -53,12 +55,12 @@ public class TestAuthRemote {
     private static String password = "password";
 
     private EnvTest env;
-    @Before public void beforeClass() {
+    @BeforeEach public void beforeClass() {
         //FusekiLogging.setLogging();
         env = EnvTest.createAuth("/ds", DatasetGraphFactory.createTxnMem(), user, password);
     }
 
-    @After public void after() {
+    @AfterEach public void after() {
         EnvTest.stop(env);
     }
 
@@ -368,10 +370,10 @@ public class TestAuthRemote {
         });
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void auth_registryHttpClient_prefix_1() {
-        // Should use exact
-        exec_auth_registry_prefix(env.datasetURL());
+        // Should use exact URL
+        assertThrows(IllegalArgumentException.class, ()->exec_auth_registry_prefix(env.datasetURL()));
     }
 
     @Test
@@ -414,11 +416,11 @@ public class TestAuthRemote {
         });
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void auth_registryHttpClient_prefix_401_5() {
-        // Not cause 401. Shorter dataset name, prefix of actual one.
+        // Does not cause 401. Shorter dataset name, prefix of actual one.
         String registerKey = env.serverPath("d");
-        exec_auth_registry_prefix(registerKey);
+        assertThrows(IllegalArgumentException.class, ()->exec_auth_registry_prefix(registerKey));
     }
 
     // Other ways of setting auth.

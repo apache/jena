@@ -18,6 +18,10 @@
 
 package org.apache.jena.test.general;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.main.FusekiServer;
@@ -29,9 +33,7 @@ import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.web.HttpSC;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+
 
 /**
  * Tests for operation run end-to-end.
@@ -43,7 +45,7 @@ public class TestRemoteEndToEnd {
     private static String LOG_LEVEL = null;
     private static String ActionLogName = Fuseki.actionLogName;
 
-    @BeforeClass public static void beforeClass() {
+    @BeforeAll public static void beforeClass() {
         // Suppress warnings.
         LOG_LEVEL = LogCtl.getLevel(ActionLogName);
         LogCtl.setLevel(ActionLogName, "ERROR");
@@ -62,7 +64,7 @@ public class TestRemoteEndToEnd {
                     .port(0).build().start();
     }
 
-    @AfterClass public static void afterClass() {
+    @AfterAll public static void afterClass() {
         try { server.stop(); } catch (Throwable th) {}
         LogCtl.setLevel(ActionLogName, LOG_LEVEL);
     }

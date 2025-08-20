@@ -18,6 +18,10 @@
 
 package org.apache.jena.test.rdfconnection;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.main.FusekiTestLib;
@@ -27,8 +31,6 @@ import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionFuseki;
 import org.apache.jena.web.HttpSC.Code;
-import org.junit.Ignore;
-import org.junit.Test;
 
 public class TestRDFConnectionFuseki extends TestRDFConnectionRemote {
     @Override
@@ -36,18 +38,15 @@ public class TestRDFConnectionFuseki extends TestRDFConnectionRemote {
         return RDFConnection.connect(server.datasetURL("/ds"));
     }
 
-    @Ignore
     @Override
-    @Test(expected=QueryParseException.class)
-    public void non_standard_syntax_0() {}
-
-    @Override
-    @Test(expected=QueryParseException.class)
+    @Test
     public void non_standard_syntax_1() {
         withServer((datasetURL)->{
             RDFConnection conn = RDFConnectionFuseki.service(datasetURL).parseCheckSPARQL(true).build();
             try ( conn ) {
-                ResultSet rs = conn.query("FOOBAR").execSelect();
+                assertThrows(QueryParseException.class,  ()->{
+                    ResultSet rs = conn.query("FOOBAR").execSelect();
+                });
             }
         });
     }

@@ -19,11 +19,15 @@
 package org.apache.jena.sparql.exec.http;
 
 import static org.apache.jena.sparql.sse.SSE.parseQuad;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Iterator;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.json.JsonArray;
@@ -39,9 +43,6 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.exec.RowSet;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
  * Tests for {@link QueryExecHTTP} with no authentication.
@@ -61,7 +62,7 @@ public class TestQueryExecHTTP {
             LogCtl.enable(Fuseki.actionLog);
         }
 
-    @BeforeClass public static void beforeClass() {
+    @BeforeAll public static void beforeClass() {
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
         dsg.add(q0);
         dsg.add(q1);
@@ -77,7 +78,7 @@ public class TestQueryExecHTTP {
         dsURL = "http://localhost:"+port+dsName;
     }
 
-    @AfterClass public static void afterClass() {
+    @AfterAll public static void afterClass() {
         server.stop();
     }
 

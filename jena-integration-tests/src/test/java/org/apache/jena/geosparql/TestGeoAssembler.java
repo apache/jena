@@ -18,10 +18,13 @@
 
 package org.apache.jena.geosparql;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.base.Sys;
@@ -34,14 +37,12 @@ import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.exec.RowSetOps;
 import org.apache.jena.tdb2.TDB2Factory;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 public class TestGeoAssembler {
     private static String DIR="src/test/files/GeoAssembler/";
 
-    @BeforeClass public static void setup() {
+    @BeforeAll public static void setup() {
         try {
             //Just jul-to-slf4j is not enough
             // Is this an initialization order thing?

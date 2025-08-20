@@ -18,12 +18,18 @@
 
 package org.apache.jena.sparql.exec.http;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.URI;
 import java.net.http.HttpClient;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.fuseki.main.FusekiTestLib;
@@ -35,7 +41,7 @@ import org.apache.jena.query.ARQ;
 import org.apache.jena.rdflink.RDFLink;
 import org.apache.jena.rdflink.RDFLinkFactory;
 import org.apache.jena.sparql.ARQConstants;
-import org.apache.jena.sparql.algebra.op.OpService ;
+import org.apache.jena.sparql.algebra.op.OpService;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.DatasetGraphZero;
@@ -45,18 +51,14 @@ import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.service.ServiceExecutorRegistry;
 import org.apache.jena.sparql.sse.SSE;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.Context;
 import org.apache.jena.test.conn.EnvTest;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /** Test Service implementation code -- Service.exec */
 public class TestServiceAuth {
     // ---- Enable service
-    @BeforeClass public static void enableAllowServiceExecution() { CtlService.enableAllowServiceExecution(); }
-    @AfterClass public static void resetAllowServiceExecution() { CtlService.resetAllowServiceExecution(); }
+    @BeforeAll public static void enableAllowServiceExecution() { CtlService.enableAllowServiceExecution(); }
+    @AfterAll public static void resetAllowServiceExecution() { CtlService.resetAllowServiceExecution(); }
     public static Context minimalContext() { return CtlService.minimalContext(); }
     // ----
 
@@ -65,16 +67,16 @@ public class TestServiceAuth {
     private static final String PASSWORD = "pw13";
     private static EnvTest env;
 
-    @BeforeClass public static void beforeClass() {
+    @BeforeAll public static void beforeClass() {
         env = EnvTest.createAuth("/ds", DatasetGraphFactory.createTxnMem(), USER, PASSWORD);
         SERVICE = env.datasetURL();
     }
 
-    @Before public void before() {
+    @BeforeEach public void before() {
         env.clear();
     }
 
-    @AfterClass public static void afterClass() {
+    @AfterAll public static void afterClass() {
         EnvTest.stop(env);
     }
 
@@ -108,10 +110,12 @@ public class TestServiceAuth {
     }
 
 
-    @Test(expected=QueryExceptionHTTP.class)
+    @Test
     public void service_auth_none() {
         OpService op = TestService.makeOp(env);
-        QueryIterator qIter = Service.exec(op, minimalContext());
+        assertThrows(QueryExceptionHTTP.class, ()->{
+            /*QueryIterator qIter = */ Service.exec(op, minimalContext());
+        });
     }
 
     @Test
@@ -222,12 +226,14 @@ public class TestServiceAuth {
         runServiceQueryWithContext(env.datasetURL(), context);
     }
 
-    @Test(expected=QueryExceptionHTTP.class)
+    @Test
     public void service_auth_bad_cxt_2() {
         Context context = minimalContext();
         HttpClient hc = env.httpClientAuthBadRetry();    // Bad
         context.set(Service.httpQueryClient, hc);
-        runServiceQueryWithContext(env.datasetURL(), context);
+        assertThrows(QueryExceptionHTTP.class, ()->{
+            runServiceQueryWithContext(env.datasetURL(), context);
+        });
     }
 
     @Test public void service_auth_good_dsg_cxt() {
@@ -240,7 +246,7 @@ public class TestServiceAuth {
         runServiceQueryWithDataset(SERVICE, local);
     }
 
-    @Test(expected=QueryExceptionHTTP.class)
+    @Test
     public void service_query_auth_context_bad() {
         // Context dataset graph.
         DatasetGraph local = DatasetGraphZero.create();
@@ -248,7 +254,9 @@ public class TestServiceAuth {
         minimalContext(context);
         HttpClient hc = env.httpClientAuthBad();    // Bad
         context.set(Service.httpQueryClient, hc);
-        runServiceQuery(SERVICE);
+        assertThrows(QueryExceptionHTTP.class, ()->{
+            runServiceQuery(SERVICE);
+        });
     }
 
     public void service_query_auth_context_silent() {

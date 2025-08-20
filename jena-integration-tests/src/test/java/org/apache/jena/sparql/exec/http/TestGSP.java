@@ -20,14 +20,11 @@ package org.apache.jena.sparql.exec.http;
 
 import static org.apache.jena.fuseki.test.HttpTest.expect400;
 import static org.apache.jena.fuseki.test.HttpTest.expect404;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.fuseki.main.FusekiServer;
@@ -54,7 +51,8 @@ public class TestGSP {
 
     private final String dsName = "/data";
 
-    @Before public void makeServer() {
+    @BeforeEach
+    public void makeServer() {
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
         server = FusekiServer.create()
                 .verbose(verbose)
@@ -65,7 +63,8 @@ public class TestGSP {
                 .start();
     }
 
-    @After public void releaseServer() {
+    @AfterEach
+    public void releaseServer() {
         if ( server != null )
             server.stop();
     }
@@ -114,16 +113,16 @@ public class TestGSP {
         assertTrue(IsoMatcher.isomorphic(graph, g));
     }
 
-    @Test(expected = HttpException.class)
+    @Test
     public void gsp_bad_put_01() {
         // No .defaultGraph
-        GSP.service(gspServiceURL()).PUT(graph);
+        assertThrows(HttpException.class, ()->GSP.service(gspServiceURL()).PUT(graph));
     }
 
-    @Test(expected = HttpException.class)
+    @Test
     public void gsp_bad_get_err_02() {
         // No .defaultGraph
-        GSP.service(gspServiceURL()).GET();
+        assertThrows(HttpException.class, ()->GSP.service(gspServiceURL()).GET());
     }
 
     @Test

@@ -21,17 +21,18 @@ package org.apache.jena.http;
 import static org.apache.jena.http.AuthBearerTestLib.attempt;
 import static org.apache.jena.http.AuthBearerTestLib.attemptBasic;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.auth.AuthBearerFilter;
 import org.apache.jena.fuseki.main.auth.SimpleBearer;
 import org.apache.jena.http.AuthBearerTestLib.Expect;
 import org.apache.jena.http.auth.AuthEnv;
-import org.junit.After;
-import org.junit.Test;
 
 /**
- * {@link SimpleBearer} is a simple to use bear toke authentication mechanism
+ * {@link SimpleBearer} is a simple to use bear token authentication mechanism
  * <p>
  * {@code Bearer: base64("user:NAME")}
  * </p>
@@ -54,7 +55,7 @@ public class TestAuthBearerSimple {
                 .start();
     }
 
-    @After
+    @AfterEach
     public void afterTest() {
         AuthEnv.get().clearAuthEnv();
     }

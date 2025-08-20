@@ -18,25 +18,28 @@
 
 package org.apache.jena.http;
 
-import static org.junit.Assert.*;
+
+import static org.apache.jena.fuseki.test.HttpTest.execWithHttpException;
+import static org.apache.jena.fuseki.test.HttpTest.expect404;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpRequest.BodyPublishers;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.atlas.web.TypedInputStream;
-import static org.apache.jena.fuseki.test.HttpTest.*;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.exec.http.Params;
 import org.apache.jena.test.conn.EnvTest;
 import org.apache.jena.web.HttpSC;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
  * {@link HttpOp} testing, and including {@link HttpOp} used directly for SPARQL operations.
@@ -48,11 +51,11 @@ public class TestHttpOp {
     private static EnvTest env;
     private static DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
 
-    @BeforeClass public static void beforeClass() {
+    @BeforeAll public static void beforeClass() {
         env = EnvTest.create("/ds");
     }
 
-    @AfterClass public static void afterClass() {
+    @AfterAll public static void afterClass() {
         EnvTest.stop(env);
     }
 
@@ -73,7 +76,7 @@ public class TestHttpOp {
     /** URL: the string holder. */
     private String PLAIN() { return env.stringHolderPath(); }
 
-    @Before public void before() {
+    @BeforeEach public void before() {
         env.clear();
     }
 

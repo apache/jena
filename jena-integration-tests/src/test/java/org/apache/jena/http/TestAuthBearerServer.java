@@ -19,15 +19,16 @@
 package org.apache.jena.http;
 
 import static org.apache.jena.http.AuthBearerTestLib.attempt;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.auth.AuthBearerFilter;
 import org.apache.jena.fuseki.main.auth.BearerMode;
 import org.apache.jena.http.auth.AuthEnv;
-import org.junit.After;
-import org.junit.Test;
 
 /**
  * Test server side functionality of bearer auth.
@@ -45,7 +46,7 @@ public class TestAuthBearerServer {
                 .start();
     }
 
-    @After
+    @AfterEach
     public void afterTest() {
         AuthEnv.get().clearAuthEnv();
     }

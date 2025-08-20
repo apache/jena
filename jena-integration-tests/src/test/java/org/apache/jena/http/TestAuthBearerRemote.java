@@ -20,11 +20,16 @@ package org.apache.jena.http;
 
 import static org.apache.jena.fuseki.test.HttpTest.expect401;
 import static org.apache.jena.fuseki.test.HttpTest.expect403;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.net.URI;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.fuseki.main.FusekiServer;
@@ -37,10 +42,6 @@ import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.http.GSP;
 import org.apache.jena.sparql.exec.http.QueryExecHTTP;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
  * Bearer authentication is different - it is a framework.
@@ -63,11 +64,24 @@ public class TestAuthBearerRemote {
         return dsEndpointURI;
     }
 
-    @BeforeClass public static void beforeClass() {
+    @BeforeAll public static void beforeClass() {
         server = server("/ds", DatasetGraphFactory.createTxnMem());
     }
 
-    @After
+    @AfterAll public static void afterClass() {
+        dsEndpoint = null;
+        dsEndpointURI = null;
+        if ( server == null )
+            return;
+        try {
+            server.stop();
+            server = null;
+        } catch (Throwable th) {
+            Log.warn(TestAuthBearerRemote.class, "Exception in test suite shutdown", th);
+        }
+    }
+
+    @AfterEach
     public void afterTest() {
         AuthEnv.get().clearAuthEnv();
     }
@@ -106,19 +120,6 @@ public class TestAuthBearerRemote {
         dsEndpoint = "http://localhost:"+server.getHttpPort()+"/ds";
         dsEndpointURI = URI.create(dsEndpoint);
         return server;
-    }
-
-    @AfterClass public static void afterClass() {
-        dsEndpoint = null;
-        dsEndpointURI = null;
-        if ( server == null )
-            return;
-        try {
-            server.stop();
-            server = null;
-        } catch (Throwable th) {
-            Log.warn(TestAuthBearerRemote.class, "Exception in test suite shutdown", th);
-        }
     }
 
     // ---- QueryExecHTTP

@@ -18,10 +18,11 @@
 
 package org.apache.jena.test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.sys.JenaSystem;
-import org.junit.Test;
 
 /** Check that the code has the production settings. */
 public class TestSettings {

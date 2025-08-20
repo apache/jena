@@ -18,11 +18,17 @@
 
 package org.apache.jena.test.txn;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
-import java.util.Collection;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.Creator;
@@ -37,37 +43,32 @@ import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
 import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb2.TDB2Factory;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
-// Tests - programmatic construct, assembler construct.  Good and bad.
-//   TestDataset2Graph - TS_Transactions.
-//   DatasetFactory.wrap
-//   DatasetOne, DatasetGraphOne. <-- Flag needed.
-//   DatasetImpl
+
+//Tests - programmatic construct, assembler construct.  Good and bad.
+//TestDataset2Graph - TS_Transactions.
+//DatasetFactory.wrap
+//DatasetOne, DatasetGraphOne. <-- Flag needed.
+//DatasetImpl
 
 /** Additional testing for "Dataset over Graph" transaction mapping */
-
-@RunWith(Parameterized.class)
+@ParameterizedClass(name="{index}: {0}")
+@MethodSource("provideArgs")
 public class TestDataset2Graph {
 
-    @Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> data() {
-        Creator<Dataset> datasetPlainMaker = ()-> DatasetFactory.createGeneral() ;
-        Creator<Dataset> datasetTxnMemMaker = ()-> DatasetFactory.createTxnMem() ;
+    private static Stream<Arguments> provideArgs() {
+        Creator<Dataset> datasetPlainMaker = ()-> DatasetFactory.createGeneral();
+        Creator<Dataset> datasetTxnMemMaker = ()-> DatasetFactory.createTxnMem();
         @SuppressWarnings("removal")
         Creator<Dataset> datasetTDB1 = ()-> TDB1Factory.createDataset();
         Creator<Dataset> datasetTDB2 = ()-> TDB2Factory.createDataset();
-
-
-        return Arrays.asList(new Object[][] {
-            { "Plain", datasetPlainMaker },
-            { "TIM",   datasetTxnMemMaker },
-            { "TDB1",  datasetTDB1 },
-            { "TDB2",  datasetTDB2 }
-        });
+        List<Arguments> x = List.of
+                (Arguments.of("Plain", datasetPlainMaker)
+                ,Arguments.of("TIM",   datasetTxnMemMaker)
+                ,Arguments.of("TDB1",  datasetTDB1)
+                ,Arguments.of("TDB2",  datasetTDB2)
+                );
+       return x.stream();
     }
 
     private final Creator<Dataset> creator;

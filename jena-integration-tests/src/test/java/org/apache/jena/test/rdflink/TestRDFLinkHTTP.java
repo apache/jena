@@ -18,62 +18,62 @@
 
 package org.apache.jena.test.rdflink;
 
-import org.apache.jena.atlas.logging.LogCtl ;
-import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.main.FusekiServer ;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.atlas.logging.LogCtl;
+import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.FusekiTestLib;
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.rdflink.AbstractTestRDFLink;
 import org.apache.jena.rdflink.RDFLink;
 import org.apache.jena.rdflink.RDFLinkFactory;
 import org.apache.jena.rdflink.RDFLinkHTTP;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.RowSet;
-import org.apache.jena.system.Txn ;
+import org.apache.jena.system.Txn;
 import org.apache.jena.web.HttpSC.Code;
-import org.junit.AfterClass ;
-import org.junit.Before ;
-import org.junit.BeforeClass ;
-import org.junit.Test;
 
 public class TestRDFLinkHTTP extends AbstractTestRDFLink {
-    private static FusekiServer server ;
-    private static DatasetGraph serverdsg = DatasetGraphFactory.createTxnMem() ;
+    private static FusekiServer server;
+    private static DatasetGraph serverdsg = DatasetGraphFactory.createTxnMem();
     protected static int PORT = 0;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         server = FusekiServer.create().loopback(true)
             .port(PORT)
             .add("/ds", serverdsg)
-            .build() ;
+            .build();
         LogCtl.setLevel(Fuseki.serverLogName,  "WARN");
         LogCtl.setLevel(Fuseki.actionLogName,  "WARN");
         LogCtl.setLevel(Fuseki.requestLogName, "WARN");
         LogCtl.setLevel(Fuseki.adminLogName,   "WARN");
         LogCtl.setLevel("org.eclipse.jetty",   "WARN");
-        server.start() ;
+        server.start();
         PORT = server.getPort();
     }
 
-    @Before
+    @BeforeEach
     public void beforeTest() {
         // Clear server
-        Txn.executeWrite(serverdsg, ()->serverdsg.clear()) ;
+        Txn.executeWrite(serverdsg, ()->serverdsg.clear());
     }
 
-//  @After
-//  public void afterTest() {}
-
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         server.stop();
     }
 
     @Override
-    protected boolean supportsAbort() { return false ; }
+    protected boolean supportsAbort() { return false; }
 
     // Whether parseCheckSPARQL=true is the default.
     protected boolean defaultToCheckQueries() { return true; }
@@ -87,12 +87,14 @@ public class TestRDFLinkHTTP extends AbstractTestRDFLink {
         return RDFLinkHTTP.service(server.datasetURL("/ds")).parseCheckSPARQL(parseCheckSPARQL).build();
     }
 
-    @Test(expected=QueryParseException.class)
+    @Test
     public void non_standard_syntax_1() {
         RDFLink link = defaultToCheckQueries() ? link() : link(true);
         // Default setup - local checking.
         try ( link ) {
-            RowSet rs = link.query("FOOBAR").select();
+            assertThrows(QueryParseException.class, ()->{
+                RowSet rs = link.query("FOOBAR").select();
+            });
         }
     }
 
@@ -117,11 +119,13 @@ public class TestRDFLinkHTTP extends AbstractTestRDFLink {
         }
     }
 
-    @Test(expected = QueryParseException.class)
+    @Test
     public void non_standard_syntax_3() {
         RDFLink link = link(true);
         try (link) {
-            link.query("custom");
+            assertThrows(QueryParseException.class, ()->{
+                link.query("custom");
+            });
         }
     }
 }

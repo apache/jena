@@ -18,31 +18,32 @@
 
 package org.apache.jena.http;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.test.conn.EnvTest;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class TestHttpRDF {
     // The HttpRDF machinery (much of which is package visible) get tested by other
     // subsystems built on top of HttpRDF. This test suite is for the public API.
     private static EnvTest env;
-    @BeforeClass public static void beforeClass() {
+    @BeforeAll public static void beforeClass() {
         env = EnvTest.create("/ds");
     }
 
-    @Before public void before() {
+    @BeforeEach public void before() {
         env.clear();
     }
 
-    @AfterClass public static void afterClass() {
+    @AfterAll public static void afterClass() {
         EnvTest.stop(env);
     }
 
@@ -51,7 +52,7 @@ public class TestHttpRDF {
     @Test public void httpRDF_01() {
         var graph = HttpRDF.httpGetGraph(url("/ds?default"));
         assertNotNull(graph);
-        assertTrue("Graph is empty", graph.isEmpty());
+        assertTrue(graph.isEmpty(), ()->"Graph is empty");
     }
 
     @Test public void httpRDF_03() {

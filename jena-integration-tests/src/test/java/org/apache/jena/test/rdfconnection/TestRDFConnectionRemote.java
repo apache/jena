@@ -19,36 +19,35 @@
 package org.apache.jena.test.rdfconnection;
 
 import static org.apache.jena.fuseki.main.ConfigureTests.OneServerPerTestSuite;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.*;
 
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.main.ConfigureTests;
-import org.apache.jena.fuseki.main.FusekiServer ;
+import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.FusekiTestLib;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryParseException;
-import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdfconnection.AbstractTestRDFConnection;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionRemote;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphFactory ;
-import org.apache.jena.system.Txn ;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.apache.jena.system.Txn;
 import org.apache.jena.update.UpdateException;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.web.HttpSC.Code;
-import org.junit.Before ;
-import org.junit.Test;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 
 public class TestRDFConnectionRemote extends AbstractTestRDFConnection {
-    protected static FusekiServer server ;
-    private static DatasetGraph serverdsg = DatasetGraphFactory.createTxnMem() ;
+    protected static FusekiServer server;
+    private static DatasetGraph serverdsg = DatasetGraphFactory.createTxnMem();
+    private static boolean localOneServerPerTestSuite = OneServerPerTestSuite;
 
     // ==== Common code: TestFusekiStdSetup, TestFusekiStdReadOnlySetup, TestFusekiShaclValidation
 
@@ -62,16 +61,36 @@ public class TestRDFConnectionRemote extends AbstractTestRDFConnection {
 
     @BeforeAll
     public static void beforeClass() {
-        if ( OneServerPerTestSuite ) {
+        if ( localOneServerPerTestSuite ) {
             server = createServer().start();
         }
     }
 
     @AfterAll
     public static void afterClass() {
-        if ( OneServerPerTestSuite )
+        if ( localOneServerPerTestSuite )
             stopServer(server);
     }
+
+    // ====
+
+    @BeforeEach
+    public void beforeTest() {
+        if ( !ConfigureTests.OneServerPerTestSuite )
+            server = createServer();
+        // Clear server
+        Txn.executeWrite(serverdsg, ()->serverdsg.clear());
+    }
+
+    // ====
+
+    @AfterEach
+      public void afterTest() {
+          if ( !ConfigureTests.OneServerPerTestSuite ) {
+              finishWithServer(server);
+              server = null;
+          }
+      }
 
     @FunctionalInterface
     interface Action { void run(String datasetURL); }
@@ -89,18 +108,18 @@ public class TestRDFConnectionRemote extends AbstractTestRDFConnection {
     }
 
     private static FusekiServer createServer() {
-        serverdsg = DatasetGraphFactory.createTxnMem() ;
+        serverdsg = DatasetGraphFactory.createTxnMem();
         server = FusekiServer.create().loopback(true)
                 .verbose(true)
                 .port(0)
                 .add("/ds", serverdsg)
-                .build() ;
-        server.start() ;
+                .build();
+        server.start();
         return server;
     }
 
     private FusekiServer server() {
-        if ( OneServerPerTestSuite )
+        if ( localOneServerPerTestSuite )
             return server;
         else
             return createServer().start();
@@ -125,17 +144,8 @@ public class TestRDFConnectionRemote extends AbstractTestRDFConnection {
 
     // ====
 
-    @Before
-    public void beforeTest() {
-        // Clear server
-        Txn.executeWrite(serverdsg, ()->serverdsg.clear()) ;
-    }
-
-//  @After
-//  public void afterTest() {}
-
     @Override
-    protected boolean supportsAbort() { return false ; }
+    protected boolean supportsAbort() { return false; }
 
     @Override
     protected RDFConnection connection() {
@@ -172,22 +182,26 @@ public class TestRDFConnectionRemote extends AbstractTestRDFConnection {
         });
     }
 
-    @Test(expected=QueryParseException.class)
+    @Test
     public void non_standard_syntax_0() {
         withServer((datasetURL)->{
             // Default setup - local checking.
             try ( RDFConnection conn = connection() ) {
-                ResultSet rs = conn.query("FOOBAR").execSelect();
+                assertThrows(QueryParseException.class, ()->{
+                    conn.query("FOOBAR");
+                });
             }
         });
     }
 
-    @Test(expected=QueryParseException.class)
+    @Test
     public void non_standard_syntax_1() {
         withServer((datasetURL)->{
             RDFConnection conn = RDFConnectionRemote.service(datasetURL).parseCheckSPARQL(true).build();
             try ( conn ) {
-                ResultSet rs = conn.query("FOOBAR").execSelect();
+                assertThrows(QueryParseException.class, ()->{
+                    conn.query("FOOBAR");
+                });
             }
         });
     }
@@ -214,11 +228,13 @@ public class TestRDFConnectionRemote extends AbstractTestRDFConnection {
     }
 
     /** Non-standard query syntax on remote connection with parse check enabled is expected to fail. */
-    @Test(expected = QueryParseException.class)
+    @Test
     public void non_standard_syntax_query_remote_1a() {
         withServer((datasetURL)->{
             try ( RDFConnection conn = RDFConnectionRemote.service(datasetURL).parseCheckSPARQL(true).build() ) {
-                try (QueryExecution qe = conn.newQuery().query("FOOBAR").build()) { }
+                assertThrows(QueryParseException.class, ()->{
+                    try (QueryExecution qe = conn.newQuery().query("FOOBAR").build()) { }
+                });
             }
         });
     }
@@ -244,21 +260,25 @@ public class TestRDFConnectionRemote extends AbstractTestRDFConnection {
     }
 
     /** Non-standard query syntax on remote connection with parse flag overridden on the builder is expected to fail. */
-    @Test(expected = QueryParseException.class)
+    @Test
     public void non_standard_syntax_query_remote_2b() {
         withServer((datasetURL)->{
             try ( RDFConnection conn = RDFConnectionRemote.service(datasetURL).parseCheckSPARQL(false).build() ) {
-                try (QueryExecution qe = conn.newQuery().parseCheck(true).query("FOOBAR").build()) { }
+                assertThrows(QueryParseException.class, ()->{
+                    try (QueryExecution qe = conn.newQuery().parseCheck(true).query("FOOBAR").build()) { }
+                });
             }
         });
     }
 
     /** Non-standard update syntax on remote connection with parse check enabled is expected to fail. */
-    @Test(expected = QueryParseException.class)
+    @Test
     public void non_standard_syntax_update_remote_1a() {
         withServer((datasetURL)->{
             try ( RDFConnection conn = RDFConnectionRemote.service(datasetURL).parseCheckSPARQL(true).build() ) {
-                conn.newUpdate().update("FOOBAR").build();
+                assertThrows(QueryParseException.class, ()->{
+                    conn.newUpdate().update("FOOBAR");
+                });
             }
         });
     }
@@ -284,13 +304,15 @@ public class TestRDFConnectionRemote extends AbstractTestRDFConnection {
     }
 
     /** Non-standard update syntax on remote connection with parse flag overridden on the builder is expected to fail. */
-    @Test(expected = QueryParseException.class)
-    public void non_standard_syntax_update_remote_2b() {withServer((datasetURL)->{
-
-        try ( RDFConnection conn = RDFConnectionRemote.service(datasetURL).parseCheckSPARQL(false).build() ) {
-            conn.newUpdate().parseCheck(true).update("FOOBAR").build();
-        }
-    });
+    @Test
+    public void non_standard_syntax_update_remote_2b() {
+        withServer((datasetURL)->{
+            try ( RDFConnection conn = RDFConnectionRemote.service(datasetURL).parseCheckSPARQL(false).build() ) {
+                assertThrows(QueryParseException.class, ()->{
+                    conn.newUpdate().parseCheck(true).update("FOOBAR").build();
+                });
+            }
+        });
     }
 
     /** Non-standard update syntax on remote connection with parse check disabled is expected to work. */
@@ -313,12 +335,18 @@ public class TestRDFConnectionRemote extends AbstractTestRDFConnection {
     }
 
     /** Non-standard update syntax with substitution should fail on build. */
-    @Test(expected = UpdateException.class)
+    @Test
     public void non_standard_syntax_update_remote_3c() {
         withServer((datasetURL)->{
             try ( RDFConnection conn = RDFConnectionRemote.service(datasetURL).parseCheckSPARQL(false).build() ) {
-                conn.newUpdate().parseCheck(false).update("FOO").update("BAR")
-                .substitution("foo", RDF.type).build();
+                var builder = conn.newUpdate()
+                        .parseCheck(false)
+                        .update("FOO")
+                        .update("BAR")
+                        .substitution("foo", RDF.type);
+                assertThrows(UpdateException.class, ()->{
+                    builder.build();
+                });
             }
         });
     }

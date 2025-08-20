@@ -19,6 +19,12 @@
 package org.apache.jena.sparql.exec.http;
 
 import static org.apache.jena.sparql.sse.SSE.parseQuad;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.fuseki.Fuseki;
@@ -31,12 +37,6 @@ import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
-
-import static org.junit.Assert.*;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class TestUpdateExecHTTP {
 
@@ -53,7 +53,7 @@ public class TestUpdateExecHTTP {
             LogCtl.enable(Fuseki.actionLog);
     }
 
-    @BeforeClass public static void beforeClass() {
+    @BeforeAll public static void beforeClass() {
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
         server = FusekiServer.create()
             .port(0)
@@ -66,7 +66,7 @@ public class TestUpdateExecHTTP {
         dsURL = "http://localhost:"+port+dsName;
     }
 
-    @AfterClass public static void afterClass() {
+    @AfterAll public static void afterClass() {
         if ( server != null ) {
             try { server.stop(); } finally { server = null; }
         }
