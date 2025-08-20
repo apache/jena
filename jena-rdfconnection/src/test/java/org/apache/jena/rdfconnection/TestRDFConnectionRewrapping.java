@@ -18,12 +18,14 @@
 
 package org.apache.jena.rdfconnection;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdflink.RDFLink;
 import org.apache.jena.rdflink.RDFLinkAdapter;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class TestRDFConnectionRewrapping {
 
@@ -38,7 +40,7 @@ public class TestRDFConnectionRewrapping {
         RDFLink link = RDFLinkAdapter.adapt(conn);
 
         link.newUpdate().update("INSERT DATA { <urn:s> <urn:p> <urn:o>}").build().execute();
-        Assert.assertTrue(link.newQuery().query("ASK { ?s ?p ?o }").build().ask());
+        assertTrue(link.newQuery().query("ASK { ?s ?p ?o }").build().ask());
     }
 
     @Test

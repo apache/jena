@@ -18,11 +18,12 @@
 
 package org.apache.jena.rdflink;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.junit.Test;
 
 public class TestLibRDFLink {
 

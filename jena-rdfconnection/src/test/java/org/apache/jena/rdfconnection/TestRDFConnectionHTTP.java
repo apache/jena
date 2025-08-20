@@ -18,14 +18,16 @@
 
 package org.apache.jena.rdfconnection;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.http.QueryExecHTTP;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class TestRDFConnectionHTTP {
 
@@ -75,22 +77,22 @@ public class TestRDFConnectionHTTP {
                 .build()) {
             try (QueryExecution qe = conn.query(queryString)) {
                 QueryExecHTTP qeh = (QueryExecHTTP)QueryExec.adapt(qe);
-                Assert.assertEquals(expectedHeader, qeh.getAppProvidedAcceptHeader());
+                assertEquals(expectedHeader, qeh.getAppProvidedAcceptHeader());
             }
 
             try (QueryExecution qe = conn.newQuery().query(queryString).build()) {
                 QueryExecHTTP qeh = (QueryExecHTTP)QueryExec.adapt(qe);
-                Assert.assertEquals(expectedHeader, qeh.getAppProvidedAcceptHeader());
+                assertEquals(expectedHeader, qeh.getAppProvidedAcceptHeader());
             }
 
             try (QueryExecution qe = conn.query(query)) {
                 QueryExecHTTP qeh = (QueryExecHTTP)QueryExec.adapt(qe);
-                Assert.assertEquals(expectedHeader, qeh.getAppProvidedAcceptHeader());
+                assertEquals(expectedHeader, qeh.getAppProvidedAcceptHeader());
             }
 
             try (QueryExecution qe = conn.newQuery().query(query).build()) {
                 QueryExecHTTP qeh = (QueryExecHTTP)QueryExec.adapt(qe);
-                Assert.assertEquals(expectedHeader, qeh.getAppProvidedAcceptHeader());
+                assertEquals(expectedHeader, qeh.getAppProvidedAcceptHeader());
             }
         }
     }

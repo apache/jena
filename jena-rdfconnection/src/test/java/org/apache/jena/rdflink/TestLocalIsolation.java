@@ -18,7 +18,10 @@
 
 package org.apache.jena.rdflink;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
@@ -30,7 +33,6 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
-import org.junit.Test;
 
 public class TestLocalIsolation {
 
@@ -46,9 +48,9 @@ public class TestLocalIsolation {
         isolationModel(Isolation.NONE, true);
     }
 
-    @Test(expected=JenaException.class)
+    @Test
     public void localIsolation_model_3() {
-        isolationModel(Isolation.READONLY, true);
+        assertThrows(JenaException.class, ()-> isolationModel(Isolation.READONLY, true) );
     }
 
     @Test public void localIsolation_dataset_1() {
@@ -59,9 +61,9 @@ public class TestLocalIsolation {
         isolationDataset(Isolation.NONE,true);
     }
 
-    @Test(expected=UnsupportedOperationException.class)
+    @Test
     public void localIsolation_dataset_3() {
-        isolationDataset(Isolation.READONLY, true);
+        assertThrows(UnsupportedOperationException.class, ()-> isolationDataset(Isolation.READONLY, true) );
     }
 
     private void isolationDataset(Isolation isolation, boolean expected) {

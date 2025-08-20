@@ -18,11 +18,11 @@
 
 package org.apache.jena.rdfconnection;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses({
     // The main testing is RDFLink.
     // Other tests, for RDFConnectionRemote and RDFConnectionFuseki, are in jena-integration-tests
     TestRDFConnectionLocalTxnMem.class
