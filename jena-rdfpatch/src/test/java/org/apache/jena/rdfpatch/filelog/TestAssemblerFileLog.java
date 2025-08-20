@@ -18,10 +18,13 @@
 
 package org.apache.jena.rdfpatch.filelog;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.logging.LogCtl;
@@ -35,8 +38,6 @@ import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.util.IsoMatcher;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.system.Txn;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class TestAssemblerFileLog {
     static {
@@ -52,7 +53,7 @@ public class TestAssemblerFileLog {
     // We want to leave the evidence around on test failures.
     private static Path DIR = Paths.get("target/filelog");
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         FileOps.ensureDir(DIR.toString());
         FileOps.clearAll(DIR.toString());
@@ -67,7 +68,7 @@ public class TestAssemblerFileLog {
         Txn.executeWrite(ds, ()->RDFDataMgr.read(ds, ADIR+"/data.ttl"));
 
         String patchfile = "target/filelog/log.rdfp.0001";
-        assertTrue("Patch file does not exist: "+patchfile, FileOps.exists(patchfile));
+        assertTrue(FileOps.exists(patchfile), ()->"Patch file does not exist: "+patchfile);
         RDFPatch patch = RDFPatchOps.read(patchfile);
         DatasetGraph dsg1 = DatasetGraphFactory.createTxnMem();
         RDFPatchOps.applyChange(dsg1, patch);
@@ -75,5 +76,4 @@ public class TestAssemblerFileLog {
         boolean b = IsoMatcher.isomorphic(ds.asDatasetGraph(), dsg1);
         assertTrue(b);
     }
-
 }

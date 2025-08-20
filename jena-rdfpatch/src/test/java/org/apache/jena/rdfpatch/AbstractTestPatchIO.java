@@ -17,7 +17,9 @@
  */
 
 package org.apache.jena.rdfpatch;
-import static org.junit.Assert.assertEquals;
+
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,11 +27,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.function.Consumer;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.rdfpatch.changes.RDFChangesCollector;
 import org.apache.jena.sparql.sse.SSE;
-import org.junit.Test;
 
 public abstract class AbstractTestPatchIO {
     // Write-read.

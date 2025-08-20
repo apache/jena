@@ -18,14 +18,15 @@
 
 package org.apache.jena.rdfpatch;
 
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.rdfpatch.filelog.TestAssemblerFileLog;
 import org.apache.jena.rdfpatch.filelog.TestRotate;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses({
     TestPatchIO_Text.class
     , TestPatchIO_Binary.class
     , TestRDFChanges.class

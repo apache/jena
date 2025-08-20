@@ -18,14 +18,16 @@
 
 package org.apache.jena.rdfpatch;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.iterator.Iter;
@@ -39,18 +41,12 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 /** Check one dataset tracks another. */
 public class TestRDFChangesDataset  {
     DatasetGraph dsgBase = DatasetGraphFactory.createTxnMem();
     ByteArrayOutputStream bout = new ByteArrayOutputStream();
     DatasetGraph dsg = RDFPatchOps.textWriter(dsgBase, bout);
-
-    @Before public void beforeTest() {}
-    @After public void afterTest() {}
 
     private static Quad quad1 = SSE.parseQuad("(:g _:s <p> 1)");
     private static Quad quad2 = SSE.parseQuad("(:g _:s <p> 2)");

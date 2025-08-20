@@ -17,12 +17,14 @@
  */
 
 package org.apache.jena.rdfpatch;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.util.function.Consumer;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.graph.Node;
@@ -31,7 +33,6 @@ import org.apache.jena.rdfpatch.changes.RDFChangesCollector;
 import org.apache.jena.rdfpatch.changes.RDFChangesCounter;
 import org.apache.jena.rdfpatch.changes.RDFChangesN;
 import org.apache.jena.sparql.sse.SSE;
-import org.junit.Test;
 
 public class TestRDFChanges {
     private static Node g1 = SSE.parseNode(":g1");
