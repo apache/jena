@@ -18,12 +18,13 @@
 
 package org.apache.jena.arq.junit4.runners;
 
-import org.apache.jena.sparql.junit.EarlReport;
 import org.junit.AssumptionViolatedException;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
+
+import org.apache.jena.arq.junit4.EarlReport4;
 
 /**
  * Run a single test.
@@ -32,7 +33,7 @@ public class RunnerOneTest extends Runner
 {
     private static int count = 1;
     private final Description description;
-    private final EarlReport report;    // Optional.
+    private final EarlReport4 report;    // Optional.
     private final Runnable testCase;
     private final String testURI;
     private final String name;
@@ -41,7 +42,7 @@ public class RunnerOneTest extends Runner
         this(name, test, null, null);
     }
 
-    public RunnerOneTest(String name, Runnable test, String testURI, EarlReport report) {
+    public RunnerOneTest(String name, Runnable test, String testURI, EarlReport4 report) {
         this.name = name;
         int count$ = count;
         testCase = test;

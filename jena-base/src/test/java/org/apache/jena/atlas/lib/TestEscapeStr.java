@@ -18,12 +18,14 @@
 
 package org.apache.jena.atlas.lib;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.StringWriter;
+
+import org.junit.jupiter.api.Test ;
 
 import org.apache.jena.atlas.io.AWriter;
 import org.apache.jena.atlas.io.IO;
-import org.junit.Assert ;
-import org.junit.jupiter.api.Test ;
 
 // Testing is a bit light here but the RDF term output and
 // the language level output covers the ground as well.
@@ -43,9 +45,9 @@ public class TestEscapeStr {
 
     private static void test_esc(String input, String expected) {
         String output = EscapeStr.stringEsc(input) ;
-        Assert.assertEquals("Failed at escape", expected, output);
+        assertEquals(expected, output, ()->"Failed at escape");
         String output2 = EscapeStr.unescapeStr(output);
-        Assert.assertEquals("Failed at unescape", input, output2);
+        assertEquals(input, output2, ()->"Failed at unescape");
     }
 
     // Single line
@@ -67,7 +69,7 @@ public class TestEscapeStr {
         EscapeStr.stringEsc(w, input, quoteChar, true);
         w.flush();
         String output = sw.toString();
-        Assert.assertEquals(expected, output);
+        assertEquals(expected, output);
     }
 
 
@@ -121,7 +123,7 @@ public class TestEscapeStr {
         EscapeStr.stringEsc(w, input, quoteChar, false);
         w.flush();
         String output = sw.toString();
-        Assert.assertEquals(expected, output);
+        assertEquals(expected, output);
     }
 
     // Unescape
@@ -132,7 +134,7 @@ public class TestEscapeStr {
 
     private void test_unesc(String input, String expected) {
         String output = EscapeStr.unescapeStr(input) ;
-        Assert.assertEquals(expected, output);
+        assertEquals(expected, output);
     }
 
     @Test public void unescape_unicode_1()   { test_unesc_unicode("", "") ; }
@@ -149,6 +151,6 @@ public class TestEscapeStr {
 
     private void test_unesc_unicode(String input, String expected) {
         String output = EscapeStr.unescapeUnicode(input) ;
-        Assert.assertEquals(expected, output);
+        assertEquals(expected, output);
     }
 }

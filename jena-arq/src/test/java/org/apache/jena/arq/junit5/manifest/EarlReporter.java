@@ -29,8 +29,7 @@ public class EarlReporter {
         currentEarlReport = earlReport;
     }
 
-    public static void clearEarlReport() { }
-
+    public static void clearEarlReport() { currentEarlReport = null; }
 
     public static void success(String testURI) {
         if ( currentEarlReport != null )

@@ -16,13 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.junit;
+package org.apache.jena.arq.junit4.sparql;
 
 /**
  * QueryTestException is root exception for all (intentional) exceptions in tests setup,
  * not a failure of the test itself (e.g. manifest problems)
  */
-
 
 public class QueryTestException extends RuntimeException
 {

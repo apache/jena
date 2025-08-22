@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.jena.arq.junit4.LibTestSetup;
+import org.apache.jena.arq.junit4.sparql.QueryTestException;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.ResultSetFactory;
@@ -31,7 +32,6 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.graph.GraphFactory;
-import org.apache.jena.sparql.junit.QueryTestException;
 import org.apache.jena.sparql.resultset.ResultsFormat;
 import org.apache.jena.sparql.resultset.SPARQLResult;
 import org.apache.jena.sparql.vocabulary.TestManifestX;

@@ -18,30 +18,32 @@
 
 package org.apache.jena.cmds;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.PrintStream;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.apache.commons.io.output.NullOutputStream;
 import org.apache.jena.cmd.Cmds;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 public class TestCmdExt {
 
     private static String CMD = "jena.$ext$";
     private static PrintStream stderr = null;
 
-    @Before
+    @BeforeEach
     public void beforeTest() {
         stderr = System.err;
         System.setErr(new PrintStream(NullOutputStream.INSTANCE));
     }
 
-    @After
+    @AfterEach
     public void afterTest() {
         if ( stderr != null )
             System.setErr(stderr);

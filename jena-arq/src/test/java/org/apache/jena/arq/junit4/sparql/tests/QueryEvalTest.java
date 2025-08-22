@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.jena.arq.junit4.manifest.ManifestEntry;
+import org.apache.jena.arq.junit4.sparql.QueryTestException;
 import org.apache.jena.atlas.lib.Creator;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Node;
@@ -48,7 +49,6 @@ import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
-import org.apache.jena.sparql.junit.QueryTestException;
 import org.apache.jena.sparql.resultset.ResultsCompare;
 import org.apache.jena.sparql.resultset.SPARQLResult;
 import org.apache.jena.sparql.util.IsoMatcher;

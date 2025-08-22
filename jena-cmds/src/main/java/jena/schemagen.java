@@ -602,6 +602,7 @@ public class schemagen {
 
     /** The opening class declaration */
     protected void writeClassDeclaration() {
+        writeln( 0, "@SuppressWarnings({\"removal\", \"deprecated\"})");
         write( 0, "public class " );
         write( 0, getClassName() );
         write( 0, " " );

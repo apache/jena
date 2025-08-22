@@ -18,7 +18,6 @@
 
 package org.apache.jena.atlas.lib;
 
-
 import org.apache.jena.atlas.lib.cache.TestCache;
 import org.apache.jena.atlas.lib.cache.TestCache2;
 import org.apache.jena.atlas.lib.cache.TestCacheSimple;

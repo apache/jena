@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.junit;
+package org.apache.jena.arq.junit4;
 
 import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
@@ -29,7 +29,10 @@ import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.XSD;
 
-public class EarlReport
+/**
+ * Model/Junit4 based EARL report
+ */
+public class EarlReport4
 {
     // Ref: http://www.w3.org/TR/EARL10-Schema/
     // NB: This vocabulary has changed over time!
@@ -48,7 +51,7 @@ public class EarlReport
 
     private Resource system;
 
-    public EarlReport(String systemURI)
+    public EarlReport4(String systemURI)
     {
         earl = ModelFactory.createDefaultModel();
 

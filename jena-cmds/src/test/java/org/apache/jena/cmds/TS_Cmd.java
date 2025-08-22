@@ -18,14 +18,14 @@
 
 package org.apache.jena.cmds;
 
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+
 import jena.Test_schemagen;
 import org.apache.jena.atlas.logging.LogCtl ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.junit.runners.Suite.SuiteClasses ;
 
-@RunWith(Suite.class)
-@SuiteClasses( {
+@Suite
+@SelectClasses({
     TestCmdLine.class
     , Test_schemagen.class
     , TestCmdExt.class
