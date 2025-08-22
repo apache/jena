@@ -44,17 +44,19 @@
       <version>5.6.0-SNAPSHOT</version>
     </dependency>
 
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-arq</artifactId>
-      <version>5.6.0-SNAPSHOT</version>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-
+    <!--
+        Does not choose JUnit4Provider.
     <dependency>
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    -->
+    
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${ver.junit4}</version>
       <scope>test</scope>
     </dependency>
 
