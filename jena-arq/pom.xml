@@ -116,6 +116,13 @@
       <type>pom</type>
     </dependency>
 
+    <!-- Necessary for command line text runner (EARL reports) -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <!--
         The vintage engine is only needed for
         the JUnit4 custom runners for manifest driven tests.
@@ -126,6 +133,8 @@
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
       <scope>test</scope>
+      <!-- scope=test does not inherit. optional here is just a marker -->
+      <optional>true</optional>
     </dependency>
 
     <dependency>

@@ -20,14 +20,11 @@
 ///////////////
 package jena;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-// Imports
-///////////////
 import java.io.*;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -36,13 +33,14 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
+import org.junit.jupiter.api.Test;
+
 import jena.schemagen.SchemagenOptionsImpl;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.util.FileUtils ;
-import org.junit.Test ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -731,14 +729,13 @@ public class Test_schemagen
             for ( String negPattern : negPatterns )
             {
                 Pattern pat = Pattern.compile( negPattern );
-                assertFalse( "negative match pattern ||" + negPattern + "|| matched on line: " + line,
-                             pat.matcher( line ).matches() );
+                assertFalse( pat.matcher( line ).matches(), ()-> "negative match pattern ||" + negPattern + "|| matched on line: " + line );
             }
         }
 
         for (int i = 0; i < posPatterns.length; i++) {
             String msg = "Expecting a positive match to pattern: ||" + posPatterns[i] + "||";
-            assertTrue( msg + " in:\n" + result, foundPos[i] );
+            assertTrue( foundPos[i], ()-> msg + " in:\n" + result );
         }
 
         // check that the file compiles with javac
@@ -794,7 +791,7 @@ public class Test_schemagen
                                               // Otherwise the build has warnings (Java21)
                                               "-proc:none" };
                 int success = (Integer) jcRun.invoke( sjc, null, null, null, args );
-                assertEquals( "Errors reported from compilation of schemagen output", 0, success );
+                assertEquals( 0, success, ()->"Errors reported from compilation of schemagen output" );
             }
             else {
                 log.debug( "Could not resolve javax.tools.JavaCompiler.run() method. Is the CLASSPATH defined correctly?" );

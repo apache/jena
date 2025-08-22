@@ -25,14 +25,15 @@ import java.util.function.Function;
 
 import arq.cmdline.ModContext;
 import org.apache.jena.Jena;
-import org.apache.jena.arq.junit4.SurpressedTest;
-import org.apache.jena.arq.junit4.TextTestRunner;
 import org.apache.jena.arq.junit4.manifest.ManifestEntry;
 import org.apache.jena.arq.junit4.riot.ParseForTest;
 import org.apache.jena.arq.junit4.riot.RiotTests;
 import org.apache.jena.arq.junit4.riot.VocabLangRDF;
 import org.apache.jena.arq.junit4.sparql.SparqlTests;
 import org.apache.jena.arq.junit4.sparql.tests.QueryEvalTest;
+import org.apache.jena.arq.junit5.EarlReport;
+import org.apache.jena.arq.junit5.Scripts;
+import org.apache.jena.arq.junit5.textrunner.TextTestRunner5;
 import org.apache.jena.atlas.legacy.BaseTest2;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.logging.LogCtl;
@@ -47,11 +48,13 @@ import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.riot.*;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RIOT;
+import org.apache.jena.riot.SysRIOT;
 import org.apache.jena.riot.lang.extra.TurtleJCC;
 import org.apache.jena.sparql.expr.E_Function;
 import org.apache.jena.sparql.expr.NodeValue;
-import org.apache.jena.sparql.junit.EarlReport;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
 import org.apache.jena.sparql.vocabulary.DOAP;
 import org.apache.jena.sparql.vocabulary.EARL;
@@ -147,7 +150,7 @@ public class rdftests extends CmdGeneral
 
         NodeValue.VerboseWarnings = false;
         E_Function.WarnOnUnknownFunction = false;
-        EarlReport report = new EarlReport(systemURI);
+        EarlReport report = createEarlReport ? new EarlReport(systemURI) : null;
 
         BaseTest2.setTestLogging();
 
@@ -164,7 +167,10 @@ public class rdftests extends CmdGeneral
             SparqlTests.defaultForSyntaxTests = Syntax.syntaxSPARQL_12;
 
         for ( String fn : getPositional() ) {
-            System.out.println("Run: "+fn);
+            if ( createEarlReport )
+                System.out.println("# Run: "+fn);
+            else
+                System.out.println("# Run: "+fn);
             exec1(report, fn);
         }
 
@@ -181,7 +187,7 @@ public class rdftests extends CmdGeneral
             // ---
             Model meta = metadata(report);
 
-            // Write meta separately so it is easy to find.
+            // Write meta separately so it is easy to find and can be extracted.
             RDFDataMgr.write(earlOut, model, Lang.TURTLE);
             earlOut.println();
             RDFDataMgr.write(earlOut, meta, Lang.TURTLE);
@@ -196,11 +202,11 @@ public class rdftests extends CmdGeneral
     }
 
     static void oneManifest(String testManifest) {
-        TextTestRunner.runOne(testManifest, testMaker());
+        TextTestRunner5.runOne(testManifest, Scripts.testMaker());
     }
 
-    static void oneManifestEarl(EarlReport report, String testManifest) {
-        TextTestRunner.runOne(report, testManifest, testMaker());
+    static void oneManifestEarl(EarlReport earlReport, String testManifest) {
+        TextTestRunner5.runOne(earlReport, testManifest, Scripts.testMaker());
     }
 
     // Test subsystems.
@@ -215,19 +221,19 @@ public class rdftests extends CmdGeneral
         installTestMaker(SparqlTests::makeSPARQLTest);
     }
 
-    private static Function<ManifestEntry, Runnable> testMaker() {
-        return (ManifestEntry entry) -> {
-            for ( Function<ManifestEntry, Runnable> engine : installed) {
-                Runnable r = engine.apply(entry);
-                if ( r != null )
-                    return r;
-            }
-            String testName = entry.getName();
-            Resource testType = entry.getTestType() ;
-            System.err.println("Unrecognized test : ("+testType+")" + testName) ;
-            return new SurpressedTest(entry) ;
-        };
-    }
+//    private static Function<ManifestEntry, Runnable> testMaker() {
+//        return (ManifestEntry entry) -> {
+//            for ( Function<ManifestEntry, Runnable> engine : installed) {
+//                Runnable r = engine.apply(entry);
+//                if ( r != null )
+//                    return r;
+//            }
+//            String testName = entry.getName();
+//            Resource testType = entry.getTestType() ;
+//            System.err.println("Unrecognized test : ("+testType+")" + testName) ;
+//            return new SurpressedTest(entry) ;
+//        };
+//    }
 
     private static String name =  "Apache Jena";
     private static String releaseVersion =  ARQ.VERSION;

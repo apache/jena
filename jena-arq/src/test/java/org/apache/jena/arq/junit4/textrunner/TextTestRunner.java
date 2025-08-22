@@ -16,21 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.jena.arq.junit4;
+package org.apache.jena.arq.junit4.textrunner;
 
 import java.util.function.Function;
 
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 
+import org.apache.jena.arq.junit4.EarlReport4;
 import org.apache.jena.arq.junit4.manifest.Manifest;
 import org.apache.jena.arq.junit4.manifest.ManifestEntry;
 import org.apache.jena.arq.junit4.runners.RunnerOneManifest;
 import org.apache.jena.arq.junit4.runners.SetupManifests;
-import org.apache.jena.atlas.junit.TextListenerLong;
 import org.apache.jena.sparql.expr.E_Function;
 import org.apache.jena.sparql.expr.NodeValue;
-import org.apache.jena.sparql.junit.EarlReport;
 
 public class TextTestRunner {
 
@@ -38,7 +37,7 @@ public class TextTestRunner {
         runOne(null, manifestFile, testMaker);
     }
 
-    public static void runOne(EarlReport report, String manifestFile, Function<ManifestEntry, Runnable> testMaker) {
+    public static void runOne(EarlReport4 report, String manifestFile, Function<ManifestEntry, Runnable> testMaker) {
         Manifest manifest = Manifest.parse(manifestFile);
         RunnerOneManifest top = SetupManifests.build(report, manifest, testMaker, null);
         int countManifests = top.getManifestCount();
@@ -61,4 +60,3 @@ public class TextTestRunner {
         System.out.println("Manifests: "+top.getManifestCount());
     }
 }
-

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas.junit;
+package org.apache.jena.arq.junit4.textrunner;
 
 import java.io.PrintStream ;
 

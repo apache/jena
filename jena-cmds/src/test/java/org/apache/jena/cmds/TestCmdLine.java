@@ -19,23 +19,14 @@
 package org.apache.jena.cmds;
 
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import org.junit.jupiter.api.Test;
-
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.Iterator;
 
-import org.apache.jena.cmd.Arg;
-import org.apache.jena.cmd.Args;
-import org.apache.jena.cmd.ArgDecl;
-import org.apache.jena.cmd.CmdException;
-import org.apache.jena.cmd.CmdLineArgs;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.cmd.*;
 
 public class TestCmdLine {
 
@@ -55,7 +46,7 @@ public class TestCmdLine {
         ArgDecl argA = new ArgDecl(false, "-a");
         cl.add(argA);
         cl.process();
-        assertTrue("-a argument found", !cl.contains(argA));
+        assertTrue(!cl.contains(argA), "-a argument found");
     }
 
     @Test
@@ -65,7 +56,7 @@ public class TestCmdLine {
         ArgDecl argA = new ArgDecl(false, "-a");
         cl.add(argA);
         cl.process();
-        assertTrue("No -a argument found", cl.contains(argA));
+        assertTrue(cl.contains(argA), "No -a argument found");
     }
 
     @Test
@@ -75,7 +66,7 @@ public class TestCmdLine {
         ArgDecl argA = new ArgDecl(false, "-a");
         cl.add(argA);
         cl.process();
-        assertTrue("No -a argument found", cl.contains(argA));
+        assertTrue(cl.contains(argA), "No -a argument found");
     }
 
     @Test
@@ -85,7 +76,7 @@ public class TestCmdLine {
         ArgDecl argA = new ArgDecl(true, "-arg");
         cl.add(argA);
         cl.process();
-        assertTrue("-arg argument found", !cl.contains(argA));
+        assertTrue(!cl.contains(argA), "-arg argument found");
     }
 
     @Test
@@ -95,9 +86,9 @@ public class TestCmdLine {
         ArgDecl argA = new ArgDecl(true, "arg");
         cl.add(argA);
         cl.process();
-        assertTrue("No -arg= argument found", cl.contains(argA));
-        assertEquals("", cl.getValue(argA), "ARG");
-        assertEquals("", cl.getArg("arg").getValue(), "ARG");
+        assertTrue(cl.contains(argA), "No -arg= argument found");
+        assertEquals(cl.getValue(argA), "ARG");
+        assertEquals(cl.getArg("arg").getValue(), "ARG");
     }
 
     @Test
@@ -109,11 +100,11 @@ public class TestCmdLine {
         ArgDecl argV = new ArgDecl(false, "-v");
         cl.add(argV);
         cl.process();
-        assertTrue("No -arg= argument found", cl.contains(argA));
+        assertTrue(cl.contains(argA), "No -arg= argument found");
 
         Iterator<String> iter = cl.getValues("arg").iterator();
-        assertEquals("Argument 1", iter.next(), "V1");
-        assertEquals("Argument 2", iter.next(), "V2");
+        assertEquals(iter.next(), "V1", ()->"Argument 1");
+        assertEquals(iter.next(), "V2", ()->"Argument 2");
     }
 
     public void test_addSetting() {
@@ -125,7 +116,6 @@ public class TestCmdLine {
         assertNotNull(a);
     }
 
-
     @Test
     public void test_removeArg1() {
         String args[] = {"--arg=V1", "-v"};
@@ -136,7 +126,6 @@ public class TestCmdLine {
         // Exception.
         assertThrows(CmdException.class, ()->cl.process());
     }
-
 
     @Test
     public void args_no_file_1() {
