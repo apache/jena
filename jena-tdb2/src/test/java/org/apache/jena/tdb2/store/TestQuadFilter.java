@@ -18,10 +18,12 @@
 
 package org.apache.jena.tdb2.store;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.function.Predicate;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.graph.NodeFactory;
@@ -35,7 +37,6 @@ import org.apache.jena.tdb2.TDB2Factory;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.sys.SystemTDB;
 import org.apache.jena.tdb2.sys.TDBInternal;
-import org.junit.jupiter.api.Test;
 
 public class TestQuadFilter
 {

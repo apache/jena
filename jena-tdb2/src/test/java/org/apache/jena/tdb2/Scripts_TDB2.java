@@ -34,13 +34,15 @@ import org.apache.jena.sparql.expr.NodeValue;
 
 public class Scripts_TDB2
 {
-    @BeforeAll static public void beforeClass() {
+    @BeforeAll
+    static public void beforeClass() {
         ARQ.setNormalMode();
         NodeValue.VerboseWarnings = false;
         E_Function.WarnOnUnknownFunction = false;
     }
 
-    @AfterAll static public void afterClass() {
+    @AfterAll
+    static public void afterClass() {
         NodeValue.VerboseWarnings = true;
         E_Function.WarnOnUnknownFunction = true;
     }

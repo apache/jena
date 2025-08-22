@@ -18,20 +18,22 @@
 
 package org.apache.jena.tdb2.store;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.system.Txn;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.sse.SSE;
+import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.TDB2;
 import org.apache.jena.tdb2.TDB2Factory;
 import org.apache.jena.update.*;
-import org.junit.jupiter.api.Test;
 
 /**
  * Test SPARQL
@@ -198,7 +200,7 @@ public class Test_SPARQL_TDB
 
         Txn.executeRead(ds, ()->{
             Model m = ds.getNamedModel("http://example/g2");
-            assertEquals("Did not find 1 statement in named graph", 1, m.size());
+            assertEquals(1, m.size(), ()->"Did not find 1 statement in named graph");
         });
     }
 

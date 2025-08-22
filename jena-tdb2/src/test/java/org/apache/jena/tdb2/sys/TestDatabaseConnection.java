@@ -18,14 +18,15 @@
 
 package org.apache.jena.tdb2.sys;
 
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb2.ConfigTest;
-import org.junit.jupiter.api.Test;
 
 public class TestDatabaseConnection {
 

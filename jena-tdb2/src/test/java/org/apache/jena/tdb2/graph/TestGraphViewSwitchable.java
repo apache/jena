@@ -18,6 +18,10 @@
 
 package org.apache.jena.tdb2.graph;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
@@ -25,8 +29,6 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.tdb2.DatabaseMgr;
-import org.junit.Assert;
-import org.junit.jupiter.api.Test;
 
 public class TestGraphViewSwitchable {
     private DatasetGraph dsg = DatabaseMgr.createDatasetGraph();
@@ -39,7 +41,7 @@ public class TestGraphViewSwitchable {
         g.getTransactionHandler().execute(()->g.add(t));
 
         g.getTransactionHandler().execute(()->
-            Assert.assertTrue(g.contains(t))
+            assertTrue(g.contains(t))
             );
     }
 
@@ -51,7 +53,7 @@ public class TestGraphViewSwitchable {
 
         Graph g2 = dsg.getDefaultGraph();
         g2.getTransactionHandler().execute(()->
-            Assert.assertTrue(g.contains(t))
+            assertTrue(g.contains(t))
             );
     }
 
@@ -64,7 +66,7 @@ public class TestGraphViewSwitchable {
         g.getTransactionHandler().execute(()->g.add(t));
 
         g.getTransactionHandler().execute(()->{
-            Assert.assertTrue(g.contains(t));
+            assertTrue(g.contains(t));
             dsg.contains(q);
         });
     }

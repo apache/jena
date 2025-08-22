@@ -18,13 +18,11 @@
 
 package org.apache.jena.tdb2;
 
-
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
 @Suite
 @SelectClasses({
-
     TestDatabaseMgr.class
     , TestTDBFactory.class
     , TestTDB2.class

@@ -18,11 +18,11 @@
 
 package org.apache.jena.tdb2.sys;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.tdb2.TDB2;
-import org.junit.jupiter.api.Test;
 
 public class TestSys {
     @Test

@@ -20,12 +20,14 @@ package org.apache.jena.tdb2.store.tupletable;
 
 import static org.apache.jena.atlas.lib.tuple.TupleFactory.tuple;
 import static org.apache.jena.tdb2.store.tupletable.NData.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Iterator;
 import java.util.Set;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.iterator.Iter;
-import static org.junit.Assert.*;
 import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.atlas.lib.tuple.TupleMap;
 import org.apache.jena.dboe.base.file.FileSet;
@@ -36,7 +38,6 @@ import org.apache.jena.tdb2.junit.BuildTestLib;
 import org.apache.jena.tdb2.params.StoreParams;
 import org.apache.jena.tdb2.store.NodeId;
 import org.apache.jena.tdb2.sys.SystemTDB;
-import org.junit.jupiter.api.Test;
 
 public class TestTupleIndexRecordDirect
 {
@@ -184,7 +185,7 @@ public class TestTupleIndexRecordDirect
         add(index, n1, n2, n3);
         Tuple<NodeId> tuple2 = tuple(n1, n2, n3);
         Iterator<Tuple<NodeId>> iter = index.findByIndex(tuple2);
-        assertTrue("Can't find tuple", iter.hasNext());
+        assertTrue(iter.hasNext(), ()->"Can't find tuple");
         iter.next();
         assertFalse(iter.hasNext());
     }
@@ -196,7 +197,7 @@ public class TestTupleIndexRecordDirect
 
         Tuple<NodeId> tuple2 = tuple(null, n2, null);
         Iterator<Tuple<NodeId>> iter = index.findByIndex(tuple2);
-        assertTrue("Can't find tuple",iter.hasNext());
+        assertTrue(iter.hasNext(), ()->"Can't find tuple");
         iter.next();
         assertFalse(iter.hasNext());
     }
@@ -209,7 +210,7 @@ public class TestTupleIndexRecordDirect
 
         Tuple<NodeId> tuple2 = tuple(null, n2, n3);
         Iterator<Tuple<NodeId>> iter = index.findByIndex(tuple2);
-        assertTrue("Can't find tuple", iter.hasNext());
+        assertTrue(iter.hasNext(), ()->"Can't find tuple");
         iter.next();
         assertFalse(iter.hasNext());
     }

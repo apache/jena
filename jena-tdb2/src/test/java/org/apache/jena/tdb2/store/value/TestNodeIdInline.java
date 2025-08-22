@@ -18,14 +18,19 @@
 
 package org.apache.jena.tdb2.store.value;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
 import org.apache.jena.tdb2.store.NodeId;
-import org.junit.jupiter.api.Test;
 
 public class TestNodeIdInline
 {
@@ -284,21 +289,21 @@ public class TestNodeIdInline
     private void testNoInline(String x) {
         Node n = NodeFactoryExtra.parseNode(x);
         NodeId nodeId = NodeId.inline(n);
-        assertNull("Converted NodeId but expected no inline form: "+x, nodeId);
+        assertNull(nodeId, ()->"Converted NodeId but expected no inline form: "+x);
     }
 
     private void test(String x, Node correct) {
         Node n = NodeFactoryExtra.parseNode(x);
         NodeId nodeId = NodeId.inline(n);
-        assertNotNull("Expected inlining: "+x, nodeId);
+        assertNotNull(nodeId, ()->"Expected inlining: "+x);
 
         boolean b = NodeId.hasInlineDatatype(n);
-        assertTrue("Converted NodeId but datatype test was false", b);
+        assertTrue(b, ()->"Converted NodeId but datatype test was false");
         Node n2 = NodeId.extract(nodeId);
-        assertNotNull("Expected recovery", n2);
+        assertNotNull(n2, ()->"Expected recovery");
         String s = "("+correct.getLiteralLexicalForm()+","+n2.getLiteralLexicalForm()+")";
-        assertTrue("Not same value: "+s, correct.sameValueAs(n2));
+        assertTrue(correct.sameValueAs(n2), ()->"Not same value: "+s);
         // Term equality.
-        assertEquals("Not same term", correct, n2);
+        assertEquals(correct, n2, ()->"Not same term");
     }
 }

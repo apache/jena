@@ -18,15 +18,17 @@
 
 package org.apache.jena.tdb2.solver;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Iterator;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.lib.tuple.Tuple;
-import org.apache.jena.system.Txn;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
+import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.junit.TL;
 import org.apache.jena.tdb2.solver.stats.StatsCollectorNodeId;
 import org.apache.jena.tdb2.solver.stats.StatsResults;
@@ -35,7 +37,6 @@ import org.apache.jena.tdb2.store.NodeId;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable;
 import org.apache.jena.tdb2.sys.TDBInternal;
-import org.junit.jupiter.api.Test;
 
 public class TestStats {
     static DatasetGraphTDB dsg = TDBInternal.getDatasetGraphTDB(TL.createTestDatasetGraphMem());
