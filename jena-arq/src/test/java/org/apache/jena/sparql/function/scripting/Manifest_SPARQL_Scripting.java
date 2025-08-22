@@ -20,7 +20,6 @@ package org.apache.jena.sparql.function.scripting;
 
 import java.util.stream.Stream;
 
-import org.junit.After;
 import org.junit.jupiter.api.*;
 
 import org.apache.jena.arq.junit5.Scripts;
@@ -34,7 +33,7 @@ public class Manifest_SPARQL_Scripting {
         System.setProperty(ARQ.systemPropertyScripting, "true");
     }
 
-    @After public static void disbleScripting() {
+    @AfterEach public void disbleScripting() {
         System.clearProperty(ARQ.systemPropertyScripting);
     }
 
@@ -61,5 +60,4 @@ public class Manifest_SPARQL_Scripting {
     public Stream<DynamicNode> testFactory_JS() {
         return Scripts.manifestTestFactorySPARQL("testing/ARQ/Scripting/manifest.ttl");
     }
-
 }

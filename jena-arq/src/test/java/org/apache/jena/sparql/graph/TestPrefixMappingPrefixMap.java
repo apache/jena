@@ -18,31 +18,30 @@
 
 package org.apache.jena.sparql.graph;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Objects;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.PrefixMapFactory;
-import org.apache.jena.shared.AbstractTestPrefixMapping;
 import org.apache.jena.shared.PrefixMapping;
 
 /** Test a {@link PrefixMapping} backed by a {@link PrefixMap} */
-public class TestPrefixMappingPrefixMap extends AbstractTestPrefixMapping {
-
-    public TestPrefixMappingPrefixMap(String name) {
-        super(name);
-    }
+public class TestPrefixMappingPrefixMap extends AbstractTestPrefixMappingX {
 
     @Override
     protected PrefixMapping getMapping() {
         PrefixMap pmap = PrefixMapFactory.create();
         return new PrefixMappingAdapter(pmap);
     }
-    
+
     // PrefixMaps only keep the prefix -> URI direction mapping.
     // Because they not have the reverse map, the outcome of getNsURIPrefix is "some match"
     // making the result non-deterministic.
     @Override
-    public void testSecondPrefixReplacesReverseMap() {
+    @Test public void testSecondPrefixReplacesReverseMap() {
         String testURI = "http://example/test";
         PrefixMapping A = getMapping();
         A.setNsPrefix( "a", testURI );
@@ -50,7 +49,7 @@ public class TestPrefixMappingPrefixMap extends AbstractTestPrefixMapping {
         String prefix = A.getNsURIPrefix( testURI );
         assertTrue(Objects.equals(prefix, "a") || Objects.equals(prefix, "b") );
     }
-    
+
     @Override
     public void testLock() {}
 }

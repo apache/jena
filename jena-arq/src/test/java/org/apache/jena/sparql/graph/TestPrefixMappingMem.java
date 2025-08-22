@@ -18,21 +18,16 @@
 
 package org.apache.jena.sparql.graph;
 
-import org.apache.jena.shared.AbstractTestPrefixMapping;
 import org.apache.jena.shared.PrefixMapping;
 
 /** Test a {@link PrefixMapping} backed by a {@link PrefixMappingMem} */
-public class TestPrefixMappingMem extends AbstractTestPrefixMapping {
-
-    public TestPrefixMappingMem(String name) {
-        super(name);
-    }
+public class TestPrefixMappingMem extends AbstractTestPrefixMappingX {
 
     @Override
     protected PrefixMapping getMapping() {
         return new PrefixMappingMem();
     }
-    
+
     @Override
     public void testLock() {}
 }
