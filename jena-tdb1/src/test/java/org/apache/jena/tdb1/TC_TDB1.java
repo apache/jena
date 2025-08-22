@@ -18,6 +18,16 @@
 
 package org.apache.jena.tdb1;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+
+// Naming conventions.
+// TS_* - Test sets: collections of testing files (Often Test*)
+// TC_*  - Test collection: sets of TS's and TC's.
+
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.apache.jena.tdb1.assembler.TS_TDB1Assembler;
@@ -34,17 +44,9 @@ import org.apache.jena.tdb1.store.nodetable.TS_NodeTable;
 import org.apache.jena.tdb1.store.tupletable.TS_TupleTable;
 import org.apache.jena.tdb1.sys.SystemTDB;
 import org.apache.jena.tdb1.transaction.TS_TransactionTDB1;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
 
-// Naming conventions.
-// TS_* - Test sets: collections of testing files (Often Test*)
-// TC_*  - Test collection: sets of TS's and TC's.
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses({
     // TDB
     TC_Base.class       // ==>  TS_Block, TS_File.class, TS_Record, TS_RecordFile
     , TS_LibTDB1.class
@@ -71,14 +73,14 @@ public class TC_TDB1
     }
     static ReorderTransformation dftReorder = null ;
 
-    @BeforeClass
+    @BeforeAll
     static public void beforeClass() {
         // Turn off general reordering (turned on for specific reorder tests)
         dftReorder = SystemTDB.defaultReorderTransform;
         SystemTDB.defaultReorderTransform = ReorderLib.identity();
     }
 
-    @AfterClass
+    @AfterAll
     static public void afterClass() {
         SystemTDB.defaultReorderTransform = dftReorder;
     }

@@ -22,7 +22,7 @@ import org.apache.jena.tdb1.TDB1Exception;
 
 public class TDB1TestException extends TDB1Exception
 {
-    public TDB1TestException() {}
+    public TDB1TestException(int x) {}
     public TDB1TestException(String msg) { super(msg) ; }
     public TDB1TestException(Throwable th) { super(th) ;}
     public TDB1TestException(String msg, Throwable th) { super(msg, th) ; }

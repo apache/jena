@@ -18,7 +18,12 @@
 
 package org.apache.jena.tdb1.assembler;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.assembler.JA;
 import org.apache.jena.assembler.exceptions.AssemblerException;
@@ -34,10 +39,6 @@ import org.apache.jena.tdb1.store.DatasetGraphTDB;
 import org.apache.jena.tdb1.store.GraphTDB;
 import org.apache.jena.tdb1.sys.TDBInternal;
 import org.apache.jena.tdb1.transaction.DatasetGraphTransaction;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 @SuppressWarnings("removal")
 public class TestTDB1Assembler {
@@ -45,19 +46,19 @@ public class TestTDB1Assembler {
     static String dirAssem = null;
     static final String dirDB = ConfigTest.getTestingDir() + "/DB";
 
-    @BeforeClass
+    @BeforeAll
     static public void beforeClass() {
         dirAssem = ConfigTest.getTestingDataRoot() + "/Assembler";
         FileOps.ensureDir(dirDB);
     }
 
-    @Before
+    @BeforeEach
     public void before() {
         TDBInternal.reset();
         FileOps.clearDirectory(dirDB);
     }
 
-    @AfterClass
+    @AfterAll
     static public void afterClass() {
         TDBInternal.reset();
         FileOps.clearDirectory(dirDB);
