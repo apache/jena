@@ -18,10 +18,12 @@
 
 package org.apache.jena.tdb2.store.value;
 
-import org.apache.jena.atlas.lib.BitsLong;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import org.apache.jena.atlas.lib.BitsLong;
 
 public class TestDoubleNode62 {
     // See also TestNodeIdInline.nodeId_double_*
@@ -87,12 +89,12 @@ public class TestDoubleNode62 {
 
     private void testNoEncoding(double d) {
         long x = DoubleNode62.pack(d);
-        assertEquals("Expected no encoding", x, DoubleNode62.NO_ENCODING);
+        assertEquals(x, DoubleNode62.NO_ENCODING, ()->"Expected no encoding");
     }
 
     private static void testRoundTripDouble(double d) {
         long x = DoubleNode62.pack(d);
-        assertNotEquals("Expected encoding", x, DoubleNode62.NO_ENCODING);
+        assertNotEquals(x, DoubleNode62.NO_ENCODING, ()->"Expected encoding");
         double d2 = DoubleNode62.unpack(x);
         assertEquals(d, d2, 0);
     }

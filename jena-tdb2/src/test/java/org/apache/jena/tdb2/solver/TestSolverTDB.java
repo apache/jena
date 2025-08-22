@@ -18,7 +18,7 @@
 
 package org.apache.jena.tdb2.solver;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Iterator;

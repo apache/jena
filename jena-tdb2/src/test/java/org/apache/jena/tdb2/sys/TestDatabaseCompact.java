@@ -18,8 +18,8 @@
 
 package org.apache.jena.tdb2.sys;
 
-import static org.junit.Assert.*;
-import static org.junit.Assume.assumeFalse;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -194,20 +194,20 @@ public class TestDatabaseCompact
         });
 
         DatasetGraphSwitchable dsgs = (DatasetGraphSwitchable)dsg;
-        assertNotNull("DatasetGraphSwitchable created", dsgs.getLocation());
+        assertNotNull(dsgs.getLocation(), ()->"DatasetGraphSwitchable created");
         DatasetGraph dsg1 = dsgs.get();
         Location loc1 = ((DatasetGraphTDB)dsg1).getLocation();
 
         // Before
         int x1 = Txn.calculateRead(dsg, ()->dsg.prefixes().size());
-        assertTrue("Prefxies count", x1 > 0);
+        assertTrue(x1 > 0, ()->"Prefxies count");
 
         DatabaseMgr.compact(dsgs, false); // HERE
 
         // After
         int x2 = Txn.calculateRead(dsg, ()->dsg.prefixes().size());
 
-        assertEquals("Before and after prefix count", x1, x2);
+        assertEquals(x1, x2, ()->"Before and after prefix count");
 
         Graph g2 = dsgs.getDefaultGraph();
 

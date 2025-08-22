@@ -18,7 +18,12 @@
 
 package org.apache.jena.tdb2.setup;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.sys.Names;
@@ -26,13 +31,12 @@ import org.apache.jena.tdb2.ConfigTest;
 import org.apache.jena.tdb2.params.StoreParams;
 import org.apache.jena.tdb2.params.StoreParamsCodec;
 import org.apache.jena.tdb2.params.StoreParamsFactory;
-import org.junit.jupiter.api.Test;
 
 /** This test suite uses on-disk structures and can be slow */
 public class TestStoreParamsChoose {
     private String DIR = ConfigTest.getCleanDir();
 
-    // Junk values bu tmuist be different.
+    // Junk values but must be different.
     static final StoreParams pApp = StoreParams.builder("App")
         .blockSize(12)              // Not dynamic, does not override.
         .nodeMissCacheSize(12)      // Dynamic

@@ -18,18 +18,21 @@
 
 package org.apache.jena.tdb2;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.system.Txn;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.sys.TDBInternal;
-import org.junit.jupiter.api.Test;
 
 /** Test of TDB2Factory - the Dataset level API to TDB2 **/
 public class TestTDBFactory

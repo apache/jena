@@ -20,15 +20,19 @@ package org.apache.jena.tdb2.store.tupletable;
 
 import static org.apache.jena.atlas.lib.tuple.TupleFactory.tuple;
 import static org.apache.jena.tdb2.store.tupletable.NData.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Iterator;
 import java.util.Set;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.iterator.Iter;
-import static org.junit.Assert.*;
 import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.tdb2.store.NodeId;
-import org.junit.jupiter.api.Test;
 
 /** Test TupleIndexes (general) */
 public abstract class AbstractTestTupleIndex
@@ -166,7 +170,7 @@ public abstract class AbstractTestTupleIndex
         add(index, n1, n2, n3);
         Tuple<NodeId> tuple2 = tuple(n1, n2, n3);
         Iterator<Tuple<NodeId>> iter = index.find(tuple2);
-        assertTrue("Can't find tuple", iter.hasNext());
+        assertTrue(iter.hasNext(), ()->"Can't find tuple");
         iter.next();
         assertFalse(iter.hasNext());
     }
@@ -178,7 +182,7 @@ public abstract class AbstractTestTupleIndex
 
         Tuple<NodeId> tuple2 = tuple(null, n2, null);
         Iterator<Tuple<NodeId>> iter = index.find(tuple2);
-        assertTrue("Can't find tuple",iter.hasNext());
+        assertTrue(iter.hasNext(), ()->"Can't find tuple");
         iter.next();
         assertFalse(iter.hasNext());
     }
@@ -191,7 +195,7 @@ public abstract class AbstractTestTupleIndex
 
         Tuple<NodeId> tuple2 = tuple(null, n2, n3);
         Iterator<Tuple<NodeId>> iter = index.find(tuple2);
-        assertTrue("Can't find tuple", iter.hasNext());
+        assertTrue(iter.hasNext(), ()->"Can't find tuple");
         iter.next();
         assertFalse(iter.hasNext());
     }

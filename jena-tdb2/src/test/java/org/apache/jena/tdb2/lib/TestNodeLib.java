@@ -19,10 +19,13 @@
 package org.apache.jena.tdb2.lib;
 
 import static org.apache.jena.tdb2.lib.NodeLib.hash;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
-import org.junit.jupiter.api.Test;
 
 public class TestNodeLib
 {

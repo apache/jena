@@ -21,15 +21,14 @@ package org.apache.jena.tdb2.sys;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.store.DatasetGraphSwitchable;
-import org.junit.Rule;
+
+import java.util.concurrent.TimeUnit;
+
 import org.junit.jupiter.api.Test;
-import org.junit.rules.Timeout;
+import org.junit.jupiter.api.Timeout;
 
+@Timeout(value = 5, unit = TimeUnit.SECONDS)
 public class TestTransactionalSystemControl {
-
-    // In case of deadlock.
-    @Rule
-    public Timeout globalTimeout = Timeout.seconds(5);
 
     @Test
     public void exclusiveMode1() {
