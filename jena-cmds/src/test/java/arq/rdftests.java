@@ -25,14 +25,14 @@ import java.util.function.Function;
 
 import arq.cmdline.ModContext;
 import org.apache.jena.Jena;
-import org.apache.jena.arq.junit4.manifest.ManifestEntry;
-import org.apache.jena.arq.junit4.riot.ParseForTest;
-import org.apache.jena.arq.junit4.riot.RiotTests;
-import org.apache.jena.arq.junit4.riot.VocabLangRDF;
-import org.apache.jena.arq.junit4.sparql.SparqlTests;
-import org.apache.jena.arq.junit4.sparql.tests.QueryEvalTest;
 import org.apache.jena.arq.junit5.EarlReport;
 import org.apache.jena.arq.junit5.Scripts;
+import org.apache.jena.arq.junit5.manifest.ManifestEntry;
+import org.apache.jena.arq.junit5.riot.ParsingStepForTest;
+import org.apache.jena.arq.junit5.riot.RiotTests;
+import org.apache.jena.arq.junit5.riot.VocabLangRDF;
+import org.apache.jena.arq.junit5.sparql.SparqlTests;
+import org.apache.jena.arq.junit5.sparql.tests.QueryEvalTest;
 import org.apache.jena.arq.junit5.textrunner.TextTestRunner5;
 import org.apache.jena.atlas.legacy.BaseTest2;
 import org.apache.jena.atlas.lib.Lib;
@@ -141,7 +141,7 @@ public class rdftests extends CmdGeneral
         if ( contains(baseDecl) )
             baseURI = super.getValue(baseDecl);
         if ( contains(useTTLjcc) )
-            ParseForTest.registerAlternative(Lang.TURTLE, TurtleJCC.factory);
+            ParsingStepForTest.registerAlternative(Lang.TURTLE, TurtleJCC.factory);
         argAsNormal = contains(useARQ);
     }
 

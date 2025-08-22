@@ -123,20 +123,6 @@
       <scope>test</scope>
     </dependency>
 
-    <!--
-        The vintage engine is only needed for
-        the JUnit4 custom runners for manifest driven tests.
-        ARQ does not now use JUnit4 but this remains while
-        downstream modules have JUnit4 runners.
-    -->
-    <dependency>
-      <groupId>org.junit.vintage</groupId>
-      <artifactId>junit-vintage-engine</artifactId>
-      <scope>test</scope>
-      <!-- scope=test does not inherit. optional here is just a marker -->
-      <optional>true</optional>
-    </dependency>
-
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
