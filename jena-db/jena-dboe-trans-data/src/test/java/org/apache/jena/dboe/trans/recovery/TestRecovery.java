@@ -45,8 +45,6 @@ import org.apache.jena.dboe.transaction.txn.journal.Journal;
 import org.apache.jena.dboe.transaction.txn.journal.JournalEntry;
 import org.apache.jena.dboe.transaction.txn.journal.JournalEntryType;
 
-// We need something to recover io order to test recovery.
-
 public class TestRecovery {
 
     @TempDir
@@ -76,7 +74,6 @@ public class TestRecovery {
 //        ComponentIdRegistry registry = new ComponentIdRegistry();
 //        registry.register(cid, "Blob", 1);
 
-
         Location location = Location.create(journal);
 
         // Write out a journal.
@@ -89,15 +86,19 @@ public class TestRecovery {
 
         TransactionCoordinator coord = TransactionCoordinator.create(location);
         BufferChannel chan = BufferChannelFile.create(data);
-        TransBlob tBlob = new TransBlob(cid, chan);
-        coord.add(tBlob);
-        coord.start();
+        try {
+            TransBlob tBlob = new TransBlob(cid, chan);
+            coord.add(tBlob);
+            coord.start();
 
-        ByteBuffer blob = tBlob.getBlob();
-        assertNotNull(blob);
-        String s = IO.byteBufferToString(blob);
-        assertEquals(str,s);
-        coord.shutdown();
+            ByteBuffer blob = tBlob.getBlob();
+            assertNotNull(blob);
+            String s = IO.byteBufferToString(blob);
+            assertEquals(str,s);
+            coord.shutdown();
+        } finally {
+            chan.close();
+        }
     }
 
     @Test public void recoverBlobFile_2() throws Exception {
@@ -119,24 +120,28 @@ public class TestRecovery {
 
         Journal journal = Journal.create(location);
         BufferChannel chan = BufferChannelFile.create(data);
-        TransBlob tBlob1 = new TransBlob(cid1, chan);
-        TransBlob tBlob2 = new TransBlob(cid2, chan);
+        try {
+            TransBlob tBlob1 = new TransBlob(cid1, chan);
+            TransBlob tBlob2 = new TransBlob(cid2, chan);
 
-        TransactionCoordinator coord = new TransactionCoordinator(journal, Arrays.asList(tBlob1, tBlob2));
-        coord.start();
+            TransactionCoordinator coord = new TransactionCoordinator(journal, Arrays.asList(tBlob1, tBlob2));
+            coord.start();
 
-        ByteBuffer blob1 = tBlob1.getBlob();
-        assertNotNull(blob1);
-        String s1 = IO.byteBufferToString(blob1);
-        assertEquals(str1,s1);
+            ByteBuffer blob1 = tBlob1.getBlob();
+            assertNotNull(blob1);
+            String s1 = IO.byteBufferToString(blob1);
+            assertEquals(str1,s1);
 
-        ByteBuffer blob2 = tBlob2.getBlob();
-        assertNotNull(blob2);
-        String s2 = IO.byteBufferToString(blob2);
-        assertEquals(str2,s2);
+            ByteBuffer blob2 = tBlob2.getBlob();
+            assertNotNull(blob2);
+            String s2 = IO.byteBufferToString(blob2);
+            assertEquals(str2,s2);
 
-        assertNotEquals(str1,str2);
-        coord.shutdown();
+            assertNotEquals(str1,str2);
+            coord.shutdown();
+        } finally {
+            chan.close();
+        }
     }
 }
 

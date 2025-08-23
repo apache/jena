@@ -20,7 +20,6 @@ package org.apache.jena.dboe.base.file;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,23 +33,22 @@ import org.apache.jena.dboe.sys.Names;
 public class TestProcessFileLock {
 
     private String lockfile;
-
+    private Path lockfilePath;
     @TempDir Path tempDir;
 
     @BeforeEach public void beforeTest() {
-        Path tmp = tempDir.resolve(Names.TDB_LOCK_FILE);
-        lockfile = tmp.toAbsolutePath().toString();
+        lockfilePath = tempDir.resolve(Names.TDB_LOCK_FILE).toAbsolutePath();
         try {
-            Files.createFile(tmp);
+            Files.createFile(lockfilePath);
+            lockfile = lockfilePath.toRealPath().toString();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    @Test public void process_lock_1() {
+    @Test public void process_lock_1() throws IOException {
         ProcessFileLock lock = ProcessFileLock.create(lockfile);
-        String fn = new File(lockfile).getAbsolutePath();
-        assertEquals(fn, lock.getPath().toString());
+        assertTrue(Files.isSameFile(lock.getPath(),lockfilePath), "Not the same file");
     }
 
     @Test public void process_lock_2() {
