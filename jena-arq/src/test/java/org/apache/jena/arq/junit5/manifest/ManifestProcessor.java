@@ -18,7 +18,6 @@
 
 package org.apache.jena.arq.junit5.manifest;
 
-import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -54,19 +53,21 @@ public class ManifestProcessor {
     }
 
     public static DynamicContainer buildFrom(String filename, String namePrefix, EntryToTest entryToTest) {
-        Set<Path> visited = new HashSet<>();
+        Set<String> visited = new HashSet<>();
         return build(filename, namePrefix, entryToTest, visited);
     }
 
     // "visited" is a safety measure to detect loops in included manifests files.
-    private static DynamicContainer build(String filename, String namePrefix, EntryToTest entryToTest, Set<Path> visited) {
+    private static DynamicContainer build(String filenameOrURI, String namePrefix, EntryToTest entryToTest, Set<String> visited) {
         int x = ++counterContainer;
-        Path path =  Path.of(filename).toAbsolutePath();
-        if ( visited.contains(path) )
-            throw new RuntimeException("Cycle in manifest files detected: "+path);
-        visited.add(path);
+        // Cycle detection.
+        // This must work for URIs and files so converting to Path is not an option.
+        // If via a symbolic links, then real link, this catches one step later because we didn't normalize.
+        if ( visited.contains(filenameOrURI) )
+            throw new RuntimeException("Cycle in manifest files detected: "+filenameOrURI);
+        visited.add(filenameOrURI);
 
-        Manifest manifest = Manifest.parse(filename);
+        Manifest manifest = Manifest.parse(filenameOrURI);
         List<DynamicContainer> subManifests = buildSubManifests(manifest, namePrefix, entryToTest, visited);
 
         // One test seems to be treated differently. test runs, but name does not show up.
@@ -78,7 +79,7 @@ public class ManifestProcessor {
 
         // Add tests
         if ( tests.size() == 1 ) {
-            // Otherwise JUnit5 only shows the container name. (this maybe an Eclipse thing)
+            // Otherwise JUnit5 only shows the container name. (this is maybe an Eclipse thing)
             DynamicTest test = tests.get(0);
             DynamicContainer here = DynamicContainer.dynamicContainer(test.getDisplayName(), tests);
             children.add(here);
@@ -122,7 +123,7 @@ public class ManifestProcessor {
         return dyntests;
     }
 
-    private static List<DynamicContainer> buildSubManifests(Manifest manifest, String namePrefix, EntryToTest entryToTest, Set<Path> visited) {
+    private static List<DynamicContainer> buildSubManifests(Manifest manifest, String namePrefix, EntryToTest entryToTest, Set<String> visited) {
         Iterator<String> iterIncludedFiles = manifest.includedManifests();
         List<DynamicContainer> subs = new ArrayList<>();
         iterIncludedFiles.forEachRemaining(filename -> {
