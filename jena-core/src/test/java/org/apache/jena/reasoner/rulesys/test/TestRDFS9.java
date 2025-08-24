@@ -22,11 +22,11 @@ import java.util.*;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.jena.graph.* ;
-import org.apache.jena.graph.compose.Union ;
-import org.apache.jena.reasoner.* ;
-import org.apache.jena.reasoner.test.TestUtil ;
-import org.apache.jena.vocabulary.* ;
+import org.apache.jena.graph.*;
+import org.apache.jena.graph.compose.Union;
+import org.apache.jena.reasoner.*;
+import org.apache.jena.reasoner.test.TestUtil;
+import org.apache.jena.vocabulary.*;
 
 /**
  * Test harness used in debugging some issues with execution

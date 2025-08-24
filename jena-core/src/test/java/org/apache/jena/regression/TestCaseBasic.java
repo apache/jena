@@ -18,8 +18,8 @@
 
 package org.apache.jena.regression;
 
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.test.JenaTestBase ;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.test.JenaTestBase;
 
 
 

@@ -18,15 +18,9 @@
 
 package org.apache.jena.util.junit;
 
-import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.rdf.model.Resource;
 
-
-public interface ManifestOldItemHandler
-{
+public interface ManifestOldItemHandler {
     /** Handle an item in a manifest */
-    public boolean processManifestItem(Resource manifest ,
-                                       Resource item ,
-                                       String testName ,
-                                       Resource action ,
-                                       Resource result) ;
+    public boolean processManifestItem(Resource manifest, Resource item, String testName, Resource action, Resource result);
 }

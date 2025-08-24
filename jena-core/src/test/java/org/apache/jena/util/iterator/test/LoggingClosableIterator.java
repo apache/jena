@@ -20,7 +20,7 @@ package org.apache.jena.util.iterator.test;
 
 import java.util.Iterator;
 
-import org.apache.jena.util.iterator.* ;
+import org.apache.jena.util.iterator.*;
 
 /**
     A closable iterator that wraps a base iterator and reports whether or not it

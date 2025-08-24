@@ -20,41 +20,41 @@ package org.apache.jena.ttl_test.turtle;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.util.Locale ;
+import java.util.Locale;
 
 import org.apache.jena.atlas.logging.Log;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 
 /** Emit N-triples */
 public class Turtle2NTriples implements TurtleEventHandler
 {
-    PrintStream out = System.out ;
-    public Turtle2NTriples(int x, PrintStream out) { this.out = out ; }
+    PrintStream out = System.out;
+    public Turtle2NTriples(int x, PrintStream out) { this.out = out; }
     
     @Override
     public void triple(int line, int col, Triple triple)
     {
         //Check it's valid triple.
-        Node s = triple.getSubject() ;
-        Node p = triple.getPredicate() ;
-        Node o = triple.getObject() ;
+        Node s = triple.getSubject();
+        Node p = triple.getPredicate();
+        Node o = triple.getObject();
         
         if ( ! ( s.isURI() || s.isBlank() ) )
-            throw new TurtleParseException("["+line+", "+col+"] : Error: Subject is not a URI or blank node") ;
+            throw new TurtleParseException("["+line+", "+col+"] : Error: Subject is not a URI or blank node");
         if ( ! p.isURI() )
-            throw new TurtleParseException("["+line+", "+col+"] : Error: Predicate is not a URI") ;
+            throw new TurtleParseException("["+line+", "+col+"] : Error: Predicate is not a URI");
         if ( ! ( o.isURI() || o.isBlank() || o.isLiteral() ) ) 
-            throw new TurtleParseException("["+line+", "+col+"] : Error: Object is not a URI, blank node or literal") ;
+            throw new TurtleParseException("["+line+", "+col+"] : Error: Object is not a URI, blank node or literal");
       
-        outputNode(s) ;
-        out.print(" ") ;
-        outputNode(p) ;
-        out.print(" ") ;
-        outputNode(o) ;
-        out.print(" .") ;
-        out.println() ;
-        out.flush() ;
+        outputNode(s);
+        out.print(" ");
+        outputNode(p);
+        out.print(" ");
+        outputNode(o);
+        out.print(" .");
+        out.println();
+        out.flush();
         
     }
 
@@ -62,53 +62,53 @@ public class Turtle2NTriples implements TurtleEventHandler
     {
         if ( node.isURI() ) 
         { 
-            out.print("<") ;
-            out.print(node.getURI()) ;
-            out.print(">") ;
-            return ; 
+            out.print("<");
+            out.print(node.getURI());
+            out.print(">");
+            return; 
         }
         if ( node.isBlank() )
         {
-            out.print("_:") ;
-            out.print(node.getBlankNodeLabel()) ;
-            return ;
+            out.print("_:");
+            out.print(node.getBlankNodeLabel());
+            return;
         }
         if ( node.isLiteral() )
         {
-            out.print('"') ;
-            outputEsc(node.getLiteralLexicalForm()) ;
-            out.print('"') ;
+            out.print('"');
+            outputEsc(node.getLiteralLexicalForm());
+            out.print('"');
 
             if ( node.getLiteralLanguage() != null && node.getLiteralLanguage().length()>0)
             {
-                out.print('@') ;
-                out.print(node.getLiteralLanguage()) ;
+                out.print('@');
+                out.print(node.getLiteralLanguage());
             }
 
             if ( node.getLiteralDatatypeURI() != null )
             {
-                out.print("^^<") ;
-                out.print(node.getLiteralDatatypeURI()) ;
-                out.print(">") ;
+                out.print("^^<");
+                out.print(node.getLiteralDatatypeURI());
+                out.print(">");
             }
-            return ; 
+            return; 
         }
-        Log.error(this, "Illegal node: "+node) ;
+        Log.error(this, "Illegal node: "+node);
     }
 
     @Override
     public void startFormula(int line, int col)
-    { throw new TurtleParseException("["+line+", "+col+"] : Error: Formula found") ; }
+    { throw new TurtleParseException("["+line+", "+col+"] : Error: Formula found"); }
 
     @Override
     public void endFormula(int line, int col)
-    { throw new TurtleParseException("["+line+", "+col+"] : Error: Formula found") ; }
+    { throw new TurtleParseException("["+line+", "+col+"] : Error: Formula found"); }
 
     @Override
     public void prefix(int line, int col, String prefix, String iri)
     {  }
     
-    static boolean applyUnicodeEscapes = true ;
+    static boolean applyUnicodeEscapes = true;
     
     private static void writeString(String s, PrintWriter writer) {
 
@@ -139,15 +139,15 @@ public class Turtle2NTriples implements TurtleEventHandler
     
     public  void outputEsc(String s)
     {
-        int len = s.length() ;
+        int len = s.length();
         for (int i = 0; i < len; i++) {
             char c = s.charAt(i);
             
             // Escape escapes and quotes
             if (c == '\\' || c == '"' ) 
             {
-                out.print('\\') ;
-                out.print(c) ;
+                out.print('\\');
+                out.print(c);
             }
             else if (c == '\n') out.print("\\n");
             else if (c == '\t') out.print("\\t");

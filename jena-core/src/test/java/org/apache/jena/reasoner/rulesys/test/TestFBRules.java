@@ -459,7 +459,7 @@ public class TestFBRules extends TestCase {
 
         rules =
           "[r1: (c r ?x) <- (?x p ?x)]" +
-          "[r2: (a p ?x) <- (a q ?x)]" ;
+          "[r2: (a p ?x) <- (a q ?x)]";
         infgraph = createInfGraph(rules, data);
         TestUtil.assertIteratorValues(this,
               infgraph.find(c, r, null),
@@ -558,7 +558,7 @@ public class TestFBRules extends TestCase {
     "[rdfs6:  (?p rdfs:subPropertyOf ?q) -> [ (?a ?q ?b) <- (?a ?p ?b)] ]" +
     "[rdfs7:  (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf ?a)]" +
     "[rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)]" +
-    "[rdfs9:  (?x rdfs:subClassOf ?y) -> [ (?a rdf:type ?y) <- (?a rdf:type ?x)] ]" ;
+    "[rdfs9:  (?x rdfs:subClassOf ?y) -> [ (?a rdf:type ?y) <- (?a rdf:type ?x)] ]";
         InfGraph infgraph = createInfGraph(rules, data);
 //        ((FBRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this,
@@ -577,7 +577,7 @@ public class TestFBRules extends TestCase {
         data.add(Triple.create(r, RDFS.range.asNode(), C1));
         String rules =
     "[rdfs3:  (?p rdfs:range ?c)  -> [(?y rdf:type ?c) <- (?x ?p ?y)] ]" +
-    "[rdfs6:  (?p rdfs:subPropertyOf ?q) -> [ (?a ?q ?b) <- (?a ?p ?b)] ]" ;
+    "[rdfs6:  (?p rdfs:subPropertyOf ?q) -> [ (?a ?q ?b) <- (?a ?p ?b)] ]";
         InfGraph infgraph = createInfGraph(rules, data);
 //        ((FBRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this,
@@ -594,7 +594,7 @@ public class TestFBRules extends TestCase {
         data.add(Triple.create(a, ty, C1));
         String rules =
         "[r1:  (?x p ?t) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]" +
-        "[r2:  (?t rdf:type C2) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]" ;
+        "[r2:  (?t rdf:type C2) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]";
         InfGraph infgraph = createInfGraph(rules, data);
 
         Node valueInstance = getValue(infgraph, a, p);
@@ -612,7 +612,7 @@ public class TestFBRules extends TestCase {
         Graph data = createGraphForTest();
         data.add(Triple.create(a, ty, C1));
         String rules =
-        "[r1:  (?x p ?t) <- (?x rdf:type C1), makeInstance(?x, p, ?t)]" ;
+        "[r1:  (?x p ?t) <- (?x rdf:type C1), makeInstance(?x, p, ?t)]";
         InfGraph infgraph = createInfGraph(rules, data);
 
         Node valueInstance = getValue(infgraph, a, p);

@@ -20,32 +20,27 @@ package org.apache.jena.graph.compose.test;
 
 import java.lang.reflect.*;
 
-import org.apache.jena.graph.* ;
-import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.graph.*;
+import org.apache.jena.rdf.model.ModelFactory;
 
-public class TestCaseBasic extends org.apache.jena.regression.TestCaseBasic
-	{
+public class TestCaseBasic extends org.apache.jena.regression.TestCaseBasic {
     private Class<? extends Graph> graphClass;
 
-    public TestCaseBasic(String name, Class<? extends Graph> graphClass)
-    	{
+    public TestCaseBasic(String name, Class<? extends Graph> graphClass) {
         super(name);
         this.graphClass = graphClass;
-    	}
+    }
 
-    private Graph newGraph( Constructor< ? extends Graph> cons ) throws Exception
-    	{
-    	return cons.newInstance
-            ( GraphMemFactory.createDefaultGraph(), GraphMemFactory.createDefaultGraph() );
-    	}
+    private Graph newGraph(Constructor<? extends Graph> cons) throws Exception {
+        return cons.newInstance(GraphMemFactory.createDefaultGraph(), GraphMemFactory.createDefaultGraph());
+    }
 
-    @Override public void setUp() throws Exception
-    	{
-		Constructor< ? extends Graph> constructor = graphClass.getConstructor
-            (new Class [] { Graph.class, Graph.class } );
-    	m1 = ModelFactory.createModelForGraph( newGraph( constructor ) );
-    	m2 = ModelFactory.createModelForGraph( newGraph( constructor ) );
-    	m3 = ModelFactory.createModelForGraph( newGraph( constructor ) );
-    	m4 = ModelFactory.createModelForGraph( newGraph( constructor ) );
-		}
-	}
+    @Override
+    public void setUp() throws Exception {
+        Constructor<? extends Graph> constructor = graphClass.getConstructor(new Class[]{Graph.class, Graph.class});
+        m1 = ModelFactory.createModelForGraph(newGraph(constructor));
+        m2 = ModelFactory.createModelForGraph(newGraph(constructor));
+        m3 = ModelFactory.createModelForGraph(newGraph(constructor));
+        m4 = ModelFactory.createModelForGraph(newGraph(constructor));
+    }
+}

@@ -45,7 +45,7 @@ class FullEventRecord extends EventRecord {
         rslt.append("{ ");
         for ( EventRecord aMoreCharacter : moreCharacter )
         {
-            rslt.append( aMoreCharacter.toString() + " ; " );
+            rslt.append( aMoreCharacter.toString() + "; " );
         }
         rslt.append(" }");
         return rslt.toString();

@@ -18,18 +18,18 @@
 
 package org.apache.jena.rdfxml.xmloutput;
 
-import java.io.* ;
-import java.util.Random ;
-import java.util.Vector ;
+import java.io.*;
+import java.util.Random;
+import java.util.Vector;
 
-import junit.framework.Test ;
-import junit.framework.TestSuite ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.rdf.model.test.ModelTestBase ;
-import org.apache.jena.shared.JenaException ;
-import org.apache.jena.vocabulary.RDFSyntax ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.test.ModelTestBase;
+import org.apache.jena.shared.JenaException;
+import org.apache.jena.vocabulary.RDFSyntax;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This will test any Writer and Reader pair.
@@ -295,10 +295,10 @@ public class TestWriterAndReader
         	if ((j % 2) == 0 && j > 0)
         		expand(m1, random, 1 + cn / 10);
 
-            tmpOut = new ByteArrayOutputStream() ;
+            tmpOut = new ByteArrayOutputStream();
             rdfWtr.write(m1, tmpOut, baseUriWrite);
-            tmpOut.flush() ;
-            tmpOut.close() ;
+            tmpOut.flush();
+            tmpOut.close();
         	m2 = createMemModel();
         	//empty(m2);
 
@@ -320,8 +320,8 @@ public class TestWriterAndReader
 //                        s1.isIsomorphicWith(s2));
             assertIsoModels( "Comparison of file written out, and file read in.", s1, s2 );
             // Free resources explicitily.
-            tmpOut.reset() ;
-            tmpOut = null ;
+            tmpOut.reset();
+            tmpOut = null;
         }
         if (showProgress) {
         	System.out.print("+");

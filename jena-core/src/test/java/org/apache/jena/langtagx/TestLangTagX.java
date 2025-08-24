@@ -18,7 +18,7 @@
 
 package org.apache.jena.langtagx;
 
-import org.junit.Test ;
+import org.junit.Test;
 
 import static org.junit.Assert.*;
 
@@ -26,24 +26,28 @@ import org.apache.jena.langtag.LangTag;
 import org.apache.jena.shared.JenaException;
 
 /**
- * Test of the LangTagX adapter to language tag implementation.
- * This is not a comprehensive set of test for language tags.
+ * Test of the LangTagX adapter to language tag implementation. This is not a
+ * comprehensive set of test for language tags.
  */
 public class TestLangTagX {
 
-    @Test public void check_langtag_01() {
+    @Test
+    public void check_langtag_01() {
         assertTrue(LangTagX.checkLanguageTag("en-gb"));
     }
 
-    @Test public void check_langtag_02() {
+    @Test
+    public void check_langtag_02() {
         assertTrue(LangTagX.checkLanguageTag("en-gb-oed"));
     }
 
-    @Test public void check_langtag_03() {
+    @Test
+    public void check_langtag_03() {
         assertFalse(LangTagX.checkLanguageTag("en-ab-xy"));
     }
 
-    @Test public void require_langtag_01() {
+    @Test
+    public void require_langtag_01() {
         LangTagX.requireValidLanguageTag("en-gb");
     }
 
@@ -52,7 +56,8 @@ public class TestLangTagX {
         LangTagX.requireValidLanguageTag("en-ab-xy");
     }
 
-    @Test public void langtag_01() {
+    @Test
+    public void langtag_01() {
         LangTag langTag = LangTagX.createLanguageTag("en-gb");
         assertNotNull(langTag);
     }
@@ -63,18 +68,21 @@ public class TestLangTagX {
         assertNotNull(langTag);
     }
 
-    @Test public void langtag_format_01() {
+    @Test
+    public void langtag_format_01() {
         String fmt = LangTagX.formatLanguageTag("en-gb");
         assertEquals("en-GB", fmt);
     }
 
-    @Test public void langtag_format_02() {
+    @Test
+    public void langtag_format_02() {
         String fmt = LangTagX.formatLanguageTag("en-latn-illegalSubTag");
         // Falls back to the "by part" formatting
         assertEquals("en-Latn-illegalsubtag", fmt);
     }
 
-    @Test public void langtag_format_03() {
+    @Test
+    public void langtag_format_03() {
         String fmt = LangTagX.formatLanguageTag("");
         assertEquals("", fmt);
     }

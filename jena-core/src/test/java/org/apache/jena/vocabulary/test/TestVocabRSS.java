@@ -19,28 +19,28 @@
 package org.apache.jena.vocabulary.test;
 
 import junit.framework.*;
-import org.apache.jena.vocabulary.* ;
+import org.apache.jena.vocabulary.*;
 
-public class TestVocabRSS extends VocabTestBase
-    {
-    public TestVocabRSS(String name)
-        { super(name); }
-
-     public static TestSuite suite()
-        { return new TestSuite( TestVocabRSS.class ); }
-
-    public void testRSS()
-        {
-		String ns = "http://purl.org/rss/1.0/";
-        assertResource( ns + "channel", RSS.channel );
-        assertResource( ns + "item", RSS.item );
-        assertProperty( ns + "description", RSS.description );
-        assertProperty( ns + "image", RSS.image );
-        assertProperty( ns + "items", RSS.items );
-        assertProperty( ns + "link", RSS.link );
-        assertProperty( ns + "name", RSS.name );
-        assertProperty( ns + "textinput", RSS.textinput );
-        assertProperty( ns + "title", RSS.title );
-        assertProperty( ns + "url", RSS.url );
-        }
+public class TestVocabRSS extends VocabTestBase {
+    public TestVocabRSS(String name) {
+        super(name);
     }
+
+    public static TestSuite suite() {
+        return new TestSuite(TestVocabRSS.class);
+    }
+
+    public void testRSS() {
+        String ns = "http://purl.org/rss/1.0/";
+        assertResource(ns + "channel", RSS.channel);
+        assertResource(ns + "item", RSS.item);
+        assertProperty(ns + "description", RSS.description);
+        assertProperty(ns + "image", RSS.image);
+        assertProperty(ns + "items", RSS.items);
+        assertProperty(ns + "link", RSS.link);
+        assertProperty(ns + "name", RSS.name);
+        assertProperty(ns + "textinput", RSS.textinput);
+        assertProperty(ns + "title", RSS.title);
+        assertProperty(ns + "url", RSS.url);
+    }
+}

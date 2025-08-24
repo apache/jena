@@ -24,7 +24,7 @@ import java.util.Map;
 import org.apache.jena.rdf.model.RDFWriterF;
 import org.apache.jena.rdf.model.RDFWriterI;
 import org.apache.jena.shared.JenaException;
-import org.apache.jena.shared.NoWriterForLangException ;
+import org.apache.jena.shared.NoWriterForLangException;
 
 /**
  */
@@ -38,7 +38,7 @@ public class X_RDFWriterF extends Object implements RDFWriterF {
     @Override
     public RDFWriterI getWriter(String lang) {
         if (lang==null || lang.equals(""))
-            lang = DEFAULTLANG ;
+            lang = DEFAULTLANG;
         Class<? extends RDFWriterI> c = custom.get(lang);
         if ( c == null )
             throw new NoWriterForLangException("Writer not found: " + lang);

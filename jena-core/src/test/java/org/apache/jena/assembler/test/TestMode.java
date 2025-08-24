@@ -22,8 +22,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.jena.assembler.Mode ;
-import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.assembler.Mode;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.junit.Test;
 

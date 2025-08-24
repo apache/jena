@@ -19,8 +19,8 @@
 package org.apache.jena.graph.compose.test;
 
 import junit.framework.TestSuite;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.compose.Intersection ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.compose.Intersection;
 
 public class TestIntersection extends TestDyadic
 {

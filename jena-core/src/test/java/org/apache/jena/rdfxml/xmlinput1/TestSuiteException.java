@@ -20,12 +20,12 @@ package org.apache.jena.rdfxml.xmlinput1;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.RDFErrorHandler ;
-import org.apache.jena.rdf.model.RDFReaderI ;
-import org.apache.jena.rdf.model.impl.RDFDefaultErrorHandler ;
-import org.apache.jena.shared.JenaException ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFErrorHandler;
+import org.apache.jena.rdf.model.RDFReaderI;
+import org.apache.jena.rdf.model.impl.RDFDefaultErrorHandler;
+import org.apache.jena.shared.JenaException;
 
 public class TestSuiteException
 	extends TestCase

@@ -21,49 +21,45 @@ package org.apache.jena.util;
 import java.util.*;
 
 import junit.framework.TestSuite;
-import org.apache.jena.rdf.model.test.ModelTestBase ;
+import org.apache.jena.rdf.model.test.ModelTestBase;
 
 /**
- 	TestHashUtils - test that the hash utility returns a map.
-*/
-public class TestCollectionFactory extends ModelTestBase
-    {
-    public TestCollectionFactory( String name )
-    	{ super( name ); }
-    
-    public static TestSuite suite()
-        { return new TestSuite( TestCollectionFactory.class ); }
-
-    public void testHashMapExists()
-        {
-        assertInstanceOf( Map.class, CollectionFactory.createHashedMap() );
-        }
-    
-    public void testHashMapSized()
-        {
-        assertInstanceOf( Map.class, CollectionFactory.createHashedMap( 42 ) );
-        }
-    
-    public void testHashMapCopy()
-        {
-        Map<String, String> map = new HashMap<>();
-        map.put( "here", "Bristol" );
-        map.put( "there", "Oxford" );
-        Map<String, String> copy = CollectionFactory.createHashedMap( map );
-        assertEquals( map, copy );
-        }
-    
-    public void testHashSetExists()
-        {
-        assertInstanceOf( Set.class, CollectionFactory.<Object>createHashedSet() );
-        }
-    
-    public void testHashSetCopy()
-        {
-        Set<String> s = new HashSet<>();
-        s.add( "jelly" );
-        s.add( "concrete" );
-        Set<String> copy = CollectionFactory.createHashedSet( s );
-        assertEquals( s, copy );
-        }
+ * TestHashUtils - test that the hash utility returns a map.
+ */
+public class TestCollectionFactory extends ModelTestBase {
+    public TestCollectionFactory(String name) {
+        super(name);
     }
+
+    public static TestSuite suite() {
+        return new TestSuite(TestCollectionFactory.class);
+    }
+
+    public void testHashMapExists() {
+        assertInstanceOf(Map.class, CollectionFactory.createHashedMap());
+    }
+
+    public void testHashMapSized() {
+        assertInstanceOf(Map.class, CollectionFactory.createHashedMap(42));
+    }
+
+    public void testHashMapCopy() {
+        Map<String, String> map = new HashMap<>();
+        map.put("here", "Bristol");
+        map.put("there", "Oxford");
+        Map<String, String> copy = CollectionFactory.createHashedMap(map);
+        assertEquals(map, copy);
+    }
+
+    public void testHashSetExists() {
+        assertInstanceOf(Set.class, CollectionFactory.<Object> createHashedSet());
+    }
+
+    public void testHashSetCopy() {
+        Set<String> s = new HashSet<>();
+        s.add("jelly");
+        s.add("concrete");
+        Set<String> copy = CollectionFactory.createHashedSet(s);
+        assertEquals(s, copy);
+    }
+}

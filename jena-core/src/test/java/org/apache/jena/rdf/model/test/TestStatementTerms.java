@@ -58,7 +58,6 @@ public class TestStatementTerms extends AbstractModelTestBase {
         return stmtTerm;
     }
 
-
     public void testStatementReifierAnon() {
         String fakeURI = "fake:URI";
         Resource S = model.createResource();

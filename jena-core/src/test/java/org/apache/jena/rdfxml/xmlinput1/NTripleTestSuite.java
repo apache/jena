@@ -17,18 +17,18 @@
  */
 
 package org.apache.jena.rdfxml.xmlinput1;
-import java.io.* ;
-import java.util.HashSet ;
-import java.util.Set ;
+import java.io.*;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.RDFErrorHandler ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.RDFErrorHandler;
 import org.apache.jena.rdfxml.libtest.InputStreamFactoryTests;
 import org.apache.jena.rdfxml.xmlinput1.impl.ARPResource;
 import org.apache.jena.rdfxml.xmlinput1.impl.ARPSaxErrorHandler;
-import org.junit.Assert ;
-import org.xml.sax.SAXException ;
-import org.xml.sax.SAXParseException ;
+import org.junit.Assert;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * A version of the test suite which uses the
@@ -109,7 +109,7 @@ class NTripleTestSuite extends WGTestSuite {
 			Assert.assertTrue(bnode.isAnonymous());
 			switch (state) {
 				case 1 :
-					Assert.fail("Missing startRDF"); return ;
+					Assert.fail("Missing startRDF"); return;
 				case 2 :
 					Assert.assertFalse(bnode.hasNodeID());
 					seen(bnode);
@@ -172,9 +172,9 @@ class NTripleTestSuite extends WGTestSuite {
 			anon.isEmpty());
 			switch (state) {
 				case 1 :
-					Assert.fail("end-of-file before anything"); return ;
+					Assert.fail("end-of-file before anything"); return;
 				case 2 :
-					Assert.fail("did not see endRDF"); return ;
+					Assert.fail("did not see endRDF"); return;
 				case 3 :
 				case 4 :
 					break;

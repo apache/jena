@@ -19,11 +19,11 @@
 package org.apache.jena.reasoner.rulesys.test;
 
 import junit.framework.TestSuite;
-import org.apache.jena.ontology.* ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.rdf.model.test.ModelTestBase ;
-import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.vocabulary.* ;
+import org.apache.jena.ontology.*;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.test.ModelTestBase;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.vocabulary.*;
 
 /**
     Test that restriction inference works even when the restriction isn't given an

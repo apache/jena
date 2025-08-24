@@ -26,7 +26,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
+import org.apache.jena.rdf.model.test.helpers.TestingModelFactory;
 import org.apache.jena.shared.Lock;
 
 /**

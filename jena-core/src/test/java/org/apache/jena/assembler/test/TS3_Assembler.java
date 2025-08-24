@@ -54,34 +54,3 @@ import org.junit.runners.Suite;
 })
 
 public class TS3_Assembler {}
-
-//    public static TestSuite suite() {
-//        TestSuite result = new TestSuite();
-//        result.addTestSuite(TestMode.class);
-//        result.addTestSuite(TestModelExpansion.class);
-//        result.addTestSuite(TestImportManager.class);
-//        result.addTestSuite(TestOntModelAcceptance.class);
-//
-//        // Was "TestAssemblers" : 19
-//        result.addTestSuite( TestRuleSet.class );
-//        result.addTestSuite( TestAssemblerHelp.class );
-//        result.addTestSuite( TestDefaultModelAssembler.class );
-//        result.addTestSuite( TestMemoryModelAssembler.class );
-//        result.addTestSuite( TestAssemblerVocabulary.class );
-//        result.addTestSuite( TestRuleSetAssembler.class );
-//        result.addTestSuite( TestInfModelAssembler.class );
-//        result.addTestSuite( TestAssemblerGroup.class );
-//        result.addTestSuite( TestAssemblerGroupTracing.class );
-//        result.addTestSuite( TestReasonerFactoryAssembler.class );
-//        result.addTestSuite( TestContentAssembler.class );
-//        result.addTestSuite( TestModelContent.class );
-//        result.addTestSuite( TestUnionModelAssembler.class );
-//        result.addTestSuite( TestPrefixMappingAssembler.class );
-//        result.addTestSuite( TestBuiltinAssemblerGroup.class );
-//        result.addTestSuite( TestModelAssembler.class );
-//        result.addTestSuite( TestDocumentManagerAssembler.class );
-//        result.addTest( TestOntModelSpecAssembler.suite() );
-//        result.addTest( TestOntModelAssembler.suite() );
-//
-//        return result;
-//    }

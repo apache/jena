@@ -25,8 +25,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.regex.Pattern;
 
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.test.ModelTestBase ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.test.ModelTestBase;
 
 public class PrettyWriterTest extends ModelTestBase {
 

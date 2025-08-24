@@ -18,7 +18,7 @@
 
 package org.apache.jena.ttl_test.turtle;
 
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.Triple;
 
 public class TurtleEventNull implements TurtleEventHandler
 {

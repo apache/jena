@@ -21,71 +21,70 @@ package org.apache.jena.graph.test;
 import java.lang.reflect.*;
 
 import junit.framework.*;
-import org.apache.jena.graph.* ;
-import org.apache.jena.shared.* ;
+import org.apache.jena.graph.*;
+import org.apache.jena.shared.*;
 
 /**
-	MetaTestGraph
-*/
-public class MetaTestGraph extends AbstractTestGraph 
-    {
+ * MetaTestGraph
+ */
+public class MetaTestGraph extends AbstractTestGraph {
     protected final Class<? extends Graph> graphClass;
-    
-	public MetaTestGraph( Class<? extends Graph> graphClass, String name) 
-        {
-		super( name );
-        this.graphClass = graphClass;
-        }
-        
-    public MetaTestGraph( String name )
-        { super( name ); graphClass = null; }
-     
-    /**
-        Construct a suite of tests from the test class <code>testClass</code>
-        by instantiating it three times, once each for the three reification styles,
-        and applying it to the graph <code>graphClass</code>.
-    */
-    public static TestSuite suite( Class<? extends Test> testClass, Class<? extends Graph> graphClass )
-        {
-        TestSuite result = new TestSuite();
-        result.addTest( suiteX( testClass, graphClass)); 
-        result.setName("Meta "+testClass.getName());
-        return result;    
-        }
-        
-    public static TestSuite suiteX( Class<? extends Test> testClass, Class<? extends Graph> graphClass)
-        {
-        TestSuite result = new TestSuite();
-        for (Class<?> c = testClass; Test.class.isAssignableFrom( c ); c = c.getSuperclass())
-            {
-            Method [] methods = c.getDeclaredMethods();
-            addTestMethods( result, testClass, methods, graphClass );  
-            }
-        result.setName(testClass.getName());
-        return result;    
-        }
-        
-    public static void addTestMethods
-        ( TestSuite result, Class<? extends Test> testClass, Method [] methods, Class<? extends Graph> graphClass)
-        {
-            for ( Method method : methods )
-            {
-                if ( isPublicTestMethod( method ) )
-                {
-                    result.addTest( makeTest( testClass, graphClass, method.getName() ) );
-                }
-            }
-        }
-        
-    public static TestCase makeTest( Class<? extends Test> testClass, Class<? extends Graph> graphClass, String name)
-        {
-        Constructor<?> cons = getConstructor( testClass, new Class[] {Class.class, String.class} );
-        if (cons == null) throw new JenaException( "cannot find MetaTestGraph constructor" );
-        try { return (TestCase) cons.newInstance( new Object [] {graphClass, name} ); }
-        catch (Exception e) { throw new JenaException( e ); }
-        }
 
-	@Override public Graph getNewGraph() 
-        { return getGraph( this, graphClass); }
-        
+    public MetaTestGraph(Class<? extends Graph> graphClass, String name) {
+        super(name);
+        this.graphClass = graphClass;
     }
+
+    public MetaTestGraph(String name) {
+        super(name);
+        graphClass = null;
+    }
+
+    /**
+     * Construct a suite of tests from the test class <code>testClass</code> by
+     * instantiating it three times, once each for the three reification styles, and
+     * applying it to the graph <code>graphClass</code>.
+     */
+    public static TestSuite suite(Class<? extends Test> testClass, Class<? extends Graph> graphClass) {
+        TestSuite result = new TestSuite();
+        result.addTest(suiteX(testClass, graphClass));
+        result.setName("Meta " + testClass.getName());
+        return result;
+    }
+
+    public static TestSuite suiteX(Class<? extends Test> testClass, Class<? extends Graph> graphClass) {
+        TestSuite result = new TestSuite();
+        for ( Class<? > c = testClass ; Test.class.isAssignableFrom(c) ; c = c.getSuperclass() ) {
+            Method[] methods = c.getDeclaredMethods();
+            addTestMethods(result, testClass, methods, graphClass);
+        }
+        result.setName(testClass.getName());
+        return result;
+    }
+
+    public static void addTestMethods(TestSuite result, Class<? extends Test> testClass, Method[] methods,
+                                      Class<? extends Graph> graphClass) {
+        for ( Method method : methods ) {
+            if ( isPublicTestMethod(method) ) {
+                result.addTest(makeTest(testClass, graphClass, method.getName()));
+            }
+        }
+    }
+
+    public static TestCase makeTest(Class<? extends Test> testClass, Class<? extends Graph> graphClass, String name) {
+        Constructor<? > cons = getConstructor(testClass, new Class[]{Class.class, String.class});
+        if ( cons == null )
+            throw new JenaException("cannot find MetaTestGraph constructor");
+        try {
+            return (TestCase)cons.newInstance(new Object[]{graphClass, name});
+        } catch (Exception e) {
+            throw new JenaException(e);
+        }
+    }
+
+    @Override
+    public Graph getNewGraph() {
+        return getGraph(this, graphClass);
+    }
+
+}

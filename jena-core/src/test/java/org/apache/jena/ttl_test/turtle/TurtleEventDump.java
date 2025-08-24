@@ -18,7 +18,7 @@
 
 package org.apache.jena.ttl_test.turtle;
 
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.Triple;
 
 
 public class TurtleEventDump implements TurtleEventHandler
@@ -27,32 +27,32 @@ public class TurtleEventDump implements TurtleEventHandler
     @Override
     public void triple(int line, int col, Triple triple)
     {
-        System.out.print(mark(line, col)) ;
-        System.out.print(" ") ;
-        System.out.println(triple.toString()) ;
+        System.out.print(mark(line, col));
+        System.out.print(" ");
+        System.out.println(triple.toString());
     }
     
     @Override
     public void startFormula(int line, int col)
     {
-        System.out.print(mark(line, col)) ;
-        System.out.println("{") ;
+        System.out.print(mark(line, col));
+        System.out.println("{");
     }
     
     @Override
     public void endFormula(int line, int col)
     {
-        System.out.print(mark(line, col)) ;
-        System.out.println("}") ;
+        System.out.print(mark(line, col));
+        System.out.println("}");
     }
 
-    private String mark(int line, int col) { return "["+line+", "+col+"]" ; }
+    private String mark(int line, int col) { return "["+line+", "+col+"]"; }
 
     @Override
     public void prefix(int line, int col, String prefix, String iri)
     { 
-        System.out.print(mark(line, col)) ;
-        System.out.print(" @prefix ") ;
-        System.out.println(prefix+": => "+iri) ;
+        System.out.print(mark(line, col));
+        System.out.print(" @prefix ");
+        System.out.println(prefix+": => "+iri);
     }
 }

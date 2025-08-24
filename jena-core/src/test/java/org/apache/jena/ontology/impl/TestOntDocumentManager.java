@@ -557,7 +557,7 @@ public class TestOntDocumentManager
         o1.setReadFailureHandler( rfh );
 
         // trigger the odm to read a non-existant source
-        String source = "@prefix owl: <http://www.w3.org/2002/07/owl#> . <> a owl:Ontology ; owl:imports <http://example.invalid/not/exist>. ";
+        String source = "@prefix owl: <http://www.w3.org/2002/07/owl#> . <> a owl:Ontology; owl:imports <http://example.invalid/not/exist>. ";
         OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_MEM );
         spec.setDocumentManager(  o1 );
         OntModel m = ModelFactory.createOntologyModel( spec );
@@ -574,7 +574,7 @@ public class TestOntDocumentManager
 
         String source =
                 "@prefix owl: <http://www.w3.org/2002/07/owl#> ."
-                + " <> a owl:Ontology ;"
+                + " <> a owl:Ontology;"
                 + " owl:imports <file:testing/ontology/testImport3/a.owl>. ";
 
         OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_MEM );
@@ -592,7 +592,7 @@ public class TestOntDocumentManager
         o1.setReadHook( rh );
         o1.reset();
 
-        String source = "@prefix owl: <http://www.w3.org/2002/07/owl#> . <> a owl:Ontology ; owl:imports <file:testing/ontology/testImport3/a.owl>. ";
+        String source = "@prefix owl: <http://www.w3.org/2002/07/owl#> . <> a owl:Ontology; owl:imports <file:testing/ontology/testImport3/a.owl>. ";
 
         OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_MEM );
         spec.setDocumentManager(  o1 );

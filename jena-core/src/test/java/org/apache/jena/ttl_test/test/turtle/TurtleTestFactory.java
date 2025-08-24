@@ -56,7 +56,7 @@ public class TurtleTestFactory extends TestFactoryManifestOld {
             }
 
             // if ( r.equals(TurtleTestVocab.TestSurpeessed ))
-            // return new TestSupressed(testName, null) ;
+            // return new TestSupressed(testName, null);
 
             System.err.println("Unrecognized test : " + testName);
             return null;

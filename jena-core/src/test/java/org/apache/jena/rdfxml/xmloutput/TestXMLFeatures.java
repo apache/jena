@@ -18,28 +18,28 @@
 
 package org.apache.jena.rdfxml.xmloutput;
 
-import java.io.* ;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection ;
-import java.util.HashSet ;
-import java.util.Iterator ;
-import java.util.Set ;
-import java.util.regex.Pattern ;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.regex.Pattern;
 
-import org.apache.jena.graph.* ;
+import org.apache.jena.graph.*;
 import org.apache.jena.irix.IRIException;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.RDFReaderI ;
-import org.apache.jena.rdf.model.RDFWriterI ;
-import org.apache.jena.rdf.model.impl.RDFDefaultErrorHandler ;
-import org.apache.jena.rdf.model.impl.Util ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFReaderI;
+import org.apache.jena.rdf.model.RDFWriterI;
+import org.apache.jena.rdf.model.impl.RDFDefaultErrorHandler;
+import org.apache.jena.rdf.model.impl.Util;
 import org.apache.jena.rdfxml.xmlinput1.RDFXMLReader;
-import org.apache.jena.rdfxml.xmloutput.impl.BaseXMLWriter ;
-import org.apache.jena.rdfxml.xmloutput.impl.SimpleLogger ;
-import org.apache.jena.shared.InvalidPropertyURIException ;
-import org.apache.jena.shared.JenaException ;
-import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.rdfxml.xmloutput.impl.BaseXMLWriter;
+import org.apache.jena.rdfxml.xmloutput.impl.SimpleLogger;
+import org.apache.jena.shared.InvalidPropertyURIException;
+import org.apache.jena.shared.JenaException;
+import org.apache.jena.vocabulary.RDF;
 
 public class TestXMLFeatures extends XMLOutputTestBase {
 	// static protected Logger logger = LoggerFactory.getLogger( TestXMLFeatures.class );
@@ -378,62 +378,62 @@ public class TestXMLFeatures extends XMLOutputTestBase {
         // BaseXMLWriter.dbg = true;
         // SystemOutAndErr.block();
         // TestLogger tl = new TestLogger(BaseXMLWriter.class);
-        blockLogger() ;
-        Node blank = NodeFactory.createBlankNode() ;
-        Node prop = NodeFactory.createURI(s) ;
-        Graph g = GraphMemFactory.createDefaultGraphSameValue() ;
-        g.add(Triple.create(blank, prop, blank)) ;
+        blockLogger();
+        Node blank = NodeFactory.createBlankNode();
+        Node prop = NodeFactory.createURI(s);
+        Graph g = GraphMemFactory.createDefaultGraphSameValue();
+        g.add(Triple.create(blank, prop, blank));
         // create Model
-        Model m = ModelFactory.createModelForGraph(g) ;
+        Model m = ModelFactory.createModelForGraph(g);
         // serialize
 
         @SuppressWarnings("deprecation")
-        RDFWriterI rw = m.getWriter(lang) ;
+        RDFWriterI rw = m.getWriter(lang);
         if ( p != null )
-            rw.setProperty(p, val) ;
+            rw.setProperty(p, val);
         try (StringWriter w = new StringWriter()) {
-            rw.write(m, w, "http://example.org/") ;
-            String f = w.toString() ;
+            rw.write(m, w, "http://example.org/");
+            String f = w.toString();
 
             switch (behaviour) {
                 case BadPropURI :
-                    fail("Bad property URI <" + s + "> was not detected.") ;
-                    return ;
+                    fail("Bad property URI <" + s + "> was not detected.");
+                    return;
                 case BadURI :
-                    fail("Bad URI <" + s + "> was not detected.") ;
-                    return ;
+                    fail("Bad URI <" + s + "> was not detected.");
+                    return;
             }
             // read back in
-            Model m2 = createMemModel() ;
+            Model m2 = createMemModel();
             RDFReaderI rdr = new RDFXMLReader();
-            rdr.setProperty("error-mode", "lax") ;
+            rdr.setProperty("error-mode", "lax");
             try (StringReader sr = new StringReader(f)) {
-                rdr.read(m2, sr, "http://example.org/") ;
+                rdr.read(m2, sr, "http://example.org/");
             }
 
             // check
             switch (behaviour) {
                 case ExtraTriples :
-                    assertTrue("Expecting Brickley behaviour.", m2.size() == 3) ;
-                    break ;
+                    assertTrue("Expecting Brickley behaviour.", m2.size() == 3);
+                    break;
                 case NoError :
-                    assertTrue("Comparing Model written out and read in.", m.isIsomorphicWith(m2)) ;
-                    break ;
+                    assertTrue("Comparing Model written out and read in.", m.isIsomorphicWith(m2));
+                    break;
             }
         } catch (IRIException ex) {
             if ( behaviour == BadURI )
-                return ;
-            throw ex ;
+                return;
+            throw ex;
         } catch (InvalidPropertyURIException je) {
             if ( behaviour == BadPropURI )
-                return ;
-            throw je ;
+                return;
+            throw je;
         } catch (JenaException e) {
-            throw e ;
+            throw e;
         } finally {
             // BaseXMLWriter.dbg = false;
             // tl.end();
-            unblockLogger() ;
+            unblockLogger();
             // SystemOutAndErr.unblock();
         }
     }
@@ -498,7 +498,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 		Model m = createMemModel();
 		m.read("file:testing/abbreviated/relative-uris.rdf");
 
-		String contents ;
+		String contents;
 		try ( ByteArrayOutputStream bos = new ByteArrayOutputStream() ) {
 	        @SuppressWarnings("deprecation")
 		    RDFWriterI writer = m.getWriter(lang);

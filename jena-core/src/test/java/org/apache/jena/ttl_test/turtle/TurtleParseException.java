@@ -18,7 +18,7 @@
 
 package org.apache.jena.ttl_test.turtle;
 
-import org.apache.jena.shared.JenaException ;
+import org.apache.jena.shared.JenaException;
 
 /** QueryParseException is root exception for all (intentional) exceptions
  *  from the various parsers where the error is to do with the syntax of a query.
@@ -27,8 +27,8 @@ import org.apache.jena.shared.JenaException ;
 
 public class TurtleParseException extends JenaException
 {
-    public TurtleParseException() { super() ; }
-    public TurtleParseException(Throwable cause) { super(cause) ; }
-    public TurtleParseException(String msg) { super(msg) ; }
-    public TurtleParseException(String msg, Throwable cause) { super(msg, cause) ; }
+    public TurtleParseException() { super(); }
+    public TurtleParseException(Throwable cause) { super(cause); }
+    public TurtleParseException(String msg) { super(msg); }
+    public TurtleParseException(String msg, Throwable cause) { super(msg, cause); }
 }

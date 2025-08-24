@@ -18,8 +18,8 @@
 
 package org.apache.jena.rdfxml.xmlinput1.states;
 
-import org.xml.sax.Attributes ;
-import org.xml.sax.SAXParseException ;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXParseException;
 
 class ElementEvent extends Event {
 

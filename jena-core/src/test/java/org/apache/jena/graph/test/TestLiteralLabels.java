@@ -18,16 +18,15 @@
 
 package org.apache.jena.graph.test;
 
-import junit.framework.Test ;
-import junit.framework.TestSuite ;
-import org.apache.jena.datatypes.BaseDatatype ;
-import org.apache.jena.datatypes.RDFDatatype ;
-import org.apache.jena.graph.impl.LiteralLabel ;
-import org.apache.jena.graph.impl.LiteralLabelFactory ;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+import org.apache.jena.datatypes.BaseDatatype;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.graph.impl.LiteralLabel;
+import org.apache.jena.graph.impl.LiteralLabelFactory;
 
 // See also TestLiteralLabelSameValueAs, TestTypedLiterals
-public class TestLiteralLabels extends GraphTestBase
-{
+public class TestLiteralLabels extends GraphTestBase {
     public TestLiteralLabels(String name) {
         super(name);
     }
@@ -79,7 +78,7 @@ public class TestLiteralLabels extends GraphTestBase
                 return false;
             }
         };
-        LiteralLabel A = LiteralLabelFactory.createByValue("17",  d);
+        LiteralLabel A = LiteralLabelFactory.createByValue("17", d);
         LiteralLabel B = LiteralLabelFactory.createByValue("17", null);
         assertFalse(A.sameValueAs(B));
     }
@@ -109,7 +108,8 @@ public class TestLiteralLabels extends GraphTestBase
     public void testEquality4() {
         LiteralLabel A = LiteralLabelFactory.createLang("xyz", "en-UK");
         LiteralLabel B = LiteralLabelFactory.createLang("xyz", "en-uk");
-        // Jena5: language tags are not normalized by LoiteralLabel but in NodeFactory.
+        // Jena5: language tags are not normalized by LoiteralLabel but in
+        // NodeFactory.
         assertFalse(A.equals(B));
         assertTrue(A.sameValueAs(B));
     }

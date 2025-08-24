@@ -23,9 +23,9 @@ package org.apache.jena.ontology.impl;
 // Imports
 ///////////////
 import junit.framework.TestCase;
-import org.apache.jena.ontology.* ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.reasoner.test.TestUtil ;
+import org.apache.jena.ontology.*;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.reasoner.test.TestUtil;
 
 
 

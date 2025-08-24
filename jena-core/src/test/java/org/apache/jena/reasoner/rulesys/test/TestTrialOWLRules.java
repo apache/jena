@@ -22,12 +22,12 @@ import junit.framework.*;
 
 import java.io.IOException;
 
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.reasoner.* ;
-import org.apache.jena.reasoner.rulesys.* ;
-import org.apache.jena.util.FileManager ;
-import org.apache.jena.vocabulary.RDF ;
-import org.apache.jena.vocabulary.ReasonerVocabulary ;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.reasoner.*;
+import org.apache.jena.reasoner.rulesys.*;
+import org.apache.jena.util.FileManager;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.ReasonerVocabulary;
 
 /**
  * Test suite to test experimental versions of the OWL reasoner, not

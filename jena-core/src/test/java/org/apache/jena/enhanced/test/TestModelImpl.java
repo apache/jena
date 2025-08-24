@@ -17,10 +17,10 @@
  */
 
 package org.apache.jena.enhanced.test;
-import org.apache.jena.enhanced.* ;
-import org.apache.jena.graph.* ;
-import org.apache.jena.rdf.model.RDFNode ;
-import org.apache.jena.util.iterator.* ;
+import org.apache.jena.enhanced.*;
+import org.apache.jena.graph.*;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.util.iterator.*;
 
 public class TestModelImpl extends EnhGraph implements TestModel {
     

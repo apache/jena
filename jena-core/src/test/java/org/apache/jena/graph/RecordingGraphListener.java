@@ -25,65 +25,63 @@ import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.testing_framework.AbstractRecordingListener;
 
 /**
- * This testing listener records the event names and data, and provides a method
- * for comparing the actual with the expected history.
+ * This testing listener records the event names and data, and provides a method for
+ * comparing the actual with the expected history.
  */
-public class RecordingGraphListener extends AbstractRecordingListener implements
-		GraphListener {
+public class RecordingGraphListener extends AbstractRecordingListener implements GraphListener {
 
-	@Override
-	public void notifyAddTriple(Graph g, Triple t) {
-		record("add", g, t);
-	}
+    @Override
+    public void notifyAddTriple(Graph g, Triple t) {
+        record("add", g, t);
+    }
 
-	@Override
-	public void notifyAddArray(Graph g, Triple[] triples) {
-		record("add[]", g, triples);
-	}
+    @Override
+    public void notifyAddArray(Graph g, Triple[] triples) {
+        record("add[]", g, triples);
+    }
 
-	@Override
-	public void notifyAddList(Graph g, List<Triple> triples) {
-		record("addList", g, triples);
-	}
+    @Override
+    public void notifyAddList(Graph g, List<Triple> triples) {
+        record("addList", g, triples);
+    }
 
-	@Override
-	public void notifyAddIterator(Graph g, Iterator<Triple> it) {
-		record("addIterator", g, Iter.toList(it));
-	}
+    @Override
+    public void notifyAddIterator(Graph g, Iterator<Triple> it) {
+        record("addIterator", g, Iter.toList(it));
+    }
 
-	@Override
-	public void notifyAddGraph(Graph g, Graph added) {
-		record("addGraph", g, added);
-	}
+    @Override
+    public void notifyAddGraph(Graph g, Graph added) {
+        record("addGraph", g, added);
+    }
 
-	@Override
-	public void notifyDeleteTriple(Graph g, Triple t) {
-		record("delete", g, t);
-	}
+    @Override
+    public void notifyDeleteTriple(Graph g, Triple t) {
+        record("delete", g, t);
+    }
 
-	@Override
-	public void notifyDeleteArray(Graph g, Triple[] triples) {
-		record("delete[]", g, triples);
-	}
+    @Override
+    public void notifyDeleteArray(Graph g, Triple[] triples) {
+        record("delete[]", g, triples);
+    }
 
-	@Override
-	public void notifyDeleteList(Graph g, List<Triple> triples) {
-		record("deleteList", g, triples);
-	}
+    @Override
+    public void notifyDeleteList(Graph g, List<Triple> triples) {
+        record("deleteList", g, triples);
+    }
 
-	@Override
-	public void notifyDeleteIterator(Graph g, Iterator<Triple> it) {
-		record("deleteIterator", g, Iter.toList(it));
-	}
+    @Override
+    public void notifyDeleteIterator(Graph g, Iterator<Triple> it) {
+        record("deleteIterator", g, Iter.toList(it));
+    }
 
-	@Override
-	public void notifyDeleteGraph(Graph g, Graph removed) {
-		record("deleteGraph", g, removed);
-	}
+    @Override
+    public void notifyDeleteGraph(Graph g, Graph removed) {
+        record("deleteGraph", g, removed);
+    }
 
-	@Override
-	public void notifyEvent(Graph source, Object event) {
-		record("someEvent", source, event);
-	}
-
+    @Override
+    public void notifyEvent(Graph source, Object event) {
+        record("someEvent", source, event);
+    }
 }

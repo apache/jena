@@ -62,8 +62,8 @@ public class ModelTestBase extends GraphTestBase {
     public static void assertIsoModels(final String title, final Model wanted, final Model got) {
         if ( wanted.isIsomorphicWith(got) == false ) {
             final Map<Node, Object> map = CollectionFactory.createHashedMap();
-            Assert.fail(title + ": expected " + GraphTestBase.nice(wanted.getGraph(), map) +
-                        "\n but had " + GraphTestBase.nice(got.getGraph(), map));
+            Assert.fail(title + ": expected " + GraphTestBase.nice(wanted.getGraph(), map) + "\n but had "
+                        + GraphTestBase.nice(got.getGraph(), map));
         }
     }
 

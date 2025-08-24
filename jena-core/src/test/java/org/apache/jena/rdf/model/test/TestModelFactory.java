@@ -19,75 +19,64 @@
 package org.apache.jena.rdf.model.test;
 
 import junit.framework.TestCase;
-import org.apache.jena.graph.compose.Union ;
-import org.apache.jena.rdf.model.InfModel ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.reasoner.InfGraph ;
-import org.apache.jena.reasoner.Reasoner ;
-import org.apache.jena.reasoner.rulesys.GenericRuleReasoner ;
-import org.apache.jena.reasoner.rulesys.Rule ;
-import org.apache.jena.test.JenaTestBase ;
+import org.apache.jena.graph.compose.Union;
+import org.apache.jena.rdf.model.InfModel;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.reasoner.InfGraph;
+import org.apache.jena.reasoner.Reasoner;
+import org.apache.jena.reasoner.rulesys.GenericRuleReasoner;
+import org.apache.jena.reasoner.rulesys.Rule;
+import org.apache.jena.test.JenaTestBase;
 import org.junit.Assert;
 
 /**
- * Tests the ModelFactory code. Very skeletal at the moment. It's really
- * testing that the methods actually exists, but it doesn't check much in
- * the way of behaviour.
- * 
+ * Tests the ModelFactory code. Very skeletal at the moment. It's really testing that
+ * the methods actually exists, but it doesn't check much in the way of behaviour.
  */
 
-public class TestModelFactory extends TestCase
-{
+public class TestModelFactory extends TestCase {
 
-	public TestModelFactory( final String name )
-	{
-		super(name);
-	}
+    public TestModelFactory(final String name) {
+        super(name);
+    }
 
-	public void testAssembleModelFromModel()
-	{
-		// TODO Model ModelFactory.assembleModelFrom( Model singleRoot )
-	}
+    public void testAssembleModelFromModel() {
+        // TODO Model ModelFactory.assembleModelFrom( Model singleRoot )
+    }
 
-	public void testAssmbleModelFromRoot()
-	{
-		// TODO Model assembleModelFrom( Resource root )
-	}
+    public void testAssmbleModelFromRoot() {
+        // TODO Model assembleModelFrom( Resource root )
+    }
 
-	/**
-	 * Test that ModelFactory.createDefaultModel() exists. [Should check that
-	 * the Model
-	 * is truly a "default" model.]
-	 */
-	public void testCreateDefaultModel()
-	{
-		ModelFactory.createDefaultModel().close();
-	}
+    /**
+     * Test that ModelFactory.createDefaultModel() exists. [Should check that the
+     * Model is truly a "default" model.]
+     */
+    public void testCreateDefaultModel() {
+        ModelFactory.createDefaultModel().close();
+    }
 
-	public void testCreateInfModel()
-	{
-		final String rule = "-> (eg:r eg:p eg:v).";
-		final Reasoner r = new GenericRuleReasoner(Rule.parseRules(rule));
-		final InfGraph ig = r
-				.bind(ModelFactory.createDefaultModel().getGraph());
-		final InfModel im = ModelFactory.createInfModel(ig);
-		JenaTestBase.assertInstanceOf(InfModel.class, im);
-		Assert.assertEquals(1, im.size());
-	}
+    public void testCreateInfModel() {
+        final String rule = "-> (eg:r eg:p eg:v).";
+        final Reasoner r = new GenericRuleReasoner(Rule.parseRules(rule));
+        final InfGraph ig = r.bind(ModelFactory.createDefaultModel().getGraph());
+        final InfModel im = ModelFactory.createInfModel(ig);
+        JenaTestBase.assertInstanceOf(InfModel.class, im);
+        Assert.assertEquals(1, im.size());
+    }
 
-	/**
-	 * test that a union model is a model over the union of the two underlying
-	 * graphs. (We don't check that Union works - that's done in the Union
-	 * tests, we hope.)
-	 */
-	public void testCreateUnion()
-	{
-		final Model m1 = ModelFactory.createDefaultModel();
-		final Model m2 = ModelFactory.createDefaultModel();
-		final Model m = ModelFactory.createUnion(m1, m2);
-		JenaTestBase.assertInstanceOf(Union.class, m.getGraph());
-		Assert.assertSame(m1.getGraph(), ((Union) m.getGraph()).getL());
-		Assert.assertSame(m2.getGraph(), ((Union) m.getGraph()).getR());
-	}
+    /**
+     * test that a union model is a model over the union of the two underlying
+     * graphs. (We don't check that Union works - that's done in the Union tests, we
+     * hope.)
+     */
+    public void testCreateUnion() {
+        final Model m1 = ModelFactory.createDefaultModel();
+        final Model m2 = ModelFactory.createDefaultModel();
+        final Model m = ModelFactory.createUnion(m1, m2);
+        JenaTestBase.assertInstanceOf(Union.class, m.getGraph());
+        Assert.assertSame(m1.getGraph(), ((Union)m.getGraph()).getL());
+        Assert.assertSame(m2.getGraph(), ((Union)m.getGraph()).getR());
+    }
 }

@@ -65,9 +65,9 @@ public class TestIRIxRelativize extends AbstractTestIRIx_3986 {
 
     @Test public void relativize_http_17() { testRelativize("http://ex/path/", "http://ex/path/file#frag", "file#frag"); }
 
-    @Test public void relativize_http_18() { testRelativize("http://example/ns#", "http://example/x", "x") ; }
+    @Test public void relativize_http_18() { testRelativize("http://example/ns#", "http://example/x", "x"); }
 
-    @Test public void relativize_http_19() { testRelativize("http://example/ns#", "http://example/ns#x", "#x") ; }
+    @Test public void relativize_http_19() { testRelativize("http://example/ns#", "http://example/ns#x", "#x"); }
 
     @Test public void relativize_http_20() { testRelativize("http://example/path", "http://example/path", ""); }
 

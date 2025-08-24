@@ -25,22 +25,21 @@ import junit.framework.TestSuite;
  * Test for the trivial tokenizer utility.
  */
 public class TestSimpleTokenizer extends TestCase {
-         
+
     /**
      * Boilerplate for junit
-     */ 
-    public TestSimpleTokenizer( String name ) {
-        super( name ); 
+     */
+    public TestSimpleTokenizer(String name) {
+        super(name);
     }
-    
+
     /**
-     * Boilerplate for junit.
-     * This is its own test suite
+     * Boilerplate for junit. This is its own test suite
      */
     public static TestSuite suite() {
-        return new TestSuite( TestSimpleTokenizer.class ); 
+        return new TestSuite(TestSimpleTokenizer.class);
     }
-    
+
     /**
      * Test tokenizer on a basic example or two.
      */
@@ -61,8 +60,8 @@ public class TestSimpleTokenizer extends TestCase {
         assertEquals(tokenizer.nextToken(), "so");
         assertEquals(tokenizer.nextToken(), " ");
         assertEquals(tokenizer.nextToken(), "there");
-        assertTrue( ! tokenizer.hasMoreTokens());
-          
+        assertTrue(!tokenizer.hasMoreTokens());
+
         tokenizer = new SimpleTokenizer("a(foo,bar)  'i am a literal' so there", "()[], \t\n\r'", "'", false);
         assertEquals(tokenizer.nextToken(), "a");
         assertEquals(tokenizer.nextToken(), "foo");
@@ -70,9 +69,8 @@ public class TestSimpleTokenizer extends TestCase {
         assertEquals(tokenizer.nextToken(), "i am a literal");
         assertEquals(tokenizer.nextToken(), "so");
         assertEquals(tokenizer.nextToken(), "there");
-        assertTrue( ! tokenizer.hasMoreTokens());
-          
+        assertTrue(!tokenizer.hasMoreTokens());
+
     }
-    
 
 }

@@ -22,20 +22,20 @@ import java.util.Iterator;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.jena.graph.* ;
-import org.apache.jena.reasoner.Derivation ;
-import org.apache.jena.reasoner.Reasoner ;
-import org.apache.jena.reasoner.ValidityReport ;
-import org.apache.jena.reasoner.rulesys.ForwardRuleInfGraphI ;
-import org.apache.jena.reasoner.rulesys.Rule ;
-import org.apache.jena.reasoner.rulesys.impl.FRuleEngine ;
-import org.apache.jena.reasoner.rulesys.impl.FRuleEngineI ;
-import org.apache.jena.reasoner.rulesys.impl.FRuleEngineIFactory ;
-import org.apache.jena.reasoner.rulesys.impl.RETEEngine ;
-import org.apache.jena.shared.AddDeniedException ;
-import org.apache.jena.shared.DeleteDeniedException ;
-import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.graph.*;
+import org.apache.jena.reasoner.Derivation;
+import org.apache.jena.reasoner.Reasoner;
+import org.apache.jena.reasoner.ValidityReport;
+import org.apache.jena.reasoner.rulesys.ForwardRuleInfGraphI;
+import org.apache.jena.reasoner.rulesys.Rule;
+import org.apache.jena.reasoner.rulesys.impl.FRuleEngine;
+import org.apache.jena.reasoner.rulesys.impl.FRuleEngineI;
+import org.apache.jena.reasoner.rulesys.impl.FRuleEngineIFactory;
+import org.apache.jena.reasoner.rulesys.impl.RETEEngine;
+import org.apache.jena.shared.AddDeniedException;
+import org.apache.jena.shared.DeleteDeniedException;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.util.iterator.ExtendedIterator;
 
 
 public class FRuleEngineIFactoryTest extends TestCase {

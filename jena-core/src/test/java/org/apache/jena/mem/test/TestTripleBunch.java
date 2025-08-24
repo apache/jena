@@ -24,10 +24,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.graph.test.GraphTestBase ;
-import org.apache.jena.mem.* ;
-import org.apache.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.test.GraphTestBase;
+import org.apache.jena.mem.*;
+import org.apache.jena.util.iterator.ExtendedIterator;
 
 /**
     Test triple bunch implementations

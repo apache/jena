@@ -18,9 +18,9 @@
 
 package org.apache.jena.enhanced.test;
 
-import org.apache.jena.enhanced.* ;
-import org.apache.jena.graph.* ;
-import org.apache.jena.rdf.model.RDFNode ;
+import org.apache.jena.enhanced.*;
+import org.apache.jena.graph.*;
+import org.apache.jena.rdf.model.RDFNode;
 /**
  * @see TestObjectImpl
  */

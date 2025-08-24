@@ -52,7 +52,7 @@ public class RandomOrderIterator<T> extends WrappedIterator<T> {
 		fill();
 	    @SuppressWarnings("unchecked")
 	    T obj = (T)rslt;
-	    return obj ;
+	    return obj;
 	}
 	
 	@Override

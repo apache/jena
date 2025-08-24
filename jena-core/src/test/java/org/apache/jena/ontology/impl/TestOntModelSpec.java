@@ -18,8 +18,8 @@
 
 package org.apache.jena.ontology.impl;
 
-import org.apache.jena.ontology.OntModelSpec ;
-import org.apache.jena.rdf.model.test.ModelTestBase ;
+import org.apache.jena.ontology.OntModelSpec;
+import org.apache.jena.rdf.model.test.ModelTestBase;
 
 @SuppressWarnings("removal")
 public class TestOntModelSpec extends ModelTestBase

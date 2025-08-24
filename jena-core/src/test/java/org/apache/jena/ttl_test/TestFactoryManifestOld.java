@@ -21,76 +21,63 @@ package org.apache.jena.ttl_test;
 import java.util.Iterator;
 
 import junit.framework.*;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.shared.JenaException ;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.shared.JenaException;
 import org.apache.jena.util.junit.ManifestOldItemHandler;
 import org.apache.jena.util.junit.TestUtils;
 import org.slf4j.LoggerFactory;
 
-public abstract class TestFactoryManifestOld implements ManifestOldItemHandler
-{
-    private TestSuite currentTestSuite = null ;
-    private TestSuite testSuite = null ;
+public abstract class TestFactoryManifestOld implements ManifestOldItemHandler {
+    private TestSuite currentTestSuite = null;
+    private TestSuite testSuite = null;
 
     public TestFactoryManifestOld() {}
 
-    public TestSuite process(String filename)
-    {
-        return oneManifest(filename) ;
+    public TestSuite process(String filename) {
+        return oneManifest(filename);
     }
 
-    private TestSuite oneManifest(String filename)
-    {
-        TestSuite ts1 = new TestSuite() ;
-        ManifestOld m = null ;
+    private TestSuite oneManifest(String filename) {
+        TestSuite ts1 = new TestSuite();
+        ManifestOld m = null;
         try {
-            m = new ManifestOld(filename) ;
-        } catch (JenaException ex)
-        {
-            LoggerFactory.getLogger(TestFactoryManifestOld.class).warn("Failed to load: "+filename+"\n"+ex.getMessage(), ex) ;
-            ts1.setName("BROKEN") ;
-            return ts1 ;
+            m = new ManifestOld(filename);
+        } catch (JenaException ex) {
+            LoggerFactory.getLogger(TestFactoryManifestOld.class).warn("Failed to load: " + filename + "\n" + ex.getMessage(), ex);
+            ts1.setName("BROKEN");
+            return ts1;
         }
         if ( m.getName() != null )
-            ts1.setName(TestUtils.safeName(m.getName())) ;
+            ts1.setName(TestUtils.safeName(m.getName()));
         else
-            ts1.setName("Unnamed Manifest") ;
+            ts1.setName("Unnamed Manifest");
 
         // Recurse
-        for (Iterator <String>iter = m.includedManifests() ; iter.hasNext() ; )
-        {
-            String n = iter.next() ;
-            TestSuite ts2 = oneManifest(n) ;
-            currentTestSuite = ts2 ;
-            ts1.addTest(ts2) ;
+        for ( Iterator<String> iter = m.includedManifests() ; iter.hasNext() ; ) {
+            String n = iter.next();
+            TestSuite ts2 = oneManifest(n);
+            currentTestSuite = ts2;
+            ts1.addTest(ts2);
         }
 
-        currentTestSuite = ts1 ;
-        m.apply(this) ;
-        return ts1 ;
+        currentTestSuite = ts1;
+        m.apply(this);
+        return ts1;
     }
 
-    protected TestSuite getTestSuite() { return currentTestSuite ; }
+    protected TestSuite getTestSuite() {
+        return currentTestSuite;
+    }
 
     /** Handle an item in a manifest */
     @Override
-    public final boolean processManifestItem(Resource manifest ,
-                                       Resource item ,
-                                       String testName ,
-                                       Resource action ,
-                                       Resource result)
-    {
-        Test t = makeTest(manifest, item, testName, action, result) ;
+    public final boolean processManifestItem(Resource manifest, Resource item, String testName, Resource action, Resource result) {
+        Test t = makeTest(manifest, item, testName, action, result);
         if ( t != null )
-            currentTestSuite.addTest(t) ;
-        return true ;
+            currentTestSuite.addTest(t);
+        return true;
     }
 
-
-    protected abstract Test makeTest(Resource manifest ,
-                           Resource item ,
-                           String testName ,
-                           Resource action ,
-                           Resource result) ;
+    protected abstract Test makeTest(Resource manifest, Resource item, String testName, Resource action, Resource result);
 
 }

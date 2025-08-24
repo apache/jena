@@ -20,12 +20,12 @@ package org.apache.jena.rdfxml.xmloutput;
 
 import java.io.*;
 
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.impl.Util ;
-import org.apache.jena.rdf.model.test.ModelTestBase ;
-import org.apache.jena.shared.CannotEncodeCharacterException ;
-import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.impl.Util;
+import org.apache.jena.rdf.model.test.ModelTestBase;
+import org.apache.jena.shared.CannotEncodeCharacterException;
+import org.apache.jena.vocabulary.RDF;
 
 /**
      Tests to ensure that certain literals are either encoded properly or reported

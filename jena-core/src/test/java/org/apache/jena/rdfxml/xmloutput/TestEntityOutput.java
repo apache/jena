@@ -20,12 +20,12 @@ package org.apache.jena.rdfxml.xmloutput;
 
 import java.io.*;
 
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.rdf.model.test.ModelTestBase ;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.test.ModelTestBase;
 import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Abbrev;
-import org.apache.jena.rdfxml.xmloutput.impl.BaseXMLWriter ;
+import org.apache.jena.rdfxml.xmloutput.impl.BaseXMLWriter;
 import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Basic;
-import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.vocabulary.RDF;
 
 /**
     Tests for entities being created corresponding to prefixes.
@@ -135,14 +135,14 @@ public class TestEntityOutput extends ModelTestBase
     public void testCRinLiterals()
     {
         Model m = createMemModel();
-        Resource r = m.createResource("http://example/r") ;
-        Property p = m.createProperty("http://example/p") ;
-        m.add(r, p, "abc\r\nxyz") ;
+        Resource r = m.createResource("http://example/r");
+        Property p = m.createProperty("http://example/p");
+        m.add(r, p, "abc\r\nxyz");
         StringWriter w = new StringWriter();
-        m.write(w, "RDF/XML") ;
+        m.write(w, "RDF/XML");
         Model m2 = createMemModel();
-        m2.read(new StringReader(w.toString()), "RDF/XML") ;
-        assertTrue(m.isIsomorphicWith(m2)) ;
+        m2.read(new StringReader(w.toString()), "RDF/XML");
+        assertTrue(m.isIsomorphicWith(m2));
     }
 
     private void testCatchesBadEntity( String bad )

@@ -20,21 +20,21 @@ package org.apache.jena.reasoner.rulesys.test;
 
 import static org.apache.jena.reasoner.rulesys.Rule.parseRule;
 
-import java.util.ArrayList ;
-import java.util.HashSet ;
-import java.util.List ;
-import java.util.Set ;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import org.apache.jena.assembler.test.AssemblerTestBase ;
+import org.apache.jena.assembler.test.AssemblerTestBase;
 import org.apache.jena.graph.Node;
-import org.apache.jena.rdf.model.InfModel ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.reasoner.rulesys.* ;
+import org.apache.jena.rdf.model.InfModel;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.reasoner.rulesys.*;
 import org.apache.jena.reasoner.rulesys.builtins.BaseBuiltin;
 import org.apache.jena.vocabulary.RDF;
-import org.apache.jena.vocabulary.ReasonerVocabulary ;
+import org.apache.jena.vocabulary.ReasonerVocabulary;
 
 
 /**
@@ -98,7 +98,7 @@ public class TestGenericRuleReasonerConfig extends AssemblerTestBase
             .replaceAll( "<ns>", ns )
             .replaceAll( "<A>", ruleA.replaceAll( " ", "\\\\\\\\s" ) )
             .replaceAll( "<B>", ruleB.replaceAll( " ", "\\\\\\\\s" ) )
-            ;
+           ;
         Resource r = resourceInModel( modelString );
         GenericRuleReasoner grr = new GenericRuleReasoner( null, r );
         assertEquals( rules, new HashSet<>( grr.getRules() ) );

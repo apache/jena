@@ -19,18 +19,18 @@
 package org.apache.jena.graph.test;
 
 import junit.framework.*;
-import org.apache.jena.graph.* ;
+import org.apache.jena.graph.*;
 
-public class TestFactory extends GraphTestBase
-    {
-    public TestFactory( String name )
-        { super( name ); }
-        
-    public static TestSuite suite()
-        { return new TestSuite( TestFactory.class ); }   
-        
-    public void testFactory()
-        {
-        GraphMemFactory.createDefaultGraph();
-        }        
+public class TestFactory extends GraphTestBase {
+    public TestFactory(String name) {
+        super(name);
     }
+
+    public static TestSuite suite() {
+        return new TestSuite(TestFactory.class);
+    }
+
+    public void testFactory() {
+        GraphMemFactory.createDefaultGraph();
+    }
+}

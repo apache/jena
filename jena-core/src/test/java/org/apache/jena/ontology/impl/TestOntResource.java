@@ -24,12 +24,12 @@ package org.apache.jena.ontology.impl;
 // Imports
 ///////////////
 import junit.framework.TestSuite;
-import org.apache.jena.ontology.* ;
-import org.apache.jena.rdf.model.Literal ;
-import org.apache.jena.rdf.model.NodeIterator ;
-import org.apache.jena.rdf.model.RDFNode ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.ontology.*;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.NodeIterator;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.RDF;
 
 
 

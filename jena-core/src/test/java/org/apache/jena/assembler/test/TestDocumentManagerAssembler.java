@@ -20,117 +20,109 @@ package org.apache.jena.assembler.test;
 
 import java.util.*;
 
-import org.apache.jena.assembler.* ;
-import org.apache.jena.assembler.assemblers.DocumentManagerAssembler ;
-import org.apache.jena.ontology.OntDocumentManager ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.util.FileManager ;
+import org.apache.jena.assembler.*;
+import org.apache.jena.assembler.assemblers.DocumentManagerAssembler;
+import org.apache.jena.ontology.OntDocumentManager;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.util.FileManager;
 
-public class TestDocumentManagerAssembler extends AssemblerTestBase
-    {
-    public TestDocumentManagerAssembler( String name )
-        { super( name ); }
+public class TestDocumentManagerAssembler extends AssemblerTestBase {
+    public TestDocumentManagerAssembler(String name) {
+        super(name);
+    }
 
-    @Override protected Class<? extends Assembler> getAssemblerClass()
-        { return DocumentManagerAssembler.class; }
+    @Override
+    protected Class<? extends Assembler> getAssemblerClass() {
+        return DocumentManagerAssembler.class;
+    }
 
-    public void testDocumentManagerAssemblerType()
-        { testDemandsMinimalType( new DocumentManagerAssembler(), JA.DocumentManager );  }
+    public void testDocumentManagerAssemblerType() {
+        testDemandsMinimalType(new DocumentManagerAssembler(), JA.DocumentManager);
+    }
 
-    public void testDocumentManagerVocabulary()
-        {
-        assertSubclassOf( JA.DocumentManager, JA.Object );
-        assertSubclassOf( JA.DocumentManager,  JA.HasFileManager);
-        assertRange( JA.FileManager, JA.fileManager );
-        assertDomain( JA.DocumentManager, JA.policyPath );
-        }
+    public void testDocumentManagerVocabulary() {
+        assertSubclassOf(JA.DocumentManager, JA.Object);
+        assertSubclassOf(JA.DocumentManager, JA.HasFileManager);
+        assertRange(JA.FileManager, JA.fileManager);
+        assertDomain(JA.DocumentManager, JA.policyPath);
+    }
 
-    public void testCreatesDocumentManager()
-        {
-        Resource root = resourceInModel( "x rdf:type ja:DocumentManager" );
+    public void testCreatesDocumentManager() {
+        Resource root = resourceInModel("x rdf:type ja:DocumentManager");
         Assembler a = new DocumentManagerAssembler();
-        Object x = a.open( root );
-        assertInstanceOf( OntDocumentManager.class, x );
-        }
+        Object x = a.open(root);
+        assertInstanceOf(OntDocumentManager.class, x);
+    }
 
-    public void testUsesFileManager()
-        {
-        Resource root = resourceInModel( "x rdf:type ja:DocumentManager; x ja:fileManager f" );
+    public void testUsesFileManager() {
+        Resource root = resourceInModel("x rdf:type ja:DocumentManager; x ja:fileManager f");
         Assembler a = new DocumentManagerAssembler();
         @SuppressWarnings("deprecation")
         FileManager fm = FileManager.create();
-        Assembler mock = new NamedObjectAssembler( resource( "f" ), fm );
-        Object x = a.open( mock, root );
-        assertInstanceOf( OntDocumentManager.class, x );
-        assertSame( fm, ((OntDocumentManager) x).getFileManager() );
-        }
+        Assembler mock = new NamedObjectAssembler(resource("f"), fm);
+        Object x = a.open(mock, root);
+        assertInstanceOf(OntDocumentManager.class, x);
+        assertSame(fm, ((OntDocumentManager)x).getFileManager());
+    }
 
-    public void testSetsPolicyPath()
-        {
-        Resource root = resourceInModel( "x rdf:type ja:DocumentManager; x ja:policyPath 'somePath'" );
+    public void testSetsPolicyPath() {
+        Resource root = resourceInModel("x rdf:type ja:DocumentManager; x ja:policyPath 'somePath'");
         final List<String> history = new ArrayList<>();
-        Assembler a = new DocumentManagerAssembler()
-            {
+        Assembler a = new DocumentManagerAssembler() {
             @Override
-            protected OntDocumentManager createDocumentManager()
-                {
-                return new OntDocumentManager( "" )
-                    {
+            protected OntDocumentManager createDocumentManager() {
+                return new OntDocumentManager("") {
                     @Override
-                    public void setMetadataSearchPath( String path, boolean replace )
-                        {
-                        assertEquals( false, replace );
-                        history.add( path );
-                        super.setMetadataSearchPath( path, replace ); }
-                    };
-                }
-            };
-        OntDocumentManager d = (OntDocumentManager) a.open( root );
-        assertEquals( listOfOne( "somePath" ), history );
-        }
+                    public void setMetadataSearchPath(String path, boolean replace) {
+                        assertEquals(false, replace);
+                        history.add(path);
+                        super.setMetadataSearchPath(path, replace);
+                    }
+                };
+            }
+        };
+        OntDocumentManager d = (OntDocumentManager)a.open(root);
+        assertEquals(listOfOne("somePath"), history);
+    }
 
-    public void testTrapsPolicyPathNotString()
-        {
-        testTrapsBadPolicyPath( "aResource" );
-        testTrapsBadPolicyPath( "17" );
-        testTrapsBadPolicyPath( "'char'en" );
-        testTrapsBadPolicyPath( "'cafe'xsd:integer" );
-        }
+    public void testTrapsPolicyPathNotString() {
+        testTrapsBadPolicyPath("aResource");
+        testTrapsBadPolicyPath("17");
+        testTrapsBadPolicyPath("'char'en");
+        testTrapsBadPolicyPath("'cafe'xsd:integer");
+    }
 
-    private void testTrapsBadPolicyPath( String path )
-        {
-        Resource root = resourceInModel( "x rdf:type ja:DocumentManager; x ja:policyPath <policy>".replaceAll( "<policy>", path ) );
+    private void testTrapsBadPolicyPath(String path) {
+        Resource root = resourceInModel("x rdf:type ja:DocumentManager; x ja:policyPath <policy>".replaceAll("<policy>", path));
         Assembler a = new DocumentManagerAssembler();
-        try
-            { a.open( root );
-            fail( "should trap illegal policy path object " + path ); }
-        catch (BadObjectException e)
-            { assertEquals( resource( "x" ), e.getRoot() );
-            assertEquals( rdfNode( root.getModel(), path ), e.getObject() ); }
-        }
-
-    public void testSetsMetadata()
-        { // we set policyPath to avoid Ont default models being thrown at us
-        Resource root = resourceInModel( "x rdf:type ja:DocumentManager; x ja:policyPath ''; x P a; a Q b; y R z" );
-        final Model expected = model( "x rdf:type ja:DocumentManager; x ja:policyPath ''; x P a; a Q b" );
-        final List<String> history = new ArrayList<>();
-        Assembler a = new DocumentManagerAssembler()
-            {
-            @Override
-            protected OntDocumentManager createDocumentManager()
-                {
-                return new OntDocumentManager( "" )
-                    {
-                    @Override
-                    public void processMetadata( Model m )
-                        {
-                        assertIsoModels( expected, m );
-                        history.add( "called" );
-                        super.processMetadata( m ); }
-                    };
-                }
-            };
-        OntDocumentManager d = (OntDocumentManager) a.open( root );
-        assertEquals( listOfOne( "called" ), history );
+        try {
+            a.open(root);
+            fail("should trap illegal policy path object " + path);
+        } catch (BadObjectException e) {
+            assertEquals(resource("x"), e.getRoot());
+            assertEquals(rdfNode(root.getModel(), path), e.getObject());
         }
     }
+
+    public void testSetsMetadata() { // we set policyPath to avoid Ont default models
+                                     // being thrown at us
+        Resource root = resourceInModel("x rdf:type ja:DocumentManager; x ja:policyPath ''; x P a; a Q b; y R z");
+        final Model expected = model("x rdf:type ja:DocumentManager; x ja:policyPath ''; x P a; a Q b");
+        final List<String> history = new ArrayList<>();
+        Assembler a = new DocumentManagerAssembler() {
+            @Override
+            protected OntDocumentManager createDocumentManager() {
+                return new OntDocumentManager("") {
+                    @Override
+                    public void processMetadata(Model m) {
+                        assertIsoModels(expected, m);
+                        history.add("called");
+                        super.processMetadata(m);
+                    }
+                };
+            }
+        };
+        OntDocumentManager d = (OntDocumentManager)a.open(root);
+        assertEquals(listOfOne("called"), history);
+    }
+}

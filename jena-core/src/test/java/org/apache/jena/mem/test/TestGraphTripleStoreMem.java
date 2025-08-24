@@ -19,9 +19,9 @@
 package org.apache.jena.mem.test;
 
 import junit.framework.TestSuite;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.impl.TripleStore ;
-import org.apache.jena.graph.test.AbstractTestTripleStore ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.impl.TripleStore;
+import org.apache.jena.graph.test.AbstractTestTripleStore;
 import org.apache.jena.mem.GraphTripleStoreMem;
 
 public class TestGraphTripleStoreMem extends AbstractTestTripleStore

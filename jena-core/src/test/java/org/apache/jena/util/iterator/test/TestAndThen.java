@@ -18,72 +18,67 @@
 
 package org.apache.jena.util.iterator.test;
 
-import java.util.List ;
+import java.util.List;
 
-import junit.framework.TestSuite ;
+import junit.framework.TestSuite;
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.rdf.model.test.ModelTestBase ;
-import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.NiceIterator ;
-import org.apache.jena.util.iterator.WrappedIterator ;
+import org.apache.jena.rdf.model.test.ModelTestBase;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.util.iterator.NiceIterator;
+import org.apache.jena.util.iterator.WrappedIterator;
 
-public class TestAndThen extends ModelTestBase
-    {
-    public TestAndThen( String name )
-        { super( name ); }
+public class TestAndThen extends ModelTestBase {
+    public TestAndThen(String name) {
+        super(name);
+    }
 
-    public static TestSuite suite()
-        { return new TestSuite( TestAndThen.class ); }
+    public static TestSuite suite() {
+        return new TestSuite(TestAndThen.class);
+    }
 
-    public void testAndThen()
-        {
-        ExtendedIterator<String> L = iteratorOfStrings( "a b c" );
-        ExtendedIterator<String> R = iteratorOfStrings( "d e f" );
-        assertInstanceOf( NiceIterator.class, L );
-        assertInstanceOf( NiceIterator.class, R );
-        assertEquals( listOfStrings( "a b c d e f" ), Iter.toList( L.andThen( R ) ) );
-        }
+    public void testAndThen() {
+        ExtendedIterator<String> L = iteratorOfStrings("a b c");
+        ExtendedIterator<String> R = iteratorOfStrings("d e f");
+        assertInstanceOf(NiceIterator.class, L);
+        assertInstanceOf(NiceIterator.class, R);
+        assertEquals(listOfStrings("a b c d e f"), Iter.toList(L.andThen(R)));
+    }
 
-    public void testAndThenExtension()
-        {
-        ExtendedIterator<String> L = iteratorOfStrings( "a b c" );
-        ExtendedIterator<String> R = iteratorOfStrings( "d e f" );
-        ExtendedIterator<String> X = iteratorOfStrings( "g h i" );
-        ExtendedIterator<String> LR = L.andThen( R );
-        ExtendedIterator<String> LRX = LR.andThen( X );
-        assertSame( LR, LRX );
-        List<String> aToI = listOfStrings( "a b c d e f g h i" );
-        assertEquals( aToI, Iter.toList( LRX ) );
-        }
+    public void testAndThenExtension() {
+        ExtendedIterator<String> L = iteratorOfStrings("a b c");
+        ExtendedIterator<String> R = iteratorOfStrings("d e f");
+        ExtendedIterator<String> X = iteratorOfStrings("g h i");
+        ExtendedIterator<String> LR = L.andThen(R);
+        ExtendedIterator<String> LRX = LR.andThen(X);
+        assertSame(LR, LRX);
+        List<String> aToI = listOfStrings("a b c d e f g h i");
+        assertEquals(aToI, Iter.toList(LRX));
+    }
 
-    public void testClosingConcatenationClosesRemainingIterators()
-        {
-        LoggingClosableIterator<String> L = new LoggingClosableIterator<>( iteratorOfStrings( "only" ) );
-        LoggingClosableIterator<String> M = new LoggingClosableIterator<>( iteratorOfStrings( "single" ) );
-        LoggingClosableIterator<String> R = new LoggingClosableIterator<>( iteratorOfStrings( "it" ) );
-        ExtendedIterator<String> cat = L.andThen( M ).andThen( R );
+    public void testClosingConcatenationClosesRemainingIterators() {
+        LoggingClosableIterator<String> L = new LoggingClosableIterator<>(iteratorOfStrings("only"));
+        LoggingClosableIterator<String> M = new LoggingClosableIterator<>(iteratorOfStrings("single"));
+        LoggingClosableIterator<String> R = new LoggingClosableIterator<>(iteratorOfStrings("it"));
+        ExtendedIterator<String> cat = L.andThen(M).andThen(R);
         cat.next();
         cat.close();
-        assertTrue( "middle iterator should have been closed", M.isClosed() );
-        assertTrue( "final iterator should have been closed", R.isClosed() );
-        }
+        assertTrue("middle iterator should have been closed", M.isClosed());
+        assertTrue("final iterator should have been closed", R.isClosed());
+    }
 
-    public void testRemove1()
-    {
+    public void testRemove1() {
         List<String> L = listOfStrings("a b c");
         List<String> R = listOfStrings("d e f");
 
         ExtendedIterator<String> Lit = WrappedIterator.create(L.iterator());
         ExtendedIterator<String> Rit = WrappedIterator.create(R.iterator());
 
-        ExtendedIterator<String> LR = Lit.andThen( Rit ) ;
+        ExtendedIterator<String> LR = Lit.andThen(Rit);
 
-        while (LR.hasNext())
-        {
+        while (LR.hasNext()) {
             String s = LR.next();
 
-            if ("c".equals(s))
-            {
+            if ( "c".equals(s) ) {
                 LR.hasNext();  // test for JENA-60
                 LR.remove();
             }
@@ -93,22 +88,19 @@ public class TestAndThen extends ModelTestBase
         assertEquals("def", concatAsString(R));
     }
 
-    public void testRemove2()
-    {
+    public void testRemove2() {
         List<String> L = listOfStrings("a b c");
         List<String> R = listOfStrings("d e f");
 
         ExtendedIterator<String> Lit = WrappedIterator.create(L.iterator());
         ExtendedIterator<String> Rit = WrappedIterator.create(R.iterator());
 
-        ExtendedIterator<String> LR = Lit.andThen( Rit ) ;
+        ExtendedIterator<String> LR = Lit.andThen(Rit);
 
-        while (LR.hasNext())
-        {
+        while (LR.hasNext()) {
             String s = LR.next();
 
-            if ("d".equals(s))
-            {
+            if ( "d".equals(s) ) {
                 LR.hasNext();  // test for JENA-60
                 LR.remove();
             }
@@ -118,18 +110,16 @@ public class TestAndThen extends ModelTestBase
         assertEquals("ef", concatAsString(R));
     }
 
-    public void testRemove3()
-    {
+    public void testRemove3() {
         List<String> L = listOfStrings("a b c");
         List<String> R = listOfStrings("d e f");
 
         ExtendedIterator<String> Lit = WrappedIterator.create(L.iterator());
         ExtendedIterator<String> Rit = WrappedIterator.create(R.iterator());
 
-        ExtendedIterator<String> LR = Lit.andThen( Rit ) ;
+        ExtendedIterator<String> LR = Lit.andThen(Rit);
 
-        while (LR.hasNext())
-        {
+        while (LR.hasNext()) {
             LR.next();
         }
         LR.remove();
@@ -138,14 +128,12 @@ public class TestAndThen extends ModelTestBase
         assertEquals("de", concatAsString(R));
     }
 
-    private String concatAsString(List<String> strings)
-    {
+    private String concatAsString(List<String> strings) {
         String toReturn = "";
-        for(String s : strings)
-        {
+        for ( String s : strings ) {
             toReturn += s;
         }
         return toReturn;
     }
 
-    }
+}

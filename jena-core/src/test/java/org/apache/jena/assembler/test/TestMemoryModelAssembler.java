@@ -18,28 +18,29 @@
 
 package org.apache.jena.assembler.test;
 
+import org.apache.jena.assembler.*;
+import org.apache.jena.assembler.assemblers.MemoryModelAssembler;
+import org.apache.jena.mem.GraphMemBase;
+import org.apache.jena.rdf.model.*;
 
-import org.apache.jena.assembler.* ;
-import org.apache.jena.assembler.assemblers.MemoryModelAssembler ;
-import org.apache.jena.mem.GraphMemBase ;
-import org.apache.jena.rdf.model.* ;
-
-public class TestMemoryModelAssembler extends AssemblerTestBase
-    {
-    public TestMemoryModelAssembler( String name )
-        { super( name ); }
-
-    @Override protected Class<? extends Assembler> getAssemblerClass()
-        { return MemoryModelAssembler.class; }
-    
-    public void testMemoryModelAssemblerType()
-        { testDemandsMinimalType( new MemoryModelAssembler(), JA.MemoryModel );  }
-    
-    public void testMemoryModelAssembler()
-        {
-        Assembler a = new MemoryModelAssembler();
-        Model m = a.openModel( resourceInModel( "x rdf:type ja:MemoryModel" ) );
-        assertInstanceOf( Model.class, m );
-        assertInstanceOf( GraphMemBase.class, m.getGraph() );
-        }
+public class TestMemoryModelAssembler extends AssemblerTestBase {
+    public TestMemoryModelAssembler(String name) {
+        super(name);
     }
+
+    @Override
+    protected Class<? extends Assembler> getAssemblerClass() {
+        return MemoryModelAssembler.class;
+    }
+
+    public void testMemoryModelAssemblerType() {
+        testDemandsMinimalType(new MemoryModelAssembler(), JA.MemoryModel);
+    }
+
+    public void testMemoryModelAssembler() {
+        Assembler a = new MemoryModelAssembler();
+        Model m = a.openModel(resourceInModel("x rdf:type ja:MemoryModel"));
+        assertInstanceOf(Model.class, m);
+        assertInstanceOf(GraphMemBase.class, m.getGraph());
+    }
+}

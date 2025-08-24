@@ -19,12 +19,12 @@
 package org.apache.jena.rdfxml.xmlinput1.states;
 
 
-import java.util.HashMap ;
+import java.util.HashMap;
 
 import org.apache.jena.rdfxml.xmlinput1.impl.ANode;
 import org.apache.jena.rdfxml.xmlinput1.impl.Taint;
 import org.apache.jena.rdfxml.xmlinput1.impl.XMLHandler;
-import org.junit.Assert ;
+import org.junit.Assert;
 
 class TestHandler extends XMLHandler {
     public void wrong(String msg) {

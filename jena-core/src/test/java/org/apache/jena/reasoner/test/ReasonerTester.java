@@ -18,31 +18,31 @@
 
 package org.apache.jena.reasoner.test;
 
-import java.io.BufferedReader ;
-import java.io.FileReader ;
-import java.io.IOException ;
-import java.io.Reader ;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-import java.util.* ;
+import java.util.*;
 
-import junit.framework.TestCase ;
-import org.apache.jena.graph.GraphMemFactory ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.rdf.model.impl.PropertyImpl ;
-import org.apache.jena.rdf.model.impl.ResourceImpl ;
-import org.apache.jena.reasoner.InfGraph ;
-import org.apache.jena.reasoner.Reasoner ;
-import org.apache.jena.reasoner.ReasonerFactory ;
-import org.apache.jena.reasoner.TriplePattern ;
-import org.apache.jena.reasoner.rulesys.Node_RuleVariable ;
-import org.apache.jena.shared.JenaException ;
-import org.apache.jena.vocabulary.RDF ;
-import org.junit.Assert ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import junit.framework.TestCase;
+import org.apache.jena.graph.GraphMemFactory;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.impl.PropertyImpl;
+import org.apache.jena.rdf.model.impl.ResourceImpl;
+import org.apache.jena.reasoner.InfGraph;
+import org.apache.jena.reasoner.Reasoner;
+import org.apache.jena.reasoner.ReasonerFactory;
+import org.apache.jena.reasoner.TriplePattern;
+import org.apache.jena.reasoner.rulesys.Node_RuleVariable;
+import org.apache.jena.shared.JenaException;
+import org.apache.jena.vocabulary.RDF;
+import org.junit.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A utility for loading a set of test reasoner problems and running defined

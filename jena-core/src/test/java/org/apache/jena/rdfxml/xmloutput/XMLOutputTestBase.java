@@ -22,11 +22,11 @@ import java.io.*;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.RDFWriterI ;
-import org.apache.jena.rdf.model.test.ModelTestBase ;
-import org.apache.jena.rdfxml.xmloutput.impl.BaseXMLWriter ;
-import org.apache.jena.rdfxml.xmloutput.impl.SimpleLogger ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.RDFWriterI;
+import org.apache.jena.rdf.model.test.ModelTestBase;
+import org.apache.jena.rdfxml.xmloutput.impl.BaseXMLWriter;
+import org.apache.jena.rdfxml.xmloutput.impl.SimpleLogger;
 
 public class XMLOutputTestBase extends ModelTestBase
     {

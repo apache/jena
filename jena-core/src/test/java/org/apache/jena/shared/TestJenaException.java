@@ -19,7 +19,7 @@
 package org.apache.jena.shared;
 
 import junit.framework.TestSuite;
-import org.apache.jena.test.JenaTestBase ;
+import org.apache.jena.test.JenaTestBase;
 
 /**
     Introduced to test that nested Jena exceptions preserve the

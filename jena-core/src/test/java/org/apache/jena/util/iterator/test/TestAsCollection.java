@@ -20,42 +20,38 @@ package org.apache.jena.util.iterator.test;
 
 import java.util.*;
 
-import org.apache.jena.rdf.model.test.ModelTestBase ;
-import org.apache.jena.util.iterator.WrappedIterator ;
+import org.apache.jena.rdf.model.test.ModelTestBase;
+import org.apache.jena.util.iterator.WrappedIterator;
 
-public class TestAsCollection extends ModelTestBase
-    {
-    public TestAsCollection( String name )
-        { super( name ); }
-
-    public void testAsList()
-        {
-        testReturnsList( "" );
-        testReturnsList( "understanding" );
-        testReturnsList( "understanding is" );
-        testReturnsList( "understanding is a three-edged sword" );
-        }
-    
-    public void testAsSet()
-        {
-        testReturnsSet( "" );
-        testReturnsSet( "x" );
-        testReturnsSet( "x x" );
-        testReturnsSet( "x y x" );
-        testReturnsSet( "a b c d e f a c f x" );
-        testReturnsSet( "the avalanch has already started" );
-        }
-
-    private Set<String> testReturnsSet( String elements )
-        {
-        Set<String> result = setOfStrings( elements );
-        assertEquals( result, WrappedIterator.create( result.iterator() ).toSet() );
-        return result;
-        }
-
-    private void testReturnsList( String elements )
-        {
-        List<String> L = listOfStrings( elements );
-        assertEquals( L, WrappedIterator.create( L.iterator() ).toList() );
-        }
+public class TestAsCollection extends ModelTestBase {
+    public TestAsCollection(String name) {
+        super(name);
     }
+
+    public void testAsList() {
+        testReturnsList("");
+        testReturnsList("understanding");
+        testReturnsList("understanding is");
+        testReturnsList("understanding is a three-edged sword");
+    }
+
+    public void testAsSet() {
+        testReturnsSet("");
+        testReturnsSet("x");
+        testReturnsSet("x x");
+        testReturnsSet("x y x");
+        testReturnsSet("a b c d e f a c f x");
+        testReturnsSet("the avalanch has already started");
+    }
+
+    private Set<String> testReturnsSet(String elements) {
+        Set<String> result = setOfStrings(elements);
+        assertEquals(result, WrappedIterator.create(result.iterator()).toSet());
+        return result;
+    }
+
+    private void testReturnsList(String elements) {
+        List<String> L = listOfStrings(elements);
+        assertEquals(L, WrappedIterator.create(L.iterator()).toList());
+    }
+}

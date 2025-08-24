@@ -18,21 +18,21 @@
 
 package org.apache.jena.ontology.makers;
 
-import java.util.ArrayList ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.List;
 
-import junit.framework.TestCase ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.test.GraphTestBase ;
+import junit.framework.TestCase;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.test.GraphTestBase;
 import org.apache.jena.ontology.models.GraphMaker;
 import org.apache.jena.ontology.models.ModelMaker;
 import org.apache.jena.ontology.models.ModelMakerImpl;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.test.JenaTestBase ;
-import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.NullIterator ;
-import org.junit.Assert ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.test.JenaTestBase;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.util.iterator.NullIterator;
+import org.junit.Assert;
 
 /**
  * Test ModelMakerImpl using a mock GraphMaker.

@@ -851,7 +851,7 @@ public class TestOntModel
                 + "@prefix owl: <http://www.w3.org/2002/07/owl#>. "
                 + "@prefix : <" + NS + ">. "
                 + ":A a owl:Class. "
-                ;
+               ;
 
         OntModel m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, null);
         m.read( new StringReader(doc), NS, "N3" );
@@ -870,7 +870,7 @@ public class TestOntModel
                 + "@prefix owl: <http://www.w3.org/2002/07/owl#>. "
                 + "@prefix : <" + NS + ">. "
                 + ":A a owl:Class. "
-                ;
+               ;
 
         OntModel m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_RULE_INF, null);
         m.read( new StringReader(doc), NS, "N3" );
@@ -889,8 +889,8 @@ public class TestOntModel
                 + "@prefix owl: <http://www.w3.org/2002/07/owl#>. "
                 + "@prefix : <" + NS + ">. "
                 + ":A a owl:Class. "
-                + ":B a owl:Class ; rdfs:subClassOf :A . "
-                ;
+                + ":B a owl:Class; rdfs:subClassOf :A . "
+               ;
 
         OntModel m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MINI_RULE_INF, null);
         m.read( new StringReader(doc), NS, "N3" );
@@ -909,8 +909,8 @@ public class TestOntModel
                 + "@prefix : <" + NS + ">. "
                 + ":A a rdfs:Class. "
                 + ":C a rdfs:Class. "
-                + ":B a rdfs:Class ; rdfs:subClassOf :A . "
-                ;
+                + ":B a rdfs:Class; rdfs:subClassOf :A . "
+               ;
 
         OntModel m = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM_RDFS_INF, null);
         m.read( new StringReader(doc), NS, "N3" );

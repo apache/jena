@@ -18,7 +18,7 @@
 
 package org.apache.jena.enhanced.test;
 
-import org.apache.jena.rdf.model.RDFNode ;
+import org.apache.jena.rdf.model.RDFNode;
 
 /**
  * An interface for viewing object nodes in the graph.

@@ -20,12 +20,12 @@ package org.apache.jena.reasoner.test;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.jena.ontology.OntModel ;
-import org.apache.jena.ontology.OntModelSpec ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.reasoner.ReasonerRegistry ;
-import org.apache.jena.util.PrintUtil ;
-import org.apache.jena.vocabulary.RDFS ;
+import org.apache.jena.ontology.OntModel;
+import org.apache.jena.ontology.OntModelSpec;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.reasoner.ReasonerRegistry;
+import org.apache.jena.util.PrintUtil;
+import org.apache.jena.vocabulary.RDFS;
 
 /**
  * Test machinery in InfModel which is not associated with any

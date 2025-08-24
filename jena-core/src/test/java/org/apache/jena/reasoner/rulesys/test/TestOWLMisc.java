@@ -87,7 +87,7 @@ public class TestOWLMisc extends TestCase  {
      * Test sameAs/differentFrom interaction
      */
     public void doTestSameAsDifferentFrom(OntModelSpec os) {
-        String test = "[ a owl:AllDifferent ; owl:distinctMembers ( :limited1 :limited2 :limited3 ) ] .\n" +
+        String test = "[ a owl:AllDifferent; owl:distinctMembers ( :limited1 :limited2 :limited3 ) ] .\n" +
                 ":limited4 owl:sameAs :limited1 .";
         OntModel inf = ModelFactory.createOntologyModel(os,  modelFromN3(test));
         Resource l4  = inf.getResource(NS + "limited4");

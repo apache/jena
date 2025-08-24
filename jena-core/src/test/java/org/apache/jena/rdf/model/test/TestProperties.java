@@ -18,69 +18,60 @@
 
 package org.apache.jena.rdf.model.test;
 
-import org.apache.jena.rdf.model.Property ;
-import org.apache.jena.rdf.model.impl.PropertyImpl ;
-import org.apache.jena.vocabulary.RDF ;
-import org.apache.jena.vocabulary.RDFS ;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.impl.PropertyImpl;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
 import org.junit.Assert;
 import junit.framework.TestCase;
 
-public class TestProperties extends TestCase
-{
-	public TestProperties( final String name )
-	{
-		super(name);
-	}
+public class TestProperties extends TestCase {
+    public TestProperties(final String name) {
+        super(name);
+    }
 
-	protected Property createProperty( final String uri )
-	{
-		return new PropertyImpl(uri);
-	}
+    protected Property createProperty(final String uri) {
+        return new PropertyImpl(uri);
+    }
 
-	public void testNonOrdinalRDFURIs()
-	{
-		testRDFOrdinalValue(0, "x");
-		testRDFOrdinalValue(0, "x1");
-		testRDFOrdinalValue(0, "_x");
-		testRDFOrdinalValue(0, "x123");
-		testRDFOrdinalValue(0, "0xff");
-		testRDFOrdinalValue(0, "_xff");
-	}
+    public void testNonOrdinalRDFURIs() {
+        testRDFOrdinalValue(0, "x");
+        testRDFOrdinalValue(0, "x1");
+        testRDFOrdinalValue(0, "_x");
+        testRDFOrdinalValue(0, "x123");
+        testRDFOrdinalValue(0, "0xff");
+        testRDFOrdinalValue(0, "_xff");
+    }
 
-	public void testNonRDFElementURIsHaveOrdinal0()
-	{
-		testOrdinalValue(0, "foo:bar");
-		testOrdinalValue(0, "foo:bar1");
-		testOrdinalValue(0, "foo:bar2");
-		testOrdinalValue(0, RDFS.getURI() + "_17");
-	}
+    public void testNonRDFElementURIsHaveOrdinal0() {
+        testOrdinalValue(0, "foo:bar");
+        testOrdinalValue(0, "foo:bar1");
+        testOrdinalValue(0, "foo:bar2");
+        testOrdinalValue(0, RDFS.getURI() + "_17");
+    }
 
-	private void testOrdinalValue( final int i, final String URI )
-	{
-		final String message = "property should have expected ordinal value for "
-				+ URI;
-		Assert.assertEquals(message, i, createProperty(URI).getOrdinal());
-	}
+    private void testOrdinalValue(final int i, final String URI) {
+        final String message = "property should have expected ordinal value for " + URI;
+        Assert.assertEquals(message, i, createProperty(URI).getOrdinal());
+    }
 
-	public void testOrdinalValues()
-	{
-		testRDFOrdinalValue(1, "_1");
-		testRDFOrdinalValue(2, "_2");
-		testRDFOrdinalValue(3, "_3");
-		testRDFOrdinalValue(4, "_4");
-		testRDFOrdinalValue(5, "_5");
-		testRDFOrdinalValue(6, "_6");
-		testRDFOrdinalValue(7, "_7");
-		testRDFOrdinalValue(8, "_8");
-		testRDFOrdinalValue(9, "_9");
-		testRDFOrdinalValue(10, "_10");
-		testRDFOrdinalValue(100, "_100");
-		testRDFOrdinalValue(1234, "_1234");
-		testRDFOrdinalValue(67890, "_67890");
-	}
+    public void testOrdinalValues() {
+        testRDFOrdinalValue(1, "_1");
+        testRDFOrdinalValue(2, "_2");
+        testRDFOrdinalValue(3, "_3");
+        testRDFOrdinalValue(4, "_4");
+        testRDFOrdinalValue(5, "_5");
+        testRDFOrdinalValue(6, "_6");
+        testRDFOrdinalValue(7, "_7");
+        testRDFOrdinalValue(8, "_8");
+        testRDFOrdinalValue(9, "_9");
+        testRDFOrdinalValue(10, "_10");
+        testRDFOrdinalValue(100, "_100");
+        testRDFOrdinalValue(1234, "_1234");
+        testRDFOrdinalValue(67890, "_67890");
+    }
 
-	private void testRDFOrdinalValue( final int i, final String local )
-	{
-		testOrdinalValue(i, RDF.getURI() + local);
-	}
+    private void testRDFOrdinalValue(final int i, final String local) {
+        testOrdinalValue(i, RDF.getURI() + local);
+    }
 }

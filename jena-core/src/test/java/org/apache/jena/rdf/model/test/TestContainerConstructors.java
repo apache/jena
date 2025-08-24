@@ -18,63 +18,54 @@
 
 package org.apache.jena.rdf.model.test;
 
-import org.apache.jena.rdf.model.Alt ;
-import org.apache.jena.rdf.model.Bag ;
-import org.apache.jena.rdf.model.Seq ;
-import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
-import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.rdf.model.Alt;
+import org.apache.jena.rdf.model.Bag;
+import org.apache.jena.rdf.model.Seq;
+import org.apache.jena.rdf.model.test.helpers.TestingModelFactory;
+import org.apache.jena.vocabulary.RDF;
 import org.junit.Assert;
 
-public class TestContainerConstructors extends AbstractModelTestBase
-{
-	public TestContainerConstructors( final TestingModelFactory modelFactory,
-			final String name )
-	{
-		super(modelFactory, name);
-	}
+public class TestContainerConstructors extends AbstractModelTestBase {
+    public TestContainerConstructors(final TestingModelFactory modelFactory, final String name) {
+        super(modelFactory, name);
+    }
 
-	public void testCreateAnonAlt()
-	{
-		final Alt tv = model.createAlt();
-		Assert.assertTrue(tv.isAnon());
-		Assert.assertTrue(model.contains(tv, RDF.type, RDF.Alt));
-	}
+    public void testCreateAnonAlt() {
+        final Alt tv = model.createAlt();
+        Assert.assertTrue(tv.isAnon());
+        Assert.assertTrue(model.contains(tv, RDF.type, RDF.Alt));
+    }
 
-	public void testCreateAnonBag()
-	{
-		final Bag tv = model.createBag();
-		Assert.assertTrue(tv.isAnon());
-		Assert.assertTrue(model.contains(tv, RDF.type, RDF.Bag));
-	}
+    public void testCreateAnonBag() {
+        final Bag tv = model.createBag();
+        Assert.assertTrue(tv.isAnon());
+        Assert.assertTrue(model.contains(tv, RDF.type, RDF.Bag));
+    }
 
-	public void testCreateAnonSeq()
-	{
-		final Seq tv = model.createSeq();
-		Assert.assertTrue(tv.isAnon());
-		Assert.assertTrue(model.contains(tv, RDF.type, RDF.Seq));
-	}
+    public void testCreateAnonSeq() {
+        final Seq tv = model.createSeq();
+        Assert.assertTrue(tv.isAnon());
+        Assert.assertTrue(model.contains(tv, RDF.type, RDF.Seq));
+    }
 
-	public void testCreateNamedAlt()
-	{
-		final String uri = "http://aldabaran/sirius";
-		final Alt tv = model.createAlt(uri);
-		Assert.assertEquals(uri, tv.getURI());
-		Assert.assertTrue(model.contains(tv, RDF.type, RDF.Alt));
-	}
+    public void testCreateNamedAlt() {
+        final String uri = "http://aldabaran/sirius";
+        final Alt tv = model.createAlt(uri);
+        Assert.assertEquals(uri, tv.getURI());
+        Assert.assertTrue(model.contains(tv, RDF.type, RDF.Alt));
+    }
 
-	public void testCreateNamedBag()
-	{
-		final String uri = "http://aldabaran/foo";
-		final Bag tv = model.createBag(uri);
-		Assert.assertEquals(uri, tv.getURI());
-		Assert.assertTrue(model.contains(tv, RDF.type, RDF.Bag));
-	}
+    public void testCreateNamedBag() {
+        final String uri = "http://aldabaran/foo";
+        final Bag tv = model.createBag(uri);
+        Assert.assertEquals(uri, tv.getURI());
+        Assert.assertTrue(model.contains(tv, RDF.type, RDF.Bag));
+    }
 
-	public void testCreateNamedSeq()
-	{
-		final String uri = "http://aldabaran/andromeda";
-		final Seq tv = model.createSeq(uri);
-		Assert.assertEquals(uri, tv.getURI());
-		Assert.assertTrue(model.contains(tv, RDF.type, RDF.Seq));
-	}
+    public void testCreateNamedSeq() {
+        final String uri = "http://aldabaran/andromeda";
+        final Seq tv = model.createSeq(uri);
+        Assert.assertEquals(uri, tv.getURI());
+        Assert.assertTrue(model.contains(tv, RDF.type, RDF.Seq));
+    }
 }

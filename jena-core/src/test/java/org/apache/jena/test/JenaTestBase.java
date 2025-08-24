@@ -25,8 +25,8 @@ import junit.framework.*;
 import java.util.*;
 
 import org.apache.jena.sys.JenaSystem;
-import org.apache.jena.util.CollectionFactory ;
-import org.apache.jena.util.iterator.* ;
+import org.apache.jena.util.CollectionFactory;
+import org.apache.jena.util.iterator.*;
 
 /**
  * A basis for Jena test cases which provides assertFalse and assertDiffer.

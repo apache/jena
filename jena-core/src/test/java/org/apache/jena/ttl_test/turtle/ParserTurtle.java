@@ -18,14 +18,14 @@
 
 package org.apache.jena.ttl_test.turtle;
 
-import java.io.InputStream ;
-import java.io.Reader ;
+import java.io.InputStream;
+import java.io.Reader;
 
-import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.ttl_test.turtle.parser.ParseException;
 import org.apache.jena.ttl_test.turtle.parser.TokenMgrError;
 import org.apache.jena.ttl_test.turtle.parser.TurtleParser;
-import org.apache.jena.util.FileUtils ;
+import org.apache.jena.util.FileUtils;
 
 
 public class ParserTurtle
@@ -34,28 +34,28 @@ public class ParserTurtle
     
     public void parse(Graph graph, String baseURI, InputStream in)
     {
-        Reader reader = FileUtils.asUTF8(in) ;
-        parse(graph, baseURI, reader) ;
+        Reader reader = FileUtils.asUTF8(in);
+        parse(graph, baseURI, reader);
     }
     
     public void parse(Graph graph, String baseURI, Reader reader)
     {
         // Nasty things happen if the reader is not UTF-8.
         try {
-            TurtleParser parser = new TurtleParser(reader) ;
-            parser.setEventHandler(new TurtleRDFGraphInserter(graph)) ;
-            parser.setBaseURI(baseURI) ;
-            parser.parse() ;
+            TurtleParser parser = new TurtleParser(reader);
+            parser.setEventHandler(new TurtleRDFGraphInserter(graph));
+            parser.setBaseURI(baseURI);
+            parser.parse();
         }
 
         catch (ParseException | TokenMgrError ex)
-        { throw new TurtleParseException(ex.getMessage()) ; }
+        { throw new TurtleParseException(ex.getMessage()); }
 
-        catch (TurtleParseException ex) { throw ex ; }
+        catch (TurtleParseException ex) { throw ex; }
 
         catch (Throwable th)
         {
-            throw new TurtleParseException(th.getMessage(), th) ;
+            throw new TurtleParseException(th.getMessage(), th);
         }
     }
     

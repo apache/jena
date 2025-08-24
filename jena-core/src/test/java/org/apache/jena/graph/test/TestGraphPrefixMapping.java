@@ -19,30 +19,28 @@
 package org.apache.jena.graph.test;
 
 import junit.framework.TestSuite;
-import org.apache.jena.graph.GraphMemFactory ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.shared.AbstractTestPrefixMapping ;
-import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.graph.GraphMemFactory;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.shared.AbstractTestPrefixMapping;
+import org.apache.jena.shared.PrefixMapping;
 
-public class TestGraphPrefixMapping extends GraphTestBase
-    {
-    public TestGraphPrefixMapping( String name )
-        { super( name ); }
-        
-    public static TestSuite suite()
-        { return new TestSuite( TestGraphPrefixMapping.class ); }   
-    
-    public void testGraphPrefixMapping()
-        { 
-        Graph g = GraphMemFactory.createDefaultGraph();
-        AbstractTestPrefixMapping.testUseEasyPrefix
-            ( "from Graph", g.getPrefixMapping() ); 
-        testSameMapping( g );
-        }
-        
-    public void testSameMapping( Graph g )
-        {
-        PrefixMapping pm = g.getPrefixMapping();
-        assertTrue( pm == g.getPrefixMapping() );
-        }
+public class TestGraphPrefixMapping extends GraphTestBase {
+    public TestGraphPrefixMapping(String name) {
+        super(name);
     }
+
+    public static TestSuite suite() {
+        return new TestSuite(TestGraphPrefixMapping.class);
+    }
+
+    public void testGraphPrefixMapping() {
+        Graph g = GraphMemFactory.createDefaultGraph();
+        AbstractTestPrefixMapping.testUseEasyPrefix("from Graph", g.getPrefixMapping());
+        testSameMapping(g);
+    }
+
+    public void testSameMapping(Graph g) {
+        PrefixMapping pm = g.getPrefixMapping();
+        assertTrue(pm == g.getPrefixMapping());
+    }
+}

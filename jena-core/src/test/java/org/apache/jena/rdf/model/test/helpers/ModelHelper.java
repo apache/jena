@@ -24,13 +24,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.test.GraphTestBase ;
-import org.apache.jena.graph.test.NodeCreateUtils ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.rdf.model.test.AbstractModelTestBase ;
-import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.util.CollectionFactory ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.test.GraphTestBase;
+import org.apache.jena.graph.test.NodeCreateUtils;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.test.AbstractModelTestBase;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.util.CollectionFactory;
 import org.junit.Ignore;
 
 /**

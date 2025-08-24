@@ -18,14 +18,14 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
-import org.apache.jena.graph.* ;
-import org.apache.jena.graph.compose.Union ;
-import org.apache.jena.reasoner.* ;
-import org.apache.jena.reasoner.rulesys.* ;
-import org.apache.jena.shared.WrappedIOException ;
-import org.apache.jena.util.FileManager ;
-import org.apache.jena.util.PrintUtil ;
-import org.apache.jena.vocabulary.* ;
+import org.apache.jena.graph.*;
+import org.apache.jena.graph.compose.Union;
+import org.apache.jena.reasoner.*;
+import org.apache.jena.reasoner.rulesys.*;
+import org.apache.jena.shared.WrappedIOException;
+import org.apache.jena.util.FileManager;
+import org.apache.jena.util.PrintUtil;
+import org.apache.jena.vocabulary.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -18,29 +18,29 @@
 
 package org.apache.jena.reasoner.test;
 
-import java.io.BufferedInputStream ;
-import java.io.FileInputStream ;
-import java.io.IOException ;
-import java.io.InputStream ;
-import java.net.URL ;
-import java.util.ArrayList ;
-import java.util.List ;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
-import junit.framework.TestCase ;
-import org.apache.jena.graph.GraphMemFactory ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.rdf.model.impl.PropertyImpl ;
-import org.apache.jena.rdf.model.impl.ResourceImpl ;
+import junit.framework.TestCase;
+import org.apache.jena.graph.GraphMemFactory;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.impl.PropertyImpl;
+import org.apache.jena.rdf.model.impl.ResourceImpl;
 import org.apache.jena.rdfxml.xmlinput1.ARPTests;
-import org.apache.jena.reasoner.InfGraph ;
-import org.apache.jena.reasoner.Reasoner ;
-import org.apache.jena.reasoner.ReasonerFactory ;
-import org.apache.jena.shared.JenaException ;
-import org.apache.jena.vocabulary.RDF ;
-import org.junit.Assert ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.apache.jena.reasoner.InfGraph;
+import org.apache.jena.reasoner.Reasoner;
+import org.apache.jena.reasoner.ReasonerFactory;
+import org.apache.jena.shared.JenaException;
+import org.apache.jena.vocabulary.RDF;
+import org.junit.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A utility to support execution of the RDFCode working group entailment
@@ -376,10 +376,10 @@ public class WGReasonerTester {
 //            if ( !correct )
 //            {
 //                boolean b = testConclusions(conclusions.getGraph(), result.getGraph());
-//                System.out.println("**** actual") ;
-//                result.write(System.out, "TTL") ;
-//                System.out.println("**** expected") ;
-//                conclusions.write(System.out, "TTL") ;
+//                System.out.println("**** actual");
+//                result.write(System.out, "TTL");
+//                System.out.println("**** expected");
+//                conclusions.write(System.out, "TTL");
 //            }
             Assert.assertTrue("Test: " + test + "\n" +  description, correct);
         }
@@ -393,7 +393,7 @@ public class WGReasonerTester {
      * variable for each distinct bNode in the conclusions graph.
      */
     public static boolean testConclusions(Graph conclusions, Graph result) {
-        return Matcher.subgraphInferred(conclusions, result) ;
+        return Matcher.subgraphInferred(conclusions, result);
     }
 
 }

@@ -18,51 +18,51 @@
 
 package org.apache.jena.graph.test;
 
-import java.lang.reflect.Constructor ;
+import java.lang.reflect.Constructor;
 
-import junit.framework.TestSuite ;
-import org.apache.jena.graph.Graph ;
+import junit.framework.TestSuite;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.mem2.GraphMem2Fast;
-import org.apache.jena.shared.JenaException ;
+import org.apache.jena.shared.JenaException;
 
 /**
-    This class tests the reifiers of ordinary graphs.
-    Old test suite - kept to ensure compatibility for the one and only Standard mode
-*/
-public class TestReifier extends AbstractTestReifier
-    {
-    public TestReifier( String name )
-        { super( name ); graphClass = null; }
+ * This class tests the reifiers of ordinary graphs. Old test suite - kept to ensure
+ * compatibility for the one and only Standard mode
+ */
+public class TestReifier extends AbstractTestReifier {
+    public TestReifier(String name) {
+        super(name);
+        graphClass = null;
+    }
 
     protected final Class<? extends Graph> graphClass;
 
-    public TestReifier( Class<? extends Graph> graphClass, String name)
-        {
-        super( name );
+    public TestReifier(Class<? extends Graph> graphClass, String name) {
+        super(name);
         this.graphClass = graphClass;
-        }
+    }
 
-    public static TestSuite suite()
-        {
+    public static TestSuite suite() {
         TestSuite result = new TestSuite();
-        result.addTest( MetaTestGraph.suite( TestReifier.class, GraphMem2Fast.class ) );
+        result.addTest(MetaTestGraph.suite(TestReifier.class, GraphMem2Fast.class));
         result.setName(TestReifier.class.getSimpleName());
         return result;
-        }
+    }
 
-    @Override public Graph getGraph( )
-        {
-        try
-            {
-            Constructor<?> cons = getConstructor( graphClass, new Class[] {} );
-            if (cons != null) return (Graph) cons.newInstance();
-            Constructor<?> cons2 = getConstructor( graphClass, new Class [] {this.getClass()} );
-            if (cons2 != null) return (Graph) cons2.newInstance( this );
-            throw new JenaException( "no suitable graph constructor found for " + graphClass );
-            }
-        catch (RuntimeException e)
-            { throw e; }
-        catch (Exception e)
-            { throw new JenaException( e ); }
+    @Override
+    public Graph getGraph() {
+        try {
+            Constructor<? > cons = getConstructor(graphClass, new Class[]{});
+            if ( cons != null )
+                return (Graph)cons.newInstance();
+            Constructor<? > cons2 = getConstructor(graphClass, new Class[]{this.getClass()});
+            if ( cons2 != null )
+                return (Graph)cons2.newInstance(this);
+            throw new JenaException("no suitable graph constructor found for " + graphClass);
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new JenaException(e);
         }
     }
+}

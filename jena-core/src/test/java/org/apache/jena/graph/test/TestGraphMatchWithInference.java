@@ -19,35 +19,30 @@
 package org.apache.jena.graph.test;
 
 import junit.framework.*;
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.rdf.model.*;
 
 /**
-    Test that an inferred graph and an identical concrete graph 
-    compare as equal.
-*/
+ * Test that an inferred graph and an identical concrete graph compare as equal.
+ */
 
-public class TestGraphMatchWithInference extends GraphTestBase
-    {
-    public TestGraphMatchWithInference( String name )
-        { super( name ); }
+public class TestGraphMatchWithInference extends GraphTestBase {
+    public TestGraphMatchWithInference(String name) {
+        super(name);
+    }
 
-   public static TestSuite suite()
-        {
-        TestSuite result = new TestSuite( TestGraphMatchWithInference.class );
+    public static TestSuite suite() {
+        TestSuite result = new TestSuite(TestGraphMatchWithInference.class);
         return result;
-        }
-        
-   
-    public void testBasic()
-        {
+    }
+
+    public void testBasic() {
         Model mrdfs = ModelFactory.createRDFSModel(ModelFactory.createDefaultModel());
         Model concrete = ModelFactory.createDefaultModel();
         concrete.add(mrdfs);
-        
-        assertIsomorphic( concrete.getGraph(),  mrdfs.getGraph() );
-        
-        assertIsomorphic( mrdfs.getGraph(), concrete.getGraph() );
-        }
-    
-       
+
+        assertIsomorphic(concrete.getGraph(), mrdfs.getGraph());
+
+        assertIsomorphic(mrdfs.getGraph(), concrete.getGraph());
     }
+
+}

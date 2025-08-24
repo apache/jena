@@ -23,9 +23,9 @@ import junit.framework.TestSuite;
 
 import java.io.IOException;
 
-import org.apache.jena.rdf.model.ResourceFactory ;
-import org.apache.jena.reasoner.* ;
-import org.apache.jena.reasoner.rulesys.* ;
+import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.reasoner.*;
+import org.apache.jena.reasoner.rulesys.*;
 
 /**
  * Version of the OWL unit tests used during development of the mini ruleset.

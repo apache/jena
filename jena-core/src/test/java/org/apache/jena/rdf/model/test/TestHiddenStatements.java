@@ -18,41 +18,33 @@
 
 package org.apache.jena.rdf.model.test;
 
-import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
-import org.apache.jena.shared.PrefixMapping ;
-import org.junit.Assert ;
+import org.apache.jena.rdf.model.test.helpers.TestingModelFactory;
+import org.apache.jena.shared.PrefixMapping;
+import org.junit.Assert;
 
-public class TestHiddenStatements extends AbstractModelTestBase
-{
-	public TestHiddenStatements( final TestingModelFactory modelFactory,
-			final String name )
-	{
-		super(modelFactory, name);
-	}
+public class TestHiddenStatements extends AbstractModelTestBase {
+    public TestHiddenStatements(final TestingModelFactory modelFactory, final String name) {
+        super(modelFactory, name);
+    }
 
-	public void assertSameMapping( final PrefixMapping L, final PrefixMapping R )
-	{
-		if (sameMapping(L, R) == false)
-		{
-			Assert.fail("wanted " + L + " but got " + R);
-		}
-	}
+    public void assertSameMapping(final PrefixMapping L, final PrefixMapping R) {
+        if ( sameMapping(L, R) == false ) {
+            Assert.fail("wanted " + L + " but got " + R);
+        }
+    }
 
-	public boolean sameMapping( final PrefixMapping L, final PrefixMapping R )
-	{
-		// System.err.println( ">> " + L.getNsPrefixMap() );
-		// System.err.println( ">> " + R.getNsPrefixMap() );
-		return L.getNsPrefixMap().equals(R.getNsPrefixMap());
-	}
+    public boolean sameMapping(final PrefixMapping L, final PrefixMapping R) {
+        // System.err.println( ">> " + L.getNsPrefixMap() );
+        // System.err.println( ">> " + R.getNsPrefixMap() );
+        return L.getNsPrefixMap().equals(R.getNsPrefixMap());
+    }
 
-	/**
-	 * Test that withHiddenStatements copies the prefix mapping
-	 * TODO add some extra prefixs for checking; should check for non-
-	 * default models.
-	 */
-	public void testPrefixCopied()
-	{
-		model.setNsPrefixes(PrefixMapping.Standard);
-		assertSameMapping(PrefixMapping.Standard, model) ;
-	}
+    /**
+     * Test that withHiddenStatements copies the prefix mapping TODO add some extra
+     * prefixs for checking; should check for non- default models.
+     */
+    public void testPrefixCopied() {
+        model.setNsPrefixes(PrefixMapping.Standard);
+        assertSameMapping(PrefixMapping.Standard, model);
+    }
 }

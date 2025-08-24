@@ -29,20 +29,20 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.impl.LiteralLabelFactory;
 
 public class TestFindLiterals extends GraphTestBase {
-    public TestFindLiterals( String name )
-        { super( name ); }
-
+    public TestFindLiterals(String name) {
+        super(name);
+    }
 
     public static junit.framework.Test suite() {
         return new TestSuite(TestFindLiterals.class);
     }
 
-    private void runTest(String graph, int size, String search, String results ) {
-        Graph g = graphWith( graph );
-        Node literal = NodeCreateUtils.create( search );
-        assertEquals( "graph has wrong size", size, g.size() );
-        Set<Node> got = g.find( Node.ANY, Node.ANY, literal ).mapWith( t -> t.getObject() ).toSet();
-        assertEquals( nodeSet( results ), got );
+    private void runTest(String graph, int size, String search, String results) {
+        Graph g = graphWith(graph);
+        Node literal = NodeCreateUtils.create(search);
+        assertEquals("graph has wrong size", size, g.size());
+        Set<Node> got = g.find(Node.ANY, Node.ANY, literal).mapWith(t -> t.getObject()).toSet();
+        assertEquals(nodeSet(results), got);
     }
 
     public void test01() {
@@ -134,34 +134,32 @@ public class TestFindLiterals extends GraphTestBase {
         runTest("a P '1'xsd:int", 1, "'1'xsd:integer", "'1'xsd:int");
     }
 
-    public void testFloatVsDouble()
-        {
-        Node A = NodeCreateUtils.create( "'1'xsd:float" );
-        Node B = NodeCreateUtils.create( "'1'xsd:double" );
-        assertFalse( A.equals( B ) );
-        assertFalse( A.sameValueAs( B ) );
-        assertFalse( B.sameValueAs( A ) );
-        assertFalse( A.matches( B ) );
-        assertFalse( B.matches( A ) );
-        }
+    public void testFloatVsDouble() {
+        Node A = NodeCreateUtils.create("'1'xsd:float");
+        Node B = NodeCreateUtils.create("'1'xsd:double");
+        assertFalse(A.equals(B));
+        assertFalse(A.sameValueAs(B));
+        assertFalse(B.sameValueAs(A));
+        assertFalse(A.matches(B));
+        assertFalse(B.matches(A));
+    }
 
     @SuppressWarnings("deprecation")
-    public void testProgrammaticValues()
-        {
-        Node ab = NodeFactory.createLiteral( LiteralLabelFactory.createTypedLiteral( (byte) 42 ) );
-        Node as = NodeFactory.createLiteral( LiteralLabelFactory.createTypedLiteral( (short) 42 ) );
-        Node ai = NodeFactory.createLiteral( LiteralLabelFactory.createTypedLiteral( 42 ) );
-        Node al = NodeFactory.createLiteral( LiteralLabelFactory.createTypedLiteral( (long) 42 ) );
-        Graph g = graphWith( "" );
-        Node SB = NodeCreateUtils.create( "SB" );
-        Node SS = NodeCreateUtils.create( "SS" );
-        Node SI = NodeCreateUtils.create( "SI" );
-        Node SL = NodeCreateUtils.create( "SL" );
-        Node P = NodeCreateUtils.create( "P" );
-        g.add( Triple.create( SB, P, ab ) );
-        g.add( Triple.create( SS, P, as ) );
-        g.add( Triple.create( SI, P, ai ) );
-        g.add( Triple.create( SL, P, al ) );
-        assertEquals( 4, Iter.toSet( g.find( Node.ANY, P, NodeCreateUtils.create( "42" ) ) ).size() );
-        }
+    public void testProgrammaticValues() {
+        Node ab = NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral((byte)42));
+        Node as = NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral((short)42));
+        Node ai = NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(42));
+        Node al = NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral((long)42));
+        Graph g = graphWith("");
+        Node SB = NodeCreateUtils.create("SB");
+        Node SS = NodeCreateUtils.create("SS");
+        Node SI = NodeCreateUtils.create("SI");
+        Node SL = NodeCreateUtils.create("SL");
+        Node P = NodeCreateUtils.create("P");
+        g.add(Triple.create(SB, P, ab));
+        g.add(Triple.create(SS, P, as));
+        g.add(Triple.create(SI, P, ai));
+        g.add(Triple.create(SL, P, al));
+        assertEquals(4, Iter.toSet(g.find(Node.ANY, P, NodeCreateUtils.create("42"))).size());
     }
+}

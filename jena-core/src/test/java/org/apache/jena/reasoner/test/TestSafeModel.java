@@ -20,16 +20,16 @@ package org.apache.jena.reasoner.test;
 
 import java.util.List;
 
-import static org.apache.jena.util.PrintUtil.egNS ;
+import static org.apache.jena.util.PrintUtil.egNS;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.reasoner.rulesys.GenericRuleReasoner ;
-import org.apache.jena.reasoner.rulesys.Rule ;
-import org.apache.jena.reasoner.rulesys.impl.SafeGraph ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.reasoner.rulesys.GenericRuleReasoner;
+import org.apache.jena.reasoner.rulesys.Rule;
+import org.apache.jena.reasoner.rulesys.impl.SafeGraph;
 
 /**
  * Some Jena reasoners support extended graphs which relax the RDF syntactic constraints

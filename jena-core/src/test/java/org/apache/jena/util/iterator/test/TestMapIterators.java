@@ -18,21 +18,19 @@
 
 package org.apache.jena.util.iterator.test;
 
+import org.apache.jena.rdf.model.test.ModelTestBase;
+import org.apache.jena.util.iterator.*;
 
-import org.apache.jena.rdf.model.test.ModelTestBase ;
-import org.apache.jena.util.iterator.* ;
+public class TestMapIterators extends ModelTestBase {
 
-public class TestMapIterators extends ModelTestBase
-    {
-    
-    public TestMapIterators( String name )
-        { super( name ); }
-
-    public void testCloseClosesBaseIterator()
-        {
-        LoggingClosableIterator<String> base = new LoggingClosableIterator<>( null );
-        Map1Iterator<String, String> mit = new Map1Iterator<>( s -> null, base );
-        mit.close();
-        assertTrue( "base must have been closed by closing map", base.isClosed() );
-        }
+    public TestMapIterators(String name) {
+        super(name);
     }
+
+    public void testCloseClosesBaseIterator() {
+        LoggingClosableIterator<String> base = new LoggingClosableIterator<>(null);
+        Map1Iterator<String, String> mit = new Map1Iterator<>(s -> null, base);
+        mit.close();
+        assertTrue("base must have been closed by closing map", base.isClosed());
+    }
+}

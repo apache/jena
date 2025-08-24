@@ -18,99 +18,100 @@
 
 package org.apache.jena.assembler.test;
 
-import org.apache.jena.assembler.* ;
-import org.apache.jena.assembler.assemblers.InfModelAssembler ;
-import org.apache.jena.assembler.exceptions.NotUniqueException ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.reasoner.* ;
-import org.apache.jena.reasoner.rulesys.GenericRuleReasonerFactory ;
+import org.apache.jena.assembler.*;
+import org.apache.jena.assembler.assemblers.InfModelAssembler;
+import org.apache.jena.assembler.exceptions.NotUniqueException;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.reasoner.*;
+import org.apache.jena.reasoner.rulesys.GenericRuleReasonerFactory;
 
-public class TestInfModelAssembler extends AssemblerTestBase
-    {
-    public TestInfModelAssembler( String name )
-        { super( name ); }
+public class TestInfModelAssembler extends AssemblerTestBase {
+    public TestInfModelAssembler(String name) {
+        super(name);
+    }
 
-    @Override protected Class<? extends Assembler> getAssemblerClass()
-        { return InfModelAssembler.class; }
+    @Override
+    protected Class<? extends Assembler> getAssemblerClass() {
+        return InfModelAssembler.class;
+    }
 
-    public void testLocationMapperAssemblerType()
-        { testDemandsMinimalType( new InfModelAssembler(), JA.InfModel );  }
-    
-    public void testMockReasonersDifferent()
-        { 
-        Reasoner R = GenericRuleReasonerFactory.theInstance().create( null );
-        assertNotSame( mockReasonerFactory( R ), mockReasonerFactory( R ) ); 
-        }
-    
-    public void testInfModel()
-        {
+    public void testLocationMapperAssemblerType() {
+        testDemandsMinimalType(new InfModelAssembler(), JA.InfModel);
+    }
+
+    public void testMockReasonersDifferent() {
+        Reasoner R = GenericRuleReasonerFactory.theInstance().create(null);
+        assertNotSame(mockReasonerFactory(R), mockReasonerFactory(R));
+    }
+
+    public void testInfModel() {
         Assembler a = Assembler.infModel;
-        Model m = a.openModel( resourceInModel( "x rdf:type ja:InfModel" ) );
-        assertInstanceOf( InfModel.class, m );
-        }
-    
-    public void testInfModelType()
-        { testDemandsMinimalType( Assembler.infModel, JA.InfModel ); }
-    
-    public void testGetsReasoner()
-        {
-        Reasoner R = GenericRuleReasonerFactory.theInstance().create( null );
-        final ReasonerFactory RF = mockReasonerFactory( R );
-        Assembler mock = new FixedObjectAssembler( RF );
-        Resource root = resourceInModel( "x rdf:type ja:InfModel; x ja:reasoner R" );
-        InfModel m = (InfModel) Assembler.infModel.open( mock, root );
-        assertSame( R, m.getReasoner() );        
-        }
+        Model m = a.openModel(resourceInModel("x rdf:type ja:InfModel"));
+        assertInstanceOf(InfModel.class, m);
+    }
 
-    protected ReasonerFactory mockReasonerFactory( final Reasoner R )
-        { 
-        return new ReasonerFactory() 
-            {
-            @Override
-            public Reasoner create( Resource configuration )
-                { return R; }
+    public void testInfModelType() {
+        testDemandsMinimalType(Assembler.infModel, JA.InfModel);
+    }
 
+    public void testGetsReasoner() {
+        Reasoner R = GenericRuleReasonerFactory.theInstance().create(null);
+        final ReasonerFactory RF = mockReasonerFactory(R);
+        Assembler mock = new FixedObjectAssembler(RF);
+        Resource root = resourceInModel("x rdf:type ja:InfModel; x ja:reasoner R");
+        InfModel m = (InfModel)Assembler.infModel.open(mock, root);
+        assertSame(R, m.getReasoner());
+    }
+
+    protected ReasonerFactory mockReasonerFactory(final Reasoner R) {
+        return new ReasonerFactory() {
             @Override
-            public Model getCapabilities()
-                { throw new RuntimeException( "mock doesn't do getCapabilities" ); }
+            public Reasoner create(Resource configuration) {
+                return R;
+            }
 
             @Override
-            public String getURI()
-                { throw new RuntimeException( "mock doesn't do getURI" ); }
-            };
-        }
-    
-    public void testGetsSpecifiedModel()
-        {
+            public Model getCapabilities() {
+                throw new RuntimeException("mock doesn't do getCapabilities");
+            }
+
+            @Override
+            public String getURI() {
+                throw new RuntimeException("mock doesn't do getURI");
+            }
+        };
+    }
+
+    public void testGetsSpecifiedModel() {
         Model base = ModelFactory.createDefaultModel();
-        Resource root = resourceInModel( "x rdf:type ja:InfModel; x ja:baseModel M" );
-        Assembler mock = new NamedObjectAssembler( resource( "M" ), base );
-        InfModel inf = (InfModel) Assembler.infModel.open( mock, root );
-        assertSame( base.getGraph(), inf.getRawModel().getGraph() );
-        }
-    
-    public void testDetectsMultipleBaseModels()
-        {
+        Resource root = resourceInModel("x rdf:type ja:InfModel; x ja:baseModel M");
+        Assembler mock = new NamedObjectAssembler(resource("M"), base);
+        InfModel inf = (InfModel)Assembler.infModel.open(mock, root);
+        assertSame(base.getGraph(), inf.getRawModel().getGraph());
+    }
+
+    public void testDetectsMultipleBaseModels() {
         Model base = ModelFactory.createDefaultModel();
-        Resource root = resourceInModel( "x rdf:type ja:InfModel; x ja:baseModel M; x ja:baseModel M2" );
-        Assembler mock = new FixedObjectAssembler( base );
-        try 
-            { Assembler.infModel.open( mock, root ); 
-            fail( "should detect multiple baseModels" ); }
-        catch (NotUniqueException e) 
-            { assertEquals( JA.baseModel, e.getProperty() ); 
-            assertEquals( resource( "x" ), e.getRoot() ); }
-        }
-    
-    public void testDetectsMultipleReasoners()
-        {
-        Resource root = resourceInModel( "x rdf:type ja:InfModel; x ja:reasoner R; x ja:reasoner R2" );
-        Assembler mock = new FixedObjectAssembler( null );
-        try 
-            { Assembler.infModel.open( mock, root ); 
-            fail( "should detect multiple reasoners" ); }
-        catch (NotUniqueException e) 
-            { assertEquals( JA.reasoner, e.getProperty() ); 
-            assertEquals( resource( "x" ), e.getRoot() ); }
+        Resource root = resourceInModel("x rdf:type ja:InfModel; x ja:baseModel M; x ja:baseModel M2");
+        Assembler mock = new FixedObjectAssembler(base);
+        try {
+            Assembler.infModel.open(mock, root);
+            fail("should detect multiple baseModels");
+        } catch (NotUniqueException e) {
+            assertEquals(JA.baseModel, e.getProperty());
+            assertEquals(resource("x"), e.getRoot());
         }
     }
+
+    public void testDetectsMultipleReasoners() {
+        Resource root = resourceInModel("x rdf:type ja:InfModel; x ja:reasoner R; x ja:reasoner R2");
+        Assembler mock = new FixedObjectAssembler(null);
+        try {
+            Assembler.infModel.open(mock, root);
+            fail("should detect multiple reasoners");
+        } catch (NotUniqueException e) {
+            assertEquals(JA.reasoner, e.getProperty());
+            assertEquals(resource("x"), e.getRoot());
+        }
+    }
+}

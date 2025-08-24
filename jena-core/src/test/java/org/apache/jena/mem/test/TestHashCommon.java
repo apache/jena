@@ -20,8 +20,8 @@ package org.apache.jena.mem.test;
 
 import java.util.*;
 
-import org.apache.jena.mem.HashCommon ;
-import org.apache.jena.rdf.model.test.ModelTestBase ;
+import org.apache.jena.mem.HashCommon;
+import org.apache.jena.rdf.model.test.ModelTestBase;
 
 public class TestHashCommon extends ModelTestBase
     {

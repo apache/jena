@@ -35,21 +35,30 @@ public class TestNodeExtras {
     private static Node p = NodeCreateUtils.create("eg:p");
     private static Node o = NodeCreateUtils.create("'abc'");
 
-    private static Triple triple1 = Triple.create(s,p,o);
-    private static Triple triple2 = Triple.create(s,p,o);
+    private static Triple triple1 = Triple.create(s, p, o);
+    private static Triple triple2 = Triple.create(s, p, o);
 
-    private static Triple triple9 = Triple.create(NodeFactory.createBlankNode(),p,o);
+    private static Triple triple9 = Triple.create(NodeFactory.createBlankNode(), p, o);
 
-    private static Node newTripleTerm(Triple triple)             { return NodeFactory.createTripleTerm(triple); }
+    private static Node newTripleTerm(Triple triple) {
+        return NodeFactory.createTripleTerm(triple);
+    }
 
-    private static Node newTripleTerm(Node s, Node p , Node o)   { return NodeFactory.createTripleTerm(s,p,o); }
+    private static Node newTripleTerm(Node s, Node p, Node o) {
+        return NodeFactory.createTripleTerm(s, p, o);
+    }
 
-    private static Node_Graph newGraphTerm(Graph graph)          { return new Node_Graph(graph); }
+    private static Node_Graph newGraphTerm(Graph graph) {
+        return new Node_Graph(graph);
+    }
 
-    private static Node_Graph newGraphTerm()                     { return new Node_Graph(GraphMemFactory.empty()); }
+    private static Node_Graph newGraphTerm() {
+        return new Node_Graph(GraphMemFactory.empty());
+    }
 
-     @Test public void term_triple_1() {
-        Node nt = newTripleTerm(s,p,o);
+    @Test
+    public void term_triple_1() {
+        Node nt = newTripleTerm(s, p, o);
         assertTrue(nt.isTripleTerm());
         assertNotNull(nt.getTriple());
         assertNotNull(nt.getTriple());
@@ -60,16 +69,18 @@ public class TestNodeExtras {
         assertTrue(nt.sameValueAs(nt));
     }
 
-    @Test public void term_triple_2() {
-        Node nt1 = newTripleTerm(s,p,o);
-        Node nt2 = newTripleTerm(s,p,o);
+    @Test
+    public void term_triple_2() {
+        Node nt1 = newTripleTerm(s, p, o);
+        Node nt2 = newTripleTerm(s, p, o);
 
         assertEquals(nt1, nt2);
         assertEquals(nt1.hashCode(), nt2.hashCode());
         assertTrue(nt1.sameValueAs(nt2));
     }
 
-    @Test public void term_triple_3() {
+    @Test
+    public void term_triple_3() {
         Node nt1 = newTripleTerm(triple1);
         Node nt2 = newTripleTerm(triple2);
         assertNotSame(nt1.getTriple(), nt2.getTriple());
@@ -78,7 +89,8 @@ public class TestNodeExtras {
         assertEquals(nt1.hashCode(), nt2.hashCode());
     }
 
-    @Test public void term_triple_4() {
+    @Test
+    public void term_triple_4() {
         Node nt1 = newTripleTerm(triple1);
         Node nt9 = newTripleTerm(triple9);
         assertNotSame(nt1.getTriple(), nt9.getTriple());
@@ -87,13 +99,13 @@ public class TestNodeExtras {
         assertFalse(nt1.sameValueAs(nt9));
     }
 
-    @Test(expected=UnsupportedOperationException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void term_triple_bad_1() {
         Node n = NodeFactory.createLiteralString("abc");
         n.getTriple();
     }
 
-    @Test(expected=UnsupportedOperationException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void term_triple_bad_2() {
         Node n = NodeFactory.createURI("http://example/abc");
         n.getTriple();

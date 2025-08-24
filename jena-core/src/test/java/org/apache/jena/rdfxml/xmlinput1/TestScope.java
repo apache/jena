@@ -23,7 +23,7 @@ import java.io.IOException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.jena.rdf.model.RDFErrorHandler ;
+import org.apache.jena.rdf.model.RDFErrorHandler;
 
 public class TestScope extends TestCase {
 	public static Test suite() {

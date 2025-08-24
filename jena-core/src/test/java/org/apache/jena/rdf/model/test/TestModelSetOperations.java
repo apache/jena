@@ -18,118 +18,100 @@
 
 package org.apache.jena.rdf.model.test;
 
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.Statement ;
-import org.apache.jena.rdf.model.StmtIterator ;
-import org.apache.jena.rdf.model.test.helpers.ModelHelper ;
-import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.rdf.model.test.helpers.ModelHelper;
+import org.apache.jena.rdf.model.test.helpers.TestingModelFactory;
 import org.junit.Assert;
 
 /**
  * A revamped version of the regression set-operation tests.
  */
-public class TestModelSetOperations extends AbstractModelTestBase
-{
-	private Model model2;
+public class TestModelSetOperations extends AbstractModelTestBase {
+    private Model model2;
 
-	public TestModelSetOperations( final TestingModelFactory modelFactory,
-			final String name )
-	{
-		super(modelFactory, name);
-	}
+    public TestModelSetOperations(final TestingModelFactory modelFactory, final String name) {
+        super(modelFactory, name);
+    }
 
-	@Override
-	public void setUp()
-	{
-		super.setUp();
-		model2 = createModel();
-	}
+    @Override
+    public void setUp() {
+        super.setUp();
+        model2 = createModel();
+    }
 
-	@Override
-	public void tearDown()
-	{
-		super.tearDown();
-		model2.close();
-	}
+    @Override
+    public void tearDown() {
+        super.tearDown();
+        model2.close();
+    }
 
-	public void testDifference()
-	{
-		ModelHelper.modelAdd(model, "a P b; w R x");
-		ModelHelper.modelAdd(model2, "w R x; y S z");
-		final Model dm = model.difference(model2);
-		for (final StmtIterator it = dm.listStatements(); it.hasNext();)
-		{
-			final Statement s = it.nextStatement();
-			Assert.assertTrue(model.contains(s) && !model2.contains(s));
-		}
-		for (final StmtIterator it = model.union(model2).listStatements(); it
-				.hasNext();)
-		{
-			final Statement s = it.nextStatement();
-			Assert.assertEquals(model.contains(s) && !model2.contains(s),
-					dm.contains(s));
-		}
-		Assert.assertTrue(dm.containsAny(model));
-		Assert.assertTrue(dm.containsAny(model.listStatements()));
-		Assert.assertFalse(dm.containsAny(model2));
-		Assert.assertFalse(dm.containsAny(model2.listStatements()));
-		Assert.assertTrue(model.containsAll(dm));
+    public void testDifference() {
+        ModelHelper.modelAdd(model, "a P b; w R x");
+        ModelHelper.modelAdd(model2, "w R x; y S z");
+        final Model dm = model.difference(model2);
+        for ( final StmtIterator it = dm.listStatements() ; it.hasNext() ; ) {
+            final Statement s = it.nextStatement();
+            Assert.assertTrue(model.contains(s) && !model2.contains(s));
+        }
+        for ( final StmtIterator it = model.union(model2).listStatements() ; it.hasNext() ; ) {
+            final Statement s = it.nextStatement();
+            Assert.assertEquals(model.contains(s) && !model2.contains(s), dm.contains(s));
+        }
+        Assert.assertTrue(dm.containsAny(model));
+        Assert.assertTrue(dm.containsAny(model.listStatements()));
+        Assert.assertFalse(dm.containsAny(model2));
+        Assert.assertFalse(dm.containsAny(model2.listStatements()));
+        Assert.assertTrue(model.containsAll(dm));
 
-	}
+    }
 
-	public void testIntersection()
-	{
+    public void testIntersection() {
 
-		ModelHelper.modelAdd(model, "a P b; w R x");
-		ModelHelper.modelAdd(model2, "w R x; y S z");
-		final Model im = model.intersection(model2);
-		Assert.assertFalse(model.containsAll(model2));
-		Assert.assertFalse(model2.containsAll(model));
-		Assert.assertTrue(model.containsAll(im));
-		Assert.assertTrue(model2.containsAll(im));
-		for (final StmtIterator it = im.listStatements(); it.hasNext();)
-		{
-			final Statement s = it.nextStatement();
-			Assert.assertTrue(model.contains(s) && model2.contains(s));
-		}
-		for (final StmtIterator it = im.listStatements(); it.hasNext();)
-		{
-			Assert.assertTrue(model.contains(it.nextStatement()));
-		}
-		for (final StmtIterator it = im.listStatements(); it.hasNext();)
-		{
-			Assert.assertTrue(model2.contains(it.nextStatement()));
-		}
-		Assert.assertTrue(model.containsAll(im.listStatements()));
-		Assert.assertTrue(model2.containsAll(im.listStatements()));
+        ModelHelper.modelAdd(model, "a P b; w R x");
+        ModelHelper.modelAdd(model2, "w R x; y S z");
+        final Model im = model.intersection(model2);
+        Assert.assertFalse(model.containsAll(model2));
+        Assert.assertFalse(model2.containsAll(model));
+        Assert.assertTrue(model.containsAll(im));
+        Assert.assertTrue(model2.containsAll(im));
+        for ( final StmtIterator it = im.listStatements() ; it.hasNext() ; ) {
+            final Statement s = it.nextStatement();
+            Assert.assertTrue(model.contains(s) && model2.contains(s));
+        }
+        for ( final StmtIterator it = im.listStatements() ; it.hasNext() ; ) {
+            Assert.assertTrue(model.contains(it.nextStatement()));
+        }
+        for ( final StmtIterator it = im.listStatements() ; it.hasNext() ; ) {
+            Assert.assertTrue(model2.contains(it.nextStatement()));
+        }
+        Assert.assertTrue(model.containsAll(im.listStatements()));
+        Assert.assertTrue(model2.containsAll(im.listStatements()));
 
-	}
+    }
 
-	public void testUnion()
-	{
+    public void testUnion() {
 
-		ModelHelper.modelAdd(model, "a P b; w R x");
-		ModelHelper.modelAdd(model2, "w R x; y S z");
-		final Model um = model.union(model2);
-		Assert.assertFalse(model.containsAll(model2));
-		Assert.assertFalse(model2.containsAll(model));
-		Assert.assertTrue(um.containsAll(model));
-		Assert.assertTrue(um.containsAll(model2));
-		for (final StmtIterator it = um.listStatements(); it.hasNext();)
-		{
-			final Statement s = it.nextStatement();
-			Assert.assertTrue(model.contains(s) || model2.contains(s));
-		}
-		for (final StmtIterator it = model.listStatements(); it.hasNext();)
-		{
-			Assert.assertTrue(um.contains(it.nextStatement()));
-		}
-		for (final StmtIterator it = model2.listStatements(); it.hasNext();)
-		{
-			Assert.assertTrue(um.contains(it.nextStatement()));
-		}
-		Assert.assertTrue(um.containsAll(model.listStatements()));
-		Assert.assertTrue(um.containsAll(model2.listStatements()));
+        ModelHelper.modelAdd(model, "a P b; w R x");
+        ModelHelper.modelAdd(model2, "w R x; y S z");
+        final Model um = model.union(model2);
+        Assert.assertFalse(model.containsAll(model2));
+        Assert.assertFalse(model2.containsAll(model));
+        Assert.assertTrue(um.containsAll(model));
+        Assert.assertTrue(um.containsAll(model2));
+        for ( final StmtIterator it = um.listStatements() ; it.hasNext() ; ) {
+            final Statement s = it.nextStatement();
+            Assert.assertTrue(model.contains(s) || model2.contains(s));
+        }
+        for ( final StmtIterator it = model.listStatements() ; it.hasNext() ; ) {
+            Assert.assertTrue(um.contains(it.nextStatement()));
+        }
+        for ( final StmtIterator it = model2.listStatements() ; it.hasNext() ; ) {
+            Assert.assertTrue(um.contains(it.nextStatement()));
+        }
+        Assert.assertTrue(um.containsAll(model.listStatements()));
+        Assert.assertTrue(um.containsAll(model2.listStatements()));
 
-	}
+    }
 }

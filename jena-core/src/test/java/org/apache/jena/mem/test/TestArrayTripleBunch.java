@@ -18,7 +18,7 @@
 
 package org.apache.jena.mem.test;
 
-import org.apache.jena.mem.* ;
+import org.apache.jena.mem.*;
 
 public class TestArrayTripleBunch extends TestTripleBunch
     {

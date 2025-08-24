@@ -18,21 +18,21 @@
 
 package org.apache.jena.reasoner.test;
 
-import java.io.IOException ;
+import java.io.IOException;
 
-import junit.framework.TestCase ;
-import junit.framework.TestSuite ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.reasoner.ReasonerFactory ;
-import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory ;
-import org.apache.jena.shared.impl.JenaParameters ;
-import org.apache.jena.vocabulary.OWLResults ;
-import org.apache.jena.vocabulary.RDFS ;
-import org.apache.jena.vocabulary.ReasonerVocabulary ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.reasoner.ReasonerFactory;
+import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
+import org.apache.jena.shared.impl.JenaParameters;
+import org.apache.jena.vocabulary.OWLResults;
+import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.ReasonerVocabulary;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Test the default RDFS reasoner against the current set of working group tests

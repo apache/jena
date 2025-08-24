@@ -18,15 +18,15 @@
 
 package org.apache.jena.rdfxml.xmlinput1.states;
 
-import java.io.FileWriter ;
-import java.io.IOException ;
-import java.lang.reflect.InvocationTargetException ;
-import java.util.* ;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 import org.apache.jena.rdfxml.xmlinput1.ARPErrorNumbers;
 import org.apache.jena.rdfxml.xmlinput1.impl.*;
-import org.xml.sax.Attributes ;
-import org.xml.sax.SAXParseException ;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXParseException;
 
 /**
  * For each state s, for each element-attribute event e1, - test s, e1 - if s,
@@ -229,7 +229,7 @@ public class TestData implements ARPErrorNumbers{
                 addEvents( character );
                 rslt.append( " " + character + " $ " );
                 boolean testV = eventList.test( f );
-                rslt.append( testInfo( f ) + " ;" );
+                rslt.append( testInfo( f ) + ";" );
                 eventList.size = sz;
                 if ( !testV )
                 {

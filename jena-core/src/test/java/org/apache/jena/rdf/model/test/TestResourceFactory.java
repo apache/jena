@@ -22,15 +22,14 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
-import org.apache.jena.datatypes.RDFDatatype ;
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.rdf.model.*;
 import org.junit.Assert;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class TestResourceFactory extends TestCase
-{
+public class TestResourceFactory extends TestCase {
 
     class TestFactory implements ResourceFactory.Interface {
 

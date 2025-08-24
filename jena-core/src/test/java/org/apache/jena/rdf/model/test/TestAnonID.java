@@ -18,82 +18,72 @@
 
 package org.apache.jena.rdf.model.test;
 
-import org.apache.jena.rdf.model.AnonId ;
-import org.apache.jena.shared.impl.JenaParameters ;
-import org.apache.jena.test.JenaTestBase ;
+import org.apache.jena.rdf.model.AnonId;
+import org.apache.jena.shared.impl.JenaParameters;
+import org.apache.jena.test.JenaTestBase;
 import org.junit.Assert;
 import junit.framework.TestSuite;
 
 /**
- * Test for anonID generation. (Originally test for the debugging hack
- * that switches off anonID generation.)
+ * Test for anonID generation. (Originally test for the debugging hack that switches
+ * off anonID generation.)
  */
-public class TestAnonID extends JenaTestBase
-{
+public class TestAnonID extends JenaTestBase {
 
-	/**
-	 * Boilerplate for junit.
-	 * This is its own test suite
-	 */
-	public static TestSuite suite()
-	{
-		return new TestSuite(TestAnonID.class);
-	}
+    /**
+     * Boilerplate for junit. This is its own test suite
+     */
+    public static TestSuite suite() {
+        return new TestSuite(TestAnonID.class);
+    }
 
-	/**
-	 * Boilerplate for junit
-	 */
-	public TestAnonID( final String name )
-	{
-		super(name);
-	}
+    /**
+     * Boilerplate for junit
+     */
+    public TestAnonID(final String name) {
+        super(name);
+    }
 
-	/**
-	 * Check that anonIDs are distinct whichever state the flag is in.
-	 */
-	public void doTestAnonID()
-	{
-		final AnonId id1 = AnonId.create();
-		final AnonId id2 = AnonId.create();
-		final AnonId id3 = AnonId.create();
-		final AnonId id4 = AnonId.create();
+    /**
+     * Check that anonIDs are distinct whichever state the flag is in.
+     */
+    public void doTestAnonID() {
+        final AnonId id1 = AnonId.create();
+        final AnonId id2 = AnonId.create();
+        final AnonId id3 = AnonId.create();
+        final AnonId id4 = AnonId.create();
 
-		JenaTestBase.assertDiffer(id1, id2);
-		JenaTestBase.assertDiffer(id1, id3);
-		JenaTestBase.assertDiffer(id1, id4);
-		JenaTestBase.assertDiffer(id2, id3);
-		JenaTestBase.assertDiffer(id2, id4);
-	}
+        JenaTestBase.assertDiffer(id1, id2);
+        JenaTestBase.assertDiffer(id1, id3);
+        JenaTestBase.assertDiffer(id1, id4);
+        JenaTestBase.assertDiffer(id2, id3);
+        JenaTestBase.assertDiffer(id2, id4);
+    }
 
-	/**
-	 * Check that anonIDs are distinct whichever state the flag is in.
-	 */
-	public void testAnonID()
-	{
-		final boolean prior = JenaParameters.disableBNodeUIDGeneration;
-		try
-		{
-			JenaParameters.disableBNodeUIDGeneration = false;
-			doTestAnonID();
-			JenaParameters.disableBNodeUIDGeneration = true;
-			doTestAnonID();
-		}
-		finally
-		{
-			JenaParameters.disableBNodeUIDGeneration = prior;
-		}
-	}
+    /**
+     * Check that anonIDs are distinct whichever state the flag is in.
+     */
+    public void testAnonID() {
+        final boolean prior = JenaParameters.disableBNodeUIDGeneration;
+        try {
+            JenaParameters.disableBNodeUIDGeneration = false;
+            doTestAnonID();
+            JenaParameters.disableBNodeUIDGeneration = true;
+            doTestAnonID();
+        } finally {
+            JenaParameters.disableBNodeUIDGeneration = prior;
+        }
+    }
 
-	/**
-	 * Test that creation of an AnonId from an AnonId string preserves that
-	 * string and is equal to the original AnonId.
-	 */
-	public void testAnonIdPreserved()
-	{
-		final AnonId anon = AnonId.create();
-		final String id = anon.toString();
-		Assert.assertEquals(anon, AnonId.create(id));
-		Assert.assertEquals(id, AnonId.create(id).toString());
-	}
+    /**
+     * Test that creation of an AnonId from an AnonId string preserves that string
+     * and is equal to the original AnonId.
+     */
+    public void testAnonIdPreserved() {
+        final AnonId anon = AnonId.create();
+        final String id = anon.toString();
+        Assert.assertEquals(anon, AnonId.create(id));
+        Assert.assertEquals(id, AnonId.create(id).toString());
+    }
 
 }

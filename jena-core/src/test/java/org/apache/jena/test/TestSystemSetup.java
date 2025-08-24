@@ -18,7 +18,7 @@
 
 package org.apache.jena.test;
 
-import junit.framework.TestCase ;
+import junit.framework.TestCase;
 import org.junit.Test;
 
 public class TestSystemSetup extends TestCase {

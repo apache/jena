@@ -27,20 +27,20 @@ import java.util.*;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.jena.irix.IRIx;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.rdf.model.impl.PropertyImpl ;
-import org.apache.jena.rdf.model.impl.ResourceImpl ;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.impl.PropertyImpl;
+import org.apache.jena.rdf.model.impl.ResourceImpl;
 import org.apache.jena.rdfxml.libtest.InputStreamFactoryTests;
 import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Abbrev;
-import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory ;
-import org.apache.jena.reasoner.test.WGReasonerTester ;
-import org.apache.jena.shared.BrokenException ;
-import org.apache.jena.shared.JenaException ;
-import org.apache.jena.shared.impl.JenaParameters ;
-import org.apache.jena.vocabulary.OWLResults ;
-import org.apache.jena.vocabulary.RDF ;
-import org.apache.jena.vocabulary.RDFS ;
-import org.apache.jena.vocabulary.ReasonerVocabulary ;
+import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
+import org.apache.jena.reasoner.test.WGReasonerTester;
+import org.apache.jena.shared.BrokenException;
+import org.apache.jena.shared.JenaException;
+import org.apache.jena.shared.impl.JenaParameters;
+import org.apache.jena.vocabulary.OWLResults;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.ReasonerVocabulary;
 import org.xml.sax.SAXException;
 class WGTestSuite extends TestSuite implements ARPErrorNumbers {
 	static private Resource jena;
@@ -336,7 +336,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         new String[] { "warning", "error", "fatal" };
 
     interface Act {
-        void act(Resource r) ;
+        void act(Resource r);
     }
     private WGReasonerTester wgReasoner;
     class ReasoningTest extends Test {

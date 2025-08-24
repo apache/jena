@@ -24,15 +24,14 @@ import java.util.Set;
 import org.junit.Assert;
 
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
-import org.apache.jena.shared.InvalidPropertyURIException ;
-import org.apache.jena.shared.PropertyNotFoundException ;
-import org.apache.jena.test.JenaTestBase ;
-import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.test.helpers.TestingModelFactory;
+import org.apache.jena.shared.InvalidPropertyURIException;
+import org.apache.jena.shared.PropertyNotFoundException;
+import org.apache.jena.test.JenaTestBase;
+import org.apache.jena.vocabulary.RDF;
 
-public class TestResources extends AbstractModelTestBase
-{
+public class TestResources extends AbstractModelTestBase {
     public TestResources(final TestingModelFactory modelFactory, final String name) {
         super(modelFactory, name);
     }
@@ -73,42 +72,32 @@ public class TestResources extends AbstractModelTestBase
 
     private void containerTest(final Model model, final Container cont1, final Container cont2) {
         final Literal tvLiteral = model.createLiteral("test 12 string 2");
-		// Resource tvResObj = model.createResource( new ResTestObjF() );
-		final Object tvLitObj = new LitTestObj(1234);
-		model.createBag();
-		model.createAlt();
-		model.createSeq();
-		final String lang = "en";
-		//
-		Assert.assertEquals(0, cont1.size());
-		Assert.assertEquals(0, cont2.size());
-		//
-		Assert.assertTrue(cont1.add(AbstractModelTestBase.tvBoolean).contains(
-				AbstractModelTestBase.tvBoolean));
-		Assert.assertTrue(cont1.add(AbstractModelTestBase.tvByte).contains(
-				AbstractModelTestBase.tvByte));
-		Assert.assertTrue(cont1.add(AbstractModelTestBase.tvShort).contains(
-				AbstractModelTestBase.tvShort));
-		Assert.assertTrue(cont1.add(AbstractModelTestBase.tvInt).contains(
-				AbstractModelTestBase.tvInt));
-		Assert.assertTrue(cont1.add(AbstractModelTestBase.tvLong).contains(
-				AbstractModelTestBase.tvLong));
-		Assert.assertTrue(cont1.add(AbstractModelTestBase.tvFloat).contains(
-				AbstractModelTestBase.tvFloat));
-		Assert.assertTrue(cont1.add(AbstractModelTestBase.tvDouble).contains(
-				AbstractModelTestBase.tvDouble));
-		Assert.assertTrue(cont1.add(AbstractModelTestBase.tvChar).contains(
-				AbstractModelTestBase.tvChar));
-		Assert.assertTrue(cont1.add(AbstractModelTestBase.tvString).contains(
-				AbstractModelTestBase.tvString));
-		Assert.assertFalse(cont1.contains(AbstractModelTestBase.tvString, lang));
-		Assert.assertTrue(cont1.add(AbstractModelTestBase.tvString, lang)
-				.contains(AbstractModelTestBase.tvString, lang));
-		Assert.assertTrue(cont1.add(tvLiteral).contains(tvLiteral));
-		// assertTrue( cont1.add( tvResObj ).contains( tvResObj ) );
-		Assert.assertTrue(cont1.add(tvLitObj).contains(tvLitObj));
-		Assert.assertEquals(12, cont1.size());
-		//
+        // Resource tvResObj = model.createResource( new ResTestObjF() );
+        final Object tvLitObj = new LitTestObj(1234);
+        model.createBag();
+        model.createAlt();
+        model.createSeq();
+        final String lang = "en";
+        //
+        Assert.assertEquals(0, cont1.size());
+        Assert.assertEquals(0, cont2.size());
+        //
+        Assert.assertTrue(cont1.add(AbstractModelTestBase.tvBoolean).contains(AbstractModelTestBase.tvBoolean));
+        Assert.assertTrue(cont1.add(AbstractModelTestBase.tvByte).contains(AbstractModelTestBase.tvByte));
+        Assert.assertTrue(cont1.add(AbstractModelTestBase.tvShort).contains(AbstractModelTestBase.tvShort));
+        Assert.assertTrue(cont1.add(AbstractModelTestBase.tvInt).contains(AbstractModelTestBase.tvInt));
+        Assert.assertTrue(cont1.add(AbstractModelTestBase.tvLong).contains(AbstractModelTestBase.tvLong));
+        Assert.assertTrue(cont1.add(AbstractModelTestBase.tvFloat).contains(AbstractModelTestBase.tvFloat));
+        Assert.assertTrue(cont1.add(AbstractModelTestBase.tvDouble).contains(AbstractModelTestBase.tvDouble));
+        Assert.assertTrue(cont1.add(AbstractModelTestBase.tvChar).contains(AbstractModelTestBase.tvChar));
+        Assert.assertTrue(cont1.add(AbstractModelTestBase.tvString).contains(AbstractModelTestBase.tvString));
+        Assert.assertFalse(cont1.contains(AbstractModelTestBase.tvString, lang));
+        Assert.assertTrue(cont1.add(AbstractModelTestBase.tvString, lang).contains(AbstractModelTestBase.tvString, lang));
+        Assert.assertTrue(cont1.add(tvLiteral).contains(tvLiteral));
+        // assertTrue( cont1.add( tvResObj ).contains( tvResObj ) );
+        Assert.assertTrue(cont1.add(tvLitObj).contains(tvLitObj));
+        Assert.assertEquals(12, cont1.size());
+        //
         final int num = 10;
         for ( int i = 0 ; i < num ; i += 1 ) {
             cont2.add(i);
@@ -215,44 +204,24 @@ public class TestResources extends AbstractModelTestBase
     private void resourceTest(final Model model, final Resource r, final int numProps) {
         final Literal tvLiteral = model.createLiteral("test 12 string 2");
         final Resource tvResource = model.createResource();
-		final String lang = "fr";
-		//
-		Assert.assertTrue(r.addLiteral(RDF.value,
-				AbstractModelTestBase.tvBoolean).hasLiteral(RDF.value,
-				AbstractModelTestBase.tvBoolean));
-		Assert.assertTrue(r.addLiteral(RDF.value, AbstractModelTestBase.tvByte)
-				.hasLiteral(RDF.value, AbstractModelTestBase.tvByte));
-		Assert.assertTrue(r
-				.addLiteral(RDF.value, AbstractModelTestBase.tvShort)
-				.hasLiteral(RDF.value, AbstractModelTestBase.tvShort));
-		Assert.assertTrue(r.addLiteral(RDF.value, AbstractModelTestBase.tvInt)
-				.hasLiteral(RDF.value, AbstractModelTestBase.tvInt));
-		Assert.assertTrue(r.addLiteral(RDF.value, AbstractModelTestBase.tvLong)
-				.hasLiteral(RDF.value, AbstractModelTestBase.tvLong));
-		Assert.assertTrue(r.addLiteral(RDF.value, AbstractModelTestBase.tvChar)
-				.hasLiteral(RDF.value, AbstractModelTestBase.tvChar));
-		Assert.assertTrue(r
-				.addLiteral(RDF.value, AbstractModelTestBase.tvFloat)
-				.hasLiteral(RDF.value, AbstractModelTestBase.tvFloat));
-		Assert.assertTrue(r.addLiteral(RDF.value,
-				AbstractModelTestBase.tvDouble).hasLiteral(RDF.value,
-				AbstractModelTestBase.tvDouble));
-		Assert.assertTrue(r.addProperty(RDF.value,
-				AbstractModelTestBase.tvString).hasProperty(RDF.value,
-				AbstractModelTestBase.tvString));
-		Assert.assertTrue(r.addProperty(RDF.value,
-				AbstractModelTestBase.tvString, lang).hasProperty(RDF.value,
-				AbstractModelTestBase.tvString, lang));
-		Assert.assertTrue(r.addLiteral(RDF.value,
-				AbstractModelTestBase.tvObject).hasLiteral(RDF.value,
-				AbstractModelTestBase.tvObject));
-		Assert.assertTrue(r.addProperty(RDF.value, tvLiteral).hasProperty(
-				RDF.value, tvLiteral));
-		Assert.assertTrue(r.addProperty(RDF.value, tvResource).hasProperty(
-				RDF.value, tvResource));
-		Assert.assertTrue(r.getRequiredProperty(RDF.value).getSubject()
-				.equals(r));
-		//
+        final String lang = "fr";
+        //
+        Assert.assertTrue(r.addLiteral(RDF.value, AbstractModelTestBase.tvBoolean).hasLiteral(RDF.value, AbstractModelTestBase.tvBoolean));
+        Assert.assertTrue(r.addLiteral(RDF.value, AbstractModelTestBase.tvByte).hasLiteral(RDF.value, AbstractModelTestBase.tvByte));
+        Assert.assertTrue(r.addLiteral(RDF.value, AbstractModelTestBase.tvShort).hasLiteral(RDF.value, AbstractModelTestBase.tvShort));
+        Assert.assertTrue(r.addLiteral(RDF.value, AbstractModelTestBase.tvInt).hasLiteral(RDF.value, AbstractModelTestBase.tvInt));
+        Assert.assertTrue(r.addLiteral(RDF.value, AbstractModelTestBase.tvLong).hasLiteral(RDF.value, AbstractModelTestBase.tvLong));
+        Assert.assertTrue(r.addLiteral(RDF.value, AbstractModelTestBase.tvChar).hasLiteral(RDF.value, AbstractModelTestBase.tvChar));
+        Assert.assertTrue(r.addLiteral(RDF.value, AbstractModelTestBase.tvFloat).hasLiteral(RDF.value, AbstractModelTestBase.tvFloat));
+        Assert.assertTrue(r.addLiteral(RDF.value, AbstractModelTestBase.tvDouble).hasLiteral(RDF.value, AbstractModelTestBase.tvDouble));
+        Assert.assertTrue(r.addProperty(RDF.value, AbstractModelTestBase.tvString).hasProperty(RDF.value, AbstractModelTestBase.tvString));
+        Assert.assertTrue(r.addProperty(RDF.value, AbstractModelTestBase.tvString, lang).hasProperty(RDF.value,
+                                                                                                     AbstractModelTestBase.tvString, lang));
+        Assert.assertTrue(r.addLiteral(RDF.value, AbstractModelTestBase.tvObject).hasLiteral(RDF.value, AbstractModelTestBase.tvObject));
+        Assert.assertTrue(r.addProperty(RDF.value, tvLiteral).hasProperty(RDF.value, tvLiteral));
+        Assert.assertTrue(r.addProperty(RDF.value, tvResource).hasProperty(RDF.value, tvResource));
+        Assert.assertTrue(r.getRequiredProperty(RDF.value).getSubject().equals(r));
+        //
         final Property p = model.createProperty("foo/", "bar");
         try {
             r.getRequiredProperty(p);
@@ -260,24 +229,17 @@ public class TestResources extends AbstractModelTestBase
         } catch (final PropertyNotFoundException e) {
             JenaTestBase.pass();
         }
-		//
-		Assert.assertEquals(13, Iter.toSet(r.listProperties(RDF.value)).size());
-		Assert.assertEquals(setOf(r), Iter.toSet(r.listProperties(RDF.value).mapWith(Statement::getSubject)));
-		//
-		Assert.assertEquals(0, Iter.toSet(r.listProperties(p))
-				.size());
-		Assert.assertEquals(
-				new HashSet<Resource>(),
-				Iter.toSet(r.listProperties(p).mapWith(
-						Statement::getSubject)));
-		//
-		Assert.assertEquals(13 + numProps,
-		                    Iter.toSet(r.listProperties()).size());
-		Assert.assertEquals(
-				setOf(r),
-				Iter.toSet(r.listProperties().mapWith(Statement::getSubject)));
-		//
-		r.removeProperties();
-		Assert.assertEquals(0, r.listProperties().toList().size());
-	}
+        //
+        Assert.assertEquals(13, Iter.toSet(r.listProperties(RDF.value)).size());
+        Assert.assertEquals(setOf(r), Iter.toSet(r.listProperties(RDF.value).mapWith(Statement::getSubject)));
+        //
+        Assert.assertEquals(0, Iter.toSet(r.listProperties(p)).size());
+        Assert.assertEquals(new HashSet<Resource>(), Iter.toSet(r.listProperties(p).mapWith(Statement::getSubject)));
+        //
+        Assert.assertEquals(13 + numProps, Iter.toSet(r.listProperties()).size());
+        Assert.assertEquals(setOf(r), Iter.toSet(r.listProperties().mapWith(Statement::getSubject)));
+        //
+        r.removeProperties();
+        Assert.assertEquals(0, r.listProperties().toList().size());
+    }
 }

@@ -18,166 +18,131 @@
 
 package org.apache.jena.rdf.model.test;
 
-import org.apache.jena.rdf.model.Literal ;
-import org.apache.jena.rdf.model.Property ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.rdf.model.Statement ;
-import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
-import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.test.helpers.TestingModelFactory;
+import org.apache.jena.vocabulary.RDF;
 import org.junit.Assert;
 
-public class TestAddAndContains extends AbstractModelTestBase
-{
+public class TestAddAndContains extends AbstractModelTestBase {
 
-	protected Resource S;
+    protected Resource S;
 
-	protected Property P;
+    protected Property P;
 
-	public TestAddAndContains( final TestingModelFactory modelFactory,
-			final String name )
-	{
-		super(modelFactory, name);
-	}
+    public TestAddAndContains(final TestingModelFactory modelFactory, final String name) {
+        super(modelFactory, name);
+    }
 
-	@Override
-	public void setUp()
-	{
-		super.setUp();
-		S = model.createResource("http://nowhere.man/subject");
-		P = model.createProperty("http://nowhere.man/predicate");
-	}
+    @Override
+    public void setUp() {
+        super.setUp();
+        S = model.createResource("http://nowhere.man/subject");
+        P = model.createProperty("http://nowhere.man/predicate");
+    }
 
-	@Override
-	public void tearDown()
-	{
-		S = null;
-		P = null;
-		super.tearDown();
-	}
+    @Override
+    public void tearDown() {
+        S = null;
+        P = null;
+        super.tearDown();
+    }
 
-	public void testAddContainLiteralByStatement()
-	{
-		final Literal L = model.createTypedLiteral(210);
-		final Statement s = model.createStatement(S, RDF.value, L);
-		Assert.assertTrue(model.add(s).contains(s));
-		Assert.assertTrue(model.contains(S, RDF.value));
-	}
+    public void testAddContainLiteralByStatement() {
+        final Literal L = model.createTypedLiteral(210);
+        final Statement s = model.createStatement(S, RDF.value, L);
+        Assert.assertTrue(model.add(s).contains(s));
+        Assert.assertTrue(model.contains(S, RDF.value));
+    }
 
-	public void testAddContainsBoolean()
-	{
-		model.addLiteral(S, P, AbstractModelTestBase.tvBoolean);
-		Assert.assertTrue(model.containsLiteral(S, P,
-				AbstractModelTestBase.tvBoolean));
-	}
+    public void testAddContainsBoolean() {
+        model.addLiteral(S, P, AbstractModelTestBase.tvBoolean);
+        Assert.assertTrue(model.containsLiteral(S, P, AbstractModelTestBase.tvBoolean));
+    }
 
-	public void testAddContainsByte()
-	{
-		model.addLiteral(S, P, AbstractModelTestBase.tvByte);
-		Assert.assertTrue(model.containsLiteral(S, P,
-				AbstractModelTestBase.tvByte));
-	}
+    public void testAddContainsByte() {
+        model.addLiteral(S, P, AbstractModelTestBase.tvByte);
+        Assert.assertTrue(model.containsLiteral(S, P, AbstractModelTestBase.tvByte));
+    }
 
-	public void testAddContainsChar()
-	{
-		model.addLiteral(S, P, AbstractModelTestBase.tvChar);
-		Assert.assertTrue(model.containsLiteral(S, P,
-				AbstractModelTestBase.tvChar));
-	}
+    public void testAddContainsChar() {
+        model.addLiteral(S, P, AbstractModelTestBase.tvChar);
+        Assert.assertTrue(model.containsLiteral(S, P, AbstractModelTestBase.tvChar));
+    }
 
-	public void testAddContainsDouble()
-	{
-		model.addLiteral(S, P, AbstractModelTestBase.tvDouble);
-		Assert.assertTrue(model.containsLiteral(S, P,
-				AbstractModelTestBase.tvDouble));
-	}
+    public void testAddContainsDouble() {
+        model.addLiteral(S, P, AbstractModelTestBase.tvDouble);
+        Assert.assertTrue(model.containsLiteral(S, P, AbstractModelTestBase.tvDouble));
+    }
 
-	public void testAddContainsFloat()
-	{
-		model.addLiteral(S, P, AbstractModelTestBase.tvFloat);
-		Assert.assertTrue(model.containsLiteral(S, P,
-				AbstractModelTestBase.tvFloat));
-	}
+    public void testAddContainsFloat() {
+        model.addLiteral(S, P, AbstractModelTestBase.tvFloat);
+        Assert.assertTrue(model.containsLiteral(S, P, AbstractModelTestBase.tvFloat));
+    }
 
-	public void testAddContainsInt()
-	{
-		model.addLiteral(S, P, AbstractModelTestBase.tvInt);
-		Assert.assertTrue(model.containsLiteral(S, P,
-				AbstractModelTestBase.tvInt));
-	}
+    public void testAddContainsInt() {
+        model.addLiteral(S, P, AbstractModelTestBase.tvInt);
+        Assert.assertTrue(model.containsLiteral(S, P, AbstractModelTestBase.tvInt));
+    }
 
-	public void testAddContainsLanguagedString()
-	{
-		model.add(S, P, "test string", "en");
-		Assert.assertFalse(model.contains(S, P, "test string"));
-		Assert.assertTrue(model.contains(S, P, "test string", "en"));
-	}
+    public void testAddContainsLanguagedString() {
+        model.add(S, P, "test string", "en");
+        Assert.assertFalse(model.contains(S, P, "test string"));
+        Assert.assertTrue(model.contains(S, P, "test string", "en"));
+    }
 
-	public void testAddContainsLong()
-	{
-		model.addLiteral(S, P, AbstractModelTestBase.tvLong);
-		Assert.assertTrue(model.containsLiteral(S, P,
-				AbstractModelTestBase.tvLong));
-	}
+    public void testAddContainsLong() {
+        model.addLiteral(S, P, AbstractModelTestBase.tvLong);
+        Assert.assertTrue(model.containsLiteral(S, P, AbstractModelTestBase.tvLong));
+    }
 
-	public void testAddContainsPlainString()
-	{
-		model.add(S, P, "test string");
-		Assert.assertTrue(model.contains(S, P, "test string"));
-		Assert.assertFalse(model.contains(S, P, "test string", "en"));
-	}
+    public void testAddContainsPlainString() {
+        model.add(S, P, "test string");
+        Assert.assertTrue(model.contains(S, P, "test string"));
+        Assert.assertFalse(model.contains(S, P, "test string", "en"));
+    }
 
-	// public void testAddContainsObject()
-	// {
-	// LitTestObj O = new LitTestObj( 12345 );
-	// model.addLiteral( S, P, O );
-	// assertTrue( model.containsLiteral( S, P, O ) );
-	// }
+    // public void testAddContainsObject()
+    // {
+    // LitTestObj O = new LitTestObj( 12345 );
+    // model.addLiteral( S, P, O );
+    // assertTrue( model.containsLiteral( S, P, O ) );
+    // }
 
-	public void testAddContainsResource()
-	{
-		final Resource r = model.createResource();
-		model.add(S, P, r);
-		Assert.assertTrue(model.contains(S, P, r));
-	}
+    public void testAddContainsResource() {
+        final Resource r = model.createResource();
+        model.add(S, P, r);
+        Assert.assertTrue(model.contains(S, P, r));
+    }
 
-	public void testAddContainsShort()
-	{
-		model.addLiteral(S, P, AbstractModelTestBase.tvShort);
-		Assert.assertTrue(model.containsLiteral(S, P,
-				AbstractModelTestBase.tvShort));
-	}
+    public void testAddContainsShort() {
+        model.addLiteral(S, P, AbstractModelTestBase.tvShort);
+        Assert.assertTrue(model.containsLiteral(S, P, AbstractModelTestBase.tvShort));
+    }
 
-	public void testAddDuplicateLeavesSizeSame()
-	{
-		final Statement s = model.createStatement(S, RDF.value, "something");
-		model.add(s);
-		final long size = model.size();
-		model.add(s);
-		Assert.assertEquals(size, model.size());
-	}
+    public void testAddDuplicateLeavesSizeSame() {
+        final Statement s = model.createStatement(S, RDF.value, "something");
+        model.add(s);
+        final long size = model.size();
+        model.add(s);
+        Assert.assertEquals(size, model.size());
+    }
 
-	public void testEmpty()
-	{
-		Assert.assertFalse(model.containsLiteral(S, P,
-				AbstractModelTestBase.tvBoolean));
-		Assert.assertFalse(model.contains(S, P, model.createResource()));
-		Assert.assertFalse(model.containsLiteral(S, P,
-				AbstractModelTestBase.tvByte));
-		Assert.assertFalse(model.containsLiteral(S, P,
-				AbstractModelTestBase.tvShort));
-		Assert.assertFalse(model.containsLiteral(S, P,
-				AbstractModelTestBase.tvInt));
-		Assert.assertFalse(model.containsLiteral(S, P,
-				AbstractModelTestBase.tvLong));
-		Assert.assertFalse(model.containsLiteral(S, P,
-				AbstractModelTestBase.tvChar));
-		Assert.assertFalse(model.containsLiteral(S, P,
-				AbstractModelTestBase.tvFloat));
-		Assert.assertFalse(model.containsLiteral(S, P,
-				AbstractModelTestBase.tvDouble));
-		Assert.assertFalse(model.containsLiteral(S, P, new LitTestObj(12345)));
-		Assert.assertFalse(model.contains(S, P, "test string"));
-		Assert.assertFalse(model.contains(S, P, "test string", "en"));
-	}
+    public void testEmpty() {
+        Assert.assertFalse(model.containsLiteral(S, P, AbstractModelTestBase.tvBoolean));
+        Assert.assertFalse(model.contains(S, P, model.createResource()));
+        Assert.assertFalse(model.containsLiteral(S, P, AbstractModelTestBase.tvByte));
+        Assert.assertFalse(model.containsLiteral(S, P, AbstractModelTestBase.tvShort));
+        Assert.assertFalse(model.containsLiteral(S, P, AbstractModelTestBase.tvInt));
+        Assert.assertFalse(model.containsLiteral(S, P, AbstractModelTestBase.tvLong));
+        Assert.assertFalse(model.containsLiteral(S, P, AbstractModelTestBase.tvChar));
+        Assert.assertFalse(model.containsLiteral(S, P, AbstractModelTestBase.tvFloat));
+        Assert.assertFalse(model.containsLiteral(S, P, AbstractModelTestBase.tvDouble));
+        Assert.assertFalse(model.containsLiteral(S, P, new LitTestObj(12345)));
+        Assert.assertFalse(model.contains(S, P, "test string"));
+        Assert.assertFalse(model.contains(S, P, "test string", "en"));
+    }
 
 }
