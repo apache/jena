@@ -18,34 +18,15 @@
 
 package org.apache.jena.shacl.tests.jena_shacl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-import org.apache.jena.shacl.testing.ShaclTest;
-import org.apache.jena.shacl.testing.ShaclTestItem;
-import org.apache.jena.shacl.testing.ShaclTests;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-
-@RunWith(Parameterized.class)
+@Suite
+@SelectClasses({
+    // jena tests
+    TestJenaShaclByCode.class,
+    TestJenaShacl.class
+} )
 public class TS_JenaShacl {
 
-    @Parameters(name = "{0}")
-    public static Collection<Object[]> data() throws Exception {
-        String manifest = "src/test/files/local/manifest.ttl";
-        List<String> omitManifests = new ArrayList<>();
-        return ShaclTests.junitParameters(manifest, omitManifests);
-    }
-
-    private ShaclTestItem test;
-
-    public TS_JenaShacl(String name,  ShaclTestItem test) {
-        this.test = test;
-    }
-
-    @Test
-    public void test() { ShaclTest.shaclTest(test); }
 }

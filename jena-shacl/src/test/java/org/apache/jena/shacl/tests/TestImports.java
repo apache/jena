@@ -18,10 +18,12 @@
 
 package org.apache.jena.shacl.tests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.graph.Graph;
@@ -32,7 +34,6 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shacl.Imports;
 import org.apache.jena.shacl.Shapes;
 import org.apache.jena.system.G;
-import org.junit.Test;
 
 public class TestImports {
     // Work in absolute URIs.

@@ -18,14 +18,13 @@
 
 package org.apache.jena.shacl.testing;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
@@ -43,6 +42,15 @@ public class ShaclTests {
         return manifest(manifestFile, Collections.emptyList());
     }
 
+    public static List<Pair<String, ShaclTestItem>> manifestNamed(String manifestFile, List<String> omitManifests) {
+        List<String> manifests = new ArrayList<>();
+        manifests.addAll(omitManifests);
+        List<ShaclTestItem> testCases = new ArrayList<>();
+        manifest(manifestFile, manifests, testCases);
+        return testCases.stream().map(stc->new Pair<>(decideName(stc), stc)).toList();
+    }
+
+
     public static List<ShaclTestItem> manifest(String manifestFile, List<String> omitManifests) {
         List<String> manifests = new ArrayList<>();
         manifests.addAll(omitManifests);
@@ -51,10 +59,10 @@ public class ShaclTests {
         return testCases;
     }
 
-    public static List<Object[]> junitParameters(String manifestFile, List<String> omitManifests) {
-        List<ShaclTestItem> testCases = manifest(manifestFile, omitManifests);
-        return testCases.stream().map(stc->new Object[] {decideName(stc), stc}).collect(toList());
-    }
+//    public static List<Object[]> junit4Parameters(String manifestFile, List<String> omitManifests) {
+//        List<ShaclTestItem> testCases = manifest(manifestFile, omitManifests);
+//        return testCases.stream().map(stc->new Object[] {decideName(stc), stc}).collect(toList());
+//    }
 
     private static String decideName(ShaclTestItem stc) {
         String fn = FileOps.basename(stc.origin());

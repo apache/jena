@@ -18,17 +18,19 @@
 
 package org.apache.jena.shacl.compact;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shacl.compact.reader.ShaclcParseException;
 import org.apache.jena.sparql.graph.GraphFactory;
-import org.junit.Test;
 
 /**
  * Test compact reading and writing by round-tripping. Unlike
@@ -46,9 +48,8 @@ public class TestCompactSyntax {
         rttTest("propertyParams.shc");
     }
 
-    @Test(expected=ShaclcParseException.class)
     public void badSyntax_01() {
-        badSyntax("nodeParam-bad-01.shc");
+        assertThrows(ShaclcParseException.class, ()->badSyntax("nodeParam-bad-01.shc"));
     }
 
     private void rttTest(String fn) {

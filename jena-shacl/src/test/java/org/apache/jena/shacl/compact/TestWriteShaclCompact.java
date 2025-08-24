@@ -18,7 +18,7 @@
 
 package org.apache.jena.shacl.compact;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -91,7 +91,7 @@ public class TestWriteShaclCompact extends AbstractTestShaclCompact {
                 RDFWriter.source(graphOther).format(RDFFormat.TURTLE_PRETTY).context(cxt).output(System.err);
             }
         }
-        assertTrue("test: "+fileBaseName, isomorphic);
+        assertTrue(isomorphic, ()->"test: "+fileBaseName);
     }
 
     private void remove(Graph graph, Node s, Node p, Node o) {

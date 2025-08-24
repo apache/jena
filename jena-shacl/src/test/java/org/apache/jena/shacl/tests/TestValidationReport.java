@@ -18,7 +18,9 @@
 
 package org.apache.jena.shacl.tests;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.rdf.model.Resource;
@@ -27,7 +29,6 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shacl.ValidationReport;
 import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.shacl.validation.VR;
-import org.junit.Test;
 
 public class TestValidationReport {
 
@@ -56,7 +57,7 @@ public class TestValidationReport {
             RDFDataMgr.write(System.out, graph2, Lang.TTL);
             System.out.flush();
         }
-        assertTrue("Does not match: "+message, b);
+        assertTrue(b, ()->"Does not match: "+message);
     }
 
     // Round trip :: ValidationReport -> RDF -> ValidationReport
@@ -80,6 +81,6 @@ public class TestValidationReport {
             ShLib.printReport(report2);
             System.out.flush();
         }
-        assertTrue("Reports differ: "+message, b);
+        assertTrue(b, ()->"Reports differ: "+message);
     }
 }

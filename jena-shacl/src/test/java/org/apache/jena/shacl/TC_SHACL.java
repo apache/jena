@@ -18,25 +18,26 @@
 
 package org.apache.jena.shacl;
 
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+
 import org.apache.jena.shacl.compact.TS_Compact;
 import org.apache.jena.shacl.tests.TestImports;
+import org.apache.jena.shacl.tests.TestValidationListener;
 import org.apache.jena.shacl.tests.TestValidationReport;
-import org.apache.jena.shacl.tests.ValidationListenerTests;
-import org.apache.jena.shacl.tests.jena_shacl.JenaShaclTestsByCode;
 import org.apache.jena.shacl.tests.jena_shacl.TS_JenaShacl;
 import org.apache.jena.shacl.tests.std.TS_StdSHACL;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses({
     TestValidationReport.class
+
     , TS_StdSHACL.class
     , TS_JenaShacl.class
     , TS_Compact.class
+
     , TestImports.class
-    , ValidationListenerTests.class
-    , JenaShaclTestsByCode.class
+    , TestValidationListener.class
 } )
 
 public class TC_SHACL { }
