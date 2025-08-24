@@ -18,9 +18,11 @@
 
 package org.apache.jena.shacl.tests.jena_shacl;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.PrintStream;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.Lang;
@@ -28,9 +30,8 @@ import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RDFWriter;
 import org.apache.jena.shacl.ShaclValidator;
 import org.apache.jena.sparql.util.IsoMatcher;
-import org.junit.Test;
 
-public class JenaShaclTestsByCode {
+public class TestJenaShaclByCode {
     static final String DIR = "src/test/files/local/other/";
     @Test public void sparql_vars_001() {
         execTest("sparql-vars-001",

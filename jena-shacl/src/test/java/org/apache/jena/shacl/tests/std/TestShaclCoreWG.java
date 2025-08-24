@@ -18,27 +18,30 @@
 
 package org.apache.jena.shacl.tests.std;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.shacl.sys.ShaclSystem;
 import org.apache.jena.shacl.testing.ShaclTest;
 import org.apache.jena.shacl.testing.ShaclTestItem;
 import org.apache.jena.shacl.testing.ShaclTests;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
-@RunWith(Parameterized.class)
+@ParameterizedClass(name="{0}")
+@MethodSource("provideArgs")
 public class TestShaclCoreWG {
 
-    @Parameters(name = "{0}")
-    public static Collection<Object[]> data() throws Exception {
-        String manifest = "src/test/files/std/core/manifest.ttl";
-        List<String> omitManifests = new ArrayList<>();
-        return ShaclTests.junitParameters(manifest, omitManifests);
+    private static Stream<Arguments> provideArgs() {
+        String manifestFile = "src/test/files/std/core/manifest.ttl";
+        List<String> omitManifests = List.of();
+        List<Pair<String, ShaclTestItem>> z = ShaclTests.manifestNamed(manifestFile, omitManifests);
+        List<Arguments> x = z.stream().map(p->Arguments.of(p.getLeft(), p.getRight())).toList();
+        return x.stream();
     }
 
     private ShaclTestItem test;

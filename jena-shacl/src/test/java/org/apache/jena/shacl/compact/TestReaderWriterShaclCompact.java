@@ -18,7 +18,7 @@
 
 package org.apache.jena.shacl.compact;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -52,9 +52,6 @@ public class TestReaderWriterShaclCompact  extends AbstractTestShaclCompact {
 //        RDFDataMgr.write(System.out, graph0, Lang.SHACLC);
 //        System.out.println("----");
         assertTrue(graph0.isIsomorphicWith(graph2));
-
     }
-
-
 }
 

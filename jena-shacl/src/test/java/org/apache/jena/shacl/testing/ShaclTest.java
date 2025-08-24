@@ -18,8 +18,8 @@
 
 package org.apache.jena.shacl.testing;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.rdf.model.Model;
@@ -92,8 +92,8 @@ public class ShaclTest {
                 System.out.println("-----");
             }
 
-            assertTrue("Reports differ : "+test.origin(), b1);
-            assertTrue("Report models differ", b2);
+            assertTrue(b1, ()->"Reports differ : "+test.origin());
+            assertTrue(b2, ()->"Report models differ");
 
         } catch (RuntimeException ex) {
 //            ex.printStackTrace();

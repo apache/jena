@@ -18,7 +18,7 @@
 
 package org.apache.jena.shacl.compact;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public abstract class AbstractTestShaclCompact {
     protected final String DIR = "src/test/files/shaclc-valid/";

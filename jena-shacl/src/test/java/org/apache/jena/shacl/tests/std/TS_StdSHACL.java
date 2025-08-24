@@ -18,17 +18,17 @@
 
 package org.apache.jena.shacl.tests.std;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    // The W3C Working Group tests. 
+@Suite
+@SelectClasses({
+    // The W3C Working Group tests.
     TestShaclCoreWG.class ,
     TestShaclSparqlWG.class
 } )
 
 public class TS_StdSHACL {
-//    @BeforeClass public static void beforeClass() {}
-//    @AfterClass public static void afterClass() {}
+//    @BeforeAll public static void beforeClass() {}
+//    @AfterAll public static void afterClass() {}
 }

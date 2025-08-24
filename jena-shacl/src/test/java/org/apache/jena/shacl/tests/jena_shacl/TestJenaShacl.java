@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shacl.tests.std;
+package org.apache.jena.shacl.tests.jena_shacl;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -31,17 +31,12 @@ import org.apache.jena.shacl.testing.ShaclTest;
 import org.apache.jena.shacl.testing.ShaclTestItem;
 import org.apache.jena.shacl.testing.ShaclTests;
 
-@ParameterizedClass(name="{0}")
+@ParameterizedClass(name="{index}: {0}")
 @MethodSource("provideArgs")
-public class TestShaclSparqlWG {
+public class TestJenaShacl {
 
     private static Stream<Arguments> provideArgs() {
-//      // The W3C WG tests for SPARQL-based Constraints is made up of:
-//      //String manifest = "src/test/files/std/sparql/property/manifest.ttl";
-//      //String manifest = "src/test/files/std/sparql/pre-binding/manifest.ttl";
-//      //String manifest = "src/test/files/std/sparql/node/manifest.ttl";
-//      //String manifest = "src/test/files/std/sparql/component/manifest.ttl";
-        String manifestFile = "src/test/files/std/sparql/manifest.ttl";
+        String manifestFile = "src/test/files/local/manifest.ttl";
         List<String> omitManifests = List.of();
         List<Pair<String, ShaclTestItem>> z = ShaclTests.manifestNamed(manifestFile, omitManifests);
         List<Arguments> x = z.stream().map(p->Arguments.of(p.getLeft(), p.getRight())).toList();
@@ -50,7 +45,7 @@ public class TestShaclSparqlWG {
 
     private ShaclTestItem test;
 
-    public TestShaclSparqlWG(String name,  ShaclTestItem test) {
+    public TestJenaShacl(String name,  ShaclTestItem test) {
         this.test = test;
     }
 

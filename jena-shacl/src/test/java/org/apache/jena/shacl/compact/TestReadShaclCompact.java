@@ -18,7 +18,7 @@
 
 package org.apache.jena.shacl.compact;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.RDFDataMgr;
@@ -48,7 +48,7 @@ public class TestReadShaclCompact extends AbstractTestShaclCompact {
                 RDFWriter.source(graphOther).format(RDFFormat.TURTLE_PRETTY).output(System.err);
             }
         }
-        assertTrue("test: "+fileBaseName, isomorphic);
+        assertTrue(isomorphic, ()->"test: "+fileBaseName);
     }
 }
 
