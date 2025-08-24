@@ -37,6 +37,11 @@ public class ExprVars
     // Collect variables / ExprList
 
     public static Set<Var> getVarsMentioned(Expr expr) {
+        // Short cut some simple cases.
+        if ( expr instanceof NodeValue )
+            return Set.of();
+        if ( expr instanceof Var nVar )
+            return Set.of(nVar);
         Set<Var> acc = new HashSet<>();
         varsMentioned(acc, expr);
         return acc;
@@ -51,6 +56,15 @@ public class ExprVars
     private static Action<Var> accVar = (a, var) -> a.add(var) ;
 
     public static void varsMentioned(Collection<Var> acc, Expr expr) {
+        //Java21 - switch + type pattern
+        // Short cut some simple cases.
+        if ( expr instanceof NodeValue )
+            return;
+        if ( expr instanceof Var nVar ) {
+            acc.add(nVar);
+        }
+
+
         ExprVarsWorker<Var> vv = new ExprVarsWorker<>(acc, accVar) ;
         Walker.walk(expr, vv) ;
     }

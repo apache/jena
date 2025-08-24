@@ -18,7 +18,10 @@
 
 package org.apache.jena.sparql.expr;
 
+import java.util.Set;
+
 import org.apache.jena.atlas.lib.InternalErrorException ;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.function.FunctionEnv ;
 import org.apache.jena.sparql.graph.NodeTransform ;
@@ -35,6 +38,11 @@ public class ExprNone extends ExprNode {
 
     @Override public NodeValue eval(Binding binding, FunctionEnv env) {
         throw new InternalErrorException("Attempt to eval ExprNone") ;
+    }
+
+    @Override
+    public Set<Var> getVarsMentioned() {
+        return Set.of();
     }
 
     @Override

@@ -36,6 +36,10 @@ import org.apache.jena.sparql.sse.writers.WriterExpr;
 
 public abstract class ExprNode implements Expr
 {
+    private Set<Var> varsMentioned = null;
+
+    protected ExprNode() {}
+
     @Override
     public boolean isSatisfied(Binding binding, FunctionEnv funcEnv) {
         try {
@@ -60,9 +64,19 @@ public abstract class ExprNode implements Expr
     @Override
     public abstract NodeValue eval(Binding binding, FunctionEnv env);
 
+    // Theer are some overrides of this method for simple cases including
+    //   NodeValue ( = "ExprConstant")
+    //   ExprVar
     @Override
     public Set<Var> getVarsMentioned() {
-        return ExprVars.getVarsMentioned(this);
+        // Calculate once, delayed until first use.
+        if ( varsMentioned == null ) {
+            synchronized(this) {
+                if ( varsMentioned == null )
+                    varsMentioned = ExprVars.getVarsMentioned(this);
+            }
+        }
+        return varsMentioned;
     }
 
     @Override
