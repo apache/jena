@@ -26,6 +26,7 @@ import static org.apache.jena.sparql.expr.ValueSpace.VSPACE_UNKNOWN;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
+import java.util.Set;
 
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
@@ -44,6 +45,7 @@ import org.apache.jena.graph.TextDirection;
 import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.SystemARQ;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.expr.nodevalue.*;
@@ -147,6 +149,11 @@ public abstract class NodeValue extends ExprNode
     // Don't create direct - the static builders manage the value/node relationship
     protected NodeValue() { super(); }
     protected NodeValue(Node n) { super(); node = n; }
+
+    @Override
+    public Set<Var> getVarsMentioned() {
+        return Set.of();
+    }
 
 //    protected makeNodeValue(NodeValue nv)
 //    {
