@@ -28,32 +28,38 @@ import org.junit.Test;
 public class TestRDFXMLiteral {
     // Different RDF terms with the same value.
 
-    @Test public void rdfxmlLiteral_1() {
+    @Test
+    public void rdfxmlLiteral_1() {
         // Normalization -> different terms, same value
         test("<x></x>", "<x/>", false, false, true);
     }
 
-    @Test public void rdfxmlLiteral_2() {
+    @Test
+    public void rdfxmlLiteral_2() {
         // Normalization -> different terms, same value
         test("<x b='8' a='123'></x>", "<x     a='123' b='8'/>", false, false, true);
     }
 
-    @Test public void rdfxmlLiteral_3() {
+    @Test
+    public void rdfxmlLiteral_3() {
         // Same term.
         test("<x a:b='8' xmlns:a='http://ex/'></x>", "<x a:b='8' xmlns:a='http://ex/'></x>", true, true, true);
     }
 
-    @Test public void rdfxmlLiteral_4() {
+    @Test
+    public void rdfxmlLiteral_4() {
         // Different term by trivial white space (removed by XML Node normalization)
-        test("<x b='8' xmlns:a='http://ex/'></x>","<x   b='8'  xmlns:a='http://ex/'    ></x>", false, false, true);
+        test("<x b='8' xmlns:a='http://ex/'></x>", "<x   b='8'  xmlns:a='http://ex/'    ></x>", false, false, true);
     }
 
     // Lexical forms do not conform to the lexical space of legal XML fragments.
-    @Test public void rdfxmlLiteral_illgeal_1() {
+    @Test
+    public void rdfxmlLiteral_illgeal_1() {
         test("<x>", "<x>", true, true, true);
     }
 
-    @Test public void rdfxmlLiteral_illgeal_2() {
+    @Test
+    public void rdfxmlLiteral_illgeal_2() {
         test("<x>", "<y>", false, false, false);
     }
 

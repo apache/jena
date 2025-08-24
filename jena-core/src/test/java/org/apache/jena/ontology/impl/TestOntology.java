@@ -24,7 +24,7 @@ package org.apache.jena.ontology.impl;
 // Imports
 ///////////////
 import junit.framework.TestSuite;
-import org.apache.jena.ontology.* ;
+import org.apache.jena.ontology.*;
 
 
 /**

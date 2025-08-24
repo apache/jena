@@ -26,45 +26,47 @@ package org.apache.jena.util.iterator.test;
 import java.util.*;
 
 import junit.framework.*;
-import org.apache.jena.graph.* ;
-import org.apache.jena.graph.test.GraphTestBase ;
-import org.apache.jena.util.iterator.* ;
+import org.apache.jena.graph.*;
+import org.apache.jena.graph.test.GraphTestBase;
+import org.apache.jena.util.iterator.*;
 
-public class TestWrappedIterator extends GraphTestBase
-    {
-    public static TestSuite suite()
-        { return new TestSuite( TestWrappedIterator.class ); }   
-            
-    public TestWrappedIterator(String name)
-        { super(name); }
+public class TestWrappedIterator extends GraphTestBase {
+    public static TestSuite suite() {
+        return new TestSuite(TestWrappedIterator.class);
+    }
 
-    public void testWrappedIterator()
-        {
-        Iterator<String> i = Arrays.asList( new String [] {"bill", "and", "ben"} ).iterator();
-        ExtendedIterator<String> e = WrappedIterator.create( i );
-        assertTrue( "wrapper has at least one element", e.hasNext() );
-        assertEquals( "", "bill", e.next() );
-        assertTrue( "wrapper has at least two elements", e.hasNext() );
-        assertEquals( "", "and", e.next() );
-        assertTrue( "wrapper has at least three elements", e.hasNext() );
-        assertEquals( "", "ben", e.next() );
-        assertFalse( "wrapper is now empty", e.hasNext() );
-        }
-    
-    public void testUnwrapExtendedIterator()
-        {
-        ExtendedIterator<Triple> i = graphWith( "a R b" ).find( Triple.ANY );
-        assertSame( i, WrappedIterator.create( i ) );
-        }
-    
-    public void testWrappedNoRemove()
-        {
-        Iterator<Node> base = nodeSet( "a b c" ).iterator();
+    public TestWrappedIterator(String name) {
+        super(name);
+    }
+
+    public void testWrappedIterator() {
+        Iterator<String> i = Arrays.asList(new String[]{"bill", "and", "ben"}).iterator();
+        ExtendedIterator<String> e = WrappedIterator.create(i);
+        assertTrue("wrapper has at least one element", e.hasNext());
+        assertEquals("", "bill", e.next());
+        assertTrue("wrapper has at least two elements", e.hasNext());
+        assertEquals("", "and", e.next());
+        assertTrue("wrapper has at least three elements", e.hasNext());
+        assertEquals("", "ben", e.next());
+        assertFalse("wrapper is now empty", e.hasNext());
+    }
+
+    public void testUnwrapExtendedIterator() {
+        ExtendedIterator<Triple> i = graphWith("a R b").find(Triple.ANY);
+        assertSame(i, WrappedIterator.create(i));
+    }
+
+    public void testWrappedNoRemove() {
+        Iterator<Node> base = nodeSet("a b c").iterator();
         base.next();
         base.remove();
-        ExtendedIterator<Node> wrapped = WrappedIterator.createNoRemove( base );
+        ExtendedIterator<Node> wrapped = WrappedIterator.createNoRemove(base);
         wrapped.next();
-        try { wrapped.remove(); fail( "wrapped-no-remove iterator should deny .remove()" ); }
-        catch (UnsupportedOperationException e) { pass(); }
+        try {
+            wrapped.remove();
+            fail("wrapped-no-remove iterator should deny .remove()");
+        } catch (UnsupportedOperationException e) {
+            pass();
         }
     }
+}

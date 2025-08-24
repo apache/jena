@@ -42,7 +42,7 @@ public class TS3_compose extends TestCase {
         };
 
         AbstractTestPackage atp = new AbstractTestPackage("Intersection", gmf) {};
-        for ( int i = 0 ; i < atp.testCount() ; i++ ) {
+        for ( int i = 0; i < atp.testCount(); i++ ) {
             result.addTest(atp.testAt(i));
         }
 
@@ -55,7 +55,7 @@ public class TS3_compose extends TestCase {
         };
 
         atp = new AbstractTestPackage("Difference", gmf) {};
-        for ( int i = 0 ; i < atp.testCount() ; i++ ) {
+        for ( int i = 0; i < atp.testCount(); i++ ) {
             result.addTest(atp.testAt(i));
         }
 
@@ -68,7 +68,7 @@ public class TS3_compose extends TestCase {
         };
 
         atp = new AbstractTestPackage("Union", gmf) {};
-        for ( int i = 0 ; i < atp.testCount() ; i++ ) {
+        for ( int i = 0; i < atp.testCount(); i++ ) {
             result.addTest(atp.testAt(i));
         }
         /* */

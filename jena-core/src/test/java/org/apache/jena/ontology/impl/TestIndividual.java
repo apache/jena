@@ -189,7 +189,7 @@ public class TestIndividual
                     iteratorTest( x.listOntClasses( false ), new Object[] {A,B} );
 
                     // now check the return types
-                    for (Iterator<OntClass> i = x.listOntClasses( false ) ; i.hasNext(); ) {
+                    for (Iterator<OntClass> i = x.listOntClasses( false ); i.hasNext(); ) {
                         assertNotNull( i.next() );
                     }
                 }
@@ -208,7 +208,7 @@ public class TestIndividual
                     iteratorTest( x.listOntClasses( true ), new Object[] {B} );
 
                     // now check the return types
-                    for (Iterator<OntClass> i = x.listOntClasses( true ) ; i.hasNext(); ) {
+                    for (Iterator<OntClass> i = x.listOntClasses( true ); i.hasNext(); ) {
                         assertNotNull( i.next() );
                     }
                 }
@@ -230,7 +230,7 @@ public class TestIndividual
 
                     // test again
                     iteratorTest( x.listOntClasses( false ), new Object[] {A,B} );
-                    for (Iterator<OntClass> i = x.listOntClasses( false ) ; i.hasNext(); ) {
+                    for (Iterator<OntClass> i = x.listOntClasses( false ); i.hasNext(); ) {
                         assertNotNull( i.next() );
                     }
                 }
@@ -252,7 +252,7 @@ public class TestIndividual
 
                     // test again
                     iteratorTest( x.listOntClasses( false ), new Object[] {B} );
-                    for (Iterator<OntClass> i = x.listOntClasses( false ) ; i.hasNext(); ) {
+                    for (Iterator<OntClass> i = x.listOntClasses( false ); i.hasNext(); ) {
                         assertNotNull( i.next() );
                     }
                 }

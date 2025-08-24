@@ -18,155 +18,120 @@
 
 package org.apache.jena.rdf.model.test;
 
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
-import org.apache.jena.shared.Lock ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.test.helpers.TestingModelFactory;
+import org.apache.jena.shared.Lock;
 import org.junit.Assert;
 
 /**
  * Parallel concurrency tests.
  */
 
-public class TestConcurrencyParallel extends AbstractModelTestBase
-{
+public class TestConcurrencyParallel extends AbstractModelTestBase {
 
-	class Operation extends Thread
-	{
-		Model lockModel;
-		boolean readLock;
+    class Operation extends Thread {
+        Model lockModel;
+        boolean readLock;
 
-		Operation( final Model m, final boolean withReadLock )
-		{
-			lockModel = m;
-			readLock = withReadLock;
-		}
+        Operation(final Model m, final boolean withReadLock) {
+            lockModel = m;
+            readLock = withReadLock;
+        }
 
-		@Override
-		public void run()
-		{
-			for (int i = 0; i < 2; i++)
-			{
-				try
-				{
-					lockModel.enterCriticalSection(readLock);
-					if (readLock)
-						readOperation(false);
-					else
-						writeOperation(false);
-				}
-				finally
-				{
-					lockModel.leaveCriticalSection();
-				}
-			}
-		}
-	}
+        @Override
+        public void run() {
+            for ( int i = 0 ; i < 2 ; i++ ) {
+                try {
+                    lockModel.enterCriticalSection(readLock);
+                    if ( readLock )
+                        readOperation(false);
+                    else
+                        writeOperation(false);
+                } finally {
+                    lockModel.leaveCriticalSection();
+                }
+            }
+        }
+    }
 
-	// Operations ----------------------------------------------
-	long SLEEP = 100;
-	int threadTotal = 10;
+    // Operations ----------------------------------------------
+    long SLEEP = 100;
+    int threadTotal = 10;
 
-	int threadCount = 0;
+    int threadCount = 0;
 
-	volatile int writers = 0;
+    volatile int writers = 0;
 
-	public TestConcurrencyParallel( final TestingModelFactory modelFactory,
-			final String name )
-	{
-		super(modelFactory, name);
-	}
+    public TestConcurrencyParallel(final TestingModelFactory modelFactory, final String name) {
+        super(modelFactory, name);
+    }
 
-	// The example model operations
-	void doStuff( final String label, final boolean doThrow )
-	{
-		Thread.currentThread().getName();
-		// Puase a while to cause other threads to (try to) enter the region.
-		try
-		{
-			Thread.sleep(SLEEP);
-		}
-		catch (final InterruptedException intEx)
-		{
-		}
-		if (doThrow)
-		{
-			throw new RuntimeException(label);
-		}
-	}
+    // The example model operations
+    void doStuff(final String label, final boolean doThrow) {
+        Thread.currentThread().getName();
+        // Puase a while to cause other threads to (try to) enter the region.
+        try {
+            Thread.sleep(SLEEP);
+        } catch (final InterruptedException intEx) {}
+        if ( doThrow ) {
+            throw new RuntimeException(label);
+        }
+    }
 
-	public void readOperation( final boolean doThrow )
-	{
-		if (writers > 0)
-		{
-			System.err.println("Concurrency error: writers around!");
-		}
-		doStuff("read operation", false);
-		if (writers > 0)
-		{
-			System.err.println("Concurrency error: writers around!");
-		}
-	}
+    public void readOperation(final boolean doThrow) {
+        if ( writers > 0 ) {
+            System.err.println("Concurrency error: writers around!");
+        }
+        doStuff("read operation", false);
+        if ( writers > 0 ) {
+            System.err.println("Concurrency error: writers around!");
+        }
+    }
 
-	// Example operations
+    // Example operations
 
-	public void testParallel()
-	{
+    public void testParallel() {
 
-		final Thread threads[] = new Thread[threadTotal];
+        final Thread threads[] = new Thread[threadTotal];
 
-		boolean getReadLock = Lock.READ;
-		for (int i = 0; i < threadTotal; i++)
-		{
-			final String nextId = "T" + Integer.toString(++threadCount);
-			threads[i] = new Operation(model, getReadLock);
-			threads[i].setName(nextId);
-			threads[i].start();
+        boolean getReadLock = Lock.READ;
+        for ( int i = 0 ; i < threadTotal ; i++ ) {
+            final String nextId = "T" + Integer.toString(++threadCount);
+            threads[i] = new Operation(model, getReadLock);
+            threads[i].setName(nextId);
+            threads[i].start();
 
-			getReadLock = !getReadLock;
-		}
+            getReadLock = !getReadLock;
+        }
 
-		boolean problems = false;
-		for (int i = 0; i < threadTotal; i++)
-		{
-			try
-			{
-				threads[i].join(200 * SLEEP);
-			}
-			catch (final InterruptedException intEx)
-			{
-			}
-		}
+        boolean problems = false;
+        for ( int i = 0 ; i < threadTotal ; i++ ) {
+            try {
+                threads[i].join(200 * SLEEP);
+            } catch (final InterruptedException intEx) {}
+        }
 
-		// Try again for any we missed.
-		for (int i = 0; i < threadTotal; i++)
-		{
-			if (threads[i].isAlive())
-			{
-				try
-				{
-					threads[i].join(200 * SLEEP);
-				}
-				catch (final InterruptedException intEx)
-				{
-				}
-			}
-			if (threads[i].isAlive())
-			{
-				System.out.println("Thread " + threads[i].getName()
-						+ " failed to finish");
-				problems = true;
-			}
-		}
+        // Try again for any we missed.
+        for ( int i = 0 ; i < threadTotal ; i++ ) {
+            if ( threads[i].isAlive() ) {
+                try {
+                    threads[i].join(200 * SLEEP);
+                } catch (final InterruptedException intEx) {}
+            }
+            if ( threads[i].isAlive() ) {
+                System.out.println("Thread " + threads[i].getName() + " failed to finish");
+                problems = true;
+            }
+        }
 
-		Assert.assertTrue("Some thread failed to finish", !problems);
-	}
+        Assert.assertTrue("Some thread failed to finish", !problems);
+    }
 
-	public void writeOperation( final boolean doThrow )
-	{
-		writers++;
-		doStuff("write operation", false);
-		writers--;
+    public void writeOperation(final boolean doThrow) {
+        writers++;
+        doStuff("write operation", false);
+        writers--;
 
-	}
+    }
 
 }

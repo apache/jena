@@ -26,13 +26,13 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.rdf.model.impl.Util;
 import org.junit.Test;
 
-
 /** Testing making string-like RDF terms */
 public class TestNodeCreateStrings {
 
     // -- xsd:string
 
-    @Test public void testIsSimpleString1() {
+    @Test
+    public void testIsSimpleString1() {
         Node n = NodeFactory.createLiteralString("abc");
         assertTrue(Util.isSimpleString(n));
         assertFalse(Util.isLangString(n));
@@ -41,7 +41,8 @@ public class TestNodeCreateStrings {
         assertFalse(Util.hasDirection(n));
     }
 
-    @Test public void testIsSimpleString2() {
+    @Test
+    public void testIsSimpleString2() {
         Node n = NodeFactory.createLiteralLang("abc", "");
         assertTrue(Util.isSimpleString(n));
         assertFalse(Util.isLangString(n));
@@ -50,7 +51,8 @@ public class TestNodeCreateStrings {
         assertFalse(Util.hasDirection(n));
     }
 
-    @Test public void testIsSimpleString3() {
+    @Test
+    public void testIsSimpleString3() {
         Node n = NodeFactory.createLiteralDirLang("abc", "", (String)null);
         assertTrue(Util.isSimpleString(n));
         assertFalse(Util.isLangString(n));
@@ -61,7 +63,8 @@ public class TestNodeCreateStrings {
 
     // -- rdf:langString
 
-    @Test public void testIsLangString1() {
+    @Test
+    public void testIsLangString1() {
         Node n = NodeFactory.createLiteralLang("abc", "en-GB");
         assertFalse(Util.isSimpleString(n));
         assertTrue(Util.isLangString(n));
@@ -70,8 +73,9 @@ public class TestNodeCreateStrings {
         assertFalse(Util.hasDirection(n));
     }
 
-    @Test public void testIsLangString2() {
-        Node n =  NodeFactory.createLiteralDirLang("abc", "en-GB", (String)null);
+    @Test
+    public void testIsLangString2() {
+        Node n = NodeFactory.createLiteralDirLang("abc", "en-GB", (String)null);
         assertFalse(Util.isSimpleString(n));
         assertTrue(Util.isLangString(n));
         assertFalse(Util.isDirLangString(n));
@@ -81,8 +85,9 @@ public class TestNodeCreateStrings {
 
     // -- rdf:dirLangString (only one way to make it)
 
-    @Test public void testIsDirLangString1() {
-        Node n =  NodeFactory.createLiteralDirLang("abc", "en-GB", "ltr");
+    @Test
+    public void testIsDirLangString1() {
+        Node n = NodeFactory.createLiteralDirLang("abc", "en-GB", "ltr");
         assertFalse(Util.isSimpleString(n));
         assertFalse(Util.isLangString(n));
         assertTrue(Util.isDirLangString(n));

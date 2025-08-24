@@ -24,12 +24,12 @@ import java.util.Iterator;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.reasoner.* ;
-import org.apache.jena.reasoner.ValidityReport.Report ;
-import org.apache.jena.reasoner.rulesys.RDFSFBRuleReasonerFactory ;
-import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory ;
-import org.apache.jena.vocabulary.* ;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.reasoner.*;
+import org.apache.jena.reasoner.ValidityReport.Report;
+import org.apache.jena.reasoner.rulesys.RDFSFBRuleReasonerFactory;
+import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
+import org.apache.jena.vocabulary.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -22,20 +22,20 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.RDFWriterI ;
-import org.apache.jena.rdf.model.test.ModelTestBase ;
-import org.apache.jena.util.FileManager ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.RDFWriterI;
+import org.apache.jena.rdf.model.test.ModelTestBase;
+import org.apache.jena.util.FileManager;
 
 public class TestWriterFeatures extends ModelTestBase
 {
 
     public TestWriterFeatures(String name)
     {
-        super(name) ;
+        super(name);
     }
 
-    private static String testFileBase = "file:testing/abbreviated" ;
+    private static String testFileBase = "file:testing/abbreviated";
 
     private void checkReadWriteRead(String filename, String writerName,
                                     String propertyName, String propertyValue)
@@ -43,15 +43,15 @@ public class TestWriterFeatures extends ModelTestBase
             Model model = createMemModel();
             FileManager.getInternal().readModelInternal(model, filename );
 
-            String contents = null ;
+            String contents = null;
 
             try ( StringWriter sw = new StringWriter() ) {
                 @SuppressWarnings("deprecation")
-                RDFWriterI w =  model.getWriter(writerName) ;
+                RDFWriterI w =  model.getWriter(writerName);
                 if ( propertyName != null )
-                    w.setProperty(propertyName, propertyValue) ;
-                w.write(model, sw, null) ;
-                contents = sw.toString() ;
+                    w.setProperty(propertyName, propertyValue);
+                w.write(model, sw, null);
+                contents = sw.toString();
             } catch (IOException ex) { /* ignore : StringWriter */ }
 
             try ( StringReader sr = new StringReader( contents ) ) {
@@ -63,20 +63,20 @@ public class TestWriterFeatures extends ModelTestBase
 
     private void checkReadWriteRead(String filename, String propertyName, String propertyValue)
     {
-        checkReadWriteRead(filename, "RDF/XML", propertyName, propertyValue) ;
-        checkReadWriteRead(filename, "RDF/XML-ABBREV", propertyName, propertyValue) ;
+        checkReadWriteRead(filename, "RDF/XML", propertyName, propertyValue);
+        checkReadWriteRead(filename, "RDF/XML-ABBREV", propertyName, propertyValue);
     }
 
     // test the tests !
     public void testEntity_0()
-    { checkReadWriteRead(testFileBase+"/entities_1.ttl", "showXmlDeclaration", "true") ; }
+    { checkReadWriteRead(testFileBase+"/entities_1.ttl", "showXmlDeclaration", "true"); }
 
     public void testEntity_1()
-    { checkReadWriteRead(testFileBase+"/entities_1.ttl", "showDoctypeDeclaration", "true") ; }
+    { checkReadWriteRead(testFileBase+"/entities_1.ttl", "showDoctypeDeclaration", "true"); }
 
     public void testEntity_2()
-    { checkReadWriteRead(testFileBase+"/entities_2.ttl", "showDoctypeDeclaration", "true") ; }
+    { checkReadWriteRead(testFileBase+"/entities_2.ttl", "showDoctypeDeclaration", "true"); }
 
     public void testEntity_3()
-    { checkReadWriteRead(testFileBase+"/entities_3.ttl", "showDoctypeDeclaration", "true") ; }
+    { checkReadWriteRead(testFileBase+"/entities_3.ttl", "showDoctypeDeclaration", "true"); }
 }

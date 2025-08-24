@@ -18,8 +18,8 @@
 
 package org.apache.jena.mem.test;
 
-import org.apache.jena.mem.* ;
-import org.apache.jena.rdf.model.test.ModelTestBase ;
+import org.apache.jena.mem.*;
+import org.apache.jena.rdf.model.test.ModelTestBase;
 
 public class TestHashedBunchMap extends ModelTestBase
     { // TODO should extend this a lot

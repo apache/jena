@@ -18,30 +18,23 @@
 
 package org.apache.jena.rdf.model.test;
 
-import org.apache.jena.rdf.model.Property ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.test.helpers.TestingModelFactory;
 import org.junit.Assert;
 
-public class TestModelPolymorphism extends AbstractModelTestBase
-{
+public class TestModelPolymorphism extends AbstractModelTestBase {
 
-	public TestModelPolymorphism( final TestingModelFactory modelFactory,
-			final String name )
-	{
-		super(modelFactory, name);
-	}
+    public TestModelPolymorphism(final TestingModelFactory modelFactory, final String name) {
+        super(modelFactory, name);
+    }
 
-	public void testPoly()
-	{
-		final Resource r = model
-				.createResource("http://www.electric-hedgehog.net/a-o-s.html");
-		Assert.assertFalse("the Resouce should not be null", r == null);
-		Assert.assertTrue("the Resource can be a Property",
-				r.canAs(Property.class));
-		final Property p = r.as(Property.class);
-		Assert.assertFalse("the Property should not be null", p == null);
-		Assert.assertFalse("the Resource and Property should not be identical",
-				r == p);
-	}
+    public void testPoly() {
+        final Resource r = model.createResource("http://www.electric-hedgehog.net/a-o-s.html");
+        Assert.assertFalse("the Resouce should not be null", r == null);
+        Assert.assertTrue("the Resource can be a Property", r.canAs(Property.class));
+        final Property p = r.as(Property.class);
+        Assert.assertFalse("the Property should not be null", p == null);
+        Assert.assertFalse("the Resource and Property should not be identical", r == p);
+    }
 }

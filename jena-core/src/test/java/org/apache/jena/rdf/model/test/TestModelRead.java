@@ -16,53 +16,51 @@
  * limitations under the License.
  */
 
-package org.apache.jena.rdf.model.test ;
+package org.apache.jena.rdf.model.test;
 
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.test.helpers.ModelHelper ;
-import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
-import org.junit.Assert ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.test.helpers.ModelHelper;
+import org.apache.jena.rdf.model.test.helpers.TestingModelFactory;
+import org.junit.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TestModelRead - test that the model.read operation(s) exist.
  */
-public class TestModelRead extends AbstractModelTestBase
-{
-    protected static Logger logger = LoggerFactory.getLogger(TestModelRead.class) ;
+public class TestModelRead extends AbstractModelTestBase {
+    protected static Logger logger = LoggerFactory.getLogger(TestModelRead.class);
 
     public TestModelRead(final TestingModelFactory modelFactory, final String name) {
-        super(modelFactory, name) ;
+        super(modelFactory, name);
     }
 
     public TestModelRead() {
-        this(new TS3_Model1.PlainModelFactory(), "TestModelRead") ;
+        this(new TS3_Model1.PlainModelFactory(), "TestModelRead");
     }
 
     public void testDefaultLangXML() {
-        final Model model = ModelFactory.createDefaultModel() ;
-        model.read(getFileName("modelReading/plain.rdf"), null, null) ;
+        final Model model = ModelFactory.createDefaultModel();
+        model.read(getFileName("modelReading/plain.rdf"), null, null);
     }
 
     public void testLoadsSimpleModel() {
-        final Model expected = createModel() ;
-        expected.read(getFileName("modelReading/simple.n3"), "N3") ;
-        Assert.assertSame(model, model.read(getFileName("modelReading/simple.n3"), "base", "N3")) ;
-        ModelHelper.assertIsoModels(expected, model) ;
+        final Model expected = createModel();
+        expected.read(getFileName("modelReading/simple.n3"), "N3");
+        Assert.assertSame(model, model.read(getFileName("modelReading/simple.n3"), "base", "N3"));
+        ModelHelper.assertIsoModels(expected, model);
     }
 
     public void testReturnsSelf() {
 
-        Assert.assertSame(model, model.read(getFileName("modelReading/empty.n3"), "base", "N3")) ;
-        Assert.assertTrue(model.isEmpty()) ;
+        Assert.assertSame(model, model.read(getFileName("modelReading/empty.n3"), "base", "N3"));
+        Assert.assertTrue(model.isEmpty());
     }
 
     public void testSimpleLoadExplicitBase() {
-        final Model mBasedExplicit = createModel() ;
-        mBasedExplicit.read(getFileName("modelReading/based.n3"), "http://example/", "N3") ;
-        ModelHelper.assertIsoModels(ModelHelper.modelWithStatements(this, "http://example/ ja:predicate ja:object"),
-                                    mBasedExplicit) ;
+        final Model mBasedExplicit = createModel();
+        mBasedExplicit.read(getFileName("modelReading/based.n3"), "http://example/", "N3");
+        ModelHelper.assertIsoModels(ModelHelper.modelWithStatements(this, "http://example/ ja:predicate ja:object"), mBasedExplicit);
     }
 }

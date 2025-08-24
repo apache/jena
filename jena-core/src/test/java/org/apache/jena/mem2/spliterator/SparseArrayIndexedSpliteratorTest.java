@@ -94,7 +94,7 @@ public class SparseArrayIndexedSpliteratorTest {
             while (spliterator.tryAdvance(i -> {
                 keysFound.add(i.key());
                 indicesFound.add(i.index());
-            })) ;
+            }));
             assertEquals(2, keysFound.size());
             assertEquals("a", keysFound.get(0));
             assertEquals("b", keysFound.get(1));
@@ -110,7 +110,7 @@ public class SparseArrayIndexedSpliteratorTest {
             while (spliterator.tryAdvance(i -> {
                 keysFound.add(i.key());
                 indicesFound.add(i.index());
-            })) ;
+            }));
             assertEquals(2, keysFound.size());
             assertEquals("a", keysFound.get(0));
             assertEquals("b", keysFound.get(1));
@@ -126,7 +126,7 @@ public class SparseArrayIndexedSpliteratorTest {
             while (spliterator.tryAdvance(i -> {
                 keysFound.add(i.key());
                 indicesFound.add(i.index());
-            })) ;
+            }));
             assertEquals(2, keysFound.size());
             assertEquals("a", keysFound.get(0));
             assertEquals("b", keysFound.get(1));
@@ -142,7 +142,7 @@ public class SparseArrayIndexedSpliteratorTest {
             while (spliterator.tryAdvance(i -> {
                 keysFound.add(i.key());
                 indicesFound.add(i.index());
-            })) ;
+            }));
             assertEquals(2, keysFound.size());
             assertEquals("a", keysFound.get(0));
             assertEquals("b", keysFound.get(1));
@@ -158,7 +158,7 @@ public class SparseArrayIndexedSpliteratorTest {
             while (spliterator.tryAdvance(i -> {
                 keysFound.add(i.key());
                 indicesFound.add(i.index());
-            })) ;
+            }));
             assertEquals(2, keysFound.size());
             assertEquals("a", keysFound.get(0));
             assertEquals("b", keysFound.get(1));
@@ -178,7 +178,7 @@ public class SparseArrayIndexedSpliteratorTest {
             while (spliterator.tryAdvance(i -> {
                 keysFound.add(i.key());
                 indicesFound.add(i.index());
-            })) ;
+            }));
             assertEquals(3, keysFound.size());
             assertEquals("a", keysFound.get(0));
             assertEquals("b", keysFound.get(1));
@@ -196,7 +196,7 @@ public class SparseArrayIndexedSpliteratorTest {
             while (spliterator.tryAdvance(i -> {
                 keysFound.add(i.key());
                 indicesFound.add(i.index());
-            })) ;
+            }));
             assertEquals(3, keysFound.size());
             assertEquals("a", keysFound.get(0));
             assertEquals("b", keysFound.get(1));
@@ -214,7 +214,7 @@ public class SparseArrayIndexedSpliteratorTest {
             while (spliterator.tryAdvance(i -> {
                 keysFound.add(i.key());
                 indicesFound.add(i.index());
-            })) ;
+            }));
             assertEquals(3, keysFound.size());
             assertEquals("a", keysFound.get(0));
             assertEquals("b", keysFound.get(1));
@@ -232,7 +232,7 @@ public class SparseArrayIndexedSpliteratorTest {
             while (spliterator.tryAdvance(i -> {
                 keysFound.add(i.key());
                 indicesFound.add(i.index());
-            })) ;
+            }));
             assertEquals(3, keysFound.size());
             assertEquals("a", keysFound.get(0));
             assertEquals("b", keysFound.get(1));
@@ -250,7 +250,7 @@ public class SparseArrayIndexedSpliteratorTest {
             while (spliterator.tryAdvance(i -> {
                 keysFound.add(i.key());
                 indicesFound.add(i.index());
-            })) ;
+            }));
             assertEquals(3, keysFound.size());
             assertEquals("a", keysFound.get(0));
             assertEquals("b", keysFound.get(1));

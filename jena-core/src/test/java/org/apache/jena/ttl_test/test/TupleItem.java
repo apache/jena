@@ -24,37 +24,37 @@ package org.apache.jena.ttl_test.test;
  */
 class TupleItem
 {
-    public static final int URI      = 0 ;
-    public static final int STRING   = 1 ;
-    public static final int UNKNOWN  = 2 ;
-    public static final int UNQUOTED = 3 ;
-    public static final int ANON     = 4 ;
+    public static final int URI      = 0;
+    public static final int STRING   = 1;
+    public static final int UNKNOWN  = 2;
+    public static final int UNQUOTED = 3;
+    public static final int ANON     = 4;
 
-    String rep ;
-    String datatype ;
-    String asFound ;
-    int itemType ;
+    String rep;
+    String datatype;
+    String asFound;
+    int itemType;
 
     TupleItem(String value, String valAsFound, int type, String dt)
     {
-        rep = value ;
-        asFound = valAsFound ;
-        itemType = type ;
-        datatype = dt ;
+        rep = value;
+        asFound = valAsFound;
+        itemType = type;
+        datatype = dt;
     }
 
-    public int getType() { return itemType ; }
+    public int getType() { return itemType; }
 
-    public boolean isURI()       { return itemType == URI ; }
-    public boolean isString()    { return itemType == STRING ; }
-    public boolean isUnknown()   { return itemType == UNKNOWN ; }
-    public boolean isUnquoted()  { return itemType == UNQUOTED ; }
-    public boolean isAnon()      { return itemType == ANON ; }
+    public boolean isURI()       { return itemType == URI; }
+    public boolean isString()    { return itemType == STRING; }
+    public boolean isUnknown()   { return itemType == UNKNOWN; }
+    public boolean isUnquoted()  { return itemType == UNQUOTED; }
+    public boolean isAnon()      { return itemType == ANON; }
 
-    public String get() { return rep ; }
-    public String getDT() { return datatype ;
+    public String get() { return rep; }
+    public String getDT() { return datatype;
     }
-    public String asQuotedString() { return asFound ; }
+    public String asQuotedString() { return asFound; }
     @Override
-    public String toString() { return rep ; }
+    public String toString() { return rep; }
 }

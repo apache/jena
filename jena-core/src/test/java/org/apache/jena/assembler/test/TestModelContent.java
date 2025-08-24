@@ -20,8 +20,8 @@ package org.apache.jena.assembler.test;
 
 import java.util.*;
 
-import org.apache.jena.assembler.* ;
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.assembler.*;
+import org.apache.jena.rdf.model.*;
 
 public class TestModelContent extends AssemblerTestBase {
     public TestModelContent(String name) {

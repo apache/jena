@@ -22,7 +22,7 @@ package org.apache.jena.rdfxml.xmlinput1.states;
 import org.apache.jena.rdfxml.xmlinput1.impl.ANode;
 import org.apache.jena.rdfxml.xmlinput1.impl.AbsXMLContext;
 import org.apache.jena.rdfxml.xmlinput1.impl.XMLHandler;
-import org.junit.Assert ;
+import org.junit.Assert;
 
 class TestFrame extends AbsXMLLiteral implements WantsObjectFrameI,
         HasSubjectFrameI {

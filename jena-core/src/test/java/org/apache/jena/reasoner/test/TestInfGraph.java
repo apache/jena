@@ -18,11 +18,11 @@
 
 package org.apache.jena.reasoner.test;
 
-import junit.framework.TestSuite ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.test.AbstractTestGraph ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.reasoner.InfGraph ;
+import junit.framework.TestSuite;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.test.AbstractTestGraph;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.reasoner.InfGraph;
 
 /**
      Needs extending; relys on knowing that the only InfGraph currently used is

@@ -18,117 +18,96 @@
 
 package org.apache.jena.rdf.model.test;
 
-import java.util.List ;
+import java.util.List;
 
-import junit.framework.JUnit4TestAdapter ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.vocabulary.RDF ;
-import org.junit.AfterClass ;
-import org.junit.Assert ;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
+import junit.framework.JUnit4TestAdapter;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.vocabulary.RDF;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-public class TestListStatements
-{
-	private static Model m;
-	private static Resource s;
-	private static Property p;
+public class TestListStatements {
+    private static Model m;
+    private static Resource s;
+    private static Property p;
 
-	@BeforeClass
-	public static void setUpBeforeClass()
-	{
-		TestListStatements.m = ModelFactory.createDefaultModel();
-		final Resource s = TestListStatements.m
-				.createResource("http://www.a.com/s");
-		final Property p = TestListStatements.m
-				.createProperty("http://www.a.com/p");
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        TestListStatements.m = ModelFactory.createDefaultModel();
+        final Resource s = TestListStatements.m.createResource("http://www.a.com/s");
+        final Property p = TestListStatements.m.createProperty("http://www.a.com/p");
 
-		TestListStatements.m.add(s, p,
-				TestListStatements.m.createResource("http://www.a.com/o"));
-		TestListStatements.m.add(s, p, "texte", "fr");
-		TestListStatements.m.add(s, p, "text", "en");
-		TestListStatements.m.add(s, p, "text");
-		TestListStatements.m.add(TestListStatements.m.createLiteralStatement(s,
-				p, 1789));
-	}
+        TestListStatements.m.add(s, p, TestListStatements.m.createResource("http://www.a.com/o"));
+        TestListStatements.m.add(s, p, "texte", "fr");
+        TestListStatements.m.add(s, p, "text", "en");
+        TestListStatements.m.add(s, p, "text");
+        TestListStatements.m.add(TestListStatements.m.createLiteralStatement(s, p, 1789));
+    }
 
-	public static junit.framework.Test suite()
-	{
-		return new JUnit4TestAdapter(TestListStatements.class);
-	}
+    public static junit.framework.Test suite() {
+        return new JUnit4TestAdapter(TestListStatements.class);
+    }
 
-	@AfterClass
-	public static void tearDownAfterClass()
-	{
-		TestListStatements.m = null;
-		TestListStatements.s = null;
-		TestListStatements.p = null;
-	}
+    @AfterClass
+    public static void tearDownAfterClass() {
+        TestListStatements.m = null;
+        TestListStatements.s = null;
+        TestListStatements.p = null;
+    }
 
-	@Test
-	public final void thereAre2LitsWoLang()
-	{
-		final StmtIterator it = TestListStatements.m.listStatements(
-				TestListStatements.s, TestListStatements.p, null, "");
-		Assert.assertTrue(it.toList().size() == 2);
-	}
+    @Test
+    public final void thereAre2LitsWoLang() {
+        final StmtIterator it = TestListStatements.m.listStatements(TestListStatements.s, TestListStatements.p, null, "");
+        Assert.assertTrue(it.toList().size() == 2);
+    }
 
-	@Test
-	public final void thereAre4Literals()
-	{
-		final StmtIterator it = TestListStatements.m.listStatements(
-				TestListStatements.s, TestListStatements.p, null, null);
-		Assert.assertTrue(it.toList().size() == 4);
-	}
+    @Test
+    public final void thereAre4Literals() {
+        final StmtIterator it = TestListStatements.m.listStatements(TestListStatements.s, TestListStatements.p, null, null);
+        Assert.assertTrue(it.toList().size() == 4);
+    }
 
-	@Test
-	public final void thereIsOneFrench()
-	{
-		final StmtIterator it = TestListStatements.m.listStatements(
-				TestListStatements.s, TestListStatements.p, null, "fr");
-		final List<Statement> lis = it.toList();
-		Assert.assertTrue(lis.size() == 1);
-		Assert.assertTrue(lis.get(0).getObject().toString().equals("texte@fr"));
-	}
+    @Test
+    public final void thereIsOneFrench() {
+        final StmtIterator it = TestListStatements.m.listStatements(TestListStatements.s, TestListStatements.p, null, "fr");
+        final List<Statement> lis = it.toList();
+        Assert.assertTrue(lis.size() == 1);
+        Assert.assertTrue(lis.get(0).getObject().toString().equals("texte@fr"));
+    }
 
-	@Test
-	public final void theresAreTwoText()
-	{
-		final StmtIterator it = TestListStatements.m.listStatements(
-				TestListStatements.s, TestListStatements.p, "text", null);
-		final List<Statement> lis = it.toList();
-		Assert.assertTrue(lis.size() == 2);
-	}
+    @Test
+    public final void theresAreTwoText() {
+        final StmtIterator it = TestListStatements.m.listStatements(TestListStatements.s, TestListStatements.p, "text", null);
+        final List<Statement> lis = it.toList();
+        Assert.assertTrue(lis.size() == 2);
+    }
 
-	@Test
-	public final void theresOneTextEN()
-	{
-		final StmtIterator it = TestListStatements.m.listStatements(
-				TestListStatements.s, TestListStatements.p, "text", "en");
-		final List<Statement> lis = it.toList();
-		Assert.assertTrue(lis.size() == 1);
-		Assert.assertTrue(lis.get(0).getObject().toString().equals("text@en"));
-	}
+    @Test
+    public final void theresOneTextEN() {
+        final StmtIterator it = TestListStatements.m.listStatements(TestListStatements.s, TestListStatements.p, "text", "en");
+        final List<Statement> lis = it.toList();
+        Assert.assertTrue(lis.size() == 1);
+        Assert.assertTrue(lis.get(0).getObject().toString().equals("text@en"));
+    }
 
-	@Test
-	public final void theresOneTextWoLang()
-	{
-		final StmtIterator it = TestListStatements.m.listStatements(
-				TestListStatements.s, TestListStatements.p, "text", "");
-		final List<Statement> lis = it.toList();
-		Assert.assertTrue(lis.size() == 1);
-	}
-	
-	@Test
-	public final void theresOneWithABNodeObject()
-	{
-	    Model m = ModelFactory.createDefaultModel();
-	    Resource anon = m.createResource();
-	    m.createResource("http://example").addProperty(RDF.type, anon);
-	    
-	    StmtIterator it = m.listStatements(null, null, anon);
-	    final List<Statement> lis = it.toList();
-	    Assert.assertTrue(lis.size() == 1);
-	    
-	}
+    @Test
+    public final void theresOneTextWoLang() {
+        final StmtIterator it = TestListStatements.m.listStatements(TestListStatements.s, TestListStatements.p, "text", "");
+        final List<Statement> lis = it.toList();
+        Assert.assertTrue(lis.size() == 1);
+    }
+
+    @Test
+    public final void theresOneWithABNodeObject() {
+        Model m = ModelFactory.createDefaultModel();
+        Resource anon = m.createResource();
+        m.createResource("http://example").addProperty(RDF.type, anon);
+
+        StmtIterator it = m.listStatements(null, null, anon);
+        final List<Statement> lis = it.toList();
+        Assert.assertTrue(lis.size() == 1);
+
+    }
 }

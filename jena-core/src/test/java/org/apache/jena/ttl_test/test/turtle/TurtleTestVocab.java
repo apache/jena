@@ -16,9 +16,9 @@
  * limitations under the License.
  */
 
-package org.apache.jena.ttl_test.test.turtle ;
+package org.apache.jena.ttl_test.test.turtle;
 
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.rdf.model.*;
  
 /**
  * Vocabulary definitions from TurtleTestVocab.ttl 

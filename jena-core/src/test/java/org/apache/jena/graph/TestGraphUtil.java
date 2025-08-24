@@ -31,11 +31,11 @@ public class TestGraphUtil {
 
     private static Graph make(int N) {
         Graph graph = GraphMemFactory.createDefaultGraph();
-        for ( int i = 0 ; i < N ; i++ ) {
+        for ( int i = 0; i < N; i++ ) {
             Triple t = GraphTestBase.triple("a P 'x"+i+"'");
             graph.add(t);
         }
-        return graph ;
+        return graph;
     }
 
     @Test public void compareSizeTo_1() {

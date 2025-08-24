@@ -32,8 +32,8 @@ public class JenaCoreTestAll extends TestCase {
         // Include old Turtle parser - not up-to-date but enough to read test input files
         RDFReaderFImpl.alternative(new X_RDFReaderF());
 
-        TestSuite ts = new TestSuite() ;
-        ts.setName("Jena Core") ;
+        TestSuite ts = new TestSuite();
+        ts.setName("Jena Core");
 
         addTest(ts,  "System setup",        adaptJUnit4(TestSystemSetup.class));
 
@@ -79,8 +79,8 @@ public class JenaCoreTestAll extends TestCase {
         // Local TTL parser for tests - not fully compliant.
         addTest(ts,  "Turtle",              adaptJUnit4(org.apache.jena.ttl_test.test.turtle.TS_TestTurtle.class));
         // ** Generated tests
-        addTest(ts,  "Turtle:Manifest",     org.apache.jena.ttl_test.test.turtle.TurtleTestSuiteManifest.suite()) ;
-        return ts ;
+        addTest(ts,  "Turtle:Manifest",     org.apache.jena.ttl_test.test.turtle.TurtleTestSuiteManifest.suite());
+        return ts;
     }
 
     // JUnit4 in a JUnit3 test runner.

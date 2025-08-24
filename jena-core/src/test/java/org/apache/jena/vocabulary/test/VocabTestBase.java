@@ -18,17 +18,19 @@
 
 package org.apache.jena.vocabulary.test;
 
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.rdf.model.test.ModelTestBase ;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.test.ModelTestBase;
 
-public class VocabTestBase extends ModelTestBase
-    {
-    public VocabTestBase(String name)
-        { super(name); }
-
-    public void assertProperty( String uri, Property p )
-        { assertResource( uri, p ); }
-    
-    public void assertResource( String uri, Resource r )
-        { assertEquals( uri, r.getURI() ); }
+public class VocabTestBase extends ModelTestBase {
+    public VocabTestBase(String name) {
+        super(name);
     }
+
+    public void assertProperty(String uri, Property p) {
+        assertResource(uri, p);
+    }
+
+    public void assertResource(String uri, Resource r) {
+        assertEquals(uri, r.getURI());
+    }
+}

@@ -19,7 +19,7 @@
 package org.apache.jena.rdfxml.xmlinput1.states;
 
 import org.apache.jena.rdfxml.xmlinput1.impl.Names;
-import org.xml.sax.Attributes ;
+import org.xml.sax.Attributes;
 
 class AttrEvent extends Event {
     final QName q;

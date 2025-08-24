@@ -21,36 +21,36 @@ package org.apache.jena.ttl_test.turtle;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 
 /** Map from _:* form to bNodes
  */
 
 public class LabelToNodeMap
 {
-    Map<String, Node> bNodeLabels = new HashMap<>() ;
+    Map<String, Node> bNodeLabels = new HashMap<>();
     
     public LabelToNodeMap()
     {}
 
     public Node asNode(String label)
     {
-        Node n = bNodeLabels.get(label) ;
+        Node n = bNodeLabels.get(label);
         if ( n != null )
-            return n ;
-        n = allocNode() ;
-        bNodeLabels.put(label, n) ;
-        return n ;
+            return n;
+        n = allocNode();
+        bNodeLabels.put(label, n);
+        return n;
     }
     
     public Node allocNode()
     {
-        return NodeFactory.createBlankNode() ;
+        return NodeFactory.createBlankNode();
     }
     
     public void clear()
     {
-        bNodeLabels.clear() ;
+        bNodeLabels.clear();
     }
 }

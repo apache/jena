@@ -18,14 +18,25 @@
 
 package org.apache.jena.util.junit;
 
-/** TestException a root exception for all (intentional) exceptions in tests setup,
- *  not a failure of the test itself (e.g. manifest problems)
+/**
+ * TestException a root exception for all (intentional) exceptions in tests setup,
+ * not a failure of the test itself (e.g. manifest problems)
  */
 
-public class TestException extends RuntimeException
-{
-    public TestException() { super() ; }
-    public TestException(Throwable cause) { super(cause) ; }
-    public TestException(String msg) { super(msg) ; }
-    public TestException(String msg, Throwable cause) { super(msg, cause) ; }
+public class TestException extends RuntimeException {
+    public TestException() {
+        super();
+    }
+
+    public TestException(Throwable cause) {
+        super(cause);
+    }
+
+    public TestException(String msg) {
+        super(msg);
+    }
+
+    public TestException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 }

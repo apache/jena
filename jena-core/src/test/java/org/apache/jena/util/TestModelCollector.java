@@ -56,7 +56,7 @@ import org.junit.Test;
 public class TestModelCollector {
 
     public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(TestModelCollector.class) ;
+        return new JUnit4TestAdapter(TestModelCollector.class);
     }
 
     private static final Model EMPTY_MODEL = ModelFactory.createDefaultModel();
@@ -75,8 +75,8 @@ public class TestModelCollector {
 
     Stream<Model> fromTriples(Supplier<Triple> kernel, byte size) {
         AtomicInteger count = new AtomicInteger();
-        return generate(kernel).collect(groupingBy(x -> count.incrementAndGet() / size)).values().stream()
-                .map(CollectionGraph::new).map(ModelFactory::createModelForGraph);
+        return generate(kernel).collect(groupingBy(x -> count.incrementAndGet() / size)).values().stream().map(CollectionGraph::new)
+                               .map(ModelFactory::createModelForGraph);
     }
 
     private static void test(Stream<Model> data, Model expectedResults, ModelCollector testCollector) {
@@ -89,7 +89,7 @@ public class TestModelCollector {
     }
 
     private void unionOfEmptyStreamOfModelsIsEmpty(ModelCollector testCollector) {
-        assertTrue(Stream.<Model>empty().collect(testCollector).isEmpty());
+        assertTrue(Stream.<Model> empty().collect(testCollector).isEmpty());
     }
 
     private static List<ModelCollector> collectors() {
@@ -116,7 +116,7 @@ public class TestModelCollector {
         ModelCollector testCollector = new UnionModelCollector();
         Model expectedResults = createDefaultModel();
         Stream<Triple> addTestStatementsToRubric = numbers().limit(10).map(this::sampleFromNum)
-                .peek(t -> expectedResults.add(expectedResults.asStatement(t)));
+                                                            .peek(t -> expectedResults.add(expectedResults.asStatement(t)));
         Stream<Model> models = addTestStatementsToRubric.map(this::intoModel);
         test(models, expectedResults, testCollector);
     }

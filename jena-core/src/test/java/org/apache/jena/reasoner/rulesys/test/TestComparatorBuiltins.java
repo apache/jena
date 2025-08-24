@@ -20,16 +20,16 @@ package org.apache.jena.reasoner.rulesys.test;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.jena.datatypes.RDFDatatype ;
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.reasoner.InfGraph ;
-import org.apache.jena.reasoner.TriplePattern ;
-import org.apache.jena.reasoner.rulesys.* ;
-import org.apache.jena.reasoner.rulesys.builtins.* ;
-import org.apache.jena.util.iterator.ClosableIterator ;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.reasoner.InfGraph;
+import org.apache.jena.reasoner.TriplePattern;
+import org.apache.jena.reasoner.rulesys.*;
+import org.apache.jena.reasoner.rulesys.builtins.*;
+import org.apache.jena.util.iterator.ClosableIterator;
 
 /**
  * Test cases for comparison operators, especially as applies to time values

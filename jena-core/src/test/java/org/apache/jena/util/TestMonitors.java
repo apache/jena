@@ -22,11 +22,11 @@ import java.util.*;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.jena.graph.* ;
-import org.apache.jena.graph.test.* ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.rdf.model.test.RecordingModelListener ;
-import org.apache.jena.reasoner.test.TestUtil ;
+import org.apache.jena.graph.*;
+import org.apache.jena.graph.test.*;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.test.RecordingModelListener;
+import org.apache.jena.reasoner.test.TestUtil;
 
 /**
  * Tests for MonitorGraph implementation.
@@ -37,19 +37,18 @@ public class TestMonitors extends TestCase {
     /**
      * Boilerplate for junit
      */
-    public TestMonitors( String name ) {
-        super( name );
+    public TestMonitors(String name) {
+        super(name);
     }
 
     /**
-     * Boilerplate for junit.
-     * This is its own test suite
+     * Boilerplate for junit. This is its own test suite
      */
     public static TestSuite suite() {
-        return new TestSuite( TestMonitors.class );
+        return new TestSuite(TestMonitors.class);
     }
 
-    private static  Graph createGraphForTest() {
+    private static Graph createGraphForTest() {
         return GraphMemFactory.createDefaultGraph();
     }
 
@@ -80,8 +79,8 @@ public class TestMonitors extends TestCase {
         List<Triple> additions = new ArrayList<>();
         List<Triple> deletions = new ArrayList<>();
         monitor.snapshot(additions, deletions);
-        TestUtil.assertIteratorValues(this, additions.iterator(), new Object[] {t1, t2, t3});
-        TestUtil.assertIteratorValues(this, deletions.iterator(), new Object[] {});
+        TestUtil.assertIteratorValues(this, additions.iterator(), new Object[]{t1, t2, t3});
+        TestUtil.assertIteratorValues(this, deletions.iterator(), new Object[]{});
 
         // Make some new changes
         base.add(t4);
@@ -92,9 +91,9 @@ public class TestMonitors extends TestCase {
         additions.clear();
         deletions.clear();
         monitor.snapshot(additions, deletions);
-        TestUtil.assertIteratorValues(this, additions.iterator(), new Object[] {t4, t5});
-        TestUtil.assertIteratorValues(this, deletions.iterator(), new Object[] {t1, t2});
-        TestUtil.assertIteratorValues(this, monitor.find(Node.ANY, Node.ANY, Node.ANY), new Object[] {t3, t4, t5});
+        TestUtil.assertIteratorValues(this, additions.iterator(), new Object[]{t4, t5});
+        TestUtil.assertIteratorValues(this, deletions.iterator(), new Object[]{t1, t2});
+        TestUtil.assertIteratorValues(this, monitor.find(Node.ANY, Node.ANY, Node.ANY), new Object[]{t3, t4, t5});
     }
 
     /**
@@ -116,10 +115,10 @@ public class TestMonitors extends TestCase {
         List<Triple> additions = new ArrayList<>();
         List<Triple> deletions = new ArrayList<>();
         monitor.snapshot(additions, deletions);
-        TestUtil.assertIteratorValues(this, additions.iterator(), new Object[] {t1, t2, t3});
-        TestUtil.assertIteratorValues(this, deletions.iterator(), new Object[] {});
+        TestUtil.assertIteratorValues(this, additions.iterator(), new Object[]{t1, t2, t3});
+        TestUtil.assertIteratorValues(this, deletions.iterator(), new Object[]{});
 
-        listener.assertHas(new Object[] {"addList", monitor, additions, "deleteList", monitor, deletions});
+        listener.assertHas(new Object[]{"addList", monitor, additions, "deleteList", monitor, deletions});
         listener.clear();
 
         // Make some new changes
@@ -131,11 +130,11 @@ public class TestMonitors extends TestCase {
         additions.clear();
         deletions.clear();
         monitor.snapshot(additions, deletions);
-        TestUtil.assertIteratorValues(this, additions.iterator(), new Object[] {t4, t5});
-        TestUtil.assertIteratorValues(this, deletions.iterator(), new Object[] {t1, t2});
-        TestUtil.assertIteratorValues(this, monitor.find(Node.ANY, Node.ANY, Node.ANY), new Object[] {t3, t4, t5});
+        TestUtil.assertIteratorValues(this, additions.iterator(), new Object[]{t4, t5});
+        TestUtil.assertIteratorValues(this, deletions.iterator(), new Object[]{t1, t2});
+        TestUtil.assertIteratorValues(this, monitor.find(Node.ANY, Node.ANY, Node.ANY), new Object[]{t3, t4, t5});
 
-        listener.assertHas(new Object[] {"addList", monitor, additions, "deleteList", monitor, deletions});
+        listener.assertHas(new Object[]{"addList", monitor, additions, "deleteList", monitor, deletions});
         listener.clear();
     }
 
@@ -166,9 +165,9 @@ public class TestMonitors extends TestCase {
         List<Statement> additions = new ArrayList<>();
         List<Statement> deletions = new ArrayList<>();
         monitor.snapshot(additions, deletions);
-        TestUtil.assertIteratorValues(this, additions.iterator(), new Object[] {s1, s2, s3});
-        TestUtil.assertIteratorValues(this, deletions.iterator(), new Object[] {});
-        listener.assertHas(new Object[] {"addList", additions, "removeList", deletions});
+        TestUtil.assertIteratorValues(this, additions.iterator(), new Object[]{s1, s2, s3});
+        TestUtil.assertIteratorValues(this, deletions.iterator(), new Object[]{});
+        listener.assertHas(new Object[]{"addList", additions, "removeList", deletions});
         listener.clear();
 
         // Make some new changes
@@ -180,11 +179,11 @@ public class TestMonitors extends TestCase {
         additions.clear();
         deletions.clear();
         monitor.snapshot(additions, deletions);
-        TestUtil.assertIteratorValues(this, additions.iterator(), new Object[] {s4, s5});
-        TestUtil.assertIteratorValues(this, deletions.iterator(), new Object[] {s1, s2});
-        TestUtil.assertIteratorValues(this, monitor.listStatements(), new Object[] {s3, s4, s5});
+        TestUtil.assertIteratorValues(this, additions.iterator(), new Object[]{s4, s5});
+        TestUtil.assertIteratorValues(this, deletions.iterator(), new Object[]{s1, s2});
+        TestUtil.assertIteratorValues(this, monitor.listStatements(), new Object[]{s3, s4, s5});
 
-        listener.assertHas(new Object[] {"addList", additions, "removeList", deletions});
+        listener.assertHas(new Object[]{"addList", additions, "removeList", deletions});
         listener.clear();
     }
 

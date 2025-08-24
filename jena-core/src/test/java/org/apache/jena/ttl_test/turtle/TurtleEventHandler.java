@@ -18,13 +18,13 @@
 
 package org.apache.jena.ttl_test.turtle;
 
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.Triple;
 
 
 public interface TurtleEventHandler
 {
-    public void triple(int line, int col, Triple triple) ;
-    public void prefix(int line, int col, String prefix, String iri) ;
-    public void startFormula(int line, int col) ;
-    public void endFormula(int line, int col) ;
+    public void triple(int line, int col, Triple triple);
+    public void prefix(int line, int col, String prefix, String iri);
+    public void startFormula(int line, int col);
+    public void endFormula(int line, int col);
 }

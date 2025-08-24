@@ -22,9 +22,9 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.jena.reasoner.* ;
-import org.apache.jena.reasoner.rulesys.* ;
-import org.apache.jena.reasoner.test.ReasonerTester ;
+import org.apache.jena.reasoner.*;
+import org.apache.jena.reasoner.rulesys.*;
+import org.apache.jena.reasoner.test.ReasonerTester;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

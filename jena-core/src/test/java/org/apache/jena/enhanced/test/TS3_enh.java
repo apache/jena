@@ -25,11 +25,11 @@
 package org.apache.jena.enhanced.test;
 
 import junit.framework.*;
-import org.apache.jena.enhanced.* ;
-import org.apache.jena.graph.* ;
-import org.apache.jena.graph.test.* ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.shared.JenaException ;
+import org.apache.jena.enhanced.*;
+import org.apache.jena.graph.*;
+import org.apache.jena.graph.test.*;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.shared.JenaException;
 
 /**
  * These tests give a small version of a model-like interface

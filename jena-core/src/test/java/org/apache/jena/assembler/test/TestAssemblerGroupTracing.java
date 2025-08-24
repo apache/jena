@@ -18,41 +18,35 @@
 
 package org.apache.jena.assembler.test;
 
-import org.apache.jena.assembler.* ;
-import org.apache.jena.assembler.assemblers.* ;
-import org.apache.jena.assembler.exceptions.AssemblerException ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.shared.JenaException ;
+import org.apache.jena.assembler.*;
+import org.apache.jena.assembler.assemblers.*;
+import org.apache.jena.assembler.exceptions.AssemblerException;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.shared.JenaException;
 
-public class TestAssemblerGroupTracing extends AssemblerTestBase
-    {
-    public TestAssemblerGroupTracing( String name )
-        { super( name ); }
+public class TestAssemblerGroupTracing extends AssemblerTestBase {
+    public TestAssemblerGroupTracing(String name) {
+        super(name);
+    }
 
-    public void testFail() 
-        {
-        Resource root = resourceInModel( "x rdf:type A" );
+    public void testFail() {
+        Resource root = resourceInModel("x rdf:type A");
         AssemblerGroup g = AssemblerGroup.create();
-        g.implementWith( resource( "A" ), new ShantAssemble() );
-        try 
-            { 
-            g.open( root ); 
-            fail( "shouldn't get past exception" ); 
-            }
-        catch (AssemblerException e) 
-            {
-            AssemblerGroup.Frame frame = new AssemblerGroup.Frame( resource( "x" ), resource( "A" ), ShantAssemble.class );
-            assertEquals( listOfOne( frame ), e.getDoing() );
-            }
-        }
-    
-    static class ShantAssemble extends AssemblerBase
-        {
-        @Override
-        public Object open( Assembler a, Resource root, Mode mode )
-            {            
-            throw new JenaException( "shan't" );
-            }
-    
+        g.implementWith(resource("A"), new ShantAssemble());
+        try {
+            g.open(root);
+            fail("shouldn't get past exception");
+        } catch (AssemblerException e) {
+            AssemblerGroup.Frame frame = new AssemblerGroup.Frame(resource("x"), resource("A"), ShantAssemble.class);
+            assertEquals(listOfOne(frame), e.getDoing());
         }
     }
+
+    static class ShantAssemble extends AssemblerBase {
+        @Override
+        public Object open(Assembler a, Resource root, Mode mode) {
+            throw new JenaException("shan't");
+        }
+
+    }
+}

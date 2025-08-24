@@ -50,6 +50,7 @@
       <artifactId>commons-rdf-api</artifactId>
     </dependency>
 
+    <!-- Uses JUnit4 -->
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-rdf-api</artifactId>

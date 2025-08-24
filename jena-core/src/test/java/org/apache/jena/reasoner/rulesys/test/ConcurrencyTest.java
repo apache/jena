@@ -18,26 +18,26 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
-import java.lang.management.ManagementFactory ;
-import java.lang.management.ThreadInfo ;
-import java.lang.management.ThreadMXBean ;
-import java.util.concurrent.ExecutorService ;
-import java.util.concurrent.Executors ;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.jena.atlas.lib.Creator;
-import org.apache.jena.ontology.OntClass ;
-import org.apache.jena.ontology.OntModel ;
-import org.apache.jena.ontology.OntModelSpec ;
-import org.apache.jena.ontology.OntResource ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.StmtIterator ;
-import org.apache.jena.shared.JenaException ;
-import org.apache.jena.shared.Lock ;
-import org.apache.jena.util.PrintUtil ;
-import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.junit.Assert ;
-import junit.framework.TestCase ;
-import junit.framework.TestSuite ;
+import org.apache.jena.ontology.OntClass;
+import org.apache.jena.ontology.OntModel;
+import org.apache.jena.ontology.OntModelSpec;
+import org.apache.jena.ontology.OntResource;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.shared.JenaException;
+import org.apache.jena.shared.Lock;
+import org.apache.jena.util.PrintUtil;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.junit.Assert;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
  * Test for deadlock and concurrency problems in rule engines.
@@ -119,7 +119,7 @@ public class ConcurrencyTest  extends TestCase {
 
 //                        // Debug
 //                        List<Statement> s = it.toList();
-//                        it = new StmtIteratorImpl(s.iterator()) ;
+//                        it = new StmtIteratorImpl(s.iterator());
 
                         while(it.hasNext()) it.nextStatement();
                         it.close();

@@ -21,14 +21,14 @@ package org.apache.jena.reasoner.examples;
 import java.io.PrintWriter;
 import java.util.*;
 
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.reasoner.* ;
-import org.apache.jena.reasoner.ValidityReport.Report ;
-import org.apache.jena.reasoner.rulesys.* ;
-import org.apache.jena.util.FileManager ;
-import org.apache.jena.util.PrintUtil ;
-import org.apache.jena.vocabulary.RDFS ;
-import org.apache.jena.vocabulary.ReasonerVocabulary ;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.reasoner.*;
+import org.apache.jena.reasoner.ValidityReport.Report;
+import org.apache.jena.reasoner.rulesys.*;
+import org.apache.jena.util.FileManager;
+import org.apache.jena.util.PrintUtil;
+import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.ReasonerVocabulary;
 
 /**
  * Some code samples from the user manual.

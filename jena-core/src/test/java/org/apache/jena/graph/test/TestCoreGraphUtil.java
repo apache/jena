@@ -19,9 +19,9 @@
 package org.apache.jena.graph.test;
 
 import junit.framework.*;
-import org.apache.jena.graph.* ;
-import org.apache.jena.graph.impl.* ;
-import org.apache.jena.util.iterator.* ;
+import org.apache.jena.graph.*;
+import org.apache.jena.graph.impl.*;
+import org.apache.jena.util.iterator.*;
 
 public class TestCoreGraphUtil extends GraphTestBase
     {
@@ -29,7 +29,9 @@ public class TestCoreGraphUtil extends GraphTestBase
         { super(name); }
 
     public static TestSuite suite()
-        { return new TestSuite( TestCoreGraphUtil.class ); }
+    {
+        return new TestSuite(TestCoreGraphUtil.class);
+    }
 
     private static class Bool
         {

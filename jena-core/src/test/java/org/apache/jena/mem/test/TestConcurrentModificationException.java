@@ -21,11 +21,11 @@ package org.apache.jena.mem.test;
 import java.util.*;
 
 import junit.framework.*;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.graph.test.NodeCreateUtils ;
-import org.apache.jena.mem.* ;
-import org.apache.jena.rdf.model.test.ModelTestBase ;
-import org.apache.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.test.NodeCreateUtils;
+import org.apache.jena.mem.*;
+import org.apache.jena.rdf.model.test.ModelTestBase;
+import org.apache.jena.util.iterator.ExtendedIterator;
 
 public abstract class TestConcurrentModificationException extends ModelTestBase
     {

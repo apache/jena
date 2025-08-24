@@ -29,7 +29,8 @@ import org.junit.Test;
 public class TestNodeEdgeCases {
 
     // Corner cases of NodeFactory
-    @Test public void term_create_01() {
+    @Test
+    public void term_create_01() {
         // "abc"^^rdf:langString (no language)
         Node node1 = NodeFactory.createLiteral("abc", null, (String)null, RDFLangString.rdfLangString);
         assertNotNull(node1);
@@ -37,7 +38,8 @@ public class TestNodeEdgeCases {
         assertNotNull(node2);
     }
 
-    @Test public void term_create_02() {
+    @Test
+    public void term_create_02() {
         // "abc"^^rdf:dirLangString (no language, no base direction)
         Node node1 = NodeFactory.createLiteral("abc", null, (String)null, RDFDirLangString.rdfDirLangString);
         assertNotNull(node1);

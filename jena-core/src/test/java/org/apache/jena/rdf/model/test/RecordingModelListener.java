@@ -25,100 +25,120 @@ import java.util.List;
 import org.junit.Assert;
 
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelChangedListener ;
-import org.apache.jena.rdf.model.Statement ;
-import org.apache.jena.rdf.model.StmtIterator ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelChangedListener;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
 
-
-public class RecordingModelListener implements ModelChangedListener
-    {
+public class RecordingModelListener implements ModelChangedListener {
     List<Object> history = new ArrayList<>();
 
     @Override
-    public void addedStatement( Statement s )
-        { record( "add", s ); }
-
-    @Override
-    public void addedStatements( Statement [] statements )
-        { record( "add[]", Arrays.asList( statements ) ); }
-
-    @Override
-    public void addedStatements( List<Statement> statements )
-        { record( "addList", statements ); }
-
-    @Override
-    public void addedStatements( StmtIterator statements )
-        { record( "addIterator", Iter.toList( statements ) ); }
-
-    @Override
-    public void addedStatements( Model m )
-        { record( "addModel", m ); }
-
-    @Override
-    public void removedStatements( Statement [] statements )
-        { record( "remove[]", Arrays.asList( statements ) ); }
-
-   @Override
-public void removedStatement( Statement s )
-        { record( "remove", s ); }
-
-    @Override
-    public void removedStatements( List<Statement> statements )
-        { record( "removeList", statements ); }
-
-    @Override
-    public void removedStatements( StmtIterator statements )
-        { record( "removeIterator", Iter.toList( statements ) ); }
-
-    @Override
-    public void removedStatements( Model m )
-        { record( "removeModel", m ); }
-
-    @Override
-    public void notifyEvent( Model m, Object event )
-        { record( "someEvent", m, event ); }
-
-    protected void record( String tag, Object x, Object y )
-        { history.add( tag ); history.add( x ); history.add( y ); }
-
-    protected void record( String tag, Object info )
-        { history.add( tag ); history.add( info ); }
-
-    public boolean has( Object [] things )
-        { return history.equals( Arrays.asList( things ) ); }
-
-    public void assertHas( Object [] things )
-        {
-        if (has( things ) == false)
-            Assert.fail( "expected " + Arrays.asList( things ) + " but got " + history );
-        }
-
-    public boolean has( List<?> things )
-            { return history.equals( things ); }
-
-    public boolean hasStart( List<Object> L )
-        { return L.size() <= history.size() && L.equals( history.subList( 0, L.size() ) ); }
-
-    public boolean hasEnd( List<Object> L )
-        { return L.size() <= history.size() && L.equals( history.subList( history.size() - L.size(), history.size() ) ); }
-
-    public void assertHas( List<?> things )
-        { if (has( things ) == false) Assert.fail( "expected " + things + " but got " + history ); }
-
-    public void assertHasStart( Object [] start )
-        {
-        List<Object> L = Arrays.asList( start );
-        if (hasStart( L ) == false) Assert.fail( "expected " + L + " at the beginning of " + history );
-        }
-
-    public void assertHasEnd( Object [] end )
-        {
-        List<Object> L = Arrays.asList( end );
-        if (hasEnd( L ) == false) Assert.fail( "expected " + L + " at the end of " + history );
-        }
-
-    public void clear()
-    { history.clear(); }
-
+    public void addedStatement(Statement s) {
+        record("add", s);
     }
+
+    @Override
+    public void addedStatements(Statement[] statements) {
+        record("add[]", Arrays.asList(statements));
+    }
+
+    @Override
+    public void addedStatements(List<Statement> statements) {
+        record("addList", statements);
+    }
+
+    @Override
+    public void addedStatements(StmtIterator statements) {
+        record("addIterator", Iter.toList(statements));
+    }
+
+    @Override
+    public void addedStatements(Model m) {
+        record("addModel", m);
+    }
+
+    @Override
+    public void removedStatements(Statement[] statements) {
+        record("remove[]", Arrays.asList(statements));
+    }
+
+    @Override
+    public void removedStatement(Statement s) {
+        record("remove", s);
+    }
+
+    @Override
+    public void removedStatements(List<Statement> statements) {
+        record("removeList", statements);
+    }
+
+    @Override
+    public void removedStatements(StmtIterator statements) {
+        record("removeIterator", Iter.toList(statements));
+    }
+
+    @Override
+    public void removedStatements(Model m) {
+        record("removeModel", m);
+    }
+
+    @Override
+    public void notifyEvent(Model m, Object event) {
+        record("someEvent", m, event);
+    }
+
+    protected void record(String tag, Object x, Object y) {
+        history.add(tag);
+        history.add(x);
+        history.add(y);
+    }
+
+    protected void record(String tag, Object info) {
+        history.add(tag);
+        history.add(info);
+    }
+
+    public boolean has(Object[] things) {
+        return history.equals(Arrays.asList(things));
+    }
+
+    public void assertHas(Object[] things) {
+        if ( has(things) == false )
+            Assert.fail("expected " + Arrays.asList(things) + " but got " + history);
+    }
+
+    public boolean has(List<? > things) {
+        return history.equals(things);
+    }
+
+    public boolean hasStart(List<Object> L) {
+        return L.size() <= history.size() && L.equals(history.subList(0, L.size()));
+    }
+
+    public boolean hasEnd(List<Object> L) {
+        return L.size() <= history.size() && L.equals(history.subList(history.size() - L.size(), history.size()));
+    }
+
+    public void assertHas(List<? > things) {
+        if ( has(things) == false )
+            Assert.fail("expected " + things + " but got " + history);
+    }
+
+    public void assertHasStart(Object[] start) {
+        List<Object> L = Arrays.asList(start);
+        if ( hasStart(L) == false )
+            Assert.fail("expected " + L + " at the beginning of " + history);
+    }
+
+    public void assertHasEnd(Object[] end) {
+        List<Object> L = Arrays.asList(end);
+        if ( hasEnd(L) == false )
+            Assert.fail("expected " + L + " at the end of " + history);
+    }
+
+    public void clear() {
+        history.clear();
+    }
+
+}

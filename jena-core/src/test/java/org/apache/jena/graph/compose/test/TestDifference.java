@@ -18,9 +18,9 @@
 
 package org.apache.jena.graph.compose.test;
 
-import junit.framework.TestSuite ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.compose.Difference ;
+import junit.framework.TestSuite;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.compose.Difference;
 
 public class TestDifference extends TestDyadic
 {

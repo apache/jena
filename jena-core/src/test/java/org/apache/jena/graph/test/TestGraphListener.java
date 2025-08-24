@@ -18,134 +18,129 @@
 
 package org.apache.jena.graph.test;
 
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
-import java.util.Arrays ;
-import java.util.Iterator ;
-import java.util.List ;
-
-import junit.framework.TestSuite ;
-import org.apache.jena.graph.* ;
+import junit.framework.TestSuite;
+import org.apache.jena.graph.*;
 import org.apache.jena.mem2.GraphMem2Fast;
 
 /**
- * Version of graph tests that set up a listener that copies all changes
- * and verifies that after every notification modified graph
- * and original are isomorphic.
+ * Version of graph tests that set up a listener that copies all changes and verifies
+ * that after every notification modified graph and original are isomorphic.
  */
 public class TestGraphListener extends MetaTestGraph {
-	public TestGraphListener(String name) {
-		super(name);
-	}
-    public TestGraphListener( Class<? extends Graph> graphClass, String name)
-    { super( graphClass, name); }
+    public TestGraphListener(String name) {
+        super(name);
+    }
 
-    public static TestSuite suite()
-    { return MetaTestGraph.suite( TestGraphListener.class, GraphMem2Fast.class ); }
-	/**
-	 * A listener to check that a graph is being tracked
-	 * correctly by its events.
-	 */
-	protected class CheckChanges implements GraphListener {
+    public TestGraphListener(Class<? extends Graph> graphClass, String name) {
+        super(graphClass, name);
+    }
 
-		protected Graph copy, original;
-		final String desc;
-		public CheckChanges(String description, Graph g) {
-			original = g;
-			desc = description;
-			copy = TestGraphListener.super.getNewGraph();
-		}
+    public static TestSuite suite() {
+        return MetaTestGraph.suite(TestGraphListener.class, GraphMem2Fast.class);
+    }
+    /**
+     * A listener to check that a graph is being tracked correctly by its events.
+     */
+    protected class CheckChanges implements GraphListener {
 
+        protected Graph copy, original;
+        final String desc;
+        public CheckChanges(String description, Graph g) {
+            original = g;
+            desc = description;
+            copy = TestGraphListener.super.getNewGraph();
+        }
 
-		protected void verify() {
-			 assertIsomorphic(desc+" has not been tracked correctly. [delegating,copy-from-listener]",
-					original,copy
-					);
-		}
+        protected void verify() {
+            assertIsomorphic(desc + " has not been tracked correctly. [delegating,copy-from-listener]", original, copy);
+        }
 
-		@Override
+        @Override
         public void notifyAddIterator(Graph g, Iterator<Triple> it) {
-			while (it.hasNext()) copy.add(it.next());
-			verify();
-	    }
+            while (it.hasNext())
+                copy.add(it.next());
+            verify();
+        }
 
-		@Override
+        @Override
         public void notifyAddTriple(Graph g, Triple t) {
-			copy.add(t);
-			verify();
-		}
+            copy.add(t);
+            verify();
+        }
 
-		@Override
+        @Override
         public void notifyDeleteIterator(Graph g, Iterator<Triple> it) {
-			while (it.hasNext()) copy.delete(it.next());
-			verify();
-		}
+            while (it.hasNext())
+                copy.delete(it.next());
+            verify();
+        }
 
-
-		@Override
+        @Override
         public void notifyDeleteTriple(Graph g, Triple t) {
-			copy.delete(t);
-			verify();
-		}
+            copy.delete(t);
+            verify();
+        }
 
-		@Override
+        @Override
         public void notifyEvent(Graph source, Object value) {
-			if (value instanceof GraphEvents) {
-				if (GraphEvents.removeAll.equals(value)) {
-					notifyRemoveAll(source,Triple.ANY);
-				} else {
-					GraphEvents event = (GraphEvents)value;
-					if ("remove".equals(event.getTitle())) {
-						notifyRemoveAll(source,(Triple)event.getContent());
-					}
-				}
-			}
-			verify();
-		}
+            if ( value instanceof GraphEvents ) {
+                if ( GraphEvents.removeAll.equals(value) ) {
+                    notifyRemoveAll(source, Triple.ANY);
+                } else {
+                    GraphEvents event = (GraphEvents)value;
+                    if ( "remove".equals(event.getTitle()) ) {
+                        notifyRemoveAll(source, (Triple)event.getContent());
+                    }
+                }
+            }
+            verify();
+        }
 
-		public void notifyRemoveAll(Graph source, Triple t) {
-			GraphUtil.remove(copy, t.getSubject(), t.getPredicate(), t.getObject());
-			verify();
-		}
-		@Override
+        public void notifyRemoveAll(Graph source, Triple t) {
+            GraphUtil.remove(copy, t.getSubject(), t.getPredicate(), t.getObject());
+            verify();
+        }
+
+        @Override
         public void notifyAddList(Graph g, List<Triple> triples) {
-			notifyAddIterator(g, triples.iterator());
-		}
+            notifyAddIterator(g, triples.iterator());
+        }
 
-		@Override
+        @Override
         public void notifyDeleteArray(Graph g, Triple[] triples) {
-			notifyDeleteIterator(g,Arrays.asList(triples).iterator());
-		}
+            notifyDeleteIterator(g, Arrays.asList(triples).iterator());
+        }
 
-		@Override
+        @Override
         public void notifyAddArray(Graph g, Triple[] triples) {
-			notifyAddIterator(g,Arrays.asList(triples).iterator());
-		}
-		@Override
+            notifyAddIterator(g, Arrays.asList(triples).iterator());
+        }
+
+        @Override
         public void notifyAddGraph(Graph g, Graph added) {
-			notifyAddIterator(g,added.find(Triple.ANY));
-		}
+            notifyAddIterator(g, added.find(Triple.ANY));
+        }
 
-
-
-		@Override
+        @Override
         public void notifyDeleteGraph(Graph g, Graph removed) {
-			notifyDeleteIterator(g,removed.find(Triple.ANY));
-		}
+            notifyDeleteIterator(g, removed.find(Triple.ANY));
+        }
 
-
-
-		@Override
+        @Override
         public void notifyDeleteList(Graph g, List<Triple> list) {
-			notifyDeleteIterator(g, list.iterator());
-		}
+            notifyDeleteIterator(g, list.iterator());
+        }
 
-
-	}
+    }
 
     @Override
-	public Graph getNewGraph() {
-    	Graph g = GraphMemFactory.createDefaultGraph();
-    	g.getEventManager().register(new CheckChanges("simple tracking",g));
-	    return g;
-	}
+    public Graph getNewGraph() {
+        Graph g = GraphMemFactory.createDefaultGraph();
+        g.getEventManager().register(new CheckChanges("simple tracking", g));
+        return g;
+    }
 }

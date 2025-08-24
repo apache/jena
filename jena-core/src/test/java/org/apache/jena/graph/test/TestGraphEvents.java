@@ -18,40 +18,36 @@
 
 package org.apache.jena.graph.test;
 
-import org.apache.jena.graph.* ;
+import org.apache.jena.graph.*;
 
-public class TestGraphEvents extends GraphTestBase
-    {
-    public TestGraphEvents( String name )
-        { super( name ); }
-
-    public void testGraphEventContent()
-        {
-        testGraphEventContents( "testing", "an example" );
-        testGraphEventContents( "toasting", Boolean.TRUE );
-        testGraphEventContents( "tasting", NodeCreateUtils.createTriple( "we are here" ) );
-        }
-    
-    public void testGraphEventsRemove()
-        {
-        testGraphEventsRemove( "s", "p", "o" );
-        testGraphEventsRemove( "s", "p", "17" );
-        testGraphEventsRemove( "_s", "p", "'object'" );
-        testGraphEventsRemove( "not:known", "p", "'chat'fr" );
-        }
-
-    private void testGraphEventsRemove( String S, String P, String O )
-        {
-        Triple expected = NodeCreateUtils.createTriple( S + " " + P + " " + O );
-        GraphEvents e = GraphEvents.remove( node( S ), node( P ), node( O ) );
-        assertEquals( expected, e.getContent() );
-        assertEquals( "remove", e.getTitle() );
-        }
-
-    private void testGraphEventContents( String title, Object expected )
-        {
-        GraphEvents e = new GraphEvents( title, expected );
-        assertEquals( title, e.getTitle() );
-        assertEquals( expected, e.getContent() );
-        }
+public class TestGraphEvents extends GraphTestBase {
+    public TestGraphEvents(String name) {
+        super(name);
     }
+
+    public void testGraphEventContent() {
+        testGraphEventContents("testing", "an example");
+        testGraphEventContents("toasting", Boolean.TRUE);
+        testGraphEventContents("tasting", NodeCreateUtils.createTriple("we are here"));
+    }
+
+    public void testGraphEventsRemove() {
+        testGraphEventsRemove("s", "p", "o");
+        testGraphEventsRemove("s", "p", "17");
+        testGraphEventsRemove("_s", "p", "'object'");
+        testGraphEventsRemove("not:known", "p", "'chat'fr");
+    }
+
+    private void testGraphEventsRemove(String S, String P, String O) {
+        Triple expected = NodeCreateUtils.createTriple(S + " " + P + " " + O);
+        GraphEvents e = GraphEvents.remove(node(S), node(P), node(O));
+        assertEquals(expected, e.getContent());
+        assertEquals("remove", e.getTitle());
+    }
+
+    private void testGraphEventContents(String title, Object expected) {
+        GraphEvents e = new GraphEvents(title, expected);
+        assertEquals(title, e.getTitle());
+        assertEquals(expected, e.getContent());
+    }
+}

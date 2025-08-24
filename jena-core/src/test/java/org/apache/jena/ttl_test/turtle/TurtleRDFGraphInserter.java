@@ -18,43 +18,43 @@
 
 package org.apache.jena.ttl_test.turtle;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 
 
 public class TurtleRDFGraphInserter implements TurtleEventHandler
 {
-    Graph graph = null ;
-    public TurtleRDFGraphInserter(Graph graph) { this.graph = graph ; }
+    Graph graph = null;
+    public TurtleRDFGraphInserter(Graph graph) { this.graph = graph; }
     
     @Override
     public void triple(int line, int col, Triple triple)
     {
         //Check it's valid triple.
-        Node s = triple.getSubject() ;
-        Node p = triple.getPredicate() ;
-        Node o = triple.getObject() ;
+        Node s = triple.getSubject();
+        Node p = triple.getPredicate();
+        Node o = triple.getObject();
         
         if ( ! ( s.isURI() || s.isBlank() ) )
-            throw new TurtleParseException("["+line+", "+col+"] : Error: Subject is not a URI or blank node") ;
+            throw new TurtleParseException("["+line+", "+col+"] : Error: Subject is not a URI or blank node");
         if ( ! p.isURI() )
-            throw new TurtleParseException("["+line+", "+col+"] : Error: Predicate is not a URI") ;
+            throw new TurtleParseException("["+line+", "+col+"] : Error: Predicate is not a URI");
         if ( ! ( o.isURI() || o.isBlank() || o.isLiteral() ) ) 
-            throw new TurtleParseException("["+line+", "+col+"] : Error: Object is not a URI, blank node or literal") ;
+            throw new TurtleParseException("["+line+", "+col+"] : Error: Object is not a URI, blank node or literal");
         
-        graph.add(triple) ;
+        graph.add(triple);
     }
 
     @Override
     public void startFormula(int line, int col)
-    { throw new TurtleParseException("["+line+", "+col+"] : Error: Formula found") ; }
+    { throw new TurtleParseException("["+line+", "+col+"] : Error: Formula found"); }
 
     @Override
     public void endFormula(int line, int col)
-    { throw new TurtleParseException("["+line+", "+col+"] : Error: Formula found") ; }
+    { throw new TurtleParseException("["+line+", "+col+"] : Error: Formula found"); }
 
     @Override
     public void prefix(int line, int col, String prefix, String iri)
-    { graph.getPrefixMapping().setNsPrefix(prefix, iri) ; }
+    { graph.getPrefixMapping().setNsPrefix(prefix, iri); }
 }

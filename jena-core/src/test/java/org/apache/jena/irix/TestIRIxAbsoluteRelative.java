@@ -47,5 +47,4 @@ public class TestIRIxAbsoluteRelative extends AbstractTestIRIx_3986 {
         assertEquals("Absolute test: IRI = "+uriStr, isAbsolute, iri.isAbsolute());
         assertEquals("Relative test: IRI = "+uriStr, isRelative, iri.isRelative());
     }
-
 }

@@ -22,11 +22,11 @@ import java.util.*;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.jena.graph.* ;
-import org.apache.jena.reasoner.* ;
-import org.apache.jena.reasoner.rulesys.* ;
-import org.apache.jena.reasoner.rulesys.impl.* ;
-import org.apache.jena.reasoner.test.TestUtil ;
+import org.apache.jena.graph.*;
+import org.apache.jena.reasoner.*;
+import org.apache.jena.reasoner.rulesys.*;
+import org.apache.jena.reasoner.rulesys.impl.*;
+import org.apache.jena.reasoner.test.TestUtil;
 
 public class TestRETE  extends TestCase {
 

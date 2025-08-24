@@ -25,8 +25,6 @@ import org.junit.runners.Suite;
 //@Suite
 //@SelectClasses({
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestLangTagX.class
-})
+@Suite.SuiteClasses({TestLangTagX.class})
 
 public class TS_LangTagX {}

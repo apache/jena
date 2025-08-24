@@ -18,32 +18,30 @@
 
 package org.apache.jena.graph.compose.test;
 
-import org.apache.jena.graph.GraphMemFactory ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.GraphUtil ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.graph.compose.MultiUnion ;
-import org.apache.jena.graph.test.NodeCreateUtils ;
-import org.apache.jena.rdf.model.impl.ReifierStd ;
-import org.apache.jena.rdf.model.test.ModelTestBase ;
-import org.apache.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.graph.GraphMemFactory;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.GraphUtil;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.compose.MultiUnion;
+import org.apache.jena.graph.test.NodeCreateUtils;
+import org.apache.jena.rdf.model.impl.ReifierStd;
+import org.apache.jena.rdf.model.test.ModelTestBase;
+import org.apache.jena.util.iterator.ExtendedIterator;
 
 /**
     Test the reifier for multi-unions.
 */
-public class TestMultiUnionReifier extends ModelTestBase
-    {
-    public TestMultiUnionReifier( String name )
-        { super( name ); }
+public class TestMultiUnionReifier extends ModelTestBase {
+    public TestMultiUnionReifier(String name) {
+        super(name);
+    }
 
-    public void testX()
-        {
-        MultiUnion mu = multi( "a P b; !b Q c; ~c R d", "" );
-        for (ExtendedIterator<Triple> it = GraphUtil.findAll( mu ); it.hasNext();)
-            {
-            System.err.println( "]]  " + it.next() );
-            }
+    public void testX() {
+        MultiUnion mu = multi("a P b; !b Q c; ~c R d", "");
+        for ( ExtendedIterator<Triple> it = GraphUtil.findAll(mu) ; it.hasNext() ; ) {
+            System.err.println("]]  " + it.next());
         }
+    }
 
     private MultiUnion multi( String a, String b )
         {
@@ -52,33 +50,25 @@ public class TestMultiUnionReifier extends ModelTestBase
         }
 
     static int count = 0;
-    
-    private Graph graph( String facts )
-        {
-        Graph result = GraphMemFactory.createDefaultGraph( );
-        String [] factArray = facts.split( ";" );
-            for ( String aFactArray : factArray )
-            {
-                String fact = aFactArray.trim();
-                if ( fact.equals( "" ) )
-                {
-                }
-                else if ( fact.charAt( 0 ) == '!' )
-                {
-                    Triple t = NodeCreateUtils.createTriple( fact.substring( 1 ) );
-                    result.add( t );
-                    ReifierStd.reifyAs( result, NodeCreateUtils.create( "_r" + ++count ), t );
-                }
-                else if ( fact.charAt( 0 ) == '~' )
-                {
-                    Triple t = NodeCreateUtils.createTriple( fact.substring( 1 ) );
-                    ReifierStd.reifyAs( result, NodeCreateUtils.create( "_r" + ++count ), t );
-                }
-                else
-                {
-                    result.add( NodeCreateUtils.createTriple( fact ) );
-                }
+
+    private Graph graph(String facts) {
+        Graph result = GraphMemFactory.createDefaultGraph();
+        String[] factArray = facts.split(";");
+        for ( String aFactArray : factArray ) {
+            String fact = aFactArray.trim();
+            if ( fact.equals("") )
+            {}
+            else if ( fact.charAt(0) == '!' ) {
+                Triple t = NodeCreateUtils.createTriple(fact.substring(1));
+                result.add(t);
+                ReifierStd.reifyAs(result, NodeCreateUtils.create("_r" + ++count), t);
+            } else if ( fact.charAt(0) == '~' ) {
+                Triple t = NodeCreateUtils.createTriple(fact.substring(1));
+                ReifierStd.reifyAs(result, NodeCreateUtils.create("_r" + ++count), t);
+            } else {
+                result.add(NodeCreateUtils.createTriple(fact));
             }
-        return result;
         }
+        return result;
     }
+}

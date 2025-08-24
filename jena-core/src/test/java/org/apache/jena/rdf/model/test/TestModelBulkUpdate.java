@@ -21,10 +21,10 @@ package org.apache.jena.rdf.model.test;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.Statement ;
-import org.apache.jena.rdf.model.test.helpers.ModelHelper ;
-import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.test.helpers.ModelHelper;
+import org.apache.jena.rdf.model.test.helpers.TestingModelFactory;
 import org.junit.Assert;
 
 /**

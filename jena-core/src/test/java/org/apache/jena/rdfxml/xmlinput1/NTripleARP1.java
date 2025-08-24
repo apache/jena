@@ -31,7 +31,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.util.Locale ;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -390,7 +390,7 @@ int debugC = 0;
 
 	@SuppressWarnings("resource")
     static private void process(String surl) {
-		InputStream in = null ;
+		InputStream in = null;
 
 		URL url;
 		String baseURL;
@@ -398,7 +398,7 @@ int debugC = 0;
 		try {
 			File ff = new File(surl);
 			in = new FileInputStream(ff);
-			url = ff.toURI().toURL() ;
+			url = ff.toURI().toURL();
 			baseURL = url.toExternalForm();
 			if (baseURL.startsWith("file:/")
 				&& !baseURL.startsWith("file://")) {
@@ -418,7 +418,7 @@ int debugC = 0;
 			}
 		}
 		process(in, baseURL, surl);
-		try { in.close() ; } catch (IOException ex) {}
+		try { in.close(); } catch (IOException ex) {}
 	}
 
 	static private void process(InputStream in, String xmlBasex, String surl) {

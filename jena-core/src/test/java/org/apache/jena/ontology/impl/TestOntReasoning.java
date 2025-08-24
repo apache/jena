@@ -26,12 +26,12 @@ package org.apache.jena.ontology.impl;
 import java.io.ByteArrayInputStream;
 import java.util.*;
 
-import org.apache.jena.enhanced.EnhGraph ;
-import org.apache.jena.ontology.* ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.reasoner.Reasoner ;
-import org.apache.jena.reasoner.ReasonerRegistry ;
-import org.apache.jena.reasoner.test.TestUtil ;
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.ontology.*;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.reasoner.Reasoner;
+import org.apache.jena.reasoner.ReasonerRegistry;
+import org.apache.jena.reasoner.test.TestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import junit.framework.TestCase;

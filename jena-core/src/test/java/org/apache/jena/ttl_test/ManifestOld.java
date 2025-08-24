@@ -23,97 +23,89 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.jena.irix.IRIs;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.util.FileManager ;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.util.FileManager;
 import org.apache.jena.util.junit.ManifestOldItemHandler;
 import org.apache.jena.util.junit.TestUtils;
-import org.apache.jena.vocabulary.RDF ;
-import org.apache.jena.vocabulary.RDFS ;
-import org.apache.jena.vocabulary.TestManifest ;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.TestManifest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A test manifest for a single manifest file.
- * Exists solely while the old Turtle/N3 parsers is tested in jena-core.
+ * A test manifest for a single manifest file. Exists solely while the old Turtle/N3
+ * parsers is tested in jena-core.
  */
 
-public class ManifestOld
-{
+public class ManifestOld {
     // This class does not know about JUnit.
-    private static Logger log = LoggerFactory.getLogger(ManifestOld.class) ;
-    Model manifest ;
-    String manifestName ;
-    String filename ;
-    List<String> includedFiles = new ArrayList<>() ;
-    Resource manifestRes = null ;
+    private static Logger log = LoggerFactory.getLogger(ManifestOld.class);
+    Model manifest;
+    String manifestName;
+    String filename;
+    List<String> includedFiles = new ArrayList<>();
+    Resource manifestRes = null;
 
-
-    public ManifestOld(String fn)
-    {
-        log.debug("Manifest = "+fn ) ;
-        filename = IRIs.resolve(fn) ;
-        log.debug("         = "+filename ) ;
-        manifest = FileManager.getInternal().loadModelInternal(filename) ;
-        parseIncludes() ;
-        parseManifest() ;
+    public ManifestOld(String fn) {
+        log.debug("Manifest = " + fn);
+        filename = IRIs.resolve(fn);
+        log.debug("         = " + filename);
+        manifest = FileManager.getInternal().loadModelInternal(filename);
+        parseIncludes();
+        parseManifest();
     }
 
-    public String getName() { return manifestName ; }
+    public String getName() {
+        return manifestName;
+    }
 
-    public Iterator<String> includedManifests() { return includedFiles.iterator() ; }
+    public Iterator<String> includedManifests() {
+        return includedFiles.iterator();
+    }
 
-    private void parseManifest()
-    {
-        StmtIterator manifestStmts =
-            manifest.listStatements(null, RDF.type, TestManifest.Manifest);
-        if ( !manifestStmts.hasNext() )
-        {
-            log.warn("No manifest in manifest file: "+filename) ;
-            return ;
+    private void parseManifest() {
+        StmtIterator manifestStmts = manifest.listStatements(null, RDF.type, TestManifest.Manifest);
+        if ( !manifestStmts.hasNext() ) {
+            log.warn("No manifest in manifest file: " + filename);
+            return;
         }
 
         Statement manifestItemStmt = manifestStmts.nextStatement();
-        if ( manifestStmts.hasNext() )
-        {
-            log.warn("Multiple manifests in manifest file: "+filename) ;
-            return ;
+        if ( manifestStmts.hasNext() ) {
+            log.warn("Multiple manifests in manifest file: " + filename);
+            return;
         }
 
         manifestRes = manifestItemStmt.getSubject();
-        manifestName = TestUtils.getLiteral(manifestRes, RDFS.label) ;
+        manifestName = TestUtils.getLiteral(manifestRes, RDFS.label);
         if ( manifestName == null )
-            manifestName = TestUtils.getLiteral(manifestRes, RDFS.comment) ;
+            manifestName = TestUtils.getLiteral(manifestRes, RDFS.comment);
         if ( manifestName == null )
-            manifestName = TestUtils.getLiteral(manifestRes, TestManifest.name) ;
+            manifestName = TestUtils.getLiteral(manifestRes, TestManifest.name);
         manifestStmts.close();
     }
 
     // For every test item (does not recurse)
-    public void apply(ManifestOldItemHandler gen)
-    {
+    public void apply(ManifestOldItemHandler gen) {
 
-        StmtIterator manifestStmts =
-            manifest.listStatements(null, RDF.type, TestManifest.Manifest);
+        StmtIterator manifestStmts = manifest.listStatements(null, RDF.type, TestManifest.Manifest);
 
-        for (; manifestStmts.hasNext();)
-        {
+        for ( ; manifestStmts.hasNext() ; ) {
             Statement manifestItemStmt = manifestStmts.nextStatement();
             Resource manifestRes = manifestItemStmt.getSubject();
 
             // For each item in this manifest
             StmtIterator listIter = manifestRes.listProperties(TestManifest.entries);
-            for (; listIter.hasNext();)
-            {
-                //List head
+            for ( ; listIter.hasNext() ; ) {
+                // List head
                 Resource listItem = listIter.nextStatement().getResource();
-                for (; !listItem.equals(RDF.nil);)
-                {
+                for ( ; !listItem.equals(RDF.nil) ; ) {
                     Resource entry = listItem.getRequiredProperty(RDF.first).getResource();
-                    String testName = TestUtils.getLiteral(entry, TestManifest.name) ;
-                    Resource action = TestUtils.getResource(entry, TestManifest.action) ;
-                    Resource result = TestUtils.getResource(entry, TestManifest.result) ;
-                    gen.processManifestItem(manifestRes, entry, testName, action, result) ;
+                    String testName = TestUtils.getLiteral(entry, TestManifest.name);
+                    Resource action = TestUtils.getResource(entry, TestManifest.action);
+                    Resource result = TestUtils.getResource(entry, TestManifest.result);
+                    gen.processManifestItem(manifestRes, entry, testName, action, result);
                     // Move to next list item
                     listItem = listItem.getRequiredProperty(RDF.rest).getResource();
                 }
@@ -124,58 +116,48 @@ public class ManifestOld
     }
 
     // -------- included manifests
-    private void parseIncludes()
-    {
-        parseIncludes(TestManifest.include) ;
+    private void parseIncludes() {
+        parseIncludes(TestManifest.include);
     }
 
-    private void parseIncludes(Property property)
-    {
-        StmtIterator includeStmts =
-            manifest.listStatements(null, property, (RDFNode)null) ;
+    private void parseIncludes(Property property) {
+        StmtIterator includeStmts = manifest.listStatements(null, property, (RDFNode)null);
 
-        for (; includeStmts.hasNext(); )
-        {
-            Statement s = includeStmts.nextStatement() ;
-            if ( ! ( s.getObject() instanceof Resource ) )
-            {
-                log.warn("Include: not a Resource"+s) ;
-                continue ;
+        for ( ; includeStmts.hasNext() ; ) {
+            Statement s = includeStmts.nextStatement();
+            if ( !(s.getObject() instanceof Resource) ) {
+                log.warn("Include: not a Resource" + s);
+                continue;
             }
-            Resource r = s.getResource() ;
-            parseOneIncludesList(r) ;
+            Resource r = s.getResource();
+            parseOneIncludesList(r);
         }
-        includeStmts.close() ;
+        includeStmts.close();
     }
 
-    private void parseOneIncludesList(Resource r)
-    {
+    private void parseOneIncludesList(Resource r) {
         if ( r == null )
-            return ;
+            return;
 
         if ( r.equals(RDF.nil) )
-            return ;
+            return;
 
-
-        if ( ! r.isAnon() )
-        {
-            String uri = r.getURI() ;
+        if ( !r.isAnon() ) {
+            String uri = r.getURI();
             if ( includedFiles.contains(uri) )
-                return ;
-            includedFiles.add(r.getURI()) ;
-            return ;
+                return;
+            includedFiles.add(r.getURI());
+            return;
         }
 
         // BNnode => list
-        Resource listItem = r ;
-        while(!listItem.equals(RDF.nil))
-        {
+        Resource listItem = r;
+        while (!listItem.equals(RDF.nil)) {
             r = listItem.getRequiredProperty(RDF.first).getResource();
-            parseOneIncludesList(r) ;
+            parseOneIncludesList(r);
             // Move on
             listItem = listItem.getRequiredProperty(RDF.rest).getResource();
         }
     }
-
 
 }

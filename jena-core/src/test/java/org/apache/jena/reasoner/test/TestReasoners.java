@@ -45,11 +45,11 @@ import org.apache.jena.reasoner.InfGraph;
 import org.apache.jena.reasoner.Reasoner;
 import org.apache.jena.reasoner.ReasonerFactory;
 import org.apache.jena.reasoner.ReasonerRegistry;
-import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory ;
+import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
 import org.apache.jena.reasoner.transitiveReasoner.TransitiveReasoner;
 import org.apache.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
-import org.apache.jena.util.FileManager ;
-import org.apache.jena.util.PrintUtil ;
+import org.apache.jena.util.FileManager;
+import org.apache.jena.util.PrintUtil;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 

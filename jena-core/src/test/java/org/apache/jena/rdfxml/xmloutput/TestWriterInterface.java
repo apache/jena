@@ -18,14 +18,14 @@
 
 package org.apache.jena.rdfxml.xmloutput;
 
-import java.io.ByteArrayOutputStream ;
-import java.io.StringWriter ;
+import java.io.ByteArrayOutputStream;
+import java.io.StringWriter;
 
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.impl.NTripleWriter ;
-import org.apache.jena.rdf.model.test.ModelTestBase ;
-import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Abbrev ;
-import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Basic ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.impl.NTripleWriter;
+import org.apache.jena.rdf.model.test.ModelTestBase;
+import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Abbrev;
+import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Basic;
 
 public class TestWriterInterface extends ModelTestBase {
     private String lang;
@@ -74,7 +74,7 @@ public class TestWriterInterface extends ModelTestBase {
         Model m1 = createMemModel();
         try ( ByteArrayOutputStream out = new ByteArrayOutputStream() ) {
             m1.write(out, lang);
-            out.reset() ;
+            out.reset();
         } catch (Exception e) {
             fail(e.getMessage());
         }

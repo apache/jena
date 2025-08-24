@@ -18,30 +18,26 @@
 
 package org.apache.jena.rdf.model.test;
 
-import org.apache.jena.rdf.model.Container ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.rdf.model.Seq ;
-import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
+import org.apache.jena.rdf.model.Container;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Seq;
+import org.apache.jena.rdf.model.test.helpers.TestingModelFactory;
 import org.junit.Assert;
 
 /**
  * Tests for containers.
  */
-public class TestContainers extends AbstractModelTestBase
-{
+public class TestContainers extends AbstractModelTestBase {
 
-	public TestContainers( final TestingModelFactory modelFactory,
-			final String name )
-	{
-		super(modelFactory, name);
-	}
+    public TestContainers(final TestingModelFactory modelFactory, final String name) {
+        super(modelFactory, name);
+    }
 
-	public void testCanAsContainer()
-	{
-		final String seqUri = "http://example.com/#seq";
-		model.createSeq(seqUri);
-		final Resource res = model.createResource(seqUri);
-		Assert.assertTrue(res.canAs(Seq.class));
-		Assert.assertTrue(res.canAs(Container.class));
-	}
+    public void testCanAsContainer() {
+        final String seqUri = "http://example.com/#seq";
+        model.createSeq(seqUri);
+        final Resource res = model.createResource(seqUri);
+        Assert.assertTrue(res.canAs(Seq.class));
+        Assert.assertTrue(res.canAs(Container.class));
+    }
 }

@@ -55,7 +55,7 @@ public class SparseArraySpliteratorTest {
             var itemsFound = new ArrayList<>();
             while (spliterator.tryAdvance((i) -> {
                 itemsFound.add(1);
-            })) ;
+            }));
             assertEquals(1, itemsFound.size());
             itemsFound.contains(1);
         }
@@ -66,7 +66,7 @@ public class SparseArraySpliteratorTest {
             var itemsFound = new ArrayList<>();
             while (spliterator.tryAdvance((i) -> {
                 itemsFound.add(1);
-            })) ;
+            }));
             assertEquals(1, itemsFound.size());
             itemsFound.contains(1);
         }
@@ -77,7 +77,7 @@ public class SparseArraySpliteratorTest {
             var itemsFound = new ArrayList<>();
             while (spliterator.tryAdvance((i) -> {
                 itemsFound.add(1);
-            })) ;
+            }));
             assertEquals(1, itemsFound.size());
             itemsFound.contains(1);
         }
@@ -92,7 +92,7 @@ public class SparseArraySpliteratorTest {
             var itemsFound = new ArrayList<>();
             while (spliterator.tryAdvance((i) -> {
                 itemsFound.add(i);
-            })) ;
+            }));
             assertEquals(2, itemsFound.size());
             itemsFound.contains(1);
             itemsFound.contains(2);
@@ -104,7 +104,7 @@ public class SparseArraySpliteratorTest {
             var itemsFound = new ArrayList<>();
             while (spliterator.tryAdvance((i) -> {
                 itemsFound.add(i);
-            })) ;
+            }));
             assertEquals(2, itemsFound.size());
             itemsFound.contains(1);
             itemsFound.contains(2);
@@ -116,7 +116,7 @@ public class SparseArraySpliteratorTest {
             var itemsFound = new ArrayList<>();
             while (spliterator.tryAdvance((i) -> {
                 itemsFound.add(i);
-            })) ;
+            }));
             assertEquals(2, itemsFound.size());
             itemsFound.contains(1);
             itemsFound.contains(2);
@@ -128,7 +128,7 @@ public class SparseArraySpliteratorTest {
             var itemsFound = new ArrayList<>();
             while (spliterator.tryAdvance((i) -> {
                 itemsFound.add(i);
-            })) ;
+            }));
             assertEquals(2, itemsFound.size());
             itemsFound.contains(1);
             itemsFound.contains(2);
@@ -140,7 +140,7 @@ public class SparseArraySpliteratorTest {
             var itemsFound = new ArrayList<>();
             while (spliterator.tryAdvance((i) -> {
                 itemsFound.add(i);
-            })) ;
+            }));
             assertEquals(2, itemsFound.size());
             itemsFound.contains(1);
             itemsFound.contains(2);
@@ -156,7 +156,7 @@ public class SparseArraySpliteratorTest {
             var itemsFound = new ArrayList<>();
             while (spliterator.tryAdvance((i) -> {
                 itemsFound.add(i);
-            })) ;
+            }));
             assertEquals(3, itemsFound.size());
             itemsFound.contains(1);
             itemsFound.contains(2);
@@ -169,7 +169,7 @@ public class SparseArraySpliteratorTest {
             var itemsFound = new ArrayList<>();
             while (spliterator.tryAdvance((i) -> {
                 itemsFound.add(i);
-            })) ;
+            }));
             assertEquals(3, itemsFound.size());
             itemsFound.contains(1);
             itemsFound.contains(2);
@@ -182,7 +182,7 @@ public class SparseArraySpliteratorTest {
             var itemsFound = new ArrayList<>();
             while (spliterator.tryAdvance((i) -> {
                 itemsFound.add(i);
-            })) ;
+            }));
             assertEquals(3, itemsFound.size());
             itemsFound.contains(1);
             itemsFound.contains(2);
@@ -195,7 +195,7 @@ public class SparseArraySpliteratorTest {
             var itemsFound = new ArrayList<>();
             while (spliterator.tryAdvance((i) -> {
                 itemsFound.add(i);
-            })) ;
+            }));
             assertEquals(3, itemsFound.size());
             itemsFound.contains(1);
             itemsFound.contains(2);
@@ -208,7 +208,7 @@ public class SparseArraySpliteratorTest {
             var itemsFound = new ArrayList<>();
             while (spliterator.tryAdvance((i) -> {
                 itemsFound.add(i);
-            })) ;
+            }));
             assertEquals(3, itemsFound.size());
             itemsFound.contains(1);
             itemsFound.contains(2);

@@ -18,21 +18,21 @@
 
 package org.apache.jena.rdfxml.xmlinput1;
 
-import java.io.* ;
+import java.io.*;
 
-import junit.framework.Test ;
-import junit.framework.TestCase ;
-import junit.framework.TestSuite ;
-import org.apache.jena.ontology.OntDocumentManager ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.RDFErrorHandler ;
-import org.apache.jena.rdf.model.RDFReaderI ;
-import org.apache.jena.vocabulary.RDF ;
-import org.junit.Assert ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
-import org.xml.sax.SAXException ;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import org.apache.jena.ontology.OntDocumentManager;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFErrorHandler;
+import org.apache.jena.rdf.model.RDFReaderI;
+import org.apache.jena.vocabulary.RDF;
+import org.junit.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 /** Additional ARP tests */
 @SuppressWarnings("deprecation")
@@ -50,7 +50,7 @@ public class TestsARP extends TestCase implements RDFErrorHandler, ARPErrorNumbe
 
         suite.addTest(new TestsMoreDOM2RDF("testDOMwithARP"));
 
-        suite.addTestSuite(TestsARP.class) ;
+        suite.addTestSuite(TestsARP.class);
 //		suite.addTest(new ARPTests2("testIcu"));
 //		suite.addTest(new ARPTests2("testLatin1"));
 //		suite.addTest(new ARPTests2("testIcu2"));
@@ -110,8 +110,8 @@ public class TestsARP extends TestCase implements RDFErrorHandler, ARPErrorNumbe
 
     private void testWineNS(Model m) throws FileNotFoundException, IOException {
         try (InputStream in = new FileInputStream("testing/arp/xmlns/wine.rdf")) {
-            m.read(in, "") ;
-            assertEquals("http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine#", m.getNsPrefixURI("")) ;
+            m.read(in, "");
+            assertEquals("http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine#", m.getNsPrefixURI(""));
         }
     }
 
@@ -167,7 +167,7 @@ public class TestsARP extends TestCase implements RDFErrorHandler, ARPErrorNumbe
 //		try ( FileReader r = new FileReader("testing/wg/rdfms-syntax-incomplete/test001.rdf") ) {
 //		    if (r.getEncoding().startsWith("UTF")) {
 //		        //logger.warn("Encoding mismatch tests not executed on platform with default UTF encoding.");
-//		        r.close() ;
+//		        r.close();
 //		        return;
 //		    }
 //		    rdr.setErrorHandler(this);
@@ -258,7 +258,7 @@ public class TestsARP extends TestCase implements RDFErrorHandler, ARPErrorNumbe
 //	}
 //
 //	public void testEncodingMismatch3() throws IOException {
-//	    try ( FileInputStream fin = new FileInputStream("testing/wg/rdf-charmod-literals/test001.rdf") ;
+//	    try ( FileInputStream fin = new FileInputStream("testing/wg/rdf-charmod-literals/test001.rdf");
 //	          InputStreamReader r = new InputStreamReader(fin,"MS950")) {
 //	        subTestEncodingMismatch2(r);
 //	    }catch (java.io.UnsupportedEncodingException e) {
@@ -440,58 +440,58 @@ public class TestsARP extends TestCase implements RDFErrorHandler, ARPErrorNumbe
 
 	public void testIRIRules_1()
 	{
-        Model model = ModelFactory.createDefaultModel() ;
-        model.read(new StringReader(RDF_TEXT), "http://example/") ;
+        Model model = ModelFactory.createDefaultModel();
+        model.read(new StringReader(RDF_TEXT), "http://example/");
 	}
 
 	// No longer applies. The testing used to have spaces in the rdf:resource but that is handled differently now.
 //	public void testIRIRules_2()
 //	{
-//        Model model = ModelFactory.createDefaultModel() ;
-//	    IRIFactory f = ARPOptions.getIRIFactoryGlobal() ;
+//        Model model = ModelFactory.createDefaultModel();
+//	    IRIFactory f = ARPOptions.getIRIFactoryGlobal();
 //	    try {
-//	        ARPOptions.setIRIFactoryGlobal(IRIFactory.iriImplementation()) ;
+//	        ARPOptions.setIRIFactoryGlobal(IRIFactory.iriImplementation());
 //	        RDFReaderI r = new RDFXMLReader();
 //            expected = new int[] { WARN_MALFORMED_URI , WARN_MALFORMED_URI };
 //	        r.setErrorHandler(this);
-//	        r.read(model, new StringReader(RDF_TEXT), "http://example/") ;
-//	    } finally { ARPOptions.setIRIFactoryGlobal(f) ; }
-//        checkExpected() ;
+//	        r.read(model, new StringReader(RDF_TEXT), "http://example/");
+//	    } finally { ARPOptions.setIRIFactoryGlobal(f); }
+//        checkExpected();
 //	}
 
     public void testIRIRules_2a()
     {
-        Model model = ModelFactory.createDefaultModel() ;
+        Model model = ModelFactory.createDefaultModel();
         RDFReaderI r = new RDFXMLReader();
         r.setErrorHandler(this);
         expected = new int[] { };
-        model.read(new StringReader(RDF_TEXT), "http://example/") ;
-        checkExpected() ;
+        model.read(new StringReader(RDF_TEXT), "http://example/");
+        checkExpected();
     }
 
     // No longer applies.
 //    public void testIRIRules_3()
 //    {
-//        Model model = ModelFactory.createDefaultModel() ;
+//        Model model = ModelFactory.createDefaultModel();
 //        RDFReaderI r = new RDFXMLReader();
 //        r.setErrorHandler(this);
 //        expected = new int[] { WARN_MALFORMED_URI , WARN_MALFORMED_URI };
-//        r.setProperty("iri-rules", "strict") ;
-//        r.read(model, new StringReader(RDF_TEXT), "http://example/") ;
-//        checkExpected() ;
+//        r.setProperty("iri-rules", "strict");
+//        r.read(model, new StringReader(RDF_TEXT), "http://example/");
+//        checkExpected();
 //    }
 
     // No longer applies.
 //    public void testIRIRules_4()
 //    {
-//        Model model = ModelFactory.createDefaultModel() ;
+//        Model model = ModelFactory.createDefaultModel();
 //        RDFReaderI r = new RDFXMLReader();
-//        r.setProperty("iri-rules", "strict") ;
-//        r.setProperty( "WARN_MALFORMED_URI", ARPErrorNumbers.EM_ERROR) ;
+//        r.setProperty("iri-rules", "strict");
+//        r.setProperty( "WARN_MALFORMED_URI", ARPErrorNumbers.EM_ERROR);
 //        r.setErrorHandler(this);
 //        expected = new int[] { WARN_MALFORMED_URI , WARN_MALFORMED_URI };   // Errors actually continue.
-//        r.read(model, new StringReader(RDF_TEXT), "http://example/") ;
-//        checkExpected() ;
+//        r.read(model, new StringReader(RDF_TEXT), "http://example/");
+//        checkExpected();
 //    }
 
     @SuppressWarnings("removal")

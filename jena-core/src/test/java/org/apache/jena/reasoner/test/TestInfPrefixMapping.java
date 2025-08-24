@@ -19,9 +19,9 @@
 package org.apache.jena.reasoner.test;
 
 import junit.framework.*;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.test.ModelTestBase ;
-import org.apache.jena.reasoner.InfGraph ;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.test.ModelTestBase;
+import org.apache.jena.reasoner.InfGraph;
 
 /**
      Needs extending; relys on knowing that the only InfGraph currently used is

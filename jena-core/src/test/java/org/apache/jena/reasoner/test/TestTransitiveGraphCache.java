@@ -20,11 +20,11 @@ package org.apache.jena.reasoner.test;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.reasoner.TriplePattern ;
-import org.apache.jena.reasoner.transitiveReasoner.TransitiveGraphCache ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.reasoner.TriplePattern;
+import org.apache.jena.reasoner.transitiveReasoner.TransitiveGraphCache;
 
 /**
  * A purely temporary test suite just used during development and kept

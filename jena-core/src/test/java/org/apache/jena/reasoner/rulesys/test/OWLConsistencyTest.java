@@ -21,14 +21,14 @@ package org.apache.jena.reasoner.rulesys.test;
 import java.util.Iterator;
 
 import junit.framework.TestCase;
-import org.apache.jena.rdf.model.InfModel ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.reasoner.Reasoner ;
-import org.apache.jena.reasoner.ReasonerFactory ;
-import org.apache.jena.reasoner.ValidityReport ;
-import org.apache.jena.reasoner.ValidityReport.Report ;
-import org.apache.jena.util.FileManager ;
+import org.apache.jena.rdf.model.InfModel;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.reasoner.Reasoner;
+import org.apache.jena.reasoner.ReasonerFactory;
+import org.apache.jena.reasoner.ValidityReport;
+import org.apache.jena.reasoner.ValidityReport.Report;
+import org.apache.jena.util.FileManager;
 
 /**
  * Utility for checking OWL validation results.

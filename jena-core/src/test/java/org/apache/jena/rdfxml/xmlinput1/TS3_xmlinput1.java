@@ -24,12 +24,12 @@ public class TS3_xmlinput1 extends TestSuite
 {
     static public TestSuite suite()
     {
-        return new TS3_xmlinput1() ;
+        return new TS3_xmlinput1();
     }
 
     private TS3_xmlinput1()
     {
-        super("RDF/XML Input ARP1") ;
+        super("RDF/XML Input ARP1");
         addTest( org.apache.jena.rdfxml.xmlinput1.TestURIs.suite());
         addTest( org.apache.jena.rdfxml.xmlinput1.TestSuiteWG_NTriples.suite());
         addTest( org.apache.jena.rdfxml.xmlinput1.TestSuiteWG_RDFXML.suite());

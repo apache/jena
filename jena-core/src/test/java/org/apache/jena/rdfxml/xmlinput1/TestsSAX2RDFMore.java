@@ -25,9 +25,9 @@ import java.util.Arrays;
 import javax.xml.parsers.SAXParserFactory;
 
 import junit.framework.TestCase;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.RDFReaderI ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFReaderI;
 import org.apache.jena.rdfxml.xmlinput1.TestsSAX2RDF.RDFEHArray;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;

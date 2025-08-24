@@ -18,29 +18,29 @@
 
 package org.apache.jena.ttl_test.test.turtle;
 
-import junit.framework.* ;
+import junit.framework.*;
 
-import java.io.* ;
+import java.io.*;
 
 import org.apache.jena.ttl_test.turtle.TurtleEventNull;
 import org.apache.jena.ttl_test.turtle.parser.TurtleParser;
-import org.apache.jena.util.junit.TestUtils ;
+import org.apache.jena.util.junit.TestUtils;
 
 public class TestTurtleInternal extends TestSuite
 {
     static public TestSuite suite() {
-        return new TestTurtleInternal() ;
+        return new TestTurtleInternal();
     }
 
-	static public final String QUOTE3 = "\"\"\"" ;
-	static public boolean VERBOSE = false ;
+	static public final String QUOTE3 = "\"\"\"";
+	static public boolean VERBOSE = false;
 
     public TestTurtleInternal() {
-		super("Turtle Parser Syntactic tests") ;
+		super("Turtle Parser Syntactic tests");
 
         // ---- Debug testing
         //addTest("<thing> b:px.b:py [] . ");
-        // if ( true ) return ;
+        // if ( true ) return;
         // ---- Debug testing
 
 		// Make sure basic things, at least, parse.
@@ -136,8 +136,8 @@ public class TestTurtleInternal extends TestSuite
         //addTest("a:subj a:prop '123', '456', .");     // Null object list
 
 		// Property lists
-		addTest("a:subj a:p1 a:v1 ;  a:p2 a:v2 .");
-    	addTest("a:subj a:p1 a:v1, a:v2 ;  a:p2 a:v2 ; a:p3 'v4' ,'v5' .");
+		addTest("a:subj a:p1 a:v1;  a:p2 a:v2 .");
+    	addTest("a:subj a:p1 a:v1, a:v2;  a:p2 a:v2; a:p3 'v4' ,'v5' .");
         addTest("a:subj a:p1 a:v1; .");                 // Null property list
         addTest("a:subj a:p1 a:v1; a:p2 a:v2; .");      // Null property list
 
@@ -246,26 +246,26 @@ public class TestTurtleInternal extends TestSuite
 
 	static class Test extends TestCase
 	{
-		String testString ;
+		String testString;
 
-		Test(String s) { super(TestUtils.safeName(s)); testString = s ; }
+		Test(String s) { super(TestUtils.safeName(s)); testString = s; }
 
 		@Override
         protected void runTest() throws Throwable
 		{
             TurtleParser parser = new TurtleParser(new StringReader(testString));
             parser.setEventHandler(new TurtleEventNull());
-            parser.getPrefixMapping().setNsPrefix("a", "http://host/a#") ;
-            parser.getPrefixMapping().setNsPrefix("x", "http://host/a#") ;
+            parser.getPrefixMapping().setNsPrefix("a", "http://host/a#");
+            parser.getPrefixMapping().setNsPrefix("x", "http://host/a#");
             // Unicode 00E9 is e-acute
             // Unicode 03B1 is alpha
-            parser.getPrefixMapping().setNsPrefix("\u00E9", "http://host/e-acute/") ;
-            parser.getPrefixMapping().setNsPrefix("\u03B1", "http://host/alpha/") ;
-            parser.getPrefixMapping().setNsPrefix("", "http://host/") ;
-            parser.getPrefixMapping().setNsPrefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#") ;
-            parser.getPrefixMapping().setNsPrefix("xsd", "http://www.w3.org/2001/XMLSchema#") ;
-            parser.setBaseURI("http://base/") ;
-            parser.parse() ;
+            parser.getPrefixMapping().setNsPrefix("\u00E9", "http://host/e-acute/");
+            parser.getPrefixMapping().setNsPrefix("\u03B1", "http://host/alpha/");
+            parser.getPrefixMapping().setNsPrefix("", "http://host/");
+            parser.getPrefixMapping().setNsPrefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+            parser.getPrefixMapping().setNsPrefix("xsd", "http://www.w3.org/2001/XMLSchema#");
+            parser.setBaseURI("http://base/");
+            parser.parse();
 		}
 	}
 }

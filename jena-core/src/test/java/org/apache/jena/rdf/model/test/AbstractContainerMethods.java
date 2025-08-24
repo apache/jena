@@ -47,12 +47,12 @@ public abstract class AbstractContainerMethods extends AbstractModelTestBase {
     public void testContainerOfIntegers() {
         final int num = 10;
         final Container c = createContainer();
-        for ( int i = 0 ; i < num ; i += 1 ) {
+        for ( int i = 0; i < num; i += 1 ) {
             c.add(i);
         }
         Assert.assertEquals(num, c.size());
         final NodeIterator it = c.iterator();
-        for ( int i = 0 ; i < num ; i += 1 ) {
+        for ( int i = 0; i < num; i += 1 ) {
             Assert.assertEquals(i, ((Literal)it.nextNode()).getInt());
         }
         Assert.assertFalse(it.hasNext());
@@ -77,7 +77,7 @@ public abstract class AbstractContainerMethods extends AbstractModelTestBase {
         final int num = retain.length;
         final boolean[] found = new boolean[num];
         final Container c = createContainer();
-        for ( int i = 0 ; i < num ; i += 1 ) {
+        for ( int i = 0; i < num; i += 1 ) {
             c.add(i);
         }
         final NodeIterator it = c.iterator();
@@ -93,7 +93,7 @@ public abstract class AbstractContainerMethods extends AbstractModelTestBase {
             Assert.assertFalse(found[v]);
             found[v] = true;
         }
-        for ( int i = 0 ; i < num ; i += 1 ) {
+        for ( int i = 0; i < num; i += 1 ) {
             Assert.assertEquals("element " + i, retain[i], found[i]);
         }
     }

@@ -26,12 +26,12 @@ package org.apache.jena.ontology.impl;
 import java.util.List;
 
 import junit.framework.TestSuite;
-import org.apache.jena.ontology.* ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.Property ;
-import org.apache.jena.reasoner.test.TestUtil ;
-import org.apache.jena.util.FileManager ;
-import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.ontology.*;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.reasoner.test.TestUtil;
+import org.apache.jena.util.FileManager;
+import org.apache.jena.vocabulary.RDF;
 
 
 
@@ -243,7 +243,7 @@ public class TestProperty
             new OntTestCase( "OntProperty.subproperty.fromFile", true, true, true ) {
                 @Override
                 public void ontTest( OntModel m ) {
-                    String lang = m_owlLang ? "owl" : "rdfs" ;
+                    String lang = m_owlLang ? "owl" : "rdfs";
                     String fileName = "file:testing/ontology/" + lang + "/Property/test.rdf";
                     m.read( fileName );
 
@@ -257,7 +257,7 @@ public class TestProperty
             new OntTestCase( "OntProperty.domain.fromFile", true, true, true ) {
                 @Override
                 public void ontTest( OntModel m ) {
-                    String lang = m_owlLang ? "owl" : "rdfs" ;
+                    String lang = m_owlLang ? "owl" : "rdfs";
                     String fileName = "file:testing/ontology/" + lang + "/Property/test.rdf";
                     m.read( fileName );
 
@@ -270,7 +270,7 @@ public class TestProperty
             new OntTestCase( "OntProperty.range.fromFile", true, true, true ) {
                 @Override
                 public void ontTest( OntModel m ) {
-                    String lang = m_owlLang ? "owl" : "rdfs" ;
+                    String lang = m_owlLang ? "owl" : "rdfs";
                     String fileName = "file:testing/ontology/" + lang + "/Property/test.rdf";
                     m.read( fileName );
 
@@ -283,7 +283,7 @@ public class TestProperty
             new OntTestCase( "OntProperty.equivalentProeprty.fromFile", true, true, false ) {
                 @Override
                 public void ontTest( OntModel m ) {
-                    String lang = m_owlLang ? "owl" : "rdfs" ;
+                    String lang = m_owlLang ? "owl" : "rdfs";
                     String fileName = "file:testing/ontology/" + lang + "/Property/test.rdf";
                     m.read( fileName );
 
@@ -296,7 +296,7 @@ public class TestProperty
             new OntTestCase( "OntProperty.inversePropertyOf.fromFile", true, true, false ) {
                 @Override
                 public void ontTest( OntModel m ) {
-                    String lang = m_owlLang ? "owl" : "rdfs" ;
+                    String lang = m_owlLang ? "owl" : "rdfs";
                     String fileName = "file:testing/ontology/" + lang + "/Property/test.rdf";
                     m.read( fileName );
 

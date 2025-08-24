@@ -37,7 +37,7 @@ import org.apache.jena.shared.NoReaderForLangException;
  * </ul>
  */
 public class X_RDFReaderF extends Object implements RDFReaderF {
-    public static final String DEFAULTLANG = "RDF/XML" ;
+    public static final String DEFAULTLANG = "RDF/XML";
     private static Map<String, Class<? extends RDFReaderI>> custom = new LinkedHashMap<>();
 
     /** Creates new RDFReaderFImpl */
@@ -47,7 +47,7 @@ public class X_RDFReaderF extends Object implements RDFReaderF {
     public RDFReaderI getReader(String lang) {
         // Jena model.read rule for defaulting.
         if (lang==null || lang.equals(""))
-            lang = DEFAULTLANG ;
+            lang = DEFAULTLANG;
         Class<? extends RDFReaderI> c = custom.get(lang);
         if ( c == null )
             throw new NoReaderForLangException("Reader not found: " + lang);

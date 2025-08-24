@@ -18,9 +18,9 @@
 
 package org.apache.jena.rdf.model.test.helpers;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.shared.PrefixMapping;
 
 /**
  * Interface that defines the Testing Model Factory.

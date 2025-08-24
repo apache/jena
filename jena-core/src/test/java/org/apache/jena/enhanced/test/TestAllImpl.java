@@ -17,9 +17,9 @@
  */
 
 package org.apache.jena.enhanced.test;
-import org.apache.jena.enhanced.* ;
-import org.apache.jena.graph.* ;
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.enhanced.*;
+import org.apache.jena.graph.*;
+import org.apache.jena.rdf.model.*;
 
 public class TestAllImpl extends TestCommonImpl implements TestSubject, TestProperty, TestObject {
 
@@ -46,7 +46,7 @@ public class TestAllImpl extends TestCommonImpl implements TestSubject, TestProp
             : t == TestSubject.class ? isSubject()
             : t == TestObject.class ? isObject()
             : false
-            ;
+           ;
         }
 
     @Override

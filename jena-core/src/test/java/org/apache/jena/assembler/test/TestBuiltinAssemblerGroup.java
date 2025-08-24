@@ -18,79 +18,73 @@
 
 package org.apache.jena.assembler.test;
 
-import org.apache.jena.assembler.* ;
-import org.apache.jena.assembler.assemblers.* ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.assembler.*;
+import org.apache.jena.assembler.assemblers.*;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.shared.PrefixMapping;
 
-public class TestBuiltinAssemblerGroup extends AssemblerTestBase
-    {
-    public TestBuiltinAssemblerGroup( String name )
-        { super( name ); }
+public class TestBuiltinAssemblerGroup extends AssemblerTestBase {
+    public TestBuiltinAssemblerGroup(String name) {
+        super(name);
+    }
 
-    @Override protected Class<? extends Assembler> getAssemblerClass()
-        { return null; }
-
-    @SuppressWarnings("removal")
-    public void testGeneralRegistration()
-        {
-        assertAssemblerClass( JA.DefaultModel, DefaultModelAssembler.class );
-        assertAssemblerClass( JA.PrefixMapping, PrefixMappingAssembler.class );
-        assertAssemblerClass( JA.SinglePrefixMapping, PrefixMappingAssembler.class );
-        assertAssemblerClass( JA.OntModel, OntModelAssembler.class );
-        assertAssemblerClass( JA.OntModelSpec, OntModelSpecAssembler.class );
-        assertAssemblerClass( JA.Content, ContentAssembler.class );
-        assertAssemblerClass( JA.ContentItem, ContentAssembler.class );
-        assertAssemblerClass( JA.ReasonerFactory, ReasonerFactoryAssembler.class );
-        assertAssemblerClass( JA.InfModel, InfModelAssembler.class );
-        assertAssemblerClass( JA.MemoryModel, MemoryModelAssembler.class );
-        assertAssemblerClass( JA.RuleSet, RuleSetAssembler.class );
-        assertAssemblerClass( JA.DocumentManager, DocumentManagerAssembler.class );
-        assertAssemblerClass( JA.UnionModel, UnionModelAssembler.class );
-        }
+    @Override
+    protected Class<? extends Assembler> getAssemblerClass() {
+        return null;
+    }
 
     @SuppressWarnings("removal")
-    public void testVariables()
-        {
-        assertInstanceOf( DefaultModelAssembler.class, Assembler.defaultModel );
-        assertInstanceOf( PrefixMappingAssembler.class, Assembler.prefixMapping );
-        assertInstanceOf( OntModelAssembler.class, Assembler.ontModel );
-        assertInstanceOf( OntModelSpecAssembler.class, Assembler.ontModelSpec );
-        assertInstanceOf( ContentAssembler.class, Assembler.content );
-        assertInstanceOf( ReasonerFactoryAssembler.class, Assembler.reasonerFactory );
-        assertInstanceOf( InfModelAssembler.class, Assembler.infModel );
-        assertInstanceOf( MemoryModelAssembler.class, Assembler.memoryModel );
-        assertInstanceOf( RuleSetAssembler.class, Assembler.ruleSet );
-        assertInstanceOf( DocumentManagerAssembler.class, Assembler.documentManager );
-        assertInstanceOf( UnionModelAssembler.class, Assembler.unionModel );
-        }
+    public void testGeneralRegistration() {
+        assertAssemblerClass(JA.DefaultModel, DefaultModelAssembler.class);
+        assertAssemblerClass(JA.PrefixMapping, PrefixMappingAssembler.class);
+        assertAssemblerClass(JA.SinglePrefixMapping, PrefixMappingAssembler.class);
+        assertAssemblerClass(JA.OntModel, OntModelAssembler.class);
+        assertAssemblerClass(JA.OntModelSpec, OntModelSpecAssembler.class);
+        assertAssemblerClass(JA.Content, ContentAssembler.class);
+        assertAssemblerClass(JA.ContentItem, ContentAssembler.class);
+        assertAssemblerClass(JA.ReasonerFactory, ReasonerFactoryAssembler.class);
+        assertAssemblerClass(JA.InfModel, InfModelAssembler.class);
+        assertAssemblerClass(JA.MemoryModel, MemoryModelAssembler.class);
+        assertAssemblerClass(JA.RuleSet, RuleSetAssembler.class);
+        assertAssemblerClass(JA.DocumentManager, DocumentManagerAssembler.class);
+        assertAssemblerClass(JA.UnionModel, UnionModelAssembler.class);
+    }
 
-    public void testRecognisesAndAssemblesSinglePrefixMapping()
-        {
-        PrefixMapping wanted = PrefixMapping.Factory.create().setNsPrefix( "P", "spoo:/" );
-        Resource r = resourceInModel( "x ja:prefix 'P'; x ja:namespace 'spoo:/'" );
-        assertEquals( wanted, Assembler.general().open( r ) );
-        }
+    @SuppressWarnings("removal")
+    public void testVariables() {
+        assertInstanceOf(DefaultModelAssembler.class, Assembler.defaultModel);
+        assertInstanceOf(PrefixMappingAssembler.class, Assembler.prefixMapping);
+        assertInstanceOf(OntModelAssembler.class, Assembler.ontModel);
+        assertInstanceOf(OntModelSpecAssembler.class, Assembler.ontModelSpec);
+        assertInstanceOf(ContentAssembler.class, Assembler.content);
+        assertInstanceOf(ReasonerFactoryAssembler.class, Assembler.reasonerFactory);
+        assertInstanceOf(InfModelAssembler.class, Assembler.infModel);
+        assertInstanceOf(MemoryModelAssembler.class, Assembler.memoryModel);
+        assertInstanceOf(RuleSetAssembler.class, Assembler.ruleSet);
+        assertInstanceOf(DocumentManagerAssembler.class, Assembler.documentManager);
+        assertInstanceOf(UnionModelAssembler.class, Assembler.unionModel);
+    }
 
-    public void testRecognisesAndAssemblesMultiplePrefixMappings()
-        {
-        PrefixMapping wanted = PrefixMapping.Factory.create()
-            .setNsPrefix( "P", "spoo:/" ).setNsPrefix( "Q", "flarn:/" );
-        Resource r = resourceInModel
-            ( "x ja:includes y; x ja:includes z; y ja:prefix 'P'; y ja:namespace 'spoo:/'; z ja:prefix 'Q'; z ja:namespace 'flarn:/'" );
-        assertEquals( wanted, Assembler.general().open( r ) );
-        }
+    public void testRecognisesAndAssemblesSinglePrefixMapping() {
+        PrefixMapping wanted = PrefixMapping.Factory.create().setNsPrefix("P", "spoo:/");
+        Resource r = resourceInModel("x ja:prefix 'P'; x ja:namespace 'spoo:/'");
+        assertEquals(wanted, Assembler.general().open(r));
+    }
 
-    public static void assertEquals( PrefixMapping wanted, Object got )
-        {
-        if (got instanceof PrefixMapping && wanted.samePrefixMappingAs( (PrefixMapping) got ))
+    public void testRecognisesAndAssemblesMultiplePrefixMappings() {
+        PrefixMapping wanted = PrefixMapping.Factory.create().setNsPrefix("P", "spoo:/").setNsPrefix("Q", "flarn:/");
+        Resource r = resourceInModel("x ja:includes y; x ja:includes z; y ja:prefix 'P'; y ja:namespace 'spoo:/'; z ja:prefix 'Q'; z ja:namespace 'flarn:/'");
+        assertEquals(wanted, Assembler.general().open(r));
+    }
+
+    public static void assertEquals(PrefixMapping wanted, Object got) {
+        if ( got instanceof PrefixMapping && wanted.samePrefixMappingAs((PrefixMapping)got) )
             pass();
         else
-            fail( "expected " + wanted + " but was: " + got );
-        }
-
-    private void assertAssemblerClass( Resource type, Class<?> C )
-        {
-        assertInstanceOf( C, Assembler.general().assemblerFor( type ) );
-        }
+            fail("expected " + wanted + " but was: " + got);
     }
+
+    private void assertAssemblerClass(Resource type, Class<? > C) {
+        assertInstanceOf(C, Assembler.general().assemblerFor(type));
+    }
+}

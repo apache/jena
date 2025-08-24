@@ -21,10 +21,10 @@ package org.apache.jena.graph.compose.test;
 import java.util.*;
 
 import junit.framework.*;
-import org.apache.jena.graph.* ;
-import org.apache.jena.graph.compose.* ;
-import org.apache.jena.graph.test.* ;
-import org.apache.jena.util.iterator.* ;
+import org.apache.jena.graph.*;
+import org.apache.jena.graph.compose.*;
+import org.apache.jena.graph.test.*;
+import org.apache.jena.util.iterator.*;
 
 public abstract class TestDyadic extends AbstractTestGraph {
     public TestDyadic(String name) {

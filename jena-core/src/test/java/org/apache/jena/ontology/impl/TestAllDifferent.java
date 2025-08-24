@@ -23,8 +23,8 @@ package org.apache.jena.ontology.impl;
 // Imports
 ///////////////
 import junit.framework.*;
-import org.apache.jena.ontology.* ;
-import org.apache.jena.rdf.model.RDFNode ;
+import org.apache.jena.ontology.*;
+import org.apache.jena.rdf.model.RDFNode;
 
 /**
  * <p>

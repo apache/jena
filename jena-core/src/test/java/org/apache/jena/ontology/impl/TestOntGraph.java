@@ -19,9 +19,9 @@
 package org.apache.jena.ontology.impl;
 
 import junit.framework.*;
-import org.apache.jena.graph.* ;
-import org.apache.jena.graph.test.* ;
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.graph.*;
+import org.apache.jena.graph.test.*;
+import org.apache.jena.rdf.model.*;
 
 /**
     Ensure that an OntGraph passes the graph tests. Clunky because it has to go

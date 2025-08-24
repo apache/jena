@@ -33,9 +33,8 @@ import org.apache.jena.shared.JenaException;
 import org.apache.jena.vocabulary.RDF;
 
 /**
- * Tests for create RDF Terms (@link Node Nodes}) involving strings
- * (xsd:string, rdf:langString, rdf:dirLangString).
- * Base direction introduced in RDF 1.2.
+ * Tests for create RDF Terms (@link Node Nodes}) involving strings (xsd:string,
+ * rdf:langString, rdf:dirLangString). Base direction introduced in RDF 1.2.
  */
 public class TestRDFStringLiterals {
 
@@ -44,68 +43,80 @@ public class TestRDFStringLiterals {
 
     // ---- xsd:string
 
-    @Test public void string01() {
+    @Test
+    public void string01() {
         Node n = NodeFactory.createLiteralString("abc");
-        test(n, "abc", "", noTextDirection , XSDDatatype.XSDstring, "abc");
+        test(n, "abc", "", noTextDirection, XSDDatatype.XSDstring, "abc");
     }
 
-    @Test public void string02() {
+    @Test
+    public void string02() {
         Node n = NodeFactory.createLiteralLang("abc", null);
         test(n, "abc", "", null, XSDDatatype.XSDstring, "abc");
     }
 
-    @Test public void string03() {
+    @Test
+    public void string03() {
         Node n = NodeFactory.createLiteralDirLang("abc", null, (String)null);
         test(n, "abc", "", null, XSDDatatype.XSDstring, "abc");
     }
 
-    @Test public void string04() {
+    @Test
+    public void string04() {
         Node n = NodeFactory.createLiteralDirLang("abc", "", "");
         test(n, "abc", "", null, XSDDatatype.XSDstring, "abc");
     }
 
     // ---- rdf:langString
 
-    @Test public void strLang01() {
+    @Test
+    public void strLang01() {
         Node n = NodeFactory.createLiteralLang("abc", "en");
         test(n, "abc", "en", null, RDF.dtLangString, "abc@en");
     }
 
-    @Test public void strLang02() {
+    @Test
+    public void strLang02() {
         Node n = NodeFactory.createLiteralLang("abc", "EN");
         test(n, "abc", "en", null, RDF.dtLangString, "abc@en");
     }
 
-    @Test public void strLang03() {
+    @Test
+    public void strLang03() {
         Node n = NodeFactory.createLiteralLang("abc", "");
         test(n, "abc", "", null, XSDDatatype.XSDstring, "abc");
     }
 
     // Make with explicit no base direction.
 
-    @Test public void strLang04() {
+    @Test
+    public void strLang04() {
         Node n = NodeFactory.createLiteralDirLang("abc", null, (String)null);
         test(n, "abc", "", null, XSDDatatype.XSDstring, "abc");
     }
 
-    @Test public void strLang05() {
+    @Test
+    public void strLang05() {
         // "" is a convenience of no direction.
         Node n = NodeFactory.createLiteralDirLang("abc", "", "");
         test(n, "abc", "", null, XSDDatatype.XSDstring, "abc");
     }
 
     // language tags
-    @Test public void strLangTag01() {
+    @Test
+    public void strLangTag01() {
         Node n = NodeFactory.createLiteralLang("abc", "en");
         test(n, "abc", "en", null, RDF.dtLangString, "abc@en");
     }
 
-    @Test public void strLangTag02() {
+    @Test
+    public void strLangTag02() {
         Node n = NodeFactory.createLiteralLang("abc", "EN-GB");
         test(n, "abc", "en-GB", null, RDF.dtLangString, "abc@en-GB");
     }
 
-    @Test public void strLangTag03() {
+    @Test
+    public void strLangTag03() {
         // "" is a convenience of no direction.
         Node n = NodeFactory.createLiteralLang("abc", "EN-LATN-GB");
         test(n, "abc", "en-Latn-GB", null, RDF.dtLangString, "abc@en-Latn-GB");
@@ -113,7 +124,8 @@ public class TestRDFStringLiterals {
 
     // ---- rdf:dirLangString
 
-    @Test public void dirLangString01() {
+    @Test
+    public void dirLangString01() {
         Node n = NodeFactory.createLiteralDirLang("abc", "en", "rtl");
         test(n, "abc", "en", RTL, RDF.dtDirLangString, "abc@en");
     }
@@ -128,7 +140,8 @@ public class TestRDFStringLiterals {
         Node n = NodeFactory.createLiteralDirLang("abc", "en", "unk");
     }
 
-    @Test public void dirLangString04() {
+    @Test
+    public void dirLangString04() {
         Node n = NodeFactory.createLiteralDirLang("abc", "en", "");
         test(n, "abc", "en", null, RDF.dtLangString, "abc@en");
     }
@@ -139,7 +152,8 @@ public class TestRDFStringLiterals {
     }
 
     // -- Via createLiteralLang splitting lang tags on "--"
-    @Test public void dirLangString10() {
+    @Test
+    public void dirLangString10() {
         Node n = NodeFactory.createLiteralLang("abc", "en--rtl");
         test(n, "abc", "en", RTL, RDF.dtDirLangString, "abc@en");
     }
@@ -158,7 +172,6 @@ public class TestRDFStringLiterals {
         assertNotEquals(nDirLangString1, nDirLangString4);
     }
 
-
     @Test(expected = JenaException.class)
     public void dirLangString11() {
         Node n = NodeFactory.createLiteralLang("abc", "en--LTR");
@@ -171,36 +184,37 @@ public class TestRDFStringLiterals {
 
     // Errors
 
-    @Test(expected=JenaException.class)
+    @Test(expected = JenaException.class)
     public void rdfStringBad01() {
         // No lang but with a direction
         Node n = NodeFactory.createLiteralDirLang("abc", null, TextDirection.LTR);
     }
 
-    @Test(expected=JenaException.class)
+    @Test(expected = JenaException.class)
     public void rdfStringBad02() {
         // No lang but with a direction
         Node n = NodeFactory.createLiteralDirLang("abc", "", TextDirection.LTR);
     }
 
-    @Test(expected=NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void rdfStringBad03() {
         Node n = NodeFactory.createLiteralString((String)null);
     }
 
-    @Test(expected=NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void rdfStringBad04() {
         Node n = NodeFactory.createLiteralLang((String)null, "en");
     }
 
-    @Test(expected=NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void rdfStringBad05() {
         Node n = NodeFactory.createLiteralDirLang((String)null, "en", TextDirection.LTR);
     }
 
     // ----
 
-    private static void test(Node node, String lexicalForm, String lang, TextDirection textDir, RDFDatatype datatype, String indexingValue) {
+    private static void test(Node node, String lexicalForm, String lang, TextDirection textDir, RDFDatatype datatype,
+                             String indexingValue) {
         assertEquals("Lexical form:", lexicalForm, node.getLiteralLexicalForm());
         assertEquals("Language:", lang, node.getLiteralLanguage());
         assertEquals("Text Direction:", textDir, node.getLiteralBaseDirection());

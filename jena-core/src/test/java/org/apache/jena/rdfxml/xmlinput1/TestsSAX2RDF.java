@@ -29,10 +29,10 @@ import javax.xml.parsers.SAXParserFactory;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.RDFErrorHandler ;
-import org.apache.jena.rdf.model.RDFReaderI ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFErrorHandler;
+import org.apache.jena.rdf.model.RDFReaderI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;

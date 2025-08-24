@@ -44,8 +44,8 @@ public class TS3_xmloutput extends TestCase{
         suite.addTestSuite( TestWriterURIExceptions.class );
         suite.addTestSuite( TestEntityOutput.class );
         suite.addTestSuite( TestLiteralEncoding.class );
-        suite.addTestSuite( TestWriterFeatures.class ) ;
-        suite.addTestSuite( TestWriterURIExceptions.class ) ;
+        suite.addTestSuite( TestWriterFeatures.class );
+        suite.addTestSuite( TestWriterURIExceptions.class );
         return suite;
     }
 }

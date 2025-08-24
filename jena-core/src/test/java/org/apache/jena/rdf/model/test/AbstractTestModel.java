@@ -224,7 +224,7 @@ public abstract class AbstractTestModel extends ModelTestBase {
     public void testRemoveSPO() {
         ModelCom mc = (ModelCom)ModelFactory.createDefaultModel();
         for ( String[] aCase : cases ) {
-            for ( int j = 0 ; j < 3 ; j += 1 ) {
+            for ( int j = 0; j < 3; j += 1 ) {
                 Model content = getModel();
                 Model baseContent = copy(content);
                 modelAdd(content, aCase[0]);

@@ -18,27 +18,29 @@
 
 package org.apache.jena.assembler.test;
 
-import org.apache.jena.assembler.* ;
-import org.apache.jena.assembler.assemblers.DefaultModelAssembler ;
-import org.apache.jena.mem.GraphMemBase ;
-import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.assembler.*;
+import org.apache.jena.assembler.assemblers.DefaultModelAssembler;
+import org.apache.jena.mem.GraphMemBase;
+import org.apache.jena.rdf.model.Model;
 
-public class TestDefaultModelAssembler extends AssemblerTestBase
-    {
-    public TestDefaultModelAssembler( String name )
-        { super( name ); }
-
-    @Override protected Class<? extends Assembler> getAssemblerClass()
-        { return DefaultModelAssembler.class; }
-    
-    public void testDefaultModelAssembler()
-        {
-        Assembler a = Assembler.defaultModel;
-        Model m = a.openModel( resourceInModel( "x rdf:type ja:DefaultModel" ) );
-        assertInstanceOf( Model.class, m );
-        assertInstanceOf( GraphMemBase.class, m.getGraph() );
-        }
-    
-    public void testDefaultModelAssemblerType()
-        { testDemandsMinimalType( Assembler.defaultModel, JA.DefaultModel ); }
+public class TestDefaultModelAssembler extends AssemblerTestBase {
+    public TestDefaultModelAssembler(String name) {
+        super(name);
     }
+
+    @Override
+    protected Class<? extends Assembler> getAssemblerClass() {
+        return DefaultModelAssembler.class;
+    }
+
+    public void testDefaultModelAssembler() {
+        Assembler a = Assembler.defaultModel;
+        Model m = a.openModel(resourceInModel("x rdf:type ja:DefaultModel"));
+        assertInstanceOf(Model.class, m);
+        assertInstanceOf(GraphMemBase.class, m.getGraph());
+    }
+
+    public void testDefaultModelAssemblerType() {
+        testDemandsMinimalType(Assembler.defaultModel, JA.DefaultModel);
+    }
+}

@@ -18,27 +18,26 @@
 
 package org.apache.jena.rdf.model.test;
 
-import java.io.IOException ;
-import java.net.ConnectException ;
-import java.net.NoRouteToHostException ;
-import java.net.UnknownHostException ;
+import java.io.IOException;
+import java.net.ConnectException;
+import java.net.NoRouteToHostException;
+import java.net.UnknownHostException;
 
-import org.apache.jena.rdf.model.RDFReaderI ;
-import org.apache.jena.rdf.model.StmtIterator ;
+import org.apache.jena.rdf.model.RDFReaderI;
+import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.rdf.model.impl.NTripleReader;
-import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
-import org.apache.jena.shared.JenaException ;
-import org.junit.Assert ;
-import org.slf4j.LoggerFactory ;
+import org.apache.jena.rdf.model.test.helpers.TestingModelFactory;
+import org.apache.jena.shared.JenaException;
+import org.junit.Assert;
+import org.slf4j.LoggerFactory;
 
-public class TestReaders extends AbstractModelTestBase
-{
+public class TestReaders extends AbstractModelTestBase {
     public TestReaders(final TestingModelFactory modelFactory, final String name) {
-        super(modelFactory, name) ;
+        super(modelFactory, name);
     }
 
     public TestReaders() {
-        this(new TS3_Model1.PlainModelFactory(), "TestReaders") ;
+        this(new TS3_Model1.PlainModelFactory(), "TestReaders");
     }
 
     /**
@@ -46,50 +45,47 @@ public class TestReaders extends AbstractModelTestBase
      */
     public void testGetNTripleReader() {
         final RDFReaderI reader = new NTripleReader();
-        Assert.assertNotNull(reader) ;
+        Assert.assertNotNull(reader);
     }
 
     public void testReadLocalNTriple() {
-        model.read(getInputStream("TestReaders.nt"), "", "N-TRIPLE") ;
-        Assert.assertEquals("Wrong size model", 5, model.size()) ;
-        final StmtIterator iter = model.listStatements(null, null, "foo\"\\\n\r\tbar") ;
-        Assert.assertTrue("No next statement found", iter.hasNext()) ;
-	}
+        model.read(getInputStream("TestReaders.nt"), "", "N-TRIPLE");
+        Assert.assertEquals("Wrong size model", 5, model.size());
+        final StmtIterator iter = model.listStatements(null, null, "foo\"\\\n\r\tbar");
+        Assert.assertTrue("No next statement found", iter.hasNext());
+    }
 
     public void testReadLocalRDF() {
-        model.read(getInputStream("TestReaders.rdf"), "http://example.org/") ;
+        model.read(getInputStream("TestReaders.rdf"), "http://example.org/");
     }
 
     public void testReadRemoteNTriple() {
         try {
-            model.read("https://www.w3.org/2000/10/rdf-tests/rdfcore/" + "rdf-containers-syntax-vs-schema/test001.nt",
-                       "N-TRIPLE") ;
-        }
-        catch (final JenaException jx) {
+            model.read("https://www.w3.org/2000/10/rdf-tests/rdfcore/" + "rdf-containers-syntax-vs-schema/test001.nt", "N-TRIPLE");
+        } catch (final JenaException jx) {
             if ( (jx.getCause() instanceof NoRouteToHostException) || (jx.getCause() instanceof UnknownHostException)
                  || (jx.getCause() instanceof ConnectException) || (jx.getCause() instanceof IOException) ) {
-                noPublicInternet() ;
+                noPublicInternet();
             } else {
-                throw jx ;
+                throw jx;
             }
         }
     }
 
     public void testReadRemoteRDF() {
         try {
-            model.read("https://www.w3.org/2000/10/rdf-tests/rdfcore/" + "rdf-containers-syntax-vs-schema/test001.rdf") ;
-        }
-        catch (final JenaException jx) {
+            model.read("https://www.w3.org/2000/10/rdf-tests/rdfcore/" + "rdf-containers-syntax-vs-schema/test001.rdf");
+        } catch (final JenaException jx) {
             if ( (jx.getCause() instanceof NoRouteToHostException) || (jx.getCause() instanceof UnknownHostException)
                  || (jx.getCause() instanceof ConnectException) || (jx.getCause() instanceof IOException) ) {
-                noPublicInternet() ;
+                noPublicInternet();
             } else {
-                throw jx ;
+                throw jx;
             }
         }
     }
 
     private void noPublicInternet() {
         LoggerFactory.getLogger(this.getClass()).warn("Cannot access public internet - part of test not executed");
-	}
+    }
 }

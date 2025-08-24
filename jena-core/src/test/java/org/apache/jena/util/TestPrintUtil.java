@@ -23,42 +23,41 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.rdf.model.ResourceFactory ;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
 
-public class TestPrintUtil extends TestCase
-{    
-    
+public class TestPrintUtil extends TestCase {
+
     public TestPrintUtil(String name) {
-        super( name );
+        super(name);
     }
-     
-     public static TestSuite suite() {
-         return new TestSuite( TestPrintUtil.class );
-     }   
 
-     // Minimal test of formating a URI with prefixes
-     public void testPrefixUse() {
-         String NS = "http://jena.hpl.hp.com/example#";
-         String name = "r1";
-         String uri = NS + name;
-         String shortform = "p:" + name;
-         String longform = "<" + uri + ">";
-         Resource r = ResourceFactory.createResource(uri);
-         assertEquals(longform, PrintUtil.print(r));
-         
-         PrintUtil.registerPrefix("p", NS);
-         assertEquals(shortform, PrintUtil.print(r));
-         
-         PrintUtil.removePrefix("p");
-         assertEquals(longform, PrintUtil.print(r));
-         
-         Map<String, String> map = new HashMap<>();
-         map.put("p", NS);
-         PrintUtil.registerPrefixMap(map);
-         assertEquals(shortform, PrintUtil.print(r));
+    public static TestSuite suite() {
+        return new TestSuite(TestPrintUtil.class);
+    }
 
-         PrintUtil.removePrefixMap( map );
-         assertEquals(longform, PrintUtil.print(r));
-     }
+    // Minimal test of formating a URI with prefixes
+    public void testPrefixUse() {
+        String NS = "http://jena.hpl.hp.com/example#";
+        String name = "r1";
+        String uri = NS + name;
+        String shortform = "p:" + name;
+        String longform = "<" + uri + ">";
+        Resource r = ResourceFactory.createResource(uri);
+        assertEquals(longform, PrintUtil.print(r));
+
+        PrintUtil.registerPrefix("p", NS);
+        assertEquals(shortform, PrintUtil.print(r));
+
+        PrintUtil.removePrefix("p");
+        assertEquals(longform, PrintUtil.print(r));
+
+        Map<String, String> map = new HashMap<>();
+        map.put("p", NS);
+        PrintUtil.registerPrefixMap(map);
+        assertEquals(shortform, PrintUtil.print(r));
+
+        PrintUtil.removePrefixMap(map);
+        assertEquals(longform, PrintUtil.print(r));
+    }
 }

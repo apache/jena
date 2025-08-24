@@ -74,9 +74,9 @@ public class TestIRIxRelative extends AbstractTestIRIx_3986 {
 
     @Test public void relative_09() { relative("http://ex/path/", "http://ex/path/file#frag", "file#frag"); }
 
-    @Test public void relative_10() { relative("http://example/ns#", "http://example/x", "x") ; }
+    @Test public void relative_10() { relative("http://example/ns#", "http://example/x", "x"); }
 
-    @Test public void relative_11() { relative("http://example/ns#", "http://example/ns#x", "#x") ; }
+    @Test public void relative_11() { relative("http://example/ns#", "http://example/ns#x", "#x"); }
 
     private void relative(String baseStr, String pathStr, String expected) {
         IRIx base = test_create(baseStr);

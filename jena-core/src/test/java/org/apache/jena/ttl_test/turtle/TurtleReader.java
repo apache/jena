@@ -20,7 +20,7 @@ package org.apache.jena.ttl_test.turtle;
 
 import java.io.Reader;
 
-import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.ttl_test.JenaReaderBase;
 
 
@@ -32,7 +32,7 @@ public class TurtleReader extends JenaReaderBase
     @Override
     protected void readWorker(Model model, Reader reader, String base)
     {
-        ParserTurtle p =  new ParserTurtle() ;
-        p.parse( model.getGraph(), base, reader ) ;
+        ParserTurtle p =  new ParserTurtle();
+        p.parse( model.getGraph(), base, reader );
     }
 }

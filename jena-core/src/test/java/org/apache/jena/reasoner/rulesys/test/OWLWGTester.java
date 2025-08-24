@@ -18,26 +18,26 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
-import java.io.BufferedReader ;
-import java.io.FileReader ;
-import java.io.IOException ;
-import java.io.Reader ;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.reasoner.InfGraph ;
-import org.apache.jena.reasoner.Reasoner ;
-import org.apache.jena.reasoner.ReasonerFactory ;
-import org.apache.jena.reasoner.rulesys.FBRuleInfGraph ;
-import org.apache.jena.reasoner.test.WGReasonerTester ;
-import org.apache.jena.shared.JenaException ;
-import org.apache.jena.util.FileManager ;
-import org.apache.jena.vocabulary.RDF ;
-import org.apache.jena.vocabulary.ReasonerVocabulary ;
-import org.junit.Assert ;
-import junit.framework.TestCase ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.reasoner.InfGraph;
+import org.apache.jena.reasoner.Reasoner;
+import org.apache.jena.reasoner.ReasonerFactory;
+import org.apache.jena.reasoner.rulesys.FBRuleInfGraph;
+import org.apache.jena.reasoner.test.WGReasonerTester;
+import org.apache.jena.shared.JenaException;
+import org.apache.jena.util.FileManager;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.ReasonerVocabulary;
+import org.junit.Assert;
+import junit.framework.TestCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A test harness for running the OWL working group tests. This

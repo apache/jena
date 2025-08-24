@@ -18,80 +18,73 @@
 
 package org.apache.jena.assembler.test;
 
-import org.apache.jena.assembler.* ;
-import org.apache.jena.assembler.assemblers.PrefixMappingAssembler ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.assembler.*;
+import org.apache.jena.assembler.assemblers.PrefixMappingAssembler;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.shared.PrefixMapping;
 
 /**
-   Tests for prefix-mapping assembler. Note that the basic atom is a
-   <i>single</i> prefix-mapping specified with a ja:prefix and ja:namespace
-   pair. If a prefix-mapping needs multiple bindings, ja:includes must be
-   used to include multiple single mappings:
-   
-   <pre>
-   whatever ja:includes [ja:prefix 'A'; ja:namespace 'namespaceForA']
-       ; ja:includes [ja:prefix 'B'; ja:namespace 'namespaceForB']
-       ...
-   </pre>
+ * Tests for prefix-mapping assembler. Note that the basic atom is a <i>single</i>
+ * prefix-mapping specified with a ja:prefix and ja:namespace pair. If a
+ * prefix-mapping needs multiple bindings, ja:includes must be used to include
+ * multiple single mappings:
+ * 
+ * <pre>
+ whatever ja:includes [ja:prefix 'A'; ja:namespace 'namespaceForA']
+    ; ja:includes [ja:prefix 'B'; ja:namespace 'namespaceForB']
+     ...
+ * </pre>
+ * 
+ * See also <i>TestBuiltinAssembler</i>.
+ */
 
-    See also <i>TestBuiltinAssembler</i>.
-*/
-
-public class TestPrefixMappingAssembler extends AssemblerTestBase
-    {
-    public TestPrefixMappingAssembler( String name )
-        { super( name ); }
-
-    @Override protected Class<? extends Assembler> getAssemblerClass()
-        { return PrefixMappingAssembler.class; }
-
-    public void testPrefixMappingAssemblerType()
-        { testDemandsMinimalType( new PrefixMappingAssembler(), JA.PrefixMapping );  }
-    
-    public void testConstructEmptyPrefixMapping()
-        {
-        Assembler a = new PrefixMappingAssembler();
-        Resource root = resourceInModel( "pm rdf:type ja:PrefixMapping" );
-        Object pm = a.open( root );
-        assertInstanceOf( PrefixMapping.class, pm );
-        }
-    
-    public void testSimplePrefixMapping()
-        {
-        PrefixMapping wanted = PrefixMapping.Factory.create()
-            .setNsPrefix( "pre", "some:prefix/" );
-        Assembler a = new PrefixMappingAssembler();
-        Resource root = resourceInModel( "pm rdf:type ja:PrefixMapping; pm ja:prefix 'pre'; pm ja:namespace 'some:prefix/'" );
-        PrefixMapping pm = (PrefixMapping) a.open( root );
-        assertSamePrefixMapping( wanted, pm );
-        }
-    
-    public void testIncludesSingleMapping()
-        {
-        PrefixMapping wanted = PrefixMapping.Factory.create()
-            .setNsPrefix( "pre", "some:prefix/" );
-        Assembler a = new PrefixMappingAssembler();
-        Resource root = resourceInModel
-            ( "root rdf:type ja:PrefixMapping; root ja:includes pm"
-            + "; pm rdf:type ja:PrefixMapping; pm ja:prefix 'pre'; pm ja:namespace 'some:prefix/'" );
-        PrefixMapping pm = (PrefixMapping) a.open( root );
-        assertSamePrefixMapping( wanted, pm );
-        }
-    
-    public void testIncludesMultipleMappings()
-        {
-        PrefixMapping wanted = PrefixMapping.Factory.create()
-            .setNsPrefix( "p1", "some:prefix/" )
-            .setNsPrefix( "p2", "other:prefix/" )
-            .setNsPrefix( "p3", "simple:prefix#" );
-        Assembler a = new PrefixMappingAssembler();
-        Resource root = resourceInModel
-            ( "root rdf:type ja:PrefixMapping"
-            + "; root ja:includes pm1; pm1 rdf:type ja:PrefixMapping; pm1 ja:prefix 'p1'; pm1 ja:namespace 'some:prefix/'"
-            + "; root ja:includes pm2; pm2 rdf:type ja:PrefixMapping; pm2 ja:prefix 'p2'; pm2 ja:namespace 'other:prefix/'"
-            + "; root ja:prefix 'p3'; root ja:namespace 'simple:prefix#'" );
-        PrefixMapping pm = (PrefixMapping) a.open( root );
-        assertSamePrefixMapping( wanted, pm );
-        }
+public class TestPrefixMappingAssembler extends AssemblerTestBase {
+    public TestPrefixMappingAssembler(String name) {
+        super(name);
     }
+
+    @Override
+    protected Class<? extends Assembler> getAssemblerClass() {
+        return PrefixMappingAssembler.class;
+    }
+
+    public void testPrefixMappingAssemblerType() {
+        testDemandsMinimalType(new PrefixMappingAssembler(), JA.PrefixMapping);
+    }
+
+    public void testConstructEmptyPrefixMapping() {
+        Assembler a = new PrefixMappingAssembler();
+        Resource root = resourceInModel("pm rdf:type ja:PrefixMapping");
+        Object pm = a.open(root);
+        assertInstanceOf(PrefixMapping.class, pm);
+    }
+
+    public void testSimplePrefixMapping() {
+        PrefixMapping wanted = PrefixMapping.Factory.create().setNsPrefix("pre", "some:prefix/");
+        Assembler a = new PrefixMappingAssembler();
+        Resource root = resourceInModel("pm rdf:type ja:PrefixMapping; pm ja:prefix 'pre'; pm ja:namespace 'some:prefix/'");
+        PrefixMapping pm = (PrefixMapping)a.open(root);
+        assertSamePrefixMapping(wanted, pm);
+    }
+
+    public void testIncludesSingleMapping() {
+        PrefixMapping wanted = PrefixMapping.Factory.create().setNsPrefix("pre", "some:prefix/");
+        Assembler a = new PrefixMappingAssembler();
+        Resource root = resourceInModel("root rdf:type ja:PrefixMapping; root ja:includes pm"
+                                        + "; pm rdf:type ja:PrefixMapping; pm ja:prefix 'pre'; pm ja:namespace 'some:prefix/'");
+        PrefixMapping pm = (PrefixMapping)a.open(root);
+        assertSamePrefixMapping(wanted, pm);
+    }
+
+    public void testIncludesMultipleMappings() {
+        PrefixMapping wanted = PrefixMapping.Factory.create().setNsPrefix("p1", "some:prefix/").setNsPrefix("p2", "other:prefix/")
+                                                    .setNsPrefix("p3", "simple:prefix#");
+        Assembler a = new PrefixMappingAssembler();
+        Resource root = resourceInModel("root rdf:type ja:PrefixMapping"
+                                        + "; root ja:includes pm1; pm1 rdf:type ja:PrefixMapping; pm1 ja:prefix 'p1'; pm1 ja:namespace 'some:prefix/'"
+                                        + "; root ja:includes pm2; pm2 rdf:type ja:PrefixMapping; pm2 ja:prefix 'p2'; pm2 ja:namespace 'other:prefix/'"
+                                        + "; root ja:prefix 'p3'; root ja:namespace 'simple:prefix#'");
+        PrefixMapping pm = (PrefixMapping)a.open(root);
+        assertSamePrefixMapping(wanted, pm);
+    }
+}

@@ -37,7 +37,7 @@ import org.junit.Test;
 public class TestRDFXML_URI {
     static public junit.framework.Test suite()
     {
-        return new JUnit4TestAdapter(TestRDFXML_URI.class) ;
+        return new JUnit4TestAdapter(TestRDFXML_URI.class);
     }
 
     private static String DIR = "testing/arp1/uri/";
