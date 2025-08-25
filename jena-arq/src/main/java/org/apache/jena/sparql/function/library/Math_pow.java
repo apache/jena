@@ -18,12 +18,12 @@
 
 package org.apache.jena.sparql.function.library;
 
-import java.math.BigInteger ;
+import java.math.BigInteger;
 
-import org.apache.jena.sparql.ARQInternalErrorException ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionBase2 ;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionBase2;
 
 // math:pow($x as xs:double?, $y as xs:numeric) as xs:double?
 //    except pow(integer,+ve integer) is an integer 
@@ -35,25 +35,25 @@ public class Math_pow extends FunctionBase2 {
         {
             case OP_INTEGER:
                 BigInteger x = v1.getInteger();
-                int y = v2.getInteger().intValue() ;
+                int y = v2.getInteger().intValue();
                 if ( y >= 0 )
-                    return NodeValue.makeInteger( x.pow(y)) ;
+                    return NodeValue.makeInteger( x.pow(y));
                 // Anything else -> double
                 //$FALL-THROUGH$
             case OP_DECIMAL:
             case OP_FLOAT:
             case OP_DOUBLE:
-                double d1 = v1.getDouble() ;
-                double d2 = v2.getDouble() ;
+                double d1 = v1.getDouble();
+                double d2 = v2.getDouble();
                 if ( d1 == 1 && d2 == Double.POSITIVE_INFINITY ) {
                     if ( v1.isInteger() )
-                        return NodeValue.nvONE ;
+                        return NodeValue.nvONE;
                     else
-                        return NodeValue.makeDouble(1) ;
+                        return NodeValue.makeDouble(1);
                 }
-                return NodeValue.makeDouble( Math.pow(v1.getDouble(), v2.getDouble()) ) ;
+                return NodeValue.makeDouble( Math.pow(v1.getDouble(), v2.getDouble()) );
             default:
-                throw new ARQInternalErrorException("Unrecognized numeric operation : "+ v1) ;
+                throw new ARQInternalErrorException("Unrecognized numeric operation : "+ v1);
         }
     }
 

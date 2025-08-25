@@ -18,13 +18,13 @@
 
 package org.apache.jena.sparql.function.library;
 
-import java.util.List ;
+import java.util.List;
 
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionBase ;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionBase;
 
 /** fn:replace */
 public class FN_StrReplace extends FunctionBase {
@@ -32,15 +32,15 @@ public class FN_StrReplace extends FunctionBase {
     @Override
     public void checkBuild(String uri, ExprList args) {
         if ( args.size() != 3 && args.size() != 4 )
-            throw new ExprEvalException("fn:replace: Wrong number of arguments: Wanted 3 or 4, got " + args.size()) ;
+            throw new ExprEvalException("fn:replace: Wrong number of arguments: Wanted 3 or 4, got " + args.size());
     }
 
     @Override
     public NodeValue exec(List<NodeValue> args) {
         if ( args.size() == 3 )
-            return XSDFuncOp.strReplace(args.get(0), args.get(1), args.get(2)) ;
+            return XSDFuncOp.strReplace(args.get(0), args.get(1), args.get(2));
         if ( args.size() == 4 )
-            return XSDFuncOp.strReplace(args.get(0), args.get(1), args.get(2), args.get(3)) ;
-        throw new ExprEvalException("fn:replace: Wrong number of arguments: Wanted 3 or 4, got " + args.size()) ;
+            return XSDFuncOp.strReplace(args.get(0), args.get(1), args.get(2), args.get(3));
+        throw new ExprEvalException("fn:replace: Wrong number of arguments: Wanted 3 or 4, got " + args.size());
     }
 }

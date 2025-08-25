@@ -18,19 +18,19 @@
 
 package org.apache.jena.sparql.function.library;
 
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionBase2 ;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionBase2;
 
-/** min(expression, expression) */ 
+/** min(expression, expression) */
 
-public class min extends FunctionBase2
-{
-    public min() { super() ; }
+public class min extends FunctionBase2 {
+    public min() {
+        super();
+    }
 
     @Override
-    public NodeValue exec(NodeValue nv1, NodeValue nv2)
-    {
-        return XSDFuncOp.min(nv1, nv2) ;
+    public NodeValue exec(NodeValue nv1, NodeValue nv2) {
+        return XSDFuncOp.min(nv1, nv2);
     }
 }

@@ -18,13 +18,13 @@
 
 package org.apache.jena.sparql.function;
 
-import org.apache.jena.query.QueryBuildException ;
+import org.apache.jena.query.QueryBuildException;
 
 /** Extension factory that instantiates a class each time. */ 
 
 class FunctionFactoryAuto implements FunctionFactory
 {
-    private final Class<?> extClass ;
+    private final Class<?> extClass;
     
     FunctionFactoryAuto(Class<? > xClass) {
         extClass = xClass;

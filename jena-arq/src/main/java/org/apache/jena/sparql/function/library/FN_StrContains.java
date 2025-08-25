@@ -18,19 +18,19 @@
 
 package org.apache.jena.sparql.function.library;
 
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionBase2 ;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionBase2;
 
 /** string contains - fn:contains */
 
-public class FN_StrContains extends FunctionBase2
-{
-    public FN_StrContains() { super() ; }
+public class FN_StrContains extends FunctionBase2 {
+    public FN_StrContains() {
+        super();
+    }
 
     @Override
-    public NodeValue exec(NodeValue str, NodeValue match)
-    {
-        return XSDFuncOp.strContains(str, match) ;
+    public NodeValue exec(NodeValue str, NodeValue match) {
+        return XSDFuncOp.strContains(str, match);
     }
 }

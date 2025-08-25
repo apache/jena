@@ -30,7 +30,7 @@ import org.apache.jena.graph.Node;
 
 //import org.apache.commons.logging.*;
 
-import org.apache.jena.sparql.ARQConstants ;
+import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
@@ -39,11 +39,13 @@ import org.apache.jena.sparql.function.FunctionEnv;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
 
-/** Function that accesses the current time and returns in the timezone of the query engine. */
+/**
+ * Function that accesses the current time and returns in the timezone of the query
+ * engine.
+ */
 
-public class nowtz extends FunctionBase0
-{
-    public nowtz() { }
+public class nowtz extends FunctionBase0 {
+    public nowtz() {}
 
     public static Symbol symNowTz = SystemARQ.allocSymbol("nowtz");
 
@@ -60,8 +62,8 @@ public class nowtz extends FunctionBase0
             return nvx;
         }
         NodeValue nvx = execAdjust(functionEnv);
-//        String formattedDate = fromQueryTime(cxt);
-//        NodeValue nvx = NodeValue.makeNode(formattedDate, null, XSD.dateTime.getURI());
+// String formattedDate = fromQueryTime(cxt);
+// NodeValue nvx = NodeValue.makeNode(formattedDate, null, XSD.dateTime.getURI());
         cxt.set(symNowTz, nvx);
         return nvx;
     }
@@ -70,18 +72,20 @@ public class nowtz extends FunctionBase0
         // NOW is UTC in Jena to make the same whoever is looking.
         // For presentation reasons, you may want it in the (server) local timezone.
         // Calculate:
-        //   fn:adjust-dateTime-to-timezone(NOW(), fn:implicit-timezone())
-        //   fn:adjust-dateTime-to-timezone(NOW(), afn:timezone())
+        // fn:adjust-dateTime-to-timezone(NOW(), fn:implicit-timezone())
+        // fn:adjust-dateTime-to-timezone(NOW(), afn:timezone())
 
         // Query time, in UTC.
         NodeValue nv = SystemVar.get(ARQConstants.sysCurrentTime, functionEnv);
         // Timezone as xsd:dayTimeDuration.
         NodeValue nvTz = XSDFuncOp.localSystemTimezone();
-        // Comes out as "Z", not "+00:00" because of cal.toXMLFormat() in NodeValue.makeDateTime
+        // Comes out as "Z", not "+00:00" because of cal.toXMLFormat() in
+        // NodeValue.makeDateTime
         return XSDFuncOp.adjustToTimezone(nv, nvTz);
     }
 
-    // For information. Do it by accessing the query current time and converting using
+    // For information. Do it by accessing the query current time and converting
+    // using
     // ZonedDateTime.withZoneSameInstant (from Java8 java.time).
 
     private static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxxxx");
@@ -93,8 +97,9 @@ public class nowtz extends FunctionBase0
         String x = (n == null) ? DateTimeUtils.nowAsXSDDateTimeString() : n.getLiteralLexicalForm();
         ZonedDateTime zdt = dtf.parse(x, ZonedDateTime::from);
         ZonedDateTime zdtLocal;
-        // Convert to local timezone. (maybe should put the time into context as an Instant?)
-        if ( ! zoneIdUTC.equals(ZoneId.systemDefault()) )
+        // Convert to local timezone. (maybe should put the time into context as an
+        // Instant?)
+        if ( !zoneIdUTC.equals(ZoneId.systemDefault()) )
             zdtLocal = zdt.withZoneSameInstant(ZoneId.systemDefault());
         else
             zdtLocal = zdt;

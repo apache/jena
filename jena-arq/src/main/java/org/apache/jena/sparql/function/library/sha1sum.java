@@ -19,30 +19,27 @@
 package org.apache.jena.sparql.function.library;
 // Contribution from Leigh Dodds 
 
-import org.apache.jena.sparql.expr.E_SHA1 ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.NodeFunctions ;
-import org.apache.jena.sparql.function.FunctionBase1 ;
+import org.apache.jena.sparql.expr.E_SHA1;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
+import org.apache.jena.sparql.function.FunctionBase1;
 
 /**
- * ARQ Extension Function that will calculate the 
- * SHA1 sum of any literal. Useful for working with 
- * FOAF data.
+ * ARQ Extension Function that will calculate the SHA1 sum of any literal. Useful for
+ * working with FOAF data.
  */
-public class sha1sum extends FunctionBase1 
-{
+public class sha1sum extends FunctionBase1 {
     // This exists for compatibility.
     // SPARQL 1.1 has a SHA1(expression) function.
     // This stub implements afn:sha1(expr) as an indirection to that function.
-    
-    private E_SHA1 sha1 = new E_SHA1(null) ;
-    
+
+    private E_SHA1 sha1 = new E_SHA1(null);
+
     public sha1sum() {}
-    
+
     @Override
-    public NodeValue exec(NodeValue nodeValue) 
-    {
-        nodeValue = NodeFunctions.str(nodeValue) ;
-        return sha1.eval(nodeValue) ;
+    public NodeValue exec(NodeValue nodeValue) {
+        nodeValue = NodeFunctions.str(nodeValue);
+        return sha1.eval(nodeValue);
     }
 }

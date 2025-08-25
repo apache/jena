@@ -18,19 +18,17 @@
 
 package org.apache.jena.sparql.function.library;
 
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.NodeFunctions ;
-import org.apache.jena.sparql.function.FunctionBase0 ;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
+import org.apache.jena.sparql.function.FunctionBase0;
 
 /** Function that returns a UUID */
 
-public class uuid extends FunctionBase0
-{
+public class uuid extends FunctionBase0 {
     public uuid() {}
 
     @Override
-    public NodeValue exec()
-    {
-        return NodeFunctions.uuid() ;
+    public NodeValue exec() {
+        return NodeFunctions.uuid();
     }
 }

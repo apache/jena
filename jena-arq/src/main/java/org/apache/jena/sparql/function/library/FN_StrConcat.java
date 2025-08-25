@@ -20,32 +20,30 @@ package org.apache.jena.sparql.function.library;
 
 //import org.apache.commons.logging.*;
 
-import java.util.List ;
+import java.util.List;
 
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.sparql.ARQInternalErrorException ;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionBase ;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionBase;
 
-/** Function that concatenates arguments as strings.
- *  fn:concat */
+/**
+ * Function that concatenates arguments as strings. fn:concat
+ */
 
-public class FN_StrConcat extends FunctionBase
-{
+public class FN_StrConcat extends FunctionBase {
 
     @Override
-    public final NodeValue exec(List<NodeValue> args)
-    {
+    public final NodeValue exec(List<NodeValue> args) {
         if ( args == null )
             // The contract on the function interface is that this should not happen.
-            throw new ARQInternalErrorException(Lib.className(this)+": Null args list") ;
-        
-        return XSDFuncOp.fnConcat(args) ;
+            throw new ARQInternalErrorException(Lib.className(this) + ": Null args list");
+
+        return XSDFuncOp.fnConcat(args);
     }
 
     @Override
-    public void checkBuild(String uri, ExprList args)
-    {}
+    public void checkBuild(String uri, ExprList args) {}
 }

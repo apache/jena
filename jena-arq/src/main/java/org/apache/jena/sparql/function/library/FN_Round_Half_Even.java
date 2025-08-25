@@ -28,31 +28,29 @@ import org.apache.jena.sparql.function.FunctionBase;
 
 import java.util.List;
 
-public class FN_Round_Half_Even extends FunctionBase
-{
-    public FN_Round_Half_Even() { super() ; }
-
-    @Override
-    public void checkBuild(String uri, ExprList args)
-    {
-        if ( args.size() != 1 && args.size() != 2 )
-            throw new QueryBuildException("Function '"+ Lib.className(this)+"' takes one or two arguments") ;
+public class FN_Round_Half_Even extends FunctionBase {
+    public FN_Round_Half_Even() {
+        super();
     }
+
     @Override
-    public NodeValue exec(List<NodeValue> args)
-    {
+    public void checkBuild(String uri, ExprList args) {
+        if ( args.size() != 1 && args.size() != 2 )
+            throw new QueryBuildException("Function '" + Lib.className(this) + "' takes one or two arguments");
+    }
+
+    @Override
+    public NodeValue exec(List<NodeValue> args) {
         if ( args.size() > 2 )
-            throw new ExprEvalException("FN_Round_Half_Even: Wrong number of arguments: "+
-                    args.size()+" : [wanted 1 or 2]") ;
+            throw new ExprEvalException("FN_Round_Half_Even: Wrong number of arguments: " + args.size() + " : [wanted 1 or 2]");
 
-        NodeValue v1 = args.get(0) ;
+        NodeValue v1 = args.get(0);
 
-        if ( args.size() == 2 )
-        {
-            NodeValue v2 = args.get(1) ;
-            return XSDFuncOp.roundXpath3(v1, v2,true) ;
+        if ( args.size() == 2 ) {
+            NodeValue v2 = args.get(1);
+            return XSDFuncOp.roundXpath3(v1, v2, true);
         }
 
-        return XSDFuncOp.roundXpath3(v1, NodeValue.makeInteger(0),true) ;
+        return XSDFuncOp.roundXpath3(v1, NodeValue.makeInteger(0), true);
     }
 }

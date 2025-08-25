@@ -20,16 +20,16 @@ package org.apache.jena.sparql.function.library;
 
 //import org.apache.commons.logging.*;
 
-import java.util.ArrayList ;
-import java.util.Iterator ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.query.QueryBuildException ;
-import org.apache.jena.sparql.ARQInternalErrorException ;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionBase ;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.query.QueryBuildException;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase;
 
 /** Function that concatenates strings using a separator.
  *  This is not fn:string-join because 
@@ -44,21 +44,21 @@ public class strjoin extends FunctionBase
     {
         if ( args == null )
             // The contract on the function interface is that this should not happen.
-            throw new ARQInternalErrorException(Lib.className(this)+": Null args list") ;
+            throw new ARQInternalErrorException(Lib.className(this)+": Null args list");
         
-        Iterator<NodeValue> iter = args.iterator() ;
-        String sep = iter.next().asString() ;
+        Iterator<NodeValue> iter = args.iterator();
+        String sep = iter.next().asString();
 
-        List<String> x = new ArrayList<>() ;
+        List<String> x = new ArrayList<>();
         iter.forEachRemaining(arg->x.add(arg.asString()));
         
-        return NodeValue.makeString(String.join(sep, x)) ;
+        return NodeValue.makeString(String.join(sep, x));
     }
 
     @Override
     public void checkBuild(String uri, ExprList args)
     {
         if ( args.size() < 1 )
-            throw new QueryBuildException("Function '"+Lib.className(this)+"' requires at least one arguments") ;
+            throw new QueryBuildException("Function '"+Lib.className(this)+"' requires at least one arguments");
     }
 }

@@ -18,8 +18,8 @@
 
 package org.apache.jena.sparql.function;
 
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.sparql.expr.NodeValue ;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.sparql.expr.NodeValue;
 
 public class FunctionCastXSD extends FunctionBase1 implements FunctionFactory {
 

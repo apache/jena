@@ -20,11 +20,12 @@ package org.apache.jena.sparql.function.library;
 
 //import org.apache.commons.logging.*;
 
-import org.apache.jena.sparql.ARQConstants ;
+import org.apache.jena.sparql.ARQConstants;
 
 /** Function that accesses the current time (the time the query started). */
 
-public class now extends SystemVar
-{
-    public now() { super(ARQConstants.sysCurrentTime) ; }
+public class now extends SystemVar {
+    public now() {
+        super(ARQConstants.sysCurrentTime);
+    }
 }

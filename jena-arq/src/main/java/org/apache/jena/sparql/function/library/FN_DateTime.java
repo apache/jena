@@ -27,6 +27,6 @@ public class FN_DateTime extends FunctionBase2 {
 
     @Override
     public NodeValue exec(NodeValue v1, NodeValue v2) {
-        return XSDFuncOp.dtDateTime(v1, v2) ;
+        return XSDFuncOp.dtDateTime(v1, v2);
     }
 }

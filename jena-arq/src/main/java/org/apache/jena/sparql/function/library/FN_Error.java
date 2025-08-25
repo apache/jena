@@ -18,14 +18,14 @@
 
 package org.apache.jena.sparql.function.library;
 
-import java.util.List ;
+import java.util.List;
 
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.query.QueryBuildException;
 import org.apache.jena.sparql.ARQInternalErrorException;
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.expr.NodeValue ;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
 import org.apache.jena.sparql.function.FunctionBase;
 
@@ -40,14 +40,14 @@ public class FN_Error extends FunctionBase {
     @Override
     public void checkBuild(String uri, ExprList args) {
         if ( args.size() != 0 && args.size() != 1 )
-            throw new QueryBuildException("Function '"+Lib.className(this)+"' takes zero or one arguments") ;
+            throw new QueryBuildException("Function '"+Lib.className(this)+"' takes zero or one arguments");
     }
     
     @Override
     public NodeValue exec(List<NodeValue> args) {
         if ( args == null )
             // The contract on the function interface is that this should not happen.
-            throw new ARQInternalErrorException("FunctionBase1: Null args list") ;
+            throw new ARQInternalErrorException("FunctionBase1: Null args list");
         
         switch(args.size()) {
             case 0:
@@ -58,7 +58,7 @@ public class FN_Error extends FunctionBase {
                 throw new ExprEvalException(str);
             }
             default:
-                    throw new ExprEvalException("fn:error: Wrong number of arguments: Wanted 0 or 1, got "+args.size()) ;
+                    throw new ExprEvalException("fn:error: Wrong number of arguments: Wanted 0 or 1, got "+args.size());
         }
     }
 }

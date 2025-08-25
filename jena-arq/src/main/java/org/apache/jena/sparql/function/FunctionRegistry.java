@@ -17,17 +17,17 @@
  */
 
 package org.apache.jena.sparql.function;
-import java.util.HashMap ;
-import java.util.HashSet ;
-import java.util.Iterator ;
-import java.util.Map ;
-import java.util.Set ;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
-import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.query.ARQ ;
-import org.apache.jena.sparql.ARQConstants ;
-import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.sparql.util.MappedLoader ;
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.query.ARQ;
+import org.apache.jena.sparql.ARQConstants;
+import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.MappedLoader;
 import org.apache.jena.sys.JenaSystem;
 
 public class FunctionRegistry
@@ -35,8 +35,8 @@ public class FunctionRegistry
     static { JenaSystem.init(); }
 
     // Extract a Registry class and do casting and initialization here.
-    private Map<String, FunctionFactory> registry = new HashMap<>() ;
-    private Set<String> attemptedLoads = new HashSet<>() ;
+    private Map<String, FunctionFactory> registry = new HashMap<>();
+    private Set<String> attemptedLoads = new HashSet<>();
 
     public static FunctionRegistry standardRegistry() {
         FunctionRegistry reg = get(ARQ.getContext());
@@ -45,11 +45,11 @@ public class FunctionRegistry
 
     public static void init() {
         // Initialize if there is no registry already set
-        FunctionRegistry reg = new FunctionRegistry() ;
+        FunctionRegistry reg = new FunctionRegistry();
         ARQFunctions.load(reg);
-        StandardFunctions.loadStdDefs(reg) ;
-        StandardFunctions.loadOtherDefs(reg) ;
-        set(ARQ.getContext(), reg) ;
+        StandardFunctions.loadStdDefs(reg);
+        StandardFunctions.loadOtherDefs(reg);
+        set(ARQ.getContext(), reg);
     }
 
     public static FunctionRegistry get() {
@@ -109,7 +109,7 @@ public class FunctionRegistry
      * @param uri
      * @param f
      */
-    public void put(String uri, FunctionFactory f) { registry.put(uri,f) ; }
+    public void put(String uri, FunctionFactory f) { registry.put(uri,f); }
 
     /** Lookup by URI */
     public FunctionFactory get(String uri) {
@@ -130,12 +130,12 @@ public class FunctionRegistry
         return registry.get(uri);
     }
 
-    public boolean isRegistered(String uri) { return registry.containsKey(uri) ; }
+    public boolean isRegistered(String uri) { return registry.containsKey(uri); }
 
     /** Remove by URI */
-    public FunctionFactory remove(String uri) { return registry.remove(uri) ; }
+    public FunctionFactory remove(String uri) { return registry.remove(uri); }
 
     /** Iterate over URIs */
-    public Iterator<String> keys() { return registry.keySet().iterator() ; }
+    public Iterator<String> keys() { return registry.keySet().iterator(); }
 
 }

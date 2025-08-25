@@ -18,19 +18,19 @@
 
 package org.apache.jena.sparql.function.library;
 
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionBase2 ;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionBase2;
 
 /** fn:substring-after */
 
-public class FN_StrAfter extends FunctionBase2
-{
-    public FN_StrAfter() { super() ; }
+public class FN_StrAfter extends FunctionBase2 {
+    public FN_StrAfter() {
+        super();
+    }
 
     @Override
-    public NodeValue exec(NodeValue str, NodeValue match)
-    {
-        return XSDFuncOp.strAfter(str, match) ;
+    public NodeValue exec(NodeValue str, NodeValue match) {
+        return XSDFuncOp.strAfter(str, match);
     }
 }

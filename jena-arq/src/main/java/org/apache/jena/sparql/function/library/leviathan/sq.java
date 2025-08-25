@@ -20,10 +20,10 @@ package org.apache.jena.sparql.function.library.leviathan;
 
 import java.math.BigInteger;
 
-import org.apache.jena.sparql.ARQInternalErrorException ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionBase1 ;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionBase1;
 
 public class sq extends FunctionBase1 {
 
@@ -35,14 +35,14 @@ public class sq extends FunctionBase1 {
                 BigInteger i = v.getInteger();
                 return NodeValue.makeInteger( i.pow(2) );
             case OP_DECIMAL:
-                double dec = v.getDecimal().doubleValue() ;
-                return NodeValue.makeDecimal( Math.pow(dec, 2d)) ;
+                double dec = v.getDecimal().doubleValue();
+                return NodeValue.makeDecimal( Math.pow(dec, 2d));
             case OP_FLOAT:
                 // TODO Should squaring a float keep it a float?
             case OP_DOUBLE:
-                return NodeValue.makeDouble( Math.pow(v.getDouble(), 2d) ) ;
+                return NodeValue.makeDouble( Math.pow(v.getDouble(), 2d) );
             default:
-                throw new ARQInternalErrorException("Unrecognized numeric operation : "+v) ;   
+                throw new ARQInternalErrorException("Unrecognized numeric operation : "+v);   
         }
     }
 

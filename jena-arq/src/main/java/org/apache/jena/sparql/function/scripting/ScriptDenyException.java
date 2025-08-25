@@ -21,5 +21,5 @@ package org.apache.jena.sparql.function.scripting;
 import org.apache.jena.sparql.expr.ExprException;
 
 public class ScriptDenyException extends ExprException {
-    public ScriptDenyException(String msg) { super(msg) ; }
+    public ScriptDenyException(String msg) { super(msg); }
 }

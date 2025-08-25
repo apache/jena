@@ -20,5 +20,5 @@ package org.apache.jena.sparql.function.library;
 
 /** substr - synonym for substring */
 
-public class substr extends substring
-{}
+public class substr extends substring {
+}

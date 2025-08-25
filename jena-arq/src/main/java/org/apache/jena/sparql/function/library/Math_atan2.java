@@ -18,8 +18,8 @@
 
 package org.apache.jena.sparql.function.library;
 
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionBase2 ;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase2;
 
 //Summary
 // Returns the angle in radians subtended at the origin by
@@ -31,7 +31,7 @@ public class Math_atan2 extends FunctionBase2 {
 
     @Override
     public NodeValue exec(NodeValue v1, NodeValue v2) {
-        double d = Math.atan2(v1.getDouble(), v2.getDouble()) ; 
-        return NodeValue.makeDouble(d) ;
+        double d = Math.atan2(v1.getDouble(), v2.getDouble()); 
+        return NodeValue.makeDouble(d);
     }
 }

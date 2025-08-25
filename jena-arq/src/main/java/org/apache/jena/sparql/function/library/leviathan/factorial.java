@@ -20,9 +20,9 @@ package org.apache.jena.sparql.function.library.leviathan;
 
 import java.math.BigInteger;
 
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionBase1 ;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase1;
 
 public class factorial extends FunctionBase1 {
 

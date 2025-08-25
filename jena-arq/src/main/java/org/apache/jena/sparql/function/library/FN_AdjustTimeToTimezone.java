@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.jena.sparql.function.library;
 
 import org.apache.jena.atlas.lib.Lib;
@@ -29,29 +30,30 @@ import org.apache.jena.sparql.function.FunctionBase;
 import java.util.List;
 
 public class FN_AdjustTimeToTimezone extends FunctionBase {
-    public FN_AdjustTimeToTimezone(){super();}
-
-    @Override
-    public void checkBuild(String uri, ExprList args)
-    {
-        if ( args.size() != 1 && args.size() != 2 )
-            throw new QueryBuildException("Function '"+ Lib.className(this)+"' takes one or two arguments") ;
+    public FN_AdjustTimeToTimezone() {
+        super();
     }
-    @Override
-    public NodeValue exec(List<NodeValue> args)
-    {
-        if ( args.size() != 1 && args.size() != 2 )
-            throw new ExprEvalException("fn:adjust-time-to-timezone: Wrong number of arguments: "+args.size()+" : [wanted 1 or 2]") ;
 
-        NodeValue v1 = args.get(0) ;
+    @Override
+    public void checkBuild(String uri, ExprList args) {
+        if ( args.size() != 1 && args.size() != 2 )
+            throw new QueryBuildException("Function '" + Lib.className(this) + "' takes one or two arguments");
+    }
+
+    @Override
+    public NodeValue exec(List<NodeValue> args) {
+        if ( args.size() != 1 && args.size() != 2 )
+            throw new ExprEvalException("fn:adjust-time-to-timezone: Wrong number of arguments: " + args.size() + " : [wanted 1 or 2]");
+
+        NodeValue v1 = args.get(0);
         if ( ARQ.isStrictMode() && !v1.isTime() )
             throw new ExprEvalException("fn:adjust-time-to-timezone: Arg 1 not an xsd:time : " + v1);
 
         if ( args.size() == 2 ) {
-            NodeValue v2 = args.get(1) ;
-            return XSDFuncOp.adjustToTimezone(v1, v2) ;
+            NodeValue v2 = args.get(1);
+            return XSDFuncOp.adjustToTimezone(v1, v2);
         }
 
-        return XSDFuncOp.adjustToTimezone(v1, null) ;
+        return XSDFuncOp.adjustToTimezone(v1, null);
     }
 }

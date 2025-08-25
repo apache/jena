@@ -18,18 +18,18 @@
 
 package org.apache.jena.sparql.function.library;
 
-import java.util.List ;
+import java.util.List;
 
-import org.apache.jena.atlas.lib.Cache ;
-import org.apache.jena.atlas.lib.CacheFactory ;
+import org.apache.jena.atlas.lib.Cache;
+import org.apache.jena.atlas.lib.CacheFactory;
 import org.apache.jena.atlas.lib.InternalErrorException;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.expr.ExprException ;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.expr.NodeValue ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.ExprException;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.*;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.sparql.util.Context;
 
 /** XPath and XQuery Functions and Operators 3.1
  * <p>
@@ -55,7 +55,7 @@ public class FN_Apply extends FunctionBase {
         if ( args.isEmpty() )
             throw new ExprException("fn:apply: no function to call (minimum number of args is one)");
         NodeValue functionId = args.get(0);
-        List<NodeValue> argExprs = args.subList(1,args.size()) ;
+        List<NodeValue> argExprs = args.subList(1,args.size());
         ExprList exprs = new ExprList();
         argExprs.forEach(exprs::add);
         Node fnNode = functionId.asNode();
@@ -85,17 +85,17 @@ public class FN_Apply extends FunctionBase {
     }
 
     private Function buildFunction(String functionIRI, FunctionEnv functionEnv) {
-        FunctionRegistry registry = chooseRegistry(functionEnv.getContext()) ;
-        FunctionFactory ff = registry.get(functionIRI) ;
+        FunctionRegistry registry = chooseRegistry(functionEnv.getContext());
+        FunctionFactory ff = registry.get(functionIRI);
         if ( ff == null )
             return null;
-        return ff.create(functionIRI) ;
+        return ff.create(functionIRI);
     }
 
     private FunctionRegistry chooseRegistry(Context context) {
-        FunctionRegistry registry = FunctionRegistry.get(context) ;
+        FunctionRegistry registry = FunctionRegistry.get(context);
         if ( registry == null )
-            registry = FunctionRegistry.get() ;
-        return registry ;
+            registry = FunctionRegistry.get();
+        return registry;
     }
 }

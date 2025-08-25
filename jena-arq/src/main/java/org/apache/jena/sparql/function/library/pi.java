@@ -18,15 +18,15 @@
 
 package org.apache.jena.sparql.function.library;
 
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionBase0 ;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase0;
 
 /** Value of pi */  
 
 public class pi extends FunctionBase0
 {
-    static NodeValue value_pi = NodeValue.makeDouble(Math.PI) ;
+    static NodeValue value_pi = NodeValue.makeDouble(Math.PI);
     
     @Override
-    public NodeValue exec() { return value_pi ; }
+    public NodeValue exec() { return value_pi; }
 }

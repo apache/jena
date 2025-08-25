@@ -18,40 +18,40 @@
 
 package org.apache.jena.sparql.function.library;
 
-import java.util.List ;
-import java.util.StringJoiner ;
+import java.util.List;
+import java.util.StringJoiner;
 
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionBase ;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase;
 
-/** Function that prints the system time to stderr at the point of execution.
- *  Returns true.
- *  This is a debugging aid only.
+/**
+ * Function that prints the system time to stderr at the point of execution. Returns
+ * true. This is a debugging aid only.
  */
 public class execTime extends FunctionBase {
 
-    static long lastms = -1 ;
-    
+    static long lastms = -1;
+
     @Override
-    public NodeValue exec(List<NodeValue> args)
-    {
-        long now = System.currentTimeMillis() ;
+    public NodeValue exec(List<NodeValue> args) {
+        long now = System.currentTimeMillis();
         StringJoiner sj = new StringJoiner(" ", "", "");
-        args.forEach((a)-> { sj.add(a.asString()) ; }) ;
+        args.forEach((a) -> {
+            sj.add(a.asString());
+        });
         if ( lastms != -1 )
-            sj.add("("+Long.toString(now - lastms)+")") ;
-        String str = sj.toString() ;
-        
-        if ( ! str.isEmpty() )
-            System.err.printf("%s : %d ms\n",str, System.currentTimeMillis()) ;
+            sj.add("(" + Long.toString(now - lastms) + ")");
+        String str = sj.toString();
+
+        if ( !str.isEmpty() )
+            System.err.printf("%s : %d ms\n", str, System.currentTimeMillis());
         else
-            System.err.printf("---- %d ms\n", System.currentTimeMillis()) ;
-        lastms = now ;
-        return NodeValue.TRUE ;
+            System.err.printf("---- %d ms\n", System.currentTimeMillis());
+        lastms = now;
+        return NodeValue.TRUE;
     }
-    
+
     @Override
-    public void checkBuild(String uri, ExprList args)
-    {}
+    public void checkBuild(String uri, ExprList args) {}
 }

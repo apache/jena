@@ -20,12 +20,12 @@ package org.apache.jena.sparql.function.library;
 
 import static org.apache.jena.atlas.lib.Lib.lowercase;
 
-import java.nio.charset.StandardCharsets ;
-import java.util.Base64 ;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionBase2 ;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase2;
 
 /** XPath and XQuery Functions and Operators 3.1
  * <p>

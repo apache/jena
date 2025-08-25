@@ -18,12 +18,12 @@
 
 package org.apache.jena.sparql.function.library;
 
-import java.math.BigInteger ;
+import java.math.BigInteger;
 
-import org.apache.jena.sparql.ARQInternalErrorException ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionBase1 ;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionBase1;
 
 // Returns the value of natural log(x)
 public class Math_exp10 extends FunctionBase1 {
@@ -33,17 +33,17 @@ public class Math_exp10 extends FunctionBase1 {
         switch (XSDFuncOp.classifyNumeric("exp10", v))
         {
             case OP_INTEGER:
-                int x = v.getInteger().intValue() ;
+                int x = v.getInteger().intValue();
                 if ( x >= 0 )
-                    return NodeValue.makeInteger(BigInteger.TEN.pow(x)) ;
+                    return NodeValue.makeInteger(BigInteger.TEN.pow(x));
                 // Anything else -> double
                 //$FALL-THROUGH$
             case OP_DECIMAL:
             case OP_FLOAT:
             case OP_DOUBLE:
-                return NodeValue.makeDouble(Math.pow(10, v.getDouble())) ;
+                return NodeValue.makeDouble(Math.pow(10, v.getDouble()));
             default:
-                throw new ARQInternalErrorException("Unrecognized numeric operation : "+ v) ;
+                throw new ARQInternalErrorException("Unrecognized numeric operation : "+ v);
         }
     }
 }

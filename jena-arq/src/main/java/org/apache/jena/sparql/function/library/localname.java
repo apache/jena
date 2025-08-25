@@ -18,25 +18,25 @@
 
 package org.apache.jena.sparql.function.library;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionBase1 ;
-import org.apache.jena.sparql.util.FmtUtils ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase1;
+import org.apache.jena.sparql.util.FmtUtils;
 
-/** localname(expression) */ 
+/** localname(expression) */
 
-public class localname extends FunctionBase1
-{
-    public localname() { super() ; }
-    
+public class localname extends FunctionBase1 {
+    public localname() {
+        super();
+    }
+
     @Override
-    public NodeValue exec(NodeValue v)
-    {
-        Node n = v.asNode() ;
-        if ( ! n.isURI() )
-            throw new ExprEvalException("Not a URI: "+FmtUtils.stringForNode(n)) ;
-        String str = n.getLocalName() ;
-        return NodeValue.makeString(str) ;
+    public NodeValue exec(NodeValue v) {
+        Node n = v.asNode();
+        if ( !n.isURI() )
+            throw new ExprEvalException("Not a URI: " + FmtUtils.stringForNode(n));
+        String str = n.getLocalName();
+        return NodeValue.makeString(str);
     }
 }
