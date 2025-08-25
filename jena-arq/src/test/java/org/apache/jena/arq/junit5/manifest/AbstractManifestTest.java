@@ -34,6 +34,7 @@ public abstract class AbstractManifestTest implements Runnable {
             success();
         } catch (Throwable th) {
             failure();
+            throw th;
         }
     }
 
