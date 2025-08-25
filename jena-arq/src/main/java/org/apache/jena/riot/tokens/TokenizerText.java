@@ -98,7 +98,7 @@ public final class TokenizerText implements Tokenizer
     // Default=true. Whether to check for legal codepoint (i.e. only high-low surrogate pairs) while building strings.
     private static final boolean CHECK_CODEPOINTS = true;
 
-    // Default=false. Whether to check for legal RDF strings (no ill formed use of surrogates) after building strings.
+    // Default=false. Whether to check for legal RDF strings (no ill formed use of surrogates) after building strings (normally done during string parsing).
     private static final boolean CHECK_RDFSTRING = false;
 
     // Default=false. Allow some illegal characters in IRIs (probably causing rejection later when the IRI is parsed).
@@ -632,9 +632,9 @@ public final class TokenizerText implements Tokenizer
     // -- Strings without possible unicode surrogates
 
     /**
-     * String with the possibility of a unicode surrogate or unicode escape.
+     * String with no possibility of a unicode surrogate or unicode escape.
      *
-     * Pair with {@link #finishStringU(int)}
+     * Pair with {@link #finishStringNU()}
      */
     private void startStringNU() {
         stringBuilder.setLength(0);
@@ -642,7 +642,7 @@ public final class TokenizerText implements Tokenizer
 
     /**
      * End processing a string.
-     * Pair with {@link #startStringU()}
+     * Pair with {@link #startStringNU()}
      */
     private String finishStringNU() {
         return stringBuilder.toString();
