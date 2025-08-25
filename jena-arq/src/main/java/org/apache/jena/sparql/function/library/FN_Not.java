@@ -18,17 +18,15 @@
 
 package org.apache.jena.sparql.function.library;
 
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionBase1 ;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionBase1;
 
 /** Boolean Equivalent Value */
 
-public class FN_Not extends FunctionBase1
-{
+public class FN_Not extends FunctionBase1 {
     @Override
-    public NodeValue exec(NodeValue x)
-    {
-        return XSDFuncOp.not(x) ;
+    public NodeValue exec(NodeValue x) {
+        return XSDFuncOp.not(x);
     }
 }

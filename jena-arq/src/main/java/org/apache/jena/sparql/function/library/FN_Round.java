@@ -22,41 +22,40 @@ import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.query.QueryBuildException;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.ExprList;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
 import org.apache.jena.sparql.function.FunctionBase;
 
 import java.util.List;
 
-/** round(expression) */ 
+/** round(expression) */
 
-public class FN_Round extends FunctionBase
-{
-    public FN_Round() { super() ; }
-
-    @Override
-    public void checkBuild(String uri, ExprList args)
-    {
-        if ( args.size() != 1 && args.size() != 2 )
-            throw new QueryBuildException("Function '"+ Lib.className(this)+"' takes one or two arguments") ;
+public class FN_Round extends FunctionBase {
+    public FN_Round() {
+        super();
     }
+
     @Override
-    public NodeValue exec(List<NodeValue> args)
-    {
-        
-        if ( args.size() == 0  )
-            throw new ExprEvalException("FN_Round: Wrong number of arguments: zero arguments") ;
+    public void checkBuild(String uri, ExprList args) {
+        if ( args.size() != 1 && args.size() != 2 )
+            throw new QueryBuildException("Function '" + Lib.className(this) + "' takes one or two arguments");
+    }
+
+    @Override
+    public NodeValue exec(List<NodeValue> args) {
+
+        if ( args.size() == 0 )
+            throw new ExprEvalException("FN_Round: Wrong number of arguments: zero arguments");
         if ( args.size() > 2 )
-            throw new ExprEvalException("FN_Round: Wrong number of arguments: "+args.size()+" : [wanted 1 or 2]") ;
+            throw new ExprEvalException("FN_Round: Wrong number of arguments: " + args.size() + " : [wanted 1 or 2]");
 
-        NodeValue v1 = args.get(0) ;
+        NodeValue v1 = args.get(0);
 
-        if ( args.size() == 2 )
-        {
-            NodeValue v2 = args.get(1) ;
-            return XSDFuncOp.roundXpath3(v1, v2,false) ;
+        if ( args.size() == 2 ) {
+            NodeValue v2 = args.get(1);
+            return XSDFuncOp.roundXpath3(v1, v2, false);
         }
 
-        return XSDFuncOp.roundXpath3(v1, NodeValue.makeInteger(0),false) ;
+        return XSDFuncOp.roundXpath3(v1, NodeValue.makeInteger(0), false);
     }
 }

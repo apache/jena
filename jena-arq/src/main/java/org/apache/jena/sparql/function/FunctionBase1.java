@@ -18,14 +18,14 @@
 
 package org.apache.jena.sparql.function;
 
-import java.util.List ;
+import java.util.List;
 
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.query.QueryBuildException ;
-import org.apache.jena.sparql.ARQInternalErrorException ;
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.expr.NodeValue ;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.query.QueryBuildException;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
 
 /** Support for functions with one argument. */
 public abstract class FunctionBase1 extends FunctionBase {

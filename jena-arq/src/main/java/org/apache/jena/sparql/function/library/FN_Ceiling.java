@@ -18,17 +18,17 @@
 
 package org.apache.jena.sparql.function.library;
 
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionBase1 ;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionBase1;
 
 /** ceiling(expression) */ 
 
 public class FN_Ceiling extends FunctionBase1
 {
-    public FN_Ceiling() { super() ; }
+    public FN_Ceiling() { super(); }
     
     @Override
     public NodeValue exec(NodeValue v)
-    { return XSDFuncOp.ceiling(v) ; }
+    { return XSDFuncOp.ceiling(v); }
 }

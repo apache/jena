@@ -18,14 +18,14 @@
 
 package org.apache.jena.sparql.function;
 
-import java.util.ArrayList ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.jena.sparql.ARQInternalErrorException ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.expr.NodeValue ;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.util.Context;
 
 /** Implementation root for custom function evaluation. */
@@ -34,16 +34,16 @@ public abstract class FunctionBase implements Function {
     @Override
     public void build(String uri, ExprList args, Context context) {
         // Rename for legacy reasons.
-        checkBuild(uri, args) ;
+        checkBuild(uri, args);
     }
 
     @Override
     public NodeValue exec(Binding binding, ExprList args, String uri, FunctionEnv env) {
         if ( args == null )
             // The contract on the function interface is that this should not happen.
-            throw new ARQInternalErrorException("FunctionBase: Null args list") ;
+            throw new ARQInternalErrorException("FunctionBase: Null args list");
         List<NodeValue> evalArgs = evalArgs(binding, args, env);
-        return exec(evalArgs, env) ;
+        return exec(evalArgs, env);
     }
 
     private static List<NodeValue> evalArgs(Binding binding, ExprList args, FunctionEnv env) {
@@ -64,7 +64,7 @@ public abstract class FunctionBase implements Function {
     }
 
     /** Function call to a list of evaluated argument values */
-    public abstract NodeValue exec(List<NodeValue> args) ;
+    public abstract NodeValue exec(List<NodeValue> args);
 
     public abstract void checkBuild(String uri, ExprList args);
 }

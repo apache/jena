@@ -18,12 +18,12 @@
 
 package org.apache.jena.sparql.function.library.leviathan;
 
-import java.math.BigInteger ;
+import java.math.BigInteger;
 
-import org.apache.jena.sparql.ARQInternalErrorException ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionBase2 ;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionBase2;
 
 public class pow extends FunctionBase2 {
 
@@ -35,14 +35,14 @@ public class pow extends FunctionBase2 {
                 BigInteger i = v1.getInteger();
                 return NodeValue.makeInteger( i.pow(v2.getInteger().intValue()) );
             case OP_DECIMAL:
-                double dec = v1.getDecimal().doubleValue() ;
-                return NodeValue.makeDecimal( Math.pow(dec, v2.getDouble())) ;
+                double dec = v1.getDecimal().doubleValue();
+                return NodeValue.makeDecimal( Math.pow(dec, v2.getDouble()));
             case OP_FLOAT:
                 // TODO Should raising a float to a power keep it a float?
             case OP_DOUBLE:
-                return NodeValue.makeDouble( Math.pow(v1.getDouble(), v2.getDouble()) ) ;
+                return NodeValue.makeDouble( Math.pow(v1.getDouble(), v2.getDouble()) );
             default:
-                throw new ARQInternalErrorException("Unrecognized numeric operation : "+ v1) ;
+                throw new ARQInternalErrorException("Unrecognized numeric operation : "+ v1);
         }
     }
 

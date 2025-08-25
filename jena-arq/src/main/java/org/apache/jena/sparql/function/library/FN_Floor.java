@@ -18,18 +18,18 @@
 
 package org.apache.jena.sparql.function.library;
 
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionBase1 ;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionBase1;
 
 /** floor(expression) */ 
 
 public class FN_Floor extends FunctionBase1
 {
-    public FN_Floor() { super() ; }
+    public FN_Floor() { super(); }
     
     @Override
     public NodeValue exec(NodeValue v)
-    { return XSDFuncOp.floor(v) ; }
+    { return XSDFuncOp.floor(v); }
 
 }

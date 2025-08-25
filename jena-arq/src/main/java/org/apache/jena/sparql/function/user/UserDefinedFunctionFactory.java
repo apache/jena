@@ -24,13 +24,13 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.apache.jena.query.QueryParseException;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprTransformer ;
-import org.apache.jena.sparql.function.Function ;
-import org.apache.jena.sparql.function.FunctionFactory ;
-import org.apache.jena.sparql.function.FunctionRegistry ;
-import org.apache.jena.sparql.sse.builders.SSE_ExprBuildException ;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprTransformer;
+import org.apache.jena.sparql.function.Function;
+import org.apache.jena.sparql.function.FunctionFactory;
+import org.apache.jena.sparql.function.FunctionRegistry;
+import org.apache.jena.sparql.sse.builders.SSE_ExprBuildException;
 import org.apache.jena.sparql.util.ExprUtils;
 
 /**

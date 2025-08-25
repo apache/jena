@@ -18,19 +18,19 @@
 
 package org.apache.jena.sparql.function.library;
 
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionBase2 ;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionBase2;
 
-/** max(expression, expression) */ 
+/** max(expression, expression) */
 
-public class max extends FunctionBase2
-{
-    public max() { super() ; }
+public class max extends FunctionBase2 {
+    public max() {
+        super();
+    }
 
     @Override
-    public NodeValue exec(NodeValue nv1, NodeValue nv2)
-    {
-        return XSDFuncOp.max(nv1, nv2) ;
+    public NodeValue exec(NodeValue nv1, NodeValue nv2) {
+        return XSDFuncOp.max(nv1, nv2);
     }
 }

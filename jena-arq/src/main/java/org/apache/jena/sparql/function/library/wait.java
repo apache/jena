@@ -18,21 +18,20 @@
 
 package org.apache.jena.sparql.function.library;
 
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionBase1 ;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase1;
 
 /** Function that pauses for N milliseconds whenever it is called (for testing) */
 public class wait extends FunctionBase1 {
 
     @Override
-    public NodeValue exec(NodeValue nv)
-    {
-        if ( ! nv.isInteger() )
-            throw new ExprEvalException("Not an integer") ;
-        int x = nv.getInteger().intValue() ;
-        Lib.sleep(x) ;
-        return NodeValue.TRUE ;
+    public NodeValue exec(NodeValue nv) {
+        if ( !nv.isInteger() )
+            throw new ExprEvalException("Not an integer");
+        int x = nv.getInteger().intValue();
+        Lib.sleep(x);
+        return NodeValue.TRUE;
     }
 }

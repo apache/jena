@@ -18,19 +18,19 @@
 
 package org.apache.jena.sparql.function.library;
 
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionBase1 ;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionBase1;
 
 /** lowercase */
 
-public class FN_StrLowerCase extends FunctionBase1
-{
-    public FN_StrLowerCase() { super() ; }
+public class FN_StrLowerCase extends FunctionBase1 {
+    public FN_StrLowerCase() {
+        super();
+    }
 
     @Override
-    public NodeValue exec(NodeValue str)
-    {
-        return XSDFuncOp.strLowerCase(str) ;
+    public NodeValue exec(NodeValue str) {
+        return XSDFuncOp.strLowerCase(str);
     }
 }

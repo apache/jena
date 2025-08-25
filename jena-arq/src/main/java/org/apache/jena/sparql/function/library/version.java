@@ -19,12 +19,13 @@
 package org.apache.jena.sparql.function.library;
 
 import org.apache.jena.query.ARQ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionBase0 ;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase0;
 
 /** Version number, as a string */
-public class version extends FunctionBase0
-{
+public class version extends FunctionBase0 {
     @Override
-    public NodeValue exec() { return NodeValue.makeNodeString(ARQ.VERSION);}
+    public NodeValue exec() {
+        return NodeValue.makeNodeString(ARQ.VERSION);
+    }
 }

@@ -18,43 +18,39 @@
 
 package org.apache.jena.sparql.function.library;
 
-import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionBase1 ;
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase1;
 
-/** date(expression) {@literal =>} XSD dateTime 
- *  Attempt to convert an expression to an XSD dateTime.
- *  Supported conversions: Date as yyyy-mm-dd
- */ 
+/**
+ * date(expression) {@literal =>} XSD dateTime Attempt to convert an expression to an
+ * XSD dateTime. Supported conversions: Date as yyyy-mm-dd
+ */
 
-public class date extends FunctionBase1
-{
-    public date() {  }
+public class date extends FunctionBase1 {
+    public date() {}
 
     @Override
-    public NodeValue exec(NodeValue v)
-    {
-        if ( ! v.isString() )
-        {
-            Log.warn(this, "date: argument not a string: "+v) ;
-            throw new ExprEvalException("date: argument not a string: "+v) ;
+    public NodeValue exec(NodeValue v) {
+        if ( !v.isString() ) {
+            Log.warn(this, "date: argument not a string: " + v);
+            throw new ExprEvalException("date: argument not a string: " + v);
         }
-        
-        String lexicalForm = v.getString() ;
-        
+
+        String lexicalForm = v.getString();
+
         // Quite picky about format
-        if ( ! lexicalForm.matches("\\d{4}-\\d{2}-\\d{2}") )
-        {
-            Log.warn(this, "date: argument not in date format: "+v) ;
-            throw new ExprEvalException("date: argument not in date format: "+v) ;
+        if ( !lexicalForm.matches("\\d{4}-\\d{2}-\\d{2}") ) {
+            Log.warn(this, "date: argument not in date format: " + v);
+            throw new ExprEvalException("date: argument not in date format: " + v);
         }
-        
-        lexicalForm=lexicalForm+"T00:00:00Z" ;
-        
-        NodeValue nv = NodeValue.makeNode(lexicalForm, XSDDatatype.XSDdateTime) ;
-        return nv ;
+
+        lexicalForm = lexicalForm + "T00:00:00Z";
+
+        NodeValue nv = NodeValue.makeNode(lexicalForm, XSDDatatype.XSDdateTime);
+        return nv;
     }
-    
+
 }

@@ -18,45 +18,44 @@
 
 package org.apache.jena.sparql.function.library;
 
-import java.util.List ;
+import java.util.List;
 
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.query.QueryBuildException ;
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionBase ;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.query.QueryBuildException;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionBase;
 
 /** substring(string, start[, finish]) - Java style */
 
-public class substring extends FunctionBase
-{
-    public substring() { super() ; }
+public class substring extends FunctionBase {
+    public substring() {
+        super();
+    }
 
     @Override
-    public void checkBuild(String uri, ExprList args)
-    {
+    public void checkBuild(String uri, ExprList args) {
         if ( args.size() != 2 && args.size() != 3 )
-            throw new QueryBuildException("Function '"+Lib.className(this)+"' takes two or three arguments") ;
+            throw new QueryBuildException("Function '" + Lib.className(this) + "' takes two or three arguments");
     }
+
     @Override
-    public NodeValue exec(List<NodeValue> args)
-    {
+    public NodeValue exec(List<NodeValue> args) {
         if ( args.size() != 2 && args.size() != 3 )
-            throw new ExprEvalException("substring: Wrong number of arguments: "+args.size()+" : [wanted 2 or 3]") ;
-        
-        NodeValue v1 = args.get(0) ;
-        NodeValue v2 = args.get(1) ;
-        NodeValue v3 = null ;
-        
-        if ( args.size() == 3 )
-        {
-            v3 = args.get(2) ;
-            return XSDFuncOp.javaSubstring(v1, v2, v3) ;
+            throw new ExprEvalException("substring: Wrong number of arguments: " + args.size() + " : [wanted 2 or 3]");
+
+        NodeValue v1 = args.get(0);
+        NodeValue v2 = args.get(1);
+        NodeValue v3 = null;
+
+        if ( args.size() == 3 ) {
+            v3 = args.get(2);
+            return XSDFuncOp.javaSubstring(v1, v2, v3);
         }
 
-        return XSDFuncOp.javaSubstring(v1, v2) ;
+        return XSDFuncOp.javaSubstring(v1, v2);
     }
-        
+
 }

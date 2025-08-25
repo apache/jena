@@ -18,15 +18,15 @@
 
 package org.apache.jena.sparql.function.library;
 
-import java.util.List ;
+import java.util.List;
 
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.query.QueryBuildException ;
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionBase ;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.query.QueryBuildException;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionBase;
 
 /** fn:format-number : 2 or 3 arguments.
  * The 3rd argument, decimal-format-name, is here a IETF BCP 47 language tag string.
@@ -35,18 +35,18 @@ public class FN_FormatNumber extends FunctionBase {
     @Override
     public void checkBuild(String uri, ExprList args) {
         if ( args.size() != 2 && args.size() != 3 )
-            throw new QueryBuildException("Function '"+Lib.className(this)+"' takes two or three arguments") ;
+            throw new QueryBuildException("Function '"+Lib.className(this)+"' takes two or three arguments");
     }
     
     @Override
     public NodeValue exec(List<NodeValue> args) {
         if ( args.size() != 2 && args.size() != 3 )
-            throw new ExprEvalException("Function '"+Lib.className(this)+"' takes two or three arguments") ;
-        NodeValue value = args.get(0) ; 
-        NodeValue picture = args.get(1) ;
-        NodeValue decimalFormatName = null ;
+            throw new ExprEvalException("Function '"+Lib.className(this)+"' takes two or three arguments");
+        NodeValue value = args.get(0); 
+        NodeValue picture = args.get(1);
+        NodeValue decimalFormatName = null;
         if ( args.size() == 3)
-            decimalFormatName = args.get(2) ;
-        return XSDFuncOp.formatNumber(value, picture, decimalFormatName) ;
+            decimalFormatName = args.get(2);
+        return XSDFuncOp.formatNumber(value, picture, decimalFormatName);
     }
 }

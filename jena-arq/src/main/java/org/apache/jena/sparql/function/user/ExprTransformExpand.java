@@ -21,9 +21,9 @@ package org.apache.jena.sparql.function.user;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.expr.* ;
-import org.apache.jena.sparql.sse.builders.SSE_ExprBuildException ;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.expr.*;
+import org.apache.jena.sparql.sse.builders.SSE_ExprBuildException;
 
 /**
  * An expression transformer that will expand user defined function expressions

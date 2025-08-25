@@ -18,18 +18,17 @@
 
 package org.apache.jena.sparql.function.library;
 
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionBase1 ;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase1;
 
 /** Function that prints it's argument to stdout (debugging aid) */
 public class print extends FunctionBase1 {
 
     @Override
-    public NodeValue exec(NodeValue nv)
-    {
-        String s = nv.asString() ;
-        System.out.println(s) ;
-        System.out.flush() ;
-        return NodeValue.TRUE ;
+    public NodeValue exec(NodeValue nv) {
+        String s = nv.asString();
+        System.out.println(s);
+        System.out.flush();
+        return NodeValue.TRUE;
     }
 }

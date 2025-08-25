@@ -18,10 +18,10 @@
 
 package org.apache.jena.sparql.function.library.leviathan;
 
-import org.apache.jena.sparql.expr.E_MD5 ;
-import org.apache.jena.sparql.expr.ExprDigest ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionBase1 ;
+import org.apache.jena.sparql.expr.E_MD5;
+import org.apache.jena.sparql.expr.ExprDigest;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase1;
 
 public class md5hash extends FunctionBase1 {
 

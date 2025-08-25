@@ -18,9 +18,9 @@
 
 package org.apache.jena.sparql.function;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.util.Context;
 
 /** Environment passed to functions */
 
@@ -30,12 +30,12 @@ public interface FunctionEnv
      * May be null if unknown or not applicable - for example, doing quad store access or
      * when sorting.
      */ 
-    public Graph getActiveGraph() ;
+    public Graph getActiveGraph();
     
     /** Return the dataset for the query
      */ 
-    public DatasetGraph getDataset() ;
+    public DatasetGraph getDataset();
     
     /** Return the context for this function call */
-    public Context getContext() ;
+    public Context getContext();
 }

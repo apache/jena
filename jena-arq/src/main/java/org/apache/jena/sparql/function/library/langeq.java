@@ -18,17 +18,14 @@
 
 package org.apache.jena.sparql.function.library;
 
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.NodeFunctions ;
-import org.apache.jena.sparql.function.FunctionBase2 ;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
+import org.apache.jena.sparql.function.FunctionBase2;
 
-
-public class langeq extends FunctionBase2
-{
+public class langeq extends FunctionBase2 {
     @Override
-    public NodeValue exec(NodeValue v1, NodeValue v2)
-    {
-        return NodeFunctions.langMatches(NodeFunctions.lang(v1), v2) ;
+    public NodeValue exec(NodeValue v1, NodeValue v2) {
+        return NodeFunctions.langMatches(NodeFunctions.lang(v1), v2);
     }
 
 }

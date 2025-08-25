@@ -18,16 +18,13 @@
 
 package org.apache.jena.sparql.function.library;
 
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionBase1 ;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionBase1;
 
-public class FN_StrEncodeForURI extends FunctionBase1
-{
+public class FN_StrEncodeForURI extends FunctionBase1 {
     @Override
-    public NodeValue exec(NodeValue v)
-    {
-        return XSDFuncOp.strEncodeForURI(v) ;
+    public NodeValue exec(NodeValue v) {
+        return XSDFuncOp.strEncodeForURI(v);
     }
 }
-

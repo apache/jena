@@ -23,7 +23,7 @@ import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
 import org.apache.jena.sparql.function.FunctionBase2;
 
 public class Op_NumericMod extends FunctionBase2 {
-    public Op_NumericMod() { super() ; }
+    public Op_NumericMod() { super(); }
 
     @Override
     public NodeValue exec(NodeValue v1, NodeValue v2) {

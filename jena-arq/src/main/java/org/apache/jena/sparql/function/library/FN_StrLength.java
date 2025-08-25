@@ -18,19 +18,19 @@
 
 package org.apache.jena.sparql.function.library;
 
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionBase1 ;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionBase1;
 
 /** string length - {@literal F&O} operation */
 
-public class FN_StrLength extends FunctionBase1
-{
-    public FN_StrLength() { super() ; }
+public class FN_StrLength extends FunctionBase1 {
+    public FN_StrLength() {
+        super();
+    }
 
     @Override
-    public NodeValue exec(NodeValue v)
-    {
+    public NodeValue exec(NodeValue v) {
         return XSDFuncOp.strlen(v);
     }
 }

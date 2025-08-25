@@ -18,16 +18,16 @@
 
 package org.apache.jena.sparql.function.library;
 
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionBase0 ;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase0;
 
 /** Value of e */  
 
 public class e extends FunctionBase0
 {
-    static NodeValue value_e = NodeValue.makeDouble(Math.E) ;
+    static NodeValue value_e = NodeValue.makeDouble(Math.E);
     
     @Override
-    public NodeValue exec() { return value_e ; }
+    public NodeValue exec() { return value_e; }
     
 }

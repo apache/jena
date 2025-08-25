@@ -18,17 +18,19 @@
 
 package org.apache.jena.sparql.function.library;
 
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionBase1 ;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionBase1;
 
-/** abs(expression) */ 
+/** abs(expression) */
 
-public class FN_Abs extends FunctionBase1
-{
-    public FN_Abs() { super() ; }
+public class FN_Abs extends FunctionBase1 {
+    public FN_Abs() {
+        super();
+    }
 
     @Override
-    public NodeValue exec(NodeValue v)
-    { return XSDFuncOp.abs(v) ; }
+    public NodeValue exec(NodeValue v) {
+        return XSDFuncOp.abs(v);
+    }
 }

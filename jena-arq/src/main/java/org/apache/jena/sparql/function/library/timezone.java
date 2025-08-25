@@ -19,4 +19,5 @@
 package org.apache.jena.sparql.function.library;
 
 /** Alternative name: afn:timezone for fn:implicit-timezone */
-public class timezone extends FN_Timezone {}
+public class timezone extends FN_Timezone {
+}

@@ -18,8 +18,8 @@
 
 package org.apache.jena.sparql.function.library.leviathan;
 
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionBase2 ;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase2;
 
 public class root extends FunctionBase2 {
 

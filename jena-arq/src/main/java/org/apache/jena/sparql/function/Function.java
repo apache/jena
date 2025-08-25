@@ -19,11 +19,11 @@
 package org.apache.jena.sparql.function;
 
 
-import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.ExprException;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.expr.NodeValue ;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.util.Context;
 
 /**
@@ -55,5 +55,5 @@ public interface Function
      * @param env   The execution context
      * @return NodeValue - a value
      */
-    public NodeValue exec(Binding binding, ExprList args, String uri, FunctionEnv env) ;
+    public NodeValue exec(Binding binding, ExprList args, String uri, FunctionEnv env);
 }

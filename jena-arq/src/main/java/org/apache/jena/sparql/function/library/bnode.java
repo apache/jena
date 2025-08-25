@@ -18,24 +18,22 @@
 
 package org.apache.jena.sparql.function.library;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionBase1 ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase1;
 
 /** Get the bnode label - a non-bnode cause a type failure */
 
-public class bnode extends FunctionBase1
-{
+public class bnode extends FunctionBase1 {
 
     @Override
-    public NodeValue exec(NodeValue v)
-    {
-        Node n = v.asNode() ;
-        if ( ! n.isBlank() )
-            throw new ExprEvalException("bnode: not a blank node") ;
+    public NodeValue exec(NodeValue v) {
+        Node n = v.asNode();
+        if ( !n.isBlank() )
+            throw new ExprEvalException("bnode: not a blank node");
 
-        NodeValue nv = NodeValue.makeString(n.getBlankNodeLabel()) ;
-        return nv ;
+        NodeValue nv = NodeValue.makeString(n.getBlankNodeLabel());
+        return nv;
     }
 }

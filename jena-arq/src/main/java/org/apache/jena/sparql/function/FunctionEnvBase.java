@@ -18,59 +18,59 @@
 
 package org.apache.jena.sparql.function;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.query.ARQ ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.query.ARQ;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.util.Context;
 
 /** Environment passed to functions -- see also {@link org.apache.jena.sparql.engine.ExecutionContext} */
 public class FunctionEnvBase implements FunctionEnv
 {
-    private Context context ;
-    private Graph activeGraph ;
-    private DatasetGraph dataset ;
-    private ExecutionContext execContext = null ;
+    private Context context;
+    private Graph activeGraph;
+    private DatasetGraph dataset;
+    private ExecutionContext execContext = null;
 
-    public FunctionEnvBase() { this(ARQ.getContext(), null, null) ; }
+    public FunctionEnvBase() { this(ARQ.getContext(), null, null); }
 
-    public FunctionEnvBase(Context context) { this ( context, null, null) ; }
+    public FunctionEnvBase(Context context) { this ( context, null, null); }
 
     public FunctionEnvBase(ExecutionContext execCxt)
     {
-        this(execCxt.getContext(), execCxt.getActiveGraph(), execCxt.getDataset()) ;
-        execContext = execCxt ;
+        this(execCxt.getContext(), execCxt.getActiveGraph(), execCxt.getDataset());
+        execContext = execCxt;
     }
 
     public FunctionEnvBase(Context context, Graph activeGraph, DatasetGraph dataset)
     {
-        this.context = context ;
-        this.activeGraph = activeGraph ;
-        this.dataset = dataset ;
+        this.context = context;
+        this.activeGraph = activeGraph;
+        this.dataset = dataset;
     }
 
     @Override
     public Graph getActiveGraph()
     {
-        return activeGraph ;
+        return activeGraph;
     }
 
     @Override
     public Context getContext()
     {
-        return context ;
+        return context;
     }
 
 //    public ExecutionContext getExecutionContext()
 //    {
 //        if ( execContext == null )
-//            execContext = new ExecutionContext(context, activeGraph, dataset, QC.getFactory(context)) ;
-//        return execContext ;
+//            execContext = new ExecutionContext(context, activeGraph, dataset, QC.getFactory(context));
+//        return execContext;
 //    }
 
     @Override
     public DatasetGraph getDataset()
     {
-        return dataset ;
+        return dataset;
     }
 }

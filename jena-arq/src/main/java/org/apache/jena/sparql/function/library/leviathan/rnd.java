@@ -20,13 +20,13 @@ package org.apache.jena.sparql.function.library.leviathan;
 
 import java.util.List;
 
-import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.lib.RandomLib;
-import org.apache.jena.query.QueryBuildException ;
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionBase ;
+import org.apache.jena.query.QueryBuildException;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase;
 
 public class rnd extends FunctionBase {
 

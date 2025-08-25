@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.jena.sparql.function.library;
 
 import org.apache.jena.sparql.expr.NodeValue;
@@ -24,15 +25,16 @@ import org.apache.jena.sparql.function.FunctionBase1;
 /**
  * fn:normalizeSpace
  */
-public class FN_StrNormalizeSpace extends FunctionBase1
-{
-    public FN_StrNormalizeSpace() { super() ; }
+public class FN_StrNormalizeSpace extends FunctionBase1 {
+    public FN_StrNormalizeSpace() {
+        super();
+    }
 
     @Override
-    public NodeValue exec(NodeValue str)
-    {
+    public NodeValue exec(NodeValue str) {
         // How to implement this??
-        // If no argument is supplied, then $arg defaults to the string value (calculated using fn:string) of the context item (.).
+        // If no argument is supplied, then $arg defaults to the string value
+        // (calculated using fn:string) of the context item (.).
         return XSDFuncOp.strNormalizeSpace(str);
     }
 }

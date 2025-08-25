@@ -18,15 +18,15 @@
 
 package org.apache.jena.sparql.function.library;
 
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionBase1 ;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase1;
 
 // Returns the value of e^x.
 public class Math_exp extends FunctionBase1 {
 
     @Override
     public NodeValue exec(NodeValue v) {
-        return NodeValue.makeDouble(Math.exp(v.getDouble())) ;
+        return NodeValue.makeDouble(Math.exp(v.getDouble()));
     }
 
 }
