@@ -195,39 +195,41 @@ public class RiotTests
         //allowWarningSet.add("#turtle-eval-bad-01");
     }
 
-    /** Tune tests for warnings. */
+    /**
+     * Tune tests for warnings. Normally, tests runs are warning sensitive.
+     */
     // Some tests have U+FFFD which, in Jena, generates a helpful warning.
     // Some tests have <http:g> which RIOT warns about but passes.
-    /*package*/ static boolean allowWarnings(ManifestEntry testEntry) {
 
-        // ARP?
-//        if ( equalsType(testEntry.getTestType(), VocabLangRDF.TestPositiveRDFXML) ) {
-//            // Various warnings in eval tests.
-//
-//            String name = testEntry.getName();
-//
-//            if ( name.equals("datatypes-test002") )
-//                return true;
-//
-//            if ( name.equals("rdfms-empty-property-elements-test016") )
-//                // Processing instruction warning.
-//                return true;
-//
-//            if ( name.equals("rdfms-rdf-names-use-test-015") )
-//                //rdf:_1 is being used on a typed node.
-//                return true;
-//
-//            if ( name.startsWith("rdfms-rdf-names-use-warn-") )
-//                // "is not a recognized RDF property or type."
-//                // "is not a recognized RDF property."
-//                return true;
-//
-//            if ( name.startsWith("unrecognised-xml-attributes-test00") )
-//                // XML attribute: xml:foo is not known
-//                return true;
-//
-//            return false;
-//        }
+    /*package*/ static boolean allowWarnings(ManifestEntry testEntry) {
+        if ( equalsType(testEntry.getTestType(), VocabLangRDF.TestPositiveRDFXML) ) {
+            // RDF/XML
+            // Various warnings in eval tests.
+
+            String name = testEntry.getName();
+
+            if ( name.equals("datatypes-test002") )
+                return true;
+
+            if ( name.equals("rdfms-empty-property-elements-test016") )
+                // Processing instruction warning.
+                return true;
+
+            if ( name.equals("rdfms-rdf-names-use-test-015") )
+                //rdf:_1 is being used on a typed node.
+                return true;
+
+            if ( name.startsWith("rdfms-rdf-names-use-warn-") )
+                // "is not a recognized RDF property or type."
+                // "is not a recognized RDF property."
+                return true;
+
+            if ( name.startsWith("unrecognised-xml-attributes-test00") )
+                // XML attribute: xml:foo is not known
+                return true;
+
+            return false;
+        }
 
         String fragment = fragment(testEntry.getURI());
         if ( fragment == null )
