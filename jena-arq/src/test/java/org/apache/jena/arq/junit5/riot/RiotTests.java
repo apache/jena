@@ -18,9 +18,7 @@
 
 package org.apache.jena.arq.junit5.riot;
 
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 import org.apache.jena.arq.junit5.SkipTest;
 import org.apache.jena.arq.junit5.SurpressedTest;
@@ -170,7 +168,7 @@ public class RiotTests
         }
     }
 
-    private static boolean equalsType(Node typeNode, Resource typeResource) {
+    static boolean equalsType(Node typeNode, Resource typeResource) {
         return typeNode.equals(typeResource.asNode());
     }
 
@@ -189,67 +187,6 @@ public class RiotTests
         return baseIRI;
     }
 
-    static Set<String> allowWarningSet = new HashSet<>();
-    static {
-        // example:
-        //allowWarningSet.add("#turtle-eval-bad-01");
-    }
-
-    /**
-     * Tune tests for warnings. Normally, tests runs are warning sensitive.
-     */
-    // Some tests have U+FFFD which, in Jena, generates a helpful warning.
-    // Some tests have <http:g> which RIOT warns about but passes.
-
-    /*package*/ static boolean allowWarnings(ManifestEntry testEntry) {
-        if ( equalsType(testEntry.getTestType(), VocabLangRDF.TestPositiveRDFXML) ) {
-            // RDF/XML
-            // Various warnings in eval tests.
-
-            String name = testEntry.getName();
-
-            if ( name.equals("datatypes-test002") )
-                return true;
-
-            if ( name.equals("rdfms-empty-property-elements-test016") )
-                // Processing instruction warning.
-                return true;
-
-            if ( name.equals("rdfms-rdf-names-use-test-015") )
-                //rdf:_1 is being used on a typed node.
-                return true;
-
-            if ( name.startsWith("rdfms-rdf-names-use-warn-") )
-                // "is not a recognized RDF property or type."
-                // "is not a recognized RDF property."
-                return true;
-
-            if ( name.startsWith("unrecognised-xml-attributes-test00") )
-                // XML attribute: xml:foo is not known
-                return true;
-
-            return false;
-        }
-
-        String fragment = fragment(testEntry.getURI());
-        if ( fragment == null )
-            return false;
-
-        // rdf-tests-cg/sparql11-query/syntax-query/
-        // rdf-tests-cg/ntriples/manifest.ttl
-        // rdf-tests-cg/nquads/manifest.ttl
-        // rdf-tests-cg/turtle/manifest.ttl
-        // rdf-tests-cg/trig/manifest.ttl
-        // jena-shex
-        if ( fragment.endsWith("UTF8_boundaries") || fragment.endsWith("character_boundaries") )
-            // Boundaries of the Unicode allowed character blocks.
-            return true;
-        // rdf-tests Turtle and Trig
-        if ( fragment.contains("IRI-resolution") )
-            return true;
-        return false;
-    }
-
     /*package*/ static String fragment(String uri) {
         if ( uri == null )
             return null;
@@ -257,5 +194,4 @@ public class RiotTests
         String frag = (j >= 0) ? uri.substring(j) : uri;
         return frag;
     }
-
 }

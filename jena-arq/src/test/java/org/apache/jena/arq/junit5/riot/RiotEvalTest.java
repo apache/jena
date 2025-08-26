@@ -18,6 +18,7 @@
 
 package org.apache.jena.arq.junit5.riot;
 
+import static org.apache.jena.arq.junit5.riot.RiotTestsConfig.fragment;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -54,7 +55,7 @@ public class RiotEvalTest extends AbstractManifestTest {
         input = entry.getAction().getURI();
         output = positiveTest ? entry.getResult().getURI() : null;
 
-        boolean silentWarnings = RiotTests.allowWarnings(manifestEntry);
+        boolean silentWarnings = RiotTestsConfig.allowWarningsEvalTests(manifestEntry);
         parser = ( baseIRI != null )
             ? ParsingStepForTest.parse(input, baseIRI, lang, silentWarnings)
             : ParsingStepForTest.parse(input, lang, silentWarnings);
@@ -79,7 +80,7 @@ public class RiotEvalTest extends AbstractManifestTest {
             parser.accept(dest);
 
             if ( ! expectLegalSyntax ) {
-                String fragment = RiotTests.fragment(manifestEntry.getURI());
+                String fragment = fragment(manifestEntry.getURI());
                 if ( fragment != null )
                     fail(fragment+": Passed bad syntax eval test");
                 else
