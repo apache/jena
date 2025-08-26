@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Node_Marker;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -1286,5 +1287,14 @@ public class TestNodeValue
             Node n = SSE.parseNode("<<( :s :p <<( :x :y ?variable )>> )>>");
             NodeValue.makeNode(n);
         });
+    }
+
+    @Test
+    public void testCustomNode() {
+        Node expectedNode = Node_Marker.marker("test");
+        Expr expr = ExprLib.nodeToExpr(expectedNode);
+        NodeValue nv = expr.getConstant();
+        Node actualNode = nv.asNode();
+        assertEquals(expectedNode, actualNode);
     }
 }

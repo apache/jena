@@ -571,6 +571,11 @@ public abstract class NodeValue extends ExprNode
     // ---- Setting : used when a node is used to make a NodeValue
 
     private static NodeValue nodeToNodeValue(Node node) {
+        if ( node.isExt() ) {
+            // Don't judge custom extensions.
+            return new NodeValueNode(node);
+        }
+
         if ( ! node.isConcrete() ) {
             String msg;
             if ( node.isVariable() )
