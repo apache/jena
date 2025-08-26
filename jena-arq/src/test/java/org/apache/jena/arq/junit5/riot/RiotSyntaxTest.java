@@ -52,7 +52,7 @@ public class RiotSyntaxTest extends AbstractManifestTest{
         this.baseIRI = ( baseIRI == null ) ? filename : baseIRI;
         this.expectLegalSyntax = positiveTest;
         this.lang = lang;
-        boolean silentWarnings = RiotTests.allowWarnings(manifestEntry);
+        boolean silentWarnings = RiotTestsConfig.allowWarningsSyntaxTests(manifestEntry);
         parser = ( baseIRI != null )
             ? ParsingStepForTest.parse(filename, baseIRI, lang, silentWarnings)
             : ParsingStepForTest.parse(filename, lang, silentWarnings);
