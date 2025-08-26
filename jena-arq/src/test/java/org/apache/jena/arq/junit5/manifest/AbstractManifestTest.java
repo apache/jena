@@ -48,4 +48,5 @@ public abstract class AbstractManifestTest implements Runnable {
     protected abstract void runTest();
     protected void success() { EarlReporter.success(uri()); }
     protected void failure() { EarlReporter.failure(uri()); }
+    protected void ignored() { EarlReporter.ignored(uri()); }
 }

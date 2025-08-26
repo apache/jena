@@ -30,6 +30,6 @@ public class SkipTest extends AbstractManifestTest implements Runnable {
     @Override
     public void runTest() {
         startTest();
-        success();
+        ignored();
     }
 }

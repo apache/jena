@@ -41,6 +41,11 @@ public class EarlReporter {
             currentEarlReport.failure(testURI);
     }
 
+    public static void ignored(String testURI) {
+//        if ( currentEarlReport != null )
+//            currentEarlReport.notApplicable(testURI);
+    }
+
     public static void notApplicable(String testURI) {
         if ( currentEarlReport != null )
             currentEarlReport.notApplicable(testURI);
