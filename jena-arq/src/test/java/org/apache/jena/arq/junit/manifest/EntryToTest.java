@@ -16,22 +16,13 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot;
+package org.apache.jena.arq.junit.manifest;
 
-import java.util.stream.Stream;
+import java.util.function.Function;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.DynamicNode;
-import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.function.Executable;
 
-import org.apache.jena.arq.junit.Scripts;
-
-/** The RIOT test suites - these are driven by a manifest file and use external files for tests */
-public class Scripts_LangSuite {
-
-    @TestFactory
-    @DisplayName("RIOT Scripts")
-    public Stream<DynamicNode> testFactory() {
-        return Scripts.manifestTestFactoryRIOT("testing/RIOT/Lang/manifest-all.ttl");
-    }
-}
+/**
+ * Name for a maker of tests function.
+ */
+public interface EntryToTest extends Function<ManifestEntry, Executable> {}

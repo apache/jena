@@ -22,8 +22,8 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.*;
 
-import org.apache.jena.arq.junit5.Scripts;
-import org.apache.jena.arq.junit5.riot.ParsingStepForTest;
+import org.apache.jena.arq.junit.Scripts;
+import org.apache.jena.arq.junit.riot.ParsingStepForTest;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.ReaderRIOTFactory;
 import org.apache.jena.riot.lang.rdfxml.rrx.ReaderRDFXML_SAX;

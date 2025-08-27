@@ -16,22 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot;
+package org.apache.jena.arq.junit.manifest;
 
-import java.util.stream.Stream;
-
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.DynamicNode;
-import org.junit.jupiter.api.TestFactory;
-
-import org.apache.jena.arq.junit.Scripts;
-
-/** The RIOT test suites - these are driven by a manifest file and use external files for tests */
-public class Scripts_LangSuite {
-
-    @TestFactory
-    @DisplayName("RIOT Scripts")
-    public Stream<DynamicNode> testFactory() {
-        return Scripts.manifestTestFactoryRIOT("testing/RIOT/Lang/manifest-all.ttl");
-    }
+public class TestSetupException  extends RuntimeException {
+    public TestSetupException()                { super() ; }
+    public TestSetupException(Throwable cause) { super(cause) ; }
+    public TestSetupException(String msg)      { super(msg) ; }
+    public TestSetupException(String msg, Throwable cause) { super(msg, cause) ; }
 }
+

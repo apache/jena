@@ -16,22 +16,26 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot;
+package org.apache.jena.arq.junit;
 
-import java.util.stream.Stream;
+import org.apache.jena.arq.junit.manifest.ManifestEntry;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.DynamicNode;
-import org.junit.jupiter.api.TestFactory;
+public class SurpressedTest extends SkipTest {
+    public final boolean verbose;
 
-import org.apache.jena.arq.junit.Scripts;
+    public SurpressedTest(ManifestEntry entry) {
+        super(entry);
+        this.verbose = false;
+    }
 
-/** The RIOT test suites - these are driven by a manifest file and use external files for tests */
-public class Scripts_LangSuite {
+    public SurpressedTest(ManifestEntry entry, boolean verbose) {
+        super(entry);
+        this.verbose = verbose;
+    }
 
-    @TestFactory
-    @DisplayName("RIOT Scripts")
-    public Stream<DynamicNode> testFactory() {
-        return Scripts.manifestTestFactoryRIOT("testing/RIOT/Lang/manifest-all.ttl");
+    @Override
+    public void runTest() {
+        if ( verbose )
+            System.err.println("Supressed test: " + manifestEntry.getName());
     }
 }

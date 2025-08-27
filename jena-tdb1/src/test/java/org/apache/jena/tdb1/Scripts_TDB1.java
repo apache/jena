@@ -23,9 +23,9 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.*;
 
-import org.apache.jena.arq.junit5.Scripts;
-import org.apache.jena.arq.junit5.manifest.ManifestEntry;
-import org.apache.jena.arq.junit5.sparql.SparqlTests;
+import org.apache.jena.arq.junit.Scripts;
+import org.apache.jena.arq.junit.manifest.ManifestEntry;
+import org.apache.jena.arq.junit.sparql.SparqlTests;
 import org.apache.jena.atlas.lib.Creator;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.query.Dataset;

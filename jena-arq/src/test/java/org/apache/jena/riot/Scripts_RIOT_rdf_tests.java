@@ -24,7 +24,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;
 
-import org.apache.jena.arq.junit5.Scripts;
+import org.apache.jena.arq.junit.Scripts;
 
 /** rdf-tests-cg, RDF languages. See testing/README.md for any modifications. */
 public class Scripts_RIOT_rdf_tests {
