@@ -21,8 +21,6 @@ package org.apache.jena.fuseki.test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.jupiter.api.Assertions;
-
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.web.HttpSC;
@@ -32,14 +30,14 @@ public class HttpTest {
     public static void expect4xx(Runnable action) {
         try {
             action.run();
-            Assertions.fail("Expected HttpException");
+            fail("Expected HttpException");
         } catch (QueryExceptionHTTP ex) {
             if ( ex.getStatusCode() < 400 || ex.getStatusCode() > 499 )
-                Assertions.fail(ex.getMessage());
+                fail(ex.getMessage());
             } catch (HttpException ex) {
             // -1 : any status code in HttpException
             if ( ex.getStatusCode() < 400 || ex.getStatusCode() > 499 )
-                Assertions.fail(ex.getMessage());
+                fail(ex.getMessage());
         }
     }
 

@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.*;
 
-import org.apache.jena.arq.junit5.Scripts;
+import org.apache.jena.arq.junit.Scripts;
 import org.apache.jena.sparql.engine.ref.QueryEngineRef;
 import org.apache.jena.sparql.expr.E_Function;
 import org.apache.jena.sparql.expr.NodeValue;
