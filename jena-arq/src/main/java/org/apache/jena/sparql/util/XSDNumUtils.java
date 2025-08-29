@@ -147,6 +147,18 @@ public class XSDNumUtils {
         return bd.stripTrailingZeros().toPlainString();
     }
 
+    /** Return a canonical decimal with a trailing ".0". */
+    public static BigDecimal canonicalDecimalWithDot(BigDecimal decimal) {
+        BigDecimal result = decimal;
+        if (result.scale() > 1) {
+            result = decimal.stripTrailingZeros();
+        }
+        if (result.scale() <= 0) {
+            result = result.setScale(1);
+        }
+        return result;
+    }
+
     /**
      * Integer-valued decimals have a trailing ".0".
      * (In XML Schema Datatype 1.1 they did not have a ".0".)
