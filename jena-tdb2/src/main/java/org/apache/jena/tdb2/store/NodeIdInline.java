@@ -163,6 +163,7 @@ public class NodeIdInline {
             // But at this point we know it's a valid literal so the excessive
             // chopping by .trim is safe.
             BigDecimal decimal = new BigDecimal(lit.getLexicalForm().trim());
+            decimal = XSDNumUtils.canonicalDecimalWithDot(decimal);
 
             // Does range checking.
             DecimalNode56 dn = DecimalNode56.valueOf(decimal);
