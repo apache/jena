@@ -33,6 +33,8 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.compose.Union;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.JenaTransactionException;
@@ -433,6 +435,18 @@ public abstract class AbstractTestRDFLink {
         }
     }
 
+    @Test public void query_json_01() {
+        try ( RDFLink link = link() ) {
+            Txn.executeWrite(link, ()->link.loadDataset(DIR+"data.trig"));
+            int actual = Txn.calculateRead(link, ()-> {
+                try (QueryExec qe = link.query("JSON { 's': ?s } { ?s ?p ?o }")) {
+                    return qe.execJson().size();
+                }
+            });
+            assertEquals(2, actual);
+        }
+    }
+
     @Test public void update_01() {
         try ( RDFLink link = link() ) {
             link.update("INSERT DATA { <urn:x:s> <urn:x:p> <urn:x:o>}");
@@ -446,16 +460,16 @@ public abstract class AbstractTestRDFLink {
     }
 
     @Test public void update_03() {
-    	UpdateRequest update = new UpdateRequest();
-    	update.add("INSERT DATA { <urn:x:s> <urn:x:p> <urn:x:o>}");
+        UpdateRequest update = new UpdateRequest();
+        update.add("INSERT DATA { <urn:x:s> <urn:x:p> <urn:x:o>}");
         try ( RDFLink link = link() ) {
             link.update(update);
         }
     }
 
     @Test public void update_04() {
-    	UpdateRequest update = new UpdateRequest();
-    	update.add("INSERT DATA { <urn:x:s> <urn:x:p> <urn:x:o>}");
+        UpdateRequest update = new UpdateRequest();
+        update.add("INSERT DATA { <urn:x:s> <urn:x:p> <urn:x:o>}");
         try ( RDFLink link = link() ) {
             Txn.executeWrite(link, ()->link.update(update));
         }
