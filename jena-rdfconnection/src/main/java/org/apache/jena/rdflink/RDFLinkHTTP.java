@@ -29,6 +29,7 @@ import org.apache.jena.http.HttpEnv;
 import org.apache.jena.query.*;
 import org.apache.jena.rdfconnection.JenaConnectionException;
 import org.apache.jena.riot.RDFFormat;
+import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.ARQException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Transactional;
@@ -341,7 +342,10 @@ public class RDFLinkHTTP implements RDFLink {
                                 requestAcceptHeader = RDFLinkHTTP.this.acceptGraph;
                         }
                         break;
-                    case UNKNOWN:
+                    case CONSTRUCT_JSON :
+                        requestAcceptHeader = WebContent.contentTypeJSON;
+                        break;
+                    case UNKNOWN :
                         // All-purpose content type.
                         if ( acceptSparqlResults != null ) {
                             requestAcceptHeader = RDFLinkHTTP.this.acceptSparqlResults;
