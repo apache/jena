@@ -8,10 +8,9 @@ sufficient activity to maintain the code over the long term.
 
 ### Apache Jena JDBC
 
-The last release of apache-jena-osgi source was with Jena 4.10.0 on 2023-@@
-Source is available from git with tag "jena-4.10.0".
-The commit retiring jena-jdbc is @@
-@@ needs setting after merge - commit is 2023-10-12, "GH-2035: Retire jena-jdbc"
+The last release of jena-jdbc was with Jena 4.10.0.
+The source code is available from git with tag "jena-4.10.0".
+The commit retiring jena-jdbc is ec83436844.
 
 ### Apache Jena OSGi
 
