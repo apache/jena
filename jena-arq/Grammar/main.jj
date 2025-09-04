@@ -2188,7 +2188,6 @@ Expr BuiltInCall() : { Expr expr ;
     { return makeFunction_URI(expr) ; }
 #endif
 
-
   | <BNODE> 
     ( <LPAREN> expr1 = Expression() <RPAREN>
       { return makeFunction_BNode(expr1) ; }
@@ -2278,7 +2277,11 @@ Expr BuiltInCall() : { Expr expr ;
   | <SHA512>      <LPAREN> expr1 = Expression() <RPAREN> { return new E_SHA512(expr1) ; }
 
 #ifdef ARQ
+  // VERSION()
   | <VERSION> <NIL>     { return new E_Version(); }
+
+  // Effective boolean value
+  | <EBV>     <LPAREN> expr = Expression() <RPAREN> { return new E_EBV(expr); }
 #endif    
 
   | <COALESCE> a = ExpressionList()
@@ -2302,7 +2305,7 @@ Expr BuiltInCall() : { Expr expr ;
   | <IF> <LPAREN> expr = Expression() <COMMA> 
                   expr1 = Expression() <COMMA> 
                   expr2 = Expression() <RPAREN>
-    { return new E_Conditional(expr, expr1, expr2) ; }
+    { return new E_If(expr, expr1, expr2) ; }
 
   | <STRLANG> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
     { return new E_StrLang(expr1, expr2) ; }
@@ -2829,6 +2832,7 @@ TOKEN [IGNORE_CASE] :
 |  < URI:         "uri" >
 
 #ifdef ARQ
+|  < EBV:         "EBV" >
 |  < CAST:        "cast" >
 |  < CALL:        "call" >
 |  < MULTI:       "multi" >

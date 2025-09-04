@@ -1670,6 +1670,7 @@ Expr BuiltInCall() : { Expr expr ;
   | <SHA384> <LPAREN> expr1 = Expression() <RPAREN> { return new E_SHA384(expr1) ; }
   | <SHA512> <LPAREN> expr1 = Expression() <RPAREN> { return new E_SHA512(expr1) ; }
   | <VERSION> <NIL> { return new E_Version(); }
+  | <EBV> <LPAREN> expr = Expression() <RPAREN> { return new E_EBV(expr); }
   | <COALESCE> a = ExpressionList()
     { return new E_Coalesce(a) ; }
   | <CALL>
@@ -1682,7 +1683,7 @@ Expr BuiltInCall() : { Expr expr ;
   | <IF> <LPAREN> expr = Expression() <COMMA>
                   expr1 = Expression() <COMMA>
                   expr2 = Expression() <RPAREN>
-    { return new E_Conditional(expr, expr1, expr2) ; }
+    { return new E_If(expr, expr1, expr2) ; }
   | <STRLANG> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
     { return new E_StrLang(expr1, expr2) ; }
   | <STRLANGDIR> <LPAREN> expr1 = Expression() <COMMA>
@@ -2062,6 +2063,7 @@ TOKEN [IGNORE_CASE] :
 | < BNODE: "bnode" >
 | < IRI: "iri" >
 | < URI: "uri" >
+| < EBV: "EBV" >
 | < CAST: "cast" >
 | < CALL: "call" >
 | < MULTI: "multi" >

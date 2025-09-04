@@ -960,28 +960,15 @@ public class TestXSDFuncOp {
     @Test public void cast_gregorian_25() { testDateTimeCast(nv_gd, XSDDatatype.XSDgDay, nv_gd); }
 
     // G* to date
-
-    @Test
-		public void cast_gregorian_31()     { assertThrows(ExprEvalTypeException.class, ()-> testDateTimeCast(nv_gym, XSDDatatype.XSDdate, nv_d) ); }
-
-    @Test
-		public void cast_gregorian_32()     { assertThrows(ExprEvalTypeException.class, ()-> testDateTimeCast(nv_gy, XSDDatatype.XSDdate, NodeValue.makeDate("2010-01-01")) ); }
-
-    @Test
-		public void cast_gregorian_33()     { assertThrows(ExprEvalTypeException.class, ()-> testDateTimeCast(nv_gmd, XSDDatatype.XSDdate, nv_d) ); }
-
-    @Test
-		public void cast_gregorian_34()     { assertThrows(ExprEvalTypeException.class, ()-> testDateTimeCast(nv_gm, XSDDatatype.XSDdate, nv_d) ); }
-
-    @Test
-		public void cast_gregorian_35()     { assertThrows(ExprEvalTypeException.class, ()-> testDateTimeCast(nv_gd, XSDDatatype.XSDdate, nv_d) ); }
+    @Test public void cast_gregorian_31() { assertThrows(ExprEvalTypeException.class, ()-> testDateTimeCast(nv_gym, XSDDatatype.XSDdate, nv_d) ); }
+    @Test public void cast_gregorian_32() { assertThrows(ExprEvalTypeException.class, ()-> testDateTimeCast(nv_gy, XSDDatatype.XSDdate, NodeValue.makeDate("2010-01-01")) ); }
+    @Test public void cast_gregorian_33() { assertThrows(ExprEvalTypeException.class, ()-> testDateTimeCast(nv_gmd, XSDDatatype.XSDdate, nv_d) ); }
+    @Test public void cast_gregorian_34() { assertThrows(ExprEvalTypeException.class, ()-> testDateTimeCast(nv_gm, XSDDatatype.XSDdate, nv_d) ); }
+    @Test public void cast_gregorian_35() { assertThrows(ExprEvalTypeException.class, ()-> testDateTimeCast(nv_gd, XSDDatatype.XSDdate, nv_d) ); }
 
     // Junk to date/time thing.
     @Test
-    public void cast_err_gregorian_01() {
-        assertThrows(ExprEvalException.class, ()->
-            testDateTimeCast(NodeValue.makeBoolean(false), XSDDatatype.XSDgDay, nv_gd));
-    }
+    public void cast_err_gregorian_01()     { assertThrows(ExprEvalException.class, ()->testDateTimeCast(NodeValue.FALSE, XSDDatatype.XSDgDay, nv_gd) ); }
 
     private static NodeValue nv_dt_tz1 = NodeValue.makeNode("2010-03-22T20:31:54.5+01:00", XSDDatatype.XSDdateTime);
     private static NodeValue nv_dt_tz2 = NodeValue.makeNode("2010-03-22T20:31:54.5-05:00", XSDDatatype.XSDdateTime);

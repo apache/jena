@@ -16,14 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.expr;
+package org.apache.jena.sparql.function.library;
 
-/** @deprecated Use E_If */
-@Deprecated(forRemoval=true)
-public class E_Conditional extends E_If {
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionBase1;
 
-    public E_Conditional(Expr condition, Expr thenExpr, Expr elseExpr) {
-        super(condition, thenExpr, elseExpr);
+/** fn:boolean - calculate the Effective Boolean Value */
+public class FN_Boolean extends FunctionBase1 {
+    @Override
+    public NodeValue exec(NodeValue x) {
+        return XSDFuncOp.effectiveBooleanValueAsNodeValue(x);
     }
 }
-

@@ -148,6 +148,7 @@ public class Tags
     public static final String tagOr              = "or";
     public static final String symAnd             = "&&";
     public static final String tagAnd             = "and";
+    public static final String tagEBV             = "ebv";
 
     public static final String symPlus            = "+";
     public static final String tagAdd             = "add";

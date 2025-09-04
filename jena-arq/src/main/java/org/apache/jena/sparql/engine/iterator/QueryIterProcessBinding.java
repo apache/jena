@@ -34,9 +34,9 @@ import org.apache.jena.sparql.engine.binding.Binding ;
  */
 
 public abstract class QueryIterProcessBinding extends QueryIter1 {
-    /** Process the binding - return null for "not accept".
-     * Subclasses may return a different Binding to the argument and
-     * the result is the returned Binding.
+    /**
+     * Process the binding - return null for "not accept". Subclasses may return a
+     * different Binding to the argument and the result is the returned Binding.
      */
     abstract public Binding accept(Binding binding) ;
 

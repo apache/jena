@@ -16,17 +16,35 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.function.library;
+package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
-import org.apache.jena.sparql.function.FunctionBase1;
+import org.apache.jena.sparql.serializer.SerializationContext;
+import org.apache.jena.sparql.sse.Tags;
 
-/** Boolean Equivalent Value */
+/* Effective Boolean Value */
+public class E_EBV extends ExprFunction1 {
 
-public class FN_BEV extends FunctionBase1 {
+    private static final String functionName = Tags.tagEBV;
+    private static final String symbol = "ebv";
+    private static final String sparqlPrintName = "EBV";
+
+    public E_EBV(Expr expr) {
+        super(expr, symbol) ;
+    }
+
     @Override
-    public NodeValue exec(NodeValue x) {
-        return XSDFuncOp.effectiveBooleanValueAsNodeValue(x);
+    public String getFunctionPrintName(SerializationContext cxt) {
+        return sparqlPrintName;
+    }
+
+    @Override
+    public Expr copy(Expr expr) {
+        return new E_EBV(expr);
+    }
+
+    @Override
+    public NodeValue eval(NodeValue arg) {
+        return XSDFuncOp.effectiveBooleanValueAsNodeValue(arg);
     }
 }
