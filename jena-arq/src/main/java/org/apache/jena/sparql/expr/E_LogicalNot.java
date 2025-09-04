@@ -29,15 +29,13 @@ public class E_LogicalNot extends ExprFunction1
     private static final String functionName = Tags.tagNot ;
     private static final String symbol = Tags.symNot ;
 
-    public E_LogicalNot(Expr expr)
-    {
-        super(expr, functionName, symbol) ;
+    public E_LogicalNot(Expr expr) {
+        super(expr, functionName, symbol);
     }
 
     @Override
-    public NodeValue eval(NodeValue v)
-    {
-        return XSDFuncOp.not(v) ;
+    public NodeValue eval(NodeValue v) {
+        return XSDFuncOp.not(v);
     }
 
     @Override
