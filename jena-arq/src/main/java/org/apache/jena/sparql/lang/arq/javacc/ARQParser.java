@@ -5567,7 +5567,7 @@ expr1 = new E_OpNumericIntegerDivide(expr1, expr2) ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case BANG:{
       jj_consume_token(BANG);
-      expr = PrimaryExpression();
+      expr = UnaryExpression();
 {if ("" != null) return new E_LogicalNot(expr) ;}
       break;
       }

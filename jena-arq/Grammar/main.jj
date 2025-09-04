@@ -2063,7 +2063,7 @@ Expr MultiplicativeExpression() : { Expr expr1, expr2 ; }
 
 Expr UnaryExpression() : { Expr expr ; }
 {
-  <BANG> expr = PrimaryExpression()
+  <BANG> expr = UnaryExpression()
     { return new E_LogicalNot(expr) ; }
   | <PLUS>  expr = PrimaryExpression() { return new E_UnaryPlus(expr) ; }
   | <MINUS> expr = PrimaryExpression() { return new E_UnaryMinus(expr) ; }
