@@ -48,7 +48,6 @@ public class E_Conditional extends ExprFunction3 {
     /** Functional form evaluation */
     @Override
     protected NodeValue evalSpecial(Binding binding, FunctionEnv env) {
-        NodeValue nv = condition.eval(binding, env);
         if ( condition.isSatisfied(binding, env) )
             return thenExpr.eval(binding, env);
         else

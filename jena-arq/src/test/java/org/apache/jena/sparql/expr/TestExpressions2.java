@@ -81,8 +81,7 @@ public class TestExpressions2
 
     public void gregorian_cast_01()             { eval("xsd:gYear('2010-03-22'^^xsd:date) = '2010'^^xsd:gYear", true ); }
 
-    @Test
-    public void coalesce_01()                   { assertThrows(ExprEvalException.class, ()-> eval("COALESCE()") ); }
+    @Test public void coalesce_01()             { assertThrows(ExprEvalException.class, ()-> eval("COALESCE()") ); }
     @Test public void coalesce_02()             { eval("COALESCE(1) = 1", true); }
     @Test public void coalesce_03()             { eval("COALESCE(?x,1) = 1", true); }
     @Test public void coalesce_04()             { eval("COALESCE(9,1) = 9", true); }
@@ -90,9 +89,14 @@ public class TestExpressions2
     // IF
     @Test public void if_01()                   { eval("IF(1+2=3, 'yes', 'no') = 'yes'", true); }
     @Test public void if_02()                   { eval("IF(1+2=4, 'yes', 'no') = 'no'", true); }
-    @Test public void if_03()                   { eval("IF(true, 'yes', 1/0) = 'yes'", true); }
-    @Test
-    public void if_04()                         { assertThrows(ExprEvalException.class, ()-> eval("IF(true, 1/0, 'no') = 'no'") ); }
+    @Test public void if_03()                   { eval("IF(true, 'then', 1/0) = 'then'", true); }
+    @Test public void if_04()                   { eval("IF(false, 1/0, 'else') = 'else'", true); }
+    @Test public void if_05()                   { assertThrows(ExprEvalException.class, ()-> eval("IF(true, 1/0, 'no') = 'no'") ); }
+    @Test public void if_06()                   { assertThrows(ExprEvalException.class, ()-> eval("IF(false, 'yes', 1/0) = 'yes'") ); }
+    // EBV in the condition
+    @Test public void if_10()                   { eval("IF(?unbound, 'yes', 'no') = 'no'"); }
+    @Test public void if_11()                   { eval("IF(! (?unbound), 'yes', 'no') = 'no'"); }
+    @Test public void if_12()                   { eval("IF(1/0, 'yes', 'no') = 'no'"); }
 
     // NOT IN, IN
     @Test public void in_01()                   { eval("1 IN(1,2,3)", true); }
