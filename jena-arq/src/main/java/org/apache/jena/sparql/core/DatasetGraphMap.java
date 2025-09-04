@@ -63,14 +63,16 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
         this(defaultGraph, DatasetGraphFactory.graphMakerMem);
     }
 
-    private DatasetGraphMap(Graph baseDefaultGraph, GraphMaker baseGraphMaker) {
+     DatasetGraphMap(GraphMaker graphMaker) {
+        this(null, graphMaker);
+    }
+
+    DatasetGraphMap(Graph baseDefaultGraph, GraphMaker baseGraphMaker) {
         this.graphMaker = namedGraphMaker(baseGraphMaker);
         if ( baseDefaultGraph == null )
             this.defaultGraph = this.graphMaker.create(null);
-        else if ( baseDefaultGraph instanceof NamedGraph )
-            this.defaultGraph = baseDefaultGraph;
         else
-            this.defaultGraph =  graphMaker.create(null);
+            this.defaultGraph = baseDefaultGraph;
         this.prefixes = Prefixes.adapt(defaultGraph);
     }
 
@@ -104,7 +106,10 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
     @Override
     public Iterator<Node> listGraphNodes() {
         // Hide empty graphs.
-        return graphs.entrySet().stream().filter(e->!e.getValue().isEmpty()).map(Entry::getKey).iterator();
+        return graphs.entrySet().stream()
+                .filter(e->!e.getValue().isEmpty())
+                .map(Entry::getKey)
+                .iterator();
     }
 
     @Override

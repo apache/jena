@@ -112,10 +112,17 @@ public class DatasetGraphFactory
 
     /**
      * Create a DatasetGraph starting with a single graph.
-     * New graphs must be explicitly added.
+     * New graphs that are explicitly added are held by reference.
      */
     public static DatasetGraph create(Graph dftGraph) {
         return new DatasetGraphMapLink(dftGraph);
+    }
+
+    /**
+     * Create a DatasetGraph using the {@link GraphMaker} for all graphs.
+     */
+    public static DatasetGraph createWithGraphMaker(GraphMaker graphMaker) {
+        return new DatasetGraphMap(graphMaker);
     }
 
     /**
