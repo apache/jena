@@ -754,7 +754,7 @@
 
       <dependency>
         <groupId>com.esotericsoftware</groupId>
-        <artifactId>kryo</artifactId>
+        <artifactId>kryo-shaded</artifactId>
         <version>${ver.kryo}</version>
       </dependency>
 
