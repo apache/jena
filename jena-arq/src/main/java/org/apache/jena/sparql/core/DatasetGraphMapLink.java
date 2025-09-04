@@ -86,8 +86,15 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
         this(dftGraph, dftGraphMaker);
     }
 
+    /** A {@code DatasetGraph} that uses the given graph for the default graph
+     *  and create in-memory graphs for named graphs as needed
+     */
+    public DatasetGraphMapLink(GraphMaker graphMaker) {
+        this(graphMaker.create(null), graphMaker);
+    }
+
     // This is the root constructor.
-    /*package*/DatasetGraphMapLink(Graph dftGraph, GraphMaker graphMaker) {
+    /*package*/ DatasetGraphMapLink(Graph dftGraph, GraphMaker graphMaker) {
         if ( dftGraph == null )
             // Always have a default graph of some kind.
             dftGraph = GraphZero.instance();

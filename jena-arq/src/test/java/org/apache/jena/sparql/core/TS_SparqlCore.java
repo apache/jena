@@ -34,6 +34,7 @@ import org.junit.platform.suite.api.Suite;
     , TestDatasetGraphMap.class
     , TestDatasetGraphCopyAdd.class
     , TestDatasetGraphViewGraphs.class
+    , TestDatasetGraphFactory.class
     , TestGraphView.class
 
     , TestDatasetGraphBaseFind_General.class
