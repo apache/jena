@@ -338,6 +338,18 @@ public class BuilderExpr
         return new E_LogicalAnd(left, right);
     };
 
+    private static Build buildNot = (ItemList list) -> {
+        BuilderLib.checkLength(2, list, "!: wanted 1 argument: got :"+numArgs(list));
+        Expr ex = buildExpr(list.get(1));
+        return new E_LogicalNot(ex);
+    };
+
+    private static Build buildEBV = (ItemList list) -> {
+        BuilderLib.checkLength(2, list, "EBV: wanted 1 argument: got :"+numArgs(list));
+        Expr expr = buildExpr(list.get(1));
+        return new E_EBV(expr);
+    };
+
     private static Build buildMult = (ItemList list) -> {
         BuilderLib.checkLength(3, list, "*: wanted 2 arguments: got :"+numArgs(list));
         Expr left = buildExpr(list.get(1));
@@ -364,12 +376,6 @@ public class BuilderExpr
         Expr left = buildExpr(list.get(1));
         Expr right = buildExpr(list.get(2));
         return new E_OpNumericMod(left, right);
-    };
-
-    private static Build buildNot = (ItemList list) -> {
-        BuilderLib.checkLength(2, list, "!: wanted 1 argument: got :"+numArgs(list));
-        Expr ex = buildExpr(list.get(1));
-        return new E_LogicalNot(ex);
     };
 
     private static Build buildStr = (ItemList list) -> {
@@ -676,12 +682,12 @@ public class BuilderExpr
         return new E_StrConcat(exprs);
     };
 
-    private static Build buildConditional = (ItemList list) -> {
+    private static Build buildIfExpr = (ItemList list) -> {
         BuilderLib.checkLength(4, list, "IF: wanted 3 arguments: got :"+numArgs(list));
         Expr ex1 = buildExpr(list.get(1));
         Expr ex2 = buildExpr(list.get(2));
         Expr ex3 = buildExpr(list.get(3));
-        return new E_Conditional(ex1, ex2, ex3);
+        return new E_If(ex1, ex2, ex3);
     };
 
     private static Build buildIsIRI = (ItemList list) -> {
@@ -1016,6 +1022,9 @@ public class BuilderExpr
         dispatch(dispatchMap, Tags.tagOr, buildOr);
         dispatch(dispatchMap, Tags.symAnd, buildAnd);
         dispatch(dispatchMap, Tags.tagAnd, buildAnd);
+        dispatch(dispatchMap, Tags.tagNot, buildNot);   // Same builders for (not ..) and (! ..)
+        dispatch(dispatchMap, Tags.symNot, buildNot);
+        dispatch(dispatchMap, Tags.tagEBV, buildEBV);
         dispatch(dispatchMap, Tags.symPlus, buildPlus);
         dispatch(dispatchMap, Tags.tagAdd,  buildPlus);
         dispatch(dispatchMap, Tags.symMinus, buildMinus);
@@ -1033,9 +1042,6 @@ public class BuilderExpr
 
         dispatch(dispatchMap, Tags.tagIDiv, buildIDiv);
         dispatch(dispatchMap, Tags.tagMod, buildMod);
-
-        dispatch(dispatchMap, Tags.tagNot, buildNot);   // Same builders for (not ..) and (! ..)
-        dispatch(dispatchMap, Tags.symNot, buildNot);
 
         dispatch(dispatchMap, Tags.tagStr, buildStr);
         dispatch(dispatchMap, Tags.tagStrLang, buildStrLang);
@@ -1092,7 +1098,7 @@ public class BuilderExpr
         dispatch(dispatchMap, Tags.tagBound, buildBound);
         dispatch(dispatchMap, Tags.tagCoalesce, buildCoalesce);
         dispatch(dispatchMap, Tags.tagConcat, buildConcat);
-        dispatch(dispatchMap, Tags.tagIf, buildConditional);
+        dispatch(dispatchMap, Tags.tagIf, buildIfExpr);
         dispatch(dispatchMap, Tags.tagIsIRI, buildIsIRI);
         dispatch(dispatchMap, Tags.tagIsURI, buildIsURI);
         dispatch(dispatchMap, Tags.tagIsBlank, buildIsBlank);

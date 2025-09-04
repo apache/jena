@@ -1445,7 +1445,7 @@ Expr BuiltInCall() : { Expr expr ;
   | <IF> <LPAREN> expr = Expression() <COMMA>
                   expr1 = Expression() <COMMA>
                   expr2 = Expression() <RPAREN>
-    { return new E_Conditional(expr, expr1, expr2) ; }
+    { return new E_If(expr, expr1, expr2) ; }
   | <STRLANG> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
     { return new E_StrLang(expr1, expr2) ; }
   | <STRLANGDIR> <LPAREN> expr1 = Expression() <COMMA>

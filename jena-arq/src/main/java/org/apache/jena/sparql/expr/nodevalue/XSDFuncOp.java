@@ -318,25 +318,28 @@ public class XSDFuncOp
         return effectiveBooleanValue(nv);
     }
 
-    /** {@literal F&O} fn:boolean */
+    /** Effective Boolean Value */
     public static boolean effectiveBooleanValue(NodeValue nv) {
         Objects.requireNonNull(nv, "NodeValue is null in call to effectiveBooleanValue");
 
         // Apply the "boolean effective value" rules
         // boolean: value of the boolean (strictly, if derived from xsd:boolean)
-        // plain literal: lexical form length(string) > 0
-        // numeric: number != Nan && number != 0
+        // string literal: lexical form is not the empty string.
+        // numeric: number != NaN && number != 0
+        // http://www.w3.org/TR/sparql12-query#ebv
         // http://www.w3.org/TR/xquery/#dt-ebv
 
         if ( nv.isBoolean() )
             return nv.getBoolean();
         if ( nv.isString() || nv.isLangString() )
-            // Plain literals.
+            // String
             return ! nv.getString().isEmpty();
         if ( nv.isInteger() )
             return !nv.getInteger().equals(BigInteger.ZERO);
-        if ( nv.isDecimal() )
-            return !nv.getDecimal().equals(BigDecimal.ZERO);
+        if ( nv.isDecimal() ) {
+            // Not equals(BigDecimal.ZERO) which is only scale=0
+            return nv.getDecimal().signum() != 0;
+        }
         if ( nv.isDouble() ) {
             double v = nv.getDouble();
             return v != 0.0d && ! Double.isNaN(v);

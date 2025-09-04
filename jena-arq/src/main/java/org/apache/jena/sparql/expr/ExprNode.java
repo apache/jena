@@ -40,8 +40,9 @@ public abstract class ExprNode implements Expr
 
     protected ExprNode() {}
 
+    // FILTER rules for expression evaluation.
     @Override
-    public boolean isSatisfied(Binding binding, FunctionEnv funcEnv) {
+    public final boolean isSatisfied(Binding binding, FunctionEnv funcEnv) {
         try {
             NodeValue v = eval(binding, funcEnv);
             boolean b = XSDFuncOp.effectiveBooleanValue(v);

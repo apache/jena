@@ -212,7 +212,7 @@ public class StandardFunctions
 
 //      7.3.1 fn:boolean
 //      7.3.2 fn:not
-      add(registry, xfn+"boolean",        FN_BEV.class);
+      add(registry, xfn+"boolean",        FN_Boolean.class);
       add(registry, xfn+"not",            FN_Not.class);
 
         // XQ/XP 3.

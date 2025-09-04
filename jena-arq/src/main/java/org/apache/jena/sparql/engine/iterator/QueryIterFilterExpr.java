@@ -44,6 +44,7 @@ public class QueryIterFilterExpr extends QueryIterProcessBinding {
 
     @Override
     public Binding accept(Binding binding) {
+        // Any problems causes null.
         try {
             // ExprNode.isSatisfied converts exceptions to ExprEvalException
             if ( expr.isSatisfied(binding, super.getExecContext()) )
@@ -54,7 +55,7 @@ public class QueryIterFilterExpr extends QueryIterProcessBinding {
             throw ex;
         } catch (ExprException ex) {
             // Some evaluation exception: should not happen.
-            Log.warn(this, "Expression Exception in " + expr, ex);
+            Log.warn(this, "Expression exception in " + expr, ex);
             return null;
         } catch (Exception ex) {
             Log.warn(this, "General exception in " + expr, ex);
