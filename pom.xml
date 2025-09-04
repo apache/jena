@@ -802,32 +802,6 @@
       </dependency>
 
       <dependency>
-        <groupId>io.github.galbiston</groupId>
-        <artifactId>expiring-map</artifactId>
-        <version>1.0.2</version>
-      </dependency>
-
-      <dependency>
-        <groupId>io.github.galbiston</groupId>
-        <artifactId>rdf-tables</artifactId>
-        <version>1.0.5</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.apache.jena</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>com.beust</groupId>
-            <artifactId>jcommander</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
         <groupId>commons-beanutils</groupId>
         <artifactId>commons-beanutils</artifactId>
         <version>1.11.0</version>
