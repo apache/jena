@@ -113,7 +113,7 @@
     <ver.org.openjdk.jmh>1.37</ver.org.openjdk.jmh>
 
     <!-- GeoSPARQL related -->
-    <ver.kryo>4.0.3</ver.kryo>
+    <ver.kryo>5.6.2</ver.kryo>
     <ver.jaxb-api>2.3.1</ver.jaxb-api>
     <ver.jakarta-xml-bind>4.0.4</ver.jakarta-xml-bind>
     <ver.jcommander>1.82</ver.jcommander>
@@ -745,8 +745,8 @@
       <!-- jena-geosparql, jena-fuseki-geosparql related -->
 
       <dependency>
-        <groupId>com.esotericsoftware</groupId>
-        <artifactId>kryo-shaded</artifactId>
+        <groupId>com.esotericsoftware.kryo</groupId>
+        <artifactId>kryo5</artifactId>
         <version>${ver.kryo}</version>
       </dependency>
 

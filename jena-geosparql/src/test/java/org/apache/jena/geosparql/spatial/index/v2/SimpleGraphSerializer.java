@@ -22,10 +22,10 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.Serializer;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.kryo5.Kryo;
+import com.esotericsoftware.kryo.kryo5.Serializer;
+import com.esotericsoftware.kryo.kryo5.io.Input;
+import com.esotericsoftware.kryo.kryo5.io.Output;
 
 /** Only used for testing Node_Graph serialization. */
 public class SimpleGraphSerializer
@@ -43,7 +43,7 @@ public class SimpleGraphSerializer
     }
 
     @Override
-    public Graph read(Kryo kryo, Input input, Class<Graph> type) {
+    public Graph read(Kryo kryo, Input input, Class<? extends Graph> type) {
         Graph result = GraphFactory.createDefaultGraph();
         for (;;) {
             Triple t = kryo.readObjectOrNull(input, Triple.class);
