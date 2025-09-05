@@ -43,10 +43,10 @@ import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.XSD;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.Serializer;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.kryo5.Kryo;
+import com.esotericsoftware.kryo.kryo5.Serializer;
+import com.esotericsoftware.kryo.kryo5.io.Input;
+import com.esotericsoftware.kryo.kryo5.io.Output;
 
 /**
  * An RDF 1.2 node serializer for kryo.
@@ -262,7 +262,7 @@ public class NodeSerializer
     }
 
     @Override
-    public Node read(Kryo kryo, Input input, Class<Node> cls) {
+    public Node read(Kryo kryo, Input input, Class<? extends Node> cls) {
         Node result;
         String v1, v2;
         Triple t;
