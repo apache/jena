@@ -24,6 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.Set;
 
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IOX;
@@ -37,10 +38,10 @@ import org.locationtech.jts.geom.Geometry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.Serializer;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.kryo5.Kryo;
+import com.esotericsoftware.kryo.kryo5.Serializer;
+import com.esotericsoftware.kryo.kryo5.io.Input;
+import com.esotericsoftware.kryo.kryo5.io.Output;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -50,6 +51,12 @@ public class SpatialIndexIoKryo {
     // Flag whether additional serializers for storing geometries in the index should be registered.
     // The current version of the index only stores the envelopes so this feature is not needed.
     private static boolean enableGeometrySerde = false;
+
+    /** Kryo4-based serialization is now obsolete. */
+    private static final Set<String> OBSOLETE_VERSIONS = Set.of("2.0.0");
+
+    /** The version of the index that is created by this class. */
+    public static final String VERSION = "3.0.0";
 
     public static SpatialIndex loadOrBuildSpatialIndex(Dataset dataset, Path spatialIndexFile) throws SpatialIndexException {
         SpatialIndex spatialIndex = loadOrBuildSpatialIndex(dataset, null, spatialIndexFile);
@@ -149,7 +156,7 @@ public class SpatialIndexIoKryo {
     public static void writeToOutputStream(OutputStream os, SpatialIndexPerGraph index) {
         SpatialIndexHeader header = new SpatialIndexHeader();
         header.setType(SpatialIndexHeader.TYPE_VALUE);
-        header.setVersion("2.0.0");
+        header.setVersion(VERSION);
         header.setSrsUri(index.getSrsInfo().getSrsURI());
 
         GeometrySerializerJtsWkb geometrySerializer = null;
@@ -207,8 +214,12 @@ public class SpatialIndexIoKryo {
             }
 
             String version = header.getVersion();
-            if (!"2.0.0".equals(version)) {
-                throw new SpatialIndexException("The version of the spatial index does not match the version of this loader class.");
+            if (!VERSION.equals(version)) {
+                if (OBSOLETE_VERSIONS.contains(version)) {
+                    throw new SpatialIndexException("Spatial index version " + version + " is no longer supported. Move or delete this file to allow for creation of a new index in its place: " + spatialIndexFile);
+                } else {
+                    throw new SpatialIndexException("Spatial index version " + version + " is not supported (expected version: " + VERSION + "). Offending file: " + spatialIndexFile);
+                }
             }
 
             srsUri = header.getSrsUri();

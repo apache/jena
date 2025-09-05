@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.iterator.IteratorCloseable;
@@ -54,7 +55,7 @@ public class STRtreeUtils {
 
     // XXX This method overlaps function-wise with SpatialIndexerComputation. Consolidate?
     public static STRtreePerGraph buildSpatialIndexTree(DatasetGraph datasetGraph, String srsURI) throws SpatialIndexException {
-        Map<Node, STRtree> treeMap = new LinkedHashMap<>();
+        Map<Node, STRtree> treeMap = new ConcurrentHashMap<>();
 
         // Process default graph.
         // LOGGER.info("building spatial index for default graph ...");

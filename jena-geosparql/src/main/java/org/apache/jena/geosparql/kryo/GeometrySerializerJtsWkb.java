@@ -23,10 +23,10 @@ import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKBReader;
 import org.locationtech.jts.io.WKBWriter;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.Serializer;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.kryo5.Kryo;
+import com.esotericsoftware.kryo.kryo5.Serializer;
+import com.esotericsoftware.kryo.kryo5.io.Input;
+import com.esotericsoftware.kryo.kryo5.io.Output;
 
 /** Geometry de-/serialization via the WKB facilities of JTS. */
 public class GeometrySerializerJtsWkb
@@ -57,7 +57,7 @@ public class GeometrySerializerJtsWkb
     }
 
     @Override
-    public Geometry read(Kryo kryo, Input input, Class<Geometry> type) {
+    public Geometry read(Kryo kryo, Input input, Class<? extends Geometry> type) {
         byte[] bytes = kryo.readObject(input, byte[].class);
         Geometry geometry;
         try {

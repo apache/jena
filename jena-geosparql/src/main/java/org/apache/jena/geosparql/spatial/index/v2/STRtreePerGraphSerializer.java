@@ -22,10 +22,10 @@ import java.util.Map;
 import org.apache.jena.graph.Node;
 import org.locationtech.jts.index.strtree.STRtree;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.Serializer;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.kryo5.Kryo;
+import com.esotericsoftware.kryo.kryo5.Serializer;
+import com.esotericsoftware.kryo.kryo5.io.Input;
+import com.esotericsoftware.kryo.kryo5.io.Output;
 
 public class STRtreePerGraphSerializer
     extends Serializer<STRtreePerGraph>
@@ -37,7 +37,7 @@ public class STRtreePerGraphSerializer
     }
 
     @Override
-    public STRtreePerGraph read(Kryo kryo, Input input, Class<STRtreePerGraph> type) {
+    public STRtreePerGraph read(Kryo kryo, Input input, Class<? extends STRtreePerGraph> type) {
         boolean isBuilt = input.readBoolean();
         @SuppressWarnings("unchecked")
         Map<Node, STRtree> treeMap = (Map<Node, STRtree>)kryo.readClassAndObject(input);
