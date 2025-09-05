@@ -801,12 +801,6 @@
         <version>2.0.6.1</version>
       </dependency>
 
-      <dependency>
-        <groupId>commons-beanutils</groupId>
-        <artifactId>commons-beanutils</artifactId>
-        <version>1.11.0</version>
-      </dependency>
-
       <!-- END jena geosparql -->
 
       <!-- BEGIN jena-fuseki-mod-geosparql -->
