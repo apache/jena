@@ -35,10 +35,10 @@ import org.apache.jena.sparql.exec.tracker.TaskEventHistory;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.system.G;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -56,7 +56,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
  * Although, a headless Chrome should be started automatically,
  * this step turns out to not yet work reliable across all environments.
  */
-@Ignore
+@Disabled
 public class TestFMod_ExecTracker {
     private WebDriver driver;
     private JavascriptExecutor js;
@@ -73,7 +73,7 @@ public class TestFMod_ExecTracker {
         return graph;
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
         dsg = DatasetGraphFactory.create();
         IntStream.range(0, 1000)
@@ -112,6 +112,14 @@ public class TestFMod_ExecTracker {
         driver = new ChromeDriver(options);
         driver.get(siteUrl);
         js = (JavascriptExecutor) driver;
+    }
+
+    @AfterEach
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+        driver = null;
     }
 
     /**
@@ -154,12 +162,5 @@ public class TestFMod_ExecTracker {
 
     private void clearLastEvent() {
         js.executeScript("window.lastEvent = null");
-    }
-
-    @After
-    public void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
     }
 }

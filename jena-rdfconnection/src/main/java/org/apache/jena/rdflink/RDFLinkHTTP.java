@@ -302,7 +302,7 @@ public class RDFLinkHTTP implements RDFLink {
 
         /** This method is far only called from RDFLinkHTTP. It validates the query string if parseCheckQueries is enabled.  */
         protected QueryExecHTTPBuilder queryStringValidated(String queryString, Syntax syntax, QueryType fallbackQueryType) {
-            Query parsedQuery = parseCheck
+            Query parsedQuery = parseCheck.orElse(false)
                     ? QueryFactory.create(queryString, syntax)
                     : null;
 

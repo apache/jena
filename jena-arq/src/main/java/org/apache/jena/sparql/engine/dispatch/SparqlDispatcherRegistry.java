@@ -21,6 +21,7 @@ package org.apache.jena.sparql.engine.dispatch;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.jena.query.Query;
 import org.apache.jena.query.Syntax;
@@ -195,31 +196,23 @@ public class SparqlDispatcherRegistry
         cxt.set(ARQConstants.parseCheck, value);
     }
 
-    public static Boolean getParseCheck(DatasetGraph dsg) {
-        return dsg == null ? null : getParseCheck(dsg.getContext());
+    public static Optional<Boolean> getParseCheck(DatasetGraph dsg) {
+        return Optional.ofNullable(dsg).map(DatasetGraph::getContext).flatMap(SparqlDispatcherRegistry::getParseCheck);
     }
 
-    public static Boolean getParseCheck(Context cxt) {
-        Boolean result = cxt == null ? null : cxt.get(ARQConstants.parseCheck);
-        return result;
+    public static Optional<Boolean> getParseCheck(Context cxt) {
+        return Optional.ofNullable(cxt).map(c -> c.get(ARQConstants.parseCheck));
     }
 
-    public static Boolean getParseCheck(ContextAccumulator cxtAcc) {
-        Boolean result = cxtAcc == null ? null : cxtAcc.get(ARQConstants.parseCheck);
-        return result;
+    public static Optional<Boolean> getParseCheck(ContextAccumulator cxtAcc) {
+        return Optional.ofNullable(cxtAcc).map(ca -> ca.get(ARQConstants.parseCheck));
     }
 
-    public static boolean effectiveParseCheck(Boolean parseCheck, Context cxt) {
-        boolean result = parseCheck != null
-            ? parseCheck.booleanValue()
-            : !Boolean.FALSE.equals(getParseCheck(cxt));
-        return result;
+    public static boolean effectiveParseCheck(Optional<Boolean> parseCheck, Context cxt) {
+        return parseCheck.orElseGet(() -> getParseCheck(cxt).orElse(true));
     }
 
-    public static boolean effectiveParseCheck(Boolean parseCheck, ContextAccumulator cxtAcc) {
-        boolean result = parseCheck != null
-            ? parseCheck.booleanValue()
-            : !Boolean.FALSE.equals(getParseCheck(cxtAcc));
-        return result;
+    public static boolean effectiveParseCheck(Optional<Boolean> parseCheck, ContextAccumulator cxtAcc) {
+        return parseCheck.orElseGet(() -> getParseCheck(cxtAcc).orElse(true));
     }
 }
