@@ -20,10 +20,10 @@ package org.apache.jena.geosparql.kryo;
 
 import org.locationtech.jts.geom.Envelope;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.Serializer;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.kryo5.Kryo;
+import com.esotericsoftware.kryo.kryo5.Serializer;
+import com.esotericsoftware.kryo.kryo5.io.Input;
+import com.esotericsoftware.kryo.kryo5.io.Output;
 
 public class EnvelopeSerializer extends Serializer<Envelope> {
     @Override
@@ -35,7 +35,7 @@ public class EnvelopeSerializer extends Serializer<Envelope> {
     }
 
     @Override
-    public Envelope read(Kryo kryo, Input input, Class<Envelope> type) {
+    public Envelope read(Kryo kryo, Input input, Class<? extends Envelope> type) {
         double xMin = input.readDouble();
         double xMax = input.readDouble();
         double yMin = input.readDouble();
