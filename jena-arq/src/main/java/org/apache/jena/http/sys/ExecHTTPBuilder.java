@@ -45,7 +45,7 @@ public abstract class ExecHTTPBuilder<X, Y> {
     protected String serviceURL = null;
     private Query query = null;
     protected String queryString = null;
-    protected Boolean parseCheck = null;
+    protected Optional<Boolean> parseCheck = Optional.empty();
     private HttpClient httpClient = null;
     protected Map<String, String> httpHeaders = new HashMap<>();
     protected Params params = Params.create();
@@ -76,7 +76,7 @@ public abstract class ExecHTTPBuilder<X, Y> {
 
     /** Whether to parse query strings passed to {@link #query(String)}. */
     public Y parseCheck(boolean parseCheck) {
-        this.parseCheck = parseCheck;
+        this.parseCheck = Optional.of(parseCheck);
         return thisBuilder();
     }
 

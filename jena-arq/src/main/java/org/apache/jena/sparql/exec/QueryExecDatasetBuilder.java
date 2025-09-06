@@ -20,6 +20,7 @@ package org.apache.jena.sparql.exec;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.graph.Graph;
@@ -57,13 +58,11 @@ public class QueryExecDatasetBuilder implements QueryExecMod, QueryExecBuilder {
         return builder;
     }
 
-    private static final long UNSET         = -1;
-
     private DatasetGraph dataset            = null;
     private Query        query              = null;
     private String       queryString        = null;
     private Syntax       syntax             = null;
-    private Boolean      parseCheck         = null;
+    private Optional<Boolean> parseCheck    = Optional.empty();
 
     private ContextAccumulator contextAcc =
             ContextAccumulator.newBuilder(()->ARQ.getContext(), ()->Context.fromDataset(dataset));
@@ -104,7 +103,7 @@ public class QueryExecDatasetBuilder implements QueryExecMod, QueryExecBuilder {
 
     @Override
     public QueryExecDatasetBuilder parseCheck(boolean parseCheck) {
-        this.parseCheck = parseCheck;
+        this.parseCheck = Optional.of(parseCheck);
         return this;
     }
 

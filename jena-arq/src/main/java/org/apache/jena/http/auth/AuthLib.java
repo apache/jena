@@ -40,7 +40,18 @@ import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.web.HttpSC;
 
 public class AuthLib {
-    /** @see #authExecuteAsync */
+    /**
+     * Call {@link HttpClient} after applying an active {@link AuthRequestModifier}
+     * to modify the {@link java.net.http.HttpRequest.Builder}.
+     * If no {@link AuthRequestModifier} is available and if a 401 response is received,
+     * setup a {@link AuthRequestModifier} passed on registered username and password information.
+     * This function supports basic and digest authentication.
+     *
+     * @param httpClient HttpClient
+     * @param httpRequest
+     * @param bodyHandler
+     * @return HttpResponse&lt;T&gt;
+     */
     public static <T> HttpResponse<T> authExecute(HttpClient httpClient, HttpRequest httpRequest, BodyHandler<T> bodyHandler) {
         return AsyncHttpRDF.getOrElseThrow(authExecuteAsync(httpClient, httpRequest, bodyHandler));
     }
@@ -55,7 +66,7 @@ public class AuthLib {
      * @param httpClient HttpClient
      * @param httpRequest
      * @param bodyHandler
-     * @return HttpResponse&lt;T&gt;
+     * @return CompletableFuture&lt;HttpResponse&lt;T&gt;&gt;
      */
     public static <T> CompletableFuture<HttpResponse<T>> authExecuteAsync(HttpClient httpClient, HttpRequest httpRequest, BodyHandler<T> bodyHandler) {
         return HttpLib.executeJDKAsync(httpClient, httpRequest, bodyHandler)
