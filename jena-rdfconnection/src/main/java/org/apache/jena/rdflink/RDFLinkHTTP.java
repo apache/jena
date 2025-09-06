@@ -45,6 +45,7 @@ import org.apache.jena.sparql.exec.http.UpdateExecHTTPBuilder;
 import org.apache.jena.sparql.exec.http.UpdateSendMode;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.system.Txn;
+import org.apache.jena.update.Update;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
 
@@ -301,7 +302,7 @@ public class RDFLinkHTTP implements RDFLink {
 
         /** This method is far only called from RDFLinkHTTP. It validates the query string if parseCheckQueries is enabled.  */
         protected QueryExecHTTPBuilder queryStringValidated(String queryString, Syntax syntax, QueryType fallbackQueryType) {
-            Query parsedQuery = parseCheck
+            Query parsedQuery = parseCheck.orElse(false)
                     ? QueryFactory.create(queryString, syntax)
                     : null;
 
@@ -414,6 +415,12 @@ public class RDFLinkHTTP implements RDFLink {
     }
 
     @Override
+    public void update(Update update) {
+        Objects.requireNonNull(update);
+        updateExec(new UpdateRequest(update), null);
+    }
+
+    @Override
     public void update(UpdateRequest update) {
         Objects.requireNonNull(update);
         updateExec(update, null);
@@ -423,10 +430,10 @@ public class RDFLinkHTTP implements RDFLink {
         checkUpdate();
         if ( update == null && updateString == null )
             throw new InternalErrorException("Both update request and update string are null");
-        UpdateRequest actual = null;
+        UpdateRequest parsed = null; // Kept for inspection
         if ( update == null ) {
             if ( parseCheckUpdates )
-                actual = UpdateFactory.create(updateString);
+                parsed = UpdateFactory.create(updateString);
         }
         // Use the update string as provided if possible, otherwise serialize the update.
         String updateStringToSend = ( updateString != null ) ? updateString  : update.toString();
