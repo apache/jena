@@ -24,6 +24,8 @@ import java.util.stream.IntStream;
 
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.cmds.FusekiMain;
+import org.apache.jena.fuseki.mod.exectracker.ExecTrackerService;
+import org.apache.jena.fuseki.mod.exectracker.FMod_ExecTracker;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;

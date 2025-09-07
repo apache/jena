@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.mod.exec.tracker;
+package org.apache.jena.fuseki.mod.exectracker;
 
 import java.util.ArrayList;
 import java.util.List;
