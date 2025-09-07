@@ -19,7 +19,7 @@
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
 
 <>  rdf:type mf:Manifest ;
-    rdfs:comment "Some SPARQL test of synta" ;
+    rdfs:comment "Some SPARQL test of syntax" ;
     mf:entries
     (
      [  mf:name    "syntax-001" ;

@@ -23,51 +23,46 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;
-import org.junit.platform.launcher.LauncherDiscoveryListener;
-import org.junit.platform.launcher.LauncherDiscoveryRequest;
 
 import org.apache.jena.arq.junit.Scripts;
+import org.apache.jena.arq.junit.manifest.ManifestProcessor;
+import org.apache.jena.atlas.lib.FileOps;
+import org.apache.jena.atlas.lib.StreamOps;
+import org.apache.jena.riot.RiotNotFoundException;
 import org.apache.jena.shared.JenaException;
 
-// This class DOES NOT run on its own. It is used by TextTestRunner.
-
+//This class DOES NOT run on its own.
+// It is used by TextTestRunner and gets configuration from ManifestConfiguration
 class ManifestHolder {
 
-    static class INIT implements LauncherDiscoveryListener {
-
-        @Override public void launcherDiscoveryStarted(LauncherDiscoveryRequest request) {
-            String fn = request.getConfigurationParameters().get(MANIFEST).get();
-            if ( fn == null ) {
-                System.err.println("Manifest not set");
-                throw new JenaException("Manifest not set");
-            }
-            manifest = fn;
-        }
-    }
-
-    public static String MANIFEST = "org.apache.jena.manifest";
-    public static String namePrefix = null;
-    public static String manifest = null;
-
-    public ManifestHolder() {}
+    public ManifestHolder() { }
 
     @TestFactory
     @DisplayName("TextTestRunner")
     public Stream<DynamicNode> testFactory() {
-        //String fn = System.getProperty(MANIFEST);
+        Stream<DynamicNode> tests = null;
+        for ( var entry : ManifestConfiguration.get() ) {
+            Stream<DynamicNode> tests1 = oneManifest(entry.manifestFile(), entry.prefix());
+            tests = StreamOps.concat(tests, tests1);
+        }
+        return tests;
+    }
 
-        String fn = manifest;
+    private int totalManifestCount = 0 ;
 
+    private Stream<DynamicNode> oneManifest(String fn, String prefix) {
         if ( fn == null ) {
             System.err.println("Manifest not set");
             throw new JenaException("Manifest not set");
         }
-
-//            DynamicNode dn = DynamicTest.dynamicTest("Hello!", ()->System.err.println("ManifestHolder: Executable"));
-//            return Stream.of(dn);
-
+        if ( ! FileOps.exists(fn) ) {
+            throw new RiotNotFoundException("Manifest "+fn);
+        }
         try {
-            var x = Scripts.manifestTestFactory(fn, namePrefix);
+            int before = ManifestProcessor.getCounterManifests();
+            Stream<DynamicNode> x = Scripts.manifestTestFactory(fn, prefix);
+            int after = ManifestProcessor.getCounterManifests();
+            totalManifestCount = after-before;
             return x;
         } catch (Exception ex) {
             ex.printStackTrace();

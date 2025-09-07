@@ -31,6 +31,7 @@ public class LibTest {
         for ( int i = 0 ; i < x.length ; i++ ) {
             System.out.printf("%2d -- %s\n", i+1, x[i]);
         }
+        System.out.println("====");
     }
 
     /** Print a (small) file, with line numbers. The file is read into memory. */

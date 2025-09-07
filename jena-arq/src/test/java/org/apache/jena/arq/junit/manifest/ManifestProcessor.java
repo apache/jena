@@ -40,12 +40,19 @@ import org.apache.jena.system.G;
  * {@link DynamicContainer}.
  * <p>
  * Manifest files can contain other manifest files.
- *
  */
 public class ManifestProcessor {
 
     private static int counterTest = 0;
-    private static int counterContainer = 0;
+    private static int counterManifests = 0;
+
+    public static int getCounterTest() {
+        return counterTest;
+    }
+
+    public static int getCounterManifests() {
+        return counterManifests;
+    }
 
     public static Stream<DynamicNode> testFactory(String filename, String namePrefix, EntryToTest entryToTest) {
         DynamicContainer tests = ManifestProcessor.buildFrom(filename, namePrefix, entryToTest);
@@ -59,7 +66,7 @@ public class ManifestProcessor {
 
     // "visited" is a safety measure to detect loops in included manifests files.
     private static DynamicContainer build(String filenameOrURI, String namePrefix, EntryToTest entryToTest, Set<String> visited) {
-        int x = ++counterContainer;
+        int x = ++counterManifests;
         // Cycle detection.
         // This must work for URIs and files so converting to Path is not an option.
         // If via a symbolic links, then real link, this catches one step later because we didn't normalize.
@@ -73,23 +80,12 @@ public class ManifestProcessor {
         // One test seems to be treated differently. test runs, but name does not show up.
         List<DynamicTest> tests = buildTests(manifest, namePrefix, entryToTest);
 
-
         List<DynamicNode> children = new ArrayList<>();
         children.addAll(subManifests);
-
-        // Add tests
-        if ( tests.size() == 1 ) {
-            // Otherwise JUnit5 only shows the container name. (this is maybe an Eclipse thing)
-            DynamicTest test = tests.get(0);
-            DynamicContainer here = DynamicContainer.dynamicContainer(test.getDisplayName(), tests);
-            children.add(here);
-        } else {
-            children.addAll(tests);
-        }
-
+        children.addAll(tests);
         String containerName = manifest.getName();
-        //containerName = "{"+x+"} "+containerName;
-        //System.out.println("Container of children="+children.size());
+        if ( containerName == null || containerName.isBlank() )
+            containerName = "Manifest [C"+counterManifests+"] "+filenameOrURI;
 
         try {
             return DynamicContainer.dynamicContainer(containerName, children);
@@ -166,7 +162,6 @@ public class ManifestProcessor {
             // Eclipse used to parse test names and () were special.
     //        string = string.replace('(', '[');
     //        string = string.replace(')', ']');
-            return string;
-        }
-
+        return string;
+    }
 }

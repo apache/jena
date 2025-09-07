@@ -21,55 +21,28 @@ package org.apache.jena.arq.junit.textrunner;
 import org.junit.platform.engine.TestExecutionResult;
 import org.junit.platform.launcher.TestExecutionListener;
 import org.junit.platform.launcher.TestIdentifier;
-import org.junit.platform.launcher.TestPlan;
 
-import org.apache.jena.atlas.io.IndentedWriter;
-
-class PrintExecutionListener implements TestExecutionListener {
+class ExecutionStats implements TestExecutionListener {
 
     // Skips outer containers:
     private int skip = 3;
     private int depth = 0 ;
 
-    // Duplicates ExecutionStats but not exposes and we need the test count anyway.
     private int testCount = 0 ;
     private int containerCount = 0 ;
+
     private int errors = 0 ;
     private int successful = 0 ;
-    private final IndentedWriter out;
 
-    public PrintExecutionListener(IndentedWriter out) {
-        this.out = out;
-    }
-
-    @Override
-    public void testPlanExecutionStarted(TestPlan testPlan) {
-        out.flush();
-    }
-
-    @Override
-    public void testPlanExecutionFinished(TestPlan testPlan) {
-        // Another way to print the summary but printed even
-        // for an EARL report so rdftests --earl > earl.ttl does not work.
-        //        out.println();
-//        out.println("Containers: "+containerCount);
-//        out.println("Successes:  "+successful);
-//        out.println("Errors:     "+errors);
-        out.flush();
-    }
+    public ExecutionStats() { }
 
     @Override
     public void executionStarted(TestIdentifier testIdentifier) {
-        // Container vs Test?
         // Not in walk order
-
         if ( testIdentifier.isContainer() ) {
             depth++;
-            if ( depth > skip ) {
+            if ( depth > skip )
                 containerCount++;
-                out.println(testIdentifier.getDisplayName());
-                out.incIndent();
-            }
         } else {
             testCount++;
         }
@@ -78,11 +51,8 @@ class PrintExecutionListener implements TestExecutionListener {
     @Override
     public void executionFinished(TestIdentifier testIdentifier, TestExecutionResult result) {
         if ( testIdentifier.isContainer() ) {
-            if ( depth > skip )
-                out.decIndent();
             depth--;
         } else {
-            out.printf("%d [%s] %s\n", testCount, result.getStatus().name().substring(0, 1), testIdentifier.getDisplayName());
             // Summary
             switch(result.getStatus()) {
                 case ABORTED->{}
@@ -91,4 +61,11 @@ class PrintExecutionListener implements TestExecutionListener {
             }
         }
     }
+
+    //@formatter:off
+    public int getContainerCount()  { return containerCount; }
+    public int getTestCount()       { return testCount; }
+    public int getTestPasses()      { return successful; }
+    public int getTestFailures()    { return errors; }
+    //@formatter:on
 }
