@@ -19,6 +19,7 @@
 package org.apache.jena.rdflink.dataset.assembler;
 
 import org.apache.jena.assembler.Assembler;
+import org.apache.jena.assembler.JA;
 import org.apache.jena.assembler.assemblers.AssemblerGroup;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
@@ -27,15 +28,14 @@ import org.apache.jena.system.Vocab;
 
 public class VocabAssemblerHTTP
 {
-    private static final String NS = "http://jena.apache.org/2025/http#";
+    private static final String NS = JA.getURI();
 
     public static String getURI() { return NS; }
 
     // Types
-
-    // Preferred
     public static final Resource tDatasetHTTP        = Vocab.type(NS, "DatasetHTTP");
 
+    // Properties
     public static final Property pUser               = Vocab.property(NS, "user");
     public static final Property pPass               = Vocab.property(NS, "pass");
 

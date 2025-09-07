@@ -204,15 +204,27 @@
     }
 
     async function fetchStatus() {
-      return fetchFromApi("GET", { "command": "status" });
+      return fetchJsonFromApi("POST", { "command": "status" });
     }
 
-    async function fetchFromApi(method, args) {
-      const params = new URLSearchParams(args);
-      try {
-        const response = await fetch(`${apiEndpoint}?${params.toString()}`, { "method": method });
+    async function fetchJsonFromApi(httpMethod, paramsPojo) {
+      const params = new URLSearchParams(paramsPojo);
+      let url = apiEndpoint;
+      let options = { "method": httpMethod };
+      switch (httpMethod) {
+      case "GET":
+        url += `?${params.toString()}`;
+        break;
+      case "POST":
+        options.body = params;
+        break;
+      default:
+        throw new Error(`Unsupported HTTP method: ${httpMethod}`);
+      };
 
-        if (response.status != 200) {
+      try {
+        const response = await fetch(url, options);
+        if (!response.ok) {
           const text = await response.text();
           throw new Error("HTTP Error: " + text);
         }
@@ -436,7 +448,6 @@
     }
 
     async function stopTask(requestId) {
-      // const mainRow = document.querySelector(`#runningTasksTable tr[data-id="${requestId}"]`);
       const mainRow = document.getElementById(`running-row-${requestId}`);
       const stopButton = mainRow.querySelector('button');
       if (stopButton) {
@@ -446,10 +457,9 @@
 
       const params = new URLSearchParams({ "command": "stop", "requestId": requestId });
       try {
-        const response = await fetch(`${apiEndpoint}?${params.toString()}`, { method: "GET" });
-
+        const response = await fetch(apiEndpoint, { "method": "POST", "body": params });
         const text = await response.text();
-        if (response.status != 200) {
+        if (!response.ok) {
             throw new Error("HTTP Error: " + text);
         }
       } catch (error) {

@@ -274,16 +274,15 @@ public abstract class DatasetGraphOverSparql
     public void end() {
         // Note: AbstractTestRDFConnection.transaction_bad_01() expects
         // a JenaTransactionException to be thrown if the
-        // following conditions are met.
-        // As of Jena-5.5.0 this is not handled in the transactional implementation itself.
-
-        // getTransactional().end();
+        // conditions of the if-statement below are satisfied.
         if (isInTransaction()) {
             if (transactionMode().equals(WRITE)) {
                 String msg = "end() called for WRITE transaction without commit or abort having been called. This causes a forced abort.";
                 throw new JenaTransactionException(msg);
             }
         }
+        // XXX wrap with finally?
+        getTransactional().end();
     }
 
     @Override
