@@ -92,16 +92,17 @@ public class QueryEvalTest extends AbstractManifestTest {
         try {
             try {
                 query = SparqlTestLib.queryFromEntry(manifestEntry);
-            } catch (QueryException qEx) {
-                qEx.printStackTrace(System.err);
-                setupFailure("Parse failure: " + qEx.getMessage());
+            } catch (QueryParseException qEx) {
+                System.err.println("Parse failure in eval test: " + qEx.getMessage());
+                //setupFailure("Parse failure: " + qEx.getMessage());
+                fail("Parse failure: " + qEx.getMessage());
+                // Keep Java quiet!
                 throw qEx;
             }
 
             Dataset dataset = setUpDataset(query, testItem);
             if ( dataset == null && !doesQueryHaveDataset(query) )
                 setupFailure("No dataset for query");
-
             if ( dataset != null )
                 Txn.executeRead(dataset, ()->execute(dataset,query));
             else
@@ -133,8 +134,6 @@ public class QueryEvalTest extends AbstractManifestTest {
 
     protected Dataset setUpDataset(Query query, QueryTestItem testItem) {
         try {
-            // testItem.requiresTextIndex()
-
             if ( doesQueryHaveDataset(query) && doesTestItemHaveDataset(testItem) ) {
                 // Only warn if there are results to test
                 // Syntax tests may have FROM etc and a manifest data file.
@@ -152,9 +151,10 @@ public class QueryEvalTest extends AbstractManifestTest {
 
             // Left to query
             return null;
-
         } catch (JenaException jEx) {
-            setupFailure("JenaException creating data source: " + jEx.getMessage());
+            // Parser logger will have printed an error
+            //setupFailure("JenaException creating data source: " + jEx.getMessage());
+            fail("Parse failure on data: " + jEx.getMessage());
             return null;
         }
     }

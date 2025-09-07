@@ -72,17 +72,32 @@ public class RiotSyntaxTest extends AbstractManifestTest{
         try {
             parser.accept(stream);
             if (! expectLegalSyntax ) {
+                String reason = "Parsing succeeded in a bad syntax test";
+                outputFailure(reason, fn, null);
                 String s = IO.readWholeFileAsUTF8(fn);
-                System.err.println();
-                System.err.println("== "+filename);
-                System.err.print(s);
-                fail("Parsing succeeded in a bad syntax test");
+                System.out.println();
+                System.out.println("== "+filename);
+                System.out.println(s);
+                fail(reason);
             }
         } catch(RiotNotFoundException ex) {
             throw ex;
         } catch(RiotException ex) {
-            if ( expectLegalSyntax )
-                fail("Parse error: "+ex.getMessage());
+            if ( expectLegalSyntax ) {
+                String reason = "Parsing failed in a good syntax test";
+                outputFailure(reason, fn, ex);
+                fail(reason+" : "+ex.getMessage());
+            }
         }
+    }
+
+    private void outputFailure(String reason, String fn, Throwable th) {
+        String s = IO.readWholeFileAsUTF8(fn);
+        System.err.println();
+        System.err.println("== "+filename+ " -- "+reason);
+        System.err.print(s);
+        if ( !s.endsWith("\n") )
+            System.err.println();
+        fail("Parsing succeeded in a bad syntax test");
     }
 }

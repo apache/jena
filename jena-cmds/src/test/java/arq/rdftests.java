@@ -33,7 +33,7 @@ import org.apache.jena.arq.junit.riot.RiotTests;
 import org.apache.jena.arq.junit.riot.VocabLangRDF;
 import org.apache.jena.arq.junit.sparql.SparqlTests;
 import org.apache.jena.arq.junit.sparql.tests.QueryEvalTest;
-import org.apache.jena.arq.junit.textrunner.TextTestRunner5;
+import org.apache.jena.arq.junit.textrunner.TextTestRunner;
 import org.apache.jena.atlas.legacy.BaseTest2;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.logging.LogCtl;
@@ -166,13 +166,9 @@ public class rdftests extends CmdGeneral
         else
             SparqlTests.defaultForSyntaxTests = Syntax.syntaxSPARQL_12;
 
-        for ( String fn : getPositional() ) {
-            if ( createEarlReport )
-                System.out.println("# Run: "+fn);
-            else
-                System.out.println("# Run: "+fn);
-            exec1(report, fn);
-        }
+        List<String> manifests = getPositional();
+        System.out.println("# Run: "+manifests);
+        exec(report, manifests);
 
         if ( createEarlReport ) {
             earlOut.println();
@@ -194,19 +190,19 @@ public class rdftests extends CmdGeneral
         }
     }
 
-    protected void exec1(EarlReport report, String manifest) {
+    protected void exec(EarlReport report, List<String> manifests) {
         if ( createEarlReport )
-            oneManifestEarl(report, manifest);
+            oneManifestEarl(report, manifests);
         else
-            oneManifest(manifest);
+            oneManifest(manifests);
     }
 
-    static void oneManifest(String testManifest) {
-        TextTestRunner5.runOne(testManifest, Scripts.testMaker());
+    static void oneManifest(List<String> manifests) {
+        TextTestRunner.run(manifests, Scripts.testMaker());
     }
 
-    static void oneManifestEarl(EarlReport earlReport, String testManifest) {
-        TextTestRunner5.runOne(earlReport, testManifest, Scripts.testMaker());
+    static void oneManifestEarl(EarlReport earlReport, List<String> manifests) {
+        TextTestRunner.run(earlReport, manifests, Scripts.testMaker());
     }
 
     // Test subsystems.

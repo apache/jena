@@ -45,15 +45,19 @@ public class QuerySyntaxTest extends AbstractManifestTest {
     public void runTest() {
         try {
             Query query = SparqlTestLib.queryFromEntry(manifestEntry, testSyntax);
-            if ( !expectLegalSyntax )
+            if ( !expectLegalSyntax ) {
+                String filename = SparqlTestLib.queryFile(manifestEntry);
+                System.out.printf("==== %s\n", "Negative Syntax test");
+                LibTest.printFile(filename);
                 fail("Expected parse failure");
+            }
         } catch (QueryException qEx) {
             if ( expectLegalSyntax ) {
                 String filename = SparqlTestLib.queryFile(manifestEntry);
+                System.out.printf("==== %s\n", "Positive Syntax test");
                 LibTest.printFile(filename);
                 throw qEx;
             }
-            // Expected a failure.
         } catch (Exception ex) {
             ex.printStackTrace();
             fail("Exception: " + ex.getClass().getName() + ": " + ex.getMessage());
