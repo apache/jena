@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.mod.exec.tracker;
+package org.apache.jena.fuseki.mod.exectracker;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -110,11 +110,20 @@ public class ExecTrackerService extends BaseActionREST {
         case "page": servePage(action); break;
         case "events": serveEvents(action); break;
         case "status": serveStatus(action); break;
-        case "stop": stopExec(action); break;
         default:
             throw new UnsupportedOperationException("Unsupported operation: " + command);
         }
     }
+
+   @Override
+   protected void doPost(HttpAction action) {
+       String command = action.getRequestParameter("command");
+       switch (command) {
+       case "stop": stopExec(action); break;
+       default:
+           throw new UnsupportedOperationException("Unsupported operation: " + command);
+       }
+   }
 
     protected void stopExec(HttpAction action) {
         checkIsAbortAllowed(action);
@@ -140,7 +149,7 @@ public class ExecTrackerService extends BaseActionREST {
 
     protected void servePage(HttpAction action) {
         // Serves the minimal graphql ui
-        String resourceName = "exec-tracker/index.html";
+        String resourceName = "exectracker/index.html";
         String str = null;
         try (InputStream in = ExecTrackerService.class.getClassLoader().getResourceAsStream(resourceName)) {
             str = IOUtils.toString(in, StandardCharsets.UTF_8);
@@ -311,13 +320,13 @@ public class ExecTrackerService extends BaseActionREST {
 
     /** Check whether abort is allowed in the endpoint's context. */
     protected static boolean isAbortAllowed(Endpoint endpoint) {
-        Context cxt = endpoint == null ? null : endpoint.getContext();
+        Context cxt = (endpoint == null) ? null : endpoint.getContext();
         return isAbortAllowed(cxt);
     }
 
-    /** Check whether abort is allowed in the context. True if not explicitly prohibited. */
+    /** Abort of executions is only allowed if explicitly enabled in the context. */
     protected static boolean isAbortAllowed(Context cxt) {
-        boolean result = cxt == null ? true : cxt.isTrueOrUndef(FMod_ExecTracker.symAllowAbort);
+        boolean result = (cxt == null) ? false : cxt.isTrue(FMod_ExecTracker.symAllowAbort);
         return result;
     }
 
