@@ -68,7 +68,7 @@ public class NodeIdFactory
         return createNew(PTR, 0, lo);
     }
 
-    /*package*/ /*long*/ static NodeId createPtrLong(int hi, long lo) {
+    /*package*/ static NodeId createPtrLong(int hi, long lo) {
         return create(PTR, hi, lo);
     }
 
