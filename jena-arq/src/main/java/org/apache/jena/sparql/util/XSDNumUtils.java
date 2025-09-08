@@ -147,18 +147,6 @@ public class XSDNumUtils {
         return bd.stripTrailingZeros().toPlainString();
     }
 
-    /** Return a canonical decimal with a trailing ".0". */
-    public static BigDecimal canonicalDecimalWithDot(BigDecimal decimal) {
-        BigDecimal result = decimal;
-        if (result.scale() > 1) {
-            result = decimal.stripTrailingZeros();
-        }
-        if (result.scale() <= 0) {
-            result = result.setScale(1);
-        }
-        return result;
-    }
-
     /**
      * Integer-valued decimals have a trailing ".0".
      * (In XML Schema Datatype 1.1 they did not have a ".0".)
@@ -177,5 +165,21 @@ public class XSDNumUtils {
             // No DOT.
             str = str + ".0";
         return str;
+    }
+
+    /**
+     * Return a canonical decimal with a trailing ".0".
+     * This is the BigDecimal form used to encode NodeIds in TDB2.
+     * It has a trailing ".0" so it is Turtle compatible.
+     */
+    public static BigDecimal canonicalDecimal(BigDecimal decimal) {
+        BigDecimal result = decimal;
+        if (result.scale() > 1) {
+            result = decimal.stripTrailingZeros();
+        }
+        if (result.scale() <= 0) {
+            result = result.setScale(1);
+        }
+        return result;
     }
 }
