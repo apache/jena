@@ -85,7 +85,6 @@ public class LogCtlLog4j2 {
         if ( level != null )
             return level.toString();
         return null;
-
     }
 
     /** Set logging level of a Logger */
