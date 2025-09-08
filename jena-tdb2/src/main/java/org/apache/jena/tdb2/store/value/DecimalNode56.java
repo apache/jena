@@ -23,48 +23,43 @@ import java.math.BigInteger;
 
 import org.apache.jena.atlas.lib.BitsLong;
 
-
 // Decimal packed into 56 bits.
 public class DecimalNode56
 {
     //private static Logger log = LoggerFactory.getLogger(DecimalNode.class);
 
-    BigDecimal decimal = null;
+    // 56 bits signed 8 bits of scale, signed 48 bits of value.
+    // Decimal precision is 47 bits (it's signed) or around 13 places (canonical form).
+    // This is not finance industry accuracy nor XSD (18 places minimum) but still useful.
 
-    // signed 8 bits of scale, signed 48 bits of value.
-    // Decimal precision is 47 bits (it's signed) or around 14 places.
-    // Not finance industry accuracy nor XSD (18 places minimum) but still useful.
+    private static final int SCALE_LEN      = 8;
+    private static final int VALUE_LEN      = 48;
+    private static final int ENC_LEN        = 48 + SCALE_LEN;
 
-    static final int        SCALE_LEN = 8;
-    static final int        VALUE_LEN = 48;
-    static final int        ENC_LEN   = 48 + SCALE_LEN;
+    private static final long MAX_VALUE     = (1L << (VALUE_LEN - 1)) - 1;
+    private static final long MIN_VALUE     = -(1L << (VALUE_LEN - 1));
 
-    static final long       MAX_VALUE = (1L << (VALUE_LEN - 1)) - 1;
-    static final long       MIN_VALUE = -(1L << (VALUE_LEN - 1));
+    private static final int MAX_SCALE      = (1 << (SCALE_LEN - 1)) - 1;
+    private static final int MIN_SCALE      = -(1 << (SCALE_LEN - 1));
 
-    static final int        MAX_SCALE = (1 << (SCALE_LEN - 1)) - 1;
-    static final int        MIN_SCALE = -(1 << (SCALE_LEN - 1));
+    private static final BigInteger MAX_I   = BigInteger.valueOf(MAX_VALUE);
+    private static final BigInteger MIN_I   = BigInteger.valueOf(MIN_VALUE);
 
-    static final BigInteger MAX_I     = BigInteger.valueOf(MAX_VALUE);
-    static final BigInteger MIN_I     = BigInteger.valueOf(MIN_VALUE);
+    // Bits positions [LO, HI)
+    private static final int SCALE_LO      = ENC_LEN - SCALE_LEN;
+    private static final int SCALE_HI      = ENC_LEN;
 
-    // Bits counts
-    static private int      SCALE_LO  = 56 - SCALE_LEN;
-    static private int      SCALE_HI  = 56;                               // Exclusive
-                                                                          // index
+    private static final int VALUE_LO       = 0;
+    private static final int VALUE_HI       = VALUE_LO + VALUE_LEN;
 
-    static private int      VALUE_LO  = 0;
-    static private int      VALUE_HI  = VALUE_LO + VALUE_LEN;
-
-    private int             scale;
-    private long            value;
+    // Object fields.
+    private BigDecimal decimal = null;
+    private int   scale;
+    private long  value;
 
     public static DecimalNode56 valueOf(BigDecimal decimal) {
         int scale = decimal.scale();
         BigInteger bigInt = decimal.unscaledValue();
-
-        //decimal.longValueExact(); // Throws exception
-        //new BigDecimal(long);
 
         if ( bigInt.compareTo(MAX_I) > 0 || bigInt.compareTo(MIN_I) < 0 )
             // This check makes sure that bigInt.longValue() is safe
@@ -82,7 +77,6 @@ public class DecimalNode56
             // log.warn("Value out of range: ("+binValue+","+scale+")");
             return null;
         }
-
         return new DecimalNode56(binValue, scale);
     }
 

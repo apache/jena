@@ -104,15 +104,24 @@ public class NodeId implements Comparable<NodeId>
 //    public long getPtrLo() { return value2; }
 //    public int  getPtrHi() { return value1 & 0x00FFFFFF; }
 
-    // 64 bit
+    /** The pointer part of a NodeId reference. */
     public long getPtrLocation()    { return value2; }
-    // Long.
+
+    // 96 bit
 //    public long getPtrLo()          { return value2; }
 //    public int  getPtrHi()          { return value1; }
 
-    public int getTypeValue()       { return type.type(); }
+    // 64 bit.
+    public int getTypeValue() {
+        return type.type();
+    }
 
-    public boolean isInline() {
+    /** The value (encoding) part of an inline literal (56 bits) */
+    public long getValue56() {
+        return value2;
+    }
+
+    public boolean isInline()       {
         return isInline(this);
     }
 
@@ -141,8 +150,11 @@ public class NodeId implements Comparable<NodeId>
 //    public static boolean isDefined(NodeId nodeId)             { return nodeId == NodeIdDefined; }
 //    public static boolean isUndefined(NodeId nodeId)           { return nodeId == NodeIdUndefined; }
 
-    /** Create from a long-encoded value */
-    /*package*/ static NodeId createRaw(NodeIdType type, long value) {
+    /**
+     * Create from a long-encoded value.
+     * Caution: an illegal value for the long argument will cause serious problems.
+     */
+    public static NodeId createRaw(NodeIdType type, long value) {
         return new NodeId(type, 0, value);
     }
 

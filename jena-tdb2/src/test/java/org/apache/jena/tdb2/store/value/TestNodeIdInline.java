@@ -153,6 +153,30 @@ public class TestNodeIdInline
     @Test public void nodeId_decimal_19()
     { testNodeIdRoundtripDecimal("18.000"); }
 
+    @Test public void nodeId_decimal_30()
+    { testNodeIdLexicalDecimal("0.0", "0.0"); }
+
+    @Test public void nodeId_decimal_31()
+    { testNodeIdLexicalDecimal("+00.000", "0.0"); }
+
+    @Test public void nodeId_decimal_32()
+    { testNodeIdLexicalDecimal("-00.000", "0.0"); }
+
+    @Test public void nodeId_decimal_40()
+    { testNodeIdLexicalDecimal("1", "1.0"); }
+
+    @Test public void nodeId_decimal_41()
+    { testNodeIdLexicalDecimal("-1", "-1.0"); }
+
+    @Test public void nodeId_decimal_42()
+    { testNodeIdLexicalDecimal("+1", "1.0"); }
+
+    @Test public void nodeId_decimal_43()
+    { testNodeIdLexicalDecimal("100.000", "100.0"); }
+
+    @Test public void nodeId_decimal_44()
+    { testNodeIdLexicalDecimal("00.000000100", "0.0000001"); }
+
     @Test public void nodeId_dateTime_01()
     { test("'2008-04-28T15:36:15+01:00'^^xsd:dateTime"); }
 
@@ -340,18 +364,31 @@ public class TestNodeIdInline
         assertEquals(correct, n2, ()->"Not same term");
     }
 
+    // Check: lexical form to recovered lexical form.
+    private static void testNodeIdLexicalDecimal(String decimalStr, String expectedLexicalForm) {
+        Node node = NodeFactory.createLiteralDT(decimalStr, XSDDatatype.XSDdecimal);
+        NodeId nodeId = NodeId.inline(node);
+        Node recoveredNode = NodeId.extract(nodeId);
+
+        // Check lexical form
+        String lex = recoveredNode.getLiteralLexicalForm();
+        assertEquals(expectedLexicalForm, lex, "Recovered lexical form");
+    }
+
+    // Check: lexical form to recovered node
     private static void testNodeIdRoundtripDecimal(String decimalStr) {
         Node node = NodeFactory.createLiteralDT(decimalStr, XSDDatatype.XSDdecimal);
         testNodeIdRoundtrip(node);
     }
 
-    /** For a Node n assert: nodeId(n) == nodeId(extract(nodeId(n)) */
+    /** For a Node n -- assert :: nodeId(n) == nodeId(extract(nodeId(n)) */
+    // Check: node to recovered node
     private static void testNodeIdRoundtrip(Node node) {
         NodeId nodeId = NodeId.inline(node);
         testNodeIdRoundtrip(nodeId);
     }
 
-    /** For a NodeId n assert: n == nodeId(extract(n)) */
+    /** For a NodeId n -- assert :: n == nodeId(extract(n)) */
     private static void testNodeIdRoundtrip(NodeId expected) {
         Node extractedNode = NodeId.extract(expected);
         NodeId actual = NodeId.inline(extractedNode);

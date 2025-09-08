@@ -18,6 +18,6 @@
 
 package org.apache.jena.tdb2.store.value;
 
-/** Placeholder for a full length decimal , using int+long.*/
+/** Placeholder for a full length decimal, using int+long.*/
 public class DecimalNode {
 }
