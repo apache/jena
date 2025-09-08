@@ -102,4 +102,10 @@ then
     JENA_CP="$JENA_CP:$CLASSPATH"
 fi
 
-"$JAVA" $JVM_ARGS $LOGGING -cp "$JENA_CP" tdb.tdbdump "$@" 
+if [ -n "$LOGGING" ]
+then
+    "$JAVA" $JVM_ARGS "$LOGGING" -cp "$JENA_CP" tdb.tdbdump "$@"
+else
+    ## LOGGING is empty or unset.
+    "$JAVA" $JVM_ARGS -cp "$JENA_CP" tdb.tdbdump "$@"
+fi

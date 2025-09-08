@@ -102,4 +102,10 @@ then
     JENA_CP="$JENA_CP:$CLASSPATH"
 fi
 
-"$JAVA" $JVM_ARGS $LOGGING -cp "$JENA_CP" arq.uparse "$@" 
+if [ -n "$LOGGING" ]
+then
+    "$JAVA" $JVM_ARGS "$LOGGING" -cp "$JENA_CP" arq.uparse "$@"
+else
+    ## LOGGING is empty or unset.
+    "$JAVA" $JVM_ARGS -cp "$JENA_CP" arq.uparse "$@"
+fi
