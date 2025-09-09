@@ -55,6 +55,7 @@ import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.aggregate.AggCount;
 import org.apache.jena.sparql.modify.request.QuadAcc;
 import org.apache.jena.sparql.modify.request.QuadDataAcc;
+import org.apache.jena.sparql.modify.request.Target;
 import org.apache.jena.sparql.modify.request.UpdateDataDelete;
 import org.apache.jena.sparql.modify.request.UpdateDataInsert;
 import org.apache.jena.sparql.modify.request.UpdateDeleteWhere;
@@ -206,8 +207,9 @@ public abstract class DatasetGraphOverSparql
     @Override
     public void removeGraph(Node graphName) {
         Objects.requireNonNull(graphName);
-        UpdateRequest ur = new UpdateRequest(new UpdateDrop(graphName));
-        execUpdate(ur);
+        delete(graphName, Node.ANY, Node.ANY, Node.ANY);
+        // UpdateRequest ur = new UpdateRequest(new UpdateDrop(graphName));
+        // execUpdate(ur);
     }
 
     @Override
@@ -232,11 +234,14 @@ public abstract class DatasetGraphOverSparql
 
     @Override
     public void deleteAny(Node g, Node s, Node p, Node o) {
-        deleteAnyInternal(g, s, p, o);
-        boolean isAnyGraph = g == null || Node.ANY.equals(g);
-        if (isAnyGraph) {
-            deleteAnyInternal(Quad.defaultGraphIRI, s, p, o);
+        boolean allowDrop = true;
+        UpdateRequest updateRequest;
+        if (allowDrop && isWildcard(s) && isWildcard(p) && isWildcard(o)) {
+            updateRequest = buildDeleteViaDrop(g);
+        } else {
+            updateRequest = buildDeleteViaPattern(g, s, p, o);
         }
+        execUpdate(updateRequest);
     }
 
     @Override
@@ -273,16 +278,18 @@ public abstract class DatasetGraphOverSparql
     @Override
     public void end() {
         // Note: AbstractTestRDFConnection.transaction_bad_01() expects
-        // a JenaTransactionException to be thrown if the
-        // conditions of the if-statement below are satisfied.
-        if (isInTransaction()) {
-            if (transactionMode().equals(WRITE)) {
-                String msg = "end() called for WRITE transaction without commit or abort having been called. This causes a forced abort.";
-                throw new JenaTransactionException(msg);
+        //   a JenaTransactionException to be thrown if the
+        //   conditions of the if-statement below are satisfied.
+        try {
+            if (isInTransaction()) {
+                if (transactionMode().equals(WRITE)) {
+                    String msg = "end() called for WRITE transaction without commit or abort having been called. This causes a forced abort.";
+                    throw new JenaTransactionException(msg);
+                }
             }
+        } finally {
+            getTransactional().end();
         }
-        // XXX wrap with finally?
-        getTransactional().end();
     }
 
     @Override
@@ -380,10 +387,7 @@ public abstract class DatasetGraphOverSparql
     }
 
     private static Triple matchTriple(Node s, Node p, Node o) {
-        return Triple.create(
-            matchNode(s, vs),
-            matchNode(p, vp),
-            matchNode(o, vo));
+        return Triple.create(matchNode(s, vs), matchNode(p, vp), matchNode(o, vo));
     }
 
     private static Quad harmonizeTripleInQuad(Quad quad) {
@@ -392,11 +396,7 @@ public abstract class DatasetGraphOverSparql
     }
 
     private static Quad matchQuad(Node g, Node s, Node p, Node o) {
-        return Quad.create(
-            matchNode(g, vg),
-            matchNode(s, vs),
-            matchNode(p, vp),
-            matchNode(o, vo));
+        return Quad.create(matchNode(g, vg), matchNode(s, vs), matchNode(p, vp), matchNode(o, vo));
     }
 
     /**
@@ -484,11 +484,38 @@ public abstract class DatasetGraphOverSparql
         return query;
     }
 
-    private void deleteAnyInternal(Node g, Node s, Node p, Node o) {
+    private static Update buildDelete(Node g, Node s, Node p, Node o) {
         Quad quad = matchQuad(g, s, p, o);
         Update update = quad.isConcrete()
             ? new UpdateDataDelete(new QuadDataAcc(List.of(quad)))
             : new UpdateDeleteWhere(new QuadAcc(List.of(quad)));
-        execUpdate(update);
+        return update;
+    }
+
+    private static UpdateRequest buildDeleteViaPattern(Node g, Node s, Node p, Node o) {
+        UpdateRequest updateRequest = new UpdateRequest();
+        if (isWildcard(g)) {
+            updateRequest.add(buildDelete(Quad.defaultGraphIRI, s, p, o));
+            updateRequest.add(buildDelete(g, s, p, o));
+        } else {
+            updateRequest.add(buildDelete(g, s, p, o));
+        }
+        return updateRequest;
+    }
+
+    private static UpdateRequest buildDeleteViaDrop(Node g) {
+        Target target = chooseTarget(g);
+        return new UpdateRequest(new UpdateDrop(target));
+    }
+
+    private static Target chooseTarget(Node g) {
+        Target target = Quad.isDefaultGraph(g)
+            ? Target.DEFAULT
+            : Quad.isUnionGraph(g)
+                ? Target.NAMED
+                : Node.ANY.equals(g)
+                    ? Target.ALL
+                    : Target.create(g);
+        return target;
     }
 }
