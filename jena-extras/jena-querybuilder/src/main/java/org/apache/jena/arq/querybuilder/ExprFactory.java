@@ -1103,8 +1103,8 @@ public class ExprFactory {
      * @param elseExpr the expression to execute if condition is false.
      * @return an E_Conditional instance.
      */
-    public final E_Conditional cond(Expr condition, Expr thenExpr, Expr elseExpr) {
-        return new E_Conditional(condition, thenExpr, elseExpr);
+    public final E_If cond(Expr condition, Expr thenExpr, Expr elseExpr) {
+        return new E_If(condition, thenExpr, elseExpr);
     }
 
     // exprN functions

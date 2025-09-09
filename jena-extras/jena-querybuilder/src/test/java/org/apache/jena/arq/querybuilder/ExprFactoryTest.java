@@ -428,7 +428,7 @@ public class ExprFactoryTest {
     @Test
     public void condTest() {
         Expr e = factory.cond(factory.none(), factory.none(), factory.none());
-        assertTrue(e instanceof E_Conditional);
+        assertTrue(e instanceof E_If);
     }
 
     // exprN functions
