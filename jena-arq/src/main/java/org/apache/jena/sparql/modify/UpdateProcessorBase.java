@@ -18,8 +18,8 @@
 
 package org.apache.jena.sparql.modify;
 
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Objects ;
+import java.util.concurrent.atomic.AtomicBoolean ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -73,7 +73,6 @@ public class UpdateProcessorBase implements UpdateProcessor
 
     @Override
     public UpdateRequest getUpdateRequest() {
-        // XXX Return a copy for safety?
         return request;
     }
 
