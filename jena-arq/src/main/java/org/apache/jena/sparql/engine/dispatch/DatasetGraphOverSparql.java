@@ -56,6 +56,7 @@ import org.apache.jena.sparql.expr.aggregate.AggCount;
 import org.apache.jena.sparql.modify.request.QuadAcc;
 import org.apache.jena.sparql.modify.request.QuadDataAcc;
 import org.apache.jena.sparql.modify.request.Target;
+import org.apache.jena.sparql.modify.request.UpdateClear;
 import org.apache.jena.sparql.modify.request.UpdateDataDelete;
 import org.apache.jena.sparql.modify.request.UpdateDataInsert;
 import org.apache.jena.sparql.modify.request.UpdateDeleteWhere;
@@ -208,7 +209,7 @@ public abstract class DatasetGraphOverSparql
     public void removeGraph(Node graphName) {
         Objects.requireNonNull(graphName);
         delete(graphName, Node.ANY, Node.ANY, Node.ANY);
-        // UpdateRequest ur = new UpdateRequest(new UpdateDrop(graphName));
+        // UpdateRequest ur = new UpdateRequest(new UpdateDrop(graphName, true));
         // execUpdate(ur);
     }
 
@@ -237,9 +238,9 @@ public abstract class DatasetGraphOverSparql
         boolean allowDrop = true;
         UpdateRequest updateRequest;
         if (allowDrop && isWildcard(s) && isWildcard(p) && isWildcard(o)) {
-            updateRequest = buildDeleteViaDrop(g);
+            updateRequest = new UpdateRequest(buildDeleteByGraph(g));
         } else {
-            updateRequest = buildDeleteViaPattern(g, s, p, o);
+            updateRequest = buildDeleteByPattern(g, s, p, o);
         }
         execUpdate(updateRequest);
     }
@@ -431,7 +432,7 @@ public abstract class DatasetGraphOverSparql
     /**
      * Generates the query:
      * <pre>
-     * SELECT ?g ?s ?p ?o { GRAPH ?g { ?s ?p ?o } }
+     * SELECT * { GRAPH ?g { ?s ?p ?o } }
      * </pre>
      */
     private static Query createQueryQuad(Quad quad) {
@@ -450,7 +451,7 @@ public abstract class DatasetGraphOverSparql
     /**
      * Generates the query:
      * <pre>
-     * SELECT ?s ?p ?o { ?s ?p ?o }
+     * SELECT * { ?s ?p ?o }
      * </pre>
      */
     private static Query createQueryTriple(Triple m) {
@@ -492,7 +493,7 @@ public abstract class DatasetGraphOverSparql
         return update;
     }
 
-    private static UpdateRequest buildDeleteViaPattern(Node g, Node s, Node p, Node o) {
+    private static UpdateRequest buildDeleteByPattern(Node g, Node s, Node p, Node o) {
         UpdateRequest updateRequest = new UpdateRequest();
         if (isWildcard(g)) {
             updateRequest.add(buildDelete(Quad.defaultGraphIRI, s, p, o));
@@ -503,9 +504,14 @@ public abstract class DatasetGraphOverSparql
         return updateRequest;
     }
 
-    private static UpdateRequest buildDeleteViaDrop(Node g) {
+    private static Update buildDeleteByGraph(Node g) {
         Target target = chooseTarget(g);
-        return new UpdateRequest(new UpdateDrop(target));
+        boolean silent = true;
+        boolean useDrop = true;
+        Update update = useDrop
+            ? new UpdateDrop(target, silent)
+            : new UpdateClear(target, silent);
+        return update;
     }
 
     private static Target chooseTarget(Node g) {
@@ -513,7 +519,7 @@ public abstract class DatasetGraphOverSparql
             ? Target.DEFAULT
             : Quad.isUnionGraph(g)
                 ? Target.NAMED
-                : Node.ANY.equals(g)
+                : (g == null || Node.ANY.equals(g))
                     ? Target.ALL
                     : Target.create(g);
         return target;
