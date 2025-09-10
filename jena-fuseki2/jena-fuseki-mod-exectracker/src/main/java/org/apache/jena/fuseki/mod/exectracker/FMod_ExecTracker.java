@@ -43,7 +43,7 @@ public class FMod_ExecTracker implements FusekiAutoModule {
     public static final Symbol symAllowAbort = Symbol.create("allowAbort");
 
     private static final Operation OPERATION = Operation.alloc(
-            FusekiVocab.NS + "tracker", "tracker", "Execution Tracker");
+            FusekiVocab.NS + "exectracker", "ExecTracker", "Execution Tracker");
 
     public static Operation getOperation() {
         return OPERATION;
