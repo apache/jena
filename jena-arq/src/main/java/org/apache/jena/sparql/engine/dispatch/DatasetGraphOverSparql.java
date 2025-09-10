@@ -403,7 +403,7 @@ public abstract class DatasetGraphOverSparql
     /**
      * Generates the query:
      * <pre>
-     * SELECT ?g ?s ?p ?o {
+     * SELECT * {
      *     { ?s ?p ?o }
      *   UNION
      *     { GRAPH ?g { ?s ?p ?o } }

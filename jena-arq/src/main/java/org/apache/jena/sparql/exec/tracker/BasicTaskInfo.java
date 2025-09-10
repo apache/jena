@@ -45,8 +45,8 @@ public interface BasicTaskInfo {
     String getStatusMessage();
 
     /**
-     * If this method returns a non-null result then the task is considered to have failed.
-     * A non-null result does not imply that the task is already in TERMINATED state.
+     * If this method returns a non-null result then the task is considered to be failing or to have failed.
+     * A non-null result does not imply that the task has already reached TERMINATED state.
      */
     Throwable getThrowable();
 
@@ -59,5 +59,4 @@ public interface BasicTaskInfo {
         TaskState state = getTaskState();
         return TaskState.TERMINATED.equals(state);
     }
-
 }
