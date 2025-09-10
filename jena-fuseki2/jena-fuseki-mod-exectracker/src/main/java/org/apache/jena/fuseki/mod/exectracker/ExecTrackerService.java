@@ -109,7 +109,6 @@ public class ExecTrackerService extends BaseActionREST {
         switch (command) {
         case "page": servePage(action); break;
         case "events": serveEvents(action); break;
-        case "status": serveStatus(action); break;
         default:
             throw new UnsupportedOperationException("Unsupported operation: " + command);
         }
@@ -118,7 +117,9 @@ public class ExecTrackerService extends BaseActionREST {
    @Override
    protected void doPost(HttpAction action) {
        String command = action.getRequestParameter("command");
+       Objects.requireNonNull(command, "Request parameter 'command' required.");
        switch (command) {
+       case "status": serveStatus(action); break;
        case "stop": stopExec(action); break;
        default:
            throw new UnsupportedOperationException("Unsupported operation: " + command);
