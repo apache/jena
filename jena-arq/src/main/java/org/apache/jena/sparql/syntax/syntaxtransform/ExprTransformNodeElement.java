@@ -66,7 +66,7 @@ public class ExprTransformNodeElement extends ExprTransformCopy {
         Node n = nodeTransform.apply(nv.asNode());
         if ( n == nv.asNode() )
             return nv;
-        return NodeValue.makeNode(n);
+        return ExprLib.nodeToExpr(n);
     }
 
     @Override

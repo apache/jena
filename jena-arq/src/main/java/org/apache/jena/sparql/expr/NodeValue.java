@@ -379,7 +379,7 @@ public abstract class NodeValue extends ExprNode
     public Expr applyNodeTransform(NodeTransform transform) {
         Node n = asNode();
         n = transform.apply(n);
-        return makeNode(n);
+        return ExprLib.nodeToExpr(n);
     }
 
     public Node evalNode(Binding binding, ExecutionContext execCxt) {

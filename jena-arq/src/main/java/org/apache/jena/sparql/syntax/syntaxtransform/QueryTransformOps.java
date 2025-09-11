@@ -59,8 +59,8 @@ public class QueryTransformOps {
             List<Var> projectVars = query2.getProjectVars();
             substitutions.forEach((v, n) -> {
                 if ( ! projectVars.contains(v) ) {
-                    var nv = NodeValue.makeNode(n);
-                    query2.getProject().update(v, NodeValue.makeNode(n));
+                    NodeValue nv = NodeValue.makeNode(n);
+                    query2.getProject().update(v, nv);
                 }
             });
         }
@@ -112,13 +112,18 @@ public class QueryTransformOps {
         });
         QuerySyntaxSubstituteScope.scopeCheck(query, varsForConst);
 
-        ElementTransform eltrans = new ElementTransformSubst(substitutions);
         NodeTransform nodeTransform = new NodeTransformSubst(substitutions);
-        ExprTransform exprTrans = new ExprTransformNodeElement(nodeTransform, eltrans);
-        return transform(query, eltrans, exprTrans);
+        return transform(query, nodeTransform);
     }
 
     // ----------------
+
+    /** Transform a query using a generic NodeTransform. */
+    public static Query transform(Query query, NodeTransform transform) {
+        ElementTransform eltrans = new ElementTransformSubst(transform);
+        ExprTransform exprTrans = new ExprTransformNodeElement(transform, eltrans);
+        return QueryTransformOps.transform(query, eltrans, exprTrans);
+    }
 
     public static Query transform(Query query, ElementTransform transform) {
         ExprTransform noop = new ExprTransformApplyElementTransform(transform);
