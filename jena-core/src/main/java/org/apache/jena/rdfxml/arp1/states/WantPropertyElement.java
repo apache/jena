@@ -176,7 +176,7 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
         }
         if (!pt.equals("Literal")) {
             warning(WARN_UNKNOWN_PARSETYPE, "Unknown rdf:parseType: '" + pt
-                    + "' (treated as 'Literal'.");
+                    + "' (treated as 'Literal')");
         }
         return new OuterXMLLiteral(this, x, pt);
     }

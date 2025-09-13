@@ -81,6 +81,7 @@ public class PrintingStreamRDF extends WriterStreamRDFPlain
         out.print("BASE") ;
         out.print("  ") ;
         printDirectURI(out, base);
+        out.println();
         flush();
         // Reset the formatter because of the new base URI.
         pretty = new NodeFormatterTTL(base, prefixMap);

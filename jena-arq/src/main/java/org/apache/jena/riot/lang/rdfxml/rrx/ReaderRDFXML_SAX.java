@@ -50,8 +50,6 @@ public class ReaderRDFXML_SAX implements ReaderRIOT
 
     private final ParserProfile parserProfile;
 
-    public static boolean TRACE = false;
-
     public ReaderRDFXML_SAX(ParserProfile parserProfile) {
         this.parserProfile = parserProfile;
     }
