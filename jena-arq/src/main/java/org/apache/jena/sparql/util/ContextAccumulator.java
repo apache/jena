@@ -93,6 +93,28 @@ public class ContextAccumulator {
         return this;
     }
 
+    /** Return the current value of a symbol. */
+    public <T> T get(Symbol symbol) {
+        T result = addedContext.get(symbol);
+        if (result == null) {
+            Context extra = extra();
+            if (extra != null) {
+                result = extra.get(symbol);
+            }
+
+            if (result == null) {
+                Context base = baseContext != null
+                        ? baseContext
+                        : baseContext();
+
+                if (base != null) {
+                    result = base.get(symbol);
+                }
+            }
+        }
+        return result;
+    }
+
     public ContextAccumulator context(Context context) {
         if ( context == null )
             return this;

@@ -178,7 +178,9 @@ public class Endpoint implements Counters {
 
         public Endpoint build() {
             Objects.requireNonNull(operation, "Operation for Endpoint");
-            return new Endpoint(operation, endpointName, authPolicy, processor, context);
+            // Always equip endpoints with a context.
+            Context finalCxt = (context != null) ? context : Context.create() ;
+            return new Endpoint(operation, endpointName, authPolicy, processor, finalCxt);
         }
     }
 

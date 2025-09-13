@@ -97,7 +97,7 @@ public class Quad implements Serializable
     }
 
     public boolean isConcrete() {
-        return subject.isConcrete() && predicate.isConcrete() && object.isConcrete() && graph.isConcrete();
+        return subject.isConcrete() && predicate.isConcrete() && object.isConcrete() && (graph == null || graph.isConcrete());
     }
 
     /**

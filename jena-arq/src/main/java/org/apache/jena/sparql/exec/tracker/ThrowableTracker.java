@@ -16,13 +16,17 @@
  * limitations under the License.
  */
 
-package org.apache.jena.geosparql.spatial.task;
+package org.apache.jena.sparql.exec.tracker;
 
-public enum TaskState {
-    CREATED,     // Task object created.
-    STARTING,    // Task execution requested, but core task.run() method not yet invoked.
-    RUNNING,     // Core task.run() method invoked.
-    ABORTING,    // Abort called while not in TERMINATING / TERMINATED state.
-    TERMINATING, // Core task.run() method exited.
-    TERMINATED,  // Task cleanup complete. Triggering this event may require a call to close().
+import java.util.Iterator;
+
+public interface ThrowableTracker {
+    void report(Throwable throwable);
+    Iterator<Throwable> getThrowables();
+
+    default Throwable getFirstThrowable() {
+        Iterator<Throwable> it = getThrowables();
+        Throwable result = it.hasNext() ? it.next() : null;
+        return result;
+    }
 }
