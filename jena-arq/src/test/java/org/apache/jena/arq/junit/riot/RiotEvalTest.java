@@ -106,6 +106,8 @@ public class RiotEvalTest extends AbstractManifestTest {
 
             if ( !b ) {
                 // graph.isIsomorphicWith(results);
+                String action = this.manifestEntry.getAction().getURI();
+                System.out.println("---- Action: "+action);
                 System.out.println("---- Parsed");
                 RDFDataMgr.write(System.out, graph, Lang.TURTLE);
                 System.out.println("---- Expected");

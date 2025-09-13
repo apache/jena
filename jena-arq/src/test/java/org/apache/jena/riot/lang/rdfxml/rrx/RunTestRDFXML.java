@@ -410,12 +410,12 @@ public class RunTestRDFXML {
 
     /** Run a test expecting a RiotException. Check the error handler. */
     private static void runTestExpectFailure(String testLabel,
-                                     ReaderRIOTFactory testSubjectFactory, String subjectLabel,
+                                             ReaderRIOTFactory testSubjectFactory, String subjectLabel,
                                      String filename, ErrorHandlerCollector expectedErrorHandler) {
         ErrorHandlerCollector actualErrorHandler = new ErrorHandlerCollector();
         assertThrows(RiotException.class, ()->{
             parseFile(testSubjectFactory, actualErrorHandler, filename);
-            output.printf("## Expected RiotExpection : %-4s : %s : %s\n", subjectLabel, testLabel, filename);
+            output.printf("## Expected RiotExpection : %s : %s\n", subjectLabel, filename);
         });
 
         if ( expectedErrorHandler != null )

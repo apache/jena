@@ -48,7 +48,7 @@ public class RIOT {
     // public static final String VERSION = NAME+"/"+ARQ.VERSION ;
     // public static final String BUILD_DATE = ARQ.BUILD_DATE ;
 
-    public static final String       VERSION = Version.versionForClass(RIOT.class).orElse("<development>");;
+    public static final String VERSION = Version.versionForClass(RIOT.class).orElse("<development>");;
 
     /** The root package name for RIOT */
     public static final String PATH    = "org.apache.jena.riot" ;

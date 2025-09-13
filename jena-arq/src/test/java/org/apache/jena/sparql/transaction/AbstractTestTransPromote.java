@@ -50,7 +50,7 @@ import org.apache.jena.system.Txn;
 /** Tests for transactions that start read and then promote to write */
 public abstract class AbstractTestTransPromote {
 
-    // Dynamically adjust the loggingso warnings are supressed for this test suite only.
+    // Dynamically adjust the logging so warnings are suppressed for this test suite only.
     private final String[] loggerNames;
     private String[] loggerLevelNames;
 
