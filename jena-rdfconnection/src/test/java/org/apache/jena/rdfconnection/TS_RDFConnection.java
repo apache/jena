@@ -29,6 +29,7 @@ import org.junit.platform.suite.api.Suite;
     , TestRDFConnectionLocalMRSW.class
     , TestLibRDFConn.class
     , TestRDFConnectionRewrapping.class
+    , TestRDFConnectionHTTPHeaders.class
 })
 
 public class TS_RDFConnection {}
