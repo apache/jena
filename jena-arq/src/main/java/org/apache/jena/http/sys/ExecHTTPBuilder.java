@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.jena.graph.Node;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.query.*;
+import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.http.Params;
@@ -52,6 +53,12 @@ public abstract class ExecHTTPBuilder<X, Y> {
 
     // Accept choice by the application
     protected String appAcceptHeader = null;
+
+    protected String selectAcceptHeader  = WebContent.defaultSparqlResultsHeader;
+    protected String askAcceptHeader     = WebContent.defaultSparqlAskHeader;
+    protected String graphAcceptHeader   = WebContent.defaultGraphAcceptHeader;
+    protected String datasetAcceptHeader = WebContent.defaultDatasetAcceptHeader;
+
     protected long timeout = -1;
     protected TimeUnit timeoutUnit = null;
 
@@ -253,9 +260,35 @@ public abstract class ExecHTTPBuilder<X, Y> {
         return thisBuilder();
     }
 
+    /** Setting this header overrides any other header. */
     public Y acceptHeader(String acceptHeader) {
         Objects.requireNonNull(acceptHeader);
         this.appAcceptHeader = acceptHeader;
+        return thisBuilder();
+    }
+
+    /** Set the HTTP {@code Accept:} header used to when making a SPARQL Protocol SELECT query. */
+    public Y acceptHeaderSelectQuery(String acceptSelectHeader) {
+        this.selectAcceptHeader = acceptSelectHeader;
+        return thisBuilder();
+    }
+
+    /** Set the HTTP {@code Accept:} header used to when making a SPARQL Protocol ASK query. */
+    public Y acceptHeaderAskQuery(String acceptAskHeader) {
+        this.askAcceptHeader = acceptAskHeader;
+        return thisBuilder();
+    }
+
+    /** Set the HTTP {@code Accept:} header used to fetch RDF graph using the SPARQL CONSTRUCT and DESCRIBE query types. */
+    public Y acceptHeaderGraph(String acceptGraph) {
+        this.graphAcceptHeader = acceptGraph;
+        return thisBuilder();
+    }
+
+    /** Set the HTTP {@code Accept:} header used to when making a SPARQL Protocol CONSTRUCT dataset query.
+     * This is a Jena extension. */
+    public Y acceptHeaderDataset(String acceptDataset) {
+        this.datasetAcceptHeader = acceptDataset;
         return thisBuilder();
     }
 
