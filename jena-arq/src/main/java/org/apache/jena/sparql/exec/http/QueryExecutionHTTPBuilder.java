@@ -53,7 +53,11 @@ public class QueryExecutionHTTPBuilder
         QueryExecHTTP qExec = new QueryExecHTTP(serviceURL, queryActual, queryStringActual, urlLimit,
                                                 hClient, new HashMap<>(httpHeaders), Params.create(params), cxt,
                                                 copyArray(defaultGraphURIs), copyArray(namedGraphURIs),
-                                                sendMode, appAcceptHeader,
+                                                sendMode,
+                                                selectAcceptHeader,
+                                                askAcceptHeader,
+                                                graphAcceptHeader,
+                                                datasetAcceptHeader,
                                                 timeout, timeoutUnit);
         return new QueryExecutionHTTP(qExec);
     }

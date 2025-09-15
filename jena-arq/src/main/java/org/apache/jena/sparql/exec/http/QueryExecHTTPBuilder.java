@@ -49,7 +49,11 @@ public class QueryExecHTTPBuilder extends ExecHTTPBuilder<QueryExecHTTP, QueryEx
                                  hClient, new HashMap<>(httpHeaders), Params.create(params), cxt,
                                  copyArray(defaultGraphURIs),
                                  copyArray(namedGraphURIs),
-                                 sendMode, appAcceptHeader,
+                                 sendMode,
+                                 selectAcceptHeader,
+                                 askAcceptHeader,
+                                 graphAcceptHeader,
+                                 datasetAcceptHeader,
                                  timeout, timeoutUnit);
     }
 

@@ -28,6 +28,7 @@ import org.junit.platform.suite.api.Suite;
     , TestRDFLinkLocalTxnMem.class
     , TestRDFLinkLocalMRSW.class
     , TestLibRDFLink.class
+    , TestRDFLinkHTTPHeaders.class
 })
 
 public class TS_RDFLink {}
