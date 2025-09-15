@@ -24,6 +24,7 @@ import java.net.http.HttpClient;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.jena.http.HttpLib;
 import org.apache.jena.http.sys.ExecHTTPBuilder;
 import org.apache.jena.query.Query;
 import org.apache.jena.sparql.exec.QueryExecBuilder;
@@ -50,6 +51,10 @@ public class QueryExecHTTPBuilder extends ExecHTTPBuilder<QueryExecHTTP, QueryEx
                                  copyArray(defaultGraphURIs),
                                  copyArray(namedGraphURIs),
                                  sendMode, appAcceptHeader,
+                                 HttpLib.dft(appAcceptHeader, selectAcceptHeader),
+                                 HttpLib.dft(appAcceptHeader, askAcceptHeader),
+                                 HttpLib.dft(appAcceptHeader, graphAcceptHeader),
+                                 HttpLib.dft(appAcceptHeader, datasetAcceptHeader),
                                  timeout, timeoutUnit);
     }
 
