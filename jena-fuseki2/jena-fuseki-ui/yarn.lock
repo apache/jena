@@ -56,7 +56,7 @@
     json5 "^2.2.3"
     semver "^6.3.1"
 
-"@babel/generator@^7.28.3":
+"@babel/generator@^7.28.0", "@babel/generator@^7.28.3":
   version "7.28.3"
   resolved "https://registry.yarnpkg.com/@babel/generator/-/generator-7.28.3.tgz#9626c1741c650cbac39121694a0f2d7451b8ef3e"
   integrity sha512-3lSpxGgvnmZznmBkCRnVREPUFJv2wrv9iAoFDvADJc0ypmdOxdUtcLeBgBJ6zE0PMeTKnxeQzyk0xTBq4Ep7zw==
@@ -7404,10 +7404,11 @@ vite-node@3.2.4:
     vite "^5.0.0 || ^6.0.0 || ^7.0.0-0"
 
 vite-plugin-istanbul@^7.0.0:
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/vite-plugin-istanbul/-/vite-plugin-istanbul-7.1.0.tgz#f1abd43d38cb094a1dae9d383b28e66a11141f91"
-  integrity sha512-md0774bPYfSrMbAMMy3Xui2+xqmEVwulCGN2ImGm4E4s+0VfO7TjFyJ4ITFIFyEmBhWoMM0sOOX0Yg0I1SsncQ==
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/vite-plugin-istanbul/-/vite-plugin-istanbul-7.2.0.tgz#5b42900665bd47fa1cbf0e43920e6cc8412df2d1"
+  integrity sha512-bZGwPaFBRMSUAhBMlkezr+XRzPidqMhuL28svdVUzy6ltI8aQbkZfGKwHk7sJgVrQ1QCFdg6lFwFApK1SN1xUw==
   dependencies:
+    "@babel/generator" "^7.28.0"
     "@istanbuljs/load-nyc-config" "^1.1.0"
     espree "^10.3.0"
     istanbul-lib-instrument "^6.0.3"
