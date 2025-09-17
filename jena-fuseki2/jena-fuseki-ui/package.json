@@ -74,7 +74,7 @@
     "vite": "^7.1.4",
     "vite-plugin-istanbul": "^7.0.0",
     "vitest": "^3.0.5",
-    "wait-on": "^8.0.0",
+    "wait-on": "^9.0.0",
     "webpack": "^5"
   },
   "resolutions": {
