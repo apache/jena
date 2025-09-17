@@ -102,6 +102,7 @@ public class JettyFusekiWebapp {
             mgtConnector = serverConnector;
 
         if ( config.enableCompression ) {
+            @SuppressWarnings("all")
             GzipHandler gzipHandler = new GzipHandler();
             gzipHandler.setHandler(server.getHandler());
             server.setHandler(gzipHandler);
