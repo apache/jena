@@ -3020,9 +3020,9 @@ csstype@^3.1.3:
   integrity sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==
 
 cypress-vite@^1.4.2:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/cypress-vite/-/cypress-vite-1.7.0.tgz#3051a1284ef43f4a57d37987d3db37734fe2f2a9"
-  integrity sha512-qiO4S2L3cEi4YDLOM33d0vpFy4RkCKuHJqHZRZahqCRyZY8HIu1zNcvepDWVrob/gkrPARQ5ZouamDL5q8uRag==
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/cypress-vite/-/cypress-vite-1.8.0.tgz#db7891c6f419bd9b6ebc055a39f17e52161cd8d9"
+  integrity sha512-rPkIpDzCIo+upsDkFa/NlrnzVumuQ45UcwL7a2k/n8WFIwsW8QYuQaWU2JiIKExP/LNQew3H3Hbs/bp26xC0Fw==
   dependencies:
     chokidar "^3.5.3"
     debug "^4.3.4"
