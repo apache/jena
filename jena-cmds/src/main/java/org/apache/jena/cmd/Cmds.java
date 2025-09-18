@@ -30,10 +30,10 @@ import org.apache.jena.sys.JenaSystem;
  */
 public class Cmds {
 
-    static { JenaSystem.init(); }
-
     private static Map<String, Consumer<String[]>> cmds = new ConcurrentHashMap<>();
     private static Object lock = new Object();
+
+    static { JenaSystem.init(); }
 
     // Initialize via JenaSubsystemLifecycle and not rely on class initialization.
     static void init() {}
