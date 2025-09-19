@@ -34,7 +34,7 @@ import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.shared.NotFoundException;
 
-public class RiotSyntaxTest extends AbstractManifestTest{
+public class RiotSyntaxTest extends AbstractManifestTest {
 
     final private boolean expectLegalSyntax;
     final private String filename;
