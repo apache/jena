@@ -55,6 +55,7 @@ public class RDFLinkHTTPBuilder {
     protected RDFFormat     outputQuads        = HttpEnv.defaultQuadsFormat;
     protected RDFFormat     outputTriples      = HttpEnv.defaultTriplesFormat;
 
+    // The acceptGraph header is used for SPARQL CONSTRUCT, DESCRIBE and GSP GET.
     protected String        acceptGraph        = WebContent.defaultGraphAcceptHeader;
     protected String        acceptDataset      = WebContent.defaultDatasetAcceptHeader;
 
