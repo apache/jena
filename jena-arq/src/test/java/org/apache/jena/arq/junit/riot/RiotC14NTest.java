@@ -18,7 +18,6 @@
 
 package org.apache.jena.arq.junit.riot;
 
-import static org.apache.jena.arq.junit.riot.RiotTestsConfig.fragment;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -26,17 +25,18 @@ import java.util.function.Consumer;
 
 import org.apache.jena.arq.junit.manifest.AbstractManifestTest;
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
+import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.*;
-import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.graph.GraphFactory;
-import org.apache.jena.sparql.util.IsoMatcher;
 
-public class RiotEvalTest extends AbstractManifestTest {
+public class RiotC14NTest extends AbstractManifestTest {
+
     final private boolean       positiveTest;
     final private Lang          lang;
     final private String        filename;
@@ -46,7 +46,7 @@ public class RiotEvalTest extends AbstractManifestTest {
     final private String output;
     final private Consumer<StreamRDF> parser;
 
-    public RiotEvalTest(ManifestEntry entry, String base, Lang lang, boolean positiveTest) {
+    public RiotC14NTest(ManifestEntry entry, String base, Lang lang, boolean positiveTest) {
         super(entry);
         this.positiveTest = positiveTest;
         this.filename = entry.getAction().getURI();
@@ -59,107 +59,97 @@ public class RiotEvalTest extends AbstractManifestTest {
         parser = ( baseIRI != null )
             ? ParsingStepForTest.parse(input, baseIRI, lang, silentWarnings)
             : ParsingStepForTest.parse(input, lang, silentWarnings);
+
     }
 
     @Override
-    public void runTest()
-    {
-        // Could generalise run4() to cover both cases.
-        // run3() predates dataset reading and is more tested.
+    public void runTest() {
         if ( RDFLanguages.isTriples(lang) )
             run3();
         else
             run4();
     }
 
-    // Triples test.
-    private void run3() {
-        Graph graph = GraphFactory.createDefaultGraph();
+    public void run3()
+    {
+        Graph graph = GraphFactory.createGraphMem();
         StreamRDF dest = StreamRDFLib.graph(graph);
         try {
             parser.accept(dest);
 
-            if ( ! positiveTest ) {
-                String fragment = fragment(manifestEntry.getURI());
-                if ( fragment != null )
-                    fail(fragment+": Passed bad syntax eval test");
-                else
-                    fail("Passed bad syntax eval test");
-            }
+            Lang outLang = RDFLanguages.filenameToLang(output, Lang.NTRIPLES);
 
-            Lang outLang = RDFLanguages.filenameToLang(output, Lang.NQUADS);
-
-            Graph results = GraphFactory.createDefaultGraph();
+            // Exactly this string.
+            String actual = RDFWriter.source(graph).format(RDFFormat.NTRIPLES_UTF8).asString();
+            String expected;
             try {
-                RDFParser.create().errorHandler(ErrorHandlerFactory.errorHandlerNoWarnings)
-                    .base(baseIRI)
-                    .forceLang(outLang)
-                    .source(output)
-                    .parse(results);
+                expected = readFile(output);
             } catch (RiotException ex) {
                 fail("Failed to read results: "+ex.getMessage());
+                return;
             }
-
-            boolean b = IsoMatcher.isomorphic(graph, results);
+            boolean b = expected.equals(actual);
 
             if ( !b ) {
-                // graph.isIsomorphicWith(results);
-                System.out.println("---- Parsed");
-                RDFDataMgr.write(System.out, graph, Lang.TURTLE);
+                System.out.println("**** Test: "+manifestEntry.getName());
+                System.out.println("---- Input");
+                String inputString = readFile(input);
+                System.out.print(inputString);
+                System.out.println("---- Actual");
+                System.out.print(actual);
                 System.out.println("---- Expected");
-                results.getPrefixMapping().setNsPrefixes(graph.getPrefixMapping());
-                RDFDataMgr.write(System.out, results, Lang.TURTLE);
+                System.out.print(expected);
                 System.out.println("--------");
             }
-            assertTrue(b, "Graphs not isomorphic");
+            assertTrue(b, "Does not match expected canonical text");
         } catch (RiotException ex) {
             if ( positiveTest )
                 throw ex;
         }
     }
 
-    private void run4() {
+    public void run4()
+    {
         DatasetGraph dsg = DatasetGraphFactory.create();
         StreamRDF dest = StreamRDFLib.dataset(dsg);
         try {
             parser.accept(dest);
 
-            if ( ! positiveTest )
-                fail("Passed bad syntax eval test");
-
             Lang outLang = RDFLanguages.filenameToLang(output, Lang.NQUADS);
 
-            DatasetGraph results = DatasetGraphFactory.create();
+            // Exactly this string.
+            String actual = RDFWriter.source(dsg).format(RDFFormat.NQUADS_UTF8).asString();
+
+            String expected;
             try {
-                RDFParser.create().errorHandler(ErrorHandlerFactory.errorHandlerNoWarnings)
-                    .base(baseIRI)
-                    .forceLang(outLang)
-                    .source(output)
-                    .parse(results);
+                expected = readFile(output);
             } catch (RiotException ex) {
                 fail("Failed to read results: "+ex.getMessage());
+                return;
             }
+            boolean b = expected.equals(actual);
 
-            boolean b = isomorphic(dsg, results);
-
-            if ( !b )
-            {
+            if ( !b ) {
                 System.out.println("**** Test: "+manifestEntry.getName());
-                System.out.println("---- Parsed");
-                RDFDataMgr.write(System.out, dsg, Lang.TRIG);
+                System.out.println("---- Input");
+                String inputString = readFile(input);
+                System.out.print(inputString);
+                System.out.println("---- Actual");
+                System.out.print(actual);
                 System.out.println("---- Expected");
-                RDFDataMgr.write(System.out, results, Lang.TRIG);
+                System.out.print(expected);
                 System.out.println("--------");
             }
-
-            assertTrue(b, "Datasets not isomorphic");
+            assertTrue(b, "Does not match expected canonical text");
         } catch (RiotException ex) {
             if ( positiveTest )
                 throw ex;
         }
     }
 
-    private boolean isomorphic(DatasetGraph dsg1, DatasetGraph dsg2) {
-        return IsoMatcher.isomorphic(dsg1, dsg2);
+    String readFile(String name) {
+        if ( name.startsWith("file:") )
+            return IO.readWholeFileAsUTF8(IRILib.IRIToFilename(name));
+        return IO.readWholeFileAsUTF8(name);
     }
 }
