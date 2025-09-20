@@ -32,12 +32,6 @@ import org.apache.jena.vocabulary.TestManifest;
 
 public class RiotTests
 {
-    public static String assumedRootURIex = "http://example/base/";
-
-//    // Depends on origin of the tests.
-//    // Now done by entry.getManifest().getTestBase();
-//    public static String x_assumedRootURITurtle = "https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/";
-//    public static String x_assumedRootURITriG = "https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-trig/";
 
     /** Create a RIOT language test - or return null for "unrecognized" */
     public static Runnable makeRIOTTest(ManifestEntry entry) {
@@ -65,8 +59,10 @@ public class RiotTests
             // Some tests assume a certain base URI.
 
             // == Syntax tests.
-
+            // Assumed base from manifest.
             String assumedBase = entry.getManifest().getTestBase();
+            if ( assumedBase == null )
+                assumedBase = "http://example/base/";
 
             // TTL
             if ( equalsType(testType, VocabLangRDF.TestPositiveSyntaxTTL) ) {
@@ -146,13 +142,34 @@ public class RiotTests
             }
 
             if ( equalsType(testType, VocabLangRDF.TestEvalRJ) ) {
-                String base = rebase(input, assumedRootURIex);
+                String base = rebase(input, assumedBase);
                 return new RiotEvalTest(entry, base, RDFLanguages.RDFJSON, true);
             }
 //            if ( equalsType(testType, VocabLangRDF.TestNegativeEvalRJ) ) {
 //                String base = rebase(input, assumedRootURIex);
 //                return new RiotEvalTest(entry, base, RDFLanguages.RDFJSON, false);
 //            }
+
+            // Canonicalization tests
+            if ( equalsType(testType, VocabLangRDF.TestNTriplesPositiveC14N) ) {
+                String base = rebase(input, assumedBase);
+                return new RiotC14NTest(entry, base, RDFLanguages.NTRIPLES, true);
+            }
+
+            if ( equalsType(testType, VocabLangRDF.TestNTriplesNegativeC14N) ) {
+                String base = rebase(input, assumedBase);
+                return new RiotC14NTest(entry, base, RDFLanguages.NTRIPLES, false);
+
+            }
+            if ( equalsType(testType, VocabLangRDF.TestNQuadsPositiveC14N) ) {
+                String base = rebase(input, assumedBase);
+                return new RiotC14NTest(entry, base, RDFLanguages.NQUADS, true);
+
+            }
+            if ( equalsType(testType, VocabLangRDF.TestNQuadsNegativeC14N) ) {
+                String base = rebase(input, assumedBase);
+                return new RiotC14NTest(entry, base, RDFLanguages.NQUADS, false);
+            }
 
             // == Not supported : Entailment tests.
 
