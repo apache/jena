@@ -1,0 +1,51 @@
+#!/usr/bin/bash
+
+## local git clone
+TMP="rdf-tests-tmp"
+if [ -e "$TMP" ]
+then
+    echo "Temporary directory already exists: $TMP" 1>&2
+    exit 1
+fi
+
+## Updated tests
+SRC="rdf-tests-src"
+if [ -e "$SRC" ]
+then
+    echo "Destination already exists: $TMP" 1>&2
+    exit 1
+fi
+mkdir "$SRC"
+
+## The tests used in the ARQ test suite.
+DEST="rdf-tests-cg"
+
+## ----
+
+## Get a copy
+echo "== git clone /w3c/rdf-tests/ to $TMP"
+git clone https://github.com/w3c/rdf-tests/ "$TMP"
+
+## Test areas
+
+
+echo "== Move rdf/ sparql/ and ns/ to $SRC"
+mv "$TMP/rdf" "$TMP/sparql" "$TMP/ns" "$SRC"
+
+echo "== Keep only RDF language and SPARQL tests."
+# Remove model theory tests.
+rm -r "$SRC/rdf/rdf11/rdf-mt"
+# Remove archives
+find "$SRC" -name TESTS\* | xargs rm -r
+# Clean out HTML
+echo "== Remove HTML files"
+find "$SRC" -name \*html -o -name template.haml | xargs rm -r
+# Remove earl reports
+find "$SRC" -name reports | xargs rm -r
+
+## Remove temp
+echo "== Delete cloned repo"
+rm -rf "$TMP"
+
+echo "== Result :: directory ${SRC}/"
+echo "== Check ${SRC}, then delete the current ${DEST}, and move ${SRC} to ${DEST}"
