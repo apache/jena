@@ -3,7 +3,7 @@ in Turtle and Trig contain IRIs with the character \U000E01EF
 in the result nt/nq files.
 
 That character is illegal in IRIs, even if allowed by syntax.
-So it causes a failure whn reading the test.
+So it causes a failure when reading the test.
 
 It is not in RFC 3987 - the block E0000-E0FFF is excluded.
 

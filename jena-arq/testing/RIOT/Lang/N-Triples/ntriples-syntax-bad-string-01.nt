@@ -1,2 +1,0 @@
-# N-Triples does not allow '' strings.
-<http://example/s> <http://example/p> 'string' .

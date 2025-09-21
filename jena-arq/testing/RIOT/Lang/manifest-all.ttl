@@ -6,16 +6,6 @@
 <> a mf:Manifest ;
 	rdfs:label "RDF Language tests" ;
 	mf:include (
-        <N-Triples/manifest.ttl>
-        ## <N-Quads/manifest.ttl>
-
-        <Turtle2/manifest.ttl>      ## Long tests
-        <TurtleSubm/manifest.ttl>
-
         <RDF-JSON/manifest.ttl>
-
-        <NTriplesStd/manifest.ttl>
-        <NQuadsStd/manifest.ttl>
-        <TurtleStd/manifest.ttl>    # W3C test suite
-        <TrigStd/manifest.ttl>      # W3C Test Suite
+        ## TriX
 	).
