@@ -1,0 +1,15 @@
+# xml-canon/test002.nt
+
+## Original.
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, Institut National de Recherche en Informatique et en
+# Automatique, Keio University).
+#
+# All Rights Reserved.
+#
+#####################################################################
+<http://www.example.org/a> <http://example.org/prop> "<br></br>"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<http://example.com/#reif> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.example.org/a> .
+<http://example.com/#reif> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://example.org/prop> .
+<http://example.com/#reif> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> "<br></br>"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<http://example.com/#reif> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
