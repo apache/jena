@@ -125,7 +125,7 @@
     <ver.plugin.assembly>3.7.1</ver.plugin.assembly>
     <ver.plugin.compiler>3.14.0</ver.plugin.compiler>
     <ver.plugin.surefire>3.5.4</ver.plugin.surefire>
-    <ver.plugin.javadoc>3.11.3</ver.plugin.javadoc>
+    <ver.plugin.javadoc>3.12.0</ver.plugin.javadoc>
     <ver.plugin.war>3.4.0</ver.plugin.war>
     <ver.plugin.shade>3.6.1</ver.plugin.shade>
     <ver.plugin.enforcer>3.6.1</ver.plugin.enforcer>
