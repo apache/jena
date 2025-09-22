@@ -1,0 +1,7 @@
+@prefix    : <http://www.example.org/> .
+@prefix rel: <http://purl.org/vocab/relationship/> .
+@prefix rif: <http://www.w3.org/2007/rif#> .
+@prefix ent:  <http://www.w3.org/ns/entailment/>.
+
+:bob rel:worksWith :alice .
+<http://example.org/r1> rif:usedWithProfile ent:Simple .

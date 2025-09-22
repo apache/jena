@@ -1,0 +1,8 @@
+PREFIX :       <http://example/>
+
+# Nesting via match
+SELECT * {
+  ?t :p4 :z .
+  << ?t  :p4 :z >> :q :o .
+  << ?s ?p ?o ~ ?t >> .
+}

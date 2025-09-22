@@ -1,0 +1,6 @@
+SELECT * WHERE {
+	?s ?p \u0022value"
+}
+
+# the escape here produces QUOTATION MARK (U+22)
+# its unescaping must lead to the literal 'value'.

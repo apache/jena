@@ -1,0 +1,12 @@
+{
+  "head": {
+    "vars": [ "dt" ]
+  },
+  "results": {
+    "bindings": [
+      {
+        "dt": { "type": "uri", "value": "http://www.w3.org/2001/XMLSchema#string" }
+      }
+    ]
+  }
+}

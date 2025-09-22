@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:ex="http://example.org/"
+  xmlns:its="http://www.w3.org/2005/11/its"
+  its:dir="ltr"
+  xml:lang="en"
+  rdf:version="1.2">
+  <rdf:Description rdf:about="http://example.org/joe" ex:name="bar" />
+</rdf:RDF>

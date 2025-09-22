@@ -1,0 +1,23 @@
+{
+  "@context": {
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "mf": "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#",
+    "mq": "http://www.w3.org/2001/sw/DataAccess/tests/test-query#",
+    "rdft": "http://www.w3.org/ns/rdftest#",
+
+    "comment": "rdfs:comment",
+    "entries": {"@id": "mf:entries", "@container": "@list", "@type": "@id"},
+    "label": "rdfs:label",
+    "name": "mf:name",
+    "action": {"@id": "mf:action", "@type": "@id"},
+    "result": {"@id": "mf:result", "@type": "@id"},
+    "approval": {"@id": "rdft:approval", "@type": "@id"},
+
+    "entailmentRegime": {"@id": "mf:entailmentRegime"},
+    "recognizedDatatypes": {"@id": "mf:recognizedDatatypes", "@type": "@id", "@container": "@list"},
+    "unrecognizedDatatypes": {"@id": "mf:unrecognizedDatatypes", "@type": "@id", "@container": "@list"}
+  },
+  "@type": "mf:Manifest",
+  "entries": {"@embed": true}
+}

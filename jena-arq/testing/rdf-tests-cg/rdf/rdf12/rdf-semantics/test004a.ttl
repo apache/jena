@@ -1,0 +1,5 @@
+prefix : <http://example.com/ns#>
+
+:a1 :p1 <<( :a :b :c )>>.
+:a :label "A".
+:c :label "C".

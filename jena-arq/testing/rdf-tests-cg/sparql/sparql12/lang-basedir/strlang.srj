@@ -1,0 +1,11 @@
+{ "head": {
+    "vars": [ "term1" , "term2" , "term3" , "term4" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "term1": { "type": "literal" , "xml:lang": "en" , "value": "abc" }
+      }
+    ]
+  }
+}

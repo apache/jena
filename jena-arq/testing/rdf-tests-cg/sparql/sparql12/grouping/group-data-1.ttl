@@ -1,0 +1,7 @@
+PREFIX : <http://example/> 
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+:s1 :p "1"^^xsd:integer .
+:s2 :p "1"^^xsd:integer .
+:s3 :p "001"^^xsd:integer . 
+:s4 :p "1"^^xsd:string .

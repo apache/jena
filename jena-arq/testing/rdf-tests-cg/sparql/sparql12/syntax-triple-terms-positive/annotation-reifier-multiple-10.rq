@@ -1,0 +1,5 @@
+PREFIX : <http://example.com/ns#>
+
+CONSTRUCT WHERE {
+  ?s ?p ?o ~ :iri1 ~ :iri2 {| :r1 ?Z1 |} {| :r2 ?Z2 |} ~ :iri3 {| :r3 ?Z3 |} .
+}

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:eg="http://example.org/"
+         xml:base="http://example.com/">
+
+  <rdf:Description rdf:about="http://www.example.org/a">
+    <eg:prop rdf:annotationNodeID="triple1" rdf:parseType="Literal"><br /></eg:prop>
+  </rdf:Description>
+
+</rdf:RDF>
+

@@ -1,0 +1,12 @@
+{ "head": {
+    "vars": [ "term1" , "term2" , "term3" , "term4" , "term5" , "term6" , "term7" , "term8" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "term1": { "type": "literal" , "xml:lang": "en" , "its:dir": "ltr" , "value": "abc" } ,
+        "term4": { "type": "literal" , "xml:lang": "ar" , "its:dir": "rtl" , "value": "قطة" }
+      }
+    ]
+  }
+}

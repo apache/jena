@@ -1,0 +1,6 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX : <http://example.com/ns#>
+
+:a1 :p1 _:pp .
+_:pp rdf:type rdfs:Proposition .

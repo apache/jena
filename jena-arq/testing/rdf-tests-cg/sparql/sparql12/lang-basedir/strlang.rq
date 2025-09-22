@@ -1,0 +1,8 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT
+    ( STRLANG("abc", "en") AS ?term1 )
+    ( STRLANG("abc", "") AS ?term2 )
+    ( STRLANG(123, "en") AS ?term3 )
+    ( STRLANG(<http:/example/x> , "en") AS ?term4 )
+WHERE {}

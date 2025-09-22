@@ -1,0 +1,4 @@
+SELECT * {
+    ?s ?p ?o .
+    BIND(<< [] ?p ?o ~ :iri >> AS ?t )
+}

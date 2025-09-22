@@ -1,0 +1,220 @@
+## Distributed under both the "W3C Test Suite License" [1]
+## and the "W3C 3-clause BSD License".
+## [1] https://www.w3.org/Consortium/Legal/2008/04-testsuite-license
+## [2] https://www.w3.org/Consortium/Legal/2008/03-bsd-license
+
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
+PREFIX rdft:   <http://www.w3.org/ns/rdftest#>
+PREFIX trs:    <https://w3c.github.io/rdf-tests/rdf/rdf12/rdf-n-triples/syntax#>
+PREFIX dct:    <http://purl.org/dc/terms/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+PREFIX foaf:    <http://xmlns.com/foaf/0.1/>
+PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
+
+trs:manifest  rdf:type mf:Manifest ;
+   rdfs:label "RDF 1.2 N-Triples Syntax Tests"@en ;
+   skos:prefLabel "La suite des tests pour RDF 1.2 N-Triples"@fr;
+   skos:prefLabel "Conjunto de pruebas para RDF 1.2 N-Triples"@es;
+   mf:assumedTestBase <https://w3c.github.io/rdf-tests/rdf/rdf12/rdf-n-triples/syntax/> ;
+   dct:issued "2023-07-20"^^xsd:date ;
+   dct:modified "2023-07-20"^^xsd:date ;
+   dct:licence <https://www.w3.org/Consortium/Legal/2008/03-bsd-license> ;
+   dct:creator [ foaf:homepage <https://w3c.github.io/rdf-star-wg/> ; foaf:name "W3C RDF & SPARQL Working Group" ] ;
+   rdfs:seeAlso <README>;
+    mf:entries
+    (
+        trs:ntriples12-01
+        trs:ntriples12-02
+        trs:ntriples12-03
+
+        trs:ntriples12-bnode-1
+
+        trs:ntriples12-nested-1
+
+        trs:ntriples-langdir-1
+        trs:ntriples-langdir-2
+
+        trs:ntriples12-bad-01
+        trs:ntriples12-bad-02
+        trs:ntriples12-bad-03
+        trs:ntriples12-bad-04
+        trs:ntriples12-bad-05
+        trs:ntriples12-bad-06
+        trs:ntriples12-bad-07
+        trs:ntriples12-bad-08
+        trs:ntriples12-bad-09
+        trs:ntriples12-bad-10
+
+        trs:ntriples12-bad-iri-1
+
+        trs:ntriples12-bad-reified-1
+        trs:ntriples12-bad-reified-2
+        trs:ntriples12-bad-reified-3
+        trs:ntriples12-bad-reified-4
+
+        trs:ntriples12-bnode-bad-annotated-syntax-1
+        trs:ntriples12-bnode-bad-annotated-syntax-2
+
+        trs:ntriples-langdir-bad-1
+        trs:ntriples-langdir-bad-2
+        trs:ntriples-langdir-bad-3
+        trs:ntriples-langdir-bad-4
+        trs:ntriples-langdir-bad-5
+    ) .
+
+trs:ntriples12-01 rdf:type rdft:TestNTriplesPositiveSyntax ;
+   mf:name      "N-Triples-12 - object triple term" ;
+   mf:action    <ntriples12-syntax-01.nt> ;
+   .
+
+trs:ntriples12-02 rdf:type rdft:TestNTriplesPositiveSyntax ;
+   mf:name      "N-Triples-12 - object triple term, no whitespace" ;
+   mf:action    <ntriples12-syntax-02.nt> ;
+   .
+
+trs:ntriples12-03 rdf:type rdft:TestNTriplesPositiveSyntax ;
+  mf:name      "N-Triples-12 - Nested, no whitespace" ;
+  mf:action    <ntriples12-syntax-03.nt> ;
+  .
+
+# Blank nodes
+
+trs:ntriples12-bnode-1 rdf:type rdft:TestNTriplesPositiveSyntax ;
+   mf:name      "N-Triples-12 - Blank node subject" ;
+   mf:action    <ntriples12-bnode-1.nt> ;
+   .
+
+trs:ntriples12-nested-1 rdf:type rdft:TestNTriplesPositiveSyntax ;
+   mf:name      "N-Triples-12 - Nested object term" ;
+   mf:action    <ntriples12-nested-1.nt> ;
+   .
+
+# Base direction
+
+trs:ntriples-langdir-1 rdf:type rdft:TestNTriplesPositiveSyntax ;
+  mf:name       "N-Triples literal with base direction ltr" ;
+  mf:action     <ntriples-langdir-1.nt> ;
+  .
+
+trs:ntriples-langdir-2 rdf:type rdft:TestNTriplesPositiveSyntax ;
+  mf:name       "N-Triples literal with base direction rtl" ;
+  mf:action     <ntriples-langdir-2.nt> ;
+  .
+
+## Bad syntax
+
+trs:ntriples12-bad-01 rdf:type rdft:TestNTriplesNegativeSyntax ;
+    mf:name      "N-Triples-12 - Bad - reified triple as predicate" ;
+    mf:action    <ntriples12-bad-syntax-01.nt> ;
+    .
+
+trs:ntriples12-bad-02 rdf:type rdft:TestNTriplesNegativeSyntax ;
+    mf:name      "N-Triples-12 - Bad - reified triple, literal subject" ;
+    mf:action    <ntriples12-bad-syntax-02.nt> ;
+    .
+
+trs:ntriples12-bad-03 rdf:type rdft:TestNTriplesNegativeSyntax ;
+    mf:name      "N-Triples-12 - Bad - reified triple, literal predicate" ;
+    mf:action    <ntriples12-bad-syntax-03.nt> ;
+    .
+
+trs:ntriples12-bad-04 rdf:type rdft:TestNTriplesNegativeSyntax ;
+    mf:name      "N-Triples-12 - Bad - reified triple, blank node predicate" ;
+    mf:action    <ntriples12-bad-syntax-04.nt> ;
+    .
+
+trs:ntriples12-bad-05 rdf:type rdft:TestNTriplesNegativeSyntax ;
+    mf:name      "N-Triples-12 - Bad - triple term as predicate" ;
+    mf:action    <ntriples12-bad-syntax-05.nt> ;
+    .
+
+trs:ntriples12-bad-06 rdf:type rdft:TestNTriplesNegativeSyntax ;
+    mf:name      "N-Triples-12 - Bad - triple term, literal subject" ;
+    mf:action    <ntriples12-bad-syntax-06.nt> ;
+    .
+
+trs:ntriples12-bad-07 rdf:type rdft:TestNTriplesNegativeSyntax ;
+    mf:name      "N-Triples-12 - Bad - triple term, literal predicate" ;
+    mf:action    <ntriples12-bad-syntax-07.nt> ;
+    .
+
+trs:ntriples12-bad-08 rdf:type rdft:TestNTriplesNegativeSyntax ;
+    mf:name      "N-Triples-12 - Bad - triple term, blank node predicate" ;
+    mf:action    <ntriples12-bad-syntax-08.nt> ;
+    .
+
+trs:ntriples12-bad-09 rdf:type rdft:TestNTriplesNegativeSyntax ;
+    mf:name      "N-Triples-12 - Bad - reified triple object" ;
+    mf:action    <ntriples12-bad-syntax-09.nt> ;
+    .
+
+trs:ntriples12-bad-10 rdf:type rdft:TestNTriplesNegativeSyntax ;
+    mf:name      "N-Triples-12 - Bad - triple term as subject" ;
+    mf:action    <ntriples12-bad-syntax-10.nt> ;
+    .
+
+trs:ntriples12-bad-iri-1 rdf:type rdft:TestNTriplesNegativeSyntax ;
+  mf:name       "N-Triples - Bad - invalid IRI" ;
+  mf:action     <ntriples12-bad-iri-1.nt> ;
+  .
+
+trs:ntriples12-bad-reified-1 rdf:type rdft:TestNTriplesNegativeSyntax ;
+   mf:name      "N-Triples-12 - Bad - subject reified triple" ;
+   mf:action    <ntriples12-bad-reified-syntax-1.nt> ;
+   .
+
+trs:ntriples12-bad-reified-2 rdf:type rdft:TestNTriplesNegativeSyntax ;
+   mf:name      "N-Triples-12 - Bad - object reified triple" ;
+   mf:action    <ntriples12-bad-reified-syntax-2.nt> ;
+   .
+
+trs:ntriples12-bad-reified-3 rdf:type rdft:TestNTriplesNegativeSyntax ;
+   mf:name      "N-Triples-12 - Bad - subject and object reified triples" ;
+   mf:action    <ntriples12-bad-reified-syntax-3.nt> ;
+   .
+
+trs:ntriples12-bad-reified-4 rdf:type rdft:TestNTriplesNegativeSyntax ;
+   mf:name      "N-Triples-12 - Bad - predicate reified triple" ;
+   mf:action    <ntriples12-bad-reified-syntax-4.nt> ;
+   .
+
+# Annotation syntax is not permitted in nt
+
+trs:ntriples12-bnode-bad-annotated-syntax-1 rdf:type rdft:TestNTriplesNegativeSyntax ;
+    mf:name      "N-Triples-12 - Bad - annotated triple, blank node subject" ;
+    mf:action    <ntriples12-bnode-bad-annotated-syntax-1.nt> ;
+    .
+
+trs:ntriples12-bnode-bad-annotated-syntax-2 rdf:type rdft:TestNTriplesNegativeSyntax ;
+    mf:name      "N-Triples-12 - Bad - annotated triple, blank node object" ;
+    mf:action    <ntriples12-bnode-bad-annotated-syntax-2.nt> ;
+    .
+
+# Base direction
+
+trs:ntriples-langdir-bad-1 rdf:type rdft:TestNTriplesNegativeSyntax ;
+  mf:name       "N-Triples literal- Bad - undefined base direction" ;
+  mf:action     <ntriples-langdir-bad-1.nt> ;
+  .
+
+trs:ntriples-langdir-bad-2 rdf:type rdft:TestNTriplesNegativeSyntax ;
+  mf:name       "N-Triples literal- Bad - upper case LTR" ;
+  mf:action     <ntriples-langdir-bad-2.nt> ;
+  .
+
+trs:ntriples-langdir-bad-3 rdf:type rdft:TestNTriplesNegativeSyntax ;
+  mf:name       "N-Triples - Bad - literal with missing language tag" ;
+  mf:action     <ntriples-langdir-bad-3.nt> ;
+  .
+
+trs:ntriples-langdir-bad-4 rdf:type rdft:TestNTriplesNegativeSyntax ;
+  mf:name       "N-Triples - Bad - literal with bad language tag" ;
+  mf:action     <ntriples-langdir-bad-4.nt> ;
+  .
+
+trs:ntriples-langdir-bad-5 rdf:type rdft:TestNTriplesNegativeSyntax ;
+  mf:name       "N-Triples - Bad - literal with missing language tag and direction" ;
+  mf:action     <ntriples-langdir-bad-5.nt> ;
+  .

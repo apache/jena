@@ -1,0 +1,8 @@
+<http://example/s> <http://example/p> <http://example/o> .
+_:anon <http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies> <<(<http://example/s> <http://example/p> <http://example/o>)>> .
+_:anon <http://example/source> _:bpl0 .
+_:anon <http://example/source> _:bpl1 .
+_:bpl0 <http://example/graph> <http://host1/> .
+_:bpl0 <http://example/date> "2020-01-20"^^<http://www.w3.org/2001/XMLSchema#date> .
+_:bpl1 <http://example/graph> <http://host2/> .
+_:bpl1 <http://example/date> "2020-12-31"^^<http://www.w3.org/2001/XMLSchema#date> .

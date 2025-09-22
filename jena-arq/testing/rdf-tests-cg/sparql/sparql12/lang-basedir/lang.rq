@@ -1,0 +1,6 @@
+PREFIX : <http://example/>
+
+SELECT ?x ?lang {
+  ?x :p ?object .
+  BIND( LANG(?object) AS ?lang )
+} ORDER BY ?x

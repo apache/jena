@@ -1,0 +1,19 @@
+PREFIX : <http://example/>
+
+VERSION "1.2"
+version "1.2"
+@version "1.2" .
+
+:s :p 1 .
+
+VERSION '1.2'
+version '1.2'
+@version '1.2' .
+
+:s :p 2 .
+
+VERSION "abc"
+version "abc"
+@version "abc" .
+
+:s :p 3 .

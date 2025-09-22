@@ -1,0 +1,14 @@
+@prefix    :        <http://example.org/things#> .
+@prefix xsd:        <http://www.w3.org/2001/XMLSchema#> .
+
+:xi1 :pl "1"^^xsd:integer ; :pr "2008-04-01T00:00:00Z"^^xsd:dateTime .
+:xb1 :pl "true"^^xsd:boolean ; :pr "2008-04-01T00:00:00Z"^^xsd:dateTime .
+:xs1 :pl "2008-04-01T00:00:00Z" ; :pr "2008-04-01T00:00:00Z"^^xsd:dateTime .
+
+:d1 :pl "2008-04-01T00:00:00Z"^^xsd:dateTime ; :pr "2008-04-01T00:00:00Z"^^xsd:dateTime . # true
+:d2 :pl "2002-04-02T12:00:00"^^xsd:dateTime ; :pr "2002-04-02T12:00:00"^^xsd:dateTime . # true
+:d3 :pl "2002-04-02T23:00:00-04:00"^^xsd:dateTime ; :pr "2002-04-03T02:00:00-01:00"^^xsd:dateTime . # true
+:d4 :pl "2002-04-02T23:00:00"^^xsd:dateTime ; :pr "2002-04-02T23:00:00+06:00"^^xsd:dateTime . # false
+:d5 :pl "1999-12-31T24:00:00"^^xsd:dateTime ; :pr "2000-01-01T00:00:00"^^xsd:dateTime . # true
+:d6 :pl "2005-04-04T24:00:00"^^xsd:dateTime ; :pr "2005-04-04T00:00:00"^^xsd:dateTime . # false
+:d7 :pl "2008-04-01T00:00:00.00Z"^^xsd:dateTime ; :pr "2008-04-01T00:00:00Z"^^xsd:dateTime . # true

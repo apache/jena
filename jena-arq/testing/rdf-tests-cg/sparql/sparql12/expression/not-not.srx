@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+  <head>
+    <variable name="v"/>
+    <variable name="ebv"/>
+  </head>
+  <results>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#boolean">true</literal>
+      </binding>
+      <binding name="ebv">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#boolean">true</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
+      </binding>
+      <binding name="ebv">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#boolean">true</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#string">a</literal>
+      </binding>
+      <binding name="ebv">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#boolean">true</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#boolean">false</literal>
+      </binding>
+      <binding name="ebv">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#boolean">false</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">0</literal>
+      </binding>
+      <binding name="ebv">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#boolean">false</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#string"></literal>
+      </binding>
+      <binding name="ebv">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#boolean">false</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal xml:lang="en">a</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#boolean">z</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#dateTime">2020-01-01T00:00:00Z</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="v">
+        <uri>http://example/a</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>

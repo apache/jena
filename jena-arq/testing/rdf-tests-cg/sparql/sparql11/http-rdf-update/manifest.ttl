@@ -1,0 +1,456 @@
+@prefix : <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#> .
+@prefix dawg: <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+@prefix gsp: <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# Note: Comments are formated as Markdown for transformation to HTML version of manifest.
+
+<> a mf:Manifest;
+    rdfs:label "SPARQL Graph Store Protocol";
+    mf:entries ( gsp:put__initial_state
+                 gsp:get_of_put__initial_state
+                 gsp:put__graph_already_in_store
+                 gsp:get_of_put__graph_already_in_store
+                 gsp:put__default_graph
+                 gsp:get_of_put__default_graph
+                 gsp:put__mismatched_payload
+                 gsp:delete__existing_graph
+                 gsp:get_of_delete__existing_graph
+                 gsp:delete__nonexistent_graph
+                 gsp:post__existing_graph
+                 gsp:get_of_post__existing_graph
+                 gsp:post__multipart_formdata
+                 gsp:get_of_post__multipart_formdata
+                 gsp:post__create__new_graph
+                 gsp:get_of_post__create__new_graph
+                 gsp:get_of_post__after_noop
+                 gsp:head_on_an_existing_graph
+                 gsp:head_on_a_nonexisting_graph ) .
+
+gsp:delete__existing_graph a mf:GraphStoreProtocolTest;
+    dawg:approval dawg:Approved;
+    dawg:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3>;
+    mf:name "DELETE - existing graph" ;
+    rdfs:comment """
+#### Request
+
+    DELETE $GRAPHSTORE$/person/2.ttl HTTP/1.1
+    Host: $HOST$
+
+#### Response
+
+    200 OK
+    """ .
+
+gsp:delete__nonexistent_graph a mf:GraphStoreProtocolTest;
+    dawg:approval dawg:Approved;
+    dawg:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3>;
+    mf:name "DELETE - non-existent graph" ;
+    rdfs:comment """
+#### Request
+
+    DELETE $GRAPHSTORE$/person/2.ttl HTTP/1.1
+    Host: $HOST$
+
+#### Response
+
+    404 Not Found
+    """ .
+
+gsp:get_of_delete__existing_graph a mf:GraphStoreProtocolTest;
+    dawg:approval dawg:Approved;
+    dawg:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3>;
+    mf:name "GET of DELETE - existing graph" ;
+    rdfs:comment """
+#### Request
+
+    GET $GRAPHSTORE$/person/2.ttl HTTP/1.1
+    Host: $HOST$
+
+#### Response
+
+    404 Not Found
+    """ .
+
+gsp:get_of_post__after_noop a mf:GraphStoreProtocolTest;
+    dawg:approval dawg:Approved;
+    dawg:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3>;
+    mf:name "GET of POST - after noop" ;
+    rdfs:comment """
+#### Request
+
+    GET $NEWPATH$ HTTP/1.1
+    Host: $HOST$
+    Accept: text/turtle
+
+#### Response
+
+    200 OK
+    Content-Type: text/turtle; charset=utf-8
+    Content-Length: ...
+
+    @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+    @prefix v: <http://www.w3.org/2006/vcard/ns#> .
+
+    []  a foaf:Person;
+        foaf:businessCard [
+            a v:VCard;
+            v:given-name "Alice"
+        ] .
+    """ .
+
+gsp:get_of_post__create__new_graph a mf:GraphStoreProtocolTest;
+    dawg:approval dawg:Approved;
+    dawg:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3>;
+    mf:name "GET of POST - create new graph" ;
+    rdfs:comment """
+#### Request
+
+    GET $NEWPATH$ HTTP/1.1
+    Host: $HOST$
+    Accept: text/turtle
+
+#### Response
+
+    200 OK
+    Content-Type: text/turtle; charset=utf-8
+    Content-Length: ...
+
+    @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+    @prefix v: <http://www.w3.org/2006/vcard/ns#> .
+
+    []  a foaf:Person;
+        foaf:businessCard [
+            a v:VCard;
+            v:given-name "Alice"
+        ] .
+    """ .
+
+gsp:get_of_post__existing_graph a mf:GraphStoreProtocolTest;
+    dawg:approval dawg:Approved;
+    dawg:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3>;
+    mf:name "GET of POST - existing graph" ;
+    rdfs:comment """
+#### Request
+
+    POST $GRAPHSTORE$/person/1.ttl HTTP/1.1
+    Host: $HOST$
+    Content-Type: text/turtle; charset=utf-8
+
+    @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+    <http://$HOST$/$GRAPHSTORE$/person/1> foaf:name "Jane Doe"
+
+#### Response
+
+    200 OK
+    """ .
+
+gsp:get_of_post__multipart_formdata a mf:GraphStoreProtocolTest;
+    dawg:approval dawg:Approved;
+    dawg:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3>;
+    mf:name "GET of POST - multipart/form-data" ;
+    rdfs:comment """
+#### Request
+
+    GET $GRAPHSTORE$/person/1.ttl HTTP/1.1
+    Host: $HOST$
+
+#### Response
+
+    200 OK
+    Content-Type: text/turtle; charset=utf-8
+    Content-Length: ...
+
+    @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+    @prefix v: <http://www.w3.org/2006/vcard/ns#> .
+
+    <http://$HOST$/$GRAPHSTORE$/person/1> a foaf:Person;
+        foaf:name           "Jane Doe";
+        foaf:givenName      "Jane";
+        foaf:familyName     "Doe";
+        foaf:businessCard [
+            a               v:VCard;
+            v:fn            "Jane Doe"
+        ] .
+    """ .
+
+gsp:get_of_put__default_graph a mf:GraphStoreProtocolTest;
+    dawg:approval dawg:Approved;
+    dawg:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3>;
+    mf:name "GET of PUT - default graph" ;
+    rdfs:comment """
+#### Request
+
+    GET $GRAPHSTORE$?default HTTP/1.1
+    Host: $HOST$
+    Accept: text/turtle
+
+#### Response
+
+    200 OK
+    Content-Type: text/turtle; charset=utf-8
+    Content-Length: ...
+
+    @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+    @prefix v: <http://www.w3.org/2006/vcard/ns#> .
+
+    []  a foaf:Person;
+        foaf:businessCard [
+            a v:VCard;
+            v:given-name "Alice"
+        ] .
+    """ .
+
+gsp:get_of_put__graph_already_in_store a mf:GraphStoreProtocolTest;
+    dawg:approval dawg:Approved;
+    dawg:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3>;
+    mf:name "GET of PUT - graph already in store" ;
+    rdfs:comment """
+#### Request
+
+    GET $GRAPHSTORE$/person/1.ttl HTTP/1.1
+    Host: $HOST$
+    Accept: text/turtle
+
+#### Response
+
+    200 OK
+    Content-Type: text/turtle; charset=utf-8
+    Content-Length: ...
+
+    @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+    @prefix v: <http://www.w3.org/2006/vcard/ns#> .
+
+    <http://$HOST$/$GRAPHSTORE$/person/1> a foaf:Person;
+       foaf:businessCard [
+            a v:VCard;
+            v:fn "Jane Doe"
+       ] .
+    """ .
+
+gsp:get_of_put__initial_state a mf:GraphStoreProtocolTest;
+    dawg:approval dawg:Approved;
+    dawg:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3>;
+    mf:name "GET of PUT - Initial state" ;
+    rdfs:comment """
+#### Request
+
+    GET $GRAPHSTORE$?graph=http://$HOST$/$GRAPHSTORE$/person/1.ttl HTTP/1.1
+    Host: $HOST$
+    Accept: text/turtle
+
+#### Response
+
+    200 OK
+    Content-Type: text/turtle; charset=utf-8
+    Content-Length: ...
+
+    @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+    @prefix v: <http://www.w3.org/2006/vcard/ns#> .
+
+    <http://$HOST$/$GRAPHSTORE$/person/1> a foaf:Person;
+       foaf:businessCard [
+            a v:VCard;
+            v:fn "John Doe"
+       ].
+    """ .
+
+gsp:head_on_a_nonexisting_graph a mf:GraphStoreProtocolTest;
+    dawg:approval dawg:Approved;
+    dawg:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3>;
+    mf:name "HEAD on a non-existing graph" ;
+    rdfs:comment """
+#### Request
+
+    HEAD $GRAPHSTORE$/person/4.ttl HTTP/1.1
+    Host: $HOST$
+
+#### Response
+
+    404 Not Found
+    """ .
+
+gsp:head_on_an_existing_graph a mf:GraphStoreProtocolTest;
+    dawg:approval dawg:Approved;
+    dawg:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3>;
+    mf:name "HEAD on an existing graph" ;
+    rdfs:comment """
+#### Request
+
+    HEAD $GRAPHSTORE$/person/1.ttl HTTP/1.1
+    Host: $HOST$
+
+#### Response
+
+    200 OK
+    Content-Type: text/turtle; charset=utf-8
+    Content-Length: ...
+    """ .
+
+gsp:post__create__new_graph a mf:GraphStoreProtocolTest;
+    dawg:approval dawg:Approved;
+    dawg:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3>;
+    mf:name "POST - create new graph" ;
+    rdfs:comment """
+#### Request
+
+    POST $GRAPHSTORE$ HTTP/1.1
+    Host: $HOST$
+    Content-Type: text/turtle; charset=utf-8
+
+    @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+    @prefix v: <http://www.w3.org/2006/vcard/ns#> .
+
+    []  a foaf:Person;
+        foaf:businessCard [
+            a v:VCard;
+            v:given-name "Alice"
+        ] .
+
+#### Response
+
+    201 Created
+    Location: $NEWPATH$
+    """ .
+
+gsp:post__existing_graph a mf:GraphStoreProtocolTest;
+    dawg:approval dawg:Approved;
+    dawg:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3>;
+    mf:name "POST - existing graph" .
+
+gsp:post__multipart_formdata a mf:GraphStoreProtocolTest;
+    dawg:approval dawg:Approved;
+    dawg:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3>;
+    mf:name "POST - multipart/form-data" ;
+    rdfs:comment """
+#### Request
+
+    POST $GRAPHSTORE$/person/1.ttl HTTP/1.1
+    Host: $HOST$
+    Content-Type: multipart/form-data; boundary=a6fe4cd636164618814be9f8d3d1a0de
+
+    --a6fe4cd636164618814be9f8d3d1a0de
+    Content-Disposition: form-data; name="lastName.ttl"; filename="lastName.ttl"
+    Content-Type: text/turtle; charset=utf-8
+
+    @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+    <http://$HOST$/$GRAPHSTORE$/person/1> foaf:familyName "Doe"
+
+    --a6fe4cd636164618814be9f8d3d1a0de
+    Content-Disposition: form-data; name="firstName.ttl"; filename="firstName.ttl"
+    Content-Type: text/turtle; charset=utf-8
+
+    @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+    <http://$HOST$/$GRAPHSTORE$/person/1> foaf:givenName "Jane"
+
+    --a6fe4cd636164618814be9f8d3d1a0de--
+
+#### Response
+
+    200 OK
+    """ .
+
+gsp:put__default_graph a mf:GraphStoreProtocolTest;
+    dawg:approval dawg:Approved;
+    dawg:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3>;
+    mf:name "PUT - default graph" ;
+    rdfs:comment """
+#### Request
+
+    PUT $GRAPHSTORE$?default HTTP/1.1
+    Host: $HOST$
+    Content-Type: text/turtle; charset=utf-8
+
+    @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+    @prefix v: <http://www.w3.org/2006/vcard/ns#> .
+
+    []  a foaf:Person;
+        foaf:businessCard [
+            a v:VCard;
+            v:given-name "Alice"
+        ] .
+
+#### Response
+
+    201 Created
+    """ .
+
+gsp:put__graph_already_in_store a mf:GraphStoreProtocolTest;
+    dawg:approval dawg:Approved;
+    dawg:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3>;
+    mf:name "PUT - graph already in store" ;
+    rdfs:comment """
+#### Request
+
+    PUT $GRAPHSTORE$/person/1.ttl HTTP/1.1
+    Host: $HOST$
+    Content-Type: text/turtle; charset=utf-8
+
+    @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+    @prefix v: <http://www.w3.org/2006/vcard/ns#> .
+
+    <http://$HOST$/$GRAPHSTORE$/person/1> a foaf:Person;
+        foaf:businessCard [
+            a v:VCard;
+            v:fn "Jane Doe"
+        ].
+
+#### Response
+
+    204 No Content
+    """ .
+
+gsp:put__initial_state a mf:GraphStoreProtocolTest;
+    dawg:approval dawg:Approved;
+    dawg:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3>;
+    mf:name "PUT - Initial state" ;
+    rdfs:comment """
+#### Request
+
+
+    PUT $GRAPHSTORE$/person/1.ttl HTTP/1.1
+    Host: $HOST$
+    Content-Type: text/turtle; charset=utf-8
+
+    @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+    @prefix v: <http://www.w3.org/2006/vcard/ns#> .
+
+    <http://$HOST$/$GRAPHSTORE$/person/1> a foaf:Person;
+        foaf:businessCard [
+            a v:VCard;
+            v:fn "John Doe"
+        ].
+
+#### Response
+
+`201 Created`
+    """ .
+
+gsp:put__mismatched_payload a mf:GraphStoreProtocolTest;
+    dawg:approval dawg:Approved;
+    dawg:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3>;
+    mf:name "PUT - mismatched payload" ;
+    rdfs:comment """
+#### Request
+
+    PUT $GRAPHSTORE$/person/1.ttl HTTP/1.1
+    Host: $HOST$
+    Content-Type: text/turtle; charset=utf-8
+
+    @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+    @prefix v: <http://www.w3.org/2006/vcard/ns#> .
+
+    <http://$HOST$/$GRAPHSTORE$/person/1> a foaf:Person;
+        foaf:businessCard [
+            a v:VCard;
+            v:fn "Jane Doe"
+        ].
+
+#### Response
+
+    400 Bad Request
+    """ .
+

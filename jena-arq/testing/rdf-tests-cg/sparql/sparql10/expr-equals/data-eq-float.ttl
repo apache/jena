@@ -1,0 +1,30 @@
+@prefix    :        <http://example.org/things#> .
+@prefix xsd:        <http://www.w3.org/2001/XMLSchema#> .
+
+:xi1 :pl "1"^^xsd:integer ; :pr "1"^^xsd:float .
+:xi2 :pl "01"^^xsd:integer ; :pr "1"^^xsd:float .
+:xi3 :pl "2"^^xsd:integer ; :pr "1"^^xsd:float .
+
+:xd1 :pl "1"^^xsd:decimal ; :pr "1"^^xsd:float .
+:xd2 :pl "1.0"^^xsd:decimal ; :pr "1"^^xsd:float .
+:xd3 :pl "2"^^xsd:decimal ; :pr "1"^^xsd:float .
+
+:xf1 :pl "1"^^xsd:float ; :pr "1"^^xsd:float .
+:xf2 :pl "1.0"^^xsd:float ; :pr "1"^^xsd:float .
+:xf3 :pl "1"^^xsd:float ; :pr "1"^^xsd:integer .
+:xf4 :pl "1"^^xsd:float ; :pr "1"^^xsd:decimal .
+:xf5 :pl "1"^^xsd:float ; :pr "1"^^xsd:double .
+:xf6 :pl "1"^^xsd:float ; :pr "1" .
+:xf7 :pl "1"^^xsd:float ; :pr :z .
+:xf8 :pl "1"^^xsd:float ; :pr "2"^^xsd:float .
+
+:xdo1 :pl "1"^^xsd:double ; :pr "1"^^xsd:float .
+:xdo2 :pl "1.0"^^xsd:double ; :pr "1"^^xsd:float .
+:xdo3 :pl "2"^^xsd:double ; :pr "1"^^xsd:float .
+
+:xt1 :pl "zzz"^^:myType ; :pr "1"^^xsd:float .
+
+:xp1 :p  "zzz" ; :pr "1"^^xsd:float .
+:xp2 :p  "1" ; :pr "1"^^xsd:float .
+
+:xu :p  :z ; :pr "1"^^xsd:float .

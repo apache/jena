@@ -1,0 +1,13 @@
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:	<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
+
+## Manifest of query-update-results for SPARQL engines.
+
+<> a mf:Manifest ;
+	rdfs:label "SPARQL 1.1 tests - engines" ;
+	mf:include (
+         <manifest-sparql11-query.ttl>
+         <manifest-sparql11-update.ttl>
+         <manifest-sparql11-results.ttl>
+	) .

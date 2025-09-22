@@ -1,0 +1,4 @@
+PREFIX ba: <http://example.org/testOntology.owl#>
+ASK {
+    ba:g1 ba:isMAEConnectedTo ba:pcg0
+}

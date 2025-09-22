@@ -1,0 +1,6 @@
+PREFIX ex: <http://example.org/ns#>
+SELECT ?nephew ?uncle
+WHERE {
+    ?nephew ex:uncle ?uncle.
+}
+

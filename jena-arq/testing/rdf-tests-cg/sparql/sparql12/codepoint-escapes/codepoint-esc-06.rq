@@ -1,0 +1,8 @@
+PREFIX og: <http://ogp.me/ns#>
+SELECT * WHERE {
+	?page og:audio\u00253Atitle ?title
+}
+
+# the escape here produces '%' PERCENT SIGN (U+25)
+# its unescaping must lead to a Prefixed Name og:audio%3Atitle which includes
+# the percent-encoding %3A (COLON).

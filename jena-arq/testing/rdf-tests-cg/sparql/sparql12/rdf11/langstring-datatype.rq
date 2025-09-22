@@ -1,0 +1,1 @@
+SELECT (DATATYPE("foo"@en) AS ?dt) WHERE {}

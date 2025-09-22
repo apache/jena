@@ -1,0 +1,448 @@
+## Distributed under both the "W3C Test Suite License" [1]
+## and the "W3C 3-clause BSD License".
+## [1] https://www.w3.org/Consortium/Legal/2008/04-testsuite-license
+## [2] https://www.w3.org/Consortium/Legal/2008/03-bsd-license
+
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#> 
+PREFIX mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> 
+PREFIX rdft:   <http://www.w3.org/ns/rdftest#> 
+PREFIX trs:    <https://w3c.github.io/rdf-tests/rdf/rdf12/rdf-turtle/syntax#> 
+PREFIX dct:    <http://purl.org/dc/terms/> 
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#> 
+PREFIX foaf:   <http://xmlns.com/foaf/0.1/> 
+PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
+
+trs:manifest  rdf:type mf:Manifest ;
+   rdfs:label "RDF 1.2 Turtle Syntax Tests"@en ;
+   skos:prefLabel "La suite des tests pour la syntaxe RDF 1.2 Turtle"@fr ;
+   skos:prefLabel "Conjunto de pruebas para la sintaxis RDF 1.2 Turtle"@es ;
+   mf:assumedTestBase <https://w3c.github.io/rdf-tests/rdf/rdf12/rdf-turtle/syntax/> ;
+   dct:issued "2023-07-20"^^xsd:date ; 
+   dct:modified "2025-06-10"^^xsd:date ; 
+   dct:licence <https://www.w3.org/Consortium/Legal/2008/03-bsd-license> ;
+   dct:creator [ foaf:homepage <https://w3c.github.io/rdf12-wg/> ; foaf:name "W3C RDF & SPARQL Working Group" ] ;
+    mf:entries
+    (
+        trs:turtle12-1
+        trs:turtle12-2
+        trs:turtle12-3
+        trs:turtle12-4
+
+        trs:turtle12-inside-1
+        trs:turtle12-inside-2
+        trs:turtle12-inside-3
+        trs:turtle12-inside-4
+
+        trs:turtle12-nested-1
+        trs:turtle12-nested-2
+
+        trs:turtle12-compound-1
+
+        trs:turtle12-bnode-1
+        trs:turtle12-bnode-2
+        trs:turtle12-bnode-3
+
+        trs:turtle12-bad-1
+        trs:turtle12-bad-2
+        trs:turtle12-bad-3
+        trs:turtle12-bad-4
+        trs:turtle12-bad-5
+        trs:turtle12-bad-6
+        trs:turtle12-bad-7
+
+        trs:turtle12-ann-1
+        trs:turtle12-ann-2
+        trs:turtle12-ann-3
+        trs:turtle12-ann-4
+        trs:turtle12-ann-5
+        trs:turtle12-ann-6
+        trs:turtle12-ann-7
+        trs:turtle12-ann-8
+        
+        trs:turtle12-bad-ann-1
+        trs:turtle12-bad-ann-2
+
+## The same data as the N-Triples 1.2 syntax tests,
+## except in file *.ttl and "TestTurtle"
+
+        trs:nt-ttl12-1
+        trs:nt-ttl12-2
+        trs:nt-ttl12-3
+
+        trs:nt-ttl12-bnode-1
+
+        trs:nt-ttl12-nested-1
+
+## Base direction
+
+        trs:nt-ttl12-langdir-1
+        trs:nt-ttl12-langdir-2
+
+        trs:nt-ttl12-langdir-bad-1
+        trs:nt-ttl12-langdir-bad-2
+
+        trs:nt-ttl12-bad-01
+        trs:nt-ttl12-bad-02
+        trs:nt-ttl12-bad-03
+        trs:nt-ttl12-bad-04
+        trs:nt-ttl12-bad-05
+        trs:nt-ttl12-bad-06
+        trs:nt-ttl12-bad-07
+        trs:nt-ttl12-bad-08
+        trs:nt-ttl12-bad-09
+
+## Version
+
+        trs:turtle12-version-01
+        trs:turtle12-version-02
+        trs:turtle12-version-03
+        trs:turtle12-version-04
+        trs:turtle12-version-05
+        trs:turtle12-version-06
+        trs:turtle12-version-07
+        trs:turtle12-version-08
+
+        trs:turtle12-version-bad-01
+        trs:turtle12-version-bad-02
+        trs:turtle12-version-bad-03
+        trs:turtle12-version-bad-04
+        trs:turtle12-version-bad-05
+        trs:turtle12-version-bad-06
+    ) .
+
+## Good Syntax
+
+trs:turtle12-1 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle 1.2 - subject reified triple" ;
+   mf:action    <turtle12-syntax-basic-01.ttl> ;
+   .
+
+trs:turtle12-2 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle 1.2 - object reified triple" ;
+   mf:action    <turtle12-syntax-basic-02.ttl> ;
+   .
+
+trs:turtle12-3 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle 1.2 - triple term object" ;
+   mf:action    <turtle12-syntax-basic-03.ttl> ;
+   .
+
+trs:turtle12-4 rdf:type rdft:TestTurtlePositiveSyntax ;
+    mf:name      "Turtle 1.2 - reified triple outside triple" ;
+    mf:action    <turtle12-syntax-basic-04.ttl> ;
+    .
+
+trs:turtle12-inside-1 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle 1.2 - reified triple inside blankNodePropertyList" ;
+   mf:action    <turtle12-syntax-inside-01.ttl> ;
+   .
+
+trs:turtle12-inside-2 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle 1.2 - reified triple inside collection" ;
+   mf:action    <turtle12-syntax-inside-02.ttl> ;
+   .
+
+trs:turtle12-inside-3 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle 1.2 - reified triple with IRI identifier" ;
+   mf:action    <turtle12-syntax-inside-03.ttl> ;
+   .
+
+trs:turtle12-inside-4 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle 1.2 - reified triple with blank node identifier" ;
+   mf:action    <turtle12-syntax-inside-04.ttl> ;
+   .
+
+trs:turtle12-nested-1 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle 1.2 - nested reified triple, subject position" ;
+   mf:action    <turtle12-syntax-nested-01.ttl> ;
+   .
+
+trs:turtle12-nested-2 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle 1.2 - nested reified triple, object position" ;
+   mf:action     <turtle12-syntax-nested-02.ttl> ;
+   .
+
+trs:turtle12-compound-1 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle 1.2 - compound forms" ;
+   mf:action    <turtle12-syntax-compound.ttl> ;
+   .
+
+trs:turtle12-bnode-1 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle 1.2 - blank node subject" ;
+   mf:action    <turtle12-syntax-bnode-01.ttl> ;
+   .
+
+trs:turtle12-bnode-2 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle 1.2 - blank node object" ;
+   mf:action    <turtle12-syntax-bnode-02.ttl> ;
+   .
+
+trs:turtle12-bnode-3 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle 1.2 - blank node" ;
+   mf:action    <turtle12-syntax-bnode-03.ttl> ;
+   .
+
+## Bad Syntax
+
+trs:turtle12-bad-1 rdf:type rdft:TestTurtleNegativeSyntax ;
+    mf:name      "Turtle 1.2 - bad - reified triple as predicate" ;
+    mf:action    <turtle12-syntax-bad-01.ttl> ;
+    .
+
+trs:turtle12-bad-2 rdf:type rdft:TestTurtleNegativeSyntax ;
+    mf:name      "Turtle 1.2 - bad - literal in subject position of reified triple" ;
+    mf:action    <turtle12-syntax-bad-02.ttl> ;
+    .
+
+trs:turtle12-bad-3 rdf:type rdft:TestTurtleNegativeSyntax ;
+    mf:name      "Turtle 1.2 - bad - blank node  as predicate in reified triple";
+    mf:action    <turtle12-syntax-bad-03.ttl> ;
+    .
+
+trs:turtle12-bad-4 rdf:type rdft:TestTurtleNegativeSyntax ;
+    mf:name      "Turtle 1.2 - bad - incomplete reified triple";
+    mf:action    <turtle12-syntax-bad-04.ttl> ;
+    .
+
+trs:turtle12-bad-5 rdf:type rdft:TestTurtleNegativeSyntax ;
+    mf:name      "Turtle 1.2 - bad - over-long reified triple";
+    mf:action    <turtle12-syntax-bad-05.ttl> ;
+    .
+
+trs:turtle12-bad-6 rdf:type rdft:TestTurtleNegativeSyntax ;
+    mf:name      "Turtle 1.2 - bad - reified with list object" ;
+    mf:action    <turtle12-syntax-bad-06.ttl> ;
+    .
+
+trs:turtle12-bad-7 rdf:type rdft:TestTurtleNegativeSyntax ;
+    mf:name      "Turtle 1.2 - bad - compound blank node expression";
+    mf:action    <turtle12-syntax-bad-07.ttl> ;
+    .
+
+## Annotation syntax
+
+trs:turtle12-ann-1 rdf:type rdft:TestTurtlePositiveSyntax ;
+    mf:name      "Turtle 1.2 - Annotation form" ;
+    mf:action    <turtle12-annotation-1.ttl> ;
+   .
+
+trs:turtle12-ann-2 rdf:type rdft:TestTurtlePositiveSyntax ;
+    mf:name      "Turtle 1.2 - Annotation example" ;
+    mf:action    <turtle12-annotation-2.ttl> ;
+    .
+
+trs:turtle12-ann-3 rdf:type rdft:TestTurtlePositiveSyntax ;
+    mf:name      "Turtle 1.2 - Annotation predicateObjecetList" ;
+    mf:action    <turtle12-annotation-3.ttl> ;
+    .
+
+trs:turtle12-ann-4 rdf:type rdft:TestTurtlePositiveSyntax ;
+    mf:name      "Turtle 1.2 - Annotation followed by predicate/object" ;
+    mf:action    <turtle12-annotation-4.ttl> ;
+    .
+
+trs:turtle12-ann-5 rdf:type rdft:TestTurtlePositiveSyntax ;
+    mf:name      "Turtle 1.2 - Reifier without annotation block" ;
+    mf:action    <turtle12-annotation-5.ttl> ;
+    .
+
+trs:turtle12-ann-6 rdf:type rdft:TestTurtlePositiveSyntax ;
+    mf:name      "Turtle 1.2 - Empty reifier without annotation block" ;
+    mf:action    <turtle12-annotation-6.ttl> ;
+    .
+
+trs:turtle12-ann-7 rdf:type rdft:TestTurtlePositiveSyntax ;
+    mf:name      "Turtle 1.2 - Reifier with annotation block" ;
+    mf:action    <turtle12-annotation-7.ttl> ;
+    .
+
+trs:turtle12-ann-8 rdf:type rdft:TestTurtlePositiveSyntax ;
+    mf:name      "Turtle 1.2 - Empty reifier with annotation block" ;
+    mf:action    <turtle12-annotation-8.ttl> ;
+    .
+
+## Bad annotation syntax
+
+trs:turtle12-bad-ann-1 rdf:type rdft:TestTurtleNegativeSyntax ;
+    mf:name      "Turtle 1.2 - bad - empty annotation" ;
+    mf:action    <turtle12-syntax-bad-ann-1.ttl> ;
+   .
+
+trs:turtle12-bad-ann-2 rdf:type rdft:TestTurtleNegativeSyntax ;
+    mf:name      "Turtle 1.2 - bad - triple as annotation" ;
+    mf:action    <turtle12-syntax-bad-ann-2.ttl> ;
+   .
+
+## --------------------------------------------------
+## Same data as the N-triples 1.2 tests.
+## N-Triples is a subset of Turtle, and the same is true for the 1.2 features.
+
+## Good Syntax
+
+trs:nt-ttl12-1 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "N-Triples 1.2 as Turtle 1.2 - triple term" ;
+   mf:action    <nt-ttl12-syntax-1.ttl> ;
+   .
+
+trs:nt-ttl12-2 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "N-Triples 1.2 as Turtle 1.2 - whitespace and terms" ;
+   mf:action    <nt-ttl12-syntax-2.ttl> ;
+   .
+
+trs:nt-ttl12-3 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "N-Triples 1.2 as Turtle 1.2 - Nested, no whitespace" ;
+   mf:action    <nt-ttl12-syntax-3.ttl> ;
+   .
+
+trs:nt-ttl12-langdir-1 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "N-Triples 1.2 as Turtle 1.2 - base direction ltr" ;
+   mf:action    <nt-ttl12-langdir-1.ttl> ;
+   .
+
+trs:nt-ttl12-langdir-2 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "N-Triples 1.2 as Turtle 1.2 - base direction ltr" ;
+   mf:action    <nt-ttl12-langdir-2.ttl> ;
+   .
+
+# Blank nodes
+
+trs:nt-ttl12-bnode-1 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "N-Triples 1.2 as Turtle 1.2 - Blank node object" ;
+   mf:action    <nt-ttl12-bnode-1.ttl> ;
+   .
+
+trs:nt-ttl12-nested-1 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "N-Triples 1.2 as Turtle 1.2 - Nested subject term" ;
+   mf:action    <nt-ttl12-nested-1.ttl> ;
+   .
+
+## Bad syntax
+ 
+trs:nt-ttl12-bad-01 rdf:type rdft:TestTurtleNegativeSyntax ;
+    mf:name      "N-Triples 1.2 as Turtle 1.2 - Bad - triple term as predicate" ;
+    mf:action    <nt-ttl12-bad-syntax-01.ttl> ;
+    .
+    
+trs:nt-ttl12-bad-02 rdf:type rdft:TestTurtleNegativeSyntax ;
+    mf:name      "N-Triples 1.2 as Turtle 1.2 - Bad - triple term, literal subject" ;
+    mf:action    <nt-ttl12-bad-syntax-02.ttl> ;
+    .
+
+trs:nt-ttl12-bad-03 rdf:type rdft:TestTurtleNegativeSyntax ;
+    mf:name      "N-Triples 1.2 as Turtle 1.2 - Bad - triple term, literal predicate" ;
+    mf:action    <nt-ttl12-bad-syntax-03.ttl> ;
+    .
+
+trs:nt-ttl12-bad-04 rdf:type rdft:TestTurtleNegativeSyntax ;
+    mf:name      "N-Triples 1.2 as Turtle 1.2 - Bad - triple term, blank node predicate" ;
+    mf:action    <nt-ttl12-bad-syntax-04.ttl> ;
+    .
+
+trs:nt-ttl12-bad-05 rdf:type rdft:TestTurtleNegativeSyntax ;
+    mf:name      "N-Triples 1.2 as Turtle 1.2 - Bad - triple term as subject" ;
+    mf:action    <nt-ttl12-bad-syntax-05.ttl> ;
+    .
+
+trs:nt-ttl12-bad-06 rdf:type rdft:TestNTriplesNegativeSyntax ;
+    mf:name      "N-Triples 1.2 as Turtle 1.2 - Bad - reified triple as predicate" ;
+    mf:action    <nt-ttl12-bad-syntax-06.ttl> ;
+    .
+
+trs:nt-ttl12-bad-07 rdf:type rdft:TestNTriplesNegativeSyntax ;
+    mf:name      "N-Triples 1.2 as Turtle 1.2 - Bad - reified triple, literal subject" ;
+    mf:action    <nt-ttl12-bad-syntax-07.ttl> ;
+    .
+
+trs:nt-ttl12-bad-08 rdf:type rdft:TestNTriplesNegativeSyntax ;
+    mf:name      "N-Triples 1.2 as Turtle 1.2 - Bad - reified triple, literal predicate" ;
+    mf:action    <nt-ttl12-bad-syntax-08.ttl> ;
+    .
+
+trs:nt-ttl12-bad-09 rdf:type rdft:TestNTriplesNegativeSyntax ;
+    mf:name      "N-Triples 1.2 as Turtle 1.2 - Bad - reified triple, blank node predicate" ;
+    mf:action    <nt-ttl12-bad-syntax-09.ttl> ;
+    .
+
+trs:nt-ttl12-langdir-bad-1 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "N-Triples 1.2 as Turtle 1.2 - undefined base direction" ;
+   mf:action    <nt-ttl12-langdir-bad-1.ttl> ;
+   .
+
+trs:nt-ttl12-langdir-bad-2 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "N-Triples 1.2 as Turtle 1.2 - upper case LTR" ;
+   mf:action    <nt-ttl12-langdir-bad-2.ttl> ;
+   .
+
+## Version
+
+trs:turtle12-version-01 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle 1.2 - VERSION" ;
+   mf:action    <turtle12-version-01.ttl> ;
+   .
+
+trs:turtle12-version-02 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle 1.2 - @version" ;
+   mf:action    <turtle12-version-02.ttl> ;
+   .
+
+trs:turtle12-version-03 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle 1.2 - VERSION in data " ;
+   mf:action    <turtle12-version-03.ttl> ;
+   .
+
+trs:turtle12-version-04 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle 1.2 - @version in data" ;
+   mf:action    <turtle12-version-04.ttl> ;
+   .
+
+trs:turtle12-version-05 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle 1.2 - VERSION other version string" ;
+   mf:action    <turtle12-version-05.ttl> ;
+   .
+
+trs:turtle12-version-06 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle 1.2 - @version other version string" ;
+   mf:action    <turtle12-version-06.ttl> ;
+   .
+
+trs:turtle12-version-07 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle 1.2 - mixed versions" ;
+   mf:action    <turtle12-version-07.ttl> ;
+   .
+
+trs:turtle12-version-08 rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name      "Turtle 1.2 - many versions" ;
+   mf:action    <turtle12-version-08.ttl> ;
+   .
+
+trs:turtle12-version-bad-01 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "Turtle 1.2 - VERSION - not string" ;
+   mf:action    <turtle12-version-bad-01.ttl> ;
+   .
+
+trs:turtle12-version-bad-02 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "Turtle 1.2 - VERSION - triple-'-quoted string" ;
+   mf:action    <turtle12-version-bad-02.ttl> ;
+   .
+
+trs:turtle12-version-bad-03 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "Turtle 1.2 - VERSION - triple-\"-quoted string" ;
+   mf:action    <turtle12-version-bad-03.ttl> ;
+   .
+
+trs:turtle12-version-bad-04 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "Turtle 1.2 - @version - not string" ;
+   mf:action    <turtle12-version-bad-04.ttl> ;
+   .
+
+trs:turtle12-version-bad-05 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "Turtle 1.2 - @version - triple-'-quoted string" ;
+   mf:action    <turtle12-version-bad-05.ttl> ;
+   .
+
+trs:turtle12-version-bad-06 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "Turtle 1.2 - @version - triple-\"-quoted string" ;
+   mf:action    <turtle12-version-bad-06.ttl> ;
+   .
+

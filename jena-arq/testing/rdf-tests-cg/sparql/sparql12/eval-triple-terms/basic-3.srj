@@ -1,0 +1,54 @@
+{
+    "head": {
+        "vars": [
+            "o",
+            "p",
+            "s"
+        ]
+    },
+    "results": {
+        "bindings": [
+            {
+                "s": {
+                    "value": "http://example/a",
+                    "type": "uri"
+                },
+                "p": {
+                    "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies",
+                    "type": "uri"
+                },
+                "o": {
+                    "value": {
+                        "subject": {
+                            "value": "http://example/a",
+                            "type": "uri"
+                        },
+                        "predicate": {
+                            "value": "http://example/b",
+                            "type": "uri"
+                        },
+                        "object": {
+                            "value": "http://example/c",
+                            "type": "uri"
+                        }
+                    },
+                    "type": "triple"
+                }
+            },
+            {
+                "s": {
+                    "value": "http://example/a",
+                    "type": "uri"
+                },
+                "p": {
+                    "value": "http://example/q",
+                    "type": "uri"
+                },
+                "o": {
+                    "value": "http://example/z",
+                    "type": "uri"
+                }
+            }
+        ]
+    }
+}

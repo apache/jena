@@ -1,0 +1,7 @@
+PREFIX : <http://example/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?v ?ebv {
+  VALUES ?v { true 1 "a" false 0 "" "a"@en "z"^^xsd:boolean "2020-01-01T00:00:00Z"^^xsd:dateTime :a }
+  BIND(!!?v AS ?ebv)
+}

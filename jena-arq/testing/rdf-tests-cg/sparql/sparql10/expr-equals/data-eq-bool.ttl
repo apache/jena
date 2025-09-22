@@ -1,0 +1,26 @@
+@prefix    :        <http://example.org/things#> .
+@prefix xsd:        <http://www.w3.org/2001/XMLSchema#> .
+
+:xi1 :pl "1"^^xsd:integer ; :pr "1"^^xsd:boolean .
+
+:xd1 :pl "1"^^xsd:decimal ; :pr "1"^^xsd:boolean .
+
+:xf1 :pl "1"^^xsd:float ; :pr "1"^^xsd:boolean .
+
+:xdo1 :pl "1"^^xsd:double ; :pr "1"^^xsd:boolean .
+
+:xb1 :pl "0"^^xsd:boolean ; :pr "false"^^xsd:boolean .
+:xb2 :pl "1"^^xsd:boolean ; :pr "true"^^xsd:boolean .
+:xb3 :pl "false"^^xsd:boolean ; :pr "0"^^xsd:boolean .
+:xb4 :pl "true"^^xsd:boolean ; :pr "1"^^xsd:boolean .
+:xb5 :pl "false"^^xsd:boolean ; :pr "false"^^xsd:boolean .
+:xb6 :pl "true"^^xsd:boolean ; :pr "true"^^xsd:boolean .
+:xb7 :pl "true"^^xsd:boolean ; :pr "yes"^^xsd:boolean .
+:xb9 :pl "true"^^xsd:boolean ; :pr "false"^^xsd:boolean .
+
+:xt1 :pl "zzz"^^:myType ; :pr "true"^^xsd:boolean .
+
+:xp1 :p  "zzz" ; :pr "true"^^xsd:boolean .
+:xp2 :p  "1" ; :pr "true"^^xsd:boolean .
+
+:xu :p  :z ; :pr "true"^^xsd:boolean .

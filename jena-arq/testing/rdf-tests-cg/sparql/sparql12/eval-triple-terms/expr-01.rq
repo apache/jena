@@ -1,0 +1,10 @@
+PREFIX : <http://example/>
+
+CONSTRUCT {
+  ?g :graphContains ?t .
+} WHERE {
+  GRAPH ?g {
+    ?s ?p ?o .
+    BIND(<<(?s ?p  ?o)>> AS ?t)
+  }
+}

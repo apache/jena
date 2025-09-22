@@ -1,0 +1,5 @@
+SELECT * WHERE {
+	?s ?p "\\u0041"
+}
+# Legal codepoint escape of LATIN CAPITAL LETTER A (U+41), resulting in an
+# invalid backslash escape \A.

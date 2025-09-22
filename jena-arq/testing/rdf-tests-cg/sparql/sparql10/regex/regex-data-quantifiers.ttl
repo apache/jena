@@ -1,0 +1,4 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ex: <http://example.com/#> .
+
+ex:foo rdf:value "ac" , "abc" , "abbc" , "abbbc" , "a\nc", "a\nb\nc" , "a.c" , "ABC" , "a?+*.{}()[]c" , "b" .

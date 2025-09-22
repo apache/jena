@@ -1,0 +1,32 @@
+{
+    "head": {
+        "vars": [
+            "o",
+            "p",
+            "s",
+            "t"
+        ]
+    },
+    "results": {
+        "bindings": [
+            {
+                "s": {
+                    "value": "http://example/s",
+                    "type": "uri"
+                },
+                "p": {
+                    "value": "http://example/p2",
+                    "type": "uri"
+                },
+                "o": {
+                    "value": "http://example/o",
+                    "type": "uri"
+                },
+                "t": {
+                    "value": "http://example/reifier2",
+                    "type": "uri"
+                }
+            }
+        ]
+    }
+}

@@ -1,0 +1,27 @@
+{ "head": {
+    "vars": [ "x" , "lang" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "x": { "type": "uri" , "value": "http://example/x1" } ,
+        "lang": { "type": "literal" , "value": "en" }
+      } ,
+      { 
+        "x": { "type": "uri" , "value": "http://example/x2" } ,
+        "lang": { "type": "literal" , "value": "en" }
+      } ,
+      { 
+        "x": { "type": "uri" , "value": "http://example/x3" } ,
+        "lang": { "type": "literal" , "value": "ar" }
+      } ,
+      { 
+        "x": { "type": "uri" , "value": "http://example/x4" } ,
+        "lang": { "type": "literal" , "value": "" }
+      } ,
+      { 
+        "x": { "type": "uri" , "value": "http://example/x5" }
+      }
+    ]
+  }
+}

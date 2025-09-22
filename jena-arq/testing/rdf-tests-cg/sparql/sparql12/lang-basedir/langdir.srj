@@ -1,0 +1,27 @@
+{ "head": {
+    "vars": [ "x" , "langdir" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "x": { "type": "uri" , "value": "http://example/x1" } ,
+        "langdir": { "type": "literal" , "value": "" }
+      } ,
+      { 
+        "x": { "type": "uri" , "value": "http://example/x2" } ,
+        "langdir": { "type": "literal" , "value": "ltr" }
+      } ,
+      { 
+        "x": { "type": "uri" , "value": "http://example/x3" } ,
+        "langdir": { "type": "literal" , "value": "rtl" }
+      } ,
+      { 
+        "x": { "type": "uri" , "value": "http://example/x4" } ,
+        "langdir": { "type": "literal" , "value": "" }
+      } ,
+      { 
+        "x": { "type": "uri" , "value": "http://example/x5" }
+      }
+    ]
+  }
+}

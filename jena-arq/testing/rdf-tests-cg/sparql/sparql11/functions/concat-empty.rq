@@ -1,0 +1,1 @@
+SELECT (CONCAT() AS ?str) WHERE {}

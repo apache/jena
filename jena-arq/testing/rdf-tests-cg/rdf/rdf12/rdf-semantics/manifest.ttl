@@ -1,0 +1,547 @@
+## Distributed under both the "W3C Test Suite License" [1]
+## and the "W3C 3-clause BSD License".
+## [1] https://www.w3.org/Consortium/Legal/2008/04-testsuite-license
+## [2] https://www.w3.org/Consortium/Legal/2008/03-bsd-license
+
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
+PREFIX rdft:   <http://www.w3.org/ns/rdftest#>
+PREFIX trs:    <https://w3c.github.io/rdf-tests/rdf/rdf12/rdf-semantics#>
+PREFIX dct:    <http://purl.org/dc/terms/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+PREFIX foaf:   <http://xmlns.com/foaf/0.1/>
+PREFIX rdft:   <http://www.w3.org/ns/rdftest#>
+PREFIX skos:   <http://www.w3.org/2004/02/skos/core#>
+
+
+trs:manifest a mf:Manifest;
+  rdfs:label "RDF 1.2 Semantics tests"@en ;
+  skos:prefLabel "La suite des tests pour la sémantique de RDF 1.2"@fr;
+  skos:prefLabel "Conjunto de pruebas para la semántica de RDF 1.2"@es;
+  mf:assumedTestBase <https://w3c.github.io/rdf-tests/rdf/rdf12/rdf-semantics/> ;
+  dct:issued "2023-07-20"^^xsd:date ;
+  dct:modified "2023-07-20"^^xsd:date ;
+  dct:licence <https://www.w3.org/Consortium/Legal/2008/03-bsd-license> ;
+  dct:creator [ foaf:homepage <https://w3c.github.io/rdf-star-wg/> ; foaf:name "W3C RDF & SPARQL Working Group" ] ;
+  rdfs:comment """
+    These test suites are a product of the [W3C RDF & SPARQL Working Group](https://www.w3.org/groups/wg/rdf-star/) as well as the
+    RDF-Star Interest Group within the W3C RDF-DEV Community Group,
+    and has been maintained by the
+    [RDF Test Curation Community Group](https://www.w3.org/community/rdf-tests/)
+    at [https://github.com/w3c/rdf-tests/tree/main/rdf/rdf11](https://github.com/w3c/rdf-tests/tree/main/rdf/rdf11/).
+
+    Conformance with RDF 1.2 specifications can be determined via successfully running the
+    tests for relevant specifications
+    along with the relevant RDF 1.1 tests.
+  """;
+  rdfs:seeAlso <README>;
+  mf:entries (
+    trs:all-identical-triple-terms-are-the-same
+    trs:triple-terms-no-spurious
+    trs:bnodes-in-triple-term-subject
+    trs:bnodes-in-triple-term-object
+    trs:bnodes-in-triple-term-subject-and-object
+    trs:bnodes-in-triple-term-subject-and-object-fail
+    trs:same-bnode-same-triple-term
+    trs:different-bnodes-same-triple-term
+    trs:constrained-bnodes-in-triple-term-subject
+    trs:constrained-bnodes-in-triple-term-object
+    trs:constrained-bnodes-in-triple-term-fail
+    trs:constrained-bnodes-on-literal
+    trs:malformed-literal-control
+    trs:malformed-literal
+    trs:malformed-literal-accepted
+    trs:malformed-literal-no-spurious
+    trs:malformed-literal-bnode-neg
+    trs:opaque-literal-control
+    trs:opaque-literal
+    trs:opaque-language-string-control
+    trs:opaque-language-string
+    trs:opaque-dir-language-string-control
+    trs:opaque-dir-language-string
+    trs:opaque-iri-control
+    trs:opaque-iri
+    trs:triple-term-not-asserted
+    trs:annotated-asserted
+    trs:annotation
+    trs:annotation-unfolded
+    trs:json-array-ordered
+    trs:json-object-unordered
+    trs:json-zero
+    trs:json-zero-array
+    trs:json-round-different
+    trs:json-round-same
+    trs:json-infinity
+    trs:float-zero
+    trs:float-round-different
+    trs:float-round-same
+    trs:float-infinity
+    trs:double-zero
+    trs:double-round-different
+    trs:double-round-same
+    trs:double-infinity
+    trs:triple-terms-propositions
+    trs:reifies-range
+  ) .
+
+trs:all-identical-triple-terms-are-the-same a mf:PositiveEntailmentTest;
+  rdfs:comment "Multiple occurrences of the same triple term are the same domain element.";
+  mf:action <test001a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "all-identical-triple-terms-are-the-same";
+  mf:recognizedDatatypes ();
+  mf:result <test001r.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:annotated-asserted a mf:PositiveEntailmentTest;
+  rdfs:comment "Annotated triples are asserted.  This is about shorthand expansion, and is not really a semantics test.";
+  mf:action <test007a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "annotated-asserted";
+  mf:recognizedDatatypes ();
+  mf:result <test007r1.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:annotation a mf:PositiveEntailmentTest;
+  rdfs:comment "Annotations are about the reifying triple.  This is about shorthand expansion, and is not really a semantics test.";
+  mf:action <test007a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "annotation";
+  mf:recognizedDatatypes ();
+  mf:result <test007r2.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:annotation-unfolded a mf:PositiveEntailmentTest;
+  rdfs:comment "Annotations are the same as separate assertions.  This is about shorthand expansion, and is not really a semantics test.";
+  mf:action <test007a2.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "annotation-unfolded";
+  mf:recognizedDatatypes ();
+  mf:result <test007a.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:bnodes-in-triple-term-object a mf:PositiveEntailmentTest;
+  rdfs:comment "Terms inside triple terms can be replaced by fresh bnodes.";
+  mf:action <test002a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "bnodes-in-triple-term-object";
+  mf:recognizedDatatypes ();
+  mf:result <test002or.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:bnodes-in-triple-term-subject a mf:PositiveEntailmentTest;
+  rdfs:comment "Terms inside triple terms can be replaced by fresh bnodes.";
+  mf:action <test002a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "bnodes-in-triple-term-subject";
+  mf:recognizedDatatypes ();
+  mf:result <test002sr.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:bnodes-in-triple-term-subject-and-object a mf:PositiveEntailmentTest;
+  rdfs:comment "Terms inside triple terms can be replaced by fresh bnodes.";
+  mf:action <test002a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "bnodes-in-triple-term-subject-and-object";
+  mf:recognizedDatatypes ();
+  mf:result <test002sor.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:bnodes-in-triple-term-subject-and-object-fail a mf:NegativeEntailmentTest;
+  rdfs:comment "The same bnode can not match different triple terms.";
+  mf:action <test002a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "bnodes-in-triple-term-subject-and-object-fail";
+  mf:recognizedDatatypes ();
+  mf:result <test002sbr.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:constrained-bnodes-in-triple-term-fail a mf:NegativeEntailmentTest;
+  rdfs:comment "Quoted bnode identifiers share the same scope as non-quoted ones. A bnode that occurs both inside triple terms and inside asserted triples must satisfy all occurrences at the same time.";
+  mf:action <test004a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "constrained-bnodes-in-triple-term-fail";
+  mf:recognizedDatatypes ();
+  mf:result <test004fr.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:constrained-bnodes-in-triple-term-object a mf:PositiveEntailmentTest;
+  rdfs:comment "Terms inside and outside triple terms can be replaced by fresh bnodes.";
+  mf:action <test004a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "constrained-bnodes-in-triple-term-object";
+  mf:recognizedDatatypes ();
+  mf:result <test004or.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:constrained-bnodes-in-triple-term-subject a mf:PositiveEntailmentTest;
+  rdfs:comment "Terms inside and outside triple terms can be replaced by fresh bnodes";
+  mf:action <test004a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "constrained-bnodes-in-triple-term-subject";
+  mf:recognizedDatatypes ();
+  mf:result <test004sr.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:constrained-bnodes-on-literal a mf:PositiveEntailmentTest;
+  rdfs:comment "Literals inside and outside triple terms can be replaced by fresh bnodes.";
+  mf:action <test006a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "constrained-bnodes-on-literal";
+  mf:recognizedDatatypes ();
+  mf:result <test006r.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:different-bnodes-same-triple-term a mf:PositiveEntailmentTest;
+  rdfs:comment "Different bnodes can match identical triple terms.";
+  mf:action <test003a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "different-bnodes-same-triple-term";
+  mf:recognizedDatatypes ();
+  mf:result <test002sor.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:triple-term-not-asserted a mf:NegativeEntailmentTest;
+  rdfs:comment "Triple terms are not asserted.";
+  mf:action <test002a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "triple-term-not-asserted";
+  mf:recognizedDatatypes ();
+  mf:result <test002pgr.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:triple-terms-no-spurious a mf:NegativeEntailmentTest;
+  rdfs:comment "This test ensures that other entailments are not spurious.";
+  mf:action <test002a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "triple-terms-no-spurious";
+  mf:recognizedDatatypes ();
+  mf:result <test005.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:malformed-literal a mf:PositiveEntailmentTest;
+  rdfs:comment "Malformed literals are allowed in triple terms, but cause inconsistency.";
+  mf:action <malformed-literal.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "malformed-literal";
+  mf:recognizedDatatypes (xsd:integer);
+  mf:result false;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:malformed-literal-accepted a mf:PositiveEntailmentTest;
+  rdfs:comment "Malformed literals are allowed when in triple terms.";
+  mf:action <malformed-literal.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "malformed-literal-accepted";
+  mf:recognizedDatatypes (xsd:integer);
+  mf:result <malformed-literal.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:malformed-literal-bnode-neg a mf:NegativeEntailmentTest;
+  rdfs:comment "Malformed literals cannot be replaced by blank nodes.";
+  mf:action <malformed-literal.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "malformed-literal-bnode-neg";
+  mf:recognizedDatatypes (xsd:integer);
+  mf:result <test002or.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:malformed-literal-control a mf:PositiveEntailmentTest;
+  rdfs:comment "Checks that xsd:integer is indeed recognized, to ensure that malformed-literal-* tests do not pass spuriously.";
+  mf:action <malformed-literal-control.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "malformed-literal-control";
+  mf:recognizedDatatypes (xsd:integer);
+  mf:result false;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:malformed-literal-no-spurious a mf:NegativeEntailmentTest;
+  rdfs:comment "Malformed literals within triple terms do not lead to spurious entailment.";
+  mf:action <malformed-literal.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "malformed-literal-no-spurious";
+  mf:recognizedDatatypes (xsd:integer);
+  mf:result <malformed-literal-other.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:opaque-iri a mf:PositiveEntailmentTest;
+  rdfs:comment "Triple term IRIs are transparent.";
+  mf:action <superman.ttl>;
+  mf:entailmentRegime "RDFS-Plus";
+  mf:name "opaque-iri";
+  mf:recognizedDatatypes ();
+  mf:result <superman_undesired_entailment.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:opaque-iri-control a mf:PositiveEntailmentTest;
+  rdfs:comment "Check that owl:sameAs works as expected; was to ensure that opaque-iri did not pass spuriously.";
+  mf:action <control-sameas-a.ttl>;
+  mf:entailmentRegime "RDFS-Plus";
+  mf:name "opaque-iri-control";
+  mf:recognizedDatatypes ();
+  mf:result <control-sameas-r.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:opaque-language-string a mf:PositiveEntailmentTest;
+  rdfs:comment "Literals within reifying terms (including language strings) are transparent.";
+  mf:action <lowercase-language-string.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "opaque-language-string";
+  mf:recognizedDatatypes ();
+  mf:result <uppercase-language-string.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:opaque-language-string-control a mf:PositiveEntailmentTest;
+  rdfs:comment "Checks that language strings are indeed recognized; was to ensure that opaque-language-string did not pass spuriously.";
+  mf:action <lowercase-language-string-control.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "opaque-language-string-control";
+  mf:recognizedDatatypes ();
+  mf:result <uppercase-language-string-control.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:opaque-dir-language-string a mf:NegativeEntailmentTest;
+  rdfs:comment "Literals within reifying terms (including directional language strings) are opaque, even when their datatype is recognized.";
+  mf:action <lowercase-dir-language-string.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "opaque-dir-language-string";
+  mf:recognizedDatatypes ();
+  mf:result <uppercase-dir-language-string.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:opaque-dir-language-string-control a mf:PositiveEntailmentTest;
+  rdfs:comment "Checks that directional language strings are indeed recognized, to ensure that opaque-dir-language-string does not pass spuriously.";
+  mf:action <lowercase-dir-language-string-control.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "opaque-dir-language-string-control";
+  mf:recognizedDatatypes ();
+  mf:result <uppercase-dir-language-string-control.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:opaque-literal a mf:PositiveEntailmentTest;
+  rdfs:comment "Literals within triple terms are transparent.";
+  mf:action <non-canonical-literal.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "opaque-literal";
+  mf:recognizedDatatypes (xsd:integer);
+  mf:result <canonical-literal.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:opaque-literal-control a mf:PositiveEntailmentTest;
+  rdfs:comment "Checks that xsd:integer is indeed recognized; was to ensure that opaque-literal did not pass spuriously.";
+  mf:action <non-canonical-literal-control.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "opaque-literal-control";
+  mf:recognizedDatatypes (xsd:integer);
+  mf:result <canonical-literal-control.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:same-bnode-same-triple-term a mf:PositiveEntailmentTest;
+  rdfs:comment "Identical triple term can be replaced by the same fresh bnode multiple times.";
+  mf:action <test003a.ttl>;
+  mf:entailmentRegime "simple";
+  mf:name "same-bnode-same-quoted-term";
+  mf:recognizedDatatypes ();
+  mf:result <test002sbr.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:json-array-ordered a mf:NegativeEntailmentTest;
+  rdfs:comment "Arrays are ordered in rdf:JSON.";
+  mf:action <json-array-1.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "json-array-unordered";
+  mf:recognizedDatatypes (rdf:JSON);
+  mf:result <json-array-2.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:json-object-unordered a mf:PositiveEntailmentTest;
+  rdfs:comment "Objects are unordered in rdf:JSON.";
+  mf:action <json-object-1.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "json-object-unordered";
+  mf:recognizedDatatypes (rdf:JSON);
+  mf:result <json-object-2.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:json-zero a mf:NegativeEntailmentTest;
+  rdfs:comment "Positive zero and negative zero are different in rdf:JSON.";
+  mf:action <json-positive-zero.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "json-zero";
+  mf:recognizedDatatypes (rdf:JSON);
+  mf:result <json-negative-zero.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:json-zero-array a mf:NegativeEntailmentTest;
+  rdfs:comment "Positive zero and negative zero are different in rdf:JSON inside arrays.";
+  mf:action <json-positive-zero-array.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "json-zero-array";
+  mf:recognizedDatatypes (rdf:JSON);
+  mf:result <json-negative-zero-array.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:json-round-different a mf:NegativeEntailmentTest;
+  rdfs:comment "Rounding to different even rdf:JSON.";
+  mf:action <json-9007199254740990-5.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "json-round-different";
+  mf:recognizedDatatypes (rdf:JSON);
+  mf:result <json-9007199254740991-5.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:json-round-same a mf:PositiveEntailmentTest;
+  rdfs:comment "Rounding to same even rdf:JSON.";
+  mf:action <json-9007199254740992-5.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "json-round-same";
+  mf:recognizedDatatypes (rdf:JSON);
+  mf:result <json-9007199254740991-5.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:json-infinity a mf:PositiveEntailmentTest;
+  rdfs:comment "Large rdf:JSON number values are infinity.";
+  mf:action <json-e400.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "json-infinity";
+  mf:recognizedDatatypes (rdf:JSON);
+  mf:result <json-e401.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:float-zero a mf:NegativeEntailmentTest;
+  rdfs:comment "Positive zero and negative zero are different in xsd:float.";
+  mf:action <float-positive-zero.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "float-zero";
+  mf:recognizedDatatypes (xsd:float);
+  mf:result <float-negative-zero.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:float-round-different a mf:NegativeEntailmentTest;
+  rdfs:comment "Rounding to different even xsd:float.";
+  mf:action <float-16777206-5.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "float-round-different";
+  mf:recognizedDatatypes (xsd:float);
+  mf:result <float-16777207-5.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:float-round-same a mf:PositiveEntailmentTest;
+  rdfs:comment "Rounding to same even xsd:float.";
+  mf:action <float-16777206-5.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "float-round-same";
+  mf:recognizedDatatypes (xsd:float);
+  mf:result <float-16777205-5.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:float-infinity a mf:PositiveEntailmentTest;
+  rdfs:comment "Large xsd:float values are infinity.";
+  mf:action <float-e400.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "float-infinity";
+  mf:recognizedDatatypes (xsd:float);
+  mf:result <float-e401.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+
+trs:double-zero a mf:NegativeEntailmentTest;
+  rdfs:comment "Positive zero and negative zero are different in xsd:double.";
+  mf:action <double-positive-zero.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "double-zero";
+  mf:recognizedDatatypes (xsd:double);
+  mf:result <double-negative-zero.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:double-round-different a mf:NegativeEntailmentTest;
+  rdfs:comment "Rounding to different even xsd:double.";
+  mf:action <double-9007199254740990-5.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "double-round-different";
+  mf:recognizedDatatypes (xsd:double);
+  mf:result <double-9007199254740991-5.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:double-round-same a mf:PositiveEntailmentTest;
+  rdfs:comment "Rounding to same even xsd:double.";
+  mf:action <double-9007199254740992-5.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "double-round-same";
+  mf:recognizedDatatypes (xsd:double);
+  mf:result <double-9007199254740991-5.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:double-infinity a mf:PositiveEntailmentTest;
+  rdfs:comment "Large xsd:double values are infinity.";
+  mf:action <double-e400.ttl>;
+  mf:entailmentRegime "RDF";
+  mf:name "double-infinity";
+  mf:recognizedDatatypes (xsd:double);
+  mf:result <double-e401.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:triple-terms-propositions a mf:PositiveEntailmentTest;
+  rdfs:comment "Triple terms denote instances of rdfs:Proposition.";
+  mf:action <test001a.ttl>;
+  mf:entailmentRegime "RDFS";
+  mf:name "triple-terms-propositions";
+  mf:recognizedDatatypes ();
+  mf:result <triple-terms-propositions.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .
+
+trs:reifies-range a mf:PositiveEntailmentTest;
+  rdfs:comment "Range of rdf:reifies is rdfs:Proposition.";
+  mf:action <reifies-rangea.ttl>;
+  mf:entailmentRegime "RDFS";
+  mf:name "reifies-range";
+  mf:recognizedDatatypes ();
+  mf:result <reifies-ranger.ttl>;
+  mf:unrecognizedDatatypes ();
+  rdft:approval rdft:NotClassified .

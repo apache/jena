@@ -1,0 +1,2 @@
+<http://example.org/> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Resource> .
+<http://example.org/triple1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies> <<(<http://example.org/> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Resource>)>> .

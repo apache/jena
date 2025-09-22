@@ -1,0 +1,4 @@
+PREFIX : <http://example.com/ns#>
+
+CONSTRUCT { :s :q <<(:s :p :o )>> }
+WHERE {}

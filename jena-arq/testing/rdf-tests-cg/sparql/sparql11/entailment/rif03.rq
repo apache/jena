@@ -1,0 +1,5 @@
+PREFIX ex: <http://example.org/example#>
+
+SELECT ?discount {
+    ex:customer017 ex:discount ?discount .
+}

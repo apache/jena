@@ -1,0 +1,4 @@
+PREFIX ex: <http://example.org/>
+SELECT ?s ?o WHERE {
+  ?s !(ex:pd|^ex:pr) ?o
+}

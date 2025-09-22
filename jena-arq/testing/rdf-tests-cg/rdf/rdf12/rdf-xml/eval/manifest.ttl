@@ -1,0 +1,244 @@
+## Distributed under both the "W3C Test Suite License" [1]
+## and the "W3C 3-clause BSD License".
+## [1] https://www.w3.org/Consortium/Legal/2008/04-testsuite-license
+## [2] https://www.w3.org/Consortium/Legal/2008/03-bsd-license
+
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
+PREFIX test:   <http://www.w3.org/2001/sw/DataAccess/tests/>
+PREFIX rdft:   <http://www.w3.org/ns/rdftest#>
+PREFIX trs:    <https://w3c.github.io/rdf-tests/rdf/rdf12/rdf-xml/eval#>
+PREFIX dct:    <http://purl.org/dc/terms/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+PREFIX foaf:   <http://xmlns.com/foaf/0.1/>
+PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
+
+trs:manifest  rdf:type mf:Manifest ;
+   rdfs:label "RDF 1.2 XML Evaluation Tests"@en ;
+   skos:prefLabel "La suite des tests pour RDF 1.2 XML"@fr;
+   skos:prefLabel "Conjunto de pruebas para RDF 1.2 XML"@es;
+   mf:assumedTestBase <https://w3c.github.io/rdf-tests/rdf/rdf12/rdf-xml/eval/> ;
+   dct:issued "2024-05-30"^^xsd:date ;
+   rdfs:seeAlso <https://w3c.github.io/rdf-tests/> ;
+   dct:modified "2024-05-30"^^xsd:date ;
+   dct:licence <https://www.w3.org/Consortium/Legal/2008/03-bsd-license> ;
+   dct:creator [ foaf:homepage <https://w3c.github.io/rdf-star-wg/> ; foaf:name "W3C RDF & SPARQL Working Group" ] ;
+    mf:entries
+    (
+        trs:rdf12-xml-dir-01
+        trs:rdf12-xml-dir-02
+        trs:rdf12-xml-dir-03
+        trs:rdf12-xml-dir-04
+        trs:rdf12-xml-dir-05
+        trs:rdf12-xml-dir-06
+
+        trs:rdf12-xml-tt-01
+        trs:rdf12-xml-tt-02
+        trs:rdf12-xml-tt-03
+        trs:rdf12-xml-tt-04
+        trs:rdf12-xml-tt-05
+        trs:rdf12-xml-tt-06
+        trs:rdf12-xml-tt-07
+        trs:rdf12-xml-tt-08
+
+        trs:rdf12-xml-an-01
+        trs:rdf12-xml-an-02
+        trs:rdf12-xml-an-03
+        trs:rdf12-xml-an-04
+        trs:rdf12-xml-an-05
+        trs:rdf12-xml-an-06
+        trs:rdf12-xml-an-07
+        trs:rdf12-xml-an-08
+        trs:rdf12-xml-an-09
+        trs:rdf12-xml-an-10
+        trs:rdf12-xml-an-11
+        trs:rdf12-xml-an-12
+        trs:rdf12-xml-an-13
+        trs:rdf12-xml-an-14
+        trs:rdf12-xml-an-15
+        trs:rdf12-xml-an-16
+    ) .
+
+# Initial Text Direction
+trs:rdf12-xml-dir-01 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-dir-01";
+  mf:comment  "Language with direction";
+  mf:action   <rdf12-xml-dir-01.rdf>;
+  mf:result   <rdf12-xml-dir-01.nt> .
+
+trs:rdf12-xml-dir-02 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-dir-02";
+  mf:comment  "Language with direction and no RDF version";
+  mf:action   <rdf12-xml-dir-02.rdf>;
+  mf:result   <rdf12-xml-dir-02.nt> .
+
+trs:rdf12-xml-dir-03 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-dir-03";
+  mf:comment  "Language with direction and no ITS version";
+  mf:action   <rdf12-xml-dir-03.rdf>;
+  mf:result   <rdf12-xml-dir-03.nt> .
+
+trs:rdf12-xml-dir-04 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-dir-04";
+  mf:comment  "Language with direction on element directly";
+  mf:action   <rdf12-xml-dir-04.rdf>;
+  mf:result   <rdf12-xml-dir-04.nt> .
+
+trs:rdf12-xml-dir-05 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-dir-05";
+  mf:comment  "Language with version and direction on element directly";
+  mf:action   <rdf12-xml-dir-05.rdf>;
+  mf:result   <rdf12-xml-dir-05.nt> .
+
+trs:rdf12-xml-dir-06 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-dir-06";
+  mf:comment  "Direction with no language";
+  mf:action   <rdf12-xml-dir-06.rdf>;
+  mf:result   <rdf12-xml-dir-06.nt> .
+
+# Triple Terms
+
+trs:rdf12-xml-tt-01 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-tt-01";
+  mf:comment  "Ignored triple term";
+  mf:action   <rdf12-xml-tt-01.rdf>;
+  mf:result   <rdf12-xml-tt-01.nt> .
+
+trs:rdf12-xml-tt-02 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-tt-02";
+  mf:comment  "Triple term having IRI subject";
+  mf:action   <rdf12-xml-tt-02.rdf>;
+  mf:result   <rdf12-xml-tt-02.nt> .
+
+trs:rdf12-xml-tt-03 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-tt-03";
+  mf:comment  "Triple term having BNode subject";
+  mf:action   <rdf12-xml-tt-03.rdf>;
+  mf:result   <rdf12-xml-tt-03.nt> .
+
+trs:rdf12-xml-tt-04 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-tt-04";
+  mf:comment  "Triple term having a type";
+  mf:action   <rdf12-xml-tt-04.rdf>;
+  mf:result   <rdf12-xml-tt-04.nt> .
+
+trs:rdf12-xml-tt-05 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-tt-05";
+  mf:comment  "Triple term having BNode object";
+  mf:action   <rdf12-xml-tt-05.rdf>;
+  mf:result   <rdf12-xml-tt-05.nt> .
+
+trs:rdf12-xml-tt-06 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-tt-06";
+  mf:comment  "Recursive triple term";
+  mf:action   <rdf12-xml-tt-06.rdf>;
+  mf:result   <rdf12-xml-tt-06.nt> .
+
+trs:rdf12-xml-tt-07 rdf:type rdft:TestXMLNegativeSyntax;
+  mf:name     "rdf12-xml-tt-07";
+  mf:comment  "Invalid triple term having no predicate or object";
+  mf:action   <rdf12-xml-tt-07.rdf> .
+
+trs:rdf12-xml-tt-08 rdf:type rdft:TestXMLNegativeSyntax;
+  mf:name     "rdf12-xml-tt-08";
+  mf:comment  "Invalid triple term having two objects";
+  mf:action   <rdf12-xml-tt-08.rdf> .
+
+# Annotations
+
+trs:rdf12-xml-an-01 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-an-01";
+  mf:comment  "On literal with IRI reifier";
+  mf:action   <rdf12-xml-an-01.rdf>;
+  mf:result   <rdf12-xml-an-01.nt> .
+
+trs:rdf12-xml-an-02 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-an-02";
+  mf:comment  "On literal with BNode reifier";
+  mf:action   <rdf12-xml-an-02.rdf>;
+  mf:result   <rdf12-xml-an-02.nt> .
+
+trs:rdf12-xml-an-03 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-an-03";
+  mf:comment  "On literal with IRI reifier and annotations";
+  mf:action   <rdf12-xml-an-03.rdf>;
+  mf:result   <rdf12-xml-an-03.nt> .
+
+trs:rdf12-xml-an-04 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-an-04";
+  mf:comment  "An empty property element just gives an empty literal. Annotate the statement at the same time. (See rdfms-empty-property-elements-test005 in 1.1 test suite)";
+  mf:action   <rdf12-xml-an-04.rdf>;
+  mf:result   <rdf12-xml-an-04.nt> .
+
+trs:rdf12-xml-an-05 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-an-05";
+  mf:comment  "Here the parseType indicates that we should create a resource. We annotate the statement at the same time. (See rdfms-empty-property-elements-test006 in 1.1 test suite)";
+  mf:action   <rdf12-xml-an-05.rdf>;
+  mf:result   <rdf12-xml-an-05.nt> .
+
+trs:rdf12-xml-an-06 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-an-06";
+  mf:comment  "rdf:annotation on an empty property element indicates reification. (See rdfms-not-id-and-resource-attr-test001 in 1.1 test suite)";
+  mf:action   <rdf12-xml-an-06.rdf>;
+  mf:result   <rdf12-xml-an-06.nt> .
+
+trs:rdf12-xml-an-07 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-an-07";
+  mf:comment  "Node with annotation having a type";
+  mf:action   <rdf12-xml-an-07.rdf>;
+  mf:result   <rdf12-xml-an-07.nt> .
+
+trs:rdf12-xml-an-08 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-an-08";
+  mf:comment  "Node with annotation having an IRI value";
+  mf:action   <rdf12-xml-an-08.rdf>;
+  mf:result   <rdf12-xml-an-08.nt> .
+
+trs:rdf12-xml-an-09 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-an-09";
+  mf:comment  "Node with annotation having an BNode value";
+  mf:action   <rdf12-xml-an-09.rdf>;
+  mf:result   <rdf12-xml-an-09.nt> .
+
+trs:rdf12-xml-an-10 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-an-10";
+  mf:comment  "Node with recursive annotation";
+  mf:action   <rdf12-xml-an-10.rdf>;
+  mf:result   <rdf12-xml-an-10.nt> .
+
+trs:rdf12-xml-an-11 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-an-11";
+  mf:comment  "rdf:annotation and rdf:resource are allowed together on empty property element.";
+  mf:action   <rdf12-xml-an-11.rdf>;
+  mf:result   <rdf12-xml-an-11.nt> .
+
+trs:rdf12-xml-an-12 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-an-12";
+  mf:comment  "rdf:annotationNodeID and rdf:resource are allowed together on empty property element.";
+  mf:action   <rdf12-xml-an-12.rdf>;
+  mf:result   <rdf12-xml-an-12.nt> .
+
+trs:rdf12-xml-an-13 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-an-13";
+  mf:comment  """rdf:annotation and parseType="Literal".""";
+  mf:action   <rdf12-xml-an-13.rdf>;
+  mf:result   <rdf12-xml-an-13.nt> .
+
+trs:rdf12-xml-an-14 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-an-14";
+  mf:comment  """rdf:annotationNodeID and parseType="Literal".""";
+  mf:action   <rdf12-xml-an-14.rdf>;
+  mf:result   <rdf12-xml-an-14.nt> .
+
+trs:rdf12-xml-an-15 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-an-15";
+  mf:comment  """rdf:annotation and parseType="Collection".""";
+  mf:action   <rdf12-xml-an-15.rdf>;
+  mf:result   <rdf12-xml-an-15.nt> .
+
+trs:rdf12-xml-an-16 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-an-16";
+  mf:comment  """rdf:annotationNodeID and parseType="Collection".""";
+  mf:action   <rdf12-xml-an-16.rdf>;
+  mf:result   <rdf12-xml-an-16.nt> .

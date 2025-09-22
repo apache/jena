@@ -1,0 +1,68 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix :       <https://w3c.github.io/rdf-tests/sparql/sparql12/codepoint-escapes#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:  <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+:manifest  rdf:type mf:Manifest ;
+    rdfs:label "SPARQL Codepoint-Escaping Tests" ;
+    mf:entries
+    ( 
+    :codepoint-esc-01
+    :codepoint-esc-02
+    :codepoint-esc-bad-03
+    :codepoint-esc-04
+    :codepoint-esc-05
+    :codepoint-esc-06
+    :codepoint-esc-07
+    :codepoint-esc-08
+    ) .
+
+
+:codepoint-esc-01 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "codepoint-esc-01.rq" ;
+   mf:action      <codepoint-esc-01.rq> .
+
+:codepoint-esc-02 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "codepoint-esc-02.rq" ;
+   rdfs:comment   "codepoint escape for the backslash of a PN_LOCAL_ESC in the PN_LOCAL part of a PrefixedName" ;
+   mf:action      <codepoint-esc-02.rq> .
+
+:codepoint-esc-bad-03 rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "codepoint-esc-bad-03.rq" ;
+   rdfs:comment   "codepoint escape that results in an invalid backslash escape (requires handling codepoint escaping before backslash escaping)" ;
+   mf:action      <codepoint-esc-bad-03.rq> .
+
+:codepoint-esc-04 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "codepoint-esc-04.rq" ;
+   rdfs:comment   "codepoint escape that results in a valid backslash escape" ;
+   mf:action      <codepoint-esc-04.rq> .
+
+:codepoint-esc-05 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "codepoint-esc-05.rq" ;
+   mf:action      <codepoint-esc-05.rq> .
+
+:codepoint-esc-06 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "codepoint-esc-06.rq" ;
+   rdfs:comment   "codepoint escape for the percent sign in the PL_LOCAL part of a PrefixedName" ;
+   mf:action      <codepoint-esc-06.rq> .
+
+:codepoint-esc-07 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "codepoint-esc-07.rq" ;
+   rdfs:comment   "codepoint escape for whitespace separating the projection tokens: SELECT * WHERE" ;
+   mf:action      <codepoint-esc-07.rq> .
+
+:codepoint-esc-08 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "codepoint-esc-08.rq" ;
+   rdfs:comment   "codepoint escape for the starting double-quote of a literal" ;
+   mf:action      <codepoint-esc-08.rq> .
+
