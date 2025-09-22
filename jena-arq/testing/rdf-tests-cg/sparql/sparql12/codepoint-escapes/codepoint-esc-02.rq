@@ -1,0 +1,8 @@
+PREFIX ns: <http://example.org/>
+SELECT * WHERE {
+	?s ?p ns:id\u005c=123
+}
+
+# the escape here produces '\' REVERSE SOLIDUS (U+5C)
+# its unescaping must lead to a Prefixed Name ns:id\=123 using an escaped
+# equals sign (U+3D), representing the IRI <http://example.org/id=123>.

@@ -1,0 +1,7 @@
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+# 
+#####################################################################
+<http://example.org/Book> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/terms#Book> .
+<http://example.org/Book> <http://example.org/terms#title> "Dogs in Hats" .

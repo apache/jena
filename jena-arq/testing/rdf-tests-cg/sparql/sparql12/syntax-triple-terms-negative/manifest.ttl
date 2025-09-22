@@ -1,0 +1,427 @@
+@prefix :       <https://w3c.github.io/rdf-tests/sparql/sparql12/syntax-triple-terms-negative/manifest#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:  <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Negative Syntax Triple Terms" ;
+    rdfs:comment "Negative syntax tests for triple terms in SPARQL 1.2" ;
+    mf:entries
+    (
+:alternate-path-anonreifier
+:alternate-path-reifier
+:alternate-path-tripleterm
+:annotated-anonreifier-alternate-path
+:annotated-anonreifier-list-predicate
+:annotated-anonreifier-oneOrMore
+:annotated-anonreifier-optional
+:annotated-anonreifier-path-on-start
+:annotated-anonreifier-path
+:annotated-anonreifier-variable-path
+:annotated-reifier-list-predicate
+:annotated-reifier-oneOrMore
+:annotated-reifier-optional
+:annotated-reifier-path-on-start
+:annotated-reifier-path
+:annotated-reifier-reifier-alternate-path
+:annotated-reifier-variable-path
+:bind-anonreified
+:bind-reified
+:bindbnode-anonreifier
+:bindbnode-reifier
+:bindbnode-tripleterm
+:bnode-predicate-anonreifier
+:bnode-predicate-reifier
+:bnode-predicate-tripleterm
+:list-anonreifier-01
+:list-anonreifier-02
+:list-reifier-01
+:list-reifier-02
+:list-tripleterm-01
+:list-tripleterm-02
+:nested-annotated-path-anonreifier
+:nested-annotated-path-reifier
+:quoted-list-object-anonreifier
+:quoted-list-object-reifier
+:quoted-list-object-tripleterm
+:quoted-list-predicate-anonreifier
+:quoted-list-predicate-reifier
+:quoted-list-predicate-tripleterm
+:quoted-list-subject-anonreifier
+:quoted-list-subject-reifier
+:quoted-list-subject-tripleterm
+:quoted-path-anonreifier
+:quoted-path-bind-anonreifier
+:quoted-path-bind-reifier
+:quoted-path-bind-tripleterm
+:quoted-path-reifier
+:quoted-path-tripleterm
+:quoted-variable-path-anonreifier
+:quoted-variable-path-reifier
+:quoted-variable-path-tripleterm
+:syntax-update-anonreifier-01
+:syntax-update-anonreifier-02
+:tripleterm-separate-01
+:tripleterm-separate-02
+:tripleterm-separate-03
+:tripleterm-separate-04
+:tripleterm-separate-05
+:tripleterm-separate-06
+
+) .
+
+:alternate-path-anonreifier rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "alternate-path-anonreifier.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <alternate-path-anonreifier.rq> .
+
+:alternate-path-reifier rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "alternate-path-reifier.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <alternate-path-reifier.rq> .
+
+:alternate-path-tripleterm rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "alternate-path-tripleterm.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <alternate-path-tripleterm.rq> .
+
+:annotated-anonreifier-alternate-path rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotated-anonreifier-alternate-path.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotated-anonreifier-alternate-path.rq> .
+
+:annotated-anonreifier-list-predicate rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotated-anonreifier-list-predicate.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotated-anonreifier-list-predicate.rq> .
+
+:annotated-anonreifier-oneOrMore rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotated-anonreifier-oneOrMore.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotated-anonreifier-oneOrMore.rq> .
+
+:annotated-anonreifier-optional rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotated-anonreifier-optional.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotated-anonreifier-optional.rq> .
+
+:annotated-anonreifier-path-on-start rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotated-anonreifier-path-on-start.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotated-anonreifier-path-on-start.rq> .
+
+:annotated-anonreifier-path rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotated-anonreifier-path.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotated-anonreifier-path.rq> .
+
+:annotated-anonreifier-variable-path rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotated-anonreifier-variable-path.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotated-anonreifier-variable-path.rq> .
+
+:annotated-reifier-list-predicate rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotated-reifier-list-predicate.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotated-reifier-list-predicate.rq> .
+
+:annotated-reifier-oneOrMore rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotated-reifier-oneOrMore.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotated-reifier-oneOrMore.rq> .
+
+:annotated-reifier-optional rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotated-reifier-optional.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotated-reifier-optional.rq> .
+
+:annotated-reifier-path-on-start rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotated-reifier-path-on-start.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotated-reifier-path-on-start.rq> .
+
+:annotated-reifier-path rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotated-reifier-path.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotated-reifier-path.rq> .
+
+:annotated-reifier-reifier-alternate-path rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotated-reifier-reifier-alternate-path.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotated-reifier-reifier-alternate-path.rq> .
+
+:annotated-reifier-variable-path rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotated-reifier-variable-path.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotated-reifier-variable-path.rq> .
+
+:bind-anonreified rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "bind-anonreified.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <bind-anonreified.rq> .
+
+:bind-reified rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "bind-reified.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <bind-reified.rq> .
+
+:bindbnode-anonreifier rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "bindbnode-anonreifier.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <bindbnode-anonreifier.rq> .
+
+:bindbnode-reifier rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "bindbnode-reifier.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <bindbnode-reifier.rq> .
+
+:bindbnode-tripleterm rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "bindbnode-tripleterm.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <bindbnode-tripleterm.rq> .
+
+:bnode-predicate-anonreifier rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "bnode-predicate-anonreifier.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <bnode-predicate-anonreifier.rq> .
+
+:bnode-predicate-reifier rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "bnode-predicate-reifier.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <bnode-predicate-reifier.rq> .
+
+:bnode-predicate-tripleterm rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "bnode-predicate-tripleterm.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <bnode-predicate-tripleterm.rq> .
+
+:list-anonreifier-01 rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "list-anonreifier-01.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <list-anonreifier-01.rq> .
+
+:list-anonreifier-02 rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "list-anonreifier-02.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <list-anonreifier-02.rq> .
+
+:list-reifier-01 rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "list-reifier-01.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <list-reifier-01.rq> .
+
+:list-reifier-02 rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "list-reifier-02.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <list-reifier-02.rq> .
+
+:list-tripleterm-01 rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "list-tripleterm-01.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <list-tripleterm-01.rq> .
+
+:list-tripleterm-02 rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "list-tripleterm-02.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <list-tripleterm-02.rq> .
+
+:nested-annotated-path-anonreifier rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "nested-annotated-path-anonreifier.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <nested-annotated-path-anonreifier.rq> .
+
+:nested-annotated-path-reifier rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "nested-annotated-path-reifier.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <nested-annotated-path-reifier.rq> .
+
+:quoted-list-object-anonreifier rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "quoted-list-object-anonreifier.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <quoted-list-object-anonreifier.rq> .
+
+:quoted-list-object-reifier rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "quoted-list-object-reifier.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <quoted-list-object-reifier.rq> .
+
+:quoted-list-object-tripleterm rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "quoted-list-object-tripleterm.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <quoted-list-object-tripleterm.rq> .
+
+:quoted-list-predicate-anonreifier rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "quoted-list-predicate-anonreifier.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <quoted-list-predicate-anonreifier.rq> .
+
+:quoted-list-predicate-reifier rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "quoted-list-predicate-reifier.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <quoted-list-predicate-reifier.rq> .
+
+:quoted-list-predicate-tripleterm rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "quoted-list-predicate-tripleterm.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <quoted-list-predicate-tripleterm.rq> .
+
+:quoted-list-subject-anonreifier rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "quoted-list-subject-anonreifier.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <quoted-list-subject-anonreifier.rq> .
+
+:quoted-list-subject-reifier rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "quoted-list-subject-reifier.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <quoted-list-subject-reifier.rq> .
+
+:quoted-list-subject-tripleterm rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "quoted-list-subject-tripleterm.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <quoted-list-subject-tripleterm.rq> .
+
+:quoted-path-anonreifier rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "quoted-path-anonreifier.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <quoted-path-anonreifier.rq> .
+
+:quoted-path-bind-anonreifier rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "quoted-path-bind-anonreifier.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <quoted-path-bind-anonreifier.rq> .
+
+:quoted-path-bind-reifier rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "quoted-path-bind-reifier.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <quoted-path-bind-reifier.rq> .
+
+:quoted-path-bind-tripleterm rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "quoted-path-bind-tripleterm.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <quoted-path-bind-tripleterm.rq> .
+
+:quoted-path-reifier rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "quoted-path-reifier.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <quoted-path-reifier.rq> .
+
+:quoted-path-tripleterm rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "quoted-path-tripleterm.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <quoted-path-tripleterm.rq> .
+
+:quoted-variable-path-anonreifier rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "quoted-variable-path-anonreifier.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <quoted-variable-path-anonreifier.rq> .
+
+:quoted-variable-path-reifier rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "quoted-variable-path-reifier.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <quoted-variable-path-reifier.rq> .
+
+:quoted-variable-path-tripleterm rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "quoted-variable-path-tripleterm.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <quoted-variable-path-tripleterm.rq> .
+
+:syntax-update-anonreifier-01 rdf:type   mf:NegativeUpdateSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "syntax-update-anonreifier-01.ru" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <syntax-update-anonreifier-01.ru> .
+
+:syntax-update-anonreifier-02 rdf:type   mf:NegativeUpdateSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "syntax-update-anonreifier-02.ru" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <syntax-update-anonreifier-02.ru> .
+
+:tripleterm-separate-01 rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "tripleterm-separate-01.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <tripleterm-separate-01.rq> .
+
+:tripleterm-separate-02 rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "tripleterm-separate-02.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <tripleterm-separate-02.rq> .
+
+:tripleterm-separate-03 rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "tripleterm-separate-03.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <tripleterm-separate-03.rq> .
+
+:tripleterm-separate-04 rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "tripleterm-separate-04.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <tripleterm-separate-04.rq> .
+
+:tripleterm-separate-05 rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "tripleterm-separate-05.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <tripleterm-separate-05.rq> .
+
+:tripleterm-separate-06 rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "tripleterm-separate-06.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <tripleterm-separate-06.rq> .

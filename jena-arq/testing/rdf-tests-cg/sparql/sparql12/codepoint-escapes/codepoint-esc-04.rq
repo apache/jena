@@ -1,0 +1,5 @@
+SELECT * WHERE {
+	?s ?p "\\u0074"
+}
+# Legal codepoint escape of LATIN SMALL LETTER T (U+74), resulting in a
+# valid backslash escape \t for CHARACTER TABULATION (U+9).

@@ -1,0 +1,5 @@
+<http://example/s> <http://example/p> <http://example/o> .
+<http://example/i1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies> <<( <http://example/s> <http://example/p> <http://example/o> )>> .
+<http://example/i1> <http://example/r1> <http://example/z1> .
+<http://example/i2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies> <<( <http://example/s> <http://example/p> <http://example/o> )>> .
+<http://example/i2> <http://example/r2> <http://example/z2> .

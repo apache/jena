@@ -1,0 +1,4 @@
+VERSION "1.2"
+PREFIX : <http://example/>
+
+:s :p :o .

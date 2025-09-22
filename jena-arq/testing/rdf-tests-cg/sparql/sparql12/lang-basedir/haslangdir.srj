@@ -1,0 +1,28 @@
+{ "head": {
+    "vars": [ "x" , "hasLangDir" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "x": { "type": "uri" , "value": "http://example/x1" } ,
+        "hasLangDir": { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#boolean" , "value": "false" }
+      } ,
+      { 
+        "x": { "type": "uri" , "value": "http://example/x2" } ,
+        "hasLangDir": { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#boolean" , "value": "true" }
+      } ,
+      { 
+        "x": { "type": "uri" , "value": "http://example/x3" } ,
+        "hasLangDir": { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#boolean" , "value": "true" }
+      } ,
+      { 
+        "x": { "type": "uri" , "value": "http://example/x4" } ,
+        "hasLangDir": { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#boolean" , "value": "false" }
+      } ,
+      { 
+        "x": { "type": "uri" , "value": "http://example/x5" } ,
+        "hasLangDir": { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#boolean" , "value": "false" }
+      }
+    ]
+  }
+}

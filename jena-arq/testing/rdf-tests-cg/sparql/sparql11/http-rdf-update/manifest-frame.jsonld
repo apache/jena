@@ -1,0 +1,28 @@
+{
+  "@context": {
+    "dawgt":  "http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#",
+    "mf":     "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#",
+    "mq":     "http://www.w3.org/2001/sw/DataAccess/tests/test-query#",
+    "rdfs":   "http://www.w3.org/2000/01/rdf-schema#",
+    "xsd":    "http://www.w3.org/2001/XMLSchema#",
+
+    "action":               {"@id": "mf:action", "@type": "@id"},
+    "approval":             {"@id": "dawgt:approval", "@type": "@id"},
+    "approvedBy":           {"@id": "dawgt:approvedBy", "@type": "@id"},
+    "comment":              {"@id": "rdfs:comment"},
+    "data":                 {"@id": "mq:data", "@type": "@id"},
+    "entries":              {"@id": "mf:entries", "@container": "@list", "@type": "@id"},
+    "feature":              {"@id": "mf:feature", "@type": "@vocab"},
+    "graphData":            {"@id": "mq:graphData", "@type": "@id"},
+    "include":              {"@id": "mf:include", "@container": "@list", "@type": "@id"},
+    "label":                {"@id": "rdfs:label"},
+    "name":                 {"@id": "mf:name"},
+    "notable":              {"@id": "mf:notable", "@type": "@vocab"},
+    "query":                {"@id": "mq:query", "@type": "@id"},
+    "queryForm":            {"@id": "mq:queryForm", "@type": "@vocab"},
+    "requires":             {"@id": "mf:requires", "@type": "@vocab", "@container": "@set"},
+    "result":               {"@id": "mf:result", "@type": "@id"}
+  },
+  "@type": "mf:Manifest",
+  "entries": {"@embed": true}
+}

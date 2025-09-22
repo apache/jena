@@ -1,0 +1,9 @@
+PREFIX : <http://example.com/ns#>
+
+SELECT * {
+
+  ?s :p <<(:a :b ?C )>> .
+  ?s
+     :q
+  <<( ?s1 :p <<(:a :b [] )>> )>> .
+}

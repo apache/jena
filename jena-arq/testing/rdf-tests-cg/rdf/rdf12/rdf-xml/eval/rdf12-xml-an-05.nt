@@ -1,0 +1,2 @@
+<http://random.ioctl.org/#bar> <http://random.ioctl.org/#someProperty> _:b .
+<http://example.org/triple1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies> <<(<http://random.ioctl.org/#bar> <http://random.ioctl.org/#someProperty> _:b)>> .

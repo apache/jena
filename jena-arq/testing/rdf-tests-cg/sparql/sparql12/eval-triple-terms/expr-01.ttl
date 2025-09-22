@@ -1,0 +1,25 @@
+PREFIX :      <http://example/>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+#<< << :s :p :o2 >> :q2 :z2 >>
+#        :graphContains  :g .
+#
+#<< _:b0 :r :o4 >>  :graphContains  :g1 .
+#
+#<< _:b0 :r :o3 >>  :graphContains  :g1 .
+#
+#<< << :s :p :o1 >> :q1 :z1 >>
+#        :graphContains  :g .
+#
+#<< << _:b0 :r :o3 >> :pb "abc" >>
+#        :graphContains  :g2 .
+#
+
+:g :graphContains <<(_:bc_0_df_14_0 rdf:reifies <<(:s :p :o1)>>)>>.
+:g :graphContains <<(_:bc_0_df_14_0 :q1 :z1)>>.
+:g :graphContains <<(_:bc_0_df_14_1 rdf:reifies <<(:s :p :o2)>>)>>.
+:g :graphContains <<(_:bc_0_df_14_1 :q2 :z2)>>.
+:g1 :graphContains <<(_:bc_0_b0_b :r :o3)>>.
+:g1 :graphContains <<(_:bc_0_b0_b :r :o4)>>.
+:g2 :graphContains <<(_:bc_0_df_14_2 rdf:reifies <<(_:bc_0_b0_b :r :o3)>>)>>.
+:g2 :graphContains <<(_:bc_0_df_14_2 :pb "abc")>>.

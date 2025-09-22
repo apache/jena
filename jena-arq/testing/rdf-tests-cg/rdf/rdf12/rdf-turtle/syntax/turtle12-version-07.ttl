@@ -1,0 +1,5 @@
+@version '1.2-basic' .
+PREFIX : <http://example/>
+VERSION "1.2"
+
+:s :p :o .

@@ -1,0 +1,3 @@
+PREFIX : <http://example.org/>
+
+CONSTRUCT { (?s ?o) :prop ?p } WHERE { ?s ?p ?o }

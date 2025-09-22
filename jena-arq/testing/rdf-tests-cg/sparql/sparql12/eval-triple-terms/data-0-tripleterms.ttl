@@ -1,0 +1,5 @@
+PREFIX : <http://example/>
+
+:a :q <<(:a :b :c)>> .
+
+:f :g <<( :s :p <<(:x2 :y3 123 )>> )>> .

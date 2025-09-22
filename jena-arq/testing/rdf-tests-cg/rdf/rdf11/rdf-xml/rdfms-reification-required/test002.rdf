@@ -1,0 +1,30 @@
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+-->
+<!--
+
+ Description:
+
+ A parser must generate inside of other reifications.
+-->
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:eg="http://example.org/"
+ xml:base="http://example.com/">
+
+ <rdf:Description rdf:about="http://example.org/a">
+   <eg:prop rdf:ID="reify">
+     <rdf:Description rdf:about="http://example.org/b">
+       <eg:prop rdf:ID="reify2" rdf:resource="http://example.org/c"/>
+     </rdf:Description>
+   </eg:prop>
+ </rdf:Description>
+</rdf:RDF>

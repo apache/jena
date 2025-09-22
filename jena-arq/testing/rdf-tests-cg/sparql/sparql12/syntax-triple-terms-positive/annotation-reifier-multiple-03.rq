@@ -1,0 +1,5 @@
+PREFIX : <http://example.com/ns#>
+
+SELECT * {
+  ?s :p ?o ~ :iri1 {| :r1 ?Z1 |} ~:iri2 {| :r2 ?Z2 |} .
+}

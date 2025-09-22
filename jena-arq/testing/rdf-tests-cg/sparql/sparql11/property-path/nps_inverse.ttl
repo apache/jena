@@ -1,0 +1,3 @@
+@prefix ex: <http://example.org/> .
+ex:sd ex:pd ex:od .
+ex:sr ex:pr ex:or .

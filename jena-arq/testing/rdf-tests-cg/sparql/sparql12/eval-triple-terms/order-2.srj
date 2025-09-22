@@ -1,0 +1,198 @@
+{
+    "head": {
+        "vars": [
+            "index",
+            "v"
+        ]
+    },
+    "results": {
+        "bindings": [
+            {
+                "v": {
+                    "value": "bc_0_b0_blank-node",
+                    "type": "bnode"
+                },
+                "index": {
+                    "value": "B-1",
+                    "type": "literal"
+                }
+            },
+            {
+                "v": {
+                    "value": "http://host/entity",
+                    "type": "uri"
+                },
+                "index": {
+                    "value": "B-2",
+                    "type": "literal"
+                }
+            },
+            {
+                "v": {
+                    "value": "string",
+                    "type": "literal"
+                },
+                "index": {
+                    "value": "A-3",
+                    "type": "literal"
+                }
+            },
+            {
+                "v": {
+                    "value": {
+                        "subject": {
+                            "value": "http://example.com/s",
+                            "type": "uri"
+                        },
+                        "predicate": {
+                            "value": "http://example.com/p",
+                            "type": "uri"
+                        },
+                        "object": {
+                            "value": "-456",
+                            "type": "literal",
+                            "datatype": "http://www.w3.org/2001/XMLSchema#integer"
+                        }
+                    },
+                    "type": "triple"
+                },
+                "index": {
+                    "value": "C-4",
+                    "type": "literal"
+                }
+            },
+            {
+                "v": {
+                    "value": {
+                        "subject": {
+                            "value": "http://example.com/s",
+                            "type": "uri"
+                        },
+                        "predicate": {
+                            "value": "http://example.com/p",
+                            "type": "uri"
+                        },
+                        "object": {
+                            "value": "123",
+                            "type": "literal",
+                            "datatype": "http://www.w3.org/2001/XMLSchema#integer"
+                        }
+                    },
+                    "type": "triple"
+                },
+                "index": {
+                    "value": "B-5",
+                    "type": "literal"
+                }
+            },
+            {
+                "v": {
+                    "value": {
+                        "subject": {
+                            "value": "http://example.com/s",
+                            "type": "uri"
+                        },
+                        "predicate": {
+                            "value": "http://example.com/p",
+                            "type": "uri"
+                        },
+                        "object": {
+                            "value": {
+                                "subject": {
+                                    "value": "http://example.com/x",
+                                    "type": "uri"
+                                },
+                                "predicate": {
+                                    "value": "http://example.com/y",
+                                    "type": "uri"
+                                },
+                                "object": {
+                                    "value": "http://example.com/z",
+                                    "type": "uri"
+                                }
+                            },
+                            "type": "triple"
+                        }
+                    },
+                    "type": "triple"
+                },
+                "index": {
+                    "value": "B-6",
+                    "type": "literal"
+                }
+            },
+            {
+                "v": {
+                    "value": {
+                        "subject": {
+                            "value": "http://example.com/s1",
+                            "type": "uri"
+                        },
+                        "predicate": {
+                            "value": "http://example.com/a",
+                            "type": "uri"
+                        },
+                        "object": {
+                            "value": "999",
+                            "type": "literal",
+                            "datatype": "http://www.w3.org/2001/XMLSchema#integer"
+                        }
+                    },
+                    "type": "triple"
+                },
+                "index": {
+                    "value": "C-7",
+                    "type": "literal"
+                }
+            },
+            {
+                "v": {
+                    "value": {
+                        "subject": {
+                            "value": "http://example.com/s1",
+                            "type": "uri"
+                        },
+                        "predicate": {
+                            "value": "http://example.com/p",
+                            "type": "uri"
+                        },
+                        "object": {
+                            "value": "999",
+                            "type": "literal",
+                            "datatype": "http://www.w3.org/2001/XMLSchema#integer"
+                        }
+                    },
+                    "type": "triple"
+                },
+                "index": {
+                    "value": "C-8",
+                    "type": "literal"
+                }
+            },
+            {
+                "v": {
+                    "value": {
+                        "subject": {
+                            "value": "http://example.com/s2",
+                            "type": "uri"
+                        },
+                        "predicate": {
+                            "value": "http://example.com/p",
+                            "type": "uri"
+                        },
+                        "object": {
+                            "value": "900",
+                            "type": "literal",
+                            "datatype": "http://www.w3.org/2001/XMLSchema#integer"
+                        }
+                    },
+                    "type": "triple"
+                },
+                "index": {
+                    "value": "A-9",
+                    "type": "literal"
+                }
+            }
+        ]
+    }
+}

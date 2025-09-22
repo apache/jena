@@ -1,0 +1,7 @@
+<http://example.org/eg#eric> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> _:an0 .
+_:an0 <http://example.org/eg#intersectionOf> _:an1 .
+<http://example.com/triple1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies> <<(_:an0 <http://example.org/eg#intersectionOf> _:an1)>> .
+_:an1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://example.org/eg#Person> .
+_:an1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:an2 .
+_:an2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://example.org/eg#Male> .
+_:an2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .

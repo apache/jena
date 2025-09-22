@@ -1,0 +1,812 @@
+@prefix :       <https://w3c.github.io/rdf-tests/sparql/sparql12/syntax-triple-terms-positive/manifest#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:  <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Positive Syntax Triple Terms" ;
+    rdfs:comment "Positive syntax tests for triple terms in SPARQL 1.2" ;
+    mf:entries
+    (
+:annotation-anonreifier-01
+:annotation-anonreifier-02
+:annotation-anonreifier-03
+:annotation-anonreifier-04
+:annotation-anonreifier-05
+:annotation-anonreifier-06
+:annotation-anonreifier-07
+:annotation-anonreifier-08
+:annotation-anonreifier-09
+:annotation-anonreifier-multiple-01
+:annotation-anonreifier-multiple-02
+:annotation-anonreifier-multiple-03
+:annotation-anonreifier-multiple-04
+:annotation-reifier-01
+:annotation-reifier-02
+:annotation-reifier-03
+:annotation-reifier-04
+:annotation-reifier-05
+:annotation-reifier-06
+:annotation-reifier-07
+:annotation-reifier-08
+:annotation-reifier-09
+:annotation-reifier-multiple-01
+:annotation-reifier-multiple-02
+:annotation-reifier-multiple-03
+:annotation-reifier-multiple-04
+:annotation-reifier-multiple-05
+:annotation-reifier-multiple-06
+:annotation-reifier-multiple-07
+:annotation-reifier-multiple-08
+:annotation-reifier-multiple-09
+:annotation-reifier-multiple-10
+:basic-anonreifier-01
+:basic-anonreifier-02
+:basic-anonreifier-03
+:basic-anonreifier-04
+:basic-anonreifier-06
+:basic-anonreifier-07
+:basic-anonreifier-08
+:basic-anonreifier-09
+:basic-anonreifier-10
+:basic-anonreifier-11
+:basic-anonreifier-12
+:basic-anonreifier-13
+:basic-reifier-01
+:basic-reifier-02
+:basic-reifier-03
+:basic-reifier-04
+:basic-reifier-06
+:basic-reifier-07
+:basic-reifier-08
+:basic-reifier-09
+:basic-reifier-10
+:basic-reifier-11
+:basic-reifier-12
+:basic-reifier-13
+:basic-tripleterm-01
+:basic-tripleterm-02
+:basic-tripleterm-03
+:basic-tripleterm-04
+:basic-tripleterm-05
+:basic-tripleterm-06
+:basic-tripleterm-07
+:basic-tripleterm-subject
+:bnode-anonreifier-01
+:bnode-anonreifier-02
+:bnode-anonreifier-03
+:bnode-reifier-01
+:bnode-reifier-02
+:bnode-reifier-03
+:bnode-tripleterm-01
+:bnode-tripleterm-02
+:bnode-tripleterm-03
+:compound-all
+:compound-anonreifier
+:compound-reifier
+:compound-tripleterm
+:compound-tripleterm-subject
+:expr-tripleterm-01
+:expr-tripleterm-03
+:expr-tripleterm-04
+:expr-tripleterm-05
+:expr-tripleterm-06
+:inside-anonreifier-01
+:inside-anonreifier-02
+:inside-reifier-01
+:inside-reifier-02
+:inside-tripleterm-01
+:inside-tripleterm-02
+:nested-anonreifier-01
+:nested-anonreifier-02
+:nested-reifier-01
+:nested-reifier-02
+:nested-tripleterm-01
+:nested-tripleterm-02
+:subject-tripleterm
+:update-anonreifier-01
+:update-anonreifier-02
+:update-anonreifier-03
+:update-anonreifier-04
+:update-anonreifier-05
+:update-anonreifier-06
+:update-reifier-01
+:update-reifier-02
+:update-reifier-03
+:update-reifier-04
+:update-reifier-05
+:update-reifier-06
+:update-reifier-07
+:update-reifier-08
+:update-tripleterm-01
+:update-tripleterm-03
+:update-tripleterm-04
+:update-tripleterm-05
+
+) .
+
+:annotation-anonreifier-01 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-anonreifier-01.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-anonreifier-01.rq> .
+
+:annotation-anonreifier-02 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-anonreifier-02.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-anonreifier-02.rq> .
+
+:annotation-anonreifier-03 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-anonreifier-03.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-anonreifier-03.rq> .
+
+:annotation-anonreifier-04 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-anonreifier-04.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-anonreifier-04.rq> .
+
+:annotation-anonreifier-05 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-anonreifier-05.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-anonreifier-05.rq> .
+
+:annotation-anonreifier-06 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-anonreifier-06.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-anonreifier-06.rq> .
+
+:annotation-anonreifier-07 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-anonreifier-07.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-anonreifier-07.rq> .
+
+:annotation-anonreifier-08 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-anonreifier-08.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-anonreifier-08.rq> .
+
+:annotation-anonreifier-09 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-anonreifier-09.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-anonreifier-09.rq> .
+
+:annotation-anonreifier-multiple-01 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-anonreifier-multiple-01.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-anonreifier-multiple-01.rq> .
+
+:annotation-anonreifier-multiple-02 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-anonreifier-multiple-02.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-anonreifier-multiple-02.rq> .
+
+:annotation-anonreifier-multiple-03 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-anonreifier-multiple-03.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-anonreifier-multiple-03.rq> .
+
+:annotation-anonreifier-multiple-04 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-anonreifier-multiple-04.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-anonreifier-multiple-04.rq> .
+
+:annotation-reifier-01 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-reifier-01.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-reifier-01.rq> .
+
+:annotation-reifier-02 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-reifier-02.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-reifier-02.rq> .
+
+:annotation-reifier-03 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-reifier-03.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-reifier-03.rq> .
+
+:annotation-reifier-04 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-reifier-04.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-reifier-04.rq> .
+
+:annotation-reifier-05 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-reifier-05.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-reifier-05.rq> .
+
+:annotation-reifier-06 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-reifier-06.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-reifier-06.rq> .
+
+:annotation-reifier-07 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-reifier-07.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-reifier-07.rq> .
+
+:annotation-reifier-08 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-reifier-08.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-reifier-08.rq> .
+
+:annotation-reifier-09 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-reifier-09.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-reifier-09.rq> .
+
+:annotation-reifier-multiple-01 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-reifier-multiple-01.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-reifier-multiple-01.rq> .
+
+:annotation-reifier-multiple-02 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-reifier-multiple-02.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-reifier-multiple-02.rq> .
+
+:annotation-reifier-multiple-03 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-reifier-multiple-03.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-reifier-multiple-03.rq> .
+
+:annotation-reifier-multiple-04 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-reifier-multiple-04.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-reifier-multiple-04.rq> .
+
+:annotation-reifier-multiple-05 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-reifier-multiple-05.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-reifier-multiple-05.rq> .
+
+:annotation-reifier-multiple-06 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-reifier-multiple-06.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-reifier-multiple-06.rq> .
+
+:annotation-reifier-multiple-07 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-reifier-multiple-07.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-reifier-multiple-07.rq> .
+
+:annotation-reifier-multiple-08 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-reifier-multiple-08.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-reifier-multiple-08.rq> .
+
+:annotation-reifier-multiple-09 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-reifier-multiple-09.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-reifier-multiple-09.rq> .
+
+:annotation-reifier-multiple-10 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "annotation-reifier-multiple-10.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <annotation-reifier-multiple-10.rq> .
+
+:basic-anonreifier-01 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-anonreifier-01.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-anonreifier-01.rq> .
+
+:basic-anonreifier-02 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-anonreifier-02.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-anonreifier-02.rq> .
+
+:basic-anonreifier-03 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-anonreifier-03.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-anonreifier-03.rq> .
+
+:basic-anonreifier-04 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-anonreifier-04.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-anonreifier-04.rq> .
+
+:basic-anonreifier-06 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-anonreifier-06.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-anonreifier-06.rq> .
+
+:basic-anonreifier-07 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-anonreifier-07.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-anonreifier-07.rq> .
+
+:basic-anonreifier-08 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-anonreifier-08.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-anonreifier-08.rq> .
+
+:basic-anonreifier-09 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-anonreifier-09.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-anonreifier-09.rq> .
+
+:basic-anonreifier-10 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-anonreifier-10.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-anonreifier-10.rq> .
+
+:basic-anonreifier-11 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-anonreifier-11.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-anonreifier-11.rq> .
+
+:basic-anonreifier-12 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-anonreifier-12.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-anonreifier-12.rq> .
+
+:basic-anonreifier-13 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-anonreifier-13.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-anonreifier-13.rq> .
+
+:basic-reifier-01 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-reifier-01.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-reifier-01.rq> .
+
+:basic-reifier-02 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-reifier-02.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-reifier-02.rq> .
+
+:basic-reifier-03 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-reifier-03.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-reifier-03.rq> .
+
+:basic-reifier-04 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-reifier-04.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-reifier-04.rq> .
+
+:basic-reifier-06 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-reifier-06.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-reifier-06.rq> .
+
+:basic-reifier-07 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-reifier-07.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-reifier-07.rq> .
+
+:basic-reifier-08 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-reifier-08.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-reifier-08.rq> .
+
+:basic-reifier-09 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-reifier-09.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-reifier-09.rq> .
+
+:basic-reifier-10 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-reifier-10.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-reifier-10.rq> .
+
+:basic-reifier-11 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-reifier-11.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-reifier-11.rq> .
+
+:basic-reifier-12 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-reifier-12.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-reifier-12.rq> .
+
+:basic-reifier-13 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-reifier-13.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-reifier-13.rq> .
+
+:basic-tripleterm-01 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-tripleterm-01.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-tripleterm-01.rq> .
+
+:basic-tripleterm-02 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-tripleterm-02.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-tripleterm-02.rq> .
+
+:basic-tripleterm-03 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-tripleterm-03.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-tripleterm-03.rq> .
+
+:basic-tripleterm-04 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-tripleterm-04.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-tripleterm-04.rq> .
+
+:basic-tripleterm-05 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-tripleterm-05.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-tripleterm-05.rq> .
+
+:basic-tripleterm-06 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-tripleterm-06.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-tripleterm-06.rq> .
+
+:basic-tripleterm-07 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-tripleterm-07.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-tripleterm-07.rq> .
+
+:basic-tripleterm-subject rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "basic-tripleterm-subject.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <basic-tripleterm-subject.rq> .
+
+:bnode-anonreifier-01 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "bnode-anonreifier-01.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <bnode-anonreifier-01.rq> .
+
+:bnode-anonreifier-02 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "bnode-anonreifier-02.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <bnode-anonreifier-02.rq> .
+
+:bnode-anonreifier-03 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "bnode-anonreifier-03.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <bnode-anonreifier-03.rq> .
+
+:bnode-reifier-01 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "bnode-reifier-01.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <bnode-reifier-01.rq> .
+
+:bnode-reifier-02 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "bnode-reifier-02.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <bnode-reifier-02.rq> .
+
+:bnode-reifier-03 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "bnode-reifier-03.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <bnode-reifier-03.rq> .
+
+:bnode-tripleterm-01 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "bnode-tripleterm-01.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <bnode-tripleterm-01.rq> .
+
+:bnode-tripleterm-02 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "bnode-tripleterm-02.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <bnode-tripleterm-02.rq> .
+
+:bnode-tripleterm-03 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "bnode-tripleterm-03.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <bnode-tripleterm-03.rq> .
+
+:compound-all rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "compound-all.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <compound-all.rq> .
+
+:compound-anonreifier rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "compound-anonreifier.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <compound-anonreifier.rq> .
+
+:compound-reifier rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "compound-reifier.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <compound-reifier.rq> .
+
+:compound-tripleterm rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "compound-tripleterm.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <compound-tripleterm.rq> .
+
+:compound-tripleterm-subject rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "compound-tripleterm-subject.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <compound-tripleterm-subject.rq> .
+
+:expr-tripleterm-01 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "expr-tripleterm-01.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <expr-tripleterm-01.rq> .
+
+:expr-tripleterm-03 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "expr-tripleterm-03.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <expr-tripleterm-03.rq> .
+
+:expr-tripleterm-04 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "expr-tripleterm-04.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <expr-tripleterm-04.rq> .
+
+:expr-tripleterm-05 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "expr-tripleterm-05.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <expr-tripleterm-05.rq> .
+
+:expr-tripleterm-06 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "expr-tripleterm-06.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <expr-tripleterm-06.rq> .
+
+:inside-anonreifier-01 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "inside-anonreifier-01.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <inside-anonreifier-01.rq> .
+
+:inside-anonreifier-02 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "inside-anonreifier-02.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <inside-anonreifier-02.rq> .
+
+:inside-reifier-01 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "inside-reifier-01.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <inside-reifier-01.rq> .
+
+:inside-reifier-02 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "inside-reifier-02.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <inside-reifier-02.rq> .
+
+:inside-tripleterm-01 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "inside-tripleterm-01.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <inside-tripleterm-01.rq> .
+
+:inside-tripleterm-02 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "inside-tripleterm-02.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <inside-tripleterm-02.rq> .
+
+:nested-anonreifier-01 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "nested-anonreifier-01.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <nested-anonreifier-01.rq> .
+
+:nested-anonreifier-02 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "nested-anonreifier-02.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <nested-anonreifier-02.rq> .
+
+:nested-reifier-01 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "nested-reifier-01.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <nested-reifier-01.rq> .
+
+:nested-reifier-02 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "nested-reifier-02.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <nested-reifier-02.rq> .
+
+:nested-tripleterm-01 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "nested-tripleterm-01.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <nested-tripleterm-01.rq> .
+
+:nested-tripleterm-02 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "nested-tripleterm-02.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <nested-tripleterm-02.rq> .
+
+:subject-tripleterm rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "subject-tripleterm.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <subject-tripleterm.rq> .
+
+:update-anonreifier-01 rdf:type   mf:PositiveUpdateSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "update-anonreifier-01.ru" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <update-anonreifier-01.ru> .
+
+:update-anonreifier-02 rdf:type   mf:PositiveUpdateSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "update-anonreifier-02.ru" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <update-anonreifier-02.ru> .
+
+:update-anonreifier-03 rdf:type   mf:PositiveUpdateSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "update-anonreifier-03.ru" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <update-anonreifier-03.ru> .
+
+:update-anonreifier-04 rdf:type   mf:PositiveUpdateSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "update-anonreifier-04.ru" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <update-anonreifier-04.ru> .
+
+:update-anonreifier-05 rdf:type   mf:PositiveUpdateSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "update-anonreifier-05.ru" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <update-anonreifier-05.ru> .
+
+:update-anonreifier-06 rdf:type   mf:PositiveUpdateSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "update-anonreifier-06.ru" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <update-anonreifier-06.ru> .
+
+:update-reifier-01 rdf:type   mf:PositiveUpdateSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "update-reifier-01.ru" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <update-reifier-01.ru> .
+
+:update-reifier-02 rdf:type   mf:PositiveUpdateSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "update-reifier-02.ru" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <update-reifier-02.ru> .
+
+:update-reifier-03 rdf:type   mf:PositiveUpdateSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "update-reifier-03.ru" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <update-reifier-03.ru> .
+
+:update-reifier-04 rdf:type   mf:PositiveUpdateSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "update-reifier-04.ru" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <update-reifier-04.ru> .
+
+:update-reifier-05 rdf:type   mf:PositiveUpdateSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "update-reifier-05.ru" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <update-reifier-05.ru> .
+
+:update-reifier-06 rdf:type   mf:PositiveUpdateSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "update-reifier-06.ru" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <update-reifier-06.ru> .
+
+:update-reifier-07 rdf:type   mf:PositiveUpdateSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "update-reifier-07.ru" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <update-reifier-07.ru> .
+
+:update-reifier-08 rdf:type   mf:PositiveUpdateSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "update-reifier-08.ru" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <update-reifier-08.ru> .
+
+:update-tripleterm-01 rdf:type   mf:PositiveUpdateSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "update-tripleterm-01.ru" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <update-tripleterm-01.ru> .
+
+:update-tripleterm-03 rdf:type   mf:PositiveUpdateSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "update-tripleterm-03.ru" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <update-tripleterm-03.ru> .
+
+:update-tripleterm-04 rdf:type   mf:PositiveUpdateSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "update-tripleterm-04.ru" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <update-tripleterm-04.ru> .
+
+:update-tripleterm-05 rdf:type   mf:PositiveUpdateSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "update-tripleterm-05.ru" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <update-tripleterm-05.ru> .

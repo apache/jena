@@ -1,0 +1,7 @@
+SELECT\u0020*\U00000009WHERE {
+	?s ?p "value"
+}
+
+# the escapes here produce whitespace -- SPACESPACE (U+20) and
+# CHARACTER TABULATION (U+9) -- surrounding the `*` token in the
+# SELECT projection.

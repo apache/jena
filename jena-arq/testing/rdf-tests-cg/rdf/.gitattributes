@@ -1,0 +1,13 @@
+# Files needing the exact end-of-line as LF given in the file.
+
+rdf11/rdf-turtle/turtle-subm-15.nt           text eol=lf
+rdf11/rdf-turtle/turtle-subm-15.ttl          text eol=lf
+rdf11/rdf-turtle/turtle-subm-16.nt           text eol=lf
+rdf11/rdf-turtle/turtle-subm-16.ttl          text eol=lf
+rdf11/rdf-turtle/literal_with_LINE_FEED.ttl  text eol=lf
+
+rdf11/rdf-trig/trig-subm-15.trig             text eol=lf
+rdf11/rdf-trig/trig-subm-15.nq               text eol=lf
+rdf11/rdf-trig/trig-subm-16.trig             text eol=lf
+rdf11/rdf-trig/trig-subm-16.nq               text eol=lf
+rdf11/rdf-trig/literal_with_LINE_FEED.trig   text eol=lf

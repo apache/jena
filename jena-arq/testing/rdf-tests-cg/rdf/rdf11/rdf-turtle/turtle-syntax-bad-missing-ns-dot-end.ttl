@@ -1,0 +1,4 @@
+PREFIX valid: <http://example.com/v#>
+PREFIX invalid.: <http://example.com/i#>
+
+valid:s valid:p invalid.:o .

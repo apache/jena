@@ -1,0 +1,90 @@
+{
+    "head": {
+        "vars": [
+            "g1",
+            "g2",
+            "o",
+            "p",
+            "q",
+            "s",
+            "z"
+        ]
+    },
+    "results": {
+        "bindings": [
+            {
+                "z": {
+                    "value": {
+                        "subject": {
+                            "value": "bc_0_b0_b",
+                            "type": "bnode"
+                        },
+                        "predicate": {
+                            "value": "http://example/r",
+                            "type": "uri"
+                        },
+                        "object": {
+                            "value": "http://example/o3",
+                            "type": "uri"
+                        }
+                    },
+                    "type": "triple"
+                },
+                "s": {
+                    "value": "bc_0_b0_b",
+                    "type": "bnode"
+                },
+                "p": {
+                    "value": "http://example/r",
+                    "type": "uri"
+                },
+                "o": {
+                    "value": "http://example/o3",
+                    "type": "uri"
+                },
+                "g2": {
+                    "value": "http://example/g2",
+                    "type": "uri"
+                },
+                "g1": {
+                    "value": "http://example/g1",
+                    "type": "uri"
+                },
+                "q": {
+                    "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies",
+                    "type": "uri"
+                }
+            },
+            {
+                "z": {
+                    "value": "abc",
+                    "type": "literal"
+                },
+                "s": {
+                    "value": "bc_0_b0_b",
+                    "type": "bnode"
+                },
+                "p": {
+                    "value": "http://example/r",
+                    "type": "uri"
+                },
+                "o": {
+                    "value": "http://example/o3",
+                    "type": "uri"
+                },
+                "g2": {
+                    "value": "http://example/g2",
+                    "type": "uri"
+                },
+                "g1": {
+                    "value": "http://example/g1",
+                    "type": "uri"
+                },
+                "q": {
+                    "value": "http://example/pb",
+                    "type": "uri"
+                }
+            }
+        ]
+    }
+}

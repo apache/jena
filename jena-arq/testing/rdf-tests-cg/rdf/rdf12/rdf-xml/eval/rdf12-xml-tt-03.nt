@@ -1,0 +1,1 @@
+<http://example.org/> <http://example.org/stuff/1.0/prop> <<(_:b1 <http://example.org/stuff/1.0/p> <http://example.org/stuff/1.0/o>)>> .

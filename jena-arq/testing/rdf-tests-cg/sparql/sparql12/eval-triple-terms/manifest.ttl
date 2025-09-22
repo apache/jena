@@ -1,0 +1,426 @@
+@prefix :       <https://w3c.github.io/rdf-tests/sparql/sparql12/eval-triple-terms/manifest#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix ut:     <http://www.w3.org/2009/sparql/tests/test-update#> .
+@prefix dawgt:  <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Evaluation Triple Terms" ;
+    rdfs:comment "Evaluation tests for triple terms in SPARQL 1.2" ;
+    mf:entries
+    (
+        :results-tripleterms-1j
+        :results-tripleterms-1x
+        :results-reifiedtriples-1j
+        :results-reifiedtriples-1x
+
+        :basic-2
+        :basic-3
+        :basic-4
+        :basic-5
+        :basic-6
+
+        :pattern-1
+        :pattern-2
+        :pattern-3
+        :pattern-3-nomatch
+        :pattern-4
+        :pattern-5
+        :pattern-6
+        :pattern-7
+        :pattern-8
+        :pattern-8-nomatch
+        :pattern-9
+
+        :construct-1
+        :construct-2
+        :construct-3
+        :construct-4
+        :construct-5
+
+        :graphs-1
+        :graphs-2
+
+        :expr-1
+        :expr-2
+
+        :op-1
+        :op-2
+        :op-3
+        :op-4
+
+        :order-1
+        :order-2
+
+        :update-1
+        :update-2
+        :update-3
+) .
+
+:results-tripleterms-1j rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name      "Triple terms - all graph triples (JSON results)" ;
+    mf:action [
+       qt:query  <results-1.rq> ;
+       qt:data   <data-0-tripleterms.ttl>
+    ] ;
+    mf:result  <results-tripleterms-1.srj>
+    .
+
+:results-tripleterms-1x rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name      "Triple terms - all graph triples (XML results)" ;
+    mf:action [
+       qt:query  <results-1.rq> ;
+       qt:data   <data-0-tripleterms.ttl>
+    ] ;
+    mf:result  <results-tripleterms-1.srx>
+    .
+
+:results-reifiedtriples-1j rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name      "Reified triples - all graph triples (JSON results)" ;
+    mf:action [
+       qt:query  <results-1.rq> ;
+       qt:data   <data-0-reifiedtriples.ttl>
+    ] ;
+    mf:result  <results-reifiedtriples-1.srj>
+    .
+
+:results-reifiedtriples-1x rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name      "Reified triples - all graph triples (XML results)" ;
+    mf:action [
+       qt:query  <results-1.rq> ;
+       qt:data   <data-0-reifiedtriples.ttl>
+    ] ;
+    mf:result  <results-reifiedtriples-1.srx>
+    .
+
+:basic-2 rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name      "Reified triples - match constant reified triple" ;
+    mf:action [
+       qt:query  <basic-2.rq> ;
+       qt:data   <data-1.ttl>
+    ] ;
+    mf:result  <basic-2.srj>
+    .
+
+:basic-3 rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name      "Reified triples - match reified triple, var subject" ;
+    mf:action [
+       qt:query  <basic-3.rq> ;
+       qt:data   <data-1.ttl>
+    ] ;
+    mf:result  <basic-3.srj>
+    .
+
+:basic-4 rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name      "Reified triples - match reified triple, var predicate" ;
+    mf:action [
+       qt:query  <basic-4.rq> ;
+       qt:data   <data-1.ttl>
+    ] ;
+    mf:result  <basic-4.srj>
+    .
+
+:basic-5 rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name      "Reified triples - match reified triple, var object" ;
+    mf:action [
+       qt:query  <basic-5.rq> ;
+       qt:data   <data-1.ttl>
+    ] ;
+    mf:result  <basic-5.srj>
+    .
+
+:basic-6 rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name      "Reified triples - no match of reified triple" ;
+    mf:action [
+       qt:query  <basic-6.rq> ;
+       qt:data   <data-1.ttl>
+    ] ;
+    mf:result  <basic-6.srj>
+    .
+
+:pattern-1 rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - Asserted and reified triple" ;
+    mf:action
+        [ qt:query  <pattern-01.rq> ;
+          qt:data   <data-2.ttl> ] ;
+    mf:result  <pattern-01.srj>
+    .
+
+:pattern-2 rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - Asserted and reified triple" ;
+    mf:action
+        [ qt:query  <pattern-02.rq> ;
+          qt:data   <data-2.ttl> ] ;
+    mf:result  <pattern-02.srj>
+    .
+
+:pattern-3 rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - Pattern - Variable for reified triple reifier" ;
+    mf:action
+        [ qt:query  <pattern-03.rq> ;
+          qt:data   <data-2.ttl> ] ;
+    mf:result  <pattern-03.srj>
+    .
+
+:pattern-3-nomatch rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - Pattern - Variable for reified triple" ;
+    mf:action
+        [ qt:query  <pattern-03-nomatch.rq> ;
+          qt:data   <data-2.ttl> ] ;
+    mf:result  <pattern-03-nomatch.srj>
+    .
+
+:pattern-4 rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - Pattern - No match" ;
+    mf:action
+        [ qt:query  <pattern-04.rq> ;
+          qt:data   <data-2.ttl> ] ;
+    mf:result  <pattern-04.srj>
+    .
+
+:pattern-5 rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - Pattern - match variables in triple terms" ;
+    mf:action
+        [ qt:query  <pattern-05.rq> ;
+          qt:data   <data-2.ttl> ] ;
+    mf:result  <pattern-05.srj>
+    .
+
+:pattern-6 rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - Pattern - Nesting 1" ;
+    mf:action
+        [ qt:query  <pattern-06.rq> ;
+          qt:data   <data-2.ttl> ] ;
+    mf:result  <pattern-06.srj>
+    .
+
+:pattern-7 rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - Pattern - Nesting 2" ;
+    mf:action
+        [ qt:query  <pattern-07.rq> ;
+          qt:data   <data-2.ttl> ] ;
+    mf:result  <pattern-07.srj>
+    .
+
+:pattern-8 rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - Pattern - Match and nesting" ;
+    mf:action
+        [ qt:query  <pattern-08.rq> ;
+          qt:data   <data-2.ttl> ] ;
+    mf:result  <pattern-08.srj>
+    .
+
+:pattern-8-nomatch rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - Pattern - Match for non-equal reifier and nesting" ;
+    mf:action
+        [ qt:query  <pattern-08-nomatch.rq> ;
+          qt:data   <data-2.ttl> ] ;
+    mf:result  <pattern-08-nomatch.srj>
+    .
+
+:pattern-9 rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - Pattern - Same variable" ;
+    mf:action
+        [ qt:query  <pattern-09.rq> ;
+          qt:data   <data-5.ttl> ] ;
+    mf:result  <pattern-09.srj>
+    .
+
+## CONSTRUCT
+
+:construct-1 rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - CONSTRUCT with constant template" ;
+    mf:action
+        [ qt:query  <construct-1.rq> ;
+          qt:data   <data-3.ttl> ] ;
+    mf:result  <construct-1.ttl> ;
+.
+
+:construct-2 rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - CONSTRUCT WHERE with constant template" ;
+    mf:action
+        [ qt:query  <construct-2.rq> ;
+          qt:data   <data-3.ttl> ] ;
+    mf:result  <construct-2.ttl> ;
+.
+
+:construct-3 rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - CONSTRUCT - about every triple" ;
+    mf:action
+        [ qt:query  <construct-3.rq> ;
+          qt:data   <data-3.ttl> ] ;
+    mf:result  <construct-3.ttl> ;
+.
+
+:construct-4 rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - CONSTRUCT with annotation syntax" ;
+    mf:action
+        [ qt:query  <construct-4.rq> ;
+          qt:data   <data-3.ttl> ] ;
+    mf:result  <construct-4.ttl> ;
+.
+
+:construct-5 rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - CONSTRUCT WHERE with annotation syntax" ;
+    mf:action
+        [ qt:query  <construct-5.rq> ;
+          qt:data   <data-3.ttl> ] ;
+    mf:result  <construct-5.ttl> ;
+    .
+
+:graphs-1 rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - GRAPH" ;
+    mf:action
+        [ qt:query  <graphs-1.rq> ;
+          qt:data   <data-4.trig> ] ;
+    mf:result  <graphs-1.srj> ;
+    .
+
+:graphs-2 rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - GRAPHs with blank node" ;
+    mf:action
+        [ qt:query  <graphs-2.rq> ;
+          qt:data   <data-4.trig> ] ;
+    mf:result  <graphs-2.srj> ;
+    .
+
+## Expressions
+
+:expr-1  rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - Embedded triple - BIND - CONSTRUCT" ;
+    mf:action
+        [ qt:query  <expr-01.rq> ;
+          qt:data   <data-4.trig> ] ;
+    mf:result  <expr-01.ttl> ;
+    .
+
+:expr-2  rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - Embedded triple - Functions" ;
+    mf:action
+        [ qt:query  <expr-02.rq> ;
+          qt:data   <empty.nq> ] ;
+    mf:result  <expr-02.srj> ;
+    .
+
+## Operators
+
+:op-1  rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - Embedded triple - sameTerm" ;
+    mf:action
+        [ qt:query  <op-1.rq> ;
+          qt:data   <data-7.ttl> ] ;
+    mf:result  <op-1.srj> ;
+    .
+
+:op-2  rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - Embedded triple - value-equality" ;
+    mf:action
+        [ qt:query  <op-2.rq> ;
+          qt:data   <data-7.ttl> ] ;
+    mf:result  <op-2.srj> ;
+    .
+
+:op-3  rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - Embedded triple - value-inequality" ;
+    mf:action
+        [ qt:query  <op-3.rq> ;
+          qt:data   <data-7.ttl> ] ;
+    mf:result  <op-3.srj> ;
+    .
+
+:op-4  rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - Embedded triple - value-inequality" ;
+    mf:action
+        [ qt:query  <op-4.rq> ;
+          qt:data   <data-7.ttl> ] ;
+    mf:result  <op-4.srj> ;
+    .
+
+## ORDER BY
+## These use the same query on different data.
+
+:order-1  rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - Embedded triple - ORDER BY" ;
+    mf:action
+        [ qt:query  <order-by.rq> ;
+          qt:data   <data-order-kind.ttl> ] ;
+    mf:result  <order-1.srj> ;
+    .
+
+:order-2  rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - Embedded triple - ordering" ;
+    mf:action
+        [ qt:query  <order-by.rq> ;
+          qt:data   <data-order.ttl> ] ;
+    mf:result  <order-2.srj> ;
+    .
+
+## Update
+
+
+:update-1 rdf:type mf:UpdateEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - Update" ;
+    mf:action [ ut:request <update-1.ru> ;
+                ut:data <data-6.trig>
+              ] ;
+    mf:result [ ut:data <update-result-1.trig>
+              ] ;
+    .
+
+:update-2 rdf:type mf:UpdateEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - Update - annotation" ;
+    mf:action [ ut:request <update-2.ru> ;
+                ut:data <data-6.trig>
+              ] ;
+    mf:result [ ut:data <update-result-2.trig>
+              ] ;
+    .
+
+:update-3 rdf:type mf:UpdateEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name    "Reified triples - Update - data" ;
+    mf:action [ ut:request <update-3.ru> ;
+                ut:data <empty.nq>
+              ] ;
+    mf:result [ ut:data <update-result-3.trig>
+              ] ;
+    .

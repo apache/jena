@@ -1,0 +1,233 @@
+## Distributed under both the "W3C Test Suite License" [1]
+## and the "W3C 3-clause BSD License".
+## [1] https://www.w3.org/Consortium/Legal/2008/04-testsuite-license
+## [2] https://www.w3.org/Consortium/Legal/2008/03-bsd-license
+
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
+PREFIX test:   <http://www.w3.org/2001/sw/DataAccess/tests/>
+PREFIX rdft:   <http://www.w3.org/ns/rdftest#>
+PREFIX trs:    <https://w3c.github.io/rdf-tests/rdf/rdf12/rdf-turtle/eval#>
+PREFIX dct:    <http://purl.org/dc/terms/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+PREFIX foaf:   <http://xmlns.com/foaf/0.1/>
+PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
+
+trs:manifest  rdf:type mf:Manifest ;
+   rdfs:label "RDF 1.2 Turtle Evaluation Tests"@en ;
+   skos:prefLabel "La suite des tests pour RDF 1.2 Turtle"@fr;
+   skos:prefLabel "Conjunto de pruebas para RDF 1.2 Turtle"@es;
+   mf:assumedTestBase <https://w3c.github.io/rdf-tests/rdf/rdf12/rdf-turtle/eval/> ;
+   dct:issued "2023-07-20"^^xsd:date ;
+   rdfs:seeAlso <https://w3c.github.io/rdf-tests/> ;
+   dct:modified "2025-06-10"^^xsd:date ;
+   dct:licence <https://www.w3.org/Consortium/Legal/2008/03-bsd-license> ;
+   dct:creator [ foaf:homepage <https://w3c.github.io/rdf-star-wg/> ; foaf:name "W3C RDF & SPARQL Working Group" ] ;
+    mf:entries
+    (
+        trs:turtle12-rt-01
+        trs:turtle12-rt-02
+        trs:turtle12-rt-03
+        trs:turtle12-rt-04
+        trs:turtle12-rt-05
+        trs:turtle12-rt-06
+        trs:turtle12-rt-07
+        trs:turtle12-rt-08
+        trs:turtle12-bnode-01
+        trs:turtle12-bnode-02
+        trs:turtle12-tt-01
+        trs:turtle12-tt-02
+        trs:turtle12-tt-03
+        trs:turtle12-tt-04
+        trs:turtle12-annotation-01
+        trs:turtle12-annotation-02
+        trs:turtle12-annotation-03
+        trs:turtle12-annotation-04
+        trs:turtle12-annotation-05
+        trs:turtle12-annotation-06
+        trs:turtle12-annotation-07
+        trs:turtle12-annotation-08
+        trs:turtle12-annotation-09
+        trs:turtle12-annotation-10
+        trs:turtle12-annotation-11
+        trs:turtle12-annotation-12
+        trs:turtle12-reified-triples-annotation-01
+        trs:turtle12-reified-triples-annotation-02
+        trs:turtle12-reified-triples-annotation-03
+    ) .
+
+trs:turtle12-rt-01 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - subject reification" ;
+   mf:action    <turtle12-eval-rt-01.ttl> ;
+   mf:result    <turtle12-eval-rt-01.nt> ;
+   .
+
+trs:turtle12-rt-02 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - object reification" ;
+   mf:action    <turtle12-eval-rt-02.ttl> ;
+   mf:result    <turtle12-eval-rt-02.nt> ;
+   .
+
+trs:turtle12-rt-03 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - subject reification with identifier" ;
+   mf:action    <turtle12-eval-rt-03.ttl> ;
+   mf:result    <turtle12-eval-rt-03.nt> ;
+   .
+
+trs:turtle12-rt-04 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - object reification with identifier" ;
+   mf:action    <turtle12-eval-rt-04.ttl> ;
+   mf:result    <turtle12-eval-rt-04.nt> ;
+   .
+
+trs:turtle12-rt-05 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - subject reification with bnode identifier" ;
+   mf:action    <turtle12-eval-rt-05.ttl> ;
+   mf:result    <turtle12-eval-rt-05.nt> ;
+   .
+
+trs:turtle12-rt-06 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - object reification with bnode identifier" ;
+   mf:action    <turtle12-eval-rt-06.ttl> ;
+   mf:result    <turtle12-eval-rt-06.nt> ;
+   .
+
+trs:turtle12-rt-07 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - subject reification with empty identifier" ;
+   mf:action    <turtle12-eval-rt-07.ttl> ;
+   mf:result    <turtle12-eval-rt-07.nt> ;
+   .
+
+trs:turtle12-rt-08 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - object reification with empty identifier" ;
+   mf:action    <turtle12-eval-rt-08.ttl> ;
+   mf:result    <turtle12-eval-rt-08.nt> ;
+   .
+
+trs:turtle12-bnode-01 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - blank node label" ;
+   mf:action    <turtle12-eval-bnode-01.ttl> ;
+   mf:result    <turtle12-eval-bnode-01.nt> ;
+   .
+
+trs:turtle12-bnode-02 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - blank node labels" ;
+   mf:action    <turtle12-eval-bnode-02.ttl> ;
+   mf:result    <turtle12-eval-bnode-02.nt> ;
+   .
+
+trs:turtle12-tt-01 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - object triple term" ;
+   mf:action    <turtle12-eval-tt-01.ttl> ;
+   mf:result    <turtle12-eval-tt-01.nt> ;
+   .
+
+trs:turtle12-tt-02 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - object triple term, no whitespace" ;
+   mf:action    <turtle12-eval-tt-02.ttl> ;
+   mf:result    <turtle12-eval-tt-02.nt> ;
+   .
+
+trs:turtle12-tt-03 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - Nested, no whitespace" ;
+   mf:action    <turtle12-eval-tt-03.ttl> ;
+   mf:result    <turtle12-eval-tt-03.nt> ;
+   .
+
+trs:turtle12-tt-04 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - Nested object term" ;
+   mf:action    <turtle12-eval-tt-04.ttl> ;
+   mf:result    <turtle12-eval-tt-04.nt> ;
+   .
+
+trs:turtle12-annotation-01 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - Annotation form" ;
+   mf:action    <turtle12-eval-annotation-01.ttl> ;
+   mf:result    <turtle12-eval-annotation-01.nt> ;
+   .
+
+trs:turtle12-annotation-02 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - Annotation example" ;
+   mf:action    <turtle12-eval-annotation-02.ttl> ;
+   mf:result    <turtle12-eval-annotation-02.nt> ;
+   .
+
+trs:turtle12-annotation-03 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - Annotation - predicate and object lists" ;
+   mf:action    <turtle12-eval-annotation-03.ttl> ;
+   mf:result    <turtle12-eval-annotation-03.nt> ;
+   .
+
+trs:turtle12-annotation-04 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - Annotation - nested" ;
+   mf:action    <turtle12-eval-annotation-04.ttl> ;
+   mf:result    <turtle12-eval-annotation-04.nt> ;
+   .
+
+trs:turtle12-annotation-05 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - Annotation object list" ;
+   mf:action    <turtle12-eval-annotation-05.ttl> ;
+   mf:result    <turtle12-eval-annotation-05.nt> ;
+   .
+
+trs:turtle12-annotation-06 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - Annotation with identifier" ;
+   mf:action    <turtle12-eval-annotation-06.ttl> ;
+   mf:result    <turtle12-eval-annotation-06.nt> ;
+   .
+
+trs:turtle12-annotation-07 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - Different annotations have different default identifiers" ;
+   mf:action    <turtle12-eval-annotation-07.ttl> ;
+   mf:result    <turtle12-eval-annotation-07.nt> ;
+   .
+
+trs:turtle12-annotation-08 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - Annotation form with explicit identifier" ;
+   mf:action    <turtle12-eval-annotation-08.ttl> ;
+   mf:result    <turtle12-eval-annotation-08.nt> ;
+   .
+
+trs:turtle12-annotation-09 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - Annotation form with multiple reifiers" ;
+   mf:action    <turtle12-eval-annotation-09.ttl> ;
+   mf:result    <turtle12-eval-annotation-09.nt> ;
+   .
+
+trs:turtle12-annotation-10 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - Annotation form with multiple annotation blocks" ;
+   mf:action    <turtle12-eval-annotation-10.ttl> ;
+   mf:result    <turtle12-eval-annotation-10.nt> ;
+   .
+
+trs:turtle12-annotation-11 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - Annotation form with annotation block followed by reifier" ;
+   mf:action    <turtle12-eval-annotation-11.ttl> ;
+   mf:result    <turtle12-eval-annotation-11.nt> ;
+   .
+
+trs:turtle12-annotation-12 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - Annotation form with alternating reifiers and annotation blocks" ;
+   mf:action    <turtle12-eval-annotation-12.ttl> ;
+   mf:result    <turtle12-eval-annotation-12.nt> ;
+   .
+
+trs:turtle12-reified-triples-annotation-01 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - Annotation with reified triples" ;
+   mf:action    <turtle12-eval-reified-triples-annotation-01.ttl> ;
+   mf:result    <turtle12-eval-reified-triples-annotation-01.nt> ;
+   .
+   
+trs:turtle12-reified-triples-annotation-02 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - Annotation on triple with reified triple subject" ;
+   mf:action    <turtle12-eval-reified-triples-annotation-02.ttl> ;
+   mf:result    <turtle12-eval-reified-triples-annotation-02.nt> ;
+   .
+   
+trs:turtle12-reified-triples-annotation-03 rdf:type rdft:TestTurtleEval ;
+   mf:name      "Turtle 1.2 - Annotation on triple with reified triple object" ;
+   mf:action    <turtle12-eval-reified-triples-annotation-03.ttl> ;
+   mf:result    <turtle12-eval-reified-triples-annotation-03.nt> ;
+   .
+

@@ -1,0 +1,13 @@
+@prefix : <http://example.org/> .
+@prefix xsd:        <http://www.w3.org/2001/XMLSchema#> .
+
+:tzasc :p1 "2008-10-01T00:00:00Z"^^xsd:dateTime ; :p2 "2008-10-03T00:00:00Z"^^xsd:dateTime .
+:tzdesc :p1 "2008-10-03T00:00:00Z"^^xsd:dateTime ; :p2 "2008-10-01T00:00:00Z"^^xsd:dateTime .
+:tzeq :p1 "2008-10-01T00:00:00Z"^^xsd:dateTime ; :p2 "2008-10-01T00:00:00Z"^^xsd:dateTime .
+:ntzasc :p1 "2008-10-01T00:00:00"^^xsd:dateTime ; :p2 "2008-10-03T00:00:00"^^xsd:dateTime .
+:ntzdesc :p1 "2008-10-03T00:00:00"^^xsd:dateTime ; :p2 "2008-10-01T00:00:00"^^xsd:dateTime .
+:ntzeq :p1 "2008-10-01T00:00:00"^^xsd:dateTime ; :p2 "2008-10-01T00:00:00"^^xsd:dateTime .
+:tzntzasc :p1 "2008-10-01T00:00:00Z"^^xsd:dateTime ; :p2 "2008-10-03T00:00:00"^^xsd:dateTime .
+:tzntzdesc :p1 "2008-10-03T00:00:00Z"^^xsd:dateTime ; :p2 "2008-10-01T00:00:00"^^xsd:dateTime .
+:ntztzasc :p1 "2008-10-01T00:00:00"^^xsd:dateTime ; :p2 "2008-10-03T00:00:00Z"^^xsd:dateTime .
+:ntztzdesc :p1 "2008-10-03T00:00:00"^^xsd:dateTime ; :p2 "2008-10-01T00:00:00Z"^^xsd:dateTime .

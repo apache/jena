@@ -1,0 +1,3 @@
+PREFIX .undefined: <http://example.com/u#>
+
+.undefined:s .undefined:p .undefined:o .

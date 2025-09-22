@@ -1,0 +1,165 @@
+{
+    "head": {
+        "vars": [
+            "left",
+            "right",
+            "x"
+        ]
+    },
+    "results": {
+        "bindings": [
+            {
+                "x": {
+                    "value": "http://example/x1",
+                    "type": "uri"
+                },
+                "left": {
+                    "value": {
+                        "subject": {
+                            "value": "http://example/a",
+                            "type": "uri"
+                        },
+                        "predicate": {
+                            "value": "http://example/b",
+                            "type": "uri"
+                        },
+                        "object": {
+                            "value": "123",
+                            "type": "literal",
+                            "datatype": "http://www.w3.org/2001/XMLSchema#integer"
+                        }
+                    },
+                    "type": "triple"
+                },
+                "right": {
+                    "value": {
+                        "subject": {
+                            "value": "http://example/a",
+                            "type": "uri"
+                        },
+                        "predicate": {
+                            "value": "http://example/b",
+                            "type": "uri"
+                        },
+                        "object": {
+                            "value": "123.0",
+                            "type": "literal",
+                            "datatype": "http://www.w3.org/2001/XMLSchema#decimal"
+                        }
+                    },
+                    "type": "triple"
+                }
+            },
+            {
+                "x": {
+                    "value": "http://example/x3",
+                    "type": "uri"
+                },
+                "left": {
+                    "value": {
+                        "subject": {
+                            "value": "http://example/a",
+                            "type": "uri"
+                        },
+                        "predicate": {
+                            "value": "http://example/q",
+                            "type": "uri"
+                        },
+                        "object": {
+                            "value": {
+                                "subject": {
+                                    "value": "http://example/a",
+                                    "type": "uri"
+                                },
+                                "predicate": {
+                                    "value": "http://example/b",
+                                    "type": "uri"
+                                },
+                                "object": {
+                                    "value": "123",
+                                    "type": "literal",
+                                    "datatype": "http://www.w3.org/2001/XMLSchema#integer"
+                                }
+                            },
+                            "type": "triple"
+                        }
+                    },
+                    "type": "triple"
+                },
+                "right": {
+                    "value": {
+                        "subject": {
+                            "value": "http://example/a",
+                            "type": "uri"
+                        },
+                        "predicate": {
+                            "value": "http://example/q",
+                            "type": "uri"
+                        },
+                        "object": {
+                            "value": {
+                                "subject": {
+                                    "value": "http://example/a",
+                                    "type": "uri"
+                                },
+                                "predicate": {
+                                    "value": "http://example/b",
+                                    "type": "uri"
+                                },
+                                "object": {
+                                    "value": "123.0",
+                                    "type": "literal",
+                                    "datatype": "http://www.w3.org/2001/XMLSchema#decimal"
+                                }
+                            },
+                            "type": "triple"
+                        }
+                    },
+                    "type": "triple"
+                }
+            },
+            {
+                "x": {
+                    "value": "http://example/x6",
+                    "type": "uri"
+                },
+                "left": {
+                    "value": {
+                        "subject": {
+                            "value": "bc_0_b0_bnode2",
+                            "type": "bnode"
+                        },
+                        "predicate": {
+                            "value": "http://example/b",
+                            "type": "uri"
+                        },
+                        "object": {
+                            "value": "123e0",
+                            "type": "literal",
+                            "datatype": "http://www.w3.org/2001/XMLSchema#double"
+                        }
+                    },
+                    "type": "triple"
+                },
+                "right": {
+                    "value": {
+                        "subject": {
+                            "value": "bc_0_b0_bnode2",
+                            "type": "bnode"
+                        },
+                        "predicate": {
+                            "value": "http://example/b",
+                            "type": "uri"
+                        },
+                        "object": {
+                            "value": "123",
+                            "type": "literal",
+                            "datatype": "http://www.w3.org/2001/XMLSchema#integer"
+                        }
+                    },
+                    "type": "triple"
+                }
+            }
+        ]
+    }
+}

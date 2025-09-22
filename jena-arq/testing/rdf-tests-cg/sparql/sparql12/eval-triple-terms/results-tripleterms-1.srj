@@ -1,0 +1,39 @@
+{ "head": {
+    "vars": [ "s" , "p" , "o" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "s": { "type": "uri" , "value": "http://example/a" } ,
+        "p": { "type": "uri" , "value": "http://example/q" } ,
+        "o": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/a" } ,
+            "predicate": { "type": "uri" , "value": "http://example/b" } ,
+            "object":   { "type": "uri" , "value": "http://example/c" }
+          }
+        }
+      } ,
+      { 
+        "s": { "type": "uri" , "value": "http://example/f" } ,
+        "p": { "type": "uri" , "value": "http://example/g" } ,
+        "o": {
+          "type": "triple" , 
+          "value": {
+            "subject":  { "type": "uri" , "value": "http://example/s" } ,
+            "predicate": { "type": "uri" , "value": "http://example/p" } ,
+            "object":   {
+              "type": "triple" , 
+              "value": {
+                "subject":  { "type": "uri" , "value": "http://example/x2" } ,
+                "predicate": { "type": "uri" , "value": "http://example/y3" } ,
+                "object":   { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "123" }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

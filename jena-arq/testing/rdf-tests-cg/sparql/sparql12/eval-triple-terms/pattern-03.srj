@@ -1,0 +1,13 @@
+{ "head": {
+    "vars": [ "s" , "o" , "z" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "s": { "type": "uri" , "value": "http://example/a1" } ,
+        "o": { "type": "uri" , "value": "http://example/reifier" } ,
+        "z": { "type": "uri" , "value": "http://example/a2" }
+      }
+    ]
+  }
+}

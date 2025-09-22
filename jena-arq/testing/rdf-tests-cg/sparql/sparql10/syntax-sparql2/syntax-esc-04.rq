@@ -1,0 +1,5 @@
+PREFIX : <http://example/> 
+SELECT *
+## Community: \ u escapes in URIs and strings only.
+## U+0078 is 'x'
+WHERE { <\u0078> :p "xx\u0078" }

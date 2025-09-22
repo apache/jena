@@ -1,0 +1,4 @@
+BASE <http://example/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+<s>rdf:reifies<<(<s2><q2><<(<s3><p3><o3>)>>)>>.

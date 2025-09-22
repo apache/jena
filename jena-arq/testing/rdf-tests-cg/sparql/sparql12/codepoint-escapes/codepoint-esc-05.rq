@@ -1,0 +1,5 @@
+SELECT * WHERE {
+	?s ?p "\u005C\u005Cn"
+}
+# Two legal codepoint escapes of REVERSE SOLIDUS (U+5C), resulting in a
+# valid backslash escape \\ for REVERSE SOLIDUS (U+5C) followed by 'n'.

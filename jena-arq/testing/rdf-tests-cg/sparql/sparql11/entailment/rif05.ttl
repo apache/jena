@@ -1,0 +1,9 @@
+@prefix ex:   <http://example.org/example#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rif:  <http://www.w3.org/2007/rif#> .
+@prefix ent:  <http://www.w3.org/ns/entailment/>.
+
+#http://www.w3.org/2005/rules/wiki/IRI_from_RDF_Literal
+
+<IRI_from_RDF_Literal-premise.rif> rif:usedWithProfile ent:Simple .

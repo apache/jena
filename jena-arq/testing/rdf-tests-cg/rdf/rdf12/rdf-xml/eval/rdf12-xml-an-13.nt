@@ -1,0 +1,2 @@
+<http://www.example.org/a> <http://example.org/prop> "<br xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:eg=\"http://example.org/\"></br>"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<http://example.com/triple1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies> <<(<http://www.example.org/a> <http://example.org/prop> "<br xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:eg=\"http://example.org/\"></br>"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral>)>> .

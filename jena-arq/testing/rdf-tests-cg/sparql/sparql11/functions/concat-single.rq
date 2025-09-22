@@ -1,0 +1,4 @@
+PREFIX : <http://example.org/>
+SELECT (CONCAT(?str1) AS ?str) WHERE {
+	:s6 :str ?str1 .
+}

@@ -1,0 +1,7 @@
+PREFIX : <http://example/>
+
+:x1 :p "abc"@en .
+:x2 :p "abc"@en--ltr .
+:x3 :p "تصميم المواقع"@ar--rtl .
+:x4 :p 1 .
+:x5 :p <http://example/> .

@@ -1,0 +1,12 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT
+   ( STRLANGDIR("abc", "en", "ltr")   AS ?term1 )
+   ( STRLANGDIR("abc", "en", "LTR")	  AS ?term2 )
+   ( STRLANGDIR("abc", "en", "")	  AS ?term3 )
+   ( STRLANGDIR("قطة", "ar", "rtl")  AS ?term4 )
+   ( STRLANGDIR("abc", "en", "")      AS ?term5 )
+   ( STRLANGDIR("abc", "", "ltr")     AS ?term6 )
+   ( STRLANGDIR(123, "", "ltr")       AS ?term7 )
+   ( STRLANGDIR(<http:/example/x>, "en", "ltr")	AS ?term8 )
+WHERE {}

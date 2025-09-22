@@ -1,0 +1,163 @@
+{
+    "head": {
+        "vars": [
+            "o",
+            "q",
+            "z"
+        ]
+    },
+    "results": {
+        "bindings": [
+            {
+                "q": {
+                    "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies",
+                    "type": "uri"
+                },
+                "z": {
+                    "value": {
+                        "subject": {
+                            "value": "http://example/s",
+                            "type": "uri"
+                        },
+                        "predicate": {
+                            "value": "http://example/p1",
+                            "type": "uri"
+                        },
+                        "object": {
+                            "value": "http://example/o",
+                            "type": "uri"
+                        }
+                    },
+                    "type": "triple"
+                },
+                "o": {
+                    "value": "http://example/o",
+                    "type": "uri"
+                }
+            },
+            {
+                "q": {
+                    "value": "http://example/q",
+                    "type": "uri"
+                },
+                "z": {
+                    "value": "http://example/z",
+                    "type": "uri"
+                },
+                "o": {
+                    "value": "http://example/o",
+                    "type": "uri"
+                }
+            },
+            {
+                "q": {
+                    "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies",
+                    "type": "uri"
+                },
+                "z": {
+                    "value": {
+                        "subject": {
+                            "value": "http://example/s",
+                            "type": "uri"
+                        },
+                        "predicate": {
+                            "value": "http://example/p1",
+                            "type": "uri"
+                        },
+                        "object": {
+                            "value": "http://example/o",
+                            "type": "uri"
+                        }
+                    },
+                    "type": "triple"
+                },
+                "o": {
+                    "value": "http://example/o",
+                    "type": "uri"
+                }
+            },
+            {
+                "q": {
+                    "value": "http://example/b",
+                    "type": "uri"
+                },
+                "z": {
+                    "value": "http://example/a2",
+                    "type": "uri"
+                },
+                "o": {
+                    "value": "http://example/o",
+                    "type": "uri"
+                }
+            },
+            {
+                "q": {
+                    "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies",
+                    "type": "uri"
+                },
+                "z": {
+                    "value": {
+                        "subject": {
+                            "value": "http://example/s",
+                            "type": "uri"
+                        },
+                        "predicate": {
+                            "value": "http://example/p1",
+                            "type": "uri"
+                        },
+                        "object": {
+                            "value": "http://example/o",
+                            "type": "uri"
+                        }
+                    },
+                    "type": "triple"
+                },
+                "o": {
+                    "value": "http://example/o",
+                    "type": "uri"
+                }
+            },
+            {
+                "q": {
+                    "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies",
+                    "type": "uri"
+                },
+                "z": {
+                    "value": {
+                        "subject": {
+                            "value": "http://example/s",
+                            "type": "uri"
+                        },
+                        "predicate": {
+                            "value": "http://example/p1",
+                            "type": "uri"
+                        },
+                        "object": {
+                            "value": "http://example/o",
+                            "type": "uri"
+                        }
+                    },
+                    "type": "triple"
+                },
+                "o": {
+                    "value": "http://example/o",
+                    "type": "uri"
+                }
+            },
+            {
+                "q": {
+                    "value": "http://example/b2",
+                    "type": "uri"
+                },
+                "z": {
+                    "value": "http://example/a2",
+                    "type": "uri"
+                },
+                "o": {
+                    "value": "http://example/o",
+                    "type": "uri"
+                }
+            }
+        ]
+    }
+}

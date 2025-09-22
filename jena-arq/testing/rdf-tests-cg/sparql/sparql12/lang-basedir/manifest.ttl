@@ -1,0 +1,79 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix :       <https://w3c.github.io/rdf-tests/sparql/sparql12/lang-basedir#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:  <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+:manifest  rdf:type mf:Manifest ;
+    rdfs:label "Language and base direction" ;
+    mf:entries
+    (
+    :haslang
+    :haslangdir
+    :lang
+    :langdir
+    :strlang
+    :strlangdir
+    ) .
+
+
+:haslang rdf:type mf:QueryEvaluationTest ;
+    mf:name "hasLANG";
+    rdfs:comment    "Function hasLANG" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <haslang.rq> ;
+           qt:data   <data-lang.ttl> ] ;
+    mf:result  <haslang.srj> ;
+    .
+    
+:haslangdir rdf:type mf:QueryEvaluationTest ;
+    mf:name "hasLANGDIR";
+    rdfs:comment    "Function hasLANGDIR" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <haslangdir.rq> ;
+           qt:data   <data-lang.ttl> ] ;
+    mf:result  <haslangdir.srj> ;
+    .
+
+:lang rdf:type mf:QueryEvaluationTest ;
+    mf:name "LANG";
+    rdfs:comment    "Function LANG" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <lang.rq> ;
+           qt:data   <data-lang.ttl> ] ;
+    mf:result  <lang.srj> ;
+    .
+    
+:langdir  rdf:type mf:QueryEvaluationTest ;
+    mf:name "LANGDIR";
+    rdfs:comment    "Function LANGDIR" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <langdir.rq> ;
+           qt:data   <data-lang.ttl> ] ;
+    mf:result  <langdir.srj> ;
+    .
+    
+:strlang rdf:type mf:QueryEvaluationTest ;
+    mf:name "STRLANG";
+    rdfs:comment    "Function STRLANG" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <strlang.rq> ;
+           qt:data   <data-empty.ttl> ] ;
+    mf:result  <strlang.srj> ;
+    .
+
+:strlangdir rdf:type mf:QueryEvaluationTest ;
+    mf:name "STRLANGDIR";
+    rdfs:comment    "Function STRLANGDIR" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <strlangdir.rq> ;
+           qt:data   <data-empty.ttl> ] ;
+    mf:result  <strlangdir.srj> ;
+    .

@@ -1,0 +1,6 @@
+PREFIX : <http://example.com/ns#>
+
+SELECT * {
+  <<?S :p :o ~ :iri >> :r :z .
+  << <<?S :p :o ~ :iri >> :r :z ~ _:bnode >> :q 1 .
+}

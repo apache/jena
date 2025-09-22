@@ -1,0 +1,8 @@
+BASE   <http://example.org/>
+PREFIX :  <#> 
+
+## Legal in SPARQL 1.0
+##SELECT * WHERE { :x :p 123. . }
+
+## SPARQL 1.1 (and RDF 1.1 Turtle, and XSD 1.1).
+SELECT * WHERE { :x :p 123.0 . }

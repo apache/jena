@@ -1,0 +1,395 @@
+## Distributed under both the "W3C Test Suite License" [1]
+## and the "W3C 3-clause BSD License".
+## [1] https://www.w3.org/Consortium/Legal/2008/04-testsuite-license
+## [2] https://www.w3.org/Consortium/Legal/2008/03-bsd-license
+##
+## Test types
+## * rdft:TestNTriplesPositiveC14N – N-Triples canonicalization
+
+PREFIX :     <https://w3c.github.io/rdf-tests/rdf/rdf12/rdf-n-triples/c14n#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX mf:   <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
+PREFIX rdft: <http://www.w3.org/ns/rdftest#>
+
+:manifest  a mf:Manifest ;
+  rdfs:label "RDF 1.2 N-Triples Canonicalization Test Suite"@en;
+  rdfs:comment "Tests the generation of canonical N-Triples."@en;
+  mf:assumedTestBase <https://w3c.github.io/rdf-tests/rdf/rdf12/rdf-n-triples/c14n/> ;
+  rdfs:seeAlso <README.md>;
+  mf:entries (
+    :comment_following_triple
+    :extra_whitespace-01
+    :extra_whitespace-02
+    :extra_whitespace-03
+    :extra_whitespace-04
+    :langtagged_string
+    # :lantag_with_subtag
+    :dirlangtagged_string
+    :literal_all_controls
+    :literal_all_punctuation
+    :literal_ascii_boundaries
+    :literal_with_2_dquotes
+    :literal_with_2_squotes
+    :literal_with_BACKSPACE
+    :literal_with_CARRIAGE_RETURN
+    :literal_with_CHARACTER_TABULATION
+    :literal_with_dquote
+    :literal_with_FORM_FEED
+    :literal_with_LINE_FEED
+    :literal_with_numeric_escape4
+    :literal_with_numeric_escape8
+    :literal_with_REVERSE_SOLIDUS
+    :literal_with_REVERSE_SOLIDUS2
+    :literal_with_squote
+    :literal_with_string_dt
+    :literal_with_extra_whitespace
+    :literal_with_UTF8_boundaries
+    :minimal_whitespace-01
+    :minimal_whitespace-02
+    :triple-term-01
+    :triple-term-02
+    :triple-term-03
+    :triple-term-04
+    :nt-syntax-uri-01
+    :nt-syntax-uri-02
+    :nt-syntax-uri-03
+    :nt-syntax-uri-04
+    :nt-syntax-str-esc-01
+    :nt-syntax-str-esc-02
+    :nt-syntax-str-esc-03
+    :literal_needing_uchar_escaping-01
+    :literal_needing_uchar_escaping-02
+  ) .
+
+:comment_following_triple rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N comment_following_triple" ;
+  rdfs:comment "Tests canonicalization of triples including comments" ;
+  rdft:approval rdft:Proposed ;
+  mf:action <comment_following_triple.nt>;
+  mf:result <comment_following_triple-c14n.nt>;
+  .
+
+:langtagged_string rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N langtagged_string" ;
+  rdfs:comment "Tests canonicalization of triples including language-tagged string" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <langtagged_string.nt> ;
+  mf:result    <langtagged_string-c14n.nt>;
+  .
+
+#:lantag_with_subtag rdf:type rdft:TestNTriplesPositiveC14N ;
+#  mf:name      "C14N lantag_with_subtag" ;
+#  rdfs:comment "Tests canonicalization of triples including language-tagged string with subtag" ;
+#  rdft:approval rdft:Proposed ;
+#  mf:action    <lantag_with_subtag.nt> ;
+#  mf:result    <lantag_with_subtag-c14n.nt>;
+#  .
+
+:dirlangtagged_string rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name       "C14N literal with base direction ltr" ;
+  rdfs:comment "Tests canonicalization of triples including directional language-tagged string" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <dirlangtagged_string.nt> ;
+  mf:result    <dirlangtagged_string-c14n.nt>;
+  .
+
+:literal_all_controls rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N literal_all_controls" ;
+  rdfs:comment "Tests canonicalization of literals with control characters" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <literal_all_controls.nt> ;
+  mf:result    <literal_all_controls-c14n.nt>;
+  .
+
+:literal_all_punctuation rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N literal_all_punctuation" ;
+  rdfs:comment "Tests canonicalization of literals with punctuation characters" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <literal_all_punctuation.nt> ;
+  mf:result    <literal_all_punctuation-c14n.nt>;
+  .
+
+:literal_ascii_boundaries rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N literal_ascii_boundaries" ;
+  rdfs:comment "Tests canonicalization of literal_ascii_boundaries '\\x00\\x26\\x28...'" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <literal_ascii_boundaries.nt> ;
+  mf:result    <literal_ascii_boundaries-c14n.nt>;
+  .
+
+:literal_with_2_dquotes rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N literal_with_2_dquotes" ;
+  rdfs:comment "Tests canonicalization of literal with 2 dquotes \"\"\"a\"\"b\"\"\"" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <literal_with_2_dquotes.nt> ;
+  mf:result    <literal_with_2_dquotes-c14n.nt>;
+  .
+
+:literal_with_2_squotes rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N literal_with_2_squotes" ;
+  rdfs:comment "Tests canonicalization of literal with 2 squotes \"x''y\"" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <literal_with_2_squotes.nt> ;
+  mf:result    <literal_with_2_squotes-c14n.nt>;
+  .
+
+:literal_with_BACKSPACE rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N literal_with_BACKSPACE" ;
+  rdfs:comment "Tests canonicalization of literals with backspace" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <literal_with_BACKSPACE.nt> ;
+  mf:result    <literal_with_BACKSPACE-c14n.nt>;
+  .
+
+:literal_with_CARRIAGE_RETURN rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N literal_with_CARRIAGE_RETURN" ;
+  rdfs:comment "Tests canonicalization of literals with carriage return" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <literal_with_CARRIAGE_RETURN.nt> ;
+  mf:result    <literal_with_CARRIAGE_RETURN-c14n.nt>;
+  .
+
+:literal_with_CHARACTER_TABULATION rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N literal_with_CHARACTER_TABULATION" ;
+  rdfs:comment "Tests canonicalization of literals with character tabulation" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <literal_with_CHARACTER_TABULATION.nt> ;
+  mf:result    <literal_with_CHARACTER_TABULATION-c14n.nt>;
+  .
+
+:literal_with_dquote rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N literal_with_dquote" ;
+  rdfs:comment "Tests canonicalization of literals with double quote" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <literal_with_dquote.nt> ;
+  mf:result    <literal_with_dquote-c14n.nt>;
+  .
+
+:literal_with_FORM_FEED rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N literal_with_FORM_FEED" ;
+  rdfs:comment "Tests canonicalization of literals with form feed" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <literal_with_FORM_FEED.nt> ;
+  mf:result    <literal_with_FORM_FEED-c14n.nt>;
+  .
+
+:literal_with_LINE_FEED rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N literal_with_LINE_FEED" ;
+  rdfs:comment "Tests canonicalization of literals with line feed" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <literal_with_LINE_FEED.nt> ;
+  mf:result    <literal_with_LINE_FEED-c14n.nt>;
+  .
+
+:literal_with_numeric_escape4 rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N literal_with_numeric_escape4" ;
+  rdfs:comment "Tests canonicalization of literals with numeric escapes" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <literal_with_numeric_escape4.nt> ;
+  mf:result    <literal_with_numeric_escape4-c14n.nt>;
+  .
+
+:literal_with_numeric_escape8 rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N literal_with_numeric_escape8" ;
+  rdfs:comment "Tests canonicalization of literals with numeric escapes" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <literal_with_numeric_escape8.nt> ;
+  mf:result    <literal_with_numeric_escape8-c14n.nt>;
+  .
+
+:literal_with_REVERSE_SOLIDUS rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N literal_with_REVERSE_SOLIDUS" ;
+  rdfs:comment "Tests canonicalization of literals with reverse solidus" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <literal_with_REVERSE_SOLIDUS.nt> ;
+  mf:result    <literal_with_REVERSE_SOLIDUS-c14n.nt>;
+  .
+
+:literal_with_REVERSE_SOLIDUS2 rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N literal_with_REVERSE_SOLIDUS2" ;
+  rdfs:comment "Tests canonicalization of literals with reverse solidus" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <literal_with_REVERSE_SOLIDUS2.nt> ;
+  mf:result    <literal_with_REVERSE_SOLIDUS2-c14n.nt>;
+  .
+
+:literal_with_squote rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N literal_with_squote" ;
+  rdfs:comment "Tests canonicalization of literals with single quotes" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <literal_with_squote.nt> ;
+  mf:result    <literal_with_squote-c14n.nt>;
+  .
+
+:literal_with_string_dt rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N literal_with_string_dt" ;
+  rdfs:comment "Tests canonicalization of literal with explicit xsd:string" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <literal_with_string_dt.nt> ;
+  mf:result    <literal_with_string_dt-c14n.nt>;
+  .
+
+:literal_with_UTF8_boundaries rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N literal_with_UTF8_boundaries" ;
+  rdfs:comment "Tests canonicalization of literals with UTF8 boundaries" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <literal_with_UTF8_boundaries.nt> ;
+  mf:result    <literal_with_UTF8_boundaries-c14n.nt>;
+  .
+
+:literal_with_extra_whitespace rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N literal_with_extra_whitespace" ;
+  rdfs:comment "Tests canonicalization of triples with literals having extra whitespace" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <literal_with_extra_whitespace.nt> ;
+  mf:result    <literal_with_extra_whitespace-c14n.nt>;
+  .
+
+:minimal_whitespace-01 rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N minimal_whitespace-01" ;
+  rdfs:comment "Tests canonicalization of triples without optional whitespace" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <minimal_whitespace-01.nt> ;
+  mf:result    <minimal_whitespace-01-c14n.nt>;
+  .
+
+:minimal_whitespace-02 rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N minimal_whitespace-02" ;
+  rdfs:comment "Tests canonicalization of triples without optional whitespace" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <minimal_whitespace-02.nt> ;
+  mf:result    <minimal_whitespace-02-c14n.nt>;
+  .
+
+:extra_whitespace-01 rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N extra_whitespace-01" ;
+  rdfs:comment "Tests canonicalization of triples with extra whitespace" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <extra_whitespace-01.nt> ;
+  mf:result    <extra_whitespace-01-c14n.nt>;
+  .
+
+:extra_whitespace-02 rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N extra_whitespace-02" ;
+  rdfs:comment "Tests canonicalization of triples with extra whitespace" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <extra_whitespace-02.nt> ;
+  mf:result    <extra_whitespace-02-c14n.nt>;
+  .
+
+:extra_whitespace-03 rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N extra_whitespace-03" ;
+  rdfs:comment "Tests canonicalization of triples with extra whitespace" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <extra_whitespace-03.nt> ;
+  mf:result    <extra_whitespace-03-c14n.nt>;
+  .
+
+:extra_whitespace-04 rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N extra_whitespace-04" ;
+  rdfs:comment "Tests canonicalization of triples with extra whitespace" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <extra_whitespace-04.nt> ;
+  mf:result    <extra_whitespace-04-c14n.nt>;
+  .
+
+:triple-term-01 rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N triple-term-01" ;
+  rdfs:comment "Tests canonicalization of triple terms with iri subject and object" ;
+  mf:action    <triple-term-01.nt> ;
+  mf:result    <triple-term-01-c14n.nt>;
+  .
+
+:triple-term-02 rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N triple-term-02" ;
+  rdfs:comment "Tests canonicalization of triple terms with iri subject and bnode object" ;
+  mf:action    <triple-term-02.nt> ;
+  mf:result    <triple-term-02-c14n.nt>;
+  .
+
+:triple-term-03 rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N triple-term-03" ;
+  rdfs:comment "Tests canonicalization of triple terms with iri subject and literal object" ;
+  mf:action    <triple-term-03.nt> ;
+  mf:result    <triple-term-03-c14n.nt>;
+  .
+
+:triple-term-04 rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N triple-term-04" ;
+  rdfs:comment "Tests canonicalization of triple terms with triple term object" ;
+  mf:action    <triple-term-04.nt> ;
+  mf:result    <triple-term-04-c14n.nt>;
+  .
+
+:nt-syntax-uri-01 rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N nt-syntax-uri-01" ;
+  rdfs:comment "Tests canonicalization of IRIs" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <nt-syntax-uri-01.nt> ;
+  mf:result    <nt-syntax-uri-01-c14n.nt>;
+  .
+
+:nt-syntax-uri-02 rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N nt-syntax-uri-02" ;
+  rdfs:comment "Tests canonicalization of IRIs" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <nt-syntax-uri-02.nt> ;
+  mf:result    <nt-syntax-uri-02-c14n.nt>;
+  .
+
+:nt-syntax-uri-03 rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N nt-syntax-uri-03" ;
+  rdfs:comment "Tests canonicalization of IRIs" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <nt-syntax-uri-03.nt> ;
+  mf:result    <nt-syntax-uri-03-c14n.nt>;
+  .
+
+:nt-syntax-uri-04 rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N nt-syntax-uri-04" ;
+  rdfs:comment "Tests canonicalization of IRIs" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <nt-syntax-uri-04.nt> ;
+  mf:result    <nt-syntax-uri-04-c14n.nt>;
+  .
+
+:nt-syntax-str-esc-01 rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N nt-syntax-str-esc-01" ;
+  rdfs:comment "Tests canonicalization of string escapes" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <nt-syntax-str-esc-01.nt> ;
+  mf:result    <nt-syntax-str-esc-01-c14n.nt>;
+  .
+
+:nt-syntax-str-esc-02 rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N nt-syntax-str-esc-02" ;
+  rdfs:comment "Tests canonicalization of string escapes" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <nt-syntax-str-esc-02.nt> ;
+  mf:result    <nt-syntax-str-esc-02-c14n.nt>;
+  .
+
+:nt-syntax-str-esc-03 rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N nt-syntax-str-esc-03" ;
+  rdfs:comment "Tests canonicalization of string escapes" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <nt-syntax-str-esc-03.nt> ;
+  mf:result    <nt-syntax-str-esc-03-c14n.nt>;
+  .
+
+:literal_needing_uchar_escaping-01 rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N literal_needing_uchar_escaping-01" ;
+  rdfs:comment "Tests canonicalization of strings with codepoints requiring UCHAR escaping, with input using raw UTF-8 data" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <literal_needing_uchar_escaping-01.nt> ;
+  mf:result    <literal_needing_uchar_escaping-01-c14n.nt>;
+  .
+
+:literal_needing_uchar_escaping-02 rdf:type rdft:TestNTriplesPositiveC14N ;
+  mf:name      "C14N literal_needing_uchar_escaping-02" ;
+  rdfs:comment "Tests canonicalization of strings with codepoints requiring UCHAR escaping, with input using \\U escaping" ;
+  rdft:approval rdft:Proposed ;
+  mf:action    <literal_needing_uchar_escaping-02.nt> ;
+  mf:result    <literal_needing_uchar_escaping-01-c14n.nt>;
+  .

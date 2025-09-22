@@ -1,0 +1,6 @@
+PREFIX : <http://example/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+:s :p :o .
+:a rdf:reifies <<( :s1 :p1 :o1 )>> .
+:r rdf:reifies <<( :23 rdf:reifies <<( :s3 :p3 :o3 )>> )>> .
