@@ -19,4 +19,5 @@ set JENA_CP="%JENA_CP%:%CLASSPATH%"
 
 @rem JVM_ARGS comes from the environment.
 java %JVM_ARGS% -Dlog4j.configurationFile="%LOGGING%" -cp "%JENA_CP%" tdb2.tdbquery %*
-exit /B
+set RC=%ERRORLEVEL%
+exit /B %RC%
