@@ -79,7 +79,9 @@ public class ParsingStepForTest {
             ReaderRIOTFactory factoryForTest = alternativeReaderFactories.get(lang);
             InputStream in = RDFDataMgr.open(source);
             ParserProfile profile = RiotLib.profile(lang, baseURI, errorHandlerTest);
-            return (StreamRDF destination)->factoryForTest.create(lang, profile).read(in, baseURI, null, destination, RIOT.getContext());
+            // Function that uses the registered alternative parser factory.
+            return (StreamRDF destination)->
+                    factoryForTest.create(lang, profile).read(in, baseURI, null, destination, RIOT.getContext());
         }
 
         // Otherwise use the normal RDFParser builder.

@@ -57,7 +57,7 @@ import org.apache.jena.riot.system.StreamRDFWriter;
 
 @ParameterizedClass
 @MethodSource("provideArgs")
-public class TestRRX {
+public class TestExtraRRX {
 
     private static String DIR = "testing/RIOT/rrx-files/";
 
@@ -75,7 +75,7 @@ public class TestRRX {
     private String label;
     private Lang lang;
 
-    public TestRRX(TestArgs args) {
+    public TestExtraRRX(TestArgs args) {
         this.label = args.label;
         this.lang = args.lang;
     }

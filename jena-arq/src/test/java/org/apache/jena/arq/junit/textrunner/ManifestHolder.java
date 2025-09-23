@@ -26,7 +26,6 @@ import org.junit.jupiter.api.TestFactory;
 
 import org.apache.jena.arq.junit.Scripts;
 import org.apache.jena.arq.junit.manifest.ManifestProcessor;
-import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.lib.StreamOps;
 import org.apache.jena.riot.RiotNotFoundException;
 import org.apache.jena.shared.JenaException;
@@ -55,15 +54,16 @@ class ManifestHolder {
             System.err.println("Manifest not set");
             throw new JenaException("Manifest not set");
         }
-        if ( ! FileOps.exists(fn) ) {
-            throw new RiotNotFoundException("Manifest "+fn);
-        }
         try {
             int before = ManifestProcessor.getCounterManifests();
             Stream<DynamicNode> x = Scripts.manifestTestFactory(fn, prefix);
             int after = ManifestProcessor.getCounterManifests();
             totalManifestCount = after-before;
             return x;
+        } catch (RiotNotFoundException ex) {
+            System.err.println("Not found: "+fn);
+            // Exceptions are swallowed by JUnit5.
+            throw new RiotNotFoundException("Manifest "+fn);
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;

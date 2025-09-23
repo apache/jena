@@ -30,6 +30,7 @@ import org.apache.jena.arq.junit.Scripts;
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
 import org.apache.jena.arq.junit.riot.ParsingStepForTest;
 import org.apache.jena.arq.junit.riot.RiotTests;
+import org.apache.jena.arq.junit.riot.SemanticsTests;
 import org.apache.jena.arq.junit.riot.VocabLangRDF;
 import org.apache.jena.arq.junit.sparql.SparqlTests;
 import org.apache.jena.arq.junit.sparql.tests.QueryEvalTest;
@@ -190,19 +191,14 @@ public class rdftests extends CmdGeneral
         }
     }
 
-    protected void exec(EarlReport report, List<String> manifests) {
+    protected void exec(EarlReport earlReport, List<String> manifests) {
+        if ( manifests.isEmpty() )
+            throw new CmdException("No manifest files");
         if ( createEarlReport )
-            oneManifestEarl(report, manifests);
+            TextTestRunner.run(earlReport, manifests, Scripts.testMaker());
         else
-            oneManifest(manifests);
-    }
+            TextTestRunner.run(manifests, Scripts.testMaker());
 
-    static void oneManifest(List<String> manifests) {
-        TextTestRunner.run(manifests, Scripts.testMaker());
-    }
-
-    static void oneManifestEarl(EarlReport earlReport, List<String> manifests) {
-        TextTestRunner.run(earlReport, manifests, Scripts.testMaker());
     }
 
     // Test subsystems.
@@ -215,21 +211,8 @@ public class rdftests extends CmdGeneral
     static {
         installTestMaker(RiotTests::makeRIOTTest);
         installTestMaker(SparqlTests::makeSPARQLTest);
+        installTestMaker(SemanticsTests::makeSemanticsTest);
     }
-
-//    private static Function<ManifestEntry, Runnable> testMaker() {
-//        return (ManifestEntry entry) -> {
-//            for ( Function<ManifestEntry, Runnable> engine : installed) {
-//                Runnable r = engine.apply(entry);
-//                if ( r != null )
-//                    return r;
-//            }
-//            String testName = entry.getName();
-//            Resource testType = entry.getTestType() ;
-//            System.err.println("Unrecognized test : ("+testType+")" + testName) ;
-//            return new SurpressedTest(entry) ;
-//        };
-//    }
 
     private static String name =  "Apache Jena";
     private static String releaseVersion =  ARQ.VERSION;

@@ -16,7 +16,9 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot;
+package org.apache.jena.riot.lang.rdfxml;
+
+import static org.apache.jena.arq.junit.Scripts.withAltParserFactory;
 
 import java.util.stream.Stream;
 
@@ -24,13 +26,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;
 
-import org.apache.jena.arq.junit.Scripts;
+import org.apache.jena.arq.TestConsts;
+import org.apache.jena.riot.Lang;
 
-/** rdf-tests-cg, RDF languages. See testing/README.md for any modifications. */
-public class Scripts_RIOT_rdf_tests {
+/**
+ * Manifest driven tests for ARP1.
+ */
+public class Scripts_ARP1_RDFXML {
+
     @TestFactory
-    @DisplayName("rdf-tests CG - RDF languages")
-    public Stream<DynamicNode> testFactory() {
-        return Scripts.manifestTestFactory("testing/rdf-tests-cg/manifest-lang.ttl");
+    @DisplayName("ARP1 (legacy)")
+    public Stream<DynamicNode> testFactoryARP1() {
+        return withAltParserFactory(Lang.RDFXML, ReaderRDFXML_ARP1.factory, TestConsts.RDF11_TESTS_DIR+"rdf-xml/manifest.ttl");
     }
 }

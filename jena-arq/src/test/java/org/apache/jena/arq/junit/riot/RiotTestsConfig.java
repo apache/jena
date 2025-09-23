@@ -26,21 +26,11 @@ import org.apache.jena.arq.junit.manifest.ManifestEntry;
 public class RiotTestsConfig {
 
     /**
-     * Tune tests for warnings. Normally, tests runs are warning sensitive.
+     * Tune tests for warnings and variations. Normally, tests runs are warning sensitive.
      * The allowWarning rules are maintained here and used in RiotEvalTests and RiotSyntaxTests.
      */
-    // Some tests have U+FFFD which, in Jena, generates a helpful warning.
-    // Some tests have <http:g> which RIOT warns about but passes.
 
-    /*package*/ static boolean allowWarningsSyntaxTests(ManifestEntry testEntry) {
-        return allowWarnings(testEntry);
-    }
-
-    /*package*/ static boolean allowWarningsEvalTests(ManifestEntry testEntry) {
-        return allowWarnings(testEntry);
-    }
-
-    private static boolean allowWarnings(ManifestEntry testEntry) {
+    /*package*/  static boolean allowWarnings(ManifestEntry testEntry) {
         if ( RiotTests.equalsType(testEntry.getTestType(), VocabLangRDF.TestPositiveRDFXML) ) {
             // RDF/XML
             // Various warnings in eval tests.

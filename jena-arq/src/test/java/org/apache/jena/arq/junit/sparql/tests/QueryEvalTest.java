@@ -18,6 +18,7 @@
 
 package org.apache.jena.arq.junit.sparql.tests;
 
+import static org.apache.jena.arq.junit.Scripts.entryContainsSubstring;
 import static org.apache.jena.arq.junit.sparql.tests.SparqlTestLib.setupFailure;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -109,6 +110,10 @@ public class QueryEvalTest extends AbstractManifestTest {
                 execute(null,query);
         } catch (NullPointerException ex) {
             throw ex;
+//        } catch (AssertionError ex) {
+//              // Development
+//            System.out.println("AssertionError: "+super.manifestEntry.getURI());
+//            throw ex;
         } catch (Exception ex) {
             ex.printStackTrace(System.err);
             setupFailure("Exception: " + ex.getClass().getName() + ": " + ex.getMessage());
@@ -118,7 +123,7 @@ public class QueryEvalTest extends AbstractManifestTest {
     private void execute(Dataset dataset, Query query) {
         try (QueryExecution qe = (dataset == null)
                         ? QueryExecutionFactory.create(query)
-                        : QueryExecutionFactory.create(query, dataset)) {
+                            : QueryExecutionFactory.create(query, dataset)) {
             if ( query.isSelectType() )
                 runTestSelect(query, qe);
             else if ( query.isConstructType() )
@@ -135,12 +140,15 @@ public class QueryEvalTest extends AbstractManifestTest {
     protected Dataset setUpDataset(Query query, QueryTestItem testItem) {
         try {
             if ( doesQueryHaveDataset(query) && doesTestItemHaveDataset(testItem) ) {
-                // Only warn if there are results to test
-                // Syntax tests may have FROM etc and a manifest data file.
-                if ( testItem.getResultFile() != null )
-                    Log.warn(this, testItem.getName() + " : query data source and also in test file");
+                // known case - constructwhere04
+                // otherwise maybe a test error.
+                if ( ! entryContainsSubstring(testItem.getManifestEntry(), "manifest#constructwhere04") ) {
+                    // Only warn if there are results to test
+                    // Syntax tests may have FROM etc and a manifest data file.
+                    if ( testItem.getResultFile() != null )
+                        Log.warn(this, testItem.getName() + " : query data source and also in test file");
+                }
             }
-
             // In test file?
             if ( doesTestItemHaveDataset(testItem) )
                 // Not specified in the query - get from test item and load

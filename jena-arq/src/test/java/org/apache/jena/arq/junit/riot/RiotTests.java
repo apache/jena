@@ -18,6 +18,8 @@
 
 package org.apache.jena.arq.junit.riot;
 
+import static org.apache.jena.arq.junit.Scripts.entryContainsSubstring;
+
 import java.util.Objects;
 
 import org.apache.jena.arq.junit.SkipTest;
@@ -25,6 +27,7 @@ import org.apache.jena.arq.junit.SurpressedTest;
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.util.SplitIRI;
@@ -32,7 +35,6 @@ import org.apache.jena.vocabulary.TestManifest;
 
 public class RiotTests
 {
-
     /** Create a RIOT language test - or return null for "unrecognized" */
     public static Runnable makeRIOTTest(ManifestEntry entry) {
         //Resource manifest = entry.getManifest();
@@ -42,13 +44,12 @@ public class RiotTests
         Node result = entry.getResult();
         Graph graph = entry.getManifest().getGraph();
 
-        String labelPrefix = "[RIOT]";
+        Node testType = entry.getTestType();
+        if ( testType == null )
+            return null;
 
         try {
-            Node testType = entry.getTestType();
-            if ( testType == null )
-                return null;
-
+            String labelPrefix = "[RIOT]";
             if ( labelPrefix != null )
                 testName = labelPrefix+testName;
 
@@ -95,15 +96,24 @@ public class RiotTests
             // RDF/XML - W3C test suite
             // This suite has eval tests (positive and warning - they have "warn" in the filename) and negative syntax tests.
             if ( equalsType(testType, VocabLangRDF.TestPositiveRDFXML) ) {
+                if ( entryContainsSubstring(entry, "#xml-canon-test") ) {
+                    // Alternative location.
+                    // "rdf-tests-cg/rdf/rdf11/rdf-xml/xml-canon/" --> "RIOT/Lang/rdf-xml/xml-canon/"
+                    String actionURI = action.getURI().replaceAll("/rdf-tests-cg/rdf/rdf11/rdf-xml/xml-canon/", "/RIOT/Lang/rdf-xml/xml-canon/");
+                    String resultURI = result.getURI().replaceAll("/rdf-tests-cg/rdf/rdf11/rdf-xml/xml-canon/", "/RIOT/Lang/rdf-xml/xml-canon/");
+                    Node action2 = NodeFactory.createURI(actionURI);
+                    Node result2 = NodeFactory.createURI(resultURI);
+                    entry = ManifestEntry.alter(entry, testType, action2, result2);
+                }
                 String fn = entry.getAction().getURI();
-                // Assumes the tests are stored in "rdf-xml" or "rdf11-xml"
-                String base = fn.replaceAll("^.*/rdf(\\d\\d)?-xml/", "https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-xml/");
+                // Adjust to changes in rdf-tests-cg layout.
+                String base = fn.replaceAll("^.*/rdf-xml/", "https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-xml/");
                 return new RiotEvalTest(entry, base, RDFLanguages.RDFXML, true);
             }
             if ( equalsType(testType, VocabLangRDF.TestNegativeRDFXML) )
                 return new RiotSyntaxTest(entry, RDFLanguages.RDFXML, false);
 
-            // Other
+            // Other: RDF/JSON
             if ( equalsType(testType, VocabLangRDF.TestPositiveSyntaxRJ) )
                 return new RiotSyntaxTest(entry, RDFLanguages.RDFJSON, true);
             if ( equalsType(testType, VocabLangRDF.TestNegativeSyntaxRJ) )
@@ -185,7 +195,7 @@ public class RiotTests
         }
     }
 
-    static boolean equalsType(Node typeNode, Resource typeResource) {
+    /*package*/static boolean equalsType(Node typeNode, Resource typeResource) {
         return typeNode.equals(typeResource.asNode());
     }
 

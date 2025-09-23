@@ -53,19 +53,25 @@ public class RunTestRDFXML {
      * Here, the exact warnings and errors are checked.
      */
     static List<String> w3cTestFiles() {
-        Path DIR = Path.of("testing/RIOT/rdf11-xml");
-        return allTestFiles(DIR);
+        Path DIR = Path.of("testing/rdf-tests-cg/rdf/rdf11/rdf-xml");
+        List<String> files = allTestFiles(DIR);
+        return files;
     }
 
-    static List<String> allTestFiles(Path DIR) {
-        if ( !Files.exists(DIR) )
+    static List<String> allTestFiles(Path directory) {
+        if ( !Files.exists(directory) ) {
+            System.err.println("No such directory: "+directory);
             return List.of();
+        }
         try {
-            return Files.walk(DIR)
+            List<String> files = Files.walk(directory)
                 .filter(Files::isRegularFile)
                 .map(Path::toString)
                 .filter(fn->fn.endsWith(".rdf"))
                 .toList();
+            if ( files.isEmpty() )
+                System.err.println("No files found in "+directory);
+            return files;
         } catch (IOException ex) {
             throw IOX.exception(ex);
         }

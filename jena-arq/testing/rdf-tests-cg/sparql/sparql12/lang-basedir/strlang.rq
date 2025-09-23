@@ -4,5 +4,5 @@ SELECT
     ( STRLANG("abc", "en") AS ?term1 )
     ( STRLANG("abc", "") AS ?term2 )
     ( STRLANG(123, "en") AS ?term3 )
-    ( STRLANG(<http:/example/x> , "en") AS ?term4 )
+    ( STRLANG(<http://example/x> , "en") AS ?term4 )
 WHERE {}

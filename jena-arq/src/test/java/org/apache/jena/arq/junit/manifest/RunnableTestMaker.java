@@ -24,6 +24,7 @@ import java.util.function.Function;
 
 import org.apache.jena.arq.junit.SurpressedTest;
 import org.apache.jena.arq.junit.riot.RiotTests;
+import org.apache.jena.arq.junit.riot.SemanticsTests;
 import org.apache.jena.arq.junit.sparql.SparqlTests;
 import org.apache.jena.graph.Node;
 
@@ -38,8 +39,9 @@ public class RunnableTestMaker {
 
     public static RunnableTestMaker std() {
         RunnableTestMaker maker = new RunnableTestMaker();
-        maker.installTestMaker(RiotTests::makeRIOTTest);
         maker.installTestMaker(SparqlTests::makeSPARQLTest);
+        maker.installTestMaker(RiotTests::makeRIOTTest);
+        maker.installTestMaker(SemanticsTests::makeSemanticsTest);
         return maker;
     }
 

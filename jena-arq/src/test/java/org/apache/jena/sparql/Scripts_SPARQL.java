@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.*;
 
+import org.apache.jena.arq.TestConsts;
 import org.apache.jena.arq.junit.Scripts;
 import org.apache.jena.arq.junit.sparql.SparqlTests;
 import org.apache.jena.sparql.expr.E_Function;
@@ -57,26 +58,23 @@ public class Scripts_SPARQL {
     @TestFactory
     @DisplayName("SPARQL 1.0")
     public Stream<DynamicNode> testFactorySPARQL_10() {
-        return all("testing/DAWG-Final/manifest-syntax.ttl",
-                   "testing/DAWG-Final/manifest-evaluation.ttl",
-                   "testing/DAWG/Misc/manifest.n3",
-                   "testing/DAWG/Syntax/manifest.n3",
-                   "testing/DAWG/examples/manifest.n3"
-                   );
+        return all(TestConsts.SPARQL10_TESTS_DIR+"manifest.ttl");
     }
 
     @TestFactory
     @DisplayName("SPARQL 1.1")
     public Stream<DynamicNode> testFactorySPARQL_11() {
-        return all("testing/rdf-tests-cg/sparql11-query/manifest-sparql11-query.ttl",
-                   "testing/rdf-tests-cg/sparql11-update/manifest-sparql11-update.ttl"
-                );
+        return all(TestConsts.SPARQL11_TESTS_DIR+"manifest-sparql11-query.ttl",
+                   // Not CSV tests - no comparision supported.
+                   // No XML results - part of SPARQL 1.0.
+                   TestConsts.SPARQL11_TESTS_DIR+"json-res/manifest.ttl",
+                   TestConsts.SPARQL11_TESTS_DIR+"manifest-sparql11-update.ttl");
     }
 
     @TestFactory
     @DisplayName("SPARQL 1.2")
     public Stream<DynamicNode> testFactorySPARQL_12() {
-        return all("testing/rdf12-wg/Syntax-SPARQL_12/manifest.ttl");
+        return all(TestConsts.SPARQL12_TESTS_DIR+"manifest.ttl");
     }
 
     @TestFactory

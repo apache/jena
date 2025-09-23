@@ -55,6 +55,7 @@ public class QueryTestItem
         return "test:" + (++counter) ;
     }
 
+    private final ManifestEntry manifestEntry;
     private final Graph       graph;
     private final Node        testResource;
     private final Node        actionResource;
@@ -74,6 +75,7 @@ public class QueryTestItem
     }
 
     private QueryTestItem(ManifestEntry entry, Node defaultTestType) {
+        manifestEntry = entry;
         graph = entry.getGraph();
         Objects.requireNonNull(graph, "Manifest graph");
 
@@ -163,6 +165,10 @@ public class QueryTestItem
 
     public String getComment() {
         return comment ;
+    }
+
+    public ManifestEntry getManifestEntry() {
+        return manifestEntry;
     }
 
     public List<String> getDefaultGraphURIs() {

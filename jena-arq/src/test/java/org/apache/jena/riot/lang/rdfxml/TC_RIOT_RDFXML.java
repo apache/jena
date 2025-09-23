@@ -29,9 +29,6 @@ import org.apache.jena.riot.lang.rdfxml.rrx.TS_RRX;
     // Local tests, extensions and error reports.
     TS_RRX.class,
 
-    // Manifest-driven RDF 1.1 rdf-xml test suite - all RDF/XML parsers.
-    Scripts_RRX_RDFXML.class,
-
     // jena-core legacy test (RDF 1.0)
     TS_ConvertedARP1.class
 })
