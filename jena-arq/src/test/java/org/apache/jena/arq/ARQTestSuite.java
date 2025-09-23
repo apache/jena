@@ -28,10 +28,7 @@ import org.apache.jena.atlas.TC_Atlas_ARQ;
 import org.apache.jena.atlas.legacy.BaseTest2;
 import org.apache.jena.http.auth.TS_HttpAuth;
 import org.apache.jena.rdfs.TS_InfRdfs;
-import org.apache.jena.riot.Scripts_RIOT_rdf_tests;
-import org.apache.jena.riot.Scripts_AltTurtle;
-import org.apache.jena.riot.Scripts_LangSuite;
-import org.apache.jena.riot.TC_Riot;
+import org.apache.jena.riot.*;
 import org.apache.jena.sparql.*;
 import org.apache.jena.sparql.expr.E_Function;
 import org.apache.jena.sparql.expr.NodeValue;
@@ -64,10 +61,12 @@ import org.apache.jena.util.TS_UtilsARQ;
     // All scripted tests.
 
     // RIOT
-    Scripts_LangSuite.class,
-    Scripts_AltTurtle.class,
     // rdf-tests CG - RDF language tests
-    Scripts_RIOT_rdf_tests.class,
+    Scripts_RIOT_rdf_tests_std.class,
+    Scripts_RIOT_extra.class,
+    Scripts_AltTurtle.class,
+
+    Scripts_c14n.class,
 
     // ARQ, SPARQL 1.0, SPARQL 1.1, SPARQL 1.2 - main engine, default in-memory dataset.
     Scripts_SPARQL.class,

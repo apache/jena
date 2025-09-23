@@ -64,6 +64,16 @@ public class ManifestProcessor {
         return build(filename, namePrefix, entryToTest, visited);
     }
 
+    // Avoid these manifests.
+    private static Set<String> unsupported = Set.of("rdf11/rdf-mt/", "rdf12/rdf-semantics/");
+    private static boolean acceptManifest(String filename) {
+        for ( String avoid : unsupported )  {
+            if ( filename.contains(avoid) )
+                return false;
+        }
+        return true;
+    }
+
     // "visited" is a safety measure to detect loops in included manifests files.
     private static DynamicContainer build(String filenameOrURI, String namePrefix, EntryToTest entryToTest, Set<String> visited) {
         int x = ++counterManifests;
@@ -123,8 +133,13 @@ public class ManifestProcessor {
         Iterator<String> iterIncludedFiles = manifest.includedManifests();
         List<DynamicContainer> subs = new ArrayList<>();
         iterIncludedFiles.forEachRemaining(filename -> {
-            DynamicContainer d1 = build(filename, namePrefix, entryToTest, visited);
-            subs.add(d1);
+            if ( acceptManifest(filename) ) {
+                DynamicContainer d1 = build(filename, namePrefix, entryToTest, visited);
+                subs.add(d1);
+            }
+            else {
+                System.err.println("Skip : "+ filename);
+            }
         });
         return subs;
     }

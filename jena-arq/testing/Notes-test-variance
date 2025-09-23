@@ -1,0 +1,48 @@
+This file records difference sbetween the RDF Tests CG test suite and Apache Jena.
+
+== RDF/XML
+
+/rdf/rdf11/rdf-xml/xml-canon/
+
+These two tests include XML Literals.
+
+The RDF test suite includes the enclosing XML namespaces in the literal.
+
+"<br xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:eg=\"http://example.org/\"></br>"^^rdf:XMLLiteral
+
+but this is not necessary.
+
+Jena (both ARP-based and RRX-based parsers only includes XML namespaces tyhat are used.
+
+Hence: the result "<br></br>"^^rdf:XMLLiteral.
+
+The manifgest processor requires the tests to file in RIOT/Lang/rdf-xml/xml-canon.
+
+== Semantics and Model Theory tests are not run.
+
+/rdf/rdf11/rdf-mt/
+/rdf/rdf12/rdf-semantics/
+
+ManifestProcessor has a list of manifests to ignore
+
+== SPARQL
+
+-- Codepoint escapes
+
+/sparql/sparql12/codepoint-escapes#codepoint-esc-07
+/sparql/sparql12/codepoint-escapes#codepoint-esc-bad-03
+
+Use of \U unicode escpae sequences outside strings and URIs is not supported.
+\u prociessing is done by javacc natively.
+
+-- /sparql/sparql11/aggregates/manifest#agg-groupconcat-04
+
+GROUP_CONCAT of "1"@en and "2"@en
+
+ARQ does not add the language tag.
+
+-- /sparql/sparql11/property-path/manifest#values_and_path
+
+Returns one result ?v = 1, the test requires zero.
+This is due to the optimizer.
+--optimize=false is correct.

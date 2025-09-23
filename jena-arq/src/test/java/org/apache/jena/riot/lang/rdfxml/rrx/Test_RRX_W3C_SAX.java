@@ -26,10 +26,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import org.apache.jena.riot.ReaderRIOTFactory;
 
-/**
- * Run over all files found by a deep walk of the directory tree.
- */
-
 @ParameterizedClass
 @MethodSource("provideArgs")
 public class Test_RRX_W3C_SAX extends AbstractTestRDFXML_RRX {

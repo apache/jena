@@ -21,13 +21,8 @@ package org.apache.jena.riot.lang.rdfxml.rrx;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
-import org.apache.jena.riot.lang.rdfxml.Scripts_RRX_RDFXML;
-
 /**
  * Detailed RRX tests, not manifest driven.
- * {@link org.apache.jena.riot.lang.rdfxml.Scripts_RRX_RDFXML}
- * runs the RRX parsers on the rdf-tests maintained test suite.
- * @see Scripts_RRX_RDFXML
  */
 @Suite
 @SelectClasses( {
@@ -36,12 +31,13 @@ import org.apache.jena.riot.lang.rdfxml.Scripts_RRX_RDFXML;
     Test_RRX_Local_StAXev.class,
     Test_RRX_Local_StAXsr.class,
     // RDF 1.1 test suite as detailed tests.
+    // See Scripts_RIOT_
     Test_RRX_W3C_SAX.class,
     Test_RRX_W3C_StAXev.class,
     Test_RRX_W3C_StAXsr.class,
 
     // Additional RRX specific tests.
-    TestRRX.class
+    TestExtraRRX.class
 })
 
 public class TS_RRX {}

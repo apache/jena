@@ -28,9 +28,12 @@ import org.apache.jena.arq.junit.manifest.EntryToTest;
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
 import org.apache.jena.arq.junit.manifest.ManifestProcessor;
 import org.apache.jena.arq.junit.manifest.RunnableTestMaker;
+import org.apache.jena.arq.junit.riot.ParsingStepForTest;
 import org.apache.jena.arq.junit.riot.RiotTests;
 import org.apache.jena.arq.junit.sparql.SparqlTests;
 import org.apache.jena.atlas.lib.StreamOps;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.ReaderRIOTFactory;
 import org.apache.jena.sparql.ARQException;
 
 public class Scripts {
@@ -99,4 +102,29 @@ public class Scripts {
         }
         return x;
     }
+
+    /** Create tests that use a specific RIOT Factory for a language.
+     *
+     * This needs to be done when the test is built.
+     * "ParsingStepForTest" is the wrapper code to parse test input.
+     * It builds a function, with a binding to the parser factory,
+     * so that at test execution time, the parser specified here will be used.
+     */
+    public static Stream<DynamicNode> withAltParserFactory(Lang lang, ReaderRIOTFactory factory, String filename) {
+        ParsingStepForTest.registerAlternative(lang, factory);
+        try {
+            return Scripts.manifestTestFactoryRIOT(filename);
+        } finally {
+            ParsingStepForTest.unregisterAlternative(lang);
+        }
+    }
+
+    /** Does the URI of the test conain a substring? */
+    public static boolean entryContainsSubstring(ManifestEntry entry, String fingerprint) {
+        String testURI = entry.getURI();
+        if ( testURI == null )
+            return false;
+        return testURI.contains(fingerprint);
+    }
+
 }

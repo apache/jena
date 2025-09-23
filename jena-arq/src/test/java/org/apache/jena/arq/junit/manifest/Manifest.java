@@ -21,12 +21,12 @@ package org.apache.jena.arq.junit.manifest;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.riot.RDFParser;
+import org.apache.jena.riot.RiotException;
+import org.apache.jena.riot.RiotNotFoundException;
 import org.apache.jena.sparql.vocabulary.TestManifestX;
 import org.apache.jena.system.G;
 import org.apache.jena.vocabulary.RDF;
@@ -46,7 +46,7 @@ public class Manifest
     private String manifestName;
     // Assumed base URI for the tests - this makes downloaded manifest tests assume their original location work.
     private String manifestTestBase;
-    private String filename;
+    private String filenameOrURI;
     private List<String> includedFiles = new ArrayList<>();
     private List<ManifestEntry> entries = new ArrayList<>();
 
@@ -55,39 +55,40 @@ public class Manifest
         return manifest;
     }
 
-    public static void walk(Manifest manifest, Consumer<Manifest> actionManifest, Consumer<ManifestEntry> actionEntry) {
-        actionManifest.accept(manifest);
-        Iterator<String> sub = manifest.includedManifests();
-        while(sub.hasNext() ) {
-            String mf = sub.next();
-            Manifest manifestSub = Manifest.parse(mf);
-            walk(manifestSub, actionManifest, actionEntry);
-        }
-        for ( ManifestEntry entry : manifest.entries() ) {
-            actionEntry.accept(entry);
-        }
-    }
-
-    private Manifest(String fn) {
-        filename = fn;
-        manifestGraph = RDFParser.source(filename).toGraph();
-        manifest = getManifestNode();
+    private Manifest(String manifestFile) {
+        filenameOrURI = manifestFile;
+        manifestGraph = manifestGraph(filenameOrURI);
+        manifest = getManifestNode(manifestGraph, filenameOrURI);
         parseManifest();
         parseIncludes();
         parseEntries();
     }
 
-    private Node getManifestNode() {
+    private Graph manifestGraph(String filenameOrURI) {
+        // Exceptions from @TestFactories are swallowed by JUnit5.
+        try {
+            return RDFParser.source(filenameOrURI).toGraph();
+        } catch (RiotNotFoundException ex) {
+            log.error("Not found: "+filenameOrURI);
+            // Exceptions from @TestFactories are swallowed by JUnit5.
+            throw new RiotNotFoundException("Manifest "+filenameOrURI);
+        } catch (RiotException ex) {
+            log.error("Error reading manifest: "+filenameOrURI);
+            throw ex;
+        }
+    }
+
+    private static Node getManifestNode(Graph manifestGraph, String filename) {
         List<Node> manifests = G.nodesOfTypeAsList(manifestGraph, TestManifest.Manifest.asNode());
         if ( manifests.size() > 1 ) {
-            log.warn("Multiple manifests in manifest file: " + filename);
+            log.warn("Multiple manifests in the manifest file: " + filename);
             return null;
         }
         return manifests.get(0);
     }
 
     public String getName()     { return manifestName; }
-    public String getFileName() { return filename; }
+    public String getFileName() { return filenameOrURI; }
     public String getTestBase() { return manifestTestBase; }
     public Graph  getGraph()    { return manifestGraph; }
 
@@ -161,11 +162,6 @@ public class Manifest
         }
     }
 
-    // XXX Temporary
-    private String getLiteral(Node r, RDFNode p) {
-        return getLiteral(r, p.asNode());
-    }
-
     private String getLiteral(Node r, Node p) {
         if ( r == null )
             return null;
@@ -195,6 +191,6 @@ public class Manifest
 
     @Override
     public String toString() {
-        return "manifest["+filename+"]";
+        return "manifest["+filenameOrURI+"]";
     }
 }

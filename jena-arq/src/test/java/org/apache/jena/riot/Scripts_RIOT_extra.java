@@ -1,5 +1,5 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
+jena-cmds  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership.  The ASF licenses this file
@@ -20,28 +20,29 @@ package org.apache.jena.riot;
 
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.DynamicNode;
-import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.*;
 
 import org.apache.jena.arq.TestConsts;
 import org.apache.jena.arq.junit.Scripts;
-import org.apache.jena.riot.lang.extra.TurtleJCC;
-import org.apache.jena.sys.JenaSystem;
 
-/** Execute turtle test with alt parser. */
-public class Scripts_AltTurtle {
+/** Run additional RIOT tests - not the RDF Test CG test suites for RDF syntaxes. */
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class Scripts_RIOT_extra {
 
+    // Turtle2
+    // RDF/JSON
+
+    @Order(1)
     @TestFactory
-    @DisplayName("Scripts AltTurtle rdf-tests")
-    public Stream<DynamicNode> testFactory() {
-        return Scripts.manifestTestFactoryRIOT(TestConsts.RDF12_TESTS_DIR+"rdf-turtle/manifest.ttl");
+    @DisplayName("RIOT - RDF/JSON")
+    public Stream<DynamicNode> testFactory_rdf_json() {
+        return Scripts.manifestTestFactory(TestConsts.RIOT_TESTS_DIR+"RDF-JSON/manifest.ttl");
     }
 
-    // If run on its own.
-    @BeforeAll public static void beforeAll() {
-        JenaSystem.init();
-        TurtleJCC.register();
+    @Order(2)
+    @TestFactory
+    @DisplayName("RIOT - Turtle2")
+    public Stream<DynamicNode> testFactory_turtle2() {
+        return Scripts.manifestTestFactory(TestConsts.RIOT_TESTS_DIR+"Turtle2/manifest.ttl");
     }
 }

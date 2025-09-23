@@ -8,5 +8,5 @@ SELECT
    ( STRLANGDIR("abc", "en", "")      AS ?term5 )
    ( STRLANGDIR("abc", "", "ltr")     AS ?term6 )
    ( STRLANGDIR(123, "", "ltr")       AS ?term7 )
-   ( STRLANGDIR(<http:/example/x>, "en", "ltr")	AS ?term8 )
+   ( STRLANGDIR(<http://example/x>, "en", "ltr")	AS ?term8 )
 WHERE {}

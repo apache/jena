@@ -27,9 +27,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.apache.jena.riot.ReaderRIOTFactory;
 import org.apache.jena.riot.lang.rdfxml.rrx_stax_sr.ReaderRDFXML_StAX_SR;
 
-/**
- * Run over all files found by a deep walk of the directory tree.
- */
 @ParameterizedClass
 @MethodSource("provideArgs")
 public class Test_RRX_W3C_StAXsr extends AbstractTestRDFXML_RRX {

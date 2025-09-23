@@ -55,7 +55,7 @@ public class RiotC14NTest extends AbstractManifestTest {
         input = entry.getAction().getURI();
         output = positiveTest ? entry.getResult().getURI() : null;
 
-        boolean silentWarnings = RiotTestsConfig.allowWarningsEvalTests(manifestEntry);
+        boolean silentWarnings = RiotTestsConfig.allowWarnings(manifestEntry);
         parser = ( baseIRI != null )
             ? ParsingStepForTest.parse(input, baseIRI, lang, silentWarnings)
             : ParsingStepForTest.parse(input, lang, silentWarnings);

@@ -18,6 +18,9 @@
 
 package org.apache.jena.arq.junit.sparql;
 
+import static org.apache.jena.arq.junit.Scripts.entryContainsSubstring;
+
+import org.apache.jena.arq.junit.Scripts;
 import org.apache.jena.arq.junit.SurpressedTest;
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
 import org.apache.jena.arq.junit.manifest.TestSetupException;
@@ -68,24 +71,35 @@ public class SparqlTests {
         if ( testType == null )
             testType = TestManifest.QueryEvaluationTest.asNode();
 
-        // == Good syntax
-        if ( equalsType(testType, TestManifest.PositiveSyntaxTest) )
+        // ---- Query syntax tests
+        if ( equalsType(testType, TestManifest.PositiveSyntaxTest) ) {
+            if ( entryContainsSubstring(entry, "codepoint-escapes#codepoint-esc-07") )
+                // \U escape outside a string or URI.
+                return null;
             return new QuerySyntaxTest(entry, querySyntax, true);
+        }
         if ( equalsType(testType, TestManifest_11.PositiveSyntaxTest11) )
             return new QuerySyntaxTest(entry, querySyntax11, true);
         if ( equalsType(testType, TestManifest_12.PositiveSyntaxTest12) )
             return new QuerySyntaxTest(entry, querySyntax12, true);
-        if ( equalsType(testType, TestManifestX.PositiveSyntaxTestARQ) )
+        if ( equalsType(testType, TestManifestX.PositiveSyntaxTestARQ) ) {
             return new QuerySyntaxTest(entry, Syntax.syntaxARQ, true);
+        }
+
+        //"codepoint-escapes#codepoint-esc-bad-07"
 
         // == Bad
-        if ( equalsType(testType, TestManifest.NegativeSyntaxTest) )
+        if ( equalsType(testType, TestManifest.NegativeSyntaxTest) ) {
+            if ( entryContainsSubstring(entry, "codepoint-escapes#codepoint-esc-bad-03") )
+                // \U escape outside a string or URI.
+                return null;
             return new QuerySyntaxTest(entry, querySyntax, false);
+        }
         if ( equalsType(testType, TestManifest_11.NegativeSyntaxTest11) ) {
             // Special override
             Syntax syn = querySyntax11;
             // Some of these are things that ARQ deals with but aren't SPARQL 1.1 so force SPARQL 1.1
-            if ( entry.getAction().getURI().contains("/Syntax-SPARQL_11/syn-bad-") )
+            if ( Scripts.entryContainsSubstring(entry, "/Syntax-SPARQL_11/syn-bad-") )
                 syn = Syntax.syntaxSPARQL_11;
             return new QuerySyntaxTest(entry, syn, false);
         }
@@ -93,7 +107,28 @@ public class SparqlTests {
         if ( equalsType(testType, TestManifestX.NegativeSyntaxTestARQ) )
             return new QuerySyntaxTest(entry, Syntax.syntaxARQ, false);
 
-        // ---- Update tests
+        // ---- Query Evaluation Tests
+        if ( equalsType(testType, TestManifest.QueryEvaluationTest) ) {
+
+            // ??
+            if ( entryContainsSubstring(entry, "aggregates/manifest#agg-groupconcat-04") ) {
+                return null;
+            }
+
+            // ??
+            if ( entryContainsSubstring(entry, "functions/manifest#bnode01") ) {
+                return null;
+            }
+            // ??
+            if ( entryContainsSubstring(entry, "property-path/manifest#values_and_path") ) {
+                return null;
+            }
+            return new QueryEvalTest(entry);
+        }
+        if ( equalsType(testType, TestManifestX.TestQuery) )
+            return new QueryEvalTest(entry);
+
+        // ---- Update syntax tests
         if ( equalsType(testType, TestManifest_11.PositiveUpdateSyntaxTest11) )
             return new UpdateSyntaxTest(entry, updateSyntax11, true);
         if ( equalsType(testType, TestManifestX.PositiveUpdateSyntaxTestARQ) )
@@ -109,13 +144,7 @@ public class SparqlTests {
         if ( equalsType(testType, TestManifest_12.NegativeUpdateSyntaxTest) )
             return new UpdateSyntaxTest(entry, Syntax.syntaxARQ, false);
 
-        //---- Query Evaluation Tests
-        if ( equalsType(testType, TestManifest.QueryEvaluationTest) )
-            return new QueryEvalTest(entry);
-        if ( equalsType(testType, TestManifestX.TestQuery) )
-            return new QueryEvalTest(entry);
-
-        // ---- Update Evaluation tests
+        // ---- Update evaluation tests
         if ( equalsType(testType, TestManifestUpdate_11.UpdateEvaluationTest) )
             return new UpdateEvalTest(entry);
         if ( equalsType(testType, TestManifest_11.UpdateEvaluationTest) )

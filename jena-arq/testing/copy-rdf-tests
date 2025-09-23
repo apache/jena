@@ -34,7 +34,8 @@ mv "$TMP/rdf" "$TMP/sparql" "$TMP/ns" "$SRC"
 
 echo "== Keep only RDF language and SPARQL tests."
 # Remove model theory tests.
-rm -r "$SRC/rdf/rdf11/rdf-mt"
+rm -r "$SRC/rdf/rdf11/rdf-mt/"
+rm -r "$SRC/rdf/rdf12/rdf-semantics/"
 # Remove archives
 find "$SRC" -name TESTS\* | xargs rm -r
 # Clean out HTML
@@ -46,6 +47,8 @@ find "$SRC" -name reports | xargs rm -r
 ## Remove temp
 echo "== Delete cloned repo"
 rm -rf "$TMP"
+
+echo "== Edit 
 
 echo "== Result :: directory ${SRC}/"
 echo "== Check ${SRC}, then delete the current ${DEST}, and move ${SRC} to ${DEST}"

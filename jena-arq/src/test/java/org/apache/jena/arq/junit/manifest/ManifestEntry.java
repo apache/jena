@@ -39,6 +39,17 @@ public class ManifestEntry {
         this.result = result;
     }
 
+    /**
+     * Return a ManifestEntry with different type/action/result.
+     * This is used to replace rdf-tests-cg where test behaviour is expected to be different.
+     */
+    public static ManifestEntry alter(ManifestEntry entry, Node testType,  Node action, Node result) {
+        return new ManifestEntry(entry.getManifest(),
+                                 entry.getEntry(),
+                                 entry.getName(),
+                                 testType, action, result);
+    }
+
     public Manifest getManifest() {
         return manifest;
     }
@@ -73,6 +84,15 @@ public class ManifestEntry {
 
     public Node getResult() {
         return result;
+    }
+
+    @Override
+    public String toString() {
+        if ( false )
+            // Multi-line
+            return String.format("ManifestEntry: <%s>\n    \"%s\"\n    action=%s result=%s", getURI(), getName(), getAction(), getResult());
+        // Shorter, single line
+        return String.format("ManifestEntry: <%s>", getURI(), getName(), getAction(), getResult());
     }
 }
 
