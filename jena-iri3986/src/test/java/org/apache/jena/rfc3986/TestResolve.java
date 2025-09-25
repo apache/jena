@@ -45,10 +45,20 @@ public class TestResolve {
     @Test public void resolve_abs_11() { testResolve("http://example/dir1/dir2/", "//EX/OtherPath", "http://EX/OtherPath"); }
     @Test public void resolve_abs_12() { testResolve("http:", "//EX/OtherPath", "http://EX/OtherPath"); }
 
+    @Test public void resolve_abs_20() { testResolve("https://example/", "//", "https://"); }
+    @Test public void resolve_abs_21() { testResolve("https://example/", "//host", "https://host"); }
+    @Test public void resolve_abs_22() { testResolve("https://example/", "//host/", "https://host/"); }
+    @Test public void resolve_abs_23() { testResolve("https://example/", "//host/path", "https://host/path"); }
+
     @Test public void resolve_ref_1() { testResolve("http://example/dir/", "A", "http://example/dir/A"); }
     @Test public void resolve_ref_2() { testResolve("http://example/dir", "A", "http://example/A"); }
     @Test public void resolve_ref_3() { testResolve("http://example/dir", "A/", "http://example/A/"); }
     @Test public void resolve_ref_4() { testResolve("http://example/dir/", "A/", "http://example/dir/A/"); }
+
+    // Different scheme.
+    @Test public void resolve_ref_5() { testResolve("http://example/", "https:subdir/", "https:subdir/"); }
+    @Test public void resolve_ref_6() { testResolve("http://example/", "https:subdir", "https:subdir"); }
+    @Test public void resolve_ref_7() { testResolve("http://example/", "urn:foo/", "urn:foo/"); }
 
     @Test public void resolve_dot_01() { testResolve("http://example/dir1/dir2/", ".", "http://example/dir1/dir2/"); }
     @Test public void resolve_dot_02() { testResolve("http://example/", ".", "http://example/"); }

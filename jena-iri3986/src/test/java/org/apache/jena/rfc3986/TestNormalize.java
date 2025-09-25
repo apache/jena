@@ -45,6 +45,10 @@ public class TestNormalize {
     @Test public void normalize_23() { testNormalize("http://host//..", "http://host/"); }
     @Test public void normalize_24() { testNormalize("http://host/abc//..", "http://host/abc/"); }
 
+    @Test public void normalize_25() { testNormalize("http://host/abc/", "http://host/abc/"); }
+    @Test public void normalize_26() { testNormalize("http://host/abc", "http://host/abc"); }
+    @Test public void normalize_27() { testNormalize("http://host/", "http://host/"); }
+
     private void testNormalize(String input, String expected) {
         IRI3986 iri = RFC3986.create(input);
         IRI3986 iri2 = iri.normalize();
