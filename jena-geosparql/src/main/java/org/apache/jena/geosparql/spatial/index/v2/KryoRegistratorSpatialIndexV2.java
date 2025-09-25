@@ -20,6 +20,7 @@ package org.apache.jena.geosparql.spatial.index.v2;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.jena.geosparql.kryo.EnvelopeSerializer;
 import org.apache.jena.geosparql.kryo.NodeSerializer;
@@ -40,9 +41,9 @@ import org.locationtech.jts.index.strtree.STRtreeSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.Serializer;
-import com.esotericsoftware.kryo.serializers.MapSerializer;
+import com.esotericsoftware.kryo.kryo5.Kryo;
+import com.esotericsoftware.kryo.kryo5.Serializer;
+import com.esotericsoftware.kryo.kryo5.serializers.MapSerializer;
 
 /**
  * The class is used to configure the kryo serialization
@@ -58,10 +59,10 @@ public class KryoRegistratorSpatialIndexV2 {
         LOGGER.debug("Registering kryo serializers for spatial index v2.");
 
         // Java
-        Serializer<?> mapSerializer = new MapSerializer();
+        Serializer<?> mapSerializer = new MapSerializer<>();
         kryo.register(Map.class, mapSerializer);
         kryo.register(HashMap.class, mapSerializer);
-        kryo.register(LinkedHashMap.class, mapSerializer);
+        kryo.register(ConcurrentHashMap.class, mapSerializer);
 
         // Jena
         NodeSerializer.register(kryo);
