@@ -100,15 +100,13 @@ public class QueryExecHTTP implements QueryExec {
     private long readTimeout = -1;
     private TimeUnit readTimeoutUnit = TimeUnit.MILLISECONDS;
 
-    // Content Types: these list the standard formats and also include */*.
-    private final String selectAcceptheader    = WebContent.defaultSparqlResultsHeader;
-    private final String askAcceptHeader       = WebContent.defaultSparqlAskHeader;
-    private final String describeAcceptHeader  = WebContent.defaultGraphAcceptHeader;
-    private final String constructAcceptHeader = WebContent.defaultGraphAcceptHeader;
-    private final String datasetAcceptHeader   = WebContent.defaultDatasetAcceptHeader;
+    private final String selectAcceptHeader;
+    private final String askAcceptHeader;
+    private final String graphAcceptHeader;
+    private final String datasetAcceptHeader;
 
     // If this is non-null, it overrides the use of any Content-Type above.
-    private String appProvidedAcceptHeader         = null;
+    private String overrideAcceptHeader         = null;
 
     // Received content type
     private String httpResponseContentType = null;
@@ -120,9 +118,27 @@ public class QueryExecHTTP implements QueryExec {
     private Map<String, String> httpHeaders;
 
     public QueryExecHTTP(String serviceURL, Query query, String queryString, int urlLimit,
+            HttpClient httpClient, Map<String, String> httpHeaders, Params params, Context context,
+            List<String> defaultGraphURIs, List<String> namedGraphURIs,
+            QuerySendMode sendMode, String overrideAcceptHeader,
+            long timeout, TimeUnit timeoutUnit) {
+        // Content Types: these list the standard formats and also include */*
+        this(serviceURL, query, queryString, urlLimit,
+                httpClient, httpHeaders, params, context,
+                defaultGraphURIs, namedGraphURIs,
+                sendMode,
+                overrideAcceptHeader,
+                WebContent.defaultSparqlResultsHeader, WebContent.defaultSparqlAskHeader,
+                WebContent.defaultGraphAcceptHeader, WebContent.defaultDatasetAcceptHeader,
+                timeout, timeoutUnit);
+    }
+
+    public QueryExecHTTP(String serviceURL, Query query, String queryString, int urlLimit,
                          HttpClient httpClient, Map<String, String> httpHeaders, Params params, Context context,
                          List<String> defaultGraphURIs, List<String> namedGraphURIs,
-                         QuerySendMode sendMode, String explicitAcceptHeader,
+                         QuerySendMode sendMode, String overrideAcceptHeader,
+                         String selectAcceptheader, String askAcceptHeader,
+                         String graphAcceptHeader, String datasetAcceptHeader,
                          long timeout, TimeUnit timeoutUnit) {
         this.context = ( context == null ) ? ARQ.getContext().copy() : context.copy();
         this.service = serviceURL;
@@ -133,11 +149,15 @@ public class QueryExecHTTP implements QueryExec {
         this.defaultGraphURIs = defaultGraphURIs;
         this.namedGraphURIs = namedGraphURIs;
         this.sendMode = Objects.requireNonNull(sendMode);
-        this.appProvidedAcceptHeader = explicitAcceptHeader;
+        this.overrideAcceptHeader = overrideAcceptHeader;
+        this.selectAcceptHeader = selectAcceptheader;
+        this.askAcceptHeader = askAcceptHeader;
+        this.graphAcceptHeader = graphAcceptHeader;
+        this.datasetAcceptHeader = datasetAcceptHeader;
         // Important - handled as special case because the defaults vary by query type.
         if ( httpHeaders.containsKey(HttpNames.hAccept) ) {
-            if ( this.appProvidedAcceptHeader != null )
-                this.appProvidedAcceptHeader = httpHeaders.get(HttpNames.hAccept);
+            if ( this.overrideAcceptHeader != null )
+                this.overrideAcceptHeader = httpHeaders.get(HttpNames.hAccept);
             this.httpHeaders.remove(HttpNames.hAccept);
         }
         this.httpHeaders = httpHeaders;
@@ -147,9 +167,29 @@ public class QueryExecHTTP implements QueryExec {
         this.httpClient = HttpLib.dft(httpClient, HttpEnv.getDftHttpClient());
     }
 
-    /** Getter for the appProvidedAcceptHeader. Only used for testing. */
+    public String getAcceptHeaderSelect() {
+        return selectAcceptHeader;
+    }
+
+    public String getAcceptHeaderAsk() {
+        return askAcceptHeader;
+    }
+
+    public String getAcceptHeaderDescribe() {
+        return graphAcceptHeader;
+    }
+
+    public String getAcceptHeaderConstructGraph() {
+        return graphAcceptHeader;
+    }
+
+    public String getAcceptHeaderConstructDataset() {
+        return datasetAcceptHeader;
+    }
+
+    /** Getter for the override accept header. Only used for testing. */
     public String getAppProvidedAcceptHeader() {
-        return appProvidedAcceptHeader;
+        return overrideAcceptHeader;
     }
 
     /** The Content-Type response header received (null before the remote operation is attempted). */
@@ -167,7 +207,7 @@ public class QueryExecHTTP implements QueryExec {
 
     private RowSet execRowSet() {
         // Use the explicitly given header or the default selectAcceptheader
-        String thisAcceptHeader = dft(appProvidedAcceptHeader, selectAcceptheader);
+        String thisAcceptHeader = dft(overrideAcceptHeader, selectAcceptHeader);
 
         HttpRequest request = effectiveHttpRequest(thisAcceptHeader);
         HttpResponse<InputStream> response = executeQuery(request);
@@ -214,7 +254,7 @@ public class QueryExecHTTP implements QueryExec {
     public boolean ask() {
         checkNotClosed();
         check(QueryType.ASK);
-        String thisAcceptHeader = dft(appProvidedAcceptHeader, askAcceptHeader);
+        String thisAcceptHeader = dft(overrideAcceptHeader, askAcceptHeader);
         HttpRequest request = effectiveHttpRequest(thisAcceptHeader);
         HttpResponse<InputStream> response = executeQuery(request);
         InputStream in = HttpLib.getInputStream(response);
@@ -262,14 +302,14 @@ public class QueryExecHTTP implements QueryExec {
     public Graph construct(Graph graph) {
         checkNotClosed();
         check(QueryType.CONSTRUCT);
-        return execGraph(graph, constructAcceptHeader);
+        return execGraph(graph, graphAcceptHeader);
     }
 
     @Override
     public Iterator<Triple> constructTriples() {
         checkNotClosed();
         check(QueryType.CONSTRUCT);
-        return execTriples(constructAcceptHeader);
+        return execTriples(graphAcceptHeader);
     }
 
     @Override
@@ -295,13 +335,13 @@ public class QueryExecHTTP implements QueryExec {
     public Graph describe(Graph graph) {
         checkNotClosed();
         check(QueryType.DESCRIBE);
-        return execGraph(graph, describeAcceptHeader);
+        return execGraph(graph, graphAcceptHeader);
     }
 
     @Override
     public Iterator<Triple> describeTriples() {
         checkNotClosed();
-        return execTriples(describeAcceptHeader);
+        return execTriples(graphAcceptHeader);
     }
 
     private Graph execGraph(Graph graph, String acceptHeader) {
@@ -354,7 +394,7 @@ public class QueryExecHTTP implements QueryExec {
     // ifNoContentType - some wild guess at the content type.
     private Pair<InputStream, Lang> execRdfWorker(String contentType, String ifNoContentType) {
         checkNotClosed();
-        String thisAcceptHeader = dft(appProvidedAcceptHeader, contentType);
+        String thisAcceptHeader = dft(overrideAcceptHeader, contentType);
         HttpRequest request = effectiveHttpRequest(thisAcceptHeader);
         HttpResponse<InputStream> response = executeQuery(request);
         InputStream in = HttpLib.getInputStream(response);
@@ -382,7 +422,7 @@ public class QueryExecHTTP implements QueryExec {
     public JsonArray execJson() {
         checkNotClosed();
         check(QueryType.CONSTRUCT_JSON);
-        String thisAcceptHeader = dft(appProvidedAcceptHeader, WebContent.contentTypeJSON);
+        String thisAcceptHeader = dft(overrideAcceptHeader, WebContent.contentTypeJSON);
         HttpRequest request = effectiveHttpRequest(thisAcceptHeader);
         HttpResponse<InputStream> response = executeQuery(request);
         InputStream in = HttpLib.getInputStream(response);

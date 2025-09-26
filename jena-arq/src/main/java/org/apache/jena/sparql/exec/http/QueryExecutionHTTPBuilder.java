@@ -23,6 +23,7 @@ import static org.apache.jena.http.HttpLib.copyArray;
 import java.net.http.HttpClient;
 import java.util.HashMap;
 
+import org.apache.jena.http.HttpLib;
 import org.apache.jena.http.sys.ExecHTTPBuilder;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecutionBuilder;
@@ -54,6 +55,10 @@ public class QueryExecutionHTTPBuilder
                                                 hClient, new HashMap<>(httpHeaders), Params.create(params), cxt,
                                                 copyArray(defaultGraphURIs), copyArray(namedGraphURIs),
                                                 sendMode, appAcceptHeader,
+                                                HttpLib.dft(appAcceptHeader, selectAcceptHeader),
+                                                HttpLib.dft(appAcceptHeader, askAcceptHeader),
+                                                HttpLib.dft(appAcceptHeader, graphAcceptHeader),
+                                                HttpLib.dft(appAcceptHeader, datasetAcceptHeader),
                                                 timeout, timeoutUnit);
         return new QueryExecutionHTTP(qExec);
     }
