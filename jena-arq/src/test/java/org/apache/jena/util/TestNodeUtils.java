@@ -19,6 +19,7 @@
 package org.apache.jena.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -65,6 +66,8 @@ public class TestNodeUtils {
         Node s = triple.getSubject(), p = triple.getPredicate(), o = triple.getObject();
         assertEquals(expected, NodeUtils.isValidAsRDF(s, p, o));
     }
+
+    @Test public void concrete_triple_in_quad() { assertTrue(Quad.create(null, s, p, o).isConcrete()); }
 
     @Test public void valid_quad_01() { testValidityQuad(true, "(:g :s :p :o)"); }
     @Test public void valid_quad_02() { testValidityQuad(true, Quad.create(g, s, p, o)); }
