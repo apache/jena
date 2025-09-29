@@ -18,6 +18,7 @@
 
 package org.apache.jena.arq.junit.textrunner;
 
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.function.Function;
 
@@ -99,15 +100,27 @@ public class TextTestRunner {
         TestExecutionSummary summary = summaryListener.getSummary();
 
         if ( summary != null ) {
-            //summary.printTo(new PrintWriter(System.out));
             out.println();
+            if ( executionStats.getTestFailures() == 0 ) {
+                out.println("** Success");
+                out.println();
+            } else {
+                out.printf("** Failures: %s\n", executionStats.getTestFailures());
+                out.println();
+            }
+            //summary.printTo(new PrintWriter(System.out, true));
 //            out.println("Containers: "+executionStats.getContainerCount());
 //            out.println("Manifests:  "+manifestCount);
-            out.println("Manifests: "+executionStats.getContainerCount());
-            out.println("Tests pass: "+executionStats.getTestPasses());
-            out.println("Tests fail: "+executionStats.getTestFailures());
-            if ( summary.getTestsSkippedCount() > 0 )
-                out.println("Tests skip: "+summary.getTestsSkippedCount());
+            if ( summary.getTestsSkippedCount() > 0 ) {
+                out.println("Manifests:     "+executionStats.getContainerCount());
+                out.println("Tests pass:    "+executionStats.getTestPasses());
+                out.println("Tests fail:    "+executionStats.getTestFailures());
+                out.println("Tests skipped: "+summary.getTestsSkippedCount());
+            } else {
+                out.println("Manifests:  "+executionStats.getContainerCount());
+                out.println("Tests pass: "+executionStats.getTestPasses());
+                out.println("Tests fail: "+executionStats.getTestFailures());
+            }
         }
 
         if ( produceEarlReport ) {
