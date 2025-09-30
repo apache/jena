@@ -120,18 +120,26 @@ public class SpatialIndexerService extends BaseActionREST {
 
     public SpatialIndexerService() {}
 
-    private static <T, C extends Collection<Node>> Set<Node> extractGraphsFromRequest(DatasetGraph dsg, HttpAction action) {
+    /**
+     * Extract the explicit set of graphs from the action w.r.t. the dataset graph.
+     *
+     * @param dsg The dataset graph.
+     * @param action The HTTP action.
+     * @param emptySelectionToAllGraphs Select all graphs if the request specifies an empty selection of graphs.
+     * @return The explicit set of graphs w.r.t. the dataset graph.
+     */
+    private static Set<Node> extractGraphsFromRequest(DatasetGraph dsg, HttpAction action, boolean emptySelectionToAllGraphs) {
         String uris = action.getRequest().getParameter(HttpNames.paramGraph);
         Collection<String> strs;
         if (uris == null || uris.isBlank()) {
             strs = List.of(Quad.defaultGraphIRI.toString(), Quad.unionGraph.toString());
         } else {
-            TypeToken<List<String>> typeToken = new TypeToken<List<String>>(){};
+            TypeToken<List<String>> typeToken = new TypeToken<>(){};
             strs = gsonForSse.fromJson(uris, typeToken);
         }
         List<Node> rawGraphNodes = strs.stream().map(NodeFactory::createURI).distinct().toList();
         // If the set of specified graphs is empty then index all.
-        if (rawGraphNodes.isEmpty()) {
+        if (rawGraphNodes.isEmpty() && emptySelectionToAllGraphs) {
             rawGraphNodes = List.of(Quad.defaultGraphIRI, Quad.unionGraph);
         }
 
@@ -453,7 +461,7 @@ public class SpatialIndexerService extends BaseActionREST {
 
         long graphCount = indexComputation.getGraphNodes().size();
 
-        TaskListener<BasicTask> taskListener = new TaskListener<BasicTask>() {
+        TaskListener<BasicTask> taskListener = new TaskListener<>() {
             @Override
             public void onStateChange(BasicTask task) {
                 switch (task.getTaskState()) {
@@ -475,6 +483,7 @@ public class SpatialIndexerService extends BaseActionREST {
                     if (logger.isInfoEnabled()) {
                         logger.info("Indexing task of {} graphs terminated.", graphCount);
                     }
+                    break;
                 }
                 default:
                     break;
@@ -496,6 +505,8 @@ public class SpatialIndexerService extends BaseActionREST {
             ServletOps.error(HttpSC.SERVICE_UNAVAILABLE_503, msg);
         } else {
             boolean isReplaceMode = isReplaceMode(action);
+            boolean isUpdateMode = !isReplaceMode;
+
             int threadCount = getThreadCount(action);
 
             // Only SpatialIndexPerGraph can be updated.
@@ -503,7 +514,6 @@ public class SpatialIndexerService extends BaseActionREST {
             // If not then raise an exception
             // that informs that only replace mode can be used in this situation.
             if (!(index instanceof SpatialIndexPerGraph)) {
-                boolean isUpdateMode = !isReplaceMode;
                 if (isUpdateMode) {
                     throw new RuntimeException("Cannot update existing spatial index because its type is unsupported. Consider replacing the index.");
                 }
@@ -516,7 +526,7 @@ public class SpatialIndexerService extends BaseActionREST {
 
             String srsURI = index.getSrsInfo().getSrsURI();
 
-            List<Node> graphNodes = new ArrayList<>(Txn.calculateRead(dsg, () -> extractGraphsFromRequest(dsg, action)));
+            List<Node> graphNodes = new ArrayList<>(Txn.calculateRead(dsg, () -> extractGraphsFromRequest(dsg, action, isUpdateMode)));
             SpatialIndexerComputation task = new SpatialIndexerComputation(dsg, srsURI, graphNodes, threadCount);
 
             action.log.info(String.format("[%d] spatial index: computation request accepted.", action.id));

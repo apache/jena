@@ -218,8 +218,9 @@
         }
 
         function updateApplyButtonLabel() {
+            const replaceMode = replaceCb.checked;
             const selectedGraphs = document.querySelectorAll('#graph-list input:checked');
-            applyBtn.textContent = selectedGraphs.length === 0 ? 'Index all graphs' : `Index ${selectedGraphs.length} graphs`;
+            applyBtn.textContent = (!replaceMode && selectedGraphs.length === 0) ? 'Index all graphs' : `Index ${selectedGraphs.length} graphs`;
         }
 
         document.getElementById('filter').addEventListener('input', function () {
@@ -300,6 +301,10 @@
 
         deselectAllBtn.addEventListener('click', function () {
             document.querySelectorAll('#graph-list input[type="checkbox"]').forEach(checkbox => checkbox.checked = false);
+            updateApplyButtonLabel();
+        });
+
+        replaceCb.addEventListener("change", function () {
             updateApplyButtonLabel();
         });
 

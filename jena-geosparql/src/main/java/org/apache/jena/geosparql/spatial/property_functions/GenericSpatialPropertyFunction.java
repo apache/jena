@@ -17,19 +17,16 @@
  */
 package org.apache.jena.geosparql.spatial.property_functions;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.stream.Stream;
 
-import org.apache.commons.collections4.iterators.IteratorChain;
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.SRSInfo;
-import org.apache.jena.geosparql.implementation.vocabulary.Geo;
-import org.apache.jena.geosparql.implementation.vocabulary.SpatialExtension;
-import org.apache.jena.geosparql.spatial.ConvertLatLon;
+import org.apache.jena.geosparql.implementation.access.AccessGeoSPARQL;
+import org.apache.jena.geosparql.implementation.access.AccessWGS84;
 import org.apache.jena.geosparql.spatial.SearchEnvelope;
 import org.apache.jena.geosparql.spatial.SpatialIndex;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
@@ -49,8 +46,6 @@ import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.pfunction.PFuncSimpleAndList;
 import org.apache.jena.sparql.pfunction.PropFuncArg;
 import org.apache.jena.sparql.util.FmtUtils;
-import org.apache.jena.system.G;
-import org.apache.jena.util.iterator.ExtendedIterator;
 
 /**
  *
@@ -66,7 +61,7 @@ public abstract class GenericSpatialPropertyFunction extends PFuncSimpleAndList 
     @Override
     public final QueryIterator execEvaluated(Binding binding, Node subject, Node predicate, PropFuncArg object, ExecutionContext execCxt) {
         try {
-            spatialIndex = SpatialIndexLib.retrieve(execCxt);
+            spatialIndex = SpatialIndexLib.require(execCxt);
             spatialArguments = extractObjectArguments(predicate, object, spatialIndex.getSrsInfo());
             return search(binding, execCxt, subject, spatialArguments.limit);
         } catch (SpatialIndexException ex) {
@@ -110,47 +105,23 @@ public abstract class GenericSpatialPropertyFunction extends PFuncSimpleAndList 
         try {
             Graph graph = execCxt.getActiveGraph();
 
-            IteratorChain<Triple> spatialTriples = new IteratorChain<>();
+            Iterator<Triple> spatialTriples;
 
-            //Check for Geometry and so GeometryLiterals.
-            if (graph.contains(subject, Geo.HAS_GEOMETRY_NODE, null)) {
-                //A Feature can have many geometries so add each of them. The check Geo.HAS_DEFAULT_GEOMETRY_NODE will only return one but requires the data to have these present.
-                List<Node> geometryNodes = G.listSP(graph, subject, Geo.HAS_GEOMETRY_NODE);
-                geometryNodes.forEach(geometry->{
-                    ExtendedIterator<Triple> iter = graph.find(geometry, Geo.HAS_SERIALIZATION_NODE, null);
-                    // Check for asWKT
-                    if (!iter.hasNext()) {
-                        iter = graph.find(geometry, Geo.AS_WKT_NODE, null);
-                    }
-                    // Check for asGML
-                    if (!iter.hasNext()) {
-                        iter = graph.find(geometry, Geo.AS_GML_NODE, null);
-                    }
-                    spatialTriples.addIterator(iter);
-                });
+            if (AccessGeoSPARQL.containsGeoLiterals(graph)) {
+                spatialTriples = AccessGeoSPARQL.findSpecificGeoLiteralsByFeature(graph, subject);
+            } else if (AccessWGS84.containsGeoLiteralProperties(graph)) {
+                spatialTriples = AccessWGS84.findGeoLiteralsAsTriples(graph, subject);
             } else {
-                //Check for Geo predicates against the feature when no geometry literals found.
-                if (graph.contains(subject, SpatialExtension.GEO_LAT_NODE, null) && graph.contains(subject, SpatialExtension.GEO_LON_NODE, null)) {
-                    Node lat = G.getOneSP(graph, subject, SpatialExtension.GEO_LAT_NODE);
-                    Node lon = G.getOneSP(graph, subject, SpatialExtension.GEO_LON_NODE);
-                    Node latLonGeometryLiteral = ConvertLatLon.toNode(lat, lon);
-                    Triple triple = Triple.create(subject, Geo.HAS_GEOMETRY_NODE, latLonGeometryLiteral);
-                    spatialTriples.addIterator(Arrays.asList(triple).iterator());
-                }
+                spatialTriples = Iter.empty();
             }
 
             //Check through each Geometry and stop if one is accepted.
-            boolean isMatched = false;
-            while (spatialTriples.hasNext()) {
-                Triple triple = spatialTriples.next();
+            boolean isMatched = Iter.anyMatch(spatialTriples, triple -> {
                 Node geometryLiteral = triple.getObject();
                 GeometryWrapper targetGeometryWrapper = GeometryWrapper.extract(geometryLiteral);
-                isMatched = checkSecondFilter(spatialArguments, targetGeometryWrapper);
-                if (isMatched) {
-                    //Stop checking when match is true.
-                    break;
-                }
-            }
+                boolean isMatch = checkSecondFilter(spatialArguments, targetGeometryWrapper);
+                return isMatch;
+            });
 
             return isMatched;
         } catch (DatatypeFormatException ex) {

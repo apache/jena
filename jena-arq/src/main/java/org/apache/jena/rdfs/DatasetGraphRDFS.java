@@ -67,6 +67,10 @@ public class DatasetGraphRDFS extends DatasetGraphWrapper implements DatasetGrap
         return new GraphRDFS(base, setup);
     }
 
+    @Override
+    public Iterator<Quad> find()
+    { return find(Node.ANY, Node.ANY, Node.ANY, Node.ANY); }
+
     // Quad-centric access
     @Override
     public Iterator<Quad> find(Quad quad) {

@@ -181,7 +181,7 @@ public class QueryRewriteIndex {
      */
     public static final void prepare(Dataset dataset) {
         Context context = dataset.getContext();
-        context.set(QUERY_REWRITE_INDEX_SYMBOL, createDefault());
+        set(context, createDefault());
     }
 
     /**
@@ -194,7 +194,7 @@ public class QueryRewriteIndex {
      */
     public static final void prepare(Dataset dataset, String queryRewriteLabel, int maxSize, long expiryInterval) {
         Context context = dataset.getContext();
-        context.set(QUERY_REWRITE_INDEX_SYMBOL, new QueryRewriteIndex(queryRewriteLabel, maxSize, expiryInterval));
+        set(context, new QueryRewriteIndex(queryRewriteLabel, maxSize, expiryInterval));
     }
 
     /**
@@ -204,10 +204,9 @@ public class QueryRewriteIndex {
      * @param execCxt
      * @return QueryRewriteIndex contained in the Context.
      */
-    public static final QueryRewriteIndex retrieve(ExecutionContext execCxt) {
-
+    public static final QueryRewriteIndex getOrCreate(ExecutionContext execCxt) {
         Context context = execCxt.getContext();
-        return retrieve(context);
+        return getOrCreate(context);
     }
 
     /**
@@ -217,10 +216,9 @@ public class QueryRewriteIndex {
      * @param dataset
      * @return QueryRewriteIndex contained in the Context.
      */
-    public static final QueryRewriteIndex retrieve(Dataset dataset) {
-
+    public static final QueryRewriteIndex getOrCreate(Dataset dataset) {
         Context context = dataset.getContext();
-        return retrieve(context);
+        return getOrCreate(context);
     }
 
     /**
@@ -230,15 +228,18 @@ public class QueryRewriteIndex {
      * @param context
      * @return QueryRewriteIndex contained in the Context.
      */
-    public static final QueryRewriteIndex retrieve(Context context) {
-        QueryRewriteIndex queryRewriteIndex = context.get(QUERY_REWRITE_INDEX_SYMBOL, null);
-
-        if (queryRewriteIndex == null) {
-            queryRewriteIndex = createDefault();
-            context.set(QUERY_REWRITE_INDEX_SYMBOL, queryRewriteIndex);
-        }
-
+    public static final QueryRewriteIndex getOrCreate(Context context) {
+        QueryRewriteIndex queryRewriteIndex = context.computeIfAbsent(QUERY_REWRITE_INDEX_SYMBOL, k -> createDefault());
         return queryRewriteIndex;
+    }
+
+    public static final QueryRewriteIndex get(Context context) {
+        return (context == null) ? null : context.get(QUERY_REWRITE_INDEX_SYMBOL);
+    }
+
+    public static final Context set(Context context, QueryRewriteIndex queryRewriteIndex) {
+        context.set(QUERY_REWRITE_INDEX_SYMBOL, queryRewriteIndex);
+        return context;
     }
 
     /**
