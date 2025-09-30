@@ -19,7 +19,7 @@ package org.apache.jena.geosparql.geo.topological;
 
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
-import org.apache.jena.geosparql.implementation.vocabulary.Geo;
+import org.apache.jena.geosparql.implementation.access.AccessGeoSPARQL;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
@@ -28,15 +28,15 @@ import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
-import org.apache.jena.sparql.engine.iterator.QueryIterConcat;
+import org.apache.jena.sparql.engine.iterator.QueryIter;
 import org.apache.jena.sparql.engine.iterator.QueryIterNullIterator;
+import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import org.apache.jena.sparql.engine.iterator.QueryIterSingleton;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.pfunction.PFuncSimple;
 import org.apache.jena.system.G;
 import org.apache.jena.util.iterator.ExtendedIterator;
-import org.apache.jena.vocabulary.RDF;
 
 /**
  *
@@ -62,7 +62,6 @@ public abstract class GenericGeometryPropertyFunction extends PFuncSimple {
             //Subject unbound and object bound.
             return subjectUnbound(binding, subject, predicate, object, execCxt);
         }
-
     }
 
     protected Node getGeometryLiteral(Node subject, Node predicate, Graph graph) throws ExprEvalException {
@@ -73,15 +72,7 @@ public abstract class GenericGeometryPropertyFunction extends PFuncSimple {
                 return G.getSP(graph, subject, predicate);
 
             //Check that the Geometry has a serialisation to use.
-            Node geomLiteral = G.getSP(graph, subject, Geo.HAS_SERIALIZATION_NODE);
-
-            // If hasSerialization not found then check asWKT and asGML.
-            if (geomLiteral == null) {
-                geomLiteral = G.getSP(graph, subject, Geo.AS_WKT_NODE);
-                if (geomLiteral == null)
-                    geomLiteral = G.getSP(graph, subject, Geo.AS_GML_NODE);
-            }
-
+            Node geomLiteral = AccessGeoSPARQL.getGeoLiteral(graph, subject);
             if (geomLiteral != null) {
                 GeometryWrapper geometryWrapper = GeometryWrapper.extract(geomLiteral);
                 NodeValue predicateResult = applyPredicate(geometryWrapper);
@@ -111,25 +102,23 @@ public abstract class GenericGeometryPropertyFunction extends PFuncSimple {
     }
 
     private QueryIterator subjectUnbound(Binding binding, Node subject, Node predicate, Node object, ExecutionContext execCxt) {
-        QueryIterConcat queryIterConcat = new QueryIterConcat(execCxt);
-
         Graph graph = execCxt.getActiveGraph();
 
-        ExtendedIterator<Triple> subjectTriples = graph.find(null, RDF.type.asNode(), Geo.GEOMETRY_NODE);
-
+        ExtendedIterator<Triple> subjectTriples = AccessGeoSPARQL.findSpecificGeoLiterals(graph);
         Var subjectVar = Var.alloc(subject.getName());
-        while (subjectTriples.hasNext()) {
-            Triple subjectTriple = subjectTriples.next();
-            Binding newBind = BindingFactory.binding(binding, subjectVar, subjectTriple.getSubject());
-            QueryIterator queryIter = bothBound(newBind, subjectTriple.getSubject(), predicate, object, execCxt);
-            queryIterConcat.add(queryIter);
-        }
+        ExtendedIterator<Binding> iterator = subjectTriples
+                .mapWith(Triple::getSubject)
+                .mapWith(node -> BindingFactory.binding(binding, subjectVar, node));
 
-        return queryIterConcat;
+        QueryIter queryIter = QueryIter.flatMap(
+                QueryIterPlainWrapper.create(iterator, execCxt),
+                b -> bothBound(b, b.get(subjectVar), predicate, object, execCxt),
+                execCxt);
+
+        return queryIter;
     }
 
     private QueryIterator objectUnbound(Binding binding, Node subject, Node predicate, Node object, ExecutionContext execCxt) {
-
         Graph graph = execCxt.getActiveGraph();
         Node geometryLiteral = getGeometryLiteral(subject, predicate, graph);
 
@@ -141,21 +130,20 @@ public abstract class GenericGeometryPropertyFunction extends PFuncSimple {
     }
 
     private QueryIterator bothUnbound(Binding binding, Node subject, Node predicate, Node object, ExecutionContext execCxt) {
-        QueryIterConcat queryIterConcat = new QueryIterConcat(execCxt);
-
         Graph graph = execCxt.getActiveGraph();
 
-        ExtendedIterator<Triple> subjectTriples = graph.find(null, RDF.type.asNode(), Geo.GEOMETRY_NODE);
-
+        ExtendedIterator<Triple> subjectTriples = AccessGeoSPARQL.findSpecificGeoLiterals(graph);
         Var subjectVar = Var.alloc(subject.getName());
-        while (subjectTriples.hasNext()) {
-            Triple subjectTriple = subjectTriples.next();
-            Binding newBind = BindingFactory.binding(binding, subjectVar, subjectTriple.getSubject());
-            QueryIterator queryIter = objectUnbound(newBind, subjectTriple.getSubject(), predicate, object, execCxt);
-            queryIterConcat.add(queryIter);
-        }
+        ExtendedIterator<Binding> iterator = subjectTriples
+                .mapWith(Triple::getSubject)
+                .mapWith(node -> BindingFactory.binding(binding, subjectVar, node));
 
-        return queryIterConcat;
+        QueryIter queryIter = QueryIter.flatMap(
+                QueryIterPlainWrapper.create(iterator, execCxt),
+                b -> objectUnbound(b, b.get(subjectVar), predicate, object, execCxt),
+                execCxt);
+
+        return queryIter;
     }
 
 }

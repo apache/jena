@@ -24,6 +24,7 @@ import static org.apache.jena.rdfs.LibTestRDFS.node;
 import static org.apache.jena.rdfs.engine.ConstRDFS.rdfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.PrintStream;
@@ -75,6 +76,12 @@ public class TestDatasetGraphRDFS {
         Iter.consume(iter2);
         Iterator<Quad> iter3  = dsg.getWrapped().find(null, node("a"), rdfType, null);
         Iter.consume(iter3);
+    }
+
+    @Test public void dsg_find_all() {
+        List<Quad> baseQuads = Iter.toList(dsg.getBase().find());
+        List<Quad> inferredQuads = Iter.toList(dsg.find());
+        assertNotEquals(baseQuads, inferredQuads);
     }
 
     @Test public void dsg_find_graph() {
