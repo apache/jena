@@ -227,7 +227,7 @@ public class Service {
         // -- End setup
 
         // Build the execution
-        QueryExecHTTP qExec = QueryExecHTTP.newBuilder()
+        try (QueryExecHTTP qExec = QueryExecHTTP.newBuilder()
                 .endpoint(serviceURL)
                 .timeout(timeoutMillis, TimeUnit.MILLISECONDS)
                 .httpHeader(HttpNames.hUserAgent, HttpEnv.UserAgent)
@@ -236,8 +236,8 @@ public class Service {
                 .context(context)
                 .httpClient(httpClient)
                 .sendMode(querySendMode)
-                .build();
-        try {
+                .build()) {
+
             // Detach from the network stream.
             RowSet rowSet = qExec.select().materialize();
             QueryIterator qIter = QueryIterPlainWrapper.create(rowSet);

@@ -29,17 +29,19 @@ import java.net.http.HttpResponse.BodyHandler;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.atlas.web.HttpException;
+import org.apache.jena.http.AsyncHttpRDF;
 import org.apache.jena.http.HttpLib;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.web.HttpSC;
 
 public class AuthLib {
     /**
-     * Call {@link HttpClient#send} after applying an active {@link AuthRequestModifier}
+     * Call the {@link HttpClient} after applying an active {@link AuthRequestModifier}
      * to modify the {@link java.net.http.HttpRequest.Builder}.
      * If no {@link AuthRequestModifier} is available and if a 401 response is received,
      * setup a {@link AuthRequestModifier} passed on registered username and password information.
@@ -51,24 +53,41 @@ public class AuthLib {
      * @return HttpResponse&lt;T&gt;
      */
     public static <T> HttpResponse<T> authExecute(HttpClient httpClient, HttpRequest httpRequest, BodyHandler<T> bodyHandler) {
-        HttpResponse<T> httpResponse = HttpLib.executeJDK(httpClient, httpRequest, bodyHandler);
+        return AsyncHttpRDF.getOrElseThrow(authExecuteAsync(httpClient, httpRequest, bodyHandler), httpRequest);
+    }
 
-        // -- 401 handling.
-        if ( httpResponse.statusCode() != 401 )
-            return httpResponse;
-        HttpResponse<T> httpResponse2 = handle401(httpClient, httpRequest, bodyHandler, httpResponse);
-        return httpResponse2;
+    /**
+     * Call {@link HttpClient#sendAsync} after applying an active {@link AuthRequestModifier}
+     * to modify the {@link java.net.http.HttpRequest.Builder}.
+     * If no {@link AuthRequestModifier} is available and if a 401 response is received,
+     * setup a {@link AuthRequestModifier} passed on registered username and password information.
+     * This function supports basic and digest authentication.
+     *
+     * @param httpClient HttpClient
+     * @param httpRequest
+     * @param bodyHandler
+     * @return CompletableFuture&lt;HttpResponse&lt;T&gt;&gt;
+     */
+    public static <T> CompletableFuture<HttpResponse<T>> authExecuteAsync(HttpClient httpClient, HttpRequest httpRequest, BodyHandler<T> bodyHandler) {
+        return HttpLib.executeJDKAsync(httpClient, httpRequest, bodyHandler)
+            .thenCompose(httpResponse -> {
+                // -- 401 handling.
+                if ( httpResponse.statusCode() != 401 )
+                    return CompletableFuture.completedFuture(httpResponse);
+                CompletableFuture<HttpResponse<T>> httpResponse2 = handle401Async(httpClient, httpRequest, bodyHandler, httpResponse);
+                return httpResponse2;
+            });
     }
 
     /* Handle a 401 (authentication challenge). */
-    private static <T> HttpResponse<T> handle401(HttpClient httpClient,
+    private static <T> CompletableFuture<HttpResponse<T>> handle401Async(HttpClient httpClient,
                                                  HttpRequest request,
                                                  BodyHandler<T> bodyHandler,
                                                  HttpResponse<T> httpResponse401) {
         AuthChallenge aHeader = wwwAuthenticateHeader(httpResponse401);
         if ( aHeader == null )
             // No valid header - simply return the original response.
-            return httpResponse401;
+            return CompletableFuture.completedFuture(httpResponse401);
 
         // Currently on a URI endpoint-by-endpoint basis.
         // String realm = aHeader.getRealm();
@@ -102,14 +121,14 @@ public class AuthLib {
             }
             case UNKNOWN :
                 // Not handled. Pass back the 401.
-                return httpResponse401;
+                return CompletableFuture.completedFuture(httpResponse401);
             default:
                 throw new HttpException("Not an authentication scheme -- "+aHeader.authScheme);
         }
 
         // Failed to generate a request modifier for a retry.
         if ( authRequestModifier == null)
-            return httpResponse401;
+            return CompletableFuture.completedFuture(httpResponse401);
 
         // ---- Register for next time the app calls this URI.
         AuthEnv.get().registerAuthModifier(request.uri().toString(), authRequestModifier);
@@ -119,7 +138,7 @@ public class AuthLib {
         request2builder = authRequestModifier.addAuth(request2builder);
 
         HttpRequest httpRequest2 = request2builder.build();
-        HttpResponse<T> httpResponse2 = HttpLib.executeJDK(httpClient, httpRequest2, bodyHandler);
+        CompletableFuture<HttpResponse<T>> httpResponse2 = HttpLib.executeJDKAsync(httpClient, httpRequest2, bodyHandler);
         // Pass back to application regardless of response code.
         return httpResponse2;
     }

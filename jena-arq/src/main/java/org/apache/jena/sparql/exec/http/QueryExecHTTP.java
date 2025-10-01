@@ -21,6 +21,7 @@ package org.apache.jena.sparql.exec.http;
 import static org.apache.jena.http.HttpLib.*;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -29,8 +30,12 @@ import java.net.http.HttpResponse;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.input.ClosedInputStream;
+import org.apache.commons.io.input.ProxyInputStream;
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.iterator.Iter;
@@ -44,6 +49,7 @@ import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.MediaType;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.http.AsyncHttpRDF;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.http.HttpLib;
 import org.apache.jena.query.*;
@@ -111,12 +117,26 @@ public class QueryExecHTTP implements QueryExec {
 
     // Received content type
     private String httpResponseContentType = null;
-    // Releasing HTTP input streams is important. We remember this for SELECT result
-    // set streaming, and will close it when the execution is closed
-    private volatile InputStream retainedConnection = null;
 
     private HttpClient httpClient = HttpEnv.getDftHttpClient();
     private Map<String, String> httpHeaders;
+
+    // ----- Cancellation -----
+
+    private volatile boolean isAborted = false;
+    private final Object abortLock = new Object();
+    private volatile CompletableFuture<HttpResponse<InputStream>> future = null;
+
+    // Releasing HTTP input streams is important. We remember this for SELECT result
+    // set streaming, and will close it when the execution is closed
+    // This is the physical InputStream of the HTTP request which will only be closed by close().
+    private InputStream retainedConnection = null;
+
+    // This is a wrapped view of retainedConnection that will be closed by abort().
+    private volatile InputStream retainedConnectionView = null;
+
+    // Whether abort cancels an async HTTP request's future immediately.
+    private boolean cancelFutureOnAbort = true;
 
     /**
      * This constructor is superseded by the other one which has more parameters.
@@ -218,12 +238,9 @@ public class QueryExecHTTP implements QueryExec {
     }
 
     private RowSet execRowSet() {
-        // Use the explicitly given header or the default selectAcceptheader
-        String thisAcceptHeader = dft(overrideAcceptHeader, selectAcceptHeader);
-
-        HttpRequest request = effectiveHttpRequest(thisAcceptHeader);
+        HttpRequest request = effectiveHttpRequest(selectAcceptHeader);
         HttpResponse<InputStream> response = executeQuery(request);
-        InputStream in = HttpLib.getInputStream(response);
+        InputStream in = registerInputStream(response);
         // Don't assume the endpoint actually gives back the content type we asked for
         String actualContentType = responseHeader(response, HttpNames.hContentType);
 
@@ -239,8 +256,6 @@ public class QueryExecHTTP implements QueryExec {
             System.out.println(str);
             in = new ByteArrayInputStream(b);
         }
-
-        retainedConnection = in; // This will be closed on close()
 
         if (actualContentType == null || actualContentType.equals(""))
             actualContentType = WebContent.contentTypeResultsXML;
@@ -266,10 +281,9 @@ public class QueryExecHTTP implements QueryExec {
     public boolean ask() {
         checkNotClosed();
         check(QueryType.ASK);
-        String thisAcceptHeader = dft(overrideAcceptHeader, askAcceptHeader);
-        HttpRequest request = effectiveHttpRequest(thisAcceptHeader);
+        HttpRequest request = effectiveHttpRequest(askAcceptHeader);
         HttpResponse<InputStream> response = executeQuery(request);
-        InputStream in = HttpLib.getInputStream(response);
+        InputStream in = registerInputStream(response);
 
         String actualContentType = responseHeader(response, HttpNames.hContentType);
         httpResponseContentType = actualContentType;
@@ -406,10 +420,10 @@ public class QueryExecHTTP implements QueryExec {
     // ifNoContentType - some wild guess at the content type.
     private Pair<InputStream, Lang> execRdfWorker(String contentType, String ifNoContentType) {
         checkNotClosed();
-        String thisAcceptHeader = dft(overrideAcceptHeader, contentType);
+        String thisAcceptHeader = contentType;
         HttpRequest request = effectiveHttpRequest(thisAcceptHeader);
         HttpResponse<InputStream> response = executeQuery(request);
-        InputStream in = HttpLib.getInputStream(response);
+        InputStream in = registerInputStream(response);
 
         // Don't assume the endpoint actually gives back the content type we asked for
         String actualContentType = responseHeader(response, HttpNames.hContentType);
@@ -437,7 +451,7 @@ public class QueryExecHTTP implements QueryExec {
         String thisAcceptHeader = dft(overrideAcceptHeader, WebContent.contentTypeJSON);
         HttpRequest request = effectiveHttpRequest(thisAcceptHeader);
         HttpResponse<InputStream> response = executeQuery(request);
-        InputStream in = HttpLib.getInputStream(response);
+        InputStream in = registerInputStream(response);
         try {
             return JSON.parseAny(in).getAsArray();
         } finally { finishInputStream(in); }
@@ -453,11 +467,6 @@ public class QueryExecHTTP implements QueryExec {
             x.add(elt.getAsObject());
         });
         return x.iterator();
-    }
-
-    private void checkNotClosed() {
-        if ( closed )
-            throw new QueryExecException("HTTP QueryExecHTTP has been closed");
     }
 
     private void check(QueryType queryType) {
@@ -590,15 +599,27 @@ public class QueryExecHTTP implements QueryExec {
     }
 
     /**
-     * Execute an HttpRequest.
+     * Execute an HttpRequest and wait for the HttpResponse.
+     * A call to {@link #abort()} interrupts the wait.
      * The response is returned after status code processing so the caller can assume the
      * query execution was successful and return 200.
      * Use {@link HttpLib#getInputStream} to access the body.
      */
     private HttpResponse<InputStream> executeQuery(HttpRequest request) {
-        logQuery(queryString, request);
+        checkNotClosed();
+
+        if (future != null) {
+            throw new IllegalStateException("Execution was already started.");
+        }
+
         try {
-            HttpResponse<InputStream> response = execute(httpClient, request);
+            synchronized (abortLock) {
+                checkNotAborted();
+                logQuery(queryString, request);
+                future = HttpLib.executeAsync(httpClient, request);
+            }
+
+            HttpResponse<InputStream> response = AsyncHttpRDF.getOrElseThrow(future, request);
             HttpLib.handleHttpStatusCode(response);
             return response;
         } catch (HttpException httpEx) {
@@ -676,22 +697,69 @@ public class QueryExecHTTP implements QueryExec {
     /**
      * Cancel query evaluation
      */
-    public void cancel() {
-        closed = true;
-    }
-
     @Override
     public void abort() {
-        try {
-            close();
-        } catch (Exception ex) {
-            Log.warn(this, "Error during abort", ex);
+        // Setting abort to true causes the next read from
+        // retainedConnectionView (if already created) to
+        // fail with a QueryCancelledException.
+        isAborted = true;
+        if (cancelFutureOnAbort) {
+            cancelFuture(future);
         }
+    }
+
+    private InputStream registerInputStream(HttpResponse<InputStream> httpResponse) {
+        InputStream in = HttpLib.getInputStream(httpResponse);
+        registerInputStream(in);
+        return in;
+    }
+
+    /**
+     * Set the given input stream as the 'retainedConnection' and create a corresponding
+     * asynchronously abortable 'retainedConnectionView'. The latter is returned.
+     * If execution was already aborted then a {@link QueryCancelledException} is raised.
+     */
+    private InputStream registerInputStream(InputStream input) {
+        synchronized (abortLock) {
+            this.retainedConnection = input;
+            // Note: Used ProxyInputStream because the ctor of CloseShieldInputStream is deprecated.
+            this.retainedConnectionView = new ProxyInputStream(input) {
+                @Override
+                protected void beforeRead(int n) throws IOException {
+                    checkNotAborted();
+                    super.beforeRead(n);
+                }
+                @Override
+                public void close() {
+                    this.in = ClosedInputStream.INSTANCE;
+                }
+            };
+
+            // If already aborted then bail out before starting the parsers.
+            checkNotAborted();
+        }
+        return retainedConnectionView;
     }
 
     @Override
     public void close() {
         closed = true;
+        // No need to handle the future here, because the possible states are:
+        // - Null because no execution was started -> retainedConnection is null.
+        // - Cancelled by asynchronous abort       -> retainedConnection is null.
+        // - Completed successfully by the same thread that now closes the retainedConnection
+        //                                         -> retainedConnection is non-null.
+        IOUtils.closeQuietly(retainedConnectionView);
+        closeRetainedConnection();
+    }
+
+    private static void cancelFuture(CompletableFuture<?> future) {
+        if (future != null) {
+            future.cancel(true);
+        }
+    }
+
+    private void closeRetainedConnection() {
         if (retainedConnection != null) {
             try {
                 // This call may take a long time if the response has not been consumed
@@ -709,6 +777,16 @@ public class QueryExecHTTP implements QueryExec {
                 retainedConnection = null;
             }
         }
+    }
+
+    private void checkNotClosed() {
+        if ( closed )
+            throw new QueryExecException("HTTP QueryExecHTTP has been closed");
+    }
+
+    protected void checkNotAborted() {
+        if ( isAborted )
+            throw new QueryCancelledException();
     }
 
     @Override

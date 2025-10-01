@@ -34,14 +34,15 @@ public class HttpException extends RuntimeException {
     }
 
     public HttpException(int statusCode, String statusLine) {
-        super(exMessage(statusCode, statusLine));
-        this.statusCode = statusCode;
-        this.statusLine = statusLine ;
-        this.response = null;
+        this(statusCode, statusLine, null, null);
     }
 
     public HttpException(int statusCode, String statusLine, String responseMessage) {
-        super(exMessage(statusCode, statusLine));
+        this(statusCode, statusLine, responseMessage, null);
+    }
+
+    public HttpException(int statusCode, String statusLine, String responseMessage, Throwable cause) {
+        super(exMessage(statusCode, statusLine), cause);
         this.statusCode = statusCode;
         this.statusLine = statusLine ;
         this.response = responseMessage;
