@@ -18,7 +18,6 @@
 
 package org.apache.jena.arq.junit.textrunner;
 
-import java.io.PrintWriter;
 import java.util.List;
 import java.util.function.Function;
 
@@ -99,7 +98,10 @@ public class TextTestRunner {
         // For skips tests.
         TestExecutionSummary summary = summaryListener.getSummary();
 
-        if ( summary != null ) {
+        if ( produceEarlReport ) {
+            //RDFWriter.source(earlReport.getModel()).format(RDFFormat.TURTLE).output(System.out);
+            EarlReporter.clearEarlReport();
+        } else {
             out.println();
             if ( executionStats.getTestFailures() == 0 ) {
                 out.println("** Success");
@@ -108,9 +110,8 @@ public class TextTestRunner {
                 out.printf("** Failures: %s\n", executionStats.getTestFailures());
                 out.println();
             }
-            //summary.printTo(new PrintWriter(System.out, true));
-//            out.println("Containers: "+executionStats.getContainerCount());
-//            out.println("Manifests:  "+manifestCount);
+            // summary should be null only when producing EARL reports.
+            //summary.printTo
             if ( summary.getTestsSkippedCount() > 0 ) {
                 out.println("Manifests:     "+executionStats.getContainerCount());
                 out.println("Tests pass:    "+executionStats.getTestPasses());
@@ -121,11 +122,6 @@ public class TextTestRunner {
                 out.println("Tests pass: "+executionStats.getTestPasses());
                 out.println("Tests fail: "+executionStats.getTestFailures());
             }
-        }
-
-        if ( produceEarlReport ) {
-            //RDFWriter.source(earlReport.getModel()).format(RDFFormat.TURTLE).output(System.out);
-            EarlReporter.clearEarlReport();
         }
     }
 }
