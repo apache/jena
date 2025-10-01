@@ -123,17 +123,6 @@
       <scope>test</scope>
     </dependency>
 
-<!--
-   Only needed if the Junit5 artifacts don't pick the right runner
-   <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>${ver.junit}</version>
-      <scope>test</scope>
-    </dependency>
--->
-
-
     <dependency>
       <groupId>org.awaitility</groupId>
       <artifactId>awaitility</artifactId>
