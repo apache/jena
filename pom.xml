@@ -103,7 +103,7 @@
 
     <!-- Testing -->
     <ver.junit4>4.13.2</ver.junit4>
-    <ver.junit5>5.13.4</ver.junit5>
+    <ver.junit>6.0.0</ver.junit>
  
     <ver.mockito>5.20.0</ver.mockito>
     <ver.awaitility>4.3.0</ver.awaitility>
@@ -320,7 +320,7 @@
       <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
-        <version>${ver.junit5}</version>
+        <version>${ver.junit}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
