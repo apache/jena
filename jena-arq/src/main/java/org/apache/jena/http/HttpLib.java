@@ -37,6 +37,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -560,7 +561,30 @@ public class HttpLib {
      * @return HttpResponse
      */
     public static HttpResponse<InputStream> execute(HttpClient httpClient, HttpRequest httpRequest) {
-        return execute(httpClient, httpRequest, BodyHandlers.ofInputStream());
+        return AsyncHttpRDF.getOrElseThrow(executeAsync(httpClient, httpRequest, BodyHandlers.ofInputStream()), httpRequest);
+    }
+
+    /**
+     * Execute a request, return a {@code HttpResponse<X>} which
+     * can be passed to {@link #handleHttpStatusCode(HttpResponse)} which will
+     * convert non-2xx status code to {@link HttpException HttpExceptions}.
+     * <p>
+     * This function applies the HTTP authentication challenge support
+     * and will repeat the request if necessary with added authentication.
+     * <p>
+     * See {@link AuthEnv} for authentication registration.
+     * <br/>
+     * See {@link #executeJDK} to execute exactly once without challenge response handling.
+     *
+     * @see AuthEnv AuthEnv for authentic registration
+     * @see #executeJDK executeJDK to execute exacly once.
+     *
+     * @param httpClient
+     * @param httpRequest
+     * @return HttpResponse
+     */
+    public static CompletableFuture<HttpResponse<InputStream>> executeAsync(HttpClient httpClient, HttpRequest httpRequest) {
+        return executeAsync(httpClient, httpRequest, BodyHandlers.ofInputStream());
     }
 
     /**
@@ -582,11 +606,10 @@ public class HttpLib {
      * @param httpRequest
      * @param bodyHandler
      * @return HttpResponse
-     */
-    /*package*/ static <X> HttpResponse<X> execute(HttpClient httpClient, HttpRequest httpRequest, BodyHandler<X> bodyHandler) {
+     */    /*package*/ static <X> CompletableFuture<HttpResponse<X>> executeAsync(HttpClient httpClient, HttpRequest httpRequest, BodyHandler<X> bodyHandler) {
         // To run with no jena-supplied authentication handling.
         if ( false )
-            return executeJDK(httpClient, httpRequest, bodyHandler);
+            return executeJDKAsync(httpClient, httpRequest, bodyHandler);
         URI uri = httpRequest.uri();
         URI key = null;
 
@@ -602,29 +625,16 @@ public class HttpLib {
                 authEnv.registerUsernamePassword(key, userpasswd[0], userpasswd[1]);
             }
         }
-        try {
-            return AuthLib.authExecute(httpClient, httpRequest, bodyHandler);
-        } finally {
-            if ( key != null )
-                // The AuthEnv is "per tenant".
-                // Temporary registration within the AuthEnv of the
-                // user:password is acceptable.
-                authEnv.unregisterUsernamePassword(key);
-        }
-    }
 
-    /**
-     * Execute request and return a {@code HttpResponse<InputStream>} response.
-     * Status codes have not been handled. The response can be passed to
-     * {@link #handleResponseInputStream(HttpResponse)} which will convert non-2xx
-     * status code to {@link HttpException HttpExceptions}.
-     *
-     * @param httpClient
-     * @param httpRequest
-     * @return HttpResponse
-     */
-    public static HttpResponse<InputStream> executeJDK(HttpClient httpClient, HttpRequest httpRequest) {
-        return execute(httpClient, httpRequest, BodyHandlers.ofInputStream());
+        URI finalKey = key;
+        return AuthLib.authExecuteAsync(httpClient, httpRequest, bodyHandler)
+            .whenComplete((httpResponse, throwable) -> {
+                if ( finalKey != null )
+                    // The AuthEnv is "per tenant".
+                    // Temporary registration within the AuthEnv of the
+                    // user:password is acceptable.
+                    authEnv.unregisterUsernamePassword(finalKey);
+            });
     }
 
     /**
@@ -640,25 +650,32 @@ public class HttpLib {
      * @return HttpResponse
      */
     public static <T> HttpResponse<T> executeJDK(HttpClient httpClient, HttpRequest httpRequest, BodyHandler<T> bodyHandler) {
-        try {
-            // This is the one place all HTTP requests go through.
-            logRequest(httpRequest);
-            HttpResponse<T> httpResponse = httpClient.send(httpRequest, bodyHandler);
-            logResponse(httpResponse);
-            return httpResponse;
-        //} catch (HttpTimeoutException ex) {
-        } catch (IOException | InterruptedException ex) {
-            if ( ex.getMessage() != null ) {
-                // This is silly.
-                // Rather than an HTTP exception, bad authentication becomes IOException("too many authentication attempts");
-                // or IOException("No credentials provided") if the authenticator decides to return null.
-                if ( ex.getMessage().contains("too many authentication attempts") ||
-                     ex.getMessage().contains("No credentials provided") ) {
-                    throw new HttpException(401, HttpSC.getMessage(401));
-                }
-            }
-            throw new HttpException(httpRequest.method()+" "+httpRequest.uri().toString(), ex);
-        }
+        return AsyncHttpRDF.getOrElseThrow(executeJDKAsync(httpClient, httpRequest, bodyHandler), httpRequest);
+    }
+
+    /**
+     * Execute request and return a {@code HttpResponse<InputStream>} response.
+     * Status codes have not been handled. The response can be passed to
+     * {@link #handleResponseInputStream(HttpResponse)} which will convert non-2xx
+     * status code to {@link HttpException HttpExceptions}.
+     *
+     * @param httpClient
+     * @param httpRequest
+     * @return HttpResponse
+     */
+    public static CompletableFuture<HttpResponse<InputStream>> executeJDKAsync(HttpClient httpClient, HttpRequest httpRequest) {
+        return executeAsync(httpClient, httpRequest, BodyHandlers.ofInputStream());
+    }
+
+    public static <T> CompletableFuture<HttpResponse<T>> executeJDKAsync(HttpClient httpClient, HttpRequest httpRequest, BodyHandler<T> bodyHandler) {
+        // This is the one place all HTTP requests go through.
+        logRequest(httpRequest);
+        CompletableFuture<HttpResponse<T>> future = httpClient.sendAsync(httpRequest, bodyHandler)
+            .thenApply(httpResponse -> {
+                logResponse(httpResponse);
+                return httpResponse;
+            });
+        return future;
     }
 
     /*package*/ static CompletableFuture<HttpResponse<InputStream>> asyncExecute(HttpClient httpClient, HttpRequest httpRequest) {

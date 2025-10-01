@@ -160,26 +160,50 @@ public class AsyncHttpRDF {
      * This operation extracts RuntimeException from the {@code CompletableFuture}.
      */
     public static <T> T getOrElseThrow(CompletableFuture<T> cf) {
+        return getOrElseThrow(cf, null);
+    }
+
+    /**
+     * Get the value of a {@link CompletableFuture} that executes of an HTTP request.
+     * In case on any error, an {@link HttpException} is thrown.
+     *
+     * @param <T> The type of the value being computed.
+     * @param cf The completable future.
+     * @param httpRequest An optional HttpRequest for improving feedback in case of exceptions.
+     * @return The value computed by the completable future.
+     */
+    public static <T> T getOrElseThrow(CompletableFuture<T> cf, HttpRequest httpRequest) {
         Objects.requireNonNull(cf);
         try {
             return cf.join();
         //} catch (CancellationException ex1) { // Let this pass out.
         } catch (CompletionException ex) {
-            if ( ex.getCause() != null ) {
-                Throwable cause = ex.getCause();
-                if ( cause instanceof RuntimeException )
-                    throw (RuntimeException)cause;
-                if ( cause instanceof IOException ) {
-                    IOException iox = (IOException)cause;
-                    // Rather than an HTTP exception, bad authentication becomes IOException("too many authentication attempts");
-                    if ( iox.getMessage().contains("too many authentication attempts") ||
-                            iox.getMessage().contains("No credentials provided") ) {
-                        throw new HttpException(401, HttpSC.getMessage(401));
-                    }
-                    IO.exception((IOException)cause);
+            Throwable cause = ex.getCause();
+            if ( cause != null ) {
+
+                // Pass on our own HttpException instances such as 401 Unauthorized.
+                if ( cause instanceof HttpException httpEx ) {
+                    throw new HttpException(httpEx.getStatusCode(), httpEx.getStatusLine(), httpEx.getResponse(), cause);
                 }
+
+                final String msg = cause.getMessage();
+
+                if ( cause instanceof IOException ) {
+                    // Rather than an HTTP exception, bad authentication becomes IOException("too many authentication attempts");
+                    if ( msg != null &&
+                            ( msg.contains("too many authentication attempts") ||
+                              msg.contains("No credentials provided") ) ) {
+                        throw new HttpException(401, HttpSC.getMessage(401), null, cause);
+                    }
+                    if (httpRequest != null) {
+                        throw new HttpException(httpRequest.method()+" "+httpRequest.uri().toString(), cause);
+                    }
+                }
+
+                throw new HttpException(msg, cause);
             }
-            throw ex;
+            // Note: CompletionException without cause should never happen.
+            throw new HttpException(ex);
         }
     }
 

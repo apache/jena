@@ -54,7 +54,9 @@ public class UpdateExecHTTP implements UpdateExec {
 
     private final Context context;
     private final String service;
-    // Not used private final UpdateRequest update;
+
+    // UpdateRequest as an object - may be null.
+    private final UpdateRequest update;
     private final String updateString;
     private final Map<String, String> httpHeaders;
     private final HttpClient httpClient;
@@ -77,7 +79,7 @@ public class UpdateExecHTTP implements UpdateExec {
                                long timeout, TimeUnit timeoutUnit) {
         this.context = context;
         this.service = serviceURL;
-        //this.update = update;
+        this.update = update;
         // Builder ensures one or the other is set.
         this.updateString = ( updateString != null ) ? updateString : update.toString();
         this.httpClient = dft(httpClient, HttpEnv.getDftHttpClient());
@@ -93,6 +95,16 @@ public class UpdateExecHTTP implements UpdateExec {
     @Override
     public Context getContext() {
         return context;
+    }
+
+    @Override
+    public UpdateRequest getUpdateRequest() {
+        return update;
+    }
+
+    @Override
+    public String getUpdateRequestString() {
+        return updateString;
     }
 
     @Override
