@@ -25,6 +25,18 @@ import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.util.Context;
 
+/**
+ * A query dispatcher is responsible for taking a query and routing it to the
+ * appropriate component or system for preparing the execution against a dataset.
+ * The result is a {@linkplain QueryExec} instance.
+ * Queries may be passed to dispatchers in syntactic or string representation.
+ *
+ * Query dispatchers form a chain, and a ChainingQueryDispatcher acts as a link in such a chain.
+ * A ChainingQueryDispatcher instance can choose to process a query by itself or to delegate processing to the
+ * remainder of the chain.
+ *
+ * @see SparqlDispatcherRegistry
+ */
 public interface ChainingQueryDispatcher {
     QueryExec create(Query query, DatasetGraph dsg, Binding initialBinding, Context context, QueryDispatcher chain);
     QueryExec create(String queryString, Syntax syntax, DatasetGraph dsg, Binding initialBinding, Context context, QueryDispatcher chain);

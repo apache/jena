@@ -251,6 +251,11 @@ public abstract class DatasetGraphOverSparql
     }
 
     @Override
+    public boolean supportsTransactionAbort() {
+        return false;
+    }
+
+    @Override
     public void abort() {
         getTransactional().abort();
     }

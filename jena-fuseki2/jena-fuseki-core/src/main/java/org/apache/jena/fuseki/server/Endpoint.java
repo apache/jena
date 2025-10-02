@@ -59,8 +59,7 @@ public class Endpoint implements Counters {
         // Canonicalise to "" for dataset-level operations.
         this.endpointName = endpointName==null? DatasetEP : endpointName;
         this.authPolicy = requestAuth;
-        // Always provide a context so that e.g. fmods can store data.
-        this.context = context != null ? context : Context.create() ;
+        this.context = context;
         this.processor = processor;
 
         // Standard counters - there may be others
@@ -179,7 +178,9 @@ public class Endpoint implements Counters {
 
         public Endpoint build() {
             Objects.requireNonNull(operation, "Operation for Endpoint");
-            return new Endpoint(operation, endpointName, authPolicy, processor, context);
+            // Always equip endpoints with a context.
+            Context finalCxt = (context != null) ? context : Context.create() ;
+            return new Endpoint(operation, endpointName, authPolicy, processor, finalCxt);
         }
     }
 

@@ -19,7 +19,12 @@
 package org.apache.jena.http.sys;
 
 import java.net.http.HttpClient;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.graph.Node;
@@ -44,7 +49,7 @@ public abstract class ExecUpdateHTTPBuilder<X, Y> {
     static { JenaSystem.init(); }
 
     protected String serviceURL;
-    protected Boolean parseCheck = null;
+    protected Optional<Boolean> parseCheck = Optional.empty();
     private UpdateEltAcc updateEltAcc = new UpdateEltAcc();
 
     protected Params params = Params.create();
@@ -105,7 +110,7 @@ public abstract class ExecUpdateHTTPBuilder<X, Y> {
     }
 
     public Y parseCheck(boolean parseCheck) {
-        this.parseCheck = parseCheck;
+        this.parseCheck = Optional.of(parseCheck);
         return thisBuilder();
     }
 

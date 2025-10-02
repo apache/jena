@@ -18,6 +18,7 @@
 
 package org.apache.jena.rdflink.dataset;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.apache.jena.query.QueryCancelledException;
@@ -117,9 +118,9 @@ public class UpdateExecOverRDFLink
                     r = r.substitution(binding);
                 }
 
-                Boolean parseCheck = SparqlDispatcherRegistry.getParseCheck(requestContext);
-                if (parseCheck != null) {
-                    r = r.parseCheck(parseCheck);
+                Optional<Boolean> parseCheck = SparqlDispatcherRegistry.getParseCheck(requestContext);
+                if (parseCheck.isPresent()) {
+                    r = r.parseCheck(parseCheck.get());
                 }
 
                 if (updateRequest != null) {

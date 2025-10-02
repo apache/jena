@@ -24,6 +24,18 @@ import org.apache.jena.sparql.exec.UpdateExec;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.update.UpdateRequest;
 
+/**
+ * An update dispatcher is responsible for taking an update request and routing it to the
+ * appropriate component or system for preparing the execution against a dataset.
+ * The result is a {@linkplain UpdateExec} instance.
+ * Update requests may be passed to dispatchers in syntactic or string representation.
+ *
+ * Update dispatchers form a chain, and a ChainingUpdateDispatcher acts as a link in such a chain.
+ * A ChainingUpdateDispatcher instance can choose to process an update request by itself or to delegate processing to the
+ * remainder of the chain.
+ *
+ * @see SparqlDispatcherRegistry
+ */
 public interface ChainingUpdateDispatcher {
     UpdateExec create(String updateRequestString, DatasetGraph dsg, Binding initialBinding, Context context, UpdateDispatcher chain);
     UpdateExec create(UpdateRequest updateRequest, DatasetGraph dsg, Binding initialBinding, Context context, UpdateDispatcher chain);

@@ -21,6 +21,7 @@ package org.apache.jena.sparql.exec;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.graph.Node;
@@ -55,8 +56,8 @@ public class UpdateExecDatasetBuilder implements UpdateExecBuilder {
 
     private TimeoutBuilderImpl timeoutBuilder = new TimeoutBuilderImpl();
 
-    private Boolean      parseCheck   = null;
-    private UpdateEltAcc updateEltAcc = new UpdateEltAcc();
+    private Optional<Boolean> parseCheck      = Optional.empty();
+    private UpdateEltAcc updateEltAcc         = new UpdateEltAcc();
 
     private UpdateExecDatasetBuilder() {}
 
@@ -90,7 +91,7 @@ public class UpdateExecDatasetBuilder implements UpdateExecBuilder {
 
     @Override
     public UpdateExecBuilder parseCheck(boolean parseCheck) {
-        this.parseCheck = parseCheck;
+        this.parseCheck = Optional.of(parseCheck);
         return this;
     }
 

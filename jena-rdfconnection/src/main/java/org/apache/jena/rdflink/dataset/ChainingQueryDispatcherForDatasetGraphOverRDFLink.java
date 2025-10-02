@@ -18,6 +18,8 @@
 
 package org.apache.jena.rdflink.dataset;
 
+import java.util.Optional;
+
 import org.apache.jena.query.Query;
 import org.apache.jena.query.Syntax;
 import org.apache.jena.rdflink.RDFLink;
@@ -63,9 +65,9 @@ public class ChainingQueryDispatcherForDatasetGraphOverRDFLink
                 qeBuilder.substitution(binding);
             }
 
-            Boolean parseCheck = SparqlDispatcherRegistry.getParseCheck(requestCxt);
-            if (parseCheck != null) {
-                qeBuilder.parseCheck(parseCheck);
+            Optional<Boolean> parseCheck = SparqlDispatcherRegistry.getParseCheck(requestCxt);
+            if (parseCheck.isPresent()) {
+                qeBuilder.parseCheck(parseCheck.get());
             }
 
             Timeout timeout = Timeouts.extractQueryTimeout(requestCxt);
