@@ -272,8 +272,11 @@ public class SPARQLParserBase extends QueryParserBase {
             String msg = QueryParseException.formatMessage("Term is not concrete: "+n, line, col);
             throw new QueryParseException(msg, line, col);
         }
-        if ( n != null )
+        if ( n != null ) {
+            if ( rowBuilder.contains(v) )
+                throw new QueryParseException("Duplicate variable: ?"+v.getName()+" in VALUES block", line, col);
             rowBuilder.add(v, n);
+        }
     }
 
     protected void finishDataBlockValueRow(int line, int col) {
