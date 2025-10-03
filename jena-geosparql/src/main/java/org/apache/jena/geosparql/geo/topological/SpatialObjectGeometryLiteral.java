@@ -20,16 +20,14 @@ package org.apache.jena.geosparql.geo.topological;
 import java.util.Objects;
 
 import org.apache.jena.datatypes.DatatypeFormatException;
+import org.apache.jena.geosparql.implementation.access.AccessGeoSPARQL;
+import org.apache.jena.geosparql.implementation.access.AccessWGS84;
 import org.apache.jena.geosparql.implementation.datatype.GeometryDatatype;
 import org.apache.jena.geosparql.implementation.vocabulary.Geo;
-import org.apache.jena.geosparql.implementation.vocabulary.SpatialExtension;
-import org.apache.jena.geosparql.spatial.ConvertLatLon;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.system.G;
-import org.apache.jena.system.RDFDataException;
-import org.apache.jena.vocabulary.RDF;
 
 /**
  *
@@ -99,13 +97,17 @@ public class SpatialObjectGeometryLiteral {
      * Objects).
      *
      * @param graph
-     * @param targetSpatialObject
+     * @param targetSpatialObject The spatial object.
      * @return SpatialObject/GeometryLiteral pair.
      */
+    // XXX This should return an iterator over all geometry literals rather than just picking an arbitrary one.
     protected static final SpatialObjectGeometryLiteral retrieve(Graph graph, Node targetSpatialObject) {
+        if (targetSpatialObject == null) {
+            return new SpatialObjectGeometryLiteral(null, null);
+        }
 
-        Node geometry = null;
-        if (targetSpatialObject != null && targetSpatialObject.isLiteral()) {
+        // Special case: Directly supplied literal - must be a geometry.
+        if (targetSpatialObject.isLiteral()) {
             if (targetSpatialObject.getLiteralDatatype() instanceof GeometryDatatype) {
                 return new SpatialObjectGeometryLiteral(NodeFactory.createBlankNode(), targetSpatialObject);
             } else {
@@ -113,42 +115,28 @@ public class SpatialObjectGeometryLiteral {
             }
         }
 
-        if (graph.contains(targetSpatialObject, RDF.type.asNode(), Geo.FEATURE_NODE)) {
-            //Target is Feature - find the default Geometry.
-            geometry = G.getSP(graph, targetSpatialObject, Geo.HAS_DEFAULT_GEOMETRY_NODE);
+        // If target has a default geometry then it is implicitly a feature.
+        // Use the feature's default geometry if present ...
+        // XXX The original code did not consider geo:hasGeometry here - does the spec really only mandate handling of default geometry?
+        Node geometry = G.getSP(graph, targetSpatialObject, Geo.HAS_DEFAULT_GEOMETRY_NODE);
 
-        } else if (graph.contains(targetSpatialObject, RDF.type.asNode(), Geo.GEOMETRY_NODE)) {
-            //Target is a Geometry.
+        // ... otherwise try to treat the target itself as the geometry resource.
+        if (geometry == null) {
             geometry = targetSpatialObject;
         }
 
-        if (geometry != null) {
-            //Find the Geometry Literal of the Geometry.
-            Node literalNode = G.getSP(graph, geometry, Geo.HAS_SERIALIZATION_NODE);
-            // If hasSerialization not found then check asWKT.
-            if (literalNode == null)
-                literalNode = G.getSP(graph, geometry, Geo.AS_WKT_NODE);
-            // If asWKT not found then check asGML.
-            if (literalNode == null)
-                literalNode = G.getSP(graph, geometry, Geo.AS_GML_NODE);
-            if (literalNode != null)
-                return new SpatialObjectGeometryLiteral(targetSpatialObject, literalNode);
-        } else {
-            //Target is not a Feature or Geometry but could have Geo Predicates.
-            if ( graph.contains(targetSpatialObject, SpatialExtension.GEO_LAT_NODE, null)
-                    && graph.contains(targetSpatialObject, SpatialExtension.GEO_LON_NODE, null)) {
-                try {
-                    //Extract Lat,Lon coordinate.
-                    Node lat = G.getOneSP(graph, targetSpatialObject, SpatialExtension.GEO_LAT_NODE);
-                    Node lon = G.getOneSP(graph, targetSpatialObject, SpatialExtension.GEO_LON_NODE);
-                    Node latLonGeometryLiteral = ConvertLatLon.toNode(lat, lon);
-                    return new SpatialObjectGeometryLiteral(targetSpatialObject, latLonGeometryLiteral);
-                } catch ( RDFDataException ex) {
-                    throw new DatatypeFormatException(targetSpatialObject.getURI() + " has more than one geo:lat or geo:lon property.");
-                }
-            }
+        Node literalNode = AccessGeoSPARQL.getGeoLiteral(graph, geometry);
+
+        // Last resort: Try the legacy WGS84 Geo Positioning vocabulary on the targetSpatialObject.
+        if (literalNode == null) {
+            literalNode = AccessWGS84.getGeoLiteral(graph, targetSpatialObject);
         }
 
+        if (literalNode != null) {
+            return new SpatialObjectGeometryLiteral(targetSpatialObject, literalNode);
+        }
+
+        // No geometry literal found.
         return new SpatialObjectGeometryLiteral(null, null);
     }
 }

@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.logging.Log;
@@ -389,12 +390,6 @@ public class Context {
         context.clear();
     }
 
-    /** Atomic compute. */
-    @SuppressWarnings("unchecked")
-    public <V> V compute(Symbol key, BiFunction<Symbol, Object, ? extends V> remappingFunction) {
-        return (V)context.compute(key, remappingFunction);
-    }
-
     @Override
     public String toString() {
         String x = "";
@@ -439,13 +434,36 @@ public class Context {
         }
     }
 
+    /** Atomic compute. */
+    @SuppressWarnings("unchecked")
+    public <V> V compute(Symbol key, BiFunction<Symbol, Object, ? extends V> remappingFunction) {
+        Object obj = context.compute(key, remappingFunction);
+        return (V)obj;
+    }
+
+    /** Atomic computeIfAbsent. */
+    @SuppressWarnings("unchecked")
+    public <V> V computeIfAbsent(Symbol key, Function<Symbol, ? extends V> mappingFunction) {
+        Object obj = context.computeIfAbsent(key, mappingFunction);
+        return (V)obj;
+    }
+
+    /** Atomic computeIfPresent. */
+    @SuppressWarnings("unchecked")
+    public <V> V computeIfPresent(Symbol key, BiFunction<Symbol, Object, V> remappingFunction) {
+        Object obj = context.computeIfPresent(key, remappingFunction);
+        return (V)obj;
+    }
+
+    /** Get the context's cancel signal. Create and set one if needed. Context must not be null. */
     public static AtomicBoolean getOrSetCancelSignal(Context context) {
-        AtomicBoolean cancelSignal = getCancelSignal(context);
-        if (cancelSignal == null) {
-            cancelSignal = new AtomicBoolean(false);
-            context.set(ARQConstants.symCancelQuery, cancelSignal);
+        try {
+            AtomicBoolean result = context.computeIfAbsent(ARQConstants.symCancelQuery, sym -> new AtomicBoolean(false));
+            return result;
+        } catch (ClassCastException ex) {
+            Log.error(Context.class, "Class cast exception: Expected AtomicBoolean for cancel control: "+ex.getMessage());
+            return null;
         }
-        return cancelSignal;
     }
 
     /** Merge an outer (defaults to the system global context)

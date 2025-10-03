@@ -44,7 +44,7 @@ public abstract class DatasetGraphQuads extends DatasetGraphBase
 
     @Override
     public void addGraph(Node graphName, Graph graph) {
-        graph.find().forEachRemaining(t -> add(Quad.create(graphName, t)));
+        graph.find().forEach(t -> add(Quad.create(graphName, t)));
     }
 
 //    @Override

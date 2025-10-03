@@ -112,13 +112,13 @@ public class SpatialIndexLib {
     }
 
     /**
-     * Retrieve the SpatialIndex from the Context.
+     * Get the SpatialIndex from the Context. Fail if absent.
      *
      * @param execCxt
      * @return SpatialIndex contained in the Context.
      * @throws SpatialIndexException
      */
-    public static final SpatialIndex retrieve(ExecutionContext execCxt) throws SpatialIndexException {
+    public static final SpatialIndex require(ExecutionContext execCxt) throws SpatialIndexException {
         Context context = execCxt.getContext();
         SpatialIndex spatialIndex = (SpatialIndex) context.get(SpatialIndexConstants.symSpatialIndex, null);
         if (spatialIndex == null) {
