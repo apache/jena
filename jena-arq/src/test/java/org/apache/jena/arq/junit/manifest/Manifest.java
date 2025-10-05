@@ -50,32 +50,37 @@ public class Manifest
     private List<String> includedFiles = new ArrayList<>();
     private List<ManifestEntry> entries = new ArrayList<>();
 
-    public static Manifest parse(String manifestFile) {
-        Manifest manifest = new Manifest(manifestFile);
+    public static Manifest parse(String filenameOrURI) {
+        Graph manifestRDF;
+        // Exceptions from @TestFactories are swallowed by JUnit5.
+        try {
+            manifestRDF = RDFParser.source(filenameOrURI).toGraph();
+        } catch (RiotNotFoundException ex) {
+            log.error("Not found: "+filenameOrURI);
+            // Exit on error.
+            System.exit(1);
+            throw new RiotNotFoundException("Manifest "+filenameOrURI);
+        } catch (RiotException ex) {
+            // Exit on error.
+            log.error("Error reading manifest: "+filenameOrURI);
+            System.exit(1);
+            throw ex;
+        } catch (RuntimeException ex) {
+            // Exit on error.
+            log.error("Error reading manifest: "+filenameOrURI);
+            System.exit(1);
+            throw ex;
+        }
+        Manifest manifest = new Manifest(manifestRDF);
         return manifest;
     }
 
-    private Manifest(String manifestFile) {
-        filenameOrURI = manifestFile;
-        manifestGraph = manifestGraph(filenameOrURI);
+    private Manifest(Graph manifestRDF) {
+        manifestGraph = manifestRDF;
         manifest = getManifestNode(manifestGraph, filenameOrURI);
         parseManifest();
         parseIncludes();
         parseEntries();
-    }
-
-    private Graph manifestGraph(String filenameOrURI) {
-        // Exceptions from @TestFactories are swallowed by JUnit5.
-        try {
-            return RDFParser.source(filenameOrURI).toGraph();
-        } catch (RiotNotFoundException ex) {
-            log.error("Not found: "+filenameOrURI);
-            // Exceptions from @TestFactories are swallowed by JUnit5.
-            throw new RiotNotFoundException("Manifest "+filenameOrURI);
-        } catch (RiotException ex) {
-            log.error("Error reading manifest: "+filenameOrURI);
-            throw ex;
-        }
     }
 
     private static Node getManifestNode(Graph manifestGraph, String filename) {
