@@ -34,7 +34,12 @@ import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.NodeUtils;
 
-/** Conversion to/from Titanium JSON-LD objects */
+
+/**
+/** Conversion to Titanium JSON-LD.
+ * @deprecated To be removed (not needed for Titanium 1.7.0, which introduces titanium-rdf-primitives)
+ */
+@Deprecated(forRemoval = true)
 public class JenaTitanium {
 
     public static class JenaTitaniumException extends JenaException {
@@ -43,7 +48,9 @@ public class JenaTitanium {
 
     /**
      * Translate a Jena {@link DatasetGraph} to a Titanium JSON-LD dataset
+     * @deprecated due to changes introduced in Titanium 1.7.0.
      */
+    @Deprecated(forRemoval = true)
     public static RdfDataset convert(DatasetGraph dataset) {
         RdfProvider provider = RdfProvider.provider();
         RdfDataset rdfDataset = provider.createDataset();
@@ -66,6 +73,30 @@ public class JenaTitanium {
         return rdfDataset;
     }
 
+    private static RdfResource resource(RdfProvider provider, NodeToLabel labelMapping, Node node) {
+        if ( node.isBlank() ) {
+            String s = labelMapping.get(null, node);
+            return provider.createBlankNode(s);
+        }
+
+        if ( node.isURI() )
+            return provider.createIRI(node.getURI());
+        throw new JenaTitaniumException("Can not convert to an RdfResource : "+node);
+    }
+
+    private static RdfValue nodeToValue(RdfProvider provider, NodeToLabel labelMapping, Node node) {
+        if ( node.isBlank() || node.isURI() )
+                return resource(provider, labelMapping, node);
+
+        if ( node.isLiteral()) {
+            String lex = node.getLiteralLexicalForm();
+            if ( NodeUtils.hasLang(node) )
+                return provider.createLangString(lex, node.getLiteralLanguage());
+            return provider.createTypedString(lex, node.getLiteralDatatypeURI());
+        }
+        throw new JenaTitaniumException("Can not be converted: "+node);
+    }
+
     /**
      * Translate a Titanium JSON-LD dataset to a {@link DatasetGraph}
      * @deprecated No longer used by the LangJSONLD_11
@@ -80,7 +111,9 @@ public class JenaTitanium {
 
     /**
      * Translate a Titanium JSON-LD dataset to a {@link DatasetGraph}
+     * @deprecated No longer used by the LangJSONLD_11
      */
+    @Deprecated(forRemoval = true)
     public static DatasetGraph convert(RdfDataset dataset) {
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
         StreamRDF dest = StreamRDFLib.dataset(dsg);
@@ -89,15 +122,19 @@ public class JenaTitanium {
     }
 
     /**
-     * Translate a Titanium JSON-LD dataset to a {@link StreamRDF}
+     * Translate a Titanium JSON-LD dataset and output to a {@link StreamRDF}
+     * @deprecated No longer used by the LangJSONLD_11
      */
+    @Deprecated(forRemoval = true)
     public static void convert(RdfDataset dataset, StreamRDF output) {
         convert(dataset, RiotLib.dftProfile(), output);
     }
 
     /**
-     * Translate a Titanium JSON-LD dataset to a {@link StreamRDF}.
+     * Translate a Titanium JSON-LD dataset and output to a {@link StreamRDF}
+     * @deprecated No longer used by the LangJSONLD_11
      */
+    @Deprecated(forRemoval = true)
     public static void convert(RdfDataset dataset, ParserProfile parserProfile, StreamRDF output) {
         for ( RdfNQuad rdfQuad : dataset.toList() ) {
             Optional<RdfResource> gn = rdfQuad.getGraphName();
@@ -146,29 +183,5 @@ public class JenaTitanium {
             return parserProfile.createTypedLiteral(lex, datatype, line, col);
         }
         throw new JenaTitaniumException("Not recognized: "+value);
-    }
-
-    private static RdfResource resource(RdfProvider provider, NodeToLabel labelMapping, Node node) {
-        if ( node.isBlank() ) {
-            String s = labelMapping.get(null, node);
-            return provider.createBlankNode(s);
-        }
-
-        if ( node.isURI() )
-            return provider.createIRI(node.getURI());
-        throw new JenaTitaniumException("Can not convert to an RdfResource : "+node);
-    }
-
-    private static RdfValue nodeToValue(RdfProvider provider, NodeToLabel labelMapping, Node node) {
-        if ( node.isBlank() || node.isURI() )
-                return resource(provider, labelMapping, node);
-
-        if ( node.isLiteral()) {
-            String lex = node.getLiteralLexicalForm();
-            if ( NodeUtils.hasLang(node) )
-                return provider.createLangString(lex, node.getLiteralLanguage());
-            return provider.createTypedString(lex, node.getLiteralDatatypeURI());
-        }
-        throw new JenaTitaniumException("Can not be converted: "+node);
     }
 }

@@ -27,30 +27,30 @@ import java.util.Objects;
 import com.apicatalog.jsonld.JsonLd;
 import com.apicatalog.jsonld.JsonLdError;
 import com.apicatalog.jsonld.JsonLdOptions;
+import com.apicatalog.jsonld.JsonLdVersion;
 import com.apicatalog.jsonld.api.CompactionApi;
 import com.apicatalog.jsonld.document.Document;
 import com.apicatalog.jsonld.document.JsonDocument;
-import com.apicatalog.jsonld.document.RdfDocument;
 import com.apicatalog.jsonld.lang.Keywords;
-import com.apicatalog.jsonld.processor.FromRdfProcessor;
-import com.apicatalog.rdf.RdfDataset;
+import com.apicatalog.jsonld.serialization.QuadsToJsonld;
+import com.apicatalog.rdf.api.RdfConsumerException;
 
 import jakarta.json.*;
 import jakarta.json.stream.JsonGenerator;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.logging.FmtLog;
+import org.apache.jena.graph.Node;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.RDFFormatVariant;
 import org.apache.jena.riot.WriterDatasetRIOT;
-import org.apache.jena.riot.system.JenaTitanium;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.Context;
 
 public class JsonLD11Writer implements WriterDatasetRIOT {
-
     // It does not matter what the non-null value of PRETTY_PRINTING is (it could be "false"!).
     // It is the keys presence that matters.
     private static Map<String, ?> configIndented = Map.of(JsonGenerator.PRETTY_PRINTING, true);
@@ -60,10 +60,6 @@ public class JsonLD11Writer implements WriterDatasetRIOT {
 
     public JsonLD11Writer(RDFFormat format) {
         this.format = format;
-    }
-
-    private Map<String, ?> config(boolean indented) {
-        return indented ? configIndented : configFlat;
     }
 
     @Override
@@ -85,26 +81,30 @@ public class JsonLD11Writer implements WriterDatasetRIOT {
         return format.getLang();
     }
 
+    // Write JSON-LD
+
+    static class JenaTitaniumException extends JenaException {
+        JenaTitaniumException(String msg) { super(msg); }
+    }
+
     private void write$(OutputStream output, Writer writer, DatasetGraph dsg) {
         try {
-            // Context, including prefixes.
-            RdfDataset ds = JenaTitanium.convert(dsg);
-            Document doc = RdfDocument.of(ds);
+            JsonArray array = datasetToJSON(dsg);
+
             RDFFormatVariant variant = format.getVariant();
-            // We do not write top-level arrays.
             JsonStructure writeThis;
             boolean indented = true;
 
             // Choose algorithms
             if ( Lib.equals(variant, RDFFormat.PRETTY) ) {
-                writeThis = writePretty(doc, dsg);
+                writeThis = writePretty(array, dsg);
             } else if ( variant == null || Lib.equals(variant, RDFFormat.PLAIN) ) {
-                writeThis = writePlain(doc, dsg);
+                writeThis = writePlain(array, dsg);
             } else if ( Lib.equals(variant, RDFFormat.FLAT) ) {
-                writeThis = writePlain(doc, dsg);
+                writeThis = writePlain(array, dsg);
                 indented = false;
             } else {
-                writeThis = writePretty(doc, dsg);
+                writeThis = writePretty(array, dsg);
             }
 
             if ( writeThis == null ) {
@@ -116,29 +116,85 @@ public class JsonLD11Writer implements WriterDatasetRIOT {
                 FmtLog.warn(this.getClass(), "Output is not a JSON object (%s)", writeThis.getClass().getSimpleName());
             }
 
-            JsonWriter jsonWriter = startWrite(output, writer, indented);
-            jsonWriter.write(writeThis);
-            finishWrite(output, writer, indented);
+            writeJson(writeThis, output, writer, indented);
         } catch (Throwable ex) {
             throw new JenaException("Exception while writing JSON-LD 1.1", ex);
         }
     }
 
+    /** Jena DatasetGraph to JSON(LD), Titanium QuadsToJsonld in version 1.7.0. */
+    private static JsonArray datasetToJSON(DatasetGraph dsg) throws JsonLdError {
+        QuadsToJsonld consumer = JsonLd.fromRdf();
+        consumer.mode(JsonLdVersion.V1_1);
+        dsg.stream().forEach( quad->{
+            String s = resource(quad.getSubject());
+            String p = resource(quad.getPredicate());
+            String g = resourceGraphName(quad.getGraph());
+            Node obj = quad.getObject();
+
+            if ( obj.isURI() || obj.isBlank() ) {
+                String o = resource(obj);
+                try {
+                    consumer.quad(s, p, o, null, null, null, g);
+                } catch (RdfConsumerException e) {
+                    e.printStackTrace();
+                }
+            } else if ( obj.isLiteral() ) {
+                String lex = obj.getLiteralLexicalForm();
+                String datatype = obj.getLiteralDatatypeURI();
+                String lang = obj.getLiteralLanguage();
+                if ( lang.isEmpty() )
+                    lang = null;
+                String dir = null;
+                if ( obj.getLiteralBaseDirection() != null )
+                    dir = obj.getLiteralBaseDirection().toString();
+                try {
+                    consumer.quad(s, p, lex, datatype, lang, dir, g);
+                } catch (RdfConsumerException ex) {
+                    throw new JenaException("Exception while translating to JSON-LD", ex);
+                }
+            } else if  ( obj.isTripleTerm() ) {
+                throw new JenaTitaniumException("Triple terms not supported for JSON-LD");
+            } else {
+                throw new JenaTitaniumException("Encountered unexpected term: "+obj);
+            }
+        });
+
+        JsonArray array = consumer.toJsonLd();
+        return array;
+    }
+
+    private static String resourceGraphName(Node gn) {
+        if ( gn == null || Quad.isDefaultGraph(gn) )
+            return null;
+        return resource(gn);
+    }
+
+    private static String resource(Node term) {
+        if ( term.isBlank() )
+            return "_:"+term.getBlankNodeLabel();
+        if ( term.isURI() )
+            return term.getURI();
+        throw new JenaTitaniumException("Not a URI or a blank node");
+    }
+
+    private Map<String, ?> config(boolean indented) {
+        return indented ? configIndented : configFlat;
+    }
+
     // Plain - no @context.
-    private JsonStructure writePlain(Document doc, DatasetGraph dsg) throws JsonLdError {
-        JsonArray array = JsonLd.fromRdf(doc).get();
+    private JsonStructure writePlain(JsonArray array, DatasetGraph dsg) throws JsonLdError {
         JsonObject writeRdf = Json.createObjectBuilder()
                 .add(Keywords.GRAPH, array)
                 .build();
         return writeRdf;
     }
 
-    private JsonStructure writePretty(Document doc, DatasetGraph dsg) throws JsonLdError {
+    private JsonStructure writePretty(JsonArray array, DatasetGraph dsg) throws JsonLdError {
         JsonLdOptions options = new JsonLdOptions();
         // Native types.
         // This looses information -- xsd:int becomes xsd:integer, xsd:double becomes xsd:decimal
         //   options.setUseNativeTypes(true);
-        JsonArray array = FromRdfProcessor.fromRdf(doc, options);
 
         // Build context
         JsonObjectBuilder cxt = Json.createObjectBuilder();
@@ -172,12 +228,6 @@ public class JsonLD11Writer implements WriterDatasetRIOT {
         return x;
     }
 
-    private JsonWriter startWrite(OutputStream output, Writer writer, boolean indented) {
-        Map<String,?> config = config(indented);
-        JsonWriterFactory factory = Json.createWriterFactory(config);
-        return (output != null ) ? factory.createWriter(output) : factory.createWriter(writer);
-    }
-
     /*
      * if (pretty) {
         Map<String, Boolean> config = new HashMap<>();
@@ -194,6 +244,24 @@ public class JsonLD11Writer implements WriterDatasetRIOT {
         return Response.ok(jsonObject).build();
     }
      */
+
+    // JsonWriter
+
+
+    private void writeJson(JsonStructure json, OutputStream output, Writer writer, boolean indented) throws IOException {
+        JsonWriter jw = startWrite(output, writer, true);
+        try {
+            jw.write(json);
+        } finally {
+            finishWrite(output, writer, true);
+        }
+    }
+
+    private JsonWriter startWrite(OutputStream output, Writer writer, boolean indented) {
+        Map<String,?> config = config(indented);
+        JsonWriterFactory factory = Json.createWriterFactory(config);
+        return (output != null ) ? factory.createWriter(output) : factory.createWriter(writer);
+    }
 
     private void finishWrite(OutputStream output, Writer writer, boolean indented) throws IOException {
         boolean outputNL = indented;
