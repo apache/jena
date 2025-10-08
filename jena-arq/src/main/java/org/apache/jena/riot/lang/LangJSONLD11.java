@@ -20,6 +20,7 @@ package org.apache.jena.riot.lang;
 
 import java.io.InputStream;
 import java.io.Reader;
+import java.net.URI;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
@@ -29,7 +30,6 @@ import com.apicatalog.jsonld.JsonLdOptions;
 import com.apicatalog.jsonld.document.Document;
 import com.apicatalog.jsonld.document.JsonDocument;
 import com.apicatalog.jsonld.lang.Keywords;
-import com.apicatalog.rdf.RdfDataset;
 import com.apicatalog.rdf.api.RdfConsumerException;
 import com.apicatalog.rdf.api.RdfQuadConsumer;
 
@@ -114,7 +114,6 @@ public class LangJSONLD11 implements ReaderRIOT {
     private void read(Document document, String baseURI, StreamRDF output, Context context) throws JsonLdError {
         // JSON-LD to RDF
         JsonLdOptions opts = getJsonLdOptions(baseURI, context);
-        RdfDataset dataset = JsonLd.toRdf(document).options(opts).base(baseURI).get();
         extractPrefixes(document, output::prefix);
 
         RdfQuadConsumer consumer = new JsonLDToStreamRDF(output, profile);
@@ -234,7 +233,11 @@ public class LangJSONLD11 implements ReaderRIOT {
      */
     private static JsonLdOptions getJsonLdOptions(String baseURI, Context jenaContext) {
         JsonLdOptions opts = jenaContext.get(JSONLD_OPTIONS);
-        return (opts != null) ? opts : new JsonLdOptions();
+        if ( opts == null )
+            opts = new JsonLdOptions();
+        if ( baseURI != null )
+            opts.setBase(URI.create(baseURI));
+        return opts;
     }
 
     static class JsonLDToStreamRDF implements RdfQuadConsumer {

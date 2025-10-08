@@ -42,6 +42,7 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.IsoMatcher;
 
+@SuppressWarnings({"removal", "deprecation"})
 public class TestJenaTitanium {
 
     @Test
@@ -97,7 +98,6 @@ public class TestJenaTitanium {
 
         // Check the RdfDataset
         try ( StringWriter writer = new StringWriter() ) {
-            @SuppressWarnings("deprecation")
             RdfWriter w = new com.apicatalog.rdf.io.nquad.NQuadsWriter(writer);
             w.write(rdfDataset);
             String s = writer.toString();
