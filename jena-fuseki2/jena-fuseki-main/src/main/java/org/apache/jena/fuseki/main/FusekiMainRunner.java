@@ -29,7 +29,7 @@ import org.apache.jena.fuseki.server.FusekiServerRunner;
 /**
  * Functions for building and runner a {@link FusekiServer} configured from command line arguments.
  *
- * @see FusekiServerRunner for similar functionality except it is also initialized with {@link FusekiModules} as well.
+ * See {@link FusekiServerRunner} for similar functionality except it is also initializes {@link FusekiModules} as well.
  */
 public class FusekiMainRunner {
 
