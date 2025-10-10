@@ -21,7 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        java_version: ['17', '21']
+        java_version: ['21', '25']
 
     steps:
     - uses: actions/checkout@v5

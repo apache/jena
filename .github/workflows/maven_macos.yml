@@ -23,7 +23,7 @@ jobs:
       uses: actions/setup-java@v5
       with:
         distribution: 'temurin'
-        java-version: '17'
+        java-version: '21'
 
     - name: Build with Maven
       run: mvn -B --file pom.xml -Dmaven.javadoc.skip=true install
