@@ -24,7 +24,7 @@ jobs:
       matrix:
         jdk_distribution: ['temurin']
         os: [ubuntu-latest]
-        java_version: ['21']
+        java_version: ['25']
 
     runs-on: ${{ matrix.os }}
 
