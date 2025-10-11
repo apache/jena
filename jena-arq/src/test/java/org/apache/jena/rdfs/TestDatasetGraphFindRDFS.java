@@ -16,38 +16,26 @@
  * limitations under the License.
  */
 
-package org.apache.jena.rdfs.engine;
+package org.apache.jena.rdfs;
 
-import java.util.stream.Stream;
-
-import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.rdfs.setup.ConfigRDFS;
-import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.sparql.core.DatasetGraph;
 
-/**
- * Find in one graph.
- */
-public class InfFindTriple extends MatchRDFS<Node, Triple> {
+public class TestDatasetGraphFindRDFS
+    extends AbstractTestRDFS_Extra
+{
+     public TestDatasetGraphFindRDFS() {
+        super("RDFS");
+     }
 
-    private final Graph graph;
+     @Override
+     protected boolean defaultCompareAsSet() {
+         return true;
+     }
 
-    public InfFindTriple(ConfigRDFS<Node> setup, Graph graph) {
-        super(setup, Mappers.mapperTriple());
-        this.graph = graph;
-    }
-
-    @Override
-    public Stream<Triple> sourceFind(Node s, Node p, Node o) {
-        ExtendedIterator<Triple> iter = graph.find(s,p,o);
-        Stream<Triple> stream = Iter.asStream(iter);
-        return stream;
-    }
-
-    @Override
-    protected boolean sourceContains(Node s, Node p, Node o) {
-        return graph.contains(s, p, o);
-    }
+     @Override
+     protected DatasetGraph applyRdfs(DatasetGraph dsg, ConfigRDFS<Node> configRDFS) {
+         return new DatasetGraphRDFS(dsg, (SetupRDFS)configRDFS);
+     }
 }
