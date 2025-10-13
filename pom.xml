@@ -67,7 +67,7 @@
     <ver.jakarta.json>2.0.1</ver.jakarta.json>
 
     <!-- These two must be in-step -->
-    <ver.jetty>12.1.1</ver.jetty>
+    <ver.jetty>12.1.2</ver.jetty>
     <ver.jakarta-servlet>6.1.0</ver.jakarta-servlet>
 
     <!--
