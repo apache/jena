@@ -30,15 +30,20 @@ import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.Endpoint;
+import org.apache.jena.fuseki.server.FusekiVocab;
 import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.rdf.model.Model;
 
 public class FMod_SpatialIndexer implements FusekiAutoModule {
 
-    public static Operation spatialIndexerOperation =
-        Operation.alloc("http://jena.apache.org/fuseki#spatial-indexer",
+    private static final Operation spatialIndexerOperation =
+        Operation.alloc(FusekiVocab.NS + "spatial-indexer",
             "spatial-indexer",
             "Spatial indexer service");
+
+    public static Operation getOperation() {
+        return spatialIndexerOperation;
+    }
 
     public FMod_SpatialIndexer() {
         super();
@@ -50,13 +55,10 @@ public class FMod_SpatialIndexer implements FusekiAutoModule {
     }
 
     @Override
-    public void start() {
-    }
-
-    @Override
     public void prepare(FusekiServer.Builder builder, Set<String> datasetNames, Model configModel) {
-        Fuseki.configLog.info(name() + ": Registering operation " + spatialIndexerOperation.getId());
-        builder.registerOperation(spatialIndexerOperation, new SpatialIndexerService());
+        Operation spatialIndexerOp = getOperation();
+        Fuseki.configLog.info(name() + ": Registering operation " + spatialIndexerOp.getId());
+        builder.registerOperation(spatialIndexerOp, new SpatialIndexerService());
     }
 
     /**
@@ -100,8 +102,9 @@ public class FMod_SpatialIndexer implements FusekiAutoModule {
 
                 Fuseki.configLog.info(logPrefix + "Registering spatial indexer endpoint: " + geoIndexerEndpointName);
 
+                Operation op = getOperation();
                 Endpoint geoIndexerEndpoint = Endpoint.create()
-                        .operation(spatialIndexerOperation)
+                        .operation(op)
                         .endpointName(geoIndexerEndpointName)
                         .authPolicy(authPolicy)
                         .build();

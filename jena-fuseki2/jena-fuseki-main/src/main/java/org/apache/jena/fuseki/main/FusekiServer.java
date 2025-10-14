@@ -1269,7 +1269,20 @@ public class FusekiServer {
             Objects.requireNonNull(datasetName, "datasetName");
             Objects.requireNonNull(endpointName, "endpointName");
             Objects.requireNonNull(operation, "operation");
-            serviceEndpointOperation(datasetName, endpointName, operation, authPolicy);
+            serviceEndpointOperation(datasetName, endpointName, operation, authPolicy, null);
+            return this;
+        }
+
+        /**
+         * Create an endpoint as a service of the dataset (i.e. {@code /dataset/endpointName}).
+         * The operation must already be registered with the builder.
+         * @see #registerOperation(Operation, ActionService)
+         */
+        public Builder addEndpoint(String datasetName, String endpointName, Operation operation, AuthPolicy authPolicy, Context context) {
+            Objects.requireNonNull(datasetName, "datasetName");
+            Objects.requireNonNull(endpointName, "endpointName");
+            Objects.requireNonNull(operation, "operation");
+            serviceEndpointOperation(datasetName, endpointName, operation, authPolicy, context);
             return this;
         }
 
@@ -1295,11 +1308,11 @@ public class FusekiServer {
         public Builder addOperation(String datasetName, Operation operation, AuthPolicy authPolicy) {
             Objects.requireNonNull(datasetName, "datasetName");
             Objects.requireNonNull(operation, "operation");
-            serviceEndpointOperation(datasetName, null, operation, authPolicy);
+            serviceEndpointOperation(datasetName, null, operation, authPolicy, null);
             return this;
         }
 
-        private void serviceEndpointOperation(String datasetName, String endpointName, Operation operation, AuthPolicy authPolicy) {
+        private void serviceEndpointOperation(String datasetName, String endpointName, Operation operation, AuthPolicy authPolicy, Context context) {
             String name = DataAccessPoint.canonical(datasetName);
 
             if ( ! operationRegistry.isRegistered(operation) )
@@ -1313,6 +1326,7 @@ public class FusekiServer {
                 .operation(operation)
                 .endpointName(endpointName)
                 .authPolicy(authPolicy)
+                .context(context)
                 .build();
             dsBuilder.addEndpoint(endpoint);
         }

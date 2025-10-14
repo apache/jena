@@ -20,23 +20,24 @@ package org.apache.jena.sparql.exec;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.query.*;
+import org.apache.jena.query.ARQ;
+import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.Syntax;
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.engine.QueryEngineFactory;
-import org.apache.jena.sparql.engine.QueryEngineRegistry;
-import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.Timeouts;
 import org.apache.jena.sparql.engine.Timeouts.Timeout;
 import org.apache.jena.sparql.engine.Timeouts.TimeoutBuilderImpl;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.dispatch.SparqlDispatcherRegistry;
 import org.apache.jena.sparql.syntax.syntaxtransform.QueryTransformOps;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.ContextAccumulator;
@@ -61,6 +62,8 @@ public class QueryExecDatasetBuilder implements QueryExecMod, QueryExecBuilder {
     private DatasetGraph dataset            = null;
     private Query        query              = null;
     private String       queryString        = null;
+    private Syntax       syntax             = null;
+    private Boolean      parseCheck         = null;
 
     private ContextAccumulator contextAcc =
             ContextAccumulator.newBuilder(()->ARQ.getContext(), ()->Context.fromDataset(dataset));
@@ -80,6 +83,8 @@ public class QueryExecDatasetBuilder implements QueryExecMod, QueryExecBuilder {
     @Override
     public QueryExecDatasetBuilder query(Query query) {
         this.query = query;
+        this.queryString = null;
+        this.syntax = null;
         return this;
     }
 
@@ -89,17 +94,22 @@ public class QueryExecDatasetBuilder implements QueryExecMod, QueryExecBuilder {
         return this;
     }
 
-    /** The parse-check flag has no effect for query execs over datasets. */
     @Override
-    public QueryExecDatasetBuilder parseCheck(boolean parseCheck) {
+    public QueryExecDatasetBuilder query(String queryString, Syntax syntax) {
+        this.query = effectiveParseCheck() ? QueryFactory.create(queryString, syntax) : null;
+        this.queryString = queryString;
+        this.syntax = syntax;
         return this;
     }
 
     @Override
-    public QueryExecDatasetBuilder query(String queryString, Syntax syntax) {
-        this.queryString = queryString;
-        this.query = QueryFactory.create(queryString, syntax);
+    public QueryExecDatasetBuilder parseCheck(boolean parseCheck) {
+        this.parseCheck = parseCheck;
         return this;
+    }
+
+    protected boolean effectiveParseCheck() {
+        return SparqlDispatcherRegistry.effectiveParseCheck(parseCheck, contextAcc);
     }
 
     public QueryExecDatasetBuilder dataset(DatasetGraph dsg) {
@@ -187,38 +197,50 @@ public class QueryExecDatasetBuilder implements QueryExecMod, QueryExecBuilder {
 
     @Override
     public QueryExec build() {
-        Objects.requireNonNull(query, "No query for QueryExec");
-        // Queries can have FROM/FROM NAMED or VALUES to get data.
-        //Objects.requireNonNull(dataset, "No dataset for QueryExec");
-        query.ensureResultVars();
-        Context cxt = getContext();
-
-        QueryEngineFactory qeFactory = QueryEngineRegistry.findFactory(query, dataset, cxt);
-        if ( qeFactory == null ) {
-            Log.warn(QueryExecDatasetBuilder.class, "Failed to find a QueryEngineFactory");
-            return null;
+        if (query == null && queryString == null) {
+            throw new NullPointerException("No query for QueryExec");
         }
+
+        // Queries can have FROM/FROM NAMED or VALUES to get data.
+        // Objects.requireNonNull(dataset, "No dataset for QueryExec");
+
+        if (query != null) {
+            query.ensureResultVars();
+        }
+
+        Context cxt = getContext();
 
         // Initial bindings / parameterized query
         Query queryActual = query;
         String queryStringActual = queryString;
 
+        // Place the effective timeout into the context
+        Timeouts.applyDefaultQueryTimeoutFromContext(timeoutBuilder, cxt);
+        Timeout timeout = timeoutBuilder.build();
+        Timeouts.setQueryTimeout(cxt, timeout);
+
         if ( substitutionMap != null && ! substitutionMap.isEmpty() ) {
-            queryActual = QueryTransformOps.replaceVars(query, substitutionMap);
+            if (queryActual == null) {
+                queryActual = QueryFactory.create(queryString, syntax);
+            }
+            queryActual = QueryTransformOps.replaceVars(queryActual, substitutionMap);
             queryStringActual = null;
         }
-
-        Timeouts.applyDefaultQueryTimeoutFromContext(this.timeoutBuilder, cxt);
 
         if ( dataset != null )
             cxt.set(ARQConstants.sysCurrentDataset, DatasetFactory.wrap(dataset));
         if ( queryActual != null )
             cxt.set(ARQConstants.sysCurrentQuery, queryActual);
 
-        Timeout timeout = timeoutBuilder.build();
+        QueryExec qExec;
+        if (queryActual != null) {
+            // Pass on query object.
+            qExec = SparqlDispatcherRegistry.exec(queryActual, dataset, initialBinding, cxt);
+        } else {
+            // Pass on query string.
+            qExec = SparqlDispatcherRegistry.exec(queryStringActual, syntax, dataset, initialBinding, cxt);
+        }
 
-        QueryExec qExec = new QueryExecDataset(queryActual, queryStringActual, dataset, cxt, qeFactory,
-                                               timeout, initialBinding);
         return qExec;
     }
 }

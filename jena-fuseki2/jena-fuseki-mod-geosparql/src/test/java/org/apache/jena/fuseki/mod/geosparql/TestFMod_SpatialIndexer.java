@@ -20,18 +20,11 @@ package org.apache.jena.fuseki.mod.geosparql;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.cmds.FusekiMain;
@@ -46,6 +39,10 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Envelope;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -54,6 +51,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
 
 /**
  * Test cases that interact with the spatial indexer web UI via Selenium.
@@ -73,7 +72,7 @@ public class TestFMod_SpatialIndexer {
     private Node graphName1 = NodeFactory.createURI("http://www.example.org/graph1");
 
     @BeforeEach
-    public void setUp() throws IOException, SpatialIndexException {
+    public void setUp() throws SpatialIndexException {
         dsg = DatasetGraphFactory.create();
         setupTestData(dsg);
 
@@ -83,8 +82,8 @@ public class TestFMod_SpatialIndexer {
 
         FusekiServer server = FusekiMain.builder(argv)
             .add("test", dsg)
-            .registerOperation(FMod_SpatialIndexer.spatialIndexerOperation, new SpatialIndexerService())
-            .addEndpoint("test", "spatial-indexer", FMod_SpatialIndexer.spatialIndexerOperation)
+            .registerOperation(FMod_SpatialIndexer.getOperation(), new SpatialIndexerService())
+            .addEndpoint("test", "spatial-indexer", FMod_SpatialIndexer.getOperation())
             .build();
         server.start();
         int port = server.getPort();

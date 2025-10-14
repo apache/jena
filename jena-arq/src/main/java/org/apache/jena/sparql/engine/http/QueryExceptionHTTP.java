@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.engine.http;
 
+import java.util.Optional;
+
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.query.QueryException;
 import org.apache.jena.web.HttpSC;
@@ -44,12 +46,13 @@ public class QueryExceptionHTTP extends QueryException
         // Therefore we need to wrap appropriately
         int responseCode = httpEx.getStatusCode();
         if (responseCode != -1) {
-            // Was an actual HTTP error
-            String responseLine = httpEx.getStatusLine() != null ? httpEx.getStatusLine() : HttpSC.getMessage(responseCode);
+            // Was an actual HTTP error. Enrich the message with the first line of the HTTP response.
+            String x = (httpEx.getStatusLine() != null) ? httpEx.getStatusLine() : HttpSC.getMessage(responseCode);
+            String responseLine = x + extractResponseLine(": ", httpEx.getResponse());
             return new QueryExceptionHTTP(responseCode, responseLine, httpEx);
         } else if (httpEx.getMessage() != null) {
             // Some non-HTTP error with a valid message e.g. Socket Communications failed, IO error
-            return new QueryExceptionHTTP(responseCode, "Unexpected error making the query: " + httpEx.getMessage(), httpEx);
+            return new QueryExceptionHTTP(responseCode, "Unexpected error making the query: " + httpEx.getMessage() + ". Cause: " + httpEx.getCause(), httpEx);
         } else if (httpEx.getCause() != null) {
             // Some other error with a cause e.g. Socket Communications failed, IO error
             return new QueryExceptionHTTP(responseCode, "Unexpected error making the query, see cause for further details", httpEx);
@@ -57,6 +60,16 @@ public class QueryExceptionHTTP extends QueryException
             // Some other error with no message and no further cause
             return new QueryExceptionHTTP(responseCode, "Unexpected error making the query", httpEx);
         }
+    }
+
+    /** Extract the first line of the given string. If that line is non-empty then prepend the given prefix. */
+    private static String extractResponseLine(String prefixIfPresent, String str) {
+        String s = str == null ? "" : str;
+        String lines[] = s.split("\\r?\\n");
+        String firstLine = lines[0].trim();
+
+        String result = firstLine.isEmpty() ? "" : prefixIfPresent + firstLine;
+        return result;
     }
 
     /**

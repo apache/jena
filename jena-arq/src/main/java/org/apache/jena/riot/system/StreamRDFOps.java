@@ -104,6 +104,11 @@ public class StreamRDFOps {
             stream.base(baseURI);
         if ( prefixMap != null )
             sendPrefixesToStream(prefixMap, stream) ;
+        sendGraphTriplesToStream(graph, stream);
+    }
+
+    /** Send only the triples of graph to a StreamRDF */
+    public static void sendGraphTriplesToStream(Graph graph, StreamRDF stream) {
         ExtendedIterator<Triple> iter = graph.find(null, null, null) ;
         try {
             StreamRDFOps.sendTriplesToStream(iter, stream) ;

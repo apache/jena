@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Execution Tracker</title>
+
+  <style>
+    .controls {
+      display: flex;
+      box-sizing: border-box;
+      width: 100%;
+      gap: 10px;
+      margin-bottom: 20px;
+      align-items: center;
+      background: #f8f9fa;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    .log-info {
+        background-color: #cce5ff;
+        color: #004085;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2em;
+    }
+    th, td {
+      padding: 0.5em;
+      border: 1px solid #ccc;
+      text-align: left;
+      overflow-wrap: break-word;
+      vertical-align: top;
+    }
+    th:nth-child(1), td:nth-child(1) {
+      width: 8em;
+      white-space: nowrap;
+    }
+    th:nth-child(2), td:nth-child(2),
+    th:nth-child(3), td:nth-child(3) {
+      width: 12em;
+      white-space: nowrap;
+    }
+    th:nth-child(4), td:nth-child(4) {
+      width: auto;
+    }
+    .expandable {
+      cursor: pointer;
+      color: blue;
+      text-decoration: underline;
+      display: block;
+    }
+    .error {
+      background-color: #fdd;
+    }
+    .details-box-row {
+      display: none;
+      background-color: #f5f5f5;
+    }
+    .details-box {
+      padding: 0.5em;
+      font-family: monospace;
+      text-align: left;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      /* border-top: 1px solid #ccc; */
+    }
+    .fade-out {
+      opacity: 0.2;
+      transition: opacity 10s ease;
+    }
+    .fade-in {
+      opacity: 0.2;
+      transition: opacity 3s ease;
+    }
+    .fade-in.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Banner that indicates manual refresh when there is too much activity. -->
+  <div id="reload-banner" class="controls log-info" style="flex-direction: column; display: none;">
+    <div id="status-container" style="width: 100%;">
+      <pre id="status-message">Too much activity. Please refresh manually.</pre>
+    </div>
+  </div>
+
+  <h1>Ongoing Executions</h1>
+  <table id="runningTasksTable">
+    <thead>
+      <tr><th>ID</th><th>Start Time</th><th>Label</th><th>Action</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h1>Completed Executions</h1>
+  <table id="completedTasksTable">
+    <thead>
+      <tr><th>ID</th><th>Start Time</th><th>End Time</th><th>Label</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const apiEndpoint = "";
+    let eventEndpoint = null;
+
+    let status = {
+      runningTasks: [],
+      completedTasks: []
+    };
+
+    // Status structure:
+    /*
+    {
+      runningTasks: [
+        {
+          requestId: 1,
+          canAbort: true,
+          timestamp: 1715440000000,
+          payload: { label: "Task A", details: "Running data import..." }
+        },
+      ],
+      completedTasks: [
+        {
+          startRecord: {
+            requestId: 4,
+            timestamp: 1715438000000,
+            payload: { label: "Task D", details: "Failed to connect" }
+          },
+          timestamp: 1715442100000,
+          error: "Connection timeout"
+        }
+      ]
+    };
+    */
+
+    const runningTasks_tbody = document.querySelector('#runningTasksTable tbody');
+    const completedTasks_tbody = document.querySelector('#completedTasksTable tbody');
+
+    const reloadBanner = document.getElementById("reload-banner");
+
+    const fadeOutTimeout = 10000;
+    const fadeInTimeout = 3000;
+
+    // Avoid freezing browser tabs under load:
+    // If there is too much activity then we disconnect from the event stream
+    // and inform the user to reload manually.
+    var activitiesInInterval = 0;
+    var maxActivitiesInInterval = 30;
+
+    var lastTick = Date.now();
+
+    var pause = false;
+
+    function reportActivity() {
+      const tick = Date.now();
+      if (tick - lastTick >= 1000) {
+        activitiesInInterval = 0;
+        lastTick = tick;
+      }
+      ++activitiesInInterval;
+
+      if (activitiesInInterval >= maxActivitiesInInterval) {
+        // Too many events - Pause activities.
+        reloadBanner.style.display = "flex";
+        if (eventEndpoint) {
+          eventEndpoint.close();
+          eventEndpoint = null;
+        }
+      }
+    }
+
+    async function connect() {
+      const eventEndpoint = new EventSource(apiEndpoint + '?command=events');
+
+      eventEndpoint.onmessage = async e => {
+        reportActivity();
+
+        // console.log('Got message:', e.data);
+        const event = JSON.parse(e.data);
+
+        // For selenium unit testing store the latest message on the window!
+        window.lastEvent = event;
+        const eventType = event.type;
+
+        if (eventType == 'StartRecord') {
+          renderRunningTask(event, true);
+        } else if (eventType == 'CompletionRecord') {
+          completeTask(event);
+        } else {
+           throw new Error("Unknown event type: " + eventType, event);
+        }
+      }
+      eventEndpoint.onerror = async e => {
+        console.error('SSE error', e);
+      }
+      return eventEndpoint;
+    }
+
+    async function fetchStatus() {
+      return fetchFromApi("GET", { "command": "status" });
+    }
+
+    async function fetchFromApi(method, args) {
+      const params = new URLSearchParams(args);
+      try {
+        const response = await fetch(`${apiEndpoint}?${params.toString()}`, { "method": method });
+
+        if (response.status != 200) {
+          const text = await response.text();
+          throw new Error("HTTP Error: " + text);
+        }
+        const json = await response.json();
+        return json;
+      } catch (error) {
+        alert(`Error: ${error.message}`);
+      }
+    }
+
+    function formatTime(ms) {
+      return new Date(ms).toLocaleString();
+    }
+
+    function formatLabel(str) {
+      return abbrevString(str, 256);
+    }
+
+    function abbrevString(str, len) {
+      return str.length > len - 3 ? str.substring(0, len) + "..." : str;
+    }
+
+    function toggleDetails(id) {
+      const detailsRow = document.getElementById(id);
+      detailsRow.style.display = detailsRow.style.display === 'table-row' ? 'none' : 'table-row';
+    }
+
+    function renderRunningTasks(tasks) {
+      tasks.forEach(task => {
+        renderRunningTask(task);
+      });
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str; // Let browser handle HTML escaping
+      return div.innerHTML;
+    }
+
+    function renderRunningTask(task, shouldFadeIn = false) {
+      const requestId = task.requestId;
+      const index = findRunningTaskIndex(requestId);
+      if (index !== -1) {
+        console.log(`WARN: Task ${requestId} already rendered}`);
+        // throw new Error(`Task ${requestId} already rendered}`);
+        return;
+      }
+
+      // Add task to the running task array.
+      status.runningTasks.push(task);
+
+      const tbody = runningTasks_tbody;
+
+      const mainRow = document.createElement('tr');
+      mainRow.id = `running-row-${requestId}`;
+      // mainRow.setAttribute('data-id', requestId);
+      const details = task.payload.label;
+      const label = formatLabel(details);
+      mainRow.innerHTML = `
+        <td>${task.requestId}</td>
+        <td>${formatTime(task.timestamp)}</td>
+        <td><span class="expandable" onclick="toggleDetails('running-details-${requestId}')">${escapeHtml(label)}</span></td>
+        <td><button onclick="stopTask(${requestId})">Stop</button></td>
+      `;
+
+      const detailsRow = document.createElement('tr');
+      detailsRow.id = `running-details-${requestId}`;
+      detailsRow.className = 'details-box-row';
+      detailsRow.innerHTML = `<td colspan="4"><div class="details-box">${escapeHtml(details)}</div></td>`;
+
+      // Disable stop button if not supported
+      if (!task.canAbort) {
+        const stopButton = mainRow.querySelector('button');
+        if (stopButton) {
+          stopButton.disabled = true;
+        }
+      }
+
+      if (shouldFadeIn) {
+        mainRow.classList.add("fade-in");
+        detailsRow.classList.add("fade-in");
+      }
+
+      tbody.appendChild(mainRow);
+      tbody.appendChild(detailsRow);
+
+      if (shouldFadeIn) {
+        // Force immediate layout refresh to apply new css classes.
+        void mainRow.offsetHeight;
+        void detailsRow.offsetHeight;
+        mainRow.classList.add('show');
+        detailsRow.classList.add('show');
+      }
+    }
+
+    function completeTask(completedRecord) {
+        var requestId = completedRecord.startRecord.requestId;
+        const runningIndex = findRunningTaskIndex(requestId);
+        if (runningIndex === -1) return;
+
+        const task = status.runningTasks[runningIndex];
+        // const mainRow = document.querySelector(`#runningTasksTable tr[data-id="${requestId}"]`);
+        const mainRow    = document.getElementById(`running-row-${requestId}`);
+        const detailsRow = document.getElementById(`running-details-${requestId}`);
+
+        mainRow.classList.add("show");
+        detailsRow.classList.add("show");
+        mainRow.classList.remove("fade-in");
+        detailsRow.classList.remove("fade-in");
+
+        // Force immediate layout refresh to apply new css classes.
+        void mainRow.offsetHeight;
+        void detailsRow.offsetHeight;
+
+        const stopButton = mainRow.querySelector('button');
+        if (stopButton) {
+          stopButton.disabled = true;
+          stopButton.innerHTML = "Terminated";
+        }
+
+        mainRow.classList.add("fade-out");
+        detailsRow.classList.add("fade-out");
+
+        setTimeout(() => {
+          mainRow.remove();
+          detailsRow.remove();
+
+          renderCompletedTask(completedRecord, true);
+          status.runningTasks.splice(runningIndex, 1);
+        }, fadeOutTimeout);
+    }
+
+    function renderCompletedTask(record, shouldFadeIn = false) {
+      var requestId = record.startRecord.requestId;
+      const index = findCompletedTaskIndex(requestId);
+      if (index !== -1) return;
+
+      status.completedTasks.unshift(record);
+
+      const tbody = completedTasks_tbody;
+      const error = record.error != null;
+
+      const mainRow = document.createElement('tr');
+      mainRow.id = `completed-row-${requestId}`;
+      // mainRow.setAttribute('data-id', record.startRecord.requestId);
+
+      if (error) {
+        mainRow.classList.add('error');
+      }
+
+      if (shouldFadeIn) {
+        mainRow.classList.add('fade-in');
+      }
+
+      const details = record.startRecord.payload.label;
+      const label = formatLabel(details);
+
+      mainRow.innerHTML = `
+        <td>${record.startRecord.requestId}</td>
+        <td>${formatTime(record.startRecord.timestamp)}</td>
+        <td>${formatTime(record.timestamp)}</td>
+        <td><span class="expandable" onclick="toggleDetails('completed-details-${requestId}')">${escapeHtml(label)}</span></td>
+      `;
+
+      const detailsRow = document.createElement('tr');
+      detailsRow.id = `completed-details-${requestId}`;
+      detailsRow.className = 'details-box-row'; if (shouldFadeIn) detailsRow.classList.add('fade-in');
+      detailsRow.innerHTML = `
+        <td colspan="4">
+          <div class="details-box">${error ? `<strong>Error:</strong> ${record.error}<br/><br/>` : ''}${escapeHtml(details)}</div>
+        </td>
+      `;
+
+      tbody.insertBefore(detailsRow, tbody.firstChild);
+      tbody.insertBefore(mainRow, detailsRow);
+
+      if (shouldFadeIn) {
+        void mainRow.offsetHeight;
+        void detailsRow.offsetHeight;
+        mainRow.classList.add('show');
+        detailsRow.classList.add('show');
+      }
+
+      // Cleanup history.
+
+      const maxHistorySize = 100; // Could inject/fetch this value from a config.
+
+      while (status.completedTasks.length > maxHistorySize) {
+        const removeRequestId = status.completedTasks[status.completedTasks.length - 1].startRecord.requestId;
+
+        const index = findCompletedTaskIndex(removeRequestId);
+        if (index !== -1) {
+          status.completedTasks.splice(index, 1);
+        }
+
+        const mainRow    = document.getElementById(`completed-row-${removeRequestId}`); // document.querySelector(`#completedTasksTable tr[data-id="${removeRequestId}"]`);
+        const detailsRow = document.getElementById(`completed-details-${removeRequestId}`);
+
+        mainRow.classList.add("fade-out");
+        detailsRow.classList.add("fade-out");
+
+        setTimeout(() => {
+          mainRow.remove();
+          detailsRow.remove();
+        }, fadeOutTimeout);
+      }
+    }
+
+    function renderCompletedTasks(tasks) {
+      tasks.forEach(record => renderCompletedTask(record));
+    }
+
+    function findRunningTaskIndex(requestId) {
+        const runningIndex = status.runningTasks.findIndex(t => t.requestId === requestId);
+        return runningIndex;
+    }
+
+    function findCompletedTaskIndex(requestId) {
+        const runningIndex = status.completedTasks.findIndex(t => t.startRecord.requestId === requestId);
+        return runningIndex;
+    }
+
+    async function stopTask(requestId) {
+      // const mainRow = document.querySelector(`#runningTasksTable tr[data-id="${requestId}"]`);
+      const mainRow = document.getElementById(`running-row-${requestId}`);
+      const stopButton = mainRow.querySelector('button');
+      if (stopButton) {
+        stopButton.disabled = true;
+        stopButton.innerHTML = "Stopping...";
+      }
+
+      const params = new URLSearchParams({ "command": "stop", "requestId": requestId });
+      try {
+        const response = await fetch(`${apiEndpoint}?${params.toString()}`, { method: "GET" });
+
+        const text = await response.text();
+        if (response.status != 200) {
+            throw new Error("HTTP Error: " + text);
+        }
+      } catch (error) {
+         alert(`Error: ${error.message}`);
+      }
+    }
+
+    async function initialize() {
+        eventEndpoint = await connect();
+        const tmp = await fetchStatus();
+
+        const runningTasks = tmp.runningTasks ?? [];
+        const completedTasks = tmp.completedTasks ?? [];
+
+        // Reverse array in order to render most recent finished task first.
+        completedTasks.reverse();
+
+        renderRunningTasks(runningTasks);
+        renderCompletedTasks(completedTasks);
+    }
+
+    initialize();
+  </script>
+</body>
+</html>
