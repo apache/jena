@@ -1,3 +1,61 @@
+==== Apache Jena 5.6.0
+Released: 2025-10-15
+Issues: https://s.apache.org/jena-5.6.0-issues
+Announcement:
+https://lists.apache.org/thread/joh04217qs9h14g01qqf4dp3s1cqy2q9
+
+== Preparation for Jena 6.0.0
+
+In preparation for Jena 6.0.0, the 5.6.0 release has code deprecations 
+indicating methods, classes and modules that are planned for removal.
+
+For Jena 6:
+
+* Minimum Java version: Java 21
+* Lucene update to 10.* (this requires Java21+)
+* Retire jena-permissions
+* Retire the Fuseki WAR file, jena-fuseki-webapp, jena-fuseki-war
+* Code deprecation removal
+* Deprecation of TDB1 but not for removal
+* Remove Graph Capabilities and Graph.dependsOn
+* No RDF/XML in jena-core/main
+* Remove ARQ initial bindings
+* Switching to org.apache.jena.ontapi (artifact jena-ontapi)
+    from the original org.apache.jena.ontology (part of jena-core)
+* Switch to jena-iri3986 as the IRI parser; retire jena-iri
+
+== Other items in Jena 5.6.0
+
+* Use async HTTP; abortable remote query requests
+* Update to Titanium json-ld v1.7.0
+* Jena testing switches to Junit6.
+
+== Contributions to Jena 5.6.0:
+
+@shawnsmith:
+* Fix for resolved URIs in jena-iri3986
+https://github.com/apache/jena/issues/3465
+
+Aklakan:
+* GH-3464: ASync HTTP
+  https://github.com/apache/jena/pull/3464
+  Switch Jena's HTTP request processing (HttpLib) to using
+    HttpClient.async.
+* GH-3437: Initialize fields of Cmds.java before JenaSystem.init()
+* Allow transform from NodeValue to Var.
+* GH-2048: Remove left-over dependencies to expiring-map and rdf-tables.
+* Use kryo-shaded instead of kryo in order to avoid conflicts with asm.
+* Support CONSTRUCT_JSON query type in RDFLinkHTTP.
+* Allow Node_Ext to be wrapped as NodeValueNode without further checks.
+* Revert fontawesome
+
+sszuev:
+* GH-3322: [jena-ontapi] add assemblers
+
+@arne-bdt:
+* GH-3323 COALESCE checks variable bindings 
+
+
 ==== Apache Jena 5.5.0
 Released: 2025-07-18
 Issues: https://s.apache.org/jena-5.5.0-issues
