@@ -38,8 +38,6 @@ import org.apache.jena.geosparql.spatial.SpatialIndex;
 import org.apache.jena.geosparql.spatial.SpatialIndexConstants;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
 import org.apache.jena.geosparql.spatial.task.TaskThread;
-import org.apache.jena.geosparql.spatial.task.BasicTask;
-import org.apache.jena.geosparql.spatial.task.BasicTask.TaskListener;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
@@ -50,6 +48,8 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.NamedGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.exec.tracker.BasicTaskExec;
+import org.apache.jena.sparql.exec.tracker.TaskListener;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.system.AutoTxn;
 import org.apache.jena.system.Txn;
@@ -217,12 +217,12 @@ public class SpatialIndexLib {
         return graphNode;
     }
 
-    public static BasicTask scheduleOnceIndexTask(DatasetGraph dsg, SpatialIndexerComputation indexComputation, Path targetFile, boolean isReplaceTask,
-            TaskListener<BasicTask> taskListener) {
+    public static BasicTaskExec scheduleOnceIndexTask(DatasetGraph dsg, SpatialIndexerComputation indexComputation, Path targetFile, boolean isReplaceTask,
+            TaskListener<BasicTaskExec> taskListener) {
         Context cxt = dsg.getContext();
 
-        BasicTask task = cxt.compute(SpatialIndexConstants.symSpatialIndexTask, (key, priorTaskObj) -> {
-            BasicTask priorTask = (BasicTask)priorTaskObj;
+        BasicTaskExec task = cxt.compute(SpatialIndexConstants.symSpatialIndexTask, (key, priorTaskObj) -> {
+            BasicTaskExec priorTask = (BasicTaskExec)priorTaskObj;
             if (priorTask != null && !priorTask.isTerminated()) {
                 throw new RuntimeException("A spatial indexing task is already active for this dataset. Wait for completion or abort it.");
             }
@@ -235,7 +235,7 @@ public class SpatialIndexLib {
         return task;
     }
 
-    public static TaskThread createIndexerTask(DatasetGraph dsg, Predicate<Node> isAuthorizedGraph, SpatialIndexerComputation indexComputation, TaskListener<BasicTask> taskListener, Path targetFile, boolean isReplaceTask) {
+    public static TaskThread createIndexerTask(DatasetGraph dsg, Predicate<Node> isAuthorizedGraph, SpatialIndexerComputation indexComputation, TaskListener<BasicTaskExec> taskListener, Path targetFile, boolean isReplaceTask) {
         Context cxt = dsg.getContext();
         long graphCount = indexComputation.getGraphNodes().size();
         boolean isEffectiveUpdate = !isReplaceTask || isAuthorizedGraph != null;
@@ -325,10 +325,10 @@ public class SpatialIndexLib {
      * Attempt to start a spatial index task that cleans the index of graphs not present in the given dataset.
      * This method fails if there is already another spatial index task running.
      */
-    public static BasicTask scheduleOnceCleanTask(DatasetGraph dsg, TaskListener<BasicTask> taskListener) {
+    public static BasicTaskExec scheduleOnceCleanTask(DatasetGraph dsg, TaskListener<BasicTaskExec> taskListener) {
         Context cxt = dsg.getContext();
-        BasicTask task = cxt.compute(SpatialIndexConstants.symSpatialIndexTask, (key, priorTaskObj) -> {
-            BasicTask priorTask = (BasicTask) priorTaskObj;
+        BasicTaskExec task = cxt.compute(SpatialIndexConstants.symSpatialIndexTask, (key, priorTaskObj) -> {
+            BasicTaskExec priorTask = (BasicTaskExec) priorTaskObj;
             if (priorTask != null && !priorTask.isTerminated()) {
                 throw new RuntimeException("A spatial indexing task is already active for this dataset. Wait for completion or abort it.");
             }
@@ -340,7 +340,7 @@ public class SpatialIndexLib {
         return task;
     }
 
-    public static TaskThread createCleanTask(DatasetGraph dsg, Predicate<Node> isAuthorizedGraph, TaskListener<BasicTask> taskListener) {
+    public static TaskThread createCleanTask(DatasetGraph dsg, Predicate<Node> isAuthorizedGraph, TaskListener<BasicTaskExec> taskListener) {
         Context cxt = dsg.getContext();
 
         TaskThread thread = new TaskThread("Clean action", taskListener) {

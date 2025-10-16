@@ -54,6 +54,8 @@
     <!-- Graph access control -->
     <module>jena-fuseki-access</module>
 
+    <module>jena-fuseki-mod-exectracker</module>
+
     <!-- Fuseki main server -->
     <module>jena-fuseki-main</module>
 
