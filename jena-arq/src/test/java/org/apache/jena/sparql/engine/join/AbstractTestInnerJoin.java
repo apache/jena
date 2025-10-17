@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 
 import org.apache.jena.sparql.algebra.Table;
 import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.expr.ExprList;
 
 /** Tests for inner/equi joins */
@@ -80,6 +81,10 @@ public abstract class AbstractTestInnerJoin extends AbstractTestJoin {
     @Test public void join_skew_02b() { testJoin("w", tableS1b(), tableS2(), tableS1J2()); }
     @Test public void join_skew_03b() { testJoin(null, tableS1b(), tableS2(), tableS1J2()); }
 
+    @Test public void testCloseOfUnusedIterator() {
+        QueryIterator qIter = join(null, table1() , table1(), null);
+        qIter.close();
+    }
 
     @Test
     public void join_skew_04() {
