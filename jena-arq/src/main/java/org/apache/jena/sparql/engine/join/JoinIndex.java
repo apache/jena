@@ -41,14 +41,21 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class indexes a set of rows w.r.t. a join key, referred to as the <i>main join key</i>.
- * <p />
+ * <p>
  * Consider the main join key [?x, ?y, ?z]:
- * <p />
  * All rows that bind all three variables will be placed into the main table.
  *
+ * <p>
  * Any rows that only bind a sub set of the variables, such as [?x, ?z] or [?y],
  * are placed into respective skew tables.
  *
+ * <p>
+ * The super join determines the bit set representation of the the main and skew join keys.
+ * It and must declare at least all variables of the main join key.
+ * For example, given the super join key [?a, ?x, ?y, ?b ?z] the aforementioned main join key
+ * becomes represented with the bit pattern [0, 1, 1, 0, 1].
+ *
+ * <p>
  * JoinIndex instances are dynamically created by {@link MultiHashProbeTable} based on the
  * variables of the bindings used in lookup requests for matching rows.
  *
@@ -82,6 +89,10 @@ class JoinIndex
             mainJoinKey = JoinKey.create(BitSetMapper.toList(superJoinKey, mainJoinKeyBitSet));
         }
         this.mainTable = new HashProbeTable(mainJoinKey);
+    }
+
+    public JoinKey getSuperJoinKey() {
+        return superJoinKey;
     }
 
     public BitSet getMainJoinKeyBitSet() {
