@@ -44,14 +44,16 @@ public abstract class AbstractIterHashJoin extends QueryIter2 {
     // See also stats in the probe table.
 
     protected JoinKey                   joinKey ;
-    protected MultiHashProbeTable       hashTable ;
+
+    // HashTable is initialized lazily.
+    protected MultiHashProbeTable       hashTable   = null ;
 
     private QueryIterator               iterStream ;
-    private Binding                     rowStream       = null ;
+    private Binding                     rowStream   = null ;
     private Iterator<Binding>           iterCurrent ;
     private boolean                     yielded ;       // Flag to note when current probe causes a result.
     // Hanlde any "post join" additions.
-    private Iterator<Binding>           iterTail        = null ;
+    private Iterator<Binding>           iterTail    = null ;
 
     enum Phase { INIT, HASH , STREAM, TRAILER, DONE }
     Phase state = Phase.INIT ;
@@ -234,13 +236,15 @@ public abstract class AbstractIterHashJoin extends QueryIter2 {
         if ( JoinLib.JOIN_EXPLAIN ) {
             String x = String.format(
                          "HashJoin: LHS=%d RHS=%d Results=%d Table=%s",
-                         s_countProbe, s_countScan, s_countResults,
-                         hashTable.toString()) ;
+                         s_countProbe, s_countScan, s_countResults, hashTable) ;
             System.out.println(x) ;
         }
         // In case it's a peek iterator.
         iterStream.close() ;
-        hashTable.clear();
+        if ( hashTable != null ) {
+            hashTable.clear() ;
+            hashTable = null ;
+        }
     }
 
     @Override
