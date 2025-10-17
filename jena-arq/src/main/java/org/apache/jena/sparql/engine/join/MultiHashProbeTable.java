@@ -69,7 +69,7 @@ class MultiHashProbeTable
     private final JoinIndex   initialIndex;
 
     /** Tables for hash lookups. Will be created dynamically during {@link #getCandidates(Binding)}. */
-    private final Map<BitSet, JoinIndex> indexes = new HashMap<>();
+    private final Map<BitSet, JoinIndex> indexes     = new HashMap<>();
 
     /** The set of seen variables across all rows */
     private final Set<Var>    seenVarSet             = new LinkedHashSet<>();
@@ -91,10 +91,6 @@ class MultiHashProbeTable
         if (initialJoinKey == null) {
             initialJoinKey = JoinKey.empty();
         }
-
-        // If an initial join key is given then its variables are added to seen vars
-        // so that those correspond to the first bits of the bit keys
-        seenVarSet.addAll(initialJoinKey);
 
         int nbits = initialJoinKey.size();
         BitSet initialJoinKeyBitset = new BitSet(nbits);
@@ -129,7 +125,7 @@ class MultiHashProbeTable
         initialIndex.put(row);
     }
 
-    /** Update seen vars with the row's relevant variables w.r.t. an optional rootJoinKey. */
+    /** Update seen vars with the row's relevant variables w.r.t. an optional maxJoinKey. */
     private void updateSeenVars(Binding row) {
         if (maxJoinKey == null) {
             row.vars().forEachRemaining(seenVarSet::add);
@@ -180,9 +176,13 @@ class MultiHashProbeTable
      *  This method is package private so that it can be called from tests.
      */
     void doFinalize() {
-        // Note: We need to stick with the variable order provided in the initial index -> don't sort!
+        // If an initial join key is given then its variables are prepended to seen vars
+        // so that those correspond to the first bits of the bit keys!
+        // This means we need to stick with the variable order provided in the initial index
+        // -> don't sort!
         // Arrays.sort(seenVars, (a, b) -> a.getName().compareTo(b.getName()));
-        seenVarsJoinKey = JoinKey.create(seenVarSet);
+        seenVarsJoinKey = JoinKey.newBuilder()
+            .addAll(initialIndex.getSuperJoinKey()).addAll(seenVarSet).build();
         indexes.put(initialIndex.getMainJoinKeyBitSet(), initialIndex);
         isFinalized = true;
     }
