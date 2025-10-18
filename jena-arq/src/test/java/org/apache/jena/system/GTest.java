@@ -18,17 +18,18 @@
 
 package org.apache.jena.system;
 
-import static org.apache.jena.testing_framework.GraphHelper.triple;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.Copyable;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.mem.GraphMem;
 import org.apache.jena.mem2.GraphMem2Fast;
+import org.apache.jena.sparql.sse.SSE;
 
-@SuppressWarnings("deprecation")
 public class GTest {
 
     @Test
@@ -36,47 +37,38 @@ public class GTest {
         // Test graph which implements Copyable<>
         {
             var graphImplementingCopyable = new GraphMem2Fast();
-
-            graphImplementingCopyable.add(triple("s1 p1 o1"));
-            graphImplementingCopyable.add(triple("s1 p2 o1"));
-            graphImplementingCopyable.add(triple("s2 p1 o1"));
-            graphImplementingCopyable.add(triple("s2 p1 o2"));
-            graphImplementingCopyable.add(triple("s2 p1 o2"));
-
-            var copy = G.copy(graphImplementingCopyable);
-
-            assertEquals(graphImplementingCopyable.size(), copy.size());
-
-            copy.delete(triple("s1 p1 o1"));
-            assertEquals(graphImplementingCopyable.size() - 1, copy.size());
-
-            copy.add(triple("s3 p3 o3"));
-            copy.add(triple("s4 p4 o4"));
-            assertEquals(graphImplementingCopyable.size() + 1, copy.size());
+            test(graphImplementingCopyable);
         }
 
         // Test graph which does not implement Copyable<>
         {
+            @SuppressWarnings("deprecation")
             GraphMem notCopyableGraph = new GraphMem();
-
             assertFalse(notCopyableGraph instanceof Copyable<?>);
-
-            notCopyableGraph.add(triple("s1 p1 o1"));
-            notCopyableGraph.add(triple("s1 p2 o1"));
-            notCopyableGraph.add(triple("s2 p1 o1"));
-            notCopyableGraph.add(triple("s2 p1 o2"));
-            notCopyableGraph.add(triple("s2 p1 o2"));
-
-            var copy = G.copy(notCopyableGraph);
-
-            assertEquals(notCopyableGraph.size(), copy.size());
-
-            copy.delete(triple("s1 p1 o1"));
-            assertEquals(notCopyableGraph.size() - 1, copy.size());
-
-            copy.add(triple("s3 p3 o3"));
-            copy.add(triple("s4 p4 o4"));
-            assertEquals(notCopyableGraph.size() + 1, copy.size());
+            test(notCopyableGraph);
         }
+    }
+
+    private void test(Graph graph) {
+        graph.add(triple("(:s1 :p1 :o1)"));
+        graph.add(triple("(:s1 :p2 :o1)"));
+        graph.add(triple("(:s2 :p1 :o1)"));
+        graph.add(triple("(:s2 :p1 :o2)"));
+        graph.add(triple("(:s2 :p1 :o2)"));
+
+        var copy = G.copy(graph);
+
+        assertEquals(graph.size(), copy.size());
+
+        copy.delete(triple("(:s1 :p1 :o1)"));
+        assertEquals(graph.size() - 1, copy.size());
+
+        copy.add(triple("(:s3 :p3 :o3)"));
+        copy.add(triple("(:s4 :p4 :o4)"));
+        assertEquals(graph.size() + 1, copy.size());
+    }
+
+    private Triple triple(String str) {
+        return SSE.parseTriple(str);
     }
 }
