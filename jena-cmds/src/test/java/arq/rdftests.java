@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import arq.cmdline.ModContext;
+import arq.cmdline.ModEngine;
 import org.apache.jena.Jena;
 import org.apache.jena.arq.junit.EarlReport;
 import org.apache.jena.arq.junit.Scripts;
@@ -93,6 +94,7 @@ public class rdftests extends CmdGeneral
         }
     }
 
+    protected ModEngine  modEngine         = new ModEngine();
     protected ModContext modContext        = new ModContext();
     protected ArgDecl    strictDecl        = new ArgDecl(ArgDecl.NoValue, "strict");
     protected boolean    cmdStrictMode     = false;
@@ -106,25 +108,22 @@ public class rdftests extends CmdGeneral
     protected ArgDecl    earlDecl          = new ArgDecl(ArgDecl.NoValue, "earl");
     protected boolean    createEarlReport  = false;
 
-    protected ArgDecl    baseDecl          = new ArgDecl(ArgDecl.HasValue, "base");
-    protected String     baseURI           = null;
-
     private static final PrintStream earlOut = System.out;
 
     private static boolean strictMode = false;
 
     protected rdftests(String[] argv) {
         super(argv);
-//        super.add(baseDecl, "--base=URI", "Set the base URI");
         super.modVersion.addClass(Jena.class);
+        addModule(modEngine);
+        addModule(modContext);
+        
         getUsage().startCategory("Tests (execute test manifest)");
-        getUsage().addUsage("<manifest>", "run the tests specified in the given manifest");
-
         add(useARQ,       "--arq",     "Operate with ARQ syntax");
         add(useTTLjcc,    "--ttljcc",  "Use the alternative Turtle parser in tests");
         add(strictDecl,   "--strict",  "Operate in strict mode (no extensions of any kind)");
         add(earlDecl,     "--earl",    "Create EARL report");
-        addModule(modContext);
+        getUsage().addUsage("<manifest> ...", "run the tests specified in the given manifest");
     }
 
     @Override
@@ -139,8 +138,6 @@ public class rdftests extends CmdGeneral
             throw new CmdException("No manifest file");
         createEarlReport = contains(earlDecl);
         cmdStrictMode = super.hasArg(strictDecl);
-        if ( contains(baseDecl) )
-            baseURI = super.getValue(baseDecl);
         if ( contains(useTTLjcc) )
             ParsingStepForTest.registerAlternative(Lang.TURTLE, TurtleJCC.factory);
         argAsNormal = contains(useARQ);
