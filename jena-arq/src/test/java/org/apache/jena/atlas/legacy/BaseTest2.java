@@ -18,43 +18,38 @@
 
 package org.apache.jena.atlas.legacy;
 
-import java.util.ArrayDeque ;
-import java.util.Deque ;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
-import org.apache.jena.atlas.junit.AssertExtra ;
-import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.riot.system.ErrorHandler ;
-import org.apache.jena.riot.system.ErrorHandlerFactory ;
+import org.apache.jena.atlas.junit.AssertExtra;
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.riot.system.ErrorHandler;
+import org.apache.jena.riot.system.ErrorHandlerFactory;
 
 public class BaseTest2 {
     // Should go elsewhere?
 
-  private static Deque<ErrorHandler> errorHandlers = new ArrayDeque<>() ;
+    private static Deque<ErrorHandler> errorHandlers = new ArrayDeque<>();
 
-   static public void setTestLogging(ErrorHandler errorhandler)
-   {
-       errorHandlers.push(ErrorHandlerFactory.getDefaultErrorHandler()) ;
-       ErrorHandlerFactory.setDefaultErrorHandler(errorhandler) ;
-   }
+    public static void setTestLogging(ErrorHandler errorhandler) {
+        errorHandlers.push(ErrorHandlerFactory.getDefaultErrorHandler());
+        ErrorHandlerFactory.setDefaultErrorHandler(errorhandler);
+    }
 
-   static public void setTestLogging()
-   {
-//       if ( errorHandlers.size() != 0 )
-//           Log.warn(BaseTest.class, "ErrorHandler already set for testing") ;
-       setTestLogging(ErrorHandlerFactory.errorHandlerNoLogging) ;
-   }
+    public static void setTestLogging() {
+        // if ( errorHandlers.size() != 0 )
+        //     Log.warn(BaseTest.class, "ErrorHandler already set for testing");
+        setTestLogging(ErrorHandlerFactory.errorHandlerNoLogging);
+    }
 
-   static public void unsetTestLogging()
-   {
-       if ( errorHandlers.size() == 0 )
-       {
-           Log.warn(AssertExtra.class, "ErrorHandler not set for testing") ;
-           ErrorHandlerFactory.setDefaultErrorHandler(ErrorHandlerFactory.errorHandlerStd) ;  // Panic measures
-           return ;
-       }
-       ErrorHandler errHandler = errorHandlers.pop();
-       ErrorHandlerFactory.setDefaultErrorHandler(errHandler) ;
-   }
-
+    public static void unsetTestLogging() {
+        if ( errorHandlers.size() == 0 ) {
+            Log.warn(AssertExtra.class, "ErrorHandler not set for testing");
+            // Panic measures
+            ErrorHandlerFactory.setDefaultErrorHandler(ErrorHandlerFactory.errorHandlerStd);
+            return;
+        }
+        ErrorHandler errHandler = errorHandlers.pop();
+        ErrorHandlerFactory.setDefaultErrorHandler(errHandler);
+    }
 }
-

@@ -43,6 +43,8 @@ public class ModEngine extends ModBase
 
     private boolean timing = false ;
 
+    public ModEngine() {}
+
     @Override
     public void registerWith(CmdGeneral cmdLine) {
         cmdLine.getUsage().startCategory("Query Engine");

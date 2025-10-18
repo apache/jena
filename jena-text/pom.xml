@@ -31,7 +31,7 @@
    <!-- apache lucene emits warnings for native access and for the vector module for java version >= 21 -->
    <profile><id>enable-native-and-incubator-vector</id>
    <activation>
-     <jdk>[21,22,23]</jdk>
+     <jdk>[21,22,23,24,25]</jdk>
    </activation>
      <properties>
        <jena.text.test.argLine>--enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector</jena.text.test.argLine>
@@ -70,15 +70,6 @@
       <version>5.7.0-SNAPSHOT</version>
     </dependency>
     
-    <!-- Testing support -->
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-base</artifactId>
-      <version>5.7.0-SNAPSHOT</version>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-
     <!-- Lucene dependencies -->
     <dependency>
       <groupId>org.apache.lucene</groupId>
