@@ -42,7 +42,6 @@ public class AbstractTestIRIx_3986 {
     public static Iterable<Object[]> data() {
         List<Object[]> data = new ArrayList<>();
         data.add(new Object[]{"IRI3986", new IRIProvider3986()});
-        data.add(new Object[]{"JenaIRI", new IRIProviderJenaIRI()});
 
         // Does not pass the test suite.
         //data.add(new Object[]{"JDK.URI", new IRIProviderJDK()});

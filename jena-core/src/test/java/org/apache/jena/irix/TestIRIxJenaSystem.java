@@ -29,8 +29,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.junit.runners.Parameterized;
 
-import org.apache.jena.iri.IRI;
-
 /**
  * Test of parsing and schema violations.
  * <p>
@@ -185,7 +183,7 @@ public class TestIRIxJenaSystem extends AbstractTestIRIx_3986 {
     @Test public void parse_file_02() { badSpecific("file://host/file/name.txt"); }
 
     // This is legal by RFC 8089 (jena-iri, based on the original RFC 1738, fails this with missing authority).
-    @Test public void parse_file_03() { goodNoIRICheck("file:/file/name.txt"); }
+    @Test public void parse_file_03() { good("file:/file/name.txt"); }
 
     // -- FTP
 
@@ -362,23 +360,9 @@ public class TestIRIxJenaSystem extends AbstractTestIRIx_3986 {
     private void good(String string) {
         IRIx iri = test_create(string);
         assertNotNull(iri);
-        if ( true ) {
-            // Run against checking mode.
-            IRI iri1 = SetupJenaIRI.iriCheckerFactory().create(string);
-            if ( iri1.hasViolation(true) ) {
-                iri1.violations(true).forEachRemaining(v-> System.err.println("IRI = "+string + " :: "+v.getLongMessage()));
-                fail("Violations "+string);
-            }
-        }
         // Check that the JDK can at least parse the string.
         java.net.URI javaURI = java.net.URI.create(string);
         assertNotNull(javaURI);
-    }
-
-    // Where jena-iri odes not get the right answer.
-    private void goodNoIRICheck(String string) {
-        IRIx iri = test_create(string);
-        java.net.URI javaURI = java.net.URI.create(string);
     }
 
     // Expect an IRIParseException

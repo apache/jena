@@ -35,9 +35,9 @@ public class SystemIRIx {
     private enum ProviderImpl { IRI0, IRI3986 }
     // **** Default system IRI provider
     // Jena 5.x : default is the legacy jena-iri
-    private static final ProviderImpl providerImpl = ProviderImpl.IRI0;
+    //private static final ProviderImpl providerImpl = ProviderImpl.IRI0;
     // Jena 6.x : jena-iri3986
-    //private static final ProviderImpl providerImpl = ProviderImpl.IRI3986;
+    private static final ProviderImpl providerImpl = ProviderImpl.IRI3986;
 
     // -- System-wide provider.
     private static IRIProvider provider = makeFreshSystemProvider();
@@ -192,11 +192,12 @@ public class SystemIRIx {
     // -- Providers
 
     private static IRIProvider makeProviderJenaIRI() {
-        IRIProvider newProviderJenaIRI = new IRIProviderJenaIRI();
-        newProviderJenaIRI.strictMode("urn",  false);
-        newProviderJenaIRI.strictMode("http", false);
-        newProviderJenaIRI.strictMode("file", false);
-        return newProviderJenaIRI;
+        throw new JenaException("No ProviderJenaIRI in Jena6");
+//        IRIProvider newProviderJenaIRI = new IRIProviderJenaIRI();
+//        newProviderJenaIRI.strictMode("urn",  false);
+//        newProviderJenaIRI.strictMode("http", false);
+//        newProviderJenaIRI.strictMode("file", false);
+//        return newProviderJenaIRI;
     }
 
     private static IRIProvider makeProviderIRI3986() {

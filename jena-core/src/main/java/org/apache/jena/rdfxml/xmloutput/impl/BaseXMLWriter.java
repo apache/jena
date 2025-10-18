@@ -27,7 +27,6 @@ import java.util.Map.Entry ;
 import java.util.regex.Pattern ;
 
 import org.apache.jena.irix.IRIException;
-import org.apache.jena.irix.IRIProviderJenaIRI.IRIxJena;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.irix.IRIx;
 import org.apache.jena.rdf.model.* ;
@@ -803,17 +802,12 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     private String relativize( IRIx base, String uri )  {
         if ( relativeFlags == 0 )
             return uri;
-        // If jena-iri
-        if ( base instanceof IRIxJena ) {
-            org.apache.jena.iri.IRI baseImpl = ((IRIxJena)base).getImpl();
-            return baseImpl.relativize(uri, relativeFlags).toString();
-        }
         try {
-            if ( relativeFlags != dftRelativeFlags ) {
-                // Use jena-iri for relativization. Backwards compatibility.
-                org.apache.jena.iri.IRI baseImpl = org.apache.jena.iri.IRIFactory.iriImplementation().create(base.str());
-                return baseImpl.relativize(uri, relativeFlags).toString();
-            }
+//            if ( relativeFlags != dftRelativeFlags ) {
+//                // Use jena-iri for relativization. Backwards compatibility.
+//                org.apache.jena.iri.IRI baseImpl = org.apache.jena.iri.IRIFactory.iriImplementation().create(base.str());
+//                return baseImpl.relativize(uri, relativeFlags).toString();
+//            }
 //            if ( relativeFlags == 1 ) {
 //                IRI3986 iri1 = IRI3986.create(base.str());
 //                IRI3986 iri2 = IRI3986.create(uri);
