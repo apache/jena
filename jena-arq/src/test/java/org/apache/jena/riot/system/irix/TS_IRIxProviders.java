@@ -24,7 +24,6 @@ import org.junit.platform.suite.api.Suite;
 @Suite
 @SelectClasses({
     TestIRIxRIOT_iri3986.class,
-    TestIRIxRIOT_JenaIRI.class
 })
 
 public class TS_IRIxProviders {}

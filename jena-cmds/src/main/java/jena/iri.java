@@ -19,15 +19,11 @@
 package jena;
 
 import java.io.PrintStream;
-import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.Lib;
-import org.apache.jena.iri.IRI ;
-import org.apache.jena.iri.Violation ;
 import org.apache.jena.iri3986.provider.IRIProvider3986;
 import org.apache.jena.iri3986.provider.IRIProvider3986.IRIx3986;
 import org.apache.jena.irix.*;
-import org.apache.jena.irix.IRIProviderJenaIRI.IRIxJena;
 import org.apache.jena.rfc3986.IRI3986;
 import org.apache.jena.rfc3986.IRIParseException;
 
@@ -58,7 +54,6 @@ public class iri
             if ( setting != null ) {
                 provider = switch(setting) {
                     case "IRI3986" -> new IRIProvider3986();
-                    case "IRI0" ->  new IRIProviderJenaIRI();
                     default -> {
                         System.err.println("Unknown IRI Provider: "+setting);
                         System.exit(1);
@@ -81,11 +76,6 @@ public class iri
             // jena-iri3986
             if ( irix instanceof IRIx3986 iri3986 ) {
                 print(iri3986, iriStr);
-                continue;
-            }
-            // jena-iri: The original Jena IRI subsystem
-            if ( irix instanceof IRIxJena iriJena ) {
-                print(iriJena, iriStr);
                 continue;
             }
             print(irix, iriStr);
@@ -125,18 +115,6 @@ public class iri
             }
         } catch (IRIParseException ex) {
             System.err.printf("Error: %s\n", ex.getMessage());
-        }
-    }
-
-    private static void print(IRIxJena jenaIRI, String iriStr) {
-        IRI iri = jenaIRI.getImpl();
-        System.out.println(iriStr + " ==> " + iri);
-        if ( jenaIRI.isRelative() )
-            System.out.println("Relative: " + iri.isRelative());
-
-        Iterator<Violation> vIter = iri.violations(true);
-        for ( ; vIter.hasNext() ; ) {
-            System.out.println(vIter.next().getShortMessage());
         }
     }
 

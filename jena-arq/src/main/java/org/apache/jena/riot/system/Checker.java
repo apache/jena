@@ -25,7 +25,6 @@ import org.apache.jena.datatypes.xsd.impl.RDFLangString;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.TextDirection;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.iri.IRI;
 import org.apache.jena.irix.*;
 import org.apache.jena.langtagx.LangTagX;
 import org.apache.jena.sparql.core.Quad;
@@ -100,10 +99,6 @@ public class Checker {
     public static boolean checkIRI(String iriStr, ErrorHandler errorHandler, long line, long col) {
         try {
             IRIx iri = IRIs.reference(iriStr);
-            if ( iri instanceof IRIProviderJenaIRI.IRIxJena jiri ) {
-                IRI jenaIRI = jiri.getImpl();
-                return CheckerJenaIRI.iriViolations(jenaIRI, errorHandler, line, col);
-            }
             if ( ! iri.hasViolations() )
                 return true;
             // IRI errors are errorHandler warnings when checking.
@@ -129,7 +124,7 @@ public class Checker {
                 errorHandler(errorHandler).warning("Bad IRI: " + msg, line, col);
             } else
                 errorHandler(errorHandler).warning("Unwise IRI: " + msg, line, col);
-        } catch (org.apache.jena.iri.IRIException0 | org.apache.jena.irix.IRIException ex) {}
+        } catch (org.apache.jena.irix.IRIException ex) {}
     }
 
     public static boolean checkLiteral(Node node) {
@@ -208,7 +203,7 @@ public class Checker {
         if ( datatype.equals(XSDDatatype.XSDstring) )
             // Simple literals are always well-formed...
             return true;
-        
+
         // If the Literal has a datatype (but no language or base direction)...
         if ( datatype.equals(RDF.dtLangString) ) {
             errorHandler(errorHandler).warning("Literal has datatype "+datatype.getURI()+" but no language tag", line, col);
