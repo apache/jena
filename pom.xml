@@ -24,7 +24,7 @@
   <artifactId>jena</artifactId>
   <packaging>pom</packaging>
   <url>https://jena.apache.org/</url>
-  <version>5.7.0-SNAPSHOT</version>
+  <version>6.0.0-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache</groupId>
@@ -53,10 +53,10 @@
 
   <properties>
     <!-- Build -->
-    <java.version>17</java.version>
+    <java.version>21</java.version>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.build.outputTimestamp>2025-10-10T09:29:56Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2025-10-18T11:14:37Z</project.build.outputTimestamp>
 
     <!-- Logging -->
     <ver.slf4j>2.0.17</ver.slf4j>
@@ -199,7 +199,6 @@
       </properties>
 
       <modules>
-        <module>jena-iri</module>
         <module>jena-iri3986</module>
         <module>jena-langtag</module>
         <module>jena-base</module>
@@ -263,7 +262,6 @@
       </activation>
       <modules>
         <!-- Basic modules -->
-        <module>jena-iri</module>
         <module>jena-iri3986</module>
         <module>jena-langtag</module>
         <module>jena-base</module>
@@ -303,7 +301,6 @@
         <module>apache-jena</module>
 
         <!-- Other -->
-        <module>jena-permissions</module>
         <module>jena-extras</module>
         <module>jena-examples</module>
 

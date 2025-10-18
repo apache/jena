@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-extras</artifactId>
-    <version>5.7.0-SNAPSHOT</version>
+    <version>6.0.0-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -37,7 +37,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>5.7.0-SNAPSHOT</version>
+      <version>6.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
