@@ -63,17 +63,19 @@ public class Syntax extends Symbol {
     public static TranslationTable<Syntax> querySyntaxNames = new TranslationTable<>(true);
     static {
         querySyntaxNames.put("sparql", syntaxSPARQL);
+        querySyntaxNames.put("arq", syntaxARQ);
 
         querySyntaxNames.put("sparql10", syntaxSPARQL_10);
+        querySyntaxNames.put("sparql-10", syntaxSPARQL_11);
         querySyntaxNames.put("sparql_10", syntaxSPARQL_10);
 
         querySyntaxNames.put("sparql11", syntaxSPARQL_11);
+        querySyntaxNames.put("sparql-11", syntaxSPARQL_11);
         querySyntaxNames.put("sparql_11", syntaxSPARQL_11);
 
         querySyntaxNames.put("sparql12", syntaxSPARQL_12);
+        querySyntaxNames.put("sparql-12", syntaxSPARQL_12);
         querySyntaxNames.put("sparql_12", syntaxSPARQL_12);
-
-        querySyntaxNames.put("arq", syntaxARQ);
 
         querySyntaxNames.put("alg", syntaxAlgebra);
         querySyntaxNames.put("op", syntaxAlgebra);
@@ -82,9 +84,15 @@ public class Syntax extends Symbol {
     public static TranslationTable<Syntax> updateSyntaxNames = new TranslationTable<>(true);
     static {
         updateSyntaxNames.put("sparql", syntaxSPARQL);
-        updateSyntaxNames.put("sparql_11", syntaxSPARQL_11);
-        updateSyntaxNames.put("sparql_12", syntaxSPARQL_11);
         updateSyntaxNames.put("arq", syntaxARQ);
+
+        updateSyntaxNames.put("sparql11", syntaxSPARQL_11);
+        updateSyntaxNames.put("sparql-11", syntaxSPARQL_11);
+        updateSyntaxNames.put("sparql_11", syntaxSPARQL_11);
+
+        updateSyntaxNames.put("sparql12", syntaxSPARQL_12);
+        updateSyntaxNames.put("sparql-12", syntaxSPARQL_12);
+        updateSyntaxNames.put("sparql_12", syntaxSPARQL_12);
     }
 
     protected Syntax(String s) {
