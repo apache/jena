@@ -18,8 +18,11 @@
 
 package org.apache.jena.rdf.model.impl;
 
-import java.io.*;
-import java.net.URL;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -81,10 +84,8 @@ public class NTripleReader extends Object implements RDFReaderI {
     @Override
     public void read(Model model, String url)  {
         try {
-            read(
-                model,
-                new InputStreamReader(((new URL(url))).openStream()),
-                url);
+            InputStream in = new URI(url).toURL().openStream();
+            read(model, in, url);
         } catch (Exception e) {
             throw new JenaException(e);
         } finally {

@@ -18,15 +18,9 @@
 
 package org.apache.jena.riot.system.stream ;
 
-import java.io.IOException ;
-import java.io.InputStream ;
-import java.net.MalformedURLException ;
-import java.net.URL ;
-
-import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream ;
-import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.http.HttpOp;
 import org.apache.jena.riot.RiotException ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -47,17 +41,10 @@ public class LocatorFTP extends LocatorURL {
     public TypedInputStream performOpen(String uri) {
         if ( uri.startsWith("ftp://") ) {
             try {
-                URL url = new URL(uri) ;
-                InputStream in = url.openStream() ;
-                ContentType ct = RDFLanguages.guessContentType(uri) ;
-                return new TypedInputStream(in, ct) ;
-            } 
-            catch (MalformedURLException ex) {
-                throw new RiotException("Bad FTP URL: "+uri, ex) ;
+                return HttpOp.httpGet(uri);
             }
-            catch (IOException ex) {
-                // This includes variations on "not found"
-                IO.exception(ex) ;
+            catch (HttpException ex) {
+                throw new RiotException("Bad FTP URL: "+uri, ex) ;
             }
         }
         return null ;

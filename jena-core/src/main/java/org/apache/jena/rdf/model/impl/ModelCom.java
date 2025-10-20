@@ -19,7 +19,8 @@
 package org.apache.jena.rdf.model.impl;
 
 import java.io.*;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -203,10 +204,12 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
 
     @Override
     public Model read(String url, String base, String lang) {
-        try (InputStream is = new URL(url).openStream()) {
-            read(is, base, lang);
-        } catch (IOException e) {
+        try (InputStream in = new URI(url).toURL().openStream()) {
+            read(in, base, lang);
+        } catch (IOException  e) {
             throw new WrappedIOException(e);
+        } catch (URISyntaxException e) {
+            throw new JenaException(e);
         }
         return this;
     }

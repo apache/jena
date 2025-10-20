@@ -18,18 +18,17 @@
 
 package org.apache.jena.arq.querybuilder;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
-import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+
+import org.junit.After;
+import org.junit.Test;
 
 import org.apache.jena.datatypes.BaseDatatype;
 import org.apache.jena.datatypes.DatatypeFormatException;
@@ -48,8 +47,6 @@ import org.apache.jena.sparql.path.P_Link;
 import org.apache.jena.sparql.path.Path;
 import org.apache.jena.sparql.util.NodeIsomorphismMap;
 import org.apache.jena.vocabulary.RDF;
-import org.junit.After;
-import org.junit.Test;
 
 public class ConvertersTest {
 
@@ -67,7 +64,7 @@ public class ConvertersTest {
     }
 
     @Test
-    public void makeLiteralObjectTest() throws MalformedURLException {
+    public void makeLiteralObjectTest() throws Exception {
         Node n = Converters.makeLiteral(5);
         assertEquals("5", n.getLiteralLexicalForm());
         assertEquals(Integer.valueOf(5), n.getLiteralValue());
@@ -79,7 +76,7 @@ public class ConvertersTest {
         assertEquals("Hello", n.getLiteralValue());
         assertEquals(XSDDatatype.XSDstring, n.getLiteralDatatype());
 
-        URL url = new URL("http://example.com");
+        URL url = new URI("http://example.com").toURL();
         n = Converters.makeLiteral(url);
         assertEquals("http://example.com", n.getLiteralLexicalForm());
         assertEquals(url, n.getLiteralValue());

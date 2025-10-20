@@ -20,16 +20,11 @@ package arq;
 
 import static org.apache.jena.atlas.logging.LogCtl.setLogging;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 import java.io.FileInputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.*;
 
 import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.rdf.model.*;
@@ -282,9 +277,8 @@ public class rdfdiff extends java.lang.Object {
 
     protected static void read(Model model, String in, String lang, String base) throws java.io.FileNotFoundException {
         try {
-            URL url = new URL(in);
-            model.read(in, base, lang);
-        } catch (java.net.MalformedURLException e) {
+            new URI(in).toURL();
+        } catch (URISyntaxException | MalformedURLException e) {
             model.read(new FileInputStream(in), base, lang);
         }
     }
