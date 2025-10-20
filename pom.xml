@@ -121,7 +121,7 @@
     <ver.jts>1.20.0</ver.jts>
 
     <!-- Plugins -->
-    <ver.plugin.rat>0.16.1</ver.plugin.rat>
+    <ver.plugin.rat>0.17</ver.plugin.rat>
     <ver.plugin.assembly>3.7.1</ver.plugin.assembly>
     <ver.plugin.compiler>3.14.1</ver.plugin.compiler>
     <ver.plugin.surefire>3.5.4</ver.plugin.surefire>
