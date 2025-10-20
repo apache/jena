@@ -100,7 +100,7 @@ public class RefImpl<T>
      * Note: Actually this method should be replaced with an approach using Java 9 Cleaner
      * however I couldn't get the cleaner to run.
      */
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("removal")
     @Override
     protected void finalize() throws Throwable {
         try {

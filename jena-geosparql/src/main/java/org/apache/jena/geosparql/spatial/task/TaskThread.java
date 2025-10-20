@@ -214,9 +214,4 @@ public abstract class TaskThread
     public boolean isAborting() {
         return requestingCancel.get();
     }
-
-    @Override
-    public boolean isTerminated() {
-        return !isAlive();
-    }
 }

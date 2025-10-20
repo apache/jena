@@ -47,7 +47,7 @@ public abstract class JenaReaderBase implements RDFReaderI {
     @Override
     final public void read(Model model, java.lang.String url) {
         try {
-            URLConnection conn = new URL(url).openConnection();
+            URLConnection conn = new URI(url).toURL().openConnection();
             String encoding = conn.getContentEncoding();
             read(model, new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8), url);
         } catch (JenaException e) {

@@ -18,15 +18,16 @@
 
 package org.apache.jena.fuseki.main;
 
+import static org.apache.jena.http.HttpLib.newGetRequest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.Iterator;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +36,7 @@ import org.junit.jupiter.api.Test;
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.web.AcceptList;
 import org.apache.jena.atlas.web.MediaType;
+import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.fuseki.DEF;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.graph.Graph;
@@ -42,6 +44,8 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.http.HttpEnv;
+import org.apache.jena.http.HttpLib;
+import org.apache.jena.http.HttpOp;
 import org.apache.jena.query.*;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.Var;
@@ -108,9 +112,13 @@ public class TestQuery extends AbstractFusekiTest {
     @Test
     public void request_id_header_01() throws IOException {
         String qs = Convert.encWWWForm("ASK{}");
-        URL u = new URL(serviceQuery() + "?query=" + qs);
-        HttpURLConnection conn = (HttpURLConnection)u.openConnection();
-        assertTrue(conn.getHeaderField(Fuseki.FusekiRequestIdHeader) != null);
+        String url = serviceQuery() + "?query=" + qs;
+        HttpRequest request = newGetRequest(url, null);
+        HttpResponse<InputStream> response = HttpLib.execute(HttpEnv.getDftHttpClient(), request);
+        try (InputStream body = response.body()) {
+            assertTrue(response.headers().firstValue(Fuseki.FusekiRequestIdHeader) != null);
+            HttpLib.finishInputStream(body);
+        }
     }
 
     @Test
@@ -267,7 +275,6 @@ public class TestQuery extends AbstractFusekiTest {
                     .queryString(query)
                     .acceptHeader(contentType)
                     .build();
-
             try ( qExec ) {
                 Graph graph = qExec.describe();
                 String x = qExec.getHttpResponseContentType();
@@ -290,17 +297,18 @@ public class TestQuery extends AbstractFusekiTest {
     public void query_json_02() throws IOException {
         String qs = Convert.encWWWForm("JSON { \"s\": ?s , \"p\": ?p , \"o\" : ?o } "
                 + "WHERE { ?s ?p ?o }");
-        URL u = new URL(serviceQuery() + "?query=" + qs);
-        HttpURLConnection conn = (HttpURLConnection)u.openConnection();
+        String url = serviceQuery() + "?query=" + qs;
         String result = null;
-        StringBuilder sb = new StringBuilder();
-        try ( InputStream is = new BufferedInputStream(conn.getInputStream());
-              BufferedReader br = new BufferedReader(new InputStreamReader(is)) ) {
-            String inputLine = "";
-            while ((inputLine = br.readLine()) != null) {
-                sb.append(inputLine);
+        try ( TypedInputStream in = HttpOp.httpGet(url) ) {
+            StringBuilder sb = new StringBuilder();
+            try ( InputStream is = new BufferedInputStream(in);
+                  BufferedReader br = new BufferedReader(new InputStreamReader(is)) ) {
+                String inputLine = "";
+                while ((inputLine = br.readLine()) != null) {
+                    sb.append(inputLine);
+                }
+                result = sb.toString();
             }
-            result = sb.toString();
         }
         assertNotNull(result);
         assertTrue(result.contains("http://example/x"));

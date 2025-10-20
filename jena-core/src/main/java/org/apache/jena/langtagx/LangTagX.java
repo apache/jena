@@ -94,8 +94,6 @@ public class LangTagX {
      * <p>
      * Passing this test does not guarantee the string is valid language tag. Use
      * {@link LangTagX#checkLanguageTag(String)} for validity checking.
-     *
-     * @returns true or false
      */
     public static boolean checkLanguageTagBasicSyntax(String langTagStr) {
         return org.apache.jena.langtag.LangTags.basicCheck(langTagStr);

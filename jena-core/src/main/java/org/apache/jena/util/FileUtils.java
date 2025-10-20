@@ -19,7 +19,9 @@
 package org.apache.jena.util;
 
 import java.io.* ;
-import java.net.URL ;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset ;
 import java.nio.charset.StandardCharsets ;
 import java.nio.file.Files;
@@ -329,8 +331,12 @@ public class FileUtils
     // TODO Replace with FileManager
     public static BufferedReader readerFromURL( String urlStr )
     {
-        try { return asBufferedUTF8( new URL(urlStr).openStream() ); }
-        catch (java.net.MalformedURLException e)
+        try {
+            InputStream conn = new URI(urlStr).toURL().openStream();
+
+            return asBufferedUTF8( conn );
+        }
+        catch (MalformedURLException | URISyntaxException e)
         { // Try as a plain filename.
             try { return asBufferedUTF8( new FileInputStream( urlStr ) ); }
             catch (FileNotFoundException f) { throw new WrappedIOException( f ); }

@@ -21,19 +21,23 @@
 package jena;
 
 
+import static org.apache.jena.atlas.logging.LogCtl.setLogging;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
-import org.apache.jena.rdf.model.Literal;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.NodeIterator;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.RDFWriter;
@@ -45,29 +49,6 @@ import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.XSD;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
-
-import static org.apache.jena.atlas.logging.LogCtl.setLogging;
 
 /**
  * <p>
@@ -2131,16 +2112,16 @@ public class schemagen {
          */
         public static String urlCheck( String uriOrFile ) {
             boolean legal = true;
-            String url = uriOrFile;
-
             // is it a URI already?  to check, we make a URL and see what happens!
             try {
-                new URL( url );
+                new URI(uriOrFile).toURL();
+                return uriOrFile;
             }
-            catch (MalformedURLException ignore) {
+            catch (URISyntaxException | MalformedURLException | IllegalArgumentException ignore) {
                 legal = false;
             }
 
+            String url = uriOrFile;
             // if not a legal url, assume it's a file
             if (!legal) {
                 legal = true;
@@ -2148,9 +2129,9 @@ public class schemagen {
                 url = "file:" + (uriOrFile.startsWith( slash ) ? (slash + slash) : "") + uriOrFile;
 
                 try {
-                    new URL( url );
+                    new URI(url).toURL();
                 }
-                catch (MalformedURLException ignore) {
+                catch (URISyntaxException | MalformedURLException ignore) {
                     legal = false;
                 }
             }
@@ -2158,7 +2139,6 @@ public class schemagen {
             if (!legal) {
                 throw new SchemagenException( "Could not parse " + uriOrFile + " as a legal URL or a file reference. Aborting.", null );
             }
-
             return url;
         }
     } /* End class SchemagenUtils */

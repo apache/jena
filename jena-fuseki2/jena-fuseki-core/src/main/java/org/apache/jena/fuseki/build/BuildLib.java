@@ -21,12 +21,9 @@ package org.apache.jena.fuseki.build;
 import static org.apache.jena.fuseki.build.FusekiPrefixes.PREFIXES;
 
 import java.lang.reflect.Constructor;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.fuseki.Fuseki;
@@ -175,28 +172,18 @@ import org.apache.jena.vocabulary.RDFS;
             ? implementation.getLiteralLexicalForm()
             : implementation.getURI();
         String javaScheme = "java:";
-        String fileScheme = "file:";
         String scheme = null;
         if ( classURI.startsWith(javaScheme) ) {
             scheme = javaScheme;
-        } else if ( classURI.startsWith(fileScheme) ) {
-            scheme = fileScheme;
         } else {
-            Fuseki.configLog.error("Class to load is not 'java:' or 'file:': " + classURI);
-            throw new FusekiConfigException("Not a 'java:' or 'file:' class reference: "+classURI);
+            Fuseki.configLog.error("Class to load is not 'java:' " + classURI);
+            throw new FusekiConfigException("Not a 'java:' class reference: "+classURI);
         }
         String className = classURI.substring(scheme.length());
 
         ActionService action = null;
         try {
-            Class<?> cls;
-            if ( Objects.equals(scheme, fileScheme) ) {
-                try ( URLClassLoader urlClassLoader = new URLClassLoader(new URL[] {new URL(classURI)}) ){
-                    cls = Class.forName(className, true, urlClassLoader);
-                }
-            } else {
-                cls = Class.forName(className);
-            }
+            Class<?> cls = Class.forName(className);
             Constructor<?> x = cls.getConstructor();
             action = (ActionService)x.newInstance();
         } catch (ClassNotFoundException ex) {
@@ -207,4 +194,44 @@ import org.apache.jena.vocabulary.RDFS;
         Operation op = Operation.alloc(NodeFactory.createBlankNode(), classURI, classURI);
         return Pair.create(op, action);
     }
+
+    // With file: file loading ...
+//    /** Load a class (an {@link ActionService}) and create an {@link Operation} for it. */
+//    /*package*/ static Pair<Operation, ActionService> loadOperationActionService(Graph graph, Node implementation) {
+//        String classURI = implementation.isLiteral()
+//            ? implementation.getLiteralLexicalForm()
+//            : implementation.getURI();
+//        String javaScheme = "java:";
+//        String fileScheme = "file:";
+//        String scheme = null;
+//        if ( classURI.startsWith(javaScheme) ) {
+//            scheme = javaScheme;
+//        } else if ( classURI.startsWith(fileScheme) ) {
+//            scheme = fileScheme;
+//        } else {
+//            Fuseki.configLog.error("Class to load is not 'java:' or 'file:': " + classURI);
+//            throw new FusekiConfigException("Not a 'java:' or 'file:' class reference: "+classURI);
+//        }
+//        String className = classURI.substring(scheme.length());
+//
+//        ActionService action = null;
+//        try {
+//            Class<?> cls;
+//            if ( Objects.equals(scheme, fileScheme) ) {
+//                try ( URLClassLoader urlClassLoader = new URLClassLoader(new URL[] {new URL(classURI)}) ){
+//                    cls = Class.forName(className, true, urlClassLoader);
+//                }
+//            } else {
+//                cls = Class.forName(className);
+//            }
+//            Constructor<?> x = cls.getConstructor();
+//            action = (ActionService)x.newInstance();
+//        } catch (ClassNotFoundException ex) {
+//            throw new FusekiConfigException("Class not found: " + className);
+//        } catch (Exception ex) {
+//            throw new FusekiConfigException("Can't create object from " + className);
+//        }
+//        Operation op = Operation.alloc(NodeFactory.createBlankNode(), classURI, classURI);
+//        return Pair.create(op, action);
+//    }
 }

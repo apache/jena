@@ -22,13 +22,16 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Assert;
+
 import junit.framework.TestCase;
-import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.apache.jena.rdf.model.impl.ResourceImpl;
@@ -38,7 +41,6 @@ import org.apache.jena.reasoner.Reasoner;
 import org.apache.jena.reasoner.ReasonerFactory;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.vocabulary.RDF;
-import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -152,7 +154,7 @@ public class WGReasonerTester {
      * @param file the file name, relative to baseDir
      * @return the loaded Model
      */
-    public Model loadFile(String file) throws IOException {
+    public Model loadFile(String file) {
         String langType = "RDF/XML";
         if (file.endsWith(".nt")) {
             langType = "N-TRIPLE";
@@ -169,17 +171,19 @@ public class WGReasonerTester {
          * Now use InputStream instead of Reader (general hygine).
          * Also treat http:.... as URL not local file.
          */
-        InputStream in;
-        if ( baseDir.startsWith("http:")) {
-        	in = new URL(baseDir+fname).openStream();
-        } else {
-        	in = new FileInputStream(baseDir + fname);
+        try {
+            InputStream in;
+            if ( baseDir.startsWith("http:") ) {
+                in = new URI(baseDir + fname).toURL().openStream();
+            } else {
+                in = new FileInputStream(baseDir + fname);
+            }
+            in = new BufferedInputStream(in);
+            result.read(in, BASE_URI + fname, langType);
+            return result;
+        } catch (IOException | URISyntaxException e) {
+            throw new JenaException(e);
         }
-        in = new BufferedInputStream(in);
-
-
-        result.read(in, BASE_URI + fname, langType);
-        return result;
     }
 
     /**

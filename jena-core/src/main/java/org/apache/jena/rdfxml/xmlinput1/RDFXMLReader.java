@@ -19,9 +19,7 @@
 package org.apache.jena.rdfxml.xmlinput1;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 import java.util.Locale ;
 
 import org.apache.jena.datatypes.RDFDatatype ;
@@ -106,7 +104,7 @@ public class RDFXMLReader implements RDFReaderI, ARPErrorNumbers {
             String connectionURL = url;
             URLConnection conn = null;
             while ( conn == null ) {
-                URLConnection conn2 = new URL(connectionURL).openConnection();
+                URLConnection conn2 = new URI(connectionURL).toURL().openConnection();
                 if ( ! ( conn2 instanceof HttpURLConnection ) ) {
                     conn = conn2;
                     break;
@@ -135,7 +133,7 @@ public class RDFXMLReader implements RDFReaderI, ARPErrorNumbers {
                 read(m, new InputStreamReader(conn.getInputStream(), encoding), url);
         } catch (FileNotFoundException e) {
             throw new DoesNotExistException(url);
-        } catch (IOException e) {
+        } catch (URISyntaxException | IOException e) {
             throw new JenaException(e);
         }
     }

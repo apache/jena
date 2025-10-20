@@ -41,7 +41,7 @@ public class AutoCloseableWithLeakDetectionBase
         return instantiationStackTrace;
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("removal")
     @Override
     protected void finalize() throws Throwable {
         try {
