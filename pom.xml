@@ -887,7 +887,7 @@
         </executions>
         <configuration>
           <excludeSubProjects>false</excludeSubProjects>
-          <excludesFile>build-files/rat-exclusions.txt</excludesFile>
+          <inputExcludeFile>build-files/rat-exclusions.txt</inputExcludeFile>
         </configuration>
       </plugin>
 
