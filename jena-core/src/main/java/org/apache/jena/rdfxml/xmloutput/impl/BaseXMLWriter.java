@@ -635,12 +635,12 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			return result;
 		} else if (propName.equalsIgnoreCase("prettyTypes")) {
 			return setTypes((Resource[]) propValue);
-		} else if (propName.equalsIgnoreCase("relativeURIs")) {
-			int old = relativeFlags;
-			relativeFlags = str2flags((String) propValue);
-			return flags2str(old);
 		} else if (propName.equalsIgnoreCase("blockRules")) {
 			return setBlockRules(propValue);
+        } else if (propName.equalsIgnoreCase("relativeURIs")) {
+            logger.warn("Ignored property: relativeURIs");
+            // Jena6 - now done if base is set otherwise, not done.
+            return null;
 		} else {
 			logger.warn("Unsupported property: " + propName);
 			return null;
@@ -751,83 +751,16 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 		return rslt;
 	}
 
-	// Copy from jena-iri IRIRelativize for isolation from IRIx provider usge.
-	private class IRIRelativize {
-	    /** Allow same document references (e.g. "" or "#frag").*/
-	    static final public int SAMEDOCUMENT = 1;
-
-	    /** Allow network relative references (e.g. "//example.org/a/b/c"). */
-	    static final public int NETWORK = 2;
-
-	    /** Allow absolute relative references (e.g. "/a/b/c"). */
-	    static final public int ABSOLUTE = 4;
-
-	    /** Allow child relative references (e.g. "b/c"). */
-	    static final public int CHILD = 8;
-
-	    /** Allow parent relative references (e.g. "../b/c"). */
-
-	    static final public int PARENT = 16;
-
-	    /** Allow grandparent relative references (e.g. "../../b/c"). */
-	    static final public int GRANDPARENT = 32;
-	}
-
-	/*
-	private boolean sameDocument = true;
-	private boolean network = false;
-	private boolean absolute = true;
-	private boolean relative = true;
-	private boolean parent = true;
-	private boolean grandparent = false;
-	*/
-	//private int relativeFlags = 0;
-	private int dftRelativeFlags = IRIRelativize.SAMEDOCUMENT | IRIRelativize.ABSOLUTE | IRIRelativize.CHILD | IRIRelativize.PARENT;
-	private int relativeFlags = dftRelativeFlags;
-
-    /**
-        Answer the form of the URI after relativiation according to the relativeFlags set
-        by properties. If the flags are 0 or the base URI is null, answer the original URI.
-        Throw an exception if the URI is "bad" and we demandGoodURIs.
-    */
-    protected String relativize( String uri ) {
-        return relativeFlags != 0 && baseURI != null
-            ? relativize( baseURI, uri )
-            : checkURI( uri );
-    }
-
-    /**
-        Answer the relative form of the URI against the base, according to the relativeFlags.
-    */
-    private String relativize( IRIx base, String uri )  {
-        if ( relativeFlags == 0 )
-            return uri;
+	/**
+    Answer the form of the URI after relativization according to the relativeFlags set
+    by properties. If the flags are 0 or the base URI is null, answer the original URI.
+    Throw an exception if the URI is "bad" and we demandGoodURIs.
+	 */
+	protected String relativize( String uri ) {
+	    if ( baseURI == null )
+	        return checkURI( uri );
         try {
-//            if ( relativeFlags != dftRelativeFlags ) {
-//                // Use jena-iri for relativization. Backwards compatibility.
-//                org.apache.jena.iri.IRI baseImpl = org.apache.jena.iri.IRIFactory.iriImplementation().create(base.str());
-//                return baseImpl.relativize(uri, relativeFlags).toString();
-//            }
-//            if ( relativeFlags == 1 ) {
-//                IRI3986 iri1 = IRI3986.create(base.str());
-//                IRI3986 iri2 = IRI3986.create(uri);
-//                IRI3986 x = AlgIRI2.relativeSameDocument(iri1, iri2);
-//                return x!=null ? x.str() : uri;
-//            }
-//            if ( relativeFlags == 4 ) {
-//                IRI3986 iri1 = IRI3986.create(base.str());
-//                IRI3986 iri2 = IRI3986.create(uri);
-//                IRI3986 x = AlgIRI2.relativeResource(iri1, iri2);
-//                return x!=null ? x.str() : uri;
-//            }
-//            if ( relativeFlags == 8 ) {
-//                IRI3986 iri1 = IRI3986.create(base.str());
-//                IRI3986 iri2 = IRI3986.create(uri);
-//                IRI3986 x = AlgIRI2.relativePath(iri1, iri2);
-//                return x!=null ? x.str() : uri;
-//            }
-
-            IRIx x = base.relativize( IRIx.create(uri) );
+            IRIx x = baseURI.relativize( IRIx.create(uri) );
             return x != null ? x.str() : uri ;
         } catch (IRIException ex) {
             return uri;
@@ -864,50 +797,5 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
             return true;
         return false;
     }
-
-    static private String flags2str(int f) {
-	StringBuilder oldValue = new StringBuilder(64);
-	if ( (f&IRIRelativize.SAMEDOCUMENT)!=0 )
-	   oldValue.append( "same-document, " );
-	if ( (f&IRIRelativize.NETWORK)!=0 )
-	   oldValue.append( "network, ");
-	if ( (f&IRIRelativize.ABSOLUTE)!=0 )
-	   oldValue.append("absolute, ");
-	if ( (f&IRIRelativize.CHILD)!=0 )
-	   oldValue.append("relative, ");
-	if ((f&IRIRelativize.PARENT)!=0)
-	   oldValue.append("parent, ");
-	if ((f&IRIRelativize.GRANDPARENT)!=0)
-	   oldValue.append("grandparent, ");
-	if (oldValue.length() > 0)
-	   oldValue.setLength(oldValue.length()-2);
-	   return oldValue.toString();
-	}
-
-	public static int str2flags(String pv){
-	StringTokenizer tkn = new StringTokenizer(pv,", ");
-	int rslt = 0;
-	while ( tkn.hasMoreElements() ) {
-	    String flag = tkn.nextToken();
-	    if ( flag.equals("same-document") )
-	       rslt |= IRIRelativize.SAMEDOCUMENT;
-	    else if ( flag.equals("network") )
-	       rslt |= IRIRelativize.NETWORK;
-	    else if ( flag.equals("absolute") )
-	       rslt |= IRIRelativize.ABSOLUTE;
-	    else if ( flag.equals("relative") )
-	       rslt |= IRIRelativize.CHILD;
-	    else if ( flag.equals("parent") )
-	       rslt |= IRIRelativize.PARENT;
-	    else if ( flag.equals("grandparent") )
-	       rslt |= IRIRelativize.GRANDPARENT;
-	    else
-
-	    logger.warn(
-	        "Incorrect property value for relativeURIs: " + flag
-	        );
-	}
-	return rslt;
-	}
 
 }
