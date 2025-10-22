@@ -23,10 +23,10 @@ import java.util.List;
 
 import org.locationtech.jts.geom.Envelope;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.Serializer;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.kryo5.Kryo;
+import com.esotericsoftware.kryo.kryo5.Serializer;
+import com.esotericsoftware.kryo.kryo5.io.Input;
+import com.esotericsoftware.kryo.kryo5.io.Output;
 
 /*
  * This file is an adapted copy of org.locationtech.jts.index.strtree.IndexSerde from
@@ -53,7 +53,7 @@ public class STRtreeSerializer
     extends Serializer<STRtree>
 {
     @Override
-    public STRtree read(Kryo kryo, Input input, Class<STRtree> type) {
+    public STRtree read(Kryo kryo, Input input, Class<? extends STRtree> type) {
         int nodeCapacity = input.readInt();
         boolean notEmpty = (input.readByte() & 0x01) == 1;
         if (notEmpty) {
