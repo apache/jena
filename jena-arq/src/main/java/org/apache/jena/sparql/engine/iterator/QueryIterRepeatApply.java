@@ -28,6 +28,7 @@ import org.apache.jena.sparql.engine.binding.Binding;
 
 /**
  * Repeatedly execute the subclass operation for each Binding in the input iterator.
+ * {@code flatmap} for {@link QueryIterator} with cancellation.
  */
 public abstract class QueryIterRepeatApply extends QueryIter1 {
     private int count = 0;
@@ -82,7 +83,6 @@ public abstract class QueryIterRepeatApply extends QueryIter1 {
         if ( !hasNextBinding() )
             throw new NoSuchElementException(Lib.className(this) + ".next()/finished");
         return currentStage.nextBinding();
-
     }
 
     private QueryIterator makeNextStage() {

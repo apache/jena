@@ -24,10 +24,17 @@ import org.apache.jena.langtag.LangTags;
 import org.apache.jena.shared.JenaException;
 
 /**
- * This class defined the Jena side policies for language tags and maps operations to
+ * This class defines the Jena-side policies for language tags
+ * and maps operations to one implementation.
+ * <p>
+ * Language tags do not include text direction.
+ *
  * {@link org.apache.jena.langtag.LangTags}.
  */
 public class LangTagX {
+
+    // If needed, convert to singleton.
+    // public LangOps get() { ... }
 
     /**
      * Create a {@link LangTag} object, using the Jena system default

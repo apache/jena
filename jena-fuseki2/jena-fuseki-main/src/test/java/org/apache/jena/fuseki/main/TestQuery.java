@@ -158,7 +158,7 @@ public class TestQuery extends AbstractFusekiTest {
     @Test
     public void query_construct_quad_01()
     {
-        String queryString = " CONSTRUCT { GRAPH <http://eg/g> {?s ?p ?oq} } WHERE {?s ?p ?oq}";
+        String queryString = "CONSTRUCT { GRAPH <http://eg/g> {?s ?p ?oq} } WHERE {?s ?p ?oq}";
         Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
 
         try ( QueryExecutionHTTP qExec = QueryExecutionHTTP.service(serviceQuery(), query) ) {
@@ -172,7 +172,7 @@ public class TestQuery extends AbstractFusekiTest {
     @Test
     public void query_construct_quad_02()
     {
-        String queryString = " CONSTRUCT { GRAPH <http://eg/g> {?s ?p ?oq} } WHERE {?s ?p ?oq}";
+        String queryString = "CONSTRUCT { GRAPH <http://eg/g> {?s ?p ?oq} } WHERE {?s ?p ?oq}";
         Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
 
         try ( QueryExecution qExec = QueryExecution.service(serviceQuery(), query) ) {
@@ -185,7 +185,7 @@ public class TestQuery extends AbstractFusekiTest {
     @Test
     public void query_construct_01()
     {
-        String query = " CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}";
+        String query = "CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}";
         try ( QueryExecution qExec = QueryExecution.service(serviceQuery(), query) ) {
             Iterator<Triple> result = qExec.execConstructTriples();
             assertTrue(result.hasNext());
@@ -195,7 +195,7 @@ public class TestQuery extends AbstractFusekiTest {
     @Test
     public void query_construct_02()
     {
-        String query = " CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}";
+        String query = "CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}";
         try ( QueryExec qExec = QueryExec.service(serviceQuery()).query(query).build() ) {
             Graph result = qExec.construct();
             assertEquals(1, result.size());
@@ -224,7 +224,7 @@ public class TestQuery extends AbstractFusekiTest {
 
     @Test
     public void query_construct_conneg() throws IOException {
-        String query = " CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}";
+        String query = "CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}";
         for (MediaType type : rdfOfferTest.entries()) {
 
             String contentType = type.toHeaderString();
@@ -244,7 +244,7 @@ public class TestQuery extends AbstractFusekiTest {
 
     @Test
     public void query_construct_quad_conneg() throws IOException {
-        String queryString = " CONSTRUCT { GRAPH ?g {?s ?p ?o} } WHERE { GRAPH ?g {?s ?p ?o}}";
+        String queryString = "CONSTRUCT { GRAPH ?g {?s ?p ?o} } WHERE { GRAPH ?g {?s ?p ?o}}";
         Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
         for (MediaType type : quadsOfferTest.entries()) {
             String contentType = type.toHeaderString();
@@ -285,8 +285,11 @@ public class TestQuery extends AbstractFusekiTest {
     }
 
     public void query_json_01() throws IOException {
-        Query query = QueryFactory.create("JSON { \"s\": ?s , \"p\": ?p , \"o\" : ?o } "
-                + "WHERE { ?s ?p ?o }", Syntax.syntaxARQ);
+        Query query = QueryFactory.create("""
+                JSON { "s": ?s , "p": ?p , "o" : ?o }
+                WHERE { ?s ?p ?o }
+                """,
+                Syntax.syntaxARQ);
         try ( QueryExecution qExec = QueryExecution.service(serviceQuery(), query) ) {
             JsonArray result = qExec.execJson();
             assertEquals(1, result.size());
@@ -295,8 +298,9 @@ public class TestQuery extends AbstractFusekiTest {
 
     @Test
     public void query_json_02() throws IOException {
-        String qs = Convert.encWWWForm("JSON { \"s\": ?s , \"p\": ?p , \"o\" : ?o } "
-                + "WHERE { ?s ?p ?o }");
+        String qs = Convert.encWWWForm("""
+                JSON { "s": ?s , "p": ?p , "o" : ?o }
+                WHERE { ?s ?p ?o }""");
         String url = serviceQuery() + "?query=" + qs;
         String result = null;
         try ( TypedInputStream in = HttpOp.httpGet(url) ) {
