@@ -13,7 +13,7 @@ PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
     fuseki:endpoint [ fuseki:operation fuseki:update ; ] ;
 
     fuseki:endpoint [ fuseki:operation fuseki:prefixes-r ; fuseki:name "prefixes" ] ;
-    fuseki:endpoint [ fuseki:operation fuseki:prefixes-ws ; fuseki:name "updatePrefixes" ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:prefixes-rw ; fuseki:name "updatePrefixes" ] ;
     fuseki:dataset :dataset ;
     .
 
