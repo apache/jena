@@ -18,105 +18,99 @@
 
 package org.apache.jena.sparql.pfunction;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.query.QueryBuildException ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.iterator.QueryIterRepeatApply ;
-import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.sparql.util.FmtUtils ;
-import org.apache.jena.sparql.util.IterLib ;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.graph.Node;
+import org.apache.jena.query.QueryBuildException;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.iterator.QueryIterRepeatApply;
+import org.apache.jena.sparql.serializer.SerializationContext;
+import org.apache.jena.sparql.util.FmtUtils;
+import org.apache.jena.sparql.util.IterLib;
 
-/** Basic property function handler that calls the implementation
- * subclass one binding at a time */
+/**
+ * Basic property function handler that calls the implementation subclass one binding
+ * at a time
+ */
 
-public abstract class PropertyFunctionBase implements PropertyFunction
-{
-    PropFuncArgType subjArgType ;
-    PropFuncArgType objFuncArgType ;
+public abstract class PropertyFunctionBase implements PropertyFunction {
+    PropFuncArgType subjArgType;
+    PropFuncArgType objFuncArgType;
 
-    protected PropertyFunctionBase()
-    {
-        this(PropFuncArgType.PF_ARG_EITHER, PropFuncArgType.PF_ARG_EITHER) ;
+    protected PropertyFunctionBase() {
+        this(PropFuncArgType.PF_ARG_EITHER, PropFuncArgType.PF_ARG_EITHER);
     }
 
-    protected PropertyFunctionBase(PropFuncArgType subjArgType,  PropFuncArgType objFuncArgType)
-    {
-        this.subjArgType = subjArgType ;
-        this.objFuncArgType = objFuncArgType ;
+    protected PropertyFunctionBase(PropFuncArgType subjArgType, PropFuncArgType objFuncArgType) {
+        this.subjArgType = subjArgType;
+        this.objFuncArgType = objFuncArgType;
     }
 
     @Override
-    public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
-    {
+    public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt) {
         if ( subjArgType.equals(PropFuncArgType.PF_ARG_SINGLE) )
             if ( argSubject.isList() )
-                throw new QueryBuildException("List arguments (subject) to "+predicate.getURI()) ;
+                throw new QueryBuildException("List arguments (subject) to " + predicate.getURI());
 
-        if ( subjArgType.equals(PropFuncArgType.PF_ARG_LIST) && ! argSubject.isList() )
-                throw new QueryBuildException("Single argument, list expected (subject) to "+predicate.getURI()) ;
+        if ( subjArgType.equals(PropFuncArgType.PF_ARG_LIST) && !argSubject.isList() )
+            throw new QueryBuildException("Single argument, list expected (subject) to " + predicate.getURI());
 
-        if ( objFuncArgType.equals(PropFuncArgType.PF_ARG_SINGLE) && argObject.isList() )
-        {
-            if ( ! argObject.isNode() )
+        if ( objFuncArgType.equals(PropFuncArgType.PF_ARG_SINGLE) && argObject.isList() ) {
+            if ( !argObject.isNode() )
                 // But allow rdf:nil.
-                throw new QueryBuildException("List arguments (object) to "+predicate.getURI()) ;
+                throw new QueryBuildException("List arguments (object) to " + predicate.getURI());
         }
 
         if ( objFuncArgType.equals(PropFuncArgType.PF_ARG_LIST) )
-            if ( ! argObject.isList() )
-                throw new QueryBuildException("Single argument, list expected (object) to "+predicate.getURI()) ;
+            if ( !argObject.isList() )
+                throw new QueryBuildException("Single argument, list expected (object) to " + predicate.getURI());
     }
 
     @Override
-    public QueryIterator exec(QueryIterator input, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
-    {
+    public QueryIterator exec(QueryIterator input, PropFuncArg argSubject, Node predicate, PropFuncArg argObject,
+                              ExecutionContext execCxt) {
         // This is the property function equivalent of Substitute.
         // To allow property functions to see the whole input stream,
         // the exec() operation allows the PF implementation to get at the
-        // input iterator.  Normally, we just want that applied one binding at a time.
+        // input iterator. Normally, we just want that applied one binding at a time.
 
-        return new RepeatApplyIteratorPF(input, argSubject, predicate, argObject, execCxt) ;
+        return new RepeatApplyIteratorPF(input, argSubject, predicate, argObject, execCxt);
     }
 
-    public abstract QueryIterator exec(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt) ;
+    public abstract QueryIterator exec(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject,
+                                       ExecutionContext execCxt);
 
+    class RepeatApplyIteratorPF extends QueryIterRepeatApply {
+        private final PropFuncArg argSubject;
+        private final Node predicate;
+        private final PropFuncArg argObject;
 
-    class RepeatApplyIteratorPF extends QueryIterRepeatApply
-    {
-        private final PropFuncArg argSubject ;
-        private final Node predicate ;
-        private final PropFuncArg argObject ;
-
-        public RepeatApplyIteratorPF(QueryIterator input, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
-        {
-            super(input, execCxt) ;
-            this.argSubject = argSubject ;
-            this.predicate = predicate ;
-            this.argObject = argObject ;
+        public RepeatApplyIteratorPF(QueryIterator input, PropFuncArg argSubject, Node predicate, PropFuncArg argObject,
+                                     ExecutionContext execCxt) {
+            super(input, execCxt);
+            this.argSubject = argSubject;
+            this.predicate = predicate;
+            this.argObject = argObject;
         }
 
         @Override
-        protected QueryIterator nextStage(Binding binding)
-        {
-            QueryIterator iter = exec(binding, argSubject, predicate, argObject, getExecContext()) ;
+        protected QueryIterator nextStage(Binding binding) {
+            QueryIterator iter = exec(binding, argSubject, predicate, argObject, getExecContext());
             if ( iter == null )
-                iter = IterLib.noResults(getExecContext()) ;
-            return iter ;
+                iter = IterLib.noResults(getExecContext());
+            return iter;
         }
 
         @Override
-        protected void details(IndentedWriter out, SerializationContext sCxt)
-        {
-            out.print("PropertyFunction ["+FmtUtils.stringForNode(predicate, sCxt)+"]") ;
-            out.print("[") ;
-            argSubject.output(out, sCxt) ;
-            out.print("][") ;
-            argObject.output(out, sCxt) ;
-            out.print("]") ;
-            out.println() ;
+        protected void details(IndentedWriter out, SerializationContext sCxt) {
+            out.print("PropertyFunction [" + FmtUtils.stringForNode(predicate, sCxt) + "]");
+            out.print("[");
+            argSubject.output(out, sCxt);
+            out.print("][");
+            argObject.output(out, sCxt);
+            out.print("]");
+            out.println();
         }
     }
 }
