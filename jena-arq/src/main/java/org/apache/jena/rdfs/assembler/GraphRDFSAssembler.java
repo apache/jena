@@ -48,7 +48,7 @@ public class GraphRDFSAssembler extends AssemblerBase implements Assembler {
     /**
      * <pre>
      * &lt;#rdfsGraph&gt; rdf:type ja:GraphRDFS ;
-     *      ja:rdfs "vocab.ttl";
+     *      ja:rdfsSchema "vocab.ttl";
      *      ja:graph &lt;#baseGraph&gt; ;
      *      .
      *

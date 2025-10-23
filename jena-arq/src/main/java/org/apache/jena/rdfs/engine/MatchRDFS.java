@@ -74,6 +74,11 @@ public abstract class MatchRDFS<X, T> extends CxtInf<X, T> implements Match<X,T>
     }
 
     @Override
+    public MapperX<X, T> getMapper() {
+        return mapper;
+    }
+
+    @Override
     public final Stream<T> match(X s, X p, X o) { return matchWithInf(s, p ,o); }
 
     /*
@@ -84,7 +89,6 @@ public abstract class MatchRDFS<X, T> extends CxtInf<X, T> implements Match<X,T>
     // Access data.
     protected abstract boolean sourceContains(X s, X p, X o);
     protected abstract Stream<T> sourceFind(X s, X p, X o);
-    protected abstract T dstCreate(X s, X p, X o);
 
     protected final X subject(T tuple)        { return mapper.subject(tuple); }
     protected final X predicate(T tuple)      { return mapper.predicate(tuple); }
@@ -458,6 +462,11 @@ public abstract class MatchRDFS<X, T> extends CxtInf<X, T> implements Match<X,T>
 
     private static <S> boolean isEmpty(Map<S, ?> map) {
         return map == null || map.isEmpty();
+    }
+
+    /** Inherit tuple construction from the mapper. */
+    protected T dstCreate(X s, X p, X o) {
+        return getMapper().tuple(s, p, o);
     }
 
 //  private void print(Map<X, Set<X>> map) {
