@@ -113,7 +113,6 @@ public class QueryIterUnfold extends QueryIterRepeatApply
         protected void closeIterator() { } // nothing to do really
     }
 
-
     protected class QueryIterUnfoldWorkerForLists extends QueryIterUnfoldWorkerBase<CDTValue> {
 
         protected int nextIndex = 0;
