@@ -27,7 +27,7 @@
 //  * Remove deprecation of CrossOriginFilter
 //  * Extract of from org.eclipse.jetty.util.StringUtil with the functions to make this file portable
 //
-// https://github.com/jetty/jetty.project/blob/jetty-12.0.x/jetty-ee10/jetty-ee10-servlets/src/main/java/org/eclipse/jetty/ee10/servlets/CrossOriginFilter.java
+// https://github.com/jetty/jetty.project/blob/jetty-12.0.x/jetty-ee11/jetty-ee11-servlets/src/main/java/org/eclipse/jetty/ee11/servlets/CrossOriginFilter.java
 // https://github.com/jetty/jetty.project/blob/jetty-12.0.x/jetty-core/jetty-util/src/main/java/org/eclipse/jetty/util/StringUtil.java
 //
 // We elect to use and distribute under the Apache License v2.0.
@@ -140,7 +140,7 @@ import org.slf4j.LoggerFactory;
  *     ...
  *     &lt;filter&gt;
  *         &lt;filter-name&gt;cross-origin&lt;/filter-name&gt;
- *         &lt;filter-class&gt;org.eclipse.jetty.ee10.servlets.CrossOriginFilter&lt;/filter-class&gt;
+ *         &lt;filter-class&gt;org.eclipse.jetty.ee11.servlets.CrossOriginFilter&lt;/filter-class&gt;
  *     &lt;/filter&gt;
  *     &lt;filter-mapping&gt;
  *         &lt;filter-name&gt;cross-origin&lt;/filter-name&gt;
