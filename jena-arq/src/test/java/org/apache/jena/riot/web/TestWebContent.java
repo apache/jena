@@ -26,32 +26,39 @@ import org.apache.jena.riot.WebContent;
 
 public class TestWebContent {
 
+    // CanonicaliseMediaTypes tests check that "Alt" forms map to the right type.
+    // Mostly, the alternative names have been removed as general standards
+    // compliance on the web has improved.
+    //
+    // Elsewhere, "text/plain" is specially handled in content negotiation,
+    // not by canonicalised media types.
+    // because files published on the web by simply placing in a directory of the
+    // HTTP server on the web can return "text/plain".
+
     @Test
-    public void testCanonicaliseMimeTypes1() {
+    public void testCanonicaliseMediaTypes1() {
         testCanonicalise(WebContent.contentTypeTurtle, WebContent.contentTypeTurtle);
-        testCanonicalise(WebContent.contentTypeTurtleAlt, WebContent.contentTypeTurtle);
     }
 
     @Test
-    public void testCanonicaliseMimeTypes2() {
+    public void testCanonicaliseMediaTypes2() {
         testCanonicalise(WebContent.contentTypeN3, WebContent.contentTypeN3);
         testCanonicalise(WebContent.contentTypeN3Alt1, WebContent.contentTypeN3);
         testCanonicalise(WebContent.contentTypeN3Alt2, WebContent.contentTypeN3);
     }
 
     @Test
-    public void testCanonicaliseMimeTypes3() {
+    public void testCanonicaliseMediaTypes3() {
         testCanonicalise(WebContent.contentTypeNTriples, WebContent.contentTypeNTriples);
-        testCanonicalise(WebContent.contentTypeNTriplesAlt, WebContent.contentTypeNTriples);
     }
 
     @Test
-    public void testCanonicaliseMimeTypes4() {
+    public void testCanonicaliseMediaTypes4() {
         testCanonicalise(WebContent.contentTypeNQuads, WebContent.contentTypeNQuads);
     }
 
     @Test
-    public void testCanonicaliseMimeTypes5() {
+    public void testCanonicaliseMediaTypes5() {
         testCanonicalise(WebContent.contentTypeTriG, WebContent.contentTypeTriG);
     }
 

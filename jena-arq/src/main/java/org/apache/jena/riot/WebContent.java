@@ -25,13 +25,14 @@ import org.apache.jena.riot.system.ContentHeaderBuilder;
 
 public class WebContent {
     // Names for things.
-    // Some alternative, incorrect, MIME types are defined for convenience. These are "Alt"
+    // Some alternative, incorrect, MIME types are defined for convenience.
+    // These were "Alt*". Removed at Jena6.
 
     public static final String contentTypeTurtle = "text/turtle";
     public static final ContentType ctTurtle = ContentType.create(contentTypeTurtle);
 
-    public static final String contentTypeTurtleAlt = "application/turtle";
-    public static final ContentType ctTurtleAlt = ContentType.create(contentTypeTurtleAlt);
+//    public static final String contentTypeTurtleAlt = "application/turtle";
+//    public static final ContentType ctTurtleAlt = ContentType.create(contentTypeTurtleAlt);
 
     public static final String contentTypeRDFXML = "application/rdf+xml";
     public static final ContentType ctRDFXML = ContentType.create(contentTypeRDFXML);
@@ -48,15 +49,15 @@ public class WebContent {
     public static final String contentTypeNTriples = "application/n-triples";
     public static final ContentType ctNTriples = ContentType.create(contentTypeNTriples);
 
-    // N-Triples was text/pain in RDF 1.0.
-    public static final String contentTypeNTriplesAlt = "text/plain";
-    public static final ContentType ctNTriplesAlt = ContentType.create(contentTypeNTriplesAlt);
+//    // N-Triples was text/plain in RDF 1.0.
+//    public static final String contentTypeNTriplesAlt = "text/plain";
+//    public static final ContentType ctNTriplesAlt = ContentType.create(contentTypeNTriplesAlt);
 
     public static final String contentTypeXML = "application/xml";
     public static final ContentType ctXML = ContentType.create(contentTypeXML);
 
-    public static final String contentTypeXMLAlt = "text/xml";
-    public static final ContentType ctXMLAlt = ContentType.create(contentTypeXMLAlt);
+//    public static final String contentTypeXMLAlt = "text/xml";
+//    public static final ContentType ctXMLAlt = ContentType.create(contentTypeXMLAlt);
 
     public static final String contentTypeTriG = "application/trig";
     public static final ContentType ctTriG = ContentType.create(contentTypeTriG);
@@ -85,8 +86,8 @@ public class WebContent {
     public static final String contentTypeMultipartFormData = "multipart/form-data";
     public static final ContentType ctMultipartFormData = ContentType.create(contentTypeMultipartFormData);
 
-    public static final String contentTypeMultiAlt = "multipart/alternative";
-    public static final ContentType ctMultiAlt = ContentType.create(contentTypeMultiAlt);
+    public static final String contentTypeMultipartAlternative = "multipart/alternative";
+    public static final ContentType ctMultipartAlternative = ContentType.create(contentTypeMultipartAlternative);
 
     public static final String contentTypeN3 = "text/rdf+n3";
     public static final ContentType ctTypeN3 = ContentType.create("text/rdf+n3");

@@ -74,7 +74,6 @@ public class RDFLanguages
     /** <a href="http://www.w3.org/TR/turtle/">Turtle</a>*/
     public static final Lang TURTLE     = LangBuilder.create(strLangTurtle, contentTypeTurtle)
                                                      .addAltNames("TTL")
-                                                     .addAltContentTypes(contentTypeTurtleAlt)
                                                      .addFileExtensions("ttl")
                                                      .build();
 
@@ -90,8 +89,6 @@ public class RDFLanguages
     /** <a href="http://www.w3.org/TR/n-triples/">N-Triples</a>*/
     public static final Lang NTRIPLES   = LangBuilder.create(strLangNTriples, contentTypeNTriples)
                                                      .addAltNames("NT", "NTriples", "NTriple", "N-Triple", "N-Triples")
-                                                     // Remove? Causes more trouble than it's worth.
-                                                     .addAltContentTypes(contentTypeNTriplesAlt)
                                                      .addFileExtensions("nt")
                                                      .build();
 
