@@ -67,9 +67,7 @@ public class DEF
     public static final AcceptList jsonOfferDefault()         { return AcceptList.create(contentTypeJSON); }
 
     public static final AcceptList constructOfferDefault()    { return AcceptList.create(contentTypeTurtle,
-                                                                                         contentTypeTurtleAlt,
                                                                                          contentTypeNTriples,
-                                                                                         contentTypeNTriplesAlt,
                                                                                          contentTypeRDFXML,
                                                                                          contentTypeTriX,
                                                                                          contentTypeTriXxml,
@@ -81,9 +79,7 @@ public class DEF
                                                                                         ); }
 
     public static final AcceptList rdfOfferDefault()          { return AcceptList.create(contentTypeTurtle,
-                                                                                         contentTypeTurtleAlt,
                                                                                          contentTypeNTriples,
-                                                                                         contentTypeNTriplesAlt,
                                                                                          contentTypeRDFXML,
                                                                                          contentTypeTriX,
                                                                                          contentTypeTriXxml,
