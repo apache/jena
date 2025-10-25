@@ -1,4 +1,6 @@
- ## Example of a TDB dataset and text index
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+## Example of a TDB dataset and text index
 
 @prefix :        <http://localhost/jena_example/#> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -6,16 +8,6 @@
 @prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
 @prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
 @prefix text:    <http://jena.apache.org/text#> .
-
-# TDB
-[] ja:loadClass "org.apache.jena.tdb.TDB" .
-tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
-tdb:GraphTDB    rdfs:subClassOf  ja:Model .
-
-# Text
-[] ja:loadClass "org.apache.jena.query.text.TextQuery" .
-text:TextDataset      rdfs:subClassOf   ja:RDFDataset .
-text:TextIndexLucene  rdfs:subClassOf   text:TextIndex .
 
 ## ---------------------------------------------------------------
 ## This URI must be fixed - it's used to assemble the text dataset.
