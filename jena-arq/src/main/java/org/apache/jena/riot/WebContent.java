@@ -25,17 +25,14 @@ import org.apache.jena.riot.system.ContentHeaderBuilder;
 
 public class WebContent {
     // Names for things.
+    // Some alternative, incorrect, MIME types are defined for convenience.
+    // These were "Alt*". Removed at Jena6.
 
     public static final String contentTypeTurtle = "text/turtle";
     public static final ContentType ctTurtle = ContentType.create(contentTypeTurtle);
 
-    public static final String contentTypeTurtleAlt1 = "application/turtle";
-    public static final ContentType ctTurtleAlt1 = ContentType.create(contentTypeTurtleAlt1);
-
-    // Name no longer supported - Jena 4.0.0.
-// public static final String contentTypeTurtleAlt2 = "application/x-turtle" ;
-// public static final ContentType ctTurtleAlt2 =
-// ContentType.create(contentTypeTurtleAlt2) ;
+//    public static final String contentTypeTurtleAlt = "application/turtle";
+//    public static final ContentType ctTurtleAlt = ContentType.create(contentTypeTurtleAlt);
 
     public static final String contentTypeRDFXML = "application/rdf+xml";
     public static final ContentType ctRDFXML = ContentType.create(contentTypeRDFXML);
@@ -52,14 +49,15 @@ public class WebContent {
     public static final String contentTypeNTriples = "application/n-triples";
     public static final ContentType ctNTriples = ContentType.create(contentTypeNTriples);
 
-    public static final String contentTypeNTriplesAlt = contentTypeTextPlain;
-    public static final ContentType ctNTriplesAlt = ContentType.create(contentTypeNTriplesAlt);
+//    // N-Triples was text/plain in RDF 1.0.
+//    public static final String contentTypeNTriplesAlt = "text/plain";
+//    public static final ContentType ctNTriplesAlt = ContentType.create(contentTypeNTriplesAlt);
 
     public static final String contentTypeXML = "application/xml";
     public static final ContentType ctXML = ContentType.create(contentTypeXML);
 
-    public static final String contentTypeXMLAlt = "text/xml";
-    public static final ContentType ctXMLAlt = ContentType.create(contentTypeXMLAlt);
+//    public static final String contentTypeXMLAlt = "text/xml";
+//    public static final ContentType ctXMLAlt = ContentType.create(contentTypeXMLAlt);
 
     public static final String contentTypeTriG = "application/trig";
     public static final ContentType ctTriG = ContentType.create(contentTypeTriG);
@@ -67,29 +65,13 @@ public class WebContent {
     public static final String contentTypeNQuads = "application/n-quads";
     public static final ContentType ctNQuads = ContentType.create(contentTypeNQuads);
 
-    public static final String contentTypeTriGAlt1 = "text/trig";
-    public static final ContentType ctTriGAlt1 = ContentType.create(contentTypeTriGAlt1);
-
     // Unofficial
     public static final String      contentTypeRDFProto          = "application/rdf+protobuf" ;
     public static final ContentType ctRDFProto                   = ContentType.create(contentTypeRDFProto) ;
 
-    // Name no longer supported - Jena 4.0.0.
-// public static final String contentTypeTriGAlt2 = "application/x-trig" ;
-// public static final ContentType ctTriGAlt2 =
-// ContentType.create(contentTypeTriGAlt2) ;
-
+    // Unofficial
     public static final String contentTypeRDFThrift = "application/rdf+thrift";
     public static final ContentType ctRDFTHRIFT = ContentType.create(contentTypeRDFThrift);
-
-    public static final String contentTypeNQuadsAlt1 = "text/n-quads";
-    public static final ContentType ctNQuadsAlt1 = ContentType.create(contentTypeNQuadsAlt1);
-
-    // Name no longer supported - Jena 4.0.0.
-// public static final String contentTypeNQuadsAlt2 = "text/nquads" ;
-// public static final ContentType ctNQuadsAlt2 =
-// ContentType.create(contentTypeNQuadsAlt2) ;
-
     public static final String contentTypeTriX = "application/trix";
     public static final ContentType ctTriX = ContentType.create(contentTypeTriX);
     public static final String contentTypeTriXxml = "application/trix+xml";
@@ -104,8 +86,8 @@ public class WebContent {
     public static final String contentTypeMultipartFormData = "multipart/form-data";
     public static final ContentType ctMultipartFormData = ContentType.create(contentTypeMultipartFormData);
 
-    public static final String contentTypeMultiAlt = "multipart/alternative";
-    public static final ContentType ctMultiAlt = ContentType.create(contentTypeMultiAlt);
+    public static final String contentTypeMultipartAlternative = "multipart/alternative";
+    public static final ContentType ctMultipartAlternative = ContentType.create(contentTypeMultipartAlternative);
 
     public static final String contentTypeN3 = "text/rdf+n3";
     public static final ContentType ctTypeN3 = ContentType.create("text/rdf+n3");
@@ -180,7 +162,7 @@ public class WebContent {
     public static final String langNQuads = "NQUADS";
     public static final String langTriG = "TRIG";
 
-    /** Java name for UTF-8 encoding */
+    /** UTF-8 encoding */
     public static final String encodingUTF8 = "utf-8";
 
     /** Accept header part when looking for a graph */

@@ -43,7 +43,7 @@ import org.apache.jena.rdfconnection.LibSec;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.web.AuthSetup;
 import org.apache.jena.web.HttpSC;
-import org.eclipse.jetty.ee10.servlet.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.ee11.servlet.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.UserStore;
 
 /**

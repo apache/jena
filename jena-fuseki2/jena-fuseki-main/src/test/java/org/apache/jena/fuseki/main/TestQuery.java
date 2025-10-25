@@ -226,6 +226,7 @@ public class TestQuery extends AbstractFusekiTest {
     public void query_construct_conneg() throws IOException {
         String query = "CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}";
         for (MediaType type : rdfOfferTest.entries()) {
+            // Includes text/plain - the old MIME type for N-triples
 
             String contentType = type.toHeaderString();
             try (QueryExecutionHTTP qExec =
@@ -237,9 +238,15 @@ public class TestQuery extends AbstractFusekiTest {
                 Iterator<Triple> iter = qExec.execConstructTriples();
                 assertTrue(iter.hasNext());
                 String x = qExec.getHttpResponseContentType();
+                x = removeHttpParameters(x);
                 assertEquals(contentType, x);
             }
         }
+    }
+
+    /** Remove any parameters e.g. charset=, version= profile= etc*/
+    private String removeHttpParameters(String x) {
+        return x.replaceAll(";.*$", "");
     }
 
     @Test
@@ -278,6 +285,7 @@ public class TestQuery extends AbstractFusekiTest {
             try ( qExec ) {
                 Graph graph = qExec.describe();
                 String x = qExec.getHttpResponseContentType();
+                x = removeHttpParameters(x);
                 assertEquals(contentType, x);
                 assertFalse(graph.isEmpty());
             }

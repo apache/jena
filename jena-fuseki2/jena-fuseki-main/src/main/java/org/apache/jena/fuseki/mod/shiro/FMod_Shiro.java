@@ -37,8 +37,8 @@ import org.apache.jena.fuseki.mgt.FusekiServerCtl;
 import org.apache.jena.rdf.model.Model;
 import org.apache.shiro.lang.io.ResourceUtils;
 import org.apache.shiro.web.servlet.ShiroFilter;
-import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
-import org.eclipse.jetty.ee10.servlet.SessionHandler;
+import org.eclipse.jetty.ee11.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee11.servlet.SessionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
