@@ -22,15 +22,9 @@ import java.util.Objects;
 import java.util.StringJoiner;
 
 /**
- * More algorithms on IRI3986's.
- * The various forms of relativizing IRIs.
+ * More relativization algorithms on IRI3986's.
  */
 public class AlgRelativizeIRI {
-
-    // For compatibility with jena-iri ...
-    // relativeScheme: when only the scheme with no "//", then NETWORK does not abbreviate.
-    //    Strict, illegal because if there is a scheme, there must be //
-    /*package*/ static final boolean legacyCompatibility = false;
 
     /**
      * Calculate a "same scheme" relative URI, if possible.
@@ -43,8 +37,7 @@ public class AlgRelativizeIRI {
             return null;
         if ( ! Objects.equals(base.scheme(), target.scheme()) )
             return null;
-        if ( legacyCompatibility && ! base.hasAuthority() && base.path().isEmpty() )
-            return IRI3986.build(null, "", target.path(), target.query(), target.fragment());
+        // No scheme.
         return IRI3986.build(null, target.authority(), target.path(), target.query(), target.fragment());
     }
 
@@ -63,18 +56,6 @@ public class AlgRelativizeIRI {
         if ( ! Objects.equals(base.authority(), target.authority()) )
             return null;
         return IRI3986.build(null, null, target.path(), target.query(), target.fragment());
-    }
-
-    /**
-     * Calculate a relative URI as a absolute path, if possible.
-     * <p>
-     * That is, the IRIs have the same scheme and authority.
-     * The base does not have a query string.
-     * The relative URI is the path, query and fragment of the target.
-     */
-    public static IRI3986 relativeAbsolutePath(IRI base, IRI target) {
-        // Same as relativeLocalResource, using jena-iri naming.
-        return relativeResource(base, target);
     }
 
     /**
@@ -138,22 +119,10 @@ public class AlgRelativizeIRI {
                 return IRI3986.build(null, null, x, target.query(), target.fragment());
             }
 
-            if ( legacyCompatibility ) {
-                // Same path, no target query.
-                // This would be just a #frag which is "same document".
-                // For compatibility with jena-iri ...
-                String pathRel = lastSegment(targetPath);
-                if ( pathRel.isEmpty() )
-                    pathRel = ".";
-                return IRI3986.build(null, null, pathRel, null, target.fragment());
-            } else {
-                String pathRel = targetPath.endsWith("/") ?
-                    // Both "" and "." are possible when the two paths end "/".
-                    "." : "";
-                return IRI3986.build(null, null, pathRel, null, target.fragment());
-            }
+            // Both "" and "." are possible when the two paths end "/".
+            String pathRel = targetPath.endsWith("/") ? "." : "";
+            return IRI3986.build(null, null, pathRel, null, target.fragment());
         }
-
 
         String relPath = relativeChildPath(basePath, targetPath);
         if ( relPath == null )

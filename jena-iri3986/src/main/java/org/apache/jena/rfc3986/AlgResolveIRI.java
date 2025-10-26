@@ -21,7 +21,7 @@ package org.apache.jena.rfc3986;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-/** Algorithms for IRIs : resolution */
+/** Algorithms for IRIs : resolution and relativize (reverse of resolution). */
 public class AlgResolveIRI {
 
     /**
