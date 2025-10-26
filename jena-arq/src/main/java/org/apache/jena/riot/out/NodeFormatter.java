@@ -21,23 +21,26 @@ package org.apache.jena.riot.out;
 import org.apache.jena.atlas.io.AWriter;
 import org.apache.jena.graph.Node;
 
-/** Processor for output of RDF terms. */
+/**
+ * Processor for output of RDF terms. The operation {@link #format(AWriter, Node)}
+ * formats a node and output on the {@link AWriter}.
+ * <p>
+ * All other operations assume their {@link Node} argument is the correct kind of
+ * RDFterm for the operation.
+ */
 public interface NodeFormatter
 {
     public void format(AWriter w, Node n);
 
-    /** Node is guaranteed to be a URI node */
     public void formatURI(AWriter w, Node n);
     public void formatURI(AWriter w, String uriStr);
 
     public void formatVar(AWriter w, Node n);
     public void formatVar(AWriter w, String name);
 
-    /** Node is guaranteed to be a blank node */
     public void formatBNode(AWriter w, Node n);
     public void formatBNode(AWriter w, String label);
 
-    /** Node is guaranteed to be a literal */
     public void formatLiteral(AWriter w, Node n);
 
     /** Plain string / xsd:string (RDF 1.1) */
@@ -54,4 +57,7 @@ public interface NodeFormatter
      * language tag or and base direction.
      */
     public void formatLitDT(AWriter w, String lex, String datatypeURI);
+
+    public void formatTripleTerm(AWriter w, Node n);
+    public void formatTripleTerm(AWriter w, Node subject, Node proedicate, Node object);
 }

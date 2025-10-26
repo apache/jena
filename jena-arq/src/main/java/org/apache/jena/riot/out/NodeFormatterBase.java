@@ -22,7 +22,6 @@ import org.apache.jena.atlas.io.AWriter;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.TextDirection;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.ARQInternalErrorException;
@@ -45,23 +44,12 @@ public abstract class NodeFormatterBase implements NodeFormatter
             formatVar(w, n);
         else if ( Node.ANY.equals(n) )
             w.print("ANY");
-        else if ( n instanceof Node_Triple )
-            formatNodeTriple(w, n);
-//        else if ( n instanceof Node_Graph )
+        else if ( n.isTripleTerm() )
+            formatTripleTerm(w, n);
+//        else if ( n.isNodeGraph() )
 //            formatNodeGraph(w, (Node_Graph)n);
         else
             throw new ARQInternalErrorException("Unknown node type: "+n);
-    }
-
-    protected void formatNodeTriple(AWriter w, Node n) {
-        Triple t = n.getTriple();
-        w.print("<<( ");
-        format(w, t.getSubject());
-        w.print(" ");
-        format(w, t.getPredicate());
-        w.print(" ");
-        format(w, t.getObject());
-        w.print(" )>>");
     }
 
     @Override
@@ -91,6 +79,23 @@ public abstract class NodeFormatterBase implements NodeFormatter
             // Datatype, no language tag, not short string.
             formatLitDT(w, lex, dt.getURI());
         }
+    }
+
+    @Override
+    public void formatTripleTerm(AWriter w, Node n) {
+        Triple t = n.getTriple();
+        formatTripleTerm(w, t.getSubject(), t.getPredicate(), t.getObject());
+    }
+
+    @Override
+    public void formatTripleTerm(AWriter w, Node subject, Node predicate, Node object) {
+        w.print("<<( ");
+        format(w, subject);
+        w.print(" ");
+        format(w, predicate);
+        w.print(" ");
+        format(w, object);
+        w.print(" )>>");
     }
 
     @Override

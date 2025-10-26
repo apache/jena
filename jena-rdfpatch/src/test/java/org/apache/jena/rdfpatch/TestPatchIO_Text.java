@@ -59,6 +59,11 @@ public class TestPatchIO_Text extends AbstractTestPatchIO {
         return patch;
     }
 
+    @Test public void read_tripleTerm_01() {
+        String str = "A <http://example/s1> <http://example/p1> <<( <http://example/s> <http://example/p> <http://example/o> )>> .";
+        parseSyntax(str);
+    }
+
     @Test public void read_warning_01() {
         String str = "A <http://example/s1> <http://example/p1> 'abc\uFFFDdef' <http://example/g1> .";
         parseSyntax(str);
