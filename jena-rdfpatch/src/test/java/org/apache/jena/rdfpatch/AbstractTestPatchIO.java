@@ -42,8 +42,10 @@ public abstract class AbstractTestPatchIO {
     private static Node s1 = SSE.parseNode(":s1");
     private static Node s2 = SSE.parseNode("_:s2");
     private static Node s3 = SSE.parseNode("<<(_:b :y 123)>>");
+
     private static Node p1 = SSE.parseNode("<http://example/p1>");
     private static Node p2 = SSE.parseNode(":p2");
+
     private static Node o1 = SSE.parseNode("<http://example/o1>");
     private static Node o2 = SSE.parseNode("123");
     private static Node o3 = SSE.parseNode("<<(  _:b :prop <<( _:b :q _:b )>> )>>");
@@ -124,6 +126,15 @@ public abstract class AbstractTestPatchIO {
             changes.txnBegin();
             changes.add(g2, s3, p2, o1);
             //changes.add(g2, s3, p2, o3);
+            changes.txnCommit();
+        });
+    }
+
+    @Test public void write_read_04() {
+        write_read(changes->{
+            changes.txnBegin();
+            changes.add(g2, s3, p2, o1);
+            changes.add(g2, s3, p2, o3);
             changes.txnCommit();
         });
     }
