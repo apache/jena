@@ -55,5 +55,4 @@ public class TestNormalize {
         String s = iri2.toString();
         assertEquals(expected, s);
     }
-
 }

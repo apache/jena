@@ -135,7 +135,6 @@ public class ParseDNS {
             // Must have one or more labels.
             error("No subdomains.");
 
-
         List<Integer> dots = new ArrayList<>(4);
 
         while (p < end) {
@@ -148,7 +147,6 @@ public class ParseDNS {
             // Separator dots
             dots.add(p-1);
         }
-        //System.out.println("Dots: "+dots);
     }
 
     // <label> ::= <letter> [ [ <ldh-str> ] <let-dig> ]
