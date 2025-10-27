@@ -67,7 +67,7 @@
     <ver.jakarta.json>2.0.1</ver.jakarta.json>
 
     <!-- These two must be in-step -->
-    <ver.jetty>12.1.2</ver.jetty>
+    <ver.jetty>12.1.3</ver.jetty>
     <ver.jakarta-servlet>6.1.0</ver.jakarta-servlet>
 
     <!--
@@ -109,7 +109,7 @@
     <ver.awaitility>4.3.0</ver.awaitility>
 
     <!-- For testing, not shipped -->
-    <ver.graalvm>25.0.0</ver.graalvm>
+    <ver.graalvm>25.0.1</ver.graalvm>
     <ver.org.openjdk.jmh>1.37</ver.org.openjdk.jmh>
 
     <!-- GeoSPARQL related -->
