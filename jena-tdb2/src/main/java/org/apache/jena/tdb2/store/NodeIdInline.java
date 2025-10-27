@@ -164,6 +164,10 @@ public class NodeIdInline {
             // chopping by .trim is safe.
             BigDecimal decimal = new BigDecimal(lit.getLexicalForm().trim());
 
+            // [Jena6] - enable for Jena6
+            if ( false )
+                decimal = XSDNumUtils.canonicalDecimal(decimal);
+
             // Does range checking.
             DecimalNode56 dn = DecimalNode56.valueOf(decimal);
             // null is "does not fit"
