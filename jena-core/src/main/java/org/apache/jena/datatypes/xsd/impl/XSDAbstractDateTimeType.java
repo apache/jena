@@ -63,18 +63,36 @@ public class XSDAbstractDateTimeType extends XSDDatatype {
 
 
 //  --------------------------------------------------------------------
-//  This code is adapated from Xerces 2.6.0 AbstractDateTimeDV.
+//  This code is adapted from Xerces 2.6.0 AbstractDateTimeDV.
 //  Copyright (c) 1999-2003 The Apache Software Foundation.  All rights
 //  reserved.
 //  --------------------------------------------------------------------
 
-     //define constants
-     protected final static int CY = 0,  M = 1, D = 2, h = 3,
-     m = 4, s = 5, ms = 6, msscale=8, utc=7, hh=0, mm=1;
+    // ----
+    // These constants are defined in both in XSDAbstractDateTimeType and AbstractDateTime
+    protected final static int CY = 0, M = 1, D = 2,
+            h = 3, m = 4, s = 5, ms = 6, msscale = 7,
+            utc=8;
+    //size for all objects must have the same fields:
+    //CCYY, MM, DD, h, m, s, ms + timeZone
+    protected final static int TOTAL_SIZE = 9;
+    protected final static int COMPARABLE_SUBSET = 6;
 
-     //size for all objects must have the same fields:
-     //CCYY, MM, DD, h, m, s, ms + timeZone
-     protected final static int TOTAL_SIZE = 9;
+    // Allow for an "era" so the range of year is more than 2 billion.
+    // The age of the planet is ~4.5 billion years.
+    // This has been tested.
+//    //define constants : in XSDAbstractDateTimeType/AbstractDateTime
+//    protected final static int EP = 0, CY = 1, M = 2, D = 3,
+//            h = 4, m = 5, s = 6, ms = 7, msscale = 8,
+//            utc=9;
+//    //size for all objects must have the same fields:
+//    //Epoch, CCYY, MM, DD, h, m, s, ms + timeZone
+//    protected final static int TOTAL_SIZE = 10;
+//    protected final static int COMPARABLE_SUBSET = 7;
+    // ----
+
+    // Timezone constants
+    protected final static int hh=0, mm=1;
 
      //define constants to be used in assigning default values for
      //all date/time excluding duration
@@ -439,7 +457,7 @@ public class XSDAbstractDateTimeType extends XSDDatatype {
 
 
 //  --------------------------------------------------------------------
-//  End of code is adapated from Xerces 2.6.0 AbstractDateTimeDV.
+//  End of code is adapted from Xerces 2.6.0 AbstractDateTimeDV.
 //  --------------------------------------------------------------------
 
      /**
