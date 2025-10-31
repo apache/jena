@@ -27,7 +27,7 @@ import java.util.Arrays ;
  * using an int array. These wrapper classes just provide more
  * convenient access to the date values.
  * <p>
- * This class includes code derived from Xerces 2.6.0 
+ * This class includes code derived from Xerces 2.6.0
  * Copyright (c) 1999-2002 The Apache Software Foundation.
  * All rights reserved.
  * </p>
@@ -36,23 +36,36 @@ public class AbstractDateTime implements Comparable<AbstractDateTime> {
 
     /** The array of year/month etc values as ints */
     protected int[] data;
-    
+
     /** The fractional seconds */
     protected double fractionalSeconds;
-    
-    //define constants
-    protected final static int CY = 0,  M = 1, D = 2, h = 3,
-    m = 4, s = 5, ms = 6, utc=7, msscale=8 ;
-    
-    // Timezone constants
-    protected final static int hh=0, mm=1;
-        
+
+    // ----
+    // These constants are defined in both in XSDAbstractDateTimeType and AbstractDateTime
+    protected final static int CY = 0, M = 1, D = 2,
+            h = 3, m = 4, s = 5, ms = 6, msscale = 7,
+            utc=8;
     //size for all objects must have the same fields:
     //CCYY, MM, DD, h, m, s, ms + timeZone
     protected final static int TOTAL_SIZE = 9;
-    
-    // The number of comparable values
     protected final static int COMPARABLE_SUBSET = 6;
+
+    // Allow for an "era" so the range of year is more than 2 billion.
+    // This has been tested.
+    // The age of the planet is ~4.5 billion years.
+//    //define constants : in XSDAbstractDateTimeType/AbstractDateTime
+//    protected final static int EP = 0, CY = 1, M = 2, D = 3,
+//            h = 4, m = 5, s = 6, ms = 7, msscale = 8,
+//            utc=9;
+//    //size for all objects must have the same fields:
+//    //Epoch, CCYY, MM, DD, h, m, s, ms + timeZone
+//    protected final static int TOTAL_SIZE = 10;
+//    protected final static int COMPARABLE_SUBSET = 7;
+    // ----
+
+    // Timezone constants
+    protected final static int hh=0, mm=1;
+    // The number of comparable values
 
     /** constant to indicate a less than relationship from compare() */
     public static final short LESS_THAN     = -1;
@@ -72,18 +85,18 @@ public class AbstractDateTime implements Comparable<AbstractDateTime> {
         //if (data[utc] == 0) data[utc]='Z';
         extractFractionalSeconds();
     }
-    
-    /** 
+
+    /**
      * Comparison function. Not quite the same as normal java compare
      * because XSD date/times are not always comparable.
-     * 
+     *
      * @param other the time/date to compare to
      * @return an order flag - one of LESS_THAN, EQUAL, GREATER_THEN, INDETERMINATE
      */
     public int compare(AbstractDateTime other) {
         return compareValues(data, other.data, true);
     }
-    
+
     /**
      * Normal java comparison function. Treats INDETERMINATE as the same
      * as equals. This is not strictly correct but seems like an appropriate
@@ -102,7 +115,7 @@ public class AbstractDateTime implements Comparable<AbstractDateTime> {
         }
         return 0;
     }
-    
+
     /**
      * Convert fractional second representation to a simple double..
      */
@@ -113,7 +126,7 @@ public class AbstractDateTime implements Comparable<AbstractDateTime> {
             fractionalSeconds = (fs) / Math.pow(10.0, data[msscale]);
         }
     }
-    
+
     /**
      * Equality function
      */
@@ -129,7 +142,7 @@ public class AbstractDateTime implements Comparable<AbstractDateTime> {
         }
         return false;
     }
-    
+
     @Override
     public int hashCode() {
         // See JENA-1140.
@@ -139,13 +152,13 @@ public class AbstractDateTime implements Comparable<AbstractDateTime> {
         result = prime * result + Arrays.hashCode(data);
         return result;
     }
-        
+
 //  --------------------------------------------------------------------
-//  This code is adapated from Xerces 2.6.0 AbstractDateTimeDV.    
+//  This code is adapated from Xerces 2.6.0 AbstractDateTimeDV.
 //  Copyright (c) 1999-2003 The Apache Software Foundation.  All rights
 //  reserved.
 //  --------------------------------------------------------------------
-    
+
     /**
      * Compare algorithm described in dateDime (3.2.7).
      *
@@ -159,7 +172,7 @@ public class AbstractDateTime implements Comparable<AbstractDateTime> {
             return compareOrder(date1, date2);
         }
         short c1, c2;
-        
+
         int[] tempDate = new int[TOTAL_SIZE];
         int[] timeZone = new int[2];
 
@@ -196,7 +209,7 @@ public class AbstractDateTime implements Comparable<AbstractDateTime> {
             cloneDate(date1, tempDate); //clones date1 value to global temporary storage: tempDate
             timeZone[hh]=14;
             timeZone[mm]=0;
-            tempDate[utc]='-'; 
+            tempDate[utc]='-';
             normalize(tempDate, timeZone);
             c1 = compareOrder(tempDate, date2);
             if (c1 == LESS_THAN)
@@ -255,11 +268,11 @@ public class AbstractDateTime implements Comparable<AbstractDateTime> {
         for (int i = scale; i < targetScale; i++) val *= 10;
         return val;
     }
-    
+
     /**
       * If timezone present - normalize dateTime  [E Adding durations to dateTimes]
       * Public to allow reuse with type objects.
-      * 
+      *
       * @param date   CCYY-MM-DDThh:mm:ss+03
       */
      public static void normalize (int[] date, int[] timeZone) {
@@ -383,7 +396,7 @@ public class AbstractDateTime implements Comparable<AbstractDateTime> {
 
         return fQuotient(temp - low, high - low);
     }
-    
+
     //
     //Private help functions
     //
@@ -393,7 +406,7 @@ public class AbstractDateTime implements Comparable<AbstractDateTime> {
     }
 
 //  --------------------------------------------------------------------
-//  End of code is adapated from Xerces 2.6.0 AbstractDateTimeDV.    
+//  End of code is adapated from Xerces 2.6.0 AbstractDateTimeDV.
 //  --------------------------------------------------------------------
 
 }
