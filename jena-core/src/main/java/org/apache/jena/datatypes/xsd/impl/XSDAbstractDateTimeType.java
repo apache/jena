@@ -61,7 +61,6 @@ public class XSDAbstractDateTimeType extends XSDDatatype {
     /** Mask to indicate all date/time are present */
     public static final short FULL_MASK = 0xf;
 
-
 //  --------------------------------------------------------------------
 //  This code is adapted from Xerces 2.6.0 AbstractDateTimeDV.
 //  Copyright (c) 1999-2003 The Apache Software Foundation.  All rights
