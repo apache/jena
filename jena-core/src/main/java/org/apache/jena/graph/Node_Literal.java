@@ -83,7 +83,6 @@ public class Node_Literal extends Node
     public final TextDirection getLiteralBaseDirection()
     { return getLiteral().baseDirection(); }
 
-
     @Override
     public final String getLiteralDatatypeURI()
     { return getLiteral().getDatatypeURI(); }

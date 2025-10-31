@@ -979,25 +979,21 @@ public class XSDFuncOp
         throw new ARQInternalErrorException("Numeric op unrecognized (" + fName + "): " + nv);
     }
 
-    private static Set<XSDDatatype> integerSubTypes = new HashSet<>();
-    static {
-//        decimalSubTypes.add(XSDDatatype.XSDfloat);
-//        decimalSubTypes.add(XSDDatatype.XSDdouble);
-        integerSubTypes.add(XSDDatatype.XSDint);
-        integerSubTypes.add(XSDDatatype.XSDlong);
-        integerSubTypes.add(XSDDatatype.XSDshort);
-        integerSubTypes.add(XSDDatatype.XSDbyte);
-        integerSubTypes.add(XSDDatatype.XSDunsignedByte);
-        integerSubTypes.add(XSDDatatype.XSDunsignedShort);
-        integerSubTypes.add(XSDDatatype.XSDunsignedInt);
-        integerSubTypes.add(XSDDatatype.XSDunsignedLong);
-//        integerSubTypes.add(XSDDatatype.XSDdecimal);
-        integerSubTypes.add(XSDDatatype.XSDinteger);
-        integerSubTypes.add(XSDDatatype.XSDnonPositiveInteger);
-        integerSubTypes.add(XSDDatatype.XSDnonNegativeInteger);
-        integerSubTypes.add(XSDDatatype.XSDpositiveInteger);
-        integerSubTypes.add(XSDDatatype.XSDnegativeInteger);
-    }
+    private static Set<XSDDatatype> integerSubTypes = Set.of
+            (XSDDatatype.XSDint,
+             XSDDatatype.XSDlong,
+             XSDDatatype.XSDshort,
+             XSDDatatype.XSDbyte,
+             XSDDatatype.XSDunsignedByte,
+             XSDDatatype.XSDunsignedShort,
+             XSDDatatype.XSDunsignedInt,
+             XSDDatatype.XSDunsignedLong,
+             XSDDatatype.XSDinteger,
+             XSDDatatype.XSDnonPositiveInteger,
+             XSDDatatype.XSDnonNegativeInteger,
+             XSDDatatype.XSDpositiveInteger,
+             XSDDatatype.XSDnegativeInteger
+            );
 
     public static boolean isNumericDatatype(XSDDatatype xsdDatatype) {
         if ( XSDDatatype.XSDfloat.equals(xsdDatatype) )
@@ -1026,16 +1022,19 @@ public class XSDFuncOp
         return integerSubTypes.contains(xsdDatatype);
     }
 
+    private static Set<XSDDatatype> temporalDatatypes = Set.of(
+             XSDDatatype.XSDdateTime,
+             XSDDatatype.XSDtime,
+             XSDDatatype.XSDdate,
+             XSDDatatype.XSDgYear,
+             XSDDatatype.XSDgYearMonth,
+             XSDDatatype.XSDgMonth,
+             XSDDatatype.XSDgMonthDay,
+             XSDDatatype.XSDgDay
+            );
+    
     public static boolean isTemporalDatatype(XSDDatatype datatype) {
-        return
-            datatype.equals(XSDDatatype.XSDdateTime) ||
-            datatype.equals(XSDDatatype.XSDtime) ||
-            datatype.equals(XSDDatatype.XSDdate) ||
-            datatype.equals(XSDDatatype.XSDgYear) ||
-            datatype.equals(XSDDatatype.XSDgYearMonth) ||
-            datatype.equals(XSDDatatype.XSDgMonth) ||
-            datatype.equals(XSDDatatype.XSDgMonthDay) ||
-            datatype.equals(XSDDatatype.XSDgDay);
+        return temporalDatatypes.contains(datatype);
     }
 
     public static boolean isDurationDatatype(XSDDatatype datatype) {

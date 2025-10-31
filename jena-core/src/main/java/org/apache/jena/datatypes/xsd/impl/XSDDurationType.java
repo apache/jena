@@ -27,13 +27,13 @@ import org.apache.jena.datatypes.xsd.* ;
  * avoid this proliferation of trivial types by use of reflection but
  * since that causes allergic reactions in some we use brute force.
  * <p>
- * This class includees code derived from Xerces 2.6.0 
+ * This class includees code derived from Xerces 2.6.0
  * Copyright (c) 1999-2002 The Apache Software Foundation.
  * All rights reserved.
  * </p>
  */
 public class XSDDurationType extends XSDAbstractDateTimeType {
-    
+
     /**
      * Constructor
      */
@@ -41,14 +41,14 @@ public class XSDDurationType extends XSDAbstractDateTimeType {
         super("duration");
         javaClass = XSDDuration.class;
     }
-        
+
     /**
     * Parse a validated date. This is invoked from
     * XSDDatatype.convertValidatedDataValue rather then from a local
     * parse method to make the implementation of XSDGenericType easier.
     */
    @Override
-public Object parseValidated(String str) {
+   public Object parseValidated(String str) {
        int len = str.length();
        int[] date=new int[TOTAL_SIZE];
 
@@ -135,5 +135,5 @@ public Object parseValidated(String str) {
        }
        return new XSDDuration(date);
    }
-    
+
 }

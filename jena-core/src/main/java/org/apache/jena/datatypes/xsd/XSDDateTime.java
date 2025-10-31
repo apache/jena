@@ -31,29 +31,29 @@ import org.apache.jena.datatypes.xsd.impl.XSDAbstractDateTimeType ;
 public class XSDDateTime extends AbstractDateTime {
     /** Mask to indicate whether year is present */
     public static final short YEAR_MASK = 0x1;
-    
+
     /** Mask to indicate whether month is present */
     public static final short MONTH_MASK = 0x2;
-    
+
     /** Mask to indicate whether day is present */
     public static final short DAY_MASK = 0x4;
-    
+
     /** Mask to indicate whether time is present */
     public static final short TIME_MASK = 0x8;
-    
+
     /** Mask to indicate all date/time are present */
     public static final short FULL_MASK = 0xf;
-    
+
     // Unused /** table mapping xs type name to mask of legal values */
     //public static final HashMap maskMap = new HashMap();
-        
+
     /** Set of legal fields for the particular date/time instance */
     protected short mask;
-    
+
     /**
      * Constructor - should only be used by the internals but public scope because
      * the internals spread across multiple packages.
-     * 
+     *
      * @param value the date/time value returned by the parsing
      * @param mask bitmask defining which components are valid in this instance
      * (e.g. dates don't have valid time fields).
@@ -62,18 +62,17 @@ public class XSDDateTime extends AbstractDateTime {
         super(value);
         this.mask = (short)mask;
     }
-    
-    
+
     /**
      * Constructor - create a full DateTime object from a java calendar instance.
-     * 
+     *
      * @param date java calendar instance
      */
     public XSDDateTime(Calendar date) {
         super(convertCalendar(date));
         this.mask = FULL_MASK;
     }
-    
+
     /**
      * Return the most specific xsd type which can represent
      * this date/time
@@ -98,10 +97,10 @@ public class XSDDateTime extends AbstractDateTime {
             return XSDDatatype.XSDdateTime;
         }
     }
-    
+
     /**
      * Set the mask for this date/time to be that appropriate
-     * for the given XSD subtype. If the type is a subtype of XSDdateTime the 
+     * for the given XSD subtype. If the type is a subtype of XSDdateTime the
      * mask will be narrowed appropriately, other types will be silently ignored.
      */
     public void narrowType(XSDDatatype dt) {
@@ -119,9 +118,9 @@ public class XSDDateTime extends AbstractDateTime {
             mask = YEAR_MASK | MONTH_MASK;
         } else if (dt.equals(XSDDatatype.XSDdate)) {
             mask = MONTH_MASK | YEAR_MASK | DAY_MASK;
-        }  
+        }
     }
-    
+
     /**
      * Convert a java calendar object to a new int[] in the format used by XSDAbstractDateTime
      */
@@ -132,8 +131,8 @@ public class XSDDateTime extends AbstractDateTime {
         // By observation (Sun Java 6), this is necessary (to force internal calculations presumably) ...
         cal.get(Calendar.ZONE_OFFSET) ;
         // ... then we can rebase the calendar
-        cal.setTimeZone(TimeZone.getTimeZone("GMT")); 
-        
+        cal.setTimeZone(TimeZone.getTimeZone("GMT"));
+
         data[AbstractDateTime.CY] = cal.get(Calendar.YEAR);
         data[AbstractDateTime.M] = cal.get(Calendar.MONTH) + 1;
         data[AbstractDateTime.D] = cal.get(Calendar.DAY_OF_MONTH);
@@ -158,15 +157,14 @@ public class XSDDateTime extends AbstractDateTime {
             data[AbstractDateTime.ms] = ms;
             data[AbstractDateTime.msscale] = 3;
         }
-        
         return data;
     }
 
     /**
-     * Return the date time as a java Calendar object. 
+     * Return the date time as a java Calendar object.
      * If the timezone has been specified then the object is normalized to GMT.
      * If the zone has not been specified then we use the default timezone.
-     * 
+     *
      * @throws IllegalDateTimeFieldException if this is not a full date + time
      */
     public Calendar asCalendar () throws IllegalDateTimeFieldException {
@@ -178,7 +176,7 @@ public class XSDDateTime extends AbstractDateTime {
         // calendar.set(Calendar.MILLISECOND, 0);
         return calendar;
     }
-    
+
     /**
      * Return the number of years in the dateTime.
      * @throws IllegalDateTimeFieldException if there is no legal year component
@@ -187,7 +185,7 @@ public class XSDDateTime extends AbstractDateTime {
         if ((mask & YEAR_MASK) == 0) throw new IllegalDateTimeFieldException("Year not available");
         return data[CY];
     }
-    
+
     /**
      * Return the month in the dateTime, this is in ISO8601 format so january = 1
      * @throws IllegalDateTimeFieldException if there is no legal month component
@@ -196,7 +194,7 @@ public class XSDDateTime extends AbstractDateTime {
         if ((mask & MONTH_MASK) == 0) throw new IllegalDateTimeFieldException("Month not available");
         return data[M];
     }
-    
+
     /**
      * Return the number of years in the dateTime
      * @throws IllegalDateTimeFieldException if there is no legal day component
@@ -205,7 +203,7 @@ public class XSDDateTime extends AbstractDateTime {
         if ((mask & DAY_MASK) == 0) throw new IllegalDateTimeFieldException("Day not available");
         return data[D];
     }
-    
+
     /**
      * Return the number of hours in the dateTime
      * @throws IllegalDateTimeFieldException if there is no legal time component
@@ -214,7 +212,7 @@ public class XSDDateTime extends AbstractDateTime {
         if ((mask & TIME_MASK) == 0) throw new IllegalDateTimeFieldException("Time not available");
         return data[h];
     }
-    
+
     /**
      * Return the number of minutes in the dateTime
      * @throws IllegalDateTimeFieldException if there is no legal time component
@@ -223,7 +221,7 @@ public class XSDDateTime extends AbstractDateTime {
         if ((mask & TIME_MASK) == 0) throw new IllegalDateTimeFieldException("Time not available");
         return data[m];
     }
-    
+
     /**
      * Return the number of full seconds in the dateTime
      * @throws IllegalDateTimeFieldException if there is no legal time component
@@ -232,7 +230,7 @@ public class XSDDateTime extends AbstractDateTime {
         if ((mask & TIME_MASK) == 0) throw new IllegalDateTimeFieldException("Time not available");
         return data[s];
     }
-    
+
     /**
      * Return the number of seconds in the dateTime, including fractional part
      * @throws IllegalDateTimeFieldException if there is no legal time component
@@ -241,7 +239,7 @@ public class XSDDateTime extends AbstractDateTime {
         if ((mask & TIME_MASK) == 0) throw new IllegalDateTimeFieldException("Time not available");
         return data[s] + fractionalSeconds;
     }
-    
+
     /**
      * Return the time component of the dateTime - i.e. just the hours/mins/seconds,
      * and returns the values in seconds.
@@ -251,7 +249,7 @@ public class XSDDateTime extends AbstractDateTime {
         if ((mask & TIME_MASK) == 0) throw new IllegalDateTimeFieldException("Time not available");
         return ((data[h]) * 60l + data[m]) * 60l + getSeconds();
     }
-    
+
     /**
      * Return legal serialized form.
      */
@@ -294,7 +292,7 @@ public class XSDDateTime extends AbstractDateTime {
 
         return buff.toString();
     }
-    
+
     /**
      * Return the lexical form of the time component.
      */
@@ -317,5 +315,5 @@ public class XSDDateTime extends AbstractDateTime {
         }
         return buff.toString();
     }
-    
+
 }

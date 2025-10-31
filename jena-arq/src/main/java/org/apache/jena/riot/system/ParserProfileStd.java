@@ -122,14 +122,11 @@ public class ParserProfileStd implements ParserProfile {
             Checker.iriViolationMessage(irix.str(), true, "Relative IRI: " + irix.str(), line, col, errorHandler);
             // And other warnings.
         }
-
         if ( ! irix.hasViolations() )
             return;
-
         irix.handleViolations((isError, message)->{
             Checker.iriViolationMessage(uriStr, isError, message, line, col, errorHandler);
         });
-
     }
 
     /**

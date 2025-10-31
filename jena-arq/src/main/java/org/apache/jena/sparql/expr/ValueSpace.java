@@ -174,5 +174,4 @@ public enum ValueSpace {
         // Includes unrecognized datatypes.
         return VSPACE_UNKNOWN ;
     }
-
 }

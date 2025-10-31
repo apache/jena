@@ -54,7 +54,6 @@ public class XSDBaseNumericType extends XSDDatatype {
         super(typeName, javaClass);
     }
 
-
     /**
      * Test whether the given LiteralLabel is a valid instance
      * of this datatype. This takes into account typing information
