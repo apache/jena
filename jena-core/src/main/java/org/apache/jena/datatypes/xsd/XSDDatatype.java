@@ -360,7 +360,7 @@ public class XSDDatatype extends BaseDatatype {
 
     /**
      * Parse a validated lexical form. Subclasses which use the default
-     * parse implementation and are not convered by the explicit convertValidatedData
+     * parse implementation and are not covered by the explicit convertValidatedData
      * cases should override this.
      */
     public Object parseValidated(String lexical) {

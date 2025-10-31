@@ -154,7 +154,7 @@ public class AbstractDateTime implements Comparable<AbstractDateTime> {
     }
 
 //  --------------------------------------------------------------------
-//  This code is adapated from Xerces 2.6.0 AbstractDateTimeDV.
+//  This code is adapted from Xerces 2.6.0 AbstractDateTimeDV.
 //  Copyright (c) 1999-2003 The Apache Software Foundation.  All rights
 //  reserved.
 //  --------------------------------------------------------------------
@@ -229,7 +229,6 @@ public class AbstractDateTime implements Comparable<AbstractDateTime> {
             return INDETERMINATE;
         }
         return INDETERMINATE;
-
     }
 
     /**
@@ -316,7 +315,6 @@ public class AbstractDateTime implements Comparable<AbstractDateTime> {
          }
          date[utc]='Z';
      }
-
 
     /**
      * Resets object representation of date/time
@@ -408,5 +406,4 @@ public class AbstractDateTime implements Comparable<AbstractDateTime> {
 //  --------------------------------------------------------------------
 //  End of code is adapated from Xerces 2.6.0 AbstractDateTimeDV.
 //  --------------------------------------------------------------------
-
 }
