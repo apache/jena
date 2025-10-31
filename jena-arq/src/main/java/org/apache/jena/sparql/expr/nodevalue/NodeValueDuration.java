@@ -25,31 +25,29 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.expr.NodeValue;
 
-/** XSD Duration */ 
+/** XSD Duration */
 
 public class NodeValueDuration extends NodeValue
 {
-    Duration duration; 
-    
-    public NodeValueDuration(Duration dt)
-    { 
+    Duration duration;
+
+    public NodeValueDuration(Duration dt) {
         duration = dt;
     }
-    
+
     public NodeValueDuration(Duration dt, Node n) { super(n); duration = dt; }
-    
+
     @Override
     public boolean isDuration() { return true; }
     @Override
     public Duration getDuration()     { return duration; }
 
     @Override
-    protected Node makeNode()
-    {
+    protected Node makeNode() {
         String lex = duration.toString();
         return NodeFactory.createLiteralDT(lex, XSDDatatype.XSDduration);
     }
-    
+
     @Override
     public void visit(NodeValueVisitor visitor) { visitor.visit(this); }
 }

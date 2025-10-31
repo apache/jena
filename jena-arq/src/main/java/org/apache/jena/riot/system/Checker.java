@@ -91,10 +91,6 @@ public class Checker {
         return checkIRI(node.getURI(), errorHandler, line, col);
     }
 
-//    public static boolean checkIRI(String iriStr) {
-//        return checkIRI(iriStr, nullErrorHandler, -1L, -1L);
-//    }
-
     /** See also {@link IRIs#reference} */
     public static boolean checkIRI(String iriStr, ErrorHandler errorHandler, long line, long col) {
         try {
@@ -148,10 +144,11 @@ public class Checker {
     }
 
     /** @deprecated Use {@link #checkLiteral(String, String, String, RDFDatatype, ErrorHandler, long, long)} */
-    @Deprecated
+    @Deprecated(forRemoval =  true)
     public static boolean checkLiteral(String lexicalForm, String lang, RDFDatatype datatype, ErrorHandler errorHandler, long line, long col) {
         return checkLiteral(lexicalForm, lang, (TextDirection)null, datatype, errorHandler, line, col);
     }
+
 
     public static boolean checkLiteral(String lexicalForm, String lang, String direction, RDFDatatype datatype, ErrorHandler errorHandler, long line, long col) {
         TextDirection textDir = null;

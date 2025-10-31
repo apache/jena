@@ -30,8 +30,9 @@ public class NodeValueString extends NodeValue
 
     private String string;
 
-    public NodeValueString(String str)         { string = str; }
-    public NodeValueString(String str, Node n) { super(n); string = str; }
+    public NodeValueString(Node node)             { this(node.getLiteralLexicalForm(), node); }
+    public NodeValueString(String str)            { string = str; }
+    public NodeValueString(String str, Node node) { super(node); string = str; }
 
     @Override
     public boolean isString() { return true; }
@@ -43,14 +44,10 @@ public class NodeValueString extends NodeValue
     public String asString() { return string; }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         if ( getNode() != null )
-        {
-            // Can be a plain string or an xsd:string.
             return FmtUtils.stringForNode(getNode());
-        }
-        return '"'+string+'"';
+        return '"' + string + '"';
     }
 
     @Override

@@ -363,6 +363,8 @@ public class XSDDuration extends AbstractDateTime {
     private static int[] canonical(int[] val) {
         val = Arrays.copyOf(val, val.length) ;
 
+        // Pairs of positive and negative overflows.
+
         while ( val[ms] >= 1000 ) {
             val[s] += 1 ;
             val[ms] -= 1000 ;
@@ -380,7 +382,6 @@ public class XSDDuration extends AbstractDateTime {
             val[m] -= 1 ;
             val[s] += 60 ;
         }
-
 
         while ( val[m] >= 60 ) {
             val[h] += 1 ;

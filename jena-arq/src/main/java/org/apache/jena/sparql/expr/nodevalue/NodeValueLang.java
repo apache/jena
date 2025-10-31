@@ -30,9 +30,6 @@ import org.apache.jena.sparql.util.FmtUtils;
  * A string + language tag which is not ""
  */
 public class NodeValueLang extends NodeValue {
-    // We could extend NodeValueString for the machinery
-    // but it get confusing as then it is a NodeValueString
-    // but isString is false.
 
     private final String string;
     private final String lang;

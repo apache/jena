@@ -28,7 +28,7 @@ import org.apache.jena.sparql.util.XSDNumUtils;
 
 public class NodeValueDecimal extends NodeValue
 {
-    BigDecimal decimal;
+    private BigDecimal decimal;
 
     public NodeValueDecimal(BigDecimal d)         { decimal = d; }
     public NodeValueDecimal(BigDecimal d, Node n) { super(n); decimal = d; }

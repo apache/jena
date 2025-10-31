@@ -81,8 +81,7 @@ public class NodeValueDateTime extends NodeValue
     }
 
     @Override
-    protected Node makeNode()
-    {
+    protected Node makeNode() {
         return null;
     }
 

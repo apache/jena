@@ -59,7 +59,7 @@ public final class NodeValueSortKey extends NodeValue implements Comparable<Node
     public boolean isSortKey() {
         return Boolean.TRUE;
     }
-    
+
     @Override
     public NodeValueSortKey getSortKey() {
         return this;
@@ -95,12 +95,10 @@ public final class NodeValueSortKey extends NodeValue implements Comparable<Node
     }
 
     @Override
-    public String toString()
-    { 
-        if (getNode() != null) {
+    public String toString() {
+        if ( getNode() != null )
             return FmtUtils.stringForNode(getNode());
-        }
-        return "'"+getString()+"'";
+        return "'" + getString() + "'";
     }
 
     @Override

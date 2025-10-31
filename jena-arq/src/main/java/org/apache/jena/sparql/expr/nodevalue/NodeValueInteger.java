@@ -31,9 +31,9 @@ public class NodeValueInteger extends NodeValue
 {
     //long integer = Integer.MIN_VALUE;
     // The performance impact of this seems to be very low
-    // After all, much of the work is pattern matching. 
+    // After all, much of the work is pattern matching.
     BigInteger integer;
-    
+
     public NodeValueInteger(BigInteger i)         { super(); integer = i; }
     public NodeValueInteger(BigInteger i, Node n) { super(n); integer = i; }
 //   public NodeValueInteger(long i, Node n)       { super(n); integer = new BigInteger(Long.toString(i)); }
@@ -49,7 +49,7 @@ public class NodeValueInteger extends NodeValue
     public boolean isFloat()  { return true; }
     @Override
     public boolean isDouble() { return true; }
-    
+
     @Override
     public BigInteger  getInteger()   { return integer; }
     @Override
@@ -62,18 +62,18 @@ public class NodeValueInteger extends NodeValue
     @Override
     protected Node makeNode()
     { return NodeFactory.createLiteralDT(integer.toString(), XSDDatatype.XSDinteger); }
-    
+
     @Override
     public String asString() { return toString(); }
-    
+
     @Override
-    public String toString()
-    { 
+    public String toString() {
         // Preserve lexical form
-        if ( getNode() != null ) return super.asString();  // str()
+        if ( getNode() != null )
+            return super.asString();
         return integer.toString();
     }
-    
+
     @Override
     public void visit(NodeValueVisitor visitor) { visitor.visit(this); }
 }

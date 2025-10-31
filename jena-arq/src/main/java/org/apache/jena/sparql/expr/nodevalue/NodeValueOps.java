@@ -45,8 +45,7 @@ import org.apache.jena.sparql.util.NodeUtils;
  * <p>
  * This class is not considered to be part of the ARQ API.
  */
-public class NodeValueOps
-{
+public class NodeValueOps {
     /*
      * Notes:
      * Does not consider whether a duration is dayTime or yearMonth for
@@ -326,7 +325,6 @@ public class NodeValueOps
      * </ul>
      */
     public static void checkTwoArgumentStringLiterals(String label, NodeValue arg1, NodeValue arg2) {
-
         /* Quote the spec:
          * Compatibility of two arguments is defined as:
          *    The arguments are simple literals or literals typed as xsd:string
