@@ -25,6 +25,7 @@ import java.util.List ;
 
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonArray;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.RDFNode ;
@@ -68,6 +69,11 @@ public class QueryExecUtils {
 
     public static void exec(Query query, DatasetGraph dsg) {
         QueryExec qExec = QueryExec.dataset(dsg).query(query).build();
+        exec(qExec);
+    }
+
+    public static void exec(Query query, Graph graph) {
+        QueryExec qExec = QueryExec.graph(graph).query(query).build();
         exec(qExec);
     }
 
