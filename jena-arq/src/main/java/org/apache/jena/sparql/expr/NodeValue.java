@@ -608,28 +608,10 @@ public abstract class NodeValue extends ExprNode
             return new NodeValueLang(node);
         }
 
-        // Typed literal
-        LiteralLabel lit = node.getLiteral();
-
-        // This includes type testing
-        // if ( ! lit.getDatatype().isValidLiteral(lit) )
-
-        // Use this - already calculated when the node is formed.
-        if ( !lit.isWellFormed() ) {
-            if ( NodeValue.VerboseWarnings ) {
-                String tmp = FmtUtils.stringForNode(node);
-                Log.warn(NodeValue.class, "Datatype format exception: " + tmp);
-            }
-            // Invalid lexical form.
-            return new NodeValueNode(node);
-        }
-
         NodeValue nv = _setByValue(node);
         if ( nv != null )
             return nv;
-
         return new NodeValueNode(node);
-        //raise(new ExprException("NodeValue.nodeToNodeValue: Unknown Node type: "+n));
     }
 
     // Jena code does not have these types (yet)
@@ -677,10 +659,11 @@ public abstract class NodeValue extends ExprNode
             // so must test for validity on the untrimmed lexical form.
             String lexTrimmed = lex.trim();
 
-            if ( ! datatype.equals(XSDdecimal) ) { // ! decimal is short for integers and all derived types.
+            if ( ! datatype.equals(XSDdecimal) ) { // decimal covers integer, and all derived types, lexical forms
                 // XSD integer and derived types
-                if ( XSDinteger.isValidLiteral(lit) )
-                {
+                if ( XSDinteger.isValidLiteral(lit) ) {
+                    if ( ! lit.isWellFormed() )
+                        return null;
                     // BigInteger does not accept such whitespace.
                     String s = lexTrimmed;
                     if ( s.startsWith("+") )
@@ -715,7 +698,9 @@ public abstract class NodeValue extends ExprNode
                 return new NodeValueBoolean(b, node);
             }
 
-            if ( (datatype.equals(XSDdateTime) || datatype.equals(XSDdateTimeStamp)) && XSDdateTime.isValid(lex) ) {
+            if ( datatype.equals(XSDdateTime) || datatype.equals(XSDdateTimeStamp) ) {
+                if ( ! XSDdateTime.isValid(lex) )
+                    return null;
                 return NodeValueDateTime.create(lexTrimmed, node);
             }
 
