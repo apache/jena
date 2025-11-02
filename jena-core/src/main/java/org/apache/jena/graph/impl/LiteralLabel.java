@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import org.apache.jena.atlas.lib.EscapeStr;
+import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
@@ -68,25 +69,34 @@ final public class LiteralLabel {
     private RDFDatatype dtype;
 
     /**
-     * The value form of the literal. It will be null if the value
-     * has not been parsed or if it is an illegal value.
+     * The value form of the literal. It will be null if the value has not been
+     * parsed or if it is an illegal value.
+     * Used in EAGER mode, otherwise it's null,
+     * and also if the LiteralLabel is created from a values, not from the lexical form
+     * and datatype.
+     * @implNote
+     * Access using {@link #getValueInternal()} or {@link #getIndexingValue()}.
      */
-    private Object value;
+    private Object value = null;
 
-    private enum ValueMode { EAGER , LAZY }
-    // LAZY does not completely pass the test suite - the point where bad literals
-    // cause exceptions changes
+    // Whether to calculate values early (when the LiteralLabel is created)
+    // or when the value is asked for.  For some uses (parsering-printing)
+    // GraphMem is the only storage to use value-based indexing.
+    // All other graphs are term-based and do not need the value.
+
+    // For LAZY mode, the value is in "value1" if the LiteralLabel
+    // is created from lexical form and datatype.
     //
-    // Whether this is the fact the tests are over sensitive or there is going to be
-    // unexpected behaviour needs investigation.
-    private static ValueMode valueMode = ValueMode.EAGER;
+    // Setting -- up to Jena5: EAGER -- from Jena6 : LAZY.
+    private enum ValueMode { EAGER , LAZY }
+    private static ValueMode valueMode = ValueMode.LAZY;
 
     /**
      * Indicates whether this is literal has a valid lexical form for the datatype.
+     * @implNote
+     * The inital value is know to {@link #isWellFormedRaw()}
      */
-    private boolean wellformed = true;
-
-    private Exception exception = null;
+    private boolean wellformed = false;
 
     private final int hash;
 
@@ -112,7 +122,7 @@ final public class LiteralLabel {
      *
      * @param lex       the lexical form of the literal
      * @param lang      the optional language tag, only relevant for rdf:langString and rdf:dirLangString
-     * @param dirLang   only relevant for rdf:langString and rdf:dirLangString
+     * @param dirLang   the language base direction, only relevant for rdf:langString and rdf:dirLangString
      * @param datatype     the type of the literal
      */
     /*package*/ LiteralLabel(String lex, String lang, TextDirection textDir, RDFDatatype datatype) {
@@ -121,17 +131,14 @@ final public class LiteralLabel {
         this.lang = lang;
         this.textDir = textDir;
         this.hash = calcHashCode();
-        if ( valueMode == ValueMode.EAGER ) {
-            this.wellformed = setValue(lex, this.dtype);
-            this.dtype = normalize(value, this.dtype);
-        } else
-            // Lazy value calculation.
-            this.value = null;
-    }
-
-    /** Calculate the indexing form for a language tag */
-    private static String indexingLang(String lang) {
-        return lang;
+        switch(valueMode) {
+            case EAGER -> {
+                this.wellformed = setValue(lex, this.dtype);
+                this.dtype = normalize(value, this.dtype);
+            }
+            case LAZY ->
+                this.value = null;
+        }
     }
 
     /**
@@ -176,7 +183,7 @@ final public class LiteralLabel {
             throw new DatatypeFormatException(value.toString(),  datatype, "in literal creation");
 
         this.lexicalForm = (datatype == null ? value.toString() : datatype.unparse(value));
-        hash = calcHashCode();
+        this.hash = calcHashCode();
     }
 
     /**
@@ -199,7 +206,7 @@ final public class LiteralLabel {
         this.lang = "";
         this.textDir = null;
         this.wellformed = true;
-        hash = calcHashCode();
+        this.hash = calcHashCode();
     }
 
     /**
@@ -214,42 +221,88 @@ final public class LiteralLabel {
             return true;
         } catch (DatatypeFormatException e) {
             // Normally this parameter is false.
-            if (JenaParameters.enableEagerLiteralValidation) {
-                e.fillInStackTrace();
+            if (JenaParameters.enableEagerLiteralValidation)
                 throw e;
-            }
-            exception  = e;
             return false;
         }
     }
 
     // -- Thread safe delayed initialization at the cost of "volatile" incurred in getValueLazy()
-    // Used by set-by-term.
-    // set-by-value is always eager.
+
+    /** Calculate the indexing form for a language tag */
+    private static String indexingLang(String lang) {
+        return lang;
+    }
+
+    /**
+     * Answer a suitable instance of a Java class representing this literal's value.
+     * Throws an exception if the literal is ill-formed.
+     */
+    public Object getValue() throws DatatypeFormatException {
+        Object val = getValueInternal();
+        if (! wellformed )
+            throw new DatatypeFormatException(lexicalForm, dtype, (Throwable)null);
+        if ( val != null )
+            // Value is good.
+            return val;
+        if ( ! JenaParameters.enableEagerLiteralValidation )
+            throw new DatatypeFormatException();
+        return null;
+    }
+
+    /**
+     * Get the possibly lazy-evaluated value.
+     * This method returns "null" for no value.
+     */
+    private Object getValueInternal() {
+        switch(valueMode) {
+            case EAGER: return value;
+            case LAZY: {
+                Object v = getValueLazy();
+                return (v == invalidValue ) ? null : v;
+            }
+            case null: throw new InternalErrorException();
+        }
+    }
 
     private volatile Object value1 = null;
-    private static Object invalidValue = new Object();
+    private static final Object invalidValue = new Object();
 
-    /** Does not return null - returns "invalidValue" */
+    /**
+     * Calculate the value if not already set.
+     * Does not return null - returns distinguished object "invalidValue".
+     */
     private Object getValueLazy() {
-        // Eager value processing.
+        switch(valueMode) {
+            case EAGER: return value;
+            case LAZY: return getSetValueLazily();
+        }
+        throw new InternalErrorException();
+    }
+
+    private Object getSetValueLazily() {
+        // Value can be set even in LAZY mode. This happens when a literal label is created from a value.
         if ( value != null )
             return value;
+        // Lazy value processing.
         if ( value1 != null ) {
             // value1 only goes from null to Object, and not back to null.
             return value1;
         }
         synchronized(this) {
             if ( value1 == null )
-                value1 = calcValue(lexicalForm);
+                value1 = calcValueFromLex(lexicalForm);
+            // Leave this.value as null.
+            return value1;
         }
-        // Object assignment is atomic.
-        // Synchronized ensured the value object is properly constructed.
-        value = (value1 != invalidValue ) ? value1 : null;
-        return value1;
     }
 
-    private Object calcValue(String lex) {
+    /** Calculate the value.
+     * This returns "invalidValue" if the value is not conformant with the datatype.
+     * This sets {@link #wellformed}.
+     * This may adjust the datatype.
+     */
+    private Object calcValueFromLex(String lex) {
         try {
             Object v = dtype.parse(lex);
             wellformed = true;
@@ -279,16 +332,18 @@ final public class LiteralLabel {
 
     /**
      * Answer true iff this is a well-formed literal (the lexical form conforms to the datatype).
-     * String literals (xsd:string, rdf:LangString,m rdf:dirLangString) are always well-formed.
+     * String literals (xsd:string, rdf:LangString, rdf:dirLangString) are always well-formed.
      */
     public boolean isWellFormed() {
         return dtype != null && isWellFormedRaw();
     }
 
     private boolean isWellFormedRaw() {
-        if ( ! wellformed )
-            return false;
-        // Force initialization.
+        // If wellformed is initialized to false so if it is true then this object passed checking.
+        // (invert if initialized to true).
+        if ( wellformed )
+            return true;
+        // Ensure value initialization.
         getValueInternal();
         return wellformed;
     }
@@ -299,7 +354,7 @@ final public class LiteralLabel {
 
     public String toString(PrefixMapping pmap, boolean quoting) {
         StringBuilder b = new StringBuilder();
-        if ( ! quoting && simpleLiteral() )
+        if ( ! quoting && dtype.equals(XSDDatatype.XSDstring) )
             return getLexicalForm();
 
         quoting = true;
@@ -322,10 +377,6 @@ final public class LiteralLabel {
                 b.append("^^").append(dtStr);
         }
         return b.toString();
-    }
-
-    private boolean simpleLiteral() {
-        return dtype.equals(XSDDatatype.XSDstring);
     }
 
     @Override
@@ -351,8 +402,8 @@ final public class LiteralLabel {
         if ( !lang.equals("") )
             // Assumed formatted/case-insensitive language tags.
             return getLexicalForm() + "@" + indexingLang(lang);
+        Object value = getValueInternal();
         if ( wellformed ) {
-            Object value = getValue();
             // JENA-1936
             // byte[] does not provide hashCode/equals based on the contents of the array.
             if ( value instanceof byte[] )
@@ -422,27 +473,6 @@ final public class LiteralLabel {
      */
     public TextDirection baseDirection() {
         return textDir;
-    }
-
-    /**
-     * Answer a suitable instance of a Java class representing this literal's value.
-     * May throw an exception if the literal is ill-formed.
-     */
-    public Object getValue() throws DatatypeFormatException {
-        Object val = getValueInternal();
-        if (! wellformed )
-            throw new DatatypeFormatException(lexicalForm, dtype, (Throwable)null);
-        if ( val != null )
-            // Value is good.
-            return val;
-        if ( ! JenaParameters.enableEagerLiteralValidation )
-            throw new DatatypeFormatException();
-        return null;
-    }
-
-    private Object getValueInternal() {
-        Object v = getValueLazy();
-        return (v == invalidValue ) ? null : v;
     }
 
     /**
@@ -626,9 +656,7 @@ final public class LiteralLabel {
     public int getValueHashCode() {
         if ( indexingValueIsSelf() )
             return hashCode();
-        Object v = getValueInternal();
-        if ( ! wellformed )
-            return hashCode();
+        Object v = getIndexingValue();
         if ( ! wellformed )
             return hashCode();
         return v.hashCode();
