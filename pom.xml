@@ -79,7 +79,7 @@
     <ver.protobuf>4.33.0</ver.protobuf>
     <ver.libthrift>0.22.0</ver.libthrift>
 
-    <ver.caffeine>3.2.2</ver.caffeine>
+    <ver.caffeine>3.2.3</ver.caffeine>
     <!-- Most of Jena uses other libraries for equivalent functionality. -->
     <ver.guava>33.5.0-jre</ver.guava>
 
@@ -103,7 +103,7 @@
 
     <!-- Testing -->
     <ver.junit4>4.13.2</ver.junit4>
-    <ver.junit>6.0.0</ver.junit>
+    <ver.junit>6.0.1</ver.junit>
  
     <ver.mockito>5.20.0</ver.mockito>
     <ver.awaitility>4.3.0</ver.awaitility>
