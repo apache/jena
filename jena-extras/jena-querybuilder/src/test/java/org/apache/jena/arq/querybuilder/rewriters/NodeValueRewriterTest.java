@@ -188,7 +188,8 @@ public class NodeValueRewriterTest {
         // 2001-10-26T21:32:52
         GregorianCalendar cal = new GregorianCalendar(2001, 10, 26, 21, 32, 52);
         Node n = NodeFactory.createLiteralByValue(cal, XSDDatatype.XSDdateTime);
-        NodeValue nv = NodeValueDateTime.create("2001-10-26T21:32:52", n);
+        @SuppressWarnings("removal")
+        NodeValue nv = NodeValue.makeDateTime(cal);
         nv.visit(rewriter);
         NodeValue result = rewriter.getResult();
         assertEquals(nv, result);

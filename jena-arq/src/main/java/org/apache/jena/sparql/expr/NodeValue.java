@@ -18,7 +18,6 @@
 
 package org.apache.jena.sparql.expr;
 
-import static javax.xml.datatype.DatatypeConstants.*;
 import static org.apache.jena.datatypes.xsd.XSDDatatype.*;
 import static org.apache.jena.sparql.expr.ValueSpace.VSPACE_DIFFERENT;
 import static org.apache.jena.sparql.expr.ValueSpace.VSPACE_UNKNOWN;
@@ -34,17 +33,12 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.atlas.logging.Log;
-import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.TypeMapper;
-import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.ext.xerces.DatatypeFactoryInst;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.TextDirection;
-import org.apache.jena.graph.impl.LiteralLabel;
-import org.apache.jena.sparql.ARQInternalErrorException;
-import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.binding.Binding;
@@ -53,7 +47,11 @@ import org.apache.jena.sparql.function.FunctionEnv;
 import org.apache.jena.sparql.graph.NodeConst;
 import org.apache.jena.sparql.graph.NodeTransform;
 import org.apache.jena.sparql.serializer.SerializationContext;
-import org.apache.jena.sparql.util.*;
+import org.apache.jena.sparql.sse.SSE;
+import org.apache.jena.sparql.util.FmtUtils;
+import org.apache.jena.sparql.util.NodeFactoryExtra;
+import org.apache.jena.sparql.util.NodeUtils;
+import org.apache.jena.sparql.util.XSDNumUtils;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.vocabulary.RDF;
 import org.slf4j.Logger;
@@ -63,55 +61,33 @@ public abstract class NodeValue extends ExprNode
 {
     static { JenaSystem.init(); }
 
-    // Maybe:: NodeValueStringLang - strings with language tag
-
-    /* Naming:
-     * getXXX => plain accessor
-     * asXXX =>  force to the required thing if necessary.
-     *
+    /*
      * Implementation notes:
      *
-     * 1. There is little point delaying turning a node into its value
-     *    because it has to be verified anyway (e.g. illegal literals).
-     *    Because a NodeValue is being created, it is reasonably likely it
-     *    is going to be used for it's value, so processing the datatype
-     *    can be done at creation time where it is clearer.
+     * Delaying turning a value into a graph Node is
+     * valuable because intermediates, like the result of 2+3, will not
+     * be needed as nodes unless used for assignment.
      *
-     * 2. Conversely, delaying turning a value into a graph node is
-     *    valuable because intermediates, like the result of 2+3, will not
-     *    be needed as nodes unless assignment (and there is no assignment
-     *    in SPARQL even if there is for ARQ).
-     *    Node level operations like str() don't need a full node.
+     * Operations:
+     * See also NV* for NodeValue code.
+     * See also NodeValueCmp for comparison operations.
+     * See also XSDFuncOp for XQuery/XPath functions.
+     * See also NodeFunctions for RDF Term related functions.
      *
-     * 3. nodevalue.NodeFunctions contains the SPARQL builtin implementations.
-     *    nodevalue.XSDFuncOp contains the implementation of the XQuery/Xpath
-     *    functions and operations.
-     *    See also NodeUtils.
      *
-     * 4. Note that SPARQL "=" is "known to be sameValueAs". Similarly "!=" is
-     *    known to be different.
-     *
-     * 5. To add a new number type:
-     *    Add sub type into nodevalue.NodeValueXXX
-     *      Must implement .hashCode() and .equals() based on value.
-     *    Add Functions.add/subtract/etc code and compareNumeric
-     *    Add to compare code
-     *    Fix TestExprNumeric
-     *    Write lots of tests.
-     *    Library code Maths1 and Maths2 for maths functions
+     * Note that SPARQL "=" is "known to be sameValueAs".
+     * Similarly "!=" is known to be different.
      */
 
     /*
      * Effective boolean value rules.
      *    boolean: value of the boolean
      *    string: length(string) > 0 is true
-     *    numeric: number != Nan && number != 0 is true
+     *    numeric: number != NaN && number != 0 is true
      * ref:  http://www.w3.org/TR/xquery/#dt-ebv
      */
 
     private static Logger log = LoggerFactory.getLogger(NodeValue.class);
-
-    // ---- Constants and initializers / public
 
     public static boolean VerboseWarnings = true;
     public static boolean VerboseExceptions = false;
@@ -146,7 +122,6 @@ public abstract class NodeValue extends ExprNode
 
     private Node node = null;     // Null used when a value has not been turned into a Node.
 
-    // Don't create direct - the static builders manage the value/node relationship
     protected NodeValue() { super(); }
     protected NodeValue(Node n) { super(); node = n; }
 
@@ -155,23 +130,15 @@ public abstract class NodeValue extends ExprNode
         return Set.of();
     }
 
-//    protected makeNodeValue(NodeValue nv)
-//    {
-//        if ( v.isNode() )    { ... }
-//        if ( v.isBoolean() ) { ... }
-//        if ( v.isInteger() ) { ... }
-//        if ( v.isDouble() )  { ... }
-//        if ( v.isDecimal() ) { ... }
-//        if ( v.isString() )  { ... }
-//        if ( v.isDate() )    { ... }
-//    }
-
-    // ----------------------------------------------------------------
-    // ---- Construct NodeValue without a graph node.
-
-    /** Convenience operation - parse a string to produce a NodeValue - common namespaces like xsd: are built-in */
+    /**
+     * Convenience operation,primarily for tests.
+     * Parse a string (using {@link SSE}) to produce a NodeValue - common namespaces like xsd: are built-in
+     */
     public static NodeValue parse(String string)
     { return makeNode(NodeFactoryExtra.parseNode(string)); }
+
+    // ----------------------------------------------------------------
+    // ---- Construct NodeValue without a graph node (calculated later if needed)
 
     public static NodeValue makeInteger(long i)
     { return new NodeValueInteger(BigInteger.valueOf(i)); }
@@ -221,6 +188,8 @@ public abstract class NodeValue extends ExprNode
     public static NodeValue makeDate(String lexicalForm)
     { return NodeValue.makeNode(lexicalForm, XSDdate); }
 
+    /** @deprecated Use a XMLGregorianCalendar */
+    @Deprecated(forRemoval=true)
     public static NodeValue makeDateTime(Calendar cal) {
         String lex = DateTimeUtils.calendarToXSDDateTimeString(cal);
         return NodeValue.makeNode(lex, XSDdateTime);
@@ -229,9 +198,11 @@ public abstract class NodeValue extends ExprNode
     public static NodeValue makeDateTime(XMLGregorianCalendar cal) {
         String lex = cal.toXMLFormat();
         Node node = NodeFactory.createLiteralDT(lex, XSDdateTime);
-        return NodeValueDateTime.create(lex, node);
+        return new NodeValueDateTime(cal, node);
     }
 
+    /** @deprecated Use a XMLGregorianCalendar */
+    @Deprecated(forRemoval=true)
     public static NodeValue makeDate(Calendar cal) {
         String lex = DateTimeUtils.calendarToXSDDateString(cal);
         return NodeValue.makeNode(lex, XSDdate);
@@ -240,7 +211,7 @@ public abstract class NodeValue extends ExprNode
     public static NodeValue makeDate(XMLGregorianCalendar cal) {
         String lex = cal.toXMLFormat();
         Node node = NodeFactory.createLiteralDT(lex, XSDdate);
-        return NodeValueDateTime.create(lex, node);
+        return new NodeValueDateTime(cal, node);
     }
 
     public static NodeValue makeDuration(String lexicalForm)
@@ -248,9 +219,6 @@ public abstract class NodeValue extends ExprNode
 
     public static NodeValue makeDuration(Duration duration)
     { return new NodeValueDuration(duration); }
-
-    public static NodeValue makeNodeDuration(Duration duration, Node node)
-    { return new NodeValueDuration(duration, node); }
 
     public static NodeValue makeBoolean(boolean b)
     { return b ? NodeValue.TRUE : NodeValue.FALSE; }
@@ -267,7 +235,7 @@ public abstract class NodeValue extends ExprNode
 
     public static NodeValue makeNode(String lexicalForm, RDFDatatype dtype) {
         Node n = NodeFactory.createLiteralDT(lexicalForm, dtype);
-        return NodeValue.makeNode(n);
+        return makeNode(n);
     }
 
     // Convenience - knows that lang tags aren't allowed with datatypes.
@@ -302,64 +270,46 @@ public abstract class NodeValue extends ExprNode
     public static NodeValue makeNodeBoolean(boolean b)
     { return b ? NodeValue.TRUE : NodeValue.FALSE; }
 
-    public static NodeValue makeNodeBoolean(String lexicalForm) {
-        return makeNode(lexicalForm, null, XSDboolean.getURI());
-    }
+    public static NodeValue makeNodeBoolean(String lexicalForm)
+    { return makeNode(lexicalForm, XSDboolean); }
 
-    public static NodeValue makeNodeInteger(long v) {
-        return makeNode(Long.toString(v), null, XSDinteger.getURI());
-    }
+    public static NodeValue makeNodeInteger(long v)
+    { return makeNode(Long.toString(v), XSDinteger); }
 
-    public static NodeValue makeNodeInteger(String lexicalForm) {
-        return makeNode(lexicalForm, null, XSDinteger.getURI());
-    }
+    public static NodeValue makeNodeInteger(String lexicalForm)
+    { return makeNode(lexicalForm, XSDinteger); }
 
-    public static NodeValue makeNodeFloat(float f) {
-        return makeNode(XSDNumUtils.stringForm(f), null, XSDfloat.getURI());
-    }
+    public static NodeValue makeNodeFloat(float f)
+    { return makeNode(XSDNumUtils.stringForm(f), XSDfloat); }
 
-    public static NodeValue makeNodeFloat(String lexicalForm) {
-        return makeNode(lexicalForm, null, XSDfloat.getURI());
-    }
+    public static NodeValue makeNodeFloat(String lexicalForm)
+    { return makeNode(lexicalForm, XSDfloat); }
 
-    public static NodeValue makeNodeDouble(double v) {
-        return makeNode(XSDNumUtils.stringForm(v), null, XSDdouble.getURI());
-    }
+    public static NodeValue makeNodeDouble(double v)
+    { return makeNode(XSDNumUtils.stringForm(v), XSDdouble); }
 
-    public static NodeValue makeNodeDouble(String lexicalForm) {
-        return makeNode(lexicalForm, null, XSDdouble.getURI());
-    }
+    public static NodeValue makeNodeDouble(String lexicalForm)
+    { return makeNode(lexicalForm, XSDdouble); }
 
     public static NodeValue makeNodeDecimal(BigDecimal decimal) {
         String lex = XSDNumUtils.stringFormatARQ(decimal);
-        return makeNode(lex, XSDDatatype.XSDdecimal);
+        return makeNode(lex, XSDdecimal);
     }
 
-    public static NodeValue makeNodeDecimal(String lexicalForm) {
-        return makeNode(lexicalForm, null, XSDdecimal.getURI());
-    }
+    public static NodeValue makeNodeDecimal(String lexicalForm)
+    { return makeNode(lexicalForm, XSDdecimal); }
 
-    public static NodeValue makeNodeString(String string) {
-        return makeNode(string, null, (String)null);
-    }
+    public static NodeValue makeNodeString(String string)
+    { return makeNode(string, XSDstring); }
 
-    public static NodeValue makeNodeDateTime(Calendar date) {
-        String lex = DateTimeUtils.calendarToXSDDateTimeString(date);
-        return makeNode(lex, XSDdateTime);
-    }
+    public static NodeValue makeNodeDateTime(String lexicalForm)
+    { return makeNode(lexicalForm, XSDdateTime); }
 
-    public static NodeValue makeNodeDateTime(String lexicalForm) {
-        return makeNode(lexicalForm, XSDdateTime);
-    }
+    public static NodeValue makeNodeDate(String lexicalForm)
+    { return makeNode(lexicalForm, XSDdate); }
 
-    public static NodeValue makeNodeDate(Calendar date) {
-        String lex = DateTimeUtils.calendarToXSDDateString(date);
-        return makeNode(lex, XSDdate);
-    }
-
-    public static NodeValue makeNodeDate(String lexicalForm) {
-        return makeNode(lexicalForm, XSDdate);
-    }
+    public static NodeValue makeNodeDuration(Duration duration, Node node)
+    { return new NodeValueDuration(duration, node); }
 
     // ----------------------------------------------------------------
     // ---- Expr interface
@@ -437,7 +387,7 @@ public abstract class NodeValue extends ExprNode
      * if known to be different values, throw ExprEvalException otherwise
      */
     public static boolean sameValueAs(NodeValue nv1, NodeValue nv2) {
-        return NodeValueCmp.sameValueAs(nv1, nv2);
+        return NVCompare.sameValueAs(nv1, nv2);
     }
 
     /**
@@ -453,7 +403,7 @@ public abstract class NodeValue extends ExprNode
      * the two NodeValues are known to be the same, else throw ExprEvalException
      */
     public static boolean notSameValueAs(NodeValue nv1, NodeValue nv2) {
-        return NodeValueCmp.notSameValueAs(nv1, nv2);
+        return NVCompare.notSameValueAs(nv1, nv2);
     }
 
     // ----------------------------------------------------------------
@@ -468,7 +418,7 @@ public abstract class NodeValue extends ExprNode
      */
     public static int compare(NodeValue nv1, NodeValue nv2) {
         //return NodeValueCompare.compare(nv1, nv2);
-        int x = NodeValueCmp.compareByValue(nv1, nv2);
+        int x = NVCompare.compareByValue(nv1, nv2);
         if ( x == Expr.CMP_INDETERMINATE || x == Expr.CMP_UNEQUAL )
             throw new ExprNotComparableException(null);
         return x;
@@ -484,7 +434,7 @@ public abstract class NodeValue extends ExprNode
      */
     public static int compareAlways(NodeValue nv1, NodeValue nv2) {
         //return NodeValueCompare.compareAlways(nv1, nv2);
-        return NodeValueCmp.compareAlways(nv1, nv2);
+        return NVCompare.compareAlways(nv1, nv2);
     }
 
     // ----------------------------------------------------------------
@@ -514,6 +464,10 @@ public abstract class NodeValue extends ExprNode
 
     // ----------------------------------------------------------------
     // ---- Subclass operations
+    // "isX" means "can it be used where X is expected", according to the XPath/XQuery Functions and Operator rules.
+    // e.g. NodeValueFloat.isDouble is true.
+
+    public boolean isLiteral()      { return getNode() == null || getNode().isLiteral(); }
 
     public boolean isBoolean()      { return false; }
     public boolean isString()       { return false; }
@@ -529,23 +483,11 @@ public abstract class NodeValue extends ExprNode
     public boolean hasDateTime()    { return isDateTime() || isDate() || isTime() || isGYear() || isGYearMonth() || isGMonth() || isGMonthDay() || isGDay(); }
     public boolean isDateTime()     { return false; }
     public boolean isDate()         { return false; }
-    public boolean isLiteral()      { return getNode() == null || getNode().isLiteral(); }
     public boolean isTime()         { return false; }
+
     public boolean isDuration()     { return false; }
-
-    public boolean isYearMonthDuration() {
-        if ( ! isDuration() ) return false;
-        Duration dur = getDuration();
-        return ( dur.isSet(YEARS) || dur.isSet(MONTHS) ) &&
-               ! dur.isSet(DAYS) && ! dur.isSet(HOURS) && ! dur.isSet(MINUTES) && ! dur.isSet(SECONDS);
-    }
-
-    public boolean isDayTimeDuration() {
-        if ( ! isDuration() ) return false;
-        Duration dur = getDuration();
-        return !dur.isSet(YEARS) && ! dur.isSet(MONTHS) &&
-            ( dur.isSet(DAYS) || dur.isSet(HOURS) || dur.isSet(MINUTES) || dur.isSet(SECONDS) );
-    }
+    public boolean isYearMonthDuration() { return isDuration() && NVOps.isYearMonthDuration(getDuration()); }
+    public boolean isDayTimeDuration()   { return isDuration() && NVOps.isDayTimeDuration(getDuration()); }
 
     public boolean isGYear()        { return false; }
     public boolean isGYearMonth()   { return false; }
@@ -608,175 +550,14 @@ public abstract class NodeValue extends ExprNode
             return new NodeValueLang(node);
         }
 
-        NodeValue nv = _setByValue(node);
-        if ( nv != null )
-            return nv;
-        return new NodeValueNode(node);
-    }
-
-    // Jena code does not have these types (yet)
-    private static final String dtXSDprecisionDecimal   = XSD+"#precisionDecimal";
-
-    // Returns null for unrecognized literal.
-    private static NodeValue _setByValue(Node node) {
-        // This should not happen.
-        // nodeToNodeValue should have been dealt with it.
-        if ( NodeUtils.hasLang(node) ) {
-            if ( NodeUtils.hasLangDir(node) )
-                return new NodeValueLangDir(node);
-            return new NodeValueLang(node);
-        }
-        LiteralLabel lit = node.getLiteral();
-        RDFDatatype datatype = lit.getDatatype();
-
-        // Quick check.
-        // Only XSD supported.
-        // And (for testing) roman numerals.
-        String datatypeURI = datatype.getURI();
-        if ( !datatypeURI.startsWith(xsdNamespace) && !SystemARQ.EnableRomanNumerals ) {
-            // Not XSD.
-            return null;
-        }
-
-        String lex = lit.getLexicalForm();
-
-        try { // DatatypeFormatException - should not happen
-            if ( XSDstring.isValidLiteral(lit) )
-                // String - plain or xsd:string, or derived datatype.
-                return new NodeValueString(lex, node);
-
-            // Otherwise xsd:string is like any other unknown datatype.
-            // Ditto literals with language tags (which are handled by nodeToNodeValue)
-
-            // isValidLiteral is a value test - not a syntactic test.
-            // This makes a difference in that "1"^^xsd:decimal" is a
-            // valid literal for xsd:integer (all other cases are subtypes of xsd:integer)
-            // which we want to become integer anyway).
-
-            // Order here is promotion order integer-decimal-float-double
-
-            // XSD allows whitespace. Java String.trim removes too much
-            // so must test for validity on the untrimmed lexical form.
-            String lexTrimmed = lex.trim();
-
-            if ( ! datatype.equals(XSDdecimal) ) { // decimal covers integer, and all derived types, lexical forms
-                // XSD integer and derived types
-                if ( XSDinteger.isValidLiteral(lit) ) {
-                    if ( ! lit.isWellFormed() )
-                        return null;
-                    // BigInteger does not accept such whitespace.
-                    String s = lexTrimmed;
-                    if ( s.startsWith("+") )
-                        // BigInteger does not accept leading "+"
-                        s = s.substring(1);
-                    // Includes subtypes (int, byte, postiveInteger etc).
-                    // NB Known to be valid for type by now
-                    BigInteger integer = new BigInteger(s);
-                    return new NodeValueInteger(integer, node);
-                }
-            }
-
-            if ( datatype.equals(XSDdecimal) && XSDdecimal.isValidLiteral(lit) ) {
-                BigDecimal decimal = new BigDecimal(lexTrimmed);
-                return new NodeValueDecimal(decimal, node);
-            }
-
-            if ( datatype.equals(XSDfloat) && XSDfloat.isValidLiteral(lit) ) {
-                // NB If needed, call to floatValue, then assign to double.
-                // Gets 1.3f != 1.3d right
-                float f = ((Number)lit.getValue()).floatValue();
-                return new NodeValueFloat(f, node);
-            }
-
-            if ( datatype.equals(XSDdouble) && XSDdouble.isValidLiteral(lit) ) {
-                double d = ((Number)lit.getValue()).doubleValue();
-                return new NodeValueDouble(d, node);
-            }
-
-            if ( datatype.equals(XSDboolean) && XSDboolean.isValidLiteral(lit) ) {
-                boolean b = (Boolean) lit.getValue();
-                return new NodeValueBoolean(b, node);
-            }
-
-            if ( datatype.equals(XSDdateTime) || datatype.equals(XSDdateTimeStamp) ) {
-                if ( ! XSDdateTime.isValid(lex) )
-                    return null;
-                return NodeValueDateTime.create(lexTrimmed, node);
-            }
-
-            if ( datatype.equals(XSDdate) && XSDdate.isValidLiteral(lit) ) {
-                return NodeValueDateTime.create(lexTrimmed, node);
-            }
-
-            if ( datatype.equals(XSDtime) && XSDtime.isValidLiteral(lit) ) {
-                return NodeValueDateTime.create(lexTrimmed, node);
-            }
-
-            if ( datatype.equals(XSDgYear) && XSDgYear.isValidLiteral(lit) ) {
-                return NodeValueDateTime.create(lexTrimmed, node);
-            }
-            if ( datatype.equals(XSDgYearMonth) && XSDgYearMonth.isValidLiteral(lit) ) {
-                return NodeValueDateTime.create(lexTrimmed, node);
-            }
-            if ( datatype.equals(XSDgMonth) && XSDgMonth.isValidLiteral(lit) ) {
-                return NodeValueDateTime.create(lexTrimmed, node);
-            }
-
-            if ( datatype.equals(XSDgMonthDay) && XSDgMonthDay.isValidLiteral(lit) ) {
-                return NodeValueDateTime.create(lexTrimmed, node);
-            }
-            if ( datatype.equals(XSDgDay) && XSDgDay.isValidLiteral(lit) ) {
-                return NodeValueDateTime.create(lexTrimmed, node);
-            }
-
-            // -- Duration
-
-            if ( datatype.equals(XSDduration) && XSDduration.isValid(lex) ) {
-                Duration duration = xmlDatatypeFactory.newDuration(lexTrimmed);
-                return new NodeValueDuration(duration, node);
-            }
-
-            if ( datatype.equals(XSDyearMonthDuration) && XSDyearMonthDuration.isValid(lex) ) {
-                Duration duration = xmlDatatypeFactory.newDuration(lexTrimmed);
-                return new NodeValueDuration(duration, node);
-            }
-            if ( datatype.equals(XSDdayTimeDuration) && XSDdayTimeDuration.isValid(lex) ) {
-                Duration duration = xmlDatatypeFactory.newDuration(lexTrimmed);
-                return new NodeValueDuration(duration, node);
-            }
-
-            // If wired into the TypeMapper via RomanNumeralDatatype.enableAsFirstClassDatatype
-//            if ( RomanNumeralDatatype.get().isValidLiteral(lit) )
-//            {
-//                int i = ((RomanNumeral)lit.getValue()).intValue();
-//                return new NodeValueInteger(i);
-//            }
-
-            // Not wired in
-            if ( SystemARQ.EnableRomanNumerals )
-            {
-                if ( lit.getDatatypeURI().equals(RomanNumeralDatatype.get().getURI()) )
-                {
-                    Object obj = RomanNumeralDatatype.get().parse(lexTrimmed);
-                    if ( obj instanceof Integer )
-                        return new NodeValueInteger(((Integer)obj).longValue());
-                    if ( obj instanceof RomanNumeral )
-                        return new NodeValueInteger( ((RomanNumeral)obj).intValue() );
-                    throw new ARQInternalErrorException("DatatypeFormatException: Roman numeral is unknown class");
-                }
-            }
-
-        } catch (DatatypeFormatException ex)
-        {
-            // Should have been caught earlier by special test in nodeToNodeValue
-            throw new ARQInternalErrorException("DatatypeFormatException: "+lit, ex);
-        }
-        return null;
+        // Includes creating NodeValueNode for ill-formed literals.
+        NodeValue nv = NVFactory.create(node);
+        return nv;
     }
 
     // ----------------------------------------------------------------
 
-    // Point to catch all exceptions.
+    /** Common point for exceptions during evaluation. */
     public static void raise(ExprException ex) {
         throw ex;
     }
@@ -787,7 +568,6 @@ public abstract class NodeValue extends ExprNode
     private void forceToNode() {
         if ( node == null )
             node = asNode();
-
         if ( node == null )
             raise(new ExprEvalException("Not a node: " + this));
     }
@@ -813,7 +593,6 @@ public abstract class NodeValue extends ExprNode
 
     // Convert to a string - usually overridden.
     public String asString() {
-        // Do not call .toString()
         forceToNode();
         return NodeFunctions.str(node);
     }
@@ -825,13 +604,13 @@ public abstract class NodeValue extends ExprNode
 
     @Override
     public boolean equals(Expr other, boolean bySyntax) {
+        // Java equals, not "same value" or "same term"
         if ( other == null ) return false;
         if ( this == other ) return true;
         // This is the equality condition Jena uses - lang tags are different by case.
         if ( ! ( other instanceof NodeValue nv) )
             return false;
         return asNode().equals(nv.asNode());
-        // Not NodeFunctions.sameTerm (which smooshes language tags by case)
     }
 
     public abstract void visit(NodeValueVisitor visitor);

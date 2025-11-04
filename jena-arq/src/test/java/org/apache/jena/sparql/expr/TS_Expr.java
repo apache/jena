@@ -27,7 +27,8 @@ import org.apache.jena.sparql.expr.nodevalue.TestNodeValueSortKey;
 
 @Suite
 @SelectClasses({
-    TestNodeValue.class
+    TestNVFactory.class
+    , TestNodeValue.class
     , TestExpressions.class
     , TestExpressions2.class
     , TestExpressions3.class

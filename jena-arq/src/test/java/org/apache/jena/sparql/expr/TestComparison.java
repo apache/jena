@@ -77,7 +77,7 @@ public class TestComparison {
 
     private static void compare(NodeValue nv1, NodeValue nv2, int expected) {
         try {
-            int cmp = NodeValueCmp.compareByValue(nv1, nv2);
+            int cmp = NVCompare.compareByValue(nv1, nv2);
             assertEquals(expected, cmp);
         } catch (ExprNotComparableException ex) {
             throw ex;

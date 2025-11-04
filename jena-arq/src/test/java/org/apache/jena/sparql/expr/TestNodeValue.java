@@ -23,6 +23,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.math.BigDecimal;
 import java.util.*;
 
+import javax.xml.datatype.XMLGregorianCalendar;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -163,18 +165,31 @@ public class TestNodeValue
     }
 
     @Test
-    public void testDateTime1() {
+    public void testDateTime1x() {
+        // Legacy
+        // Better to use XMLGregorianCalendar
         Calendar cal = new GregorianCalendar();
         cal.setTimeZone(TimeZone.getTimeZone("GMT"));
         // Clear/ set all fields (milliseconds included).
         cal.setTimeInMillis(0);
         cal.set(2005, 01, 18, 20, 39, 10); // NB Months from 0, not 1
 
+        @SuppressWarnings("removal")
         NodeValue v = NodeValue.makeDateTime(cal);
         assertTrue(v.isDateTime(), ()->"Not a dateTime: " + v);
         assertFalse(v.isDate(), ()->"A date: " + v);
         // DateTimes always have nodes because we used that to parse the thing.
     }
+
+    @Test
+    public void testDateTime1() {
+        // Better to use XMLGregorianCalendar
+        XMLGregorianCalendar cal = NodeValue.xmlDatatypeFactory.newXMLGregorianCalendar("2025-11-05T12:08:30.5Z");
+        NodeValue v = NodeValue.makeDateTime(cal);
+        assertTrue(v.isDateTime(), ()->"Not a dateTime: " + v);
+        assertFalse(v.isDate(), ()->"A date: " + v);
+    }
+
 
     @Test
     public void testDateTime2() {
@@ -262,19 +277,26 @@ public class TestNodeValue
     }
 
     @Test
-    public void testDate1() {
+    public void testDate1x() {
+        // Legacy
         Calendar cal = new GregorianCalendar();
         cal.setTimeZone(TimeZone.getTimeZone("GMT"));
         // Clear/ set all fields (milliseconds included).
         cal.setTimeInMillis(0);
-        // NB Months from 0, not 1
-        // For a date, must be time = 00:00:00
         cal.set(2005, 01, 18, 0, 0, 0);
-
+        @SuppressWarnings("removal")
         NodeValue v = NodeValue.makeDate(cal);
         assertTrue(v.isDate(), ()->"Not a date: " + v);
         assertFalse(v.isDateTime(), ()->"A dateTime: " + v);
-        // DateTimes always have nodes because we used that to parse the thing.
+    }
+
+    @Test
+    public void testDate1() {
+        // Better to use XMLGregorianCalendar
+        XMLGregorianCalendar cal = NodeValue.xmlDatatypeFactory.newXMLGregorianCalendar("2025-11-05");
+        NodeValue v = NodeValue.makeDate(cal);
+        assertTrue(v.isDate(), ()->"Not a date: " + v);
+        assertFalse(v.isDateTime(), ()->"A dateTime: " + v);
     }
 
     @Test
