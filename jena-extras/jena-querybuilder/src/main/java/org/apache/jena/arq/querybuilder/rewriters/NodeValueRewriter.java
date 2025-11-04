@@ -81,7 +81,7 @@ class NodeValueRewriter extends AbstractRewriter<NodeValue> implements NodeValue
 
     @Override
     public void visit(NodeValueDateTime nv) {
-        push(NodeValueDateTime.create(nv.getDateTime().toXMLFormat(), changeNode(nv.asNode())));
+        push(new NodeValueDateTime(nv.getDateTime(), changeNode(nv.asNode())));
     }
 
     @Override

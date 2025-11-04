@@ -30,21 +30,6 @@ public class NodeValueDateTime extends NodeValue
 {
     final private XMLGregorianCalendar datetime;
 
-    /** Lex - caller removes leading and trailing whitespace. */
-    public static NodeValueDateTime create(String lex, Node n) {
-        // Java bug : gMonth with a timezone of Z causes IllegalArgumentException
-        if ( XSDgMonth.equals(n.getLiteralDatatype()) ) {
-            if ( lex.endsWith("Z") ) {
-                lex = lex.substring(0, lex.length() - 1);
-                XMLGregorianCalendar datetime = NodeValue.xmlDatatypeFactory.newXMLGregorianCalendar(lex);
-                datetime.setTimezone(0);
-                return new NodeValueDateTime(datetime, n);
-            }
-        }
-        XMLGregorianCalendar datetime = NodeValue.xmlDatatypeFactory.newXMLGregorianCalendar(lex);
-        return new NodeValueDateTime(datetime, n);
-    }
-
     public NodeValueDateTime(XMLGregorianCalendar datetime, Node n) {
         super(n);
         this.datetime = datetime;

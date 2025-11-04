@@ -39,7 +39,7 @@ import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
 import org.apache.jena.sparql.util.NodeCmp;
 
-public class NodeValueCmp {
+class NVCompare {
 
     // ----------------------------------------------------------------
     // ---- sameValueAs

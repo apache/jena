@@ -181,9 +181,9 @@ public class TestSortOrdering {
         test(nv1, nv2, nv3);
 
         // And this should be <= order
-        int x12 = NodeValueCmp.compareWithOrdering(nv1, nv2);
-        int x23 = NodeValueCmp.compareWithOrdering(nv2, nv3);
-        int x13 = NodeValueCmp.compareWithOrdering(nv1, nv3);
+        int x12 = NVCompare.compareWithOrdering(nv1, nv2);
+        int x23 = NVCompare.compareWithOrdering(nv2, nv3);
+        int x13 = NVCompare.compareWithOrdering(nv1, nv3);
 
         boolean isTransitiveLE = isLE(x12) && isLE(x23) && isLE(x13);
 
@@ -234,9 +234,9 @@ public class TestSortOrdering {
      * Test, return true if a transitive order of arguments holds (either "less than or equals" or "greater than or equal").
      */
     static boolean testWorker(NodeValue nv1, NodeValue nv2, NodeValue nv3) {
-        int x12 = NodeValueCmp.compareWithOrdering(nv1, nv2);
-        int x23 = NodeValueCmp.compareWithOrdering(nv2, nv3);
-        int x13 = NodeValueCmp.compareWithOrdering(nv1, nv3);
+        int x12 = NVCompare.compareWithOrdering(nv1, nv2);
+        int x23 = NVCompare.compareWithOrdering(nv2, nv3);
+        int x13 = NVCompare.compareWithOrdering(nv1, nv3);
 
         if ( isLE(x12) ) {
             if ( isLE(x23) ) {
@@ -256,11 +256,11 @@ public class TestSortOrdering {
     }
 
     private static boolean isLE(NodeValue nv1, NodeValue nv2) {
-        return isLE(NodeValueCmp.compareWithOrdering(nv1, nv2));
+        return isLE(NVCompare.compareWithOrdering(nv1, nv2));
     }
 
     private static boolean isGE(NodeValue nv1, NodeValue nv2) {
-        return isGE(NodeValueCmp.compareWithOrdering(nv1, nv2));
+        return isGE(NVCompare.compareWithOrdering(nv1, nv2));
     }
 
     private static boolean isLE(int x) {
