@@ -73,6 +73,9 @@ import org.apache.jena.util.TS_UtilsARQ;
     Scripts_RefEngine.class,
     Scripts_SPARQL_Dataset.class,
 
+    // Composite datatypes extension
+    Scripts_CDTs.class
+
     // Only runs when src-examples is a source folder, which it isn't in the build.
     //, org.apache.jena.arq.examples.TC_Examples.class
 })

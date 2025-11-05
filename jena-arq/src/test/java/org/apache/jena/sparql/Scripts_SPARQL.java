@@ -77,12 +77,6 @@ public class Scripts_SPARQL {
         return all(TestConsts.SPARQL12_TESTS_DIR+"manifest.ttl");
     }
 
-    @TestFactory
-    @DisplayName("SPARQL CDTs")
-    public Stream<DynamicNode> testFactorySPARQL_CDTs() {
-        return all("testing/SPARQL-CDTs/manifest-all.ttl");
-    }
-
     private static Stream<DynamicNode> all(String... manifests) {
         if ( manifests == null || manifests.length == 0 )
             throw new ARQException("No manifest files");
