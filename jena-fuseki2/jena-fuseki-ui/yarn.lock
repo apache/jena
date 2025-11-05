@@ -3086,9 +3086,9 @@ cypress-vite@^1.4.2:
     debug "^4.3.4"
 
 cypress@^15.0.0:
-  version "15.5.0"
-  resolved "https://registry.yarnpkg.com/cypress/-/cypress-15.5.0.tgz#039c8549f623957a14e57adee46dbfabaabac741"
-  integrity sha512-7jXBsh5hTfjxr9QQONC2IbdTj0nxSyU8x4eiarMZBzXzCj3pedKviUx8JnLcE4vL8e0TsOzp70WSLRORjEssRA==
+  version "15.6.0"
+  resolved "https://registry.yarnpkg.com/cypress/-/cypress-15.6.0.tgz#bde57b8ae9fbe6473a3324bb1d583437c299230d"
+  integrity sha512-Vqo66GG1vpxZ7H1oDX9umfmzA3nF7Wy80QAc3VjwPREO5zTY4d1xfQFNPpOWleQl9vpdmR2z1liliOcYlRX6rQ==
   dependencies:
     "@cypress/request" "^3.0.9"
     "@cypress/xvfb" "^1.2.4"
