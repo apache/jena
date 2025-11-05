@@ -65,11 +65,11 @@ public class CDTAwareParserProfile extends ParserProfileStd {
         // are all blank node identifers that occur directly in the file (i.e.,
         // ourside of CDT literals).
 
-        if ( datatype.equals(CompositeDatatypeList.type) ) {
+        if ( datatype.equals(CompositeDatatypeList.datatype()) ) {
             return createListLiteral(lex);
         }
 
-        if ( datatype.equals(CompositeDatatypeMap.type) ) {
+        if ( datatype.equals(CompositeDatatypeMap.datatype()) ) {
             return createMapLiteral(lex);
         }
 
@@ -88,7 +88,7 @@ public class CDTAwareParserProfile extends ParserProfileStd {
             value = ParserForCDTLiterals.parseListLiteral(this, lex);
         }
         catch ( final Exception ex ) {
-            throw new DatatypeFormatException(lex, CompositeDatatypeList.type, ex);
+            throw new DatatypeFormatException(lex, CompositeDatatypeList.datatype(), ex);
         }
 
         // At this point we have both the lexical form (which, after the
@@ -104,7 +104,7 @@ public class CDTAwareParserProfile extends ParserProfileStd {
         // may not be identical to the lexical form with which we have created
         // the value here. The issue with that is that a SAMETERM comparison
         // would incorrectly return false.
-        final LiteralLabel ll = LiteralLabelFactory.createIncludingValue(lex, value, CompositeDatatypeList.type);
+        final LiteralLabel ll = LiteralLabelFactory.createIncludingValue(lex, value, CompositeDatatypeList.datatype());
         @SuppressWarnings("deprecation")
         Node n = NodeFactory.createLiteral(ll);
         return n;
@@ -122,12 +122,12 @@ public class CDTAwareParserProfile extends ParserProfileStd {
             value = ParserForCDTLiterals.parseMapLiteral(this, lex);
         }
         catch ( final Exception ex ) {
-            throw new DatatypeFormatException(lex, CompositeDatatypeMap.type, ex);
+            throw new DatatypeFormatException(lex, CompositeDatatypeMap.datatype(), ex);
         }
 
         // We create a LiteralLabel with both the lexical form and the value,
         // for the same reasons as described above in createListLiteral().
-        final LiteralLabel ll = LiteralLabelFactory.createIncludingValue(lex, value, CompositeDatatypeMap.type);
+        final LiteralLabel ll = LiteralLabelFactory.createIncludingValue(lex, value, CompositeDatatypeMap.datatype());
         @SuppressWarnings("deprecation")
         Node n = NodeFactory.createLiteral(ll);
         return n;

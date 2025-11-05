@@ -40,12 +40,12 @@ public class CDTFactory
 	}
 
 	public static CDTValue createValue( final List<CDTValue> l ) {
-		final Node n = NodeFactory.createLiteralByValue(l, CompositeDatatypeList.type);
+		final Node n = NodeFactory.createLiteralByValue(l, CompositeDatatypeList.datatype());
 		return createValue(n);
 	}
 
 	public static CDTValue createValue( final Map<CDTKey,CDTValue> m ) {
-		final Node n = NodeFactory.createLiteralByValue(m, CompositeDatatypeMap.type);
+		final Node n = NodeFactory.createLiteralByValue(m, CompositeDatatypeMap.datatype());
 		return createValue(n);
 	}
 

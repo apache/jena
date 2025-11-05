@@ -689,8 +689,8 @@ public class ARQ
             SPARQLFuncOp.init();
 
             // Register the datatypes for the CDT literals
-            TypeMapper.getInstance().registerDatatype(CompositeDatatypeList.type) ;
-            TypeMapper.getInstance().registerDatatype(CompositeDatatypeMap.type) ;
+            TypeMapper.getInstance().registerDatatype(CompositeDatatypeList.datatype()) ;
+            TypeMapper.getInstance().registerDatatype(CompositeDatatypeMap.datatype()) ;
 
             JenaSystem.logLifecycle("ARQ.init - finish");
         }

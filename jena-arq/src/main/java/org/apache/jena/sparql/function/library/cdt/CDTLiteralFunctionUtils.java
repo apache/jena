@@ -123,7 +123,7 @@ public class CDTLiteralFunctionUtils
      * given list.
      */
     public static final Node createNode( final List<CDTValue> list ) {
-        return NodeFactory.createLiteralByValue(list, CompositeDatatypeList.type);
+        return NodeFactory.createLiteralByValue(list, CompositeDatatypeList.datatype());
     }
 
     /**
@@ -131,7 +131,7 @@ public class CDTLiteralFunctionUtils
      * given map.
      */
     public static final Node createNode( final Map<CDTKey,CDTValue> map ) {
-        return NodeFactory.createLiteralByValue(map, CompositeDatatypeMap.type);
+        return NodeFactory.createLiteralByValue(map, CompositeDatatypeMap.datatype());
     }
 
     /**

@@ -82,9 +82,9 @@ public class ARQParserBase extends SPARQLParserBase
     protected void jsonValueNull(long currLine, long currCol)                    { handler.valueNull(currLine, currCol) ; }
 
     protected void jsonValueVar(String image, long currLine, long currCol)       { throw new NotImplemented("yet") ; }
-    protected ElementGroup createQueryPattern(Template t){
+    protected ElementGroup createQueryPattern(Template template){
         ElementGroup elg = new ElementGroup();
-        Map<Node, BasicPattern> graphs = t.getGraphPattern();
+        Map<Node, BasicPattern> graphs = template.getGraphPattern();
         for(Node n: graphs.keySet()){
           Element el = new ElementPathBlock(graphs.get(n));
           if(! Quad.defaultGraphNodeGenerated.equals(n) ){
@@ -109,9 +109,9 @@ public class ARQParserBase extends SPARQLParserBase
         // reusing the same ParserProfile for parsing all the CDT literals.
         final RDFDatatype cdtDatatype;
         if ( CompositeDatatypeList.uri.equals(datatypeURI) )
-            cdtDatatype = CompositeDatatypeList.type;
+            cdtDatatype = CompositeDatatypeList.datatype();
         else if ( CompositeDatatypeMap.uri.equals(datatypeURI) )
-            cdtDatatype = CompositeDatatypeMap.type;
+            cdtDatatype = CompositeDatatypeMap.datatype();
         else
             cdtDatatype = null;
 

@@ -35,9 +35,14 @@ import org.apache.jena.sparql.expr.NodeValue;
 public class CompositeDatatypeMap extends CompositeDatatypeBase<Map<CDTKey,CDTValue>>
 {
 	public final static String uri = "http://w3id.org/awslabs/neptune/SPARQL-CDTs/Map";
-	public final static CompositeDatatypeMap type = new CompositeDatatypeMap();
+	public final static CompositeDatatypeMap datatype() { return DT.type ; }
 
-	protected CompositeDatatypeMap() {}
+	// Thread-safe lazy initializer
+	private static class DT {
+	    static CompositeDatatypeMap type = new CompositeDatatypeMap();
+	}
+
+	private CompositeDatatypeMap() {}
 
 	@Override
 	public String getURI() {
@@ -59,8 +64,7 @@ public class CompositeDatatypeMap extends CompositeDatatypeBase<Map<CDTKey,CDTVa
 				return false;
 			}
 		}
-
-		return true; 
+		return true;
 	}
 
 	@Override
@@ -96,7 +100,7 @@ public class CompositeDatatypeMap extends CompositeDatatypeBase<Map<CDTKey,CDTVa
 			return ParserForCDTLiterals.parseMapLiteral(lexicalForm);
 		}
 		catch ( final Exception ex ) {
-			throw new DatatypeFormatException(lexicalForm, type, ex);
+			throw new DatatypeFormatException(lexicalForm, datatype(), ex);
 		}
 	}
 
