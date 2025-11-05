@@ -2092,20 +2092,20 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
-"@zazuko/yasgui-utils@^4.5.0":
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/@zazuko/yasgui-utils/-/yasgui-utils-4.5.0.tgz#2be45255ea501dbef79f79edd8fa691381627744"
-  integrity sha512-+m8Y33mNS51wBA+mN52sjtucyyKJB4ihkKaL+w6jtezEuO/DkDpwGpGywVYeXtnE5eW0XQOEPCFW/A/aXMnWyg==
+"@zazuko/yasgui-utils@^4.5.0", "@zazuko/yasgui-utils@^4.6.0":
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/@zazuko/yasgui-utils/-/yasgui-utils-4.6.0.tgz#c58cde4466b347ca63a601f6d10a250602db6ee2"
+  integrity sha512-0McDIzL/3dbTDIposvbP0XfpXApJ46iUVA9mFEIV2V3FckZ9fowRfF5D9acSixfBgCXdqpngfqjWh89IGoi7NQ==
   dependencies:
     dompurify "^3.2.4"
     store "^2.0.12"
 
 "@zazuko/yasqe@^4.2.34", "@zazuko/yasqe@^4.5.0":
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/@zazuko/yasqe/-/yasqe-4.5.0.tgz#5d9daa2f57283d312a1a6c07d62174411193c4e6"
-  integrity sha512-YqsCViZHQ3XuFw3147S4eogm/fY4mGIJeFbdSk+cgHhhGSUHrj1N0+vHw2QdNbgU1QsU6myXlHULhgXPFi5SuA==
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/@zazuko/yasqe/-/yasqe-4.6.0.tgz#4acfc573465b1d843cadffcc4ec4a3f3a2628284"
+  integrity sha512-6vVC/nQBcr+nQd0w5ZFxDo9++rr85KrfM/8ny72f+SgAV8qWf5wnyqgRQR2CLoLyZqg1u1OsGXfFbqR0qpvFGA==
   dependencies:
-    "@zazuko/yasgui-utils" "^4.5.0"
+    "@zazuko/yasgui-utils" "^4.6.0"
     codemirror "^5.51.0"
     lodash-es "^4.17.15"
     query-string "^6.10.1"
