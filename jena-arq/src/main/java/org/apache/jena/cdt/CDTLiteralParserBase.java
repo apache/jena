@@ -38,11 +38,11 @@ public class CDTLiteralParserBase extends LangParserBase
 	@Override
 	protected Node createLiteral( final String lex, final String langTag, final String datatypeURI, final int line, final int column ) {
 		if ( CompositeDatatypeList.uri.equals(datatypeURI) ) {
-			return profile.createTypedLiteral(lex, CompositeDatatypeList.type, 0L, 0L);
+			return profile.createTypedLiteral(lex, CompositeDatatypeList.datatype(), 0L, 0L);
 		}
 
 		if ( CompositeDatatypeMap.uri.equals(datatypeURI) ) {
-			return profile.createTypedLiteral(lex, CompositeDatatypeMap.type, 0L, 0L);
+			return profile.createTypedLiteral(lex, CompositeDatatypeMap.datatype(), 0L, 0L);
 		}
 
 		return super.createLiteral(lex, langTag, datatypeURI, line, column);
