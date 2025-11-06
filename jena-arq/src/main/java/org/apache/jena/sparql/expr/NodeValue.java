@@ -31,8 +31,12 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.apache.jena.atlas.lib.Cache;
+import org.apache.jena.atlas.lib.CacheFactory;
 import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.cdt.CompositeDatatypeList;
+import org.apache.jena.cdt.CompositeDatatypeMap;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.ext.xerces.DatatypeFactoryInst;
@@ -50,10 +54,8 @@ import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.FmtUtils;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
-import org.apache.jena.sparql.util.NodeUtils;
 import org.apache.jena.sparql.util.XSDNumUtils;
 import org.apache.jena.sys.JenaSystem;
-import org.apache.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,10 +89,16 @@ public abstract class NodeValue extends ExprNode
      * ref:  http://www.w3.org/TR/xquery/#dt-ebv
      */
 
-    private static Logger log = LoggerFactory.getLogger(NodeValue.class);
+    static Logger log = LoggerFactory.getLogger(NodeValue.class);
 
     public static boolean VerboseWarnings = true;
     public static boolean VerboseExceptions = false;
+
+    // Before constants
+    public static DatatypeFactory xmlDatatypeFactory =  DatatypeFactoryInst.newDatatypeFactory();
+    private static int NODEVALUE_CACHE_SIZE = 10_000;
+    private static Set<RDFDatatype> noCache = Set.of(CompositeDatatypeList.datatype(), CompositeDatatypeMap.datatype());
+    private static Cache<Node, NodeValue> nodeValueCache = CacheFactory.createCache(NODEVALUE_CACHE_SIZE);
 
     public static final NodeValue TRUE   = NodeValue.makeNode("true", XSDboolean);
     public static final NodeValue FALSE  = NodeValue.makeNode("false", XSDboolean);
@@ -110,15 +118,6 @@ public abstract class NodeValue extends ExprNode
     public static final NodeValue nvEmptyString  = NodeValue.makeString("");
 
     public static final String xsdNamespace = XSD+"#";
-
-    public static DatatypeFactory xmlDatatypeFactory = null;
-
-    static {
-        // JDK default regardless.
-        //xmlDatatypeFactory = DatatypeFactory.newDefaultInstance();
-        // Extracted Xerces.
-        xmlDatatypeFactory = DatatypeFactoryInst.newDatatypeFactory();
-    }
 
     private Node node = null;     // Null used when a value has not been turned into a Node.
 
@@ -510,14 +509,32 @@ public abstract class NodeValue extends ExprNode
     public Duration    getDuration() { raise(new ExprEvalTypeException("Not a duration: "+this)); return null; }
 
     // ----------------------------------------------------------------
-    // ---- Setting : used when a node is used to make a NodeValue
 
     private static NodeValue nodeToNodeValue(Node node) {
+        if ( node.isLiteral() ) {
+            // XXX Could have a set of all support datatypes in NVDatatypes
+            RDFDatatype dt = node.getLiteralDatatype();
+            if ( noCache.contains(dt) ) {
+                // Composite datatypes (CDT) are not cached.
+                return NodeValue.nodeToNodeValueMaker(node);
+            }
+        }
         if ( node.isExt() ) {
             // Don't judge custom extensions.
             return new NodeValueNode(node);
         }
+        NodeValue nv = nodeValueCache.get(node, NodeValue::nodeToNodeValueMaker);
+        //NodeValue nv = NodeValue.nodeToNodeValueMaker(node);
+        return nv;
+    }
 
+    /**
+     * Always returns a NodeValue of some kind.
+     *
+     * If the literal is ill-formed for the datatype,
+     * then a {@link NodeValueNode} is returned
+     */
+    private static NodeValue nodeToNodeValueMaker(Node node) {
         if ( ! node.isConcrete() ) {
             String msg;
             if ( node.isVariable() )
@@ -526,28 +543,6 @@ public abstract class NodeValue extends ExprNode
                 throw new ExprException("Triple term with a variable passed to NodeValue.nodeToNodeValue: "+node);
             // Should not happen.
             throw new ExprException("Node is not a constant");
-        }
-
-        if ( ! node.isLiteral() )
-            // Not a literal - no value to extract
-            return new NodeValueNode(node);
-
-        boolean hasLangTag = NodeUtils.isLangString(node);
-        boolean isPlainLiteral = ( node.getLiteralDatatypeURI() == null && ! hasLangTag );
-
-        if ( isPlainLiteral )
-            return new NodeValueString(node.getLiteralLexicalForm(), node);
-
-        if ( hasLangTag ) {
-            // Works for RDF 1.0 and RDF 1.1
-            if ( node.getLiteralDatatype() != null && ! RDF.dtLangString.equals(node.getLiteralDatatype()) ) {
-                if ( NodeValue.VerboseWarnings )
-                    Log.warn(NodeValue.class, "Lang tag and datatype (datatype ignored)");
-            }
-            // RDF 1.2
-            if ( NodeUtils.hasLangDir(node) )
-                    return new NodeValueLangDir(node);
-            return new NodeValueLang(node);
         }
 
         // Includes creating NodeValueNode for ill-formed literals.
