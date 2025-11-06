@@ -28,12 +28,14 @@ import java.util.Map;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.expr.nodevalue.*;
+import org.apache.jena.sparql.util.NodeUtils;
 import org.apache.jena.sparql.util.RomanNumeral;
 import org.apache.jena.sparql.util.RomanNumeralDatatype;
 import org.apache.jena.vocabulary.RDF;
@@ -44,8 +46,28 @@ class NVFactory {
 
     private static Map<RDFDatatype, ToNodeValue> mapper = dtSetup();
 
-    public static NodeValue create(Node node) {
+    // Called from NodeValue.
+    static NodeValue create(Node node) {
+        if ( ! node.isLiteral() )
+            // Not a literal - no value to extract
+            return new NodeValueNode(node);
+
+        // Special cases: LangString and DirLangString, well-formed.
         RDFDatatype datatype = node.getLiteralDatatype();
+
+        boolean hasLangTag = NodeUtils.hasLang(node);  // hasLang - covers rdf:langString and rdf:dirLangString
+        if ( hasLangTag ) {
+            if ( NodeUtils.hasLangDir(node) ) {
+                if ( ! RDF.dtDirLangString.equals(datatype) )
+                    throw new InternalErrorException("Wrong type for literal with a text direction");
+                return new NodeValueLangDir(node);
+            } else {
+                if ( ! RDF.dtLangString.equals(datatype) )
+                    throw new InternalErrorException("Wrong type for literal with a langugae tag");
+                return new NodeValueLang(node);
+            }
+        }
+        // Includes literal datatype rdf:langString or rdf:dirLangString without the proper special components
         ToNodeValue function = mapper.get(datatype);
         if ( function == null )
             return new NodeValueNode(node);
@@ -86,9 +108,8 @@ class NVFactory {
         entry(mapper, XSDboolean,            NVFactory::booleanMaker);
 
         entry(mapper, XSDstring,             NVFactory::stringMaker);
-        //[DT] XXX needs validation
         entry(mapper, XSDnormalizedString,  NVFactory::stringMaker);
-        //[DT] XXX xsd;token, xsd:language
+        // XXX May be xsd;token, xsd:language
 
         entry(mapper, RDF.dtLangString,      NVFactory::langStringMaker);
         entry(mapper, RDF.dtDirLangString,   NVFactory::dirLangStringMaker);

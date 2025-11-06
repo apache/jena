@@ -151,12 +151,12 @@ class NVCompare {
             case VSPACE_CDT_LIST : {
                 final LiteralLabel lit1 = nv1.asNode().getLiteral() ;
                 final LiteralLabel lit2 = nv2.asNode().getLiteral() ;
-                return CompositeDatatypeList.type.isEqual(lit1, lit2) ;
+                return CompositeDatatypeList.datatype().isEqual(lit1, lit2) ;
             }
             case VSPACE_CDT_MAP : {
                 final LiteralLabel lit1 = nv1.asNode().getLiteral() ;
                 final LiteralLabel lit2 = nv2.asNode().getLiteral() ;
-                return CompositeDatatypeMap.type.isEqual(lit1, lit2) ;
+                return CompositeDatatypeMap.datatype().isEqual(lit1, lit2) ;
             }
         }
 

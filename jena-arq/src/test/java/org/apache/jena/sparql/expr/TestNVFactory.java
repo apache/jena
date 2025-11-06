@@ -101,49 +101,6 @@ public class TestNVFactory {
     }
 
     @Test
-    public void testBoolean() {
-        NodeValue nv1 = test("true", XSDboolean, NodeValueBoolean.class);
-        NodeValue nv2 = test("false", XSDboolean, NodeValueBoolean.class);
-    }
-
-    @Test
-    public void testString() {
-        NodeValue nv = test("test string", XSDstring, NodeValueString.class);
-    }
-
-    // Keep original language string tests as they have special handling
-    @Test
-    public void testLangString() {
-        String lex = "hello";
-        String lang = "en";
-        Node n = NodeFactory.createLiteralLang(lex, lang);
-        NodeValue nv = NVFactory.create(n);
-        assertTrue(NodeValueLang.class.isInstance(nv));
-        assertEquals(lex, nv.getString());
-        assertEquals(lang, nv.getLang());
-    }
-
-    @Test
-    public void testDirLangString() {
-        String lex = "hello";
-        String lang = "en-GB";
-        String ltr = "ltr";
-        Node n = NodeFactory.createLiteralDirLang(lex, lang, ltr);
-        NodeValue nv = NVFactory.create(RDF.dtDirLangString, n);
-        assertTrue(NodeValueLangDir.class.isInstance(nv));
-        assertEquals(lex, nv.getString());
-        assertEquals(lang, nv.getLang());
-    }
-
-    @Test
-    public void testInvalidIntegerLiteral() {
-        NodeValue nv = test("not-an-integer", XSDinteger, NodeValueNode.class);
-        assertNotNull(nv);
-        assertFalse(nv.isNumber());
-        assertFalse(nv.isInteger());
-    }
-
-    @Test
     public void testDerivedInt() {
         NodeValue nv = test("123", XSDint, NodeValueInteger.class);
         assertTrue(nv.isInteger());
@@ -215,8 +172,110 @@ public class TestNVFactory {
         assertTrue(nv.isInteger());
     }
 
-    // Date and time types
+    @Test
+    public void testInvalidIntegerLiteral() {
+        NodeValue nv = test("not-an-integer", XSDinteger, NodeValueNode.class);
+        assertNotNull(nv);
+        assertFalse(nv.isNumber());
+        assertFalse(nv.isInteger());
+    }
 
+    @Test
+    public void testInvalidDecimalFormat() {
+        // Multiple decimal points
+        NodeValue nv = test("12.34.56", XSDdecimal, NodeValueNode.class);
+        assertFalse(nv.isInteger());
+    }
+
+    @Test
+    public void testInvalidFloatFormat() {
+        // Incomplete exponent
+        NodeValue nv = test("12.34e", XSDfloat, NodeValueNode.class);
+        assertFalse(nv.isInteger());
+    }
+
+    @Test
+    public void testInvalidIntegerFormat() {
+        // Decimal not allowed for integer
+        NodeValue nv = test("123.45", XSDinteger, NodeValueNode.class);
+        assertFalse(nv.isInteger());
+    }
+
+    @Test
+    public void testInvalidPositiveIntegerNegativeValue() {
+        // Negative value not allowed for positive integer
+        NodeValue nv = test("-123", XSDpositiveInteger, NodeValueNode.class);
+        assertFalse(nv.isInteger());
+    }
+
+    @Test
+    public void testInvalidUnsignedIntValue() {
+        // Negative value not allowed for unsigned
+        NodeValue nv = test("-1", XSDunsignedInt, NodeValueNode.class);
+        assertFalse(nv.isInteger());
+    }
+
+    @Test
+    public void testInvalidByteRange() {
+        // Outside byte range (-128 to 127)
+        NodeValue nv = test("128", XSDbyte, NodeValueNode.class);
+        assertFalse(nv.isInteger());
+    }
+
+    @Test
+    public void testInvalidUnsignedByteRange() {
+        // Outside unsigned byte range (0 to 255)
+        NodeValue nv = test("256", XSDunsignedByte, NodeValueNode.class);
+        assertFalse(nv.isInteger());
+    }
+
+    @Test
+    public void testInvalidNonNegativeInteger() {
+        // Negative value not allowed
+        NodeValue nv = test("-1", XSDnonNegativeInteger, NodeValueNode.class);
+        assertFalse(nv.isInteger());
+    }
+
+    @Test
+    public void testInvalidNonPositiveInteger() {
+        // Positive value not allowed
+        NodeValue nv = test("1", XSDnonPositiveInteger, NodeValueNode.class);
+        assertFalse(nv.isInteger());
+    }
+
+    @Test
+    public void testBoolean() {
+        NodeValue nv1 = test("true", XSDboolean, NodeValueBoolean.class);
+        NodeValue nv2 = test("false", XSDboolean, NodeValueBoolean.class);
+    }
+
+    @Test
+    public void testString() {
+        NodeValue nv = test("test string", XSDstring, NodeValueString.class);
+    }
+
+    @Test
+    public void testLangString() {
+        String lex = "hello";
+        String lang = "en";
+        Node n = NodeFactory.createLiteralLang(lex, lang);
+        NodeValue nv = NVFactory.create(n);
+        assertTrue(NodeValueLang.class.isInstance(nv));
+        assertEquals(lex, nv.getString());
+        assertEquals(lang, nv.getLang());
+    }
+
+    @Test
+    public void testDirLangString() {
+        String lex = "hello";
+        String lang = "en-GB";
+        String ltr = "ltr";
+        Node n = NodeFactory.createLiteralDirLang(lex, lang, ltr);
+        NodeValue nv = NVFactory.create(RDF.dtDirLangString, n);
+        assertTrue(NodeValueLangDir.class.isInstance(nv));
+        assertEquals(lex, nv.getString());
+        assertEquals(lang, nv.getLang());
+    }
 
     @Test
     public void testDateTimeType() {
@@ -375,27 +434,6 @@ public class TestNVFactory {
     }
 
     @Test
-    public void testInvalidDecimalFormat() {
-        // Multiple decimal points
-        NodeValue nv = test("12.34.56", XSDdecimal, NodeValueNode.class);
-        assertFalse(nv.isInteger());
-    }
-
-    @Test
-    public void testInvalidFloatFormat() {
-        // Incomplete exponent
-        NodeValue nv = test("12.34e", XSDfloat, NodeValueNode.class);
-        assertFalse(nv.isInteger());
-    }
-
-    @Test
-    public void testInvalidIntegerFormat() {
-        // Decimal not allowed for integer
-        NodeValue nv = test("123.45", XSDinteger, NodeValueNode.class);
-        assertFalse(nv.isInteger());
-    }
-
-    @Test
     public void testInvalidDurationFormat() {
         // Invalid duration designator
         test("P1X", XSDduration, NodeValueNode.class);
@@ -411,47 +449,5 @@ public class TestNVFactory {
     public void testInvalidGDayFormat() {
         // Invalid day value
         test("---32", XSDgDay, NodeValueNode.class);
-    }
-
-    @Test
-    public void testInvalidPositiveIntegerNegativeValue() {
-        // Negative value not allowed for positive integer
-        NodeValue nv = test("-123", XSDpositiveInteger, NodeValueNode.class);
-        assertFalse(nv.isInteger());
-    }
-
-    @Test
-    public void testInvalidUnsignedIntValue() {
-        // Negative value not allowed for unsigned
-        NodeValue nv = test("-1", XSDunsignedInt, NodeValueNode.class);
-        assertFalse(nv.isInteger());
-    }
-
-    @Test
-    public void testInvalidByteRange() {
-        // Outside byte range (-128 to 127)
-        NodeValue nv = test("128", XSDbyte, NodeValueNode.class);
-        assertFalse(nv.isInteger());
-    }
-
-    @Test
-    public void testInvalidUnsignedByteRange() {
-        // Outside unsigned byte range (0 to 255)
-        NodeValue nv = test("256", XSDunsignedByte, NodeValueNode.class);
-        assertFalse(nv.isInteger());
-    }
-
-    @Test
-    public void testInvalidNonNegativeInteger() {
-        // Negative value not allowed
-        NodeValue nv = test("-1", XSDnonNegativeInteger, NodeValueNode.class);
-        assertFalse(nv.isInteger());
-    }
-
-    @Test
-    public void testInvalidNonPositiveInteger() {
-        // Positive value not allowed
-        NodeValue nv = test("1", XSDnonPositiveInteger, NodeValueNode.class);
-        assertFalse(nv.isInteger());
     }
 }

@@ -33,54 +33,53 @@ class NVDatatypes {
     // Not a derived type of xsd:decimal.
     //public static final RDFDatatype XSDprecisionDecimal = new XSDPRecisionDecimal("precisionDecimal", BigDecimal.class);
 
-    public static final RDFDatatype XSDdecimal = XSDDatatype.XSDdecimal;
-    public static final RDFDatatype XSDfloat = XSDDatatype.XSDfloat;
-    public static final RDFDatatype XSDdouble = XSDDatatype.XSDdouble;
+    public static final RDFDatatype XSDdecimal            = datatype(XSDDatatype.XSDdecimal);
+    public static final RDFDatatype XSDfloat              = datatype(XSDDatatype.XSDfloat);
+    public static final RDFDatatype XSDdouble             = datatype(XSDDatatype.XSDdouble);
 
-    public static final RDFDatatype XSDinteger = XSDDatatype.XSDinteger;
-    public static final RDFDatatype XSDpositiveInteger = XSDDatatype.XSDpositiveInteger;
-    public static final RDFDatatype XSDnegativeInteger = XSDDatatype.XSDnegativeInteger;
-    public static final RDFDatatype XSDnonPositiveInteger = XSDDatatype.XSDnonPositiveInteger;
-    public static final RDFDatatype XSDnonNegativeInteger = XSDDatatype.XSDnonNegativeInteger;
+    public static final RDFDatatype XSDinteger            = datatype(XSDDatatype.XSDinteger);
+    public static final RDFDatatype XSDpositiveInteger    = datatype(XSDDatatype.XSDpositiveInteger);
+    public static final RDFDatatype XSDnegativeInteger    = datatype(XSDDatatype.XSDnegativeInteger);
+    public static final RDFDatatype XSDnonPositiveInteger = datatype(XSDDatatype.XSDnonPositiveInteger);
+    public static final RDFDatatype XSDnonNegativeInteger = datatype(XSDDatatype.XSDnonNegativeInteger);
 
-    public static final RDFDatatype XSDlong = XSDDatatype.XSDlong;
-    public static final RDFDatatype XSDint = XSDDatatype.XSDint;
-    public static final RDFDatatype XSDshort = XSDDatatype.XSDshort;
-    public static final RDFDatatype XSDbyte = XSDDatatype.XSDbyte;
+    public static final RDFDatatype XSDlong               = datatype(XSDDatatype.XSDlong);
+    public static final RDFDatatype XSDint                = datatype(XSDDatatype.XSDint);
+    public static final RDFDatatype XSDshort              = datatype(XSDDatatype.XSDshort);
+    public static final RDFDatatype XSDbyte               = datatype(XSDDatatype.XSDbyte);
 
-    public static final RDFDatatype XSDunsignedLong = XSDDatatype.XSDunsignedLong;
-    public static final RDFDatatype XSDunsignedInt = XSDDatatype.XSDunsignedInt;
-    public static final RDFDatatype XSDunsignedShort = XSDDatatype.XSDunsignedShort;
-    public static final RDFDatatype XSDunsignedByte = XSDDatatype.XSDunsignedByte;
+    public static final RDFDatatype XSDunsignedLong       = datatype(XSDDatatype.XSDunsignedLong);
+    public static final RDFDatatype XSDunsignedInt        = datatype(XSDDatatype.XSDunsignedInt);
+    public static final RDFDatatype XSDunsignedShort      = datatype(XSDDatatype.XSDunsignedShort);
+    public static final RDFDatatype XSDunsignedByte       = datatype(XSDDatatype.XSDunsignedByte);
 
-    public static final RDFDatatype XSDboolean = XSDDatatype.XSDboolean;
+    public static final RDFDatatype XSDboolean            = datatype(XSDDatatype.XSDboolean);
 
-    public static final RDFDatatype XSDstring = XSDDatatype.XSDstring;
-    public static final RDFDatatype langString = RDF.dtLangString;
-    public static final RDFDatatype dirLangString = RDF.dtDirLangString;
+    public static final RDFDatatype XSDstring             = datatype(XSDDatatype.XSDstring);
+    public static final RDFDatatype langString            = datatype(RDF.dtLangString);
+    public static final RDFDatatype dirLangString         = datatype(RDF.dtDirLangString);
 
+    public static final RDFDatatype XSDnormalizedString   = datatype(XSDDatatype.XSDnormalizedString);
+//    public static final RDFDatatype XSDtoken              = datatype(XSDDatatype.XSDtoken);
+//    public static final RDFDatatype XSDlanguage           = datatype(XSDDatatype.XSDlanguage);
 
-    public static final RDFDatatype XSDnormalizedString = XSDDatatype.XSDnormalizedString;
-//    public static final RDFDatatype XSDtoken = XSDDatatype.XSDtoken;
-//    public static final RDFDatatype XSDlanguage = XSDDatatype.XSDlanguage;
+//    public static final RDFDatatype XSDhexBinary          = datatype(XSDDatatype.XSDhexBinary);
+//    public static final RDFDatatype XSDbase64Binary       = datatype(XSDDatatype.XSDbase64Binary);
 
-//    public static final RDFDatatype XSDhexBinary = XSDDatatype.XSDhexBinary;
-//    public static final RDFDatatype XSDbase64Binary = XSDDatatype.XSDbase64Binary;
+    public static final RDFDatatype XSDdateTime           = datatype(XSDDatatype.XSDdateTime);
+    public static final RDFDatatype XSDdateTimeStamp      = datatype(XSDDatatype.XSDdateTimeStamp);
+    public static final RDFDatatype XSDdate               = datatype(XSDDatatype.XSDdate);
+    public static final RDFDatatype XSDtime               = datatype(XSDDatatype.XSDtime);
 
-    public static final RDFDatatype XSDdateTime = XSDDatatype.XSDdateTime;
-    public static final RDFDatatype XSDdateTimeStamp = XSDDatatype.XSDdateTimeStamp;
-    public static final RDFDatatype XSDdate = XSDDatatype.XSDdate;
-    public static final RDFDatatype XSDtime = XSDDatatype.XSDtime;
+    public static final RDFDatatype XSDduration           = datatype(XSDDatatype.XSDduration);
+    public static final RDFDatatype XSDdayTimeDuration    = datatype(XSDDatatype.XSDdayTimeDuration);
+    public static final RDFDatatype XSDyearMonthDuration  = datatype(XSDDatatype.XSDyearMonthDuration);
 
-    public static final RDFDatatype XSDduration = XSDDatatype.XSDduration;
-    public static final RDFDatatype XSDdayTimeDuration = XSDDatatype.XSDdayTimeDuration;
-    public static final RDFDatatype XSDyearMonthDuration = XSDDatatype.XSDyearMonthDuration;
-
-    public static final RDFDatatype XSDgYear = XSDDatatype.XSDgYear;
-    public static final RDFDatatype XSDgMonth = XSDDatatype.XSDgMonth;
-    public static final RDFDatatype XSDgDay = XSDDatatype.XSDgDay;
-    public static final RDFDatatype XSDgYearMonth = XSDDatatype.XSDgYearMonth;
-    public static final RDFDatatype XSDgMonthDay = XSDDatatype.XSDgMonthDay;
+    public static final RDFDatatype XSDgYear              = datatype(XSDDatatype.XSDgYear);
+    public static final RDFDatatype XSDgMonth             = datatype(XSDDatatype.XSDgMonth);
+    public static final RDFDatatype XSDgDay               = datatype(XSDDatatype.XSDgDay);
+    public static final RDFDatatype XSDgYearMonth         = datatype(XSDDatatype.XSDgYearMonth);
+    public static final RDFDatatype XSDgMonthDay          = datatype(XSDDatatype.XSDgMonthDay);
 
     public static final Set<RDFDatatype> numerics = Set.of(XSDdecimal, XSDfloat, XSDdouble, XSDinteger,
                                                            XSDpositiveInteger, XSDnegativeInteger, XSDnonPositiveInteger, XSDnonNegativeInteger,
@@ -92,4 +91,9 @@ class NVDatatypes {
     public static final Set<RDFDatatype> temporal = Set.of(XSDdateTime, XSDdateTimeStamp,XSDdate, XSDtime,
                                                            XSDgYear, XSDgMonth, XSDgDay,
                                                            XSDgYearMonth, XSDgMonthDay);
+
+    private static RDFDatatype datatype(RDFDatatype rdfDatatype) {
+        // Option to register in a set.
+        return rdfDatatype;
+    }
 }
