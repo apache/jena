@@ -59,10 +59,10 @@ public class ShaclTests {
         return testCases;
     }
 
-//    public static List<Object[]> junit4Parameters(String manifestFile, List<String> omitManifests) {
-//        List<ShaclTestItem> testCases = manifest(manifestFile, omitManifests);
-//        return testCases.stream().map(stc->new Object[] {decideName(stc), stc}).collect(toList());
-//    }
+    public static List<Object[]> junit4Parameters(String manifestFile, List<String> omitManifests) {
+        List<ShaclTestItem> testCases = manifest(manifestFile, omitManifests);
+        return testCases.stream().map(stc->new Object[] {decideName(stc), stc}).toList();
+    }
 
     private static String decideName(ShaclTestItem stc) {
         String fn = FileOps.basename(stc.origin());
