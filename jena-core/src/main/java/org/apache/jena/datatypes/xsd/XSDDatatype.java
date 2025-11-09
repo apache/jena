@@ -31,8 +31,6 @@ import org.apache.jena.ext.xerces.impl.dv.*;
 import org.apache.jena.ext.xerces.impl.dv.util.Base64;
 import org.apache.jena.ext.xerces.impl.dv.util.HexBin;
 import org.apache.jena.ext.xerces.impl.dv.xs.DecimalDV;
-import org.apache.jena.ext.xerces.impl.dv.xs.XSSimpleTypeDecl;
-import org.apache.jena.ext.xerces.util.SymbolHash;
 import org.apache.jena.ext.xerces.xs.XSConstants;
 import org.apache.jena.ext.xerces.xs.XSTypeDefinition;
 import org.apache.jena.graph.impl.LiteralLabel ;
@@ -107,61 +105,26 @@ public class XSDDatatype extends BaseDatatype {
     /** Datatype representing xsd:string */
     public static final XSDDatatype XSDstring = new XSDBaseStringType("string", String.class);
 
-    /** Datatype representing xsd:normalizedString */
-    public static final XSDDatatype XSDnormalizedString = new XSDBaseStringType("normalizedString", String.class);
-
     /** Datatype representing xsd:anyURI */
     public static final XSDDatatype XSDanyURI = new XSDPlainType("anyURI", URI.class);
-
-    /** Datatype representing xsd:token */
-    public static final XSDDatatype XSDtoken = new XSDBaseStringType("token");
-
-    /** Datatype representing xsd:Name */
-    public static final XSDDatatype XSDName = new XSDBaseStringType("Name");
-
-    /**
-     * Datatype representing xsd:QName
-     * @deprecated will be removed in Jena 6
-     */
-    @Deprecated(forRemoval = true)
-    public static final XSDDatatype XSDQName = new XSDPlainType("QName");
 
     /** Datatype representing xsd:language */
     public static final XSDDatatype XSDlanguage = new XSDBaseStringType("language");
 
+    /** Datatype representing xsd:normalizedString */
+    public static final XSDDatatype XSDnormalizedString = new XSDBaseStringType("normalizedString", String.class);
+
+    /** Datatype representing xsd:token */
+    public static final XSDDatatype XSDtoken = new XSDBaseStringType("token");
+
     /** Datatype representing xsd:NMTOKEN */
     public static final XSDDatatype XSDNMTOKEN = new XSDBaseStringType("NMTOKEN");
 
-    /**
-     * Datatype representing xsd:ENTITY
-     * @deprecated will be removed in Jena 6
-     */
-    @Deprecated(forRemoval = true)
-    public static final XSDDatatype XSDENTITY = new XSDBaseStringType("ENTITY");
-
-    /**
-     * Datatype representing xsd:ID
-     * @deprecated will be removed in Jena 6
-     */
-    @Deprecated(forRemoval = true)
-    public static final XSDDatatype XSDID = new XSDBaseStringType("ID");
+    /** Datatype representing xsd:Name */
+    public static final XSDDatatype XSDName = new XSDBaseStringType("Name");
 
     /** Datatype representing xsd:NCName */
     public static final XSDDatatype XSDNCName = new XSDBaseStringType("NCName");
-
-    /**
-     * Datatype representing xsd:IDREF
-     * @deprecated will be removed in Jena 6
-     */
-    @Deprecated(forRemoval = true)
-    public static final XSDDatatype XSDIDREF = new XSDPlainType("IDREF");
-
-    /**
-     * Datatype representing xsd:NOTATION
-     * @deprecated will be removed in Jena 6
-     */
-    @Deprecated(forRemoval = true)
-    public static final XSDDatatype XSDNOTATION = new XSDPlainType("NOTATION");
 
     /** Datatype representing xsd:hexBinary */
     public static final XSDDatatype XSDhexBinary = new XSDhexBinary("hexBinary");
@@ -470,7 +433,10 @@ public class XSDDatatype extends BaseDatatype {
      * type mapper registry.
      */
     public static void loadXSDSimpleTypes(TypeMapper tm) {
-        tm.registerDatatype(new XSDDatatype("anySimpleType"));
+
+        // There are 39 XSD atomic datatypes (RDF 1.2)
+        //   excluding xsd:precisionDecimal -- not part of XSD 1.1 datatypes, defined in a separate document
+        //   excluding xsd:anySimpleType and xsd:anyAtomicType -- "Special types"
 
         tm.registerDatatype(XSDdecimal);
         tm.registerDatatype(XSDinteger);
@@ -515,16 +481,9 @@ public class XSDDatatype extends BaseDatatype {
         tm.registerDatatype(XSDName);
         tm.registerDatatype(XSDlanguage);
 
-        // According to the RDF 1.1 spec, these datatypes SHOULD NOT be used in RDF.
-        // Jena will not do any special handling or validation of these datatypes.
-        tm.registerDatatype(XSDQName);
         tm.registerDatatype(XSDNMTOKEN);
-        tm.registerDatatype(XSDID);
-        tm.registerDatatype(XSDENTITY);
         tm.registerDatatype(XSDNCName);
-        tm.registerDatatype(XSDNOTATION);
-        tm.registerDatatype(XSDIDREF);
-    }
+        }
 
     /**
      * Generic XML Schema datatype (outside the xsd: namespace)
@@ -547,22 +506,6 @@ public class XSDDatatype extends BaseDatatype {
          */
         XSDGenericType(XSSimpleType xstype, String namespace) {
             super(xstype, namespace);
-        }
-    }
-
-    // Used to bootstrap the above initialization code
-    public static void main(String[] args) {
-        SymbolHash types = SchemaDVFactory.getInstance().getBuiltInTypes();
-        int len = types.getLength();
-        Object[] values = new Object[len];
-        types.getValues(values, 0);
-        for ( Object value : values ) {
-            if ( value instanceof XSSimpleTypeDecl ) {
-                XSSimpleTypeDecl decl = (XSSimpleTypeDecl)value ;
-                System.out.println("tm.registerDatatype(new XSDDatatype(\"" + decl.getName() + "\"));") ;
-            } else {
-                System.out.println(" - " + value) ;
-            }
         }
     }
 }
