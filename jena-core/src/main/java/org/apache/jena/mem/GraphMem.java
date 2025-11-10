@@ -26,11 +26,12 @@ import java.util.stream.Stream;
 
 /**
  * In-memory, non-thread-safe, non-transactional graph.
+ * This specialised graph has same-value semantics for literals.
+ * It is used in the ModelAPI : see {@link GraphMemFactory#createGraphMemForModel}.
  *
- * @deprecated This implementation of GraphMem will be replaced by a new
- *     implementation. Applications should be using
+ * @deprecated Applications should be using
  *     {@link GraphMemFactory#createDefaultGraph()} for a general purpose graph or
- *     {@link GraphMemFactory#createGraphMem()} to specific this style of
+ *     {@link GraphMemFactory#createDefaultGraphSameValue()} if necessary
  *     implementation.
  */
 @Deprecated
@@ -38,9 +39,9 @@ public class GraphMem extends GraphMemBase {
     // Rename as GraphMemValue.
 
     /**
-     This Graph's TripleStore. Visible for <i>read-only</i> purposes only.
+     This Graph's TripleStore.
      */
-    public final TripleStore store;
+    private final TripleStore store;
 
     public GraphMem() {
         super();

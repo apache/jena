@@ -51,71 +51,20 @@ public class GraphMemFactory
     static { JenaSystem.init(); }
 
     private GraphMemFactory() {}
-    // Default for sameTerm/sameValue
-    // Up to Jena 4 : default false (same value)
-    // From Jena 5  : default false (same term)
-    private static boolean defaultSameTerm = true;
-    static {
-        // Initial setting.
-        String x = System.getProperty("jena:graphSameTerm");
-        if ( x != null ) {
-            if ( x.equalsIgnoreCase("true") )
-                defaultSameTerm = true;
-            if ( x.equalsIgnoreCase("false") )
-                defaultSameTerm = false;
-        }
-    }
-
-    /**
-     * Set the default mode for in-memory graphs : same term (true) or same value
-     * (false).
-     * <p>
-     * This is initially set with system property "jena:graphSameTerm"
-     * with the system default is same value (Jena4).
-     * <p>
-     * This affects {@link #createDefaultGraph}.
-     * @deprecated To be removed.
-     */
-    @Deprecated(forRemoval = true)
-    public static void setDftGraphSameTerm(boolean value) {
-        defaultSameTerm = value;
-    }
-
-    /**
-     * Get the default mode for in-memory for graphs : same term (true) or same value
-     * (false).
-     * <p>
-     * This is used by {@link #createDefaultGraph}.
-     * @deprecated To be removed.
-     */
-    @Deprecated(forRemoval = true)
-    public static boolean dftGraphSameTerm() {
-        return defaultSameTerm;
-    }
-
 
     /**
      * Answer a memory-based graph.
      * This is the system default.
      */
     public static Graph createDefaultGraph() {
-        return dftGraphSameTerm()
-                ? createDefaultGraphSameTerm()
-                : createDefaultGraphSameValue();
+        return createDefaultGraphSameTerm();
     }
 
     /**
-     * @deprecated To be renamed. Use {@link #createGraphMemForModel()}. The function will be re-purposed for the default same-term memory graph.
+     * This function will track the preferred general purpose graph for the Model
+     * API. It is value-based, to align with the Java-object mapping, rather than
+     * RDF-term based (Integers +001 and 1 are the same value).
      */
-    @Deprecated(forRemoval = true)
-    public static Graph createGraphMem() {
-        //return createGraphMemForModel();
-        return createGraphMem2();
-    }
-
-     /**
-      * This function will track the preferred general purpose graph for the Model API.
-      */
     public static Graph createGraphMemForModel() {
         @SuppressWarnings("deprecation")
         Graph g = new org.apache.jena.mem.GraphMem();
@@ -137,7 +86,8 @@ public class GraphMemFactory
 
     /**
      * Answer a memory-based graph with "same term" semantics
-     * This method will continue to provide the preferred general purpose "same term" graph.
+     * This method will continue to provide the preferred
+     * general purpose "same term" graph.
      */
     public static Graph createDefaultGraphSameTerm()
     { return createGraphMem2(); }
@@ -154,18 +104,9 @@ public class GraphMemFactory
      * with a simpler implementation, primarily due to not providing support for {@link Iterator#remove}.
      * <p>
      * See {@link GraphMem2Legacy} for details.
-     *
      */
-     public static Graph createGraphMemBasic()
-     { return new GraphMem2Legacy(); }
-
-     /**
-      * @deprecated Use {@link #createGraphMemBasic()}
-      */
-     @Deprecated(forRemoval = true)
-     public static Graph createGraphMem2Basic()
-     { return createGraphMemBasic(); }
-
+    public static Graph createGraphMemBasic()
+    { return new GraphMem2Legacy(); }
 
     /**
      * A graph that stores triples in memory. This class is not thread-safe.
@@ -179,18 +120,9 @@ public class GraphMemFactory
      * <p>
      * See {@link GraphMem2Fast} for details.
      */
-    //public static Graph createGraphMemX() {
-     public static Graph createGraphMem2() {
+    public static Graph createGraphMem2() {
         return new GraphMem2Fast();
     }
-
-//     /**
-//      * @deprecated Use {@link #createGraphMemBasic()}
-//      */
-//     @Deprecated(forRemoval = true)
-//     public static Graph createGraphMem2() {
-//         return new GraphMem2Fast();
-//     }
 
     /**
      * A graph that stores triples in memory. This class is not thread-safe.
@@ -207,14 +139,6 @@ public class GraphMemFactory
      */
     public static Graph createGraphMemRoaring()
     { return new GraphMem2Roaring(); }
-
-
-    /**
-     * @deprecated Use {@link #createGraphMemRoaring()}
-     */
-    @Deprecated(forRemoval = true)
-    public static Graph createGraphMem2Roaring()
-    { return createGraphMemRoaring(); }
 
     private final static Graph emptyGraph = new GraphBase() {
         @Override
