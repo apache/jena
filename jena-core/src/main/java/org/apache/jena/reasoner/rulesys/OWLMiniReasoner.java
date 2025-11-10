@@ -20,7 +20,6 @@ package org.apache.jena.reasoner.rulesys;
 
 import java.util.*;
 
-import org.apache.jena.graph.Capabilities ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.reasoner.* ;
 
@@ -77,15 +76,4 @@ public class OWLMiniReasoner extends GenericRuleReasoner implements Reasoner {
         ((FBRuleInfGraph)graph).setDatatypeRangeValidation(true);
         return graph;
     }
-
-    /**
-     * Return the Jena Graph Capabilties that the inference graphs generated
-     * by this reasoner are expected to conform to.
-     */
-    @Deprecated
-    @Override
-    public Capabilities getGraphCapabilities() {
-        return BaseInfGraph.reasonerInfCapabilities;
-    }
-
 }

@@ -18,8 +18,11 @@
 
 package org.apache.jena.reasoner.transitiveReasoner;
 
-import org.apache.jena.graph.* ;
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.reasoner.* ;
 import org.apache.jena.vocabulary.RDFS ;
 import org.apache.jena.vocabulary.ReasonerVocabulary ;
@@ -231,15 +234,4 @@ public class TransitiveReasoner implements Reasoner {
     public Finder getTbox() {
         return tbox;
     }
-
-    /**
-     * Return the Jena Graph Capabilties that the inference graphs generated
-     * by this reasoner are expected to conform to.
-     */
-    @Deprecated
-    @Override
-    public Capabilities getGraphCapabilities() {
-        return BaseInfGraph.reasonerInfCapabilities;
-    }
-
 }

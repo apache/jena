@@ -35,19 +35,9 @@ public class WrappedGraph implements GraphWithPerform
     public WrappedGraph( Graph base )
     { this.base = base; }
 
-    @SuppressWarnings("removal")
-    @Override
-    public boolean dependsOn( Graph other )
-    { return base.dependsOn( other ); }
-
     @Override
     public TransactionHandler getTransactionHandler()
     { return base.getTransactionHandler(); }
-
-    @Deprecated(forRemoval = true)
-    @Override
-    public Capabilities getCapabilities()
-    { return base.getCapabilities(); }
 
     @Override
     public GraphEventManager getEventManager()

@@ -19,7 +19,6 @@
 package org.apache.jena.mem;
 
 import org.apache.jena.graph.* ;
-import org.apache.jena.graph.impl.AllCapabilities;
 import org.apache.jena.graph.impl.TripleStore ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 
@@ -100,10 +99,5 @@ public class GraphMem extends GraphMemBase {
      */
     public void clearStore() {
         store.clear();
-    }
-
-    @Override
-    public Capabilities getCapabilities() {
-        return AllCapabilities.updateAllowedWithValues;
     }
 }

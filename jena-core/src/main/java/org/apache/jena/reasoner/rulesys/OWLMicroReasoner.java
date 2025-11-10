@@ -18,11 +18,13 @@
 
 package org.apache.jena.reasoner.rulesys;
 
-import java.util.*;
+import java.util.List;
 
-import org.apache.jena.graph.Capabilities ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.reasoner.* ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.reasoner.InfGraph;
+import org.apache.jena.reasoner.Reasoner;
+import org.apache.jena.reasoner.ReasonerException;
+import org.apache.jena.reasoner.ReasonerFactory;
 
 /**
  * Reasoner configuration for the OWL micro reasoner.
@@ -64,17 +66,6 @@ public class OWLMicroReasoner extends GenericRuleReasoner implements Reasoner {
         setTransitiveClosureCaching(true);
     }
 
-
-    /**
-     * Return the Jena Graph Capabilities that the inference graphs generated
-     * by this reasoner are expected to conform to.
-     */
-    @Deprecated
-    @Override
-    public Capabilities getGraphCapabilities() {
-        return BaseInfGraph.reasonerInfCapabilities;
-    }
-
     /**
      * Attach the reasoner to a set of RDF data to process.
      * The reasoner may already have been bound to specific rules or ontology
@@ -92,5 +83,4 @@ public class OWLMicroReasoner extends GenericRuleReasoner implements Reasoner {
         ((FBRuleInfGraph)graph).setDatatypeRangeValidation(true);
         return graph;
     }
-
 }

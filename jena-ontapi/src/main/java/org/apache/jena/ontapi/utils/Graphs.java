@@ -752,18 +752,6 @@ public class Graphs {
     }
 
     /**
-     * Answers {@code true} if the left graph depends on the right one.
-     *
-     * @param left  {@link Graph}
-     * @param right {@link Graph}
-     * @return {@code true} if the left argument graph is dependent on the right
-     */
-    @SuppressWarnings("removal")
-    public static boolean dependsOn(Graph left, Graph right) {
-        return left == right || (left != null && left.dependsOn(right));
-    }
-
-    /**
      * Lists all unique subject nodes in the given graph.
      * Warning: the result is temporary stored in-memory!
      *

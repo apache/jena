@@ -22,7 +22,6 @@ import java.util.Iterator;
 
 import org.apache.jena.graph.* ;
 import org.apache.jena.graph.compose.MultiUnion ;
-import org.apache.jena.graph.impl.AllCapabilities;
 import org.apache.jena.graph.impl.GraphBase;
 import org.apache.jena.graph.impl.TransactionHandlerBase;
 import org.apache.jena.shared.PrefixMapping;
@@ -48,9 +47,6 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     /** version count */
     protected volatile int version = 0;
 
-    @SuppressWarnings("removal")
-    private Capabilities infCapabilities;
-
     /**
          Inference graphs share the prefix-mapping of their underlying raw graph.
      	@see org.apache.jena.graph.Graph#getPrefixMapping()
@@ -69,56 +65,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
         super( );
         this.fdata = new FGraph( data );
         this.reasoner = reasoner;
-        this.infCapabilities = calcCapabilitiesFrom(data);
     }
-
-    @SuppressWarnings("removal")
-    private Capabilities calcCapabilitiesFrom(Graph data) {
-        if ( data == null )
-            return reasonerInfCapabilities;
-
-        // Same as data graph except size is not accurate.
-        Capabilities baseCapabilities = data.getCapabilities();
-        return AllCapabilities.create(false,
-                                      data.getCapabilities().addAllowed(),
-                                      data.getCapabilities().deleteAllowed(),
-                                      data.getCapabilities().handlesLiteralTyping());
-    }
-
-    /**
-        Answer the InfCapabilities of this InfGraph.
-     */
-    @SuppressWarnings("removal")
-    @Override
-    public Capabilities getCapabilities() {
-        return infCapabilities;
-    }
-
-    /**
-     * Capabilities that a reason must conform to.
-     * A base graph may also provide handling literal datatypes.
-     */
-
-    @SuppressWarnings("removal")
-    public static Capabilities reasonerInfCapabilities = new Capabilities() {
-        @Override
-        public boolean sizeAccurate() { return false; }
-
-        // Reasoners do not require update.
-        @Override
-        public boolean addAllowed() { return false; }
-
-        // Reasoners do not require update.
-        @Override
-        public boolean deleteAllowed() { return false; }
-
-        /**
-         * Reasoners require "same term" but if the data graph supports "same value",
-         * then the reasoners will also support it.
-         */
-        @Override
-        public boolean handlesLiteralTyping() { return false; }
-    };
 
     @Override
     public void remove( Node s, Node p, Node o )
@@ -206,9 +153,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     @Override
     public synchronized void rebind(Graph data) {
         fdata = new FGraph(data);
-        infCapabilities = calcCapabilitiesFrom(data);
         isPrepared = false;
-
     }
 
     /**

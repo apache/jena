@@ -328,15 +328,6 @@ public abstract class AbstractTestGraph extends GraphTestBase {
         }
     }
 
-    @SuppressWarnings("removal")
-    public void testHasCapabilities() {
-        Graph g = getNewGraph();
-        Capabilities c = g.getCapabilities();
-        boolean sa = c.sizeAccurate();
-        boolean aaSome = c.addAllowed();
-        boolean daSome = c.deleteAllowed();
-    }
-
     public void testFind() {
         Graph g = getNewGraph();
         graphAdd(g, "S P O");

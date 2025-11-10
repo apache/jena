@@ -18,9 +18,8 @@
 
 package org.apache.jena.sparql.graph;
 
-import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.impl.GraphPlain;
+import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.sys.JenaSystem;
@@ -91,16 +90,6 @@ public class GraphFactory {
         return GraphMemFactory.createDefaultGraph();
     }
 
-    /**
-     * Graph that uses same-term for find() and contains().
-     *
-     * @deprecated From Jena5, graphs are all "same term" except for {@link org.apache.jena.mem.GraphMem}.
-     */
-    @Deprecated
-    public static Graph createPlainGraph() {
-        return GraphPlain.plain();
-    }
-
     public static Graph sinkGraph() {
         return new GraphSink();
     }
@@ -113,10 +102,5 @@ public class GraphFactory {
     /** Create a model over a default graph (ARQ-wide for default graph type) */
     public static Model makeDefaultModel() {
         return ModelFactory.createModelForGraph(createDefaultGraph());
-    }
-
-    /** Create a model over a plain graph (small-scale use only) */
-    public static Model makePlainModel() {
-        return ModelFactory.createModelForGraph(createPlainGraph());
     }
 }

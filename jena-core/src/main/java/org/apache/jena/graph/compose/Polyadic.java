@@ -133,22 +133,6 @@ public abstract class Polyadic extends CompositionBase
         super.close();
     }
 
-
-    /**
-     * <p>
-     * Answer true if this graph contains the given graph as a sub-component.
-     * </p>
-     *
-     * @param graph A graph to test
-     * @return True if the graph is this graph, or is a sub-graph of this one.
-     * @see org.apache.jena.graph.Graph#dependsOn(Graph)
-     */
-    @Override
-    public boolean dependsOn( Graph graph ) {
-        return (graph == this) || m_subGraphs.contains( graph );
-    }
-
-
     /**
      * <p>
      * Add the given graph to this composition.

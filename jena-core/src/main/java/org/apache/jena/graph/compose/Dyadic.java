@@ -63,15 +63,6 @@ public abstract class Dyadic extends CompositionBase {
         this.closed = true;
     }
 
-    /**
-     * Generic dependsOn, true iff it depends on either of the subgraphs.
-     */
-    @SuppressWarnings("removal")
-    @Override
-    public boolean dependsOn(Graph other) {
-        return other == this || L.dependsOn(other) || R.dependsOn(other);
-    }
-
     public Union union(Graph X) {
         return new Union(this, X);
     }
