@@ -147,7 +147,7 @@ public class TestOntModel
 
         // write to a stream
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        m.write( out );
+        m.write( out, "RDF/XML" );
 
         String s = out.toString();
         ByteArrayInputStream in = new ByteArrayInputStream( s.getBytes() );
@@ -192,7 +192,7 @@ public class TestOntModel
         om.add( statement( om, "ping http://spoo.spoo.com/spoo#pang pilly" ) );
         om.add( statement( om, "gg " + OWL.getURI() + "hh ii" ) );
         StringWriter sw = new StringWriter();
-        om.write( sw );
+        om.write( sw , "RDF/XML");
         String s = sw.getBuffer().toString();
         assertTrue( s.indexOf( "xmlns:spoo=\"http://spoo.spoo.com/spoo#\"" ) > 0 );
         assertTrue( s.indexOf( "xmlns:owl=\"" + OWL.getURI() + "\"" ) > 0 );
@@ -220,7 +220,7 @@ public class TestOntModel
 
         // write to a stream
         StringWriter out = new StringWriter();
-        m.write( out );
+        m.write( out, "RDF/XML");
 
         String s = out.toString();
 

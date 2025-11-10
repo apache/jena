@@ -1535,13 +1535,6 @@ public class OntGraphModelImpl extends ModelCom implements OntModel, OntEnhGraph
         return this;
     }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public OntGraphModelImpl write(Writer writer) {
-        getBaseModel().write(writer);
-        return this;
-    }
-
     @Override
     public OntGraphModelImpl write(Writer writer, String lang) {
         getBaseModel().write(writer, lang);
@@ -1551,12 +1544,6 @@ public class OntGraphModelImpl extends ModelCom implements OntModel, OntEnhGraph
     @Override
     public OntGraphModelImpl write(Writer writer, String lang, String base) {
         getBaseModel().write(writer, lang, base);
-        return this;
-    }
-
-    @Override
-    public OntGraphModelImpl write(OutputStream out) {
-        getBaseModel().write(out);
         return this;
     }
 
