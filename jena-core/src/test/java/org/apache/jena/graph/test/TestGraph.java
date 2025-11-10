@@ -84,12 +84,12 @@ public class TestGraph extends GraphTestBase {
     }
 
     /**
-     * Class to provide a constructor that produces a wrapper round a GraphMem.
+     * Class to provide a constructor that produces a wrapper round a
+     * default choice of in-memory graph.
      */
     public static class WrappedGraphMem extends WrappedGraph {
-        @SuppressWarnings("removal")
         public WrappedGraphMem() {
-            super(GraphMemFactory.createGraphMem());
+            super(GraphMemFactory.createDefaultGraph());
         }
     }
 }
