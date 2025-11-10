@@ -80,11 +80,4 @@ public class GraphRDFS extends GraphWrapper {
         // Even better, don't ask.
         return super.size();
     }
-
-    @Override
-    public boolean dependsOn(Graph other) {
-        if ( other == super.get() )
-            return true;
-        return super.dependsOn(other);
-    }
 }

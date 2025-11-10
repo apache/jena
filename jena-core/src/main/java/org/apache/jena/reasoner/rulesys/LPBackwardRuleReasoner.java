@@ -213,14 +213,4 @@ public class LPBackwardRuleReasoner implements Reasoner {
     public void setParameter(Property parameter, Object value) {
         throw new IllegalParameterException(parameter.toString());
     }
-
-    /**
-     * Return the Jena Graph Capabilties that the inference graphs generated
-     * by this reasoner are expected to conform to.
-     */
-    @Deprecated
-    @Override
-    public Capabilities getGraphCapabilities() {
-        return BaseInfGraph.reasonerInfCapabilities;
-    }
 }

@@ -21,6 +21,7 @@ package org.apache.jena.graph.impl;
 import java.util.function.Predicate;
 
 import org.apache.jena.graph.* ;
+import org.apache.jena.mem.GraphMem;
 import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 
@@ -43,18 +44,20 @@ public class GraphPlain extends WrappedGraph
      */
     @Deprecated
     public static Graph plain(Graph base) {
-        if ( ! base.getCapabilities().handlesLiteralTyping() )
+        if ( ! GraphMem.class.isInstance(base) )
+            // No need to do anything.
             return base;
         return new GraphPlain(base);
     }
 
     /**
      * Return a graph that only has term-equality.
-     * @deprecated From Jena5, graphs are all "same term".
+     * @deprecated From Jena5, graphs are all "same term",
+     * except {@link GraphMem} which is only used in the Model API.
      */
     @Deprecated
     public static Graph plain() {
-        return plain(GraphMemFactory.createDefaultGraph());
+        return GraphMemFactory.createDefaultGraph();
     }
 
     private GraphPlain(Graph other) {

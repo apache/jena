@@ -35,7 +35,7 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-@SuppressWarnings({"deprecation", "removal"})
+@SuppressWarnings("deprecation")
 public class TestGraphPlain {
 
     private static Graph graph;
@@ -45,8 +45,6 @@ public class TestGraphPlain {
         // GraphMem is the old in-memory graph which has value-based indexing.
         // It is not the default graph implementation.
         graph = new org.apache.jena.mem.GraphMem();
-        if ( !graph.getCapabilities().handlesLiteralTyping() )
-            throw new IllegalArgumentException("Test graph does not do the value thing");
         graphAdd(graph, "s p o; s p 1; s p 01");
     }
 

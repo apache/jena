@@ -18,10 +18,8 @@
 
 package org.apache.jena.reasoner.rulesys;
 
-import java.util.*;
+import java.util.List;
 
-import org.apache.jena.graph.Capabilities ;
-import org.apache.jena.reasoner.BaseInfGraph ;
 import org.apache.jena.reasoner.ReasonerFactory ;
 
 /**
@@ -46,7 +44,6 @@ public class RDFSForwardRuleReasoner extends GenericRuleReasoner {
      */
     public RDFSForwardRuleReasoner(ReasonerFactory parent) {
         super(loadRules(), parent);
-//        setMode(FORWARD_RETE);
         setMode(FORWARD);
     }
 
@@ -56,15 +53,5 @@ public class RDFSForwardRuleReasoner extends GenericRuleReasoner {
     public static List<Rule> loadRules() {
         if (ruleSet == null) ruleSet = loadRules( RULE_FILE );
         return ruleSet;
-    }
-
-    /**
-     * Return the Jena Graph Capabilities that the inference graphs generated
-     * by this reasoner are expected to conform to.
-     */
-    @Deprecated
-    @Override
-    public Capabilities getGraphCapabilities() {
-        return BaseInfGraph.reasonerInfCapabilities;
     }
 }

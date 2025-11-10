@@ -135,13 +135,4 @@ public interface Reasoner {
      * @return true if the given property is handled specially by the reasoner.
      */
     public boolean supportsProperty(Property property);
-
-    /**
-     * Return the Jena Graph Capabilties that the inference graphs generated
-     * by this reasoner are expected to conform to.
-     * @deprecated Do not use - to be removed.
-     *    Use the inference graph capabilities.
-     */
-    @Deprecated
-    public org.apache.jena.graph.Capabilities getGraphCapabilities();
 }

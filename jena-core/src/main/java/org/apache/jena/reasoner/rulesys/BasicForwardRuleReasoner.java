@@ -207,15 +207,4 @@ public class BasicForwardRuleReasoner implements Reasoner {
             throw new IllegalParameterException("Don't recognize configuration parameter " + parameter + " for rule-based reasoner");
         }
     }
-
-
-    /**
-     * Return the Jena Graph Capabilities that the inference graphs generated
-     * by this reasoner are expected to conform to.
-     */
-    @Deprecated
-    @Override
-    public Capabilities getGraphCapabilities() {
-        return BaseInfGraph.reasonerInfCapabilities;
-    }
 }

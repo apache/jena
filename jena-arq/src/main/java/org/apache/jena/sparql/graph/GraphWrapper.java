@@ -40,12 +40,6 @@ public class GraphWrapper implements Graph
         get().add(t);
     }
 
-    @SuppressWarnings("removal")
-    @Override
-    public boolean dependsOn(Graph other) {
-        return get().dependsOn(other);
-    }
-
     @Override
     public TransactionHandler getTransactionHandler() {
         return get().getTransactionHandler();
