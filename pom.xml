@@ -74,7 +74,7 @@
          These two go together
          See jena-fuseki-webapp and https://shiro.apache.org/jakarta-ee.html
     -->
-    <ver.shiro>2.0.5</ver.shiro>
+    <ver.shiro>2.0.6</ver.shiro>
 
     <ver.protobuf>4.33.0</ver.protobuf>
     <ver.libthrift>0.22.0</ver.libthrift>
@@ -811,7 +811,7 @@
       <dependency>
         <groupId>io.github.bonigarcia</groupId>
         <artifactId>webdrivermanager</artifactId>
-        <version>6.3.2</version>
+        <version>6.3.3</version>
         <scope>test</scope>
       </dependency>
       <!-- END jena-fuseki-mod-geosparql -->
