@@ -60,27 +60,6 @@ interface IOModel<R extends Model> extends Model {
      * <strong>Note(1):</strong> this method is adapted for the ontology
      * model to write out only the base model (which contains the asserted data).
      * To write all triples, including imported data and inferred triples, use
-     * {@link #writeAll(Writer, String, String) writeAll }.
-     * <strong>Note(2):</strong> it is often better to use an {@code OutputStream} rather than a {@code Writer},
-     * since this will avoid character encoding errors.
-     * <p>
-     * The language in which to write the model is specified by the {@code lang} argument.
-     * Some of the supported formats are "RDF/XML", "RDF/XML-ABBREV", "N-TRIPLE", "TURTLE".
-     * See {@link org.apache.jena.riot.Lang Lang} for all supported formats.
-     * The default value, represented by {@code null}, is "RDF/XML".
-     *
-     * @param writer the output writer
-     * @return this model
-     */
-    @Deprecated
-    @Override
-    R write(Writer writer);
-
-    /**
-     * Writes a serialized representation of a model in a specified language.
-     * <strong>Note(1):</strong> this method is adapted for the ontology
-     * model to write out only the base model (which contains the asserted data).
-     * To write all triples, including imported data and inferred triples, use
      * {@link #writeAll(Writer, String) writeAll }.
      * <strong>Note(2):</strong> it is often better to use an {@code OutputStream} rather than a {@code Writer},
      * since this will avoid character encoding errors.
@@ -119,24 +98,6 @@ interface IOModel<R extends Model> extends Model {
      */
     @Override
     R write(Writer writer, String lang, String base);
-
-    /**
-     * Writes a serialized representation of a model in a specified language.
-     * <strong>Note:</strong> this method is adapted for the ontology
-     * model to write out only the base model (which contains the asserted data).
-     * To write all triples, including imported data and inferred triples, use
-     * {@link #writeAll(OutputStream, String, String) writeAll }.
-     * <p>
-     * The language in which to write the model is specified by the {@code lang} argument.
-     * Some of the supported formats are "RDF/XML", "RDF/XML-ABBREV", "N-TRIPLE", "TURTLE".
-     * See {@link org.apache.jena.riot.Lang Lang} for all supported formats.
-     * The default value, represented by {@code null}, is "RDF/XML".
-     *
-     * @param out tre output stream to which the RDF is written
-     * @return this model
-     */
-    @Override
-    R write(OutputStream out);
 
     /**
      * Writes a serialized representation of a model in a specified language.

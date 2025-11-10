@@ -235,13 +235,6 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
         return writerFactory.getWriter(lang);
     }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public Model write(Writer writer) {
-        getWriter(null).write(this, writer, "");
-        return this;
-    }
-
     @Override
     public Model write(Writer writer, String lang) {
         getWriter(lang).write(this, writer, "");
@@ -251,12 +244,6 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
     @Override
     public Model write(Writer writer, String lang, String base) {
         getWriter(lang).write(this, writer, base);
-        return this;
-    }
-
-    @Override
-    public Model write(OutputStream writer) {
-        getWriter(null).write(this, writer, "");
         return this;
     }
 
