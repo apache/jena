@@ -64,17 +64,10 @@ public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
     public static String XMLLiteralTypeURI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral";
 
     /**
-     * Singleton instance of the rdf:XMLLIteral datatype.
+     * Singleton instance of the rdf:XMLLiteral datatype.
      * Prefer {@link RDF#dtXMLLiteral} in applications.
      */
     public static final RDFDatatype rdfXMLLiteral = new XMLLiteralType();
-
-    /**
-     * Singleton instance (legacy name)
-     * @deprecated Prefer the constant {@link #rdfXMLLiteral} or {@link RDF#dtXMLLiteral}
-     */
-    @Deprecated
-    public static final RDFDatatype theXMLLiteralType = rdfXMLLiteral;
 
     private static final String  xmlWrapperTagName  = "xml-literal-fragment";
     private static final String  xmlWrapperTagStart = "<"+xmlWrapperTagName+">";

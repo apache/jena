@@ -19,12 +19,14 @@
 package org.apache.jena.rdfxml.xmlinput1;
 
 import java.io.*;
-import java.net.*;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLConnection;
 import java.util.Locale ;
 
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
-import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
 import org.apache.jena.graph.* ;
 import org.apache.jena.irix.*;
 import org.apache.jena.rdf.model.Model ;
@@ -36,6 +38,7 @@ import org.apache.jena.shared.DoesNotExistException ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.UnknownPropertyException ;
 import org.apache.jena.shared.WrappedIOException ;
+import org.apache.jena.vocabulary.RDF;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
@@ -144,7 +147,7 @@ public class RDFXMLReader implements RDFReaderI, ARPErrorNumbers {
             return NodeFactory.createLiteralLang(lit.toString(), lit.getLang());
 
         if (lit.isWellFormedXML()) {
-            return NodeFactory.createLiteral(lit.toString(), null, XMLLiteralType.rdfXMLLiteral);
+            return NodeFactory.createLiteral(lit.toString(), null, RDF.dtXMLLiteral);
         }
 
         RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(dtURI);

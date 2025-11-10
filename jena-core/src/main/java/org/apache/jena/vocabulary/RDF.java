@@ -130,53 +130,6 @@ public class RDF {
     public static final RDFDatatype dtRDFJSON       = RDFjson.rdfJSON;
     public static final RDFDatatype dtRDFHTML       = RDFhtml.rdfHTML;
 
-    @Deprecated(forRemoval = true)
-    private static class Init {
-        // This should not be needed anymore.
-        public static Resource Alt()                { return resource( "Alt" ); }
-        public static Resource Bag()                { return resource( "Bag" ); }
-
-        // This was a due to a Java8 bug : https://bugzilla.redhat.com/show_bug.cgi?id=1423421
-        //  Can't have a method name ending in "Property" - it crashes the javadoc generation.
-        //  https://bugzilla.redhat.com/show_bug.cgi?id=1423421 ==>
-        //  https://bugs.openjdk.java.net/browse/JDK-8061305
-
-        /** @deprecated Use {@link #Property()} */
-        @Deprecated(forRemoval = true)
-        public static Resource _Property()          { return resource( "Property" ); }
-
-        public static Resource Property()           { return resource( "Property" ); }
-        public static Resource Seq()                { return resource( "Seq" ); }
-        public static Resource Statement()          { return resource( "Statement" ); }
-        public static Resource List()               { return resource( "List" ); }
-        public static Resource nil()                { return resource( "nil" ); }
-        public static Resource PlainLiteral()       { return resource("PlainLiteral"); }
-        public static Property first()              { return property( "first" ); }
-        public static Property rest()               { return property( "rest" ); }
-        public static Property subject()            { return property( "subject" ); }
-        public static Property predicate()          { return property( "predicate" ); }
-        public static Property object()             { return property( "object" ); }
-        public static Property type()               { return property( "type" ); }
-        public static Property value()              { return property( "value" ); }
-        public static Property langRange()          { return property( "langRange" ); }
-
-        public static Resource langString()         { return ResourceFactory.createResource(dtLangString().getURI()); }
-        public static Resource dirLangString()      { return ResourceFactory.createResource(dtDirLangString().getURI()); }
-        public static Resource HTML()               { return ResourceFactory.createResource(dtRDFHTML().getURI()); }
-        public static Resource xmlLiteral()         { return ResourceFactory.createResource(dtXMLLiteral().getURI()); }
-        public static Resource JSON()               { return ResourceFactory.createResource(dtRDFJSON().getURI()) ; }
-
-        public static Resource CompoundLiteral()    { return resource( "CompoundLiteral" ); }
-        public static Property language()           { return property( "language" ); }
-        public static Property direction()          { return property( "direction" ); }
-
-        public static RDFDatatype dtLangString()    { return RDFLangString.rdfLangString; }
-        public static RDFDatatype dtDirLangString() { return RDFDirLangString.rdfDirLangString; }
-        public static RDFDatatype dtXMLLiteral()    { return XMLLiteralType.rdfXMLLiteral; }
-        public static RDFDatatype dtRDFJSON()       { return RDFjson.rdfJSON; }
-        public static RDFDatatype dtRDFHTML()       { return RDFhtml.rdfHTML; }
-    }
-
     /**
      * The main items of RDF vocabulary, but at the Node level, parked inside a nested
      * class so that there's a simple way to refer to them.

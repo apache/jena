@@ -37,7 +37,6 @@ import org.apache.jena.atlas.lib.Cache;
 import org.apache.jena.atlas.lib.CacheFactory;
 import org.apache.jena.atlas.lib.EscapeStr;
 import org.apache.jena.datatypes.RDFDatatype;
-import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
@@ -812,7 +811,7 @@ class ParserRRX_StAX_SR {
 
     private int parseTypeLiteral(Node subject, Node property, Emitter emitter, Location location) {
         String text = xmlLiteralAccumulateText();
-        Node object = literalDatatype(text, XMLLiteralType.rdfXMLLiteral, location);
+        Node object = literalDatatype(text, RDF.dtXMLLiteral, location);
         emitter.emit(subject, property, object, location);
         return END_ELEMENT;
     }

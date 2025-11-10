@@ -273,8 +273,8 @@ public class SplitIRI
     }
 
     /**
-     * Split point, according to XML 1.0 qname rules.
-     * This is the longest XML 1.0 NCName at the end of the uri.
+     * Split point, according to XML 1.1 qname rules.
+     * This is the longest XML 1.1 NCName at the end of the uri.
      * Return a split at the end of the string if there is no match
      * (e.g. the URI string ends in '/' or '#').
      */
@@ -473,6 +473,10 @@ public class SplitIRI
         return j;
     }
 
+    /**
+     * splitXML with local stricter XML 1.0 rules (only single Java characters)
+     * Retained as a record of previous split handling.
+     */
     private static int splitNamespaceXML10(String uri) {
         // The original code.
         char ch;

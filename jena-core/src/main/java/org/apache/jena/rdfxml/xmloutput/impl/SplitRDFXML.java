@@ -66,5 +66,4 @@ class SplitRDFXML {
         int i = splitXML10(string);
         return string.substring(i);
     }
-
 }

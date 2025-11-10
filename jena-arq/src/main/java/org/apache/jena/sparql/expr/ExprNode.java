@@ -53,19 +53,10 @@ public abstract class ExprNode implements Expr
         }
     }
 
-    /** @deprecated Unnecessary - to be removed */
-    @Deprecated(forRemoval = true)
-    public boolean isExpr()     { return true; }
-    /** @deprecated Unnecessary - to be removed */
-    @Deprecated(forRemoval = true)
-    public final Expr getExpr() { return this; }
-
-    // --- interface Constraint
-
     @Override
     public abstract NodeValue eval(Binding binding, FunctionEnv env);
 
-    // Theer are some overrides of this method for simple cases including
+    // There are some overrides of this method for simple cases including
     //   NodeValue ( = "ExprConstant")
     //   ExprVar
     @Override

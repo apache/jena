@@ -18,12 +18,13 @@
 
 package org.apache.jena.datatypes;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
+import org.junit.Test;
+
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.junit.Test;
+import org.apache.jena.vocabulary.RDF;
 
 public class TestRDFXMLiteral {
     // Different RDF terms with the same value.
@@ -66,8 +67,8 @@ public class TestRDFXMLiteral {
     // ----
 
     private static void test(String lex1, String lex2, boolean javaEquals, boolean sameTerm, boolean sameValue) {
-        Node n1 = NodeFactory.createLiteralDT(lex1, XMLLiteralType.rdfXMLLiteral);
-        Node n2 = NodeFactory.createLiteralDT(lex2, XMLLiteralType.rdfXMLLiteral);
+        Node n1 = NodeFactory.createLiteralDT(lex1, RDF.dtXMLLiteral);
+        Node n2 = NodeFactory.createLiteralDT(lex2, RDF.dtXMLLiteral);
         assertEquals(javaEquals, n1.equals(n2));
         assertEquals(sameTerm, n1.sameTermAs(n2));
         assertEquals(sameValue, n1.sameValueAs(n2));

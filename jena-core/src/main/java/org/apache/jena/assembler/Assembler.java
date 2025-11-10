@@ -77,7 +77,7 @@ public interface Assembler {
 
     public static final Assembler infModel = ConstAssembler.infModel();
 
-    /** @deprecated Use org.apache.hena.ontapi */
+    /** @deprecated Use org.apache.jena.ontapi */
     @Deprecated(forRemoval=true)
     public static final Assembler ontModel = ConstAssembler.ontModel();
 
@@ -89,7 +89,7 @@ public interface Assembler {
 
     public static final Assembler unionModel = ConstAssembler.unionModel();
 
-    /** @deprecated Use org.apache.hena.ontapi */
+    /** @deprecated Use org.apache.jena.ontapi */
     @Deprecated(forRemoval=true)
     public static final Assembler ontModelSpec = ConstAssembler.ontModelSpec();
 

@@ -42,12 +42,6 @@ public class RDFjson extends BaseDatatype implements RDFDatatype {
     public static final RDFDatatype rdfJSON = new RDFjson();
 
     /**
-     * @deprecated Prefer {@link #rdfJsonURI}.
-     */
-    @Deprecated
-    public static String RDFjson = rdfJsonURI;
-
-    /**
      * Test where an {@link RDFDatatype} is that for {@code rdf:XMLLiteral}.
      */
     public static boolean isRDFjson(RDFDatatype rdfDatatype) {

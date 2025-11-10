@@ -210,16 +210,6 @@ public interface Model
 	*/
 	public Resource createResource( String uri ) ;
 
-	/**
-	 * Create a resource that represents a statement.
-	 * This is in support of RDF 1.2 triple terms.
-     * @deprecated Use {@link #createStatementTerm}
-     */
-    @Deprecated(forRemoval = true)
-	public default RDFNode createResource( Statement statement ) {
-        return createStatementTerm(statement);
-    }
-
     /**
      * Create an RDFNode for a statement.
      * This is in support of RDF 1.2 triple terms.

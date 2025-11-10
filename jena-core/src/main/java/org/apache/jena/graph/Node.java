@@ -121,14 +121,6 @@ public abstract class Node implements Serializable {
     { return false; }
 
     /**
-     * Answer true iff this node is an "triple node" (RDF-star)
-     * @deprecated use {@link #isTripleTerm}
-     */
-    @Deprecated(forRemoval = true)
-    public boolean isNodeTriple()
-    { return isTripleTerm(); }
-
-    /**
      * Answer true iff this node is an "graph node" (N3 formula). This is not related
      * to named graphs.
      */

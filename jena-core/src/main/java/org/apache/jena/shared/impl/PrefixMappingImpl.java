@@ -129,19 +129,6 @@ public class PrefixMappingImpl implements PrefixMapping
     }
 
     /**
-     * Test whether a URI is "nice" for RDF/XML (ends in a non-NCName character according to XML 1.0).
-     * @deprecated To be removed.
-     */
-    @Deprecated
-    public static boolean isNiceURI(String uri) {
-        // Not used in Jena anymore.
-        if ( uri.equals("") )
-            return false;
-        char last = uri.charAt(uri.length() - 1);
-        return !org.apache.jena.util.XMLChar.isNCName(last);
-    }
-
-    /**
      * Add the bindings of other to our own. We defer to the general case because we
      * have to ensure the URIs are checked.
      *

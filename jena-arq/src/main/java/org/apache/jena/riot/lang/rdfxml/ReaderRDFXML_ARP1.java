@@ -28,7 +28,6 @@ import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
-import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.irix.IRIs;
@@ -41,6 +40,7 @@ import org.apache.jena.riot.system.FactoryRDF;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.vocabulary.RDF;
 import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
 
@@ -224,7 +224,7 @@ public class ReaderRDFXML_ARP1 implements ReaderRIOT
                 return parserProfile.createLangLiteral(lit.toString(), lit.getLang(), -1, -1);
 
             if (lit.isWellFormedXML()) {
-                return parserProfile.createTypedLiteral(lit.toString(), XMLLiteralType.rdfXMLLiteral, -1, -1);
+                return parserProfile.createTypedLiteral(lit.toString(), RDF.dtXMLLiteral, -1, -1);
             }
 
             RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(dtURI);
