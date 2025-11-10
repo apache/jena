@@ -139,8 +139,6 @@ public class ARQParserBase extends SPARQLParserBase
         // the following function checks whether the given lexical form is
         // well formed but, in the current case, we already know that it is
         // not well formed.
-        @SuppressWarnings("deprecation")
-        Node n = NodeFactory.createLiteral(lexicalForm, cdtDatatype);
-        return n;
+        return NodeFactory.createLiteralDT(lexicalForm, cdtDatatype);
     }
 }

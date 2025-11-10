@@ -28,9 +28,6 @@ import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
-import org.apache.jena.datatypes.xsd.impl.RDFhtml;
-import org.apache.jena.datatypes.xsd.impl.RDFjson;
-import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
 import org.apache.jena.graph.TextDirection;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.PrefixMapping;
@@ -419,9 +416,9 @@ final public class LiteralLabel {
      * Therefore getValueHashCode is the same as hashCode();
      */
     private boolean indexingValueIsSelf() {
-        return dtype == XMLLiteralType.rdfXMLLiteral ||
-               dtype == RDFjson.rdfJSON ||
-               dtype == RDFhtml.rdfHTML ;
+        return dtype == RDF.dtXMLLiteral ||
+               dtype == RDF.dtRDFJSON ||
+               dtype == RDF.dtRDFHTML;
     }
 
     /**

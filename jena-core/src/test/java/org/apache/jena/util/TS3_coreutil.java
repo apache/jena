@@ -28,11 +28,8 @@ import org.junit.runners.Suite;
     TestCollectionFactory.class,
     TestLocationMapper.class,
     TestFileManager.class,
-    TestMonitors.class,
     TestPrintUtil.class,
     TestPrefixMappingUtils.class,
-    TestIteratorCollection.class,
-    TestModelCollector.class,
 
     TestSplitIRI_Display.class,
     TestSplitIRI_XML.class,

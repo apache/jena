@@ -33,7 +33,6 @@ import org.apache.jena.atlas.lib.Cache;
 import org.apache.jena.atlas.lib.CacheFactory;
 import org.apache.jena.atlas.lib.EscapeStr;
 import org.apache.jena.datatypes.RDFDatatype;
-import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
@@ -95,7 +94,7 @@ class ParserRRX_SAX
     private static final String rdfAboutEachPrefix = "aboutEachPrefix";
     private static final String rdfBagID = "bagID";
 
-    private static final RDFDatatype rdfXmlLiteralDT = XMLLiteralType.rdfXMLLiteral;
+    private static final RDFDatatype rdfXmlLiteralDT = RDF.dtXMLLiteral;
 
     // LN = Local name.
     private static final String xmlBaseLN = "base";

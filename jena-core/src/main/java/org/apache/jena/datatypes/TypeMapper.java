@@ -24,8 +24,8 @@ import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.datatypes.xsd.impl.*;
 import org.apache.jena.shared.impl.JenaParameters ;
+import org.apache.jena.vocabulary.RDF;
 
 /**
  * The TypeMapper provides a global registry of known datatypes.
@@ -66,11 +66,11 @@ public class TypeMapper {
     static { reset() ; }
     public static void reset() {
         theTypeMap = new TypeMapper();
-        theTypeMap.registerDatatype(RDFLangString.rdfLangString) ;
-        theTypeMap.registerDatatype(RDFDirLangString.rdfDirLangString) ;
-        theTypeMap.registerDatatype(RDFjson.rdfJSON);
-        theTypeMap.registerDatatype(XMLLiteralType.rdfXMLLiteral);
-        theTypeMap.registerDatatype(RDFhtml.rdfHTML);
+        theTypeMap.registerDatatype(RDF.dtLangString) ;
+        theTypeMap.registerDatatype(RDF.dtDirLangString);
+        theTypeMap.registerDatatype(RDF.dtRDFJSON);
+        theTypeMap.registerDatatype(RDF.dtXMLLiteral);
+        theTypeMap.registerDatatype(RDF.dtRDFHTML);
         XSDDatatype.loadXSDSimpleTypes(theTypeMap);
 
         // add primitive types

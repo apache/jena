@@ -175,10 +175,6 @@ public interface Literal extends RDFNode {
      */
     public String getLanguage();
 
-    /** @deprecated Use {@link #getBaseDirection()} */
-    @Deprecated
-    public default String getTextDirection() { return getBaseDirection(); }
-
     /**
      * If a base direction is defined for this literal return it
      *

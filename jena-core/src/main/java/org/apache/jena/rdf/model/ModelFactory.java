@@ -22,8 +22,8 @@ import java.util.Set ;
 
 import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.assembler.AssemblerHelp ;
-import org.apache.jena.graph.GraphMemFactory ;
 import org.apache.jena.graph.Graph ;
+import org.apache.jena.graph.GraphMemFactory ;
 import org.apache.jena.graph.compose.Union ;
 import org.apache.jena.ontology.OntModel ;
 import org.apache.jena.ontology.OntModelSpec ;

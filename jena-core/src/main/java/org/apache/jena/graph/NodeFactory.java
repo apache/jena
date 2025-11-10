@@ -83,31 +83,12 @@ public class NodeFactory {
         return new Node_Literal( lit );
     }
 
-    /** @deprecated Use {@link #createLiteralString} */
-    @Deprecated(forRemoval = true)
-    public static Node createLiteral(String string) {
-        return createLiteralString(string);
-    }
-
     /*
      * Make literal which is a string (xsd:string)
      */
     public static Node createLiteralString(String string) {
         Objects.requireNonNull(string, "Argument to NodeFactory.createLiteralString is null");
         return new Node_Literal(string);
-    }
-
-    /**
-     * Make a literal with specified language. The lexical form must not be null.
-     *
-     * @param string  the lexical form of the literal
-     * @param lang    the optional language tag
-     *
-     * @deprecated Use {@link #createLiteralLang(String, String)}.
-     */
-    @Deprecated(forRemoval = true)
-    public static Node createLiteral(String string, String lang) {
-        return createLiteralLang(string, lang);
     }
 
     /**
@@ -284,12 +265,6 @@ public class NodeFactory {
         return textDir;
     }
 
-    /** @deprecated Use {@link #createLiteralDT(String, RDFDatatype)} */
-    @Deprecated
-    public static Node createLiteral(String lex, RDFDatatype dtype) {
-        return createLiteralDT(lex, dtype);
-    }
-
     /**
      * Build a typed literal node from its lexical form.
      *
@@ -336,24 +311,6 @@ public class NodeFactory {
     /** Create a triple term (RDF-star) */
     public static Node createTripleTerm(Triple triple) {
         return new Node_Triple(triple);
-    }
-
-    /**
-     * Create a triple term (RDF-star)
-     * @deprecated Use {@link #createTripleTerm(Node, Node, Node)}
-     */
-    @Deprecated
-    public static Node createTripleNode(Node s, Node p, Node o) {
-        return createTripleTerm(s, p, o);
-    }
-
-    /**
-     * Create a triple node (RDF-star)
-     * @deprecated Use {@link #createTripleTerm(Triple)}
-     */
-    @Deprecated
-    public static Node createTripleNode(Triple triple) {
-        return createTripleTerm(triple);
     }
 
     /** Create a graph node. This is an N3-formula; it is not a named graph (see "quad") */

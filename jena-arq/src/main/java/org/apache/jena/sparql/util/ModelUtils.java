@@ -18,22 +18,13 @@
 
 package org.apache.jena.sparql.util;
 
-import java.util.Iterator;
-
-import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.query.QueryException;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.rdf.model.impl.LiteralImpl;
 import org.apache.jena.rdf.model.impl.ResourceImpl;
-import org.apache.jena.rdf.model.impl.StmtIteratorImpl;
 import org.apache.jena.sparql.ARQInternalErrorException;
-import org.apache.jena.util.ModelCollector;
-import org.apache.jena.util.iterator.ClosableIterator;
 
 public class ModelUtils
 {
@@ -72,73 +63,4 @@ public class ModelUtils
     public static RDFNode convertGraphNodeToRDFNode(Node node) {
         return convertGraphNodeToRDFNode(node, null);
     }
-
-    /**
-     * @deprecated Use {@link Model#asStatement(Triple)}.
-     */
-    @Deprecated(forRemoval = true)
-    public static Statement tripleToStatement(Model model, Triple t) {
-        if ( model == null )
-            throw new ARQInternalErrorException("Attempt to create statement with null model");
-
-        Node sNode = t.getSubject();
-        Node pNode = t.getPredicate();
-        Node oNode = t.getObject();
-
-        if (!NodeUtils.isValidAsRDF(sNode, pNode, oNode)) return null;
-
-        return model.asStatement(t);
-    }
-
-    /**
-     * Determines whether a valid Statement can be formed from the given Subject, Predicate and Object
-     * <p>
-     * This function reflects the fact that the {@link Triple} API is flexible in allowing any Node type in any position (including non-RDF node types like Variable)
-     * and as such not all Triples can be safely converted into Statements
-     * </p>
-     * @param s Subject
-     * @param p Predicate
-     * @param o Object
-     * @return True if a valid Statement can be formed
-     *
-     * @deprecated Use {@link NodeUtils#isValidAsRDF(Node, Node, Node)}.
-     */
-    @Deprecated(forRemoval = true)
-    public static boolean isValidAsStatement(Node s, Node p, Node o) {
-        return NodeUtils.isValidAsRDF(s, p, o);
-    }
-
-    /**
-    * @deprecated Use {@link NodeUtils#isValidAsRDF(Node, Node, Node)}.
-    */
-   @Deprecated(forRemoval = true)
-    public static StmtIterator triplesToStatements(final Iterator<Triple> it, final Model refModel) {
-        return new StmtIteratorImpl(Iter.map(it, refModel::asStatement)) {
-            // Make sure to close the incoming iterator
-            @Override
-            public void close() {
-                if ( it instanceof ClosableIterator<? > ) {
-                    ((ClosableIterator<? >)it).close();
-                } else {
-                    Iter.close(it);
-                }
-            }
-        };
-    }
-
-    /** @deprecated To be removed. */
-    @Deprecated(forRemoval = true)
-    public static ModelCollector intersectCollector() {
-        return new ModelCollector.IntersectionModelCollector();
-    }
-
-    /** @deprecated To be removed. */
-    @Deprecated(forRemoval = true)
-    public static ModelCollector unionCollector() {
-        return new ModelCollector.UnionModelCollector();
-    }
-//
-//    public static Iterator<Triple> statementsToTriples(final Iterator<Statement> it) {
-//        return Iter.onClose(Iter.map(it, Statement::asTriple), ()->Iter.close(it));
-//    }
 }
