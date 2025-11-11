@@ -19,7 +19,6 @@
 package org.apache.jena.tdb2.store.nodetable;
 
 import java.util.Iterator;
-import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
@@ -134,27 +133,6 @@ public class ThreadBufferingCache<Key,Value> implements Cache<Key,Value> {
         if ( item != null )
             return item;
         return baseCache.getIfPresent(key);
-    }
-
-    @SuppressWarnings("removal")
-    @Override
-    public Value getOrFill(Key key, Callable<Value> callable) {
-        if ( ! buffering() )
-            return baseCache.getOrFill(key, callable);
-        // Not thread safe but this overlay cache is for single-thread use.
-        Value item = localCache().getIfPresent(key);
-        if ( item != null )
-            return item;
-        item = baseCache.getIfPresent(key);
-        if ( item != null )
-            return item;
-        try {
-            item = callable.call();
-            localCache().put(key, item);
-        } catch (Exception ex) {
-            throw new TDBException("Exception filling cache", ex);
-        }
-        return item;
     }
 
     @Override

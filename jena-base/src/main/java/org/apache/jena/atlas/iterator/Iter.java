@@ -79,12 +79,6 @@ public class Iter<T> implements IteratorCloseable<T> {
 
     // ---- Special iterators.
 
-    /** @deprecated Use {@link #singletonIterator} */
-    @Deprecated
-    public static <T> Iterator<T> singleton(T item) {
-        return singletonIterator(item);
-    }
-
     public static <T> Iterator<T> singletonIterator(T item) {
         // There is a singleton iterator in Collections but it is not public.
         return new SingletonIterator<>(item);
@@ -253,12 +247,6 @@ public class Iter<T> implements IteratorCloseable<T> {
 
     public static <T> Iterator<T> filterDrop(final Iterator<? extends T> stream, final Predicate<T> filter) {
         return filter(stream, filter.negate());
-    }
-
-    /** @deprecated Use {@link #filterDrop} */
-    @Deprecated
-    public static <T> Iterator<T> notFilter(final Iterator<? extends T> stream, final Predicate<T> filter) {
-        return filterDrop(stream, filter);
     }
 
     // Filter-related

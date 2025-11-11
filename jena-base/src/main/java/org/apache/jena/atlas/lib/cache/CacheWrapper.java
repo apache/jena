@@ -18,49 +18,42 @@
 
 package org.apache.jena.atlas.lib.cache;
 import java.util.Iterator ;
-import java.util.concurrent.Callable ;
 import java.util.function.Function;
 
 import org.apache.jena.atlas.lib.Cache ;
 
-
-
 public class CacheWrapper<Key,T> implements Cache<Key,T>
 {
-    protected Cache<Key,T> cache ;
+    private final Cache<Key,T> cache ;
 
     public CacheWrapper(Cache<Key,T> cache)         { this.cache = cache ; }
+    protected final Cache<Key,T> get() { return cache; }
 
     @Override
-    public void clear()                             { cache.clear(); }
+    public void clear()                             { get().clear(); }
 
     @Override
-    public boolean containsKey(Key key)             { return cache.containsKey(key) ; }
+    public boolean containsKey(Key key)             { return get().containsKey(key) ; }
 
     @Override
-    public T getIfPresent(Key key)                  { return cache.getIfPresent(key) ; }
-
-    @SuppressWarnings("removal")
-    @Override
-    public T getOrFill(Key key, Callable<T> callable)  { return cache.getOrFill(key, callable) ; }
+    public T getIfPresent(Key key)                  { return get().getIfPresent(key) ; }
 
     @Override
-    public T get(Key key, Function<Key, T> fucntion)  { return cache.get(key, fucntion) ; }
-
-
-    @Override
-    public boolean isEmpty()                        { return cache.isEmpty() ; }
+    public T get(Key key, Function<Key, T> fucntion)  { return get().get(key, fucntion) ; }
 
     @Override
-    public Iterator<Key> keys()                     { return cache.keys(); }
+    public boolean isEmpty()                        { return get().isEmpty() ; }
 
     @Override
-    public void put(Key key, T thing)               { cache.put(key, thing) ; }
+    public Iterator<Key> keys()                     { return get().keys(); }
 
     @Override
-    public void remove(Key key)                     { cache.remove(key) ; }
+    public void put(Key key, T thing)               { get().put(key, thing) ; }
 
     @Override
-    public long size()                              { return cache.size() ; }
+    public void remove(Key key)                     { get().remove(key) ; }
+
+    @Override
+    public long size()                              { return get().size() ; }
 
 }
