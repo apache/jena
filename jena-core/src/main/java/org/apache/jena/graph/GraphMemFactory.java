@@ -67,7 +67,7 @@ public class GraphMemFactory
      */
     public static Graph createGraphMemForModel() {
         @SuppressWarnings("deprecation")
-        Graph g = new org.apache.jena.mem.GraphMem();
+        Graph g = new org.apache.jena.mem.GraphMemValue();
         return g;
     }
 
@@ -80,7 +80,7 @@ public class GraphMemFactory
      */
     public static Graph createDefaultGraphSameValue() {
         @SuppressWarnings("deprecation")
-        Graph g = new org.apache.jena.mem.GraphMem();
+        Graph g = new org.apache.jena.mem.GraphMemValue();
         return g;
     }
 
@@ -100,7 +100,7 @@ public class GraphMemFactory
      * <li>Iterator over this graph does not provide Iterator.remove</li>
      * </ul>
      * <p>
-     * It has improved performance compared to {@link org.apache.jena.mem.GraphMem}
+     * It has improved performance compared to {@link org.apache.jena.mem.GraphMemValue}
      * with a simpler implementation, primarily due to not providing support for {@link Iterator#remove}.
      * <p>
      * See {@link GraphMem2Legacy} for details.

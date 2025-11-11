@@ -31,7 +31,7 @@ import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.*;
 import org.apache.jena.graph.impl.LiteralLabelFactory;
 import org.apache.jena.graph.test.AbstractTestGraph;
-import org.apache.jena.mem.GraphMem;
+import org.apache.jena.mem.GraphMemValue;
 import org.apache.jena.testing_framework.NodeCreateUtils;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.junit.Test;
@@ -41,7 +41,7 @@ import org.junit.Test;
  * <p>
  * This is used by the Model API.
  * <p>
- * Jena5+ : Only {@link GraphMem} supports this. Other graph are "same term", not
+ * Jena5+ : Only {@link GraphMemValue} supports this. Other graph are "same term", not
  * "same value" and language tags are held in canonical form.
  */
 public class TestGraphMemModel extends AbstractTestGraph {

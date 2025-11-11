@@ -18,14 +18,21 @@
 
 package org.apache.jena.ontapi;
 
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import com.github.andrewoma.dexx.collection.Sets;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.compose.MultiUnion;
 import org.apache.jena.graph.impl.GraphBase;
 import org.apache.jena.graph.impl.WrappedGraph;
-import org.apache.jena.mem.GraphMem;
 import org.apache.jena.ontapi.impl.UnionGraphImpl;
 import org.apache.jena.ontapi.testutils.ModelTestUtils;
 import org.apache.jena.ontapi.utils.Graphs;
@@ -37,22 +44,16 @@ import org.apache.jena.sparql.graph.GraphWrapper;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.vocabulary.OWL2;
 import org.apache.jena.vocabulary.RDF;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * To test {@link Graphs} utility class.
  */
-@SuppressWarnings("deprecation")
 public class GraphUtilsTest {
+
+    // The test graph implementation choice.
+    private static Graph createGraph() {
+        return GraphMemFactory.createGraphMemForModel();
+    }
 
     private static Stream<Graph> flat(Graph graph) {
         if (graph == null) return Stream.empty();
@@ -77,11 +78,11 @@ public class GraphUtilsTest {
 
     @Test
     public void testIsSized() {
-        Assertions.assertTrue(Graphs.isSized(new GraphMem()));
-        Assertions.assertTrue(Graphs.isSized(new UnionGraphImpl(new GraphMem())));
-        Assertions.assertFalse(Graphs.isSized(new UnionGraphImpl(new GraphWrapper(new GraphMem()))));
+        Assertions.assertTrue(Graphs.isSized(createGraph()));
+        Assertions.assertTrue(Graphs.isSized(new UnionGraphImpl(createGraph())));
+        Assertions.assertFalse(Graphs.isSized(new UnionGraphImpl(new GraphWrapper(createGraph()))));
 
-        UnionGraph u1 = new UnionGraphImpl(new GraphMem());
+        UnionGraph u1 = new UnionGraphImpl(createGraph());
         u1.addSubGraph(u1);
         Assertions.assertFalse(Graphs.isSized(u1));
 
@@ -96,14 +97,14 @@ public class GraphUtilsTest {
 
     @Test
     public void testIsDistinct() {
-        Assertions.assertTrue(Graphs.isDistinct(new GraphMem()));
-        Assertions.assertTrue(Graphs.isDistinct(new UnionGraphImpl(new GraphMem())));
-        Assertions.assertTrue(Graphs.isDistinct(new UnionGraphImpl(new GraphWrapper(new GraphMem()))));
+        Assertions.assertTrue(Graphs.isDistinct(createGraph()));
+        Assertions.assertTrue(Graphs.isDistinct(new UnionGraphImpl(createGraph())));
+        Assertions.assertTrue(Graphs.isDistinct(new UnionGraphImpl(new GraphWrapper(createGraph()))));
 
-        UnionGraph u1 = new UnionGraphImpl(new GraphMem(), false);
+        UnionGraph u1 = new UnionGraphImpl(createGraph(), false);
         Assertions.assertTrue(Graphs.isDistinct(u1));
 
-        u1.addSubGraph(new GraphMem());
+        u1.addSubGraph(createGraph());
         Assertions.assertFalse(Graphs.isDistinct(u1));
 
         Graph g = new GraphBase() {
@@ -125,7 +126,7 @@ public class GraphUtilsTest {
 
         MultiUnion b = new MultiUnion();
         b.addGraph(g);
-        b.addGraph(new GraphMem());
+        b.addGraph(createGraph());
         Assertions.assertTrue(Graphs.isSameBase(a, b));
 
         UnionGraph c1 = new UnionGraphImpl(new GraphWrapper(g));
@@ -140,19 +141,19 @@ public class GraphUtilsTest {
         Graph d = new UnionGraphImpl(new WrappedGraph(new WrappedGraph(g)));
         Assertions.assertTrue(Graphs.isSameBase(a, d));
 
-        Assertions.assertFalse(Graphs.isSameBase(new UnionGraphImpl(g), new UnionGraphImpl(new GraphMem())));
+        Assertions.assertFalse(Graphs.isSameBase(new UnionGraphImpl(g), new UnionGraphImpl(createGraph())));
 
         MultiUnion e = new MultiUnion();
-        e.addGraph(new GraphMem());
+        e.addGraph(createGraph());
         e.addGraph(g);
         Assertions.assertFalse(Graphs.isSameBase(b, e));
     }
 
     @Test
     public void testCollectPrefixes() {
-        Graph a = new GraphMem();
-        Graph b = new GraphMem();
-        Graph c = new GraphMem();
+        Graph a = createGraph();
+        Graph b = createGraph();
+        Graph c = createGraph();
         a.getPrefixMapping().setNsPrefix("a1", "x1").setNsPrefix("a2", "x2");
         b.getPrefixMapping().setNsPrefix("b1", "x3");
         c.getPrefixMapping().setNsPrefix("b2", "x4");
