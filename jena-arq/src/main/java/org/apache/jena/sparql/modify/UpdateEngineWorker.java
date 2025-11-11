@@ -575,7 +575,8 @@ public class UpdateEngineWorker implements UpdateVisitor
         updateRemainingQueryTimeout(context);
 
         // Not QueryExecDataset.dataset(...) because of initialBinding.
-        QueryExecDatasetBuilder builder = QueryExecDatasetBuilder.create().dataset(dsg).query(query).context(context);
+        // Note: QueryExecDatasetBuilderImpl.create() -> default engine builder, QueryExecDataset.create() -> deferred builder.
+        QueryExecDatasetBuilder builder = QueryExecDatasetBuilderImpl.create().dataset(dsg).query(query).context(context);
         if ( inputBinding != null ) {
             // Must use initialBinding - it puts the input in the results, unlike substitution.
             builder.initialBinding(inputBinding);
