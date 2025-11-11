@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.CoordinateXYZM;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.Envelope;
 
@@ -385,11 +386,17 @@ public class CustomCoordinateSequence implements CoordinateSequence, Serializabl
 
     @Override
     public Coordinate getCoordinate(int i) {
+        if (measuresDimension == 1) {
+            return new CoordinateXYZM(x[i], y[i], z[i], m[i]);
+        }
         return new Coordinate(x[i], y[i], z[i]);
     }
 
     @Override
     public Coordinate getCoordinateCopy(int i) {
+        if (measuresDimension == 1) {
+            return new CoordinateXYZM(x[i], y[i], z[i], m[i]);
+        }
         return new Coordinate(x[i], y[i], z[i]);
     }
 
@@ -472,7 +479,11 @@ public class CustomCoordinateSequence implements CoordinateSequence, Serializabl
         Coordinate[] coordinates = new Coordinate[size];
 
         for (int i = 0; i < size; i++) {
-            coordinates[i] = new Coordinate(x[i], y[i], z[i]);
+            if (measuresDimension == 1) {
+                coordinates[i] = new CoordinateXYZM(x[i], y[i], z[i], m[i]);
+            } else {
+                coordinates[i] = new Coordinate(x[i], y[i], z[i]);
+            }
         }
 
         return coordinates;

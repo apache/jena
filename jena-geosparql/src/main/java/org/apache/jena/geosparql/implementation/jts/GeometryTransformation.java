@@ -187,7 +187,7 @@ public class GeometryTransformation {
         boolean isZSource = sourceDims > 2;
         for (int i = 0; i < size; i++) {
             Coordinate coord = coordSeq.getCoordinate(i);
-            int j = i * targetDims;
+            int j = i * sourceDims;
             sourcePts[j] = coord.getX();
             sourcePts[j + 1] = coord.getY();
             if (isZSource) {
