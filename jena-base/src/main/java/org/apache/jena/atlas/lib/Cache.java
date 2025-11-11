@@ -19,7 +19,6 @@
 package org.apache.jena.atlas.lib;
 
 import java.util.Iterator ;
-import java.util.concurrent.Callable ;
 import java.util.function.Function;
 
 import org.apache.jena.atlas.lib.cache.CacheInfo;
@@ -48,22 +47,6 @@ public interface Cache<Key, Value>
      * @return If the cache contains an entry for the given key, the value is returned, otherwise null.
      */
     public Value getIfPresent(Key key) ;
-
-    /** Get from cache; if not present, call the {@link Callable}
-     *  to try to fill the cache. This operation should be atomic.
-     *  The 'key' and 'callcable' must not be null.
-     *  @deprecated Use {@link #get(Object, Function)}
-     */
-    @Deprecated(forRemoval = true)
-    public default Value getOrFill(Key key, Callable<Value> callable) {
-        return get(key, k->{
-            try {
-                return callable.call();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
 
     /**
      * Get from cache; if not present, call the {@link Function}

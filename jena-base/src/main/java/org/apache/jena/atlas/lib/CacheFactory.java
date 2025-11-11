@@ -67,7 +67,7 @@ public class CacheFactory {
      * Create a null cache.
      * <p>
      * This cache never retains a value and always
-     * evaluates in {@link Cache#getOrFill}.
+     * evaluates in {@link Cache#get}.
      * <p>
      * This cache is thread-safe.
      */

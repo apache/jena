@@ -23,7 +23,6 @@ import static java.util.stream.Collectors.joining;
 
 import java.util.ArrayList ;
 import java.util.List ;
-import java.util.stream.Stream;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.logging.Log ;
@@ -48,12 +47,6 @@ public class ListUtils
         if ( list.isEmpty() )
             return null;
         return list.get(list.size()-1);
-    }
-
-    /** @deprecated Call {@link Stream#toList} */
-    @Deprecated(forRemoval = true)
-    public static <T> List<T> toList(Stream<T> stream) {
-        return stream.toList() ;
     }
 
     public static <T> String str(T[] array) {

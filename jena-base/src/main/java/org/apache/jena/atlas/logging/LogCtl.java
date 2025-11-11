@@ -236,14 +236,6 @@ public class LogCtl {
         }
     }
 
-    /**
-     * @deprecated Use {@link #setLogging}.
-     */
-    @Deprecated(forRemoval = true)
-    public static void setCmdLogging() {
-        setLogging();
-    }
-
     // ---- log4j2.
 
     /** The log4j2 configuration file - must be a file or URL, not a classpath java resource. */
