@@ -56,6 +56,8 @@ import org.apache.jena.sparql.util.XSDNumUtils;
 /**
  * Implementation of XQuery/XPath functions and operators.
  * http://www.w3.org/TR/xpath-functions/
+ * <p>
+ * See also {@link XSDNumUtils}.
  */
 public class XSDFuncOp
 {
@@ -252,33 +254,6 @@ public class XSDFuncOp
         }
     }
 
-    /**
-     * Decimal format, cast-to-string.
-     * <p>
-     * Decimal canonical form where integer values has no ".0" (as in XSD 1.1).
-     * <p>
-     * In XSD 1.0, canonical integer-valued decimal has a trailing ".0".
-     * In XSD 1.1 and F&amp;O v 3.1, xs:string cast of a decimal which is integer valued, does
-     * not have the trailing ".0".
-     * @deprecated Use {@link XSDNumUtils#stringFormatXSD11} instead
-     */
-    @Deprecated(forRemoval = true)
-    public static String canonicalDecimalStrNoIntegerDot(BigDecimal bd) {
-        return XSDNumUtils.stringFormatXSD11(bd);
-    }
-
-    /**
-     * Canonical decimal according to XML Schema Datatype 2 v1.0.
-     * Integer-valued decimals have a trailing ".0".
-     * (In XML Schema Datatype 1.1 they did not have a ".0".)
-     * <p>
-     * @deprecated Use {@link XSDNumUtils#stringFormatXSD10(BigDecimal)} instead
-     */
-    @Deprecated(forRemoval = true)
-    public static String canonicalDecimalStr(BigDecimal decimal) {
-        return XSDNumUtils.stringFormatXSD10(decimal);
-    }
-
     public static NodeValue max(NodeValue nv1, NodeValue nv2) {
         int x = compareNumeric(nv1, nv2);
         if ( x == Expr.CMP_LESS )
@@ -299,23 +274,11 @@ public class XSDFuncOp
         return NodeValue.booleanReturn(!b);
     }
 
-    /** @deprecated Renamed as {@link #effectiveBooleanValueAsNodeValue}. */
-    @Deprecated(forRemoval = true)
-    public static NodeValue booleanEffectiveValueAsNodeValue(NodeValue nv) {
-        return effectiveBooleanValueAsNodeValue(nv);
-    }
-
     /** {@literal F&O} fn:boolean */
     public static NodeValue effectiveBooleanValueAsNodeValue(NodeValue nv) {
         if ( nv.isBoolean() ) // "Optimization" (saves on object churn)
             return nv;
         return NodeValue.booleanReturn(effectiveBooleanValue(nv));
-    }
-
-    /** @deprecated Renamed as {@link #effectiveBooleanValue}. */
-    @Deprecated(forRemoval = true)
-    public static boolean booleanEffectiveValue(NodeValue nv) {
-        return effectiveBooleanValue(nv);
     }
 
     /** Effective Boolean Value */
@@ -1032,7 +995,7 @@ public class XSDFuncOp
              XSDDatatype.XSDgMonthDay,
              XSDDatatype.XSDgDay
             );
-    
+
     public static boolean isTemporalDatatype(XSDDatatype datatype) {
         return temporalDatatypes.contains(datatype);
     }

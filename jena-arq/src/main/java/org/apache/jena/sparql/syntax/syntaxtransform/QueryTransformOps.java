@@ -67,12 +67,6 @@ public class QueryTransformOps {
         return query2;
     }
 
-    /** @deprecated Use {@link #replaceVars} */
-    @Deprecated
-    public static Query transform(Query query, Map<Var, ? extends Node> substitutions) {
-        return replaceVars(query, substitutions);
-    }
-
     /**
      * Transform a query based on a mapping from {@link Var} variable to replacement {@link Node}.
      * The replacement can be a constant or another variable.
@@ -84,12 +78,6 @@ public class QueryTransformOps {
      */
     public static Query replaceVars(Query query, Map<Var, ? extends Node> substitutions) {
         return transformSubstitute(query, substitutions);
-    }
-
-    /** @deprecated Use {@link #queryReplaceVars} */
-    @Deprecated
-    public static Query transformQuery(Query query, Map<String, ? extends RDFNode> substitutions)    {
-        return queryReplaceVars(query, substitutions);
     }
 
     /**

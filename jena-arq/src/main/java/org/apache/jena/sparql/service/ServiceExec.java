@@ -34,15 +34,6 @@ import org.apache.jena.sparql.util.Context;
 public class ServiceExec {
 
     /**
-     * Use {@link #exec(OpService, QueryIterator, ExecutionContext)} whose parameter order matches that of
-     * {@link ServiceExecutorBulk#createExecution(OpService, QueryIterator, ExecutionContext)}.
-     */
-    @Deprecated(forRemoval = true, since = "5.4.0")
-    public static QueryIterator exec(QueryIterator input, OpService opService, ExecutionContext execCxt) {
-        return exec(opService, input, execCxt);
-    }
-
-    /**
      * Execute an OpService w.r.t. the execCxt's service executor registry.
      * This is the route from OpExecutor.
      *

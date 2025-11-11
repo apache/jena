@@ -77,20 +77,8 @@ public interface ParserProfile {
     /** Create a triple term (RDF-star) */
     public Node createTripleTerm(Node subject, Node predicate, Node object, long line, long col);
 
-    /** @deprecated Use {@link #createTripleTerm} */
-    @Deprecated
-    public default Node createTripleNode(Node subject, Node predicate, Node object, long line, long col) {
-        return createTripleTerm(subject, predicate, object, line, col);
-    }
-
     /** Create a triple node (RDF-star) */
     public Node createTripleTerm(Triple triple, long line, long col);
-
-    /** @deprecated Use {@link #createTripleTerm} */
-    @Deprecated
-    public default Node createTripleNode(Triple triple, long line, long col) {
-        return createTripleTerm(triple, line, col);
-    }
 
     /** Create a graph node. This is an N3-formula and not named graphs */
     public Node createGraphNode(Graph graph, long line, long col);

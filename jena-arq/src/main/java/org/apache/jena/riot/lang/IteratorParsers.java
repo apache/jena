@@ -20,8 +20,13 @@ package org.apache.jena.riot.lang;
 
 import java.io.InputStream;
 import java.util.Iterator;
+import java.util.Objects;
 
 import org.apache.jena.graph.Triple;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.RiotException;
+import org.apache.jena.riot.system.AsyncParser;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.riot.system.StreamRDF;
@@ -33,6 +38,32 @@ import org.apache.jena.sparql.core.Quad;
  * Parsers that support the iterator pattern for receiving the results of parsing.
  */
 public class IteratorParsers {
+
+    /**
+     * Creates an iterator over parsing of quads.
+     * This function creates a thread unless the Lang is N-Triples.
+     */
+    public static Iterator<Triple> createIteratorTriples(InputStream input, Lang lang, String baseURI) {
+        Objects.requireNonNull(lang);
+        if ( Lang.NTRIPLES.equals(lang) )
+            return createIteratorNTriples(input);
+        if ( ! RDFLanguages.isTriples(lang) )
+            throw new RiotException("Not a triples syntax: "+lang.getName());
+        // For all other languages, we need to do the parsing asynchronously
+        return AsyncParser.asyncParseTriples(input, lang, baseURI);
+    }
+
+    /**
+     * Create an iterator over parsing of triples.
+     * This function creates a thread unless the Lang is N-Quads.
+     */
+    public static Iterator<Quad> createIteratorQuads(InputStream input, Lang lang, String baseURI) {
+        Objects.requireNonNull(lang);
+        if ( Lang.NQUADS.equals(lang) )
+            return createIteratorNQuads(input);
+        // For all other languages, we need to do the parsing asynchronously
+        return AsyncParser.asyncParseQuads(input, lang, baseURI);
+    }
 
     /** Create an iterator for parsing N-Triples. */
     public static Iterator<Triple> createIteratorNTriples(InputStream input) {

@@ -143,13 +143,6 @@ public class Checker {
         return checkLiteral(lexicalForm, lang, (TextDirection)null, null, errorHandler, line, col);
     }
 
-    /** @deprecated Use {@link #checkLiteral(String, String, String, RDFDatatype, ErrorHandler, long, long)} */
-    @Deprecated(forRemoval =  true)
-    public static boolean checkLiteral(String lexicalForm, String lang, RDFDatatype datatype, ErrorHandler errorHandler, long line, long col) {
-        return checkLiteral(lexicalForm, lang, (TextDirection)null, datatype, errorHandler, line, col);
-    }
-
-
     public static boolean checkLiteral(String lexicalForm, String lang, String direction, RDFDatatype datatype, ErrorHandler errorHandler, long line, long col) {
         TextDirection textDir = null;
         if ( direction != null ) {

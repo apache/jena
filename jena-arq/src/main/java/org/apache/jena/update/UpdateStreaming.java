@@ -35,18 +35,6 @@ public class UpdateStreaming {
      * Create an UpdateExecution appropriate to the datasetGraph, or null if no
      * available factory to make an UpdateExecution
      *
-     * @param datasetGraph
-     * @return UpdateExecution
-     */
-    @Deprecated(forRemoval = true)
-    public static UpdateProcessorStreaming createStreaming(DatasetGraph datasetGraph) {
-        return makeStreaming(datasetGraph, null, null);
-    }
-
-    /**
-     * Create an UpdateExecution appropriate to the datasetGraph, or null if no
-     * available factory to make an UpdateExecution
-     *
      * @param dataset
      * @param inputBinding Initial binding to be applied to Update operations that
      *     can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
@@ -84,19 +72,6 @@ public class UpdateStreaming {
         return makeStreaming(dataset.asDatasetGraph(), null, context);
     }
 
-    /**
-     * Create an UpdateExecution appropriate to the datasetGraph, or null if no
-     * available factory to make an UpdateExecution
-     *
-     * @param datasetGraph
-     * @param context (null means use merge of global and graph store context))
-     * @return UpdateExecution
-     */
-    @Deprecated(forRemoval = true)
-    public static UpdateProcessorStreaming createStreaming(DatasetGraph datasetGraph, Context context) {
-        return makeStreaming(datasetGraph, null, context);
-    }
-
     // Everything for local updates comes through one of these two make methods
     /*package*/ static UpdateProcessorStreaming makeStreaming(DatasetGraph datasetGraph, Binding inputBinding, Context context) {
         Prologue prologue = new Prologue();
@@ -105,5 +80,4 @@ public class UpdateStreaming {
         UpdateProcessorStreamingBase uProc = new UpdateProcessorStreamingBase(datasetGraph, inputBinding, prologue, cxt, f);
         return uProc;
     }
-
 }

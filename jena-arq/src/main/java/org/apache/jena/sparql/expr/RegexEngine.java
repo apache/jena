@@ -28,6 +28,7 @@ import org.apache.jena.ext.xerces_regex.REUtil;
 import org.apache.jena.ext.xerces_regex.RegexParseException;
 import org.apache.jena.ext.xerces_regex.RegularExpression;
 import org.apache.jena.query.ARQ;
+import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
 
@@ -52,21 +53,22 @@ public abstract class RegexEngine {
 
     private static RegexImpl regexImpl = chooseRegexImpl(ARQ.getContext());
 
-    // Set from the context.
-    @SuppressWarnings("removal")
     private static RegexImpl chooseRegexImpl(Context context) {
-        Object v = ARQ.getContext().get(ARQ.regexImpl, ARQ.javaRegex);
-        Symbol symbol = null;
-        if ( v instanceof Symbol sym )
-            symbol = sym;
-        if ( v instanceof String str )
-            symbol = Symbol.create(str);
-
-        if ( ARQ.javaRegex.equals(symbol) )
+        Object v = ARQ.getContext().get(ARQ.regexImpl);
+        if ( v == null )
             return RegexImpl.Java;
-        if ( ARQ.xercesRegex.equals(symbol) )
-            return RegexImpl.Xerces;
-        Log.warn(E_Regex.class, "Regex implementation not recognized : default to Java");
+
+        if ( v instanceof String str ) {
+            return switch(str) {
+                case ARQConstants.strJavaRegex -> RegexImpl.Java;
+                case ARQConstants.strXercesRegex -> RegexImpl.Xerces;
+                default -> throw new IllegalArgumentException("Unexpected value: " + str);
+            };
+        }
+        if ( v instanceof Symbol sym )
+            Log.error(E_Regex.class, "Regex implementation context setting is a symbol : default to Java");
+        else
+            Log.warn(E_Regex.class, "Regex implementation not recognized : default to Java");
         return RegexImpl.Java;
     }
 

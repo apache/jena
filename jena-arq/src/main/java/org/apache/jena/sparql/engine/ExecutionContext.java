@@ -163,34 +163,7 @@ public class ExecutionContext implements FunctionEnv
         return create(dsg, graph, cxt);
     }
 
-    // ---- Previous generation - constructors
-
-    /**
-     * Setup with defaults of global settings
-     * @deprecated Use {@link #create(DatasetGraph)}
-     * */
-    @Deprecated(forRemoval = true)
-    public ExecutionContext(DatasetGraph dataset) {
-        this(dataset, QC.getFactory(ARQ.getContext()));
-    }
-
-    /** Setup with defaults of global settings but explicit {@link OpExecutorFactory}.
-     * @deprecated Use {@link #create(DatasetGraph)}
-     */
-    @Deprecated(forRemoval = true)
-    public ExecutionContext(DatasetGraph dataset, OpExecutorFactory factory) {
-        this(ARQ.getContext().copy(), dataset.getDefaultGraph(), dataset, factory);
-    }
-
-    /** @deprecated Use a "create" function where possible. */
-    @Deprecated
-    public ExecutionContext(Context params, Graph activeGraph, DatasetGraph dataset, OpExecutorFactory factory) {
-        this(params, activeGraph, dataset, factory, Context.getCancelSignal(params));
-    }
-
-    /** @deprecated This will be changed to be private. */
-    @Deprecated
-    public ExecutionContext(Context params, Graph activeGraph, DatasetGraph dataset, OpExecutorFactory factory, AtomicBoolean cancelSignal) {
+    private ExecutionContext(Context params, Graph activeGraph, DatasetGraph dataset, OpExecutorFactory factory, AtomicBoolean cancelSignal) {
         this.context = params;
         this.dataset = dataset;
         this.openIterators = new ArrayList<>();
@@ -200,8 +173,6 @@ public class ExecutionContext implements FunctionEnv
         this.executor = factory;
         this.cancelSignal = cancelSignal;
     }
-
-    // ---- Previous generation - constructors
 
     @Override
     public Context getContext() {

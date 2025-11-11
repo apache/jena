@@ -101,12 +101,6 @@ public class LangParserBase {
         return createBNode(line, column);
     }
 
-    /** @deprecated Use {@link #checkRDFString}. */
-    @Deprecated(forRemoval=true)
-    protected void checkString(String string, int line, int column) {
-        checkRDFString(string, line, column);
-    }
-
     /**
      * Apply any checks for "RDF String" to a string that has already had escape processing applied.
      * An RDF String is a sequence of codepoints in the range U+0000 to U+10FFFF, excluding surrogates.

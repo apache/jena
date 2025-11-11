@@ -22,7 +22,6 @@ import java.io.*;
 import java.util.Iterator;
 import java.util.Objects;
 
-import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.graph.Graph;
@@ -32,8 +31,6 @@ import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.lang.IteratorParsers;
-import org.apache.jena.riot.system.AsyncParser;
-import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.riot.system.stream.StreamManager;
@@ -822,15 +819,9 @@ public class RDFDataMgr
      * @param lang Language
      * @param baseIRI Base IRI
      * @return Iterator over the triples
-     * @deprecated Use {@link AsyncParser#asyncParseTriples} or for N-Triples, {@link IteratorParsers#createIteratorNTriples}
      */
-    @Deprecated(forRemoval = true)
     public static Iterator<Triple> createIteratorTriples(InputStream input, Lang lang, String baseIRI) {
-        // Special case N-Triples, because the RIOT reader has a pull interface
-        if ( RDFLanguages.sameLang(RDFLanguages.NTRIPLES, lang) )
-            return Iter.onCloseIO(IteratorParsers.createIteratorNTriples(input), input);
-        // Otherwise, we have to spin up a thread to deal with it
-        return AsyncParser.asyncParseTriples(input, lang, baseIRI);
+        return IteratorParsers.createIteratorTriples(input, lang, baseIRI);
     }
 
     /**
@@ -841,14 +832,8 @@ public class RDFDataMgr
      * @param lang Language
      * @param baseIRI Base IRI
      * @return Iterator over the quads
-     * @deprecated Use {@link AsyncParser#asyncParseQuads} or for N-Triples, {@link IteratorParsers#createIteratorNQuads}
      */
-    @Deprecated(forRemoval = true)
     public static Iterator<Quad> createIteratorQuads(InputStream input, Lang lang, String baseIRI) {
-        // Special case N-Quads, because the RIOT reader has a pull interface
-        if ( RDFLanguages.sameLang(RDFLanguages.NQUADS, lang) )
-            return Iter.onCloseIO(IteratorParsers.createIteratorNQuads(input, RiotLib.dftProfile()), input);
-        // Otherwise, we have to spin up a thread to deal with it
-        return AsyncParser.asyncParseQuads(input, lang, baseIRI);
+        return IteratorParsers.createIteratorQuads(input, lang, baseIRI);
     }
 }

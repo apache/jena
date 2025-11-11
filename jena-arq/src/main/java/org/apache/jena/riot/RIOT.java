@@ -149,11 +149,4 @@ public class RIOT {
      * Print literals with newlines in multiple line form, using triple quotes.
      */
     public static final Symbol symTurtleMultilineLiterals = SystemARQ.allocSymbol(TURTLE_SYMBOL_BASE, "multiline_literals") ;
-
-    /**
-     * Control of multiline literals.
-     * @deprecated Use {@link #symTurtleMultilineLiterals}.
-     */
-    @Deprecated(forRemoval = true)
-    public static final Symbol multilineLiterals = symTurtleMultilineLiterals;
 }

@@ -234,12 +234,6 @@ public class ARQ
     public static final Symbol useSAX = SystemARQ.allocSymbol("useSAX");
 
     /**
-     * @deprecated Ignored
-     */
-    @Deprecated(forRemoval = true)
-    public static final boolean allowDuplicateSelectColumns = false;
-
-    /**
      * Determine which regular expression system to use.
      * The value of this context entry should be a string:
      * <ul>
@@ -250,18 +244,18 @@ public class ARQ
      */
     public static final Symbol regexImpl =  SystemARQ.allocSymbol("regexImpl");
 
-    /**
-     * Symbol to name java.util.regex regular expression engine
-     * @deprecated Use string "javaRegex"
-     */
-    @Deprecated(forRemoval = true)
-    public static final Symbol javaRegex =  SystemARQ.allocSymbol("javaRegex");
-    /**
-     * Symbol to name the Xerces-J regular expression engine
-     * @deprecated Use string "xercesRegex"
-     */
-    @Deprecated(forRemoval = true)
-    public static final Symbol xercesRegex =  SystemARQ.allocSymbol("xercesRegex");
+//    /**
+//     * Symbol to name java.util.regex regular expression engine
+//     * @deprecated Use string "javaRegex"
+//     */
+//    @Deprecated(forRemoval = true)
+//    public static final Symbol javaRegex =  SystemARQ.allocSymbol("javaRegex");
+//    /**
+//     * Symbol to name the Xerces-J regular expression engine
+//     * @deprecated Use string "xercesRegex"
+//     */
+//    @Deprecated(forRemoval = true)
+//    public static final Symbol xercesRegex =  SystemARQ.allocSymbol("xercesRegex");
 
     /**
      * Use this Symbol to allow passing additional query parameters to a
@@ -616,7 +610,7 @@ public class ARQ
         context.set(extensionValueTypes,            false);
         context.set(constantBNodeLabels,            false);
         context.set(generateToList,                 true);
-        context.set(regexImpl,                      xercesRegex);
+        context.set(regexImpl,                      ARQConstants.strXercesRegex);
 
         //context.set(filterPlacement,            false);
     }
@@ -643,7 +637,7 @@ public class ARQ
         context.set(extensionValueTypes,            true);
         context.set(constantBNodeLabels,            true);
         context.set(generateToList,                 false);
-        context.set(regexImpl,                      javaRegex);
+        context.set(regexImpl,                      ARQConstants.strJavaRegex);
     }
 
     // ----------------------------------
@@ -709,7 +703,7 @@ public class ARQ
         context.set(strictSPARQL,                  false);
         context.set(constantBNodeLabels,           true);
         context.set(enablePropertyFunctions,       true);
-        context.set(regexImpl,                     javaRegex);
+        context.set(regexImpl,                     ARQConstants.strJavaRegex);
     }
 
     public static Context getContext() {

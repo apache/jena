@@ -138,12 +138,6 @@ public class AssemblerUtils
         return model;
     }
 
-    /** @deprecated Use {@link #prepareForAssembler(Model)} */
-    @Deprecated(forRemoval = true)
-    public static Model addRegistered(Model model) {
-        return prepareForAssembler(model);
-    }
-
     public static Object build(String assemblerFile, String typeURI) {
         Resource type = ResourceFactory.createResource(typeURI);
         return build(assemblerFile, type);
