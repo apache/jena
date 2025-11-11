@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.apache.jena.atlas.lib.Copyable;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.mem.GraphMem;
+import org.apache.jena.mem.GraphMemValue;
 import org.apache.jena.mem2.GraphMem2Fast;
 import org.apache.jena.sparql.sse.SSE;
 
@@ -43,7 +43,7 @@ public class GTest {
         // Test graph which does not implement Copyable<>
         {
             @SuppressWarnings("deprecation")
-            GraphMem notCopyableGraph = new GraphMem();
+            GraphMemValue notCopyableGraph = new GraphMemValue();
             assertFalse(notCopyableGraph instanceof Copyable<?>);
             test(notCopyableGraph);
         }

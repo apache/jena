@@ -27,7 +27,7 @@ import org.apache.jena.mem2.store.legacy.LegacyTripleStore;
  * Purpose: Use this graph implementation if you want to maintain the 'old' behavior of GraphMem or if your memory
  * constraints prevent you from utilizing more memory-intensive solutions.
  * <p>
- * Slightly improved performance compared to {@link org.apache.jena.mem.GraphMem}
+ * Slightly improved performance compared to {@link org.apache.jena.mem.GraphMemValue}
  * Simplified implementation, primarily due to lack of support for Iterator#remove
  * <p>
  * The heritage of GraphMem:
@@ -37,7 +37,7 @@ import org.apache.jena.mem2.store.legacy.LegacyTripleStore;
  * <li>Also based on HashCommon
  * </ul>
  * <p>
- * This implementation is based on the original {@link org.apache.jena.mem.GraphMem} implementation.
+ * This implementation is based on the original {@link org.apache.jena.mem.GraphMemValue} implementation.
  * The main difference is that it strictly uses term equality for all nodes.
  * The inner workings of the used structures like ArrayBunch and HashedBunchMap are not changed.
  */

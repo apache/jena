@@ -35,15 +35,14 @@ import java.util.stream.Stream;
  *     implementation.
  */
 @Deprecated
-public class GraphMem extends GraphMemBase {
-    // Rename as GraphMemValue.
+public class GraphMemValue extends GraphMemBase {
 
     /**
      This Graph's TripleStore.
      */
     private final TripleStore store;
 
-    public GraphMem() {
+    public GraphMemValue() {
         super();
         store = new GraphTripleStoreMem(this);
     }

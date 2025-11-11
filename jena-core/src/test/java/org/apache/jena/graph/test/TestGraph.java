@@ -28,7 +28,7 @@ import junit.framework.TestSuite;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.impl.WrappedGraph;
-import org.apache.jena.mem.GraphMem;
+import org.apache.jena.mem.GraphMemValue;
 import org.apache.jena.mem2.GraphMem2Fast;
 import org.apache.jena.mem2.GraphMem2Legacy;
 import org.apache.jena.mem2.GraphMem2Roaring;
@@ -46,8 +46,8 @@ public class TestGraph extends GraphTestBase {
     public static TestSuite suite() {
         TestSuite result = new TestSuite(TestGraph.class);
 
-        result.addTest(suite(MetaTestGraph.class, GraphMem.class));
-        result.addTest(suite(TestReifier.class, GraphMem.class));
+        result.addTest(suite(MetaTestGraph.class, GraphMemValue.class));
+        result.addTest(suite(TestReifier.class, GraphMemValue.class));
 
         result.addTest(suite(MetaTestGraph.class, WrappedGraphMem.class));
         result.addTest(suite(TestReifier.class, WrappedGraphMem.class));

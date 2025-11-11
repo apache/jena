@@ -33,7 +33,7 @@ public class GraphTripleNodeHelper480 implements GraphTripleNodeHelper<Graph, Tr
     @SuppressWarnings("deprecation")
     @Override
     public Graph createGraph(Context.GraphClass graphClass) {
-        if (Objects.requireNonNull(graphClass) == Context.GraphClass.GraphMem) {
+        if (Objects.requireNonNull(graphClass) == Context.GraphClass.GraphMemValue) {
             return new GraphMem();
         }
         throw new IllegalArgumentException("Unknown graph class: " + graphClass);
