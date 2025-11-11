@@ -43,14 +43,7 @@ public class ElementGroup extends Element {
         ensureBGP().addTriple(t);
     }
 
-    /** @deprecated Use {@link #addElement} */
-    @Deprecated(forRemoval = true)
-    public void addElementFilter(ElementFilter el) {
-        addElement(el);
-    }
-
     // Ensure the current top element is a basic graph pattern.
-
     private ElementTriplesBlock ensureBGP() {
         if ( elements.size() == 0 )
             return pushBGP();

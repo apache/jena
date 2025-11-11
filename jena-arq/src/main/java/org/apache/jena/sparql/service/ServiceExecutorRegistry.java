@@ -25,9 +25,6 @@ import java.util.Objects;
 
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.ARQConstants;
-import org.apache.jena.sparql.algebra.op.OpService;
-import org.apache.jena.sparql.engine.ExecutionContext;
-import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.service.bulk.ChainingServiceExecutorBulk;
 import org.apache.jena.sparql.service.single.ChainingServiceExecutor;
 import org.apache.jena.sparql.service.single.ChainingServiceExecutorWrapper;
@@ -213,14 +210,5 @@ public class ServiceExecutorRegistry
         ServiceExecutorRegistry tmp = ServiceExecutorRegistry.get(cxt);
         ServiceExecutorRegistry result = tmp == null ? new ServiceExecutorRegistry() : tmp.copy();
         return result;
-    }
-
-    /**
-     * Execution
-     * @deprecated To be removed. Moved to {@link ServiceExec#exec}.
-     */
-    @Deprecated(forRemoval = true, since = "4.9.0")
-    public static QueryIterator exec(QueryIterator input, OpService opService, ExecutionContext execCxt) {
-        return ServiceExec.exec(input, opService, execCxt);
     }
 }

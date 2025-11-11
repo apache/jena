@@ -28,7 +28,7 @@ import org.apache.jena.riot.system.StreamRDF;
  * So {@code "+01"^^xsd:integer} is converted to {@code "1"^^xsd:integer}.
  * Language tags are canonicalized for case as well.
  *
- * See {@link RDFParserBuilder#canonicalValues(boolean)} and {@link RDFParserBuilder#langTagCanonical()}.
+ * See {@link RDFParserBuilder#canonicalValues(boolean)}.
  */
 public class StreamCanonicalLiterals extends StreamRDFApplyObject {
     public StreamCanonicalLiterals(StreamRDF other) {

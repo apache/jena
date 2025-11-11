@@ -352,73 +352,9 @@ public class RDFParserBuilder {
      * <p>
      * For consistent loading of data, it is recommended that data is cleaned and
      * canonicalized before loading so the conversion is done once.
-     *
-     * @see #langTagLowerCase
-     * @see #langTagCanonical
      */
     public RDFParserBuilder canonicalValues(boolean flag) {
         this.canonicalValues = flag;
-        return this;
-    }
-
-    /**
-     * Convert language tags to lower case.
-     * <p>
-     * This is the suggested form in RDF 1.1 for comparsions.
-     * However, this is not the recommended canonical form in
-     * <a href="https://tools.ietf.org/html/rfc5646">RFC 5646</a>.
-     * <p>
-     * Providing all data is converted consistently, language tag equality
-     * is maintained for either lower case or RFC canonicalization styles.
-     * <p>
-     * This option can slow parsing down.
-     *
-     * @see #langTagCanonical
-     * @deprecated In Jena5, language tags are always converted to RFC 5646 case format.
-     */
-    @Deprecated(forRemoval=true)
-    public RDFParserBuilder langTagLowerCase() {
-        return langTagForm(LangTagForm.LOWER_CASE);
-    }
-
-    /**
-     * Language tags are case-normalized as defined by
-     * <a href="https://tools.ietf.org/html/rfc5646">RFC 5646</a>.
-     * Example: {@code en-GB}, not {@code en-gb}.
-     * <p>
-     * This does not affect the RDF 1.1 requirement that the
-     * value-space of language tags is lower-case.
-     * <p>
-     * Providing all data is converted consistently, lang tag equality is maintained for either
-     * lower case or RFC canonicalization.
-     * <p>
-     * This option can slow parsing down.
-     * </p>
-     * @see #langTagLowerCase
-     * @deprecated In Jena5, language tags are always converted to RFC 5646 case format.
-     */
-    @Deprecated(forRemoval=true)
-    public RDFParserBuilder langTagCanonical() {
-        return langTagForm(LangTagForm.CANONICAL);
-    }
-
-    /**
-     * The form of the language tags as given in the data is preserved.
-     * This is the default behaviour of parsing.
-     * @see #langTagLowerCase
-     * @see #langTagCanonical
-     * @deprecated In Jena5, language tags are always converted to RFC 5646 case format.
-     */
-    @Deprecated(forRemoval=true)
-    public RDFParserBuilder langTagAsGiven() {
-        return langTagForm(LangTagForm.NONE);
-    }
-
-    @Deprecated(forRemoval=true)
-    private RDFParserBuilder langTagForm(LangTagForm form) {
-        // Ignore!
-        // language tags are always converted to RFC 5646 case format.
-        //this.langTagForm = form;
         return this;
     }
 

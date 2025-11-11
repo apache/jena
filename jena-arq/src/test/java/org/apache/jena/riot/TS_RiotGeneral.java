@@ -28,7 +28,7 @@ import org.junit.platform.suite.api.Suite;
     , TestSyntaxDetermination.class
     , TestJenaReaderRIOT.class
     , TestReadData.class
-    , TestRiotReader.class
+    , TestRiotParserIterators.class
     , TestParserRegistry.class
     , TestRDFParser.class
     , TestRDFWriter.class

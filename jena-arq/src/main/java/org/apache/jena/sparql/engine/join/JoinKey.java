@@ -47,16 +47,6 @@ public final class JoinKey extends ImmutableUniqueList<Var>
         return create(intersection) ;
     }
 
-    /** Make a JoinKey of single variable from the intersection of two sets. **/
-    @Deprecated
-    public static JoinKey createVarKey(Collection<Var> vars1, Collection<Var> vars2) {
-        for ( Var v : vars1 ) {
-            if ( vars2.contains(v) )
-                return create(v) ;
-        }
-        return empty() ;
-    }
-
     public static JoinKey create(Var var) {
         return createUnsafe(new Var[] { var });
     }

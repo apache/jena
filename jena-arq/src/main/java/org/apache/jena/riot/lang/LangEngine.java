@@ -153,12 +153,6 @@ public class LangEngine {
         raiseException(new RiotParseException(msg, line, col));
     }
 
-    /** @deprecated use {@link #exception(String, long, long)}*/
-    @Deprecated(forRemoval = true)
-    protected final void exceptionDirect(String msg, long line, long col) {
-        raiseException(new RiotParseException(msg, line, col));
-    }
-
     protected final void raiseException(RiotParseException ex) {
         if ( errorHandler != null )
             errorHandler.fatal(ex.getOriginalMessage(), ex.getLine(), ex.getCol());

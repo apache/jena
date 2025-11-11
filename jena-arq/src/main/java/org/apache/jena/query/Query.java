@@ -388,17 +388,6 @@ public class Query extends Prologue implements Cloneable, Printable
      */
     private boolean resultVarsSet = false;
 
-    /**
-     * Set the results variables if necessary, when the query has "*" ({@code SELECT *}
-     * or {@code DESCRIBE *}) and for a construct query. This operation is idempotent and can
-     * be called to ensure the results variables have been set.
-     * @deprecated Use {@link #ensureResultVars()}
-     */
-    @Deprecated(forRemoval = true)
-    public void setResultVars() {
-        ensureResultVars();
-    }
-
     public void ensureResultVars() {
         if ( resultVarsSet )
             return;

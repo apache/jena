@@ -54,6 +54,7 @@ import org.apache.jena.http.HttpEnv;
 import org.apache.jena.http.HttpLib;
 import org.apache.jena.query.*;
 import org.apache.jena.riot.*;
+import org.apache.jena.riot.lang.IteratorParsers;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.resultset.ResultSetReaderRegistry;
 import org.apache.jena.riot.web.HttpNames;
@@ -394,25 +395,21 @@ public class QueryExecHTTP implements QueryExec {
         return dataset;
     }
 
-    @SuppressWarnings("removal")
     private Iterator<Triple> execTriples(String acceptHeader) {
         Pair<InputStream, Lang> p = execRdfWorker(acceptHeader, WebContent.contentTypeRDFXML);
         InputStream input = p.getLeft();
         Lang lang = p.getRight();
         // Base URI?
-        // Unless N-Triples, this creates a thread.
-        Iterator<Triple> iter = RDFDataMgr.createIteratorTriples(input, lang, null);
+        Iterator<Triple> iter = IteratorParsers.createIteratorTriples(input, lang, null);
         return Iter.onCloseIO(iter, input);
     }
 
-    @SuppressWarnings("removal")
     private Iterator<Quad> execQuads() {
         checkNotClosed();
         Pair<InputStream, Lang> p = execRdfWorker(datasetAcceptHeader, WebContent.contentTypeNQuads);
         InputStream input = p.getLeft();
         Lang lang = p.getRight();
-        // Unless N-Quads, this creates a thread.
-        Iterator<Quad> iter = RDFDataMgr.createIteratorQuads(input, lang, null);
+        Iterator<Quad> iter = IteratorParsers.createIteratorQuads(input, lang, null);
         return Iter.onCloseIO(iter, input);
     }
 

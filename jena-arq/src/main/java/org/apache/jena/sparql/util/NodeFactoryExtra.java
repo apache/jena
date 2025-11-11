@@ -21,12 +21,9 @@ package org.apache.jena.sparql.util ;
 import java.util.Calendar ;
 
 import org.apache.jena.atlas.lib.DateTimeUtils ;
-import org.apache.jena.datatypes.RDFDatatype ;
-import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.graph.TextDirection;
 import org.apache.jena.graph.impl.LiteralLabel ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.PrefixMap ;
@@ -84,37 +81,6 @@ public class NodeFactoryExtra {
                 throw new RiotException("Space(s) in  IRI: " + nodeString) ;
         }
         return node ;
-    }
-
-    /**
-     * Create a literal Node, when the datatype, if given, is a string.
-     * @deprecated Use {@link NodeFactory#createLiteral(String, String, RDFDatatype)}
-     */
-    @Deprecated(forRemoval = true)
-    public static Node createLiteralNode(String lex, String lang, String datatypeURI) {
-        return createLiteralNode(lex, lang, null, datatypeURI);
-    }
-
-    /**
-     * Create a literal Node, when the datatype, if given, is a string.
-     * @deprecated Use {@link NodeFactory#createLiteral(String, String, String, RDFDatatype)}
-     */
-    @Deprecated(forRemoval = true)
-    public static Node createLiteralNode(String lex, String lang, String baseDir, String datatypeURI) {
-        if ( datatypeURI != null && datatypeURI.equals("") )
-            datatypeURI = null ;
-
-        if ( lang != null && lang.equals("") )
-            lang = null ;
-
-        RDFDatatype dType = null ;
-        if ( datatypeURI != null )
-            dType = TypeMapper.getInstance().getSafeTypeByName(datatypeURI) ;
-
-        TextDirection baseDirection = TextDirection.createOrNull(baseDir);
-
-        Node n = NodeFactory.createLiteral(lex, lang, baseDirection, dType) ;
-        return n ;
     }
 
     /**

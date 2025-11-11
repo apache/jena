@@ -89,12 +89,6 @@ public class SyntaxVarScope {
     }
 
     /**
-     * @deprecated use {@link #checkElement}
-     */
-    @Deprecated(forRemoval = true)
-    public static void check(Element queryPattern) { checkElement(queryPattern); }
-
-    /**
      * Apply the SPARQL scope rules to a query element (part or all of a WEHERE clause).
      * Throw {@link QueryParseException} if there is a violation.
      */

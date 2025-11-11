@@ -212,6 +212,10 @@ public class ARQConstants
     public static final String allocSSEAnonVars         = allocVarAnonMarker ;          // ParseHandlerPlain - SSE token "??"
     public static final String allocSSENamedVars        = allocVarMarker ;              // ParseHandlerPlain - SSE token "?."
 
+    // Regular expression engines.
+    public static final String strJavaRegex             =  "javaRegex";
+    public static final String strXercesRegex           =  "xercesRegex";
+
     /** Marker for system symbols */
     public static final String systemVarNS = "http://jena.apache.org/ARQ/system#" ;
 

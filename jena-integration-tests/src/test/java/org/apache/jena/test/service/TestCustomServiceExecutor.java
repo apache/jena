@@ -41,7 +41,6 @@ import org.apache.jena.sparql.algebra.op.OpService;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
-import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.iterator.QueryIter;
 import org.apache.jena.sparql.exec.QueryExec;
@@ -134,7 +133,7 @@ public class TestCustomServiceExecutor {
 
     /**
      * A test case where custom executors both forward requests down the chain as well
-     * as start the chain over using {@link ServiceExec#exec(QueryIterator, OpService, ExecutionContext)}.
+     * as start the chain over using {@link ServiceExec#exec}.
      *
      * This test case tests the chain for bulk execution.
      */

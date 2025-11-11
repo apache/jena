@@ -119,12 +119,29 @@ public class XSDNumUtils {
         return canonicalDecimalStrWithDot(bd);
     }
 
-    /** Strict XSD 1.0 format for {@code xsd:decimal}. */
+
+    /**
+     * Strict XSD 1.0 format for {@code xsd:decimal}.
+     * <p>
+     * Decimal canonical form where integer values has a ".0" (as in XSD 1.0).
+     * <p>
+     * In XSD 1.0, canonical integer-valued decimal has a trailing ".0".
+     * In XSD 1.1 and F&amp;O v 3.1, xs:string cast of a decimal which is integer valued, does
+     * not have the trailing ".0".
+     */
     public static String stringFormatXSD10(BigDecimal bd) {
         return canonicalDecimalStrWithDot(bd);
     }
 
-    /** Strict XSD 1.1 format for {@code xsd:decimal}. */
+    /**
+     * Strict XSD 1.1 format for {@code xsd:decimal}.
+     * <p>
+     * Decimal canonical form where integer values has no ".0" (as in XSD 1.1).
+     * <p>
+     * In XSD 1.0, canonical integer-valued decimal has a trailing ".0".
+     * In XSD 1.1 and F&amp;O v 3.1, xs:string cast of a decimal which is integer valued, does
+     * not have the trailing ".0".
+     */
     public static String stringFormatXSD11(BigDecimal bd) {
         return canonicalDecimalStrNoIntegerDot(bd);
     }

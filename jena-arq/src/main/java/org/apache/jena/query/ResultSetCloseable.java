@@ -37,9 +37,7 @@ public class ResultSetCloseable extends ResultSetOnClose implements AutoCloseabl
         return new ResultSetCloseable(queryExecution.execSelect(), queryExecution) ;
     }
 
-    /** @deprecated The constructor will become private. Use {@link #closeableResultSet}. */
-    @Deprecated
-    public ResultSetCloseable(ResultSet rs, QueryExecution qexec) {
+    private ResultSetCloseable(ResultSet rs, QueryExecution qexec) {
         super(rs, ()->qexec.close()) ;
     }
 }
