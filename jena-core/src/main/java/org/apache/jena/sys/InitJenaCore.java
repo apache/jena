@@ -19,6 +19,7 @@
 package org.apache.jena.sys;
 
 import org.apache.jena.assembler.Assembler;
+import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.irix.SystemIRIx;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
@@ -54,6 +55,8 @@ public class InitJenaCore  implements JenaSubsystemLifecycle {
 
             // Initialization
             SystemIRIx.init();
+            TypeMapper.reset();
+
             // Touch classes with constants.
             // This isn't necessary but it makes it more deterministic.
             // These constants are reused in various places.
