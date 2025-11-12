@@ -18,72 +18,72 @@
 
 package org.apache.jena.sparql.resultset;
 
-import java.io.OutputStream ;
-import java.io.PrintWriter ;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 
-import org.apache.jena.query.QuerySolution ;
-import org.apache.jena.query.ResultSet ;
-import org.apache.jena.rdf.model.RDFNode ;
-import org.apache.jena.sparql.core.Prologue ;
-import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.sparql.util.FmtUtils ;
-import org.apache.jena.util.FileUtils ;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.sparql.core.Prologue;
+import org.apache.jena.sparql.serializer.SerializationContext;
+import org.apache.jena.sparql.util.FmtUtils;
+import org.apache.jena.util.FileUtils;
 
-public class PlainFormat implements ResultSetProcessor
-{
-    PrintWriter out ;
-    int count = 0 ;
-    boolean lineNumbers = true ;
-    boolean first = true ;
-    SerializationContext context ;
+public class PlainFormat implements ResultSetProcessor {
+    private PrintWriter out;
+    private int count = 0;
+    private boolean lineNumbers = true;
+    private boolean first = true;
+    private SerializationContext context;
 
-    public PlainFormat(OutputStream outStream, SerializationContext context)
-    {
-        this.out = FileUtils.asPrintWriterUTF8(outStream) ;
-        this.context = context ;
+    public PlainFormat(OutputStream outStream, SerializationContext context) {
+        this.out = FileUtils.asPrintWriterUTF8(outStream);
+        this.context = context;
     }
-    
-    public PlainFormat(OutputStream outStream, Prologue prologue)
-    {
-        this(outStream, new SerializationContext(prologue)) ;
+
+    public PlainFormat(OutputStream outStream, Prologue prologue) {
+        this(outStream, new SerializationContext(prologue));
     }
-    
+
     @Override
     public void start(ResultSet rs) {}
+
     @Override
-    public void finish(ResultSet rs) { out.flush() ; } 
-    @Override
-    public void start(QuerySolution qs)
-    {
-        count++ ;
-        //insertLineNumber() ;
-        first = true ;
-    }
-    
-    @Override
-    public void finish(QuerySolution qs) { out.println() ; }
-    @Override
-    public void binding(String varName, RDFNode value)
-    {
-        if ( value == null )
-            return ; // Unbound
-        if ( ! first )
-            out.print(" ") ;
-        // Would like to share code Binding here.
-        String s = FmtUtils.stringForRDFNode(value, context) ;
-        out.print("( ?"+varName+" = "+s+" )") ;
-        first = false ;
-    }
-    
-    void insertLineNumber()
-    {
-        if ( ! lineNumbers )
-            return ;
-        String s = Integer.toString(count) ;
-        for ( int i = 0 ; i < 3-s.length() ; i++ )
-            out.print(' ') ;
-        out.print(s) ;
-        out.print(' ') ;
+    public void finish(ResultSet rs) {
+        out.flush();
     }
 
+    @Override
+    public void start(QuerySolution qs) {
+        count++;
+        // insertLineNumber() ;
+        first = true;
+    }
+
+    @Override
+    public void finish(QuerySolution qs) {
+        out.println();
+    }
+
+    @Override
+    public void binding(String varName, RDFNode value) {
+        if ( value == null )
+            return; // Unbound
+        if ( !first )
+            out.print(" ");
+        // Would like to share code Binding here.
+        String s = FmtUtils.stringForRDFNode(value, context);
+        out.print("( ?" + varName + " = " + s + " )");
+        first = false;
+    }
+
+    void insertLineNumber() {
+        if ( !lineNumbers )
+            return;
+        String s = Integer.toString(count);
+        for ( int i = 0 ; i < 3 - s.length() ; i++ )
+            out.print(' ');
+        out.print(s);
+        out.print(' ');
+    }
 }

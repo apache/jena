@@ -18,247 +18,151 @@
 
 package org.apache.jena.sparql.resultset;
 
-import static org.apache.jena.riot.WebContent.* ;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFFormat;
+import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.resultset.ResultSetLang;
+import org.apache.jena.sparql.util.TranslationTable;
 
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.HashMap ;
-import java.util.Map ;
+/**
+ * The output formats for all query types.
+ * Result sets, boolean graphs.
+ * <p>
+ * This does not include results sets as RDF is elsewhere which is provided for tests with {@link RDFInput} and {@link RDFOutput}.
+ */
 
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.query.ResultSetFormatter;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.resultset.ResultSetLang ;
-import org.apache.jena.sparql.core.Prologue;
-import org.apache.jena.sparql.util.QueryExecUtils;
-import org.apache.jena.sparql.util.Symbol ;
-import org.apache.jena.sparql.util.TranslationTable ;
+public enum ResultsFormat {
+    // Results formats, by surface syntax.
+    // Used by commands.
 
-// Better ....
-//public enum ResultFormat
-//{
-//    // Merge with our system wide naming (WebContent?)
-//    FMT_RS_XML , FMT_RS_JSON , FMT_RS_CSV , FMT_RS_TSV , FMT_RS_SSE , FMT_RS_BIO ,
-//    FMT_NONE , FMT_TEXT , FMT_TUPLES , FMT_COUNT ,
-//    FMT_RS_RDF , FMT_RDF_XML , FMT_RDF_N3 , FMT_RDF_TTL , FMT_RDF_TURTLE , FMT_RDF_NT ,
-//    FMT_UNKNOWN ;
+    XML(ResultSetLang.RS_XML, RDFFormat.RDFXML_ABBREV),
+    JSON(ResultSetLang.RS_JSON, RDFFormat.JSONLD11),
+    TEXT(ResultSetLang.RS_Text, RDFFormat.TURTLE),
 
+    CSV(ResultSetLang.RS_CSV, null),
+    TSV(ResultSetLang.RS_TSV, null),
 
-// Old world.
-public class ResultsFormat extends Symbol
-{
-    private ResultsFormat(String symbol) {
-        super(symbol);
+    THRIFT(ResultSetLang.RS_Thrift, RDFFormat.RDF_THRIFT),
+    PROTOBUF(ResultSetLang.RS_Protobuf, RDFFormat.RDF_PROTO),
+
+    // result set as RDF is handled specially
+    TTL(null, RDFFormat.TURTLE),
+    NT(null, RDFFormat.NTRIPLES),
+    RDFXML(null, RDFFormat.RDFXML),
+    RDF_JSONLD(null, RDFFormat.JSONLD),
+
+    // Special name.
+    COUNT(null, null),
+
+    NONE(ResultSetLang.RS_None, RDFFormat.RDFNULL),
+
+    SSE(null, null),
+    TUPLES(null, null)
+    ;
+
+    private final Lang resultSetLang;
+    private final RDFFormat rdfFormat;
+    //private final boolean supportsBoolean;
+
+    ResultsFormat(Lang resultSetLang, RDFFormat rdfFormat) {
+        this.resultSetLang = resultSetLang;
+        this.rdfFormat = rdfFormat;
+
+        //this.supportsBoolean = supportsBoolean;
     }
 
-    static public ResultsFormat FMT_RS_XML       = new ResultsFormat(contentTypeResultsXML) ;
-    static public ResultsFormat FMT_RS_JSON      = new ResultsFormat(contentTypeResultsJSON) ;
-
-    static public ResultsFormat FMT_RS_THRIFT    = new ResultsFormat(contentTypeResultsThrift) ;
-    static public ResultsFormat FMT_RS_PROTOBUF  = new ResultsFormat(contentTypeResultsProtobuf) ;
-
-    static public ResultsFormat FMT_RS_CSV       = new ResultsFormat(contentTypeTextCSV) ;
-    static public ResultsFormat FMT_RS_TSV       = new ResultsFormat(contentTypeTextTSV) ;
-    static public ResultsFormat FMT_RS_SSE       = new ResultsFormat(contentTypeSSE) ;
-    static public ResultsFormat FMT_NONE         = new ResultsFormat("none") ;
-    static public ResultsFormat FMT_TEXT         = new ResultsFormat("text") ;
-    static public ResultsFormat FMT_TUPLES       = new ResultsFormat("tuples") ;
-    static public ResultsFormat FMT_COUNT        = new ResultsFormat("count") ;
-    // Also used for output of result sets as RDF.
-    static public ResultsFormat FMT_RDF_XML      = new ResultsFormat(contentTypeRDFXML) ;
-    static public ResultsFormat FMT_RDF_N3       = new ResultsFormat(contentTypeN3) ;
-    static public ResultsFormat FMT_RDF_TTL      = new ResultsFormat(contentTypeTurtle) ;
-    static public ResultsFormat FMT_RDF_TURTLE   = new ResultsFormat(contentTypeTurtle) ;
-    static public ResultsFormat FMT_RDF_NT       = new ResultsFormat(contentTypeNTriples) ;
-    static public ResultsFormat FMT_RDF_TRIG     = new ResultsFormat(contentTypeTriG) ;
-    static public ResultsFormat FMT_RDF_NQ       = new ResultsFormat(contentTypeNQuads) ;
-    static public ResultsFormat FMT_RDF_JSONLD   = new ResultsFormat(contentTypeJSONLD) ;
-    static public ResultsFormat FMT_UNKNOWN      = new ResultsFormat("unknown") ;
-
-    // ---- Compatibility
-
-    // Common names to symbol (used by arq.rset)
-    private static TranslationTable<ResultsFormat> names = new TranslationTable<>(true) ;
-    static {
-        names.put("srx",         FMT_RS_XML) ;
-        names.put("xml",         FMT_RS_XML) ;
-
-        names.put("json",        FMT_RS_JSON) ;
-        names.put("srj",         FMT_RS_JSON) ;
-
-        names.put("srt",         FMT_RS_THRIFT) ;
-        names.put("srp",         FMT_RS_PROTOBUF) ;
-
-        names.put("sse",         FMT_RS_SSE) ;
-        names.put("csv",         FMT_RS_CSV) ;
-        names.put("tsv",         FMT_RS_TSV) ;
-        names.put("text",        FMT_TEXT) ;
-        names.put("count",       FMT_COUNT) ;
-        names.put("tuples",      FMT_TUPLES) ;
-        names.put("none",        FMT_NONE) ;
-
-        names.put("rdf",         FMT_RDF_XML) ;
-        names.put("rdf/n3",      FMT_RDF_N3) ;
-        names.put("rdf/xml",     FMT_RDF_XML) ;
-        names.put("n3",          FMT_RDF_N3) ;
-        names.put("ttl",         FMT_RDF_TTL) ;
-        names.put("turtle",      FMT_RDF_TTL) ;
-        names.put("graph",       FMT_RDF_TTL) ;
-        names.put("nt",          FMT_RDF_NT) ;
-        names.put("n-triples",   FMT_RDF_NT) ;
-        names.put("ntriples",    FMT_RDF_NT) ;
-        names.put("jsonld",      FMT_RDF_JSONLD) ;
-        names.put("json-ld",     FMT_RDF_JSONLD) ;
-
-        names.put("nq",          FMT_RDF_NQ) ;
-        names.put("nquads",      FMT_RDF_NQ) ;
-        names.put("n-quads",     FMT_RDF_NQ) ;
-        names.put("trig",        FMT_RDF_TRIG) ;
+    public Lang resultSetLang() {
+        return resultSetLang;
     }
 
-    public static ResultsFormat guessSyntax(String url) {
-        return guessSyntax(url, FMT_RS_XML);
+    public RDFFormat rdfFormat() {
+        return rdfFormat;
     }
 
-    public static boolean isRDFGraphSyntax(ResultsFormat fmt) {
-        if ( FMT_RDF_N3.equals(fmt) )
-            return true;
-        if ( FMT_RDF_TURTLE.equals(fmt) )
-            return true;
-        if ( FMT_RDF_XML.equals(fmt) )
-            return true;
-        if ( FMT_RDF_NT.equals(fmt) )
-            return true;
-        return false;
-    }
+//
+//    public boolean supportsBoolean() {
+//        return supportsBoolean;
+//    }
+//
+//    public boolean isResultSet() {
+//        return ResultSetLang.isRegistered(lang());
+//    }
 
-    public static boolean isDatasetSyntax(ResultsFormat fmt) {
-        if ( FMT_RDF_TRIG.equals(fmt) )
-            return true;
-        if ( FMT_RDF_NQ.equals(fmt) )
-            return true;
-        return false;
-    }
-
-    public static ResultsFormat guessSyntax(String url, ResultsFormat defaultFormat) {
-        // -- XML
-        if ( url.endsWith(".srx") )
-            return FMT_RS_XML;
-        if ( url.endsWith(".xml") )
-            return FMT_RS_XML;
-
-        // -- Some kind of RDF
-        if ( url.endsWith(".rdf") )
-            return FMT_RDF_XML;
-        if ( url.endsWith(".n3") )
-            return FMT_RDF_N3;
-        if ( url.endsWith(".ttl") )
-            return FMT_RDF_TURTLE;
-
-        // -- JSON
-        if ( url.endsWith(".srj") )
-            return FMT_RS_JSON;
-        if ( url.endsWith(".json") )
-            return FMT_RS_JSON;
-        if ( url.endsWith(".yml") )
-            return FMT_RS_JSON;
-
-        // -- Thrift
-        if ( url.endsWith(".srt") )
-            return FMT_RS_THRIFT;
-        // -- Thrift
-        if ( url.endsWith(".srp") )
-            return FMT_RS_PROTOBUF;
-
-        // -- SSE : http://jena.apache.org/documentation/notes/sse.html
-        if ( url.endsWith(".sse") )
-            return FMT_RS_SSE;
-
-        // Likely to be something completely different!
-        if ( url.endsWith(".csv") )
-            return FMT_RS_CSV;
-        if ( url.endsWith(".tsv") )
-            return FMT_RS_TSV;
-
-        // -- Dataset
-        if ( url.endsWith(".trig") )
-            return FMT_RDF_TRIG;
-        if ( url.endsWith(".nq") )
-            return FMT_RDF_NQ;
-
-        return defaultFormat;
+    /** Guess the syntax of a result set URL */
+    public static ResultsFormat guessSyntax(String resultsFilename) {
+        Lang rsLang = RDFLanguages.pathnameToLang(resultsFilename);
+        if ( rsLang == null )
+            return null;
+//        if ( ! ResultSetLang.isRegistered(rsLang) )
+//            return null;
+        ResultsFormat[] enums = ResultsFormat.values();
+        for ( ResultsFormat rsFmt : enums ) {
+            if ( rsFmt.resultSetLang().equals(rsLang) )
+                return rsFmt;
+        }
+        return null;
     }
 
     /**
      * Look up a short name for a result set FMT_
      *
-     * @param s
-     *            Short name
+     * @param shortname Short name
      * @return ResultSetFormat
      */
-    public static ResultsFormat lookup(String s) {
-        return names.lookup(s);
+    public static ResultsFormat lookup(String shortname) {
+        return names.lookup(shortname);
     }
 
-    /**
-     * Mapping from old-style {@link ResultsFormat} to {@link ResultSetLang} or other
-     * {@link Lang}. See also {@link QueryExecUtils#outputResultSet} for dispatch of some old,
-     * specialized types such as results encoded in RDF.
-     */
-    static Map<ResultsFormat, Lang> mapResultsFormatToLang = new HashMap<>() ;
+    // Common names to symbol (used by arq.rset)
+    private static TranslationTable<ResultsFormat> names = new TranslationTable<>(true) ;
     static {
-        mapResultsFormatToLang.put(ResultsFormat.FMT_NONE,        ResultSetLang.RS_None) ;
-        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_CSV,      ResultSetLang.RS_CSV) ;
-        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_TSV,      ResultSetLang.RS_TSV) ;
-        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_XML,      ResultSetLang.RS_XML) ;
-        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_JSON,     ResultSetLang.RS_JSON) ;
-        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_THRIFT,   ResultSetLang.RS_Thrift) ;
-        mapResultsFormatToLang.put(ResultsFormat.FMT_RS_PROTOBUF, ResultSetLang.RS_Protobuf) ;
-        mapResultsFormatToLang.put(ResultsFormat.FMT_TEXT,        ResultSetLang.RS_Text);
-    }
+        names.put("srx",         XML) ;
+        names.put("xml",         XML) ;
 
-    public static Lang convert(ResultsFormat fmt) {
-        return mapResultsFormatToLang.get(fmt) ;
-    }
+        names.put("json",        JSON) ;
+        names.put("srj",         JSON) ;
 
-    /** Write a {@link ResultSet} in various old style formats no longer recommended.
-     * Return true if the format was handled else false.
-     */
-    public static boolean oldWrite(OutputStream out, ResultsFormat outputFormat, Prologue prologue, ResultSet resultSet) {
-        if ( outputFormat.equals(ResultsFormat.FMT_COUNT) ) {
-            int count = ResultSetFormatter.consume(resultSet) ;
-            PrintStream pOut = new PrintStream(out);
-            pOut.println("Count = " + count) ;
-            return true ;
-        }
+        names.put("srt",         THRIFT) ;
+        names.put("srp",         PROTOBUF) ;
 
-        if ( outputFormat.equals(ResultsFormat.FMT_RDF_XML) ) {
-            RDFOutput.outputAsRDF(out, "RDF/XML-ABBREV", resultSet) ;
-            return true;
-        }
+        names.put("rdfxml",      RDFXML) ;
+        names.put("rdf",         TTL) ;
+        names.put("ttl",         TTL);
+        names.put("turtle",      TTL);
 
-        if ( outputFormat.equals(ResultsFormat.FMT_RDF_TTL) ) {
-            RDFOutput.outputAsRDF(out, "TTL", resultSet) ;
-            return true;
-        }
+        names.put("n-triples",   NT);
+        names.put("ntriples",    NT);
+        names.put("nt",          NT);
 
-        if ( outputFormat.equals(ResultsFormat.FMT_RDF_NT) ) {
-            RDFOutput.outputAsRDF(out, "N-TRIPLES", resultSet) ;
-            return true;
-        }
+        names.put("jsonld",      RDF_JSONLD) ;
+        names.put("json-ld",     RDF_JSONLD) ;
 
-        if ( outputFormat.equals(ResultsFormat.FMT_RDF_JSONLD) ) {
-            RDFOutput.outputAsRDF(out, "JSONLD", resultSet) ;
-            return true;
-        }
+        names.put("sse",         SSE) ;
+        names.put("csv",         CSV) ;
+        names.put("tsv",         TSV) ;
+        names.put("text",        TEXT) ;
+        names.put("count",       COUNT) ;
+        names.put("tuples",      TUPLES) ;
+        names.put("none",        NONE) ;
 
-        if ( outputFormat.equals(ResultsFormat.FMT_TUPLES) ) {
-            PlainFormat pFmt = new PlainFormat(out, prologue) ;
-            ResultSetApply a = new ResultSetApply(resultSet, pFmt) ;
-            a.apply() ;
-            return true;
-        }
+        //names.put("rdf",         ???) ;
 
-        return false;
+//        names.put("rdf",         RDF_XML) ;
+//        names.put("rdf/n3",      RDF_N3) ;
+//        names.put("rdf/xml",     RDF_XML) ;
+//        names.put("n3",          RDF_N3) ;
+//        names.put("ttl",         RDF_TTL) ;
+//        names.put("turtle",      RDF_TTL) ;
+//        names.put("graph",       RDF_TTL) ;
+//        names.put("nt",          RDF_NT) ;
+//        names.put("n-triples",   RDF_NT) ;
+//        names.put("ntriples",    RDF_NT) ;
+//        names.put("jsonld",      RDF_JSONLD) ;
+//        names.put("json-ld",     RDF_JSONLD) ;
+//
+//        names.put("nq",          RDF_NQ) ;
+//        names.put("nquads",      RDF_NQ) ;
+//        names.put("n-quads",     RDF_NQ) ;
+//        names.put("trig",        RDF_TRIG) ;
     }
 }

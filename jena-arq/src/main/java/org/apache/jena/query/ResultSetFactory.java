@@ -26,9 +26,7 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.IOX;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.ReadAnything;
 import org.apache.jena.riot.ResultSetMgr ;
 import org.apache.jena.riot.resultset.ResultSetLang;
@@ -37,7 +35,6 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.ResultSetStream ;
 import org.apache.jena.sparql.exec.RowSet;
-import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.resultset.* ;
 
 /** ResultSetFactory - make result sets from places other than a query. */
@@ -91,127 +88,20 @@ public class ResultSetFactory {
     public static ResultSet load(InputStream input, ResultsFormat format) {
         if (format == null) {
             Log.warn(ResultSet.class, "Null format - defaulting to XML");
-            format = ResultsFormat.FMT_RS_XML;
+            format = ResultsFormat.XML;
         }
 
-        // Old World - new world
-        Lang lang = ResultsFormat.convert(format) ;
-        if ( lang != null )
-            return ResultSetMgr.read(input, lang) ;
-
-        if (format.equals(ResultsFormat.FMT_TEXT)) {
+        if ( format == ResultsFormat.TEXT ) {
             Log.warn(ResultSet.class, "Can't read a text result set");
             throw new ResultSetException("Can't read a text result set");
         }
 
-        if (format.equals(ResultsFormat.FMT_RDF_XML)) {
-            Model m = ModelFactory.createDefaultModel();
-            m.read(input, null);
-            return RDFInput.fromRDF(m);
-        }
+        Lang lang = format.resultSetLang();
 
-        if (format.equals(ResultsFormat.FMT_RDF_TTL)) {
-            Model m = ModelFactory.createDefaultModel();
-            m.read(input, null, "TURTLE");
-            return RDFInput.fromRDF(m);
-        }
-
-        if (format.equals(ResultsFormat.FMT_RDF_N3)) {
-            Model m = ModelFactory.createDefaultModel();
-            m.read(input, null, "N3");
-            return RDFInput.fromRDF(m);
-        }
-
-        if (format.equals(ResultsFormat.FMT_RDF_NT)) {
-            Model m = ModelFactory.createDefaultModel();
-            m.read(input, null, "N-TRIPLES");
-            return RDFInput.fromRDF(m);
-        }
+        if ( lang != null )
+            return ResultSetMgr.read(input, lang) ;
 
         Log.warn(ResultSet.class, "Unknown result set syntax: " + format);
-        return null;
-    }
-
-    /**
-     * Load a result set (or any other model) from file or URL
-     *
-     * @param filenameOrURI
-     * @return Model
-     */
-    public static Model loadAsModel(String filenameOrURI) {
-        return loadAsModel(null, filenameOrURI, null);
-    }
-
-    /**
-     * Load a result set (or any other model) from file or URL
-     *
-     * @param model
-     *            Load into this model (returned)
-     * @param filenameOrURI
-     * @return Model
-     */
-    public static Model loadAsModel(Model model, String filenameOrURI) {
-        return loadAsModel(model, filenameOrURI, null);
-    }
-
-    /**
-     * Load a result set (or any other model) from file or URL
-     *
-     * @param filenameOrURI
-     * @param format
-     * @return Model
-     */
-    public static Model loadAsModel(String filenameOrURI, ResultsFormat format) {
-        return loadAsModel(null, filenameOrURI, format);
-    }
-
-    /**
-     * Load a result set (or any other model) from file or URL. Does not have to
-     * be a result set (e.g. CONSTRUCt results) but it does interpret the
-     * ResultSetFormat possibilities.
-     *
-     * @param model
-     *            Load into this model (returned)
-     * @param filenameOrURI
-     * @param format
-     * @return Model
-     * @deprecated This function will become be internal.
-     */
-    @Deprecated
-    public static Model loadAsModel(Model model, String filenameOrURI, ResultsFormat format) {
-        if (model == null)
-            model = GraphFactory.makeDefaultModel();
-
-        if (format == null)
-            format = ResultsFormat.guessSyntax(filenameOrURI);
-
-        if (format == null) {
-            Log.warn(ResultSet.class, "Null format - defaulting to XML");
-            format = ResultsFormat.FMT_RS_XML;
-        }
-
-        if (format.equals(ResultsFormat.FMT_TEXT)) {
-            Log.error(ResultSet.class, "Can't read a text result set");
-            throw new ResultSetException("Can't read a text result set");
-        }
-
-        if (format.equals(ResultsFormat.FMT_RS_XML) || format.equals(ResultsFormat.FMT_RS_JSON)) {
-            SPARQLResult x = ReadAnything.read(filenameOrURI);
-            if (x.isResultSet())
-                RDFOutput.encodeAsRDF(model, x.getResultSet());
-            else if ( x.isBoolean() )
-                RDFOutput.encodeAsRDF(model, x.getBooleanResult());
-            else
-                throw new ResultSetException("Not a result set");
-            return model;
-        }
-
-        if (ResultsFormat.isRDFGraphSyntax(format)) {
-            RDFDataMgr.read(model, filenameOrURI);
-            return model;
-        }
-
-        Log.error(ResultSet.class, "Unknown result set syntax: " + format);
         return null;
     }
 

@@ -42,7 +42,7 @@ public class RDFConnectionExampleDBpedia01 {
                     .acceptHeaderSelectQuery(acceptHeader).parseCheckSPARQL(false).build()) {
                 try (QueryExecution qe = conn.query(queryString)) {
                     ResultSet rs = qe.execSelect();
-                    ResultSetFormatter.output(System.out, rs, ResultsFormat.FMT_TEXT);
+                    ResultSetFormatter.output(System.out, rs, ResultsFormat.TEXT);
                 } catch (Exception e) {
                     System.out.println("Request failed: " + e.getMessage());
                 }

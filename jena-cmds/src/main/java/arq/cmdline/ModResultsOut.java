@@ -31,7 +31,7 @@ import org.apache.jena.sparql.util.QueryExecUtils ;
 public class ModResultsOut extends ModBase {
     protected final ArgDecl resultsFmtDecl = new ArgDecl(ArgDecl.HasValue, "results", "out", "rfmt");
 
-    private ResultsFormat   resultsFormat  = ResultsFormat.FMT_UNKNOWN;
+    private ResultsFormat resultsFormat  = ResultsFormat.TEXT;
 
     @Override
     public void processArgs(CmdArgModule cmdline) throws IllegalArgumentException {
@@ -48,7 +48,7 @@ public class ModResultsOut extends ModBase {
         cmdLine.getUsage().startCategory("Results");
         cmdLine.add(resultsFmtDecl,
                     "--results=",
-                    "Results format (Result set: text, XML, JSON, CSV, TSV; Graph: RDF serialization)") ;  
+                    "Results format (Result set: text, XML, JSON, CSV, TSV; Graph: RDF serialization)") ;
     }
 
     public void checkCommandLine(CmdArgModule cmdLine) {}
@@ -60,5 +60,4 @@ public class ModResultsOut extends ModBase {
     public ResultsFormat getResultsFormat() {
         return resultsFormat;
     }
-
 }

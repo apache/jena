@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.arq.junit.sparql.tests ;
+package org.apache.jena.arq.junit.sparql.tests;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +29,9 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.ResultSetFactory;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.sparql.graph.GraphFactory;
-import org.apache.jena.sparql.resultset.ResultsFormat;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.sparql.resultset.SPARQLResult;
 import org.apache.jena.sparql.vocabulary.TestManifestX;
 import org.apache.jena.sparql.vocabulary.VocabTestQuery;
@@ -49,10 +48,10 @@ import org.apache.jena.vocabulary.TestManifest;
  */
 public class QueryTestItem
 {
-    static int counter = 0 ;
+    static int counter = 0;
 
     public static String fakeURI() {
-        return "test:" + (++counter) ;
+        return "test:" + (++counter);
     }
 
     private final ManifestEntry manifestEntry;
@@ -60,18 +59,18 @@ public class QueryTestItem
     private final Node        testResource;
     private final Node        actionResource;
 
-    private final String       name ;
+    private final String       name;
 
-    private boolean      buildLuceneIndex = false ;
-    private final String       resultFile ;
-    private final String       comment ;
-    private List<String> defaultGraphURIs ;
-    private List<String> namedGraphURIs ;
+    private boolean      buildLuceneIndex = false;
+    private final String       resultFile;
+    private final String       comment;
+    private List<String> defaultGraphURIs;
+    private List<String> namedGraphURIs;
     private final Node         testType;
     private final String       queryFile;
 
     public static QueryTestItem create(ManifestEntry entry, Node defaultTestType) {
-        return new QueryTestItem(entry, defaultTestType) ;
+        return new QueryTestItem(entry, defaultTestType);
     }
 
     private QueryTestItem(ManifestEntry entry, Node defaultTestType) {
@@ -83,30 +82,30 @@ public class QueryTestItem
         actionResource = G.getOneSP(graph, testResource, TestManifest.action.asNode());
 
         if ( ! G.hasProperty(graph, testResource, TestManifest.name.asNode()) )
-            throw new TestSetupException("TestItem with no name (" + entry + ")") ;
-        name = _getName() ;
+            throw new TestSetupException("TestItem with no name (" + entry + ")");
+        name = _getName();
 
         if ( ! G.hasProperty(graph, testResource, TestManifest.action.asNode()) )
-            throw new TestSetupException("TestItem '" + name + "' with no action") ;
+            throw new TestSetupException("TestItem '" + name + "' with no action");
 
         // Assumes one type per test only.
-        Node _testType = G.getZeroOrOneSP(graph, testResource, RDF.Nodes.type) ;
+        Node _testType = G.getZeroOrOneSP(graph, testResource, RDF.Nodes.type);
         if ( _testType == null )
-            _testType = defaultTestType ;
+            _testType = defaultTestType;
         testType = _testType;
 
-        resultFile = _getResultFile() ;
-        comment = _getComment() ;
+        resultFile = _getResultFile();
+        comment = _getComment();
 
-        defaultGraphURIs = _getDefaultGraphURIs() ;
-        namedGraphURIs = _getNamedGraphsURIs() ;
+        defaultGraphURIs = _getDefaultGraphURIs();
+        namedGraphURIs = _getNamedGraphsURIs();
 
         queryFile = SparqlTestLib.queryFile(entry);
-        buildLuceneIndex = _getTextIndex() ;
+        buildLuceneIndex = _getTextIndex();
     }
 
     public Node getResource() {
-        return testResource ;
+        return testResource;
     }
 
     public Node getAction() {
@@ -115,56 +114,56 @@ public class QueryTestItem
 
     /** @return Returns the testType. */
     public Node getTestType() {
-        return testType ;
+        return testType;
     }
 
     public String getQueryFile() {
-        return queryFile ;
+        return queryFile;
     }
 
     public String getResultFile() {
-        return resultFile ;
+        return resultFile;
     }
 
     /**
-     * Load results as a SPARQLResult. If the results are a model, no conversion
-     * to a result set is attempted here.
+     * Load tests results as a SPARQLResult.
+     * <p>
+     * If the results are an RDF graph, no
+     * conversion to a result set is attempted here.
      */
     public SPARQLResult getResults() {
         if ( resultFile == null )
-            return null ;
-        ResultsFormat format = ResultsFormat.guessSyntax(resultFile) ;
+            return null;
+        Lang lang = RDFLanguages.pathnameToLang(resultFile);
 
-        if ( ResultsFormat.isRDFGraphSyntax(format) ) {
-            // Load plain.
-            Graph g = GraphFactory.createDefaultGraph();
-            SparqlTestLib.parser(resultFile).parse(g);
-            Model m = ModelFactory.createModelForGraph(g);
-            return new SPARQLResult(m) ;
+        if ( ResultSetLang.isRegistered(lang) ) {
+            // Attempt to handle as a resultset or boolean result.s
+            SPARQLResult x = ResultSetFactory.result(resultFile);
+            return x;
         }
 
-        if ( ResultsFormat.isDatasetSyntax(format) ) {
-            Dataset d = RDFDataMgr.loadDataset(resultFile) ;
-            return new SPARQLResult(d) ;
+        if ( RDFLanguages.isTriples(lang) ) {
+            // Load plain. No warnings.
+            Model m = SparqlTestLib.parser(resultFile).toModel();
+            return new SPARQLResult(m);
+        } else {
+            Dataset d = SparqlTestLib.parser(resultFile).toDataset();
+            return new SPARQLResult(d);
         }
-
-        // Attempt to handle as a resultset or boolean result.s
-        SPARQLResult x = ResultSetFactory.result(resultFile) ;
-        return x ;
     }
 
     public String getName() {
-        return name ;
+        return name;
     }
 
     public String getURI() {
         if ( testResource != null && testResource.isURI() )
-            return testResource.getURI() ;
-        return fakeURI() ;
+            return testResource.getURI();
+        return fakeURI();
     }
 
     public String getComment() {
-        return comment ;
+        return comment;
     }
 
     public ManifestEntry getManifestEntry() {
@@ -172,19 +171,19 @@ public class QueryTestItem
     }
 
     public List<String> getDefaultGraphURIs() {
-        return defaultGraphURIs ;
+        return defaultGraphURIs;
     }
 
     public List<String> getNamedGraphURIs() {
-        return namedGraphURIs ;
+        return namedGraphURIs;
     }
 
     public boolean requiresTextIndex() {
-        return buildLuceneIndex ;
+        return buildLuceneIndex;
     }
 
     private String _getName() {
-        Node x = G.getOneSP(graph, testResource, TestManifest.name.asNode()) ;
+        Node x = G.getOneSP(graph, testResource, TestManifest.name.asNode());
         if ( ! testResource.isURI() )
             return G.asString(x);
         String ln = SplitIRI.localname(testResource.getURI());
@@ -193,8 +192,8 @@ public class QueryTestItem
 
 //    private Resource _getAction() {
 //        if ( actionResource == null )
-//            actionResource = testResource.getProperty(TestManifest.action).getResource() ;
-//        return actionResource ;
+//            actionResource = testResource.getProperty(TestManifest.action).getResource();
+//        return actionResource;
 //    }
 //
     private String _getResultFile() {
@@ -205,9 +204,9 @@ public class QueryTestItem
     }
 
     private String _getComment() {
-        Node c = G.getZeroOrOneSP(graph, testResource, RDFS.Nodes.comment) ;
+        Node c = G.getZeroOrOneSP(graph, testResource, RDFS.Nodes.comment);
         if ( c == null )
-            return null ;
+            return null;
         return c.getLiteralLexicalForm();
     }
 
@@ -224,15 +223,15 @@ public class QueryTestItem
     private List<String> _getDefaultGraphURIs() {
         if ( ! actionResource.isBlank() )
             // Action is not a blank node - the data had better be in the query itself.
-            return null ;
+            return null;
 
-        List<String> l = new ArrayList<>() ;
+        List<String> l = new ArrayList<>();
         G.listSP(graph, actionResource, VocabTestQuery.data.asNode()).forEach(x->{
             if ( ! x.isURI() )
                 throw new TestSetupException("Deafult Graph URI is not a URI: "+x);
-            l.add(x.getURI()) ;
+            l.add(x.getURI());
         });
-        return l ;
+        return l;
     }
 
     /**
@@ -244,22 +243,22 @@ public class QueryTestItem
     private List<String> _getNamedGraphsURIs() {
         if ( ! actionResource.isBlank() )
             // Action is not a blank node - the data had better be in the query itself.
-            return null ;
+            return null;
 
-        List<String> l = new ArrayList<>() ;
+        List<String> l = new ArrayList<>();
         G.listSP(graph, actionResource, VocabTestQuery.graphData.asNode()).forEach(x->{
             if ( ! x.isURI() )
                 throw new TestSetupException("Deafult Graph URI is not a URI: "+x);
-            l.add(x.getURI()) ;
+            l.add(x.getURI());
         });
-        return l ;
+        return l;
     }
 
     private boolean _getTextIndex() {
-        Node x = G.getZeroOrOneSP(graph, testResource, TestManifestX.textIndex.asNode()) ;
+        Node x = G.getZeroOrOneSP(graph, testResource, TestManifestX.textIndex.asNode());
         if ( x == null )
-            return false ;
-        return G.asString(x).equalsIgnoreCase("true") ;
+            return false;
+        return G.asString(x).equalsIgnoreCase("true");
     }
 
     // ----------------------------------------------------
@@ -267,14 +266,14 @@ public class QueryTestItem
 
     @Override
     public String toString() {
-        StringBuilder sbuff = new StringBuilder() ;
-        String name = getName() ;
-        // String actionStr = FmtUtils.stringForRDFNode(_getAction()) ;
+        StringBuilder sbuff = new StringBuilder();
+        String name = getName();
+        // String actionStr = FmtUtils.stringForRDFNode(_getAction());
 
-        sbuff.append("Name: " + name) ;
+        sbuff.append("Name: " + name);
 
         if ( getComment() != null )
-            sbuff.append("    Comment: " + getComment()) ;
-        return sbuff.toString() ;
+            sbuff.append("    Comment: " + getComment());
+        return sbuff.toString();
     }
 }

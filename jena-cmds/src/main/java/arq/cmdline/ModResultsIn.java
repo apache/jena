@@ -30,7 +30,7 @@ public class ModResultsIn extends ModBase
     protected final ArgDecl resultsInputFmtDecl = new ArgDecl(ArgDecl.HasValue, "in") ;
     protected final ArgDecl fileDecl = new ArgDecl(ArgDecl.HasValue, "file") ;
 
-    private ResultsFormat inputFormat = ResultsFormat.FMT_TEXT ;
+    private ResultsFormat inputFormat = ResultsFormat.TEXT;
     private String resultsFilename = null ;
     private ResultSet resultSet = null ;
 
