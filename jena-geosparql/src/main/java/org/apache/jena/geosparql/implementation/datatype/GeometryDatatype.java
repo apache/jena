@@ -24,11 +24,8 @@ import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.index.GeometryLiteralIndex;
 import org.apache.jena.geosparql.implementation.index.GeometryLiteralIndex.GeometryIndex;
+import org.apache.jena.sys.JenaSystem;
 
-/**
- *
- *
- */
 public abstract class GeometryDatatype extends BaseDatatype {
 
     public GeometryDatatype(String uri) {
@@ -60,15 +57,22 @@ public abstract class GeometryDatatype extends BaseDatatype {
         }
     }
 
-    private static final TypeMapper TYPE_MAPPER = TypeMapper.getInstance();
-    private static boolean isDatatypesRegistered = false;
+    public static void registerDatatypes() {
+        Types.init();
+    }
 
-    public static final void registerDatatypes() {
-        if (!isDatatypesRegistered) {
-            TYPE_MAPPER.registerDatatype(WKTDatatype.INSTANCE);
-            TYPE_MAPPER.registerDatatype(GMLDatatype.INSTANCE);
-            isDatatypesRegistered = true;
+    // Robust initialization.
+    // Running the tests has an unpredictable order.
+    private static class Types {
+        static { JenaSystem.init(); }
+        private static final TypeMapper MAPPER = addDatatypes();
+        public static TypeMapper addDatatypes() {
+            TypeMapper mapper = TypeMapper.getInstance();
+            mapper.registerDatatype(WKTDatatype.INSTANCE);
+            mapper.registerDatatype(GMLDatatype.INSTANCE);
+            return mapper;
         }
+        public static void init() {}
     }
 
     public static final GeometryDatatype get(RDFDatatype rdfDatatype) throws DatatypeFormatException {
@@ -81,14 +85,12 @@ public abstract class GeometryDatatype extends BaseDatatype {
 
     public static final GeometryDatatype get(String datatypeURI) {
         checkURI(datatypeURI);
-        RDFDatatype rdfDatatype = TYPE_MAPPER.getTypeByName(datatypeURI);
-
+        RDFDatatype rdfDatatype = Types.MAPPER.getTypeByName(datatypeURI);
         return GeometryDatatype.get(rdfDatatype);
     }
 
     public static final boolean checkURI(String datatypeURI) throws DatatypeFormatException {
-        registerDatatypes();
-        RDFDatatype rdfDatatype = TYPE_MAPPER.getTypeByName(datatypeURI);
+        RDFDatatype rdfDatatype = Types.MAPPER.getTypeByName(datatypeURI);
         if (rdfDatatype != null) {
             return rdfDatatype instanceof GeometryDatatype;
         } else {

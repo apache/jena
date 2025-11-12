@@ -30,7 +30,6 @@ import org.apache.jena.fuseki.geosparql.cli.FileGraphFormat;
 import org.apache.jena.geosparql.configuration.GeoSPARQLConfig;
 import org.apache.jena.geosparql.configuration.GeoSPARQLOperations;
 import org.apache.jena.geosparql.implementation.datatype.GMLDatatype;
-import org.apache.jena.geosparql.implementation.datatype.GeometryDatatype;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
 import org.apache.jena.query.Dataset;
@@ -126,7 +125,6 @@ public class DatasetOperations {
     public static final void registerDatatypes() {
         DatatypeController.addPrefixDatatype("wkt", WKTDatatype.INSTANCE);
         DatatypeController.addPrefixDatatype("gml", GMLDatatype.INSTANCE);
-        GeometryDatatype.registerDatatypes();
     }
 
     public static void loadData(ArgsConfig argsConfig, Dataset dataset) throws DatasetException {

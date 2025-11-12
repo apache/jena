@@ -63,7 +63,6 @@ public class TypeMapper {
     /**
      * Static initializer. Adds builtin datatypes to the mapper.
      */
-    static { reset() ; }
     public static void reset() {
         theTypeMap = new TypeMapper();
         theTypeMap.registerDatatype(RDF.dtLangString) ;
