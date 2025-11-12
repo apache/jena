@@ -37,7 +37,7 @@ import org.apache.jena.update.UpdateRequest;
 /** Misc code to make the tests clearer */
 class SparqlTestLib {
 
-    // Data Parser - no warnings.
+    // Test data or results - no warnings.
     static RDFParserBuilder parser(String sourceURI) {
         return RDFParser.create().source(sourceURI).errorHandler(ErrorHandlerFactory.errorHandlerNoWarnings);
     }

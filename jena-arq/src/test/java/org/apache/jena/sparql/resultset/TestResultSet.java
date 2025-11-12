@@ -176,19 +176,19 @@ public class TestResultSet {
     @Test
     public void test_RS_7() {
         ResultSet rs = ResultSetFactory.load(DIR + "output.srx");
-        test_RS_fmt(rs, ResultsFormat.FMT_RS_XML, true);
+        test_RS_fmt(rs, ResultsFormat.XML, true);
     }
 
     @Test
     public void test_RS_8() {
         ResultSet rs = ResultSetFactory.load(DIR + "output.srx");
-        test_RS_fmt(rs, ResultsFormat.FMT_RS_JSON, true);
+        test_RS_fmt(rs, ResultsFormat.JSON, true);
     }
 
     @Test
     public void test_RS_9() {
         ResultSet rs = ResultSetFactory.load(DIR + "output.srx");
-        test_RS_fmt(rs, ResultsFormat.FMT_RDF_XML, false);
+        test_RS_fmt(rs, ResultsFormat.XML, false);
     }
 
     @Test

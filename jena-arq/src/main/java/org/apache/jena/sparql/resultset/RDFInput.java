@@ -32,13 +32,12 @@ import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.vocabulary.ResultSetGraphVocab;
 import org.apache.jena.vocabulary.RDF;
 
+/**
+ * Process a result set encoded in RDF according to
+ * <a href="http://www.w3.org/2001/sw/DataAccess/tests/result-set">http://www.w3.org/2001/sw/DataAccess/tests/result-set</a>
+ */
 public class RDFInput extends ResultSetMem {
-    /**
-     * Process a result set encoded in RDF according to
-     * <code>@link{http://www.w3.org/2001/sw/DataAccess/tests/result-set}#</code>
-     *
-     * @param model
-     */
+
     public RDFInput(Model model) {
         buildFromDumpFormat(model);
     }

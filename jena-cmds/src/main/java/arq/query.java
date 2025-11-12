@@ -235,8 +235,9 @@ public class query extends CmdARQ
             Txn.executeRead(transactional, ()->{
                 modTime.startTimer() ;
                 try ( QueryExecution qe = QueryExecutionFactory.create(query, dataset) ) {
-                    try { QueryExecUtils.executeQuery(query, qe, fmt, resultsDest); }
-                    catch (QueryCancelledException ex) {
+                    try {
+                        QueryExecUtils.executeQuery(query, qe, fmt, resultsDest);
+                    } catch (QueryCancelledException ex) {
                         IO.flush(resultsDest);
                         System.err.println("Query timed out");
                     }

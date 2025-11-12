@@ -29,6 +29,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.json.JsonObject;
@@ -279,19 +280,16 @@ public class ResultSetFormatter {
      */
 
     static public void output(OutputStream outStream, ResultSet resultSet, ResultsFormat rFmt) {
-        Lang lang = ResultsFormat.convert(rFmt);
-        if ( lang != null ) {
-            output(outStream, resultSet, lang);
-            return;
-        }
+        Objects.requireNonNull(resultSet);
+        Objects.requireNonNull(outStream);
+        Objects.requireNonNull(rFmt);
 
-        boolean b = ResultsFormat.oldWrite(outStream, rFmt, null, resultSet);
-        if ( b )
-            return;
-        throw new ARQException("Unknown ResultSet format: " + rFmt);
+        Lang lang = rFmt.resultSetLang();
+        if ( lang == null )
+            throw new ARQException("Unknown ResultSet output format: " + rFmt);
+
+        output(outStream, resultSet, lang);
     }
-
-    // ---- General Output
 
     public static void output(ResultSet resultSet, Lang resultFormat) {
         output(System.out, resultSet, resultFormat);

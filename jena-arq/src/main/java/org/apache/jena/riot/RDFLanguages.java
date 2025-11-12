@@ -419,8 +419,8 @@ public class RDFLanguages
     public static Lang filenameToLang(String uriOrFilename) { return pathnameToLang(uriOrFilename); }
 
     /**
-     * Try to map a URI or URI path name to a {@link Lang}; return null on no
-     * registered mapping.
+     * Try to map a URI or URI path name to a {@link Lang}; This included filenames.
+     * Return null on no registered mapping.
      */
     public static Lang pathnameToLang(String pathname) {
         if ( pathname == null )
