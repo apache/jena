@@ -31,7 +31,7 @@ public class Scripts_CDTs {
     @TestFactory
     @DisplayName("SPARQL CDTs")
     public Stream<DynamicNode> testFactorySPARQL_CDTs_bnodes() {
-        return all("testing/SPARQL-CDTs/bnodes/manifest.ttl");
+        return all("testing/SPARQL-CDTs/manifest-all.ttl");
     }
 
     private static Stream<DynamicNode> all(String... manifests) {
