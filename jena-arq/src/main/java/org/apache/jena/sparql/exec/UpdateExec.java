@@ -48,8 +48,4 @@ public interface UpdateExec extends UpdateProcessor
     public static UpdateExecDatasetBuilder newBuilder() {
         return UpdateExecDatasetBuilder.create();
     }
-
-    /** Execute */
-    @Override
-    public void execute();
 }

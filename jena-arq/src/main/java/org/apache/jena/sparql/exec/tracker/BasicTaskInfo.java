@@ -16,39 +16,44 @@
  * limitations under the License.
  */
 
-package org.apache.jena.geosparql.spatial.task;
+package org.apache.jena.sparql.exec.tracker;
 
-import org.apache.jena.sparql.engine.iterator.Abortable;
-
-/** An outside view of a running task */
-public interface BasicTask extends Abortable {
-
-    public interface TaskListener<T extends BasicTask> {
-        void onStateChange(T task);
-    }
-
+public interface BasicTaskInfo {
+    /** The state of the task. */
     TaskState getTaskState();
 
-    /** A label for the task. */
-    String getLabel();
-
-    @Override
-    void abort();
-
+    /** Time stamp for when the task object was created. */
     long getCreationTime();
+
+    /** Time stamp for when the task was started. Returns -1 if was not started yet.*/
     long getStartTime();
-    long getEndTime();
+
+    /**
+     * Time stamp for when the task completed. Returns -1 if it has not finished yet.
+     */
+    long getFinishTime();
+
+    /** Time stamp for when the task was cancelled. Returns -1 if not aborted. */
     long getAbortTime();
 
-    /** If non null, the throwable that is the cause for an exceptional termination of the task. */
-    Throwable getThrowable();
+    /**
+     * Return a description suitable for presentation to users.
+     * This might be a less technical description than what is returned by toString().
+     */
+    String getLabel();
 
-    /** Get the last status message of the task. May be null. */
     String getStatusMessage();
 
+    /**
+     * If this method returns a non-null result then the task is considered to be failing or to have failed.
+     * A non-null result does not imply that the task has already reached TERMINATED state.
+     */
+    Throwable getThrowable();
+
     /** Whether abort has been called. */
-    // XXX this might be different from whether the task actually transitioned into aborting state.
-    boolean isAborting();
+    default boolean isAborting() {
+        return getAbortTime() >= 0;
+    }
 
     default boolean isTerminated() {
         TaskState state = getTaskState();

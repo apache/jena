@@ -24,10 +24,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import java.util.function.Predicate;
-
-import org.junit.jupiter.api.Test;
 
 import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
@@ -42,6 +39,7 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Envelope;
 
 /** Test cases that check for whether the correct graphs are indexed - also when a user is only authorized to a certain subset of graphs. */
@@ -104,7 +102,7 @@ public class TestSpatialIndexerTasks {
     }
 
     @Test
-    public void testDsgIndexUpdate() throws SpatialIndexException {
+    public void testDsgIndexUpdate() {
         DatasetGraph dsg = createTestData();
 
         Set<Node> initialGraphs = Set.of(g2, g3, g4);
@@ -131,7 +129,7 @@ public class TestSpatialIndexerTasks {
     }
 
     @Test
-    public void testDsgIndexClean() throws InterruptedException, ExecutionException, SpatialIndexException {
+    public void testDsgIndexClean() throws SpatialIndexException {
         DatasetGraph dsg = createTestData();
 
         SpatialIndexLib.buildSpatialIndex(dsg, SRS_URI.DEFAULT_WKT_CRS84);
@@ -140,12 +138,12 @@ public class TestSpatialIndexerTasks {
 
         SpatialIndexPerGraph spatialIndex = clean(dsg, null);
         Set<Node> actual = spatialIndex.getIndex().getTreeMap().keySet();
-        Set<Node> expected = Set.of(dg, g4);;
+        Set<Node> expected = Set.of(dg, g4);
         assertEquals(expected, actual);
     }
 
     @Test
-    public void testProtectedDsgIndexUpdate() throws SpatialIndexException {
+    public void testProtectedDsgIndexUpdate() {
         DatasetGraph dsg = createTestData();
 
         // User can only see g3 and g4 and requests to update both of them.

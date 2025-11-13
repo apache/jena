@@ -18,7 +18,12 @@
 
 package org.apache.jena.sparql.exec.http;
 
-import static org.apache.jena.http.HttpLib.*;
+import static org.apache.jena.http.HttpLib.acceptHeader;
+import static org.apache.jena.http.HttpLib.contentTypeHeader;
+import static org.apache.jena.http.HttpLib.dft;
+import static org.apache.jena.http.HttpLib.finishInputStream;
+import static org.apache.jena.http.HttpLib.requestURL;
+import static org.apache.jena.http.HttpLib.responseHeader;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -52,8 +57,21 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.http.AsyncHttpRDF;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.http.HttpLib;
-import org.apache.jena.query.*;
-import org.apache.jena.riot.*;
+import org.apache.jena.query.ARQ;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryCancelledException;
+import org.apache.jena.query.QueryException;
+import org.apache.jena.query.QueryExecException;
+import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.QueryParseException;
+import org.apache.jena.query.QueryType;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.Syntax;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.ResultSetMgr;
+import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.resultset.ResultSetReaderRegistry;
 import org.apache.jena.riot.web.HttpNames;

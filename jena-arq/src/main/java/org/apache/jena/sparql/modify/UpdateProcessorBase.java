@@ -18,13 +18,14 @@
 
 package org.apache.jena.sparql.modify;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Objects ;
+import java.util.concurrent.atomic.AtomicBoolean ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.Timeouts;
 import org.apache.jena.sparql.engine.Timeouts.Timeout;
+import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.update.UpdateProcessor ;
 import org.apache.jena.update.UpdateRequest ;
@@ -68,6 +69,16 @@ public class UpdateProcessorBase implements UpdateProcessor
         if (timeout != null) {
             Timeouts.setUpdateTimeout(context, timeout);
         }
+    }
+
+    @Override
+    public UpdateRequest getUpdateRequest() {
+        return request;
+    }
+
+    @Override
+    public String getUpdateRequestString() {
+        return Objects.toString(request);
     }
 
     @Override

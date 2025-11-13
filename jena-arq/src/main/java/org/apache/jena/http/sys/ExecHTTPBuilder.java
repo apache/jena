@@ -29,6 +29,7 @@ import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.dispatch.SparqlDispatcherRegistry;
 import org.apache.jena.sparql.exec.http.Params;
 import org.apache.jena.sparql.exec.http.QuerySendMode;
 import org.apache.jena.sparql.syntax.syntaxtransform.QueryTransformOps;
@@ -46,7 +47,7 @@ public abstract class ExecHTTPBuilder<X, Y> {
     protected String serviceURL = null;
     private Query query = null;
     protected String queryString = null;
-    protected boolean parseCheck = true;
+    protected Optional<Boolean> parseCheck = Optional.empty();
     private HttpClient httpClient = null;
     protected Map<String, String> httpHeaders = new HashMap<>();
     protected Params params = Params.create();
@@ -84,8 +85,12 @@ public abstract class ExecHTTPBuilder<X, Y> {
 
     /** Whether to parse query strings passed to {@link #query(String)}. */
     public Y parseCheck(boolean parseCheck) {
-        this.parseCheck = parseCheck;
+        this.parseCheck = Optional.of(parseCheck);
         return thisBuilder();
+    }
+
+    protected boolean effectiveParseCheck() {
+        return SparqlDispatcherRegistry.effectiveParseCheck(parseCheck, contextAcc);
     }
 
     /** Set the query - this also sets the query string to agree with the query argument. */
@@ -102,14 +107,14 @@ public abstract class ExecHTTPBuilder<X, Y> {
      */
     public Y query(String queryStr) {
         Objects.requireNonNull(queryStr);
-        Query query = parseCheck ? QueryFactory.create(queryStr) : null;
+        Query query = effectiveParseCheck() ? QueryFactory.create(queryStr) : null;
         setQuery(query, queryStr);
         return thisBuilder();
     }
 
     public Y query(String queryStr, Syntax syntax) {
         Objects.requireNonNull(queryStr);
-        Query query = QueryFactory.create(queryStr, syntax);
+        Query query = effectiveParseCheck() ? QueryFactory.create(queryStr, syntax) : null;
         setQuery(query, queryStr);
         return thisBuilder();
     }

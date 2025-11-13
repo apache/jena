@@ -51,8 +51,6 @@ import org.apache.jena.geosparql.spatial.SpatialIndexConstants;
 import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexLib;
 import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexPerGraph;
 import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexerComputation;
-import org.apache.jena.geosparql.spatial.task.BasicTask;
-import org.apache.jena.geosparql.spatial.task.BasicTask.TaskListener;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Query;
@@ -65,6 +63,8 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.RowSet;
+import org.apache.jena.sparql.exec.tracker.BasicTaskExec;
+import org.apache.jena.sparql.exec.tracker.TaskListener;
 import org.apache.jena.sparql.syntax.syntaxtransform.QueryTransformOps;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.system.Txn;
@@ -215,10 +215,10 @@ public class SpatialIndexerService extends BaseActionREST {
         }
     }
 
-    protected BasicTask getActiveTask(HttpAction action) {
+    protected BasicTaskExec getActiveTask(HttpAction action) {
         DatasetGraph dsg = action.getDataset();
         Context cxt = dsg.getContext();
-        BasicTask activeTask = cxt.get(SpatialIndexConstants.symSpatialIndexTask);
+        BasicTaskExec activeTask = cxt.get(SpatialIndexConstants.symSpatialIndexTask);
         return activeTask;
     }
 
@@ -357,7 +357,7 @@ public class SpatialIndexerService extends BaseActionREST {
             if (clients == null) {
                 clients = new EndpointClients();
             }
-                clients.eventListeners.put(asyncContext, disposeSseListener[0]);
+            clients.eventListeners.put(asyncContext, disposeSseListener[0]);
             return clients;
         });
     }
@@ -369,7 +369,7 @@ public class SpatialIndexerService extends BaseActionREST {
         DatasetGraph dsg = action.getDataset();
         Endpoint endpoint = action.getEndpoint();
 
-        TaskListener<BasicTask> taskListener = task -> {
+        TaskListener<BasicTaskExec> taskListener = task -> {
             switch (task.getTaskState()) {
             case STARTING: {
                 JsonObject json = toJsonTaskStart(task.getStartTime(), null);
@@ -377,7 +377,7 @@ public class SpatialIndexerService extends BaseActionREST {
                 break;
             }
             case TERMINATED: {
-                JsonObject json = toJsonTaskEnd(task.getEndTime(), task.getThrowable(), task.getStatusMessage());
+                JsonObject json = toJsonTaskEnd(task.getFinishTime(), task.getThrowable(), task.getStatusMessage());
                 broadcastJson(endpoint, json);
                 break;
             }
@@ -395,7 +395,7 @@ public class SpatialIndexerService extends BaseActionREST {
 
     /** Send a stop request to a running task. Does not wait for the task to terminate. */
     protected void doCancel(HttpAction action) {
-        BasicTask task = getActiveTask(action);
+        BasicTaskExec task = getActiveTask(action);
         String state;
         if (task != null) {
             state = "true";
@@ -422,7 +422,7 @@ public class SpatialIndexerService extends BaseActionREST {
      * </pre>
      */
     protected void serveStatus(HttpAction action) {
-        BasicTask task = getActiveTask(action);
+        BasicTaskExec task = getActiveTask(action);
 
         JsonObject status = new JsonObject();
         long time;
@@ -435,7 +435,7 @@ public class SpatialIndexerService extends BaseActionREST {
                 status.addProperty("isAborting", task.isAborting());
                 time = !task.isAborting() ? task.getStartTime() : task.getAbortTime();
             } else {
-                time = task.getEndTime();
+                time = task.getFinishTime();
             }
             Throwable throwable = task.getThrowable();
             if (throwable != null) {
@@ -455,29 +455,29 @@ public class SpatialIndexerService extends BaseActionREST {
         successJson(action, jsonStr);
     }
 
-    protected BasicTask scheduleIndexTask(HttpAction action, SpatialIndexerComputation indexComputation, Path targetFile, boolean isReplaceTask) {
+    protected BasicTaskExec scheduleIndexTask(HttpAction action, SpatialIndexerComputation indexComputation, Path targetFile, boolean isReplaceTask) {
         Endpoint endpoint = action.getEndpoint();
         DatasetGraph dsg = action.getDataset();
 
         long graphCount = indexComputation.getGraphNodes().size();
 
-        TaskListener<BasicTask> taskListener = new TaskListener<>() {
+        TaskListener<BasicTaskExec> taskListener = new TaskListener<>() {
             @Override
-            public void onStateChange(BasicTask task) {
+            public void onStateChange(BasicTaskExec task) {
                 switch (task.getTaskState()) {
                 case STARTING: {
                     JsonObject json = toJsonTaskStart(task.getStartTime(), null);
                     broadcastJson(endpoint, json);
                     break;
                 }
-                case ABORTING: {
+                case TERMINATING: {
                     JsonObject json = toJsonTaskAbort(task.getAbortTime(), null);
                     broadcastJson(endpoint, json);
                     break;
                 }
                 case TERMINATED: {
                     Throwable throwable = task.getThrowable();
-                    long endTime = task.getEndTime();
+                    long endTime = task.getFinishTime();
                     JsonObject json = toJsonTaskEnd(endTime, throwable, task.getStatusMessage());
                     broadcastJson(endpoint, json);
                     if (logger.isInfoEnabled()) {

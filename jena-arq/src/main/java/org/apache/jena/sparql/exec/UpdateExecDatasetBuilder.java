@@ -21,23 +21,24 @@ package org.apache.jena.sparql.exec;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.graph.Node;
+import org.apache.jena.http.sys.UpdateEltAcc;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.Timeouts;
 import org.apache.jena.sparql.engine.Timeouts.Timeout;
 import org.apache.jena.sparql.engine.Timeouts.TimeoutBuilderImpl;
-import org.apache.jena.sparql.modify.UpdateEngineFactory;
-import org.apache.jena.sparql.modify.UpdateEngineRegistry;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.dispatch.SparqlDispatcherRegistry;
 import org.apache.jena.sparql.syntax.syntaxtransform.UpdateTransformOps;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.ContextAccumulator;
 import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.update.Update;
-import org.apache.jena.update.UpdateException;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
 
@@ -55,8 +56,8 @@ public class UpdateExecDatasetBuilder implements UpdateExecBuilder {
 
     private TimeoutBuilderImpl timeoutBuilder = new TimeoutBuilderImpl();
 
-    private UpdateRequest  update             = null;
-    private UpdateRequest  updateRequest      = new UpdateRequest();
+    private Optional<Boolean> parseCheck      = Optional.empty();
+    private UpdateEltAcc updateEltAcc         = new UpdateEltAcc();
 
     private UpdateExecDatasetBuilder() {}
 
@@ -79,15 +80,23 @@ public class UpdateExecDatasetBuilder implements UpdateExecBuilder {
     /** Parse and update operations to the {@link UpdateRequest} being built. */
     @Override
     public UpdateExecDatasetBuilder update(String updateRequestString) {
-        UpdateRequest more = UpdateFactory.create(updateRequestString);
-        add(more);
+        if (effectiveParseCheck()) {
+            UpdateRequest more = UpdateFactory.create(updateRequestString);
+            add(more);
+        } else {
+            updateEltAcc.add(updateRequestString);
+        }
         return this;
     }
 
-    /** Hint has no effect on update execs over datasets. */
     @Override
     public UpdateExecBuilder parseCheck(boolean parseCheck) {
+        this.parseCheck = Optional.of(parseCheck);
         return this;
+    }
+
+    protected boolean effectiveParseCheck() {
+        return SparqlDispatcherRegistry.effectiveParseCheck(parseCheck, contextAcc);
     }
 
     public UpdateExecDatasetBuilder dataset(DatasetGraph dsg) {
@@ -157,22 +166,29 @@ public class UpdateExecDatasetBuilder implements UpdateExecBuilder {
 
     @Override
     public UpdateExec build() {
-        Objects.requireNonNull(dataset, "No dataset for update");
-        Objects.requireNonNull(updateRequest, "No update request");
+        UpdateRequest actualUpdate = null;
 
-        UpdateRequest actualUpdate = updateRequest;
-
-        if ( substitutionMap != null && ! substitutionMap.isEmpty() )
+        if ( substitutionMap != null && ! substitutionMap.isEmpty() ) {
+            actualUpdate = updateEltAcc.buildUpdateRequest();
             actualUpdate = UpdateTransformOps.transform(actualUpdate, substitutionMap);
+        }
 
         Context cxt = getContext();
-        UpdateEngineFactory f = UpdateEngineRegistry.get().find(dataset, cxt);
-        if ( f == null )
-            throw new UpdateException("Failed to find an UpdateEngine");
 
+        Timeouts.applyDefaultUpdateTimeoutFromContext(timeoutBuilder, cxt);
         Timeout timeout = timeoutBuilder.build();
+        Timeouts.setUpdateTimeout(cxt, timeout);
 
-        UpdateExec uExec = new UpdateExecDataset(actualUpdate, dataset, initialBinding, cxt, f, timeout);
+        UpdateExec uExec;
+        if (updateEltAcc.isParsed()) {
+            if (actualUpdate == null) {
+                actualUpdate = updateEltAcc.buildUpdateRequest();
+            }
+            uExec = SparqlDispatcherRegistry.exec(actualUpdate, dataset, initialBinding, cxt);
+        } else {
+            String actualString = updateEltAcc.buildString();
+            uExec = SparqlDispatcherRegistry.exec(actualString, dataset, initialBinding, cxt);
+        }
         return uExec;
     }
 
@@ -189,10 +205,10 @@ public class UpdateExecDatasetBuilder implements UpdateExecBuilder {
     }
 
     private void add(UpdateRequest request) {
-        request.getOperations().forEach(this::add);
+        updateEltAcc.add(request);
     }
 
     private void add(Update update) {
-        this.updateRequest.add(update);
+        updateEltAcc.add(update);
     }
 }
