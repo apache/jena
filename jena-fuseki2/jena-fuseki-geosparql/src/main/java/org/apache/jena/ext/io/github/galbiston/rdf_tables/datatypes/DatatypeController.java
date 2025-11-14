@@ -28,10 +28,6 @@ import org.apache.jena.rdf.model.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author Gerg
- */
 public class DatatypeController {
 
     //TODO load from file

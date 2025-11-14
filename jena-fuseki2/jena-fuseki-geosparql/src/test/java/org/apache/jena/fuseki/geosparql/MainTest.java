@@ -32,6 +32,8 @@ import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.sys.JenaSystem;
+
 import org.junit.*;
 
 /**
@@ -39,6 +41,8 @@ import org.junit.*;
  *
  */
 public class MainTest {
+
+    static { JenaSystem.init(); }
 
     private static GeosparqlServer SERVER;
 
