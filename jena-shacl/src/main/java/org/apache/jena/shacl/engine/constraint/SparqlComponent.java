@@ -74,14 +74,6 @@ public class SparqlComponent {
         return query;
     }
 
-//    public String getSparqlString() {
-//        return sparqlString;
-//    }
-//
-//    public boolean isSelect() {
-//        return query.isSelectType();
-//    }
-
     public List<Parameter> getParams() {
         return params;
     }
