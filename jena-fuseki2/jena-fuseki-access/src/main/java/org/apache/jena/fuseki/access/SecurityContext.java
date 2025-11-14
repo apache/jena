@@ -28,11 +28,9 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.exec.QueryExec;
-import org.apache.jena.sparql.exec.QueryExecutionAdapter;
 import org.apache.jena.sparql.util.Context;
 
 /** A {@link SecurityContext} is the things actor (user, role) is allowed to do.
@@ -80,24 +78,10 @@ public interface SecurityContext {
 
     public boolean visableDefaultGraph();
 
-    /** @deprecated Use {@link #createQueryExec(Query, DatasetGraph)} */
-    @Deprecated(forRemoval = true)
-    public default QueryExecution createQueryExecution(String queryString, DatasetGraph dsg) {
-        return createQueryExecution(QueryFactory.create(queryString), dsg);
-    }
-
-    /** @deprecated Use {@link #createQueryExec(Query, DatasetGraph)} */
-    @Deprecated(forRemoval = true)
-    public default QueryExecution createQueryExecution(Query query, DatasetGraph dsg) {
-        return QueryExecutionAdapter.adapt(createQueryExec(query, dsg));
-    }
-
     public QueryExec createQueryExec(Query query, DatasetGraph dsg);
 
     /**
-     * Quad filter to reflect the security policy of this {@link SecurityContext}. It is
-     * better to call {@link #createQueryExecution(Query, DatasetGraph)} which may be more
-     * efficient.
+     * Quad filter to reflect the security policy of this {@link SecurityContext}.
      */
     public Predicate<Quad> predicateQuad();
 

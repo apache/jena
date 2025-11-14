@@ -48,7 +48,7 @@ public class SecurityContextAllowAll implements SecurityContext {
 
     /**
      * Quad filter to reflect the security policy of this {@link SecurityContextAllowAll}. It is
-     * better to call {@link #createQueryExecution(Query, DatasetGraph)} which may be more
+     * better to call {@link #createQueryExec(Query, DatasetGraph)} which may be more
      * efficient.
      */
     @Override

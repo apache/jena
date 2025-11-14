@@ -51,7 +51,6 @@ import org.apache.jena.fuseki.servlets.ActionService;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
@@ -664,12 +663,6 @@ public class FusekiConfig {
             endpointName = null;
         Endpoint endpoint = Endpoint.create(operation, endpointName, authPolicy);
         endpoints.add(endpoint);
-    }
-
-    @Deprecated(forRemoval = true)
-    public static Dataset getDataset(Resource datasetDesc, DatasetDescriptionMap dsDescMap) {
-        DatasetGraph dsg = getDataset(datasetDesc.getModel().getGraph(), datasetDesc.asNode(), dsDescMap);
-        return DatasetFactory.wrap(dsg);
     }
 
     public static DatasetGraph getDataset(Graph configuration, Node datasetDesc, DatasetDescriptionMap dsDescMap) {
