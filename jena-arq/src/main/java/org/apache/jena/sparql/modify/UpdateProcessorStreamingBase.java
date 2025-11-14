@@ -18,55 +18,54 @@
 
 package org.apache.jena.sparql.modify;
 
-import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Prologue;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.update.UpdateProcessorStreaming ;
+import org.apache.jena.sparql.util.Context;
+import org.apache.jena.update.UpdateProcessorStreaming;
 
 /** Class to hold the general state of a update request execution.
  *  See query ExecutionContext
  */
 public class UpdateProcessorStreamingBase implements UpdateProcessorStreaming
 {
-    protected final DatasetGraph datasetGraph ;
-    protected final Context context ;
-    
+    protected final DatasetGraph datasetGraph;
+    protected final Context context;
+
     protected final UpdateEngine proc;
     protected final Prologue prologue;
 
-    public UpdateProcessorStreamingBase(DatasetGraph datasetGraph, Binding inputBinding, Prologue prologue, Context context, UpdateEngineFactory factory)
+    public UpdateProcessorStreamingBase(DatasetGraph datasetGraph, Prologue prologue, Context context, UpdateEngineFactory factory)
     {
-        this.datasetGraph = datasetGraph ;
+        this.datasetGraph = datasetGraph;
         this.prologue = prologue;
         this.context = context;
-        Context.setCurrentDateTime(this.context) ;
-        proc = factory.create(datasetGraph, inputBinding, context) ;
+        Context.setCurrentDateTime(this.context);
+        proc = factory.create(datasetGraph, context);
     }
-    
+
     @Override
     public void startRequest() {
-        proc.startRequest() ;
+        proc.startRequest();
     }
 
     @Override
     public void finishRequest() {
-        proc.finishRequest() ;
+        proc.finishRequest();
     }
 
     @Override
     public UpdateSink getUpdateSink() {
-        return proc.getUpdateSink() ;
+        return proc.getUpdateSink();
     }
 
     @Override
     public DatasetGraph getDatasetGraph() {
-        return datasetGraph ;
+        return datasetGraph;
     }
 
     @Override
     public Context getContext() {
-        return context ;
+        return context;
     }
 
     @Override

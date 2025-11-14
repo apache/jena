@@ -96,7 +96,6 @@ import org.apache.jena.sparql.util.ModelUtils;
     }
 
     /** return true if the validation is "conforms" */
-    @SuppressWarnings("removal")
     private static boolean validateMap(ValidationContext vCxt, Graph data, Shape shape,
                                         Node focusNode, Path path, Node valueNode,
                                         Query _query, Map<Parameter, Node> parameterMap,
@@ -133,7 +132,7 @@ import org.apache.jena.sparql.util.ModelUtils;
             DatasetGraph dsg = DatasetGraphFactory.createGeneral(model.getGraph()); // Dataset by links.
             dsg.addGraph(shapesGraphResource.asNode(), shape.getShapeGraph());
             Dataset ds = DatasetFactory.wrap(dsg);
-            qExec = QueryExecution.create().query(query).dataset(ds).initialBinding(qsm).build();
+            qExec = QueryExecution.create().query(query).dataset(ds).substitution(qsm).build();
         }
 
         // ASK validator.
