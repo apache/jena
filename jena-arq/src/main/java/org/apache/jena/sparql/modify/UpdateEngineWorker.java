@@ -43,11 +43,11 @@ import org.apache.jena.riot.*;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.core.*;
+import org.apache.jena.sparql.engine.Timeouts;
+import org.apache.jena.sparql.engine.Timeouts.Timeout;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingRoot;
 import org.apache.jena.sparql.exec.*;
-import org.apache.jena.sparql.engine.Timeouts;
-import org.apache.jena.sparql.engine.Timeouts.Timeout;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.graph.GraphOps;
 import org.apache.jena.sparql.modify.request.*;
@@ -64,7 +64,6 @@ public class UpdateEngineWorker implements UpdateVisitor
 {
     protected final DatasetGraph datasetGraph;
     protected final boolean autoSilent = true;  // DROP and CREATE
-    protected final Binding inputBinding;       // Used for UpdateModify only: substitution is better.
     protected final Context context;
 
     protected final Timeout timeout;
@@ -76,9 +75,8 @@ public class UpdateEngineWorker implements UpdateVisitor
     protected final AtomicBoolean cancelSignal;
     protected volatile QueryExec activeQExec = null;
 
-    public UpdateEngineWorker(DatasetGraph datasetGraph, Binding inputBinding, Context context) {
+    public UpdateEngineWorker(DatasetGraph datasetGraph, Context context) {
         this.datasetGraph = datasetGraph;
-        this.inputBinding = inputBinding;
         this.context = context;
         this.timeout = Timeouts.extractUpdateTimeout(context);
         this.cancelSignal = Context.getOrSetCancelSignal(context);
@@ -403,7 +401,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         ThresholdPolicy<Binding> policy = ThresholdPolicyFactory.policyFromContext(datasetGraph.getContext());
         DataBag<Binding> db = BagFactory.newDefaultBag(policy, SerializationFactoryFinder.bindingSerializationFactory());
         try {
-            Iterator<Binding> bindings = evalBindings(query, dsg, inputBinding, context);
+            Iterator<Binding> bindings = evalBindings(query, dsg, context);
 
             try {
                 if ( false ) {
@@ -560,15 +558,14 @@ public class UpdateEngineWorker implements UpdateVisitor
 
     protected Iterator<Binding> evalBindings(Element pattern) {
         Query query = elementToQuery(pattern);
-        return evalBindings(query, datasetGraph, inputBinding, context);
+        return evalBindings(query, datasetGraph, context);
     }
 
-    @SuppressWarnings("removal")
-    protected Iterator<Binding> evalBindings(Query query, DatasetGraph dsg, Binding inputBinding, Context context) {
+    protected Iterator<Binding> evalBindings(Query query, DatasetGraph dsg, Context context) {
         // The UpdateProcessorBase already copied the context and made it safe
         // ... but that's going to happen again :-(
         if ( query == null ) {
-            Binding binding = (null != inputBinding) ? inputBinding : BindingRoot.create();
+            Binding binding = BindingRoot.create();
             return Iter.singletonIterator(binding);
         }
 
@@ -576,12 +573,6 @@ public class UpdateEngineWorker implements UpdateVisitor
 
         // Not QueryExecDataset.dataset(...) because of initialBinding.
         QueryExecDatasetBuilder builder = QueryExecDatasetBuilder.create().dataset(dsg).query(query).context(context);
-        if ( inputBinding != null ) {
-            // Must use initialBinding - it puts the input in the results, unlike substitution.
-            builder.initialBinding(inputBinding);
-            // substitution does not put results in the output.
-            // builder.substitution(inputBinding);
-        }
         QueryExec qExec = builder.build();
         setQExec(qExec);
         return qExec.select();

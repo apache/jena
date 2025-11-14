@@ -21,7 +21,9 @@ package org.apache.jena.query;
 import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.Map ;
+import java.util.stream.Collectors;
 
+import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.sparql.core.QuerySolutionBase ;
 import org.apache.jena.sparql.core.Var ;
@@ -45,23 +47,37 @@ public class QuerySolutionMap extends QuerySolutionBase
     protected boolean _contains(String varName)     { return map.containsKey(varName) ; }
 
     @Override
-    public Iterator<String> varNames()                   { return map.keySet().iterator() ; }
+    public Iterator<String> varNames()              { return map.keySet().iterator() ; }
 
-    /** Add all of the solutions from one QuerySolutionMap into this QuerySolutionMap */
-    public void addAll(QuerySolutionMap other)
-    {
+    /**
+     * Add all of the solutions from one QuerySolutionMap into this QuerySolutionMap
+     */
+    public void addAll(QuerySolutionMap other) {
         map.putAll(other.map);
     }
 
-    /** Return a <code>Map&lt;String, RDFNode&gt;</code> representing the current
-     * state of this <code>QuerySolutionMap</code>. The map is not connected
-     * to the <code>QuerySolutionMap</code> and later changes to either <code>Map</code>
-     * or <code>QuerySolutionMap</code> will not reflected in the other.
+    /**
+     * Return a <code>Map&lt;String, RDFNode&gt;</code> representing the current
+     * state of this <code>QuerySolutionMap</code>. The map is not connected to the
+     * <code>QuerySolutionMap</code> and later changes to either <code>Map</code> or
+     * <code>QuerySolutionMap</code> will not reflected in the other.
      *
      * @return {@literal Map<String, RDFNode>}
      */
     public Map<String, RDFNode> asMap() {
         return Map.copyOf(map) ;
+    }
+
+    /** Return a <code>Map&lt;Var, Node&gt;</code> representing the current
+     * state of this <code>QuerySolutionMap</code>. The map is not connected
+     * to the <code>QuerySolutionMap</code> and later changes to either <code>Map</code>
+     * or <code>QuerySolutionMap</code> will not reflected in the other.
+     *
+     * @return {@literal Map<Var, Node>}
+     */
+    public Map<Var, Node> asVarNodeMap() {
+        return map.entrySet().stream()
+                  .collect(Collectors.toMap(e -> Var.alloc(e.getKey()), e -> e.getValue().asNode()));
     }
 
     /** Add all of the solutions from one QuerySolution into this QuerySolutionMap */

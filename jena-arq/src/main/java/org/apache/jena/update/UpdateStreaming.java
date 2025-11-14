@@ -19,11 +19,8 @@
 package org.apache.jena.update;
 
 import org.apache.jena.query.Dataset;
-import org.apache.jena.query.QuerySolution;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Prologue;
-import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.engine.binding.BindingLib;
 import org.apache.jena.sparql.modify.UpdateEngineFactory;
 import org.apache.jena.sparql.modify.UpdateEngineRegistry;
 import org.apache.jena.sparql.modify.UpdateProcessorStreamingBase;
@@ -36,28 +33,10 @@ public class UpdateStreaming {
      * available factory to make an UpdateExecution
      *
      * @param dataset
-     * @param inputBinding Initial binding to be applied to Update operations that
-     *     can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
      * @return UpdateExecution
      */
-    @Deprecated(forRemoval = true)
-    public static UpdateProcessorStreaming createStreaming(Dataset dataset, QuerySolution inputBinding) {
-        return createStreaming(dataset.asDatasetGraph(), BindingLib.asBinding(inputBinding));
-    }
-
-    /**
-     * Create an UpdateExecution appropriate to the datasetGraph, or null if no
-     * available factory to make an UpdateExecution
-     *
-     * @param datasetGraph
-     * @param inputBinding Initial binding to be applied to Update operations that
-     *     can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
-     * @return UpdateExecution
-     * @deprecated Use {@code UpdateExecution.dataset(dataset)... build()}
-     */
-    @Deprecated(forRemoval = true)
-    public static UpdateProcessorStreaming createStreaming(DatasetGraph datasetGraph, Binding inputBinding) {
-        return makeStreaming(datasetGraph, inputBinding, null);
+    public static UpdateProcessorStreaming createStreaming(Dataset dataset) {
+        return makeStreaming(dataset.asDatasetGraph(), null);
     }
 
     /**
@@ -69,15 +48,39 @@ public class UpdateStreaming {
      * @return UpdateExecution
      */
     public static UpdateProcessorStreaming createStreaming(Dataset dataset, Context context) {
-        return makeStreaming(dataset.asDatasetGraph(), null, context);
+        return makeStreaming(dataset.asDatasetGraph(), context);
+    }
+
+
+    /**
+     * Create an UpdateExecution appropriate to the datasetGraph, or null if no
+     * available factory to make an UpdateExecution
+     *
+     * @param dataset
+     * @return UpdateExecution
+     */
+    public static UpdateProcessorStreaming createStreaming(DatasetGraph dataset) {
+        return makeStreaming(dataset, null);
+    }
+
+    /**
+     * Create an UpdateExecution appropriate to the datasetGraph, or null if no
+     * available factory to make an UpdateExecution
+     *
+     * @param dataset
+     * @param context (null means use merge of global and graph store context))
+     * @return UpdateExecution
+     */
+    public static UpdateProcessorStreaming createStreaming(DatasetGraph dataset, Context context) {
+        return makeStreaming(dataset, context);
     }
 
     // Everything for local updates comes through one of these two make methods
-    /*package*/ static UpdateProcessorStreaming makeStreaming(DatasetGraph datasetGraph, Binding inputBinding, Context context) {
+    /*package*/ static UpdateProcessorStreaming makeStreaming(DatasetGraph datasetGraph, Context context) {
         Prologue prologue = new Prologue();
         Context cxt = Context.setupContextForDataset(context, datasetGraph);
         UpdateEngineFactory f = UpdateEngineRegistry.get().find(datasetGraph, cxt);
-        UpdateProcessorStreamingBase uProc = new UpdateProcessorStreamingBase(datasetGraph, inputBinding, prologue, cxt, f);
+        UpdateProcessorStreamingBase uProc = new UpdateProcessorStreamingBase(datasetGraph, prologue, cxt, f);
         return uProc;
     }
 }

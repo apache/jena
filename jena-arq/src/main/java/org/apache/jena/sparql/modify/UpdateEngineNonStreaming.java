@@ -18,84 +18,84 @@
 
 package org.apache.jena.sparql.modify;
 
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.modify.request.UpdateVisitor ;
-import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.update.Update ;
-import org.apache.jena.update.UpdateRequest ;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.modify.request.UpdateVisitor;
+import org.apache.jena.sparql.util.Context;
+import org.apache.jena.update.Update;
+import org.apache.jena.update.UpdateRequest;
 
 /**
- * Example implementation of an update engine that does not stream data, instead it will build it up into an
- * in-memory UpdateRequest, and then traverse it after all update operations have finished.
+ * Example implementation of an update engine that does not stream data, instead it
+ * will build it up into an in-memory UpdateRequest, and then traverse it after all
+ * update operations have finished.
  */
-public class UpdateEngineNonStreaming extends UpdateEngineMain
-{
+public class UpdateEngineNonStreaming extends UpdateEngineMain {
     // This is the internal accumulator of update operations.
     // It is used to accumulate Updates so as not to alter
     // the UpdateRequest at the application level.
-    protected final UpdateRequest accRequests ;
-    protected final UpdateSink    updateSink ;
-    
+    protected final UpdateRequest accRequests;
+    protected final UpdateSink updateSink;
+
     /**
      * Creates a new Update Engine
+     *
      * @param datasetGraph Store the updates operate over
-     * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
      * @param context Execution Context
      */
-    public UpdateEngineNonStreaming(DatasetGraph datasetGraph, Binding inputBinding, Context context)
-    {
-        super(datasetGraph, inputBinding, context) ;
+    public UpdateEngineNonStreaming(DatasetGraph datasetGraph, Context context) {
+        super(datasetGraph, context);
         accRequests = new UpdateRequest();
-        updateSink = new UpdateRequestSink(accRequests)
-        {
+        updateSink = new UpdateRequestSink(accRequests) {
             @Override
-            public void close()
-            {
-                // Override the close() method to call execute() when we're done accepting update operations
+            public void close() {
+                // Override the close() method to call execute() when we're done
+                // accepting update operations
                 super.close();
                 execute();
             }
-        } ;
+        };
     }
 
     @Override
-    public void startRequest()  {}
-    
+    public void startRequest() {}
+
     @Override
     public void finishRequest() {}
-    
+
     /**
-     * Returns an {@link UpdateSink} that adds all update operations into an internal {@link UpdateRequest} object.
-     * After the last update operation has been added, the {@link #execute()} method is called.
+     * Returns an {@link UpdateSink} that adds all update operations into an internal
+     * {@link UpdateRequest} object. After the last update operation has been added,
+     * the {@link #execute()} method is called.
      */
     @Override
-    public UpdateSink getUpdateSink() { return updateSink ; }
-    
+    public UpdateSink getUpdateSink() {
+        return updateSink;
+    }
+
     /**
-     * Called after all of the update operations have been added to {@link #accRequests}.
+     * Called after all of the update operations have been added to
+     * {@link #accRequests}.
      */
-    protected void execute()
-    {
-        UpdateVisitor worker = this.prepareWorker() ;
-        for ( Update up : accRequests )
-        {
-            up.visit(worker) ;
+    protected void execute() {
+        UpdateVisitor worker = this.prepareWorker();
+        for ( Update up : accRequests ) {
+            up.visit(worker);
         }
     }
-    
+
     private static UpdateEngineFactory factory = new UpdateEngineFactory() {
         @Override
         public boolean accept(DatasetGraph datasetGraph, Context context) {
-            return true ;
+            return true;
         }
 
         @Override
-        public UpdateEngine create(DatasetGraph datasetGraph, Binding inputBinding,
-                                   Context context) {
-            return new UpdateEngineNonStreaming(datasetGraph, inputBinding, context) ;
+        public UpdateEngine create(DatasetGraph datasetGraph, Context context) {
+            return new UpdateEngineNonStreaming(datasetGraph, context);
         }
-    } ;
+    };
 
-    public static UpdateEngineFactory getFactory() { return factory ; }
+    public static UpdateEngineFactory getFactory() {
+        return factory;
+    }
 }

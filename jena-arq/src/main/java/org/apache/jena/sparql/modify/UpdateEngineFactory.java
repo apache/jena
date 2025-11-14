@@ -19,17 +19,16 @@
 package org.apache.jena.sparql.modify;
 
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.util.Context ;
 
-/** 
+/**
  * Interface for factories that accept and process SPARQL update requests.
  */
 public interface UpdateEngineFactory
 {
     /** Answer whether this factory can produce an UpdateEngine for the specified GraphStore */
     public boolean accept(DatasetGraph datasetGraph, Context context) ;
-    
+
     /** Create the update engine - having returned true to accept, should not fail */
-    public UpdateEngine create(DatasetGraph datasetGraph, Binding inputBinding, Context context);
+    public UpdateEngine create(DatasetGraph datasetGraph, Context context);
 }
