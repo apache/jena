@@ -108,7 +108,7 @@ public class SecurityContextView implements SecurityContext {
 
     /**
      * Quad filter to reflect the security policy of this {@link SecurityContext}. It is
-     * better to call {@link #createQueryExecution(Query, DatasetGraph)} which may be more
+     * better to call {@link #createQueryExec(Query, DatasetGraph)} which may be more
      * efficient.
      */
     @Override

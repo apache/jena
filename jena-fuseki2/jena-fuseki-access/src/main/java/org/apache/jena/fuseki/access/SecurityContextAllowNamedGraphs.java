@@ -47,9 +47,7 @@ public class SecurityContextAllowNamedGraphs implements SecurityContext {
     }
 
     /**
-     * Quad filter to reflect the security policy of this {@link SecurityContextAllowNamedGraphs}. It is
-     * better to call {@link #createQueryExecution(Query, DatasetGraph)} which may be more
-     * efficient.
+     * Quad filter to reflect the security policy of this {@link SecurityContextAllowNamedGraphs}.
      */
     @Override
     public Predicate<Quad> predicateQuad() { return q -> ! Quad.isDefaultGraph(q.getGraph()); }
