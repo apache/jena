@@ -26,7 +26,6 @@ import org.apache.jena.update.UpdateRequest;
 /** SPARQL Update Operations on a connection.
  *
  * @see RDFConnection
- * @see RDFConnectionFactory
  */
 public interface SparqlUpdateConnection extends Transactional, AutoCloseable
 {

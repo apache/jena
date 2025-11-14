@@ -28,30 +28,29 @@ import org.apache.jena.sparql.core.Transactional;
  *
  * @see RDFDatasetConnection
  * @see RDFConnection
- * @see RDFConnectionFactory
- */  
+ */
 public interface RDFDatasetAccessConnection extends Transactional, AutoCloseable
 {
     /** Fetch a named graph.
-     * This is SPARQL Graph Store Protocol HTTP GET or equivalent. 
-     * 
+     * This is SPARQL Graph Store Protocol HTTP GET or equivalent.
+     *
      * @param graphName URI string for the graph name (null or "default" for the default graph)
      * @return Model
      */
     public Model fetch(String graphName);
-    
+
     /** Fetch the default graph.
-     * This is SPARQL Graph Store Protocol HTTP GET or equivalent. 
+     * This is SPARQL Graph Store Protocol HTTP GET or equivalent.
      * @return Model
      */
     public Model fetch();
-    
-    /** Fetch the contents of the dataset */ 
+
+    /** Fetch the contents of the dataset */
     public Dataset fetchDataset();
-    
+
     /** Test whether this connection is closed or not */
     public boolean isClosed();
-    
-    /** Close this connection.  Use with try-resource. */ 
+
+    /** Close this connection.  Use with try-resource. */
     @Override public void close();
 }
