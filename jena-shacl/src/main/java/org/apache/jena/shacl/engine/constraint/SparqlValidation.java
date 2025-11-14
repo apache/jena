@@ -137,16 +137,16 @@ import org.apache.jena.sparql.util.ModelUtils;
 
         // ASK validator.
         if ( qExec.getQuery().isAskType() ) {
-            boolean b = qExec.execAsk();
-            if ( ! b ) {
+            boolean askResult = qExec.execAsk();
+            if ( ! askResult ) {
                 String msg = ( violationTemplate == null )
                     ? "SPARQL ASK constraint for "+ShLib.displayStr(valueNode)+" returns false"
                     : substitute(violationTemplate, parameterMap, focusNode, path, valueNode);
                 vCxt.reportEntry(msg, shape, focusNode, path, valueNode, reportConstraint);
             }
             vCxt.notifyValidationListener(() ->
-                new ConstraintEvaluatedOnSinglePathNodeEvent(vCxt, shape, focusNode, reportConstraint, path, valueNode,b));
-            return b;
+                new ConstraintEvaluatedOnSinglePathNodeEvent(vCxt, shape, focusNode, reportConstraint, path, valueNode, askResult));
+            return askResult;
         }
 
         // SELECT validator.
