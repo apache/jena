@@ -21,10 +21,9 @@ package org.apache.jena.sparql.modify;
 import java.util.function.Consumer;
 
 import org.apache.jena.atlas.lib.Sink;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.modify.request.UpdateVisitor ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.modify.request.UpdateVisitor;
+import org.apache.jena.sparql.util.Context;
 
 /**
  * Default implementation of an update engine based on stream updates to a worker
@@ -43,12 +42,11 @@ public class UpdateEngineMain extends UpdateEngineBase
     /**
      * Creates a new Update Engine
      * @param datasetGraph DatasetGraph the updates operate over
-     * @param inputBinding Initial binding to be applied to Update operations that can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
      * @param context Execution Context
      */
-    public UpdateEngineMain(DatasetGraph datasetGraph, Binding inputBinding, Context context)
+    public UpdateEngineMain(DatasetGraph datasetGraph, Context context)
     {
-        super(datasetGraph, inputBinding, context) ;
+        super(datasetGraph, context);
     }
 
     @Override
@@ -57,7 +55,7 @@ public class UpdateEngineMain extends UpdateEngineBase
     @Override
     public void finishRequest() {}
 
-    private UpdateSink updateSink = null ;
+    private UpdateSink updateSink = null;
 
     /*
      * Returns the {@link UpdateSink}. In this implementation, this is done by with
@@ -73,7 +71,7 @@ public class UpdateEngineMain extends UpdateEngineBase
             updateSink = new UpdateVisitorSink(this.prepareWorker(),
                                                sink(q->datasetGraph.add(q)),
                                                sink(q->datasetGraph.delete(q)));
-        return updateSink ;
+        return updateSink;
     }
 
     /**
@@ -81,7 +79,7 @@ public class UpdateEngineMain extends UpdateEngineBase
      * @return The update visitor to be used to apply the updates
      */
     protected UpdateVisitor prepareWorker() {
-        return new UpdateEngineWorker(datasetGraph, inputBinding, context) ;
+        return new UpdateEngineWorker(datasetGraph, context);
     }
 
     /** Direct a sink to a Consumer. */
@@ -100,15 +98,14 @@ public class UpdateEngineMain extends UpdateEngineBase
     {
         @Override
         public boolean accept(DatasetGraph datasetGraph, Context context) {
-            return true ;
+            return true;
         }
 
         @Override
-        public UpdateEngine create(DatasetGraph datasetGraph, Binding inputBinding,
-                                   Context context) {
-            return new UpdateEngineMain(datasetGraph, inputBinding, context) ;
+        public UpdateEngine create(DatasetGraph datasetGraph, Context context) {
+            return new UpdateEngineMain(datasetGraph, context);
         }
-    } ;
+    };
 
-    public static UpdateEngineFactory getFactory() { return factory ; }
+    public static UpdateEngineFactory getFactory() { return factory; }
 }

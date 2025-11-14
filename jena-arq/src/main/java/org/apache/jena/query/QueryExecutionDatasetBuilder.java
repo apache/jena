@@ -103,25 +103,6 @@ public class QueryExecutionDatasetBuilder implements QueryExecutionBuilder {
         return this;
     }
 
-    /** @deprecated Prefer {@link #substitution(Binding)} which substitutes variables for values in the the query before execution. */
-    @Deprecated(forRemoval = true)
-    public QueryExecutionDatasetBuilder initialBinding(Binding binding) {
-        builder.initialBinding(binding);
-        return this;
-    }
-
-    /**
-     * @deprecated Prefer {@link #substitution(QuerySolution)} which substitutes variables for values in the the query before execution.
-     */
-    @Deprecated(forRemoval = true)
-    public QueryExecutionDatasetBuilder initialBinding(QuerySolution querySolution) {
-        if ( querySolution != null ) {
-            Binding binding = BindingLib.toBinding(querySolution);
-            initialBinding(binding);
-        }
-        return this;
-    }
-
     @Override
     public QueryExecutionDatasetBuilder substitution(QuerySolution querySolution) {
         if ( querySolution != null ) {

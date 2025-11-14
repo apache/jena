@@ -50,7 +50,6 @@ public class EvalSparql {
 
     private static boolean USE_QueryTransformOps = true;
 
-    @SuppressWarnings("removal")
     public static Collection<Node> evalSparqlComponent(Graph data, Node node, SparqlComponent sparqlComponent) {
         checkForRequiredParams(data, node, sparqlComponent);
 
@@ -70,7 +69,7 @@ public class EvalSparql {
             // Done with pre-binding.
             Model model = ModelFactory.createModelForGraph(data);
             QuerySolutionMap qsm = parametersToPreBinding(model, node, sparqlComponent.getParams());
-            try ( QueryExecution qExec = QueryExecution.create().query(query).model(model).initialBinding(qsm).build() ) {
+            try ( QueryExecution qExec = QueryExecution.create().query(query).model(model).substitution(qsm).build() ) {
                 return evalSparqlOneVar(qExec);
             }
         }

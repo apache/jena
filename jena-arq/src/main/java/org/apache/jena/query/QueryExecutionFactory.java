@@ -25,7 +25,6 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.GraphView;
-import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.QueryExecDataset;
 import org.apache.jena.sparql.exec.QueryExecDatasetBuilder;
 import org.apache.jena.sparql.exec.QueryExecutionCompat;
@@ -179,34 +178,6 @@ public class QueryExecutionFactory
         return create(makeQuery(queryStr, lang), model);
     }
 
-    /** Create a QueryExecution over a Dataset given some initial values of variables.
-     *
-     * @param query            Query
-     * @param dataset          Target of the query
-     * @param querySolution    Any initial binding of variables
-     * @return QueryExecution
-     * @deprecated Use {@code QueryExecution.dataset(dataset).query(query).substitution(querySolution).build()}.
-     */
-    @Deprecated(forRemoval = true)
-    public static QueryExecution create(Query query, Dataset dataset, QuerySolution querySolution) {
-        checkArg(query);
-        return QueryExecution.dataset(dataset).query(query).substitution(querySolution).build();
-    }
-
-    /** Create a QueryExecution over a Model given some initial values of variables.
-     *
-     * @param query            Query
-     * @param model            Target of the query
-     * @param querySolution   Any initial binding of variables
-     * @return QueryExecution
-     * @deprecated Use {@code QueryExecution#model(model).query(query).substitution(querySolution).build()}.
-     */
-    @Deprecated(forRemoval = true)
-    public static QueryExecution create(Query query, Model model, QuerySolution querySolution) {
-        checkArg(query);
-        return QueryExecution.model(model).query(query).substitution(querySolution).build();
-    }
-
     // ---------------- Internal routines
 
     private static Query toQuery(Element pattern) {
@@ -255,22 +226,13 @@ public class QueryExecutionFactory
     // dataset and datasetGraph can't both be set.
     // Null for both of them is allowed and assumes the query has a dataset description.
     private static QueryExecution make(Query query, Dataset dataset, DatasetGraph datasetGraph) {
-        return make$(query, dataset, datasetGraph, null);
-    }
-
-    // This form of "make" has support for "initialBinding" (seed the execution)
-    // The preferred approach is to use "substitution" )(replace variables with RDF terms).
-    @SuppressWarnings("removal")
-    private static QueryExecution make$(Query query, Dataset dataset, DatasetGraph datasetGraph, Binding initialBinding) {
         QueryExecDatasetBuilder builder = QueryExecDataset.newBuilder().query(query);
-        if ( initialBinding != null )
-            builder.initialBinding(initialBinding);
         if ( dataset == null && datasetGraph == null )
             return QueryExecutionCompat.compatibility(builder, null, query, builder.getQueryString());
         if ( dataset == null ) {
             builder.dataset(datasetGraph);
             dataset = DatasetFactory.wrap(datasetGraph);
-        } else {
+       } else {
             builder.dataset(dataset.asDatasetGraph());
         }
         return QueryExecutionCompat.compatibility(builder, dataset, query, builder.getQueryString());

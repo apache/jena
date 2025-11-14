@@ -18,19 +18,19 @@
 
 package org.apache.jena.sparql.modify;
 
-import java.util.ArrayList ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.util.Context;
 
 public class UpdateEngineRegistry
 {
-    List<UpdateEngineFactory> factories = new ArrayList<>() ;
+    List<UpdateEngineFactory> factories = new ArrayList<>();
 
     // Singleton
-    private static UpdateEngineRegistry registry ;
-    static { init() ; }
+    private static UpdateEngineRegistry registry;
+    static { init(); }
 
     static public UpdateEngineRegistry get()
     {
@@ -41,8 +41,8 @@ public class UpdateEngineRegistry
 
     private static void init()
     {
-        registry = new UpdateEngineRegistry() ;
-        registry.add(UpdateEngineMain.getFactory()) ;
+        registry = new UpdateEngineRegistry();
+        registry.add(UpdateEngineMain.getFactory());
     }
 
     /** Locate a suitable factory for this dataset from the default registry
@@ -51,7 +51,7 @@ public class UpdateEngineRegistry
      * @return A QueryExecutionFactory or null if none accept the request
      */
     public static UpdateEngineFactory findFactory(DatasetGraph graphStore, Context context)
-    { return get().find(graphStore, context) ; }
+    { return get().find(graphStore, context); }
 
     /** Locate a suitable factory for this dataset
      *
@@ -63,34 +63,34 @@ public class UpdateEngineRegistry
         for ( UpdateEngineFactory f : factories )
         {
             if ( f.accept(graphStore, context) )
-                return f ;
+                return f;
         }
-        return null ;
+        return null;
     }
 
     /** Add a QueryExecutionFactory to the default registry */
-    public static void addFactory(UpdateEngineFactory f) { get().add(f) ; }
+    public static void addFactory(UpdateEngineFactory f) { get().add(f); }
 
     /** Add a QueryExecutionFactory */
     public void add(UpdateEngineFactory f)
     {
         // Add to low end so that newer factories are tried first
-        factories.add(0, f) ;
+        factories.add(0, f);
     }
 
     /** Remove a QueryExecutionFactory */
-    public static void removeFactory(UpdateEngineFactory f)  { get().remove(f) ; }
+    public static void removeFactory(UpdateEngineFactory f)  { get().remove(f); }
 
     /** Remove a QueryExecutionFactory */
-    public void remove(UpdateEngineFactory f)  { factories.remove(f) ; }
+    public void remove(UpdateEngineFactory f)  { factories.remove(f); }
 
     /** Allow <b>careful</b> manipulation of the factories list */
-    public List<UpdateEngineFactory> factories() { return factories ; }
+    public List<UpdateEngineFactory> factories() { return factories; }
 
     /** Check whether a query engine factory is already registered in the default registry*/
-    public static boolean containsFactory(UpdateEngineFactory f) { return get().contains(f) ; }
+    public static boolean containsFactory(UpdateEngineFactory f) { return get().contains(f); }
 
     /** Check whether a query engine factory is already registered */
-    public boolean contains(UpdateEngineFactory f) { return factories.contains(f) ; }
+    public boolean contains(UpdateEngineFactory f) { return factories.contains(f); }
 
 }

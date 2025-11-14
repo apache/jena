@@ -36,9 +36,6 @@ import org.apache.jena.query.QueryException;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
-import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.engine.binding.BindingFactory;
 import org.apache.jena.sparql.exec.UpdateExec;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.modify.request.*;
@@ -251,31 +248,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
         assertFalse(graphContains(gStore.getGraph(graphIRI), t));
     }
 
-    @Test
-    public void testModifyInitialBindings() {
-        DatasetGraph gStore = getEmptyDatasetGraph();
-        defaultGraphData(gStore, data12());
-        namedGraphData(gStore, graphIRI, GraphMemFactory.createDefaultGraph());
-
-        Binding initialBinding = BindingFactory.binding(Var.alloc("o"), o1);
-
-        UpdateModify modify = new UpdateModify();
-        Element element = QueryFactory.createElement("{ ?s <http://example/p> ?o }");
-        modify.setElement(element);
-
-        modify.getInsertAcc().addQuad(new Quad(graphIRI, triple1));
-        modify.getDeleteAcc().addTriple(SSE.parseTriple("(?s <http://example/p> ?o)"));
-        modify.getDeleteAcc().addQuad(SSE.parseQuad("(<http://example/graph> ?s <http://example/p> ?o)"));
-        UpdateAction.execute(modify, gStore, initialBinding);
-
-        assertFalse(graphEmpty(gStore.getGraph(graphIRI)));
-        assertFalse(graphEmpty(gStore.getDefaultGraph()));
-        assertTrue(graphContains(gStore.getGraph(graphIRI), triple1));
-        assertTrue(graphContains(gStore.getDefaultGraph(), triple2));
-        assertFalse(graphContains(gStore.getDefaultGraph(), triple1));
-    }
-
-    @Test
+        @Test
     public void testCopy() {
         // Use blank nodes (will expose any problems in serialization when spill
         // occurs)

@@ -38,6 +38,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.graph.GraphFactory;
+import org.apache.jena.sparql.syntax.syntaxtransform.QueryTransformOps;
 import org.apache.jena.sparql.util.IsoMatcher;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
@@ -66,75 +67,48 @@ public class TestAPI
         d.addNamedModel(g1.getURI(), m);
     }
 
-    @SuppressWarnings("removal")
-    @Test public void testInitialBindingsConstruct1()
-    {
+    @Test
+    public void test_API1() {
+        String qs = "SELECT * {?s ?p ?o}";
+        try (QueryExecution qExec = QueryExecution.model(m).query(qs).build()) {
+            ResultSet rs = qExec.execSelect();
+            assertTrue(rs.hasNext(), () -> "No results");
+            QuerySolution qSoln = rs.nextSolution();
+            Resource qr = qSoln.getResource("s");
+            Set<Statement> s1 = qr.getModel().listStatements().toSet();
+            Set<Statement> s2 = m.listStatements().toSet();
+            assertEquals(s1, s2);
+        }
+    }
+
+    @Test
+    public void testSubstitutionConstruct1() {
         QuerySolutionMap init = new QuerySolutionMap();
         init.add("z", m.createLiteral("zzz"));
         String qs = "CONSTRUCT {?s ?p ?z} {?s ?p 'x1'}";
-        try ( QueryExecution qExec = QueryExecution.model(m)
-                .query(qs)
-                .initialBinding(init)
-                .build() ) {
+        try (QueryExecution qExec = QueryExecution.model(m).query(qs).substitution(init).build()) {
             Model r = qExec.execConstruct();
-            assertTrue(r.size() > 0 , ()->"Empty model");
-            Property p1 = m.createProperty(ns+"p1");
-            assertTrue(r.contains(null,p1, init.get("z")), ()->"Empty model");
+            assertTrue(r.size() > 0, () -> "Empty model");
+            Property p1 = m.createProperty(ns + "p1");
+            assertTrue(r.contains(null, p1, init.get("z")), () -> "Empty model");
         }
     }
 
-    @SuppressWarnings("removal")
-    @Test public void testInitialBindingsConstruct2()
-    {
+    @Test
+    public void testSubstitutionConstruct2() {
         QuerySolutionMap init = new QuerySolutionMap();
         init.add("o", m.createLiteral("x1"));
         String qs = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
-        try ( QueryExecution qExec = QueryExecution.model(m).query(qs)
-                .initialBinding(init)
-                .build() ) {
+        try (QueryExecution qExec = QueryExecution.model(m).query(qs).substitution(init).build()) {
             Model r = qExec.execConstruct();
-            assertTrue(r.size() > 0 , ()->"Empty model");
-            Property p1 = m.createProperty(ns+"p1");
-            assertTrue(r.contains(null, p1, init.get("x1")), ()->"Empty model");
+            assertTrue(r.size() > 0, () -> "Empty model");
+            Property p1 = m.createProperty(ns + "p1");
+            assertTrue(r.contains(null, p1, init.get("x1")), () -> "Empty model");
         }
     }
 
-    // The original test (see commented out "assertSame) in the test is now bogus.
-    // DatasetImpl no longer caches the default model as that caused problems.
-    //
-    // This is testing that the model for the resource in the result is the
-    // same object as the model supplied to the query.
-    // "Same" here means "same contents" including blank nodes.
-    //
-    // it used to be that this tested whether they were the same object.
-    // That is dubious and no longer true even for DatasetImpl (the default mode
-    // is not cached but recreated on demand so there are no problems with
-    // transaction boundaries).
-    //
-    // Left as an active test so the assumption is tested (it has been true for
-    // many years).
-    //
-    // Using the Resource.getXXX and Resource.listXXX operations is dubious if
-    // there are named graphs and that has always been the case.
-
-    @Test public void test_API1()
-    {
-        String qs = "SELECT * {?s ?p ?o}";
-        try ( QueryExecution qExec = QueryExecution.model(m).query(qs)
-                .build() ) {
-            ResultSet rs = qExec.execSelect();
-            assertTrue(rs.hasNext(), ()->"No results");
-            QuerySolution qSoln = rs.nextSolution();
-            Resource qr = qSoln.getResource("s");
-            //assertSame("Not the same model as queried", qr.getModel(), m);
-            Set<Statement> s1 = qr.getModel().listStatements().toSet();
-            Set<Statement> s2 = m.listStatements().toSet();
-            assertEquals(s1,s2);
-        }
-    }
-
-    @Test public void testInitialBindings0()
-    {
+    @Test
+    public void testSubstitution0() {
         QuerySolutionMap smap1 = new QuerySolutionMap();
         QuerySolutionMap smap2 = new QuerySolutionMap();
         smap1.add("o", m.createLiteral("y1"));
@@ -149,70 +123,63 @@ public class TestAPI
         assertTrue(smap2.contains("o"));
     }
 
-    @SuppressWarnings("removal")
-    @Test public void testInitialBindings1()
-    {
+    @Test
+    public void testSubstitution1() {
         QuerySolutionMap init = new QuerySolutionMap();
         init.add("o", m.createLiteral("y1"));
         String qs = "SELECT * {?s ?p ?o}";
-        try ( QueryExecution qExec = QueryExecution.model(m).query(qs)
-                .initialBinding(init)
-                .build() ) {
+        try (QueryExecution qExec = QueryExecution.model(m).query(qs).substitution(init).build()) {
             int count = queryAndCount(qExec);
-            assertEquals(1, count, ()->"Initial binding didn't restrict query properly");
+            assertEquals(1, count, () -> "Initial binding didn't restrict query properly");
         }
     }
 
-    @SuppressWarnings("removal")
-    @Test public void testInitialBindings2()
-    {
+    @Test
+    public void testSubstitution2() {
         QuerySolutionMap init = new QuerySolutionMap();
         init.add("z", m.createLiteral("zzz"));
         String qs = "SELECT * {?s ?p ?o}";
-        try ( QueryExecution qExec = QueryExecution.model(m).query(qs)
-                .initialBinding(init)
-                .build() ) {
+        try (QueryExecution qExec = QueryExecution.model(m).query(qs).substitution(init).build()) {
             int count = queryAndCount(qExec);
             assertEquals(3, count, "Initial binding restricted query improperly");
         }
     }
 
-    @SuppressWarnings("removal")
-    @Test public void testInitialBindings3()
-    {
+    @Test
+    public void testSubstitution3() {
+        // test requires the substitutions are returned.
         QuerySolutionMap init = new QuerySolutionMap();
         init.add("z", m.createLiteral("zzz"));
         String qs = "SELECT * {?s ?p 'x1'}";
-        try ( QueryExecution qExec = QueryExecution.model(m).query(qs)
-                .initialBinding(init)
-                .build() ) {
+        Query q = QueryFactory.create(qs);
+        Query q2 = QueryTransformOps.syntaxSubstitute(q, init.asVarNodeMap());
+
+        try (QueryExecution qExec = QueryExecution.model(m).query(q2).build()) {
             ResultSet rs = qExec.execSelect();
-            QuerySolution qSoln= rs.nextSolution();
-            assertTrue(qSoln.getLiteral("z").getLexicalForm().equals("zzz"), ()->"Initial setting not set correctly now");
+            QuerySolution qSoln = rs.nextSolution();
+            assertTrue(qSoln.getLiteral("z").getLexicalForm().equals("zzz"), () -> "Initial setting not set correctly now");
         }
     }
 
-    @SuppressWarnings("removal")
-    @Test public void testInitialBindings4()
-    {
+    @Test public void testSubstitution4() {
         // Test derived from report by Holger Knublauch
-        String queryString =
-            "PREFIX : <"+ns+">\n" +
-            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
-            "SELECT * \n" +
-            "WHERE { \n" +
-            "    ?x :p1 ?z ." +
-            "    NOT EXISTS { \n" +
-            "        ?x rdfs:label ?z . \n" +
-            "    }\n" +
-            "}";
+        String queryString = "PREFIX : <"+ns+">\n" +
+                """
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            SELECT *
+            WHERE {
+                ?x :p1 ?z .
+                NOT EXISTS {
+                    ?x rdfs:label ?z .
+                }
+            }""";
 
         Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
         QuerySolutionMap map = new QuerySolutionMap();
         map.add("this", OWL.Thing);
 
         try ( QueryExecution qExec = QueryExecution.model(m).query(queryString)
-                .initialBinding(map)
+                .substitution(map)
                 .build() ) {
             ResultSet rs = qExec.execSelect();
             while(rs.hasNext()) {
@@ -221,11 +188,7 @@ public class TestAPI
         }
     }
 
-    /**
-     * Initial binding substitution happens before optimization so initial bindings can make a semantically always false query into one that can return true
-     */
-    @SuppressWarnings("removal")
-    @Test public void testInitialBindings5() {
+    @Test public void testSubstitution5() {
         // From JENA-500
         Query query = QueryFactory.create(
                 "ASK\n" +
@@ -236,19 +199,15 @@ public class TestAPI
 
         Model model = ModelFactory.createDefaultModel();
         model.add(OWL.Thing, RDF.type, OWL.Class);
-        QuerySolutionMap initialBinding = new QuerySolutionMap();
-        initialBinding.add("a", ResourceFactory.createResource("http://constant"));
-        try ( QueryExecution qExec = QueryExecution.model(model).query(query).initialBinding(initialBinding).build() ) {
+        QuerySolutionMap substitution = new QuerySolutionMap();
+        substitution.add("a", ResourceFactory.createResource("http://constant"));
+        try ( QueryExecution qExec = QueryExecution.model(model).query(query).substitution(substitution).build() ) {
             boolean result = qExec.execAsk();
             assertTrue(result);
         }
     }
 
-    /**
-     * Initial binding substitution happens before optimization so initial bindings can make a semantically always false query into one that can return true
-     */
-    @SuppressWarnings("removal")
-    @Test public void testInitialBindings6() {
+    @Test public void testSubstitution6() {
         // From JENA-500
         Query query = QueryFactory.create(
                 "ASK\n" +
@@ -259,23 +218,23 @@ public class TestAPI
 
         Model model = ModelFactory.createDefaultModel();
         model.add(OWL.Thing, RDF.type, OWL.Class);
-        QuerySolutionMap initialBinding = new QuerySolutionMap();
-        initialBinding.add("a", ResourceFactory.createTypedLiteral(Boolean.TRUE));
-        initialBinding.add("b", ResourceFactory.createTypedLiteral(Boolean.TRUE));
-        try ( QueryExecution qExec = QueryExecution.model(model).query(query).initialBinding(initialBinding).build() ) {
+        QuerySolutionMap substitution = new QuerySolutionMap();
+        substitution.add("a", ResourceFactory.createTypedLiteral(Boolean.TRUE));
+        substitution.add("b", ResourceFactory.createTypedLiteral(Boolean.TRUE));
+        try ( QueryExecution qExec = QueryExecution.model(model).query(query).substitution(substitution).build() ) {
             boolean result = qExec.execAsk();
             assertTrue(result);
         }
     }
 
-    @Test public void testInitialBindings7() {
+    @Test public void testSubstitution7() {
         // JENA-1354
         Query query = QueryFactory.create("SELECT DISTINCT ?x WHERE {}");
         Dataset ds = DatasetFactory.create();
-        QuerySolutionMap initialBinding = new QuerySolutionMap();
-        initialBinding.add("a", ResourceFactory.createTypedLiteral(Boolean.TRUE));
+        QuerySolutionMap substitution = new QuerySolutionMap();
+        substitution.add("a", ResourceFactory.createTypedLiteral(Boolean.TRUE));
         try ( QueryExecution qExec = QueryExecution
-                .dataset(ds).query(query).substitution(initialBinding).build() ) {
+                .dataset(ds).query(query).substitution(substitution).build() ) {
             assertFalse(qExec.execSelect().next().contains("a"));
         }
     }
@@ -339,24 +298,6 @@ public class TestAPI
         assertEquals(0, count);
     }
 
-
-//    // Execute a test both with and without regex optimization enabled
-//    // Check the number of results
-//    private void XexecRegexTest(int expected, String queryString)
-//    {
-//        Object b = ARQ.getContext().get(ARQ.enableRegexConstraintsOpt);
-//        try {
-//            ARQ.getContext().set(ARQ.enableRegexConstraintsOpt, "false");
-//            int count1 = queryAndCount(queryString);
-//            ARQ.getContext().set(ARQ.enableRegexConstraintsOpt, "true");
-//            int count2 = queryAndCount(queryString);
-//            assertEquals("Different number of results", count1, count2);
-//            if ( expected >= 0 )
-//                assertEquals("Unexpected number of results", expected, count1);
-//        } finally {
-//            ARQ.getContext().set(ARQ.enableRegexConstraintsOpt, b);
-//        }
-//    }
 
     // ARQ Construct Quad Tests:
     // Two types of query strings: a) construct triple string; b) construct quad string;

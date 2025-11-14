@@ -19,7 +19,6 @@
 package org.apache.jena.tdb1.modify;
 
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.modify.UpdateEngine ;
 import org.apache.jena.sparql.modify.UpdateEngineFactory ;
 import org.apache.jena.sparql.modify.UpdateEngineMain ;
@@ -29,12 +28,8 @@ import org.apache.jena.tdb1.store.DatasetGraphTDB;
 
 public class UpdateEngineTDB extends UpdateEngineMain
 {
-    public UpdateEngineTDB(DatasetGraphTDB graphStore, Binding inputBinding, Context context)
-    { super(graphStore, inputBinding, context) ; }
-    
-
     // ---- Factory
-    public static UpdateEngineFactory getFactory() { 
+    public static UpdateEngineFactory getFactory() {
         return new UpdateEngineFactory()
         {
             @Override
@@ -43,11 +38,15 @@ public class UpdateEngineTDB extends UpdateEngineMain
             }
 
             @Override
-            public UpdateEngine create(DatasetGraph graphStore, Binding inputBinding, Context context) {
-                return new UpdateEngineTDB((DatasetGraphTDB)graphStore, inputBinding, context) ;
+            public UpdateEngine create(DatasetGraph graphStore, Context context) {
+                return new UpdateEngineTDB((DatasetGraphTDB)graphStore, context) ;
             }
         } ;
     }
 
     public static void register() { UpdateEngineRegistry.get().add(getFactory()) ; }
+
+    public UpdateEngineTDB(DatasetGraphTDB graphStore, Context context)
+    { super(graphStore, context) ; }
+
 }

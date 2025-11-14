@@ -20,22 +20,17 @@ package org.apache.jena.sparql.modify;
 
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 
 public abstract class UpdateEngineBase implements UpdateEngine
 {
     protected final DatasetGraph datasetGraph ;
-    protected final Binding inputBinding;
     protected final Context context ;
 
-    public UpdateEngineBase(DatasetGraph datasetGraph,
-                            Binding inputBinding,
-                            Context context)
+    public UpdateEngineBase(DatasetGraph datasetGraph, Context context)
     {
         this.datasetGraph = datasetGraph ;
-        this.inputBinding = inputBinding ;
         this.context = setupContext(context, datasetGraph) ;
     }
 

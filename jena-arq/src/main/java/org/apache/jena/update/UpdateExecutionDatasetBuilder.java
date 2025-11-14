@@ -101,21 +101,6 @@ public class UpdateExecutionDatasetBuilder implements UpdateExecutionBuilder {
         return this;
     }
 
-//    public UpdateExecutionBuilder initialBinding(Binding initialBinding) {
-//        builder.initialBinding(initialBinding);
-//        return this;
-//    }
-
-    /** @deprecated Prefer {@link #substitution(QuerySolution)}. */
-    @Deprecated(forRemoval = true)
-    public UpdateExecutionDatasetBuilder initialBinding(QuerySolution querySolution) {
-        if ( querySolution == null )
-            return this;
-        Binding binding = BindingLib.asBinding(querySolution);
-        builder.initialBinding(binding);
-        return this;
-    }
-
     @Override
     public UpdateExecutionDatasetBuilder substitution(QuerySolution querySolution) {
         if ( querySolution == null )
