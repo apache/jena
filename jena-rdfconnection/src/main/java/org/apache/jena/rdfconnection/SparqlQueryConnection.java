@@ -27,7 +27,6 @@ import org.apache.jena.sparql.core.Transactional;
 /** SPARQL Query Operations on a connection.
  *
  * @see RDFConnection
- * @see RDFConnectionFactory
  */
 public interface SparqlQueryConnection extends Transactional, AutoCloseable
 {
