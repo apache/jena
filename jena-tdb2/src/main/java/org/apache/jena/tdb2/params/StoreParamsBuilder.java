@@ -105,18 +105,6 @@ public class StoreParamsBuilder {
 
     private Item<String[]>           prefixIndexes         = new Item<>(StoreParamsConst.prefixIndexes, false);
 
-    /** @deprecated Prefer {@link #create(String)}. */
-    @Deprecated
-    public static StoreParamsBuilder create() {
-        return new StoreParamsBuilder();
-    }
-
-    /** @deprecated Prefer {@link #create(String, StoreParams)}. */
-    @Deprecated
-    public static StoreParamsBuilder create(StoreParams params) {
-        return new StoreParamsBuilder(params);
-    }
-
     public static StoreParamsBuilder create(String label) {
         return new StoreParamsBuilder().label(label);
     }

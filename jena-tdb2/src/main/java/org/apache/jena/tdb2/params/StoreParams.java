@@ -79,18 +79,6 @@ public class StoreParams implements IndexParams, BlockParams, StoreParamsDynamic
     /*package*/ final Item<String>             primaryIndexPrefix;
     /*package*/ final Item<String[]>           prefixIndexes;
 
-    /** @deprecated Prefer {@link #builder(String)}. */
-    @Deprecated
-    public static StoreParamsBuilder builder() {
-        return builder((String)null);
-    }
-
-    /** @deprecated Prefer {@link #builder(String, StoreParams)}. */
-    @Deprecated
-    public static StoreParamsBuilder builder(StoreParams params) {
-        return builder(null, params);
-    }
-
     /** Build StoreParams, starting from system defaults.
      *
      * @return StoreParamsBuilder
