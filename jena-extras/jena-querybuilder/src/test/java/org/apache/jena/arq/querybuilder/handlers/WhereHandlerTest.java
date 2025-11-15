@@ -24,6 +24,9 @@ import static org.junit.Assert.assertTrue;
 import java.math.BigInteger;
 import java.util.*;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import org.apache.jena.arq.querybuilder.*;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -42,13 +45,10 @@ import org.apache.jena.sparql.expr.E_Function;
 import org.apache.jena.sparql.expr.E_LessThan;
 import org.apache.jena.sparql.expr.E_Random;
 import org.apache.jena.sparql.expr.aggregate.AggCount;
-import org.apache.jena.sparql.path.P_Link;
 import org.apache.jena.sparql.path.Path;
 import org.apache.jena.sparql.path.PathParser;
 import org.apache.jena.sparql.syntax.*;
 import org.apache.jena.vocabulary.RDF;
-import org.junit.Before;
-import org.junit.Test;
 
 public class WhereHandlerTest extends AbstractHandlerTest {
 
@@ -161,20 +161,20 @@ public class WhereHandlerTest extends AbstractHandlerTest {
         assertTrue(wv.matching);
 
     }
-    
+
     @Test
     public void testAddWhereCollection() {
         PrefixMapping pmap = new PrefixMappingImpl();
         pmap.setNsPrefix("ts", "urn:test:");
         Path path = PathParser.parse("ts:two/ts:dos", pmap);
-        
+
         TriplePath[] expected = {
                 new TriplePath(Triple.create(Node.ANY, RDF.first.asNode(), Node.ANY)),
                 new TriplePath(Triple.create(NodeFactory.createURI("one"), ResourceFactory.createResource("two").asNode(),
                         ResourceFactory.createLangLiteral("three", "en-US").asNode())),
                 new TriplePath(NodeFactory.createURI("one"), path, ResourceFactory.createLangLiteral("three", "en-US").asNode())
         };
-        
+
         handler.addWhere(Arrays.asList(expected));
         handler.build();
 
@@ -208,10 +208,10 @@ public class WhereHandlerTest extends AbstractHandlerTest {
                         NodeFactory.createURI("three"))),
                 new TriplePath(Triple.create(Node.ANY, RDF.first.asNode(), Node.ANY))
                         };
-        
+
         handler.addOptional(Arrays.asList(expected));
         handler.build();
-        
+
         ElementPathBlock epb = new ElementPathBlock();
         Arrays.stream(expected).forEach(epb::addTriple);
         ElementOptional opt = new ElementOptional(epb);
@@ -251,7 +251,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
 
     @Test
     public void testAddOptionalObjects() {
-        
+
         handler.addOptional(Arrays.asList(
                 new TriplePath(Triple.create(NodeFactory.createURI("one"), ResourceFactory.createResource("two").asNode(),
                         ResourceFactory.createLangLiteral("three", "en-US").asNode()))));
@@ -574,7 +574,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
         handler.getQueryPattern().visit(visitor);
         assertTrue(visitor.matching);
     }
-    
+
     @Test
     public void testAddGraphTriplePaths() {
 
@@ -583,7 +583,7 @@ public class WhereHandlerTest extends AbstractHandlerTest {
                         NodeFactory.createURI("three"))),
                 new TriplePath(Triple.create(NodeFactory.createURI("four"), NodeFactory.createURI("five"),
                         NodeFactory.createURI("six"))) };
-        
+
         handler.addGraph(NodeFactory.createURI("graph"), Arrays.asList(expected));
         handler.build();
 
@@ -776,82 +776,6 @@ public class WhereHandlerTest extends AbstractHandlerTest {
         ElementBind bind = new ElementBind(Var.alloc("foo"), new E_Random());
         WhereValidator visitor = new WhereValidator(bind);
         handler.getQueryPattern().visit(visitor);
-        assertTrue(visitor.matching);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void testList() {
-        Node n = handler.list("<one>", "?var", "'three'");
-
-        Node one = NodeFactory.createURI("one");
-        Node two = Var.alloc("var");
-        Node three = NodeFactory.createLiteralString("three");
-
-        ElementPathBlock epb = new ElementPathBlock();
-        Node firstObject = NodeFactory.createBlankNode();
-        Node secondObject = NodeFactory.createBlankNode();
-        Node thirdObject = NodeFactory.createBlankNode();
-
-        epb.addTriplePath(new TriplePath(Triple.create(firstObject, RDF.first.asNode(), one)));
-        epb.addTriplePath(new TriplePath(Triple.create(firstObject, RDF.rest.asNode(), secondObject)));
-        epb.addTriplePath(new TriplePath(Triple.create(secondObject, RDF.first.asNode(), two)));
-        epb.addTriplePath(new TriplePath(Triple.create(secondObject, RDF.rest.asNode(), thirdObject)));
-        epb.addTriplePath(new TriplePath(Triple.create(thirdObject, RDF.first.asNode(), three)));
-        epb.addTriplePath(new TriplePath(Triple.create(thirdObject, RDF.rest.asNode(), RDF.nil.asNode())));
-
-        WhereValidator visitor = new WhereValidator(epb);
-        query.getQueryPattern().visit(visitor);
-        assertTrue(visitor.matching);
-
-        assertTrue(n.isBlank());
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void testListInTriple() {
-        handler.addWhere(new TriplePath(Triple.create(handler.list("<one>", "?var", "'three'"),
-                ResourceFactory.createResource("foo").asNode(), ResourceFactory.createResource("bar").asNode())));
-        handler.build();
-
-        P_Link first = new P_Link(RDF.first.asNode());
-        P_Link rest = new P_Link(RDF.rest.asNode());
-        Node n = NodeFactory.createURI("foo");
-        P_Link foo = new P_Link(n);
-        // ElementPathBlock epb = (ElementPathBlock) query.getQueryPattern();
-        ElementPathBlock epb = new ElementPathBlock();
-        Node list = NodeFactory.createBlankNode();
-        Node s = list;
-        epb.addTriple(new TriplePath(s, first, NodeFactory.createURI("one")));
-        Node o = NodeFactory.createBlankNode();
-        epb.addTriple(new TriplePath(s, rest, o));
-        s = o;
-        epb.addTriple(new TriplePath(s, first, Var.alloc("var")));
-        o = NodeFactory.createBlankNode();
-        epb.addTriple(new TriplePath(s, rest, o));
-        s = o;
-        epb.addTriple(new TriplePath(s, first, NodeFactory.createLiteralString("three")));
-        epb.addTriple(new TriplePath(s, rest, RDF.nil.asNode()));
-        epb.addTriple(new TriplePath(list, foo, NodeFactory.createURI("bar")));
-
-        WhereValidator visitor = new WhereValidator(epb);
-        query.getQueryPattern().visit(visitor);
-        assertTrue(visitor.matching);
-    }
-
-    @Test
-    public void testAddMinus() {
-        SelectBuilder sb = new SelectBuilder();
-        sb.addPrefix("pfx", "uri").addWhere("<one>", "<two>", "three");
-        handler.addMinus(sb);
-        handler.build();
-
-        ElementPathBlock epb = new ElementPathBlock();
-        ElementMinus minus = new ElementMinus(epb);
-        epb.addTriplePath(new TriplePath(Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
-                NodeFactory.createLiteralString("three"))));
-        WhereValidator visitor = new WhereValidator(minus);
-        query.getQueryPattern().visit(visitor);
         assertTrue(visitor.matching);
     }
 

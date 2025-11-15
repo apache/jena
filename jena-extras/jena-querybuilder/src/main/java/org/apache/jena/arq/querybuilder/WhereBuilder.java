@@ -223,7 +223,7 @@ public class WhereBuilder extends AbstractQueryBuilder<WhereBuilder> implements 
         getWhereHandler().addGraph(makeNode(graph), collection);
         return this;
     }
-    
+
     @Override
     public WhereBuilder addBind(Expr expression, Object var) {
         getWhereHandler().addBind(expression, Converters.makeVar(var));
@@ -234,14 +234,6 @@ public class WhereBuilder extends AbstractQueryBuilder<WhereBuilder> implements 
     public WhereBuilder addBind(String expression, Object var) {
         getWhereHandler().addBind(expression, Converters.makeVar(var));
         return this;
-    }
-
-    /*
-     * @deprecated use {@code addWhere(Converters.makeCollection(List.of(Object...)))}, or simply call {@link #addWhere(Object, Object, Object)} passing the collection for one of the objects.
-     */
-    @Deprecated(since="5.0.0")    @Override
-    public Node list(Object... objs) {
-        return getWhereHandler().list(objs);
     }
 
     @Override

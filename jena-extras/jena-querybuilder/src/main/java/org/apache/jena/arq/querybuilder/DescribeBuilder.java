@@ -198,7 +198,7 @@ public class DescribeBuilder extends AbstractQueryBuilder<DescribeBuilder> imple
         getWhereHandler().addWhere(t);
         return this;
     }
-    
+
 
     @Override
     public DescribeBuilder addWhere(Collection<TriplePath> collection) {
@@ -351,7 +351,7 @@ public class DescribeBuilder extends AbstractQueryBuilder<DescribeBuilder> imple
         getWhereHandler().addGraph(makeNode(graph), Arrays.asList(triplePath));
         return this;
     }
-    
+
     @Override
     public DescribeBuilder addGraph(Object graph, Collection<TriplePath> collection) {
         getWhereHandler().addGraph(makeNode(graph), collection);
@@ -368,15 +368,6 @@ public class DescribeBuilder extends AbstractQueryBuilder<DescribeBuilder> imple
     public DescribeBuilder addBind(String expression, Object var) {
         getWhereHandler().addBind(expression, Converters.makeVar(var));
         return this;
-    }
-
-    /*
-     * @deprecated use {@code addWhere(Converters.makeCollection(List.of(Object...)))}, or simply call {@link #addWhere(Object, Object, Object)} passing the collection for one of the objects.
-     */
-    @Deprecated(since="5.0.0")
-    @Override
-    public Node list(Object... objs) {
-        return getWhereHandler().list(objs);
     }
 
     @Override

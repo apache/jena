@@ -1096,7 +1096,7 @@ public class ExprFactory {
      * Converts expr to an Expr object via expr()
      *
      * @see #asExpr(Object)
-     * @see org.apache.jena.sparql.expr.E_Conditional
+     * @see org.apache.jena.sparql.expr.E_If
      *
      * @param condition the condition to check.
      * @param thenExpr the expression to execute if condition is true.
