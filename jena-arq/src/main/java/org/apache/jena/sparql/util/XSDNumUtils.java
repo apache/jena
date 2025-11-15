@@ -70,8 +70,9 @@ public class XSDNumUtils {
     }
 
     /**
-     * Produce a lexical form for {@link BigDecimal} that is compatible with
-     * Turtle syntax (i.e it has a decimal point).
+     * Produce a lexical form for {@link BigDecimal} that is compatible with Turtle
+     * syntax (i.e it has a decimal point). This is also the function used by TDB2 to
+     * turn decimal NodeId values into the lexical form of an xsd:decimal.
      */
     public static String stringForm(BigDecimal decimal) {
         return XSDNumUtils.canonicalDecimalStrWithDot(decimal);
@@ -182,5 +183,30 @@ public class XSDNumUtils {
             // No DOT.
             str = str + ".0";
         return str;
+    }
+
+    /**
+     * Return a canonical decimal with a trailing ".0".
+     * This is canonicalizing the value/scale.
+     * <p>
+     * This is the {@link BigDecimal} form used to encode into NodeIds in TDB2.
+     * <p>
+     * It has a trailing ".0" for integer values so it is Turtle compatible, but
+     * otherwise has no trailing zeros.
+     * <p>
+     * For TDB2, we require a consistent, fixed value/scale form for any value to be
+     * encoded in a TDB2 NodeId and when reconstructed to get the same lexical form.
+     *
+     * @see BigDecimal
+     */
+    public static BigDecimal canonicalDecimal(BigDecimal decimal) {
+        BigDecimal result = decimal;
+        if (result.scale() > 1) {
+            result = decimal.stripTrailingZeros();
+        }
+        if (result.scale() <= 0) {
+            result = result.setScale(1);
+        }
+        return result;
     }
 }

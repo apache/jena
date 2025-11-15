@@ -91,34 +91,91 @@ public class TestNodeIdInline
     @Test public void nodeId_int_21()
     { testNoInline("'300'^^xsd:byte"); }
 
-    @Test public void nodeId_decimal_1()
+    @Test public void nodeId_decimal_01()
     { test("3.14", "3.14"); }
 
-    @Test public void nodeId_decimal_2()
+    @Test public void nodeId_decimal_02()
     { testNoInline("123456789.123456789"); }
 
     // Just this once, directly create the Node.
-    @Test public void nodeId_decimal_3()
+    @Test public void nodeId_decimal_03()
     { test("12.89", NodeFactory.createLiteralDT("12.89", XSDDatatype.XSDdecimal)); }
 
-    @Test public void nodeId_decimal_4()
+    @Test public void nodeId_decimal_04()
     { test("-1.0",  "-1.0"); }
 
     // This number has > 47 bits of value : 2412.80478192688
-    @Test public void nodeId_decimal_5()
+    @Test public void nodeId_decimal_05()
     { testNoInline("2412.80478192688"); }
 
     // This number has > 47 bits of value : -2412.80478192688
-    @Test public void nodeId_decimal_6()
+    @Test public void nodeId_decimal_06()
     { testNoInline("-2412.80478192688"); }
 
-    @Test public void nodeId_decimal_7()
+    @Test public void nodeId_decimal_07()
     { test("'0.00000001'^^xsd:decimal",
            NodeFactory.createLiteralDT("0.00000001", XSDDatatype.XSDdecimal));
     }
 
-    @Test public void nodeId_decimal_8()
+    @Test public void nodeId_decimal_08()
     { test("0.00000001", NodeFactory.createLiteralDT("0.00000001", XSDDatatype.XSDdecimal)); }
+
+    @Test public void nodeId_decimal_09()
+    { testNodeIdRoundtripDecimal("0"); }
+
+    @Test public void nodeId_decimal_10()
+    { testNodeIdRoundtripDecimal("-0"); }
+
+    @Test public void nodeId_decimal_11()
+    { testNodeIdRoundtripDecimal("0.0"); }
+
+    @Test public void nodeId_decimal_12()
+    { testNodeIdRoundtripDecimal("-0.0"); }
+
+    @Test public void nodeId_decimal_13()
+    { testNodeIdRoundtripDecimal(".0"); }
+
+    @Test public void nodeId_decimal_14()
+    { testNodeIdRoundtripDecimal("-.0"); }
+
+    @Test public void nodeId_decimal_15()
+    { testNodeIdRoundtripDecimal("18"); }
+
+    @Test public void nodeId_decimal_16()
+    { testNodeIdRoundtripDecimal("18."); }
+
+    @Test public void nodeId_decimal_17()
+    { testNodeIdRoundtripDecimal("18.0"); }
+
+    @Test public void nodeId_decimal_18()
+    { testNodeIdRoundtripDecimal("18.00"); }
+
+    @Test public void nodeId_decimal_19()
+    { testNodeIdRoundtripDecimal("18.000"); }
+
+    @Test public void nodeId_decimal_30()
+    { testNodeIdLexicalDecimal("0.0", "0.0"); }
+
+    @Test public void nodeId_decimal_31()
+    { testNodeIdLexicalDecimal("+00.000", "0.0"); }
+
+    @Test public void nodeId_decimal_32()
+    { testNodeIdLexicalDecimal("-00.000", "0.0"); }
+
+    @Test public void nodeId_decimal_40()
+    { testNodeIdLexicalDecimal("1", "1.0"); }
+
+    @Test public void nodeId_decimal_41()
+    { testNodeIdLexicalDecimal("-1", "-1.0"); }
+
+    @Test public void nodeId_decimal_42()
+    { testNodeIdLexicalDecimal("+1", "1.0"); }
+
+    @Test public void nodeId_decimal_43()
+    { testNodeIdLexicalDecimal("100.000", "100.0"); }
+
+    @Test public void nodeId_decimal_44()
+    { testNodeIdLexicalDecimal("00.000000100", "0.0000001"); }
 
     @Test public void nodeId_dateTime_01()
     { test("'2008-04-28T15:36:15+01:00'^^xsd:dateTime"); }
@@ -305,5 +362,36 @@ public class TestNodeIdInline
         assertTrue(correct.sameValueAs(n2), ()->"Not same value: "+s);
         // Term equality.
         assertEquals(correct, n2, ()->"Not same term");
+    }
+
+    // Check: lexical form to recovered lexical form.
+    private static void testNodeIdLexicalDecimal(String decimalStr, String expectedLexicalForm) {
+        Node node = NodeFactory.createLiteralDT(decimalStr, XSDDatatype.XSDdecimal);
+        NodeId nodeId = NodeId.inline(node);
+        Node recoveredNode = NodeId.extract(nodeId);
+
+        // Check lexical form
+        String lex = recoveredNode.getLiteralLexicalForm();
+        assertEquals(expectedLexicalForm, lex, "Recovered lexical form");
+    }
+
+    // Check: lexical form to recovered node
+    private static void testNodeIdRoundtripDecimal(String decimalStr) {
+        Node node = NodeFactory.createLiteralDT(decimalStr, XSDDatatype.XSDdecimal);
+        testNodeIdRoundtrip(node);
+    }
+
+    /** For a Node n -- assert :: nodeId(n) == nodeId(extract(nodeId(n)) */
+    // Check: node to recovered node
+    private static void testNodeIdRoundtrip(Node node) {
+        NodeId nodeId = NodeId.inline(node);
+        testNodeIdRoundtrip(nodeId);
+    }
+
+    /** For a NodeId n -- assert :: n == nodeId(extract(n)) */
+    private static void testNodeIdRoundtrip(NodeId expected) {
+        Node extractedNode = NodeId.extract(expected);
+        NodeId actual = NodeId.inline(extractedNode);
+        assertEquals(expected, actual);
     }
 }

@@ -162,7 +162,11 @@ public class NodeIdInline {
             // .trim is how Jena does it but it rather savage. spc, \n \r \t.
             // But at this point we know it's a valid literal so the excessive
             // chopping by .trim is safe.
+
+            // Jena 5 and before
             BigDecimal decimal = new BigDecimal(lit.getLexicalForm().trim());
+            // Jena6: Adjust to canonicalize the value/scale.
+            decimal = XSDNumUtils.canonicalDecimal(decimal);
 
             // Does range checking.
             DecimalNode56 dn = DecimalNode56.valueOf(decimal);

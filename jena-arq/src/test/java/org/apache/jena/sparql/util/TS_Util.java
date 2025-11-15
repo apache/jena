@@ -28,7 +28,8 @@ import org.junit.platform.suite.api.Suite;
     TestFmtUtils.class,
     TestContextUtils.class,
     TestGraphUtils.class,
-    TestQueryCheckRW.class
+    TestQueryCheckRW.class,
+    TestXSDNumUtils.class
 })
 public class TS_Util
 { }
