@@ -55,7 +55,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
      * @return This Builder for chaining.
      */
     public T addWhere(TriplePath t);
-    
+
     /**
      * Adds a collections of triple paths to the where clause.
      *
@@ -236,7 +236,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
      * @return This Builder for chaining.
      */
     public T addOptional(TriplePath t);
-    
+
     /**
      * Adds a collection of triple paths as the optional clauses.
      *
@@ -374,7 +374,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
      * @return This builder for chaining.
      */
     public T addGraph(Object graph, TriplePath triplePath);
-    
+
     /**
      * Adds a collection of triple paths as the optional clauses.
      *
@@ -410,27 +410,6 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
      * @return The WhereHandler used by this clause.
      */
     public WhereHandler getWhereHandler();
-
-    /**
-     * Create a list node from a list of objects as per RDF Collections.
-     *
-     * http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#collections
-     *
-     * See {@link AbstractQueryBuilder#makeNode} for conversion of the param values.
-     * <p>
-     * usage:
-     * <ul>
-     * <li>list( param1, param2, param3, ... )</li>
-     * <li>addWhere( list( param1, param2, param3, ... ), p, o )</li>
-     * <li>addOptional( list( param1, param2, param3, ... ), p, o )</li>
-     * </ul>
-     *
-     * @param objs the list of objects for the list.
-     * @return the first blank node in the list.
-     * @deprecated use {@code addWhere(Converters.makeCollection(List.of(Object...)))}, or simply call {@link #addWhere(Object, Object, Object)} passing the collection for one of the objects.
-     */
-    @Deprecated(since="5.0.0")
-    public Node list(Object... objs);
 
     /**
      * Add a minus clause to the query.

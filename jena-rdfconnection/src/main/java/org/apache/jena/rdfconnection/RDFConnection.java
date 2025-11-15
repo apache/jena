@@ -64,8 +64,6 @@ import org.apache.jena.update.UpdateRequest;
  * Not all implementations may implement all operations.
  * See the implementation notes for details.
  *
- * @see RDFConnectionFactory
- * @see RDFConnectionLocal
  * @see RDFConnectionRemote
  * @see RDFConnectionRemoteBuilder
  * @see SparqlQueryConnection
@@ -84,7 +82,6 @@ public interface RDFConnection extends
      *
      * @param dataset
      * @return RDFConnection
-     * @see RDFConnectionLocal
      */
     public static RDFConnection connect(Dataset dataset) {
         return adapt(RDFLinkDatasetBuilder.newBuilder().dataset(dataset.asDatasetGraph()).build());

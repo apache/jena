@@ -4413,7 +4413,7 @@ expr1 = new E_Divide(expr1, expr2) ;
       jj_consume_token(COMMA);
       expr2 = Expression();
       jj_consume_token(RPAREN);
-{if ("" != null) return new E_Conditional(expr, expr1, expr2) ;}
+{if ("" != null) return new E_If(expr, expr1, expr2) ;}
       break;
       }
     case STRLANG:{

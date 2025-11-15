@@ -296,8 +296,8 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
         getWhereHandler().addWhere(collection);
         return this;
     }
-    
-    
+
+
 
     @Override
     public SelectBuilder addWhere(Triple t) {
@@ -455,7 +455,7 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
         getWhereHandler().addGraph(makeNode(graph), collection);
         return this;
     }
-    
+
     @Override
     public SelectBuilder addBind(Expr expression, Object var) {
         getWhereHandler().addBind(expression, Converters.makeVar(var));
@@ -471,14 +471,6 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
     @Override
     public SelectHandler getSelectHandler() {
         return handlerBlock.getSelectHandler();
-    }
-
-    /*
-     * @deprecated use {@code addWhere(Converters.makeCollection(List.of(Object...)))}, or simply call {@link #addWhere(Object, Object, Object)} passing the collection for one of the objects.
-     */
-    @Deprecated(since="5.0.0")    @Override
-    public Node list(Object... objs) {
-        return getWhereHandler().list(objs);
     }
 
     @Override

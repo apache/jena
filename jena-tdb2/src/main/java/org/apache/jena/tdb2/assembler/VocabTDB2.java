@@ -40,16 +40,8 @@ public class VocabTDB2
     // Another accept name.
     public static final Resource tDatasetTDB2       = Vocab.type(NS, "DatasetTDB2");
 
-    /** @deprecated Use {@link #tDatasetTDB} */
-    @Deprecated(forRemoval = true)
-    public static final Resource tDatasetTDB_alt    = Vocab.type(NS, "DatasetTDB");
-
     public static final Resource tGraphTDB          = Vocab.type(NS, "GraphTDB");
     public static final Resource tGraphTDB2         = Vocab.type(NS, "GraphTDB2");
-
-    /** @deprecated Use {@link #tGraphTDB} */
-    @Deprecated(forRemoval = true)
-    public static final Resource tGraphTDB_alt      = Vocab.type(NS, "GraphTDB");
 
 //    public static final Resource tTupleIndex        = Vocab.type(NS, "TupleIndex");
 //    public static final Resource tNodeTable         = Vocab.type(NS, "NodeTable");

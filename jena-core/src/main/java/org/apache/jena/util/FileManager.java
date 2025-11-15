@@ -154,7 +154,7 @@ public interface FileManager {
      * @param baseURI
      * @param syntax
      * @return The model
-     *  @exception JenaException if there is syntax error in file.
+     * @exception JenaException if there is syntax error in file.
      */
 
     /** Open a file using the locators of this FileManager */
@@ -162,14 +162,6 @@ public interface FileManager {
 
     /** Apply the mapping of a filename or URI */
     String mapURI(String filenameOrURI);
-
-    /** Slurp up a whole file */
-    @Deprecated
-    String readWholeFileAsUTF8(InputStream in);
-
-    /** Slurp up a whole file: map filename as necessary */
-    @Deprecated
-    String readWholeFileAsUTF8(String filename);
 
     /** Open a file using the locators of this FileManager
      *  but without location mapping */

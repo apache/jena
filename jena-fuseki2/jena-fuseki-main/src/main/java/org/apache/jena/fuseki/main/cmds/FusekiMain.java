@@ -160,29 +160,6 @@ public class FusekiMain extends CmdARQ {
     }
 
     /**
-     * Registers a custom arguments module.
-     *
-     * @deprecated Register a {@link org.apache.jena.fuseki.main.sys.FusekiServerArgsCustomiser} via
-     *             {@link #addCustomiser(FusekiServerArgsCustomiser)} instead.
-     */
-    @Deprecated(forRemoval = true)
-    public static void addArgModule(ArgModuleGeneral argModule) {
-        FusekiServerArgsCustomiser customiser =
-        new FusekiServerArgsCustomiser() {
-            final ArgModuleGeneral argMod = argModule;
-            @Override
-            public void serverArgsModify(CmdGeneral fusekiCmd, ServerArgs serverArgs) {
-                fusekiCmd.addModule(argMod);
-            }
-            @Override
-            public void serverArgsPrepare(CmdGeneral fusekiCmd, ServerArgs serverArgs) {
-                argMod.processArgs(fusekiCmd);
-            }
-        };
-        addCustomiser(customiser);
-    }
-
-    /**
      * Registers a CLI customiser
      * <p>
      * A CLI customiser can add one/more custom arguments into the Fuseki Server CLI arguments and then can apply those

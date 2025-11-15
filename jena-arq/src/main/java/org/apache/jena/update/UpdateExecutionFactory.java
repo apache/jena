@@ -85,18 +85,6 @@ public class UpdateExecutionFactory
     }
 
     /**
-     * Create an UpdateExecution appropriate to the datasetGraph, or null if no
-     * available factory to make an UpdateExecution
-     *
-     * @param dataset
-     * @return UpdateExecution
-     */
-    @Deprecated(forRemoval = true)
-    public static UpdateProcessorStreaming createStreaming(Dataset dataset) {
-        return UpdateStreaming.makeStreaming(dataset.asDatasetGraph(), null, null);
-    }
-
-    /**
      * Create an UpdateExecution that sends the update to a remote SPARQL Update
      * service.
      *

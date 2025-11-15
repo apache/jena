@@ -29,8 +29,6 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.ARQException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
-import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.engine.binding.BindingLib;
 import org.apache.jena.sparql.exec.UpdateExec;
 import org.apache.jena.sparql.lang.UpdateParser;
 import org.apache.jena.sparql.modify.UpdateSink;
@@ -81,31 +79,8 @@ public class UpdateAction {
      * @param dataset
      */
     public static void readExecute(String filename, DatasetGraph dataset) {
-        readExecute(filename, dataset, null);
-    }
-
-    /**
-     * Read a file containing SPARQL Update operations, and execute the operations.
-     *
-     * @param filename
-     * @param dataset
-     * @param inputBinding
-     */
-    public static void readExecute(String filename, Dataset dataset, QuerySolution inputBinding) {
         UpdateRequest req = UpdateFactory.read(filename);
-        execute(req, dataset, inputBinding);
-    }
-
-    /**
-     * Read a file containing SPARQL Update operations, and execute the operations.
-     *
-     * @param filename
-     * @param datasetGraph
-     * @param inputBinding
-     */
-    public static void readExecute(String filename, DatasetGraph datasetGraph, Binding inputBinding) {
-        UpdateRequest req = UpdateFactory.read(filename);
-        execute$(req, datasetGraph, inputBinding);
+        execute$(req, dataset);
     }
 
     /**
@@ -154,31 +129,6 @@ public class UpdateAction {
     }
 
     /**
-     * Parse a string containing SPARQL Update operations, and execute the
-     * operations.
-     *
-     * @param updateString
-     * @param dataset
-     * @param inputBinding
-     */
-    public static void parseExecute(String updateString, Dataset dataset, QuerySolution inputBinding) {
-        parseExecute(updateString, dataset.asDatasetGraph(), BindingLib.asBinding(inputBinding));
-    }
-
-    /**
-     * Parse a string containing SPARQL Update operations, and execute the
-     * operations.
-     *
-     * @param updateString
-     * @param dataset
-     * @param inputBinding
-     */
-    public static void parseExecute(String updateString, DatasetGraph dataset, Binding inputBinding) {
-        UpdateRequest req = UpdateFactory.create(updateString);
-        execute(req, dataset, inputBinding);
-    }
-
-    /**
      * Execute SPARQL Update operations.
      *
      * @param request
@@ -215,7 +165,7 @@ public class UpdateAction {
      * @param dataset
      */
     public static void execute(UpdateRequest request, DatasetGraph dataset) {
-        execute$(request, dataset, null);
+        execute$(request, dataset);
     }
 
     /**
@@ -226,18 +176,7 @@ public class UpdateAction {
      * @param inputBinding
      */
     public static void execute(UpdateRequest request, Dataset dataset, QuerySolution inputBinding) {
-        execute(request, dataset.asDatasetGraph(), BindingLib.asBinding(inputBinding));
-    }
-
-    /**
-     * Execute SPARQL Update operations.
-     *
-     * @param request
-     * @param datasetGraph
-     * @param inputBinding
-     */
-    public static void execute(UpdateRequest request, DatasetGraph datasetGraph, Binding inputBinding) {
-        execute$(request, datasetGraph, inputBinding);
+        execute$(request, dataset.asDatasetGraph());
     }
 
     private static DatasetGraph toDatasetGraph(Graph graph) {
@@ -246,9 +185,8 @@ public class UpdateAction {
 
     // All non-streaming updates come through here.
 
-    private static void execute$(UpdateRequest request, DatasetGraph datasetGraph, Binding inputBinding) {
-        @SuppressWarnings("removal")
-        UpdateExec uProc = UpdateExec.newBuilder().update(request).dataset(datasetGraph).initialBinding(inputBinding).build();
+    private static void execute$(UpdateRequest request, DatasetGraph datasetGraph) {
+        UpdateExec uProc = UpdateExec.newBuilder().update(request).dataset(datasetGraph).build();
         if ( uProc == null )
             throw new ARQException("No suitable update procesors are registered/able to execute your updates");
         uProc.execute();
@@ -291,35 +229,13 @@ public class UpdateAction {
      * @param dataset
      */
     public static void execute(Update update, DatasetGraph dataset) {
-        execute(update, dataset, null);
+        execute$(update, dataset);
     }
 
-    /**
-     * Execute a single SPARQL Update operation.
-     *
-     * @param update
-     * @param dataset
-     * @param inputBinding
-     */
-    public static void execute(Update update, Dataset dataset, QuerySolution inputBinding) {
-        execute(update, dataset.asDatasetGraph(), BindingLib.asBinding(inputBinding));
-    }
-
-    /**
-     * Execute a single SPARQL Update operation.
-     *
-     * @param update
-     * @param datasetGraph
-     * @param inputBinding
-     */
-    public static void execute(Update update, DatasetGraph datasetGraph, Binding inputBinding) {
-        execute$(update, datasetGraph, inputBinding);
-    }
-
-    private static void execute$(Update update, DatasetGraph datasetGraph, Binding inputBinding) {
+    private static void execute$(Update update, DatasetGraph datasetGraph) {
         UpdateRequest request = new UpdateRequest();
         request.add(update);
-        execute$(request, datasetGraph, inputBinding);
+        execute$(request, datasetGraph);
     }
 
     // Streaming Updates:
@@ -336,18 +252,6 @@ public class UpdateAction {
 
     /** Parse update operations into a DatasetGraph by reading it from a file */
     public static void parseExecute(UsingList usingList, DatasetGraph dataset, String fileName, String baseURI, Syntax syntax) {
-        parseExecute(usingList, dataset, fileName, (Binding)null, baseURI, syntax);
-    }
-
-    /** Parse update operations into a DatasetGraph by reading it from a file */
-    public static void parseExecute(UsingList usingList, DatasetGraph dataset, String fileName, QuerySolution inputBinding, String baseURI,
-                                    Syntax syntax) {
-        parseExecute(usingList, dataset, fileName, BindingLib.asBinding(inputBinding), baseURI, syntax);
-    }
-
-    /** Parse update operations into a DatasetGraph by reading it from a file */
-    public static void parseExecute(UsingList usingList, DatasetGraph dataset, String fileName, Binding inputBinding, String baseURI,
-                                    Syntax syntax) {
         InputStream in = null;
         if ( fileName.equals("-") )
             in = System.in;
@@ -356,7 +260,7 @@ public class UpdateAction {
             if ( in == null )
                 throw new UpdateException("File could not be opened: " + fileName);
         }
-        parseExecute(usingList, dataset, in, inputBinding, baseURI, syntax);
+        parseExecute(usingList, dataset, in, baseURI, syntax);
         if ( in != System.in )
             IO.close(in);
     }
@@ -408,46 +312,7 @@ public class UpdateAction {
      * @param syntax The update language syntax
      */
     public static void parseExecute(UsingList usingList, DatasetGraph dataset, InputStream input, String baseURI, Syntax syntax) {
-        parseExecute(usingList, dataset, input, (Binding)null, baseURI, syntax);
-    }
-
-    /**
-     * Parse update operations into a DatasetGraph by parsing from an InputStream.
-     *
-     * @param usingList A list of USING or USING NAMED statements that be added to
-     *     all {@link UpdateWithUsing} queries
-     * @param dataset The dataset to apply the changes to
-     * @param input The source of the update request (must be UTF-8).
-     * @param inputBinding Initial binding to be applied to Update operations that
-     *     can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify). May
-     *     be <code>null</code>
-     * @param baseURI The base URI for resolving relative URIs (may be
-     *     <code>null</code>)
-     * @param syntax The update language syntax
-     */
-    public static void parseExecute(UsingList usingList, DatasetGraph dataset, InputStream input, QuerySolution inputBinding,
-                                    String baseURI, Syntax syntax) {
-        parseExecute(usingList, dataset, input, BindingLib.asBinding(inputBinding), baseURI, syntax);
-    }
-
-    /**
-     * Parse update operations into a DatasetGraph by parsing from an InputStream.
-     *
-     * @param usingList A list of USING or USING NAMED statements that be added to
-     *     all {@link UpdateWithUsing} queries
-     * @param dataset The dataset to apply the changes to
-     * @param input The source of the update request (must be UTF-8).
-     * @param inputBinding Initial binding to be applied to Update operations that
-     *     can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify). May
-     *     be <code>null</code>
-     * @param baseURI The base URI for resolving relative URIs (may be
-     *     <code>null</code>)
-     * @param syntax The update language syntax
-     */
-    public static void parseExecute(UsingList usingList, DatasetGraph dataset, InputStream input, Binding inputBinding, String baseURI,
-                                    Syntax syntax) {
-        @SuppressWarnings("removal")
-        UpdateProcessorStreaming uProc = UpdateStreaming.createStreaming(dataset, inputBinding);
+        UpdateProcessorStreaming uProc = UpdateStreaming.createStreaming(dataset);
         if ( uProc == null )
             throw new ARQException("No suitable update procesors are registered/able to execute your updates");
 

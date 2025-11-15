@@ -118,7 +118,7 @@ public class FusekiServer {
     /**
      * Construct a Fuseki server from command line arguments.
      * The return server has not been started.
-     * @deprecated Use {@link FusekiMainRunner#construct} or {@link FusekiServerRunner#construct} 
+     * @deprecated Use {@link FusekiMainRunner#construct} or {@link FusekiServerRunner#construct}
      */
     @Deprecated
     static public FusekiServer construct(String... args) {
@@ -140,18 +140,6 @@ public class FusekiServer {
     /** Return a builder, with the default choices of actions available. */
     public static Builder create() {
         return new Builder();
-    }
-
-    /**
-     * Return a builder, with a custom set of operation-action mappings. An endpoint must
-     * still be created for the server to be able to provide the action. An endpoint
-     * dispatches to an operation, and an operation maps to an implementation. This is a
-     * specialised operation - normal use is the operation {@link #create()}.
-     * @deprecated Use {@link #create(OperationRegistry, Context)}.
-     */
-    @Deprecated(forRemoval = true)
-    public static Builder create(OperationRegistry serviceDispatchRegistry) {
-        return create(serviceDispatchRegistry, Fuseki.getContext());
     }
 
     /**

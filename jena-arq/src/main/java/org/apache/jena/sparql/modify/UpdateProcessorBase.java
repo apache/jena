@@ -36,21 +36,11 @@ public class UpdateProcessorBase implements UpdateProcessor
 {
     protected final UpdateRequest request ;
     protected final DatasetGraph datasetGraph ;
-    protected final Binding inputBinding;
     protected final UpdateEngineFactory factory ;
     protected final Context context ;
     protected final Timeout timeout ;
 
-    @Deprecated
-    public UpdateProcessorBase(UpdateRequest request,
-                               DatasetGraph datasetGraph,
-                               Binding inputBinding,
-                               Context context,
-                               UpdateEngineFactory factory) {
-        this(request, datasetGraph, inputBinding, context, factory, null);
-    }
-
-    public UpdateProcessorBase(UpdateRequest request,
+        public UpdateProcessorBase(UpdateRequest request,
                                DatasetGraph datasetGraph,
                                Binding inputBinding,
                                Context context,
@@ -59,7 +49,6 @@ public class UpdateProcessorBase implements UpdateProcessor
     {
         this.request = request ;
         this.datasetGraph = datasetGraph ;
-        this.inputBinding = inputBinding;
         this.context = context;
         Context.setCurrentDateTime(this.context) ;
         this.factory = factory ;
@@ -72,7 +61,7 @@ public class UpdateProcessorBase implements UpdateProcessor
 
     @Override
     public void execute() {
-        UpdateEngine uProc = factory.create(datasetGraph, inputBinding, context);
+        UpdateEngine uProc = factory.create(datasetGraph, context);
         uProc.startRequest();
 
         // context.get(ARQ.updateTimeout);
