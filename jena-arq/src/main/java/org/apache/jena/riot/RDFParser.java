@@ -155,21 +155,6 @@ public class RDFParser {
         return RDFParserBuilder.create().source(uriOrFile);
     }
 
-//    /**
-//     * Create an {@link RDFParserBuilder} and set content to be parsed to the
-//     * string. The syntax must be set with {@code .lang(...)}.
-//     * <p>
-//     * Shortcut for {@code RDFParser.create.fromString(string)}.
-//     *
-//     * @param string
-//     * @return RDFParserBuilder
-//     * @deprecated Use {@link #fromString(String, Lang)}
-//     */
-//    @Deprecated
-//    public static RDFParserBuilder fromString(String string) {
-//        return RDFParserBuilder.create().fromString(string);
-//    }
-
     /**
      * Create an {@link RDFParserBuilder} and set content to be parsed
      * together with the RDF syntax language.

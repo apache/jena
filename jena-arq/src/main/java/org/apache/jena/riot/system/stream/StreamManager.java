@@ -179,24 +179,6 @@ public class StreamManager {
         return null ;
     }
 
-    /**
-     * Set the location mapping
-     * @deprecated Use {@link #locationMapper(LocationMapper)}
-     */
-    @Deprecated(forRemoval = true)
-    public void setLocationMapper(LocationMapper mapper) {
-        this.mapper = mapper ;
-    }
-
-    /**
-     * Get the location mapping
-     * @deprecated Use {@link #locationMapper()}
-     */
-    @Deprecated(forRemoval = true)
-    public LocationMapper getLocationMapper() {
-        return mapper ;
-    }
-
     /** Set the location mapping */
     public StreamManager locationMapper(LocationMapper mapper) {
         this.mapper = mapper ;

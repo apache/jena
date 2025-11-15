@@ -244,19 +244,6 @@ public class ARQ
      */
     public static final Symbol regexImpl =  SystemARQ.allocSymbol("regexImpl");
 
-//    /**
-//     * Symbol to name java.util.regex regular expression engine
-//     * @deprecated Use string "javaRegex"
-//     */
-//    @Deprecated(forRemoval = true)
-//    public static final Symbol javaRegex =  SystemARQ.allocSymbol("javaRegex");
-//    /**
-//     * Symbol to name the Xerces-J regular expression engine
-//     * @deprecated Use string "xercesRegex"
-//     */
-//    @Deprecated(forRemoval = true)
-//    public static final Symbol xercesRegex =  SystemARQ.allocSymbol("xercesRegex");
-
     /**
      * Use this Symbol to allow passing additional query parameters to a
      * {@literal SERVICE <IRI>} call.

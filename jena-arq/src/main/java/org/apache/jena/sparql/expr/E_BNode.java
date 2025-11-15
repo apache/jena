@@ -90,7 +90,6 @@ public class E_BNode implements Unstable
             }
             LabelToNodeMap mapper = mapping.get(binding);
             if ( mapper == null ) {
-                @SuppressWarnings("deprecation")
                 LabelToNodeMap mapper_ = LabelToNodeMap.createBNodeMap();
                 mapper = mapper_;
                 mapping.put(binding, mapper);
