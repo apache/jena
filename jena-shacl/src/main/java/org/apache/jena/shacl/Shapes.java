@@ -88,17 +88,6 @@ public class Shapes implements Iterable<Shape> {
     }
 
     /**
-     * Parse the graph and return the shapes connected to the targets.
-     *
-     * @deprecated Use {@link #parse(Graph)}.
-     */
-    @Deprecated(forRemoval = true)
-    public static Shapes parseTargets(Graph graph) {
-        Shapes shapes = parseProcess(graph, Collections.emptyList());
-        return shapes;
-    }
-
-    /**
      * Parse the graph and also include all declared (have rdf:type) node and
      * property shapes (i.e. have rdf:type sh:NodeShape or sh:PropertyShape) whether
      * connected to the targets or not.
