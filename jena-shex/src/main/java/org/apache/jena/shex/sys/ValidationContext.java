@@ -45,12 +45,6 @@ public class ValidationContext {
 
     private final ShexReport.Builder reportBuilder = ShexReport.create();
 
-    /** @deprecated Use method {@link #create()} */
-    @Deprecated(forRemoval = true)
-    public static ValidationContext create(ValidationContext vCxt) {
-        return vCxt.create();
-    }
-
     public ValidationContext(Graph data, ShexSchema shapes) {
         this(data, shapes, null);
     }
