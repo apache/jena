@@ -18,90 +18,88 @@
 
 package org.apache.jena.util;
 
-import java.io.* ;
-import java.util.* ;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.irix.IRIs;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.shared.JenaException ;
-import org.apache.jena.shared.NotFoundException ;
-import org.apache.jena.shared.WrappedIOException ;
-import org.apache.jena.sys.JenaSystem ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.shared.JenaException;
+import org.apache.jena.shared.NotFoundException;
+import org.apache.jena.sys.JenaSystem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/** FileManager
- *
- * A FileManager provides access to named file-like resources by opening
- * InputStreams to things in the filing system, by URL (http: and file:) and
- * found by the classloader.  It can also load RDF data from such a system
- * resource into an existing model or create a new (Memory-based) model.
- * There is a global FileManager which provide uniform access to system
- * resources: applications may also create specialised FileManagers.
- *
- * A FileManager contains a list of location functions to try: the global
- * FileManger has one {@link LocatorFile}, one {@link LocatorClassLoader} and
- * one {@link LocatorURL}
- *
- * Main operations:
- *  * <ul>
+/**
+ * FileManager A FileManager provides access to named file-like resources by opening
+ * InputStreams to things in the filing system, by URL (http: and file:) and found by
+ * the classloader. It can also load RDF data from such a system resource into an
+ * existing model or create a new (Memory-based) model. There is a global FileManager
+ * which provide uniform access to system resources: applications may also create
+ * specialised FileManagers. A FileManager contains a list of location functions to
+ * try: the global FileManger has one {@link LocatorFile}, one
+ * {@link LocatorClassLoader} and one {@link LocatorURL} Main operations: *
+ * <ul>
  * <li>loadModel, readModel : URI to model</li>
  * <li>open, openNoMap : URI to input stream</li>
  * <li>mapURI : map URI to another by {@link LocationMapper}</li>
  * </ul>
- *
  * Utilities:
  * <ul>
  * <li>readWholeFileAsUTF8</li>
- * <li>optional caching of models<li>
+ * <li>optional caching of models
+ * <li>
  * </ul>
- *
- * A FileManager works in conjunction with a LocationMapper.
- * A {@link LocationMapper} is a set of alternative locations for system
- * resources and a set of alternative prefix locations.  For example, a local
- * copy of a common RDF dataset may be used whenever the usual URL is used by
- * the application.
- *
- * The {@link LocatorFile} also supports the idea of "current directory".
+ * A FileManager works in conjunction with a LocationMapper. A {@link LocationMapper}
+ * is a set of alternative locations for system resources and a set of alternative
+ * prefix locations. For example, a local copy of a common RDF dataset may be used
+ * whenever the usual URL is used by the application. The {@link LocatorFile} also
+ * supports the idea of "current directory".
  *
  * @see LocationMapper
  * @see FileUtils
  */
 @SuppressWarnings("deprecation")
-public class FileManagerImpl implements FileManager
-{
+public class FileManagerImpl implements FileManager {
     // The case of the FileManager used first.
-    private static Logger log = LoggerFactory.getLogger(FileManager.class) ;
+    private static Logger log = LoggerFactory.getLogger(FileManager.class);
 
-    /** Delimiter between path entries : because URI scheme names use : we only allow ; */
-
-    /*package*/ static FileManager fmInstance = null ;
-
-    protected List<Locator> fmHandlers = new ArrayList<>() ;
-    protected LocationMapper fmMapper = null ;
-
-    static { JenaSystem.init(); }
-
-    /** Get the global file manager.
-     * @return the global file manager
+    /**
+     * Delimiter between path entries : because URI scheme names use : we only allow
+     * ;
      */
-    public static FileManager get()
-    {
-        // Singleton pattern adopted in case we later have several file managers.
-        if ( fmInstance == null )
-            fmInstance = makeGlobal() ;
-        return fmInstance ;
+
+    /* package */ static FileManager fmInstance = null;
+
+    protected List<Locator> fmHandlers = new ArrayList<>();
+    protected LocationMapper fmMapper = null;
+
+    static {
+        JenaSystem.init();
     }
 
-    /** Set the global file manager (as returned by get())
-     * If called before any call to get(), then the usual default filemanager is not created
+    /**
+     * Get the global file manager.
+     *
+     * @return the global file manager
+     */
+    public static FileManager get() {
+        // Singleton pattern adopted in case we later have several file managers.
+        if ( fmInstance == null )
+            fmInstance = makeGlobal();
+        return fmInstance;
+    }
+
+    /**
+     * Set the global file manager (as returned by get()) If called before any call
+     * to get(), then the usual default filemanager is not created
+     *
      * @param globalFileManager
      */
-    public static void setGlobalFileManager(FileManager globalFileManager)
-    {
-        fmInstance = globalFileManager ;
+    public static void setGlobalFileManager(FileManager globalFileManager) {
+        fmInstance = globalFileManager;
     }
 
     /** Create an uninitialized FileManager */
@@ -121,229 +119,235 @@ public class FileManagerImpl implements FileManager
     }
 
     @Override
-    public FileManager clone() { return clone(this) ; }
+    public FileManager clone() {
+        return clone(this);
+    }
 
     // Isolate to help avoid copy errors.
     private static FileManager clone(FileManagerImpl filemanager) {
-        FileManagerImpl newFm = new FileManagerImpl() ;
-        newFm.fmHandlers.addAll(filemanager.fmHandlers) ;
-        newFm.fmMapper = null ;
+        FileManagerImpl newFm = new FileManagerImpl();
+        newFm.fmHandlers.addAll(filemanager.fmHandlers);
+        newFm.fmMapper = null;
         if ( filemanager.getLocationMapper() != null )
-            newFm.fmMapper = new LocationMapper(filemanager.getLocationMapper()) ;
-        newFm.cacheModelLoads = false ;
-        newFm.modelCache = null ;
-        return newFm ;
+            newFm.fmMapper = new LocationMapper(filemanager.getLocationMapper());
+        newFm.cacheModelLoads = false;
+        newFm.modelCache = null;
+        return newFm;
     }
 
     /** Create a "standard" FileManager. */
-    public static FileManager makeGlobal()
-    {
-        FileManagerImpl fMgr = new FileManagerImpl(LocationMapper.getInternal()) ;
-        setStdLocators(fMgr) ;
-        return fMgr ;
+    public static FileManager makeGlobal() {
+        FileManagerImpl fMgr = new FileManagerImpl(LocationMapper.getInternal());
+        setStdLocators(fMgr);
+        return fMgr;
     }
 
     /** Force a file handler to have the default configuration. */
-    private static void setStdLocators(FileManagerImpl fMgr)
-    {
-        fMgr.fmHandlers.clear() ;
-        fMgr.addLocatorFile() ;
-        fMgr.addLocatorURL() ;
-        fMgr.addLocatorClassLoader(fMgr.getClass().getClassLoader()) ;
+    private static void setStdLocators(FileManagerImpl fMgr) {
+        fMgr.fmHandlers.clear();
+        fMgr.addLocatorFile();
+        fMgr.addLocatorURL();
+        fMgr.addLocatorClassLoader(fMgr.getClass().getClassLoader());
     }
+
     /** Set the location mapping */
     @Override
-    public void setLocationMapper(LocationMapper _mapper) { fmMapper = _mapper ; }
+    public void setLocationMapper(LocationMapper _mapper) {
+        fmMapper = _mapper;
+    }
 
     /** Get the location mapping */
     @Override
-    public LocationMapper getLocationMapper() { return fmMapper ; }
+    public LocationMapper getLocationMapper() {
+        return fmMapper;
+    }
 
     /** Return an iterator over all the handlers */
     @Override
-    public Iterator<Locator> locators() { return fmHandlers.listIterator() ; }
+    public Iterator<Locator> locators() {
+        return fmHandlers.listIterator();
+    }
 
     /** Add a locator to the end of the locators list */
     @Override
-    public void addLocator(Locator loc)
-    {
-        log.debug("Add location: "+loc.getName()) ;
-        fmHandlers.add(loc) ; }
+    public void addLocator(Locator loc) {
+        log.debug("Add location: " + loc.getName());
+        fmHandlers.add(loc);
+    }
 
     /** Add a file locator */
     @Deprecated
     @Override
-    public void addLocatorFile() { addLocatorFile(null) ; }
+    public void addLocatorFile() {
+        addLocatorFile(null);
+    }
 
     /** Add a file locator which uses dir as its working directory */
     @Deprecated
     @Override
-    public void addLocatorFile(String dir)
-    {
-        LocatorFile fLoc = new LocatorFile(dir) ;
-        addLocator(fLoc) ;
+    public void addLocatorFile(String dir) {
+        LocatorFile fLoc = new LocatorFile(dir);
+        addLocator(fLoc);
     }
 
     /** Add a class loader locator */
     @Deprecated
     @Override
-    public void addLocatorClassLoader(ClassLoader cLoad)
-    {
-        LocatorClassLoader cLoc = new LocatorClassLoader(cLoad) ;
-        addLocator(cLoc) ;
+    public void addLocatorClassLoader(ClassLoader cLoad) {
+        LocatorClassLoader cLoc = new LocatorClassLoader(cLoad);
+        addLocator(cLoc);
     }
 
     /** Add a URL locator */
     @Deprecated
     @Override
-    public void addLocatorURL()
-    {
-        Locator loc = new LocatorURL() ;
-        addLocator(loc) ;
+    public void addLocatorURL() {
+        Locator loc = new LocatorURL();
+        addLocator(loc);
     }
 
     /** Add a zip file locator */
     @Deprecated
     @Override
-    public void addLocatorZip(String zfn)
-    {
-        Locator loc = new LocatorZip(zfn) ;
-        addLocator(loc) ;
+    public void addLocatorZip(String zfn) {
+        Locator loc = new LocatorZip(zfn);
+        addLocator(loc);
     }
-
 
     /** Remove a locator */
     @Override
-    public void remove(Locator loc) { fmHandlers.remove(loc) ; }
+    public void remove(Locator loc) {
+        fmHandlers.remove(loc);
+    }
 
     // -------- Cache operations
-    boolean cacheModelLoads = false ;
-    Map<String, Model> modelCache = null ;
+    boolean cacheModelLoads = false;
+    Map<String, Model> modelCache = null;
 
     /** Reset the model cache */
     @Override
-    public void resetCache()
-    {
+    public void resetCache() {
         if ( modelCache != null )
-            modelCache.clear() ;
+            modelCache.clear();
     }
 
     /** Change the state of model cache : does not clear the cache */
     @Override
-    public void setModelCaching(boolean state)
-    {
-        cacheModelLoads = state ;
+    public void setModelCaching(boolean state) {
+        cacheModelLoads = state;
         if ( cacheModelLoads && modelCache == null )
-            modelCache = new HashMap<String, Model>() ;
+            modelCache = new HashMap<String, Model>();
     }
 
     /** return whether caching is on of off */
     @Override
-    public boolean isCachingModels() { return cacheModelLoads ; }
+    public boolean isCachingModels() {
+        return cacheModelLoads;
+    }
 
     /** Read out of the cache - return null if not in the cache */
     @Override
-    public Model getFromCache(String filenameOrURI)
-    {
-        if ( ! isCachingModels() )
+    public Model getFromCache(String filenameOrURI) {
+        if ( !isCachingModels() )
             return null;
-        return modelCache.get(filenameOrURI) ;
+        return modelCache.get(filenameOrURI);
     }
 
     @Override
-    public boolean hasCachedModel(String filenameOrURI)
-    {
-        if ( ! isCachingModels() )
-            return false ;
-        return modelCache.containsKey(filenameOrURI) ;
+    public boolean hasCachedModel(String filenameOrURI) {
+        if ( !isCachingModels() )
+            return false;
+        return modelCache.containsKey(filenameOrURI);
     }
 
     @Override
-    public void addCacheModel(String uri, Model m)
-    {
+    public void addCacheModel(String uri, Model m) {
         if ( isCachingModels() )
-            modelCache.put(uri, m) ;
+            modelCache.put(uri, m);
     }
 
     @Override
-    public void removeCacheModel(String uri)
-    {
+    public void removeCacheModel(String uri) {
         if ( isCachingModels() )
-            modelCache.remove(uri) ;
+            modelCache.remove(uri);
     }
 
     // -------- Cache operations (end)
 
-    /** Load a model from a file (local or remote).
-     *  This operation may attempt content negotiation for http URLs.
-     *  @param filenameOrURI The filename or a URI (file:, http:)
-     *  @return a new model
-     *  @exception JenaException if there is syntax error in file.
+    /**
+     * Load a model from a file (local or remote). This operation may attempt content
+     * negotiation for http URLs.
+     *
+     * @param filenameOrURI The filename or a URI (file:, http:)
+     * @return a new model
+     * @exception JenaException if there is syntax error in file.
      */
     @Override
-    public Model loadModelInternal(String filenameOrURI)
-    {
+    public Model loadModelInternal(String filenameOrURI) {
         if ( log.isDebugEnabled() )
-            log.debug("loadModel("+filenameOrURI+")") ;
+            log.debug("loadModel(" + filenameOrURI + ")");
 
-        return loadModelWorker(filenameOrURI, null) ;
+        return loadModelWorker(filenameOrURI, null);
     }
 
     private Model loadModelWorker(String filenameOrURI, String baseURI) {
-        if ( hasCachedModel(filenameOrURI) )
-        {
+        if ( hasCachedModel(filenameOrURI) ) {
             if ( log.isDebugEnabled() )
-                log.debug("Model cache hit: "+filenameOrURI) ;
-            return getFromCache(filenameOrURI) ;
+                log.debug("Model cache hit: " + filenameOrURI);
+            return getFromCache(filenameOrURI);
         }
         Model model = ModelFactory.createDefaultModel();
         readModelWorker(model, filenameOrURI, baseURI);
         if ( isCachingModels() )
-            addCacheModel(filenameOrURI, model) ;
+            addCacheModel(filenameOrURI, model);
         return model;
     }
 
     /**
-     * Read a file of RDF into a model.  Guesses the syntax of the file based on filename extension,
-     *  defaulting to RDF/XML.
+     * Read a file of RDF into a model. Guesses the syntax of the file based on
+     * filename extension, defaulting to RDF/XML.
+     *
      * @param model
      * @param filenameOrURI
      * @return The model or null, if there was an error.
-     *  @exception JenaException if there is syntax error in file.
+     * @exception JenaException if there is syntax error in file.
      */
     @Override
-    public Model readModelInternal(Model model, String filenameOrURI)
-    {
+    public Model readModelInternal(Model model, String filenameOrURI) {
         if ( log.isDebugEnabled() )
-            log.debug("readModel(model,"+filenameOrURI+")") ;
+            log.debug("readModel(model," + filenameOrURI + ")");
         return readModelWorker(model, filenameOrURI, null);
     }
 
-    protected Model readModelWorker(Model model, String filenameOrURI, String baseURI)
-    {
-        // Doesn't call open() - we want to make the syntax guess based on the mapped URI.
-        String mappedURI = mapURI(filenameOrURI) ;
+    protected Model readModelWorker(Model model, String filenameOrURI, String baseURI) {
+        // Doesn't call open() - we want to make the syntax guess based on the mapped
+        // URI.
+        String mappedURI = mapURI(filenameOrURI);
 
-        if ( log.isDebugEnabled() && ! mappedURI.equals(filenameOrURI) )
-            log.debug("Map: "+filenameOrURI+" => "+mappedURI) ;
+        if ( log.isDebugEnabled() && !mappedURI.equals(filenameOrURI) )
+            log.debug("Map: " + filenameOrURI + " => " + mappedURI);
 
-        String syntax = FileUtils.guessLang(mappedURI) ;
+        String syntax = FileUtils.guessLang(mappedURI);
         if ( syntax == null || syntax.equals("") )
-            syntax = FileUtils.langXML ;
+            syntax = FileUtils.langXML;
         if ( log.isDebugEnabled() )
-            log.debug("Syntax guess: "+syntax);
+            log.debug("Syntax guess: " + syntax);
 
         if ( baseURI == null )
-            baseURI = chooseBaseURI(filenameOrURI) ;
+            baseURI = chooseBaseURI(filenameOrURI);
 
         TypedStream in = openNoMapOrNull(mappedURI);
         if ( in == null ) {
             FmtLog.debug(log, "Failed to locate '%s'", mappedURI);
             throw new NotFoundException("Not found: " + filenameOrURI);
         }
-        model.read(in.getInput(), baseURI, syntax) ;
-        try { in.getInput().close(); } catch (IOException ex) { ex.printStackTrace();}
-        return model ;
+        model.read(in.getInput(), baseURI, syntax);
+        try {
+            in.getInput().close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return model;
     }
 
     private static String chooseBaseURI(String baseURI) {
@@ -352,99 +356,64 @@ public class FileManagerImpl implements FileManager
 
     /** Open a file using the locators of this FileManager */
     @Override
-    public InputStream open(String filenameOrURI)
-    {
-        if ( log.isDebugEnabled())
-            log.debug("open("+filenameOrURI+")") ;
+    public InputStream open(String filenameOrURI) {
+        if ( log.isDebugEnabled() )
+            log.debug("open(" + filenameOrURI + ")");
 
-        String uri = mapURI(filenameOrURI) ;
+        String uri = mapURI(filenameOrURI);
 
-        if ( log.isDebugEnabled() && ! uri.equals(filenameOrURI) )
-            log.debug("open: mapped to "+uri) ;
+        if ( log.isDebugEnabled() && !uri.equals(filenameOrURI) )
+            log.debug("open: mapped to " + uri);
 
-        return openNoMap(uri) ;
+        return openNoMap(uri);
     }
-
 
     /** Apply the mapping of a filename or URI */
     @Override
-    public String mapURI(String filenameOrURI)
-    {
+    public String mapURI(String filenameOrURI) {
         if ( fmMapper == null )
-            return filenameOrURI ;
+            return filenameOrURI;
 
-        String uri = fmMapper.altMapping(filenameOrURI, null) ;
+        String uri = fmMapper.altMapping(filenameOrURI, null);
 
-        if ( uri == null )
-        {
+        if ( uri == null ) {
             if ( FileManager.logAllLookups && log.isDebugEnabled() )
-                log.debug("Not mapped: "+filenameOrURI) ;
-            uri = filenameOrURI ;
-        }
-        else
-        {
+                log.debug("Not mapped: " + filenameOrURI);
+            uri = filenameOrURI;
+        } else {
             if ( log.isDebugEnabled() )
-                log.debug("Mapped: "+filenameOrURI+" => "+uri) ;
+                log.debug("Mapped: " + filenameOrURI + " => " + uri);
         }
-        return uri ;
+        return uri;
     }
 
-    /** Slurp up a whole file */
+    /**
+     * Open a file using the locators of this FileManager but without location
+     * mapping
+     */
     @Override
-    public String readWholeFileAsUTF8(InputStream in)
-    {
-        try (Reader r = FileUtils.asBufferedUTF8(in); StringWriter sw = new StringWriter(1024)) {
-            char buff[] = new char[1024] ;
-            while (true) {
-                int l = r.read(buff) ;
-                if ( l <= 0 )
-                    break ;
-                sw.write(buff, 0, l) ;
-            }
-            return sw.toString() ;
-        } catch (IOException ex)
-        { throw new WrappedIOException(ex) ; }
-    }
-
-    /** Slurp up a whole file: map filename as necessary */
-    @Override
-    public String readWholeFileAsUTF8(String filename)
-    {
-        InputStream in = open(filename) ;
+    public InputStream openNoMap(String filenameOrURI) {
+        TypedStream in = openNoMapOrNull(filenameOrURI);
         if ( in == null )
-            throw new NotFoundException("File not found: "+filename) ;
-        return readWholeFileAsUTF8(in) ;
+            return null;
+        // if ( in == null )
+        //     throw new NotFoundException(filenameOrURI) ;
+        return in.getInput();
     }
 
-    /** Open a file using the locators of this FileManager
-     *  but without location mapping */
-    @Override
-    public InputStream openNoMap(String filenameOrURI)
-    {
-        TypedStream in = openNoMapOrNull(filenameOrURI) ;
-        if ( in == null )
-            return null ;
-//        if ( in == null )
-//            throw new NotFoundException(filenameOrURI) ;
-        return in.getInput() ;
-    }
-
-    /** Open a file using the locators of this FileManager
-     *  but without location mapping.
-     *  Return null if not found
+    /**
+     * Open a file using the locators of this FileManager but without location
+     * mapping. Return null if not found
      */
 
     @Override
-    public TypedStream openNoMapOrNull(String filenameOrURI)
-    {
-        for (Locator loc : fmHandlers)
-        {
-            TypedStream in = loc.open(filenameOrURI) ;
-            if ( in != null )
-            {
+    public TypedStream openNoMapOrNull(String filenameOrURI) {
+        for ( Locator loc : fmHandlers ) {
+            TypedStream in = loc.open(filenameOrURI);
+            if ( in != null ) {
                 if ( log.isDebugEnabled() )
-                    log.debug("Found: "+filenameOrURI+" ("+loc.getName()+")") ;
-                return in ;
+                    log.debug("Found: " + filenameOrURI + " (" + loc.getName() + ")");
+                return in;
             }
         }
         return null;
