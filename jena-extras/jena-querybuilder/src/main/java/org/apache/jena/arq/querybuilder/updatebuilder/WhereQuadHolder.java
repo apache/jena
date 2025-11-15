@@ -24,14 +24,11 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
-import org.apache.jena.arq.querybuilder.Converters;
 import org.apache.jena.arq.querybuilder.clauses.SelectClause;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
 import org.apache.jena.arq.querybuilder.rewriters.BuildElementVisitor;
 import org.apache.jena.arq.querybuilder.rewriters.ElementRewriter;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.TriplePath;
@@ -41,7 +38,6 @@ import org.apache.jena.sparql.syntax.*;
 import org.apache.jena.sparql.util.ExprUtils;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.NiceIterator;
-import org.apache.jena.vocabulary.RDF;
 
 /**
  * The where processor. Generally handles update where clause.
@@ -393,35 +389,6 @@ public class WhereQuadHolder implements QuadHolder {
     public QuadHolder setValues(Map<Var, Node> values) {
         setVars(values);
         return this;
-    }
-
-    /**
-     * Create a list node from a list of objects as per RDF Collections.
-     *
-     * http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#collections
-     *
-     * @param objs the list of objects for the list.
-     * @return the first blank node in the list.
-     * @deprecated use {@code Converters.makeCollection(List.of(Object...))}
-     */
-    @Deprecated(since="5.0.0")
-    public Node list(Object... objs) {
-        Node retval = NodeFactory.createBlankNode();
-        Node lastObject = retval;
-        for (int i = 0; i < objs.length; i++) {
-            Node n = Converters.makeNode(objs[i], prefixHandler.getPrefixes());
-            addWhere(new TriplePath(Triple.create(lastObject, RDF.first.asNode(), n)));
-            if (i + 1 < objs.length) {
-                Node nextObject = NodeFactory.createBlankNode();
-                addWhere(new TriplePath(Triple.create(lastObject, RDF.rest.asNode(), nextObject)));
-                lastObject = nextObject;
-            } else {
-                addWhere(new TriplePath(Triple.create(lastObject, RDF.rest.asNode(), RDF.nil.asNode())));
-            }
-
-        }
-
-        return retval;
     }
 
     /**
