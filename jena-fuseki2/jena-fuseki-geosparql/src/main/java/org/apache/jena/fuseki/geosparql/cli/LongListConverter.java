@@ -21,10 +21,6 @@ import com.beust.jcommander.IStringConverter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- *
- */
 public class LongListConverter implements IStringConverter<List<Long>> {
 
     @Override

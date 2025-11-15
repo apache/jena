@@ -28,10 +28,6 @@ import java.util.List;
 import org.apache.jena.ext.io.github.galbiston.rdf_tables.cli.FormatParameter;
 import org.apache.jena.riot.RDFFormat;
 
-/**
- *
- *
- */
 public class RDFFileParameter implements IStringConverter<List<FileGraphFormat>>, IParameterValidator {
 
     private static final FormatParameter FORMAT_PARAMETER = new FormatParameter();

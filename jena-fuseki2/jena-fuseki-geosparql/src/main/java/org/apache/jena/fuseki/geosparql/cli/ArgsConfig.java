@@ -25,10 +25,6 @@ import java.util.Arrays;
 import java.util.List;
 import static org.apache.jena.fuseki.geosparql.DatasetOperations.SPATIAL_INDEX_FILE;
 
-/**
- *
- *
- */
 public class ArgsConfig {
 
     //1) Port

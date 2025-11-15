@@ -21,10 +21,6 @@ import com.beust.jcommander.IStringConverter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- *
- */
 public class IntegerListConverter implements IStringConverter<List<Integer>> {
 
     @Override

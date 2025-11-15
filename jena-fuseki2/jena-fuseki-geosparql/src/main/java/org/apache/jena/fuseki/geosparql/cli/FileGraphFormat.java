@@ -21,10 +21,6 @@ import java.io.File;
 import java.util.Objects;
 import org.apache.jena.riot.RDFFormat;
 
-/**
- *
- *
- */
 public class FileGraphFormat {
 
     private final File rdfFile;
