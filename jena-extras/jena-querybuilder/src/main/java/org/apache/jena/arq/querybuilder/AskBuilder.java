@@ -367,15 +367,6 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
         return handlerBlock.getModifierHandler();
     }
 
-    /*
-     * @deprecated use {@code addWhere(Converters.makeCollection(List.of(Object...)))}, or simply call {@link #addWhere(Object, Object, Object)} passing the collection for one of the objects.
-     */
-    @Deprecated(since="5.0.0")
-    @Override
-    public Node list(Object... objs) {
-        return getWhereHandler().list(objs);
-    }
-
     @Override
     public AskBuilder addMinus(AbstractQueryBuilder<?> t) {
         getWhereHandler().addMinus(t);

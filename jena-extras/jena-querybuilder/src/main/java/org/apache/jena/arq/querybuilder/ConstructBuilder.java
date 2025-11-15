@@ -204,7 +204,7 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
         getWhereHandler().addWhere(collection);
         return this;
     }
-    
+
     @Override
     public ConstructBuilder addWhere(Triple t) {
         getWhereHandler().addWhere(new TriplePath(t));
@@ -280,7 +280,7 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
         getWhereHandler().addOptional(collection);
         return this;
     }
-    
+
     @Override
     public ConstructBuilder addOptional(Triple t) {
         return addOptional(new TriplePath(t));
@@ -355,7 +355,7 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
         getWhereHandler().addGraph(makeNode(graph), Arrays.asList(triplePath));
         return this;
     }
-    
+
     @Override
     public ConstructBuilder addGraph(Object graph, Collection<TriplePath> collection) {
         getWhereHandler().addGraph(makeNode(graph), collection);
@@ -388,15 +388,6 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
     @Override
     public ConstructBuilder addConstruct(Object s, Object p, Object o) {
         return addConstruct(Triple.create(makeNode(s), makeNode(p), makeNode(o)));
-    }
-
-    /*
-     * @deprecated use {@code addWhere(Converters.makeCollection(List.of(Object...)))}, or simply call {@link #addWhere(Object, Object, Object)} passing the collection for one of the objects.
-     */
-    @Deprecated(since="5.0.0")
-    @Override
-    public Node list(Object... objs) {
-        return getWhereHandler().list(objs);
     }
 
     @Override
