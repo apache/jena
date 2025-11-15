@@ -35,7 +35,6 @@ import org.apache.jena.sparql.core.VarAlloc;
  */
 public class LabelToNodeMap
 {
-
     private Map<String, Node> bNodeLabels = new HashMap<>();
 
     // Variables or bNodes?
@@ -46,11 +45,12 @@ public class LabelToNodeMap
 
     /**
      * Create blank nodes, with the same blank node returned for the same label.
+     * Internal use only for SPARQL parsing.
+     * Use {@link LabelToNode} for RIOT.
      *
      * @return LabelToNodeMap
-     * @deprecated Internal use only. Use {@link LabelToNode#createUseLabelAsGiven}
+     *
      */
-    @Deprecated
     public static LabelToNodeMap createBNodeMap()
     { return new LabelToNodeMap(false, null); }
 

@@ -81,7 +81,6 @@ public class QueryParserBase {
     private boolean bNodesAreAllowed = true;
 
     // label => bNode for construct templates patterns
-    @SuppressWarnings("deprecation")
     final LabelToNodeMap bNodeLabels = LabelToNodeMap.createBNodeMap();
 
     // label => bNode (as variable) for graph patterns

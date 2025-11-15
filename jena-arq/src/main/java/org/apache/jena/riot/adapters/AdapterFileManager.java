@@ -20,24 +20,23 @@ package org.apache.jena.riot.adapters;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.Iterator ;
+import java.util.Iterator;
 
-import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.logging.FmtLog;
-import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.irix.IRIs;
-import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.system.stream.* ;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.system.stream.*;
 import org.apache.jena.shared.NotFoundException;
-import org.apache.jena.util.FileManager ;
-import org.apache.jena.util.FileUtils ;
-import org.apache.jena.util.TypedStream ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.apache.jena.util.FileManager;
+import org.apache.jena.util.FileUtils;
+import org.apache.jena.util.TypedStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Adapter that provides {@link FileManager} for RIOT by translating the operations.
@@ -92,19 +91,19 @@ public class AdapterFileManager implements org.apache.jena.util.FileManager
     // RIOT reader uses StreamManager.
     // Each FileManager has a StreamManager.
 
-    /** Delimiter between path entries : because URI scheme names use : we only allow ; */
+    /** Delimiter between path entries : because URI scheme names use : we only allow; */
     //public static final String PATH_DELIMITER = ";";
-    //public static final String filePathSeparator = java.io.File.separator ;
+    //public static final String filePathSeparator = java.io.File.separator;
 
-    private static Logger log = LoggerFactory.getLogger(AdapterFileManager.class) ;
+    private static Logger log = LoggerFactory.getLogger(AdapterFileManager.class);
 
-    private static AdapterFileManager instance = null ;
-    private final StreamManager streamManager ;
+    private static AdapterFileManager instance = null;
+    private final StreamManager streamManager;
 
     // -------- Cache operations
     // See also loadModelWorker which uses the cache.
     // These are in the FileManager for legacy reasons.
-    private FileManagerModelCache modelCache = new FileManagerModelCache() ;
+    private FileManagerModelCache modelCache = new FileManagerModelCache();
 
     /**
      * Get the global file manager.
@@ -113,8 +112,8 @@ public class AdapterFileManager implements org.apache.jena.util.FileManager
      */
     public static AdapterFileManager get() {
         if ( instance == null )
-            instance = makeGlobal() ;
-        return instance ;
+            instance = makeGlobal();
+        return instance;
     }
 
     /**
@@ -124,95 +123,95 @@ public class AdapterFileManager implements org.apache.jena.util.FileManager
      * @param globalFileManager
      */
     public static void setGlobalFileManager(AdapterFileManager globalFileManager) {
-        instance = globalFileManager ;
+        instance = globalFileManager;
     }
 
     /** Create an uninitialized StreamManager */
     private AdapterFileManager() {
-        streamManager = new StreamManager() ;
+        streamManager = new StreamManager();
     }
 
     @Override
     public FileManager clone() {
-        StreamManager sm = streamManager.clone() ;
-        AdapterFileManager x = new AdapterFileManager(sm) ;
-        return x ;
+        StreamManager sm = streamManager.clone();
+        AdapterFileManager x = new AdapterFileManager(sm);
+        return x;
     }
 
     public AdapterFileManager(StreamManager streamManager) {
-        this(streamManager, streamManager == null ? null : streamManager.locationMapper()) ;
+        this(streamManager, streamManager == null ? null : streamManager.locationMapper());
     }
 
     /** Create a FileManger using a RIOT StreamManager and RIOT LocationMapper */
     public AdapterFileManager(StreamManager streamManager, LocationMapper mapper) {
         if ( streamManager == null )
-            streamManager = new StreamManager() ;
-        this.streamManager = streamManager ;
+            streamManager = new StreamManager();
+        this.streamManager = streamManager;
         if ( mapper != null )
-            streamManager.locationMapper(mapper) ;
+            streamManager.locationMapper(mapper);
     }
 
     /** Create a "standard" FileManager. */
     public static AdapterFileManager makeGlobal() {
-        AdapterFileManager fMgr = new AdapterFileManager(StreamManager.get()) ;
-        return fMgr ;
+        AdapterFileManager fMgr = new AdapterFileManager(StreamManager.get());
+        return fMgr;
     }
 
     /** Return the associate stream manager */
     public StreamManager getStreamManager() {
-        return streamManager ;
+        return streamManager;
     }
 
     /** Set the location mapping */
     @Override
     public void setLocationMapper(org.apache.jena.util.LocationMapper mapper) {
-        streamManager.locationMapper(AdapterLib.copyConvert(mapper)) ;
+        streamManager.locationMapper(AdapterLib.copyConvert(mapper));
     }
 
     /** Get the location mapping */
     @Override
     public org.apache.jena.util.LocationMapper getLocationMapper() {
-        return new AdapterLocationMapper(streamManager.locationMapper()) ;
+        return new AdapterLocationMapper(streamManager.locationMapper());
     }
 
     /** Return an iterator over all the handlers */
     @Override
     public Iterator<org.apache.jena.util.Locator> locators() {
-        throw new UnsupportedOperationException() ;
+        throw new UnsupportedOperationException();
     }
 
     /** Remove a locator */
     @Override
     public void remove(org.apache.jena.util.Locator loc) {
-        throw new UnsupportedOperationException() ;
+        throw new UnsupportedOperationException();
     }
 
     /** Add a locator to the end of the locators list */
     @Override
     public void addLocator(org.apache.jena.util.Locator oldloc) {
-        Locator loc = AdapterLib.convert(oldloc) ;
-        log.debug("Add location: " + loc.getName()) ;
-        streamManager.addLocator(loc) ;
+        Locator loc = AdapterLib.convert(oldloc);
+        log.debug("Add location: " + loc.getName());
+        streamManager.addLocator(loc);
     }
 
     /** Add a file locator */
     @Override
     public void addLocatorFile() {
-        addLocatorFile(null) ;
+        addLocatorFile(null);
     }
 
     /** Add a file locator which uses dir as its working directory */
     @Override
     public void addLocatorFile(String dir) {
-        LocatorFile fLoc = new LocatorFile(dir) ;
-        streamManager.addLocator(fLoc) ;
+        LocatorFile fLoc = new LocatorFile(dir);
+        streamManager.addLocator(fLoc);
     }
 
     /** Add a class loader locator */
     @Override
     public void addLocatorClassLoader(ClassLoader cLoad) {
-        LocatorClassLoader cLoc = new LocatorClassLoader(cLoad) ;
-        streamManager.addLocator(cLoc) ;
+        LocatorClassLoader cLoc = new LocatorClassLoader(cLoad);
+        streamManager.addLocator(cLoc);
     }
 
     @Override
@@ -221,21 +220,21 @@ public class AdapterFileManager implements org.apache.jena.util.FileManager
     }
 
     public void addLocatorHTTP() {
-        Locator loc = new LocatorHTTP() ;
-        streamManager.addLocator(loc) ;
+        Locator loc = new LocatorHTTP();
+        streamManager.addLocator(loc);
     }
 
     public void addLocatorFTP() {
-        Locator loc = new LocatorFTP() ;
-        streamManager.addLocator(loc) ;
+        Locator loc = new LocatorFTP();
+        streamManager.addLocator(loc);
     }
 
 
     /** Add a zip file locator */
     @Override
     public void addLocatorZip(String zfn) {
-        Locator loc = new LocatorZip(zfn) ;
-        streamManager.addLocator(loc) ;
+        Locator loc = new LocatorZip(zfn);
+        streamManager.addLocator(loc);
     }
 
     // -------- Cache operations (start)
@@ -243,89 +242,88 @@ public class AdapterFileManager implements org.apache.jena.util.FileManager
     @Deprecated
     @Override
     public void resetCache() {
-        modelCache.resetCache() ;
+        modelCache.resetCache();
     }
 
     /** Change the state of model cache : does not clear the cache */
     @Deprecated
     @Override
     public void setModelCaching(boolean state) {
-        modelCache.setModelCaching(state) ;
+        modelCache.setModelCaching(state);
     }
 
     /** return whether caching is on of off */
     @Deprecated
     @Override
     public boolean isCachingModels() {
-        return modelCache.isCachingModels() ;
+        return modelCache.isCachingModels();
     }
 
     /** Read out of the cache - return null if not in the cache */
     @Deprecated
     @Override
     public Model getFromCache(String filenameOrURI) {
-        return modelCache.getFromCache(filenameOrURI) ;
+        return modelCache.getFromCache(filenameOrURI);
     }
 
     @Deprecated
     @Override
     public boolean hasCachedModel(String filenameOrURI) {
-        return modelCache.hasCachedModel(filenameOrURI) ;
+        return modelCache.hasCachedModel(filenameOrURI);
     }
 
     @Deprecated
     @Override
     public void addCacheModel(String uri, Model m) {
-        modelCache.addCacheModel(uri, m) ;
+        modelCache.addCacheModel(uri, m);
     }
 
     @Deprecated
     @Override
     public void removeCacheModel(String uri) {
-        modelCache.removeCacheModel(uri) ;
+        modelCache.removeCacheModel(uri);
     }
 
     // -------- Cache operations (end)
 
     private Model loadModelWorker(String filenameOrURI, String baseURI) {
-        if ( hasCachedModel(filenameOrURI) )
-        {
+        if ( hasCachedModel(filenameOrURI) ) {
             if ( log.isDebugEnabled() )
-                log.debug("Model cache hit: "+filenameOrURI) ;
-            return getFromCache(filenameOrURI) ;
+                log.debug("Model cache hit: " + filenameOrURI);
+            return getFromCache(filenameOrURI);
         }
         Model model = ModelFactory.createDefaultModel();
         readModelWorker(model, filenameOrURI, baseURI);
         if ( isCachingModels() )
-            addCacheModel(filenameOrURI, model) ;
+            addCacheModel(filenameOrURI, model);
         return model;
     }
 
     protected Model readModelWorker(Model model, String filenameOrURI, String baseURI) {
         // Doesn't call open() - we want to make the syntax guess
         // based on the mapped URI.
-        String mappedURI = mapURI(filenameOrURI) ;
+        String mappedURI = mapURI(filenameOrURI);
 
         if ( log.isDebugEnabled() && !mappedURI.equals(filenameOrURI) )
-            log.debug("Map: " + filenameOrURI + " => " + mappedURI) ;
+            log.debug("Map: " + filenameOrURI + " => " + mappedURI);
 
-        Lang lang = RDFLanguages.resourceNameToLang(mappedURI, Lang.RDFXML) ;
+        Lang lang = RDFLanguages.resourceNameToLang(mappedURI, Lang.RDFXML);
 
         // Not : RDFDataMgr.read(model, mappedURI, baseURI, lang);
         // Allow model.read to be overridden e.g. by OntModel which does import processing.
         if ( baseURI == null )
-            baseURI = IRIs.toBase(filenameOrURI) ;
+            baseURI = IRIs.toBase(filenameOrURI);
         try(TypedInputStream in = streamManager.openNoMapOrNull(mappedURI)) {
             if ( in == null )
             {
                 FmtLog.debug(log, "Failed to locate '%s'", mappedURI);
-                throw new NotFoundException("Not found: "+filenameOrURI) ;
+                throw new NotFoundException("Not found: "+filenameOrURI);
             }
             Lang lang2 = RDFDataMgr.determineLang(mappedURI, in.getContentType(), lang);
             // May be overridden by model implementation.
-            model.read(in, baseURI, lang2.getName()) ;
+            model.read(in, baseURI, lang2.getName());
         }
-        return model ;
+        return model;
     }
 
     /**
@@ -334,13 +332,13 @@ public class AdapterFileManager implements org.apache.jena.util.FileManager
      */
     @Override
     public InputStream open(String filenameOrURI) {
-        return streamManager.open(filenameOrURI) ;
+        return streamManager.open(filenameOrURI);
     }
 
     /** Apply the mapping of a filename or URI */
     @Override
     public String mapURI(String filenameOrURI) {
-        return streamManager.mapURI(filenameOrURI) ;
+        return streamManager.mapURI(filenameOrURI);
     }
 
     /**
@@ -349,7 +347,7 @@ public class AdapterFileManager implements org.apache.jena.util.FileManager
      */
     @Override
     public InputStream openNoMap(String filenameOrURI) {
-        return streamManager.openNoMap(filenameOrURI) ;
+        return streamManager.openNoMap(filenameOrURI);
     }
 
     /**
@@ -358,7 +356,7 @@ public class AdapterFileManager implements org.apache.jena.util.FileManager
      */
     @Override
     public TypedStream openNoMapOrNull(String filenameOrURI) {
-        return AdapterLib.convert(streamManager.openNoMapOrNull(filenameOrURI)) ;
+        return AdapterLib.convert(streamManager.openNoMapOrNull(filenameOrURI));
     }
 
     // -------- Cache operations (end)
@@ -366,75 +364,47 @@ public class AdapterFileManager implements org.apache.jena.util.FileManager
     // LEGACY
 
     @Override
-    public Model loadModelInternal(String filenameOrURI)
-    {
+    public Model loadModelInternal(String filenameOrURI) {
         if ( log.isDebugEnabled() )
-            log.debug("loadModel("+filenameOrURI+")") ;
+            log.debug("loadModel(" + filenameOrURI + ")");
 
-        return loadModelWorker(filenameOrURI, null) ;
+        return loadModelWorker(filenameOrURI, null);
     }
 
     @Override
-    public Model readModelInternal(Model model, String filenameOrURI)
-    {
+    public Model readModelInternal(Model model, String filenameOrURI) {
         if ( log.isDebugEnabled() )
-            log.debug("readModel(model,"+filenameOrURI+")") ;
+            log.debug("readModel(model," + filenameOrURI + ")");
         return readModelWorker(model, filenameOrURI, null);
     }
 
-    private static String chooseBaseURI(String baseURI)
-    {
-        String scheme = IRIs.scheme(baseURI) ;
+    private static String chooseBaseURI(String baseURI) {
+        String scheme = IRIs.scheme(baseURI);
 
-        if ( scheme != null )
-        {
-            if ( scheme.equals("file") )
-            {
-                if ( ! baseURI.startsWith("file:///") )
-                {
+        if ( scheme != null ) {
+            if ( scheme.equals("file") ) {
+                if ( !baseURI.startsWith("file:///") ) {
                     try {
-                        // Fix up file URIs.  Yuk.
-                        String tmp = baseURI.substring("file:".length()) ;
-                        File f = new File(tmp) ;
-                        baseURI = "file:///"+f.getCanonicalPath() ;
-                        baseURI = baseURI.replace('\\','/') ;
+                        // Fix up file URIs. Yuk.
+                        String tmp = baseURI.substring("file:".length());
+                        File f = new File(tmp);
+                        baseURI = "file:///"+f.getCanonicalPath();
+                        baseURI = baseURI.replace('\\','/');
 
 //                        baseURI = baseURI.replace(" ","%20");
 //                        baseURI = baseURI.replace("~","%7E");
                         // Convert to URI.  Except that it removes ///
                         // Could do that and fix up (again)
-                        //java.net.URL u = new java.net.URL(baseURI) ;
-                        //baseURI = u.toExternalForm() ;
+                        //java.net.URL u = new java.net.URL(baseURI);
+                        //baseURI = u.toExternalForm();
                     } catch (Exception ex) {}
                 }
             }
-            return baseURI ;
+            return baseURI;
         }
 
         if ( baseURI.startsWith("/") )
-            return "file://"+baseURI ;
-        return "file:"+baseURI ;
-    }
-
-    /**
-     * @deprecated Use {@link IO#readWholeFileAsUTF8(InputStream)}
-     */
-    @Override
-    @Deprecated(forRemoval = true)
-    public String readWholeFileAsUTF8(InputStream in) {
-        return IO.readWholeFileAsUTF8(in);
-    }
-
-    /**
-     * @deprecated Use {@link IO#readWholeFileAsUTF8(String)}
-     */
-    @Override
-    @Deprecated(forRemoval = true)
-    public String readWholeFileAsUTF8(String filename)
-    {
-        InputStream in = open(filename) ;
-        if ( in == null )
-            throw new NotFoundException("File not found: "+filename) ;
-        return readWholeFileAsUTF8(in) ;
+            return "file://"+baseURI;
+        return "file:"+baseURI;
     }
 }
