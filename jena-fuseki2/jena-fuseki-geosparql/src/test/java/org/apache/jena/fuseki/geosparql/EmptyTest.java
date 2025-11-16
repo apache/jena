@@ -24,6 +24,8 @@ import java.util.List;
 
 import com.beust.jcommander.JCommander;
 
+import org.junit.*;
+
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.fuseki.geosparql.cli.ArgsConfig;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
@@ -37,12 +39,7 @@ import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.update.UpdateExecution;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
-import org.junit.*;
 
-/**
- *
- *
- */
 public class EmptyTest {
 
     private static GeosparqlServer SERVER;
