@@ -28,10 +28,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- *
- * @author Gerg
- */
 public class TabFileParameterTest {
 
     public TabFileParameterTest() {
