@@ -20,10 +20,6 @@ package org.apache.jena.fuseki.geosparql.cli;
 import java.io.File;
 import java.util.Objects;
 
-/**
- *
- *
- */
 public class FileGraphDelimiter {
 
     private final File tabFile;

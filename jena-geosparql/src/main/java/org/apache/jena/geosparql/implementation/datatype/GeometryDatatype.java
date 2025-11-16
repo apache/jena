@@ -56,7 +56,6 @@ public abstract class GeometryDatatype extends BaseDatatype {
             throw new DatatypeFormatException(ex.getMessage() + " - Illegal Geometry Literal: " + lexicalForm);
         }
     }
-
     public static void registerDatatypes() {
         Types.init();
     }
@@ -74,6 +73,8 @@ public abstract class GeometryDatatype extends BaseDatatype {
         }
         public static void init() {}
     }
+    private static TypeMapper typeMapper() { return Types.MAPPER; }
+
 
     public static final GeometryDatatype get(RDFDatatype rdfDatatype) throws DatatypeFormatException {
         if (rdfDatatype instanceof GeometryDatatype) {
@@ -85,12 +86,12 @@ public abstract class GeometryDatatype extends BaseDatatype {
 
     public static final GeometryDatatype get(String datatypeURI) {
         checkURI(datatypeURI);
-        RDFDatatype rdfDatatype = Types.MAPPER.getTypeByName(datatypeURI);
+        RDFDatatype rdfDatatype = typeMapper().getTypeByName(datatypeURI);
         return GeometryDatatype.get(rdfDatatype);
     }
 
     public static final boolean checkURI(String datatypeURI) throws DatatypeFormatException {
-        RDFDatatype rdfDatatype = Types.MAPPER.getTypeByName(datatypeURI);
+        RDFDatatype rdfDatatype = typeMapper().getTypeByName(datatypeURI);
         if (rdfDatatype != null) {
             return rdfDatatype instanceof GeometryDatatype;
         } else {

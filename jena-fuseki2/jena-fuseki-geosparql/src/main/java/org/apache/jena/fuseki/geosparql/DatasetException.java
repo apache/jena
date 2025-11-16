@@ -17,10 +17,6 @@
  */
 package org.apache.jena.fuseki.geosparql;
 
-/**
- *
- *
- */
 public class DatasetException extends Exception {
 
     public DatasetException(String msg) {
