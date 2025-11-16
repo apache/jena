@@ -27,10 +27,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- *
- */
 public class TabFileParameter implements IStringConverter<List<FileGraphDelimiter>>, IParameterValidator {
 
     private static final DelimiterValidator DELIMITER_VALIDATOR = new DelimiterValidator();
