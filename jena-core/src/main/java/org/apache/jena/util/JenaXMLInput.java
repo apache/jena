@@ -54,20 +54,33 @@ public class JenaXMLInput {
     static {
         // XMLConstants.FEATURE_SECURE_PROCESSING defaults to true.
         // This can result in problems occasionally.
-        //
-        // It limits internal resources - one case: system property "entityExpansionLimit"
+
+        // Limits on internal resources - one case: system property "java.xml.entityExpansionLimit"
         // The default setting Java17 is 64000. RDF/XML that uses a lot of "&ent;" as a form of URI management
         // might lead to exceeding this limit.
         //
-        // This limit applies to SAX/XMLreader, StAX/XMLStreamReader and StAX/XMLEventReader.
-        // Illustrative code that sets the default higher if it is not already been set.
-        if ( false ) {
-            String keyExpansionLimit = "entityExpansionLimit";
-            if ( System.getProperty(keyExpansionLimit) == null ) {
-                // The system default (no setting) is 64000
-                System.setProperty(keyExpansionLimit, "200000");
-            }
-        }
+        // These limits apply to SAX/XMLreader, StAX/XMLStreamReader and StAX/XMLEventReader.
+
+        // https://docs.oracle.com/javase/tutorial/jaxp/limits/limits.html
+
+        /*
+         * Limits:
+         * System property                      Default value (less than or equal to zero means no limit)
+         * jdk.xml.entityExpansionLimit           64000
+         * jdk.xml.elementAttributeLimit          10000
+         * jdk.xml.maxOccurLimit                   5000
+         * jdk.xml.totalEntitySizeLimit          5x10^7
+         * jdk.xml.maxGeneralEntitySizeLimit          0
+         * jdk.xml.maxParameterEntitySizeLimit  1000000
+         * jdk.xml.entityReplacementLimit       3000000
+         * jdk.xml.maxElementDepth                    0
+         * jdk.xml.maxXMLNameLimit                 1000
+         *
+         * Legacy:
+         * entityExpansionLimit         jdk.xml.entityExpansionLimit
+         * elementAttributeLimit        jdk.xml.elementAttributeLimit
+         * maxOccurLimit                jdk.xml.maxOccur (typo in documentation?)
+         */
     }
 
     public static XMLReader createXMLReader() throws ParserConfigurationException, SAXException {
