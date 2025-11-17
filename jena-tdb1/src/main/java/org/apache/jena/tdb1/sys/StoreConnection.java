@@ -102,8 +102,8 @@ public class StoreConnection
      */
     public DatasetGraphTxn begin(TxnType mode, String label) {
         checkValid();
+        // This sets haveUsedInTransaction = true;
         checkTransactional();
-        haveUsedInTransaction = true;
         return transactionManager.begin(mode, label);
     }
 
