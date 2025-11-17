@@ -104,7 +104,9 @@ public class schemagen {
         "const",       "float",       "native",      "super",       "while",
 
         // And distinguished names.
-        "var", "record"
+        "var", "record",
+        // And literals
+        "true", "false", "null"
     };
 
 
