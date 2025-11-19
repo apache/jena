@@ -19,6 +19,7 @@ package org.apache.jena.geosparql.spatial.property_functions;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
 import org.apache.jena.atlas.iterator.Iter;
@@ -101,6 +102,7 @@ public abstract class GenericSpatialPropertyFunction extends PFuncSimpleAndList 
     }
 
     private boolean checkBound(ExecutionContext execCxt, Node subject) {
+        AtomicBoolean cancel = execCxt.getCancelSignal();
 
         try {
             Graph graph = execCxt.getActiveGraph();
@@ -108,9 +110,9 @@ public abstract class GenericSpatialPropertyFunction extends PFuncSimpleAndList 
             Iterator<Triple> spatialTriples;
 
             if (AccessGeoSPARQL.containsGeoLiterals(graph)) {
-                spatialTriples = AccessGeoSPARQL.findSpecificGeoLiteralsByFeature(graph, subject);
+                spatialTriples = AccessGeoSPARQL.findSpecificGeoLiteralsByFeature(cancel, graph, subject);
             } else if (AccessWGS84.containsGeoLiteralProperties(graph)) {
-                spatialTriples = AccessWGS84.findGeoLiteralsAsTriples(graph, subject);
+                spatialTriples = AccessWGS84.findGeoLiteralsAsTriples(cancel, graph, subject);
             } else {
                 spatialTriples = Iter.empty();
             }

@@ -16,11 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.jena.query;
+package org.apache.jena.sparql.exec;
 
-/** Indicate that a query execution has been cancelled and the operation can't be called */
-public class QueryCancelledException extends QueryExecException
+import org.apache.jena.query.Dataset;
+import org.apache.jena.tdb2.TDB2Factory;
+
+public class TestQueryExecutionCancel_TDB2
+    extends AbstractTestQueryExecutionCancel
 {
-    public QueryCancelledException() {}
-    public QueryCancelledException(Throwable cause) { super(cause) ; }
+    @Override
+    public Dataset createDataset() {
+        return TDB2Factory.createDataset();
+    }
 }

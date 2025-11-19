@@ -117,7 +117,7 @@ public class PatternMatchTDB2 {
             // RDF-star SA
             chain = matchQuadPattern(chain, graphNode, triple, nodeTupleTable, patternTuple, anyGraph, filter, execCxt);
 
-            chain = makeAbortable(chain, killList);
+            chain = makeAbortable(chain, killList, execCxt.getCancelSignal());
         }
 
         Iterator<Binding> iterBinding = SolverLibTDB.convertToNodes(chain, nodeTable);

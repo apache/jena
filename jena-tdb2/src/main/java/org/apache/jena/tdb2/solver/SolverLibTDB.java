@@ -193,12 +193,12 @@ public class SolverLibTDB
             distinctMode = GraphNamesDistinctMode.FULL;
         }
 
+        iter1 = makeAbortable(iter1, killList, execCxt.getCancelSignal());
+
         if ( filter != null )
             iter1 = Iter.filter(iter1, filter);
 
         Iterator<NodeId> iter2 = Iter.map(iter1, t -> t.get(0));
-        // Project is cheap - don't brother wrapping iter1
-        iter2 = makeAbortable(iter2, killList);
 
         // Apply the necessary distinct calculation (if any)
         Iterator<NodeId> iter3;
@@ -214,7 +214,6 @@ public class SolverLibTDB
                 iter3 = iter2;
                 break;
         }
-        iter3 = makeAbortable(iter3, killList);
 
         Iterator<Node> iter4 = NodeLib.nodes(ds.getQuadTable().getNodeTupleTable().getNodeTable(), iter3);
 

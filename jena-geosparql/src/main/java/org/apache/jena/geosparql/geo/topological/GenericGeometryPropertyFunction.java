@@ -17,6 +17,8 @@
  */
 package org.apache.jena.geosparql.geo.topological;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.access.AccessGeoSPARQL;
@@ -103,8 +105,9 @@ public abstract class GenericGeometryPropertyFunction extends PFuncSimple {
 
     private QueryIterator subjectUnbound(Binding binding, Node subject, Node predicate, Node object, ExecutionContext execCxt) {
         Graph graph = execCxt.getActiveGraph();
+        AtomicBoolean cancel = execCxt.getCancelSignal();
 
-        ExtendedIterator<Triple> subjectTriples = AccessGeoSPARQL.findSpecificGeoLiterals(graph);
+        ExtendedIterator<Triple> subjectTriples = AccessGeoSPARQL.findSpecificGeoLiterals(cancel, graph);
         Var subjectVar = Var.alloc(subject.getName());
         ExtendedIterator<Binding> iterator = subjectTriples
                 .mapWith(Triple::getSubject)
@@ -131,8 +134,9 @@ public abstract class GenericGeometryPropertyFunction extends PFuncSimple {
 
     private QueryIterator bothUnbound(Binding binding, Node subject, Node predicate, Node object, ExecutionContext execCxt) {
         Graph graph = execCxt.getActiveGraph();
+        AtomicBoolean cancel = execCxt.getCancelSignal();
 
-        ExtendedIterator<Triple> subjectTriples = AccessGeoSPARQL.findSpecificGeoLiterals(graph);
+        ExtendedIterator<Triple> subjectTriples = AccessGeoSPARQL.findSpecificGeoLiterals(cancel, graph);
         Var subjectVar = Var.alloc(subject.getName());
         ExtendedIterator<Binding> iterator = subjectTriples
                 .mapWith(Triple::getSubject)
