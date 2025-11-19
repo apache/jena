@@ -29,9 +29,9 @@ import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.atlas.lib.tuple.TupleFactory;
 import org.apache.jena.graph.Node;
-import org.apache.jena.query.QueryCancelledException;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.iterator.IterAbortable;
 import org.apache.jena.tdb2.store.NodeId;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable;
@@ -72,14 +72,7 @@ class StageMatchTuple {
 
         // Add cancel check.
         AtomicBoolean cancelSignal = execCxt.getCancelSignal();
-        if (cancelSignal != null) {
-            iterMatches = Iter.map(iterMatches, x -> {
-                 if (cancelSignal.get()) {
-                     throw new QueryCancelledException();
-                 }
-                 return x;
-            });
-        }
+        iterMatches = IterAbortable.wrap(iterMatches, cancelSignal);
 
         // ** Allow a triple or quad filter here.
         if ( filter != null )

@@ -20,6 +20,7 @@ package org.apache.jena.sparql.engine.main.solver;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
@@ -35,10 +36,10 @@ public class SolverLib {
      * Create an abortable iterator, storing it in the killList.
      * Just return the input iterator if killList is null.
      */
-    public static <T> Iterator<T> makeAbortable(Iterator<T> iter, List<Abortable> killList) {
+    public static <T> Iterator<T> makeAbortable(Iterator<T> iter, List<Abortable> killList, AtomicBoolean cancel) {
         if ( killList == null )
             return iter;
-        IterAbortable<T> k = new IterAbortable<>(iter);
+        IterAbortable<T> k = IterAbortable.wrap(iter, cancel);
         killList.add(k);
         return k;
     }

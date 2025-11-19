@@ -70,7 +70,7 @@ public abstract class QueryIteratorBase
     }
 
     private boolean requestingCancel() {
-        return (requestingCancel != null && requestingCancel.get()) || Thread.interrupted() ;
+        return (requestingCancel != null && requestingCancel.get()) || Thread.currentThread().isInterrupted() ;
     }
 
     private void haveCancelled() {}

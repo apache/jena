@@ -18,6 +18,7 @@
 package org.apache.jena.geosparql.spatial;
 
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.iterator.IteratorCloseable;
@@ -41,15 +42,15 @@ public class SpatialIndexFindUtils {
      * @param srsURI
      * @return SpatialIndexItems found.
      */
-    public static IteratorCloseable<SpatialIndexItem> findIndexItems(DatasetGraph datasetGraph, String srsURI) {
+    public static IteratorCloseable<SpatialIndexItem> findIndexItems(AtomicBoolean cancel, DatasetGraph datasetGraph, String srsURI) {
         Graph defaultGraph = datasetGraph.getDefaultGraph();
-        IteratorCloseable<SpatialIndexItem> itemsIter = findIndexItems(defaultGraph, srsURI);
+        IteratorCloseable<SpatialIndexItem> itemsIter = findIndexItems(cancel, defaultGraph, srsURI);
         try {
             //Named Models
             Iterator<Node> graphNodeIt = datasetGraph.listGraphNodes();
             Iterator<SpatialIndexItem> namedGraphItemsIt = Iter.iter(graphNodeIt).flatMap(graphNode -> {
                 Graph namedGraph = datasetGraph.getGraph(graphNode);
-                IteratorCloseable<SpatialIndexItem> graphItems = findIndexItems(namedGraph, srsURI);
+                IteratorCloseable<SpatialIndexItem> graphItems = findIndexItems(cancel, namedGraph, srsURI);
                 return graphItems;
             });
             itemsIter = Iter.iter(itemsIter).append(namedGraphItemsIt);
@@ -67,13 +68,13 @@ public class SpatialIndexFindUtils {
      * @param srsURI
      * @return Items found in the Model in the SRS URI.
      */
-    public static final IteratorCloseable<SpatialIndexItem> findIndexItems(Graph graph, String srsURI) {
+    public static final IteratorCloseable<SpatialIndexItem> findIndexItems(AtomicBoolean cancel, Graph graph, String srsURI) {
         IteratorCloseable<SpatialIndexItem> result;
         // Only add one set of statements as a converted dataset will duplicate the same info.
         if (AccessGeoSPARQL.containsGeoLiterals(graph)) {
-            result = findIndexItemsGeoSparql(graph, srsURI);
+            result = findIndexItemsGeoSparql(cancel, graph, srsURI);
         } else if (AccessWGS84.containsGeoLiteralProperties(graph)) {
-            result = findIndexItemsWgs84(graph, srsURI);
+            result = findIndexItemsWgs84(cancel, graph, srsURI);
         } else {
             result = Iter.empty();
         }
@@ -86,12 +87,12 @@ public class SpatialIndexFindUtils {
      * @param srsURI
      * @return SpatialIndexItem items prepared for adding to SpatialIndex.
      */
-    public static IteratorCloseable<SpatialIndexItem> findIndexItemsGeoSparql(Graph graph, String srsURI) {
-        Iterator<Triple> stmtIter = AccessGeoSPARQL.findSpecificGeoResources(graph);
+    public static IteratorCloseable<SpatialIndexItem> findIndexItemsGeoSparql(AtomicBoolean cancel, Graph graph, String srsURI) {
+        Iterator<Triple> stmtIter = AccessGeoSPARQL.findSpecificGeoResources(cancel, graph);
         IteratorCloseable<SpatialIndexItem> result = Iter.iter(stmtIter).flatMap(stmt -> {
             Node feature = stmt.getSubject();
             Node geometry = stmt.getObject();
-            Iterator<Triple> serializationIter = AccessGeoSPARQL.findSpecificGeoLiterals(graph, geometry);
+            Iterator<Triple> serializationIter = AccessGeoSPARQL.findSpecificGeoLiterals(cancel, graph, geometry);
             Iterator<SpatialIndexItem> itemIter = Iter.map(serializationIter, triple -> {
                 Node geometryNode = triple.getObject();
                 GeometryWrapper geometryWrapper = GeometryWrapper.extract(geometryNode);
@@ -110,8 +111,8 @@ public class SpatialIndexFindUtils {
      * @param srsURI
      * @return Geo predicate objects prepared for adding to SpatialIndex.
      */
-    public static IteratorCloseable<SpatialIndexItem> findIndexItemsWgs84(Graph graph, String srsURI) {
-        return Iter.iter(AccessWGS84.findGeoLiterals(graph, null)).map(e -> {
+    public static IteratorCloseable<SpatialIndexItem> findIndexItemsWgs84(AtomicBoolean cancel, Graph graph, String srsURI) {
+        return Iter.iter(AccessWGS84.findGeoLiterals(cancel, graph, null)).map(e -> {
             Node feature = e.getKey();
             GeometryWrapper geometryWrapper = e.getValue();
             SpatialIndexItem item = makeSpatialIndexItem(feature, geometryWrapper, srsURI);

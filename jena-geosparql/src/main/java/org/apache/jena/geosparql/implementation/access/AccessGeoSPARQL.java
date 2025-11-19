@@ -20,12 +20,14 @@ package org.apache.jena.geosparql.implementation.access;
 
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.geosparql.implementation.vocabulary.Geo;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.query.QueryCancelledException;
 import org.apache.jena.system.G;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
@@ -86,40 +88,40 @@ public class AccessGeoSPARQL {
      * Find all triples with geo:hasDefaultGeometry and geo:hasGeometry predicates.
      * If a feature has a default geometry, then this method will omit all its (non-default) geometries.
      */
-    public static ExtendedIterator<Triple> findSpecificGeoResources(Graph graph) {
+    public static ExtendedIterator<Triple> findSpecificGeoResources(AtomicBoolean cancel, Graph graph) {
         // List resources that have a default geometry followed by those that
         // only have a non-default one.
-        ExtendedIterator<Triple> result = graph.find(null, Geo.HAS_DEFAULT_GEOMETRY_NODE, null);
+        ExtendedIterator<Triple> result = G.find(cancel, graph, null, Geo.HAS_DEFAULT_GEOMETRY_NODE, null);
         try {
             boolean hasDefaultGeometry = result.hasNext();
-            ExtendedIterator<Triple> it = graph.find(null, Geo.HAS_GEOMETRY_NODE, null);
+            ExtendedIterator<Triple> it = G.find(cancel, graph, null, Geo.HAS_GEOMETRY_NODE, null);
 
             // No default geometry -> no need to filter.
             result = hasDefaultGeometry
                 ? result.andThen(it.filterDrop(t -> G.hasProperty(graph, t.getSubject(), Geo.HAS_DEFAULT_GEOMETRY_NODE)))
                 : result.andThen(it);
-        } catch (RuntimeException t) {
+        } catch (RuntimeException e) {
             result.close();
-            throw new RuntimeException(t);
+            throw buildException(e);
         }
         return result;
     }
 
-    public static ExtendedIterator<Triple> findDefaultGeoResources(Graph graph) {
-        return graph.find(null, Geo.HAS_DEFAULT_GEOMETRY_NODE, null);
+    public static ExtendedIterator<Triple> findDefaultGeoResources(AtomicBoolean cancel, Graph graph) {
+        return G.find(cancel, graph, null, Geo.HAS_DEFAULT_GEOMETRY_NODE, null);
     }
 
-    public static ExtendedIterator<Triple> findSpecificGeoResources(Graph graph, Node feature) {
+    public static ExtendedIterator<Triple> findSpecificGeoResources(AtomicBoolean cancel, Graph graph, Node feature) {
         Objects.requireNonNull(feature);
-        ExtendedIterator<Triple> result = graph.find(feature, Geo.HAS_DEFAULT_GEOMETRY_NODE, null);
+        ExtendedIterator<Triple> result = G.find(cancel, graph, feature, Geo.HAS_DEFAULT_GEOMETRY_NODE, null);
         try {
             if (!result.hasNext()) {
                 result.close();
             }
-            result = graph.find(feature, Geo.HAS_GEOMETRY_NODE, null);
-        } catch (RuntimeException t) {
+            result = G.find(cancel, graph, feature, Geo.HAS_GEOMETRY_NODE, null);
+        } catch (RuntimeException e) {
             result.close();
-            throw new RuntimeException(t);
+            throw buildException(e);
         }
         return result;
     }
@@ -133,9 +135,9 @@ public class AccessGeoSPARQL {
      *
      * If a geo:hasDefaultGeometry does not lead to a valid geo-literal there is no backtracking to geo:hasGeometry.
      */
-    public static Iterator<Triple> findSpecificGeoLiteralsByFeature(Graph graph, Node feature) {
-        return Iter.flatMap(findSpecificGeoResources(graph, feature),
-            t -> findSpecificGeoLiterals(graph, t.getObject()));
+    public static Iterator<Triple> findSpecificGeoLiteralsByFeature(AtomicBoolean cancel, Graph graph, Node feature) {
+        return Iter.flatMap(findSpecificGeoResources(cancel, graph, feature),
+            t -> findSpecificGeoLiterals(cancel, graph, t.getObject()));
     }
 
     /**
@@ -143,24 +145,24 @@ public class AccessGeoSPARQL {
      * The specific properties geo:asWKT and geo:asGML take precedence over the more general geo:hasSerialization.
      * This means if a resource has wkt and/or gml then all geo:hasSerialization triples will be omitted for it.
      */
-    public static ExtendedIterator<Triple> findSpecificGeoLiterals(Graph graph) {
-        ExtendedIterator<Triple> result = graph.find(null, Geo.AS_WKT_NODE, null);
+    public static ExtendedIterator<Triple> findSpecificGeoLiterals(AtomicBoolean cancel, Graph graph) {
+        ExtendedIterator<Triple> result = G.find(cancel, graph, null, Geo.AS_WKT_NODE, null);
         try {
-            result = result.andThen(graph.find(null, Geo.AS_GML_NODE, null));
+            result = result.andThen(G.find(cancel, graph, null, Geo.AS_GML_NODE, null));
             // If there is no specific serialization property use the general one.
             if (!result.hasNext()) {
                 result.close();
-                result = graph.find(null, Geo.HAS_SERIALIZATION_NODE, null);
+                result = G.find(cancel, graph, null, Geo.HAS_SERIALIZATION_NODE, null);
             } else {
                 // Append more general serializations for those resources that lack a specific one.
-                ExtendedIterator<Triple> it = graph.find(null, Geo.HAS_SERIALIZATION_NODE, null).filterDrop(t ->
+                ExtendedIterator<Triple> it = G.find(cancel, graph, null, Geo.HAS_SERIALIZATION_NODE, null).filterDrop(t ->
                     G.hasProperty(graph, t.getSubject(), Geo.AS_WKT_NODE) ||
                     G.hasProperty(graph, t.getSubject(), Geo.AS_GML_NODE));
                 result = result.andThen(it);
             }
-        } catch (RuntimeException t) {
+        } catch (RuntimeException e) {
             result.close();
-            throw new RuntimeException(t);
+            throw buildException(e);
         }
         return result;
     }
@@ -170,19 +172,19 @@ public class AccessGeoSPARQL {
      * The geometry resource must not be null.
      * A specific serialization (WKT, GML) takes precedence over the more general hasSerialization property.
      */
-    public static ExtendedIterator<Triple> findSpecificGeoLiterals(Graph graph, Node geometry) {
+    public static ExtendedIterator<Triple> findSpecificGeoLiterals(AtomicBoolean cancel, Graph graph, Node geometry) {
         Objects.requireNonNull(geometry);
-        ExtendedIterator<Triple> result = graph.find(geometry, Geo.AS_WKT_NODE, null);
+        ExtendedIterator<Triple> result = G.find(cancel, graph, geometry, Geo.AS_WKT_NODE, null);
         try {
-            result = result.andThen(graph.find(geometry, Geo.AS_GML_NODE, null));
+            result = result.andThen(G.find(cancel, graph, geometry, Geo.AS_GML_NODE, null));
             if (!result.hasNext()) {
                 result.close();
                 // Fallback to the more generic property.
-                result = graph.find(geometry, Geo.HAS_SERIALIZATION_NODE, null);
+                result = G.find(cancel, graph, geometry, Geo.HAS_SERIALIZATION_NODE, null);
             }
-        } catch (RuntimeException t) {
+        } catch (RuntimeException e) {
             result.close();
-            throw new RuntimeException(t);
+            throw buildException(e);
         }
         return result;
     }
@@ -228,5 +230,12 @@ public class AccessGeoSPARQL {
             graph.contains(node, Geo.AS_WKT_NODE, null) ||
             graph.contains(node, Geo.AS_GML_NODE, null);
         return result;
+    }
+
+    public static RuntimeException buildException(RuntimeException e) {
+        if (e instanceof QueryCancelledException e2) {
+            return new QueryCancelledException(e2);
+        }
+        return new RuntimeException(e);
     }
 }

@@ -40,7 +40,7 @@ public class STRtreeUtils {
     public static STRtree buildSpatialIndexTree(Graph graph, String srsURI) throws SpatialIndexException {
         try {
             STRtree tree;
-            IteratorCloseable<SpatialIndexItem> it = SpatialIndexFindUtils.findIndexItems(graph, srsURI);
+            IteratorCloseable<SpatialIndexItem> it = SpatialIndexFindUtils.findIndexItems(null, graph, srsURI);
             try {
                 tree = buildSpatialIndexTree(it);
             } finally {

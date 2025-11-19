@@ -59,7 +59,7 @@ public class PatternMatchData {
 
             // [Match] Missing filter.
             chain = SolverRX3.rdfStarTriple(chain, triple, execCxt);
-            chain = SolverLib.makeAbortable(chain, killList);
+            chain = SolverLib.makeAbortable(chain, killList, execCxt.getCancelSignal());
         }
 
         // "input" will be closed by QueryIterAbortable but is otherwise unused.
@@ -98,7 +98,7 @@ public class PatternMatchData {
 
             // [Match] Missing filter.
             chain = SolverRX4.rdfStarQuad(chain, graphNode, triple, execCxt);
-            chain = SolverLib.makeAbortable(chain, killList);
+            chain = SolverLib.makeAbortable(chain, killList, execCxt.getCancelSignal());
         }
 
         // "input" will be closed by QueryIterAbortable but is otherwise unused.
