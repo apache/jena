@@ -186,9 +186,11 @@ public class DatasetGraphText extends DatasetGraphTextMonitor implements Transac
      */
     @Override
     public void abort() {
-        super.getMonitor().finish();
-        abortAction.run();
-        readWriteMode.set(null);
+        synchronized (txnExitLock) {
+            super.getMonitor().finish();
+            abortAction.run();
+            readWriteMode.set(null);
+        }
     }
 
     private void commit_R() {

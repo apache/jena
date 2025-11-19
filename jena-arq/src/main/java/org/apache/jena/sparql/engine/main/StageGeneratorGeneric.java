@@ -26,6 +26,7 @@ import org.apache.jena.sparql.core.Substitute ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.iterator.QueryIterFailed;
 import org.apache.jena.sparql.engine.iterator.QueryIterPeek ;
 import org.apache.jena.sparql.engine.main.solver.PatternMatchData;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib ;
@@ -60,10 +61,7 @@ public class StageGeneratorGeneric implements StageGenerator {
                                     QueryIterator input, ExecutionContext execCxt) {
         Explain.explain(pattern, execCxt.getContext()) ;
 
-        if ( ! input.hasNext() )
-            return input ;
-
-        if ( reorder != null && pattern.size() >= 2 ) {
+         if ( reorder != null && pattern.size() >= 2 ) {
             // If pattern size is 0 or 1, nothing to do.
             BasicPattern bgp2 = pattern ;
 
@@ -73,19 +71,26 @@ public class StageGeneratorGeneric implements StageGenerator {
                 // And now use this one
                 input = peek ;
                 Binding b ;
+                // Eager access may fail e.g. due to timeout.
                 try {
                     b = peek.peek() ;
                 } catch (Exception e) {
-                    // Close peek iterator on failure e.g. due to cancellation.
-                    peek.close() ;
-                    e.addSuppressed(new RuntimeException("Error during peek().")) ;
-                    throw e ;
+                    return new QueryIterFailed(input, execCxt, e);
                 }
                 bgp2 = Substitute.substitute(pattern, b) ;
             }
             ReorderProc reorderProc = reorder.reorderIndexes(bgp2) ;
             pattern = reorderProc.reorder(pattern) ;
+        } else {
+            // Eager access may fail e.g. due to timeout.
+            try {
+                if ( ! input.hasNext() )
+                    return input ;
+            } catch (Exception e) {
+                return new QueryIterFailed(input, execCxt, e);
+            }
         }
+
         Explain.explain("Reorder/generic", pattern, execCxt.getContext()) ;
         return PatternMatchData.execute(execCxt.getActiveGraph(), pattern, input, null, execCxt) ;
     }

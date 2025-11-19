@@ -22,6 +22,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.datatypes.DatatypeFormatException;
@@ -60,8 +61,8 @@ public class AccessWGS84 {
 
     /** For each matching resource, build triples of format 's geo:hasGeometry geometryLiteral'. */
     // XXX geo:hasSerialization might seem a better choice but the original jena-geosparql implementation used geo:hasGeometry.
-    public static ExtendedIterator<Triple> findGeoLiteralsAsTriples(Graph graph, Node s) {
-        return findGeoLiteralsAsTriples(graph, s, Geo.HAS_GEOMETRY_NODE);
+    public static ExtendedIterator<Triple> findGeoLiteralsAsTriples(AtomicBoolean cancel, Graph graph, Node s) {
+        return findGeoLiteralsAsTriples(cancel, graph, s, Geo.HAS_GEOMETRY_NODE);
     }
 
     /**
@@ -72,19 +73,19 @@ public class AccessWGS84 {
      * @param p The predicate to use for creating triples. Can be chosen freely but must not be null.
      * @return Iterator of created triples (not obtained from the graph directly).
      */
-    public static ExtendedIterator<Triple> findGeoLiteralsAsTriples(Graph graph, Node s, Node p) {
-        return findGeoLiterals(graph, s).mapWith(e -> Triple.create(e.getKey(), p, e.getValue().asNode()));
+    public static ExtendedIterator<Triple> findGeoLiteralsAsTriples(AtomicBoolean cancel, Graph graph, Node s, Node p) {
+        return findGeoLiterals(cancel, graph, s).mapWith(e -> Triple.create(e.getKey(), p, e.getValue().asNode()));
     }
 
     /**
      * For each matching resource, build geometry literals from the cartesian product of the WGS84 lat/long properties.
      * Resources must have both properties, lat and long, to be matched by this method.
      */
-    public static ExtendedIterator<Entry<Node, GeometryWrapper>> findGeoLiterals(Graph graph, Node s) {
+    public static ExtendedIterator<Entry<Node, GeometryWrapper>> findGeoLiterals(AtomicBoolean cancel, Graph graph, Node s) {
         // Warn about multiple lat/lon combinations only at most once per graph.
         boolean enableWarnings = false;
         boolean[] loggedMultipleLatLons = { false };
-        ExtendedIterator<Triple> latIt = graph.find(s, SpatialExtension.GEO_LAT_NODE, Node.ANY);
+        ExtendedIterator<Triple> latIt = G.find(cancel, graph, s, SpatialExtension.GEO_LAT_NODE, Node.ANY);
         ExtendedIterator<Entry<Node, GeometryWrapper>> result = WrappedIterator.create(Iter.iter(latIt).flatMap(triple -> {
             Node feature = triple.getSubject();
             Node lat = triple.getObject();

@@ -19,6 +19,7 @@ package org.apache.jena.geosparql.geo.topological;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.geosparql.geof.topological.GenericFilterFunction;
@@ -112,9 +113,10 @@ public abstract class GenericPropertyFunction extends PFuncSimple {
     private QueryIterator bothUnbound(Binding binding, Node subject, Node predicate, Node object, ExecutionContext execCxt, SpatialIndex spatialIndex, QueryRewriteIndex queryRewriteIndex) {
         Var subjectVar = Var.alloc(subject.getName());
         Graph graph = execCxt.getActiveGraph();
+        AtomicBoolean cancel = execCxt.getCancelSignal();
 
         //Search for both Features and Geometry in the Graph. Reliant upon consistent usage of SpatialObject (which is base class of Feature and Geometry) if present.
-        ExtendedIterator<Binding> iterator = findSpatialObjects(graph)
+        ExtendedIterator<Binding> iterator = findSpatialObjects(cancel, graph)
             .mapWith(node -> BindingFactory.binding(binding, subjectVar, node));
 
         QueryIter queryIter = QueryIter.flatMap(
@@ -155,8 +157,9 @@ public abstract class GenericPropertyFunction extends PFuncSimple {
         //Prepare the results.
         Var unboundVar = Var.alloc(unboundNode.getName());
 
+        AtomicBoolean cancel = execCxt.getCancelSignal();
         //Search for both Features and Geometry in the Graph. Reliant upon consistent usage of SpatialObject (which is base class of Feature and Geometry) if present.
-        ExtendedIterator<Binding> iterator = findSpatialObjects(graph)
+        ExtendedIterator<Binding> iterator = findSpatialObjects(cancel, graph)
             .mapWith(node -> BindingFactory.binding(binding, unboundVar, node));
 
         return QueryIter.flatMap(
@@ -169,18 +172,18 @@ public abstract class GenericPropertyFunction extends PFuncSimple {
             execCxt);
     }
 
-    private static ExtendedIterator<Node> findSpatialObjects(Graph graph) {
+    private static ExtendedIterator<Node> findSpatialObjects(AtomicBoolean cancel, Graph graph) {
         // The found nodes are passed to SpatialObjectGeometryLiteral.retrieve which:
         //   - Filters out all features unless they have a geo:hasDefaultGeometry property or wgs84 vocab.
         //   - Retrieves only a single specific geoLiteral for a geoResource
         // There would be performance potential by leveraging the triples here for retrieve.
-        ExtendedIterator<Triple> result = AccessGeoSPARQL.findSpecificGeoLiterals(graph);
+        ExtendedIterator<Triple> result = AccessGeoSPARQL.findSpecificGeoLiterals(cancel, graph);
         try {
-            result = result.andThen(AccessGeoSPARQL.findDefaultGeoResources(graph));
-            result = result.andThen(AccessWGS84.findGeoLiteralsAsTriples(graph, null));
+            result = result.andThen(AccessGeoSPARQL.findDefaultGeoResources(cancel, graph));
+            result = result.andThen(AccessWGS84.findGeoLiteralsAsTriples(cancel, graph, null));
         } catch (RuntimeException t) {
             result.close();
-            throw new RuntimeException(t);
+            throw AccessGeoSPARQL.buildException(t);
         }
         return result.mapWith(Triple::getSubject);
     }
@@ -254,7 +257,14 @@ public abstract class GenericPropertyFunction extends PFuncSimple {
 
         // Also test all Geometry of the Features. All, some or one Geometry may have matched.
         // ExtendedIterator<Node> featureGeometries = G.iterSP(graph, featureNode, Geo.HAS_GEOMETRY_NODE);
-        ExtendedIterator<Node> featureGeometries = AccessGeoSPARQL.findSpecificGeoResources(graph, featureNode).mapWith(Triple::getObject);
+        AtomicBoolean cancel = execCxt.getCancelSignal();
+        ExtendedIterator<Node> featureGeometries;
+        try {
+            featureGeometries = AccessGeoSPARQL.findSpecificGeoResources(cancel, graph, featureNode).mapWith(Triple::getObject);
+        } catch (RuntimeException e) {
+            featureIterConcat.close();
+            throw AccessGeoSPARQL.buildException(e);
+        }
         QueryIterator geometriesQueryIterator = QueryIterPlainWrapper.create(
             Iter.map(
                 Iter.filter( // omit asserted

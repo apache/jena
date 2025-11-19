@@ -34,6 +34,7 @@ import org.apache.jena.sparql.core.Substitute;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.iterator.QueryIterFailed;
 import org.apache.jena.sparql.engine.iterator.QueryIterPeek;
 import org.apache.jena.sparql.engine.main.OpExecutor;
 import org.apache.jena.sparql.engine.main.OpExecutorFactory;
@@ -191,9 +192,6 @@ public class OpExecutorTDB2 extends OpExecutor
                                                         BasicPattern pattern, ExprList exprs,
                                                         ExecutionContext execCxt)
     {
-        if ( !input.hasNext() )
-            return input;
-
         // -- Input
         // Must pass this iterator into the next stage.
         if ( pattern.size() >= 2 ) {
@@ -202,7 +200,18 @@ public class OpExecutorTDB2 extends OpExecutor
             if ( transform != null ) {
                 QueryIterPeek peek = QueryIterPeek.create(input, execCxt);
                 input = peek; // Must pass on
-                pattern = reorder(pattern, peek, transform);
+                try {
+                    pattern = reorder(pattern, peek, transform);
+                } catch (Exception e) {
+                    return new QueryIterFailed(input, execCxt, e);
+                }
+            }
+        } else {
+            try {
+                if ( !input.hasNext() )
+                    return input;
+            } catch (Exception e) {
+                return new QueryIterFailed(input, execCxt, e);
             }
         }
 
@@ -223,9 +232,6 @@ public class OpExecutorTDB2 extends OpExecutor
                                                       Node gn, BasicPattern bgp,
                                                       ExprList exprs, ExecutionContext execCxt)
     {
-        if ( !input.hasNext() )
-            return input;
-
         // ---- Graph names with special meaning.
 
         gn = decideGraphNode(gn, execCxt);
@@ -239,7 +245,18 @@ public class OpExecutorTDB2 extends OpExecutor
             if ( transform != null ) {
                 QueryIterPeek peek = QueryIterPeek.create(input, execCxt);
                 input = peek; // Original input now invalid.
-                bgp = reorder(bgp, peek, transform);
+                try {
+                    bgp = reorder(bgp, peek, transform);
+                } catch (Exception e) {
+                    return new QueryIterFailed(input, execCxt, e);
+                }
+            }
+        } else {
+            try {
+                if ( !input.hasNext() )
+                    return input;
+            } catch (Exception e) {
+                return new QueryIterFailed(input, execCxt, e);
             }
         }
 

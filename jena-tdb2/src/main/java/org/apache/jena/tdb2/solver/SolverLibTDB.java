@@ -198,7 +198,7 @@ public class SolverLibTDB
 
         Iterator<NodeId> iter2 = Iter.map(iter1, t -> t.get(0));
         // Project is cheap - don't brother wrapping iter1
-        iter2 = makeAbortable(iter2, killList);
+        iter2 = makeAbortable(iter2, killList, execCxt.getCancelSignal());
 
         // Apply the necessary distinct calculation (if any)
         Iterator<NodeId> iter3;
@@ -214,7 +214,7 @@ public class SolverLibTDB
                 iter3 = iter2;
                 break;
         }
-        iter3 = makeAbortable(iter3, killList);
+        iter3 = makeAbortable(iter3, killList, execCxt.getCancelSignal());
 
         Iterator<Node> iter4 = NodeLib.nodes(ds.getQuadTable().getNodeTupleTable().getNodeTable(), iter3);
 
