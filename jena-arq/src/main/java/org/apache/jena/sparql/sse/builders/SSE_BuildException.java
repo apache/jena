@@ -20,10 +20,7 @@ package org.apache.jena.sparql.sse.builders;
 
 import org.apache.jena.sparql.sse.ItemException;
 
-public class SSE_BuildException extends ItemException
-{
-//        public BuildException(Throwable cause) { super(cause); }
-//        public BuildException() { super(); }
-        public SSE_BuildException (String msg) { super(msg); }
-        public SSE_BuildException (String msg, Throwable cause) { super(msg, cause); }
-    }
+public class SSE_BuildException extends ItemException {
+    public SSE_BuildException (String msg) { super(msg); }
+    public SSE_BuildException (String msg, Throwable cause) { super(msg, cause); }
+}

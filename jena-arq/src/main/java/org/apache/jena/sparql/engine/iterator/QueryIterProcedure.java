@@ -18,73 +18,65 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.procedure.Procedure ;
-import org.apache.jena.sparql.serializer.SerializationContext ;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.procedure.Procedure;
+import org.apache.jena.sparql.serializer.SerializationContext;
 
-/** QueryIterator for a procedure.  Delays first touch until first call because
- *  first touch may cause work to be done.
- *  
- *  Assumes .build already called. */
+/**
+ * QueryIterator for a procedure. Delays first touch until first call because first
+ * touch may cause work to be done.
+ */
 
-public class QueryIterProcedure extends QueryIter1
-{
-    private Procedure proc ;
-    private boolean initialized = false ;
-    private QueryIterator procIter = null ;
-    
-    public QueryIterProcedure(QueryIterator input, Procedure proc, ExecutionContext execCxt)
-    {
-        super(input, execCxt) ;
-        this.proc = proc ;
+public class QueryIterProcedure extends QueryIter1 {
+    private final Procedure proc;
+    private boolean initialized = false;
+    private QueryIterator procIter = null;
+
+    public QueryIterProcedure(QueryIterator input, Procedure proc, ExecutionContext execCxt) {
+        super(input, execCxt);
+        this.proc = proc;
     }
 
-    private void init()
-    {
-        if ( ! initialized )
-        {
-            procIter = proc.proc(getInput(), getExecContext()) ;
-            initialized = true ;
+    private void init() {
+        if ( !initialized ) {
+            procIter = proc.proc(getInput(), getExecContext());
+            initialized = true;
         }
     }
 
     @Override
-    protected void closeSubIterator()
-    { 
-        init() ;    // Ensure initialized even if immediately closed.
-        procIter.close(); 
+    protected void closeSubIterator() {
+        // Ensure initialized even if immediately closed.
+        init();
+        procIter.close();
     }
 
     @Override
-    protected void requestSubCancel()
-    { 
-       if (procIter != null) 
-    	   procIter.cancel(); 
-    }
-    
-    @Override
-    protected boolean hasNextBinding()
-    {
-        init() ;
-        return procIter.hasNext() ;
+    protected void requestSubCancel() {
+        if ( procIter != null )
+            procIter.cancel();
     }
 
     @Override
-    protected Binding moveToNextBinding()
-    {
-        init( ) ;
-        return procIter.nextBinding() ;
+    protected boolean hasNextBinding() {
+        init();
+        return procIter.hasNext();
     }
-    
+
     @Override
-    protected void details(IndentedWriter out, SerializationContext sCxt)
-    {
-        out.print(Lib.className(this)) ;
-        out.print(" ") ;
-        proc.output(out, sCxt) ;
+    protected Binding moveToNextBinding() {
+        init();
+        return procIter.nextBinding();
+    }
+
+    @Override
+    protected void details(IndentedWriter out, SerializationContext sCxt) {
+        out.print(Lib.className(this));
+        out.print(" ");
+        proc.output(out, sCxt);
     }
 }

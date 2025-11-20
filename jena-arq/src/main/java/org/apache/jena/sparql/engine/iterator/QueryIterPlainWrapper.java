@@ -73,7 +73,7 @@ public class QueryIterPlainWrapper extends QueryIter
 
     @Override
     protected void requestCancel()
-    { }
+    { closeIterator(); }
 
     @Override
     public void output(IndentedWriter out, SerializationContext sCxt)

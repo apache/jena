@@ -190,7 +190,7 @@ public class HttpAction
             transactional = dsg;
             isTransactional = false;
         } else {
-            // Nothing to build on.  Be safe.
+            // Nothing to build on. Be safe.
             transactional = TransactionalLock.createMutex();
             isTransactional = false;
         }
