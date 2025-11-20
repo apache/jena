@@ -385,5 +385,4 @@ public class ActionExecLib {
             Fuseki.serverLog.warn("Exception on counter dec", ex);
         }
     }
-
 }

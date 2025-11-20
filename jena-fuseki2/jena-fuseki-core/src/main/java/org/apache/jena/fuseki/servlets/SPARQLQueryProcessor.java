@@ -303,8 +303,7 @@ public abstract class SPARQLQueryProcessor extends ActionService
         action.abortSilent();
     }
 
-    /**
-     * Check the query - if unacceptable, throw ActionErrorException
+    /** Check the query - if unacceptable, throw ActionErrorException
      * or call on of the {@link ServletOps#error} operations.
      * @param action HTTP Action
      * @param query  SPARQL Query

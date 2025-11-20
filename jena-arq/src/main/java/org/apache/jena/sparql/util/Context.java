@@ -390,6 +390,27 @@ public class Context {
         context.clear();
     }
 
+    /** Atomic compute. */
+    @SuppressWarnings("unchecked")
+    public <V> V compute(Symbol key, BiFunction<Symbol, Object, ? extends V> remappingFunction) {
+        Object obj = context.compute(key, remappingFunction);
+        return (V)obj;
+    }
+
+    /** Atomic computeIfAbsent. */
+    @SuppressWarnings("unchecked")
+    public <V> V computeIfAbsent(Symbol key, Function<Symbol, ? extends V> mappingFunction) {
+        Object obj = context.computeIfAbsent(key, mappingFunction);
+        return (V)obj;
+    }
+
+    /** Atomic computeIfPresent. */
+    @SuppressWarnings("unchecked")
+    public <V> V computeIfPresent(Symbol key, BiFunction<Symbol, Object, V> remappingFunction) {
+        Object obj = context.computeIfPresent(key, remappingFunction);
+        return (V)obj;
+    }
+
     @Override
     public String toString() {
         String x = "";
@@ -432,27 +453,6 @@ public class Context {
             Log.error(Context.class, "Class cast exception: Expected AtomicBoolean for cancel control: "+ex.getMessage());
             return null;
         }
-    }
-
-    /** Atomic compute. */
-    @SuppressWarnings("unchecked")
-    public <V> V compute(Symbol key, BiFunction<Symbol, Object, ? extends V> remappingFunction) {
-        Object obj = context.compute(key, remappingFunction);
-        return (V)obj;
-    }
-
-    /** Atomic computeIfAbsent. */
-    @SuppressWarnings("unchecked")
-    public <V> V computeIfAbsent(Symbol key, Function<Symbol, ? extends V> mappingFunction) {
-        Object obj = context.computeIfAbsent(key, mappingFunction);
-        return (V)obj;
-    }
-
-    /** Atomic computeIfPresent. */
-    @SuppressWarnings("unchecked")
-    public <V> V computeIfPresent(Symbol key, BiFunction<Symbol, Object, V> remappingFunction) {
-        Object obj = context.computeIfPresent(key, remappingFunction);
-        return (V)obj;
     }
 
     /** Get the context's cancel signal. Create and set one if needed. Context must not be null. */
