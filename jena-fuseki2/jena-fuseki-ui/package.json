@@ -28,6 +28,7 @@
     "@vue/compat": "^3.5.16",
     "@zazuko/yasqe": "^4.6.0",
     "@zazuko/yasr": "^4.6.0",
+    "yasgui-geo-tg": "Thib-G/yasgui-geo-tg#49091f8",
     "axios": "^1.6.1",
     "bootstrap": "^5.3.2",
     "codemirror": "6.0.2",
