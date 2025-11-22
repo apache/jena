@@ -32,6 +32,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.*;
@@ -56,9 +60,6 @@ import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 
 public class TestQueryExecutionCancel {
 
