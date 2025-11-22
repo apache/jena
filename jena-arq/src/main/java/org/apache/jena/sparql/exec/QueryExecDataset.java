@@ -378,15 +378,13 @@ public class QueryExecDataset implements QueryExec
     class TimeoutCallback implements Runnable {
         @Override
         public void run() {
-            synchronized (lockTimeout) {
-                // Abort query if and only if we are the expected callback.
-                // If the first row has appeared, and we are removing timeout1
-                // callback, it still may go off so it needs to check here
-                // it's still wanted.
-                if ( expectedCallback.get() == this ) {
-                    if ( cancelSignal != null )
-                        cancelSignal.set(true);
-                }
+            // Abort query if and only if we are the expected callback.
+            // If the first row has appeared, and we are removing timeout1
+            // callback, it still may go off so it needs to check here
+            // it's still wanted.
+            if ( expectedCallback.get() == this ) {
+                if ( cancelSignal != null )
+                    cancelSignal.set(true);
             }
         }
     }

@@ -21,6 +21,7 @@ package org.apache.jena.system;
 import static org.apache.jena.graph.Node.ANY;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -34,10 +35,12 @@ import org.apache.jena.rdf.model.impl.Util;
 import org.apache.jena.riot.out.NodeFmtLib;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.engine.iterator.IterAbortable;
 import org.apache.jena.sparql.graph.NodeConst;
 import org.apache.jena.sparql.util.graph.GNode;
 import org.apache.jena.sparql.util.graph.GraphList;
 import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.util.iterator.WrappedIterator;
 
 /**
  * A library of functions for working with {@link Graph graphs}. Internally, all
@@ -1130,5 +1133,21 @@ public class G {
         if ( x.equals("") )
             return false ;
         return true ;
+    }
+
+    // --- Cancellable variants ---
+
+    /**
+     * Cancellable variant of {@link Graph#find(Node, Node, Node)}.
+     * Wraps the iterator returned by {@code graph.find()} with the provided cancel signal.
+     * If the cancel signal is null then no wrapping is applied.
+     */
+    public static ExtendedIterator<Triple> find(AtomicBoolean cancel, Graph graph, Node subject, Node predicate, Node object) {
+        Objects.requireNonNull(graph, "graph");
+        ExtendedIterator<Triple> it = graph.find(subject, predicate, object);
+        if (cancel == null) {
+            return it;
+        }
+        return WrappedIterator.create(IterAbortable.wrap(it, cancel));
     }
 }

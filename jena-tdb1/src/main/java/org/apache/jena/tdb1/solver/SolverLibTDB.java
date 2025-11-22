@@ -148,16 +148,13 @@ public class SolverLibTDB
         List<Abortable> killList = new ArrayList<>();
         Iterator<Tuple<NodeId>> iter1 = ds.getQuadTable().getNodeTupleTable().find(NodeId.NodeIdAny, NodeId.NodeIdAny,
                                                                                    NodeId.NodeIdAny, NodeId.NodeIdAny);
+        iter1 = makeAbortable(iter1, killList, execCxt.getCancelSignal());
+
         if ( filter != null )
             iter1 = Iter.filter(iter1, filter);
 
         Iterator<NodeId> iter2 = Iter.map(iter1, t -> t.get(0));
-        // Project is cheap - don't brother wrapping iter1
-        iter2 = makeAbortable(iter2, killList);
-
         Iterator<NodeId> iter3 = Iter.distinct(iter2);
-        iter3 = makeAbortable(iter3, killList);
-
         Iterator<Node> iter4 = NodeLib.nodes(ds.getQuadTable().getNodeTupleTable().getNodeTable(), iter3);
 
         final Var var = Var.alloc(graphNode);

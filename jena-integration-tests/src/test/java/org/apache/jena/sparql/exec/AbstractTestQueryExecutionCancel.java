@@ -16,41 +16,48 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.api;
+package org.apache.jena.sparql.exec;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
-
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.query.*;
+import org.apache.jena.query.ARQ;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryCancelledException;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.ReadWrite;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.iterator.QueryIteratorCheck;
 import org.apache.jena.sparql.engine.iterator.QueryIteratorCheck.OpenIteratorException;
-import org.apache.jena.sparql.exec.QueryExec;
-import org.apache.jena.sparql.exec.QueryExecBuilder;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase0;
 import org.apache.jena.sparql.function.FunctionEnv;
@@ -60,8 +67,15 @@ import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
+import org.apache.jena.system.AutoTxn;
+import org.apache.jena.system.Txn;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
-public class TestQueryExecutionCancel {
+public abstract class AbstractTestQueryExecutionCancel {
+
+    public abstract Dataset createDataset();
 
     private static final String ns = "http://example/ns#";
 
@@ -79,70 +93,6 @@ public class TestQueryExecutionCancel {
     @BeforeAll public static void beforeClass() { FunctionRegistry.get().put(ns + "wait", wait.class); }
     //@AfterAll  public static void afterClass() { FunctionRegistry.get().remove(ns + "wait"); }
 
-    @Test
-    public void test_Cancel_API_1()
-    {
-        try(QueryExecution qExec = makeQExec("SELECT * {?s ?p ?o}")) {
-            ResultSet rs = qExec.execSelect();
-            assertTrue(rs.hasNext());
-            qExec.abort();
-            assertThrows(QueryCancelledException.class,
-                         ()-> rs.nextSolution(),
-                         ()->"Results not expected after cancel.");
-        }
-    }
-
-    @Test
-    public void test_Cancel_API_2()
-    {
-        try(QueryExecution qExec = makeQExec("PREFIX ex: <" + ns + "> SELECT * {?s ?p ?o . FILTER ex:wait(100) }")) {
-            ResultSet rs = qExec.execSelect();
-            assertTrue(rs.hasNext());
-            qExec.abort();
-            assertThrows(QueryCancelledException.class,
-                         ()-> rs.hasNext(),
-                         ()->"Results not expected after cancel.");
-        }
-    }
-
-    @Test public void test_Cancel_API_3() throws InterruptedException
-    {
-        // Don't qExec.close on this thread.
-        QueryExecution qExec = makeQExec("PREFIX ex: <" + ns + "> SELECT * { ?s ?p ?o . FILTER ex:wait(100) }");
-        CancelThreadRunner thread = new CancelThreadRunner(qExec);
-        thread.start();
-        synchronized (qExec) { qExec.wait(); }
-        synchronized (qExec) { qExec.abort();}
-        synchronized (qExec) { qExec.notify(); }
-        assertEquals (1, thread.getCount());
-    }
-
-    @Test public void test_Cancel_API_4() throws InterruptedException
-    {
-        // Don't qExec.close on this thread.
-        QueryExecution qExec = makeQExec("PREFIX ex: <" + ns + "> SELECT * { ?s ?p ?o } ORDER BY ex:wait(100)");
-        CancelThreadRunner thread = new CancelThreadRunner(qExec);
-        thread.start();
-        synchronized (qExec) { qExec.wait(); }
-        synchronized (qExec) { qExec.abort(); }
-        synchronized (qExec) { qExec.notify(); }
-        assertEquals (1, thread.getCount());
-    }
-
-    @Test
-    public void test_Cancel_API_5() {
-        try (QueryExecution qe = QueryExecutionFactory.create("SELECT * { ?s ?p ?o }", m)) {
-            qe.abort();
-            assertThrows(QueryCancelledException.class, ()-> ResultSetFormatter.consume(qe.execSelect()));
-        }
-    }
-
-    private QueryExecution makeQExec(String queryString)
-    {
-        Query q = QueryFactory.create(queryString);
-        QueryExecution qExec = QueryExecutionFactory.create(q, m);
-        return qExec;
-    }
 
     class CancelThreadRunner extends Thread
     {
@@ -182,52 +132,52 @@ public class TestQueryExecutionCancel {
 
     @Test
     public void test_cancel_select_1() {
-        cancellationTest("SELECT * {}", QueryExec::select);
+        cancellationTest("SELECT * {}", QueryExecution::execSelect);
     }
 
     @Test
     public void test_cancel_select_2() {
-        cancellationTest("SELECT * {}", QueryExec::select, Iterator::hasNext);
+        cancellationTest("SELECT * {}", QueryExecution::execSelect, Iterator::hasNext);
     }
 
     @Test
     public void test_cancel_ask() {
-        cancellationTest("ASK {}", QueryExec::ask);
+        cancellationTest("ASK {}", QueryExecution::execAsk);
     }
 
     @Test
     public void test_cancel_construct() {
-        cancellationTest("CONSTRUCT WHERE {}", QueryExec::construct);
+        cancellationTest("CONSTRUCT WHERE {}", QueryExecution::execConstruct);
     }
 
     @Test
     public void test_cancel_describe() {
-        cancellationTest("DESCRIBE * {}", QueryExec::describe);
+        cancellationTest("DESCRIBE * {}", QueryExecution::execDescribe);
     }
 
     @Test
     public void test_cancel_construct_dataset() {
-        cancellationTest("CONSTRUCT{} WHERE{}", QueryExec::constructDataset);
+        cancellationTest("CONSTRUCT{} WHERE{}", QueryExecution::execConstructDataset);
     }
 
     @Test
     public void test_cancel_construct_triples_1() {
-        cancellationTest("CONSTRUCT{} WHERE{}", QueryExec::constructTriples, Iterator::hasNext);
+        cancellationTest("CONSTRUCT{} WHERE{}", QueryExecution::execConstructTriples, Iterator::hasNext);
     }
 
     @Test
     public void test_cancel_construct_triples_2() {
-        cancellationTest("CONSTRUCT{} WHERE{}", QueryExec::constructTriples);
+        cancellationTest("CONSTRUCT{} WHERE{}", QueryExecution::execConstructTriples);
     }
 
     @Test
     public void test_cancel_construct_quads_1() {
-        cancellationTest("CONSTRUCT{} WHERE{}", QueryExec::constructQuads, Iterator::hasNext);
+        cancellationTest("CONSTRUCT{} WHERE{}", QueryExecution::execConstructQuads, Iterator::hasNext);
     }
 
     @Test
     public void test_cancel_construct_quads_2() {
-        cancellationTest("CONSTRUCT{} WHERE{}", QueryExec::constructQuads);
+        cancellationTest("CONSTRUCT{} WHERE{}", QueryExecution::execConstructQuads);
     }
 
     @Test
@@ -293,38 +243,43 @@ public class TestQueryExecutionCancel {
         return fnReg;
     }
 
-    /** Create a model with 1000 triples. */
-    static Graph createTestGraph() {
-        Graph graph = GraphFactory.createDefaultGraph();
-        IntStream.range(0, 1000)
+    static void generateTestData(Graph graph, int size) {
+        IntStream.range(0, size)
             .mapToObj(i -> NodeFactory.createURI("http://www.example.org/r" + i))
             .forEach(node -> graph.add(node, node, node));
-        return graph;
     }
 
-    static <T> void cancellationTest(String queryString, Function<QueryExec, Iterator<T>> itFactory, Consumer<Iterator<T>> itConsumer) {
+    public <T> void cancellationTest(String queryString, Function<QueryExecution, Iterator<T>> itFactory, Consumer<Iterator<T>> itConsumer) {
         cancellationTest(queryString, itFactory::apply);
         cancellationTestForIterator(queryString, itFactory, itConsumer);
     }
 
     /** Abort the query exec and expect all execution methods to fail */
-    static void cancellationTest(String queryString, Consumer<QueryExec> execAction) {
-        DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
-        dsg.add(SSE.parseQuad("(_ :s :p :o)"));
-        try(QueryExec aExec = QueryExec.dataset(dsg).query(queryString).build()) {
-            aExec.abort();
-            assertThrows(QueryCancelledException.class, ()-> execAction.accept(aExec));
+    public void cancellationTest(String queryString, Consumer<QueryExecution> execAction) {
+        Dataset ds = createDataset();
+        try (AutoTxn txn = Txn.autoTxn(ds, ReadWrite.WRITE)) {
+            ds.asDatasetGraph().add(SSE.parseQuad("(_ :s :p :o)"));
+            txn.commit();
+        }
+        try (AutoTxn txn = Txn.autoTxn(ds, ReadWrite.READ);
+             QueryExecution exec = QueryExecution.dataset(ds).query(queryString).build()) {
+            exec.abort();
+            assertThrows(QueryCancelledException.class, ()-> execAction.accept(exec));
         }
     }
 
     /** Obtain an iterator and only afterwards abort the query exec.
      *  Operations on the iterator are now expected to fail. */
-    static <T> void cancellationTestForIterator(String queryString, Function<QueryExec, Iterator<T>> itFactory, Consumer<Iterator<T>> itConsumer) {
-        DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
-        dsg.add(SSE.parseQuad("(_ :s :p :o)"));
-        try(QueryExec aExec = QueryExec.dataset(dsg).query(queryString).build()) {
-            Iterator<T> it = itFactory.apply(aExec);
-            aExec.abort();
+    public <T> void cancellationTestForIterator(String queryString, Function<QueryExecution, Iterator<T>> itFactory, Consumer<Iterator<T>> itConsumer) {
+        Dataset ds = createDataset();
+        try (AutoTxn txn = Txn.autoTxn(ds, ReadWrite.WRITE)) {
+            ds.asDatasetGraph().add(SSE.parseQuad("(_ :s :p :o)"));
+            txn.commit();
+        }
+        try (AutoTxn txn = Txn.autoTxn(ds, ReadWrite.READ);
+             QueryExecution exec = QueryExecution.dataset(ds).query(queryString).build()) {
+            Iterator<T> it = itFactory.apply(exec);
+            exec.abort();
             assertThrows(QueryCancelledException.class, ()-> itConsumer.accept(it));
         }
     }
@@ -335,7 +290,7 @@ public class TestQueryExecutionCancel {
     @Timeout(value = 10000, unit=TimeUnit.MILLISECONDS)
     public void test_cancel_concurrent_1() {
         // Create a query that creates 3 cross joins - resulting in one billion result rows.
-        test_cancel_concurrent("SELECT * { ?a ?b ?c . ?d ?e ?f . ?g ?h ?i . }");
+        test_cancel_concurrent(1000, "SELECT * { ?a ?b ?c . ?d ?e ?f . ?g ?h ?i . }");
     }
 
     @Test
@@ -343,28 +298,30 @@ public class TestQueryExecutionCancel {
     public void test_cancel_concurrent_2() {
         // Create a query that creates 3 cross joins - resulting in one billion result rows.
         // Tests against additional operators, namely UNION and BIND.
-        test_cancel_concurrent("SELECT * { { ?a ?b ?c . ?d ?e ?f . ?g ?h ?i . } UNION { BIND('x' AS ?x) } }");
+        test_cancel_concurrent(1000, "SELECT * { { ?a ?b ?c . ?d ?e ?f . ?g ?h ?i . } UNION { BIND('x' AS ?x) } }");
     }
 
     @Test
     @Timeout(value = 10000, unit=TimeUnit.MILLISECONDS)
     public void test_cancel_concurrent_3() {
-        test_cancel_concurrent("""
-            SELECT * {
-              ?s ?p ?o
-              {
+        test_cancel_concurrent(
+            1000,
+            """
                 SELECT * {
                   ?s ?p ?o
+                  {
+                    SELECT * {
+                      ?x ?y ?z
+                    }
+                    LIMIT 1000000
+                  }
+                  ?s ?p ?o
                 }
-                LIMIT 1
-              }
-              ?s ?p ?o
-            }
-            LIMIT 1
-        """);
+                LIMIT 1000000
+            """);
     }
 
-    private static void test_cancel_concurrent(String queryString) {
+    private void test_cancel_concurrent(int testDataSize, String queryString) {
         int maxCancelDelayInMillis = 100;
 
         int cpuCount = Runtime.getRuntime().availableProcessors();
@@ -372,25 +329,26 @@ public class TestQueryExecutionCancel {
         int taskCount = cpuCount * 10;
 
         // Create a model with 1000 triples
-        Model model = ModelFactory.createModelForGraph(createTestGraph());
+        Dataset ds = createDataset();
+        try (AutoTxn txn = Txn.autoTxn(ds, ReadWrite.WRITE)) {
+            generateTestData(ds.asDatasetGraph().getDefaultGraph(), testDataSize);
+            ds.commit();
+        }
 
         Query query = QueryFactory.create(queryString);
-        Callable<QueryExecution> qeFactory = () -> QueryExecutionFactory.create(query, model);
-
-        runConcurrentAbort(taskCount, maxCancelDelayInMillis, qeFactory, TestQueryExecutionCancel::doCount);
+        Callable<QueryExecution> qeFactory = () -> QueryExecutionFactory.create(query, ds);
+        runConcurrentAbort(taskCount, maxCancelDelayInMillis, ds, qeFactory, AbstractTestQueryExecutionCancel::doCount);
     }
 
     private static final int doCount(QueryExecution qe) {
-        try (QueryExecution qe2 = qe) {
-            ResultSet rs = qe2.execSelect();
-            int size = ResultSetFormatter.consume(rs);
-            return size;
-        }
+        ResultSet rs = qe.execSelect();
+        int size = ResultSetFormatter.consume(rs);
+        return size;
     }
 
     /** Reusable method that creates a parallel stream that starts query executions
      *  and schedules cancel tasks on a separate thread pool. */
-    public static void runConcurrentAbort(int taskCount, int maxCancelDelay, Callable<QueryExecution> qeFactory, Function<QueryExecution, ?> processor) {
+    public static void runConcurrentAbort(int taskCount, int maxCancelDelay, Transactional ds, Callable<QueryExecution> qeFactory, Function<QueryExecution, ?> processor) {
         Random cancelDelayRandom = new Random();
         ExecutorService executorService = Executors.newCachedThreadPool();
         try {
@@ -398,46 +356,58 @@ public class TestQueryExecutionCancel {
             list
                 .parallelStream()
                 .forEach(i -> {
-                    QueryExecution qe;
-                    try {
-                        qe = qeFactory.call();
+                    try (AutoTxn txn = Txn.autoTxn(ds, ReadWrite.READ);
+                         QueryExecution qe = qeFactory.call()) {
+                        // Fail if any iterators are not properly closed
+                        qe.getContext().set(QueryIteratorCheck.failOnOpenIterator, true);
+
+                        // Schedule the concurrent abort action with random delay.
+                        int delayToAbort = cancelDelayRandom.nextInt(maxCancelDelay);
+                        boolean[] abortDone = {false};
+                        Future<?> future = executorService.submit(() -> {
+                            try {
+                                Thread.sleep(delayToAbort);
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
+                            // System.out.println("Abort: " + qe);
+                            abortDone[0] = true;
+                            qe.abort();
+                        });
+
+                        // Meanwhile start the query execution.
+                        try {
+                            processor.apply(qe);
+                        } catch (Throwable e) {
+                            if (!(e instanceof QueryCancelledException)) {
+                                // Unexpected exception - print out the stack trace
+                                e.printStackTrace();
+                            }
+                            assertEquals(QueryCancelledException.class, e.getClass());
+
+                            boolean hasOpenIterators = Arrays.stream(e.getSuppressed())
+                                    .anyMatch(x -> x instanceof OpenIteratorException);
+                            if (hasOpenIterators) {
+                                throw new RuntimeException("Encountered open iterators.", e);
+                            }
+                        }
+
+                        // The query has completed. Cancel the abort thread if it hasn't done so yet.
+                        if (!abortDone[0]) {
+                            future.cancel(true);
+                        }
+                        try {
+                            future.get();
+                        } catch (CancellationException e) {
+                            // In this test setup, it is an error for a query to complete before abort gets called.
+                            throw new RuntimeException("Query completed too early", e);
+                        } catch (Exception e) {
+                            // Should not happen.
+                            throw new RuntimeException(e);
+                        }
+
                     } catch (Exception e) {
-                        throw new RuntimeException("Failed to build a query execution", e);
-                    }
-
-                    // Fail if any iterators are not properly closed
-                    qe.getContext().set(QueryIteratorCheck.failOnOpenIterator, true);
-
-                    Future<?> future = executorService.submit(() -> processor.apply(qe));
-                    int delayToAbort = cancelDelayRandom.nextInt(maxCancelDelay);
-                    try {
-                        Thread.sleep(delayToAbort);
-                    } catch (InterruptedException e) {
                         throw new RuntimeException(e);
-                    }
-                    // System.out.println("Abort: " + qe);
-                    qe.abort();
-                    try {
-                        // System.out.println("Waiting for: " + qe);
-                        future.get();
-                    } catch (ExecutionException e) {
-                        Throwable cause = e.getCause();
-                        if (!(cause instanceof QueryCancelledException)) {
-                            // Unexpected exception - print out the stack trace
-                            e.printStackTrace();
-                        }
-                        assertEquals(QueryCancelledException.class, cause.getClass());
-
-                        boolean hasOpenIterators = Arrays.stream(cause.getSuppressed())
-                                .anyMatch(x -> x instanceof OpenIteratorException);
-                        if (hasOpenIterators) {
-                            throw new RuntimeException("Encountered open iterators.", e);
-                        }
-
-                    } catch (InterruptedException e) {
-                        // Ignored
-                    } finally {
-                        // System.out.println("Completed: " + qe);
                     }
                 });
         } finally {
