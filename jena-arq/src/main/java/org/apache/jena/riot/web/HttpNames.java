@@ -43,7 +43,6 @@ public class HttpNames
     public static final String hLocation            = "Location" ;
     public static final String hVary                = "Vary" ;
     public static final String hUserAgent           = "User-Agent" ;
-    public static final String charset              = "charset" ;
 
     // CORS:
     //   http://www.w3.org/TR/cors/  http://esw.w3.org/CORS_Enabled
@@ -56,6 +55,14 @@ public class HttpNames
     public static final String hOrigin                          = "Origin" ;
     public static final String hAccessControlRequestMethod      = "Access-Control-Request-Method" ;
     public static final String hAccessControlRequestHeaders     = "Access-Control-Request-Headers" ;
+
+    // Media type parameters.
+    // XXX Rename as mtCharset?
+    public static final String charset              = "charset" ;
+    // RDF .1.2+ SPARQL 1.2+ HTTP header parameters
+    public static final String mtParamVersion         = "version" ;
+    // RFC 6906 -- https://www.rfc-editor.org/rfc/rfc6906
+    public static final String mtParamProfile         = "profile" ;
 
     // GSP parameter names
     public static final String paramGraph           = "graph" ;
@@ -81,7 +88,7 @@ public class HttpNames
     // Jena parameter names (SPARQL protocol extensions)
     public static final String paramStyleSheet      = "stylesheet" ;
     public static final String paramLang            = "lang" ;
-    public static final String paramAccept          = "accept" ;
+    public static final String paramAccept          = "accept" ;        // Unused
     public static final String paramOutput1         = "output" ;
     public static final String paramOutput2         = "format" ;        // Alternative name
     public static final String paramOutput3         = "results" ;       // Alternative name
