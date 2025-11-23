@@ -132,7 +132,8 @@ public class Responses
                 // Status code 200 may have already been sent.
                 // We can try to set the HTTP response code anyway.
                 // Breaking the results is the best we can do to indicate the timeout.
-                action.setResponseStatus(HttpSC.BAD_REQUEST_400);
+                // There isn't an ideal status code. Keep this aligned with the status used in ActionExecLib. execActionSub
+                action.setResponseStatus(Fuseki.SC_QueryCancelled);
                 action.log.info(format("[%d] Query Cancelled - results truncated (but 200 may have already been sent)", action.id));
                 PrintStream ps = new PrintStream(out);
                 ps.println();
