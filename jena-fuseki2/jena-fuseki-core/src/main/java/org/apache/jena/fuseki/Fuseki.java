@@ -32,6 +32,7 @@ import org.apache.jena.riot.system.stream.LocatorHTTP;
 import org.apache.jena.riot.system.stream.StreamManager;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
+import org.apache.jena.web.HttpSC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -168,6 +169,10 @@ public class Fuseki {
 
     public static final String        compactLogName    = PATH + ".Compact";
     public static final Logger        compactLog        = LoggerFactory.getLogger(compactLogName);;
+
+    // There isn't an ideal status code for a cancelled query.
+    // HTTP 408 "Request timeout" which is about connection management
+    public static int SC_QueryCancelled                 = HttpSC.SERVICE_UNAVAILABLE_503;
 
     // Servlet context attribute names used by the core engine.
     // Also in FusekiServerCtl for Fuseki server

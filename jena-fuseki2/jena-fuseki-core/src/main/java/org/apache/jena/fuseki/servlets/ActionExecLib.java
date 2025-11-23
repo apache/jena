@@ -129,7 +129,7 @@ public class ActionExecLib {
             //    dataset -- dataset.getContect(ARQ.queryTimeout)
             //    protocol -- SPARQL_Query.setAnyTimeouts
             String message = "Query timed out";
-            ServletOps.responseSendError(response, HttpSC.SERVICE_UNAVAILABLE_503, message);
+            ServletOps.responseSendError(response, Fuseki.SC_QueryCancelled, message);
         } catch (QueryDeniedException ex) {
             // Typically a configuration setting blocks the query.
             ServletOps.responseSendError(response, HttpSC.UNPROCESSABLE_ENTITY_422, ex.getMessage());
