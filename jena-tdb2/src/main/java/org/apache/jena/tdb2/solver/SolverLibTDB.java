@@ -106,7 +106,7 @@ public class SolverLibTDB
                 // Can occur with BindingProject
                 continue;
 
-            // Rely on the node table cache for efficency - we will likely be
+            // Rely on the node table cache for efficiency - we will likely be
             // repeatedly looking up the same node in different bindings.
             NodeId id = nodeTable.getNodeIdForNode(n);
             // Even put in "does not exist" for a node now known not to be in the DB.
@@ -148,9 +148,7 @@ public class SolverLibTDB
     private static Tuple<NodeId> TupleANY = TupleFactory.create4(NodeId.NodeIdAny, NodeId.NodeIdAny, NodeId.NodeIdAny, NodeId.NodeIdAny);
 
     private enum GraphNamesDistinctMode {
-        NONE,
-        ADJACENT,
-        FULL;
+        NONE, ADJACENT, FULL;
     }
 
     /** Find all the graph names in the quads table. */
@@ -198,22 +196,17 @@ public class SolverLibTDB
         if ( filter != null )
             iter1 = Iter.filter(iter1, filter);
 
+        // Extract graph node.
         Iterator<NodeId> iter2 = Iter.map(iter1, t -> t.get(0));
+        // iter2 yields 1-1 with iter1 and does not touch the database
+        // so there is no need to wrap iter2 in an IterAbortable.
 
         // Apply the necessary distinct calculation (if any)
-        Iterator<NodeId> iter3;
-        switch (distinctMode) {
-            case FULL:
-                iter3 = Iter.distinct(iter2);
-                break;
-            case ADJACENT:
-                iter3 = Iter.distinctAdjacent(iter2);
-                break;
-            case NONE:
-            default:
-                iter3 = iter2;
-                break;
-        }
+        Iterator<NodeId> iter3 = switch (distinctMode) {
+            case FULL -> Iter.distinct(iter2);
+            case ADJACENT -> Iter.distinctAdjacent(iter2);
+            default -> iter2;
+        };
 
         Iterator<Node> iter4 = NodeLib.nodes(ds.getQuadTable().getNodeTupleTable().getNodeTable(), iter3);
 
