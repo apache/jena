@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.query.ARQ;
+import org.apache.jena.query.QueryCancelledException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.engine.main.OpExecutorFactory;
@@ -181,6 +182,12 @@ public class ExecutionContext implements FunctionEnv
 
     public AtomicBoolean getCancelSignal() {
         return cancelSignal;
+    }
+
+    /** Check the cancel signal and throw {@link QueryCancelledException}} if it is true. */
+    public void checkCancelSignal() {
+      if ( cancelSignal != null && cancelSignal.get() )
+          throw new QueryCancelledException();
     }
 
     public void openIterator(QueryIterator qIter) {
