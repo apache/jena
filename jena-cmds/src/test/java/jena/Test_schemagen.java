@@ -232,6 +232,24 @@ public class Test_schemagen
     }
 
     @Test
+    public void testVersionInfoURI() throws Exception {
+        String SOURCE =
+                "@prefix csvw: <http://www.w3.org/ns/csvw#> .\n" +
+                "@prefix dc: <http://purl.org/dc/terms/> .\n" +
+                "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n" +
+                "\n" +
+                "# CSVM Ontology definition\n" +
+                "csvw: a owl:Ontology;\n" +
+                "  dc:title \"CSVW Namespace Vocabulary Terms\"@en;\n" +
+                "  owl:versionInfo <https://github.com/w3c/csvw/commit/fcc9db20ba4de10e41e964eee1b5d01defa4c664>;\n" +
+                "  .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {},
+                             new String[] {".*public static final String VERSION_INFO = \"https://github.com/w3c/csvw/commit/fcc9db20ba4de10e41e964eee1b5d01defa4c664\";*"},
+                             new String[] {} );
+    }
+
+    @Test
     public void testDatatype0() throws Exception {
         String SOURCE = PREFIX + "ex:d a rdfs:Datatype . ex:d rdfs:comment \"custom datatype\" .";
         testSchemagenOutput( SOURCE, null,

@@ -752,7 +752,11 @@ public class schemagen {
                 Resource ont = i.nextStatement().getSubject();
                 StmtIterator j = m_source.getBaseModel().listStatements( ont, OWL.versionInfo, (RDFNode)null );
                 if (j.hasNext()) {
-                    versionInfo = j.nextStatement().getObject().asLiteral().getLexicalForm();
+                    RDFNode versionInfoObject = j.nextStatement().getObject();
+                    if (versionInfoObject.isResource())
+                        versionInfo = versionInfoObject.asResource().getURI();
+                    else
+                        versionInfo = versionInfoObject.asLiteral().getLexicalForm();
 
                     // check for ambiguous answers
                     if (j.hasNext()) {
