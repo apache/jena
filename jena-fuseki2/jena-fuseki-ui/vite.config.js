@@ -67,6 +67,14 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     css: true,
+    server: {
+      deps: {
+        inline: [
+          /yasgui-geo-tg/,
+          /leaflet/,
+        ]
+      }
+    },
     mockReset: true,
     restoreMocks: true,
     clearMocks: true,
