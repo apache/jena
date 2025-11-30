@@ -96,6 +96,7 @@ public class HttpNames
     public static final String paramForceAccept     = "force-accept" ;  // Force the accept header at the last moment
     public static final String paramTimeout         = "timeout" ;
 
+    // Replace by enum HttpMethods
     public static final String METHOD_DELETE        = "DELETE";
     public static final String METHOD_HEAD          = "HEAD";
     public static final String METHOD_GET           = "GET";
