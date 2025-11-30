@@ -96,11 +96,20 @@ public class SPARQLFuncOp {
 
     // ---- All the implementations
 
+    /** @deprecated Use  {@link #sparql_add} */
+    @Deprecated(forRemoval = true)
     public static NodeValue sparql_plus(NodeValue nv1, NodeValue nv2) {
         if ( strict() )
             return XSDFuncOp.numAdd(nv1, nv2);
         return NodeValueOps.additionNV(nv1, nv2);
     }
+
+    public static NodeValue sparql_add(NodeValue nv1, NodeValue nv2) {
+        if ( strict() )
+            return XSDFuncOp.numAdd(nv1, nv2);
+        return NodeValueOps.additionNV(nv1, nv2);
+    }
+
 
     public static NodeValue sparql_subtract(NodeValue nv1, NodeValue nv2) {
         if ( strict() )

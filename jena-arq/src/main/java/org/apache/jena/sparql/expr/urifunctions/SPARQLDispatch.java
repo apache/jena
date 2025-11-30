@@ -166,8 +166,8 @@ public class SPARQLDispatch {
         // Move out/rename to "FunctionDispatch"
         // Add ARQ specials.
 
-        register(map, "plus", SPARQLFuncOp::sparql_plus );
-        register(map, "add", SPARQLFuncOp::sparql_plus );           // Alt name.
+        register(map, "plus", SPARQLFuncOp::sparql_add );
+        register(map, "add", SPARQLFuncOp::sparql_add );            // Alt name.
         register(map, "subtract", SPARQLFuncOp::sparql_subtract );
         register(map, "minus", SPARQLFuncOp::sparql_subtract );     // Alt name.
         register(map, "multiply", SPARQLFuncOp::sparql_multiply );
