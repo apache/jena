@@ -513,4 +513,15 @@ public abstract class AbstractDatasetGraphTests
             dsg.delete(Quad.unionGraph, quad.getSubject(), quad.getPredicate(), quad.getObject())
             );
     }
+
+    @Test
+    public void copyGraph_1() {
+        DatasetGraph dsg = emptyDataset();
+        Quad quad = SSE.parseQuad("(quad :g :s :p :o)");
+        Node h = SSE.parseNode(":h");
+        dsg.add(quad);
+        Graph graph = dsg.getGraph(quad.getGraph());
+        dsg.addGraph(h, graph);
+        assertEquals(2, dsg.size());
+    }
 }

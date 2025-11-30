@@ -33,6 +33,7 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingLib;
 import org.apache.jena.sparql.exec.QueryExecDatasetBuilder;
+import org.apache.jena.sparql.exec.QueryExecDatasetBuilderDeferred;
 import org.apache.jena.sparql.exec.QueryExecutionCompat;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
@@ -49,7 +50,7 @@ public class QueryExecutionDatasetBuilder implements QueryExecutionBuilder {
     private Dataset dataset = null;
 
     public QueryExecutionDatasetBuilder() {
-        builder = QueryExecDatasetBuilder.create();
+        builder = QueryExecDatasetBuilderDeferred.create();
     }
 
     @Override
@@ -150,7 +151,7 @@ public class QueryExecutionDatasetBuilder implements QueryExecutionBuilder {
     public QueryExecution build() {
         // QueryExecutionCompat delays creating the execution (builder.build) until
         // it is required so that setters in QueryExecution
-        // (setInitialBinding/setTimeout*) act on the QueryExec builder.
+        // (setTimeout*) act on the QueryExec builder.
         return QueryExecutionCompat.compatibility(builder, dataset, builder.getQuery(), builder.getQueryString());
     }
 

@@ -22,10 +22,13 @@
 package org.apache.jena.sparql;
 
 import org.apache.jena.cdt.CDT;
-import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.shared.impl.PrefixMappingImpl ;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.shared.impl.PrefixMappingImpl;
 import org.apache.jena.sparql.core.Prologue;
-import org.apache.jena.sparql.util.Symbol ;
+import org.apache.jena.sparql.exec.QueryExecBuilder;
+import org.apache.jena.sparql.exec.UpdateExecBuilder;
+import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.sys.JenaSystem;
 
 /**
@@ -326,6 +329,33 @@ public class ARQConstants
     public static final Symbol registryExtensions =
         SystemARQ.allocSymbol("registryExtensions") ;
 
-    public static void init() {}
+    /** The query exec builder registry key */
+    public static final Symbol registryQueryExecBuilders =
+        SystemARQ.allocSymbol("registryQueryExecBuilders") ;
 
+    /** The update exec builder registry key */
+    public static final Symbol registryUpdateExecBuilders =
+        SystemARQ.allocSymbol("registryUpdateExecBuilders") ;
+
+    /**
+     * Symbol that tells {@link QueryExecBuilder} and {@link UpdateExecBuilder}
+     * implementations whether they should <i>eagerly</i> parse the supplied SPARQL strings.
+     *
+     * <p>When the symbol is <i>absent</i> from a {@link Context}
+     * (or the context attached to a {@link org.apache.jena.sparql.core.DatasetGraph}),
+     * parse‑checking is <i>enabled</i> – this is the default behavior.
+     *
+     * Placing the symbol in a {@link Context}
+     * with the value {@code false} explicitly disables the eager parse check.
+     * This is useful for builders that forward the query/update string to an
+     * engine that accepts third‑party extensions which the ARQ parser would
+     * reject.
+     *
+     * @see QueryExecBuilder
+     * @see UpdateExecBuilder
+     */
+    public static final Symbol parseCheck =
+        SystemARQ.allocSymbol("parseCheck") ;
+
+    public static void init() {}
 }

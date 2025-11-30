@@ -35,7 +35,7 @@ import org.apache.jena.sparql.util.Context;
 
 /**
  * {@link QueryExec} that delays making the QueryExec until needed by a query operation
- * This means timeouts and initialBinding can still be set via the {@link QueryExecMod}.
+ * This means timeouts can still be set via the {@link QueryExecMod}.
  *
  * @see QueryExec
  */

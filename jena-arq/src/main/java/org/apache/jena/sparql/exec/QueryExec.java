@@ -22,6 +22,7 @@
 package org.apache.jena.sparql.exec;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.json.JsonObject;
@@ -29,6 +30,7 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
+import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
@@ -49,12 +51,17 @@ public interface QueryExec extends AutoCloseable {
      * to get a {@link QueryExecDatasetBuilder}.
      */
     public static QueryExecBuilder dataset(DatasetGraph dataset) {
-        return QueryExecDatasetBuilder.create().dataset(dataset);
+        Objects.requireNonNull(dataset);
+        QueryExecBuilder builder = SystemARQ.DeferredExecBuilders
+                ? QueryExecBuilderRegistry.newQueryExecBuilder(dataset)
+                : QueryExecDatasetBuilderMain.create().dataset(dataset);
+        return builder;
     }
 
     /** Create a {@link QueryExecBuilder} for a graph. */
     public static QueryExecBuilder graph(Graph graph) {
-        return QueryExecDatasetBuilder.create().graph(graph);
+        DatasetGraph dsg = DatasetGraphFactory.wrap(graph);
+        return dataset(dsg);
     }
 
     /** Create a {@link QueryExecBuilder} for a remote endpoint. */
@@ -62,7 +69,13 @@ public interface QueryExec extends AutoCloseable {
         return QueryExecHTTPBuilder.create().endpoint(serviceURL);
     }
 
-    /** Create an uninitialized {@link QueryExecDatasetBuilder}. */
+    /**
+     * Create an uninitialized {@link QueryExecDatasetBuilderDeferred}.
+     * This builder is not tied to a specific dataset implementation, and
+     * its dataset property can be freely modified.
+     * Upon build, the specialized builder for the dataset is chosen and the
+     * settings are transferred.
+     */
     public static QueryExecDatasetBuilder newBuilder() {
         return QueryExecDatasetBuilder.create();
     }

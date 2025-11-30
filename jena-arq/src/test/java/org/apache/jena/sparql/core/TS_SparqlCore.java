@@ -50,6 +50,8 @@ import org.junit.platform.suite.api.Suite;
     , TestDatasetGraphFilteredView.class
     , TestSpecialDatasets.class
     , TestDatasetMisc.class
+
+    , TestDatasetGraphSparql.class
 })
 
 public class TS_SparqlCore

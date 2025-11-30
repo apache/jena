@@ -29,6 +29,7 @@ import org.junit.platform.suite.api.Suite;
     TestExecEnvironment.class
     , TestQueryExecDataset.class
     , TestQueryExecution.class
+    , TestQueryExecBuilderFactorySystem.class
 } )
 
 public class TS_ExecSPARQL {

@@ -24,18 +24,26 @@ package org.apache.jena.sparql.exec.http;
 import static org.apache.jena.http.HttpLib.copyArray;
 
 import java.net.http.HttpClient;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.http.sys.ExecHTTPBuilder;
 import org.apache.jena.query.Query;
 import org.apache.jena.sparql.exec.QueryExecBuilder;
 import org.apache.jena.sparql.exec.QueryExecMod;
+import org.apache.jena.sparql.exec.QueryExecTransform;
 import org.apache.jena.sparql.util.Context;
 
 public class QueryExecHTTPBuilder extends ExecHTTPBuilder<QueryExecHTTP, QueryExecHTTPBuilder> implements QueryExecMod, QueryExecBuilder {
 
-    public static QueryExecHTTPBuilder create() { return new QueryExecHTTPBuilder(); }
+    protected List<QueryExecTransform> queryExecTransforms = new ArrayList<>();
+
+    public static QueryExecHTTPBuilder create() {
+        return new QueryExecHTTPBuilder();
+    }
 
     public static QueryExecHTTPBuilder service(String serviceURL) { return create().endpoint(serviceURL); }
 
@@ -48,7 +56,7 @@ public class QueryExecHTTPBuilder extends ExecHTTPBuilder<QueryExecHTTP, QueryEx
 
     @Override
     protected QueryExecHTTP buildX(HttpClient hClient, Query queryActual, String queryStringActual, Context cxt) {
-        return new QueryExecHTTP(serviceURL, queryActual, queryStringActual, urlLimit,
+        QueryExecHTTP result = new QueryExecHTTPImpl(serviceURL, queryActual, queryStringActual, urlLimit,
                                  hClient, new HashMap<>(httpHeaders), Params.create(params), cxt,
                                  copyArray(defaultGraphURIs),
                                  copyArray(namedGraphURIs),
@@ -58,6 +66,10 @@ public class QueryExecHTTPBuilder extends ExecHTTPBuilder<QueryExecHTTP, QueryEx
                                  graphAcceptHeader,
                                  datasetAcceptHeader,
                                  timeout, timeoutUnit);
+        for (QueryExecTransform queryExecTransform : queryExecTransforms) {
+            result = QueryExecHTTPWrapper.transform(result, queryExecTransform);
+        }
+        return result;
     }
 
     @Override
@@ -74,6 +86,13 @@ public class QueryExecHTTPBuilder extends ExecHTTPBuilder<QueryExecHTTP, QueryEx
     @Override
     public QueryExecHTTPBuilder overallTimeout(long timeout, TimeUnit timeUnit) {
         timeout(timeout, timeUnit);
+        return thisBuilder();
+    }
+
+    @Override
+    public QueryExecHTTPBuilder transformExec(QueryExecTransform queryExecTransform) {
+        Objects.requireNonNull(queryExecTransform);
+        queryExecTransforms.add(queryExecTransform);
         return thisBuilder();
     }
 
