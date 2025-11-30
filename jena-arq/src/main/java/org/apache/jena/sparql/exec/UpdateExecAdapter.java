@@ -23,6 +23,7 @@ package org.apache.jena.sparql.exec;
 
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.update.UpdateExecution;
+import org.apache.jena.update.UpdateRequest;
 
 public class UpdateExecAdapter implements UpdateExec {
 
@@ -39,6 +40,16 @@ public class UpdateExecAdapter implements UpdateExec {
 
     protected UpdateExecAdapter(UpdateExecution updateProc) {
         this.updateProc = updateProc;
+    }
+
+    @Override
+    public UpdateRequest getUpdateRequest() {
+        return updateProc.getUpdateRequest();
+    }
+
+    @Override
+    public String getUpdateRequestString() {
+        return updateProc.getUpdateRequestString();
     }
 
     @Override
