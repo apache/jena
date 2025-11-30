@@ -31,12 +31,13 @@ public interface ActionProcessor {
     public default void process(HttpAction action) {
         switch ( action.getRequestMethod() ) {
             case METHOD_GET ->       execGet(action);
+            //case METHOD_QUERY ->     execQuery(action);
             case METHOD_POST ->      execPost(action);
             case METHOD_PATCH ->     execPatch(action);
             case METHOD_PUT ->       execPut(action);
             case METHOD_DELETE ->    execDelete(action);
             case METHOD_HEAD ->      execHead(action);
-            case METHOD_OPTIONS->    execOptions(action);
+            case METHOD_OPTIONS ->   execOptions(action);
             case METHOD_TRACE ->     execTrace(action);
             default -> execAny(action.getRequestMethod(), action);
         }
