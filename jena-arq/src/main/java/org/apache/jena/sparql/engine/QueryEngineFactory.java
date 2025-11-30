@@ -34,7 +34,7 @@ import org.apache.jena.sparql.util.Context;
  *  * A {@code QueryEngineFactory} is registered with the
  * {@link QueryEngineRegistry}.
  * <p>
- *  * When determining which factory to use, the querye execution process calls
+ * When determining which factory to use, the query execution process calls
  * {@link #accept(Query, DatasetGraph, Context)} or
  * {@link #accept(Op, DatasetGraph, Context)} to determine whether the
  * particular type of query engine produced by this factory accepts the

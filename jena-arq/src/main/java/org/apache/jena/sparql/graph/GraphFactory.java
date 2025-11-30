@@ -77,6 +77,15 @@ public class GraphFactory {
     }
 
     /**
+     * Return an immutable, transactional, empty graph.
+     * <p>
+     * This fully supports transactions.
+     */
+    public static Graph emptyGraph() {
+        return GraphZero.instance();
+    }
+
+    /**
      * Create a graph - ARQ-wide default type.
      * <p>
      * From Jena5, this is "same-term"
@@ -91,7 +100,7 @@ public class GraphFactory {
     }
 
     public static Graph sinkGraph() {
-        return new GraphSink();
+        return GraphSink.instance();
     }
 
     /** Guaranteed call-through to Jena's ModelFactory operation */

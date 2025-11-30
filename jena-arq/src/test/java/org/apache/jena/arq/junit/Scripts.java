@@ -45,7 +45,6 @@ public class Scripts {
     public static Function<ManifestEntry, Runnable> testMaker() { return runnableGenerator.testMaker(); }
 
     public static Stream<DynamicNode> manifestTestFactory(String filename, String namePrefix, Function<ManifestEntry, Runnable> testMaker) {
-        // When does this happen?
         EntryToTest f = entry -> {
             Runnable r = testMaker.apply(entry);
             if ( r == null )
@@ -119,12 +118,11 @@ public class Scripts {
         }
     }
 
-    /** Does the URI of the test conain a substring? */
+    /** Does the URI of the test contain a substring? */
     public static boolean entryContainsSubstring(ManifestEntry entry, String fingerprint) {
         String testURI = entry.getURI();
         if ( testURI == null )
             return false;
         return testURI.contains(fingerprint);
     }
-
 }
