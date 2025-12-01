@@ -91,21 +91,34 @@ public class Triple implements Serializable
     public final Node getObject()
 	{ return obj; }
 
-	/** Return subject or null, not Node.ANY */
+	/**
+	 * Return subject or null, not Node.ANY
+	 * @deprecated Use {@link #getSubject()}.
+	 */
+    @Deprecated(forRemoval = true)
     public Node getMatchSubject()
-    { return anyToNull( subj ); }
+    { return anyToNull( getSubject() ); }
 
-    /** Return predicate or null, not Node.ANY */
+    /**
+     *  Return predicate or null, not Node.ANY.
+     * @deprecated Use {@link #getPredicate()}.
+     */
+    @Deprecated(forRemoval = true)
     public Node getMatchPredicate()
-    { return anyToNull( pred ); }
+    { return anyToNull( getPredicate() ); }
 
-    /** Return object or null, not Node.ANY */
+    /** Return object or null, not Node.ANY.
+     * @deprecated Use {@link #getObject()}.
+     */
+    @Deprecated(forRemoval = true)
     public Node getMatchObject()
-    { return anyToNull( obj ); }
+    { return anyToNull( getObject() ); }
 
+    @Deprecated(forRemoval = true)
     private static Node anyToNull( Node n )
     { return Node.ANY.equals( n ) ? null : n; }
 
+    @Deprecated(forRemoval = true)
     private static Node nullToAny( Node n )
     { return n == null ? Node.ANY : n; }
 

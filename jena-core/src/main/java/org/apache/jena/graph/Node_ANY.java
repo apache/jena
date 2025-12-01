@@ -41,7 +41,7 @@ public class Node_ANY extends Node {
 
     @Override
     public boolean equals(Object other) {
-        // This is only one such object.
+        // There is only one such object.
         if ( this == other )
             return true;
         return false;

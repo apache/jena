@@ -168,7 +168,7 @@ public class DatasetGraphSimpleMem extends DatasetGraphTriplesQuads implements T
         protected ExtendedIterator<Triple> graphBaseFind(Triple m) {
             List<Triple> results = new ArrayList<>();
             for ( Triple t : triples )
-                if ( m.matches(t.getMatchSubject(), t.getMatchPredicate(), t.getMatchObject()) )
+                if ( m.matches(t.getSubject(), t.getPredicate(), t.getObject()) )
                     results.add(t);
             return WrappedIterator.create(results.iterator());
         }
@@ -197,7 +197,7 @@ public class DatasetGraphSimpleMem extends DatasetGraphTriplesQuads implements T
         protected ExtendedIterator<Triple> graphBaseFind(Triple m) {
             List<Triple> results = new ArrayList<>();
 
-            Iterator<Quad> iter = findNG(graphName, m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject());
+            Iterator<Quad> iter = findNG(graphName, m.getSubject(), m.getPredicate(), m.getObject());
             for (; iter.hasNext(); )
                 results.add(iter.next().asTriple());
             return WrappedIterator.create(results.iterator());

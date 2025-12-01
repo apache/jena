@@ -98,7 +98,7 @@ public class TestLPBRuleEngineLeak extends TestCase {
 
 		ExtendedIterator<Triple> it3 = infgraph.find(a, ty, C1);
 		assertTrue(it3.hasNext());
-		assertEquals(a, it3.next().getMatchSubject());
+		assertEquals(a, it3.next().getSubject());
 
 		// .. and what if we forget to call next() to consume b?
 		// (e.g. return from a method with the first hit)
