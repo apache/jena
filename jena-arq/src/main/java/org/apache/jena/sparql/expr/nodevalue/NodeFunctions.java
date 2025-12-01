@@ -92,10 +92,37 @@ public class NodeFunctions {
 //            && sameTerm(t1.getObject(), t2.getObject());
 //    }
 
+    // -------- sameValue
+
+    public static boolean sameValue(NodeValue nv1, NodeValue nv2) {
+        return NodeValue.sameValueAs(nv1, nv2);
+    }
+
+    public static boolean sameValue(Node node1, Node node2) {
+        NodeValue nv1 = NodeValue.makeNode(node1);
+        NodeValue nv2 = NodeValue.makeNode(node2);
+        return NodeValue.sameValueAs(nv1, nv2);
+    }
+
+    public static boolean notSameValue(NodeValue nv1, NodeValue nv2) {
+        return NodeValue.notSameValueAs(nv1, nv2);
+    }
+
+    public static boolean notSameValue(Node node1, Node node2) {
+        NodeValue nv1 = NodeValue.makeNode(node1);
+        NodeValue nv2 = NodeValue.makeNode(node2);
+        return NodeValue.notSameValueAs(nv1, nv2);
+    }
+
     // -------- RDFterm-equals -- raises an exception on "don't know" for literals.
 
     // Exact as defined by SPARQL spec, when there are no value extensions.
     //   Exception for two literals that might be equal but we don't know because of language tags.
+
+    // THIS IS NOT:
+    // SPARQL 1.1 = RDFterm-equals
+    // SPARQL 1.2 = sameValue
+
     public static boolean rdfTermEquals(Node n1, Node n2) {
         if ( n1.equals(n2) )
             return true;
