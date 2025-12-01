@@ -283,9 +283,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      */
     @Override
     protected ExtendedIterator<Triple> graphBaseFind(Triple triple) {
-        return graphBaseFind(triple.getMatchSubject(), triple.getMatchPredicate(), triple.getMatchObject())
-             // .filterKeep(new TripleMatchFilter(m.asTriple()))
-             ;
+        return graphBaseFind(triple.getSubject(), triple.getPredicate(), triple.getObject());
     }
 
     /**

@@ -40,10 +40,6 @@ import org.apache.jena.sparql.pfunction.PFuncSimple;
 import org.apache.jena.system.G;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
-/**
- *
- *
- */
 public abstract class GenericGeometryPropertyFunction extends PFuncSimple {
 
     protected abstract NodeValue applyPredicate(GeometryWrapper geometryWrapper);
@@ -95,7 +91,7 @@ public abstract class GenericGeometryPropertyFunction extends PFuncSimple {
         Node geometryLiteral = getGeometryLiteral(subject, predicate, graph);
 
         if (geometryLiteral != null) {
-            if (object.matches(geometryLiteral)) {
+            if (object.sameTermAs(geometryLiteral)) {
                 return QueryIterSingleton.create(binding, execCxt);
             }
         }

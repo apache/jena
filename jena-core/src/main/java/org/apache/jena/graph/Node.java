@@ -21,6 +21,7 @@ package org.apache.jena.graph;
 import java.io.IOException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.apache.jena.datatypes.RDFDatatype ;
@@ -239,7 +240,8 @@ public abstract class Node implements Serializable {
 
     /**
      * Java rules for equals. See also {#sameTermAs} and {#sameValueAs}.
-     * Nodes only equal other Nodes that have equal labels.
+     * {@code .equals} is "same RDF Term" with all the rules of
+     *  Java equality such as "null" handling.
      */
     @Override
     public abstract boolean equals(Object o);
@@ -247,8 +249,10 @@ public abstract class Node implements Serializable {
     /**
      * RDF term equality.
      */
-    public boolean sameTermAs(Object o)
-    { return equals( o ); }
+    public boolean sameTermAs(Object o) {
+        Objects.requireNonNull(o);
+        return equals(o);
+    }
 
     /**
      * Test that two nodes are semantically equivalent.
@@ -256,8 +260,8 @@ public abstract class Node implements Serializable {
      * equals is stricter. For example, two xsd:int literals with
      * the same value but different lexical form are semantically
      * equivalent but distinguished by the java equals function.
-     * <p>Default implementation is to use equals, subclasses should
-     * override this.</p>
+     * <p>Default implementation is to use {@link #equals}
+     * subclasses should override this.</p>
      */
     public boolean sameValueAs(Object o)
     { return equals( o ); }
