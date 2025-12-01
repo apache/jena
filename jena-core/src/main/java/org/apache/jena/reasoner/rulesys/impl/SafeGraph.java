@@ -39,12 +39,12 @@ public class SafeGraph extends WrappedGraph implements Graph {
 
     @Override
     public ExtendedIterator<Triple> find( Triple triple ) {
-        return find(triple.getMatchSubject(), triple.getMatchPredicate(), triple.getMatchObject());
+        return find(triple.getSubject(), triple.getPredicate(), triple.getObject());
     }
-    
+
     @Override
     public ExtendedIterator<Triple> find( Node s, Node p, Node o ) {
-        return SimpleEventManager.notifyingRemove( this, 
+        return SimpleEventManager.notifyingRemove( this,
                 base.find( s, p, o ).filterDrop( t -> t.getSubject().isLiteral() ||
                 		t.getPredicate().isBlank() || t.getPredicate().isLiteral() ) );
     }
@@ -55,5 +55,5 @@ public class SafeGraph extends WrappedGraph implements Graph {
     public Graph getRawGraph() {
         return base;
     }
-    
+
 }
