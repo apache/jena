@@ -2104,33 +2104,33 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
-"@zazuko/yasgui-utils@^4.6.0":
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/@zazuko/yasgui-utils/-/yasgui-utils-4.6.0.tgz#c58cde4466b347ca63a601f6d10a250602db6ee2"
-  integrity sha512-0McDIzL/3dbTDIposvbP0XfpXApJ46iUVA9mFEIV2V3FckZ9fowRfF5D9acSixfBgCXdqpngfqjWh89IGoi7NQ==
+"@zazuko/yasgui-utils@^4.6.1":
+  version "4.6.1"
+  resolved "https://registry.yarnpkg.com/@zazuko/yasgui-utils/-/yasgui-utils-4.6.1.tgz#5d0da6fffbf6d294b258fc4b3fcd5af002bea159"
+  integrity sha512-HpmAeLYy6e8qoKAt3A4T3tmcoT0N9tm5StwP7tsxB3jOibJfQzti1pMZh803OAM8cjQID38wrJSTgU/2vwLhLw==
   dependencies:
     dompurify "^3.2.4"
     store "^2.0.12"
 
-"@zazuko/yasqe@^4.6.0":
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/@zazuko/yasqe/-/yasqe-4.6.0.tgz#4acfc573465b1d843cadffcc4ec4a3f3a2628284"
-  integrity sha512-6vVC/nQBcr+nQd0w5ZFxDo9++rr85KrfM/8ny72f+SgAV8qWf5wnyqgRQR2CLoLyZqg1u1OsGXfFbqR0qpvFGA==
+"@zazuko/yasqe@^4.6.0", "@zazuko/yasqe@^4.6.1":
+  version "4.6.1"
+  resolved "https://registry.yarnpkg.com/@zazuko/yasqe/-/yasqe-4.6.1.tgz#352796bd94bc835e0d69f6496d1f6fa3ef5d1d4e"
+  integrity sha512-VZZk283TmQVSD40k6i0drrdBq7CD/eIdB/GFu4iO4yfMQsK1hGlmfmlIyudjr0ydDuzg/LXzAGVJrsY2aF4m0Q==
   dependencies:
-    "@zazuko/yasgui-utils" "^4.6.0"
+    "@zazuko/yasgui-utils" "^4.6.1"
     codemirror "^5.51.0"
     lodash-es "^4.17.15"
     query-string "^6.10.1"
 
 "@zazuko/yasr@^4.6.0":
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/@zazuko/yasr/-/yasr-4.6.0.tgz#865a7173d31b06f7e07e16780a6cf8af580321c0"
-  integrity sha512-wfz4JtWLxfHvNsSbD+Xlo1WvV7VdkBDJaqLhZ5LspLz827od4Mx1kFWfv6jF3k/2j4RZONgkd9UG8w71GxhFBQ==
+  version "4.6.1"
+  resolved "https://registry.yarnpkg.com/@zazuko/yasr/-/yasr-4.6.1.tgz#6e4e5998d6ea538b6ef6d5da6d47a1a3d4fa47ee"
+  integrity sha512-RgAAAAb4eFL8qXfcA8vTrNoBbLh7Rl4hSD5k04/RyXo+2MrAMMcydfH8ocJ7DRGpwjRBRfP8KYOFco8UKyebUQ==
   dependencies:
     "@fortawesome/free-solid-svg-icons" "^5.14.0"
     "@json2csv/plainjs" "^7.0.4"
-    "@zazuko/yasgui-utils" "^4.6.0"
-    "@zazuko/yasqe" "^4.6.0"
+    "@zazuko/yasgui-utils" "^4.6.1"
+    "@zazuko/yasqe" "^4.6.1"
     codemirror "^5.51.0"
     colors "^1.4.0"
     column-resizer "^1.4.0"
@@ -3106,9 +3106,9 @@ cypress-vite@^1.4.2:
     debug "^4.3.4"
 
 cypress@^15.0.0:
-  version "15.7.0"
-  resolved "https://registry.yarnpkg.com/cypress/-/cypress-15.7.0.tgz#4d2a317766360232920f63c7d11ea8f5d83bc358"
-  integrity sha512-1C81zKxnQckYm2XGi37rPV4rN0bzUoWhydhKdOyshJn5gJKszEx5as9VLSZI0jp0ye49QxmnbU4TtMpcD+OmGQ==
+  version "15.7.1"
+  resolved "https://registry.yarnpkg.com/cypress/-/cypress-15.7.1.tgz#5ff5101a07b2627809adbaba86a66ff0dc499e88"
+  integrity sha512-U3sYnJ+Cnpgr6IPycxsznTg//mGVXfPGeGV+om7VQCyp5XyVkhG4oPr3X3hTq1+OB0Om0O5DxusYmt7cbvwqMQ==
   dependencies:
     "@cypress/request" "^3.0.9"
     "@cypress/xvfb" "^1.2.4"
@@ -7523,9 +7523,9 @@ vite-plugin-istanbul@^7.0.0:
     test-exclude "^7.0.1"
 
 "vite@^5.0.0 || ^6.0.0 || ^7.0.0-0", vite@^7.1.4:
-  version "7.2.4"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-7.2.4.tgz#a3a09c7e25487612ecc1119c7d412c73da35bd4e"
-  integrity sha512-NL8jTlbo0Tn4dUEXEsUg8KeyG/Lkmc4Fnzb8JXN/Ykm9G4HNImjtABMJgkQoVjOBN/j2WAwDTRytdqJbZsah7w==
+  version "7.2.6"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-7.2.6.tgz#91e05ba05bc7c667a7645595e21f2a0eb1057631"
+  integrity sha512-tI2l/nFHC5rLh7+5+o7QjKjSR04ivXDF4jcgV0f/bTQ+OJiITy5S6gaynVsEM+7RqzufMnVbIon6Sr5x1SDYaQ==
   dependencies:
     esbuild "^0.25.0"
     fdir "^6.5.0"
