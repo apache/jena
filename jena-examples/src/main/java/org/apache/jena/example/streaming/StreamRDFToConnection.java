@@ -136,7 +136,7 @@ public class StreamRDFToConnection implements StreamRDF {
         Statement stmt2 = new StatementImpl(s, RDF.type, t);
         stream.start();
         stream.triple(stmt1.asTriple());
-        stream.quad(new Quad(g.asNode(), stmt2.asTriple()));
+        stream.quad(Quad.create(g.asNode(), stmt2.asTriple()));
         stream.finish();
 
         System.out.println("Contains model 'g': " + dataset.containsNamedModel("g"));

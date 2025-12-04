@@ -55,8 +55,8 @@ public class CollectionQuadHolderTest {
 
         List<Quad> lst = holder.getQuads().toList();
         assertEquals(2, lst.size());
-        assertEquals(new Quad(g, tLst.get(0)), lst.get(0));
-        assertEquals(new Quad(g, tLst.get(1)), lst.get(1));
+        assertEquals(Quad.create(g, tLst.get(0)), lst.get(0));
+        assertEquals(Quad.create(g, tLst.get(1)), lst.get(1));
     }
 
     @Test
@@ -85,8 +85,8 @@ public class CollectionQuadHolderTest {
 
         List<Quad> lst = holder.getQuads().toList();
         assertEquals(2, lst.size());
-        assertEquals(new Quad(g, aLst.get(0)), lst.get(0));
-        assertEquals(new Quad(g, aLst.get(1)), lst.get(1));
+        assertEquals(Quad.create(g, aLst.get(0)), lst.get(0));
+        assertEquals(Quad.create(g, aLst.get(1)), lst.get(1));
     }
 
     @Test
@@ -108,8 +108,8 @@ public class CollectionQuadHolderTest {
 
         List<Quad> lst = holder.getQuads().toList();
         assertEquals(2, lst.size());
-        assertEquals(new Quad(g, tLst.get(0)), lst.get(0));
-        assertEquals(new Quad(g, tLst.get(1)), lst.get(1));
+        assertEquals(Quad.create(g, tLst.get(0)), lst.get(0));
+        assertEquals(Quad.create(g, tLst.get(1)), lst.get(1));
     }
 
     @Test
@@ -139,8 +139,8 @@ public class CollectionQuadHolderTest {
 
         List<Quad> lst = holder.getQuads().toList();
         assertEquals(2, lst.size());
-        assertEquals(new Quad(g, aLst.get(0)), lst.get(0));
-        assertEquals(new Quad(g, aLst.get(1)), lst.get(1));
+        assertEquals(Quad.create(g, aLst.get(0)), lst.get(0));
+        assertEquals(Quad.create(g, aLst.get(1)), lst.get(1));
     }
 
     @Test
@@ -161,8 +161,8 @@ public class CollectionQuadHolderTest {
 
         List<Quad> lst = holder.getQuads().toList();
         assertEquals(2, lst.size());
-        assertEquals(new Quad(Quad.defaultGraphNodeGenerated, tLst.get(0)), lst.get(0));
-        assertEquals(new Quad(Quad.defaultGraphNodeGenerated, tLst.get(1)), lst.get(1));
+        assertEquals(Quad.create(Quad.defaultGraphNodeGenerated, tLst.get(0)), lst.get(0));
+        assertEquals(Quad.create(Quad.defaultGraphNodeGenerated, tLst.get(1)), lst.get(1));
     }
 
     @Test
@@ -189,8 +189,8 @@ public class CollectionQuadHolderTest {
 
         List<Quad> lst = holder.getQuads().toList();
         assertEquals(2, lst.size());
-        assertEquals(new Quad(Quad.defaultGraphNodeGenerated, aLst.get(0)), lst.get(0));
-        assertEquals(new Quad(Quad.defaultGraphNodeGenerated, aLst.get(1)), lst.get(1));
+        assertEquals(Quad.create(Quad.defaultGraphNodeGenerated, aLst.get(0)), lst.get(0));
+        assertEquals(Quad.create(Quad.defaultGraphNodeGenerated, aLst.get(1)), lst.get(1));
     }
 
     @Test
@@ -211,8 +211,8 @@ public class CollectionQuadHolderTest {
 
         List<Quad> lst = holder.getQuads().toList();
         assertEquals(2, lst.size());
-        assertEquals(new Quad(Quad.defaultGraphNodeGenerated, tLst.get(0)), lst.get(0));
-        assertEquals(new Quad(Quad.defaultGraphNodeGenerated, tLst.get(1)), lst.get(1));
+        assertEquals(Quad.create(Quad.defaultGraphNodeGenerated, tLst.get(0)), lst.get(0));
+        assertEquals(Quad.create(Quad.defaultGraphNodeGenerated, tLst.get(1)), lst.get(1));
     }
 
     @Test
@@ -239,7 +239,7 @@ public class CollectionQuadHolderTest {
 
         List<Quad> lst = holder.getQuads().toList();
         assertEquals(2, lst.size());
-        assertEquals(new Quad(Quad.defaultGraphNodeGenerated, aLst.get(0)), lst.get(0));
-        assertEquals(new Quad(Quad.defaultGraphNodeGenerated, aLst.get(1)), lst.get(1));
+        assertEquals(Quad.create(Quad.defaultGraphNodeGenerated, aLst.get(0)), lst.get(0));
+        assertEquals(Quad.create(Quad.defaultGraphNodeGenerated, aLst.get(1)), lst.get(1));
     }
 }

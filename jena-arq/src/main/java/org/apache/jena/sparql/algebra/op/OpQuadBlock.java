@@ -61,7 +61,7 @@ public class OpQuadBlock extends Op0
     public static OpQuadBlock create(Node quadNode, BasicPattern triples) {
         QuadPattern qp = new QuadPattern();
         for ( Triple t : triples ) {
-            qp.add(new Quad(quadNode, t));
+            qp.add(Quad.create(quadNode, t));
         }
         return new OpQuadBlock(qp);
     }

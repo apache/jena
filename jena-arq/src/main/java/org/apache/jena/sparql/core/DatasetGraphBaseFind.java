@@ -27,19 +27,19 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.core.mem.DatasetGraphInMemory ;
 
-/** 
- * DatasetGraph framework.  
- * This class contains a convenience implementation of find that maps to a split between 
+/**
+ * DatasetGraph framework.
+ * This class contains a convenience implementation of find that maps to a split between
  * defaultGraph/named graphs.
  * @see DatasetGraphTriplesQuads
  * @see DatasetGraphCollection
  * @see DatasetGraphOne
  * @see DatasetGraphInMemory
  */
-abstract public class DatasetGraphBaseFind extends DatasetGraphBase 
+abstract public class DatasetGraphBaseFind extends DatasetGraphBase
 {
     protected DatasetGraphBaseFind() {}
-    
+
     /** Implementation of find based on splitting into triples (default graph) and quads (named graph) */
     @Override
     public Iterator<Quad> find(Node g, Node s, Node p, Node o) {
@@ -49,7 +49,7 @@ abstract public class DatasetGraphBaseFind extends DatasetGraphBase
             return findNG(g, s, p, o) ;
         return findAny(s, p, o) ;
     }
-    
+
     @Override
     public Iterator<Quad> findNG(Node g, Node s, Node p , Node o) {
         Iterator<Quad> qIter ;
@@ -104,7 +104,7 @@ abstract public class DatasetGraphBaseFind extends DatasetGraphBase
      * For example, it may be possible to avoid "distinct".
      */
     public Iterator<Quad> findQuadsInUnionGraph(Node s, Node p , Node o) {
-        return findUnionGraphTriples(s,p,o).map(t -> new Quad(Quad.unionGraph, t)).iterator() ;
+        return findUnionGraphTriples(s,p,o).map(t -> Quad.create(Quad.unionGraph, t)).iterator() ;
     }
 
     /** Find matches in the notional union of all named graphs - return as triples.
@@ -120,7 +120,7 @@ abstract public class DatasetGraphBaseFind extends DatasetGraphBase
 
     /** Find in a specific named graph - {@code g} is a ground term (IRI or bNode), not a wild card (or null). */
     protected abstract Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p , Node o) ;
-    
+
     /** Find in any named graph - return quads.
      * If a triple matches in two different graph, return a quad for each.
      * See {@link #findInUnionGraph} for matching without duplicate triples.

@@ -414,7 +414,7 @@ public class UpdateBuilder {
      * @return this builder for chaining.
      */
     public UpdateBuilder addInsert(Object g, Triple t) {
-        Quad q = new Quad(makeNode(g), t);
+        Quad q = Quad.create(makeNode(g), t);
         inserts.add(new SingleQuadHolder(q));
         return this;
     }
@@ -617,7 +617,7 @@ public class UpdateBuilder {
      * @return this builder for chaining.
      */
     public UpdateBuilder addDelete(Object g, Triple t) {
-        Quad q = new Quad(makeNode(g), t);
+        Quad q = Quad.create(makeNode(g), t);
         deletes.add(new SingleQuadHolder(q));
         return this;
     }

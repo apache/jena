@@ -140,7 +140,7 @@ public class TestInMemDatasetAssembler {
         final DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
         model.listStatements()
             .mapWith(Statement::asTriple)
-            .mapWith(t -> new Quad(quadsURI.asNode(), t))
+            .mapWith(t -> Quad.create(quadsURI.asNode(), t))
             .forEachRemaining(dsg::add);
         try (OutputStream out = new FileOutputStream(quads)) {
             write(out, dsg, NQUADS);

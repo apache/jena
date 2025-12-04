@@ -296,7 +296,7 @@ public abstract class AbstractDatasetGraphTests
         Node subject = NodeFactory.createURI("http://example/s");
         Node predicate = NodeFactory.createURI("http://example/p");
         Node object = NodeFactory.createBlankNode();
-        dsg.add(new Quad(Quad.defaultGraphIRI, subject, predicate, object));
+        dsg.add(Quad.create(Quad.defaultGraphIRI, subject, predicate, object));
         dsg.deleteAny(Node.ANY, subject, null, null);
     }
 
