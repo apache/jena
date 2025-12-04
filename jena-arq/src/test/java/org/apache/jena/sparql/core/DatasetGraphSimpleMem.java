@@ -94,7 +94,7 @@ public class DatasetGraphSimpleMem extends DatasetGraphTriplesQuads implements T
             if ( matches(t, s, p, o) )
                 // ?? Quad.defaultGraphNodeGenerated
                 // Quad.defaultGraphIRI
-                results.add(new Quad(Quad.defaultGraphIRI, t));
+                results.add(Quad.create(Quad.defaultGraphIRI, t));
         return results.iterator();
     }
 
@@ -139,7 +139,7 @@ public class DatasetGraphSimpleMem extends DatasetGraphTriplesQuads implements T
 
     @Override
     protected void addToNamedGraph(Node g, Node s, Node p, Node o) {
-        Quad q = new Quad(g, s, p, o);
+        Quad q = Quad.create(g, s, p, o);
         quads.add(q);
     }
 
@@ -150,7 +150,7 @@ public class DatasetGraphSimpleMem extends DatasetGraphTriplesQuads implements T
 
     @Override
     protected void deleteFromNamedGraph(Node g, Node s, Node p, Node o) {
-        quads.remove(new Quad(g, s, p, o));
+        quads.remove(Quad.create(g, s, p, o));
     }
 
     class GraphDft extends GraphBase {
@@ -183,13 +183,13 @@ public class DatasetGraphSimpleMem extends DatasetGraphTriplesQuads implements T
 
         @Override
         public void performAdd(Triple t) {
-            Quad q = new Quad(graphName, t);
+            Quad q = Quad.create(graphName, t);
             quads.add(q);
         }
 
         @Override
         public void performDelete(Triple t) {
-            Quad q = new Quad(graphName, t);
+            Quad q = Quad.create(graphName, t);
             quads.remove(q);
         }
 

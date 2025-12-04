@@ -60,7 +60,7 @@ public class TestFmtUtils
     public void stringForQuadEncoding() {
         Node n1 = NodeFactory.createURI("q1");
 
-        Quad quad = new Quad(n1, getTriple());
+        Quad quad = Quad.create(n1, getTriple());
         assertEquals("<q1> <n1> <n2> \"l3\"", stringForQuad(quad));
 
     }
@@ -69,7 +69,7 @@ public class TestFmtUtils
     public void stringForQuad_WithPrefixMapping() {
         Node n1 = NodeFactory.createURI("q1");
 
-        Quad quad = new Quad(n1, getPrefixedTriple());
+        Quad quad = Quad.create(n1, getPrefixedTriple());
         assertEquals("<q1> zz:abs <n2> \"l3\"", stringForQuad(quad, getPrefixMapping()));
     }
 

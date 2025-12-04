@@ -48,20 +48,22 @@ public class Quad implements Serializable
      *  (and the default graph when parsing N-Quads or TriG)
      *  Not for access to the default graph by name - use Quad.defaultGraphIRI.
      */
-    public static final Node tripleInQuad           =  null;
+    public static final Node tripleInQuad        =  null;
 
     /** A {@code Quad} that has a wildcard in all fields. */
     public static final Quad ANY = Quad.create( Node.ANY, Node.ANY, Node.ANY, Node.ANY );
 
     private final Node graph, subject, predicate, object;
 
-    public Quad(Node graph, Triple triple)
-    {
+    /** @deprecated Prefer {@link Quad#create(Node, Triple)}. */
+    @Deprecated
+    public Quad(Node graph, Triple triple) {
         this(graph, triple.getSubject(), triple.getPredicate(), triple.getObject());
     }
 
-    public Quad(Node g, Node s, Node p, Node o)
-    {
+    /** @deprecated Prefer {@link Quad#create(Node, Node, Node, Node)}. */
+    @Deprecated
+    public Quad(Node g, Node s, Node p, Node o) {
         // Null means it's a triple really.
 //        if ( g == null )
 //            throw new UnsupportedOperationException("Quad: graph cannot be null");
@@ -77,8 +79,40 @@ public class Quad implements Serializable
         this.object = o;
     }
 
-    public static Quad create(Node g, Node s, Node p, Node o)   { return new Quad(g,s,p,o); }
-    public static Quad create(Node g, Triple t)                 { return new Quad(g,t); }
+    /**
+     * Create a {@code Quad}. Nulls are not allowed for subject/predicate/object.
+     * <p>
+     * Null for graph means this is a triple, but for type checking reasons, it is
+     * being carried as a {@code Quad}.
+     */
+    public static Quad create(Node g, Node s, Node p, Node o) {
+        return new Quad(g, s, p, o);
+    }
+
+    /**
+     * Create a {@code Quad}. Nulls for for subject/predicate/object are converted to
+     * {@link Node#ANY}.
+     * <p>
+     * Null for graph means this is a triple, but for type checking
+     * reasons, it is being carried as a {@code Quad}.
+     */
+    public static Quad createMatch(Node g, Node s, Node p, Node o) {
+        return Quad.create(g, nullToAny(s), nullToAny(p), nullToAny(o));
+    }
+
+    public static Quad create(Node g, Triple t) {
+        Objects.requireNonNull(t);
+        return new Quad(g, t);
+    }
+
+    private static Node anyToNull( Node n )
+    { return Node.ANY.equals( n ) ? null : n; }
+
+    private static Node nullToAny( Node n )
+    { return n == null ? Node.ANY : n; }
+
+    private static boolean isAny(Node n)
+    { return n == null || Node.ANY.equals(n); }
 
     public final Node getGraph()      { return graph; }
     public final Node getSubject()    { return subject; }
@@ -86,18 +120,38 @@ public class Quad implements Serializable
     public final Node getObject()     { return object; }
 
     /**
-     * Get as a triple - useful because quads often come in blocks for the same graph
+     * Get the subject/predicate/object as a triple.
      */
     public Triple asTriple() {
-        // Should we keep the triple around esp from the Quad(n,triple) constructor.
-        // Still have s,p,o for quads.
-        // Cost : one slot.
-        // Saving - (re)creating triples.
         return Triple.create(subject, predicate, object);
     }
 
     public boolean isConcrete() {
         return subject.isConcrete() && predicate.isConcrete() && object.isConcrete() && (graph == null || graph.isConcrete());
+    }
+
+    /**
+     * Does this quad, match the other quad, allowing for wildcards.
+     * The wildcard node is {@link Node#ANY} and it matches any node, including a wildcard.
+     * Both this quad and the argument quad may contain wildcards,
+     * that is "matches" is symmetric:
+     * {@code this.matches(that) == that.matches(this)}.
+     */
+    public boolean matches(Quad other) {
+        return matches(other.getGraph(), other.getSubject(), other.getPredicate(), other.getObject());
+    }
+
+    public boolean matches(Node g, Node s, Node p, Node o) {
+        return matches(this.graph, g) && matches(this.subject, s) && matches(this.predicate, p) && matches(this.object, o);
+    }
+
+    /** Match with possible wildcards (Node.ANY) in either argument. */
+    private static boolean matches(Node patternNode, Node node) {
+        if ( isAny(patternNode) )
+            return true;
+        if ( isAny(node) )
+            return true;
+        return patternNode.sameTermAs(node);
     }
 
     /**
@@ -218,16 +272,6 @@ public class Quad implements Serializable
         if ( ! predicate.equals(quad.predicate) ) return false;
         if ( ! object.equals(quad.object) ) return false;
         return true;
-    }
-
-    public boolean matches(Node g, Node s, Node p, Node o) {
-        return nodeMatches(getGraph(), g) && nodeMatches(getSubject(), s) &&
-               nodeMatches(getPredicate(), p) && nodeMatches(getObject(), o);
-    }
-
-    private static boolean nodeMatches(Node thisNode, Node otherNode) {
-        // otherNode may be Node.ANY, and this works out.
-        return otherNode.matches(thisNode);
     }
 
     @Override

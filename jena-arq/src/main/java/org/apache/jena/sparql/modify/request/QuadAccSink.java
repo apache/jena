@@ -57,7 +57,7 @@ public class QuadAccSink implements TripleCollector, Closeable
     public void addTriple(Triple triple)
     {
         check(triple) ;
-        sink.send(new Quad(graphNode, triple)) ;
+        sink.send(Quad.create(graphNode, triple)) ;
     }
 
     @Override

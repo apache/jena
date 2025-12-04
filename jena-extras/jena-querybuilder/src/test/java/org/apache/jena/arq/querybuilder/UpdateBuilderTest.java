@@ -130,7 +130,7 @@ public class UpdateBuilderTest {
     @Test
     public void testInsert_Quad() {
         UpdateBuilder builder = new UpdateBuilder();
-        builder.addInsert(new Quad(g, s, p, o));
+        builder.addInsert(Quad.create(g, s, p, o));
         Update update = builder.build();
         assertTrue(update instanceof UpdateDataInsert);
         UpdateDataInsert udi = (UpdateDataInsert) update;
@@ -148,14 +148,14 @@ public class UpdateBuilderTest {
         UpdateBuilder builder = new UpdateBuilder();
         Collection<Quad> quads = new ArrayList<Quad>();
 
-        quads.add(new Quad(g, s, p, o));
+        quads.add(Quad.create(g, s, p, o));
 
         Node g2 = NodeFactory.createURI("http://example.com/graph2");
         Node s2 = NodeFactory.createURI("http://example.com/subject2");
         Node p2 = NodeFactory.createURI("http://example.com/predicate2");
         Node o2 = NodeFactory.createURI("http://example.com/object2");
 
-        quads.add(new Quad(g2, s2, p2, o2));
+        quads.add(Quad.create(g2, s2, p2, o2));
 
         builder.addInsertQuads(quads);
         Update update = builder.build();
@@ -265,7 +265,7 @@ public class UpdateBuilderTest {
     public void testDelete_Quad() {
 
         UpdateBuilder builder = new UpdateBuilder();
-        builder.addDelete(new Quad(g, s, p, o));
+        builder.addDelete(Quad.create(g, s, p, o));
         Update update = builder.build();
         assertTrue(update instanceof UpdateDataDelete);
         UpdateDataDelete udd = (UpdateDataDelete) update;
@@ -283,14 +283,14 @@ public class UpdateBuilderTest {
         UpdateBuilder builder = new UpdateBuilder();
         Collection<Quad> quads = new ArrayList<Quad>();
 
-        quads.add(new Quad(g, s, p, o));
+        quads.add(Quad.create(g, s, p, o));
 
         Node g2 = NodeFactory.createURI("http://example.com/graph2");
         Node s2 = NodeFactory.createURI("http://example.com/subject2");
         Node p2 = NodeFactory.createURI("http://example.com/predicate2");
         Node o2 = NodeFactory.createURI("http://example.com/object2");
 
-        quads.add(new Quad(g2, s2, p2, o2));
+        quads.add(Quad.create(g2, s2, p2, o2));
 
         builder.addDeleteQuads(quads);
         Update update = builder.build();
@@ -332,7 +332,7 @@ public class UpdateBuilderTest {
     @Test
     public void testInsertAndDelete() {
         UpdateBuilder builder = new UpdateBuilder();
-        builder.addInsert(new Quad(g, s, p, o));
+        builder.addInsert(Quad.create(g, s, p, o));
         builder.addDelete(Triple.create(s, p, o));
         builder.addWhere(null, p, "foo");
         Update update = builder.build();
@@ -370,7 +370,7 @@ public class UpdateBuilderTest {
         UpdateBuilder builder = new UpdateBuilder();
         Var v = Var.alloc("v");
 
-        builder.addInsert(new Quad(g, s, v, o));
+        builder.addInsert(Quad.create(g, s, v, o));
         builder.addDelete(Triple.create(s, v, o));
         builder.addWhere(null, v, "foo");
         builder.setVar(v, p);
@@ -409,7 +409,7 @@ public class UpdateBuilderTest {
         UpdateBuilder builder = new UpdateBuilder();
         Node v = NodeFactory.createVariable("v");
 
-        builder.addInsert(new Quad(g, s, v, o));
+        builder.addInsert(Quad.create(g, s, v, o));
         builder.addDelete(Triple.create(s, v, o));
         builder.addWhere(null, v, "foo");
         builder.setVar(v, p);
@@ -448,7 +448,7 @@ public class UpdateBuilderTest {
         UpdateBuilder builder = new UpdateBuilder();
         Node v = NodeFactory.createVariable("v");
 
-        builder.addInsert(new Quad(g, s, v, o));
+        builder.addInsert(Quad.create(g, s, v, o));
         builder.addDelete(Triple.create(s, v, o));
         builder.addWhere(null, v, "foo");
 

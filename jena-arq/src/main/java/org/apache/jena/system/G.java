@@ -937,7 +937,7 @@ public class G {
 
     /** Convert an iterator of triples into quads for the specified graph name. */
     public static Iter<Quad> triples2quads(Node graphNode, Iterator<Triple> iter) {
-        return Iter.iter(iter).map(t -> new Quad(graphNode, t));
+        return Iter.iter(iter).map(t -> Quad.create(graphNode, t));
     }
 
     /**

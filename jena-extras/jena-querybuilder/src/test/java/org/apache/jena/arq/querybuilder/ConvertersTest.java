@@ -376,8 +376,8 @@ public class ConvertersTest {
         if (expected.isTriple()) {
             assertTrue(errMsg, expected.asTriple().matches(asTriple(actual)));
         } else {
-            assertTrue(errMsg, expected.getSubject().matches(asTriplePath(actual).getSubject()));
-            assertTrue(errMsg, expected.getObject().matches(asTriplePath(actual).getObject()));
+            assertTrue(errMsg, expected.getSubject().sameTermAs(asTriplePath(actual).getSubject()));
+            assertTrue(errMsg, expected.getObject().sameTermAs(asTriplePath(actual).getObject()));
             assertTrue(errMsg, expected.getPath().equalTo(asTriplePath(actual).getPath(), new NodeIsomorphismMap()));
         }
     }
