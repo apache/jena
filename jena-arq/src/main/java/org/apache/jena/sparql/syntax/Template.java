@@ -85,7 +85,7 @@ public class Template {
         if ( this.bgp != null ) {
             List<Quad> quads = new ArrayList<>();
             for ( Triple triple : this.bgp.getList() ) {
-                quads.add(new Quad(Quad.defaultGraphNodeGenerated, triple));
+                quads.add(Quad.create(Quad.defaultGraphNodeGenerated, triple));
             }
             return quads;
         }

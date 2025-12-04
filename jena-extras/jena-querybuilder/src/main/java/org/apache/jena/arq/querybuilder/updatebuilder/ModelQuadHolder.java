@@ -57,7 +57,7 @@ public class ModelQuadHolder implements QuadHolder {
 
     @Override
     public ExtendedIterator<Quad> getQuads() {
-        return model.listStatements().mapWith(stmt -> new Quad(defaultGraphName, stmt.asTriple()));
+        return model.listStatements().mapWith(stmt -> Quad.create(defaultGraphName, stmt.asTriple()));
     }
 
     /**

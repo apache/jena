@@ -150,7 +150,7 @@ public class NodeTransformLib {
 
         if ( !change )
             return quad;
-        return new Quad(g, s, p, o);
+        return Quad.create(g, s, p, o);
     }
 
     public static Table transform(Table table, NodeTransform transform) {

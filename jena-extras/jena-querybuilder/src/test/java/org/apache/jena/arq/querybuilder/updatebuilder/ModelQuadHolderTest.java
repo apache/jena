@@ -57,10 +57,10 @@ public class ModelQuadHolderTest {
 
         List<Quad> lst = holder.getQuads().toList();
         assertEquals(2, lst.size());
-        Quad q = new Quad(Quad.defaultGraphNodeGenerated, tLst.get(0));
+        Quad q = Quad.create(Quad.defaultGraphNodeGenerated, tLst.get(0));
         assertTrue(lst.contains(q), "missing " + q);
 
-        q = new Quad(Quad.defaultGraphNodeGenerated, tLst.get(1));
+        q = Quad.create(Quad.defaultGraphNodeGenerated, tLst.get(1));
         assertTrue(lst.contains(q), "missing " + q);
     }
 
@@ -86,10 +86,10 @@ public class ModelQuadHolderTest {
 
         List<Quad> lst = holder.getQuads().toList();
         assertEquals(2, lst.size());
-        Quad q = new Quad(g, tLst.get(0));
+        Quad q = Quad.create(g, tLst.get(0));
         assertTrue(lst.contains(q), "missing " + q);
 
-        q = new Quad(g, tLst.get(1));
+        q = Quad.create(g, tLst.get(1));
         assertTrue(lst.contains(q), "missing " + q);
     }
 }

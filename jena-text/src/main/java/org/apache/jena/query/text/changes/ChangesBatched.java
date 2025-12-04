@@ -78,7 +78,7 @@ public abstract class ChangesBatched implements TextDatasetChanges {
             currentSubject = s ;
         }
 
-        batchQuads.add(new Quad(g, s, p, o)) ;
+        batchQuads.add(Quad.create(g, s, p, o)) ;
     }
 
     private void startBatch() {

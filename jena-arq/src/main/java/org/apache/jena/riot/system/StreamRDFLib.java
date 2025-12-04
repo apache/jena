@@ -147,7 +147,7 @@ public class StreamRDFLib
         { super(base); this.gn = gn; }
 
         @Override public void triple(Triple triple)
-        { other.quad(new Quad(gn, triple)); }
+        { other.quad(Quad.create(gn, triple)); }
     }
 
     private static class ParserOutputSinkTriples extends StreamRDFBase

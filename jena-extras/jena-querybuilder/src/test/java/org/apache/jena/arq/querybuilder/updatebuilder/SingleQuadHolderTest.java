@@ -41,7 +41,7 @@ public class SingleQuadHolderTest {
         Node s = NodeFactory.createURI("s");
         Node p = NodeFactory.createURI("p");
         Node o = NodeFactory.createURI("o");
-        Quad quad = new Quad(g, s, p, o);
+        Quad quad = Quad.create(g, s, p, o);
         holder = new SingleQuadHolder(quad);
         List<Quad> lst = holder.getQuads().toList();
         assertEquals(1, lst.size());
@@ -54,7 +54,7 @@ public class SingleQuadHolderTest {
         Node s = NodeFactory.createURI("s");
         Node p = NodeFactory.createVariable("p");
         Node o = NodeFactory.createURI("o");
-        Quad quad = new Quad(g, s, p, o);
+        Quad quad = Quad.create(g, s, p, o);
         holder = new SingleQuadHolder(quad);
         List<Quad> lst = holder.getQuads().toList();
         assertEquals(1, lst.size());
@@ -64,7 +64,7 @@ public class SingleQuadHolderTest {
         Node p2 = NodeFactory.createURI("p2");
         map.put(Var.alloc(p), p2);
         holder.setValues(map);
-        Quad quad2 = new Quad(g, s, p2, o);
+        Quad quad2 = Quad.create(g, s, p2, o);
         lst = holder.getQuads().toList();
         assertEquals(1, lst.size());
         assertEquals(quad2, lst.get(0));
@@ -77,7 +77,7 @@ public class SingleQuadHolderTest {
         Node p = NodeFactory.createURI("p");
         Node o = NodeFactory.createURI("o");
         Triple triple = Triple.create(s, p, o);
-        Quad quad = new Quad(Quad.defaultGraphNodeGenerated, s, p, o);
+        Quad quad = Quad.create(Quad.defaultGraphNodeGenerated, s, p, o);
         holder = new SingleQuadHolder(triple);
         List<Quad> lst = holder.getQuads().toList();
         assertEquals(1, lst.size());
@@ -90,7 +90,7 @@ public class SingleQuadHolderTest {
         Node p = NodeFactory.createVariable("p");
         Node o = NodeFactory.createURI("o");
         Triple triple = Triple.create(s, p, o);
-        Quad quad = new Quad(Quad.defaultGraphNodeGenerated, s, p, o);
+        Quad quad = Quad.create(Quad.defaultGraphNodeGenerated, s, p, o);
         holder = new SingleQuadHolder(triple);
         List<Quad> lst = holder.getQuads().toList();
         assertEquals(1, lst.size());
@@ -100,7 +100,7 @@ public class SingleQuadHolderTest {
         Node p2 = NodeFactory.createURI("p2");
         map.put(Var.alloc(p), p2);
         holder.setValues(map);
-        Quad quad2 = new Quad(Quad.defaultGraphNodeGenerated, s, p2, o);
+        Quad quad2 = Quad.create(Quad.defaultGraphNodeGenerated, s, p2, o);
         lst = holder.getQuads().toList();
         assertEquals(1, lst.size());
         assertEquals(quad2, lst.get(0));

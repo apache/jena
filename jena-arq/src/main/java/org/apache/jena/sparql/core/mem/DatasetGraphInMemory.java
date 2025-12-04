@@ -346,7 +346,7 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     }
 
     private Consumer<Graph> addGraph(final Node name) {
-        return g -> g.find().mapWith(t -> new Quad(name, t)).forEach(this::add);
+        return g -> g.find().mapWith(t -> Quad.create(name, t)).forEach(this::add);
     }
 
     private final Consumer<Graph> removeGraph = g -> g.find().forEach(g::delete);

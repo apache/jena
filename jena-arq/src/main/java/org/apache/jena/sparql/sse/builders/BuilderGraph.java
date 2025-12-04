@@ -208,6 +208,6 @@ public class BuilderGraph {
         Node s = BuilderNode.buildNode(list.get(1));
         Node p = BuilderNode.buildNode(list.get(2));
         Node o = BuilderNode.buildNode(list.get(3));
-        return new Quad(g, s, p, o);
+        return Quad.create(g, s, p, o);
     }
 }
