@@ -51,7 +51,7 @@ class OpRewriter extends AbstractRewriter<Op> implements OpVisitor {
     }
 
     private Quad rewrite(Quad q) {
-        return new Quad(changeNode(q.getGraph()), changeNode(q.getSubject()), changeNode(q.getPredicate()),
+        return Quad.create(changeNode(q.getGraph()), changeNode(q.getSubject()), changeNode(q.getPredicate()),
                 changeNode(q.getObject()));
     }
 

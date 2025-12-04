@@ -43,7 +43,7 @@ public class SingleQuadHolder implements QuadHolder {
     public SingleQuadHolder(Quad quad) {
         if (quad.getGraph().isVariable() || quad.getSubject().isVariable() || quad.getPredicate().isVariable()
                 || quad.getObject().isVariable()) {
-            this.quad = new Quad(Converters.checkVar(quad.getGraph()), Converters.checkVar(quad.getSubject()),
+            this.quad = Quad.create(Converters.checkVar(quad.getGraph()), Converters.checkVar(quad.getSubject()),
                     Converters.checkVar(quad.getPredicate()), Converters.checkVar(quad.getObject()));
         } else {
             this.quad = quad;
@@ -58,7 +58,7 @@ public class SingleQuadHolder implements QuadHolder {
      * @param triple the triple to convert to a quad.
      */
     public SingleQuadHolder(Triple triple) {
-        this.quad = new Quad(Quad.defaultGraphNodeGenerated, Converters.checkVar(triple.getSubject()),
+        this.quad = Quad.create(Quad.defaultGraphNodeGenerated, Converters.checkVar(triple.getSubject()),
                 Converters.checkVar(triple.getPredicate()), Converters.checkVar(triple.getObject()));
     }
 
@@ -69,7 +69,7 @@ public class SingleQuadHolder implements QuadHolder {
      * @param triple the triple to convert to a quad.
      */
     public SingleQuadHolder(Node graph, Triple triple) {
-        this.quad = new Quad(graph, triple);
+        this.quad = Quad.create(graph, triple);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class SingleQuadHolder implements QuadHolder {
 
     @Override
     public QuadHolder setValues(Map<Var, Node> values) {
-        updated = new Quad(mapValue(quad.getGraph(), values), mapValue(quad.getSubject(), values),
+        updated = Quad.create(mapValue(quad.getGraph(), values), mapValue(quad.getSubject(), values),
                 mapValue(quad.getPredicate(), values), mapValue(quad.getObject(), values));
         return this;
     }

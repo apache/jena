@@ -67,7 +67,7 @@ public class QuadCollectionHolder implements QuadHolder {
         ExtendedIterator<Quad> retval = WrappedIterator.create(collection.iterator());
 
         if (values != null) {
-            retval = retval.mapWith(q -> new Quad(valueMap(q.getGraph()), valueMap(q.getSubject()),
+            retval = retval.mapWith(q -> Quad.create(valueMap(q.getGraph()), valueMap(q.getSubject()),
                     valueMap(q.getPredicate()), valueMap(q.getObject())));
         }
         return retval;

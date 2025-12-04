@@ -23,7 +23,8 @@ import org.junit.platform.suite.api.Suite;
 
 @Suite
 @SelectClasses({
-    TestContext.class
+    TestQuad.class
+    , TestContext.class
     , TestDatasetGraphMem.class
     , TestDatasetGraphMemTriplesQuads.class
     , TestDatasetGeneral.class

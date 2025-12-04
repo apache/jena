@@ -82,7 +82,7 @@ public class ChangesCapture implements TextDatasetChanges {
 
     @Override
     public void change(TextQuadAction qaction, Node g, Node s, Node p, Node o) {
-        Quad q = new Quad(g, s, p, o) ;
+        Quad q = Quad.create(g, s, p, o) ;
         Pair<TextQuadAction, Quad> pair = Pair.create(qaction, q) ;
 
         switch (qaction) {

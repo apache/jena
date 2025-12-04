@@ -82,7 +82,7 @@ public abstract class OrderedTupleTable<TupleType, ConsumerType> implements Tupl
     }
 
     protected Quad unmap(final Node x1, final Node x2, final Node x3, final Node x4) {
-        return apply(reverse, x1, x2, x3, x4, Quad::new);
+        return apply(reverse, x1, x2, x3, x4, Quad::create);
     }
 
     protected Consumer<Triple> map(final TConsumer3<Node> consumer) {
