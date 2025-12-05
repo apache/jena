@@ -25,17 +25,17 @@ import java.util.Spliterator;
 
 /**
     A bunch of triples - a stripped-down set with specialized methods. A
-    bunch is expected to store triples that share some useful property 
+    bunch is expected to store triples that share some useful property
     (such as having the same subject or predicate).
 
 */
-public interface TripleBunch 
+public interface TripleBunch
     {
     /**
         Answer true iff this TripleBunch contains a triple .equals to <code>t</code>.
     */
     public abstract boolean contains( Triple t );
-    
+
     /**
         Answer true iff this TripleBunch contains a triple with .sameValueAs
         subject, predicate, and object. (Typically this only matters for the
@@ -43,31 +43,31 @@ public interface TripleBunch
         zeroes can be .sameValueAs but not .equals).
     */
     public abstract boolean containsBySameValueAs( Triple t );
-    
+
     /**
         Answer the number of triples in this bunch.
     */
     public abstract int size();
-    
+
     /**
         Add <code>t</code> to the triples in this bunch. If <code>t</code>
         is already a member, nothing happens. The bunch now .contains this
         triple.
     */
     public abstract void add( Triple t );
-    
+
     /**
          Remove <code>t</code> from the triples in this bunch. If it wasn't
          a member, nothing happens. The bunch no longer .contains this triple.
     */
     public abstract void remove( Triple t );
-    
+
     /**
         Answer an iterator over all the triples in this bunch. It is unwise to
         .remove from this iterator. (It may become illegal.)
     */
     public abstract ExtendedIterator<Triple> iterator();
-    
+
     /**
         Answer an iterator over all the triples in this bunch. If use of .remove on
         this iterator empties the bunch, the <code>emptied</code> method of
@@ -79,5 +79,5 @@ public interface TripleBunch
         Answer a spliterator over all the triples in this bunch.
     */
     public abstract Spliterator<Triple> spliterator();
-    
+
     }

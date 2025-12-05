@@ -33,25 +33,25 @@ public abstract class GraphTripleStoreBase implements TripleStore
     protected NodeToTriplesMapBase subjects;
     protected NodeToTriplesMapBase predicates;
     protected NodeToTriplesMapBase objects;
-    
+
     protected GraphTripleStoreBase
         ( Graph parent,
         NodeToTriplesMapBase subjects,
         NodeToTriplesMapBase predicates,
         NodeToTriplesMapBase objects
         )
-        { 
-        this.parent = parent; 
+        {
+        this.parent = parent;
         this.subjects = subjects; this.objects = objects; this.predicates = predicates;
-        }   
-    
+        }
+
     /**
         Destroy this triple store - discard the indexes.
     */
      @Override
     public void close()
          { subjects = predicates = objects = null; }
-     
+
      /**
           Add a triple to this triple store.
      */
@@ -61,10 +61,10 @@ public abstract class GraphTripleStoreBase implements TripleStore
          if (subjects.add( t ))
              {
              predicates.add( t );
-             objects.add( t ); 
+             objects.add( t );
              }
          }
-     
+
      /**
           Remove a triple from this triple store.
      */
@@ -74,10 +74,10 @@ public abstract class GraphTripleStoreBase implements TripleStore
          if (subjects.remove( t ))
              {
              predicates.remove( t );
-             objects.remove( t ); 
+             objects.remove( t );
              }
          }
-     
+
      /**
           Clear this store, ie remove all triples from it.
      */
@@ -95,25 +95,25 @@ public abstract class GraphTripleStoreBase implements TripleStore
      @Override
     public int size()
          { return subjects.size(); }
-     
+
      /**
           Answer true iff this triple store is empty.
      */
      @Override
     public boolean isEmpty()
          { return subjects.isEmpty(); }
-     
+
      @Override
     public ExtendedIterator<Node> listSubjects()
          { return expectOnlyNodes( subjects.domain() ); }
-     
+
      @Override
     public ExtendedIterator<Node> listPredicates()
          { return expectOnlyNodes( predicates.domain() ); }
-    
+
      private ExtendedIterator<Node> expectOnlyNodes( Iterator<Object> elements )
         { return WrappedIterator.createNoRemove( elements ).mapWith( o -> (Node) o ); }
-     
+
      @Override
     public ExtendedIterator<Node> listObjects()
          {
@@ -123,7 +123,7 @@ public abstract class GraphTripleStoreBase implements TripleStore
                  { return objects.iteratorForIndexed( y ); }
              };
          }
-     
+
      /**
           Answer true iff this triple store contains the (concrete) triple <code>t</code>.
      */
@@ -147,16 +147,16 @@ public abstract class GraphTripleStoreBase implements TripleStore
              return !this.isEmpty();
          }
 
-     /** 
+     /**
          Answer an ExtendedIterator returning all the triples from this store that
          match the pattern <code>m = (S, P, O)</code>.
-         
+
          <p>Because the node-to-triples maps index on each of subject, predicate,
          and (non-literal) object, concrete S/P/O patterns can immediately select
          an appropriate map. Because the match for literals must be by sameValueAs,
          not equality, the optimisation is not applied for literals. [This is probably a
          Bad Thing for strings.]
-         
+
          <p>Practice suggests doing the predicate test <i>last</i>, because there are
          "usually" many more statements than predicates, so the predicate doesn't
          cut down the search space very much. By "practice suggests" I mean that
@@ -167,10 +167,10 @@ public abstract class GraphTripleStoreBase implements TripleStore
      @Override
     public ExtendedIterator<Triple> find( Triple t )
          {
+         Node sm = t.getSubject();
          Node pm = t.getPredicate();
          Node om = t.getObject();
-         Node sm = t.getSubject();
-             
+
          if (sm.isConcrete())
              return new StoreTripleIterator( parent, subjects.iterator( sm, pm, om ), subjects, predicates, objects );
          else if (om.isConcrete())
