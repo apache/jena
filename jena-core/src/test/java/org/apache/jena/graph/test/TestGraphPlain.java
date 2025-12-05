@@ -44,7 +44,7 @@ public class TestGraphPlain {
     public static void setUp() {
         // GraphMem is the old in-memory graph which has value-based indexing.
         // It is not the default graph implementation.
-        graph = new org.apache.jena.mem.GraphMemValue();
+        graph = new org.apache.jena.memvalue.GraphMemValue();
         graphAdd(graph, "s p o; s p 1; s p 01");
     }
 

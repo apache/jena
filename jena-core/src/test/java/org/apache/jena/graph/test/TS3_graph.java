@@ -21,6 +21,8 @@ package org.apache.jena.graph.test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import org.apache.jena.memvalue.TestNodeToTriplesMapMem;
+
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestFindLiterals.class,

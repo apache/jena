@@ -21,7 +21,7 @@ package org.apache.jena.graph.impl;
 import java.util.function.Predicate;
 
 import org.apache.jena.graph.* ;
-import org.apache.jena.mem.GraphMemValue;
+import org.apache.jena.memvalue.GraphMemValue;
 import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 

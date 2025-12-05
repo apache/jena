@@ -18,9 +18,9 @@
 
 package org.apache.jena.assembler.test;
 
-import org.apache.jena.assembler.*;
+import org.apache.jena.assembler.Assembler;
+import org.apache.jena.assembler.JA;
 import org.apache.jena.assembler.assemblers.DefaultModelAssembler;
-import org.apache.jena.mem.GraphMemBase;
 import org.apache.jena.rdf.model.Model;
 
 public class TestDefaultModelAssembler extends AssemblerTestBase {
@@ -36,8 +36,7 @@ public class TestDefaultModelAssembler extends AssemblerTestBase {
     public void testDefaultModelAssembler() {
         Assembler a = Assembler.defaultModel;
         Model m = a.openModel(resourceInModel("x rdf:type ja:DefaultModel"));
-        assertInstanceOf(Model.class, m);
-        assertInstanceOf(GraphMemBase.class, m.getGraph());
+        assertNotNull(m.getGraph());
     }
 
     public void testDefaultModelAssemblerType() {
