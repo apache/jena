@@ -40,10 +40,11 @@ public class SimpleGraphMaker extends BaseGraphMaker {
     /**
      * The mapping from the names of graphs to the Graphs themselves.
      */
-    private Map<String, Graph> graphs = new HashMap<>();
+    private Map<String, GraphRefCount> graphs = new HashMap<>();
 
-    public Graph create() {
-        return GraphMemFactory.createDefaultGraph();
+    public GraphRefCount create() {
+        Graph g = GraphMemFactory.createDefaultGraphSameValue();
+        return new GraphRefCount(g);
     }
 
     /**
@@ -51,15 +52,15 @@ public class SimpleGraphMaker extends BaseGraphMaker {
      */
     @Override
     public Graph createGraph(String name, boolean strict) {
-        Graph already = graphs.get(name);
+        GraphRefCount already = graphs.get(name);
         if ( already == null ) {
-            Graph result = GraphMemFactory.createDefaultGraph();
+            GraphRefCount result = create();
             graphs.put(name, result);
             return result;
         }
         if ( strict )
             throw new AlreadyExistsException(name);
-        return already;
+        return already.openAgain();
     }
 
     /**
@@ -67,13 +68,13 @@ public class SimpleGraphMaker extends BaseGraphMaker {
      */
     @Override
     public Graph openGraph(String name, boolean strict) {
-        Graph already = graphs.get(name);
+        GraphRefCount already = graphs.get(name);
         if ( already == null )
             if ( strict )
                 throw new DoesNotExistException(name);
             else
                 return createGraph(name, true);
-        return already;
+        return already.openAgain();
     }
 
     @Override
