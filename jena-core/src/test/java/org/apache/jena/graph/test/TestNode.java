@@ -628,11 +628,17 @@ public class TestNode extends GraphTestBase {
         assertFalse("", NodeCreateUtils.create("_X").sameTermAs(NodeCreateUtils.create("_Y")));
         assertTrue(NodeCreateUtils.create("10").sameTermAs(NodeCreateUtils.create("10")));
         assertFalse("", NodeCreateUtils.create("10").sameTermAs(NodeCreateUtils.create("11")));
+        // Jena6. nulls no longer allowed.
 
-        assertFalse("", NodeCreateUtils.create("S").sameTermAs(null));
-        assertFalse("", NodeCreateUtils.create("_X").sameTermAs(null));
-        assertFalse("", NodeCreateUtils.create("10").sameTermAs(null));
-        assertFalse("", Node.ANY.sameTermAs(null));
+        try {
+            NodeCreateUtils.create("S").sameTermAs(null);
+            fail("Expected NullPointerException");
+        } catch (NullPointerException ex) {}
+
+//        assertFalse("", NodeCreateUtils.create("S").sameTermAs(null));
+//        assertFalse("", NodeCreateUtils.create("_X").sameTermAs(null));
+//        assertFalse("", NodeCreateUtils.create("10").sameTermAs(null));
+//        assertFalse("", Node.ANY.sameTermAs(null));
     }
 
     public void testDataSameValue() {
