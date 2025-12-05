@@ -22,11 +22,10 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 
 /**
- * Proviced the release specific access to the helper classes for working with graphs, triples and nodes.
+ * Provide the release specific access to the helper classes for working with graphs, triples and nodes.
  */
 public class Releases {
 
     public static GraphTripleNodeHelper<Graph, Triple, Node> current = new GraphTripleNodeHelperCurrent();
     public static GraphTripleNodeHelper<org.apache.shadedJena480.graph.Graph, org.apache.shadedJena480.graph.Triple, org.apache.shadedJena480.graph.Node> v480 = new GraphTripleNodeHelper480();
-
 }

@@ -50,7 +50,7 @@ public class JenaCoreTestAll extends TestCase {
 
         // Old GraphMem/GraphMemValue.
         // TO CHECK
-        addTest(ts,  "MemValue",            adaptJUnit4(org.apache.jena.mem.test.TS3_GraphMemValue.class));
+        addTest(ts,  "MemValue",            adaptJUnit4(org.apache.jena.memvalue.TS3_GraphMemValue.class));
 
         // ** COMPLEX
         addTest(ts,  "Model1",              org.apache.jena.rdf.model.test.TS3_Model1.suite());

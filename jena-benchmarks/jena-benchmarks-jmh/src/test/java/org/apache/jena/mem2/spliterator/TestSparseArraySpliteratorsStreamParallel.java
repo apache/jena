@@ -44,7 +44,7 @@ public class TestSparseArraySpliteratorsStreamParallel {
     @Param({"1000000", "2000000", "3000000", "5000000"})
     public int param0_arraySize;
     @Param({
-            "mem.SparseArraySpliterator",
+            "memvalue.SparseArraySpliterator",
             "mem2.SparseArraySpliterator"
     })
     public String param1_iteratorImplementation;
@@ -77,8 +77,8 @@ public class TestSparseArraySpliteratorsStreamParallel {
             }
         };
         switch (param1_iteratorImplementation) {
-            case "mem.SparseArraySpliterator":
-                return new org.apache.jena.mem.SparseArraySpliterator<>(arrayWithNulls, count, checkForConcurrentModification);
+            case "memvalue.SparseArraySpliterator":
+                return new org.apache.jena.memvalue.SparseArraySpliterator<>(arrayWithNulls, count, checkForConcurrentModification);
             case "mem2.SparseArraySpliterator":
                 return new SparseArraySpliterator<>(arrayWithNulls, checkForConcurrentModification);
 

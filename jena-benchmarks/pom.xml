@@ -26,7 +26,6 @@
 
   <name>Apache Jena - Benchmark Suite</name>
   <artifactId>jena-benchmarks</artifactId>
-  <version>6.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <description>Suite with different benchmarks.

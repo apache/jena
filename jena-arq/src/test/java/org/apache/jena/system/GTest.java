@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.apache.jena.atlas.lib.Copyable;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.mem.GraphMemValue;
+import org.apache.jena.memvalue.GraphMemValue;
 import org.apache.jena.mem2.GraphMem2Fast;
 import org.apache.jena.sparql.sse.SSE;
 

@@ -29,7 +29,7 @@ import org.apache.jena.util.iterator.SingletonIterator;
 import java.util.stream.Stream;
 
 /**
- * Successor of {@link org.apache.jena.mem.GraphTripleStoreMem} that uses term-equality
+ * Successor of {@link org.apache.jena.memvalue.GraphTripleStoreMem} that uses term-equality
  * instead of literal value equality.
  * This implementation also does not support {@link java.util.Iterator#remove()}.
  * <p>

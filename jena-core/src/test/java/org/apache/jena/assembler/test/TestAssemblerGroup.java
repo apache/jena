@@ -27,7 +27,7 @@ import org.apache.jena.assembler.assemblers.AssemblerGroup.ExpandingAssemblerGro
 import org.apache.jena.assembler.assemblers.InfModelAssembler;
 import org.apache.jena.assembler.exceptions.NoSpecificTypeException;
 import org.apache.jena.graph.Graph;
-import org.apache.jena.mem.GraphMemBase;
+import org.apache.jena.graph.impl.GraphBase;
 import org.apache.jena.rdf.model.InfModel;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
@@ -159,7 +159,7 @@ public class TestAssemblerGroup extends AssemblerTestBase {
     protected void assertMemoryModel(Object object) {
         if ( object instanceof Model ) {
             Graph g = ((Model)object).getGraph();
-            assertInstanceOf(GraphMemBase.class, g);
+            assertInstanceOf(GraphBase.class, g);
         } else
             fail("expected a Model, but got a " + object.getClass());
     }
