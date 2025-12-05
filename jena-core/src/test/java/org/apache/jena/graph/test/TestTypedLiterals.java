@@ -774,20 +774,21 @@ public class TestTypedLiterals extends TestCase {
         assertEquals("DateTime from date", XSDDateTime.class, l1.getValue().getClass());
         assertEquals("DateTime from date", "2004-04-21T19:50:42Z", l1.getValue().toString());
         // System.err.println("date is: "+ncal.getTime());
-
     }
 
     /**
      * Test query applied to graphs containing typed values
      */
     public void testTypedContains() {
-        Model model = ModelFactory.createDefaultModel();
+        Model model = ModelFactory.createModelSameValue();
         Property p = model.createProperty("urn:x-eg/p");
         Literal l1 = model.createTypedLiteral("10", "http://www.w3.org/2001/XMLSchema#integer");
         Literal l2 = model.createTypedLiteral("010", "http://www.w3.org/2001/XMLSchema#integer");
         assertSameValueAs("sameas test", l1, l2);
+
         Resource a = model.createResource("urn:x-eg/a");
-        a.addProperty(p, l1);
+        model.add(a, p, l1);
+
         assertTrue(model.getGraph().contains(a.asNode(), p.asNode(), l1.asNode()));
         assertTrue(model.getGraph().contains(a.asNode(), p.asNode(), l2.asNode()));
     }
@@ -1279,7 +1280,7 @@ class RationalType extends BaseDatatype {
 
     /**
      * Parse a lexical form of this datatype to a value
-     * 
+     *
      * @throws DatatypeFormatException if the lexical form is not legal
      */
     @Override
@@ -1322,7 +1323,7 @@ class Rational {
 
     /**
      * Returns the denominator.
-     * 
+     *
      * @return int
      */
     public int getDenominator() {
@@ -1331,7 +1332,7 @@ class Rational {
 
     /**
      * Returns the numerator.
-     * 
+     *
      * @return int
      */
     public int getNumerator() {
@@ -1340,7 +1341,7 @@ class Rational {
 
     /**
      * Sets the denominator.
-     * 
+     *
      * @param denominator The denominator to set
      */
     public void setDenominator(int denominator) {
@@ -1349,7 +1350,7 @@ class Rational {
 
     /**
      * Sets the numerator.
-     * 
+     *
      * @param numerator The numerator to set
      */
     public void setNumerator(int numerator) {

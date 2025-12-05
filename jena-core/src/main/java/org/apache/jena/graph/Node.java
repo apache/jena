@@ -21,7 +21,6 @@ package org.apache.jena.graph;
 import java.io.IOException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
-import java.util.Objects;
 import java.util.function.Function;
 
 import org.apache.jena.datatypes.RDFDatatype ;
@@ -248,10 +247,11 @@ public abstract class Node implements Serializable {
 
     /**
      * RDF term equality.
+     * <p>
+     * The {@link Node} argument must not be null.
      */
-    public boolean sameTermAs(Object o) {
-        Objects.requireNonNull(o);
-        return equals(o);
+    public boolean sameTermAs(Object node) {
+        return equals(node);
     }
 
     /**
@@ -262,9 +262,12 @@ public abstract class Node implements Serializable {
      * equivalent but distinguished by the java equals function.
      * <p>Default implementation is to use {@link #equals}
      * subclasses should override this.</p>
+     * <p>
+     * The {@link Node} argument must not be null.
      */
-    public boolean sameValueAs(Object o)
-    { return equals( o ); }
+    public boolean sameValueAs(Object node) {
+        return equals(node);
+    }
 
     /** Answer a human-readable representation of this Node. */
     @Override
@@ -279,17 +282,6 @@ public abstract class Node implements Serializable {
 
     @Override
     public abstract int hashCode();
-
-    /**
-     * Answer true iff this node accepts the other one as a match. The default is an
-     * equality test; it is over-ridden in subclasses to provide the appropriate
-     * semantics for literals, ANY, and variables.
-     *
-     * @param other a node to test for matching
-     * @return true iff this node accepts the other as a match
-     */
-    public boolean matches( Node other )
-    { return equals( other ); }
 
     // ---- Serializable
     // Must be "protected", not "private".
