@@ -67,7 +67,7 @@ public class QuadDataAcc extends QuadDataAccSink implements TripleCollectorMark 
     @Override
     public void addTriple(int index, Triple triple) {
         check(triple);
-        quads.add(index, new Quad(graphNode, triple));
+        quads.add(index, Quad.create(graphNode, triple));
     }
 
     @Override

@@ -34,7 +34,28 @@ import org.apache.jena.sys.Serializer;
  */
 public class Triple implements Serializable
 {
-	private final Node subj, pred, obj;
+    /**
+     * Create triple,
+     * Nulls are not permnitted.
+     */
+	public static Triple create(Node s, Node p, Node o) {
+        if ( isAny(s) && isAny(p) && isAny(o) )
+            return Triple.ANY;
+        return new Triple(s, p, o);
+    }
+
+    /**
+     * Create triple,
+     * Nulls are converted to {@link Node#ANY}.
+     */
+    public static Triple createMatch( Node s, Node p, Node o )
+    { return Triple.create( nullToAny( s ), nullToAny( p ), nullToAny( o ) ); }
+
+    /**
+        A Triple that has {@link Node#ANY} in all fields.
+    */
+    public static final Triple ANY = new Triple( Node.ANY, Node.ANY, Node.ANY );
+    private final Node subj, pred, obj;
 
 	protected Triple( Node s, Node p, Node o ) {
 	    if (s == null) throw new UnsupportedOperationException( "subject cannot be null" );
@@ -91,17 +112,28 @@ public class Triple implements Serializable
     public final Node getObject()
 	{ return obj; }
 
-	/** Return subject or null, not Node.ANY */
+	/**
+	 * Return subject or null, not Node.ANY
+	 * @deprecated Use {@link #getSubject()}.
+	 */
+    @Deprecated(forRemoval = true)
     public Node getMatchSubject()
-    { return anyToNull( subj ); }
+    { return anyToNull( getSubject() ); }
 
-    /** Return predicate or null, not Node.ANY */
+    /**
+     *  Return predicate or null, not Node.ANY.
+     * @deprecated Use {@link #getPredicate()}.
+     */
+    @Deprecated(forRemoval = true)
     public Node getMatchPredicate()
-    { return anyToNull( pred ); }
+    { return anyToNull( getPredicate() ); }
 
-    /** Return object or null, not Node.ANY */
+    /** Return object or null, not Node.ANY.
+     * @deprecated Use {@link #getObject()}.
+     */
+    @Deprecated(forRemoval = true)
     public Node getMatchObject()
-    { return anyToNull( obj ); }
+    { return anyToNull( getObject() ); }
 
     private static Node anyToNull( Node n )
     { return Node.ANY.equals( n ) ? null : n; }
@@ -125,28 +157,33 @@ public class Triple implements Serializable
 
     /**
         Answer true iff this triple has subject s, predicate p, and object o.
+        The relationship is "same term".
+        Use {@link #matches(Node, Node, Node)} for wildcards.
     */
     public boolean sameAs( Node s, Node p, Node o )
-    { return subj.equals( s ) && pred.equals( p ) && obj.equals( o ); }
+    { return subj.sameTermAs( s ) && pred.sameTermAs( p ) && obj.sameTermAs( o ); }
 
-    /** Does this triple, used as a pattern match, the other triple (usually a ground triple) */
+    /**
+     * Does this triple, match the other triple, allowing for wildcards.
+     * The wildcard node is {@link Node#ANY} and it matches any node, including a wildcard.
+     * Both this triple and the argument triple may contain wildcards,
+     * that is "matches" is symmetric:
+     * {@code this.matches(that) == that.matches(this)}.
+     */
     public boolean matches( Triple other )
-    { return other.matchedBy( subj, pred, obj  ); }
+    { return matches(other.getSubject(), other.getPredicate(), other.getObject()); }
 
     public boolean matches( Node s, Node p, Node o )
-    { return subj.matches( s ) && pred.matches( p ) && obj.matches( o ); }
+    { return matches(subj, s) && matches(pred, p) && matches(obj, o); }
 
-    private boolean matchedBy( Node s, Node p, Node o )
-    { return s.matches( subj ) && p.matches( pred ) && o.matches( obj ); }
-
-    public boolean subjectMatches( Node s )
-    { return subj.matches( s ); }
-
-    public boolean predicateMatches( Node p )
-    { return pred.matches( p ); }
-
-    public boolean objectMatches( Node o )
-    { return obj.matches( o ); }
+    /** Match with possible wildcards (Node.ANY) in either argument. */
+    private static boolean matches(Node patternNode, Node node) {
+        if ( isAny(patternNode) )
+            return true;
+        if ( isAny(node) )
+            return true;
+        return patternNode.sameTermAs(node);
+    }
 
     // ---- Serializable
     protected Object writeReplace() throws ObjectStreamException {
@@ -180,20 +217,6 @@ public class Triple implements Serializable
      */
     public static int hashCode( Node s, Node p, Node o )
     { return (s.hashCode() >> 1) ^ p.hashCode() ^ (o.hashCode() << 1); }
-
-    public static Triple create(Node s, Node p, Node o) {
-        if ( isAny(s) && isAny(p) && isAny(o) )
-            return Triple.ANY;
-        return new Triple(s, p, o);
-    }
-
-    public static Triple createMatch( Node s, Node p, Node o )
-        { return Triple.create( nullToAny( s ), nullToAny( p ), nullToAny( o ) ); }
-
-    /**
-        A Triple that has {@link Node#ANY} in all fields.
-    */
-    public static final Triple ANY = new Triple( Node.ANY, Node.ANY, Node.ANY );
 
     /**
         A Field is a selector from Triples; it allows selectors to be passed

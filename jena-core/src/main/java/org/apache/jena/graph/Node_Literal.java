@@ -125,23 +125,11 @@ public class Node_Literal extends Node
         return label.equals(other.label);
     }
 
-    /**
-     * Test that two nodes are equivalent as values.
-     * In some cases this may be the same as "same term", in others
-     * equals is stricter. For example, two xsd:int literals with
-     * the same value if they are "01" and "1".
-     * <p>Default implementation is to use equals, subclasses should
-     * override this.</p>
-     */
     @Override
-    public boolean sameValueAs(Object o) {
-        return o instanceof Node_Literal
-              && label.sameValueAs( ((Node_Literal) o).getLiteral() );
-    }
-
-    @Override
-    public boolean matches(Node x) {
-        return sameValueAs(x);
+    public boolean sameValueAs(Node other) {
+        if ( other instanceof Node_Literal otherLiteral )
+            return label.sameValueAs( otherLiteral.getLiteral() );
+        return false;
     }
 
     @Override

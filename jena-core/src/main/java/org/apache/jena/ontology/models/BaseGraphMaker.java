@@ -18,62 +18,68 @@
 
 package org.apache.jena.ontology.models;
 
-import org.apache.jena.graph.* ;
-import org.apache.jena.shared.* ;
+import org.apache.jena.graph.*;
+import org.apache.jena.shared.*;
 
 /**
-    This base class provides convenience functions for the three "usual" graph
-    makers and a place to hold the reification style for the graphs it constructs.   
-*/
-public abstract class BaseGraphMaker implements GraphMaker
-    {
+ * This base class provides convenience functions for the three "usual" graph makers
+ * and a place to hold the reification style for the graphs it constructs.
+ */
+public abstract class BaseGraphMaker implements GraphMaker {
     /**
-        Construct the base level of a graph maker.
+     * Construct the base level of a graph maker.
      */
-    public BaseGraphMaker( ) { }
-        
-    private int counter = 0;
-    
-    /**
-        Answer the default graph for this maker. If we haven't already made it, make it
-        now.
-     */
-    @Override
-    public Graph getGraph()
-        { 
-        if (defaultGraph == null) { defaultGraph = createGraph(); }
-        return defaultGraph;
-        }
-        
-    private Graph defaultGraph;
-    
-    @Override
-    public Graph openGraph()
-        { if (defaultGraph == null) throw new DoesNotExistException
-            ( "no default graph in this GraphMaker [" + this.getClass() + "]" ); 
-        return defaultGraph; }
-    
-    /**
-        Make a fresh anonymous graph.
-    */
-    @Override
-    public Graph createGraph()
-        { return createGraph( "anon_" + counter++ + "", false ); }
-         
-     /**
-        A non-strict create.
-      	@see org.apache.jena.ontology.models.GraphMaker#createGraph(java.lang.String)
-      */
-    @Override
-    public Graph createGraph(String name)
-        { return createGraph( name, false ); }
-        
-    /**
-        A non-strict open.
-     	@see org.apache.jena.ontology.models.GraphMaker#openGraph(java.lang.String)
-     */
-    @Override
-    public Graph openGraph( String name )
-        { return openGraph( name, false ); }
+    public BaseGraphMaker() {}
 
+    private int counter = 0;
+
+    /**
+     * Answer the default graph for this maker. If we haven't already made it, make
+     * it now.
+     */
+    @Override
+    public Graph getGraph() {
+        if ( defaultGraph == null ) {
+            defaultGraph = createGraph();
+        }
+        return defaultGraph;
     }
+
+    private Graph defaultGraph;
+
+    @Override
+    public Graph openGraph() {
+        if ( defaultGraph == null )
+            throw new DoesNotExistException("no default graph in this GraphMaker [" + this.getClass() + "]");
+        return defaultGraph;
+    }
+
+    /**
+     * Make a fresh anonymous graph.
+     */
+    @Override
+    public Graph createGraph() {
+        return createGraph("anon_" + counter++ + "", false);
+    }
+
+    /**
+     * A non-strict create.
+     *
+     * @see org.apache.jena.ontology.models.GraphMaker#createGraph(java.lang.String)
+     */
+    @Override
+    public Graph createGraph(String name) {
+        return createGraph(name, false);
+    }
+
+    /**
+     * A non-strict open.
+     *
+     * @see org.apache.jena.ontology.models.GraphMaker#openGraph(java.lang.String)
+     */
+    @Override
+    public Graph openGraph(String name) {
+        return openGraph(name, false);
+    }
+
+}

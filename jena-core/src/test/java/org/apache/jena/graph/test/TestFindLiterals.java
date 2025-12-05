@@ -140,8 +140,6 @@ public class TestFindLiterals extends GraphTestBase {
         assertFalse(A.equals(B));
         assertFalse(A.sameValueAs(B));
         assertFalse(B.sameValueAs(A));
-        assertFalse(A.matches(B));
-        assertFalse(B.matches(A));
     }
 
     @SuppressWarnings("deprecation")

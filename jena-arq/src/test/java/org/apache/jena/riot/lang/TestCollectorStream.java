@@ -56,7 +56,7 @@ public class TestCollectorStream {
         List<Quad> results = new ArrayList<>();
         out.start();
         for ( int i = 1; i <= size; i++ ) {
-            Quad q = new Quad(NodeFactory.createURI("http://graph"), NodeFactory.createBlankNode(),
+            Quad q = Quad.create(NodeFactory.createURI("http://graph"), NodeFactory.createBlankNode(),
                               NodeFactory.createURI("http://predicate"), NodeFactoryExtra.intToNode(i));
             out.quad(q);
             results.add(q);

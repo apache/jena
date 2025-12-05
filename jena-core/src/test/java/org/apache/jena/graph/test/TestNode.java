@@ -621,22 +621,27 @@ public class TestNode extends GraphTestBase {
     }
 
     public void testSimpleMatches() {
-        assertTrue(NodeCreateUtils.create("S").matches(NodeCreateUtils.create("S")));
-        assertFalse("", NodeCreateUtils.create("S").matches(NodeCreateUtils.create("T")));
-        assertFalse("", NodeCreateUtils.create("S").matches(null));
-        assertTrue(NodeCreateUtils.create("_X").matches(NodeCreateUtils.create("_X")));
-        assertFalse("", NodeCreateUtils.create("_X").matches(NodeCreateUtils.create("_Y")));
-        assertFalse("", NodeCreateUtils.create("_X").matches(null));
-        assertTrue(NodeCreateUtils.create("10").matches(NodeCreateUtils.create("10")));
-        assertFalse("", NodeCreateUtils.create("10").matches(NodeCreateUtils.create("11")));
-        assertFalse("", NodeCreateUtils.create("10").matches(null));
-        assertTrue(Node.ANY.matches(NodeCreateUtils.create("S")));
-        assertTrue(Node.ANY.matches(NodeCreateUtils.create("_X")));
-        assertTrue(Node.ANY.matches(NodeCreateUtils.create("10")));
-        assertFalse("", Node.ANY.matches(null));
+        assertTrue(NodeCreateUtils.create("S").sameTermAs(NodeCreateUtils.create("S")));
+        assertFalse("", NodeCreateUtils.create("S").sameTermAs(NodeCreateUtils.create("T")));
+
+        assertTrue(NodeCreateUtils.create("_X").sameTermAs(NodeCreateUtils.create("_X")));
+        assertFalse("", NodeCreateUtils.create("_X").sameTermAs(NodeCreateUtils.create("_Y")));
+        assertTrue(NodeCreateUtils.create("10").sameTermAs(NodeCreateUtils.create("10")));
+        assertFalse("", NodeCreateUtils.create("10").sameTermAs(NodeCreateUtils.create("11")));
+        // Jena6. nulls no longer allowed.
+
+        try {
+            NodeCreateUtils.create("S").sameTermAs(null);
+            fail("Expected NullPointerException");
+        } catch (NullPointerException ex) {}
+
+//        assertFalse("", NodeCreateUtils.create("S").sameTermAs(null));
+//        assertFalse("", NodeCreateUtils.create("_X").sameTermAs(null));
+//        assertFalse("", NodeCreateUtils.create("10").sameTermAs(null));
+//        assertFalse("", Node.ANY.sameTermAs(null));
     }
 
-    public void testDataMatches() {
+    public void testDataSameValue() {
         TypeMapper tm = TypeMapper.getInstance();
         RDFDatatype dt1 = tm.getTypeByValue(Integer.valueOf(10));
         RDFDatatype dt2 = tm.getTypeByValue(Short.valueOf((short)10));
@@ -644,7 +649,6 @@ public class TestNode extends GraphTestBase {
         Node b = NodeFactory.createLiteralDT("10", dt2);
         assertDiffer("types must make a difference", a, b);
         assertTrue("A and B must express the same value", a.sameValueAs(b));
-        assertTrue("matching literals must respect sameValueAs", a.matches(b));
     }
 
     public void testLiteralToString() {

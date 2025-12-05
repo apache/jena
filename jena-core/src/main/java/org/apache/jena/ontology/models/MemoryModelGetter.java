@@ -20,23 +20,23 @@ package org.apache.jena.ontology.models;
 
 import java.util.HashMap;
 
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.ModelReader ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.ModelReader;
 
-public class MemoryModelGetter implements ModelGetter
-	{
-	protected HashMap<String, Model> models = new HashMap<>();
+public class MemoryModelGetter implements ModelGetter {
+    protected HashMap<String, Model> models = new HashMap<>();
 
-	@Override
-    public Model getModel(String URL)
-		{ return models.get( URL ); }
+    @Override
+    public Model getModel(String URL) {
+        return models.get(URL);
+    }
 
-	@Override
-    public Model getModel(String URL, ModelReader loadIfAbsent)
-		{
-		Model m = models.get( URL );
-		if (m == null) models.put( URL, m = ModelFactory.createDefaultModel() );
-		return m;
-		}
-	}
+    @Override
+    public Model getModel(String URL, ModelReader loadIfAbsent) {
+        Model m = models.get(URL);
+        if ( m == null )
+            models.put(URL, m = ModelFactory.createDefaultModel());
+        return m;
+    }
+}
