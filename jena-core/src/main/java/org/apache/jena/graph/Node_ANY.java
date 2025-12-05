@@ -53,11 +53,6 @@ public class Node_ANY extends Node {
     }
 
     @Override
-    public boolean matches(Node other) {
-        return other != null;
-    }
-
-    @Override
     public String toString( PrefixMapping pmap ) { return toString(); }
 
     @Override

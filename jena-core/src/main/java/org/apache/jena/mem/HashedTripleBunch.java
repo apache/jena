@@ -44,9 +44,10 @@ public class HashedTripleBunch extends HashCommon<Triple> implements TripleBunch
         int index = initialIndexFor( key );
         while (true)
             {
-            Object current = keys[index];
+            Triple current = keys[index];
             if (current == null) return index;
-            if (key.matches( (Triple) current )) return ~index;
+            if ( ByValue.sameByValue(key, current) )
+                return ~index;
             if (--index < 0) index += capacity;
             }
         }

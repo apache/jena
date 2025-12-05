@@ -23,8 +23,9 @@ import static org.apache.jena.testing_framework.GraphHelper.txnCommit;
 import static org.apache.jena.testing_framework.GraphHelper.txnRollback;
 import static org.apache.jena.testing_framework.GraphHelper.txnRun;
 
-import java.util.Iterator;
 import java.util.Set;
+
+import org.junit.Test;
 
 import junit.framework.JUnit4TestAdapter;
 import org.apache.jena.atlas.iterator.Iter;
@@ -34,7 +35,6 @@ import org.apache.jena.graph.test.AbstractTestGraph;
 import org.apache.jena.mem.GraphMemValue;
 import org.apache.jena.testing_framework.NodeCreateUtils;
 import org.apache.jena.util.iterator.ExtendedIterator;
-import org.junit.Test;
 
 /**
  * Tests of a graph which has support for (Java object) value handling.
@@ -289,26 +289,5 @@ public class TestGraphMemModel extends AbstractTestGraph {
         ExtendedIterator<Triple> it = g.find(Node.ANY, Node.ANY, node("y"));
         it.removeNext();
         assertFalse(g.find(Node.ANY, Node.ANY, Node.ANY).hasNext());
-    }
-
-    @Test
-    public void testUnnecessaryMatches() {
-        Node special = new Node_URI("eg:foo") {
-            @Override
-            public boolean matches(Node s) {
-                fail("Matched called superfluously.");
-                return true;
-            }
-        };
-        Graph g = getGraphWith("x p y");
-        g.add(Triple.create(special, special, special));
-        exhaust(g.find(special, Node.ANY, Node.ANY));
-        exhaust(g.find(Node.ANY, special, Node.ANY));
-        exhaust(g.find(Node.ANY, Node.ANY, special));
-    }
-
-    protected void exhaust(Iterator<? > it) {
-        while (it.hasNext())
-            it.next();
     }
 }

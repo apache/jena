@@ -23,23 +23,23 @@ import org.apache.jena.graph.Triple.Field ;
 import org.apache.jena.graph.impl.TripleStore ;
 
 public class GraphTripleStoreMem extends GraphTripleStoreBase implements TripleStore
-    {    
+    {
     public GraphTripleStoreMem( Graph parent )
-        { 
+        {
         super( parent,
             new NodeToTriplesMapMem( Field.fieldSubject, Field.fieldPredicate, Field.fieldObject ),
             new NodeToTriplesMapMem( Field.fieldPredicate, Field.fieldObject, Field.fieldSubject ),
             new NodeToTriplesMapMem( Field.fieldObject, Field.fieldSubject, Field.fieldPredicate )
-                ); 
+                );
         }
-    
+
     public NodeToTriplesMapMem getSubjects()
         { return (NodeToTriplesMapMem) subjects; }
 
     public NodeToTriplesMapMem getPredicates()
         { return (NodeToTriplesMapMem) predicates; }
-    
+
     public NodeToTriplesMapMem getObjects()
         { return (NodeToTriplesMapMem) objects; }
-    
+
     }

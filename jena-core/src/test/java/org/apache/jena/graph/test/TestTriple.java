@@ -180,20 +180,6 @@ public class TestTriple extends GraphTestBase {
         assertFalse(NodeCreateUtils.createTriple("S P O").matches(node("Z"), node("P"), node("I")));
     }
 
-    public void testElementMatches() {
-        assertTrue(NodeCreateUtils.createTriple("S P O").subjectMatches(node("S")));
-        assertTrue(NodeCreateUtils.createTriple("S P O").predicateMatches(node("P")));
-        assertTrue(NodeCreateUtils.createTriple("S P O").objectMatches(node("O")));
-        /* */
-        assertFalse(NodeCreateUtils.createTriple("S P O").subjectMatches(node("Z")));
-        assertFalse(NodeCreateUtils.createTriple("S P O").predicateMatches(node("Q")));
-        assertFalse(NodeCreateUtils.createTriple("S P O").objectMatches(node("I")));
-        /* */
-        assertTrue(NodeCreateUtils.createTriple("?? P O").subjectMatches(node("SUB")));
-        assertTrue(NodeCreateUtils.createTriple("S ?? O").predicateMatches(node("PRED")));
-        assertTrue(NodeCreateUtils.createTriple("S P ??").objectMatches(node("OBJ")));
-    }
-
     public void testConcrete() {
         assertTrue(NodeCreateUtils.createTriple("S P O").isConcrete());
         assertTrue(NodeCreateUtils.createTriple("S P 11").isConcrete());
