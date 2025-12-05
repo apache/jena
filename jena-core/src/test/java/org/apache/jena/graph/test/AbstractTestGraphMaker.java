@@ -198,6 +198,9 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase {
         assertFalse("no such graph", gf.hasGraph("george"));
     }
 
+    // Up to Jena5, the graph created did open/close counting.
+    // But only some graph implements provided this.
+
     public void testCarefulClose() {
         Graph x = gf.createGraph("x");
         Graph y = gf.openGraph("x");
