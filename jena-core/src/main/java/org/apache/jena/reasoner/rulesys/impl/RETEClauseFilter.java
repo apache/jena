@@ -31,47 +31,47 @@ import org.apache.jena.reasoner.rulesys.* ;
  * and bindings are implemented using a simple byte-coded interpreter.
  */
 public class RETEClauseFilter implements RETESourceNode {
-    
+
     /** Contains the set of byte-coded instructions and argument pointers */
     protected byte[] instructions;
-    
+
     /** Contains the object arguments referenced from the instructions array */
     protected Object[] args;
-    
+
     /** The network node to receive any created tokens */
     protected RETESinkNode continuation;
-    
+
     /** Instruction code: Check triple entry (arg1) against literal value (arg2). */
     public static final byte TESTValue = 0x01;
-    
+
     /** Instruction code: Check literal value is a functor of name arg1 */
     public static final byte TESTFunctorName = 0x02;
-    
+
     /** Instruction code: Cross match two triple entries (arg1, arg2) */
     public static final byte TESTIntraMatch = 0x03;
-    
+
     /** Instruction code: Create a result environment of length arg1. */
     public static final byte CREATEToken = 0x04;
-    
+
     /** Instruction code: Bind a node (arg1) to a place in the rules token (arg2). */
     public static final byte BIND = 0x05;
-    
+
     /** Instruction code: Final entry - dispatch to the network. */
     public static final byte END = 0x06;
-    
+
     /** Argument addressing code: triple subject */
     public static final byte ADDRSubject = 0x10;
-    
+
     /** Argument addressing code: triple predicate */
     public static final byte ADDRPredicate = 0x20;
-    
+
     /** Argument addressing code: triple object as a whole */
     public static final byte ADDRObject = 0x30;
-    
-    /** Argument addressing code: triple object functor node, offset in 
+
+    /** Argument addressing code: triple object functor node, offset in
      *  low nibble, only usable after a successful TestFunctorName. */
     public static final byte ADDRFunctorNode = 0x40;
-        
+
     /**
      * Constructor.
      * @param instructions the set of byte-coded instructions and argument pointers.
@@ -81,7 +81,7 @@ public class RETEClauseFilter implements RETESourceNode {
         this.instructions = instructions;
         this.args = args;
     }
-    
+
     /**
      * Create a filter node from a rule clause.
      * Clause complexity is limited to less than 50 args in a Functor.
@@ -89,17 +89,17 @@ public class RETEClauseFilter implements RETESourceNode {
      * @param envLength the size of binding environment that should be created on successful matches
      * @param varList a list to which all clause variables will be appended
      */
-    public static RETEClauseFilter compile(TriplePattern clause, int envLength, List<Node> varList) { 
+    public static RETEClauseFilter compile(TriplePattern clause, int envLength, List<Node> varList) {
         byte[] instructions = new byte[300];
         byte[] bindInstructions = new byte[100];
         ArrayList<Object> args = new ArrayList<>();
-        int pc = 0;   
+        int pc = 0;
         int bpc = 0;
-        
+
         // Pass 0 - prepare env creation statement
         bindInstructions[bpc++] = CREATEToken;
         bindInstructions[bpc++] = (byte)envLength;
-        
+
         // Pass 1 - check literal values
         Node n = clause.getSubject();
         if ( !n.isVariable() ) {
@@ -162,16 +162,16 @@ public class RETEClauseFilter implements RETESourceNode {
             varList.add(n);
         }
         bindInstructions[bpc++] = END;
-        
+
         // Pass 4 - Pack instructions
         byte[] packed = new byte[pc + bpc];
         System.arraycopy(instructions, 0, packed, 0, pc);
         System.arraycopy(bindInstructions, 0, packed, pc, bpc);
         Object[] packedArgs = args.toArray();
-        
+
         return new RETEClauseFilter(packed, packedArgs);
     }
-    
+
     /**
      * Set the continuation node for this node.
      */
@@ -186,23 +186,32 @@ public class RETEClauseFilter implements RETESourceNode {
      * @param isAdd true if the triple is being added to the working set.
      */
     public void fire(Triple triple, boolean isAdd) {
-        
+
         Functor lastFunctor = null;     // bound by TESTFunctorName
         BindingVector env = null;       // bound by CREATEToken
         Node n = null;                  // Temp workspace
-        
+
         for (int pc = 0; pc < instructions.length; ) {
             switch(instructions[pc++]) {
-                
-            case TESTValue: 
-                // Check triple entry (arg1) against literal value (arg2)
-                if (! getTripleValue(triple, instructions[pc++], lastFunctor)
-                                .sameValueAs(args[instructions[pc++]])) return;
-                break;
-                
+
+               case TESTValue:
+                    // Check triple entry (arg1) against literal value (arg2)
+                   Node arg1 = getTripleValue(triple, instructions[pc++], lastFunctor);
+                   Object obj2 = args[instructions[pc++]];
+                   if ( ! ( obj2 instanceof Node arg2) )
+                       return;
+                   if ( ! arg1.sameValueAs(arg2) )
+                       return;
+                    break;
+   // Was:
+   // when sameValueAs took an Object as argument (a non-node was then false).
+   //                if (! getTripleValue(triple, instructions[pc++], lastFunctor)
+   //                                .sameValueAs(args[instructions[pc++]])) return;
+   //                break;
+
             case TESTFunctorName:
                 // Check literal value is a functor of name arg1.
-                // Side effect: leaves a loop variable pointing to functor 
+                // Side effect: leaves a loop variable pointing to functor
                 // for possible later functor argument accesses
                 n = triple.getObject();
                 if ( !n.isLiteral() ) return;
@@ -210,26 +219,25 @@ public class RETEClauseFilter implements RETESourceNode {
                 lastFunctor = (Functor)n.getLiteralValue();
                 if ( !lastFunctor.getName().equals(args[instructions[pc++]]) ) return;
                 break;
-                
+
             case CREATEToken:
                 // Create a result environment of length arg1
                 env = new BindingVector(new Node[instructions[pc++]]);
                 break;
-                
+
             case BIND:
                 // Bind a node (arg1) to a place in the rules token (arg2)
                 n = getTripleValue(triple, instructions[pc++], lastFunctor);
                 if ( !env.bind(instructions[pc++], n) ) return;
                 break;
-                
+
             case END:
                 // Success, fire the continuation
                 continuation.fire(env, isAdd);
             }
         }
-
     }
-    
+
     /**
      * Helpful function. Return the node from the argument triple
      * corresponding to the byte code address.
@@ -247,7 +255,7 @@ public class RETEClauseFilter implements RETESourceNode {
         }
         return null;
     }
-    
+
     /**
      * Clone this node in the network.
      * @param netCopy a map from RETENode to cloned instance
@@ -263,5 +271,5 @@ public class RETEClauseFilter implements RETESourceNode {
         }
         return clone;
     }
-    
+
 }

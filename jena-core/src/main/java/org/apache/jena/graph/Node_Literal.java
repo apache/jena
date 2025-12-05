@@ -126,7 +126,7 @@ public class Node_Literal extends Node
     }
 
     @Override
-    public boolean sameValueAs(Object other) {
+    public boolean sameValueAs(Node other) {
         if ( other instanceof Node_Literal otherLiteral )
             return label.sameValueAs( otherLiteral.getLiteral() );
         return false;
