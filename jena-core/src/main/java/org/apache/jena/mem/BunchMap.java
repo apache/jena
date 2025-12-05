@@ -35,14 +35,14 @@ public interface BunchMap
         Clear this map: all entries are removed.
     */
     public void clear();
-    
+
     /**
         The number of items in the bunch.
     */
     public long size();
 
     /**
-        Answer the TripleBunch associated with <code>key</code>, or 
+        Answer the TripleBunch associated with <code>key</code>, or
         <code>null</code> if there isn't one.
     */
     public TripleBunch get( Object key );
@@ -53,10 +53,10 @@ public interface BunchMap
         will now deliver this value.
     */
     public void put( Object key, TripleBunch value );
-    
+
     /**
       Get the <code>key</code> and return the value found there; if nothing,
-      calculate the <code>value</code> and insert. Return the value now the slot.  
+      calculate the <code>value</code> and insert. Return the value now the slot.
      */
     public TripleBunch getOrSet( Object key, Function<Object, TripleBunch> setter );
 

@@ -130,15 +130,16 @@ public class NodeToTriplesMapMem extends NodeToTriplesMapBase
        {
        Object indexValue = index.getIndexingValue();
        TripleBunch s = bunchMap.get( indexValue );
-       if (s == null) return NullIterator.<Triple>instance();
-           var filter = FieldFilter.filterOn(f2, n2, f3, n3);
-           return filter.hasFilter()
-               ? s.iterator( new NotifyMe( indexValue ) ).filterKeep( filter.getFilter() )
-               : s.iterator( new NotifyMe( indexValue ) );
+       if (s == null)
+           return NullIterator.instance();
+       var filter = FieldFilter.filterOn(f2, n2, f3, n3);
+       return filter.hasFilter()
+           ? s.iterator( new NotifyMe( indexValue ) ).filterKeep( filter.getFilter() )
+           : s.iterator( new NotifyMe( indexValue ) );
        }
 
-        protected TripleBunch get( Object index )
-        { return bunchMap.get( index ); }
+    protected TripleBunch get( Object index )
+    { return bunchMap.get( index ); }
 
     /**
      Answer an iterator over all the triples that are indexed by the item <code>y</code>.

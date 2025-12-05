@@ -60,7 +60,7 @@ public class OpQuadPattern extends Op0
         if ( quads == null ) {
             quads = new QuadPattern();
             for ( Triple t : triples )
-                quads.add(new Quad(graphNode, t));
+                quads.add(Quad.create(graphNode, t));
         }
     }
 

@@ -68,7 +68,7 @@ public class GraphSPARQLService extends GraphBase implements Graph
     @Override
     protected ExtendedIterator<Triple> graphBaseFind(Triple m)
     {
-        Node s = m.getMatchSubject() ;
+        Node s = m.getSubject() ;
         Var sVar = null ;
         if ( s == null )
         {
@@ -76,7 +76,7 @@ public class GraphSPARQLService extends GraphBase implements Graph
             s = sVar ;
         }
 
-        Node p = m.getMatchPredicate() ;
+        Node p = m.getPredicate() ;
         Var pVar = null ;
         if ( p == null )
         {
@@ -84,7 +84,7 @@ public class GraphSPARQLService extends GraphBase implements Graph
             p = pVar ;
         }
 
-        Node o = m.getMatchObject() ;
+        Node o = m.getObject() ;
         Var oVar = null ;
         if ( o == null )
         {

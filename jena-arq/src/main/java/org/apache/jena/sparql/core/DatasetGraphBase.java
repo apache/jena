@@ -91,9 +91,9 @@ abstract public class DatasetGraphBase implements DatasetGraph
     public void delete(Quad quad) { throw new UnsupportedOperationException("DatasetGraph.delete(Quad)") ; }
 
     @Override
-    public void add(Node g, Node s, Node p, Node o)     { add(new Quad(g,s,p,o)) ; }
+    public void add(Node g, Node s, Node p, Node o)     { add(Quad.create(g,s,p,o)) ; }
     @Override
-    public void delete(Node g, Node s, Node p, Node o)  { delete(new Quad(g,s,p,o)) ; }
+    public void delete(Node g, Node s, Node p, Node o)  { delete(Quad.create(g,s,p,o)) ; }
 
     @Override
     /** Simple implementation but done without assuming iterator.remove() */
