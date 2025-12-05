@@ -174,7 +174,7 @@ public class Node_RuleVariable extends Node_Variable {
      * Test that two nodes are semantically equivalent.
      */
     @Override
-    public boolean sameValueAs(Object other) {
+    public boolean sameValueAs(Node other) {
         return other instanceof Node_RuleVariable;
     }
 
