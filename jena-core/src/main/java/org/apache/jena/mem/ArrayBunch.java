@@ -34,22 +34,28 @@ import org.apache.jena.util.iterator.NiceIterator ;
 */
 public class ArrayBunch implements TripleBunch
     {
-    
+
     protected int size = 0;
     protected Triple [] elements;
-    protected volatile int changes = 0; 
+    protected volatile int changes = 0;
 
     public ArrayBunch()
         { elements = new Triple[5]; }
-    
+
     @Override
     public boolean containsBySameValueAs( Triple t )
         {
         int i = size;
-        while (i > 0) if (t.matches( elements[--i])) return true;
+        //while (i > 0) if (t.matches( elements[--i])) return true;
+
+        while (i > 0) {
+            if ( ByValue.sameByValue(t,elements[--i]) )
+                return true;
+        }
+
         return false;
         }
-    
+
     @Override
     public boolean contains( Triple t )
         {
@@ -57,24 +63,24 @@ public class ArrayBunch implements TripleBunch
         while (i > 0) if (t.equals( elements[--i] )) return true;
         return false;
         }
-    
+
     @Override
     public int size()
         { return size; }
-    
+
     @Override
     public void add( Triple t )
-        { 
+        {
         if (size == elements.length) grow();
-        elements[size++] = t; 
+        elements[size++] = t;
         changes++;
         }
-    
+
     /**
         Note: linear growth is suboptimal (order n<sup>2</sup>) normally, but
         ArrayBunch's are meant for <i>small</i> sets and are replaced by some
         sort of hash- or tree- set when they get big; currently "big" means more
-        than 9 elements, so that's only one growth spurt anyway.  
+        than 9 elements, so that's only one growth spurt anyway.
     */
     protected void grow()
         {
@@ -101,21 +107,21 @@ public class ArrayBunch implements TripleBunch
         return iterator( new HashCommon.NotifyEmpty() { @Override
         public void emptied() {} } );
         }
-    
+
     @Override
     public ExtendedIterator<Triple> iterator( final HashCommon.NotifyEmpty container )
         {
         return new NiceIterator<Triple>()
             {
             protected final int initialChanges = changes;
-            
+
             protected int i = size;
 
             @Override public boolean hasNext()
-                { 
+                {
                 return 0 < i;
                 }
-        
+
             @Override public Triple next()
                 {
                 if (changes != initialChanges) throw new ConcurrentModificationException();
