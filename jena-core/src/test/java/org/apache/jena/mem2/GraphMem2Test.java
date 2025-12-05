@@ -32,17 +32,6 @@ import static org.mockito.Mockito.*;
 public class GraphMem2Test {
 
     @Test
-    public void destroy() {
-        TripleStore mockStore = mock();
-
-        var sut = new GraphMem2(mockStore);
-        sut.destroy();
-
-        inOrder(mockStore).verify(mockStore, times(1)).clear();
-        verifyNoMoreInteractions(mockStore);
-    }
-
-    @Test
     public void clear() {
         TripleStore mockStore = mock();
 

@@ -27,7 +27,7 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphEventManager;
 import org.apache.jena.graph.GraphListener;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.mem.TrackingTripleIterator;
+import org.apache.jena.memvalue.TrackingTripleIterator;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
 /**

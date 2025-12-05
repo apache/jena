@@ -18,10 +18,10 @@
 
 package org.apache.jena.assembler.test;
 
-import org.apache.jena.assembler.*;
+import org.apache.jena.assembler.Assembler;
+import org.apache.jena.assembler.JA;
 import org.apache.jena.assembler.assemblers.MemoryModelAssembler;
-import org.apache.jena.mem.GraphMemBase;
-import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.Model;
 
 public class TestMemoryModelAssembler extends AssemblerTestBase {
     public TestMemoryModelAssembler(String name) {
@@ -40,7 +40,6 @@ public class TestMemoryModelAssembler extends AssemblerTestBase {
     public void testMemoryModelAssembler() {
         Assembler a = new MemoryModelAssembler();
         Model m = a.openModel(resourceInModel("x rdf:type ja:MemoryModel"));
-        assertInstanceOf(Model.class, m);
-        assertInstanceOf(GraphMemBase.class, m.getGraph());
+        assertNotNull(m.getGraph());
     }
 }

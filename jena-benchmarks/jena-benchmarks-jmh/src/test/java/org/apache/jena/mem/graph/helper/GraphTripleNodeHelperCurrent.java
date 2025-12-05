@@ -37,7 +37,7 @@ public class GraphTripleNodeHelperCurrent implements GraphTripleNodeHelper<Graph
     public Graph createGraph(Context.GraphClass graphClass) {
         switch (graphClass) {
             case GraphMemValue:
-                return new org.apache.jena.mem.GraphMemValue();
+                return new org.apache.jena.memvalue.GraphMemValue();
             case GraphMem2Fast:
                 return new GraphMem2Fast();
             case GraphMem2Legacy:
@@ -61,7 +61,7 @@ public class GraphTripleNodeHelperCurrent implements GraphTripleNodeHelper<Graph
     public List<Triple> readTriples(String graphUri) {
         var list = new ArrayList<Triple>();
         @SuppressWarnings("deprecation")
-        var g1 = new org.apache.jena.mem.GraphMemValue() {
+        var g1 = new org.apache.jena.memvalue.GraphMemValue() {
             @Override
             public void add(Triple t) {
                 list.add(t);
