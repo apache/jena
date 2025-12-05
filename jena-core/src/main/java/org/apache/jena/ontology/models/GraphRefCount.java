@@ -16,9 +16,10 @@
  * limitations under the License.
  */
 
-package org.apache.jena.memvalue;
+package org.apache.jena.ontology.models;
 
-import org.apache.jena.graph.impl.GraphBase;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.impl.WrappedGraph;
 
 /**
  * GraphMemRefCount - a base class for GraphMemValue
@@ -29,7 +30,7 @@ import org.apache.jena.graph.impl.GraphBase;
  * GraphBase.close() called. Thus in normal use one close is enough, but GraphMakers
  * using GraphMems can arrange to re-use the same named graph.
  */
-abstract class GraphMemRefCount extends GraphBase {
+public class GraphRefCount extends WrappedGraph {
     /**
      * The number-of-times-opened count.
      */
@@ -38,14 +39,15 @@ abstract class GraphMemRefCount extends GraphBase {
     /**
      * initialise a GraphMemBase with its count set to 1.
      */
-    protected GraphMemRefCount() {
+    protected GraphRefCount(Graph graph) {
+        super(graph);
         count = 1;
     }
 
     /**
      * Note a re-opening of this graph by incrementing the count. Answer this Graph.
      */
-    public GraphMemRefCount openAgain() {
+    public GraphRefCount openAgain() {
         count++;
         return this;
     }
@@ -54,7 +56,7 @@ abstract class GraphMemRefCount extends GraphBase {
      * Sub-classes over-ride this method to release any resources they no longer need
      * once fully closed.
      */
-    protected abstract void destroy();
+    public void destroy() {}
 
     /**
      * Close this graph; if it is now fully closed, destroy its resources and run the

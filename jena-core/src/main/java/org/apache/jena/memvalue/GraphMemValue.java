@@ -18,11 +18,15 @@
 
 package org.apache.jena.memvalue;
 
-import org.apache.jena.graph.* ;
+import java.util.stream.Stream;
+
+import org.apache.jena.graph.GraphEvents;
+import org.apache.jena.graph.GraphMemFactory;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.impl.GraphBase;
 import org.apache.jena.graph.impl.TripleStore ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
-
-import java.util.stream.Stream;
 
 /**
  * In-memory, non-thread-safe, non-transactional graph.
@@ -35,7 +39,7 @@ import java.util.stream.Stream;
  *     implementation.
  */
 @Deprecated
-public class GraphMemValue extends GraphMemRefCount {
+public class GraphMemValue extends GraphBase {
 
     /**
      This Graph's TripleStore.
@@ -45,11 +49,6 @@ public class GraphMemValue extends GraphMemRefCount {
     public GraphMemValue() {
         super();
         store = new GraphTripleStoreMem(this);
-    }
-
-    @Override
-    protected void destroy() {
-        store.close();
     }
 
     @Override public void performAdd( Triple t )
