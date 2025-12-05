@@ -22,7 +22,7 @@ import java.io.InputStream;
 import java.util.*;
 
 import org.apache.jena.graph.*;
-import org.apache.jena.mem.TrackingTripleIterator;
+import org.apache.jena.memvalue.TrackingTripleIterator;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.impl.ReifierStd;

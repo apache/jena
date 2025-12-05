@@ -18,15 +18,10 @@
 
 package org.apache.jena.ontapi.utils;
 
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.GraphUtil;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.*;
 import org.apache.jena.graph.compose.Dyadic;
 import org.apache.jena.graph.compose.Polyadic;
 import org.apache.jena.graph.impl.WrappedGraph;
-import org.apache.jena.mem.GraphMemBase;
 import org.apache.jena.ontapi.UnionGraph;
 import org.apache.jena.reasoner.InfGraph;
 import org.apache.jena.shared.PrefixMapping;

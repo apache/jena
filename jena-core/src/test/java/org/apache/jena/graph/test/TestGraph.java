@@ -28,7 +28,7 @@ import junit.framework.TestSuite;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.impl.WrappedGraph;
-import org.apache.jena.mem.GraphMemValue;
+import org.apache.jena.memvalue.GraphMemValue;
 import org.apache.jena.mem2.GraphMem2Fast;
 import org.apache.jena.mem2.GraphMem2Legacy;
 import org.apache.jena.mem2.GraphMem2Roaring;

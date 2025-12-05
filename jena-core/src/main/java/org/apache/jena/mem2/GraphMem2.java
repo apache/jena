@@ -23,8 +23,8 @@ import java.util.stream.Stream;
 import org.apache.jena.atlas.lib.Copyable;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.impl.GraphBase;
 import org.apache.jena.graph.impl.GraphWithPerform;
-import org.apache.jena.mem.GraphMemBase;
 import org.apache.jena.mem2.store.TripleStore;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
@@ -35,22 +35,13 @@ import org.apache.jena.util.iterator.ExtendedIterator;
  * Implementation must always comply to term-equality semantics. The characteristics of the
  * implementations always have handlesLiteralTyping() == false.
  */
-public class GraphMem2 extends GraphMemBase implements GraphWithPerform, Copyable<GraphMem2> {
+public class GraphMem2 extends GraphBase implements GraphWithPerform, Copyable<GraphMem2> {
 
     final TripleStore tripleStore;
 
     protected GraphMem2(TripleStore tripleStore) {
         super();
         this.tripleStore = tripleStore;
-    }
-
-    /**
-     * Subclasses over-ride this method to release any resources they no
-     * longer need once fully closed.
-     */
-    @Override
-    public void destroy() {
-        this.tripleStore.clear();
     }
 
     /**
