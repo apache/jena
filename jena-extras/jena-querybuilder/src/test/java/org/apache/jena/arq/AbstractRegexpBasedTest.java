@@ -17,7 +17,7 @@
  */
 package org.apache.jena.arq;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Arrays;
 import java.util.regex.Pattern;

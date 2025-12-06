@@ -18,11 +18,11 @@
 
 package org.apache.jena.arq.querybuilder;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.arq.AbstractRegexpBasedTest;
 import org.apache.jena.graph.Triple;
@@ -32,7 +32,7 @@ public class ConstructBuilderTest extends AbstractRegexpBasedTest {
 
     private ConstructBuilder builder;
 
-    @Before
+    @BeforeEach
     public void setup() {
         builder = new ConstructBuilder();
     }
