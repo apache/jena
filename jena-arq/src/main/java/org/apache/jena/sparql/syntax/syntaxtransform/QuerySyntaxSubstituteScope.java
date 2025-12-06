@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.syntax.syntaxtransform;
 
 import java.util.Collection;
+import java.util.Objects;
 
 import org.apache.jena.query.Query;
 import org.apache.jena.sparql.core.Var;
@@ -35,11 +36,19 @@ public class QuerySyntaxSubstituteScope {
      * For example, an assigned variables ({@code AS ?var}) can not be replace by a value.
      */
     public static void scopeCheck(Query query, Collection<Var> vars) {
+        Objects.requireNonNull(query);
+        Objects.requireNonNull(vars);
+        if ( vars.isEmpty() )
+            return;
         checkLevel(query, vars);
-        checkPattern(query.getQueryPattern(), vars);
+        // DESCRIBE might not have a pattern
+        if ( query.getQueryPattern() != null )
+            checkPattern(query.getQueryPattern(), vars);
     }
 
     public static void checkPattern(Element element, Collection<Var> vars) {
+        Objects.requireNonNull(element);
+        Objects.requireNonNull(vars);
         ElementVisitor visitor = new SubstituteScopeVisitor(vars);
         ElementWalker.walk(element, visitor);
     }
