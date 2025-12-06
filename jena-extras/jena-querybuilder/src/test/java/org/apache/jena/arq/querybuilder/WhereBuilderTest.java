@@ -17,14 +17,15 @@
  */
 package org.apache.jena.arq.querybuilder;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.junit.Test;
 
 public class WhereBuilderTest {
 

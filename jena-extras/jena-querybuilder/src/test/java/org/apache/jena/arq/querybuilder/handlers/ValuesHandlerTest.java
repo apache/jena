@@ -17,19 +17,12 @@
  */
 package org.apache.jena.arq.querybuilder.handlers;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.arq.querybuilder.WhereValidator;
 import org.apache.jena.graph.Node;
@@ -40,15 +33,13 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
 import org.apache.jena.sparql.syntax.ElementData;
-import org.junit.Before;
-import org.junit.Test;
 
 public class ValuesHandlerTest extends AbstractHandlerTest {
 
     private Query query;
     private ValuesHandler handler;
 
-    @Before
+    @BeforeEach
     public void setup() {
         query = new Query();
         handler = new ValuesHandler(query);

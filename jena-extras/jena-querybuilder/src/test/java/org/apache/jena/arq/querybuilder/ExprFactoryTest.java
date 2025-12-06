@@ -1,4 +1,3 @@
-package org.apache.jena.arq.querybuilder;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -17,12 +16,16 @@ package org.apache.jena.arq.querybuilder;
  * limitations under the License.
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+package org.apache.jena.arq.querybuilder;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.arq.querybuilder.clauses.WhereClause;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
@@ -35,7 +38,6 @@ import org.apache.jena.sparql.expr.*;
 import org.apache.jena.sparql.expr.nodevalue.NodeValueInteger;
 import org.apache.jena.sparql.expr.nodevalue.NodeValueNode;
 import org.apache.jena.sparql.expr.nodevalue.NodeValueString;
-import org.junit.Test;
 
 public class ExprFactoryTest {
 

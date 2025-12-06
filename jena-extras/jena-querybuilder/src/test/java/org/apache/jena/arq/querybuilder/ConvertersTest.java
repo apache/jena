@@ -18,7 +18,7 @@
 
 package org.apache.jena.arq.querybuilder;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.net.URI;
 import java.net.URL;
@@ -27,8 +27,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.datatypes.BaseDatatype;
 import org.apache.jena.datatypes.DatatypeFormatException;
@@ -50,7 +50,7 @@ import org.apache.jena.vocabulary.RDF;
 
 public class ConvertersTest {
 
-    @After
+    @AfterEach
     public void cleanup() {
         TypeMapper.reset();
     }
@@ -374,17 +374,17 @@ public class ConvertersTest {
     private void assertTriplePath(TriplePath expected, Object actual) {
         String errMsg = String.format("Expected '%s', actual '%s'", expected, actual);
         if (expected.isTriple()) {
-            assertTrue(errMsg, expected.asTriple().matches(asTriple(actual)));
+            assertTrue(expected.asTriple().matches(asTriple(actual)), errMsg);
         } else {
-            assertTrue(errMsg, expected.getSubject().matches(asTriplePath(actual).getSubject()));
-            assertTrue(errMsg, expected.getObject().matches(asTriplePath(actual).getObject()));
-            assertTrue(errMsg, expected.getPath().equalTo(asTriplePath(actual).getPath(), new NodeIsomorphismMap()));
+            assertTrue(expected.getSubject().matches(asTriplePath(actual).getSubject()), errMsg);
+            assertTrue(expected.getObject().matches(asTriplePath(actual).getObject()), errMsg);
+            assertTrue(expected.getPath().equalTo(asTriplePath(actual).getPath(), new NodeIsomorphismMap()), errMsg);
         }
     }
 
     private void assertTriplePath(Triple expected, Object actual) {
         String errMsg = String.format("Expected '%s', actual '%s'", expected, actual);
-        assertTrue(errMsg, expected.matches(asTriple(actual)));
+        assertTrue(expected.matches(asTriple(actual)), errMsg);
     }
 
     @Test

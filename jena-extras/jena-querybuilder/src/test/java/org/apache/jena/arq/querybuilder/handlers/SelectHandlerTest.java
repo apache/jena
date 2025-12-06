@@ -17,10 +17,13 @@
  */
 package org.apache.jena.arq.querybuilder.handlers;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.query.Query;
 import org.apache.jena.sparql.core.Var;
@@ -31,15 +34,13 @@ import org.apache.jena.sparql.expr.ExprAggregator;
 import org.apache.jena.sparql.expr.aggregate.AggCount;
 import org.apache.jena.sparql.expr.aggregate.AggSum;
 import org.apache.jena.sparql.syntax.ElementGroup;
-import org.junit.Before;
-import org.junit.Test;
 
 public class SelectHandlerTest extends AbstractHandlerTest {
 
     private SelectHandler handler;
     private Query query;
 
-    @Before
+    @BeforeEach
     public void setup() {
         query = new Query();
         AggregationHandler aggHandler = new AggregationHandler(query);
@@ -70,8 +71,8 @@ public class SelectHandlerTest extends AbstractHandlerTest {
         VarExprList expr = query.getProject();
         assertEquals(1, expr.size());
         Expr e = expr.getExpr(Var.alloc("foo"));
-        assertNotNull("expression should not be null", e);
-        assertTrue("Should be an E_Random", e instanceof E_Random);
+        assertNotNull(e, "expression should not be null");
+        assertTrue(e instanceof E_Random, "Should be an E_Random");
     }
 
     @Test
@@ -82,9 +83,9 @@ public class SelectHandlerTest extends AbstractHandlerTest {
         VarExprList expr = query.getProject();
         assertEquals(1, expr.size());
         Expr e = expr.getExpr(Var.alloc("foo"));
-        assertNotNull("expression should not be null", e);
-        assertTrue("Should be an ExprAggregator", e instanceof ExprAggregator);
-        assertTrue("Should contain an AggSum", ((ExprAggregator) e).getAggregator() instanceof AggSum);
+        assertNotNull(e, "expression should not be null");
+        assertTrue(e instanceof ExprAggregator, "Should be an ExprAggregator");
+        assertTrue(((ExprAggregator) e).getAggregator() instanceof AggSum, "Should contain an AggSum");
     }
 
     @Test
@@ -94,9 +95,9 @@ public class SelectHandlerTest extends AbstractHandlerTest {
         VarExprList expr = query.getProject();
         assertEquals(1, expr.size());
         Expr e = expr.getExpr(Var.alloc("foo"));
-        assertNotNull("expression should not be null", e);
-        assertTrue("Should be an ExprAggregator", e instanceof ExprAggregator);
-        assertTrue("Should be AggCount", ((ExprAggregator) e).getAggregator() instanceof AggCount);
+        assertNotNull(e, "expression should not be null");
+        assertTrue(e instanceof ExprAggregator, "Should be an ExprAggregator");
+        assertTrue(((ExprAggregator) e).getAggregator() instanceof AggCount, "Should be AggCount");
     }
 
     @Test
@@ -106,8 +107,8 @@ public class SelectHandlerTest extends AbstractHandlerTest {
         VarExprList expr = query.getProject();
         assertEquals(1, expr.size());
         Expr e = expr.getExpr(Var.alloc("foo"));
-        assertNotNull("expression should not be null", e);
-        assertTrue("Should be an E_Random", e instanceof E_Random);
+        assertNotNull(e, "expression should not be null");
+        assertTrue(e instanceof E_Random, "Should be an E_Random");
     }
 
     @Test
