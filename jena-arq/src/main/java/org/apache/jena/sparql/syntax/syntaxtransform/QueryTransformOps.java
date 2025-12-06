@@ -42,14 +42,14 @@ import org.apache.jena.sparql.syntax.*;
 public class QueryTransformOps {
 
     /**
-     * Replace variables in a query by RDF terms.
-     * The replacements are added to the return queries SELECT clause (if a SELECT query).
+     * Replace variables in a query by RDF terms. The replacements are added to the
+     * return queries SELECT clause if the query is a SELECT query.
      *
-     * @throws QueryScopeException if the query contains variables used in a
-     *   way that does not allow substitution (.e.g {@code AS ?var} or used in
-     *   {@code VALUES}).
-     *
-     *  @see #replaceVars(Query, Map) to replace variables without adding the replacements to the SELECT clause.
+     * @throws QueryScopeException if the query contains variables used in a way that
+     *     does not allow substitution (.e.g {@code AS ?var} or used in
+     *     {@code VALUES}).
+     * @see #replaceVars(Query, Map) to replace variables without adding the
+     *     replacements to the SELECT clause.
      */
     public static Query syntaxSubstitute(Query input, Map<Var, ? extends Node> substitutions) {
         Query query2 = transformSubstitute(input, substitutions);
@@ -68,13 +68,14 @@ public class QueryTransformOps {
     }
 
     /**
-     * Transform a query based on a mapping from {@link Var} variable to replacement {@link Node}.
-     * The replacement can be a constant or another variable.
-     * This operation does not record the substitution made.
+     * Transform a query based on a mapping from {@link Var} variable to replacement
+     * {@link Node}. The replacement can be a constant or another variable.
+     * <p>
+     * To change the query to record the substitutions made, use
+     * {@link #syntaxSubstitute(Query,Map)}.
      *
-     * See {@link #syntaxSubstitute(Query,Map)}
-     * @throws QueryScopeException if the query contains variables used in a
-     *   way that does not allow constant substitution.
+     * @throws QueryScopeException if the query contains variables used in a way that
+     *     does not allow constant substitution.
      */
     public static Query replaceVars(Query query, Map<Var, ? extends Node> substitutions) {
         return transformSubstitute(query, substitutions);
@@ -98,6 +99,7 @@ public class QueryTransformOps {
           if (! ( node instanceof Var ) )
               varsForConst.add(var);
         });
+        // Check the transformation is possible (e.g. no replacement of "AS ?var")
         QuerySyntaxSubstituteScope.scopeCheck(query, varsForConst);
 
         NodeTransform nodeTransform = new NodeTransformSubst(substitutions);
@@ -482,6 +484,10 @@ public class QueryTransformOps {
         }
     }
 
+    /**
+     * Return a new query object with copies of prefixes, base and dataset description
+     * and shares patterns and results clause (SELECT query) with the original.
+     */
     public static Query shallowCopy(Query query) {
         QueryShallowCopy copy = new QueryShallowCopy();
         query.visit(copy);

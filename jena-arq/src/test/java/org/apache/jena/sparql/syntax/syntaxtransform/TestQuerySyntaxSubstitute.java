@@ -104,6 +104,32 @@ public class TestQuerySyntaxSubstitute {
                       );
     }
 
+    // ==== Other query forms
+
+    @Test public void syntaxSubstitute_describe_1() {
+        testSubstitute("DESCRIBE ?x", substitutions1, "DESCRIBE :xxx");
+    }
+
+    @Test public void syntaxSubstitute_describe_2() {
+        testSubstitute("DESCRIBE ?x {}", substitutions1, "DESCRIBE :xxx {}");
+    }
+
+    @Test public void syntaxSubstitute_describe_3() {
+        testSubstitute("DESCRIBE ?x ?y { ?x :p ?y }", substitutions1, "DESCRIBE :xxx ?y { :xxx :p ?y }");
+    }
+
+    @Test public void syntaxSubstitute_construct_1() {
+        testSubstitute("CONSTRUCT {} WHERE {}", substitutions1, "CONSTRUCT {} WHERE {}");
+    }
+
+    @Test public void syntaxSubstitute_construct_2() {
+        testSubstitute("CONSTRUCT { ?x :p ?y } WHERE {?x :p ?y }", substitutions1, "CONSTRUCT { :xxx :p ?y } WHERE { :xxx :p ?y }");
+    }
+
+    @Test public void syntaxSubstitute_ask_1() {
+        testSubstitute("ASK { ?x :p ?y}" , substitutions1, "ASK { :xxx :p ?y }");
+    }
+
     // ==== Variable-variable renaming.
     // This is always possible so no scoping checks are done.
 
