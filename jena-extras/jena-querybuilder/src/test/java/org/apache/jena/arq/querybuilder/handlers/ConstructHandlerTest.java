@@ -17,12 +17,15 @@
  */
 package org.apache.jena.arq.querybuilder.handlers;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -30,14 +33,12 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.syntax.Template;
-import org.junit.Before;
-import org.junit.Test;
 
 public class ConstructHandlerTest extends AbstractHandlerTest {
     private Query query;
     private ConstructHandler handler;
 
-    @Before
+    @BeforeEach
     public void setup() {
         query = new Query();
         handler = new ConstructHandler(query);

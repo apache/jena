@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,26 +17,27 @@
  */
 package org.apache.jena.arq.querybuilder.handlers;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.SortCondition;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.E_Random;
-import org.junit.Before;
-import org.junit.Test;
 
 public class SolutionModifierHandlerTest extends AbstractHandlerTest {
 
     private Query query;
     private SolutionModifierHandler solutionModifier;
 
-    @Before
+    @BeforeEach
     public void setup() {
         query = new Query();
         solutionModifier = new SolutionModifierHandler(query);
@@ -79,18 +80,20 @@ public class SolutionModifierHandlerTest extends AbstractHandlerTest {
 
     }
 
+    //static void assertEquals(Object expected, Object actual,  String x) {}
+
     @Test
     public void testAddOrderBy() {
         solutionModifier.addOrderBy(Var.alloc("orderBy"));
         List<SortCondition> sc = query.getOrderBy();
-        assertEquals("Wrong number of conditions", 1, sc.size());
-        assertEquals("Wrong value", sc.get(0).expression.asVar(), Var.alloc("orderBy"));
+        assertEquals(1, sc.size(), "Wrong number of conditions");
+        assertEquals(sc.get(0).expression.asVar(), Var.alloc("orderBy"), "Wrong value");
 
         solutionModifier.addOrderBy(Var.alloc("orderBy2"));
         sc = query.getOrderBy();
-        assertEquals("Wrong number of conditions", 2, sc.size());
-        assertEquals("Wrong value", sc.get(0).expression.asVar(), Var.alloc("orderBy"));
-        assertEquals("Wrong value", sc.get(1).expression.asVar(), Var.alloc("orderBy2"));
+        assertEquals(2, sc.size(), "Wrong number of conditions");
+        assertEquals(sc.get(0).expression.asVar(), Var.alloc("orderBy"), "Wrong value");
+        assertEquals(sc.get(1).expression.asVar(), Var.alloc("orderBy2"), "Wrong value");
     }
 
     @Test

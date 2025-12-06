@@ -17,10 +17,13 @@
  */
 package org.apache.jena.arq.querybuilder;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
@@ -35,8 +38,6 @@ import org.apache.jena.vocabulary.DCTypes;
 import org.apache.jena.vocabulary.DC_11;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.XSD;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * Tests based on https://www.w3.org/TR/sparql11-update examples
@@ -54,7 +55,7 @@ public class UpdateBuilderExampleTests {
         m = ModelFactory.createDefaultModel();
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         m.clearNsPrefixMap();
     }

@@ -17,7 +17,7 @@
  */
 package org.apache.jena.arq.querybuilder.rewriters;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -28,6 +28,8 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -36,7 +38,6 @@ import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.nodevalue.*;
 import org.apache.jena.sparql.graph.NodeConst;
 import org.apache.jena.sparql.util.XSDNumUtils;
-import org.junit.Test;
 
 public class NodeValueRewriterTest {
 
