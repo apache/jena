@@ -223,10 +223,6 @@
 
         <module>jena-integration-tests</module>
 
-        <module>jena-benchmarks</module>
-        <!-- Binary distribution -->
-        <!-- <module>apache-jena</module> -->
-
         <module>jena-bom</module>
 
       </modules>
