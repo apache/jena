@@ -27,7 +27,7 @@ import org.apache.jena.graph.*;
 import org.apache.jena.graph.compose.Dyadic;
 import org.apache.jena.graph.compose.Polyadic;
 import org.apache.jena.graph.impl.WrappedGraph;
-import org.apache.jena.mem2.GraphMem2;
+import org.apache.jena.mem.GraphMem;
 import org.apache.jena.memvalue.GraphMemValue;
 import org.apache.jena.ontapi.UnionGraph;
 import org.apache.jena.reasoner.InfGraph;
@@ -187,7 +187,7 @@ public class Graphs {
      */
     @SuppressWarnings("deprecation")
     public static boolean isGraphMem(Graph graph) {
-        return graph instanceof GraphMemValue || graph instanceof GraphMem2 ;
+        return graph instanceof GraphMemValue || graph instanceof GraphMem ;
     }
 
     /**

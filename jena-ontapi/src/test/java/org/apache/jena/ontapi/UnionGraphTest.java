@@ -31,7 +31,6 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.mem2.GraphMem2Fast;
 import org.apache.jena.ontapi.impl.UnionGraphImpl;
 import org.apache.jena.ontapi.model.OntModel;
 import org.apache.jena.ontapi.testutils.ModelTestUtils;
@@ -58,12 +57,7 @@ public class UnionGraphTest {
     }
 
     static Graph createTestMemGraph(String name) {
-        return new GraphMem2Fast() {
-            @Override
-            public String toString() {
-                return String.format("[%s]", name);
-            }
-        };
+        return GraphMemFactory.createDefaultGraph();
     }
 
     private static void assertClosed(UnionGraph g, boolean expectedClosed) {

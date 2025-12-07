@@ -18,10 +18,11 @@
 
 package org.apache.jena.mem.graph;
 
+import org.apache.jena.mem.GraphMem;
 import org.apache.jena.mem.graph.helper.Context;
 import org.apache.jena.mem.graph.helper.JMHDefaultOptions;
 import org.apache.jena.mem.graph.helper.Releases;
-import org.apache.jena.mem2.GraphMem2;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.openjdk.jmh.annotations.*;
@@ -41,11 +42,11 @@ public class TestGraphCopy {
     public String param0_GraphUri;
 
     @Param({
-            "GraphMem2Fast (current)",
-            "GraphMem2Roaring EAGER (current)",
-            "GraphMem2Roaring LAZY (current)",
-            "GraphMem2Roaring LAZY_PARALLEL (current)",
-            "GraphMem2Roaring MINIMAL (current)",
+            "GraphMemFast (current)",
+            "GraphMemRoaring EAGER (current)",
+            "GraphMemRoaring LAZY (current)",
+            "GraphMemRoaring LAZY_PARALLEL (current)",
+            "GraphMemRoaring MINIMAL (current)",
     })
     public String param1_GraphImplementation;
 
@@ -55,21 +56,21 @@ public class TestGraphCopy {
     })
     public String param2_CopyOrConstruct;
 
-    Supplier<GraphMem2> copySupplier;
+    Supplier<GraphMem> copySupplier;
 
-    Supplier<GraphMem2> newGraphSupplier;
-    private GraphMem2 sutCurrent;
+    Supplier<GraphMem> newGraphSupplier;
+    private GraphMem sutCurrent;
 
     @Benchmark
-    public GraphMem2 copy() {
+    public GraphMem copy() {
         return copySupplier.get();
     }
 
-    private GraphMem2 nativeCopy() {
+    private GraphMem nativeCopy() {
         return sutCurrent.copy();
     }
 
-    private GraphMem2 findAndAddAll() {
+    private GraphMem findAndAddAll() {
         var copy = newGraphSupplier.get();
         sutCurrent.find().forEachRemaining(copy::add);
         return copy;
@@ -80,7 +81,7 @@ public class TestGraphCopy {
         var trialContext = new Context(param1_GraphImplementation);
         switch (trialContext.getJenaVersion()) {
             case CURRENT: {
-                this.newGraphSupplier = () -> (GraphMem2) Releases.current.createGraph(trialContext.getGraphClass());
+                this.newGraphSupplier = () -> (GraphMem) Releases.current.createGraph(trialContext.getGraphClass());
                 this.sutCurrent = this.newGraphSupplier.get();
 
                 var triples = Releases.current.readTriples(param0_GraphUri);

@@ -22,7 +22,7 @@ import java.lang.reflect.Constructor;
 
 import junit.framework.TestSuite;
 import org.apache.jena.graph.Graph;
-import org.apache.jena.mem2.GraphMem2Fast;
+import org.apache.jena.mem.GraphMemFast;
 import org.apache.jena.shared.JenaException;
 
 /**
@@ -44,7 +44,7 @@ public class TestReifier extends AbstractTestReifier {
 
     public static TestSuite suite() {
         TestSuite result = new TestSuite();
-        result.addTest(MetaTestGraph.suite(TestReifier.class, GraphMem2Fast.class));
+        result.addTest(MetaTestGraph.suite(TestReifier.class, GraphMemFast.class));
         result.setName(TestReifier.class.getSimpleName());
         return result;
     }
