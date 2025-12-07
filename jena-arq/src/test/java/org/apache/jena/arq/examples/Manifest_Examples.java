@@ -23,6 +23,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.*;
 
 import org.apache.jena.arq.junit.Scripts;
+import org.apache.jena.arq.junit.manifest.TestMakers;
 import org.apache.jena.sparql.expr.E_Function;
 import org.apache.jena.sparql.expr.NodeValue;
 
@@ -47,7 +48,7 @@ public class Manifest_Examples {
     @TestFactory
     @DisplayName("ARQ Examples")
     public Stream<DynamicNode> testFactory_ARQ_Examples() {
-        return Scripts.manifestTestFactory("testing/ARQ/Examples/manifest.ttl", Scripts.testMakerSPARQL);
+        return Scripts.manifestTestFactory("testing/ARQ/Examples/manifest.ttl", TestMakers.testMakerSPARQL);
     }
 
 }

@@ -18,13 +18,12 @@
 
 package org.apache.jena.tdb1;
 
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.*;
 
 import org.apache.jena.arq.junit.Scripts;
-import org.apache.jena.arq.junit.manifest.ManifestEntry;
+import org.apache.jena.arq.junit.manifest.TestMaker;
 import org.apache.jena.arq.junit.sparql.SparqlTests;
 import org.apache.jena.atlas.lib.Creator;
 import org.apache.jena.query.ARQ;
@@ -50,15 +49,7 @@ public class Scripts_TDB1
     public Stream<DynamicNode> testFactory(){
         @SuppressWarnings("removal")
         Creator<Dataset> creator = ()->TDB1Factory.createDataset();
-        Function<ManifestEntry, Runnable> testMaker = (manifestEntry) -> SparqlTests.makeSPARQLTestExecOnly(manifestEntry, creator);
+        TestMaker testMaker = (manifestEntry) -> SparqlTests.makeSPARQLTestExecOnly(manifestEntry, creator);
         return Scripts.manifestTestFactory("testing/manifest.ttl", "TDB1-", testMaker);
     }
-//
-//    private static Function<ManifestEntry, Runnable> testMaker() {
-//        Creator<Dataset> creator = ()->TDB2Factory.createDataset();
-//        return
-//            (manifestEntry) ->
-//                SparqlTests.makeSPARQLTestExecOnly(manifestEntry, creator);
-//    }
-
 }

@@ -25,6 +25,7 @@ import org.junit.jupiter.api.*;
 
 import org.apache.jena.arq.junit.Scripts;
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
+import org.apache.jena.arq.junit.manifest.TestMaker;
 import org.apache.jena.arq.junit.sparql.SparqlTests;
 import org.apache.jena.atlas.lib.Creator;
 import org.apache.jena.query.ARQ;
@@ -51,7 +52,7 @@ public class Scripts_TDB2
     @DisplayName("TDB2")
     public Stream<DynamicNode> testFactory(){
         Creator<Dataset> creator = ()->TDB2Factory.createDataset();
-        Function<ManifestEntry, Runnable> testMaker = (manifestEntry) -> SparqlTests.makeSPARQLTestExecOnly(manifestEntry, creator);
+        TestMaker testMaker = (manifestEntry) -> SparqlTests.makeSPARQLTestExecOnly(manifestEntry, creator);
         return Scripts.manifestTestFactory("testing/manifest.ttl", "TDB2-", testMaker);
     }
 

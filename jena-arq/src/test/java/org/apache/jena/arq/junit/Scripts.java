@@ -18,19 +18,13 @@
 
 package org.apache.jena.arq.junit;
 
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.function.Executable;
 
-import org.apache.jena.arq.junit.manifest.EntryToTest;
-import org.apache.jena.arq.junit.manifest.ManifestEntry;
-import org.apache.jena.arq.junit.manifest.ManifestProcessor;
-import org.apache.jena.arq.junit.manifest.RunnableTestMaker;
+import org.apache.jena.arq.junit.manifest.*;
 import org.apache.jena.arq.junit.riot.ParsingStepForTest;
-import org.apache.jena.arq.junit.riot.RiotTests;
-import org.apache.jena.arq.junit.sparql.SparqlTests;
 import org.apache.jena.atlas.lib.StreamOps;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.ReaderRIOTFactory;
@@ -38,13 +32,9 @@ import org.apache.jena.sparql.ARQException;
 
 public class Scripts {
 
-    public static Function<ManifestEntry, Runnable> testMakerSPARQL = SparqlTests::makeSPARQLTest;
-    public static Function<ManifestEntry, Runnable> testMakerRIOT = RiotTests::makeRIOTTest;
+    private static TestMakers runnableGenerator = TestMakers.system();
 
-    static RunnableTestMaker runnableGenerator = RunnableTestMaker.std();
-    public static Function<ManifestEntry, Runnable> testMaker() { return runnableGenerator.testMaker(); }
-
-    public static Stream<DynamicNode> manifestTestFactory(String filename, String namePrefix, Function<ManifestEntry, Runnable> testMaker) {
+    private static Stream<DynamicNode> manifestTestFactory0(String filename, String namePrefix, TestMaker testMaker) {
         EntryToTest f = entry -> {
             Runnable r = testMaker.apply(entry);
             if ( r == null )
@@ -56,19 +46,30 @@ public class Scripts {
         return ManifestProcessor.testFactory(filename, namePrefix, f);
     }
 
-    public static Stream<DynamicNode> manifestTestFactory(String filename, Function<ManifestEntry, Runnable> testMaker) {
+    /**
+     * Return a function make tests from ManifestEntry entries that tries all
+     * installed test makers.
+     * @see TestMakers
+     */
+    public static TestMaker testMakerGeneral() { return runnableGenerator.testMaker(); }
+
+    public static Stream<DynamicNode> manifestTestFactory(String filename, String namePrefix, TestMaker testMaker) {
+        return manifestTestFactory0(filename, namePrefix, testMaker);
+    }
+
+    public static Stream<DynamicNode> manifestTestFactory(String filename, TestMaker testMaker) {
         return manifestTestFactory(filename, null, testMaker);
     }
 
-    /** Make tests, tries both SPARQL and RIOT test types. */
+    /** Make tests; tries all installed test makers. */
     public static Stream<DynamicNode> manifestTestFactory(String filename) {
-        return manifestTestFactory(filename, (String)null);
+        return manifestTestFactory0(filename, (String)null, testMakerGeneral());
     }
 
-    /** Make tests, tries both SPARQL and RIOT test types. */
-    public static Stream<DynamicNode> manifestTestFactory(String filename, String namePrefix) {
-        return manifestTestFactory(filename, namePrefix, testMaker());
-    }
+   /** Make tests, tries all installed test types. */
+   public static Stream<DynamicNode> manifestTestFactory(String filename, String namePrefix) {
+       return manifestTestFactory0(filename, namePrefix, testMakerGeneral());
+   }
 
     /** Specifically SPARQL tests */
     public static Stream<DynamicNode> manifestTestFactorySPARQL(String filename) {
@@ -77,7 +78,7 @@ public class Scripts {
 
     /** Specifically SPARQL tests */
     public static Stream<DynamicNode> manifestTestFactorySPARQL(String filename, String namePrefix) {
-        return manifestTestFactory(filename, namePrefix, testMakerSPARQL);
+        return manifestTestFactory0(filename, namePrefix, TestMakers.testMakerSPARQL);
     }
 
     /** Specifically RIOT tests */
@@ -87,11 +88,11 @@ public class Scripts {
 
     /** Specifically RIOT tests */
     public static Stream<DynamicNode> manifestTestFactoryRIOT(String filename, String namePrefix) {
-        return manifestTestFactory(filename, namePrefix, testMakerRIOT);
+        return manifestTestFactory0(filename, namePrefix, TestMakers.testMakerRIOT);
     }
 
     /** Produce tests from a number of test manifests. */
-    public static Stream<DynamicNode> all(Function<ManifestEntry, Runnable> testMaker, String... manifests ) {
+    public static Stream<DynamicNode> all(TestMaker testMaker, String... manifests ) {
         if ( manifests == null || manifests.length == 0 )
             throw new ARQException("No manifest files");
         Stream<DynamicNode> x = null;

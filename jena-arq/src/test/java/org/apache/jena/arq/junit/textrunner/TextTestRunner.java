@@ -19,7 +19,7 @@
 package org.apache.jena.arq.junit.textrunner;
 
 import java.util.List;
-import java.util.function.Function;
+import java.util.Objects;
 
 import org.junit.platform.engine.discovery.DiscoverySelectors;
 import org.junit.platform.launcher.Launcher;
@@ -33,16 +33,15 @@ import org.junit.platform.launcher.listeners.TestExecutionSummary;
 
 import org.apache.jena.arq.junit.EarlReport;
 import org.apache.jena.arq.junit.manifest.EarlReporter;
-import org.apache.jena.arq.junit.manifest.ManifestEntry;
 import org.apache.jena.atlas.io.IndentedWriter;
 
 public class TextTestRunner {
 
-    public static void run(List<String> manifestFiles, Function<ManifestEntry, Runnable> testMaker) {
-        runInternal(null, manifestFiles);
+    public static void run(List<String> manifestFiles) {
+        run(null, manifestFiles);
     }
 
-    public static void run(EarlReport report, List<String> manifestFiles, Function<ManifestEntry, Runnable> testMaker) {
+    public static void run(EarlReport report, List<String> manifestFiles) {
         runInternal(report, manifestFiles);
     }
 
@@ -57,8 +56,10 @@ public class TextTestRunner {
     }
 
     // Either an EARL report xor text output.
-    static void runInternal0(IndentedWriter out, EarlReport earlReport, List<String> filenames) {
-        if ( filenames.isEmpty() )
+    static void runInternal0(IndentedWriter out, EarlReport earlReport, List<String> manifestFiles) {
+        Objects.requireNonNull(manifestFiles);
+
+        if ( manifestFiles.isEmpty() )
             throw new IllegalArgumentException("No manifests");
 
         boolean produceEarlReport = earlReport!=null ;
@@ -71,9 +72,8 @@ public class TextTestRunner {
             out.println(string.get());
         });
 
-
         ManifestConfiguration config = ManifestConfiguration.get();
-        filenames.forEach(config::add);
+        manifestFiles.forEach(config::add);
 
         LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
                 .selectors(DiscoverySelectors.selectClass(ManifestHolder.class))
