@@ -20,8 +20,8 @@ package org.apache.jena.riot.lang.rdfxml;
 
 import org.apache.commons.io.input.BufferedFileChannelInputStream;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.mem.GraphMemFast;
 import org.apache.jena.mem.graph.helper.JMHDefaultOptions;
-import org.apache.jena.mem2.GraphMem2Fast;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 import org.junit.Assert;
@@ -91,7 +91,7 @@ public class TestXMLParser {
 
     @Benchmark
     public Graph parseXML() throws Exception {
-        final var graph = new GraphMem2Fast();
+        final var graph = new GraphMemFast();
         try(final var is = new BufferedFileChannelInputStream.Builder()
                 .setFile(this.param0_GraphUri)
                 .setOpenOptions(StandardOpenOption.READ)
