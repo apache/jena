@@ -27,7 +27,6 @@ import arq.cmdline.ModContext;
 import arq.cmdline.ModEngine;
 import org.apache.jena.Jena;
 import org.apache.jena.arq.junit.EarlReport;
-import org.apache.jena.arq.junit.Scripts;
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
 import org.apache.jena.arq.junit.riot.ParsingStepForTest;
 import org.apache.jena.arq.junit.riot.RiotTests;
@@ -117,7 +116,7 @@ public class rdftests extends CmdGeneral
         super.modVersion.addClass(Jena.class);
         addModule(modEngine);
         addModule(modContext);
-        
+
         getUsage().startCategory("Tests (execute test manifest)");
         add(useARQ,       "--arq",     "Operate with ARQ syntax");
         add(useTTLjcc,    "--ttljcc",  "Use the alternative Turtle parser in tests");
@@ -192,10 +191,9 @@ public class rdftests extends CmdGeneral
         if ( manifests.isEmpty() )
             throw new CmdException("No manifest files");
         if ( createEarlReport )
-            TextTestRunner.run(earlReport, manifests, Scripts.testMaker());
+            TextTestRunner.run(earlReport, manifests);
         else
-            TextTestRunner.run(manifests, Scripts.testMaker());
-
+            TextTestRunner.run(manifests);
     }
 
     // Test subsystems.

@@ -26,6 +26,8 @@ import org.junit.jupiter.api.TestFactory;
 
 import org.apache.jena.arq.junit.Scripts;
 import org.apache.jena.arq.junit.manifest.ManifestProcessor;
+import org.apache.jena.arq.junit.manifest.TestMaker;
+import org.apache.jena.arq.junit.manifest.TestMakers;
 import org.apache.jena.atlas.lib.StreamOps;
 import org.apache.jena.riot.RiotNotFoundException;
 import org.apache.jena.shared.JenaException;
@@ -41,7 +43,7 @@ class ManifestHolder {
     public Stream<DynamicNode> testFactory() {
         Stream<DynamicNode> tests = null;
         for ( var entry : ManifestConfiguration.get() ) {
-            Stream<DynamicNode> tests1 = oneManifest(entry.manifestFile(), entry.prefix());
+            Stream<DynamicNode> tests1 = oneManifest(entry.manifestFile(), entry.prefix(), TestMakers.system().testMaker());
             tests = StreamOps.concat(tests, tests1);
         }
         return tests;
@@ -49,14 +51,14 @@ class ManifestHolder {
 
     private int totalManifestCount = 0 ;
 
-    private Stream<DynamicNode> oneManifest(String fn, String prefix) {
+    private Stream<DynamicNode> oneManifest(String fn, String prefix, TestMaker testMaker) {
         if ( fn == null ) {
             System.err.println("Manifest not set");
             throw new JenaException("Manifest not set");
         }
         try {
             int before = ManifestProcessor.getCounterManifests();
-            Stream<DynamicNode> x = Scripts.manifestTestFactory(fn, prefix);
+            Stream<DynamicNode> x = Scripts.manifestTestFactory(fn, prefix, testMaker);
             int after = ManifestProcessor.getCounterManifests();
             totalManifestCount = after-before;
             return x;

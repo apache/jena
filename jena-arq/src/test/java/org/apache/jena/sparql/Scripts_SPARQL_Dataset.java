@@ -18,13 +18,12 @@
 
 package org.apache.jena.sparql;
 
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.*;
 
 import org.apache.jena.arq.junit.Scripts;
-import org.apache.jena.arq.junit.manifest.ManifestEntry;
+import org.apache.jena.arq.junit.manifest.TestMaker;
 import org.apache.jena.arq.junit.sparql.SparqlTests;
 import org.apache.jena.atlas.lib.Creator;
 import org.apache.jena.query.Dataset;
@@ -37,21 +36,21 @@ import org.apache.jena.sparql.graph.GraphFactory;
 
 public class Scripts_SPARQL_Dataset {
 
-    private static Function<ManifestEntry, Runnable> testMakerDataset(Creator<Dataset> creator) {
+    private static TestMaker testMakerDataset(Creator<Dataset> creator) {
         return (manifestEntry) -> SparqlTests.makeSPARQLTestExecOnly(manifestEntry, creator);
     }
 
     @TestFactory
     @DisplayName("DS-TIM")
     public Stream<DynamicNode> testFactory_TIM() {
-        Function<ManifestEntry, Runnable> testMaker_TIM = testMakerDataset(()->DatasetFactory.createTxnMem());
+        TestMaker testMaker_TIM = testMakerDataset(()->DatasetFactory.createTxnMem());
         return Scripts.manifestTestFactory("testing/ARQ/manifest-arq.ttl", "TIM-", testMaker_TIM);
     }
 
     @TestFactory
     @DisplayName("DS-General")
     public Stream<DynamicNode> testFactory_General() {
-        Function<ManifestEntry, Runnable> testMaker_General = testMakerDataset(()->DatasetFactory.createGeneral());
+        TestMaker testMaker_General = testMakerDataset(()->DatasetFactory.createGeneral());
         return Scripts.manifestTestFactory("testing/ARQ/manifest-arq.ttl", "General-", testMaker_General);
     }
 
@@ -59,7 +58,7 @@ public class Scripts_SPARQL_Dataset {
     @DisplayName("DS-Map")
     public Stream<DynamicNode> testFactory_Map() {
         Creator<Dataset> creator = ()->DatasetFactory.wrap(new DatasetGraphMap());
-        Function<ManifestEntry, Runnable> testMaker_Map = testMakerDataset(creator);
+        TestMaker testMaker_Map = testMakerDataset(creator);
         return Scripts.manifestTestFactory("testing/ARQ/manifest-arq.ttl", "Map-", testMaker_Map);
     }
 
@@ -67,7 +66,7 @@ public class Scripts_SPARQL_Dataset {
     @DisplayName("DS-MapLink")
     public Stream<DynamicNode> testFactory_MapLink() {
         Creator<Dataset> creator = ()->DatasetFactory.wrap(new DatasetGraphMapLink(GraphFactory.createDefaultGraph()));
-        Function<ManifestEntry, Runnable> testMaker_Map = testMakerDataset(creator);
+        TestMaker testMaker_Map = testMakerDataset(creator);
         return Scripts.manifestTestFactory("testing/ARQ/manifest-arq.ttl", "MapLink-", testMaker_Map);
     }
 

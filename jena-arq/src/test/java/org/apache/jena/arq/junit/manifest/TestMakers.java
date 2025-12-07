@@ -20,7 +20,6 @@ package org.apache.jena.arq.junit.manifest;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 import org.apache.jena.arq.junit.SurpressedTest;
 import org.apache.jena.arq.junit.riot.RiotTests;
@@ -29,38 +28,53 @@ import org.apache.jena.arq.junit.sparql.SparqlTests;
 import org.apache.jena.graph.Node;
 
 /**
- * Manage a number of test makes so a {@code TestFactory} does not need to know the
+ * Manage a number of test makers so a {@code TestFactory} does not need to know the
  * kind of the tests. Making tests using {@link #testMaker} tries each registered
- * test maker until one return non-null.
+ * test maker until one returns non-null.
  */
-public class RunnableTestMaker {
+public class TestMakers {
 
-    private final List<Function<ManifestEntry, Runnable>> installed = new ArrayList<>();
+    public static TestMaker testMakerSPARQL = SparqlTests::makeSPARQLTest;
+    public static TestMaker testMakerRIOT = RiotTests::makeRIOTTest;
 
-    public static RunnableTestMaker std() {
-        RunnableTestMaker maker = new RunnableTestMaker();
-        maker.installTestMaker(SparqlTests::makeSPARQLTest);
-        maker.installTestMaker(RiotTests::makeRIOTTest);
-        maker.installTestMaker(SemanticsTests::makeSemanticsTest);
+    private final List<TestMaker> installed = new ArrayList<>();
+    private static TestMakers systemSetup = systemSetup();
+
+    // The test makers in the codebase for W3C tests.
+    // Add more with "install"
+    private static TestMakers systemSetup() {
+        TestMakers maker = new TestMakers();
+        maker.add(testMakerSPARQL);
+        maker.add(testMakerRIOT);
+        maker.add(SemanticsTests::makeSemanticsTest);
         return maker;
     }
 
-    private RunnableTestMaker() {}
-
-    public RunnableTestMaker(List<Function<ManifestEntry, Runnable>> installed) {
-        this();
-        for ( Function<ManifestEntry, Runnable> maker : installed ) {
-            installTestMaker(maker);
-        }
+    /**
+     * Add a test maker to the system-wide test makers list
+     */
+    public static void install(TestMaker testMaker) {
+        systemSetup.add(testMaker);
     }
 
-    public void installTestMaker(Function<ManifestEntry, Runnable> testMaker) {
+    /** Return the system-wide instance of {@link TestMakers}. */
+    public static TestMakers system() {
+        return systemSetup;
+    }
+
+    public void add(TestMaker testMaker) {
         installed.add(testMaker);
     }
 
-    public Function<ManifestEntry, Runnable> testMaker() {
+    /**
+     * Return a function that takes a {@link ManifestEntry} and provides a test maker.
+     * The function iterates through the installed {@link TestMaker TestMakers}
+     * until it finds one that
+     * If no test maker is found, return a {@link SurpressedTest}.
+     */
+    public TestMaker testMaker() {
         return (ManifestEntry entry) -> {
-            for ( Function<ManifestEntry, Runnable> engine : installed ) {
+            for ( TestMaker engine : installed ) {
                 Runnable r = engine.apply(entry);
                 if ( r != null )
                     return r;
