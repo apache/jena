@@ -33,36 +33,36 @@ public class Context {
                 this.graphClass = GraphClass.GraphMemValue;
                 this.jenaVersion = JenaVersion.CURRENT;
                 break;
-            case "GraphMem2Fast (current)":
-                this.graphClass = GraphClass.GraphMem2Fast;
+            case "GraphMemFast (current)":
+                this.graphClass = GraphClass.GraphMemFast;
                 this.jenaVersion = JenaVersion.CURRENT;
                 break;
-            case "GraphMem2Legacy (current)":
-                this.graphClass = GraphClass.GraphMem2Legacy;
+            case "GraphMemLegacy (current)":
+                this.graphClass = GraphClass.GraphMemLegacy;
                 this.jenaVersion = JenaVersion.CURRENT;
                 break;
-            case "GraphMem2Roaring (current)":
-                this.graphClass = GraphClass.GraphMem2RoaringEager;
+            case "GraphMemRoaring (current)":
+                this.graphClass = GraphClass.GraphMemRoaringEager;
                 this.jenaVersion = JenaVersion.CURRENT;
                 break;
-            case "GraphMem2Roaring EAGER (current)":
-                this.graphClass = GraphClass.GraphMem2RoaringEager;
+            case "GraphMemRoaring EAGER (current)":
+                this.graphClass = GraphClass.GraphMemRoaringEager;
                 this.jenaVersion = JenaVersion.CURRENT;
                 break;
-            case "GraphMem2Roaring LAZY (current)":
-                this.graphClass = GraphClass.GraphMem2RoaringLazy;
+            case "GraphMemRoaring LAZY (current)":
+                this.graphClass = GraphClass.GraphMemRoaringLazy;
                 this.jenaVersion = JenaVersion.CURRENT;
                 break;
-            case "GraphMem2Roaring LAZY_PARALLEL (current)":
-                this.graphClass = GraphClass.GraphMem2RoaringLazyParallel;
+            case "GraphMemRoaring LAZY_PARALLEL (current)":
+                this.graphClass = GraphClass.GraphMemRoaringLazyParallel;
                 this.jenaVersion = JenaVersion.CURRENT;
                 break;
-            case "GraphMem2Roaring MINIMAL (current)":
-                this.graphClass = GraphClass.GraphMem2RoaringMinimal;
+            case "GraphMemRoaring MINIMAL (current)":
+                this.graphClass = GraphClass.GraphMemRoaringMinimal;
                 this.jenaVersion = JenaVersion.CURRENT;
                 break;
-            case "GraphMem2Roaring MANUAL (current)":
-                this.graphClass = GraphClass.GraphMem2RoaringManual;
+            case "GraphMemRoaring MANUAL (current)":
+                this.graphClass = GraphClass.GraphMemRoaringManual;
                 this.jenaVersion = JenaVersion.CURRENT;
                 break;
             case "GraphMem (Jena 4.8.0)":
@@ -85,13 +85,13 @@ public class Context {
 
     public enum GraphClass {
         GraphMemValue,
-        GraphMem2Fast,
-        GraphMem2Legacy,
-        GraphMem2RoaringEager,
-        GraphMem2RoaringLazy,
-        GraphMem2RoaringLazyParallel,
-        GraphMem2RoaringMinimal,
-        GraphMem2RoaringManual,
+        GraphMemFast,
+        GraphMemLegacy,
+        GraphMemRoaringEager,
+        GraphMemRoaringLazy,
+        GraphMemRoaringLazyParallel,
+        GraphMemRoaringMinimal,
+        GraphMemRoaringManual,
     }
 
 
