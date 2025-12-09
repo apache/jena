@@ -273,14 +273,12 @@ public class WebContent {
         // server setups return text/plain for any file type.
         // (It was never registered as being N-triples;
         // that was only for RDF 2004 testing.)
+        if ( !isTextPlain && (contentTypeStr != null) )
+            return ContentType.create(contentTypeStr);
+
         ContentType ct = null;
-        if ( !isTextPlain )
-            // Not guaranteed to be registered as a language here.
-            ct = (contentTypeStr == null) ? null : ContentType.create(contentTypeStr);
-
-        if ( ct == null && hintLang != null )
+        if ( hintLang != null )
             ct = hintLang.getContentType();
-
         if ( ct == null )
             ct = RDFLanguages.guessContentType(target);
 
