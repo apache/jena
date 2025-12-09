@@ -111,7 +111,7 @@ public class RDFParser {
     private final ErrorHandler        errorHandler;
     private final Context             context;
     // Some cases the parser is reusable (read a file), some are not (input streams).
-    private boolean                 canUseThisParser = true;
+    private boolean                   canUseThisParser = true;
 
     // ---- Builder creation
 
