@@ -78,7 +78,6 @@ public class RiotEvalTest extends AbstractManifestTest {
         StreamRDF dest = StreamRDFLib.graph(graph);
         try {
             parser.accept(dest);
-
             if ( ! positiveTest ) {
                 String fragment = fragment(manifestEntry.getURI());
                 if ( fragment != null )

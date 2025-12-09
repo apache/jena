@@ -27,6 +27,8 @@ import org.apache.jena.arq.junit.manifest.ManifestEntry;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.lib.IRILib;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.irix.IRIs;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.RiotNotFoundException;
@@ -37,7 +39,7 @@ import org.apache.jena.shared.NotFoundException;
 public class RiotSyntaxTest extends AbstractManifestTest {
 
     final private boolean expectLegalSyntax;
-    final private String filename;
+    final private String actionURI;
     final private String baseIRI;
     final private Lang lang;
     final private Consumer<StreamRDF> parser;
@@ -48,36 +50,39 @@ public class RiotSyntaxTest extends AbstractManifestTest {
 
     public RiotSyntaxTest(ManifestEntry entry, String baseIRI, Lang lang, boolean positiveTest) {
         super(entry);
-        this.filename = entry.getAction().getURI();
-        this.baseIRI = ( baseIRI == null ) ? filename : baseIRI;
+        this.actionURI = entry.getAction().getURI();
+        this.baseIRI = ( baseIRI == null ) ? actionURI : baseIRI;
         this.expectLegalSyntax = positiveTest;
         this.lang = lang;
         boolean silentWarnings = RiotTestsConfig.allowWarnings(manifestEntry);
         parser = ( baseIRI != null )
-            ? ParsingStepForTest.parse(filename, baseIRI, lang, silentWarnings)
-            : ParsingStepForTest.parse(filename, lang, silentWarnings);
-
+            ? ParsingStepForTest.parse(actionURI, baseIRI, lang, silentWarnings)
+            : ParsingStepForTest.parse(actionURI, lang, silentWarnings);
     }
 
     @Override
     public void runTest() {
         StreamRDF stream = StreamRDFLib.sinkNull();
-        // Check so the parse step does not confuse missing with bad syntax.
-        String fn = IRILib.IRIToFilename(filename);
-        if ( ! FileOps.exists(fn) ) {
-            throw new NotFoundException("File not found: "+filename) {
-                @Override public Throwable fillInStackTrace() { return this; }
-            };
+        // If a file, check so the parse step does not confuse missing with bad syntax.
+        String uriScheme = IRIs.scheme(actionURI);
+        boolean isLocal = "file".equals(Lib.lowercase(uriScheme));
+        String fn = isLocal ? IRILib.IRIToFilename(actionURI) : actionURI;
+        if (isLocal) {
+            if ( ! FileOps.exists(fn) ) {
+                throw new NotFoundException("File not found: "+actionURI) {
+                    @Override public Throwable fillInStackTrace() { return this; }
+                };
+            }
         }
+
         try {
             parser.accept(stream);
             if (! expectLegalSyntax ) {
-                String reason = "Parsing succeeded in a bad syntax test";
+                String reason = "Parsing succeeded in a bad syntax test: "+actionURI;
                 outputFailure(reason, fn, null);
-                String s = IO.readWholeFileAsUTF8(fn);
-                System.out.println();
-                System.out.println("== "+filename);
-                System.out.println(s);
+                if ( isLocal )
+                printIfFile(reason, actionURI, fn);
+                System.out.println("== "+actionURI);
                 fail(reason);
             }
         } catch(RiotNotFoundException ex) {
@@ -91,13 +96,16 @@ public class RiotSyntaxTest extends AbstractManifestTest {
         }
     }
 
-    private void outputFailure(String reason, String fn, Throwable th) {
+    private void printIfFile(String reason, String uri, String fn) {
         String s = IO.readWholeFileAsUTF8(fn);
         System.err.println();
-        System.err.println("== "+filename+ " -- "+reason);
+        System.err.println("== "+actionURI+ " -- "+reason);
         System.err.print(s);
         if ( !s.endsWith("\n") )
             System.err.println();
+    }
+
+    private void outputFailure(String reason, String fn, Throwable th) {
         fail("Parsing succeeded in a bad syntax test");
     }
 }
