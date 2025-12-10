@@ -31,7 +31,16 @@ public class EltStreamRDF
 {
     private static final long serialVersionUID = 1L;
 
-    private final EltStreamRDFType type;
+    public enum EltType {
+        UNKNOWN,
+        TRIPLE,
+        QUAD,
+        PREFIX,
+        BASE,
+        EXCEPTION
+    }
+
+    private final EltType type;
     private final Triple triple;
     private final Quad quad;
     private final String prefix; // Null implies "base".
@@ -40,13 +49,13 @@ public class EltStreamRDF
 
     /* Prefer static constructors in EltStreamRDF */
 
-    EltStreamRDF(Triple triple) { this(EltStreamRDFType.TRIPLE, triple, null, null, null, null); }
-    EltStreamRDF(Quad quad) { this(EltStreamRDFType.QUAD, null, quad, null, null, null); }
-    EltStreamRDF(String prefix, String iri) { this(EltStreamRDFType.PREFIX, null, null, prefix, iri, null); }
-    EltStreamRDF(String iri) { this(EltStreamRDFType.BASE, null, null, null, iri, null); }
-    EltStreamRDF(Throwable exception) { this(EltStreamRDFType.EXCEPTION, null, null, null, null, exception); }
+    EltStreamRDF(Triple triple)             { this(EltType.TRIPLE, triple, null, null, null, null); }
+    EltStreamRDF(Quad quad)                 { this(EltType.QUAD, null, quad, null, null, null); }
+    EltStreamRDF(String prefix, String iri) { this(EltType.PREFIX, null, null, prefix, iri, null); }
+    EltStreamRDF(String iri)                { this(EltType.BASE, null, null, null, iri, null); }
+    EltStreamRDF(Throwable exception)       { this(EltType.EXCEPTION, null, null, null, null, exception); }
 
-    EltStreamRDF(EltStreamRDFType eltType, Triple triple, Quad quad, String prefix, String iri, Throwable exception) {
+    EltStreamRDF(EltType eltType, Triple triple, Quad quad, String prefix, String iri, Throwable exception) {
         this.type = eltType;
         this.triple = triple;
         this.quad = quad;
@@ -55,18 +64,18 @@ public class EltStreamRDF
         this.exception = exception;
     }
 
-    public boolean   isTriple()    { return EltStreamRDFType.TRIPLE.equals(type); }
+    public boolean   isTriple()    { return EltType.TRIPLE.equals(type); }
     public Triple    triple()      { return triple; }
-    public boolean   isQuad()      { return EltStreamRDFType.QUAD.equals(type); }
+    public boolean   isQuad()      { return EltType.QUAD.equals(type); }
     public Quad      quad()        { return quad; }
-    public boolean   isPrefix()    { return EltStreamRDFType.PREFIX.equals(type); }
+    public boolean   isPrefix()    { return EltType.PREFIX.equals(type); }
     public String    prefix()      { return prefix; }
-    public boolean   isBase()      { return EltStreamRDFType.BASE.equals(type); }
+    public boolean   isBase()      { return EltType.BASE.equals(type); }
     public String    iri()         { return iri; }
-    public boolean   isException() { return EltStreamRDFType.EXCEPTION.equals(type); }
+    public boolean   isException() { return EltType.EXCEPTION.equals(type); }
     public Throwable exception()   { return exception; }
 
-    public EltStreamRDFType getType() {
+    public EltType getType() {
         return type;
     }
 
