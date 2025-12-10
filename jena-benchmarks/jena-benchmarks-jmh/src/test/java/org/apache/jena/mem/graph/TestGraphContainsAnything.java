@@ -20,10 +20,11 @@ package org.apache.jena.mem.graph;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.mem.GraphMemRoaring;
 import org.apache.jena.mem.graph.helper.Context;
 import org.apache.jena.mem.graph.helper.JMHDefaultOptions;
 import org.apache.jena.mem.graph.helper.Releases;
-import org.apache.jena.mem2.GraphMem2Roaring;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.openjdk.jmh.annotations.*;
@@ -46,10 +47,10 @@ public class TestGraphContainsAnything {
     public String param0_GraphUri;
 
     @Param({
-            "GraphMem2Fast (current)",
-            "GraphMem2Roaring EAGER (current)",
-//            "GraphMem2Roaring LAZY (current)",
-            "GraphMem2Roaring LAZY_PARALLEL (current)",
+            "GraphMemFast (current)",
+            "GraphMemRoaring EAGER (current)",
+//            "GraphMemRoaring LAZY (current)",
+            "GraphMemRoaring LAZY_PARALLEL (current)",
 //            "GraphMem (Jena 4.8.0)",
     })
     public String param1_GraphImplementation;
@@ -161,7 +162,7 @@ public class TestGraphContainsAnything {
                 triples.forEach(this.sutCurrent::add);
 
                 // init index if needed
-                if(this.sutCurrent instanceof GraphMem2Roaring roaringGraph
+                if(this.sutCurrent instanceof GraphMemRoaring roaringGraph
                    && !roaringGraph.isIndexInitialized()) {
                     roaringGraph.initializeIndexParallel();
                 }

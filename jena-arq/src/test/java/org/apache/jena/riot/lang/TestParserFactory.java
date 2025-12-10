@@ -112,7 +112,7 @@ public class TestParserFactory
         assertEquals(1, sink.quads.size());
 
         Triple t = SSE.parseTriple("(<x> <p> <q>)");
-        Quad q = new Quad(Quad.defaultGraphNodeGenerated, t);
+        Quad q = Quad.create(Quad.defaultGraphNodeGenerated, t);
         assertEquals(q, last(sink.quads));
     }
 
@@ -127,7 +127,7 @@ public class TestParserFactory
         assertEquals(1, sink.quads.size());
 
         Triple t = SSE.parseTriple("(<http://base/x> <http://base/p> <http://base/q>)");
-        Quad q = new Quad(Quad.defaultGraphNodeGenerated, t);
+        Quad q = Quad.create(Quad.defaultGraphNodeGenerated, t);
         assertEquals(q, last(sink.quads));
     }
 

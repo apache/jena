@@ -30,13 +30,9 @@ import org.apache.jena.shared.DoesNotExistException;
 
 /**
  * Abstract base class for testing graph factories. Subclasses define the method
- * <code>getGraphFactory()</code> which supplies a new graph factory to be tested:
+ * {@link #getGraphMaker} which supplies a new graph maker to be tested:
  * ATGF invokes that during <code>setUp</code> and closes it in
  * <code>tearDown</code>.
- * <p>
- * This bunch of tests is not remotely exhaustive, but it was sufficent to drive the
- * development of the first full graph factory. (Although at the time it wasn't
- * abstract.)
  */
 
 public abstract class AbstractTestGraphMaker extends GraphTestBase {
@@ -201,6 +197,9 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase {
         assertTrue("paul still exists", gf.hasGraph("paul"));
         assertFalse("no such graph", gf.hasGraph("george"));
     }
+
+    // Up to Jena5, the graph created did open/close counting.
+    // But only some graph implements provided this.
 
     public void testCarefulClose() {
         Graph x = gf.createGraph("x");

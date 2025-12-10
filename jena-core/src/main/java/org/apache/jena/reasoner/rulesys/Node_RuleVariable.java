@@ -134,7 +134,7 @@ public class Node_RuleVariable extends Node_Variable {
     }
 
     /**
-     * Clone the rule variable to allow multiple rule instaces to be active at the same time.
+     * Clone the rule variable to allow multiple rule instances to be active at the same time.
      */
     public Node_RuleVariable cloneNode() {
         return new Node_RuleVariable(getName(), index);
@@ -149,12 +149,12 @@ public class Node_RuleVariable extends Node_Variable {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof Node_RuleVariable) {
+        if (o instanceof Node_RuleVariable nrv) {
             String name = getName();
             if (name == null) {
                 return this == o;
             } else {
-                return name.equals( ((Node_RuleVariable)o).getName() );
+                return name.equals( nrv.getName() );
             }
         } else
             return false;
@@ -174,17 +174,17 @@ public class Node_RuleVariable extends Node_Variable {
      * Test that two nodes are semantically equivalent.
      */
     @Override
-    public boolean sameValueAs(Object o) {
-        return o instanceof Node_RuleVariable;
+    public boolean sameValueAs(Node other) {
+        return other instanceof Node_RuleVariable;
     }
 
     /**
      * Compare two nodes, taking into account variable indices.
      */
     public static boolean sameNodeAs(Node n, Node m) {
-        if (n instanceof Node_RuleVariable) {
-            if (m instanceof Node_RuleVariable) {
-                return ((Node_RuleVariable)n).getIndex() == ((Node_RuleVariable)m).getIndex();
+        if (n instanceof Node_RuleVariable nrv_n) {
+            if (m instanceof Node_RuleVariable nrv_m) {
+                return nrv_n.getIndex() == nrv_m.getIndex();
             } else {
                 return false;
             }

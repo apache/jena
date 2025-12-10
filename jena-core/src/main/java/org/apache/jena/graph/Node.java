@@ -21,6 +21,7 @@ package org.apache.jena.graph;
 import java.io.IOException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.apache.jena.datatypes.RDFDatatype ;
@@ -239,28 +240,39 @@ public abstract class Node implements Serializable {
 
     /**
      * Java rules for equals. See also {#sameTermAs} and {#sameValueAs}.
-     * Nodes only equal other Nodes that have equal labels.
+     * {@code .equals} is "same RDF Term" with all the rules of
+     *  Java equality such as "null" handling.
      */
     @Override
     public abstract boolean equals(Object o);
 
     /**
      * RDF term equality.
+     * <p>
+     * The {@link Node} argument must not be null.
      */
-    public boolean sameTermAs(Object o)
-    { return equals( o ); }
+    public boolean sameTermAs(Node node) {
+        Objects.requireNonNull(node);
+        return equals(node);
+    }
 
     /**
-     * Test that two nodes are semantically equivalent.
-     * In some cases this may be the same as equals, in others
-     * equals is stricter. For example, two xsd:int literals with
-     * the same value but different lexical form are semantically
-     * equivalent but distinguished by the java equals function.
-     * <p>Default implementation is to use equals, subclasses should
-     * override this.</p>
+     * Test that two nodes represent the same value.
+     * <p>
+     * In some cases this may be the same as {@link #sameTermAs}. For example, two
+     * xsd:int literals with the same value but different lexical form are
+     * semantically equivalent but distinguished by the java equals function.
+     * </p>
+     * <p>
+     * The default implementation is to use {@link #equals}; subclasses should
+     * override this.
+     * </p>
+     * The {@link Node} argument must not be null.
      */
-    public boolean sameValueAs(Object o)
-    { return equals( o ); }
+    public boolean sameValueAs(Node node) {
+        Objects.requireNonNull(node);
+        return equals(node);
+    }
 
     /** Answer a human-readable representation of this Node. */
     @Override
@@ -275,17 +287,6 @@ public abstract class Node implements Serializable {
 
     @Override
     public abstract int hashCode();
-
-    /**
-     * Answer true iff this node accepts the other one as a match. The default is an
-     * equality test; it is over-ridden in subclasses to provide the appropriate
-     * semantics for literals, ANY, and variables.
-     *
-     * @param other a node to test for matching
-     * @return true iff this node accepts the other as a match
-     */
-    public boolean matches( Node other )
-    { return equals( other ); }
 
     // ---- Serializable
     // Must be "protected", not "private".

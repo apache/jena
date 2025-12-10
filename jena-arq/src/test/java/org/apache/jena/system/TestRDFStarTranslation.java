@@ -36,6 +36,7 @@ import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.IsoMatcher;
 import org.apache.jena.vocabulary.RDF;
 
+@SuppressWarnings("removal")
 public class TestRDFStarTranslation {
 
     private static final Node s = SSE.parseNode(":s");

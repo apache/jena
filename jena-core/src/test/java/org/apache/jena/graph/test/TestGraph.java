@@ -28,10 +28,10 @@ import junit.framework.TestSuite;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.impl.WrappedGraph;
-import org.apache.jena.mem.GraphMemValue;
-import org.apache.jena.mem2.GraphMem2Fast;
-import org.apache.jena.mem2.GraphMem2Legacy;
-import org.apache.jena.mem2.GraphMem2Roaring;
+import org.apache.jena.mem.GraphMemFast;
+import org.apache.jena.mem.GraphMemLegacy;
+import org.apache.jena.mem.GraphMemRoaring;
+import org.apache.jena.memvalue.GraphMemValue;
 
 @SuppressWarnings("deprecation")
 public class TestGraph extends GraphTestBase {
@@ -52,14 +52,14 @@ public class TestGraph extends GraphTestBase {
         result.addTest(suite(MetaTestGraph.class, WrappedGraphMem.class));
         result.addTest(suite(TestReifier.class, WrappedGraphMem.class));
 
-        result.addTest(suite(MetaTestGraph.class, GraphMem2Fast.class));
-        result.addTest(suite(TestReifier.class, GraphMem2Fast.class));
+        result.addTest(suite(MetaTestGraph.class, GraphMemFast.class));
+        result.addTest(suite(TestReifier.class, GraphMemFast.class));
 
-        result.addTest(suite(MetaTestGraph.class, GraphMem2Legacy.class));
-        result.addTest(suite(TestReifier.class, GraphMem2Legacy.class));
+        result.addTest(suite(MetaTestGraph.class, GraphMemLegacy.class));
+        result.addTest(suite(TestReifier.class, GraphMemLegacy.class));
 
-        result.addTest(suite(MetaTestGraph.class, GraphMem2Roaring.class));
-        result.addTest(suite(TestReifier.class, GraphMem2Roaring.class));
+        result.addTest(suite(MetaTestGraph.class, GraphMemRoaring.class));
+        result.addTest(suite(TestReifier.class, GraphMemRoaring.class));
 
         result.addTest(TestGraphListener.suite());
         result.addTestSuite(TestRegisterGraphListener.class);

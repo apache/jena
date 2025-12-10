@@ -46,11 +46,11 @@ public class JenaCoreTestAll extends TestCase {
         addTest(ts,  "Enhanced",            org.apache.jena.enhanced.test.TS3_enh.suite());
         addTest(ts,  "Graph",               adaptJUnit4(org.apache.jena.graph.test.TS3_graph.class));
         // mem2
-        addTest(ts,  "Mem",                 adaptJUnit4(org.apache.jena.mem2.TS4_GraphMem2.class));
+        addTest(ts,  "Mem",                 adaptJUnit4(org.apache.jena.mem.TS4_GraphMem.class));
 
         // Old GraphMem/GraphMemValue.
         // TO CHECK
-        addTest(ts,  "MemValue",            adaptJUnit4(org.apache.jena.mem.test.TS3_GraphMemValue.class));
+        addTest(ts,  "MemValue",            adaptJUnit4(org.apache.jena.memvalue.TS3_GraphMemValue.class));
 
         // ** COMPLEX
         addTest(ts,  "Model1",              org.apache.jena.rdf.model.test.TS3_Model1.suite());

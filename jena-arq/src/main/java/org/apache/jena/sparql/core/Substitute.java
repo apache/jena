@@ -153,7 +153,7 @@ public class Substitute {
 
         Quad q = quad;
         if ( s1 != s || p1 != p || o1 != o || g1 != g )
-            q = new Quad(g1, s1, p1, o1);
+            q = Quad.create(g1, s1, p1, o1);
         return q;
     }
 

@@ -61,7 +61,7 @@ public class TemplateLib {
         if ( dftGraph == null || Quad.isDefaultGraph(dftGraph) )
             return quads ;
         Stream<Quad> remappedStream = quads.stream().map(q->
-            !q.isDefaultGraph() ? q : new Quad(dftGraph, q.getSubject(), q.getPredicate(), q.getObject())
+            !q.isDefaultGraph() ? q : Quad.create(dftGraph, q.getSubject(), q.getPredicate(), q.getObject())
         ) ;
         return remappedStream.toList();
     }
@@ -144,7 +144,7 @@ public class TemplateLib {
 
         Quad q = quad;
         if ( s1 != s || p1 != p || o1 != o || g1 != g )
-            q = new Quad(g1, s1, p1, o1);
+            q = Quad.create(g1, s1, p1, o1);
 
         Quad q2 = Substitute.substitute(q, b);
         return q2;

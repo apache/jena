@@ -21,9 +21,9 @@ package org.apache.jena.graph;
 import java.util.Iterator;
 
 import org.apache.jena.graph.impl.GraphBase ;
-import org.apache.jena.mem2.GraphMem2Fast;
-import org.apache.jena.mem2.GraphMem2Legacy;
-import org.apache.jena.mem2.GraphMem2Roaring;
+import org.apache.jena.mem.GraphMemFast;
+import org.apache.jena.mem.GraphMemLegacy;
+import org.apache.jena.mem.GraphMemRoaring;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.NullIterator ;
@@ -67,7 +67,7 @@ public class GraphMemFactory
      */
     public static Graph createGraphMemForModel() {
         @SuppressWarnings("deprecation")
-        Graph g = new org.apache.jena.mem.GraphMemValue();
+        Graph g = new org.apache.jena.memvalue.GraphMemValue();
         return g;
     }
 
@@ -80,7 +80,7 @@ public class GraphMemFactory
      */
     public static Graph createDefaultGraphSameValue() {
         @SuppressWarnings("deprecation")
-        Graph g = new org.apache.jena.mem.GraphMemValue();
+        Graph g = new org.apache.jena.memvalue.GraphMemValue();
         return g;
     }
 
@@ -100,13 +100,13 @@ public class GraphMemFactory
      * <li>Iterator over this graph does not provide Iterator.remove</li>
      * </ul>
      * <p>
-     * It has improved performance compared to {@link org.apache.jena.mem.GraphMemValue}
+     * It has improved performance compared to {@link org.apache.jena.memvalue.GraphMemValue}
      * with a simpler implementation, primarily due to not providing support for {@link Iterator#remove}.
      * <p>
-     * See {@link GraphMem2Legacy} for details.
+     * See {@link GraphMemLegacy} for details.
      */
     public static Graph createGraphMemBasic()
-    { return new GraphMem2Legacy(); }
+    { return new GraphMemLegacy(); }
 
     /**
      * A graph that stores triples in memory. This class is not thread-safe.
@@ -118,10 +118,10 @@ public class GraphMemFactory
      * <p>
      * This graph implementation provides improved performance with a minor increase in memory usage.
      * <p>
-     * See {@link GraphMem2Fast} for details.
+     * See {@link GraphMemFast} for details.
      */
     public static Graph createGraphMem2() {
-        return new GraphMem2Fast();
+        return new GraphMemFast();
     }
 
     /**
@@ -132,13 +132,13 @@ public class GraphMemFactory
      * <li>Iterator over this graph does not provide Iterator.remove</li>
      * </ul>
      * <p>
-     * {@link GraphMem2Roaring} is focused on handling large in-memory graphs.
+     * {@link GraphMemRoaring} is focused on handling large in-memory graphs.
      * It uses <a href="https://roaringbitmap.org/">Roaring bitmaps</a> for indexing.
      * <p>
-     * See {@link GraphMem2Roaring} for details.
+     * See {@link GraphMemRoaring} for details.
      */
     public static Graph createGraphMemRoaring()
-    { return new GraphMem2Roaring(); }
+    { return new GraphMemRoaring(); }
 
     private final static Graph emptyGraph = new GraphBase() {
         @Override

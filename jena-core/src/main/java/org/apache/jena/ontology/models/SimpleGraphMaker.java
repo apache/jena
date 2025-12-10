@@ -20,64 +20,61 @@ package org.apache.jena.ontology.models;
 
 import java.util.*;
 
-import org.apache.jena.graph.* ;
-import org.apache.jena.mem.* ;
-import org.apache.jena.shared.* ;
-import org.apache.jena.util.iterator.* ;
+import org.apache.jena.graph.*;
+import org.apache.jena.shared.*;
+import org.apache.jena.util.iterator.*;
 
 /**
-    A SimpleGraphFactory produces memory-based graphs and records them
-    in a local map.
+ * A SimpleGraphFactory produces memory-based graphs and records them in a local map.
  */
 
-public class SimpleGraphMaker extends BaseGraphMaker
-{
+public class SimpleGraphMaker extends BaseGraphMaker {
 
     /**
-        Initialise a SimpleGraphMaker with reification style Minimal
+     * Initialise a SimpleGraphMaker with reification style Minimal
      */
-    public SimpleGraphMaker()
-    { super() ; }
-
-    /**
-        The mapping from the names of graphs to the Graphs themselves.
-     */
-    private Map<String, Graph> graphs = new HashMap<>();
-
-    public Graph create()
-    { return GraphMemFactory.createDefaultGraph(); }
-
-    /**
-        Create a graph and record it with the given name in the local map.
-     */
-    @Override
-    public Graph createGraph( String name, boolean strict )
-    {
-        GraphMemBase already = (GraphMemBase) graphs.get( name );
-        if (already == null) {
-            Graph result = GraphMemFactory.createDefaultGraph();
-            graphs.put( name, result );
-            return result;
-        }
-        if (strict)
-            throw new AlreadyExistsException( name );
-        else
-            return already.openAgain();
+    public SimpleGraphMaker() {
+        super();
     }
 
     /**
-        Open (aka find) a graph with the given name in the local map.
+     * The mapping from the names of graphs to the Graphs themselves.
+     */
+    private Map<String, GraphRefCount> graphs = new HashMap<>();
+
+    public GraphRefCount create() {
+        Graph g = GraphMemFactory.createDefaultGraphSameValue();
+        return new GraphRefCount(g);
+    }
+
+    /**
+     * Create a graph and record it with the given name in the local map.
+     */
+    @Override
+    public Graph createGraph(String name, boolean strict) {
+        GraphRefCount already = graphs.get(name);
+        if ( already == null ) {
+            GraphRefCount result = create();
+            graphs.put(name, result);
+            return result;
+        }
+        if ( strict )
+            throw new AlreadyExistsException(name);
+        return already.openAgain();
+    }
+
+    /**
+     * Open (aka find) a graph with the given name in the local map.
      */
     @Override
     public Graph openGraph(String name, boolean strict) {
-        GraphMemBase already = (GraphMemBase)graphs.get(name);
+        GraphRefCount already = graphs.get(name);
         if ( already == null )
             if ( strict )
                 throw new DoesNotExistException(name);
             else
                 return createGraph(name, true);
-        else
-            return already.openAgain();
+        return already.openAgain();
     }
 
     @Override
@@ -96,20 +93,21 @@ public class SimpleGraphMaker extends BaseGraphMaker
     }
 
     /**
-        Return true iff we have a graph with the given name
+     * Return true iff we have a graph with the given name
      */
     @Override
-    public boolean hasGraph( String name )
-    { return graphs.containsKey( name ); }
+    public boolean hasGraph(String name) {
+        return graphs.containsKey(name);
+    }
 
     /**
-        Close this factory - we choose to do nothing.
+     * Close this factory - we choose to do nothing.
      */
     @Override
-    public void close()
-    { /* nothing to do */ }
+    public void close() { /* nothing to do */ }
 
     @Override
-    public ExtendedIterator<String> listGraphs()
-    { return WrappedIterator.create( graphs.keySet().iterator() ); }
+    public ExtendedIterator<String> listGraphs() {
+        return WrappedIterator.create(graphs.keySet().iterator());
+    }
 }

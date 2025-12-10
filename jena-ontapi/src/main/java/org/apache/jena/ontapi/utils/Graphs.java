@@ -18,15 +18,17 @@
 
 package org.apache.jena.ontapi.utils;
 
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.GraphUtil;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.Triple;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.apache.jena.graph.*;
 import org.apache.jena.graph.compose.Dyadic;
 import org.apache.jena.graph.compose.Polyadic;
 import org.apache.jena.graph.impl.WrappedGraph;
-import org.apache.jena.mem.GraphMemBase;
+import org.apache.jena.mem.GraphMem;
+import org.apache.jena.memvalue.GraphMemValue;
 import org.apache.jena.ontapi.UnionGraph;
 import org.apache.jena.reasoner.InfGraph;
 import org.apache.jena.shared.PrefixMapping;
@@ -37,26 +39,6 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.NullIterator;
 import org.apache.jena.vocabulary.OWL2;
 import org.apache.jena.vocabulary.RDF;
-
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.Spliterator;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Helper to work with {@link Graph Jena Graph} (generally with our {@link UnionGraph}) and with its related objects:
@@ -153,28 +135,28 @@ public class Graphs {
             if (!seen.add(g)) {
                 continue;
             }
-            if (g instanceof GraphWrapper) {
-                candidates.add(((GraphWrapper) g).get());
+            if (g instanceof GraphWrapper gw) {
+                candidates.add(gw.get());
                 continue;
             }
-            if (g instanceof WrappedGraph) {
-                candidates.add(((WrappedGraph) g).getWrapped());
+            if (g instanceof WrappedGraph wg) {
+                candidates.add(wg.getWrapped());
                 continue;
             }
-            if (g instanceof UnionGraph) {
-                candidates.add(((UnionGraph) g).getBaseGraph());
+            if (g instanceof UnionGraph ug) {
+                candidates.add(ug.getBaseGraph());
                 continue;
             }
-            if (g instanceof Polyadic) {
-                candidates.add(((Polyadic) g).getBaseGraph());
+            if (g instanceof Polyadic pg) {
+                candidates.add(pg.getBaseGraph());
                 continue;
             }
-            if (g instanceof Dyadic) {
-                candidates.add(((Dyadic) g).getL());
+            if (g instanceof Dyadic dg) {
+                candidates.add(dg.getL());
                 continue;
             }
-            if (g instanceof InfGraph) {
-                candidates.add(((InfGraph) g).getRawGraph());
+            if (g instanceof InfGraph ig) {
+                candidates.add(ig.getRawGraph());
             }
             return g;
         }
@@ -198,13 +180,14 @@ public class Graphs {
     }
 
     /**
-     * Answers {@code true} if the graph specified is {@code GraphMem}.
+     * Answers {@code true} if the graph specified is memory storage graph.
      *
      * @param graph {@link Graph}
      * @return {@code boolean}
      */
+    @SuppressWarnings("deprecation")
     public static boolean isGraphMem(Graph graph) {
-        return graph instanceof GraphMemBase;
+        return graph instanceof GraphMemValue || graph instanceof GraphMem ;
     }
 
     /**

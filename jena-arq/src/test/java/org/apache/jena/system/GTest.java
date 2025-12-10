@@ -26,8 +26,8 @@ import org.junit.jupiter.api.Test;
 import org.apache.jena.atlas.lib.Copyable;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.mem.GraphMemValue;
-import org.apache.jena.mem2.GraphMem2Fast;
+import org.apache.jena.mem.GraphMemFast;
+import org.apache.jena.memvalue.GraphMemValue;
 import org.apache.jena.sparql.sse.SSE;
 
 public class GTest {
@@ -36,7 +36,7 @@ public class GTest {
     public void copy() {
         // Test graph which implements Copyable<>
         {
-            var graphImplementingCopyable = new GraphMem2Fast();
+            var graphImplementingCopyable = new GraphMemFast();
             test(graphImplementingCopyable);
         }
 

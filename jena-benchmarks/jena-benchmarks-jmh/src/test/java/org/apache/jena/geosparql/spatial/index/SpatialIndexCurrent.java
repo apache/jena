@@ -73,7 +73,7 @@ public class SpatialIndexCurrent
     @Override
     public void build() throws Exception {
         indexFile = Files.createTempFile("jena-", ".spatial-index");
-        indexA = (SpatialIndexPerGraph)SpatialIndexLib.buildSpatialIndex(dsg, finalSrs);
+        indexA = SpatialIndexLib.buildSpatialIndex(dsg, finalSrs);
         SpatialIndexIoKryo.save(indexFile, indexA);
     }
 

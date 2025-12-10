@@ -136,16 +136,6 @@ public class AbstractQueryBuilderTest {
 
     }
 
-    private void assertTripleMatch(Triple expected, Triple actual) {
-        if (!expected.matches(actual)) {
-            fail("expected: "+expected+" actual: "+actual);
-        }
-    }
-
-    private void assertTripleMatch(Triple expected, TriplePath actual) {
-        assertTripleMatch(expected, actual.asTriple());
-    }
-
     @Test
     public void testMakeTriplePaths() {
         List<Object> list = new ArrayList<Object>();
@@ -155,6 +145,7 @@ public class AbstractQueryBuilderTest {
         list.add("<one>");
         list.add(Integer.valueOf(5));
 
+        // ANY for the blank nodes.
         Triple[] expected = {
             Triple.create(Node.ANY, RDF.first.asNode(), RDF.type.asNode()),
             Triple.create(Node.ANY, RDF.rest.asNode(), Node.ANY),
@@ -171,8 +162,7 @@ public class AbstractQueryBuilderTest {
 
         assertEquals(expected.length, result.size());
         for (int i=0;i<expected.length;i++) {
-            assertTripleMatch( expected[i], result.get(i));
+            expected[i].matches(result.get(i).asTriple());
         }
     }
-
 }

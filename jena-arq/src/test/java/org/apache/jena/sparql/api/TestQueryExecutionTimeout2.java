@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Timeout;
 
 import org.apache.jena.base.Sys;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.impl.GraphBase;
@@ -180,7 +181,7 @@ public class TestQueryExecutionTimeout2
         Graph graph = new GraphBase() {
             @Override
             protected ExtendedIterator<Triple> graphBaseFind(Triple t) {
-                if (t.getMatchSubject() != null && t.getMatchSubject().isConcrete()) {
+                if (t.getSubject() != null && t.getSubject().isConcrete()) {
                     // Don't match any concrete subject
                     return NiceIterator.emptyIterator();
                 } else {
@@ -204,5 +205,7 @@ public class TestQueryExecutionTimeout2
             assertThrows(QueryCancelledException.class, ()-> RowSetOps.count(qe.select()));
         }
     }
+
+    public boolean isWildcard(Node n) { return n == null || n == Node.ANY; }
 }
 

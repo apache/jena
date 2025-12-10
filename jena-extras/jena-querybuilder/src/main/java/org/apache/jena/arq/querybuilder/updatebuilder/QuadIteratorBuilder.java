@@ -45,7 +45,7 @@ class QuadIteratorBuilder implements ElementVisitor {
 
         @Override
         public Quad apply(Triple triple) {
-            return new Quad(defaultGraph, Converters.checkVar(triple.getSubject()),
+            return Quad.create(defaultGraph, Converters.checkVar(triple.getSubject()),
                     Converters.checkVar(triple.getPredicate()), Converters.checkVar(triple.getObject()));
         }
     };

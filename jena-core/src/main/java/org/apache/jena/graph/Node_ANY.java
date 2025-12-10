@@ -41,7 +41,7 @@ public class Node_ANY extends Node {
 
     @Override
     public boolean equals(Object other) {
-        // This is only one such object.
+        // There is only one such object.
         if ( this == other )
             return true;
         return false;
@@ -50,11 +50,6 @@ public class Node_ANY extends Node {
     @Override
     public Object visitWith(NodeVisitor v) {
         return v.visitAny(this);
-    }
-
-    @Override
-    public boolean matches(Node other) {
-        return other != null;
     }
 
     @Override

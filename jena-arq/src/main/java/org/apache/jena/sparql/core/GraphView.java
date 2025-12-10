@@ -107,9 +107,9 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
     @Override
     protected ExtendedIterator<Triple> graphBaseFind(Triple m) {
         if ( m == null ) m = Triple.ANY ;
-        Node s = m.getMatchSubject() ;
-        Node p = m.getMatchPredicate() ;
-        Node o = m.getMatchObject() ;
+        Node s = m.getSubject() ;
+        Node p = m.getPredicate() ;
+        Node o = m.getObject() ;
         return graphBaseFind(s, p, o) ;
     }
 

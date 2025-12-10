@@ -19,10 +19,11 @@
 package org.apache.jena.mem.graph;
 
 import org.apache.jena.graph.Triple;
+import org.apache.jena.mem.GraphMemRoaring;
 import org.apache.jena.mem.graph.helper.Context;
 import org.apache.jena.mem.graph.helper.JMHDefaultOptions;
 import org.apache.jena.mem.graph.helper.Releases;
-import org.apache.jena.mem2.GraphMem2Roaring;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.openjdk.jmh.annotations.*;
@@ -42,7 +43,7 @@ public class TestGraphInitializeIndex {
     public String param0_GraphUri;
 
     @Param({
-            "GraphMem2Roaring MANUAL (current)",
+            "GraphMemRoaring MANUAL (current)",
     })
     public String param1_GraphImplementation;
     java.util.function.Supplier<Object> graphAdd;
@@ -52,14 +53,14 @@ public class TestGraphInitializeIndex {
 
     @Benchmark
     public Object GrapInitializeIndex() {
-        var graphWithIndexing= (GraphMem2Roaring) graphAdd.get();
+        var graphWithIndexing= (GraphMemRoaring) graphAdd.get();
         graphWithIndexing.initializeIndex();
         return graphWithIndexing;
     }
 
     @Benchmark
     public Object GrapInitializeIndexParallel() {
-        var graphWithIndexing= (GraphMem2Roaring) graphAdd.get();
+        var graphWithIndexing= (GraphMemRoaring) graphAdd.get();
         graphWithIndexing.initializeIndexParallel();
         return graphWithIndexing;
     }

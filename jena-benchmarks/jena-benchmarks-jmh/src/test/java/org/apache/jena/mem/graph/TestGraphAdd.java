@@ -41,11 +41,11 @@ public class TestGraphAdd {
     public String param0_GraphUri;
 
     @Param({
-            "GraphMem2Fast (current)",
-            "GraphMem2Roaring EAGER (current)",
-//            "GraphMem2Roaring LAZY (current)",
-            "GraphMem2Roaring LAZY_PARALLEL (current)",
-            "GraphMem2Roaring MINIMAL (current)",
+            "GraphMemFast (current)",
+            "GraphMemRoaring EAGER (current)",
+//            "GraphMemRoaring LAZY (current)",
+            "GraphMemRoaring LAZY_PARALLEL (current)",
+            "GraphMemRoaring MINIMAL (current)",
 //            "GraphMem (Jena 4.8.0)",
     })
     public String param1_GraphImplementation;

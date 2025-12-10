@@ -24,7 +24,7 @@ import java.util.List;
 
 import junit.framework.TestSuite;
 import org.apache.jena.graph.*;
-import org.apache.jena.mem2.GraphMem2Fast;
+import org.apache.jena.mem.GraphMemFast;
 
 /**
  * Version of graph tests that set up a listener that copies all changes and verifies
@@ -40,7 +40,7 @@ public class TestGraphListener extends MetaTestGraph {
     }
 
     public static TestSuite suite() {
-        return MetaTestGraph.suite(TestGraphListener.class, GraphMem2Fast.class);
+        return MetaTestGraph.suite(TestGraphListener.class, GraphMemFast.class);
     }
     /**
      * A listener to check that a graph is being tracked correctly by its events.
