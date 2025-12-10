@@ -53,7 +53,7 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RIOT;
 import org.apache.jena.riot.SysRIOT;
-import org.apache.jena.riot.lang.extra.TurtleJCC;
+import org.apache.jena.riot.lang.turtlejcc.TurtleJCC;
 import org.apache.jena.sparql.expr.E_Function;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.util.NodeFactoryExtra;

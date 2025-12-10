@@ -20,8 +20,9 @@
 
 package org.apache.jena.sparql.sse.lang.parser ;
 
+import static org.apache.jena.riot.lang.LangParserLib.*;
+
 import org.apache.jena.sparql.sse.lang.ParserSSEBase ;
-import static org.apache.jena.riot.lang.extra.LangParserLib.*;
 
 public class SSE_ParserCore extends ParserSSEBase implements SSE_ParserCoreConstants {
 

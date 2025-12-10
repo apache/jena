@@ -24,7 +24,7 @@ import static org.apache.jena.shex.sys.SysShex.*;
 import org.apache.jena.shex.parser.*;
 import org.apache.jena.shex.expressions.*;
 import org.apache.jena.graph.*;
-import static org.apache.jena.riot.lang.extra.LangParserLib.*;
+import static org.apache.jena.riot.lang.LangParserLib.*;
 import java.util.*;
 
 public class ShExJavacc extends ParserShExC implements ShExJavaccConstants {
@@ -115,7 +115,7 @@ finishShexDoc();
 }
 
 // ----
-  final public 
+  final public
 void directive() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case BASE:{
@@ -157,7 +157,7 @@ imports(iri, token.beginLine, token.beginColumn) ;
 }
 
 // ----
-  final public 
+  final public
 void notStartAction() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case START:{
@@ -227,7 +227,7 @@ semActs(semAct, token.beginLine, token.beginColumn);
 }
 
 // ----
-  final public 
+  final public
 void shapeExprDecl() throws ParseException {Node n;
 startShapeExprDecl();
     n = shapeExprLabel();
@@ -781,7 +781,7 @@ constraintDatatype(str, token.beginLine, token.beginColumn);
 }
 
 // Check precedence
-  final public 
+  final public
 void nonLitInlineNodeConstraint() throws ParseException {int idx;
 idx = startNonLiteralNodeConstraint(token.beginLine, token.beginColumn);
     nonLitNodeConstraint();
@@ -1160,7 +1160,7 @@ extras.add(p);
 // {
 //     oneOfTripleExpr()
 // }
-// 
+//
 // void oneOfTripleExpr() : {}
 // {
 //  	(LOOKAHEAD(2)
@@ -1168,12 +1168,12 @@ extras.add(p);
 //     | multiElementOneOf()
 //     )
 // }
-// 
+//
 // void multiElementOneOf() : {}
 // {
 //    	groupTripleExpr() (<VBAR> groupTripleExpr())+
 // }
-// 
+//
 // void groupTripleExpr() : {}
 // {
 //     ( LOOKAHEAD(2)
@@ -1181,12 +1181,12 @@ extras.add(p);
 //     | multiElementGroup()
 //     )
 // }
-// 
+//
 // void singleElementGroup() : {}
 // {
 //   	unaryTripleExpr() (<SEMI_COLON>)?
 // }
-// 
+//
 // void multiElementGroup() : {}
 // {
 //   	unaryTripleExpr()
@@ -1253,7 +1253,7 @@ finishTripleExpressionClause(idx, null);
 // }
 
 // ----
-  final public 
+  final public
 void unaryTripleExpr() throws ParseException {Node n = null;
 startUnaryTripleExpr();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -1464,7 +1464,7 @@ finishValueSet();
 // {
 //     iriRange() | literalRange() | languageRange() | (LOOKAHEAD(2) exclusion())+
 // }
-// 
+//
 // void exclusion() : {}
 // {
 //   	<MINUS>
@@ -1472,7 +1472,7 @@ finishValueSet();
 //         iri() | literal() | <LANGTAG>
 //     ) (<TILDE>)?
 // }
-  final public 
+  final public
 void valueSetValue() throws ParseException {
 startValueSetValue();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -1583,12 +1583,12 @@ finishValueExclusion(iriStr, lang, lit, isStem);
 // {
 //    iri() (<TILDE> ( iriExclusion())*)?
 // }
-// 
+//
 // void iriExclusion() : {}
 // {
 //     <MINUS> iri() (<TILDE>)?
 // }
-  final public 
+  final public
 void iriRange() throws ParseException {String iriStr; boolean seenTilde = false; boolean haveSet = false;
 startIriRange();
     iriStr = iri();
@@ -1637,12 +1637,12 @@ if ( ! haveSet ) { valueSetIriRange(iriStr, false); }
 // {
 //     literal() (<TILDE> ( literalExclusion() )* )?
 // }
-// 
+//
 // void literalExclusion() : {}
 // {
 //     <MINUS> literal() (<TILDE>)?
 // }
-  final public 
+  final public
 void literalRange() throws ParseException {Node lit; boolean seenTilde = false; boolean haveSet = false;
 startLiteralRange();
     lit = literal();
@@ -1695,7 +1695,7 @@ if ( ! haveSet ) { valueSetLiteralRange(lit, false); }
 //     <AT> <TILDE> ( languageExclusion() )*
 //     )
 // }
-// 
+//
 // void languageExclusion() : {}
 // {
 //     <MINUS> <LANGTAG> (<TILDE>)?
@@ -1950,7 +1950,7 @@ semActs.add(semAct);
 }
 
 // ------------------------- Terms
-  final public 
+  final public
 Node booleanLiteral() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case TRUE:{
@@ -2154,7 +2154,7 @@ lex = stripQuotes3(t.image) ;
 }
 
 // ---- Shape Map
-  final public 
+  final public
 void UnitShapeMap() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case BOM:{
@@ -2282,7 +2282,7 @@ association(n, t, label);
 //   | t = triplePattern() { shapeAssociation(t); }
 //   )
 // }
-  final public 
+  final public
 Node subjectTerm() throws ParseException {String s;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case IRIref:
@@ -2787,7 +2787,7 @@ o = focusNode;
 	 throw generateParseException();
   }
 
-  
+
   static private final class LookaheadSuccess extends java.lang.Error {
     @Override
     public Throwable fillInStackTrace() {
@@ -2974,7 +2974,7 @@ o = focusNode;
 	   p = p.next;
 	 }
 
-	 p.gen = jj_gen + xla - jj_la; 
+	 p.gen = jj_gen + xla - jj_la;
 	 p.first = token;
 	 p.arg = xla;
   }

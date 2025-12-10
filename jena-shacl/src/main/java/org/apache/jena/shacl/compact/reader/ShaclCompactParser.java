@@ -23,7 +23,7 @@ import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.riot.lang.extra.LangParserBase;
+import org.apache.jena.riot.lang.LangParserBase;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.tokens.TokenizerText;
