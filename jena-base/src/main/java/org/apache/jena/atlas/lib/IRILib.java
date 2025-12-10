@@ -172,7 +172,7 @@ public class IRILib
 
     /** Convert a file: IRI to a filename */
     public static String IRIToFilename(String iri) {
-        if ( ! isFilename("file:") )
+        if ( ! isFilename(iri) )
             throw new AtlasException("Not a file: URI: "+iri);
 
         String fn;

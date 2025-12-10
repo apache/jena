@@ -78,14 +78,19 @@ class SparqlTestLib {
         throw new TestSetupException("Not a string or URI for "+context+": "+node);
     }
 
+    // For tests which directly have the action as a URi to a file.
+    static String getAction(ManifestEntry entry) {
+        Graph graph = entry.getGraph();
+        if ( entry.getAction().isBlank() )
+            throw new TestSetupException("action :: Blank node where URI expected");
+        return entry.getAction().getURI();
+    }
+
+    // Query string - either on the action or as [ qt:query ...]
     static String queryFile(ManifestEntry entry) {
         Graph graph = entry.getGraph();
-        Node testResource = entry.getEntry();
-        Node queryFile = G.getZeroOrOneSP(graph, testResource, VocabTestQuery.query.asNode());
-        if ( queryFile != null )
-            return getStringOrURI(queryFile, "query file");
-
-        // No query property - must be this action node
+        if ( entry.getAction().isURI() )
+            return entry.getAction().getURI();
 
         if ( entry.getAction().isBlank() ) {
             // action -> :query
@@ -94,7 +99,7 @@ class SparqlTestLib {
                 throw new TestSetupException("Can't determine the query from the action");
             return x.getURI();
         }
-        return entry.getAction().getURI();
+        throw new TestSetupException("Can't determine the query. Not a blank node or a URI. "+entry.getAction());
     }
 
     static Query queryFromEntry(ManifestEntry entry) {
@@ -164,14 +169,12 @@ class SparqlTestLib {
     }
 
     static UpdateRequest updateFromEntry(ManifestEntry entry, Syntax syntax) {
-
         if ( queryFile(entry) == null ) {
             SparqlTestLib.setupFailure("Query test file is null");
             return null;
         }
         String fn = queryFile(entry);
         Syntax syn = (syntax!=null) ? syntax : guessFileSyntax(fn);
-
         UpdateRequest request = UpdateFactory.read(fn, syn);
         return request;
     }
