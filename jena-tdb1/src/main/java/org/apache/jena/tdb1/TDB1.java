@@ -52,6 +52,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Deprecated(forRemoval = true)
+@SuppressWarnings({"removal", "deprecated"})
 public class TDB1 {
 
     private TDB1() {}

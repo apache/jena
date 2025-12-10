@@ -28,6 +28,7 @@ import org.apache.jena.tdb1.TDB1;
 @Deprecated(forRemoval = true)
 public class VocabTDB1
 {
+    @SuppressWarnings("removal")
     private static final String NS = TDB1.namespace ;
 
     public static String getURI() { return NS ; }

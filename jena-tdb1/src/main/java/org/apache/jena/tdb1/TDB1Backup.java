@@ -35,6 +35,7 @@ import org.apache.jena.tdb1.transaction.DatasetGraphTxn;
  * @deprecated Migrate to TDB2.
  */
 @Deprecated(forRemoval =true)
+@SuppressWarnings("removal")
 public class TDB1Backup
 {
     public static void backup(Location location, String backupfile)

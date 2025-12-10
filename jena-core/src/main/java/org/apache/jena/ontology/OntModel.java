@@ -1497,6 +1497,7 @@ public interface OntModel
      * <p>Answer the ontology model specification that was used to construct this model</p>
      * @return An ont model spec instance.
      */
+    @SuppressWarnings("removal")
     public OntModelSpec getSpecification();
 
 

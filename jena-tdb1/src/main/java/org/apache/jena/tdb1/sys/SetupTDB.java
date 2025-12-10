@@ -38,6 +38,7 @@ import org.slf4j.Logger ;
 
 /** Makes things : datasets from locations, indexes, etc etc. */
 @Deprecated(forRemoval = true)
+@SuppressWarnings({"removal", "deprecated"})
 public class SetupTDB
 {
     // Replaced/merge with DatasetBuilderStd mechanisms.

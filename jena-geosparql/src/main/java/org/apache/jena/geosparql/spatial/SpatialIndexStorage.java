@@ -30,10 +30,11 @@ import org.locationtech.jts.geom.Envelope;
 /**
  * Spatial Index Items in a Serializable form for file reading or writing.
  *
+ *
  */
-@Deprecated /** Serializable java class of spatial index v1. Moving this class would break Java serialization. */
+@Deprecated
 public class SpatialIndexStorage implements Serializable {
-
+    /* Serializable java class of spatial index v1. Moving this class would break Java serialization. */
     private final String srsURI;
     private final List<StorageItem> storageItems;
 
@@ -65,6 +66,8 @@ public class SpatialIndexStorage implements Serializable {
         return indexItems;
     }
 
+
+    @SuppressWarnings("removal")
     public SpatialIndexV1 getSpatialIndex() throws SpatialIndexException {
         return new SpatialIndexV1(getIndexItems(), srsURI);
     }

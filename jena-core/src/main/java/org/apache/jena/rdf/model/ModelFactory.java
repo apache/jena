@@ -186,6 +186,7 @@ public class ModelFactory extends ModelFactoryBase
      *
      * @deprecated Use org.apache.jena.ontapi.
      */
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true)
     public static OntModel createOntologyModel() {
         return createOntologyModel( ProfileRegistry.OWL_LANG );
@@ -239,6 +240,7 @@ public class ModelFactory extends ModelFactoryBase
      * @see OntModelSpec#getDefaultSpec
      * @deprecated Use org.apache.jena.ontapi.
      */
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true)
     public static OntModel createOntologyModel( String languageURI ) {
         return createOntologyModel( OntModelSpec.getDefaultSpec( languageURI ), null );
@@ -261,6 +263,7 @@ public class ModelFactory extends ModelFactoryBase
      * @see OntModelSpec
      * @deprecated Use org.apache.jena.ontapi.
      */
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true)
     public static OntModel createOntologyModel( OntModelSpec spec, ModelMaker maker, Model base ) {
         OntModelSpec _spec = new OntModelSpec( spec );
@@ -282,6 +285,7 @@ public class ModelFactory extends ModelFactoryBase
      * @see OntModelSpec
      * @deprecated Use org.apache.jena.ontapi.
      */
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true)
     public static OntModel createOntologyModel( OntModelSpec spec, Model base ) {
         return new OntModelImpl( spec, base );
@@ -292,6 +296,7 @@ public class ModelFactory extends ModelFactoryBase
      * a ModelMaker which will create the necessary base model.
      * @deprecated Use org.apache.jena.ontapi.
      */
+    @SuppressWarnings("removal")
     @Deprecated(forRemoval = true)
     public static OntModel createOntologyModel(OntModelSpec spec) {
         return new OntModelImpl(spec);

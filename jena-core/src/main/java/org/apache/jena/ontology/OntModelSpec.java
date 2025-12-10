@@ -52,6 +52,8 @@ import java.util.Objects;
  * @deprecated Use org.apache.jena.ontapi.
  */
 @Deprecated(forRemoval = true)
+@SuppressWarnings("removal")
+
 public class OntModelSpec {
     // Constants
     //////////////////////////////////
