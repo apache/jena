@@ -21,10 +21,9 @@
 package org.apache.jena.riot.lang.turtlejcc.javacc;
 
 import org.apache.jena.graph.*;
-import org.apache.jena.riot.lang.* ;
-import static org.apache.jena.riot.lang.LangParserLib.*;
+import org.apache.jena.riot.lang.turtlejcc.*;
 
-public class TurtleJavacc extends LangParserBase implements TurtleJavaccConstants {
+public class TurtleJavacc extends LangTurtleJCCParserBase implements TurtleJavaccConstants {
 
 // Entry point
   final public void parse() throws ParseException {

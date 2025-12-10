@@ -20,8 +20,7 @@
 
 package org.apache.jena.riot.lang.turtlejcc.javacc;
 import org.apache.jena.graph.*;
-import org.apache.jena.riot.lang.* ;
-import static org.apache.jena.riot.lang.LangParserLib.*;
+import org.apache.jena.riot.lang.turtlejcc.*;
 
 /** Token Manager. */
 @SuppressWarnings ("unused")
