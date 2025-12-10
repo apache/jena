@@ -25,6 +25,9 @@ maven-eclipse.xml
 *.iml
 .idea/
 
+# Visual Studio Code
+.vscode/
+
 # Caches
 .scala_dependencies
 
