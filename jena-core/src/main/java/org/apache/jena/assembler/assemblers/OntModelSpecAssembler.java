@@ -37,6 +37,7 @@ import org.apache.jena.shared.NotFoundException ;
     in which case the defaults are taken from there.
 */
 @Deprecated(forRemoval=true)
+@SuppressWarnings("removal")
 public class OntModelSpecAssembler extends AssemblerBase implements Assembler
 {
     @Override

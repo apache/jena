@@ -55,6 +55,7 @@ import org.apache.jena.assembler.assemblers.* ;
 
     private static Assembler ontModel = null ;
     @Deprecated(forRemoval=true)
+    @SuppressWarnings("removal")
 	public static Assembler ontModel() {
 		if ( ontModel == null )
 			ontModel = new OntModelAssembler();
@@ -91,6 +92,7 @@ import org.apache.jena.assembler.assemblers.* ;
 
     private static Assembler ontModelSpec = null ;
     @Deprecated(forRemoval=true)
+    @SuppressWarnings("removal")
 	public static Assembler ontModelSpec() {
 		if ( ontModelSpec == null )
 			ontModelSpec = new OntModelSpecAssembler();
