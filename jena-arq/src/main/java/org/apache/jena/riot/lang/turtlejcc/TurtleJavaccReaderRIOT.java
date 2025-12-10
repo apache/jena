@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.lang.extra;
+package org.apache.jena.riot.lang.turtlejcc;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -26,9 +26,9 @@ import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.riot.ReaderRIOT;
 import org.apache.jena.riot.RiotParseException;
 import org.apache.jena.riot.lang.LangTurtle;
-import org.apache.jena.riot.lang.extra.javacc.ParseException;
-import org.apache.jena.riot.lang.extra.javacc.TokenMgrError;
-import org.apache.jena.riot.lang.extra.javacc.TurtleJavacc;
+import org.apache.jena.riot.lang.turtlejcc.javacc.ParseException;
+import org.apache.jena.riot.lang.turtlejcc.javacc.TokenMgrError;
+import org.apache.jena.riot.lang.turtlejcc.javacc.TurtleJavacc;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.util.Context;

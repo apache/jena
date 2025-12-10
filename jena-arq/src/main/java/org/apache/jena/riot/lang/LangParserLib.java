@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.lang.extra;
+package org.apache.jena.riot.lang;
 
 import org.apache.jena.atlas.AtlasException;
 import org.apache.jena.atlas.lib.EscapeStr;

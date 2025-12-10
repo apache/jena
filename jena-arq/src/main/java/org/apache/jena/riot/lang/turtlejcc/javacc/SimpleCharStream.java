@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.lang.extra.javacc;
+package org.apache.jena.riot.lang.turtlejcc.javacc;
 
 /**
  * An implementation of interface CharStream, where the stream is assumed to

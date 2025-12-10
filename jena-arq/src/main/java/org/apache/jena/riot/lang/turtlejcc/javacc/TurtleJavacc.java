@@ -18,11 +18,11 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.lang.extra.javacc;
+package org.apache.jena.riot.lang.turtlejcc.javacc;
 
 import org.apache.jena.graph.*;
-import org.apache.jena.riot.lang.extra.* ;
-import static org.apache.jena.riot.lang.extra.LangParserLib.*;
+import org.apache.jena.riot.lang.* ;
+import static org.apache.jena.riot.lang.LangParserLib.*;
 
 public class TurtleJavacc extends LangParserBase implements TurtleJavaccConstants {
 

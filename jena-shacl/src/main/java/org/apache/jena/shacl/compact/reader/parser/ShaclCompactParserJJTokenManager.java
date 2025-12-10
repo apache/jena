@@ -20,11 +20,13 @@
 
 package org.apache.jena.shacl.compact.reader.parser;
 import java.util.List;
+
+import static org.apache.jena.riot.lang.LangParserLib.*;
+
 import java.util.ArrayList;
 import org.apache.jena.graph.*;
 import org.apache.jena.sparql.path.*;
 import org.apache.jena.shacl.compact.reader.*;
-import static org.apache.jena.riot.lang.extra.LangParserLib.*;
 
 /** Token Manager. */
 @SuppressWarnings ("unused")

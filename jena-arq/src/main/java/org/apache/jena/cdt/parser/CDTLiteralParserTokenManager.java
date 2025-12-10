@@ -19,13 +19,14 @@
  */
 
 package org.apache.jena.cdt.parser;
+import static org.apache.jena.riot.lang.LangParserLib.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.jena.cdt.*;
 import org.apache.jena.graph.Node;
-import static org.apache.jena.riot.lang.extra.LangParserLib.*;
 
 /** Token Manager. */
 @SuppressWarnings ("unused")
