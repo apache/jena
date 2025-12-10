@@ -247,6 +247,7 @@ public class SpatialIndexV1 {
      */
     public static final void setSpatialIndex(Dataset dataset, SpatialIndexV1 spatialIndex) {
         Context context = dataset.getContext();
+        @SuppressWarnings("removal")
         SpatialIndex wrapper = new SpatialIndexAdapterV1(spatialIndex);
         SpatialIndexLib.setSpatialIndex(context, wrapper);
     }
