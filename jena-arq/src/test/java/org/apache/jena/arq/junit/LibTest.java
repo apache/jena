@@ -20,6 +20,7 @@ package org.apache.jena.arq.junit;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.IRILib;
+import org.apache.jena.http.HttpOp;
 
 public class LibTest {
 
@@ -36,8 +37,14 @@ public class LibTest {
 
     /** Print a (small) file, with line numbers. The file is read into memory. */
     public static void printFile(String filenameOrIRI) {
-        String filename = IRILib.IRIToFilename(filenameOrIRI);
-        String x = IO.readWholeFileAsUTF8(filename);
-        printString(x) ;
+        try {
+            String filename = IRILib.IRIToFilename(filenameOrIRI);
+            String x = IO.readWholeFileAsUTF8(filename);
+            printString(x) ;
+        } catch (RuntimeException ex) {
+            // Try HTTP
+            String x = HttpOp.httpGetString(filenameOrIRI);
+            printString(x) ;
+        }
     }
 }
