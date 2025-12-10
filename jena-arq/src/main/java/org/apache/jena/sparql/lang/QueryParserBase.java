@@ -37,7 +37,7 @@ import org.apache.jena.irix.IRIx;
 import org.apache.jena.irix.RelativeIRIException;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.query.QueryParseException;
-import org.apache.jena.riot.lang.extra.LangParserLib;
+import org.apache.jena.riot.lang.LangParserLib;
 import org.apache.jena.riot.system.Checker;
 import org.apache.jena.riot.system.ErrorHandler;
 import org.apache.jena.riot.system.ErrorHandlerFactory;

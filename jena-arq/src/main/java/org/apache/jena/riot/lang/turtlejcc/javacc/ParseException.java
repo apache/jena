@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.lang.extra.javacc;
+package org.apache.jena.riot.lang.turtlejcc.javacc;
 
 /**
  * This exception is thrown when parse errors are encountered.

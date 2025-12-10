@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.lang.extra.javacc;
+package org.apache.jena.riot.lang.turtlejcc.javacc;
 
 
 /**

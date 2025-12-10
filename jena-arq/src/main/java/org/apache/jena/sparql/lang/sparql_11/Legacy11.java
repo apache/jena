@@ -38,7 +38,6 @@ import org.apache.jena.irix.RelativeIRIException;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryParseException;
-import org.apache.jena.riot.lang.extra.LangParserLib;
 import org.apache.jena.riot.system.Checker;
 import org.apache.jena.riot.system.ErrorHandler;
 import org.apache.jena.riot.system.ErrorHandlerFactory;
@@ -357,7 +356,7 @@ class Legacy11 {
 
         /** remove the first n characters from the string */
         protected static String stripChars(String s, int n) {
-            return LangParserLib.stripChars(s, n);
+            return s.substring(n, s.length()) ;
         }
 
         protected Var createVariable(String s, int line, int column) {
