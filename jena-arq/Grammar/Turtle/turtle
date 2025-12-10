@@ -15,7 +15,7 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-DIR="../../src/main/java/org/apache/jena/riot/lang/extra/javacc"
+DIR="../../src/main/java/org/apache/jena/riot/lang/turtlejcc/javacc"
 FILE="turtle.jj"
 CLASS=TurtleJavacc
 
