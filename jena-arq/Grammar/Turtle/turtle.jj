@@ -52,13 +52,12 @@ PARSER_BEGIN(TurtleJavacc)
  * limitations under the License.
  */
 
-package org.apache.jena.riot.lang.extra.javacc;
+package org.apache.jena.riot.lang.turtlejcc.javacc;
 
 import org.apache.jena.graph.*;
-import org.apache.jena.riot.lang.* ;
-import static org.apache.jena.riot.lang.LangParserLib.*;
+import org.apache.jena.riot.lang.turtlejcc.*;
 
-public class TurtleJavacc extends LangParserBase
+public class TurtleJavacc extends LangTurtleJCCParserBase
 {}
 PARSER_END(TurtleJavacc)
 
