@@ -16,6 +16,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 package org.apache.jena.riot.lang.turtlejcc.javacc;
@@ -147,4 +149,4 @@ public class Token implements java.io.Serializable {
   }
 
 }
-/* JavaCC - OriginalChecksum=86f7e20338a37f70eadbb3337db56872 (do not edit this line) */
+/* JavaCC - OriginalChecksum=5810fb5a4aa08316fd92aead1dccd1f7 (do not edit this line) */

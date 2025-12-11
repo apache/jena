@@ -16,6 +16,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 package org.apache.jena.shex.parser.javacc;
@@ -147,4 +149,4 @@ public class Token implements java.io.Serializable {
   }
 
 }
-/* JavaCC - OriginalChecksum=88dcbdff36e126a736981446bfe10222 (do not edit this line) */
+/* JavaCC - OriginalChecksum=e17cd7303397a632c08f8e71a8e1facf (do not edit this line) */

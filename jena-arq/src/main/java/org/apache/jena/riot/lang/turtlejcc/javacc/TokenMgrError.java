@@ -16,6 +16,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 package org.apache.jena.riot.lang.turtlejcc.javacc;
@@ -164,4 +166,4 @@ public class TokenMgrError extends Error
     this(LexicalErr(EOFSeen, lexState, errorLine, errorColumn, errorAfter, curChar), reason);
   }
 }
-/* JavaCC - OriginalChecksum=568f4fa9a2786005de0bec225a66eeae (do not edit this line) */
+/* JavaCC - OriginalChecksum=684816d89c4668227f64d26bb0d9ac0f (do not edit this line) */

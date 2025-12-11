@@ -24,9 +24,9 @@ import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.jena.cdt.parser.CDTLiteralParser;
-import org.apache.jena.cdt.parser.ParseException;
-import org.apache.jena.cdt.parser.TokenMgrError;
+import org.apache.jena.cdt.javacc.CDTLiteralParser;
+import org.apache.jena.cdt.javacc.ParseException;
+import org.apache.jena.cdt.javacc.TokenMgrError;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.RiotLib;
 
