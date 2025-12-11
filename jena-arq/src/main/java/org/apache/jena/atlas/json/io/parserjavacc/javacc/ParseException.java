@@ -16,8 +16,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  */
-package org.apache.jena.atlas.json.io.parserjavacc.javacc ;
+
+package org.apache.jena.atlas.json.io.parserjavacc.javacc;
 
 /**
  * This exception is thrown when parse errors are encountered.
@@ -209,4 +212,4 @@ public class ParseException extends Exception {
    }
 
 }
-/* JavaCC - OriginalChecksum=88898db4ee5541decf0f86085cdcf1e4 (do not edit this line) */
+/* JavaCC - OriginalChecksum=4a8a414c54bab9e2a2f33e10fed4a8de (do not edit this line) */

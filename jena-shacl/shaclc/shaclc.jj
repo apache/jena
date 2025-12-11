@@ -14,6 +14,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 options
@@ -49,16 +51,18 @@ PARSER_BEGIN(ShaclCompactParserJJ)
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.shacl.compact.reader.parser;
+package org.apache.jena.shacl.compact.reader.javacc;
 
 import java.util.List;
 import java.util.ArrayList;
 import org.apache.jena.graph.*;
 import org.apache.jena.sparql.path.*;
 import org.apache.jena.shacl.compact.reader.*;
-import static org.apache.jena.riot.lang.extra.LangParserLib.*;
+import static org.apache.jena.riot.lang.LangParserLib.*;
 
 public class ShaclCompactParserJJ extends ShaclCompactParser
 {}

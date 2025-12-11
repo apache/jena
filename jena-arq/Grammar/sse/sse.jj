@@ -14,6 +14,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 options
@@ -43,12 +45,14 @@ PARSER_BEGIN(SSE_ParserCore)
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.sparql.sse.lang.parser ;
+package org.apache.jena.sparql.sse.lang.javacc ;
 
 import org.apache.jena.sparql.sse.lang.ParserSSEBase ;
-import static org.apache.jena.riot.lang.extra.LangParserLib.*;
+import static org.apache.jena.riot.lang.LangParserLib.*;
 
 public class SSE_ParserCore extends ParserSSEBase
 {

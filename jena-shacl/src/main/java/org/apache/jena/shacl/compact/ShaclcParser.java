@@ -28,9 +28,9 @@ import org.apache.jena.irix.IRIxResolver;
 import org.apache.jena.riot.system.*;
 import org.apache.jena.shacl.Shapes;
 import org.apache.jena.shacl.compact.reader.ShaclcParseException;
-import org.apache.jena.shacl.compact.reader.parser.ParseException;
-import org.apache.jena.shacl.compact.reader.parser.ShaclCompactParserJJ;
-import org.apache.jena.shacl.compact.reader.parser.TokenMgrError;
+import org.apache.jena.shacl.compact.reader.javacc.ParseException;
+import org.apache.jena.shacl.compact.reader.javacc.ShaclCompactParserJJ;
+import org.apache.jena.shacl.compact.reader.javacc.TokenMgrError;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.util.Context;
 

@@ -16,6 +16,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 package org.apache.jena.riot.lang.turtlejcc.javacc;
@@ -487,4 +489,4 @@ public class SimpleCharStream
   boolean getTrackLineColumn() { return trackLineColumn; }
   void setTrackLineColumn(boolean tlc) { trackLineColumn = tlc; }
 }
-/* JavaCC - OriginalChecksum=32186373cb0e81e8631f76d36a3caa8c (do not edit this line) */
+/* JavaCC - OriginalChecksum=05d70475ba7d4c88086c6bf2d9a2204d (do not edit this line) */

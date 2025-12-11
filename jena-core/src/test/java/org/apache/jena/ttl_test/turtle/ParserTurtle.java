@@ -22,9 +22,9 @@ import java.io.InputStream;
 import java.io.Reader;
 
 import org.apache.jena.graph.Graph;
-import org.apache.jena.ttl_test.turtle.parser.ParseException;
-import org.apache.jena.ttl_test.turtle.parser.TokenMgrError;
-import org.apache.jena.ttl_test.turtle.parser.TurtleParser;
+import org.apache.jena.ttl_test.turtle.javacc.ParseException;
+import org.apache.jena.ttl_test.turtle.javacc.TokenMgrError;
+import org.apache.jena.ttl_test.turtle.javacc.TurtleParser;
 import org.apache.jena.util.FileUtils;
 
 

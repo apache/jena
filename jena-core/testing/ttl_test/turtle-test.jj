@@ -14,13 +14,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  */
 
-// Turtle & N3 for Jena 
-
-// N3 compatible:
-// All legal Turtle documents are acceped by this grammar.
-// Some N3 features, which are stil RDF, are provided.
+// Turtle for Jena testing
 
 options
 {
@@ -52,12 +50,14 @@ PARSER_BEGIN(TurtleParser)
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.ttl_test.turtle.parser;
+package org.apache.jena.ttl_test.turtle.javacc;
 
 import org.apache.jena.ttl_test.turtle.*;
-import org.apache.jena.graph.* ;
+import org.apache.jena.graph.*;
 
 public class TurtleParser extends TurtleParserBase
 {

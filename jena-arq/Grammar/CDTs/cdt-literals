@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 ## Licensed to the Apache Software Foundation (ASF) under one
 ## or more contributor license agreements.  See the NOTICE file
 ## distributed with this work for additional information
@@ -14,10 +14,10 @@
 ## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
+##
+## SPDX-License-Identifier: Apache-2.0
 
-# Parser builder
-
-DIR="../../src/main/java/org/apache/jena/cdt/parser"
+DIR="../../src/main/java/org/apache/jena/cdt/javacc"
 FILE=cdt_literals.jj
 CLASS=CDTLiteralParser
 
