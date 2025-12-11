@@ -21,9 +21,9 @@ package org.apache.jena.sparql.sse.lang;
 import java.io.Reader;
 
 import org.apache.jena.sparql.sse.SSE_ParseException;
-import org.apache.jena.sparql.sse.lang.parser.ParseException;
-import org.apache.jena.sparql.sse.lang.parser.SSE_ParserCore;
-import org.apache.jena.sparql.sse.lang.parser.TokenMgrError;
+import org.apache.jena.sparql.sse.lang.javacc.ParseException;
+import org.apache.jena.sparql.sse.lang.javacc.SSE_ParserCore;
+import org.apache.jena.sparql.sse.lang.javacc.TokenMgrError;
 
 /** Public interface to the SSE parser */
 public class SSE_Parser

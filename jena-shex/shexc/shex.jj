@@ -14,6 +14,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 options
@@ -43,6 +45,8 @@ PARSER_BEGIN(ShExJavacc)
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 package org.apache.jena.shex.parser.javacc;
@@ -51,7 +55,7 @@ import static org.apache.jena.shex.sys.SysShex.*;
 import org.apache.jena.shex.parser.*;
 import org.apache.jena.shex.expressions.*;
 import org.apache.jena.graph.*;
-import static org.apache.jena.riot.lang.extra.LangParserLib.*;
+import static org.apache.jena.riot.lang.LangParserLib.*;
 import java.util.*;
 
 public class ShExJavacc extends ParserShExC

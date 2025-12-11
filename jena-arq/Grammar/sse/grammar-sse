@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 ## Licensed to the Apache Software Foundation (ASF) under one
 ## or more contributor license agreements.  See the NOTICE file
 ## distributed with this work for additional information
@@ -14,8 +14,8 @@
 ## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
-
-# Parser builder
+##
+## SPDX-License-Identifier: Apache-2.0
 
 GRAMMAR="${GRAMMAR:-"sse.jj"}"
 ROOT="../.."
@@ -54,23 +54,4 @@ function grammar
     echo "---- Done"
 }
 
-if [ $# == 0 ]
-then
-    set -- unisyn
-fi
-
-for G in "$@"
-do
-    case "$G" in
-	unisyn)
-## 	    cp ../header.jj parser.jj
-## 	    # The parser that is exactly the working group grammar
-## 	    cat "$GRAMMAR" | cpp -P >> parser.jj
-## 	    grammar parser.jj sse/lang/parser SSE_ParserCore
-## 	    [ "$RC" = 0 ] && rm parser.jj
-	    grammar sse.jj sse/lang/parser SSE_ParserCore
-	    ;;
-	*)    echo "**** Unknown grammar: $G" 1>&2
-	      ;;
-    esac
-done
+grammar sse.jj sse/lang/javacc SSE_ParserCore

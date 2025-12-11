@@ -16,6 +16,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 package org.apache.jena.riot.lang.turtlejcc.javacc;
@@ -210,4 +212,4 @@ public class ParseException extends Exception {
    }
 
 }
-/* JavaCC - OriginalChecksum=29e7bb342c6cf3e245929b9fd8149bac (do not edit this line) */
+/* JavaCC - OriginalChecksum=e79a66ce3f6fbde28350aa0f8e5a480f (do not edit this line) */
