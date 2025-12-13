@@ -18,12 +18,11 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.expr.nodevalue.NodeFunctions ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
+import org.apache.jena.sparql.sse.Tags;
 
 /** Create a literal from lexical form and language tag */
-public class E_StrLang extends ExprFunction2
-{
+public class E_StrLang extends ExprFunction2 {
     private static final String symbol = Tags.tagStrLang;
 
     public E_StrLang(Expr expr1, Expr expr2) {
@@ -36,5 +35,7 @@ public class E_StrLang extends ExprFunction2
     }
 
     @Override
-    public Expr copy(Expr e1, Expr e2) { return new E_StrLang(e1, e2); }
+    public Expr copy(Expr e1, Expr e2) {
+        return new E_StrLang(e1, e2);
+    }
 }

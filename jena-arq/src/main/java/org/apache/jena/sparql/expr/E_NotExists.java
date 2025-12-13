@@ -18,69 +18,69 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.algebra.Algebra ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.syntax.Element ;
+import org.apache.jena.sparql.algebra.Algebra;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.function.FunctionEnv;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.syntax.Element;
 
-public class E_NotExists extends ExprFunctionOp
-{
+public class E_NotExists extends ExprFunctionOp {
     // Translated to "(not (exists (...)))"
-    private static final String symbol = Tags.tagNotExists ;
+    private static final String symbol = Tags.tagNotExists;
 
-    public E_NotExists(Op op)
-    {
-        this(null, op) ;
+    public E_NotExists(Op op) {
+        this(null, op);
     }
 
-    public E_NotExists(Element elt)
-    {
-        this(elt, Algebra.compile(elt)) ;
+    public E_NotExists(Element elt) {
+        this(elt, Algebra.compile(elt));
     }
 
-    public E_NotExists(Element el, Op op)
-    {
-        super(symbol, el, op) ;
+    public E_NotExists(Element el, Op op) {
+        super(symbol, el, op);
     }
 
     @Override
     protected Expr copy(Element elt, Op op) {
-        return new E_NotExists(elt, op) ;
+        return new E_NotExists(elt, op);
     }
 
     @Override
-    protected NodeValue eval(Binding binding, QueryIterator qIter, FunctionEnv env)
-    {
-        boolean b = qIter.hasNext() ;
-        return NodeValue.booleanReturn(!b) ;
+    protected NodeValue eval(Binding binding, QueryIterator qIter, FunctionEnv env) {
+        boolean b = qIter.hasNext();
+        return NodeValue.booleanReturn(!b);
     }
 
     @Override
-    public int hashCode()
-    {
-        return symbol.hashCode() ^ getGraphPattern().hashCode() ;
+    public int hashCode() {
+        return symbol.hashCode() ^ getGraphPattern().hashCode();
     }
 
     @Override
     public boolean equals(Expr other, boolean bySyntax) {
-        if ( other == null ) return false ;
-        if ( this == other ) return true ;
-        if ( ! ( other instanceof E_NotExists ) )
-            return false ;
+        if ( other == null )
+            return false;
+        if ( this == other )
+            return true;
+        if ( !(other instanceof E_NotExists) )
+            return false;
 
-        E_NotExists ex = (E_NotExists)other ;
+        E_NotExists ex = (E_NotExists)other;
         if ( bySyntax )
-            return this.getElement().equals(ex.getElement()) ;
+            return this.getElement().equals(ex.getElement());
         else
-            return this.getGraphPattern().equals(ex.getGraphPattern()) ;
+            return this.getGraphPattern().equals(ex.getGraphPattern());
     }
 
     @Override
-    public ExprFunctionOp copy(ExprList args, Op x) { return new E_NotExists(x) ; }
+    public ExprFunctionOp copy(ExprList args, Op x) {
+        return new E_NotExists(x);
+    }
 
     @Override
-    public ExprFunctionOp copy(ExprList args, Element elPattern) { return new E_NotExists(elPattern) ; }
+    public ExprFunctionOp copy(ExprList args, Element elPattern) {
+        return new E_NotExists(elPattern);
+    }
 }

@@ -20,20 +20,20 @@ package org.apache.jena.sparql.expr.aggregate;
 
 import static org.apache.jena.atlas.lib.Lib.lowercase;
 
-import java.util.HashMap ;
-import java.util.Map ;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.jena.atlas.io.IndentedLineBuffer ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.ARQInternalErrorException ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.expr.NodeValue ;
+import org.apache.jena.atlas.io.IndentedLineBuffer;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.graph.NodeTransform;
-import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.sparql.sse.writers.WriterExpr ;
-import org.apache.jena.sparql.util.ExprUtils ;
+import org.apache.jena.sparql.serializer.SerializationContext;
+import org.apache.jena.sparql.sse.writers.WriterExpr;
+import org.apache.jena.sparql.util.ExprUtils;
 
 /** Aggregate that does everything except the per-group aggregation that is needed for each operation */
 public abstract class AggregatorBase implements Aggregator
@@ -50,49 +50,49 @@ public abstract class AggregatorBase implements Aggregator
     // but COUNT(*) and COUNT(Expr) are different beasts
     // each in DISTINCT and non-DISTINCT versions
 
-    protected final String name ;
-    protected final boolean isDistinct ;
-    protected final ExprList exprList ;
+    protected final String name;
+    protected final boolean isDistinct;
+    protected final ExprList exprList;
 
     protected AggregatorBase(String name, boolean isDistinct, Expr expr) {
-        this(name, isDistinct, new ExprList(expr)) ;
+        this(name, isDistinct, new ExprList(expr));
     }
 
     protected AggregatorBase(String name, boolean isDistinct, ExprList exprList) {
-        this.name = name ;
-        this.isDistinct = isDistinct ;
-        this.exprList = exprList ;
+        this.name = name;
+        this.isDistinct = isDistinct;
+        this.exprList = exprList;
     }
 
-    private Map<Binding, Accumulator> buckets = new HashMap<>() ;   // Bindingkey => Accumulator
+    private Map<Binding, Accumulator> buckets = new HashMap<>();   // Bindingkey => Accumulator
 
     @Override
-    public abstract Accumulator createAccumulator() ;
+    public abstract Accumulator createAccumulator();
 
     @Override
-    public abstract Node getValueEmpty() ;
+    public abstract Node getValueEmpty();
 
     public Node getValue(Binding key)
     {
-        Accumulator acc = buckets.get(key) ;
+        Accumulator acc = buckets.get(key);
         if ( acc == null )
-            throw new ARQInternalErrorException("Null for accumulator") ;
+            throw new ARQInternalErrorException("Null for accumulator");
         NodeValue nv = acc.getValue();
         if ( nv == null )
-            return null ;
-        return nv.asNode() ;
+            return null;
+        return nv.asNode();
     }
 
     @Override
-    public String key() {  return toPrefixString() ; }
+    public String key() {  return toPrefixString(); }
 
     @Override
     public final Aggregator copyTransform(NodeTransform transform)
     {
-        ExprList e = getExprList() ;
+        ExprList e = getExprList();
         if ( e != null )
-            e = e.applyNodeTransform(transform) ;
-        return copy(e) ;
+            e = e.applyNodeTransform(transform);
+        return copy(e);
     }
 
     /** Many aggregate use a single expression.
@@ -100,94 +100,94 @@ public abstract class AggregatorBase implements Aggregator
      */
     protected Expr getExpr() {
         if ( exprList != null && exprList.size() == 1 )
-            return getExprList().get(0) ;
-        return null ;
+            return getExprList().get(0);
+        return null;
     }
 
     @Override
-    public ExprList getExprList()           { return exprList ; }
+    public ExprList getExprList()           { return exprList; }
 
     @Override
-    public String getName()                 { return name ; }
+    public String getName()                 { return name; }
 
     @Override
-    public String toString()                { return asSparqlExpr(null) ; }
+    public String toString()                { return asSparqlExpr(null); }
 
     @Override
     public String asSparqlExpr(SerializationContext sCxt) {
-        IndentedLineBuffer x = new IndentedLineBuffer() ;
-        x.append(getName()) ;
-        x.append("(") ;
+        IndentedLineBuffer x = new IndentedLineBuffer();
+        x.append(getName());
+        x.append("(");
         if ( isDistinct )
-            x.append("DISTINCT ") ;
+            x.append("DISTINCT ");
         if ( getExprList() != null )
-            ExprUtils.fmtSPARQL(x, getExprList(), sCxt) ;
-        x.append(")") ;
-        return x.asString() ;
+            ExprUtils.fmtSPARQL(x, getExprList(), sCxt);
+        x.append(")");
+        return x.asString();
     }
 
     @Override
     public String toPrefixString() {
-        IndentedLineBuffer x = new IndentedLineBuffer() ;
-        x.append("(") ;
-        x.append(lowercase(getName())) ;
+        IndentedLineBuffer x = new IndentedLineBuffer();
+        x.append("(");
+        x.append(lowercase(getName()));
         x.incIndent();
         if ( isDistinct )
-            x.append(" distinct") ;
+            x.append(" distinct");
         for ( Expr e : getExprList() ) {
             x.append(" ");
-            WriterExpr.output(x, e, null) ;
+            WriterExpr.output(x, e, null);
         }
         x.decIndent();
-        x.append(")") ;
-        return x.asString() ;
+        x.append(")");
+        return x.asString();
     }
 
     @Override
-    public abstract int hashCode() ;
+    public abstract int hashCode();
 
     @Override
     public final boolean equals(Object other) {
-        if ( other == null ) return false ;
-        if ( this == other ) return true ;
-        if ( ! ( other instanceof Aggregator ) ) return false ;
-        return equals((Aggregator)other, false) ;
+        if ( other == null ) return false;
+        if ( this == other ) return true;
+        if ( ! ( other instanceof Aggregator ) ) return false;
+        return equals((Aggregator)other, false);
     }
 
-    protected static final int HC_AggAvg                    =  0x170 ;
-    protected static final int HC_AggAvgDistinct            =  0x171 ;
+    protected static final int HC_AggAvg                    =  0x170;
+    protected static final int HC_AggAvgDistinct            =  0x171;
 
-    protected static final int HC_AggCount                  =  0x172 ;
-    protected static final int HC_AggCountDistinct          =  0x173 ;
+    protected static final int HC_AggCount                  =  0x172;
+    protected static final int HC_AggCountDistinct          =  0x173;
 
-    protected static final int HC_AggCountVar               =  0x174 ;
-    protected static final int HC_AggCountVarDistinct       =  0x175 ;
+    protected static final int HC_AggCountVar               =  0x174;
+    protected static final int HC_AggCountVarDistinct       =  0x175;
 
-    protected static final int HC_AggMin                    =  0x176 ;
-    protected static final int HC_AggMinDistinct            =  0x177 ;
+    protected static final int HC_AggMin                    =  0x176;
+    protected static final int HC_AggMinDistinct            =  0x177;
 
-    protected static final int HC_AggMax                    =  0x178 ;
-    protected static final int HC_AggMaxDistinct            =  0x179 ;
+    protected static final int HC_AggMax                    =  0x178;
+    protected static final int HC_AggMaxDistinct            =  0x179;
 
-    protected static final int HC_AggSample                 =  0x17A ;
-    protected static final int HC_AggSampleDistinct         =  0x17B ;
+    protected static final int HC_AggSample                 =  0x17A;
+    protected static final int HC_AggSampleDistinct         =  0x17B;
 
-    protected static final int HC_AggSum                    =  0x17C ;
-    protected static final int HC_AggSumDistinct            =  0x17D ;
+    protected static final int HC_AggSum                    =  0x17C;
+    protected static final int HC_AggSumDistinct            =  0x17D;
 
-    protected static final int HC_AggGroupConcat            =  0x17E ;
-    protected static final int HC_AggGroupConcatDistinct    =  0x17F ;
+    protected static final int HC_AggGroupConcat            =  0x17E;
+    protected static final int HC_AggGroupConcatDistinct    =  0x17F;
 
-    protected static final int HC_AggNull                   =  0x180 ;
-    protected static final int HC_AggCustom                 =  0x181 ;
+    protected static final int HC_AggNull                   =  0x180;
+    protected static final int HC_AggCustom                 =  0x181;
 
-    protected static final int HC_AggMedian                 =  0x182 ;
-    protected static final int HC_AggMedianDistinct         =  0x183 ;
+    protected static final int HC_AggMedian                 =  0x182;
+    protected static final int HC_AggMedianDistinct         =  0x183;
 
-    protected static final int HC_AggMode                   =  0x184 ;
-    protected static final int HC_AggModeDistinct           =  0x185 ;
+    protected static final int HC_AggMode                   =  0x184;
+    protected static final int HC_AggModeDistinct           =  0x185;
 
-    protected static final int HC_AggFoldList               =  0x186 ;
-    protected static final int HC_AggFoldMap                =  0x187 ;
+    protected static final int HC_AggFoldList               =  0x186;
+    protected static final int HC_AggFoldMap                =  0x187;
 
 }

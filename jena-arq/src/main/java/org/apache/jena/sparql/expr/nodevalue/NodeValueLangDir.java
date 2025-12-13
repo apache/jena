@@ -43,7 +43,7 @@ public class NodeValueLangDir extends NodeValue {
         Objects.requireNonNull(textDirStr);
         this.textDir = TextDirection.createOrNull(textDirStr);
         if ( textDir == null )
-            throw new IllegalArgumentException("base direction is not valid : '"+textDirStr+"'");
+            throw new IllegalArgumentException("base direction is not valid : '" + textDirStr + "'");
     }
 
     public NodeValueLangDir(String lex, String lang, TextDirection textDir) {
@@ -67,28 +67,39 @@ public class NodeValueLangDir extends NodeValue {
     }
 
     @Override
-    public String getString()   { return string; }
+    public String getString() {
+        return string;
+    }
 
     @Override
-    public String getLang()     { return lang; }
+    public String getLang() {
+        return lang;
+    }
 
     @Override
-    public String getLangDir()  { return textDir.direction(); }
+    public String getLangDir() {
+        return textDir.direction();
+    }
 
     @Override
-    public String asString()    { return string; }
+    public String asString() {
+        return string;
+    }
 
     @Override
-    protected Node makeNode()
-    { return NodeFactory.createLiteralDirLang(string, lang, textDir); }
+    protected Node makeNode() {
+        return NodeFactory.createLiteralDirLang(string, lang, textDir);
+    }
 
     @Override
     public String toString() {
         if ( getNode() != null )
             return FmtUtils.stringForNode(getNode());
-        return "'"+getString()+"'@"+lang+"--"+textDir.direction() ;
+        return "'" + getString() + "'@" + lang + "--" + textDir.direction();
     }
 
     @Override
-    public void visit(NodeValueVisitor visitor) { visitor.visit(this); }
+    public void visit(NodeValueVisitor visitor) {
+        visitor.visit(this);
+    }
 }

@@ -18,26 +18,26 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprList ;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprList;
 
 public class AggMax extends AggMaxBase
 {
     // ---- MAX(expr)
-    public AggMax(Expr expr) { super(expr, false) ; } 
+    public AggMax(Expr expr) { super(expr, false); } 
     @Override
-    public Aggregator copy(ExprList expr) { return new AggMax(expr.get(0)) ; }
+    public Aggregator copy(ExprList expr) { return new AggMax(expr.get(0)); }
 
     @Override
-    public int hashCode()   { return HC_AggMax ^ getExpr().hashCode() ; }
+    public int hashCode()   { return HC_AggMax ^ getExpr().hashCode(); }
     
     @Override
     public boolean equals(Aggregator other, boolean bySyntax) {
-        if ( other == null ) return false ;
-        if ( this == other ) return true ; 
+        if ( other == null ) return false;
+        if ( this == other ) return true; 
         if ( ! ( other instanceof AggMax ) )
-            return false ;
-        AggMax agg = (AggMax)other ;
-        return exprList.equals(agg.exprList, bySyntax) ;
+            return false;
+        AggMax agg = (AggMax)other;
+        return exprList.equals(agg.exprList, bySyntax);
     }
 }

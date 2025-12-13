@@ -18,21 +18,23 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_StrEndsWith extends ExprFunction2
-{
-    private static final String symbol = Tags.tagStrEnds ;
+public class E_StrEndsWith extends ExprFunction2 {
+    private static final String symbol = Tags.tagStrEnds;
 
-    public E_StrEndsWith(Expr expr1, Expr expr2)
-    {
-        super(expr1, expr2, symbol) ;
+    public E_StrEndsWith(Expr expr1, Expr expr2) {
+        super(expr1, expr2, symbol);
     }
-    
+
     @Override
-    public NodeValue eval(NodeValue v1, NodeValue v2) { return XSDFuncOp.strEndsWith(v1, v2) ; }
-    
+    public NodeValue eval(NodeValue v1, NodeValue v2) {
+        return XSDFuncOp.strEndsWith(v1, v2);
+    }
+
     @Override
-    public Expr copy(Expr e1, Expr e2) { return new E_StrEndsWith(e1, e2) ; } 
+    public Expr copy(Expr e1, Expr e2) {
+        return new E_StrEndsWith(e1, e2);
+    }
 }

@@ -18,13 +18,12 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionEnv;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_LogicalAnd extends ExprFunction2
-{
+public class E_LogicalAnd extends ExprFunction2 {
     // See logical OR
     private static final String functionName = Tags.tagAnd;
     private static final String symbol = Tags.symAnd;
@@ -50,23 +49,23 @@ public class E_LogicalAnd extends ExprFunction2
         // LHS was false or error.
 
         try {
-            NodeValue y = getArg2().eval(binding, env) ;
+            NodeValue y = getArg2().eval(binding, env);
 
-            if ( ! XSDFuncOp.effectiveBooleanValue(y) )
-                return NodeValue.FALSE ;
+            if ( !XSDFuncOp.effectiveBooleanValue(y) )
+                return NodeValue.FALSE;
 
             // RHS is true but was there an error earlier?
             if ( error != null )
-                throw error ;
+                throw error;
 
-            return NodeValue.TRUE ;
+            return NodeValue.TRUE;
         } catch (ExprEvalException eee) {
             // LHS an error, RHS was not false => error
             // Throw the first
             if ( error != null )
-                throw error ;
+                throw error;
             // RHS was true - throw this error.
-            throw eee ;
+            throw eee;
         }
     }
 
@@ -74,16 +73,18 @@ public class E_LogicalAnd extends ExprFunction2
     public NodeValue eval(NodeValue x, NodeValue y) {
         // Evaluation only happens as part of copySubstitute.
         // Proper evaluation is a special form as above.
-        if ( ! x.isBoolean() )
-            throw new ExprEvalException("Not a boolean: "+x) ;
-        if ( ! y.isBoolean() )
-            throw new ExprEvalException("Not a boolean: "+y) ;
+        if ( !x.isBoolean() )
+            throw new ExprEvalException("Not a boolean: " + x);
+        if ( !y.isBoolean() )
+            throw new ExprEvalException("Not a boolean: " + y);
 
-        boolean boolX = x.getBoolean() ;
-        boolean boolY = y.getBoolean() ;
-        return NodeValue.makeBoolean( boolX && boolY ) ;
+        boolean boolX = x.getBoolean();
+        boolean boolY = y.getBoolean();
+        return NodeValue.makeBoolean(boolX && boolY);
     }
 
     @Override
-    public Expr copy(Expr e1, Expr e2) {  return new E_LogicalAnd(e1 , e2 ) ; }
+    public Expr copy(Expr e1, Expr e2) {
+        return new E_LogicalAnd(e1, e2);
+    }
 }

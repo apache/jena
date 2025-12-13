@@ -18,64 +18,69 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.algebra.Algebra ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.syntax.Element ;
+import org.apache.jena.sparql.algebra.Algebra;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.function.FunctionEnv;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.syntax.Element;
 
-public class E_Exists extends ExprFunctionOp
-{
-    private static final String symbol = Tags.tagExists ;
+public class E_Exists extends ExprFunctionOp {
+    private static final String symbol = Tags.tagExists;
 
     public E_Exists(Op op) {
-        this(null, op) ;
+        this(null, op);
     }
 
     public E_Exists(Element elt) {
-        this(elt, Algebra.compile(elt)) ;
+        this(elt, Algebra.compile(elt));
     }
 
     public E_Exists(Element el, Op op) {
-        super(symbol, el, op) ;
+        super(symbol, el, op);
     }
 
     @Override
     protected Expr copy(Element elt, Op op) {
-        return new E_Exists(elt, op) ;
+        return new E_Exists(elt, op);
     }
 
     @Override
     protected NodeValue eval(Binding binding, QueryIterator qIter, FunctionEnv env) {
-        boolean b = qIter.hasNext() ;
-        return NodeValue.booleanReturn(b) ;
+        boolean b = qIter.hasNext();
+        return NodeValue.booleanReturn(b);
     }
 
     @Override
     public int hashCode() {
-        return symbol.hashCode() ^ getGraphPattern().hashCode() ;
+        return symbol.hashCode() ^ getGraphPattern().hashCode();
     }
 
     @Override
     public boolean equals(Expr other, boolean bySyntax) {
-        if ( other == null ) return false ;
-        if ( this == other ) return true ;
-        if ( ! ( other instanceof E_Exists ) )
-            return false ;
+        if ( other == null )
+            return false;
+        if ( this == other )
+            return true;
+        if ( !(other instanceof E_Exists) )
+            return false;
 
-        E_Exists ex = (E_Exists)other ;
+        E_Exists ex = (E_Exists)other;
         if ( bySyntax )
-            return this.getElement().equals(ex.getElement()) ;
+            return this.getElement().equals(ex.getElement());
         else
-            return this.getGraphPattern().equals(ex.getGraphPattern()) ;
+            return this.getGraphPattern().equals(ex.getGraphPattern());
     }
 
     @Override
-    public ExprFunctionOp copy(ExprList args, Op x) { return new E_Exists(x) ; }
+    public ExprFunctionOp copy(ExprList args, Op x) {
+        return new E_Exists(x);
+    }
 
     @Override
-    public ExprFunctionOp copy(ExprList args, Element elPattern) { return new E_Exists(elPattern) ; }
+    public ExprFunctionOp copy(ExprList args, Element elPattern) {
+        return new E_Exists(elPattern);
+    }
 
 }

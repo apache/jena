@@ -34,7 +34,7 @@ import org.apache.jena.sparql.function.FunctionEnv;
 import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.sparql.sse.writers.WriterExpr;
 import org.apache.jena.sparql.util.ExprUtils;
-import org.apache.jena.sparql.util.FmtUtils ;
+import org.apache.jena.sparql.util.FmtUtils;
 
 /**
  * Syntax element and framework execution for custom aggregates.
@@ -66,8 +66,8 @@ public class AggCustom extends AggregatorBase {
             x.append(" ");
         }
 
-        String uriStr = FmtUtils.stringForURI(iri, sCxt) ;
-        x.append(uriStr) ;
+        String uriStr = FmtUtils.stringForURI(iri, sCxt);
+        x.append(uriStr);
         x.append("(");
         if ( isDistinct )
             x.append("DISTINCT ");
