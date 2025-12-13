@@ -20,59 +20,59 @@ package org.apache.jena.sparql.expr.aggregate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionEnv ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionEnv;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AggMode extends AggregatorBase
 {
     // ---- MODE(?var)
-    private static Logger log = LoggerFactory.getLogger("MODE") ;
+    private static Logger log = LoggerFactory.getLogger("MODE");
 
-    public AggMode(Expr expr) { super("MODE", false, expr) ; }
+    public AggMode(Expr expr) { super("MODE", false, expr); }
     @Override
-    public Aggregator copy(ExprList expr) { return new AggMode(expr.get(0)) ; }
+    public Aggregator copy(ExprList expr) { return new AggMode(expr.get(0)); }
 
     // XQuery/XPath Functions&Operators suggests zero
     // SQL suggests null.
-    private static final NodeValue noValuesToMode = NodeValue.nvZERO ; // null
+    private static final NodeValue noValuesToMode = NodeValue.nvZERO; // null
 
     @Override
     public Accumulator createAccumulator()
     {
-        return new AccMode(getExpr()) ;
+        return new AccMode(getExpr());
     }
 
     @Override
-    public Node getValueEmpty()     { return NodeValue.toNode(noValuesToMode) ; }
+    public Node getValueEmpty()     { return NodeValue.toNode(noValuesToMode); }
 
     @Override
-    public int hashCode()   { return HC_AggMode ^ getExprList().hashCode() ; }
+    public int hashCode()   { return HC_AggMode ^ getExprList().hashCode(); }
 
     @Override
     public boolean equals(Aggregator other, boolean bySyntax) {
-        if ( other == null ) return false ;
-        if ( this == other ) return true ;
-        if ( ! ( other instanceof AggMode ) ) return false ;
-        AggMode a = (AggMode)other ;
-        return exprList.equals(a.exprList, bySyntax) ;
+        if ( other == null ) return false;
+        if ( this == other ) return true;
+        if ( ! ( other instanceof AggMode ) ) return false;
+        AggMode a = (AggMode)other;
+        return exprList.equals(a.exprList, bySyntax);
     }
 
     // ---- Accumulator
     private static class AccMode extends AccumulatorExpr
     {
         // Non-empty case but still can be nothing because the expression may be undefined.
-        private NodeValue total = noValuesToMode ;
-        private int count = 0 ;
+        private NodeValue total = noValuesToMode;
+        private int count = 0;
         ArrayList<NodeValue> collection=new ArrayList<NodeValue>();
 
-        public AccMode(Expr expr) { super(expr, false) ; }
+        public AccMode(Expr expr) { super(expr, false); }
 
         @Override
         protected void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
@@ -81,13 +81,13 @@ public class AggMode extends AggregatorBase
 
             if ( nv.isNumber() )
             {
-                count++ ;
+                count++;
                 collection.add(nv);
             }
             else
             {
-                //ARQ.getExecLogger().warn("Evaluation error: mode() on "+nv) ;
-                throw new ExprEvalException("mode: not a number: "+nv) ;
+                //ARQ.getExecLogger().warn("Evaluation error: mode() on "+nv);
+                throw new ExprEvalException("mode: not a number: "+nv);
             }
 
             log.debug("mode count {}", count);
@@ -97,9 +97,9 @@ public class AggMode extends AggregatorBase
         public NodeValue getAccValue()
         {
             double mode= Double.NaN;
-            if ( count == 0 ) return noValuesToMode ;
+            if ( count == 0 ) return noValuesToMode;
             if ( super.errorCount != 0 )
-                return null ;
+                return null;
 
             int indexsize = collection.size();
             double[] arrDouble = new double[indexsize];

@@ -18,11 +18,11 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
-import org.apache.jena.sparql.expr.ExprList ;
+import org.apache.jena.sparql.expr.ExprList;
 
 /** An Args is an ExprList with a flag for DISTINCT.
  *  Only used for rule ArgList in the SPARQL grammar.
  */  
 public class Args extends ExprList {
-    public boolean distinct = false ;
+    public boolean distinct = false;
 }

@@ -18,21 +18,18 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.ARQConstants ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.ARQConstants;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_Now extends ExprSystem
-{
-    static private String fName = Tags.tagNow ;
-    
-    public E_Now()
-    {
-        super(fName, ARQConstants.sysCurrentTime) ;
+public class E_Now extends ExprSystem {
+    static private String fName = Tags.tagNow;
+
+    public E_Now() {
+        super(fName, ARQConstants.sysCurrentTime);
     }
 
     @Override
-    public Expr copy()
-    {
-        return new E_Now() ;
+    public Expr copy() {
+        return new E_Now();
     }
 }

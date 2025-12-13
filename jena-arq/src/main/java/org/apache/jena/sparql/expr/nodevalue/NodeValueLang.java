@@ -26,8 +26,8 @@ import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.util.FmtUtils;
 
 /**
- * A NodeValue that is a lang tagged literal (rdf:langString).
- * A string + language tag which is not ""
+ * A NodeValue that is a lang tagged literal (rdf:langString). A string + language
+ * tag which is not ""
  */
 public class NodeValueLang extends NodeValue {
 
@@ -51,29 +51,41 @@ public class NodeValueLang extends NodeValue {
     public boolean isLangString() {
         return true;
     }
-    @Override
-    public String getString()   { return string; }
 
     @Override
-    public String getLang()     { return lang; }
+    public String getString() {
+        return string;
+    }
 
     @Override
-    public String getLangDir()  { return ""; }
+    public String getLang() {
+        return lang;
+    }
 
     @Override
-    public String asString()    { return string; }
+    public String getLangDir() {
+        return "";
+    }
 
     @Override
-    protected Node makeNode()
-    { return NodeFactory.createLiteralLang(string, lang); }
+    public String asString() {
+        return string;
+    }
+
+    @Override
+    protected Node makeNode() {
+        return NodeFactory.createLiteralLang(string, lang);
+    }
 
     @Override
     public String toString() {
         if ( getNode() != null )
             return FmtUtils.stringForNode(getNode());
-        return "'"+getString()+"'@"+lang ;
+        return "'" + getString() + "'@" + lang;
     }
 
     @Override
-    public void visit(NodeValueVisitor visitor) { visitor.visit(this); }
+    public void visit(NodeValueVisitor visitor) {
+        visitor.visit(this);
+    }
 }

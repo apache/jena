@@ -18,12 +18,11 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.expr.nodevalue.NodeFunctions ;
-import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
+import org.apache.jena.sparql.function.FunctionEnv;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_StrUUID extends ExprFunction0 implements Unstable
-{
+public class E_StrUUID extends ExprFunction0 implements Unstable {
     static private String fName = Tags.tagStrUUID;
 
     public E_StrUUID() {

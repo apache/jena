@@ -18,11 +18,11 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
-import java.util.HashMap ;
-import java.util.Map ;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.expr.aggregate.lib.StandardAggregates ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.expr.aggregate.lib.StandardAggregates;
 
 /** Registry of custom aggregates
  * There is only a single global registry of aggregates - it affects parsing
@@ -30,8 +30,8 @@ import org.apache.jena.sparql.expr.aggregate.lib.StandardAggregates ;
  */
 public class AggregateRegistry {
     
-    private static Map<String, AccumulatorFactory> registry         = new HashMap<>() ;
-    private static Map<String, Node>               noGroupValues    = new HashMap<>() ;
+    private static Map<String, AccumulatorFactory> registry         = new HashMap<>();
+    private static Map<String, Node>               noGroupValues    = new HashMap<>();
     
     public static void init() {
         StandardAggregates.register();
@@ -41,33 +41,33 @@ public class AggregateRegistry {
      * Register a custom aggregate, with its associated factory for accumulators.
      */
     public static void register(String uri, AccumulatorFactory accFactory) {
-        register(uri, accFactory, null) ;
+        register(uri, accFactory, null);
     }
 
     public static void register(String uri, AccumulatorFactory accFactory, Node noGroupValue) {
-        registry.put(uri, accFactory) ;
-        noGroupValues.put(uri, noGroupValue) ;
+        registry.put(uri, accFactory);
+        noGroupValues.put(uri, noGroupValue);
     }
 
     /** Remove a registration. */
     public static void unregister(String uri) {
-        registry.remove(uri) ;
-        noGroupValues.remove(uri) ;
+        registry.remove(uri);
+        noGroupValues.remove(uri);
     }
     
     /** Return the AccumulatorFactory for a registered custom aggregate. */
     public static AccumulatorFactory getAccumulatorFactory(String uri) {
-        return registry.get(uri) ;
+        return registry.get(uri);
     }
     
     /** Return the registered "no groups" value */ 
     public static Node getNoGroupValue(String uri) {
-        return noGroupValues.get(uri) ;
+        return noGroupValues.get(uri);
     }
 
     /** Is the URI registered as an aggregate function? */
     public static boolean isRegistered(String uri) {
-        return registry.containsKey(uri) ;
+        return registry.containsKey(uri);
     }
 }
 

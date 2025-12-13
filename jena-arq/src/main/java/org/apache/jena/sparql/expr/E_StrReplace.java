@@ -18,14 +18,14 @@
 
 package org.apache.jena.sparql.expr;
 
-import java.util.List ;
-import java.util.regex.Pattern ;
+import java.util.List;
+import java.util.regex.Pattern;
 
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.sse.Tags;
 
 public class E_StrReplace extends ExprFunctionN {
-    private static final String symbol  = Tags.tagReplace;
+    private static final String symbol = Tags.tagReplace;
     private final Pattern pattern;
 
     public E_StrReplace(Expr expr1, Expr expr2, Expr expr3) {
@@ -47,23 +47,23 @@ public class E_StrReplace extends ExprFunctionN {
     }
 
     private static boolean isString(Expr expr) {
-        return expr.isConstant() && expr.getConstant().isString() ;
+        return expr.isConstant() && expr.getConstant().isString();
     }
 
     @Override
     public NodeValue eval(List<NodeValue> args) {
         if ( pattern != null )
-            return XSDFuncOp.strReplace(args.get(0), pattern, args.get(2)) ;
+            return XSDFuncOp.strReplace(args.get(0), pattern, args.get(2));
 
         if ( args.size() == 3 )
-            return XSDFuncOp.strReplace(args.get(0), args.get(1), args.get(2)) ;
-        return XSDFuncOp.strReplace(args.get(0), args.get(1), args.get(2), args.get(3)) ;
+            return XSDFuncOp.strReplace(args.get(0), args.get(1), args.get(2));
+        return XSDFuncOp.strReplace(args.get(0), args.get(1), args.get(2), args.get(3));
     }
 
     @Override
     public Expr copy(ExprList newArgs) {
         if ( newArgs.size() == 3 )
-            return new E_StrReplace(newArgs.get(0), newArgs.get(1), newArgs.get(2), null) ;
-        return new E_StrReplace(newArgs.get(0), newArgs.get(1), newArgs.get(2), newArgs.get(3)) ;
+            return new E_StrReplace(newArgs.get(0), newArgs.get(1), newArgs.get(2), null);
+        return new E_StrReplace(newArgs.get(0), newArgs.get(1), newArgs.get(2), newArgs.get(3));
     }
 }

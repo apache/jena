@@ -18,52 +18,52 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionEnv ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionEnv;
 
 abstract class AggMaxBase extends AggregatorBase
 {
     // ---- MAX(expr) and MAX(DISTINCT expr)
-    protected AggMaxBase(Expr expr, boolean isDistinct) { super("MAX", isDistinct, expr) ; } 
+    protected AggMaxBase(Expr expr, boolean isDistinct) { super("MAX", isDistinct, expr); } 
 
     @Override
     public
     final Accumulator createAccumulator()
     { 
-        return new AccMax(getExpr()) ;
+        return new AccMax(getExpr());
     }
 
     @Override
-    public final Node getValueEmpty()     { return null ; } 
+    public final Node getValueEmpty()     { return null; } 
 
     // ---- Accumulator
     private static class AccMax extends AccumulatorExpr
     {
         // Non-empty case but still can be nothing because the expression may be undefined.
-        private NodeValue maxSoFar = null ;
+        private NodeValue maxSoFar = null;
 
-        public AccMax(Expr expr) { super(expr, false) ; }
+        public AccMax(Expr expr) { super(expr, false); }
 
-        static final boolean DEBUG = false ;
+        static final boolean DEBUG = false;
 
         @Override
         public void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
         { 
             if ( maxSoFar == null )
             {
-                maxSoFar = nv ;
-                if ( DEBUG ) System.out.println("max: init : "+nv) ;
-                return ;
+                maxSoFar = nv;
+                if ( DEBUG ) System.out.println("max: init : "+nv);
+                return;
             }
 
-            int x = NodeValue.compareAlways(maxSoFar, nv) ;
+            int x = NodeValue.compareAlways(maxSoFar, nv);
             if ( x < 0 )
-                maxSoFar = nv ;
+                maxSoFar = nv;
 
-            if ( DEBUG ) System.out.println("max: "+nv+" ==> "+maxSoFar) ;
+            if ( DEBUG ) System.out.println("max: "+nv+" ==> "+maxSoFar);
         }
 
         @Override
@@ -72,6 +72,6 @@ abstract class AggMaxBase extends AggregatorBase
 
         @Override
         public NodeValue getAccValue()
-        { return maxSoFar ; }
+        { return maxSoFar; }
     }
 }

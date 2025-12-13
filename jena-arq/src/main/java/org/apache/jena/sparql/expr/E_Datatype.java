@@ -18,21 +18,23 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.expr.nodevalue.NodeFunctions ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_Datatype extends ExprFunction1
-{
-    private static final String symbol = Tags.tagDatatype ;
+public class E_Datatype extends ExprFunction1 {
+    private static final String symbol = Tags.tagDatatype;
 
-    public E_Datatype(Expr expr)
-    {
-        super(expr, symbol) ;
+    public E_Datatype(Expr expr) {
+        super(expr, symbol);
     }
-    
+
     @Override
-    public NodeValue eval(NodeValue v) { return NodeFunctions.datatype(v) ; }
-    
+    public NodeValue eval(NodeValue v) {
+        return NodeFunctions.datatype(v);
+    }
+
     @Override
-    public Expr copy(Expr expr) { return new E_Datatype(expr) ; } 
+    public Expr copy(Expr expr) {
+        return new E_Datatype(expr);
+    }
 }
