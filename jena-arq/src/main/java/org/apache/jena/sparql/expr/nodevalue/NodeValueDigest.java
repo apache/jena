@@ -36,8 +36,8 @@ import org.apache.jena.sparql.expr.NodeValue;
 public class NodeValueDigest {
 
     /**
-     * Calculate digest of a string literals.
-     * Pass in the digest name exactly, upper case and with a dash e.g. "SHA-1")
+     * Calculate digest of a string literals. Pass in the digest name exactly, upper
+     * case and with a dash e.g. "SHA-1")
      */
     public static NodeValue calculateDigest(NodeValue nv, String digestName) {
         // Exact digest name.
@@ -46,11 +46,11 @@ public class NodeValueDigest {
     }
 
     /**
-     * Calculate digest of a string literals by
-     * function name or namespace fragment without the @code #}.
+     * Calculate digest of a string literals by function name or namespace fragment
+     * without the @code #}.
      */
     public static NodeValue function(NodeValue nv, String functionName) {
-        if ( ! digestFunctionName.contains(functionName) )
+        if ( !digestFunctionName.contains(functionName) )
             throw new ExprEvalException("Digest not supported: " + functionName);
 
         functionName = Lib.lowercase(functionName);
@@ -59,12 +59,14 @@ public class NodeValueDigest {
     }
 
     // SPARQL name (lower case) to Java digest name.
+    // @formatter:off
     private static Map<String, String> translateDigestFunctionNames = Map.of("md5",     "MD-5",
                                                                              "sha1",    "SHA-1",
                                                                              "sha224",  "SHA-224",
                                                                              "sha256",  "SHA-256",
                                                                              "sha384",  "SHA-384",
                                                                              "sha512",  "SHA-512");
+    // @formatter:on
 
     private static Set<String> digestFunctionName = Set.of("md5", "sha1", "sha224", "sha256", "sha384", "sha512");
 

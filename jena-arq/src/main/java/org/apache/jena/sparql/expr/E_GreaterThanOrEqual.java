@@ -18,26 +18,24 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_GreaterThanOrEqual extends ExprFunction2
-{
-    private static final String functionName = Tags.tagGE ;   
-    private static final String symbol = Tags.symGE ;    
+public class E_GreaterThanOrEqual extends ExprFunction2 {
+    private static final String functionName = Tags.tagGE;
+    private static final String symbol = Tags.symGE;
 
-    public E_GreaterThanOrEqual(Expr left, Expr right)
-    {
-        super(left, right, functionName, symbol) ;
-    }
-
-    
-    @Override
-    public NodeValue eval(NodeValue x, NodeValue y)
-    {
-        int r = NodeValue.compare(x, y) ;
-        return NodeValue.booleanReturn( r == Expr.CMP_GREATER || r == Expr.CMP_EQUAL ) ;
+    public E_GreaterThanOrEqual(Expr left, Expr right) {
+        super(left, right, functionName, symbol);
     }
 
     @Override
-    public Expr copy(Expr e1, Expr e2) {  return new E_GreaterThanOrEqual(e1 , e2) ; }
+    public NodeValue eval(NodeValue x, NodeValue y) {
+        int r = NodeValue.compare(x, y);
+        return NodeValue.booleanReturn(r == Expr.CMP_GREATER || r == Expr.CMP_EQUAL);
+    }
+
+    @Override
+    public Expr copy(Expr e1, Expr e2) {
+        return new E_GreaterThanOrEqual(e1, e2);
+    }
 }

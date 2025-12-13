@@ -18,25 +18,25 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprList ;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprList;
 
 public class AggMinDistinct extends AggMinBase
 {
     // ---- MIN(DISTINCT expr)
-    public AggMinDistinct(Expr expr) { super(expr, true) ; } 
+    public AggMinDistinct(Expr expr) { super(expr, true); } 
     @Override
-    public Aggregator copy(ExprList exprs) { return new AggMinDistinct(exprs.get(0)) ; }
+    public Aggregator copy(ExprList exprs) { return new AggMinDistinct(exprs.get(0)); }
     @Override
-    public int hashCode()   { return HC_AggMinDistinct ^ getExpr().hashCode() ; }
+    public int hashCode()   { return HC_AggMinDistinct ^ getExpr().hashCode(); }
     
     @Override
     public boolean equals(Aggregator other, boolean bySyntax) {
-        if ( other == null ) return false ;
-        if ( this == other ) return true ; 
+        if ( other == null ) return false;
+        if ( this == other ) return true; 
         if ( ! ( other instanceof AggMinDistinct ) )
-            return false ;
-        AggMinDistinct agg = (AggMinDistinct)other ;
-        return exprList.equals(agg.exprList, bySyntax) ;
+            return false;
+        AggMinDistinct agg = (AggMinDistinct)other;
+        return exprList.equals(agg.exprList, bySyntax);
     } 
 }

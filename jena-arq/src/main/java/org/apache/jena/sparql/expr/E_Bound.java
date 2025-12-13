@@ -22,8 +22,7 @@ import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.function.FunctionEnv;
 import org.apache.jena.sparql.sse.Tags;
 
-public class E_Bound extends ExprFunction1
-{
+public class E_Bound extends ExprFunction1 {
     private static final String symbol = Tags.tagBound;
     boolean isBound = false;
 
@@ -51,17 +50,21 @@ public class E_Bound extends ExprFunction1
         // General expression. This case can't be written in SPARQL
         // but we keep the code general in case some optimization rewrite
         // or algebra expression uses the generalized feature.
-		try {
-			expr.eval(binding, env);
+        try {
+            expr.eval(binding, env);
             return NodeValue.TRUE;
-		} catch (VariableNotBoundException ex) {
-			return NodeValue.FALSE;
-		}
+        } catch (VariableNotBoundException ex) {
+            return NodeValue.FALSE;
+        }
     }
 
     @Override
-    public NodeValue eval(NodeValue x) { return NodeValue.TRUE; }
+    public NodeValue eval(NodeValue x) {
+        return NodeValue.TRUE;
+    }
 
     @Override
-    public Expr copy(Expr expr) { return new E_Bound(expr); }
+    public Expr copy(Expr expr) {
+        return new E_Bound(expr);
+    }
 }

@@ -20,77 +20,77 @@ package org.apache.jena.sparql.expr.aggregate;
 
 import java.util.Objects;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.serializer.SerializationContext ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionEnv;
+import org.apache.jena.sparql.serializer.SerializationContext;
 
 public class AggGroupConcatDistinct extends AggregatorBase
 {
-    private final String separator ;
-    private final String effectiveSeparator ;
+    private final String separator;
+    private final String effectiveSeparator;
 
     public AggGroupConcatDistinct(Expr expr, String separator)
     { 
         this(expr, 
              ( separator != null ) ? separator : AggGroupConcat.SeparatorDefault ,
-             separator) ;
+             separator);
     }
 
     private AggGroupConcatDistinct(Expr expr, String effectiveSeparator, String separatorSeen)
     {
-        super("GROUP_CONCAT", true, expr) ;
-        this.separator = separatorSeen ;
-        this.effectiveSeparator = effectiveSeparator ; 
+        super("GROUP_CONCAT", true, expr);
+        this.separator = separatorSeen;
+        this.effectiveSeparator = effectiveSeparator; 
     }
     
     @Override
-    public Aggregator copy(ExprList exprs) { return new AggGroupConcatDistinct(exprs.get(0), effectiveSeparator, separator) ; }
+    public Aggregator copy(ExprList exprs) { return new AggGroupConcatDistinct(exprs.get(0), effectiveSeparator, separator); }
 
     @Override
     public String toPrefixString() {
-        return AggGroupConcat.prefixGroupConcatString(super.isDistinct,  separator, getExprList()) ;
+        return AggGroupConcat.prefixGroupConcatString(super.isDistinct,  separator, getExprList());
     }
     
     @Override
     public String asSparqlExpr(SerializationContext sCxt) {
-        return AggGroupConcat.asSparqlExpr(isDistinct, separator, exprList, sCxt) ;
+        return AggGroupConcat.asSparqlExpr(isDistinct, separator, exprList, sCxt);
     }
 
     @Override
     public Accumulator createAccumulator()
     { 
-        return new AccGroupConcatDistinct(getExpr(), effectiveSeparator) ;
+        return new AccGroupConcatDistinct(getExpr(), effectiveSeparator);
     }
 
-    public String getSeparator() { return separator ; }
+    public String getSeparator() { return separator; }
 
     @Override
-    public Node getValueEmpty()     { return null ; } 
+    public Node getValueEmpty()     { return null; } 
 
     @Override
-    public int hashCode()   { return HC_AggCountVar ^ getExpr().hashCode() ; }
+    public int hashCode()   { return HC_AggCountVar ^ getExpr().hashCode(); }
     
     @Override
     public boolean equals(Aggregator other, boolean bySyntax) {
-        if ( other == null ) return false ;
-        if ( this == other ) return true ;
+        if ( other == null ) return false;
+        if ( this == other ) return true;
         if ( ! ( other instanceof AggGroupConcatDistinct ) )
-            return false ;
-        AggGroupConcatDistinct agg = (AggGroupConcatDistinct)other ;
+            return false;
+        AggGroupConcatDistinct agg = (AggGroupConcatDistinct)other;
         return Objects.equals(agg.getSeparator(),getSeparator()) && 
-                agg.getExpr().equals(getExpr(), bySyntax) ;
+                agg.getExpr().equals(getExpr(), bySyntax);
     }
     
     // ---- Accumulator
     static class AccGroupConcatDistinct extends AccumulatorExpr
     {
-        private StringBuilder stringSoFar = new StringBuilder() ;
-        private boolean first = true ;
-        private final String separator ;
+        private StringBuilder stringSoFar = new StringBuilder();
+        private boolean first = true;
+        private final String separator;
 
         public AccGroupConcatDistinct(Expr expr, String sep) {
             super(expr, true);
@@ -100,11 +100,11 @@ public class AggGroupConcatDistinct extends AggregatorBase
         @Override
         public void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
         {
-            String str = nv.asString() ;
+            String str = nv.asString();
             if ( ! first )
-                stringSoFar.append(separator) ;
-            stringSoFar.append(str) ;
-            first = false ;
+                stringSoFar.append(separator);
+            stringSoFar.append(str);
+            first = false;
         }
 
         @Override
@@ -113,6 +113,6 @@ public class AggGroupConcatDistinct extends AggregatorBase
         
         @Override
         public NodeValue getAccValue()
-        { return NodeValue.makeString(stringSoFar.toString()) ; }
+        { return NodeValue.makeString(stringSoFar.toString()); }
     }
 }

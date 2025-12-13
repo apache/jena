@@ -18,21 +18,23 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_NumCeiling extends ExprFunction1
-{
-    private static final String symbol = Tags.tagNumCeiling ;
+public class E_NumCeiling extends ExprFunction1 {
+    private static final String symbol = Tags.tagNumCeiling;
 
-    public E_NumCeiling(Expr expr)
-    {
-        super(expr, symbol) ;
+    public E_NumCeiling(Expr expr) {
+        super(expr, symbol);
     }
-    
+
     @Override
-    public NodeValue eval(NodeValue v) { return XSDFuncOp.ceiling(v) ; }
-    
+    public NodeValue eval(NodeValue v) {
+        return XSDFuncOp.ceiling(v);
+    }
+
     @Override
-    public Expr copy(Expr expr) { return new E_NumCeiling(expr) ; } 
+    public Expr copy(Expr expr) {
+        return new E_NumCeiling(expr);
+    }
 }

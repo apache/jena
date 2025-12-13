@@ -18,24 +18,23 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.expr.nodevalue.NodeFunctions ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_SameTerm extends ExprFunction2
-{
-    private static final String functionName = Tags.tagSameTerm ;
+public class E_SameTerm extends ExprFunction2 {
+    private static final String functionName = Tags.tagSameTerm;
 
-    public E_SameTerm(Expr left, Expr right)
-    {
-        super(left, right, functionName) ;
+    public E_SameTerm(Expr left, Expr right) {
+        super(left, right, functionName);
     }
-    
+
     @Override
-    public NodeValue eval(NodeValue x, NodeValue y)
-    {
-        return NodeFunctions.sameTerm(x, y) ;
+    public NodeValue eval(NodeValue x, NodeValue y) {
+        return NodeFunctions.sameTerm(x, y);
     }
-    
+
     @Override
-    public Expr copy(Expr e1, Expr e2) {  return new E_SameTerm(e1 , e2 ) ; }
+    public Expr copy(Expr e1, Expr e2) {
+        return new E_SameTerm(e1, e2);
+    }
 }

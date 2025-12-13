@@ -18,18 +18,17 @@
 
 package org.apache.jena.sparql.expr;
 
-import java.util.List ;
+import java.util.List;
 
-import org.apache.commons.lang3.StringUtils ;
-import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.query.ARQ ;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.graph.Node;
+import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.expr.nodevalue.NodeValueOps;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.util.FmtUtils ;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.util.FmtUtils;
 
-public class E_Regex extends ExprFunctionN
-{
+public class E_Regex extends ExprFunctionN {
     private static final String name = Tags.tagRegex;
     private RegexEngine regexEngine = null;
 
@@ -114,14 +113,14 @@ public class E_Regex extends ExprFunctionN
         return RegexEngine.create(pattern, flags);
     }
 
-//    /** @return Returns the expr of the regex */
-//    public final Expr getRegexExpr() { return expr1 ; }
+// /** @return Returns the expr of the regex */
+// public final Expr getRegexExpr() { return expr1 ; }
 //
-//    /** @return Returns the pattern. */
-//    public final Expr getPattern()  { return expr2 ; }
+// /** @return Returns the pattern. */
+// public final Expr getPattern() { return expr2 ; }
 //
-//    /** @return Returns the flags. */
-//    public final Expr getFlags() { return expr3 ; }
+// /** @return Returns the flags. */
+// public final Expr getFlags() { return expr3 ; }
 
     @Override
     public Expr copy(ExprList newArgs) {

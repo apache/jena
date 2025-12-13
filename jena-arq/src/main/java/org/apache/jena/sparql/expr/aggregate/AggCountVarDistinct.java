@@ -21,41 +21,41 @@ package org.apache.jena.sparql.expr.aggregate;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.graph.NodeConst ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionEnv;
+import org.apache.jena.sparql.graph.NodeConst;
 
 public class AggCountVarDistinct extends AggregatorBase
 {
     // ---- COUNT(DISTINCT ?var)
-    public AggCountVarDistinct(Expr expr) { super("COUNT", true, expr) ; }
+    public AggCountVarDistinct(Expr expr) { super("COUNT", true, expr); }
     @Override
-    public Aggregator copy(ExprList exprs) { return new AggCountVarDistinct(exprs.get(0)) ; }
+    public Aggregator copy(ExprList exprs) { return new AggCountVarDistinct(exprs.get(0)); }
 
     @Override
     public Accumulator createAccumulator()
     { 
-        return new AccCountDistinctVar(getExpr()) ; 
+        return new AccCountDistinctVar(getExpr()); 
     }
 
     @Override
-    public Node getValueEmpty()     { return NodeConst.nodeZero ; } 
+    public Node getValueEmpty()     { return NodeConst.nodeZero; } 
 
     @Override
-    public int hashCode()   { return HC_AggCountVar ^ exprList.hashCode() ; }
+    public int hashCode()   { return HC_AggCountVar ^ exprList.hashCode(); }
     
     @Override
     public boolean equals(Aggregator other, boolean bySyntax) {
-        if ( other == null ) return false ;
-        if ( this == other ) return true ;
+        if ( other == null ) return false;
+        if ( this == other ) return true;
         if ( ! ( other instanceof AggCountVarDistinct ) )
-            return false ;
-        AggCountVarDistinct agg = (AggCountVarDistinct)other ;
-        return agg.getExpr().equals(getExpr(), bySyntax) ;
+            return false;
+        AggCountVarDistinct agg = (AggCountVarDistinct)other;
+        return agg.getExpr().equals(getExpr(), bySyntax);
     }
 
     // ---- Accumulator

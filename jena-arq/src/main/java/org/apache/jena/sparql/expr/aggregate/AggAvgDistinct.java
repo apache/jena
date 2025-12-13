@@ -18,49 +18,49 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionEnv ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionEnv;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class AggAvgDistinct extends AggregatorBase
 {
-    private static Logger log = LoggerFactory.getLogger("AVG DISTINCT") ;
+    private static Logger log = LoggerFactory.getLogger("AVG DISTINCT");
 
     // ---- AVG(DISTINCT expr)
-    public AggAvgDistinct(Expr expr) { super("AVG", true, expr) ; } 
+    public AggAvgDistinct(Expr expr) { super("AVG", true, expr); } 
     @Override
-    public Aggregator copy(ExprList expr) { return new AggAvgDistinct(expr.get(0)) ; }
+    public Aggregator copy(ExprList expr) { return new AggAvgDistinct(expr.get(0)); }
 
-    private static final NodeValue noValuesToAvg = NodeValue.nvZERO ; 
+    private static final NodeValue noValuesToAvg = NodeValue.nvZERO; 
 
     @Override
     public Accumulator createAccumulator()
     { 
-        return new AccAvgDistinct(getExpr()) ;
+        return new AccAvgDistinct(getExpr());
     }
 
     @Override
-    public Node getValueEmpty()     { return NodeValue.toNode(noValuesToAvg) ; } 
+    public Node getValueEmpty()     { return NodeValue.toNode(noValuesToAvg); } 
 
     @Override
     public int hashCode()   {
-        return HC_AggAvgDistinct ^ getExprList().hashCode() ;
+        return HC_AggAvgDistinct ^ getExprList().hashCode();
     }
 
     @Override
     public boolean equals(Aggregator other, boolean bySyntax) {
-        if ( other == null ) return false ;
-        if ( this == other ) return true ;
-        if ( ! ( other instanceof AggAvgDistinct ) ) return false ;
-        AggAvgDistinct a = (AggAvgDistinct)other ;
-        return exprList.equals(a.exprList, bySyntax) ;
+        if ( other == null ) return false;
+        if ( this == other ) return true;
+        if ( ! ( other instanceof AggAvgDistinct ) ) return false;
+        AggAvgDistinct a = (AggAvgDistinct)other;
+        return exprList.equals(a.exprList, bySyntax);
     }
 
     
@@ -68,33 +68,33 @@ public class AggAvgDistinct extends AggregatorBase
     class AccAvgDistinct extends AccumulatorExpr
     {
         // Non-empty case but still can be nothing because the expression may be undefined.
-        private NodeValue total = noValuesToAvg ;
-        private int count = 0 ;
+        private NodeValue total = noValuesToAvg;
+        private int count = 0;
 
-        public AccAvgDistinct(Expr expr) { super(expr, true) ; }
+        public AccAvgDistinct(Expr expr) { super(expr, true); }
 
         @Override
         protected void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
         { 
             if ( nv.isNumber() )
             {
-                count++ ;
+                count++;
                 if ( total == noValuesToAvg )
-                    total = nv ;
+                    total = nv;
                 else
-                    total = XSDFuncOp.numAdd(nv, total) ;
+                    total = XSDFuncOp.numAdd(nv, total);
             }
             else
-                throw new ExprEvalException("avg: not a number: "+nv) ;
+                throw new ExprEvalException("avg: not a number: "+nv);
             log.debug("avg count {}", count);
         }
 
         @Override
         public NodeValue getAccValue()
         {
-            if ( count == 0 ) return noValuesToAvg ;
-            NodeValue nvCount = NodeValue.makeInteger(count) ;
-            return XSDFuncOp.numDivide(total, nvCount) ;
+            if ( count == 0 ) return noValuesToAvg;
+            NodeValue nvCount = NodeValue.makeInteger(count);
+            return XSDFuncOp.numDivide(total, nvCount);
         }
 
         @Override

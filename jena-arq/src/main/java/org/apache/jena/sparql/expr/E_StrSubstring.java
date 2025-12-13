@@ -18,35 +18,31 @@
 
 package org.apache.jena.sparql.expr;
 
-import java.util.List ;
+import java.util.List;
 
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_StrSubstring extends ExprFunctionN
-{
-    private static final String symbol = Tags.tagSubstr ;
+public class E_StrSubstring extends ExprFunctionN {
+    private static final String symbol = Tags.tagSubstr;
 
-    public E_StrSubstring(Expr expr1, Expr expr2, Expr expr3)
-    {
-        super(symbol, expr1, expr2, expr3) ;
+    public E_StrSubstring(Expr expr1, Expr expr2, Expr expr3) {
+        super(symbol, expr1, expr2, expr3);
     }
-    
+
     @Override
-    public NodeValue eval(List<NodeValue> args)
-    { 
+    public NodeValue eval(List<NodeValue> args) {
         if ( args.size() == 2 )
-            return XSDFuncOp.substring(args.get(0), args.get(1)) ;
-        
-        //return NodeFunctions.substring(args.get(0), args.get(1), args.get(2)) ;
-        return XSDFuncOp.substring(args.get(0), args.get(1), args.get(2)) ;
+            return XSDFuncOp.substring(args.get(0), args.get(1));
+
+        // return NodeFunctions.substring(args.get(0), args.get(1), args.get(2)) ;
+        return XSDFuncOp.substring(args.get(0), args.get(1), args.get(2));
     }
 
     @Override
-    public Expr copy(ExprList newArgs)
-    {
+    public Expr copy(ExprList newArgs) {
         if ( newArgs.size() == 2 )
-            return new E_StrSubstring(newArgs.get(0), newArgs.get(1), null) ; 
-        return new E_StrSubstring(newArgs.get(0), newArgs.get(1), newArgs.get(2)) ;   
+            return new E_StrSubstring(newArgs.get(0), newArgs.get(1), null);
+        return new E_StrSubstring(newArgs.get(0), newArgs.get(1), newArgs.get(2));
     }
 }

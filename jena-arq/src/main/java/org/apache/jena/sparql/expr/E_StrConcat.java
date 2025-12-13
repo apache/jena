@@ -18,31 +18,27 @@
 
 package org.apache.jena.sparql.expr;
 
-import java.util.List ;
+import java.util.List;
 
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.sse.Tags;
 
 /** SPARQL CONCATs */
 
-public class E_StrConcat extends ExprFunctionN
-{
-    private static final String name = Tags.tagConcat ;
-    
-    public E_StrConcat(ExprList args)
-    {
-        super(name, args) ;
+public class E_StrConcat extends ExprFunctionN {
+    private static final String name = Tags.tagConcat;
+
+    public E_StrConcat(ExprList args) {
+        super(name, args);
     }
 
     @Override
-    public Expr copy(ExprList newArgs)
-    {
-        return new E_StrConcat(newArgs) ;
+    public Expr copy(ExprList newArgs) {
+        return new E_StrConcat(newArgs);
     }
 
     @Override
-    public NodeValue eval(List<NodeValue> args)
-    { 
-        return XSDFuncOp.strConcat(args) ;
+    public NodeValue eval(List<NodeValue> args) {
+        return XSDFuncOp.strConcat(args);
     }
 }

@@ -18,53 +18,53 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionEnv ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionEnv;
 
 public class AggSumDistinct  extends AggregatorBase
 {
     // ---- SUM(DISTINCT expr)
-    public AggSumDistinct(Expr expr) { super("SUM", true, expr) ; } 
+    public AggSumDistinct(Expr expr) { super("SUM", true, expr); } 
     @Override
-    public Aggregator copy(ExprList exprs) { return new AggSumDistinct(exprs.get(0)) ; }
+    public Aggregator copy(ExprList exprs) { return new AggSumDistinct(exprs.get(0)); }
 
-    private static final NodeValue noValuesToSum = NodeValue.nvZERO ; 
+    private static final NodeValue noValuesToSum = NodeValue.nvZERO; 
     
     @Override
     public Accumulator createAccumulator()
     { 
-        return new AccSumDistinct(getExpr()) ;
+        return new AccSumDistinct(getExpr());
     }
 
     @Override
-    public int hashCode()   { return HC_AggSumDistinct ^ getExpr().hashCode() ; }
+    public int hashCode()   { return HC_AggSumDistinct ^ getExpr().hashCode(); }
     
     @Override
     public boolean equals(Aggregator other, boolean bySyntax) {
-        if ( other == null ) return false ;
-        if ( this == other ) return true ; 
+        if ( other == null ) return false;
+        if ( this == other ) return true; 
         if ( ! ( other instanceof AggSumDistinct ) )
-            return false ;
-        AggSumDistinct agg = (AggSumDistinct)other ;
-        return getExpr().equals(agg.getExpr(), bySyntax) ;
+            return false;
+        AggSumDistinct agg = (AggSumDistinct)other;
+        return getExpr().equals(agg.getExpr(), bySyntax);
     } 
 
     @Override
-    public Node getValueEmpty()     { return NodeValue.toNode(noValuesToSum) ; } 
+    public Node getValueEmpty()     { return NodeValue.toNode(noValuesToSum); } 
 
     // ---- Accumulator
     class AccSumDistinct extends AccumulatorExpr
     {
         // Non-empty case but still can be nothing because the expression may be undefined.
-        private NodeValue total = null ;
+        private NodeValue total = null;
 
-        public AccSumDistinct(Expr expr) { super(expr, true) ; }
+        public AccSumDistinct(Expr expr) { super(expr, true); }
 
         @Override
         public void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
@@ -72,17 +72,17 @@ public class AggSumDistinct  extends AggregatorBase
             if ( nv.isNumber() )
             {
                 if ( total == null )
-                    total = nv ;
+                    total = nv;
                 else
-                    total = XSDFuncOp.numAdd(nv, total) ;
+                    total = XSDFuncOp.numAdd(nv, total);
             }
             else
-                throw new ExprEvalException("Not a number: "+nv) ;
+                throw new ExprEvalException("Not a number: "+nv);
         }
         
         @Override
         public NodeValue getAccValue()
-        { return total ; }
+        { return total; }
 
         @Override
         protected void accumulateError(Binding binding, FunctionEnv functionEnv)

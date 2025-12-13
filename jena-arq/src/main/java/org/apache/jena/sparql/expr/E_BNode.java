@@ -29,8 +29,7 @@ import org.apache.jena.sparql.lang.LabelToNodeMap;
 import org.apache.jena.sparql.sse.Tags;
 import org.apache.jena.sparql.util.Symbol;
 
-public class E_BNode implements Unstable
-{
+public class E_BNode implements Unstable {
     private static final String symbol = Tags.tagBNode;
 
     private static final Symbol keyMap = Symbol.create("arq:internal:bNodeMappings");
@@ -44,7 +43,7 @@ public class E_BNode implements Unstable
     }
 
     // --- The zero argument case.
-    public static class BNode0 extends ExprFunction0  implements Unstable {
+    public static class BNode0 extends ExprFunction0 implements Unstable {
 
         protected BNode0() {
             super(symbol);
@@ -62,14 +61,15 @@ public class E_BNode implements Unstable
     }
 
     // --- The one argument case.
-    public static class BNode1 extends ExprFunction1  implements Unstable {
+    public static class BNode1 extends ExprFunction1 implements Unstable {
         protected BNode1(Expr expr) {
             super(expr, symbol);
         }
 
         @Override
-        public NodeValue eval(NodeValue nv)
-        { throw new ARQInternalErrorException(); }
+        public NodeValue eval(NodeValue nv) {
+            throw new ARQInternalErrorException();
+        }
 
         @Override
         public NodeValue evalSpecial(Binding binding, FunctionEnv env) {
