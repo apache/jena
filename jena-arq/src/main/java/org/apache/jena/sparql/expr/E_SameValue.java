@@ -19,27 +19,26 @@
 package org.apache.jena.sparql.expr;
 
 import org.apache.jena.sparql.ARQNotImplemented;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_SameValue extends ExprFunction2
-{
-    private static final String functionName = Tags.tagSameValue ;
+public class E_SameValue extends ExprFunction2 {
+    private static final String functionName = Tags.tagSameValue;
 
-    public E_SameValue(Expr left, Expr right)
-    {
-        super(left, right, functionName) ;
+    public E_SameValue(Expr left, Expr right) {
+        super(left, right, functionName);
     }
 
     @Override
-    public NodeValue eval(NodeValue x, NodeValue y)
-    {
+    public NodeValue eval(NodeValue x, NodeValue y) {
         throw new ARQNotImplemented("E_SameValue");
         // "strict/plain" and "extended"
-//        // EXCEPT NaN
-//        boolean b = NodeValue.sameValueAs(x, y) ;
-//        return NodeValue.booleanReturn(b) ;
+// // EXCEPT NaN
+// boolean b = NodeValue.sameValueAs(x, y) ;
+// return NodeValue.booleanReturn(b) ;
     }
 
     @Override
-    public Expr copy(Expr e1, Expr e2) {  return new E_SameValue(e1 , e2 ) ; }
+    public Expr copy(Expr e1, Expr e2) {
+        return new E_SameValue(e1, e2);
+    }
 }

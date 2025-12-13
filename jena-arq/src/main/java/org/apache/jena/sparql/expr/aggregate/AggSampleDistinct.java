@@ -18,19 +18,19 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionEnv ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionEnv;
 
 public class AggSampleDistinct extends AggregatorBase
 {
     // ---- Sample(DISTINCT expr)
-    public AggSampleDistinct(Expr expr) { super("SAMPLE", true, expr) ; } 
+    public AggSampleDistinct(Expr expr) { super("SAMPLE", true, expr); } 
     @Override
-    public Aggregator copy(ExprList exprs) { return new AggSampleDistinct(exprs.get(0)) ; }
+    public Aggregator copy(ExprList exprs) { return new AggSampleDistinct(exprs.get(0)); }
 
     @Override
     public Accumulator createAccumulator() {
@@ -38,28 +38,28 @@ public class AggSampleDistinct extends AggregatorBase
     }
 
     @Override
-    public int hashCode()   { return HC_AggSample ^ getExpr().hashCode() ; }
+    public int hashCode()   { return HC_AggSample ^ getExpr().hashCode(); }
     @Override
     public boolean equals(Aggregator other, boolean bySyntax) {
-        if ( other == null ) return false ;
-        if ( this == other ) return true ;
+        if ( other == null ) return false;
+        if ( this == other ) return true;
         if ( ! ( other instanceof AggSampleDistinct ) )
-            return false ;
-        AggSampleDistinct agg = (AggSampleDistinct)other ;
-        return this.exprList.equals(agg.exprList, bySyntax) ;
+            return false;
+        AggSampleDistinct agg = (AggSampleDistinct)other;
+        return this.exprList.equals(agg.exprList, bySyntax);
     } 
 
     @Override
-    public Node getValueEmpty()     { return null ; } 
+    public Node getValueEmpty()     { return null; } 
 
     // ---- Accumulator
     private static class AccSampleDistict extends AccumulatorExpr
     {
         // For sample, DISTINCT is a no-op - this code is picks the last element.
         // it does not need the group to made made distinct.
-        private NodeValue sampleSoFar = null ;
+        private NodeValue sampleSoFar = null;
 
-        public AccSampleDistict(Expr expr) { super(expr, false)  ; }
+        public AccSampleDistict(Expr expr) { super(expr, false) ; }
 
         @Override
         public void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv) {
@@ -74,7 +74,7 @@ public class AggSampleDistinct extends AggregatorBase
         
         @Override
         public NodeValue getAccValue()
-        { return sampleSoFar ; }
+        { return sampleSoFar; }
         
         @Override
         public NodeValue getValue() { 

@@ -18,26 +18,27 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.expr.nodevalue.NodeFunctions ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_IsIRI extends ExprFunction1
-{
-    private static final String symbol = Tags.tagIsIRI ;
+public class E_IsIRI extends ExprFunction1 {
+    private static final String symbol = Tags.tagIsIRI;
 
-    public E_IsIRI(Expr expr)
-    {
-        super(expr, symbol) ;
+    public E_IsIRI(Expr expr) {
+        super(expr, symbol);
     }
 
-    public E_IsIRI(Expr expr, String altSymbol)
-    {
-        super(expr, altSymbol) ;
+    public E_IsIRI(Expr expr, String altSymbol) {
+        super(expr, altSymbol);
     }
-    
+
     @Override
-    public NodeValue eval(NodeValue v) { return NodeFunctions.isIRI(v) ; }
-    
+    public NodeValue eval(NodeValue v) {
+        return NodeFunctions.isIRI(v);
+    }
+
     @Override
-    public Expr copy(Expr expr) { return new E_IsIRI(expr) ; } 
+    public Expr copy(Expr expr) {
+        return new E_IsIRI(expr);
+    }
 }

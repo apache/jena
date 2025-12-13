@@ -16,82 +16,82 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.expr.aggregate ;
+package org.apache.jena.sparql.expr.aggregate;
 
 import java.util.List;
 
-import org.apache.jena.atlas.lib.NotImplemented ;
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.lib.NotImplemented;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.query.SortCondition;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprList ;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprList;
 
 public class AggregatorFactory {
     public static Aggregator createCount(boolean distinct) {
-        return distinct ? new AggCountDistinct() : new AggCount() ;
+        return distinct ? new AggCountDistinct() : new AggCount();
     }
 
     public static Aggregator createCountExpr(boolean distinct, Expr expr) {
-        return distinct ? new AggCountVarDistinct(expr) : new AggCountVar(expr) ;
+        return distinct ? new AggCountVarDistinct(expr) : new AggCountVar(expr);
     }
 
     public static Aggregator createSum(boolean distinct, Expr expr) {
-        return distinct ? new AggSumDistinct(expr) : new AggSum(expr) ;
+        return distinct ? new AggSumDistinct(expr) : new AggSum(expr);
     }
 
     public static Aggregator createMin(boolean distinct, Expr expr) {
         // Only remember it's DISTINCT for getting the printing right.
-        return distinct ? new AggMinDistinct(expr) : new AggMin(expr) ;
+        return distinct ? new AggMinDistinct(expr) : new AggMin(expr);
     }
 
     public static Aggregator createMax(boolean distinct, Expr expr) {
-        return distinct ? new AggMaxDistinct(expr) : new AggMax(expr) ;
+        return distinct ? new AggMaxDistinct(expr) : new AggMax(expr);
     }
 
     public static Aggregator createAvg(boolean distinct, Expr expr) {
-        return distinct ? new AggAvgDistinct(expr) : new AggAvg(expr) ;
+        return distinct ? new AggAvgDistinct(expr) : new AggAvg(expr);
     }
 
     public static Aggregator createMedian(boolean distinct, Expr expr) {
-        return distinct ? new AggMedianDistinct(expr) : new AggMedian(expr) ;
+        return distinct ? new AggMedianDistinct(expr) : new AggMedian(expr);
     }
 
     public static Aggregator createMode(boolean distinct, Expr expr) {
-        return distinct ? new AggModeDistinct(expr) : new AggMode(expr) ;
+        return distinct ? new AggModeDistinct(expr) : new AggMode(expr);
     }
 
     public static Aggregator createSample(boolean distinct, Expr expr) {
-        return distinct ? new AggSampleDistinct(expr) : new AggSample(expr) ;
+        return distinct ? new AggSampleDistinct(expr) : new AggSample(expr);
     }
 
     public static Aggregator createGroupConcat(boolean distinct, Expr expr, String separator, ExprList orderedBy) {
         if ( orderedBy != null && !orderedBy.isEmpty() )
-            throw new NotImplemented("GROUP_CONCAT / ORDER BY not implemented yet") ;
-        return distinct ? new AggGroupConcatDistinct(expr, separator) : new AggGroupConcat(expr, separator) ;
+            throw new NotImplemented("GROUP_CONCAT / ORDER BY not implemented yet");
+        return distinct ? new AggGroupConcatDistinct(expr, separator) : new AggGroupConcat(expr, separator);
     }
 
     public static Aggregator createAggNull() {
-        return new AggNull() ;
+        return new AggNull();
     }
 
     public static Aggregator createFold(boolean distinct, Expr expr1, Expr expr2, List<SortCondition> orderBy) {
         if ( expr2 == null )
-            return new AggFoldList(distinct, expr1, orderBy) ;
+            return new AggFoldList(distinct, expr1, orderBy);
         else
-            return new AggFoldMap(expr1, expr2, orderBy) ;
+            return new AggFoldMap(expr1, expr2, orderBy);
     }
 
     public static Aggregator createCustom(String iri, Args a) {
-        return createCustom(iri, a.distinct, ExprList.copy(a)) ;
+        return createCustom(iri, a.distinct, ExprList.copy(a));
     }
     
     public static Aggregator createCustom(String iri, boolean distinct, Expr expr) {
-        return createCustom(iri, distinct, new ExprList(expr)) ;
+        return createCustom(iri, distinct, new ExprList(expr));
     }
     
     public static Aggregator createCustom(String iri, boolean distinct, ExprList exprs) {
         if ( ! AggregateRegistry.isRegistered(iri) )
-            Log.warn(AggregatorFactory.class, "Not registered: custom aggregate <"+iri+">") ;
-        return new AggCustom(iri, distinct, exprs) ;
+            Log.warn(AggregatorFactory.class, "Not registered: custom aggregate <"+iri+">");
+        return new AggCustom(iri, distinct, exprs);
     }
 }

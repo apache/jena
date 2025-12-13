@@ -18,16 +18,15 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_LogicalNot extends ExprFunction1
-{
+public class E_LogicalNot extends ExprFunction1 {
     // See logicalOR for truth table.
 
     // Errors propagate as normal.
-    private static final String functionName = Tags.tagNot ;
-    private static final String symbol = Tags.symNot ;
+    private static final String functionName = Tags.tagNot;
+    private static final String symbol = Tags.symNot;
 
     public E_LogicalNot(Expr expr) {
         super(expr, functionName, symbol);
@@ -39,5 +38,7 @@ public class E_LogicalNot extends ExprFunction1
     }
 
     @Override
-    public Expr copy(Expr expr) { return new E_LogicalNot(expr) ; }
+    public Expr copy(Expr expr) {
+        return new E_LogicalNot(expr);
+    }
 }

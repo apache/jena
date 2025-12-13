@@ -30,7 +30,7 @@ public class E_EBV extends ExprFunction1 {
     private static final String sparqlPrintName = "EBV";
 
     public E_EBV(Expr expr) {
-        super(expr, symbol) ;
+        super(expr, symbol);
     }
 
     @Override

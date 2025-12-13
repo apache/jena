@@ -18,23 +18,25 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.expr.nodevalue.NodeFunctions ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_IsURI extends E_IsIRI
-{
+public class E_IsURI extends E_IsIRI {
     // "isURI" is another name for "isIRI" -- we try to keep the parse name.
 
-    private static final String symbol = Tags.tagIsURI ;
+    private static final String symbol = Tags.tagIsURI;
 
-    public E_IsURI(Expr expr)
-    {
-        super(expr, symbol) ;
+    public E_IsURI(Expr expr) {
+        super(expr, symbol);
     }
-    
+
     @Override
-    public NodeValue eval(NodeValue v) { return NodeFunctions.isURI(v) ; }
-    
+    public NodeValue eval(NodeValue v) {
+        return NodeFunctions.isURI(v);
+    }
+
     @Override
-    public Expr copy(Expr expr) { return new E_IsURI(expr) ; } 
+    public Expr copy(Expr expr) {
+        return new E_IsURI(expr);
+    }
 }

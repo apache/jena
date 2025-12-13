@@ -21,59 +21,59 @@ package org.apache.jena.sparql.expr.aggregate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionEnv ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionEnv;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AggModeDistinct extends AggregatorBase
 {
     // ---- Mode (DISTINCT expr)
-    private static Logger log = LoggerFactory.getLogger("ModeDistinct") ;
+    private static Logger log = LoggerFactory.getLogger("ModeDistinct");
 
-    public AggModeDistinct(Expr expr) { super("Mode", true, expr) ; }
+    public AggModeDistinct(Expr expr) { super("Mode", true, expr); }
     @Override
-    public Aggregator copy(ExprList expr) { return new AggModeDistinct(expr.get(0)) ; }
+    public Aggregator copy(ExprList expr) { return new AggModeDistinct(expr.get(0)); }
 
-    private static final NodeValue noValuesToMode = NodeValue.nvZERO ;
+    private static final NodeValue noValuesToMode = NodeValue.nvZERO;
 
     @Override
     public Accumulator createAccumulator()
     {
-        return new AccModeDistinct(getExpr()) ;
+        return new AccModeDistinct(getExpr());
     }
 
     @Override
-    public Node getValueEmpty()     { return NodeValue.toNode(noValuesToMode) ; }
+    public Node getValueEmpty()     { return NodeValue.toNode(noValuesToMode); }
 
     @Override
     public int hashCode()   {
-        return HC_AggModeDistinct ^ getExprList().hashCode() ;
+        return HC_AggModeDistinct ^ getExprList().hashCode();
     }
 
     @Override
     public boolean equals(Aggregator other, boolean bySyntax) {
-        if ( other == null ) return false ;
-        if ( this == other ) return true ;
-        if ( ! ( other instanceof AggModeDistinct ) ) return false ;
-        AggModeDistinct a = (AggModeDistinct)other ;
-        return exprList.equals(a.exprList, bySyntax) ;
+        if ( other == null ) return false;
+        if ( this == other ) return true;
+        if ( ! ( other instanceof AggModeDistinct ) ) return false;
+        AggModeDistinct a = (AggModeDistinct)other;
+        return exprList.equals(a.exprList, bySyntax);
     }
 
     // ---- Accumulator
     class AccModeDistinct extends AccumulatorExpr
     {
         // Non-empty case but still can be nothing because the expression may be undefined.
-        private NodeValue total = noValuesToMode ;
-        private int count = 0 ;
+        private NodeValue total = noValuesToMode;
+        private int count = 0;
         ArrayList<NodeValue> collection=new ArrayList<NodeValue>();
 
-        public AccModeDistinct(Expr expr) { super(expr, true) ; }
+        public AccModeDistinct(Expr expr) { super(expr, true); }
 
         @Override
         protected void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
@@ -82,11 +82,11 @@ public class AggModeDistinct extends AggregatorBase
 
             if ( nv.isNumber() )
             {
-                count++ ;
+                count++;
                 collection.add(nv);
             }
             else
-                throw new ExprEvalException("mode: not a number: "+nv) ;
+                throw new ExprEvalException("mode: not a number: "+nv);
 
             log.debug("mode count {}", count);
         }
@@ -95,9 +95,9 @@ public class AggModeDistinct extends AggregatorBase
         public NodeValue getAccValue()
         {
             double mode= Double.NaN;
-            if ( count == 0 ) return noValuesToMode ;
+            if ( count == 0 ) return noValuesToMode;
             if ( super.errorCount != 0 )
-                return null ;
+                return null;
 
             int indexsize = collection.size();
             double[] arrDouble = new double[indexsize];

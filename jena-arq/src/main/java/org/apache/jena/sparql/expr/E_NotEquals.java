@@ -18,29 +18,28 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_NotEquals extends ExprFunction2
-{
-    private static final String functionName = Tags.tagNE ;
-    private static final String symbol = Tags.symNE ;    
+public class E_NotEquals extends ExprFunction2 {
+    private static final String functionName = Tags.tagNE;
+    private static final String symbol = Tags.symNE;
 
-    public E_NotEquals(Expr left, Expr right)
-    {
-        super(left, right, functionName, symbol) ;
+    public E_NotEquals(Expr left, Expr right) {
+        super(left, right, functionName, symbol);
     }
-    
+
     @Override
-    public NodeValue eval(NodeValue x, NodeValue y)
-    {
+    public NodeValue eval(NodeValue x, NodeValue y) {
         // Note: notSameValueAs means "known to be different"
         // sameValueAs means "know to be the same value"
         // so they are not opposites
 
-        boolean b = NodeValue.notSameValueAs(x, y) ;
-        return NodeValue.booleanReturn(b) ;
+        boolean b = NodeValue.notSameValueAs(x, y);
+        return NodeValue.booleanReturn(b);
     }
-    
+
     @Override
-    public Expr copy(Expr e1, Expr e2) {  return new E_NotEquals(e1 , e2 ) ; }
+    public Expr copy(Expr e1, Expr e2) {
+        return new E_NotEquals(e1, e2);
+    }
 }

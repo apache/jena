@@ -19,16 +19,13 @@
 package org.apache.jena.sparql.expr;
 
 import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.sse.Tags;
 
-
-public class E_HasLangDir extends ExprFunction1
-{
+public class E_HasLangDir extends ExprFunction1 {
     private static final String symbol = Tags.tagHasLangDir;
 
-    public E_HasLangDir(Expr expr)
-    {
-        super(expr, symbol) ;
+    public E_HasLangDir(Expr expr) {
+        super(expr, symbol);
     }
 
     @Override
@@ -37,5 +34,7 @@ public class E_HasLangDir extends ExprFunction1
     }
 
     @Override
-    public Expr copy(Expr expr) { return new E_HasLangDir(expr) ; }
+    public Expr copy(Expr expr) {
+        return new E_HasLangDir(expr);
+    }
 }

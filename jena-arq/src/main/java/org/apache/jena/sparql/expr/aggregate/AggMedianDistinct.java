@@ -21,48 +21,48 @@ package org.apache.jena.sparql.expr.aggregate;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionEnv ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionEnv;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AggMedianDistinct extends AggregatorBase
 {
     // ---- Median(DISTINCT expr)
-    private static Logger log = LoggerFactory.getLogger("MedianDistinct") ;
+    private static Logger log = LoggerFactory.getLogger("MedianDistinct");
 
-    public AggMedianDistinct(Expr expr) { super("Median", true, expr) ; } 
+    public AggMedianDistinct(Expr expr) { super("Median", true, expr); } 
     @Override
-    public Aggregator copy(ExprList expr) { return new AggMedianDistinct(expr.get(0)) ; }
+    public Aggregator copy(ExprList expr) { return new AggMedianDistinct(expr.get(0)); }
 
-    private static final NodeValue noValuesToMedian = NodeValue.nvZERO ; 
+    private static final NodeValue noValuesToMedian = NodeValue.nvZERO; 
 
     @Override
     public Accumulator createAccumulator()
     { 
-        return new AccMedianDistinct(getExpr()) ;
+        return new AccMedianDistinct(getExpr());
     }
 
     @Override
-    public Node getValueEmpty()     { return NodeValue.toNode(noValuesToMedian) ; } 
+    public Node getValueEmpty()     { return NodeValue.toNode(noValuesToMedian); } 
 
     @Override
     public int hashCode()   {
-        return HC_AggMedianDistinct ^ getExprList().hashCode() ;
+        return HC_AggMedianDistinct ^ getExprList().hashCode();
     }
 
     @Override
     public boolean equals(Aggregator other, boolean bySyntax) {
-        if ( other == null ) return false ;
-        if ( this == other ) return true ;
-        if ( ! ( other instanceof AggMedianDistinct ) ) return false ;
-        AggMedianDistinct a = (AggMedianDistinct)other ;
-        return exprList.equals(a.exprList, bySyntax) ;
+        if ( other == null ) return false;
+        if ( this == other ) return true;
+        if ( ! ( other instanceof AggMedianDistinct ) ) return false;
+        AggMedianDistinct a = (AggMedianDistinct)other;
+        return exprList.equals(a.exprList, bySyntax);
     }
 
     
@@ -70,11 +70,11 @@ public class AggMedianDistinct extends AggregatorBase
     class AccMedianDistinct extends AccumulatorExpr
     {
         // Non-empty case but still can be nothing because the expression may be undefined.
-        private NodeValue total = noValuesToMedian ;
-        private int count = 0 ;
+        private NodeValue total = noValuesToMedian;
+        private int count = 0;
         ArrayList<NodeValue> collection=new ArrayList<NodeValue>(); 
         
-        public AccMedianDistinct(Expr expr) { super(expr, true) ; }
+        public AccMedianDistinct(Expr expr) { super(expr, true); }
 
         @Override
         protected void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
@@ -83,11 +83,11 @@ public class AggMedianDistinct extends AggregatorBase
 
             if ( nv.isNumber() )
             {
-                count++ ;
+                count++;
                 collection.add(nv);
             }
             else
-                throw new ExprEvalException("median: not a number: "+nv) ;
+                throw new ExprEvalException("median: not a number: "+nv);
 
             log.debug("median count {}", count);
         }
@@ -96,9 +96,9 @@ public class AggMedianDistinct extends AggregatorBase
         public NodeValue getAccValue()
         {
             double median;
-            if ( count == 0 ) return noValuesToMedian ;
+            if ( count == 0 ) return noValuesToMedian;
             if ( super.errorCount != 0 )
-                return null ;
+                return null;
 
             int indexsize = collection.size();
             double[] arrDouble = new double[indexsize];

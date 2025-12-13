@@ -18,22 +18,24 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_UnaryMinus extends ExprFunction1
-{
-    private static final String functionName = Tags.tagUnaryMinus ;
-    private static final String symbol = Tags.symMinus ;
+public class E_UnaryMinus extends ExprFunction1 {
+    private static final String functionName = Tags.tagUnaryMinus;
+    private static final String symbol = Tags.symMinus;
 
-    public E_UnaryMinus(Expr expr)
-    {
-        super(expr, functionName, symbol) ;
+    public E_UnaryMinus(Expr expr) {
+        super(expr, functionName, symbol);
     }
-    
+
     @Override
-    public NodeValue eval(NodeValue v) { return XSDFuncOp.unaryMinus(v) ; }
-    
+    public NodeValue eval(NodeValue v) {
+        return XSDFuncOp.unaryMinus(v);
+    }
+
     @Override
-    public Expr copy(Expr expr) { return new E_UnaryMinus(expr) ; } 
+    public Expr copy(Expr expr) {
+        return new E_UnaryMinus(expr);
+    }
 }

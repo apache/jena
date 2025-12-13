@@ -18,7 +18,7 @@
 
 package org.apache.jena.sparql.expr.aggregate.lib;
 
-import org.apache.jena.sparql.expr.Expr ;
+import org.apache.jena.sparql.expr.Expr;
 
 /** Aggregate - statistical variance - sample (i.e. N-1) */
 public class AccStatVarSample extends AccStatBase {
@@ -29,6 +29,6 @@ public class AccStatVarSample extends AccStatBase {
 
     @Override
     protected double calc() {
-        return super.calcVarianceSample() ;
+        return super.calcVarianceSample();
     }
 }

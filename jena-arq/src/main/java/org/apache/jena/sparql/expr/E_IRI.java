@@ -30,13 +30,12 @@ import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.sparql.sse.Tags;
 
 /**
- * IRI(expr), one argument, SPARQL standard form.
- * The function URI(expr) is the same, but under a different name as a
- * subclass.
+ * IRI(expr), one argument, SPARQL standard form. The function URI(expr) is the same,
+ * but under a different name as a subclass.
  * <p>
- * See also E_IRI2, an ARQ extension. That allows a base and a relative IRI.
- * The relative URI (string or IRI) is resolved against the result of the value of the base expression.
- * which in turn is resolved as per the one-argument form.
+ * See also E_IRI2, an ARQ extension. That allows a base and a relative IRI. The
+ * relative URI (string or IRI) is resolved against the result of the value of the
+ * base expression. which in turn is resolved as per the one-argument form.
  */
 public class E_IRI extends ExprFunction1 {
 
@@ -78,7 +77,7 @@ public class E_IRI extends ExprFunction1 {
         return resolve(v, parserBase, env);
     }
 
-    /*package*/ static NodeValue resolve(NodeValue relative, String baseIRI, FunctionEnv env) {
+    /* package */ static NodeValue resolve(NodeValue relative, String baseIRI, FunctionEnv env) {
         if ( baseIRI == null ) {
             if ( env.getContext() != null ) {
                 Query query = (Query)env.getContext().get(ARQConstants.sysCurrentQuery);
@@ -104,8 +103,9 @@ public class E_IRI extends ExprFunction1 {
     }
 
     @Override
-    public String getFunctionPrintName(SerializationContext cxt)
-    { return sparqlPrintName ; }
+    public String getFunctionPrintName(SerializationContext cxt) {
+        return sparqlPrintName;
+    }
 
     /**
      * Get the parser base - the base URI a a string at the point in parsing when
@@ -141,7 +141,6 @@ public class E_IRI extends ExprFunction1 {
         if ( getClass() != obj.getClass() )
             return false;
         E_IRI other = (E_IRI)obj;
-        return Objects.equals(parserBase, other.parserBase) &&
-               Objects.equals(relExpr, other.relExpr);
+        return Objects.equals(parserBase, other.parserBase) && Objects.equals(relExpr, other.relExpr);
     }
 }

@@ -18,31 +18,31 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
-import java.util.HashSet ;
-import java.util.Set ;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.expr.ExprLib ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionEnv ;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.ExprLib;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionEnv;
 
 /** Accumulator that passes down every value of an expression */
 public abstract class AccumulatorExpr implements Accumulator
 {
-    private final Set<NodeValue> values ;
-    private long accCount = 0 ;
-    protected long errorCount = 0 ; 
-    private final Expr expr ;
+    private final Set<NodeValue> values;
+    private long accCount = 0;
+    protected long errorCount = 0; 
+    private final Expr expr;
     protected final boolean makeDistinct;
     
     protected AccumulatorExpr(Expr expr, boolean makeDistinct) {
         this.expr = expr;
         // Not all subclasses use the machinery here to handled  DISTINCT.
         // SAMPLE(DISTINCT) and COUNT(DISTINCT *) are different.
-        this.makeDistinct = makeDistinct ;
-        this.values  = makeDistinct ? new HashSet<>() : null ;
+        this.makeDistinct = makeDistinct;
+        this.values  = makeDistinct ? new HashSet<>() : null;
     }
     
     @Override
@@ -51,8 +51,8 @@ public abstract class AccumulatorExpr implements Accumulator
         if ( nv != null ) {
             if ( makeDistinct ) {
                 if ( values.contains(nv) )
-                    return ;
-                values.add(nv) ;
+                    return;
+                values.add(nv);
             }
             try {
                 accumulate(nv, binding, functionEnv);
@@ -79,17 +79,17 @@ public abstract class AccumulatorExpr implements Accumulator
     }
 
     /** Get the count of accumulated values */ 
-    protected long getAccCount() { return accCount ; }
+    protected long getAccCount() { return accCount; }
     
     /** Called if no errors to get the accumulated result */
-    protected abstract NodeValue getAccValue() ; 
+    protected abstract NodeValue getAccValue(); 
 
     /** Called when the expression being aggregated evaluates OK.
      * Can throw ExprEvalException - in which case the accumulateError is called */
-    protected abstract void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv) ;
+    protected abstract void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv);
     
     /** Called when an evaluation of the expression causes an error
      * or when the accumulation step throws ExprEvalException  
      */
-    protected abstract void accumulateError(Binding binding, FunctionEnv functionEnv) ;
+    protected abstract void accumulateError(Binding binding, FunctionEnv functionEnv);
 }

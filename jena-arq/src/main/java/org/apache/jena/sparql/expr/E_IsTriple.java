@@ -19,20 +19,22 @@
 package org.apache.jena.sparql.expr;
 
 import org.apache.jena.sparql.function.library.triple.TripleTermOps;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_IsTriple extends ExprFunction1
-{
-    private static final String symbol = Tags.tagIsTriple ;
+public class E_IsTriple extends ExprFunction1 {
+    private static final String symbol = Tags.tagIsTriple;
 
-    public E_IsTriple(Expr expr)
-    {
-        super(expr, symbol) ;
+    public E_IsTriple(Expr expr) {
+        super(expr, symbol);
     }
 
     @Override
-    public NodeValue eval(NodeValue nv) { return TripleTermOps.isTriple(nv); }
+    public NodeValue eval(NodeValue nv) {
+        return TripleTermOps.isTriple(nv);
+    }
 
     @Override
-    public Expr copy(Expr expr) { return new E_IsTriple(expr) ; }
+    public Expr copy(Expr expr) {
+        return new E_IsTriple(expr);
+    }
 }

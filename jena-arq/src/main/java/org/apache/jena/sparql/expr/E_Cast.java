@@ -18,32 +18,32 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.ARQNotImplemented ;
+import org.apache.jena.sparql.ARQNotImplemented;
 
 // CAST(string, IRI)
-public class E_Cast extends ExprFunction2
-{
+public class E_Cast extends ExprFunction2 {
     // See E_StrDatatype
-    private static final String symbol = "cast" ;
+    private static final String symbol = "cast";
 
-    private E_Cast(Expr expr1, Expr expr2)
-    {
-        super(expr1, expr2, symbol) ;
+    private E_Cast(Expr expr1, Expr expr2) {
+        super(expr1, expr2, symbol);
     }
 
     @Override
-    public NodeValue eval(NodeValue x, NodeValue y)
-    {
-        if ( ! x.isString() ) throw new ExprEvalException("cast: arg 2 is not a string: "+x) ;
-        if ( ! y.isIRI() ) throw new ExprEvalException("cast: arg 2 is not a URI: "+y) ;
+    public NodeValue eval(NodeValue x, NodeValue y) {
+        if ( !x.isString() )
+            throw new ExprEvalException("cast: arg 2 is not a string: " + x);
+        if ( !y.isIRI() )
+            throw new ExprEvalException("cast: arg 2 is not a URI: " + y);
 
-        String lex = x.getString() ;
-        y.asNode().getURI() ;
+        String lex = x.getString();
+        y.asNode().getURI();
 
-        throw new ARQNotImplemented() ;
+        throw new ARQNotImplemented();
     }
 
     @Override
-    public Expr copy(Expr arg1, Expr arg2)
-    { return new E_Cast(arg1, arg2) ; }
+    public Expr copy(Expr arg1, Expr arg2) {
+        return new E_Cast(arg1, arg2);
+    }
 }

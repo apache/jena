@@ -26,14 +26,18 @@ import org.apache.jena.sparql.expr.NodeValue;
  * nodes. Unrecognized literals includes ones with a known type but wrong lexical
  * form
  */
-public class NodeValueNode extends NodeValue
-{
-    public NodeValueNode(Node n) { super(n); }
+public class NodeValueNode extends NodeValue {
+    public NodeValueNode(Node n) {
+        super(n);
+    }
 
     @Override
-    protected Node makeNode()
-    { return asNode(); }
+    protected Node makeNode() {
+        return asNode();
+    }
 
     @Override
-    public void visit(NodeValueVisitor visitor) { visitor.visit(this); }
+    public void visit(NodeValueVisitor visitor) {
+        visitor.visit(this);
+    }
 }

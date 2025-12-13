@@ -27,9 +27,8 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.expr.NodeValue;
 
 
-public class NodeValueInteger extends NodeValue
-{
-    //long integer = Integer.MIN_VALUE;
+public class NodeValueInteger extends NodeValue {
+    // long integer = Integer.MIN_VALUE;
     // The performance impact of this seems to be very low
     // After all, much of the work is pattern matching.
     BigInteger integer;

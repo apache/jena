@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.jena.sparql.expr;
 
 import java.util.List;
@@ -25,11 +26,11 @@ import org.apache.jena.sparql.sse.Tags;
 /** Do any of FN_Adjust(date/time)ToTimezone */
 public class E_AdjustToTimezone extends ExprFunctionN {
 
-    public E_AdjustToTimezone(Expr expr1){
+    public E_AdjustToTimezone(Expr expr1) {
         this(expr1, null);
     }
 
-    public E_AdjustToTimezone(Expr expr1, Expr expr2){
+    public E_AdjustToTimezone(Expr expr1, Expr expr2) {
         super(Tags.tagAdjust, expr1, expr2);
     }
 
@@ -39,20 +40,19 @@ public class E_AdjustToTimezone extends ExprFunctionN {
     }
 
     @Override
-    public NodeValue eval(List<NodeValue> args)
-    {
+    public NodeValue eval(List<NodeValue> args) {
         if ( args.size() != 1 && args.size() != 2 )
-            throw new ExprEvalException("ADJUST: Wrong number of arguments: "+args.size()+" : [wanted 1 or 2]") ;
+            throw new ExprEvalException("ADJUST: Wrong number of arguments: " + args.size() + " : [wanted 1 or 2]");
 
-        NodeValue v1 = args.get(0) ;
+        NodeValue v1 = args.get(0);
         if ( !v1.isDateTime() && !v1.isDate() && !v1.isTime() )
             throw new ExprEvalException("ADJUST: Not an xsd:dateTime, xsd:date or xsd:time : " + v1);
 
         if ( args.size() == 2 ) {
-            NodeValue v2 = args.get(1) ;
-            return XSDFuncOp.adjustToTimezone(v1, v2) ;
+            NodeValue v2 = args.get(1);
+            return XSDFuncOp.adjustToTimezone(v1, v2);
         }
 
-        return XSDFuncOp.adjustToTimezone(v1, null) ;
+        return XSDFuncOp.adjustToTimezone(v1, null);
     }
 }

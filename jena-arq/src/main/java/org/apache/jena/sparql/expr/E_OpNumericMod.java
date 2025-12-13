@@ -34,5 +34,7 @@ public class E_OpNumericMod extends ExprFunction2 {
     }
 
     @Override
-    public Expr copy(Expr e1, Expr e2) { return new E_OpNumericMod(e1, e2); }
+    public Expr copy(Expr e1, Expr e2) {
+        return new E_OpNumericMod(e1, e2);
+    }
 }

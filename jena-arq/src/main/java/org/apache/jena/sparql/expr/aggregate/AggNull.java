@@ -18,56 +18,56 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionEnv ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionEnv;
 
 /** The null aggregate (which can't be written in SPARQL) 
  * calculates nothing but does help remember the group key.  
  */
 public class AggNull extends AggregatorBase
 {
-    public AggNull() { super("AGGNULL", false, (ExprList)null) ; } 
+    public AggNull() { super("AGGNULL", false, (ExprList)null); } 
     @Override
-    public Aggregator copy(ExprList exprs) { return this ; }
+    public Aggregator copy(ExprList exprs) { return this; }
     
     @Override
     public Accumulator createAccumulator()
     { 
-        return createAccNull() ;
+        return createAccNull();
     }
 
     @Override
-    public Node getValueEmpty()     { return null ; } 
+    public Node getValueEmpty()     { return null; } 
 
     @Override
-    public int hashCode()   { return HC_AggNull ; }
+    public int hashCode()   { return HC_AggNull; }
     @Override
     public boolean equals(Aggregator other, boolean bySyntax) {
-        if ( other == null ) return false ;
-        if ( this == other ) return true ; 
-        return ( other instanceof AggNull ) ;
+        if ( other == null ) return false;
+        if ( this == other ) return true; 
+        return ( other instanceof AggNull );
     } 
 
-    public static Accumulator createAccNull() { return new  AccNull() ; }
+    public static Accumulator createAccNull() { return new  AccNull(); }
     
     // ---- Accumulator
     private static class AccNull implements Accumulator
     {
-        private int nBindings = 0 ;
+        private int nBindings = 0;
 
         public AccNull() { }
 
         @Override
         public void accumulate(Binding binding, FunctionEnv functionEnv)
-        { nBindings++ ; }
+        { nBindings++; }
 
         @Override
         public NodeValue getValue()
         {
-            return null ;
+            return null;
         }
     }
 

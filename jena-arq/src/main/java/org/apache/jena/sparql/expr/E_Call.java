@@ -18,23 +18,22 @@
 
 package org.apache.jena.sparql.expr;
 
-import java.util.HashMap ;
-import java.util.List ;
-import java.util.Map ;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import org.apache.jena.sparql.ARQInternalErrorException ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.function.FunctionEnv;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.util.Context;
 
 /**
  * ARQ extension to SPARQL which provides for dynamic function invocation
  */
-public class E_Call extends ExprFunctionN
-{
-    private static final String symbol = Tags.tagCall ;
-    private Map<String,Expr> functionCache = new HashMap<>();
+public class E_Call extends ExprFunctionN {
+    private static final String symbol = Tags.tagCall;
+    private Map<String, Expr> functionCache = new HashMap<>();
     private Expr identExpr;
     private List<Expr> argExprs;
 
@@ -55,73 +54,81 @@ public class E_Call extends ExprFunctionN
     @Override
     public NodeValue evalSpecial(Binding binding, FunctionEnv env) {
         // No argument returns unbound
-        if (identExpr == null) throw new ExprEvalException("CALL() has no arguments");
+        if ( identExpr == null )
+            throw new ExprEvalException("CALL() has no arguments");
 
-        //One/More arguments means invoke a function dynamically
+        // One/More arguments means invoke a function dynamically
         NodeValue func = identExpr.eval(binding, env);
-        if (func == null) throw new ExprEvalException("CALL: Function identifier unbound");
-        if (func.isIRI()) {
-        	Expr e = buildFunction(func.getNode().getURI(), argExprs, env.getContext());
-        	if (e == null)
-        	    throw new ExprEvalException("CALL: Function identifier <" + func.getNode().getURI() + "> does not identify a known function");
-        	//Calling this may throw an error which we will just let bubble up
-        	return e.eval(binding, env);
+        if ( func == null )
+            throw new ExprEvalException("CALL: Function identifier unbound");
+        if ( func.isIRI() ) {
+            Expr e = buildFunction(func.getNode().getURI(), argExprs, env.getContext());
+            if ( e == null )
+                throw new ExprEvalException("CALL: Function identifier <" + func.getNode().getURI()
+                                            + "> does not identify a known function");
+            // Calling this may throw an error which we will just let bubble up
+            return e.eval(binding, env);
         } else {
-        	throw new ExprEvalException("CALL: Function identifier not an IRI");
+            throw new ExprEvalException("CALL: Function identifier not an IRI");
         }
     }
 
     @Override
-    public Expr copy(ExprList newArgs)       { return new E_Call(newArgs) ; }
+    public Expr copy(ExprList newArgs) {
+        return new E_Call(newArgs);
+    }
 
     @Override
     public NodeValue eval(List<NodeValue> args, FunctionEnv env) {
-        // Instead of evalSpecial, we can rely on the machinery to evaluate the arguments to CALL first.
+        // Instead of evalSpecial, we can rely on the machinery to evaluate the
+        // arguments to CALL first.
         // This precludes special forms for CALL first argument.
-        // This code here is not usually called - evalSpecial is more general and is the main code path,
-        NodeValue func = args.get(0) ;
-        if (func == null) throw new ExprEvalException("CALL: Function identifier unbound");
-        if (func.isIRI()) {
-            ExprList a = new ExprList() ;
+        // This code here is not usually called - evalSpecial is more general and is
+        // the main code path,
+        NodeValue func = args.get(0);
+        if ( func == null )
+            throw new ExprEvalException("CALL: Function identifier unbound");
+        if ( func.isIRI() ) {
+            ExprList a = new ExprList();
             for ( int i = 1 ; i < args.size() ; i++ )
-                a.add(args.get(i)) ;
-            //Expr e = null ;
+                a.add(args.get(i));
+            // Expr e = null ;
             Expr e = new E_Function(func.getNode().getURI(), a);
-            //Calling this may throw an error which we will just let bubble up
-            return e.eval(null, env) ;
+            // Calling this may throw an error which we will just let bubble up
+            return e.eval(null, env);
         } else
             throw new ExprEvalException("CALL: Function identifier not an IRI");
     }
 
-	@Override
-	public NodeValue eval(List<NodeValue> args) {
-	    // eval(List, FunctionEnv) should be called.
-		throw new ARQInternalErrorException();
-	}
+    @Override
+    public NodeValue eval(List<NodeValue> args) {
+        // eval(List, FunctionEnv) should be called.
+        throw new ARQInternalErrorException();
+    }
 
-	/**
-	 * Returns the expr representing the dynamic function to be invoked
-	 * <p>
-	 * Uses caching wherever possible to avoid
-	 * </p>
-	 */
-    private Expr buildFunction(String functionIRI, List<Expr> args, Context cxt)
-    {
-    	//Use our cached version of the expression wherever possible
-    	if (functionCache.containsKey(functionIRI))	{
-    		return functionCache.get(functionIRI);
-    	}
+    /**
+     * Returns the expr representing the dynamic function to be invoked
+     * <p>
+     * Uses caching wherever possible to avoid
+     * </p>
+     */
+    private Expr buildFunction(String functionIRI, List<Expr> args, Context cxt) {
+        // Use our cached version of the expression wherever possible
+        if ( functionCache.containsKey(functionIRI) ) {
+            return functionCache.get(functionIRI);
+        }
 
-    	//Otherwise generate a new function and cache it
-    	try {
-    		E_Function e = new E_Function(functionIRI, new ExprList(args));
-    		e.buildFunction(cxt);
-        	functionCache.put(functionIRI, e);
-        	return e;
-    	} catch (Throwable e) {
-    		//Anything goes wrong in creating the function cache a null so we don't retry every time we see this IRI
-    		functionCache.put(functionIRI, null);
-    		return null;
-    	}
+        // Otherwise generate a new function and cache it
+        try {
+            E_Function e = new E_Function(functionIRI, new ExprList(args));
+            e.buildFunction(cxt);
+            functionCache.put(functionIRI, e);
+            return e;
+        } catch (Throwable e) {
+            // Anything goes wrong in creating the function cache a null so we don't
+            // retry every time we see this IRI
+            functionCache.put(functionIRI, null);
+            return null;
+        }
     }
 }

@@ -29,13 +29,12 @@ import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.sparql.sse.Tags;
 
 /**
- * IRI(base, expr). Two argument SPARQL extension.
- * The function URI(base, expr) is the same, but under a different name as a
- * subclass.
+ * IRI(base, expr). Two argument SPARQL extension. The function URI(base, expr) is
+ * the same, but under a different name as a subclass.
  * <p>
- * As an ARQ extension, {@code IRI(base, relative)} resolves the relative
- * URI (string or IRI) against the result of the "base" expression,
- * which in turn is resolved as per the one-argument form.
+ * As an ARQ extension, {@code IRI(base, relative)} resolves the relative URI (string
+ * or IRI) against the result of the "base" expression, which in turn is resolved as
+ * per the one-argument form.
  */
 public class E_IRI2 extends ExprFunction2 {
 
@@ -60,7 +59,7 @@ public class E_IRI2 extends ExprFunction2 {
     }
 
     protected E_IRI2(Expr baseExpr, String baseStr, Expr relExpr, String sparqlName, String sseName) {
-        //super(baseExpr, relExpr, sparqlName, sseName);
+        // super(baseExpr, relExpr, sparqlName, sseName);
         super(baseExpr, relExpr, sseName);
         this.parserBase = baseStr;
         this.baseExpr = baseExpr;
@@ -106,8 +105,9 @@ public class E_IRI2 extends ExprFunction2 {
     }
 
     @Override
-    public String getFunctionPrintName(SerializationContext cxt)
-    { return sparqlPrintName ; }
+    public String getFunctionPrintName(SerializationContext cxt) {
+        return sparqlPrintName;
+    }
 
     /**
      * Get the parser base - the base URI a a string at the point in parsing when
@@ -128,10 +128,8 @@ public class E_IRI2 extends ExprFunction2 {
         return relExpr;
     }
 
-    /*
-     * Base expression - 2 argument for of "IRI(base, relative)".
-     * This is an ARQ extension.
-     */
+    /* Base expression - 2 argument for of "IRI(base, relative)". This is an ARQ
+     * extension. */
     public Expr getBaseExpr() {
         return baseExpr;
     }
@@ -151,8 +149,7 @@ public class E_IRI2 extends ExprFunction2 {
         if ( getClass() != obj.getClass() )
             return false;
         E_IRI2 other = (E_IRI2)obj;
-        return Objects.equals(parserBase, other.parserBase) &&
-               Objects.equals(baseExpr, other.baseExpr) &&
-               Objects.equals(relExpr, other.relExpr);
+        return Objects.equals(parserBase, other.parserBase) && Objects.equals(baseExpr, other.baseExpr)
+               && Objects.equals(relExpr, other.relExpr);
     }
 }

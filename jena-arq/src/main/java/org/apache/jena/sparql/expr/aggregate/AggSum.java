@@ -18,53 +18,53 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionEnv ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionEnv;
 
 public class AggSum  extends AggregatorBase
 {
     // ---- SUM(expr)
-    private static final NodeValue noValuesToSum = NodeValue.nvZERO ; 
+    private static final NodeValue noValuesToSum = NodeValue.nvZERO; 
 
-    public AggSum(Expr expr) { super("SUM", false, expr) ; } 
+    public AggSum(Expr expr) { super("SUM", false, expr); } 
     @Override
-    public Aggregator copy(ExprList exprs) { return new AggSum(exprs.get(0)) ; }
+    public Aggregator copy(ExprList exprs) { return new AggSum(exprs.get(0)); }
 
     @Override
     public Accumulator createAccumulator()
     { 
-        return new AccSum(getExpr()) ;
+        return new AccSum(getExpr());
     }
 
     @Override
-    public Node getValueEmpty() { return NodeValue.toNode(noValuesToSum) ; } 
+    public Node getValueEmpty() { return NodeValue.toNode(noValuesToSum); } 
 
     @Override
-    public int hashCode()   { return HC_AggSum ^ getExpr().hashCode() ; }
+    public int hashCode()   { return HC_AggSum ^ getExpr().hashCode(); }
     
     @Override
     public boolean equals(Aggregator other, boolean bySyntax) {
-        if ( other == null ) return false ;
-        if ( this == other ) return true ; 
+        if ( other == null ) return false;
+        if ( this == other ) return true; 
         if ( ! ( other instanceof AggSum ) )
-            return false ;
-        AggSum agg = (AggSum)other ;
-        return getExpr().equals(agg.getExpr(), bySyntax) ;
+            return false;
+        AggSum agg = (AggSum)other;
+        return getExpr().equals(agg.getExpr(), bySyntax);
     } 
 
     // ---- Accumulator
     private static class AccSum extends AccumulatorExpr
     {
         // Non-empty case but still can be nothing because the expression may be undefined.
-        private NodeValue total = null ;
+        private NodeValue total = null;
 
-        public AccSum(Expr expr) { super(expr, false) ; }
+        public AccSum(Expr expr) { super(expr, false); }
 
         @Override
         protected void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
@@ -72,12 +72,12 @@ public class AggSum  extends AggregatorBase
             if ( nv.isNumber() )
             {
                 if ( total == null )
-                    total = nv ;
+                    total = nv;
                 else
-                    total = XSDFuncOp.numAdd(nv, total) ;
+                    total = XSDFuncOp.numAdd(nv, total);
             }
             else
-                throw new ExprEvalException("Not a number: "+nv) ;
+                throw new ExprEvalException("Not a number: "+nv);
         }
 
         @Override
@@ -86,6 +86,6 @@ public class AggSum  extends AggregatorBase
 
         @Override
         public NodeValue getAccValue()
-        { return total ; }
+        { return total; }
     }
 }

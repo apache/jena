@@ -18,21 +18,23 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_DateTimeTZ extends ExprFunction1
-{
-    private static final String symbol = Tags.tagTZ ;
+public class E_DateTimeTZ extends ExprFunction1 {
+    private static final String symbol = Tags.tagTZ;
 
-    public E_DateTimeTZ(Expr expr)
-    {
-        super(expr, symbol) ;
+    public E_DateTimeTZ(Expr expr) {
+        super(expr, symbol);
     }
-    
+
     @Override
-    public NodeValue eval(NodeValue v) { return XSDFuncOp.dtGetTZ(v) ; }
-    
+    public NodeValue eval(NodeValue v) {
+        return XSDFuncOp.dtGetTZ(v);
+    }
+
     @Override
-    public Expr copy(Expr expr) { return new E_DateTimeTZ(expr) ; } 
+    public Expr copy(Expr expr) {
+        return new E_DateTimeTZ(expr);
+    }
 }

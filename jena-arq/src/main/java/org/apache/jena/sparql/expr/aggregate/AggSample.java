@@ -18,51 +18,51 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionEnv ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionEnv;
 
 public class AggSample extends AggregatorBase
 {
     // ---- Sample(expr)
-    public AggSample(Expr expr) { super("SAMPLE", false, expr) ; } 
+    public AggSample(Expr expr) { super("SAMPLE", false, expr); } 
     
     @Override
-    public Aggregator copy(ExprList exprs) { return new AggSample(exprs.get(0)) ; }
+    public Aggregator copy(ExprList exprs) { return new AggSample(exprs.get(0)); }
     
     @Override
     public Accumulator createAccumulator()
     { 
-        return new AccSample(getExpr()) ;
+        return new AccSample(getExpr());
     }
 
     @Override
-    public Node getValueEmpty()     { return null ; } 
+    public Node getValueEmpty()     { return null; } 
 
     @Override
-    public int hashCode()   { return HC_AggSample ^ getExpr().hashCode() ; }
+    public int hashCode()   { return HC_AggSample ^ getExpr().hashCode(); }
     
     @Override
     public boolean equals(Aggregator other, boolean bySyntax) {
-        if ( other == null ) return false ;
-        if ( this == other ) return true ; 
+        if ( other == null ) return false;
+        if ( this == other ) return true; 
         if ( ! ( other instanceof AggSample ) )
-            return false ;
-        AggSample agg = (AggSample)other ;
-        return this.exprList.equals(agg.exprList, bySyntax) ;
+            return false;
+        AggSample agg = (AggSample)other;
+        return this.exprList.equals(agg.exprList, bySyntax);
     } 
 
     // ---- Accumulator
     private static class AccSample extends AccumulatorExpr
     {
         // Sample: first evaluation of the expression that is not an error.
-        private NodeValue sampleSoFar = null ;
+        private NodeValue sampleSoFar = null;
 
         // SAMPLE is different : it treats errors as "just another value" and tries to return a defined value if any have been seen.
-        public AccSample(Expr expr) { super(expr, false) ; }
+        public AccSample(Expr expr) { super(expr, false); }
 
         @Override
         public void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv) {
@@ -78,7 +78,7 @@ public class AggSample extends AggregatorBase
         
         @Override
         public NodeValue getAccValue()
-        { return sampleSoFar ; }
+        { return sampleSoFar; }
         
         @Override
         public NodeValue getValue() {

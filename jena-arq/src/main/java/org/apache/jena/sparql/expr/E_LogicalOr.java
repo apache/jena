@@ -18,10 +18,10 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionEnv;
+import org.apache.jena.sparql.sse.Tags;
 
 /*
     Logical OR and AND is special with respect to handling errors truth table.
@@ -39,49 +39,47 @@ import org.apache.jena.sparql.sse.Tags ;
     F       F   |   T       F       F
 */
 
-public class E_LogicalOr extends ExprFunction2
-{
+public class E_LogicalOr extends ExprFunction2 {
 
-    private static final String functionName = Tags.tagOr ;
-    private static final String symbol = Tags.symOr ;
+    private static final String functionName = Tags.tagOr;
+    private static final String symbol = Tags.symOr;
 
     public E_LogicalOr(Expr left, Expr right) {
         super(left, right, functionName, symbol);
     }
 
     @Override
-    public NodeValue evalSpecial(Binding binding, FunctionEnv env)
-    {
-        ExprEvalException error = null ;
+    public NodeValue evalSpecial(Binding binding, FunctionEnv env) {
+        ExprEvalException error = null;
         try {
-            NodeValue x = getArg1().eval(binding, env) ;
+            NodeValue x = getArg1().eval(binding, env);
             if ( XSDFuncOp.effectiveBooleanValue(x) )
-    			return NodeValue.TRUE ;
+                return NodeValue.TRUE;
         } catch (ExprEvalException eee) {
             // RHS Must be true else error.
-            error = eee ;
+            error = eee;
         }
 
         // LHS was false or error.
 
         try {
-            NodeValue y = getArg2().eval(binding, env) ;
+            NodeValue y = getArg2().eval(binding, env);
 
-    		if ( XSDFuncOp.effectiveBooleanValue(y) )
-    			return NodeValue.TRUE ;
+            if ( XSDFuncOp.effectiveBooleanValue(y) )
+                return NodeValue.TRUE;
 
             // RHS is false but was there an error earlier?
             if ( error != null )
-                throw error ;
+                throw error;
 
-    		return NodeValue.FALSE ;
+            return NodeValue.FALSE;
         } catch (ExprEvalException eee) {
             // LHS an error, RHS was not true => error
             // Throw the first
             if ( error != null )
-                throw error ;
+                throw error;
             // RHS was false - throw this error.
-            throw eee ;
+            throw eee;
         }
     }
 
@@ -90,16 +88,18 @@ public class E_LogicalOr extends ExprFunction2
         // Evaluation only happens as part of copySubstitute.
         // Proper evaluation is a special form as above.
 
-        if ( ! x.isBoolean() )
-            throw new ExprEvalException("Not a boolean: "+x) ;
-        if ( ! y.isBoolean() )
-            throw new ExprEvalException("Not a boolean: "+y) ;
+        if ( !x.isBoolean() )
+            throw new ExprEvalException("Not a boolean: " + x);
+        if ( !y.isBoolean() )
+            throw new ExprEvalException("Not a boolean: " + y);
 
-        boolean boolX = x.getBoolean() ;
-        boolean boolY = y.getBoolean() ;
-        return NodeValue.makeBoolean( boolX || boolY ) ;
+        boolean boolX = x.getBoolean();
+        boolean boolY = y.getBoolean();
+        return NodeValue.makeBoolean(boolX || boolY);
     }
 
     @Override
-    public Expr copy(Expr e1, Expr e2) {  return new E_LogicalOr(e1 , e2 ) ; }
+    public Expr copy(Expr e1, Expr e2) {
+        return new E_LogicalOr(e1, e2);
+    }
 }

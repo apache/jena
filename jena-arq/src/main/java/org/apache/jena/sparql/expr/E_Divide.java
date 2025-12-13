@@ -18,30 +18,29 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.query.ARQ ;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueOps ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.query.ARQ;
+import org.apache.jena.sparql.expr.nodevalue.NodeValueOps;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_Divide extends ExprFunction2
-{
-    private static final String functionName = Tags.tagDivide ;
-    private static final String symbol = Tags.symDiv ;
-    
-    public E_Divide(Expr left, Expr right)
-    {
-        super(left, right, functionName, symbol) ;
+public class E_Divide extends ExprFunction2 {
+    private static final String functionName = Tags.tagDivide;
+    private static final String symbol = Tags.symDiv;
+
+    public E_Divide(Expr left, Expr right) {
+        super(left, right, functionName, symbol);
     }
-    
+
     @Override
-    public NodeValue eval(NodeValue x, NodeValue y)
-    {
+    public NodeValue eval(NodeValue x, NodeValue y) {
         if ( ARQ.isStrictMode() )
-            return XSDFuncOp.numDivide(x, y) ;
+            return XSDFuncOp.numDivide(x, y);
 
-        return NodeValueOps.divisionNV(x, y) ;
+        return NodeValueOps.divisionNV(x, y);
     }
-    
+
     @Override
-    public Expr copy(Expr e1, Expr e2) {  return new E_Divide(e1 , e2) ; }
+    public Expr copy(Expr e1, Expr e2) {
+        return new E_Divide(e1, e2);
+    }
 }

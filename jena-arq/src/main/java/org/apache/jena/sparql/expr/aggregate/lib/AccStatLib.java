@@ -18,29 +18,29 @@
 
 package org.apache.jena.sparql.expr.aggregate.lib;
 
-import org.apache.jena.sparql.expr.ExprEvalException ;
+import org.apache.jena.sparql.expr.ExprEvalException;
 
 public class AccStatLib {
     /** Calculate the variance (sample) */ 
     public static double calcVarianceSample(double sumSquared, double sum, long count) {
         // (N*sum(?x*?x) - sum(?x) ) / N*(N-1) 
-        return calcVariance$(sumSquared, sum, count, count-1) ;
+        return calcVariance$(sumSquared, sum, count, count-1);
     }
 
     /** Calculate the variance (population) */ 
     public static double calcVariancePopulation(double sumSquared, double sum, long N) {
-        return calcVariance$(sumSquared, sum, N, N) ;
+        return calcVariance$(sumSquared, sum, N, N);
     }
     
     // Engine.
     static private double calcVariance$(double sumSquared, double sum, long N, long N1) {
-//        System.out.printf("sum = %f, sumSq = %f, N=%d\n", sum, sumSquared, N) ;
+//        System.out.printf("sum = %f, sumSq = %f, N=%d\n", sum, sumSquared, N);
         if ( N <= 0 )
-            throw new ExprEvalException("N= "+N) ;
+            throw new ExprEvalException("N= "+N);
         if ( N1 == 0 )
-            throw new ExprEvalException("Sample size one") ;
-        double x = sumSquared - (sum*sum)/N ;
-        x = x / N1 ;
-        return x ;
+            throw new ExprEvalException("Sample size one");
+        double x = sumSquared - (sum*sum)/N;
+        x = x / N1;
+        return x;
     }
 }

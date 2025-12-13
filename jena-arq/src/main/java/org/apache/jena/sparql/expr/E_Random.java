@@ -18,9 +18,9 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.atlas.lib.RandomLib ;
-import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.atlas.lib.RandomLib;
+import org.apache.jena.sparql.function.FunctionEnv;
+import org.apache.jena.sparql.sse.Tags;
 
 public class E_Random extends ExprFunction0 implements Unstable {
     private static final String symbol = Tags.tagRand;

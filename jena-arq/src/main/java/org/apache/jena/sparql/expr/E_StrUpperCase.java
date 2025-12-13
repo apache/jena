@@ -18,21 +18,23 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_StrUpperCase extends ExprFunction1
-{
-    private static final String symbol = Tags.tagStrUppercase ;
+public class E_StrUpperCase extends ExprFunction1 {
+    private static final String symbol = Tags.tagStrUppercase;
 
-    public E_StrUpperCase(Expr expr)
-    {
-        super(expr, symbol) ;
+    public E_StrUpperCase(Expr expr) {
+        super(expr, symbol);
     }
-    
+
     @Override
-    public NodeValue eval(NodeValue v) { return XSDFuncOp.strUpperCase(v) ; }
-    
+    public NodeValue eval(NodeValue v) {
+        return XSDFuncOp.strUpperCase(v);
+    }
+
     @Override
-    public Expr copy(Expr expr) { return new E_StrUpperCase(expr) ; } 
+    public Expr copy(Expr expr) {
+        return new E_StrUpperCase(expr);
+    }
 }

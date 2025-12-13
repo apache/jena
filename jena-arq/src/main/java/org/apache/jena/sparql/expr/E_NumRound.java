@@ -18,21 +18,23 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_NumRound extends ExprFunction1
-{
-    private static final String symbol = Tags.tagNumRound ;
+public class E_NumRound extends ExprFunction1 {
+    private static final String symbol = Tags.tagNumRound;
 
-    public E_NumRound(Expr expr)
-    {
-        super(expr, symbol) ;
+    public E_NumRound(Expr expr) {
+        super(expr, symbol);
     }
-    
+
     @Override
-    public NodeValue eval(NodeValue v) { return XSDFuncOp.round(v) ; }
-    
+    public NodeValue eval(NodeValue v) {
+        return XSDFuncOp.round(v);
+    }
+
     @Override
-    public Expr copy(Expr expr) { return new E_NumRound(expr) ; } 
+    public Expr copy(Expr expr) {
+        return new E_NumRound(expr);
+    }
 }

@@ -27,20 +27,27 @@ import org.apache.jena.sparql.expr.NodeValue;
 
 /** XSD Duration */
 
-public class NodeValueDuration extends NodeValue
-{
+public class NodeValueDuration extends NodeValue {
     Duration duration;
 
     public NodeValueDuration(Duration dt) {
         duration = dt;
     }
 
-    public NodeValueDuration(Duration dt, Node n) { super(n); duration = dt; }
+    public NodeValueDuration(Duration dt, Node n) {
+        super(n);
+        duration = dt;
+    }
 
     @Override
-    public boolean isDuration() { return true; }
+    public boolean isDuration() {
+        return true;
+    }
+
     @Override
-    public Duration getDuration()     { return duration; }
+    public Duration getDuration() {
+        return duration;
+    }
 
     @Override
     protected Node makeNode() {
@@ -49,5 +56,7 @@ public class NodeValueDuration extends NodeValue
     }
 
     @Override
-    public void visit(NodeValueVisitor visitor) { visitor.visit(this); }
+    public void visit(NodeValueVisitor visitor) {
+        visitor.visit(this);
+    }
 }

@@ -26,7 +26,6 @@ public class E_SHA224 extends ExprDigest {
     private static final String symbol = Tags.tagSHA224;
     private static final String printName = uppercase(symbol);
 
-
     public E_SHA224(Expr expr) {
         super(expr, symbol, printName, "SHA-224");
     }

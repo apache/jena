@@ -34,5 +34,7 @@ public class E_LangDir extends ExprFunction1 {
     }
 
     @Override
-    public Expr copy(Expr expr) { return new E_LangDir(expr); }
+    public Expr copy(Expr expr) {
+        return new E_LangDir(expr);
+    }
 }

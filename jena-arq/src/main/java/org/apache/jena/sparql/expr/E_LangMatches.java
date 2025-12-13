@@ -18,24 +18,23 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.expr.nodevalue.NodeFunctions ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_LangMatches extends ExprFunction2
-{
-    private static final String symbol = Tags.tagLangMatches ;
+public class E_LangMatches extends ExprFunction2 {
+    private static final String symbol = Tags.tagLangMatches;
 
-    public E_LangMatches(Expr expr1, Expr expr2)
-    {
-        super(expr1, expr2, symbol) ;
+    public E_LangMatches(Expr expr1, Expr expr2) {
+        super(expr1, expr2, symbol);
     }
-    
+
     @Override
-    public NodeValue eval(NodeValue lang, NodeValue pattern)
-    {
-        return NodeFunctions.langMatches(lang, pattern) ; 
+    public NodeValue eval(NodeValue lang, NodeValue pattern) {
+        return NodeFunctions.langMatches(lang, pattern);
     }
-    
+
     @Override
-    public Expr copy(Expr e1, Expr e2) {  return new E_LangMatches(e1 , e2) ; }
+    public Expr copy(Expr e1, Expr e2) {
+        return new E_LangMatches(e1, e2);
+    }
 }

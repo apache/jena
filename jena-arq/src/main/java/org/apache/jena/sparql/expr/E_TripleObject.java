@@ -19,14 +19,13 @@
 package org.apache.jena.sparql.expr;
 
 import org.apache.jena.sparql.function.library.triple.TripleTermOps;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_TripleObject extends ExprFunction1
-{
+public class E_TripleObject extends ExprFunction1 {
     private static final String symbol = Tags.tagObject;
 
     public E_TripleObject(Expr expr) {
-        super(expr, symbol) ;
+        super(expr, symbol);
     }
 
     @Override

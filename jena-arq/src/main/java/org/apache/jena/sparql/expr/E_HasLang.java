@@ -22,8 +22,8 @@ import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
 import org.apache.jena.sparql.sse.Tags;
 
 /**
- * Does the argument have a language tag?
- * It tests for a language tag for both {@code rdf:langString} and {@code rdf:dirLangString}.
+ * Does the argument have a language tag? It tests for a language tag for both
+ * {@code rdf:langString} and {@code rdf:dirLangString}.
  */
 public class E_HasLang extends ExprFunction1 {
     private static final String symbol = Tags.tagHasLang;
@@ -38,5 +38,7 @@ public class E_HasLang extends ExprFunction1 {
     }
 
     @Override
-    public Expr copy(Expr expr) { return new E_HasLang(expr); }
+    public Expr copy(Expr expr) {
+        return new E_HasLang(expr);
+    }
 }

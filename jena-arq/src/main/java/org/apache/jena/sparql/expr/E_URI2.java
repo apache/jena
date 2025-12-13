@@ -22,8 +22,8 @@ import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.sparql.sse.Tags;
 
 /**
- * This class is an alternative name for {@linkplain E_IRI2}.
- * See the javadoc for {@linkplain E_IRI2}.
+ * This class is an alternative name for {@linkplain E_IRI2}. See the javadoc for
+ * {@linkplain E_IRI2}.
  */
 public class E_URI2 extends E_IRI2 {
     private static final String sparqlPrintName = "URI";
@@ -45,12 +45,13 @@ public class E_URI2 extends E_IRI2 {
     }
 
     @Override
-    public String getFunctionPrintName(SerializationContext cxt)
-    { return sparqlPrintName ; }
+    public String getFunctionPrintName(SerializationContext cxt) {
+        return sparqlPrintName;
+    }
 
     @Override
     public int hashCode() {
-        return super.hashCode()+1;
+        return super.hashCode() + 1;
     }
 
     @Override

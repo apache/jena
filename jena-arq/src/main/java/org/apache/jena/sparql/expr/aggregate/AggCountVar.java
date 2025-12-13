@@ -18,52 +18,52 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.graph.NodeConst ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionEnv;
+import org.apache.jena.sparql.graph.NodeConst;
 
 public class AggCountVar extends AggregatorBase
 {
     // ---- COUNT(?var)
-    public AggCountVar(Expr expr) { super("COUNT", false, expr) ; }
+    public AggCountVar(Expr expr) { super("COUNT", false, expr); }
     @Override
-    public Aggregator copy(ExprList expr) { return new AggCountVar(expr.get(0)) ; }
+    public Aggregator copy(ExprList expr) { return new AggCountVar(expr.get(0)); }
 
     @Override
     public Accumulator createAccumulator()
     { 
-        return new AccCountVar(getExpr()) ;
+        return new AccCountVar(getExpr());
     }
 
     @Override
-    public int hashCode()   { return HC_AggCountVar ^ exprList.hashCode() ; }
+    public int hashCode()   { return HC_AggCountVar ^ exprList.hashCode(); }
     
     @Override
     public boolean equals(Aggregator other, boolean bySyntax) {
-        if ( other == null ) return false ;
-        if ( this == other ) return true ;
+        if ( other == null ) return false;
+        if ( this == other ) return true;
         if ( ! ( other instanceof AggCountVar ) )
-            return false ;
-        AggCountVar agg = (AggCountVar)other ;
-        return agg.getExpr().equals(getExpr(), bySyntax) ;
+            return false;
+        AggCountVar agg = (AggCountVar)other;
+        return agg.getExpr().equals(getExpr(), bySyntax);
     }
 
     @Override
-    public Node getValueEmpty()     { return NodeConst.nodeZero ; } 
+    public Node getValueEmpty()     { return NodeConst.nodeZero; } 
 
     // ---- Accumulator
     private static class AccCountVar extends AccumulatorExpr
     {
-        private long count = 0 ;
-        public AccCountVar(Expr expr)   { super(expr, false) ; }
+        private long count = 0;
+        public AccCountVar(Expr expr)   { super(expr, false); }
 
         @Override
         public void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
-        { count++ ; }
+        { count++; }
 
         @Override
         protected void accumulateError(Binding binding, FunctionEnv functionEnv)
@@ -72,9 +72,9 @@ public class AggCountVar extends AggregatorBase
         // Ignore errors.
         @Override
         public NodeValue getValue()
-        { return getAccValue() ; }
+        { return getAccValue(); }
 
         @Override
-        public NodeValue getAccValue()             { return NodeValue.makeInteger(count) ; }
+        public NodeValue getAccValue()             { return NodeValue.makeInteger(count); }
     }
 }
