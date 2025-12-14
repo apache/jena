@@ -16,21 +16,21 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.system.stream;
+package org.apache.jena.riot.system.streammgr;
 
-import java.util.StringTokenizer ;
+import java.util.StringTokenizer;
 
-import org.apache.jena.atlas.web.TypedInputStream ;
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.atlas.web.TypedInputStream;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.RDFParser;
-import org.apache.jena.riot.adapters.AdapterFileManager ;
-import org.apache.jena.shared.JenaException ;
+import org.apache.jena.riot.adapters.AdapterFileManager;
+import org.apache.jena.shared.JenaException;
 import org.apache.jena.util.SystemUtils;
-import org.apache.jena.vocabulary.LocationMappingVocab ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.apache.jena.vocabulary.LocationMappingVocab;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Code for using the general facilities of the location mapper/ filemanager subsystem
  *  and set up for Jena usage. e.g. find a location mapper with RDf description.
@@ -58,11 +58,11 @@ public class JenaIOEnvironment
     /** The default path for searching for the location mapper */
     public static final String DEFAULT_PATH =
         "location-mapping.ttl;location-mapping.rdf;"+
-        "etc/location-mapping.rdf;etc/location-mapping.ttl" ;
-    public static final String GlobalMapperSystemProperty1 = "http://jena.hpl.hp.com/2004/08/LocationMap" ;
-    public static final String GlobalMapperSystemProperty2 = "LocationMap" ;
+        "etc/location-mapping.rdf;etc/location-mapping.ttl";
+    public static final String GlobalMapperSystemProperty1 = "http://jena.hpl.hp.com/2004/08/LocationMap";
+    public static final String GlobalMapperSystemProperty2 = "LocationMap";
 
-    static String s_globalMapperPath = null ;
+    static String s_globalMapperPath = null;
 
     static private String getGlobalConfigPath() {
         if ( s_globalMapperPath == null )
@@ -99,7 +99,7 @@ public class JenaIOEnvironment
         LocationMapper locMap = new LocationMapper();
         StmtIterator mappings = m.listStatements(null, LocationMappingVocab.mapping, (RDFNode)null);
 
-        for ( ; mappings.hasNext() ; ) {
+        for (; mappings.hasNext(); ) {
             Statement s = mappings.nextStatement();
             Resource mapping = s.getResource();
 

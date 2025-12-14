@@ -35,9 +35,9 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RiotNotFoundException;
 import org.apache.jena.riot.SysRIOT;
-import org.apache.jena.riot.system.stream.LocatorFile;
-import org.apache.jena.riot.system.stream.LocatorHTTP;
-import org.apache.jena.riot.system.stream.StreamManager;
+import org.apache.jena.riot.system.streammgr.LocatorFile;
+import org.apache.jena.riot.system.streammgr.LocatorHTTP;
+import org.apache.jena.riot.system.streammgr.StreamManager;
 import org.apache.jena.sparql.util.Context;
 
 public class TestStreamManager {

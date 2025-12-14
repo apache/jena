@@ -24,7 +24,7 @@ import java.util.Objects;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.riot.*;
-import org.apache.jena.riot.system.stream.StreamManager;
+import org.apache.jena.riot.system.streammgr.StreamManager;
 import org.apache.jena.sparql.exec.QueryExecResult;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.util.Context;

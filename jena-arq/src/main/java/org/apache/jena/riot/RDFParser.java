@@ -50,7 +50,7 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.process.normalize.StreamCanonicalLangTag;
 import org.apache.jena.riot.process.normalize.StreamCanonicalLiterals;
 import org.apache.jena.riot.system.*;
-import org.apache.jena.riot.system.stream.StreamManager;
+import org.apache.jena.riot.system.streammgr.StreamManager;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;

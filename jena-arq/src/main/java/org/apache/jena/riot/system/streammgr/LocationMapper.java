@@ -16,18 +16,18 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.system.stream;
+package org.apache.jena.riot.system.streammgr;
 
-import java.util.Iterator ;
-import java.util.Map ;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.vocabulary.LocationMappingVocab ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.LocationMappingVocab;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Alternative locations for URIs.  Maintains two maps:
@@ -43,9 +43,9 @@ import org.slf4j.LoggerFactory ;
 
 public class LocationMapper
 {
-    private static Logger log = LoggerFactory.getLogger(LocationMapper.class)  ;
-    private Map<String, String> altLocations = new ConcurrentHashMap<>() ;
-    private Map<String, String> altPrefixes = new ConcurrentHashMap<>() ;
+    private static Logger log = LoggerFactory.getLogger(LocationMapper.class) ;
+    private Map<String, String> altLocations = new ConcurrentHashMap<>();
+    private Map<String, String> altPrefixes = new ConcurrentHashMap<>();
 
     /** Create a LocationMapper with no mapping yet */
     public LocationMapper() { }
@@ -53,19 +53,19 @@ public class LocationMapper
     /** Deep copy of location and prefix maps */
     @Override
     public LocationMapper clone() {
-        return clone(this) ;
+        return clone(this);
     }
 
     private static LocationMapper clone(LocationMapper other) {
-        LocationMapper mapper = new LocationMapper() ;
-        mapper.altLocations.putAll(other.altLocations) ;
-        mapper.altPrefixes.putAll(other.altPrefixes) ;
-        return mapper ;
+        LocationMapper mapper = new LocationMapper();
+        mapper.altLocations.putAll(other.altLocations);
+        mapper.altPrefixes.putAll(other.altPrefixes);
+        return mapper;
     }
 
     public void copyFrom(LocationMapper lmap2) {
-        this.altLocations.putAll(lmap2.altLocations) ;
-        this.altPrefixes.putAll(lmap2.altPrefixes) ;
+        this.altLocations.putAll(lmap2.altLocations);
+        this.altPrefixes.putAll(lmap2.altPrefixes);
     }
 
     public boolean containsMapping(String uri) {
@@ -73,7 +73,7 @@ public class LocationMapper
     }
 
     public String altMapping(String uri) {
-        return altMapping(uri, uri) ;
+        return altMapping(uri, uri);
     }
 
     /**
@@ -89,9 +89,9 @@ public class LocationMapper
         if ( altLocations.isEmpty() && altPrefixes.isEmpty() )
             return otherwise;
         if ( altLocations.containsKey(uri) )
-            return altLocations.get(uri) ;
-        String newStart = null ;
-        String oldStart = null ;
+            return altLocations.get(uri);
+        String newStart = null;
+        String oldStart = null;
         for ( String prefix : altPrefixes.keySet() )
         {
             if ( uri.startsWith( prefix ) )
@@ -106,43 +106,43 @@ public class LocationMapper
         }
 
         if ( newStart != null )
-            return newStart + uri.substring(oldStart.length()) ;
+            return newStart + uri.substring(oldStart.length());
 
-        return otherwise ;
+        return otherwise;
     }
 
     public void addAltEntry(String uri, String alt) {
-        altLocations.put(uri, alt) ;
+        altLocations.put(uri, alt);
     }
 
     public void addAltPrefix(String uriPrefix, String altPrefix) {
-        altPrefixes.put(uriPrefix, altPrefix) ;
+        altPrefixes.put(uriPrefix, altPrefix);
     }
 
     /** Iterate over all the entries registered */
     public Iterator<String> listAltEntries() {
-        return altLocations.keySet().iterator() ;
+        return altLocations.keySet().iterator();
     }
 
     /** Iterate over all the prefixes registered */
     public Iterator<String> listAltPrefixes() {
-        return altPrefixes.keySet().iterator() ;
+        return altPrefixes.keySet().iterator();
     }
 
     public void removeAltEntry(String uri) {
-        altLocations.remove(uri) ;
+        altLocations.remove(uri);
     }
 
     public void removeAltPrefix(String uriPrefix) {
-        altPrefixes.remove(uriPrefix) ;
+        altPrefixes.remove(uriPrefix);
     }
 
     public String getAltEntry(String uri) {
-        return altLocations.get(uri) ;
+        return altLocations.get(uri);
     }
 
     public String getAltPrefix(String uriPrefix) {
-        return altPrefixes.get(uriPrefix) ;
+        return altPrefixes.get(uriPrefix);
     }
 
     /** Iterate over all the entries registered */
@@ -152,29 +152,29 @@ public class LocationMapper
 
     @Override
     public int hashCode() {
-        int x = 0 ;
-        x = x ^ altLocations.hashCode() ;
-        x = x ^ altPrefixes.hashCode() ;
-        return x ;
+        int x = 0;
+        x = x ^ altLocations.hashCode();
+        x = x ^ altPrefixes.hashCode();
+        return x;
     }
 
     @Override
     public boolean equals(Object obj) {
         if ( !(obj instanceof LocationMapper) )
-            return false ;
-        LocationMapper other = (LocationMapper)obj ;
+            return false;
+        LocationMapper other = (LocationMapper)obj;
 
         if ( !this.altLocations.equals(other.altLocations) )
-            return false ;
+            return false;
 
         if ( !this.altPrefixes.equals(other.altPrefixes) )
-            return false ;
-        return true ;
+            return false;
+        return true;
     }
 
     @Override
     public String toString() {
-        String s = "" ;
+        String s = "";
         for ( String k : altLocations.keySet() )
         {
             String v = altLocations.get( k );
@@ -186,14 +186,14 @@ public class LocationMapper
             String v = altPrefixes.get( k );
             s = s + "(Prefix:" + k + "=>" + v + ") ";
         }
-        return s ;
+        return s;
     }
 
     public Model toModel() {
-        Model m = ModelFactory.createDefaultModel() ;
-        m.setNsPrefix("lmap", "http://jena.hpl.hp.com/2004/08/location-mapping#") ;
-        toModel(m) ;
-        return m ;
+        Model m = ModelFactory.createDefaultModel();
+        m.setNsPrefix("lmap", "http://jena.hpl.hp.com/2004/08/location-mapping#");
+        toModel(m);
+        return m;
     }
 
     public void toModel(Model model) {

@@ -36,7 +36,7 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFParser.LangTagForm;
 import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.system.*;
-import org.apache.jena.riot.system.stream.StreamManager;
+import org.apache.jena.riot.system.streammgr.StreamManager;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.ContextAccumulator;

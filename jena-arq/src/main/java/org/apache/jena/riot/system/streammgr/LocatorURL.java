@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.system.stream;
+package org.apache.jena.riot.system.streammgr;
 
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.web.TypedInputStream;
