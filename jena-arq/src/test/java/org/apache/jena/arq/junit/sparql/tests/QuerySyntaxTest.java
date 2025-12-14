@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import org.apache.jena.arq.junit.LibTest;
 import org.apache.jena.arq.junit.manifest.AbstractManifestTest;
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
+import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.query.Query;
 
 //import java.io.IOException;
@@ -47,14 +48,14 @@ public class QuerySyntaxTest extends AbstractManifestTest {
             Query query = SparqlTestLib.queryFromEntry(manifestEntry, testSyntax);
             if ( !expectLegalSyntax ) {
                 String filename = SparqlTestLib.getAction(manifestEntry);
-                System.out.printf("==== %s\n", "Negative syntax test");
+                System.out.printf("==== Syntax test %s : %s\n", FileOps.basename(filename), "expected negative, got positive");
                 LibTest.printFile(filename);
                 fail("Expected parse failure");
             }
         } catch (QueryException qEx) {
             if ( expectLegalSyntax ) {
                 String filename = SparqlTestLib.getAction(manifestEntry);
-                System.out.printf("==== %s\n", "Positive syntax test");
+                System.out.printf("==== Syntax test %s : %s\n", FileOps.basename(filename), "expected postive, got negative");
                 LibTest.printFile(filename);
                 throw qEx;
             }

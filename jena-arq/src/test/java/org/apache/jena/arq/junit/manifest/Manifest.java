@@ -55,11 +55,6 @@ public class Manifest
         // Exceptions from @TestFactories are swallowed by JUnit5.
         try {
             manifestRDF = RDFParser.source(filenameOrURI).toGraph();
-        } catch (RiotNotFoundException ex) {
-            log.error("Not found: "+filenameOrURI);
-            // Exit on error.
-            System.exit(1);
-            throw new RiotNotFoundException("Manifest "+filenameOrURI);
         } catch (RiotException ex) {
             // Exit on error.
             log.error("Error reading manifest: "+filenameOrURI);
