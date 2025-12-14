@@ -111,7 +111,7 @@ public class tdbloader extends CmdTDBGraph {
 
     @Override
     protected String getSummary() {
-        return getCommandName() + "--loader= [--desc DATASET | --loc DIR] FILE ...";
+        return getCommandName() + " --loader= [--desc DATASET | --loc DIR] FILE ...";
     }
 
     @Override
