@@ -1389,10 +1389,10 @@ Node TripleTermData() : { Node n = null ; Token openToken ; String iri ; Node s 
 Node TripleTermDataSubject() : { Node n = null; String iri; }
 {
  ( iri = iri() { n = createNode(iri) ; }
- | n = RDFLiteral()
- | n = NumericLiteral()
- | n = BooleanLiteral()
- | n = TripleTermData()
+//  | n = RDFLiteral()
+//  | n = NumericLiteral()
+//  | n = BooleanLiteral()
+//  | n = TripleTermData()
  )
  { return n; }
 }
@@ -1580,11 +1580,11 @@ Node ExprTripleTerm() : { Token t ; Node s,p,o,n; }
 Node ExprTripleTermSubject() : { Node n; String iri; }
 {
   ( iri = iri() { n = createNode(iri); }
-  | n = RDFLiteral()
-  | n = NumericLiteral()
-  | n = BooleanLiteral()
   | n = Var()
-  | n = ExprTripleTerm()
+//   | n = RDFLiteral()
+//   | n = NumericLiteral()
+//   | n = BooleanLiteral()
+//   | n = ExprTripleTerm()
   )
   { return n; }
 }
