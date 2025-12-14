@@ -16,26 +16,26 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.system.stream ;
+package org.apache.jena.riot.system.streammgr;
 
 import org.apache.jena.atlas.web.HttpException;
-import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.http.HttpOp;
-import org.apache.jena.riot.RiotException ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.apache.jena.riot.RiotException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Support for resources using the "ftp:" scheme */
 public class LocatorFTP extends LocatorURL {
-    private static Logger         log         = LoggerFactory.getLogger(LocatorFTP.class) ;
-    private static final String[] schemeNames = { "ftp" } ;
+    private static Logger         log         = LoggerFactory.getLogger(LocatorFTP.class);
+    private static final String[] schemeNames = { "ftp" };
 
     public LocatorFTP() {
-        super(schemeNames) ;
+        super(schemeNames);
     }
 
     @Override
-    protected Logger log() { return log ; }
+    protected Logger log() { return log; }
 
     @Override
     public TypedInputStream performOpen(String uri) {
@@ -44,19 +44,19 @@ public class LocatorFTP extends LocatorURL {
                 return HttpOp.httpGet(uri);
             }
             catch (HttpException ex) {
-                throw new RiotException("Bad FTP URL: "+uri, ex) ;
+                throw new RiotException("Bad FTP URL: "+uri, ex);
             }
         }
-        return null ;
+        return null;
     }
 
     @Override
     public String getName() {
-        return "LocatorFTP" ;
+        return "LocatorFTP";
     }
 
     @Override
     public int hashCode() {
-        return 57 ;
+        return 57;
     }
 }

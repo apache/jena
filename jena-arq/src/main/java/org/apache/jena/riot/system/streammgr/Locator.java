@@ -16,9 +16,9 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.system.stream;
+package org.apache.jena.riot.system.streammgr;
 
-import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.atlas.web.TypedInputStream;
 
 /**
  *  Interface to things that open TypedStreams from a place
@@ -27,6 +27,6 @@ import org.apache.jena.atlas.web.TypedInputStream ;
 public interface Locator
 {
     // Open a stream given a name of some kind (not necessarily an IRI).
-    public TypedInputStream open(String uri) ;
-    public String getName() ;
+    public TypedInputStream open(String uri);
+    public String getName();
 }

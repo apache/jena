@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.riot.WebContent;
-import org.apache.jena.riot.system.stream.LocatorFile;
+import org.apache.jena.riot.system.streammgr.LocatorFile;
 
 public class TestLocators
 {

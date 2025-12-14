@@ -16,40 +16,40 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.system.stream ;
+package org.apache.jena.riot.system.streammgr;
 
-import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.http.HttpOp;
-import org.apache.jena.riot.WebContent ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.apache.jena.riot.WebContent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Support for resources using the "http:" and "https" schemes */
 public class LocatorHTTP extends LocatorURL {
-    private static Logger         log         = LoggerFactory.getLogger(LocatorHTTP.class) ;
-    private static final String[] schemeNames = {"http", "https"} ;
+    private static Logger         log         = LoggerFactory.getLogger(LocatorHTTP.class);
+    private static final String[] schemeNames = {"http", "https"};
 
     public LocatorHTTP() {
-        super(schemeNames) ;
+        super(schemeNames);
     }
 
     @Override
-    protected Logger log() { return log ; }
+    protected Logger log() { return log; }
 
     @Override
     public TypedInputStream performOpen(String uri) {
         if ( uri.startsWith("http://") || uri.startsWith("https://") )
-            return HttpOp.httpGet(uri, WebContent.defaultRDFAcceptHeader) ;
-        return null ;
+            return HttpOp.httpGet(uri, WebContent.defaultRDFAcceptHeader);
+        return null;
     }
 
     @Override
     public String getName() {
-        return "LocatorHTTP" ;
+        return "LocatorHTTP";
     }
 
     @Override
     public int hashCode() {
-        return 57 ;
+        return 57;
     }
 }
