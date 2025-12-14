@@ -163,42 +163,52 @@ public class ByteBufferLib {
     }
 
     // --------
-    // For the record ...
+    private static class Archive {
+        // --- For reference
 
-    /**
-     * Bulk copy, without using an intermediate byte[].
-     */
-    private final static void bbcopyOLD(ByteBuffer bb, int src, int dst, int length, int slotLen) {
-        if ( src == dst )
-            return ;
+        // This is the original version of bbcopy.
+        // It operates without creating a temporary area (the srcBytes array above).
+        // but then the bulk operations can not be used.
+        // It splits the call into 2 cases:
+        // bbcopy1 (src < dst) and bbcopy2 (src > dst).
 
-        if ( allowArray && bb.hasArray() ) {
-            acopyArray(bb, src, dst, length, slotLen) ;
-            return ;
+        // Java execution capabilities have evolved.
+        // 2023-03 : This is slower than bbcopyBulk.
+        // https://github.com/apache/jena/pull/1800
+        // https://github.com/apache/jena/issue/1803
+
+        private final static void a_bbcopy(ByteBuffer bb, int src, int dst, int length, int slotLen) {
+            if ( src == dst )
+                return ;
+
+            if ( allowArray && bb.hasArray() ) {
+                acopyArray(bb, src, dst, length, slotLen) ;
+                return ;
+            }
+            // For non-array versions : beware of overlaps.
+            if ( src < dst )
+                a_bbcopy1(bb, src, dst, length, slotLen) ;
+            else
+                a_bbcopy2(bb, src, dst, length, slotLen) ;
         }
 
-        if ( src < dst )
-            bbcopy1(bb, src, dst, length, slotLen) ;
-        else
-            bbcopy2(bb, src, dst, length, slotLen) ;
-    }
+        private final static void a_bbcopy1(ByteBuffer bb, int src, int dst, int length, int slotLen) {
+            int bDst = dst * slotLen ;
+            int bSrc = src * slotLen ;
+            int bLen = length * slotLen ;
+            // src < dst so top dst is not in the overlap : work backwards
+            for ( int i = bLen - 1 ; i >= 0 ; i-- )
+                bb.put(bDst + i, bb.get(bSrc + i)) ;
+        }
 
-    private final static void bbcopy1(ByteBuffer bb, int src, int dst, int length, int slotLen) {
-        int bDst = dst * slotLen ;
-        int bSrc = src * slotLen ;
-        int bLen = length * slotLen ;
-        // src < dst so top dst is not in the overlap : work backwards
-        for ( int i = bLen - 1 ; i >= 0 ; i-- )
-            bb.put(bDst + i, bb.get(bSrc + i)) ;
-    }
-
-    private final static void bbcopy2(ByteBuffer bb, int src, int dst, int length, int slotLen) {
-        int bDst = dst * slotLen ;
-        int bSrc = src * slotLen ;
-        int bLen = length * slotLen ;
-        // src > dst so dst[0] is not in the overlap
-        for ( int i = 0 ; i < bLen ; i++ )
-            bb.put(bDst + i, bb.get(bSrc + i)) ;
+        private final static void a_bbcopy2(ByteBuffer bb, int src, int dst, int length, int slotLen) {
+            int bDst = dst * slotLen ;
+            int bSrc = src * slotLen ;
+            int bLen = length * slotLen ;
+            // src > dst so dst[0] is not in the overlap
+            for ( int i = 0 ; i < bLen ; i++ )
+                bb.put(bDst + i, bb.get(bSrc + i)) ;
+        }
     }
 
     // --------
