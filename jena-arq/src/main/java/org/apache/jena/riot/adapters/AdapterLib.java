@@ -21,7 +21,7 @@ package org.apache.jena.riot.adapters;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.riot.RiotException;
-import org.apache.jena.riot.system.stream.*;
+import org.apache.jena.riot.system.streammgr.*;
 
 class AdapterLib {
     public static org.apache.jena.util.TypedStream convert(TypedInputStream in) {

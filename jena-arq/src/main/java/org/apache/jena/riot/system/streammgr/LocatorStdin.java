@@ -16,17 +16,17 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.system.stream;
+package org.apache.jena.riot.system.streammgr;
 
-import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.atlas.web.TypedInputStream;
 
 /** Locator for the resource called "-" mapped to {@code System.in}. */
 public class LocatorStdin implements Locator {
     @Override
     public TypedInputStream open(String uri) {
         if ( uri.equals("-") )
-            return TypedInputStream.wrap(System.in) ;
-        return null ;
+            return TypedInputStream.wrap(System.in);
+        return null;
     }
 
     @Override

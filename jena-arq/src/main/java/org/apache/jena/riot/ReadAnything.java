@@ -31,7 +31,7 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.resultset.ResultSetReaderRegistry;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
-import org.apache.jena.riot.system.stream.StreamManager;
+import org.apache.jena.riot.system.streammgr.StreamManager;
 import org.apache.jena.shared.NotFoundException;
 import org.apache.jena.sparql.resultset.ResultsReader;
 import org.apache.jena.sparql.resultset.SPARQLResult;

@@ -16,19 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.system.stream ;
+package org.apache.jena.riot.system.streammgr;
 
-import java.util.ArrayList ;
-import java.util.Collections ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.jena.atlas.lib.Lib;
-import org.apache.jena.atlas.web.TypedInputStream ;
-import org.apache.jena.riot.RiotNotFoundException ;
+import org.apache.jena.atlas.web.TypedInputStream;
+import org.apache.jena.riot.RiotNotFoundException;
 import org.apache.jena.riot.SysRIOT;
 import org.apache.jena.sparql.util.Context;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Management of stream opening, including redirecting through a location mapper
@@ -37,14 +37,14 @@ import org.slf4j.LoggerFactory ;
  */
 
 public class StreamManager {
-    private static Logger        log           = LoggerFactory.getLogger(StreamManager.class) ;
+    private static Logger        log           = LoggerFactory.getLogger(StreamManager.class);
 
-    public static boolean        logAllLookups = true ;
+    public static boolean        logAllLookups = true;
 
-    private List<Locator>        handlers      = new ArrayList<>() ;
-    private LocationMapper       mapper        = null ;
+    private List<Locator>        handlers      = new ArrayList<>();
+    private LocationMapper       mapper        = null;
 
-    private static StreamManager globalStreamManager ;
+    private static StreamManager globalStreamManager;
 
     /**
      * Return a default configuration StreamManager with a {@link LocatorFile},
@@ -57,14 +57,14 @@ public class StreamManager {
             .addLocator(new LocatorHTTP())
             .addLocator(new LocatorFTP())
             .addLocator(new LocatorClassLoader(StreamManager.class.getClassLoader()));
-        return streamManager ;
+        return streamManager;
     }
 
     /**
      * Return the global {@code StreamManager}.
      */
     public static StreamManager get() {
-        return globalStreamManager ;
+        return globalStreamManager;
     }
 
     /**
@@ -91,10 +91,10 @@ public class StreamManager {
      * Set the global {@code StreamManager}.
      */
     public static void setGlobal(StreamManager streamManager) {
-        globalStreamManager = streamManager ;
+        globalStreamManager = streamManager;
     }
 
-    static { setGlobal(createStd()) ; }
+    static { setGlobal(createStd()); }
 
     /** Create a {@code StreamManager} with no locator or location mapper. */
     public StreamManager() {}
@@ -102,14 +102,14 @@ public class StreamManager {
     /** Create a deep copy of this StreamManager */
     @Override
     public StreamManager clone() {
-        return clone(this) ;
+        return clone(this);
     }
 
     private static StreamManager clone(StreamManager other) {
-        StreamManager sm = new StreamManager() ;
-        sm.handlers.addAll(other.handlers) ;
-        sm.mapper = other.mapper == null ? null : other.mapper.clone() ;
-        return sm ;
+        StreamManager sm = new StreamManager();
+        sm.handlers.addAll(other.handlers);
+        sm.mapper = other.mapper == null ? null : other.mapper.clone();
+        return sm;
     }
 
     /**
@@ -118,14 +118,14 @@ public class StreamManager {
      */
     public TypedInputStream open(String filenameOrURI) {
         if ( log.isDebugEnabled() )
-            log.debug("open(" + filenameOrURI + ")") ;
+            log.debug("open(" + filenameOrURI + ")");
 
-        String uri = mapURI(filenameOrURI) ;
+        String uri = mapURI(filenameOrURI);
 
         if ( log.isDebugEnabled() && !uri.equals(filenameOrURI) )
-            log.debug("open: mapped to " + uri) ;
+            log.debug("open: mapped to " + uri);
 
-        return openNoMapOrNull(uri) ;
+        return openNoMapOrNull(uri);
     }
 
     /** Test whether a mapping exists */
@@ -136,19 +136,19 @@ public class StreamManager {
     /** Apply the mapping of a filename or URI */
     public String mapURI(String filenameOrURI) {
         if ( mapper == null )
-            return filenameOrURI ;
+            return filenameOrURI;
 
-        String uri = mapper.altMapping(filenameOrURI, null) ;
+        String uri = mapper.altMapping(filenameOrURI, null);
 
         if ( uri == null ) {
             if ( StreamManager.logAllLookups && log.isDebugEnabled() )
-                log.debug("Not mapped: " + filenameOrURI) ;
-            uri = filenameOrURI ;
+                log.debug("Not mapped: " + filenameOrURI);
+            uri = filenameOrURI;
         } else {
             if ( log.isDebugEnabled() )
-                log.debug("Mapped: " + filenameOrURI + " => " + uri) ;
+                log.debug("Mapped: " + filenameOrURI + " => " + uri);
         }
-        return uri ;
+        return uri;
     }
 
     /**
@@ -156,10 +156,10 @@ public class StreamManager {
      * mapping. Throws RiotNotFoundException if not found.
      */
     public TypedInputStream openNoMap(String filenameOrURI) {
-        TypedInputStream in = openNoMapOrNull(filenameOrURI) ;
+        TypedInputStream in = openNoMapOrNull(filenameOrURI);
         if ( in == null )
-            throw new RiotNotFoundException(filenameOrURI) ;
-        return in ;
+            throw new RiotNotFoundException(filenameOrURI);
+        return in;
     }
 
     /**
@@ -169,19 +169,19 @@ public class StreamManager {
 
     public TypedInputStream openNoMapOrNull(String filenameOrURI) {
         for (Locator loc : handlers) {
-            TypedInputStream in = loc.open(filenameOrURI) ;
+            TypedInputStream in = loc.open(filenameOrURI);
             if ( in != null ) {
                 if ( log.isDebugEnabled() )
-                    log.debug("Found: " + filenameOrURI + " (" + loc.getName() + ")") ;
-                return in ;
+                    log.debug("Found: " + filenameOrURI + " (" + loc.getName() + ")");
+                return in;
             }
         }
-        return null ;
+        return null;
     }
 
     /** Set the location mapping */
     public StreamManager locationMapper(LocationMapper mapper) {
-        this.mapper = mapper ;
+        this.mapper = mapper;
         return this;
     }
 
@@ -193,17 +193,17 @@ public class StreamManager {
 
     /** Return an immutable list of all the handlers */
     public List<Locator> locators() {
-        return Collections.unmodifiableList(handlers) ;
+        return Collections.unmodifiableList(handlers);
     }
 
     /** Remove a locator. */
     public void remove(Locator loc) {
-        handlers.remove(loc) ;
+        handlers.remove(loc);
     }
 
     /** Remove all locators */
     public void clearLocators() {
-        handlers.clear() ;
+        handlers.clear();
     }
 
     /**
@@ -211,7 +211,7 @@ public class StreamManager {
      * Returns {@code this} StreamManager.
      */
     public StreamManager addLocator(Locator loc) {
-        handlers.add(loc) ;
+        handlers.add(loc);
         return this;
     }
 }
