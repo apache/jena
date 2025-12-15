@@ -21,18 +21,19 @@
 
 package org.apache.jena.mem.set.triple;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.HashSet;
+import java.util.List;
+
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.mem.graph.helper.JMHDefaultOptions;
+import org.apache.jena.jmh.JmhDefaultOptions;
 import org.apache.jena.mem.graph.helper.Releases;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
-
-import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.List;
 
 @State(Scope.Benchmark)
 public class TestSetMemoryConsumption {
@@ -58,13 +59,10 @@ public class TestSetMemoryConsumption {
      *
      * @return the memory consumption in MB
      */
-    @SuppressWarnings("removal")
     private static double runGcAndGetUsedMemoryInMB() {
-        System.runFinalization();
         System.gc();
-        Runtime.getRuntime().runFinalization();
         Runtime.getRuntime().gc();
-        return BigDecimal.valueOf(Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()).divide(BigDecimal.valueOf(1024L)).divide(BigDecimal.valueOf(1024L)).doubleValue();
+        return BigDecimal.valueOf(Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()).divide(BigDecimal.valueOf(1024L), 3, RoundingMode.HALF_UP).divide(BigDecimal.valueOf(1024L), 3, RoundingMode.HALF_UP).doubleValue();
     }
 
     @Benchmark
@@ -82,8 +80,7 @@ public class TestSetMemoryConsumption {
     }
 
     private Object fillHashSet() {
-        var sut = new HashSet<Triple>();
-        triples.forEach(sut::add);
+        var sut = new HashSet<>(triples);
         Assert.assertEquals(triples.size(), sut.size());
         return sut;
     }
@@ -104,7 +101,7 @@ public class TestSetMemoryConsumption {
 
 
     @Setup(Level.Trial)
-    public void setupTrial() throws Exception {
+    public void setupTrial() {
         triples = Releases.current.readTriples(param0_GraphUri);
         switch (param1_SetImplementation) {
             case "HashSet":
@@ -123,7 +120,7 @@ public class TestSetMemoryConsumption {
 
     @Test
     public void benchmark() throws Exception {
-        var opt = JMHDefaultOptions.getDefaults(this.getClass())
+        var opt = JmhDefaultOptions.getDefaults(this.getClass())
                 .warmupIterations(3)
                 .measurementIterations(3)
                 .build();

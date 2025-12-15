@@ -16,7 +16,7 @@
    KIND, either express or implied.  See the License for the
    specific language governing permissions and limitations
    under the License.
-    
+
      SPDX-License-Identifier: Apache-2.0
 -->
 
@@ -92,21 +92,7 @@
 
         <dependency>
             <groupId>org.apache.jena</groupId>
-            <artifactId>jena-benchmarks-shadedJena480</artifactId>
-            <version>6.1.0-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.jena</groupId>
-            <artifactId>jena-benchmarks-shadedJena510</artifactId>
-            <version>6.1.0-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.jena</groupId>
-            <artifactId>jena-benchmarks-shadedJena550</artifactId>
+            <artifactId>jena-benchmarks-shadedJena560</artifactId>
             <version>6.1.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>

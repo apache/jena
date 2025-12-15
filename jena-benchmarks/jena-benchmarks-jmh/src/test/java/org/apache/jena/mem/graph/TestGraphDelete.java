@@ -21,18 +21,18 @@
 
 package org.apache.jena.mem.graph;
 
+import java.util.List;
+import java.util.Random;
+
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.jmh.JmhDefaultOptions;
 import org.apache.jena.mem.graph.helper.Context;
-import org.apache.jena.mem.graph.helper.JMHDefaultOptions;
 import org.apache.jena.mem.graph.helper.Releases;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
-
-import java.util.List;
-import java.util.Random;
 
 @State(Scope.Benchmark)
 public class TestGraphDelete {
@@ -46,21 +46,24 @@ public class TestGraphDelete {
 
     @Param({
             "GraphMemFast (current)",
-            "GraphMemRoaring EAGER (current)",
+            "GraphMemValue (current)",
+//            "GraphMemRoaring EAGER (current)",
 //            "GraphMemRoaring LAZY (current)",
-            "GraphMemRoaring LAZY_PARALLEL (current)",
-            "GraphMemRoaring MINIMAL (current)",
-//            "GraphMem (Jena 4.8.0)",
+//            "GraphMemRoaring LAZY_PARALLEL (current)",
+//            "GraphMemRoaring MINIMAL (current)",
+//            "GraphMemValue (Jena 5.6.0)",
+            "GraphMemFast (Jena 5.6.0)",
+            "GraphMemValue (Jena 5.6.0)",
     })
     public String param1_GraphImplementation;
     java.util.function.Supplier<Integer> graphDelete;
     private Context trialContext;
     private Graph sutCurrent;
-    private org.apache.shadedJena480.graph.Graph sut480;
+    private org.apache.shadedJena560.graph.Graph sut560;
     private List<Triple> allTriplesCurrent;
-    private List<org.apache.shadedJena480.graph.Triple> allTriples480;
+    private List<org.apache.shadedJena560.graph.Triple> allTriples560;
     private List<Triple> triplesToDeleteFromSutCurrent;
-    private List<org.apache.shadedJena480.graph.Triple> triplesToDeleteFromSut480;
+    private List<org.apache.shadedJena560.graph.Triple> triplesToDeleteFromSut560;
 
     @Benchmark
     public int graphDelete() {
@@ -73,10 +76,10 @@ public class TestGraphDelete {
         return this.sutCurrent.size();
     }
 
-    private int graphDelete480() {
-        triplesToDeleteFromSut480.forEach(t -> this.sut480.delete(t));
-        Assert.assertTrue(this.sut480.isEmpty());
-        return this.sut480.size();
+    private int graphDelete560() {
+        triplesToDeleteFromSut560.forEach(t -> this.sut560.delete(t));
+        Assert.assertTrue(this.sut560.isEmpty());
+        return this.sut560.size();
     }
 
     @Setup(Level.Invocation)
@@ -92,14 +95,14 @@ public class TestGraphDelete {
                 java.util.Collections.shuffle(this.triplesToDeleteFromSutCurrent, new Random(4721));
                 break;
 
-            case JENA_4_8_0:
-                this.sut480 = Releases.v480.createGraph(this.trialContext.getGraphClass());
-                this.allTriples480.forEach(this.sut480::add);
+            case JENA_5_6_0:
+                this.sut560 = Releases.v560.createGraph(this.trialContext.getGraphClass());
+                this.allTriples560.forEach(this.sut560::add);
                 /*cloning is important so that the triples are not reference equal */
-                this.triplesToDeleteFromSut480 = Releases.v480.cloneTriples(this.allTriples480);
+                this.triplesToDeleteFromSut560 = Releases.v560.cloneTriples(this.allTriples560);
                 /* Shuffle is import because the order might play a role. We want to test the performance of the
                        contains method regardless of the order */
-                java.util.Collections.shuffle(this.triplesToDeleteFromSut480, new Random(4721));
+                java.util.Collections.shuffle(this.triplesToDeleteFromSut560, new Random(4721));
                 break;
 
             default:
@@ -108,16 +111,16 @@ public class TestGraphDelete {
     }
 
     @Setup(Level.Trial)
-    public void setupTrial() throws Exception {
+    public void setupTrial() {
         this.trialContext = new Context(param1_GraphImplementation);
         switch (this.trialContext.getJenaVersion()) {
             case CURRENT:
                 this.allTriplesCurrent = Releases.current.readTriples(param0_GraphUri);
                 this.graphDelete = this::graphDeleteCurrent;
                 break;
-            case JENA_4_8_0:
-                this.allTriples480 = Releases.v480.readTriples(param0_GraphUri);
-                this.graphDelete = this::graphDelete480;
+            case JENA_5_6_0:
+                this.allTriples560 = Releases.v560.readTriples(param0_GraphUri);
+                this.graphDelete = this::graphDelete560;
                 break;
             default:
                 throw new IllegalArgumentException("Unknown Jena version: " + this.trialContext.getJenaVersion());
@@ -126,7 +129,7 @@ public class TestGraphDelete {
 
     @Test
     public void benchmark() throws Exception {
-        var opt = JMHDefaultOptions.getDefaults(this.getClass())
+        var opt = JmhDefaultOptions.getDefaults(this.getClass())
                 .build();
         var results = new Runner(opt).run();
         Assert.assertNotNull(results);

@@ -22,9 +22,9 @@
 package org.apache.jena.mem.graph;
 
 import org.apache.jena.graph.Triple;
+import org.apache.jena.jmh.JmhDefaultOptions;
 import org.apache.jena.mem.GraphMemRoaring;
 import org.apache.jena.mem.graph.helper.Context;
-import org.apache.jena.mem.graph.helper.JMHDefaultOptions;
 import org.apache.jena.mem.graph.helper.Releases;
 
 import org.junit.Assert;
@@ -39,8 +39,8 @@ import java.util.List;
 public class TestGraphInitializeIndex {
 
     @Param({
-//            "../testing/cheeses-0.1.ttl",
-//            "../testing/pizza.owl.rdf",
+            "../testing/cheeses-0.1.ttl",
+            "../testing/pizza.owl.rdf",
             "../testing/data.nt.gz",
     })
     public String param0_GraphUri;
@@ -76,13 +76,14 @@ public class TestGraphInitializeIndex {
     }
 
     @Setup(Level.Trial)
-    public void setupTrial() throws Exception {
+    public void setupTrial() {
         this.trialContext = new Context(param1_GraphImplementation);
         switch (this.trialContext.getJenaVersion()) {
             case CURRENT:
                 triplesCurrent = Releases.current.readTriples(param0_GraphUri);
                 this.graphAdd = this::graphAddCurrent;
                 break;
+            case JENA_5_6_0:
             default:
                 throw new IllegalArgumentException("Unknown Jena version: " + this.trialContext.getJenaVersion());
         }
@@ -90,7 +91,7 @@ public class TestGraphInitializeIndex {
 
     @Test
     public void benchmark() throws Exception {
-        var opt = JMHDefaultOptions.getDefaults(this.getClass())
+        var opt = JmhDefaultOptions.getDefaults(this.getClass())
                 .build();
         var results = new Runner(opt).run();
         Assert.assertNotNull(results);

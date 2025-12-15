@@ -24,10 +24,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.apache.jena.geosparql.configuration.GeoSPARQLOperations;
-import org.apache.jena.geosparql.spatial.SpatialIndexException;
 import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexIoKryo;
-import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexPerGraph;
 import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexLib;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexPerGraph;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParserBuilder;
@@ -38,10 +37,10 @@ import org.locationtech.jts.geom.Envelope;
 public class SpatialIndexCurrent
     implements SpatialIndexLifeCycle
 {
-    protected DatasetGraph dsg;
-    protected Envelope envelope;
-    protected String srs;
-    protected boolean validate;
+    protected final DatasetGraph dsg;
+    protected final Envelope envelope;
+    protected final String srs;
+    protected final boolean validate;
 
     public SpatialIndexCurrent(DatasetGraph dsg, Envelope envelope, String srs, boolean validate) {
         super();
@@ -51,7 +50,7 @@ public class SpatialIndexCurrent
         this.srs = srs;
     }
 
-    public static SpatialIndexCurrent setup(String data, Envelope envelope, String srs, boolean validate) throws SpatialIndexException {
+    public static SpatialIndexCurrent setup(String data, Envelope envelope, String srs, boolean validate) {
         DatasetGraph dsg = RDFParserBuilder.create().fromString(data).lang(Lang.TURTLE).toDatasetGraph();
         return new SpatialIndexCurrent(dsg, envelope, srs, validate);
     }

@@ -20,36 +20,12 @@
  */
 package org.apache.jena.sparql.engine.benchmark;
 
-public class QueryTaskResult {
-    protected String queryString;
-    protected String originalOpString;
-    protected String optimizedOpString;
-    protected long resultSetSize;
+import org.jspecify.annotations.NonNull;
 
-    public QueryTaskResult(String queryString, String originalOpString, String optimizedOpString, long resultSetSize) {
-        super();
-        this.queryString = queryString;
-        this.originalOpString = originalOpString;
-        this.optimizedOpString = optimizedOpString;
-        this.resultSetSize = resultSetSize;
-    }
+public record QueryTaskResult(String queryString, String originalOpString, String optimizedOpString,
+                              long resultSetSize) {
 
-    public String getQueryString() {
-        return queryString;
-    }
-
-    public String getOriginalOpString() {
-        return originalOpString;
-    }
-
-    public String getOptimizedOpString() {
-        return optimizedOpString;
-    }
-
-    public long getResultSetSize() {
-        return resultSetSize;
-    }
-
+    @NonNull
     @Override
     public String toString() {
         return String.join("\n",

@@ -23,64 +23,65 @@ package org.apache.jena.geosparql.spatial.index;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.apache.shadedJena510.geosparql.configuration.GeoSPARQLOperations;
-import org.apache.shadedJena510.geosparql.spatial.SpatialIndex;
-import org.apache.shadedJena510.geosparql.spatial.SpatialIndexException;
-import org.apache.shadedJena510.query.Dataset;
-import org.apache.shadedJena510.riot.Lang;
-import org.apache.shadedJena510.riot.RDFParserBuilder;
+import org.apache.jena.geosparql.configuration.GeoSPARQLOperations;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexIoKryo;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexLib;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexPerGraph;
+import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFParserBuilder;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.junit.Assert;
 import org.locationtech.jts.geom.Envelope;
 
-public class SpatialIndex510
-    implements SpatialIndexLifeCycle
+public class SpatialIndex560
+        implements SpatialIndexLifeCycle
 {
-    protected Dataset ds;
-    protected Envelope envelope;
-    protected String srs;
-    protected boolean validate;
+    protected final DatasetGraph dsg;
+    protected final Envelope envelope;
+    protected final String srs;
+    protected final boolean validate;
 
-    public SpatialIndex510(Dataset ds, Envelope envelope, String srs, boolean validate) {
+    public SpatialIndex560(DatasetGraph dsg, Envelope envelope, String srs, boolean validate) {
         super();
-        this.ds = ds;
+        this.dsg = dsg;
         this.envelope = envelope;
         this.validate = validate;
         this.srs = srs;
     }
 
-    public static SpatialIndex510 setup(String data, Envelope envelope, String srs, boolean validate) throws SpatialIndexException {
-        Dataset ds = RDFParserBuilder.create().fromString(data).lang(Lang.TURTLE).toDataset();
-        return new SpatialIndex510(ds, envelope, srs, validate);
+    public static SpatialIndexCurrent setup(String data, Envelope envelope, String srs, boolean validate) {
+        DatasetGraph dsg = RDFParserBuilder.create().fromString(data).lang(Lang.TURTLE).toDatasetGraph();
+        return new SpatialIndexCurrent(dsg, envelope, srs, validate);
     }
 
     protected Path indexFile;
     protected String finalSrs = null;
-    protected SpatialIndex indexA;
-    protected SpatialIndex indexB;
+    protected SpatialIndexPerGraph indexA;
+    protected SpatialIndexPerGraph indexB;
 
     @Override
     public void init() {
-        ds.getContext().remove(SpatialIndex.SPATIAL_INDEX_SYMBOL);
+        SpatialIndexLib.setSpatialIndex(dsg.getContext(), null);
     }
 
     @Override
     public void findSrs() {
         finalSrs = srs == null
-            ? GeoSPARQLOperations.findModeSRS(ds)
-            : srs;
+                ? GeoSPARQLOperations.findModeSRS(DatasetFactory.wrap(dsg))
+                : srs;
     }
 
     @Override
     public void build() throws Exception {
         indexFile = Files.createTempFile("jena-", ".spatial-index");
-        Files.deleteIfExists(indexFile); // buildSpatialIndex in v1 will attempt to load the file first
-
-        indexA = SpatialIndex.buildSpatialIndex(ds, finalSrs, indexFile.toFile());
+        indexA = SpatialIndexLib.buildSpatialIndex(dsg, finalSrs);
+        SpatialIndexIoKryo.save(indexFile, indexA);
     }
 
     @Override
     public void load() throws Exception {
-        indexB = SpatialIndex.load(indexFile.toFile());
+        indexB = SpatialIndexIoKryo.load(indexFile);
     }
 
     @Override
@@ -88,8 +89,8 @@ public class SpatialIndex510
         Files.deleteIfExists(indexFile);
 
         if (validate) {
-            int itemCountA = indexA.query(envelope).size();
-            int itemCountB = indexB.query(envelope).size();
+            int itemCountA = indexA.query(envelope, null).size();
+            int itemCountB = indexB.query(envelope, null).size();
             // Assert.assertTrue(itemCountA > 0);
             Assert.assertEquals(itemCountA, itemCountB);
         }

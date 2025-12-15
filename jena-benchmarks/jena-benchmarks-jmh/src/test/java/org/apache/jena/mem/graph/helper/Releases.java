@@ -29,6 +29,6 @@ import org.apache.jena.graph.Triple;
  */
 public class Releases {
 
-    public static GraphTripleNodeHelper<Graph, Triple, Node> current = new GraphTripleNodeHelperCurrent();
-    public static GraphTripleNodeHelper<org.apache.shadedJena480.graph.Graph, org.apache.shadedJena480.graph.Triple, org.apache.shadedJena480.graph.Node> v480 = new GraphTripleNodeHelper480();
+    public static final GraphTripleNodeHelper<Graph, Triple, Node> current = new GraphTripleNodeHelperCurrent();
+    public static final GraphTripleNodeHelper<org.apache.shadedJena560.graph.Graph, org.apache.shadedJena560.graph.Triple, org.apache.shadedJena560.graph.Node> v560 = new GraphTripleNodeHelper560();
 }

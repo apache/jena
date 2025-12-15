@@ -25,7 +25,7 @@ import org.apache.jena.atlas.lib.Cache;
 import org.apache.jena.atlas.lib.CacheFactory;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.mem.graph.helper.JMHDefaultOptions;
+import org.apache.jena.jmh.JmhDefaultOptions;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.junit.Assert;
@@ -51,8 +51,8 @@ public class TestCaches {
     @Param({
             "Caffeine",
             "Simple",
-            "Jena510.Caffeine",
-            "Jena510.Simple"
+            "Jena560.Caffeine",
+            "Jena560.Simple"
     })
     public String param1_Cache;
 
@@ -60,30 +60,27 @@ public class TestCaches {
 
     private Cache<String, Node> cache;
 
-    private static int calculateRealCacheSize(int minCacheSize) {
+    private static int calculateRealCacheSize() {
         // the cache size is a power of 2 --> that is a requirement for the CacheSimpleFast
         // to start with fair conditions for the caches, we use the same size for all caches
-        var cacheSize = Integer.highestOneBit(minCacheSize);
-        if (cacheSize < minCacheSize) {
+        var cacheSize = Integer.highestOneBit(TestCaches.DEFAULT_CACHE_SIZE);
+        if (cacheSize < TestCaches.DEFAULT_CACHE_SIZE) {
             cacheSize <<= 1;
         }
         return cacheSize;
     }
 
     private static Cache<String, Node> createCache(String cacheName) {
-        var cacheSize = calculateRealCacheSize(DEFAULT_CACHE_SIZE);
-        switch (cacheName) {
-            case "Caffeine":
-                return CacheFactory.createCache(cacheSize);
-            case "Simple":
-                return CacheFactory.createSimpleCache(cacheSize);
-            case "Jena510.Caffeine":
-                return new CacheFromJena510Wrapped<>(org.apache.shadedJena510.atlas.lib.CacheFactory.createCache(cacheSize));
-            case "Jena510.Simple":
-                return new CacheFromJena510Wrapped<>(org.apache.shadedJena510.atlas.lib.CacheFactory.createSimpleCache(cacheSize));
-            default:
-                throw new IllegalArgumentException("Unknown Cache: " + cacheName);
-        }
+        var cacheSize = calculateRealCacheSize();
+        return switch (cacheName) {
+            case "Caffeine" -> CacheFactory.createCache(cacheSize);
+            case "Simple" -> CacheFactory.createSimpleCache(cacheSize);
+            case "Jena560.Caffeine" ->
+                    new CacheFromJena560Wrapped<>(org.apache.shadedJena560.atlas.lib.CacheFactory.createCache(cacheSize));
+            case "Jena560.Simple" ->
+                    new CacheFromJena560Wrapped<>(org.apache.shadedJena560.atlas.lib.CacheFactory.createSimpleCache(cacheSize));
+            default -> throw new IllegalArgumentException("Unknown Cache: " + cacheName);
+        };
     }
 
     @Benchmark
@@ -175,63 +172,58 @@ public class TestCaches {
         });
     }
 
-    private static class CacheFromJena510Wrapped<K, V> implements Cache<K, V> {
-
-        private final org.apache.shadedJena510.atlas.lib.Cache<K, V> wrappedCache;
-
-        public CacheFromJena510Wrapped(org.apache.shadedJena510.atlas.lib.Cache<K, V> cacheFromJena510) {
-            this.wrappedCache = cacheFromJena510;
-        }
+    private record CacheFromJena560Wrapped<K, V>(
+            org.apache.shadedJena560.atlas.lib.Cache<K, V> wrappedCache) implements Cache<K, V> {
 
 
         @Override
-        public boolean containsKey(K k) {
-            return wrappedCache.containsKey(k);
-        }
+            public boolean containsKey(K k) {
+                return wrappedCache.containsKey(k);
+            }
 
-        @Override
-        public V getIfPresent(K k) {
-            return wrappedCache.getIfPresent(k);
-        }
+            @Override
+            public V getIfPresent(K k) {
+                return wrappedCache.getIfPresent(k);
+            }
 
-        @Override
-        public V get(K k, Function<K, V> callable) {
-            return wrappedCache.get(k, callable);
-        }
+            @Override
+            public V get(K k, Function<K, V> callable) {
+                return wrappedCache.get(k, callable);
+            }
 
-        @Override
-        public void put(K k, V thing) {
-            wrappedCache.put(k, thing);
-        }
+            @Override
+            public void put(K k, V thing) {
+                wrappedCache.put(k, thing);
+            }
 
-        @Override
-        public void remove(K k) {
-            wrappedCache.remove(k);
-        }
+            @Override
+            public void remove(K k) {
+                wrappedCache.remove(k);
+            }
 
-        @Override
-        public Iterator<K> keys() {
-            return wrappedCache.keys();
-        }
+            @Override
+            public Iterator<K> keys() {
+                return wrappedCache.keys();
+            }
 
-        @Override
-        public boolean isEmpty() {
-            return wrappedCache.isEmpty();
-        }
+            @Override
+            public boolean isEmpty() {
+                return wrappedCache.isEmpty();
+            }
 
-        @Override
-        public void clear() {
-            wrappedCache.clear();
-        }
+            @Override
+            public void clear() {
+                wrappedCache.clear();
+            }
 
-        @Override
-        public long size() {
-            return wrappedCache.size();
+            @Override
+            public long size() {
+                return wrappedCache.size();
+            }
         }
-    }
 
     @Setup(Level.Trial)
-    public void setupTrial() throws Exception {
+    public void setupTrial() {
         this.graph = GraphFactory.createGraphMem();
         RDFDataMgr.read(this.graph, this.param0_GraphUri);
     }
@@ -244,7 +236,7 @@ public class TestCaches {
 
     @Test
     public void benchmark() throws Exception {
-        var opt = JMHDefaultOptions.getDefaults(this.getClass())
+        var opt = JmhDefaultOptions.getDefaults(this.getClass())
                 .build();
         var results = new Runner(opt).run();
         Assert.assertNotNull(results);

@@ -21,19 +21,19 @@
 
 package org.apache.jena.mem.set.triple;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.jena.atlas.iterator.ActionCount;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.jmh.JmhDefaultOptions;
 import org.apache.jena.mem.graph.helper.Releases;
-import org.apache.jena.mem.helper.JMHDefaultOptions;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
-
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -95,12 +95,12 @@ public class TestSetIterate {
 
 
     @Setup(Level.Trial)
-    public void setupTrial() throws Exception {
+    public void setupTrial() {
         this.triples = Releases.current.readTriples(param0_GraphUri);
         switch (param1_SetImplementation) {
             case "HashSet":
                 this.hashSet = new HashSet<>(triples.size());
-                triples.forEach(hashSet::add);
+                hashSet.addAll(triples);
                 this.getIterator = this::getIteratorFromHashSet;
                 break;
             case "HashCommonTripleSet":
@@ -120,7 +120,7 @@ public class TestSetIterate {
 
     @Test
     public void benchmark() throws Exception {
-        var opt = JMHDefaultOptions.getDefaults(this.getClass())
+        var opt = JmhDefaultOptions.getDefaults(this.getClass())
                 .build();
         var results = new Runner(opt).run();
         Assert.assertNotNull(results);

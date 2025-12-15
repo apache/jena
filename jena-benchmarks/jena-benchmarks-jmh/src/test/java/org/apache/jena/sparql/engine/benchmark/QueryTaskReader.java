@@ -26,11 +26,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.jena.atlas.lib.Creator;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.RDFDataMgr;
 
 /** Utility methods to read RDF query task descriptions and create {@link QueryTask} objects from them. */
@@ -57,7 +53,7 @@ public class QueryTaskReader {
         if (tasks.size() != 1) {
             throw new RuntimeException("Exactly one task expected");
         }
-        return tasks.get(0);
+        return tasks.getFirst();
     }
 
     public static List<QueryTask> load(String location, String jenaVersion, Creator<QueryTaskBuilder> taskBuilderCreator) {
@@ -67,15 +63,14 @@ public class QueryTaskReader {
 
     public static List<QueryTask> load(Model model, String jenaVersion, Creator<QueryTaskBuilder> taskBuilderCreator) {
         List<Resource> taskDescriptions = model.listResourcesWithProperty(queryString).toList();
-        List<QueryTask> result = taskDescriptions.stream()
+        return taskDescriptions.stream()
                 .map(task -> configure(task, jenaVersion, taskBuilderCreator.create()).build())
                 .collect(Collectors.toList());
-        return result;
     }
 
     public static QueryTaskBuilder configure(Resource taskDescription, String jenaVersion, QueryTaskBuilder taskBuilder) {
         String query = taskDescription.getRequiredProperty(queryString).getString();
-        long size = Optional.ofNullable(taskDescription.getProperty(expectedResultSetSize)).map(Statement::getLong).orElse(-1l);
+        long size = Optional.ofNullable(taskDescription.getProperty(expectedResultSetSize)).map(Statement::getLong).orElse(-1L);
 
         Set<String> skippedExecutions = taskDescription.listProperties(skipExecution).mapWith(Statement::getString).toSet();
         boolean skipExecution = skippedExecutions.contains(jenaVersion);

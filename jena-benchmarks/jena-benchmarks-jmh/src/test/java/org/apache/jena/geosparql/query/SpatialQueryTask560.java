@@ -21,35 +21,32 @@
 
 package org.apache.jena.geosparql.query;
 
-import java.util.stream.Stream;
+import org.apache.jena.geosparql.configuration.GeoSPARQLOperations;
+import org.apache.jena.geosparql.spatial.SpatialIndexException;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexLib;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.rdfs.RDFSFactory;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFParser;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.sparql.exec.RowSetOps;
 
-import org.apache.shadedJena550.geosparql.configuration.GeoSPARQLOperations;
-import org.apache.shadedJena550.geosparql.spatial.SpatialIndexException;
-import org.apache.shadedJena550.geosparql.spatial.index.v2.SpatialIndexLib;
-import org.apache.shadedJena550.graph.Graph;
-import org.apache.shadedJena550.rdfs.RDFSFactory;
-import org.apache.shadedJena550.riot.Lang;
-import org.apache.shadedJena550.riot.RDFParser;
-import org.apache.shadedJena550.sparql.core.DatasetGraph;
-import org.apache.shadedJena550.sparql.core.DatasetGraphFactory;
-import org.apache.shadedJena550.sparql.core.Quad;
-import org.apache.shadedJena550.sparql.exec.QueryExec;
-import org.apache.shadedJena550.sparql.exec.RowSetOps;
-
-public class SpatialQueryTask550
-    implements SpatialQueryTask
+public class SpatialQueryTask560
+        implements SpatialQueryTask
 {
-    private DatasetGraph baseDsg = null;
-    private DatasetGraph effectiveDsg = null;
+    private org.apache.jena.sparql.core.DatasetGraph baseDsg = null;
+    private org.apache.jena.sparql.core.DatasetGraph effectiveDsg = null;
     private String query;
 
     @Override
-    public void setData(String trigString) throws Exception {
-        baseDsg = RDFParser.create().fromString(trigString).lang(Lang.TRIG).toDatasetGraph();
+    public void setData(String ttlString) {
+        baseDsg = RDFParser.create().fromString(ttlString).lang(Lang.TRIG).toDatasetGraph();
     }
 
     @Override
-    public void setQuery(String queryString) throws Exception {
+    public void setQuery(String queryString) {
         this.query = queryString;
     }
 
@@ -60,21 +57,13 @@ public class SpatialQueryTask550
             DatasetGraph virtualDsg = RDFSFactory.datasetRDFS(baseDsg, vocab);
             if (materialize) {
                 effectiveDsg = DatasetGraphFactory.create();
-
-                // Bugged in 5.5.0 because find() is not overridden to yield inferences:
-                // effectiveDsg.addAll(virtualDsg);
-
-                try (Stream<Quad> stream = virtualDsg.stream(null, null, null, null)) {
-                    stream.forEach(effectiveDsg::add);
-                }
+                effectiveDsg.addAll(virtualDsg);
             } else {
                 effectiveDsg = virtualDsg;
             }
         } else {
             effectiveDsg = baseDsg;
         }
-
-        // RDFDataMgr.write(System.err, effectiveDsg, RDFFormat.TRIG_PRETTY);
     }
 
     @Override
@@ -91,8 +80,7 @@ public class SpatialQueryTask550
     @Override
     public long exec() {
         try (QueryExec qe = QueryExec.dataset(effectiveDsg).query(query).build()) {
-            long count = RowSetOps.count(qe.select());
-            return count;
+            return RowSetOps.count(qe.select());
         }
     }
 }

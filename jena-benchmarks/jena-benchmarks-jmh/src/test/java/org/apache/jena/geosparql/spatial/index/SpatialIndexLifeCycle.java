@@ -21,8 +21,8 @@
 package org.apache.jena.geosparql.spatial.index;
 
 public interface SpatialIndexLifeCycle {
-    void init()    throws Exception;
-    void findSrs() throws Exception;
+    void init();
+    void findSrs();
     void build()   throws Exception;
     void load()    throws Exception;
     void close()   throws Exception;
