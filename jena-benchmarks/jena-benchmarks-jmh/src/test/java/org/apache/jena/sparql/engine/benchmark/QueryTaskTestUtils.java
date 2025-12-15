@@ -33,7 +33,7 @@ public class QueryTaskTestUtils {
             QueryTaskResult data = task.exec();
 
             long expectedResultSetSize = task.getExpectedResultSetSize();
-            long actualResultSetSize = data.getResultSetSize();
+            long actualResultSetSize = data.resultSetSize();
 
             if (!task.skipValidation()) {
                 if (expectedResultSetSize >= 0) {
@@ -49,7 +49,7 @@ public class QueryTaskTestUtils {
                 System.err.println(String.join("\n",
                     "Query exec result:",
                     // "Query:", data.getOptimizedOpString(),
-                    "Result count:", Long.toString(data.getResultSetSize())));
+                    "Result count:", Long.toString(data.resultSetSize())));
             }
         }
     }

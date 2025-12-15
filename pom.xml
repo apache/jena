@@ -135,12 +135,6 @@
     <ver.plugin.cyclonedx>2.9.1</ver.plugin.cyclonedx>
     <ver.plugin.spdx>0.7.0</ver.plugin.spdx>
 
-    <!--
-         See jena-benchmarks/jena-benchmarks-jmh/pom.xml
-         Overidden by command line "-Dbenchmark.skip=false"
-    -->
-    <benchmark.skip>true</benchmark.skip>
-
   </properties>
 
   <issueManagement>
@@ -295,7 +289,6 @@
             test remote client APIs.
         -->
         <module>jena-integration-tests</module>
-        <module>jena-benchmarks</module>
 
         <!-- Binary distribution -->
         <module>apache-jena</module>

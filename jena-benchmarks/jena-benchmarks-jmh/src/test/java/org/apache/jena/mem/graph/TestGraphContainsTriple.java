@@ -21,18 +21,18 @@
 
 package org.apache.jena.mem.graph;
 
+import java.util.List;
+import java.util.Random;
+
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.jmh.JmhDefaultOptions;
 import org.apache.jena.mem.graph.helper.Context;
-import org.apache.jena.mem.graph.helper.JMHDefaultOptions;
 import org.apache.jena.mem.graph.helper.Releases;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
-
-import java.util.List;
-import java.util.Random;
 
 
 @State(Scope.Benchmark)
@@ -47,18 +47,21 @@ public class TestGraphContainsTriple {
 
     @Param({
             "GraphMemFast (current)",
-            "GraphMemRoaring EAGER (current)",
+            "GraphMemValue (current)",
+//            "GraphMemRoaring EAGER (current)",
 //            "GraphMemRoaring LAZY (current)",
-            "GraphMemRoaring LAZY_PARALLEL (current)",
-            "GraphMemRoaring MINIMAL (current)",
-//            "GraphMem (Jena 4.8.0)",
+//            "GraphMemRoaring LAZY_PARALLEL (current)",
+//            "GraphMemRoaring MINIMAL (current)",
+//            "GraphMemValue (Jena 5.6.0)",
+            "GraphMemFast (Jena 5.6.0)",
+            "GraphMemValue (Jena 5.6.0)",
     })
     public String param1_GraphImplementation;
     java.util.function.Supplier<Boolean> graphContains;
     private Graph sutCurrent;
-    private org.apache.shadedJena480.graph.Graph sut480;
+    private org.apache.shadedJena560.graph.Graph sut560;
     private List<Triple> triplesToFindCurrent;
-    private List<org.apache.shadedJena480.graph.Triple> triplesToFind480;
+    private List<org.apache.shadedJena560.graph.Triple> triplesToFind560;
 
     @Benchmark
     public boolean graphContains() {
@@ -74,10 +77,10 @@ public class TestGraphContainsTriple {
         return found;
     }
 
-    private boolean graphContains480() {
+    private boolean graphContains560() {
         var found = false;
-        for (var t : triplesToFind480) {
-            found = sut480.contains(t);
+        for (var t : triplesToFind560) {
+            found = sut560.contains(t);
             Assert.assertTrue(found);
         }
         return found;
@@ -85,7 +88,7 @@ public class TestGraphContainsTriple {
 
 
     @Setup(Level.Trial)
-    public void setupTrial() throws Exception {
+    public void setupTrial() {
         var trialContext = new Context(param1_GraphImplementation);
         switch (trialContext.getJenaVersion()) {
             case CURRENT: {
@@ -102,18 +105,18 @@ public class TestGraphContainsTriple {
                 java.util.Collections.shuffle(this.triplesToFindCurrent, new Random(4721));
             }
             break;
-            case JENA_4_8_0: {
-                this.sut480 = Releases.v480.createGraph(trialContext.getGraphClass());
-                this.graphContains = this::graphContains480;
+            case JENA_5_6_0: {
+                this.sut560 = Releases.v560.createGraph(trialContext.getGraphClass());
+                this.graphContains = this::graphContains560;
 
-                var triples = Releases.v480.readTriples(param0_GraphUri);
-                triples.forEach(this.sut480::add);
+                var triples = Releases.v560.readTriples(param0_GraphUri);
+                triples.forEach(this.sut560::add);
 
                 /*clone the triples because they should not be the same objects*/
-                this.triplesToFind480 = Releases.v480.cloneTriples(triples);
+                this.triplesToFind560 = Releases.v560.cloneTriples(triples);
                     /* Shuffle is import because the order might play a role. We want to test the performance of the
                        contains method regardless of the order */
-                java.util.Collections.shuffle(this.triplesToFind480, new Random(4721));
+                java.util.Collections.shuffle(this.triplesToFind560, new Random(4721));
             }
             break;
             default:
@@ -123,7 +126,7 @@ public class TestGraphContainsTriple {
 
     @Test
     public void benchmark() throws Exception {
-        var opt = JMHDefaultOptions.getDefaults(this.getClass())
+        var opt = JmhDefaultOptions.getDefaults(this.getClass())
                 .build();
         var results = new Runner(opt).run();
         Assert.assertNotNull(results);

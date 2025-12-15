@@ -23,29 +23,26 @@ package org.apache.jena.sparql.expr;
 
 
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.mem.graph.helper.JMHDefaultOptions;
+import org.apache.jena.jmh.JmhDefaultOptions;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.function.FunctionEnv;
 import org.apache.jena.sys.JenaSystem;
+
 import org.junit.Assert;
 import org.junit.Test;
+
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.runner.Runner;
-
-import java.util.Random;
-
 
 @State(Scope.Benchmark)
 public class TestCoalesce {
 
     static {
         JenaSystem.init();
-        org.apache.shadedJena550.sys.JenaSystem.init();
+        org.apache.shadedJena560.sys.JenaSystem.init();
     }
-
-    final static Random rnd = new Random();
 
     @Benchmark
     public Long benchmarkCoalesceJenaCurrent() {
@@ -78,25 +75,25 @@ public class TestCoalesce {
     }
 
     @Benchmark
-    public Long benchmarkCoalesceJena550() {
+    public Long benchmarkCoalesceJena5601() {
         var checksum = 0L;
         // Create a Coalesce expression with some dummy expressions
-        var expressions = new org.apache.shadedJena550.sparql.expr.ExprList();
-        expressions.add(new org.apache.shadedJena550.sparql.expr.ExprVar("var1"));
-        expressions.add(new org.apache.shadedJena550.sparql.expr.ExprVar("var2"));
-        expressions.add(new org.apache.shadedJena550.sparql.expr.ExprVar("var3"));
-        expressions.add(new org.apache.shadedJena550.sparql.expr.ExprVar("var4"));
-        expressions.add(new org.apache.shadedJena550.sparql.expr.ExprVar("var5"));
+        var expressions = new org.apache.shadedJena560.sparql.expr.ExprList();
+        expressions.add(new org.apache.shadedJena560.sparql.expr.ExprVar("var1"));
+        expressions.add(new org.apache.shadedJena560.sparql.expr.ExprVar("var2"));
+        expressions.add(new org.apache.shadedJena560.sparql.expr.ExprVar("var3"));
+        expressions.add(new org.apache.shadedJena560.sparql.expr.ExprVar("var4"));
+        expressions.add(new org.apache.shadedJena560.sparql.expr.ExprVar("var5"));
 
-        var var3BoundLiteral =  org.apache.shadedJena550.graph.NodeFactory.createLiteralString("Value5");
-        var bindingBuilder = org.apache.shadedJena550.sparql.engine.binding.Binding.builder();
+        var var3BoundLiteral =  org.apache.shadedJena560.graph.NodeFactory.createLiteralString("Value5");
+        var bindingBuilder = org.apache.shadedJena560.sparql.engine.binding.Binding.builder();
         bindingBuilder.add(expressions.get(4).asVar(), var3BoundLiteral);
         var binding = bindingBuilder.build();
-        org.apache.shadedJena550.sparql.function.FunctionEnv env = null;
+        org.apache.shadedJena560.sparql.function.FunctionEnv env = null;
 
         // Coalesce expression
         var coalesceExpr =
-                new org.apache.shadedJena550.sparql.expr.E_Coalesce(expressions);
+                new org.apache.shadedJena560.sparql.expr.E_Coalesce(expressions);
 
         for(var i=0; i<1000000; i++) {
             var result = coalesceExpr.eval(binding, env);
@@ -109,7 +106,7 @@ public class TestCoalesce {
 
     @Test
     public void benchmark() throws Exception {
-        var opt = JMHDefaultOptions.getDefaults(this.getClass())
+        var opt = JmhDefaultOptions.getDefaults(this.getClass())
                 .build();
         var results = new Runner(opt).run();
         Assert.assertNotNull(results);

@@ -20,26 +20,35 @@
  */
 package org.apache.jena.mem.graph.helper;
 
-import org.apache.shadedJena480.graph.Graph;
-import org.apache.shadedJena480.graph.Node;
-import org.apache.shadedJena480.graph.NodeFactory;
-import org.apache.shadedJena480.graph.Triple;
-import org.apache.shadedJena480.mem.GraphMem;
-import org.apache.shadedJena480.riot.RDFDataMgr;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-public class GraphTripleNodeHelper480 implements GraphTripleNodeHelper<Graph, Triple, Node> {
+import org.apache.shadedJena560.mem2.GraphMem2Fast;
+import org.apache.shadedJena560.mem2.GraphMem2Legacy;
+import org.apache.shadedJena560.mem2.GraphMem2Roaring;
+import org.apache.shadedJena560.mem2.IndexingStrategy;
+import org.apache.shadedJena560.graph.Graph;
+import org.apache.shadedJena560.graph.Node;
+import org.apache.shadedJena560.graph.NodeFactory;
+import org.apache.shadedJena560.graph.Triple;
+import org.apache.shadedJena560.mem.GraphMem;
+import org.apache.shadedJena560.riot.RDFDataMgr;
+
+public class GraphTripleNodeHelper560 implements GraphTripleNodeHelper<Graph, Triple, Node> {
 
     @SuppressWarnings("deprecation")
     @Override
     public Graph createGraph(Context.GraphClass graphClass) {
-        if (Objects.requireNonNull(graphClass) == Context.GraphClass.GraphMemValue) {
-            return new GraphMem();
-        }
-        throw new IllegalArgumentException("Unknown graph class: " + graphClass);
+        return switch (graphClass) {
+            case GraphMemValue -> new GraphMem();
+            case GraphMemFast -> new GraphMem2Fast();
+            case GraphMemLegacy -> new GraphMem2Legacy();
+            case GraphMemRoaringEager -> new GraphMem2Roaring(IndexingStrategy.EAGER);
+            case GraphMemRoaringLazy -> new GraphMem2Roaring(IndexingStrategy.LAZY);
+            case GraphMemRoaringLazyParallel -> new GraphMem2Roaring(IndexingStrategy.LAZY_PARALLEL);
+            case GraphMemRoaringMinimal -> new GraphMem2Roaring(IndexingStrategy.MINIMAL);
+            case GraphMemRoaringManual -> new GraphMem2Roaring(IndexingStrategy.MANUAL);
+        };
     }
 
     @SuppressWarnings("deprecation")
@@ -72,7 +81,7 @@ public class GraphTripleNodeHelper480 implements GraphTripleNodeHelper<Graph, Tr
     @Override
     public Node cloneNode(Node node) {
         if (node.isLiteral()) {
-            return NodeFactory.createLiteralByValue(node.getLiteralLexicalForm(), node.getLiteralLanguage(), node.getLiteralDatatype());
+            return NodeFactory.createLiteral(node.getLiteralLexicalForm(), node.getLiteralLanguage(), node.getLiteralDatatype());
         }
         if (node.isURI()) {
             return NodeFactory.createURI(node.getURI());

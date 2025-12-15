@@ -41,12 +41,12 @@ public class SpatialQueryTaskCurrent
     private String query;
 
     @Override
-    public void setData(String ttlString) throws Exception {
+    public void setData(String ttlString) {
         baseDsg = RDFParser.create().fromString(ttlString).lang(Lang.TRIG).toDatasetGraph();
     }
 
     @Override
-    public void setQuery(String queryString) throws Exception {
+    public void setQuery(String queryString) {
         this.query = queryString;
     }
 
@@ -80,8 +80,7 @@ public class SpatialQueryTaskCurrent
     @Override
     public long exec() {
         try (QueryExec qe = QueryExec.dataset(effectiveDsg).query(query).build()) {
-            long count = RowSetOps.count(qe.select());
-            return count;
+            return RowSetOps.count(qe.select());
         }
     }
 }

@@ -51,9 +51,15 @@
 
   <modules>
     <module>jena-benchmarks-jmh</module>
-    <module>jena-benchmarks-shadedJena480</module>
-    <module>jena-benchmarks-shadedJena510</module>
-    <module>jena-benchmarks-shadedJena550</module>
+    <module>jena-benchmarks-shadedJena560</module>
   </modules>
+
+  <properties>
+    <!--
+        See jena-benchmarks/jena-benchmarks-jmh/pom.xml
+        Overidden by command line "-Dbenchmark.skip=false"
+    -->
+    <benchmark.skip>true</benchmark.skip>
+  </properties>
 
 </project>

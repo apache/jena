@@ -21,18 +21,18 @@
 
 package org.apache.jena.mem.map.node;
 
+import java.util.HashMap;
+import java.util.List;
+
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.jmh.JmhDefaultOptions;
 import org.apache.jena.mem.graph.helper.Releases;
-import org.apache.jena.mem.helper.JMHDefaultOptions;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
-
-import java.util.HashMap;
-import java.util.List;
 
 
 @State(Scope.Benchmark)
@@ -164,7 +164,7 @@ public class TestMapContains {
     }
 
     @Setup(Level.Trial)
-    public void setupTrial() throws Exception {
+    public void setupTrial() {
         var triples = Releases.current.readTriples(param0_GraphUri);
         this.triplesToFind = Releases.current.cloneTriples(triples);
         switch (param1_SetImplementation) {
@@ -214,7 +214,7 @@ public class TestMapContains {
 
     @Test
     public void benchmark() throws Exception {
-        var opt = JMHDefaultOptions.getDefaults(this.getClass())
+        var opt = JmhDefaultOptions.getDefaults(this.getClass())
                 .build();
         var results = new Runner(opt).run();
         Assert.assertNotNull(results);

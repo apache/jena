@@ -23,8 +23,8 @@ package org.apache.jena.mem.graph;
 
 import org.apache.jena.atlas.iterator.ActionCount;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.jmh.JmhDefaultOptions;
 import org.apache.jena.mem.graph.helper.Context;
-import org.apache.jena.mem.graph.helper.JMHDefaultOptions;
 import org.apache.jena.mem.graph.helper.Releases;
 import org.junit.Assert;
 import org.junit.Test;
@@ -46,16 +46,19 @@ public class TestGraphFindAllWithForEachRemaining {
 
     @Param({
             "GraphMemFast (current)",
-            "GraphMemRoaring EAGER (current)",
+            "GraphMemValue (current)",
+//            "GraphMemRoaring EAGER (current)",
 //            "GraphMemRoaring LAZY (current)",
-            "GraphMemRoaring LAZY_PARALLEL (current)",
-            "GraphMemRoaring MINIMAL (current)",
-//            "GraphMem (Jena 4.8.0)",
+//            "GraphMemRoaring LAZY_PARALLEL (current)",
+//            "GraphMemRoaring MINIMAL (current)",
+//            "GraphMemValue (Jena 5.6.0)",
+            "GraphMemFast (Jena 5.6.0)",
+            "GraphMemValue (Jena 5.6.0)",
     })
     public String param1_GraphImplementation;
     java.util.function.Supplier<Long> graphFindAll;
     private Graph sutCurrent;
-    private org.apache.shadedJena480.graph.Graph sut480;
+    private org.apache.shadedJena560.graph.Graph sut560;
 
     @Benchmark
     public Long graphFindAll() {
@@ -65,23 +68,23 @@ public class TestGraphFindAllWithForEachRemaining {
     private Long graphFindAllCurrent() {
         var actionCounter = new ActionCount<>();
         var iter = sutCurrent.find();
-        iter.forEachRemaining(actionCounter::accept);
+        iter.forEachRemaining(actionCounter);
         iter.close();
         assertEquals(sutCurrent.size(), actionCounter.getCount());
         return actionCounter.getCount();
     }
 
-    private Long graphFindAll480() {
+    private Long graphFindAll560() {
         var actionCounter = new ActionCount<>();
-        var iter = sut480.find();
-        iter.forEachRemaining(actionCounter::accept);
+        var iter = sut560.find();
+        iter.forEachRemaining(actionCounter);
         iter.close();
-        assertEquals(sut480.size(), actionCounter.getCount());
+        assertEquals(sut560.size(), actionCounter.getCount());
         return actionCounter.getCount();
     }
 
     @Setup(Level.Trial)
-    public void setupTrial() throws Exception {
+    public void setupTrial() {
         Context trialContext = new Context(param1_GraphImplementation);
         switch (trialContext.getJenaVersion()) {
             case CURRENT: {
@@ -92,12 +95,12 @@ public class TestGraphFindAllWithForEachRemaining {
                 triples.forEach(this.sutCurrent::add);
             }
             break;
-            case JENA_4_8_0: {
-                this.sut480 = Releases.v480.createGraph(trialContext.getGraphClass());
-                this.graphFindAll = this::graphFindAll480;
+            case JENA_5_6_0: {
+                this.sut560 = Releases.v560.createGraph(trialContext.getGraphClass());
+                this.graphFindAll = this::graphFindAll560;
 
-                var triples = Releases.v480.readTriples(param0_GraphUri);
-                triples.forEach(this.sut480::add);
+                var triples = Releases.v560.readTriples(param0_GraphUri);
+                triples.forEach(this.sut560::add);
             }
             break;
             default:
@@ -107,7 +110,7 @@ public class TestGraphFindAllWithForEachRemaining {
 
     @Test
     public void benchmark() throws Exception {
-        var opt = JMHDefaultOptions.getDefaults(this.getClass())
+        var opt = JmhDefaultOptions.getDefaults(this.getClass())
                 .build();
         var results = new Runner(opt).run();
         Assert.assertNotNull(results);

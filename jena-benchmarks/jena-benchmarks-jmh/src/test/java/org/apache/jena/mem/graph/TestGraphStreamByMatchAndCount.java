@@ -24,9 +24,9 @@ package org.apache.jena.mem.graph;
 import org.apache.jena.atlas.iterator.ActionCount;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.jmh.JmhDefaultOptions;
 import org.apache.jena.mem.GraphMemRoaring;
 import org.apache.jena.mem.graph.helper.Context;
-import org.apache.jena.mem.graph.helper.JMHDefaultOptions;
 import org.apache.jena.mem.graph.helper.Releases;
 
 import org.junit.Test;
@@ -54,10 +54,14 @@ public class TestGraphStreamByMatchAndCount {
 
     @Param({
             "GraphMemFast (current)",
-            "GraphMemRoaring EAGER (current)",
+            "GraphMemValue (current)",
+//            "GraphMemRoaring EAGER (current)",
 //            "GraphMemRoaring LAZY (current)",
-            "GraphMemRoaring LAZY_PARALLEL (current)",
-//            "GraphMem (Jena 4.8.0)",
+//            "GraphMemRoaring LAZY_PARALLEL (current)",
+//            "GraphMemRoaring MINIMAL (current)",
+//            "GraphMemValue (Jena 5.6.0)",
+            "GraphMemFast (Jena 5.6.0)",
+            "GraphMemValue (Jena 5.6.0)",
     })
     public String param1_GraphImplementation;
 
@@ -65,13 +69,13 @@ public class TestGraphStreamByMatchAndCount {
     public int param2_sampleSize;
     Function<String, Object> graphStreamByMatchAndCount;
     private Graph sutCurrent;
-    private org.apache.shadedJena480.graph.Graph sut480;
+    private org.apache.shadedJena560.graph.Graph sut560;
     private List<Triple> triplesToFindCurrent;
-    private List<org.apache.shadedJena480.graph.Triple> triplesToFind480;
+    private List<org.apache.shadedJena560.graph.Triple> triplesToFind560;
 
     private static int count(final Stream<?> stream) {
         var actionCounter = new ActionCount<>();
-        stream.forEach(actionCounter::accept);
+        stream.forEach(actionCounter);
         return (int) actionCounter.getCount();
     }
 
@@ -114,55 +118,41 @@ public class TestGraphStreamByMatchAndCount {
         return total;
     }
 
-    private Object graphStreamByMatchAndCount480(String pattern) {
-        var streamFunction = getStreamFunctionByPattern480(pattern);
+    private Object graphStreamByMatchAndCount560(String pattern) {
+        var streamFunction = getStreamFunctionByPattern560(pattern);
         var total = 0;
-        for (org.apache.shadedJena480.graph.Triple sample : this.triplesToFind480) {
+        for (org.apache.shadedJena560.graph.Triple sample : this.triplesToFind560) {
             total += count(streamFunction.apply(sample));
         }
         return total;
     }
 
     Function<Triple, Stream<Triple>> getStreamFunctionByPatternCurrent(String pattern) {
-        switch (pattern) {
-            case "S__":
-                return t -> sutCurrent.stream(t.getSubject(), null, null);
-            case "_P_":
-                return t -> sutCurrent.stream(null, t.getPredicate(), null);
-            case "__O":
-                return t -> sutCurrent.stream(null, null, t.getObject());
-            case "SP_":
-                return t -> sutCurrent.stream(t.getSubject(), t.getPredicate(), null);
-            case "S_O":
-                return t -> sutCurrent.stream(t.getSubject(), null, t.getObject());
-            case "_PO":
-                return t -> sutCurrent.stream(null, t.getPredicate(), t.getObject());
-            default:
-                throw new IllegalArgumentException("Unknown pattern: " + pattern);
-        }
+        return switch (pattern) {
+            case "S__" -> t -> sutCurrent.stream(t.getSubject(), null, null);
+            case "_P_" -> t -> sutCurrent.stream(null, t.getPredicate(), null);
+            case "__O" -> t -> sutCurrent.stream(null, null, t.getObject());
+            case "SP_" -> t -> sutCurrent.stream(t.getSubject(), t.getPredicate(), null);
+            case "S_O" -> t -> sutCurrent.stream(t.getSubject(), null, t.getObject());
+            case "_PO" -> t -> sutCurrent.stream(null, t.getPredicate(), t.getObject());
+            default -> throw new IllegalArgumentException("Unknown pattern: " + pattern);
+        };
     }
 
-    Function<org.apache.shadedJena480.graph.Triple, Stream<org.apache.shadedJena480.graph.Triple>> getStreamFunctionByPattern480(String pattern) {
-        switch (pattern) {
-            case "S__":
-                return t -> sut480.stream(t.getSubject(), null, null);
-            case "_P_":
-                return t -> sut480.stream(null, t.getPredicate(), null);
-            case "__O":
-                return t -> sut480.stream(null, null, t.getObject());
-            case "SP_":
-                return t -> sut480.stream(t.getSubject(), t.getPredicate(), null);
-            case "S_O":
-                return t -> sut480.stream(t.getSubject(), null, t.getObject());
-            case "_PO":
-                return t -> sut480.stream(null, t.getPredicate(), t.getObject());
-            default:
-                throw new IllegalArgumentException("Unknown pattern: " + pattern);
-        }
+    Function<org.apache.shadedJena560.graph.Triple, Stream<org.apache.shadedJena560.graph.Triple>> getStreamFunctionByPattern560(String pattern) {
+        return switch (pattern) {
+            case "S__" -> t -> sut560.stream(t.getSubject(), null, null);
+            case "_P_" -> t -> sut560.stream(null, t.getPredicate(), null);
+            case "__O" -> t -> sut560.stream(null, null, t.getObject());
+            case "SP_" -> t -> sut560.stream(t.getSubject(), t.getPredicate(), null);
+            case "S_O" -> t -> sut560.stream(t.getSubject(), null, t.getObject());
+            case "_PO" -> t -> sut560.stream(null, t.getPredicate(), t.getObject());
+            default -> throw new IllegalArgumentException("Unknown pattern: " + pattern);
+        };
     }
 
     @Setup(Level.Trial)
-    public void setupTrial() throws Exception {
+    public void setupTrial() {
         Context trialContext = new Context(param1_GraphImplementation);
         switch (trialContext.getJenaVersion()) {
             case CURRENT: {
@@ -188,22 +178,22 @@ public class TestGraphStreamByMatchAndCount {
                 java.util.Collections.shuffle(this.triplesToFindCurrent, new Random(4721));
             }
             break;
-            case JENA_4_8_0: {
-                this.sut480 = Releases.v480.createGraph(trialContext.getGraphClass());
-                this.graphStreamByMatchAndCount = this::graphStreamByMatchAndCount480;
+            case JENA_5_6_0: {
+                this.sut560 = Releases.v560.createGraph(trialContext.getGraphClass());
+                this.graphStreamByMatchAndCount = this::graphStreamByMatchAndCount560;
 
-                var triples = Releases.v480.readTriples(param0_GraphUri);
-                triples.forEach(this.sut480::add);
+                var triples = Releases.v560.readTriples(param0_GraphUri);
+                triples.forEach(this.sut560::add);
 
                 /*clone the triples because they should not be the same objects*/
-                this.triplesToFind480 = new ArrayList<>(param2_sampleSize);
+                this.triplesToFind560 = new ArrayList<>(param2_sampleSize);
                 var sampleIncrement = triples.size() / param2_sampleSize;
                 for (var i = 0; i < triples.size(); i += sampleIncrement) {
-                    this.triplesToFind480.add(Releases.v480.cloneTriple(triples.get(i)));
+                    this.triplesToFind560.add(Releases.v560.cloneTriple(triples.get(i)));
                 }
                 /* Shuffle is import because the order might play a role. We want to test the performance of the
                        contains method regardless of the order */
-                java.util.Collections.shuffle(this.triplesToFind480, new Random(4721));
+                java.util.Collections.shuffle(this.triplesToFind560, new Random(4721));
             }
             break;
             default:
@@ -213,7 +203,7 @@ public class TestGraphStreamByMatchAndCount {
 
     @Test
     public void benchmark() throws Exception {
-        var opt = JMHDefaultOptions.getDefaults(this.getClass())
+        var opt = JmhDefaultOptions.getDefaults(this.getClass())
                 .build();
         var results = new Runner(opt).run();
         assertNotNull(results);

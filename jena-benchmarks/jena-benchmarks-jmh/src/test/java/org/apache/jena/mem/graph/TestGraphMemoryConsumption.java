@@ -23,8 +23,8 @@ package org.apache.jena.mem.graph;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.jmh.JmhDefaultOptions;
 import org.apache.jena.mem.graph.helper.Context;
-import org.apache.jena.mem.graph.helper.JMHDefaultOptions;
 import org.apache.jena.mem.graph.helper.Releases;
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,6 +32,7 @@ import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @State(Scope.Benchmark)
@@ -46,30 +47,30 @@ public class TestGraphMemoryConsumption {
 
     @Param({
             "GraphMemFast (current)",
-            "GraphMemRoaring EAGER (current)",
+            "GraphMemValue (current)",
+//            "GraphMemRoaring EAGER (current)",
 //            "GraphMemRoaring LAZY (current)",
-            "GraphMemRoaring LAZY_PARALLEL (current)",
-            "GraphMemRoaring MINIMAL (current)",
-//            "GraphMem (Jena 4.8.0)",
+//            "GraphMemRoaring LAZY_PARALLEL (current)",
+//            "GraphMemRoaring MINIMAL (current)",
+//            "GraphMemValue (Jena 5.6.0)",
+            "GraphMemFast (Jena 5.6.0)",
+            "GraphMemValue (Jena 5.6.0)",
     })
     public String param1_GraphImplementation;
     java.util.function.Supplier<Object> graphFill;
     private Context trialContext;
     private List<Triple> allTriplesCurrent;
-    private List<org.apache.shadedJena480.graph.Triple> allTriples480;
+    private List<org.apache.shadedJena560.graph.Triple> allTriples560;
 
     /**
      * This method is used to get the memory consumption of the current JVM.
      *
      * @return the memory consumption in MB
      */
-    @SuppressWarnings("removal")
     private static double runGcAndGetUsedMemoryInMB() {
-        System.runFinalization();
         System.gc();
-        Runtime.getRuntime().runFinalization();
         Runtime.getRuntime().gc();
-        return BigDecimal.valueOf(Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()).divide(BigDecimal.valueOf(1024L)).divide(BigDecimal.valueOf(1024L)).doubleValue();
+        return BigDecimal.valueOf(Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()).divide(BigDecimal.valueOf(1024L), 3, RoundingMode.HALF_UP).divide(BigDecimal.valueOf(1024L), 3, RoundingMode.HALF_UP).doubleValue();
     }
 
     @Benchmark
@@ -91,11 +92,11 @@ public class TestGraphMemoryConsumption {
         return sut;
     }
 
-    private Object graphFill480() {
+    private Object graphFill560() {
         var memoryBefore = runGcAndGetUsedMemoryInMB();
         var stopwatch = StopWatch.createStarted();
-        var sut = Releases.v480.createGraph(trialContext.getGraphClass());
-        allTriples480.forEach(sut::add);
+        var sut = Releases.v560.createGraph(trialContext.getGraphClass());
+        allTriples560.forEach(sut::add);
         stopwatch.stop();
         var memoryAfter = runGcAndGetUsedMemoryInMB();
         System.out.printf("graphs: %d time to fill graphs: %s additional memory: %5.3f MB%n",
@@ -106,16 +107,16 @@ public class TestGraphMemoryConsumption {
     }
 
     @Setup(Level.Trial)
-    public void setupTrial() throws Exception {
+    public void setupTrial() {
         this.trialContext = new Context(param1_GraphImplementation);
         switch (this.trialContext.getJenaVersion()) {
             case CURRENT:
                 this.allTriplesCurrent = Releases.current.readTriples(param0_GraphUri);
                 this.graphFill = this::graphFillCurrent;
                 break;
-            case JENA_4_8_0:
-                this.allTriples480 = Releases.v480.readTriples(param0_GraphUri);
-                this.graphFill = this::graphFill480;
+            case JENA_5_6_0:
+                this.allTriples560 = Releases.v560.readTriples(param0_GraphUri);
+                this.graphFill = this::graphFill560;
                 break;
             default:
                 throw new IllegalArgumentException("Unknown Jena version: " + this.trialContext.getJenaVersion());
@@ -124,7 +125,7 @@ public class TestGraphMemoryConsumption {
 
     @Test
     public void benchmark() throws Exception {
-        var opt = JMHDefaultOptions.getDefaults(this.getClass())
+        var opt = JmhDefaultOptions.getDefaults(this.getClass())
                 .warmupIterations(3)
                 .measurementIterations(3)
                 .build();

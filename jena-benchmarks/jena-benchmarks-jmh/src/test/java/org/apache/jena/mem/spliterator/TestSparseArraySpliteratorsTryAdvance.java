@@ -21,22 +21,20 @@
 
 package org.apache.jena.mem.spliterator;
 
-import org.apache.jena.atlas.iterator.ActionCount;
-import org.junit.Assert;
-import org.junit.Test;
-import org.openjdk.jmh.annotations.*;
-import org.openjdk.jmh.results.format.ResultFormatType;
-import org.openjdk.jmh.runner.Runner;
-import org.openjdk.jmh.runner.options.OptionsBuilder;
-import org.openjdk.jmh.runner.options.TimeValue;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Spliterator;
-import java.util.concurrent.TimeUnit;
 
+import org.apache.jena.atlas.iterator.ActionCount;
+import org.apache.jena.jmh.JmhDefaultOptions;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.runner.Runner;
+
+import static org.junit.Assert.assertNotNull;
 
 @State(Scope.Benchmark)
 public class TestSparseArraySpliteratorsTryAdvance {
@@ -50,8 +48,8 @@ public class TestSparseArraySpliteratorsTryAdvance {
             "mem2.SparseArraySpliterator"
     })
     public String param1_iteratorImplementation;
-    List<Object[]> arraysWithNulls = new ArrayList<>(stepsWithNull.length);
-    List<Integer> elementsCounts = new ArrayList<>(stepsWithNull.length);
+    final List<Object[]> arraysWithNulls = new ArrayList<>(stepsWithNull.length);
+    final List<Integer> elementsCounts = new ArrayList<>(stepsWithNull.length);
 
     @Benchmark
     public long testSpliteratorTryAdvance() {
@@ -64,7 +62,7 @@ public class TestSparseArraySpliteratorsTryAdvance {
             var sut = createSut(arrayWithNulls, elementsCount);
 
             do {
-            } while (sut.tryAdvance(actionCounter::accept));
+            } while (sut.tryAdvance(actionCounter));
 
             total += actionCounter.getCount();
             Assert.assertEquals(elementsCount.longValue(), actionCounter.getCount());
@@ -74,25 +72,24 @@ public class TestSparseArraySpliteratorsTryAdvance {
 
 
     public Spliterator<Object> createSut(Object[] arrayWithNulls, int elementsCount) {
-        var count = elementsCount;
+        @SuppressWarnings("UnnecessaryLocalVariable") var count = elementsCount;
         Runnable checkForConcurrentModification = () -> {
             if (count != elementsCount) {
                 throw new RuntimeException("Concurrent modification detected");
             }
         };
-        switch (param1_iteratorImplementation) {
-            case "memvalue.SparseArraySpliterator":
-                return new org.apache.jena.memvalue.SparseArraySpliterator<>(arrayWithNulls, count, checkForConcurrentModification);
-            case "mem2.SparseArraySpliterator":
-                return new SparseArraySpliterator<>(arrayWithNulls, checkForConcurrentModification);
-
-            default:
-                throw new IllegalArgumentException("Unknown spliterator implementation: " + param1_iteratorImplementation);
-        }
+        return switch (param1_iteratorImplementation) {
+            case "memvalue.SparseArraySpliterator" ->
+                    new org.apache.jena.memvalue.SparseArraySpliterator<>(arrayWithNulls, count, checkForConcurrentModification);
+            case "mem2.SparseArraySpliterator" ->
+                    new SparseArraySpliterator<>(arrayWithNulls, checkForConcurrentModification);
+            default ->
+                    throw new IllegalArgumentException("Unknown spliterator implementation: " + param1_iteratorImplementation);
+        };
     }
 
     @Setup(Level.Trial)
-    public void setupTrial() throws Exception {
+    public void setupTrial() {
         for (int i = 0; i < stepsWithNull.length; i++) {
             var arrayWithNulls = new Object[param0_arraySize];
             var stepsWithNull = TestSparseArraySpliteratorsTryAdvance.stepsWithNull[i];
@@ -108,29 +105,12 @@ public class TestSparseArraySpliteratorsTryAdvance {
 
     @Test
     public void benchmark() throws Exception {
-        var opt = new OptionsBuilder()
-                // Specify which benchmarks to run.
-                // You can be more specific if you'd like to run only one benchmark per test.
-                .include(this.getClass().getName())
-                // Set the following options as needed
-                .mode(Mode.AverageTime)
-                .timeUnit(TimeUnit.SECONDS)
-                .warmupTime(TimeValue.NONE)
+        var opt = JmhDefaultOptions.getDefaults(this.getClass())
                 .warmupIterations(10)
                 .measurementIterations(100)
-                .measurementTime(TimeValue.NONE)
-                .threads(1)
-                .forks(1)
-                .shouldFailOnError(true)
-                .shouldDoGC(true)
-                //.jvmArgs("-XX:+UnlockDiagnosticVMOptions", "-XX:+PrintInlining")
-                .jvmArgs("-Xmx12G")
-                //.addProfiler(WinPerfAsmProfiler.class)
-                .resultFormat(ResultFormatType.JSON)
-                .result(this.getClass().getSimpleName() + "_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) + ".json")
                 .build();
         var results = new Runner(opt).run();
-        Assert.assertNotNull(results);
+        assertNotNull(results);
     }
 
 }

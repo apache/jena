@@ -30,7 +30,7 @@ public class HashCommonNodeMap extends HashCommonMap<Node, Object> {
      * capacity and the corresponding threshold. All the key elements start out
      * null.
      *
-     * @param initialCapacity
+     * @param initialCapacity Initial capacity
      */
     public HashCommonNodeMap(int initialCapacity) {
         super(initialCapacity);

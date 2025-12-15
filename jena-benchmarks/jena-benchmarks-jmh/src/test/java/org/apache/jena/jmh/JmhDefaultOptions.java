@@ -18,7 +18,11 @@
  *
  *   SPDX-License-Identifier: Apache-2.0
  */
-package org.apache.jena.mem.helper;
+package org.apache.jena.jmh;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.TimeUnit;
 
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.results.format.ResultFormatType;
@@ -26,14 +30,10 @@ import org.openjdk.jmh.runner.options.ChainedOptionsBuilder;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 import org.openjdk.jmh.runner.options.TimeValue;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.concurrent.TimeUnit;
-
 /**
  * Default options for JMH benchmarks for graphs.
  */
-public class JMHDefaultOptions {
+public class JmhDefaultOptions {
     public static ChainedOptionsBuilder getDefaults(Class<?> c) {
         return new OptionsBuilder()
                 // Specify which benchmarks to run.

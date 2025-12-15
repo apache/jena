@@ -22,9 +22,9 @@
 package org.apache.jena.geosparql.query;
 
 public interface SpatialQueryTask {
-    void setData(String trigString) throws Exception;
-    void setInferenceMode(boolean enableInferences, boolean materialize) throws Exception;
-    void setQuery(String queryString) throws Exception;
+    void setData(String trigString);
+    void setInferenceMode(boolean enableInferences, boolean materialize);
+    void setQuery(String queryString);
     void setIndex(boolean isEnabled);
     long exec();
 }

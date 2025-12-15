@@ -24,6 +24,7 @@ import java.util.Collection;
 
 import org.junit.Assert;
 import org.junit.Test;
+
 import org.openjdk.jmh.results.RunResult;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.options.Options;
@@ -32,7 +33,7 @@ public class TestBenchmarkHashJoin {
     @Test
     public void benchmark() throws Exception {
         Options opt = BenchmarkHashJoin.getDefaults(BenchmarkHashJoin.class).build();
-        // JMHDefaultOptions.getDefaults(BenchmarkHashJoin.class).build();
+        // JmhDefaultOptions.getDefaults(BenchmarkHashJoin.class).build();
         Collection<RunResult> runResults = new Runner(opt).run();
         Assert.assertNotNull(runResults);
     }
