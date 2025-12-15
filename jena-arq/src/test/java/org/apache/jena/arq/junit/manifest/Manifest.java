@@ -26,7 +26,6 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RiotException;
-import org.apache.jena.riot.RiotNotFoundException;
 import org.apache.jena.sparql.vocabulary.TestManifestX;
 import org.apache.jena.system.G;
 import org.apache.jena.vocabulary.RDF;
