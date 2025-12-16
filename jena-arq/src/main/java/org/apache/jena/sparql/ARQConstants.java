@@ -18,6 +18,7 @@
 
 package org.apache.jena.sparql;
 
+import org.apache.jena.cdt.CDT;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
 import org.apache.jena.sparql.core.Prologue;
@@ -86,8 +87,13 @@ public class ARQConstants
     /** URI scheme that triggers the loader to load a java class */
     public static final String javaClassURIScheme = "java:" ;
 
-    /** The ARQ function library URI space */
+    /**
+     * The CDT function URI space
+     * @deprecated Use {@link CDT#CDTFunctionLibraryURI}
+     */
+    @Deprecated(forRemoval = true)
     public static final String CDTFunctionLibraryURI = "http://w3id.org/awslabs/neptune/SPARQL-CDTs/" ;
+
 
     /** The ARQ function library URI space */
     public static final String ARQFunctionLibraryURI = "http://jena.apache.org/ARQ/function#" ;

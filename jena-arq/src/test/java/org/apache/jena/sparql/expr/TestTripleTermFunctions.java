@@ -40,76 +40,40 @@ public class TestTripleTermFunctions {
 
     static { JenaSystem.init(); }
 
-    @Test public void tripleTermKW_Create1() {
+    @Test public void tripleTerm_Create1() {
         Node r = eval("triple(:s1, :p1, :o1)");
         assertNotNull(r);
     }
 
     @Test
-    public void tripleTermKW_Create2() {
+    public void tripleTerm_Bad1() {
         assertThrows(ExprEvalException.class, ()-> eval("triple(:s1, 'bc', :o1)") );
     }
 
     @Test
-    public void tripleTermKW_Access1() {
+    public void tripleTerm_Access1() {
         test("subject(triple(:s1, :p1, :o1))", ":s1");
     }
 
     @Test
-    public void tripleTermKW_Access2() {
+    public void tripleTerm_Access2() {
         test("predicate(triple(:s1, :p1, :o1))", ":p1");
     }
 
     @Test
-    public void tripleTermKW_Access3() {
+    public void tripleTerm_Access3() {
         test("object(triple(:s1, :p1, :o1))", ":o1");
     }
 
     @Test
-    public void tripleTermKW_Test1() {
+    public void tripleTerm_Test1() {
         test("isTriple(triple(:s1, :p1, :o1))", "true");
     }
 
     @Test
-    public void tripleTermKW_Test2() {
+    public void tripleTerm_Test2() {
         test("isTriple(:x)", "false");
     }
-
-    @Test public void tripleTermURI_Create1() {
-        Node r = eval("triple(:s1, :p1, :o1)");
-        assertNotNull(r);
-    }
-
-    @Test
-    public void tripleTermURI_Create2() {
-        assertThrows(ExprEvalException.class, ()-> eval("afn:triple(:s1, 'bc', :o1)") );
-    }
-
-    @Test
-    public void tripleTermURI_Access1() {
-        test("afn:subject(afn:triple(:s1, :p1, :o1))", ":s1");
-    }
-
-    @Test
-    public void tripleTermURI_Access2() {
-        test("afn:predicate(afn:triple(:s1, :p1, :o1))", ":p1");
-    }
-
-    @Test
-    public void tripleTermURI_Access3() {
-        test("afn:object(afn:triple(:s1, :p1, :o1))", ":o1");
-    }
-
-    @Test
-    public void tripleTermURI_Test1() {
-        test("afn:isTriple(afn:triple(:s1, :p1, :o1))", "true");
-    }
-
-    @Test
-    public void tripleTermURI_Test2() {
-        test("afn:isTriple(:x)", "false");
-    }
-
 
     private static Node eval(String string) {
         Expr expr = ExprUtils.parse(string, pmap);

@@ -38,8 +38,9 @@ public class SystemARQ
 
     // NodeValues work without the context so some things only have global settings.
 
-    /** Control whether addition datatypes, over and above strict, minimal SPARQL compliance, are handled.
-     *  Examples include xsd:date and simple literal/xsd:string.
+    /**
+     * Control whether addition datatypes, over and above strict, minimal SPARQL compliance, are handled.
+     * Examples include xsd:date and simple literal/xsd:string.
      */
     public static boolean ValueExtensions       = true ;
 
@@ -52,10 +53,17 @@ public class SystemARQ
      */
     public static boolean StrictDateTimeFO      = false ;
 
-    /** Whether support for Roman numerals (datatype http://rome.example.org/Numeral).
-     *  Mainly a test of datatype extension.
+    /**
+     * Whether support for Roman numerals (datatype http://rome.example.org/Numeral).
+     * Mainly a test of datatype extension.
      */
     public static boolean EnableRomanNumerals   = true ;
+
+    /**
+     * Enable CDT support.
+     * <a href="https://awslabs.github.io/SPARQL-CDTs/spec/latest.html">SPARQL CDTs: Representing and Querying Lists and Maps as RDF Literals</a>
+     */
+    public static boolean EnableCDTs   = true ;
 
     /**
      * Sync a Model if it provides the underlying graph provides sync . Do nothing

@@ -96,9 +96,12 @@ public abstract class NodeValue extends ExprNode
 
     // Before constants
     public static DatatypeFactory xmlDatatypeFactory =  DatatypeFactoryInst.newDatatypeFactory();
+
     private static int NODEVALUE_CACHE_SIZE = 10_000;
-    private static Set<RDFDatatype> noCache = Set.of(CompositeDatatypeList.datatype(), CompositeDatatypeMap.datatype());
     private static Cache<Node, NodeValue> nodeValueCache = CacheFactory.createCache(NODEVALUE_CACHE_SIZE);
+
+    // Datatypes not to cache
+    private static Set<RDFDatatype> noCache = Set.of(CompositeDatatypeList.datatype(), CompositeDatatypeMap.datatype());
 
     public static final NodeValue TRUE   = NodeValue.makeNode("true", XSDboolean);
     public static final NodeValue FALSE  = NodeValue.makeNode("false", XSDboolean);
