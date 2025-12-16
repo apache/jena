@@ -39,7 +39,7 @@ import org.apache.jena.sparql.expr.nodevalue.TestNodeValueSortKey;
     , TestFunctions.class
     , TestFunctions2.class
     , TestFunctionsByURI.class
-    , TestTripleTermFunctions.class
+    , TestExprTripleTerms.class
     , TestLeviathanFunctions.class
     , TestNodeValueOps.class
     , TestOrdering.class
