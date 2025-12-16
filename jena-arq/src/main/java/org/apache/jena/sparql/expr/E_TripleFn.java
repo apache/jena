@@ -21,6 +21,7 @@ package org.apache.jena.sparql.expr;
 import org.apache.jena.sparql.function.library.triple.TripleTermOps;
 import org.apache.jena.sparql.sse.Tags;
 
+// The function "TRIPLE", not "<<( )>>", used in an expression.
 public class E_TripleFn extends ExprFunction3 {
 
     private static final String symbol = Tags.tagFnTriple;

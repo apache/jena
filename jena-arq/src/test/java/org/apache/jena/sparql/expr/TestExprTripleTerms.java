@@ -34,9 +34,8 @@ import org.apache.jena.sys.JenaSystem;
 
 /**
  * Tests for TRIPLE, SUBJECT, PREDICATE, OBJECT, isTRIPLE
- * and by URIs afn:triple(), afn:subject(), afn:predicate(), afn:object(), afn:isTriple().
  */
-public class TestTripleTermFunctions {
+public class TestExprTripleTerms {
 
     static { JenaSystem.init(); }
 

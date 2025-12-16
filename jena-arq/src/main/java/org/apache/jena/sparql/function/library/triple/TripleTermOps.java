@@ -23,6 +23,7 @@ import java.util.function.Function;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.NodeValue;
 
@@ -33,6 +34,13 @@ public class TripleTermOps {
      */
     public static NodeValue fnTriple(NodeValue nv1, NodeValue nv2, NodeValue nv3) {
         Node s = nv1.asNode();
+        if ( ARQ.isStrictMode() ) {
+            if ( s.isTripleTerm() )
+                throw new ExprEvalException("triple: Subject is a triple term: "+nv1);
+            if ( !s.isURI() && !s.isBlank() )
+                throw new ExprEvalException("triple: Subject is not a URI or blank node: "+nv2);
+        }
+
         Node p = nv2.asNode();
         if ( ! p.isURI() )
             throw new ExprEvalException("triple: Predicate not a URI: "+nv2);
