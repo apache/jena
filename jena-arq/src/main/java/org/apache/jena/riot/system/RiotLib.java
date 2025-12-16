@@ -45,6 +45,7 @@ import org.apache.jena.riot.*;
 import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.writer.DirectiveStyle;
 import org.apache.jena.riot.writer.WriterGraphRIOTBase;
+import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
@@ -223,29 +224,24 @@ public class RiotLib {
     }
 
     /**
-     * Create a {@link ParserProfile} with default settings, and a specific error handler.
+     * Create a {@link ParserProfile} with a specific error handler,
+     * and otherwise default settings.
      */
     public static ParserProfile createParserProfile(FactoryRDF factory, ErrorHandler errorHandler, boolean checking) {
-        return new CDTAwareParserProfile(factory,
-                                    errorHandler,
-                                    IRIxResolver.create(IRIs.getSystemBase()).build(),
-                                    PrefixMapFactory.create(),
-                                    RIOT.getContext().copy(),
-                                    checking,
-                                    false);
+        IRIxResolver resolver = IRIxResolver.create(IRIs.getSystemBase()).build();
+        return createParserProfile(factory, errorHandler, resolver, checking);
     }
 
     /**
-     * Create a {@link ParserProfile}.
+     * Create a {@link ParserProfile} with a specific error handler,
+     * and a specific IRI resolver and otherwise default settings.
      */
-    public static ParserProfile createParserProfile(FactoryRDF factory, ErrorHandler errorHandler,
-                                                    IRIxResolver resolver, boolean checking) {
-        return new CDTAwareParserProfile(factory,
-                errorHandler,
-                resolver,
-                PrefixMapFactory.create(),
-                RIOT.getContext().copy(),
-                checking, false);
+    public static ParserProfile createParserProfile(FactoryRDF factory, ErrorHandler errorHandler, IRIxResolver resolver, boolean checking) {
+        PrefixMap prefixMap = PrefixMapFactory.create();
+        Context context = RIOT.getContext().copy();
+        if ( SystemARQ.EnableCDTs )
+            return new CDTAwareParserProfile(factory, errorHandler, resolver, prefixMap, context, checking, false);
+        return new ParserProfileStd(factory, errorHandler, resolver, prefixMap, context, checking, false);
     }
 
     /**

@@ -26,6 +26,7 @@ import java.util.Set;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.ARQConstants;
+import org.apache.jena.sparql.function.library.cdt.CDTLiteralFunctions;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.MappedLoader;
 import org.apache.jena.sys.JenaSystem;
@@ -46,9 +47,16 @@ public class FunctionRegistry
     public static void init() {
         // Initialize if there is no registry already set
         FunctionRegistry reg = new FunctionRegistry();
-        ARQFunctions.load(reg);
+
         StandardFunctions.loadStdDefs(reg);
         StandardFunctions.loadOtherDefs(reg);
+
+        // "arq:" functions
+        ARQFunctions.load(reg);
+        // "cdt:" (Composite Datatypes) extension.
+        // The functions are always loaded.
+        CDTLiteralFunctions.register(reg);
+
         set(ARQ.getContext(), reg);
     }
 

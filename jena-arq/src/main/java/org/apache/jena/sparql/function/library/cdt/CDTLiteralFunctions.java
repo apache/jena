@@ -18,26 +18,26 @@
 
 package org.apache.jena.sparql.function.library.cdt;
 
-import org.apache.jena.sparql.ARQConstants;
+import org.apache.jena.cdt.CDT;
 import org.apache.jena.sparql.function.FunctionRegistry;
 
 public class CDTLiteralFunctions {
     public static void register( final FunctionRegistry functionRegistry ) {
-        functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "concat",  ConcatFct.class );
-        functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "contains",     ContainsFct.class );
-        functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "containsKey",  ContainsKeyFct.class );
-        functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "containsTerm", ContainsTermFct.class );
-        functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "get",     GetFct.class );
-        functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "head",    HeadFct.class );
-        functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "keys",    KeysFct.class );
-        functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "List",    ListFct.class );
-        functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "Map",     MapFct.class );
-        functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "merge",   MergeFct.class );
-        functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "put",     PutFct.class );
-        functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "remove",  RemoveFct.class );
-        functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "reverse", ReverseFct.class );
-        functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "size",    SizeFct.class );
-        functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "subseq",  SubSeqFct.class );
-        functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "tail",    TailFct.class );
+        functionRegistry.put( CDT.CDTFunctionLibraryURI + "concat",         ConcatFct.class );
+        functionRegistry.put( CDT.CDTFunctionLibraryURI + "contains",       ContainsFct.class );
+        functionRegistry.put( CDT.CDTFunctionLibraryURI + "containsKey",    ContainsKeyFct.class );
+        functionRegistry.put( CDT.CDTFunctionLibraryURI + "containsTerm",   ContainsTermFct.class );
+        functionRegistry.put( CDT.CDTFunctionLibraryURI + "get",            GetFct.class );
+        functionRegistry.put( CDT.CDTFunctionLibraryURI + "head",           HeadFct.class );
+        functionRegistry.put( CDT.CDTFunctionLibraryURI + "keys",           KeysFct.class );
+        functionRegistry.put( CDT.CDTFunctionLibraryURI + "List",           ListFct.class );
+        functionRegistry.put( CDT.CDTFunctionLibraryURI + "Map",            MapFct.class );
+        functionRegistry.put( CDT.CDTFunctionLibraryURI + "merge",          MergeFct.class );
+        functionRegistry.put( CDT.CDTFunctionLibraryURI + "put",            PutFct.class );
+        functionRegistry.put( CDT.CDTFunctionLibraryURI + "remove",         RemoveFct.class );
+        functionRegistry.put( CDT.CDTFunctionLibraryURI + "reverse",        ReverseFct.class );
+        functionRegistry.put( CDT.CDTFunctionLibraryURI + "size",           SizeFct.class );
+        functionRegistry.put( CDT.CDTFunctionLibraryURI + "subseq",         SubSeqFct.class );
+        functionRegistry.put( CDT.CDTFunctionLibraryURI + "tail",           TailFct.class );
     }
 }

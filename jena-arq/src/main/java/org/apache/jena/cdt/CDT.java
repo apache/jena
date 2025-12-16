@@ -14,23 +14,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.sparql.function;
+package org.apache.jena.cdt;
 
-import org.apache.jena.sparql.ARQConstants;
-import org.apache.jena.sparql.util.MappedLoader;
+public class CDT {
 
-/** Load ARQ functions ().
- *
- *  Any additional functions from afn: that need special loading.
- *
- * They can be invoked by afn:name without registration because
- * the {@link MappedLoader} maps the names to a "java:" loadable name.
- *
- * @see ARQConstants#ARQFunctionLibraryURI
- * @see ARQConstants#ARQFunctionLibrary
- */
-public class ARQFunctions {
-    public static void load(FunctionRegistry reg) {}
+    /** The CDT function library URI space */
+    public static final String CDTFunctionLibraryURI = "http://w3id.org/awslabs/neptune/SPARQL-CDTs/" ;
 }

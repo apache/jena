@@ -588,6 +588,7 @@ public class ARQ
         SystemARQ.StrictDateTimeFO      = true;
         SystemARQ.ValueExtensions       = false;
         SystemARQ.EnableRomanNumerals   = false;
+        SystemARQ.EnableCDTs            = false;
 
         context.set(optimization,                   false);
         context.set(hideNonDistiguishedVariables,   true);
@@ -609,6 +610,7 @@ public class ARQ
         SystemARQ.StrictDateTimeFO      = false;
         SystemARQ.ValueExtensions       = true;
         SystemARQ.EnableRomanNumerals   = false;
+        SystemARQ.EnableCDTs            = true;
         setNormalMode(ARQ.getContext());
     }
 
@@ -677,11 +679,14 @@ public class ARQ
         }
     }
 
+    // Settings for normal operation.
     private static void setARQSettings() {
         // This must be executable before initialization
         SystemARQ.StrictDateTimeFO      = false;
         SystemARQ.ValueExtensions       = true;
         SystemARQ.EnableRomanNumerals   = false;
+        SystemARQ.EnableCDTs            = true;
+
 
         // The system context is allocated in RIOT because RIOT initializes before ARQ.
         Context context = RIOT.getContext();

@@ -32,8 +32,9 @@ public class MappedLoader {
     // java:com.hp.hpl.jena.sparql.pfunction.
 
     static Map<String, String> uriMap = new HashMap<>();
+    static { setup(); }
 
-    static {
+    private static void setup() {
         // ARQ library
         uriMap.put(ARQConstants.ARQFunctionLibraryURI, ARQConstants.ARQFunctionLibrary);
         uriMap.put(ARQConstants.ARQFunctionLibraryURI_Jena2, ARQConstants.ARQFunctionLibrary);
@@ -64,7 +65,7 @@ public class MappedLoader {
             String newURI = uri.replace("http://jena.hpl.hp.com/", "http://jena.apache.org/") ;
             Log.warnOnce(MappedLoader.class, "Loading function or property function with old style 'jena.hpl.hp.com' used - preferred style is to use 'jena.apache.org': "+uri+ " => "+newURI, uri) ;
         }
-        
+
         Map.Entry<String, String> e = find(uri);
         if (e == null) {
             if (uri.startsWith(ARQConstants.javaClassURIScheme))

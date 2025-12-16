@@ -52,6 +52,7 @@ import org.apache.jena.riot.process.normalize.StreamCanonicalLiterals;
 import org.apache.jena.riot.system.*;
 import org.apache.jena.riot.system.streammgr.StreamManager;
 import org.apache.jena.riot.web.HttpNames;
+import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.graph.GraphFactory;
@@ -541,9 +542,19 @@ public class RDFParser {
                 ? resolver
                 : IRIxResolver.create().base(baseStr).resolve(resolve).allowRelative(allowRelative).build();
         PrefixMap pmap = ( this.prefixMap != null ) ? this.prefixMap : PrefixMapFactory.create();
-        ParserProfileStd parserFactory = new CDTAwareParserProfile(factory, errorHandler,
-                                                                   parserResolver, pmap,
-                                                                   context, checking$, strict);
-        return parserFactory;
+        ParserProfile parserProfile = createParserProfile(factory, errorHandler, parserResolver, pmap, context, checking$, strict);
+        return parserProfile;
+    }
+
+    private static ParserProfile createParserProfile(FactoryRDF factory, ErrorHandler errorHandler,
+                                         IRIxResolver parserResolver, PrefixMap prefixMap, Context context,
+                                         boolean checking, boolean strictMode) {
+        if ( SystemARQ.EnableCDTs )
+            return new CDTAwareParserProfile(factory, errorHandler,
+                                             parserResolver, prefixMap,
+                                             context, checking, strictMode);
+        return new ParserProfileStd(factory, errorHandler,
+                                    parserResolver, prefixMap,
+                                    context, checking, strictMode);
     }
 }
