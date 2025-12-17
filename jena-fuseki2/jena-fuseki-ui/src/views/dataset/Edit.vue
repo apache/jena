@@ -88,12 +88,16 @@
                       disabled
                     />
                   </div>
-                  <textarea
+                  <CodeMirror
                     ref="graph-editor"
-                    :value="content"
-                    @update:modelValue="content = $event"
                     class="form-control"
-                  ></textarea>
+                    :str-value="content"
+                    :b-allow-update="bAllowUpdate"
+                    :cm-extender="cmOptions"
+                    @ready="(objReady) => { cmView = objReady.view; }"
+                    @update-value="(strNew) => { updateChanges(strNew); }"
+                    @destroy="() => { cmView = null; }"
+                  />
                   <div class="mt-2 text-right">
                     <button
                       @click="discardChanges()"
@@ -128,14 +132,10 @@
 <script>
 import Menu from '@/components/dataset/Menu.vue'
 import TableListing from '@/components/dataset/TableListing.vue'
-import { EditorView, keymap, lineNumbers } from '@codemirror/view'
-import { defaultKeymap, history, historyKeymap } from '@codemirror/commands'
-import { syntaxHighlighting, defaultHighlightStyle } from '@codemirror/language'
-import { turtle } from 'codemirror-lang-turtle'
-import {
-  faTimes,
-  faCheck
-} from '@fortawesome/free-solid-svg-icons'
+import CodeMirror from '@/components/dataset/CodeMirror.vue';
+import { StreamLanguage } from '@codemirror/language'
+import { turtle } from "@codemirror/legacy-modes/mode/turtle"
+import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import currentDatasetMixin from '@/mixins/current-dataset'
@@ -146,32 +146,13 @@ library.add(faTimes, faCheck)
 
 const MAX_EDITABLE_SIZE = 10000
 
-/**
- * In CodeMirror 5, the static CodeMirror.fromTextArea was used in Jena UI to
- * sync an area in the page to the CodeMirror editor. That was removed in the
- * 6.x release, https://codemirror.net/docs/migration/.
- *
- * @param textarea
- * @param extensions
- * @returns {EditorView}
- */
-function editorFromTextArea(textarea, extensions) {
-  const view = new EditorView({doc: textarea.value, extensions})
-  textarea.parentNode.insertBefore(view.dom, textarea)
-  textarea.style.display = "none"
-  if (textarea.form) textarea.form.addEventListener("submit", () => {
-    textarea.value = view.state.doc.toString()
-  })
-  return view
-}
-
-
 export default {
   name: 'DatasetEdit',
 
   components: {
     Menu,
     TableListing,
+    CodeMirror,
     FontAwesomeIcon
   },
 
@@ -201,15 +182,13 @@ export default {
         }
       ],
       selectedGraph: '',
-      content: '',
-      code: '',
+      bAllowUpdate: true,
+      content: '', // ...always comes from CodeMirror editor except on initial load
+      cmView: null, // TODO: Add error message display when CodeMirror view reports error
       cmOptions: {
+        basic: true,
         extensions: [
-          lineNumbers(),
-          history(),
-          turtle(),
-          syntaxHighlighting(defaultHighlightStyle),
-          keymap.of([...defaultKeymap, ...historyKeymap])
+          StreamLanguage.define(turtle)
         ]
       }
     }
@@ -233,21 +212,10 @@ export default {
     }
   },
 
-  created () {
-    this.codemirrorEditor = null
-  },
-
   watch: {
-    code (newVal) {
-      this.codeChanged(newVal)
-    },
     services (newVal) {
       if (newVal && newVal['gsp-rw'] && Object.keys(newVal['gsp-rw']).length > 0) {
-        const element = this.$refs['graph-editor']
-        this.codemirrorEditor = editorFromTextArea(element, this.cmOptions.extensions)
-        EditorView.updateListener.of(v => {
-          this.content = v.getValue()
-        })
+        // ...nothing to do...
       }
     }
   },
@@ -257,19 +225,9 @@ export default {
   },
 
   methods: {
-    codeChanged (newVal) {
-      this.codemirrorEditor.dispatch({
-        changes: {
-          from: 0,
-          to: this.codemirrorEditor.state.doc.length,
-          insert: newVal
-        }
-      })
-    },
     listCurrentGraphs: async function () {
       this.loadingGraphs = true
       this.loadingGraph = true
-      this.code = ''
       this.selectedGraph = ''
       try {
         this.graphs = await this.$fusekiService.countGraphsTriples(this.datasetName, this.services.query['srv.endpoints'][0])
@@ -284,7 +242,7 @@ export default {
       const graph = Object.entries(this.graphs)
         .find(element => element[0] === graphName)
       if (parseInt(graph[1]) > MAX_EDITABLE_SIZE) {
-        alert('Sorry, that dataset is too large to load into the editor')
+        alert('The dataset is too large (> ' + MAX_EDITABLE_SIZE + ') for the editor')
         return
       }
       this.loadingGraph = true
@@ -294,7 +252,8 @@ export default {
           this.datasetName,
           this.services['gsp-rw']['srv.endpoints'],
           graphName)
-        this.code = result.data
+        this.bAllowUpdate = true;
+        this.content = result.data // ...reactive update to CodeMirror editor
       } catch (error) {
         displayError(this, error)
       } finally {
@@ -303,7 +262,12 @@ export default {
     },
     discardChanges: function () {
       this.selectedGraph = ''
-      this.code = ''
+      this.bAllowUpdate = true;
+      this.content = '' // ...reactive update to CodeMirror editor
+    },
+    updateChanges: function (strNew) {
+      this.bAllowUpdate = false; // ...since the update came from the editor, don't update itself
+      this.content = strNew; // ...reactive update does NOT change CodeMirror editor
     },
     saveGraph: async function () {
       if (!this.saveGraphDisabled) {
