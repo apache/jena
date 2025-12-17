@@ -33,6 +33,7 @@ import org.locationtech.jts.geom.Envelope;
 
 /** Adapter class for spatial index v1. */
 @Deprecated(forRemoval=true)
+@SuppressWarnings("removal")
 public class SpatialIndexAdapterV1
     implements SpatialIndex
 {

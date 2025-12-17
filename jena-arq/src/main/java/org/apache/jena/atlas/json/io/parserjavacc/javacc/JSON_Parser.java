@@ -16,14 +16,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  */
-package org.apache.jena.atlas.json.io.parserjavacc.javacc ;
+
+package org.apache.jena.atlas.json.io.parserjavacc.javacc;
+
 
 @SuppressWarnings("all")
 public class JSON_Parser extends JSON_ParserBase implements JSON_ParserConstants {
 
 // ---- Parser entry points
-  final public void unit() throws ParseException {Token t ;
+  final public 
+void unit() throws ParseException {Token t ;
 startParse(-1, -1) ;
     Object();
     t = jj_consume_token(0);
@@ -60,7 +65,8 @@ finishParse(t.beginLine, t.beginColumn) ;
 }
 
 // ---- Structures
-  final public void Value() throws ParseException {
+  final public 
+void Value() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case STRING_LITERAL2:
     case INTEGER:
@@ -190,7 +196,8 @@ element(line, col) ;
 }
 
 // ---- 
-  final public void SimpleValue() throws ParseException {
+  final public 
+void SimpleValue() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case STRING_LITERAL2:{
       String();

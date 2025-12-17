@@ -165,9 +165,14 @@ public class IRILib
         return plainFilenameToURL(fn);
     }
 
+    /** Test whether a URI starts with schema name {@code file:} (any case) */
+    public static boolean isFilename(String iri) {
+        return StrUtils.strStartsWithIgnoreCase(iri, "file:");
+    }
+
     /** Convert a file: IRI to a filename */
     public static String IRIToFilename(String iri) {
-        if ( ! iri.startsWith("file:") )
+        if ( ! isFilename(iri) )
             throw new AtlasException("Not a file: URI: "+iri);
 
         String fn;
@@ -180,7 +185,6 @@ public class IRILib
         // At this point, we have a filename of /C:/
         // so need strip the leading "/"
         fn = fixupWindows(fn);
-
         return decodeHex(fn);
     }
 

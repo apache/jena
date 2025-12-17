@@ -30,7 +30,7 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages;
-import org.apache.jena.riot.system.stream.*;
+import org.apache.jena.riot.system.streammgr.*;
 import org.apache.jena.shared.NotFoundException;
 import org.apache.jena.util.FileManager;
 import org.apache.jena.util.FileUtils;

@@ -18,26 +18,24 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.sse.Tags;
 
+public class E_IsLiteral extends ExprFunction1 {
+    private static final String symbol = Tags.tagIsLiteral;
 
-public class E_IsLiteral extends ExprFunction1
-{
-    private static final String symbol = Tags.tagIsLiteral ;
-
-    public E_IsLiteral(Expr expr)
-    {
-        super(expr, symbol) ;
+    public E_IsLiteral(Expr expr) {
+        super(expr, symbol);
     }
-    
+
     @Override
-    public NodeValue eval(NodeValue v)
-    { 
+    public NodeValue eval(NodeValue v) {
         if ( v.isLiteral() )
-            return NodeValue.TRUE ;
-        return NodeValue.FALSE ;
+            return NodeValue.TRUE;
+        return NodeValue.FALSE;
     }
-    
+
     @Override
-    public Expr copy(Expr expr) { return new E_IsLiteral(expr) ; } 
+    public Expr copy(Expr expr) {
+        return new E_IsLiteral(expr);
+    }
 }

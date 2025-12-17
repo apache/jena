@@ -35,13 +35,13 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RiotNotFoundException;
 import org.apache.jena.riot.SysRIOT;
-import org.apache.jena.riot.system.stream.LocatorFile;
-import org.apache.jena.riot.system.stream.LocatorHTTP;
-import org.apache.jena.riot.system.stream.StreamManager;
+import org.apache.jena.riot.system.streammgr.LocatorFile;
+import org.apache.jena.riot.system.streammgr.LocatorHTTP;
+import org.apache.jena.riot.system.streammgr.StreamManager;
 import org.apache.jena.sparql.util.Context;
 
-public class TestStreamManager
-{
+public class TestStreamManager {
+
     private static final String directory = "testing/RIOT/StreamManager";
     private static final String absDirectory = new File(directory).getAbsolutePath();
 
@@ -50,8 +50,8 @@ public class TestStreamManager
     private static StreamManager streamMgrNull;
     private static StreamManager streamMgrStd;
 
-    @BeforeAll static public void beforeClass()
-    {
+    @BeforeAll
+    static public void beforeClass() {
         streamMgrStd = StreamManager.get();
         streamMgrDir = new StreamManager();
         // Not current directory.
@@ -66,13 +66,12 @@ public class TestStreamManager
         streamMgrNull = new StreamManager();
     }
 
-    @AfterAll static public void afterClass()
-    {
+    @AfterAll
+    static public void afterClass() {
         StreamManager.setGlobal(streamMgrStd);
     }
 
-    private static Context context(StreamManager streamMgr)
-    {
+    private static Context context(StreamManager streamMgr) {
         Context context = new Context();
         context.put(SysRIOT.sysStreamManager, streamMgr);
         return context;
@@ -121,31 +120,25 @@ public class TestStreamManager
     @Test public void fm_read_14()  { read("file:D.rj"); }
     @Test public void fm_read_15()  { read("file:D.jsonld"); }
 
-    // TriG
-    // NQuads
-
-    private static void open(StreamManager streamMgr, String dataName, Context context)
-    {
+    private static void open(StreamManager streamMgr, String dataName, Context context) {
+        StreamManager sMgr = StreamManager.get();
         StreamManager.setGlobal(streamMgr);
-        try {
-            TypedInputStream in = RDFDataMgr.open(dataName, StreamManager.get(context));
+        try (TypedInputStream in = RDFDataMgr.open(dataName, StreamManager.get(context))) {
             assertNotNull(in);
             IO.close(in);
         } finally {
-            StreamManager.setGlobal(streamMgrStd);
+            StreamManager.setGlobal(sMgr);
         }
     }
 
-    private static void read(String dataName)
-    {
+    private static void read(String dataName) {
         try {
             StreamManager.setGlobal(streamMgrDir);
             Model m = ModelFactory.createDefaultModel();
             RDFDataMgr.read(m, dataName);
-            assertNotEquals(0, m.size(),()->"Read "+dataName);
+            assertNotEquals(0, m.size(), () -> "Read " + dataName);
         } finally {
             StreamManager.setGlobal(streamMgrStd);
         }
     }
 }
-

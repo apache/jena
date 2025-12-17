@@ -19,12 +19,11 @@
 package org.apache.jena.sparql.expr;
 
 import org.apache.jena.sparql.expr.nodevalue.ARQFuncOp;
-import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.function.FunctionEnv;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_Version extends ExprFunction0
-{
-    static private String fName = Tags.tagVersion ;
+public class E_Version extends ExprFunction0 {
+    static private String fName = Tags.tagVersion;
 
     public E_Version() {
         super(fName);

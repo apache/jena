@@ -263,6 +263,7 @@ public abstract class ExecHTTPBuilder<X, Y> {
     }
 
     /** Setting this header overrides any other header. */
+    @SuppressWarnings("removal")
     public Y acceptHeader(String acceptHeader) {
         Objects.requireNonNull(acceptHeader);
         this.appAcceptHeader = acceptHeader;

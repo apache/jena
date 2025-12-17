@@ -31,7 +31,7 @@ import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.stream.TestLocationMapper;
-import org.apache.jena.riot.system.stream.StreamManager;
+import org.apache.jena.riot.system.streammgr.StreamManager;
 import org.apache.jena.shared.NotFoundException;
 import org.apache.jena.util.FileManager;
 import org.apache.jena.util.LocationMapper;
@@ -84,7 +84,7 @@ public class TestFileManager
 
     @Test
     public void testFileManagerNoFile3() {
-        FileManager fileManager = new AdapterFileManager(new StreamManager(), new org.apache.jena.riot.system.stream.LocationMapper());
+        FileManager fileManager = new AdapterFileManager(new StreamManager(), new org.apache.jena.riot.system.streammgr.LocationMapper());
         fileManager.addLocatorFile();
         assertThrows(NotFoundException.class, ()->fileManager.readModelInternal(ModelFactory.createDefaultModel(), filenameNonExistent));
     }

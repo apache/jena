@@ -23,7 +23,7 @@ import java.io.InputStream;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.irix.IRIx;
-import org.apache.jena.riot.system.stream.StreamManager;
+import org.apache.jena.riot.system.streammgr.StreamManager;
 import org.apache.jena.shared.NotFoundException;
 import org.apache.jena.sparql.lang.SPARQLParser;
 import org.apache.jena.sparql.lang.SPARQLParserRegistry;

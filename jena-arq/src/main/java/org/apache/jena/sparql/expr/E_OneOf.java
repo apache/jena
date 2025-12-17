@@ -18,15 +18,14 @@
 
 package org.apache.jena.sparql.expr;
 
-import java.util.List ;
+import java.util.List;
 
-import org.apache.jena.sparql.ARQInternalErrorException ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.function.FunctionEnv;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_OneOf extends E_OneOfBase
-{
+public class E_OneOf extends E_OneOfBase {
 
     private static final String functionName = Tags.tagIn;
 

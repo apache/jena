@@ -38,7 +38,6 @@ import org.apache.jena.irix.RelativeIRIException;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryParseException;
-import org.apache.jena.riot.lang.extra.LangParserLib;
 import org.apache.jena.riot.system.Checker;
 import org.apache.jena.riot.system.ErrorHandler;
 import org.apache.jena.riot.system.ErrorHandlerFactory;
@@ -62,7 +61,6 @@ import org.apache.jena.update.Update;
 import org.apache.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /** Copies of classes so that the SPARQL 1.0 parser is isolated from later SPARQL parser development. */
 class Legacy10 {
@@ -357,7 +355,7 @@ class Legacy10 {
 
         /** remove the first n characters from the string */
         protected static String stripChars(String s, int n) {
-            return LangParserLib.stripChars(s, n);
+            return s.substring(n, s.length()) ;
         }
 
         protected Var createVariable(String s, int line, int column) {

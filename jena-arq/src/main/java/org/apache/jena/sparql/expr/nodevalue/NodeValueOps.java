@@ -243,7 +243,7 @@ public class NodeValueOps {
     }
 
     private static double durationYearMonthAsMonths(Duration dur) {
-        return 12*dur.getYears() + dur.getMonths();
+        return 12 * dur.getYears() + dur.getMonths();
     }
 
     private static double durationDayTimeAsSeconds(Duration dur) {
@@ -268,7 +268,7 @@ public class NodeValueOps {
 //            case VSPACE_G_MONTH:
 //            case VSPACE_G_DAY:
                 return true;
-            default:
+            default :
                 return false;
         }
     }
@@ -294,8 +294,8 @@ public class NodeValueOps {
     }
 
     /**
-     * check and get a string (may be a simple literal, literal with language
-     * tag or an XSD string).
+     * check and get a string (may be a simple literal, literal with language tag or
+     * an XSD string).
      */
     public static Node checkAndGetStringLiteral(String label, NodeValue nv) {
         Node n = nv.asNode();
@@ -304,24 +304,25 @@ public class NodeValueOps {
         String lang = n.getLiteralLanguage();
 
         if ( NodeUtils.isLangString(n) )
-            // Language tag.  Legal.
+            // Language tag. Legal.
             return n;
 
         // No language tag : either no datatype or a datatype of xsd:string
-        // Includes the case of rdf:langString and no language ==> Illegal as a compatible string.
+        // Includes the case of rdf:langString and no language ==> Illegal as a
+        // compatible string.
 
         if ( nv.isString() )
-                return n;
+            return n;
         throw new ExprEvalException(label + ": Not a string literal: " + nv);
     }
 
     /**
-     * Check for string operations with primary first arg and second arg
-     * (e.g. CONTAINS).  The arguments are not used in the same way and the check
-     * operation is not symmetric.
+     * Check for string operations with primary first arg and second arg (e.g.
+     * CONTAINS). The arguments are not used in the same way and the check operation
+     * is not symmetric.
      * <ul>
-     * <li> "abc"@en is compatible with "abc"
-     * <li> "abc" is NOT compatible with "abc"@en
+     * <li>"abc"@en is compatible with "abc"
+     * <li>"abc" is NOT compatible with "abc"@en
      * </ul>
      */
     public static void checkTwoArgumentStringLiterals(String label, NodeValue arg1, NodeValue arg2) {

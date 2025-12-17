@@ -23,9 +23,9 @@ import static org.apache.jena.riot.Lang.*;
 import java.util.*;
 
 import org.apache.jena.riot.lang.*;
-import org.apache.jena.riot.lang.extra.TurtleJCC;
 import org.apache.jena.riot.lang.rdfxml.RRX;
 import org.apache.jena.riot.lang.rdfxml.rrx.ReaderRDFXML_SAX;
+import org.apache.jena.riot.lang.turtlejcc.TurtleJCC;
 
 /** The registry of languages and parsers.
  * To register a new parser:

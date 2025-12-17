@@ -16,8 +16,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  */
-package org.apache.jena.atlas.json.io.parserjavacc.javacc ;
+
+package org.apache.jena.atlas.json.io.parserjavacc.javacc;
 
 /**
  * Describes the input token stream.
@@ -146,4 +149,4 @@ public class Token implements java.io.Serializable {
   }
 
 }
-/* JavaCC - OriginalChecksum=9246de72e737b3871bb8c283dc9ff0e2 (do not edit this line) */
+/* JavaCC - OriginalChecksum=0398fa9c48266b88fcc06fa57ca72a89 (do not edit this line) */

@@ -19,7 +19,7 @@
 package org.apache.jena.cdt;
 
 import org.apache.jena.graph.Node;
-import org.apache.jena.riot.lang.extra.LangParserBase;
+import org.apache.jena.riot.lang.LangParserBase;
 
 public class CDTLiteralParserBase extends LangParserBase
 {

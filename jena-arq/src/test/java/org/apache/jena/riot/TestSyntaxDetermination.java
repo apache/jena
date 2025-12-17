@@ -37,33 +37,34 @@ public class TestSyntaxDetermination {
 
     public static Stream<Arguments> provideArgs() {
         List<Arguments> x = new ArrayList<>();
-        add(x, "Test-ext-ttl-1", "http://sparql.org/D.ttl",   "text/turtle",  Lang.TTL,     Lang.TTL);
-        add(x, "Test-ext-ttl-2", "http://sparql.org/D.ttl",   "text/turtle",  Lang.RDFXML,  Lang.TTL);
-        add(x, "Test-ext-ttl-3", "http://sparql.org/D.ttl",   "text/plain",   null,         Lang.TTL);
-        add(x, "Test-ext-ttl-4", "http://sparql.org/D.ttl",   "text/plain",   Lang.RDFXML,  Lang.RDFXML);
-        add(x, "Test-ext-ttl-5", "http://sparql.org/D.ttl",   null,           Lang.TTL,     Lang.TTL);
-        add(x, "Test-ext-ttl-6", "http://sparql.org/D.ttl",   null,           null,         Lang.TTL);
+        //     marker               url                          contentType     hintLang,     expected
+        add(x, "Test-ext-ttl-1",    "http://sparql.org/D.ttl",   "text/turtle",  Lang.TTL,     Lang.TTL);
+        add(x, "Test-ext-ttl-2",    "http://sparql.org/D.ttl",   "text/turtle",  Lang.RDFXML,  Lang.TTL);
+        add(x, "Test-ext-ttl-3",    "http://sparql.org/D.ttl",   "text/plain",   null,         Lang.TTL);
+        add(x, "Test-ext-ttl-4",    "http://sparql.org/D.ttl",   "text/plain",   Lang.RDFXML,  Lang.RDFXML);
+        add(x, "Test-ext-ttl-5",    "http://sparql.org/D.ttl",   null,           Lang.TTL,     Lang.TTL);
+        add(x, "Test-ext-ttl-6",    "http://sparql.org/D.ttl",   null,           null,         Lang.TTL);
 
-        add(x, "Test-no-ext-1", "http://sparql.org/D",       "text/turtle",  Lang.TTL,     Lang.TTL);
-        add(x, "Test-no-ext-2", "http://sparql.org/D",       "text/turtle",  Lang.RDFXML,  Lang.TTL);
-        add(x, "Test-no-ext-3", "http://sparql.org/D",       "text/plain",   null,         null);
-        add(x, "Test-no-ext-4", "http://sparql.org/D",       "text/plain",   Lang.RDFXML,  Lang.RDFXML);
-        add(x, "Test-no-ext-5", "http://sparql.org/D",       null,          Lang.NT,      Lang.NT);
-        add(x, "Test-no-ext-6", "http://sparql.org/D",       null,           null,         null);
+        add(x, "Test-no-ext-1",     "http://sparql.org/D",       "text/turtle",  Lang.TTL,     Lang.TTL);
+        add(x, "Test-no-ext-2",     "http://sparql.org/D",       "text/turtle",  Lang.RDFXML,  Lang.TTL);
+        add(x, "Test-no-ext-3",     "http://sparql.org/D",       "text/plain",   null,         null);
+        add(x, "Test-no-ext-4",     "http://sparql.org/D",       "text/plain",   Lang.RDFXML,  Lang.RDFXML);
+        add(x, "Test-no-ext-5",     "http://sparql.org/D",       null,          Lang.NT,      Lang.NT);
+        add(x, "Test-no-ext-6",     "http://sparql.org/D",       null,           null,         null);
 
-        add(x, "Test-ext-rdf-1", "http://sparql.org/D.rdf",  "text/turtle",  Lang.TTL,     Lang.TTL);
-        add(x, "Test-ext-rdf-2", "http://sparql.org/D.rdf",  "text/turtle",  Lang.RDFXML,  Lang.TTL);
-        add(x, "Test-ext-rdf-3", "http://sparql.org/D.rdf",  "text/plain",   null,         Lang.RDFXML);
-        add(x, "Test-ext-rdf-4", "http://sparql.org/D.rdf",  "text/plain",   Lang.RDFXML,  Lang.RDFXML);
-        add(x, "Test-ext-rdf-5", "http://sparql.org/D.rdf",  null,           Lang.TTL,     Lang.TTL);
-        add(x, "Test-ext-rdf-6", "http://sparql.org/D.rdf",  null,           null,         Lang.RDFXML);
+        add(x, "Test-ext-rdf-1",    "http://sparql.org/D.rdf",  "text/turtle",  Lang.TTL,     Lang.TTL);
+        add(x, "Test-ext-rdf-2",    "http://sparql.org/D.rdf",  "text/turtle",  Lang.RDFXML,  Lang.TTL);
+        add(x, "Test-ext-rdf-3",    "http://sparql.org/D.rdf",  "text/plain",   null,         Lang.RDFXML);
+        add(x, "Test-ext-rdf-4",    "http://sparql.org/D.rdf",  "text/plain",   Lang.RDFXML,  Lang.RDFXML);
+        add(x, "Test-ext-rdf-5",    "http://sparql.org/D.rdf",  null,           Lang.TTL,     Lang.TTL);
+        add(x, "Test-ext-rdf-6",    "http://sparql.org/D.rdf",  null,           null,         Lang.RDFXML);
 
-        add(x, "Test-unknown-ext-1", "http://sparql.org/D.xyz",       "text/turtle",  Lang.TTL,     Lang.TTL);
-        add(x, "Test-unknown-ext-2", "http://sparql.org/D.xyz",       "text/turtle",  Lang.RDFXML,  Lang.TTL);
-        add(x, "Test-unknown-ext-3", "http://sparql.org/D.xyz",       "text/plain",   null,         null);
-        add(x, "Test-unknown-ext-4", "http://sparql.org/D.xyz",       "text/plain",   Lang.RDFXML,  Lang.RDFXML);
-        add(x, "Test-unknown-ext-5", "http://sparql.org/D.xyz",       null,           Lang.NT,      Lang.NT);
-        add(x, "Test-unknown-ext-6", "http://sparql.org/D.xyz",       null,           null,         null);
+        add(x, "Test-unknown-ext-1", "http://sparql.org/D.xyz", "text/turtle",  Lang.TTL,     Lang.TTL);
+        add(x, "Test-unknown-ext-2", "http://sparql.org/D.xyz", "text/turtle",  Lang.RDFXML,  Lang.TTL);
+        add(x, "Test-unknown-ext-3", "http://sparql.org/D.xyz", "text/plain",   null,         null);
+        add(x, "Test-unknown-ext-4", "http://sparql.org/D.xyz", "text/plain",   Lang.RDFXML,  Lang.RDFXML);
+        add(x, "Test-unknown-ext-5", "http://sparql.org/D.xyz", null,           Lang.NT,      Lang.NT);
+        add(x, "Test-unknown-ext-6", "http://sparql.org/D.xyz", null,           null,         null);
 
         return x.stream();
     }
@@ -72,11 +73,10 @@ public class TestSyntaxDetermination {
         x.add(Arguments.of(marker, url, contentType, hintLang, expected));
     }
 
-    private String url;
-    private String contentType;
-    private Lang hintLang;
-    private Lang expected;
-
+    private final String url;
+    private final String contentType;
+    private final Lang hintLang;
+    private final Lang expected;
 
     public TestSyntaxDetermination(String marker, String url, String contentType, Lang hintLang, Lang expected) {
         this.url = url;

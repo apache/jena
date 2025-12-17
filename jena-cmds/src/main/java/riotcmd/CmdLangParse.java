@@ -293,6 +293,8 @@ public abstract class CmdLangParse extends CmdGeneral {
     }
 
     public ParseRecord parseFile(String filename) {
+        String filenameLabel = filename;
+        boolean isStdin = filename.equals("-");
         String baseParserIRI = this.parserBaseIRI;
         RDFParserBuilder builder = RDFParser.create();
         if ( baseParserIRI != null )
@@ -306,23 +308,26 @@ public abstract class CmdLangParse extends CmdGeneral {
             // Always use the command line specified syntax.
             builder.forceLang(modLangParse.getLang());
         else {
-            // Otherwise, use the command selected language, with N-Quads as the
-            // ultimate fallback.
-            Lang lang = dftLang();
-            if ( lang == null )
-                lang = Lang.NQUADS;
-            // Fall back lang if RIOT can't guess it.
-            builder.lang(lang);
+            if ( isStdin ) {
+                // Otherwise, use the command selected language, with N-Quads as the
+                // ultimate fallback.
+                Lang lang = dftLang();
+                if ( lang == null )
+                    lang = Lang.NQUADS;
+                // Fall back lang if RIOT can't guess it.
+                builder.lang(lang);
+                // hint > file extension in WebContent.determineCT
+            }
         }
 
         // Set the display name and the source URL.
         String sourceURL = filename;
-        if ( filename.equals("-") ) {
+        if ( isStdin ) {
             if ( baseParserIRI == null ) {
                 baseParserIRI = "http://base/";
                 builder.base(baseParserIRI);
             }
-            filename = "stdin";
+            filenameLabel = "stdin";
             builder.source(System.in);
         } else {
             String scheme = IRIs.scheme(filename);
@@ -334,7 +339,7 @@ public abstract class CmdLangParse extends CmdGeneral {
                 sourceURL = IRILib.filenameToIRI(filename);
             builder.source(sourceURL);
         }
-        return parseRIOT(builder, filename, sourceURL);
+        return parseRIOT(builder, filenameLabel, sourceURL);
     }
 
     // Return the default (fall-back) language used if no other choice is made.
@@ -342,7 +347,7 @@ public abstract class CmdLangParse extends CmdGeneral {
     protected abstract Lang dftLang();
 
     /** Parse one source */
-    protected ParseRecord parseRIOT(RDFParserBuilder builder, String filename, String sourceURL) {
+    protected ParseRecord parseRIOT(RDFParserBuilder builder, String filenameLabel, String sourceURL) {
         boolean checking = true;
         if ( modLangParse.explicitChecking() )
             checking = true;
@@ -405,7 +410,7 @@ public abstract class CmdLangParse extends CmdGeneral {
         }
         parserOut.finish();
         long x = modTime.endTimer();
-        ParseRecord outcome = new ParseRecord(filename, sourceURL, successful, x, parserOut.countTriples(), parserOut.countQuads(), errHandler);
+        ParseRecord outcome = new ParseRecord(filenameLabel, sourceURL, successful, x, parserOut.countTriples(), parserOut.countQuads(), errHandler);
         return outcome;
     }
 

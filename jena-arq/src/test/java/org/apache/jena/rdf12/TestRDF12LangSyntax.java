@@ -32,7 +32,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.riot.*;
-import org.apache.jena.riot.lang.extra.TurtleJCC;
+import org.apache.jena.riot.lang.turtlejcc.TurtleJCC;
 import org.apache.jena.riot.system.*;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.DatasetGraph;

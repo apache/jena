@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 ## Licensed to the Apache Software Foundation (ASF) under one
 ## or more contributor license agreements.  See the NOTICE file
 ## distributed with this work for additional information
@@ -14,8 +14,8 @@
 ## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
-
-# Parser builder
+##
+## SPDX-License-Identifier: Apache-2.0
 
 GRAMMAR="${GRAMMAR:-main.jj}"
 
@@ -116,17 +116,19 @@ do
 ##           ##grammar sparql_11.jj sparql_11 SPARQLParser11
 	  echo "SPARQL 1.1 - not rebuilt"
 	  ;;
+
+      ## header.jj puts back the license header that cpp removed.
       
       sparql12|sparql_12.jj)
 	  cp header.jj sparql_12.jj
           # The parser that is exactly the working group grammar.
-          cat "$GRAMMAR" | cpp -P -DSPARQL -DSPARQL_12 >> sparql_12.jj
+          cat "$GRAMMAR" | cpp -P -C -DSPARQL -DSPARQL_12 >> sparql_12.jj
           grammar sparql_12.jj sparql_12 SPARQLParser12
           ;;
 
       arq|arq.jj)
 	  cp header.jj arq.jj
-          cat "$GRAMMAR" | cpp -P -DARQ - >> arq.jj
+          cat "$GRAMMAR" | cpp -P -C -DARQ - >> arq.jj
           grammar arq.jj arq ARQParser
           ;;
 

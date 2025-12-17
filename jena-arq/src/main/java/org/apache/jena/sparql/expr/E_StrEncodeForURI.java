@@ -18,24 +18,23 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_StrEncodeForURI extends ExprFunction1
-{
-    private static final String symbol = Tags.tagStrEncodeForURI ;
+public class E_StrEncodeForURI extends ExprFunction1 {
+    private static final String symbol = Tags.tagStrEncodeForURI;
 
-    public E_StrEncodeForURI(Expr expr)
-    {
-        super(expr, symbol) ;
+    public E_StrEncodeForURI(Expr expr) {
+        super(expr, symbol);
     }
-    
+
     @Override
-    public NodeValue eval(NodeValue v)
-    { 
-        return XSDFuncOp.strEncodeForURI(v) ;
+    public NodeValue eval(NodeValue v) {
+        return XSDFuncOp.strEncodeForURI(v);
     }
-        
+
     @Override
-    public Expr copy(Expr expr) { return new E_StrEncodeForURI(expr) ; } 
+    public Expr copy(Expr expr) {
+        return new E_StrEncodeForURI(expr);
+    }
 }

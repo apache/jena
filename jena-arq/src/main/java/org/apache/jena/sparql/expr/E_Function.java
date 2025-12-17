@@ -34,26 +34,27 @@ import java.util.List;
 import java.util.Objects;
 
 /** SPARQL filter function */
-public class E_Function extends ExprFunctionN
-{
-    private static final String name = "function" ;
-    public static boolean WarnOnUnknownFunction = true ;
-    private String functionIRI ;
+public class E_Function extends ExprFunctionN {
+    private static final String name = "function";
+    public static boolean WarnOnUnknownFunction = true;
+    private String functionIRI;
 
-    private Function function = null ;
-    private boolean functionBound = false ;
+    private Function function = null;
+    private boolean functionBound = false;
 
     public E_Function(String functionIRI, ExprList args) {
-        super(name, args) ;
-        this.functionIRI = functionIRI ;
+        super(name, args);
+        this.functionIRI = functionIRI;
 
-        if (ScriptFunction.isScriptFunction(functionIRI)) {
+        if ( ScriptFunction.isScriptFunction(functionIRI) ) {
             function = new ScriptFunction();
         }
     }
 
     @Override
-    public String getFunctionIRI() { return functionIRI ; }
+    public String getFunctionIRI() {
+        return functionIRI;
+    }
 
     // The Function subsystem takes over evaluation via SpecialForms.
     // This allows a "function" to behave as a special form (this is discouraged).
@@ -61,75 +62,75 @@ public class E_Function extends ExprFunctionN
     public NodeValue evalSpecial(Binding binding, FunctionEnv env) {
         // Otherwise, the buildFunction() calls should have done everything
         if ( !functionBound )
-            buildFunction(env.getContext()) ;
+            buildFunction(env.getContext());
         if ( function == null )
-            throw new ExprEvalException("URI <" + getFunctionIRI() + "> not bound") ;
-        NodeValue r = function.exec(binding, args, getFunctionIRI(), env) ;
-        return r ;
+            throw new ExprEvalException("URI <" + getFunctionIRI() + "> not bound");
+        NodeValue r = function.exec(binding, args, getFunctionIRI(), env);
+        return r;
     }
 
     @Override
     public NodeValue eval(List<NodeValue> args) {
         // evalSpecial hands over function evaluation to the "Function" hierarchy
-        throw new ARQInternalErrorException() ;
+        throw new ARQInternalErrorException();
     }
 
     public void buildFunction(Context cxt) {
-        try { bindFunction(cxt) ; }
-        catch (ExprUndefFunction ex) {
+        try {
+            bindFunction(cxt);
+        } catch (ExprUndefFunction ex) {
             if ( WarnOnUnknownFunction )
-                ARQ.getExecLogger().warn("URI <"+functionIRI+"> has no registered function factory") ;
+                ARQ.getExecLogger().warn("URI <" + functionIRI + "> has no registered function factory");
         }
     }
 
     private FunctionFactory functionFactory(Context cxt) {
-        FunctionRegistry registry = chooseRegistry(cxt) ;
-        FunctionFactory ff = registry.get(functionIRI) ;
+        FunctionRegistry registry = chooseRegistry(cxt);
+        FunctionFactory ff = registry.get(functionIRI);
         return ff;
     }
 
     private void bindFunction(Context cxt) {
         if ( functionBound )
-            return ;
+            return;
 
-        if (function == null) {
+        if ( function == null ) {
             FunctionFactory ff = functionFactory(cxt);
-            if (ff == null) {
+            if ( ff == null ) {
                 functionBound = true;
                 throw new ExprUndefFunction("URI <" + functionIRI + "> not found as a function", functionIRI);
             }
             function = ff.create(functionIRI);
         }
-        function.build(functionIRI, args, cxt) ;
-        functionBound = true ;
+        function.build(functionIRI, args, cxt);
+        functionBound = true;
     }
 
     private FunctionRegistry chooseRegistry(Context context) {
-        FunctionRegistry registry = FunctionRegistry.get(context) ;
+        FunctionRegistry registry = FunctionRegistry.get(context);
         if ( registry == null )
-            registry = FunctionRegistry.get() ;
-        return registry ;
+            registry = FunctionRegistry.get();
+        return registry;
     }
 
     @Override
     public String getFunctionPrintName(SerializationContext cxt) {
-        return FmtUtils.stringForURI(functionIRI, cxt) ;
+        return FmtUtils.stringForURI(functionIRI, cxt);
     }
 
     @Override
     public String getFunctionName(SerializationContext cxt) {
-        return FmtUtils.stringForURI(functionIRI, cxt) ;
+        return FmtUtils.stringForURI(functionIRI, cxt);
     }
 
     @Override
     public Expr copy(ExprList newArgs) {
-        return new E_Function(getFunctionIRI(), newArgs) ;
+        return new E_Function(getFunctionIRI(), newArgs);
     }
 
     @Override
     public boolean equals(Expr other, boolean bySyntax) {
-        return super.equals(other, bySyntax) &&
-            Objects.equals(getFunctionIRI(), ((E_Function)other).getFunctionIRI());
+        return super.equals(other, bySyntax) && Objects.equals(getFunctionIRI(), ((E_Function)other).getFunctionIRI());
     }
 
     @Override

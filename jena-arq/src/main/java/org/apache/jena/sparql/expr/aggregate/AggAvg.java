@@ -18,60 +18,60 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import org.apache.jena.sparql.function.FunctionEnv ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.function.FunctionEnv;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class AggAvg extends AggregatorBase
 {
     // ---- AVG(?var)
-    public AggAvg(Expr expr) { super("AVG", false, expr) ; } 
+    public AggAvg(Expr expr) { super("AVG", false, expr); } 
     
-    private static Logger log = LoggerFactory.getLogger("AVG") ;
+    private static Logger log = LoggerFactory.getLogger("AVG");
 
     @Override
-    public Aggregator copy(ExprList expr) { return new AggAvg(expr.get(0)) ; }
+    public Aggregator copy(ExprList expr) { return new AggAvg(expr.get(0)); }
 
     // XQuery/XPath Functions&Operators suggests zero
     // SQL suggests null.
-    private static final NodeValue noValuesToAvg = NodeValue.nvZERO ; // null 
+    private static final NodeValue noValuesToAvg = NodeValue.nvZERO; // null 
 
     @Override
     public Accumulator createAccumulator()
     { 
-        return new AccAvg(getExpr()) ;
+        return new AccAvg(getExpr());
     }
 
     @Override
-    public Node getValueEmpty()     { return NodeValue.toNode(noValuesToAvg) ; } 
+    public Node getValueEmpty()     { return NodeValue.toNode(noValuesToAvg); } 
     
     @Override
-    public int hashCode()   { return HC_AggAvg ^ getExprList().hashCode() ; }
+    public int hashCode()   { return HC_AggAvg ^ getExprList().hashCode(); }
 
     @Override
     public boolean equals(Aggregator other, boolean bySyntax) {
-        if ( other == null ) return false ;
-        if ( this == other ) return true ;
-        if ( ! ( other instanceof AggAvg ) ) return false ;
-        AggAvg a = (AggAvg)other ;
-        return exprList.equals(a.exprList, bySyntax) ;
+        if ( other == null ) return false;
+        if ( this == other ) return true;
+        if ( ! ( other instanceof AggAvg ) ) return false;
+        AggAvg a = (AggAvg)other;
+        return exprList.equals(a.exprList, bySyntax);
     }
     
     // ---- Accumulator
     private static class AccAvg extends AccumulatorExpr
     {
         // Non-empty case but still can be nothing because the expression may be undefined.
-        private NodeValue total = noValuesToAvg ;
-        private int count = 0 ;
+        private NodeValue total = noValuesToAvg;
+        private int count = 0;
 
-        public AccAvg(Expr expr) { super(expr, false) ; }
+        public AccAvg(Expr expr) { super(expr, false); }
 
         @Override
         protected void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv)
@@ -80,16 +80,16 @@ public class AggAvg extends AggregatorBase
 
             if ( nv.isNumber() )
             {
-                count++ ;
+                count++;
                 if ( total == noValuesToAvg )
-                    total = nv ;
+                    total = nv;
                 else
-                    total = XSDFuncOp.numAdd(nv, total) ;
+                    total = XSDFuncOp.numAdd(nv, total);
             }
             else
             {
-                //ARQ.getExecLogger().warn("Evaluation error: avg() on "+nv) ;
-                throw new ExprEvalException("avg: not a number: "+nv) ;
+                //ARQ.getExecLogger().warn("Evaluation error: avg() on "+nv);
+                throw new ExprEvalException("avg: not a number: "+nv);
             }
 
             log.debug("avg count {}", count);
@@ -103,12 +103,12 @@ public class AggAvg extends AggregatorBase
         @Override
         public NodeValue getAccValue()
         {
-            if ( count == 0 ) return noValuesToAvg ;
+            if ( count == 0 ) return noValuesToAvg;
             if ( super.errorCount != 0 )
-                //throw new ExprEvalException("avg: error in group") ; 
-                return null ;
-            NodeValue nvCount = NodeValue.makeInteger(count) ;
-            return XSDFuncOp.numDivide(total, nvCount) ;
+                //throw new ExprEvalException("avg: error in group"); 
+                return null;
+            NodeValue nvCount = NodeValue.makeInteger(count);
+            return XSDFuncOp.numDivide(total, nvCount);
         }
     }
 }

@@ -23,7 +23,7 @@ import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 
-class SPARQLParser11Base extends Legacy11.SPARQLParserBase {
+public abstract class SPARQLParser11Base extends Legacy11.SPARQLParserBase {
 
     protected Node createLiteral(String lexicalForm, String langTag, String datatypeURI) {
         Node n = null;

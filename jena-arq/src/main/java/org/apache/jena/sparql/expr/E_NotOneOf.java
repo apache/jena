@@ -18,41 +18,37 @@
 
 package org.apache.jena.sparql.expr;
 
-import java.util.List ;
+import java.util.List;
 
-import org.apache.jena.sparql.ARQInternalErrorException ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.function.FunctionEnv;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_NotOneOf extends E_OneOfBase
-{
-    private static final String functionName = Tags.tagNotIn ;
-    
-    public E_NotOneOf(Expr expr, ExprList args)
-    {
-        super(functionName, expr, args) ;
+public class E_NotOneOf extends E_OneOfBase {
+    private static final String functionName = Tags.tagNotIn;
+
+    public E_NotOneOf(Expr expr, ExprList args) {
+        super(functionName, expr, args);
     }
 
-    protected E_NotOneOf(ExprList args)
-    {
-        super(functionName, args) ;
+    protected E_NotOneOf(ExprList args) {
+        super(functionName, args);
     }
-    
-    @Override
-    public NodeValue evalSpecial(Binding binding, FunctionEnv env)
-    {
-        boolean b = super.evalNotOneOf(binding, env) ;
-        return NodeValue.booleanReturn(b) ;
-    }
-    
-    @Override
-    public NodeValue eval(List<NodeValue> args)
-    { throw new ARQInternalErrorException() ; }
 
     @Override
-    public Expr copy(ExprList newArgs)
-    {
-        return new E_NotOneOf(newArgs) ;
+    public NodeValue evalSpecial(Binding binding, FunctionEnv env) {
+        boolean b = super.evalNotOneOf(binding, env);
+        return NodeValue.booleanReturn(b);
+    }
+
+    @Override
+    public NodeValue eval(List<NodeValue> args) {
+        throw new ARQInternalErrorException();
+    }
+
+    @Override
+    public Expr copy(ExprList newArgs) {
+        return new E_NotOneOf(newArgs);
     }
 }

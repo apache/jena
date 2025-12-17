@@ -23,25 +23,38 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.util.FmtUtils;
 
-
-public class NodeValueString extends NodeValue
-{
+public class NodeValueString extends NodeValue {
     // A plain string, with no language tag, or an xsd:string.
 
     private String string;
 
-    public NodeValueString(Node node)             { this(node.getLiteralLexicalForm(), node); }
-    public NodeValueString(String str)            { string = str; }
-    public NodeValueString(String str, Node node) { super(node); string = str; }
+    public NodeValueString(Node node) {
+        this(node.getLiteralLexicalForm(), node);
+    }
+
+    public NodeValueString(String str) {
+        string = str;
+    }
+
+    public NodeValueString(String str, Node node) {
+        super(node);
+        string = str;
+    }
 
     @Override
-    public boolean isString() { return true; }
+    public boolean isString() {
+        return true;
+    }
 
     @Override
-    public String getString() { return string; }
+    public String getString() {
+        return string;
+    }
 
     @Override
-    public String asString() { return string; }
+    public String asString() {
+        return string;
+    }
 
     @Override
     public String toString() {
@@ -51,9 +64,12 @@ public class NodeValueString extends NodeValue
     }
 
     @Override
-    protected Node makeNode()
-    { return NodeFactory.createLiteralString(string); }
+    protected Node makeNode() {
+        return NodeFactory.createLiteralString(string);
+    }
 
     @Override
-    public void visit(NodeValueVisitor visitor) { visitor.visit(this); }
+    public void visit(NodeValueVisitor visitor) {
+        visitor.visit(this);
+    }
 }

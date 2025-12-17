@@ -33,7 +33,7 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.lang.IteratorParsers;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
-import org.apache.jena.riot.system.stream.StreamManager;
+import org.apache.jena.riot.system.streammgr.StreamManager;
 import org.apache.jena.riot.writer.NQuadsWriter;
 import org.apache.jena.riot.writer.NTriplesWriter;
 import org.apache.jena.sparql.core.DatasetGraph;

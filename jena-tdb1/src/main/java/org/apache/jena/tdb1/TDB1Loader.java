@@ -215,6 +215,7 @@ public class TDB1Loader
 
     private static void loadGraph$(GraphTDB graph, InputStream input, boolean showProgress, boolean collectStats) {
 
+        @SuppressWarnings("removal")
         DatasetGraphTDB dsgtdb = TDBInternal.getBaseDatasetGraphTDB(graph.getDatasetGraphTDB());
 
         if ( graph.getGraphName() == null )

@@ -27,7 +27,7 @@ import org.junit.jupiter.api.TestFactory;
 
 import org.apache.jena.arq.TestConsts;
 import org.apache.jena.arq.junit.Scripts;
-import org.apache.jena.riot.lang.extra.TurtleJCC;
+import org.apache.jena.riot.lang.turtlejcc.TurtleJCC;
 import org.apache.jena.sys.JenaSystem;
 
 /** Execute turtle test with alt parser. */

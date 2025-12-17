@@ -29,9 +29,9 @@ import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.riot.system.stream.Locator;
-import org.apache.jena.riot.system.stream.LocatorFile;
-import org.apache.jena.riot.system.stream.StreamManager;
+import org.apache.jena.riot.system.streammgr.Locator;
+import org.apache.jena.riot.system.streammgr.LocatorFile;
+import org.apache.jena.riot.system.streammgr.StreamManager;
 import org.apache.jena.shex.expressions.Sx2;
 import org.apache.jena.vocabulary.RDF;
 

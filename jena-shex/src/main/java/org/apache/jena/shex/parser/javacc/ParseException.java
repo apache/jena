@@ -16,6 +16,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 package org.apache.jena.shex.parser.javacc;
@@ -210,4 +212,4 @@ public class ParseException extends Exception {
    }
 
 }
-/* JavaCC - OriginalChecksum=a3ec69c1dd4ca694bcf142b44289fc52 (do not edit this line) */
+/* JavaCC - OriginalChecksum=0f319fb63126a4fbcfc32e85d92fa44d (do not edit this line) */

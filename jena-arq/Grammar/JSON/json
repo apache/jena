@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 ## Licensed to the Apache Software Foundation (ASF) under one
 ## or more contributor license agreements.  See the NOTICE file
 ## distributed with this work for additional information
@@ -14,6 +14,8 @@
 ## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
+##
+## SPDX-License-Identifier: Apache-2.0
 
 # Parser builder
 
@@ -85,9 +87,7 @@ for G in "$@"
   do
   case "$G" in
   json)
-    cpp -P -C "$GRAMMAR" > parser.jj
-    grammar parser.jj $PKG JSON_Parser
-    [ "$RC" = 0 ] && rm -f parser.jj
+    grammar $GRAMMAR $PKG JSON_Parser
     ;;
   *)    echo "**** Unknown grammar: $G" 1>&2
     ;;
