@@ -42,6 +42,7 @@ import org.apache.jena.sparql.syntax.ElementGroup;
 import org.apache.jena.sparql.syntax.ElementPathBlock;
 import org.apache.jena.update.Update;
 import org.apache.jena.update.UpdateAction;
+import org.apache.jena.update.UpdateRequest;
 import org.apache.jena.vocabulary.DC_11;
 
 public class UpdateBuilderTest {
@@ -558,5 +559,21 @@ public class UpdateBuilderTest {
 
         // JENA-1739 fails here
         new UpdateBuilder().addDelete("?s", "<x>", "?p").addOptional("?s", path, "?p").build();
+    }
+
+    @Test
+    public void testValuesInWhereClause() {
+        Var s = Converters.makeVar("s");
+        Node[] uris = { NodeFactory.createURI("my:uri1"), NodeFactory.createURI("my:uri2") };
+        WhereBuilder where = new WhereBuilder();
+        where.addWhere("?s", "?p", "?o");
+        where.addWhereValueVar(s, (Object[])uris);
+        UpdateBuilder update = new UpdateBuilder();
+        update.addDelete("?s", "?p", "?o");
+        update.addWhere(where);
+        UpdateRequest upRequest = update.buildRequest();
+
+        String output = upRequest.toString();
+        assertTrue(output.contains("VALUES"));
     }
 }

@@ -97,7 +97,15 @@ public class WhereQuadHolder implements QuadHolder {
      */
     public void addAll(WhereHandler whereHandler) {
 
-        Element e = whereHandler.getQueryPattern();
+        // GH-3656
+        // Need to make the whereHandler have a completed query pattern.
+        // Values assembly is incremental and need freezing.
+        // Clone and build to leave the WhereHandler argument untouched.
+        WhereHandler whereHandler2 = new WhereHandler();
+        whereHandler2.addAll(whereHandler);
+        whereHandler2.build();
+        Element e = whereHandler2.getQueryPattern();
+
         if (e != null) {
             // clone the Element
             ElementRewriter rewriter = new ElementRewriter(Collections.emptyMap());

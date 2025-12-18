@@ -26,8 +26,6 @@ import org.apache.jena.arq.querybuilder.clauses.SelectClause;
 import org.apache.jena.arq.querybuilder.rewriters.BuildElementVisitor;
 import org.apache.jena.arq.querybuilder.rewriters.ElementRewriter;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.core.TriplePath;
@@ -35,7 +33,6 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.syntax.*;
 import org.apache.jena.sparql.util.ExprUtils;
-import org.apache.jena.vocabulary.RDF;
 
 /**
  * The where handler. Generally handles GroupGraphPattern.
@@ -50,7 +47,6 @@ public class WhereHandler implements Handler {
     private static Predicate<Node> checkPredicate = n -> n.isURI() || n.isVariable() || n.equals(Node.ANY);
 
     private static Predicate<Node> checkSubject = n -> checkPredicate.test(n) || n.isBlank();
-
 
     // the query to modify
     private final Query query;
@@ -454,47 +450,19 @@ public class WhereHandler implements Handler {
          */
         BuildElementVisitor visitor = new BuildElementVisitor();
         getElement().visit(visitor);
+        Element result = visitor.getResult();
+
         if (!valuesHandler.isEmpty()) {
-            if (visitor.getResult() instanceof ElementGroup) {
-                ((ElementGroup) visitor.getResult()).addElement(valuesHandler.asElement());
-                ;
-            } else {
-                ElementGroup eg = new ElementGroup();
-                eg.addElement(visitor.getResult());
+            if (result instanceof ElementGroup eg) {
                 eg.addElement(valuesHandler.asElement());
-                visitor.setResult(eg);
-            }
-        }
-        query.setQueryPattern(visitor.getResult());
-    }
-
-    /**
-     * Create a list node from a list of objects as per RDF Collections.
-     *
-     * http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#collections
-     *
-     * @param objs the list of objects for the list.
-     * @return the first blank node in the list.
-     * @deprecated use {code Converters.makeCollection(List.of(Object...))}.
-     */
-    @Deprecated(since="5.0.0")
-    public Node list(Object... objs) {
-        Node retval = NodeFactory.createBlankNode();
-        Node lastObject = retval;
-        for (int i = 0; i < objs.length; i++) {
-            Node n = Converters.makeNode(objs[i], query.getPrefixMapping());
-            addWhere(new TriplePath(Triple.create(lastObject, RDF.first.asNode(), n)));
-            if (i + 1 < objs.length) {
-                Node nextObject = NodeFactory.createBlankNode();
-                addWhere(new TriplePath(Triple.create(lastObject, RDF.rest.asNode(), nextObject)));
-                lastObject = nextObject;
             } else {
-                addWhere(new TriplePath(Triple.create(lastObject, RDF.rest.asNode(), RDF.nil.asNode())));
+                ElementGroup eg2 = new ElementGroup();
+                eg2.addElement(result);
+                eg2.addElement(valuesHandler.asElement());
+                result = eg2;
             }
-
         }
-
-        return retval;
+        query.setQueryPattern(result);
     }
 
     /**
