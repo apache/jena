@@ -73,7 +73,6 @@
 :basic-tripleterm-05
 :basic-tripleterm-06
 :basic-tripleterm-07
-:basic-tripleterm-subject
 :bnode-anonreifier-01
 :bnode-anonreifier-02
 :bnode-anonreifier-03
@@ -504,12 +503,6 @@
    mf:name        "basic-tripleterm-07.rq" ;
    mf:specVersion "sparql-1.2";
    mf:action      <basic-tripleterm-07.rq> .
-
-:basic-tripleterm-subject rdf:type   mf:PositiveSyntaxTest ;
-   dawgt:approval dawgt:Proposed ;
-   mf:name        "basic-tripleterm-subject.rq" ;
-   mf:specVersion "sparql-1.2";
-   mf:action      <basic-tripleterm-subject.rq> .
 
 :bnode-anonreifier-01 rdf:type   mf:PositiveSyntaxTest ;
    dawgt:approval dawgt:Proposed ;

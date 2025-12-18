@@ -69,7 +69,12 @@
 :tripleterm-separate-04
 :tripleterm-separate-05
 :tripleterm-separate-06
-
+:tripleterm-subject-01
+:tripleterm-subject-02
+:tripleterm-subject-03
+:tripleterm-subject-04
+:tripleterm-subject-05
+:tripleterm-subject-06
 ) .
 
 :alternate-path-anonreifier rdf:type   mf:NegativeSyntaxTest ;
@@ -425,3 +430,39 @@
    mf:name        "tripleterm-separate-06.rq" ;
    mf:specVersion "sparql-1.2";
    mf:action      <tripleterm-separate-06.rq> .
+
+:tripleterm-subject-01 rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "Triple term in the subject position of a triple term (VALUES, simple)" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <tripleterm-subject-01.rq> .
+
+:tripleterm-subject-02 rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "Triple term in the subject position of a triple term (VALUES, general)" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <tripleterm-subject-02.rq> .
+   
+:tripleterm-subject-03 rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "Triple term in the subject position  of a triple term (expression)" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <tripleterm-subject-03.rq> .
+
+:tripleterm-subject-04 rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "Literal in the subject position of a triple term (VALUES, simple)" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <tripleterm-subject-04.rq> .
+
+:tripleterm-subject-05 rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "Literal in the subject position of a triple term (VALUES, general)" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <tripleterm-subject-05.rq> .
+   
+:tripleterm-subject-06 rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "Literal in the subject position of a triple term (expression)" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <tripleterm-subject-06.rq> .
