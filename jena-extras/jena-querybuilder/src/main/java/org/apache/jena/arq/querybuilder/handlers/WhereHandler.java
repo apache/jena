@@ -457,8 +457,8 @@ public class WhereHandler implements Handler {
                 eg.addElement(valuesHandler.asElement());
             } else {
                 ElementGroup eg2 = new ElementGroup();
-                eg2.addElement(result);
                 eg2.addElement(valuesHandler.asElement());
+                eg2.addElement(result);
                 result = eg2;
             }
         }
