@@ -1,0 +1,5 @@
+PREFIX : <http://example.com/ns#>
+
+SELECT * {
+   BIND( <<( <<(:s :p :o )>> :q :z )>> AS ?X )
+}

@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang='en' prefix='dawgt:   http://www.w3.org/2001/sw/DataAccess/tests/test-dawg# mf: http://www.w3.org/2001/sw/DataAccess/tests/test-manifest# mfx:    http://jena.hpl.hp.com/2005/05/test-manifest-extra# qt:     http://www.w3.org/2001/sw/DataAccess/tests/test-query# sd:      http://www.w3.org/ns/sparql-service-description# ut:     http://www.w3.org/2009/sparql/tests/test-update#'>
+  <head>
+    <meta content='text/html;charset=utf-8' http-equiv='Content-Type'>
+    <meta content='width=device-width, initial-scale=1.0' name='viewport'>
+    <link href='https://www.w3.org/StyleSheets/TR/base' rel='stylesheet' type='text/css'>
+    <style>
+      body {background-image: none;}
+      dl.editor>dd {
+        margin: 0 0 0 40px;
+      }
+      dl.test-detail {
+        padding: 0.5em;
+      }
+      dl.test-detail>dt {
+        float: left;
+        clear: left;
+        text-align: right;
+        font-weight: bold;
+        color: green;
+      }
+      dl.test-detail>dt:after {content: ": "}
+      dl.test-detail>dd {
+        margin: 0 0 0 110px;
+        padding: 0 0 0.5em 0;
+      }
+      dl.test-description>dt {margin-top: 2em;}
+      dd {margin-left: 0;}
+      dd code {display: inline;}
+      footer {text-align: center;}
+    </style>
+    <title>
+      Negative Syntax Triple Terms
+    </title>
+    <style>
+      em.rfc2119 {
+        text-transform: lowercase;
+        font-variant:   small-caps;
+        font-style:     normal;
+        color:          #900;
+      }
+      a.testlink {
+        color: inherit;
+        text-decoration: none;
+      }
+      a.testlink:hover {
+        text-decoration: underline;
+      }
+      .warning {color: orange;}
+      .error {color: red;}
+    </style>
+  </head>
+  <body resource='./' typeof='mf:Manifest'>
+    <p>
+      <a href='http://www.w3.org/'>
+        <img alt='W3C' height='48' src='http://www.w3.org/Icons/w3c_home' width='72'>
+      </a>
+    </p>
+    <h1 property='rdfs:label'>Negative Syntax Triple Terms</h1>
+    <p><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2010 <a href="http://www.w3.org/"><acronym title="World Wide Web Consortium">W3C</acronym></a><sup>®</sup> (<a href="http://www.csail.mit.edu/"><acronym title="Massachusetts Institute of Technology">MIT</acronym></a>, <a href="http://www.ercim.org/"><acronym title="European Research Consortium for Informatics and Mathematics">ERCIM</acronym></a>, <a href="http://www.keio.ac.jp/">Keio</a>), All Rights Reserved. W3C <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a>, and <a href="http://www.w3.org/Consortium/Legal/copyright-documents">document use</a> rules apply.</p>
+    <hr title='Separator for header'>
+    <div>
+      <h2 id='abstract'>Abstract</h2>
+      <p property='rdfs:comment'>
+        <p>Negative syntax tests for triple terms in SPARQL 1.2</p>
+      </p>
+      <p>This page describes SPARQL 1.2 test suite of the W3C RDF &amp; SPARQL Working Group.</p>
+      <h3 id='contributing-tests'>Contributing Tests</h3>
+      <p>The test manifests and entries are built automatically from <a href="manifest.ttl">manifest.ttl</a> using a Rake task. Tests may be contributed via pull request to <a href="https://github.com/w3c/rdf-tests">https://github.com/w3c/rdf-tests</a> with suitable changes to the <a href="manifest.ttl">manifest.ttl</a> and referenced files.</p>
+      <h3 id='distribution'>Distribution</h3>
+      <p>Distributed under both the <a href="http://www.w3.org/Consortium/Legal/2008/04-testsuite-license">W3C Test Suite License</a> and the <a href="http://www.w3.org/Consortium/Legal/2008/03-bsd-license">W3C 3-clause BSD License</a>. To contribute to a W3C Test Suite, see the <a href="http://www.w3.org/2004/10/27-testcases">policies and contribution forms</a>.</p>
+      <h3 id='disclaimer'>Disclaimer</h3>
+      <p>UNDER BOTH MUTUALLY EXCLUSIVE LICENSES, THIS DOCUMENT AND ALL DOCUMENTS, TESTS AND SOFTWARE THAT LINK THIS STATEMENT ARE PROVIDED "AS IS," AND COPYRIGHT HOLDERS MAKE NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, OR TITLE; THAT THE CONTENTS OF THE DOCUMENT ARE SUITABLE FOR ANY PURPOSE; NOR THAT THE IMPLEMENTATION OF SUCH CONTENTS WILL NOT INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS OR OTHER RIGHTS.
+        COPYRIGHT HOLDERS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF ANY USE OF THE DOCUMENT OR THE PERFORMANCE OR IMPLEMENTATION OF THE CONTENTS THEREOF.</p>
+    </div>
+    <div>
+      <h2>
+        Test Descriptions
+      </h2>
+      <dl class='test-description'>
+        <dt id='alternate-path-anonreifier'>
+          <a class='testlink' href='#alternate-path-anonreifier'>
+            alternate-path-anonreifier:
+          </a>
+          <span about='manifest#alternate-path-anonreifier' property='mf:name'>alternate-path-anonreifier.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#alternate-path-anonreifier' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='alternate-path-anonreifier.rq' property='mf:action'>alternate-path-anonreifier.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='alternate-path-reifier'>
+          <a class='testlink' href='#alternate-path-reifier'>
+            alternate-path-reifier:
+          </a>
+          <span about='manifest#alternate-path-reifier' property='mf:name'>alternate-path-reifier.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#alternate-path-reifier' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='alternate-path-reifier.rq' property='mf:action'>alternate-path-reifier.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='alternate-path-tripleterm'>
+          <a class='testlink' href='#alternate-path-tripleterm'>
+            alternate-path-tripleterm:
+          </a>
+          <span about='manifest#alternate-path-tripleterm' property='mf:name'>alternate-path-tripleterm.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#alternate-path-tripleterm' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='alternate-path-tripleterm.rq' property='mf:action'>alternate-path-tripleterm.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='annotated-anonreifier-alternate-path'>
+          <a class='testlink' href='#annotated-anonreifier-alternate-path'>
+            annotated-anonreifier-alternate-path:
+          </a>
+          <span about='manifest#annotated-anonreifier-alternate-path' property='mf:name'>annotated-anonreifier-alternate-path.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#annotated-anonreifier-alternate-path' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='annotated-anonreifier-alternate-path.rq' property='mf:action'>annotated-anonreifier-alternate-path.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='annotated-anonreifier-list-predicate'>
+          <a class='testlink' href='#annotated-anonreifier-list-predicate'>
+            annotated-anonreifier-list-predicate:
+          </a>
+          <span about='manifest#annotated-anonreifier-list-predicate' property='mf:name'>annotated-anonreifier-list-predicate.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#annotated-anonreifier-list-predicate' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='annotated-anonreifier-list-predicate.rq' property='mf:action'>annotated-anonreifier-list-predicate.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='annotated-anonreifier-oneOrMore'>
+          <a class='testlink' href='#annotated-anonreifier-oneOrMore'>
+            annotated-anonreifier-oneOrMore:
+          </a>
+          <span about='manifest#annotated-anonreifier-oneOrMore' property='mf:name'>annotated-anonreifier-oneOrMore.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#annotated-anonreifier-oneOrMore' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='annotated-anonreifier-oneOrMore.rq' property='mf:action'>annotated-anonreifier-oneOrMore.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='annotated-anonreifier-optional'>
+          <a class='testlink' href='#annotated-anonreifier-optional'>
+            annotated-anonreifier-optional:
+          </a>
+          <span about='manifest#annotated-anonreifier-optional' property='mf:name'>annotated-anonreifier-optional.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#annotated-anonreifier-optional' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='annotated-anonreifier-optional.rq' property='mf:action'>annotated-anonreifier-optional.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='annotated-anonreifier-path-on-start'>
+          <a class='testlink' href='#annotated-anonreifier-path-on-start'>
+            annotated-anonreifier-path-on-start:
+          </a>
+          <span about='manifest#annotated-anonreifier-path-on-start' property='mf:name'>annotated-anonreifier-path-on-start.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#annotated-anonreifier-path-on-start' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='annotated-anonreifier-path-on-start.rq' property='mf:action'>annotated-anonreifier-path-on-start.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='annotated-anonreifier-path'>
+          <a class='testlink' href='#annotated-anonreifier-path'>
+            annotated-anonreifier-path:
+          </a>
+          <span about='manifest#annotated-anonreifier-path' property='mf:name'>annotated-anonreifier-path.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#annotated-anonreifier-path' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='annotated-anonreifier-path.rq' property='mf:action'>annotated-anonreifier-path.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='annotated-anonreifier-variable-path'>
+          <a class='testlink' href='#annotated-anonreifier-variable-path'>
+            annotated-anonreifier-variable-path:
+          </a>
+          <span about='manifest#annotated-anonreifier-variable-path' property='mf:name'>annotated-anonreifier-variable-path.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#annotated-anonreifier-variable-path' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='annotated-anonreifier-variable-path.rq' property='mf:action'>annotated-anonreifier-variable-path.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='annotated-reifier-list-predicate'>
+          <a class='testlink' href='#annotated-reifier-list-predicate'>
+            annotated-reifier-list-predicate:
+          </a>
+          <span about='manifest#annotated-reifier-list-predicate' property='mf:name'>annotated-reifier-list-predicate.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#annotated-reifier-list-predicate' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='annotated-reifier-list-predicate.rq' property='mf:action'>annotated-reifier-list-predicate.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='annotated-reifier-oneOrMore'>
+          <a class='testlink' href='#annotated-reifier-oneOrMore'>
+            annotated-reifier-oneOrMore:
+          </a>
+          <span about='manifest#annotated-reifier-oneOrMore' property='mf:name'>annotated-reifier-oneOrMore.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#annotated-reifier-oneOrMore' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='annotated-reifier-oneOrMore.rq' property='mf:action'>annotated-reifier-oneOrMore.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='annotated-reifier-optional'>
+          <a class='testlink' href='#annotated-reifier-optional'>
+            annotated-reifier-optional:
+          </a>
+          <span about='manifest#annotated-reifier-optional' property='mf:name'>annotated-reifier-optional.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#annotated-reifier-optional' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='annotated-reifier-optional.rq' property='mf:action'>annotated-reifier-optional.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='annotated-reifier-path-on-start'>
+          <a class='testlink' href='#annotated-reifier-path-on-start'>
+            annotated-reifier-path-on-start:
+          </a>
+          <span about='manifest#annotated-reifier-path-on-start' property='mf:name'>annotated-reifier-path-on-start.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#annotated-reifier-path-on-start' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='annotated-reifier-path-on-start.rq' property='mf:action'>annotated-reifier-path-on-start.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='annotated-reifier-path'>
+          <a class='testlink' href='#annotated-reifier-path'>
+            annotated-reifier-path:
+          </a>
+          <span about='manifest#annotated-reifier-path' property='mf:name'>annotated-reifier-path.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#annotated-reifier-path' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='annotated-reifier-path.rq' property='mf:action'>annotated-reifier-path.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='annotated-reifier-reifier-alternate-path'>
+          <a class='testlink' href='#annotated-reifier-reifier-alternate-path'>
+            annotated-reifier-reifier-alternate-path:
+          </a>
+          <span about='manifest#annotated-reifier-reifier-alternate-path' property='mf:name'>annotated-reifier-reifier-alternate-path.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#annotated-reifier-reifier-alternate-path' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='annotated-reifier-reifier-alternate-path.rq' property='mf:action'>annotated-reifier-reifier-alternate-path.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='annotated-reifier-variable-path'>
+          <a class='testlink' href='#annotated-reifier-variable-path'>
+            annotated-reifier-variable-path:
+          </a>
+          <span about='manifest#annotated-reifier-variable-path' property='mf:name'>annotated-reifier-variable-path.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#annotated-reifier-variable-path' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='annotated-reifier-variable-path.rq' property='mf:action'>annotated-reifier-variable-path.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='bind-anonreified'>
+          <a class='testlink' href='#bind-anonreified'>
+            bind-anonreified:
+          </a>
+          <span about='manifest#bind-anonreified' property='mf:name'>bind-anonreified.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#bind-anonreified' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='bind-anonreified.rq' property='mf:action'>bind-anonreified.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='bind-reified'>
+          <a class='testlink' href='#bind-reified'>
+            bind-reified:
+          </a>
+          <span about='manifest#bind-reified' property='mf:name'>bind-reified.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#bind-reified' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='bind-reified.rq' property='mf:action'>bind-reified.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='bindbnode-anonreifier'>
+          <a class='testlink' href='#bindbnode-anonreifier'>
+            bindbnode-anonreifier:
+          </a>
+          <span about='manifest#bindbnode-anonreifier' property='mf:name'>bindbnode-anonreifier.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#bindbnode-anonreifier' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='bindbnode-anonreifier.rq' property='mf:action'>bindbnode-anonreifier.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='bindbnode-reifier'>
+          <a class='testlink' href='#bindbnode-reifier'>
+            bindbnode-reifier:
+          </a>
+          <span about='manifest#bindbnode-reifier' property='mf:name'>bindbnode-reifier.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#bindbnode-reifier' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='bindbnode-reifier.rq' property='mf:action'>bindbnode-reifier.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='bindbnode-tripleterm'>
+          <a class='testlink' href='#bindbnode-tripleterm'>
+            bindbnode-tripleterm:
+          </a>
+          <span about='manifest#bindbnode-tripleterm' property='mf:name'>bindbnode-tripleterm.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#bindbnode-tripleterm' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='bindbnode-tripleterm.rq' property='mf:action'>bindbnode-tripleterm.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='bnode-predicate-anonreifier'>
+          <a class='testlink' href='#bnode-predicate-anonreifier'>
+            bnode-predicate-anonreifier:
+          </a>
+          <span about='manifest#bnode-predicate-anonreifier' property='mf:name'>bnode-predicate-anonreifier.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#bnode-predicate-anonreifier' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='bnode-predicate-anonreifier.rq' property='mf:action'>bnode-predicate-anonreifier.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='bnode-predicate-reifier'>
+          <a class='testlink' href='#bnode-predicate-reifier'>
+            bnode-predicate-reifier:
+          </a>
+          <span about='manifest#bnode-predicate-reifier' property='mf:name'>bnode-predicate-reifier.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#bnode-predicate-reifier' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='bnode-predicate-reifier.rq' property='mf:action'>bnode-predicate-reifier.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='bnode-predicate-tripleterm'>
+          <a class='testlink' href='#bnode-predicate-tripleterm'>
+            bnode-predicate-tripleterm:
+          </a>
+          <span about='manifest#bnode-predicate-tripleterm' property='mf:name'>bnode-predicate-tripleterm.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#bnode-predicate-tripleterm' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='bnode-predicate-tripleterm.rq' property='mf:action'>bnode-predicate-tripleterm.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='list-anonreifier-01'>
+          <a class='testlink' href='#list-anonreifier-01'>
+            list-anonreifier-01:
+          </a>
+          <span about='manifest#list-anonreifier-01' property='mf:name'>list-anonreifier-01.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#list-anonreifier-01' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='list-anonreifier-01.rq' property='mf:action'>list-anonreifier-01.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='list-anonreifier-02'>
+          <a class='testlink' href='#list-anonreifier-02'>
+            list-anonreifier-02:
+          </a>
+          <span about='manifest#list-anonreifier-02' property='mf:name'>list-anonreifier-02.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#list-anonreifier-02' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='list-anonreifier-02.rq' property='mf:action'>list-anonreifier-02.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='list-reifier-01'>
+          <a class='testlink' href='#list-reifier-01'>
+            list-reifier-01:
+          </a>
+          <span about='manifest#list-reifier-01' property='mf:name'>list-reifier-01.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#list-reifier-01' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='list-reifier-01.rq' property='mf:action'>list-reifier-01.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='list-reifier-02'>
+          <a class='testlink' href='#list-reifier-02'>
+            list-reifier-02:
+          </a>
+          <span about='manifest#list-reifier-02' property='mf:name'>list-reifier-02.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#list-reifier-02' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='list-reifier-02.rq' property='mf:action'>list-reifier-02.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='list-tripleterm-01'>
+          <a class='testlink' href='#list-tripleterm-01'>
+            list-tripleterm-01:
+          </a>
+          <span about='manifest#list-tripleterm-01' property='mf:name'>list-tripleterm-01.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#list-tripleterm-01' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='list-tripleterm-01.rq' property='mf:action'>list-tripleterm-01.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='list-tripleterm-02'>
+          <a class='testlink' href='#list-tripleterm-02'>
+            list-tripleterm-02:
+          </a>
+          <span about='manifest#list-tripleterm-02' property='mf:name'>list-tripleterm-02.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#list-tripleterm-02' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='list-tripleterm-02.rq' property='mf:action'>list-tripleterm-02.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='nested-annotated-path-anonreifier'>
+          <a class='testlink' href='#nested-annotated-path-anonreifier'>
+            nested-annotated-path-anonreifier:
+          </a>
+          <span about='manifest#nested-annotated-path-anonreifier' property='mf:name'>nested-annotated-path-anonreifier.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#nested-annotated-path-anonreifier' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nested-annotated-path-anonreifier.rq' property='mf:action'>nested-annotated-path-anonreifier.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='nested-annotated-path-reifier'>
+          <a class='testlink' href='#nested-annotated-path-reifier'>
+            nested-annotated-path-reifier:
+          </a>
+          <span about='manifest#nested-annotated-path-reifier' property='mf:name'>nested-annotated-path-reifier.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#nested-annotated-path-reifier' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nested-annotated-path-reifier.rq' property='mf:action'>nested-annotated-path-reifier.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='quoted-list-object-anonreifier'>
+          <a class='testlink' href='#quoted-list-object-anonreifier'>
+            quoted-list-object-anonreifier:
+          </a>
+          <span about='manifest#quoted-list-object-anonreifier' property='mf:name'>quoted-list-object-anonreifier.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#quoted-list-object-anonreifier' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='quoted-list-object-anonreifier.rq' property='mf:action'>quoted-list-object-anonreifier.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='quoted-list-object-reifier'>
+          <a class='testlink' href='#quoted-list-object-reifier'>
+            quoted-list-object-reifier:
+          </a>
+          <span about='manifest#quoted-list-object-reifier' property='mf:name'>quoted-list-object-reifier.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#quoted-list-object-reifier' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='quoted-list-object-reifier.rq' property='mf:action'>quoted-list-object-reifier.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='quoted-list-object-tripleterm'>
+          <a class='testlink' href='#quoted-list-object-tripleterm'>
+            quoted-list-object-tripleterm:
+          </a>
+          <span about='manifest#quoted-list-object-tripleterm' property='mf:name'>quoted-list-object-tripleterm.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#quoted-list-object-tripleterm' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='quoted-list-object-tripleterm.rq' property='mf:action'>quoted-list-object-tripleterm.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='quoted-list-predicate-anonreifier'>
+          <a class='testlink' href='#quoted-list-predicate-anonreifier'>
+            quoted-list-predicate-anonreifier:
+          </a>
+          <span about='manifest#quoted-list-predicate-anonreifier' property='mf:name'>quoted-list-predicate-anonreifier.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#quoted-list-predicate-anonreifier' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='quoted-list-predicate-anonreifier.rq' property='mf:action'>quoted-list-predicate-anonreifier.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='quoted-list-predicate-reifier'>
+          <a class='testlink' href='#quoted-list-predicate-reifier'>
+            quoted-list-predicate-reifier:
+          </a>
+          <span about='manifest#quoted-list-predicate-reifier' property='mf:name'>quoted-list-predicate-reifier.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#quoted-list-predicate-reifier' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='quoted-list-predicate-reifier.rq' property='mf:action'>quoted-list-predicate-reifier.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='quoted-list-predicate-tripleterm'>
+          <a class='testlink' href='#quoted-list-predicate-tripleterm'>
+            quoted-list-predicate-tripleterm:
+          </a>
+          <span about='manifest#quoted-list-predicate-tripleterm' property='mf:name'>quoted-list-predicate-tripleterm.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#quoted-list-predicate-tripleterm' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='quoted-list-predicate-tripleterm.rq' property='mf:action'>quoted-list-predicate-tripleterm.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='quoted-list-subject-anonreifier'>
+          <a class='testlink' href='#quoted-list-subject-anonreifier'>
+            quoted-list-subject-anonreifier:
+          </a>
+          <span about='manifest#quoted-list-subject-anonreifier' property='mf:name'>quoted-list-subject-anonreifier.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#quoted-list-subject-anonreifier' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='quoted-list-subject-anonreifier.rq' property='mf:action'>quoted-list-subject-anonreifier.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='quoted-list-subject-reifier'>
+          <a class='testlink' href='#quoted-list-subject-reifier'>
+            quoted-list-subject-reifier:
+          </a>
+          <span about='manifest#quoted-list-subject-reifier' property='mf:name'>quoted-list-subject-reifier.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#quoted-list-subject-reifier' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='quoted-list-subject-reifier.rq' property='mf:action'>quoted-list-subject-reifier.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='quoted-list-subject-tripleterm'>
+          <a class='testlink' href='#quoted-list-subject-tripleterm'>
+            quoted-list-subject-tripleterm:
+          </a>
+          <span about='manifest#quoted-list-subject-tripleterm' property='mf:name'>quoted-list-subject-tripleterm.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#quoted-list-subject-tripleterm' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='quoted-list-subject-tripleterm.rq' property='mf:action'>quoted-list-subject-tripleterm.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='quoted-path-anonreifier'>
+          <a class='testlink' href='#quoted-path-anonreifier'>
+            quoted-path-anonreifier:
+          </a>
+          <span about='manifest#quoted-path-anonreifier' property='mf:name'>quoted-path-anonreifier.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#quoted-path-anonreifier' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='quoted-path-anonreifier.rq' property='mf:action'>quoted-path-anonreifier.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='quoted-path-bind-anonreifier'>
+          <a class='testlink' href='#quoted-path-bind-anonreifier'>
+            quoted-path-bind-anonreifier:
+          </a>
+          <span about='manifest#quoted-path-bind-anonreifier' property='mf:name'>quoted-path-bind-anonreifier.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#quoted-path-bind-anonreifier' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='quoted-path-bind-anonreifier.rq' property='mf:action'>quoted-path-bind-anonreifier.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='quoted-path-bind-reifier'>
+          <a class='testlink' href='#quoted-path-bind-reifier'>
+            quoted-path-bind-reifier:
+          </a>
+          <span about='manifest#quoted-path-bind-reifier' property='mf:name'>quoted-path-bind-reifier.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#quoted-path-bind-reifier' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='quoted-path-bind-reifier.rq' property='mf:action'>quoted-path-bind-reifier.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='quoted-path-bind-tripleterm'>
+          <a class='testlink' href='#quoted-path-bind-tripleterm'>
+            quoted-path-bind-tripleterm:
+          </a>
+          <span about='manifest#quoted-path-bind-tripleterm' property='mf:name'>quoted-path-bind-tripleterm.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#quoted-path-bind-tripleterm' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='quoted-path-bind-tripleterm.rq' property='mf:action'>quoted-path-bind-tripleterm.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='quoted-path-reifier'>
+          <a class='testlink' href='#quoted-path-reifier'>
+            quoted-path-reifier:
+          </a>
+          <span about='manifest#quoted-path-reifier' property='mf:name'>quoted-path-reifier.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#quoted-path-reifier' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='quoted-path-reifier.rq' property='mf:action'>quoted-path-reifier.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='quoted-path-tripleterm'>
+          <a class='testlink' href='#quoted-path-tripleterm'>
+            quoted-path-tripleterm:
+          </a>
+          <span about='manifest#quoted-path-tripleterm' property='mf:name'>quoted-path-tripleterm.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#quoted-path-tripleterm' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='quoted-path-tripleterm.rq' property='mf:action'>quoted-path-tripleterm.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='quoted-variable-path-anonreifier'>
+          <a class='testlink' href='#quoted-variable-path-anonreifier'>
+            quoted-variable-path-anonreifier:
+          </a>
+          <span about='manifest#quoted-variable-path-anonreifier' property='mf:name'>quoted-variable-path-anonreifier.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#quoted-variable-path-anonreifier' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='quoted-variable-path-anonreifier.rq' property='mf:action'>quoted-variable-path-anonreifier.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='quoted-variable-path-reifier'>
+          <a class='testlink' href='#quoted-variable-path-reifier'>
+            quoted-variable-path-reifier:
+          </a>
+          <span about='manifest#quoted-variable-path-reifier' property='mf:name'>quoted-variable-path-reifier.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#quoted-variable-path-reifier' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='quoted-variable-path-reifier.rq' property='mf:action'>quoted-variable-path-reifier.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='quoted-variable-path-tripleterm'>
+          <a class='testlink' href='#quoted-variable-path-tripleterm'>
+            quoted-variable-path-tripleterm:
+          </a>
+          <span about='manifest#quoted-variable-path-tripleterm' property='mf:name'>quoted-variable-path-tripleterm.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#quoted-variable-path-tripleterm' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='quoted-variable-path-tripleterm.rq' property='mf:action'>quoted-variable-path-tripleterm.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='syntax-update-anonreifier-01'>
+          <a class='testlink' href='#syntax-update-anonreifier-01'>
+            syntax-update-anonreifier-01:
+          </a>
+          <span about='manifest#syntax-update-anonreifier-01' property='mf:name'>syntax-update-anonreifier-01.ru</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#syntax-update-anonreifier-01' typeof='mf:NegativeUpdateSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeUpdateSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='syntax-update-anonreifier-01.ru' property='mf:action'>syntax-update-anonreifier-01.ru</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='syntax-update-anonreifier-02'>
+          <a class='testlink' href='#syntax-update-anonreifier-02'>
+            syntax-update-anonreifier-02:
+          </a>
+          <span about='manifest#syntax-update-anonreifier-02' property='mf:name'>syntax-update-anonreifier-02.ru</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#syntax-update-anonreifier-02' typeof='mf:NegativeUpdateSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeUpdateSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='syntax-update-anonreifier-02.ru' property='mf:action'>syntax-update-anonreifier-02.ru</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='tripleterm-separate-01'>
+          <a class='testlink' href='#tripleterm-separate-01'>
+            tripleterm-separate-01:
+          </a>
+          <span about='manifest#tripleterm-separate-01' property='mf:name'>tripleterm-separate-01.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#tripleterm-separate-01' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='tripleterm-separate-01.rq' property='mf:action'>tripleterm-separate-01.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='tripleterm-separate-02'>
+          <a class='testlink' href='#tripleterm-separate-02'>
+            tripleterm-separate-02:
+          </a>
+          <span about='manifest#tripleterm-separate-02' property='mf:name'>tripleterm-separate-02.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#tripleterm-separate-02' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='tripleterm-separate-02.rq' property='mf:action'>tripleterm-separate-02.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='tripleterm-separate-03'>
+          <a class='testlink' href='#tripleterm-separate-03'>
+            tripleterm-separate-03:
+          </a>
+          <span about='manifest#tripleterm-separate-03' property='mf:name'>tripleterm-separate-03.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#tripleterm-separate-03' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='tripleterm-separate-03.rq' property='mf:action'>tripleterm-separate-03.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='tripleterm-separate-04'>
+          <a class='testlink' href='#tripleterm-separate-04'>
+            tripleterm-separate-04:
+          </a>
+          <span about='manifest#tripleterm-separate-04' property='mf:name'>tripleterm-separate-04.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#tripleterm-separate-04' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='tripleterm-separate-04.rq' property='mf:action'>tripleterm-separate-04.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='tripleterm-separate-05'>
+          <a class='testlink' href='#tripleterm-separate-05'>
+            tripleterm-separate-05:
+          </a>
+          <span about='manifest#tripleterm-separate-05' property='mf:name'>tripleterm-separate-05.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#tripleterm-separate-05' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='tripleterm-separate-05.rq' property='mf:action'>tripleterm-separate-05.rq</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='tripleterm-separate-06'>
+          <a class='testlink' href='#tripleterm-separate-06'>
+            tripleterm-separate-06:
+          </a>
+          <span about='manifest#tripleterm-separate-06' property='mf:name'>tripleterm-separate-06.rq</span>
+        </dt>
+        <dd inlist='true' property='mf:entry' resource='manifest#tripleterm-separate-06' typeof='mf:NegativeSyntaxTest'>
+          <div property='rdfs:comment'>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeSyntaxTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource=''></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='tripleterm-separate-06.rq' property='mf:action'>tripleterm-separate-06.rq</a>
+            </dd>
+          </dl>
+        </dd>
+      </dl>
+    </div>
+    <footer>
+      <p><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright ©</a> 2015 <a href="http://www.w3.org/">W3C</a>® (<a href="http://www.csail.mit.edu/">MIT</a>, <a href="http://www.ercim.org/">ERCIM</a>, <a href="http://www.keio.ac.jp/">Keio</a>, <a href="http://ev.buaa.edu.cn/">Beihang</a>). W3C® <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and <a href="http://www.w3.org/Consortium/Legal/copyright-documents">document use</a> rules apply.</p>
+    </footer>
+  </body>
+</html>

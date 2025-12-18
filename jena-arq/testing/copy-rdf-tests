@@ -48,7 +48,7 @@ find "$SRC" -name reports | xargs rm -r
 echo "== Delete cloned repo"
 rm -rf "$TMP"
 
-echo "== Edit 
+echo "== Edit" 
 
 echo "== Result :: directory ${SRC}/"
 echo "== Check ${SRC}, then delete the current ${DEST}, and move ${SRC} to ${DEST}"
