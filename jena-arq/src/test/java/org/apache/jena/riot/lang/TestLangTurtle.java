@@ -234,14 +234,25 @@ public class TestLangTurtle
 
     @Test
     public void turtle_rdf12_04() {
+        Graph graph = parse(PREFIXES, "[] rdf:reifies <<( :s :p true )>>");
+        assertEquals(1, graph.size());
+    }
+
+    public void turtle_rdf12_05() {
+        Graph graph = parse(PREFIXES, "<< :s :p false >>");
+        assertEquals(1, graph.size());
+    }
+
+    @Test
+    public void turtle_rdf12_bad_01() {
         // Triple term as subject
         parseException(ExFatal.class, PREFIXES, "<<( :s :p :o )>> :q :z ");
     }
 
     @Test
-    public void turtle_rdf12_05() {
-        // Triple term as subject
-        parseException(ExFatal.class, PREFIXES, ":a <<( :s :p :o )>> :b :c");
+    public void turtle_rdf12_bad_02() {
+        // Triple term as predicate
+        parseException(ExFatal.class, PREFIXES, ":a <<( :s :p :o )>> :b ");
     }
 
     @Test
