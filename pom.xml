@@ -60,7 +60,7 @@
 
     <!-- Logging -->
     <ver.slf4j>2.0.17</ver.slf4j>
-    <ver.log4j2>2.25.2</ver.log4j2>
+    <ver.log4j2>2.25.3</ver.log4j2>
 
     <!-- JSON-LD 1.1 -->
     <ver.titanium-json-ld>1.7.0</ver.titanium-json-ld>
