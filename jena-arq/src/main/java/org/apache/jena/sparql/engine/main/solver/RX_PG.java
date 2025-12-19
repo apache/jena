@@ -34,7 +34,7 @@ import org.apache.jena.sparql.util.Context;
  * For reference only: this code uses the triple index for matching and it is PG mode.
  */
 /*
- * Solver library for RDF-star.
+ * Solver library for RDF-star (<em>not</em> RDF 1.2)
  * <p>
  * There are two entry points.
  * <p>
@@ -47,6 +47,8 @@ import org.apache.jena.sparql.util.Context;
  * {@code FIND(<<...>> AS ?t)}.
  */
 /*ARCHIVE*/ class RX_PG {
+
+    private static final String allocVarTripleTerm      = "~";
 
     // ---- PG mode ----
     // This code implements RDF-star in "PG mode" (the embedded triple also exists as
@@ -176,7 +178,7 @@ import org.apache.jena.sparql.util.Context;
         Context context = execCxt.getContext();
         VarAlloc varAlloc = VarAlloc.get(context, ARQConstants.sysVarAllocRDFStar);
         if ( varAlloc == null ) {
-            varAlloc = new VarAlloc(ARQConstants.allocVarTripleTerm);
+            varAlloc = new VarAlloc(allocVarTripleTerm);
             context.set(ARQConstants.sysVarAllocRDFStar, varAlloc);
         }
         return varAlloc;

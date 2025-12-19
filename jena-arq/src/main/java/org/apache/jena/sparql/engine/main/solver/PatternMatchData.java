@@ -54,7 +54,7 @@ public class PatternMatchData {
         List<Abortable> killList = new ArrayList<>();
 
         for ( Triple triple : triples ) {
-            // Plain, no RDF-star
+            // Plain, no RDF triple terms.
             //chain = StageMatchTriple.accessTriple(chain, graph, triple, filter, execCxt);
 
             // [Match] Missing filter.
@@ -93,7 +93,7 @@ public class PatternMatchData {
         List<Abortable> killList = new ArrayList<>();
 
         for ( Triple triple : triples ) {
-            // Plain - no RDF-star.
+            // Plain - no triple terms with variables.
             //chain = StageMatchData.accessQuad(chain, graphNode, triple, filter, anyGraph, execCxt);
 
             // [Match] Missing filter.

@@ -116,7 +116,7 @@ public abstract class Node implements Serializable {
     { return false; }
 
     /**
-     * Answer true iff this node is an "triple node" (RDF-star)
+     * Answer true iff this node is a triple term
      */
     public boolean isTripleTerm()
     { return false; }
@@ -223,9 +223,9 @@ public abstract class Node implements Serializable {
     public String getName()
     { throw new UnsupportedOperationException( "this (" + this.getClass() + ") is not a variable node" ); }
 
-    /** Get the triple for a triple term (embedded triple), otherwise die horribly */
+    /** Get the triple for a triple term, otherwise die horribly */
     public Triple getTriple()
-    { throw new UnsupportedOperationException( "this (" + this.getClass() + ") is not a embedded triple node" ); }
+    { throw new UnsupportedOperationException( "this (" + this.getClass() + ") is not a triple term node" ); }
 
     /** Get the graph for a graph term (N3 formula), otherwise die horribly */
     public Graph getGraph()

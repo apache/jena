@@ -840,7 +840,7 @@ public abstract class TurtleShell {
          *   triple term must refer to a triple in the graph so blank node used elsewhere.)
          */
         private void findBNodesSyntax1() {
-            // Set of all bnodes used into triple terms (RDF-star)
+            // Set of all bnodes used into triple terms
             Set<Node> blankNodesInTripleTerms = new HashSet<>();
             // Nodes known not to meet the requirement.
             Set<Node> rejects = new HashSet<>();
@@ -1036,7 +1036,7 @@ public abstract class TurtleShell {
         // some other triple. Turtle does not allow free standing (... ) .
         // so write as a predicateObjectList for one element.
         // Later:
-        // RDF-star does not allow list syntax in quoted triples.
+        // Triple terms do not allow list syntax in quoted triples.
         // (All that can go there are RDF terms).
         // so write the head as a labelled bnode and the rest as a list.
         private boolean writeRemainingFreeLists(boolean somethingWritten) {

@@ -31,40 +31,33 @@ import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
 
 /**
- * Basic parsing tests of RDF-star constructs for N-Quads
+ * Basic parsing tests of triple terms
  */
-public class TestNQuadsStarParse {
+public class TestNTriplesTripleTerms {
 
     private ErrorHandler silent = ErrorHandlerFactory.errorHandlerStrictNoLogging;
     private static StreamRDF sink = StreamRDFLib.sinkNull();
 
-    @Test public void parse_nq_good_1()    { parse("<x:s> <x:q> <<( <x:s> <x:p> <x:o> )>> . "); }
+    @Test public void parse_nt_good_1()    { parse("<x:s> <x:q> <<( <x:s> <x:p> <x:o>)>> . "); }
 
-    @Test public void parse_nq_good_2()    { parse("<x:s> <x:p> <<( <x:s> <x:p> <x:o> )>> <http://example/g> . "); }
+    @Test public void parse_nt_good_2()    { parse("_:b <x:p> <<(_:b <x:p> _:o)>>. "); }
 
-    @Test public void parse_nq_good_3()    { parse("<x:s> <x:q> <<( <x:s> <x:p> <<(<x:s1> <x:p1> <x:o1>)>> )>> . "); }
-
-    @Test public void parse_nq_good_4()    { parse("<x:s> <x:p> <<( <x:s> <x:p> <<(<x:s1> <x:p1> <x:o1>)>> )>> <http://example/g> . "); }
-
-    @Test public void parse_nq_good_5()    { parse("_:b <x:p> <<(_:b <x:p> _:o)>> _:g . "); }
+    @Test public void parse_nt_good_3()    { parse("<x:x> <x:y> <<(<x:s1> <x:p1> <<( <x:s> <x:p> '1' )>> )>> ."); }
 
     @Test
-    public void parse_nq_bad_1()           { parseException("<<<x:s> <x:p> <x:o>>> <x:q> <x:z> . "); }
+    public void parse_nt_bad_1()           { parseException("<< <x:s> <x:p> <x:o> >> . "); }
 
     @Test
-    public void parse_nq_bad_2()           { parseException("<<(<x:s> <x:p> <x:o>)>> <x:q> 'ABC' . "); }
+    public void parse_nt_bad_2()           { parseException("<<( <x:s> <x:p> <x:o>)>> <x:y> <x:z> . "); }
 
     @Test
-    public void parse_nq_bad_3()           { parseException("<x:s> <<(<x:s> <x:p> <x:o>)>> <x:o> <http://example/g> . "); }
-
-    @Test
-    public void parse_nq_bad_4()           { parseException("<x:s> <x:p> <x:o> <<(<x:gs> <x:gp> <x:go> )>> . "); }
+    public void parse_nt_bad_3()           { parseException("<x:s> <<( <x:s> <x:p> <x:o>)>> <x:x>  . "); }
 
     private void parseException(String string) {
         assertThrows(RiotException.class, ()->parse(string));
     }
 
     private void parse(String string) {
-        RDFParser.fromString(string, Lang.NQUADS).errorHandler(silent).parse(sink);
+        RDFParser.fromString(string, Lang.NTRIPLES).errorHandler(silent).parse(sink);
     }
 }

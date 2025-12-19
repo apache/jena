@@ -38,8 +38,8 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 /**
  * Triple version of {@link StageMatchData}. This goes directly to the graph.
  * <p>
- * Plain matching - see {@link SolverRX3#rdfStarTriple} for matching with variables
- * in RDF-star embedded triples.
+ * Plain matching - see {@link SolverRX3#rdfStarTriple}
+ * for matching with variables in triple terms.
  */
 public class StageMatchTriple {
     public static Iterator<Binding> accessTriple(Iterator<Binding> input, Graph graph, Triple pattern,

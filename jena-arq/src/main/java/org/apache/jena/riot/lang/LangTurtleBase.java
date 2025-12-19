@@ -500,7 +500,6 @@ public abstract class LangTurtleBase extends LangBase {
         //    is at least one predicate /object.
         // Method triplesNodeCompound ()-> triplesBlankNode(subject)
         //    can cope with zero length, covering grammar token ANON and rule [7] predicateObjectList cases
-        // But here, in RDF-star, only [] is legal.
 
         // XXX Generalize and reuse in Reifier.
         // []
@@ -515,7 +514,7 @@ public abstract class LangTurtleBase extends LangBase {
 
         // Single token terms
         if ( ! lookingAt(NODE) )
-            exception(peekToken(), "Bad %s in RDF-star triple: %s", posnLabel, peekToken().text());
+            exception(peekToken(), "Bad %s in triple term: %s", posnLabel, peekToken().text());
         Node node = node();
         return node;
     }
@@ -673,7 +672,7 @@ public abstract class LangTurtleBase extends LangBase {
             Node tripleTerm = profile.createTripleTerm(subject, predicate, object, tokenReifer.getLine(), tokenReifer.getColumn());
             emit(reif, NodeConst.nodeReifies, tripleTerm);
 
-            // RDF-star annotation syntax
+            // Annotation syntax
             if ( lookingAt(L_ANN) ) {
                 Token tNext = nextToken();
                 if ( lookingAt(R_ANN) )

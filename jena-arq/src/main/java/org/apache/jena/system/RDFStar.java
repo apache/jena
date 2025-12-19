@@ -38,7 +38,7 @@ import org.apache.jena.vocabulary.RDF;
  * Library for RDF-star translation to and from reification form.
  * There is one reification for each unique quoted triple term.
  * This is especially important when decoding.
- * @deprecated Do not use this class. It is related to RDF-star Community Group, not RDF 1.2.
+ * @deprecated Do NOT use this class. It is related to RDF-star Community Group, not RDF 1.2.
  */
 @Deprecated(forRemoval = true)
 public class RDFStar {

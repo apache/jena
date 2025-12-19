@@ -45,10 +45,10 @@ import org.apache.jena.tdb2.store.NodeId;
 import org.apache.jena.tdb2.store.nodetable.NodeTable;
 import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable;
 
-/** RDF-star processing for matching a triple/quad pattern. */
+/** Processing for matching an individual triple/quad pattern including triple terms with variables. */
 public class SolverRX {
     /**
-     * Control whether to check for embedded triple terms with variables or to act in a direct manner.
+     * Control whether to check for triple terms with variables or to act in a direct manner.
      * <p>
      * This constant is not public API. It is exposed only so integration testing can
      * check the value for a release build.
@@ -62,12 +62,13 @@ public class SolverRX {
                                                     boolean anyGraph, Predicate<Tuple<NodeId>> filter, ExecutionContext execCxt) {
         if ( DATAPATH ) {
             if ( ! tripleHasEmbTripleWithVars(tPattern) )
-                // No RDF-star <<>> with variables which are wildcards at this point.
+             // No RDF triple terms <<()>> with variables which are wildcards at this point.
                 return StageMatchTuple.access(nodeTupleTable, chain, patternTuple, filter, anyGraph, execCxt);
         }
 
-        // RDF-star <<>> with wildcards.
+        // RDF triple terms <<()>> with wildcards.
         // This path should work regardless.
+
 
         boolean isTriple = (patternTuple.len() == 3);
         NodeTable nodeTable = nodeTupleTable.getNodeTable();

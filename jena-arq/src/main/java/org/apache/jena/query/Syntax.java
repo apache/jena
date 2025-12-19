@@ -31,7 +31,7 @@ public class Syntax extends Symbol {
     /** The syntax that the SPARQL 1.1 working group has defined. */
     public static final Syntax syntaxSPARQL_11 = new Syntax("http://jena.hpl.hp.com/2003/07/query/SPARQL_11");
 
-    /** The syntax that is SPARQL 1.2 from the RDF-star working group. */
+    /** The syntax that is SPARQL 1.2 */
     public static final Syntax syntaxSPARQL_12 = new Syntax("http://jena.hpl.hp.com/2003/07/query/SPARQL_12");
 
     /** The query syntax for extended SPARQL. */

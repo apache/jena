@@ -85,7 +85,7 @@ import org.slf4j.Logger;
  * This is a Fuseki server running with a pre-configured set
  * of datasets and services.
  * <p>
- * To create a embedded sever, use {@link FusekiServer} ({@link #make} is a packaging
+ * To create a embedded server, use {@link FusekiServer} ({@link #make} is a packaging
  * of a call to {@link FusekiServer} for the case of one dataset, responding to
  * localhost only).
  * <p>

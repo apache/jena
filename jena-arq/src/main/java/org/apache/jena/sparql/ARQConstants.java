@@ -209,9 +209,6 @@ public class ARQConstants
     public static final String allocPathVariables       = allocVarAnonMarker+"P" ;      // PathCompiler
     public static final String allocQueryVariables      = allocVarMarker ;              // Query
 
-    /** Marker for RDF-star variables */
-    public static final String allocVarTripleTerm      = "~";                           // RX, SolverRX
-
     public static final String allocParserAnonVars      = allocVarAnonMarker ;          // LabelToModeMap
     // SSE
     public static final String allocSSEUnamedVars       = "_" ;                         // ParseHandlerPlain - SSE token "?" - legal SPARQL

@@ -156,8 +156,8 @@ public interface Graph {
      * </a>
      *
      * Note: this implementation does not handle correctly blank nodes in
-     * quoted triples (RDF-star). If you need to work with RDF-star,
-     * use the slower implementation in
+     * triple terms (RDF 1.2). If you need to work with triple terms
+     * use the potentially slower implementation in
      * {@code org.apache.jena.sparql.util.IsoMatcher}.
      *
 	 * @param g Compare against this.

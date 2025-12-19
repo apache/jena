@@ -32,7 +32,7 @@ import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
 
 /**
- * Test parsing of RDF-star constructs for Turtle.
+ * Test parsing of occurrences and triple terms in Turtle.
  */
 public class TestTurtleStarParse {
 

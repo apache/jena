@@ -802,11 +802,6 @@ public class TestTokenizerText {
     }
 
     @Test
-    public void tokenUnit_var9() {
-        tokenizeAndTestExact("?" + ARQConstants.allocVarTripleTerm + "9", TokenType.VAR, ARQConstants.allocVarTripleTerm + "9");
-    }
-
-    @Test
     public void tokenUnit_hex1() {
         tokenizeAndTestExact("0xABC", TokenType.HEX, "0xABC");
     }

@@ -22,7 +22,7 @@ import java.util.Objects;
 
 import org.apache.jena.shared.PrefixMapping;
 
-/** RDF triples as RDF terms for RDF-star quoted triples. */
+/** RDF triples as triple terms (RDF-1.2) */
 public class Node_Triple extends Node {
 
     private final Triple triple;

@@ -303,12 +303,12 @@ public class NodeFactory {
         return new Node_Literal(LiteralLabelFactory.createByValue(value, dtype));
     }
 
-    /** Create a triple node (RDF-star) */
+    /** Create a triple term */
     public static Node createTripleTerm(Node s, Node p, Node o) {
         return new Node_Triple(s, p, o);
     }
 
-    /** Create a triple term (RDF-star) */
+    /** Create a triple term */
     public static Node createTripleTerm(Triple triple) {
         return new Node_Triple(triple);
     }

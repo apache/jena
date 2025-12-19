@@ -149,14 +149,11 @@ class SparqlTestLib {
         return def;
     }
 
-    // Allow *.rq is strictly SPARQL 1.1 tests.
-    // but RDF-star test may fail.
     protected static Syntax guessFileSyntax(String filename) {
 //        if ( filename.endsWith(".rq") )
 //            return Syntax.syntaxSPARQL_11;
 //        if ( filename.endsWith(".ru") )
 //            return Syntax.syntaxSPARQL_11;
-
         return Syntax.guessFileSyntax(filename);
     }
 //
