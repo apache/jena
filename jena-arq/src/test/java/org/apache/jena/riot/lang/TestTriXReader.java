@@ -74,7 +74,6 @@ public class TestTriXReader {
                  Arguments.of(DIR+"/trix-w3c-1.trix", DIR+"/trix-w3c-1.nq"),
                  Arguments.of(DIR+"/trix-w3c-2.trix", DIR+"/trix-w3c-2.nq"),
 
-                 // RDF-star
                  Arguments.of(DIR+"/trix-star-1.trix", DIR+"/trix-star-1.nq"),
                  Arguments.of(DIR+"/trix-star-2.trix", DIR+"/trix-star-2.nq")
                         );

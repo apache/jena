@@ -23,11 +23,10 @@ import org.junit.platform.suite.api.Suite;
 
 @Suite
 @SelectClasses({
-    // Old basic tests,
-    // ** To be removed.
-    TestNQuadsStarParse.class,
-    TestNTriplesStarParse.class,
-    TestTrigStarParse.class,
+    // ** To be removed?
+    TestNQuadsTripleTerms.class,
+    TestNTriplesTripleTerms.class,
+    TestTrigParseTripleTerms.class,
     TestTurtleStarParse.class,
     TestSPARQL12Parse.class
 })

@@ -42,8 +42,6 @@ import org.apache.jena.sparql.core.BasicPattern;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.vocabulary.RDF;
 
-// RDF Star CG tests, converted to SPARQL 1.2
-
 public class TestSPARQL12Parse {
 
     static { JenaSystem.init(); }

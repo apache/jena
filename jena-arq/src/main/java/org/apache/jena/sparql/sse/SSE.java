@@ -74,8 +74,6 @@ import org.apache.jena.vocabulary.*;
  * "()" and "[]" are interchangeable and used for visual effect. Expressions are
  * parsed and printed in prefix notation e.g. {@code (+ 1 ?x)}.
  * <p>
- * RDF-star quoted triples are This mean "item.getNode"
- * <p>
  * The operations are grouped into:
  * <ul>
  * <li>{@code parseTYPE} &ndash; parse a string to object of a specific kind.

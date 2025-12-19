@@ -154,7 +154,6 @@ public class TestIsoMatcher
                                                  "(<_:a> :p1 <_:b>) (<_:b> :p2 <_:a>)",
                                                  true); }
 
-    // RDF-star terms
     @Test public void iso_graph_40() { testGraphIso("(<<(:s :p :o)>> :q1 :z1) (<<(_:a :p :o)>> :q2 :z2)",
                                                     "(<<(_:a :p :o)>> :q2 :z2) (<<(:s :p :o)>> :q1 :z1)",
                                                     true); }

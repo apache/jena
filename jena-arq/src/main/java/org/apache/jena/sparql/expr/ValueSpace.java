@@ -101,7 +101,7 @@ public enum ValueSpace {
     VSPACE_CDT_MAP(301),
 
     VSPACE_SORTKEY(900),
-    VSPACE_TRIPLE_TERM(999),      // RDF-star : Last recognized value space.
+    VSPACE_TRIPLE_TERM(999),    // Last recognized value space.
 
     // Unknown RDF term value space.
     VSPACE_UNKNOWN(6000),

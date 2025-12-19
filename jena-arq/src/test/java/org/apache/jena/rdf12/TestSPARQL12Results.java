@@ -30,7 +30,7 @@ import org.apache.jena.sparql.resultset.ResultsReader;
  */
 public class TestSPARQL12Results {
 
-    private static String FILES = "testing/ARQ/RDF-star/Other/";
+    private static String FILES = "testing/ARQ/OtherSystems/";
 
     // RDF4J format JSON results.
     // It uses "s", "p" and "o" for the RDF term results.

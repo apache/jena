@@ -340,7 +340,7 @@ public class Checker {
         }
 
         if ( subject == null || (!subject.isURI() && !subject.isBlank() && !subject.isTripleTerm()) ) {
-            errorHandler(errorHandler).error("Subject is not a URI, blank node or RDF-star triple term", line, col);
+            errorHandler(errorHandler).error("Subject is not a URI, blank node or triple term", line, col);
             rc = false;
         }
         if ( predicate == null || (!predicate.isURI()) ) {
@@ -348,7 +348,7 @@ public class Checker {
             rc = false;
         }
         if ( object == null || (!object.isURI() && !object.isBlank() && !object.isLiteral() && !subject.isTripleTerm()) ) {
-            errorHandler(errorHandler).error("Object is not a URI, blank node, literal or RDF-star triple term", line, col);
+            errorHandler(errorHandler).error("Object is not a URI, blank node, literal or triple term", line, col);
             rc = false;
         }
         return rc;

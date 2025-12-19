@@ -46,7 +46,6 @@ import org.apache.jena.tdb1.store.nodetupletable.NodeTupleTable;
 
 /**
  * Entry to the basic pattern solver for TDB1.
- * {@link SolverRX} is the single stage and include RDF-star.
  */
 public class PatternMatchTDB1 {
 
@@ -111,10 +110,8 @@ public class PatternMatchTDB1 {
             else
                 // 4-tuples.
                 patternTuple = TupleFactory.create4(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject());
-            // Plain RDF, no RDF-star
-            // chain = solve(nodeTupleTable, tuple, anyGraph, chain, filter, execCxt)
-            // ;
-            // RDF-star SA
+            // Plain - no triple terms with variables.
+            // chain = solve(nodeTupleTable, tuple, anyGraph, chain, filter, execCxt);
             chain = matchQuadPattern(chain, graphNode, triple, nodeTupleTable, patternTuple, anyGraph, filter, execCxt);
 
             chain = makeAbortable(chain, killList, execCxt.getCancelSignal());

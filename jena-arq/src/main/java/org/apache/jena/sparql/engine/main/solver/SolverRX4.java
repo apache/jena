@@ -37,7 +37,7 @@ import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingBuilder;
 
-/** RDF-star - quad form. Solve patterns when there is an embedded triple with variables. */
+/** Solve patterns when there may be a triple term with variables. */
 public class SolverRX4 {
 
     /**
@@ -55,7 +55,7 @@ public class SolverRX4 {
         if ( DATAPATH ) {
             if ( ! tripleHasEmbTripleWithVars(pattern) &&
                     (graphName == null || ! graphName.isTripleTerm() ) )
-                // No variables inside <<>>
+                // No variables inside <<()>>
                 return matchDataQuad(chain, graphName, pattern, execCxt);
         }
         return rdfStarQuadSub(chain, graphName, pattern, execCxt);

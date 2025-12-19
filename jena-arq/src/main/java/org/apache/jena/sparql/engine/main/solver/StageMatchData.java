@@ -37,8 +37,8 @@ import org.apache.jena.sparql.engine.binding.BindingFactory;
 /**
  * This is the data access step of quads and datasets.
  * <p>
- * Plain matching - see {@link SolverRX4#rdfStarQuad} for matching with variables
- * in RDF-star triple terms.
+ * Plain matching - see {@link SolverRX4#rdfStarQuad} for matching
+ * with variables in triple terms.
  */
 public class StageMatchData {
 

@@ -81,7 +81,7 @@ public class ReaderTriX implements ReaderRIOT {
 <!ELEMENT typedLiteral (#PCDATA)>
 <!ATTLIST typedLiteral datatype CDATA #REQUIRED>
 
- Extended for RDF-star.
+ Extended for triple terms
 <!ELEMENT triple ((id|uri|plainLiteral|typedLiteral|triple), uri, (id|uri|plainLiteral|typedLiteral|triple))>
      */
 

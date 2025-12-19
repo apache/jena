@@ -84,7 +84,7 @@ public class KryoRegistratorSpatialIndexV2 {
 
     /**
      * The default serializer for {@link Triple}.
-     * Must be registered in addition to node serializers for RDF-Star (triples-in-nodes).
+     * Must be registered in addition to node serializers for triple terms.
      */
     public static void registerTripleSerializer(Kryo kryo) {
         kryo.register(Triple.class, new TripleSerializer());

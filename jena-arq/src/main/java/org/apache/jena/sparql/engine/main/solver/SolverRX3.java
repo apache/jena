@@ -36,7 +36,7 @@ import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
-/** RDF-star - triple form. Solve patterns when there is an embedded triple with variables. */
+/** Solve patterns when there may be a triple term with variables. */
 public class SolverRX3 {
 
     /**
@@ -48,9 +48,9 @@ public class SolverRX3 {
     public static Iterator<Binding> rdfStarTriple(Iterator<Binding> chain, Triple tPattern, ExecutionContext execCxt) {
         // Should all work without this trap for plain RDF.
         if ( DATAPATH ) {
-            // No variables inside <<>>
+            // No variables inside triple terms
             if ( ! tripleHasEmbTripleWithVars(tPattern) )
-                // No RDF-star : direct to data.
+                // direct to data.
                 return matchData(chain, tPattern, execCxt);
         }
         return rdfStarTripleMatch(chain, tPattern, execCxt);
@@ -94,7 +94,6 @@ public class SolverRX3 {
         return r ? bb.build() : null;
     }
 
-    // Used in matching a triple in an embedded triple term.
     /*package*/ static boolean bindTriple(BindingBuilder bb, Triple tData, Triple tPattern) {
         Node sPattern = tPattern.getSubject();
         Node pPattern = tPattern.getPredicate();

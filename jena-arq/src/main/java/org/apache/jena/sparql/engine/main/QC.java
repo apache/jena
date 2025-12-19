@@ -64,7 +64,7 @@ public class QC
     }
 
     /**
-     * Execute a triple pattern - top level variables only (no variables in RDF-star triple terms).
+     * Execute a triple pattern - top level variables only (no variables in RDF triple terms).
      * This is data access to asserted triples.
      */
     public static QueryIterator executeFlat(QueryIterator input, Triple pattern, ExecutionContext execCxt) {

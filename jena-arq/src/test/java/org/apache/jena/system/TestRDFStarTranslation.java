@@ -36,6 +36,7 @@ import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.IsoMatcher;
 import org.apache.jena.vocabulary.RDF;
 
+/** This is RDF-star - the pre-RDF-1.2 work. */
 @SuppressWarnings("removal")
 public class TestRDFStarTranslation {
 
@@ -56,7 +57,6 @@ public class TestRDFStarTranslation {
     }
 
     @Test public void rdfx_basic() {
-        // No RDF-star triple terms - no change.
         Graph g = data("(graph (:s :p :o))");
 
         Graph g1 = RDFStar.encodeAsRDF(g);

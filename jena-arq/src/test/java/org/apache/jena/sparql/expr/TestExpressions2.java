@@ -231,7 +231,6 @@ public class TestExpressions2
     @Test public void term_constructor_strlang_02() { assertThrows(ExprEvalException.class, ()-> eval("STRLANG(<http://example/>, 'en') = 'abc'@en") ); }
     @Test public void term_constructor_strlang_03() { assertThrows(ExprEvalException.class, ()-> eval("STRLANG('abc'@en, 'en') = 'abc'@en") ); }
 
-    // RDF-star
     @Test public void triple_term_cmp_01()
     { eval("<<(<ex:s> <ex:p> <ex:p>)>> = <<(<ex:s> <ex:p> <ex:p>)>>"); }
 

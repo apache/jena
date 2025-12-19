@@ -33,7 +33,7 @@ import org.apache.jena.riot.tokens.TokenizerText;
 import org.apache.jena.tdb1.TDB1Exception;
 
 /**
- * This decode is specific to TDB1. With {@link NodecSSE}, RDF-star triple terms are
+ * This decode is specific to TDB1. With {@link NodecSSE}, triple terms are
  * encoded with {@link NodeFmtLib#str(Node)}. The format for encodes blank node
  * labels (e.g. "-" character and adds a leading "B") using
  * {@link NodeFmtLib#encodeBNodeLabel}.

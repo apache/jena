@@ -64,8 +64,8 @@ public class SolverLib {
     }
 
     /**
-     * Test whether a triple has a triple term (RDF-star) as one of its components
-     * and that embedded triple term has variables.
+     * Test whether a triple has a triple term as one of its components
+     * and that the nest triple term has variables.
      */
     public static boolean tripleHasEmbTripleWithVars(Triple triple) {
         return isTripleTermWithVars(triple.getSubject())
@@ -74,8 +74,8 @@ public class SolverLib {
     }
 
     /**
-     * Test whether a quad has a triple term (RDF-star) as one of its components
-     * and that embedded triple term has variables.
+     * Test whether a quad has a triple term as one of its components
+     * and that triple term has variables.
      */
     public static boolean quadHasEmbTripleWithVars(Quad quad) {
         return isTripleTermWithVars(quad.getSubject())

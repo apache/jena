@@ -167,7 +167,6 @@ public class NV implements RDFJS {
         if ( isLiteral() )
             return "Literal";
         if ( isTripleTerm() )
-            // RDF-star embedded triple.
             return "Triple";
         return null;
     }

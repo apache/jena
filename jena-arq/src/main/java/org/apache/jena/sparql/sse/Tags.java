@@ -246,7 +246,7 @@ public class Tags
     public static final String tagSubject         = "subject";
     public static final String tagPredicate       = "predicate";
     public static final String tagObject          = "object";
-    // This the SPARQL function for RDF-star: TRIPLE(expr_s, expr_p, expr_o)
+    // This the SPARQL function TRIPLE(expr_s, expr_p, expr_o)
     public static final String tagFnTriple        = Tags.tagTriple;
 
     public static final String tagIn              = "in";

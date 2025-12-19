@@ -44,15 +44,15 @@ public class JSONResultsKW
     public static final String kBnode         = "bnode" ;
     public static final String kBoolean       = "boolean" ;
 
-    // RDF-star Triple terms
+    // Triple terms
     public static final String kTriple        = "triple" ;
-    // Alternative type for RDF-star triple terms.
+    // Alternative type for triple terms.
     public static final String kStatement     = "statement" ;
     public static final String kSubject       = "subject" ;
     public static final String kPredicate     = "predicate" ;
     public static final String kProperty      = "property" ;
     public static final String kObject        = "object" ;
-    // RDF-star Triple terms - alternative keywords
+    // Triple terms - alternative keywords
     public static final String kSubjectAlt    = "s" ;
     public static final String kPredicateAlt  = "p" ;
     public static final String kObjectAlt     = "o" ;
