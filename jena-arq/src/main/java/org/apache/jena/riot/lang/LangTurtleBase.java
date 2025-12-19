@@ -342,9 +342,6 @@ public abstract class LangTurtleBase extends LangBase {
     }
 
     // -- rtSubject rules
-    // ??? profile.isValidTriple(s,p,o);
-    //profile.createTriple(s, p, o, token.getLine(), token.getColumn());
-
     private Node rtSubject(Token startToken) {
         if ( lookingAt(LT2) )
             return parseReifiedTriple();
@@ -365,8 +362,13 @@ public abstract class LangTurtleBase extends LangBase {
         Node o = possibleAnon() ;
         if ( o != null )
             return o;
+        o = possibleBooleanLiteral();
+        if (o != null )
+            return o;
+
         // Not compound triples (blankPredicateObjectList, collections).
         o = object();
+
         if ( ! (o.isURI() || o.isBlank() || o.isLiteral() || o.isTripleTerm() ) )
             exception(startToken, "Illgeal object in a reified triple: %s", o);
         return o;
@@ -385,18 +387,6 @@ public abstract class LangTurtleBase extends LangBase {
         Node x = profile.createBlankNode(currentGraph, token.getLine(), token.getColumn());
         return x;
     }
-
-//    // XXX Checker.validateTriple
-//    // XXX TripleTerm
-//    private void validateTriple(Node s, Node p, Node o, String usage, Token token) {
-//        if ( ! (s.isURI() || s.isBlank() ) )
-//            // ReifiedTriple covered by branch.
-//            exception(token, "Subject in a %s is not a URI, blank node or a nested reified triple: %s", usage, s);
-//        if ( ! p.isURI() )
-//            exception(token, "Predicate in a %s is not a URI: %s", usage, p);
-//        if ( ! (o.isURI() || o.isBlank() || o.isLiteral() || o.isNodeTriple() ) )
-//            exception(token, "Object in a %s is not a URI, blank node, nested reified triple or triple term : %s", usage, o);
-//    }
 
     private Node parseTripleTerm() {
         Token entryToken = nextToken();
@@ -417,7 +407,6 @@ public abstract class LangTurtleBase extends LangBase {
 
         if ( ! lookingAt(TokenType.TILDE) )
             return profile.createBlankNode(currentGraph, line, column);
-        // XXX Check BNF
         return Reifier(s, p, o, line, column);
     }
 
@@ -434,7 +423,6 @@ public abstract class LangTurtleBase extends LangBase {
         Node reif;
         // URI or bNode
         if ( lookingAtIRIorBNode() ) {
-            // XXX   and use elsewhere : nodeURIorBLankNode()
             nextToken();
             reif = tokenAsNode(tokenReif);
         } else if ( lookingAt(LBRACKET) ) {
@@ -442,7 +430,7 @@ public abstract class LangTurtleBase extends LangBase {
             nextToken();
             Token t = peekToken();
             if ( ! lookingAt(RBRACKET) )
-                exception(peekToken(), "Bad %s in RDF triple. Expected ] after [", "riefier", peekToken().text());
+                exception(peekToken(), "Bad %s in RDF triple. Expected ] after [", "reifier", peekToken().text());
             nextToken();
             reif = profile.createBlankNode(currentGraph, t.getLine(), t.getColumn());
         } else {
@@ -454,18 +442,12 @@ public abstract class LangTurtleBase extends LangBase {
     }
 
     private Node ttSubject() {
-        Node node = term("subject");
-        // XXX Maybe allow but restrict later.
-        if ( node.isLiteral() )
-            exception(peekToken(), "Literals are not legal in the subject position.");
-        if ( node.isTripleTerm() ) {
-            exception(peekToken(), "Triple terms are not legal in the subject position.");
-        }
+        Node node = tripleTermSubjectObject(Posn.SUBJECT);
         return node;
     }
 
     private Node ttObject() {
-        Node node = term("object");
+        Node node = tripleTermSubjectObject(Posn.OBJECT);
         return node;
     }
 
@@ -479,7 +461,8 @@ public abstract class LangTurtleBase extends LangBase {
         return nodeTerm();
     }
 
-    // Single token terms, triple terms and reified triples.
+
+    // Single token terms, triple terms <<( ... )>> and reified triples. << ... >>
     private Node nodeTerm() {
         if ( lookingAt(LT2) )
             return parseReifiedTriple();
@@ -489,9 +472,33 @@ public abstract class LangTurtleBase extends LangBase {
         return node;
     }
 
-    /** Any RDFTerm, including compound structures but not reified triples. */
-    // XXX RENAME
-    private Node term(String posnLabel) {
+    // Keywords 'true' and 'false'
+    private Node possibleBooleanLiteral() {
+        if ( ! lookingAt(TokenType.KEYWORD) )
+            return null;
+        Token tErr = peekToken();
+        // Location independent node words
+        String image = peekToken().getImage();
+        nextToken();
+        if ( image.equals(KW_TRUE) )
+            return NodeConst.nodeTrue;
+        if ( image.equals(KW_FALSE) )
+            return NodeConst.nodeFalse;
+        if ( image.equals(KW_A) )
+            exception(tErr, "Keyword 'a' not legal at this point");
+
+        exception(tErr, "Unrecognized keyword: " + image);
+        return null;
+    }
+
+    enum Posn {
+        SUBJECT("subject"), OBJECT("object");
+        private String label;
+        Posn(String label) { this.label = label; }
+    }
+
+    /** Any RDFTerm that can appear in a triple term subject or object position. */
+    private Node tripleTermSubjectObject(Posn posn) {
         if ( lookingAt(L_TRIPLE) )
             return parseTripleTerm();
 
@@ -507,20 +514,36 @@ public abstract class LangTurtleBase extends LangBase {
             nextToken();
             Token t = peekToken();
             if ( ! lookingAt(RBRACKET) )
-                exception(peekToken(), "Bad %s in RDF triple. Expected ] after [", posnLabel, peekToken().text());
+                exception(peekToken(), "Bad %s in RDF triple. Expected ] after [", posn.label, peekToken().text());
             nextToken();
             return profile.createBlankNode(currentGraph, t.getLine(), t.getColumn());
         }
 
+        Node n = possibleBooleanLiteral();
+        if ( n != null )
+            return n;
+
         // Single token terms
-        if ( ! lookingAt(NODE) )
-            exception(peekToken(), "Bad %s in triple term: %s", posnLabel, peekToken().text());
+        if ( ! lookingAt(NODE) ) {
+            exception(peekToken(), "Bad %s in triple term: %s", posn.label, peekToken().text());
+        }
         Node node = node();
+
+        // Further restrictions due to position.
+        switch (posn) {
+            case OBJECT->{} // None
+            case SUBJECT->{
+                if ( node.isLiteral() )
+                    exception(peekToken(), "Literals are not legal in the %s position.", posn.label);
+                if ( node.isTripleTerm() ) {
+                    exception(peekToken(), "Triple terms are not legal in the %s position.", posn.label);
+                }
+            }
+        }
         return node;
     }
 
     // Must be at least one triple.
-    //   Not reifiedTriple
     protected final void triplesSameSubject() {
         // Looking at a node.
         Node subject = subject();
@@ -578,10 +601,7 @@ public abstract class LangTurtleBase extends LangBase {
     static protected final Node nodeSameAs     = NodeConst.nodeOwlSameAs;
     static protected final Node nodeLogImplies = NodeFactory.createURI("http://www.w3.org/2000/10/swap/log#implies");
 
-    // XXX verb()
-
     // [11]  verb  ::= predicate | 'a'
-    // [12]  subject ::= iri | BlankNode | collection
     // [13]  predicate ::= iri
     // and '=' (owl:sameAs),
     /** Get predicate - return null for "illegal" */
@@ -643,7 +663,6 @@ public abstract class LangTurtleBase extends LangBase {
         return n;
     }
 
-    // XXX Update for RDF 1.2
     protected final void objectList(Node subject, Node predicate) {
         for (;;) {
             // object ::=
@@ -692,29 +711,13 @@ public abstract class LangTurtleBase extends LangBase {
             Node n = node();
             return n;
         }
-
-        // Special words.
-        if ( lookingAt(TokenType.KEYWORD) ) {
-            Token tErr = peekToken();
-            // Location independent node words
-            String image = peekToken().getImage();
-            nextToken();
-            if ( image.equals(KW_TRUE) )
-                return NodeConst.nodeTrue;
-            if ( image.equals(KW_FALSE) )
-                return NodeConst.nodeFalse;
-            if ( image.equals(KW_A) )
-                exception(tErr, "Keyword 'a' not legal at this point");
-
-            exception(tErr, "Unrecognized keyword: " + image);
-        }
-
         if ( lookingAt(LT2) )
             return parseReifiedTriple();
-
         if ( lookingAt(L_TRIPLE) )
             return parseTripleTerm();
-
+        Node n = possibleBooleanLiteral();
+        if ( n != null )
+            return n;
         return triplesNodeCompound();
     }
 
