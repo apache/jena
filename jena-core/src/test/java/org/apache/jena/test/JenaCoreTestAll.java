@@ -58,7 +58,7 @@ public class JenaCoreTestAll extends TestCase {
         addTest(ts,  "Model2",              org.apache.jena.rdf.model.test.TS3_StandardModels.suite() );
 
         // Test suite building
-        addTest(ts,  "XML Input [ARP1]",    org.apache.jena.rdfxml.xmlinput1.TS3_xmlinput1.suite());
+        addTest(ts,  "XML Input [ARP1]",    org.apache.jena.rdfxml.arp1tests.TS3_xmlinput1.suite());
         addTest(ts,  "XML Output",          org.apache.jena.rdfxml.xmloutput.TS3_xmloutput.suite());
 
         addTest(ts,  "Util",                adaptJUnit4(org.apache.jena.util.TS3_coreutil.class));
