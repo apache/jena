@@ -18,32 +18,22 @@
 package org.apache.jena.geosparql.spatial.index.v2;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import com.esotericsoftware.kryo.kryo5.Kryo;
+import com.esotericsoftware.kryo.kryo5.Serializer;
+import com.esotericsoftware.kryo.kryo5.serializers.MapSerializer;
 
 import org.apache.jena.geosparql.kryo.EnvelopeSerializer;
 import org.apache.jena.geosparql.kryo.NodeSerializer;
 import org.apache.jena.geosparql.kryo.TripleSerializer;
 import org.apache.jena.graph.Triple;
-import org.locationtech.jts.geom.Envelope;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryCollection;
-import org.locationtech.jts.geom.LineString;
-import org.locationtech.jts.geom.LinearRing;
-import org.locationtech.jts.geom.MultiLineString;
-import org.locationtech.jts.geom.MultiPoint;
-import org.locationtech.jts.geom.MultiPolygon;
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.geom.*;
 import org.locationtech.jts.index.strtree.STRtree;
 import org.locationtech.jts.index.strtree.STRtreeSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.esotericsoftware.kryo.kryo5.Kryo;
-import com.esotericsoftware.kryo.kryo5.Serializer;
-import com.esotericsoftware.kryo.kryo5.serializers.MapSerializer;
 
 /**
  * The class is used to configure the kryo serialization
