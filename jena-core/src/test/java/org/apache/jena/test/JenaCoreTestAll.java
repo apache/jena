@@ -18,8 +18,12 @@
 
 package org.apache.jena.test;
 
-import junit.framework.*;
+import junit.framework.JUnit4TestAdapter;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 import org.apache.jena.rdf.model.impl.RDFReaderFImpl;
+import org.apache.jena.rdf.model.impl.RDFWriterFImpl;
 import org.apache.jena.sys.JenaSystem;
 
 /**
@@ -29,8 +33,10 @@ public class JenaCoreTestAll extends TestCase {
 
     static public TestSuite suite() {
         JenaSystem.init();
-        // Include old Turtle parser - not up-to-date but enough to read test input files
+        // Include parsers and writers needed for the tests.
+        // These are not up-to-date but enough to work with the test suite.
         RDFReaderFImpl.alternative(new X_RDFReaderF());
+        RDFWriterFImpl.alternative(new X_RDFWriterF());
 
         TestSuite ts = new TestSuite();
         ts.setName("Jena Core");

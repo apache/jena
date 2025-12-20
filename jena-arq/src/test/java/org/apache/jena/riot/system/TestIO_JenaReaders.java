@@ -19,17 +19,22 @@ package org.apache.jena.riot.system;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import org.apache.jena.atlas.logging.LogCtl;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFReaderF;
 import org.apache.jena.rdf.model.impl.RDFReaderFImpl;
 import org.apache.jena.riot.IO_Jena;
 import org.apache.jena.riot.adapters.RDFReaderRIOT;
 import org.apache.jena.shared.NoReaderForLangException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TestIO_JenaReaders {
     @BeforeAll public static void beforeClass() { }
@@ -59,20 +64,31 @@ public class TestIO_JenaReaders {
     public void resetJena() {
         IO_Jena.wireIntoJena();
         IO_Jena.resetJena();
-        RDFReaderF readerF = new RDFReaderFImpl();
+        try {
+            RDFReaderF readerF = new RDFReaderFImpl();
+            Model model = ModelFactory.createDefaultModel();
+            Logger logger = LoggerFactory.getLogger("RDFReader");
 
-        assertNotEquals(RDFReaderRIOT.class, readerF.getReader(null).getClass());
-        assertNotEquals(RDFReaderRIOT.class, readerF.getReader("RDF/XML").getClass());
-        assertNotEquals(RDFReaderRIOT.class, readerF.getReader("RDF/XML-ABBREV").getClass());
-        assertNotEquals(RDFReaderRIOT.class, readerF.getReader("N-TRIPLES").getClass());
-        assertNotEquals(RDFReaderRIOT.class, readerF.getReader("N-Triples").getClass());
-        assertNotEquals(RDFReaderRIOT.class, readerF.getReader("N-TRIPLE").getClass());
+            LogCtl.withLevel(logger, "off", ()->{
+                assertThrows(NoReaderForLangException.class, ()->readerF.getReader("RDF"));
+                assertThrows(NoReaderForLangException.class, ()->readerF.getReader("RDF/XML"));
+                assertThrows(NoReaderForLangException.class, ()->readerF.getReader("RDF/XML-ABBREV"));
 
-        try { readerF.getReader("NT")     ; fail("Exception expected"); } catch (NoReaderForLangException e) {}
-        try { readerF.getReader("JSON_LD"); fail("Exception expected"); } catch (NoReaderForLangException e) {}
-        try { readerF.getReader("RDF/JSON"); fail("Exception expected"); } catch (NoReaderForLangException e) {}
+                assertThrows(NoReaderForLangException.class, ()->model.read("http://example/"));
+                assertThrows(NoReaderForLangException.class, ()->model.read("http://example/", "RDF/XML"));
+            });
 
-        IO_Jena.wireIntoJena();
+            assertNotEquals(RDFReaderRIOT.class, readerF.getReader("N-TRIPLES").getClass());
+            assertNotEquals(RDFReaderRIOT.class, readerF.getReader("N-Triples").getClass());
+            assertNotEquals(RDFReaderRIOT.class, readerF.getReader("N-TRIPLE").getClass());
+
+            // It's not called "NT" in jena-core on it's own.
+            assertThrows(NoReaderForLangException.class, ()->readerF.getReader("NT"));
+            assertThrows(NoReaderForLangException.class, ()->readerF.getReader("TURTLE"));
+            assertThrows(NoReaderForLangException.class, ()->readerF.getReader("JSON-LD"));
+        } finally {
+            IO_Jena.wireIntoJena();
+        }
     }
 
 

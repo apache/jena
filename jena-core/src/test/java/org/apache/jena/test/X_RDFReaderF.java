@@ -21,15 +21,19 @@ package org.apache.jena.test;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.jena.rdf.model.RDFReaderI;
+import org.apache.jena.atlas.lib.Creator;
 import org.apache.jena.rdf.model.RDFReaderF;
+import org.apache.jena.rdf.model.RDFReaderI;
+import org.apache.jena.rdf.model.impl.NTripleReader;
+import org.apache.jena.rdfxml.xmlinput1.RDFXMLReader;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.NoReaderForLangException;
+import org.apache.jena.ttl_test.turtle.TurtleReader;
 
 /**
  * For jena-core tests only.
  * <p>
- * The RDFReaderF provides the languages needed by the jena-core test suite.
+ * This RDFReaderF provides the languages needed by the jena-core test suite.
  * <ul>
  * <li>RDF/XML</li>
  * <li>test-only Turtle (not fully RDF 1.1 compliant)<li>
@@ -37,41 +41,38 @@ import org.apache.jena.shared.NoReaderForLangException;
  * </ul>
  */
 public class X_RDFReaderF extends Object implements RDFReaderF {
-    public static final String DEFAULTLANG = "RDF/XML";
-    private static Map<String, Class<? extends RDFReaderI>> custom = new LinkedHashMap<>();
+    public static final String DEFAULTLANG = "RDF/XML" ;
+    private static Map<String, Creator<RDFReaderI>> custom = new LinkedHashMap<>();
+    private static RDFReaderF rewiredAlternative = null ;
+    static { reset(); }
 
-    /** Creates new RDFReaderFImpl */
     public X_RDFReaderF() {}
 
     @Override
     public RDFReaderI getReader(String lang) {
         // Jena model.read rule for defaulting.
         if (lang==null || lang.equals(""))
-            lang = DEFAULTLANG;
-        Class<? extends RDFReaderI> c = custom.get(lang);
+            lang = DEFAULTLANG ;
+        // if RIOT ->
+        if ( rewiredAlternative != null )
+            return rewiredAlternative.getReader(lang) ;
+        Creator<RDFReaderI> c = custom.get(lang);
         if ( c == null )
             throw new NoReaderForLangException("Reader not found: " + lang);
 
         try {
-            return c.getConstructor().newInstance();
+            return c.create();
         }
-        catch (Exception e) {
+        catch (RuntimeException e) {
             throw new JenaException(e);
         }
     }
 
-    static {
-        // static initializer - set default readers
-        reset();
-    }
 
     private static void reset() {
-        Class<? extends RDFReaderI> rdfxmlReader = org.apache.jena.rdfxml.xmlinput1.RDFXMLReader.class;
-
-        // test use only
-        Class<? extends RDFReaderI> ntReader = org.apache.jena.rdf.model.impl.NTripleReader.class;
-        // test use only
-        Class<? extends RDFReaderI> turtleReader = org.apache.jena.ttl_test.turtle.TurtleReader.class;
+        Creator<RDFReaderI> rdfxmlReader = RDFXMLReader::new;
+        Creator<RDFReaderI> ntReader     = NTripleReader::new;
+        Creator<RDFReaderI> turtleReader = TurtleReader::new;
 
         custom.put("RDF", rdfxmlReader);
         custom.put("RDF/XML", rdfxmlReader);
@@ -85,13 +86,5 @@ public class X_RDFReaderF extends Object implements RDFReaderF {
         custom.put("TURTLE", turtleReader);
         custom.put("Turtle", turtleReader);
         custom.put("TTL", turtleReader);
-    }
-
-    private static String currentEntry(String lang) {
-        Class<? extends RDFReaderI> oldClass = custom.get(lang);
-        if ( oldClass != null )
-            return oldClass.getName();
-        else
-            return null;
     }
 }

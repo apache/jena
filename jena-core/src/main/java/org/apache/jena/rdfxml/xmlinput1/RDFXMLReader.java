@@ -33,6 +33,7 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
 import org.apache.jena.rdf.model.RDFReaderI ;
 import org.apache.jena.rdf.model.impl.RDFDefaultErrorHandler ;
+import org.apache.jena.rdf.model.impl.RDFReaderFImpl;
 import org.apache.jena.rdfxml.xmlinput1.impl.RDFXMLParser;
 import org.apache.jena.shared.DoesNotExistException ;
 import org.apache.jena.shared.JenaException ;
@@ -68,11 +69,10 @@ public class RDFXMLReader implements RDFReaderI, ARPErrorNumbers {
     private final boolean resolveInitialXmlBase;
 
     /**
-     * Creates new JenaReader
+     * Creates new JenaReader (used by {@link RDFReaderFImpl})
      */
     public RDFXMLReader() {
-        arpf = RDFXMLParser.create();
-        this.resolveInitialXmlBase = true;
+        this(true);
     }
 
     /**
@@ -85,7 +85,6 @@ public class RDFXMLReader implements RDFReaderI, ARPErrorNumbers {
         arpf = RDFXMLParser.create();
         this.resolveInitialXmlBase = resolveInitialXmlBase;
     }
-
 
     final private RDFXMLParser arpf;
 

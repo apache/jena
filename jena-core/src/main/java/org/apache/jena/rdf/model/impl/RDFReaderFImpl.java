@@ -20,81 +20,81 @@ package org.apache.jena.rdf.model.impl;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.lib.Creator;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.rdf.model.RDFReaderF;
 import org.apache.jena.rdf.model.RDFReaderI;
+import org.apache.jena.rdfxml.xmlinput1.RDFXMLReader;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.NoReaderForLangException;
 
 public class RDFReaderFImpl extends Object implements RDFReaderF {
-    public static final String DEFAULTLANG = "RDF/XML" ;
-    private static Map<String, Class<? extends RDFReaderI>> custom = new LinkedHashMap<>();
-    private static RDFReaderF rewiredAlternative = null ;
+    public static final String DEFAULTLANG = "RDF/XML";
+    private static Map<String, Creator<RDFReaderI>> custom = new LinkedHashMap<>();
+    private static RDFReaderF rewiredAlternative = null;
+
+    // Jena6
+    private static final boolean includeRDFXML = false;
+
     /** Rewire to use an external RDFReaderF (typically, RIOT).
      * Set to null to use old jena-core setup.
      * @param other
      */
     public static void alternative(RDFReaderF other) {
-        rewiredAlternative = other ;
+        rewiredAlternative = other;
     }
+
+    private static String msgNoRDFXML = "RDF/XML is no longer supported in jena-core. Add jena-arq to the classpath";
+    private static Set<String> removedLangs = Set.of("RDF", "RDF/XML", "RDF/XML-ABBREV");
 
     /** Creates new RDFReaderFImpl */
     public RDFReaderFImpl() {}
+
+    static { setup(); }
 
     @Override
     public RDFReaderI getReader(String lang) {
         // Jena model.read rule for defaulting.
         if (lang==null || lang.equals(""))
-            lang = DEFAULTLANG ;
+            lang = DEFAULTLANG;
         // if RIOT ->
         if ( rewiredAlternative != null )
-            return rewiredAlternative.getReader(lang) ;
-        Class<? extends RDFReaderI> c = custom.get(lang);
+            return rewiredAlternative.getReader(lang);
+
+        if ( ! includeRDFXML ) {
+            // Jena6: reading RDF/XML removed from jena-core
+            if ( removedLangs.contains(lang) )
+                Log.error("RDFReader", msgNoRDFXML);
+        }
+
+        Creator<RDFReaderI> c = custom.get(lang);
         if ( c == null )
             throw new NoReaderForLangException("Reader not found: " + lang);
 
         try {
-            return c.getConstructor().newInstance();
+            return c.create();
         }
-        catch (Exception e) {
+        catch (RuntimeException e) {
             throw new JenaException(e);
         }
     }
 
-    static {
-        // static initializer - set default readers
-        reset();
-    }
-
-    private static void reset() {
-        Class<? extends RDFReaderI> rdfxmlReader = org.apache.jena.rdfxml.xmlinput1.RDFXMLReader.class;
-        Class<? extends RDFReaderI> ntReader = org.apache.jena.rdf.model.impl.NTripleReader.class;
+    private static void setup() {
         // Turtle moved to test-only
+        // Jena6: ARP1 (RDF/XML) not installed except for tests
 
-        custom.put("RDF", rdfxmlReader);
-        custom.put("RDF/XML", rdfxmlReader);
-        custom.put("RDF/XML-ABBREV", rdfxmlReader);
-
-        custom.put("N-TRIPLE", ntReader);
+        Creator<RDFReaderI> ntReader     = NTripleReader::new;
+        custom.put("N-TRIPLE",  ntReader);
         custom.put("N-TRIPLES", ntReader);
         custom.put("N-Triples", ntReader);
-    }
 
-    private static String currentEntry(String lang) {
-        Class<? extends RDFReaderI> oldClass = custom.get(lang);
-        if ( oldClass != null )
-            return oldClass.getName();
-        else
-            return null;
-    }
-
-    private static String remove(String lang) {
-        if ( rewiredAlternative != null )
-            Log.error(RDFReaderFImpl.class, "Rewired RDFReaderFImpl - configuration changes have no effect on reading");
-
-        String oldClassName = currentEntry(lang);
-        custom.remove(lang);
-        return oldClassName;
+        if ( includeRDFXML ) {
+          Creator<RDFReaderI> rdfxmlReader = RDFXMLReader::new;
+          custom.put("RDF",            rdfxmlReader);
+          custom.put("RDF/XML",        rdfxmlReader);
+          custom.put("RDF/XML-ABBREV", rdfxmlReader);
+        }
     }
 }
