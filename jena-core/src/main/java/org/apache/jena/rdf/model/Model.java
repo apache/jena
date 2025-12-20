@@ -552,7 +552,7 @@ public interface Model
      */
     @Deprecated(forRemoval = true)
     public default Model write(Writer writer) { return write(writer, "RDF/XML"); }
-    
+
     /**
      * <p>Write a serialized representation of a model in a specified language.
      * It is often better to use an OutputStream rather than a Writer, since this
@@ -585,13 +585,11 @@ public interface Model
      */
 	public Model write( Writer writer, String lang, String base );
 
-
     /**
      * <p>Write a serialization of this model as an XML document.s</p>
      * @deprecated Use {@code write(OutputStream, "RDF/XML")}
      */
     @Deprecated(forRemoval = true)
-
 	public default Model write(OutputStream out) { return write(out, "RDF/XML"); }
 
     /**

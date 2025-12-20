@@ -19,17 +19,22 @@ package org.apache.jena.riot.system;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import org.apache.jena.atlas.logging.LogCtl;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFWriterF;
 import org.apache.jena.rdf.model.impl.RDFWriterFImpl;
 import org.apache.jena.riot.IO_Jena;
 import org.apache.jena.riot.adapters.RDFWriterRIOT;
 import org.apache.jena.shared.NoWriterForLangException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TestIO_JenaWriters {
 
@@ -57,30 +62,34 @@ public class TestIO_JenaWriters {
         assertEquals(RDFWriterRIOT.class, writerF.getWriter("RDFJSON").getClass());
     }
 
+    @SuppressWarnings("removal")
     @Test
     public void testResetJena() {
         IO_Jena.wireIntoJena();
         IO_Jena.resetJena();
-        RDFWriterF writerF = new RDFWriterFImpl();
+        try {
+            RDFWriterF writerF = new RDFWriterFImpl();
+            Model model = ModelFactory.createDefaultModel();
+            Logger logger = LoggerFactory.getLogger("RDFWriter");
 
-        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter(null).getClass());
-        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("RDF/XML").getClass());
-        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("RDF/XML-ABBREV").getClass());
-        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("N-TRIPLE").getClass());
-        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("N-Triples").getClass());
-        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("N-TRIPLE").getClass());
+            LogCtl.withLevel(logger, "off", ()->{
+                assertThrows(NoWriterForLangException.class, ()->writerF.getWriter("RDF/XML"));
+                assertThrows(NoWriterForLangException.class, ()->writerF.getWriter("RDF/XML-ABBREV"));
 
-        //N3 , Turtle in jena-core removed.
-//        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("N3").getClass());
-//        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("TURTLE").getClass());
-//        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("Turtle").getClass());
-//        assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("TTL").getClass());
+                assertThrows(NoWriterForLangException.class, ()->model.write(System.err));
+                assertThrows(NoWriterForLangException.class, ()->model.write(System.err, "RDF/XML"));
+            });
 
-        try { writerF.getWriter("NT"); fail("Exception expected"); } catch (NoWriterForLangException ex) {}
-        try { writerF.getWriter("RDF/JSON"); fail("Exception expected"); } catch (NoWriterForLangException ex) {}
-        try { writerF.getWriter("RDFJSON"); fail("Exception expected"); } catch (NoWriterForLangException ex) {}
-        IO_Jena.wireIntoJena();
+            assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("N-TRIPLE").getClass());
+            assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("N-Triples").getClass());
+            assertNotEquals(RDFWriterRIOT.class, writerF.getWriter("N-TRIPLE").getClass());
+
+            // It's not called "NT" in jena-core on it's own.
+            assertThrows(NoWriterForLangException.class, ()->writerF.getWriter("NT"));
+            assertThrows(NoWriterForLangException.class, ()->writerF.getWriter("TURTLE"));
+            assertThrows(NoWriterForLangException.class, ()->writerF.getWriter("JSON-LD"));
+        } finally {
+            IO_Jena.wireIntoJena();
+        }
     }
-
-
 }

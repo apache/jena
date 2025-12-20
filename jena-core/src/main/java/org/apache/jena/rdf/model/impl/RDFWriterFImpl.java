@@ -20,25 +20,31 @@ package org.apache.jena.rdf.model.impl;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
-import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.rdf.model.RDFWriterI;
+import org.apache.jena.atlas.lib.Creator;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.rdf.model.RDFWriterF;
+import org.apache.jena.rdf.model.RDFWriterI;
+import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Abbrev;
+import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Basic;
 import org.apache.jena.shared.JenaException;
-import org.apache.jena.shared.NoWriterForLangException ;
+import org.apache.jena.shared.NoWriterForLangException;
 
-/**
- */
 public class RDFWriterFImpl extends Object implements RDFWriterF {
     public static final String DEFAULTLANG = "RDF/XML";
-    private static Map<String, Class<? extends RDFWriterI>> custom = new LinkedHashMap<>();
-    private static RDFWriterF rewiredAlternative = null ;
+    private static Map<String, Creator<RDFWriterI>> custom = new LinkedHashMap<>();
+    private static RDFWriterF rewiredAlternative = null;
+
+    // Jena6
+    private static final boolean includeRDFXML = false;
+
     /** Rewire to use an external RDFWriterF (typically, RIOT).
      * Set to null to use old jena-core setup.
      * @param other
      */
     public static void alternative(RDFWriterF other) {
-        rewiredAlternative = other ;
+        rewiredAlternative = other;
     }
 
     /** Return the the current "rewiredAlternative" which may be null, meaning {@code RDFWriterFImpl} is in use. */
@@ -46,59 +52,51 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
         return rewiredAlternative;
     }
 
+    private static String msgNoRDFXML = "RDF/XML is no longer supported in jena-core. Add jena-arq to the classpath";
+    private static Set<String> removedLangs = Set.of("RDF/XML", "RDF/XML-ABBREV");
+
+    static { setup(); }
+
     /** Creates new RDFReaderFImpl */
     public RDFWriterFImpl() {}
 
     @Override
     public RDFWriterI getWriter(String lang) {
         if (lang==null || lang.equals(""))
-            lang = DEFAULTLANG ;
+            lang = DEFAULTLANG;
         // If RIOT ->
         if ( rewiredAlternative != null )
-            return rewiredAlternative.getWriter(lang) ;
-        if (lang==null || lang.equals(""))
-            lang = DEFAULTLANG ;
-        Class<? extends RDFWriterI> c = custom.get(lang);
+            return rewiredAlternative.getWriter(lang);
+
+        if ( ! includeRDFXML ) {
+            // Jena6: writing RDF/XML removed from jena-core
+            if ( removedLangs.contains(lang) )
+                Log.error("RDFWriter", msgNoRDFXML);
+        }
+
+        Creator<RDFWriterI> c = custom.get(lang);
         if ( c == null )
             throw new NoWriterForLangException("Writer not found: " + lang);
         try {
-            return c.getConstructor().newInstance();
+            return c.create();
         }
-        catch (Exception e) {
+        catch (RuntimeException e) {
             throw new JenaException(e);
         }
     }
 
-    static {
-        reset();
-    }
-
-    private static void reset() {
-        Class<? extends RDFWriterI> rdfxmlWriter = org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Basic.class;
-        Class<? extends RDFWriterI> rdfxmlAbbrevWriter = org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Abbrev.class;
-        Class<? extends RDFWriterI> ntWriter = org.apache.jena.rdf.model.impl.NTripleWriter.class;
-
-        custom.put("RDF/XML", rdfxmlWriter);
-        custom.put("RDF/XML-ABBREV", rdfxmlAbbrevWriter);
-
+    private static void setup() {
+        Creator<RDFWriterI> ntWriter     = NTripleWriter::new;
         custom.put("N-TRIPLE",  ntWriter);
         custom.put("N-TRIPLES", ntWriter);
         custom.put("N-Triples", ntWriter);
-    }
 
-    private static String currentEntry(String lang) {
-        Class<? extends RDFWriterI> oldClass = custom.get(lang);
-        if ( oldClass != null )
-            return oldClass.getName();
-        else
-            return null;
-    }
-
-    private static String remove(String lang) {
-        if ( rewiredAlternative != null )
-            Log.error(RDFWriterFImpl.class, "Rewired RDFWriterFImpl2 - configuration changes have no effect on writing");
-        String oldClassName = currentEntry(lang);
-        custom.remove(lang);
-        return oldClassName;
+        if ( includeRDFXML ) {
+            // Jena6: RDF/XML writing not installed except for tests.
+            Creator<RDFWriterI> rdfxmlWriterBasic  = RDFXML_Basic::new;
+            Creator<RDFWriterI> rdfxmlWriterAbbrev = RDFXML_Abbrev::new;
+            custom.put("RDF/XML",        rdfxmlWriterBasic);
+            custom.put("RDF/XML-ABBREV", rdfxmlWriterAbbrev);
+        }
     }
 }
