@@ -35,7 +35,6 @@ import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.apache.jena.rdf.model.impl.ResourceImpl;
-import org.apache.jena.rdfxml.xmlinput1.ARPTests;
 import org.apache.jena.reasoner.InfGraph;
 import org.apache.jena.reasoner.Reasoner;
 import org.apache.jena.reasoner.ReasonerFactory;
@@ -326,8 +325,7 @@ public class WGReasonerTester {
         // Check the results against the official conclusions
         boolean correct = true;
         int goodResult = PASS;
-        boolean noisy = !(baseDir.equals(DEFAULT_BASE_DIR)
-               || ARPTests.internet );
+        boolean noisy = ! baseDir.equals(DEFAULT_BASE_DIR);
         if (testType.equals(PositiveEntailmentTest)) {
             if (conclusions == null) {
                 // Check that the result is flagged as semantically invalid

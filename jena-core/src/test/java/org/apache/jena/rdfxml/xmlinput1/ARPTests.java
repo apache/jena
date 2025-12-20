@@ -22,13 +22,6 @@ package org.apache.jena.rdfxml.xmlinput1;
  * Constants for the test suite for ARP.
  */
 public class ARPTests extends java.lang.Object {
-	/**
-	 * Setting this field to true uses the tests found
-	 * on the W3C web site.
-	 * The default value false uses a cached corrected
-	 * copy of the tests.
-	 */
-	static public boolean internet = false;
 	static String wgTestDir =   "http://www.w3.org/2000/10/rdf-tests/rdfcore/";
 	static String arpTestDir =  "http://jcarroll.hpl.hp.com/arp-tests/";
 }
