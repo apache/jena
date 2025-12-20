@@ -30,7 +30,6 @@ import org.apache.jena.irix.IRIx;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.apache.jena.rdf.model.impl.ResourceImpl;
-import org.apache.jena.rdfxml.libtest.InputStreamFactoryTests;
 import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Abbrev;
 import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
 import org.apache.jena.reasoner.test.WGReasonerTester;
@@ -81,9 +80,9 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
 	private static boolean logging = false;
 	private static String BASE_RESULTS_URI = "https://jena.apache.org/data/rdf-results.rdf";
     static public boolean checkMessages = false;
-    static private boolean doSemanticTests() {
-    	return ARPTests.internet;
-    }
+
+    static private boolean doSemanticTests() { return false ; }
+
     static private boolean inDevelopment = false;
      Model loadRDF(InputSupplier in, RDFErrorHandler eh, String base)
         throws IOException {
@@ -168,11 +167,9 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
 		  }
     };
 
-    InputStreamFactoryTests factory;
+    InputStreamFactoryARP inputStreamMgr;
 
-    static private Collection<String> misc =
-        Arrays.asList(
-            new String[] { "http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-uri-substructure/error001" });
+    static private Collection<String> misc = List.of("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-uri-substructure/error001");
 
     private Map<ResourceImpl, Act> behaviours = new HashMap<>();
 
@@ -181,8 +178,6 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             .put(new ResourceImpl(testNS + "PositiveParserTest"), new Act() {
             @Override
             public void act(Resource r)  {
-                //		if (r.getProperty(status).getString().equals(approved))
-                //  if (r.getURI().endsWith("rdfms-xmllang/test004"))
                 if (r.hasProperty(warning)) {
                     addTest(r, new WarningTest(r));
                 } else {
@@ -194,19 +189,21 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             .put(new ResourceImpl(testNS + "NegativeParserTest"), new Act() {
             @Override
             public void act(Resource r)  {
-                //		if (r.getProperty(status).getString().equals(approved))
                 addTest(r, new NegativeTest(r));
             }
         });
-		    behaviours.put(new ResourceImpl(testNS + "False-Document"), noop);
+
+        behaviours.put(new ResourceImpl(testNS + "False-Document"), noop);
         behaviours.put(new ResourceImpl(testNS + "RDF-XML-Document"), noop);
         behaviours.put(new ResourceImpl(testNS + "NT-Document"), noop);
+
         behaviours.put(
             new ResourceImpl(testNS + "PositiveEntailmentTest"),
             semTest);
         behaviours.put(
             new ResourceImpl(testNS + "NegativeEntailmentTest"),
 		        semTest);
+
         behaviours
             .put(new ResourceImpl(testNS + "MiscellaneousTest"), new Act() {
             @Override
@@ -219,17 +216,17 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         });
     }
 
-    private Model loadRDF(final InputStreamFactoryTests fact,
+    private Model loadRDF(final InputStreamFactoryARP fact,
       final String file) {
         Model m = null;
         String base = fact.getBase().toString();
         if (!base.endsWith("/"))
             base = base + "/";
 
-        try ( InputStream in = fact.fullyOpen(file) ) {
+        try ( InputStream in = openFileOrURI(fact, file) ) {
             if (in == null )
                 return null;
-            m = loadRDF(()->fact.fullyOpen(file) , null, base + file);
+            m = loadRDF(()->in , null, base + file);
         } catch (JenaException e) {
             //	System.out.println(e.getMessage());
             throw e;
@@ -243,14 +240,18 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         return m;
     }
 
+    private static InputStream openFileOrURI(InputStreamFactoryARP fact, String fileOrURI) throws IOException {
+        return fact.fullyOpen(fileOrURI);
+    }
+
     /** Creates new WGTestSuite
         This is a private snapshot of the RDF Test Cases Working Draft's
         data.
      */
 
-    WGTestSuite(InputStreamFactoryTests fact, String name, boolean dynamic) {
+    WGTestSuite(InputStreamFactoryARP fact, String name, boolean dynamic) {
         super(name);
-        factory = fact;
+        inputStreamMgr = fact;
         testDir = fact.getBase();
         if (dynamic)
             try {
@@ -286,10 +287,6 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                         action.act(st.getSubject());
                     }
                 }
-                if ( ARPTests.internet) {
-                	initResults();
-                	addTest(new DummyTest());
-                }
             } catch (RuntimeException re) {
                 re.printStackTrace();
                 throw re;
@@ -304,7 +301,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
 
     static TestSuite suite(String testDir, String d, String nm) {
         return new WGTestSuite(
-            new InputStreamFactoryTests(testDir, d),
+            new InputStreamFactoryARP(testDir, d),
             nm,
             true);
     }
@@ -407,9 +404,9 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             Resource t = file.getRequiredProperty(RDF.type).getResource();
             final String uri = file.getURI();
             if (ntriple.equals(t)) {
-                return loadNT(factory.open(uri),uri);
+                return loadNT(openFileOrURI(inputStreamMgr, uri),uri);
             } else if (rdfxml.equals(t)) {
-                return loadRDF( ()->factory.open(uri), this, uri);
+                return loadRDF( ()->openFileOrURI(inputStreamMgr, uri), this, uri);
             } else {
                 fail("Unrecognized file type: " + t);
             }
@@ -679,10 +676,10 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         }
         Model read(String file, boolean type) throws IOException {
             if (!type) {
-                return loadNT(factory.open(file),file);
+                return loadNT(openFileOrURI(inputStreamMgr, file),file);
             }
                 final String uri = file;
-                return loadRDF( ()->factory.open(uri) , this, uri);
+                return loadRDF(()->openFileOrURI(inputStreamMgr, uri) , this, uri);
         }
 
         @Override

@@ -203,7 +203,7 @@ public class ARP implements ARPConfig
         arpf.setOptionsWith(opts);
     }
 
-    void setBadStatementHandler(StatementHandler sh) {
+    public void setBadStatementHandler(StatementHandler sh) {
         arpf.setBadStatementHandler(sh);
 
     }

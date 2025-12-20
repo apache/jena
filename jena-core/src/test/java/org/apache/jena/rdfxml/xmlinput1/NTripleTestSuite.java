@@ -21,12 +21,12 @@ import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.Assert;
+
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFErrorHandler;
-import org.apache.jena.rdfxml.libtest.InputStreamFactoryTests;
 import org.apache.jena.rdfxml.xmlinput1.impl.ARPResource;
 import org.apache.jena.rdfxml.xmlinput1.impl.ARPSaxErrorHandler;
-import org.junit.Assert;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -36,7 +36,7 @@ import org.xml.sax.SAXParseException;
  * Jena N-triple writer.
  */
 class NTripleTestSuite extends WGTestSuite {
-	NTripleTestSuite(InputStreamFactoryTests fact, String name, boolean b) {
+	NTripleTestSuite(InputStreamFactoryARP fact, String name, boolean b) {
 		super(fact, name, b);
 	}
 

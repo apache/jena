@@ -19,7 +19,6 @@
 package org.apache.jena.rdfxml.xmlinput1;
 
 import junit.framework.Test;
-import org.apache.jena.rdfxml.libtest.InputStreamFactoryTests;
 
 public class TestSuiteWG_RDFXML_ARP
 {
@@ -28,7 +27,7 @@ public class TestSuiteWG_RDFXML_ARP
         String base = "http://jcarroll.hpl.hp.com/arp-tests/";
 
         WGTestSuite testSuite = new org.apache.jena.rdfxml.xmlinput1.WGTestSuite
-                (new InputStreamFactoryTests(base, "arp")
+                (new InputStreamFactoryARP(base, "arp")
                 ,"ARP RDF/XML Tests"
                 ,false);
         Test test177 = testSuite.createPositiveTest("http://jcarroll.hpl.hp.com/arp-tests/xml-literals/reported3",

@@ -20,7 +20,6 @@ package org.apache.jena.rdfxml.xmlinput1;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import org.apache.jena.rdfxml.libtest.InputStreamFactoryTests;
 
 public class TestSuiteWG_RDFXML
 {
@@ -29,7 +28,7 @@ public class TestSuiteWG_RDFXML
         TestSuite testSuite = new TestSuite("WG RDF/XML");
         WGTestSuite testSuiteWG =
             new org.apache.jena.rdfxml.xmlinput1.WGTestSuite(
-                                                         new InputStreamFactoryTests("http://www.w3.org/2000/10/rdf-tests/rdfcore/", "wg"),
+                                                         new InputStreamFactoryARP("http://www.w3.org/2000/10/rdf-tests/rdfcore/", "wg"),
                                                          "WG Parser Tests", false);
         TestSuite testSuiteApproved = new TestSuite("APPROVED");
 
