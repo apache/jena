@@ -1221,6 +1221,7 @@ public class TestsSAX2RDF extends TestCase {
 		Model m2 = ModelFactory.createDefaultModel();
         RDFEHArray eh = new RDFEHArray();
         try ( InputStream in = new FileInputStream(file) ) {
+            @SuppressWarnings("removal")
             RDFReaderI r = new RDFXMLReader();
             r.setErrorHandler(eh);
             r.read(m, in, base);

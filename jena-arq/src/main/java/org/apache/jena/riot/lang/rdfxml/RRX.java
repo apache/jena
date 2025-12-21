@@ -68,7 +68,10 @@ public class RRX {
         register(RDFXML_StAX_sr, ReaderRDFXML_StAX_SR.factory);
 
         // ARP using IRIx
-        register(RDFXML_ARP1,    ReaderRDFXML_ARP1.factory);
+
+        @SuppressWarnings("removal")
+        var arpFactory = ReaderRDFXML_ARP1.factory;
+        register(RDFXML_ARP1,  arpFactory);
     }
 
     private static void register(Lang lang, ReaderRIOTFactory factory) {

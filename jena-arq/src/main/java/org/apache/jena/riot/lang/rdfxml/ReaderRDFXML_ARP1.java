@@ -48,12 +48,13 @@ import org.xml.sax.SAXParseException ;
  * <p>
  * <b>LEGACY</b>
  * <p>
- * Uses xmlinput1 - the version of ARP from Jena 4.7.0 to Jena 4.10.0.
+ * Uses ARQ1 - the version of ARP from Jena 4.7.0 to Jena 4.10.0.
  * <p>
  * Replaced at Jena 5 by RRX.
  *
  * @see <a href="http://www.w3.org/TR/rdf-syntax-grammar/">http://www.w3.org/TR/rdf-syntax-grammar/</a>
  */
+@Deprecated(forRemoval = true)
 public class ReaderRDFXML_ARP1 implements ReaderRIOT
 {
     public static ReaderRIOTFactory factory = (Lang language, ParserProfile parserProfile) -> {
@@ -133,13 +134,13 @@ public class ReaderRDFXML_ARP1 implements ReaderRIOT
         options.setErrorMode(cond, val);
     }
 
-    @SuppressWarnings({"deprecation"})
     private void parse(InputStream input, Reader reader, String xmlBase, ContentType ct, StreamRDF sink, Context context) {
         // Hacked out of ARP because of all the "private" methods
         // JenaReader has reset the options since new ARP() was called.
         sink.start() ;
         HandlerSink rslt = new HandlerSink(sink, parserProfile) ;
 
+        @SuppressWarnings("removal")
         ARP arp = new ARP();
         arp.getHandlers().setStatementHandler(rslt) ;
         arp.getHandlers().setErrorHandler(rslt) ;

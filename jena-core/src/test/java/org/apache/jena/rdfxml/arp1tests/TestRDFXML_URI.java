@@ -72,6 +72,7 @@ public class TestRDFXML_URI {
         try {
             file = DIR+file;
             Model m1 = ModelFactory.createDefaultModel();
+            @SuppressWarnings("removal")
             RDFXMLReader xr = new RDFXMLReader(true);
             xr.setErrorHandler(eh);
             InputStream in = new FileInputStream(file);

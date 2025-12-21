@@ -29,6 +29,7 @@ public class RDFXMLAbbrevWriter extends AdapterRDFWriter {
 
     public RDFXMLAbbrevWriter() {}
 
+    @SuppressWarnings("deprecation")
     @Override
     protected RDFWriterI create() {
         return new RDFXML_Abbrev();

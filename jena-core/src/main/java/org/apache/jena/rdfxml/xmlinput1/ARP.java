@@ -65,7 +65,7 @@ import org.xml.sax.SAXException;
  * Includes contributions from Simon Raboczi and Andrew Newman
  * @deprecated Direct access to the RDF/XML parser is planned for removal. Please contact the Jena development community for details.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public class ARP implements ARPConfig
 {
 
@@ -73,9 +73,9 @@ public class ARP implements ARPConfig
 
     /**
      * Can parse one file at a time.
-     * @deprecated Direct access to the RDF/XML parser is planned for removal. Please contact the Jena development community for details.
+     * @deprecated Direct access to this RDF/XML parser is planned for removal. Please contact the Jena development community for details.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public ARP()  {
         arpf =  RDFXMLParser.create();
     }

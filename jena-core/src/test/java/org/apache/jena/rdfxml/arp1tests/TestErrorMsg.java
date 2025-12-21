@@ -58,13 +58,13 @@ public class TestErrorMsg extends TestCase {
 		check(filename, regex, null);
 	}
 	*/
-    @SuppressWarnings("deprecation")
 	private void check(
 		String filename,
 		String regexPresent,
 		String regexAbsent)
 		throws IOException {
 		final StringBuilder buf = new StringBuilder();
+		@SuppressWarnings("removal")
         ARP arp = new ARP();
 		arp.getHandlers().setErrorHandler(new ErrorHandler() {
 

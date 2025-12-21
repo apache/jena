@@ -122,6 +122,7 @@ public class TestEntityOutput extends ModelTestBase
         Model m = createMemModel();
         m.read("file:testing/abbreviated/entities.rdf");
         try ( StringWriter w = new StringWriter() ) {
+            @SuppressWarnings("deprecation")
             RDFWriterI wr = new RDFXML_Basic();
             wr.setProperty("showDoctypeDeclaration", "true");
             wr.write(m, w, "http://example.org/");
@@ -175,6 +176,7 @@ public class TestEntityOutput extends ModelTestBase
     private String modelToString( Model m )
         {
         StringWriter s = new StringWriter();
+        @SuppressWarnings("deprecation")
         RDFWriterI w = new RDFXML_Abbrev();
         w.setProperty( "showDoctypeDeclaration", Boolean.TRUE );
         w.write( m, s, null );

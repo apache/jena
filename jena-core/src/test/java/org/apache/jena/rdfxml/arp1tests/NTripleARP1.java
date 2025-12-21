@@ -90,7 +90,8 @@ import org.xml.sax.SAXParseException;
 public class NTripleARP1 implements ARPErrorNumbers {
 
 	private static StringBuilder line = new StringBuilder();
-	private static ARP arp;
+	@SuppressWarnings("removal")
+    private static ARP arp;
 	private static String xmlBase = null;
 	private static boolean numbers = false;
 	static StatementHandler andMeToo = null;
@@ -102,6 +103,7 @@ public class NTripleARP1 implements ARPErrorNumbers {
 	 * @param eh Can be null.
 	 * @param ap Can be null.
 	 */
+    @SuppressWarnings("removal")
     static public void mainEh(String args[], ErrorHandler eh, ARPEventHandler ap) {
 		boolean doneOne = false;
 		startMem = -1;
