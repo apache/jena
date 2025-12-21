@@ -45,6 +45,7 @@ import org.apache.jena.sparql.graph.GraphFactory;
 /** Ways to run tests on parsers. */
 public class RunTestRDFXML {
 
+    @SuppressWarnings("removal")
     static ReaderRIOTFactory arpFactory = ReaderRDFXML_ARP1.factory;
 
     /**

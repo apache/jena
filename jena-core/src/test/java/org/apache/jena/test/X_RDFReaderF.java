@@ -70,6 +70,7 @@ public class X_RDFReaderF extends Object implements RDFReaderF {
 
 
     private static void reset() {
+        @SuppressWarnings("removal")
         Creator<RDFReaderI> rdfxmlReader = RDFXMLReader::new;
         Creator<RDFReaderI> ntReader     = NTripleReader::new;
         Creator<RDFReaderI> turtleReader = TurtleReader::new;

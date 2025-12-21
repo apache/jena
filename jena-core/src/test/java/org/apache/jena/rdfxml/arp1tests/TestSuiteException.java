@@ -29,9 +29,9 @@ import org.apache.jena.rdfxml.xmlinput1.ARPErrorNumbers;
 import org.apache.jena.rdfxml.xmlinput1.RDFXMLReader;
 import org.apache.jena.shared.JenaException;
 
-public class TestSuiteException
-	extends TestCase
-	implements ARPErrorNumbers {
+@SuppressWarnings({"deprecated", "removal"})
+public class TestSuiteException extends TestCase implements ARPErrorNumbers {
+
 	static public Test suite() {
 		TestSuite suite = new TestSuite("ARP Exceptions");
 
@@ -122,7 +122,7 @@ public class TestSuiteException
 		RDFDefaultErrorHandler.silent = true;
 		try {
 		  Model m = ModelFactory.createDefaultModel();
-		  RDFReaderI rdr = new RDFXMLReader();
+          RDFReaderI rdr = new RDFXMLReader();
 		  rdr.setProperty("ERR_BAD_RDF_ATTRIBUTE","EM_FATAL");
 		  rdr.read(m,"file:testing/wg/rdfms-abouteach/error002.rdf");
 

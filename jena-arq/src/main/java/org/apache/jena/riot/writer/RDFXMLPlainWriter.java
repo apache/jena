@@ -28,6 +28,7 @@ import org.apache.jena.riot.adapters.AdapterRDFWriter;
 public class RDFXMLPlainWriter extends AdapterRDFWriter {
     public RDFXMLPlainWriter() {}
 
+    @SuppressWarnings("deprecation")
     @Override
     protected RDFWriterI create() {
         return new RDFXML_Basic();

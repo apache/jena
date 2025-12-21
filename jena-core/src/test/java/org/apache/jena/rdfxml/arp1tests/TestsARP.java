@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 /** Additional ARP tests */
-@SuppressWarnings("deprecation")
+@SuppressWarnings("removal")
 public class TestsARP extends TestCase implements RDFErrorHandler, ARPErrorNumbers {
 
 	static private Logger logger = LoggerFactory.getLogger(TestsARP.class);
@@ -340,7 +340,7 @@ public class TestsARP extends TestCase implements RDFErrorHandler, ARPErrorNumbe
 	}
 
 	/** Create an {@link RDFXMLReader} that does not resolve the initial XML base. */
-	private static RDFXMLReader baseTestReader() {
+    private static RDFXMLReader baseTestReader() {
 	    return new RDFXMLReader(false);
 	}
 
@@ -495,7 +495,6 @@ public class TestsARP extends TestCase implements RDFErrorHandler, ARPErrorNumbe
 //        checkExpected();
 //    }
 
-    @SuppressWarnings("removal")
     public void testNTripleEscaping() {
     	String data[][] = {
     			{ "foo", "foo" },

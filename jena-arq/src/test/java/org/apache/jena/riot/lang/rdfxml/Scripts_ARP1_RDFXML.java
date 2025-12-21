@@ -37,6 +37,8 @@ public class Scripts_ARP1_RDFXML {
     @TestFactory
     @DisplayName("ARP1 (legacy)")
     public Stream<DynamicNode> testFactoryARP1() {
-        return withAltParserFactory(Lang.RDFXML, ReaderRDFXML_ARP1.factory, TestConsts.RDF11_TESTS_DIR+"rdf-xml/manifest.ttl");
+        @SuppressWarnings("removal")
+        var factory = ReaderRDFXML_ARP1.factory;
+        return withAltParserFactory(Lang.RDFXML, factory, TestConsts.RDF11_TESTS_DIR+"rdf-xml/manifest.ttl");
     }
 }

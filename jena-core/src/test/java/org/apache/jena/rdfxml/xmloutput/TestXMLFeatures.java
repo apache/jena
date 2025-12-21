@@ -398,6 +398,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
             }
             // read back in
             Model m2 = createMemModel();
+            @SuppressWarnings("removal")
             RDFReaderI rdr = new RDFXMLReader();
             rdr.setProperty("error-mode", "lax");
             try (StringReader sr = new StringReader(f)) {

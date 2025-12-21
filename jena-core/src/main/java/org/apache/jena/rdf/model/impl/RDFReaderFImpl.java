@@ -91,6 +91,7 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
         custom.put("N-Triples", ntReader);
 
         if ( includeRDFXML ) {
+          @SuppressWarnings("removal")
           Creator<RDFReaderI> rdfxmlReader = RDFXMLReader::new;
           custom.put("RDF",            rdfxmlReader);
           custom.put("RDF/XML",        rdfxmlReader);

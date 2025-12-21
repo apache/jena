@@ -93,8 +93,11 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
 
         if ( includeRDFXML ) {
             // Jena6: RDF/XML writing not installed except for tests.
+            @SuppressWarnings("deprecation")
             Creator<RDFWriterI> rdfxmlWriterBasic  = RDFXML_Basic::new;
+            @SuppressWarnings("deprecation")
             Creator<RDFWriterI> rdfxmlWriterAbbrev = RDFXML_Abbrev::new;
+
             custom.put("RDF/XML",        rdfxmlWriterBasic);
             custom.put("RDF/XML-ABBREV", rdfxmlWriterAbbrev);
         }

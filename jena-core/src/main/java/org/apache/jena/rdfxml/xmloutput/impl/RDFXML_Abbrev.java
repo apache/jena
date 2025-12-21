@@ -28,13 +28,13 @@ import org.apache.jena.vocabulary.RDFSyntax;
 
 import java.io.PrintWriter;
 
-/** Writes out RDF in the abbreviated syntax,  for human consumption 
+/** Writes out RDF in the abbreviated syntax,  for human consumption
    not only machine readable.
  * It is not normal to call the constructor directly, but to use
  * the method RDFWriterF.getWriter("RDF/XML-ABBREV").
  * Does not support the <code>NSPREFIXPROPBASE</code> system properties.
  * Use <code>setNsPrefix</code>.
- * For best results it is necessary to set the property 
+ * For best results it is necessary to set the property
    <code>"prettyTypes"</code>. See setProperty for information.
    @see org.apache.jena.rdf.model.RDFWriterF#getWriter(String)
  */
@@ -43,7 +43,7 @@ public class RDFXML_Abbrev extends BaseXMLWriter implements RDFErrorHandler {
 	private Resource types[] =
 		new Resource[] {
 			OWL.Ontology,
-			//OWL.DataRange, named or orphaned dataranges unusual.      
+			//OWL.DataRange, named or orphaned dataranges unusual.
 			RDFS.Datatype,
 			RDFS.Class,
 			OWL.Class,
@@ -55,10 +55,10 @@ public class RDFXML_Abbrev extends BaseXMLWriter implements RDFErrorHandler {
 			OWL.FunctionalProperty,
 			OWL.InverseFunctionalProperty,
 			};
-            
+
 	boolean sReification;
-    
-    
+
+
 	boolean sIdAttr;
     boolean sDamlCollection;
     boolean sParseTypeCollectionPropertyElt;
@@ -68,6 +68,13 @@ public class RDFXML_Abbrev extends BaseXMLWriter implements RDFErrorHandler {
     boolean sPropertyAttr;
 
     boolean sResourcePropertyElt;
+
+    /**
+     * Do not create directly.
+     * @deprecated The RDFWriter may be replaced,
+     */
+    @Deprecated
+    public RDFXML_Abbrev() {}
 
 	@Override
     protected void unblockAll() {
@@ -81,12 +88,12 @@ public class RDFXML_Abbrev extends BaseXMLWriter implements RDFErrorHandler {
 		sPropertyAttr = false;
         sListExpand = false;
 	}
-    
+
     {
         unblockAll();
         blockRule(RDFSyntax.propertyAttr);
     }
-    
+
     @Override
     protected void blockRule(Resource r) {
         if (r.equals(RDFSyntax.sectionReification)) sReification=true;

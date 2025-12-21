@@ -64,7 +64,9 @@ public class X_RDFWriterF extends Object implements RDFWriterF {
     }
 
     private static void reset() {
+        @SuppressWarnings("deprecation")
         Creator<RDFWriterI> rdfxmlWriter = RDFXML_Basic::new;
+        @SuppressWarnings("deprecation")
         Creator<RDFWriterI> rdfxmlAbbrevWriter = RDFXML_Abbrev::new;
         Creator<RDFWriterI> ntWriter = NTripleWriter::new;
 

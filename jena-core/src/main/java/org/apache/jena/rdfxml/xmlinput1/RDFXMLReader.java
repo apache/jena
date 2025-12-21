@@ -70,7 +70,9 @@ public class RDFXMLReader implements RDFReaderI, ARPErrorNumbers {
 
     /**
      * Creates new JenaReader (used by {@link RDFReaderFImpl})
+     * Modern RDF/XML support is available from RIOT in jena-arq.
      */
+    @Deprecated(forRemoval = true)
     public RDFXMLReader() {
         this(true);
     }
@@ -81,6 +83,7 @@ public class RDFXMLReader implements RDFReaderI, ARPErrorNumbers {
      * RIOT; only directly creating an RDFXMLReader or running without RIOT
      * (which is in jena-arq) has had that behaviour.
      */
+    @Deprecated(forRemoval = true)
     public RDFXMLReader(boolean resolveInitialXmlBase) {
         arpf = RDFXMLParser.create();
         this.resolveInitialXmlBase = resolveInitialXmlBase;
@@ -94,10 +97,8 @@ public class RDFXMLReader implements RDFReaderI, ARPErrorNumbers {
      * Reads from url, using url as base, adding triples to model.
      * Uses content negotiation to ask for application/rdf+xml, if available.
      *
-     * @param m
-     *            A model to add triples to.
-     * @param url
-     *            The URL of the RDF/XML document.
+     * @param m   A model to add triples to.
+     * @param url The URL of the RDF/XML document.
      */
     @Override
     public void read(Model m, String url) throws JenaException {

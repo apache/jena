@@ -90,6 +90,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
      Model loadRDF(InputSupplier in, RDFErrorHandler eh, String base)
         throws IOException {
         Model model = ModelFactory.createDefaultModel();
+        @SuppressWarnings("removal")
         RDFXMLReader jr = new RDFXMLReader();
 
         if (eh != null)
@@ -119,7 +120,8 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
 		@Override
         public void runTest()  throws IOException {
 			if (logging) {
-			    RDFWriterI w = new RDFXML_Abbrev();
+			    @SuppressWarnings("deprecation")
+                RDFWriterI w = new RDFXML_Abbrev();
 			    w.setProperty("xmlbase",BASE_RESULTS_URI );
 			    try ( OutputStream out = new FileOutputStream("/tmp/rdf-results.rdf") ) {
 			        w.write(testResults,out,BASE_RESULTS_URI);
