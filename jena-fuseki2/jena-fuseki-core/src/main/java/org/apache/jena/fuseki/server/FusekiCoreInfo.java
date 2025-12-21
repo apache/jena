@@ -36,6 +36,11 @@ public class FusekiCoreInfo {
         FmtLog.info(log, "%s %s", serverName, version);
     }
 
+    /** Details of the system runtime configuration. */
+    public static void logSystemDetails(Logger log) {
+        PlatformInfo.logSystemDetails(log);
+    }
+
     /** Log details - this function is about command line details */
     public static void logServerCmdSetup(Logger log, boolean verbose, DataAccessPointRegistry dapRegistry,
                                          String datasetPath, String datasetDescription, String serverConfigFile, String staticFiles) {
@@ -47,7 +52,7 @@ public class FusekiCoreInfo {
         FusekiCoreInfo.logDataAccessPointRegistry(log, dapRegistry, verbose);
         if ( staticFiles != null )
             FmtLog.info(log, "Static files: %s", staticFiles);
-        PlatformInfo.logDetailsSystem(log);
+        PlatformInfo.logSystemDetails(log);
         if ( verbose )
             PlatformInfo.logDetailsJVM(log);
     }
@@ -129,5 +134,4 @@ public class FusekiCoreInfo {
         others.stream().sorted(order).forEach(nice::add);
         return nice;
     }
-
 }

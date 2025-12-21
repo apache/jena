@@ -339,6 +339,9 @@ public class FusekiServer {
      * To synchronise with the server stopping, call {@link #join}.
      */
     public FusekiServer start() {
+        if ( server.isRunning() )
+            return this;
+
         try {
             FusekiModuleStep.serverBeforeStarting(this);
             server.start();
@@ -373,18 +376,7 @@ public class FusekiServer {
 
         FusekiModuleStep.serverAfterStarting(this);
 
-        if ( httpsPort > 0 && httpPort > 0 )
-            Fuseki.serverLog.info("Start Fuseki (http="+httpPort+" https="+httpsPort+")");
-        else if ( httpsPort > 0 )
-            Fuseki.serverLog.info("Start Fuseki (https="+httpsPort+")");
-        else if ( httpPort > 0 )
-            Fuseki.serverLog.info("Start Fuseki (http="+httpPort+")");
-        else
-            Fuseki.serverLog.info("Start Fuseki");
-
         // Any post-startup configuration here.
-        // --
-        // Done!
         return this;
     }
 
@@ -418,7 +410,7 @@ public class FusekiServer {
     public void join() {
         try {
             if ( ! server.isStarted() && ! server.isStarting() )
-                server.start();
+                start();
             server.join(); }
         catch (FusekiException e) { throw e; }
         catch (Exception e) { throw new FusekiException(e); }
