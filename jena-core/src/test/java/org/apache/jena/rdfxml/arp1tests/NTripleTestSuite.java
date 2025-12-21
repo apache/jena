@@ -25,11 +25,11 @@ import org.junit.Assert;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFErrorHandler;
-import org.apache.jena.rdfxml.xmlinput1.ALiteral;
-import org.apache.jena.rdfxml.xmlinput1.ARPEventHandler;
-import org.apache.jena.rdfxml.xmlinput1.AResource;
-import org.apache.jena.rdfxml.xmlinput1.impl.ARPResource;
-import org.apache.jena.rdfxml.xmlinput1.impl.ARPSaxErrorHandler;
+import org.apache.jena.rdfxml.arp1.ALiteral;
+import org.apache.jena.rdfxml.arp1.ARPEventHandler;
+import org.apache.jena.rdfxml.arp1.AResource;
+import org.apache.jena.rdfxml.arp1.impl.ARPResource;
+import org.apache.jena.rdfxml.arp1.impl.ARPSaxErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 

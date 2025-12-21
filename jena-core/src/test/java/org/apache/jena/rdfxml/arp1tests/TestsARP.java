@@ -28,7 +28,7 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFErrorHandler;
 import org.apache.jena.rdf.model.RDFReaderI;
-import org.apache.jena.rdfxml.xmlinput1.*;
+import org.apache.jena.rdfxml.arp1.*;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Assert;
 import org.slf4j.Logger;

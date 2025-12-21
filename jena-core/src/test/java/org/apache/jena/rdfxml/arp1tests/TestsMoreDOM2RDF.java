@@ -27,10 +27,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import junit.framework.TestCase;
-import org.apache.jena.rdfxml.xmlinput1.ALiteral;
-import org.apache.jena.rdfxml.xmlinput1.AResource;
-import org.apache.jena.rdfxml.xmlinput1.DOM2Model;
-import org.apache.jena.rdfxml.xmlinput1.StatementHandler;
+import org.apache.jena.rdfxml.arp1.ALiteral;
+import org.apache.jena.rdfxml.arp1.AResource;
+import org.apache.jena.rdfxml.arp1.DOM2Model;
+import org.apache.jena.rdfxml.arp1.StatementHandler;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.util.JenaXMLInput;
 import org.w3c.dom.Document;

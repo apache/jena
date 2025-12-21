@@ -26,7 +26,7 @@ import org.apache.jena.atlas.lib.Creator;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.rdf.model.RDFReaderF;
 import org.apache.jena.rdf.model.RDFReaderI;
-import org.apache.jena.rdfxml.xmlinput1.RDFXMLReader;
+import org.apache.jena.rdfxml.arp1.RDFXMLReader;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.NoReaderForLangException;
 

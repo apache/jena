@@ -17,7 +17,7 @@
  */
 
 package org.apache.jena.rdfxml.arp1tests.states;
-import org.apache.jena.rdfxml.xmlinput1.impl.Names;
+import org.apache.jena.rdfxml.arp1.impl.Names;
 
 class QName implements Names {
     final String uri;

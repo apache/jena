@@ -32,8 +32,8 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.rdf.model.RDFErrorHandler ;
-import org.apache.jena.rdfxml.xmlinput1.*;
-import org.apache.jena.rdfxml.xmlinput1.impl.ARPSaxErrorHandler;
+import org.apache.jena.rdfxml.arp1.*;
+import org.apache.jena.rdfxml.arp1.impl.ARPSaxErrorHandler;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.system.ErrorHandler;
 import org.apache.jena.riot.system.FactoryRDF;
@@ -48,7 +48,7 @@ import org.xml.sax.SAXParseException ;
  * <p>
  * <b>LEGACY</b>
  * <p>
- * Uses ARQ1 - the version of ARP from Jena 4.7.0 to Jena 4.10.0.
+ * Uses ARP1 - the version of ARP from Jena 4.7.0 to Jena 4.10.0.
  * <p>
  * Replaced at Jena 5 by RRX.
  *

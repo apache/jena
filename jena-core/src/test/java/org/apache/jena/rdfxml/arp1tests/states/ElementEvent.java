@@ -18,7 +18,7 @@
 
 package org.apache.jena.rdfxml.arp1tests.states;
 
-import org.apache.jena.rdfxml.xmlinput1.states.FrameI;
+import org.apache.jena.rdfxml.arp1.states.FrameI;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 

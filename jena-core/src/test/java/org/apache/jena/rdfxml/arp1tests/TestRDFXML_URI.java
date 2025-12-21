@@ -30,8 +30,8 @@ import org.apache.jena.irix.IRIs;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFErrorHandler;
-import org.apache.jena.rdfxml.xmlinput1.ParseException;
-import org.apache.jena.rdfxml.xmlinput1.RDFXMLReader;
+import org.apache.jena.rdfxml.arp1.ParseException;
+import org.apache.jena.rdfxml.arp1.RDFXMLReader;
 import org.apache.jena.shared.JenaException;
 import org.junit.Test;
 
