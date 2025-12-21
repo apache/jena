@@ -25,8 +25,8 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFErrorHandler;
 import org.apache.jena.rdf.model.RDFReaderI;
 import org.apache.jena.rdf.model.impl.RDFDefaultErrorHandler;
-import org.apache.jena.rdfxml.xmlinput1.ARPErrorNumbers;
-import org.apache.jena.rdfxml.xmlinput1.RDFXMLReader;
+import org.apache.jena.rdfxml.arp1.ARPErrorNumbers;
+import org.apache.jena.rdfxml.arp1.RDFXMLReader;
 import org.apache.jena.shared.JenaException;
 
 @SuppressWarnings({"deprecated", "removal"})

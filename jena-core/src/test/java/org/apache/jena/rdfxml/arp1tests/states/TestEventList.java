@@ -21,7 +21,7 @@ package org.apache.jena.rdfxml.arp1tests.states;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.jena.rdfxml.xmlinput1.states.FrameI;
+import org.apache.jena.rdfxml.arp1.states.FrameI;
 
 public class TestEventList extends TestCase implements Test {
 

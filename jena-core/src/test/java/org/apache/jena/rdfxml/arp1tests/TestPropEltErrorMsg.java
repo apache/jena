@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.jena.rdfxml.xmlinput1.impl.XMLHandler;
+import org.apache.jena.rdfxml.arp1.impl.XMLHandler;
 import org.apache.jena.vocabulary.RDF;
 import org.xml.sax.Attributes;
 import org.xml.sax.ErrorHandler;

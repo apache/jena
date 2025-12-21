@@ -19,10 +19,10 @@
 package org.apache.jena.rdfxml.arp1tests.states;
 
 
-import org.apache.jena.rdfxml.xmlinput1.impl.TaintImpl;
-import org.apache.jena.rdfxml.xmlinput1.states.FrameI;
-
 import org.junit.Assert;
+
+import org.apache.jena.rdfxml.arp1.impl.TaintImpl;
+import org.apache.jena.rdfxml.arp1.states.FrameI;
 import org.xml.sax.Attributes;
 
 

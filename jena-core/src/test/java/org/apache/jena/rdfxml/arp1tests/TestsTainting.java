@@ -31,8 +31,8 @@ import junit.framework.TestSuite;
 import org.apache.jena.ontology.OntDocumentManager;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdfxml.xmlinput1.ARPErrorNumbers;
-import org.apache.jena.rdfxml.xmlinput1.ParseException;
+import org.apache.jena.rdfxml.arp1.ARPErrorNumbers;
+import org.apache.jena.rdfxml.arp1.ParseException;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
 

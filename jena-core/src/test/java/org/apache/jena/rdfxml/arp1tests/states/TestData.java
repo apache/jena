@@ -23,9 +23,9 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-import org.apache.jena.rdfxml.xmlinput1.ARPErrorNumbers;
-import org.apache.jena.rdfxml.xmlinput1.impl.*;
-import org.apache.jena.rdfxml.xmlinput1.states.*;
+import org.apache.jena.rdfxml.arp1.ARPErrorNumbers;
+import org.apache.jena.rdfxml.arp1.impl.*;
+import org.apache.jena.rdfxml.arp1.states.*;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 

@@ -21,10 +21,11 @@ package org.apache.jena.rdfxml.arp1tests.states;
 
 import java.util.HashMap;
 
-import org.apache.jena.rdfxml.xmlinput1.impl.ANode;
-import org.apache.jena.rdfxml.xmlinput1.impl.Taint;
-import org.apache.jena.rdfxml.xmlinput1.impl.XMLHandler;
 import org.junit.Assert;
+
+import org.apache.jena.rdfxml.arp1.impl.ANode;
+import org.apache.jena.rdfxml.arp1.impl.Taint;
+import org.apache.jena.rdfxml.arp1.impl.XMLHandler;
 
 class TestHandler extends XMLHandler {
     public void wrong(String msg) {
