@@ -47,7 +47,7 @@ public class FusekiServerCmd {
      * syntax but not start it.
      */
     static public void main(String... args) {
-        FusekiServerRunner.construct(args).join();
+        FusekiServerRunner.run(args);
     }
 }
 

@@ -24,7 +24,7 @@ import java.util.function.Function;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.slf4j.Logger;
 
-/** Platform inforamtion - OS and JVM */
+/** Platform information - OS and JVM */
 /*package*/ class PlatformInfo {
 
     public static void main(String ...args) throws IOException {
@@ -37,7 +37,7 @@ import org.slf4j.Logger;
     }
 
     /** System details */
-    /*package*/ static void logDetailsSystem(Logger log) {
+    /*package*/ static void logSystemDetails(Logger log) {
         String prefix = "  ";
         long maxMem = Runtime.getRuntime().maxMemory();
         long totalMem = Runtime.getRuntime().totalMemory();
@@ -56,7 +56,7 @@ import org.slf4j.Logger;
 
     /** JVM details section. */
     /*package*/ static void logDetailsJVM(Logger log) {
-        String prefix = "  ";
+        String prefix = "    ";
         logOne(log, prefix, "java.vendor");
         logOne(log, prefix, "java.home");
         logOne(log, prefix, "java.runtime.version");

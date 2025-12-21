@@ -26,6 +26,7 @@ import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.main.FusekiMainRunner;
+import org.apache.jena.fuseki.main.FusekiRunner;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.cmds.FusekiMain;
 import org.apache.jena.fuseki.main.cmds.ServerArgs;
@@ -33,6 +34,8 @@ import org.apache.jena.fuseki.main.sys.FusekiModules;
 import org.apache.jena.fuseki.main.sys.FusekiServerArgsCustomiser;
 import org.apache.jena.fuseki.mgt.FusekiServerCtl;
 import org.apache.jena.fuseki.mod.FusekiServerModules;
+import org.apache.jena.sys.JenaSystem;
+import org.slf4j.Logger;
 
 /**
  * Functions for building and runner a {@link FusekiServer} configured from command line arguments
@@ -42,6 +45,8 @@ import org.apache.jena.fuseki.mod.FusekiServerModules;
  */
 public class FusekiServerRunner {
 
+    static { JenaSystem.init(); }
+
     /**
      * Run {@link FusekiServer} with {@link FusekiModules} as given by {@link FusekiServerModules#serverModules()}.
      * @param args Command line arguments.
@@ -49,6 +54,11 @@ public class FusekiServerRunner {
      */
     public static FusekiServer runAsync(String... args) {
         FusekiServer server = construct(args);
+        startAsync(server);
+        return server;
+    }
+
+    private static FusekiServer startAsync(FusekiServer server) {
         try {
             return server.start();
         } catch (FusekiException ex) {
@@ -67,7 +77,12 @@ public class FusekiServerRunner {
      * This function does not return.
      */
     public static void run(String... args) {
-        FusekiServer server = runAsync(args);
+        Logger log = Fuseki.fusekiLog;
+        FusekiRunner.logCode(log);
+        FusekiServer server = construct(args);
+        FusekiRunner.logServerSetup(log, server);
+        startAsync(server);
+        FusekiRunner.logServerStart(log, server);
         server.join();
     }
 
