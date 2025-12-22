@@ -19,22 +19,28 @@
 package org.apache.jena.cmd;
 
 import org.apache.jena.atlas.logging.LogCtl;
-/** Adds main()-like methods
- *
- * Usage:
- *    new YourCommand(args).mainAndExit()
- *  which never returns and routes thing to System.exit.
- *  or call
- *     new YourCommand(args).mainMethod()
- *  which should not call System.exit anywhere */
 
-public abstract class CmdMain extends CmdLineArgs
+/**
+ * Adds main()-like methods to argument processing.
+ * <p>
+ * Use this class for commands that follow the common pattern of processing arguments
+ * and then executing with no additional intermediate steps.
+ * <p>
+ * Usage:
+ * <pre>new YourCommand(args).mainAndExit()</pre>
+ * which never returns and routes to System.exit. or call
+ * <pre>new YourCommand(args).mainMethod()</pre>
+ *
+ * which should not call {@code System.exit} anywhere.
+ */
+
+public abstract class CmdMain extends CmdGeneral
 {
     // Do this very early so it happens before anything else
     // gets a chance to create a logger.
     static { LogCtl.setLogging(); }
 
-    public CmdMain(String[] args) {
+    protected CmdMain(String[] args) {
         super(args);
     }
 
@@ -81,18 +87,11 @@ public abstract class CmdMain extends CmdLineArgs
         return 0;
     }
 
+
+    protected abstract void exec();
+
     protected final void mainMethod() {
         process();
         exec();
-    }
-
-    protected abstract void exec();
-    protected abstract String getCommandName();
-    public void cmdError(String msg) { cmdError(msg, true);}
-
-    public void cmdError(String msg, boolean exit) {
-        System.err.println(msg);
-        if ( exit )
-            throw new TerminationException(5);
     }
 }

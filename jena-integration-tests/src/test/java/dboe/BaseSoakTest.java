@@ -23,16 +23,16 @@ import java.util.List;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.lib.RandomLib;
 import org.apache.jena.cmd.CmdException;
-import org.apache.jena.cmd.CmdGeneral;
+import org.apache.jena.cmd.CmdMain;
 
-public abstract class BaseSoakTest extends CmdGeneral {
+public abstract class BaseSoakTest extends CmdMain {
 
     protected final int MinOrder = 2;
     protected final int MinSize  = 1;
     protected int       MaxOrder = -1;
     protected int       MaxSize  = -1;
     protected int       NumTest  = -1;
-    
+
     protected BaseSoakTest(String[] argv) {
         super(argv);
     }
@@ -50,7 +50,7 @@ public abstract class BaseSoakTest extends CmdGeneral {
         List<String> args = super.getPositional();
         if ( args.size() != 3 )
             throw new CmdException("Usage: maxOrder maxSize NumTests");
-        
+
         try { MaxOrder = Integer.parseInt(args.get(0)); }
         catch (NumberFormatException ex)
         { throw new CmdException("Bad number for MaxOrder"); }
@@ -76,10 +76,10 @@ public abstract class BaseSoakTest extends CmdGeneral {
             testsPerTick = 5;
         else if ( NumTest < 200 )
             testsPerTick = 50;
-        else 
+        else
             testsPerTick = 500;
-        
-        
+
+
         // ---- Format for line counter.
         int numLines = (int)Math.ceil( ((double)NumTest) / (testsPerTick * numOnLine) );
         // Start of last line.
@@ -90,11 +90,11 @@ public abstract class BaseSoakTest extends CmdGeneral {
         String format = "[%"+digits+"d] ";
 
         System.out.printf("TEST : %,d tests : Max Order=%d  Max Items=%,d [tests per tick=%d]\n", NumTest, MaxOrder, MaxSize, testsPerTick);
-        
+
         before();
-        
+
         int testCount = 1;
-        
+
         for ( testCount = 1; testCount <= NumTest; testCount++ ) {
             if ( testCount % testsPerTick == 0 )
                 System.out.print(".");
@@ -117,11 +117,11 @@ public abstract class BaseSoakTest extends CmdGeneral {
                 failures++;
             }
         }
-        
+
         // Did the last loop print a new line?
         if ( (testCount-1) % (testsPerTick*numOnLine) != 0 )
             System.out.println();
-            
+
         after();
         System.err.flush();
         System.out.flush();
@@ -133,6 +133,6 @@ public abstract class BaseSoakTest extends CmdGeneral {
     protected abstract void runOneTest(int testCount, int order, int size);
 
     @Override
-    protected String getCommandName() { return Lib.className(this); } 
+    protected String getCommandName() { return Lib.className(this); }
 }
 

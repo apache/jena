@@ -26,11 +26,11 @@ import arq.cmdline.ModTime;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.cmd.ArgDecl;
-import org.apache.jena.cmd.CmdGeneral;
+import org.apache.jena.cmd.CmdMain;
 import org.apache.jena.sys.JenaSystem;
 
 /** Abstract base class to work on patch files given on the command line */
-public abstract class CmdRDFPatch extends CmdGeneral {
+public abstract class CmdRDFPatch extends CmdMain {
     static {
         LogCtl.setLogging();
         JenaSystem.init();

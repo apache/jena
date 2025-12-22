@@ -21,7 +21,7 @@ package org.apache.jena.cmd;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class CmdArgModule extends CmdMain
+public abstract class CmdArgModule extends CmdLineArgs
 {
     private List<ArgModuleGeneral> modules = new ArrayList<>();
 
@@ -34,9 +34,9 @@ public abstract class CmdArgModule extends CmdMain
     }
 
     @Override
-    final public void process() {
+    public void process() {
         super.process();
-        forEach((controller, module) -> module.processArgs(controller));
+        forEach((cmdArgModule, module) -> module.processArgs(cmdArgModule));
         processModulesAndArgs();
     }
 
@@ -48,7 +48,8 @@ public abstract class CmdArgModule extends CmdMain
         }
     }
 
+    @FunctionalInterface
     interface Action {
-        public void action(CmdArgModule controller, ArgModuleGeneral module);
+        public void action(CmdArgModule cmdArgModule, ArgModuleGeneral module);
     }
 }

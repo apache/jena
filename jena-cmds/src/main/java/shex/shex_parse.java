@@ -30,7 +30,7 @@ import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
-import org.apache.jena.cmd.CmdGeneral;
+import org.apache.jena.cmd.CmdMain;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.shex.Shex;
 import org.apache.jena.shex.ShexSchema;
@@ -42,7 +42,7 @@ import org.apache.jena.sys.JenaSystem;
  * <p>
  * Usage: <code>shex parse FILE</code>
  */
-public class shex_parse extends CmdGeneral {
+public class shex_parse extends CmdMain {
     static {
         LogCtl.setLogging();
         JenaSystem.init();

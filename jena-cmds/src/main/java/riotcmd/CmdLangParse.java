@@ -36,7 +36,7 @@ import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
-import org.apache.jena.cmd.CmdGeneral;
+import org.apache.jena.cmd.CmdMain;
 import org.apache.jena.irix.IRIException;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.irix.IRIxResolver;
@@ -54,7 +54,7 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sys.JenaSystem;
 
 /** Common framework for running RIOT parsers */
-public abstract class CmdLangParse extends CmdGeneral {
+public abstract class CmdLangParse extends CmdMain {
     static {
         JenaSystem.init();
     }

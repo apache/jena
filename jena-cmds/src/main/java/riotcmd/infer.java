@@ -23,7 +23,7 @@ import java.util.List ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
-import org.apache.jena.cmd.CmdGeneral;
+import org.apache.jena.cmd.CmdMain;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.rdfs.RDFSFactory;
 import org.apache.jena.riot.Lang ;
@@ -78,7 +78,7 @@ AllegroGraph RDFS++
     * owl:inverseOf
     * owl:TransitiveProperty
  */
-public class infer extends CmdGeneral
+public class infer extends CmdMain
 {
     static final ArgDecl argRDFS = new ArgDecl(ArgDecl.HasValue, "rdfs") ;
     private Graph vocab ;

@@ -28,7 +28,7 @@ import java.util.List;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
-import org.apache.jena.cmd.CmdGeneral;
+import org.apache.jena.cmd.CmdMain;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.tdb2.xloader.XLoaderFiles;
 
@@ -36,7 +36,7 @@ import org.apache.jena.tdb2.xloader.XLoaderFiles;
  * Base class for TDB xloaders commands for java steps in the load process.
  * All steps accept all the same arguments, even if they are not applicable to the stage.
  */
-abstract class AbstractCmdxLoad extends CmdGeneral {
+abstract class AbstractCmdxLoad extends CmdMain {
     static {
         JenaSystem.init();
         LogCtl.setLog4j2();
@@ -78,9 +78,6 @@ abstract class AbstractCmdxLoad extends CmdGeneral {
     }
 
     protected abstract void setCmdArgs();
-
-    @Override
-    protected abstract String getSummary();
 
     protected String getArgsSummary() {
         return "--loc=DIR --tmpdir=DIR";

@@ -21,7 +21,7 @@ package org.apache.jena.cmd;
 import java.io.PrintStream;
 import org.apache.jena.atlas.io.IndentedWriter;
 // Added usage + some common flags
-// This is the usual starting point for any sub
+// This is the starting point for argument processing.
 
 public abstract class CmdGeneral extends CmdArgModule
 {
@@ -40,9 +40,9 @@ public abstract class CmdGeneral extends CmdArgModule
         argModule.registerWith(this);
     }
 
-    protected boolean isVerbose() { return modGeneral.verbose; }
-    protected boolean isQuiet()   { return modGeneral.quiet; }
-    protected boolean isDebug()   { return modGeneral.debug; }
+    public boolean isVerbose() { return modGeneral.verbose; }
+    public boolean isQuiet()   { return modGeneral.quiet; }
+    public boolean isDebug()   { return modGeneral.debug; }
     protected boolean help()      { return modGeneral.help; }
 
     final public void printHelp() {
@@ -56,20 +56,22 @@ public abstract class CmdGeneral extends CmdArgModule
             modVersion.printVersionAndExit();
     }
 
+    public void add(ArgDecl argDecl, String argName, String msg) {
+        add(argDecl);
+        getUsage().addUsage(argName, msg);
+    }
+
     private Usage usage = new Usage();
-    protected String cmdName = null;
+
+    protected String getCommandName() { return null; }
     protected abstract String getSummary();
+
     public void usage() { usage(System.err); }
 
     public void usage(PrintStream pStr) {
         IndentedWriter out = new IndentedWriter(pStr);
         out.println(getSummary());
         usage.output(out);
-    }
-
-    public void add(ArgDecl argDecl, String argName, String msg) {
-        add(argDecl);
-        getUsage().addUsage(argName, msg);
     }
 
     public Usage getUsage() { return usage; }

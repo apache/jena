@@ -31,6 +31,14 @@ public class CmdLineArgs extends CommandLineBase {
         super(args);
     }
 
+    public void cmdError(String msg) { cmdError(msg, true);}
+
+    public void cmdError(String msg, boolean exit) {
+        System.err.println(msg);
+        if ( exit )
+            throw new TerminationException(5);
+    }
+
     private boolean processedArgs = false;
 
     // Setup:
