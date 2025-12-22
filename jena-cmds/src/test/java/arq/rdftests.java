@@ -40,7 +40,7 @@ import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
-import org.apache.jena.cmd.CmdGeneral;
+import org.apache.jena.cmd.CmdMain;
 import org.apache.jena.cmd.TerminationException;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.ARQ;
@@ -76,8 +76,7 @@ import org.apache.jena.vocabulary.XSD;
  * </pre>
  */
 
-public class rdftests extends CmdGeneral
-{
+public class rdftests extends CmdMain {
     static {
         JenaSystem.init();
         LogCtl.setLog4j2();

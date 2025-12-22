@@ -26,7 +26,7 @@ import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
-import org.apache.jena.cmd.CmdGeneral;
+import org.apache.jena.cmd.CmdMain;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.sys.JenaSystem;
@@ -36,7 +36,7 @@ import org.apache.jena.tdb1.store.xloader.ProcNodeTableDataBuilder;
 import tdb.cmdline.CmdTDB;
 
 /** Build node table - write triples/quads as text file */
-public class CmdNodeTableBuilder extends CmdGeneral
+public class CmdNodeTableBuilder extends CmdMain
 {
     static {
         LogCtl.setLogging();

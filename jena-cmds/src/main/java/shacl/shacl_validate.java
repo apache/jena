@@ -21,7 +21,7 @@ package shacl;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
-import org.apache.jena.cmd.CmdGeneral;
+import org.apache.jena.cmd.CmdMain;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -39,7 +39,7 @@ import org.apache.jena.sys.JenaSystem;
  * <p>
  * Usage: <code>shacl validate [--text] --shapes SHAPES --data DATA</code>
  */
-public class shacl_validate extends CmdGeneral {
+public class shacl_validate extends CmdMain {
 
     static {
         LogCtl.setLogging();

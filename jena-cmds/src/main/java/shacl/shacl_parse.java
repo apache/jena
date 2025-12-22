@@ -30,7 +30,7 @@ import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
-import org.apache.jena.cmd.CmdGeneral;
+import org.apache.jena.cmd.CmdMain;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.irix.IRIException;
 import org.apache.jena.irix.IRIs;
@@ -49,7 +49,7 @@ import org.apache.jena.sys.JenaSystem;
  * <p>
  * Usage: <code>shacl parse FILE</code>
  */
-public class shacl_parse extends CmdGeneral {
+public class shacl_parse extends CmdMain {
     static {
         LogCtl.setLogging();
         JenaSystem.init();

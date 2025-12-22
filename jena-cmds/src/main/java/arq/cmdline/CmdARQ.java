@@ -20,11 +20,11 @@ package arq.cmdline;
 
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.cmd.ArgDecl;
-import org.apache.jena.cmd.CmdGeneral;
+import org.apache.jena.cmd.CmdMain;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sys.JenaSystem;
 
-public abstract class CmdARQ extends CmdGeneral {
+public abstract class CmdARQ extends CmdMain {
     static {
         JenaSystem.init();
     }

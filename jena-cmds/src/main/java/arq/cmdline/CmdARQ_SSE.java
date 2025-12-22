@@ -23,16 +23,18 @@ import org.apache.jena.sparql.sse.Item ;
 /** Root of read an SSE file and do something */
 public abstract class CmdARQ_SSE extends CmdARQ
 {
-    protected ModItem modItem = new ModItem() ; 
-    
+    protected ModItem modItem = new ModItem() ;
+
     public CmdARQ_SSE(String[] argv)
     {
         super(argv) ;
         super.addModule(modItem) ;
     }
-    
+
     @Override
-    protected String getSummary() { return getCommandName()+" [--file<file> | string]" ; }
+    protected String getSummary() {
+        return getCommandName() + " [--file<file> | string]";
+    }
 
     @Override
     final protected void exec()
@@ -40,6 +42,6 @@ public abstract class CmdARQ_SSE extends CmdARQ
         Item item = modItem.getItem() ;
         exec(item) ;
     }
-    
+
     protected abstract void exec(Item item) ;
 }
