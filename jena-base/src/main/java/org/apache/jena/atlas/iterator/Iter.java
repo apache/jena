@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.lib.CacheFactory;
 import org.apache.jena.atlas.lib.Closeable;
 import org.apache.jena.atlas.lib.Sink;
 
@@ -105,6 +106,10 @@ public class Iter<T> implements IteratorCloseable<T> {
 
     public static<T> Iter<T> ofNullable(T t) {
         return t == null ? Iter.empty() : Iter.of(t);
+    }
+
+    public static <T> Iterator<T> ofStream(Stream<T> stream) {
+        return Iter.onClose(stream.iterator(), stream::close);
     }
 
     /**
@@ -516,6 +521,14 @@ public class Iter<T> implements IteratorCloseable<T> {
      */
     public static <T> Iterator<T> distinct(Iterator<T> iter) {
         return filter(iter, new FilterUnique<T>());
+    }
+
+    /** Returns an iterator that uses an LRU cache to filter out duplicates.
+     * This provides a best-effort distinct view within a sliding window of recent elements.
+     * Memory usage is bounded by the specified cache size.
+     */
+    public static <T> Iterator<T> distinctCached(Iterator<T> iter, int cacheMaxSize) {
+        return filter(iter, new FilterUniqueCache<T>(cacheMaxSize));
     }
 
     /** Remove adjacent duplicates. This operation does not need

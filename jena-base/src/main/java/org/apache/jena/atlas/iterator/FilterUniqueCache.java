@@ -16,29 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.jena.rdfs.engine;
+package org.apache.jena.atlas.iterator;
 
-import java.util.stream.Stream;
+import java.util.function.Predicate;
 
-import org.apache.jena.graph.Node;
+import org.apache.jena.atlas.lib.Cache;
+import org.apache.jena.atlas.lib.CacheFactory;
 
-/**
- * Match by S/P/O where {@code X} is the RDF term representation (Node, NodeId) and
- * {@code T} is the tuple (triple, quad, tuple) representation.
- */
-public interface Match<X, T> {
-    public Stream<T> match(X s, X p, X o);
+public class FilterUniqueCache<T> implements Predicate<T> {
+    private final Cache<T, Object> seen;
 
-    public default boolean contains(X s, X p, X o) {
-        try (Stream<T> stream = match(s, p, o)) {
-            return stream.findFirst().isPresent();
-        }
+    public FilterUniqueCache(int size) {
+        super();
+        this.seen = CacheFactory.createCache(size);
     }
 
-    /**
-     * The mapper for reuse with wrappers.
-     * Note that this indirectly ties the {@link Match} interface to the {@link Node} realm:
-     * One can use the mapper to obtain X for e.g. RDF.Nodes.type.
-     */
-    MapperX<X, T> getMapper();
+    @Override
+    public boolean test(T item) {
+        boolean wasSeen = seen.containsKey(item);
+        seen.put(item, Boolean.TRUE);
+        return !wasSeen;
+    }
 }

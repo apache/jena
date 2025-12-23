@@ -18,66 +18,21 @@
 
 package org.apache.jena.rdfs;
 
-import java.util.stream.Stream;
-
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
+import org.apache.jena.rdfs.engine.GraphMatch;
 import org.apache.jena.rdfs.engine.InfFindTriple;
-import org.apache.jena.rdfs.engine.MatchRDFS;
 import org.apache.jena.rdfs.setup.ConfigRDFS;
-import org.apache.jena.sparql.graph.GraphWrapper;
-import org.apache.jena.util.iterator.ExtendedIterator;
-import org.apache.jena.util.iterator.WrappedIterator;
 
 /**
  * RDFS graph over a base graph.
  */
-public class GraphRDFS extends GraphWrapper {
-    private final MatchRDFS<Node, Triple> source;
+public class GraphRDFS extends GraphMatch {
     private final ConfigRDFS<Node> setup;
 
     public GraphRDFS(Graph graph, ConfigRDFS<Node> setup) {
-        super(graph);
+        super(graph, new InfFindTriple(setup, graph));
         this.setup = setup;
-        this.source = new InfFindTriple(setup, graph);
-    }
-
-    @Override
-    public ExtendedIterator<Triple> find(Triple m) {
-        return find(m.getSubject(), m.getPredicate(), m.getObject());
-    }
-
-    @Override
-    public ExtendedIterator<Triple> find(Node s, Node p, Node o) {
-        Stream<Triple> stream = source.match(s, p, o);
-        ExtendedIterator<Triple> iter = WrappedIterator.ofStream(stream);
-        return iter;
-    }
-
-    @Override
-    public Stream<Triple> stream(Node s, Node p, Node o) {
-        return source.match(s, p, o);
-    }
-
-    @Override
-    public boolean contains(Node s, Node p, Node o) {
-        // Must go via find()-like functionality.
-        ExtendedIterator<Triple> iter = find(s, p, o);
-        try {
-            return iter.hasNext();
-        } finally { iter.close(); }
-    }
-
-    @Override
-    public boolean contains(Triple t) {
-        return contains(t.getSubject(), t.getPredicate(), t.getObject());
-    }
-
-    @Override
-    public int size() {
-        // Report the size of the underlying graph.
-        // Even better, don't ask.
-        return super.size();
     }
 }
+
