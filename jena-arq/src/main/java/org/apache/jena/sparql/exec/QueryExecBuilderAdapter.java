@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.exec;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -31,6 +33,7 @@ import org.apache.jena.query.Syntax;
 import org.apache.jena.sparql.core.ResultBinding;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.exec.tracker.QueryExecTransform;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.ModelUtils;
 import org.apache.jena.sparql.util.Symbol;
@@ -39,6 +42,7 @@ import org.apache.jena.sparql.util.Symbol;
 public class QueryExecBuilderAdapter implements QueryExecBuilder
 {
     protected QueryExecutionBuilder builder;
+    protected List<QueryExecTransform> queryExecTransforms = new ArrayList<>();
 
     protected QueryExecBuilderAdapter(QueryExecutionBuilder builder) {
         super();
@@ -67,7 +71,7 @@ public class QueryExecBuilderAdapter implements QueryExecBuilder
     }
 
     @Override
-    public QueryExecMod initialTimeout(long timeout, TimeUnit timeUnit) {
+    public QueryExecBuilder initialTimeout(long timeout, TimeUnit timeUnit) {
         tryCast(QueryExecutionDatasetBuilder.class, builder)
                 .orElseThrow(() -> new UnsupportedOperationException("QueryExecBuilderAdapter.initialTimeout()"))
                 .initialTimeout(timeout, timeUnit);
@@ -75,7 +79,7 @@ public class QueryExecBuilderAdapter implements QueryExecBuilder
     }
 
     @Override
-    public QueryExecMod overallTimeout(long timeout, TimeUnit timeUnit) {
+    public QueryExecBuilder overallTimeout(long timeout, TimeUnit timeUnit) {
         tryCast(QueryExecutionDatasetBuilder.class, builder)
             .orElseThrow(() -> new UnsupportedOperationException("QueryExecBuilderAdapter.overallTimeout()"))
             .overallTimeout(timeout, timeUnit);
@@ -153,9 +157,19 @@ public class QueryExecBuilderAdapter implements QueryExecBuilder
     }
 
     @Override
+    public QueryExecBuilder transformExec(QueryExecTransform queryExecTransform) {
+        Objects.requireNonNull(queryExecTransform);
+        queryExecTransforms.add(queryExecTransform);
+        return this;
+    }
+
+    @Override
     public QueryExec build() {
         QueryExecution qExec = builder.build();
         QueryExec result = QueryExecAdapter.adapt(qExec);
+        for (QueryExecTransform queryExecTransform : queryExecTransforms) {
+            result = queryExecTransform.transform(result);
+        }
         return result;
     }
 }
