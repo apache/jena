@@ -182,10 +182,13 @@
 import Menu from '@/components/dataset/Menu.vue'
 import Yasqe from '@zazuko/yasqe'
 import Yasr from '@zazuko/yasr'
+import GeoPlugin from 'yasgui-geo-tg'
 import { createShareableLink } from '@/utils/query'
 import { nextTick } from 'vue'
 import currentDatasetMixin from '@/mixins/current-dataset'
 import currentDatasetMixinNavigationGuards from '@/mixins/current-dataset-navigation-guards'
+
+Yasr.registerPlugin('geo', GeoPlugin)
 
 const SELECT_TRIPLES_QUERY = `SELECT ?subject ?predicate ?object
 WHERE {
@@ -280,7 +283,9 @@ export default {
           {
             // we do not want to save the results, otherwise we will have query results showing in different
             // dataset views
-            persistenceId: null
+            persistenceId: null,
+            // Enable geo plugin alongside default table
+            pluginOrder: ['table', 'response', 'geo'],
           }
         )
         // Curried function to create shareable links. YASQE expects a function
@@ -416,5 +421,8 @@ export default {
       }
     }
   }
+}
+.yasr .yasr_btnGroup .select_geo .plugin_icon {
+  margin-bottom: 20%;
 }
 </style>
