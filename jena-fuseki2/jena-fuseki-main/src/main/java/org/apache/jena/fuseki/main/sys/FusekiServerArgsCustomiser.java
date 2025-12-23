@@ -44,13 +44,14 @@ import org.apache.jena.rdf.model.Model;
  *   {@link FusekiAutoModule#start()} or from Java application code.
  * </li>
  * <li>
- *    {@link #serverArgsModify} &ndash; Register or modify the argument setup to be
+ *    {@link #serverArgsModify} &ndash; Called before command line processing.
+ *    This call can register or modify the argument setup to be
  *     used to parse the command line.
  * </li>
  * <li>
  *   {@link #serverArgsPrepare} &ndash; Called after parsing the command line and
- *   recoding the command line settings in {@link ServerArgs}. Customisers can record
- *   argument values and flags.
+ *   recording the command line settings in {@link ServerArgs}.
+ *   Customisers can record argument values and flags.
  * </li>
  * <li>
  *   {@link #serverArgsBuilder} &ndash; Called after the {@link ServerArgs} have
