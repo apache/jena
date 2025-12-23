@@ -20,7 +20,6 @@ package org.apache.jena.fuseki.main;
 
 import static java.util.Objects.requireNonNull;
 import static org.apache.jena.atlas.lib.PropertyUtils.loadFromFile;
-import static org.apache.jena.fuseki.Fuseki.serverLog;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -30,8 +29,6 @@ import java.util.function.Predicate;
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.lib.FileOps;
@@ -50,6 +47,7 @@ import org.apache.jena.fuseki.auth.AuthPolicy;
 import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.fuseki.ctl.*;
 import org.apache.jena.fuseki.main.cmds.FusekiMain;
+import org.apache.jena.fuseki.main.cmds.Servlet404;
 import org.apache.jena.fuseki.main.sys.*;
 import org.apache.jena.fuseki.metrics.MetricsProvider;
 import org.apache.jena.fuseki.mod.prometheus.PrometheusMetricsProvider;
@@ -67,7 +65,6 @@ import org.apache.jena.sparql.util.ContextAccumulator;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.system.G;
 import org.apache.jena.system.RDFDataException;
-import org.apache.jena.web.HttpSC;
 import org.eclipse.jetty.ee11.servlet.DefaultServlet;
 import org.eclipse.jetty.ee11.servlet.FilterHolder;
 import org.eclipse.jetty.ee11.servlet.ServletContextHandler;
@@ -362,7 +359,7 @@ public class FusekiServer {
         // Post-start completion. Find the ports.
         Connector[] connectors = server.getServer().getConnectors();
         if ( connectors.length == 0 )
-            serverLog.warn("Start Fuseki: No connectors");
+            Fuseki.serverLog.warn("Start Fuseki: No connectors");
 
         // Extract the ports from the Connectors.
         Arrays.stream(connectors).forEach(c->{
@@ -1742,33 +1739,10 @@ public class FusekiServer {
                 context.addServlet(staticContent, "/");
             } else {
                 // Backstop servlet
-                // Jetty default is 404 on GET and 405 otherwise
+                // Jetty default is 404 on GET and 405 (Method not allowed) otherwise
                 HttpServlet staticServlet = new Servlet404();
                 ServletHolder staticContent = new ServletHolder(staticServlet);
                 context.addServlet(staticContent, "/");
-            }
-        }
-
-        /** 404 for HEAD/GET/POST/PUT */
-        static class Servlet404 extends HttpServlet {
-
-            public Servlet404() {}
-            // service()?
-            @Override
-            protected void doHead(HttpServletRequest req, HttpServletResponse resp)     { err404(req, resp); }
-            @Override
-            protected void doGet(HttpServletRequest req, HttpServletResponse resp)      { err404(req, resp); }
-            @Override
-            protected void doPost(HttpServletRequest req, HttpServletResponse resp)     { err404(req, resp); }
-            @Override
-            protected void doPut(HttpServletRequest req, HttpServletResponse resp)      { err404(req, resp); }
-            //protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
-            //protected void doTrace(HttpServletRequest req, HttpServletResponse resp)
-            //protected void doOptions(HttpServletRequest req, HttpServletResponse resp)
-            private static void err404(HttpServletRequest req, HttpServletResponse response) {
-                try {
-                    response.sendError(HttpSC.NOT_FOUND_404, HttpSC.getMessage(HttpSC.NOT_FOUND_404));
-                } catch (IOException ex) {}
             }
         }
 
@@ -1804,7 +1778,7 @@ public class FusekiServer {
         }
 
         private Server jettyServer(ServletContextHandler handler, String jettyServerConfig) {
-            serverLog.info("Jetty server config file = " + jettyServerConfig);
+            Fuseki.serverLog.info("Jetty server config file = " + jettyServerConfig);
             Server server = JettyServer.jettyServer(jettyServerConfig);
             server.setHandler(handler);
             return server;
