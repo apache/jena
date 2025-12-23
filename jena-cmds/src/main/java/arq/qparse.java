@@ -110,11 +110,11 @@ public class qparse extends CmdARQ {
             printQuery = true;
     }
 
-    static String usage = qparse.class.getName() + " [--in syntax] [--out syntax] [--print=FORM] [\"query\"] | --query <file>";
+    static String usageArgs =  "[--in syntax] [--out syntax] [--print=FORM] [\"query\"] | --query <file>";
 
     @Override
     protected String getSummary() {
-        return usage;
+        return getCommandName()+" "+usageArgs;
     }
 
     static final String divider = "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
