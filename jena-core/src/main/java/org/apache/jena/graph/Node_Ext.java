@@ -71,11 +71,8 @@ public abstract class Node_Ext<X> extends Node {
     public boolean equals(Object obj) {
         if ( this == obj )
             return true;
-        if ( obj == null )
+        if ( !( obj instanceof Node_Ext<?> other ) )
             return false;
-        if ( getClass() != obj.getClass() )
-            return false;
-        Node_Ext<?> other = (Node_Ext<?>)obj;
         return Objects.equals(object, other.object);
     }
 }

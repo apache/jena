@@ -68,11 +68,8 @@ public class Node_Triple extends Node {
     public boolean equals(Object obj) {
         if ( this == obj )
             return true;
-        if ( obj == null )
+        if ( !( obj instanceof Node_Triple other ) )
             return false;
-        if ( getClass() != obj.getClass() )
-            return false;
-        Node_Triple other = (Node_Triple)obj;
         return triple.equals(other.triple);
     }
 
