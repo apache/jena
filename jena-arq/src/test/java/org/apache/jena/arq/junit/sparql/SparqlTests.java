@@ -110,16 +110,18 @@ public class SparqlTests {
         // ---- Query Evaluation Tests
         if ( equalsType(testType, TestManifest.QueryEvaluationTest) ) {
 
+            // tests not supported.
+
             // ??
             if ( entryContainsSubstring(entry, "aggregates/manifest#agg-groupconcat-04") ) {
                 return null;
             }
 
-            // ??
+            // Two BNODE in the SELECT
             if ( entryContainsSubstring(entry, "functions/manifest#bnode01") ) {
                 return null;
             }
-            // ??
+            // Jena bug?
             if ( entryContainsSubstring(entry, "property-path/manifest#values_and_path") ) {
                 return null;
             }
