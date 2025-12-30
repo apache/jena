@@ -31,7 +31,7 @@ import org.apache.jena.sparql.util.XSDNumUtils;
 
 public class NodeValueDouble extends NodeValue {
 
-    double value = Double.NaN;
+    private final double value;
 
     public NodeValueDouble(double d)         { super(); value = d; }
     public NodeValueDouble(double d, Node n) { super(n); value = d; }

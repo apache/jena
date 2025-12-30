@@ -135,7 +135,7 @@ public class TestLeviathanFunctions {
     public void log_03() {
         NodeValue actual = LibTestExpr.eval("lfn:log(-1)");
         // Test the object, not the value.
-        assertTrue(NodeValue.nvNaN.equals(actual));
+        assertTrue(NodeValue.nvDoubleNaN.equals(actual));
     }
 
     @Test

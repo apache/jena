@@ -40,7 +40,7 @@ import org.apache.jena.sparql.util.NodeUtils;
  * Operations relating to {@link NodeValue NodeValues}.
  * <ul>
  * <li>The code parts of arithmetic operations on {@link NodeValue}s.
- * <li>Library code such as Argument testing
+ * <li>Library code such as expression string argument testing
  * </ul>
  * <p>
  * This class is not considered to be part of the ARQ API.

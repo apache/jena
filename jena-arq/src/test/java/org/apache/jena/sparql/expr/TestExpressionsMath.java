@@ -20,7 +20,7 @@ package org.apache.jena.sparql.expr;
 
 import static org.apache.jena.sparql.expr.LibTestExpr.test;
 import static org.apache.jena.sparql.expr.LibTestExpr.testDouble;
-import static org.apache.jena.sparql.expr.LibTestExpr.testIsNaN;
+import static org.apache.jena.sparql.expr.LibTestExpr.testDoubleIsNaN;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ public class TestExpressionsMath
     @Test public void exp_04()          { test("math:exp(1e0/0)", "'INF'^^xsd:double"); }
     @Test public void exp_05()          { test("math:exp('INF'^^xsd:double)", "'INF'^^xsd:double"); }
     @Test public void exp_06()          { test("math:exp('-INF'^^xsd:double)", "'0.0e0'^^xsd:double"); }
-    @Test public void exp_07()          { testIsNaN("math:exp('NaN'^^xsd:double)"); }
+    @Test public void exp_07()          { testDoubleIsNaN("math:exp('NaN'^^xsd:double)"); }
 
     @Test public void exp10_01()        { test("math:exp10(2)", "100"); }
     @Test public void exp10_02()        { testDouble("math:exp10(-1)", 0.1, 0.00001); }
@@ -55,7 +55,7 @@ public class TestExpressionsMath
     @Test public void log_04()          { test("math:log(0)", "'-INF'^^xsd:double"); }
     @Test public void log_05()          { test("math:exp('INF'^^xsd:double)", "'INF'^^xsd:double"); }
     @Test public void log_06()          { test("math:exp('-INF'^^xsd:double)", "'0.0e0'^^xsd:double"); }
-    @Test public void log_07()          { testIsNaN("math:exp('NaN'^^xsd:double)"); }
+    @Test public void log_07()          { testDoubleIsNaN("math:exp('NaN'^^xsd:double)"); }
 
     @Test public void pow_01()          { test("math:pow(2,2)", "4"); }
     @Test public void pow_02()          { testDouble("math:pow(2,-2)", 0.25, 0.00001); }
@@ -67,18 +67,18 @@ public class TestExpressionsMath
 
     @Test public void pow_13()          { test("math:pow('INF'^^xsd:double,0)", "'1.0e0'^^xsd:double"); }
     @Test public void pow_14()          { test("math:pow('-INF'^^xsd:double, 0)", "'1.0e0'^^xsd:double"); }
-    @Test public void pow_15()          { testIsNaN("math:pow('NaN'^^xsd:double, 1)"); }
-    @Test public void pow_16()          { testIsNaN("math:pow(1, 'NaN'^^xsd:double)"); }
+    @Test public void pow_15()          { testDoubleIsNaN("math:pow('NaN'^^xsd:double, 1)"); }
+    @Test public void pow_16()          { testDoubleIsNaN("math:pow(1, 'NaN'^^xsd:double)"); }
 
     @Test public void sqrt_01()         { test("math:sqrt(1)", "'1.0e0'^^xsd:double"); }
     @Test public void sqrt_02()         { testDouble("math:sqrt(2)", Math.sqrt(2), 0.000001); }
-    @Test public void sqrt_03()         { testIsNaN("math:sqrt(-2)"); }
+    @Test public void sqrt_03()         { testDoubleIsNaN("math:sqrt(-2)"); }
 
     @Test public void sqrt_04()         { assertThrows(ARQException.class, ()->test("math:sqrt('TWO')", "'dummy'")); }
 
     @Test public void sqrt_10()         { test("math:sqrt('INF'^^xsd:double)", "'INF'^^xsd:double"); }
-    @Test public void sqrt_11()         { testIsNaN("math:sqrt('-INF'^^xsd:double)"); }
-    @Test public void sqrt_12()         { testIsNaN("math:sqrt('NaN'^^xsd:double)"); }
+    @Test public void sqrt_11()         { testDoubleIsNaN("math:sqrt('-INF'^^xsd:double)"); }
+    @Test public void sqrt_12()         { testDoubleIsNaN("math:sqrt('NaN'^^xsd:double)"); }
 
     //  4.8.7 math:sqrt
     //  4.8.8 math:sin

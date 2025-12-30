@@ -18,8 +18,8 @@
 
 package org.apache.jena.sparql.function;
 
-import static org.apache.jena.sparql.expr.NodeValue.nvNaN;
-import static org.apache.jena.sparql.expr.NodeValue.nvNegZERO;
+import static org.apache.jena.sparql.expr.NodeValue.nvDoubleNaN;
+import static org.apache.jena.sparql.expr.NodeValue.nvDoubleNegZERO;
 import static org.apache.jena.sparql.expr.NodeValue.nvZERO;
 import static org.apache.jena.sparql.expr.nodevalue.XSDFuncOp.*;
 import java.math.BigDecimal;
@@ -273,7 +273,10 @@ public class CastXSD {
         if ( nv.isBoolean() )
             return nv;
         if ( nv.isNumber() ) {
-            if ( NodeValue.sameValueAs(nv, nvZERO) || NodeValue.sameValueAs(nv, nvNaN) || NodeValue.sameValueAs(nv, nvNegZERO) )
+            if ( NodeValue.sameValueAs(nv, nvZERO) )
+                return NodeValue.FALSE;
+            // sameValueAs Covers xsd:float
+            if ( NodeValue.sameValueAs(nv, nvDoubleNaN) || NodeValue.sameValueAs(nv, nvDoubleNegZERO) )
                 return NodeValue.FALSE;
             return NodeValue.TRUE;
         }
