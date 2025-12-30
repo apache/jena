@@ -257,6 +257,50 @@ public class QueryEvalTest extends AbstractManifestTest {
         return;
     }
 
+    private void runTestAsk(Query query, QueryExecution qe) {
+        boolean bActual = qe.execAsk();
+        if ( results != null ) {
+            if ( results.isBoolean() ) {
+                boolean bExpected = results.getBooleanResult();
+                if ( bExpected != bActual ) {
+                    printFailedAskTest(query, qe, bExpected, bActual);
+                }
+                assertEquals(bExpected, bActual, ()->"ASK test results do not match");
+            } else {
+                Model resultsAsModel = results.getModel();
+                StmtIterator sIter = results.getModel().listStatements(null, RDF.type, ResultSetGraphVocab.ResultSet);
+                if ( !sIter.hasNext() )
+                    throw new TestSetupException("Can't find the ASK result");
+                Statement s = sIter.nextStatement();
+                if ( sIter.hasNext() )
+                    throw new TestSetupException("Too many result sets in ASK result");
+                Resource r = s.getSubject();
+                Property p = resultsAsModel.createProperty(ResultSetGraphVocab.getURI() + "boolean");
+
+                boolean x = r.getRequiredProperty(p).getBoolean();
+                if ( x != bActual )
+                    assertEquals(x, bActual, ()->"ASK test results do not match");
+            }
+        }
+        return;
+    }
+
+    private void runTestConstruct(Query query, QueryExecution qe) {
+        // Do the query!
+        if ( query.isConstructQuad() ) {
+            Dataset resultActual = qe.execConstructDataset();
+            compareDatasetResults(resultActual, query);
+        } else {
+            Model resultsActual = qe.execConstruct();
+            compareGraphResults(resultsActual, query);
+        }
+    }
+
+    private void runTestDescribe(Query query, QueryExecution qe) {
+        Model resultsActual = qe.execDescribe();
+        compareGraphResults(resultsActual, query);
+    }
+
     private ResultSetRewindable convertToStrings(ResultSetRewindable resultsActual) {
         List<Binding> bindings = new ArrayList<>();
         while (resultsActual.hasNext()) {
@@ -312,17 +356,6 @@ public class QueryEvalTest extends AbstractManifestTest {
         }
     }
 
-    private void runTestConstruct(Query query, QueryExecution qe) {
-        // Do the query!
-        if ( query.isConstructQuad() ) {
-            Dataset resultActual = qe.execConstructDataset();
-            compareDatasetResults(resultActual, query);
-        } else {
-            Model resultsActual = qe.execConstruct();
-            compareGraphResults(resultsActual, query);
-        }
-    }
-
     private void compareGraphResults(Model resultsActual, Query query) {
         if ( results != null ) {
             try {
@@ -364,36 +397,6 @@ public class QueryEvalTest extends AbstractManifestTest {
         }
     }
 
-    private void runTestDescribe(Query query, QueryExecution qe) {
-        Model resultsActual = qe.execDescribe();
-        compareGraphResults(resultsActual, query);
-    }
-
-    private void runTestAsk(Query query, QueryExecution qe) {
-        boolean result = qe.execAsk();
-        if ( results != null ) {
-            if ( results.isBoolean() ) {
-                boolean b = results.getBooleanResult();
-                assertEquals(b, result, ()->"ASK test results do not match");
-            } else {
-                Model resultsAsModel = results.getModel();
-                StmtIterator sIter = results.getModel().listStatements(null, RDF.type, ResultSetGraphVocab.ResultSet);
-                if ( !sIter.hasNext() )
-                    throw new TestSetupException("Can't find the ASK result");
-                Statement s = sIter.nextStatement();
-                if ( sIter.hasNext() )
-                    throw new TestSetupException("Too many result sets in ASK result");
-                Resource r = s.getSubject();
-                Property p = resultsAsModel.createProperty(ResultSetGraphVocab.getURI() + "boolean");
-
-                boolean x = r.getRequiredProperty(p).getBoolean();
-                if ( x != result )
-                    assertEquals(x, result, ()->"ASK test results do not match");
-            }
-        }
-        return;
-    }
-
     private void printFailedResultSetTest(Query query, QueryExecution qe, ResultSetRewindable qrExpected, ResultSetRewindable qrActual) {
         PrintStream out = System.out;
         out.println();
@@ -415,6 +418,22 @@ public class QueryEvalTest extends AbstractManifestTest {
         ResultSetFormatter.out(out, qrExpected, query.getPrefixMapping());
         qrExpected.reset();
 
+        out.println();
+        out.flush();
+    }
+
+    private void printFailedAskTest(Query query, QueryExecution qe, boolean qrExpected, boolean qrActual) {
+        PrintStream out = System.out;
+        out.println();
+        out.println("=======================================");
+        out.println("Failure: " + description());
+        out.println("Query: \n" + query);
+        if ( qe != null && qe.getDataset() != null ) {
+            out.println("Data:");
+            RDFDataMgr.write(out, qe.getDataset(), Lang.TRIG);
+        }
+        out.println("Got: " + qrActual + " --------------------------------");
+        out.println("Expected: " + qrExpected + " -----------------------------");
         out.println();
         out.flush();
     }
