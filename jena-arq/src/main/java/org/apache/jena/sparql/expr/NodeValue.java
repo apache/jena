@@ -106,19 +106,35 @@ public abstract class NodeValue extends ExprNode
     public static final NodeValue TRUE   = NodeValue.makeNode("true", XSDboolean);
     public static final NodeValue FALSE  = NodeValue.makeNode("false", XSDboolean);
 
+    public static final NodeValue nvEmptyString  = NodeValue.makeString("");
+
     public static final NodeValue nvZERO = NodeValue.makeNode(NodeConst.nodeZero);
-    public static final NodeValue nvNegZERO = NodeValue.makeNode("-0.0e0", XSDdouble);
     public static final NodeValue nvONE  = NodeValue.makeNode(NodeConst.nodeOne);
     public static final NodeValue nvTEN  = NodeValue.makeNode(NodeConst.nodeTen);
 
     public static final NodeValue nvDecimalZERO = NodeValue.makeNode("0.0", XSDdecimal);
     public static final NodeValue nvDecimalONE  = NodeValue.makeNode("1.0", XSDdecimal);
 
-    public static final NodeValue nvNaN     = NodeValue.makeNode("NaN", XSDdouble);
-    public static final NodeValue nvINF     = NodeValue.makeNode("INF", XSDdouble);
-    public static final NodeValue nvNegINF  = NodeValue.makeNode("-INF",XSDdouble);
+    public static final NodeValue nvDoubleNegZERO = NodeValue.makeNode("-0.0e0", XSDdouble);
+    public static final NodeValue nvDoubleNaN     = NodeValue.makeNode("NaN", XSDdouble);
+    public static final NodeValue nvDoubleINF     = NodeValue.makeNode("INF", XSDdouble);
+    public static final NodeValue nvDoubleNegINF  = NodeValue.makeNode("-INF",XSDdouble);
 
-    public static final NodeValue nvEmptyString  = NodeValue.makeString("");
+    /** @deprecated Use {@link #nvDoubleNegZERO} */
+    @Deprecated
+    public static final NodeValue nvNegZERO = nvDoubleNegZERO;
+
+    /** @deprecated Use {@link #nvDoubleNaN} */
+    @Deprecated
+    public static final NodeValue nvNaN     = nvDoubleNaN;
+
+    /** @deprecated Use {@link #nvDoubleINF} */
+    @Deprecated
+    public static final NodeValue nvINF     = nvDoubleINF;
+
+    /** @deprecated Use {@link #nvDoubleNegINF} */
+    @Deprecated
+    public static final NodeValue nvNegINF  = nvDoubleNegINF;
 
     public static final String xsdNamespace = XSD+"#";
 
@@ -605,7 +621,7 @@ public abstract class NodeValue extends ExprNode
         // Java equals, not "same value" or "same term"
         if ( other == null ) return false;
         if ( this == other ) return true;
-        // This is the equality condition Jena uses - lang tags are different by case.
+        // This is the equality condition Jena uses
         if ( ! ( other instanceof NodeValue nv) )
             return false;
         return asNode().equals(nv.asNode());

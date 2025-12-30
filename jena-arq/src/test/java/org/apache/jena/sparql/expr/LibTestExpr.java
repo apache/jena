@@ -94,8 +94,8 @@ public class LibTestExpr {
         assertTrue(sameValueSameDatatype(expected, actual), ()->"Expected = " + expected + " : Actual = " + actual);
     }
 
-    public static void testIsNaN(String exprStr) {
-        testSameObject(exprStr, NodeValue.nvNaN);
+    public static void testDoubleIsNaN(String exprStr) {
+        testSameObject(exprStr, NodeValue.nvDoubleNaN);
     }
 
     public static void testSameObject(String exprStr, NodeValue expected) {

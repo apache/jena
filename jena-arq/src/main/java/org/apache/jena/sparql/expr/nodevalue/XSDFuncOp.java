@@ -397,12 +397,48 @@ public class XSDFuncOp
                     dec = v.getDecimal().setScale(0, RoundingMode.HALF_UP);
                 return NodeValue.makeDecimal(dec);
             case OP_FLOAT:
-                return NodeValue.makeFloat(Math.round(v.getFloat()));
+                return NodeValue.makeFloat(roundFloat(v.getFloat()));
             case OP_DOUBLE:
-                return NodeValue.makeDouble(Math.round(v.getDouble()));
+                return NodeValue.makeDouble(roundDouble(v.getDouble()));
             default:
                 throw new ARQInternalErrorException("Unrecognized numeric operation : " + v);
         }
+    }
+
+    private static double roundDouble(double d) {
+        if ( Double.isNaN(d) )
+            return Double.NaN;
+        if ( d == Double.POSITIVE_INFINITY )
+            return d;
+        if ( d == Double.NEGATIVE_INFINITY )
+            return d;
+        if ( d == -0.0e0 )
+            return d;
+        // Math.round returns a java long
+        long resultLong = Math.round(d);
+        if ( resultLong == 0 && d < 0 )
+            // Return -0 for round negative to 0.
+            return -0.0e0d;
+        // Cast to double by the return.
+        return resultLong;
+    }
+
+    private static float roundFloat(float f) {
+        if ( Float.isNaN(f) )
+            return Float.NaN;
+        if ( f == Float.POSITIVE_INFINITY )
+            return f;
+        if ( f == Float.NEGATIVE_INFINITY )
+            return f;
+        if ( f == -0.0e0f )
+            return f;
+        // Math.round returns a java long
+        long resultLong = Math.round(f);
+        if ( resultLong == 0 && f < 0 )
+            // Return -0 for round negative to 0.
+            return -0.0e0f;
+        // Math.round returns a java long, which is cast to float by the return.
+        return resultLong;
     }
 
     // The following function 'roundXpath3' implements the definition for "fn:round" in F&O v3.

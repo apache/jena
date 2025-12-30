@@ -26,7 +26,7 @@ import org.apache.jena.sparql.util.XSDNumUtils;
 
 public class NodeValueFloat extends NodeValue
 {
-    float value = Float.NaN;
+    private final float value;
 
     public NodeValueFloat(float f)         { super(); value = f; }
     public NodeValueFloat(float f, Node n) { super(n); value = f; }
