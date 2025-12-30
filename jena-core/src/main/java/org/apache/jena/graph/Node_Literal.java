@@ -120,11 +120,8 @@ public class Node_Literal extends Node
     public boolean equals(Object obj) {
         if ( this == obj )
             return true;
-        if ( obj == null )
+        if ( !( obj instanceof Node_Literal other ) )
             return false;
-        if ( getClass() != obj.getClass() )
-            return false;
-        Node_Literal other = (Node_Literal)obj;
         return label.equals(other.label);
     }
 

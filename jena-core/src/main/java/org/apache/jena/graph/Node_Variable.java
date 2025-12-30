@@ -66,12 +66,9 @@ public class Node_Variable extends Node
     public boolean equals(Object obj) {
         if ( this == obj )
             return true;
-        if ( obj == null )
-            return false;
         // For jena-arq Var
-        if ( ! (obj instanceof Node_Variable) )
+        if ( ! (obj instanceof Node_Variable other) )
             return false;
-        Node_Variable other = (Node_Variable)obj;
         return Objects.equals(varName, other.varName);
     }
 

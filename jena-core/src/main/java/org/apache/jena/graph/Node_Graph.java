@@ -67,9 +67,8 @@ public class Node_Graph extends Node {
     public boolean equals(Object o) {
         if ( o == this )
             return true;
-        if ( !(o instanceof Node_Graph) )
+        if ( !(o instanceof Node_Graph other) )
             return false;
-        Node_Graph other = (Node_Graph)o;
         return this.getGraph() == other.getGraph();
     }
 

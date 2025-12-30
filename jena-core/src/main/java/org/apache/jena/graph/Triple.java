@@ -156,7 +156,7 @@ public class Triple implements Serializable
      */
 	@Override
     public boolean equals(Object o)
-	{ return o instanceof Triple && ((Triple) o).sameAs( subj, pred, obj ); }
+	{ return o instanceof Triple t && t.sameAs( subj, pred, obj ); }
 
     /**
         Answer true iff this triple has subject s, predicate p, and object o.

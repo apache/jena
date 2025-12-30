@@ -58,11 +58,8 @@ public class Node_Blank extends Node
     public boolean equals(Object obj) {
         if ( this == obj )
             return true;
-        if ( obj == null )
+        if ( !(obj instanceof Node_Blank other) )
             return false;
-        if ( getClass() != obj.getClass() )
-            return false;
-        Node_Blank other = (Node_Blank)obj;
         return Objects.equals(label, other.label);
     }
 
