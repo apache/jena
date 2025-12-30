@@ -20,6 +20,9 @@ package org.apache.jena.sparql.util;
 
 import java.math.BigDecimal;
 
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.NodeValue;
+
 public class XSDNumUtils {
 
     /**
@@ -35,7 +38,7 @@ public class XSDNumUtils {
             case "+INF", "+inf" -> Double.POSITIVE_INFINITY;
             case "-INF", "-inf" -> Double.NEGATIVE_INFINITY;
             case "NaN"          -> Double.NaN ;
-            // Acceptable as Java doubles (value is "NaN" but not as xsd:double
+            // Acceptable as Java doubles (value is "NaN" but not as xsd:double)
             case "-NaN"-> throw new NumberFormatException("-NaN is not valid as an xsd:double");
             case "+NaN"-> throw new NumberFormatException("+NaN is not valid as an xsd:double");
             // Includes +0 and -0.
@@ -62,6 +65,20 @@ public class XSDNumUtils {
             // Includes +0 and -0.
             default-> Float.parseFloat(lexicalForm);
         };
+    }
+
+    /**
+     * isNaN() - for xsd:double and xsd:float.
+     * The argument must be numeric; if not, this function throws {@link ExprEvalException}.
+     */
+    public static boolean isNaN(NodeValue nv) {
+        if ( ! nv.isNumber() )
+            throw new ExprEvalException("Not a numeric datatype");
+        if ( nv.isDouble() )
+            return Double.isNaN(nv.getDouble());
+        if ( nv.isFloat() )
+            return Float.isNaN(nv.getFloat());
+        return false;
     }
 
     /** Parse an XSD decimal. */
@@ -119,7 +136,6 @@ public class XSDNumUtils {
     public static String stringFormatARQ(BigDecimal bd) {
         return canonicalDecimalStrWithDot(bd);
     }
-
 
     /**
      * Strict XSD 1.0 format for {@code xsd:decimal}.

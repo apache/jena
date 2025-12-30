@@ -805,6 +805,104 @@ public class TestXSDFuncOp {
         assertEquals(2d, r.getDouble(), accuracyExact_D, "Wrong result");
     }
 
+    @Test public void testRoundDouble1() {
+        NodeValue nv = NodeValue.makeDouble(1.23d);
+        NodeValue r = XSDFuncOp.round(nv);
+        assertTrue(r.isDouble(), "Not a double: "+r);
+        assertTrue(r instanceof NodeValueDouble, "Not a NodeValueDouble: "+r);
+        assertEquals(1d, r.getDouble(), 0d, "Wrong result");
+    }
+
+    @Test public void testRoundDouble2() {
+        NodeValue nv = NodeValue.makeDouble(0d);
+        NodeValue r = XSDFuncOp.round(nv);
+        assertTrue(r.isDouble(), "Not a double: "+r);
+        assertTrue(r instanceof NodeValueDouble, "Not a NodeValueDouble: "+r);
+        assertEquals(0.0d, r.getDouble(), 0d, "Wrong result");
+    }
+
+    @Test public void testRoundDouble3() {
+        NodeValue nv = NodeValue.makeDouble(-0d);
+        NodeValue r = XSDFuncOp.round(nv);
+        assertTrue(r.isDouble(), "Not a double: "+r);
+        assertTrue(r instanceof NodeValueDouble, "Not a NodeValueDouble: "+r);
+        assertEquals(-0.0d, r.getDouble(), 0d, "Wrong result");
+    }
+
+    @Test public void testRoundDouble4() {
+        NodeValue nv = NodeValue.makeDouble(Double.NaN);
+        NodeValue r = XSDFuncOp.round(nv);
+        assertTrue(XSDNumUtils.isNaN(r));
+    }
+
+    @Test public void testRoundDouble5() {
+        NodeValue nv = NodeValue.makeDouble(Double.POSITIVE_INFINITY);
+        NodeValue r = XSDFuncOp.round(nv);
+        assertEquals(r.getDouble(), Double.POSITIVE_INFINITY);
+    }
+
+    @Test public void testRoundDouble6() {
+        NodeValue nv = NodeValue.makeDouble(Double.NEGATIVE_INFINITY);
+        NodeValue r = XSDFuncOp.round(nv);
+        assertEquals(r.getDouble(), Double.NEGATIVE_INFINITY);
+    }
+
+    @Test public void testRoundFloat1() {
+        NodeValue nv = NodeValue.makeFloat(1.23f);
+        NodeValue r = XSDFuncOp.round(nv);
+        assertTrue(r.isFloat(), "Not a float: "+r);
+        assertTrue(r instanceof NodeValueFloat, "Not a NodeValueFloat: "+r);
+        assertEquals(1f, r.getFloat(), 0f, "Wrong result");
+    }
+
+    @Test public void testRoundFloat2() {
+        NodeValue nv = NodeValue.makeFloat(0f);
+        NodeValue r = XSDFuncOp.round(nv);
+        assertTrue(r.isFloat(), "Not a float: "+r);
+        assertTrue(r instanceof NodeValueFloat, "Not a NodeValueFloat: "+r);
+        assertEquals(0.0f, r.getFloat(), 0f, "Wrong result");
+    }
+
+    @Test public void testRoundFloat3() {
+        NodeValue nv = NodeValue.makeFloat(-0f);
+        NodeValue r = XSDFuncOp.round(nv);
+        assertTrue(r.isFloat(), "Not a float: "+r);
+        assertTrue(r instanceof NodeValueFloat, "Not a NodeValueFloat: "+r);
+        assertEquals(-0.0f, r.getFloat(), 0f, "Wrong result");
+    }
+
+    @Test public void testRoundFloat4() {
+        NodeValue nv = NodeValue.makeFloat(Float.NaN);
+        NodeValue r = XSDFuncOp.round(nv);
+        assertTrue(XSDNumUtils.isNaN(r));
+    }
+
+    @Test public void testRoundFloat5() {
+        NodeValue nv = NodeValue.makeFloat(Float.POSITIVE_INFINITY);
+        NodeValue r = XSDFuncOp.round(nv);
+        assertEquals(r.getFloat(), Float.POSITIVE_INFINITY);
+    }
+
+    @Test public void testRoundFloat6() {
+        NodeValue nv = NodeValue.makeFloat(Float.NEGATIVE_INFINITY);
+        NodeValue r = XSDFuncOp.round(nv);
+        assertEquals(r.getFloat(), Double.NEGATIVE_INFINITY);
+    }
+
+    @Test public void testRound1() {
+        NodeValue nv = NodeValue.makeDecimal(1.23);
+        NodeValue r = XSDFuncOp.round(nv);
+        assertTrue(r instanceof NodeValueDecimal, "Not a NodeValueDecimal: "+r);
+        assertEquals(new BigDecimal("1"), r.getDecimal(), "Wrong result");
+    }
+
+    @Test public void testRound2() {
+        NodeValue nv = NodeValue.makeDecimal(-1.23);
+        NodeValue r = XSDFuncOp.round(nv);
+        assertTrue(r instanceof NodeValueDecimal, "Not a NodeValueDecimal: "+r);
+        assertEquals(new BigDecimal("-1"), r.getDecimal(), "Wrong result");
+    }
+
     @Test public void testCeiling1() {
         NodeValue nv = NodeValue.makeDecimal(2.6);
         NodeValue r = XSDFuncOp.ceiling(nv);

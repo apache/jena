@@ -19,13 +19,14 @@
 package org.apache.jena.sparql.expr;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.ARQConstants;
@@ -91,61 +92,68 @@ public class TestFunctions2
     // Any same value would do - we test for the exact lexical form
     // of the implementation.
 
-    @Test public void round_01()    { test("round(123)",    "123"); }
-    @Test public void round_02()    { test("round(123.5)",  "'124.0'^^xsd:decimal"); }
-    @Test public void round_03()    { test("round(-0.5e0)", "0.0e0"); }
-    @Test public void round_04()    { test("round(-1.5)",   "'-1.0'^^xsd:decimal"); }
-    @Test public void round_05()    { test("round(-0)",     "-0"); }
+    // ROUND
+    @Test public void round_01()  { test("round(123)",    "123"); }
+    @Test public void round_02()  { test("round(123.5)",  "'124.0'^^xsd:decimal"); }
+    @Test public void round_03()  { test("round(-0.5e0)", "-0.0e0"); }
+    @Test public void round_04()  { test("round(-1.5)",   "'-1.0'^^xsd:decimal"); }
+    @Test public void round_05()  { test("round(-0)",     "-0"); }
 
-    @Test public void abs_01()    { test("abs(1)",      "1"); }
-    @Test public void abs_02()    { test("abs(1.0)",    "1.0"); }
-    @Test public void abs_03()    { test("abs(1.0e0)",  "1.0e0"); }
-    @Test public void abs_04()    { test("abs(-1)",     "1"); }
-    @Test public void abs_05()    { test("abs(+0)",     "0"); }
-    @Test public void abs_06()    { test("abs(-0)",     "0"); }
+    @Test public void round_10()  { test("round('NaN'^^xsd:double)",    "'NaN'^^xsd:double"); }
+    @Test public void round_11()  { test("round('NaN'^^xsd:float)",     "'NaN'^^xsd:float"); }
+    @Test public void round_12()  { test("round('-0'^^xsd:double)",     "'-0.0e0'^^xsd:double"); }
+    @Test public void round_13()  { test("round('-0'^^xsd:float)",      "'-0.0'^^xsd:float"); }
+    @Test public void round_14()  { test("round('-0'^^xsd:double)",     "'-0.0e0'^^xsd:double"); }
+
+    @Test public void abs_01()    { test("abs(1)",        "1"); }
+    @Test public void abs_02()    { test("abs(1.0)",      "1.0"); }
+    @Test public void abs_03()    { test("abs(1.0e0)",    "1.0e0"); }
+    @Test public void abs_04()    { test("abs(-1)",       "1"); }
+    @Test public void abs_05()    { test("abs(+0)",       "0"); }
+    @Test public void abs_06()    { test("abs(-0)",       "0"); }
 
     // CEIL
-    @Test public void ceil_01()    { test("ceil(1)",        "1"); }
-    @Test public void ceil_02()    { test("ceil(1.0)",      "'1.0'^^xsd:decimal"); }
-    @Test public void ceil_03()    { test("ceil(1e0)",      "1.0e0"); }
-    @Test public void ceil_04()    { test("ceil(1.5e0)",    "2.0e0"); }
-    @Test public void ceil_05()    { test("ceil(-0.9)",     "'0.0'^^xsd:decimal"); }
-    @Test public void ceil_06()    { test("ceil(-9)",       "-9"); }
-    @Test public void ceil_07()    { test("ceil(-9.5)",     "'-9.0'^^xsd:decimal"); }
-    @Test public void ceil_08()    { test("ceil(0)",        "0"); }
+    @Test public void ceil_01()   { test("ceil(1)",       "1"); }
+    @Test public void ceil_02()   { test("ceil(1.0)",     "'1.0'^^xsd:decimal"); }
+    @Test public void ceil_03()   { test("ceil(1e0)",     "1.0e0"); }
+    @Test public void ceil_04()   { test("ceil(1.5e0)",   "2.0e0"); }
+    @Test public void ceil_05()   { test("ceil(-0.9)",    "'0.0'^^xsd:decimal"); }
+    @Test public void ceil_06()   { test("ceil(-9)",      "-9"); }
+    @Test public void ceil_07()   { test("ceil(-9.5)",    "'-9.0'^^xsd:decimal"); }
+    @Test public void ceil_08()   { test("ceil(0)",       "0"); }
 
     // FLOOR
-    @Test public void floor_01()    { test("floor(1)",      "1"); }
-    @Test public void floor_02()    { test("floor(1.0)",    "'1.0'^^xsd:decimal"); }
-    @Test public void floor_03()    { test("floor(1e0)",    "1.0e0"); }
-    @Test public void floor_04()    { test("floor(1.5e0)",  "1.0e0"); }
-    @Test public void floor_05()    { test("floor(-0.9)",   "'-1.0'^^xsd:decimal"); }
-    @Test public void floor_06()    { test("floor(-9)",     "-9"); }
-    @Test public void floor_07()    { test("floor(-9.5)",   "'-10.0'^^xsd:decimal"); }
-    @Test public void floor_08()    { test("floor(0)",      "0"); }
+    @Test public void floor_01()  { test("floor(1)",      "1"); }
+    @Test public void floor_02()  { test("floor(1.0)",    "'1.0'^^xsd:decimal"); }
+    @Test public void floor_03()  { test("floor(1e0)",    "1.0e0"); }
+    @Test public void floor_04()  { test("floor(1.5e0)",  "1.0e0"); }
+    @Test public void floor_05()  { test("floor(-0.9)",   "'-1.0'^^xsd:decimal"); }
+    @Test public void floor_06()  { test("floor(-9)",     "-9"); }
+    @Test public void floor_07()  { test("floor(-9.5)",   "'-10.0'^^xsd:decimal"); }
+    @Test public void floor_08()  { test("floor(0)",      "0"); }
 
-    // simple, PLWL, xsd:string.
 
     // CONCAT
-    @Test public void concat_01()   { test("concat('a')",       "'a'"); }
-    @Test public void concat_02()   { test("concat('a', 'b')",  "'ab'"); }
-    @Test public void concat_03()   { test("concat('a'@en, 'b')",  "'ab'"); }
-    @Test public void concat_04()   { test("concat('a'@en, 'b'@en)",  "'ab'@en"); }
-    //@Test public void concat_05()   { test("concat('a'^^xsd:string, 'b')",  "'ab'^^xsd:string"); }
-    @Test public void concat_05()   { test("concat('a'^^xsd:string, 'b')",  "'ab'"); }
-    @Test public void concat_06()   { test("concat('a'^^xsd:string, 'b'^^xsd:string)",  "'ab'^^xsd:string"); }
-    @Test public void concat_07()   { test("concat('a'^^xsd:string, 'b'^^xsd:string)",  "'ab'^^xsd:string"); }
+    @Test public void concat_00()    { test("concat()",       "''"); }
+    @Test public void concat_01()    { test("concat('a')",       "'a'"); }
+    @Test public void concat_02()    { test("concat('a', 'b')",  "'ab'"); }
+    @Test public void concat_03()    { test("concat('a'@en, 'b')",  "'ab'"); }
+    @Test public void concat_04()    { test("concat('a'@en, 'b'@en)",  "'ab'@en"); }
+    //@Test public void concat_05()    { test("concat('a'^^xsd:string, 'b')",  "'ab'^^xsd:string"); }
+    @Test public void concat_05()    { test("concat('a'^^xsd:string, 'b')",  "'ab'"); }
+    @Test public void concat_06()    { test("concat('a'^^xsd:string, 'b'^^xsd:string)",  "'ab'^^xsd:string"); }
+    @Test public void concat_07()    { test("concat('a'^^xsd:string, 'b'^^xsd:string)",  "'ab'^^xsd:string"); }
     //@Test public void concat_08()   { test("concat('a', 'b'^^xsd:string)",  "'ab'^^xsd:string"); }
-    @Test public void concat_08()   { test("concat('a', 'b'^^xsd:string)",  "'ab'"); }
-    @Test public void concat_09()   { test("concat('a'@en, 'b'^^xsd:string)",  "'ab'"); }
-    @Test public void concat_10()   { test("concat('a'^^xsd:string, 'b'@en)",  "'ab'"); }
-    @Test public void concat_11()   { test("concat()",  "''"); }
+    @Test public void concat_08()    { test("concat('a', 'b'^^xsd:string)",  "'ab'"); }
+    @Test public void concat_09()    { test("concat('a'@en, 'b'^^xsd:string)",  "'ab'"); }
+    @Test public void concat_10()    { test("concat('a'^^xsd:string, 'b'@en)",  "'ab'"); }
+    @Test public void concat_11()    { test("concat()",  "''"); }
 
     @Test
     public void concat_90()          { assertThrows(ExprEvalException.class, ()-> test("concat(1)",      "1") ); }
 
     @Test
-    public void concat_91()         { test("concat('a'@en, 'b'@fr)",  "'ab'"); }
+    public void concat_91()          { test("concat('a'@en, 'b'@fr)",  "'ab'"); }
 
     // SUBSTR
     @Test public void substr_01()    { test("substr('abc',1)",      "'abc'"); }
@@ -156,15 +164,15 @@ public class TestFunctions2
     @Test public void substr_06()    { test("substr('12345',-1,3)", "'1'"); }
 
     // These are the examples in F&O
-    @Test public void substr_10()   { test("substr('motor car', 6)",      "' car'"); }
-    @Test public void substr_11()   { test("substr('metadata', 4, 3)",    "'ada'"); }
-    @Test public void substr_12()   { test("substr('12345', 1.5, 2.6)",   "'234'"); }
-    @Test public void substr_13()   { test("substr('12345', 0, 3)",       "'12'"); }
-    @Test public void substr_14()   { test("substr('12345', 5, -3)",      "''"); }
-    @Test public void substr_15()   { test("substr('12345', -3, 5)",      "'1'"); }
-    @Test public void substr_16()   { test("substr('12345', 0/0E0, 3)",   "''"); }
-    @Test public void substr_17()   { test("substr('12345', 1, 0/0E0)",   "''"); }
-    @Test public void substr_18()   { test("substr('', 1, 3)",            "''"); }
+    @Test public void substr_10()    { test("substr('motor car', 6)",      "' car'"); }
+    @Test public void substr_11()    { test("substr('metadata', 4, 3)",    "'ada'"); }
+    @Test public void substr_12()    { test("substr('12345', 1.5, 2.6)",   "'234'"); }
+    @Test public void substr_13()    { test("substr('12345', 0, 3)",       "'12'"); }
+    @Test public void substr_14()    { test("substr('12345', 5, -3)",      "''"); }
+    @Test public void substr_15()    { test("substr('12345', -3, 5)",      "'1'"); }
+    @Test public void substr_16()    { test("substr('12345', 0/0E0, 3)",   "''"); }
+    @Test public void substr_17()    { test("substr('12345', 1, 0/0E0)",   "''"); }
+    @Test public void substr_18()    { test("substr('', 1, 3)",            "''"); }
 
     @Test
     public void substr_20()         { assertThrows(ExprEvalException.class, ()-> test("substr(1, 1, 3)",            "''") ); }
@@ -226,35 +234,30 @@ public class TestFunctions2
     */
 
     // CONTAINS
-    @Test public void contains_01()    { test("contains('abc', 'a')", "true"); }
-    @Test public void contains_02()    { test("contains('abc', 'b')", "true"); }
-    @Test public void contains_03()    { test("contains('ABC', 'a')", "false"); }
-    @Test public void contains_04()    { test("contains('abc', '')",  "true"); }
-    @Test public void contains_05()    { test("contains('', '')",     "true"); }
-    @Test public void contains_06()    { test("contains('', 'a')",    "false"); }
-    @Test public void contains_07()    { test("contains('12345', '34')",        "true"); }
-    @Test public void contains_08()    { test("contains('12345', '123456')",    "false"); }
+    @Test public void contains_01()     { test("contains('abc', 'a')", "true"); }
+    @Test public void contains_02()     { test("contains('abc', 'b')", "true"); }
+    @Test public void contains_03()     { test("contains('ABC', 'a')", "false"); }
+    @Test public void contains_04()     { test("contains('abc', '')",  "true"); }
+    @Test public void contains_05()     { test("contains('', '')",     "true"); }
+    @Test public void contains_06()     { test("contains('', 'a')",    "false"); }
+    @Test public void contains_07()     { test("contains('12345', '34')",        "true"); }
+    @Test public void contains_08()     { test("contains('12345', '123456')",    "false"); }
 
-    @Test public void contains_10()    { test("contains('abc', 'a'^^xsd:string)",          "true"); }
-    @Test
-    public void contains_11()    { assertThrows(ExprEvalException.class, ()-> test("contains('abc', 'a'@en)",          "true") ); }
+    @Test public void contains_10()     { test("contains('abc', 'a'^^xsd:string)",          "true"); }
+    @Test public void contains_11()     { assertThrows(ExprEvalException.class, ()-> test("contains('abc', 'a'@en)",          "true") ); }
 
-    @Test public void contains_12()    { test("contains('abc'@en, 'a')",          "true"); }
-    @Test public void contains_13()    { test("contains('abc'@en, 'a'^^xsd:string)",          "true"); }
-    @Test public void contains_14()    { test("contains('abc'@en, 'a'@en)",       "true"); }
-    @Test
-    public void contains_15()          { assertThrows(ExprEvalException.class, ()-> test("contains('abc'@en, 'a'@fr)",       "true") ); }
+    @Test public void contains_12()     { test("contains('abc'@en, 'a')",          "true"); }
+    @Test public void contains_13()     { test("contains('abc'@en, 'a'^^xsd:string)",          "true"); }
+    @Test public void contains_14()     { test("contains('abc'@en, 'a'@en)",       "true"); }
+    @Test public void contains_15()     { assertThrows(ExprEvalException.class, ()-> test("contains('abc'@en, 'a'@fr)",       "true") ); }
 
-    @Test public void contains_16()    { test("contains('abc'^^xsd:string, 'a')", "true"); }
+    @Test public void contains_16()     { test("contains('abc'^^xsd:string, 'a')", "true"); }
 
-    @Test
-    public void contains_17()          { assertThrows(ExprEvalException.class, ()-> test("contains('abc'^^xsd:string, 'a'@en)", "true") ); }
-    @Test public void contains_18()    { test("contains('abc'^^xsd:string, 'a'^^xsd:string)", "true"); }
+    @Test public void contains_17()     { assertThrows(ExprEvalException.class, ()-> test("contains('abc'^^xsd:string, 'a'@en)", "true") ); }
+    @Test public void contains_18()     { test("contains('abc'^^xsd:string, 'a'^^xsd:string)", "true"); }
 
-    @Test
-    public void contains_20()    { assertThrows(ExprEvalException.class, ()-> test("contains(1816, 'a'^^xsd:string)", "true") ); }
-    @Test
-    public void contains_21()    { assertThrows(ExprEvalException.class, ()-> test("contains('abc', 1066)", "true") ); }
+    @Test public void contains_20()     { assertThrows(ExprEvalException.class, ()-> test("contains(1816, 'a'^^xsd:string)", "true") ); }
+    @Test public void contains_21()     { assertThrows(ExprEvalException.class, ()-> test("contains('abc', 1066)", "true") ); }
 
     @Test public void strstarts_01()    { test("strstarts('abc', 'a')", "true"); }
     @Test public void strstarts_02()    { test("strstarts('abc', 'b')", "false"); }
@@ -264,8 +267,7 @@ public class TestFunctions2
     @Test public void strstarts_06()    { test("strstarts('', 'a')",    "false"); }
 
     @Test public void strstarts_10()    { test("strstarts('abc', 'a'^^xsd:string)",          "true"); }
-    @Test
-    public void strstarts_11()    { assertThrows(ExprEvalException.class, ()-> test("strstarts('abc', 'a'@en)",          "true") ); }
+    @Test public void strstarts_11()    { assertThrows(ExprEvalException.class, ()-> test("strstarts('abc', 'a'@en)",          "true") ); }
 
     @Test public void strstarts_12()    { test("strstarts('abc'@en, 'a')",          "true"); }
     @Test public void strstarts_13()    { test("strstarts('abc'@en, 'a'^^xsd:string)",          "true"); }
@@ -279,10 +281,8 @@ public class TestFunctions2
     public void strstarts_17()          { assertThrows(ExprEvalException.class, ()-> test("strstarts('abc'^^xsd:string, 'a'@en)", "true") ); }
     @Test public void strstarts_18()    { test("strstarts('abc'^^xsd:string, 'a'^^xsd:string)", "true"); }
 
-    @Test
-    public void strstarts_20()    { assertThrows(ExprEvalException.class, ()-> test("strstarts(1816, 'a'^^xsd:string)", "true") ); }
-    @Test
-    public void strstarts_21()    { assertThrows(ExprEvalException.class, ()-> test("strstarts('abc', 1066)", "true") ); }
+    @Test public void strstarts_20()    { assertThrows(ExprEvalException.class, ()-> test("strstarts(1816, 'a'^^xsd:string)", "true") ); }
+    @Test public void strstarts_21()    { assertThrows(ExprEvalException.class, ()-> test("strstarts('abc', 1066)", "true") ); }
 
     // STRENDS
     @Test public void strends_01()      { test("strends('abc', 'c')", "true"); }
@@ -293,8 +293,7 @@ public class TestFunctions2
     @Test public void strends_06()      { test("strends('', 'a')",    "false"); }
 
     @Test public void strends_10()      { test("strends('abc', 'c'^^xsd:string)",          "true"); }
-    @Test
-    public void strends11()             { assertThrows(ExprEvalException.class, ()-> test("strends('abc', 'c'@en)",          "true") ); }
+    @Test public void strends11()       { assertThrows(ExprEvalException.class, ()-> test("strends('abc', 'c'@en)",          "true") ); }
 
     @Test public void strends_12()      { test("strends('abc'@en, 'c')",          "true"); }
     @Test public void strends_13()      { test("strends('abc'@en, 'c'^^xsd:string)",          "true"); }
@@ -307,10 +306,8 @@ public class TestFunctions2
     public void strends_17()            { assertThrows(ExprEvalException.class, ()-> test("strends('abc'^^xsd:string, 'a'@en)", "true") ); }
     @Test public void strends_18()      { test("strends('abc'^^xsd:string, 'abc'^^xsd:string)", "true"); }
 
-    @Test
-    public void strends_20()            { assertThrows(ExprEvalException.class, ()-> test("strends(1816, '6'^^xsd:string)", "true") ); }
-    @Test
-    public void strends_21()            { assertThrows(ExprEvalException.class, ()-> test("strends('abc', 1066)", "true") ); }
+    @Test public void strends_20()      { assertThrows(ExprEvalException.class, ()-> test("strends(1816, '6'^^xsd:string)", "true") ); }
+    @Test public void strends_21()      { assertThrows(ExprEvalException.class, ()-> test("strends('abc', 1066)", "true") ); }
 
     // YEAR
     @Test public void year_01()         { test("year('2010-12-24T16:24:01.123'^^xsd:dateTime)", "2010"); }
@@ -436,49 +433,45 @@ public class TestFunctions2
     @Test public void hours_20()        { test("hours('2010-12-24T16:24:01.123-08:00'^^xsd:dateTime)", "16"); }
     @Test public void hours_21()        { test("hours('16:24:24-08:00'^^xsd:time)", "16"); }
 
-    @Test public void hours_dur_01()     { test("hours('P1Y2M3DT4H5M6S'^^xsd:duration)", "4"); }
+    @Test public void hours_dur_01()    { test("hours('P1Y2M3DT4H5M6S'^^xsd:duration)", "4"); }
 
     // MINUTES
-    @Test public void minutes_01()        { test("minutes('2010-12-24T16:24:01.123'^^xsd:dateTime)", "24"); }
-    @Test
-    public void minutes_02()              { assertThrows(ExprEvalException.class, ()-> test("minutes('2010-12-24'^^xsd:date)", "") ); }
-    @Test public void minutes_03()        { test("minutes('16:24:01'^^xsd:time)", "24"); }
+    @Test public void minutes_01()      { test("minutes('2010-12-24T16:24:01.123'^^xsd:dateTime)", "24"); }
+    @Test public void minutes_02()      { assertThrows(ExprEvalException.class, ()-> test("minutes('2010-12-24'^^xsd:date)", "") ); }
+    @Test public void minutes_03()      { test("minutes('16:24:01'^^xsd:time)", "24"); }
 
-    @Test public void minutes_10()        { test("minutes('2010-12-24T16:24:01.123Z'^^xsd:dateTime)", "24"); }
-    @Test public void minutes_11()        { test("minutes('16:24:01.1Z'^^xsd:time)", "24"); }
+    @Test public void minutes_10()      { test("minutes('2010-12-24T16:24:01.123Z'^^xsd:dateTime)", "24"); }
+    @Test public void minutes_11()      { test("minutes('16:24:01.1Z'^^xsd:time)", "24"); }
 
-    @Test public void minutes_20()        { test("minutes('2010-12-24T16:24:01.123-08:00'^^xsd:dateTime)", "24"); }
-    @Test public void minutes_21()        { test("minutes('16:24:01.01-08:00'^^xsd:time)", "24"); }
+    @Test public void minutes_20()      { test("minutes('2010-12-24T16:24:01.123-08:00'^^xsd:dateTime)", "24"); }
+    @Test public void minutes_21()      { test("minutes('16:24:01.01-08:00'^^xsd:time)", "24"); }
 
-    @Test public void minutes_dur_01()    { test("minutes('P1Y2M3DT4H5M6S'^^xsd:duration)", "5"); }
+    @Test public void minutes_dur_01()  { test("minutes('P1Y2M3DT4H5M6S'^^xsd:duration)", "5"); }
 
     // SECONDS
-    @Test public void seconds_01()        { test("seconds('2010-12-24T16:24:01.123'^^xsd:dateTime)", "01.123"); }
+    @Test public void seconds_01()      { test("seconds('2010-12-24T16:24:01.123'^^xsd:dateTime)", "01.123"); }
     @Test
-    public void seconds_02()              { assertThrows(ExprEvalException.class, ()-> test("seconds('2010-12-24'^^xsd:date)", "") ); }
-    @Test public void seconds_03()        { test("seconds('16:24:01'^^xsd:time)", "'01'^^xsd:decimal"); }
+    public void seconds_02()            { assertThrows(ExprEvalException.class, ()-> test("seconds('2010-12-24'^^xsd:date)", "") ); }
+    @Test public void seconds_03()      { test("seconds('16:24:01'^^xsd:time)", "'01'^^xsd:decimal"); }
 
-    @Test public void seconds_10()        { test("seconds('2010-12-24T16:24:31.123Z'^^xsd:dateTime)", "31.123"); }
-    @Test public void seconds_11()        { test("seconds('16:24:01.1Z'^^xsd:time)", "'01.1'^^xsd:decimal"); }
+    @Test public void seconds_10()      { test("seconds('2010-12-24T16:24:31.123Z'^^xsd:dateTime)", "31.123"); }
+    @Test public void seconds_11()      { test("seconds('16:24:01.1Z'^^xsd:time)", "'01.1'^^xsd:decimal"); }
 
-    @Test public void seconds_20()        { test("seconds('2010-12-24T16:24:35.123-08:00'^^xsd:dateTime)", "35.123"); }
-    @Test public void seconds_21()        { test("seconds('16:24:01.01-08:00'^^xsd:time)", "'01.01'^^xsd:decimal"); }
+    @Test public void seconds_20()      { test("seconds('2010-12-24T16:24:35.123-08:00'^^xsd:dateTime)", "35.123"); }
+    @Test public void seconds_21()      { test("seconds('16:24:01.01-08:00'^^xsd:time)", "'01.01'^^xsd:decimal"); }
 
-    @Test public void seconds_dur_01()    { test("seconds('P1Y2M3DT4H5M6S'^^xsd:duration)", "'6.0'^^xsd:decimal"); }
+    @Test public void seconds_dur_01()  { test("seconds('P1Y2M3DT4H5M6S'^^xsd:duration)", "'6.0'^^xsd:decimal"); }
 
     // TIMEZONE
-    @Test public void timezone_01()       { test("timezone('2010-12-24T16:24:35.123Z'^^xsd:dateTime)", "'PT0S'^^xsd:dayTimeDuration"); }
-    @Test public void timezone_02()       { test("timezone('2010-12-24T16:24:35.123-08:00'^^xsd:dateTime)", "'-PT8H'^^xsd:dayTimeDuration"); }
-    @Test public void timezone_03()       { test("timezone('2010-12-24T16:24:35.123+01:00'^^xsd:dateTime)", "'PT1H'^^xsd:dayTimeDuration"); }
-    @Test public void timezone_04()       { test("timezone('2010-12-24T16:24:35.123-00:00'^^xsd:dateTime)", "'-PT0S'^^xsd:dayTimeDuration"); }
-    @Test public void timezone_05()       { test("timezone('2010-12-24T16:24:35.123+00:00'^^xsd:dateTime)", "'PT0S'^^xsd:dayTimeDuration"); }
+    @Test public void timezone_01()     { test("timezone('2010-12-24T16:24:35.123Z'^^xsd:dateTime)", "'PT0S'^^xsd:dayTimeDuration"); }
+    @Test public void timezone_02()     { test("timezone('2010-12-24T16:24:35.123-08:00'^^xsd:dateTime)", "'-PT8H'^^xsd:dayTimeDuration"); }
+    @Test public void timezone_03()     { test("timezone('2010-12-24T16:24:35.123+01:00'^^xsd:dateTime)", "'PT1H'^^xsd:dayTimeDuration"); }
+    @Test public void timezone_04()     { test("timezone('2010-12-24T16:24:35.123-00:00'^^xsd:dateTime)", "'-PT0S'^^xsd:dayTimeDuration"); }
+    @Test public void timezone_05()     { test("timezone('2010-12-24T16:24:35.123+00:00'^^xsd:dateTime)", "'PT0S'^^xsd:dayTimeDuration"); }
 
-    @Test
-    public void timezone_09()             { assertThrows(ExprEvalException.class, ()-> test("timezone('2010-12-24T16:24:35'^^xsd:dateTime)", "'PT0S'^^xsd:dayTimeDuration") ); }
-    @Test
-    public void timezone_10()             { assertThrows(ExprEvalException.class, ()-> test("timezone(2010)", "'PT0S'^^xsd:dayTimeDuration") ); }
-    @Test
-    public void timezone_11()             { assertThrows(ExprEvalException.class, ()-> test("timezone('2010-junk'^^xsd:gYear)", "'PT0S'^^xsd:dayTimeDuration") ); }
+    @Test public void timezone_09()     { assertThrows(ExprEvalException.class, ()-> test("timezone('2010-12-24T16:24:35'^^xsd:dateTime)", "'PT0S'^^xsd:dayTimeDuration") ); }
+    @Test public void timezone_10()     { assertThrows(ExprEvalException.class, ()-> test("timezone(2010)", "'PT0S'^^xsd:dayTimeDuration") ); }
+    @Test public void timezone_11()     { assertThrows(ExprEvalException.class, ()-> test("timezone('2010-junk'^^xsd:gYear)", "'PT0S'^^xsd:dayTimeDuration") ); }
 
     // General "adjust-to-timezone"
     @Test public void adjust_1() {
@@ -503,40 +496,32 @@ public class TestFunctions2
 
 
     // TZ
-    @Test public void tz_01()             { test("tz('2010-12-24T16:24:35.123Z'^^xsd:dateTime)", "'Z'"); }
-    @Test public void tz_02()             { test("tz('2010-12-24T16:24:35.123-08:00'^^xsd:dateTime)", "'-08:00'"); }
-    @Test public void tz_03()             { test("tz('2010-12-24T16:24:35.123+01:00'^^xsd:dateTime)", "'+01:00'"); }
-    @Test public void tz_04()             { test("tz('2010-12-24T16:24:35.123-00:00'^^xsd:dateTime)", "'-00:00'"); }
-    @Test public void tz_05()             { test("tz('2010-12-24T16:24:35.123+00:00'^^xsd:dateTime)", "'+00:00'"); }
-    @Test public void tz_06()             { test("tz('2010-12-24T16:24:35.123'^^xsd:dateTime)", "''"); }
+    @Test public void tz_01()           { test("tz('2010-12-24T16:24:35.123Z'^^xsd:dateTime)", "'Z'"); }
+    @Test public void tz_02()           { test("tz('2010-12-24T16:24:35.123-08:00'^^xsd:dateTime)", "'-08:00'"); }
+    @Test public void tz_03()           { test("tz('2010-12-24T16:24:35.123+01:00'^^xsd:dateTime)", "'+01:00'"); }
+    @Test public void tz_04()           { test("tz('2010-12-24T16:24:35.123-00:00'^^xsd:dateTime)", "'-00:00'"); }
+    @Test public void tz_05()           { test("tz('2010-12-24T16:24:35.123+00:00'^^xsd:dateTime)", "'+00:00'"); }
+    @Test public void tz_06()           { test("tz('2010-12-24T16:24:35.123'^^xsd:dateTime)", "''"); }
 
-    @Test
-					 public void tz_10()                   { assertThrows(ExprEvalException.class, ()-> test("tz(2010)", "''") ); }
-    @Test
-					 public void tz_11()                   { assertThrows(ExprEvalException.class, ()-> test("tz('2010-junk'^^xsd:gYear)", "''") ); }
+    @Test public void tz_10()           { assertThrows(ExprEvalException.class, ()-> test("tz(2010)", "''") ); }
+    @Test public void tz_11()           { assertThrows(ExprEvalException.class, ()-> test("tz('2010-junk'^^xsd:gYear)", "''") ); }
 
     // NOW
     //@Test public void now_01()        { test("now() > '2010-12-24T16:24:35.123-08:00'^^xsd:dateTime", "true"); }
 
-
     // MD5
-    @Test public void md5_01()      { test("md5('abcd')","'e2fc714c4727ee9395f324cd2e7f331f'"); }
-    @Test public void md5_02()            { test("md5('abcd'^^xsd:string)","'e2fc714c4727ee9395f324cd2e7f331f'"); }
-    @Test
-					 public void md5_03()            { assertThrows(ExprEvalException.class, ()-> test("md5('abcd'@en)","'e2fc714c4727ee9395f324cd2e7f331f'") ); }
-    @Test
-					 public void md5_04()            { assertThrows(ExprEvalException.class, ()-> test("md5(1234)","'e2fc714c4727ee9395f324cd2e7f331f'") ); }
+    @Test public void md5_01()          { test("md5('abcd')","'e2fc714c4727ee9395f324cd2e7f331f'"); }
+    @Test public void md5_02()          { test("md5('abcd'^^xsd:string)","'e2fc714c4727ee9395f324cd2e7f331f'"); }
+    @Test public void md5_03()          { assertThrows(ExprEvalException.class, ()-> test("md5('abcd'@en)","'e2fc714c4727ee9395f324cd2e7f331f'") ); }
+    @Test public void md5_04()          { assertThrows(ExprEvalException.class, ()-> test("md5(1234)","'e2fc714c4727ee9395f324cd2e7f331f'") ); }
 
     // SHA1
+    @Test public void sha1_01()         { test("sha1('abcd')","'81fe8bfe87576c3ecb22426f8e57847382917acf'"); }
+    @Test public void sha1_02()         { test("sha1('abcd'^^xsd:string)","'81fe8bfe87576c3ecb22426f8e57847382917acf'"); }
+    @Test public void sha1_03()         { assertThrows(ExprEvalException.class, ()-> test("sha1('abcd'@en)","'81fe8bfe87576c3ecb22426f8e57847382917acf'") ); }
+    @Test public void sha1_04()         { assertThrows(ExprEvalException.class, ()-> test("sha1(123)","'81fe8bfe87576c3ecb22426f8e57847382917acf'") ); }
 
-    @Test public void sha1_01()      { test("sha1('abcd')","'81fe8bfe87576c3ecb22426f8e57847382917acf'"); }
-    @Test public void sha1_02()      { test("sha1('abcd'^^xsd:string)","'81fe8bfe87576c3ecb22426f8e57847382917acf'"); }
-    @Test
-					 public void sha1_03()            { assertThrows(ExprEvalException.class, ()-> test("sha1('abcd'@en)","'81fe8bfe87576c3ecb22426f8e57847382917acf'") ); }
-    @Test
-					 public void sha1_04()            { assertThrows(ExprEvalException.class, ()-> test("sha1(123)","'81fe8bfe87576c3ecb22426f8e57847382917acf'") ); }
-
-    // SHA224
+//    // SHA224
 //    @Test public void sha224_01()      { test("sha224('abcd')","'e2fc714c4727ee9395f324cd2e7f331f'"); }
 //
 //    @Test
@@ -550,49 +535,43 @@ public class TestFunctions2
 
     // SHA256
 
-    @Test public void sha256_01()      { test("sha256('abcd')","'88d4266fd4e6338d13b845fcf289579d209c897823b9217da3e161936f031589'"); }
-
-    @Test public void sha256_02()      { test("sha256('abcd'^^xsd:string)","'88d4266fd4e6338d13b845fcf289579d209c897823b9217da3e161936f031589'"); }
-
-    @Test
-					 public void sha256_03()            { assertThrows(ExprEvalException.class, ()-> test("sha256('abcd'@en)","'88d4266fd4e6338d13b845fcf289579d209c897823b9217da3e161936f031589'") ); }
-
-    @Test
-					 public void sha256_04()            { assertThrows(ExprEvalException.class, ()-> test("sha256(<uri>)","'88d4266fd4e6338d13b845fcf289579d209c897823b9217da3e161936f031589'") ); }
+    @Test public void sha256_01()       { test("sha256('abcd')","'88d4266fd4e6338d13b845fcf289579d209c897823b9217da3e161936f031589'"); }
+    @Test public void sha256_02()       { test("sha256('abcd'^^xsd:string)","'88d4266fd4e6338d13b845fcf289579d209c897823b9217da3e161936f031589'"); }
+    @Test public void sha256_03()       { assertThrows(ExprEvalException.class, ()-> test("sha256('abcd'@en)","'88d4266fd4e6338d13b845fcf289579d209c897823b9217da3e161936f031589'") ); }
+    @Test public void sha256_04()       { assertThrows(ExprEvalException.class, ()-> test("sha256(<uri>)","'88d4266fd4e6338d13b845fcf289579d209c897823b9217da3e161936f031589'") ); }
 
     // SHA384
-    @Test public void sha384_01()      { test("sha384('abcd')","'1165b3406ff0b52a3d24721f785462ca2276c9f454a116c2b2ba20171a7905ea5a026682eb659c4d5f115c363aa3c79b'"); }
-
-
-    @Test public void sha384_02()      { test("sha384('abcd'^^xsd:string)","'1165b3406ff0b52a3d24721f785462ca2276c9f454a116c2b2ba20171a7905ea5a026682eb659c4d5f115c363aa3c79b'"); }
-
-    @Test
-					 public void sha384_03()            { assertThrows(ExprEvalException.class, ()-> test("sha384('abcd'@en)","'1165b3406ff0b52a3d24721f785462ca2276c9f454a116c2b2ba20171a7905ea5a026682eb659c4d5f115c363aa3c79b'") ); }
-
-    @Test
-					 public void sha384_04()            { assertThrows(ExprEvalException.class, ()-> test("sha384(123.45)","'1165b3406ff0b52a3d24721f785462ca2276c9f454a116c2b2ba20171a7905ea5a026682eb659c4d5f115c363aa3c79b'") ); }
+    @Test public void sha384_01()       { test("sha384('abcd')","'1165b3406ff0b52a3d24721f785462ca2276c9f454a116c2b2ba20171a7905ea5a026682eb659c4d5f115c363aa3c79b'"); }
+    @Test public void sha384_02()       { test("sha384('abcd'^^xsd:string)","'1165b3406ff0b52a3d24721f785462ca2276c9f454a116c2b2ba20171a7905ea5a026682eb659c4d5f115c363aa3c79b'"); }
+    @Test public void sha384_03()       { assertThrows(ExprEvalException.class, ()-> test("sha384('abcd'@en)","'1165b3406ff0b52a3d24721f785462ca2276c9f454a116c2b2ba20171a7905ea5a026682eb659c4d5f115c363aa3c79b'") ); }
+    @Test public void sha384_04()       { assertThrows(ExprEvalException.class, ()-> test("sha384(123.45)","'1165b3406ff0b52a3d24721f785462ca2276c9f454a116c2b2ba20171a7905ea5a026682eb659c4d5f115c363aa3c79b'") ); }
 
     // SHA512
-    @Test public void sha512_01()      { test("sha512('abcd')","'d8022f2060ad6efd297ab73dcc5355c9b214054b0d1776a136a669d26a7d3b14f73aa0d0ebff19ee333368f0164b6419a96da49e3e481753e7e96b716bdccb6f'"); }
-
-    @Test public void sha512_02()      { test("sha512('abcd'^^xsd:string)","'d8022f2060ad6efd297ab73dcc5355c9b214054b0d1776a136a669d26a7d3b14f73aa0d0ebff19ee333368f0164b6419a96da49e3e481753e7e96b716bdccb6f'"); }
-
-    @Test
-					 public void sha512_03()            { assertThrows(ExprEvalException.class, ()-> test("md5('abcd'@en)","'d8022f2060ad6efd297ab73dcc5355c9b214054b0d1776a136a669d26a7d3b14f73aa0d0ebff19ee333368f0164b6419a96da49e3e481753e7e96b716bdccb6f'") ); }
-
-    @Test
-					 public void sha512_04()            { assertThrows(ExprEvalException.class, ()-> test("md5(0.0e0)","'d8022f2060ad6efd297ab73dcc5355c9b214054b0d1776a136a669d26a7d3b14f73aa0d0ebff19ee333368f0164b6419a96da49e3e481753e7e96b716bdccb6f'") ); }
+    @Test public void sha512_01()       { test("sha512('abcd')","'d8022f2060ad6efd297ab73dcc5355c9b214054b0d1776a136a669d26a7d3b14f73aa0d0ebff19ee333368f0164b6419a96da49e3e481753e7e96b716bdccb6f'"); }
+    @Test public void sha512_02()       { test("sha512('abcd'^^xsd:string)","'d8022f2060ad6efd297ab73dcc5355c9b214054b0d1776a136a669d26a7d3b14f73aa0d0ebff19ee333368f0164b6419a96da49e3e481753e7e96b716bdccb6f'"); }
+    @Test public void sha512_03()       { assertThrows(ExprEvalException.class, ()-> test("md5('abcd'@en)","'d8022f2060ad6efd297ab73dcc5355c9b214054b0d1776a136a669d26a7d3b14f73aa0d0ebff19ee333368f0164b6419a96da49e3e481753e7e96b716bdccb6f'") ); }
+    @Test public void sha512_04()       { assertThrows(ExprEvalException.class, ()-> test("md5(0.0e0)","'d8022f2060ad6efd297ab73dcc5355c9b214054b0d1776a136a669d26a7d3b14f73aa0d0ebff19ee333368f0164b6419a96da49e3e481753e7e96b716bdccb6f'") ); }
 
     // --------
 
     private static PrefixMapping pmap = ARQConstants.getGlobalPrefixMap();
 
-    private static void test(String string, String result) {
-        Expr expr = ExprUtils.parse(string, pmap);
+    private static void test(String expressionStr, String result) {
+        Expr expr = ExprUtils.parse(expressionStr, pmap);
         NodeValue nv = expr.eval(null, new FunctionEnvBase());
         Node r = NodeFactoryExtra.parseNode(result);
         NodeValue nvr = NodeValue.makeNode(r);
 
+        // Check datatypes.
+        RDFDatatype dtActual = nv.asNode().getLiteralDatatype();
+        RDFDatatype dtExpected = nvr.asNode().getLiteralDatatype();
+        assertEquals(dtExpected, dtActual, "Differing datatpes");
+
+        // Same term works for NaNs
+        if ( nv.asNode().sameTermAs(nvr.asNode()) )
+            return;
+
+        // Not NaNs!
         assertTrue(NodeValue.sameValueAs(nvr, nv), "Not same value: Expected: " + nvr + " : Actual = " + nv);
         // test result must be lexical form exact.
         assertEquals(r, nv.asNode());
