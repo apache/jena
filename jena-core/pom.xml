@@ -151,7 +151,11 @@
           </dependency>
         </dependencies>
         <configuration>
+          <!-- One possibility
           <argLine>-javaagent:${org.mockito:mockito-core:jar} -Xshare:off</argLine>
+          -->
+          <!-- Without needing ${org.mockito:mockito-core:jar} -->
+          <argLine>-XX:+EnableDynamicAgentLoading -Xshare:off</argLine>
           <includes>
             <include>org/apache/jena/test/JenaCoreTestAll.java</include>
           </includes>
