@@ -16,56 +16,56 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.util ;
+package org.apache.jena.sparql.util;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.List ;
+import java.util.List;
 
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.graph.Graph;
-import org.apache.jena.query.* ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.RDFNode ;
-import org.apache.jena.riot.Lang ;
+import org.apache.jena.query.*;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.RDFWriter;
 import org.apache.jena.riot.resultset.ResultSetLang;
-import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.shared.impl.PrefixMappingImpl ;
-import org.apache.jena.sparql.ARQConstants ;
-import org.apache.jena.sparql.ARQException ;
-import org.apache.jena.sparql.algebra.Algebra ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.OpVars ;
-import org.apache.jena.sparql.algebra.op.OpProject ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.Prologue ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.shared.impl.PrefixMappingImpl;
+import org.apache.jena.sparql.ARQConstants;
+import org.apache.jena.sparql.ARQException;
+import org.apache.jena.sparql.algebra.Algebra;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpVars;
+import org.apache.jena.sparql.algebra.op.OpProject;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.Prologue;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.ResultSetStream;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.QueryExecutionAdapter;
 import org.apache.jena.sparql.resultset.RDFOutput;
-import org.apache.jena.sparql.resultset.ResultsFormat ;
+import org.apache.jena.sparql.resultset.ResultsFormat;
 import org.apache.jena.sparql.resultset.ResultsWriter;
 import org.apache.jena.sparql.resultset.SPARQLResult;
 
 /** Some utilities for query processing. */
 public class QueryExecUtils {
-    protected static PrefixMapping globalPrefixMap = new PrefixMappingImpl() ;
+    protected static PrefixMapping globalPrefixMap = new PrefixMappingImpl();
     static {
-        globalPrefixMap.setNsPrefix("rdf",  ARQConstants.rdfPrefix) ;
-        globalPrefixMap.setNsPrefix("rdfs", ARQConstants.rdfsPrefix) ;
-        globalPrefixMap.setNsPrefix("xsd",  ARQConstants.xsdPrefix) ;
-        globalPrefixMap.setNsPrefix("owl" , ARQConstants.owlPrefix) ;
-        globalPrefixMap.setNsPrefix("ex" ,  "http://example.org/") ;
-        globalPrefixMap.setNsPrefix("ns" ,  "http://example.org/ns#") ;
-        globalPrefixMap.setNsPrefix("" ,    "http://example/") ;
+        globalPrefixMap.setNsPrefix("rdf",  ARQConstants.rdfPrefix);
+        globalPrefixMap.setNsPrefix("rdfs", ARQConstants.rdfsPrefix);
+        globalPrefixMap.setNsPrefix("xsd",  ARQConstants.xsdPrefix);
+        globalPrefixMap.setNsPrefix("owl" , ARQConstants.owlPrefix);
+        globalPrefixMap.setNsPrefix("ex" ,  "http://example.org/");
+        globalPrefixMap.setNsPrefix("ns" ,  "http://example.org/ns#");
+        globalPrefixMap.setNsPrefix("" ,    "http://example/");
     }
-    protected static Prologue      dftPrologue     = new Prologue(globalPrefixMap) ;
+    protected static Prologue      dftPrologue     = new Prologue(globalPrefixMap);
 
     public static void exec(Query query, DatasetGraph dsg) {
         QueryExec qExec = QueryExec.dataset(dsg).query(query).build();
@@ -78,11 +78,11 @@ public class QueryExecUtils {
     }
 
     public static void exec(QueryExec queryExec) {
-        exec(queryExec.getQuery(), queryExec) ;
+        exec(queryExec.getQuery(), queryExec);
     }
 
     public static void exec(Prologue prologue, QueryExec queryExec) {
-        exec(prologue, queryExec, ResultsFormat.TEXT) ;
+        exec(prologue, queryExec, ResultsFormat.TEXT);
     }
 
     public static void exec(Prologue prologue, QueryExec queryExec, ResultsFormat outputFormat) {
@@ -95,11 +95,11 @@ public class QueryExecUtils {
     }
 
     public static void executeQuery(QueryExecution queryExecution) {
-        executeQuery(null, queryExecution) ;
+        executeQuery(null, queryExecution);
     }
 
     public static void executeQuery(Prologue prologue, QueryExecution queryExecution) {
-        executeQuery(prologue, queryExecution, ResultsFormat.TEXT) ;
+        executeQuery(prologue, queryExecution, ResultsFormat.TEXT);
     }
 
     public static void executeQuery(Prologue prologue, QueryExecution queryExecution, ResultsFormat outputFormat) {
@@ -107,30 +107,30 @@ public class QueryExecUtils {
     }
 
     public static void executeQuery(Prologue prologue, QueryExecution queryExecution, ResultsFormat outputFormat, OutputStream output) {
-        Query query = queryExecution.getQuery() ;
+        Query query = queryExecution.getQuery();
         if ( prologue == null && query != null )
-            prologue = query.getPrologue() ;
+            prologue = query.getPrologue();
         if ( prologue == null )
-            prologue = dftPrologue ;
+            prologue = dftPrologue;
         if ( query.isSelectType() )
-            doSelectQuery(prologue, queryExecution, outputFormat, output) ;
+            doSelectQuery(prologue, queryExecution, outputFormat, output);
         else if ( query.isDescribeType() )
-            doDescribeQuery(prologue, queryExecution, outputFormat, output) ;
+            doDescribeQuery(prologue, queryExecution, outputFormat, output);
         else if ( query.isConstructQuad() )
             // Before isConstructType.
-            doConstructQuadsQuery(prologue, queryExecution, outputFormat, output) ;
+            doConstructQuadsQuery(prologue, queryExecution, outputFormat, output);
         else if ( query.isConstructType() )
-            doConstructQuery(prologue, queryExecution, outputFormat, output) ;
+            doConstructQuery(prologue, queryExecution, outputFormat, output);
         else if ( query.isAskType() )
-            doAskQuery(prologue, queryExecution, outputFormat, output) ;
+            doAskQuery(prologue, queryExecution, outputFormat, output);
         else if ( query.isJsonType() )
-            doJsonQuery(prologue, queryExecution, outputFormat, output) ;
+            doJsonQuery(prologue, queryExecution, outputFormat, output);
         else
             throw new QueryException("Unrecognized query form");
     }
 
     public static void execute(Op op, DatasetGraph dsg) {
-        execute(op, dsg, ResultsFormat.TEXT) ;
+        execute(op, dsg, ResultsFormat.TEXT);
     }
 
     public static void execute(Op op, DatasetGraph dsg, ResultsFormat outputFormat) {
@@ -138,20 +138,19 @@ public class QueryExecUtils {
     }
 
     public static void execute(Op op, DatasetGraph dsg, ResultsFormat outputFormat, OutputStream output) {
-        QueryIterator qIter = Algebra.exec(op, dsg) ;
+        QueryIterator qIter = Algebra.exec(op, dsg);
 
-        List<Var> vars = null ;
+        List<Var> vars = null;
         if ( op instanceof OpProject )
-            vars = ((OpProject)op).getVars() ;
+            vars = ((OpProject)op).getVars();
         else
             // The variables defined in patterns (not Filters, nor NOT EXISTS,
             // nor ORDER BY)
-            vars = new ArrayList<>(OpVars.visibleVars(op)) ;
+            vars = new ArrayList<>(OpVars.visibleVars(op));
 
-        ResultSet results = ResultSetStream.create(vars, qIter) ;
-        outputResultSet(results, null, outputFormat, output) ;
+        ResultSet results = ResultSetStream.create(vars, qIter);
+        outputResultSet(results, null, outputFormat, output);
     }
-
 
     public static void output(SPARQLResult result, ResultsFormat outputFormat, OutputStream output) {
         if ( result.isResultSet() ) {
@@ -180,10 +179,10 @@ public class QueryExecUtils {
 
     public static void outputResultSet(ResultSet resultSet, Prologue prologue, ResultsFormat outputFormat, OutputStream output) {
         if ( prologue == null )
-            prologue = new Prologue(globalPrefixMap) ;
+            prologue = new Prologue(globalPrefixMap);
 
         if ( outputFormat == ResultsFormat.TEXT ) {
-            ResultSetFormatter.out(output, resultSet);
+            ResultSetFormatter.out(output, resultSet,prologue.getPrefixMapping());
             return;
         }
 
@@ -212,16 +211,16 @@ public class QueryExecUtils {
         if ( prologue != null )
             context.set(ARQConstants.symPrologue, prologue);
         ResultsWriter.create().context(context).lang(rsLang).build().write(output, resultSet);
-        return ;
+        return;
     }
 
     private static void doSelectQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat, OutputStream output) {
         if ( prologue == null )
-            prologue = qe.getQuery().getPrologue() ;
+            prologue = qe.getQuery().getPrologue();
         if ( outputFormat == null )
             outputFormat = ResultsFormat.TEXT;
-        ResultSet results = qe.execSelect() ;
-        outputResultSet(results, prologue, outputFormat, output) ;
+        ResultSet results = qe.execSelect();
+        outputResultSet(results, prologue, outputFormat, output);
     }
 
     private static void doJsonQuery(Prologue prologue, QueryExecution queryExecution, ResultsFormat outputFormat, OutputStream output) {
@@ -230,8 +229,8 @@ public class QueryExecUtils {
     }
 
     private static void doDescribeQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat, OutputStream output) {
-        Model r = qe.execDescribe() ;
-        writeModel(r, outputFormat, output) ;
+        Model r = qe.execDescribe();
+        writeModel(r, outputFormat, output);
     }
 
     private static void doConstructQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat, OutputStream output) {
@@ -239,17 +238,17 @@ public class QueryExecUtils {
             doConstructQuadsQuery(prologue, qe, outputFormat, output);
             return;
         }
-        Model r = qe.execConstruct() ;
-        writeModel(r, outputFormat, output) ;
+        Model r = qe.execConstruct();
+        writeModel(r, outputFormat, output);
     }
 
     private static void doConstructQuadsQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat, OutputStream output) {
         Dataset ds = qe.execConstructDataset();
-        writeDataset(ds, outputFormat, output) ;
+        writeDataset(ds, outputFormat, output);
     }
 
     private static void doAskQuery(Prologue prologue, QueryExecution qe, ResultsFormat outputFormat, OutputStream output) {
-        boolean resultBoolean = qe.execAsk() ;
+        boolean resultBoolean = qe.execAsk();
 
         if ( outputFormat == ResultsFormat.TEXT ) {
             ResultSetFormatter.out(output, resultBoolean);
@@ -291,7 +290,7 @@ public class QueryExecUtils {
      * that one RDFNode
      */
     public static RDFNode getExactlyOne(String qs, Model model) {
-        return getExactlyOne(qs, DatasetFactory.wrap(model)) ;
+        return getExactlyOne(qs, DatasetFactory.wrap(model));
     }
 
     /**
@@ -299,12 +298,12 @@ public class QueryExecUtils {
      * that one RDFNode
      */
     public static RDFNode getExactlyOne(String qs, Dataset ds) {
-        Query q = QueryFactory.create(qs) ;
+        Query q = QueryFactory.create(qs);
         if ( q.getResultVars().size() != 1 )
-            throw new ARQException("getExactlyOne: Must have exactly one result columns") ;
-        String varname = q.getResultVars().get(0) ;
+            throw new ARQException("getExactlyOne: Must have exactly one result columns");
+        String varname = q.getResultVars().get(0);
         try ( QueryExecution qExec = QueryExecutionFactory.create(q, ds) ) {
-            return getExactlyOne(qExec, varname) ;
+            return getExactlyOne(qExec, varname);
         }
     }
 
@@ -314,16 +313,16 @@ public class QueryExecUtils {
      * Use with {@code try ( QueryExecution qExec = ....)}.
      */
     public static RDFNode getExactlyOne(QueryExecution qExec, String varname) {
-        ResultSet rs = qExec.execSelect() ;
+        ResultSet rs = qExec.execSelect();
 
         if ( !rs.hasNext() )
-            throw new ARQException("Not found: var ?" + varname) ;
+            throw new ARQException("Not found: var ?" + varname);
 
-        QuerySolution qs = rs.nextSolution() ;
-        RDFNode r = qs.get(varname) ;
+        QuerySolution qs = rs.nextSolution();
+        RDFNode r = qs.get(varname);
         if ( rs.hasNext() )
-            throw new ARQException("More than one: var ?" + varname) ;
-        return r ;
+            throw new ARQException("More than one: var ?" + varname);
+        return r;
     }
 
     /**
@@ -332,35 +331,35 @@ public class QueryExecUtils {
      * Use with {@code try ( QueryExecution qExec = ....)}.
      */
     public static RDFNode getAtMostOne(QueryExecution qExec, String varname) {
-        ResultSet rs = qExec.execSelect() ;
+        ResultSet rs = qExec.execSelect();
 
         if ( !rs.hasNext() )
-            return null ;
+            return null;
 
-        QuerySolution qs = rs.nextSolution() ;
-        RDFNode r = qs.get(varname) ;
+        QuerySolution qs = rs.nextSolution();
+        RDFNode r = qs.get(varname);
         if ( rs.hasNext() ) {
-            QuerySolution qs2 = rs.next() ;
-            RDFNode r2 = qs2.get(varname) ;
+            QuerySolution qs2 = rs.next();
+            RDFNode r2 = qs2.get(varname);
             if ( rs.hasNext() )
-                throw new ARQException("More than one: var ?" + varname + " -> " + r + ", " + r2 + ", ...") ;
+                throw new ARQException("More than one: var ?" + varname + " -> " + r + ", " + r2 + ", ...");
             else
-                throw new ARQException("Found two matches: var ?" + varname + " -> " + r + ", " + r2) ;
+                throw new ARQException("Found two matches: var ?" + varname + " -> " + r + ", " + r2);
         }
-        return r ;
+        return r;
     }
 
     /**
      * Execute, returning all matches, which may be zero.
      */
     public static List<RDFNode> getAll(QueryExecution qExec, String varname) {
-        ResultSet rs = qExec.execSelect() ;
+        ResultSet rs = qExec.execSelect();
         List<RDFNode> matches = new ArrayList<>();
         rs.forEachRemaining(qs->{
-            RDFNode r = qs.get(varname) ;
+            RDFNode r = qs.get(varname);
             if ( r != null )
                 matches.add(r);
         });
-        return matches ;
+        return matches;
     }
 }
