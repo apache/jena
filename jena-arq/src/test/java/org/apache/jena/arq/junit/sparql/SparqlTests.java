@@ -20,6 +20,7 @@ package org.apache.jena.arq.junit.sparql;
 
 import static org.apache.jena.arq.junit.Scripts.entryContainsSubstring;
 
+import org.apache.jena.arq.junit.OmittedTest;
 import org.apache.jena.arq.junit.Scripts;
 import org.apache.jena.arq.junit.SurpressedTest;
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
@@ -109,22 +110,21 @@ public class SparqlTests {
 
         // ---- Query Evaluation Tests
         if ( equalsType(testType, TestManifest.QueryEvaluationTest) ) {
-
-            // tests not supported.
+            // Locally no supported.
+            // Omitted tests.
 
             // ??
-            if ( entryContainsSubstring(entry, "aggregates/manifest#agg-groupconcat-04") ) {
-                return null;
-            }
+            if ( entryContainsSubstring(entry, "aggregates/manifest#agg-groupconcat-04") )
+                return new OmittedTest(entry);
 
             // Two BNODE in the SELECT
-            if ( entryContainsSubstring(entry, "functions/manifest#bnode01") ) {
-                return null;
-            }
-            // Jena bug?
-            if ( entryContainsSubstring(entry, "property-path/manifest#values_and_path") ) {
-                return null;
-            }
+            if ( entryContainsSubstring(entry, "functions/manifest#bnode01") )
+                return new OmittedTest(entry);
+            // Jena issue?
+            if ( entryContainsSubstring(entry, "property-path/manifest#values_and_path") )
+                return new OmittedTest(entry);
+
+            // Query evaluation tests.
             return new QueryEvalTest(entry);
         }
         if ( equalsType(testType, TestManifestX.TestQuery) )
