@@ -50,6 +50,8 @@ public class TestModPrometheus {
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
         FusekiModules fusekiModules = FusekiModules.create(FMod_Prometheus.create());
         testServer = FusekiServer.create()
+                .port(0)
+                .loopback(true)
                 .add("/ds", dsg)
                 .enableMetrics(false)       // N.B. false. Instead, use module to setup.
                 .fusekiModules(fusekiModules)

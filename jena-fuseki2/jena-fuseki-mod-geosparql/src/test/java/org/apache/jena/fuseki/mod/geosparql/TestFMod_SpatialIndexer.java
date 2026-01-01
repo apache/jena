@@ -34,7 +34,6 @@ import org.junit.jupiter.api.Test;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.fuseki.main.FusekiServer;
-import org.apache.jena.fuseki.main.cmds.FusekiMain;
 import org.apache.jena.geosparql.spatial.SpatialIndex;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
 import org.apache.jena.geosparql.spatial.index.v2.GeometryGenerator;
@@ -81,11 +80,12 @@ public class TestFMod_SpatialIndexer {
 
         String[] argv = new String[] { "--empty" };
 
-        FusekiServer server = FusekiMain.builder(argv)
-            .add("test", dsg)
-            .registerOperation(FMod_SpatialIndexer.spatialIndexerOperation, new SpatialIndexerService())
-            .addEndpoint("test", "spatial-indexer", FMod_SpatialIndexer.spatialIndexerOperation)
-            .build();
+        FusekiServer server = FusekiServer.create()
+                .applyArgs(argv)
+                .add("test", dsg)
+                .registerOperation(FMod_SpatialIndexer.spatialIndexerOperation, new SpatialIndexerService())
+                .addEndpoint("test", "spatial-indexer", FMod_SpatialIndexer.spatialIndexerOperation)
+                .build();
         server.start();
         int port = server.getPort();
         String serverURL = "http://localhost:" + port + "/";

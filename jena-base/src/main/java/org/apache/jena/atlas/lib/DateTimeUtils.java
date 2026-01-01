@@ -18,6 +18,7 @@
 
 package org.apache.jena.atlas.lib;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar ;
@@ -35,6 +36,34 @@ public class DateTimeUtils {
     private static final DateTimeFormatter timeFmt_XSD_ms0      = DateTimeFormatter.ofPattern("HH:mm:ssxxx");
     private static final DateTimeFormatter timeFmt_XSD_ms       = DateTimeFormatter.ofPattern("HH:mm:ss.SSSxxx");
 
+
+    // ---- java.time
+
+    private static ZoneId tzUTC = ZoneId.of("UTC");
+
+    // "now" as UTC, not locale specific.
+    public static String nowUTC() {
+        ZonedDateTime zdt = ZonedDateTime.now(tzUTC);
+        return asXSDDateTimeString(zdt);
+    }
+
+    public static String asXSDDateTimeString(ZonedDateTime zdt) {
+        DateTimeFormatter fmt = chooseFormatter(zdt);
+        return zdt.format(fmt);
+    }
+
+    private static boolean hasZeroMilliSeconds(ZonedDateTime zdt) {
+        return zdt.getNano() == 0;
+    }
+
+    private static DateTimeFormatter chooseFormatter(ZonedDateTime zdt) {
+        DateTimeFormatter fmt = hasZeroMilliSeconds(zdt)
+                ? dateTimeFmt_XSD_ms0
+                : dateTimeFmt_XSD_ms ;
+        return fmt;
+    }
+
+    // ---- GregorianCalendar
     public static String nowAsXSDDateTimeString() {
         return calendarToXSDDateTimeString(new GregorianCalendar()) ;
     }

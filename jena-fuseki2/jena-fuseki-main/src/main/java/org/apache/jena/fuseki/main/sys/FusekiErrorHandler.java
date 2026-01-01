@@ -27,14 +27,13 @@ import org.apache.jena.riot.WebContent;
 import org.eclipse.jetty.http.MimeTypes;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Response;
-import org.eclipse.jetty.server.handler.ErrorHandler;
 import org.eclipse.jetty.util.Callback;
 
 /**
  * Fuseki error handler (used with ServletAPI HttpServletResponse.sendError).
  * Typically ServletOps.responseSendError is used which directly sends the error and a message.
  */
-public class FusekiErrorHandler extends ErrorHandler
+public class FusekiErrorHandler extends org.eclipse.jetty.server.handler.ErrorHandler
 {
     private static List<Charset> utf8List = List.of(StandardCharsets.UTF_8);
 

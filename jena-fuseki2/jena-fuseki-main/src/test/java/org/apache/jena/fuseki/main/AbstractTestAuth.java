@@ -36,7 +36,7 @@ import org.apache.jena.sparql.exec.http.UpdateExecutionHTTPBuilder;
  * Common setup for running a server with an initially empty database with authentication by password file.
  */
 
-public class AbstractTestAuth_JDK {
+public class AbstractTestAuth {
 
     private FusekiServer server;
 

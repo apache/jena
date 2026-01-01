@@ -36,25 +36,18 @@ import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.fuseki.ctl.ActionCtl;
 import org.apache.jena.fuseki.main.FusekiServer;
-import org.apache.jena.fuseki.main.cmds.ServerArgs;
+import org.apache.jena.fuseki.main.runner.ServerArgs;
 import org.apache.jena.fuseki.main.sys.FusekiModule;
 import org.apache.jena.fuseki.mgt.ActionBackup;
 import org.apache.jena.fuseki.mgt.ActionBackupList;
 import org.apache.jena.fuseki.mgt.ActionDatasets;
 import org.apache.jena.fuseki.mgt.FusekiServerCtl;
+import org.apache.jena.fuseki.mod.shiro.FMod_Shiro;
 import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.rdf.model.Model;
 import org.slf4j.Logger;
 
 public class FMod_Admin implements FusekiModule {
-
-//    @Override
-//    public void start() {}
-//
-//    @Override
-//    public int level() {
-//        return FusekiApp.levelFModAdmin;
-//    }
 
     @Override
     public String name() {
@@ -79,14 +72,18 @@ public class FMod_Admin implements FusekiModule {
     @Override
     public void serverArgsModify(CmdGeneral fusekiCmd, ServerArgs serverArgs) {
 
+        // Allow empty -- no database specified on the command line -- because
+        // FMod_Admin get databases from the admin area.
+        serverArgs.allowEmpty = true;
+
+        // Add command information.
         fusekiCmd.getUsage().startCategory("Admin");
 
         ArgModuleGeneral argModule = new ArgModuleGeneral() {
             @Override
             public void registerWith(CmdGeneral cmdLine) {
-                // Phase 2
-//                cmdLine.add(argAdmin, "--admin", "Enable server admin with user:password");
-//                cmdLine.add(argAdminArea,"--adminRun", "Directory for server configuration");
+                cmdLine.add(argAdmin, "--admin", "Enable server admin with user:password");
+                cmdLine.add(argAdminArea,"--adminRun", "Directory for server configuration");
             }
             @Override
             public void processArgs(CmdArgModule cmdLine) {}
@@ -135,12 +132,13 @@ public class FMod_Admin implements FusekiModule {
         FusekiServerCtl serverCtl = new FusekiServerCtl(directory);
         serverCtl.setup();
         Path fusekiBase = serverCtl.getFusekiBase();
-        builder.addServletAttribute(Fuseki.attrFusekiServerCtl, serverCtl);
+        builder.setServletAttribute(Fuseki.attrFusekiServerCtl, serverCtl);
 
-        // Shiro.
+        // Shiro configuration. Pass this to FMod_Shiro via a builder servlet attribute.
         Path shiroIni = fusekiBase.resolve(FusekiServerCtl.DFT_SHIRO_INI);
         if ( Files.exists(shiroIni) ) {
-            System.setProperty(FusekiServerCtl.envFusekiShiro, shiroIni.toString());
+            String attrName = FMod_Shiro.adminShiroFile;
+            builder.setServletAttribute(FMod_Shiro.adminShiroFile, shiroIni);
         } else {
             FmtLog.info(LOG, "No shiro.ini: dir=%s", fusekiBase);
         }
@@ -186,13 +184,13 @@ public class FMod_Admin implements FusekiModule {
                 .addServlet("/$/backups/*", actionBackup)
                 .addServlet("/$/backups-list", new ActionBackupList())
 
-                // Enables the task subsystem and is also called by enableCompact
+                // Enables the task subsystem
                 .enableTasks(true)
+                .enableCompact(true)
 
-                // Can also be enabled by FMod_UI
+                // stats - also enabled by FMod_UI
                 .enableStats(true)
                 .enablePing(true)
-                .enableCompact(true)
                 ;
     }
 

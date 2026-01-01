@@ -14,17 +14,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.cmd;
+package org.apache.jena.fuseki.main.runner;
 
-/**
- * Exception used to indicate that the command should end now. Use instead of
- * System.exit so that a wrapper can catch (else a command server will exit wrongly).
- */
-public class TerminationException extends CmdException
+import java.net.BindException;
+
+import org.apache.jena.fuseki.FusekiException;
+
+public class FusekiBindException extends FusekiException
 {
-    public int returnCode;
-    public TerminationException(int rc) { super(); this.returnCode = rc; }
-    public int getCode() { return returnCode; }
+    public FusekiBindException(String msg, BindException cause)  { super(msg, cause); }
+//    public FusekiBindException(String msg)                     { super(msg); }
+//    public FusekiBindException(BindException cause)            { super(cause); }
+//    public FusekiBindException()                               { super(); }
 }

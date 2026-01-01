@@ -22,6 +22,7 @@ import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
 import org.apache.jena.fuseki.main.prefixes.TS_PrefixesService;
+import org.apache.jena.fuseki.main.runner.TestFusekiSetupInternal;
 import org.apache.jena.fuseki.main.sys.TestFusekiModules;
 
 @Suite
@@ -32,8 +33,10 @@ import org.apache.jena.fuseki.main.sys.TestFusekiModules;
   , TestFusekiModules.class
 
   , TestMultipleEmbedded.class
+  , TestFusekiSetupInternal.class
+  , TestFusekiStart.class
   , TestFusekiCustomOperation.class
-  , TestFusekiMainCmd.class
+  , TestFusekiCmdLineArgs.class
   , TestFusekiMainCmdArguments.class
   , TestFusekiMainCmdCustomArguments.class
   , TestFusekiStdSetup.class
@@ -44,8 +47,8 @@ import org.apache.jena.fuseki.main.sys.TestFusekiModules;
   , TestFusekiDatasetSharing.class
 
   , TestFileUpload.class
-  , TestAuthQuery_JDK.class
-  , TestAuthUpdate_JDK.class
+  , TestAuthQuery.class
+  , TestAuthUpdate.class
   , TestHttpOperations.class
   , TestHttpOptions.class
   , TestQuery.class

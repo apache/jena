@@ -32,20 +32,20 @@ import org.apache.jena.rdf.model.Model;
  * When a server is being built:
  * <ul>
  * <li>{@linkplain #prepare}
- *      -- called at the beginning of the
+ *      &ndash; called at the beginning of the
  *     {@link org.apache.jena.fuseki.main.FusekiServer.Builder#build() FusekiServer.Builder build()}
  *      step. This call can manipulate the server configuration. This is the usual operation for customizing a server.</li>
- * <li>{@linkplain #configured} -- called after the DataAccessPoint registry has been built.</li>
- * <li>{@linkplain #server(FusekiServer)} -- called at the end of the "build" step before
- *     {@link org.apache.jena.fuseki.main.FusekiServer.Builder#build() FusekiServer.Builder build()}
- *     returns.</li>
+ * <li>{@linkplain #configured}
+ *      &ndash; called after the DataAccessPoint registry has been built.</li>
+ * <li>{@linkplain #server}
+ *      &ndash; called at the end of the "build" step before
+ *      {@link org.apache.jena.fuseki.main.FusekiServer.Builder#build() FusekiServer.Builder build()}
+ *      returns.</li>
+ *  <li>{@linkplain #serverConfirmReload} &ndash; called before configuration is at reloaded. </li>
+ *  <li>{@linkplain #serverReload} &ndash; called when a reload happens.</li>
  * </ul>
  */
 public interface FusekiBuildCycle {
-    /**
-     * A display name to identify this module.
-     */
-    public String name();
 
     // ---- Build cycle
 

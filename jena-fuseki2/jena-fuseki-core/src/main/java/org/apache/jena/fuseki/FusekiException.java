@@ -18,9 +18,9 @@
 
 package org.apache.jena.fuseki;
 
-import org.apache.jena.sparql.ARQException;
+import org.apache.jena.shared.JenaException;
 
-public class FusekiException extends ARQException
+public class FusekiException extends JenaException
 {
     public FusekiException(String msg, Throwable cause)    { super(msg, cause); }
     public FusekiException(String msg)                     { super(msg); }

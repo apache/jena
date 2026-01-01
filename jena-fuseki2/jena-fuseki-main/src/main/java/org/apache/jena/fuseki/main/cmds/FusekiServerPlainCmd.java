@@ -18,12 +18,27 @@
 
 package org.apache.jena.fuseki.main.cmds;
 
-// Command line DSG
-public enum SetupType {
-    UNSET,
-    MEM, FILE, TDB, MEMTDB,  // Datasets on the command line
-    CONF,                    // Configuration file.
-    ASSEM,                   // Assembler for a datasets. Legacy.
-    NONE,                    // Explicitly no dataset or configuration file.
-    SPARQLer                 // SPARQler mode
+import org.apache.jena.fuseki.main.FusekiMain;
+import org.apache.jena.fuseki.main.runner.FusekiRunner;
+
+/**
+ * Fuseki command that runs a Fuseki server with all function except with UI.
+ * Shiro must be configured using the command line {@code --shiro=...}
+ * or using environment {@code FUSEKI_SHIRO}.
+ * <p>
+ * Use {@code --conf=} for multiple datasets and specific service names.
+ * <p>
+ * The command line dataset setup only supports a single dataset.
+ */
+
+public class FusekiServerPlainCmd {
+    /**
+     * Build and run, a server based on command line syntax. This operation does not
+     * return. See {@link FusekiMain#build} to build a server in code using command line
+     * syntax but not start it.
+     */
+    static public void main(String... args) {
+        RunFuseki.run(args, FusekiRunner::execServerPlain);
+    }
 }
+

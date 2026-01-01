@@ -32,9 +32,9 @@ import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.fuseki.Fuseki;
-import org.apache.jena.fuseki.main.cmds.FusekiMain;
-import org.apache.jena.fuseki.main.cmds.ServerArgs;
-import org.apache.jena.fuseki.main.sys.FusekiServerArgsCustomiser;
+import org.apache.jena.fuseki.main.runner.ServerArgs;
+import org.apache.jena.fuseki.main.sys.FusekiModule;
+import org.apache.jena.fuseki.main.sys.FusekiModules;
 import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.rdf.model.Model;
@@ -73,12 +73,8 @@ public class TestFusekiMainCmdCustomArguments {
         // Clear up!
     }
 
-    private FusekiServer server = null;
-
     @AfterEach public void after() {
-        if ( server != null )
-            server.stop();
-        FusekiMain.resetCustomisers();
+        // No servers started here.
     }
 
     @Test
@@ -90,17 +86,18 @@ public class TestFusekiMainCmdCustomArguments {
     @Test
     public void test_custom_no_custom_args_decl() {
         String[] arguments = {"--port=0", "--special", "--mem","/ds"};
-        assertThrows(CmdException.class, ()->FusekiMain.build(arguments));
+        assertThrows(CmdException.class, ()->FusekiMain.construct(arguments));
     }
 
     @Test
     public void test_custom_allowNoArgs() {
         String[] arguments1 = {"--port=0"};
-        FusekiServerArgsCustomiser customiser = new TestArgsAllowNoSetup();
-        FusekiServer server1 = test(customiser, arguments1, serv->{});
+        FusekiModule customizer = new TestArgsAllowNoSetup();
+        FusekiServer server1 = test(customizer, arguments1, serv->{});
         // Dataset arguments are allowed.
         String[] arguments2 = {"--port=0","--mem", "/ds"};
-        FusekiServer server2 = test(customiser, arguments2, serv->{});
+        FusekiServer server2 = test(customizer, arguments2, serv->{});
+
     }
 
     @Test
@@ -118,9 +115,9 @@ public class TestFusekiMainCmdCustomArguments {
     @Test
     public void test_custom_confModel_noFlag() {
         String[] arguments = {"--port=0", "--mem", "/ds"};
-        TestArgsCustomModelAltArg customiser = new TestArgsCustomModelAltArg(new ArgDecl(false, "fixed"), confFixed);
-        test(customiser, arguments, server->{
-            assertSame(null, customiser.notedServerConfigModel);
+        TestArgsCustomModelAltArg customizer = new TestArgsCustomModelAltArg(new ArgDecl(false, "fixed"), confFixed);
+        test(customizer, arguments, server->{
+            assertSame(null, customizer.notedServerConfigModel);
             DataAccessPoint dap1 = server.getDataAccessPointRegistry().get("/ds");
             assertNotNull(dap1);
             DataAccessPoint dap2 = server.getDataAccessPointRegistry().get("/dataset");
@@ -132,8 +129,8 @@ public class TestFusekiMainCmdCustomArguments {
     public void test_custom_confModel_replace() {
         // Ignores command line.
         String[] arguments = {"--port=0", "--conf=somefile.ttl", "--fixed"};
-        FusekiServerArgsCustomiser customiser = new TestArgsCustomModelAltArg(new ArgDecl(false, "fixed"), confFixed);
-        FusekiServer server = test(customiser, arguments, serv->{
+        FusekiModule customizer = new TestArgsCustomModelAltArg(new ArgDecl(false, "fixed"), confFixed);
+        FusekiServer server = test(customizer, arguments, serv->{
             DataAccessPoint dap1 = serv.getDataAccessPointRegistry().get("/ds");
             assertNull(dap1);
             DataAccessPoint dap2 = serv.getDataAccessPointRegistry().get("/dataset");
@@ -141,15 +138,14 @@ public class TestFusekiMainCmdCustomArguments {
         });
         assertTrue(server.getDataAccessPointRegistry().isRegistered("/dataset"));
         assertFalse(server.getDataAccessPointRegistry().isRegistered("/ds"));
-        FusekiMain.resetCustomisers();
     }
 
     @Test
     public void test_custom_confModel_different() {
         // Ignores command line --conf setting.
         String[] arguments = {"--port=0", "--conf=somefile.ttl"};
-        FusekiServerArgsCustomiser customiser = new TestArgsMyConfModel();
-        FusekiServer server = test(customiser, arguments, serv->{
+        FusekiModule customizer = new TestArgsMyConfModel();
+        FusekiServer server = test(customizer, arguments, serv->{
             DataAccessPoint dap1 = serv.getDataAccessPointRegistry().get("/ds");
             assertNull(dap1);
             DataAccessPoint dap2 = serv.getDataAccessPointRegistry().get("/dataset");
@@ -163,8 +159,8 @@ public class TestFusekiMainCmdCustomArguments {
     public void test_custom_confModel_different_ignore() {
         // --conf not used. Does not reset.
         String[] arguments = {"--port=0", "--mem", "/ds"};
-        FusekiServerArgsCustomiser customiser = new TestArgsMyConfModel();
-        FusekiServer server = test(customiser, arguments, serv->{
+        FusekiModule customizer = new TestArgsMyConfModel();
+        FusekiServer server = test(customizer, arguments, serv->{
             DataAccessPoint dap1 = serv.getDataAccessPointRegistry().get("/ds");
             assertNotNull(dap1);
             DataAccessPoint dap2 = serv.getDataAccessPointRegistry().get("/dataset");
@@ -177,27 +173,28 @@ public class TestFusekiMainCmdCustomArguments {
     // ----
 
     private void test(ArgDecl argDecl, String[] arguments, boolean seen, String value) {
-        TestArgsCustomArg customiser = new TestArgsCustomArg(argDecl);
-        test(customiser, arguments, (server)->{
-            assertEquals(seen, customiser.argSeen);
-            assertEquals(value, customiser.argValue);
+        TestArgsCustomArg customizer = new TestArgsCustomArg(argDecl);
+        test(customizer, arguments, (server)->{
+            assertEquals(seen, customizer.argSeen);
+            assertEquals(value, customizer.argValue);
         });
     }
 
-    private FusekiServer test(FusekiServerArgsCustomiser customiser, String[] arguments, Consumer<FusekiServer> checker) {
-        FusekiMain.resetCustomisers();
-        if ( customiser != null )
-            FusekiMain.addCustomiser(customiser);
-        FusekiServer server = FusekiMain.build(arguments);
+    // Does not start the server
+    private FusekiServer test(FusekiModule customizer, String[] arguments, Consumer<FusekiServer> checker) {
+        FusekiModules fmods = (customizer == null)
+                ? FusekiModules.empty()
+                : FusekiModules.create(customizer);
+        FusekiServer server = FusekiMain.construct(fmods, arguments);
         if ( checker != null )
             checker.accept(server);
         return server;
     }
 
-    // ---- Arg customisers.
+    // ---- Arg customizers.
 
-    // Allow no daatset or configuration.
-    static class TestArgsAllowNoSetup implements FusekiServerArgsCustomiser {
+    // Allow no dataset or configuration.
+    static class TestArgsAllowNoSetup implements FusekiModule {
         @Override
         public void serverArgsModify(CmdGeneral fusekiCmd, ServerArgs serverArgs) {
             serverArgs.allowEmpty = true;
@@ -205,7 +202,7 @@ public class TestFusekiMainCmdCustomArguments {
     }
 
     // Custom argument.
-    static class TestArgsCustomArg implements FusekiServerArgsCustomiser {
+    static class TestArgsCustomArg implements FusekiModule {
         final ArgDecl argDecl;
         String argValue = null;
         boolean argSeen = false;
@@ -227,7 +224,7 @@ public class TestFusekiMainCmdCustomArguments {
     };
 
     // --fixed triggers replacing the configuration model.
-    static class TestArgsCustomModelAltArg implements FusekiServerArgsCustomiser {
+    static class TestArgsCustomModelAltArg implements FusekiModule {
         final ArgDecl argDecl;
         final Model fixedModel;
         Model notedServerConfigModel = null;
@@ -263,7 +260,7 @@ public class TestFusekiMainCmdCustomArguments {
     };
 
     // Replace --conf setting with the model. Do nothing if no --conf.
-    static class TestArgsMyConfModel implements FusekiServerArgsCustomiser {
+    static class TestArgsMyConfModel implements FusekiModule {
 
         TestArgsMyConfModel() { }
 

@@ -66,11 +66,11 @@ public class TestSecurityFilterLocal {
 
         List<Arguments> x = List.of
                 (Arguments.of("TDB1/db", c1, true),
-                    Arguments.of("TDB2/db", c2, true),
-
+                 Arguments.of("TDB2/db", c2, true),
                 // By adding the general, but slower, DatasetGraphFilter
-                Arguments.of("TDB/filtered", c1, false),
+                Arguments.of("TDB1/filtered", c1, false),
                 Arguments.of("TDB2/filtered", c2, false),
+
                 Arguments.of("TIM/filtered", c3, false),
                 Arguments.of("Plain/filtered", c4, false)
         );

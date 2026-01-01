@@ -72,6 +72,8 @@ public class TestAdminDatabaseOps extends FusekiServerPerTest {
     @Override
     protected void customizerServer(FusekiServer.Builder builder) {
         builder.add(datasetName(), DatasetGraphFactory.createTxnMem());
+        // stats are used for testing.
+        builder.enableStats(true);
     }
 
     private String datasetName() {

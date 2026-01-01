@@ -16,15 +16,28 @@
  * limitations under the License.
  */
 
-package org.apache.jena.cmd;
+package org.apache.jena.fuseki.main.cmds;
+
+import org.apache.jena.fuseki.main.FusekiMain;
+import org.apache.jena.fuseki.main.runner.FusekiRunner;
+import org.apache.jena.fuseki.main.sys.FusekiModule;
 
 /**
- * Exception used to indicate that the command should end now. Use instead of
- * System.exit so that a wrapper can catch (else a command server will exit wrongly).
+ * Fuseki command that runs a Fuseki server with the admin UI and other {@link FusekiModule FusekiModules}.
+ * <p>
+ * Use {@code --conf=} for multiple datasets and specific service names.
+ * <p>
+ * The command line dataset setup only supports a single dataset.
  */
-public class TerminationException extends CmdException
-{
-    public int returnCode;
-    public TerminationException(int rc) { super(); this.returnCode = rc; }
-    public int getCode() { return returnCode; }
+
+public class FusekiServerUICmd {
+    /**
+     * Build and run, a server based on command line syntax. This operation does not
+     * return. See {@link FusekiMain#build} to build a server using command line
+     * syntax but not start it.
+     */
+    static public void main(String... args) {
+        RunFuseki.run(args, FusekiRunner::execServerUI);
+    }
 }
+

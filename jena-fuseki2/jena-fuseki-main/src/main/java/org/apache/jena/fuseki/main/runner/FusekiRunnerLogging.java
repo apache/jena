@@ -18,16 +18,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.fuseki.main;
+package org.apache.jena.fuseki.main.runner;
 
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
-import org.apache.jena.fuseki.server.FusekiCoreInfo;
+import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.fuseki.main.sys.FusekiCoreInfo;
+import org.apache.jena.fuseki.main.sys.FusekiModules;
+import org.apache.jena.fuseki.main.sys.PlatformInfo;
 import org.slf4j.Logger;
 
-public class FusekiRunner {
-
-    // ---- Logging fragments
+/** Code fragments used to log Fuseki start-stop */
+public class FusekiRunnerLogging {
 
     public static void logCode(Logger log) {
         FusekiCoreInfo.logCode(log);
@@ -36,22 +39,50 @@ public class FusekiRunner {
     public static void logServerSetup(Logger log, FusekiServer server) {
         boolean verbose = Fuseki.getVerbose(server.getServletContext());
         FusekiCoreInfo.logDataAccessPointRegistry(log, server.getDataAccessPointRegistry(), verbose);
-        FusekiCoreInfo.logSystemDetails(log);
+        if ( verbose )
+            logModules(log, server);
+        FmtLog.info(log, "System");
+        if ( verbose )
+            PlatformInfo.logSystemDetailsLong(log);
+        else
+            PlatformInfo.logSystemDetailsShort(log);
     }
 
-    public static void logServerStart(Logger log, FusekiServer server) {
+    public static void logServerStarted(Logger log, FusekiServer server) {
         if ( ! server.getJettyServer().isStarted() )
             throw new FusekiException("FusekiServer not ready");
+
         int httpPort = server.getHttpPort();
         int httpsPort = server.getHttpsPort();
-        if ( httpsPort > 0 && httpPort > 0 )
-            Fuseki.serverLog.info("Start Fuseki (http="+httpPort+" https="+httpsPort+")");
-        else if ( httpsPort > 0 )
-            Fuseki.serverLog.info("Start Fuseki (https="+httpsPort+")");
-        else if ( httpPort > 0 )
-            Fuseki.serverLog.info("Start Fuseki (http="+httpPort+")");
-        else
-            Fuseki.serverLog.info("Start Fuseki");
+
+        if ( httpsPort > 0 )
+            PlatformInfo.logInfo(log, "Port:", "https=%s", httpsPort);
+
+        if ( httpPort > 0 )
+            PlatformInfo.logInfo(log, "Port:", "http=%s", httpPort);
+
+        log.info("Start Fuseki");
+    }
+
+
+    private static void logModules(Logger log, FusekiServer server) {
+        FmtLog.info(log, "Modules");
+        FusekiModules modules = server.getModules();
+        if ( modules == null ) {
+            PlatformInfo.logInfo(log, "No modules", "");
+            return;
+        }
+        if ( modules.isEmpty() ) {
+            PlatformInfo.logInfo(log, "No modules", "");
+            return;
+        }
+
+        modules.forEach(fmod->{
+            String name = fmod.name();
+            if ( name == null )
+                name = fmod.getClass().getSimpleName();
+            PlatformInfo.logInfo(log, "Module:", "%s", name );
+        });
     }
 
     public static void logServerStop(Logger log, FusekiServer server) {

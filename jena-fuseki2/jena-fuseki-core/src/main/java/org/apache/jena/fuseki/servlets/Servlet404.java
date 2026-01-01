@@ -18,7 +18,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.fuseki.main.cmds;
+package org.apache.jena.fuseki.servlets;
 
 import java.io.IOException;
 

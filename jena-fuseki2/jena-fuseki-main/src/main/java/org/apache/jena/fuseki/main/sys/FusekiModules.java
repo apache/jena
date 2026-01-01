@@ -18,6 +18,7 @@
 
 package org.apache.jena.fuseki.main.sys;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -82,6 +83,38 @@ public class FusekiModules {
         return new FusekiModules(modules);
     }
 
+    /**
+     * Return a new {@code FusekiModules} object consisting of the all
+     * the modules of the first argument together with the additional modules.
+     * The input {@code FusekiModules} is not modified.
+     */
+    public static FusekiModules add(FusekiModules fusekiModules, FusekiModule ... additionalModules) {
+        if ( additionalModules.length == 0 )
+            return fusekiModules;
+        List<FusekiModule> list = new ArrayList<>();
+        list.addAll(fusekiModules.modules);
+        for ( FusekiModule fm : additionalModules )
+            list.add(fm);
+        return FusekiModules.create(list);
+    }
+
+    /**
+     * Return a new {@code FusekiModules} object consisting of the all
+     * the modules of the first argument together with the additional modules.
+     * The input {@code FusekiModules} is not modified.
+     */
+    public static FusekiModules add(FusekiModules fusekiModules, List<FusekiModule> additionalModules) {
+        if ( additionalModules.isEmpty() )
+            return fusekiModules;
+        List<FusekiModule> list = new ArrayList<>();
+        list.addAll(fusekiModules.modules);
+        for ( FusekiModule fm : additionalModules )
+            list.add(fm);
+        return FusekiModules.create(list);
+    }
+
+    // ---- Object
+
     private final List<FusekiModule> modules;
 
     private FusekiModules(FusekiModule ... modules) {
@@ -109,5 +142,9 @@ public class FusekiModules {
     /** Test whether a code module is registered. */
     public boolean contains(FusekiModule module) {
         return modules.contains(module);
+    }
+
+    public boolean isEmpty() {
+        return modules.isEmpty();
     }
 }

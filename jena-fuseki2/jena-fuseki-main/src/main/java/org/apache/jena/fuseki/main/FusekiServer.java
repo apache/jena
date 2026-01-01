@@ -28,6 +28,7 @@ import java.util.function.Predicate;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonObject;
@@ -46,8 +47,9 @@ import org.apache.jena.fuseki.auth.Auth;
 import org.apache.jena.fuseki.auth.AuthPolicy;
 import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.fuseki.ctl.*;
-import org.apache.jena.fuseki.main.cmds.FusekiMain;
-import org.apache.jena.fuseki.main.cmds.Servlet404;
+import org.apache.jena.fuseki.main.runner.FusekiArgs;
+import org.apache.jena.fuseki.main.runner.FusekiRunner;
+import org.apache.jena.fuseki.main.runner.FusekiRunnerLogging;
 import org.apache.jena.fuseki.main.sys.*;
 import org.apache.jena.fuseki.metrics.MetricsProvider;
 import org.apache.jena.fuseki.mod.prometheus.PrometheusMetricsProvider;
@@ -115,11 +117,26 @@ public class FusekiServer {
     /**
      * Construct a Fuseki server from command line arguments.
      * The return server has not been started.
-     * @deprecated Use {@link FusekiMainRunner#construct} or {@link FusekiServerRunner#construct}
+     * @deprecated Use {@link FusekiMain#construct} or {@link FusekiRunner#basic()}
      */
     @Deprecated
     static public FusekiServer construct(String... args) {
-        return FusekiMainRunner.construct(args);
+        return FusekiMain.construct(args);
+    }
+
+    /**
+     * Run a Fuseki server using the command line arguments for setup
+     * The returned server has been started.
+     * @deprecated Use {@link FusekiMain#run} or {@link FusekiRunner#basic()}
+     */
+    @Deprecated
+    static public FusekiServer run(String...args) {
+        return construct().start();
+    }
+
+    /** Return a fresh builder configured according to the the argument list */
+    public static Builder builder(String...args) {
+        return new Builder().applyArgs(args);
     }
 
     /** Construct a Fuseki server for one dataset.
@@ -128,13 +145,22 @@ public class FusekiServer {
      */
     static public FusekiServer make(int port, String name, DatasetGraph dsg) {
         return create()
-            .port(port)
-            .loopback(true)
-            .add(name, dsg)
-            .build();
+                .port(port)
+                .loopback(true)
+                .add(name, dsg)
+                .build();
     }
 
-    /** Return a builder, with the default choices of actions available. */
+    /**
+     * Run a Fuseki server for one dataset.
+     * It only responds to localhost.
+     * The returned server has been started.
+     */
+    static public FusekiServer run(int port, String name, DatasetGraph dsg) {
+        return make(port, name, dsg).start();
+    }
+
+    /** Return a fresh builder. */
     public static Builder create() {
         return new Builder();
     }
@@ -144,7 +170,9 @@ public class FusekiServer {
      * still be created for the server to be able to provide the action. An endpoint
      * dispatches to an operation, and an operation maps to an implementation. This is a
      * specialised operation - normal use is the operation {@link #create()}.
+     * @deprecated Do not use. To be removed.
      */
+    @Deprecated(forRemoval = true)
     public static Builder create(OperationRegistry serviceDispatchRegistry, Context context) {
         if ( context == null )
             context = Fuseki.getContext();
@@ -163,17 +191,31 @@ public class FusekiServer {
         return server;
     }
 
-    /**
-     * Default port when running in Java via {@code FusekiServer....build()}.
-     * The server will be http://localhost:3330.
-     *
-     * This is not the command line port (3030) which the command line programme sets.
-     *
-     * See {@link FusekiMain#defaultPort} and {@link FusekiMain#defaultHttpsPort}.
-     */
-    public static final int DefaultServerPort  = 3330;
+    /** Default HTTP port when running from the command line. */
+    public static final int defaultHttpPort         = 3030;
 
-    private final Server server;
+    /** Default HTTPS port when running from the command line. */
+    public static final int defaultHttpsPort        = 3043;
+
+    /**
+     * The port set at the start of the build() step if there is no port setting.
+     * <p>
+     * Legacy: the 3030 default.
+     * <p>
+     * Set to -1 to have no default for {@code FusekiServer.create()...build()}
+     * <ul>
+     * <li>Running from the command line defaults the port to {@link FusekiArgs#defaultArgsHttpPort},
+     *     done in {@link FusekiArgs#processStdArguments()})
+     * <li>Reading a configuration sets a default (to {@link FusekliServer#defaultArgsHttpPort}),
+     *     done in {@link FusekiServer.Builder#parseConfiguration}.</li>
+     * <li>Using a Jetty configuration file leaves the port decision to Jetty setup.</li>
+     * </ul>
+     * {@link FusekiArgs} also default the HTTPS port to 3043 ({@link FusekiArgs#defaultArgsHttpsPort})
+     * when HTTPS is requested by no port for HTTPS is given
+     */
+    private static final int defaultBuilderPort      = defaultHttpPort;
+
+    private final Server jettyServer;
     private int httpPort;
     private int httpsPort;
     private final String staticContentDir;
@@ -181,12 +223,12 @@ public class FusekiServer {
     private final String configFilename;
     private final FusekiModules modules;
 
-    private FusekiServer(int httpPort, int httpsPort, Server server,
+    private FusekiServer(int httpPort, int httpsPort, Server jettyServer,
                          String staticContentDir,
                          FusekiModules modules,
                          String configFilename,
                          ServletContext fusekiServletContext) {
-        this.server = Objects.requireNonNull(server);
+        this.jettyServer = Objects.requireNonNull(jettyServer);
         this.httpPort = httpPort;
         this.httpsPort = httpsPort;
         this.staticContentDir = staticContentDir;
@@ -281,7 +323,7 @@ public class FusekiServer {
 
     /** Get the underlying Jetty server which has also been set up. */
     public Server getJettyServer() {
-        return server;
+        return jettyServer;
     }
 
     /**
@@ -332,48 +374,59 @@ public class FusekiServer {
     }
 
     /**
+     * Return the "verbose" setting.
+     */
+    public boolean getVerbose() {
+        return Fuseki.getVerbose(getServletContext());
+    }
+
+    /**
      * Start the server - the server continues to run after this call returns.
      * To synchronise with the server stopping, call {@link #join}.
      */
     public FusekiServer start() {
-        if ( server.isRunning() )
+        if ( jettyServer.isRunning() )
             return this;
 
+        FusekiModuleStep.serverBeforeStarting(this);
+        logServerBeforeStarting(this);
         try {
-            FusekiModuleStep.serverBeforeStarting(this);
-            server.start();
-        }
-        catch (IOException ex) {
+            jettyServer.start();
+        } catch (ServletException ex) {
+            // FusekiExceptions will come back as wrapped ServletExceptions.
+            if ( ex.getCause() instanceof FusekiException exFuseki )
+                throw exFuseki;
+            throw new FusekiException(ex);
+        } catch (IOException ex) {
             if ( ex.getCause() instanceof java.security.UnrecoverableKeyException )
                 // Unbundle for clearer message.
                 throw new FusekiException(ex.getMessage());
             throw new FusekiException(ex);
-        }
-        catch (IllegalStateException ex) {
+        } catch (IllegalStateException ex) {
             throw new FusekiException(ex.getMessage(), ex);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             throw new FusekiException(ex);
         }
 
-        // Post-start completion. Find the ports.
-        Connector[] connectors = server.getServer().getConnectors();
+        int httpPortRequested = this.getHttpPort();
+
+        // Post-start completion. Find the ports in case port=0 was used.
+        Connector[] connectors = jettyServer.getServer().getConnectors();
         if ( connectors.length == 0 )
             Fuseki.serverLog.warn("Start Fuseki: No connectors");
-
-        // Extract the ports from the Connectors.
-        Arrays.stream(connectors).forEach(c->{
-            if ( c instanceof ServerConnector connector ) {
+        Arrays.stream(connectors).forEach(jettyConnector->{
+            if ( jettyConnector instanceof ServerConnector connector ) {
                 String protocol = connector.getDefaultConnectionFactory().getProtocol();
                 String scheme = (protocol.startsWith("SSL-") || protocol.equals("SSL")) ? "https" : "http";
                 int port = connector.getLocalPort();
-                connector(scheme, port);
+                if ( port >= 0 )
+                    // Negative port if an error.
+                    connector(scheme, port);
             }
         });
-
+        // -- Completed.
+        logServerAfterStarting(this);
         FusekiModuleStep.serverAfterStarting(this);
-
-        // Any post-startup configuration here.
         return this;
     }
 
@@ -392,10 +445,10 @@ public class FusekiServer {
 
     /** Stop the server. */
     public void stop() {
-        Fuseki.serverLog.info("Stop Fuseki");
         try {
-            server.stop();
+            jettyServer.stop();
             FusekiModuleStep.serverStopped(this);
+            logServerStopped(this);
         } catch (Exception e) { throw new FusekiException(e); }
     }
 
@@ -406,11 +459,39 @@ public class FusekiServer {
      */
     public void join() {
         try {
-            if ( ! server.isStarted() && ! server.isStarting() )
+            if ( jettyServer.isStopping() )
+                throw new FusekiException("Server stopping");
+            if ( ! jettyServer.isStarted() && ! jettyServer.isStarting() )
                 start();
-            server.join(); }
+            jettyServer.join(); }
         catch (FusekiException e) { throw e; }
         catch (Exception e) { throw new FusekiException(e); }
+    }
+
+    // Server logging.
+    // This could be done with a FusekiModule but mistakenly not having that module results in silence.
+    // Instead, we threat logging start-stop as integral and make it hard-wired.
+
+    private Logger serverLogger = Fuseki.serverLog;
+
+    // The Apache Jena version banner is output before configuration.
+    // Modules may do logging.
+//    private void logServerBeginning(FusekiServer server) {
+//        FusekiRunnerLogging.logCode(serverLogger);
+//    }
+
+    // Called just before jetty.start()
+    private void logServerBeforeStarting(FusekiServer server) {
+        FusekiRunnerLogging.logServerSetup(serverLogger, server);
+    }
+
+    // Called after jetty.start() and the extracting the port.
+    private void logServerAfterStarting(FusekiServer server) {
+        FusekiRunnerLogging.logServerStarted(serverLogger, server);
+    }
+
+    private void logServerStopped(FusekiServer server) {
+        FusekiRunnerLogging.logServerStop(serverLogger, server);
     }
 
     /** FusekiServer.Builder */
@@ -468,7 +549,6 @@ public class FusekiServer {
         private List<Pair<String, Filter>> afterFilters     = new ArrayList<>();
 
         // Modules to use to process the building of the server.
-        // The default (fusekiModules is null) is the system-wide modules.
         private FusekiModules            fusekiModules     = null;
 
         private String                   contextPath        = "/";
@@ -513,6 +593,16 @@ public class FusekiServer {
         private boolean isRegistered(String datasetPath) {
             datasetPath = DataAccessPoint.canonical(datasetPath);
             return dataServices.isRegistered(datasetPath) || providedDataServices.isRegistered(datasetPath);
+        }
+
+        /**
+         * Apply the argument string to the builder.
+         * <p>s
+         * Caution: arguments passed to this method
+         * overwrite previous settings in this builder.
+         */
+        public Builder applyArgs(String...args) {
+            return FusekiArgs.applyArgs(this, args);
         }
 
         /**
@@ -638,8 +728,7 @@ public class FusekiServer {
 
         /**
          * Add the "/$/compact/*" servlet that triggers compaction for specified dataset.
-         * Also adds the "/$/tasks/*" servlet if compact is enabled (but if compact is disabled,
-         * then tasks is not automatically disabled).
+         * See also {@link #enableTasks} to track compactions.
          */
         public Builder enableCompact(boolean withCompact) {
             this.withCompact = withCompact;
@@ -892,6 +981,11 @@ public class FusekiServer {
             Fuseki.getContext().putAll(settings);
             // Can further modify the services in the configuration file.
             x.forEach(dap->addDataAccessPoint(dap));
+
+            // Default the port
+            if ( serverHttpPort < 0 && serverHttpsPort < 0 )
+                serverHttpPort = FusekiServer.defaultHttpPort;
+
         }
 
         /** Add a {@link DataAccessPoint} as a builder. */
@@ -1151,8 +1245,14 @@ public class FusekiServer {
             return this;
         }
 
-        /** Add a servlet attribute. Pass a value of null to remove any existing binding. */
+        /** @deprecated Use {@link #setServletAttribute} */
+        @Deprecated(forRemoval = true)
         public Builder addServletAttribute(String attrName, Object value) {
+            return setServletAttribute(attrName, value);
+        }
+
+        /** Add a servlet attribute. Pass a value of null to remove any existing binding. */
+        public Builder setServletAttribute(String attrName, Object value) {
             requireNonNull(attrName, "attrName");
             if ( value != null )
                 servletAttr.put(attrName, value);
@@ -1354,8 +1454,11 @@ public class FusekiServer {
          * Build a server according to the current description.
          */
         public FusekiServer build() {
-            if ( serverHttpPort < 0 && serverHttpsPort < 0 )
-                serverHttpPort = DefaultServerPort;
+            // The port may also be set by a Jetty configuration
+            if ( serverHttpPort < 0 && serverHttpsPort < 0 && jettyServerConfig == null )
+               //throw new FusekiConfigException("No port set");
+               // Legacy: there has been a default of 3030 for many versions.
+               serverHttpPort = FusekiServer.defaultHttpPort;
 
             FusekiModules modules = (fusekiModules == null)
                     ? FusekiModules.getSystemModules()
@@ -1470,7 +1573,6 @@ public class FusekiServer {
          * Build one configured Fuseki processor (ServletContext), same dispatch ContextPath
          */
         private ServletContextHandler buildFusekiServerContext() {
-            // DataAccessPointRegistry was created by buildStart so does not need copying.
             ServletContextHandler handler = buildServletContext(contextPath);
             ServletContext cxt = handler.getServletContext();
             Fuseki.setVerbose(cxt, verbose);
@@ -1504,8 +1606,8 @@ public class FusekiServer {
          * {@link DataAccessPointRegistry} and {@link OperationRegistry}.
          */
         private static void applyDatabaseSetup(ServletContextHandler handler,
-                                                          DataAccessPointRegistry dapRegistry,
-                                                          OperationRegistry operationReg) {
+                                               DataAccessPointRegistry dapRegistry,
+                                               OperationRegistry operationReg) {
             // Final wiring up of DataAccessPointRegistry
             prepareDataServices(dapRegistry, operationReg);
 

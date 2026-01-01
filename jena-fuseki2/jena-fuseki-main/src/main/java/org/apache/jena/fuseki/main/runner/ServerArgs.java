@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.main.cmds;
+package org.apache.jena.fuseki.main.runner;
 
 import java.util.function.Consumer;
 
@@ -28,17 +28,26 @@ import org.apache.jena.sparql.core.DatasetGraph;
 
 /**
  * Setup details (command line, config file) from command line processing.
- * This is built by {@link FusekiMain#processModulesAndArgs}.
- * This is processed by {@link FusekiMain#applyServerArgs}.
+ * This is built by {@link FusekiArgs#process}.
+ * This is processed by {@link FusekiArgs#applyArgs}.
  */
 public class ServerArgs {
-    /** Server port. This is the http port when both http and https are active. */
-    public int port                       = -1;
+
+    /*package*/ static int UNSET_PORT = -1;
+
+    public ServerArgs() { }
+
+    // General
+    public boolean quietLogging           = false;
+    public boolean verboseLogging         = false;
+
     /** Loopback */
     public boolean loopback               = false;
 
+    /** Server port. This is the port (server.getPort) when both http and https are active. */
+    public int httpPort                   = UNSET_PORT;
     // https
-    public int httpsPort                  = -1;
+    public int httpsPort                  = UNSET_PORT;
     public String httpsKeysDetails        = null;
 
     // Jetty server configuration file.
@@ -49,11 +58,8 @@ public class ServerArgs {
     /** Allow update */
     public boolean allowUpdate            = false;
 
-    public boolean verboseLogging         = false;
-
     /**
      * FusekiModules to use during the server build
-     * Command line customisers are handled separately by FusekiMain.
      */
     public FusekiModules fusekiModules    = null;
 
@@ -82,7 +88,7 @@ public class ServerArgs {
     public boolean startEmpty             = false;
 
     /** General query processor servlet */
-    public String addGeneral              = null;
+    public String addGeneralQueryProc     = null;
 
     public boolean validators             = false;
     /** An informative label */

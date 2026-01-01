@@ -20,48 +20,46 @@ package org.apache.jena.fuseki.main.sys;
 
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.cmd.CmdGeneral;
+import org.apache.jena.fuseki.main.FusekiMain;
 import org.apache.jena.fuseki.main.FusekiServer;
-import org.apache.jena.fuseki.main.cmds.FusekiMain;
-import org.apache.jena.fuseki.main.cmds.ServerArgs;
+import org.apache.jena.fuseki.main.runner.FusekiArgs;
+import org.apache.jena.fuseki.main.runner.ServerArgs;
 import org.apache.jena.rdf.model.Model;
 
 /**
  * Interface to implement for extending the CLI argument parsing portion of a
- * {@link FusekiServer}.
+ * {@link FusekiServer} which task place in {@link FusekiArgs}
  * <p>
- * Customisation code is registered by calling {@link FusekiMain#addCustomiser}
- * before invoking {@link FusekiMain#build}. This can be done from Java code, or
- * during {@link FusekiAutoModule#start()} for dynamically loaded code.
+ * This is one of several interfaces combined into the extension mechanism of {@link FusekiModule}.
  * <p>
- * The customiser modifies the Fuseki arguments setup after the standard Fuseki main
- * arguments have been registered. The customiser is then called
+ * Customisation code is registered by calling an operation such as
+ * {@link FusekiMain#builder(FusekiModules, String...)}.
+ * <p>
+ * The argument handler modifies the Fuseki arguments setup after the standard Fuseki main
+ * arguments have been registered. The handler is then called
  * after the standard arguments have been used to produce the {@link ServerArgs}.
  * <p>
  * The lifecycle for command line argument processing is:
  * <ul>
  * <li>
- *   Add customisers by calling {@link FusekiMain#addCustomiser} from
- *   {@link FusekiAutoModule#start()} or from Java application code.
- * </li>
- * <li>
- *    {@link #serverArgsModify} &ndash; Called before command line processing.
+ *    {@link #serverArgsModify} &ndash; called before command line processing.
  *    This call can register or modify the argument setup to be
  *     used to parse the command line.
  * </li>
  * <li>
- *   {@link #serverArgsPrepare} &ndash; Called after parsing the command line and
+ *   {@link #serverArgsPrepare} &ndash; called after parsing the command line and
  *   recording the command line settings in {@link ServerArgs}.
- *   Customisers can record argument values and flags.
+ *   The argument handler can record argument values and flags.
  * </li>
  * <li>
- *   {@link #serverArgsBuilder} &ndash; Called after the {@link ServerArgs} have
+ *   {@link #serverArgsBuilder} &ndash; called after the {@link ServerArgs} have
  *   been used to construct a server builder.
  * </li>
  * </ul>
  * Following command like processing, server construction proceeds with the {@link FusekiBuildCycle},
  * the first step of which is {@link FusekiBuildCycle#prepare}.
  */
-public interface FusekiServerArgsCustomiser {
+public interface FusekiServerArgsHandler {
 
     /**
      * Called after the standard Fuseki main arguments have been added

@@ -28,7 +28,7 @@ public class FusekiSystemConstants {
 
     /**
      * Jetty: ServletContextHandler.setMaxFormContentSize (set in
-     * {@link org.apache.jena.fuseki.main.FusekiServer.Builder#buildServletContext})
+     * {@link org.apache.jena.fuseki.main.FusekiServer.Builder#buildServletContext FusekiServer.Builder.buildServletContext})
      * (Jetty 12 default is 200k.)
      */
     public static final int jettyMaxFormContentSize = getValueInt(FormFields.MAX_LENGTH_ATTRIBUTE, jettyMaxFormContentSizeDefault);

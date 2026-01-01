@@ -23,19 +23,29 @@ import java.nio.file.Path;
 import java.util.List;
 
 import jakarta.servlet.ServletContext;
-import org.apache.jena.fuseki.FusekiConfigException;
+import org.apache.jena.atlas.logging.LogCtl;
+import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.main.FusekiAbortException;
 import org.apache.shiro.lang.io.ResourceUtils;
 import org.apache.shiro.web.env.EnvironmentLoaderListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/*package*/ class FusekiShiroLib {
+/*package*/ class FusekiShiro {
+    public static final Logger shiroLog = LoggerFactory.getLogger(Fuseki.PATH + ".Shiro");
+
     static void shiroEnvironment(ServletContext servletContext, List<String> possibleShiroIniFiles) {
         // Shiro environment initialization, done here because we don't have webapp listeners.
         EnvironmentLoaderListener shiroListener = new ShiroEnvironmentLoaderListener(possibleShiroIniFiles);
+        // Silence these - handle the errors ourselves.
+        LogCtl.disable(org.apache.shiro.web.env.IniWebEnvironment.class);
+        LogCtl.disable(org.apache.shiro.web.env.EnvironmentLoader.class);
+        LogCtl.disable(org.apache.shiro.web.servlet.AbstractFilter.class);
         try {
             shiroListener.initEnvironment(servletContext);
         } catch (org.apache.shiro.config.ConfigurationException ex) {
-            ShiroEnvironmentLoaderListener.shiroConfigLog.error("Failed to initialize Shiro: "+ex.getMessage());
-            throw new FusekiConfigException(ex.getMessage(), ex);
+            shiroLog.error(ex.getMessage());
+            throw new FusekiAbortException(9);
         }
     }
 

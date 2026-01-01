@@ -39,7 +39,7 @@ public class TestFusekiModules {
     @Test public void modules_0() {
         ModuleForTest module = new ModuleForTest();
         assertEquals(0, module.countPrepared.get());
-        assertEquals(0, module.countConfiguration.get());
+        assertEquals(0, module.countConfigured.get());
         // Created, not loaded
     }
 
@@ -69,7 +69,7 @@ public class TestFusekiModules {
 
     private void lifecycle(FusekiServer.Builder builder, ModuleForTest module) {
         assertEquals(0, module.countPrepared.get(), "prepare:");
-        assertEquals(0, module.countConfiguration.get(), "configured:");
+        assertEquals(0, module.countConfigured.get(), "configured:");
         assertEquals(0, module.countServer.get(), "server:");
         assertEquals(0, module.countServerBeforeStarting.get(), "serverBefore:");
         assertEquals(0, module.countServerAfterStarting.get(), "serverAfter:");
@@ -78,7 +78,7 @@ public class TestFusekiModules {
         assertFalse(server.getModules().asList().isEmpty());
 
         assertEquals(1, module.countPrepared.get(), "prepare:");
-        assertEquals(1, module.countConfiguration.get(), "configured:");
+        assertEquals(1, module.countConfigured.get(), "configured:");
         assertEquals(1, module.countServer.get(), "server:");
         assertEquals(0, module.countServerBeforeStarting.get(), "serverBefore:");
         assertEquals(0, module.countServerAfterStarting.get(), "serverAfter:");
@@ -86,7 +86,7 @@ public class TestFusekiModules {
         server.start();
 
         assertEquals(1, module.countPrepared.get(), "prepare:");
-        assertEquals(1, module.countConfiguration.get(), "configured:");
+        assertEquals(1, module.countConfigured.get(), "configured:");
         assertEquals(1, module.countServer.get(), "server:");
         assertEquals(1, module.countServerBeforeStarting.get(), "serverBefore:");
         assertEquals(1, module.countServerAfterStarting.get(), "serverAfter:");

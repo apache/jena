@@ -34,8 +34,7 @@ import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.fuseki.Fuseki;
-import org.apache.jena.fuseki.main.cmds.FusekiMain;
-import org.apache.jena.fuseki.main.cmds.ServerArgs;
+import org.apache.jena.fuseki.main.runner.ServerArgs;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.riot.SysRIOT;
 
@@ -379,7 +378,7 @@ public class TestFusekiMainCmdArguments {
     public void test_error_httpsConfig() {
         // given
         List<String> arguments = List.of("--mem", "--httpsPort=12345", "/dataset");
-        String expectedMessage = "https port given but not certificate details via --https";
+        String expectedMessage = "https port given but no certificate details via --https";
         // when, then
         testForCmdException(arguments, expectedMessage);
     }
@@ -445,7 +444,7 @@ public class TestFusekiMainCmdArguments {
     private void buildServer(String... cmdline) {
         if ( server != null )
             fail("Bad test - a server has already been created");
-        server = FusekiMain.build(cmdline);
+        server = FusekiMain.construct(cmdline);
         server.start();
     }
 }

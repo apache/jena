@@ -20,54 +20,84 @@ package org.apache.jena.fuseki.main.sys;
 
 import java.util.Set;
 
+import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.fuseki.main.runner.ServerArgs;
 import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.rdf.model.Model;
 
 /**
- * Module interface for Fuseki.
+ * Module extension interface for Fuseki.
  * <p>
- * A module is additional code, usually in a separate jar, but it can be part of
- * the application code. Calls are made to each module at certain points in the
- * lifecycle of a Fuseki server.
+ * A module is additional code and it can be part of the application code.
+ * Calls are made to each module at certain points in the lifecycle of a Fuseki server.
  * <p>
  * A module must provide a no-argument constructor if it is to be loaded automatically.
+ * See {@link FusekiAutoModule}.
  * <p>
- *
- * When a server is being built:
- * * <ul>
+ * When a server is being built {@link FusekiBuildCycle}:
+ * <ul>
  * <li>{@linkplain #prepare}
  *      -- called at the beginning of the
  *     {@link org.apache.jena.fuseki.main.FusekiServer.Builder#build() FusekiServer.Builder build()}
  *      step. This call can manipulate the server configuration. This is the usual operation for customizing a server.</li>
- * <li>{@linkplain #configured} -- called after the DataAccessPoint registry has been built.</li>
- * <li>{@linkplain #server(FusekiServer)} -- called at the end of the "build" step before
+ * <li>{@linkplain #configured} &ndash; called after the DataAccessPoint registry has been built.</li>
+ * <li>{@linkplain #server(FusekiServer)} &ndash; called at the end of the "build" step before
  *     {@link org.apache.jena.fuseki.main.FusekiServer.Builder#build() FusekiServer.Builder build()}
  *     returns.</li>
  * </ul>
- * At server start-up:
+ * At server start-up and stopping{@link FusekiStartStop}:
  * <ul>
- * <li>{@linkplain #serverBeforeStarting(FusekiServer)} -- called before {@code server.start} happens.</li>
- * <li>{@linkplain #serverAfterStarting(FusekiServer)} -- called after {@code server.start} happens.</li>
- * <li>{@linkplain #serverStopped(FusekiServer)} -- call after {@code server.stop}, but only if a clean shutdown happens.
- *     Servers may simply exit without a shutdown phase.
+ * <li>{@linkplain #serverBeforeStarting(FusekiServer)} &ndash; called before {@code server.start} happens.</li>
+ * <li>{@linkplain #serverAfterStarting(FusekiServer)} &ndash; called after {@code server.start} happens.</li>
+ * <li>{@linkplain #serverStopped(FusekiServer)} &ndash; call after {@code server.stop}, but only if a clean shutdown happens.
+ *     N.B. Servers may simply exit without a shutdown phase.
  *     The JVM may exit or be killed without clean shutdown.
  *     Modules must not rely on a call to {@code serverStopped} happening.</li>
  * </ul>
+ * Modules can also be involed in command line argument processing {@link FusekiServerArgsHandler}:
+ * <ul>
+ * <li>
+ *    {@link #serverArgsModify} &ndash; called before command line processing.
+ *    This call can register or modify the argument setup to be used to parse the command line.
+ * </li>
+ * <li>
+ *   {@link #serverArgsPrepare} &ndash; called after parsing the command line and
+ *   recording the command line settings in {@link ServerArgs}.
+ *   Argument handlers can record their own argument values and flags.
+ * </li>
+ * <li>
+ *   {@link #serverArgsBuilder} &ndash; called after the {@link ServerArgs} have
+ *   been used to construct a server builder.
+ * </li>
+ * </ul>
  */
-public interface FusekiModule extends FusekiServerArgsCustomiser, FusekiBuildCycle, FusekiStartStop, FusekiActionCycle {
-    // Gather all interface method together.
+public interface FusekiModule extends FusekiServerArgsHandler, FusekiBuildCycle, FusekiStartStop, FusekiActionCycle {
+    // Gather all interface methods together.
     // Inherited javadoc.
 
     /**
-     * {@inheritDoc}
-     * <p>This defaults to the Java simple class name of module.
+     * A display name to identify this module.
+     * The name defaults to the class simple name.
      */
-    @Override
-    public default String name() { return null; }
+    public default String name() { return this.getClass().getSimpleName(); }
 
-    // ---- Build cycle
+    // ---- FusekiServerArgsHandler
+
+    /** {@inheritDoc} */
+    @Override
+    public default void serverArgsModify(CmdGeneral fusekiCmd, ServerArgs serverArgs) { }
+
+    /** {@inheritDoc} */
+    @Override
+    public default void serverArgsPrepare(CmdGeneral fusekiCmd, ServerArgs serverArgs) { }
+
+    /** {@inheritDoc} */
+    @Override
+    public default void serverArgsBuilder(FusekiServer.Builder serverBuilder, Model configModel) {}
+
+    // ---- FusekiBuildCycle
 
     /** {@inheritDoc} */
     @Override
@@ -95,7 +125,7 @@ public interface FusekiModule extends FusekiServerArgsCustomiser, FusekiBuildCyc
     @Override
     public default void serverReload(FusekiServer server) { }
 
-    // ---- Server start-stop.
+    // ---- FusekiStartStop
 
     /** {@inheritDoc} */
     @Override
@@ -108,4 +138,7 @@ public interface FusekiModule extends FusekiServerArgsCustomiser, FusekiBuildCyc
     /** {@inheritDoc} */
     @Override
     public default void serverStopped(FusekiServer server) { }
+
+    // ---- FusekiActionCycle
+    // Currently, a placeholder.s
 }
