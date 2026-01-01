@@ -16,15 +16,11 @@
  * limitations under the License.
  */
 
-package org.apache.jena.cmd;
+package org.apache.jena.fuseki.main.cmds;
 
-/**
- * Exception used to indicate that the command should end now. Use instead of
- * System.exit so that a wrapper can catch (else a command server will exit wrongly).
- */
-public class TerminationException extends CmdException
-{
-    public int returnCode;
-    public TerminationException(int rc) { super(); this.returnCode = rc; }
-    public int getCode() { return returnCode; }
+/** Reserved. Entry point used by the combined jar and "--jar" (from v6.0.0) */
+public class FusekiCmd {
+    static public void main(String... args) {
+        FusekiServerUICmd.main(args);
+    }
 }

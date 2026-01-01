@@ -52,7 +52,7 @@ public class FMod_Prometheus implements FusekiModule {
 
     @Override public void prepare(FusekiServer.Builder serverBuilder, Set<String> datasetNames, Model configModel) {
         metricsProvider = new PrometheusMetricsProvider();
-        serverBuilder.addServletAttribute(Fuseki.attrMetricsProvider, metricsProvider);
+        serverBuilder.setServletAttribute(Fuseki.attrMetricsProvider, metricsProvider);
         serverBuilder.addServlet("/$/metrics", new ActionMetrics());
     }
 

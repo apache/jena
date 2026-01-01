@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.main.cmds;
+package org.apache.jena.fuseki.main.runner;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -42,13 +42,10 @@ import org.slf4j.Logger;
 
 /**
  * Various ways to build a dataset from command line arguments.
- *
- * @implNote
- * This code is extracted so as to keep {@link FusekiMain} more manageable.
  */
 
 /*package*/ class DSGSetup {
-    // Each setup* should set ensure
+    // Each setup* should set/ensure
     //   serverArgs.datasetDescription
     //   serverArgs.dataset
     // are set on exit.
@@ -141,13 +138,13 @@ import org.slf4j.Logger;
         }
     }
 
-    public static void setupAssembler(Logger log, ModDatasetAssembler modDataset, ServerArgs serverArgs) {
+    /*package*/ static void setupAssembler(Logger log, ModDatasetAssembler modDataset, ServerArgs serverArgs) {
         serverArgs.datasetDescription = "Assembler: "+ modDataset.getAssemblerFile();
         Dataset ds = modDataset.createDataset();
         serverArgs.dataset = ds.asDatasetGraph();
     }
 
-    public static void setupRDFS(Logger serverlog, Graph rdfsSchemaGraph, ServerArgs serverArgs) {
+    /*package*/ static void setupRDFS(Logger serverlog, Graph rdfsSchemaGraph, ServerArgs serverArgs) {
         serverArgs.datasetDescription = (serverArgs.datasetDescription == null)
                 ? "RDFS"
                 : serverArgs.datasetDescription+ " (with RDFS)";

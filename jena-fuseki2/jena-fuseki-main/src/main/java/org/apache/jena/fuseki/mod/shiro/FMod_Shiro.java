@@ -23,15 +23,18 @@ import java.util.List;
 import java.util.Set;
 
 import jakarta.servlet.Filter;
+import jakarta.servlet.ServletException;
 import org.apache.jena.atlas.io.IOX;
 import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiConfigException;
+import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.main.FusekiServer;
-import org.apache.jena.fuseki.main.cmds.ServerArgs;
+import org.apache.jena.fuseki.main.runner.ServerArgs;
 import org.apache.jena.fuseki.main.sys.FusekiModule;
 import org.apache.jena.fuseki.mgt.FusekiServerCtl;
 import org.apache.jena.rdf.model.Model;
@@ -40,7 +43,6 @@ import org.apache.shiro.web.servlet.ShiroFilter;
 import org.eclipse.jetty.ee11.servlet.ServletContextHandler;
 import org.eclipse.jetty.ee11.servlet.SessionHandler;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Fuseki Module for Apache Shiro.
@@ -51,16 +53,6 @@ import org.slf4j.LoggerFactory;
  */
 public class FMod_Shiro implements FusekiModule {
 
-//    @Override
-//    public void start() {
-//        Fuseki.serverLog.info("FMod Shiro");
-//    }
-    //
-//  @Override
-//  public int level() {
-//      return FusekiApp.levelFModShiro;
-//  }
-
     @Override
     public String name() {
         return "FMod Shiro";
@@ -70,41 +62,74 @@ public class FMod_Shiro implements FusekiModule {
         return new FMod_Shiro();
     }
 
-    public static final Logger shiroConfigLog = LoggerFactory.getLogger(Fuseki.PATH + ".Shiro");
+    public static final Logger shiroConfigLog = FusekiShiro.shiroLog;
 
     private static List<String> iniFileLocations = null;
 
     private static ArgDecl argShiroIni = new ArgDecl(true, "shiro", "shiro-ini");
 
-    // Module state (for reload).
-    private String shiroFile = null;
+    /** Name of the servlet attribute in the builder for in the admin area. */
+    public static String adminShiroFile = "org.apache.jena.fuseki:AdminShiroFile";
 
-    public FMod_Shiro() {
-        this(null);
-    }
+    /** Shiro configuration file given a a command line argument. */
+    private String argShiroFile = null;
 
-    public FMod_Shiro(String shiroFile) {
-        this.shiroFile = shiroFile;
-    }
+    public FMod_Shiro() {}
 
     // ---- If used from the command line
     @Override
     public void serverArgsModify(CmdGeneral fusekiCmd, ServerArgs serverArgs) {
         fusekiCmd.add(argShiroIni);
+        argShiroFile = null;
     }
 
     @Override
     public void serverArgsPrepare(CmdGeneral fusekiCmd, ServerArgs serverArgs) {
         if ( fusekiCmd.contains(argShiroIni) ) {
-            shiroFile = fusekiCmd.getValue(argShiroIni);
-            Path path = Path.of(shiroFile);
-            IOX.checkReadableFile(path, CmdException::new);
+            argShiroFile = fusekiCmd.getValue(argShiroIni);
+            Path path = Path.of(argShiroFile);
+            IOX.checkReadableFile(path, msg-> {
+                FmtLog.error(shiroConfigLog, msg);
+               return new CmdException();
+            });
         }
     }
+
+    // ---- Build cycle
 
     // The filter is added in prepare().
     // This allows other Fuseki modules, such as FMod_Admin, to setup shiro.ini.
     // FMod_Admin unpacks a default one to FUSEKI_BASE/shiro.ini (usually "run/shiro.ini")
+
+    /**
+     * Find the Shiro configuration. In order:
+     * <ol>
+     * <li>From a command line argument.</li>
+     * <li>From the environment variable "FUSEKI_SHIRO".</li>
+     * <li>From 'shiro.ini' in the admin run time area.
+     * </ol>
+     * */
+    private String decideShiroConfiguration(FusekiServer.Builder serverBuilder) {
+        String shiroConfig = this.argShiroFile;
+        if ( shiroConfig != null )
+            return shiroConfig;
+
+        // Environment variable:  FUSEKI_SHIRO
+        shiroConfig = Lib.getenv(FusekiServerCtl.envFusekiShiro);
+        if ( shiroConfig != null )
+            return shiroConfig;
+
+        // FMod_admin.
+        Object obj = serverBuilder.getServletAttribute(adminShiroFile);
+        if ( obj == null )
+            return null;
+        if ( obj instanceof Path path )
+            return path.toString();
+        else {
+            FmtLog.error(shiroConfigLog,"Servlet attribute '%s' is not a Path: got: %s", adminShiroFile, obj);
+        }
+        return null;
+    }
 
      /**
       * Determine the Shiro configuration file.
@@ -112,28 +137,24 @@ public class FMod_Shiro implements FusekiModule {
       */
     @Override
     public void prepare(FusekiServer.Builder serverBuilder, Set<String> datasetNames, Model configModel) {
-        if ( shiroFile == null ) {
-            // Environment variable:  FUSEKI_SHIRO
-            shiroFile = Lib.getenv(FusekiServerCtl.envFusekiShiro);
-        }
-
-        if ( shiroFile == null ) {
+        String shiroConfig = decideShiroConfiguration(serverBuilder);
+        if ( shiroConfig == null )
             return;
-        }
 
-        if ( shiroFile != null ) {
-            // Shiro-style.
-            String shiroResourceName = FusekiShiroLib.withResourcePrefix(shiroFile);
-            if ( ! ResourceUtils.resourceExists(shiroResourceName) )
-                throw new FusekiConfigException("Shiro resource does not exist");
-            //IOX.checkReadableFile(shiroFile, FusekiConfigException::new);
-            Filter filter = new FusekiShiroFilter(shiroResourceName);
-            // This is a "before" filter.
-            serverBuilder.addFilter("/*", filter);
-        }
+        // Shiro prints stack traces and exceptions. Rather than silence
+        //checkShiroConfiguration(shiroConfig);
+
+        // Shiro-style.
+        String shiroResourceName = FusekiShiro.withResourcePrefix(shiroConfig);
+        if ( ! ResourceUtils.resourceExists(shiroResourceName) )
+            throw new FusekiConfigException("Shiro resource does not exist");
+        Filter filter = new FusekiShiroFilter(shiroResourceName);
+        // This is a "before" filter.
+        serverBuilder.addFilter("/*", filter);
+        serverBuilder.setServletAttribute(Fuseki.attrShiroResource, shiroResourceName);
 
         // Clear.
-        shiroFile = null;
+        this.argShiroFile = null;
     }
 
     /**
@@ -151,18 +172,33 @@ public class FMod_Shiro implements FusekiModule {
 
         @Override
         public void init() throws Exception {
-            // Intercept Shiro initialization.
-            List<String> locations = List.of();
-            if ( shiroInitializationResource != null ) {
-                locations = List.of(shiroInitializationResource);
+            try {
+                // Intercept Shiro initialization.
+                List<String> locations = List.of();
+                if ( shiroInitializationResource != null ) {
+                    locations = List.of(shiroInitializationResource);
+                }
+                FusekiShiro.shiroEnvironment(getServletContext(), locations);
+            } catch (FusekiException ex) {
+                // Wrap so ShiroFilter does not log it.
+                throw new ServletException(ex);
             }
-            FusekiShiroLib.shiroEnvironment(getServletContext(), locations);
             super.init();
         }
     }
 
     @Override
     public void serverBeforeStarting(FusekiServer server) {
+        try {
+            String x =(String)server.getServletContext().getAttribute(Fuseki.attrShiroResource);
+            if ( x != null )
+                FmtLog.info(shiroConfigLog, "Shiro configuration: %s", x);
+//            else
+//                FmtLog.info(shiroConfigLog, "No Shiro configuration");
+        } catch (ClassCastException ex) {
+            FmtLog.warn(shiroConfigLog, "Unexpected Shiro configuration: %s", server.getServletContext().getAttribute(Fuseki.attrShiroResource));
+        }
+
         // Shiro requires a session handler.
         // This needs the Jetty server to have been created.
         org.eclipse.jetty.server.Server jettyServer = server.getJettyServer();

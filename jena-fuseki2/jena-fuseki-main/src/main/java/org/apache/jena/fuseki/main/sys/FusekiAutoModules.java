@@ -24,7 +24,6 @@ import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import java.util.function.Function;
 
-import org.apache.jena.atlas.lib.Version;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiConfigException;
@@ -70,6 +69,8 @@ public class FusekiAutoModules {
 
     /**
      * For testing only.
+     * This call does not fully reset the system.
+     * Call {@link #get()} to perform a reload.
      */
     static void reset() {
         currentLoadedModules = null;
@@ -128,22 +129,25 @@ public class FusekiAutoModules {
                 .filter(Objects::nonNull)
                 .sorted((x,y)-> Integer.compare(x.level(), y.level()))
                 .toList();
-        // Start, and convert to FusekiModules (generics issue)
+        // Start, and convert to FusekiModules
+        // (generics issue - otherwise <? extends FusekiModule> tends to be needed in several places)
         List<FusekiModule> fmods = autoMods.stream().map(afmod->{
             afmod.start();
             return (FusekiModule)afmod;
         }).toList();
 
-        fmods.forEach(m->{
-            String name = m.name();
-            if ( name == null )
-                name = m.getClass().getSimpleName();
-            String verStr = Version.versionForClass(m.getClass()).orElse(null);
-            if ( verStr == null )
-                FmtLog.info(LOG, "Module: %s", name);
-            else
-                FmtLog.info(LOG, "Module: %s (%s)", name, verStr);
-        });
+        if ( false ) {
+            if ( fmods.isEmpty() )
+                FmtLog.debug(LOG, "No modules");
+            else {
+                fmods.forEach(m->{
+                    String name = m.name();
+                    if ( name == null )
+                        name = m.getClass().getSimpleName();
+                    FmtLog.debug(LOG, "Module: %s", name);
+                });
+            }
+        }
 
         return FusekiModules.create(fmods);
     }

@@ -31,9 +31,9 @@ import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.ctl.ActionSleep;
 import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.fuseki.main.runner.FusekiRunner;
 import org.apache.jena.fuseki.main.sys.FusekiModules;
 import org.apache.jena.fuseki.mgt.FusekiServerCtl;
-import org.apache.jena.fuseki.mod.FusekiServerModules;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -89,7 +89,7 @@ public class FusekiServerPerTestClass {
 
     // For the one-per-class setup, include the usual modules for jena-fuseki-server.
     private static FusekiModules modulesSetup() {
-        return FusekiServerModules.serverModules();
+        return FusekiRunner.fmodsServerUI();
     }
 
     private static FusekiServer createServerForTest() {

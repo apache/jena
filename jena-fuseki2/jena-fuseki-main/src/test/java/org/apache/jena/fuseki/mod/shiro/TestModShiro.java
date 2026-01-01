@@ -33,8 +33,8 @@ import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.net.Host;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.fuseki.FusekiConfigException;
+import org.apache.jena.fuseki.main.FusekiMain;
 import org.apache.jena.fuseki.main.FusekiServer;
-import org.apache.jena.fuseki.main.cmds.FusekiMain;
 import org.apache.jena.fuseki.main.sys.FusekiModule;
 import org.apache.jena.fuseki.main.sys.FusekiModules;
 import org.apache.jena.fuseki.mgt.FusekiServerCtl;
@@ -189,20 +189,16 @@ public class TestModShiro {
     @Test public void shiroByCommandLine() {
         String dsname = "/ds";
         FusekiModule fmod = FMod_Shiro.create();
-        FusekiMain.addCustomiser(fmod);
+        FusekiModules x = FusekiModules.create(fmod);
 
         // And also a module!
-        FusekiServer server = FusekiMain.builder("--port=0", "--shiro=testing/Shiro/shiro_userpassword.ini", "--mem", dsname)
-                // Must be same instance.
-                .fusekiModules(FusekiModules.create(fmod))
-                .build();
+        FusekiServer server = FusekiMain.construct(x, "--port=0", "--shiro=testing/Shiro/shiro_userpassword.ini", "--mem", dsname);
         server.start();
         try {
          // No user-password
             HttpException httpEx = assertThrows(HttpException.class, ()->attemptByLocalhost(server, dsname));
             assertEquals(401, httpEx.getStatusCode(), "Expected HTTP 401");
         } finally { server.stop(); }
-        FusekiMain.resetCustomisers();
     }
 
     // ----------------------------

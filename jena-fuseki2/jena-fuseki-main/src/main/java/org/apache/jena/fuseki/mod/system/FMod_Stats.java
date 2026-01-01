@@ -14,17 +14,33 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.cmd;
+package org.apache.jena.fuseki.mod.system;
+
+import org.apache.jena.cmd.CmdGeneral;
+import org.apache.jena.fuseki.main.runner.ServerArgs;
+import org.apache.jena.fuseki.main.sys.FusekiModule;
 
 /**
- * Exception used to indicate that the command should end now. Use instead of
- * System.exit so that a wrapper can catch (else a command server will exit wrongly).
+ * Enable the {@code /$/stats} endpoint via the command line.
+ * (May be disabled from a Fuseki server builder.)
  */
-public class TerminationException extends CmdException
-{
-    public int returnCode;
-    public TerminationException(int rc) { super(); this.returnCode = rc; }
-    public int getCode() { return returnCode; }
+public class FMod_Stats implements FusekiModule {
+
+    public static FusekiModule create() {
+        return new FMod_Stats();
+    }
+
+    @Override
+    public void serverArgsModify(CmdGeneral fusekiCmd, ServerArgs serverArgs) {
+        serverArgs.withStats = true;
+    }
+//
+//    @Override
+//    public void prepare(FusekiServer.Builder serverBuilder, Set<String> datasetNames, Model configModel) {
+//        serverBuilder.enableStats(true);
+//    }
 }

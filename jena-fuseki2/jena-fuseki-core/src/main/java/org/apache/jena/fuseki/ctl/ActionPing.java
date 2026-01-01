@@ -27,15 +27,15 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.web.HttpSC;
 
-/** The ping servlet provides a low cost, uncached endpoint that can be used
- * to determine if this component is running and responding.  For example,
- * a Nagios check should use this endpoint.
+/**
+ * The ping servlet provides a low cost, uncached, endpoint that can be used
+ * to determine if this server is running and responding.
+ * For example, a Nagios check should use this endpoint.
  */
 public class ActionPing extends HttpServlet
 {
@@ -45,18 +45,21 @@ public class ActionPing extends HttpServlet
     public ActionPing() { super(); }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        doCommon(req, resp);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+        doCommon(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
-        doCommon(req, resp);
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+        doCommon(request, response);
     }
 
     @Override
-    protected void doHead(HttpServletRequest req, HttpServletResponse resp) {
-        doCommon(req, resp);
+    protected void doHead(HttpServletRequest request, HttpServletResponse response) {
+        ServletOps.setNoCache(response);
+        response.setContentType(contentTypeTextPlain);
+        response.setCharacterEncoding(charsetUTF8);
+        response.setStatus(HttpSC.OK_200);
     }
 
     protected void doCommon(HttpServletRequest request, HttpServletResponse response) {
@@ -66,11 +69,9 @@ public class ActionPing extends HttpServlet
             response.setCharacterEncoding(charsetUTF8);
             response.setStatus(HttpSC.OK_200);
             ServletOutputStream out = response.getOutputStream();
-            out.println(DateTimeUtils.nowAsXSDDateTimeString());
+            out.println(DateTimeUtils.nowUTC());
         } catch (IOException ex) {
             Fuseki.serverLog.warn("ping :: IOException :: "+ex.getMessage());
         }
     }
 }
-
-

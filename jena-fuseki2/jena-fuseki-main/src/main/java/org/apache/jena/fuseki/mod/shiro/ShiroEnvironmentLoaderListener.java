@@ -18,15 +18,13 @@
 
 package org.apache.jena.fuseki.mod.shiro;
 
-import static java.lang.String.format;
-
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.shiro.web.env.EnvironmentLoaderListener;
 import org.apache.shiro.web.env.ResourceBasedWebEnvironment;
 import org.apache.shiro.web.env.WebEnvironment;
-import org.slf4j.Logger;
 
 /**
  * A Shiro {@link EnvironmentLoaderListener} that supports multiple possible
@@ -34,8 +32,6 @@ import org.slf4j.Logger;
  * of possible file names.
  */
 class ShiroEnvironmentLoaderListener extends EnvironmentLoaderListener{
-
-    public static final Logger shiroConfigLog = FMod_Shiro.shiroConfigLog;
 
     private List<String> locations;
 
@@ -61,15 +57,16 @@ class ShiroEnvironmentLoaderListener extends EnvironmentLoaderListener{
             String[] configLocations = env.getConfigLocations();
             if ( configLocations != null && configLocations.length > 0 ) {
                 // Set some other way.
-                shiroConfigLog.info(format("Shiro file resource %s", Arrays.asList(configLocations)));
+                FmtLog.info(FusekiShiro.shiroLog, "Shiro file resource %s", Arrays.asList(configLocations));
                 return;
             }
-            String loc = FusekiShiroLib.huntForShiroIni(locations);
+            String loc = FusekiShiro.huntForShiroIni(locations);
             if  ( loc == null ) {
-                shiroConfigLog.info(format("No Shiro file found (tried: %s)", locations));
+                FmtLog.info(FusekiShiro.shiroLog, "No Shiro file found (tried: %s)", locations);
                 return;
             }
-            shiroConfigLog.info("Shiro configuration: "+loc);
+            // A location found by FMod_Shiro is logged in FMod_Shiro
+            //shiroConfigLog.info("Shiro configuration: "+loc);
             String[] configLocationsHere = new String[] {loc};
             env.setConfigLocations(configLocationsHere);
         }

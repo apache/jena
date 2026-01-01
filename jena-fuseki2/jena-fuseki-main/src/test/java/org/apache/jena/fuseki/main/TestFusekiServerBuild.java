@@ -105,24 +105,28 @@ public class TestFusekiServerBuild {
     private static final String DIR = "testing/FusekiBuild/";
 
     // Build with defaults.
-    @Test public void fuseki_build_dft_port_01() {
+    @Test public void fuseki_build_defaults() {
         // In case another unrelated Fuseki server is running on port 3330 in another JVM,
         // this test logs the bind failure but does not fail the test.
-        // Because this tests for "defaults", it's quite easy to have another server running.
+        // Because this tests for "defaults", it's quite easy to have another server running
+        // on a development machine.
+        // In CI, the build/test is isolated and this does not happen.
 
         DatasetGraph dsg = dataset();
-        // Default embedded server port (command line default is 3030).
-        int port = FusekiServer.DefaultServerPort;
+        int port = FusekiServer.defaultHttpPort;
         // Server, using the defaults.
         FusekiServer server = FusekiServer.create()
                 .add("/ds", dsg)
                 .build();
         try {
+            int serverPort = server.getHttpPort();
+            assertEquals(port, serverPort);
+
             assertTrue(server.getDataAccessPointRegistry().isRegistered("/ds"));
             try {
                 server.start();
             } catch (FusekiException ex) {
-                //org.apache.jena.fuseki.FusekiException: java.io.IOException: Failed to bind to 0.0.0.0/0.0.0.0:3330
+                //org.apache.jena.fuseki.FusekiException: java.io.IOException: Failed to bind to 0.0.0.0/0.0.0.0:3030
                 if ( ex.getCause() instanceof IOException ex2 ) {
                     if ( ex2.getMessage().matches("Failed to bind to .*:"+port) ) {
                         // Some other Fuseki running on this machine.
@@ -142,7 +146,6 @@ public class TestFusekiServerBuild {
         }
     }
 
-    // Build - naming does make a difference.
     @Test public void fuseki_build_registry_02() {
         DatasetGraph dsg = dataset();
         FusekiServer server = FusekiServer.make(0, "/ds2", dsg);
@@ -155,11 +158,7 @@ public class TestFusekiServerBuild {
 
     @Test public void fuseki_build_add_data_03() {
         DatasetGraph dsg = dataset();
-        FusekiServer server = FusekiServer.create()
-            .port(0)
-            .add("/ds1", dsg)
-            .build();
-        server.start();
+        FusekiServer server =  FusekiServer.run(0, "/ds1", dsg);
         int port = server.getPort();
         try {
             // Add while live.
@@ -174,7 +173,6 @@ public class TestFusekiServerBuild {
             });
         } finally { server.stop(); }
     }
-
 
     @Test public void dataservice_01() {
         DatasetGraph dsg = dataset();

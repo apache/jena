@@ -43,7 +43,6 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.build.DatasetDescriptionMap;
 import org.apache.jena.fuseki.build.FusekiConfig;
-import org.apache.jena.fuseki.main.cmds.FusekiMain;
 import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.FusekiVocabG;
@@ -87,11 +86,6 @@ public class FusekiServerCtl {
     private static final String systemFileAreaBase    = "system_files";
     private static final String templatesNameBase     = "templates";
     private static final String DFT_CONFIG            = "config.ttl";
-
-    private static int BaseFusekiAutoModuleLevel      = 500;
-    public static int levelFModAdmin                  = BaseFusekiAutoModuleLevel;
-    public static int levelFModUI                     = BaseFusekiAutoModuleLevel+10;
-    public static int levelFModShiro                  = BaseFusekiAutoModuleLevel+20;
 
     /** Directory for TDB databases - this is known to the assembler templates */
     public static Path        dirDatabases       = null;
@@ -386,7 +380,6 @@ public class FusekiServerCtl {
     public static void clearUpSystemState() {
         Lib.unsetenv(FusekiServerCtl.envFusekiShiro);
         Lib.unsetenv(FusekiServerCtl.envFusekiBase);
-        FusekiMain.resetCustomisers();
     }
 
     private static Path makePath(Path root , String relName ) {

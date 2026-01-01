@@ -22,18 +22,35 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.fuseki.main.FusekiServer.Builder;
+import org.apache.jena.fuseki.main.runner.ServerArgs;
+import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.rdf.model.Model;
 
 // Not autoloaded
 public class ModuleForTest implements FusekiModule {
 
+
+    // ---- FusekiServerArgsHandler
+    public AtomicInteger countArgsModify = new AtomicInteger(0);
+    public AtomicInteger countArgsPrepare = new AtomicInteger(0);
+    public AtomicInteger countArgsBuilder = new AtomicInteger(0);
+
+    // ---- FusekiBuildCycle
     public AtomicInteger countPrepared = new AtomicInteger(0);
-    public AtomicInteger countConfiguration = new AtomicInteger(0);
+    public AtomicInteger countConfigured = new AtomicInteger(0);
+    public AtomicInteger countConfigDataAccessPoint = new AtomicInteger(0);
     public AtomicInteger countServer = new AtomicInteger(0);
+    public AtomicInteger countServerConfirmReload = new AtomicInteger(0);
+    public AtomicInteger countServerReload = new AtomicInteger(0);
+
+    // ---- FusekiStartStop
     public AtomicInteger countServerBeforeStarting = new AtomicInteger(0);
     public AtomicInteger countServerAfterStarting = new AtomicInteger(0);
+    public AtomicInteger countServerStopped = new AtomicInteger(0);
 
     public ModuleForTest() {}
 
@@ -45,38 +62,84 @@ public class ModuleForTest implements FusekiModule {
     }
 
     public void clearLifecycle() {
-        // Not countStart.
-        countConfiguration.set(0);
+        countArgsModify.set(0);
+        countArgsPrepare.set(0);
+        countArgsBuilder.set(0);
+
         countPrepared.set(0);
+        countConfigured.set(0);
+        countConfigDataAccessPoint.set(0);
         countServer.set(0);
+        countServerConfirmReload.set(0);
+        countServerReload.set(0);
+
         countServerBeforeStarting.set(0);
         countServerAfterStarting.set(0);
+        countServerStopped.set(0);
     }
 
-    @Override
-    public void prepare(FusekiServer.Builder builder, Set<String> datasetNames, Model configModel) {
+    // ---- FusekiServerArgsHandler
+
+    @Override public void serverArgsModify(CmdGeneral cmdGeneral, ServerArgs serverArgs) {
+        countArgsModify.incrementAndGet();
+    }
+
+    @Override public void serverArgsPrepare(CmdGeneral cmdGeneral, ServerArgs serverArgs) {
+        countArgsPrepare.incrementAndGet();
+    }
+
+    @Override public void serverArgsBuilder(Builder build, Model confModel) {
+        countArgsBuilder.incrementAndGet();
+    }
+
+    // ---- FusekiBuildCycle
+
+    @Override public void prepare(FusekiServer.Builder builder, Set<String> datasetNames, Model configModel) {
         countPrepared.incrementAndGet();
     }
 
-    @Override
-    public void configured(FusekiServer.Builder serverBuilder, DataAccessPointRegistry dapRegistry, Model configModel) {
-        countConfiguration.getAndIncrement();
+    @Override public void configured(FusekiServer.Builder serverBuilder, DataAccessPointRegistry dapRegistry, Model configModel) {
+        countConfigured.getAndIncrement();
     }
 
+    @Override public void configDataAccessPoint(DataAccessPoint dataAccessPoint, Model confModel) {
+        countConfigDataAccessPoint.getAndIncrement();
+    }
 
     // Built, not started, about to be returned to the builder caller
     @Override public void server(FusekiServer server) {
         countServer.getAndIncrement();
     }
 
-    // Server starting
+    @Override public boolean serverConfirmReload(FusekiServer server) {
+        countServerConfirmReload.incrementAndGet();
+        return true;
+    }
+
+    @Override public void serverReload(FusekiServer server) {
+        countServerReload.incrementAndGet();
+    }
+
+    // ---- FusekiStartStop
+
     @Override public void serverBeforeStarting(FusekiServer server) {
         countServerBeforeStarting.getAndIncrement();
     }
 
-    // Server starting
     @Override public void serverAfterStarting(FusekiServer server) {
         countServerAfterStarting.getAndIncrement();
     }
 
+    @Override public void serverStopped(FusekiServer server) {
+        countServerStopped.getAndIncrement();
+    }
+
+    // Debugging!
+    @Override
+    public String toString() {
+        return String.format("ModuleForTest[prepared=%s configuration=%s server=%s]",
+                             countPrepared.get(),
+                             countConfigured.get(),
+                             countServer.get());
+    }
 }

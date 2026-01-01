@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.server;
+package org.apache.jena.fuseki.main.sys;
 
 import static java.lang.String.format;
 
@@ -24,6 +24,7 @@ import java.util.*;
 
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.server.*;
 import org.slf4j.Logger;
 
 /** Functions that log information about the core Fuseki engine. */
@@ -34,27 +35,6 @@ public class FusekiCoreInfo {
         String version = Fuseki.VERSION;
         String serverName = Fuseki.NAME;
         FmtLog.info(log, "%s %s", serverName, version);
-    }
-
-    /** Details of the system runtime configuration. */
-    public static void logSystemDetails(Logger log) {
-        PlatformInfo.logSystemDetails(log);
-    }
-
-    /** Log details - this function is about command line details */
-    public static void logServerCmdSetup(Logger log, boolean verbose, DataAccessPointRegistry dapRegistry,
-                                         String datasetPath, String datasetDescription, String serverConfigFile, String staticFiles) {
-        if ( datasetPath != null )
-            FmtLog.info(log, "Database: %s", datasetDescription);
-        if ( serverConfigFile != null )
-            FmtLog.info(log, "Configuration file: %s", serverConfigFile);
-
-        FusekiCoreInfo.logDataAccessPointRegistry(log, dapRegistry, verbose);
-        if ( staticFiles != null )
-            FmtLog.info(log, "Static files: %s", staticFiles);
-        PlatformInfo.logSystemDetails(log);
-        if ( verbose )
-            PlatformInfo.logDetailsJVM(log);
     }
 
     /** Log a {@link DataAccessPointRegistry} */

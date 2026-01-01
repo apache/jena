@@ -68,7 +68,7 @@ public class ModuleByServiceLoader extends ModuleForTest implements FusekiAutoMo
 
     @Override
     public void configured(FusekiServer.Builder serverBuilder, DataAccessPointRegistry dapRegistry, Model configModel) {
-        countConfiguration.getAndIncrement();
+        countConfigured.getAndIncrement();
     }
 
 

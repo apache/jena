@@ -31,7 +31,7 @@ import org.apache.jena.http.auth.AuthEnv;
 import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
 
 @TestMethodOrder(MethodOrderer.MethodName.class)
-public class TestAuthQuery_JDK extends AbstractTestAuth_JDK {
+public class TestAuthQuery extends AbstractTestAuth {
     @Test
     public void query_auth_jdk_01_no_auth() {
         QueryExecutionHTTP qe = QueryExecutionHTTP.create().endpoint(databaseURL()).query("ASK { }").build();

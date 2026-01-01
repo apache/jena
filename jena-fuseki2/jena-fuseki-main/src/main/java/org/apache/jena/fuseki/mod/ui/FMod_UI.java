@@ -32,7 +32,7 @@ import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.main.FusekiServer;
-import org.apache.jena.fuseki.main.cmds.ServerArgs;
+import org.apache.jena.fuseki.main.runner.ServerArgs;
 import org.apache.jena.fuseki.main.sys.FusekiModule;
 import org.apache.jena.fuseki.mgt.FusekiServerCtl;
 import org.apache.jena.fuseki.validation.*;
@@ -154,7 +154,7 @@ public class FMod_UI implements FusekiModule {
         if ( r != null ) {
             // Simplify name.
             String displayName = loggingName(r);
-            FmtLog.info(LOG, "UI Base = %s", displayName);
+            FmtLog.info(LOG, "UI Base: %s", displayName);
             return r;
         }
         // Bad!

@@ -26,11 +26,7 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.auth.AuthPolicy;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.sys.FusekiAutoModule;
-import org.apache.jena.fuseki.server.DataAccessPoint;
-import org.apache.jena.fuseki.server.DataAccessPointRegistry;
-import org.apache.jena.fuseki.server.DataService;
-import org.apache.jena.fuseki.server.Endpoint;
-import org.apache.jena.fuseki.server.Operation;
+import org.apache.jena.fuseki.server.*;
 import org.apache.jena.rdf.model.Model;
 
 public class FMod_SpatialIndexer implements FusekiAutoModule {
@@ -50,12 +46,7 @@ public class FMod_SpatialIndexer implements FusekiAutoModule {
     }
 
     @Override
-    public void start() {
-    }
-
-    @Override
     public void prepare(FusekiServer.Builder builder, Set<String> datasetNames, Model configModel) {
-        Fuseki.configLog.info(name() + ": Registering operation " + spatialIndexerOperation.getId());
         builder.registerOperation(spatialIndexerOperation, new SpatialIndexerService());
     }
 
@@ -65,8 +56,6 @@ public class FMod_SpatialIndexer implements FusekiAutoModule {
      */
     @Override
     public void configured(FusekiServer.Builder serverBuilder, DataAccessPointRegistry dapRegistry, Model configModel) {
-        FusekiAutoModule.super.configured(serverBuilder, dapRegistry, configModel);
-
         boolean autoConfigure = false;
         if (autoConfigure) {
             autoConfigure(serverBuilder, dapRegistry, configModel);
@@ -80,8 +69,6 @@ public class FMod_SpatialIndexer implements FusekiAutoModule {
      * The spatial indexer endpoint with name follows the pattern '{updateEndpointName}-spatial and inherits the update endpoint's auth policy.
      */
     private void autoConfigure(FusekiServer.Builder serverBuilder, DataAccessPointRegistry dapRegistry, Model configModel) {
-        FusekiAutoModule.super.configured(serverBuilder, dapRegistry, configModel);
-
         List<DataAccessPoint> newDataAccessPoints = new ArrayList<>();
         // Register the spatial indexer for each update endpoint and inherit its auth policy.
         for (DataAccessPoint dap : dapRegistry.accessPoints()) {

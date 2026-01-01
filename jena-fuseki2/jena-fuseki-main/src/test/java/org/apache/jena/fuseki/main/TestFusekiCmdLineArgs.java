@@ -32,18 +32,17 @@ import org.junit.jupiter.api.Test;
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.web.TypedInputStream;
-import org.apache.jena.fuseki.main.cmds.FusekiMain;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.http.HttpOp;
 import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.rdfconnection.RDFConnection;
 
 /**
- * Test Fuseki Main command line.
+ * Test Fuseki command line.
  *
  * @see TestCrossOriginFilter for CORS
  */
-public class TestFusekiMainCmd {
+public class TestFusekiCmdLineArgs {
 
     private static final String DATABASES="target/Databases";
     // Fuseki Main server
@@ -54,11 +53,11 @@ public class TestFusekiMainCmd {
 
     private void server(String... cmdline) {
         String[] a = Stream.concat(
-            Stream.of("--port=0"),
+            Stream.of("--port=0", "--stats"),
             Arrays.stream(cmdline))
             .toArray(String[]::new);
 
-        FusekiServer server = FusekiMain.build(a);
+        FusekiServer server = FusekiMain.construct(a);
         server.start();
         int port = server.getPort();
         serverURL = "http://localhost:"+port;

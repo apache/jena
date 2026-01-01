@@ -27,7 +27,7 @@ import org.apache.jena.fuseki.mod.shiro.TestModShiro;
 
 @Suite
 @SelectClasses({
-    // Admin
+    // Admin suite
     TSMod_Admin.class,
     // UI
 

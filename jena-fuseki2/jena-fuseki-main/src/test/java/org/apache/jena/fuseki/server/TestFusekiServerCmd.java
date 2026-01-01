@@ -32,12 +32,13 @@ import org.apache.commons.io.FileUtils;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.fuseki.main.runner.FusekiRunner;
 import org.apache.jena.fuseki.mgt.FusekiServerCtl;
 import org.apache.jena.http.HttpOp;
 import org.apache.jena.sparql.exec.http.Params;
 
 /**
- * Tests Fuseki Server run with all features (FMods)from the command line.
+ * Tests Fuseki Server run with all features from the command line.
  */
 public class TestFusekiServerCmd {
 
@@ -67,16 +68,22 @@ public class TestFusekiServerCmd {
     }
 
     @Test public void plainStart() {
-        FusekiServer server = FusekiServerRunner.construct();
+        FusekiServer server = FusekiRunner.serverUI().construct();
         server.start();
         server.stop();
     }
 
+    @Test public void argsNoConfigurationStart() {
+        FusekiServer server = FusekiRunner.serverUI().construct("--port=0");
+        server.start();
+        server.stop();
+    }
+
+
     @Test public void persistentConfigurationBlockCommandLine() {
         // Create a persistent configuration.
-
         String dbName = "/ds93" ;
-        FusekiServer server0 = FusekiServerRunner.construct();
+        FusekiServer server0 = FusekiRunner.runAsyncServerUI();
         server0.start();
         addDataset(server0, dbName);
         server0.stop();
@@ -105,7 +112,7 @@ public class TestFusekiServerCmd {
     }
 
     private void start_stop_server(String... args) {
-        FusekiServer server = FusekiServerRunner.construct(args);
+        FusekiServer server = FusekiRunner.runAsyncServerUI(args);
         server.start();
         server.stop();
     }

@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 @TestMethodOrder(MethodOrderer.MethodName.class)
-public class TestAuthUpdate_JDK extends AbstractTestAuth_JDK {
+public class TestAuthUpdate extends AbstractTestAuth {
     @Test
     public void update_jdk_auth_01() {
         UpdateRequest updates = UpdateFactory.create("CREATE SILENT GRAPH <http://graph>");

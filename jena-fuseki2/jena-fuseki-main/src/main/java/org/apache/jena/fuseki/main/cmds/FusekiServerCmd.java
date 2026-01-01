@@ -18,36 +18,11 @@
 
 package org.apache.jena.fuseki.main.cmds;
 
-import org.apache.jena.fuseki.main.sys.FusekiModule;
-import org.apache.jena.fuseki.server.FusekiServerRunner;
-import org.apache.jena.fuseki.system.FusekiLogging;
-
-/**
- * Fuseki command that runs a Fuseki server with the admin UI and other {@link FusekiModule FusekiModules}.
- * <p>
- * Use {@code --conf=} for multiple datasets and specific service names.
- * <p>
- * The command line dataset setup only supports a single dataset.
+/** 
+ * Old name used in the fuseki-server script up to v5.6.0
  */
-
 public class FusekiServerCmd {
-    // This class wraps FusekiMain so that it can take control of logging setup.
-    // This class does not depend via inheritance on any Jena code
-    // and does not trigger Jena initialization.
-    // FusekiLogging runs before any Jena code can trigger logging setup.
-    //
-    // Inheritance causes initialization in the super class first, before class
-    // initialization code in this class.
-
-    static { FusekiLogging.setLogging(); }
-
-    /**
-     * Build and run, a server based on command line syntax. This operation does not
-     * return. See {@link FusekiMain#build} to build a server using command line
-     * syntax but not start it.
-     */
     static public void main(String... args) {
-        FusekiServerRunner.run(args);
+        FusekiServerUICmd.main(args);
     }
 }
-
