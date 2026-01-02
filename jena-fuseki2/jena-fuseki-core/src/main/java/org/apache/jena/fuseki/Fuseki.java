@@ -50,13 +50,10 @@ public class Fuseki {
      */
     static public final String FusekiSymbolIRI    = "http://jena.apache.org/fuseki#";
 
-    /** Default location of the pages for the Fuseki UI  */
-    static public final String PagesStatic        = "pages";
-
-    /** Dummy base URi string for parsing SPARQL Query and Update requests */
+    /** Dummy base URI string for parsing SPARQL Query and Update requests */
     static public final String BaseParserSPARQL   = "http://server/unset-base/";
 
-    /** Dummy base URi string for parsing SPARQL Query and Update requests */
+    /** Dummy base URI string for parsing SPARQL Query and Update requests */
     static public final String BaseUpload         = "http://server/unset-base/";
 
     /** The name of the Fuseki server.*/
@@ -85,7 +82,7 @@ public class Fuseki {
      * <b>Note</b><br/>
      * GSP Direct Naming was implemented to provide two implementations for the SPARQL 1.1 implementation report.
      */
-    static public final boolean       GSP_DIRECT_NAMING = false;
+    static public final boolean GSP_DIRECT_NAMING = false;
 
     /** Are we in development mode?  That means a SNAPSHOT, or no VERSION
      * because maven has not filtered the fuseki-properties.xml file.
@@ -97,6 +94,7 @@ public class Fuseki {
         developmentMode = ( VERSION == null || VERSION.equals("development") || VERSION.contains("SNAPSHOT") );
     }
 
+    // @formatter:off
     public static boolean   outputJettyServerHeader     = developmentMode;
     public static boolean   outputFusekiServerHeader    = developmentMode;
 
@@ -110,85 +108,80 @@ public class Fuseki {
     static public final String  serverHttpName          = NAME + " (" + VERSION + ")";
 
     /** Logger name for operations */
-    public static final String        actionLogName     = PATH + ".Fuseki";
+    public static final String  actionLogName     = PATH + ".Fuseki";
 
     /** Instance of log for operations */
-    public static final Logger        actionLog         = LoggerFactory.getLogger(actionLogName);
+    public static final Logger  actionLog         = LoggerFactory.getLogger(actionLogName);
 
     /** Instance of log for operations : alternative variable name */
-    public static final Logger        fusekiLog         = LoggerFactory.getLogger(actionLogName);
+    public static final Logger  fusekiLog         = LoggerFactory.getLogger(actionLogName);
 
     /** Logger name for standard webserver log file request log */
-    public static final String        requestLogName    = PATH + ".Request";
+    public static final String  requestLogName    = PATH + ".Request";
 
     // See HttpAction.finishRequest.
     // Normally OFF
     /** Instance of a log for requests: format is NCSA. */
-    public static final Logger        requestLog        = LoggerFactory.getLogger(requestLogName);
+    public static final Logger  requestLog        = LoggerFactory.getLogger(requestLogName);
 
     /** Admin log file for operations. */
-    public static final String        adminLogName      = PATH + ".Admin";
+    public static final String  adminLogName      = PATH + ".Admin";
 
     /** Instance of log for operations. */
-    public static final Logger        adminLog          = LoggerFactory.getLogger(adminLogName);
+    public static final Logger  adminLog          = LoggerFactory.getLogger(adminLogName);
 
-    // Unused
-//    /** Admin log file for operations. */
-//    public static final String        builderLogName    = PATH + ".Builder";
-//
-//    /** Instance of log for operations. */
-//    public static final Logger        builderLog        = LoggerFactory.getLogger(builderLogName);
-//
-//    // Now validation uses action logger.
+//    // Now validation uses the action logger.
 //    /** Validation log file for operations. */
 //    public static final String        validationLogName = PATH + ".Validate";
 
     /** Instance of log for validation. */
-    public static final Logger        validationLog     = LoggerFactory.getLogger(adminLogName);
+    public static final Logger  validationLog     = actionLog;
 
     /** Actual log file for general server messages. */
-    public static final String        serverLogName     = PATH + ".Server";
+    public static final String  serverLogName     = PATH + ".Server";
 
     /** Instance of log for general server messages. */
-    public static final Logger        serverLog         = LoggerFactory.getLogger(serverLogName);
+    public static final Logger  serverLog         = LoggerFactory.getLogger(serverLogName);
 
     /**
      * Logger used for the servletContent.log operations (if settable -- depends on environment).
      * This is both the display name of the servlet context and the logger name.
      */
-    public static final String        servletRequestLogName     = PATH + ".Servlet";
+    public static final String  servletRequestLogName     = PATH + ".Servlet";
 
     /** log for config server messages. */
-    public static final String        configLogName     = PATH + ".Config";
+    public static final String  configLogName     = PATH + ".Config";
 
     /** Instance of log for config server messages. */
-    public static final Logger        configLog         = LoggerFactory.getLogger(configLogName);
+    public static final Logger  configLog         = LoggerFactory.getLogger(configLogName);
 
-    public static final String        backupLogName     = PATH + ".Backup";
-    public static final Logger        backupLog         = LoggerFactory.getLogger(backupLogName);
+    public static final String  backupLogName     = PATH + ".Backup";
+    public static final Logger  backupLog         = LoggerFactory.getLogger(backupLogName);
 
-    public static final String        compactLogName    = PATH + ".Compact";
-    public static final Logger        compactLog        = LoggerFactory.getLogger(compactLogName);;
+    public static final String  compactLogName    = PATH + ".Compact";
+    public static final Logger  compactLog        = LoggerFactory.getLogger(compactLogName);
 
     // There isn't an ideal status code for a cancelled query.
-    // HTTP 408 "Request timeout" which is about connection management
+    // HTTP 408 "Request timeout" which is about connection management, not for general timeouts.
     public static int SC_QueryCancelled                 = HttpSC.SERVICE_UNAVAILABLE_503;
 
     // Servlet context attribute names used by the core engine.
     // Also in FusekiServerCtl for Fuseki server
-    public static final String attrVerbose                 = "org.apache.jena.fuseki:verbose";
-    public static final String attrNameRegistry            = "org.apache.jena.fuseki:DataAccessPointRegistry";
-    public static final String attrOperationRegistry       = "org.apache.jena.fuseki:OperationRegistry";
-    public static final String attrMetricsProvider         = "org.apache.jena.fuseki:MetricsProvider";
+    public static final String attrVerbose              = "org.apache.jena.fuseki:verbose";
+    public static final String attrNameRegistry         = "org.apache.jena.fuseki:DataAccessPointRegistry";
+    public static final String attrOperationRegistry    = "org.apache.jena.fuseki:OperationRegistry";
+    public static final String attrMetricsProvider      = "org.apache.jena.fuseki:MetricsProvider";
 
     // Use by jena-fuseki-access
-    public static final String attrAuthorizationService    = "org.apache.jena.fuseki:AuthorizationService";
+    public static final String attrAuthorizationService = "org.apache.jena.fuseki:AuthorizationService";
 
     // Servlet context attribute names used by Fuseki Server.
     // The server (so we can go from servlet context, available in request, to the server.
-    public static final String attrFusekiServer            = "org.apache.jena.fuseki:Server";
+    public static final String attrFusekiServer         = "org.apache.jena.fuseki:Server";
     // The FusekiServerCtl object for the admin area; may be null
-    public static final String attrFusekiServerCtl         = "org.apache.jena.fuseki:ServerCtl";
+    public static final String attrFusekiServerCtl      = "org.apache.jena.fuseki:ServerCtl";
+
+    // @formatter:on
 
     public static void setVerbose(ServletContext cxt, boolean verbose) {
         cxt.setAttribute(attrVerbose, Boolean.valueOf(verbose));
@@ -221,11 +214,17 @@ public class Fuseki {
 
     // Server start time and uptime.
     private static final long startMillis = System.currentTimeMillis();
-    // Hide server locale
-    private static final Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("00:00"));
-    static { cal.setTimeInMillis(startMillis); }  // Exactly the same start point!
+    private static final String startDateTime = calculateServerStartTime(startMillis);
 
-    private static final String startDateTime = DateTimeUtils.calendarToXSDDateTimeString(cal);
+    /** Calculate an XSD string for the server start time, in timezone 00:00 (hide server locale) */
+    private static String calculateServerStartTime(long milliseconds) {
+        // Use same milliseconds as startMillis to get exactly the same point in time.
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("00:00"));
+        // Exactly the same start point in timezone Z
+        cal.setTimeInMillis(milliseconds);
+        String x = DateTimeUtils.calendarToXSDDateTimeString(cal);
+        return x;
+    }
 
     /** Return the number of milliseconds since the server started */
     public static long serverUptimeMillis() {
