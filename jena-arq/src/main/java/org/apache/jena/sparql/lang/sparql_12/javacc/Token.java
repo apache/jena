@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * SPDX-License-Identifier: Apache-2.0
+ *     SPDX-License-Identifier: Apache-2.0
  */
 package org.apache.jena.sparql.lang.sparql_12.javacc ;
 
@@ -148,4 +148,4 @@ public class Token implements java.io.Serializable {
   }
 
 }
-/* JavaCC - OriginalChecksum=9da22c9f6ce45912877b4a331ce86d77 (do not edit this line) */
+/* JavaCC - OriginalChecksum=310c8c27031b3a3c00c6ebd83ada02b8 (do not edit this line) */

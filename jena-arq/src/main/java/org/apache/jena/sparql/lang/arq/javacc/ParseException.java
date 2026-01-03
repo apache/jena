@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * SPDX-License-Identifier: Apache-2.0
+ *     SPDX-License-Identifier: Apache-2.0
  */
 package org.apache.jena.sparql.lang.arq.javacc ;
 
@@ -211,4 +211,4 @@ public class ParseException extends Exception {
    }
 
 }
-/* JavaCC - OriginalChecksum=362fb86fd5c6c0ed2f64aeac41efbdb4 (do not edit this line) */
+/* JavaCC - OriginalChecksum=5068fec00bfdf638e28b2deaa3a632cb (do not edit this line) */

@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * SPDX-License-Identifier: Apache-2.0
+ *     SPDX-License-Identifier: Apache-2.0
  */
 package org.apache.jena.sparql.lang.arq.javacc ;
 
@@ -163,4 +163,4 @@ public class TokenMgrError extends Error
     this(LexicalErr(EOFSeen, lexState, errorLine, errorColumn, errorAfter, curChar), reason);
   }
 }
-/* JavaCC - OriginalChecksum=8c2c291adc311b3f67b86ad569e8e606 (do not edit this line) */
+/* JavaCC - OriginalChecksum=b763b79da6c34bdb0ea3355056b880a5 (do not edit this line) */

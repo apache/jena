@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * SPDX-License-Identifier: Apache-2.0
+ *     SPDX-License-Identifier: Apache-2.0
  */
 package org.apache.jena.sparql.lang.sparql_12.javacc ;
 
@@ -708,4 +708,4 @@ class JavaCharStream
   void setTrackLineColumn(boolean tlc) { trackLineColumn = tlc; }
 
 }
-/* JavaCC - OriginalChecksum=5cba76439ca2495d156f7e0493cfbc38 (do not edit this line) */
+/* JavaCC - OriginalChecksum=f078d83e5f98d89aa65fa95d3fa45b4d (do not edit this line) */
