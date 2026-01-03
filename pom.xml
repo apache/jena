@@ -216,6 +216,7 @@
         <module>apache-jena-libs</module>
 
         <module>jena-text</module>
+        <module>jena-serviceenhancer</module>
 
         <module>jena-cmds</module>
         <module>jena-geosparql</module>
@@ -275,6 +276,7 @@
         <module>apache-jena-libs</module>
 
         <module>jena-text</module>
+        <module>jena-serviceenhancer</module>
 
         <module>jena-cmds</module>
         <module>jena-geosparql</module>
@@ -299,7 +301,6 @@
 
         <module>jena-extras/jena-commonsrdf</module>
         <module>jena-extras/jena-querybuilder</module>
-        <module>jena-extras/jena-serviceenhancer</module>
 
         <module>jena-examples</module>
 
