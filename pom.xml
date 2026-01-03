@@ -300,7 +300,7 @@
         <module>apache-jena</module>
 
         <module>jena-extras/jena-commonsrdf</module>
-        <module>jena-extras/jena-querybuilder</module>
+        <module>jena-querybuilder</module>
 
         <module>jena-examples</module>
 
