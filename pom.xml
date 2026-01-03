@@ -244,8 +244,8 @@
 
     <profile>
       <!--
-          This is the complete profile, it builds everything including slow
-          building modules and the distribution packages.
+          This is the complete profile, it builds everything including 
+          any building modules, javadoc and the distribution packages.
       -->
       <id>complete</id>
       <activation>
@@ -297,8 +297,10 @@
         <!-- Binary distribution -->
         <module>apache-jena</module>
 
-        <!-- Other -->
-        <module>jena-extras</module>
+        <module>jena-extras/jena-commonsrdf</module>
+        <module>jena-extras/jena-querybuilder</module>
+        <module>jena-extras/jena-serviceenhancer</module>
+
         <module>jena-examples</module>
 
         <module>jena-bom</module>
