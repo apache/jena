@@ -17,5 +17,5 @@
 
 ## Run Fuseki as a standalone server with no UI
 
-export MAIN=org.apache.jena.fuseki.main.cmds.FusekiMainCmd
-exec fuseki-server "$#"
+export MAIN="server-plain"
+exec fuseki-server "$@"

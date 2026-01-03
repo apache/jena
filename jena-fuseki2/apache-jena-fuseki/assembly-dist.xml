@@ -65,7 +65,6 @@
       <outputDirectory></outputDirectory>
       <includes>
         <include>log4j2.properties</include>
-        <include>fuseki</include>
         <include>fuseki.service</include>
         <include>fuseki-server.bat</include>
       </includes>
@@ -77,7 +76,16 @@
       <fileMode>0755</fileMode>
       <includes>
         <include>fuseki-server</include>
+        <include>fuseki-plain</include>
         <include>fuseki-backup</include>
+      </includes>
+    </fileSet>
+
+    <fileSet>
+      <outputDirectory>service/</outputDirectory>
+      <includes>
+        <include>service/fuseki.service</include>
+        <include>service/fuseki.initd</include>
       </includes>
     </fileSet>
     
