@@ -277,9 +277,11 @@
         <module>jena-text</module>
 
         <module>jena-cmds</module>
+        <module>jena-geosparql</module>
+
         <module>jena-fuseki2</module>
 
-        <module>jena-geosparql</module>
+        <!-- The original, standalone jena-fuseki-geosparql -->
         <module>jena-fuseki2/jena-fuseki-geosparql</module>
 
         <!--
