@@ -16,10 +16,10 @@
 
 @echo off
 @REM modify this to name the server jar
-java -Xmx4G -cp fuseki-server.jar org.apache.jena.fuseki.main.cmds.FusekiServerCmd %*
+java -Xmx4G -cp fuseki-server.jar org.apache.jena.fuseki.main.cmds.FusekiServerUICmd %*
 
 @REM Adding custom code to the Fuseki server:
 @REM  
 @REM In this way, you can add custom java to the classpath:
 @REM 
-@REM  java ... -cp fuseki-server.jar;MyCustomCode.jar org.apache.jena.fuseki.main.cmds.FusekiServerCmd %*
+@REM  java ... -cp fuseki-server.jar;MyCustomCode.jar org.apache.jena.fuseki.main.cmds.FusekiServerUICmd %*

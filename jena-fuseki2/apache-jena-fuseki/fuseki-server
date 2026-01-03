@@ -114,24 +114,27 @@ then
     LOGGING="-Dlog4j.configurationFile=$DFT_LOG_CONF"
 fi
 
-## MAIN="${MAIN:-org.apache.jena.fuseki.main.cmds.FusekiMainCmd}"
+## Fuseki server. Default: with UI and admin area.
+MAIN="${MAIN:-serverUI}"
 
-## Fuseki server, with UI and admin area.
-MAIN="${MAIN:-server}"
-
-## Translater names into Java entry points.
+## Translate names into Java entry points.
 case $MAIN in
     ## Minimal server - no additional features.
-    "basic")  MAIN=org.apache.jena.fuseki.main.cmds.FusekiBasicCmd ;;
-    
-    ## Server, no UI, no admin work area, only Prometheus.
-    "main")   MAIN=org.apache.jena.fuseki.main.cmds.FusekiMainCmd ;;
-
-    ## Plain server, with Fuseki modules, no UI, no admin work area, only Prometheus.
-    "plain")  MAIN=org.apache.jena.fuseki.main.cmds.FusekiServerPlainCmd ;;
-
-    ## Full server, with Fuseki modules, no UI, no admin work area, only Prometheus.
-    "server") MAIN=org.apache.jena.fuseki.main.cmds.FusekiServerCmd ;;
+    "basic")
+	MAIN='org.apache.jena.fuseki.main.cmds.FusekiBasicCmd'
+	;;
+    ## Server, no UI, no admin work area, only Prometheus and Shiro
+    "main")
+	MAIN='org.apache.jena.fuseki.main.cmds.FusekiMainCmd'
+	;;
+    ## Plain server, with Fuseki modules, no UI, no admin work area, with Prometheus and Shiro.
+    "server-plain" | "plain")
+	MAIN='org.apache.jena.fuseki.main.cmds.FusekiServerPlainCmd'
+	;;
+    ## Full server, with Fuseki modules, with UI and with an admin work area.
+    "serverui"| "server-ui" | "serverUI" )
+	MAIN='org.apache.jena.fuseki.main.cmds.FusekiServerUICmd'
+	;;
 esac
 
 if [ -n "$LOGGING" ]

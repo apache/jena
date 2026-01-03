@@ -111,7 +111,7 @@
 
           <transformers>
             <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-              <mainClass>org.apache.jena.fuseki.main.cmds.FusekiCmd</mainClass>
+              <mainClass>org.apache.jena.fuseki.main.cmds.FusekiServerCmd</mainClass>
               <!-- https://issues.apache.org/jira/browse/LOG4J2-2537 -->
               <manifestEntries>
                 <Multi-Release>true</Multi-Release>
