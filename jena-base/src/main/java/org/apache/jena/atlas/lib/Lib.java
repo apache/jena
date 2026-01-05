@@ -65,10 +65,16 @@ public class Lib
 
     /**
      * Return true if obj1 and obj are both null or are .equals, else return false
-     * Prefer {@link Objects#equals(Object, Object)}
+     * @deprecated Use {@link #equalsOrNulls(Object, Object)} {@link Objects#equals(Object, Object)}
      */
+    @Deprecated(forRemoval = true)
     public static final <T> boolean equals(T obj1, T obj2) {
         // Include because other equals* operations are here.
+        return Objects.equals(obj1, obj2);
+    }
+
+    public static final <T> boolean equalsOrNulls(T obj1, T obj2) {
+        // Include because static import works.
         return Objects.equals(obj1, obj2);
     }
 

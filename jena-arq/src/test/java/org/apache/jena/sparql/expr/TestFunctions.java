@@ -19,7 +19,6 @@
 package org.apache.jena.sparql.expr;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -31,15 +30,13 @@ import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
 
-import org.apache.jena.datatypes.xsd.XSDDatatype;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.util.ExprUtils;
 
 public class TestFunctions
 {
     // Test of fn;* are in org.apache.jena.sparql.function.library.*
+    // TestFunctions2 has the SPARQl keyword functions.
 
     private static final NodeValue TRUE     = NodeValue.TRUE;
     private static final NodeValue FALSE    = NodeValue.FALSE;
@@ -121,149 +118,13 @@ public class TestFunctions
     // Timezone +11:00 can be a day behind
     @Test public void exprSprintf_25() { test_exprSprintf_tz_possibilites("2005-10-14T10:09:43+11:00",  "10 13,2005", "10 14,2005"); }
 
-    @Test public void exprStrStart10() { test("STRSTARTS('abc', 'abcd')", FALSE); }
-    @Test public void exprStrStart11() { test("STRSTARTS('abc'@en, 'ab')", TRUE); }
-    @Test public void exprStrStart12() { test("STRSTARTS('abc'^^xsd:string, 'ab')", TRUE); }
-    @Test public void exprStrStart13() { test("STRSTARTS('abc'^^xsd:string, 'ab'^^xsd:string)", TRUE); }
-    @Test public void exprStrStart14() { test("STRSTARTS('abc', 'ab'^^xsd:string)", TRUE); }
-    @Test public void exprStrStart15() { test("STRSTARTS('abc'@en, 'ab'@en)", TRUE); }
-
-    @Test public void exprStrStart16() { testEvalException("STRSTARTS('ab'@en, 'ab'@fr)"); }
-    @Test public void exprStrStart17() { testEvalException("STRSTARTS(123, 'ab'@fr)"); }
-    @Test public void exprStrStart18() { testEvalException("STRSTARTS('123'^^xsd:string, 12.3)"); }
-
-    @Test public void exprStrBefore0() { test("STRBEFORE('abc', 'abcd')", NodeValue.nvEmptyString); }
-    @Test public void exprStrBefore1() { test("STRBEFORE('abc'@en, 'b')", NodeValue.makeNode("a", "en", (String)null)); }
-    @Test public void exprStrBefore2() { test("STRBEFORE('abc'^^xsd:string, 'c')", NodeValue.makeNode("ab", XSDDatatype.XSDstring)); }
-    @Test public void exprStrBefore3() { test("STRBEFORE('abc'^^xsd:string, ''^^xsd:string)", NodeValue.makeNode("", XSDDatatype.XSDstring)); }
-    @Test public void exprStrBefore4() { test("STRBEFORE('abc', 'ab'^^xsd:string)", NodeValue.nvEmptyString); }
-    @Test public void exprStrBefore5() { test("STRBEFORE('abc'@en, 'b'@en)", NodeValue.makeNode("a", "en", (String)null)); }
-
-    @Test public void exprStrBefore6() { testEvalException("STRBEFORE('ab'@en, 'ab'@fr)"); }
-    @Test public void exprStrBefore7() { testEvalException("STRBEFORE(123, 'ab'@fr)"); }
-    @Test public void exprStrBefore8() { testEvalException("STRBEFORE('123'^^xsd:string, 12.3)"); }
-    // No match case
-    @Test public void exprStrBefore9() { test("STRBEFORE('abc'^^xsd:string, 'z')", NodeValue.nvEmptyString); }
-    // Empty string case
-    @Test public void exprStrBefore10() { test("STRBEFORE('abc'^^xsd:string, '')", NodeValue.makeNode("", XSDDatatype.XSDstring)); }
-
-    @Test public void exprStrAfter0() { test("STRAFTER('abc', 'abcd')", NodeValue.nvEmptyString); }
-    @Test public void exprStrAfter1() { test("STRAFTER('abc'@en, 'b')", NodeValue.makeNode("c", "en", (String)null)); }
-    @Test public void exprStrAfter2() { test("STRAFTER('abc'^^xsd:string, 'a')", NodeValue.makeNode("bc", XSDDatatype.XSDstring)); }
-    @Test public void exprStrAfter3() { test("STRAFTER('abc'^^xsd:string, ''^^xsd:string)", NodeValue.makeNode("abc", XSDDatatype.XSDstring)); }
-    @Test public void exprStrAfter4() { test("STRAFTER('abc', 'bc'^^xsd:string)", NodeValue.nvEmptyString); }
-    @Test public void exprStrAfter5() { test("STRAFTER('abc'@en, 'b'@en)", NodeValue.makeNode("c", "en", (String)null)); }
-
-    @Test public void exprStrAfter6() { testEvalException("STRAFTER('ab'@en, 'ab'@fr)"); }
-    @Test public void exprStrAfter7() { testEvalException("STRAFTER(123, 'ab'@fr)"); }
-    @Test public void exprStrAfter8() { testEvalException("STRAFTER('123'^^xsd:string, 12.3)"); }
-    // No match case
-    @Test public void exprStrAfter9() { test("STRAFTER('abc'^^xsd:string, 'z')", NodeValue.nvEmptyString); }
-    // Empty string case
-    @Test public void exprStrAfter10() { test("STRAFTER('abc'^^xsd:string, '')", NodeValue.makeNode("abc", XSDDatatype.XSDstring)); }
-
-    @Test public void exprStrEnds10() { test("STRENDS('abc', 'abcd')", FALSE); }
-    @Test public void exprStrEnds11() { test("STRENDS('abc'@en, 'bc')", TRUE); }
-    @Test public void exprStrEnds12() { test("STRENDS('abc'^^xsd:string, 'c')", TRUE); }
-    @Test public void exprStrEnds13() { test("STRENDS('abc'^^xsd:string, 'c'^^xsd:string)", TRUE); }
-    @Test public void exprStrEnds14() { test("STRENDS('abc', 'ab'^^xsd:string)", FALSE); }
-    @Test public void exprStrEnds15() { test("STRENDS('abc'@en, 'abc'@en)", TRUE); }
-
-    @Test public void exprStrEnds16() { testEvalException("STRENDS('ab'@en, 'ab'@fr)"); }
-    @Test public void exprStrEnds17() { testEvalException("STRENDS(123, 'ab'@fr)"); }
-    @Test public void exprStrEnds18() { testEvalException("STRENDS('123'^^xsd:string, 12.3)"); }
-
-    @Test public void exprContains10() { test("Contains('abc', 'abcd')", FALSE); }
-    @Test public void exprContains11() { test("Contains('abc'@en, 'bc')", TRUE); }
-    @Test public void exprContains12() { test("Contains('abc'^^xsd:string, 'c')", TRUE); }
-    @Test public void exprContains13() { test("Contains('abc'^^xsd:string, 'c'^^xsd:string)", TRUE); }
-    @Test public void exprContains14() { test("Contains('abc', 'z'^^xsd:string)", FALSE); }
-    @Test public void exprContains15() { test("Contains('abc'@en, 'abc'@en)", TRUE); }
-
-    @Test public void exprContains16() { testEvalException("Contains('ab'@en, 'ab'@fr)"); }
-    @Test public void exprContains17() { testEvalException("Contains(123, 'ab'@fr)"); }
-    @Test public void exprContains18() { testEvalException("STRENDS('123'^^xsd:string, 12.3)"); }
-
-    @Test public void exprReplace01()  { test("REPLACE('abc', 'b', 'Z')", NodeValue.makeString("aZc")); }
-    @Test public void exprReplace02()  { test("REPLACE('abc', 'b.', 'Z')", NodeValue.makeString("aZ")); }
-    @Test public void exprReplace03()  { test("REPLACE('abcbd', 'b.', 'Z')", NodeValue.makeString("aZZ")); }
-
-    @Test public void exprReplace04()  { test("REPLACE('abcbd'^^xsd:string, 'b.', 'Z')", NodeValue.makeNode("aZZ", XSDDatatype.XSDstring)); }
-    @Test public void exprReplace05()  { test("REPLACE('abcbd'@en, 'b.', 'Z')", NodeValue.makeNode("aZZ", "en", (String)null)); }
-    @Test public void exprReplace06()  { test("REPLACE('abcbd', 'B.', 'Z', 'i')", NodeValue.makeString("aZZ")); }
-
-    // See JENA-740
-    // ARQ provides replacement of the potentially empty string.
-    @Test public void exprReplace07()  { test("REPLACE('abc', '.*', 'Z')", NodeValue.makeString("Z")); }
-    @Test public void exprReplace08()  { test("REPLACE('', '.*', 'Z')",    NodeValue.makeString("Z")); }
-    @Test public void exprReplace09()  { test("REPLACE('abc', '.?', 'Z')", NodeValue.makeString("ZZZ")); }
-
-    @Test public void exprReplace10()  { test("REPLACE('abc', 'XXX', 'Z')", NodeValue.makeString("abc")); }
-    @Test public void exprReplace11()  { test("REPLACE('', '.', 'Z')",      NodeValue.makeString("")); }
-    @Test public void exprReplace12()  { test("REPLACE('', '(a|b)?', 'Z')", NodeValue.makeString("Z")); }
-
-    // Bad group
-    @Test
-    public void exprReplace13() {
-        testEvalException("REPLACE('abc', '.*', '$1')");
-    }
-
-    // Bad pattern; static (parse or build time) compilation.
-    @Test
-    public void exprReplace14() {
-		assertThrows(ExprException.class,
-		             ()-> ExprUtils.parse("REPLACE('abc', '^(a){-9}', 'ABC')")
-		             );
-    }
-
     // Better name!
     @Test public void localTimezone_2() { test("afn:timezone()", nv->nv.isDayTimeDuration()); }
-
     @Test public void localDateTime_1() { test("afn:nowtz()", nv-> nv.isDateTime()); }
     // Test field defined.
     @Test public void localDateTime_2() { test("afn:nowtz()", nv-> nv.getDateTime().getTimezone() >= -14 * 60 ); }
 
     @Test public void localDateTime_3() { test("afn:nowtz() = NOW()", NodeValue.TRUE); }
-
-    @Test public void exprSameTerm1()     { test("sameTerm(1,1)",           TRUE); }
-    @Test public void exprSameTerm2()     { test("sameTerm(1,1.0)",         FALSE); }
-    @Test public void exprSameTerm3()     { test("sameTerm(1,1e0)",         FALSE); }
-    @Test public void exprSameTerm4()     { test("sameTerm(<_:a>, <_:a>)",  TRUE); }
-    @Test public void exprSameTerm5()     { test("sameTerm(<x>, <x>)",      TRUE); }
-    @Test public void exprSameTerm6()     { test("sameTerm(<x>, <y>)",      FALSE); }
-
-    @Test public void exprOneOf_01()     { test("57 in (xsd:integer, '123')",   FALSE); }
-    @Test public void exprOneOf_02()     { test("57 in (57)",                   TRUE); }
-    @Test public void exprOneOf_03()     { test("57 in (123, 57)",              TRUE); }
-    @Test public void exprOneOf_04()     { test("57 in (57, 456)",              TRUE); }
-    @Test public void exprOneOf_05()     { test("57 in (123, 57, 456)",         TRUE); }
-    @Test public void exprOneOf_06()     { test("57 in (1,2,3)",                FALSE); }
-
-    @Test public void exprNotOneOf_01()  { test("57 not in (xsd:integer, '123')",   TRUE); }
-    @Test public void exprNotOneOf_02()  { test("57 not in (57)",                   FALSE); }
-    @Test public void exprNotOneOf_03()  { test("57 not in (123, 57)",              FALSE); }
-    @Test public void exprNotOneOf_04()  { test("57 not in (57, 456)",              FALSE); }
-    @Test public void exprNotOneOf_05()  { test("57 not in (123, 57, 456)",         FALSE); }
-    @Test public void exprNotOneOf_06()  { test("57 not in (1,2,3)",                TRUE); }
-
-
-    static Node xyz_en = NodeFactory.createLiteralLang("xyz", "en");
-    static NodeValue nv_xyz_en = NodeValue.makeNode(xyz_en);
-
-    static Node xyz_xsd_string = NodeFactory.createLiteralDT("xyz", XSDDatatype.XSDstring);
-    static NodeValue nv_xyz_string = NodeValue.makeNode(xyz_xsd_string);
-
-
-    @Test public void exprStrLang1()     { test("strlang('xyz', 'en')",             nv_xyz_en); }
-    @Test
-    public void exprStrLang2()           { assertThrows(ExprEvalException.class, ()-> test("strlang('xyz', '')", x->false) ); }
-
-    @Test public void exprStrDatatype1()    { test("strdt('123', xsd:integer)",     NodeValue.makeInteger(123)); }
-    @Test public void exprStrDatatype2()    { test("strdt('xyz', xsd:string)",      nv_xyz_string); }
-    @Test public void exprStrDatatype3()    { testEvalException("strdt('123',       'datatype')"); }
-
-    static Node n_uri = NodeFactory.createURI("http://example/");
-    static NodeValue nv_uri = NodeValue.makeNode(n_uri);
 
     private void test(String exprStr, NodeValue result) {
         Expr expr = ExprUtils.parse(exprStr);

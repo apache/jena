@@ -27,14 +27,17 @@ import java.util.GregorianCalendar;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.TextDirection;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.ExprEvalTypeException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.ValueSpace;
-import org.apache.jena.sparql.util.NodeUtils;
+import org.apache.jena.vocabulary.RDF;
 
 /**
  * Operations relating to {@link NodeValue NodeValues}.
@@ -301,18 +304,36 @@ public class NodeValueOps {
         Node n = nv.asNode();
         if ( !n.isLiteral() )
             throw new ExprEvalException(label + ": Not a literal: " + nv);
-        String lang = n.getLiteralLanguage();
-
-        if ( NodeUtils.isLangString(n) )
-            // Language tag. Legal.
-            return n;
-
-        // No language tag : either no datatype or a datatype of xsd:string
-        // Includes the case of rdf:langString and no language ==> Illegal as a
-        // compatible string.
 
         if ( nv.isString() )
+            // Includes derived types of xsd:string.
             return n;
+
+        RDFDatatype dt = n.getLiteralDatatype();
+        if ( ! RDF.dtLangString.equals(dt) && ! RDF.dtDirLangString.equals(dt) )
+            throw new ExprEvalException(label + ": Not a string literal: " + nv);
+
+        // Check for malformed:
+        // e.g. "abc"^^rdf:langString, and "abc"^^rdf:dirLangString
+
+        // Must have a language.
+        String lang = n.getLiteralLanguage();
+        if ( lang == null || lang.isEmpty() )
+            throw new ExprEvalException(label + ": Not a string literal (no langtag): " + nv);
+        if ( RDF.dtLangString.equals(dt) ) {
+            // Must not have a text direction
+            if ( n.getLiteralBaseDirection() != null )
+                throw new ExprEvalException(label + ": Not a string literal (rdf:langString + text direction): " + nv);
+            return n;
+        }
+        if ( RDF.dtDirLangString.equals(dt) ) {
+            // Must have a text direction
+            if ( n.getLiteralBaseDirection() == null )
+                throw new ExprEvalException(label + ": Not a string literal (no text direction): " + nv);
+            return n;
+        }
+
+        // Should not get here.
         throw new ExprEvalException(label + ": Not a string literal: " + nv);
     }
 
@@ -322,19 +343,36 @@ public class NodeValueOps {
      * is not symmetric.
      * <ul>
      * <li>"abc"@en is compatible with "abc"
+     * <li>"abc"@en--ltr is compatible with "abc"
      * <li>"abc" is NOT compatible with "abc"@en
+     * <li>"abc"@en--ltr is NOT compatible with "abc"@en
      * </ul>
      */
     public static void checkTwoArgumentStringLiterals(String label, NodeValue arg1, NodeValue arg2) {
-        /* Quote the spec:
-         * Compatibility of two arguments is defined as:
-         *    The arguments are simple literals or literals typed as xsd:string
-         *    The arguments are plain literals with identical language tags
-         *    The first argument is a plain literal with language tag and the second argument is a simple literal or literal typed as xsd:string
+        /* Compatibility of two arguments:
+         *    The arguments are both xsd:string
+         *    The arguments are rdf:langString with identical language tags
+         *    The arguments are rdf:dirLangString with identical language tags and text direction
+         *    The first argument a string literal (rdf:langString, rdf:dirLangString) and the second argument is an xsd:string
+         *
+         * which simplifies to
+         *     Both arguments are string literals
+         *     The second argument is an xsd:string.
+         *     The first and second arguments have the same lang and text direction.
          */
 
+        // Common case
+        if ( arg1.isString() && arg2.isString() )
+            // Includes derived datatypes of xsd:string.
+            return;
+
+        // Robust checking.
         Node n1 = checkAndGetStringLiteral(label, arg1);
         Node n2 = checkAndGetStringLiteral(label, arg2);
+        if ( arg2.isString() )
+            // args1 is some kind of string literal.
+            return;
+        // same lane, same text direction.
         String lang1 = n1.getLiteralLanguage();
         String lang2 = n2.getLiteralLanguage();
         if ( lang1 == null )
@@ -342,21 +380,13 @@ public class NodeValueOps {
         if ( lang2 == null )
             lang2 = "";
 
-        // Case 1
-        if ( lang1.equals("") ) {
-            if ( lang2.equals("") )
-                return;
+        if ( ! Lib.equalsOrNulls(lang1, lang2) )
+            // Different languages.
             throw new ExprEvalException(label + ": Incompatible: " + arg1 + " and " + arg2);
-        }
 
-        // Case 2
-        if ( lang1.equalsIgnoreCase(lang2) )
-            return;
-
-        // Case 3
-        if ( lang2.equals("") )
-            return;
-
-        throw new ExprEvalException(label + ": Incompatible: " + arg1 + " and " + arg2);
+        TextDirection textDir1 = n1.getLiteralBaseDirection();
+        TextDirection textDir2 = n2.getLiteralBaseDirection();
+        if ( ! Lib.equalsOrNulls(textDir1, textDir2) )
+            throw new ExprEvalException(label + ": Incompatible: " + arg1 + " and " + arg2);
     }
 }

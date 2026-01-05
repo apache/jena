@@ -42,11 +42,13 @@ import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.jena.atlas.lib.IRILib;
+import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.TextDirection;
 import org.apache.jena.rdf.model.impl.Util;
 import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.SystemARQ;
@@ -745,7 +747,7 @@ public class XSDFuncOp
 
     /** Build a NodeValue with lexical form, and same language and datatype as the Node argument */
     private static NodeValue calcReturn(String result, Node arg) {
-        Node n2 = NodeFactory.createLiteral(result, arg.getLiteralLanguage(), arg.getLiteralDatatype());
+        Node n2 = NodeFactory.createLiteral(result, arg.getLiteralLanguage(), arg.getLiteralBaseDirection(), arg.getLiteralDatatype());
         return NodeValue.makeNode(n2);
     }
 
@@ -823,57 +825,57 @@ public class XSDFuncOp
     }
 
     /** SPARQL CONCAT (no implicit casts to strings) */
-    public static NodeValue strConcat(List<NodeValue> args) {
-        // Step 1 : Choose type.
-        // One lang tag -> that lang tag
-        String lang = null;
-        boolean mixedLang = false;
-        boolean xsdString = false;
-        boolean simpleLiteral = false;
+    public static NodeValue /*XSDFuncOp*/strConcat(List<NodeValue> args) {
+        // Is this list of argument known to result in xsd:string by being mixed or seen an xsd:string?
+        boolean outputSimpleString = false;
+
+        // A candidate has been set (happens at first argument)
+        boolean candidateSet = false;
+        String concatLang = null;
+        TextDirection concatTextDir = null;
 
         StringBuilder sb = new StringBuilder();
 
         for (NodeValue nv : args) {
+            // ExprEvalException is is not a string/langString or dirLangString.
             Node n = NodeValueOps.checkAndGetStringLiteral("CONCAT", nv);
-            String lang1 = n.getLiteralLanguage();
-            if ( !lang1.equals("") ) {
-                if ( lang != null && !lang1.equals(lang) )
-                    // throw new
-                    // ExprEvalException("CONCAT: Mixed language tags: "+args);
-                    mixedLang = true;
-                lang = lang1;
-            } else if ( n.getLiteralDatatype() != null )
-                xsdString = true;
-            else
-                simpleLiteral = true;
-
             sb.append(n.getLiteralLexicalForm());
+            if ( outputSimpleString )
+                continue;
+            String nLang = n.getLiteralLanguage();
+            TextDirection nTextDir = n.getLiteralBaseDirection();
+
+            // Not mixed,
+            if ( ! candidateSet ) {
+                if ( nLang.isEmpty() ) {
+                    // No language => outcome is an xsd:string
+                    outputSimpleString = nLang.isEmpty();
+                    continue;
+                }
+                // It is the first argument, then set candidate
+                concatLang = nLang;
+                concatTextDir = nTextDir;
+                candidateSet = true;
+                continue;
+            }
+            // candidateSet is true
+            // Possible lang/textDir
+            if ( ! Lib.equalsOrNulls(concatLang, nLang) || ! Lib.equalsOrNulls(concatTextDir, nTextDir) ) {
+                // Different => outcome is an xsd:string
+                outputSimpleString = true;
+                candidateSet = false;
+            }
         }
 
-        if ( mixedLang )
+        String string = sb.toString();
+
+        if ( outputSimpleString )
             return NodeValue.makeString(sb.toString());
 
-        // Must be all one lang.
-        if ( lang != null ) {
-            if ( !xsdString && !simpleLiteral )
-                return NodeValue.makeNode(sb.toString(), lang, (String)null);
-            else
-                // Lang and one or more of xsd:string or simpleLiteral.
-                return NodeValue.makeString(sb.toString());
-        }
-
-        if ( simpleLiteral && xsdString )
-            return NodeValue.makeString(sb.toString());
-        // All xsdString
-        if ( xsdString )
-            return NodeValue.makeNode(sb.toString(), XSDDatatype.XSDstring);
-        if ( simpleLiteral )
-            return NodeValue.makeString(sb.toString());
-
-        // No types - i.e. no arguments
-        return NodeValue.makeString(sb.toString());
+        // Handles "textDir == null"
+        Node nOut = NodeFactory.createLiteralDirLang(string, concatLang, concatTextDir);
+        return NodeValue.makeNode(nOut);
     }
-
     /** fn:normalizeSpace */
     public static NodeValue strNormalizeSpace(NodeValue v){
         String str = v.asString();
