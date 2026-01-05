@@ -18,6 +18,8 @@
 
 package org.apache.jena.riot.writer;
 
+import static org.apache.jena.atlas.lib.Lib.equalsOrNulls;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
@@ -37,7 +39,6 @@ import com.apicatalog.rdf.api.RdfConsumerException;
 
 import jakarta.json.*;
 import jakarta.json.stream.JsonGenerator;
-import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.Lang;
@@ -96,11 +97,11 @@ public class JsonLD11Writer implements WriterDatasetRIOT {
             boolean indented = true;
 
             // Choose algorithms
-            if ( Lib.equals(variant, RDFFormat.PRETTY) ) {
+            if ( equalsOrNulls(variant, RDFFormat.PRETTY) ) {
                 writeThis = writePretty(array, dsg);
-            } else if ( variant == null || Lib.equals(variant, RDFFormat.PLAIN) ) {
+            } else if ( variant == null || equalsOrNulls(variant, RDFFormat.PLAIN) ) {
                 writeThis = writePlain(array, dsg);
-            } else if ( Lib.equals(variant, RDFFormat.FLAT) ) {
+            } else if ( equalsOrNulls(variant, RDFFormat.FLAT) ) {
                 writeThis = writePlain(array, dsg);
                 indented = false;
             } else {

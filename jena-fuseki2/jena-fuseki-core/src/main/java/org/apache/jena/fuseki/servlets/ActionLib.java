@@ -19,6 +19,7 @@
 package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format;
+import static org.apache.jena.atlas.lib.Lib.equalsOrNulls;
 import static org.apache.jena.riot.web.HttpNames.METHOD_POST;
 
 import java.io.ByteArrayOutputStream;
@@ -35,7 +36,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO;
-import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.web.AcceptList;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.atlas.web.MediaType;
@@ -193,7 +193,7 @@ public class ActionLib {
 
     public static boolean splitContains(String[] elts, String str) {
         for ( int i = 0 ; i < elts.length ; i++ ) {
-            if ( Lib.equals(elts[i],  str) )
+            if ( equalsOrNulls(elts[i],  str) )
                 return true;
         }
         return false;

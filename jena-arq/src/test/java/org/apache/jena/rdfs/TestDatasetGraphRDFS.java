@@ -19,6 +19,7 @@
 package org.apache.jena.rdfs;
 
 import static org.apache.jena.atlas.iterator.Iter.iter;
+import static org.apache.jena.atlas.lib.Lib.equalsOrNulls;
 import static org.apache.jena.graph.Node.ANY;
 import static org.apache.jena.rdfs.LibTestRDFS.node;
 import static org.apache.jena.rdfs.engine.ConstRDFS.rdfType;
@@ -36,7 +37,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.lib.ListUtils;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.graph.Graph;
@@ -136,7 +136,7 @@ public class TestDatasetGraphRDFS {
     }
 
     private static boolean hasNG(List<Quad> quads, Node graphName) {
-        return quads.stream().map(Quad::getGraph).anyMatch(gn -> Lib.equals(gn, graphName));
+        return quads.stream().map(Quad::getGraph).anyMatch(gn -> equalsOrNulls(gn, graphName));
     }
 
     private void testContains(Node g, Node s, Node p, Node o, boolean expected) {

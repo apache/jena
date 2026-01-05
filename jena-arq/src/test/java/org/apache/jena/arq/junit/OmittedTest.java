@@ -21,7 +21,7 @@ package org.apache.jena.arq.junit;
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
 
 /**
- * Omitted test -= no marked as "suppressed" but not run.
+ * Omitted test = not marked as "suppressed" but not run.
  */
 public class OmittedTest extends SkipTest {
     public final boolean verbose;
@@ -38,7 +38,7 @@ public class OmittedTest extends SkipTest {
 
     @Override
     public void runTest() {
-        //if ( verbose )
+        if ( verbose )
             System.err.println("Omitted test: " + manifestEntry.getName());
     }
 }
