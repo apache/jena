@@ -30,7 +30,7 @@ import java.util.Map ;
 import org.apache.jena.irix.IRIx;
 import org.apache.jena.rdfxml.arp1.ARPErrorNumbers;
 import org.apache.jena.util.XML11Char;
-import org.apache.jena.util.XMLChar;
+import org.apache.jena.util.XML10Char;
 import org.xml.sax.SAXParseException ;
 
 public class ParserSupport implements ARPErrorNumbers, Names {
@@ -84,7 +84,7 @@ public class ParserSupport implements ARPErrorNumbers, Names {
 	}
 
 	protected void checkNodeID_XMLName( Taint taintMe, String str) throws SAXParseException {
-	    if ( ! XMLChar.isValidNCName(str) ) {
+	    if ( ! XML10Char.isValidNCName(str) ) {
             warning(taintMe,
                 WARN_BAD_NAME,
                 "Not an XML Name: '" + str + "'");

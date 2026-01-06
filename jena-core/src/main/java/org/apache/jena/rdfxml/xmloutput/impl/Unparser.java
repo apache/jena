@@ -127,7 +127,7 @@ import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.shared.BrokenException ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.PropertyNotFoundException ;
-import org.apache.jena.util.XMLChar;
+import org.apache.jena.util.XML10Char;
 import org.apache.jena.util.iterator.* ;
 import org.apache.jena.vocabulary.RDF ;
 import org.slf4j.Logger ;
@@ -1205,7 +1205,7 @@ class Unparser {
 
     private boolean isLocalReference(Resource r) {
         return (!r.isAnon()) && getXMLNameSpace(r).equals(outputName + "#")
-                && XMLChar.isValidNCName(getXMLLocalName(r));
+                && XML10Char.isValidNCName(getXMLLocalName(r));
     }
 
     /*

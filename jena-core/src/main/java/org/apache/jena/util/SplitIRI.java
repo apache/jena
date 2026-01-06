@@ -486,7 +486,7 @@ public class SplitIRI
         int i = lg-1;
         for (; i >= 1; i--) {
             ch = uri.charAt(i);
-            if ( !XMLChar.isNCName(ch) )
+            if ( !XML10Char.isNCName(ch) )
                 break;
         }
 
@@ -512,7 +512,7 @@ public class SplitIRI
         // The split must start with NCNameStart.
         for (; j < lg; j++) {
             ch = uri.charAt(j);
-            if (XMLChar.isNCNameStart(ch))
+            if (XML10Char.isNCNameStart(ch))
             {
                 // "mailto:" is special.
                 // split "mailto:me" as "mailto:m" and "e" !

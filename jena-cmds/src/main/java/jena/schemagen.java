@@ -42,7 +42,7 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.RDFWriter;
 import org.apache.jena.shared.JenaException;
-import org.apache.jena.util.XMLChar;
+import org.apache.jena.util.XML10Char;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.WrappedIterator;
 import org.apache.jena.vocabulary.OWL;
@@ -800,7 +800,7 @@ public class schemagen {
 
             // ensure ends with namespace separator char
             char ch = uri.charAt( uri.length() - 1 );
-            boolean endsWithNCNameCh = XMLChar.isNCName( ch );
+            boolean endsWithNCNameCh = XML10Char.isNCName( ch );
             uri = endsWithNCNameCh ? uri + "#" : uri;
 
             // check for ambiguous answers
