@@ -25,7 +25,7 @@ import org.apache.jena.rdf.model.RDFErrorHandler ;
 import org.apache.jena.rdfxml.arp1.impl.ARPSaxErrorHandler;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.util.XMLChar;
+import org.apache.jena.util.XML10Char;
 
 /**
  * Interface between Jena and ARP.
@@ -96,7 +96,7 @@ final class JenaHandler extends ARPSaxErrorHandler implements StatementHandler, 
         if ( uri.equals("") )
             return false;
         char last = uri.charAt(uri.length() - 1);
-        return !XMLChar.isNCName(last);
+        return !XML10Char.isNCName(last);
     }
 
     @Override
