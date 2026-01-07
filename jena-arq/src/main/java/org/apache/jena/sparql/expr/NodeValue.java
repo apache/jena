@@ -401,8 +401,8 @@ public abstract class NodeValue extends ExprNode
     // Every langtag implies another value space as well.
 
     /**
-     * Return true if the two NodeValues are known to be the same value return false
-     * if known to be different values, throw ExprEvalException otherwise
+     * Return true if the two NodeValues are known to be the same value. Return false
+     * if known to be different values, else throw ExprEvalException
      */
     public static boolean sameValueAs(NodeValue nv1, NodeValue nv2) {
         return NVCompare.sameValueAs(nv1, nv2);
