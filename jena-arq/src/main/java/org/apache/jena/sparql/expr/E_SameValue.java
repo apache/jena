@@ -18,7 +18,6 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.ARQNotImplemented;
 import org.apache.jena.sparql.sse.Tags;
 
 public class E_SameValue extends ExprFunction2 {
@@ -30,15 +29,29 @@ public class E_SameValue extends ExprFunction2 {
 
     @Override
     public NodeValue eval(NodeValue x, NodeValue y) {
-        throw new ARQNotImplemented("E_SameValue");
-        // "strict/plain" and "extended"
-// // EXCEPT NaN
-// boolean b = NodeValue.sameValueAs(x, y) ;
-// return NodeValue.booleanReturn(b) ;
+        if ( isNaN(x) ) {
+            if ( isNaN(y) )
+                return NodeValue.TRUE;
+            return NodeValue.FALSE;
+        }
+        boolean b = NodeValue.sameValueAs(x, y) ;
+        return NodeValue.booleanReturn(b) ;
     }
 
     @Override
     public Expr copy(Expr e1, Expr e2) {
         return new E_SameValue(e1, e2);
+    }
+
+    private static boolean isNaN(NodeValue nv) {
+        if ( nv.isDouble() ) {
+            double d = nv.getDouble();
+            return Double.isNaN(d);
+        }
+        if ( nv.isFloat() ) {
+            float f = nv.getFloat();
+            return Float.isNaN(f);
+        }
+        return false;
     }
 }

@@ -84,7 +84,7 @@ public class TestSparqlKeywordFunctions
     | 'NOW' NIL
     | 'MD5' '(' Expression ')'
     | 'SHA1' '(' Expression ')'
-    | SHA224 '(' Expression ')'
+    | 'SHA224' '(' Expression ')'
     | 'SHA256' '(' Expression ')'
     | 'SHA384' '(' Expression ')'
     | 'SHA512' '(' Expression ')'
@@ -409,12 +409,32 @@ public class TestSparqlKeywordFunctions
     @Test public void replace30()       { test("REPLACE('b'@en--ltr, '(a|b)?', 'Z')", "'Z'@en--ltr"); }
     @Test public void replace31()       { test("REPLACE('b'@en--ltr, '(a|b)?', 'Z'@en--ltr)", "'Z'@en--ltr"); }
 
-    @Test public void sameTerm1()       { test("sameTerm(1,1)",           kwTRUE); }
-    @Test public void sameTerm2()       { test("sameTerm(1,1.0)",         kwFALSE); }
-    @Test public void sameTerm3()       { test("sameTerm(1,1e0)",         kwFALSE); }
-    @Test public void sameTerm4()       { test("sameTerm(<_:a>, <_:a>)",  kwTRUE); }
-    @Test public void sameTerm5()       { test("sameTerm(<x>, <x>)",      kwTRUE); }
-    @Test public void sameTerm6()       { test("sameTerm(<x>, <y>)",      kwFALSE); }
+    @Test public void sameTerm_01()     { test("sameTerm(1,1)",           kwTRUE); }
+    @Test public void sameTerm_02()     { test("sameTerm(1,1.0)",         kwFALSE); }
+    @Test public void sameTerm_03()     { test("sameTerm(1,1e0)",         kwFALSE); }
+    @Test public void sameTerm_04()     { test("sameTerm(<_:a>, <_:a>)",  kwTRUE); }
+    @Test public void sameTerm_05()     { test("sameTerm(<x>, <x>)",      kwTRUE); }
+    @Test public void sameTerm_06()     { test("sameTerm(<x>, <y>)",      kwFALSE); }
+
+    @Test public void sameTerm_07()     { test("sameTerm('abc'@en, 'abc'@EN)", kwTRUE); }
+    @Test public void sameTerm_08()     { test("sameTerm('abc'@en--ltr, 'abc'@EN--ltr)", kwTRUE); }
+    @Test public void sameTerm_09()     { test("sameTerm('abc'@en--ltr, 'abc'@en--rtl)", kwFALSE); }
+    @Test public void sameTerm_10()     { test("sameTerm(<<( <x> <p> 123 )>>, <<( <x> <p> 123 )>>)", kwTRUE); }
+
+    // 'SameValue' is not in SPARQL 1.2 as a keyword.
+    // However, ARQ provides access to the function.
+
+    @Test public void sameValue_01()    { test("sameValue(<x>, <x>)",      kwTRUE); }
+    @Test public void sameValue_02()    { test("sameValue(<x>, <y>)",      kwFALSE); }
+    @Test public void sameValue_03()    { test("sameValue(1, 1.0e0)",      kwTRUE); }
+    @Test public void sameValue_04()    { test("sameValue('NaN'^^xsd:double, 'NaN'^^xsd:double)",     kwTRUE); }
+    @Test public void sameValue_05()    { test("sameValue('NaN'^^xsd:float, 'NaN'^^xsd:double)",      kwTRUE); }
+    @Test public void sameValue_06()    { test("sameValue('NaN'^^xsd:double, 'NaN'^^xsd:float)",      kwTRUE); }
+    @Test public void sameValue_07()    { test("sameValue('NaN'^^xsd:float, 'NaN'^^xsd:float)",       kwTRUE); }
+    @Test public void sameValue_08()    { test("sameValue('NaN'^^xsd:float, 'INF'^^xsd:float)",       kwFALSE); }
+    @Test public void sameValue_09()    { test("sameValue(<<( <x> <p> 123 )>>, <<( <x> <p> 123.0e0 )>>)", kwTRUE); }
+    @Test public void sameValue_10()    { test("sameValue(<<( <x> <p> 'abc'@en )>>, <<( <x> <p> 'abc'@en--ltr )>>)", kwFALSE); }
+    @Test public void sameValue_11()    { test("sameValue(<<( <x> <p> 'abc'@en--ltr )>>, <<( <x> <p> 'abc'@en--rtl )>>)", kwFALSE); }
 
     @Test public void OneOf_01()        { test("57 in (xsd:integer, '123')",   kwFALSE); }
     @Test public void OneOf_02()        { test("57 in (57)",                   kwTRUE); }
