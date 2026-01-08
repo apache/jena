@@ -213,18 +213,15 @@
         <module>jena-db</module>
         <module>jena-tdb1</module>
         <module>jena-tdb2</module>
-
         <module>apache-jena-libs</module>
 
         <module>jena-text</module>
         <module>jena-serviceenhancer</module>
-
         <module>jena-cmds</module>
         <module>jena-geosparql</module>
         <module>jena-fuseki2</module>
 
         <module>jena-integration-tests</module>
-
         <module>jena-bom</module>
 
       </modules>
@@ -278,14 +275,15 @@
 
         <module>jena-text</module>
         <module>jena-serviceenhancer</module>
-
         <module>jena-cmds</module>
         <module>jena-geosparql</module>
-
         <module>jena-fuseki2</module>
 
         <!-- The original, standalone jena-fuseki-geosparql -->
         <module>jena-fuseki2/jena-fuseki-geosparql</module>
+
+        <module>jena-commonsrdf</module>
+        <module>jena-querybuilder</module>
 
         <!--
             Tests of artifacts that require additional
@@ -294,17 +292,11 @@
             test remote client APIs.
         -->
         <module>jena-integration-tests</module>
-
         <module>jena-benchmarks</module>
 
         <!-- Binary distribution -->
         <module>apache-jena</module>
-
-        <module>jena-commonsrdf</module>
-        <module>jena-querybuilder</module>
-
         <module>jena-examples</module>
-
         <module>jena-bom</module>
 
       </modules>
