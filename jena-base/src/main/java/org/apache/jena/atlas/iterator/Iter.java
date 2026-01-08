@@ -27,7 +27,6 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.apache.jena.atlas.io.IO;
-import org.apache.jena.atlas.lib.CacheFactory;
 import org.apache.jena.atlas.lib.Closeable;
 import org.apache.jena.atlas.lib.Sink;
 
