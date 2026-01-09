@@ -1,7 +1,3 @@
-package org.apache.jena.reasoner.rulesys;
-
-import org.apache.jena.reasoner.rulesys.builtins.*;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,6 +15,10 @@ import org.apache.jena.reasoner.rulesys.builtins.*;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.apache.jena.reasoner.rulesys;
+
+import org.apache.jena.reasoner.rulesys.builtins.*;
 
 public abstract class BuiltinRegistry {
     /** The default base registry */
