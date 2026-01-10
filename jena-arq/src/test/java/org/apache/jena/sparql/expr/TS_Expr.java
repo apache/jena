@@ -35,10 +35,11 @@ import org.apache.jena.sparql.expr.nodevalue.TestNodeValueSortKey;
     , TestExpressions4.class
     , TestCastXSD.class
     , TestNodeFunctions.class
+    , TestNodeFunctionsMisc.class
     , TestExpressionsMath.class
     , TestFunctions.class
     , TestStringArgCompatibility.class
-    , TestSparqlKeywordFunctions.class
+    , TestSPARQLKeywordFunctions.class
     , TestFunctionsByURI.class
     , TestExprTripleTerms.class
     , TestLeviathanFunctions.class

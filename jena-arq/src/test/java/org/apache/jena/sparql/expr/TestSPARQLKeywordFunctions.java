@@ -36,7 +36,7 @@ import org.apache.jena.sparql.util.ExprUtils;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
 import org.apache.jena.sys.JenaSystem;
 
-public class TestSparqlKeywordFunctions
+public class TestSPARQLKeywordFunctions
 {
     static { JenaSystem.init(); }
     // Some overlap with TestFunctions except those are direct function calls and these are via SPARQL 1.1 syntax.
