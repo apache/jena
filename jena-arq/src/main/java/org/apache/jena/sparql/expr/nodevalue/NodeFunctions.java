@@ -59,14 +59,14 @@ public class NodeFunctions {
         return NodeValue.booleanReturn(sameTerm(nv1.asNode(), nv2.asNode()));
     }
 
-    // Jena - up to Jena 4.
-    // Language tags were kept in the case form they were given as.
-    // Jena5 - language tags are canonicalised.
-
     /** sameTerm(x,y) */
     public static boolean sameTerm(Node node1, Node node2) {
         return node1.sameTermAs(node2);
     }
+
+    // Jena - up to Jena 4.
+    // Language tags were kept in the case form they were given as.
+    // Jena5 - language tags are canonicalised.
 
 // Before jena stored normalized language tags ...
 //    /** sameTerm(x,y) */
@@ -94,44 +94,102 @@ public class NodeFunctions {
 
     // -------- sameValue
 
+    /** sameValue as equality */
     public static boolean sameValue(NodeValue nv1, NodeValue nv2) {
         return NodeValue.sameValueAs(nv1, nv2);
     }
 
+    /** sameValue as equality */
     public static boolean sameValue(Node node1, Node node2) {
         NodeValue nv1 = NodeValue.makeNode(node1);
         NodeValue nv2 = NodeValue.makeNode(node2);
         return NodeValue.sameValueAs(nv1, nv2);
     }
 
+    /** notSameValue as "not value-equals" */
     public static boolean notSameValue(NodeValue nv1, NodeValue nv2) {
         return NodeValue.notSameValueAs(nv1, nv2);
     }
 
+    /** notSameValue as "not value-equals" */
     public static boolean notSameValue(Node node1, Node node2) {
         NodeValue nv1 = NodeValue.makeNode(node1);
         NodeValue nv2 = NodeValue.makeNode(node2);
         return NodeValue.notSameValueAs(nv1, nv2);
     }
 
-    // -------- RDFterm-equals -- raises an exception on "don't know" for literals.
+    /**
+     * The sameValue function in SPARQL.
+     * NaN's do not follow value-equality.
+     */
+    public static NodeValue sameValueFunction(NodeValue x, NodeValue y) {
+        // Case: sameValue("NaN"^^xsd:double, "NaN"^^xsd:float) = true
+        if ( isNaN(x) )
+            return NodeValue.booleanReturn(isNaN(y));
+        else {
+            if ( isNaN(y) )
+                // x is not NaN
+                return NodeValue.FALSE;
+        }
 
-    // Exact as defined by SPARQL spec, when there are no value extensions.
-    //   Exception for two literals that might be equal but we don't know because of language tags.
+        // Case: sameValue("NaN"^^xsd:double, "NaN"^^xsd:float) = false
+        if ( false ) {
+            if ( isDoubleNaN(x) )
+                return NodeValue.booleanReturn(isDoubleNaN(y));
+            if ( isFloatNaN(x) )
+                return NodeValue.booleanReturn(isFloatNaN(y));
+            if (  isNaN(y) )
+                // x is not NaN
+                return NodeValue.FALSE;
+        }
 
+        boolean b = NodeValue.sameValueAs(x, y) ;
+        return NodeValue.booleanReturn(b) ;
+    }
+
+    /** Test whether the argument is a NaN, either as a double or as a float. */
+    public static boolean isNaN(NodeValue nv) {
+        return isDoubleNaN(nv) || isFloatNaN(nv);
+    }
+
+    /** Test whether the argument is NaN as a double : "NaN"^^xsd:double.  */
+    public static boolean isDoubleNaN(NodeValue nv) {
+        if ( nv.isDouble() ) {
+            double d = nv.getDouble();
+            return Double.isNaN(d);
+        }
+        return false;
+    }
+
+    /** Test whether the argument is NaN as a float : "NaN"^^xsd:float.  */
+    public static boolean isFloatNaN(NodeValue nv) {
+        if ( nv.isFloat() ) {
+            float f = nv.getFloat();
+            return Float.isNaN(f);
+        }
+        return false;
+    }
+
+
+    // -------- RDFterm-equals -- raises an exception on "don't know" for literals; no value extensions.
+
+    // Exact as defined by SPARQL 1.1 spec, when there are no value extensions.
     // THIS IS NOT:
-    // SPARQL 1.1 = RDFterm-equals
     // SPARQL 1.2 = sameValue
 
-    public static boolean rdfTermEquals(Node n1, Node n2) {
+    // Legacy
+    @Deprecated(forRemoval = true)
+    public static boolean rdfTermEqual11_legacy(Node n1, Node n2) {
         if ( n1.equals(n2) )
             return true;
 
         if ( n1.isLiteral() && n2.isLiteral() ) {
+            // Jena4.
             // Two literals, may be sameTerm by language tag case insensitivity.
             String lang1 = n1.getLiteralLanguage();
             String lang2 = n2.getLiteralLanguage();
             if ( isNotEmpty(lang1) && isNotEmpty(lang2) ) {
+                // Jena4.
                 // Two language tags, both not "", equal by case insensitivity => lexical test.
                 if ( lang1.equalsIgnoreCase(lang2) ) {
                     boolean b = n1.getLiteralLexicalForm().equals(n2.getLiteralLexicalForm());
@@ -141,7 +199,7 @@ public class NodeFunctions {
             }
 
             // Two literals:
-            //   Were not .equals
+            //   They were not .equals
             //   case 1: At least one language tag., not same lexical form -> unknown.
             //   case 2: No language tags, not .equals -> unknown.
             // Raise error (rather than return false).
@@ -151,9 +209,9 @@ public class NodeFunctions {
         if ( n1.isTripleTerm() && n2.isTripleTerm() ) {
             Triple t1 = n1.getTriple();
             Triple t2 = n2.getTriple();
-            return rdfTermEquals(t1.getSubject(), t2.getSubject())
-                && rdfTermEquals(t1.getPredicate(), t2.getPredicate())
-                && rdfTermEquals(t1.getObject(), t2.getObject());
+            return rdfTermEqual11_legacy(t1.getSubject(), t2.getSubject())
+                && rdfTermEqual11_legacy(t1.getPredicate(), t2.getPredicate())
+                && rdfTermEqual11_legacy(t1.getObject(), t2.getObject());
         }
 
         // Not both literal nor both triple terms - .equals would have worked.

@@ -114,8 +114,8 @@ class NVCompare {
                 Node node2 = nv2.asNode();
 
                 if ( !SystemARQ.ValueExtensions )
-                    // No value extensions => raw rdfTermEquals
-                    return NodeFunctions.rdfTermEquals(node1, node2);
+                    // No value extensions => raw SameValue, value testing done.
+                    raise(new ExprEvalException("Unknown equality test: " + nv1 + " and " + nv2));
 
                 // Some "value spaces" are know to be not equal (no overlap).
                 // Like one literal with a language tag, and one without can't be
@@ -127,12 +127,21 @@ class NVCompare {
                     return false;
 
                 // Two literals at this point.
+                // Any known to be disjoint value spaces.
 
                 if ( NodeFunctions.sameTerm(node1, node2) )
                     return true;
 
-                if ( !node1.getLiteralLanguage().equals("") || !node2.getLiteralLanguage().equals("") )
-                    // One had lang tag but weren't sameNode => not equals
+                boolean hasLang1 = NodeFunctions.hasLang(node1);
+                boolean hasLang2 = NodeFunctions.hasLang(node2);
+                if ( hasLang1 != hasLang2 )
+                    // One had lang tag, one doeesn't
+                    return false;
+
+                boolean hasLangDir1 = NodeFunctions.hasLangDir(node1);
+                boolean hasLangDir2 = NodeFunctions.hasLangDir(node2);
+                if ( hasLangDir1 != hasLangDir2 )
+                    // One had lang direction, one doesn't
                     return false;
 
                 raise(new ExprEvalException("Unknown equality test: " + nv1 + " and " + nv2));
