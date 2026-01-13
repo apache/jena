@@ -89,10 +89,7 @@ public class FN_Apply extends FunctionBase {
 
     private Function buildFunction(String functionIRI, FunctionEnv functionEnv) {
         FunctionRegistry registry = chooseRegistry(functionEnv.getContext());
-        FunctionFactory ff = registry.get(functionIRI);
-        if ( ff == null )
-            return null;
-        return ff.create(functionIRI);
+        return registry.getFunction(functionIRI);
     }
 
     private FunctionRegistry chooseRegistry(Context context) {

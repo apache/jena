@@ -21,20 +21,19 @@
 
 package org.apache.jena.sparql.expr;
 
+import java.util.List;
+import java.util.Objects;
+
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.function.Function;
 import org.apache.jena.sparql.function.FunctionEnv;
-import org.apache.jena.sparql.function.FunctionFactory;
 import org.apache.jena.sparql.function.FunctionRegistry;
 import org.apache.jena.sparql.function.scripting.ScriptFunction;
 import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.FmtUtils;
-
-import java.util.List;
-import java.util.Objects;
 
 /** SPARQL filter function */
 public class E_Function extends ExprFunctionN {
@@ -87,10 +86,9 @@ public class E_Function extends ExprFunctionN {
         }
     }
 
-    private FunctionFactory functionFactory(Context cxt) {
+    private Function function(Context cxt) {
         FunctionRegistry registry = chooseRegistry(cxt);
-        FunctionFactory ff = registry.get(functionIRI);
-        return ff;
+        return registry.getFunction(functionIRI);
     }
 
     private void bindFunction(Context cxt) {
@@ -98,12 +96,11 @@ public class E_Function extends ExprFunctionN {
             return;
 
         if ( function == null ) {
-            FunctionFactory ff = functionFactory(cxt);
-            if ( ff == null ) {
+            function = function(cxt);
+            if ( function == null ) {
                 functionBound = true;
                 throw new ExprUndefFunction("URI <" + functionIRI + "> not found as a function", functionIRI);
             }
-            function = ff.create(functionIRI);
         }
         function.build(functionIRI, args, cxt);
         functionBound = true;
