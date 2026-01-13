@@ -125,8 +125,14 @@ public class FunctionRegistry
         return this;
     }
 
-    /** Lookup by URI */
+    /** @deprecated Use {@link #getFunctionFactory} */
+    @Deprecated(forRemoval = true)
     public FunctionFactory get(String uri) {
+        return getFunctionFactory(uri);
+    }
+
+    /** Lookup by URI */
+    public FunctionFactory getFunctionFactory(String uri) {
         FunctionFactory function = registry.get(uri);
         if ( function != null )
             return function;
@@ -142,6 +148,17 @@ public class FunctionRegistry
         attemptedLoads.add(uri);
         // Call again to get it.
         return registry.get(uri);
+    }
+
+    /**
+     * Get a ARQ expression {@link Function}.
+     * Return null if the URI does not map to a registered entry.
+     */
+    public Function getFunction(String uri) {
+        FunctionFactory ff = get(uri);
+        if ( ff == null )
+            return null;
+        return ff.create(uri);
     }
 
     public boolean isRegistered(String uri) {
