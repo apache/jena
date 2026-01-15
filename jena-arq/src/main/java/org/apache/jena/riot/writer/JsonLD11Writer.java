@@ -32,26 +32,23 @@ import java.util.Objects;
 import com.apicatalog.jsonld.JsonLd;
 import com.apicatalog.jsonld.JsonLdError;
 import com.apicatalog.jsonld.JsonLdOptions;
-import com.apicatalog.jsonld.JsonLdVersion;
 import com.apicatalog.jsonld.api.CompactionApi;
 import com.apicatalog.jsonld.document.Document;
 import com.apicatalog.jsonld.document.JsonDocument;
 import com.apicatalog.jsonld.lang.Keywords;
-import com.apicatalog.jsonld.serialization.QuadsToJsonld;
-import com.apicatalog.rdf.api.RdfConsumerException;
 
 import jakarta.json.*;
 import jakarta.json.stream.JsonGenerator;
 import org.apache.jena.atlas.logging.FmtLog;
-import org.apache.jena.graph.Node;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.RDFFormatVariant;
 import org.apache.jena.riot.WriterDatasetRIOT;
 import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.jsonld.JenaToTitanium;
+import org.apache.jena.riot.system.jsonld.TitaniumJsonLdOptions;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.Context;
 
 public class JsonLD11Writer implements WriterDatasetRIOT {
@@ -70,14 +67,14 @@ public class JsonLD11Writer implements WriterDatasetRIOT {
     public void write(OutputStream outputStream, DatasetGraph datasetGraph, PrefixMap prefixMap, String baseURI, Context context) {
         Objects.requireNonNull(outputStream);
         Objects.requireNonNull(datasetGraph);
-        write$(outputStream, null, datasetGraph);
+        write$(outputStream, null, datasetGraph, baseURI, context);
     }
 
     @Override
     public void write(Writer out, DatasetGraph datasetGraph, PrefixMap prefixMap, String baseURI, Context context) {
         Objects.requireNonNull(out);
         Objects.requireNonNull(datasetGraph);
-        write$(null, out, datasetGraph);
+        write$(null, out, datasetGraph, baseURI, context);
     }
 
     @Override
@@ -85,15 +82,10 @@ public class JsonLD11Writer implements WriterDatasetRIOT {
         return format.getLang();
     }
 
-    // Write JSON-LD
-
-    static class JenaTitaniumException extends JenaException {
-        JenaTitaniumException(String msg) { super(msg); }
-    }
-
-    private void write$(OutputStream output, Writer writer, DatasetGraph dsg) {
+    private void write$(OutputStream output, Writer writer, DatasetGraph dsg, String baseURI, Context context) {
         try {
-            JsonArray array = datasetToJSON(dsg);
+            JsonLdOptions opts = TitaniumJsonLdOptions.get(baseURI, context);
+            JsonArray array = JenaToTitanium.convert(dsg, opts);
 
             RDFFormatVariant variant = format.getVariant();
             JsonStructure writeThis;
@@ -124,62 +116,6 @@ public class JsonLD11Writer implements WriterDatasetRIOT {
         } catch (Throwable ex) {
             throw new JenaException("Exception while writing JSON-LD 1.1", ex);
         }
-    }
-
-    /** Jena DatasetGraph to JSON(LD), Titanium QuadsToJsonld in version 1.7.0. */
-    private static JsonArray datasetToJSON(DatasetGraph dsg) throws JsonLdError {
-        QuadsToJsonld consumer = JsonLd.fromRdf();
-        consumer.mode(JsonLdVersion.V1_1);
-        dsg.stream().forEach( quad->{
-            String s = resource(quad.getSubject());
-            String p = resource(quad.getPredicate());
-            String g = resourceGraphName(quad.getGraph());
-            Node obj = quad.getObject();
-
-            if ( obj.isURI() || obj.isBlank() ) {
-                String o = resource(obj);
-                try {
-                    consumer.quad(s, p, o, null, null, null, g);
-                } catch (RdfConsumerException e) {
-                    e.printStackTrace();
-                }
-            } else if ( obj.isLiteral() ) {
-                String lex = obj.getLiteralLexicalForm();
-                String datatype = obj.getLiteralDatatypeURI();
-                String lang = obj.getLiteralLanguage();
-                if ( lang.isEmpty() )
-                    lang = null;
-                String dir = null;
-                if ( obj.getLiteralBaseDirection() != null )
-                    dir = obj.getLiteralBaseDirection().toString();
-                try {
-                    consumer.quad(s, p, lex, datatype, lang, dir, g);
-                } catch (RdfConsumerException ex) {
-                    throw new JenaException("Exception while translating to JSON-LD", ex);
-                }
-            } else if  ( obj.isTripleTerm() ) {
-                throw new JenaTitaniumException("Triple terms not supported for JSON-LD");
-            } else {
-                throw new JenaTitaniumException("Encountered unexpected term: "+obj);
-            }
-        });
-
-        JsonArray array = consumer.toJsonLd();
-        return array;
-    }
-
-    private static String resourceGraphName(Node gn) {
-        if ( gn == null || Quad.isDefaultGraph(gn) )
-            return null;
-        return resource(gn);
-    }
-
-    private static String resource(Node term) {
-        if ( term.isBlank() )
-            return "_:"+term.getBlankNodeLabel();
-        if ( term.isURI() )
-            return term.getURI();
-        throw new JenaTitaniumException("Not a URI or a blank node");
     }
 
     private Map<String, ?> config(boolean indented) {
