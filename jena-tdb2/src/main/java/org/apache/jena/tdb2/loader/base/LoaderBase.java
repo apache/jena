@@ -126,7 +126,7 @@ public abstract class LoaderBase implements DataLoader {
         ProgressMonitor monitor = createProgressMonitor(output);
         monitor.startMessage("Start: "+label);
         monitor.start();
-        LoaderOps.inputStream(stream(), input, syntax, monitor);
+        LoaderOps.inputStream(streamRDF(), input, syntax, monitor);
         monitor.finish();
         monitor.finishMessage("Finished: "+label);
     }
@@ -139,7 +139,7 @@ public abstract class LoaderBase implements DataLoader {
     protected void loadOne(String filename, ProgressMonitor monitor) {
         String label = LoaderOps.label(filename);
         monitor.setLabel(label);
-        LoaderOps.inputFile(stream(), filename, monitor);
+        LoaderOps.inputFile(streamRDF(), filename, monitor);
     }
 
     protected void outputSummary(long totalElapsed) {
