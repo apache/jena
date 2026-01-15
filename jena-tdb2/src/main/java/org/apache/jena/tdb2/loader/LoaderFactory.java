@@ -69,7 +69,7 @@ public class LoaderFactory {
      * other quad data is discarded.
      * <p>
      * For other behaviours, use {@link #basicLoader(DatasetGraph, MonitorOutput)}
-     * and wrap the {@link StreamRDF} from {@link DataLoader#stream()}) with the required
+     * and wrap the {@link StreamRDF} from {@link DataLoader#streamRDF()}) with the required
      * transformation.
      *
      * @see #basicLoader(DatasetGraph, MonitorOutput)
@@ -107,7 +107,7 @@ public class LoaderFactory {
      * other quad data is discarded.
      * <p>
      * For other behaviours, use {@link #basicLoader(DatasetGraph, MonitorOutput)}
-     * and wrap the {@link StreamRDF} from {@link DataLoader#stream()}) with the required
+     * and wrap the {@link StreamRDF} from {@link DataLoader#streamRDF()}) with the required
      * transformation.
      *
      * @see #sequentialLoader(DatasetGraph, MonitorOutput)
@@ -148,7 +148,7 @@ public class LoaderFactory {
      * other quad data is discarded.
      * <p>
      * For other behaviours, use {@link #phasedLoader(DatasetGraph, MonitorOutput)}
-     * and wrap the {@link StreamRDF} from {@link DataLoader#stream()}) with the required
+     * and wrap the {@link StreamRDF} from {@link DataLoader#streamRDF()}) with the required
      * transformation.
      *
      * @see #phasedLoader(DatasetGraph, MonitorOutput)
@@ -188,7 +188,7 @@ public class LoaderFactory {
      * other quad data is discarded.
      * <p>
      * For other behaviours, use {@link #parallelLoader(DatasetGraph, MonitorOutput)}
-     * and wrap the {@link StreamRDF} from {@link DataLoader#stream()}) with the required
+     * and wrap the {@link StreamRDF} from {@link DataLoader#streamRDF()}) with the required
      * transformation.
      *
      * @see #parallelLoader(DatasetGraph, MonitorOutput)

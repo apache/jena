@@ -131,7 +131,7 @@ public abstract class AbstractTestLoader {
         DatasetGraph dsg = fresh();
         DataLoader loader = maker.apply(dsg, null);
         loader.startBulk();
-        RDFParser.source(DIR + "data-1.nq").parse(loader.stream());
+        RDFParser.source(DIR + "data-1.nq").parse(loader.streamRDF());
         loader.finishBulk();
         Txn.executeRead(dsg, ()->{
             assertTrue(dsg.getDefaultGraph().isEmpty());

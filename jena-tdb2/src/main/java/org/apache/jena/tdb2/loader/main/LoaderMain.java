@@ -231,7 +231,7 @@ public class LoaderMain extends LoaderBase implements DataLoader {
     }
 
     @Override
-    public StreamRDF stream() {
+    public StreamRDF streamRDF() {
         return stream;
     }
 
