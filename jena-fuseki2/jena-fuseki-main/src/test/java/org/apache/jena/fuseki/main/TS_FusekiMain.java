@@ -63,6 +63,8 @@ import org.apache.jena.fuseki.main.sys.TestFusekiModules;
   , TS_PrefixesService.class
   , TestMetrics.class
   , TestFusekiShaclValidation.class
+  
+  // Temporary independent test due for tarcking failures.
   , TestFusekiShaclValidation2.class
 
 })
