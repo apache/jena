@@ -91,7 +91,6 @@ public class Operation {
     public static final Operation PREFIXES_R   = alloc(FusekiVocabG.opPREFIXES_R,   "prefixes-r",   "Read prefixes");
     public static final Operation PREFIXES_RW  = alloc(FusekiVocabG.opPREFIXES_RW,  "prefixes-rw",  "Read-write prefixes");
 
-
     static {
         // Not everyone will remember "_" vs "-" so ...
         altName(FusekiVocabG.opNoOp_alt,   FusekiVocabG.opNoOp);
