@@ -44,7 +44,7 @@ public class TestCaches {
     @Param({
             "../testing/cheeses-0.1.ttl",
             "../testing/pizza.owl.rdf",
-//            "../testing/BSBM/bsbm-5m.nt.gz",
+//            "../testing/data.nt.gz",
     })
     public String param0_GraphUri;
 
