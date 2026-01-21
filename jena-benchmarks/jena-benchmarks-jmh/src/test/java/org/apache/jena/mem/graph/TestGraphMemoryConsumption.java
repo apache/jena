@@ -40,7 +40,7 @@ public class TestGraphMemoryConsumption {
     @Param({
             "../testing/cheeses-0.1.ttl",
             "../testing/pizza.owl.rdf",
-            "../testing/BSBM/bsbm-1m.nt.gz",
+            "../testing/data.nt.gz",
     })
     public String param0_GraphUri;
 
@@ -63,6 +63,7 @@ public class TestGraphMemoryConsumption {
      *
      * @return the memory consumption in MB
      */
+    @SuppressWarnings("removal")
     private static double runGcAndGetUsedMemoryInMB() {
         System.runFinalization();
         System.gc();
