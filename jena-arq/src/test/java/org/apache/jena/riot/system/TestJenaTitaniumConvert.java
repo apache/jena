@@ -19,17 +19,16 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.riot.system.jsonld;
+package org.apache.jena.riot.system;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.apache.jena.riot.system.ErrorHandlerFactory;
-import org.apache.jena.riot.system.ParserProfile;
-import org.apache.jena.riot.system.RiotLib;
-import org.apache.jena.riot.system.StreamRDF;
-import org.apache.jena.riot.system.StreamRDFLib;
+import org.apache.jena.riot.system.jsonld.JenaToTitanium;
+import org.apache.jena.riot.system.jsonld.TitaniumJsonLdOptions;
+import org.apache.jena.riot.system.jsonld.TitaniumToJena;
+
 import org.junit.jupiter.api.Test;
 
 import com.apicatalog.jsonld.JsonLdError;
@@ -46,13 +45,13 @@ import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.IsoMatcher;
 
-public class TestJenaToTitanium {
+public class TestJenaTitaniumConvert {
 
     private JsonObject findInArray(JsonArray array, String key, String value) {
         return array.stream()
                 .filter(jsonValue -> jsonValue.getValueType() == JsonValue.ValueType.OBJECT
-                        && jsonValue.asJsonObject().containsKey(key)
-                        && jsonValue.asJsonObject().getString(key).equals(value))
+                                     && jsonValue.asJsonObject().containsKey(key)
+                                     && jsonValue.asJsonObject().getString(key).equals(value))
                 .map(JsonValue::asJsonObject).findFirst().orElse(null);
     }
 
@@ -63,18 +62,18 @@ public class TestJenaToTitanium {
 
         String dsStr = StrUtils.strjoinNL
                 ("(dataset"
-                        , "  (_ :s :p :o)"
-                        , "  (_ :s :p 123)"
-                        , "  (_ :s :p 123.5)"
-                        , "  (_ :s :p 1e10)"
-                        , "  (_ :s :p '2021-08-10'^^xsd:date)"
-                        , "  (_ :s :p 'foo')"
-                        , "  (:g1 :s :p :o)"
-                        , "  (:g1 _:x :p :o)"
-                        , "  (:g2 _:x :p 123)"
-                        , "  (:g2 _:x :p 'abc'@en)"
-                        , "  (_:x _:x :p _:x)"
-                        ,")"
+                 , "  (_ :s :p :o)"
+                 , "  (_ :s :p 123)"
+                 , "  (_ :s :p 123.5)"
+                 , "  (_ :s :p 1e10)"
+                 , "  (_ :s :p '2021-08-10'^^xsd:date)"
+                 , "  (_ :s :p 'foo')"
+                 , "  (:g1 :s :p :o)"
+                 , "  (:g1 _:x :p :o)"
+                 , "  (:g2 _:x :p 123)"
+                 , "  (:g2 _:x :p 'abc'@en)"
+                 , "  (_:x _:x :p _:x)"
+                 ,")"
                 );
         DatasetGraph dsg1 = SSE.parseDatasetGraph(dsStr);
 
@@ -98,6 +97,10 @@ public class TestJenaToTitanium {
         assertEquals(2, dateValue.size());
         assertEquals(XSDDatatype.XSDdate.getURI(), dateValue.getString("@type"));
 
+        // Checking g1
+        JsonObject g1 = findInArray(jsonld, "@id", "http://example/g1");
+        assertTrue(g1.containsKey("@graph"));
+
         // Checking g2
         JsonObject g2 = findInArray(jsonld, "@id", "http://example/g2");
         assertTrue(g2.containsKey("@graph"));
@@ -116,6 +119,4 @@ public class TestJenaToTitanium {
         TitaniumToJena.convert(document, options, output, profile);
         assertTrue(IsoMatcher.isomorphic(dsg1, dsg2), "Datasets should be isomorphic");
     }
-
-
 }

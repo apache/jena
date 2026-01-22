@@ -21,6 +21,7 @@
 
 package org.apache.jena.riot.lang;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -40,22 +41,44 @@ import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.system.ErrorHandlerFactory;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.vocabulary.RDF;
 
 public class TestLangJsonLD {
 
-    // These tests fail under some java11 (but not java17)
-    // for RIOT default JSON-LD 1.1 because Titanium contacts schema.org
-    // with java.net.http/HTTP2 (default version setting)
-    // which fails.
-
     @Test
-    public final void simpleReadTest() throws IOException {
+    public final void readFromString() throws IOException {
         String jsonld = someSchemaDotOrgJsonld();
         Dataset ds = jsonld2dataset(jsonld, null, Lang.JSONLD);
         assertJohnDoeIsOK(ds.getDefaultModel());
+    }
+
+    @Test
+    public final void readContext() {
+        DatasetGraph dsg = RDFParser.source("testing/RIOT/jsonld11/doc-1.jsonld11").toDatasetGraph();
+        assertFalse(dsg.isEmpty());
+        // "@vocab" : "http://example.org/vocab" -- not a prefix - does not end in "/" "#" or ":"
+        assertEquals(0, dsg.prefixes().size());
+    }
+
+    @Test
+    public final void readContextArrayPrefixes_1() {
+        DatasetGraph dsg = RDFParser.source("testing/RIOT/jsonld11/doc-2.jsonld11").toDatasetGraph();
+        assertTrue(dsg.prefixes().containsPrefix("foaf"));
+        assertEquals(1, dsg.prefixes().size());
+    }
+
+    @Test
+    public final void readContextArrayPrefixes_2() {
+        DatasetGraph dsg = RDFParser.source("testing/RIOT/jsonld11/doc-3.jsonld11").toDatasetGraph();
+        assertTrue(dsg.prefixes().containsPrefix("foaf"));
+        assertEquals(3, dsg.prefixes().size());
+        assertTrue(dsg.prefixes().containsPrefix("foaf"));
+        assertTrue(dsg.prefixes().containsPrefix("foo"));
+        assertTrue(dsg.prefixes().containsPrefix(""));
+        assertFalse(dsg.prefixes().containsPrefix("bar"));
     }
 
     @Test
