@@ -32,7 +32,6 @@ import org.junit.platform.suite.api.Suite;
     , TestTxnOp.class
     , TestTxn.class
     , TestTxnThread.class
-    , TestJenaTitanium.class
     , TestReadXML.class
     , TestPrefixes.class
     , TestPrefixLib.class
