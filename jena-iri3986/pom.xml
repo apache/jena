@@ -37,7 +37,8 @@
   </description>
 
   <properties>
-    <automatic.module.name>org.apache.jena.iri3986</automatic.module.name>
+    <!-- Module names are strongly encouraged to end in a letter. -->
+    <automatic.module.name>org.apache.jena.iri3986x</automatic.module.name>
   </properties>
 
   <dependencies>

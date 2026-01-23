@@ -101,7 +101,7 @@ public class RoaringTripleStore implements TripleStore {
      * Create a new RoaringTripleStore with the given indexing strategy and an initial capacity.
      *
      * @param indexingStrategy the indexing strategy to use
-     * @returns a new RoaringTripleStore instance
+     * @return a new RoaringTripleStore instance
      */
     private StoreStrategy createStoreStrategy(final IndexingStrategy indexingStrategy) {
         return switch (indexingStrategy) {

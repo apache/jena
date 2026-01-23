@@ -145,7 +145,7 @@ public class LangTags {
      * Passing this test does not guarantee the string is valid language tag. Use
      * {@link LangTags#check(String)} for validity checking.
      *
-     * @returns true or false
+     * @return true or false
      */
     public static boolean basicCheck(String string) {
         try {
@@ -206,7 +206,7 @@ public class LangTags {
      * <p>
      * The string should be a legal language tag, at least by the general SPARQL/Turtle(etc) grammar rule.
      * {@code [a-zA-Z]+ ('-' [a-zA-Z0-9]+)*}
-     * @returns null on bad input syntax
+     * @return null on bad input syntax
      *
      * @see LangTags#check
      * @see LangTags#create
@@ -224,7 +224,7 @@ public class LangTags {
      * <p>
      * The string should be a legal language tag, at least by the general SPARQL/Turtle(etc) grammar rule.
      * {@code [a-zA-Z]+ ('-' [a-zA-Z0-9]+)*}
-     * @throw {@link LangTagException}
+     * @throws LangTagException
      *
      * @see LangTags#check
      * @see LangTags#create

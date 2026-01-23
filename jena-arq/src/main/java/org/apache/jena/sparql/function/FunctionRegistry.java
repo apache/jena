@@ -104,7 +104,7 @@ public class FunctionRegistry
      *
      * @param uri           String URI
      * @param funcClass     Class for the function (new instance called).
-     * @returns This registry
+     * @return This registry
      */
     public FunctionRegistry put(String uri, Class<? > funcClass) {
         if ( !Function.class.isAssignableFrom(funcClass) ) {
@@ -118,7 +118,7 @@ public class FunctionRegistry
      *
      * @param uri
      * @param f
-     * @returns This registry
+     * @return This registry
      */
     public FunctionRegistry put(String uri, FunctionFactory f) {
         registry.put(uri, f);

@@ -994,7 +994,7 @@ public class RDFListImpl
      * for rdf:type has therefore been removed.
      * </p>
      *
-     * @returns True if this list cell passes basic validity checks
+     * @return True if this list cell passes basic validity checks
      */
     protected void checkValid() {
         if (!equals( listNil() )) {
