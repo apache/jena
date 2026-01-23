@@ -28,10 +28,12 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import org.apache.jena.atlas.lib.Closeable;
+import org.apache.jena.atlas.lib.Sync;
+import org.apache.jena.sparql.service.enhancer.concurrent.AutoLock;
+
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeSet;
-
-import org.apache.jena.atlas.lib.Sync;
 
 /**
  * A concurrently accessible sequence of data of possibly unknown size.
@@ -52,7 +54,7 @@ public interface Slice<T>
      *
      * This method should not be used directly but via {@link SliceAccessor#addEvictionGuard}.
      */
-    Disposable addEvictionGuard(RangeSet<Long> range);
+    Closeable addEvictionGuard(RangeSet<Long> range);
 
     /**
      * Read the metadata and check whether the slice has a known size and
@@ -95,17 +97,12 @@ public interface Slice<T>
         X result;
         ReadWriteLock rwl = this.getReadWriteLock();
         Lock lock = isWrite ? rwl.writeLock() : rwl.readLock();
-        lock.lock();
-        try {
+        try (AutoLock autoLock = AutoLock.lock(lock)) {
             result = fn.apply(this);
-
             if (isWrite) {
                 this.getHasDataCondition().signalAll();
             }
-        } finally {
-            lock.unlock();
         }
-
         return result;
     }
 

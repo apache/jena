@@ -31,12 +31,18 @@ public class ServiceEnhancerConstants {
     /** An IRI constant for referencing the active dataset within a SERVICE clause */
     public static final Node SELF = NodeFactory.createURI("urn:x-arq:self");
 
+    /** An IRI constant for referencing the active dataset within a SERVICE clause */
+    // FIXME SERVICE <urn:x-arq-self+bulk> is handled by the the bulk chain of the service executor which receives an iterator of the input bindings.
+    //   In constrast SERVICE <urn:x-arq-self> is handled by the single chain which is fed each binding individually.
+    //   Self bulk can thus perform more powerful bulk requests.
+    public static final Node SELF_BULK = NodeFactory.createURI("urn:x-arq:self+bulk");
+
     /** Namespace for context symbols. Same as the assembler vocabulary. */
     public static final String NS = ServiceEnhancerVocab.NS;
 
     public static String getURI() { return NS; }
 
-    /** Maximum number of bindings to group into a single bulk request; restricts serviceBulkRequestItemCount */
+    /** Maximum number of bindings to group into a single bulk request; upper limit for serviceBulkRequestBindingCount */
     public static final Symbol serviceBulkMaxBindingCount = SystemARQ.allocSymbol(NS, "serviceBulkMaxBindingCount") ;
 
     /** Maximum number of out-of-band bindings that can be skipped over when forming an individual bulk request */
@@ -45,8 +51,29 @@ public class ServiceEnhancerConstants {
     /** Number of bindings to group into a single bulk request */
     public static final Symbol serviceBulkBindingCount = SystemARQ.allocSymbol(NS, "serviceBulkBindingCount") ;
 
+    /** Default number of slots when no explicit number is given.
+     *  Subject to capping by {@link #serviceConcurrentMaxSlotCount}. */
+    public static final Symbol serviceConcurrentDftSlotCount = SystemARQ.allocSymbol(NS, "serviceConcurrentDftSlotCount") ;
+
+    public static final Symbol serviceConcurrentMaxSlotCount = SystemARQ.allocSymbol(NS, "serviceConcurrentMaxSlotCount") ;
+
+    /** Default number of slots when no explicit number is given.
+     *  Subject to capping by {@link #serviceConcurrentDftReadaheadCount}. */
+    public static final Symbol serviceConcurrentDftReadaheadCount = SystemARQ.allocSymbol(NS, "serviceConcurrentDftReadaheadCount") ;
+
+    public static final Symbol serviceConcurrentMaxReadaheadCount = SystemARQ.allocSymbol(NS, "serviceConcurrentMaxReadaheadCount") ;
+
     /** Symbol for the cache of services' result sets */
     public static final Symbol serviceCache = SystemARQ.allocSymbol(NS, "serviceCache") ;
+
+    /** Factory for on-demand initialization of a serviceCache instance */
+    // public static final Symbol serviceCacheFactory = SystemARQ.allocSymbol(NS, "serviceCacheFactory") ;
+
+    // The following serviceCache* context symbols can be used to configure on-demand serviceCache instance creation.
+
+    public static final Symbol serviceCacheMaxEntryCount = SystemARQ.allocSymbol(NS, "serviceCacheMaxEntryCount") ;
+    public static final Symbol serviceCachePageSize = SystemARQ.allocSymbol(NS, "serviceCachePageSize") ;
+    public static final Symbol serviceCacheMaxPageCount = SystemARQ.allocSymbol(NS, "serviceCacheMaxPageCount") ;
 
     /** Symbol for the cache of services' result set sizes */
     public static final Symbol serviceResultSizeCache = SystemARQ.allocSymbol(NS, "serviceResultSizeCache") ;
