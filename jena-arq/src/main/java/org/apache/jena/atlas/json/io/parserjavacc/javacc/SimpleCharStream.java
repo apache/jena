@@ -20,7 +20,8 @@
  *
  *   SPDX-License-Identifier: Apache-2.0
  */
-package org.apache.jena.sparql.lang.arq.javacc ;
+
+package org.apache.jena.atlas.json.io.parserjavacc.javacc;
 
 /**
  * An implementation of interface CharStream, where the stream is assumed to
@@ -489,4 +490,4 @@ public class SimpleCharStream
   boolean getTrackLineColumn() { return trackLineColumn; }
   void setTrackLineColumn(boolean tlc) { trackLineColumn = tlc; }
 }
-/* JavaCC - OriginalChecksum=634b64954287d690165240ef69bf7568 (do not edit this line) */
+/* JavaCC - OriginalChecksum=559105d158e3346436a40e072f618c5c (do not edit this line) */
