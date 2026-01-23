@@ -36,11 +36,6 @@
     The IRI module provides an implementation of the IRI and URI specifications (RFC 3987 and 3986).
   </description>
 
-  <properties>
-    <!-- Module names are strongly encouraged to end in a letter. -->
-    <automatic.module.name>org.apache.jena.iri3986x</automatic.module.name>
-  </properties>
-
   <dependencies>
 
     <dependency>
