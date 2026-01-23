@@ -136,7 +136,7 @@ public final class LangTagRFC5646 implements LangTag {
      *  provide "same immutable object" semantics.
      * The language tags are treated case-sensitively.
      *
-     * @See LangTagOps.sameLangTagAs for equivalent language tags.
+     * @see LangTags#sameLangTagAs for equivalent language tags.
      */
     @Override
     public boolean equals(Object obj) {

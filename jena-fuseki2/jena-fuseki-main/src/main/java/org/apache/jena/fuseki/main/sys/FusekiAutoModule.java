@@ -74,11 +74,9 @@ public interface FusekiAutoModule extends FusekiModule, FusekiLifecycle {
 
     // ---- SubsystemLifecycle
 
-    /** {@inheritDoc} */
     @Override
     public default void start() { }
 
-    /** {@inheritDoc} */
     @Override
     public default void stop() {}
 

@@ -1203,7 +1203,7 @@ public final class TokenizerText implements Tokenizer
      * <p>
      * HEX has already been handled.
      *
-     * @returns true if the function consumed any characters.
+     * @return true if the function consumed any characters.
      */
     private boolean readNumber(int initialChar, boolean isDigit) {
         // initial character is a +/- sign or 0.

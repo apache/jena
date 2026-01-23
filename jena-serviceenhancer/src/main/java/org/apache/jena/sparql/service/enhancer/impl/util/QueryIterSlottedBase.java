@@ -35,7 +35,8 @@ import org.apache.jena.sparql.util.QueryOutputUtils;
 /**
  * QueryIterator implementation based on IteratorSlotted.
  * Its purpose is to ease wrapping a non-QueryIterator as one based
- * on a {@link #moveToNext()} method analogous to guava's AbstractIterator.
+ * on a {@link IteratorSlotted#moveToNext} method analogous
+ * to guava's AbstractIterator.
  */
 public abstract class QueryIterSlottedBase
     extends IteratorSlotted<Binding>
