@@ -81,7 +81,8 @@ class SparqlTestLib {
         throw new TestSetupException("Not a string or URI for "+context+": "+node);
     }
 
-    // For tests which directly have the action as a URi to a file.
+    // For tests which directly have the action as a URI to a file
+    // i.e. not via a blank node.
     static String getAction(ManifestEntry entry) {
         Graph graph = entry.getGraph();
         if ( entry.getAction().isBlank() )
