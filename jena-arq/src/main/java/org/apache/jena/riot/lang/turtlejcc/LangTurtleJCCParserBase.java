@@ -230,11 +230,11 @@ public class LangTurtleJCCParserBase {
         output.version(version);
     }
 
-    protected void emitTriple(int line, int column, Node s, Node p, Node o) {
+    protected void emitTriple(Node s, Node p, Node o, int line, int column) {
         output.triple(Triple.create(s, p, o));
     }
 
-    protected Node emitTripleReifier(int line, int column, Node reifierId, Node s, Node p, Node o) {
+    protected Node emitTripleReifier(Node reifierId, Node s, Node p, Node o, int line, int column) {
         Node tripleTerm = createTripleTerm(s, p, o, line, column);
         if ( reifierId == null )
             reifierId = createBNode(line, column);
@@ -253,7 +253,7 @@ public class LangTurtleJCCParserBase {
         if ( annotationReifierId != null )
             return annotationReifierId;
         Node reifierId = createBNode(line, column);
-        emitTripleReifier(line, column, reifierId, s, p, o);
+        emitTripleReifier(reifierId, s, p, o, line, column);
         return reifierId;
     }
 
@@ -270,6 +270,6 @@ public class LangTurtleJCCParserBase {
     }
 
     protected void listStart(int line, int column) {};
-    protected void listTriple(int line, int column, Node s, Node p , Node o) { emitTriple(line, column, s, p, o); }
+    protected void listTriple(int line, int column, Node s, Node p , Node o) { emitTriple(s, p, o, line, column); }
     protected void listFinish(int line, int column) {};
 }
