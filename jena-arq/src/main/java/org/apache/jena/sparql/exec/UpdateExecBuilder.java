@@ -27,6 +27,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.exec.tracker.UpdateExecTransform;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.update.Update;
@@ -69,6 +70,9 @@ public interface UpdateExecBuilder {
     public default UpdateExecBuilder substitution(String var, Node value) {
         return substitution(Var.alloc(var), value);
     }
+
+    /** Add a transform that gets applied when building the UpdateExec instance. */
+    public UpdateExecBuilder transformExec(UpdateExecTransform updateExecTransform);
 
     public UpdateExecBuilder timeout(long value, TimeUnit timeUnit);
 
