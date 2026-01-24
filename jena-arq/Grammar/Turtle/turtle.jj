@@ -151,11 +151,11 @@ void PredicateObjectList(Node s) : { Node p = null ; }
 void ObjectList(Node s, Node p): { Node o ; } 
 {
   o = Object()
-  { emitTriple(token.beginLine, token.beginColumn, s, p, o) ; }
+  { emitTriple(s, p, o, token.beginLine, token.beginColumn) ; }
   Annotation(s, p, o)
   (
     <COMMA> o = Object()
-    { emitTriple(token.beginLine, token.beginColumn, s, p, o) ; }
+    { emitTriple(s, p, o, token.beginLine, token.beginColumn) ; }
     Annotation(s, p, o)
   )*
 }
@@ -365,7 +365,7 @@ Node ReifiedTriple() : { Node reifId = null ; Token tok ;  Node s; Node p ; Node
    p = Verb()
    o = ReifiedTripleObject()
    ( reifId = Reifier())?
-   { reifId = emitTripleReifier(tok.beginLine, tok.beginColumn, reifId, s, p, o); }
+   { reifId = emitTripleReifier(reifId, s, p, o, tok.beginLine, tok.beginColumn); }
    <GT2>
    { return reifId ; }
 }
@@ -425,7 +425,7 @@ void Annotation(Node s, Node p, Node o) : { Node reifId = null; }
 {
   (
     reifId = Reifier()
-    { reifId = emitTripleReifier(token.beginLine, token.beginColumn, reifId, s, p, o) ; }
+    { reifId = emitTripleReifier(reifId, s, p, o, token.beginLine, token.beginColumn) ; }
     { setReifierId(reifId); }
   |
     { reifId = getOrAllocReifierId(s, p, o, token.beginLine, token.beginColumn); }

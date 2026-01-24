@@ -275,7 +275,7 @@ declareVersion(verStr, t.beginLine, t.beginColumn);
 
   final public void ObjectList(Node s, Node p) throws ParseException {Node o ;
     o = Object();
-emitTriple(token.beginLine, token.beginColumn, s, p, o) ;
+emitTriple(s, p, o, token.beginLine, token.beginColumn) ;
     Annotation(s, p, o);
     label_3:
     while (true) {
@@ -290,7 +290,7 @@ emitTriple(token.beginLine, token.beginColumn, s, p, o) ;
       }
       jj_consume_token(COMMA);
       o = Object();
-emitTriple(token.beginLine, token.beginColumn, s, p, o) ;
+emitTriple(s, p, o, token.beginLine, token.beginColumn) ;
       Annotation(s, p, o);
     }
 }
@@ -786,7 +786,7 @@ if ( n == null ) n = createBNode(t.beginLine, t.beginColumn) ;
       jj_la1[29] = jj_gen;
       ;
     }
-reifId = emitTripleReifier(tok.beginLine, tok.beginColumn, reifId, s, p, o);
+reifId = emitTripleReifier(reifId, s, p, o, tok.beginLine, tok.beginColumn);
     jj_consume_token(GT2);
 {if ("" != null) return reifId ;}
     throw new Error("Missing return statement in function");
@@ -955,7 +955,7 @@ o = createURI(iri, token.beginLine, token.beginColumn) ;
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case TILDE:{
         reifId = Reifier();
-reifId = emitTripleReifier(token.beginLine, token.beginColumn, reifId, s, p, o) ;
+reifId = emitTripleReifier(reifId, s, p, o, token.beginLine, token.beginColumn) ;
 setReifierId(reifId);
         break;
         }
