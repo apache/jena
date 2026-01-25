@@ -985,16 +985,9 @@ public class RDFListImpl
     //////////////////////////////////
 
     /**
-     * <p>
-     * Answer true if this is a valid list cell, which means either that it
-     * is nil, or it has the appropriate type and a first and next relation.
-     * Updated 17-06-2003: RDFCore last comments process has decided that the
-     * rdf:type of a list is implied by the domain constraints on rdf:first
-     * and rdf:rest, so no longer needs to be asserted directly.  The test
-     * for rdf:type has therefore been removed.
-     * </p>
-     *
-     * @return True if this list cell passes basic validity checks
+     * Check this is a valid list cell. If not, throw an {@link InvalidListException} exception.
+     * The check is whether the cell
+     * is nil, or it has exactly one each of first and next relations.
      */
     protected void checkValid() {
         if (!equals( listNil() )) {
