@@ -114,7 +114,7 @@
     <ver.awaitility>4.3.0</ver.awaitility>
 
     <!-- For testing, not shipped -->
-    <ver.graalvm>25.0.1</ver.graalvm>
+    <ver.graalvm>25.0.2</ver.graalvm>
     <ver.org.openjdk.jmh>1.37</ver.org.openjdk.jmh>
 
     <!-- GeoSPARQL related -->
