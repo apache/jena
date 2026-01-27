@@ -30,7 +30,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-db</artifactId>
-    <version>6.0.0-SNAPSHOT</version>
+    <version>6.0.0</version>
   </parent> 
 
   <properties>
@@ -42,7 +42,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>6.0.0-SNAPSHOT</version>
+      <version>6.0.0</version>
     </dependency>
 
   </dependencies>

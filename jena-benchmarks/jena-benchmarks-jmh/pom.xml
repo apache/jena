@@ -25,7 +25,7 @@
     <parent>
         <groupId>org.apache.jena</groupId>
         <artifactId>jena-benchmarks</artifactId>
-        <version>6.0.0-SNAPSHOT</version>
+        <version>6.0.0</version>
     </parent>
 
     <name>Apache Jena - Benchmarks JMH</name>
@@ -57,28 +57,28 @@
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-base</artifactId>
-            <version>6.0.0-SNAPSHOT</version>
+            <version>6.0.0</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-core</artifactId>
-            <version>6.0.0-SNAPSHOT</version>
+            <version>6.0.0</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-arq</artifactId>
-            <version>6.0.0-SNAPSHOT</version>
+            <version>6.0.0</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-geosparql</artifactId>
-            <version>6.0.0-SNAPSHOT</version>
+            <version>6.0.0</version>
             <scope>test</scope>
         </dependency>
 
@@ -86,28 +86,28 @@
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-arq</artifactId>
             <classifier>tests</classifier>
-            <version>6.0.0-SNAPSHOT</version>
+            <version>6.0.0</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-benchmarks-shadedJena480</artifactId>
-            <version>6.0.0-SNAPSHOT</version>
+            <version>6.0.0</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-benchmarks-shadedJena510</artifactId>
-            <version>6.0.0-SNAPSHOT</version>
+            <version>6.0.0</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-benchmarks-shadedJena550</artifactId>
-            <version>6.0.0-SNAPSHOT</version>
+            <version>6.0.0</version>
             <scope>test</scope>
         </dependency>
 

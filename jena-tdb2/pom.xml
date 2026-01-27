@@ -31,7 +31,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>6.0.0-SNAPSHOT</version>
+    <version>6.0.0</version>
   </parent> 
 
   <properties>
@@ -44,13 +44,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-dboe-storage</artifactId>
-      <version>6.0.0-SNAPSHOT</version>
+      <version>6.0.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>6.0.0-SNAPSHOT</version>
+      <version>6.0.0</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>

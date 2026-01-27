@@ -29,7 +29,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-fuseki</artifactId>
-    <version>6.0.0-SNAPSHOT</version>
+    <version>6.0.0</version>
   </parent> 
 
   <packaging>jar</packaging>
@@ -44,25 +44,25 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki-main</artifactId>
-      <version>6.0.0-SNAPSHOT</version>
+      <version>6.0.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki-ui</artifactId>
-      <version>6.0.0-SNAPSHOT</version>
+      <version>6.0.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-text</artifactId>
-      <version>6.0.0-SNAPSHOT</version>
+      <version>6.0.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki-access</artifactId>
-      <version>6.0.0-SNAPSHOT</version>
+      <version>6.0.0</version>
     </dependency>
 
     <dependency>

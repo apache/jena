@@ -29,7 +29,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>6.0.0-SNAPSHOT</version>
+    <version>6.0.0</version>
   </parent>
   <profiles>
    <!-- apache lucene emits warnings for native access and for the vector module for java version >= 21 -->
@@ -53,25 +53,25 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>6.0.0-SNAPSHOT</version>
+      <version>6.0.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb1</artifactId>
-      <version>6.0.0-SNAPSHOT</version>
+      <version>6.0.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb2</artifactId>
-      <version>6.0.0-SNAPSHOT</version>
+      <version>6.0.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-cmds</artifactId>
-      <version>6.0.0-SNAPSHOT</version>
+      <version>6.0.0</version>
     </dependency>
 
     <!-- Lucene dependencies -->
