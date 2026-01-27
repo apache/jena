@@ -27,12 +27,12 @@
   <artifactId>apache-jena-libs</artifactId>
   <packaging>pom</packaging>
   <name>Apache Jena - Libraries POM</name>
-  <version>6.0.0</version>
+  <version>6.1.0-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>6.0.0</version>
+    <version>6.1.0-SNAPSHOT</version>
   </parent>
 
   <description>
@@ -50,43 +50,43 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-rdfpatch</artifactId>
-      <version>6.0.0</version>
+      <version>6.1.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-ontapi</artifactId>
-      <version>6.0.0</version>
+      <version>6.1.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-shacl</artifactId>
-      <version>6.0.0</version>
+      <version>6.1.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-shex</artifactId>
-      <version>6.0.0</version>
+      <version>6.1.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb1</artifactId>
-      <version>6.0.0</version>
+      <version>6.1.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb2</artifactId>
-      <version>6.0.0</version>
+      <version>6.1.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-rdfconnection</artifactId>
-      <version>6.0.0</version>
+      <version>6.1.0-SNAPSHOT</version>
     </dependency>
 
   </dependencies>

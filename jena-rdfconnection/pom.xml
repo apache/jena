@@ -32,7 +32,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>6.0.0</version>
+    <version>6.1.0-SNAPSHOT</version>
   </parent>
 
   <licenses>
@@ -50,7 +50,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>6.0.0</version>
+      <version>6.1.0-SNAPSHOT</version>
     </dependency>
 
     <!-- Testing is also done in jena-integration-tests -->
