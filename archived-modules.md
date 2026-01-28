@@ -21,7 +21,7 @@ and jena-fuseki-war is b414be274d.
 
 ### Apache Jena Permissions
 
-The last release of jena-jdbc was with Jena 5.6.0 on 2025-10-15.
+The last release of jena-permissions was with Jena 5.6.0 on 2025-10-15.
 The source code is available from git with tag "jena-5.6.0".
 The commit retiring jena-permissions is 3d4d533248.
 
