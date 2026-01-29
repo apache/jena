@@ -122,12 +122,12 @@ public class TestFusekiStart {
         assertFalse(pingServer(URL));
     }
 
+    private static Object lock = new Object();
+    private static String adminTestArea = "target/startAdmin";
+
     @Test public void defaultPort_builder() {
         testDefaultPort(3030, ()->FusekiServer.builder("--empty").start());
     }
-
-    private static Object lock = new Object();
-    private static String adminTestArea = "target/startAdmin";
 
     @Test public void defaultPort_basic() {
         synchronized(lock) {
