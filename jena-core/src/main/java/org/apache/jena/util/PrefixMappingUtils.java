@@ -50,14 +50,6 @@ public class PrefixMappingUtils {
         prefixMapping.lock() ;
         Graph graph2 = new WrappedGraph(graph) {
             @Override
-            public void performAdd(Triple triple)
-            { throw new UnsupportedOperationException() ; }
-
-            @Override
-            public void performDelete(Triple triple)
-            { throw new UnsupportedOperationException() ; }
-
-            @Override
             public PrefixMapping getPrefixMapping() {
                 return prefixMapping ;
             }
@@ -111,7 +103,6 @@ public class PrefixMappingUtils {
 
         // Map URI to prefix, with partial lookup (all uri keys that partly match the URI)
         Trie<String> trie = new Trie<>() ;
-        // Change this to "add(uri, uri)" to calculate the uris.
         pmap.forEach((prefix,uri)-> trie.add(uri, prefix)) ;
         // Prefixes in use.
         // (URIs if "add(uri, uri)")
@@ -250,8 +241,9 @@ public class PrefixMappingUtils {
             processTTL(node.getTriple(), inUse, prefixMapping);
             return ;
         }
-        else
+        else {
             return;
+        }
         // URI case.
         int idx = SplitIRI.splitpoint(uri) ;
         if ( idx < 0 )
