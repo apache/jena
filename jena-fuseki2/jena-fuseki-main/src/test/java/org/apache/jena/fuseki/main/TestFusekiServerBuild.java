@@ -129,7 +129,7 @@ public class TestFusekiServerBuild {
             try {
                 server.start();
             } catch (FusekiException ex) {
-                //org.apache.jena.fuseki.FusekiException: java.io.IOException: Failed to bind to 0.0.0.0/0.0.0.0:3030
+                //org.apache.jena.fuseki.FusekiException: java.io.IOException: Failed to bind to 0.0.0.0/0.0.0.0:????
                 if ( ex.getCause() instanceof IOException ex2 ) {
                     if ( ex2.getMessage().matches("Failed to bind to .*:"+port) ) {
                         // Some other Fuseki running on this machine.
