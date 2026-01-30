@@ -22,13 +22,18 @@
 package org.apache.jena.http.sys;
 
 import java.net.http.HttpClient;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.query.ARQ;
+import org.apache.jena.sparql.adapter.ParseCheckUtils;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.http.Params;
@@ -40,110 +45,14 @@ import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.update.Update;
 import org.apache.jena.update.UpdateException;
-import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
 
 public abstract class ExecUpdateHTTPBuilder<X, Y> {
 
-    /** Update element. Either an Update object or a string. */
-    private record UpdateElt(Update update, String updateString) {
-        UpdateElt(Update update) { this(Objects.requireNonNull(update), null); }
-        UpdateElt(String updateString) { this(null, Objects.requireNonNull(updateString)); }
-        boolean isParsed() { return update != null; }
-
-        @Override
-        public String toString() {
-            return isParsed()
-                    ? new UpdateRequest(update()).toString() // Reuse UpdateRequest's serialization approach
-                    : updateString();
-        }
-    }
-
-    /** Accumulator for update elements. Can build an overall string or UpdateRequest from the elements. */
-    private class UpdateEltAcc implements Iterable<UpdateElt> {
-        /** Delimiter for joining multiple SPARQL update strings into a single one.
-          * The delimiter takes into account that the last line of a statement may be a single-line-comment. */
-        public static final String DELIMITER = "\n;\n";
-
-        private List<UpdateElt> updateOperations = new ArrayList<>();
-        private List<UpdateElt> updateOperationsView = Collections.unmodifiableList(updateOperations);
-        private boolean isParsed = true; // True iff there are no strings in updateOperations
-
-        public boolean isParsed() {
-            return isParsed;
-        }
-
-        public void add(UpdateElt updateElt) {
-            isParsed = isParsed && updateElt.isParsed();
-            updateOperations.add(updateElt);
-        }
-
-        public void add(Update update) {
-            add(new UpdateElt(update));
-        }
-
-        /** Add a string by parsing it. */
-        public void add(String updateRequestString) {
-            UpdateRequest updateRequest = UpdateFactory.create(updateRequestString);
-            add(updateRequest);
-        }
-
-        public void add(UpdateRequest updateRequest) {
-            updateRequest.getOperations().forEach(this::add);
-        }
-
-        /** Add a string without parsing it. */
-        public void addString(String updateRequestString) {
-            add(new UpdateElt(updateRequestString));
-        }
-
-        /** Attempt to build an UpdateRequest from the state of this accumulator. Attempts to parse any string elements. */
-        public UpdateRequest buildUpdateRequest() {
-            return addToUpdateRequest(new UpdateRequest());
-        }
-
-        public UpdateRequest addToUpdateRequest(UpdateRequest updateRequest) {
-            for (UpdateElt elt : updateOperations) {
-                if (elt.isParsed()) {
-                    updateRequest.add(elt.update());
-                } else {
-                    try {
-                        updateRequest.add(elt.updateString());
-                    } catch (Exception e) {
-                        // Expose the string that failed to parse
-                        e.addSuppressed(new RuntimeException("Failed to parse: " + elt.updateString()));
-                        throw e;
-                    }
-                }
-            }
-            return updateRequest;
-        }
-
-        public void clear() {
-            updateOperations.clear();
-            isParsed = true;
-        }
-
-        public boolean isEmpty() {
-            return updateOperations.isEmpty();
-        }
-
-        @Override
-        public Iterator<UpdateElt> iterator() {
-            return updateOperationsView.iterator();
-        }
-
-        public String buildString() {
-            return updateOperations.stream()
-                .map(UpdateElt::toString)
-                .collect(Collectors.joining(DELIMITER));
-        }
-    }
-
     static { JenaSystem.init(); }
 
     protected String serviceURL;
-    protected boolean parseCheck = true;
+    protected Boolean parseCheck = null;
     private UpdateEltAcc updateEltAcc = new UpdateEltAcc();
 
     protected Params params = Params.create();
@@ -176,7 +85,7 @@ public abstract class ExecUpdateHTTPBuilder<X, Y> {
 
     public Y update(String updateRequestString) {
         Objects.requireNonNull(updateRequestString);
-        if (parseCheck) {
+        if (effectiveParseCheck()) {
             updateEltAcc.add(updateRequestString);
         } else {
             updateEltAcc.addString(updateRequestString);
@@ -206,6 +115,10 @@ public abstract class ExecUpdateHTTPBuilder<X, Y> {
     public Y parseCheck(boolean parseCheck) {
         this.parseCheck = parseCheck;
         return thisBuilder();
+    }
+
+    protected boolean effectiveParseCheck() {
+        return ParseCheckUtils.effectiveParseCheck(parseCheck, contextAcc);
     }
 
     public Y substitution(Binding binding) {

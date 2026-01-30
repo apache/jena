@@ -24,6 +24,8 @@ package org.apache.jena.rdflink;
 import static java.util.Objects.requireNonNull;
 
 import java.net.http.HttpClient;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -33,6 +35,8 @@ import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.sparql.core.TransactionalLock;
 import org.apache.jena.sparql.exec.http.QuerySendMode;
 import org.apache.jena.sparql.exec.http.UpdateSendMode;
+import org.apache.jena.sparql.exec.tracker.QueryExecTransform;
+import org.apache.jena.sparql.exec.tracker.UpdateExecTransform;
 import org.apache.jena.sys.JenaSystem;
 
 /** Builder class for {@link RDFLinkHTTP} */
@@ -73,6 +77,9 @@ public class RDFLinkHTTPBuilder {
     protected QuerySendMode  querySendMode      = QuerySendMode.systemDefault;
     protected UpdateSendMode updateSendMode     = UpdateSendMode.systemDefault;
 
+    protected List<QueryExecTransform> queryExecTransforms = new ArrayList<>();
+    protected List<UpdateExecTransform> updateExecTransforms = new ArrayList<>();
+
     protected RDFLinkHTTPBuilder() {
         // Default settings are the member declarations.
     }
@@ -100,6 +107,9 @@ public class RDFLinkHTTPBuilder {
 
         querySendMode       = base.querySendMode;
         updateSendMode      = base.updateSendMode;
+
+        queryExecTransforms = base.queryExecTransforms;
+        updateExecTransforms = base.updateExecTransforms;
     }
 
     /** URL of the remote SPARQL endpoint.
@@ -344,6 +354,7 @@ public class RDFLinkHTTPBuilder {
                                acceptDataset, acceptGraph,
                                acceptSparqlResults, acceptSelectResult, acceptAskResult,
                                parseCheckQueries, parseCheckUpdates,
-                               querySendMode, updateSendMode);
+                               querySendMode, updateSendMode,
+                               queryExecTransforms, updateExecTransforms);
     }
 }
