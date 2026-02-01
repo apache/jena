@@ -78,7 +78,7 @@ jobs:
           node-version: 'lts/*'
 
       - name: Test (E2E)
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@v7
         env:
           BASE_URL: http://localhost:8080/
           FUSEKI_URL: http://localhost:3030/
