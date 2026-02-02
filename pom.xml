@@ -71,7 +71,7 @@
     <ver.jakarta.json>2.0.1</ver.jakarta.json>
 
     <!-- These two must be in-step -->
-    <ver.jetty>12.1.5</ver.jetty>
+    <ver.jetty>12.1.6</ver.jetty>
     <ver.jakarta-servlet>6.1.0</ver.jakarta-servlet>
 
     <!--
@@ -80,7 +80,7 @@
     -->
     <ver.shiro>2.0.6</ver.shiro>
 
-    <ver.protobuf>4.33.4</ver.protobuf>
+    <ver.protobuf>4.33.5</ver.protobuf>
     <ver.libthrift>0.22.0</ver.libthrift>
 
     <ver.caffeine>3.2.3</ver.caffeine>
