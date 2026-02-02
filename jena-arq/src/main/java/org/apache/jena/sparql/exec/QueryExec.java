@@ -29,6 +29,8 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
+import org.apache.jena.sparql.adapter.SparqlAdapter;
+import org.apache.jena.sparql.adapter.SparqlAdapterRegistry;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
@@ -49,23 +51,40 @@ public interface QueryExec extends AutoCloseable {
      * to get a {@link QueryExecDatasetBuilder}.
      */
     public static QueryExecBuilder dataset(DatasetGraph dataset) {
-        return QueryExecDatasetBuilder.create().dataset(dataset);
+        return SparqlAdapterRegistry.adapt(dataset).newQuery();
     }
 
     /** Create a {@link QueryExecBuilder} for a graph. */
     public static QueryExecBuilder graph(Graph graph) {
-        return QueryExecDatasetBuilder.create().graph(graph);
+        DatasetGraph dsg = DatasetGraphFactory.wrap(graph);
+        return dataset(dsg);
     }
 
     /** Create a {@link QueryExecBuilder} for a remote endpoint. */
     public static QueryExecBuilder service(String serviceURL) {
+        // FIXME Apply execution tracking here or in the builder
+        //       if there is a global event tracker?
         return QueryExecHTTPBuilder.create().endpoint(serviceURL);
     }
 
-    /** Create an uninitialized {@link QueryExecDatasetBuilder}. */
+    /**
+     * Create an uninitialized {@link QueryExecDatasetBuilderDeferred}.
+     * This builder is not tied to a specific dataset implementation, and
+     * its dataset property can be freely modified.
+     * Upon build, the specialized builder for the dataset is chosen and the
+     * settings are transferred.
+     */
     public static QueryExecDatasetBuilder newBuilder() {
-        return QueryExecDatasetBuilder.create();
+        return QueryExecDatasetBuilderDeferred.create();
     }
+
+    /**
+     * Create an uninitialized {@link QueryExecDatasetBuilder} that goes
+     * to the ARQ's native QueryEngineFactory system.
+     * Does not use the {@link SparqlAdapter} indirection mechanism. */
+//    public static QueryExecDatasetBuilder newNativeBuilder() {
+//        return QueryExecDatasetBuilderImpl.create();
+//    }
 
     /**
      * The dataset against which the query will execute. May be null - the dataset

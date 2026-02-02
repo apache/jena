@@ -22,6 +22,7 @@
 package org.apache.jena.update;
 
 import java.io.InputStream;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.graph.Graph;
@@ -38,6 +39,7 @@ import org.apache.jena.sparql.modify.UpdateSink;
 import org.apache.jena.sparql.modify.UsingList;
 import org.apache.jena.sparql.modify.UsingUpdateSink;
 import org.apache.jena.sparql.modify.request.UpdateWithUsing;
+import org.apache.jena.sparql.util.Context;
 
 /**
  * A class of forms for executing SPARQL Update operations. parse means the update
@@ -263,7 +265,7 @@ public class UpdateAction {
             if ( in == null )
                 throw new UpdateException("File could not be opened: " + fileName);
         }
-        parseExecute(usingList, dataset, in, baseURI, syntax);
+        parseExecute(usingList, dataset, in, baseURI, syntax, null);
         if ( in != System.in )
             IO.close(in);
     }
@@ -315,23 +317,91 @@ public class UpdateAction {
      * @param syntax The update language syntax
      */
     public static void parseExecute(UsingList usingList, DatasetGraph dataset, InputStream input, String baseURI, Syntax syntax) {
-        UpdateProcessorStreaming uProc = UpdateStreaming.createStreaming(dataset);
-        if ( uProc == null )
-            throw new ARQException("No suitable update procesors are registered/able to execute your updates");
+        parseExecute(usingList, dataset, input, baseURI, syntax, null);
+    }
 
-        uProc.startRequest();
-        try {
-            UpdateSink sink = new UsingUpdateSink(uProc.getUpdateSink(), usingList);
-            try {
-                UpdateParser parser = UpdateFactory.setupParser(uProc.getPrologue(), baseURI, syntax);
-                parser.parse(sink, uProc.getPrologue(), input);
-            }
-            finally {
-                sink.close();
+    /**
+     * Parse update operations into a DatasetGraph by parsing from an InputStream.
+     *
+     * @param usingList A list of USING or USING NAMED statements that be added to
+     *     all {@link UpdateWithUsing} queries
+     * @param dataset The dataset to apply the changes to
+     * @param input The source of the update request (must be UTF-8).
+     *     can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify). May
+     *     be <code>null</code>
+     * @param baseURI The base URI for resolving relative URIs (may be
+     *     <code>null</code>)
+     * @param syntax The update language syntax
+     * @param context The context which may provide an abort signal.
+     */
+    public static void parseExecute(UsingList usingList, DatasetGraph dataset, InputStream input, String baseURI, Syntax syntax, Context context) {
+        UpdateExec uExec = new UpdateExecStreaming(usingList, dataset, input, baseURI, syntax, context);
+
+        // TODO UpdateExec tracking could go here.
+
+        uExec.execute();
+    }
+
+    private static class UpdateExecStreaming
+        implements UpdateExec {
+
+        private UsingList usingList;
+        private DatasetGraph dataset;
+        private InputStream input;
+        private String baseURI;
+        private Syntax syntax;
+        private Context context;
+
+        /** InputStream is not owned by this class - must be closed externally. */
+        public UpdateExecStreaming(UsingList usingList, DatasetGraph dataset, InputStream input, String baseURI, Syntax syntax, Context context) {
+            super();
+            this.usingList = usingList;
+            this.dataset = dataset;
+            this.input = input;
+            this.baseURI = baseURI;
+            this.syntax = syntax;
+            this.context = context;
+        }
+
+        @Override
+        public String getUpdateRequestString() {
+            //  Options to provide more information about the request:
+            // - Use a BufferedInputStream to peek the beginning of the request
+            // - Use an InputStreamWrapper that appends read bytes (up to some cap) to the string returned by this methods.
+            return "# streaming update.";
+        }
+
+        @Override
+        public void abort() {
+            // Could improve abort by aborting the parser and uProc.
+            // Could also call inputStream.close() but that'd kill the parser with EOF - ugly.
+            AtomicBoolean cancelSignal = Context.getCancelSignal(context);
+            if (cancelSignal != null) {
+                cancelSignal.set(true);
             }
         }
-        finally {
-            uProc.finishRequest();
+
+        @Override
+        public void execute() {
+            UpdateProcessorStreaming uProc = UpdateStreaming.createStreaming(dataset);
+            if ( uProc == null )
+                throw new ARQException("No suitable update procesors are registered/able to execute your updates");
+
+            uProc.startRequest();
+            try {
+                UpdateSink sink = new UsingUpdateSink(uProc.getUpdateSink(), usingList);
+                try {
+                    UpdateParser parser = UpdateFactory.setupParser(uProc.getPrologue(), baseURI, syntax);
+                    parser.parse(sink, uProc.getPrologue(), input);
+                }
+                finally {
+                    sink.close();
+                }
+            }
+            finally {
+                uProc.finishRequest();
+            }
         }
     }
 }
+

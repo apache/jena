@@ -22,6 +22,7 @@
 package org.apache.jena.rdflink;
 
 import java.net.http.HttpClient;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -45,7 +46,10 @@ import org.apache.jena.sparql.exec.http.QueryExecHTTPBuilder;
 import org.apache.jena.sparql.exec.http.QuerySendMode;
 import org.apache.jena.sparql.exec.http.UpdateExecHTTPBuilder;
 import org.apache.jena.sparql.exec.http.UpdateSendMode;
+import org.apache.jena.sparql.exec.tracker.QueryExecTransform;
+import org.apache.jena.sparql.exec.tracker.UpdateExecTransform;
 import org.apache.jena.system.Txn;
+import org.apache.jena.update.Update;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
 
@@ -87,6 +91,10 @@ public class RDFLinkHTTP implements RDFLink {
     protected final QuerySendMode querySendMode;
     protected final UpdateSendMode updateSendMode;
 
+    protected final List<QueryExecTransform> queryExecTransforms;
+    protected final List<UpdateExecTransform> updateExecTransforms;
+
+
     /** Create a {@link RDFLinkHTTPBuilder}. */
     public static RDFLinkHTTPBuilder newBuilder() {
         return new RDFLinkHTTPBuilder();
@@ -112,7 +120,8 @@ public class RDFLinkHTTP implements RDFLink {
                           String acceptSparqlResultsFallback,
                           String acceptSelectResult, String acceptAskResult,
                           boolean parseCheckQueries, boolean parseCheckUpdates,
-                          QuerySendMode querySendMode, UpdateSendMode updateSendMode) {
+                          QuerySendMode querySendMode, UpdateSendMode updateSendMode,
+                          List<QueryExecTransform> queryExecTransforms, List<UpdateExecTransform> updateExecTransforms) {
         // Any defaults.
         HttpClient hc =  httpClient!=null ? httpClient : HttpEnv.getDftHttpClient();
         if ( txnLifecycle == null )
@@ -135,6 +144,8 @@ public class RDFLinkHTTP implements RDFLink {
         this.parseCheckUpdates = parseCheckUpdates;
         this.querySendMode = querySendMode;
         this.updateSendMode = updateSendMode;
+        this.queryExecTransforms = queryExecTransforms;
+        this.updateExecTransforms = updateExecTransforms;
     }
 
     @Override
@@ -271,6 +282,11 @@ public class RDFLinkHTTP implements RDFLink {
             .acceptHeaderAskQuery(HttpLib.dft(acceptAskResult, acceptSparqlResults))
             .acceptHeaderGraph(HttpLib.dft(acceptGraph, acceptSparqlResults))
             .acceptHeaderDataset(HttpLib.dft(acceptDataset, acceptSparqlResults));
+
+        for (QueryExecTransform queryExecTransform : queryExecTransforms) {
+            builder = builder.transformExec(queryExecTransform);
+        }
+
         return builder;
     }
 
@@ -296,14 +312,26 @@ public class RDFLinkHTTP implements RDFLink {
 
     /** Create a builder, configured with the link setup. */
     private UpdateExecHTTPBuilder createUExecBuilder() {
-        return UpdateExecHTTPBuilder.create().endpoint(svcUpdate).httpClient(httpClient)
+        UpdateExecHTTPBuilder builder = UpdateExecHTTPBuilder.create().endpoint(svcUpdate).httpClient(httpClient)
                 .sendMode(updateSendMode).parseCheck(parseCheckUpdates);
+
+        for (UpdateExecTransform updateExecTransform : updateExecTransforms) {
+            builder = builder.transformExec(updateExecTransform);
+        }
+
+        return builder;
     }
 
     @Override
     public void update(String updateString) {
         Objects.requireNonNull(updateString);
         updateExec(null, updateString);
+    }
+
+    @Override
+    public void update(Update update) {
+        Objects.requireNonNull(update);
+        updateExec(new UpdateRequest(update), null);
     }
 
     @Override
@@ -316,10 +344,10 @@ public class RDFLinkHTTP implements RDFLink {
         checkUpdate();
         if ( update == null && updateString == null )
             throw new InternalErrorException("Both update request and update string are null");
-        UpdateRequest actual = null;
+        UpdateRequest parsed = null; // Kept for inspection
         if ( update == null ) {
             if ( parseCheckUpdates )
-                actual = UpdateFactory.create(updateString);
+                parsed = UpdateFactory.create(updateString);
         }
         // Use the update string as provided if possible, otherwise serialize the update.
         String updateStringToSend = ( updateString != null ) ? updateString  : update.toString();

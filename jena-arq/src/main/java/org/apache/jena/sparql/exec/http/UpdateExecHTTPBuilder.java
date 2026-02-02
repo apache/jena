@@ -24,14 +24,20 @@ package org.apache.jena.sparql.exec.http;
 import static org.apache.jena.http.HttpLib.copyArray;
 
 import java.net.http.HttpClient;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 import org.apache.jena.http.sys.ExecUpdateHTTPBuilder;
 import org.apache.jena.sparql.exec.UpdateExecBuilder;
+import org.apache.jena.sparql.exec.tracker.UpdateExecTransform;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.update.UpdateRequest;
 
 public class UpdateExecHTTPBuilder extends ExecUpdateHTTPBuilder<UpdateExecHTTP, UpdateExecHTTPBuilder> implements UpdateExecBuilder {
+
+    protected List<UpdateExecTransform> updateExecTransforms = new ArrayList<>();
 
     public static UpdateExecHTTPBuilder create() { return new UpdateExecHTTPBuilder(); }
 
@@ -44,10 +50,21 @@ public class UpdateExecHTTPBuilder extends ExecUpdateHTTPBuilder<UpdateExecHTTP,
 
     @Override
     protected UpdateExecHTTP buildX(HttpClient hClient, UpdateRequest updateActual, String updateStringActual, Context cxt) {
-        return new UpdateExecHTTP(serviceURL, updateActual, updateStringActual, hClient, params,
+        UpdateExecHTTP result = new UpdateExecHTTPImpl(serviceURL, updateActual, updateStringActual, hClient, params,
                                   copyArray(usingGraphURIs),
                                   copyArray(usingNamedGraphURIs),
                                   new HashMap<>(httpHeaders),
                                   sendMode, cxt, timeout, timeoutUnit);
+        for (UpdateExecTransform updateExecTransform : updateExecTransforms) {
+            result = UpdateExecHTTPWrapper.transform(result, updateExecTransform);
+        }
+        return result;
+    }
+
+    @Override
+    public UpdateExecHTTPBuilder transformExec(UpdateExecTransform updateExecTransform) {
+        Objects.requireNonNull(updateExecTransform);
+        updateExecTransforms.add(updateExecTransform);
+        return this;
     }
 }

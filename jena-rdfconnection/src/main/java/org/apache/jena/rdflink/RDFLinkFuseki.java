@@ -22,6 +22,7 @@
 package org.apache.jena.rdflink;
 
 import java.net.http.HttpClient;
+import java.util.List;
 
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFFormat;
@@ -29,6 +30,8 @@ import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.sparql.exec.http.QuerySendMode;
 import org.apache.jena.sparql.exec.http.UpdateSendMode;
+import org.apache.jena.sparql.exec.tracker.QueryExecTransform;
+import org.apache.jena.sparql.exec.tracker.UpdateExecTransform;
 
 /**
  * Implementation of the {@link RDFLink} interface for connecting to an Apache Jena Fuseki.
@@ -92,7 +95,8 @@ public class RDFLinkFuseki extends RDFLinkHTTP {
             base.acceptDataset, base.acceptGraph,
             base.acceptSparqlResults, base.acceptSelectResult, base.acceptAskResult,
             base.parseCheckQueries, base.parseCheckUpdates,
-            base.querySendMode, base.updateSendMode);
+            base.querySendMode, base.updateSendMode,
+            base.queryExecTransforms, base.updateExecTransforms);
     }
 
     protected RDFLinkFuseki(Transactional txnLifecycle, HttpClient httpClient, String destination,
@@ -100,13 +104,15 @@ public class RDFLinkFuseki extends RDFLinkHTTP {
                             String acceptDataset, String acceptGraph,
                             String acceptSparqlResults, String acceptSelectResult, String acceptAskResult,
                             boolean parseCheckQueries, boolean parseCheckUpdates,
-                            QuerySendMode querySendMode, UpdateSendMode updateSendMode) {
+                            QuerySendMode querySendMode, UpdateSendMode updateSendMode,
+                            List<QueryExecTransform> queryExecTransforms, List<UpdateExecTransform> updateExecTransforms) {
         super(txnLifecycle, httpClient,
               destination, queryURL, updateURL, gspURL,
               outputQuads, outputTriples,
               acceptDataset, acceptGraph,
               acceptSparqlResults, acceptSelectResult, acceptAskResult, parseCheckQueries, parseCheckUpdates,
-              querySendMode, updateSendMode);
+              querySendMode, updateSendMode,
+              queryExecTransforms, updateExecTransforms);
     }
 
     // Fuseki specific operations.
