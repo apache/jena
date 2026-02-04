@@ -66,7 +66,7 @@
     "eslint-plugin-standard": "^5.0.0",
     "eslint-plugin-vue": "^9.17.0",
     "express": "^5.1.0",
-    "jsdom": "^27.0.0",
+    "jsdom": "^28.0.0",
     "json-server": "^0.17.4",
     "nanoid": "^5.0.9",
     "nodemon": "^3.0.1",
