@@ -21,6 +21,7 @@
 
 package org.apache.jena.riot;
 
+import static org.apache.jena.atlas.lib.Lib.*;
 import static org.apache.jena.riot.RDFLanguages.NQUADS;
 import static org.apache.jena.riot.RDFLanguages.NTRIPLES;
 import static org.apache.jena.riot.RDFLanguages.RDFJSON;
@@ -39,6 +40,7 @@ import java.util.Optional;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.graph.Graph;
@@ -194,7 +196,7 @@ public class RDFParser {
                             boolean canonicalLexicalValues, LangTagForm langTagForm,
                             boolean resolveURIs, IRIxResolver resolver, PrefixMap prefixMap,
                             FactoryRDF factory, ErrorHandler errorHandler, Context context) {
-        int x = countNonNull(uri, path, content, inputStream, javaReader);
+        int x = Lib.countNonNull(uri, path, content, inputStream, javaReader);
         if ( x >= 2 )
             throw new IllegalArgumentException("Only one source allowed: one of uri, path, content, inputStream and javaReader must be set");
         if ( x < 1 )
@@ -225,33 +227,6 @@ public class RDFParser {
         this.factory = factory;
         this.errorHandler = errorHandler;
         this.context = context;
-    }
-
-    /** Count the nulls */
-    private int countNonNull(Object... objs) {
-        int x = 0;
-        for ( Object obj : objs )
-            if ( obj != null )
-                x++;
-        return x;
-    }
-
-    /** One or more non-null */
-    private boolean isNonNull(Object... objs) {
-        int x = 0;
-        for ( Object obj : objs )
-            if ( obj != null )
-                return true;
-        return false;
-    }
-
-    /** All null */
-    private boolean allNull(Object... objs) {
-        int x = 0;
-        for ( Object obj : objs )
-            if ( obj != null )
-                return false;
-        return true;
     }
 
     /**

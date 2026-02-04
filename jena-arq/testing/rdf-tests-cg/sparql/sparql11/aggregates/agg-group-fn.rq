@@ -1,0 +1,6 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT ?i
+WHERE {
+	?s ?p ?o
+}
+GROUP BY (xsd:integer(?o) AS ?i)

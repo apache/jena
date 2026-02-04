@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+  <head>
+    <variable name="d"/>
+    <variable name="c"/>
+  </head>
+  <results>
+    <result>
+      <binding name="d">
+        <uri>http://www.w3.org/2001/XMLSchema#decimal</uri>
+      </binding>
+      <binding name="c">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">5</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="d">
+        <uri>http://www.w3.org/2001/XMLSchema#double</uri>
+      </binding>
+      <binding name="c">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">4</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="d">
+        <uri>http://www.w3.org/2001/XMLSchema#integer</uri>
+      </binding>
+      <binding name="c">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">4</literal>
+      </binding>
+    </result>
+  </results>
+</sparql>

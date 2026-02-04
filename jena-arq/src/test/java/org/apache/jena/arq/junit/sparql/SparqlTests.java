@@ -113,12 +113,8 @@ public class SparqlTests {
 
         // ---- Query Evaluation Tests
         if ( equalsType(testType, TestManifest.QueryEvaluationTest) ) {
-            // Locally no supported.
+            // Locally not supported.
             // Omitted tests.
-
-            // ??
-            if ( entryContainsSubstring(entry, "aggregates/manifest#agg-groupconcat-04") )
-                return new OmittedTest(entry);
 
             // Two BNODE in the SELECT
             if ( entryContainsSubstring(entry, "functions/manifest#bnode01") )

@@ -306,5 +306,35 @@ public class Lib
         return output;
     }
 
+    /** Are all the arguments non-null? */
+    @SafeVarargs
+    public static <X> boolean allNonNull(X ... objects) {
+        return countNonNull(objects) == objects.length;
+    }
 
+    /** Is one and only one argument non-null? */
+    @SafeVarargs
+    public static <X> boolean exactlyOneSet(X ... objects) {
+        return countNonNull(objects) == 1;
+    }
+
+    /** One or more non-null */
+    public static boolean isNonNull(Object... objs) {
+        int x = 0;
+        for ( Object obj : objs )
+            if ( obj != null )
+                return true;
+        return false;
+    }
+
+    /** Count non-nulls */
+    @SafeVarargs
+    public static <X> int countNonNull(X ... objects) {
+        int x = 0;
+        for ( Object obj : objects ) {
+            if ( obj != null )
+                x++;
+        }
+        return x;
+    }
 }
