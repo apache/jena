@@ -1,3 +1,89 @@
+==== Apache Jena 6.0.0
+Released: 2026-02-04
+Issues: https://s.apache.org/jena-6.0.0-issues
+Announcement:
+https://lists.apache.org/thread/8kd5zptnp1c1kb098djwgz1hhqd77z52
+
+== Jena 6.0.0
+
+* Minimum Java version: Java 21
+* Reloading data into TDB2 is recommended
+* Reload geospatial data for the move to Kyro5
+* Lucene update to 10.* (this requires Java21+)
+* Switch to jena-iri3986 as the IRI parser; retire jena-iri
+
+* Retired - jena-permissions
+* Retired - the Fuseki WAR file, jena-fuseki-webapp, jena-fuseki-war
+
+Using Jena as an application library:
+
+* Removed ARQ initial bindings
+* Removed deprecated code
+* Deprecation of TDB1 (but not removed)
+
+== Contributions to Jena 6.0.0:
+
+Contributors:
+
+@jduchateau
+Updates to schemagen for keyword handling and
+Allow versionInfo to be a URI
+
+Aklakan
+  Improve query cancellation
+  Fix for AbstractIterhasJoin
+  RDFS improvements
+  GeoSpatql - upgrade to kryo5
+
+SimonBin:
+Ability to render GeoSPARQL results on a map in Fuseki-UI
+https://github.com/apache/jena/pull/3587
+
+@imsdu:
+Conversions to/from JSON object for Titanium JSON-LD
+https://github.com/apache/jena/pull/3702
+
+@MathiasVDA
+Correction for GeoSPARQL #3577
+
+@AtesComp
+Update Fuseki Edit view CodeMirror usage
+
+== Impact:
+
+The minimum version of Java is now Java21.
+
+= TDB2
+
+There is a fix for handling xsd:decimals.
+It is advisable to reload data if xsd:decimals have been used.
+
+= geosparql
+
+jena-geosparql: Jena 6 requires re-creation of spatial index files that were
+generated with earlier versions. The reason is a bump to the latest major
+version of the kryo serialization framework dependency.
+
+In general, it is recommended to back up existing databases including the
+spatial indexes prior to engaging in the migration process.
+
+The GeoSPARQL Assembler will automatically re-create all referenced absent
+spatial index files. Hence, moving or deleting existing spatial indexes is
+usually sufficient. The Fuseki SPARQL server runs spatial index creation of
+GeoSPARQL assemblers during server start. This process may take a while
+depending on the sizes of the involved datasets.
+
+= Lucene 10
+
+jena-text upgraded to use Apache Lucene 10.
+
+= modules removed:
+jena-iri, jena-fuseki-webapp, jena-fuseki-war, jena-permissions
+
+= Package org.apache.jena.tdb removed.
+Migrate to TDB2 or use package org.apache.jena.tdb1 (for now).
+
+
 ==== Apache Jena 5.6.0
 Released: 2025-10-15
 Issues: https://s.apache.org/jena-5.6.0-issues
@@ -185,7 +271,9 @@ Issues: https://s.apache.org/jena-5.3.0-issues
 Announcement:
 https://lists.apache.org/thread/4gk0kpf75hyk58db343hx13nzq8pvldg
 
-Jena 5.3.0 has changes in the structure of the Fuseki server; a new IRI provider; and clean-up and simplification of Jena's use of Apache Xerces code in RDF Datatypes.
+Jena 5.3.0 has changes in the structure of the Fuseki server; a new IRI
+provider; and clean-up and simplification of Jena's use of Apache Xerces code in
+RDF Datatypes.
 
 ==== Contributions
 
@@ -225,16 +313,19 @@ and not forgetting @dependabot
 
 ==== Fuseki
 
-The artifact jena-fuseki-main now has equivalent functionality, including UI, to the former Fuseki/webapp packaging.
+The artifact jena-fuseki-main now has equivalent functionality, including UI, to
+the former Fuseki/webapp packaging.
 
-The artifact jena-fuseki-server packages jena-fuseki-main with dependencies and UI files into a single jar. This is now the jar
-in the Fuseki download.
+The artifact jena-fuseki-server packages jena-fuseki-main with dependencies and
+UI files into a single jar. This is now the jar in the Fuseki download.
 
 It should be a drop-in replacement.
 
-There is no functionality added or removed; it is a better base for future development.
+There is no functionality added or removed; it is a better base for future
+development.
 
-Fuseki/webapp packaging for the WAR file which will continue to be produced but may not get all future Fuseki development features.
+Fuseki/webapp packaging for the WAR file which will continue to be produced but
+may not get all future Fuseki development features.
 
 ==== IRI3986
 
@@ -250,7 +341,9 @@ General URIs are handled, with additional URI scheme specific rules for:
 and non-standard schemes
    uuid: and oid:
 
-When parsing, "Bad syntax", that is, not passing the grammar of RFC 3986 is treated as a parse error. Violations of scheme-specific rules are warnings. The severity levels can be adjusted.
+When parsing, "Bad syntax", that is, not passing the grammar of RFC 3986 is
+treated as a parse error. Violations of scheme-specific rules are warnings. The
+severity levels can be adjusted.
 
 This is the same as principle as Jena has had, but the parser/checker is
 jena-iri3986 supports URI scheme-specific rules for the latest
@@ -301,7 +394,8 @@ SPARQL
 Issue: https://github.com/apache/jena/issues/2518
 PR:    https://github.com/apache/jena/pull/2501
 
-This is "experimental" meaning it is subject to change.  There should be no impact if the feature isn't used.
+This is "experimental" meaning it is subject to change.  There should be no
+impact if the feature isn't used.
 
 == Contributions
 
@@ -487,11 +581,15 @@ The update to slf4j 2.x means the log4j artifact changes to
 
 ** Deprecation removal
 
-There has been a clearing out of deprecated functions, methods and classes. This includes the deprecations in Jena 4.10.0 added to show code that is being removed in Jena5.
+There has been a clearing out of deprecated functions, methods and classes. This
+includes the deprecations in Jena 4.10.0 added to show code that is being
+removed in Jena5.
 
 ** QueryExecutionFactory
 
-QueryExecutionFactory is simplified to cover commons cases only; it becomes a way to call the general QueryExecution builders which are preferred and provide all full query execution setup controls.
+QueryExecutionFactory is simplified to cover commons cases only; it becomes a
+way to call the general QueryExecution builders which are preferred and provide
+all full query execution setup controls.
 
 Local execution builder:
 QueryExecution.create()...
@@ -791,9 +889,13 @@ Simon Bin: Fix for working on non-root gsp-rw endpoint
   Jena IRI abstraction IRIx.
   https://github.com/apache/jena/issues/1773
 
-Uses of RDF/XML read through RIOT (RDFDataMgr, RDFParser) and from the command line "riot" should see no changes except where both WARN and ERROR were reported, now only the ERROR happens.
+Uses of RDF/XML read through RIOT (RDFDataMgr, RDFParser) and from the command
+line "riot" should see no changes except where both WARN and ERROR were
+reported, now only the ERROR happens.
 
-Code that directly calls the RDF/XML parser will encounter the behaviour seen from RIOT. Relative IRIs will not be in the parsed data. IRI errors are reported as errors.
+Code that directly calls the RDF/XML parser will encounter the behaviour seen
+from RIOT. Relative IRIs will not be in the parsed data. IRI errors are reported
+as errors.
 
 The original RDF/XML parser is still accessible:
 https://jena.apache.org/documentation/io/rdfxml-io.html
@@ -868,17 +970,21 @@ https://lists.apache.org/thread/63vtkb9hwzzd9mrmmxr2xsmd5zvw53vv
 
 -- Bulk retrieval and caching for SERVICE clauses
 
-There is a new module "jena-serviceenhancer", a contribution from Claus Stadler, for federated query, including caching remote data and controlling execution order for SERVICE.
+There is a new module "jena-serviceenhancer", a contribution from Claus Stadler,
+for federated query, including caching remote data and controlling execution
+order for SERVICE.
 
 https://jena.apache.org/documentation/query/service_enhancer.html
 
 -- GeoSPARQL: GML handling.
 
-GH-1299 - The GeoSPARQL has acknowledged a mistake in their documentation whereby the wrong namespace was being used for "gml:".
+GH-1299 - The GeoSPARQL has acknowledged a mistake in their documentation
+whereby the wrong namespace was being used for "gml:".
 https://github.com/opengeospatial/ogc-geosparql/pull/334
 
 This also leads to problems with interoperation with GML data sources.
-Unfortunately the change impacts impacts existing data and any spatial indexes would will need to be deleted and rebuilt.
+Unfortunately the change impacts impacts existing data and any spatial indexes
+would will need to be deleted and rebuilt.
 
 https://github.com/apache/jena/issues/1299
 
