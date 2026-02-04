@@ -30,50 +30,36 @@ import org.apache.jena.sparql.util.Context;
 /** Environment passed to functions -- see also {@link org.apache.jena.sparql.engine.ExecutionContext} */
 public class FunctionEnvBase implements FunctionEnv
 {
-    private Context context;
-    private Graph activeGraph;
-    private DatasetGraph dataset;
-    private ExecutionContext execContext = null;
+    private final Context context;
+    private final Graph activeGraph;
+    private final DatasetGraph dataset;
 
     public FunctionEnvBase() { this(ARQ.getContext(), null, null); }
 
     public FunctionEnvBase(Context context) { this ( context, null, null); }
 
-    public FunctionEnvBase(ExecutionContext execCxt)
-    {
+    public FunctionEnvBase(ExecutionContext execCxt) {
         this(execCxt.getContext(), execCxt.getActiveGraph(), execCxt.getDataset());
-        execContext = execCxt;
     }
 
-    public FunctionEnvBase(Context context, Graph activeGraph, DatasetGraph dataset)
-    {
+    public FunctionEnvBase(Context context, Graph activeGraph, DatasetGraph dataset) {
         this.context = context;
         this.activeGraph = activeGraph;
         this.dataset = dataset;
     }
 
     @Override
-    public Graph getActiveGraph()
-    {
+    public Graph getActiveGraph() {
         return activeGraph;
     }
 
     @Override
-    public Context getContext()
-    {
+    public Context getContext() {
         return context;
     }
 
-//    public ExecutionContext getExecutionContext()
-//    {
-//        if ( execContext == null )
-//            execContext = new ExecutionContext(context, activeGraph, dataset, QC.getFactory(context));
-//        return execContext;
-//    }
-
     @Override
-    public DatasetGraph getDataset()
-    {
+    public DatasetGraph getDataset() {
         return dataset;
     }
 }
