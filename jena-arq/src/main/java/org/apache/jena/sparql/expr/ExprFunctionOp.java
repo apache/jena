@@ -88,9 +88,9 @@ public abstract class ExprFunctionOp extends ExprFunction
         Element elt2 = null;
         if (elt != null) {
             Map<Var, Node> map = BindingLib.bindingToMap(binding);
-            NodeTransform nodeTransform = new NodeTransformSubst(map);
+            NodeTransform nodeTransform =   new NodeTransformSubst(map);
             ElementTransform eltTransform = new ElementTransformSubst(nodeTransform);
-            ExprTransform exprTransform =  new ExprTransformNodeElement(nodeTransform, eltTransform);
+            ExprTransform exprTransform =   new ExprTransformNodeElement(nodeTransform, eltTransform);
             elt2 = ElementTransformer.transform(elt, eltTransform, exprTransform);
         }
         return copy(elt2, op2) ;
@@ -103,7 +103,7 @@ public abstract class ExprFunctionOp extends ExprFunction
         Element elt2 = null;
         if (elt != null) {
             ElementTransform eltTransform = new ElementTransformSubst(nodeTransform);
-            ExprTransform exprTransform =  new ExprTransformNodeElement(nodeTransform, eltTransform);
+            ExprTransform exprTransform =   new ExprTransformNodeElement(nodeTransform, eltTransform);
             elt2 = ElementTransformer.transform(elt, eltTransform, exprTransform);
         }
         return copy(elt2, op2) ;

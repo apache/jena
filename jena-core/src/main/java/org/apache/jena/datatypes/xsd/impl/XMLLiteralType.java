@@ -64,7 +64,7 @@ import org.xml.sax.SAXParseException;
  */
 public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
 
-    public static String XMLLiteralTypeURI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral";
+    public static final String XMLLiteralTypeURI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral";
 
     /**
      * Singleton instance of the rdf:XMLLiteral datatype.
