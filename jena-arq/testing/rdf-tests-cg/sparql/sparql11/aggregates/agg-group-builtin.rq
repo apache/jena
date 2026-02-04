@@ -1,0 +1,6 @@
+PREFIX : <http://www.example.org/>
+SELECT ?d (COUNT(*) AS ?c)
+WHERE {
+	?s ?p ?o
+}
+GROUP BY (DATATYPE(?o) AS ?d)

@@ -37,13 +37,25 @@
     :agg-min-02
     :agg-max-01
     :agg-max-02
-    :agg-sample-01 
+    :agg-sample-01
     :agg-err-01
     :agg-err-02
     :agg-empty-group-max-1
     :agg-empty-group-max-2
     :agg-empty-group-count-1
     :agg-empty-group-count-2
+    :agg-empty-group-count-graph
+    :agg-multiple-having
+    :agg-group-fn
+    :agg-group-builtin
+    :agg-avg-distinct
+    :agg-count-distinct
+    :agg-count-rows-distinct
+    :agg-groupconcat-distinct
+    :agg-max-distinct
+    :agg-min-distinct
+    :agg-sample-distinct
+    :agg-sum-distinct
 ) .
 
 
@@ -231,6 +243,14 @@
     mf:result  <agg-groupconcat-5.srx>
     .
 
+:agg-groupconcat-06 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "GROUP_CONCAT with one element" ;
+	mf:feature sparql:group_concat ;
+    mf:action
+         [ qt:query  <agg-groupconcat-6.rq> ] ;
+    mf:result  <agg-groupconcat-6.srx>
+    .
+
 :agg-avg-01 rdf:type mf:QueryEvaluationTest ;
     mf:name    "AVG" ;
 	mf:feature sparql:avg ;
@@ -400,4 +420,111 @@
          [ qt:query  <agg-empty-group-count-2.rq> ;
            qt:data   <empty.ttl> ] ;
     mf:result  <agg-empty-group-count-2.srj>
+    .
+
+:agg-empty-group-count-graph  rdf:type mf:QueryEvaluationTest ;
+	mf:name "COUNT: no GROUP BY inside of GRAPH" ;
+    rdfs:comment "counting no results without grouping always returns a single result per named graph." ;
+    mf:action
+         [ qt:query     <agg-empty-group-count-graph.rq> ;
+           qt:data      <empty.ttl> ;
+           qt:graphData <empty.ttl> ;
+           qt:graphData <singleton.ttl> ] ;
+    mf:result  <agg-empty-group-count-graph.ttl>
+    .
+
+:agg-multiple-having rdf:type mf:QueryEvaluationTest ;
+	mf:name "HAVING: multiple conditions" ;
+    rdfs:comment "HAVING can contain multiple conditions." ;
+    mf:action
+         [ qt:query     <agg-multiple-having.rq> ;
+           qt:data      <agg-numeric.ttl> ] ;
+    mf:result  <agg-multiple-having.srx>
+    .
+
+:agg-group-fn rdf:type mf:QueryEvaluationTest ;
+	mf:name "GROUP BY with a function" ;
+    mf:action
+         [ qt:query     <agg-group-fn.rq> ;
+           qt:data      <agg-numeric.ttl> ] ;
+    mf:result  <agg-group-fn.srx>
+    .
+
+:agg-group-builtin rdf:type mf:QueryEvaluationTest ;
+	mf:name "GROUP BY with a built-in function" ;
+    mf:action
+         [ qt:query     <agg-group-builtin.rq> ;
+           qt:data      <agg-numeric.ttl> ] ;
+    mf:result  <agg-group-builtin.srx>
+    .
+
+:agg-avg-distinct rdf:type mf:QueryEvaluationTest ;
+    mf:name    "AVG DISTINCT with GROUP BY" ;
+	mf:feature sparql:avg ;
+    mf:action
+         [ qt:query  <agg-avg-distinct.rq> ;
+           qt:data   <agg-numeric-duplicates.ttl> ] ;
+    mf:result  <agg-avg-distinct.srx>
+    .
+
+:agg-count-distinct rdf:type mf:QueryEvaluationTest ;
+    mf:name    "COUNT DISTINCT with GROUP BY" ;
+	mf:feature sparql:count ;
+    mf:action
+         [ qt:query  <agg-count-distinct.rq> ;
+           qt:data   <agg-numeric-duplicates.ttl> ] ;
+    mf:result  <agg-count-distinct.srx>
+    .
+
+:agg-count-rows-distinct rdf:type mf:QueryEvaluationTest ;
+    mf:name    "COUNT(DISTINCT *) with GROUP BY" ;
+	mf:feature sparql:count ;
+    mf:action
+         [ qt:query  <agg-count-rows-distinct.rq> ;
+           qt:data   <agg-numeric-duplicates.ttl> ] ;
+    mf:result  <agg-count-rows-distinct.srx>
+    .
+
+:agg-groupconcat-distinct rdf:type mf:QueryEvaluationTest ;
+    mf:name    "GROUP_CONCAT DISTINCT" ;
+	mf:feature sparql:group_concat ;
+    mf:action
+         [ qt:query  <agg-groupconcat-distinct.rq> ] ;
+    mf:result  <agg-groupconcat-distinct.srx>
+    .
+
+:agg-max-distinct rdf:type mf:QueryEvaluationTest ;
+    mf:name    "MAX DISTINCT with GROUP BY" ;
+	mf:feature sparql:max ;
+    mf:action
+         [ qt:query  <agg-max-distinct.rq> ;
+           qt:data   <agg-numeric-duplicates.ttl> ] ;
+    mf:result  <agg-max-distinct.srx>
+    .
+
+:agg-min-distinct rdf:type mf:QueryEvaluationTest ;
+    mf:name    "MIN DISTINCT with GROUP BY" ;
+	mf:feature sparql:min ;
+    mf:action
+         [ qt:query  <agg-min-distinct.rq> ;
+           qt:data   <agg-numeric-duplicates.ttl> ] ;
+    mf:result  <agg-min-distinct.srx>
+    .
+
+:agg-sample-distinct rdf:type mf:QueryEvaluationTest ;
+    mf:name    "SAMPLE DISTINCT" ;
+	mf:feature sparql:sample ;
+    mf:action
+         [ qt:query  <agg-sample-distinct.rq> ;
+           qt:data   <agg-numeric-duplicates.ttl> ] ;
+    mf:result  <agg-sample-01.srx>
+    .
+
+:agg-sum-distinct rdf:type mf:QueryEvaluationTest ;
+    mf:name    "SUM DISTINCT with GROUP BY" ;
+	mf:feature sparql:sum ;
+    mf:action
+         [ qt:query  <agg-sum-distinct.rq> ;
+           qt:data   <agg-numeric-duplicates.ttl> ] ;
+    mf:result  <agg-sum-distinct.srx>
     .
