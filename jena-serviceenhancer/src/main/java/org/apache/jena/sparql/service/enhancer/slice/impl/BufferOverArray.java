@@ -85,4 +85,9 @@ public class BufferOverArray<A>
     public Object get(long index) {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public String toString() {
+        return arrayOps.toString(array);
+    }
 }

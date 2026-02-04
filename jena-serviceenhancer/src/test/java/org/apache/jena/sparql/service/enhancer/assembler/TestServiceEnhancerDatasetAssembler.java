@@ -7,19 +7,19 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- *
- *   SPDX-License-Identifier: Apache-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.apache.jena.sparql.service.enhancer.assembler;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,6 +27,8 @@ import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
@@ -45,20 +47,20 @@ import org.apache.jena.sparql.util.Context;
 import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.assembler.VocabTDB2;
 import org.apache.jena.vocabulary.RDF;
-import org.junit.Assert;
-import org.junit.Test;
-
 
 public class TestServiceEnhancerDatasetAssembler
 {
     private static final String SPEC_STR_01 = String.join("\n",
             "PREFIX ja: <http://jena.hpl.hp.com/2005/11/Assembler#>",
             "PREFIX se: <http://jena.apache.org/service-enhancer#>",
-            "<urn:example:root> a se:DatasetServiceEnhancer ; ja:baseDataset <urn:example:base> .",
+            "<urn:example:root> a se:DatasetServiceEnhancer ; ja:dataset <urn:example:base> .",
             "<urn:example:root> se:cacheMaxEntryCount 5 ; se:cachePageSize 1000 ; se:cacheMaxPageCount 10 .",
             "<urn:example:root> se:bulkMaxSize 20 ; se:bulkSize 10 ; se:bulkMaxOutOfBandSize 5 .",
             "<urn:example:base> a ja:MemoryDataset ."
         );
+
+    // Replace the property property "ja:dataset" with the legacy one.
+    private static final String SPEC_STR_01_LEGACY = SPEC_STR_01.replace("ja:dataset", "ja:baseDataset");
 
     /**
      * This test case attempts to assemble a dataset with the service enhancer plugin
@@ -67,15 +69,27 @@ public class TestServiceEnhancerDatasetAssembler
      */
     @Test
     public void testAssembler() {
+        testAssemblerActual(SPEC_STR_01);
+    }
+
+    /**
+     * Same as {@link #testAssembler()} but uses the incorrect ja:baseDataset property.
+     */
+    // @Test // Disabled by default because it generates a deprecation warning.
+    public void testAssembler_legacy() {
+        testAssemblerActual(SPEC_STR_01_LEGACY);
+    }
+
+    private void testAssemblerActual(String specStr) {
         Model spec = ModelFactory.createDefaultModel();
-        RDFDataMgr.read(spec, new StringReader(SPEC_STR_01), null, Lang.TURTLE);
+        RDFDataMgr.read(spec, new StringReader(specStr), null, Lang.TURTLE);
 
         Dataset dataset = DatasetFactory.assemble(spec.getResource("urn:example:root"));
         Context cxt = dataset.getContext();
 
-        Assert.assertEquals(20, cxt.getInt(ServiceEnhancerConstants.serviceBulkMaxBindingCount, -1));
-        Assert.assertEquals(10, cxt.getInt(ServiceEnhancerConstants.serviceBulkBindingCount, -1));
-        Assert.assertEquals(5, cxt.getInt(ServiceEnhancerConstants.serviceBulkMaxOutOfBandBindingCount, -1));
+        assertEquals(20, cxt.getInt(ServiceEnhancerConstants.serviceBulkMaxBindingCount, -1));
+        assertEquals(10, cxt.getInt(ServiceEnhancerConstants.serviceBulkBindingCount, -1));
+        assertEquals(5, cxt.getInt(ServiceEnhancerConstants.serviceBulkMaxOutOfBandBindingCount, -1));
 
         try (QueryExecution qe = QueryExecutionFactory.create(
                 "SELECT * { BIND(<urn:example:x> AS ?x) SERVICE <loop:bulk+10:> { ?x ?y ?z } }", dataset)) {
@@ -84,22 +98,24 @@ public class TestServiceEnhancerDatasetAssembler
     }
 
     /** Test that calling cacheRm fails because enableMgmt has not been set to true in the context */
-    @Test(expected = QueryExecException.class)
+    @Test
     public void testAssemblerMgmtFail() {
         String specStr = String.join("\n",
             "PREFIX ja: <http://jena.hpl.hp.com/2005/11/Assembler#>",
             "PREFIX se: <http://jena.apache.org/service-enhancer#>",
-            "<urn:example:root> a se:DatasetServiceEnhancer ; ja:baseDataset <urn:example:base> .",
+            "<urn:example:root> a se:DatasetServiceEnhancer ; ja:dataset <urn:example:base> .",
             "<urn:example:base> a ja:MemoryDataset ."
         );
 
         Model spec = ModelFactory.createDefaultModel();
         RDFDataMgr.read(spec, new StringReader(specStr), null, Lang.TURTLE);
         Dataset dataset = DatasetFactory.assemble(spec.getResource("urn:example:root"));
-        try (QueryExecution qe = QueryExecutionFactory.create(
-                "PREFIX se: <http://jena.apache.org/service-enhancer#> SELECT se:cacheRm(0) { }", dataset)) {
-            Assert.assertEquals(1, ResultSetFormatter.consume(qe.execSelect()));
-        }
+        assertThrows(QueryExecException.class, () -> {
+            try (QueryExecution qe = QueryExecutionFactory.create(
+                    "PREFIX se: <http://jena.apache.org/service-enhancer#> SELECT se:cacheRm(0) { }", dataset)) {
+                assertEquals(1, ResultSetFormatter.consume(qe.execSelect()));
+            }
+        });
     }
 
     /** Test for cacheRm to execute successfully due to enableMgmt having been set to true in the context */
@@ -108,7 +124,7 @@ public class TestServiceEnhancerDatasetAssembler
         String specStr = String.join("\n",
             "PREFIX ja: <http://jena.hpl.hp.com/2005/11/Assembler#>",
             "PREFIX se: <http://jena.apache.org/service-enhancer#>",
-            "<urn:example:root> a se:DatasetServiceEnhancer ; se:enableMgmt true ; ja:baseDataset <urn:example:base> .",
+            "<urn:example:root> a se:DatasetServiceEnhancer ; se:enableMgmt true ; ja:dataset <urn:example:base> .",
             "<urn:example:base> a ja:MemoryDataset ."
         );
 
@@ -120,12 +136,12 @@ public class TestServiceEnhancerDatasetAssembler
         dataset.asDatasetGraph().getDefaultGraph().add(RDF.Nodes.type, RDF.Nodes.type, RDF.Nodes.Property);
         try (QueryExecution qe = QueryExecutionFactory.create(
                 "SELECT * { SERVICE <cache:> { ?s ?p ?o } }", dataset)) {
-            Assert.assertEquals(1, ResultSetFormatter.consume(qe.execSelect()));
+            assertEquals(1, ResultSetFormatter.consume(qe.execSelect()));
         }
 
         try (QueryExecution qe = QueryExecutionFactory.create(
                 "PREFIX se: <http://jena.apache.org/service-enhancer#> SELECT se:cacheRm(0) { }", dataset)) {
-            Assert.assertEquals(1, ResultSetFormatter.consume(qe.execSelect()));
+            assertEquals(1, ResultSetFormatter.consume(qe.execSelect()));
         }
     }
 
@@ -142,7 +158,7 @@ public class TestServiceEnhancerDatasetAssembler
                     "PREFIX ja: <http://jena.hpl.hp.com/2005/11/Assembler#>",
                     "PREFIX se: <http://jena.apache.org/service-enhancer#>",
                     "PREFIX tdb2: <http://jena.apache.org/2016/tdb#>",
-                    "<urn:example:root> a se:DatasetServiceEnhancer ; ja:baseDataset <urn:example:base> .",
+                    "<urn:example:root> a se:DatasetServiceEnhancer ; ja:dataset <urn:example:base> .",
                     "<urn:example:root> se:cacheMaxEntryCount 5 ; se:cachePageSize 1000 ; se:cacheMaxPageCount 10 .",
                     "<urn:example:root> se:bulkMaxSize 20 ; se:bulkSize 10 ; se:bulkMaxOutOfBandSize 5 .",
                     "<urn:example:base> a tdb2:DatasetTDB2 .",
@@ -173,7 +189,7 @@ public class TestServiceEnhancerDatasetAssembler
                 }
             });
 
-            Assert.assertEquals(4, actualRowCount);
+            assertEquals(4, actualRowCount);
         } finally {
             Files.walk(tdb2TmpFolder)
                     .sorted(Comparator.reverseOrder())

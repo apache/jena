@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.collect.BiMap;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
 import org.apache.jena.sparql.algebra.Op;
@@ -40,6 +39,8 @@ import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.graph.NodeTransformLib;
 import org.apache.jena.sparql.service.enhancer.impl.util.VarScopeUtils;
 import org.apache.jena.sparql.syntax.syntaxtransform.NodeTransformSubst;
+
+import com.google.common.collect.BiMap;
 
 /**
  * Class used to map a given scoped OpService to a normalized form. Several methods abbreviate
@@ -88,15 +89,18 @@ public class OpServiceInfo {
             this.offset = Query.NOLIMIT;
         }
 
+        Set<Var> visibleSubOpVars = OpVars.visibleVars(baseSubOp);
         Collection<Var> mentionedSubOpVars = OpVars.mentionedVars(baseSubOp);
+
+        Set<String> visiblePlainNames = VarScopeUtils.getPlainNames(visibleSubOpVars);
+
         // mentionedSubOpVarsScopedToNormed = VarUtils.normalizeVarScopesGlobal(mentionedSubOpVars);
-        mentionedSubOpVarsScopedToNormed = VarScopeUtils.normalizeVarScopes(mentionedSubOpVars);
+        mentionedSubOpVarsScopedToNormed = VarScopeUtils.normalizeVarScopes(mentionedSubOpVars, visiblePlainNames);
 
         normedQueryOp = NodeTransformLib.transform(new NodeTransformSubst(mentionedSubOpVarsScopedToNormed), baseSubOp);
 
         // Handling of a null supOp - can that happen?
-        Set<Var> visibleSubOpVars = OpVars.visibleVars(baseSubOp);
-        this.visibleSubOpVarsScopedToNorm = VarScopeUtils.normalizeVarScopes(visibleSubOpVars);
+        this.visibleSubOpVarsScopedToNorm = VarScopeUtils.normalizeVarScopes(visibleSubOpVars, visiblePlainNames);
 
         this.normedQuery = OpAsQuery.asQuery(normedQueryOp);
 
