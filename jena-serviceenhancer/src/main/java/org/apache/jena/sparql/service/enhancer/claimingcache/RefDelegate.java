@@ -58,7 +58,7 @@ public interface RefDelegate<T, R extends Ref<T>>
     }
 
     @Override
-    default Object getSynchronizer() {
+    default Synchronizer getSynchronizer() {
         return getDelegate().getSynchronizer();
     }
 
