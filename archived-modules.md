@@ -14,10 +14,10 @@ The commit retiring jena-iri is 5f01141144.
 
 ### Apache Jena Fuseki WAR file
 
-The last release of jena-jdbc was with Jena 5.6.0 on 2025-10-15.
+The last release of jena-fuseki-war was with Jena 5.6.0 on 2025-10-15.
 The source code is available from git with tag "jena-5.6.0".
-The commit retiring jena-iri is modules jena-fuseki-webapp
-and jena-fuseki-war is b414be274d.
+The commit retiring modules jena-fuseki-webapp and jena-fuseki-war
+is b414be274d.
 
 ### Apache Jena Permissions
 
