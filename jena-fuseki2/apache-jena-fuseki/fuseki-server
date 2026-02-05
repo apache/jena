@@ -152,6 +152,6 @@ fi
 ## It is also possible to add more jars to the CP environment variable before 
 ## the exec call:
 ##
-##   CP="${CP}:MyCode.jar
+##   CP="${CP}:MyCode.jar"
 ## 
 ## "exec" is optional - it simply frees up an OS process.
