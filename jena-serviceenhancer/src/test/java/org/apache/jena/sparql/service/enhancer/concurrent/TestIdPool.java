@@ -44,7 +44,7 @@ public class TestIdPool {
         assertEquals(2, id2);
 
         // We have not given back any ids to the pool so no id can be recycled.
-        assertEquals(0, pool.getRecyclePoolSize());
+        assertEquals(0, pool.getRecycledIdsPoolSize());
 
         // Give back and re-acquire ids starting from the lowest.
         // Giving back a single id and immediately re-acquiring a new one should
@@ -63,7 +63,7 @@ public class TestIdPool {
         assertEquals(id2, 2);
 
         // We have re-acquired all ids so there shouldn't be any recycled ones.
-        assertEquals(0, pool.getRecyclePoolSize());
+        assertEquals(0, pool.getRecycledIdsPoolSize());
 
         // Give back and re-acquire ids starting from the highest.
 
@@ -83,11 +83,11 @@ public class TestIdPool {
         pool.giveBack(id0);
         pool.giveBack(id1);
 
-        assertEquals(2, pool.getRecyclePoolSize());
+        assertEquals(2, pool.getRecycledIdsPoolSize());
 
         // Giving back the highest id should now clear the recycle pool
         pool.giveBack(id2);
-        assertEquals(0, pool.getRecyclePoolSize());
+        assertEquals(0, pool.getRecycledIdsPoolSize());
 
         // Since all ids were given back then next acquired one should be 0 again
         id0 = pool.acquire();
@@ -135,7 +135,7 @@ public class TestIdPool {
         ids.forEach(pool::giveBack);
 
         // Assert that the recycle pool is empty since all ids were given back
-        assertEquals(0, pool.getRecyclePoolSize());
+        assertEquals(0, pool.getRecycledIdsPoolSize());
 
         // Assert that the next id we get is 0
         int id0 = pool.acquire();
