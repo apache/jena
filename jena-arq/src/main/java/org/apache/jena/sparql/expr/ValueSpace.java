@@ -130,51 +130,51 @@ public enum ValueSpace {
     public static ValueSpace valueSpace(NodeValue nv) {
         // Maybe code getValueSpace into type hierarchy.
         if ( nv == null )           return VSPACE_UNDEF;
-        if ( nv.isNumber() )        return VSPACE_NUM ;
-        if ( nv.isDateTime() )      return VSPACE_DATETIME ;
-        if ( nv.isString())         return VSPACE_STRING ;
-        if ( nv.isLangString())     return VSPACE_LANG ;
-        if ( nv.isBoolean())        return VSPACE_BOOLEAN ;
+        if ( nv.isNumber() )        return VSPACE_NUM;
+        if ( nv.isDateTime() )      return VSPACE_DATETIME;
+        if ( nv.isString())         return VSPACE_STRING;
+        if ( nv.isLangString())     return VSPACE_LANG;
+        if ( nv.isBoolean())        return VSPACE_BOOLEAN;
 
-        //if ( ! nv.isLiteral() )     return VSPACE_NODE ;
+        //if ( ! nv.isLiteral() )     return VSPACE_NODE;
 
         if ( ! SystemARQ.ValueExtensions )
-            return VSPACE_UNKNOWN ;
+            return VSPACE_UNKNOWN;
 
         // Datatypes and their value spaces that are an extension of minimal SPARQL 1.1
-        if ( nv.isDate() )          return VSPACE_DATE ;
-        if ( nv.isTime() )          return VSPACE_TIME ;
+        if ( nv.isDate() )          return VSPACE_DATE;
+        if ( nv.isTime() )          return VSPACE_TIME;
 
         // These compare (sort) via their implied dateTime.
-        if ( nv.isGYear() )         return VSPACE_DATETIME ;
-        if ( nv.isGYearMonth() )    return VSPACE_DATETIME ;
-        if ( nv.isGMonth() )        return VSPACE_DATETIME ;
-        if ( nv.isGMonthDay() )     return VSPACE_DATETIME ;
-        if ( nv.isGDay() )          return VSPACE_DATETIME ;
+        if ( nv.isGYear() )         return VSPACE_DATETIME;
+        if ( nv.isGYearMonth() )    return VSPACE_DATETIME;
+        if ( nv.isGMonth() )        return VSPACE_DATETIME;
+        if ( nv.isGMonthDay() )     return VSPACE_DATETIME;
+        if ( nv.isGDay() )          return VSPACE_DATETIME;
 
         // Dynamically classify yearMonth and dateTime,
         if ( nv.isDuration() ) return VSPACE_DURATION;
 //        if ( nv.isDayTimeDuration() ) return VSPACE_DURATION_DAYTIME;
 //        if ( nv.isYearMonthDuration() ) return VSPACE_DURATION_YEARMONTH;
 
-        if ( nv.isSortKey() )       return VSPACE_SORTKEY ;
+        if ( nv.isSortKey() )       return VSPACE_SORTKEY;
 
         if ( nv.isLiteral() ) {
-            String dtURI = nv.getDatatypeURI() ;
-            if ( CompositeDatatypeList.uri.equals(dtURI) )  return VSPACE_CDT_LIST ;
-            if ( CompositeDatatypeMap.uri.equals(dtURI) )   return VSPACE_CDT_MAP ;
+            String dtURI = nv.getDatatypeURI();
+            if ( CompositeDatatypeList.uri.equals(dtURI) )  return VSPACE_CDT_LIST;
+            if ( CompositeDatatypeMap.uri.equals(dtURI) )   return VSPACE_CDT_MAP;
         }
 
-        //if ( nv.isLiteral() )       return VSPACE_UNKNOWN ;
+        //if ( nv.isLiteral() )       return VSPACE_UNKNOWN;
 
         if ( nv.isBlank() )         return VSPACE_BLANKNODE;
         if ( nv.isIRI() )           return VSPACE_URI;
         if ( nv.isVariable() )      return VSPACE_VARIABLE;
-        if ( nv.isTripleTerm())     return VSPACE_TRIPLE_TERM ;
+        if ( nv.isTripleTerm())     return VSPACE_TRIPLE_TERM;
 
         if ( NodeUtils.hasLang(nv.asNode()) )
-            return VSPACE_LANG ;
+            return VSPACE_LANG;
         // Includes unrecognized datatypes.
-        return VSPACE_UNKNOWN ;
+        return VSPACE_UNKNOWN;
     }
 }

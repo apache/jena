@@ -22,18 +22,18 @@
 package org.apache.jena.sparql.expr;
 
 import org.apache.jena.graph.Node;
-import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.core.Var;
 
 public interface ExprTransform
 {
-    public Expr transform(ExprFunction0 func) ;
-    public Expr transform(ExprFunction1 func, Expr expr1) ;
-    public Expr transform(ExprFunction2 func, Expr expr1, Expr expr2) ;
-    public Expr transform(ExprFunction3 func, Expr expr1, Expr expr2, Expr expr3) ;
-    public Expr transform(ExprFunctionN func, ExprList args) ;
-    public Expr transform(ExprFunctionOp funcOp, ExprList args, Op opArg) ;
-    public Expr transform(NodeValue nv) ;
+    public Expr transform(ExprFunction0 func);
+    public Expr transform(ExprFunction1 func, Expr expr1);
+    public Expr transform(ExprFunction2 func, Expr expr1, Expr expr2);
+    public Expr transform(ExprFunction3 func, Expr expr1, Expr expr2, Expr expr3);
+    public Expr transform(ExprFunctionN func, ExprList args);
+    public Expr transform(ExprFunctionOp funcOp, ExprList args, Op opArg);
+    public Expr transform(NodeValue nv);
 
     public default Expr transform(Node node) {
         if ( Var.isVar(node) ) {
@@ -44,7 +44,7 @@ public interface ExprTransform
         return transform(nv);
     }
 
-    public Expr transform(ExprNone exprNone) ;
-    public Expr transform(ExprVar exprVar) ;
-    public Expr transform(ExprAggregator eAgg) ;
+    public Expr transform(ExprNone exprNone);
+    public Expr transform(ExprVar exprVar);
+    public Expr transform(ExprAggregator eAgg);
 }

@@ -83,7 +83,7 @@ public abstract class ExprFunctionOp extends ExprFunction
 
     @Override
     public Expr copySubstitute(Binding binding) {
-        Op op2 = Substitute.substitute(getGraphPattern(), binding) ;
+        Op op2 = Substitute.substitute(getGraphPattern(), binding);
         Element elt = getElement();
         Element elt2 = null;
         if (elt != null) {
@@ -93,12 +93,12 @@ public abstract class ExprFunctionOp extends ExprFunction
             ExprTransform exprTransform =   new ExprTransformNodeElement(nodeTransform, eltTransform);
             elt2 = ElementTransformer.transform(elt, eltTransform, exprTransform);
         }
-        return copy(elt2, op2) ;
+        return copy(elt2, op2);
     }
 
     @Override
     public Expr applyNodeTransform(NodeTransform nodeTransform) {
-        Op op2 = NodeTransformLib.transform(nodeTransform, getGraphPattern()) ;
+        Op op2 = NodeTransformLib.transform(nodeTransform, getGraphPattern());
         Element elt = getElement();
         Element elt2 = null;
         if (elt != null) {
@@ -106,7 +106,7 @@ public abstract class ExprFunctionOp extends ExprFunction
             ExprTransform exprTransform =   new ExprTransformNodeElement(nodeTransform, eltTransform);
             elt2 = ElementTransformer.transform(elt, eltTransform, exprTransform);
         }
-        return copy(elt2, op2) ;
+        return copy(elt2, op2);
     }
 
     protected abstract Expr copy(Element elt, Op op);

@@ -51,7 +51,7 @@ public abstract class ExprFunction0 extends ExprFunction
         return eval(env);
     }
 
-    public abstract NodeValue eval(FunctionEnv env) ;
+    public abstract NodeValue eval(FunctionEnv env);
 
     @Override
     final public Expr applyNodeTransform(NodeTransform transform) {

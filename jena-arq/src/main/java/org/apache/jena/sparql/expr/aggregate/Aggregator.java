@@ -40,7 +40,7 @@ public interface Aggregator
     /** Value if there are no groups : return null for no result */
     public Node getValueEmpty();
     
-    public String toPrefixString() ;
+    public String toPrefixString();
     // Key to identify an aggregator as syntax for duplicate use in a query.
     public String key();           
     

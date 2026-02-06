@@ -21,21 +21,21 @@
 
 package org.apache.jena.sparql.expr;
 
-import java.util.Collection ;
-import java.util.HashSet ;
-import java.util.Set ;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.query.SortCondition ;
-import org.apache.jena.sparql.algebra.OpVars ;
-import org.apache.jena.sparql.algebra.walker.Walker ;
-import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.query.SortCondition;
+import org.apache.jena.sparql.algebra.OpVars;
+import org.apache.jena.sparql.algebra.walker.Walker;
+import org.apache.jena.sparql.core.Var;
 
 public class ExprVars
 {
     @FunctionalInterface
-    interface Action<T> { void var(Collection<T> acc, Var var) ; }
+    interface Action<T> { void var(Collection<T> acc, Var var); }
 
     // Collect variables / ExprList
 
@@ -56,7 +56,7 @@ public class ExprVars
         return acc;
     }
 
-    private static Action<Var> accVar = (a, var) -> a.add(var) ;
+    private static Action<Var> accVar = (a, var) -> a.add(var);
 
     public static void varsMentioned(Collection<Var> acc, Expr expr) {
         //Java21 - switch + type pattern
@@ -68,13 +68,13 @@ public class ExprVars
         }
 
 
-        ExprVarsWorker<Var> vv = new ExprVarsWorker<>(acc, accVar) ;
-        Walker.walk(expr, vv) ;
+        ExprVarsWorker<Var> vv = new ExprVarsWorker<>(acc, accVar);
+        Walker.walk(expr, vv);
     }
 
     public static void nonOpVarsMentioned(Collection<Var> acc, Expr expr) {
-        ExprNoOpVarsWorker<Var> vv = new ExprNoOpVarsWorker<>(acc, accVar) ;
-        Walker.walk(expr, vv) ;
+        ExprNoOpVarsWorker<Var> vv = new ExprNoOpVarsWorker<>(acc, accVar);
+        Walker.walk(expr, vv);
     }
 
     // Collect variables / ExprList
@@ -102,15 +102,15 @@ public class ExprVars
     // Names variants
 
     public static Set<String> getVarNamesMentioned(Expr expr) {
-        Set<String> acc = new HashSet<>() ;
-        varNamesMentioned(acc, expr) ;
-        return acc ;
+        Set<String> acc = new HashSet<>();
+        varNamesMentioned(acc, expr);
+        return acc;
     }
 
     public static Set<String> getNonOpVarNamesMentioned(Expr expr) {
-        Set<String> acc = new HashSet<>() ;
-        nonOpVarNamesMentioned(acc, expr) ;
-        return acc ;
+        Set<String> acc = new HashSet<>();
+        nonOpVarNamesMentioned(acc, expr);
+        return acc;
     }
 
     private static Action<String> accVarName = (a, var) -> a.add(var.getVarName());
@@ -132,9 +132,9 @@ public class ExprVars
     }
 
     public static Set<Var> getVarsMentioned(Collection<SortCondition> sortConditions) {
-        Set<Var> acc = new HashSet<>() ;
-        varsMentioned(acc, sortConditions) ;
-        return acc ;
+        Set<Var> acc = new HashSet<>();
+        varsMentioned(acc, sortConditions);
+        return acc;
     }
 
     public static  void varsMentioned(Collection<Var> acc, SortCondition sortCondition) {
@@ -143,20 +143,20 @@ public class ExprVars
 
     public static void varsMentioned(Collection<Var> acc, Collection<SortCondition> sortConditions) {
         for (SortCondition sc : sortConditions )
-            varsMentioned(acc, sc) ;
+            varsMentioned(acc, sc);
     }
 
     static class ExprNoOpVarsWorker<T>  extends ExprVisitorBase
     {
-        protected final Collection<T> acc ;
-        protected final Action<T> action ;
+        protected final Collection<T> acc;
+        protected final Action<T> action;
 
         public ExprNoOpVarsWorker(Collection<T> acc, Action<T> action)
-        { this.acc = acc ; this.action = action ; }
+        { this.acc = acc; this.action = action; }
 
         @Override
         public void visit(ExprVar nv)
-        { action.var(acc, nv.asVar()) ; }
+        { action.var(acc, nv.asVar()); }
 
         @Override
         public void visit(ExprTripleTerm exTripleTerm)
@@ -191,9 +191,9 @@ public class ExprVars
         @Override
         public void visit(ExprFunctionOp funcOp)
         {
-            Collection<Var> vars = OpVars.visibleVars(funcOp.getGraphPattern()) ;
+            Collection<Var> vars = OpVars.visibleVars(funcOp.getGraphPattern());
             for ( Var v : vars )
-                action.var(acc, v) ;
+                action.var(acc, v);
         }
 
     }
