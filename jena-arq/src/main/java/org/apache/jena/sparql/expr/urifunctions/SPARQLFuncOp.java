@@ -258,8 +258,8 @@ public class SPARQLFuncOp {
     public static NodeValue sparql_struuid() { return NodeFunctions.struuid(); }
 
     public static NodeValue sparql_strlen(NodeValue nv) { return XSDFuncOp.strlen(nv); }
-    public static NodeValue sparql_substr(NodeValue nv1, NodeValue nv2) { return XSDFuncOp.substring(nv1, nv2) ; }
-    public static NodeValue sparql_substr(NodeValue nv1, NodeValue nv2, NodeValue nv3) { return XSDFuncOp.substring(nv1, nv2, nv3) ; }
+    public static NodeValue sparql_substr(NodeValue nv1, NodeValue nv2) { return XSDFuncOp.substring(nv1, nv2); }
+    public static NodeValue sparql_substr(NodeValue nv1, NodeValue nv2, NodeValue nv3) { return XSDFuncOp.substring(nv1, nv2, nv3); }
 
     public static NodeValue sparql_ucase(NodeValue nv) { return XSDFuncOp.strUpperCase(nv); }
     public static NodeValue sparql_lcase(NodeValue nv) { return XSDFuncOp.strLowerCase(nv); }

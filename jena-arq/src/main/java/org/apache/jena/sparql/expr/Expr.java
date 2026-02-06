@@ -21,25 +21,25 @@
 
 package org.apache.jena.sparql.expr;
 
-import java.util.Set ;
+import java.util.Set;
 
-import javax.xml.datatype.DatatypeConstants ;
+import javax.xml.datatype.DatatypeConstants;
 
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.function.FunctionEnv ;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.function.FunctionEnv;
 import org.apache.jena.sparql.graph.NodeTransform;
 
 public interface Expr
 {
-    public static final Expr NONE = ExprNone.NONE0 ;
+    public static final Expr NONE = ExprNone.NONE0;
 
-    public static final int CMP_GREATER  =  DatatypeConstants.GREATER ;
-    public static final int CMP_EQUAL    =  DatatypeConstants.EQUAL ;
-    public static final int CMP_LESS     =  DatatypeConstants.LESSER ;
+    public static final int CMP_GREATER  =  DatatypeConstants.GREATER;
+    public static final int CMP_EQUAL    =  DatatypeConstants.EQUAL;
+    public static final int CMP_LESS     =  DatatypeConstants.LESSER;
 
-    public static final int CMP_UNEQUAL  = -9 ;
-    public static final int CMP_INDETERMINATE  = DatatypeConstants.INDETERMINATE ;
+    public static final int CMP_UNEQUAL  = -9;
+    public static final int CMP_INDETERMINATE  = DatatypeConstants.INDETERMINATE;
 
     /**
      * Test whether a constraint is satisfied, given a set of bindings. Includes
@@ -51,55 +51,55 @@ public interface Expr
      * @param execCxt FunctionEnv
      * @return true or false
      */
-    public boolean isSatisfied(Binding binding, FunctionEnv execCxt) ;
+    public boolean isSatisfied(Binding binding, FunctionEnv execCxt);
 
     /**
      * Variables used by this expression.
      * @see ExprVars#getVarNamesMentioned
      * @see ExprVars#getNonOpVarNamesMentioned
      */
-    public Set<Var>  getVarsMentioned() ;
+    public Set<Var>  getVarsMentioned();
 
     /**
      * Evaluate this expression against the binding
      * @param binding
      * @param env
      */
-    public NodeValue eval(Binding binding, FunctionEnv env) ;
+    public NodeValue eval(Binding binding, FunctionEnv env);
 
     /** Deep copy with substitution */
-    public Expr copySubstitute(Binding binding) ;
+    public Expr copySubstitute(Binding binding);
 
     /**
      * Rewrite, applying a node{@literal ->}node transformation
      */
-    public Expr applyNodeTransform(NodeTransform transform) ;
+    public Expr applyNodeTransform(NodeTransform transform);
 
     /** Deep copy */
-    public Expr deepCopy() ;
+    public Expr deepCopy();
 
     /** Answer whether this is a variable. */
-    public boolean isVariable() ;
+    public boolean isVariable();
     /** Variable name (returns null if not a variable) */
-    public String  getVarName() ;
+    public String  getVarName();
     /** Variable (or null) */
-    public ExprVar getExprVar() ;
+    public ExprVar getExprVar();
     /** Convert to a Var variable.*/
-    public Var asVar() ;
+    public Var asVar();
 
     /** Answer whether this is a constant expression - false includes "don't know"
      *  No constant folding so "false" from an expression that evaluates to a constant
      */
-    public boolean   isConstant() ;
+    public boolean   isConstant();
     /** NodeValue constant (returns null if not a constant) */
-    public NodeValue getConstant() ;
+    public NodeValue getConstant();
 
     /** Answer whether this is a function. */
-    public boolean isFunction() ;
+    public boolean isFunction();
     /** Get the function (returns null if not a function) */
-    public ExprFunction getFunction() ;
+    public ExprFunction getFunction();
 
-    public void visit(ExprVisitor visitor) ;
+    public void visit(ExprVisitor visitor);
 
     /**
      * <code>Expr</code> are used in both syntax and algebra. There is no syntax
@@ -123,13 +123,13 @@ public interface Expr
      * Hence, different {@code hashCode} {@literal =>} not {@code equalsBySyntax}.
      */
     @Override
-    public int hashCode() ;
+    public int hashCode();
 
     @Override
-    public boolean equals(Object other) ;
+    public boolean equals(Object other);
 
-    public boolean equalsBySyntax(Expr other) ;
+    public boolean equalsBySyntax(Expr other);
 
     /** General equality operation - consider this to be 'protected' */
-    public boolean equals(Expr other, boolean bySyntax) ;
+    public boolean equals(Expr other, boolean bySyntax);
 }

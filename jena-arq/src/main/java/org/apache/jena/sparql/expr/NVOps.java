@@ -140,14 +140,14 @@ class NVOps {
 
     static boolean isDayTimeDuration(Duration duration) {
         return checkDurationField(duration, DatatypeConstants.YEARS, false) &&
-               checkDurationField(duration, DatatypeConstants.MONTHS, false) ;
+               checkDurationField(duration, DatatypeConstants.MONTHS, false);
     }
 
     static boolean isYearMonthDuration(Duration duration) {
         return checkDurationField(duration, DatatypeConstants.DAYS, false) &&
                checkDurationField(duration, DatatypeConstants.HOURS, false) &&
                checkDurationField(duration, DatatypeConstants.MINUTES, false) &&
-               checkDurationField(duration, DatatypeConstants.SECONDS, false) ;
+               checkDurationField(duration, DatatypeConstants.SECONDS, false);
     }
 
     /** Check the set/undefined status of a field value in a Duration. */

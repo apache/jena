@@ -93,9 +93,9 @@ public class E_Call extends ExprFunctionN {
             throw new ExprEvalException("CALL: Function identifier unbound");
         if ( func.isIRI() ) {
             ExprList a = new ExprList();
-            for ( int i = 1 ; i < args.size() ; i++ )
+            for ( int i = 1; i < args.size(); i++ )
                 a.add(args.get(i));
-            // Expr e = null ;
+            // Expr e = null;
             Expr e = new E_Function(func.getNode().getURI(), a);
             // Calling this may throw an error which we will just let bubble up
             return e.eval(null, env);

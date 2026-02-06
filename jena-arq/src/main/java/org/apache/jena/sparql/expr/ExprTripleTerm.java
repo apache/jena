@@ -29,9 +29,9 @@ import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.core.Substitute;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.graph.NodeTransform ;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.function.FunctionEnv;
+import org.apache.jena.sparql.graph.NodeTransform;
 
 /**
  * RDF 1.2 triple term in an expression.
@@ -43,7 +43,7 @@ public class ExprTripleTerm extends ExprNode {
 
     public ExprTripleTerm(Node node) {
         if ( ! node.isTripleTerm() )
-            throw new ARQInternalErrorException("Not a triple term "+node) ;
+            throw new ARQInternalErrorException("Not a triple term "+node);
         Node_Triple tripleTerm = (Node_Triple)node;
         this.tripleTerm = tripleTerm;
         this.nvTripleTerm = ( tripleTerm.isConcrete() ) ?  NodeValue.makeNode(tripleTerm) : null;
@@ -65,7 +65,7 @@ public class ExprTripleTerm extends ExprNode {
             Node tripleTerm2 = NodeFactory.createTripleTerm(t2);
             return NodeValue.makeNode(tripleTerm2);
         }
-        throw new VariableNotBoundException("Not concrete: triple "+tripleTerm) ;
+        throw new VariableNotBoundException("Not concrete: triple "+tripleTerm);
     }
 
     public Node getNode() {

@@ -60,8 +60,8 @@ public abstract class E_OneOfBase extends ExprFunctionN {
         return possibleValues;
     }
 
-// public Expr getLHS() { return expr ; }
-// public ExprList getRHS() { return possibleValues ; }
+// public Expr getLHS() { return expr; }
+// public ExprList getRHS() { return possibleValues; }
 
     protected boolean evalOneOf(Binding binding, FunctionEnv env) {
         // Special form.

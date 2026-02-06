@@ -32,9 +32,9 @@ import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeConstants.Field;
 import javax.xml.datatype.Duration;
 
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.TextDirection;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.irix.IRIException;
@@ -146,8 +146,8 @@ public class NodeFunctions {
                 return NodeValue.FALSE;
         }
 
-        boolean b = NodeValue.sameValueAs(x, y) ;
-        return NodeValue.booleanReturn(b) ;
+        boolean b = NodeValue.sameValueAs(x, y);
+        return NodeValue.booleanReturn(b);
     }
 
     /** Test whether the argument is a NaN, either as a double or as a float. */
@@ -240,11 +240,11 @@ public class NodeFunctions {
             return "<< " + f.apply(t.getSubject()) + " " + f.apply(t.getPredicate()) + " " + f.apply(t.getObject()) + " >>";
         }
         if ( node.isBlank() )
-            NodeValue.raise(new ExprEvalException("Blank node: " + node)) ;
+            NodeValue.raise(new ExprEvalException("Blank node: " + node));
         if ( node.isTripleTerm())
-            NodeValue.raise(new ExprEvalException("Triple term: " + node)) ;
-        NodeValue.raise(new ExprEvalException("Not valid for STR(): " + node)) ;
-        return "[undef]" ;
+            NodeValue.raise(new ExprEvalException("Triple term: " + node));
+        NodeValue.raise(new ExprEvalException("Not valid for STR(): " + node));
+        return "[undef]";
     }
 
     // -------- sort key (collation)
@@ -283,7 +283,7 @@ public class NodeFunctions {
     // -------- lang
 
     public static NodeValue hasLang(NodeValue nv) {
-        return NodeValue.booleanReturn(hasLang(nv.asNode())) ;
+        return NodeValue.booleanReturn(hasLang(nv.asNode()));
     }
 
     public static boolean hasLang(Node node) {
@@ -291,7 +291,7 @@ public class NodeFunctions {
     }
 
     public static NodeValue hasLangDir(NodeValue nv) {
-        return NodeValue.booleanReturn(hasLangDir(nv.asNode())) ;
+        return NodeValue.booleanReturn(hasLangDir(nv.asNode()));
     }
 
     public static boolean hasLangDir(Node node) {
@@ -313,24 +313,24 @@ public class NodeFunctions {
 
         String s = node.getLiteralLanguage();
         if ( s == null )
-            return "" ;
-        return s ;
+            return "";
+        return s;
     }
 
     public static NodeValue langdir(NodeValue nv) {
         if ( nv.isLangString() )
-            return NodeValue.makeString(nv.getLangDir()) ;
+            return NodeValue.makeString(nv.getLangDir());
         if ( nv.isLiteral() )
-            return NodeValue.nvEmptyString ;
-        NodeValue.raise(new ExprTypeException("lang: Not a literal: " + nv.asQuotedString())) ;
+            return NodeValue.nvEmptyString;
+        NodeValue.raise(new ExprTypeException("lang: Not a literal: " + nv.asQuotedString()));
         return null;
     }
 
     public static String langdir(Node node) {
         if ( !node.isLiteral() )
-            NodeValue.raise(new ExprTypeException("lang: Not a literal: " + FmtUtils.stringForNode(node))) ;
+            NodeValue.raise(new ExprTypeException("lang: Not a literal: " + FmtUtils.stringForNode(node)));
 
-        TextDirection textDir = node.getLiteralBaseDirection() ;
+        TextDirection textDir = node.getLiteralBaseDirection();
         if ( textDir == null )
             return "";
         return textDir.direction();
@@ -574,26 +574,26 @@ public class NodeFunctions {
 
     public static NodeValue strLangDir(NodeValue v1, NodeValue v2, NodeValue v3) {
         if ( !v1.isString() )
-            throw new ExprEvalException("Not a string (arg 1): " + v1) ;
+            throw new ExprEvalException("Not a string (arg 1): " + v1);
         if ( !v2.isString() )
-            throw new ExprEvalException("Not a string (arg 2): " + v2) ;
+            throw new ExprEvalException("Not a string (arg 2): " + v2);
         if ( !v2.isString() )
-            throw new ExprEvalException("Not a string (arg 3): " + v2) ;
-        String lex = v1.asString() ;
-        String lang = v2.asString() ;
+            throw new ExprEvalException("Not a string (arg 3): " + v2);
+        String lex = v1.asString();
+        String lang = v2.asString();
         if ( lang.isEmpty() )
-            throw new ExprEvalException("Empty lang tag") ;
+            throw new ExprEvalException("Empty lang tag");
         String textDirStr = v3.asString();
         if ( textDirStr.isEmpty() )
-            throw new ExprEvalException("Empty base direction") ;
+            throw new ExprEvalException("Empty base direction");
         TextDirection textDir = TextDirection.createOrNull(v3.asString());
         if ( textDir == null )
-            throw new ExprEvalException("Invalid base direction: '"+textDirStr+"'") ;
+            throw new ExprEvalException("Invalid base direction: '"+textDirStr+"'");
         return NodeValue.makeDirLangString(lex, lang, textDir);
     }
 
     /** Canonical duration of 0 -- "PT0S" */
-    private static Duration zeroDuration = NodeValue.xmlDatatypeFactory.newDuration(true, null, null, null, null, null, BigDecimal.ZERO) ;
+    private static Duration zeroDuration = NodeValue.xmlDatatypeFactory.newDuration(true, null, null, null, null, null, BigDecimal.ZERO);
     /** A duration, tided */
     public static Duration duration(int seconds) {
         if ( seconds == 0 )

@@ -27,7 +27,7 @@ public class ExprUndefFunction extends ExprEvalException
 {
     private final String fnName;
 
-    public ExprUndefFunction(String msg, String fnName) { super(msg) ; this.fnName = fnName;}
+    public ExprUndefFunction(String msg, String fnName) { super(msg); this.fnName = fnName;}
     
     public String getFunctionName() {
         return fnName;

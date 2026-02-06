@@ -117,13 +117,13 @@ public class E_Regex extends ExprFunctionN {
     }
 
 // /** @return Returns the expr of the regex */
-// public final Expr getRegexExpr() { return expr1 ; }
+// public final Expr getRegexExpr() { return expr1; }
 //
 // /** @return Returns the pattern. */
-// public final Expr getPattern() { return expr2 ; }
+// public final Expr getPattern() { return expr2; }
 //
 // /** @return Returns the flags. */
-// public final Expr getFlags() { return expr3 ; }
+// public final Expr getFlags() { return expr3; }
 
     @Override
     public Expr copy(ExprList newArgs) {

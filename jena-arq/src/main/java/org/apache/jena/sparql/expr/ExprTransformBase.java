@@ -21,18 +21,18 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.algebra.Op;
 
 public class ExprTransformBase implements ExprTransform
 {
-    @Override public Expr transform(ExprFunction0 func)                                       { return func ; }
-    @Override public Expr transform(ExprFunction1 func, Expr expr1)                           { return func ; }
-    @Override public Expr transform(ExprFunction2 func, Expr expr1, Expr expr2)               { return func ; }
-    @Override public Expr transform(ExprFunction3 func, Expr expr1, Expr expr2, Expr expr3)   { return func ; }
-    @Override public Expr transform(ExprFunctionN func, ExprList args)                        { return func ; }
-    @Override public Expr transform(ExprFunctionOp funcOp, ExprList args, Op opArg)           { return funcOp ; }
-    @Override public Expr transform(NodeValue nv)                                             { return nv ; }
-    @Override public Expr transform(ExprNone exprNone)                                        { return exprNone ; }
-    @Override public Expr transform(ExprVar ev)                                               { return ev ; }
-    @Override public Expr transform(ExprAggregator eAgg)                                      { return eAgg ; }
+    @Override public Expr transform(ExprFunction0 func)                                       { return func; }
+    @Override public Expr transform(ExprFunction1 func, Expr expr1)                           { return func; }
+    @Override public Expr transform(ExprFunction2 func, Expr expr1, Expr expr2)               { return func; }
+    @Override public Expr transform(ExprFunction3 func, Expr expr1, Expr expr2, Expr expr3)   { return func; }
+    @Override public Expr transform(ExprFunctionN func, ExprList args)                        { return func; }
+    @Override public Expr transform(ExprFunctionOp funcOp, ExprList args, Op opArg)           { return funcOp; }
+    @Override public Expr transform(NodeValue nv)                                             { return nv; }
+    @Override public Expr transform(ExprNone exprNone)                                        { return exprNone; }
+    @Override public Expr transform(ExprVar ev)                                               { return ev; }
+    @Override public Expr transform(ExprAggregator eAgg)                                      { return eAgg; }
 }

@@ -33,10 +33,10 @@ public class ExprEvalException extends ExprException
     // exception. But if we are using exception for flow control, we don't
     // need the stack trace.
 
-    @Override public Throwable fillInStackTrace() { return this ; }
+    @Override public Throwable fillInStackTrace() { return this; }
 
-    public ExprEvalException() { super() ; }
-    public ExprEvalException(Throwable cause) { super(cause) ; }
-    public ExprEvalException(String msg) { super(msg) ; }
-    public ExprEvalException(String msg, Throwable cause) { super(msg, cause) ; }
+    public ExprEvalException() { super(); }
+    public ExprEvalException(Throwable cause) { super(cause); }
+    public ExprEvalException(String msg) { super(msg); }
+    public ExprEvalException(String msg, Throwable cause) { super(msg, cause); }
 }

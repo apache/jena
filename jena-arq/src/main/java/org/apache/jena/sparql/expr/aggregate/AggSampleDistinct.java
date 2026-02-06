@@ -62,7 +62,7 @@ public class AggSampleDistinct extends AggregatorBase
         // it does not need the group to made made distinct.
         private NodeValue sampleSoFar = null;
 
-        public AccSampleDistict(Expr expr) { super(expr, false) ; }
+        public AccSampleDistict(Expr expr) { super(expr, false); }
 
         @Override
         public void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv) {
