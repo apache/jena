@@ -18,7 +18,6 @@
  *
  *   SPDX-License-Identifier: Apache-2.0
  */
-
 package org.apache.jena.sparql.service.enhancer.impl;
 
 import java.util.NavigableMap;

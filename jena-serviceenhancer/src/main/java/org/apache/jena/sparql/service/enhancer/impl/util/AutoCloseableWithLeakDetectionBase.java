@@ -21,6 +21,7 @@
 
 package org.apache.jena.sparql.service.enhancer.impl.util;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,29 +31,40 @@ import org.slf4j.LoggerFactory;
  * If finalize is called (typically only by the GC) and there was no prior call to close then
  * a warning including the stack trace is logged.
  *
- * Implementing classes should override {@link #closeActual()} rather than
- * {@link #close()}.
+ * Implementing classes need to override {@link #closeActual()} because {@link #close()} is final.
  */
 public class AutoCloseableWithLeakDetectionBase
     extends AutoCloseableBase
 {
     private static final Logger logger = LoggerFactory.getLogger(AutoCloseableWithLeakDetectionBase.class);
 
-    protected final StackTraceElement[] instantiationStackTrace = StackTraceUtils.getStackTraceIfEnabled();
+    protected final StackTraceElement[] instantiationStackTrace;
+
+    public AutoCloseableWithLeakDetectionBase() {
+        this(true);
+    }
+
+    public AutoCloseableWithLeakDetectionBase(boolean enableInstantiationStackTrace) {
+        super(enableInstantiationStackTrace);
+        this.instantiationStackTrace = enableInstantiationStackTrace
+                ? StackTraceUtils.getStackTraceIfEnabled()
+                : null;
+    }
 
     public StackTraceElement[] getInstantiationStackTrace() {
         return instantiationStackTrace;
     }
 
-    @SuppressWarnings("removal")
     @Override
+    @SuppressWarnings("removal")
     protected void finalize() throws Throwable {
         try {
             if (!isClosed) {
-                String str = StackTraceUtils.toString(instantiationStackTrace);
-
-                logger.warn("Close invoked via GC rather than user logic - indicates resource leak. Object constructed at " + str);
-
+                if (logger.isWarnEnabled()) {
+                    String objectIdStr = ObjectUtils.identityToString(this);
+                    String stackTraceStr = StackTraceUtils.toString(instantiationStackTrace);
+                    logger.warn(String.format("Close invoked via GC rather than user logic - indicates resource leak. Object %s constructed at %s", objectIdStr, stackTraceStr));
+                }
                 close();
             }
         } finally {
