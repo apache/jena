@@ -78,7 +78,7 @@
          These two go together
          See jena-fuseki-webapp and https://shiro.apache.org/jakarta-ee.html
     -->
-    <ver.shiro>2.0.6</ver.shiro>
+    <ver.shiro>2.1.0</ver.shiro>
 
     <ver.protobuf>4.33.5</ver.protobuf>
     <ver.libthrift>0.22.0</ver.libthrift>
