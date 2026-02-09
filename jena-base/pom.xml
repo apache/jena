@@ -92,13 +92,6 @@
       <artifactId>caffeine</artifactId>
     </dependency>
 
-    <!--
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-    </dependency>
-    -->
-
     <!-- supports persistent data structures -->
     <dependency>
       <groupId>com.github.andrewoma.dexx</groupId>
