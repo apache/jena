@@ -120,7 +120,7 @@
     <!-- GeoSPARQL related -->
     <ver.kryo>5.6.2</ver.kryo>
     <ver.jaxb-api>2.3.1</ver.jaxb-api>
-    <ver.jakarta-xml-bind>4.0.4</ver.jakarta-xml-bind>
+    <ver.jakarta-xml-bind>4.0.5</ver.jakarta-xml-bind>
     <ver.jcommander>1.82</ver.jcommander>
     <ver.sis>1.4</ver.sis>
     <ver.jts>1.20.0</ver.jts>
