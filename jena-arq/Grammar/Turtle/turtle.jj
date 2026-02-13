@@ -19,7 +19,9 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-// Turtle RDF 1.1 Grammar.
+// Turtle RDF 1.2 Grammar.
+// https://www.w3.org/TR/rdf12-turtle/#sec-grammar
+//
 // This is not the usual parser used by RIOT.
 // RIOT has it's own tokenizer/parser which is faster.
 // This grammar exists as a more convenient base for new languages
@@ -71,8 +73,14 @@ PARSER_END(TurtleJavacc)
 void parse(): { }
 {
   ByteOrderMark()
-  (Statement())*
+  TurtleDoc()
   <EOF>
+}
+
+// Turtle [1] -- turtleDoc ::= statement*
+void TurtleDoc() : {}
+{
+  (Statement())*
 }
 
 void ByteOrderMark() : {}
@@ -80,7 +88,7 @@ void ByteOrderMark() : {}
   (<BOM>)?
 }
 
-// Turtle [2] statement
+// Turtle [2] -- statement ::= directive | (triples '.')
 void Statement() : {}
 {
     Directive()
@@ -90,7 +98,7 @@ void Statement() : {}
   | (Triples() <DOT> )
 }
 
-// Turtle [3] directive
+// Turtle [3] -- directive ::= ... |  sparqlPrefix | sparqlBase | sparqlVersion
 void Directive() : { Token t ; String iri ; String verStr ;}
 {
     <PREFIX> t = <PNAME_NS> iri = IRIREF()
@@ -104,6 +112,21 @@ void Directive() : { Token t ; String iri ; String verStr ;}
     { declareVersion(verStr, t.beginLine, t.beginColumn); }
 }
 
+// Turtle [3] -- directive ::= prefixID | base | version | ...
+void DirectiveOld() : { Token t ; Token t2 ; String iri ; String verStr ; }
+{
+    <PREFIX_OLD> t = <PNAME_NS> iri = IRIREF() <DOT>
+    { String s = canonicalPrefix(t.image, t.beginLine, t.beginColumn) ;
+      setPrefix(s, iri, t.beginLine, t.beginColumn) ; }
+ |
+    t = <BASE_OLD> iri = IRIREF() <DOT>
+    { setBase(iri, t.beginLine, t.beginColumn) ; }
+ |
+    t = <VERSION_OLD> verStr = VersionSpecificer() <DOT>
+    { declareVersion(verStr, t.beginLine, t.beginColumn); }
+}
+
+// Turtle [10] -- VersionSpecifier ::= STRING_LITERAL_QUOTE | STRING_LITERAL_SINGLE_QUOTE
 String VersionSpecificer() : {  Token t; String verStr; }
 {
   
@@ -119,19 +142,9 @@ String VersionSpecificer() : {  Token t; String verStr; }
     } 
 }
 
-void DirectiveOld() : { Token t ; Token t2 ; String iri ; String verStr ; }
-{
-    <PREFIX_OLD> t = <PNAME_NS> iri = IRIREF() <DOT>
-    { String s = canonicalPrefix(t.image, t.beginLine, t.beginColumn) ;
-      setPrefix(s, iri, t.beginLine, t.beginColumn) ; }
- |
-    t = <BASE_OLD> iri = IRIREF() <DOT>
-    { setBase(iri, t.beginLine, t.beginColumn) ; }
- |
-    t = <VERSION_OLD> verStr = VersionSpecificer() <DOT>
-    { declareVersion(verStr, t.beginLine, t.beginColumn); }
-}
-
+// Turtle [11] -- triples ::= (subject predicateObjectList)
+//                          | (blankNodePropertyList predicateObjectList?)
+//                          | (reifiedTriple predicateObjectList?)
 void Triples() : { Node n; }
 {
   n = Subject() PredicateObjectList(n)
@@ -141,6 +154,7 @@ void Triples() : { Node n; }
   n = ReifiedTriple() ( PredicateObjectList(n) )?
 }
 
+// Turtle [12] -- predicateObjectList ::= verb objectList (';' (verb objectList)?)*
 void PredicateObjectList(Node s) : { Node p = null ; }
 {
     p = Verb()
@@ -148,25 +162,37 @@ void PredicateObjectList(Node s) : { Node p = null ; }
     (<SEMICOLON> (p = Verb() ObjectList(s, p))? )*
 }
 
+// Turtle [13] -- objectList ::= object annotation (',' object annotation)*
 void ObjectList(Node s, Node p): { Node o ; } 
 {
   o = Object()
   { emitTriple(s, p, o, token.beginLine, token.beginColumn) ; }
   Annotation(s, p, o)
+  // Strict
   (
     <COMMA> o = Object()
     { emitTriple(s, p, o, token.beginLine, token.beginColumn) ; }
     Annotation(s, p, o)
   )*
+//   // Trailing comma allowed
+//   (
+//     <COMMA>
+//     (
+//       o = Object()
+//       { emitTriple(s, p, o, token.beginLine, token.beginColumn) ; }
+//       Annotation(s, p, o)
+//     )?
+//   )*
 }
 
-// Turtle [9] verb
+// Turtle [14] -- verb ::= predicate | 'a'
 Node Verb() : { Node p ; }
 {
   ( p = Predicate()  | <KW_A> { p = nRDFtype ; } )
   { return p ; }
 }
 
+// Turtle [15] -- subject ::= iri | BlankNode | collection
 Node Subject() : { Node s; String iri ; }
 {
   (
@@ -179,14 +205,15 @@ Node Subject() : { Node s; String iri ; }
   { return s ; }
 }
 
-// Turtle [11] predicate
+// Turtle [16] -- predicate ::= verb
 Node Predicate() : { String iri;}
 {
   iri = iri()
   { return createURI(iri, token.beginLine, token.beginColumn); }
 }
 
-// Turtle [12] object
+// Turtle [17] -- object ::= iri | BlankNode | collection | blankNodePropertyList
+//                         | literal | tripleTerm | reifiedTriple
 Node Object(): { Node o ; String iri; }
 {
   ( iri = iri() { o = createURI(iri, token.beginLine, token.beginColumn) ; }
@@ -200,7 +227,7 @@ Node Object(): { Node o ; String iri; }
   { return o; }
 }
 
-// Turtle [13] literal
+// Turtle [18] literal ::= RDFLiteral | NumericLiteral | BooleanLiteral
 Node Literal() : { Node n ;}
 {
   n = RDFLiteral()      { return n ; }
@@ -208,7 +235,7 @@ Node Literal() : { Node n ;}
 | n = BooleanLiteral()  { return n ; }
 }
 
-// Turtle [14] blankNodePropertyList
+// Turtle [19] -- blankNodePropertyList ::= '[' predicateObjectList ']'
 Node BlankNodePropertyList() : { Token t ; }
 {
   t = <LBRACKET> 
@@ -218,9 +245,8 @@ Node BlankNodePropertyList() : { Token t ; }
     { return n ; }
 }
 
-// Turtle [15] collection
-Node Collection() : 
-    { Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ; }
+// Turtle [20] -- collection ::= '(' object* ')'
+Node Collection() : { Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ; }
 {
   t = <LPAREN>
   { int line = t.beginLine; int column = t.beginColumn;
@@ -246,14 +272,14 @@ Node Collection() :
      return listHead ; }
 }
 
-// Turtle: Gramnmar has "object" directly in the collection rule.
+// Turtle: Grammar has "object" directly in the collection rule.
 Node CollectionElt() : { Node o;}
 {
   o = Object()
   { return o; }
 }
 
-// Turtle [16] NumericLiteral
+// Turtle [21] -- NumericLiteral ::= INTEGER | DECIMAL | DOUBLE
 Node NumericLiteral() : { Token t ; }
 {
   (
@@ -263,7 +289,7 @@ Node NumericLiteral() : { Token t ; }
   )
 }
 
-// Turtle [128s] RDFLiteral
+// Turtle [22] -- RDFLiteral ::= String (LANG_DIR | ('^^' iri))?
 Node RDFLiteral() : { Token t ; String lex = null ; }
 {
   lex = String()
@@ -277,20 +303,7 @@ Node RDFLiteral() : { Token t ; String lex = null ; }
     { return createLiteral(lex, lang, uri, token.beginLine, token.beginColumn) ; }
 } 
 
-String LangTag() : { Token t ; }
-{
-  // Enumerate the directives here because they look like language tags.
-  ( t = <LANG_DIR> | t = AnyDirective() )
-  { String lang = stripChars(t.image, 1) ; return lang ; }
-}
-
-Token AnyDirective() : { Token t ; }
-{
-    ( t = <PREFIX_OLD> | t = <BASE_OLD> | t = <VERSION_OLD> )
-    { return t ; }
-}
-
-// Turtle [133s] BooleanLiteral
+// Turtle [23] -- BooleanLiteral ::= 'true' | 'false'
 Node BooleanLiteral() : {}
 {
   <TRUE> { return XSD_TRUE ; }
@@ -298,7 +311,10 @@ Node BooleanLiteral() : {}
   <FALSE> { return XSD_FALSE ; }
 }
 
-// Turtle [17] String
+// Turtle [24] -- String ::= STRING_LITERAL_QUOTE
+//                         | STRING_LITERAL_SINGLE_QUOTE
+//                         | STRING_LITERAL_LONG_SINGLE_QUOTE
+//                         | STRING_LITERAL_LONG_QUOTE
 String String() : { Token t ; String lex ; }
 {
   ( t = <STRING_LITERAL1> { lex = stripQuotes(t.image) ; }
@@ -312,7 +328,7 @@ String String() : { Token t ; String lex ; }
     }
 }
 
-// Turtle [135s] iri
+// Turtle [25] -- iri ::= IRIREF | PrefixedName
 String iri() : { String iri ; }
 {
   iri = IRIREF() { return iri ; }
@@ -320,7 +336,7 @@ String iri() : { String iri ; }
   iri = PrefixedName() { return iri ; }
 }
 
-// Turtle [136s] PrefixedName
+// Turtle [26] -- PrefixedName ::= PNAME_LN | PNAME_NS
 String PrefixedName() : { Token t ; }
 {
   ( t = <PNAME_LN>
@@ -331,7 +347,7 @@ String PrefixedName() : { Token t ; }
   )
 }
 
-// Turtle [137s] BlankNode
+// Turtle [27] -- BlankNode ::= BLANK_NODE_LABEL | ANON
 Node BlankNode() :  { Token t = null ; }
 {
   t = <BLANK_NODE_LABEL>
@@ -341,12 +357,7 @@ Node BlankNode() :  { Token t = null ; }
 
 }
 
-String IRIREF() : { Token t ; }
-{
-  t = <IRIref>
-  { return resolveQuotedIRI(t.image, t.beginLine, t.beginColumn) ; }
-}
-
+// Turtle [28] -- reifier ::= '~' (iri | BlankNode)?
 Node Reifier() : { Node n = null; String iriStr; Token t; }
 {
   t = <TILDE>
@@ -358,6 +369,7 @@ Node Reifier() : { Node n = null; String iriStr; Token t; }
   { return n ; }
 }
 
+// Turtle [29] -- reifiedTriple ::= '<<' rtSubject verb rtObject reifier? '>>'
 Node ReifiedTriple() : { Node reifId = null ; Token tok ;  Node s; Node p ; Node o ; }
 {
    tok = <LT2>
@@ -370,7 +382,7 @@ Node ReifiedTriple() : { Node reifId = null ; Token tok ;  Node s; Node p ; Node
    { return reifId ; }
 }
 
-// rtSubject
+// Turtle [30] -- rtSubject ::= iri | BlankNode | reifiedTriple
 Node ReifiedTripleSubject() : { Node s; String iri; } {
   ( iri = iri() { s = createURI(iri, token.beginLine, token.beginColumn) ; }
   | s = BlankNode()
@@ -379,7 +391,7 @@ Node ReifiedTripleSubject() : { Node s; String iri; } {
   { return s; }
 }
 
-// rtObject
+// Turtle [31] -- rtObject ::= iri | BlankNode | literal | tripleTerm | reifiedTriple
 Node ReifiedTripleObject() : { Node o; String iri; } {
   ( iri = iri() { o = createURI(iri, token.beginLine, token.beginColumn) ; }
   | o = BlankNode()
@@ -390,6 +402,7 @@ Node ReifiedTripleObject() : { Node o; String iri; } {
   { return o; }
 }
 
+// Turtle [32] -- tripleTerm ::= '<<(' ttSubject verb ttObject ')>>'
 Node TripleTerm() : { Node n = null ; Token openToken ; String iri ; Node s , p , o ; }
 {
   <L_TRIPLE>
@@ -400,7 +413,7 @@ Node TripleTerm() : { Node n = null ; Token openToken ; String iri ; Node s , p 
   { return createTripleTerm(s, p, o, token.beginLine, token.beginColumn) ; }
 }
 
-// ttSubject
+// Turtle [33] -- ttSubject ::= iri | BlankNode
 Node TripleTermSubject(): { Node o ; String iri; }
 {
   ( iri = iri() { o = createURI(iri, token.beginLine, token.beginColumn) ; }
@@ -409,7 +422,7 @@ Node TripleTermSubject(): { Node o ; String iri; }
   { return o; }
 }
 
-// ttObject
+// Turtle [34] -- ttObject ::= iri | BlankNode | literal | tripleTerm
 Node TripleTermObject(): { Node o ; String iri; }
 {
   ( iri = iri() { o = createURI(iri, token.beginLine, token.beginColumn) ; }
@@ -421,6 +434,7 @@ Node TripleTermObject(): { Node o ; String iri; }
 }
 
 // RDF-star Annotation Syntax
+// Turtle [35] -- annotation ::= (reifier | annotationBlock)*
 void Annotation(Node s, Node p, Node o) : { Node reifId = null; }
 {
   (
@@ -434,17 +448,37 @@ void Annotation(Node s, Node p, Node o) : { Node reifId = null; }
   ) *
 }
 
+// Turtle [36] -- annotationBlock ::= '{|' predicateObjectList '|}'
 void AnnotationBlock( Node reifId ) : {}
 {
    <L_ANN>
    PredicateObjectList(reifId)
    <R_ANN>
-// (
-//     <L_ANN>
-//       { Node x = createQuotedTriple(s, p, o, token.beginLine, token.beginColumn); }
-//       PredicateObjectList(x)
-//     <R_ANN>
-//   )?
+}
+
+// ---- Turtle Terminals
+
+// Turtle [38] -- IRIREF ::= ...
+String IRIREF() : { Token t ; }
+{
+  t = <IRIref>
+  { return resolveQuotedIRI(t.image, t.beginLine, t.beginColumn) ; }
+}
+
+// Turtle [42] -- LANG_DIR ::= '@' [a-zA-Z]+ ('-' [a-zA-Z0-9]+)* ('--' [a-zA-Z]+)?
+//   modified to enumerate the @-directives here because they look like language tags.
+String LangTag() : { Token t ; }
+{
+  // Enumerate the directives here because they look like language tags.
+  ( t = <LANG_DIR> | t = AnyAtDirective() )
+  { String lang = stripChars(t.image, 1) ; return lang ; }
+}
+
+// @-directives are legal as language tags.
+Token AnyAtDirective() : { Token t ; }
+{
+    ( t = <PREFIX_OLD> | t = <BASE_OLD> | t = <VERSION_OLD> )
+    { return t ; }
 }
 
 // ------------------------------------------
