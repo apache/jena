@@ -31,6 +31,12 @@ public class TurtleJavacc extends LangTurtleJCCParserBase implements TurtleJavac
 // Entry point
   final public void parse() throws ParseException {
     ByteOrderMark();
+    TurtleDoc();
+    jj_consume_token(0);
+}
+
+// Turtle [1] -- turtleDoc ::= statement*
+  final public void TurtleDoc() throws ParseException {
     label_1:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -57,7 +63,6 @@ public class TurtleJavacc extends LangTurtleJCCParserBase implements TurtleJavac
       }
       Statement();
     }
-    jj_consume_token(0);
 }
 
   final public void ByteOrderMark() throws ParseException {
@@ -72,7 +77,7 @@ public class TurtleJavacc extends LangTurtleJCCParserBase implements TurtleJavac
     }
 }
 
-// Turtle [2] statement
+// Turtle [2] -- statement ::= directive | (triples '.')
   final public void Statement() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case BASE:
@@ -106,7 +111,7 @@ public class TurtleJavacc extends LangTurtleJCCParserBase implements TurtleJavac
     }
 }
 
-// Turtle [3] directive
+// Turtle [3] -- directive ::= ... |  sparqlPrefix | sparqlBase | sparqlVersion
   final public void Directive() throws ParseException {Token t ; String iri ; String verStr ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case PREFIX:{
@@ -136,29 +141,7 @@ declareVersion(verStr, t.beginLine, t.beginColumn);
     }
 }
 
-  final public String VersionSpecificer() throws ParseException {Token t; String verStr;
-    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case STRING_LITERAL1:{
-      t = jj_consume_token(STRING_LITERAL1);
-verStr = stripQuotes(t.image) ;
-      break;
-      }
-    case STRING_LITERAL2:{
-      t = jj_consume_token(STRING_LITERAL2);
-verStr = stripQuotes(t.image) ;
-      break;
-      }
-    default:
-      jj_la1[4] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
-verStr = unescapeStr(verStr, t.beginLine, t.beginColumn) ;
-      checkRDFString(verStr, t.beginLine, t.beginColumn) ;
-      {if ("" != null) return verStr ;}
-    throw new Error("Missing return statement in function");
-}
-
+// Turtle [3] -- directive ::= prefixID | base | version | ...
   final public void DirectiveOld() throws ParseException {Token t ; Token t2 ; String iri ; String verStr ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case PREFIX_OLD:{
@@ -185,12 +168,39 @@ declareVersion(verStr, t.beginLine, t.beginColumn);
       break;
       }
     default:
-      jj_la1[5] = jj_gen;
+      jj_la1[4] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
 }
 
+// Turtle [10] -- VersionSpecifier ::= STRING_LITERAL_QUOTE | STRING_LITERAL_SINGLE_QUOTE
+  final public String VersionSpecificer() throws ParseException {Token t; String verStr;
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case STRING_LITERAL1:{
+      t = jj_consume_token(STRING_LITERAL1);
+verStr = stripQuotes(t.image) ;
+      break;
+      }
+    case STRING_LITERAL2:{
+      t = jj_consume_token(STRING_LITERAL2);
+verStr = stripQuotes(t.image) ;
+      break;
+      }
+    default:
+      jj_la1[5] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+verStr = unescapeStr(verStr, t.beginLine, t.beginColumn) ;
+      checkRDFString(verStr, t.beginLine, t.beginColumn) ;
+      {if ("" != null) return verStr ;}
+    throw new Error("Missing return statement in function");
+}
+
+// Turtle [11] -- triples ::= (subject predicateObjectList)
+//                          | (blankNodePropertyList predicateObjectList?)
+//                          | (reifiedTriple predicateObjectList?)
   final public void Triples() throws ParseException {Node n;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case IRIref:
@@ -242,6 +252,7 @@ declareVersion(verStr, t.beginLine, t.beginColumn);
     }
 }
 
+// Turtle [12] -- predicateObjectList ::= verb objectList (';' (verb objectList)?)*
   final public void PredicateObjectList(Node s) throws ParseException {Node p = null ;
     p = Verb();
     ObjectList(s, p);
@@ -273,6 +284,7 @@ declareVersion(verStr, t.beginLine, t.beginColumn);
     }
 }
 
+// Turtle [13] -- objectList ::= object annotation (',' object annotation)*
   final public void ObjectList(Node s, Node p) throws ParseException {Node o ;
     o = Object();
 emitTriple(s, p, o, token.beginLine, token.beginColumn) ;
@@ -295,7 +307,7 @@ emitTriple(s, p, o, token.beginLine, token.beginColumn) ;
     }
 }
 
-// Turtle [9] verb
+// Turtle [14] -- verb ::= predicate | 'a'
   final public Node Verb() throws ParseException {Node p ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case IRIref:
@@ -318,6 +330,7 @@ p = nRDFtype ;
     throw new Error("Missing return statement in function");
 }
 
+// Turtle [15] -- subject ::= iri | BlankNode | collection
   final public Node Subject() throws ParseException {Node s; String iri ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case IRIref:
@@ -345,14 +358,15 @@ s = createURI(iri, token.beginLine, token.beginColumn) ;
     throw new Error("Missing return statement in function");
 }
 
-// Turtle [11] predicate
+// Turtle [16] -- predicate ::= verb
   final public Node Predicate() throws ParseException {String iri;
     iri = iri();
 {if ("" != null) return createURI(iri, token.beginLine, token.beginColumn);}
     throw new Error("Missing return statement in function");
 }
 
-// Turtle [12] object
+// Turtle [17] -- object ::= iri | BlankNode | collection | blankNodePropertyList
+//                         | literal | tripleTerm | reifiedTriple
   final public Node Object() throws ParseException {Node o ; String iri;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case IRIref:
@@ -404,7 +418,7 @@ o = createURI(iri, token.beginLine, token.beginColumn) ;
     throw new Error("Missing return statement in function");
 }
 
-// Turtle [13] literal
+// Turtle [18] literal ::= RDFLiteral | NumericLiteral | BooleanLiteral
   final public Node Literal() throws ParseException {Node n ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case STRING_LITERAL1:
@@ -436,7 +450,7 @@ o = createURI(iri, token.beginLine, token.beginColumn) ;
     throw new Error("Missing return statement in function");
 }
 
-// Turtle [14] blankNodePropertyList
+// Turtle [19] -- blankNodePropertyList ::= '[' predicateObjectList ']'
   final public Node BlankNodePropertyList() throws ParseException {Token t ;
     t = jj_consume_token(LBRACKET);
 Node n = createBNode(t.beginLine, t.beginColumn) ;
@@ -446,7 +460,7 @@ Node n = createBNode(t.beginLine, t.beginColumn) ;
     throw new Error("Missing return statement in function");
 }
 
-// Turtle [15] collection
+// Turtle [20] -- collection ::= '(' object* ')'
   final public Node Collection() throws ParseException {Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ;
     t = jj_consume_token(LPAREN);
 int line = t.beginLine; int column = t.beginColumn;
@@ -496,14 +510,14 @@ if ( lastCell != null )
     throw new Error("Missing return statement in function");
 }
 
-// Turtle: Gramnmar has "object" directly in the collection rule.
+// Turtle: Grammar has "object" directly in the collection rule.
   final public Node CollectionElt() throws ParseException {Node o;
     o = Object();
 {if ("" != null) return o;}
     throw new Error("Missing return statement in function");
 }
 
-// Turtle [16] NumericLiteral
+// Turtle [21] -- NumericLiteral ::= INTEGER | DECIMAL | DOUBLE
   final public Node NumericLiteral() throws ParseException {Token t ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case INTEGER:{
@@ -529,7 +543,7 @@ if ( lastCell != null )
     throw new Error("Missing return statement in function");
 }
 
-// Turtle [128s] RDFLiteral
+// Turtle [22] -- RDFLiteral ::= String (LANG_DIR | ('^^' iri))?
   final public Node RDFLiteral() throws ParseException {Token t ; String lex = null ;
     lex = String();
 String lang = null ; String uri = null ;
@@ -567,51 +581,7 @@ String lang = null ; String uri = null ;
     throw new Error("Missing return statement in function");
 }
 
-  final public String LangTag() throws ParseException {Token t ;
-    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case LANG_DIR:{
-      t = jj_consume_token(LANG_DIR);
-      break;
-      }
-    case PREFIX_OLD:
-    case BASE_OLD:
-    case VERSION_OLD:{
-      t = AnyDirective();
-      break;
-      }
-    default:
-      jj_la1[20] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
-String lang = stripChars(t.image, 1) ; {if ("" != null) return lang ;}
-    throw new Error("Missing return statement in function");
-}
-
-  final public Token AnyDirective() throws ParseException {Token t ;
-    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case PREFIX_OLD:{
-      t = jj_consume_token(PREFIX_OLD);
-      break;
-      }
-    case BASE_OLD:{
-      t = jj_consume_token(BASE_OLD);
-      break;
-      }
-    case VERSION_OLD:{
-      t = jj_consume_token(VERSION_OLD);
-      break;
-      }
-    default:
-      jj_la1[21] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
-{if ("" != null) return t ;}
-    throw new Error("Missing return statement in function");
-}
-
-// Turtle [133s] BooleanLiteral
+// Turtle [23] -- BooleanLiteral ::= 'true' | 'false'
   final public Node BooleanLiteral() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case TRUE:{
@@ -625,14 +595,17 @@ String lang = stripChars(t.image, 1) ; {if ("" != null) return lang ;}
       break;
       }
     default:
-      jj_la1[22] = jj_gen;
+      jj_la1[20] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
 }
 
-// Turtle [17] String
+// Turtle [24] -- String ::= STRING_LITERAL_QUOTE
+//                         | STRING_LITERAL_SINGLE_QUOTE
+//                         | STRING_LITERAL_LONG_SINGLE_QUOTE
+//                         | STRING_LITERAL_LONG_QUOTE
   final public String String() throws ParseException {Token t ; String lex ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case STRING_LITERAL1:{
@@ -656,7 +629,7 @@ lex = stripQuotes3(t.image) ;
       break;
       }
     default:
-      jj_la1[23] = jj_gen;
+      jj_la1[21] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -665,7 +638,7 @@ lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
     throw new Error("Missing return statement in function");
 }
 
-// Turtle [135s] iri
+// Turtle [25] -- iri ::= IRIREF | PrefixedName
   final public String iri() throws ParseException {String iri ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case IRIref:{
@@ -680,14 +653,14 @@ lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
       break;
       }
     default:
-      jj_la1[24] = jj_gen;
+      jj_la1[22] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
 }
 
-// Turtle [136s] PrefixedName
+// Turtle [26] -- PrefixedName ::= PNAME_LN | PNAME_NS
   final public String PrefixedName() throws ParseException {Token t ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case PNAME_LN:{
@@ -701,14 +674,14 @@ lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
       break;
       }
     default:
-      jj_la1[25] = jj_gen;
+      jj_la1[23] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
 }
 
-// Turtle [137s] BlankNode
+// Turtle [27] -- BlankNode ::= BLANK_NODE_LABEL | ANON
   final public Node BlankNode() throws ParseException {Token t = null ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case BLANK_NODE_LABEL:{
@@ -722,19 +695,14 @@ lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
       break;
       }
     default:
-      jj_la1[26] = jj_gen;
+      jj_la1[24] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
 }
 
-  final public String IRIREF() throws ParseException {Token t ;
-    t = jj_consume_token(IRIref);
-{if ("" != null) return resolveQuotedIRI(t.image, t.beginLine, t.beginColumn) ;}
-    throw new Error("Missing return statement in function");
-}
-
+// Turtle [28] -- reifier ::= '~' (iri | BlankNode)?
   final public Node Reifier() throws ParseException {Node n = null; String iriStr; Token t;
     t = jj_consume_token(TILDE);
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -757,14 +725,14 @@ n = createURI(iriStr, token.beginLine, token.beginColumn) ;
         break;
         }
       default:
-        jj_la1[27] = jj_gen;
+        jj_la1[25] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
       }
     default:
-      jj_la1[28] = jj_gen;
+      jj_la1[26] = jj_gen;
       ;
     }
 if ( n == null ) n = createBNode(t.beginLine, t.beginColumn) ;
@@ -772,6 +740,7 @@ if ( n == null ) n = createBNode(t.beginLine, t.beginColumn) ;
     throw new Error("Missing return statement in function");
 }
 
+// Turtle [29] -- reifiedTriple ::= '<<' rtSubject verb rtObject reifier? '>>'
   final public Node ReifiedTriple() throws ParseException {Node reifId = null ; Token tok ;  Node s; Node p ; Node o ;
     tok = jj_consume_token(LT2);
     s = ReifiedTripleSubject();
@@ -783,7 +752,7 @@ if ( n == null ) n = createBNode(t.beginLine, t.beginColumn) ;
       break;
       }
     default:
-      jj_la1[29] = jj_gen;
+      jj_la1[27] = jj_gen;
       ;
     }
 reifId = emitTripleReifier(reifId, s, p, o, tok.beginLine, tok.beginColumn);
@@ -792,7 +761,7 @@ reifId = emitTripleReifier(reifId, s, p, o, tok.beginLine, tok.beginColumn);
     throw new Error("Missing return statement in function");
 }
 
-// rtSubject
+// Turtle [30] -- rtSubject ::= iri | BlankNode | reifiedTriple
   final public Node ReifiedTripleSubject() throws ParseException {Node s; String iri;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case IRIref:
@@ -812,7 +781,7 @@ s = createURI(iri, token.beginLine, token.beginColumn) ;
       break;
       }
     default:
-      jj_la1[30] = jj_gen;
+      jj_la1[28] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -820,7 +789,7 @@ s = createURI(iri, token.beginLine, token.beginColumn) ;
     throw new Error("Missing return statement in function");
 }
 
-// rtObject
+// Turtle [31] -- rtObject ::= iri | BlankNode | literal | tripleTerm | reifiedTriple
   final public Node ReifiedTripleObject() throws ParseException {Node o; String iri;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case IRIref:
@@ -856,7 +825,7 @@ o = createURI(iri, token.beginLine, token.beginColumn) ;
       break;
       }
     default:
-      jj_la1[31] = jj_gen;
+      jj_la1[29] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -864,6 +833,7 @@ o = createURI(iri, token.beginLine, token.beginColumn) ;
     throw new Error("Missing return statement in function");
 }
 
+// Turtle [32] -- tripleTerm ::= '<<(' ttSubject verb ttObject ')>>'
   final public Node TripleTerm() throws ParseException {Node n = null ; Token openToken ; String iri ; Node s , p , o ;
     jj_consume_token(L_TRIPLE);
     s = TripleTermSubject();
@@ -874,7 +844,7 @@ o = createURI(iri, token.beginLine, token.beginColumn) ;
     throw new Error("Missing return statement in function");
 }
 
-// ttSubject
+// Turtle [33] -- ttSubject ::= iri | BlankNode
   final public Node TripleTermSubject() throws ParseException {Node o ; String iri;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case IRIref:
@@ -890,7 +860,7 @@ o = createURI(iri, token.beginLine, token.beginColumn) ;
       break;
       }
     default:
-      jj_la1[32] = jj_gen;
+      jj_la1[30] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -898,7 +868,7 @@ o = createURI(iri, token.beginLine, token.beginColumn) ;
     throw new Error("Missing return statement in function");
 }
 
-// ttObject
+// Turtle [34] -- ttObject ::= iri | BlankNode | literal | tripleTerm
   final public Node TripleTermObject() throws ParseException {Node o ; String iri;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case IRIref:
@@ -930,7 +900,7 @@ o = createURI(iri, token.beginLine, token.beginColumn) ;
       break;
       }
     default:
-      jj_la1[33] = jj_gen;
+      jj_la1[31] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -939,6 +909,7 @@ o = createURI(iri, token.beginLine, token.beginColumn) ;
 }
 
 // RDF-star Annotation Syntax
+// Turtle [35] -- annotation ::= (reifier | annotationBlock)*
   final public void Annotation(Node s, Node p, Node o) throws ParseException {Node reifId = null;
     label_5:
     while (true) {
@@ -949,7 +920,7 @@ o = createURI(iri, token.beginLine, token.beginColumn) ;
         break;
         }
       default:
-        jj_la1[34] = jj_gen;
+        jj_la1[32] = jj_gen;
         break label_5;
       }
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -966,17 +937,74 @@ clearReifierId();
         break;
         }
       default:
-        jj_la1[35] = jj_gen;
+        jj_la1[33] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
     }
 }
 
+// Turtle [36] -- annotationBlock ::= '{|' predicateObjectList '|}'
   final public void AnnotationBlock(Node reifId) throws ParseException {
     jj_consume_token(L_ANN);
     PredicateObjectList(reifId);
     jj_consume_token(R_ANN);
+}
+
+// ---- Turtle Terminals
+
+// Turtle [38] -- IRIREF ::= ...
+  final public String IRIREF() throws ParseException {Token t ;
+    t = jj_consume_token(IRIref);
+{if ("" != null) return resolveQuotedIRI(t.image, t.beginLine, t.beginColumn) ;}
+    throw new Error("Missing return statement in function");
+}
+
+// Turtle [42] -- LANG_DIR ::= '@' [a-zA-Z]+ ('-' [a-zA-Z0-9]+)* ('--' [a-zA-Z]+)?
+//   modified to enumerate the @-directives here because they look like language tags.
+  final public String LangTag() throws ParseException {Token t ;
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case LANG_DIR:{
+      t = jj_consume_token(LANG_DIR);
+      break;
+      }
+    case PREFIX_OLD:
+    case BASE_OLD:
+    case VERSION_OLD:{
+      t = AnyAtDirective();
+      break;
+      }
+    default:
+      jj_la1[34] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+String lang = stripChars(t.image, 1) ; {if ("" != null) return lang ;}
+    throw new Error("Missing return statement in function");
+}
+
+// @-directives are legal as language tags.
+  final public Token AnyAtDirective() throws ParseException {Token t ;
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case PREFIX_OLD:{
+      t = jj_consume_token(PREFIX_OLD);
+      break;
+      }
+    case BASE_OLD:{
+      t = jj_consume_token(BASE_OLD);
+      break;
+      }
+    case VERSION_OLD:{
+      t = jj_consume_token(VERSION_OLD);
+      break;
+      }
+    default:
+      jj_la1[35] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+{if ("" != null) return t ;}
+    throw new Error("Missing return statement in function");
 }
 
   /** Generated Token Manager. */
@@ -998,10 +1026,10 @@ clearReifierId();
 	   jj_la1_init_2();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x87e00,0x40000,0x87e00,0x7000,0x0,0xe00,0x80100,0x80100,0x80000,0x0,0x80100,0x0,0x80100,0x80000,0x3898000,0x3818000,0x3898000,0x3800000,0xe00,0xe00,0xe00,0xe00,0x18000,0x0,0x80000,0x0,0x0,0x80000,0x80000,0x0,0x80000,0x3898000,0x80000,0x3898000,0x0,0x0,};
+	   jj_la1_0 = new int[] {0x87e00,0x40000,0x87e00,0x7000,0xe00,0x0,0x80100,0x80100,0x80000,0x0,0x80100,0x0,0x80100,0x80000,0x3898000,0x3818000,0x3898000,0x3800000,0xe00,0xe00,0x18000,0x0,0x80000,0x0,0x0,0x80000,0x80000,0x0,0x80000,0x3898000,0x80000,0x3898000,0x0,0x0,0xe00,0xe00,};
 	}
 	private static void jj_la1_init_1() {
-	   jj_la1_1 = new int[] {0xe080a20,0x0,0xe080a20,0x0,0x6,0x0,0x6000000,0x6000000,0xe080a20,0x1000,0x6000000,0x2000,0x6000000,0xe000820,0xe0a0a3e,0x1e,0xe0a0a3e,0x0,0x10008000,0x10008000,0x10000000,0x0,0x0,0x1e,0x6000000,0x6000000,0x8000800,0xe000800,0xe000800,0x800000,0xe080800,0xe0a081e,0xe000800,0xe02081e,0xa00000,0xa00000,};
+	   jj_la1_1 = new int[] {0xe080a20,0x0,0xe080a20,0x0,0x0,0x6,0x6000000,0x6000000,0xe080a20,0x1000,0x6000000,0x2000,0x6000000,0xe000820,0xe0a0a3e,0x1e,0xe0a0a3e,0x0,0x10008000,0x10008000,0x0,0x1e,0x6000000,0x6000000,0x8000800,0xe000800,0xe000800,0x800000,0xe080800,0xe0a081e,0xe000800,0xe02081e,0xa00000,0xa00000,0x10000000,0x0,};
 	}
 	private static void jj_la1_init_2() {
 	   jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
