@@ -32,7 +32,6 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryFactory;
 import org.apache.jena.rdfconnection.Isolation;
 import org.apache.jena.rdfconnection.JenaConnectionException;
 import org.apache.jena.rdfconnection.LibSec;
@@ -47,7 +46,6 @@ import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.exec.UpdateExecBuilder;
 import org.apache.jena.system.Txn;
 import org.apache.jena.update.Update;
-import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
 
 /**
@@ -358,7 +356,9 @@ public interface RDFLink extends
      * @return QueryExecution
      */
     @Override
-    public QueryExec query(Query query);
+    default public QueryExec query(Query query) {
+        return newQuery().query(query).build();
+    }
 
     /**
      * Setup a SPARQL query execution.
@@ -377,7 +377,7 @@ public interface RDFLink extends
      */
     @Override
     public default QueryExec query(String queryString) {
-        return query(QueryFactory.create(queryString));
+        return newQuery().query(queryString).build();
     }
 
     /**
@@ -408,7 +408,7 @@ public interface RDFLink extends
      */
     @Override
     public default void update(Update update) {
-        update(new UpdateRequest(update));
+        newUpdate().update(update).execute();
     }
 
     /**
@@ -416,7 +416,9 @@ public interface RDFLink extends
      * @param update
      */
     @Override
-    public void update(UpdateRequest update);
+    public default void update(UpdateRequest update) {
+        newUpdate().update(update).execute();
+    }
 
     /**
      * Execute a SPARQL Update.
@@ -424,7 +426,7 @@ public interface RDFLink extends
      */
     @Override
     public default void update(String updateString) {
-        update(UpdateFactory.create(updateString));
+        newUpdate().update(updateString).execute();
     }
 
     /** Fetch the default graph.

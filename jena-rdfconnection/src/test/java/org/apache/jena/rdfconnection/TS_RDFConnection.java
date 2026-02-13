@@ -31,6 +31,8 @@ import org.junit.platform.suite.api.Suite;
     TestRDFConnectionLocalTxnMem.class
     , TestRDFConnectionLocalMRSW.class
     , TestLibRDFConn.class
+    , TestRDFConnectionDatasetGraphOverRDFLinkNoTxn.class
+    , TestRDFConnectionDatasetGraphOverRDFLinkWithTxn.class
     , TestRDFConnectionRewrapping.class
     , TestRDFConnectionHTTPHeaders.class
 })

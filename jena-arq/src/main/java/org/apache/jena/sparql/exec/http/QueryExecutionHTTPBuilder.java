@@ -53,7 +53,7 @@ public class QueryExecutionHTTPBuilder
 
     @Override
     protected QueryExecutionHTTP buildX(HttpClient hClient, Query queryActual, String queryStringActual, Context cxt) {
-        QueryExecHTTP qExec = new QueryExecHTTP(serviceURL, queryActual, queryStringActual, urlLimit,
+        QueryExecHTTP qExec = new QueryExecHTTPImpl(serviceURL, queryActual, queryStringActual, urlLimit,
                                                 hClient, new HashMap<>(httpHeaders), Params.create(params), cxt,
                                                 copyArray(defaultGraphURIs), copyArray(namedGraphURIs),
                                                 sendMode,
