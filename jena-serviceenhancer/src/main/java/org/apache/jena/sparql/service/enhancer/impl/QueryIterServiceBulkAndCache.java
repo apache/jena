@@ -36,14 +36,6 @@ import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.iterator.IteratorCloseable;
 import org.apache.jena.atlas.iterator.IteratorOnClose;
 import org.apache.jena.atlas.lib.Closeable;
-import com.google.common.collect.Iterators;
-import com.google.common.collect.Range;
-import com.google.common.collect.RangeMap;
-import com.google.common.collect.RangeSet;
-import com.google.common.collect.TreeBasedTable;
-import com.google.common.collect.TreeRangeMap;
-import com.google.common.collect.TreeRangeSet;
-import com.google.common.math.LongMath;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
 import org.apache.jena.sparql.algebra.Algebra;
@@ -66,6 +58,8 @@ import org.apache.jena.sparql.service.enhancer.impl.IteratorFactoryWithBuffer.Su
 import org.apache.jena.sparql.service.enhancer.impl.util.BindingUtils;
 import org.apache.jena.sparql.service.enhancer.impl.util.QueryIterDefer;
 import org.apache.jena.sparql.service.enhancer.impl.util.QueryIterSlottedBase;
+import org.apache.jena.sparql.service.enhancer.impl.util.iterator.AbortableIterators;
+import org.apache.jena.sparql.service.enhancer.impl.util.iterator.QueryIteratorOverAbortableIterator;
 import org.apache.jena.sparql.service.enhancer.slice.api.IteratorOverReadableChannel;
 import org.apache.jena.sparql.service.enhancer.slice.api.ReadableChannel;
 import org.apache.jena.sparql.service.enhancer.slice.api.ReadableChannelOverSliceAccessor;
@@ -76,16 +70,23 @@ import org.apache.jena.sparql.util.NodeFactoryExtra;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Iterators;
+import com.google.common.collect.Range;
+import com.google.common.collect.RangeMap;
+import com.google.common.collect.RangeSet;
+import com.google.common.collect.TreeBasedTable;
+import com.google.common.collect.TreeRangeMap;
+import com.google.common.collect.TreeRangeSet;
+import com.google.common.math.LongMath;
+
 /**
  * QueryIter to process service requests in bulk with support for streaming caching.
- *
- * The methods closeIterator and moveToNext are synchronized.
- *
  */
-public class QueryIterServiceBulk
+public class QueryIterServiceBulkAndCache
     extends QueryIterSlottedBase
+    // extends AbstractAbortableIterator<Binding>
 {
-    private static final Logger logger = LoggerFactory.getLogger(QueryIterServiceBulk.class);
+    private static final Logger logger = LoggerFactory.getLogger(QueryIterServiceBulkAndCache.class);
 
     protected OpServiceInfo serviceInfo;
     protected ServiceCacheKeyFactory cacheKeyFactory;
@@ -138,7 +139,7 @@ public class QueryIterServiceBulk
     // Close a sliceKey's iterator upon exhaustion if they slice key is in the set
     protected Set<SliceKey> sliceKeyToClose = new HashSet<>();
 
-    public QueryIterServiceBulk(
+    public QueryIterServiceBulkAndCache(
             OpServiceInfo serviceInfo,
             BatchQueryRewriter batchQueryRewriter,
             ServiceCacheKeyFactory cacheKeyFactory,
@@ -149,6 +150,8 @@ public class QueryIterServiceBulk
             ServiceResponseCache cache,
             CacheMode cacheMode
         ) {
+        super(execCxt);
+
         this.serviceInfo = serviceInfo;
         this.cacheKeyFactory = cacheKeyFactory;
         this.opExecutor = opExecutor;
@@ -176,8 +179,21 @@ public class QueryIterServiceBulk
         }
     }
 
+//    @Override
+//    protected Binding moveToNext() {
+//        Binding result;
+//        try {
+//            result = moveToNextActual();
+//        } catch (Exception e) {
+//            freeResources();
+//            e.addSuppressed(new RuntimeException("Problem encountered moving to next item."));
+//            throw e;
+//        }
+//        return result;
+//    }
+
     @Override
-    protected synchronized Binding moveToNext() {
+    protected Binding moveToNext() {
         Binding mergedBindingWithIdx = null;
 
         // One time init
@@ -250,7 +266,6 @@ public class QueryIterServiceBulk
 
                             // If there is insufficient buffer available we can still try whether we see a result set limit
                             // alternatively we could just set resetRequest to true
-
                             boolean isResultSetLimitReached = false; // reached end without seeing the end marker
                             while (obtainedRowCount < remainingNeededBackendRowCount) { // Repeat until we can serve another binding
 
@@ -337,34 +352,36 @@ public class QueryIterServiceBulk
 
             if (activeIt != null) {
                 if (activeIt.hasNext()) {
+                    // Peek the next binding from the active iterator.
                     Binding peek = activeIt.peek();
                     int peekOutputId = BindingUtils.getNumber(peek, idxVar).intValue();
                     if (BatchQueryRewriter.isRemoteEndMarker(peekOutputId)) {
-                        // Attempt to move to the next range
-                        ++currentRangeId;
-                        continue;
-                    }
+                        // If that binding was the end marker just fall through - this
+                        // moves the active iterator to the next range or input and
+                        // retries the loop.
+                    } else {
+                        // Process the peeked binding into a result binding.
+                        SliceKey sliceKey = outputToSliceKey.get(peekOutputId);
 
-                    SliceKey sliceKey = outputToSliceKey.get(peekOutputId);
+                        if (sliceKey == null) {
+                            throw new IllegalStateException(
+                                    String.format("An output binding referred to an input id without corresponding input binding. Referenced input id %1$d, Output binding: %2$s", peekOutputId, peek));
+                        }
 
-                    if (sliceKey == null) {
-                        throw new IllegalStateException(
-                                String.format("An output binding referred to an input id without corresponding input binding. Referenced input id %1$d, Output binding: %2$s", peekOutputId, peek));
-                    }
+                        boolean matchesCurrentPartition = sliceKey.getInputId() == currentInputId &&
+                                sliceKey.getRangeId() == currentRangeId;
 
-                    boolean matchesCurrentPartition = sliceKey.getInputId() == currentInputId &&
-                            sliceKey.getRangeId() == currentRangeId;
+                        if (matchesCurrentPartition) {
+                            Binding parentBinding = inputs.get(currentInputId);
+                            Binding childBindingWithIdx = activeIt.next();
 
-                    if (matchesCurrentPartition) {
-                        Binding parentBinding = inputs.get(currentInputId);
-                        Binding childBindingWithIdx = activeIt.next();
-
-                        // Check for compatibility
-                        mergedBindingWithIdx = Algebra.merge(parentBinding, childBindingWithIdx);
-                        if (mergedBindingWithIdx == null) {
-                            continue;
-                        } else {
-                            break;
+                            // Check for compatibility
+                            mergedBindingWithIdx = Algebra.merge(parentBinding, childBindingWithIdx);
+                            if (mergedBindingWithIdx == null) {
+                                continue;
+                            } else {
+                                break;
+                            }
                         }
                     }
                 } else {
@@ -381,7 +398,7 @@ public class QueryIterServiceBulk
             SliceKey sliceKey = new SliceKey(currentInputId, currentRangeId);
 
             if (sliceKeyToClose.contains(sliceKey)) {
-                // System.out.println("Closing part key " + pk);
+                // System.out.println("Closing slice key " + pk);
                 Closeable closeable = sliceKeyToIter.get(sliceKey);
                 closeable.close();
                 sliceKeyToClose.remove(sliceKey);
@@ -416,6 +433,7 @@ public class QueryIterServiceBulk
         }
 
         if (result == null) {
+            result = endOfData();
             freeResources();
         }
 
@@ -434,6 +452,7 @@ public class QueryIterServiceBulk
 
     protected void freeResources() {
         if (backendIt != null) {
+            backendIt.getDelegate().close();
             backendIt.close();
         }
 
@@ -441,6 +460,7 @@ public class QueryIterServiceBulk
             Closeable closeable = sliceKeyToIter.get(partKey);
             closeable.close();
         }
+
         sliceKeyToClose.clear();
 
         inputToRangeToOutput.clear();
@@ -452,16 +472,23 @@ public class QueryIterServiceBulk
     }
 
     @Override
-    public synchronized void closeIterator() {
+    public void closeIteratorActual() {
         freeResources();
     }
 
-    /** Prepare the lazy execution of the next batch and register all iterators with {@link #sliceKeyToIter} */
+    @Override
+    protected void requestCancel() {
+    }
+
+    /**
+     * Prepare the lazy execution of the next batch and register all iterators with {@link #sliceKeyToIter}.
+     * Only called from {@link #moveToNext()}.
+     */
     // seqId = sequential number injected into the request
     // inputId = id (index) of the input binding
     // rangeId = id of the range w.r.t. to the input binding
     // sliceKey = (inputId, rangeId)
-    public void prepareNextBatchExec(boolean bypassCacheOnFirstInput) {
+    protected void prepareNextBatchExec(boolean bypassCacheOnFirstInput) {
 
         freeResources();
 
@@ -494,18 +521,22 @@ public class QueryIterServiceBulk
             // Binding joinBinding = new BindingProject(joinVarMap.keySet(), inputBinding);
 
             Slice<Binding[]> slice = null;
-            Lock lock = null;
+            Lock sliceReadLock = null;
             RefFuture<ServiceCacheValue> cacheValueRef = null;
 
             if (cache != null) {
-
                 ServiceCacheKey cacheKey = cacheKeyFactory.createCacheKey(inputBinding);
-                // ServiceCacheKey cacheKey = new ServiceCacheKey(targetService, serviceInfo.getRawQueryOp(), joinBinding, useLoopJoin);
-                // System.out.println("Lookup with cache key " + cacheKey);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Created cache key: {}", cacheKey);
+                }
 
                 // Note: cacheValueRef must be closed as part of the iterators that read from the cache
                 cacheValueRef = cache.getCache().claim(cacheKey);
+
                 ServiceCacheValue serviceCacheValue = cacheValueRef.await();
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Claimed slice for key {} with state {}.", cacheKey, serviceCacheValue);
+                }
 
                 // Lock an existing cache entry so we can read out the loaded ranges
                 slice = serviceCacheValue.getSlice();
@@ -514,14 +545,14 @@ public class QueryIterServiceBulk
                     slice.clear();
                 }
 
-                lock = slice.getReadWriteLock().readLock();
-
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Created cache key: " + cacheKey);
-                }
+                // Locking for reading prevents any further changes to the slice's metadata, such as loaded ranges.
+                sliceReadLock = slice.getReadWriteLock().readLock();
                 // Log.debug(BatchRequestIterator.class, "Cached ranges: " + slice.getLoadedRanges().toString());
 
-                lock.lock();
+                // FIXME I think locking the slice must immediately add an eviction guard for all data in the slice.
+                //   FIXME Right now its done in a separate step which I think can cause a race condition!!!
+                //   FIXME Also, if we know the cache size here, then we can cleverly stop caching batches that are outside of the max cache size! -so this way, rerunning the same query again will use the cache.
+                sliceReadLock.lock();
             }
 
             RangeSet<Long> loadedRanges;
@@ -566,6 +597,7 @@ public class QueryIterServiceBulk
                     ? Range.atLeast(start)
                     : Range.closedOpen(start, end);
 
+                Range<Long> lastPresentRange = null;
                 RangeMap<Long, Boolean> allRanges = TreeRangeMap.create();
                 if (bypassCacheOnFirstInput && isFirstInput) {
                     allRanges.put(requestedRange, false);
@@ -573,10 +605,14 @@ public class QueryIterServiceBulk
                     //   based on 'currentInputIdBindingsServed'
                 } else {
                     RangeSet<Long> presentRanges = loadedRanges.subRangeSet(requestedRange);
-                    RangeSet<Long> absentRanges = loadedRanges.complement().subRangeSet(requestedRange);
+                    RangeSet<Long> absentRanges = loadedRanges.complement().subRangeSet(requestedRange); // FIXME This is RangeUtils.gaps?!
 
                     presentRanges.asRanges().forEach(r -> allRanges.put(r, true));
                     absentRanges.asRanges().forEach(r -> allRanges.put(r, false));
+
+                    if (!presentRanges.isEmpty()) {
+                        lastPresentRange = presentRanges.asDescendingSetOfRanges().iterator().next();
+                    }
                 }
 
                 // If the beginning of the request range is covered by a cache then serve from it
@@ -621,21 +657,24 @@ public class QueryIterServiceBulk
                     boolean usesCacheRead = false;
                     while (rangeIt.hasNext()) {
                         SliceKey sliceKey = new SliceKey(inputId, rangeId);
-                        Entry<Range<Long>, Boolean> f = rangeIt.next();
+                        Entry<Range<Long>, Boolean> rangeAndState = rangeIt.next();
 
-                        Range<Long> range = f.getKey();
-                        boolean isLoaded = f.getValue();
+                        Range<Long> range = rangeAndState.getKey();
+                        boolean isLoaded = rangeAndState.getValue();
 
                         long lo = range.lowerEndpoint();
                         long hi = range.hasUpperBound() ? range.upperEndpoint() : Long.MAX_VALUE;
                         long lim = hi == Long.MAX_VALUE ? Long.MAX_VALUE : hi - lo;
 
-                        if (isLoaded) {
+                        if (isLoaded) { // Implies (slice != null).
                             usesCacheRead = true;
+                            // Set up a an accessor for serving the cached data from the slice.
+                            // Make sure to protect the cached data from eviction.
+
                             // Accessor will be closed via channel below
                             SliceAccessor<Binding[]> accessor = slice.newSliceAccessor();
 
-                            // Prevent eviction of the scheduled range
+                            // Prevent eviction of the scheduled range.
                             accessor.addEvictionGuard(Range.closedOpen(lo, hi));
 
                             // Create a channel over the accessor for sequential reading
@@ -651,15 +690,14 @@ public class QueryIterServiceBulk
                             IteratorCloseable<Binding> baseIt = new IteratorOverReadableChannel<>(channel.getArrayOps(), channel, 1024 * 4);
 
                             // The last iterator's close method also unclaims the cache entry
-                            Runnable cacheEntryCloseAction = rangeIt.hasNext() || finalCacheValueRef == null
-                                    ? baseIt::close
-                                    : () -> {
-                                        baseIt.close();
-                                        finalCacheValueRef.close();
-                                    };
+                            IteratorCloseable<Binding> coreIt = !range.equals(lastPresentRange) || finalCacheValueRef == null
+                                ? baseIt
+                                : Iter.onClose(baseIt, () -> {
+                                    finalCacheValueRef.close();
+                                });
 
                             // Bridge the cache iterator to jena
-                            QueryIterator qIterA = QueryIterPlainWrapper.create(Iter.onClose(baseIt, cacheEntryCloseAction), execCxt);
+                            QueryIterator qIterA = QueryIterPlainWrapper.create(coreIt, execCxt);
 
                             Map<Var, Var> normedToScoped = serviceInfo.getVisibleSubOpVarsNormedToScoped();
                             qIterA = new QueryIteratorMapped(qIterA, normedToScoped);
@@ -670,10 +708,9 @@ public class QueryIterServiceBulk
                                 BindingFactory.binding(b, idxVar, NodeFactoryExtra.intToNode(idxVarValue)), execCxt);
 
                             QueryIterPeek it = QueryIterPeek.create(qIterB, execCxt);
-
                             sliceKeyToIter.put(sliceKey, it);
                             sliceKeyToClose.add(sliceKey);
-                        } else {
+                        } else { // if range is not loaded into cache then schedule a backend request
                             PartitionRequest<Binding> request = new PartitionRequest<>(nextAllocOutputId, inputBinding, lo, lim);
                             backendRequests.put(nextAllocOutputId, request);
                             sliceKeysForBackend.add(sliceKey);
@@ -692,16 +729,16 @@ public class QueryIterServiceBulk
                     }
                 }
             } finally {
-                if (lock != null) {
-                    lock.unlock();
+                if (sliceReadLock != null) {
+                    sliceReadLock.unlock();
                 }
             }
 
             rangeId = 0;
         }
 
-        // Create *deferred* a remote execution if needed
-        // A limit on the query may cause the deferred execution to never run
+        // Create a *deferred* backend query execution if needed.
+        // A limit on the query may cause the deferred execution to never run.
         if (!backendRequests.isEmpty()) {
             BatchQueryRewriteResult rewrite = batchQueryRewriter.rewrite(backendRequests);
             // System.out.println(rewrite);
@@ -713,15 +750,17 @@ public class QueryIterServiceBulk
             // (1) we can merge it with other backend and cache requests in the right order
             // (2) responses are written to the cache
             Supplier<QueryIterator> qIterSupplier = () -> {
-                QueryIterator r = opExecutor.exec(substitutedOp);
+                QueryIterator r = opExecutor.exec(substitutedOp, execCxt);
                 return r;
             };
 
-            QueryIterator qIter = new QueryIterDefer(qIterSupplier);
+            QueryIterator qIter = new QueryIterDefer(execCxt, qIterSupplier);
+            qIter = new QueryIteratorOverAbortableIterator(AbortableIterators.adapt(qIter));
 
             // Wrap the iterator such that the items are cached
             if (cache != null) {
-                qIter = new QueryIterWrapperCache(qIter, cacheBulkSize, cache, cacheKeyFactory, backendRequests, idxVar, targetService);
+                qIter = AbortableIterators.asQueryIterator(
+                        new QueryIterWrapperCache(execCxt, qIter, cacheBulkSize, cache, cacheKeyFactory, backendRequests, idxVar, targetService));
             }
 
             // Apply renaming after cache to avoid mismatch between op and bindings
@@ -770,4 +809,3 @@ public class QueryIterServiceBulk
         return outputToSliceKey.get(outputId);
     }
 }
-
