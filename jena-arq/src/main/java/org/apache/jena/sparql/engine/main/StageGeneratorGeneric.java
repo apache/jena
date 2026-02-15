@@ -63,38 +63,30 @@ public class StageGeneratorGeneric implements StageGenerator {
     protected QueryIterator execute(BasicPattern pattern, ReorderTransformation reorder,
                                     QueryIterator input, ExecutionContext execCxt) {
         Explain.explain(pattern, execCxt.getContext()) ;
+        try {
+            if ( ! input.hasNext() )
+                return input ;
 
-         if ( reorder != null && pattern.size() >= 2 ) {
-            // If pattern size is 0 or 1, nothing to do.
-            BasicPattern bgp2 = pattern ;
+            if ( reorder != null && pattern.size() >= 2 ) {
+                // If pattern size is 0 or 1, nothing to do.
+                BasicPattern bgp2 = pattern ;
 
-            // Try to ground the pattern
-            if ( ! input.isJoinIdentity() ) {
-                QueryIterPeek peek = QueryIterPeek.create(input, execCxt) ;
-                // And now use this one
-                input = peek ;
-                Binding b ;
-                // Eager access may fail e.g. due to timeout.
-                try {
-                    b = peek.peek() ;
-                } catch (Exception e) {
-                    return new QueryIterFailed(input, execCxt, e);
+                // Try to ground the pattern
+                if ( ! input.isJoinIdentity() ) {
+                    QueryIterPeek peek = QueryIterPeek.create(input, execCxt) ;
+                    // And now use this one
+                    input = peek ;
+                    Binding b = peek.peek() ;
+                    bgp2 = Substitute.substitute(pattern, b) ;
                 }
-                bgp2 = Substitute.substitute(pattern, b) ;
+                ReorderProc reorderProc = reorder.reorderIndexes(bgp2) ;
+                pattern = reorderProc.reorder(pattern) ;
             }
-            ReorderProc reorderProc = reorder.reorderIndexes(bgp2) ;
-            pattern = reorderProc.reorder(pattern) ;
-        } else {
-            // Eager access may fail e.g. due to timeout.
-            try {
-                if ( ! input.hasNext() )
-                    return input ;
-            } catch (Exception e) {
-                return new QueryIterFailed(input, execCxt, e);
-            }
-        }
 
-        Explain.explain("Reorder/generic", pattern, execCxt.getContext()) ;
-        return PatternMatchData.execute(execCxt.getActiveGraph(), pattern, input, null, execCxt) ;
+            Explain.explain("Reorder/generic", pattern, execCxt.getContext()) ;
+            return PatternMatchData.execute(execCxt.getActiveGraph(), pattern, input, null, execCxt) ;
+        } catch (Exception e) {
+            return new QueryIterFailed(input, execCxt, e);
+        }
     }
 }

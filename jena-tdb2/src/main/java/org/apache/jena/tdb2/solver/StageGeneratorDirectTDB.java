@@ -34,7 +34,7 @@ import org.apache.jena.tdb2.store.GraphViewSwitchable;
 import org.apache.jena.tdb2.store.NodeId;
 
 /**
- * Execute TDB requests directly -- no reordering Using OpExecutor is preferred.
+ * Execute TDB requests directly -- no reordering. Using OpExecutor is preferred.
  */
 public class StageGeneratorDirectTDB implements StageGenerator {
     // Using OpExecutor is preferred.

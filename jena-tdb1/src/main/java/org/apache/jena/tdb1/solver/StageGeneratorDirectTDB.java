@@ -23,38 +23,35 @@ package org.apache.jena.tdb1.solver;
 
 import java.util.function.Predicate;
 
-import org.apache.jena.atlas.lib.tuple.Tuple ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.sparql.core.BasicPattern ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.main.StageGenerator ;
+import org.apache.jena.atlas.lib.tuple.Tuple;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.sparql.core.BasicPattern;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.main.StageGenerator;
 import org.apache.jena.tdb1.store.GraphTDB;
 import org.apache.jena.tdb1.store.NodeId;
 
-/** Execute TDB requests directly -- no reordering
- *  Using OpExecutor is preferred.
+/**
+ * Execute TDB requests directly -- no reordering. Using OpExecutor is preferred.
  */
-public class StageGeneratorDirectTDB implements StageGenerator
-{
+public class StageGeneratorDirectTDB implements StageGenerator {
     // Using OpExecutor is preferred.
-    StageGenerator above = null ;
+    StageGenerator above = null;
 
-    public StageGeneratorDirectTDB(StageGenerator original)
-    {
-        above = original ;
+    public StageGeneratorDirectTDB(StageGenerator original) {
+        above = original;
     }
 
     @Override
-    public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
-    {
+    public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt) {
         // --- In case this isn't for TDB
-        Graph g = execCxt.getActiveGraph() ;
+        Graph g = execCxt.getActiveGraph();
 
-        if ( ! ( g instanceof GraphTDB graph) )
+        if ( !(g instanceof GraphTDB graph) )
             // Not us - bounce up the StageGenerator chain
-            return above.execute(pattern, input, execCxt) ;
-        Predicate<Tuple<NodeId>> filter = QC2.getFilter(execCxt.getContext()) ;
-        return PatternMatchTDB1.execute(graph, pattern, input, filter, execCxt) ;
+            return above.execute(pattern, input, execCxt);
+        Predicate<Tuple<NodeId>> filter = QC2.getFilter(execCxt.getContext());
+        return PatternMatchTDB1.execute(graph, pattern, input, filter, execCxt);
     }
 }
