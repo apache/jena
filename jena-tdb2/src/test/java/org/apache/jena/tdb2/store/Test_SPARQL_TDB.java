@@ -32,8 +32,13 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.sparql.exec.RowSet;
+import org.apache.jena.sparql.exec.RowSetOps;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
+import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.TDB2;
 import org.apache.jena.tdb2.TDB2Factory;
 import org.apache.jena.update.*;
@@ -41,8 +46,7 @@ import org.apache.jena.update.*;
 /**
  * Test SPARQL
  */
-public class Test_SPARQL_TDB
-{
+public class Test_SPARQL_TDB {
     private static Dataset create() {
         return TDB2Factory.createDataset();
     }
@@ -55,12 +59,13 @@ public class Test_SPARQL_TDB
     private static Triple triple = SSE.parseTriple("(<x> <y> 123)");
 
     // Standalone graph.
-    @Test public void sparql1()
-    {
-        // Test OpExecutor.execute(OpBGP) for a named graph used as a standalone model
+    @Test
+    public void sparql1() {
+        // Test OpExecutor.execute(OpBGP) for a named graph used as a standalone
+        // model
         Dataset ds = create();
         add(ds, graphName, triple);
-        Txn.executeRead(ds, ()->{
+        Txn.executeRead(ds, () -> {
             Model m = ds.getNamedModel(graphName);
             String qs = "SELECT * { ?s ?p ?o . }";
             Query query = QueryFactory.create(qs);
@@ -71,17 +76,18 @@ public class Test_SPARQL_TDB
     }
 
     // Standalone graph.
-    @Test public void sparql2()
-    {
-        // Test OpExecutor.execute(OpFilter)for a named graph used as a standalone model
+    @Test
+    public void sparql2() {
+        // Test OpExecutor.execute(OpFilter)for a named graph used as a standalone
+        // model
         Dataset ds = create();
         add(ds, graphName, triple);
 
-        Txn.executeRead(ds, ()->{
+        Txn.executeRead(ds, () -> {
             Model m = ds.getNamedModel(graphName);
             String qs = "SELECT * { ?s ?p ?o . FILTER ( ?o < 456 ) }";
             Query query = QueryFactory.create(qs);
-            try(QueryExecution qexec = QueryExecutionFactory.create(query, m)) {
+            try (QueryExecution qexec = QueryExecutionFactory.create(query, m)) {
                 ResultSet rs = qexec.execSelect();
                 ResultSetFormatter.consume(rs);
             }
@@ -89,11 +95,11 @@ public class Test_SPARQL_TDB
     }
 
     // Requires OpDatasetNames
-    @Test public void sparql3()
-    {
+    @Test
+    public void sparql3() {
         Dataset dataset = create();
         // No triple added
-        Txn.executeRead(dataset, ()->{
+        Txn.executeRead(dataset, () -> {
             Query query = QueryFactory.create("SELECT ?g { GRAPH ?g {} }");
             QueryExecution qExec = QueryExecutionFactory.create(query, dataset);
             ResultSet rs = qExec.execSelect();
@@ -102,11 +108,11 @@ public class Test_SPARQL_TDB
         });
     }
 
-    @Test public void sparql4()
-    {
+    @Test
+    public void sparql4() {
         Dataset dataset = create();
         add(dataset, graphName, triple);
-        Txn.executeRead(dataset, ()->{
+        Txn.executeRead(dataset, () -> {
             Query query = QueryFactory.create("SELECT ?g { GRAPH ?g {} }");
             QueryExecution qExec = QueryExecutionFactory.create(query, dataset);
             ResultSet rs = qExec.execSelect();
@@ -115,30 +121,44 @@ public class Test_SPARQL_TDB
         });
     }
 
-    @Test public void sparql5()
-    {
+    @Test
+    public void sparql5() {
         Dataset dataset = create();
         add(dataset, graphName, triple);
-        Txn.executeRead(dataset, ()->{
-            Query query = QueryFactory.create("ASK { GRAPH <"+graphName+"> {} }");
+        Txn.executeRead(dataset, () -> {
+            Query query = QueryFactory.create("ASK { GRAPH <" + graphName + "> {} }");
             boolean b = QueryExecutionFactory.create(query, dataset).execAsk();
             assertEquals(true, b);
         });
     }
 
-    @Test public void sparql6()
-    {
+    @Test
+    public void sparql6() {
         Dataset dataset = create();
         add(dataset, graphName, triple);
-        Txn.executeRead(dataset, ()->{
+        Txn.executeRead(dataset, () -> {
             Query query = QueryFactory.create("ASK { GRAPH <http://example/x> {} }");
             boolean b = QueryExecutionFactory.create(query, dataset).execAsk();
             assertEquals(false, b);
         });
     }
 
+    @Test
+    public void sparql7() {
+        // https://github.com/apache/jena/issues/3751
+        String qs = """
+                PREFIX : <http://example/>
+                SELECT * { ?x :property+ ?y . ?z :q1 123 . ?z :q2 456 . }
+                """;
+        DatasetGraph dsg = DatabaseMgr.createDatasetGraph();
+        dsg.executeRead(()->{
+            RowSet rs = QueryExec.dataset(dsg).query(qs).select();
+            RowSetOps.consume(rs);
+        });
+    }
+
     private static void add(Dataset dataset, String graphName, Triple triple) {
-        Txn.executeWrite(dataset, ()->{
+        Txn.executeWrite(dataset, () -> {
             Graph g2 = dataset.asDatasetGraph().getGraph(NodeFactory.createURI(graphName));
             g2.add(triple);
         });
@@ -146,10 +166,10 @@ public class Test_SPARQL_TDB
 
     // Test transactions effective.
 
-    @Test public void sparql_txn_1()
-    {
+    @Test
+    public void sparql_txn_1() {
         Dataset dataset = create();
-        Txn.executeWrite(dataset, ()->{
+        Txn.executeWrite(dataset, () -> {
             update(dataset, "INSERT DATA { <x:s> <x:p> <x:o> }");
         });
         // Explicit trasnaction steps.
@@ -159,56 +179,55 @@ public class Test_SPARQL_TDB
             assertEquals(1, n);
             n = count(dataset, "SELECT * { <x:s> <x:p> <x:o>}");
             assertEquals(1, n);
-        } finally { dataset.end(); }
+        } finally {
+            dataset.end();
+        }
     }
 
-    @Test public void sparql_txn_2()
-    {
+    @Test
+    public void sparql_txn_2() {
         Dataset dataset1 = create(Location.mem("foo"));
         Dataset dataset2 = create(Location.mem("foo"));
 
-        Txn.executeWrite(dataset1, ()->{
+        Txn.executeWrite(dataset1, () -> {
             update(dataset1, "INSERT DATA { <x:s> <x:p> <x:o> }");
         });
 
-        Txn.executeRead(dataset1, ()->{
+        Txn.executeRead(dataset1, () -> {
             assertEquals(1, count(dataset1));
         });
 
         // Same location.
-        Txn.executeRead(dataset2, ()->{
+        Txn.executeRead(dataset2, () -> {
             assertEquals(1, count(dataset2));
         });
     }
 
-    @Test public void sparql_update_unionGraph()
-    {
+    @Test
+    public void sparql_update_unionGraph() {
         Dataset ds = TDB2Factory.createDataset();
         // Update concrete default graph
-        Txn.executeWrite(ds, ()->{
+        Txn.executeWrite(ds, () -> {
             ds.asDatasetGraph().add(SSE.parseQuad("(<g> <s> <p> 123)"));
         });
         ds.getContext().setTrue(TDB2.symUnionDefaultGraph);
 
-        Txn.executeWrite(ds, ()->{
+        Txn.executeWrite(ds, () -> {
             // Update by looking in union graph
-            String us = StrUtils.strjoinNL(
-                "INSERT { GRAPH <http://example/g2> { ?s ?p 'NEW' } }",
-                "WHERE { ",
-                     "?s ?p 123",
-                " }" );
+            String us = StrUtils.strjoinNL("INSERT { GRAPH <http://example/g2> { ?s ?p 'NEW' } }", "WHERE { ", "?s ?p 123", " }");
             UpdateRequest req = UpdateFactory.create(us);
             UpdateAction.execute(req, ds);
         });
 
-        Txn.executeRead(ds, ()->{
+        Txn.executeRead(ds, () -> {
             Model m = ds.getNamedModel("http://example/g2");
-            assertEquals(1, m.size(), ()->"Did not find 1 statement in named graph");
+            assertEquals(1, m.size(), () -> "Did not find 1 statement in named graph");
         });
     }
 
-    private int count(Dataset dataset)
-    { return count(dataset, "SELECT * { ?s ?p ?o }"); }
+    private int count(Dataset dataset) {
+        return count(dataset, "SELECT * { ?s ?p ?o }");
+    }
 
     private int count(Dataset dataset, String queryString)
 
@@ -218,8 +237,8 @@ public class Test_SPARQL_TDB
         ResultSet rs = qExec.execSelect();
         return ResultSetFormatter.consume(rs);
     }
-    private void update(Dataset dataset, String string)
-    {
+
+    private void update(Dataset dataset, String string) {
         UpdateRequest req = UpdateFactory.create(string);
         UpdateExecution proc = UpdateExecutionFactory.create(req, dataset);
         proc.execute();
