@@ -19,38 +19,34 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.sparql.engine.iterator ;
+package org.apache.jena.sparql.engine.iterator;
 
-import java.util.HashSet ;
-import java.util.Set ;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
 
 /** Memory limited QueryIterDistinct */
-public class QueryIterDistinctMem extends QueryIterDistinctReduced
-{
-    private Set<Binding> seen = new HashSet<>() ;
+public class QueryIterDistinctMem extends QueryIterDistinctReduced {
+    private Set<Binding> seen = new HashSet<>();
 
-    public QueryIterDistinctMem(QueryIterator iter, ExecutionContext context)
-    {
-        super(iter, context)  ;
+    public QueryIterDistinctMem(QueryIterator iter, ExecutionContext context) {
+        super(iter, context);
     }
 
     @Override
-    protected void closeSubIterator()
-    {
-        seen = null ;
-        super.closeSubIterator() ;
+    protected void closeSubIterator() {
+        seen = null;
+        super.closeSubIterator();
     }
 
     @Override
-    protected boolean isFreshSighting(Binding binding)
-    {
+    protected boolean isFreshSighting(Binding binding) {
         if ( seen.contains(binding) )
-            return false ;
-        seen.add(binding) ;
-        return true ;
+            return false;
+        seen.add(binding);
+        return true;
     }
 }

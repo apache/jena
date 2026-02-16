@@ -34,28 +34,27 @@ import org.apache.jena.sparql.serializer.SerializationContext ;
 
 public class QueryIterNullIterator extends QueryIter
 {
-    public static QueryIterator create(ExecutionContext qCxt) { return new QueryIterNullIterator(qCxt) ; }
-    
-    // Or QueryIterYieldN with N = 0 ;
-    // but sometimes it clearer just to w-r-i-t-e the code.
-    
+    public static QueryIterator create(ExecutionContext qCxt) { return new QueryIterNullIterator(qCxt); }
+
     public QueryIterNullIterator(ExecutionContext qCxt) { super(qCxt) ; }
 
     @Override
-    protected boolean hasNextBinding()
-    { return false ; }
+    protected boolean hasNextBinding() {
+        return false;
+    }
 
     @Override
     protected Binding moveToNextBinding()
-    { throw new NoSuchElementException(Lib.className(this)) ; }
+    { throw new NoSuchElementException(Lib.className(this)); }
 
     @Override
     protected void closeIterator() {}
-    
-    @Override
-    protected void requestCancel() { }
 
     @Override
-    public void output(IndentedWriter out, SerializationContext sCxt)
-    { out.println(Lib.className(this)) ; }
+    protected void requestCancel() {}
+
+    @Override
+    public void output(IndentedWriter out, SerializationContext sCxt) {
+        out.println(Lib.className(this));
+    }
 }

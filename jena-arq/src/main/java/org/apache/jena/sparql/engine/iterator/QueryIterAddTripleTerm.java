@@ -77,5 +77,4 @@ public class QueryIterAddTripleTerm extends QueryIterProcessBinding {
     protected void details(IndentedWriter out, SerializationContext sCxt) {
         out.print(this.getClass().getSimpleName()+": ["+var+"] " + triple);
     }
-
 }

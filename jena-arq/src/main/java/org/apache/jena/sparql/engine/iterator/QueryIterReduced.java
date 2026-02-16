@@ -21,36 +21,34 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import java.util.ArrayList ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
 
-public class QueryIterReduced extends QueryIterDistinctReduced
-{
-    List<Binding> window = new ArrayList<>() ;
-    int N = 1 ;
-    
-    public QueryIterReduced(QueryIterator iter, ExecutionContext context)
-    { super(iter, context)  ; }
+public class QueryIterReduced extends QueryIterDistinctReduced {
+    List<Binding> window = new ArrayList<>();
+    int N = 1;
 
-    @Override
-    protected void closeSubIterator()
-    {
-        window = null ;
-        super.closeSubIterator() ;
+    public QueryIterReduced(QueryIterator iter, ExecutionContext context) {
+        super(iter, context);
     }
 
     @Override
-    protected boolean isFreshSighting(Binding b)
-    {
+    protected void closeSubIterator() {
+        window = null;
+        super.closeSubIterator();
+    }
+
+    @Override
+    protected boolean isFreshSighting(Binding b) {
         if ( window.contains(b) )
-            return false ;
+            return false;
         if ( window.size() >= N )
-            window.remove(window.size()-1) ;
-        window.add(0, b) ;
-        return true ;
+            window.remove(window.size() - 1);
+        window.add(0, b);
+        return true;
     }
 }

@@ -21,77 +21,74 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.Plan ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.serializer.SerializationContext ;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.Plan;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.serializer.SerializationContext;
 
 /**
- * This class marks a QueryIter that takes two QueryIterators as input. */
-public abstract class QueryIter2 extends QueryIter
-{
-    private QueryIterator leftInput ; 
-    private QueryIterator rightInput ;
-    
-    public QueryIter2(QueryIterator left, QueryIterator right, ExecutionContext execCxt)
-    { 
-        super(execCxt) ;
-        this.leftInput = left ;
-        this.rightInput = right ;
+ * This class marks a QueryIter that takes two QueryIterators as input.
+ */
+public abstract class QueryIter2 extends QueryIter {
+    private QueryIterator leftInput;
+    private QueryIterator rightInput;
+
+    public QueryIter2(QueryIterator left, QueryIterator right, ExecutionContext execCxt) {
+        super(execCxt);
+        this.leftInput = left;
+        this.rightInput = right;
     }
-    
-    protected QueryIterator getLeft()   { return leftInput ; } 
-    protected QueryIterator getRight()  { return rightInput ; } 
-    
+
+    protected QueryIterator getLeft()   { return leftInput ; }
+    protected QueryIterator getRight()  { return rightInput ; }
+
     @Override
-    protected final
-    void closeIterator()
-    {
-        closeSubIterator() ;
-        performClose(leftInput) ;
-        performClose(rightInput) ;
-        leftInput = null ;
-        rightInput = null ;
+    protected final void closeIterator() {
+        closeSubIterator();
+        performClose(leftInput);
+        performClose(rightInput);
+        leftInput = null;
+        rightInput = null;
     }
-    
+
     @Override
-    protected final
-    void requestCancel()
-    {
-        requestSubCancel() ;
-        performRequestCancel(leftInput) ;
-        performRequestCancel(rightInput) ;
+    protected final void requestCancel() {
+        requestSubCancel();
+        performRequestCancel(leftInput);
+        performRequestCancel(rightInput);
     }
-    
+
     /** Cancellation of the query execution is happening */
-    protected abstract void requestSubCancel() ;
-    
-    /** Pass on the close method - no need to close the left or right QueryIterators passed to the QueryIter2 constructor */
-    protected abstract void closeSubIterator() ;
-    
+    protected abstract void requestSubCancel();
+
+    /**
+     * Pass on the close method - no need to close the left or right QueryIterators
+     * passed to the QueryIter2 constructor
+     */
+    protected abstract void closeSubIterator();
+
     // Do better
     @Override
-    public void output(IndentedWriter out, SerializationContext sCxt)
-    { 
-        out.println(Lib.className(this)) ;
-        out.incIndent() ;
-        
-        out.print(Plan.startMarker) ;
-        out.incIndent() ;
-        getLeft().output(out, sCxt) ;
-        out.decIndent() ;
-        //out.ensureStartOfLine() ;
-        out.println(Plan.finishMarker) ;
-        
-        out.print(Plan.startMarker) ;
-        out.incIndent() ;
-        getRight().output(out, sCxt) ;
-        out.decIndent() ;
-        //out.ensureStartOfLine() ;
-        out.println(Plan.finishMarker) ;
-        
-        out.decIndent() ;
+    public void output(IndentedWriter out, SerializationContext sCxt) {
+        out.println(Lib.className(this));
+        out.incIndent();
+
+        out.print(Plan.startMarker);
+        out.incIndent();
+        getLeft().output(out, sCxt);
+        out.decIndent();
+        // out.ensureStartOfLine() ;
+        out.println(Plan.finishMarker);
+
+        out.print(Plan.startMarker);
+        out.incIndent();
+        getRight().output(out, sCxt);
+        out.decIndent();
+        // out.ensureStartOfLine() ;
+        out.println(Plan.finishMarker);
+
+        out.decIndent();
     }
 }

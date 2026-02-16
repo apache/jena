@@ -29,33 +29,30 @@ import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
 
 /** QueryIterator that calls a list of abort actions when a cancel happens. */
-public class QueryIterAbortable extends QueryIterPlainWrapper
-{
-    final private QueryIterator originalInput ;
-    private List<Abortable> killList ;
+public class QueryIterAbortable extends QueryIterPlainWrapper {
+    final private QueryIterator originalInput;
+    private List<Abortable> killList;
 
     // The original input needs closing as well.
-    public QueryIterAbortable(Iterator<Binding> iterBinding, List<Abortable> killList, QueryIterator originalInput, ExecutionContext execCxt)
-    {
-        super(iterBinding, execCxt) ;
-        this.originalInput = originalInput ;
-        this.killList = killList ;
+    public QueryIterAbortable(Iterator<Binding> iterBinding, List<Abortable> killList, QueryIterator originalInput,
+                              ExecutionContext execCxt) {
+        super(iterBinding, execCxt);
+        this.originalInput = originalInput;
+        this.killList = killList;
     }
 
     @Override
-    protected void closeIterator()
-    {
+    protected void closeIterator() {
         if ( originalInput != null )
             originalInput.close();
-        super.closeIterator() ;
+        super.closeIterator();
     }
 
     @Override
-    protected void requestCancel()
-    {
+    protected void requestCancel() {
         if ( killList != null )
             for ( Abortable it : killList )
-                it.abort() ;
+                it.abort();
         if ( originalInput != null )
             originalInput.cancel();
     }
