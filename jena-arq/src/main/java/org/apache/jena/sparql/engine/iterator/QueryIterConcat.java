@@ -33,114 +33,97 @@ import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 
-
 /**
- * A query iterator that joins two or more iterators into a single iterator. */ 
+ * A query iterator that joins two or more iterators into a single iterator.
+ */
 
-public class QueryIterConcat extends QueryIter
-{
-    boolean initialized = false ;
-    List<QueryIterator> iteratorList = new ArrayList<>() ;
-    Iterator<QueryIterator> iterator ;
-    QueryIterator currentQIter = null ;
+public class QueryIterConcat extends QueryIter {
+    boolean initialized = false;
+    List<QueryIterator> iteratorList = new ArrayList<>();
+    Iterator<QueryIterator> iterator;
+    QueryIterator currentQIter = null;
 
-    Binding binding ;
-    boolean doneFirst = false ;
+    Binding binding;
+    boolean doneFirst = false;
 
-    public QueryIterConcat(ExecutionContext context)
-    {
-        super(context) ;
+    public QueryIterConcat(ExecutionContext context) {
+        super(context);
     }
 
-    private void init()
-    {
-        if ( ! initialized )
-        {
-            currentQIter = null ;
+    private void init() {
+        if ( !initialized ) {
+            currentQIter = null;
             if ( iterator == null )
-                iterator = iteratorList.listIterator() ;
+                iterator = iteratorList.listIterator();
             if ( iterator.hasNext() )
-                currentQIter = iterator.next() ;
-            initialized = true ;
+                currentQIter = iterator.next();
+            initialized = true;
         }
     }
-    
-    public void add(QueryIterator qIter)
-    {
-        if ( qIter != null )
-            iteratorList.add(qIter) ; 
-    }
-    
-    
-    @Override
-    protected boolean hasNextBinding()
-    {
-        if ( isFinished() )
-            return false ;
 
-        init() ;
+    public void add(QueryIterator qIter) {
+        if ( qIter != null )
+            iteratorList.add(qIter);
+    }
+
+    @Override
+    protected boolean hasNextBinding() {
+        if ( isFinished() )
+            return false;
+
+        init();
         if ( currentQIter == null )
-            return false ;
-        
-        while ( ! currentQIter.hasNext() )
-        {
+            return false;
+
+        while (!currentQIter.hasNext()) {
             // End sub iterator
-            //currentQIter.close() ;
-            currentQIter = null ;
+            // currentQIter.close() ;
+            currentQIter = null;
             if ( iterator.hasNext() )
-                currentQIter = iterator.next() ;
-            if ( currentQIter == null )
-            {
+                currentQIter = iterator.next();
+            if ( currentQIter == null ) {
                 // No more.
-                //close() ;
-                return false ;
+                // close() ;
+                return false;
             }
         }
-        
-        return true ;
+
+        return true;
     }
 
     @Override
-    protected Binding moveToNextBinding()
-    {
-        if ( ! hasNextBinding() )
-            throw new NoSuchElementException(Lib.className(this)) ; 
+    protected Binding moveToNextBinding() {
+        if ( !hasNextBinding() )
+            throw new NoSuchElementException(Lib.className(this));
         if ( currentQIter == null )
-            throw new NoSuchElementException(Lib.className(this)) ; 
-        
-        Binding binding = currentQIter.nextBinding() ;
-        return binding ;
+            throw new NoSuchElementException(Lib.className(this));
+
+        Binding binding = currentQIter.nextBinding();
+        return binding;
     }
 
-    
     @Override
-    protected void closeIterator()
-    {
-        for ( QueryIterator qIter : iteratorList )
-        {
-            performClose( qIter );
+    protected void closeIterator() {
+        for ( QueryIterator qIter : iteratorList ) {
+            performClose(qIter);
         }
     }
-    
+
     @Override
-    protected void requestCancel()
-    {
-        for ( QueryIterator qIter : iteratorList )
-        {
-            performRequestCancel( qIter );
+    protected void requestCancel() {
+        for ( QueryIterator qIter : iteratorList ) {
+            performRequestCancel(qIter);
         }
     }
-    
+
     @Override
-    public void output(IndentedWriter out, SerializationContext sCxt)
-    { 
-        out.println(Lib.className(this)) ;
-        out.incIndent() ;
-        for ( QueryIterator qIter : iteratorList )
-        {
-            qIter.output( out, sCxt );
+    public void output(IndentedWriter out, SerializationContext sCxt) {
+        out.println(Lib.className(this));
+        out.incIndent();
+        for ( QueryIterator qIter : iteratorList ) {
+            qIter.output(out, sCxt);
         }
-        out.decIndent() ;
-        out.ensureStartOfLine() ;
+        out.decIndent();
+        out.ensureStartOfLine();
     }
 }

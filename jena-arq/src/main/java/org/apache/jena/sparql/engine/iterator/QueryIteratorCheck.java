@@ -21,22 +21,22 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import java.util.Iterator ;
+import java.util.Iterator;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.query.QueryException;
 import org.apache.jena.sparql.SystemARQ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.serializer.SerializationContext ;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.sparql.util.Symbol;
 
 /** Query iterator that checks everything was closed correctly */
 public class QueryIteratorCheck extends QueryIteratorWrapper
 {
-    private ExecutionContext execCxt ;
+    private ExecutionContext execCxt;
 
     /**
      * Whether detection of open iterator should raise an {@link OpenIteratorException}.
@@ -52,10 +52,10 @@ public class QueryIteratorCheck extends QueryIteratorWrapper
      */
     public static class OpenIteratorException extends RuntimeException {
         private static final long serialVersionUID = 1L;
-        public OpenIteratorException() { super() ; }
-        public OpenIteratorException(Throwable cause) { super(cause) ; }
-        public OpenIteratorException(String msg) { super(msg) ; }
-        public OpenIteratorException(String msg, Throwable cause) { super(msg, cause) ; }
+        public OpenIteratorException() { super(); }
+        public OpenIteratorException(Throwable cause) { super(cause); }
+        public OpenIteratorException(String msg) { super(msg); }
+        public OpenIteratorException(String msg, Throwable cause) { super(msg, cause); }
     }
 
     private QueryIteratorCheck(QueryIterator qIter, ExecutionContext execCxt) {
@@ -75,7 +75,7 @@ public class QueryIteratorCheck extends QueryIteratorWrapper
     // Be silent about ourselves.
     @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
-    { iterator.output(out, sCxt) ; }
+    { iterator.output(out, sCxt); }
 
     public static void checkForOpenIterators(ExecutionContext execContext)
     { dump(execContext, false); }

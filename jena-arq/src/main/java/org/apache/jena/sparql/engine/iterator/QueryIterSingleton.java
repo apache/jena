@@ -21,46 +21,38 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.serializer.SerializationContext ;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.binding.BindingFactory;
+import org.apache.jena.sparql.serializer.SerializationContext;
 
 /** A singleton iterator */
 
-public class QueryIterSingleton extends QueryIterYieldN
-{
+public class QueryIterSingleton extends QueryIterYieldN {
     // A common usage?
-    public static QueryIterSingleton create(Binding parent, Var var, Node value, ExecutionContext execCxt)
-    {
-        Binding b = BindingFactory.binding(parent, var, value) ;
-        return QueryIterSingleton.create(b, execCxt) ;
+    public static QueryIterSingleton create(Binding parent, Var var, Node value, ExecutionContext execCxt) {
+        Binding b = BindingFactory.binding(parent, var, value);
+        return QueryIterSingleton.create(b, execCxt);
     }
-    
-    public static QueryIterSingleton create(Binding binding, ExecutionContext execCxt)
-    {
-        return new QueryIterSingleton(binding, execCxt) ;
+
+    public static QueryIterSingleton create(Binding binding, ExecutionContext execCxt) {
+        return new QueryIterSingleton(binding, execCxt);
     }
 
     private QueryIterSingleton(Binding binding) // Not needed
     {
-        this(binding, null) ;
+        this(binding, null);
     }
-    
-    protected QueryIterSingleton(Binding binding, ExecutionContext context)
-    {
-        super(1, binding, context) ;
+
+    protected QueryIterSingleton(Binding binding, ExecutionContext context) {
+        super(1, binding, context);
     }
-    
+
     @Override
-    public void output(IndentedWriter out, SerializationContext sCxt)
-    {
-        out.print("QueryIterSingleton "+binding);
+    public void output(IndentedWriter out, SerializationContext sCxt) {
+        out.print("QueryIterSingleton " + binding);
     }
-    
-//    @Override
-//    public void closeIterator() { super.closeIterator() ; }
 }

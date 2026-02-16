@@ -21,43 +21,38 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.sparql.core.TriplePath ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.path.PathLib ;
-import org.apache.jena.sparql.serializer.SerializationContext ;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.sparql.core.TriplePath;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.path.PathLib;
+import org.apache.jena.sparql.serializer.SerializationContext;
 
-public class QueryIterPath extends QueryIterRepeatApply
-{
-    private TriplePath triplePath ;
-    private Var varSubject = null ;
-    private Var varObject = null ;
-    
+public class QueryIterPath extends QueryIterRepeatApply {
+    private TriplePath triplePath;
+    private Var varSubject = null;
+    private Var varObject = null;
 
-    public QueryIterPath(TriplePath triplePath, QueryIterator input, ExecutionContext context)
-    {
-        super(input, context) ;
-        this.triplePath = triplePath ;
+    public QueryIterPath(TriplePath triplePath, QueryIterator input, ExecutionContext context) {
+        super(input, context);
+        this.triplePath = triplePath;
     }
 
     @Override
-    protected QueryIterator nextStage(Binding binding)
-    {
-        QueryIterator qIter = PathLib.execTriplePath(binding, triplePath, getExecContext()) ;
-        return qIter ; 
+    protected QueryIterator nextStage(Binding binding) {
+        QueryIterator qIter = PathLib.execTriplePath(binding, triplePath, getExecContext());
+        return qIter;
     }
-    
+
     @Override
-    protected void details(IndentedWriter out, SerializationContext sCxt)
-    {
-        out.print(Lib.className(this)) ;
-        out.println() ;
-        out.incIndent() ;
-        out.print(triplePath.toString()) ; 
-        out.decIndent() ;
+    protected void details(IndentedWriter out, SerializationContext sCxt) {
+        out.print(Lib.className(this));
+        out.println();
+        out.incIndent();
+        out.print(triplePath.toString());
+        out.decIndent();
     }
 }

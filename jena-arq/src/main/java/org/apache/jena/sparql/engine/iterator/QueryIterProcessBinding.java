@@ -19,17 +19,17 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.sparql.engine.iterator ;
+package org.apache.jena.sparql.engine.iterator;
 
-import java.util.NoSuchElementException ;
+import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.query.QueryCancelledException;
-import org.apache.jena.sparql.ARQInternalErrorException ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
 
 /**
  * An iterator that applies a condition. The condition may return a different
@@ -41,14 +41,14 @@ public abstract class QueryIterProcessBinding extends QueryIter1 {
      * Process the binding - return null for "not accept". Subclasses may return a
      * different Binding to the argument and the result is the returned Binding.
      */
-    abstract public Binding accept(Binding binding) ;
+    abstract public Binding accept(Binding binding);
 
-    private Binding nextBinding ;
-    private final AtomicBoolean signalCancel ;
+    private Binding nextBinding;
+    private final AtomicBoolean signalCancel;
 
     public QueryIterProcessBinding(QueryIterator qIter, ExecutionContext context) {
-        super(qIter, context) ;
-        nextBinding = null ;
+        super(qIter, context);
+        nextBinding = null;
         AtomicBoolean signal;
         try {
             signal = context.getCancelSignal();
@@ -67,27 +67,27 @@ public abstract class QueryIterProcessBinding extends QueryIter1 {
     protected boolean hasNextBinding() {
         // Needs to be idempotent.?
         if ( isFinished() )
-            return false ;
+            return false;
 
         if ( nextBinding != null )
-            return true ;
+            return true;
 
         // Null iterator.
         if ( getInput() == null )
-            throw new ARQInternalErrorException(Lib.className(this) + ": Null iterator") ;
+            throw new ARQInternalErrorException(Lib.className(this) + ": Null iterator");
 
         while (getInput().hasNext()) {
             checkCancelled();
             // Skip forward until a binding to return is found.
-            Binding input = getInput().nextBinding() ;
-            Binding output = accept(input) ;
+            Binding input = getInput().nextBinding();
+            Binding output = accept(input);
             if ( output != null ) {
-                nextBinding = output ;
-                return true ;
+                nextBinding = output;
+                return true;
             }
         }
-        nextBinding = null ;
-        return false ;
+        nextBinding = null;
+        return false;
     }
 
     private final void checkCancelled() {
@@ -105,11 +105,11 @@ public abstract class QueryIterProcessBinding extends QueryIter1 {
     @Override
     public Binding moveToNextBinding() {
         if ( hasNext() ) {
-            Binding r = nextBinding ;
-            nextBinding = null ;
-            return r ;
+            Binding r = nextBinding;
+            nextBinding = null;
+            return r;
         }
-        throw new NoSuchElementException() ;
+        throw new NoSuchElementException();
     }
 
     @Override

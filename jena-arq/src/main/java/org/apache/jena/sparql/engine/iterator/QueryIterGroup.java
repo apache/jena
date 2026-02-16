@@ -21,27 +21,27 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import java.util.ArrayList ;
-import java.util.Collection ;
-import java.util.Iterator ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.collections4.MultiMapUtils;
 import org.apache.commons.collections4.MultiValuedMap;
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.IteratorDelayedInitialization ;
-import org.apache.jena.atlas.lib.Pair ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.core.VarExprList ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.atlas.iterator.IteratorDelayedInitialization;
+import org.apache.jena.atlas.lib.Pair;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.core.VarExprList;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingBuilder;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.expr.ExprAggregator ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.aggregate.Accumulator ;
+import org.apache.jena.sparql.engine.binding.BindingFactory;
+import org.apache.jena.sparql.expr.ExprAggregator;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.aggregate.Accumulator;
 
 public class QueryIterGroup extends QueryIterPlainWrapper
 {
@@ -70,7 +70,7 @@ public class QueryIterGroup extends QueryIterPlainWrapper
         super.closeIterator();
     }
 
-	private static Pair<Var, Accumulator> placeholder = Pair.create((Var)null, (Accumulator)null) ;
+	private static Pair<Var, Accumulator> placeholder = Pair.create((Var)null, (Accumulator)null);
 
     private static Iterator<Binding> calc(final QueryIterator iter,
                                           final VarExprList groupVarExpr,
@@ -90,7 +90,7 @@ public class QueryIterGroup extends QueryIterPlainWrapper
                 if ( noInput ) {
                     if ( hasGroupBy )
                         // GROUP
-                        return Iter.nullIterator() ;
+                        return Iter.nullIterator();
                     if ( ! hasAggregators ) {
                         // No GROUP BY, no aggregators. One result row of no columns.
                         return Iter.singletonIterator(BindingFactory.binding());
