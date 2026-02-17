@@ -31,7 +31,10 @@ import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 
-/** Turn an normal java.util.Iterator (of Bindings) into a QueryIterator */
+/**
+ * Turn an normal {@link java.util.Iterator} (of {@link Binding Bindings})
+ * into a {@link QueryIterator}.
+ */
 public class QueryIterPlainWrapper extends QueryIter
 {
     public static QueryIterator create(Iterator<Binding> iter, ExecutionContext execCxt) {
@@ -52,22 +55,29 @@ public class QueryIterPlainWrapper extends QueryIter
         iterator = iter;
     }
 
-    /** Preferable to use a constructor - but sometimes that is inconvenient
-     *  so pass null in the constructor and then call this before the iterator is
-     *  used.
+    /**
+     * Preferable to use a constructor - but sometimes that is inconvenient so pass
+     * null in the constructor and then call this before the iterator is used.
      */
-    public void setIterator(Iterator<Binding> iterator) { this.iterator = iterator; }
+    protected void setIterator(Iterator<Binding> iter) {
+        // Only used by QueryIterTopN and QueryIterSort for delayed setting in their constructors.
+        if ( this.iterator != null )
+            throw new IllegalStateException("QueryIterPlainWrapper: iterator already set");
+        this.iterator = iter;
+    }
 
     @Override
-    protected boolean hasNextBinding() { return iterator.hasNext(); }
+    protected boolean hasNextBinding() {
+        return iterator.hasNext();
+    }
 
     @Override
-    protected Binding moveToNextBinding() { return iterator.next(); }
+    protected Binding moveToNextBinding() {
+        return iterator.next();
+    }
 
-    // Synchronized to prevent race conditions when abort() and close() compete
-    // to close the iterator concurrent by calling closeIterator()
     @Override
-    protected synchronized void closeIterator() {
+    protected void closeIterator() {
         if ( iterator != null ) {
             // In case we wrapped a QueryIterator or a Jena graph ExtendedIterator.
             // Includes the effect of NiceIterator.close(iterator)
@@ -77,8 +87,7 @@ public class QueryIterPlainWrapper extends QueryIter
     }
 
     @Override
-    protected void requestCancel()
-    { closeIterator(); }
+    protected void requestCancel() {}
 
     @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
