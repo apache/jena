@@ -55,7 +55,10 @@ public abstract class QueryIteratorBase
     // It causes notification to cancellation to be made, once, by calling .requestCancel()
     // which is called synchronously with .cancel() and asynchronously with iterator execution.
     private final AtomicBoolean requestingCancel;
+
+    // Used so that requestCanel is called once.
     private volatile boolean cancelOnce = false;
+
     private Object cancelLock = new Object();
 
     /** QueryIteratorBase with no cancellation facility */
@@ -75,8 +78,6 @@ public abstract class QueryIteratorBase
     private boolean requestingCancel() {
         return (requestingCancel != null && requestingCancel.get()) || Thread.currentThread().isInterrupted() ;
     }
-
-    private void haveCancelled() {}
 
     // -------- The contract with the subclasses
 
