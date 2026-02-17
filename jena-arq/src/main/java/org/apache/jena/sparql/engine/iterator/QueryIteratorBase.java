@@ -52,13 +52,12 @@ public abstract class QueryIteratorBase
     // === Cancellation
 
     // .cancel() can be called asynchronously with iterator execution.
-    // It causes notification to cancellation to be made, once, by calling .requestCancel()
+    // It causes notification of cancellation to be made, once, by calling .requestCancel()
     // which is called synchronously with .cancel() and asynchronously with iterator execution.
     private final AtomicBoolean requestingCancel;
 
-    // Used so that requestCanel is called once.
+    // cancelOnce and cancelLock are used to ensure requestCancel() is called once.
     private volatile boolean cancelOnce = false;
-
     private Object cancelLock = new Object();
 
     /** QueryIteratorBase with no cancellation facility */
@@ -97,10 +96,17 @@ public abstract class QueryIteratorBase
     /** Close the iterator. */
     protected abstract void closeIterator();
 
-    /** Propagates the cancellation request - called asynchronously with the iterator itself */
+    /**
+     * Propagates the cancellation request - called asynchronously with the iterator itself.
+     * Implementations of {@code requestCancel()} must be aware that
+     * the iterator maybe concurrently in-progress on the iteration thread,
+     * that is, it may be inside {@link #hasNextBinding} or {@link #nextBinding}.
+     *
+     */
     protected abstract void requestCancel();
 
     /* package */ boolean getRequestingCancel() {
+        // Testing only.
         return requestingCancel();
     }
 
@@ -116,8 +122,7 @@ public abstract class QueryIteratorBase
             return false;
 
         if ( cancelOnce ) {
-            // Try to close first to release resources (in case the user
-            // doesn't have a close() call in a finally block)
+            // cancel() has been called and may be in-progress.
             close();
             throw new QueryCancelledException();
         }
@@ -136,15 +141,15 @@ public abstract class QueryIteratorBase
     }
 
     /**
-     * final - autoclose and registration relies on it - implement
-     * moveToNextBinding()
+     * final - autoclose and registration relies on it -
+     * Subclasses implement {@link #moveToNextBinding()}.
      */
     @Override
     public final Binding next() {
         return nextBinding();
     }
 
-    /** final - subclasses implement moveToNextBinding() */
+    /** final - subclasses implement {@link #moveToNextBinding()}. */
     @Override
     public final Binding nextBinding() {
         try {
@@ -187,6 +192,11 @@ public abstract class QueryIteratorBase
         throw new UnsupportedOperationException(Lib.className(this) + ".remove");
     }
 
+    /**
+     * Close the iterator.
+     * This must be called on the iteration thread.
+     * Use {@link #cancel()} to asynchronously stop an iterator.
+     */
     @Override
     public void close() {
         if ( finished )
@@ -199,7 +209,13 @@ public abstract class QueryIteratorBase
         finished = true;
     }
 
-    /** Cancel this iterator : this is called, possibly asynchronously, to cancel an iterator.*/
+    /**
+     * Cancel this iterator; this can be called asynchronously.
+     * <p>
+     * Once cancelled, the query iterator will stop, call {@link #close()}
+     * then throw {@link QueryCancelledException}. This happens on the thread
+     * that is iterating, where the iterator was created.
+     */
     @Override
     public final void cancel() {
         synchronized (cancelLock) {
@@ -207,8 +223,8 @@ public abstract class QueryIteratorBase
                 // Need to set the flags before allowing subclasses to handle requestCancel() in order
                 // to prevent a race condition. We want to be sure that calls to have hasNext()/nextBinding()
                 // will definitely throw a QueryCancelledException in this class and
-                // not allow a situation in which a subclass component thinks it is cancelled,
-                // while this class does not.
+                // not allow a situation in which a subclass component thinks
+                // it is cancelled, while this class does not.
                 if ( requestingCancel != null )
                     // Signalling from timeouts
                     requestingCancel.set(true);
