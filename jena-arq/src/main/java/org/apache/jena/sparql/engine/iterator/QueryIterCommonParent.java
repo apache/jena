@@ -21,63 +21,59 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import java.util.Iterator ;
+import java.util.Iterator;
 
-import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.ARQInternalErrorException ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingBuilder;
 
 /**
- * Yield new bindings, with a fixed parent, with values from an iterator.
- * Parent must not have variables in common with the iterator stream.
+ * Yield new bindings, with a fixed parent, with values from an iterator. Parent must
+ * not have variables in common with the iterator stream.
  */
-public class QueryIterCommonParent extends QueryIterConvert
-{
-    public QueryIterCommonParent(QueryIterator input, Binding binding, ExecutionContext execCxt)
-    {
-        super(input, new ConverterExtend(binding) , execCxt) ;
+public class QueryIterCommonParent extends QueryIterConvert {
+    public QueryIterCommonParent(QueryIterator input, Binding binding, ExecutionContext execCxt) {
+        super(input, new ConverterExtend(binding), execCxt);
     }
 
     // Extend (with checking) an iterator stream of binding to have a common parent.
-    static class ConverterExtend implements QueryIterConvert.Converter
-    {
-        private Binding parentBinding ;
+    static class ConverterExtend implements QueryIterConvert.Converter {
+        private Binding parentBinding;
 
-        ConverterExtend(Binding parent) { parentBinding = parent ; }
+        ConverterExtend(Binding parent) {
+            parentBinding = parent;
+        }
 
         @Override
-        public Binding convert(Binding b)
-        {
+        public Binding convert(Binding b) {
             if ( parentBinding == null || parentBinding.isEmpty() )
-                return b ;
+                return b;
 
             // This is the result.
-            BindingBuilder b2 = Binding.builder(parentBinding) ;
+            BindingBuilder b2 = Binding.builder(parentBinding);
 
-            // Copy the resultSet bindings to the combined result binding with checking.
-            for ( Iterator<Var> iter = b.vars() ; iter.hasNext(); )
-            {
+            // Copy the resultSet bindings to the combined result binding with
+            // checking.
+            for ( Iterator<Var> iter = b.vars() ; iter.hasNext() ; ) {
                 Var v = iter.next();
-                Node n = b.get(v) ;
-                if ( b2.contains(v) )
-                {
-                    Node n2 = b2.get(v) ;
+                Node n = b.get(v);
+                if ( b2.contains(v) ) {
+                    Node n2 = b2.get(v);
                     if ( n2.equals(n) )
-                        Log.warn(this, "Binding already for "+v+" (same value)" ) ;
-                    else
-                    {
-                        Log.error(this, "Binding already for "+v+" (different values)" ) ;
-                        throw new ARQInternalErrorException("Incompatible bindings for "+v) ;
+                        Log.warn(this, "Binding already for " + v + " (same value)");
+                    else {
+                        Log.error(this, "Binding already for " + v + " (different values)");
+                        throw new ARQInternalErrorException("Incompatible bindings for " + v);
                     }
                 }
-                b2.add(v, n) ;
+                b2.add(v, n);
             }
-            return b2.build() ;
+            return b2.build();
         }
     }
 }

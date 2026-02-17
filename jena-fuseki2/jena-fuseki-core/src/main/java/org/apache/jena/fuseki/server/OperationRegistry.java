@@ -59,14 +59,16 @@ public class OperationRegistry {
     private static final OperationRegistry stdConfig   = stdConfig();
 
     /**
-     * Return the current server-wide standard configuration. It is copied into each
-     * new FusekiServer created. Changing it after a server has been created does not
-     * affect the server.
+     * Return the current server-wide standard configuration for available services.
+     * The building of a server still needs to assign operations to endpoints.
+     * Changing the system default after a server has been created does not affect
+     * the server.
      */
     public static OperationRegistry get() { return stdConfig; }
 
     private static OperationRegistry stdConfig() {
         OperationRegistry stdOpReg = new OperationRegistry();
+        // Available services.
         stdOpReg.register(Operation.Query,   WebContent.contentTypeSPARQLQuery, queryServlet);
         stdOpReg.register(Operation.Update,  WebContent.contentTypeSPARQLUpdate, updateServlet);
         stdOpReg.register(Operation.GSP_R,   null, gspServlet_R);

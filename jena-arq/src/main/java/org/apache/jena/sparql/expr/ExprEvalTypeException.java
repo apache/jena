@@ -25,8 +25,8 @@ package org.apache.jena.sparql.expr;
 
 public class ExprEvalTypeException extends ExprEvalException
 {
-    public ExprEvalTypeException() { super() ; }
-    public ExprEvalTypeException(Throwable cause) { super(cause) ; }
-    public ExprEvalTypeException(String msg) { super(msg) ; }
-    public ExprEvalTypeException(String msg, Throwable cause) { super(msg, cause) ; }
+    public ExprEvalTypeException() { super(); }
+    public ExprEvalTypeException(Throwable cause) { super(cause); }
+    public ExprEvalTypeException(String msg) { super(msg); }
+    public ExprEvalTypeException(String msg, Throwable cause) { super(msg, cause); }
 }

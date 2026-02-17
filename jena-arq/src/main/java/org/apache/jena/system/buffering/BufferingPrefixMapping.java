@@ -21,6 +21,7 @@
 
 package org.apache.jena.system.buffering;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -140,7 +141,8 @@ public class BufferingPrefixMapping extends PrefixMappingBase implements Bufferi
 
     @Override
     protected Map<String, String> asMapCopy() {
-        Map<String, String> map = other.getNsPrefixMap();
+        // Mutable copy.
+        Map<String, String> map = new HashMap<>(other.getNsPrefixMap());
         deleted.forEach(prefix->map.remove(prefix));
         map.putAll(added.getNsPrefixMap());
         return map;

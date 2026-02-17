@@ -24,5 +24,5 @@ package org.apache.jena.sparql.expr;
 
 public class ExprNotComparableException extends ExprEvalException
 {
-    public ExprNotComparableException(String msg) { super(msg) ; }
+    public ExprNotComparableException(String msg) { super(msg); }
 }

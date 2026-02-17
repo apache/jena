@@ -21,35 +21,32 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.util.Symbol ;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.function.FunctionEnv;
+import org.apache.jena.sparql.util.Symbol;
 
-public abstract class ExprSystem extends ExprFunction0
-{
-    protected final Symbol systemSymbol ;
+public abstract class ExprSystem extends ExprFunction0 {
+    protected final Symbol systemSymbol;
 
-    protected ExprSystem(String fName, Symbol systemSymbol)
-    {
-        super(fName) ;
-        this.systemSymbol = systemSymbol ;
+    protected ExprSystem(String fName, Symbol systemSymbol) {
+        super(fName);
+        this.systemSymbol = systemSymbol;
     }
 
     @Override
-    public NodeValue eval(FunctionEnv env)
-    {
-        Object obj = env.getContext().get(systemSymbol) ;
-        
+    public NodeValue eval(FunctionEnv env) {
+        Object obj = env.getContext().get(systemSymbol);
+
         if ( obj == null )
-            throw new ExprEvalException("null for system symbol: "+systemSymbol) ;
-        if ( ! ( obj instanceof Node ) )
-            throw new ExprEvalException("ExprSystem: Not a Node: "+Lib.className(obj)) ;
-        
-        Node n = (Node)obj ;
+            throw new ExprEvalException("null for system symbol: " + systemSymbol);
+        if ( !(obj instanceof Node) )
+            throw new ExprEvalException("ExprSystem: Not a Node: " + Lib.className(obj));
+
+        Node n = (Node)obj;
         if ( n == null )
-            throw new ExprEvalException("No value for system variable: "+systemSymbol) ;  
-        NodeValue nv = NodeValue.makeNode(n) ;
-        return nv ;
+            throw new ExprEvalException("No value for system variable: " + systemSymbol);
+        NodeValue nv = NodeValue.makeNode(n);
+        return nv;
     }
 }

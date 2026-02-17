@@ -26,18 +26,16 @@ import org.apache.jena.sparql.engine.QueryIterator ;
 
 public class QueryIteratorCloseable extends QueryIteratorWrapper
 {
-    private Closeable closeable ;
+    private Closeable closeable;
 
-    public QueryIteratorCloseable(QueryIterator qIter, Closeable closeable)
-    {
-        super(qIter) ;
-        this.closeable = closeable ;
+    public QueryIteratorCloseable(QueryIterator qIter, Closeable closeable) {
+        super(qIter);
+        this.closeable = closeable;
     }
-    
+
     @Override
-    public void close()
-    { 
-        closeable.close() ;
-        super.close() ;
+    public void close() {
+        closeable.close();
+        super.close();
     }
 }

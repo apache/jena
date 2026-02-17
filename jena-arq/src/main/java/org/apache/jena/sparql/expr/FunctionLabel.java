@@ -21,10 +21,10 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.util.Symbol ;
+import org.apache.jena.sparql.util.Symbol;
 
 public class FunctionLabel extends Symbol
 {
-    public FunctionLabel(String name)         { super(name) ; }
-    public FunctionLabel(FunctionLabel other)  { super(other) ; }
+    public FunctionLabel(String name)         { super(name); }
+    public FunctionLabel(FunctionLabel other)  { super(other); }
 }

@@ -34,67 +34,66 @@ public class QueryIterSlice extends QueryIter1
     long count = 0 ;
     long limit ;
     long offset ;
-    
+
     /** Create an iterator that limits the number of returns of
      * another CloseableIterator.
-     * 
-     * @param cIter            The closable iterator to throttle 
+     *
+     * @param cIter            The closable iterator to throttle
      * @param startPosition    Offset of start after - 0 is the no-op.
-     * @param numItems         Maximum number of items to yield.  
+     * @param numItems         Maximum number of items to yield.
      */
-    
-    public QueryIterSlice(QueryIterator cIter, long startPosition, long numItems, ExecutionContext context)
-    {
-        super(cIter, context) ;
-        
-        offset = startPosition ;
+
+    public QueryIterSlice(QueryIterator cIter, long startPosition, long numItems, ExecutionContext context) {
+        super(cIter, context);
+
+        offset = startPosition;
         if ( offset == Query.NOLIMIT )
-            offset = 0 ;
-        
-        limit = numItems ;
+            offset = 0;
+
+        limit = numItems;
         if ( limit == Query.NOLIMIT )
-            limit = Long.MAX_VALUE ;
+            limit = Long.MAX_VALUE;
 
         if ( limit < 0 )
-            throw new QueryExecException("Negative LIMIT: "+limit) ;
+            throw new QueryExecException("Negative LIMIT: " + limit);
         if ( offset < 0 )
-            throw new QueryExecException("Negative OFFSET: "+offset) ;
-        
-        count = 0 ;
+            throw new QueryExecException("Negative OFFSET: " + offset);
+
+        count = 0;
         // Offset counts from 0 (the no op).
-        for ( int i = 0 ; i < offset ; i++ )
-        {
+        for ( int i = 0 ; i < offset ; i++ ) {
             // Not subtle
-            if ( !cIter.hasNext() ) { close() ; break ; }
-            cIter.next() ;
+            if ( !cIter.hasNext() ) {
+                close();
+                break;
+            }
+            cIter.next();
         }
     }
-    
+
     @Override
-    protected boolean hasNextBinding()
-    {
+    protected boolean hasNextBinding() {
         if ( isFinished() )
             return false;
-        
-        if ( ! getInput().hasNext() )
-            return false ;
-        
-        if ( count >= limit )
-            return false ;
 
-        return true ;
+        if ( !getInput().hasNext() )
+            return false;
+
+        if ( count >= limit )
+            return false;
+
+        return true;
     }
 
     @Override
-    protected Binding moveToNextBinding()
-    {
-        count ++ ;
-        return getInput().nextBinding() ;
+    protected Binding moveToNextBinding() {
+        count++;
+        return getInput().nextBinding();
     }
 
     @Override
     protected void closeSubIterator() {}
-    
+
     @Override
     protected void requestSubCancel() {}
 }

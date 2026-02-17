@@ -792,46 +792,6 @@ public class G {
         } finally { iter.close(); }
     }
 
-    /** Are all the arguments non-null? */
-    @SafeVarargs
-    public static <X> boolean allNonNull(X ... objects) {
-        return countNonNulls(objects) == objects.length;
-    }
-
-    /** Is one and only one argument non-null? */
-    @SafeVarargs
-    public static <X> boolean exactlyOneSet(X ... objects) {
-        return countNonNulls(objects) == 1;
-    }
-
-    /** Is one or none of the arguments non-null? */
-    @SafeVarargs
-    public static <X> X atMostOne(X ... objects) {
-        int c = 0;
-        X x = null;
-        for ( X obj : objects ) {
-            if ( obj != null ) {
-                c++;
-                if ( c > 1 )
-                    throw new RDFDataException("atMostOne:"+Arrays.asList(objects));
-                if ( x == null )
-                    x = obj;
-            }
-        }
-        return x;
-    }
-
-    /** Count non-nulls */
-    @SafeVarargs
-    public static <X> int countNonNulls(X ... objects) {
-        int x = 0;
-        for ( Object obj : objects ) {
-            if ( obj != null )
-                x++;
-        }
-        return x;
-    }
-
     // ---- Project
 
     /** Project quads to triples */

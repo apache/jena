@@ -1,0 +1,9 @@
+==== jena-benchmark-jmh
+
+The jena source release does not include large binary files.
+
+The file "testing/data.nt.gz" is a placeholder for a large file for JMH testing. The file
+name is known in various "Test*" classes.
+
+Replace the file with a file of your choice, e.g. for BSBM - create "bsbm-5m.nt.gz".
+

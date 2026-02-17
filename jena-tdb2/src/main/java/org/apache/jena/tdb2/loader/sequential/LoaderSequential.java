@@ -107,7 +107,7 @@ public class LoaderSequential extends LoaderBase {
     }
 
     @Override
-    public StreamRDF stream() {
+    public StreamRDF streamRDF() {
         return stream;
     }
 

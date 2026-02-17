@@ -53,7 +53,7 @@ public class LoaderBasic extends LoaderBase {
     }
 
     @Override
-    public StreamRDF stream() {
+    public StreamRDF streamRDF() {
         return dest;
     }
 

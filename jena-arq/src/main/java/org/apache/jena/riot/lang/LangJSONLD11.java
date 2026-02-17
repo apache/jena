@@ -23,27 +23,18 @@ package org.apache.jena.riot.lang;
 
 import java.io.InputStream;
 import java.io.Reader;
-import java.net.URI;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
-import com.apicatalog.jsonld.JsonLd;
 import com.apicatalog.jsonld.JsonLdError;
 import com.apicatalog.jsonld.JsonLdOptions;
 import com.apicatalog.jsonld.document.Document;
 import com.apicatalog.jsonld.document.JsonDocument;
 import com.apicatalog.jsonld.lang.Keywords;
-import com.apicatalog.rdf.api.RdfConsumerException;
-import com.apicatalog.rdf.api.RdfQuadConsumer;
-
 import jakarta.json.*;
 import jakarta.json.stream.JsonLocation;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.ContentType;
-import org.apache.jena.datatypes.RDFDatatype;
-import org.apache.jena.datatypes.TypeMapper;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.ReaderRIOT;
@@ -51,8 +42,9 @@ import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.system.ErrorHandler;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.system.jsonld.TitaniumJsonLdOptions;
+import org.apache.jena.riot.system.jsonld.TitaniumToJena;
 import org.apache.jena.sparql.SystemARQ;
-import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
 
@@ -116,14 +108,9 @@ public class LangJSONLD11 implements ReaderRIOT {
 
     private void read(Document document, String baseURI, StreamRDF output, Context context) throws JsonLdError {
         // JSON-LD to RDF
-        JsonLdOptions opts = getJsonLdOptions(baseURI, context);
+        JsonLdOptions opts = TitaniumJsonLdOptions.get(baseURI, context);
         extractPrefixes(document, output::prefix);
-
-        RdfQuadConsumer consumer = new JsonLDToStreamRDF(output, profile);
-        JsonLd.toRdf(document).options(opts).provide(consumer);
-
-        // Titanium 1.5.0 and earlier.
-        // JenaTitanium.convert(dataset, profile, output);
+        TitaniumToJena.convert(document, opts, output, profile);
     }
 
     /**
@@ -229,70 +216,5 @@ public class LangJSONLD11 implements ReaderRIOT {
                 return;
             }
         });
-    }
-
-    /**
-     * Get the (jsonld) options from the jena context if exists or create default
-     */
-    private static JsonLdOptions getJsonLdOptions(String baseURI, Context jenaContext) {
-        JsonLdOptions opts = jenaContext.get(JSONLD_OPTIONS);
-        if ( opts == null )
-            opts = new JsonLdOptions();
-        if ( baseURI != null )
-            opts.setBase(URI.create(baseURI));
-        return opts;
-    }
-
-    static class JsonLDToStreamRDF implements RdfQuadConsumer {
-        private static long line = -1L;
-        private static long col = -1L;
-
-        private final StreamRDF output;
-        private final ParserProfile profile;
-
-        JsonLDToStreamRDF(StreamRDF output, ParserProfile profile) {
-            this.output = output;
-            this.profile = profile;
-        }
-
-        @Override
-        public RdfQuadConsumer quad(String subject, String predicate, String object,
-                                    String datatype, String language, String direction,
-                                    String graph) throws RdfConsumerException {
-            Node g = (graph == null) ? null : convertToNode(graph);
-            Node s = convertToNode(subject);
-            Node p = convertToNode(predicate);
-            Node o;
-
-            if ( RdfQuadConsumer.isLiteral(datatype, language, direction) )
-                o = convertToLiteral(object, datatype, language, direction);
-            else
-                o = convertToNode(object);
-
-            if ( g == null )
-                output.triple(Triple.create(s, p, o));
-            else
-                output.quad(Quad.create(g, s, p, o));
-            return this;
-        }
-        private Node convertToNode(String str) {
-            if ( RdfQuadConsumer.isBlank(str) ) {
-                str = str.substring(2); // Remove "_:"
-                Node bn = profile.getFactorRDF().createBlankNode(str);
-                return bn;
-            }
-            str = profile.resolveIRI(str, line, col);
-            Node iri = profile.createURI(str, line, col);
-            return iri;
-        }
-
-        private Node convertToLiteral(String lexical, String datatypeURI, String language, String direction) {
-            if ( RdfQuadConsumer.isLangString(datatypeURI, language, direction) )
-                return profile.createLangLiteral(lexical, language, line, col);
-            if ( RdfQuadConsumer.isDirLangString(datatypeURI, language, direction) )
-                return profile.createLangDirLiteral(lexical, language, direction, line, col);
-            RDFDatatype dType = TypeMapper.getInstance().getSafeTypeByName(datatypeURI) ;
-            return profile.createTypedLiteral(lexical, dType, line, col);
-        }
     }
 }

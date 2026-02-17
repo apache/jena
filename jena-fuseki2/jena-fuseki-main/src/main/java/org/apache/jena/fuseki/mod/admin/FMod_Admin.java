@@ -23,12 +23,12 @@ package org.apache.jena.fuseki.mod.admin;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
-import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.SetUtils;
+import org.apache.jena.atlas.lib.SetUtils;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.ArgModuleGeneral;
@@ -100,7 +100,7 @@ public class FMod_Admin implements FusekiModule {
         if ( dirStr != null )
             directory = Path.of(dirStr);
 
-        // Phase 2
+        // Phase 2 (cmdline --admin + password.)
 //        String admin = fusekiCmd.getValue(argAdmin);
 //        if ( admin == null ) {
 //            return;
@@ -117,9 +117,6 @@ public class FMod_Admin implements FusekiModule {
             if ( ! Files.isWritable(directory)  )
                 throw new FusekiConfigException("Not writable: "+dirStr);
         }
-
-        // "directory" null mean use the FUSEKI_BASE environment variable, done by "new FusekiServerCtl"
-
     }
 
 //    @Override
@@ -130,14 +127,19 @@ public class FMod_Admin implements FusekiModule {
 
     @Override
     public void prepare(FusekiServer.Builder builder, Set<String> datasetNames, Model configModel) {
-        // Ensure the work area is setup
+        prepareFromServerPeristentState(builder, datasetNames);
+    }
 
+    /**
+     * Data service setup from the run/ area.
+     */
+    private void prepareFromServerPeristentState(FusekiServer.Builder builder, Set<String> datasetNames) {
         FusekiServerCtl serverCtl = new FusekiServerCtl(directory);
         serverCtl.setup();
         Path fusekiBase = serverCtl.getFusekiBase();
         builder.setServletAttribute(Fuseki.attrFusekiServerCtl, serverCtl);
 
-        // Shiro configuration. Pass this to FMod_Shiro via a builder servlet attribute.
+        // -- Shiro configuration. Pass this to FMod_Shiro via a builder servlet attribute.
         Path shiroIni = fusekiBase.resolve(FusekiServerCtl.DFT_SHIRO_INI);
         if ( Files.exists(shiroIni) ) {
             String attrName = FMod_Shiro.adminShiroFile;
@@ -146,8 +148,18 @@ public class FMod_Admin implements FusekiModule {
             FmtLog.info(LOG, "No shiro.ini: dir=%s", fusekiBase);
         }
 
+        // -- run/ area configuration
         String configDir = FusekiServerCtl.dirConfiguration.toString();
         List<DataAccessPoint> directoryDatabases = FusekiConfig.readConfigurationDirectory(configDir);
+
+        // Check for duplicates service names in the configuration files.
+        Set<String> directoryDatabasesNames = new HashSet<>();
+        for ( DataAccessPoint dap : directoryDatabases) {
+            String name = dap.getName();
+            name = DataAccessPoint.canonical(name);
+            if ( directoryDatabasesNames.contains(name) )
+                throw new FusekiConfigException("Duplicate database entries in configurtation files: "+name);
+        }
 
         // Check there are no collisions between the command line (datasetNames)
         // and existing configurations.
@@ -156,13 +168,12 @@ public class FMod_Admin implements FusekiModule {
         else {
             if ( ! datasetNames.isEmpty() ) {
                 // Check no clashes of command line and configuration
-                Set<String> directoryDatabasesNames = directoryDatabases.stream().map(dap->dap.getName()).collect(Collectors.toSet());
                 Set<String> both = SetUtils.intersection(datasetNames, directoryDatabasesNames);
                 if ( ! both.isEmpty() ) {
                     StringJoiner sj = new StringJoiner(", ");
                     both.forEach(sj::add);
                     String dups = sj.toString();
-                    //both.forEach(dbName -> FmtLog.error(LOG, "Duplicate database '%s' (command line and existing configuration)", dbName));
+                    both.forEach(dbName -> FmtLog.error(LOG, "Duplicate database '%s' (command line and existing configuration)", dbName));
                     throw new FusekiConfigException("Duplicate database entries for "+dups);
                 }
             }
@@ -171,12 +182,14 @@ public class FMod_Admin implements FusekiModule {
             directoryDatabases.forEach(dap -> FmtLog.info(Fuseki.configLog, "Database: %s", dap.getName()));
         }
 
+        // -- Add to builder
         directoryDatabases.forEach(db -> {
             String dbName = db.getName();
             // Names have been checked for uniqueness.
             builder.add(dbName, db.getDataService());
         });
 
+        // -- Admin servlets
         // Modify the server to include the admin operations.
         // Security is performed by FMod_Shiro.
         ActionCtl actionBackup = new ActionBackup();

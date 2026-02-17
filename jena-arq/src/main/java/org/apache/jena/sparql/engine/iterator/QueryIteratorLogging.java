@@ -27,47 +27,41 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 
-/** Intercept and print iterator operations */ 
+/** Intercept and print iterator operations */
 
-public class QueryIteratorLogging extends QueryIteratorWrapper
-{
-    private Logger log = null ;  
-    private boolean logging = true ;        // Fine grain control of logging.
+public class QueryIteratorLogging extends QueryIteratorWrapper {
+    private Logger log = null;
+    private boolean logging = true;        // Fine grain control of logging.
 
-    public QueryIteratorLogging(QueryIterator input)
-    {
-        super(input) ;
-        log = LoggerFactory.getLogger(input.getClass()) ;
-    }
-    
-    @Override
-    protected boolean hasNextBinding()
-    { 
-        boolean b = super.hasNextBinding() ;
-        if ( logging )
-            log.info("hasNextBinding: "+b) ;
-        return b ;
-    }
-         
-    
-    @Override
-    protected Binding moveToNextBinding()
-    { 
-        Binding binding = super.moveToNextBinding() ;
-        if ( logging )
-            log.info("moveToNextBinding: "+binding) ;
-        return binding ;
+    public QueryIteratorLogging(QueryIterator input) {
+        super(input);
+        log = LoggerFactory.getLogger(input.getClass());
     }
 
     @Override
-    protected void closeIterator()
-    {
+    protected boolean hasNextBinding() {
+        boolean b = super.hasNextBinding();
         if ( logging )
-            log.info("closeIterator") ;
+            log.info("hasNextBinding: " + b);
+        return b;
+    }
+
+    @Override
+    protected Binding moveToNextBinding() {
+        Binding binding = super.moveToNextBinding();
+        if ( logging )
+            log.info("moveToNextBinding: " + binding);
+        return binding;
+    }
+
+    @Override
+    protected void closeIterator() {
+        if ( logging )
+            log.info("closeIterator");
         super.closeIterator();
     }
-    
+
     public void loggingOn()                 { logging(true) ; }
     public void loggingOff()                { logging(false) ; }
-    public void logging(boolean state)      { logging = state ; } 
+    public void logging(boolean state)      { logging = state ; }
 }

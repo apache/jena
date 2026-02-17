@@ -1,0 +1,7 @@
+PREFIX : <http://www.example.org/>
+SELECT ?s
+WHERE {
+	?s ?p ?o
+}
+GROUP BY ?s
+HAVING (COUNT(*) > 1) (COUNT(*) < 3)

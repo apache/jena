@@ -161,14 +161,14 @@ class NVCompare {
                 return false;
 
             case VSPACE_CDT_LIST : {
-                final LiteralLabel lit1 = nv1.asNode().getLiteral() ;
-                final LiteralLabel lit2 = nv2.asNode().getLiteral() ;
-                return CompositeDatatypeList.datatype().isEqual(lit1, lit2) ;
+                final LiteralLabel lit1 = nv1.asNode().getLiteral();
+                final LiteralLabel lit2 = nv2.asNode().getLiteral();
+                return CompositeDatatypeList.datatype().isEqual(lit1, lit2);
             }
             case VSPACE_CDT_MAP : {
-                final LiteralLabel lit1 = nv1.asNode().getLiteral() ;
-                final LiteralLabel lit2 = nv2.asNode().getLiteral() ;
-                return CompositeDatatypeMap.datatype().isEqual(lit1, lit2) ;
+                final LiteralLabel lit1 = nv1.asNode().getLiteral();
+                final LiteralLabel lit2 = nv2.asNode().getLiteral();
+                return CompositeDatatypeMap.datatype().isEqual(lit1, lit2);
             }
         }
 
@@ -230,7 +230,7 @@ class NVCompare {
         if ( nv2 == null )
             return CMP_GREATER;
 
-        ValueSpace compType = classifyValueOp(nv1, nv2) ;
+        ValueSpace compType = classifyValueOp(nv1, nv2);
 
         if ( nv1.hasNode()
              && nv2.hasNode()
@@ -251,55 +251,55 @@ class NVCompare {
                 // Not value compatible.
                 if ( sortOrderingCompare )
                     return NodeCmp.compareRDFTerms(nv1.asNode(), nv2.asNode());
-                raise(new ExprNotComparableException("Can't compare (incompatible value spaces) "+nv1+" and "+nv2)) ;
-                throw new ARQInternalErrorException("NodeValue.raise returned") ;
+                raise(new ExprNotComparableException("Can't compare (incompatible value spaces) "+nv1+" and "+nv2));
+                throw new ARQInternalErrorException("NodeValue.raise returned");
 
             case VSPACE_DATETIME:
             case VSPACE_DATE:
             case VSPACE_TIME:
                 if ( sortOrderingCompare )
-                    return XSDFuncOp.compareDateTimeFO(nv1, nv2) ;
+                    return XSDFuncOp.compareDateTimeFO(nv1, nv2);
                 // Must be same URI
                 if ( nv1.getDatatypeURI().equals(nv2.getDatatypeURI()) )
                     // Indeterminate possible.
                     return XSDFuncOp.compareDateTime(nv1, nv2);
-                raise(new ExprNotComparableException("Can't compare (incompatible temporal value spaces) "+nv1+" and "+nv2)) ;
+                raise(new ExprNotComparableException("Can't compare (incompatible temporal value spaces) "+nv1+" and "+nv2));
 
 //            case VSPACE_DURATION_DAYTIME:
 //            case VSPACE_DURATION_YEARMONTH:
             case VSPACE_DURATION: {
-                int x = XSDFuncOp.compareDuration(nv1, nv2) ;
+                int x = XSDFuncOp.compareDuration(nv1, nv2);
                 // Fix up - Java (Oracle java7 at least) returns "equals" for
                 // "P1Y"/"P365D" and "P1M"/"P28D", and others split over
                 // YearMonth/DayTime.
 
                 // OR return CMP_INDETERMINATE ??
                 if ( x == CMP_EQUAL ) {
-                    Duration d1 = nv1.getDuration() ;
-                    Duration d2 = nv2.getDuration() ;
+                    Duration d1 = nv1.getDuration();
+                    Duration d2 = nv2.getDuration();
                     if ( ( XSDFuncOp.isDayTime(d1) && XSDFuncOp.isYearMonth(d2) ) ||
                             ( XSDFuncOp.isDayTime(d2) && XSDFuncOp.isYearMonth(d1) ) )
-                        x = CMP_INDETERMINATE ;
+                        x = CMP_INDETERMINATE;
                 }
                 return x;
             }
 
             case VSPACE_NUM:
-                return XSDFuncOp.compareNumeric(nv1, nv2) ;
+                return XSDFuncOp.compareNumeric(nv1, nv2);
 
             case VSPACE_SORTKEY :
                 return nv1.getSortKey().compareTo(nv2.getSortKey());
 
             case VSPACE_BOOLEAN:
-                return XSDFuncOp.compareBoolean(nv1, nv2) ;
+                return XSDFuncOp.compareBoolean(nv1, nv2);
 
             case VSPACE_LANG: {
                 // Two literals, both with language tags.
                 // Compare by lang tag then by lexical form.
-                Node node1 = nv1.asNode() ;
-                Node node2 = nv2.asNode() ;
+                Node node1 = nv1.asNode();
+                Node node2 = nv2.asNode();
 
-                int x = StrUtils.strCompareIgnoreCase(node1.getLiteralLanguage(), node2.getLiteralLanguage()) ;
+                int x = StrUtils.strCompareIgnoreCase(node1.getLiteralLanguage(), node2.getLiteralLanguage());
                 if ( x != CMP_EQUAL ) {
                     // Different lang tags
                     if ( !sortOrderingCompare )
@@ -309,21 +309,21 @@ class NVCompare {
                 }
 
                 // same lang tag (case insensitive)
-                x = strcompare(node1.getLiteralLexicalForm(), node2.getLiteralLexicalForm()) ;
+                x = strcompare(node1.getLiteralLexicalForm(), node2.getLiteralLexicalForm());
                 if ( x != CMP_EQUAL )
-                    return x ;
+                    return x;
                 // Same lexical forms, same lang tag by value
                 // Try to split by syntactic lang tags.
-                x = StrUtils.strCompare(node1.getLiteralLanguage(), node2.getLiteralLanguage()) ;
+                x = StrUtils.strCompare(node1.getLiteralLanguage(), node2.getLiteralLanguage());
                 // Maybe they are the same after all!
                 // Should be node.equals by now.
                 if ( x == CMP_EQUAL  && ! NodeFunctions.sameTerm(node1, node2) )
-                    throw new ARQInternalErrorException("Looks like the same (lang tags) but not node equals") ;
-                return x ;
+                    throw new ARQInternalErrorException("Looks like the same (lang tags) but not node equals");
+                return x;
             }
 
             case VSPACE_STRING: {
-                int x = XSDFuncOp.compareString(nv1, nv2) ;
+                int x = XSDFuncOp.compareString(nv1, nv2);
                 //if ( JenaRuntime.isRDF11 )
                     return x;
 
@@ -331,8 +331,8 @@ class NVCompare {
 //                // RDF 1.0 legacy note.
 //                // Split plain literals and xsd:strings for sorting purposes.
 //                // Same by string value.
-//                String dt1 = nv1.asNode().getLiteralDatatypeURI() ;
-//                String dt2 = nv2.asNode().getLiteralDatatypeURI() ;
+//                String dt1 = nv1.asNode().getLiteralDatatypeURI();
+//                String dt2 = nv2.asNode().getLiteralDatatypeURI();
 //                if ( dt1 == null && dt2 != null )
 //                    return CMP_LESS;
 //                if ( dt2 == null && dt1 != null )
@@ -358,7 +358,7 @@ class NVCompare {
                 int x = compareRepresentations(label1, label2, sortOrderingCompare);
                 if ( x != CMP_INDETERMINATE )
                     return x;
-                raise(new ExprNotComparableException("Can't compare blank nodes as values "+nv1+" and "+nv2)) ;
+                raise(new ExprNotComparableException("Can't compare blank nodes as values "+nv1+" and "+nv2));
             }
 
             case VSPACE_URI : {
@@ -367,7 +367,7 @@ class NVCompare {
                 int x = compareRepresentations(uri1, uri2, sortOrderingCompare);
                 if ( x != CMP_INDETERMINATE )
                     return x;
-                raise(new ExprNotComparableException("Can't compare URIs as values "+nv1+" and "+nv2)) ;
+                raise(new ExprNotComparableException("Can't compare URIs as values "+nv1+" and "+nv2));
             }
             case VSPACE_VARIABLE : {
                 String name1 = nv1.asNode().getName();
@@ -375,50 +375,50 @@ class NVCompare {
                 int x = compareRepresentations(name1, name2, sortOrderingCompare);
                 if ( x != CMP_INDETERMINATE )
                     return x;
-                raise(new ExprNotComparableException("Can't compare valiables as values "+nv1+" and "+nv2)) ;
+                raise(new ExprNotComparableException("Can't compare valiables as values "+nv1+" and "+nv2));
             }
 
             case VSPACE_CDT_LIST : {
-                final LiteralLabel lit1 = nv1.asNode().getLiteral() ;
-                final LiteralLabel lit2 = nv2.asNode().getLiteral() ;
+                final LiteralLabel lit1 = nv1.asNode().getLiteral();
+                final LiteralLabel lit2 = nv2.asNode().getLiteral();
                 try {
-                    return CompositeDatatypeList.compare(lit1, lit2, sortOrderingCompare) ;
+                    return CompositeDatatypeList.compare(lit1, lit2, sortOrderingCompare);
                 }
                 catch( final ExprNotComparableException e ) {
-                    raise(e) ;
+                    raise(e);
                 }
             }
 
             case VSPACE_CDT_MAP : {
-                final LiteralLabel lit1 = nv1.asNode().getLiteral() ;
-                final LiteralLabel lit2 = nv2.asNode().getLiteral() ;
+                final LiteralLabel lit1 = nv1.asNode().getLiteral();
+                final LiteralLabel lit2 = nv2.asNode().getLiteral();
                 try {
-                    return CompositeDatatypeMap.compare(lit1, lit2, sortOrderingCompare) ;
+                    return CompositeDatatypeMap.compare(lit1, lit2, sortOrderingCompare);
                 }
                 catch( final ExprNotComparableException e ) {
-                    raise(e) ;
+                    raise(e);
                 }
             }
 
             case VSPACE_UNKNOWN : {
                 // One or two unknown value spaces.
-                Node node1 = nv1.asNode() ;
-                Node node2 = nv2.asNode() ;
+                Node node1 = nv1.asNode();
+                Node node2 = nv2.asNode();
                 // Two unknown literals can be equal.
                 if ( NodeFunctions.sameTerm(node1, node2) )
-                    return CMP_EQUAL ;
+                    return CMP_EQUAL;
 
                 if ( sortOrderingCompare )
-                    return NodeCmp.compareRDFTerms(node1, node2) ;
+                    return NodeCmp.compareRDFTerms(node1, node2);
 
-                raise(new ExprNotComparableException("Can't compare "+nv1+" and "+nv2)) ;
-                throw new ARQInternalErrorException("NodeValue.raise returned") ;
+                raise(new ExprNotComparableException("Can't compare "+nv1+" and "+nv2));
+                throw new ARQInternalErrorException("NodeValue.raise returned");
             }
 
             case VSPACE_DIFFERENT:
-                raise(new ExprNotComparableException("Can't compare "+nv1+" and "+nv2)) ;
+                raise(new ExprNotComparableException("Can't compare "+nv1+" and "+nv2));
         }
-        throw new ARQInternalErrorException("Compare failure "+nv1+" and "+nv2) ;
+        throw new ARQInternalErrorException("Compare failure "+nv1+" and "+nv2);
     }
 
     /**
@@ -526,7 +526,7 @@ class NVCompare {
     }
 
     private static int strcompare(String string1, String string2) {
-        // StrUtils.strCompare(string1, string2) ;
+        // StrUtils.strCompare(string1, string2);
         return result(string1.compareTo(string2));
     }
 

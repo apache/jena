@@ -21,46 +21,44 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.util.iterator.NiceIterator ;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.util.iterator.NiceIterator;
 
 /** Track a QueryIterator */
 
-public class QueryIterTracked extends QueryIter
-{
-    QueryIterator iterator = null ;
-    
+public class QueryIterTracked extends QueryIter {
+    QueryIterator iterator = null;
+
     /** Use QueryIter.makeTracked */
-    QueryIterTracked(QueryIterator iter, ExecutionContext execCxt)
-    {
-        super(execCxt) ;
-        iterator = iter ;
+    QueryIterTracked(QueryIterator iter, ExecutionContext execCxt) {
+        super(execCxt);
+        iterator = iter;
     }
 
     @Override
-    protected boolean hasNextBinding() { return iterator.hasNext() ; } 
-    
-    @Override
-    protected Binding moveToNextBinding() { return iterator.next() ; }
+    protected boolean hasNextBinding() {
+        return iterator.hasNext();
+    }
 
     @Override
-    protected void closeIterator()
-    {
-        if ( iterator != null )
-        {
-            NiceIterator.close(iterator) ;
-            iterator = null ;
+    protected Binding moveToNextBinding() {
+        return iterator.next();
+    }
+
+    @Override
+    protected void closeIterator() {
+        if ( iterator != null ) {
+            NiceIterator.close(iterator);
+            iterator = null;
         }
     }
-    
+
     @Override
-    protected void requestCancel()
-    {
-        if ( iterator != null )
-        {
-        	iterator.cancel();
+    protected void requestCancel() {
+        if ( iterator != null ) {
+            iterator.cancel();
         }
     }
 }

@@ -23,24 +23,24 @@ package org.apache.jena.sparql.expr;
 
 import java.util.Set;
 
-import org.apache.jena.atlas.lib.InternalErrorException ;
+import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.graph.NodeTransform ;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.function.FunctionEnv;
+import org.apache.jena.sparql.graph.NodeTransform;
 
 /**
  * Marker, used in place of a null. This may be tested for using {@code ==}
  */
 public class ExprNone extends ExprNode {
 
-    /*package*/ static Expr NONE0 = new ExprNone() ;
+    /*package*/ static Expr NONE0 = new ExprNone();
     private ExprNone() {}
 
     @Override public void visit(ExprVisitor visitor) { visitor.visit(this); }
 
     @Override public NodeValue eval(Binding binding, FunctionEnv env) {
-        throw new InternalErrorException("Attempt to eval ExprNone") ;
+        throw new InternalErrorException("Attempt to eval ExprNone");
     }
 
     @Override
@@ -50,21 +50,21 @@ public class ExprNone extends ExprNode {
 
     @Override
     public int hashCode() {
-        return -999999 ;
+        return -999999;
     }
 
     @Override
     public boolean equals(Expr other, boolean bySyntax) {
-        return other == this ;
+        return other == this;
     }
 
     @Override
     public Expr copySubstitute(Binding binding) {
-        return this ;
+        return this;
     }
 
     @Override
     public Expr applyNodeTransform(NodeTransform transform) {
-        return this ;
+        return this;
     }
 }

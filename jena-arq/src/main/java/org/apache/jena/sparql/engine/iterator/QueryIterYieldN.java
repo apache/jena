@@ -21,67 +21,60 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import java.util.NoSuchElementException ;
+import java.util.NoSuchElementException;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.serializer.SerializationContext ;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.serializer.SerializationContext;
 
 /** A query iterator that yields the same thing N times. */
 
-public class QueryIterYieldN extends QueryIter
-{
-    protected int limitYielded ;
-    protected int countYielded = 0 ;
-    protected Binding binding ;
-    
-    public QueryIterYieldN(int num, Binding b)
-    {
-        this(num, b, null) ;
+public class QueryIterYieldN extends QueryIter {
+    protected int limitYielded;
+    protected int countYielded = 0;
+    protected Binding binding;
+
+    public QueryIterYieldN(int num, Binding b) {
+        this(num, b, null);
     }
-    
-    public QueryIterYieldN(int num, Binding b, ExecutionContext context)
-    {
-        super(context) ;
-        binding = b ;
-        limitYielded = num ;
+
+    public QueryIterYieldN(int num, Binding b, ExecutionContext context) {
+        super(context);
+        binding = b;
+        limitYielded = num;
     }
-    
-    public Binding getBinding() { return binding ; }
-    
-    @Override
-    protected boolean hasNextBinding()
-    {
-        return countYielded < limitYielded ;
-    }
-    
-    @Override
-    protected Binding moveToNextBinding()
-    {
-        if ( ! hasNextBinding() )
-            // Try to get the class name as specific as possible for subclasses
-            throw new NoSuchElementException(Lib.className(this)) ;
-        countYielded++ ;
-        return binding ;
+
+    public Binding getBinding() {
+        return binding;
     }
 
     @Override
-    protected void closeIterator()
-    {
-        //binding = null ;
+    protected boolean hasNextBinding() {
+        return countYielded < limitYielded;
     }
-    
+
     @Override
-    protected void requestCancel()
-    {
+    protected Binding moveToNextBinding() {
+        if ( !hasNextBinding() )
+            // Try to get the class name as specific as possible for subclasses
+            throw new NoSuchElementException(Lib.className(this));
+        countYielded++;
+        return binding;
     }
-    
+
     @Override
-    public void output(IndentedWriter out, SerializationContext sCxt)
-    {
-        out.print("QueryIterYieldN: "+limitYielded+" of "+binding);
+    protected void closeIterator() {
+        // binding = null ;
+    }
+
+    @Override
+    protected void requestCancel() {}
+
+    @Override
+    public void output(IndentedWriter out, SerializationContext sCxt) {
+        out.print("QueryIterYieldN: " + limitYielded + " of " + binding);
     }
 
 }

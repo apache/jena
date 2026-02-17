@@ -25,45 +25,15 @@ import java.nio.file.Path;
 
 import org.apache.jena.geosparql.spatial.SpatialIndex;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
-import org.apache.jena.geosparql.spatial.index.v1.SpatialIndexAdapterV1;
 import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexIoKryo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SuppressWarnings("removal")
 public class SpatialIndexIo {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     /** Attempt to load a spatial index from file using all supported formats. */
     public static final SpatialIndex load(Path spatialIndexFile) throws SpatialIndexException {
-        return load(spatialIndexFile, false);
-    }
-
-    /**
-     * Attempt to load a spatial index from file using all supported formats.
-     * This method should only be used for testing as it allows suppressing warnings when loading legacy index formats.
-     */
-    public static final SpatialIndex load(Path spatialIndexFile, boolean suppressLegacyWarnings) throws SpatialIndexException {
-        SpatialIndex result;
-        try {
-            result = SpatialIndexIoKryo.load(spatialIndexFile);
-        } catch (Throwable t1) {
-            if (!suppressLegacyWarnings) {
-                LOGGER.warn("Failed to load spatial index with latest format. Trying legacy formats...", t1);
-            }
-            try {
-                org.apache.jena.geosparql.spatial.index.v1.SpatialIndexV1 v1 = org.apache.jena.geosparql.spatial.index.v1.SpatialIndexV1.load(spatialIndexFile.toFile());
-                result = new SpatialIndexAdapterV1(v1);
-
-                if (!suppressLegacyWarnings) {
-                    LOGGER.warn("Successfully loaded spatial index with legacy format v1. Upgrade advised.");
-                }
-            } catch (Throwable t2) {
-                LOGGER.warn("Failed to load spatial index legacy format.", t2);
-                t1.addSuppressed(new RuntimeException("Failed to load spatial index with any format.", t2));
-                throw t1;
-            }
-        }
-        return result;
-    }
+        return SpatialIndexIoKryo.load(spatialIndexFile);
+   }
 }

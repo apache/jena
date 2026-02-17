@@ -123,12 +123,12 @@ public class TestContextUtils {
         assertNotSame(givenServiceExecutorRegistry, actualServiceExecutorRegistry);
 
         List<FunctionFactory> actualFunctionFactories = new ArrayList<>();
-        actualFunctionRegistry.keys().forEachRemaining(k -> actualFunctionFactories.add(actualFunctionRegistry.get(k)));
+        actualFunctionRegistry.keys().forEachRemaining(k -> actualFunctionFactories.add(actualFunctionRegistry.getFunctionFactory(k)));
         List<PropertyFunctionFactory> actualPFunctionFactories = new ArrayList<>();
         actualPFunctionRegistry.keys().forEachRemaining(k -> actualPFunctionFactories.add(actualPFunctionRegistry.get(k)));
 
         assertSame(givenPFunctionFactory, actualPFunctionRegistry.get("y"));
-        assertSame(givenFunctionFactory, actualFunctionRegistry.get("x"));
+        assertSame(givenFunctionFactory, actualFunctionRegistry.getFunctionFactory("x"));
         assertEquals(List.of(givenPFunctionFactory), actualPFunctionFactories);
         assertEquals(List.of(givenFunctionFactory), actualFunctionFactories);
         assertEquals(List.of(givenServiceExecutionFactory), actualServiceExecutorRegistry.getBulkChain());

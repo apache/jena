@@ -21,14 +21,14 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.sparql.ARQInternalErrorException ;
-import org.apache.jena.sparql.algebra.optimize.ExprTransformConstantFold ;
-import org.apache.jena.sparql.algebra.walker.Walker ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.function.FunctionEnv ;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.algebra.optimize.ExprTransformConstantFold;
+import org.apache.jena.sparql.algebra.walker.Walker;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.function.FunctionEnv;
 
 public class ExprLib
 {
@@ -39,14 +39,14 @@ public class ExprLib
      */
 
     public static NodeValue evalOrNull(Expr expr, Binding binding, FunctionEnv functionEnv) {
-        return evalOrElse(expr, binding, functionEnv, null) ;
+        return evalOrElse(expr, binding, functionEnv, null);
     }
 
     /** evaluate or throw an exception */
     // This post dates a lot of code that uses expr.eval directly.
     // Placeholder for now.
     private static NodeValue evalOrException(Expr expr, Binding binding, FunctionEnv functionEnv) {
-        return expr.eval(binding, functionEnv) ;
+        return expr.eval(binding, functionEnv);
     }
 
     private static NodeValue evalOrElse(Expr expr, Binding binding, FunctionEnv functionEnv, NodeValue exceptionValue) {
@@ -67,21 +67,21 @@ public class ExprLib
 
         if ( expr.isConstant() )
             // Easy case.
-            return expr.getConstant() ;
+            return expr.getConstant();
         if ( expr.isVariable() ) {
             // The case of the expr being a single variable.
-            Var v = expr.asVar() ;
-            Node n = binding.get(v) ;
+            Var v = expr.asVar();
+            Node n = binding.get(v);
             if ( n == null )
-                return exceptionValue ;
-            NodeValue nv = NodeValue.makeNode(n) ;
-            return nv ;
+                return exceptionValue;
+            NodeValue nv = NodeValue.makeNode(n);
+            return nv;
         }
 
         try {
-            return expr.eval(binding, functionEnv) ;
+            return expr.eval(binding, functionEnv);
         } catch (ExprEvalException ex) {
-            return exceptionValue ;
+            return exceptionValue;
         }
     }
 
@@ -91,7 +91,7 @@ public class ExprLib
      * @return Expression
      */
     public static Expr foldConstants(Expr expr) {
-        return ExprTransformer.transform(new ExprTransformConstantFold(), expr) ;
+        return ExprTransformer.transform(new ExprTransformConstantFold(), expr);
     }
 
     /** transform an expression that may involve aggregates into one that just uses the variable for the aggregate */
@@ -103,7 +103,7 @@ public class ExprLib
 //    /** transform expressions that may involve aggregates into one that just uses the variable for the aggregate */
 //    public static ExprList replaceAggregateByVariable(ExprList exprs)
 //    {
-//        return ExprTransformer.transform(replaceAgg, exprs) ;
+//        return ExprTransformer.transform(replaceAgg, exprs);
 //}
 
     private static ExprTransform replaceAgg = new ExprTransformCopy() {

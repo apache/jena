@@ -58,7 +58,7 @@ public class LangParserBase {
     protected final Node nRDFpredicate  = RDF.Nodes.predicate ;
     protected final Node nRDFobject     = RDF.Nodes.object ;
 
-    protected final Node nRDFreifies = RDF.Nodes.reifies;
+    protected final Node nRDFreifies    = RDF.Nodes.reifies;
 
     protected StreamRDF stream;
     protected ParserProfile profile;
@@ -206,11 +206,22 @@ public class LangParserBase {
         stream.version(version);
     }
 
+    @Deprecated(forRemoval = true)
     protected void emitTriple(int line, int column, Node s, Node p, Node o) {
+        emitTriple(s, p, o, line, column);
+    }
+
+    protected void emitTriple(Node s, Node p, Node o, int line, int column) {
         stream.triple(Triple.create(s, p, o));
     }
 
+
+    @Deprecated(forRemoval = true)
     protected Node emitTripleReifier(int line, int column, Node reifierId, Node s, Node p, Node o) {
+        return emitTripleReifier(reifierId, s, p, o, line, column);
+    }
+
+    protected Node emitTripleReifier(Node reifierId, Node s, Node p, Node o, int line, int column) {
         Node tripleTerm = createTripleTerm(s, p, o, line, column);
         if ( reifierId == null )
             reifierId = createBNode(line, column);

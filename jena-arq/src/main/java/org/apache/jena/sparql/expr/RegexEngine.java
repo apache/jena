@@ -100,7 +100,7 @@ public abstract class RegexEngine {
         if ( modifiers == null )
             return 0;
         int newMask = 0;
-        for ( int i = 0 ; i < modifiers.length() ; i++ ) {
+        for ( int i = 0; i < modifiers.length(); i++ ) {
             switch (modifiers.charAt(i)) {
                 case 'i' -> {
                     newMask |= Pattern.UNICODE_CASE;

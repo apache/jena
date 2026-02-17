@@ -19,7 +19,7 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-module org.apache.jena.iri3986 {
+module org.apache.jena.iri3986x {
     exports org.apache.jena.rfc3986;
     exports org.apache.jena.rfc3986.cmd;
 }

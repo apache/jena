@@ -64,8 +64,10 @@ public class QueryIterPlainWrapper extends QueryIter
     @Override
     protected Binding moveToNextBinding() { return iterator.next(); }
 
+    // Synchronized to prevent race conditions when abort() and close() compete
+    // to close the iterator concurrent by calling closeIterator()
     @Override
-    protected void closeIterator() {
+    protected synchronized void closeIterator() {
         if ( iterator != null ) {
             // In case we wrapped a QueryIterator or a Jena graph ExtendedIterator.
             // Includes the effect of NiceIterator.close(iterator)

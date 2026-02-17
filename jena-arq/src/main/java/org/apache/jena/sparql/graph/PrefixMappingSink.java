@@ -67,6 +67,7 @@ public class PrefixMappingSink extends PrefixMappingBase {
 
     @Override
     protected Map<String, String> asMap() {
+        // Immutable.
         return Collections.emptyMap();
     }
 

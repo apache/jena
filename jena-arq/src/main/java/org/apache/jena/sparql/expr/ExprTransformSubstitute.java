@@ -23,8 +23,8 @@ package org.apache.jena.sparql.expr;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.function.user.UserDefinedFunction ;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.function.user.UserDefinedFunction;
 
 /**
  * An expression transformer that substitutes another expression in place of variables

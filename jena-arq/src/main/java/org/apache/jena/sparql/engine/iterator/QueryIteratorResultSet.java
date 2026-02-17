@@ -21,29 +21,29 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.query.ResultSet ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.serializer.SerializationContext ;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.serializer.SerializationContext;
 
 public class QueryIteratorResultSet extends QueryIteratorBase
 {
-    private ResultSet resultSet ; 
-    public QueryIteratorResultSet(ResultSet rs) { resultSet = rs ; }
-    
+    private ResultSet resultSet;
+    public QueryIteratorResultSet(ResultSet rs) { resultSet = rs; }
+
     @Override
-    protected void closeIterator()          { resultSet = null ; }
+    protected void closeIterator()          { resultSet = null; }
     @Override
     protected void requestCancel()          { }
     @Override
-    protected boolean hasNextBinding()      { return resultSet.hasNext() ; }
+    protected boolean hasNextBinding()      { return resultSet.hasNext(); }
     @Override
-    protected Binding moveToNextBinding()   { return resultSet.nextBinding() ; }
+    protected Binding moveToNextBinding()   { return resultSet.nextBinding(); }
 
     @Override
     public void output(IndentedWriter out, SerializationContext cxt)
     {
-        out.print(Lib.className(this)) ;
+        out.print(Lib.className(this));
     }
 }

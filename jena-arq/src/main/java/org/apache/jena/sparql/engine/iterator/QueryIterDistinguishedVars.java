@@ -26,25 +26,22 @@ import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingProjectNamed ;
 
-/** Filter bindings for distinguished variables only 
+/** Filter bindings for distinguished variables only
  *  Currently unused. */
 
 public class QueryIterDistinguishedVars extends QueryIterConvert
 {
 
-    public QueryIterDistinguishedVars(QueryIterator iter, ExecutionContext context)
-    {
-        super(iter, conv, context) ;
+    public QueryIterDistinguishedVars(QueryIterator iter, ExecutionContext context) {
+        super(iter, conv, context);
     }
 
-    static Converter conv = new ProjectWrap() ;
+    static Converter conv = new ProjectWrap();
 
-    static class ProjectWrap implements Converter
-    {
+    static class ProjectWrap implements Converter {
         @Override
-        public Binding convert(Binding binding)
-        {
-            return new BindingProjectNamed(binding) ;
+        public Binding convert(Binding binding) {
+            return new BindingProjectNamed(binding);
         }
     }
 }

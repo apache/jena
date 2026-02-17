@@ -47,17 +47,18 @@ public class Shacl03_FusekiValidationService {
         //Operation op = Operation.Shacl;
         FusekiServer server =
             FusekiServer.create()
-                .port(3030)
+                .port(0)
                 .add("/ds", DatasetGraphFactory.createTxnMem(), true)
                 .addEndpoint("/ds", "shacl", op)
                 .build();
         try {
             server.start();
-            try ( RDFConnection conn = RDFConnection.connect("http://localhost:3030/ds")) {
+            int port = server.getPort();
+            try ( RDFConnection conn = RDFConnection.connect("http://localhost:"+port+"/ds")) {
                 conn.put("fu-data.ttl");
             }
 
-            ValidationReport report = validateReport("http://localhost:3030/ds/shacl?graph=default", "fu-shapes.ttl");
+            ValidationReport report = validateReport("http://localhost:"+port+"/ds/shacl?graph=default", "fu-shapes.ttl");
 
             System.out.println();
             ShLib.printReport(report);

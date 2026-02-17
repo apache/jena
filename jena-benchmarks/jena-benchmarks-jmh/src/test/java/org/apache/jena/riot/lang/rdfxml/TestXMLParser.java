@@ -40,7 +40,7 @@ public class TestXMLParser {
     @Param({
             "../testing/pizza.owl.rdf",
 //            "../testing/citations.rdf",
-//            "../testing/BSBM/bsbm-5m.xml",
+//            "../testing/data.xml",
 
     })
     public String param0_GraphUri;

@@ -21,63 +21,61 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import org.apache.jena.sparql.ARQInternalErrorException ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
 
-public class QueryIterPeek extends QueryIter1
-{
-    private Binding binding = null ;
-    private boolean closed = false ;
+public class QueryIterPeek extends QueryIter1 {
+    private Binding binding = null;
+    private boolean closed = false;
 
-    public static QueryIterPeek create(QueryIterator iterator, ExecutionContext cxt)
-    {
-        if ( iterator instanceof QueryIterPeek)
-            return (QueryIterPeek)iterator ;
-        return new QueryIterPeek(iterator, cxt) ;
+    public static QueryIterPeek create(QueryIterator iterator, ExecutionContext cxt) {
+        if ( iterator instanceof QueryIterPeek )
+            return (QueryIterPeek)iterator;
+        return new QueryIterPeek(iterator, cxt);
     }
 
-    private QueryIterPeek(QueryIterator iterator, ExecutionContext cxt)
-    {
-        super(iterator, cxt) ;
+    private QueryIterPeek(QueryIterator iterator, ExecutionContext cxt) {
+        super(iterator, cxt);
     }
 
-    /** Returns the next binding without moving on.  Returns "null" for no such element. */
-    public Binding peek()
-    {
-        if ( closed ) return null ;
-        if ( ! hasNextBinding() )
-            return null ;
-        return binding ;
+    /**
+     * Returns the next binding without moving on. Returns "null" for no such
+     * element.
+     */
+    public Binding peek() {
+        if ( closed )
+            return null;
+        if ( !hasNextBinding() )
+            return null;
+        return binding;
     }
 
     @Override
-    protected boolean hasNextBinding()
-    {
+    protected boolean hasNextBinding() {
         if ( binding != null )
-            return true ;
-        if ( ! getInput().hasNext() )
-            return false ;
-        binding = getInput().nextBinding() ;
-        return true ;
+            return true;
+        if ( !getInput().hasNext() )
+            return false;
+        binding = getInput().nextBinding();
+        return true;
     }
 
     @Override
-    protected Binding moveToNextBinding()
-    {
-        if ( ! hasNextBinding() )
-            throw new ARQInternalErrorException("No next binding") ;
-        Binding b = binding ;
-        binding = null ;
-        return b ;
+    protected Binding moveToNextBinding() {
+        if ( !hasNextBinding() )
+            throw new ARQInternalErrorException("No next binding");
+        Binding b = binding;
+        binding = null;
+        return b;
     }
 
     @Override
-    protected void closeSubIterator()
-    { closed = true ; }
+    protected void closeSubIterator() {
+        closed = true;
+    }
 
     @Override
-    protected void requestSubCancel()
-    { }
+    protected void requestSubCancel() {}
 }

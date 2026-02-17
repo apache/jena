@@ -22,18 +22,13 @@
 package arq;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 import arq.cmdline.ModContext;
 import arq.cmdline.ModEngine;
 import org.apache.jena.Jena;
 import org.apache.jena.arq.junit.EarlReport;
-import org.apache.jena.arq.junit.manifest.ManifestEntry;
 import org.apache.jena.arq.junit.riot.ParsingStepForTest;
-import org.apache.jena.arq.junit.riot.RiotTests;
-import org.apache.jena.arq.junit.riot.SemanticsTests;
 import org.apache.jena.arq.junit.riot.VocabLangRDF;
 import org.apache.jena.arq.junit.sparql.SparqlTests;
 import org.apache.jena.arq.junit.sparql.tests.QueryEvalTest;
@@ -120,7 +115,7 @@ public class rdftests extends CmdMain {
         addModule(modContext);
 
         getUsage().startCategory("Tests (execute test manifest)");
-        add(useARQ,       "--arq",     "Operate with ARQ syntax");
+        //add(useARQ,       "--arq",     "Operate with ARQ syntax");
         add(useTTLjcc,    "--ttljcc",  "Use the alternative Turtle parser in tests");
         add(strictDecl,   "--strict",  "Operate in strict mode (no extensions of any kind)");
         add(earlDecl,     "--earl",    "Create EARL report");
@@ -167,7 +162,7 @@ public class rdftests extends CmdMain {
 
         List<String> manifests = getPositional();
         System.out.println("# Run: "+manifests);
-        exec(report, manifests);
+        exec(createEarlReport, report, manifests);
 
         if ( createEarlReport ) {
             earlOut.println();
@@ -189,26 +184,14 @@ public class rdftests extends CmdMain {
         }
     }
 
-    protected void exec(EarlReport earlReport, List<String> manifests) {
+    public static void exec(boolean createEarlReport, EarlReport earlReport, List<String> manifests) {
+        // See TestMakers for which test makers are installed.
         if ( manifests.isEmpty() )
             throw new CmdException("No manifest files");
         if ( createEarlReport )
             TextTestRunner.run(earlReport, manifests);
         else
             TextTestRunner.run(manifests);
-    }
-
-    // Test subsystems.
-    private static List<Function<ManifestEntry, Runnable>> installed = new ArrayList<>();
-
-    public static void installTestMaker(Function<ManifestEntry, Runnable> testMaker) {
-        installed.add(testMaker);
-    }
-
-    static {
-        installTestMaker(RiotTests::makeRIOTTest);
-        installTestMaker(SparqlTests::makeSPARQLTest);
-        installTestMaker(SemanticsTests::makeSemanticsTest);
     }
 
     private static String name =  "Apache Jena";

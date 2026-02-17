@@ -218,15 +218,58 @@ public class TestIter
 
     @Test
     public void map_01() {
-        Iterator<String> it = Iter.map(data2.iterator(), item -> item + item);
+        Iterator<String> it = Iter.map(data2.iterator(), TestIter::strAction);
         test(it, "xx", "yy", "zz");
     }
 
     @Test
     public void map_02() {
-        Iterator<String> it = Iter.map(data2.iterator(), item -> item + item);
+        Iterator<String> it = Iter.map(data2.iterator(), TestIter::strAction);
         testWithForeachRemaining(it, "xx", "yy", "zz");
     }
+
+    @Test
+    public void mapRemove_01() {
+        List<String> input = List.of();
+        Iterator<String> output = Iter.mapRemove(input.iterator(), TestIter::strActionOrNull);
+        test(output);
+    }
+
+    @Test
+    public void mapRemove_02() {
+        List<String> input = List.of("a", "b");
+        Iterator<String> output = Iter.mapRemove(input.iterator(), TestIter::strActionOrNull);
+        test(output, "aa", "bb");
+    }
+
+    @Test
+    public void mapRemove_03() {
+        List<String> input = List.of("!");
+        Iterator<String> output = Iter.mapRemove(input.iterator(), TestIter::strActionOrNull);
+        test(output);
+    }
+
+    @Test
+    public void mapRemove_04() {
+        List<String> input = List.of("a", "!", "b");
+        Iterator<String> output = Iter.mapRemove(input.iterator(), TestIter::strActionOrNull);
+        test(output, "aa", "bb");
+    }
+
+    private static String strAction(String string) {
+        if ( string == null )
+            return null;
+        return string+string;
+    }
+
+    private static String strActionOrNull(String string) {
+        if ( string == null )
+            return null;
+        if ( string.startsWith("!") )
+            return null;
+        return string+string;
+    }
+
 
     @Test
     public void flatmap_01() {

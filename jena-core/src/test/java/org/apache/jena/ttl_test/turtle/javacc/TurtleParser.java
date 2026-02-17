@@ -9,15 +9,16 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  *
- * SPDX-License-Identifier: Apache-2.0
+ *   SPDX-License-Identifier: Apache-2.0
  */
 
 package org.apache.jena.ttl_test.turtle.javacc;
@@ -247,7 +248,7 @@ void TriplesSameSubject() throws ParseException {Node s ;
   final public void Object(Node s, Node p) throws ParseException {Node o ;
     o = GraphNode();
 Triple t = Triple.create(s,p,o) ;
-    emitTriple(token.beginLine, token.beginColumn, t) ;
+    emitTriple(t, token.beginLine, token.beginColumn) ;
 }
 
   final public Node Verb() throws ParseException {Node p ; String iri ;
@@ -334,11 +335,11 @@ Node cell = createBNode() ;
       if ( listHead == nRDFnil )
          listHead = cell ;
       if ( lastCell != null )
-        emitTriple(token.beginLine, token.beginColumn,
-                   Triple.create(lastCell, nRDFrest,  cell)) ;
+        emitTriple(Triple.create(lastCell, nRDFrest,  cell),
+                   token.beginLine, token.beginColumn);
       n = GraphNode();
-emitTriple(token.beginLine, token.beginColumn,
-                 Triple.create(cell, nRDFfirst,  n)) ;
+emitTriple(Triple.create(cell, nRDFfirst,  n),
+                 token.beginLine, token.beginColumn);
       lastCell = cell ;
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case TRUE:
@@ -370,8 +371,8 @@ emitTriple(token.beginLine, token.beginColumn,
     }
     jj_consume_token(RPAREN);
 if ( lastCell != null )
-       emitTriple(token.beginLine, token.beginColumn,
-                  Triple.create(lastCell, nRDFrest,  nRDFnil)) ;
+       emitTriple(Triple.create(lastCell, nRDFrest,  nRDFnil),
+                  token.beginLine, token.beginColumn);
      {if ("" != null) return listHead ;}
     throw new Error("Missing return statement in function");
 }

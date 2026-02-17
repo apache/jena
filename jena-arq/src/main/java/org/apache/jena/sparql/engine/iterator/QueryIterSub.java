@@ -30,34 +30,32 @@ import org.apache.jena.sparql.engine.QueryIterator ;
  */
 public abstract class QueryIterSub extends QueryIter
 {
-    protected QueryIterator iter ; 
-    
-    public QueryIterSub(QueryIterator input, ExecutionContext execCxt)
-    { 
-        super(execCxt) ;
-        this.iter = input ;
+    protected QueryIterator iter ;
+
+    public QueryIterSub(QueryIterator input, ExecutionContext execCxt) {
+        super(execCxt);
+        this.iter = input;
     }
-    
+
     @Override
-    protected final
-    void closeIterator()
-    {
-        closeSubIterator() ;
-        performClose(iter) ;
-        iter = null ;
+    protected final void closeIterator() {
+        closeSubIterator();
+        performClose(iter);
+        iter = null;
     }
-    
+
     @Override
-    protected final
-    void requestCancel()
-    {
-        requestSubCancel() ;
-        performRequestCancel(iter) ;
+    protected final void requestCancel() {
+        requestSubCancel();
+        performRequestCancel(iter);
     }
-    
+
     /** Cancellation of the query execution is happening */
-    protected abstract void requestSubCancel() ;
-    
-    /** Pass on the close method - no need to close the QueryIterator passed to the QueryIter1 constructor */
+    protected abstract void requestSubCancel();
+
+    /**
+     * Pass on the close method - no need to close the QueryIterator passed to the
+     * QueryIter1 constructor
+     */
     protected abstract void closeSubIterator() ;
 }

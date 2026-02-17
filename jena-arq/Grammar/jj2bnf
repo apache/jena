@@ -53,9 +53,11 @@ $grammar =~ s!^[\n\s]*!\n! ;
 # Merge alts
 $grammar =~ s!\n\s*\|!\ |!g ;
 
+# Tab after |
+$grammar =~ s!\|\t!\| !g ;
+
 $tokens =~ s!//.*!!g ;
 $tokens =~ s!\r!!g ;
-
 
 ## Grammar
 
@@ -254,13 +256,15 @@ sub fixupRule {
 	print STDERR "A:",$body,"\n" if $p ;
 
 	## Fix up for BNODE that uses "|" - put in marker.
-	$body =~ s%'BNODE' \( '\(' Expression '\)' \| \<NIL\> \)%XXX-BNODE-XXX%;
-
-	## | followed by <NIL>
+	$body =~ s%'BNODE' \( '\(' Expression '\)' \| NIL \)%XXX-BNODE-XXX%;
+	
+	## Alternative more general removal: NB space-) - matched the BNF parens
+	##$body =~ s%'BNODE'.*? \)%XXX-BNODE-XXX%;
+	
 	$body =~ s%\|\s*%\n                          |   %g ;
 	
 	## Replace marker
-	$body =~ s%XXX-BNODE-XXX%'BNODE' \( '(' Expression ')' \| \<NIL\> \)%;
+	$body =~ s%XXX-BNODE-XXX%'BNODE' \( '(' Expression ')' \| NIL \)%;
     }
 
      if ( $head eq "Aggregate" )

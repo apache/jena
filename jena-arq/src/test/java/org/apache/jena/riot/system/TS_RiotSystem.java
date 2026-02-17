@@ -46,6 +46,7 @@ import org.junit.platform.suite.api.Suite;
 
     , TestRiotLib.class
     , TestAsyncParser.class
+    , TestJenaTitaniumConvert.class
 })
 
 /**

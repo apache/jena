@@ -128,8 +128,12 @@ public interface DataLoader {
      */
     default public void load(String ... filenames) { load(Arrays.asList(filenames)); }
 
+    /** @deprecated Use {@link #streamRDF()}. */
+    @Deprecated
+    public default StreamRDF stream() { return streamRDF(); }
+
     /** Send data to the loader by {@link StreamRDF} */
-    public StreamRDF stream();
+    public StreamRDF streamRDF();
 
     /** Return count of triples sent to the loader and added. This is not a count of unique triples. */
     public long countTriples();

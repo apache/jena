@@ -23,6 +23,8 @@ package org.apache.jena.tdb1.store;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Test ;
+
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.NodeFactory ;
@@ -30,6 +32,10 @@ import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.sparql.exec.RowSet;
+import org.apache.jena.sparql.exec.RowSetOps;
 import org.apache.jena.sparql.exec.UpdateExec;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.system.Txn;
@@ -39,7 +45,6 @@ import org.apache.jena.tdb1.base.file.Location;
 import org.apache.jena.update.UpdateAction;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
-import org.junit.Test ;
 
 /**
  * Test SPARQL
@@ -150,6 +155,20 @@ public class Test_SPARQL_TDB1
         Query query = QueryFactory.create("ASK { GRAPH <http://example/x> {} }");
         boolean b = QueryExecutionFactory.create(query, dataset).execAsk();
         assertEquals(false, b);
+    }
+
+    @Test
+    public void sparql7() {
+        // https://github.com/apache/jena/issues/3751
+        String qs = """
+                PREFIX : <http://example/>
+                SELECT * { ?x :property+ ?y . ?z :q1 123 . ?z :q2 456 . }
+                """;
+        DatasetGraph dsg = TDB1Factory.createDatasetGraph();
+        dsg.executeRead(()->{
+            RowSet rs = QueryExec.dataset(dsg).query(qs).select();
+            RowSetOps.consume(rs);
+        });
     }
 
     // Test transactions effective.

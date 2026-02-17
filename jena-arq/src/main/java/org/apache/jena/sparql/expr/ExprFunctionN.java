@@ -67,8 +67,7 @@ public abstract class ExprFunctionN extends ExprFunction
     @Override
     public Expr copySubstitute(Binding binding) {
         ExprList newArgs = new ExprList();
-        for ( int i = 1; i <= numArgs(); i++ )
-        {
+        for ( int i = 1; i <= numArgs(); i++ ) {
             Expr e = getArg(i);
             e = e.copySubstitute(binding);
             newArgs.add(e);
@@ -79,7 +78,7 @@ public abstract class ExprFunctionN extends ExprFunction
     @Override
     public Expr applyNodeTransform(NodeTransform transform) {
         ExprList newArgs = new ExprList();
-        for ( int i = 1 ; i <= numArgs() ; i++ ) {
+        for ( int i = 1; i <= numArgs(); i++ ) {
             Expr e = getArg(i);
             e = e.applyNodeTransform(transform);
             newArgs.add(e);
@@ -97,7 +96,7 @@ public abstract class ExprFunctionN extends ExprFunction
             return s;
 
         List<NodeValue> argsEval = new ArrayList<>();
-        for ( int i = 1 ; i <= numArgs() ; i++ ) {
+        for ( int i = 1; i <= numArgs(); i++ ) {
             NodeValue x = eval(binding, env, getArg(i));
             argsEval.add(x);
         }
@@ -113,5 +112,4 @@ public abstract class ExprFunctionN extends ExprFunction
     @Override
     public void visit(ExprVisitor visitor) { visitor.visit(this); }
     public Expr apply(ExprTransform transform, ExprList exprList) { return transform.transform(this, exprList); }
-
 }

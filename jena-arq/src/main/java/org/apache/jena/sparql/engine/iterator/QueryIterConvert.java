@@ -21,55 +21,48 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.serializer.SerializationContext ;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.serializer.SerializationContext;
 
+/**
+ * Iterator over another QueryIterator, applying a converter function to each object
+ * that is returned by .next()
+ */
 
-/** Iterator over another QueryIterator, applying a converter function
- *  to each object that is returned by .next() */
-
-public class QueryIterConvert extends QueryIter1
-{
-    public interface Converter
-    {
-        public Binding convert(Binding obj) ;
+public class QueryIterConvert extends QueryIter1 {
+    public interface Converter {
+        public Binding convert(Binding obj);
     }
-    
-    Converter converter ; 
-    
-    public QueryIterConvert(QueryIterator iter, Converter c, ExecutionContext context)
-    { 
-        super(iter, context) ;
-        converter = c ;
-    }
-    
-    @Override
-    protected void 
-    closeSubIterator() {}
-    
-    @Override
-    protected void 
-    requestSubCancel() {}
 
-    @Override
-    public boolean hasNextBinding()
-    {
-        return getInput().hasNext() ;
+    private Converter converter;
+
+    public QueryIterConvert(QueryIterator iter, Converter c, ExecutionContext context) {
+        super(iter, context);
+        converter = c;
     }
 
     @Override
-    public Binding moveToNextBinding()
-    {
-        return converter.convert(getInput().nextBinding()) ;
+    protected void closeSubIterator() {}
+
+    @Override
+    protected void requestSubCancel() {}
+
+    @Override
+    public boolean hasNextBinding() {
+        return getInput().hasNext();
     }
 
     @Override
-    protected void details(IndentedWriter out, SerializationContext cxt)
-    { 
-        out.println(Lib.className(this)) ;
+    public Binding moveToNextBinding() {
+        return converter.convert(getInput().nextBinding());
+    }
+
+    @Override
+    protected void details(IndentedWriter out, SerializationContext cxt) {
+        out.println(Lib.className(this));
     }
 }

@@ -20,16 +20,16 @@
  */
 
 package org.apache.jena.sparql.expr;
-import org.apache.jena.query.QueryException ;
+import org.apache.jena.query.QueryException;
 
 /** The root of all expression exceptions */
 
 public class ExprException extends QueryException
 {
-    public ExprException() { super() ; }
-    public ExprException(Throwable cause) { super(cause) ; }
-    public ExprException(String msg) { super(msg) ; }
-    public ExprException(String msg, Throwable cause) { super(msg, cause) ; }
+    public ExprException() { super(); }
+    public ExprException(Throwable cause) { super(cause); }
+    public ExprException(String msg) { super(msg); }
+    public ExprException(String msg, Throwable cause) { super(msg, cause); }
     
     private static final long serialVersionUID = 1L; // Unused
 }

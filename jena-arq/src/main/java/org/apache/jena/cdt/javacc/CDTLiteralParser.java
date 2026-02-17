@@ -9,15 +9,16 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  *
- * SPDX-License-Identifier: Apache-2.0
+ *   SPDX-License-Identifier: Apache-2.0
  */
 
 package org.apache.jena.cdt.javacc;
@@ -412,7 +413,7 @@ lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
 
   /** Generated Token Manager. */
   public CDTLiteralParserTokenManager token_source;
-  JavaCharStream jj_input_stream;
+  SimpleCharStream jj_input_stream;
   /** Current token. */
   public Token token;
   /** Next token. */
@@ -439,7 +440,7 @@ lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
   }
   /** Constructor with InputStream and supplied encoding */
   public CDTLiteralParser(java.io.InputStream stream, String encoding) {
-	 try { jj_input_stream = new JavaCharStream(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
+	 try { jj_input_stream = new SimpleCharStream(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
 	 token_source = new CDTLiteralParserTokenManager(jj_input_stream);
 	 token = new Token();
 	 jj_ntk = -1;
@@ -463,7 +464,7 @@ lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
 
   /** Constructor. */
   public CDTLiteralParser(java.io.Reader stream) {
-	 jj_input_stream = new JavaCharStream(stream, 1, 1);
+	 jj_input_stream = new SimpleCharStream(stream, 1, 1);
 	 token_source = new CDTLiteralParserTokenManager(jj_input_stream);
 	 token = new Token();
 	 jj_ntk = -1;
@@ -474,7 +475,7 @@ lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
   /** Reinitialise. */
   public void ReInit(java.io.Reader stream) {
 	if (jj_input_stream == null) {
-	   jj_input_stream = new JavaCharStream(stream, 1, 1);
+	   jj_input_stream = new SimpleCharStream(stream, 1, 1);
 	} else {
 	   jj_input_stream.ReInit(stream, 1, 1);
 	}

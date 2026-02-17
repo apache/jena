@@ -25,10 +25,10 @@ package org.apache.jena.sparql.expr;
 
 public class ExprTypeException extends ExprEvalException
 {
-    public ExprTypeException() { super() ; }
-    public ExprTypeException(Throwable cause) { super(cause) ; }
-    public ExprTypeException(String msg) { super(msg) ; }
-    public ExprTypeException(String msg, Throwable cause) { super(msg, cause) ; }
+    public ExprTypeException() { super(); }
+    public ExprTypeException(Throwable cause) { super(cause); }
+    public ExprTypeException(String msg) { super(msg); }
+    public ExprTypeException(String msg, Throwable cause) { super(msg, cause); }
 
     private static final long serialVersionUID = 1L; // Unused
 }

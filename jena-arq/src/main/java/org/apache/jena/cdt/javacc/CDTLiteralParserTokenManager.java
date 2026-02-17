@@ -9,15 +9,16 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  *
- * SPDX-License-Identifier: Apache-2.0
+ *   SPDX-License-Identifier: Apache-2.0
  */
 
 package org.apache.jena.cdt.javacc;
@@ -1007,23 +1008,23 @@ private void jjCheckNAddStates(int start, int end)
 }
 
     /** Constructor. */
-    public CDTLiteralParserTokenManager(JavaCharStream stream){
+    public CDTLiteralParserTokenManager(SimpleCharStream stream){
 
-      if (JavaCharStream.staticFlag)
+      if (SimpleCharStream.staticFlag)
             throw new Error("ERROR: Cannot use a static CharStream class with a non-static lexical analyzer.");
 
     input_stream = stream;
   }
 
   /** Constructor. */
-  public CDTLiteralParserTokenManager (JavaCharStream stream, int lexState){
+  public CDTLiteralParserTokenManager (SimpleCharStream stream, int lexState){
     ReInit(stream);
     SwitchTo(lexState);
   }
 
   /** Reinitialise parser. */
   
-  public void ReInit(JavaCharStream stream)
+  public void ReInit(SimpleCharStream stream)
   {
 
 
@@ -1044,7 +1045,7 @@ private void jjCheckNAddStates(int start, int end)
   }
 
   /** Reinitialise parser. */
-  public void ReInit(JavaCharStream stream, int lexState)
+  public void ReInit(SimpleCharStream stream, int lexState)
   
   {
     ReInit(stream);
@@ -1083,7 +1084,7 @@ static final long[] jjtoSpecial = {
 static final long[] jjtoMore = {
    0x0L, 
 };
-    protected JavaCharStream  input_stream;
+    protected SimpleCharStream  input_stream;
 
     private final int[] jjrounds = new int[74];
     private final int[] jjstateSet = new int[2 * 74];

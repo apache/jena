@@ -21,27 +21,27 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.algebra.walker.Walker ;
+import org.apache.jena.sparql.algebra.walker.Walker;
 
 public class ExprTransformer
 {
     /** Transform an expression */
     public static Expr transform(ExprTransform transform, Expr expr)
-    { return Walker.transform(expr, transform) ;}
+    { return Walker.transform(expr, transform);}
 
     /** Transform an expression list */
     public static ExprList transform(ExprTransform transform, ExprList exprList) {
-        ExprList exprList2 = new ExprList() ;
-        boolean changed = false ;
+        ExprList exprList2 = new ExprList();
+        boolean changed = false;
         for ( Expr e : exprList ) {
-            Expr e2 = transform(transform, e) ;
-            exprList2.add(e2) ;
+            Expr e2 = transform(transform, e);
+            exprList2.add(e2);
             if ( e != e2 )
-                changed = true ;
-        } ;
+                changed = true;
+        };
         if ( changed )
-            return exprList2 ;
+            return exprList2;
         else
-            return exprList ;
+            return exprList;
     }
 }

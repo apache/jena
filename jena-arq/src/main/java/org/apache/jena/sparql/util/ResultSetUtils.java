@@ -95,7 +95,7 @@ public class ResultSetUtils
      * The input ResultSets are exhausted.
      *
      * @param sets the ResultSets to concatenate.
-     * @returns ResultSetRewindable
+     * @return ResultSetRewindable
      */
     public static ResultSetRewindable merge(ResultSet... sets) {
         List<Var> vars = new ArrayList<>();

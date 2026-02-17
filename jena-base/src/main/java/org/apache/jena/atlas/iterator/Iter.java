@@ -420,6 +420,15 @@ public class Iter<T> implements IteratorCloseable<T> {
         return new IterMap<>(stream, converter);
     }
 
+    /**
+     * Apply a function to every element of an iterator, transforming it
+     * from a {@code T} to an {@code R}. If the mapped object is null, skip
+     * this mapping. Equivalent to {@code removeNulls(map(stream, mapper)) }
+     */
+    public static <T, R> Iterator<R> mapRemove(Iterator<T> stream, Function<T, R> mapper) {
+        return Iter.iter(stream).map(mapper).removeNulls();
+    }
+
     private static final class IterMap<T,R> implements IteratorCloseable<R> {
         private final Iterator<? extends T> stream;
         private final Function<T, R> converter;
@@ -931,6 +940,13 @@ public class Iter<T> implements IteratorCloseable<T> {
         this.iterator = iterator;
     }
 
+    /**
+     * Unwrap the iterator.
+     */
+    public Iterator<T> get() {
+        return iterator;
+    }
+
     @Override
     public void close() {
         Iter.close(iterator);
@@ -1021,6 +1037,17 @@ public class Iter<T> implements IteratorCloseable<T> {
     public <R> Iter<R> flatMap(Function<T, Iterator<R>> converter) {
         return iter(flatMap(iterator, converter));
     }
+
+    // Convenience form.
+    /**
+     * Map each element using given function.
+     * If the function returns null, filter out this element.
+     * Equivalent to {@code .map(mapper).removeNulls()}
+     */
+    public <R> Iter<R> mapRemoveNulls(Function<T, R> converter) {
+        return this.map(converter).removeNulls();
+    }
+
     /**
      * Apply an action to everything in the stream, yielding a stream of the
      * original items.

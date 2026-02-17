@@ -18,6 +18,7 @@ buildNumber.properties
 .metadata
 maven-eclipse.xml
 .externalToolBuilders/
+.mvn/
 
 # Idea IntelliJ
 *.ipr

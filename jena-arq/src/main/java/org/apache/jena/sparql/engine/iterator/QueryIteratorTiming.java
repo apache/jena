@@ -30,60 +30,62 @@ import org.slf4j.LoggerFactory ;
 public class QueryIteratorTiming extends QueryIteratorWrapper
 {
     static private Logger log = LoggerFactory.getLogger(QueryIteratorTiming.class) ;
-    
-    static final public int NotStarted = -2 ;
-    static final public int NotFinished = -1 ;
-    
-    public static QueryIteratorTiming time(QueryIterator iter) { return new QueryIteratorTiming(iter) ; }
-    
-    private QueryIteratorTiming(QueryIterator iter)
-    {
-        super(iter) ;
-    }
-    
-    @Override
-    protected boolean hasNextBinding() { start() ; return super.hasNextBinding() ; }
-    
-    @Override
-    protected Binding moveToNextBinding() { start() ; return super.moveToNextBinding() ; }
-    
-    @Override
-    protected void closeIterator()
-    {
-        super.closeIterator() ;
-        stop() ;
+
+    static final public int NotStarted = -2;
+    static final public int NotFinished = -1;
+
+    public static QueryIteratorTiming time(QueryIterator iter) {
+        return new QueryIteratorTiming(iter);
     }
 
-    private Timer timer = null ; 
-    private long milliseconds = NotStarted ;
-    
-    private void start()
-    {
-        if ( timer == null )
-        {
-            timer = new Timer() ;
-            timer.startTimer() ;
-            milliseconds = NotFinished ;
+    private QueryIteratorTiming(QueryIterator iter) {
+        super(iter);
+    }
+
+    @Override
+    protected boolean hasNextBinding() {
+        start();
+        return super.hasNextBinding();
+    }
+
+    @Override
+    protected Binding moveToNextBinding() {
+        start();
+        return super.moveToNextBinding();
+    }
+
+    @Override
+    protected void closeIterator() {
+        super.closeIterator();
+        stop();
+    }
+
+    private Timer timer = null;
+    private long milliseconds = NotStarted;
+
+    private void start() {
+        if ( timer == null ) {
+            timer = new Timer();
+            timer.startTimer();
+            milliseconds = NotFinished;
         }
     }
 
-    private void stop()
-    {
-        if ( timer == null )
-        {
-            milliseconds = 0 ; 
-            return ;
+    private void stop() {
+        if ( timer == null ) {
+            milliseconds = 0;
+            return;
         }
-            
-        milliseconds = timer.endTimer() ;
-        
-//        if ( log.isDebugEnabled() )
-//            log.debug("Iterator: {} milliseconds", milliseconds) ;
-        log.info("Execution: {} milliseconds", milliseconds) ;
+        milliseconds = timer.endTimer();
+        log.info("Execution: {} milliseconds", milliseconds);
     }
-    
-    /** Return the elapsed time, in milliseconds, between the first call to this iterator and the close call.
-     *  Returns the time, or NotStarted (-2) or NotFinished (-1).
+
+    /**
+     * Return the elapsed time, in milliseconds, between the first call to this
+     * iterator and the close call. Returns the time, or NotStarted (-2) or
+     * NotFinished (-1).
      */
-    public long getMillis() { return milliseconds ; }
+    public long getMillis() {
+        return milliseconds;
+    }
 }

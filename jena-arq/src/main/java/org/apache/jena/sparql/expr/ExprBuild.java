@@ -21,17 +21,17 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.engine.OpEval ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.sparql.engine.OpEval;
+import org.apache.jena.sparql.util.Context;
 
 /** Visitor class to run over expressions and initialise them */
 public class ExprBuild extends ExprVisitorBase 
 {
-    private Context context ;
-    private OpEval opExec ;
+    private Context context;
+    private OpEval opExec;
     public ExprBuild(Context context)
     { 
-        this.context = context ;
+        this.context = context;
     }
     
     @Override
@@ -40,8 +40,8 @@ public class ExprBuild extends ExprVisitorBase
         if ( func instanceof E_Function )
         {
             // Causes unbindable functions to complain now, not later.
-            E_Function f = (E_Function)func ;
-            f.buildFunction(context) ;
+            E_Function f = (E_Function)func;
+            f.buildFunction(context);
         }
     }
 }

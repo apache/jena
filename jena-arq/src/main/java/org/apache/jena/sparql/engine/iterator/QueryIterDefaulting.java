@@ -21,82 +21,81 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import java.util.NoSuchElementException ;
+import java.util.NoSuchElementException;
 
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
 
-/** An iterator that returns at least one element from another iterator
- *  or a default value (once) if the wrapped iterator returns nothing. */ 
+/**
+ * An iterator that returns at least one element from another iterator or a default
+ * value (once) if the wrapped iterator returns nothing.
+ */
 
-public class QueryIterDefaulting extends QueryIterSub
-{
-    Binding defaultObject ;
-    
-    boolean returnDefaultObject = false ;
-    boolean haveReturnedSomeObject = false ; 
+public class QueryIterDefaulting extends QueryIterSub {
+    Binding defaultObject;
 
-    public QueryIterDefaulting(QueryIterator cIter, Binding _defaultObject, ExecutionContext qCxt) 
-    {
-        super(cIter, qCxt) ;
-        defaultObject = _defaultObject ;
+    boolean returnDefaultObject = false;
+    boolean haveReturnedSomeObject = false;
+
+    public QueryIterDefaulting(QueryIterator cIter, Binding _defaultObject, ExecutionContext qCxt) {
+        super(cIter, qCxt);
+        defaultObject = _defaultObject;
     }
 
-    /** Returns true if the returned binding was the default object. Undef if before the iterator's first .hasNext() */
-    public boolean wasDefaultObject()
-    { return returnDefaultObject ; }
-    
+    /**
+     * Returns true if the returned binding was the default object. Undef if before
+     * the iterator's first .hasNext()
+     */
+    public boolean wasDefaultObject() {
+        return returnDefaultObject;
+    }
+
     @Override
-    protected boolean hasNextBinding()
-    {
+    protected boolean hasNextBinding() {
         if ( isFinished() )
-            return false ;
+            return false;
 
         if ( iter != null && iter.hasNext() )
-            return true ;
-        
-        // Wrapped iterator has ended (or does not exist).  Have we returned anything yet? 
-        
+            return true;
+
+        // Wrapped iterator has ended (or does not exist). Have we returned anything
+        // yet?
+
         if ( haveReturnedSomeObject )
-            return false ;
-        
-        returnDefaultObject = true ;
-        return true ;
+            return false;
+
+        returnDefaultObject = true;
+        return true;
     }
 
     @Override
-    protected Binding moveToNextBinding()
-    {
+    protected Binding moveToNextBinding() {
         if ( isFinished() )
-            throw new NoSuchElementException(Lib.className(this)) ;
-        
-        if ( returnDefaultObject )
-        {
-            haveReturnedSomeObject = true ;
-            return defaultObject ;
+            throw new NoSuchElementException(Lib.className(this));
+
+        if ( returnDefaultObject ) {
+            haveReturnedSomeObject = true;
+            return defaultObject;
         }
 
-        Binding binding = null ;
+        Binding binding = null;
         if ( iter != null && iter.hasNext() )
-            binding = iter.next() ;
-        else
-        {
+            binding = iter.next();
+        else {
             if ( haveReturnedSomeObject )
-                throw new NoSuchElementException("DefaultingIterator - without hasNext call first") ;
-            binding = defaultObject ;
+                throw new NoSuchElementException("DefaultingIterator - without hasNext call first");
+            binding = defaultObject;
         }
-        
-        haveReturnedSomeObject = true ;
-        return binding ;
+
+        haveReturnedSomeObject = true;
+        return binding;
     }
 
     @Override
-    protected void requestSubCancel()
-    {}
+    protected void requestSubCancel() {}
 
     @Override
-    protected void closeSubIterator()
-    {}
+    protected void closeSubIterator() {}
 }

@@ -1,0 +1,4 @@
+PREFIX : <http://www.example.org/>
+SELECT ?s (COUNT(DISTINCT ?o) AS ?count) WHERE {
+	?s ?p ?o
+} GROUP BY ?s

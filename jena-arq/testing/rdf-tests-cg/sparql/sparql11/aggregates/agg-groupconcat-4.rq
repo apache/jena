@@ -3,5 +3,5 @@ ASK {
 	{SELECT (GROUP_CONCAT(?o) AS ?g) WHERE {
 		VALUES ?o { "1"@en "2"@en }
 	}}
-	FILTER(?g = "1 2"@en || ?g = "2 1"@en)
+	FILTER(?g = "1 2" || ?g = "2 1")
 }

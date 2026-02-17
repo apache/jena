@@ -21,62 +21,56 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.binding.BindingProjectNamed ;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.binding.BindingProjectNamed;
 
 /** Implementation skeleton for DISTINCT and REDUCED. */
 
 public abstract class QueryIterDistinctReduced extends QueryIter1
 {
-    private Binding slot = null ;       // ready to go.
-    
-    public QueryIterDistinctReduced(QueryIterator iter, ExecutionContext context)
-    { super(iter, context)  ; }
+    private Binding slot = null;       // ready to go.
 
-    // Subclasses will want to implement this as well. 
+    public QueryIterDistinctReduced(QueryIterator iter, ExecutionContext context)
+    { super(iter, context) ; }
+
+    // Subclasses will want to implement this as well.
     @Override
     protected void closeSubIterator()
-    { slot = null ; }
+    { slot = null; }
 
     @Override
     protected void requestSubCancel()
     { }
-    
+
     @Override
-    final
-    protected boolean hasNextBinding()
-    {
+    final protected boolean hasNextBinding() {
         // Already waiting to go.
         if ( slot != null )
-            return true ;
-        
+            return true;
+
         // Always moves.
-        for ( ; getInput().hasNext() ; )
-        {
-            Binding b = getInput().nextBinding() ;
+        for ( ; getInput().hasNext() ; ) {
+            Binding b = getInput().nextBinding();
             // Hide unnamed and internal variables.
-            // Don't need to worry about rename scope vars 
-            // (they are projected away in sub-SELECT ?var { ... }) 
-            b = new BindingProjectNamed(b) ;
-            if ( isFreshSighting(b) )
-            {
-                slot = b ;
-                return true ;
+            // Don't need to worry about rename scope vars
+            // (they are projected away in sub-SELECT ?var { ... })
+            b = new BindingProjectNamed(b);
+            if ( isFreshSighting(b) ) {
+                slot = b;
+                return true;
             }
         }
-        return false ;
+        return false;
     }
 
     @Override
-    final
-    protected Binding moveToNextBinding()
-    {
-        Binding r = slot ;
-        slot = null ;
-        return r ;
+    final protected Binding moveToNextBinding() {
+        Binding r = slot;
+        slot = null;
+        return r;
     }
-    
-    protected abstract boolean isFreshSighting(Binding binding) ;
+
+    protected abstract boolean isFreshSighting(Binding binding);
 }

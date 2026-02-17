@@ -29,16 +29,17 @@ import org.apache.jena.sparql.util.Context;
 
 public interface FunctionEnv
 {
-    /** Return the active graph (the one matching is against at this point in the query.
-     * May be null if unknown or not applicable - for example, doing quad store access or
-     * when sorting.
-     */ 
+    /** Return the active graph (the one involved in pattern matching atthis point in the query).
+     * May be null if unknown or not applicable - for example, doing quad store access or when sorting.
+     */
     public Graph getActiveGraph();
-    
-    /** Return the dataset for the query
-     */ 
+
+    /**
+     * Return the dataset for the query.
+     * May be null for "unknown"/"not relevant"
+     */
     public DatasetGraph getDataset();
-    
+
     /** Return the context for this function call */
     public Context getContext();
 }
