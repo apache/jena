@@ -56,4 +56,3 @@ SELECT ?field ?value ?count WHERE {
 - Reuse existing context-based caching patterns used by `text:query`.
 - Keep `text:query` and `text:facet` independently callable.
 - When both are present and normalized inputs match, reuse shared execution automatically.
-

@@ -10,6 +10,7 @@ The jena-text module supports native Lucene faceting using `SortedSetDocValuesFa
 
 - **Open Facets**: Get facet counts for all indexed documents (no search query required)
 - **Filtered Facets**: Get facet counts constrained by a text search query
+- **Structured Filters**: Filter by facet field values using JSON syntax (AND across fields, OR within)
 - **Efficient Counting**: O(1) facet counting using pre-built DocValues (no document iteration)
 - **SPARQL Integration**: Two property functions for facet access
 - **Java API**: Direct access to faceting via `TextIndexLucene` methods
@@ -18,8 +19,8 @@ The jena-text module supports native Lucene faceting using `SortedSetDocValuesFa
 
 | Function | Purpose |
 |----------|---------|
-| `text:facetCounts` | Get facet counts (open or filtered by search query) |
-| `text:queryWithFacets` | Text search that returns documents with scores and facets |
+| `text:query` | Text search with optional JSON filter support |
+| `text:facet` | Get facet counts with JSON facet fields and optional filters |
 
 ### Java API Methods
 
@@ -27,6 +28,8 @@ The jena-text module supports native Lucene faceting using `SortedSetDocValuesFa
 |--------|---------|
 | `getFacetCounts(List<String> fields, int max)` | Open facets - counts for all documents |
 | `getFacetCounts(String query, List<String> fields, int max)` | Filtered facets - counts for matching documents |
+| `getFacetCountsWithFilters(String query, List<String> fields, Map<String,List<String>> filters, int max)` | Facets with structured filter constraints |
+| `queryWithFilters(List<Resource> props, String qs, Map<String,List<String>> filters, ...)` | Text query with structured filters |
 | `isFacetingEnabled()` | Check if faceting is configured |
 
 ---
@@ -92,150 +95,137 @@ PREFIX text:    <http://jena.apache.org/text#>
 
 ## SPARQL Usage
 
-### text:facetCounts - Get Facet Counts
+### text:facet - Get Facet Counts
 
-Use this when you want facet counts without document results. Supports both open facets (browse all documents) and filtered facets (counts for search results).
+Use this when you want facet counts. Supports open facets, filtered facets, and structured filter constraints.
 
 **Syntax:**
 ```sparql
-# Open facets (all documents)
-(?field ?value ?count) text:facetCounts (field1 field2 ... maxValues)
+# Basic: query + facet fields
+(?field ?value ?count) text:facet ("query" '["field1","field2"]' maxValues)
 
-# Filtered facets (matching search query)
-(?field ?value ?count) text:facetCounts ("search query" field1 field2 ... maxValues)
+# With filters: query + facet fields + filter constraints
+(?field ?value ?count) text:facet ("query" '["field1","field2"]' '{"field":"[val]"}' maxValues)
+
+# With property:
+(?field ?value ?count) text:facet (rdfs:label "query" '["field1"]' 10)
 ```
 
 **Parameters:**
-- `"search query"` - Optional Lucene query string to filter documents. If the first argument is NOT a configured facet field name and NOT a number, it is treated as a search query.
-- `field1, field2, ...` - Field names to get facet counts for (strings, must be configured in `text:facetFields`)
+- Property URI(s) - Optional, restricts which indexed fields to search
+- `"query"` - Text query string
+- `'["field1","field2"]'` - JSON array of facet field names to count
+- `'{"field": ["value1","value2"]}'` - Optional JSON object for filter constraints
 - `maxValues` - Maximum values per field (integer, optional, default 10)
+
+**Filter semantics:**
+- Multiple values within a field are **OR'd** (e.g., category=Technology OR category=Science)
+- Multiple fields are **AND'd** (e.g., category=X AND author=Y)
 
 **Returns:** Bindings for each facet value:
 - `?field` - The facet field name (literal)
 - `?value` - The facet value (literal)
 - `?count` - Number of documents with this value (xsd:long)
 
-**Example: Open facets - Get category counts for all documents**
+**Example: Basic facet counts**
 ```sparql
 PREFIX text: <http://jena.apache.org/text#>
 
 SELECT ?field ?value ?count
 WHERE {
-    (?field ?value ?count) text:facetCounts ("category" 10)
+    (?field ?value ?count) text:facet ("learning" '["category"]' 10)
 }
 ORDER BY DESC(?count)
 ```
 
-**Example: Open facets - Multiple fields**
+**Example: Multiple facet fields**
 ```sparql
 PREFIX text: <http://jena.apache.org/text#>
 
 SELECT ?field ?value ?count
 WHERE {
-    (?field ?value ?count) text:facetCounts ("category" "author" "year" 20)
+    (?field ?value ?count) text:facet ("learning" '["category", "author"]' 20)
 }
 ORDER BY ?field DESC(?count)
 ```
 
-**Example: Filtered facets - Counts for search results**
+**Example: Facets with filter constraints**
 ```sparql
 PREFIX text: <http://jena.apache.org/text#>
 
-# Get category counts for documents matching "machine AND learning"
+# Get author facets, filtered to only technology documents
 SELECT ?field ?value ?count
 WHERE {
-    (?field ?value ?count) text:facetCounts ("machine AND learning" "category" 10)
+    (?field ?value ?count) text:facet ("learning" '["author"]' '{"category": ["technology"]}' 10)
 }
 ORDER BY DESC(?count)
 ```
 
-**Example: Filtered facets - Single word query**
+**Example: Multi-value filter (OR within field)**
 ```sparql
 PREFIX text: <http://jena.apache.org/text#>
 
-# Get category and author counts for documents containing "technology"
+# Get author facets for technology OR science documents
 SELECT ?field ?value ?count
 WHERE {
-    (?field ?value ?count) text:facetCounts ("technology" "category" "author" 10)
+    (?field ?value ?count) text:facet ("learning" '["author"]' '{"category": ["technology", "science"]}' 10)
 }
-ORDER BY ?field DESC(?count)
+ORDER BY DESC(?count)
 ```
 
-**Query Syntax Notes:**
-- The default query parser uses OR for multiple words. Use explicit `AND` for conjunction: `"machine AND learning"`
-- Use quotes for phrase matching: `"\"machine learning\""`
-- Standard Lucene query syntax is supported: wildcards, fuzzy, etc.
+### text:query - Text Search (with optional filters)
 
-### text:queryWithFacets - Text Search with Scores
-
-Use this for text search that returns documents with relevance scores. Combine with SPARQL aggregation for facet counts.
+Use this for text search. Now supports optional JSON filter constraints.
 
 **Syntax:**
 ```sparql
-(?doc ?score) text:queryWithFacets ("query string")
-(?doc ?score) text:queryWithFacets (property "query string")
+# Standard (unchanged)
+(?s ?score) text:query ("query string" limit)
+(?s ?score) text:query (rdfs:label "query string" limit)
+
+# With JSON filters (new)
+(?s ?score) text:query ("query string" '{"category": ["Technology"]}' limit)
+(?s ?score) text:query (rdfs:label "query string" '{"category": ["Technology"], "author": ["Smith"]}' limit)
 ```
 
-**Parameters:**
-- `property` - Optional RDF property to search (e.g., `rdfs:label`)
-- `"query string"` - Lucene query string
-
-**Returns:**
-- `?doc` - The matched subject URI
-- `?score` - Relevance score (xsd:float)
-
-**Example: Basic text search**
+**Example: Standard text search (backward compatible)**
 ```sparql
 PREFIX text: <http://jena.apache.org/text#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?doc ?score ?label
 WHERE {
-    (?doc ?score) text:queryWithFacets ("machine learning") .
+    (?doc ?score) text:query ("machine learning" 20) .
     ?doc rdfs:label ?label .
 }
 ORDER BY DESC(?score)
 ```
 
-**Example: Search specific property**
+**Example: Text search filtered by category**
 ```sparql
 PREFIX text: <http://jena.apache.org/text#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?doc ?label
+SELECT ?doc ?score ?label
 WHERE {
-    (?doc ?score) text:queryWithFacets (rdfs:label "machine learning") .
+    (?doc ?score) text:query ("learning" '{"category": ["technology"]}' 20) .
     ?doc rdfs:label ?label .
 }
 ORDER BY DESC(?score)
 ```
 
-**Example: Get facet counts via SPARQL aggregation**
-```sparql
-PREFIX text: <http://jena.apache.org/text#>
-PREFIX ex: <http://example.org/>
-
-SELECT ?category (COUNT(?doc) AS ?count)
-WHERE {
-    (?doc ?score) text:queryWithFacets ("learning") .
-    ?doc ex:category ?category .
-}
-GROUP BY ?category
-ORDER BY DESC(?count)
-```
-
-**Example: Filter results with SPARQL**
+**Example: Combining text:query and text:facet with shared execution**
 ```sparql
 PREFIX text: <http://jena.apache.org/text#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX ex: <http://example.org/>
 
-SELECT ?doc ?label
+# When both PFs use the same query string and filters,
+# they share a single Lucene execution via SearchExecution
+SELECT ?doc ?label ?field ?value ?count
 WHERE {
-    (?doc ?score) text:queryWithFacets ("learning") .
-    ?doc rdfs:label ?label ;
-         ex:category ?cat .
-    FILTER(?cat = "technology")
+    (?doc ?score) text:query ("learning" '{"category": ["technology"]}' 20) .
+    ?doc rdfs:label ?label .
+    (?field ?value ?count) text:facet ("learning" '["author"]' '{"category": ["technology"]}' 10)
 }
 ORDER BY DESC(?score)
 ```
@@ -257,49 +247,22 @@ TextIndexLucene index = ...;
 if (index.isFacetingEnabled()) {
     List<String> facetFields = Arrays.asList("category", "author");
 
-    // Get all facet counts (open facets)
+    // Open facets (all documents)
     Map<String, List<FacetValue>> counts = index.getFacetCounts(facetFields, 10);
 
-    // Get facet counts filtered by query
-    Map<String, List<FacetValue>> filteredCounts =
+    // Filtered by query
+    Map<String, List<FacetValue>> filtered =
         index.getFacetCounts("machine learning", facetFields, 10);
 
-    // Process results
-    for (FacetValue fv : counts.get("category")) {
-        System.out.printf("%s: %d%n", fv.getValue(), fv.getCount());
-    }
-}
-```
+    // Filtered by query AND structured filters
+    Map<String, List<String>> filters = new LinkedHashMap<>();
+    filters.put("category", Arrays.asList("technology", "science"));
+    Map<String, List<FacetValue>> drillDown =
+        index.getFacetCountsWithFilters("learning", facetFields, filters, 10);
 
-### Using queryWithFacets
-
-```java
-import org.apache.jena.query.text.*;
-import org.apache.jena.rdf.model.*;
-import java.util.*;
-
-TextIndexLucene index = ...;
-List<Resource> props = Arrays.asList(RDFS.label);
-List<String> facetFields = Arrays.asList("category");
-
-FacetedTextResults results = index.queryWithFacets(
-    props,           // Properties to search
-    "search text",   // Query string
-    null,            // graphURI (null for default)
-    null,            // lang (null for any)
-    1000,            // max results limit
-    facetFields,     // Fields to facet on
-    10               // max facet values per field
-);
-
-// Access hits
-for (TextHit hit : results.getHits()) {
-    System.out.println("Found: " + hit.getNode());
-}
-
-// Access facets
-for (FacetValue fv : results.getFacetsForField("category")) {
-    System.out.printf("Category %s: %d docs%n", fv.getValue(), fv.getCount());
+    // Query with filters
+    List<TextHit> hits = index.queryWithFilters(
+        props, "learning", filters, null, null, 20, null);
 }
 ```
 
@@ -307,49 +270,29 @@ for (FacetValue fv : results.getFacetsForField("category")) {
 
 ## Architecture
 
-### How Native Faceting Works
-
-```
-Document Indexing:
-    Entity data → doc() method
-                    │
-                    ├─► Standard Lucene fields (for search)
-                    │
-                    └─► SortedSetDocValuesFacetField (for faceting)
-                            │
-                            ▼
-                    FacetsConfig.build(doc)
-                            │
-                            ▼
-                    IndexWriter.addDocument()
-
-Facet Query:
-    getFacetCounts()
-            │
-            ▼
-    SortedSetDocValuesReaderState ◄── FacetsConfig
-            │
-            ▼
-    SortedSetDocValuesFacetCounts
-            │
-            ├─► No query: counts from all docs (O(1))
-            │
-            └─► With query: FacetsCollector + IndexSearcher
-                    │
-                    ▼
-            Map<String, List<FacetValue>>
-```
-
 ### Key Classes
 
 | Class | Purpose |
 |-------|---------|
 | `FacetValue` | Immutable (value, count) pair |
-| `FacetedTextResults` | Container for search hits + facet counts |
-| `TextIndexLucene` | Core index implementation with `getFacetCounts()` |
-| `TextFacetCountsPF` | SPARQL property function for `text:facetCounts` |
-| `TextQueryFacetsPF` | SPARQL property function for `text:queryWithFacets` |
+| `TextIndexLucene` | Core index implementation with faceting methods |
+| `TextFacetPF` | SPARQL property function for `text:facet` |
+| `TextQueryPF` | SPARQL property function for `text:query` (extended with filter support) |
+| `SearchExecution` | Shared execution state between PFs (lazy hits + facet counts) |
 | `TextIndexConfig` | Configuration including facet fields |
+
+### Shared Execution
+
+When `text:query` and `text:facet` appear in the same BGP with matching parameters (same properties, query string, and filters), they share a `SearchExecution` instance stored in the `ExecutionContext`. This avoids executing the Lucene query twice.
+
+### Triple-Based Document Model
+
+The jena-text module uses a triples-based indexing model where each triple creates a separate Lucene document. Filter queries use a two-pass approach:
+
+1. Execute text query to find matching entity URIs
+2. For each filter field, query for documents matching those URIs + filter values
+3. Intersect entity URIs across all filter fields
+4. Return hits/facets only for the surviving entity URIs
 
 ---
 
@@ -364,43 +307,11 @@ The implementation uses Lucene's `SortedSetDocValuesFacetCounts` which:
 - Requires ~25% more indexing time vs non-faceted
 - Adds memory overhead for DocValues (~10-20 bytes per unique value)
 
-### Benchmarks
-
-| Data Size | Open Facets | Filtered Facets |
-|-----------|-------------|-----------------|
-| 1K docs   | < 5ms       | < 10ms          |
-| 10K docs  | < 10ms      | < 50ms          |
-| 100K docs | < 50ms      | < 200ms         |
-
 ### Best Practices
 
 1. **Limit facet fields**: Only enable faceting on fields you'll actually facet on
 2. **Use maxValues**: Don't request more facet values than needed
-3. **Cache reader state**: The `SortedSetDocValuesReaderState` is reused internally
-4. **Index rebuild required**: Enable faceting before loading data, or rebuild index
-
----
-
-## Comparison: queryWithFacets vs facetCounts
-
-| Feature | text:queryWithFacets | text:facetCounts |
-|---------|---------------------|------------------|
-| Returns documents | Yes (with scores) | No |
-| Returns facet counts | Yes (via subject list) | Yes (directly) |
-| Open facets (no query) | No | Yes |
-| Filtered facets (with query) | Yes | Yes |
-| Implementation | Lucene search + facets | Native Lucene SortedSetDocValues |
-| Best for | Search results + facets | Faceted navigation UI |
-
-**Use `text:facetCounts` when:**
-- You only need facet counts (no documents)
-- Building faceted navigation UI ("Browse by category")
-- Showing available filter options before or during search
-- Getting facet counts constrained by a search query
-
-**Use `text:queryWithFacets` when:**
-- You need both search results with scores AND facet counts in one query
-- Combining text search with SPARQL patterns for additional filtering
+3. **Index rebuild required**: Enable faceting before loading data, or rebuild index
 
 ---
 
@@ -422,12 +333,6 @@ The implementation uses Lucene's `SortedSetDocValuesFacetCounts` which:
 
 3. **Rebuild index** if faceting was added after data was loaded
 
-### Performance Issues
-
-1. **Limit facet values:** Use `maxValues` parameter
-2. **Check index size:** Very large indexes may need more heap
-3. **Profile queries:** Use Lucene's explain functionality
-
 ### Errors
 
 | Error | Cause | Solution |
@@ -438,17 +343,4 @@ The implementation uses Lucene's `SortedSetDocValuesFacetCounts` which:
 
 ---
 
-## Migration from Iteration-Based Faceting
-
-If you were using the previous iteration-based `queryWithFacets`:
-
-1. **Add `text:facetFields` to your configuration**
-2. **Rebuild your index** to create SortedSetDocValues
-3. **Use `text:facetCounts` for pure facet queries**
-4. **Continue using `queryWithFacets`** for search + aggregation patterns
-
-The old iteration-based approach still works but native faceting is recommended for better performance.
-
----
-
-**Last Updated:** 2026-01-19
+**Last Updated:** 2026-02-17

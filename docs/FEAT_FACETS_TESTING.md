@@ -28,13 +28,26 @@ cd /Users/hjohns/workspace/kurrawong/fuseki/jena
 # Build jena-text and all its dependencies
 mvn clean install -pl jena-text -am -DskipTests
 
-# Verify the build
-mvn test -pl jena-text -Dtest="*Facet*"
+# Verify the build - run all tests
+mvn test -pl jena-text
 ```
 
 Expected output:
 ```
-Tests run: 36, Failures: 0, Errors: 0, Skipped: 0
+Tests run: 303, Failures: 0, Errors: 0, Skipped: 8
+BUILD SUCCESS
+```
+
+### Run New Faceting Tests Only
+
+```bash
+# Run the new API tests
+mvn test -pl jena-text -Dtest="TestSearchExecution,TestUpdateDocumentFacets,TestTextFacetPF,TestTextQueryPFFilters,TestNativeFacetCounts,TestFacetedResults"
+```
+
+Expected output:
+```
+Tests run: 34, Failures: 0, Errors: 0, Skipped: 0
 BUILD SUCCESS
 ```
 
@@ -216,7 +229,10 @@ curl -X POST "http://localhost:3030/ds" \
 
 ---
 
-## Step 5: Test Native Facet Counts (text:facetCounts)
+## Step 5: Test Facet Counts (text:facet)
+
+> **Note:** The `text:facetCounts` PF has been replaced by `text:facet` as of 2026-02-17.
+> The `text:facet` PF uses JSON array syntax for facet fields and JSON object syntax for filters.
 
 The `text:facetCounts` property function provides native Lucene faceting with O(1) counting - no document iteration required.
 

@@ -25,7 +25,6 @@ import java.io.IOException ;
 import java.util.*;
 import java.util.Map.Entry ;
 import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.datatypes.RDFDatatype ;
@@ -64,6 +63,7 @@ import org.apache.lucene.queryparser.surround.query.BasicQueryFactory;
 import org.apache.lucene.search.*;
 import org.apache.lucene.search.highlight.*;
 import org.apache.lucene.store.Directory ;
+import org.apache.lucene.util.BytesRef ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -279,9 +279,11 @@ public class TextIndexLucene implements TextIndex {
 
     protected void updateDocument(Entity entity) throws IOException {
         Document doc = doc(entity);
+        // If faceting is enabled, build the document with facet fields properly indexed
+        Document indexDoc = facetFields.isEmpty() ? doc : facetsConfig.build(doc);
         Term term = new Term(docDef.getEntityField(), entity.getId());
         try {
-            indexWriter.updateDocument(term, doc) ;
+            indexWriter.updateDocument(term, indexDoc) ;
         } catch (Exception ex) {
             log.error("Error updating {} with term: {} message: {}", doc, term, ex.getMessage());
             if (ignoreIndexErrors) {
@@ -844,135 +846,6 @@ public class TextIndexLucene implements TextIndex {
     }
 
     /**
-     * Query with faceting support.
-     * Performs a text search and additionally computes facet counts for specified fields.
-     *
-     * @param indexReader The Lucene index reader
-     * @param props RDF properties to search
-     * @param qs Query string
-     * @param textQueryExtender Optional query extender
-     * @param graphURI Graph URI filter (optional)
-     * @param facetFields List of field names to compute facets for
-     * @param maxFacetValues Maximum number of facet values to return per field
-     * @return FacetedTextResults containing both hits and facet counts
-     */
-    public FacetedTextResults queryWithFacets$(
-            IndexReader indexReader,
-            List<Resource> props,
-            String qs,
-            UnaryOperator<Query> textQueryExtender,
-            String graphURI,
-            List<String> facetFields,
-            int maxFacetValues)
-            throws ParseException, IOException {
-
-        // Step 1: Execute the standard query (reuse existing logic)
-        List<String> textFields = new ArrayList<>();
-
-        // Build text field list from properties
-        for (Resource prop : props) {
-            String field = docDef.getField(prop.asNode());
-            if (field != null) {
-                textFields.add(field);
-            }
-        }
-        if (textFields.isEmpty()) {
-            textFields.add(docDef.getPrimaryField());
-        }
-
-        // Parse and build query
-        Query textQuery = parseQuery(qs, queryAnalyzer);
-        Query query = textQueryExtender.apply(textQuery);
-
-        // Set limit
-        int limit = MAX_N;
-
-        // Execute search
-        IndexSearcher indexSearcher = new IndexSearcher(indexReader);
-        TopDocs topDocs = indexSearcher.search(query, limit);
-
-        // Step 2: Collect facets from matching documents
-        Map<String, Map<String, Long>> facetCounts = new HashMap<>();
-
-        for (ScoreDoc sd : topDocs.scoreDocs) {
-            Document doc = indexSearcher.storedFields().document(sd.doc);
-
-            // For each requested facet field, extract value and count it
-            for (String facetField : facetFields) {
-                String value = doc.get(facetField);
-                if (value != null && !value.isEmpty()) {
-                    facetCounts
-                        .computeIfAbsent(facetField, k -> new HashMap<>())
-                        .merge(value, 1L, Long::sum);
-                }
-            }
-        }
-
-        // Step 3: Convert facet counts to sorted FacetValue lists
-        Map<String, List<FacetValue>> facets = processFacetCounts(facetCounts, maxFacetValues);
-
-        // Step 4: Process hits using existing logic
-        List<TextHit> hits = simpleResults(topDocs.scoreDocs, indexSearcher, query, textFields);
-
-        return new FacetedTextResults(hits, facets, topDocs.totalHits.value());
-    }
-
-    /**
-     * Helper method to convert raw facet counts into sorted FacetValue lists.
-     *
-     * @param facetCounts Map of field -> (value -> count)
-     * @param maxValues Maximum values to return per field
-     * @return Map of field -> List<FacetValue> (sorted by count descending)
-     */
-    private Map<String, List<FacetValue>> processFacetCounts(
-            Map<String, Map<String, Long>> facetCounts,
-            int maxValues) {
-
-        Map<String, List<FacetValue>> result = new HashMap<>();
-
-        for (Map.Entry<String, Map<String, Long>> fieldEntry : facetCounts.entrySet()) {
-            String fieldName = fieldEntry.getKey();
-            Map<String, Long> counts = fieldEntry.getValue();
-
-            // Convert to FacetValue list and sort by count (descending)
-            List<FacetValue> facetValues = counts.entrySet().stream()
-                .map(e -> new FacetValue(e.getKey(), e.getValue()))
-                .sorted((a, b) -> Long.compare(b.getCount(), a.getCount()))  // Descending
-                .limit(maxValues)
-                .collect(Collectors.toList());
-
-            result.put(fieldName, facetValues);
-        }
-
-        return result;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * Implementation of faceted text search for Lucene index.
-     */
-    @Override
-    public FacetedTextResults queryWithFacets(List<Resource> props, String qs, String graphURI,
-            String lang, int limit, List<String> facetFields, int maxFacetValues) {
-        try (IndexReader indexReader = DirectoryReader.open(directory)) {
-            return queryWithFacets$(
-                indexReader,
-                props,
-                qs,
-                UnaryOperator.identity(),
-                graphURI,
-                facetFields,
-                maxFacetValues
-            );
-        } catch (ParseException ex) {
-            throw new TextIndexParseException(qs, ex.getMessage());
-        } catch (Exception ex) {
-            throw new TextIndexException("queryWithFacets", ex);
-        }
-    }
-
-    /**
      * Get facet counts using native Lucene SortedSetDocValues faceting.
      * This is efficient O(1) facet counting that doesn't iterate through documents.
      *
@@ -1039,11 +912,12 @@ public class TextIndexLucene implements TextIndex {
 
                     // Build a query that matches all documents for the matched entities
                     // This will include documents with facet fields for those entities
-                    BooleanQuery.Builder uriQueryBuilder = new BooleanQuery.Builder();
+                    // Uses TermInSetQuery instead of BooleanQuery to avoid TooManyClauses
+                    List<BytesRef> uriRefs = new ArrayList<>(matchedUris.size());
                     for (String uri : matchedUris) {
-                        uriQueryBuilder.add(new TermQuery(new Term(entityField, uri)), BooleanClause.Occur.SHOULD);
+                        uriRefs.add(new BytesRef(uri));
                     }
-                    Query uriQuery = uriQueryBuilder.build();
+                    Query uriQuery = new TermInSetQuery(entityField, uriRefs);
 
                     // Now collect facets from all documents for matched entities
                     FacetsCollector fc = new FacetsCollector();
@@ -1093,5 +967,272 @@ public class TextIndexLucene implements TextIndex {
      */
     public List<String> getFacetFields() {
         return Collections.unmodifiableList(facetFields);
+    }
+
+    /**
+     * Query with structured filters applied.
+     * <p>
+     * Uses a two-pass approach to handle the triple-based document model:
+     * 1. Execute text query to get matching entity URIs
+     * 2. Find entities whose filter-field documents match the filter criteria
+     * 3. Return text hits only for entities that pass both text and filter criteria
+     *
+     * @param props RDF properties to search
+     * @param qs Query string
+     * @param filters Map of field name to list of values (OR'd within field, AND'd across fields)
+     * @param graphURI Graph URI filter (optional)
+     * @param lang Language filter (optional)
+     * @param limit Maximum number of hits
+     * @param highlight Highlight options (optional)
+     * @return List of matching TextHit results
+     */
+    public List<TextHit> queryWithFilters(List<Resource> props, String qs,
+            Map<String, List<String>> filters, String graphURI, String lang,
+            int limit, String highlight) {
+        // Step 1: Execute the text query to get all matching hits
+        List<TextHit> allHits = query(props, qs, graphURI, lang, limit > 0 ? limit * 10 : MAX_N, highlight);
+
+        if (allHits.isEmpty() || filters == null || filters.isEmpty()) {
+            return allHits;
+        }
+
+        // Step 2: Find which entity URIs pass the filter criteria
+        Set<String> filteredUris = findFilteredEntityUris(allHits, filters);
+
+        // Step 3: Filter the original hits
+        List<TextHit> filtered = new ArrayList<>();
+        for (TextHit hit : allHits) {
+            String uri = TextQueryFuncs.subjectToString(hit.getNode());
+            if (filteredUris.contains(uri)) {
+                filtered.add(hit);
+                if (limit > 0 && filtered.size() >= limit) {
+                    break;
+                }
+            }
+        }
+        return filtered;
+    }
+
+    /**
+     * Find entity URIs from the given hits that also match the filter criteria.
+     * Queries the index for documents with matching entity URIs and filter field values.
+     */
+    private Set<String> findFilteredEntityUris(List<TextHit> hits, Map<String, List<String>> filters) {
+        // Collect unique entity URIs from hits
+        Set<String> hitUris = new LinkedHashSet<>();
+        for (TextHit hit : hits) {
+            hitUris.add(TextQueryFuncs.subjectToString(hit.getNode()));
+        }
+
+        try (IndexReader indexReader = DirectoryReader.open(directory)) {
+            IndexSearcher searcher = new IndexSearcher(indexReader);
+            String entityField = docDef.getEntityField();
+
+            // For each filter field, find which entity URIs have matching values
+            // Start with all hit URIs and intersect with each filter's matches
+            Set<String> remainingUris = new HashSet<>(hitUris);
+
+            for (Map.Entry<String, List<String>> entry : filters.entrySet()) {
+                String field = entry.getKey();
+                List<String> values = entry.getValue();
+
+                // Build a query: entityField IN (hitUris) AND field IN (values)
+                List<BytesRef> uriRefs = new ArrayList<>(remainingUris.size());
+                for (String uri : remainingUris) {
+                    uriRefs.add(new BytesRef(uri));
+                }
+                BooleanQuery.Builder builder = new BooleanQuery.Builder();
+                builder.add(new TermInSetQuery(entityField, uriRefs), BooleanClause.Occur.MUST);
+
+                if (values.size() == 1) {
+                    builder.add(new TermQuery(new Term(field, values.get(0))),
+                        BooleanClause.Occur.MUST);
+                } else {
+                    List<BytesRef> valRefs = new ArrayList<>(values.size());
+                    for (String v : values) {
+                        valRefs.add(new BytesRef(v));
+                    }
+                    builder.add(new TermInSetQuery(field, valRefs),
+                        BooleanClause.Occur.MUST);
+                }
+
+                TopDocs topDocs = searcher.search(builder.build(), MAX_N);
+                Set<String> matchedUris = new HashSet<>();
+                StoredFields storedFields = searcher.storedFields();
+                for (ScoreDoc sd : topDocs.scoreDocs) {
+                    Document doc = storedFields.document(sd.doc);
+                    String uri = doc.get(entityField);
+                    if (uri != null) {
+                        matchedUris.add(uri);
+                    }
+                }
+
+                // Intersect: only keep URIs that matched this filter field
+                remainingUris.retainAll(matchedUris);
+                if (remainingUris.isEmpty()) {
+                    break;
+                }
+            }
+
+            return remainingUris;
+        } catch (IOException ex) {
+            throw new TextIndexException("findFilteredEntityUris", ex);
+        }
+    }
+
+    /**
+     * Get facet counts with structured filters applied.
+     * <p>
+     * Uses the triple-based document model approach:
+     * 1. Execute text query to find matching entity URIs
+     * 2. Apply filter criteria to narrow the entity set
+     * 3. Collect facets from all documents for the remaining entities
+     *
+     * @param queryString Optional text query to filter documents
+     * @param facetFieldsToQuery Fields to get facet counts for
+     * @param filters Map of field name to list of values for filtering
+     * @param maxValues Maximum facet values per field
+     * @return Map of field name to list of FacetValue
+     */
+    public Map<String, List<FacetValue>> getFacetCountsWithFilters(
+            String queryString, List<String> facetFieldsToQuery,
+            Map<String, List<String>> filters, int maxValues) {
+
+        Map<String, List<FacetValue>> result = new HashMap<>();
+
+        if (facetFieldsToQuery == null || facetFieldsToQuery.isEmpty()) {
+            return result;
+        }
+
+        try {
+            IndexReader indexReader = DirectoryReader.open(directory);
+            try {
+                IndexSearcher searcher = new IndexSearcher(indexReader);
+                String entityField = docDef.getEntityField();
+
+                // Step 1: Find entity URIs matching the text query
+                Set<String> matchedUris;
+                if (queryString == null || queryString.isEmpty()) {
+                    // No text query: start with all entities
+                    matchedUris = null; // will use MatchAllDocs later
+                } else {
+                    Query query = parseQuery(queryString, queryAnalyzer);
+                    TopDocs topDocs = searcher.search(query, 10000);
+                    matchedUris = new HashSet<>();
+                    StoredFields storedFields = searcher.storedFields();
+                    for (ScoreDoc sd : topDocs.scoreDocs) {
+                        Document doc = storedFields.document(sd.doc);
+                        String uri = doc.get(entityField);
+                        if (uri != null) {
+                            matchedUris.add(uri);
+                        }
+                    }
+
+                    if (matchedUris.isEmpty()) {
+                        return result;
+                    }
+                }
+
+                // Step 2: Apply filter criteria to narrow entity URIs
+                if (filters != null && !filters.isEmpty()) {
+                    Set<String> remainingUris = matchedUris != null
+                        ? new HashSet<>(matchedUris) : null;
+
+                    for (Map.Entry<String, List<String>> entry : filters.entrySet()) {
+                        String field = entry.getKey();
+                        List<String> values = entry.getValue();
+
+                        BooleanQuery.Builder filterBuilder = new BooleanQuery.Builder();
+                        // Constrain to current remaining URIs if we have them
+                        if (remainingUris != null) {
+                            List<BytesRef> uriRefs = new ArrayList<>(remainingUris.size());
+                            for (String uri : remainingUris) {
+                                uriRefs.add(new BytesRef(uri));
+                            }
+                            filterBuilder.add(new TermInSetQuery(entityField, uriRefs),
+                                BooleanClause.Occur.MUST);
+                        }
+
+                        // Add filter value constraint
+                        if (values.size() == 1) {
+                            filterBuilder.add(new TermQuery(new Term(field, values.get(0))),
+                                BooleanClause.Occur.MUST);
+                        } else {
+                            List<BytesRef> valRefs = new ArrayList<>(values.size());
+                            for (String v : values) {
+                                valRefs.add(new BytesRef(v));
+                            }
+                            filterBuilder.add(new TermInSetQuery(field, valRefs),
+                                BooleanClause.Occur.MUST);
+                        }
+
+                        TopDocs filterDocs = searcher.search(filterBuilder.build(), MAX_N);
+                        Set<String> filterMatchedUris = new HashSet<>();
+                        StoredFields sf = searcher.storedFields();
+                        for (ScoreDoc sd : filterDocs.scoreDocs) {
+                            Document doc = sf.document(sd.doc);
+                            String uri = doc.get(entityField);
+                            if (uri != null) {
+                                filterMatchedUris.add(uri);
+                            }
+                        }
+
+                        if (remainingUris != null) {
+                            remainingUris.retainAll(filterMatchedUris);
+                        } else {
+                            remainingUris = filterMatchedUris;
+                        }
+
+                        if (remainingUris.isEmpty()) {
+                            return result;
+                        }
+                    }
+
+                    matchedUris = remainingUris;
+                }
+
+                // Step 3: Collect facets from all documents for the matched entities
+                SortedSetDocValuesReaderState state =
+                    new DefaultSortedSetDocValuesReaderState(indexReader, facetsConfig);
+                Facets facets;
+
+                if (matchedUris == null) {
+                    facets = new SortedSetDocValuesFacetCounts(state);
+                } else {
+                    List<BytesRef> uriRefs = new ArrayList<>(matchedUris.size());
+                    for (String uri : matchedUris) {
+                        uriRefs.add(new BytesRef(uri));
+                    }
+                    Query uriQuery = new TermInSetQuery(entityField, uriRefs);
+                    FacetsCollector fc = new FacetsCollector();
+                    searcher.search(uriQuery, fc);
+                    facets = new SortedSetDocValuesFacetCounts(state, fc);
+                }
+
+                // Extract results
+                for (String field : facetFieldsToQuery) {
+                    List<FacetValue> fieldFacets = new ArrayList<>();
+                    try {
+                        FacetResult facetResult = facets.getTopChildren(maxValues, field);
+                        if (facetResult != null && facetResult.labelValues != null) {
+                            for (LabelAndValue lv : facetResult.labelValues) {
+                                fieldFacets.add(new FacetValue(lv.label, lv.value.longValue()));
+                            }
+                        }
+                    } catch (IllegalArgumentException e) {
+                        log.debug("No facet data for field '{}': {}", field, e.getMessage());
+                    }
+                    result.put(field, fieldFacets);
+                }
+            } finally {
+                indexReader.close();
+            }
+        } catch (IOException ex) {
+            throw new TextIndexException("getFacetCountsWithFilters", ex);
+        } catch (ParseException ex) {
+            throw new TextIndexParseException(queryString, ex.getMessage());
+        }
+
+        return result;
     }
 }
