@@ -576,7 +576,43 @@ Requires adding `lucene-suggest` to `jena-text/pom.xml`:
 
 ---
 
-## 8. Open Questions
+## 8. Note: Constructing JSON Filters Dynamically with CDT
+
+The JSON filter arguments accepted by `text:query`, `text:facet`, and `text:suggest` can be constructed inline in SPARQL using Jena's CDT (Composite Datatype) extension. This avoids hardcoding filter values and allows filters to be built from `VALUES` clauses or query results.
+
+**Example:** Building `{"country": ["AU", "NZ"], "colour": ["Red", "Blue"]}` dynamically:
+
+```sparql
+PREFIX cdt: <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+SELECT (FOLD(?filter, ?vals) AS ?filters)
+WHERE {
+  {
+    SELECT ?filter (FOLD(?value) AS ?vals)
+    WHERE {
+      VALUES (?filter ?value) {
+        ("country" "AU")
+        ("country" "NZ")
+        ("colour"  "Red")
+        ("colour"  "Blue")
+      }
+    }
+    GROUP BY ?filter
+  }
+}
+```
+
+This produces a value of type `cdt:Map` which serializes as:
+
+```
+"{"country" : ["AU", "NZ"], "colour" : ["Red", "Blue"]}"^^<http://w3id.org/awslabs/neptune/SPARQL-CDTs/Map>
+```
+
+Note: CDT `FOLD` is a Jena extension (not standard SPARQL). No implementation changes needed — this is a usage pattern for users who want to build filters programmatically rather than as string literals.
+
+---
+
+## 9. Open Questions
 
 1. **Multiple shapes matching same entity:** If `ex:book1` matches both `BookShape` and `PublicationShape`, produce two documents or merge?
    - **Proposed:** Two separate documents. Each shape is independent.
