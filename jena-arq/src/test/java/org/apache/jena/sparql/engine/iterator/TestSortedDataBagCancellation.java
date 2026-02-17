@@ -40,6 +40,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingComparator;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
@@ -80,7 +81,7 @@ public class TestSortedDataBagCancellation {
         return iter;
     }
 
-    QueryIterSort qs = new QueryIterSort(baseIter, bc, ec);
+    private QueryIterator qs = QueryIterSort.create(baseIter, bc, ec);
 
     /**
      * In this test, the iterator is not cancelled; all items should be
@@ -145,7 +146,8 @@ public class TestSortedDataBagCancellation {
             while (qs.hasNext())
                 qs.next();
         } catch (QueryCancelledException qe) {
-            assertTrue(qs.db.isCancelled());
+            QueryIterSort qIterSort = (QueryIterSort)qs;
+            assertTrue(qIterSort.dataBag.isCancelled());
             return;
         }
         fail("query was not cancelled");

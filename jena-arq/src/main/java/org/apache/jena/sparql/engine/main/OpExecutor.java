@@ -373,7 +373,7 @@ public class OpExecutor {
 
     protected QueryIterator execute(OpOrder opOrder, QueryIterator input) {
         QueryIterator qIter = exec(opOrder.getSubOp(), input);
-        qIter = new QueryIterSort(qIter, opOrder.getConditions(), execCxt);
+        qIter = QueryIterSort.create(qIter, opOrder.getConditions(), execCxt);
         return qIter;
     }
 
@@ -386,10 +386,10 @@ public class OpExecutor {
         if ( opTop.getSubOp() instanceof OpDistinct ) {
             OpDistinct opDistinct = (OpDistinct)opTop.getSubOp();
             qIter = exec(opDistinct.getSubOp(), input);
-            qIter = new QueryIterTopN(qIter, opTop.getConditions(), opTop.getLimit(), true, execCxt);
+            qIter = QueryIterTopN.create(qIter, opTop.getConditions(), opTop.getLimit(), true, execCxt);
         } else {
             qIter = exec(opTop.getSubOp(), input);
-            qIter = new QueryIterTopN(qIter, opTop.getConditions(), opTop.getLimit(), false, execCxt);
+            qIter = QueryIterTopN.create(qIter, opTop.getConditions(), opTop.getLimit(), false, execCxt);
         }
         return qIter;
     }
