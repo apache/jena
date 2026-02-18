@@ -57,7 +57,7 @@ public class TestQueryIterSort {
     private Random random;
     private List<Binding> unsorted;
     private BindingComparator comparator;
-    private CallbackIterator iterator;
+    private QueryIteratorCallback iterator;
 
     @BeforeEach
     public void setup() {
@@ -78,7 +78,7 @@ public class TestQueryIterSort {
         List<SortCondition> conditions = new ArrayList<>();
         conditions.add(new SortCondition(new ExprVar("8"), Query.ORDER_ASCENDING));
         comparator = new BindingComparator(conditions);
-        iterator = new CallbackIterator(unsorted.iterator(), 25, null);
+        iterator = new QueryIteratorCallback(unsorted.iterator(), 25, null);
         iterator.setCallback(() -> {
             throw new QueryCancelledException();
         });
@@ -244,7 +244,7 @@ public class TestQueryIterSort {
 
     @Test
     public void testCancelInterruptsExternalSortAtStartOfIteration() {
-        iterator = new CallbackIterator(unsorted.iterator(), 25, null);
+        iterator = new QueryIteratorCallback(unsorted.iterator(), 25, null);
         iterator.setCallback(() -> {});
         assertEquals(0, iterator.getReturnedElementCount());
         Context context = new Context();
@@ -321,21 +321,22 @@ public class TestQueryIterSort {
         return builder.toString();
     }
 
-    private static class CallbackIterator implements QueryIterator {
+    // Call a Runnable after a trigger number of operations have been called.
+    private static class QueryIteratorCallback implements QueryIterator {
         int elementsReturned = 0;
-        Callback callback;
+        Runnable callback;
         int trigger;
         Iterator<Binding> delegate;
         boolean canceled = false;
         boolean closed = false;
 
-        public CallbackIterator(Iterator<Binding> delegate, int trigger, Callback callback) {
+        public QueryIteratorCallback(Iterator<Binding> delegate, int trigger, Runnable callback) {
             this.delegate = delegate;
             this.callback = callback;
             this.trigger = trigger;
         }
 
-        public void setCallback(Callback callback) {
+        public void setCallback(Runnable callback) {
             this.callback = callback;
         }
 
@@ -351,7 +352,7 @@ public class TestQueryIterSort {
         @Override
         public Binding next() {
             if ( elementsReturned++ >= trigger ) {
-                callback.call();
+                callback.run();
             }
             return delegate.next();
         }
@@ -376,7 +377,7 @@ public class TestQueryIterSort {
         @Override
         public Binding nextBinding() {
             if ( elementsReturned++ >= trigger )
-                callback.call();
+                callback.run();
             return delegate.next();
         }
 
@@ -404,11 +405,5 @@ public class TestQueryIterSort {
         public void output(IndentedWriter out) {
             throw new ARQNotImplemented();
         }
-
     }
-
-    public interface Callback {
-        public void call();
-    }
-
 }

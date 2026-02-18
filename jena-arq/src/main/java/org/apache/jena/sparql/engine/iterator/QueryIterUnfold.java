@@ -110,9 +110,6 @@ public class QueryIterUnfold extends QueryIterRepeatApply
         protected boolean hasNextBinding() { return itElmts.hasNext(); }
 
         @Override
-        protected void requestCancel() { } // nothing to do really
-
-        @Override
         protected void closeIterator() { } // nothing to do really
     }
 

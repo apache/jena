@@ -98,12 +98,12 @@ public abstract class QueryIteratorBase
 
     /**
      * Propagates the cancellation request - called asynchronously with the iterator itself.
+     * <p>
      * Implementations of {@code requestCancel()} must be aware that
      * the iterator maybe concurrently in-progress on the iteration thread,
      * that is, it may be inside {@link #hasNextBinding} or {@link #nextBinding}.
-     *
      */
-    protected abstract void requestCancel();
+    protected void requestCancel() {}
 
     /* package */ boolean getRequestingCancel() {
         // Testing only.

@@ -78,11 +78,6 @@ public class TestCancelDistinct {
         protected void closeIterator() {
 
         }
-
-        @Override
-        protected void requestCancel() {
-
-        }
     }
 
     /**
