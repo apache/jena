@@ -149,13 +149,21 @@ public class SearchExecution {
      */
     public synchronized Map<String, List<FacetValue>> getFacetCounts(
             List<String> facetFields, int maxValues) {
+        return getFacetCounts(facetFields, maxValues, 0);
+    }
+
+    /**
+     * Get facet counts with minCount threshold, computing them lazily on first access.
+     */
+    public synchronized Map<String, List<FacetValue>> getFacetCounts(
+            List<String> facetFields, int maxValues, int minCount) {
         if (!facetCountsComputed) {
             try {
                 if (filters.isEmpty()) {
-                    facetCounts = textIndex.getFacetCounts(queryString, facetFields, maxValues);
+                    facetCounts = textIndex.getFacetCounts(queryString, facetFields, maxValues, minCount);
                 } else {
                     facetCounts = textIndex.getFacetCountsWithFilters(
-                        queryString, facetFields, filters, maxValues);
+                        queryString, facetFields, filters, maxValues, minCount);
                 }
             } catch (Exception e) {
                 log.error("Error computing facet counts: {}", e.getMessage());

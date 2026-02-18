@@ -181,9 +181,9 @@ public class TextFacetPF extends PropertyFunctionBase {
                 SearchExecution se = SearchExecution.getOrCreate(
                     execCxt, args.props, args.queryString,
                     args.filters, textIndex, null, null);
-                facetCounts = se.getFacetCounts(args.facetFields, args.maxValues);
+                facetCounts = se.getFacetCounts(args.facetFields, args.maxValues, args.minCount);
             } else {
-                facetCounts = textIndex.getFacetCounts(args.queryString, args.facetFields, args.maxValues);
+                facetCounts = textIndex.getFacetCounts(args.queryString, args.facetFields, args.maxValues, args.minCount);
             }
         } catch (Exception e) {
             log.error("Error getting facet counts: {}", e.getMessage());
@@ -240,6 +240,8 @@ public class TextFacetPF extends PropertyFunctionBase {
         List<String> facetFields = new ArrayList<>();
         Map<String, List<String>> filters = null;
         int maxValues = 10;
+        int minCount = 0;
+        boolean maxValuesSet = false;
 
         if (argObject.isNode()) {
             // Single arg - must be a query string, but we need facet fields too
@@ -268,6 +270,7 @@ public class TextFacetPF extends PropertyFunctionBase {
         }
 
         // 3. Parse remaining: JSON arrays, JSON objects, and integers
+        // First integer = maxValues, second integer = minCount
         while (idx < list.size()) {
             Node n = list.get(idx);
             if (n.isLiteral()) {
@@ -282,7 +285,12 @@ public class TextFacetPF extends PropertyFunctionBase {
                     // JSON object: filter map
                     filters = TextQueryPF.parseJsonFilters(lex);
                 } else if (isInteger(lex)) {
-                    maxValues = Integer.parseInt(lex);
+                    if (!maxValuesSet) {
+                        maxValues = Integer.parseInt(lex);
+                        maxValuesSet = true;
+                    } else {
+                        minCount = Integer.parseInt(lex);
+                    }
                 } else {
                     // Unrecognized literal - could be a query string if we haven't seen one
                     if (queryString == null) {
@@ -295,7 +303,7 @@ public class TextFacetPF extends PropertyFunctionBase {
             idx++;
         }
 
-        return new FacetArgs(props, queryString, facetFields, filters, maxValues);
+        return new FacetArgs(props, queryString, facetFields, filters, maxValues, minCount);
     }
 
     private static boolean isInteger(String s) {
@@ -313,14 +321,16 @@ public class TextFacetPF extends PropertyFunctionBase {
         final List<String> facetFields;
         final Map<String, List<String>> filters;
         final int maxValues;
+        final int minCount;
 
         FacetArgs(List<Resource> props, String queryString, List<String> facetFields,
-                  Map<String, List<String>> filters, int maxValues) {
+                  Map<String, List<String>> filters, int maxValues, int minCount) {
             this.props = props;
             this.queryString = queryString;
             this.facetFields = facetFields;
             this.filters = filters;
             this.maxValues = maxValues;
+            this.minCount = minCount;
         }
     }
 }

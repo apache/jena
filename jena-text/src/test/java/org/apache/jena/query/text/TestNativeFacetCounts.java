@@ -247,4 +247,37 @@ public class TestNativeFacetCounts {
         // Should be empty since no documents match
         assertTrue(categoryFacets.isEmpty());
     }
+
+    @Test
+    public void testGetAllChildrenWhenMaxValuesZero() {
+        // maxValues=0 should use getAllChildren and return all values
+        Map<String, List<FacetValue>> facets = textIndex.getFacetCounts(
+            "learning",
+            Arrays.asList("author"),
+            0
+        );
+
+        List<FacetValue> authorFacets = facets.get("author");
+        assertNotNull(authorFacets);
+        // Should return all 6 authors: Smith(3), Jones(1), Brown(1), Wilson(1), Garcia(1), Taylor(1)
+        assertEquals("maxValues=0 should return all authors", 6, authorFacets.size());
+    }
+
+    @Test
+    public void testMinCountFiltering() {
+        // minCount=2 should exclude authors with count < 2
+        // Smith appears 3 times; all others appear once
+        Map<String, List<FacetValue>> facets = textIndex.getFacetCounts(
+            "learning",
+            Arrays.asList("author"),
+            10,
+            2
+        );
+
+        List<FacetValue> authorFacets = facets.get("author");
+        assertNotNull(authorFacets);
+        assertEquals("Only Smith should pass minCount=2", 1, authorFacets.size());
+        assertEquals("Smith", authorFacets.get(0).getValue());
+        assertEquals(3, authorFacets.get(0).getCount());
+    }
 }

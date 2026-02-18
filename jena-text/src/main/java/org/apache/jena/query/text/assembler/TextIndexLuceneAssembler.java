@@ -225,6 +225,20 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                 }
             }
 
+            int maxFacetHits = 0;
+            Statement maxFacetHitsStatement = root.getProperty(pMaxFacetHits);
+            if (null != maxFacetHitsStatement) {
+                RDFNode mfhNode = maxFacetHitsStatement.getObject();
+                if (! mfhNode.isLiteral()) {
+                    throw new TextIndexException("text:maxFacetHits property must be an int : " + mfhNode);
+                }
+                try {
+                    maxFacetHits = mfhNode.asLiteral().getInt();
+                } catch (RuntimeException ex) {
+                    throw new TextIndexException("text:maxFacetHits property must be an int : " + mfhNode + "(" + ex.getMessage() + ")");
+                }
+            }
+
             // use query cache by default
             boolean cacheQueries = true;
             Statement cacheQueriesStatement = root.getProperty(pCacheQueries);
@@ -236,8 +250,25 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                 cacheQueries = cqNode.asLiteral().getBoolean();
             }
 
-            Resource r = GraphUtils.getResourceValue(root, pEntityMap) ;
-            EntityDefinition docDef = (EntityDefinition)a.open(r) ;
+            // Determine indexing mode: SHACL shapes or classic entityMap
+            Statement shapesStmt = root.getProperty(pShapes);
+            Resource entityMapResource = GraphUtils.getResourceValue(root, pEntityMap);
+
+            if (shapesStmt != null && entityMapResource != null)
+                throw new TextIndexException("Cannot specify both text:shapes and text:entityMap on " + root);
+            if (shapesStmt == null && entityMapResource == null)
+                throw new TextIndexException("Must specify either text:shapes or text:entityMap on " + root);
+
+            EntityDefinition docDef;
+            ShaclIndexMapping shaclMapping = null;
+
+            if (shapesStmt != null) {
+                shaclMapping = ShaclIndexAssembler.parseShapes(a, shapesStmt.getObject().asResource());
+                docDef = ShaclIndexAssembler.deriveEntityDefinition(shaclMapping);
+            } else {
+                docDef = (EntityDefinition) a.open(entityMapResource);
+            }
+
             TextIndexConfig config = new TextIndexConfig(docDef);
             config.setAnalyzer(analyzer);
             config.setQueryAnalyzer(queryAnalyzer);
@@ -246,8 +277,20 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
             config.setMaxBasicQueries(maxBasicQueries);
             config.setValueStored(storeValues);
             config.setIgnoreIndexErrors(ignoreIndexErrs);
-            config.setFacetFields(facetFields);
+            config.setMaxFacetHits(maxFacetHits);
             docDef.setCacheQueries(cacheQueries);
+
+            if (shaclMapping != null) {
+                config.setShaclMapping(shaclMapping);
+                // Derive facet fields from mapping and merge with any explicit config
+                java.util.List<String> shaclFacetFields = shaclMapping.getFacetFieldNames();
+                for (String f : shaclFacetFields) {
+                    if (!facetFields.contains(f)) {
+                        facetFields.add(f);
+                    }
+                }
+            }
+            config.setFacetFields(facetFields);
 
             return TextDatasetFactory.createLuceneIndex(directory, config) ;
         } catch (IOException e) {

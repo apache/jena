@@ -198,6 +198,85 @@ public class TestTextFacetPF {
     }
 
     @Test
+    public void testFacetCountsWithMinCount() {
+        // minCount=2 should exclude authors with count < 2
+        // Data: Smith=3 (doc1,doc3,doc5), Jones=1, Wilson=1
+        // Only Smith should survive minCount=2
+        String sparql = "PREFIX text: <http://jena.apache.org/text#>\n" +
+            "SELECT ?f ?v ?c WHERE {\n" +
+            "  (?f ?v ?c) text:facet (\"learning\" '[\"author\"]' 10 2)\n" +
+            "}";
+
+        dataset.begin(ReadWrite.READ);
+        try {
+            try (QueryExecution qe = QueryExecutionFactory.create(sparql, dataset)) {
+                ResultSet rs = qe.execSelect();
+                int count = 0;
+                while (rs.hasNext()) {
+                    QuerySolution sol = rs.next();
+                    String value = sol.getLiteral("v").getString();
+                    long cnt = sol.getLiteral("c").getLong();
+                    assertTrue("Count should be >= 2, got " + cnt + " for " + value, cnt >= 2);
+                    count++;
+                }
+                assertEquals("Only Smith should pass minCount=2", 1, count);
+            }
+        } finally {
+            dataset.end();
+        }
+    }
+
+    @Test
+    public void testFacetCountsWithMaxValuesZero() {
+        // maxValues=0 should return all values (getAllChildren)
+        String sparql = "PREFIX text: <http://jena.apache.org/text#>\n" +
+            "SELECT ?f ?v ?c WHERE {\n" +
+            "  (?f ?v ?c) text:facet (\"learning\" '[\"author\"]' 0)\n" +
+            "}";
+
+        dataset.begin(ReadWrite.READ);
+        try {
+            try (QueryExecution qe = QueryExecutionFactory.create(sparql, dataset)) {
+                ResultSet rs = qe.execSelect();
+                int count = 0;
+                while (rs.hasNext()) {
+                    rs.next();
+                    count++;
+                }
+                // Should return all 3 authors: Smith, Jones, Wilson
+                assertEquals("maxValues=0 should return all authors", 3, count);
+            }
+        } finally {
+            dataset.end();
+        }
+    }
+
+    @Test
+    public void testFacetCountsWithMinCountAndMaxValues() {
+        // maxValues=0 (all) + minCount=2 → only Smith (count=3)
+        String sparql = "PREFIX text: <http://jena.apache.org/text#>\n" +
+            "SELECT ?f ?v ?c WHERE {\n" +
+            "  (?f ?v ?c) text:facet (\"learning\" '[\"author\"]' 0 2)\n" +
+            "}";
+
+        dataset.begin(ReadWrite.READ);
+        try {
+            try (QueryExecution qe = QueryExecutionFactory.create(sparql, dataset)) {
+                ResultSet rs = qe.execSelect();
+                int count = 0;
+                while (rs.hasNext()) {
+                    QuerySolution sol = rs.next();
+                    assertEquals("Smith", sol.getLiteral("v").getString());
+                    count++;
+                }
+                assertEquals("Only Smith should pass combined filter", 1, count);
+            }
+        } finally {
+            dataset.end();
+        }
+    }
+
+    @Test
     public void testFacetCountsWithProperty() {
         String sparql = "PREFIX text: <http://jena.apache.org/text#>\n" +
             "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +

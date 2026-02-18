@@ -24,7 +24,9 @@ package org.apache.jena.query.text;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.jena.datatypes.RDFDatatype;
 
+import java.util.ArrayList ;
 import java.util.HashMap ;
+import java.util.List ;
 import java.util.Map ;
 
 public class Entity
@@ -65,6 +67,21 @@ public class Entity
     { return map.get(key) ; }
 
     public Map<String, Object> getMap()     { return map ; }
+
+    @SuppressWarnings("unchecked")
+    public void addValue(String key, Object value) {
+        Object existing = map.get(key);
+        if (existing == null) {
+            map.put(key, value);
+        } else if (existing instanceof List) {
+            ((List<Object>) existing).add(value);
+        } else {
+            List<Object> list = new ArrayList<>();
+            list.add(existing);
+            list.add(value);
+            map.put(key, list);
+        }
+    }
 
     public String getChecksum(String property, String value) {
         String key = getGraph() + "-" + getId() + "-" + property + "-" + value + "-" + getLanguage();

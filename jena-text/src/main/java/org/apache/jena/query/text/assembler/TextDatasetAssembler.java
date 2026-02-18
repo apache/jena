@@ -32,9 +32,11 @@ import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.assembler.Mode ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.text.ShaclTextDocProducer ;
 import org.apache.jena.query.text.TextDatasetFactory ;
 import org.apache.jena.query.text.TextDocProducer ;
 import org.apache.jena.query.text.TextIndex ;
+import org.apache.jena.query.text.TextIndexLucene ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -90,6 +92,14 @@ public class TextDatasetAssembler extends DatasetAssembler implements Assembler
             } catch (Exception ex) {
                 Log.warn(ClsLoader.class, "Exception during instantiation '"+className+"': "+ex.getMessage()) ;
                 return null ;
+            }
+        }
+        // In SHACL mode, auto-create ShaclTextDocProducer if no custom producer was specified
+        if (textDocProducer == null && textIndex instanceof TextIndexLucene) {
+            TextIndexLucene luceneIndex = (TextIndexLucene) textIndex;
+            if (luceneIndex.isShaclMode()) {
+                textDocProducer = new ShaclTextDocProducer(
+                    ds.asDatasetGraph(), textIndex, luceneIndex.getShaclMapping());
             }
         }
         // "true" -> closeIndexOnDSGClose

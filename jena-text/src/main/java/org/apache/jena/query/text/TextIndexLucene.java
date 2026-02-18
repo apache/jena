@@ -70,7 +70,7 @@ import org.slf4j.LoggerFactory ;
 public class TextIndexLucene implements TextIndex {
     private static Logger          log      = LoggerFactory.getLogger(TextIndexLucene.class) ;
 
-    private static int             MAX_N    = 10000 ;
+    private static final int       DEFAULT_MAX_RESULTS = 10000 ;
     // prefix for storing datatype URIs in the index, to distinguish them from language tags
     private static final String    DATATYPE_PREFIX = "^^";
 
@@ -102,7 +102,9 @@ public class TextIndexLucene implements TextIndex {
     private final boolean          isMultilingual ;
     private final int              maxBasicQueries ;
     private final boolean          ignoreIndexErrors ;
+    private final int              maxFacetHits ;
 
+    private final ShaclIndexMapping shaclMapping; // null if triple model
     private Map<String, Analyzer> multilingualQueryAnalyzers = new HashMap<>();
     private final List<String> facetFields;
     private final FacetsConfig facetsConfig;
@@ -132,7 +134,8 @@ public class TextIndexLucene implements TextIndex {
         }
 
         this.ignoreIndexErrors = config.ignoreIndexErrors ;
-
+        this.maxFacetHits = config.getMaxFacetHits();
+        this.shaclMapping = config.getShaclMapping();
 
         // create the analyzer as a wrapper that uses KeywordAnalyzer for
         // entity and graph fields and the configured analyzer(s) for all other
@@ -177,6 +180,16 @@ public class TextIndexLucene implements TextIndex {
         for (String facetField : this.facetFields) {
             // Configure each facet field to be multi-valued (multiple values per document allowed)
             facetsConfig.setMultiValued(facetField, true);
+        }
+        // In SHACL mode, also configure multiValued from FieldDef flags
+        if (this.shaclMapping != null) {
+            for (ShaclIndexMapping.IndexProfile profile : this.shaclMapping.getProfiles()) {
+                for (ShaclIndexMapping.FieldDef field : profile.getFields()) {
+                    if (field.isFacetable() && field.isMultiValued()) {
+                        facetsConfig.setMultiValued(field.getFieldName(), true);
+                    }
+                }
+            }
         }
         if (!this.facetFields.isEmpty()) {
             log.info("Faceting enabled for fields: {}", this.facetFields);
@@ -491,7 +504,7 @@ public class TextIndexLucene implements TextIndex {
 
     @Override
     public List<TextHit> query(Node property, String qs, String graphURI, String lang) {
-        return query(property, qs, graphURI, lang, MAX_N) ;
+        return query(property, qs, graphURI, lang, DEFAULT_MAX_RESULTS) ;
     }
 
     @Override
@@ -812,7 +825,7 @@ public class TextIndexLucene implements TextIndex {
         Query query = textQueryExtender.apply(textQuery);
 
         if ( limit <= 0 )
-            limit = MAX_N ;
+            limit = DEFAULT_MAX_RESULTS ;
 
         log.debug("query$ with LIST: {}; INPUT qString: {}; with queryParserType: {}; parseQuery with {} YIELDS: {}; parsed query: {}; limit: {}", props, qString, queryParserType, qa, textQuery, query, limit) ;
 
@@ -841,6 +854,181 @@ public class TextIndexLucene implements TextIndex {
         return docDef ;
     }
 
+    public ShaclIndexMapping getShaclMapping() {
+        return shaclMapping;
+    }
+
+    public boolean isShaclMode() {
+        return shaclMapping != null;
+    }
+
+    /**
+     * Build a Lucene Document from an Entity using SHACL field definitions.
+     * Handles TEXT, KEYWORD, INT, LONG, DOUBLE field types with appropriate Lucene field classes.
+     */
+    protected Document docFromMapping(Entity entity, ShaclIndexMapping.IndexProfile profile) {
+        Document doc = new Document();
+
+        // Entity URI field (always stored and indexed for lookup)
+        String docIdField = profile.getDocIdField();
+        doc.add(new Field(docIdField, entity.getId(), ftIRI));
+
+        // Discriminator field — first target class local name
+        String discriminatorField = profile.getDiscriminatorField();
+        if (discriminatorField != null && !profile.getTargetClasses().isEmpty()) {
+            Node firstClass = profile.getTargetClasses().iterator().next();
+            String localName = firstClass.getLocalName();
+            if (localName != null && !localName.isEmpty()) {
+                doc.add(new StringField(discriminatorField, localName, org.apache.lucene.document.Field.Store.YES));
+            }
+        }
+
+        // Process each field
+        for (ShaclIndexMapping.FieldDef fieldDef : profile.getFields()) {
+            Object value = entity.get(fieldDef.getFieldName());
+            if (value == null) continue;
+
+            if (value instanceof List) {
+                @SuppressWarnings("unchecked")
+                List<Object> values = (List<Object>) value;
+                for (Object v : values) {
+                    addFieldToDoc(doc, fieldDef, v);
+                }
+            } else {
+                addFieldToDoc(doc, fieldDef, value);
+            }
+        }
+
+        return doc;
+    }
+
+    private void addFieldToDoc(Document doc, ShaclIndexMapping.FieldDef fieldDef, Object value) {
+        String fieldName = fieldDef.getFieldName();
+        org.apache.lucene.document.Field.Store store =
+            fieldDef.isStored() ? org.apache.lucene.document.Field.Store.YES : org.apache.lucene.document.Field.Store.NO;
+
+        switch (fieldDef.getFieldType()) {
+            case TEXT:
+                if (fieldDef.isIndexed()) {
+                    FieldType ft = fieldDef.isStored() ? TextField.TYPE_STORED : TextField.TYPE_NOT_STORED;
+                    doc.add(new Field(fieldName, value.toString(), ft));
+                } else if (fieldDef.isStored()) {
+                    doc.add(new StoredField(fieldName, value.toString()));
+                }
+                break;
+
+            case KEYWORD:
+                String strVal = value.toString();
+                if (fieldDef.isIndexed()) {
+                    doc.add(new StringField(fieldName, strVal, store));
+                } else if (fieldDef.isStored()) {
+                    doc.add(new StoredField(fieldName, strVal));
+                }
+                if (fieldDef.isFacetable() && strVal != null && !strVal.isEmpty()) {
+                    doc.add(new SortedSetDocValuesFacetField(fieldName, strVal));
+                }
+                if (fieldDef.isSortable()) {
+                    doc.add(new SortedDocValuesField(fieldName, new BytesRef(strVal)));
+                }
+                break;
+
+            case INT: {
+                int intVal = (value instanceof Number) ? ((Number) value).intValue() : Integer.parseInt(value.toString());
+                if (fieldDef.isIndexed()) {
+                    doc.add(new IntPoint(fieldName, intVal));
+                }
+                if (fieldDef.isStored()) {
+                    doc.add(new StoredField(fieldName, intVal));
+                }
+                if (fieldDef.isSortable()) {
+                    doc.add(new NumericDocValuesField(fieldName, intVal));
+                }
+                break;
+            }
+
+            case LONG: {
+                long longVal = (value instanceof Number) ? ((Number) value).longValue() : Long.parseLong(value.toString());
+                if (fieldDef.isIndexed()) {
+                    doc.add(new LongPoint(fieldName, longVal));
+                }
+                if (fieldDef.isStored()) {
+                    doc.add(new StoredField(fieldName, longVal));
+                }
+                if (fieldDef.isSortable()) {
+                    doc.add(new NumericDocValuesField(fieldName, longVal));
+                }
+                break;
+            }
+
+            case DOUBLE: {
+                double dblVal = (value instanceof Number) ? ((Number) value).doubleValue() : Double.parseDouble(value.toString());
+                if (fieldDef.isIndexed()) {
+                    doc.add(new DoublePoint(fieldName, dblVal));
+                }
+                if (fieldDef.isStored()) {
+                    doc.add(new StoredField(fieldName, dblVal));
+                }
+                if (fieldDef.isSortable()) {
+                    doc.add(new NumericDocValuesField(fieldName, Double.doubleToRawLongBits(dblVal)));
+                }
+                break;
+            }
+        }
+    }
+
+    /**
+     * Update (or create) the Lucene document for a specific entity and profile.
+     * Uses a composite term (entity URI + discriminator) to identify the document.
+     */
+    public void updateEntityForProfile(Entity entity, ShaclIndexMapping.IndexProfile profile) {
+        try {
+            Document doc = docFromMapping(entity, profile);
+            Document indexDoc = facetFields.isEmpty() ? doc : facetsConfig.build(doc);
+
+            // Delete by composite query: uri + docType
+            String docIdField = profile.getDocIdField();
+            String discriminatorField = profile.getDiscriminatorField();
+            Node firstClass = profile.getTargetClasses().iterator().next();
+            String localName = firstClass.getLocalName();
+
+            BooleanQuery deleteQuery = new BooleanQuery.Builder()
+                .add(new TermQuery(new Term(docIdField, entity.getId())), BooleanClause.Occur.MUST)
+                .add(new TermQuery(new Term(discriminatorField, localName)), BooleanClause.Occur.MUST)
+                .build();
+
+            indexWriter.deleteDocuments(deleteQuery);
+            indexWriter.addDocument(indexDoc);
+            log.trace("updateEntityForProfile: {} profile={}", entity.getId(), profile.getShapeNode());
+        } catch (IOException e) {
+            throw new TextIndexException("updateEntityForProfile", e);
+        }
+    }
+
+    /**
+     * Delete all Lucene documents for a given entity URI (across all profiles).
+     */
+    public void deleteEntityByUri(String entityUri) {
+        try {
+            // In SHACL mode, the docIdField may vary by profile, but we use a reasonable approach:
+            // delete by any docIdField found in the mapping
+            Set<String> docIdFields = new HashSet<>();
+            if (shaclMapping != null) {
+                for (ShaclIndexMapping.IndexProfile profile : shaclMapping.getProfiles()) {
+                    docIdFields.add(profile.getDocIdField());
+                }
+            }
+            if (docIdFields.isEmpty()) {
+                docIdFields.add(docDef.getEntityField());
+            }
+            for (String field : docIdFields) {
+                indexWriter.deleteDocuments(new Term(field, entityUri));
+            }
+            log.trace("deleteEntityByUri: {}", entityUri);
+        } catch (IOException e) {
+            throw new TextIndexException("deleteEntityByUri", e);
+        }
+    }
+
     private Node entryToNode(String v) {
         return NodeFactory.createLiteralString(v) ;
     }
@@ -867,6 +1055,20 @@ public class TextIndexLucene implements TextIndex {
      * @return Map of field name to list of FacetValue (value + count)
      */
     public Map<String, List<FacetValue>> getFacetCounts(String queryString, List<String> facetFieldsToQuery, int maxValues) {
+        return getFacetCounts(queryString, facetFieldsToQuery, maxValues, 0);
+    }
+
+    /**
+     * Get facet counts using native Lucene SortedSetDocValues faceting,
+     * optionally filtered by a search query, with minCount threshold.
+     *
+     * @param queryString Optional search query to filter documents (null for all documents)
+     * @param facetFieldsToQuery List of field names to get facet counts for
+     * @param maxValues Maximum number of facet values per field (0 or negative for all)
+     * @param minCount Minimum count threshold; values below this are excluded (0 for no threshold)
+     * @return Map of field name to list of FacetValue (value + count)
+     */
+    public Map<String, List<FacetValue>> getFacetCounts(String queryString, List<String> facetFieldsToQuery, int maxValues, int minCount) {
         Map<String, List<FacetValue>> result = new HashMap<>();
 
         if (facetFieldsToQuery == null || facetFieldsToQuery.isEmpty()) {
@@ -896,7 +1098,7 @@ public class TextIndexLucene implements TextIndex {
                     // 2. Build a query that matches those URIs
                     // 3. Collect facets from documents with those URIs (which includes facet docs)
                     Query query = parseQuery(queryString, queryAnalyzer);
-                    TopDocs topDocs = searcher.search(query, 10000);
+                    TopDocs topDocs = searcher.search(query, facetSearchLimit());
 
                     // Extract unique entity URIs from search results
                     String entityField = docDef.getEntityField();
@@ -929,10 +1131,14 @@ public class TextIndexLucene implements TextIndex {
                 for (String field : facetFieldsToQuery) {
                     List<FacetValue> fieldFacets = new ArrayList<>();
                     try {
-                        FacetResult facetResult = facets.getTopChildren(maxValues, field);
+                        FacetResult facetResult = (maxValues <= 0)
+                            ? facets.getAllChildren(field)
+                            : facets.getTopChildren(maxValues, field);
                         if (facetResult != null && facetResult.labelValues != null) {
                             for (LabelAndValue lv : facetResult.labelValues) {
-                                fieldFacets.add(new FacetValue(lv.label, lv.value.longValue()));
+                                if (minCount <= 0 || lv.value.longValue() >= minCount) {
+                                    fieldFacets.add(new FacetValue(lv.label, lv.value.longValue()));
+                                }
                             }
                         }
                     } catch (IllegalArgumentException e) {
@@ -959,6 +1165,10 @@ public class TextIndexLucene implements TextIndex {
      */
     public boolean isFacetingEnabled() {
         return !facetFields.isEmpty();
+    }
+
+    private int facetSearchLimit() {
+        return maxFacetHits > 0 ? maxFacetHits : Integer.MAX_VALUE;
     }
 
     /**
@@ -990,7 +1200,7 @@ public class TextIndexLucene implements TextIndex {
             Map<String, List<String>> filters, String graphURI, String lang,
             int limit, String highlight) {
         // Step 1: Execute the text query to get all matching hits
-        List<TextHit> allHits = query(props, qs, graphURI, lang, limit > 0 ? limit * 10 : MAX_N, highlight);
+        List<TextHit> allHits = query(props, qs, graphURI, lang, limit > 0 ? limit * 10 : DEFAULT_MAX_RESULTS, highlight);
 
         if (allHits.isEmpty() || filters == null || filters.isEmpty()) {
             return allHits;
@@ -1056,7 +1266,7 @@ public class TextIndexLucene implements TextIndex {
                         BooleanClause.Occur.MUST);
                 }
 
-                TopDocs topDocs = searcher.search(builder.build(), MAX_N);
+                TopDocs topDocs = searcher.search(builder.build(), facetSearchLimit());
                 Set<String> matchedUris = new HashSet<>();
                 StoredFields storedFields = searcher.storedFields();
                 for (ScoreDoc sd : topDocs.scoreDocs) {
@@ -1097,6 +1307,22 @@ public class TextIndexLucene implements TextIndex {
     public Map<String, List<FacetValue>> getFacetCountsWithFilters(
             String queryString, List<String> facetFieldsToQuery,
             Map<String, List<String>> filters, int maxValues) {
+        return getFacetCountsWithFilters(queryString, facetFieldsToQuery, filters, maxValues, 0);
+    }
+
+    /**
+     * Get facet counts with structured filters applied and minCount threshold.
+     *
+     * @param queryString Optional text query to filter documents
+     * @param facetFieldsToQuery Fields to get facet counts for
+     * @param filters Map of field name to list of values for filtering
+     * @param maxValues Maximum facet values per field (0 or negative for all)
+     * @param minCount Minimum count threshold; values below this are excluded (0 for no threshold)
+     * @return Map of field name to list of FacetValue
+     */
+    public Map<String, List<FacetValue>> getFacetCountsWithFilters(
+            String queryString, List<String> facetFieldsToQuery,
+            Map<String, List<String>> filters, int maxValues, int minCount) {
 
         Map<String, List<FacetValue>> result = new HashMap<>();
 
@@ -1117,7 +1343,7 @@ public class TextIndexLucene implements TextIndex {
                     matchedUris = null; // will use MatchAllDocs later
                 } else {
                     Query query = parseQuery(queryString, queryAnalyzer);
-                    TopDocs topDocs = searcher.search(query, 10000);
+                    TopDocs topDocs = searcher.search(query, facetSearchLimit());
                     matchedUris = new HashSet<>();
                     StoredFields storedFields = searcher.storedFields();
                     for (ScoreDoc sd : topDocs.scoreDocs) {
@@ -1166,7 +1392,7 @@ public class TextIndexLucene implements TextIndex {
                                 BooleanClause.Occur.MUST);
                         }
 
-                        TopDocs filterDocs = searcher.search(filterBuilder.build(), MAX_N);
+                        TopDocs filterDocs = searcher.search(filterBuilder.build(), facetSearchLimit());
                         Set<String> filterMatchedUris = new HashSet<>();
                         StoredFields sf = searcher.storedFields();
                         for (ScoreDoc sd : filterDocs.scoreDocs) {
@@ -1213,10 +1439,14 @@ public class TextIndexLucene implements TextIndex {
                 for (String field : facetFieldsToQuery) {
                     List<FacetValue> fieldFacets = new ArrayList<>();
                     try {
-                        FacetResult facetResult = facets.getTopChildren(maxValues, field);
+                        FacetResult facetResult = (maxValues <= 0)
+                            ? facets.getAllChildren(field)
+                            : facets.getTopChildren(maxValues, field);
                         if (facetResult != null && facetResult.labelValues != null) {
                             for (LabelAndValue lv : facetResult.labelValues) {
-                                fieldFacets.add(new FacetValue(lv.label, lv.value.longValue()));
+                                if (minCount <= 0 || lv.value.longValue() >= minCount) {
+                                    fieldFacets.add(new FacetValue(lv.label, lv.value.longValue()));
+                                }
                             }
                         }
                     } catch (IllegalArgumentException e) {
