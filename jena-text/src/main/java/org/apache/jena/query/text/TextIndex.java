@@ -66,23 +66,5 @@ public interface TextIndex extends Closeable //, Transactional
         return query(property, qs, graphURI, lang, limit, highlight);
     }
 
-    /**
-     * Query with faceting support.
-     * Performs a text search and additionally computes facet counts for specified fields.
-     *
-     * @param props RDF properties to search
-     * @param qs Query string
-     * @param graphURI Graph URI filter (optional)
-     * @param lang Language filter (optional)
-     * @param limit Maximum number of hits to return
-     * @param facetFields List of field names to compute facets for
-     * @param maxFacetValues Maximum number of facet values to return per field
-     * @return FacetedTextResults containing both hits and facet counts
-     */
-    default FacetedTextResults queryWithFacets(List<Resource> props, String qs, String graphURI,
-            String lang, int limit, List<String> facetFields, int maxFacetValues) {
-        throw new UnsupportedOperationException("Faceted queries not supported by this text index implementation");
-    }
-
     EntityDefinition getDocDef() ;
 }

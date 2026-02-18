@@ -6,6 +6,47 @@ This document tracks changes made to the faceting implementation in Apache Jena'
 
 ## Version History
 
+### 2026-02-17 - API Redesign (Phase 0 + Phase 1)
+
+**Status:** Complete
+
+#### Summary
+
+Replaced 3 confusing PFs (`text:query`, `text:queryWithFacets`, `text:facetCounts`) with 2 clean PFs (`text:query` with filter support, `text:facet` with JSON syntax). Fixed two bugs found in David's review (2026-01-23).
+
+#### Bug Fixes
+1. **updateDocument missing facetsConfig.build()** — Updated documents now have facet DocValues indexed
+2. **getFacetCounts TooManyClauses risk** — BooleanQuery replaced with TermInSetQuery + BytesRef
+
+#### API Changes
+
+| Old | New | Notes |
+|-----|-----|-------|
+| `text:query` | `text:query` | Extended with optional JSON filter arg |
+| `text:queryWithFacets` | Removed | Use `text:query` + SPARQL aggregation, or `text:query` + `text:facet` |
+| `text:facetCounts` | `text:facet` | JSON array for facet fields, JSON object for filters |
+
+#### New Classes
+- `TextFacetPF.java` — `text:facet` property function
+- `SearchExecution.java` — Shared execution state between PFs
+
+#### Deleted Classes
+- `TextQueryFacetsPF.java`, `TextFacetCountsPF.java`
+- `TestTextQueryFacetsPF.java`, `TestTextFacetCountsPF.java`
+- `TestFacetedSearchIntegration.java`, `TestFacetedSearchPerformance.java`
+
+#### New Methods in TextIndexLucene
+- `queryWithFilters()` — Two-pass text query with structured filters
+- `getFacetCountsWithFilters()` — Facet counts with structured filters
+- `findFilteredEntityUris()` — Internal helper for URI intersection
+
+#### Design Decisions
+- **JSON literals** chosen over CDT maps (more familiar, simpler parsing for string-only KV pairs)
+- **Nested RDF lists rejected** (Jena PF framework doesn't support recursive list parsing)
+- **Two-pass filter approach** required by triple-based document model (text + facet fields in separate docs)
+
+---
+
 ### 2026-01-19 - Filtered Facets Support
 
 **Status:** Complete

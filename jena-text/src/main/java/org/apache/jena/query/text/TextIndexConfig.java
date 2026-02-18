@@ -38,6 +38,8 @@ public class TextIndexConfig {
     boolean valueStored;
     boolean ignoreIndexErrors;
     List<String> facetFields = new ArrayList<>();
+    int maxFacetHits = 0; // 0 = unlimited
+    ShaclIndexMapping shaclMapping = null;
 
     public TextIndexConfig(EntityDefinition entDef) {
         this.entDef = entDef;
@@ -134,5 +136,25 @@ public class TextIndexConfig {
      */
     public boolean isFacetField(String fieldName) {
         return facetFields.contains(fieldName);
+    }
+
+    public int getMaxFacetHits() {
+        return maxFacetHits;
+    }
+
+    public void setMaxFacetHits(int maxFacetHits) {
+        this.maxFacetHits = maxFacetHits;
+    }
+
+    public ShaclIndexMapping getShaclMapping() {
+        return shaclMapping;
+    }
+
+    public void setShaclMapping(ShaclIndexMapping m) {
+        this.shaclMapping = m;
+    }
+
+    public boolean isShaclMode() {
+        return shaclMapping != null;
     }
 }

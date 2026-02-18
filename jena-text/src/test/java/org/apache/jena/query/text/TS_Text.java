@@ -22,6 +22,7 @@
 package org.apache.jena.query.text;
 
 import org.apache.jena.query.text.assembler.TestEntityMapAssembler;
+import org.apache.jena.query.text.assembler.TestShaclAssembler;
 import org.apache.jena.query.text.assembler.TestTextDatasetAssembler;
 import org.apache.jena.query.text.assembler.TestTextIndexLuceneAssembler;
 import org.apache.jena.query.text.changes.TestDatasetMonitor;
@@ -75,6 +76,16 @@ import org.junit.runners.Suite.SuiteClasses;
     , TestTextPropLists02.class
     , TestTextMultilingualEnhancements02.class
 
+    , TestNativeFacetCounts.class
+    , TestTextFacetPF.class
+    , TestSearchExecution.class
+
+    // SHACL entity-per-document tests
+    , TestShaclIndexMapping.class
+    , TestShaclDocumentBuilding.class
+    , TestShaclTextDocProducer.class
+    , TestShaclAssembler.class
+    , TestShaclEntityPerDocument.class
 })
 
 public class TS_Text

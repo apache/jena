@@ -25,12 +25,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.jena.atlas.json.JSON;
+import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.QueryBuildException;
 import org.apache.jena.query.QueryExecException;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Substitute;
 import org.apache.jena.sparql.core.Var;
@@ -46,61 +51,32 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * SPARQL property function for native Lucene facet counts.
- * <p>
- * This property function provides efficient facet counting using Lucene's native
- * SortedSetDocValues faceting. It does NOT iterate through documents - counts are
- * computed directly from the index structure.
+ * SPARQL property function for facet counts with structured filter support.
  * <p>
  * <b>Syntax:</b>
  * <pre>
- * (?field ?value ?count) text:facetCounts (query? field1 field2 ... maxValues?)
- * </pre>
- * <p>
- * <b>Usage Examples:</b>
- * <pre>
- * PREFIX text: &lt;http://jena.apache.org/text#&gt;
- *
- * # Open facets - counts for all indexed documents
- * SELECT ?field ?value ?count WHERE {
- *   (?field ?value ?count) text:facetCounts ("category" "author" 10)
- * }
- *
- * # Filtered facets - counts only for documents matching "machine learning"
- * SELECT ?field ?value ?count WHERE {
- *   (?field ?value ?count) text:facetCounts ("machine learning" "category" "author" 10)
- * }
- *
- * # Single-word query filter (detected as query if not a configured facet field)
- * SELECT ?field ?value ?count WHERE {
- *   (?field ?value ?count) text:facetCounts ("learning" "category" 10)
- * }
+ * (?field ?value ?count) text:facet (property? "query" '["field1","field2"]' '{"field":"[val]"}'? maxValues?)
  * </pre>
  * <p>
  * <b>Arguments:</b>
  * <ol>
- *   <li><b>query</b> (optional): A Lucene query string to filter documents.
- *       Detected automatically: if the first argument is not a configured facet field name
- *       and not a number, it is treated as a query.</li>
- *   <li><b>field1, field2, ...</b> (required): One or more facet field names (must be
- *       configured in text:facetFields)</li>
- *   <li><b>maxValues</b> (optional): Maximum facet values per field (integer, default 10)</li>
+ *   <li>Optional: One or more property URIs to search</li>
+ *   <li>Required: Query string (plain literal)</li>
+ *   <li>Required: Facet fields as JSON array: '["category", "author"]'</li>
+ *   <li>Optional: Filters as JSON object: '{"category": ["Technology"]}'</li>
+ *   <li>Optional: Max facet values per field (integer, default 10)</li>
  * </ol>
  * <p>
- * <b>Returns:</b> Bindings for each facet value with:
- * <ul>
- *   <li>?field - The facet field name (xsd:string)</li>
- *   <li>?value - A facet value (xsd:string)</li>
- *   <li>?count - Number of documents with this value (xsd:long)</li>
- * </ul>
+ * When used together with text:query in the same BGP with matching parameters,
+ * they share a SearchExecution instance to avoid duplicate Lucene queries.
  */
-public class TextFacetCountsPF extends PropertyFunctionBase {
-    private static Logger log = LoggerFactory.getLogger(TextFacetCountsPF.class);
+public class TextFacetPF extends PropertyFunctionBase {
+    private static final Logger log = LoggerFactory.getLogger(TextFacetPF.class);
 
     private TextIndexLucene textIndex = null;
     private boolean warningIssued = false;
 
-    public TextFacetCountsPF() {}
+    public TextFacetPF() {}
 
     @Override
     public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt) {
@@ -118,10 +94,8 @@ public class TextFacetCountsPF extends PropertyFunctionBase {
         if (argObject.isList()) {
             List<Node> list = argObject.getArgList();
             if (list.isEmpty()) {
-                throw new QueryBuildException("Object list must contain at least one facet field name");
+                throw new QueryBuildException("Object list must contain at least a query string and facet fields");
             }
-        } else if (!argObject.getArg().isLiteral()) {
-            throw new QueryBuildException("Object must be a literal facet field name or a list");
         }
     }
 
@@ -131,16 +105,16 @@ public class TextFacetCountsPF extends PropertyFunctionBase {
             return (TextIndexLucene) obj;
         }
         if (obj != null) {
-            Log.warn(TextFacetCountsPF.class, "Context setting '" + TextQuery.textIndex + "' is not a TextIndexLucene");
+            Log.warn(TextFacetPF.class, "Context setting '" + TextQuery.textIndex + "' is not a TextIndexLucene");
         }
         if (dsg instanceof DatasetGraphText) {
             TextIndex ti = ((DatasetGraphText) dsg).getTextIndex();
             if (ti instanceof TextIndexLucene) {
                 return (TextIndexLucene) ti;
             }
-            Log.warn(TextFacetCountsPF.class, "TextIndex is not a TextIndexLucene - native faceting not supported");
+            Log.warn(TextFacetPF.class, "TextIndex is not a TextIndexLucene - faceting not supported");
         }
-        Log.warn(TextFacetCountsPF.class, "Failed to find the text index");
+        Log.warn(TextFacetPF.class, "Failed to find the text index");
         return null;
     }
 
@@ -164,7 +138,7 @@ public class TextFacetCountsPF extends PropertyFunctionBase {
         argSubject = Substitute.substitute(argSubject, binding);
         argObject = Substitute.substitute(argObject, binding);
 
-        // Parse subject variables
+        // Parse subject variables: (?field ?value ?count)
         Node fieldNode = null;
         Node valueNode = null;
         Node countNode = null;
@@ -195,21 +169,27 @@ public class TextFacetCountsPF extends PropertyFunctionBase {
         }
 
         // Parse object arguments
-        FacetCountParams params = parseObjectArgs(argObject);
-        if (params == null || params.facetFields.isEmpty()) {
+        FacetArgs args = parseObjectArgs(argObject);
+        if (args == null || args.facetFields.isEmpty()) {
             return IterLib.noResults(execCxt);
         }
 
-        // Get facet counts from the index
+        // Get facet counts (via SearchExecution if filters present, direct otherwise)
         Map<String, List<FacetValue>> facetCounts;
         try {
-            facetCounts = textIndex.getFacetCounts(params.queryString, params.facetFields, params.maxValues);
+            if (args.filters != null && !args.filters.isEmpty()) {
+                SearchExecution se = SearchExecution.getOrCreate(
+                    execCxt, args.props, args.queryString,
+                    args.filters, textIndex, null, null);
+                facetCounts = se.getFacetCounts(args.facetFields, args.maxValues, args.minCount);
+            } else {
+                facetCounts = textIndex.getFacetCounts(args.queryString, args.facetFields, args.maxValues, args.minCount);
+            }
         } catch (Exception e) {
             log.error("Error getting facet counts: {}", e.getMessage());
             return IterLib.noResults(execCxt);
         }
 
-        // Generate bindings
         return generateBindings(binding, fieldNode, valueNode, countNode, facetCounts, execCxt);
     }
 
@@ -243,78 +223,114 @@ public class TextFacetCountsPF extends PropertyFunctionBase {
         return QueryIterPlainWrapper.create(bindings.iterator(), execCxt);
     }
 
-    private FacetCountParams parseObjectArgs(PropFuncArg argObject) {
-        List<String> facetFields = new ArrayList<>();
+    /**
+     * Parse the object argument list into structured facet parameters.
+     * <p>
+     * Argument order:
+     * 1. While arg is URI: collect as properties
+     * 2. First plain literal (not JSON, not integer): query string
+     * 3. Remaining literals:
+     *    - starts with '[': JSON array of facet field names
+     *    - starts with '{': JSON object of filter map
+     *    - parseable as integer: maxValues
+     */
+    private FacetArgs parseObjectArgs(PropFuncArg argObject) {
+        List<Resource> props = new ArrayList<>();
         String queryString = null;
+        List<String> facetFields = new ArrayList<>();
+        Map<String, List<String>> filters = null;
         int maxValues = 10;
-
-        // Get configured facet fields for detection
-        List<String> configuredFacetFields = textIndex != null ?
-            textIndex.getFacetFields() : new ArrayList<>();
+        int minCount = 0;
+        boolean maxValuesSet = false;
 
         if (argObject.isNode()) {
-            Node o = argObject.getArg();
-            if (!o.isLiteral()) {
-                log.warn("Facet field name must be a literal: " + o);
-                return null;
-            }
-            facetFields.add(o.getLiteralLexicalForm());
-            return new FacetCountParams(queryString, facetFields, maxValues);
+            // Single arg - must be a query string, but we need facet fields too
+            log.warn("text:facet requires at least a query string and facet fields");
+            return null;
         }
 
         List<Node> list = argObject.getArgList();
         int idx = 0;
 
-        // First argument detection: if it's a literal that is NOT a configured facet field
-        // and NOT a number, treat it as a search query
-        if (!list.isEmpty() && list.get(0).isLiteral()) {
-            String firstArg = list.get(0).getLiteralLexicalForm();
+        // 1. Collect property URIs
+        while (idx < list.size() && list.get(idx).isURI()) {
+            Node n = list.get(idx);
+            Property prop = ResourceFactory.createProperty(n.getURI());
+            props.add(prop);
+            idx++;
+        }
 
-            // Check if it's a number (would be maxValues at wrong position - unlikely)
-            boolean isNumber = false;
-            try {
-                Integer.parseInt(firstArg);
-                isNumber = true;
-            } catch (NumberFormatException e) {
-                // Not a number
-            }
-
-            // If not a number and not a configured facet field, it's a query
-            if (!isNumber && !configuredFacetFields.contains(firstArg)) {
-                queryString = firstArg;
+        // 2. Query string (first plain literal that's not JSON and not an integer)
+        if (idx < list.size() && list.get(idx).isLiteral()) {
+            String lex = list.get(idx).getLiteralLexicalForm();
+            if (!lex.startsWith("[") && !lex.startsWith("{") && !isInteger(lex)) {
+                queryString = lex;
                 idx++;
             }
         }
 
-        // Parse facet fields and max values
+        // 3. Parse remaining: JSON arrays, JSON objects, and integers
+        // First integer = maxValues, second integer = minCount
         while (idx < list.size()) {
             Node n = list.get(idx);
             if (n.isLiteral()) {
-                String lexForm = n.getLiteralLexicalForm();
-                // Check if it's a number (max facet values)
-                try {
-                    int val = Integer.parseInt(lexForm);
-                    maxValues = val;
-                } catch (NumberFormatException e) {
-                    // It's a facet field name
-                    facetFields.add(lexForm);
+                String lex = n.getLiteralLexicalForm();
+                if (lex.startsWith("[")) {
+                    // JSON array: facet field names
+                    JsonArray arr = JSON.parseAny(lex).getAsArray();
+                    for (int i = 0; i < arr.size(); i++) {
+                        facetFields.add(arr.get(i).getAsString().value());
+                    }
+                } else if (lex.startsWith("{")) {
+                    // JSON object: filter map
+                    filters = TextQueryPF.parseJsonFilters(lex);
+                } else if (isInteger(lex)) {
+                    if (!maxValuesSet) {
+                        maxValues = Integer.parseInt(lex);
+                        maxValuesSet = true;
+                    } else {
+                        minCount = Integer.parseInt(lex);
+                    }
+                } else {
+                    // Unrecognized literal - could be a query string if we haven't seen one
+                    if (queryString == null) {
+                        queryString = lex;
+                    } else {
+                        log.warn("Unexpected argument in text:facet: {}", lex);
+                    }
                 }
             }
             idx++;
         }
 
-        return new FacetCountParams(queryString, facetFields, maxValues);
+        return new FacetArgs(props, queryString, facetFields, filters, maxValues, minCount);
     }
 
-    private static class FacetCountParams {
+    private static boolean isInteger(String s) {
+        try {
+            Integer.parseInt(s);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private static class FacetArgs {
+        final List<Resource> props;
         final String queryString;
         final List<String> facetFields;
+        final Map<String, List<String>> filters;
         final int maxValues;
+        final int minCount;
 
-        FacetCountParams(String queryString, List<String> facetFields, int maxValues) {
+        FacetArgs(List<Resource> props, String queryString, List<String> facetFields,
+                  Map<String, List<String>> filters, int maxValues, int minCount) {
+            this.props = props;
             this.queryString = queryString;
             this.facetFields = facetFields;
+            this.filters = filters;
             this.maxValues = maxValues;
+            this.minCount = minCount;
         }
     }
 }

@@ -62,19 +62,11 @@ public class TextQuery
                 }
             });
 
-            // Register faceted query property function
-            PropertyFunctionRegistry.get().put("http://jena.apache.org/text#queryWithFacets", new PropertyFunctionFactory() {
+            // Register facet counts property function
+            PropertyFunctionRegistry.get().put("http://jena.apache.org/text#facet", new PropertyFunctionFactory() {
                 @Override
                 public PropertyFunction create(String uri) {
-                    return new TextQueryFacetsPF() ;
-                }
-            });
-
-            // Register native facet counts property function (no document iteration)
-            PropertyFunctionRegistry.get().put("http://jena.apache.org/text#facetCounts", new PropertyFunctionFactory() {
-                @Override
-                public PropertyFunction create(String uri) {
-                    return new TextFacetCountsPF() ;
+                    return new TextFacetPF() ;
                 }
             });
 
