@@ -44,7 +44,7 @@
   "devDependencies": {
     "@babel/core": "^7.27.4",
     "@babel/preset-env": "^7.0.0",
-    "@cypress/code-coverage": "^3.14.4",
+    "@cypress/code-coverage": "^4.0.0",
     "@cypress/vue": "^6.0.0",
     "@eslint/js": "^9.28.0",
     "@types/codemirror": "^5.60.15",
