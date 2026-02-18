@@ -68,7 +68,4 @@ public class QueryIterExtendByVar extends QueryIter
     protected void closeIterator() {
         Iter.close(members);
     }
-
-    @Override
-    protected void requestCancel() {}
 }

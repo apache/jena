@@ -87,9 +87,6 @@ public class QueryIterPlainWrapper extends QueryIter
     }
 
     @Override
-    protected void requestCancel() {}
-
-    @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
     { out.println(Lib.className(this)); }
 }

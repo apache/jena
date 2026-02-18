@@ -179,10 +179,6 @@ public class TestSortedDataBagCancellation {
         @Override
         protected void closeIterator() {
         }
-
-        @Override
-        protected void requestCancel() {
-        }
     }
 
     /**
