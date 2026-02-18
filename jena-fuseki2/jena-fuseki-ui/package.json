@@ -35,7 +35,7 @@
     "codemirror": "6.0.2",
     "follow-redirects": "^1.15.4",
     "mitt": "^3.0.1",
-    "qs": "6.14.2",
+    "qs": "6.15.0",
     "vue": "^3.5.26",
     "vue-router": "^5.0.2",
     "vue-upload-component": "^3.1.8",
