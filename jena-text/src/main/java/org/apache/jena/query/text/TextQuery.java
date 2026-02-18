@@ -21,6 +21,7 @@
 
 package org.apache.jena.query.text;
 
+import org.apache.jena.query.text.assembler.IndexVocab;
 import org.apache.jena.query.text.assembler.TextAssembler ;
 import org.apache.jena.query.text.cmd.InitTextCmds;
 import org.apache.jena.sparql.pfunction.PropertyFunction ;
@@ -62,8 +63,14 @@ public class TextQuery
                 }
             });
 
-            // Register facet counts property function
-            PropertyFunctionRegistry.get().put("http://jena.apache.org/text#facet", new PropertyFunctionFactory() {
+            // Register SHACL-mode property functions under luc: namespace
+            PropertyFunctionRegistry.get().put(IndexVocab.pfQuery, new PropertyFunctionFactory() {
+                @Override
+                public PropertyFunction create(String uri) {
+                    return new ShaclTextQueryPF() ;
+                }
+            });
+            PropertyFunctionRegistry.get().put(IndexVocab.pfFacet, new PropertyFunctionFactory() {
                 @Override
                 public PropertyFunction create(String uri) {
                     return new TextFacetPF() ;

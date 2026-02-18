@@ -6,8 +6,8 @@ This documentation covers the faceted search and entity-per-document indexing fe
 
 | Document | Audience | Description |
 |----------|----------|-------------|
-| [User Guide](01-user-guide.md) | Users / Integrators | How to configure and query with facets |
-| [SPARQL API Reference](02-sparql-api.md) | Users / Developers | Complete `text:query` and `text:facet` syntax |
+| [User Guide](01-user-guide.md) | Users / Integrators | Configure, query, deploy with Fuseki, troubleshoot |
+| [SPARQL API Reference](02-sparql-api.md) | Users / Developers | `text:query`, `luc:query`, `luc:facet` syntax, Lucene query syntax, Java API |
 | [Configuration Reference](03-configuration.md) | Admins / Integrators | Assembler TTL config for both indexing modes |
 | [Architecture](04-architecture.md) | Developers | Internal design, document models, shared execution |
 | [Testing](05-testing.md) | Developers / QA | Test coverage, how to run tests |
@@ -17,23 +17,28 @@ This documentation covers the faceted search and entity-per-document indexing fe
 ## Quick Start
 
 ```turtle
-# Assembler config — classic triple-per-document with faceting
-text:facetFields ("category" "author") ;
+# Classic mode — upstream Jena text search (text:query)
+text:entityMap <#entMap> ;
 
-# OR — SHACL entity-per-document (all fields on one Lucene doc)
-text:shapes ( ex:BookShape ) ;
+# SHACL mode — entity-per-document with faceting (luc:query, luc:facet)
+text:shapes ( <#BookShape> ) ;
 ```
 
 ```sparql
-# Search with facets
+# Classic: text search
+PREFIX text: <http://jena.apache.org/text#>
 (?s ?sc) text:query ("machine learning") .
-(?f ?v ?c) text:facet ("machine learning" '["category"]' 10) .
+
+# SHACL: search with filters + facets
+PREFIX luc: <urn:jena:lucene:index#>
+(?s ?sc) luc:query ("machine learning") .
+(?f ?v ?c) luc:facet ("machine learning" '["category"]' 10) .
 ```
 
 ## Build & Test
 
 ```bash
-mvn test -pl jena-text                    # 362 tests
+mvn test -pl jena-text                    # 366 tests
 mvn clean install -pl jena-fuseki2/jena-fuseki-server -am -DskipTests  # build Fuseki
 ```
 

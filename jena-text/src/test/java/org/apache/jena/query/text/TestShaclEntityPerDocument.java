@@ -145,10 +145,10 @@ public class TestShaclEntityPerDocument {
     @Test
     public void testTextQueryViaSPARQL() {
         String queryStr =
-            "PREFIX text: <http://jena.apache.org/text#>\n" +
+            "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "PREFIX ex: <" + NS + ">\n" +
             "SELECT ?s WHERE {\n" +
-            "  (?s ?score) text:query ('machine learning') .\n" +
+            "  (?s ?score) luc:query ('machine learning') .\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);

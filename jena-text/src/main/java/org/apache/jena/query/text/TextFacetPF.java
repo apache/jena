@@ -283,7 +283,7 @@ public class TextFacetPF extends PropertyFunctionBase {
                     }
                 } else if (lex.startsWith("{")) {
                     // JSON object: filter map
-                    filters = TextQueryPF.parseJsonFilters(lex);
+                    filters = parseJsonFilters(lex);
                 } else if (isInteger(lex)) {
                     if (!maxValuesSet) {
                         maxValues = Integer.parseInt(lex);
@@ -304,6 +304,24 @@ public class TextFacetPF extends PropertyFunctionBase {
         }
 
         return new FacetArgs(props, queryString, facetFields, filters, maxValues, minCount);
+    }
+
+    /**
+     * Parse a JSON object string into a filter map.
+     * Expected format: {"field": ["value1", "value2"], "field2": ["value3"]}
+     */
+    static Map<String, List<String>> parseJsonFilters(String jsonStr) {
+        Map<String, List<String>> filters = new java.util.LinkedHashMap<>();
+        org.apache.jena.atlas.json.JsonObject json = JSON.parse(jsonStr);
+        for (String key : json.keys()) {
+            JsonArray vals = json.get(key).getAsArray();
+            List<String> values = new ArrayList<>();
+            for (int i = 0; i < vals.size(); i++) {
+                values.add(vals.get(i).getAsString().value());
+            }
+            filters.put(key, values);
+        }
+        return filters;
     }
 
     private static boolean isInteger(String s) {

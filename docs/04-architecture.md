@@ -14,12 +14,7 @@ Triple: ex:book1 ex:category "Technology"
   → Lucene doc: {uri: "ex:book1", category: "Technology"}
 ```
 
-**Consequence for faceting:** A text search finds documents with the `text` field. Facet values live on *different* documents (those with the `category` field). To connect them, a two-pass URI-join is required:
-
-1. Search text field → collect entity URIs
-2. Build `TermInSetQuery` for those URIs → collect facets from matching docs
-
-This works but is inherently limited — it cannot use Lucene's `DrillSideways` and requires materialising the full URI set in memory.
+This is the upstream Jena text index, used with `text:entityMap` configuration and `text:query` for SPARQL search. No faceting support.
 
 ### SHACL: Entity-Per-Document
 
@@ -37,6 +32,8 @@ Entity: ex:book1 (type ex:Book)
     }
 ```
 
+Used with `text:shapes` configuration. SPARQL search via `luc:query` (with filter support), facet counts via `luc:facet`.
+
 **Advantages:**
 - Single-pass faceting (text and facet fields on same document)
 - Enables `DrillSideways` (future optimisation)
@@ -48,48 +45,50 @@ Entity: ex:book1 (type ex:Book)
 
 ## Key Classes
 
-### Core
+### Core (upstream, unmodified)
 
 | Class | Role |
 |-------|------|
-| `TextIndexLucene` | Central index implementation. Manages Lucene `IndexWriter`, `FacetsConfig`. Contains all query, facet, and document-building methods |
+| `TextQueryPF` | Implements `text:query` — upstream Jena text search property function |
 | `EntityDefinition` | Maps RDF predicates to Lucene field names. Used by both modes |
-| `Entity` | Represents a single indexable entity with field→value map. `addValue()` supports multi-valued fields |
 | `TextIndexConfig` | Configuration holder passed to `TextIndexLucene` constructor |
 
-### SHACL Mode
+### Core (extended)
+
+| Class | Role |
+|-------|------|
+| `TextIndexLucene` | Central index implementation. Manages Lucene `IndexWriter`. Upstream methods unchanged; additive SHACL methods for faceting and entity document building |
+| `Entity` | Represents a single indexable entity. `addValue()` supports multi-valued fields (additive) |
+
+### SHACL Mode (all new files)
 
 | Class | Role |
 |-------|------|
 | `ShaclIndexMapping` | Parsed data model: `IndexProfile` (shape), `FieldDef` (field), `FieldType` enum. Pure data, no RDF/Lucene dependencies beyond `Node` and `Analyzer` |
 | `ShaclTextDocProducer` | Change listener. On triple add/delete, reads entity state from base dataset, builds Entity, calls `updateEntityForProfile()` |
-| `ShaclIndexAssembler` | Parses `text:shapes` RDF config into `ShaclIndexMapping`. Reads `sh:targetClass`, `sh:path`, `sh:alternativePath`. No jena-shacl dependency |
-| `IndexVocab` | `urn:jena:lucene:index#` namespace constants |
-
-### Property Functions
-
-| Class | Role |
-|-------|------|
-| `TextQueryPF` | Implements `text:query`. Parses args, handles JSON filter detection, delegates to `TextIndexLucene` |
-| `TextFacetPF` | Implements `text:facet`. Parses facet field list, maxValues, minCount. Returns (field, value, count) bindings |
+| `ShaclTextQueryPF` | Implements `luc:query` — search with JSON filter support. Uses `SearchExecution` for shared state with `luc:facet` |
+| `TextFacetPF` | Implements `luc:facet` — facet counts property function. Returns (field, value, count) bindings |
 | `SearchExecution` | Shared execution state. Stored in `ExecutionContext` keyed by normalised query params. Lazy-computes hits and facet counts |
+| `FacetValue` | Immutable (value, count) pair for facet results |
+| `ShaclIndexAssembler` | Parses `text:shapes` RDF config into `ShaclIndexMapping`. Reads `sh:targetClass`, `sh:path`, `sh:alternativePath`. No jena-shacl dependency |
+| `IndexVocab` | `urn:jena:lucene:index#` namespace constants and PF URI strings |
 
-### Assembler
+### Assembler (minimally extended)
 
 | Class | Role |
 |-------|------|
-| `TextIndexLuceneAssembler` | Builds `TextIndexLucene` from TTL config. Detects `text:shapes` vs `text:entityMap` |
-| `TextDatasetAssembler` | Builds text-indexed dataset. Auto-creates `ShaclTextDocProducer` in SHACL mode |
+| `TextIndexLuceneAssembler` | Builds `TextIndexLucene` from TTL config. Additive: detects `text:shapes` alongside existing `text:entityMap` path |
+| `TextDatasetAssembler` | Builds text-indexed dataset. Additive: auto-creates `ShaclTextDocProducer` in SHACL mode |
 
 ---
 
 ## Shared Execution Flow
 
-When `text:query` and `text:facet` appear in the same SPARQL query:
+When `luc:query` and `luc:facet` appear in the same SPARQL query:
 
 ```
 SPARQL query parsed
-  ├── TextQueryPF.exec()
+  ├── ShaclTextQueryPF.exec()
   │     ├── Parse args: queryString, props, filters, limit
   │     ├── Build lookup key: "props=...|qs=...|filters=..."
   │     ├── SearchExecution.getOrCreate(execCxt, key, ...)
@@ -157,3 +156,41 @@ The base dataset is always up-to-date when `change()` fires because `DatasetGrap
 Each entity document also gets:
 - **URI field** (`ftIRI` type) — tokenized=false, stored=true
 - **Discriminator field** — `StringField` with the target class local name (e.g., "Book")
+
+---
+
+## Performance Characteristics
+
+### SortedSetDocValues Faceting
+
+The SHACL mode uses Lucene's `SortedSetDocValuesFacetCounts` for facet counting:
+
+- **O(1) counting** — uses pre-built DocValues structures, not document iteration
+- **~25% more indexing time** compared to non-faceted fields (DocValues must be built at write time)
+- **Memory overhead** — ~10-20 bytes per unique value per facetable field in the DocValues segment
+- **High cardinality caution** — fields with very many unique values (e.g., URIs) can consume significant memory during facet collection. Use `text:maxFacetHits` to limit the search scope if needed.
+
+### Best Practices
+
+1. **Only enable faceting on fields you'll facet on** — set `idx:facetable true` selectively, not on every field
+2. **Use `maxValues`** — don't request more facet values than the UI needs
+3. **Use `minCount`** — exclude rare values to reduce result size
+4. **Index rebuild required** — changing a field from non-facetable to facetable requires a full reindex since DocValues are built at write time
+5. **`text:maxFacetHits`** — for large indexes, set this assembler property to cap the number of documents searched during facet collection. `0` (default) means unlimited.
+
+### Entity Rebuild Cost
+
+In SHACL mode, any relevant triple change triggers a full entity document rebuild. This reads all triples for the entity from the base dataset and replaces the Lucene document. For typical entities (< 50 triples), this is fast. For entities with hundreds of triples, this may be noticeable during high-frequency updates.
+
+---
+
+## Backward Compatibility
+
+All changes are purely additive. The upstream Jena `jena-text` code paths are unmodified:
+
+- `TextQueryPF` — upstream `text:query` implementation, unchanged
+- `TextIndexLucene` core methods (`doc()`, `addDocument()`, `updateDocument()`) — unchanged
+- `TextIndexLuceneAssembler` — `text:entityMap` path unchanged; `text:shapes` is an additive alternative
+- `TextDatasetAssembler` — SHACL producer wiring only activates when `isShaclMode()` is true
+
+New code lives in separate classes (`ShaclTextQueryPF`, `TextFacetPF`, `ShaclTextDocProducer`, etc.) and registers under the `luc:` namespace (`urn:jena:lucene:index#`), not the `text:` namespace.

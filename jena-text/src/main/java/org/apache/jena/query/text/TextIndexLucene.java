@@ -70,7 +70,7 @@ import org.slf4j.LoggerFactory ;
 public class TextIndexLucene implements TextIndex {
     private static Logger          log      = LoggerFactory.getLogger(TextIndexLucene.class) ;
 
-    private static final int       DEFAULT_MAX_RESULTS = 10000 ;
+    private static int             MAX_N    = 10000 ;
     // prefix for storing datatype URIs in the index, to distinguish them from language tags
     private static final String    DATATYPE_PREFIX = "^^";
 
@@ -134,8 +134,8 @@ public class TextIndexLucene implements TextIndex {
         }
 
         this.ignoreIndexErrors = config.ignoreIndexErrors ;
-        this.maxFacetHits = config.getMaxFacetHits();
         this.shaclMapping = config.getShaclMapping();
+        this.maxFacetHits = config.getMaxFacetHits();
 
         // create the analyzer as a wrapper that uses KeywordAnalyzer for
         // entity and graph fields and the configured analyzer(s) for all other
@@ -174,15 +174,13 @@ public class TextIndexLucene implements TextIndex {
         if (config.isValueStored() && docDef.getLangField() == null)
             log.warn("Values stored but langField not set. Returned values will not have language tag or datatype.");
 
-        // Initialize facet fields configuration
-        this.facetFields = new ArrayList<>(config.getFacetFields());
-        this.facetsConfig = new FacetsConfig();
-        for (String facetField : this.facetFields) {
-            // Configure each facet field to be multi-valued (multiple values per document allowed)
-            facetsConfig.setMultiValued(facetField, true);
-        }
-        // In SHACL mode, also configure multiValued from FieldDef flags
+        // Initialize facet fields configuration (SHACL mode only)
         if (this.shaclMapping != null) {
+            this.facetFields = new ArrayList<>(config.getFacetFields());
+            this.facetsConfig = new FacetsConfig();
+            for (String facetField : this.facetFields) {
+                facetsConfig.setMultiValued(facetField, true);
+            }
             for (ShaclIndexMapping.IndexProfile profile : this.shaclMapping.getProfiles()) {
                 for (ShaclIndexMapping.FieldDef field : profile.getFields()) {
                     if (field.isFacetable() && field.isMultiValued()) {
@@ -190,9 +188,12 @@ public class TextIndexLucene implements TextIndex {
                     }
                 }
             }
-        }
-        if (!this.facetFields.isEmpty()) {
-            log.info("Faceting enabled for fields: {}", this.facetFields);
+            if (!this.facetFields.isEmpty()) {
+                log.info("Faceting enabled for fields: {}", this.facetFields);
+            }
+        } else {
+            this.facetFields = Collections.emptyList();
+            this.facetsConfig = new FacetsConfig();
         }
 
         openIndexWriter();
@@ -292,11 +293,9 @@ public class TextIndexLucene implements TextIndex {
 
     protected void updateDocument(Entity entity) throws IOException {
         Document doc = doc(entity);
-        // If faceting is enabled, build the document with facet fields properly indexed
-        Document indexDoc = facetFields.isEmpty() ? doc : facetsConfig.build(doc);
         Term term = new Term(docDef.getEntityField(), entity.getId());
         try {
-            indexWriter.updateDocument(term, indexDoc) ;
+            indexWriter.updateDocument(term, doc) ;
         } catch (Exception ex) {
             log.error("Error updating {} with term: {} message: {}", doc, term, ex.getMessage());
             if (ignoreIndexErrors) {
@@ -326,9 +325,7 @@ public class TextIndexLucene implements TextIndex {
     protected void addDocument(Entity entity) throws IOException {
         Document doc = doc(entity) ;
         try {
-            // If faceting is enabled, build the document with facet fields properly indexed
-            Document indexDoc = facetFields.isEmpty() ? doc : facetsConfig.build(doc);
-            indexWriter.addDocument(indexDoc) ;
+            indexWriter.addDocument(doc) ;
         } catch (Exception ex) {
             log.error("Error adding {} message: {}", doc, ex.getMessage());
             if (ignoreIndexErrors) {
@@ -382,10 +379,6 @@ public class TextIndexLucene implements TextIndex {
             String value = (String) e.getValue();
             FieldType ft = (docDef.getNoIndex(field)) ? ftTextStoredNoIndex : ftText ;
             doc.add( new Field(field, value, ft) );
-            // Add SortedSetDocValuesFacetField for fields configured for faceting
-            if (facetFields.contains(field) && value != null && !value.isEmpty()) {
-                doc.add(new SortedSetDocValuesFacetField(field, value));
-            }
             if (langField != null) {
                 String lang = entity.getLanguage();
                 RDFDatatype datatype = entity.getDatatype();
@@ -504,7 +497,7 @@ public class TextIndexLucene implements TextIndex {
 
     @Override
     public List<TextHit> query(Node property, String qs, String graphURI, String lang) {
-        return query(property, qs, graphURI, lang, DEFAULT_MAX_RESULTS) ;
+        return query(property, qs, graphURI, lang, MAX_N) ;
     }
 
     @Override
@@ -825,7 +818,7 @@ public class TextIndexLucene implements TextIndex {
         Query query = textQueryExtender.apply(textQuery);
 
         if ( limit <= 0 )
-            limit = DEFAULT_MAX_RESULTS ;
+            limit = MAX_N ;
 
         log.debug("query$ with LIST: {}; INPUT qString: {}; with queryParserType: {}; parseQuery with {} YIELDS: {}; parsed query: {}; limit: {}", props, qString, queryParserType, qa, textQuery, query, limit) ;
 
@@ -1200,7 +1193,7 @@ public class TextIndexLucene implements TextIndex {
             Map<String, List<String>> filters, String graphURI, String lang,
             int limit, String highlight) {
         // Step 1: Execute the text query to get all matching hits
-        List<TextHit> allHits = query(props, qs, graphURI, lang, limit > 0 ? limit * 10 : DEFAULT_MAX_RESULTS, highlight);
+        List<TextHit> allHits = query(props, qs, graphURI, lang, limit > 0 ? limit * 10 : MAX_N, highlight);
 
         if (allHits.isEmpty() || filters == null || filters.isEmpty()) {
             return allHits;

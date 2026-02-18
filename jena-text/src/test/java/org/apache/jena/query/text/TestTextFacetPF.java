@@ -24,26 +24,34 @@ package org.apache.jena.query.text;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
+import java.util.Collections;
 
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.*;
+import org.apache.jena.query.text.ShaclIndexMapping.FieldDef;
+import org.apache.jena.query.text.ShaclIndexMapping.FieldType;
+import org.apache.jena.query.text.ShaclIndexMapping.IndexProfile;
+import org.apache.jena.query.text.assembler.ShaclIndexAssembler;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.lucene.store.ByteBuffersDirectory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests for the text:facet property function.
+ * Tests for the luc:facet property function.
  */
 public class TestTextFacetPF {
 
     private static final String NS = "http://example.org/";
-    private static final Property CATEGORY = ResourceFactory.createProperty(NS + "category");
-    private static final Property AUTHOR = ResourceFactory.createProperty(NS + "author");
+    private static final Node BOOK_CLASS = NodeFactory.createURI(NS + "Book");
+    private static final Node TITLE_PRED = NodeFactory.createURI(NS + "title");
+    private static final Node CATEGORY_PRED = NodeFactory.createURI(NS + "category");
+    private static final Node AUTHOR_PRED = NodeFactory.createURI(NS + "author");
 
     private Dataset dataset;
 
@@ -51,19 +59,40 @@ public class TestTextFacetPF {
     public void setUp() {
         TextQuery.init();
 
-        EntityDefinition entDef = new EntityDefinition("uri", "text");
-        entDef.setPrimaryPredicate(RDFS.label);
-        entDef.set("category", CATEGORY.asNode());
-        entDef.set("author", AUTHOR.asNode());
+        FieldDef titleField = new FieldDef("title", FieldType.TEXT, null,
+            true, true, false, false, false, true,
+            Collections.singleton(TITLE_PRED));
 
-        TextIndexConfig config = new TextIndexConfig(entDef);
+        FieldDef categoryField = new FieldDef("category", FieldType.KEYWORD, null,
+            true, true, true, false, true, false,
+            Collections.singleton(CATEGORY_PRED));
+
+        FieldDef authorField = new FieldDef("author", FieldType.KEYWORD, null,
+            true, true, true, false, false, false,
+            Collections.singleton(AUTHOR_PRED));
+
+        IndexProfile bookProfile = new IndexProfile(
+            NodeFactory.createURI(NS + "BookShape"),
+            Collections.singleton(BOOK_CLASS),
+            "uri", "docType",
+            Arrays.asList(titleField, categoryField, authorField));
+
+        ShaclIndexMapping mapping = new ShaclIndexMapping(Collections.singletonList(bookProfile));
+        EntityDefinition defn = ShaclIndexAssembler.deriveEntityDefinition(mapping);
+
+        TextIndexConfig config = new TextIndexConfig(defn);
+        config.setShaclMapping(mapping);
+        config.setFacetFields(mapping.getFacetFieldNames());
         config.setValueStored(true);
-        config.setFacetFields(Arrays.asList("category", "author"));
 
-        Dataset baseDs = DatasetFactory.create();
         ByteBuffersDirectory dir = new ByteBuffersDirectory();
         TextIndexLucene textIndex = new TextIndexLucene(dir, config);
-        dataset = TextDatasetFactory.create(baseDs, textIndex);
+
+        Dataset baseDs = DatasetFactory.create();
+        ShaclTextDocProducer producer = new ShaclTextDocProducer(
+            baseDs.asDatasetGraph(), textIndex, mapping);
+
+        dataset = TextDatasetFactory.create(baseDs, textIndex, true, producer);
 
         loadTestData();
     }
@@ -72,22 +101,23 @@ public class TestTextFacetPF {
         dataset.begin(ReadWrite.WRITE);
         try {
             Model model = dataset.getDefaultModel();
-            createDoc(model, "doc1", "Introduction to Machine Learning", "technology", "Smith");
-            createDoc(model, "doc2", "Deep Learning Neural Networks", "technology", "Jones");
-            createDoc(model, "doc3", "Machine Learning for Beginners", "technology", "Smith");
-            createDoc(model, "doc4", "Learning About Quantum Physics", "science", "Wilson");
-            createDoc(model, "doc5", "Machine Learning in Biology", "science", "Smith");
+            addBook(model, "doc1", "Introduction to Machine Learning", "technology", "Smith");
+            addBook(model, "doc2", "Deep Learning Neural Networks", "technology", "Jones");
+            addBook(model, "doc3", "Machine Learning for Beginners", "technology", "Smith");
+            addBook(model, "doc4", "Learning About Quantum Physics", "science", "Wilson");
+            addBook(model, "doc5", "Machine Learning in Biology", "science", "Smith");
             dataset.commit();
         } finally {
             dataset.end();
         }
     }
 
-    private void createDoc(Model model, String id, String label, String category, String author) {
-        Resource doc = ResourceFactory.createResource(NS + id);
-        model.add(doc, RDFS.label, label);
-        model.add(doc, CATEGORY, category);
-        model.add(doc, AUTHOR, author);
+    private void addBook(Model model, String id, String title, String category, String author) {
+        Resource book = ResourceFactory.createResource(NS + id);
+        model.add(book, RDF.type, ResourceFactory.createResource(NS + "Book"));
+        model.add(book, ResourceFactory.createProperty(NS + "title"), title);
+        model.add(book, ResourceFactory.createProperty(NS + "category"), category);
+        model.add(book, ResourceFactory.createProperty(NS + "author"), author);
     }
 
     @After
@@ -99,9 +129,9 @@ public class TestTextFacetPF {
 
     @Test
     public void testBasicFacetCounts() {
-        String sparql = "PREFIX text: <http://jena.apache.org/text#>\n" +
+        String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "SELECT ?f ?v ?c WHERE {\n" +
-            "  (?f ?v ?c) text:facet (\"learning\" '[\"category\"]' 10)\n" +
+            "  (?f ?v ?c) luc:facet (\"learning\" '[\"category\"]' 10)\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);
@@ -125,9 +155,9 @@ public class TestTextFacetPF {
 
     @Test
     public void testFacetCountsWithMultipleFields() {
-        String sparql = "PREFIX text: <http://jena.apache.org/text#>\n" +
+        String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "SELECT ?f ?v ?c WHERE {\n" +
-            "  (?f ?v ?c) text:facet (\"learning\" '[\"category\", \"author\"]' 10)\n" +
+            "  (?f ?v ?c) luc:facet (\"learning\" '[\"category\", \"author\"]' 10)\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);
@@ -152,9 +182,9 @@ public class TestTextFacetPF {
 
     @Test
     public void testFacetCountsWithFilters() {
-        String sparql = "PREFIX text: <http://jena.apache.org/text#>\n" +
+        String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "SELECT ?f ?v ?c WHERE {\n" +
-            "  (?f ?v ?c) text:facet (\"learning\" '[\"author\"]' '{\"category\": [\"technology\"]}' 10)\n" +
+            "  (?f ?v ?c) luc:facet (\"learning\" '[\"author\"]' '{\"category\": [\"technology\"]}' 10)\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);
@@ -176,9 +206,9 @@ public class TestTextFacetPF {
 
     @Test
     public void testFacetCountsWithMaxValues() {
-        String sparql = "PREFIX text: <http://jena.apache.org/text#>\n" +
+        String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "SELECT ?f ?v ?c WHERE {\n" +
-            "  (?f ?v ?c) text:facet (\"learning\" '[\"author\"]' 1)\n" +
+            "  (?f ?v ?c) luc:facet (\"learning\" '[\"author\"]' 1)\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);
@@ -199,12 +229,9 @@ public class TestTextFacetPF {
 
     @Test
     public void testFacetCountsWithMinCount() {
-        // minCount=2 should exclude authors with count < 2
-        // Data: Smith=3 (doc1,doc3,doc5), Jones=1, Wilson=1
-        // Only Smith should survive minCount=2
-        String sparql = "PREFIX text: <http://jena.apache.org/text#>\n" +
+        String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "SELECT ?f ?v ?c WHERE {\n" +
-            "  (?f ?v ?c) text:facet (\"learning\" '[\"author\"]' 10 2)\n" +
+            "  (?f ?v ?c) luc:facet (\"learning\" '[\"author\"]' 10 2)\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);
@@ -214,9 +241,8 @@ public class TestTextFacetPF {
                 int count = 0;
                 while (rs.hasNext()) {
                     QuerySolution sol = rs.next();
-                    String value = sol.getLiteral("v").getString();
                     long cnt = sol.getLiteral("c").getLong();
-                    assertTrue("Count should be >= 2, got " + cnt + " for " + value, cnt >= 2);
+                    assertTrue("Count should be >= 2", cnt >= 2);
                     count++;
                 }
                 assertEquals("Only Smith should pass minCount=2", 1, count);
@@ -228,10 +254,9 @@ public class TestTextFacetPF {
 
     @Test
     public void testFacetCountsWithMaxValuesZero() {
-        // maxValues=0 should return all values (getAllChildren)
-        String sparql = "PREFIX text: <http://jena.apache.org/text#>\n" +
+        String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "SELECT ?f ?v ?c WHERE {\n" +
-            "  (?f ?v ?c) text:facet (\"learning\" '[\"author\"]' 0)\n" +
+            "  (?f ?v ?c) luc:facet (\"learning\" '[\"author\"]' 0)\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);
@@ -243,7 +268,6 @@ public class TestTextFacetPF {
                     rs.next();
                     count++;
                 }
-                // Should return all 3 authors: Smith, Jones, Wilson
                 assertEquals("maxValues=0 should return all authors", 3, count);
             }
         } finally {
@@ -253,10 +277,9 @@ public class TestTextFacetPF {
 
     @Test
     public void testFacetCountsWithMinCountAndMaxValues() {
-        // maxValues=0 (all) + minCount=2 → only Smith (count=3)
-        String sparql = "PREFIX text: <http://jena.apache.org/text#>\n" +
+        String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "SELECT ?f ?v ?c WHERE {\n" +
-            "  (?f ?v ?c) text:facet (\"learning\" '[\"author\"]' 0 2)\n" +
+            "  (?f ?v ?c) luc:facet (\"learning\" '[\"author\"]' 0 2)\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);
@@ -270,25 +293,6 @@ public class TestTextFacetPF {
                     count++;
                 }
                 assertEquals("Only Smith should pass combined filter", 1, count);
-            }
-        } finally {
-            dataset.end();
-        }
-    }
-
-    @Test
-    public void testFacetCountsWithProperty() {
-        String sparql = "PREFIX text: <http://jena.apache.org/text#>\n" +
-            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
-            "SELECT ?f ?v ?c WHERE {\n" +
-            "  (?f ?v ?c) text:facet (rdfs:label \"learning\" '[\"category\"]' 10)\n" +
-            "}";
-
-        dataset.begin(ReadWrite.READ);
-        try {
-            try (QueryExecution qe = QueryExecutionFactory.create(sparql, dataset)) {
-                ResultSet rs = qe.execSelect();
-                assertTrue("Should have facet results with property", rs.hasNext());
             }
         } finally {
             dataset.end();

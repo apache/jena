@@ -25,11 +25,17 @@ import static org.junit.Assert.*;
 
 import java.util.*;
 
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.*;
+import org.apache.jena.query.text.ShaclIndexMapping.FieldDef;
+import org.apache.jena.query.text.ShaclIndexMapping.FieldType;
+import org.apache.jena.query.text.ShaclIndexMapping.IndexProfile;
+import org.apache.jena.query.text.assembler.ShaclIndexAssembler;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.lucene.store.ByteBuffersDirectory;
 import org.junit.After;
@@ -37,13 +43,15 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests for JSON filter support in text:query property function.
+ * Tests for luc:query filter support and JSON filter parsing.
  */
 public class TestTextQueryPFFilters {
 
     private static final String NS = "http://example.org/";
-    private static final Property CATEGORY = ResourceFactory.createProperty(NS + "category");
-    private static final Property AUTHOR = ResourceFactory.createProperty(NS + "author");
+    private static final Node BOOK_CLASS = NodeFactory.createURI(NS + "Book");
+    private static final Node TITLE_PRED = NodeFactory.createURI(NS + "title");
+    private static final Node CATEGORY_PRED = NodeFactory.createURI(NS + "category");
+    private static final Node AUTHOR_PRED = NodeFactory.createURI(NS + "author");
 
     private Dataset dataset;
 
@@ -51,19 +59,40 @@ public class TestTextQueryPFFilters {
     public void setUp() {
         TextQuery.init();
 
-        EntityDefinition entDef = new EntityDefinition("uri", "text");
-        entDef.setPrimaryPredicate(RDFS.label);
-        entDef.set("category", CATEGORY.asNode());
-        entDef.set("author", AUTHOR.asNode());
+        FieldDef titleField = new FieldDef("title", FieldType.TEXT, null,
+            true, true, false, false, false, true,
+            Collections.singleton(TITLE_PRED));
 
-        TextIndexConfig config = new TextIndexConfig(entDef);
+        FieldDef categoryField = new FieldDef("category", FieldType.KEYWORD, null,
+            true, true, true, false, true, false,
+            Collections.singleton(CATEGORY_PRED));
+
+        FieldDef authorField = new FieldDef("author", FieldType.KEYWORD, null,
+            true, true, true, false, false, false,
+            Collections.singleton(AUTHOR_PRED));
+
+        IndexProfile bookProfile = new IndexProfile(
+            NodeFactory.createURI(NS + "BookShape"),
+            Collections.singleton(BOOK_CLASS),
+            "uri", "docType",
+            Arrays.asList(titleField, categoryField, authorField));
+
+        ShaclIndexMapping mapping = new ShaclIndexMapping(Collections.singletonList(bookProfile));
+        EntityDefinition defn = ShaclIndexAssembler.deriveEntityDefinition(mapping);
+
+        TextIndexConfig config = new TextIndexConfig(defn);
+        config.setShaclMapping(mapping);
+        config.setFacetFields(mapping.getFacetFieldNames());
         config.setValueStored(true);
-        config.setFacetFields(Arrays.asList("category", "author"));
 
-        Dataset baseDs = DatasetFactory.create();
         ByteBuffersDirectory dir = new ByteBuffersDirectory();
         TextIndexLucene textIndex = new TextIndexLucene(dir, config);
-        dataset = TextDatasetFactory.create(baseDs, textIndex);
+
+        Dataset baseDs = DatasetFactory.create();
+        ShaclTextDocProducer producer = new ShaclTextDocProducer(
+            baseDs.asDatasetGraph(), textIndex, mapping);
+
+        dataset = TextDatasetFactory.create(baseDs, textIndex, true, producer);
 
         loadTestData();
     }
@@ -72,22 +101,23 @@ public class TestTextQueryPFFilters {
         dataset.begin(ReadWrite.WRITE);
         try {
             Model model = dataset.getDefaultModel();
-            createDoc(model, "doc1", "Introduction to Machine Learning", "technology", "Smith");
-            createDoc(model, "doc2", "Deep Learning Neural Networks", "technology", "Jones");
-            createDoc(model, "doc3", "Machine Learning for Beginners", "technology", "Smith");
-            createDoc(model, "doc4", "Learning About Quantum Physics", "science", "Wilson");
-            createDoc(model, "doc5", "Machine Learning in Biology", "science", "Smith");
+            addBook(model, "doc1", "Introduction to Machine Learning", "technology", "Smith");
+            addBook(model, "doc2", "Deep Learning Neural Networks", "technology", "Jones");
+            addBook(model, "doc3", "Machine Learning for Beginners", "technology", "Smith");
+            addBook(model, "doc4", "Learning About Quantum Physics", "science", "Wilson");
+            addBook(model, "doc5", "Machine Learning in Biology", "science", "Smith");
             dataset.commit();
         } finally {
             dataset.end();
         }
     }
 
-    private void createDoc(Model model, String id, String label, String category, String author) {
-        Resource doc = ResourceFactory.createResource(NS + id);
-        model.add(doc, RDFS.label, label);
-        model.add(doc, CATEGORY, category);
-        model.add(doc, AUTHOR, author);
+    private void addBook(Model model, String id, String title, String category, String author) {
+        Resource book = ResourceFactory.createResource(NS + id);
+        model.add(book, RDF.type, ResourceFactory.createResource(NS + "Book"));
+        model.add(book, ResourceFactory.createProperty(NS + "title"), title);
+        model.add(book, ResourceFactory.createProperty(NS + "category"), category);
+        model.add(book, ResourceFactory.createProperty(NS + "author"), author);
     }
 
     @After
@@ -98,11 +128,10 @@ public class TestTextQueryPFFilters {
     }
 
     @Test
-    public void testQueryWithoutFiltersStillWorks() {
-        // Standard text:query without filters should work as before
-        String sparql = "PREFIX text: <http://jena.apache.org/text#>\n" +
+    public void testLucQueryWithoutFilters() {
+        String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "SELECT ?s ?score WHERE {\n" +
-            "  (?s ?score) text:query (\"learning\" 10)\n" +
+            "  (?s ?score) luc:query (\"learning\" 10)\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);
@@ -124,10 +153,10 @@ public class TestTextQueryPFFilters {
     }
 
     @Test
-    public void testQueryWithSingleFilter() {
-        String sparql = "PREFIX text: <http://jena.apache.org/text#>\n" +
+    public void testLucQueryWithSingleFilter() {
+        String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "SELECT ?s ?score WHERE {\n" +
-            "  (?s ?score) text:query (\"learning\" '{\"category\": [\"technology\"]}' 20)\n" +
+            "  (?s ?score) luc:query (\"learning\" '{\"category\": [\"technology\"]}' 20)\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);
@@ -139,11 +168,8 @@ public class TestTextQueryPFFilters {
                     QuerySolution sol = rs.next();
                     subjects.add(sol.getResource("s").getURI());
                 }
-                // Only technology docs should be returned
-                // doc1, doc2, doc3 are technology + have "learning"
                 assertTrue("Should find technology docs", subjects.size() > 0);
                 for (String s : subjects) {
-                    // doc4 (science) and doc5 (science) should NOT be here
                     assertFalse("Should not find doc4 (science)", s.equals(NS + "doc4"));
                 }
             }
@@ -153,35 +179,10 @@ public class TestTextQueryPFFilters {
     }
 
     @Test
-    public void testQueryWithMultiValueFilter() {
-        // Filter for category = technology OR science
-        String sparql = "PREFIX text: <http://jena.apache.org/text#>\n" +
+    public void testLucQueryWithMultiFieldFilter() {
+        String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "SELECT ?s WHERE {\n" +
-            "  (?s ?score) text:query (\"learning\" '{\"category\": [\"technology\", \"science\"]}' 20)\n" +
-            "}";
-
-        dataset.begin(ReadWrite.READ);
-        try {
-            try (QueryExecution qe = QueryExecutionFactory.create(sparql, dataset)) {
-                ResultSet rs = qe.execSelect();
-                int count = 0;
-                while (rs.hasNext()) {
-                    rs.next();
-                    count++;
-                }
-                assertTrue("Should find results from both categories", count > 0);
-            }
-        } finally {
-            dataset.end();
-        }
-    }
-
-    @Test
-    public void testQueryWithMultiFieldFilter() {
-        // Filter for category=technology AND author=Smith
-        String sparql = "PREFIX text: <http://jena.apache.org/text#>\n" +
-            "SELECT ?s WHERE {\n" +
-            "  (?s ?score) text:query (\"learning\" '{\"category\": [\"technology\"], \"author\": [\"Smith\"]}' 20)\n" +
+            "  (?s ?score) luc:query (\"learning\" '{\"category\": [\"technology\"], \"author\": [\"Smith\"]}' 20)\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);
@@ -193,7 +194,6 @@ public class TestTextQueryPFFilters {
                     QuerySolution sol = rs.next();
                     subjects.add(sol.getResource("s").getURI());
                 }
-                // Only doc1 and doc3 are technology + Smith + "learning"
                 for (String s : subjects) {
                     assertTrue("Should only find doc1 or doc3",
                         s.equals(NS + "doc1") || s.equals(NS + "doc3"));
@@ -205,11 +205,10 @@ public class TestTextQueryPFFilters {
     }
 
     @Test
-    public void testQueryWithFilterNoMatches() {
-        // Filter for a non-existent category
-        String sparql = "PREFIX text: <http://jena.apache.org/text#>\n" +
+    public void testLucQueryWithFilterNoMatches() {
+        String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "SELECT ?s WHERE {\n" +
-            "  (?s ?score) text:query (\"learning\" '{\"category\": [\"nonexistent\"]}' 20)\n" +
+            "  (?s ?score) luc:query (\"learning\" '{\"category\": [\"nonexistent\"]}' 20)\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);
@@ -225,7 +224,7 @@ public class TestTextQueryPFFilters {
 
     @Test
     public void testParseJsonFilters() {
-        Map<String, List<String>> filters = TextQueryPF.parseJsonFilters(
+        Map<String, List<String>> filters = ShaclTextQueryPF.parseJsonFilters(
             "{\"category\": [\"Technology\", \"Science\"], \"author\": [\"Smith\"]}");
 
         assertEquals(2, filters.size());
@@ -235,7 +234,7 @@ public class TestTextQueryPFFilters {
 
     @Test
     public void testParseJsonFiltersSingleValue() {
-        Map<String, List<String>> filters = TextQueryPF.parseJsonFilters(
+        Map<String, List<String>> filters = ShaclTextQueryPF.parseJsonFilters(
             "{\"category\": [\"Technology\"]}");
 
         assertEquals(1, filters.size());

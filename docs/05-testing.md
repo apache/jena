@@ -3,14 +3,11 @@
 ## Running Tests
 
 ```bash
-# Full jena-text suite (362 tests)
+# Full jena-text suite (366 tests)
 mvn test -pl jena-text
 
-# Only SHACL / entity-per-document tests (35 tests)
-mvn test -pl jena-text -Dtest="TestShaclIndexMapping,TestShaclDocumentBuilding,TestShaclTextDocProducer,TestShaclAssembler,TestShaclEntityPerDocument"
-
-# Only faceting tests (classic mode)
-mvn test -pl jena-text -Dtest="TestNativeFacetCounts,TestTextFacetPF,TestSearchExecution"
+# Only SHACL / faceting tests
+mvn test -pl jena-text -Dtest="TestShaclIndexMapping,TestShaclDocumentBuilding,TestShaclTextDocProducer,TestShaclAssembler,TestShaclEntityPerDocument,TestNativeFacetCounts,TestTextFacetPF,TestTextQueryPFFilters,TestSearchExecution"
 ```
 
 All tests run via JUnit 4 and are aggregated in `TS_Text.java` (Surefire only picks up `**/TS_*.java`).
@@ -19,12 +16,13 @@ All tests run via JUnit 4 and are aggregated in `TS_Text.java` (Surefire only pi
 
 ## Test Suite Overview
 
-### Classic Faceting Tests
+### SHACL Faceting Tests
 
 | Class | Tests | What it covers |
 |-------|-------|---------------|
 | `TestNativeFacetCounts` | 10 | Java API: open facets, filtered facets, maxValues, minCount, getAllChildren, empty/nonexistent fields |
-| `TestTextFacetPF` | 8 | SPARQL `text:facet` PF: basic counts, multiple fields, filters, maxValues, minCount, property args |
+| `TestTextFacetPF` | 7 | SPARQL `luc:facet` PF: basic counts, multiple fields, filters, maxValues, minCount, maxValues=0 |
+| `TestTextQueryPFFilters` | 6 | SPARQL `luc:query` with JSON filters: single filter, multi-field, no matches, JSON parsing |
 | `TestSearchExecution` | 6 | Shared execution: key generation, normalisation, reuse across PFs |
 
 ### SHACL Entity-Per-Document Tests
@@ -34,12 +32,12 @@ All tests run via JUnit 4 and are aggregated in `TS_Text.java` (Surefire only pi
 | `TestShaclIndexMapping` | 8 | Data model: predicate lookup, class lookup, irrelevant predicates, facet field names, defaults |
 | `TestShaclDocumentBuilding` | 11 | Lucene doc building: TEXT/KEYWORD/INT/LONG/DOUBLE field types, multi-valued, discriminator, null fields, int-from-string |
 | `TestShaclTextDocProducer` | 5 | Change listener: add type creates doc, add property rebuilds, delete type removes, irrelevant predicate ignored, multiple entities |
-| `TestShaclAssembler` | 4 | Config parsing: valid shapes parsed, EntityDefinition derived, both shapes+entityMap errors, neither errors |
-| `TestShaclEntityPerDocument` | 7 | End-to-end: text search, SPARQL query, facet counts, filtered facets, add after load, entity-per-doc model verification |
+| `TestShaclAssembler` | 3 | Config parsing: valid shapes parsed, EntityDefinition derived, both shapes+entityMap errors |
+| `TestShaclEntityPerDocument` | 7 | End-to-end: text search, SPARQL `luc:query`, facet counts, filtered facets, add after load, entity-per-doc model verification |
 
 ### Existing Tests (unchanged, verifying no regressions)
 
-327 pre-existing tests covering text search, multilingual support, graph indexing, deletion, analyzers, property lists, etc. All pass.
+327 pre-existing tests covering text search, multilingual support, graph indexing, deletion, analyzers, property lists, etc. All pass unchanged.
 
 ---
 
@@ -102,7 +100,7 @@ TextIndexLucene index = (TextIndexLucene) Assembler.general().open(indexSpec);
 
 ### Covered
 
-- All SPARQL argument forms for `text:query` and `text:facet`
+- All SPARQL argument forms for `luc:query` and `luc:facet`
 - JSON filter parsing and semantics (OR within field, AND across fields)
 - All five field types (TEXT, KEYWORD, INT, LONG, DOUBLE)
 - Multi-valued fields
@@ -111,7 +109,7 @@ TextIndexLucene index = (TextIndexLucene) Assembler.general().open(indexSpec);
 - Shared execution between PFs
 - Facet count accuracy with filters
 - minCount and maxValues options
-- Backward compatibility (all 327 existing tests pass)
+- Backward compatibility (all 327 existing tests pass unchanged)
 
 ### Not yet covered (candidates for future tests)
 
@@ -122,6 +120,21 @@ TextIndexLucene index = (TextIndexLucene) Assembler.general().open(indexSpec);
 - TTL-file-based assembler integration test (currently programmatic only)
 - `sh:alternativePath` in assembler config
 - Edge cases: empty string values, very long field values, special characters in filters
+
+---
+
+## Fuseki Integration Testing
+
+The unit tests above cover the Java API and SPARQL property functions programmatically. For end-to-end testing with a running Fuseki server (HTTP endpoint, data loading, curl queries), see the [Deploying with Fuseki](01-user-guide.md#deploying-with-fuseki) section of the User Guide.
+
+```bash
+# Build Fuseki
+mvn clean install -pl jena-fuseki2/jena-fuseki-server -am -DskipTests
+
+# Start with a config file
+java -jar jena-fuseki2/jena-fuseki-server/target/jena-fuseki-server-*.jar \
+    --config config.ttl
+```
 
 ---
 

@@ -4,10 +4,39 @@
 
 | Phase | Date | Summary |
 |-------|------|---------|
-| 1 | Jan 2026 | Initial native faceting: `SortedSetDocValues`, `text:queryWithFacets`, `text:facetCounts` |
+| 1 | Jan 2026 | Initial native faceting exploration |
 | 1.5 | Feb 2026 | Enhancements: minCount, configurable maxFacetHits, getAllChildren |
-| 2 (API) | Feb 2026 | API redesign after review: split PFs, JSON filters, shared execution, bug fixes |
+| 2 (API) | Feb 2026 | API redesign after review: split PFs, JSON filters, shared execution |
 | 2 (SHACL) | Feb 2026 | Entity-per-document model: SHACL shapes, typed fields, change listener |
+| 2 (Additive) | Feb 2026 | Backward compatibility: revert upstream changes, use `luc:` namespace for new PFs |
+
+---
+
+## Decision: Purely additive changes (no upstream modifications)
+
+**Problem:** The initial implementation modified upstream Jena files (`TextQueryPF`, `TextIndexLucene` core methods, `TextQuery` PF registrations). This makes merging with upstream Apache Jena difficult and creates maintenance burden.
+
+**Decision:** All changes must be purely additive. No existing upstream code paths are modified.
+
+**Implementation:**
+- `TextQueryPF` reverted to upstream — `text:query` has no filter support
+- `TextIndexLucene` core methods (`doc()`, `addDocument()`, `updateDocument()`) reverted
+- New `ShaclTextQueryPF` class implements `luc:query` with filter support
+- New `TextFacetPF` class implements `luc:facet`
+- Facet infrastructure (`FacetsConfig`, `SortedSetDocValues`) only initialised in SHACL mode
+- PFs registered under `urn:jena:lucene:index#` namespace, not `http://jena.apache.org/text#`
+
+**Rationale:** Clean separation means our fork can pull upstream changes without merge conflicts. Classic mode is byte-for-byte identical to upstream. New features are clearly isolated.
+
+---
+
+## Decision: `luc:` namespace for new property functions
+
+**Problem:** After making changes additive, the new PFs need a namespace. Options: `text:` (conflict with upstream), `idx:` (config namespace), `luc:` (already used for config vocab).
+
+**Decision:** Use `urn:jena:lucene:index#` (prefix `luc:`) for both config vocabulary (`idx:fieldName`, `idx:facetable`, etc.) and property function URIs (`luc:query`, `luc:facet`).
+
+**Rationale:** The `luc:` prefix is already established in SHACL config. Using it for PFs makes SHACL-mode SPARQL queries self-consistent. The `text:` prefix stays for classic mode, `luc:` for SHACL mode.
 
 ---
 
@@ -17,8 +46,8 @@
 
 **Decision:** Two independent PFs that share execution when parameters match.
 
-- `text:query` — returns hits (one row per match)
-- `text:facet` — returns facet counts (one row per value)
+- `luc:query` — returns hits (one row per match)
+- `luc:facet` — returns facet counts (one row per value)
 
 **Rationale:** SPARQL property functions return flat bindings. Hits and facets have different cardinalities and different output shapes. Keeping them separate is semantically clean and avoids the binding explosion. Shared execution via `SearchExecution` ensures efficiency (one Lucene query, not two).
 
@@ -36,8 +65,8 @@
 **Decision:** JSON object for filters, JSON array for facet field lists.
 
 ```sparql
-(?s ?sc) text:query ("learning" '{"category": ["Technology"]}') .
-(?f ?v ?c) text:facet ("learning" '["category", "author"]') .
+(?s ?sc) luc:query ("learning" '{"category": ["Technology"]}') .
+(?f ?v ?c) luc:facet ("learning" '["category", "author"]') .
 ```
 
 **Rationale:** JSON is the lingua franca of web APIs. Application code generating SPARQL queries can construct filter JSON from UI state (e.g., selected facet checkboxes) trivially. The `{` and `[` prefixes make reliable detection in the argument list straightforward.
@@ -96,30 +125,18 @@
 
 ---
 
-## Decision: TermInSetQuery instead of BooleanQuery for URI joins
+## Decision: TermInSetQuery for filtered facets
 
-**Problem:** The original filtered faceting used `BooleanQuery` with one clause per matched entity URI. With 10k+ hits, this exceeds Lucene's 1024 clause limit (`TooManyClauses`).
+**Problem:** Filtered faceting with structured filters requires matching entity URIs against a set of candidates. The original approach used `BooleanQuery` with one clause per URI, which exceeds Lucene's 1024 clause limit (`TooManyClauses`) with large result sets.
 
-**Decision:** Replace with `TermInSetQuery`, which handles arbitrary numbers of terms efficiently using sorted byte arrays.
-
-**This was a bug fix** identified in David's review. The original code would silently fail on large result sets.
-
----
-
-## Decision: FacetsConfig.build() on updateDocument
-
-**Problem:** `addDocument()` called `facetsConfig.build(doc)` to create DocValues for facet fields, but `updateDocument()` did not. After an entity was updated, its facet DocValues were silently lost, causing facet counts to drift.
-
-**Decision:** Both `addDocument()` and `updateDocument()` now call `facetsConfig.build()`.
-
-**This was a bug fix** identified in David's review. Difficult to detect because updates appear to work (text search still finds the entity) but facet counts gradually become incorrect.
+**Decision:** Use `TermInSetQuery`, which handles arbitrary numbers of terms efficiently using sorted byte arrays.
 
 ---
 
 ## Decision: maxFacetHits as assembler property (not per-query)
 
-**Problem:** The two-pass facet approach runs a secondary search to collect facets. How many documents should that secondary search consider?
+**Problem:** Facet collection requires searching for matching documents. How many documents should the search consider?
 
-**Decision:** Configurable via `text:maxFacetHits` assembler property. 0 means unlimited (`Integer.MAX_VALUE`).
+**Decision:** Configurable via `text:maxFacetHits` assembler property (SHACL mode only). 0 means unlimited (`Integer.MAX_VALUE`).
 
 **Rationale:** This is an operational tuning knob, not a query semantics control. Setting it per-index via the assembler is appropriate. Applications that need per-query control can use the Java API directly.

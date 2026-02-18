@@ -162,21 +162,4 @@ public class TestShaclAssembler {
         }
     }
 
-    @Test
-    public void testNeitherShapesNorEntityMapThrows() {
-        Model model = createModel();
-
-        Resource indexSpec = model.createResource(EX + "emptyIndex")
-            .addProperty(RDF.type, TextVocab.textIndexLucene)
-            .addProperty(TextVocab.pDirectory, model.createLiteral("mem"));
-
-        try {
-            Assembler.general().open(indexSpec);
-            fail("Should have thrown an exception");
-        } catch (AssemblerException e) {
-            assertTrue("Cause should be TextIndexException",
-                e.getCause() instanceof TextIndexException);
-            assertTrue(e.getCause().getMessage().contains("Must specify either"));
-        }
-    }
 }

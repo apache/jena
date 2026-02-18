@@ -24,17 +24,12 @@ package org.apache.jena.query.text;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
 import org.apache.commons.collections4.ListValuedMap;
 import org.apache.commons.collections4.MultiMapUtils;
 import org.apache.jena.atlas.io.IndentedLineBuffer;
-import org.apache.jena.atlas.json.JSON;
-import org.apache.jena.atlas.json.JsonArray;
-import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.Cache;
 import org.apache.jena.atlas.lib.CacheFactory;
@@ -110,7 +105,7 @@ public class TextQueryPF extends PropertyFunctionBase {
                 throw new QueryBuildException("No query string just properties in list : " + list);
             }
 
-            if (sz-numProps > 5) {
+            if (sz-numProps > 4) {
                 throw new QueryBuildException("Too many arguments in list : " + list);
             }
         }
@@ -271,35 +266,11 @@ public class TextQueryPF extends PropertyFunctionBase {
 
     private QueryIterator prepareQuery(Binding binding, Node subj, Node score, Node literal, Node graph, Node prop, StrMatch match, ExecutionContext execCxt) {
         log.trace("prepareQuery with subject: {}; params: {}", subj, match);
+        ListValuedMap<String,TextHit> rezList;
 
         if (!Var.isVar(subj))
             match.setQueryLimit(-1);
 
-        // When filters are present, use SearchExecution for shared state
-        if (match.hasFilters() && textIndex instanceof TextIndexLucene) {
-            String graphURI = chooseGraphURI(execCxt);
-            SearchExecution se = SearchExecution.getOrCreate(
-                execCxt, match.getProps(), match.getQueryString(),
-                match.getFilters(), (TextIndexLucene) textIndex,
-                graphURI, match.getLang());
-            List<TextHit> allHits = se.getHits(match.getQueryLimit(), match.getHighlight());
-            Collection<TextHit> hits;
-            if (Var.isVar(subj)) {
-                hits = allHits;
-            } else {
-                String subjStr = TextQueryFuncs.subjectToString(subj);
-                hits = new ArrayList<>();
-                for (TextHit hit : allHits) {
-                    if (subjStr.equals(TextQueryFuncs.subjectToString(hit.getNode()))) {
-                        hits.add(hit);
-                    }
-                }
-            }
-            return resultsToQueryIterator(binding, subj, score, literal, graph, prop, hits, execCxt);
-        }
-
-        // Standard path (no filters)
-        ListValuedMap<String,TextHit> rezList;
         rezList = query(subj, match, execCxt);
 
         if ( rezList == null ) // null return value - empty result
@@ -487,16 +458,6 @@ public class TextQueryPF extends PropertyFunctionBase {
         String queryString = x.getLiteralLexicalForm();
         idx++;
 
-        // Check for JSON filter object (starts with '{')
-        Map<String, List<String>> filters = null;
-        if (idx < list.size() && list.get(idx).isLiteral()) {
-            String nextLex = list.get(idx).getLiteralLexicalForm();
-            if (nextLex.startsWith("{")) {
-                filters = parseJsonFilters(nextLex);
-                idx++;
-            }
-        }
-
         int limit = -1;
         float score = 0;
 
@@ -522,25 +483,7 @@ public class TextQueryPF extends PropertyFunctionBase {
 
         String highlight = extractArg("highlight", list);
 
-        return new StrMatch(props, queryString, lang, limit, score, highlight, filters);
-    }
-
-    /**
-     * Parse a JSON object string into a filter map.
-     * Expected format: {"field": ["value1", "value2"], "field2": ["value3"]}
-     */
-    static Map<String, List<String>> parseJsonFilters(String jsonStr) {
-        Map<String, List<String>> filters = new LinkedHashMap<>();
-        JsonObject json = JSON.parse(jsonStr);
-        for (String key : json.keys()) {
-            JsonArray vals = json.get(key).getAsArray();
-            List<String> values = new ArrayList<>();
-            for (int i = 0; i < vals.size(); i++) {
-                values.add(vals.get(i).getAsString().value());
-            }
-            filters.put(key, values);
-        }
-        return filters;
+        return new StrMatch(props, queryString, lang, limit, score, highlight);
     }
 
     class StrMatch {
@@ -551,13 +494,8 @@ public class TextQueryPF extends PropertyFunctionBase {
         private       int    queryLimit;
         private final float  scoreLimit;
         private final String highlight;
-        private final Map<String, List<String>> filters;
 
         public StrMatch(List<Resource> props, String queryString, String lang, int limit, float scoreLimit, String highlight) {
-            this(props, queryString, lang, limit, scoreLimit, highlight, null);
-        }
-
-        public StrMatch(List<Resource> props, String queryString, String lang, int limit, float scoreLimit, String highlight, Map<String, List<String>> filters) {
             super();
             this.props = props;
             this.queryString = queryString;
@@ -566,7 +504,6 @@ public class TextQueryPF extends PropertyFunctionBase {
             this.queryLimit = limit;
             this.scoreLimit = scoreLimit;
             this.highlight = highlight;
-            this.filters = filters;
         }
 
         public List<Resource> getProps() {
@@ -605,17 +542,9 @@ public class TextQueryPF extends PropertyFunctionBase {
             return highlight;
         }
 
-        public Map<String, List<String>> getFilters() {
-            return filters;
-        }
-
-        public boolean hasFilters() {
-            return filters != null && !filters.isEmpty();
-        }
-
         @Override
         public String toString() {
-            return "( properties: " + props + "; query: " + queryString + "; limit: " + limit + "; lang: " + lang + "; highlight: " + highlight + "; filters: " + filters + " )";
+            return "( properties: " + props + "; query: " + queryString + "; limit: " + limit + "; lang: " + lang + "; highlight: " + highlight + " )";
         }
     }
 }

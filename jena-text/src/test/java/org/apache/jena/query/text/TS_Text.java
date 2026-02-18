@@ -86,6 +86,7 @@ import org.junit.runners.Suite.SuiteClasses;
     , TestShaclTextDocProducer.class
     , TestShaclAssembler.class
     , TestShaclEntityPerDocument.class
+    , TestTextQueryPFFilters.class
 })
 
 public class TS_Text

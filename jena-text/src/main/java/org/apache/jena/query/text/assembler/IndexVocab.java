@@ -33,6 +33,10 @@ import org.apache.jena.system.Vocab;
 public class IndexVocab {
     public static final String NS = "urn:jena:lucene:index#";
 
+    // Property function URIs
+    public static final String pfQuery = NS + "query";
+    public static final String pfFacet = NS + "facet";
+
     // Types
     public static final Resource IndexProfile   = Vocab.resource(NS, "IndexProfile");
     public static final Resource Field          = Vocab.resource(NS, "Field");

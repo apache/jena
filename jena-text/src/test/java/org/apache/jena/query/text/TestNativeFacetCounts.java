@@ -24,17 +24,23 @@ package org.apache.jena.query.text;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.ReadWrite;
+import org.apache.jena.query.text.ShaclIndexMapping.FieldDef;
+import org.apache.jena.query.text.ShaclIndexMapping.FieldType;
+import org.apache.jena.query.text.ShaclIndexMapping.IndexProfile;
+import org.apache.jena.query.text.assembler.ShaclIndexAssembler;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.lucene.store.ByteBuffersDirectory;
 import org.junit.After;
 import org.junit.Before;
@@ -46,32 +52,51 @@ import org.junit.Test;
 public class TestNativeFacetCounts {
 
     private static final String NS = "http://example.org/";
-    private static final Property CATEGORY = ResourceFactory.createProperty(NS + "category");
-    private static final Property AUTHOR = ResourceFactory.createProperty(NS + "author");
+    private static final Node DOC_CLASS = NodeFactory.createURI(NS + "Document");
+    private static final Node TITLE_PRED = NodeFactory.createURI(NS + "title");
+    private static final Node CATEGORY_PRED = NodeFactory.createURI(NS + "category");
+    private static final Node AUTHOR_PRED = NodeFactory.createURI(NS + "author");
 
     private Dataset dataset;
     private TextIndexLucene textIndex;
 
     @Before
     public void setUp() {
-        // Create entity definition with facet-enabled fields
-        EntityDefinition entDef = new EntityDefinition("uri", "text");
-        entDef.setPrimaryPredicate(RDFS.label);
-        entDef.set("category", CATEGORY.asNode());
-        entDef.set("author", AUTHOR.asNode());
+        FieldDef titleField = new FieldDef("text", FieldType.TEXT, null,
+            true, true, false, false, false, true,
+            Collections.singleton(TITLE_PRED));
 
-        // Create config with facet fields
-        TextIndexConfig config = new TextIndexConfig(entDef);
+        FieldDef categoryField = new FieldDef("category", FieldType.KEYWORD, null,
+            true, true, true, false, true, false,
+            Collections.singleton(CATEGORY_PRED));
+
+        FieldDef authorField = new FieldDef("author", FieldType.KEYWORD, null,
+            true, true, true, false, false, false,
+            Collections.singleton(AUTHOR_PRED));
+
+        IndexProfile docProfile = new IndexProfile(
+            NodeFactory.createURI(NS + "DocShape"),
+            Collections.singleton(DOC_CLASS),
+            "uri", "docType",
+            Arrays.asList(titleField, categoryField, authorField));
+
+        ShaclIndexMapping mapping = new ShaclIndexMapping(Collections.singletonList(docProfile));
+        EntityDefinition defn = ShaclIndexAssembler.deriveEntityDefinition(mapping);
+
+        TextIndexConfig config = new TextIndexConfig(defn);
+        config.setShaclMapping(mapping);
+        config.setFacetFields(mapping.getFacetFieldNames());
         config.setValueStored(true);
-        config.setFacetFields(Arrays.asList("category", "author"));
 
-        // Create dataset with text index
-        Dataset baseDs = DatasetFactory.create();
         ByteBuffersDirectory dir = new ByteBuffersDirectory();
         textIndex = new TextIndexLucene(dir, config);
-        dataset = TextDatasetFactory.create(baseDs, textIndex);
 
-        // Load test data
+        Dataset baseDs = DatasetFactory.create();
+        ShaclTextDocProducer producer = new ShaclTextDocProducer(
+            baseDs.asDatasetGraph(), textIndex, mapping);
+
+        dataset = TextDatasetFactory.create(baseDs, textIndex, true, producer);
+
         loadTestData();
     }
 
@@ -80,19 +105,14 @@ public class TestNativeFacetCounts {
         try {
             Model model = dataset.getDefaultModel();
 
-            // Technology documents
-            createDoc(model, "doc1", "Introduction to Machine Learning", "technology", "Smith");
-            createDoc(model, "doc2", "Deep Learning Neural Networks", "technology", "Jones");
-            createDoc(model, "doc3", "Machine Learning for Beginners", "technology", "Smith");
-            createDoc(model, "doc4", "Advanced Machine Learning", "technology", "Brown");
-
-            // Science documents
-            createDoc(model, "doc5", "Learning About Quantum Physics", "science", "Wilson");
-            createDoc(model, "doc6", "Machine Learning in Biology", "science", "Smith");
-
-            // Cooking documents
-            createDoc(model, "doc7", "Learning to Cook Italian", "cooking", "Garcia");
-            createDoc(model, "doc8", "Learning Baking Fundamentals", "cooking", "Taylor");
+            addDoc(model, "doc1", "Introduction to Machine Learning", "technology", "Smith");
+            addDoc(model, "doc2", "Deep Learning Neural Networks", "technology", "Jones");
+            addDoc(model, "doc3", "Machine Learning for Beginners", "technology", "Smith");
+            addDoc(model, "doc4", "Advanced Machine Learning", "technology", "Brown");
+            addDoc(model, "doc5", "Learning About Quantum Physics", "science", "Wilson");
+            addDoc(model, "doc6", "Machine Learning in Biology", "science", "Smith");
+            addDoc(model, "doc7", "Learning to Cook Italian", "cooking", "Garcia");
+            addDoc(model, "doc8", "Learning Baking Fundamentals", "cooking", "Taylor");
 
             dataset.commit();
         } finally {
@@ -100,11 +120,12 @@ public class TestNativeFacetCounts {
         }
     }
 
-    private void createDoc(Model model, String id, String label, String category, String author) {
+    private void addDoc(Model model, String id, String title, String category, String author) {
         Resource doc = ResourceFactory.createResource(NS + id);
-        model.add(doc, RDFS.label, label);
-        model.add(doc, CATEGORY, category);
-        model.add(doc, AUTHOR, author);
+        model.add(doc, RDF.type, ResourceFactory.createResource(NS + "Document"));
+        model.add(doc, ResourceFactory.createProperty(NS + "title"), title);
+        model.add(doc, ResourceFactory.createProperty(NS + "category"), category);
+        model.add(doc, ResourceFactory.createProperty(NS + "author"), author);
     }
 
     @After
@@ -125,7 +146,6 @@ public class TestNativeFacetCounts {
 
     @Test
     public void testOpenFacets() {
-        // Get facet counts without a search query (open facets)
         Map<String, List<FacetValue>> facets = textIndex.getFacetCounts(
             Arrays.asList("category"), 10
         );
@@ -136,10 +156,8 @@ public class TestNativeFacetCounts {
         List<FacetValue> categoryFacets = facets.get("category");
         assertNotNull(categoryFacets);
 
-        // Should have 3 categories: technology (4), science (2), cooking (2)
         assertEquals(3, categoryFacets.size());
 
-        // Verify counts - should be sorted by count descending
         FacetValue first = categoryFacets.get(0);
         assertEquals("technology", first.getValue());
         assertEquals(4, first.getCount());
@@ -156,12 +174,10 @@ public class TestNativeFacetCounts {
         assertTrue(facets.containsKey("category"));
         assertTrue(facets.containsKey("author"));
 
-        // Check author facets
         List<FacetValue> authorFacets = facets.get("author");
         assertNotNull(authorFacets);
         assertTrue(authorFacets.size() > 0);
 
-        // Smith appears 3 times (doc1, doc3, doc6)
         boolean foundSmith = false;
         for (FacetValue fv : authorFacets) {
             if ("Smith".equals(fv.getValue())) {
@@ -175,7 +191,6 @@ public class TestNativeFacetCounts {
 
     @Test
     public void testFilteredFacets() {
-        // Get facet counts filtered by "machine learning"
         Map<String, List<FacetValue>> facets = textIndex.getFacetCounts(
             "machine learning",
             Arrays.asList("category"),
@@ -186,9 +201,6 @@ public class TestNativeFacetCounts {
         List<FacetValue> categoryFacets = facets.get("category");
         assertNotNull(categoryFacets);
 
-        // "machine learning" appears in:
-        // doc1 (technology), doc3 (technology), doc4 (technology), doc6 (science)
-        // So: technology=3, science=1
         long techCount = 0;
         long scienceCount = 0;
         for (FacetValue fv : categoryFacets) {
@@ -204,7 +216,6 @@ public class TestNativeFacetCounts {
 
     @Test
     public void testMaxFacetValues() {
-        // Request only 2 facet values
         Map<String, List<FacetValue>> facets = textIndex.getFacetCounts(
             Arrays.asList("category"), 2
         );
@@ -228,7 +239,6 @@ public class TestNativeFacetCounts {
             Arrays.asList("nonexistent"), 10
         );
 
-        // Should return empty list for non-existent field
         List<FacetValue> nonexistentFacets = facets.get("nonexistent");
         assertNotNull(nonexistentFacets);
         assertTrue(nonexistentFacets.isEmpty());
@@ -244,13 +254,11 @@ public class TestNativeFacetCounts {
 
         List<FacetValue> categoryFacets = facets.get("category");
         assertNotNull(categoryFacets);
-        // Should be empty since no documents match
         assertTrue(categoryFacets.isEmpty());
     }
 
     @Test
     public void testGetAllChildrenWhenMaxValuesZero() {
-        // maxValues=0 should use getAllChildren and return all values
         Map<String, List<FacetValue>> facets = textIndex.getFacetCounts(
             "learning",
             Arrays.asList("author"),
@@ -259,14 +267,11 @@ public class TestNativeFacetCounts {
 
         List<FacetValue> authorFacets = facets.get("author");
         assertNotNull(authorFacets);
-        // Should return all 6 authors: Smith(3), Jones(1), Brown(1), Wilson(1), Garcia(1), Taylor(1)
         assertEquals("maxValues=0 should return all authors", 6, authorFacets.size());
     }
 
     @Test
     public void testMinCountFiltering() {
-        // minCount=2 should exclude authors with count < 2
-        // Smith appears 3 times; all others appear once
         Map<String, List<FacetValue>> facets = textIndex.getFacetCounts(
             "learning",
             Arrays.asList("author"),

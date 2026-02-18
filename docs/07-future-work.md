@@ -19,8 +19,6 @@ All tests use small datasets (5-10 entities). The SHACL mode's "rebuild entire e
 - Indexes with 100k+ entities
 - High-frequency update scenarios
 
-The two-pass URI-join in classic mode should also be profiled with large result sets to understand where `text:maxFacetHits` needs to be set.
-
 ### Multiple sh:targetClass per shape
 
 The data model supports multiple `sh:targetClass` values per shape. The change listener and document builder handle this correctly. However, this pattern has limited test coverage — most tests use one class per shape.
@@ -51,17 +49,13 @@ This is the standard faceted search UX pattern. Implementation requires:
 
 Group search results by a field value (e.g., group books by author). Lucene's `GroupingSearch` can do this efficiently. The entity-per-document model makes this straightforward since the grouping field is on the same document.
 
-```sparql
-# Hypothetical future syntax
-(?author ?s ?score) text:queryGrouped ("learning" "author" 10) .
-```
-
 ### Suggest / Autocomplete (Phase 3)
 
-Add `text:suggest` property function using Lucene's `SuggestField` for type-ahead autocomplete:
+Add `luc:suggest` property function using Lucene's `SuggestField` for type-ahead autocomplete:
 
 ```sparql
-(?suggestion ?weight) text:suggest ("mach" 10) .
+PREFIX luc: <urn:jena:lucene:index#>
+(?suggestion ?weight) luc:suggest ("mach" 10) .
 ```
 
 Would require:
@@ -88,7 +82,8 @@ Would require:
 Numeric and date range faceting (e.g., "2020-2024", "0-100"):
 
 ```sparql
-(?range ?count) text:facetRange ("learning" "year" '[2020, 2022, 2024, 2026]') .
+PREFIX luc: <urn:jena:lucene:index#>
+(?range ?count) luc:facetRange ("learning" "year" '[2020, 2022, 2024, 2026]') .
 ```
 
 The entity-per-document model with `IntPoint`/`LongPoint`/`DoublePoint` fields provides the foundation. Implementation would use Lucene's `LongRangeFacetCounts` or similar.
@@ -121,8 +116,6 @@ The `FacetsConfig` (which fields are multi-valued, etc.) must be consistent betw
 ### Memory considerations for faceting
 
 `SortedSetDocValues` faceting stores all unique values in memory during facet collection. For fields with very high cardinality (e.g., URIs), this can consume significant memory. The `text:maxFacetHits` property limits the number of documents searched, which indirectly limits memory usage.
-
-For the two-pass URI-join in classic mode, the entire set of matched entity URIs is materialised in a `Set<String>`. With 100k+ matches, this set itself can be large.
 
 ### Thread safety
 

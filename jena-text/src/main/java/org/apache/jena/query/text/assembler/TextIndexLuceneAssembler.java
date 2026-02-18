@@ -189,56 +189,6 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                 ignoreIndexErrs = iieNode.asLiteral().getBoolean();
             }
 
-            // Parse facet fields (list of field names to enable native faceting on)
-            java.util.List<String> facetFields = new java.util.ArrayList<>();
-            Statement facetFieldsStatement = root.getProperty(pFacetFields);
-            if (null != facetFieldsStatement) {
-                RDFNode ffNode = facetFieldsStatement.getObject();
-                if (ffNode.isLiteral()) {
-                    // Single field name
-                    facetFields.add(ffNode.asLiteral().getString());
-                } else if (ffNode.isResource()) {
-                    // List of field names
-                    Resource list = ffNode.asResource();
-                    org.apache.jena.rdf.model.StmtIterator iter = list.listProperties();
-                    while (iter.hasNext()) {
-                        Statement stmt = iter.next();
-                        if (org.apache.jena.vocabulary.RDF.first.equals(stmt.getPredicate())) {
-                            RDFNode item = stmt.getObject();
-                            if (item.isLiteral()) {
-                                facetFields.add(item.asLiteral().getString());
-                            }
-                        }
-                    }
-                    // Also handle RDF list properly
-                    try {
-                        org.apache.jena.rdf.model.RDFList rdfList = list.as(org.apache.jena.rdf.model.RDFList.class);
-                        facetFields.clear();
-                        for (RDFNode item : rdfList.asJavaList()) {
-                            if (item.isLiteral()) {
-                                facetFields.add(item.asLiteral().getString());
-                            }
-                        }
-                    } catch (Exception e) {
-                        // Not a proper RDF list, use what we found
-                    }
-                }
-            }
-
-            int maxFacetHits = 0;
-            Statement maxFacetHitsStatement = root.getProperty(pMaxFacetHits);
-            if (null != maxFacetHitsStatement) {
-                RDFNode mfhNode = maxFacetHitsStatement.getObject();
-                if (! mfhNode.isLiteral()) {
-                    throw new TextIndexException("text:maxFacetHits property must be an int : " + mfhNode);
-                }
-                try {
-                    maxFacetHits = mfhNode.asLiteral().getInt();
-                } catch (RuntimeException ex) {
-                    throw new TextIndexException("text:maxFacetHits property must be an int : " + mfhNode + "(" + ex.getMessage() + ")");
-                }
-            }
-
             // use query cache by default
             boolean cacheQueries = true;
             Statement cacheQueriesStatement = root.getProperty(pCacheQueries);
@@ -256,8 +206,6 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
 
             if (shapesStmt != null && entityMapResource != null)
                 throw new TextIndexException("Cannot specify both text:shapes and text:entityMap on " + root);
-            if (shapesStmt == null && entityMapResource == null)
-                throw new TextIndexException("Must specify either text:shapes or text:entityMap on " + root);
 
             EntityDefinition docDef;
             ShaclIndexMapping shaclMapping = null;
@@ -266,7 +214,8 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                 shaclMapping = ShaclIndexAssembler.parseShapes(a, shapesStmt.getObject().asResource());
                 docDef = ShaclIndexAssembler.deriveEntityDefinition(shaclMapping);
             } else {
-                docDef = (EntityDefinition) a.open(entityMapResource);
+                Resource r = GraphUtils.getResourceValue(root, pEntityMap) ;
+                docDef = (EntityDefinition) a.open(r) ;
             }
 
             TextIndexConfig config = new TextIndexConfig(docDef);
@@ -277,20 +226,22 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
             config.setMaxBasicQueries(maxBasicQueries);
             config.setValueStored(storeValues);
             config.setIgnoreIndexErrors(ignoreIndexErrs);
-            config.setMaxFacetHits(maxFacetHits);
             docDef.setCacheQueries(cacheQueries);
 
             if (shaclMapping != null) {
                 config.setShaclMapping(shaclMapping);
-                // Derive facet fields from mapping and merge with any explicit config
-                java.util.List<String> shaclFacetFields = shaclMapping.getFacetFieldNames();
-                for (String f : shaclFacetFields) {
-                    if (!facetFields.contains(f)) {
-                        facetFields.add(f);
+                // Derive facet fields from mapping
+                config.setFacetFields(shaclMapping.getFacetFieldNames());
+                // Parse maxFacetHits if specified
+                Statement maxFacetHitsStatement = root.getProperty(pMaxFacetHits);
+                if (null != maxFacetHitsStatement) {
+                    RDFNode mfhNode = maxFacetHitsStatement.getObject();
+                    if (! mfhNode.isLiteral()) {
+                        throw new TextIndexException("text:maxFacetHits property must be an int : " + mfhNode);
                     }
+                    config.setMaxFacetHits(mfhNode.asLiteral().getInt());
                 }
             }
-            config.setFacetFields(facetFields);
 
             return TextDatasetFactory.createLuceneIndex(directory, config) ;
         } catch (IOException e) {

@@ -22,15 +22,13 @@ All configuration is done via Jena Assembler TTL files. The text index is config
 
 ## Classic Mode (text:entityMap)
 
-The original triple-per-document model. Each RDF triple matching the entity map becomes a separate Lucene document.
+The original triple-per-document model. Each RDF triple matching the entity map becomes a separate Lucene document. Uses `text:query` for search. No faceting support.
 
 ```turtle
 <#index> a text:TextIndexLucene ;
     text:directory <file:/path/to/lucene> ;   # or "mem" for in-memory
     text:entityMap <#entMap> ;
     text:storeValues true ;
-    text:facetFields ("category" "author") ;  # enable faceting on these fields
-    text:maxFacetHits 50000 ;                 # limit facet search (0 = unlimited)
     .
 
 <#entMap> a text:EntityMap ;
@@ -52,8 +50,6 @@ The original triple-per-document model. Each RDF triple matching the entity map 
 | `text:directory` | URI or `"mem"` | required | Lucene index location |
 | `text:entityMap` | Resource | required* | Entity map definition |
 | `text:storeValues` | boolean | false | Store literal values for retrieval |
-| `text:facetFields` | RDF list of strings | empty | Fields to enable faceting on |
-| `text:maxFacetHits` | integer | 0 | Max docs for facet collection. 0 = unlimited |
 | `text:analyzer` | Resource | StandardAnalyzer | Default analyzer |
 | `text:queryAnalyzer` | Resource | same as analyzer | Analyzer for queries |
 | `text:multilingualSupport` | boolean | false | Enable multilingual indexing |
@@ -66,7 +62,7 @@ The original triple-per-document model. Each RDF triple matching the entity map 
 
 ## SHACL Mode (text:shapes)
 
-Entity-per-document model. Each entity (identified by `rdf:type` matching `sh:targetClass`) gets one Lucene document containing all its fields.
+Entity-per-document model. Each entity (identified by `rdf:type` matching `sh:targetClass`) gets one Lucene document containing all its fields. Uses `luc:query` for search with filters and `luc:facet` for facet counts.
 
 ```turtle
 @prefix text:  <http://jena.apache.org/text#> .
@@ -77,8 +73,19 @@ Entity-per-document model. Each entity (identified by `rdf:type` matching `sh:ta
     text:directory "mem" ;
     text:shapes ( <#BookShape> <#ArticleShape> ) ;
     text:storeValues true ;
+    text:maxFacetHits 50000 ;                 # limit facet search (0 = unlimited)
     .
 ```
+
+### SHACL-mode properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `text:shapes` | RDF list | required* | List of shape resources |
+| `text:maxFacetHits` | integer | 0 | Max docs for facet collection. 0 = unlimited |
+| `text:storeValues` | boolean | false | Store literal values for retrieval |
+
+*Mutually exclusive with `text:entityMap`.
 
 ### Shape definition
 
@@ -205,7 +212,6 @@ Each entity gets a `docType` discriminator field (the local name of its `sh:targ
 ## Validation rules
 
 - `text:shapes` and `text:entityMap` are **mutually exclusive** — specifying both throws an error
-- At least one of them must be present
 - Each shape must have at least one `sh:targetClass`
 - Each field must have at least one path (`sh:path` or `idx:path`)
 - Each field must have an `idx:fieldName`
