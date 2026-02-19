@@ -211,7 +211,7 @@ The query string argument in both `luc:query` and `text:query` uses the standard
 | `~` | Fuzzy match | `"learninh~"` matches "learning" |
 | `-term` | Exclusion | `"learning -neural"` |
 
-These are Lucene query parser conventions — not specific to Jena. Refer to the [Lucene Classic Query Parser documentation](https://lucene.apache.org/core/9_0_0/queryparser/org/apache/lucene/queryparser/classic/package-summary.html) for full syntax.
+These are Lucene query parser conventions — not specific to Jena. Refer to the [Lucene Classic Query Parser documentation](https://lucene.apache.org/core/10_3_1/queryparser/org/apache/lucene/queryparser/classic/package-summary.html) for full syntax.
 
 ---
 

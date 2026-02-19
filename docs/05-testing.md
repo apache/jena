@@ -37,7 +37,7 @@ All tests run via JUnit 4 and are aggregated in `TS_Text.java` (Surefire only pi
 
 ### Existing Tests (unchanged, verifying no regressions)
 
-327 pre-existing tests covering text search, multilingual support, graph indexing, deletion, analyzers, property lists, etc. All pass unchanged.
+303 pre-existing tests covering text search, multilingual support, graph indexing, deletion, analyzers, property lists, etc. All pass unchanged.
 
 ---
 
@@ -109,7 +109,7 @@ TextIndexLucene index = (TextIndexLucene) Assembler.general().open(indexSpec);
 - Shared execution between PFs
 - Facet count accuracy with filters
 - minCount and maxValues options
-- Backward compatibility (all 327 existing tests pass unchanged)
+- Backward compatibility (all 303 existing tests pass unchanged)
 
 ### Not yet covered (candidates for future tests)
 
