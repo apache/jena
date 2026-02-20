@@ -30,12 +30,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.locks.Lock;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import com.google.common.collect.Range;
-import com.google.common.collect.Sets;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Query;
@@ -55,14 +52,17 @@ import org.apache.jena.sparql.pfunction.PropFuncArgType;
 import org.apache.jena.sparql.pfunction.PropertyFunctionEval;
 import org.apache.jena.sparql.service.enhancer.assembler.ServiceEnhancerVocab;
 import org.apache.jena.sparql.service.enhancer.claimingcache.RefFuture;
+import org.apache.jena.sparql.service.enhancer.concurrent.AutoLock;
 import org.apache.jena.sparql.service.enhancer.impl.ServiceCacheKey;
 import org.apache.jena.sparql.service.enhancer.impl.ServiceCacheValue;
 import org.apache.jena.sparql.service.enhancer.impl.ServiceResponseCache;
 import org.apache.jena.sparql.service.enhancer.impl.util.PropFuncArgUtils;
-import org.apache.jena.sparql.service.enhancer.init.ServiceEnhancerConstants;
 import org.apache.jena.sparql.service.enhancer.slice.api.Slice;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
+
+import com.google.common.collect.Range;
+import com.google.common.collect.Sets;
 
 
 /**
@@ -106,7 +106,7 @@ public class cacheLs
             ExecutionContext execCxt) {
 
         Context context = execCxt.getContext();
-        ServiceResponseCache cache = context.get(ServiceEnhancerConstants.serviceCache);
+        ServiceResponseCache cache = ServiceResponseCache.get(context);
 
         Node s = subject.getArg();
         Var sv = s instanceof Var ? (Var)s : null;
@@ -163,12 +163,8 @@ public class cacheLs
                             if (refFuture != null) {
                                 ServiceCacheValue entry = refFuture.await();
                                 Slice<Binding[]> slice = entry.getSlice();
-                                Lock lock = slice.getReadWriteLock().readLock();
-                                lock.lock();
-                                try {
+                                try (AutoLock lock = AutoLock.lock(slice.getReadWriteLock().readLock())) {
                                     ranges = new ArrayList<>(entry.getSlice().getLoadedRanges().asRanges());
-                                } finally {
-                                    lock.unlock();
                                 }
 
                                 if (ranges.isEmpty()) {

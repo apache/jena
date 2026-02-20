@@ -43,12 +43,14 @@ public interface RefFuture<T>
     @Override
     RefFuture<T> acquire();
 
+    @Override
+    RefFuture<T> acquire(Object comment);
+
     /** Create a sub-reference to a transformed value of the CompletableFuture */
     // Result must be closed by caller
     default <U> RefFuture<U> acquireTransformed(Function<? super T, ? extends U> transform) {
         RefFuture<T> acquired = this.acquire();
-        Object synchronizer = acquired.getSynchronizer();
-
+        Synchronizer synchronizer = acquired.getSynchronizer();
         CompletableFuture<U> future = acquired.get().thenApply(transform);
         RefFuture<U> result = RefFutureImpl.wrap(RefImpl.create(future, synchronizer, acquired::close));
         return result;

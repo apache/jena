@@ -23,13 +23,12 @@ package org.apache.jena.sparql.service.enhancer.slice.impl;
 
 import java.io.IOException;
 
-import com.google.common.collect.Range;
-import com.google.common.collect.RangeSet;
-import com.google.common.collect.TreeRangeSet;
-
 import org.apache.jena.sparql.service.enhancer.impl.util.RangeUtils;
 import org.apache.jena.sparql.service.enhancer.slice.api.ArrayOps;
 
+import com.google.common.collect.Range;
+import com.google.common.collect.RangeSet;
+import com.google.common.collect.TreeRangeSet;
 
 public class RangeBufferImpl<A>
     implements RangeBuffer<A>
@@ -118,14 +117,15 @@ public class RangeBufferImpl<A>
     @Override
     public int readInto(A tgt, int tgtOffset, long srcOffset, int length) throws IOException {
 
+        // FIXME Must ensure the ranges are locked while we read!
+
         long start = srcOffset + offsetInRanges;
         long end = start + length;
         Range<Long> totalReadRange = Range.closedOpen(start, end);
 
         if (!ranges.encloses(totalReadRange)) {
-            RangeSet<Long> gaps = ranges.complement().subRangeSet(totalReadRange);
-
-            throw new ReadOverGapException("Attempt to read over gaps at: " + gaps);
+            RangeSet<Long> gaps = RangeUtils.gaps(totalReadRange,ranges);
+            throw new ReadOverGapException("Attempt to read over gaps. Gaps: " + gaps + ", Requested range: " + totalReadRange + ", Available ranges: " + ranges);
         }
 
         int result = backingBuffer.readInto(tgt, tgtOffset, srcOffset, length);
@@ -146,7 +146,7 @@ public class RangeBufferImpl<A>
             throw new RuntimeException("Attempt to write beyond buffer capacity");
         }
 
-        // TODO Add debug mode: Check when writing to already known ranges
+        // XXX Add debug mode: Check when writing to already known ranges
         // Range<Long> writeRange = Range.closedOpen(start, end);
 
         backingBuffer.write(offsetInBuffer, arrayWithItemsOfTypeT, arrOffset, arrLength);

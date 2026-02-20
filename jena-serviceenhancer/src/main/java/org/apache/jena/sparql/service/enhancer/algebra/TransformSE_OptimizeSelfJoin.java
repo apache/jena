@@ -26,6 +26,7 @@ import org.apache.jena.sparql.algebra.TransformCopy;
 import org.apache.jena.sparql.algebra.op.OpService;
 import org.apache.jena.sparql.algebra.optimize.Rewrite;
 import org.apache.jena.sparql.service.enhancer.impl.ServiceOpts;
+import org.apache.jena.sparql.service.enhancer.impl.ServiceOptsSE;
 import org.apache.jena.sparql.service.enhancer.init.ServiceEnhancerConstants;
 
 /** It seems that preemtive optimization before execution does not work with property
@@ -44,17 +45,17 @@ public class TransformSE_OptimizeSelfJoin
     @Override
     public Op transform(OpService opService, Op subOp) {
         Op result;
-        ServiceOpts so = ServiceOpts.getEffectiveService(
+        ServiceOpts so = ServiceOptsSE.getEffectiveService(
                 new OpService(opService.getService(), subOp, opService.getSilent()));
 
         OpService targetService = so.getTargetService();
         if (ServiceEnhancerConstants.SELF.equals(targetService.getService())) {
-            String optimizerOpt = so.getFirstValue(ServiceOpts.SO_OPTIMIZE, "on", "on");
+            String optimizerOpt = so.getFirstValue(ServiceOptsSE.SO_OPTIMIZE, "on", "on");
 
             if (!optimizerOpt.equalsIgnoreCase("off")) {
                 Op newSub = selfRewrite.rewrite(targetService.getSubOp());
 
-                so.removeKey(ServiceOpts.SO_OPTIMIZE);
+                so.removeKey(ServiceOptsSE.SO_OPTIMIZE);
                 // so.add(ServiceOpts.SO_OPTIMIZE, "off");
                 // so.add(ServiceOpts.SO_OPTIMIZE, "on");
                 result = new ServiceOpts(

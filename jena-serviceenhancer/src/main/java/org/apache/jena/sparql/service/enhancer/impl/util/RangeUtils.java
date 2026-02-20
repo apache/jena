@@ -23,10 +23,10 @@ package org.apache.jena.sparql.service.enhancer.impl.util;
 
 import java.util.function.Function;
 
+import org.apache.jena.query.Query;
+
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeSet;
-
-import org.apache.jena.query.Query;
 
 /** Utility methods for working with guava {@link Range} instances */
 public class RangeUtils {

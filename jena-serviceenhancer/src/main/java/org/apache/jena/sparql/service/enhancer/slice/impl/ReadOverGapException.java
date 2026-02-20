@@ -29,7 +29,6 @@ import java.io.IOException;
  * Read operations should typically be scheduled w.r.t. available data, however
  * concurrent modifications may invalidate such schedules and re-scheduling based on this
  * exception is a simple way to react to such changes.
- *
  */
 public class ReadOverGapException
     extends IOException

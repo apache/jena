@@ -38,27 +38,21 @@ public class OpServiceExecutorImpl
     implements OpServiceExecutor
 {
     protected OpService originalOp;
-    protected ExecutionContext execCxt;
     protected ServiceExecutorBulk delegate;
 
-    public OpServiceExecutorImpl(OpService opService, ExecutionContext execCxt, ServiceExecutorBulk delegate) {
+    public OpServiceExecutorImpl(OpService opService, ServiceExecutorBulk delegate) {
         this.originalOp = opService;
-        this.execCxt = execCxt;
         this.delegate = delegate;
     }
 
-    public ExecutionContext getExecCxt() {
-        return execCxt;
-    }
-    
     @Override
-    public QueryIterator exec(OpService substitutedOp) {
+    public QueryIterator exec(OpService substitutedOp, ExecutionContext execCxt) {
         QueryIterator result;
         Binding input = BindingFactory.binding();
         boolean silent = originalOp.getSilent();
 
         try {
-            QueryIterator singleton = QueryIterSingleton.create(BindingFactory.root(), execCxt);
+            QueryIter singleton = QueryIterSingleton.create(BindingFactory.root(), execCxt);
             result = delegate.createExecution(substitutedOp, singleton, execCxt);
 
             // ---- Execute
