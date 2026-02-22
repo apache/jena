@@ -24,6 +24,7 @@ package org.apache.jena.sparql.exec;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
@@ -36,7 +37,11 @@ import org.apache.jena.update.UpdateRequest;
 public interface UpdateExecDatasetBuilder
     extends UpdateExecBuilder
 {
-    public static UpdateExecDatasetBuilder create() { return new UpdateExecDatasetBuilderDeferred(); }
+    public static UpdateExecDatasetBuilder create() {
+        return SystemARQ.DeferredExecBuilders
+                ? UpdateExecDatasetBuilderDeferred.create()
+                : UpdateExecDatasetBuilderImpl.create();
+    }
 
     public UpdateExecDatasetBuilder dataset(DatasetGraph dataset);
 

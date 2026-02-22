@@ -29,6 +29,8 @@ public class UpdateExecDatasetBuilderDeferred
 {
     public static UpdateExecDatasetBuilder create() { return new UpdateExecDatasetBuilderDeferred(); }
 
+    private UpdateExecDatasetBuilderDeferred() {}
+
     @Override
     protected UpdateExecBuilder newActualExecBuilder() {
         SparqlAdapter adapter = SparqlAdapterRegistry.adapt(dataset);

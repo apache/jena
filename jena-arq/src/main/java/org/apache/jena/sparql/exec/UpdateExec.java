@@ -49,7 +49,7 @@ public interface UpdateExec extends UpdateProcessor
         return UpdateExecHTTP.newBuilder().endpoint(serviceURL);
     }
 
-    public static UpdateExecDatasetBuilderDeferred newBuilder() {
-        return new UpdateExecDatasetBuilderDeferred();
+    public static UpdateExecDatasetBuilder newBuilder() {
+        return UpdateExecDatasetBuilder.create();
     }
 }

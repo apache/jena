@@ -25,7 +25,6 @@ import java.util.Objects;
 
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.DatasetGraphOne;
 import org.apache.jena.sparql.util.Context;
 
 public class SparqlAdapterRegistry {

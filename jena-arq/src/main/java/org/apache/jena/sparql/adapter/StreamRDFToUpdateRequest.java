@@ -47,7 +47,7 @@ import org.apache.jena.update.UpdateRequest;
     /**
      * Constructs the StreamRDFToRDFLink using default {@value #DFT_BUFFER_SIZE} quad buffer size.
      *
-     * @param link the link to talk to.
+     * @param sink the link to talk to.
      */
     public StreamRDFToUpdateRequest(Consumer<UpdateRequest> sink) {
         this(sink, null);

@@ -36,7 +36,7 @@ import org.apache.jena.sparql.util.Context;
 public abstract class QueryExecDatasetBuilderDeferredBase<X extends QueryExecDatasetBuilderDeferredBase<X>>
     extends QueryExecDatasetBuilderBase<X>
 {
-    public QueryExecDatasetBuilderDeferredBase<X> graph(Graph graph) {
+    protected QueryExecDatasetBuilderDeferredBase<X> graph(Graph graph) {
         DatasetGraph dsg = DatasetGraphFactory.wrap(graph);
         dataset(dsg);
         return thisBuilder();

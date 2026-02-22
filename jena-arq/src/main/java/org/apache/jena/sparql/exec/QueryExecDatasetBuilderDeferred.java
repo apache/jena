@@ -28,6 +28,9 @@ import org.apache.jena.sparql.adapter.SparqlAdapterRegistry;
 public class QueryExecDatasetBuilderDeferred
     extends QueryExecDatasetBuilderDeferredBase<QueryExecDatasetBuilderDeferred>
 {
+
+    private QueryExecDatasetBuilderDeferred() {}
+
     public static QueryExecDatasetBuilderDeferred create() {
         return new QueryExecDatasetBuilderDeferred();
     }

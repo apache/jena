@@ -29,7 +29,6 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
-import org.apache.jena.sparql.adapter.SparqlAdapter;
 import org.apache.jena.sparql.adapter.SparqlAdapterRegistry;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
@@ -75,7 +74,7 @@ public interface QueryExec extends AutoCloseable {
      * settings are transferred.
      */
     public static QueryExecDatasetBuilder newBuilder() {
-        return QueryExecDatasetBuilderDeferred.create();
+        return QueryExecDatasetBuilder.create();
     }
 
     /**

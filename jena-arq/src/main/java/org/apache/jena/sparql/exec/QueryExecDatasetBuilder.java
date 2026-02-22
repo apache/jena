@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.Syntax;
+import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
@@ -37,13 +38,10 @@ import org.apache.jena.sparql.util.Symbol;
 public interface QueryExecDatasetBuilder
     extends QueryExecBuilder
 {
-    /** Create an uninitialized {@link QueryExecDatasetBuilderDeferred}. */
-    public static QueryExecDatasetBuilder newBuilder() {
-        return QueryExecDatasetBuilderDeferred.create();
-    }
-
     public static QueryExecDatasetBuilder create() {
-        return QueryExecDatasetBuilderDeferred.create();
+        return SystemARQ.DeferredExecBuilders
+                ? QueryExecDatasetBuilderDeferred.create()
+                : QueryExecDatasetBuilderImpl.create();
     }
 
     // TODO SparqlAdapter binds QueryExecBuilder to a dsg - must not set it afterwards.

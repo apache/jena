@@ -402,7 +402,9 @@ public abstract class DatasetGraphSPARQL
     }
 
     private static Quad harmonizeTripleInQuad(Quad quad) {
-        Quad result = quad.isTriple() ? new Quad(Quad.defaultGraphIRI, quad.asTriple()) : quad;
+        Quad result = quad.isTriple()
+                ? Quad.create(Quad.defaultGraphIRI, quad.asTriple())
+                : quad;
         return result;
     }
 

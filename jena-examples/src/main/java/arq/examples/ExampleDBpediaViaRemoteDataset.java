@@ -88,6 +88,7 @@ public class ExampleDBpediaViaRemoteDataset {
             this.label = label;
         }
 
+        @Override
         protected <T> T exec(Supplier<T> supplier) {
             T r = supplier.get();
             System.out.println(label + ": Execution result object type: " + className(r));

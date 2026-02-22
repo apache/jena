@@ -46,6 +46,8 @@ public class QueryExecDatasetBuilderImpl
         return new QueryExecDatasetBuilderImpl();
     }
 
+    private QueryExecDatasetBuilderImpl() {}
+
     /** Always parse queries regardless of the parse check hint. */
     @Override
     protected boolean effectiveParseCheck() {

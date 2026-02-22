@@ -56,10 +56,6 @@ public abstract class ExecHTTPBuilder<X, Y> {
     protected Params params = Params.create();
     private ContextAccumulator contextAcc = ContextAccumulator.newBuilder(()->ARQ.getContext());
 
-    // Accept choice by the application. Deprecated - Superseded by acceptHeader(String) which sets all header fields explicitly.
-    @Deprecated(forRemoval = true)
-    protected String appAcceptHeader     = null;
-
     protected String selectAcceptHeader  = WebContent.defaultSparqlResultsHeader;
     protected String askAcceptHeader     = WebContent.defaultSparqlAskHeader;
     protected String graphAcceptHeader   = WebContent.defaultGraphAcceptHeader;
@@ -271,10 +267,8 @@ public abstract class ExecHTTPBuilder<X, Y> {
     }
 
     /** Setting this header overrides any other header. */
-    @SuppressWarnings("removal")
     public Y acceptHeader(String acceptHeader) {
         Objects.requireNonNull(acceptHeader);
-        this.appAcceptHeader = acceptHeader;
         this.selectAcceptHeader = acceptHeader;
         this.askAcceptHeader = acceptHeader;
         this.graphAcceptHeader = acceptHeader;
