@@ -31,6 +31,8 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.reasoner.InfGraph ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.GraphView ;
+import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.sparql.exec.UpdateExec;
 import org.apache.jena.sparql.graph.GraphWrapper ;
 import org.apache.jena.sparql.util.Symbol ;
 
@@ -67,6 +69,11 @@ public class SystemARQ
      * <a href="https://awslabs.github.io/SPARQL-CDTs/spec/latest.html">SPARQL CDTs: Representing and Querying Lists and Maps as RDF Literals</a>
      */
     public static boolean EnableCDTs   = true ;
+
+    /**
+     * Control for {@link QueryExec} and {@link UpdateExec} builder.
+     */
+    public final static boolean DeferredExecBuilders = true;
 
     /**
      * Sync a Model if it provides the underlying graph provides sync . Do nothing

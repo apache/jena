@@ -66,7 +66,9 @@ import org.apache.jena.sparql.util.ModelUtils;
 
 public class QueryExecDataset implements QueryExec
 {
-    public static QueryExecDatasetBuilder newBuilder() { return QueryExecDatasetBuilder.create(); }
+    public static QueryExecDatasetBuilder newBuilder() {
+        return QueryExecDatasetBuilder.create();
+    }
 
     private final Query              query;
     private String                   queryString = null;
