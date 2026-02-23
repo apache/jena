@@ -8,6 +8,15 @@ Apache Jena — a Java framework for semantic web and linked data applications. 
 
 **Version**: 6.1.0-SNAPSHOT | **Java**: 21+ | **Build**: Maven 3.9+
 
+## Repository
+
+This is a **fork** of `apache/jena`. The upstream repo is a read-only reference.
+
+- **Fork (ours):** `aiworkerjohns/jena` — all issues, PRs, and pushes go here
+- **Upstream:** `apache/jena` — do NOT create issues, PRs, or push to this repo
+
+The `gh` CLI default is set to `aiworkerjohns/jena`. Always use `-R aiworkerjohns/jena` if there is any ambiguity. Never use `-R apache/jena` for write operations.
+
 ## Build Commands
 
 ```bash
