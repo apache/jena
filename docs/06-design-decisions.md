@@ -53,6 +53,24 @@
 
 ---
 
+## Decision: Separate queries for hits and facets (not combined BGP)
+
+**Problem:** Splitting `luc:query` and `luc:facet` into separate PFs solved the Phase 1 binding explosion, but placing both PFs in the same basic graph pattern still produces a cartesian product. They share no variables, so SPARQL cross-joins the results: N hits × M facet values = N×M rows.
+
+**Alternatives evaluated:**
+
+1. **Handle-based API** (`luc:search` creates a handle, `luc:hit` and `luc:facet` read from it) — evaluated Feb 2026. The shared handle variable `?r` is a constant (same value in every row), so it doesn't prevent the cross join. Nested blank node patterns (`[ luc:entity ?s ; luc:score ?score ]`) are not implementable with Jena's PF mechanism — PFs bind subject/object variables, they don't produce virtual triples for downstream pattern matching. Adds ceremony (three PFs instead of two) without solving the problem.
+
+2. **OPTIONAL wrapping** (each PF in its own OPTIONAL block) — OPTIONAL is a left outer join, not a partition. Each input row from the first OPTIONAL is extended by all M matches from the second, still producing N×M.
+
+3. **CONSTRUCT output** — deduplicates the output graph, but the intermediate evaluation still computes N×M bindings. Also changes the consumer model from tabular results to graph traversal.
+
+**Decision:** Recommend separate SPARQL queries as the primary pattern. Document UNION as an alternative for single-request scenarios. The combined BGP pattern is documented with a cartesian product warning.
+
+**Rationale:** The cartesian product is a SPARQL join semantics issue, not a PF design issue — no PF restructuring can avoid it when two unrelated binding streams are joined in the same BGP. Separate queries match the pattern used by Elasticsearch, Solr, and other search engines: one request for results, one for facets. The UNION pattern (N+M rows, sparse columns) works when a single SPARQL request is required. The `SearchExecution` keyed caching ensures both PFs share a single Lucene execution when they appear in the same query, regardless of query structure.
+
+---
+
 ## Decision: JSON syntax for filters and facet field lists
 
 **Problem:** How to pass structured filter criteria (`category=Technology AND author=Smith`) in a SPARQL property function argument list.

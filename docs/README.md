@@ -142,9 +142,11 @@ text:shapes ( <#BookShape> ) ;
 PREFIX text: <http://jena.apache.org/text#>
 (?s ?sc) text:query ("machine learning") .
 
-# SHACL: search with filters + facets
+# SHACL: search with filters
 PREFIX luc: <urn:jena:lucene:index#>
 (?s ?sc) luc:query ("machine learning") .
+
+# SHACL: facet counts (separate query)
 (?f ?v ?c) luc:facet ("machine learning" '["category"]' 10) .
 ```
 

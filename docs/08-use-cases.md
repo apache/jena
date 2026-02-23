@@ -78,69 +78,52 @@ flowchart LR
 
 ---
 
-### Search + Facets Together — Shared Execution
+### Search + Facets Together — Recommended Patterns
 
-When `luc:query` and `luc:facet` appear in the same SPARQL query with matching parameters, they share a single Lucene search. No redundant index access.
+Search hits and facet counts are different result shapes. Hits are entities with scores; facets are (field, value, count) aggregations. Care is needed to avoid a cartesian product when combining them.
 
 ```mermaid
 flowchart TB
-    SPARQL["SPARQL query with both PFs"]
-    SE["SearchExecution<br/>(single Lucene search)"]
-    Hits["luc:query results<br/>(entity URIs + scores)"]
-    Facets["luc:facet results<br/>(field, value, count)"]
+    App["Search UI"]
+    Q1["Query 1: luc:query<br/>(entity URIs + scores)"]
+    Q2["Query 2: luc:facet<br/>(field, value, count)"]
+    SE["SearchExecution<br/>(shared internally<br/>when in same query)"]
 
-    SPARQL --> SE
-    SE --> Hits
-    SE --> Facets
+    App --> Q1
+    App --> Q2
+    Q1 --> SE
+    Q2 --> SE
 
-    style SPARQL fill:#f8f9fa,stroke:#999,color:#333
-    style SE fill:#1a6dd4,stroke:#0d4a94,color:#fff
-    style Hits fill:#d4edda,stroke:#28a745,color:#1a3d1a
-    style Facets fill:#d4edda,stroke:#28a745,color:#1a3d1a
+    style App fill:#f8f9fa,stroke:#999,color:#333
+    style Q1 fill:#1a6dd4,stroke:#0d4a94,color:#fff
+    style Q2 fill:#1a6dd4,stroke:#0d4a94,color:#fff
+    style SE fill:#e8f0fe,stroke:#b8d4f8,color:#333
 ```
 
 ```sparql
-# One query execution, structured result graph
-CONSTRUCT {
-
-  ?search a :SearchResult .
-
-  # Hits
-  ?search :hasHit ?s .
-  ?s :score ?score .
-
-  # Facets
-  ?search :hasFacet ?facet .
-  ?facet :field ?field ;
-         :value ?value ;
-         :count ?count .
-
-}
-WHERE {
-
-  BIND(IRI(CONCAT("urn:search:", ENCODE_FOR_URI("climate change"))) AS ?search)
-
-  {
-    # Hit results
+# Recommended: separate queries, clean result shapes
+# Query 1 — hits
+SELECT ?s ?score WHERE {
     (?s ?score) luc:query ("climate change") .
-  }
+}
 
-  UNION
+# Query 2 — facets
+SELECT ?field ?value ?count WHERE {
+    (?field ?value ?count) luc:facet ("climate change" '["category", "publisher"]' 10) .
+}
 
-  {
-    # Facet aggregates
-    (?field ?value ?count)
-        luc:facet ("climate change" '["category","publisher"]' 10) .
-
-    BIND(BNODE() AS ?facet)
-  }
-
+# Alternative: single query via UNION (N+M rows, no cartesian product)
+SELECT ?s ?score ?field ?value ?count WHERE {
+    { (?s ?score) luc:query ("climate change") . }
+    UNION
+    { (?field ?value ?count) luc:facet ("climate change" '["category", "publisher"]' 10) . }
 }
 ```
 
 **Where this applies:**
 - Any search page that shows results and facet counts together
-- Avoids the "two queries" pattern common with external search engines
+- Matches the pattern used by Elasticsearch and Solr — one request for hits, one for facets
+- UNION alternative when a single SPARQL request is required
 
 ---
 

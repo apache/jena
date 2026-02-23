@@ -178,22 +178,69 @@ PREFIX luc: <urn:jena:lucene:index#>
 
 ---
 
-## Shared Execution
+## Combining Search and Facets
 
-When `luc:query` and `luc:facet` appear in the same query with matching parameters (same query string, same properties, same filters), they share a single Lucene execution:
+Search hits and facet counts are two fundamentally different result shapes — hits are entities with scores, facets are (field, value, count) aggregations. SPARQL's tabular result model requires care when combining them.
+
+### Recommended: Separate queries
+
+Use one query for hits, another for facets. Each returns a clean result shape with no wasted rows.
 
 ```sparql
 PREFIX luc: <urn:jena:lucene:index#>
 
+# Query 1: search results
+SELECT ?s ?score WHERE {
+    (?s ?score) luc:query ("learning") .
+}
+
+# Query 2: facet counts
+SELECT ?field ?value ?count WHERE {
+    (?field ?value ?count) luc:facet ("learning" '["category", "author"]' 10) .
+}
+```
+
+This is the pattern used by search UIs (Elasticsearch, Solr) — one request for results, one for facets. Each result set has exactly the rows the consumer needs.
+
+### Alternative: UNION in a single query
+
+If a single SPARQL request is preferred, use `UNION` to return both result sets without a cartesian product:
+
+```sparql
+PREFIX luc: <urn:jena:lucene:index#>
+
+SELECT ?s ?score ?field ?value ?count WHERE {
+    { (?s ?score) luc:query ("learning") . }
+    UNION
+    { (?field ?value ?count) luc:facet ("learning" '["category"]' 10) . }
+}
+```
+
+This returns N + M rows (not N × M). Hit rows have `?field`, `?value`, `?count` unbound; facet rows have `?s`, `?score` unbound. The consumer splits results by checking which columns are present. Both PFs share a single Lucene execution via `SearchExecution` (see below).
+
+### Avoid: Combined BGP (cartesian product)
+
+Placing both PFs in the same basic graph pattern produces a cartesian product:
+
+```sparql
+# WARNING: produces N × M rows
 SELECT ?s ?score ?field ?value ?count WHERE {
     (?s ?score) luc:query ("learning") .
     (?field ?value ?count) luc:facet ("learning" '["category"]' 10) .
 }
 ```
 
-This is efficient: one Lucene query, one index reader snapshot, consistent results.
+With 100 hits and 10 facet values, this returns 1,000 rows — every hit paired with every facet value. The shared execution avoids redundant Lucene work, but the result set still explodes. This is a consequence of SPARQL's join semantics: two patterns with no shared variables produce a cross join.
+
+---
+
+## Shared Execution
+
+When `luc:query` and `luc:facet` appear in the same SPARQL query (whether in a BGP, UNION, or subquery) with matching parameters, they share a single Lucene execution internally. One Lucene query, one index reader snapshot, consistent results.
 
 The match is based on normalised keys — property URIs are sorted, filter maps are sorted by field name. If parameters differ, each PF executes independently.
+
+This optimisation is transparent. It reduces Lucene index access but does not change SPARQL result semantics — the cartesian product concern (above) is a SPARQL join issue, not a Lucene execution issue.
 
 ---
 
