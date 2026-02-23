@@ -100,10 +100,41 @@ flowchart TB
 ```
 
 ```sparql
-# One query, two result streams, one Lucene execution
-SELECT ?s ?score ?field ?value ?count WHERE {
+# One query execution, structured result graph
+CONSTRUCT {
+
+  ?search a :SearchResult .
+
+  # Hits
+  ?search :hasHit ?s .
+  ?s :score ?score .
+
+  # Facets
+  ?search :hasFacet ?facet .
+  ?facet :field ?field ;
+         :value ?value ;
+         :count ?count .
+
+}
+WHERE {
+
+  BIND(IRI(CONCAT("urn:search:", ENCODE_FOR_URI("climate change"))) AS ?search)
+
+  {
+    # Hit results
     (?s ?score) luc:query ("climate change") .
-    (?field ?value ?count) luc:facet ("climate change" '["category", "publisher"]' 10) .
+  }
+
+  UNION
+
+  {
+    # Facet aggregates
+    (?field ?value ?count)
+        luc:facet ("climate change" '["category","publisher"]' 10) .
+
+    BIND(BNODE() AS ?facet)
+  }
+
 }
 ```
 
