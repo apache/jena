@@ -89,56 +89,7 @@ graph TB
     style FC fill:#1a6dd4,stroke:#0d4a94,color:#fff
 ```
 
-Grey = upstream (unchanged) / Blue = new code in this fork
-
-### Query Flow
-
-```mermaid
-sequenceDiagram
-    participant S as SPARQL Query
-    participant QP as ShaclTextQueryPF
-    participant FP as TextFacetPF
-    participant SE as SearchExecution
-    participant L as Lucene Index
-
-    S->>QP: luc:query ("learning" '{"category":["Tech"]}')
-    QP->>SE: getOrCreate(key = "qs=learning|filters=category:Tech")
-    SE->>L: Execute query (first access, lazy)
-    L-->>SE: Hits + reader snapshot
-    SE-->>QP: Hit URIs + scores
-    QP-->>S: (?s ?score) bindings
-
-    S->>FP: luc:facet ("learning" '["category"]')
-    FP->>SE: getOrCreate(same key) — reuses existing
-    SE-->>FP: Facet counts (from same snapshot)
-    FP-->>S: (?field ?value ?count) bindings
-```
-
-### Indexing Flow
-
-```mermaid
-flowchart LR
-    subgraph TTL["config.ttl"]
-        Shapes["text:shapes (BookShape)"]
-        Shape["BookShape<br/>sh:targetClass ex:Book<br/>sh:property [<br/>  idx:fieldName 'title'<br/>  idx:fieldType idx:TextField<br/>  sh:path rdfs:label<br/>]"]
-    end
-
-    subgraph Runtime["Runtime"]
-        Assembler["ShaclIndexAssembler"]
-        Mapping["ShaclIndexMapping<br/><i>profiles + field defs</i>"]
-        Producer["ShaclTextDocProducer"]
-    end
-
-    subgraph Lucene["Lucene Document"]
-        Doc["uri: ex:book1<br/>docType: Book<br/>title: 'Machine Learning'<br/>category: 'Technology'<br/>year: 2024"]
-    end
-
-    Shapes --> Shape
-    Shape -- "parse" --> Assembler
-    Assembler --> Mapping
-    Mapping --> Producer
-    Producer -- "rebuild on<br/>triple change" --> Doc
-```
+Grey = upstream (unchanged) / Blue = new code in this fork. See [Architecture](04-architecture.md) for detailed query flow and indexing flow diagrams.
 
 ### Roadmap
 

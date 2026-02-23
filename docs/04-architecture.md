@@ -86,24 +86,28 @@ Used with `text:shapes` configuration. SPARQL search via `luc:query` (with filte
 
 When `luc:query` and `luc:facet` appear in the same SPARQL query:
 
+```mermaid
+sequenceDiagram
+    participant S as SPARQL Query
+    participant QP as ShaclTextQueryPF
+    participant FP as TextFacetPF
+    participant SE as SearchExecution
+    participant L as Lucene Index
+
+    S->>QP: luc:query ("learning" '{"category":["Tech"]}')
+    QP->>SE: getOrCreate(key = "qs=learning|filters=category:Tech")
+    SE->>L: Execute query (first access, lazy)
+    L-->>SE: Hits + reader snapshot
+    SE-->>QP: Hit URIs + scores
+    QP-->>S: (?s ?score) bindings
+
+    S->>FP: luc:facet ("learning" '["category"]')
+    FP->>SE: getOrCreate(same key) — reuses existing
+    SE-->>FP: Facet counts (from same snapshot)
+    FP-->>S: (?field ?value ?count) bindings
 ```
-SPARQL query parsed
-  ├── ShaclTextQueryPF.exec()
-  │     ├── Parse args: queryString, props, filters, limit
-  │     ├── Build lookup key: "props=...|qs=...|filters=..."
-  │     ├── SearchExecution.getOrCreate(execCxt, key, ...)
-  │     │     └── Creates new SearchExecution, stores in ExecutionContext
-  │     └── searchExec.getHits(limit, highlight)
-  │           └── Executes Lucene query (lazy, first access)
-  │
-  └── TextFacetPF.exec()
-        ├── Parse args: queryString, props, filters, facetFields, maxValues, minCount
-        ├── Build lookup key: "props=...|qs=...|filters=..." (same key!)
-        ├── SearchExecution.getOrCreate(execCxt, key, ...)
-        │     └── Returns EXISTING SearchExecution from context
-        └── searchExec.getFacetCounts(facetFields, maxValues, minCount)
-              └── Reuses same reader snapshot
-```
+
+Both PFs build a normalised key from query parameters. `SearchExecution.getOrCreate()` stores/retrieves shared state in `ExecutionContext`.
 
 Key normalisation: property URIs are sorted, filter map keys are sorted, filter values within each key are sorted. This ensures the same logical query always produces the same key regardless of argument ordering.
 
@@ -111,7 +115,35 @@ Key normalisation: property URIs are sorted, filter map keys are sorted, filter 
 
 ## SHACL Change Listener Flow
 
-`ShaclTextDocProducer` handles all triple changes:
+`ShaclTextDocProducer` handles all triple changes. The base dataset is always up-to-date when `change()` fires because `DatasetGraphTextMonitor` calls `super.add()` before `record()`.
+
+### Indexing flow from config to Lucene document
+
+```mermaid
+flowchart LR
+    subgraph TTL["config.ttl"]
+        Shapes["text:shapes (BookShape)"]
+        Shape["BookShape<br/>sh:targetClass ex:Book<br/>sh:property [<br/>  idx:fieldName 'title'<br/>  idx:fieldType idx:TextField<br/>  sh:path rdfs:label<br/>]"]
+    end
+
+    subgraph Runtime["Runtime"]
+        Assembler["ShaclIndexAssembler"]
+        Mapping["ShaclIndexMapping<br/><i>profiles + field defs</i>"]
+        Producer["ShaclTextDocProducer"]
+    end
+
+    subgraph Lucene["Lucene Document"]
+        Doc["uri: ex:book1<br/>docType: Book<br/>title: 'Machine Learning'<br/>category: 'Technology'<br/>year: 2024"]
+    end
+
+    Shapes --> Shape
+    Shape -- "parse" --> Assembler
+    Assembler --> Mapping
+    Mapping --> Producer
+    Producer -- "rebuild on<br/>triple change" --> Doc
+```
+
+### Change listener detail
 
 ```
 DatasetGraphTextMonitor.add(g, s, p, o)
@@ -138,8 +170,6 @@ rebuildEntityDocuments(subject)
               ├── Delete existing doc by (uri + docType) composite query
               └── Add new document
 ```
-
-The base dataset is always up-to-date when `change()` fires because `DatasetGraphTextMonitor` calls `super.add()` before `record()`.
 
 ---
 
