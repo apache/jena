@@ -31,7 +31,39 @@ The `ShaclTextDocProducer` uses a `ThreadLocal<Boolean>` for transaction trackin
 
 ## Planned Extensions
 
-### DrillSideways (next priority)
+### Inverse and sequence paths (next priority)
+
+Currently only `sh:path <uri>` and `sh:alternativePath` are supported. This limits what can be indexed to direct properties of an entity. Extending path support would significantly increase the range of data that can be indexed without denormalising.
+
+- `sh:inversePath` — index objects that point *to* the entity (e.g., index a Person's affiliated Organisation by following `ex:memberOf` backwards)
+- Sequence paths — traverse multi-hop paths (e.g., `ex:author / ex:name` to index the author's name directly on a Book entity)
+
+Would require:
+- Path evaluation logic in `ShaclTextDocProducer.rebuildEntityDocuments()` to traverse beyond single predicates
+- Change listener must detect changes to intermediate triples (e.g., if the author's name changes, the book's index should update)
+- Config parsing in `ShaclIndexAssembler` for `sh:inversePath` and `sh:sequencePath`
+
+### Spatial filtering (bbox)
+
+Combine text search with a bounding-box spatial filter so that facet counts and search results are scoped to a geographic region. Proposed in the [January 2026 review](archive/2026-01-23-david-review.md) as an optional structured argument:
+
+```sparql
+(?f ?v ?c) luc:facet ("climate" '["category"]' '{"bbox": [40.0, -75.0, 41.0, -74.0]}') .
+```
+
+The bbox would become a Lucene spatial `MUST` filter combined with the text query. Would require:
+- A spatial field type (e.g., `LatLonPoint`) in the SHACL field type enum
+- Indexing coordinates into the entity document
+- Parsing the bbox argument in `ShaclTextQueryPF` and `TextFacetPF`
+- Integration with or independence from the existing `jena-geosparql` module (Lucene's native spatial may be simpler than bridging to JTS/SIS)
+
+This does not change the query or response models — it extends the existing filter argument with a spatial dimension.
+
+### Deferrable extensions
+
+The following features do not change the existing query or response models. Each can be added later as either an opt-in parameter on an existing PF or as a new PF, with no breaking changes. They are listed here for completeness but are not prioritised.
+
+#### DrillSideways
 
 The entity-per-document model enables Lucene's `DrillSideways` API for efficient faceted navigation. Currently, facet counts are collected via `SortedSetDocValuesFacetCounts` with a `FacetsCollector`. DrillSideways would allow:
 
@@ -45,11 +77,43 @@ This is the standard faceted search UX pattern. Implementation requires:
 
 **Prerequisite:** Entity-per-document (completed). DrillSideways requires all facet fields on the same document as the searchable fields.
 
-### Result grouping
+**API impact:** Opt-in parameter on `luc:facet`. No breaking changes.
+
+#### Hierarchical facets
+
+For taxonomy-based faceting (e.g., Science > Physics > Quantum Physics), Lucene supports hierarchical facets via path-based `FacetField`:
+
+```java
+doc.add(new FacetField("category", "Science", "Physics", "Quantum Physics"));
+```
+
+Would require:
+- Config syntax for hierarchy delimiter or SKOS broader/narrower traversal
+- Returning hierarchy paths in facet results
+- UI support for drill-down
+
+**API impact:** Facet values become path strings. Same response shape `(field, value, count)`. No breaking changes.
+
+#### Range facets
+
+Numeric and date range faceting (e.g., "2020-2024", "0-100"):
+
+```sparql
+PREFIX luc: <urn:jena:lucene:index#>
+(?range ?count) luc:facetRange ("learning" "year" '[2020, 2022, 2024, 2026]') .
+```
+
+The entity-per-document model with `IntPoint`/`LongPoint`/`DoublePoint` fields provides the foundation. Implementation would use Lucene's `LongRangeFacetCounts` or similar.
+
+**API impact:** New PF `luc:facetRange`. No changes to existing PFs.
+
+#### Result grouping
 
 Group search results by a field value (e.g., group books by author). Lucene's `GroupingSearch` can do this efficiently. The entity-per-document model makes this straightforward since the grouping field is on the same document.
 
-### Suggest / Autocomplete (Phase 3)
+**API impact:** New PF `luc:group`. No changes to existing PFs.
+
+#### Suggest / Autocomplete
 
 Add `luc:suggest` property function using Lucene's `SuggestField` for type-ahead autocomplete:
 
@@ -64,42 +128,16 @@ Would require:
 - New PF implementation
 - Index rebuild to populate suggest data structures
 
-### Hierarchical facets
+**API impact:** New PF `luc:suggest`. No changes to existing PFs.
 
-For taxonomy-based faceting (e.g., Science > Physics > Quantum Physics), Lucene supports hierarchical facets via path-based `FacetField`:
-
-```java
-doc.add(new FacetField("category", "Science", "Physics", "Quantum Physics"));
-```
-
-Would require:
-- Config syntax for hierarchy delimiter or SKOS broader/narrower traversal
-- Returning hierarchy paths in facet results
-- UI support for drill-down
-
-### Range facets
-
-Numeric and date range faceting (e.g., "2020-2024", "0-100"):
-
-```sparql
-PREFIX luc: <urn:jena:lucene:index#>
-(?range ?count) luc:facetRange ("learning" "year" '[2020, 2022, 2024, 2026]') .
-```
-
-The entity-per-document model with `IntPoint`/`LongPoint`/`DoublePoint` fields provides the foundation. Implementation would use Lucene's `LongRangeFacetCounts` or similar.
-
-### SHACL-aware bulk reindexing
+#### SHACL-aware bulk reindexing
 
 The existing `jena.textindexer` CLI tool indexes all data using the triple-per-document model. A SHACL-aware variant would:
 1. Load the SHACL mapping from the assembler config
 2. For each entity matching a shape's `sh:targetClass`, build a complete entity document
 3. Bulk-index efficiently (no per-triple rebuild overhead)
 
-### Inverse and sequence paths
-
-Currently only `sh:path <uri>` and `sh:alternativePath` are supported. Future extensions:
-- `sh:inversePath` — index objects that point *to* the entity
-- Sequence paths — traverse multi-hop paths (e.g., `ex:author / ex:name`)
+**API impact:** CLI tool only. No SPARQL API changes.
 
 ---
 

@@ -2,6 +2,167 @@
 
 This documentation covers the faceted search and entity-per-document indexing features added to Apache Jena's `jena-text` module.
 
+## Feature Overview
+
+### Feature Status
+
+| Feature | Status | SPARQL | Description |
+|---------|--------|--------|-------------|
+| Entity-per-document indexing | Done | — | SHACL shapes define entity types with typed fields (TEXT, KEYWORD, INT, LONG, DOUBLE) |
+| Text search with filters | Done | `luc:query` | Full-text search with JSON structured filters (AND/OR) |
+| Facet counts | Done | `luc:facet` | Field value counts with maxValues, minCount controls |
+| Shared execution | Done | — | `luc:query` + `luc:facet` share a single Lucene search when co-occurring |
+| Automatic index maintenance | Done | — | Change listener rebuilds entity docs on triple add/delete |
+| Inverse and sequence paths | Proposed | — | `sh:inversePath` and multi-hop `sh:sequencePath` for richer indexing |
+| Spatial filtering | Proposed | `luc:query`/`luc:facet` | Bounding-box filter via LatLonPoint |
+| DrillSideways | Proposed | `luc:facet` | Filtered dimension still shows all values (standard faceted UI pattern) |
+| Hierarchical facets | Proposed | `luc:facet` | Taxonomy drill-down (Science > Physics > Quantum) |
+| Range facets | Proposed | `luc:facetRange` | Bucket counts over numeric ranges (year bands, price tiers) |
+| Result grouping | Proposed | `luc:group` | Group search hits by field value |
+| Suggest / Autocomplete | Proposed | `luc:suggest` | Type-ahead completions via Lucene suggesters |
+| Bulk SHACL reindexer | Proposed | — | CLI tool for full reindex using SHACL shapes |
+
+All proposed extensions are additive — no breaking changes to existing query or response models.
+
+### Component Architecture (current implementation)
+
+```mermaid
+graph TB
+    subgraph SPARQL["SPARQL Interface"]
+        TQ["text:query<br/><i>upstream, unchanged</i>"]
+        LQ["luc:query<br/><i>search + JSON filters</i>"]
+        LF["luc:facet<br/><i>field value counts</i>"]
+    end
+
+    subgraph Execution["Query Execution"]
+        SE["SearchExecution<br/><i>shared state via ExecutionContext</i>"]
+        SQP["ShaclTextQueryPF"]
+        TFP["TextFacetPF"]
+    end
+
+    subgraph Index["Lucene Index"]
+        TIL["TextIndexLucene"]
+        FC["FacetsConfig<br/><i>SortedSetDocValues</i>"]
+    end
+
+    subgraph Indexing["Index Maintenance"]
+        STDP["ShaclTextDocProducer<br/><i>change listener</i>"]
+        SIM["ShaclIndexMapping<br/><i>IndexProfile + FieldDef</i>"]
+    end
+
+    subgraph Config["Assembler Config (TTL)"]
+        EM["text:entityMap<br/><i>classic mode</i>"]
+        TS["text:shapes<br/><i>SHACL mode</i>"]
+    end
+
+    subgraph Store["RDF Store"]
+        DS["TDB2 Dataset"]
+    end
+
+    LQ --> SQP
+    LF --> TFP
+    SQP --> SE
+    TFP --> SE
+    SE --> TIL
+    TIL --> FC
+
+    TQ --> TIL
+
+    DS -- "triple change" --> STDP
+    STDP --> SIM
+    STDP -- "rebuild entity doc" --> TIL
+    SIM -- "field types, profiles" --> TIL
+
+    TS -- "parsed by ShaclIndexAssembler" --> SIM
+    EM -- "parsed by TextIndexLuceneAssembler" --> TIL
+
+    style TQ fill:#e0e0e0,stroke:#888,color:#333
+    style EM fill:#e0e0e0,stroke:#888,color:#333
+    style LQ fill:#1a6dd4,stroke:#0d4a94,color:#fff
+    style LF fill:#1a6dd4,stroke:#0d4a94,color:#fff
+    style SQP fill:#1a6dd4,stroke:#0d4a94,color:#fff
+    style TFP fill:#1a6dd4,stroke:#0d4a94,color:#fff
+    style SE fill:#1a6dd4,stroke:#0d4a94,color:#fff
+    style STDP fill:#1a6dd4,stroke:#0d4a94,color:#fff
+    style SIM fill:#1a6dd4,stroke:#0d4a94,color:#fff
+    style TS fill:#1a6dd4,stroke:#0d4a94,color:#fff
+    style FC fill:#1a6dd4,stroke:#0d4a94,color:#fff
+```
+
+Grey = upstream (unchanged) / Blue = new code in this fork
+
+### Query Flow
+
+```mermaid
+sequenceDiagram
+    participant S as SPARQL Query
+    participant QP as ShaclTextQueryPF
+    participant FP as TextFacetPF
+    participant SE as SearchExecution
+    participant L as Lucene Index
+
+    S->>QP: luc:query ("learning" '{"category":["Tech"]}')
+    QP->>SE: getOrCreate(key = "qs=learning|filters=category:Tech")
+    SE->>L: Execute query (first access, lazy)
+    L-->>SE: Hits + reader snapshot
+    SE-->>QP: Hit URIs + scores
+    QP-->>S: (?s ?score) bindings
+
+    S->>FP: luc:facet ("learning" '["category"]')
+    FP->>SE: getOrCreate(same key) — reuses existing
+    SE-->>FP: Facet counts (from same snapshot)
+    FP-->>S: (?field ?value ?count) bindings
+```
+
+### Indexing Flow
+
+```mermaid
+flowchart LR
+    subgraph TTL["config.ttl"]
+        Shapes["text:shapes (BookShape)"]
+        Shape["BookShape<br/>sh:targetClass ex:Book<br/>sh:property [<br/>  idx:fieldName 'title'<br/>  idx:fieldType idx:TextField<br/>  sh:path rdfs:label<br/>]"]
+    end
+
+    subgraph Runtime["Runtime"]
+        Assembler["ShaclIndexAssembler"]
+        Mapping["ShaclIndexMapping<br/><i>profiles + field defs</i>"]
+        Producer["ShaclTextDocProducer"]
+    end
+
+    subgraph Lucene["Lucene Document"]
+        Doc["uri: ex:book1<br/>docType: Book<br/>title: 'Machine Learning'<br/>category: 'Technology'<br/>year: 2024"]
+    end
+
+    Shapes --> Shape
+    Shape -- "parse" --> Assembler
+    Assembler --> Mapping
+    Mapping --> Producer
+    Producer -- "rebuild on<br/>triple change" --> Doc
+```
+
+### Roadmap
+
+```mermaid
+timeline
+    title Feature Roadmap
+    section Done
+        Entity-per-document indexing   : SHACL shapes, typed fields, change listener
+        luc꞉query with filters         : Full-text search with JSON structured filters
+        luc꞉facet counts               : Field value counts with maxValues, minCount
+        Shared execution               : Single Lucene search shared across PFs
+    section Proposed
+        Inverse and sequence paths     : sh꞉inversePath and multi-hop sh꞉sequencePath
+        Spatial filtering              : Bounding-box filter via LatLonPoint
+        DrillSideways                  : Standard faceted UI counting (opt-in on luc꞉facet)
+        Hierarchical facets            : Taxonomy drill-down paths
+        Range facets                   : Numeric bucket counts via luc꞉facetRange
+        Result grouping                : Group hits by field via luc꞉group
+        Suggest / Autocomplete         : Type-ahead via luc꞉suggest
+        Bulk SHACL reindexer           : CLI tool for full reindex
+```
+
+All proposed extensions are additive — no breaking changes to existing query or response models. See [Use Cases](08-use-cases.md) for how these features combine in a real application.
+
 ## Documents
 
 | Document | Audience | Description |
@@ -13,6 +174,7 @@ This documentation covers the faceted search and entity-per-document indexing fe
 | [Testing](05-testing.md) | Developers / QA | Test coverage, how to run tests |
 | [Design Decisions](06-design-decisions.md) | Developers / Reviewers | Why things are the way they are |
 | [Known Limitations & Future Work](07-future-work.md) | All | What's deferred, what needs attention |
+| [Use Cases](08-use-cases.md) | All / Business | Search portal example showing how features combine |
 
 ## Quick Start
 
