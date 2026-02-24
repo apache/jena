@@ -27,6 +27,9 @@ task load
 # 4. Run all queries
 task query
 # or run individually: task query-one -- queries/01-basic-search.rq
+
+# 5. Stop the server
+task stop
 ```
 
 ## Data model

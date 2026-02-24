@@ -1,3 +1,4 @@
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 # Sequence path: facet counts on authorName field
 # The authorName field is indexed via the sequence path (ex:authoredBy / ex:name),
 # which traverses from reports to their authors to get the author's name.

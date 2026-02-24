@@ -1,3 +1,4 @@
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 # Filter by sequence path field: find reports by a specific author
 # Uses the authorName keyword field (populated via sequence path) as a filter.
 # Only reports authored by "Dr Sarah Jones" are returned.
