@@ -83,6 +83,20 @@ PREFIX ex:      <http://example.org/mining/>
         idx:fieldType idx:IntField ;
         idx:sortable true ;
         sh:path ex:year ;
+    ] ;
+    ## Sequence path: traverses ex:authoredBy then ex:name to index author name on reports
+    sh:property [
+        idx:fieldName "authorName" ;
+        idx:fieldType idx:KeywordField ;
+        idx:facetable true ;
+        sh:path ( ex:authoredBy ex:name ) ;
+    ] ;
+    ## Inverse path: indexes who authored this report (via ^ex:authored)
+    sh:property [
+        idx:fieldName "authoredByUri" ;
+        idx:fieldType idx:KeywordField ;
+        idx:multiValued true ;
+        sh:path [ sh:inversePath ex:authored ] ;
     ] .
 
 :BoreholeShape

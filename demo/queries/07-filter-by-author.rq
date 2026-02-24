@@ -1,0 +1,13 @@
+# Filter by sequence path field: find reports by a specific author
+# Uses the authorName keyword field (populated via sequence path) as a filter.
+# Only reports authored by "Dr Sarah Jones" are returned.
+
+PREFIX luc: <urn:jena:lucene:index#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?entity ?score ?label
+WHERE {
+    (?entity ?score) luc:query ('*' '{"authorName": ["Dr Sarah Jones"]}') .
+    ?entity rdfs:label ?label .
+}
+ORDER BY DESC(?score)

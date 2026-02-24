@@ -26,12 +26,14 @@ import static org.junit.Assert.*;
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.assembler.exceptions.AssemblerException;
 import org.apache.jena.query.text.ShaclIndexMapping;
+import org.apache.jena.query.text.ShaclIndexMapping.FieldDef;
 import org.apache.jena.query.text.TextIndexException;
 import org.apache.jena.query.text.TextIndexLucene;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.sparql.path.*;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
@@ -111,6 +113,107 @@ public class TestShaclAssembler {
             assertEquals("uri", index.getDocDef().getEntityField());
             assertEquals("label", index.getDocDef().getPrimaryField());
             assertEquals(RDFS.label.asNode(), index.getDocDef().getPrimaryPredicate());
+        } finally {
+            index.close();
+        }
+    }
+
+    @Test
+    public void testInversePathParsed() {
+        Model model = createModel();
+
+        // Shape with inverse path: sh:path [ sh:inversePath ex:wrote ]
+        Resource bookShape = model.createResource(EX + "BookShape")
+            .addProperty(model.createProperty(SH, "targetClass"), model.createResource(EX + "Book"))
+            .addProperty(
+                model.createProperty(SH, "property"),
+                model.createResource()
+                    .addProperty(model.createProperty(IndexVocab.NS, "fieldName"), "title")
+                    .addProperty(model.createProperty(IndexVocab.NS, "defaultSearch"), model.createTypedLiteral(true))
+                    .addProperty(model.createProperty(SH, "path"), RDFS.label)
+            )
+            .addProperty(
+                model.createProperty(SH, "property"),
+                model.createResource()
+                    .addProperty(model.createProperty(IndexVocab.NS, "fieldName"), "wroteBy")
+                    .addProperty(model.createProperty(IndexVocab.NS, "fieldType"), IndexVocab.KeywordField)
+                    .addProperty(model.createProperty(SH, "path"),
+                        model.createResource()
+                            .addProperty(model.createProperty(SH, "inversePath"),
+                                model.createResource(EX + "wrote")))
+            );
+
+        RDFNode shapesList = model.createList(new RDFNode[]{ bookShape });
+        Resource indexSpec = model.createResource(EX + "index")
+            .addProperty(RDF.type, TextVocab.textIndexLucene)
+            .addProperty(TextVocab.pDirectory, model.createLiteral("mem"))
+            .addProperty(TextVocab.pShapes, shapesList);
+
+        TextIndexLucene index = (TextIndexLucene) Assembler.general().open(indexSpec);
+        try {
+            ShaclIndexMapping mapping = index.getShaclMapping();
+            FieldDef wroteByField = null;
+            for (FieldDef f : mapping.getProfiles().get(0).getFields()) {
+                if ("wroteBy".equals(f.getFieldName())) {
+                    wroteByField = f;
+                }
+            }
+            assertNotNull("Should have wroteBy field", wroteByField);
+            assertTrue("wroteBy should have complex path", wroteByField.hasComplexPath());
+            assertTrue("wroteBy path should be P_Inverse", wroteByField.getPath() instanceof P_Inverse);
+        } finally {
+            index.close();
+        }
+    }
+
+    @Test
+    public void testSequencePathParsed() {
+        Model model = createModel();
+
+        // Shape with sequence path: sh:path ( ex:author ex:name )
+        Resource authorPath = model.createList(new RDFNode[]{
+            model.createResource(EX + "author"),
+            model.createResource(EX + "name")
+        }).asResource();
+
+        Resource bookShape = model.createResource(EX + "BookShape")
+            .addProperty(model.createProperty(SH, "targetClass"), model.createResource(EX + "Book"))
+            .addProperty(
+                model.createProperty(SH, "property"),
+                model.createResource()
+                    .addProperty(model.createProperty(IndexVocab.NS, "fieldName"), "title")
+                    .addProperty(model.createProperty(IndexVocab.NS, "defaultSearch"), model.createTypedLiteral(true))
+                    .addProperty(model.createProperty(SH, "path"), RDFS.label)
+            )
+            .addProperty(
+                model.createProperty(SH, "property"),
+                model.createResource()
+                    .addProperty(model.createProperty(IndexVocab.NS, "fieldName"), "authorName")
+                    .addProperty(model.createProperty(IndexVocab.NS, "fieldType"), IndexVocab.KeywordField)
+                    .addProperty(model.createProperty(SH, "path"), authorPath)
+            );
+
+        RDFNode shapesList = model.createList(new RDFNode[]{ bookShape });
+        Resource indexSpec = model.createResource(EX + "index")
+            .addProperty(RDF.type, TextVocab.textIndexLucene)
+            .addProperty(TextVocab.pDirectory, model.createLiteral("mem"))
+            .addProperty(TextVocab.pShapes, shapesList);
+
+        TextIndexLucene index = (TextIndexLucene) Assembler.general().open(indexSpec);
+        try {
+            ShaclIndexMapping mapping = index.getShaclMapping();
+            FieldDef authorNameField = null;
+            for (FieldDef f : mapping.getProfiles().get(0).getFields()) {
+                if ("authorName".equals(f.getFieldName())) {
+                    authorNameField = f;
+                }
+            }
+            assertNotNull("Should have authorName field", authorNameField);
+            assertTrue("authorName should have complex path", authorNameField.hasComplexPath());
+            assertTrue("authorName path should be P_Seq", authorNameField.getPath() instanceof P_Seq);
+
+            // Verify leaf predicates extracted for change listener
+            assertEquals("Should have 2 leaf predicates", 2, authorNameField.getPredicates().size());
         } finally {
             index.close();
         }

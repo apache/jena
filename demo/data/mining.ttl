@@ -87,6 +87,30 @@ ex:bh-pil-001 a ex:Borehole ;
     ex:state "WA" ;
     ex:depth 150 .
 
+## --- Authors ---
+## Authors are separate entities linked to reports via ex:authoredBy (on reports)
+## and ex:authored (on authors). This enables sequence and inverse path indexing.
+
+ex:author-jones a ex:Author ;
+    ex:name "Dr Sarah Jones" ;
+    ex:affiliation "CSIRO Mineral Resources" ;
+    ex:authored ex:report-mia-2023, ex:report-od-2024 .
+
+ex:author-chen a ex:Author ;
+    ex:name "Prof Wei Chen" ;
+    ex:affiliation "Geoscience Australia" ;
+    ex:authored ex:report-mia-2021, ex:report-bh-1985 .
+
+ex:author-williams a ex:Author ;
+    ex:name "James Williams" ;
+    ex:affiliation "Rio Tinto Technical Services" ;
+    ex:authored ex:report-pil-2024, ex:report-pil-exploration .
+
+ex:author-patel a ex:Author ;
+    ex:name "Dr Priya Patel" ;
+    ex:affiliation "Newmont Geology" ;
+    ex:authored ex:report-bod-2022, ex:report-cad-2023 .
+
 ## --- Mining Reports ---
 
 ex:report-mia-2023 a ex:MiningReport ;
@@ -96,7 +120,8 @@ ex:report-mia-2023 a ex:MiningReport ;
     ex:state "QLD" ;
     ex:operator "Glencore" ;
     ex:status "Current" ;
-    ex:year 2023 .
+    ex:year 2023 ;
+    ex:authoredBy ex:author-jones .
 
 ex:report-mia-2021 a ex:MiningReport ;
     rdfs:label "Mount Isa Lead-Zinc Exploration Summary" ;
@@ -105,7 +130,8 @@ ex:report-mia-2021 a ex:MiningReport ;
     ex:state "QLD" ;
     ex:operator "Glencore" ;
     ex:status "Current" ;
-    ex:year 2021 .
+    ex:year 2021 ;
+    ex:authoredBy ex:author-chen .
 
 ex:report-od-2024 a ex:MiningReport ;
     rdfs:label "Olympic Dam Expansion Feasibility Study" ;
@@ -114,7 +140,8 @@ ex:report-od-2024 a ex:MiningReport ;
     ex:state "SA" ;
     ex:operator "BHP" ;
     ex:status "Current" ;
-    ex:year 2024 .
+    ex:year 2024 ;
+    ex:authoredBy ex:author-jones .
 
 ex:report-bod-2022 a ex:MiningReport ;
     rdfs:label "Boddington Gold Production Report 2022" ;
@@ -123,7 +150,8 @@ ex:report-bod-2022 a ex:MiningReport ;
     ex:state "WA" ;
     ex:operator "Newmont" ;
     ex:status "Current" ;
-    ex:year 2022 .
+    ex:year 2022 ;
+    ex:authoredBy ex:author-patel .
 
 ex:report-bh-1985 a ex:MiningReport ;
     rdfs:label "Broken Hill Lead-Zinc Historical Assessment" ;
@@ -132,7 +160,8 @@ ex:report-bh-1985 a ex:MiningReport ;
     ex:state "NSW" ;
     ex:operator "BHP" ;
     ex:status "Historical" ;
-    ex:year 1985 .
+    ex:year 1985 ;
+    ex:authoredBy ex:author-chen .
 
 ex:report-cad-2023 a ex:MiningReport ;
     rdfs:label "Cadia Valley Gold-Copper Resource Update" ;
@@ -141,7 +170,8 @@ ex:report-cad-2023 a ex:MiningReport ;
     ex:state "NSW" ;
     ex:operator "Newcrest" ;
     ex:status "Current" ;
-    ex:year 2023 .
+    ex:year 2023 ;
+    ex:authoredBy ex:author-patel .
 
 ex:report-pil-2024 a ex:MiningReport ;
     rdfs:label "Pilbara Iron Ore Reserves Statement 2024" ;
@@ -150,7 +180,8 @@ ex:report-pil-2024 a ex:MiningReport ;
     ex:state "WA" ;
     ex:operator "Rio Tinto" ;
     ex:status "Current" ;
-    ex:year 2024 .
+    ex:year 2024 ;
+    ex:authoredBy ex:author-williams .
 
 ex:report-pil-exploration a ex:MiningReport ;
     rdfs:label "Pilbara Greenfield Exploration Program Results" ;
@@ -159,4 +190,5 @@ ex:report-pil-exploration a ex:MiningReport ;
     ex:state "WA" ;
     ex:operator "Rio Tinto" ;
     ex:status "Current" ;
-    ex:year 2023 .
+    ex:year 2023 ;
+    ex:authoredBy ex:author-williams .

@@ -24,6 +24,8 @@ package org.apache.jena.query.text;
 import java.util.*;
 
 import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.path.P_Link;
+import org.apache.jena.sparql.path.Path;
 import org.apache.lucene.analysis.Analyzer;
 
 /**
@@ -47,11 +49,20 @@ public class ShaclIndexMapping {
         private final boolean multiValued;
         private final boolean defaultSearch;
         private final Set<Node> predicates;
+        private final Path path;
 
         public FieldDef(String fieldName, FieldType fieldType, Analyzer analyzer,
                         boolean stored, boolean indexed, boolean facetable,
                         boolean sortable, boolean multiValued, boolean defaultSearch,
                         Set<Node> predicates) {
+            this(fieldName, fieldType, analyzer, stored, indexed, facetable,
+                 sortable, multiValued, defaultSearch, predicates, null);
+        }
+
+        public FieldDef(String fieldName, FieldType fieldType, Analyzer analyzer,
+                        boolean stored, boolean indexed, boolean facetable,
+                        boolean sortable, boolean multiValued, boolean defaultSearch,
+                        Set<Node> predicates, Path path) {
             this.fieldName = Objects.requireNonNull(fieldName);
             this.fieldType = fieldType != null ? fieldType : FieldType.TEXT;
             this.analyzer = analyzer;
@@ -62,6 +73,7 @@ public class ShaclIndexMapping {
             this.multiValued = multiValued;
             this.defaultSearch = defaultSearch;
             this.predicates = predicates != null ? Collections.unmodifiableSet(new LinkedHashSet<>(predicates)) : Collections.emptySet();
+            this.path = path;
         }
 
         public String getFieldName()       { return fieldName; }
@@ -74,6 +86,14 @@ public class ShaclIndexMapping {
         public boolean isMultiValued()      { return multiValued; }
         public boolean isDefaultSearch()    { return defaultSearch; }
         public Set<Node> getPredicates()    { return predicates; }
+
+        /** The structured path for this field. Null for simple predicate fields (backward compat). */
+        public Path getPath()              { return path; }
+
+        /** True if this field uses a complex path (sequence, inverse, or nested). */
+        public boolean hasComplexPath() {
+            return path != null && !(path instanceof P_Link);
+        }
 
         @Override
         public String toString() {

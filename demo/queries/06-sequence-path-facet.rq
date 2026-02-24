@@ -1,0 +1,13 @@
+# Sequence path: facet counts on authorName field
+# The authorName field is indexed via the sequence path (ex:authoredBy / ex:name),
+# which traverses from reports to their authors to get the author's name.
+# This shows how many reports each author wrote, without the author name
+# being stored directly on the report.
+
+PREFIX luc: <urn:jena:lucene:index#>
+
+SELECT ?field ?value ?count
+WHERE {
+    (?field ?value ?count) luc:facet ("*" '["authorName", "state"]' 10)
+}
+ORDER BY ?field DESC(?count)

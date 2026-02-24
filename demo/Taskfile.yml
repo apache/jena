@@ -46,6 +46,8 @@ tasks:
           - queries/03-facet-counts.rq
           - queries/04-facet-filtered.rq
           - queries/05-combined.rq
+          - queries/06-sequence-path-facet.rq
+          - queries/07-filter-by-author.rq
         cmd: |
           echo "=== {{.ITEM}} ==="
           curl -s -X POST "{{.SERVER_URL}}/{{.DATASET}}/query" \
