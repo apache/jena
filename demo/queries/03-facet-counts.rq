@@ -1,3 +1,4 @@
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 # Facet counts for a search query.
 # Shows how results for "copper" distribute across commodity, state, and operator.
 # Each row is a (field, value, count) triple.

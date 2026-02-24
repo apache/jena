@@ -1,3 +1,4 @@
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 # Search with structured filters.
 # Finds entities matching "copper" that are in Queensland (state=QLD).
 # Filters use JSON syntax: AND across fields, OR within a field.

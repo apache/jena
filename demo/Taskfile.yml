@@ -1,3 +1,4 @@
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 # https://taskfile.dev
 version: '3'
 
@@ -17,6 +18,11 @@ tasks:
     desc: Start Fuseki with the demo config
     cmds:
       - java -jar {{.FUSEKI_JAR}} --config config.ttl
+
+  stop:
+    desc: Stop the running Fuseki server (sends SIGTERM for clean shutdown)
+    cmds:
+      - pkill -f "jena-fuseki-server" && echo "Server stopped" || echo "No server running"
 
   load:
     desc: Load the demo mining dataset via SPARQL Graph Store Protocol
@@ -45,7 +51,7 @@ tasks:
           echo ""
 
   query-one:
-    desc: Run a single query file (usage: task query-one -- queries/01-basic-search.rq)
+    desc: "Run a single query file (usage: task query-one -- queries/01-basic-search.rq)"
     cmds:
       - |
         curl -s -X POST "{{.SERVER_URL}}/{{.DATASET}}/query" \
@@ -54,7 +60,7 @@ tasks:
           --data-binary @{{.CLI_ARGS}}
 
   generate:
-    desc: Generate a synthetic dataset (usage: task generate -- --count 1000)
+    desc: "Generate a synthetic dataset (usage: task generate -- --count 1000)"
     cmds:
       - python3 generate.py {{.CLI_ARGS}}
 

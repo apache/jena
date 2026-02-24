@@ -1,3 +1,4 @@
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 # Search results and facet counts in a single query using UNION.
 # Returns N + M rows (not a cartesian product).
 # Hit rows have ?field/?value/?count unbound; facet rows have ?entity/?score unbound.

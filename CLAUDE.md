@@ -104,6 +104,10 @@ When `luc:query` and `luc:facet` appear in the same SPARQL query, both build a n
 
 `DatasetGraphTextMonitor.add()` → `super.add()` (base dataset updated first) → `ShaclTextDocProducer.change()` → if relevant predicate or `rdf:type`, calls `rebuildEntityDocuments()` which reads all entity triples from base dataset and replaces the Lucene document.
 
+## Git Commits
+
+- Do NOT add `Co-Authored-By` lines to commit messages
+
 ## Code Style
 
 - K&R "Egyptian brackets" braces
