@@ -1,0 +1,11 @@
+# Facet counts for a search query.
+# Shows how results for "copper" distribute across commodity, state, and operator.
+# Each row is a (field, value, count) triple.
+
+PREFIX luc: <urn:jena:lucene:index#>
+
+SELECT ?field ?value ?count
+WHERE {
+    (?field ?value ?count) luc:facet ("copper" '["commodity", "state", "operator"]' 10)
+}
+ORDER BY ?field DESC(?count)

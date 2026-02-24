@@ -1,0 +1,11 @@
+# Search with structured filters.
+# Finds entities matching "copper" that are in Queensland (state=QLD).
+# Filters use JSON syntax: AND across fields, OR within a field.
+
+PREFIX luc: <urn:jena:lucene:index#>
+
+SELECT ?entity ?score
+WHERE {
+    (?entity ?score) luc:query ("copper" '{"state": ["QLD"]}')
+}
+ORDER BY DESC(?score)

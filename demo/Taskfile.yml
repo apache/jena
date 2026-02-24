@@ -1,0 +1,65 @@
+# https://taskfile.dev
+version: '3'
+
+vars:
+  FUSEKI_JAR: ../jena-fuseki2/jena-fuseki-server/target/jena-fuseki-server-6.1.0-SNAPSHOT.jar
+  SERVER_URL: http://localhost:3030
+  DATASET: mining
+
+tasks:
+  build:
+    desc: Build the Fuseki server JAR (includes jena-text)
+    dir: ..
+    cmds:
+      - mvn clean install -pl jena-fuseki2/jena-fuseki-server -am -DskipTests
+
+  serve:
+    desc: Start Fuseki with the demo config
+    cmds:
+      - java -jar {{.FUSEKI_JAR}} --config config.ttl
+
+  load:
+    desc: Load the demo mining dataset via SPARQL Graph Store Protocol
+    cmds:
+      - |
+        curl -s -X PUT "{{.SERVER_URL}}/{{.DATASET}}/data?default" \
+          -H "Content-Type: text/turtle" \
+          --data-binary @data/mining.ttl
+      - echo "Loaded data/mining.ttl"
+
+  query:
+    desc: Run all demo queries against the server
+    cmds:
+      - for:
+          - queries/01-basic-search.rq
+          - queries/02-filtered-search.rq
+          - queries/03-facet-counts.rq
+          - queries/04-facet-filtered.rq
+          - queries/05-combined.rq
+        cmd: |
+          echo "=== {{.ITEM}} ==="
+          curl -s -X POST "{{.SERVER_URL}}/{{.DATASET}}/query" \
+            -H "Content-Type: application/sparql-query" \
+            -H "Accept: text/tab-separated-values" \
+            --data-binary @{{.ITEM}}
+          echo ""
+
+  query-one:
+    desc: Run a single query file (usage: task query-one -- queries/01-basic-search.rq)
+    cmds:
+      - |
+        curl -s -X POST "{{.SERVER_URL}}/{{.DATASET}}/query" \
+          -H "Content-Type: application/sparql-query" \
+          -H "Accept: text/tab-separated-values" \
+          --data-binary @{{.CLI_ARGS}}
+
+  generate:
+    desc: Generate a synthetic dataset (usage: task generate -- --count 1000)
+    cmds:
+      - python3 generate.py {{.CLI_ARGS}}
+
+  clean:
+    desc: Remove TDB2 and Lucene data directories
+    cmds:
+      - rm -rf DB Lucene
+      - echo "Cleaned DB and Lucene directories"
