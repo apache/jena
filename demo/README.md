@@ -6,30 +6,46 @@ using an Australian mining domain with reports, boreholes, sites, and authors.
 ## Prerequisites
 
 - Java 21+
-- [go-task](https://taskfile.dev/) (optional, for `task` commands)
 - Maven 3.9+ (for building)
+- [go-task](https://taskfile.dev/) (for `task` commands)
+
+For Docker workflows:
+- Docker Desktop
+- **GitHub CR**: `gh` CLI authenticated with `write:packages` scope
+- **Azure CR**: `az` CLI authenticated
 
 ## Quick start
 
 ```bash
 # 1. Build the Fuseki server JAR (from repo root)
 task build
-# or: cd .. && mvn clean install -Pdev -DskipTests && cd demo
 
 # 2. Start the server
 task serve
-# or: java -jar ../jena-fuseki2/jena-fuseki-server/target/jena-fuseki-server-*.jar --config config.ttl
 
 # 3. Load the demo data (in a separate terminal)
 task load
-# or: curl -X PUT "http://localhost:3030/mining/data?default" -H "Content-Type: text/turtle" --data-binary @data/mining.ttl
 
 # 4. Run all queries
 task query
-# or run individually: task query-one -- queries/01-basic-search.rq
 
 # 5. Stop the server
 task stop
+```
+
+## Quick start (Docker)
+
+```bash
+# Start the server using the pre-built image from GitHub CR
+docker compose up
+
+# Load data and run queries (in a separate terminal)
+task load
+task query
+
+# Stop
+docker compose down      # keep data
+docker compose down -v   # wipe data volumes
 ```
 
 ## Data model
@@ -108,18 +124,62 @@ report-mia-2023  "Mount Isa Copper Resource Estimation 2023"
 report-od-2024   "Olympic Dam Expansion Feasibility Study"
 ```
 
+## Docker image
+
+### Building
+
+Build the Docker image locally:
+
+```bash
+task image-build
+```
+
+This produces `fuseki-ai:6.1.0-SNAPSHOT` by default. The image is based on `eclipse-temurin:21-jre-alpine` and includes the server config and demo mining dataset.
+
+Override the image name or tag:
+
+```bash
+task image-build IMAGE_NAME=myapp IMAGE_TAG=latest
+```
+
+### Pushing to GitHub Container Registry
+
+```bash
+task ghcr-push
+```
+
+Pushes to `ghcr.io/aiworkerjohns/fuseki-ai:6.1.0-SNAPSHOT`. Override the owner:
+
+```bash
+task ghcr-push GHCR_OWNER=other-org
+```
+
+New packages default to private. Set visibility to public via GitHub > Package Settings > Change visibility.
+
+The `gh` CLI must have the `write:packages` scope. Add it with:
+
+```bash
+gh auth refresh -s write:packages
+```
+
+### Pushing to Azure Container Registry
+
+```bash
+task image-push ACR_NAME=myregistry
+```
+
+Pushes to `myregistry.azurecr.io/fuseki-ai:6.1.0-SNAPSHOT`. The task checks for an active Azure session and runs `az login` if needed, then authenticates with the ACR before pushing.
+
 ## Synthetic data generation
 
 Generate larger datasets for performance testing:
 
 ```bash
 task generate -- --count 1000
-# or: python3 generate.py --count 1000
 ```
 
 ## Cleanup
 
 ```bash
 task clean
-# or: rm -rf DB Lucene
 ```
