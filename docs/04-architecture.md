@@ -65,10 +65,10 @@ Used with `text:shapes` configuration. SPARQL search via `luc:query` (with filte
 | Class | Role |
 |-------|------|
 | `ShaclIndexMapping` | Parsed data model: `IndexProfile` (shape), `FieldDef` (field), `FieldType` enum. Pure data, no RDF/Lucene dependencies beyond `Node` and `Analyzer` |
-| `ShaclTextDocProducer` | Change listener. On triple add/delete, reads entity state from base dataset, builds Entity, calls `updateEntityForProfile()` |
-| `ShaclTextQueryPF` | Implements `luc:query` — search with JSON filter support. Uses `SearchExecution` for shared state with `luc:facet` |
+| `ShaclTextDocProducer` | Change listener. On triple add/delete, reads entity state from `MultiUnion(defaultGraph, unionGraph)`, builds Entity, calls `updateEntityForProfile()`. Supports data in default and named graphs |
+| `ShaclTextQueryPF` | Implements `luc:query` — search with JSON filter support, `?totalHits` binding. Uses `SearchExecution` for shared state with `luc:facet` |
 | `TextFacetPF` | Implements `luc:facet` — facet counts property function. Returns (field, value, count) bindings |
-| `SearchExecution` | Shared execution state. Stored in `ExecutionContext` keyed by normalised query params. Lazy-computes hits and facet counts |
+| `SearchExecution` | Shared execution state. Stored in `ExecutionContext` keyed by normalised query params. Lazy-computes hits, facet counts, and total hit count |
 | `FacetValue` | Immutable (value, count) pair for facet results |
 | `ShaclIndexAssembler` | Parses `text:shapes` RDF config into `ShaclIndexMapping`. Reads `sh:targetClass`, `sh:path`, `sh:alternativePath`. No jena-shacl dependency |
 | `IndexVocab` | `urn:jena:lucene:index#` namespace constants and PF URI strings |
@@ -117,6 +117,8 @@ Key normalisation: property URIs are sorted, filter map keys are sorted, filter 
 
 `ShaclTextDocProducer` handles all triple changes. The base dataset is always up-to-date when `change()` fires because `DatasetGraphTextMonitor` calls `super.add()` before `record()`.
 
+The producer reads entity data from a `MultiUnion` graph combining the default graph and the union of all named graphs. This ensures entities are indexed regardless of whether data is loaded into the default graph or named graphs (e.g. N-Quads with `tdb2:unionDefaultGraph`).
+
 ### Indexing flow from config to Lucene document
 
 ```mermaid
@@ -159,11 +161,12 @@ DatasetGraphTextMonitor.add(g, s, p, o)
         └── else: ignore (irrelevant predicate)
 
 rebuildEntityDocuments(subject)
-  ├── Read rdf:type values from base dataset
+  ├── getAllGraph() → MultiUnion(defaultGraph, unionGraph)
+  ├── Read rdf:type values from combined graph
   ├── Find matching IndexProfiles via classLookup
   ├── If no profiles match → deleteEntityByUri()
   └── For each matching profile:
-        ├── Read all relevant triples from base dataset
+        ├── Read all relevant triples from combined graph
         ├── Build Entity with addValue() for each field
         └── indexer.updateEntityForProfile(entity, profile)
               ├── docFromMapping() → builds typed Lucene Document

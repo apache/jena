@@ -90,7 +90,7 @@ All new code is additive — upstream code paths are unmodified.
 |-------|------|
 | `ShaclIndexMapping` | Parsed data model: `IndexProfile` (shape), `FieldDef` (field), `FieldType` enum |
 | `ShaclTextDocProducer` | Change listener — rebuilds entity Lucene docs on triple add/delete |
-| `ShaclTextQueryPF` | `luc:query` property function with JSON filter support |
+| `ShaclTextQueryPF` | `luc:query` property function with JSON filter support and `?totalHits` binding |
 | `TextFacetPF` | `luc:facet` property function — returns (field, value, count) bindings |
 | `SearchExecution` | Shared state between `luc:query` and `luc:facet` in same SPARQL query via `ExecutionContext` |
 | `ShaclIndexAssembler` | Parses `text:shapes` RDF config into `ShaclIndexMapping` |

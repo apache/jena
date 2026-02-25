@@ -65,7 +65,7 @@ Extended search property function for SHACL-mode datasets. Supports JSON filter 
 ### Syntax
 
 ```
-(?s ?score ?literal ?graph ?prop) luc:query (property* queryString filter? limit?)
+(?s ?score ?literal ?totalHits ?graph ?prop) luc:query (property* queryString filter? limit?)
 ```
 
 ### Arguments (positional, left to right)
@@ -84,8 +84,11 @@ Extended search property function for SHACL-mode datasets. Supports JSON filter 
 | ?s | Yes | URI | Matched entity |
 | ?score | No | float | Lucene relevance score |
 | ?literal | No | Literal | The matched text value |
+| ?totalHits | No | xsd:long | Total matching documents (same value on every row) |
 | ?graph | No | URI | Named graph of the match |
 | ?prop | No | URI | Which predicate matched |
+
+The `?totalHits` binding returns the total number of documents matching the query and filters, regardless of the `limit` parameter. This is useful for displaying "Showing X of Y results" in search UIs. The value is computed efficiently using `IndexSearcher.count()` and is only evaluated when the variable is present in the subject.
 
 ### Examples
 
@@ -101,8 +104,14 @@ PREFIX luc: <urn:jena:lucene:index#>
 # Search with limit
 (?s ?score) luc:query ("machine learning" 20) .
 
+# Search with total hit count
+(?s ?score ?literal ?totalHits) luc:query ("machine learning" 20) .
+
 # Search with filter (only Technology books)
 (?s ?score) luc:query ("learning" '{"category": ["Technology"]}' 20) .
+
+# Search with filter and total hit count
+(?s ?score ?_lit ?totalHits) luc:query ("learning" '{"category": ["Technology"]}' 20) .
 
 # Search with multi-value filter (Technology OR Science)
 (?s ?score) luc:query ("learning" '{"category": ["Technology", "Science"]}') .
@@ -209,14 +218,14 @@ If a single SPARQL request is preferred, use `UNION` to return both result sets 
 ```sparql
 PREFIX luc: <urn:jena:lucene:index#>
 
-SELECT ?s ?score ?field ?value ?count WHERE {
-    { (?s ?score) luc:query ("learning") . }
+SELECT ?s ?score ?totalHits ?field ?value ?count WHERE {
+    { (?s ?score ?_lit ?totalHits) luc:query ("learning" 10) . }
     UNION
     { (?field ?value ?count) luc:facet ("learning" '["category"]' 10) . }
 }
 ```
 
-This returns N + M rows (not N × M). Hit rows have `?field`, `?value`, `?count` unbound; facet rows have `?s`, `?score` unbound. The consumer splits results by checking which columns are present. Both PFs share a single Lucene execution via `SearchExecution` (see below).
+This returns N + M rows (not N × M). Hit rows have `?field`, `?value`, `?count` unbound; facet rows have `?s`, `?score`, `?totalHits` unbound. The consumer splits results by checking which columns are present. `?totalHits` appears on every hit row with the same value — read it from the first row. Both PFs share a single Lucene execution via `SearchExecution` (see below).
 
 ### Avoid: Combined BGP (cartesian product)
 
@@ -315,6 +324,9 @@ Map<String, List<FacetValue>> drilled =
 // Text query with filters
 List<TextHit> hits =
     textIndex.queryWithFilters(props, "learning", filters, null, null, 20, null);
+
+// Count total matching documents (efficient — uses IndexSearcher.count())
+long total = textIndex.countQuery("learning", filters);
 ```
 
 `FacetValue` is an immutable pair:

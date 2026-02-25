@@ -177,6 +177,7 @@ public class TextFacetPF extends PropertyFunctionBase {
         // Get facet counts (via SearchExecution if filters present, direct otherwise)
         Map<String, List<FacetValue>> facetCounts;
         try {
+            log.debug("TextFacetPF: filters={} queryString='{}' facetFields={}", args.filters, args.queryString, args.facetFields);
             if (args.filters != null && !args.filters.isEmpty()) {
                 SearchExecution se = SearchExecution.getOrCreate(
                     execCxt, args.props, args.queryString,

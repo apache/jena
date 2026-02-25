@@ -2,12 +2,6 @@
 
 ## Items Needing Attention
 
-### Named graph support in SHACL mode
-
-The `ShaclTextDocProducer` currently reads triples from the default graph only (`baseDataset.getDefaultGraph()`). Entities in named graphs will not be indexed. This should be extended to iterate over all graphs, or to accept a configurable graph URI.
-
-**Impact:** Users who store data in named graphs will not see those entities indexed in SHACL mode. Classic mode handles named graphs via the `graphField` in `EntityDefinition`.
-
 ### Assembler integration test with TTL file
 
 The `TestShaclAssembler` builds config programmatically using the Model API. There is no test that loads a real TTL file with `text:shapes`. Adding a TTL-file-based assembler test would catch config serialisation issues.
@@ -30,18 +24,6 @@ The `ShaclTextDocProducer` uses a `ThreadLocal<Boolean>` for transaction trackin
 ---
 
 ## Planned Extensions
-
-### Inverse and sequence paths (next priority)
-
-Currently only `sh:path <uri>` and `sh:alternativePath` are supported. This limits what can be indexed to direct properties of an entity. Extending path support would significantly increase the range of data that can be indexed without denormalising.
-
-- `sh:inversePath` — index objects that point *to* the entity (e.g., index a Person's affiliated Organisation by following `ex:memberOf` backwards)
-- Sequence paths — traverse multi-hop paths (e.g., `ex:author / ex:name` to index the author's name directly on a Book entity)
-
-Would require:
-- Path evaluation logic in `ShaclTextDocProducer.rebuildEntityDocuments()` to traverse beyond single predicates
-- Change listener must detect changes to intermediate triples (e.g., if the author's name changes, the book's index should update)
-- Config parsing in `ShaclIndexAssembler` for `sh:inversePath` and `sh:sequencePath`
 
 ### Spatial filtering (bbox)
 

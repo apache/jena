@@ -35,9 +35,9 @@ import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.logging.Log;
-import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.QueryBuildException;
 import org.apache.jena.query.QueryExecException;
 import org.apache.jena.rdf.model.Property;
@@ -87,8 +87,8 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
 
         if (argSubject.isList()) {
             int size = argSubject.getArgListSize();
-            if (size == 0 || size > 5) {
-                throw new QueryBuildException("Subject has " + size + " elements, must be 1-5: " + argSubject);
+            if (size == 0 || size > 6) {
+                throw new QueryBuildException("Subject has " + size + " elements, must be 1-6: " + argSubject);
             }
         }
 
@@ -142,7 +142,7 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
         argSubject = Substitute.substitute(argSubject, binding);
         argObject = Substitute.substitute(argObject, binding);
 
-        Node s = null, score = null, literal = null, graph = null, prop = null;
+        Node s = null, score = null, literal = null, totalHitsNode = null, graph = null, prop = null;
 
         if (argSubject.isList()) {
             s = argSubject.getArg(0);
@@ -157,12 +157,17 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
                     throw new QueryExecException("Hit literal is not a variable: " + argSubject);
             }
             if (argSubject.getArgListSize() > 3) {
-                graph = argSubject.getArg(3);
+                totalHitsNode = argSubject.getArg(3);
+                if (!totalHitsNode.isVariable())
+                    throw new QueryExecException("Total hits is not a variable: " + argSubject);
+            }
+            if (argSubject.getArgListSize() > 4) {
+                graph = argSubject.getArg(4);
                 if (!graph.isVariable())
                     throw new QueryExecException("Hit graph is not a variable: " + argSubject);
             }
-            if (argSubject.getArgListSize() > 4) {
-                prop = argSubject.getArg(4);
+            if (argSubject.getArgListSize() > 5) {
+                prop = argSubject.getArg(5);
                 if (!prop.isVariable())
                     throw new QueryExecException("Hit prop is not a variable: " + argSubject);
             }
@@ -198,28 +203,34 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
             }
         }
 
-        QueryIterator qIter = resultsToQueryIterator(binding, s, score, literal, graph, prop, hits, execCxt);
+        long totalHits = totalHitsNode != null ? se.getTotalHits() : -1;
+        QueryIterator qIter = resultsToQueryIterator(binding, s, score, literal, totalHitsNode, totalHits, graph, prop, hits, execCxt);
         if (args.limit >= 0)
             qIter = new QueryIterSlice(qIter, 0, args.limit, execCxt);
         return qIter;
     }
 
     private QueryIterator resultsToQueryIterator(Binding binding, Node subj, Node score, Node literal,
+                                                  Node totalHitsNode, long totalHits,
                                                   Node graph, Node prop, Collection<TextHit> results,
                                                   ExecutionContext execCxt) {
         Var sVar = Var.isVar(subj) ? Var.alloc(subj) : null;
         Var scoreVar = (score == null) ? null : Var.alloc(score);
         Var literalVar = (literal == null) ? null : Var.alloc(literal);
+        Var totalHitsVar = (totalHitsNode == null) ? null : Var.alloc(totalHitsNode);
+        Node totalHitsValue = totalHitsVar != null
+            ? NodeFactory.createLiteralDT(String.valueOf(totalHits), XSDDatatype.XSDlong) : null;
         Var graphVar = (graph == null) ? null : Var.alloc(graph);
         Var propVar = (prop == null) ? null : Var.alloc(prop);
 
         Function<TextHit, Binding> converter = (TextHit hit) -> {
-            if (score == null && literal == null)
+            if (score == null && literal == null && totalHitsVar == null)
                 return sVar != null ? BindingFactory.binding(binding, sVar, hit.getNode()) : BindingFactory.binding(binding);
             BindingBuilder bmap = Binding.builder(binding);
             if (sVar != null) bmap.add(sVar, hit.getNode());
             if (scoreVar != null) bmap.add(scoreVar, NodeFactoryExtra.floatToNode(hit.getScore()));
             if (literalVar != null && hit.getLiteral() != null) bmap.add(literalVar, hit.getLiteral());
+            if (totalHitsVar != null) bmap.add(totalHitsVar, totalHitsValue);
             if (graphVar != null && hit.getGraph() != null) bmap.add(graphVar, hit.getGraph());
             if (propVar != null && hit.getProp() != null) bmap.add(propVar, hit.getProp());
             return bmap.build();
