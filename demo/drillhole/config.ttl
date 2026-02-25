@@ -1,0 +1,91 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+PREFIX :        <#>
+PREFIX fuseki:  <http://jena.apache.org/fuseki#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
+PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
+PREFIX text:    <http://jena.apache.org/text#>
+PREFIX idx:     <urn:jena:lucene:index#>
+PREFIX sh:      <http://www.w3.org/ns/shacl#>
+PREFIX sosa:    <http://www.w3.org/ns/sosa/>
+PREFIX exg:     <http://example.com/>
+
+## --- Fuseki server ---
+
+[] rdf:type fuseki:Server ;
+   fuseki:services ( :service ) .
+
+:service rdf:type fuseki:Service ;
+    fuseki:name "geochem" ;
+    fuseki:endpoint [ fuseki:operation fuseki:query  ; fuseki:name "query"  ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:update ; fuseki:name "update" ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:gsp-rw ; fuseki:name "data"   ] ;
+    fuseki:dataset :text_dataset .
+
+## --- Text-indexed dataset ---
+
+:text_dataset rdf:type text:TextDataset ;
+    text:dataset :base_dataset ;
+    text:index   :index .
+
+:base_dataset rdf:type tdb2:DatasetTDB ;
+    tdb2:location "DB" ;
+    tdb2:unionDefaultGraph true .
+
+:index rdf:type text:TextIndexLucene ;
+    text:directory <file:Lucene> ;
+    text:shapes ( :GeochemAnalysisShape ) ;
+    text:storeValues true ;
+    text:maxFacetHits 100000 .
+
+## --- GSWA Geochemistry Analysis Shape ---
+## Each entity is a sosa:Observation typed as exg:GeochemistryAnalysis.
+## 100K entities per file, 200 files available.
+
+:GeochemAnalysisShape
+    sh:targetClass exg:GeochemistryAnalysis ;
+
+    ## Entity type label via sequence path: rdf:type -> rdfs:label
+    sh:property [
+        idx:fieldName "entityType" ;
+        idx:fieldType idx:KeywordField ;
+        idx:facetable true ;
+        sh:path ( rdf:type rdfs:label ) ;
+    ] ;
+
+    ## Observation label (site + sample ID)
+    sh:property [
+        idx:fieldName "title" ;
+        idx:fieldType idx:TextField ;
+        idx:defaultSearch true ;
+        sh:path rdfs:label ;
+    ] ;
+
+    ## Element being measured via sequence path: sosa:observedProperty -> rdfs:label
+    ## e.g. "Au", "Cu", "Fe", "Pb" (122 unique values)
+    sh:property [
+        idx:fieldName "element" ;
+        idx:fieldType idx:KeywordField ;
+        idx:facetable true ;
+        sh:path ( sosa:observedProperty rdfs:label ) ;
+    ] ;
+
+    ## Analytical method via sequence path: sosa:usedProcedure -> rdfs:label
+    ## e.g. "XRF", "ICP-MS", "Fire Assay" (765 unique values)
+    sh:property [
+        idx:fieldName "procedure" ;
+        idx:fieldType idx:KeywordField ;
+        idx:facetable true ;
+        sh:path ( sosa:usedProcedure rdfs:label ) ;
+    ] ;
+
+    ## Laboratory via sequence path: sosa:madeBySensor -> rdfs:label
+    ## e.g. "ALS", "Genalysis", "SGS" (293 unique values)
+    sh:property [
+        idx:fieldName "lab" ;
+        idx:fieldType idx:KeywordField ;
+        idx:facetable true ;
+        sh:path ( sosa:madeBySensor rdfs:label ) ;
+    ] .

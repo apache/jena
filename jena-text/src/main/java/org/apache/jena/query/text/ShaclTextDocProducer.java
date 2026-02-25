@@ -23,10 +23,14 @@ package org.apache.jena.query.text;
 
 import java.util.*;
 
+import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.text.ShaclIndexMapping.*;
 import org.apache.jena.query.text.changes.TextQuadAction;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.path.P_Link;
+import org.apache.jena.sparql.path.Path;
+import org.apache.jena.sparql.path.eval.PathEval;
 import org.apache.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,20 +149,36 @@ public class ShaclTextDocProducer implements TextDocProducer {
 
     /**
      * Build an Entity by reading all relevant triples for the subject from the base dataset.
+     * Uses PathEval for complex paths (sequence, inverse); direct triple match for simple predicates.
      */
     private Entity buildEntity(Node subject, String entityUri, IndexProfile profile) {
         Entity entity = new Entity(entityUri, null);
+        Graph graph = baseDataset.getDefaultGraph();
 
         for (FieldDef fieldDef : profile.getFields()) {
-            for (Node predicate : fieldDef.getPredicates()) {
-                Iterator<Node> objects = baseDataset.getDefaultGraph()
-                    .find(subject, predicate, Node.ANY)
-                    .mapWith(t -> t.getObject());
-                while (objects.hasNext()) {
-                    Node obj = objects.next();
+            Path path = fieldDef.getPath();
+            if (path != null && fieldDef.hasComplexPath()) {
+                // Complex path — use PathEval
+                Iterator<Node> values = PathEval.eval(graph, subject, path, null);
+                while (values.hasNext()) {
+                    Node obj = values.next();
                     Object value = nodeToValue(obj, fieldDef.getFieldType());
                     if (value != null) {
                         entity.addValue(fieldDef.getFieldName(), value);
+                    }
+                }
+            } else {
+                // Simple predicate(s) — direct triple match (fast path)
+                for (Node predicate : fieldDef.getPredicates()) {
+                    Iterator<Node> objects = graph
+                        .find(subject, predicate, Node.ANY)
+                        .mapWith(t -> t.getObject());
+                    while (objects.hasNext()) {
+                        Node obj = objects.next();
+                        Object value = nodeToValue(obj, fieldDef.getFieldType());
+                        if (value != null) {
+                            entity.addValue(fieldDef.getFieldName(), value);
+                        }
                     }
                 }
             }

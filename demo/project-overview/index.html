@@ -1,0 +1,1303 @@
+<!-- Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SHACL Faceted Search for Apache Jena — KurrawongAI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <style>
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg-base: #0f1117;
+  --bg-raised: #181b23;
+  --bg-elevated: #1e222c;
+  --bg-code: #141720;
+  --text-primary: #e8e6e3;
+  --text-secondary: #9ca3af;
+  --text-muted: #5a6070;
+  --amber: #d4944c;
+  --amber-dim: rgba(212,148,76,0.12);
+  --teal: #4db8a4;
+  --teal-dim: rgba(77,184,164,0.10);
+  --steel: #5b8cb8;
+  --steel-dim: rgba(91,140,184,0.12);
+  --green: #5aad7a;
+  --green-dim: rgba(90,173,122,0.10);
+  --red: #c45c5c;
+  --red-dim: rgba(196,92,92,0.10);
+  --purple: #9b7ed8;
+  --purple-dim: rgba(155,126,216,0.10);
+  --border: #272c38;
+  --border-subtle: #1e222c;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius: 8px;
+  --radius-sm: 4px;
+}
+
+html { background: var(--bg-base); color-scheme: dark; }
+body {
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* ── Top Bar ── */
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 48px;
+  background: var(--bg-raised);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem;
+}
+.topbar-brand {
+  display: flex; align-items: center; gap: 0.6rem;
+}
+.topbar-brand img { height: 22px; }
+.topbar-brand-text {
+  font-weight: 700; font-size: 0.85rem; color: var(--text-secondary);
+  letter-spacing: 0.02em;
+}
+
+/* ── Progress Meter (top-right) ── */
+.progress-meter {
+  display: flex; align-items: center; gap: 0.75rem;
+}
+.progress-dots {
+  display: flex; gap: 4px;
+}
+.progress-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--border);
+  transition: background 0.3s, transform 0.3s;
+}
+.progress-dot.done { background: var(--teal); }
+.progress-dot.active { background: var(--amber); transform: scale(1.4); }
+.progress-dot.proposed { background: var(--text-muted); opacity: 0.4; }
+.progress-label {
+  font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* ── Slide Container ── */
+.slide-deck {
+  position: fixed; top: 48px; left: 0; right: 0; bottom: 0;
+  overflow: hidden;
+}
+.slide {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  padding: 3rem 4rem 2rem;
+  opacity: 0;
+  transform: translateX(60px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  pointer-events: none;
+  overflow-y: auto;
+}
+.slide.active {
+  opacity: 1; transform: translateX(0);
+  pointer-events: auto;
+}
+.slide.exiting {
+  opacity: 0; transform: translateX(-60px);
+}
+
+/* ── Slide Typography ── */
+.slide-eyebrow {
+  font-family: var(--font-mono); font-size: 0.65rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--amber); margin-bottom: 0.75rem;
+}
+.slide-title {
+  font-size: 2.8rem; font-weight: 700; line-height: 1.15;
+  margin-bottom: 1rem; max-width: 900px;
+}
+.slide-title span.highlight { color: var(--amber); }
+.slide-subtitle {
+  font-size: 1.1rem; color: var(--text-secondary); line-height: 1.6;
+  max-width: 720px; margin-bottom: 2rem;
+}
+
+/* ── Cards & Grids ── */
+.card-grid {
+  display: grid; gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  margin-top: 1.5rem;
+}
+.card {
+  background: var(--bg-raised); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.25rem;
+  transition: border-color 0.2s;
+}
+.card:hover { border-color: var(--amber-dim); }
+.card-label {
+  font-family: var(--font-mono); font-size: 0.65rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text-muted); margin-bottom: 0.4rem;
+}
+.card-value {
+  font-family: var(--font-mono); font-size: 2rem; font-weight: 700;
+  color: var(--amber); line-height: 1; margin-bottom: 0.25rem;
+}
+.card-perf {
+  font-family: var(--font-mono); font-size: 0.6rem; color: var(--teal);
+  opacity: 0.8;
+}
+.card-desc {
+  font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;
+  margin-top: 0.5rem;
+}
+
+/* ── Status Badges ── */
+.badge {
+  display: inline-flex; align-items: center; gap: 0.3em;
+  font-size: 0.65rem; font-weight: 600; padding: 0.2em 0.6em;
+  border-radius: var(--radius-sm); letter-spacing: 0.03em;
+}
+.badge-done { background: var(--green-dim); color: var(--green); border: 1px solid rgba(90,173,122,0.2); }
+.badge-active { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(212,148,76,0.2); }
+.badge-proposed { background: var(--purple-dim); color: var(--purple); border: 1px solid rgba(155,126,216,0.2); }
+
+/* ── SPARQL Code Block ── */
+.sparql-block {
+  background: var(--bg-code); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1rem 1.25rem;
+  margin-top: 1rem; overflow-x: auto; max-width: 100%;
+}
+.sparql-block pre {
+  margin: 0; font-family: var(--font-mono); font-size: 0.75rem;
+  line-height: 1.7; color: var(--text-secondary); white-space: pre;
+}
+.sparql-block .kw { color: var(--steel); font-weight: 600; }
+.sparql-block .fn { color: var(--amber); }
+.sparql-block .str { color: var(--green); }
+.sparql-block .var { color: var(--teal); }
+.sparql-block .comment { color: var(--text-muted); font-style: italic; }
+
+/* ── Live Query Panel ── */
+.live-panel {
+  background: var(--bg-raised); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.25rem; margin-top: 1rem;
+}
+.live-panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+.live-panel-title {
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted);
+}
+.live-btn {
+  background: var(--amber); color: var(--bg-base); border: none;
+  border-radius: var(--radius-sm); font-weight: 600; font-size: 0.75rem;
+  padding: 0.4em 1em; cursor: pointer; transition: opacity 0.2s;
+}
+.live-btn:hover { opacity: 0.85; }
+.live-btn:disabled { opacity: 0.4; cursor: default; }
+.live-result {
+  font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-secondary);
+  line-height: 1.6; max-height: 180px; overflow-y: auto; white-space: pre;
+}
+.live-result .perf {
+  color: var(--teal); font-weight: 600;
+}
+
+/* ── Roadmap ── */
+.roadmap {
+  display: flex; flex-direction: column; gap: 0;
+  margin-top: 1.5rem; position: relative;
+  padding-left: 1.5rem;
+}
+.roadmap::before {
+  content: ''; position: absolute; left: 5px; top: 8px; bottom: 8px;
+  width: 2px; background: var(--border);
+}
+.roadmap-item {
+  display: flex; align-items: flex-start; gap: 1rem;
+  padding: 0.6rem 0; position: relative;
+}
+.roadmap-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  flex-shrink: 0; margin-top: 3px; position: relative; left: -1.5rem;
+  margin-right: -1.5rem;
+}
+.roadmap-dot.done { background: var(--green); box-shadow: 0 0 8px rgba(90,173,122,0.3); }
+.roadmap-dot.active { background: var(--amber); box-shadow: 0 0 8px rgba(212,148,76,0.3); }
+.roadmap-dot.proposed { background: var(--text-muted); }
+.roadmap-text { flex: 1; }
+.roadmap-label { font-weight: 600; font-size: 0.9rem; }
+.roadmap-desc { font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.15rem; }
+
+/* ── Two Column Layout ── */
+.two-col {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+  margin-top: 1.5rem; align-items: start;
+}
+.two-col-wide-left { grid-template-columns: 1.2fr 0.8fr; }
+.two-col-wide-right { grid-template-columns: 0.8fr 1.2fr; }
+
+/* ── Mermaid ── */
+.mermaid-container {
+  background: var(--bg-raised); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.5rem; margin-top: 1rem;
+  display: flex; justify-content: center;
+}
+.mermaid-container svg { max-width: 100%; }
+
+/* ── Feature Row ── */
+.feature-row {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 0.75rem 1rem; border-radius: var(--radius-sm);
+  transition: background 0.15s;
+}
+.feature-row:hover { background: var(--bg-elevated); }
+.feature-icon {
+  width: 32px; height: 32px; border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; flex-shrink: 0;
+}
+.feature-icon.done { background: var(--green-dim); color: var(--green); }
+.feature-icon.proposed { background: var(--purple-dim); color: var(--purple); }
+.feature-name { font-weight: 600; font-size: 0.9rem; flex: 1; }
+.feature-detail { font-size: 0.75rem; color: var(--text-secondary); }
+
+/* ── Navigation Arrows ── */
+.nav-arrows {
+  position: fixed; bottom: 1.5rem; right: 2rem; z-index: 100;
+  display: flex; gap: 0.5rem;
+}
+.nav-arrow {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--bg-raised); border: 1px solid var(--border);
+  color: var(--text-secondary); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.2s, color 0.2s;
+  font-size: 1.1rem;
+}
+.nav-arrow:hover { border-color: var(--amber); color: var(--amber); }
+.nav-arrow:disabled { opacity: 0.3; cursor: default; }
+.nav-counter {
+  position: fixed; bottom: 1.75rem; left: 2rem; z-index: 100;
+  font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted);
+}
+
+/* ── Table ── */
+.data-table {
+  width: 100%; border-collapse: collapse; font-size: 0.8rem;
+  margin-top: 0.75rem;
+}
+.data-table th {
+  font-family: var(--font-mono); font-size: 0.65rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text-muted); background: var(--bg-elevated);
+  padding: 0.5rem 0.75rem; text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.data-table td {
+  padding: 0.45rem 0.75rem; border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+}
+.data-table tr:hover td { background: var(--bg-elevated); }
+.data-table td:first-child { color: var(--text-primary); font-weight: 500; }
+
+/* ── Title Slide Big Number ── */
+.big-number {
+  font-family: var(--font-mono); font-size: 4rem; font-weight: 700;
+  color: var(--amber); line-height: 1;
+}
+.big-number-label {
+  font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;
+}
+.big-numbers-row {
+  display: flex; gap: 3rem; margin-top: 2rem;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+* { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+
+/* ── Spinner ── */
+.spinner {
+  display: inline-block; width: 14px; height: 14px;
+  border: 2px solid var(--border); border-top-color: var(--amber);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .slide { padding: 2rem 1.5rem 2rem; }
+  .slide-title { font-size: 1.8rem; }
+  .two-col { grid-template-columns: 1fr; }
+  .big-number { font-size: 2.5rem; }
+}
+  </style>
+</head>
+<body>
+
+<!-- ── Top Bar ── -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <img src="https://kurrawong.ai/img/KurrawongAI_inverted_350.png" alt="KurrawongAI" onerror="this.style.display='none'">
+    <span class="topbar-brand-text">KurrawongAI</span>
+  </div>
+  <div class="progress-meter" id="progressMeter"></div>
+</div>
+
+<!-- ── Navigation ── -->
+<div class="nav-counter" id="navCounter"></div>
+<div class="nav-arrows">
+  <button class="nav-arrow" id="btnPrev" onclick="prevSlide()">&#8592;</button>
+  <button class="nav-arrow" id="btnNext" onclick="nextSlide()">&#8594;</button>
+</div>
+
+<!-- ── Slide Deck ── -->
+<div class="slide-deck" id="slideDeck">
+
+  <!-- ═══════════════ SLIDE 0: Title ═══════════════ -->
+  <div class="slide" data-slide="title">
+    <div class="slide-eyebrow">Project Overview</div>
+    <h1 class="slide-title">
+      SHACL Faceted Search<br>for <span class="highlight">Apache Jena</span>
+    </h1>
+    <p class="slide-subtitle">
+      Entity-per-document indexing with native faceted navigation, powered by Lucene.
+      A purely additive extension to <code style="font-family:var(--font-mono);font-size:0.85em;color:var(--teal);background:var(--bg-elevated);padding:0.1em 0.4em;border-radius:3px;">jena-text</code> — zero upstream modifications.
+    </p>
+    <div class="big-numbers-row" id="titleStats">
+      <div>
+        <div class="big-number" id="titleTriples"><span class="spinner"></span></div>
+        <div class="big-number-label">triples loaded</div>
+      </div>
+      <div>
+        <div class="big-number">9</div>
+        <div class="big-number-label">new Java classes</div>
+      </div>
+      <div>
+        <div class="big-number">366</div>
+        <div class="big-number-label">tests passing</div>
+      </div>
+      <div>
+        <div class="big-number">0</div>
+        <div class="big-number-label">upstream changes</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ SLIDE 1: Roadmap Overview ═══════════════ -->
+  <div class="slide" data-slide="roadmap">
+    <div class="slide-eyebrow">Roadmap</div>
+    <h1 class="slide-title">Feature <span class="highlight">Progress</span></h1>
+    <div class="two-col">
+      <div>
+        <div class="roadmap">
+          <div class="roadmap-item"><div class="roadmap-dot done"></div><div class="roadmap-text"><div class="roadmap-label">Full-Text Search with Filters <span class="badge badge-done">Done</span></div><div class="roadmap-desc">luc:query with JSON filter arguments, ?totalHits binding</div></div></div>
+          <div class="roadmap-item"><div class="roadmap-dot done"></div><div class="roadmap-text"><div class="roadmap-label">Faceted Navigation <span class="badge badge-done">Done</span></div><div class="roadmap-desc">luc:facet returning (field, value, count) via SortedSetDocValues</div></div></div>
+          <div class="roadmap-item"><div class="roadmap-dot done"></div><div class="roadmap-text"><div class="roadmap-label">Entity-Per-Document Indexing <span class="badge badge-done">Done</span></div><div class="roadmap-desc">SHACL shapes define typed fields, one Lucene doc per entity</div></div></div>
+          <div class="roadmap-item"><div class="roadmap-dot done"></div><div class="roadmap-text"><div class="roadmap-label">Automatic Index Maintenance <span class="badge badge-done">Done</span></div><div class="roadmap-desc">Change listener rebuilds entity docs on triple add/delete</div></div></div>
+          <div class="roadmap-item"><div class="roadmap-dot done"></div><div class="roadmap-text"><div class="roadmap-label">Inverse &amp; Sequence Paths <span class="badge badge-done">Done</span></div><div class="roadmap-desc">SHACL sh:path traversal — ^ex:authored, ex:authoredBy/ex:name</div></div></div>
+          <div class="roadmap-item"><div class="roadmap-dot done"></div><div class="roadmap-text"><div class="roadmap-label">Shared Execution <span class="badge badge-done">Done</span></div><div class="roadmap-desc">Single Lucene query shared between luc:query and luc:facet</div></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="roadmap">
+          <div class="roadmap-item"><div class="roadmap-dot proposed"></div><div class="roadmap-text"><div class="roadmap-label">Spatial Filtering (bbox) <span class="badge badge-proposed">Proposed</span></div><div class="roadmap-desc">Bounding-box filter combined with text + facet queries</div></div></div>
+          <div class="roadmap-item"><div class="roadmap-dot proposed"></div><div class="roadmap-text"><div class="roadmap-label">DrillSideways <span class="badge badge-proposed">Proposed</span></div><div class="roadmap-desc">Single-pass facet collection with drill-down semantics</div></div></div>
+          <div class="roadmap-item"><div class="roadmap-dot proposed"></div><div class="roadmap-text"><div class="roadmap-label">Hierarchical Facets <span class="badge badge-proposed">Proposed</span></div><div class="roadmap-desc">Taxonomy drill-down via path-based FacetField</div></div></div>
+          <div class="roadmap-item"><div class="roadmap-dot proposed"></div><div class="roadmap-text"><div class="roadmap-label">Range Facets <span class="badge badge-proposed">Proposed</span></div><div class="roadmap-desc">Numeric/date bucket aggregation via LongRangeFacetCounts</div></div></div>
+          <div class="roadmap-item"><div class="roadmap-dot proposed"></div><div class="roadmap-text"><div class="roadmap-label">Suggest / Autocomplete <span class="badge badge-proposed">Proposed</span></div><div class="roadmap-desc">Type-ahead via Lucene SuggestField + AnalyzingInfixSuggester</div></div></div>
+          <div class="roadmap-item"><div class="roadmap-dot proposed"></div><div class="roadmap-text"><div class="roadmap-label">Bulk SHACL Reindexer <span class="badge badge-proposed">Proposed</span></div><div class="roadmap-desc">CLI tool for SHACL-aware full reindex without per-triple overhead</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ SLIDE 2: Architecture Overview ═══════════════ -->
+  <div class="slide" data-slide="architecture-overview">
+    <div class="slide-eyebrow">Architecture</div>
+    <h1 class="slide-title">How It <span class="highlight">Works</span></h1>
+    <p class="slide-subtitle">SHACL shapes define what to index. Lucene stores one document per entity. SPARQL property functions expose search and facets.</p>
+    <div class="mermaid-container">
+      <pre class="mermaid">
+flowchart LR
+    subgraph Config["config.ttl"]
+        S["text:shapes\n(SHACL)"]
+    end
+    subgraph Runtime["Jena Runtime"]
+        A["ShaclIndexAssembler\n<i>parses shapes</i>"]
+        P["ShaclTextDocProducer\n<i>change listener</i>"]
+    end
+    subgraph Index["Lucene Index"]
+        D["Entity Documents\n<i>one doc per entity</i>\n<i>typed fields + DocValues</i>"]
+    end
+    subgraph SPARQL["SPARQL"]
+        Q["luc:query\n<i>search + filters</i>"]
+        F["luc:facet\n<i>facet counts</i>"]
+    end
+    S --> A --> P --> D
+    D --> Q
+    D --> F
+    Q <-.->|"SearchExecution\n(shared)"| F
+      </pre>
+    </div>
+  </div>
+
+  <!-- ═══════════════ SLIDE 3: Entity-Per-Document (Explain) ═══════════════ -->
+  <div class="slide" data-slide="entity-per-doc">
+    <div class="slide-eyebrow">Completed Feature</div>
+    <h1 class="slide-title">Entity-Per-Document <span class="highlight">Indexing</span></h1>
+    <div class="two-col">
+      <div>
+        <p class="slide-subtitle" style="max-width:100%">
+          Classic jena-text creates one Lucene document per triple. SHACL mode creates <strong style="color:var(--text-primary)">one document per entity</strong> with all fields — enabling faceting, typed fields, and range queries.
+        </p>
+        <table class="data-table">
+          <thead><tr><th>Aspect</th><th>Classic (triple-per-doc)</th><th>SHACL (entity-per-doc)</th></tr></thead>
+          <tbody>
+            <tr><td>Document count</td><td>1 per indexed triple</td><td>1 per entity</td></tr>
+            <tr><td>Faceting</td><td>Not possible</td><td>SortedSetDocValues</td></tr>
+            <tr><td>Field types</td><td>Text only</td><td>Text, Keyword, Int, Long, Double</td></tr>
+            <tr><td>Filters</td><td>None</td><td>JSON filter arguments</td></tr>
+            <tr><td>Config</td><td>text:entityMap</td><td>text:shapes (SHACL)</td></tr>
+            <tr><td>SPARQL PF</td><td>text:query</td><td>luc:query + luc:facet</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="mermaid-container" style="margin-top:0">
+          <pre class="mermaid">
+block-beta
+    columns 1
+    block:doc["Entity Document: ex:report1"]
+        columns 2
+        uri["uri: ex:report1"]
+        docType["docType: MiningReport"]
+        title["title: 'Copper Exploration'"]
+        commodity["commodity: 'Copper'"]
+        state["state: 'QLD'"]
+        year["year: 2024"]
+        authorName["authorName: 'Dr Jones'"]
+        status["status: 'Current'"]
+    end
+    style doc fill:#181b23,stroke:#d4944c,color:#e8e6e3
+    style uri fill:#1e222c,stroke:#272c38,color:#4db8a4
+    style docType fill:#1e222c,stroke:#272c38,color:#5b8cb8
+    style title fill:#1e222c,stroke:#272c38,color:#e8e6e3
+    style commodity fill:#1e222c,stroke:#272c38,color:#d4944c
+    style state fill:#1e222c,stroke:#272c38,color:#d4944c
+    style year fill:#1e222c,stroke:#272c38,color:#9b7ed8
+    style authorName fill:#1e222c,stroke:#272c38,color:#d4944c
+    style status fill:#1e222c,stroke:#272c38,color:#d4944c
+          </pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ SLIDE 4: Entity-Per-Document (Live) ═══════════════ -->
+  <div class="slide" data-slide="entity-per-doc-live">
+    <div class="slide-eyebrow">Live Demo</div>
+    <h1 class="slide-title">Dataset <span class="highlight">Overview</span></h1>
+    <p class="slide-subtitle">Live statistics from the running Fuseki instance. Values update dynamically as data is loaded.</p>
+    <div class="card-grid" id="liveStatsCards">
+      <div class="card">
+        <div class="card-label">Total Triples</div>
+        <div class="card-value" id="statTriples"><span class="spinner"></span></div>
+        <div class="card-perf" id="statTriplesPerf"></div>
+      </div>
+      <div class="card">
+        <div class="card-label">Named Graphs</div>
+        <div class="card-value" id="statGraphs"><span class="spinner"></span></div>
+        <div class="card-perf" id="statGraphsPerf"></div>
+      </div>
+      <div class="card">
+        <div class="card-label">Distinct Subjects</div>
+        <div class="card-value" id="statSubjects"><span class="spinner"></span></div>
+        <div class="card-perf" id="statSubjectsPerf"></div>
+      </div>
+      <div class="card">
+        <div class="card-label">Distinct Predicates</div>
+        <div class="card-value" id="statPredicates"><span class="spinner"></span></div>
+        <div class="card-perf" id="statPredicatesPerf"></div>
+      </div>
+    </div>
+    <div class="live-panel" style="margin-top:1.5rem">
+      <div class="live-panel-header">
+        <span class="live-panel-title">Live SPARQL</span>
+        <button class="live-btn" onclick="refreshLiveStats()">Refresh</button>
+      </div>
+      <div class="live-result" id="liveStatsQuery" style="color:var(--text-muted);font-style:italic">Click Refresh to query Fuseki</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ SLIDE 5: Full-Text Search (Explain) ═══════════════ -->
+  <div class="slide" data-slide="text-search">
+    <div class="slide-eyebrow">Completed Feature</div>
+    <h1 class="slide-title">Full-Text Search <span class="highlight">with Filters</span></h1>
+    <div class="two-col two-col-wide-left">
+      <div>
+        <p class="slide-subtitle" style="max-width:100%">
+          <code style="font-family:var(--font-mono);color:var(--teal);background:var(--bg-elevated);padding:0.1em 0.4em;border-radius:3px;font-size:0.85em">luc:query</code> extends Jena text search with JSON filter arguments and a <code style="font-family:var(--font-mono);color:var(--teal);background:var(--bg-elevated);padding:0.1em 0.4em;border-radius:3px;font-size:0.85em">?totalHits</code> binding. Filters are AND across fields, OR within a field.
+        </p>
+        <div class="sparql-block">
+<pre><span class="kw">PREFIX</span> <span class="fn">luc:</span>  &lt;urn:jena:lucene:index#&gt;
+
+<span class="kw">SELECT</span> <span class="var">?entity</span> <span class="var">?score</span> <span class="var">?totalHits</span>
+<span class="kw">WHERE</span> {
+    (<span class="var">?entity</span> <span class="var">?score</span> <span class="var">?_lit</span> <span class="var">?totalHits</span>)
+        <span class="fn">luc:query</span> (<span class="str">'copper'</span> <span class="str">'{"state":["QLD"]}'</span> 10)
+}</pre>
+        </div>
+        <table class="data-table" style="margin-top:1rem">
+          <thead><tr><th>Argument</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>queryString</td><td>String</td><td>Lucene query (supports wildcards, phrases, field scoping)</td></tr>
+            <tr><td>filter</td><td>JSON object</td><td>Structured facet filters — {"field": ["val1","val2"]}</td></tr>
+            <tr><td>limit</td><td>Integer</td><td>Max result rows. ?totalHits still returns full count</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="card" style="border-left:3px solid var(--teal)">
+          <div class="card-label">Key Innovation</div>
+          <div class="card-desc">
+            <strong style="color:var(--text-primary)">?totalHits</strong> is computed via <code style="font-family:var(--font-mono);font-size:0.8em;color:var(--teal)">IndexSearcher.count()</code> — an O(1) operation that doesn't retrieve documents. This enables "Showing 10 of 1,234 results" without fetching all rows.
+          </div>
+        </div>
+        <div class="card" style="border-left:3px solid var(--amber);margin-top:1rem">
+          <div class="card-label">Filter Semantics</div>
+          <div class="card-desc">
+            <strong style="color:var(--text-primary)">Within a field:</strong> OR (matches any value)<br>
+            <strong style="color:var(--text-primary)">Across fields:</strong> AND (must match all)<br><br>
+            Implemented via Lucene <code style="font-family:var(--font-mono);font-size:0.8em;color:var(--amber)">TermInSetQuery</code> wrapped in <code style="font-family:var(--font-mono);font-size:0.8em;color:var(--amber)">BooleanQuery</code>.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ SLIDE 6: Full-Text Search (Live) ═══════════════ -->
+  <div class="slide" data-slide="text-search-live">
+    <div class="slide-eyebrow">Live Demo</div>
+    <h1 class="slide-title">Search in <span class="highlight">Action</span></h1>
+    <div class="two-col">
+      <div>
+        <div class="live-panel">
+          <div class="live-panel-header">
+            <span class="live-panel-title">luc:query — Text Search</span>
+            <button class="live-btn" id="btnRunSearch" onclick="runLiveSearch()">Run Query</button>
+          </div>
+          <div class="sparql-block" style="margin-top:0.5rem">
+<pre id="searchQueryDisplay"><span class="kw">PREFIX</span> <span class="fn">luc:</span> &lt;urn:jena:lucene:index#&gt;
+<span class="kw">PREFIX</span> <span class="fn">rdfs:</span> &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+
+<span class="kw">SELECT</span> <span class="var">?entity</span> <span class="var">?score</span> <span class="var">?totalHits</span> <span class="var">?label</span>
+<span class="kw">WHERE</span> {
+    (<span class="var">?entity</span> <span class="var">?score</span> <span class="var">?_lit</span> <span class="var">?totalHits</span>)
+        <span class="fn">luc:query</span> (<span class="str">'copper'</span> 5) .
+    <span class="var">?entity</span> <span class="fn">rdfs:label</span> <span class="var">?label</span> .
+}</pre>
+          </div>
+          <div class="live-result" id="searchResult" style="margin-top:0.75rem;color:var(--text-muted);font-style:italic">Click Run Query to execute</div>
+        </div>
+      </div>
+      <div>
+        <div class="live-panel">
+          <div class="live-panel-header">
+            <span class="live-panel-title">luc:query — With Filter</span>
+            <button class="live-btn" id="btnRunFiltered" onclick="runLiveFilteredSearch()">Run Query</button>
+          </div>
+          <div class="sparql-block" style="margin-top:0.5rem">
+<pre><span class="kw">PREFIX</span> <span class="fn">luc:</span> &lt;urn:jena:lucene:index#&gt;
+<span class="kw">PREFIX</span> <span class="fn">rdfs:</span> &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+
+<span class="kw">SELECT</span> <span class="var">?entity</span> <span class="var">?score</span> <span class="var">?label</span>
+<span class="kw">WHERE</span> {
+    (<span class="var">?entity</span> <span class="var">?score</span>)
+        <span class="fn">luc:query</span> (<span class="str">'copper'</span>
+            <span class="str">'{"state":["QLD"]}'</span> 10) .
+    <span class="var">?entity</span> <span class="fn">rdfs:label</span> <span class="var">?label</span> .
+}</pre>
+          </div>
+          <div class="live-result" id="filteredResult" style="margin-top:0.75rem;color:var(--text-muted);font-style:italic">Click Run Query to execute</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ SLIDE 7: Faceted Navigation (Explain) ═══════════════ -->
+  <div class="slide" data-slide="facets">
+    <div class="slide-eyebrow">Completed Feature</div>
+    <h1 class="slide-title">Faceted <span class="highlight">Navigation</span></h1>
+    <div class="two-col two-col-wide-left">
+      <div>
+        <p class="slide-subtitle" style="max-width:100%">
+          <code style="font-family:var(--font-mono);color:var(--teal);background:var(--bg-elevated);padding:0.1em 0.4em;border-radius:3px;font-size:0.85em">luc:facet</code> returns aggregate counts per field value. Powered by Lucene's <strong style="color:var(--text-primary)">SortedSetDocValuesFacetCounts</strong> for O(1) counting.
+        </p>
+        <div class="sparql-block">
+<pre><span class="kw">PREFIX</span> <span class="fn">luc:</span>  &lt;urn:jena:lucene:index#&gt;
+
+<span class="kw">SELECT</span> <span class="var">?field</span> <span class="var">?value</span> <span class="var">?count</span>
+<span class="kw">WHERE</span> {
+    (<span class="var">?field</span> <span class="var">?value</span> <span class="var">?count</span>)
+        <span class="fn">luc:facet</span> (<span class="str">'copper'</span>
+            <span class="str">'["commodity","state","status"]'</span> 10)
+}
+<span class="kw">ORDER BY</span> <span class="var">?field</span> <span class="kw">DESC</span>(<span class="var">?count</span>)</pre>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="border-left:3px solid var(--amber)">
+          <div class="card-label">Performance</div>
+          <div class="card-desc">
+            <strong style="color:var(--text-primary)">O(1) facet counting</strong> — pre-built DocValues structures, not document iteration. ~25% indexing overhead for DocValues creation at write time.
+          </div>
+        </div>
+        <table class="data-table" style="margin-top:1rem">
+          <thead><tr><th>Argument</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>queryString</td><td>Lucene query to scope facets</td></tr>
+            <tr><td>facetFields</td><td>JSON array of field names</td></tr>
+            <tr><td>filter</td><td>Optional JSON filter (same as luc:query)</td></tr>
+            <tr><td>maxValues</td><td>Max values per field (0 = all)</td></tr>
+            <tr><td>minCount</td><td>Exclude rare values below threshold</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ SLIDE 8: Facets (Live) ═══════════════ -->
+  <div class="slide" data-slide="facets-live">
+    <div class="slide-eyebrow">Live Demo</div>
+    <h1 class="slide-title">Facets in <span class="highlight">Action</span></h1>
+    <div class="two-col">
+      <div>
+        <div class="live-panel">
+          <div class="live-panel-header">
+            <span class="live-panel-title">luc:facet — All Entities</span>
+            <button class="live-btn" id="btnRunFacets" onclick="runLiveFacets()">Run Query</button>
+          </div>
+          <div class="sparql-block" style="margin-top:0.5rem">
+<pre><span class="kw">PREFIX</span> <span class="fn">luc:</span> &lt;urn:jena:lucene:index#&gt;
+
+<span class="kw">SELECT</span> <span class="var">?field</span> <span class="var">?value</span> <span class="var">?count</span>
+<span class="kw">WHERE</span> {
+    (<span class="var">?field</span> <span class="var">?value</span> <span class="var">?count</span>)
+        <span class="fn">luc:facet</span> (<span class="str">'*'</span>
+            <span class="str">'["entityType","commodity","state"]'</span> 10)
+}
+<span class="kw">ORDER BY</span> <span class="var">?field</span> <span class="kw">DESC</span>(<span class="var">?count</span>)</pre>
+          </div>
+          <div class="live-result" id="facetResult" style="margin-top:0.75rem;color:var(--text-muted);font-style:italic">Click Run Query to execute</div>
+        </div>
+      </div>
+      <div>
+        <div class="live-panel">
+          <div class="live-panel-header">
+            <span class="live-panel-title">luc:facet — With Filter Applied</span>
+            <button class="live-btn" id="btnRunFacetsFiltered" onclick="runLiveFacetsFiltered()">Run Query</button>
+          </div>
+          <div class="sparql-block" style="margin-top:0.5rem">
+<pre><span class="kw">PREFIX</span> <span class="fn">luc:</span> &lt;urn:jena:lucene:index#&gt;
+
+<span class="kw">SELECT</span> <span class="var">?field</span> <span class="var">?value</span> <span class="var">?count</span>
+<span class="kw">WHERE</span> {
+    (<span class="var">?field</span> <span class="var">?value</span> <span class="var">?count</span>)
+        <span class="fn">luc:facet</span> (<span class="str">'*'</span>
+            <span class="str">'["commodity","operator"]'</span>
+            <span class="str">'{"state":["WA"]}'</span> 10)
+}
+<span class="kw">ORDER BY</span> <span class="var">?field</span> <span class="kw">DESC</span>(<span class="var">?count</span>)</pre>
+          </div>
+          <div class="live-result" id="facetFilteredResult" style="margin-top:0.75rem;color:var(--text-muted);font-style:italic">Click Run Query to execute</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ SLIDE 9: Shared Execution (Explain) ═══════════════ -->
+  <div class="slide" data-slide="shared-exec">
+    <div class="slide-eyebrow">Completed Feature</div>
+    <h1 class="slide-title">Shared <span class="highlight">Execution</span></h1>
+    <div class="two-col two-col-wide-right">
+      <div>
+        <p class="slide-subtitle" style="max-width:100%">
+          When <code style="font-family:var(--font-mono);color:var(--teal);font-size:0.85em">luc:query</code> and <code style="font-family:var(--font-mono);color:var(--teal);font-size:0.85em">luc:facet</code> appear in the same SPARQL query with matching parameters, they share a single Lucene execution — one index read, consistent snapshot.
+        </p>
+        <div class="sparql-block">
+<pre><span class="comment">-- UNION pattern: N+M rows, not N*M</span>
+<span class="kw">SELECT</span> <span class="var">?entity</span> <span class="var">?score</span> <span class="var">?totalHits</span>
+       <span class="var">?field</span> <span class="var">?value</span> <span class="var">?count</span>
+<span class="kw">WHERE</span> {
+  { (<span class="var">?entity</span> <span class="var">?score</span> <span class="var">?_lit</span> <span class="var">?totalHits</span>)
+        <span class="fn">luc:query</span> (<span class="str">'copper'</span> 10) }
+  <span class="kw">UNION</span>
+  { (<span class="var">?field</span> <span class="var">?value</span> <span class="var">?count</span>)
+        <span class="fn">luc:facet</span> (<span class="str">'copper'</span>
+            <span class="str">'["state","commodity"]'</span> 10) }
+}</pre>
+        </div>
+      </div>
+      <div>
+        <div class="mermaid-container" style="margin-top:0">
+          <pre class="mermaid">
+sequenceDiagram
+    participant S as SPARQL Engine
+    participant Q as luc:query
+    participant F as luc:facet
+    participant SE as SearchExecution
+    participant L as Lucene
+
+    S->>Q: evaluate luc:query
+    Q->>SE: getOrCreate(key)
+    SE->>L: execute query
+    L-->>SE: hits + reader
+    SE-->>Q: hit URIs + scores
+    Q-->>S: result bindings
+
+    S->>F: evaluate luc:facet
+    F->>SE: getOrCreate(same key)
+    Note over SE: reuses existing
+    SE-->>F: facet counts
+    F-->>S: (field,value,count)
+          </pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ SLIDE 10: Shared Execution (Live) ═══════════════ -->
+  <div class="slide" data-slide="shared-exec-live">
+    <div class="slide-eyebrow">Live Demo</div>
+    <h1 class="slide-title">Combined Query <span class="highlight">UNION</span></h1>
+    <p class="slide-subtitle">Search results and facet counts in a single SPARQL request. Both property functions share one Lucene execution.</p>
+    <div class="live-panel">
+      <div class="live-panel-header">
+        <span class="live-panel-title">luc:query UNION luc:facet</span>
+        <button class="live-btn" id="btnRunCombined" onclick="runLiveCombined()">Run Query</button>
+      </div>
+      <div class="sparql-block" style="margin-top:0.5rem">
+<pre><span class="kw">PREFIX</span> <span class="fn">luc:</span>  &lt;urn:jena:lucene:index#&gt;
+<span class="kw">PREFIX</span> <span class="fn">rdfs:</span> &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+
+<span class="kw">SELECT</span> <span class="var">?entity</span> <span class="var">?score</span> <span class="var">?totalHits</span> <span class="var">?field</span> <span class="var">?value</span> <span class="var">?count</span>
+<span class="kw">WHERE</span> {
+    { (<span class="var">?entity</span> <span class="var">?score</span> <span class="var">?_lit</span> <span class="var">?totalHits</span>) <span class="fn">luc:query</span> (<span class="str">'iron ore'</span> 5) }
+    <span class="kw">UNION</span>
+    { (<span class="var">?field</span> <span class="var">?value</span> <span class="var">?count</span>) <span class="fn">luc:facet</span> (<span class="str">'iron ore'</span> <span class="str">'["state","status","commodity"]'</span> 10) }
+}</pre>
+      </div>
+      <div class="live-result" id="combinedResult" style="margin-top:0.75rem;color:var(--text-muted);font-style:italic">Click Run Query to execute</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ SLIDE 11: Sequence & Inverse Paths ═══════════════ -->
+  <div class="slide" data-slide="paths">
+    <div class="slide-eyebrow">Completed Feature</div>
+    <h1 class="slide-title">Sequence &amp; Inverse <span class="highlight">Paths</span></h1>
+    <div class="two-col">
+      <div>
+        <p class="slide-subtitle" style="max-width:100%">
+          SHACL <code style="font-family:var(--font-mono);color:var(--teal);font-size:0.85em">sh:path</code> expressions traverse multiple predicates or reverse direction. Indexed transparently — the SPARQL consumer never sees the traversal.
+        </p>
+        <div class="card" style="border-left:3px solid var(--teal);margin-top:1rem">
+          <div class="card-label">Sequence Path</div>
+          <div class="card-desc">
+            <code style="font-family:var(--font-mono);font-size:0.8em;color:var(--amber)">sh:path ( ex:authoredBy ex:name )</code><br><br>
+            Traverses Report → Author → Name at index time. The <code style="font-family:var(--font-mono);font-size:0.8em;color:var(--teal)">authorName</code> field contains "Dr Sarah Jones", not a URI.
+          </div>
+        </div>
+        <div class="card" style="border-left:3px solid var(--purple);margin-top:1rem">
+          <div class="card-label">Inverse Path</div>
+          <div class="card-desc">
+            <code style="font-family:var(--font-mono);font-size:0.8em;color:var(--amber)">sh:path [ sh:inversePath ex:authored ]</code><br><br>
+            Traverses <code style="font-family:var(--font-mono);font-size:0.8em;color:var(--teal)">^ex:authored</code> backwards from Author to Report. Indexes the author URI on the report.
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="live-panel">
+          <div class="live-panel-header">
+            <span class="live-panel-title">Filter by Author (Sequence Path)</span>
+            <button class="live-btn" id="btnRunPaths" onclick="runLivePaths()">Run Query</button>
+          </div>
+          <div class="sparql-block" style="margin-top:0.5rem">
+<pre><span class="kw">PREFIX</span> <span class="fn">luc:</span> &lt;urn:jena:lucene:index#&gt;
+<span class="kw">PREFIX</span> <span class="fn">rdfs:</span> &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+
+<span class="kw">SELECT</span> <span class="var">?entity</span> <span class="var">?score</span> <span class="var">?label</span>
+<span class="kw">WHERE</span> {
+    (<span class="var">?entity</span> <span class="var">?score</span>) <span class="fn">luc:query</span>
+        (<span class="str">'*'</span> <span class="str">'{"authorName":["Dr Sarah Jones"]}'</span>) .
+    <span class="var">?entity</span> <span class="fn">rdfs:label</span> <span class="var">?label</span> .
+}
+<span class="kw">ORDER BY DESC</span>(<span class="var">?score</span>)</pre>
+          </div>
+          <div class="live-result" id="pathsResult" style="margin-top:0.75rem;color:var(--text-muted);font-style:italic">Click Run Query to execute</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ SLIDE 12: Change Listener ═══════════════ -->
+  <div class="slide" data-slide="change-listener">
+    <div class="slide-eyebrow">Completed Feature</div>
+    <h1 class="slide-title">Automatic Index <span class="highlight">Maintenance</span></h1>
+    <div class="two-col two-col-wide-right">
+      <div>
+        <p class="slide-subtitle" style="max-width:100%">
+          <code style="font-family:var(--font-mono);color:var(--teal);font-size:0.85em">ShaclTextDocProducer</code> listens to every triple change. On add or delete of a relevant predicate or <code style="font-family:var(--font-mono);font-size:0.85em;color:var(--teal)">rdf:type</code>, the entire entity document is rebuilt from the base dataset.
+        </p>
+        <div class="card" style="border-left:3px solid var(--green)">
+          <div class="card-label">Design Choice</div>
+          <div class="card-desc">
+            Full rebuild per entity change (not incremental field update) ensures correctness for multi-valued fields and sequence paths. For typical entities (&lt;50 triples), rebuild is sub-millisecond.
+          </div>
+        </div>
+        <div class="card" style="border-left:3px solid var(--steel);margin-top:1rem">
+          <div class="card-label">Graph Support</div>
+          <div class="card-desc">
+            Reads from <code style="font-family:var(--font-mono);font-size:0.8em;color:var(--teal)">MultiUnion(defaultGraph, unionGraph)</code> — entities indexed regardless of whether data is in default or named graphs.
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="mermaid-container" style="margin-top:0">
+          <pre class="mermaid">
+flowchart TD
+    A["Triple Add/Delete"] --> B["DatasetGraphTextMonitor"]
+    B --> C["super.add() — base dataset updated"]
+    C --> D["ShaclTextDocProducer.change()"]
+    D --> E{Relevant predicate?}
+    E -->|rdf:type| F["handleTypeChange()"]
+    E -->|indexed field| G["rebuildEntityDocuments()"]
+    E -->|irrelevant| H["ignore"]
+    F --> G
+    G --> I["Read all entity triples\nfrom MultiUnion graph"]
+    I --> J["Build Entity object\nwith all field values"]
+    J --> K["Delete old Lucene doc\nAdd new Lucene doc"]
+
+    style A fill:#181b23,stroke:#d4944c,color:#e8e6e3
+    style K fill:#181b23,stroke:#5aad7a,color:#e8e6e3
+    style H fill:#181b23,stroke:#5a6070,color:#5a6070
+          </pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ SLIDE 13: Proposed — Spatial & DrillSideways ═══════════════ -->
+  <div class="slide" data-slide="proposed">
+    <div class="slide-eyebrow">Proposed Extensions</div>
+    <h1 class="slide-title">What's <span class="highlight">Next</span></h1>
+    <p class="slide-subtitle">All proposed features are purely additive — new PFs or opt-in parameters. No breaking changes to existing APIs.</p>
+    <div class="card-grid" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="card" style="border-top:3px solid var(--purple)">
+        <div class="card-label">Spatial Filtering</div>
+        <div class="card-desc" style="margin-top:0">
+          Bounding-box filter via Lucene <code style="font-family:var(--font-mono);font-size:0.75em;color:var(--purple)">LatLonPoint</code>. Scope search + facets to a geographic region.
+        </div>
+        <div class="sparql-block" style="margin-top:0.75rem;padding:0.75rem">
+<pre style="font-size:0.65rem"><span class="fn">luc:facet</span> (<span class="str">"climate"</span>
+  <span class="str">'["category"]'</span>
+  <span class="str">'{"bbox":[40,-75,41,-74]}'</span>)</pre>
+        </div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--purple)">
+        <div class="card-label">DrillSideways</div>
+        <div class="card-desc" style="margin-top:0">
+          Single-pass combined search + facet collection. When filtering by state=QLD, the state facet still shows counts for <em>all</em> states.
+        </div>
+        <div style="margin-top:0.75rem;font-size:0.75rem;color:var(--text-secondary)">
+          <strong style="color:var(--text-primary)">Prerequisite:</strong> Entity-per-document <span class="badge badge-done" style="font-size:0.6rem">Done</span>
+        </div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--purple)">
+        <div class="card-label">Range Facets</div>
+        <div class="card-desc" style="margin-top:0">
+          Numeric bucket aggregation. Year ranges, depth ranges — using existing IntPoint/LongPoint fields.
+        </div>
+        <div class="sparql-block" style="margin-top:0.75rem;padding:0.75rem">
+<pre style="font-size:0.65rem"><span class="fn">luc:facetRange</span> (<span class="str">"*"</span>
+  <span class="str">"year"</span>
+  <span class="str">'[2020,2022,2024,2026]'</span>)</pre>
+        </div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--purple)">
+        <div class="card-label">Hierarchical Facets</div>
+        <div class="card-desc" style="margin-top:0">
+          Taxonomy drill-down via path-based FacetField. SKOS broader/narrower traversal for category trees.
+        </div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--purple)">
+        <div class="card-label">Suggest / Autocomplete</div>
+        <div class="card-desc" style="margin-top:0">
+          Type-ahead via Lucene <code style="font-family:var(--font-mono);font-size:0.75em;color:var(--purple)">SuggestField</code> + <code style="font-family:var(--font-mono);font-size:0.75em;color:var(--purple)">AnalyzingInfixSuggester</code>.
+        </div>
+        <div class="sparql-block" style="margin-top:0.75rem;padding:0.75rem">
+<pre style="font-size:0.65rem"><span class="fn">luc:suggest</span> (<span class="str">"mach"</span> 10)</pre>
+        </div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--purple)">
+        <div class="card-label">Bulk Reindexer</div>
+        <div class="card-desc" style="margin-top:0">
+          SHACL-aware CLI tool. Full reindex without per-triple rebuild overhead. Parallel entity document construction.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ SLIDE 14: Summary ═══════════════ -->
+  <div class="slide" data-slide="summary">
+    <div class="slide-eyebrow">Summary</div>
+    <h1 class="slide-title">Production-Ready <span class="highlight">Foundation</span></h1>
+    <div class="two-col" style="margin-top:1rem">
+      <div>
+        <p class="slide-subtitle" style="max-width:100%">
+          A purely additive extension to Apache Jena's <code style="font-family:var(--font-mono);font-size:0.85em;color:var(--teal)">jena-text</code> module. All 303 upstream tests pass unmodified. 60 new tests cover SHACL mode comprehensively.
+        </p>
+        <div class="big-numbers-row" style="margin-top:1.5rem;flex-wrap:wrap;gap:2rem">
+          <div>
+            <div class="big-number">9</div>
+            <div class="big-number-label">new classes</div>
+          </div>
+          <div>
+            <div class="big-number">2,594</div>
+            <div class="big-number-label">lines added</div>
+          </div>
+          <div>
+            <div class="big-number">0</div>
+            <div class="big-number-label">upstream modified</div>
+          </div>
+          <div>
+            <div class="big-number">366</div>
+            <div class="big-number-label">tests passing</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:0.85rem;color:var(--text-secondary);line-height:1.7">
+          <div class="feature-row"><div class="feature-icon done">&#10003;</div><div class="feature-name">Full-text search with JSON filters</div></div>
+          <div class="feature-row"><div class="feature-icon done">&#10003;</div><div class="feature-name">Native faceted navigation (O(1) counting)</div></div>
+          <div class="feature-row"><div class="feature-icon done">&#10003;</div><div class="feature-name">Entity-per-document via SHACL shapes</div></div>
+          <div class="feature-row"><div class="feature-icon done">&#10003;</div><div class="feature-name">5 typed fields (Text, Keyword, Int, Long, Double)</div></div>
+          <div class="feature-row"><div class="feature-icon done">&#10003;</div><div class="feature-name">Automatic index maintenance (change listener)</div></div>
+          <div class="feature-row"><div class="feature-icon done">&#10003;</div><div class="feature-name">Sequence &amp; inverse SHACL paths</div></div>
+          <div class="feature-row"><div class="feature-icon done">&#10003;</div><div class="feature-name">Shared execution (single Lucene query)</div></div>
+          <div class="feature-row"><div class="feature-icon done">&#10003;</div><div class="feature-name">100% backward compatible</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /slide-deck -->
+
+<script>
+// ════════════════════════════════════════════════════════════
+// Slide Engine
+// ════════════════════════════════════════════════════════════
+
+const FUSEKI_ENDPOINT = 'http://localhost:3030/mining/query';
+
+const SLIDE_META = [
+  { id: 'title',             label: 'Overview',          group: 'intro' },
+  { id: 'roadmap',           label: 'Roadmap',           group: 'intro' },
+  { id: 'architecture-overview', label: 'Architecture',  group: 'intro' },
+  { id: 'entity-per-doc',    label: 'Entity Indexing',   group: 'done',   feature: 'Entity-Per-Document Indexing' },
+  { id: 'entity-per-doc-live', label: 'Live Stats',      group: 'done',   feature: 'Entity-Per-Document Indexing' },
+  { id: 'text-search',       label: 'Text Search',       group: 'done',   feature: 'Full-Text Search with Filters' },
+  { id: 'text-search-live',  label: 'Search Demo',       group: 'done',   feature: 'Full-Text Search with Filters' },
+  { id: 'facets',            label: 'Facets',            group: 'done',   feature: 'Faceted Navigation' },
+  { id: 'facets-live',       label: 'Facets Demo',       group: 'done',   feature: 'Faceted Navigation' },
+  { id: 'shared-exec',       label: 'Shared Exec',       group: 'done',   feature: 'Shared Execution' },
+  { id: 'shared-exec-live',  label: 'Combined Demo',     group: 'done',   feature: 'Shared Execution' },
+  { id: 'paths',             label: 'Paths',             group: 'done',   feature: 'Inverse & Sequence Paths' },
+  { id: 'change-listener',   label: 'Change Listener',   group: 'done',   feature: 'Automatic Index Maintenance' },
+  { id: 'proposed',          label: 'Proposed',          group: 'proposed' },
+  { id: 'summary',           label: 'Summary',           group: 'intro' },
+];
+
+let currentSlide = 0;
+const slides = document.querySelectorAll('.slide');
+
+function updateSlide(from, to) {
+  if (from === to) return;
+  const prev = slides[from];
+  const next = slides[to];
+  prev.classList.add('exiting');
+  prev.classList.remove('active');
+  next.classList.add('active');
+  setTimeout(() => { prev.classList.remove('exiting'); }, 500);
+  currentSlide = to;
+  updateUI();
+}
+
+function nextSlide() { if (currentSlide < slides.length - 1) updateSlide(currentSlide, currentSlide + 1); }
+function prevSlide() { if (currentSlide > 0) updateSlide(currentSlide, currentSlide - 1); }
+
+function updateUI() {
+  document.getElementById('btnPrev').disabled = currentSlide === 0;
+  document.getElementById('btnNext').disabled = currentSlide === slides.length - 1;
+  document.getElementById('navCounter').textContent =
+    `${currentSlide + 1} / ${slides.length}`;
+  renderProgressMeter();
+}
+
+function renderProgressMeter() {
+  const meter = document.getElementById('progressMeter');
+  const meta = SLIDE_META[currentSlide];
+  let dots = '';
+  for (let i = 0; i < SLIDE_META.length; i++) {
+    const m = SLIDE_META[i];
+    const cls = i === currentSlide ? 'active'
+      : m.group === 'done' ? 'done'
+      : m.group === 'proposed' ? 'proposed'
+      : 'done';
+    dots += `<div class="progress-dot ${cls}" title="${m.label}" onclick="goToSlide(${i})" style="cursor:pointer"></div>`;
+  }
+  meter.innerHTML = `
+    <span class="progress-label">${meta.label}</span>
+    <div class="progress-dots">${dots}</div>
+  `;
+}
+
+function goToSlide(i) { if (i >= 0 && i < slides.length) updateSlide(currentSlide, i); }
+
+// Keyboard nav
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+  if (e.key === 'Home') { e.preventDefault(); goToSlide(0); }
+  if (e.key === 'End') { e.preventDefault(); goToSlide(slides.length - 1); }
+});
+
+// Init
+slides[0].classList.add('active');
+updateUI();
+
+// ════════════════════════════════════════════════════════════
+// Mermaid
+// ════════════════════════════════════════════════════════════
+
+mermaid.initialize({
+  startOnLoad: true,
+  theme: 'dark',
+  themeVariables: {
+    primaryColor: '#22262e',
+    primaryTextColor: '#e8e6e3',
+    primaryBorderColor: '#d4944c',
+    lineColor: '#5a6070',
+    secondaryColor: '#1e222c',
+    tertiaryColor: '#181b23',
+    noteBkgColor: '#1e222c',
+    noteTextColor: '#9ca3af',
+    noteBorderColor: '#272c38',
+    actorBkg: '#22262e',
+    actorBorder: '#d4944c',
+    actorTextColor: '#e8e6e3',
+    signalColor: '#9ca3af',
+    signalTextColor: '#e8e6e3',
+    labelBoxBkgColor: '#22262e',
+    labelBoxBorderColor: '#272c38',
+    labelTextColor: '#e8e6e3',
+  },
+  sequence: { mirrorActors: false },
+  flowchart: { curve: 'basis' },
+});
+
+// ════════════════════════════════════════════════════════════
+// SPARQL Query Helpers
+// ════════════════════════════════════════════════════════════
+
+async function sparql(endpoint, query) {
+  const t0 = performance.now();
+  const resp = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/sparql-query',
+      'Accept': 'application/sparql-results+json',
+    },
+    body: query,
+  });
+  const ms = performance.now() - t0;
+  if (!resp.ok) throw new Error(`${resp.status} ${resp.statusText}`);
+  const data = await resp.json();
+  return { data, ms };
+}
+
+function fmt(n) {
+  if (n >= 1e9) return (n / 1e9).toFixed(1) + 'B';
+  if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
+  if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
+  return n.toLocaleString();
+}
+
+function resultToText(data, ms) {
+  const vars = data.head.vars;
+  const rows = data.results.bindings;
+  let out = vars.join('\t') + '\n';
+  out += vars.map(() => '────').join('\t') + '\n';
+  for (const row of rows.slice(0, 20)) {
+    out += vars.map(v => {
+      const cell = row[v];
+      if (!cell) return '';
+      let val = cell.value;
+      // Shorten URIs
+      val = val.replace('http://example.org/mining/', 'ex:');
+      val = val.replace('http://www.w3.org/2000/01/rdf-schema#', 'rdfs:');
+      val = val.replace('http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'rdf:');
+      if (cell.type === 'typed-literal' || cell.type === 'literal') {
+        const num = parseFloat(val);
+        if (!isNaN(num) && num === Math.round(num * 100) / 100) val = num.toFixed(2);
+      }
+      return val;
+    }).join('\t') + '\n';
+  }
+  if (rows.length > 20) out += `... (${rows.length - 20} more rows)\n`;
+  out += `\n<span class="perf">${rows.length} rows in ${ms.toFixed(0)}ms</span>`;
+  return out;
+}
+
+// ════════════════════════════════════════════════════════════
+// Live Query Functions
+// ════════════════════════════════════════════════════════════
+
+async function refreshLiveStats() {
+  const el = document.getElementById('liveStatsQuery');
+  el.innerHTML = '<span class="spinner"></span> Querying Fuseki...';
+
+  const queries = [
+    { id: 'statTriples', perfId: 'statTriplesPerf', q: 'SELECT (COUNT(*) AS ?c) WHERE { ?s ?p ?o }' },
+    { id: 'statGraphs', perfId: 'statGraphsPerf', q: 'SELECT (COUNT(DISTINCT ?g) AS ?c) WHERE { GRAPH ?g { ?s ?p ?o } }' },
+    { id: 'statSubjects', perfId: 'statSubjectsPerf', q: 'SELECT (COUNT(DISTINCT ?s) AS ?c) WHERE { ?s ?p ?o }' },
+    { id: 'statPredicates', perfId: 'statPredicatesPerf', q: 'SELECT (COUNT(DISTINCT ?p) AS ?c) WHERE { ?s ?p ?o }' },
+  ];
+
+  let log = '';
+  for (const { id, perfId, q } of queries) {
+    try {
+      const { data, ms } = await sparql(FUSEKI_ENDPOINT, q);
+      const val = parseInt(data.results.bindings[0].c.value, 10);
+      document.getElementById(id).textContent = fmt(val);
+      document.getElementById(perfId).textContent = `${ms.toFixed(0)}ms`;
+      log += `${q}\n  → ${val.toLocaleString()} (${ms.toFixed(0)}ms)\n\n`;
+    } catch (e) {
+      document.getElementById(id).textContent = '—';
+      document.getElementById(perfId).textContent = '';
+      log += `${q}\n  → ERROR: ${e.message}\n\n`;
+    }
+  }
+  el.innerHTML = log;
+}
+
+async function runLiveSearch() {
+  const el = document.getElementById('searchResult');
+  const btn = document.getElementById('btnRunSearch');
+  btn.disabled = true;
+  el.innerHTML = '<span class="spinner"></span> Querying...';
+  try {
+    const q = `PREFIX luc: <urn:jena:lucene:index#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nSELECT ?entity ?score ?totalHits ?label\nWHERE {\n    (?entity ?score ?_lit ?totalHits) luc:query ('copper' 5) .\n    ?entity rdfs:label ?label .\n}`;
+    const { data, ms } = await sparql(FUSEKI_ENDPOINT, q);
+    el.innerHTML = resultToText(data, ms);
+  } catch (e) { el.innerHTML = `<span style="color:var(--red)">Error: ${e.message}</span>`; }
+  btn.disabled = false;
+}
+
+async function runLiveFilteredSearch() {
+  const el = document.getElementById('filteredResult');
+  const btn = document.getElementById('btnRunFiltered');
+  btn.disabled = true;
+  el.innerHTML = '<span class="spinner"></span> Querying...';
+  try {
+    const q = `PREFIX luc: <urn:jena:lucene:index#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nSELECT ?entity ?score ?label\nWHERE {\n    (?entity ?score) luc:query ('copper' '{"state":["QLD"]}' 10) .\n    ?entity rdfs:label ?label .\n}`;
+    const { data, ms } = await sparql(FUSEKI_ENDPOINT, q);
+    el.innerHTML = resultToText(data, ms);
+  } catch (e) { el.innerHTML = `<span style="color:var(--red)">Error: ${e.message}</span>`; }
+  btn.disabled = false;
+}
+
+async function runLiveFacets() {
+  const el = document.getElementById('facetResult');
+  const btn = document.getElementById('btnRunFacets');
+  btn.disabled = true;
+  el.innerHTML = '<span class="spinner"></span> Querying...';
+  try {
+    const q = `PREFIX luc: <urn:jena:lucene:index#>\nSELECT ?field ?value ?count\nWHERE {\n    (?field ?value ?count) luc:facet ('*' '["entityType","commodity","state"]' 10)\n}\nORDER BY ?field DESC(?count)`;
+    const { data, ms } = await sparql(FUSEKI_ENDPOINT, q);
+    el.innerHTML = resultToText(data, ms);
+  } catch (e) { el.innerHTML = `<span style="color:var(--red)">Error: ${e.message}</span>`; }
+  btn.disabled = false;
+}
+
+async function runLiveFacetsFiltered() {
+  const el = document.getElementById('facetFilteredResult');
+  const btn = document.getElementById('btnRunFacetsFiltered');
+  btn.disabled = true;
+  el.innerHTML = '<span class="spinner"></span> Querying...';
+  try {
+    const q = `PREFIX luc: <urn:jena:lucene:index#>\nSELECT ?field ?value ?count\nWHERE {\n    (?field ?value ?count) luc:facet ('*' '["commodity","operator"]' '{"state":["WA"]}' 10)\n}\nORDER BY ?field DESC(?count)`;
+    const { data, ms } = await sparql(FUSEKI_ENDPOINT, q);
+    el.innerHTML = resultToText(data, ms);
+  } catch (e) { el.innerHTML = `<span style="color:var(--red)">Error: ${e.message}</span>`; }
+  btn.disabled = false;
+}
+
+async function runLiveCombined() {
+  const el = document.getElementById('combinedResult');
+  const btn = document.getElementById('btnRunCombined');
+  btn.disabled = true;
+  el.innerHTML = '<span class="spinner"></span> Querying...';
+  try {
+    const q = `PREFIX luc: <urn:jena:lucene:index#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nSELECT ?entity ?score ?totalHits ?field ?value ?count\nWHERE {\n    { (?entity ?score ?_lit ?totalHits) luc:query ('iron ore' 5) }\n    UNION\n    { (?field ?value ?count) luc:facet ('iron ore' '["state","status","commodity"]' 10) }\n}`;
+    const { data, ms } = await sparql(FUSEKI_ENDPOINT, q);
+    el.innerHTML = resultToText(data, ms);
+  } catch (e) { el.innerHTML = `<span style="color:var(--red)">Error: ${e.message}</span>`; }
+  btn.disabled = false;
+}
+
+async function runLivePaths() {
+  const el = document.getElementById('pathsResult');
+  const btn = document.getElementById('btnRunPaths');
+  btn.disabled = true;
+  el.innerHTML = '<span class="spinner"></span> Querying...';
+  try {
+    const q = `PREFIX luc: <urn:jena:lucene:index#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nSELECT ?entity ?score ?label\nWHERE {\n    (?entity ?score) luc:query ('*' '{"authorName":["Dr Sarah Jones"]}') .\n    ?entity rdfs:label ?label .\n}\nORDER BY DESC(?score)`;
+    const { data, ms } = await sparql(FUSEKI_ENDPOINT, q);
+    el.innerHTML = resultToText(data, ms);
+  } catch (e) { el.innerHTML = `<span style="color:var(--red)">Error: ${e.message}</span>`; }
+  btn.disabled = false;
+}
+
+// ════════════════════════════════════════════════════════════
+// Auto-refresh title stats
+// ════════════════════════════════════════════════════════════
+
+async function refreshTitleTriples() {
+  try {
+    const { data } = await sparql(FUSEKI_ENDPOINT, 'SELECT (COUNT(*) AS ?c) WHERE { ?s ?p ?o }');
+    const val = parseInt(data.results.bindings[0].c.value, 10);
+    document.getElementById('titleTriples').textContent = fmt(val);
+  } catch {
+    document.getElementById('titleTriples').textContent = '—';
+  }
+}
+
+// Try on load
+refreshTitleTriples();
+</script>
+</body>
+</html>

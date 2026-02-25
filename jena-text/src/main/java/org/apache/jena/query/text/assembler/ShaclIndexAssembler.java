@@ -24,10 +24,13 @@ package org.apache.jena.query.text.assembler;
 import java.util.*;
 
 import org.apache.jena.assembler.Assembler;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.text.*;
 import org.apache.jena.query.text.ShaclIndexMapping.*;
 import org.apache.jena.rdf.model.*;
+import org.apache.jena.sparql.path.*;
+import org.apache.jena.system.G;
 import org.apache.lucene.analysis.Analyzer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +52,12 @@ public class ShaclIndexAssembler {
     private static final Property shProperty        = ResourceFactory.createProperty(SH, "property");
     private static final Property shPath            = ResourceFactory.createProperty(SH, "path");
     private static final Property shAlternativePath = ResourceFactory.createProperty(SH, "alternativePath");
+    private static final Property shInversePath    = ResourceFactory.createProperty(SH, "inversePath");
+
+    private static final Node SH_INVERSE_PATH     = shInversePath.asNode();
+    private static final Node SH_ALTERNATIVE_PATH  = shAlternativePath.asNode();
+    private static final Node RDF_FIRST = org.apache.jena.vocabulary.RDF.first.asNode();
+    private static final Node RDF_NIL  = org.apache.jena.vocabulary.RDF.nil.asNode();
 
     private ShaclIndexAssembler() {}
 
@@ -161,61 +170,144 @@ public class ShaclIndexAssembler {
         boolean multiValued = getOptionalBoolean(fieldRes, IndexVocab.pMultiValued, false);
         boolean defaultSearch = getOptionalBoolean(fieldRes, IndexVocab.pDefaultSearch, false);
 
-        // Predicates: from sh:path or idx:path
-        Set<Node> predicates = extractPredicates(fieldRes);
-        if (predicates.isEmpty()) {
+        // Parse path: from sh:path or idx:path
+        Path path = extractPath(fieldRes);
+        if (path == null) {
             throw new TextIndexException("Field " + fieldRes + " (" + fieldName + ") has no path/predicate");
         }
 
-        log.debug("Parsed field: {} type={} predicates={} facetable={}", fieldName, fieldType, predicates, facetable);
+        // Extract leaf predicates for change listener compatibility
+        Set<Node> predicates = extractLeafPredicates(path);
+
+        log.debug("Parsed field: {} type={} path={} facetable={}", fieldName, fieldType, path, facetable);
         return new FieldDef(fieldName, fieldType, analyzer, stored, indexed,
-                           facetable, sortable, multiValued, defaultSearch, predicates);
+                           facetable, sortable, multiValued, defaultSearch, predicates, path);
     }
 
     /**
-     * Extract predicate URIs from sh:path or idx:path on a field/property-shape resource.
+     * Extract a {@link Path} from sh:path or idx:path on a field/property-shape resource.
      * <p>
-     * Supports:
+     * Supports the SHACL property path subset:
      * <ul>
-     *   <li>{@code sh:path <uri>} — single predicate</li>
-     *   <li>{@code sh:path [ sh:alternativePath (<uri1> <uri2> ...) ]} — set of predicates</li>
+     *   <li>{@code sh:path <uri>} — predicate path</li>
+     *   <li>{@code sh:path [ sh:alternativePath (<uri1> <uri2> ...) ]} — alternative path</li>
+     *   <li>{@code sh:path [ sh:inversePath <uri> ]} — inverse path</li>
+     *   <li>{@code sh:path ( <uri1> <uri2> )} — sequence path</li>
+     *   <li>Nesting of the above types</li>
      *   <li>{@code idx:path <uri>} — single predicate (convenience)</li>
      * </ul>
      */
-    static Set<Node> extractPredicates(Resource fieldRes) {
-        Set<Node> predicates = new LinkedHashSet<>();
-
+    static Path extractPath(Resource fieldRes) {
         // Try sh:path first
         Statement pathStmt = fieldRes.getProperty(shPath);
         if (pathStmt != null) {
-            RDFNode pathNode = pathStmt.getObject();
-            if (pathNode.isURIResource()) {
-                // sh:path <uri> — direct predicate
-                predicates.add(pathNode.asNode());
-            } else if (pathNode.isResource()) {
-                // sh:path [ sh:alternativePath (...) ]
-                Statement altStmt = pathNode.asResource().getProperty(shAlternativePath);
-                if (altStmt != null && altStmt.getObject().isResource()) {
-                    RDFList altList = altStmt.getObject().asResource().as(RDFList.class);
-                    for (RDFNode alt : altList.asJavaList()) {
-                        if (alt.isURIResource()) {
-                            predicates.add(alt.asNode());
-                        }
-                    }
-                }
-            }
+            Node pathNode = pathStmt.getObject().asNode();
+            Graph graph = fieldRes.getModel().getGraph();
+            return parseShaclPath(graph, pathNode);
         }
 
-        // Also try idx:path as a convenience
+        // Also try idx:path as a convenience (single predicate only)
         Statement idxPathStmt = fieldRes.getProperty(IndexVocab.pPath);
         if (idxPathStmt != null) {
             RDFNode pathNode = idxPathStmt.getObject();
             if (pathNode.isURIResource()) {
-                predicates.add(pathNode.asNode());
+                return PathFactory.pathLink(pathNode.asNode());
             }
         }
 
+        return null;
+    }
+
+    /**
+     * Parse a SHACL property path from an RDF graph into a jena-arq {@link Path} object.
+     * Supports predicate, alternative, inverse, and sequence paths (and nesting of these).
+     * Does not support zeroOrMore, oneOrMore, or zeroOrOne paths.
+     * <p>
+     * Logic adapted from {@code org.apache.jena.shacl.engine.ShaclPaths.path()} to avoid
+     * a jena-shacl dependency.
+     */
+    static Path parseShaclPath(Graph graph, Node node) {
+        // Predicate path: a URI node
+        if (node.isURI() && !RDF_NIL.equals(node)) {
+            return PathFactory.pathLink(node);
+        }
+
+        // Sequence path: an RDF list ( p1 p2 ... )
+        if (isList(graph, node)) {
+            List<Node> nodes = G.rdfList(graph, node);
+            if (nodes.isEmpty()) {
+                throw new TextIndexException("Empty list for path sequence");
+            }
+            Path path = null;
+            for (Node n : nodes) {
+                Path p = parseShaclPath(graph, n);
+                if (path == null) {
+                    path = p;
+                } else {
+                    path = PathFactory.pathSeq(path, p);
+                }
+            }
+            return path;
+        }
+
+        // Blank node: inverse or alternative path
+        if (node.isBlank()) {
+            // sh:inversePath
+            if (G.hasProperty(graph, node, SH_INVERSE_PATH)) {
+                Node x = G.getOneSP(graph, node, SH_INVERSE_PATH);
+                Path p = parseShaclPath(graph, x);
+                return PathFactory.pathInverse(p);
+            }
+
+            // sh:alternativePath
+            if (G.hasProperty(graph, node, SH_ALTERNATIVE_PATH)) {
+                Node x = G.getOneSP(graph, node, SH_ALTERNATIVE_PATH);
+                List<Node> nodes = G.rdfList(graph, x);
+                Path path = null;
+                for (Node n : nodes) {
+                    Path p = parseShaclPath(graph, n);
+                    if (path == null) {
+                        path = p;
+                    } else {
+                        path = PathFactory.pathAlt(path, p);
+                    }
+                }
+                return path;
+            }
+        }
+
+        throw new TextIndexException("Unsupported SHACL path node: " + node
+            + ". Only predicate, alternative, inverse, and sequence paths are supported.");
+    }
+
+    /** Check if a node is the head of an RDF list. */
+    private static boolean isList(Graph graph, Node node) {
+        return RDF_NIL.equals(node) || G.contains(graph, node, RDF_FIRST, null);
+    }
+
+    /**
+     * Extract all leaf predicate URIs from a {@link Path} for change listener compatibility.
+     * For simple paths, returns the single predicate. For complex paths, collects all
+     * predicate URIs that appear anywhere in the path structure.
+     */
+    static Set<Node> extractLeafPredicates(Path path) {
+        Set<Node> predicates = new LinkedHashSet<>();
+        collectPredicates(path, predicates);
         return predicates;
+    }
+
+    private static void collectPredicates(Path path, Set<Node> predicates) {
+        if (path instanceof P_Link pLink) {
+            predicates.add(pLink.getNode());
+        } else if (path instanceof P_Inverse pInv) {
+            collectPredicates(pInv.getSubPath(), predicates);
+        } else if (path instanceof P_Seq pSeq) {
+            collectPredicates(pSeq.getLeft(), predicates);
+            collectPredicates(pSeq.getRight(), predicates);
+        } else if (path instanceof P_Alt pAlt) {
+            collectPredicates(pAlt.getLeft(), predicates);
+            collectPredicates(pAlt.getRight(), predicates);
+        }
     }
 
     /**

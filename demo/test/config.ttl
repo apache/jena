@@ -30,7 +30,8 @@ PREFIX ex:      <http://example.org/mining/>
     text:index   :index .
 
 :base_dataset rdf:type tdb2:DatasetTDB ;
-    tdb2:location "DB" .
+    tdb2:location "DB" ;
+    tdb2:unionDefaultGraph true .
 
 :index rdf:type text:TextIndexLucene ;
     text:directory <file:Lucene> ;
@@ -42,6 +43,12 @@ PREFIX ex:      <http://example.org/mining/>
 
 :MiningReportShape
     sh:targetClass ex:MiningReport ;
+    sh:property [
+        idx:fieldName "entityType" ;
+        idx:fieldType idx:KeywordField ;
+        idx:facetable true ;
+        sh:path ( rdf:type rdfs:label ) ;
+    ] ;
     sh:property [
         idx:fieldName "title" ;
         idx:fieldType idx:TextField ;
@@ -83,10 +90,30 @@ PREFIX ex:      <http://example.org/mining/>
         idx:fieldType idx:IntField ;
         idx:sortable true ;
         sh:path ex:year ;
+    ] ;
+    ## Sequence path: traverses ex:authoredBy then ex:name to index author name on reports
+    sh:property [
+        idx:fieldName "authorName" ;
+        idx:fieldType idx:KeywordField ;
+        idx:facetable true ;
+        sh:path ( ex:authoredBy ex:name ) ;
+    ] ;
+    ## Inverse path: indexes who authored this report (via ^ex:authored)
+    sh:property [
+        idx:fieldName "authoredByUri" ;
+        idx:fieldType idx:KeywordField ;
+        idx:multiValued true ;
+        sh:path [ sh:inversePath ex:authored ] ;
     ] .
 
 :BoreholeShape
     sh:targetClass ex:Borehole ;
+    sh:property [
+        idx:fieldName "entityType" ;
+        idx:fieldType idx:KeywordField ;
+        idx:facetable true ;
+        sh:path ( rdf:type rdfs:label ) ;
+    ] ;
     sh:property [
         idx:fieldName "title" ;
         idx:fieldType idx:TextField ;
@@ -115,6 +142,12 @@ PREFIX ex:      <http://example.org/mining/>
 
 :SiteShape
     sh:targetClass ex:Site ;
+    sh:property [
+        idx:fieldName "entityType" ;
+        idx:fieldType idx:KeywordField ;
+        idx:facetable true ;
+        sh:path ( rdf:type rdfs:label ) ;
+    ] ;
     sh:property [
         idx:fieldName "title" ;
         idx:fieldType idx:TextField ;

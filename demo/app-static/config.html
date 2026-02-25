@@ -1,0 +1,134 @@
+<!-- Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0 -->
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Configuration &mdash; Search Tester</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+  <link rel="stylesheet" href="app.css">
+  <script src="https://cdn.jsdelivr.net/npm/n3@1.22.3/browser/n3.min.js"></script>
+  <script src="app.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+</head>
+<body>
+  <nav class="site-navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <span class="brand-icon">&#9670;</span>
+      <a class="brand-name" href="index.html">Search Tester</a>
+      <span class="version-badge">v6.1</span>
+      <button class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="mainNav">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </button>
+    </div>
+    <div id="mainNav" class="navbar-tabs">
+      <a class="nav-tab" href="index.html">Search</a>
+      <a class="nav-tab is-tab-active" href="config.html">Configuration</a>
+      <a class="nav-tab" href="stats.html">Stats</a>
+      <a class="nav-tab" href="about.html">About</a>
+    </div>
+  </nav>
+
+  <section class="section">
+    <div class="container is-fluid main-content" x-data="configApp()" x-cloak>
+
+      <template x-if="error">
+        <div class="notice-error" x-text="error"></div>
+      </template>
+
+      <template x-if="config">
+        <div>
+          <h1 class="config-title">Index Configuration</h1>
+
+          <div class="stat-cards">
+            <div class="stat-card">
+              <div class="stat-value" x-text="config.shapes.length"></div>
+              <div class="stat-label">Shapes</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" x-text="config.facetFields.length"></div>
+              <div class="stat-label">Facetable Fields</div>
+            </div>
+          </div>
+
+          <h2 class="config-section-title">Global Settings</h2>
+          <table class="config-table settings-table">
+            <tbody>
+              <tr>
+                <th>Store values</th>
+                <td x-text="config.storeValues"></td>
+              </tr>
+              <tr>
+                <th>Max facet hits</th>
+                <td x-text="config.maxFacetHits"></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <hr class="config-divider">
+
+          <template x-for="shape in config.shapes" :key="shape.name">
+            <div class="shape-section">
+              <div class="shape-title" x-text="shape.name"></div>
+              <p class="shape-target">
+                Target class: <code x-text="shape.targetClass"></code>
+                &mdash; <span x-text="shape.fields.length"></span> fields
+              </p>
+
+              <table class="config-table">
+                <thead>
+                  <tr>
+                    <th>Field</th>
+                    <th>Path</th>
+                    <th>Type</th>
+                    <th>Facetable</th>
+                    <th>Multi-valued</th>
+                    <th>Default</th>
+                    <th>Sortable</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <template x-for="f in shape.fields" :key="f.name">
+                    <tr>
+                      <td x-text="f.name"></td>
+                      <td><code x-text="f.path"></code></td>
+                      <td x-text="f.fieldType"></td>
+                      <td x-html="f.facetable ? '<span class=\'bool-yes\'>&#10003;</span>' : '<span class=\'bool-no\'>&mdash;</span>'"></td>
+                      <td x-html="f.multiValued ? '<span class=\'bool-yes\'>&#10003;</span>' : '<span class=\'bool-no\'>&mdash;</span>'"></td>
+                      <td x-html="f.defaultSearch ? '<span class=\'bool-yes\'>&#10003;</span>' : '<span class=\'bool-no\'>&mdash;</span>'"></td>
+                      <td x-html="f.sortable ? '<span class=\'bool-yes\'>&#10003;</span>' : '<span class=\'bool-no\'>&mdash;</span>'"></td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+            </div>
+          </template>
+        </div>
+      </template>
+
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Burger menu toggle
+      const burger = document.querySelector('.navbar-burger');
+      const menu = document.getElementById(burger.dataset.target);
+      burger.addEventListener('click', () => {
+        burger.classList.toggle('is-active');
+        menu.classList.toggle('is-active');
+      });
+
+      // Page entrance animation
+      requestAnimationFrame(() => {
+        document.querySelector('.main-content').classList.add('is-visible');
+      });
+    });
+  </script>
+</body>
+</html>
