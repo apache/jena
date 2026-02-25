@@ -608,7 +608,8 @@ public class HttpLib {
      * @param httpRequest
      * @param bodyHandler
      * @return HttpResponse
-     */    /*package*/ static <X> CompletableFuture<HttpResponse<X>> executeAsync(HttpClient httpClient, HttpRequest httpRequest, BodyHandler<X> bodyHandler) {
+     */
+    /*package*/ static <X> CompletableFuture<HttpResponse<X>> executeAsync(HttpClient httpClient, HttpRequest httpRequest, BodyHandler<X> bodyHandler) {
         // To run with no jena-supplied authentication handling.
         if ( false )
             return executeJDKAsync(httpClient, httpRequest, bodyHandler);
@@ -737,7 +738,7 @@ public class HttpLib {
      * <li>ARQ.httpRegistryRequestModifer - the registry, keyed by service URL.</li>
      * </ul>
      */
-    /*package*/ public static void modifyByService(String serviceURI, Context context, Params params, Map<String, String> httpHeaders) {
+    public static void modifyByService(String serviceURI, Context context, Params params, Map<String, String> httpHeaders) {
         HttpRequestModifier modifier = context.get(ARQ.httpRequestModifer);
         if ( modifier != null ) {
             modifier.modify(params, httpHeaders);

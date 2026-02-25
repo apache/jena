@@ -191,71 +191,10 @@ public abstract class StoreProtocol<X extends StoreProtocol<X>> {
     final protected void httpHeaders(BiConsumer<String, String> action) { httpHeaders.forEach(action); }
 
     protected void ensureAcceptHeader(String dftAcceptheader) {
-        String requestAccept = header(acceptHeader(), WebContent.defaultRDFAcceptHeader);
+        String dft = (dftAcceptheader != null) ? dftAcceptheader : WebContent.defaultRDFAcceptHeader;
+        String requestAccept = header(acceptHeader(), dft);
         acceptHeader(requestAccept);
     }
-
-//    /**
-//     * POST the contents of a file using the filename extension to determine the
-//     * Content-Type to use if not already set.
-//     * <p>
-//     * This operation does not parse the file.
-//     */
-//    public void POST(String file) {
-//        String fileExtContentType = contentTypeFromFilename(file);
-//        HttpClient hc = requestHttpClient(serviceEndpoint, serviceEndpoint);
-//        uploadQuads(hc, serviceEndpoint, file, fileExtContentType, httpHeaders, Push.POST);
-//    }
-//
-//    /** POST a dataset */
-//    public void POST(DatasetGraph dataset) {
-//        RDFFormat requestFmt = rdfFormat(HttpEnv.defaultQuadsFormat);
-//        HttpClient hc = requestHttpClient(serviceEndpoint, serviceEndpoint);
-//        HttpRDF.httpPostDataset(hc, serviceEndpoint, dataset, requestFmt, httpHeaders);
-//    }
-//
-//    /**
-//     * PUT the contents of a file using the filename extension to determine the
-//     * Content-Type to use if not already set.
-//     * <p>
-//     * This operation does not parse the file.
-//     */
-//    public void PUT(String file) {
-//        String fileExtContentType = contentTypeFromFilename(file);
-//        HttpClient hc = requestHttpClient(serviceEndpoint, serviceEndpoint);
-//        uploadQuads(hc, serviceEndpoint, file, fileExtContentType, httpHeaders, Push.PUT);
-//    }
-//
-//    /** PUT a dataset */
-//    public void PUT(DatasetGraph dataset) {
-//        RDFFormat requestFmt = rdfFormat(HttpEnv.defaultQuadsFormat);
-//        HttpClient hc = requestHttpClient(serviceEndpoint, serviceEndpoint);
-//        HttpRDF.httpPutDataset(hc, serviceEndpoint, dataset, requestFmt, httpHeaders);
-//    }
-//
-////    /** Send a file of triples to a URL. */
-////    private static void uploadTriples(HttpClient httpClient, String gspUrl, String file, String fileExtContentType,
-////                                      Map<String, String> headers, Push mode) {
-////        Lang lang = RDFLanguages.contentTypeToLang(fileExtContentType);
-////        if ( lang == null )
-////            throw new ARQException("Not a recognized as an RDF format: "+fileExtContentType);
-////        if ( RDFLanguages.isQuads(lang) && ! RDFLanguages.isTriples(lang) )
-////            throw new ARQException("Can't load quads into a graph");
-////        if ( ! RDFLanguages.isTriples(lang) )
-////            throw new ARQException("Not an RDF format: "+file+" (lang="+lang+")");
-////        pushFile(httpClient, gspUrl, file, fileExtContentType, headers, mode);
-////    }
-//
-//    /**
-//     * Send a file of quads to a URL. The Content-Type is inferred from the file
-//     * extension.
-//     */
-//    private static void uploadQuads(HttpClient httpClient, String endpoint, String file, String fileExtContentType, Map<String, String> headers, Push mode) {
-//        Lang lang = RDFLanguages.contentTypeToLang(fileExtContentType);
-//        if ( !RDFLanguages.isQuads(lang) && !RDFLanguages.isTriples(lang) )
-//            throw new ARQException("Not an RDF format: " + file + " (lang=" + lang + ")");
-//        pushFile(httpClient, endpoint, file, fileExtContentType, headers, mode);
-//    }
 
     /** Header string or default value. */
     private static String header(String choice, String dftString) {
