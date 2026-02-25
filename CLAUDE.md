@@ -107,6 +107,7 @@ When `luc:query` and `luc:facet` appear in the same SPARQL query, both build a n
 ## Git Commits
 
 - Do NOT add `Co-Authored-By` lines to commit messages
+- Do NOT add "Generated with Claude Code" or similar attribution lines to PR descriptions
 
 ## Code Style
 
