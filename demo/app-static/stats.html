@@ -1,0 +1,133 @@
+<!-- Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0 -->
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stats &mdash; Search Tester</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+  <link rel="stylesheet" href="app.css">
+  <script src="https://cdn.jsdelivr.net/npm/n3@1.22.3/browser/n3.min.js"></script>
+  <script src="app.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+</head>
+<body>
+  <nav class="site-navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <span class="brand-icon">&#9670;</span>
+      <a class="brand-name" href="index.html">Search Tester</a>
+      <span class="version-badge">v6.1</span>
+      <button class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="mainNav">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </button>
+    </div>
+    <div id="mainNav" class="navbar-tabs">
+      <a class="nav-tab" href="index.html">Search</a>
+      <a class="nav-tab" href="config.html">Configuration</a>
+      <a class="nav-tab is-tab-active" href="stats.html">Stats</a>
+      <a class="nav-tab" href="about.html">About</a>
+    </div>
+  </nav>
+
+  <section class="section">
+    <div class="container is-fluid main-content" x-data="statsApp()" x-cloak>
+
+      <div class="loading-bar" :class="{ 'is-loading': loading }"></div>
+
+      <template x-if="error">
+        <div class="notice-error" x-text="error"></div>
+      </template>
+
+      <template x-if="loading && !error">
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">Loading dataset statistics&hellip;</p>
+      </template>
+
+      <template x-if="stats">
+        <div>
+          <h1 class="config-title">Dataset Statistics</h1>
+
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-value" x-text="stats.totalEntities.toLocaleString()"></div>
+              <div class="stat-label">Indexed Entities</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" x-text="stats.totalTriples.toLocaleString()"></div>
+              <div class="stat-label">Total Triples</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" x-text="stats.shapes"></div>
+              <div class="stat-label">Shapes</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" x-text="stats.facetableFields"></div>
+              <div class="stat-label">Facetable Fields</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" x-text="(stats.totalMs / 1000).toFixed(2) + 's'"></div>
+              <div class="stat-label">Query Time</div>
+            </div>
+          </div>
+
+          <p style="margin-bottom: 1.5rem;">
+            <span class="perf-badge">Lucene + facets: <span x-text="stats.statsQueryMs.toFixed(0)"></span>ms</span>
+            <span class="perf-badge" style="margin-left: 0.5rem;">Triple count: <span x-text="stats.countQueryMs.toFixed(0)"></span>ms</span>
+          </p>
+
+          <h2 class="config-section-title">Facet Breakdown</h2>
+
+          <template x-for="fieldName in stats.facetFields" :key="fieldName">
+            <div>
+              <template x-if="(stats.facets[fieldName] || []).length > 0">
+                <div class="shape-section">
+                  <div class="shape-title" x-text="fieldName"></div>
+                  <p class="shape-target">
+                    <span x-text="(stats.facets[fieldName] || []).length"></span> distinct values
+                  </p>
+                  <table class="facet-breakdown">
+                    <thead>
+                      <tr>
+                        <th>Value</th>
+                        <th>Count</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <template x-for="fv in stats.facets[fieldName]" :key="fv.value">
+                        <tr>
+                          <td x-text="fv.value"></td>
+                          <td x-text="fv.count"></td>
+                        </tr>
+                      </template>
+                    </tbody>
+                  </table>
+                </div>
+              </template>
+            </div>
+          </template>
+        </div>
+      </template>
+
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const burger = document.querySelector('.navbar-burger');
+      const menu = document.getElementById(burger.dataset.target);
+      burger.addEventListener('click', () => {
+        burger.classList.toggle('is-active');
+        menu.classList.toggle('is-active');
+      });
+
+      requestAnimationFrame(() => {
+        document.querySelector('.main-content').classList.add('is-visible');
+      });
+    });
+  </script>
+</body>
+</html>

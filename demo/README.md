@@ -170,6 +170,26 @@ task image-push ACR_NAME=myregistry
 
 Pushes to `myregistry.azurecr.io/fuseki-ai:6.1.0-SNAPSHOT`. The task checks for an active Azure session and runs `az login` if needed, then authenticates with the ACR before pushing.
 
+## Demo app (FastAPI + Bulma)
+
+A lightweight web UI for interactive faceted search. Built with FastAPI, Jinja2 templates, and Bulma CSS. Provides a search box, sidebar facet checkboxes with counts, and result cards with clickable facet badges.
+
+The app dynamically reads `config.ttl` to discover shapes, fields, and facetability — no hardcoded field names.
+
+```bash
+# Install dependencies (once)
+task app-setup
+
+# Start the app (Fuseki must be running)
+task app
+```
+
+Opens at `http://localhost:8000`. The app queries the Fuseki endpoint at `localhost:3030/mining` — start the server first with `task serve` or `docker compose up`, then load data with `task load`.
+
+Configure via environment variables:
+- `FUSEKI_ENDPOINT` — SPARQL endpoint URL (default: `http://localhost:3030/mining/query`)
+- `FUSEKI_CONFIG` — path to assembler config (default: `../config.ttl`)
+
 ## Synthetic data generation
 
 Generate larger datasets for performance testing:

@@ -1,0 +1,197 @@
+<!-- Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0 -->
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Search &mdash; Search Tester</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+  <link rel="stylesheet" href="app.css">
+  <script src="https://cdn.jsdelivr.net/npm/n3@1.22.3/browser/n3.min.js"></script>
+  <script src="app.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+</head>
+<body>
+  <nav class="site-navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <span class="brand-icon">&#9670;</span>
+      <a class="brand-name" href="index.html">Search Tester</a>
+      <span class="version-badge">v6.1</span>
+      <button class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="mainNav">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </button>
+    </div>
+    <div id="mainNav" class="navbar-tabs">
+      <a class="nav-tab is-tab-active" href="index.html">Search</a>
+      <a class="nav-tab" href="config.html">Configuration</a>
+      <a class="nav-tab" href="stats.html">Stats</a>
+      <a class="nav-tab" href="about.html">About</a>
+    </div>
+  </nav>
+
+  <section class="section">
+    <div class="container is-fluid main-content" x-data="searchApp()" x-cloak>
+
+      <div class="loading-bar" :class="{ 'is-loading': showLoading }"></div>
+
+      <template x-if="error">
+        <div class="notice-error" x-text="error"></div>
+      </template>
+
+      <div class="columns mb-0" x-show="!error">
+        <div class="column is-3"></div>
+        <div class="column">
+          <p class="results-description" x-html="description"></p>
+        </div>
+        <div class="column is-3"></div>
+      </div>
+
+      <div class="columns search-layout">
+
+        <!-- Sidebar: search + facets -->
+        <div class="column is-3">
+          <div class="facet-sidebar">
+            <div class="sidebar-panel">
+              <div class="sidebar-header">Search &amp; Filter</div>
+
+              <div class="field has-addons">
+                <div class="control is-expanded">
+                  <input class="input" type="text" x-model="q"
+                         placeholder="e.g. copper, gold, iron ore"
+                         @keydown.enter="search()">
+                </div>
+                <div class="control">
+                  <button class="btn-search" type="button" @click="search()">Search</button>
+                </div>
+              </div>
+
+              <div class="limit-control">
+                <label class="limit-label">Show</label>
+                <select class="limit-select" x-model.number="limit" @change="search()">
+                  <template x-for="n in resultLimits" :key="n">
+                    <option :value="n" x-text="n.toLocaleString()"></option>
+                  </template>
+                </select>
+                <span class="limit-label">results</span>
+              </div>
+
+              <template x-if="hasActiveFilters()">
+                <button class="btn-clear-filters" type="button" @click="clearFilters()">
+                  &#10005; Clear all filters
+                </button>
+              </template>
+
+              <template x-for="fieldName in facetFields" :key="fieldName">
+                <div>
+                  <template x-if="(facets[fieldName] || []).length > 0">
+                    <details class="facet-group" open>
+                      <summary class="facet-group-label" x-text="fieldName"></summary>
+                      <template x-for="fv in facets[fieldName]" :key="fv.value">
+                        <label class="facet-option">
+                          <input type="checkbox"
+                                 :checked="isSelected(fieldName, fv.value)"
+                                 @change="toggleFacet(fieldName, fv.value)">
+                          <span class="facet-value" x-text="fv.value"></span>
+                          <span class="facet-count" x-text="fv.count"></span>
+                        </label>
+                      </template>
+                    </details>
+                  </template>
+                </div>
+              </template>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Main content: results -->
+        <div class="column">
+
+          <template x-if="!error && cards.length === 0 && !loading">
+            <div class="notice-empty">
+              No results found. Try broadening your search or clearing filters.
+            </div>
+          </template>
+
+          <template x-for="card in cards" :key="card.uri">
+            <div class="result-card">
+              <div class="result-card-header">
+                <span class="result-card-label" x-text="card.label"></span>
+                <span class="result-card-score">
+                  <span class="score-label">score</span>
+                  <span class="score-value" x-text="card.score.toFixed(2)"></span>
+                </span>
+              </div>
+
+              <template x-if="card.description">
+                <p class="result-description"
+                   x-text="card.description.length > 300
+                     ? card.description.substring(0, 300) + '\u2026'
+                     : card.description">
+                </p>
+              </template>
+
+              <div class="result-tags">
+                <span class="rtag rtag-type" x-text="card.entityType"></span>
+                <template x-for="tag in card.tags" :key="tag.pred + ':' + tag.value">
+                  <span class="rtag" :class="tag.cssClass"
+                        x-text="tag.value"
+                        :tabindex="tag.clickable ? 0 : -1"
+                        @click="tag.clickable && toggleFacet(tag.facetField, tag.value)"
+                        @keydown.enter="tag.clickable && toggleFacet(tag.facetField, tag.value)">
+                  </span>
+                </template>
+              </div>
+            </div>
+          </template>
+
+        </div>
+
+        <!-- SPARQL log panel -->
+        <div class="column is-3">
+          <div class="query-log-sidebar">
+            <div class="query-log-panel">
+              <div class="sidebar-header">SPARQL Log</div>
+
+              <template x-if="queryLog.length === 0">
+                <p class="query-log-empty">Queries will appear here as you search.</p>
+              </template>
+
+              <template x-for="(entry, i) in queryLog" :key="i">
+                <div class="query-log-entry" :class="{ 'is-new': i === 0 }">
+                  <div class="query-log-meta">
+                    <span class="query-log-timestamp" x-text="entry.time"></span>
+                    <span class="query-log-label" x-text="entry.label"></span>
+                  </div>
+                  <pre class="query-log-code"><code x-text="entry.query"></code></pre>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const burger = document.querySelector('.navbar-burger');
+      const menu = document.getElementById(burger.dataset.target);
+      burger.addEventListener('click', () => {
+        burger.classList.toggle('is-active');
+        menu.classList.toggle('is-active');
+      });
+
+      requestAnimationFrame(() => {
+        document.querySelector('.main-content').classList.add('is-visible');
+      });
+    });
+  </script>
+</body>
+</html>

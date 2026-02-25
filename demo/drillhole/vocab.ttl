@@ -1,0 +1,13 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+## Class and property labels for the GSWA drillhole geochemistry dataset.
+## Loaded alongside observation data so sequence paths like (rdf:type rdfs:label) resolve.
+
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sosa:  <http://www.w3.org/ns/sosa/> .
+@prefix exg:   <http://example.com/> .
+
+exg:GeochemistryAnalysis  rdfs:label "Geochemistry Analysis" .
+sosa:Result               rdfs:label "Result" .
+sosa:Procedure            rdfs:label "Procedure" .
+sosa:Sensor               rdfs:label "Sensor" .
+sosa:ObservableProperty   rdfs:label "Observable Property" .

@@ -6,7 +6,6 @@ vars:
   VERSION: 6.1.0-SNAPSHOT
   FUSEKI_JAR: ../jena-fuseki2/jena-fuseki-server/target/jena-fuseki-server-{{.VERSION}}.jar
   SERVER_URL: http://localhost:3030
-  DATASET: mining
   IMAGE_NAME: '{{.IMAGE_NAME | default "fuseki-ai"}}'
   IMAGE_TAG: '{{.IMAGE_TAG | default .VERSION}}'
   GHCR_OWNER: '{{.GHCR_OWNER | default "aiworkerjohns"}}'
@@ -18,27 +17,71 @@ tasks:
     cmds:
       - mvn clean install -pl jena-fuseki2/jena-fuseki-server -am -DskipTests
 
-  serve:
-    desc: Start Fuseki with the demo config
-    cmds:
-      - java -jar {{.FUSEKI_JAR}} --config config.ttl
-
   stop:
     desc: Stop the running Fuseki server (sends SIGTERM for clean shutdown)
     cmds:
       - pkill -f "jena-fuseki-server" && echo "Server stopped" || echo "No server running"
 
+  # ── Drillhole (GSWA Geochemistry) ──────────────────────────
+
+  serve:
+    desc: Start Fuseki with the drillhole config
+    dir: drillhole
+    cmds:
+      - java -jar ../{{.FUSEKI_JAR}} --config config.ttl
+
   load:
-    desc: Load the demo mining dataset via SPARQL Graph Store Protocol
+    desc: "Load one drillhole file via GSP (usage: task load -- Drillholes_DHGeochemistry_SS_Observation_1.nq)"
     cmds:
       - |
-        curl -s -X PUT "{{.SERVER_URL}}/{{.DATASET}}/data?default" \
-          -H "Content-Type: text/turtle" \
-          --data-binary @data/mining.ttl
-      - echo "Loaded data/mining.ttl"
+        curl -s -X POST "{{.SERVER_URL}}/geochem/data" \
+          -H "Content-Type: application/n-quads" \
+          --data-binary @drillhole/{{.CLI_ARGS}}
+      - echo "Loaded drillhole/{{.CLI_ARGS}}"
 
-  query:
-    desc: Run all demo queries against the server
+  load-batch:
+    desc: "Load multiple drillhole files (usage: task load-batch -- 5 to load first 5 files)"
+    cmds:
+      - |
+        count={{.CLI_ARGS}}
+        i=0
+        for f in drillhole/Drillholes_DHGeochemistry_SS_Observation_*.nq; do
+          [ "$i" -ge "$count" ] && break
+          echo "Loading $f ($((i+1))/$count)..."
+          curl -s -X POST "{{.SERVER_URL}}/geochem/data" \
+            -H "Content-Type: application/n-quads" \
+            --data-binary @"$f"
+          i=$((i+1))
+        done
+        echo "Loaded $i files"
+
+  clean:
+    desc: Remove drillhole TDB2 and Lucene data directories
+    dir: drillhole
+    cmds:
+      - rm -rf DB Lucene
+      - echo "Cleaned drillhole DB and Lucene directories"
+
+  # ── Test (mining demo) ─────────────────────────────────────
+
+  test-serve:
+    desc: Start Fuseki with the test mining config
+    dir: test
+    cmds:
+      - java -jar ../{{.FUSEKI_JAR}} --config config.ttl
+
+  test-load:
+    desc: Load the test mining dataset via GSP
+    cmds:
+      - |
+        curl -s -X PUT "{{.SERVER_URL}}/mining/data?default" \
+          -H "Content-Type: text/turtle" \
+          --data-binary @test/data/mining.ttl
+      - echo "Loaded test/data/mining.ttl"
+
+  test-query:
+    desc: Run all test queries against the mining server
+    dir: test
     cmds:
       - for:
           - queries/01-basic-search.rq
@@ -50,30 +93,41 @@ tasks:
           - queries/07-filter-by-author.rq
         cmd: |
           echo "=== {{.ITEM}} ==="
-          curl -s -X POST "{{.SERVER_URL}}/{{.DATASET}}/query" \
+          curl -s -X POST "{{.SERVER_URL}}/mining/query" \
             -H "Content-Type: application/sparql-query" \
             -H "Accept: text/tab-separated-values" \
             --data-binary @{{.ITEM}}
           echo ""
 
-  query-one:
-    desc: "Run a single query file (usage: task query-one -- queries/01-basic-search.rq)"
+  test-clean:
+    desc: Remove test mining TDB2 and Lucene data directories
+    dir: test
     cmds:
-      - |
-        curl -s -X POST "{{.SERVER_URL}}/{{.DATASET}}/query" \
-          -H "Content-Type: application/sparql-query" \
-          -H "Accept: text/tab-separated-values" \
-          --data-binary @{{.CLI_ARGS}}
+      - rm -rf DB Lucene
+      - echo "Cleaned test DB and Lucene directories"
 
-  generate:
-    desc: "Generate a synthetic dataset (usage: task generate -- --count 1000)"
+  # ── Static Apps ────────────────────────────────────────────
+
+  app-static:
+    desc: Serve the static demo app (Alpine.js, no Python deps)
     cmds:
-      - python3 generate.py {{.CLI_ARGS}}
+      - ln -sfn ../drillhole/config.ttl app-static/config.ttl
+      - echo "Serving at http://localhost:8000"
+      - cmd: python3 -m http.server 8000 --directory app-static
+
+  overview:
+    desc: Serve the project overview presentation
+    cmds:
+      - echo "Serving at http://localhost:8001"
+      - cmd: python3 -m http.server 8001 --directory project-overview
+
+  # ── Docker ─────────────────────────────────────────────────
 
   image-build:
     desc: "Build Docker image (optionally: task image-build IMAGE_NAME=myapp IMAGE_TAG=latest)"
+    dir: test
     cmds:
-      - cp {{.FUSEKI_JAR}} jena-fuseki-server.jar
+      - cp ../{{.FUSEKI_JAR}} jena-fuseki-server.jar
       - docker build -t {{.IMAGE_NAME}}:{{.IMAGE_TAG}} .
       - rm -f jena-fuseki-server.jar
 
@@ -96,8 +150,29 @@ tasks:
       - docker tag {{.IMAGE_NAME}}:{{.IMAGE_TAG}} ghcr.io/{{.GHCR_OWNER}}/{{.IMAGE_NAME}}:{{.IMAGE_TAG}}
       - docker push ghcr.io/{{.GHCR_OWNER}}/{{.IMAGE_NAME}}:{{.IMAGE_TAG}}
 
-  clean:
-    desc: Remove TDB2 and Lucene data directories
+  docker-start:
+    desc: Start Fuseki in Docker (detached)
+    dir: test
     cmds:
-      - rm -rf DB Lucene
-      - echo "Cleaned DB and Lucene directories"
+      - docker compose up -d
+      - echo "Fuseki starting at {{.SERVER_URL}}"
+
+  docker-stop:
+    desc: Stop the Docker Fuseki container
+    dir: test
+    cmds:
+      - docker compose down
+      - echo "Fuseki stopped"
+
+  docker-clean:
+    desc: Stop Fuseki and remove Docker volumes (DB + Lucene index)
+    dir: test
+    cmds:
+      - docker compose down -v
+      - echo "Fuseki stopped and volumes removed"
+
+  docker-serve:
+    desc: Start Fuseki in Docker (foreground with logs)
+    dir: test
+    cmds:
+      - docker compose up

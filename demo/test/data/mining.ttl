@@ -5,40 +5,52 @@
 @prefix dct:   <http://purl.org/dc/terms/> .
 @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
 
+## --- Classes ---
+
+ex:MiningReport rdfs:label "Mining Report" .
+ex:Borehole     rdfs:label "Borehole" .
+ex:Site         rdfs:label "Site" .
+
 ## --- Sites ---
 
 ex:site-mount-isa a ex:Site ;
     rdfs:label "Mount Isa Mine" ;
+    dct:description "Major polymetallic mining complex in northwest Queensland producing copper, lead and zinc since 1923. One of the most significant base metal deposits in the world." ;
     ex:commodity "Copper", "Lead", "Zinc" ;
     ex:state "QLD" ;
     ex:status "Active" .
 
 ex:site-olympic-dam a ex:Site ;
     rdfs:label "Olympic Dam" ;
+    dct:description "Underground mine in South Australia producing copper, uranium, gold and silver. Hosts one of the world's largest known ore deposits within an iron oxide copper-gold system." ;
     ex:commodity "Copper", "Uranium", "Gold" ;
     ex:state "SA" ;
     ex:status "Active" .
 
 ex:site-boddington a ex:Site ;
     rdfs:label "Boddington Gold Mine" ;
+    dct:description "Large open-pit gold-copper mine in the Darling Range of Western Australia. Currently the largest gold mine in the country by production volume." ;
     ex:commodity "Gold", "Copper" ;
     ex:state "WA" ;
     ex:status "Active" .
 
 ex:site-broken-hill a ex:Site ;
     rdfs:label "Broken Hill Mine" ;
+    dct:description "Historic lead-zinc-silver mining district in far western New South Wales. Mining commenced in 1883, making it one of the longest continuously operating mining fields in Australia." ;
     ex:commodity "Lead", "Zinc", "Silver" ;
     ex:state "NSW" ;
     ex:status "Historical" .
 
 ex:site-cadia-valley a ex:Site ;
     rdfs:label "Cadia Valley Operations" ;
+    dct:description "Underground panel cave and open-pit gold-copper mine near Orange, New South Wales. One of Australia's largest gold operations, extracting from a porphyry copper-gold deposit." ;
     ex:commodity "Gold", "Copper" ;
     ex:state "NSW" ;
     ex:status "Active" .
 
 ex:site-pilbara-iron a ex:Site ;
     rdfs:label "Pilbara Iron Ore Hub" ;
+    dct:description "Cluster of open-pit iron ore mines in the Pilbara region of Western Australia. Produces high-grade hematite ore for export, connected by private rail to port facilities." ;
     ex:commodity "Iron Ore" ;
     ex:state "WA" ;
     ex:status "Active" .
@@ -47,42 +59,49 @@ ex:site-pilbara-iron a ex:Site ;
 
 ex:bh-mia-001 a ex:Borehole ;
     rdfs:label "MIA-DDH-001 Mount Isa Diamond Drill Hole" ;
+    dct:description "Diamond drill hole targeting the copper-rich silica dolomite zone at 400m depth. Core recovery 95%. Intersected significant chalcopyrite mineralisation below 380m." ;
     ex:commodity "Copper" ;
     ex:state "QLD" ;
     ex:depth 450 .
 
 ex:bh-mia-002 a ex:Borehole ;
     rdfs:label "MIA-DDH-002 Mount Isa Exploration Hole" ;
+    dct:description "Exploration hole in the northern lead-zinc zone targeting Urquhart Shale stratigraphy. Encountered sphalerite and galena mineralisation between 210m and 290m." ;
     ex:commodity "Lead", "Zinc" ;
     ex:state "QLD" ;
     ex:depth 320 .
 
 ex:bh-od-001 a ex:Borehole ;
     rdfs:label "OD-RC-001 Olympic Dam Reverse Circulation Hole" ;
+    dct:description "Reverse circulation hole drilled into the Olympic Dam breccia complex. Targeted the hematite-quartz breccia unit hosting copper-uranium mineralisation." ;
     ex:commodity "Copper", "Uranium" ;
     ex:state "SA" ;
     ex:depth 280 .
 
 ex:bh-bod-001 a ex:Borehole ;
     rdfs:label "BOD-DDH-001 Boddington Deep Diamond Hole" ;
+    dct:description "Deep diamond drill hole investigating the primary gold-copper mineralisation at depth beneath the existing open pit. Targeted the diorite-hosted stockwork zone below the supergene blanket." ;
     ex:commodity "Gold" ;
     ex:state "WA" ;
     ex:depth 600 .
 
 ex:bh-bh-001 a ex:Borehole ;
     rdfs:label "BHM-DDH-001 Broken Hill Legacy Drill Hole" ;
+    dct:description "Historical diamond drill hole from the Broken Hill main lode. Part of the 1970s exploration campaign that delineated the southern extension of the orebody." ;
     ex:commodity "Lead", "Silver" ;
     ex:state "NSW" ;
     ex:depth 210 .
 
 ex:bh-cad-001 a ex:Borehole ;
     rdfs:label "CAD-DDH-001 Cadia Deep Exploration Hole" ;
+    dct:description "Deep exploration hole targeting the Cadia East porphyry at depth. Intersected a thick zone of sheeted quartz-sulphide veins with elevated gold and copper grades from 620m." ;
     ex:commodity "Gold", "Copper" ;
     ex:state "NSW" ;
     ex:depth 850 .
 
 ex:bh-pil-001 a ex:Borehole ;
     rdfs:label "PIL-RC-001 Pilbara Iron Ore Reverse Circulation" ;
+    dct:description "Shallow reverse circulation hole in the channel iron deposit. Sampled the Tertiary pisolitic limonite horizon for iron grade and contaminant analysis." ;
     ex:commodity "Iron Ore" ;
     ex:state "WA" ;
     ex:depth 150 .
