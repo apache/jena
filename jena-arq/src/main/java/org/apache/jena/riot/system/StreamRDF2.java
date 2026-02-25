@@ -29,7 +29,15 @@ public class StreamRDF2 implements StreamRDF {
     protected final StreamRDF sink1;
     protected final StreamRDF sink2;
 
-    public StreamRDF2(StreamRDF sink1, StreamRDF sink2) {
+    public static StreamRDF create(StreamRDF sink1, StreamRDF sink2) {
+        if ( sink1 == null )
+            return sink2;
+        if ( sink2 == null )
+            return sink1;
+        return new StreamRDF2(sink1, sink2);
+    }
+
+    private StreamRDF2(StreamRDF sink1, StreamRDF sink2) {
         this.sink1 = sink1;
         this.sink2 = sink2;
     }
@@ -75,5 +83,4 @@ public class StreamRDF2 implements StreamRDF {
         sink1.finish();
         sink2.finish();
     }
-
 }
