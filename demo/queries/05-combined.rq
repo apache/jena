@@ -1,0 +1,14 @@
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+# Search results and facet counts in a single query using UNION.
+# Returns N + M rows (not a cartesian product).
+# Hit rows have ?field/?value/?count unbound; facet rows have ?entity/?score unbound.
+# Both property functions share a single Lucene execution internally.
+
+PREFIX luc: <urn:jena:lucene:index#>
+
+SELECT ?entity ?score ?field ?value ?count
+WHERE {
+    { (?entity ?score) luc:query ("iron ore") }
+    UNION
+    { (?field ?value ?count) luc:facet ("iron ore" '["state", "status"]' 10) }
+}

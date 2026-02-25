@@ -47,6 +47,10 @@ hs_err_*
 # Fuseki file area
 run/
 
+# Demo runtime data
+demo/DB/
+demo/Lucene/
+
 # Benchmark JSON results
 jena-benchmarks/jena-benchmarks-jmh/*.json
 

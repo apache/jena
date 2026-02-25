@@ -1,0 +1,17 @@
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+# Facet counts with a filter applied.
+# Gets operator and commodity counts for "gold" results, but only in Western Australia.
+# This is the drill-down pattern: user selects a state, sees updated facets.
+
+PREFIX luc: <urn:jena:lucene:index#>
+
+SELECT ?field ?value ?count
+WHERE {
+    (?field ?value ?count) luc:facet (
+        "gold"
+        '["operator", "commodity"]'
+        '{"state": ["WA"]}'
+        10
+    )
+}
+ORDER BY ?field DESC(?count)

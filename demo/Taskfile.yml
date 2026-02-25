@@ -1,0 +1,101 @@
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+# https://taskfile.dev
+version: '3'
+
+vars:
+  VERSION: 6.1.0-SNAPSHOT
+  FUSEKI_JAR: ../jena-fuseki2/jena-fuseki-server/target/jena-fuseki-server-{{.VERSION}}.jar
+  SERVER_URL: http://localhost:3030
+  DATASET: mining
+  IMAGE_NAME: '{{.IMAGE_NAME | default "fuseki-ai"}}'
+  IMAGE_TAG: '{{.IMAGE_TAG | default .VERSION}}'
+  GHCR_OWNER: '{{.GHCR_OWNER | default "aiworkerjohns"}}'
+
+tasks:
+  build:
+    desc: Build the Fuseki server JAR (includes jena-text)
+    dir: ..
+    cmds:
+      - mvn clean install -pl jena-fuseki2/jena-fuseki-server -am -DskipTests
+
+  serve:
+    desc: Start Fuseki with the demo config
+    cmds:
+      - java -jar {{.FUSEKI_JAR}} --config config.ttl
+
+  stop:
+    desc: Stop the running Fuseki server (sends SIGTERM for clean shutdown)
+    cmds:
+      - pkill -f "jena-fuseki-server" && echo "Server stopped" || echo "No server running"
+
+  load:
+    desc: Load the demo mining dataset via SPARQL Graph Store Protocol
+    cmds:
+      - |
+        curl -s -X PUT "{{.SERVER_URL}}/{{.DATASET}}/data?default" \
+          -H "Content-Type: text/turtle" \
+          --data-binary @data/mining.ttl
+      - echo "Loaded data/mining.ttl"
+
+  query:
+    desc: Run all demo queries against the server
+    cmds:
+      - for:
+          - queries/01-basic-search.rq
+          - queries/02-filtered-search.rq
+          - queries/03-facet-counts.rq
+          - queries/04-facet-filtered.rq
+          - queries/05-combined.rq
+        cmd: |
+          echo "=== {{.ITEM}} ==="
+          curl -s -X POST "{{.SERVER_URL}}/{{.DATASET}}/query" \
+            -H "Content-Type: application/sparql-query" \
+            -H "Accept: text/tab-separated-values" \
+            --data-binary @{{.ITEM}}
+          echo ""
+
+  query-one:
+    desc: "Run a single query file (usage: task query-one -- queries/01-basic-search.rq)"
+    cmds:
+      - |
+        curl -s -X POST "{{.SERVER_URL}}/{{.DATASET}}/query" \
+          -H "Content-Type: application/sparql-query" \
+          -H "Accept: text/tab-separated-values" \
+          --data-binary @{{.CLI_ARGS}}
+
+  generate:
+    desc: "Generate a synthetic dataset (usage: task generate -- --count 1000)"
+    cmds:
+      - python3 generate.py {{.CLI_ARGS}}
+
+  image-build:
+    desc: "Build Docker image (optionally: task image-build IMAGE_NAME=myapp IMAGE_TAG=latest)"
+    cmds:
+      - cp {{.FUSEKI_JAR}} jena-fuseki-server.jar
+      - docker build -t {{.IMAGE_NAME}}:{{.IMAGE_TAG}} .
+      - rm -f jena-fuseki-server.jar
+
+  image-push:
+    desc: "Build and push image to ACR (usage: task image-push ACR_NAME=myregistry)"
+    requires:
+      vars: [ACR_NAME]
+    deps: [image-build]
+    cmds:
+      - az account show > /dev/null 2>&1 || az login
+      - az acr login --name {{.ACR_NAME}}
+      - docker tag {{.IMAGE_NAME}}:{{.IMAGE_TAG}} {{.ACR_NAME}}.azurecr.io/{{.IMAGE_NAME}}:{{.IMAGE_TAG}}
+      - docker push {{.ACR_NAME}}.azurecr.io/{{.IMAGE_NAME}}:{{.IMAGE_TAG}}
+
+  ghcr-push:
+    desc: "Build and push image to GitHub CR (usage: task ghcr-push)"
+    deps: [image-build]
+    cmds:
+      - gh auth token | docker login ghcr.io -u {{.GHCR_OWNER}} --password-stdin
+      - docker tag {{.IMAGE_NAME}}:{{.IMAGE_TAG}} ghcr.io/{{.GHCR_OWNER}}/{{.IMAGE_NAME}}:{{.IMAGE_TAG}}
+      - docker push ghcr.io/{{.GHCR_OWNER}}/{{.IMAGE_NAME}}:{{.IMAGE_TAG}}
+
+  clean:
+    desc: Remove TDB2 and Lucene data directories
+    cmds:
+      - rm -rf DB Lucene
+      - echo "Cleaned DB and Lucene directories"

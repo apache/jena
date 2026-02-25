@@ -1,0 +1,6 @@
+DB/
+Lucene/
+queries/
+generate.py
+Taskfile.yml
+*.md

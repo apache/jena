@@ -1,0 +1,142 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+PREFIX :        <#>
+PREFIX fuseki:  <http://jena.apache.org/fuseki#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
+PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
+PREFIX text:    <http://jena.apache.org/text#>
+PREFIX idx:     <urn:jena:lucene:index#>
+PREFIX sh:      <http://www.w3.org/ns/shacl#>
+PREFIX ex:      <http://example.org/mining/>
+
+## --- Fuseki server ---
+
+[] rdf:type fuseki:Server ;
+   fuseki:services ( :service ) .
+
+:service rdf:type fuseki:Service ;
+    fuseki:name "mining" ;
+    fuseki:endpoint [ fuseki:operation fuseki:query  ; fuseki:name "query"  ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:update ; fuseki:name "update" ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:gsp-rw ; fuseki:name "data"   ] ;
+    fuseki:dataset :text_dataset .
+
+## --- Text-indexed dataset ---
+
+:text_dataset rdf:type text:TextDataset ;
+    text:dataset :base_dataset ;
+    text:index   :index .
+
+:base_dataset rdf:type tdb2:DatasetTDB ;
+    tdb2:location "DB" .
+
+:index rdf:type text:TextIndexLucene ;
+    text:directory <file:Lucene> ;
+    text:shapes ( :MiningReportShape :BoreholeShape :SiteShape ) ;
+    text:storeValues true ;
+    text:maxFacetHits 50000 .
+
+## --- Shapes ---
+
+:MiningReportShape
+    sh:targetClass ex:MiningReport ;
+    sh:property [
+        idx:fieldName "title" ;
+        idx:fieldType idx:TextField ;
+        idx:defaultSearch true ;
+        sh:path rdfs:label ;
+    ] ;
+    sh:property [
+        idx:fieldName "description" ;
+        idx:fieldType idx:TextField ;
+        sh:path <http://purl.org/dc/terms/description> ;
+    ] ;
+    sh:property [
+        idx:fieldName "commodity" ;
+        idx:fieldType idx:KeywordField ;
+        idx:facetable true ;
+        idx:multiValued true ;
+        sh:path ex:commodity ;
+    ] ;
+    sh:property [
+        idx:fieldName "state" ;
+        idx:fieldType idx:KeywordField ;
+        idx:facetable true ;
+        sh:path ex:state ;
+    ] ;
+    sh:property [
+        idx:fieldName "operator" ;
+        idx:fieldType idx:KeywordField ;
+        idx:facetable true ;
+        sh:path ex:operator ;
+    ] ;
+    sh:property [
+        idx:fieldName "status" ;
+        idx:fieldType idx:KeywordField ;
+        idx:facetable true ;
+        sh:path ex:status ;
+    ] ;
+    sh:property [
+        idx:fieldName "year" ;
+        idx:fieldType idx:IntField ;
+        idx:sortable true ;
+        sh:path ex:year ;
+    ] .
+
+:BoreholeShape
+    sh:targetClass ex:Borehole ;
+    sh:property [
+        idx:fieldName "title" ;
+        idx:fieldType idx:TextField ;
+        idx:defaultSearch true ;
+        sh:path rdfs:label ;
+    ] ;
+    sh:property [
+        idx:fieldName "commodity" ;
+        idx:fieldType idx:KeywordField ;
+        idx:facetable true ;
+        idx:multiValued true ;
+        sh:path ex:commodity ;
+    ] ;
+    sh:property [
+        idx:fieldName "state" ;
+        idx:fieldType idx:KeywordField ;
+        idx:facetable true ;
+        sh:path ex:state ;
+    ] ;
+    sh:property [
+        idx:fieldName "depth" ;
+        idx:fieldType idx:IntField ;
+        idx:sortable true ;
+        sh:path ex:depth ;
+    ] .
+
+:SiteShape
+    sh:targetClass ex:Site ;
+    sh:property [
+        idx:fieldName "title" ;
+        idx:fieldType idx:TextField ;
+        idx:defaultSearch true ;
+        sh:path rdfs:label ;
+    ] ;
+    sh:property [
+        idx:fieldName "commodity" ;
+        idx:fieldType idx:KeywordField ;
+        idx:facetable true ;
+        idx:multiValued true ;
+        sh:path ex:commodity ;
+    ] ;
+    sh:property [
+        idx:fieldName "state" ;
+        idx:fieldType idx:KeywordField ;
+        idx:facetable true ;
+        sh:path ex:state ;
+    ] ;
+    sh:property [
+        idx:fieldName "status" ;
+        idx:fieldType idx:KeywordField ;
+        idx:facetable true ;
+        sh:path ex:status ;
+    ] .

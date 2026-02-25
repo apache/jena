@@ -1,0 +1,13 @@
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+services:
+  fuseki:
+    image: ghcr.io/aiworkerjohns/fuseki-ai:6.1.0-SNAPSHOT
+    ports:
+      - "3030:3030"
+    volumes:
+      - fuseki-db:/fuseki/DB
+      - fuseki-lucene:/fuseki/Lucene
+
+volumes:
+  fuseki-db:
+  fuseki-lucene:

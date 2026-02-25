@@ -1,0 +1,12 @@
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+# Basic full-text search across all indexed entities.
+# Searches the default text field (title/rdfs:label) for the term "copper".
+# Returns matching entities ranked by Lucene relevance score.
+
+PREFIX luc: <urn:jena:lucene:index#>
+
+SELECT ?entity ?score
+WHERE {
+    (?entity ?score) luc:query ("copper")
+}
+ORDER BY DESC(?score)
