@@ -70,9 +70,6 @@ public class QueryIterYieldN extends QueryIter {
     }
 
     @Override
-    protected void requestCancel() {}
-
-    @Override
     public void output(IndentedWriter out, SerializationContext sCxt) {
         out.print("QueryIterYieldN: " + limitYielded + " of " + binding);
     }

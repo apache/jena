@@ -260,7 +260,7 @@ public class EvaluatorSimple implements Evaluator {
     @Override
     public Table order(Table table, List<SortCondition> conditions) {
         QueryIterator qIter = table.iterator(getExecContext());
-        qIter = new QueryIterSort(qIter, conditions, getExecContext());
+        qIter = QueryIterSort.create(qIter, conditions, getExecContext());
         return new TableN(qIter);
     }
 

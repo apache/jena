@@ -48,18 +48,22 @@ public class QueryIterTopN extends QueryIterPlainWrapper
      * To keep another element, it must be less than the max so far.
      * This leaves the least N in the heap.
      */
-	private final QueryIterator embeddedIterator;      // Keep a record of the underlying source for .cancel.
+	private final QueryIterator inputIterator;      // Keep a record of the unsorted underlying source for .cancel.
     private PriorityQueue<Binding> heap;
     private long limit;
     private final boolean distinct;
 
-    public QueryIterTopN(QueryIterator qIter, List<SortCondition> conditions, long numItems, boolean distinct, ExecutionContext context) {
-        this(qIter, new BindingComparator(conditions, context), numItems, distinct, context);
+    public static QueryIterator create(QueryIterator qIter, List<SortCondition> conditions, long numItems, boolean distinct, ExecutionContext context) {
+        return create(qIter, new BindingComparator(conditions, context), numItems, distinct, context);
     }
 
-    public QueryIterTopN(QueryIterator qIter, Comparator<Binding> comparator, long numItems, boolean distinct, ExecutionContext context) {
+    public static QueryIterator create(QueryIterator qIter, Comparator<Binding> comparator, long numItems, boolean distinct, ExecutionContext context) {
+        return new QueryIterTopN(qIter, comparator, numItems, distinct, context);
+    }
+
+    private QueryIterTopN(QueryIterator qIter, Comparator<Binding> comparator, long numItems, boolean distinct, ExecutionContext context) {
         super(null, context);
-        this.embeddedIterator = qIter;
+        this.inputIterator = qIter;
         this.distinct = distinct;
 
         limit = numItems;
@@ -84,13 +88,13 @@ public class QueryIterTopN extends QueryIterPlainWrapper
 
     @Override
     public void requestCancel() {
-        this.embeddedIterator.cancel();
+        this.inputIterator.cancel();
         super.requestCancel();
     }
 
     @Override
     protected void closeIterator() {
-        this.embeddedIterator.close();
+        this.inputIterator.close();
         super.closeIterator();
     }
 

@@ -51,9 +51,6 @@ public class QueryIterNullIterator extends QueryIter
     protected void closeIterator() {}
 
     @Override
-    protected void requestCancel() {}
-
-    @Override
     public void output(IndentedWriter out, SerializationContext sCxt) {
         out.println(Lib.className(this));
     }

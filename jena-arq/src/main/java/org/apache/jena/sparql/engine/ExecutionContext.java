@@ -33,74 +33,40 @@ import org.apache.jena.query.ARQ;
 import org.apache.jena.query.QueryCancelledException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.apache.jena.sparql.engine.iterator.QueryIteratorBase;
 import org.apache.jena.sparql.engine.main.OpExecutorFactory;
 import org.apache.jena.sparql.engine.main.QC;
 import org.apache.jena.sparql.function.FunctionEnv;
 import org.apache.jena.sparql.util.Context;
 
-public class ExecutionContext implements FunctionEnv
+public final class ExecutionContext implements FunctionEnv
 {
     private static final boolean TrackAllIterators = false;
 
-    private Context context       = null;
-    private DatasetGraph dataset  = null;
+    private final Context context;
+    private final DatasetGraph dataset;
 
     // Iterator tracking
     private final Collection<QueryIterator> openIterators;
     // Tracking all iterators leads to a build up of state,
-    private Collection<QueryIterator> allIterators     = null;
-    private Graph activeGraph           = null;
-    private OpExecutorFactory executor  = null;
+    private final Collection<QueryIterator> allIterators;
+    private final Graph activeGraph;
+    private final OpExecutorFactory executor;
     private final AtomicBoolean cancelSignal;
-
-    /** Clone */
-    public static ExecutionContext copy(ExecutionContext other) {
-        return new ExecutionContext(other);
-    }
-
-    /** @deprecated Use {@link #copy(ExecutionContext)} */
-    @Deprecated
-    public ExecutionContext(ExecutionContext other) {
-        this.context = other.context;
-        this.dataset = other.dataset;
-        this.openIterators = other.openIterators;
-        this.allIterators = other.allIterators;
-        this.activeGraph = other.activeGraph;
-        this.executor = other.executor;
-        this.cancelSignal = other.cancelSignal;
-    }
 
     /** Create ExecutionContext from {@link FunctionEnv} */
     public static ExecutionContext fromFunctionEnv(FunctionEnv functionEnv) {
         return new ExecutionContext(functionEnv);
     }
 
-    private ExecutionContext(FunctionEnv other) {
-        this.context = other.getContext();
-        this.dataset = other.getDataset();
-        this.openIterators = new ArrayList<>();
-        if ( TrackAllIterators )
-            this.allIterators  = new ArrayList<>();
-        else
-            this.allIterators  = null;
-        this.activeGraph = other.getActiveGraph();
-        this.executor = QC.getFactory(context);
-        this.cancelSignal = Context.getCancelSignal(context);
-    }
-
     /** Clone and change active graph - shares tracking */
     public static ExecutionContext copyChangeActiveGraph(ExecutionContext other, Graph activeGraph) {
-        return new ExecutionContext(other, activeGraph);
+        return new ExecutionContext(other, activeGraph, other.executor);
     }
 
-    /**
-     * Clone and change active graph - shares tracking
-     * @deprecated Use {@link #copyChangeActiveGraph(ExecutionContext, Graph)}.
-     */
-    @Deprecated
-    public ExecutionContext(ExecutionContext other, Graph activeGraph) {
-        this(other);
-        this.activeGraph = activeGraph;
+    /** Clone and change OpExecutor - shares tracking */
+    public static ExecutionContext copyChangeExecutor(ExecutionContext other, OpExecutorFactory opExecutorFactory) {
+        return new ExecutionContext(other, other.activeGraph, opExecutorFactory);
     }
 
     /**
@@ -144,8 +110,7 @@ public class ExecutionContext implements FunctionEnv
      * ExecutionContext for normal execution over a dataset.
      */
     public static ExecutionContext create(DatasetGraph dataset, Graph activeGraph, Context context) {
-        return new ExecutionContext(context,
-                                    activeGraph, dataset,
+        return new ExecutionContext(context, activeGraph, dataset,
                                     QC.getFactory(context),
                                     Context.getCancelSignal(context));
     }
@@ -167,12 +132,38 @@ public class ExecutionContext implements FunctionEnv
         return create(dsg, graph, cxt);
     }
 
+    /** Create from a {@link FunctionEnv} */
+    private ExecutionContext(FunctionEnv other) {
+        this.context = other.getContext();
+        this.dataset = other.getDataset();
+        this.openIterators = new ArrayList<>();
+        this.allIterators = (TrackAllIterators) ? new ArrayList<>() : null;
+        this.activeGraph = other.getActiveGraph();
+        this.executor = QC.getFactory(context);
+        this.cancelSignal = Context.getCancelSignal(context);
+    }
+
+    /**
+     * Clone, changing the active graph and OpExecutorFactory.
+     */
+    private ExecutionContext(ExecutionContext other, Graph activeGraph, OpExecutorFactory opExecutorFactory) {
+        this.context = other.context;
+        this.dataset = other.dataset;
+        this.openIterators = other.openIterators;
+        this.allIterators = other.allIterators;
+        this.activeGraph = activeGraph;
+        this.executor = opExecutorFactory;
+        this.cancelSignal = other.cancelSignal;
+    }
+
+    /**
+     * Make a new ExecutionContext.
+     */
     private ExecutionContext(Context params, Graph activeGraph, DatasetGraph dataset, OpExecutorFactory factory, AtomicBoolean cancelSignal) {
         this.context = params;
         this.dataset = dataset;
         this.openIterators = new ArrayList<>();
-        if ( TrackAllIterators )
-            this.allIterators  = new ArrayList<>();
+        this.allIterators = (TrackAllIterators) ? new ArrayList<>() : null;
         this.activeGraph = activeGraph;
         this.executor = factory;
         this.cancelSignal = cancelSignal;
@@ -187,7 +178,16 @@ public class ExecutionContext implements FunctionEnv
         return cancelSignal;
     }
 
-    /** Check the cancel signal and throw {@link QueryCancelledException}} if it is true. */
+
+    /**
+     * Check the cancel signal and throw {@link QueryCancelledException}} if it is true.
+     *
+     * @deprecated This rarely the right way to handle cancellation.
+     *   Either {@link #getCancelSignal} check the flag, take action and throw
+     *   {@link QueryCancelledException} or let the query iterator machinery
+     *   in {@link QueryIteratorBase} deal with it when no additional action is required.
+     */
+    @Deprecated(forRemoval=true)
     public void checkCancelSignal() {
       if ( cancelSignal != null && cancelSignal.get() )
           throw new QueryCancelledException();
@@ -217,17 +217,16 @@ public class ExecutionContext implements FunctionEnv
         return executor;
     }
 
-    /** Setter for the policy for algebra expression evaluation - use with care */
-    public void setExecutor(OpExecutorFactory executor) {
-        this.executor = executor;
-    }
-
+    /**
+     * Return the dataset for the query execution.
+     */
     @Override
     public DatasetGraph getDataset()  { return dataset; }
 
-    /** Return the active graph (the one matching is against at this point in the query.
-     * May be null if unknown or not applicable - for example, doing quad store access or
-     * when sorting
+    /**
+     * Return the active graph (the one matching is against at this point in the
+     * query. May be null if unknown or not applicable - for example, doing quad
+     * store access or when sorting.
      */
     @Override
     public Graph getActiveGraph()     { return activeGraph; }
