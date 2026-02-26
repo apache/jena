@@ -35,8 +35,6 @@ public class QueryIteratorResultSet extends QueryIteratorBase
     @Override
     protected void closeIterator()          { resultSet = null; }
     @Override
-    protected void requestCancel()          { }
-    @Override
     protected boolean hasNextBinding()      { return resultSet.hasNext(); }
     @Override
     protected Binding moveToNextBinding()   { return resultSet.nextBinding(); }

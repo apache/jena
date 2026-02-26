@@ -37,7 +37,7 @@ import org.apache.jena.sparql.serializer.SerializationContext ;
  */
 public abstract class QueryIter extends QueryIteratorBase
 {
-    // Volatile just to make it safe to concurrent updates
+    // Volatile to make it safe against concurrent updates
     // It does not matter too much if it is wrong - it's used as a label.
     private volatile static int iteratorCounter = 0 ;
     private int iteratorNumber = (iteratorCounter++) ;

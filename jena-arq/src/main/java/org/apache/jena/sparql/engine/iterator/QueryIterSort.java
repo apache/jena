@@ -47,32 +47,36 @@ import org.apache.jena.sparql.system.SerializationFactoryFinder;
  */
 
 public class QueryIterSort extends QueryIterPlainWrapper {
-    private final QueryIterator embeddedIterator;
-    /*package*/ final SortedDataBag<Binding> db;
+    private final QueryIterator inputIterator;
+    /*package*/ final SortedDataBag<Binding> dataBag;
 
-    public QueryIterSort(QueryIterator qIter, List<SortCondition> conditions, ExecutionContext context) {
-        this(qIter, new BindingComparator(conditions, context), context);
+    public static QueryIterator create(QueryIterator qIter, List<SortCondition> conditions, ExecutionContext context) {
+        return create(qIter, new BindingComparator(conditions, context), context);
     }
 
-    public QueryIterSort(QueryIterator qIter, Comparator<Binding> comparator, ExecutionContext context) {
+    public static  QueryIterator create(QueryIterator qIter, Comparator<Binding> comparator, ExecutionContext context) {
+        return new QueryIterSort(qIter, comparator, context);
+    }
+
+    private QueryIterSort(QueryIterator qIter, Comparator<Binding> comparator, ExecutionContext context) {
         super(null, context);
-        this.embeddedIterator = qIter;
+        this.inputIterator = qIter;
         ThresholdPolicy<Binding> policy = ThresholdPolicyFactory.policyFromContext(context.getContext());
-        this.db = BagFactory.newSortedBag(policy, SerializationFactoryFinder.bindingSerializationFactory(), comparator);
+        this.dataBag = BagFactory.newSortedBag(policy, SerializationFactoryFinder.bindingSerializationFactory(), comparator);
         this.setIterator(new SortedBindingIterator(qIter));
     }
 
     @Override
     public void requestCancel() {
-        this.db.cancel();
-        this.embeddedIterator.cancel();
+        this.dataBag.cancel();
+        this.inputIterator.cancel();
         super.requestCancel();
     }
 
     @Override
     protected void closeIterator() {
-        this.db.close();
-        this.embeddedIterator.close();
+        this.dataBag.close();
+        this.inputIterator.close();
         super.closeIterator();
     }
 
@@ -86,8 +90,8 @@ public class QueryIterSort extends QueryIterPlainWrapper {
         @Override
         protected Iterator<Binding> initializeIterator() {
             try {
-                db.addAll(qIter);
-                return db.iterator();
+                dataBag.addAll(qIter);
+                return dataBag.iterator();
             }
             // Should we catch other exceptions too? Theoretically
             // the user should be using this
@@ -102,7 +106,7 @@ public class QueryIterSort extends QueryIterPlainWrapper {
 
         @Override
         public void close() {
-            db.close();
+            dataBag.close();
         }
     }
 
