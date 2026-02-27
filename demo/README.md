@@ -207,6 +207,7 @@ docker run --rm \
 
 | Environment variable | Default | Purpose |
 |---|---|---|
+| `MODE` | `all` | `all` = load + reindex, `load` = TDB2 load only, `index` = SHACL reindex only |
 | `CONFIG` | `/config/config.ttl` | Path to assembler config inside the container |
 | `DB_DIR` | `/data/DB` | TDB2 output directory |
 | `INPUT_DIR` | `/input` | Data files directory |

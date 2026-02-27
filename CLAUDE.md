@@ -17,6 +17,8 @@ This is a **fork** of `apache/jena`. The upstream repo is a read-only reference.
 
 The `gh` CLI default is set to `aiworkerjohns/jena`. Always use `-R aiworkerjohns/jena` if there is any ambiguity. Never use `-R apache/jena` for write operations.
 
+**Docker image pushes to GHCR**: The `gh` CLI must have `aiworkerjohns` as the active account (not `hjohns`) with the `write:packages` scope. Before pushing, verify with `gh auth status` and switch if needed: `gh auth switch --user aiworkerjohns`.
+
 ## Build Commands
 
 ```bash

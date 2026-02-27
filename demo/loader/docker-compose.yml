@@ -1,3 +1,4 @@
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 services:
   loader:
     image: ghcr.io/aiworkerjohns/fuseki-loader:6.1.0-SNAPSHOT
