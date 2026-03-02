@@ -1,0 +1,7 @@
+== Basic positive tests for RRX
+
+The tests in this directory cover RDF/XML features for RDF 1.1
+See RunTestRDFXML.java.
+
+Tests are run by comparing the results to ARP.
+

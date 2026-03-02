@@ -38,8 +38,8 @@ public class Test_RRX_W3C_StAXev extends AbstractTestRDFXML_RRX {
     private static String implLabel = "StAX(ev)";
 
     private static Stream<RRX_TestFileArgs> provideArgs() {
-        List<String> testfiles = RunTestRDFXML.w3cTestFiles();
-        return RunTestRDFXML.makeTestSetup(implLabel, rdfxmlStAXevFactory, testfiles).stream();
+        List<String> testfiles = RunTestRDFXML11.w3cTestFiles();
+        return RunTestRDFXML11.makeTestSetup(implLabel, rdfxmlStAXevFactory, testfiles).stream();
     }
 
     public Test_RRX_W3C_StAXev(RRX_TestFileArgs args) {

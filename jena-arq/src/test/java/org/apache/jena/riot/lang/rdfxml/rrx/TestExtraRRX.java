@@ -43,7 +43,7 @@ import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.IOX;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.lang.rdfxml.RRX;
-import org.apache.jena.riot.lang.rdfxml.rrx.RunTestRDFXML.ErrorHandlerCollector;
+import org.apache.jena.riot.lang.rdfxml.rrx.RunTestRDFXML11.ErrorHandlerCollector;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.riot.system.StreamRDF;
@@ -62,7 +62,7 @@ import org.apache.jena.riot.system.StreamRDFWriter;
 @MethodSource("provideArgs")
 public class TestExtraRRX {
 
-    private static String DIR = "testing/RIOT/rrx-files/";
+    private static String DIR = "testing/RIOT/rrx11-files/";
 
     private record TestArgs(String label, Lang lang) {}
 
@@ -239,16 +239,16 @@ public class TestExtraRRX {
         trackFilename(filename);
         ReaderRIOTFactory factory = RDFParserRegistry.getFactory(lang);
         String fn = DIR+filename;
-        RunTestRDFXML.runTestPlain(filename, factory, label, fn);
-        RunTestRDFXML.runTestCompareARP(fn, factory, label, fn);
+        RunTestRDFXML11.runTestPlain(filename, factory, label, fn);
+        RunTestRDFXML11.runTestCompareARP(fn, factory, label, fn);
     }
 
     private void warningTest(String filename, int warnings) {
         trackFilename(filename);
         ReaderRIOTFactory factory = RDFParserRegistry.getFactory(lang);
         String fn = DIR+filename;
-        RunTestRDFXML.runTestExpectWarning(filename, factory, label, warnings, fn);
-        RunTestRDFXML.runTestCompareARP(fn, factory, label, fn);
+        RunTestRDFXML11.runTestExpectWarning(filename, factory, label, warnings, fn);
+        RunTestRDFXML11.runTestCompareARP(fn, factory, label, fn);
     }
 
     /**
@@ -276,9 +276,9 @@ public class TestExtraRRX {
         trackFilename(filename);
         ReaderRIOTFactory factory = RDFParserRegistry.getFactory(lang);
         String fn = DIR+filename;
-        RunTestRDFXML.runTestExpectFailure(filename, factory, label, fn);
+        RunTestRDFXML11.runTestExpectFailure(filename, factory, label, fn);
         if ( compare )
-            RunTestRDFXML.runTestCompareARP(fn, factory, label, fn);
+            RunTestRDFXML11.runTestCompareARP(fn, factory, label, fn);
     }
 
     static Set<String> localTestFiles() {
