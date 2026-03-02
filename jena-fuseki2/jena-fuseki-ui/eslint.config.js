@@ -17,6 +17,7 @@
 
 import js from '@eslint/js'
 import pluginVue from 'eslint-plugin-vue'
+import globals from 'globals'
 
 export default [
   js.configs.recommended,
@@ -44,8 +45,9 @@ export default [
       'vue/html-self-closing': 'off'
     },
     'languageOptions': {
-      'ecmaVersion': 2021,
+      'ecmaVersion': 2022,
       'globals': {
+        ...globals.browser,
         'process': true,
         'describe': true,
         'it': true,
