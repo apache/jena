@@ -16,7 +16,7 @@
  */
 
 import {defineConfig} from 'cypress'
-import codeCoverageTask from '@cypress/code-coverage/task.js'
+import codeCoverageTask from '@cypress/code-coverage/task'
 import vitePreprocessor from 'cypress-vite'
 import {resolve} from 'path'
 
@@ -24,6 +24,7 @@ const __dirname = resolve()
 
 export default defineConfig({
   video: false,
+  allowCypressEnv: false,
   defaultCommandTimeout: 20000,
   execTimeout: 30000,
   taskTimeout: 30000,
