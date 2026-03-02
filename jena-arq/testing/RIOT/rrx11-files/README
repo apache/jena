@@ -1,11 +1,11 @@
-## Files for specific tests of RRX.
+== Files for specific tests of RRX.
 
 This directory contained files used for specific tests of RRX to suppliment the
 basic positive tests
 
 - errors and extensions.
 
-Used by: TestRRX.java
+Used by: TestExtraRRX.java
 
 # Extensions to RDF/XML
 

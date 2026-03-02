@@ -41,8 +41,8 @@ public class Test_RRX_Local_StAXsr extends AbstractTestRDFXML_RRX {
     private static String implLabel = "StAX(sr)";
 
     private static Stream<RRX_TestFileArgs> provideArgs() {
-        List<String> testfiles = RunTestRDFXML.localTestFiles();
-        return RunTestRDFXML.makeTestSetup(implLabel, rdfxmlStAXsrFactory, testfiles).stream();
+        List<String> testfiles = RunTestRDFXML11.localTestFiles();
+        return RunTestRDFXML11.makeTestSetup(implLabel, rdfxmlStAXsrFactory, testfiles).stream();
     }
 
     public Test_RRX_Local_StAXsr(RRX_TestFileArgs args) {

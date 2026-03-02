@@ -1,4 +1,0 @@
-== Basic positive tests for RRX
-
-The tests in this directory cover RDF/XML features.
-See RunTestRDFXML.java.

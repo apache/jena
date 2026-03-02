@@ -37,8 +37,8 @@ public class Test_RRX_W3C_SAX extends AbstractTestRDFXML_RRX {
     private static String implLabel = "SAX";
 
     private static Stream<RRX_TestFileArgs> provideArgs() {
-        List<String> testfiles = RunTestRDFXML.w3cTestFiles();
-        return RunTestRDFXML.makeTestSetup(implLabel, rdfxmlSAXfactory, testfiles).stream();
+        List<String> testfiles = RunTestRDFXML11.w3cTestFiles();
+        return RunTestRDFXML11.makeTestSetup(implLabel, rdfxmlSAXfactory, testfiles).stream();
     }
 
     public Test_RRX_W3C_SAX(RRX_TestFileArgs args) {

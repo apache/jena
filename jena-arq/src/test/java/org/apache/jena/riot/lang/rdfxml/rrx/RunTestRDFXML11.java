@@ -46,13 +46,14 @@ import org.apache.jena.riot.system.*;
 import org.apache.jena.sparql.graph.GraphFactory;
 
 /** Ways to run tests on parsers. */
-public class RunTestRDFXML {
+public class RunTestRDFXML11 {
 
     @SuppressWarnings("removal")
     static ReaderRIOTFactory arpFactory = ReaderRDFXML_ARP1.factory;
 
     /**
-     * The RDF/XML tests from rdf-tests CG
+     * The RDF/XML tests from rdf-tests CG for RDF 1.1
+     *
      * These are also run from {@link org.apache.jena.riot.lang.rdfxml.Scripts_RRX_RDFXML}.
      * Here, the exact warnings and errors are checked.
      */
@@ -92,7 +93,7 @@ public class RunTestRDFXML {
      * Check the files on disk agree with the built-in order list.
      */
     static List<String> localTestFiles() {
-        Path LOCAL_DIR = Path.of("testing/RIOT/rrx/");
+        Path LOCAL_DIR = Path.of("testing/RIOT/rrx11/");
         Set<String> found;
         try {
             found = Files
@@ -379,7 +380,7 @@ public class RunTestRDFXML {
             if ( expectedErrorHandler != null )
                 checkErrorHandler(testLabel, expectedErrorHandler, errorHandlerTest);
             return;
-        } catch(RiotException ex) {
+        } catch (RiotException ex) {
 //            output.println("## "+testLabel);
 //            ex.printStackTrace();
             fail("Unexpected parse error: "+ex.getMessage());
