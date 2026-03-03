@@ -31,6 +31,7 @@ import org.apache.jena.arq.junit.Scripts;
 import org.apache.jena.arq.junit.manifest.ManifestProcessor;
 import org.apache.jena.arq.junit.manifest.TestMaker;
 import org.apache.jena.arq.junit.manifest.TestMakers;
+import org.apache.jena.arq.junit.manifest.TestSetupException;
 import org.apache.jena.atlas.lib.StreamOps;
 import org.apache.jena.riot.RiotNotFoundException;
 import org.apache.jena.shared.JenaException;
@@ -69,6 +70,9 @@ class ManifestHolder {
             System.err.println("Not found: "+fn);
             // Exceptions are swallowed by JUnit5.
             throw new RiotNotFoundException("Manifest "+fn);
+        } catch (TestSetupException ex) {
+            System.exit(1);
+            return null;
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;

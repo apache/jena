@@ -65,8 +65,7 @@ public class Manifest
         } catch (RuntimeException ex) {
             // Exit on error.
             log.error("Error reading manifest: "+filenameOrURI);
-            System.exit(1);
-            throw ex;
+            throw new TestSetupException("Error reading manifest: "+filenameOrURI);
         }
         Manifest manifest = new Manifest(manifestRDF);
         return manifest;
@@ -112,6 +111,20 @@ public class Manifest
         if ( entriesNode == null )
             return;
         List<Node> items = G.rdfList(manifestGraph, entriesNode);
+
+        List<Node> missingEntries = items.stream().filter(entry -> ! G.contains(manifestGraph, entry, null, null)).toList();
+        if ( ! missingEntries.isEmpty() ) {
+            missingEntries.forEach(entry->{
+                String x = null;
+                if ( entry.isURI() )
+                    x = manifestGraph.getPrefixMapping().shortForm(entry.getURI());
+                if ( x == null )
+                    x = entry.toString();
+               log.error("Can't find entry for "+x);
+            });
+            throw new TestSetupException("Missing manifest entries");
+        }
+
         items.forEach(entry->{
             String testName = getLiteral(entry, TestManifest.name.asNode());
             Node testType = G.getZeroOrOneSP(manifestGraph, entry, RDF.Nodes.type);

@@ -293,7 +293,6 @@ public class GSP extends StoreProtocol<GSP> {
      * @param graphName
      * @return String without the "?"
      */
-
     protected static String queryStringForGraph(String graphName) {
         if ( graphName == null )
             return HttpNames.paramGraphDefault;
