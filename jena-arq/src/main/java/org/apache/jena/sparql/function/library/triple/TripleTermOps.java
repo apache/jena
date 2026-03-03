@@ -34,6 +34,7 @@ public class TripleTermOps {
     /**
      * Create a triple term.
      * Throws {@link ExprEvalException} if the predicate argument is not a URI.
+     * In strict mode, throw an exception if the triple is not an RDF Triple.
      */
     public static NodeValue fnTriple(NodeValue nv1, NodeValue nv2, NodeValue nv3) {
         Node s = nv1.asNode();
