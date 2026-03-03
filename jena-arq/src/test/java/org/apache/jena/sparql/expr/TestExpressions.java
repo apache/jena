@@ -34,6 +34,7 @@ import org.junit.jupiter.api.Test;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.query.ARQ;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.QueryParseException;
@@ -42,6 +43,7 @@ import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
 import org.apache.jena.sparql.function.FunctionEnv;
 import org.apache.jena.sparql.function.FunctionEnvBase;
+import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.ExprUtils;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.vocabulary.RDF;
@@ -399,13 +401,40 @@ public class TestExpressions
 
     // RDF 1.2: triple terms.
     @Test public void tripleterm_01() { testEval("TRIPLE(<x:s>, <x:p>, 123)"); }
-    @Test public void tripleterm_02() { testURI("SUBJECT( TRIPLE(<x:s>, <x:p>, 123) )", "x:s"); }
-    @Test public void tripleterm_03() { testURI("PREDICATE( TRIPLE(<x:s>, <x:p>, 123) )", "x:p"); }
+    @Test public void tripleterm_02() { testEval("TRIPLE(BNODE(), <x:p>, 123)"); }
+    @Test public void tripleterm_03() { testEval("TRIPLE(<x:s>, <x:p>, TRIPLE(<x:s1>, <x:p1>, <x:o1>))"); }
+
+    // Not symmetric RDF
+    @Test public void tripleterm_10() { assertThrows(ExprEvalException.class, ()->testEval("TRIPLE(<x:s>, BNODE(), <x:o>)")); }
+
+    // TRIPLE generates symmetric RDF (non-strict)
+    @Test public void tripleterm_20() { testEval("TRIPLE(123, <x:p>, <x:o>)"); }
+    @Test public void tripleterm_21() { testEval("TRIPLE(TRIPLE(<x:s>, <x:p>, <x:o>), <x:p>, <x:o>)"); }
+
+    // TRIPLE generates RDF triples (strict)
+    @Test public void tripleterm_30() {
+        strictMode(()->assertThrows(ExprEvalException.class, ()-> {
+            strictMode(()->testEval("TRIPLE(123, <x:p>, <x:o>)"));
+        }));
+    }
+
+    @Test public void tripleterm_31() {
+        strictMode(()->assertThrows(ExprEvalException.class, ()-> {
+            strictMode(()->testEval("TRIPLE(TRIPLE(<x:s>, <x:p>, <x:o>), <x:p>, <x:o>)"));
+        }));
+    }
+
+    // Accessors
+    @Test public void tripleterm_50() { testURI("SUBJECT( TRIPLE(<x:s>, <x:p>, 123) )", "x:s"); }
+    @Test public void tripleterm_51() { testURI("PREDICATE( TRIPLE(<x:s>, <x:p>, 123) )", "x:p"); }
+    @Test public void tripleterm_52() { testNumeric("OBJECT( TRIPLE(<x:s>, <x:p>, 123) )", 123); }
 
     @Test
-    public void tripleterm_03a() { assertThrows(QueryParseException.class, ()-> testURI("PROPERTY( TRIPLE(<x:s>, <x:p>, 123) )", "x:p") ); }
+    public void tripleterm_90() {
+        // Not keyword PROEPRTY
+        assertThrows(QueryParseException.class, ()-> testURI("PROPERTY( TRIPLE(<x:s>, <x:p>, 123) )", "x:p") );
+    }
 
-    @Test public void tripleterm_04() { testNumeric("OBJECT( TRIPLE(<x:s>, <x:p>, 123) )", 123); }
 
     @Test public void boolean_129() { testBoolean("isURI(?x)", true, env); }
     @Test public void boolean_130() { testBoolean("isURI(?a)", false, env); }
@@ -503,6 +532,17 @@ public class TestExpressions
         parseToEnd(exprString);
     }
 
+    // Strict mode - just set the flag.
+    private static void strictMode(Runnable action) {
+        Object setting = ARQ.getContext().get(ARQ.strictSPARQL);
+        try {
+            ARQ.getContext().set(ARQ.strictSPARQL, true);
+            action.run();
+        } finally {
+            ARQ.getContext().set(ARQ.strictSPARQL, setting);
+        }
+    }
+
     // "should evaluate", don't care what the result is.
     private static void testEval(String string) {
         Expr expr = parseToEnd(string);
@@ -510,6 +550,17 @@ public class TestExpressions
         FunctionEnv env = new FunctionEnvBase();
         NodeValue v = expr.eval(binding, env);
     }
+
+    // Evaluate and test against an SSEw-rriter expected value
+    private static void testEval(String string, String expectedStr) {
+        Expr expr = parseToEnd(string);
+        Binding binding = BindingFactory.empty();
+        FunctionEnv env = new FunctionEnvBase();
+        NodeValue actual = expr.eval(binding, env);
+        NodeValue expected = SSE.parseNodeValue(expectedStr);
+        assertEquals(expected, actual);
+    }
+
 
     // All value testing should be parseToEnd
     private static void testNumeric(String string, int i) {
