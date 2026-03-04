@@ -17,6 +17,8 @@ This is a **fork** of `apache/jena`. The upstream repo is a read-only reference.
 
 The `gh` CLI default is set to `aiworkerjohns/jena`. Always use `-R aiworkerjohns/jena` if there is any ambiguity. Never use `-R apache/jena` for write operations.
 
+**Docker image pushes to GHCR**: The `gh` CLI must have `aiworkerjohns` as the active account (not `hjohns`) with the `write:packages` scope. Before pushing, verify with `gh auth status` and switch if needed: `gh auth switch --user aiworkerjohns`.
+
 ## Build Commands
 
 ```bash
@@ -90,7 +92,7 @@ All new code is additive — upstream code paths are unmodified.
 |-------|------|
 | `ShaclIndexMapping` | Parsed data model: `IndexProfile` (shape), `FieldDef` (field), `FieldType` enum |
 | `ShaclTextDocProducer` | Change listener — rebuilds entity Lucene docs on triple add/delete |
-| `ShaclTextQueryPF` | `luc:query` property function with JSON filter support |
+| `ShaclTextQueryPF` | `luc:query` property function with JSON filter support and `?totalHits` binding |
 | `TextFacetPF` | `luc:facet` property function — returns (field, value, count) bindings |
 | `SearchExecution` | Shared state between `luc:query` and `luc:facet` in same SPARQL query via `ExecutionContext` |
 | `ShaclIndexAssembler` | Parses `text:shapes` RDF config into `ShaclIndexMapping` |
@@ -107,6 +109,7 @@ When `luc:query` and `luc:facet` appear in the same SPARQL query, both build a n
 ## Git Commits
 
 - Do NOT add `Co-Authored-By` lines to commit messages
+- Do NOT add "Generated with Claude Code" or similar attribution lines to PR descriptions
 
 ## Code Style
 

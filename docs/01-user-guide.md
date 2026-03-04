@@ -176,16 +176,31 @@ SELECT ?field ?value ?count WHERE {
 }
 ```
 
-### 6. Combine search and facets in one query
+### 6. Get total hit count
+
+Add `?totalHits` as the 4th subject variable to get the total number of matching documents. This is useful for "Showing X of Y results" UI patterns:
+
+```sparql
+PREFIX luc: <urn:jena:lucene:index#>
+
+SELECT ?s ?score ?totalHits WHERE {
+    (?s ?score ?_lit ?totalHits) luc:query ("learning" 10) .
+}
+```
+
+`?totalHits` is the same value on every row — read it from the first result. The count is computed efficiently using `IndexSearcher.count()` and only runs when the variable is present.
+
+### 7. Combine search and facets in one query
 
 When `luc:query` and `luc:facet` appear in the same query with matching parameters, they automatically share execution (one Lucene query, not two):
 
 ```sparql
 PREFIX luc: <urn:jena:lucene:index#>
 
-SELECT ?s ?score ?field ?value ?count WHERE {
-    (?s ?score) luc:query ("learning") .
-    (?field ?value ?count) luc:facet ("learning" '["category"]' 10) .
+SELECT ?s ?score ?totalHits ?field ?value ?count WHERE {
+    { (?s ?score ?_lit ?totalHits) luc:query ("learning" 10) }
+    UNION
+    { (?field ?value ?count) luc:facet ("learning" '["category"]' 10) }
 }
 ```
 
@@ -357,6 +372,16 @@ SELECT ?s ?score WHERE {
 ---
 
 ## Troubleshooting
+
+### Named Graph Data Not Indexed
+
+If data is loaded into named graphs (e.g. N-Quads), the SHACL indexer reads from a combined view of all graphs (`MultiUnion` of default + named). This works automatically. For SPARQL queries to also see named graph data, add `tdb2:unionDefaultGraph true` to the TDB2 dataset config:
+
+```turtle
+:base_dataset rdf:type tdb2:DatasetTDB ;
+    tdb2:location "DB" ;
+    tdb2:unionDefaultGraph true .
+```
 
 ### No Search Results
 

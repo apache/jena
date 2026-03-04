@@ -124,11 +124,11 @@ report-mia-2023  "Mount Isa Copper Resource Estimation 2023"
 report-od-2024   "Olympic Dam Expansion Feasibility Study"
 ```
 
-## Docker image
+## Server image
 
 ### Building
 
-Build the Docker image locally:
+Build the server Docker image locally:
 
 ```bash
 task image-build
@@ -169,6 +169,83 @@ task image-push ACR_NAME=myregistry
 ```
 
 Pushes to `myregistry.azurecr.io/fuseki-ai:6.1.0-SNAPSHOT`. The task checks for an active Azure session and runs `az login` if needed, then authenticates with the ACR before pushing.
+
+## Loader / reindexer image
+
+A separate Docker image for offline bulk data operations: loading N-Quads/Turtle/N-Triples into TDB2 and building the SHACL Lucene index. Useful for large datasets where GSP loading is too slow (e.g. the drillhole dataset — 17.6M entities, 184M triples).
+
+The image runs two steps sequentially:
+1. `tdb2.tdbloader` — bulk loads data files into TDB2
+2. `shacltextindexer` — builds the SHACL Lucene index from the TDB2 store
+
+### Building
+
+```bash
+task loader-build
+```
+
+Produces `fuseki-loader:6.1.0-SNAPSHOT`. Requires the Fuseki JAR to be built first (`task build`).
+
+### Running
+
+```bash
+docker run --rm \
+  -v /path/to/config.ttl:/config/config.ttl:ro \
+  -v /path/to/data:/input:ro \
+  -v fuseki-db:/data/DB \
+  -v fuseki-lucene:/data/Lucene \
+  -e JAVA_OPTS="-Xmx8g" \
+  fuseki-loader:6.1.0-SNAPSHOT
+```
+
+| Volume mount | Purpose |
+|---|---|
+| `/config/config.ttl` | Assembler config (must reference `/data/DB` for TDB2 and `/data/Lucene` for the index) |
+| `/input` | Directory containing `.nq`, `.ttl`, or `.nt` data files |
+| `/data/DB` | TDB2 database output |
+| `/data/Lucene` | Lucene index output |
+
+| Environment variable | Default | Purpose |
+|---|---|---|
+| `MODE` | `all` | `all` = load + reindex, `load` = TDB2 load only, `index` = SHACL reindex only |
+| `CONFIG` | `/config/config.ttl` | Path to assembler config inside the container |
+| `DB_DIR` | `/data/DB` | TDB2 output directory |
+| `INPUT_DIR` | `/input` | Data files directory |
+| `JAVA_OPTS` | (none) | JVM flags, e.g. `-Xmx8g` for large datasets |
+
+### Using with the server image
+
+The loader and server images share volumes, so you can bulk-load data offline then start the server:
+
+```bash
+# 1. Load data
+docker run --rm \
+  -v ./config.ttl:/config/config.ttl:ro \
+  -v ./data:/input:ro \
+  -v fuseki-db:/data/DB \
+  -v fuseki-lucene:/data/Lucene \
+  -e JAVA_OPTS="-Xmx8g" \
+  ghcr.io/aiworkerjohns/fuseki-loader:6.1.0-SNAPSHOT
+
+# 2. Start the server with the same volumes
+docker run -d -p 3030:3030 \
+  -v ./config.ttl:/fuseki/config.ttl:ro \
+  -v fuseki-db:/fuseki/DB \
+  -v fuseki-lucene:/fuseki/Lucene \
+  ghcr.io/aiworkerjohns/fuseki-ai:6.1.0-SNAPSHOT
+```
+
+A `docker-compose.yml` example is provided in `loader/`.
+
+### Pushing
+
+```bash
+# GitHub Container Registry
+task loader-ghcr-push
+
+# Azure Container Registry
+task loader-acr-push ACR_NAME=gswadevacr
+```
 
 ## Demo app (FastAPI + Bulma)
 

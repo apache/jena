@@ -65,22 +65,22 @@ tasks:
   # ── Test (mining demo) ─────────────────────────────────────
 
   test-serve:
-    desc: Start Fuseki with the test mining config
+    desc: Start Fuseki with the test mining config (port 3031)
     dir: test
     cmds:
-      - java -jar ../{{.FUSEKI_JAR}} --config config.ttl
+      - java -jar ../{{.FUSEKI_JAR}} --port 3031 --config config.ttl
 
   test-load:
-    desc: Load the test mining dataset via GSP
+    desc: Load the test mining dataset via GSP (port 3031)
     cmds:
       - |
-        curl -s -X PUT "{{.SERVER_URL}}/mining/data?default" \
+        curl -s -X PUT "http://localhost:3031/mining/data?default" \
           -H "Content-Type: text/turtle" \
           --data-binary @test/data/mining.ttl
       - echo "Loaded test/data/mining.ttl"
 
   test-query:
-    desc: Run all test queries against the mining server
+    desc: Run all test queries against the mining server (port 3031)
     dir: test
     cmds:
       - for:
@@ -93,7 +93,7 @@ tasks:
           - queries/07-filter-by-author.rq
         cmd: |
           echo "=== {{.ITEM}} ==="
-          curl -s -X POST "{{.SERVER_URL}}/mining/query" \
+          curl -s -X POST "http://localhost:3031/mining/query" \
             -H "Content-Type: application/sparql-query" \
             -H "Accept: text/tab-separated-values" \
             --data-binary @{{.ITEM}}
@@ -109,10 +109,17 @@ tasks:
   # ── Static Apps ────────────────────────────────────────────
 
   app-static:
-    desc: Serve the static demo app (Alpine.js, no Python deps)
+    desc: Serve the static demo app with drillhole config (default)
     cmds:
       - ln -sfn ../drillhole/config.ttl app-static/config.ttl
-      - echo "Serving at http://localhost:8000"
+      - echo "Serving at http://localhost:8000 (drillhole → localhost:3030)"
+      - cmd: python3 -m http.server 8000 --directory app-static
+
+  app-mining:
+    desc: Serve the static demo app with mining config (port 3031)
+    cmds:
+      - ln -sfn ../test/config.ttl app-static/config.ttl
+      - echo "Serving at http://localhost:8000 (mining → localhost:3031)"
       - cmd: python3 -m http.server 8000 --directory app-static
 
   overview:
@@ -176,3 +183,32 @@ tasks:
     dir: test
     cmds:
       - docker compose up
+
+  # ── Loader / Reindexer ────────────────────────────────────
+
+  loader-build:
+    desc: Build the loader/reindexer Docker image
+    dir: loader
+    cmds:
+      - cp ../{{.FUSEKI_JAR}} jena-fuseki-server.jar
+      - docker build -t fuseki-loader:{{.IMAGE_TAG}} .
+      - rm -f jena-fuseki-server.jar
+
+  loader-ghcr-push:
+    desc: Build and push loader image to GitHub CR
+    deps: [loader-build]
+    cmds:
+      - gh auth token | docker login ghcr.io -u {{.GHCR_OWNER}} --password-stdin
+      - docker tag fuseki-loader:{{.IMAGE_TAG}} ghcr.io/{{.GHCR_OWNER}}/fuseki-loader:{{.IMAGE_TAG}}
+      - docker push ghcr.io/{{.GHCR_OWNER}}/fuseki-loader:{{.IMAGE_TAG}}
+
+  loader-acr-push:
+    desc: "Build and push loader image to ACR (usage: task loader-acr-push ACR_NAME=gswadevacr)"
+    requires:
+      vars: [ACR_NAME]
+    deps: [loader-build]
+    cmds:
+      - az account show > /dev/null 2>&1 || az login
+      - az acr login --name {{.ACR_NAME}}
+      - docker tag fuseki-loader:{{.IMAGE_TAG}} {{.ACR_NAME}}.azurecr.io/fuseki-loader:{{.IMAGE_TAG}}
+      - docker push {{.ACR_NAME}}.azurecr.io/fuseki-loader:{{.IMAGE_TAG}}

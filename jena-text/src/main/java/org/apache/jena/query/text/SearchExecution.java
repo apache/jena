@@ -52,6 +52,7 @@ public class SearchExecution {
     // Lazy results
     private List<TextHit> hits;
     private Map<String, List<FacetValue>> facetCounts;
+    private long totalHits = -1;
     private boolean hitsComputed = false;
     private boolean facetCountsComputed = false;
 
@@ -172,6 +173,21 @@ public class SearchExecution {
             facetCountsComputed = true;
         }
         return facetCounts;
+    }
+
+    /**
+     * Get total hit count, computing lazily on first access.
+     */
+    public synchronized long getTotalHits() {
+        if (totalHits < 0) {
+            try {
+                totalHits = textIndex.countQuery(queryString, filters.isEmpty() ? null : filters);
+            } catch (Exception e) {
+                log.error("Error computing total hits: {}", e.getMessage());
+                totalHits = 0;
+            }
+        }
+        return totalHits;
     }
 
     public Map<String, List<String>> getFilters() {

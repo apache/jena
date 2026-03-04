@@ -425,6 +425,11 @@ public class TextIndexLucene implements TextIndex {
     }
 
     private Query parseQuery(String queryString, Analyzer analyzer) throws ParseException {
+        // Treat "*" as match-all rather than an expensive WildcardQuery
+        if ("*".equals(queryString)) {
+            return new MatchAllDocsQuery();
+        }
+
         Query query = null;
         QueryParser qp = null;
 
@@ -1082,11 +1087,18 @@ public class TextIndexLucene implements TextIndex {
                     // For "open facets" (no search query), use the simpler constructor
                     // This is equivalent to MatchAllDocsQuery but faster
                     facets = new SortedSetDocValuesFacetCounts(state);
+                } else if (isShaclMode()) {
+                    // In entity-per-document (SHACL) mode, each Lucene document is a
+                    // complete entity with all facet DocValues fields. We can collect
+                    // facets directly from the query results without extracting URIs.
+                    Query query = parseQuery(queryString, queryAnalyzer);
+                    FacetsCollector fc = new FacetsCollector();
+                    searcher.search(query, fc);
+                    facets = new SortedSetDocValuesFacetCounts(state, fc);
                 } else {
-                    // When filtering by query, we need to handle the triples-based indexing model
-                    // where each triple creates a separate document. The search may match documents
-                    // that don't have facet DocValues (e.g., label documents vs category documents).
-                    // To fix this, we:
+                    // In triple-per-document mode, each triple creates a separate document.
+                    // The search may match documents that don't have facet DocValues
+                    // (e.g., label documents vs category documents). To fix this, we:
                     // 1. Execute search to find matching entity URIs
                     // 2. Build a query that matches those URIs
                     // 3. Collect facets from documents with those URIs (which includes facet docs)
@@ -1192,10 +1204,22 @@ public class TextIndexLucene implements TextIndex {
     public List<TextHit> queryWithFilters(List<Resource> props, String qs,
             Map<String, List<String>> filters, String graphURI, String lang,
             int limit, String highlight) {
+
+        if (filters == null || filters.isEmpty()) {
+            return query(props, qs, graphURI, lang, limit, highlight);
+        }
+
+        if (isShaclMode()) {
+            // In entity-per-document mode, all fields live on the same document.
+            // Build a single combined Lucene query: text + filter terms.
+            return queryWithFiltersDirect(props, qs, filters, graphURI, lang, limit, highlight);
+        }
+
+        // Triple-per-document mode: two-step approach
         // Step 1: Execute the text query to get all matching hits
         List<TextHit> allHits = query(props, qs, graphURI, lang, limit > 0 ? limit * 10 : MAX_N, highlight);
 
-        if (allHits.isEmpty() || filters == null || filters.isEmpty()) {
+        if (allHits.isEmpty()) {
             return allHits;
         }
 
@@ -1214,6 +1238,102 @@ public class TextIndexLucene implements TextIndex {
             }
         }
         return filtered;
+    }
+
+    /**
+     * SHACL entity-per-document: build a single Lucene query combining text + filters.
+     * No stored-field extraction needed since all fields are on the same document.
+     */
+    private List<TextHit> queryWithFiltersDirect(List<Resource> props, String qs,
+            Map<String, List<String>> filters, String graphURI, String lang,
+            int limit, String highlight) {
+        try (IndexReader indexReader = DirectoryReader.open(directory)) {
+            IndexSearcher searcher = new IndexSearcher(indexReader);
+
+            BooleanQuery.Builder combined = new BooleanQuery.Builder();
+
+            // Text query
+            if (qs != null && !qs.isEmpty()) {
+                combined.add(parseQuery(qs, queryAnalyzer), BooleanClause.Occur.MUST);
+            }
+
+            // Filter terms
+            for (Map.Entry<String, List<String>> entry : filters.entrySet()) {
+                String field = entry.getKey();
+                List<String> values = entry.getValue();
+                if (values.size() == 1) {
+                    combined.add(new TermQuery(new Term(field, values.get(0))),
+                        BooleanClause.Occur.MUST);
+                } else {
+                    List<BytesRef> valRefs = new ArrayList<>(values.size());
+                    for (String v : values) {
+                        valRefs.add(new BytesRef(v));
+                    }
+                    combined.add(new TermInSetQuery(field, valRefs),
+                        BooleanClause.Occur.MUST);
+                }
+            }
+
+            int maxHits = limit > 0 ? limit : MAX_N;
+            TopDocs topDocs = searcher.search(combined.build(), maxHits);
+
+            List<TextHit> results = new ArrayList<>();
+            String entityField = docDef.getEntityField();
+            StoredFields storedFields = searcher.storedFields();
+            for (ScoreDoc sd : topDocs.scoreDocs) {
+                Document doc = storedFields.document(sd.doc);
+                String uri = doc.get(entityField);
+                if (uri != null) {
+                    Node entityNode = TextQueryFuncs.stringToNode(uri);
+                    results.add(new TextHit(entityNode, sd.score, null));
+                }
+            }
+            return results;
+        } catch (IOException ex) {
+            throw new TextIndexException("queryWithFiltersDirect", ex);
+        } catch (ParseException ex) {
+            throw new TextIndexParseException(qs, ex.getMessage());
+        }
+    }
+
+    /**
+     * Count total matching documents for a query with optional filters.
+     * Uses {@code IndexSearcher.count()} which is very efficient.
+     */
+    public long countQuery(String queryString, Map<String, List<String>> filters) {
+        try (IndexReader indexReader = DirectoryReader.open(directory)) {
+            IndexSearcher searcher = new IndexSearcher(indexReader);
+            BooleanQuery.Builder bq = new BooleanQuery.Builder();
+            if (queryString != null && !queryString.isEmpty()) {
+                bq.add(parseQuery(queryString, queryAnalyzer), BooleanClause.Occur.MUST);
+            }
+            if (filters != null) {
+                for (Map.Entry<String, List<String>> entry : filters.entrySet()) {
+                    String field = entry.getKey();
+                    List<String> values = entry.getValue();
+                    if (values.size() == 1) {
+                        bq.add(new TermQuery(new Term(field, values.get(0))),
+                            BooleanClause.Occur.MUST);
+                    } else {
+                        List<BytesRef> valRefs = new ArrayList<>(values.size());
+                        for (String v : values) {
+                            valRefs.add(new BytesRef(v));
+                        }
+                        bq.add(new TermInSetQuery(field, valRefs),
+                            BooleanClause.Occur.MUST);
+                    }
+                }
+            }
+            BooleanQuery query = bq.build();
+            if (query.clauses().isEmpty()) {
+                return indexReader.numDocs();
+            }
+            return searcher.count(query);
+        } catch (IOException ex) {
+            throw new TextIndexException("countQuery", ex);
+        } catch (ParseException ex) {
+            throw new TextIndexParseException(queryString, ex.getMessage());
+        }
     }
 
     /**
@@ -1317,6 +1437,7 @@ public class TextIndexLucene implements TextIndex {
             String queryString, List<String> facetFieldsToQuery,
             Map<String, List<String>> filters, int maxValues, int minCount) {
 
+        log.debug("getFacetCountsWithFilters: query='{}' filters={} shaclMode={}", queryString, filters, isShaclMode());
         Map<String, List<FacetValue>> result = new HashMap<>();
 
         if (facetFieldsToQuery == null || facetFieldsToQuery.isEmpty()) {
@@ -1328,6 +1449,49 @@ public class TextIndexLucene implements TextIndex {
             try {
                 IndexSearcher searcher = new IndexSearcher(indexReader);
                 String entityField = docDef.getEntityField();
+
+                SortedSetDocValuesReaderState state =
+                    new DefaultSortedSetDocValuesReaderState(indexReader, facetsConfig);
+                Facets facets;
+
+                if (isShaclMode()) {
+                    // In entity-per-document (SHACL) mode, all fields live on the same
+                    // document. Build a single combined query and collect facets directly
+                    // without extracting URIs via stored fields.
+                    BooleanQuery.Builder combined = new BooleanQuery.Builder();
+
+                    if (queryString != null && !queryString.isEmpty()) {
+                        combined.add(parseQuery(queryString, queryAnalyzer), BooleanClause.Occur.MUST);
+                    }
+
+                    if (filters != null) {
+                        for (Map.Entry<String, List<String>> entry : filters.entrySet()) {
+                            String field = entry.getKey();
+                            List<String> values = entry.getValue();
+                            if (values.size() == 1) {
+                                combined.add(new TermQuery(new Term(field, values.get(0))),
+                                    BooleanClause.Occur.MUST);
+                            } else {
+                                List<BytesRef> valRefs = new ArrayList<>(values.size());
+                                for (String v : values) {
+                                    valRefs.add(new BytesRef(v));
+                                }
+                                combined.add(new TermInSetQuery(field, valRefs),
+                                    BooleanClause.Occur.MUST);
+                            }
+                        }
+                    }
+
+                    BooleanQuery bq = combined.build();
+                    if (bq.clauses().isEmpty()) {
+                        facets = new SortedSetDocValuesFacetCounts(state);
+                    } else {
+                        FacetsCollector fc = new FacetsCollector();
+                        searcher.search(bq, fc);
+                        facets = new SortedSetDocValuesFacetCounts(state, fc);
+                    }
+                } else {
+                // Triple-per-document mode: extract URIs via stored fields
 
                 // Step 1: Find entity URIs matching the text query
                 Set<String> matchedUris;
@@ -1410,11 +1574,6 @@ public class TextIndexLucene implements TextIndex {
                     matchedUris = remainingUris;
                 }
 
-                // Step 3: Collect facets from all documents for the matched entities
-                SortedSetDocValuesReaderState state =
-                    new DefaultSortedSetDocValuesReaderState(indexReader, facetsConfig);
-                Facets facets;
-
                 if (matchedUris == null) {
                     facets = new SortedSetDocValuesFacetCounts(state);
                 } else {
@@ -1427,6 +1586,7 @@ public class TextIndexLucene implements TextIndex {
                     searcher.search(uriQuery, fc);
                     facets = new SortedSetDocValuesFacetCounts(state, fc);
                 }
+                } // end triple-per-document else
 
                 // Extract results
                 for (String field : facetFieldsToQuery) {

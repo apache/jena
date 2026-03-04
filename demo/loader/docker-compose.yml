@@ -1,0 +1,15 @@
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+services:
+  loader:
+    image: ghcr.io/aiworkerjohns/fuseki-loader:6.1.0-SNAPSHOT
+    volumes:
+      - ./config.ttl:/config/config.ttl:ro
+      - ./data:/input:ro
+      - fuseki-db:/data/DB
+      - fuseki-lucene:/data/Lucene
+    environment:
+      - JAVA_OPTS=-Xmx4g
+
+volumes:
+  fuseki-db:
+  fuseki-lucene:

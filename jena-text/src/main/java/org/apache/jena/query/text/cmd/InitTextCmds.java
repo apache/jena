@@ -27,6 +27,7 @@ public class InitTextCmds {
     public static void cmds() {
         Cmds.injectCmd("textindexdump", a->textindexdump.main(a));
         Cmds.injectCmd("textindexer", a->textindexer.main(a));
+        Cmds.injectCmd("shacltextindexer", a->shacltextindexer.main(a));
     }
 }
 
