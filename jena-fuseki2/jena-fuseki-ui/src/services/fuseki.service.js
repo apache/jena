@@ -144,9 +144,9 @@ class FusekiService {
       if (error.response) {
         if (error.response.statusCode !== 200) {
           if (error.response.statusCode === 409) {
-            throw new Error(`failed to create dataset "${datasetName}", reason: there is another dataset with the same name`)
+            throw new Error(`failed to create dataset "${datasetName}", reason: there is another dataset with the same name`, { cause: error })
           }
-          throw new Error(`failed to create dataset "${datasetName}" with type ${datasetType}, reason: HTTP status: "${error.response.statusCode}", message: ${error.response.statusText}`)
+          throw new Error(`failed to create dataset "${datasetName}" with type ${datasetType}, reason: HTTP status: "${error.response.statusCode}", message: ${error.response.statusText}`, { cause: error })
         }
       }
       throw error
