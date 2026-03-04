@@ -27,6 +27,6 @@ public class utf8
     /** Simple program to help hunt down bad UTF-8 encoded characters */
     public static void main(String... args)
     {
-        riotcmd.utf8.main(args) ;
+        riotcmd.utf8.main(args);
     }
 }

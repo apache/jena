@@ -21,90 +21,90 @@
 
 package arq;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.TerminationException;
-import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.sparql.sse.Item ;
-import org.apache.jena.sparql.sse.ItemWriter ;
-import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.sparql.serializer.SerializationContext;
+import org.apache.jena.sparql.sse.Item;
+import org.apache.jena.sparql.sse.ItemWriter;
+import org.apache.jena.sparql.sse.SSE;
 
-import arq.cmdline.CmdARQ_SSE ;
+import arq.cmdline.CmdARQ_SSE;
 
 public class sse extends CmdARQ_SSE
 {
-    protected final ArgDecl numberDecl      = new ArgDecl(ArgDecl.HasValue, "num", "number") ;
-    protected final ArgDecl noPrintDecl     = new ArgDecl(ArgDecl.NoValue, "n") ;
-    protected final ArgDecl noResolveDecl   = new ArgDecl(ArgDecl.NoValue, "raw") ;
+    protected final ArgDecl numberDecl      = new ArgDecl(ArgDecl.HasValue, "num", "number");
+    protected final ArgDecl noPrintDecl     = new ArgDecl(ArgDecl.NoValue, "n");
+    protected final ArgDecl noResolveDecl   = new ArgDecl(ArgDecl.NoValue, "raw");
 
-    private boolean         print       = true ;
-    private boolean         structural  = true ;
-    private boolean         lineNumbers = false ;
+    private boolean         print       = true;
+    private boolean         structural  = true;
+    private boolean         lineNumbers = false;
 
     public static void main (String... argv)
     {
-        new sse(argv).mainRun() ;
+        new sse(argv).mainRun();
     }
 
     public sse(String[] argv)
     {
-        super(argv) ;
-        super.add(noPrintDecl,      "-n",               "Don't print the expression") ;
-        super.add(numberDecl,       "--num [on|off]",   "Numbers") ;
-        super.add(noResolveDecl,    "--raw", "Don't handle base or prefix names specially") ;
+        super(argv);
+        super.add(noPrintDecl,      "-n",               "Don't print the expression");
+        super.add(numberDecl,       "--num [on|off]",   "Numbers");
+        super.add(noResolveDecl,    "--raw", "Don't handle base or prefix names specially");
     }
 
     @Override
     protected void processModulesAndArgs()
     {
-        super.processModulesAndArgs() ;
-        print = !contains(noPrintDecl) ;
+        super.processModulesAndArgs();
+        print = !contains(noPrintDecl);
         if ( contains(numberDecl) )
-            lineNumbers = getValue(numberDecl).equalsIgnoreCase("on") ;
+            lineNumbers = getValue(numberDecl).equalsIgnoreCase("on");
         
         if ( contains(noResolveDecl) )
-            SSE.setUseResolver(false) ;
+            SSE.setUseResolver(false);
     }
 
     @Override
-    protected String getCommandName() { return Lib.className(this) ; }
+    protected String getCommandName() { return Lib.className(this); }
 
     @Override
-    protected String getSummary() { return getCommandName() ; }
+    protected String getSummary() { return getCommandName(); }
 
-    static final String divider = "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" ;
-    //static final String divider = "" ;
+    static final String divider = "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
+    //static final String divider = "";
 
-    boolean needDivider = false ;
+    boolean needDivider = false;
     private void divider()
     {
-        if ( needDivider ) System.out.println(divider) ;
-        needDivider = true ;
+        if ( needDivider ) System.out.println(divider);
+        needDivider = true;
     }
 
     @Override
     protected void exec(Item item)
     {
         if ( ! print )
-            return ;
+            return;
         
         if ( item == null )
         {
-            System.err.println("No expression") ;
-            throw new TerminationException(9) ;
+            System.err.println("No expression");
+            throw new TerminationException(9);
         }
-        divider() ;
-        IndentedWriter out = new IndentedWriter(System.out, lineNumbers) ;
+        divider();
+        IndentedWriter out = new IndentedWriter(System.out, lineNumbers);
         
         // Need to check if used.
-        //PrefixMapping pmap = SSE.getDefaultPrefixMapWrite() ;
-        PrefixMapping pmap = null ;
-        SerializationContext sCxt = new SerializationContext(pmap) ;
-        ItemWriter.write(out, item, sCxt) ;
-        //item.output(out) ;
-        out.ensureStartOfLine() ;
+        //PrefixMapping pmap = SSE.getDefaultPrefixMapWrite();
+        PrefixMapping pmap = null;
+        SerializationContext sCxt = new SerializationContext(pmap);
+        ItemWriter.write(out, item, sCxt);
+        //item.output(out);
+        out.ensureStartOfLine();
         out.flush();
     }
 }

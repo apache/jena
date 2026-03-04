@@ -21,59 +21,59 @@
 
 package arq;
 
-import java.io.IOException ;
-import java.util.List ;
+import java.io.IOException;
+import java.util.List;
 
-import arq.cmdline.CmdARQ ;
-import org.apache.jena.atlas.io.IndentedLineBuffer ;
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.atlas.logging.LogCtl ;
+import arq.cmdline.CmdARQ;
+import org.apache.jena.atlas.io.IndentedLineBuffer;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
-import org.apache.jena.query.ARQ ;
-import org.apache.jena.query.QueryException ;
-import org.apache.jena.query.QueryParseException ;
-import org.apache.jena.query.Syntax ;
-import org.apache.jena.sparql.core.QueryCheckException ;
-import org.apache.jena.sparql.lang.QueryParserBase ;
-import org.apache.jena.sparql.modify.request.UpdateWriter ;
-import org.apache.jena.update.UpdateFactory ;
-import org.apache.jena.update.UpdateRequest ;
-import org.apache.jena.util.FileUtils ;
+import org.apache.jena.query.ARQ;
+import org.apache.jena.query.QueryException;
+import org.apache.jena.query.QueryParseException;
+import org.apache.jena.query.Syntax;
+import org.apache.jena.sparql.core.QueryCheckException;
+import org.apache.jena.sparql.lang.QueryParserBase;
+import org.apache.jena.sparql.modify.request.UpdateWriter;
+import org.apache.jena.update.UpdateFactory;
+import org.apache.jena.update.UpdateRequest;
+import org.apache.jena.util.FileUtils;
 
 public class uparse extends CmdARQ
 {
-    protected static final ArgDecl argFile          = new ArgDecl(ArgDecl.HasValue, "file", "update") ;
-    protected static final ArgDecl argSyntax        = new ArgDecl(ArgDecl.HasValue, "syntax", "syn") ;
-    protected static final ArgDecl argBase          = new ArgDecl(ArgDecl.HasValue, "base") ;
-    protected static final ArgDecl argDeclPrint     = new ArgDecl(ArgDecl.HasValue, "print") ;
-    protected static final ArgDecl argDeclFixup     = new ArgDecl(ArgDecl.NoValue, "fixup") ;
+    protected static final ArgDecl argFile          = new ArgDecl(ArgDecl.HasValue, "file", "update");
+    protected static final ArgDecl argSyntax        = new ArgDecl(ArgDecl.HasValue, "syntax", "syn");
+    protected static final ArgDecl argBase          = new ArgDecl(ArgDecl.HasValue, "base");
+    protected static final ArgDecl argDeclPrint     = new ArgDecl(ArgDecl.HasValue, "print");
+    protected static final ArgDecl argDeclFixup     = new ArgDecl(ArgDecl.NoValue, "fixup");
 
-    List<String> requestFiles = null ;
-    protected Syntax updateSyntax = null ;
+    List<String> requestFiles = null;
+    protected Syntax updateSyntax = null;
     protected String baseURI = null;
     protected boolean fixup = false;
-    private boolean printUpdate = false ;
-    private boolean printNone  = false ;
+    private boolean printUpdate = false;
+    private boolean printNone  = false;
 
     public static void main (String... argv)
-    { new uparse(argv).mainRun() ; }
+    { new uparse(argv).mainRun(); }
 
     protected uparse(String[] argv) {
-        super(argv) ;
-        super.add(argFile,      "--file=FILE",      "Update commands to parse") ;
-        super.add(argSyntax,    "--syntax=name",    "Update syntax") ;
+        super(argv);
+        super.add(argFile,      "--file=FILE",      "Update commands to parse");
+        super.add(argSyntax,    "--syntax=name",    "Update syntax");
         super.add(argBase,      "--base=IRI",       "Base URI");
-        super.add(argDeclPrint, "--print",          "Print in various forms [update, none]") ;
-        super.add(argDeclFixup, "--fixup",          "Convert undeclared prefix names to URIs") ;
+        super.add(argDeclPrint, "--print",          "Print in various forms [update, none]");
+        super.add(argDeclFixup, "--fixup",          "Convert undeclared prefix names to URIs");
     }
 
     @Override
     protected void processModulesAndArgs() {
-        requestFiles = getValues(argFile) ;
-        super.processModulesAndArgs() ;
+        requestFiles = getValues(argFile);
+        super.processModulesAndArgs();
         if ( super.cmdStrictMode )
-            updateSyntax = Syntax.syntaxSPARQL_12 ;
+            updateSyntax = Syntax.syntaxSPARQL_12;
 
         if ( super.contains(argDeclFixup) )
             fixup = true;
@@ -81,11 +81,11 @@ public class uparse extends CmdARQ
         // Set syntax
         if ( super.contains(argSyntax) ) {
             // short name
-            String s = super.getValue(argSyntax) ;
-            Syntax syn = Syntax.lookup(s) ;
+            String s = super.getValue(argSyntax);
+            Syntax syn = Syntax.lookup(s);
             if ( syn == null )
-                super.cmdError("Unrecognized syntax: " + s + " ; Choices are: arq, sparql, sparql10, sparql11)") ;
-            updateSyntax = syn ;
+                super.cmdError("Unrecognized syntax: " + s + "; Choices are: arq, sparql, sparql10, sparql11)");
+            updateSyntax = syn;
         }
 
         for ( String arg : getValues( argDeclPrint ) ) {
@@ -101,14 +101,14 @@ public class uparse extends CmdARQ
             baseURI = super.getValue(argBase);
 
         if ( !printUpdate && ! printNone )
-            printUpdate = true ;
+            printUpdate = true;
     }
 
     @Override
-    protected String getCommandName() { return Lib.className(this) ; }
+    protected String getCommandName() { return Lib.className(this); }
 
     @Override
-    protected String getSummary() { return getCommandName()+" --file=<request file> | <update string>" ; }
+    protected String getSummary() { return getCommandName()+" --file=<request file> | <update string>"; }
 
     @Override
     protected void exec() {
@@ -158,7 +158,7 @@ public class uparse extends CmdARQ
             System.err.println(ex.getMessage());
             return;
         }
-        // req.output(IndentedWriter.stderr) ;
+        // req.output(IndentedWriter.stderr);
         if ( printUpdate )
             System.out.print(req);
 
@@ -174,20 +174,20 @@ public class uparse extends CmdARQ
             if ( ex.getCause() != null )
                 ex.getCause().printStackTrace(System.err);
         }
-        finally { LogCtl.setLevel(QueryParserBase.ParserLoggerName, "INFO") ; }
+        finally { LogCtl.setLevel(QueryParserBase.ParserLoggerName, "INFO"); }
     }
 
     public static class UpdateCheckException extends QueryException {
-        public UpdateCheckException() { super() ; }
-        public UpdateCheckException(Throwable cause) { super(cause) ; }
-        public UpdateCheckException(String msg) { super(msg) ; }
-        public UpdateCheckException(String msg, Throwable cause) { super(msg, cause) ; }
+        public UpdateCheckException() { super(); }
+        public UpdateCheckException(Throwable cause) { super(cause); }
+        public UpdateCheckException(String msg) { super(msg); }
+        public UpdateCheckException(String msg, Throwable cause) { super(msg, cause); }
     }
 
     public static void checkUpdate(UpdateRequest req, Syntax syntax) {
-        IndentedLineBuffer w = new IndentedLineBuffer() ;
-        UpdateWriter.output(req, w) ;
-        String updateString2 = w.asString() ;
+        IndentedLineBuffer w = new IndentedLineBuffer();
+        UpdateWriter.output(req, w);
+        String updateString2 = w.asString();
 
         UpdateRequest req2;
         try {
@@ -204,18 +204,18 @@ public class uparse extends CmdARQ
         }
 
 //        if ( req.hashCode() != req2.hashCode() )
-//            throw new UpdateCheckException("reparsed query hashCode does not equal parsed input update \nUpdate (hashCode: " + req.hashCode() + ")=\n" + req + "\n\nUpdate2 (hashCode: " + req2.hashCode() + ")=\n" + req2) ;
+//            throw new UpdateCheckException("reparsed query hashCode does not equal parsed input update \nUpdate (hashCode: " + req.hashCode() + ")=\n" + req + "\n\nUpdate2 (hashCode: " + req2.hashCode() + ")=\n" + req2);
 //
 //        if ( ! req.equals(req2) )
-//            throw new UpdateCheckException("reparsed output does not equal parsed input") ;
+//            throw new UpdateCheckException("reparsed output does not equal parsed input");
     }
 
 
-    static final String divider = "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" ;
-    //static final String divider = "" ;
-    static boolean needDivider = false ;
+    static final String divider = "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
+    //static final String divider = "";
+    static boolean needDivider = false;
     private static void divider() {
-        if ( needDivider ) System.out.println(divider) ;
-        needDivider = true ;
+        if ( needDivider ) System.out.println(divider);
+        needDivider = true;
     }
 }

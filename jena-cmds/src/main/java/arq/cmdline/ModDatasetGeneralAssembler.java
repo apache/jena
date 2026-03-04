@@ -23,36 +23,36 @@ package arq.cmdline;
 
 import org.apache.jena.cmd.CmdArgModule;
 import org.apache.jena.cmd.CmdGeneral;
-import org.apache.jena.query.Dataset ;
+import org.apache.jena.query.Dataset;
 
 /** Add assembler to a general dataset description */
 public class ModDatasetGeneralAssembler extends ModDatasetGeneral
 {
     public ModDatasetGeneralAssembler() {}
     
-    private ModDatasetAssembler modAssembler = new ModDatasetAssembler() ;
+    private ModDatasetAssembler modAssembler = new ModDatasetAssembler();
     
     @Override
     public Dataset createDataset()
     {
-        Dataset ds = modAssembler.createDataset() ;
+        Dataset ds = modAssembler.createDataset();
         if ( ds == null )
-            ds = super.createDataset() ;
-        return ds ;
+            ds = super.createDataset();
+        return ds;
     }
 
     @Override
     public void registerWith(CmdGeneral cmdLine)
     {
-        modAssembler.registerWith(cmdLine) ;
-        super.registerWith(cmdLine) ;
+        modAssembler.registerWith(cmdLine);
+        super.registerWith(cmdLine);
     }
 
     @Override
     public void processArgs(CmdArgModule cmdLine)
     {
-        modAssembler.processArgs(cmdLine) ;
-        super.processArgs(cmdLine) ;
+        modAssembler.processArgs(cmdLine);
+        super.processArgs(cmdLine);
     }
 
 }

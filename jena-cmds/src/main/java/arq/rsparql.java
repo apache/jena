@@ -21,24 +21,24 @@
 
 package arq;
 
-import arq.cmdline.CmdARQ ;
-import arq.cmdline.ModQueryIn ;
-import arq.cmdline.ModRemote ;
-import arq.cmdline.ModResultsOut ;
+import arq.cmdline.CmdARQ;
+import arq.cmdline.ModQueryIn;
+import arq.cmdline.ModRemote;
+import arq.cmdline.ModResultsOut;
 import org.apache.jena.cmd.CmdException;
-import org.apache.jena.query.Query ;
-import org.apache.jena.query.Syntax ;
-import org.apache.jena.sparql.engine.http.QueryExceptionHTTP ;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.Syntax;
+import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
 import org.apache.jena.sparql.exec.http.QueryExecutionHTTPBuilder;
 import org.apache.jena.sparql.exec.http.QuerySendMode;
-import org.apache.jena.sparql.util.QueryExecUtils ;
+import org.apache.jena.sparql.util.QueryExecUtils;
 
 public class rsparql extends CmdARQ
 {
-    protected ModQueryIn    modQuery =      new ModQueryIn(Syntax.syntaxARQ) ;
-    protected ModRemote     modRemote =     new ModRemote() ;
-    protected ModResultsOut modResults =    new ModResultsOut() ;
+    protected ModQueryIn    modQuery =      new ModQueryIn(Syntax.syntaxARQ);
+    protected ModRemote     modRemote =     new ModRemote();
+    protected ModResultsOut modResults =    new ModResultsOut();
 
     public static void main(String...argv) {
         new rsparql(argv).mainRun();

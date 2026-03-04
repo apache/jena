@@ -21,7 +21,7 @@
 
 package arq;
 
-import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.lib.StrUtils;
 
 public class wwwdec
 {
@@ -29,11 +29,11 @@ public class wwwdec
     {
         for ( String x : args)
         {
-            String y = StrUtils.decodeHex(x, '%') ;
-            System.out.println(y) ;
+            String y = StrUtils.decodeHex(x, '%');
+            System.out.println(y);
             
-//            String s2 = URLDecoder.decode(x, "utf-8") ;
-//            System.out.println(s2) ;   
+//            String s2 = URLDecoder.decode(x, "utf-8");
+//            System.out.println(s2);   
         }
     }
 }

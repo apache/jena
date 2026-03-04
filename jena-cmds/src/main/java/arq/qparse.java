@@ -121,7 +121,7 @@ public class qparse extends CmdARQ {
     }
 
     static final String divider = "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
-    // static final String divider = "" ;
+    // static final String divider = "";
     boolean needDivider = false;
     private void divider() {
         if ( needDivider )
@@ -192,7 +192,7 @@ public class qparse extends CmdARQ {
             System.err.println(ex.getMessage());
             ex.printStackTrace(System.err);
         } catch (QueryException qEx) {
-            // System.err.println(qEx.getMessage()) ;
+            // System.err.println(qEx.getMessage());
             throw new CmdException("Query Exeception", qEx);
         } catch (JenaException ex) {
             ex.printStackTrace();
@@ -212,7 +212,7 @@ public class qparse extends CmdARQ {
     static void writeSyntaxes(String msg, PrintStream out) {
         if ( msg != null )
             out.println(msg);
-        for ( Iterator<String> iter = Syntax.querySyntaxNames.keys() ; iter.hasNext() ; ) {
+        for ( Iterator<String> iter = Syntax.querySyntaxNames.keys(); iter.hasNext(); ) {
             String k = iter.next();
             Syntax v = Syntax.lookup(k);
             k = padOut(k, 10);
@@ -222,7 +222,7 @@ public class qparse extends CmdARQ {
 
     static String padOut(String x, int len) {
         StringBuilder r = new StringBuilder(x);
-        for ( int i = x.length() ; i <= len ; i++ )
+        for ( int i = x.length(); i <= len; i++ )
             r.append(" ");
         return r.toString();
     }

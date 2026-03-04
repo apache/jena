@@ -21,33 +21,33 @@
 
 package arq;
 
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.sparql.sse.Item ;
-import org.apache.jena.sparql.sse.builders.BuilderExec ;
-import arq.cmdline.CmdARQ_SSE ;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.sparql.sse.Item;
+import org.apache.jena.sparql.sse.builders.BuilderExec;
+import arq.cmdline.CmdARQ_SSE;
 
 public class sse_exec extends CmdARQ_SSE
 {
     
     public static void main (String... argv)
     {
-        new sse_exec(argv).mainRun() ;
+        new sse_exec(argv).mainRun();
     }
     
     public sse_exec(String[] argv)
     {
-        super(argv) ;
+        super(argv);
     }
     
     @Override
-    protected String getCommandName() { return Lib.className(this) ; }
+    protected String getCommandName() { return Lib.className(this); }
     
     @Override
-    protected String getSummary() { return getCommandName()+" [--file<file> | string]" ; }
+    protected String getSummary() { return getCommandName()+" [--file<file> | string]"; }
 
     @Override
     protected void exec(Item item)
     {
-        BuilderExec.exec(item) ;
+        BuilderExec.exec(item);
     }
 }

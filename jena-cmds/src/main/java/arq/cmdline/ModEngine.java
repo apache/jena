@@ -21,13 +21,13 @@
 
 package arq.cmdline;
 
-import java.util.List ;
+import java.util.List;
 
 import org.apache.jena.cmd.*;
-import org.apache.jena.sparql.engine.main.QueryEngineMain ;
-import org.apache.jena.sparql.engine.main.QueryEngineMainQuad ;
-import org.apache.jena.sparql.engine.ref.QueryEngineRef ;
-import org.apache.jena.sparql.engine.ref.QueryEngineRefQuad ;
+import org.apache.jena.sparql.engine.main.QueryEngineMain;
+import org.apache.jena.sparql.engine.main.QueryEngineMainQuad;
+import org.apache.jena.sparql.engine.ref.QueryEngineRef;
+import org.apache.jena.sparql.engine.ref.QueryEngineRefQuad;
 
 
 public class ModEngine extends ModBase
@@ -36,15 +36,15 @@ public class ModEngine extends ModBase
     // Alters the ARQ environment but provides nothing at execution time.
     // Combine with ModSymbol?
 
-    protected final ArgDecl engineDecl = new ArgDecl(ArgDecl.HasValue, "engine") ;
+    protected final ArgDecl engineDecl = new ArgDecl(ArgDecl.HasValue, "engine");
     protected final ArgDecl unEngineDecl = new ArgDecl(ArgDecl.HasValue,
                                                        "unengine",
                                                        "unEngine",
                                                        "removeEngine",
                                                        "removeengine"
-                                                       ) ;
+                                                       );
 
-    private boolean timing = false ;
+    private boolean timing = false;
 
     public ModEngine() {}
 
@@ -67,7 +67,7 @@ public class ModEngine extends ModBase
         List<String> engineDecls = cmdLine.getValues(engineDecl);
 
         // if ( x.size() > 0 )
-        // QueryEngineRegistry.get().factories().clear() ;
+        // QueryEngineRegistry.get().factories().clear();
 
         for ( String engineName : engineDecls ) {
             switch (engineName.toLowerCase()) {
