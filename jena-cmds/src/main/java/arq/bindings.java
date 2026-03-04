@@ -21,25 +21,25 @@
 
 package arq;
 
-import java.io.InputStream ;
-import java.io.OutputStream ;
+import java.io.InputStream;
+import java.io.OutputStream;
 
-import org.apache.jena.sparql.engine.binding.BindingInputStream ;
-import org.apache.jena.sparql.engine.binding.BindingOutputStream ;
+import org.apache.jena.sparql.engine.binding.BindingInputStream;
+import org.apache.jena.sparql.engine.binding.BindingOutputStream;
 
 /** Simple command for testing bindings */
 public class bindings
 {
     public static void main(String... args)
     {
-        InputStream in = System.in ;
-        OutputStream out = System.out ;
+        InputStream in = System.in;
+        OutputStream out = System.out;
         
-        BindingInputStream input = new BindingInputStream(in) ;
-        BindingOutputStream output = new BindingOutputStream(out) ;
+        BindingInputStream input = new BindingInputStream(in);
+        BindingOutputStream output = new BindingOutputStream(out);
         
-        for ( ; input.hasNext() ; )
-            output.send(input.next()) ;
-        output.flush() ;
+        for (; input.hasNext(); )
+            output.send(input.next());
+        output.flush();
     }
 }

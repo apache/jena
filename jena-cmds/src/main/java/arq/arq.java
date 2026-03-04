@@ -21,20 +21,20 @@
 
 package arq;
 
-import org.apache.jena.query.Syntax ;
+import org.apache.jena.query.Syntax;
 
 /** A program to execute queries from the command line in ARQ mode. */
 
 public class arq extends query
 {
     public static void main (String... argv) {
-        new arq(argv).mainRun() ;
+        new arq(argv).mainRun();
     }
     
     public arq(String[] argv) {
-        super(argv) ; 
+        super(argv); 
     }
 
     @Override
-    protected Syntax getDefaultSyntax()     { return Syntax.syntaxARQ ; } 
+    protected Syntax getDefaultSyntax()     { return Syntax.syntaxARQ; } 
  }

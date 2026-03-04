@@ -22,31 +22,31 @@
 package arq.cmdline;
 
 import org.apache.jena.cmd.*;
-import org.apache.jena.query.ResultSet ;
-import org.apache.jena.query.ResultSetFactory ;
-import org.apache.jena.shared.NotFoundException ;
-import org.apache.jena.sparql.ARQInternalErrorException ;
-import org.apache.jena.sparql.resultset.ResultsFormat ;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFactory;
+import org.apache.jena.shared.NotFoundException;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.resultset.ResultsFormat;
 
 public class ModResultsIn extends ModBase
 {
-    protected final ArgDecl resultsInputFmtDecl = new ArgDecl(ArgDecl.HasValue, "in") ;
-    protected final ArgDecl fileDecl = new ArgDecl(ArgDecl.HasValue, "file") ;
+    protected final ArgDecl resultsInputFmtDecl = new ArgDecl(ArgDecl.HasValue, "in");
+    protected final ArgDecl fileDecl = new ArgDecl(ArgDecl.HasValue, "file");
 
     private ResultsFormat inputFormat = ResultsFormat.TEXT;
-    private String resultsFilename = null ;
-    private ResultSet resultSet = null ;
+    private String resultsFilename = null;
+    private ResultSet resultSet = null;
 
     @Override
     public void registerWith(CmdGeneral cmdLine)
     {
-        cmdLine.getUsage().startCategory("Results") ;
+        cmdLine.getUsage().startCategory("Results");
         cmdLine.add(fileDecl,
                     "--file",
-                    "Input file") ;
+                    "Input file");
         cmdLine.add(resultsInputFmtDecl,
                     "--in",
-                    "Results format (XML, JSON; RDF serialization)") ;
+                    "Results format (XML, JSON; RDF serialization)");
     }
 
     @Override
@@ -54,32 +54,32 @@ public class ModResultsIn extends ModBase
     {
         // Input file.
         if ( cmdline.contains(fileDecl) )
-            resultsFilename = cmdline.getValue(fileDecl) ;
+            resultsFilename = cmdline.getValue(fileDecl);
 
         if ( cmdline.getNumPositional() == 0 && resultsFilename == null )
-            cmdline.cmdError("No results file") ;
+            cmdline.cmdError("No results file");
 
         if ( cmdline.getNumPositional() > 1 )
-            cmdline.cmdError("Only one result set file allowed") ;
+            cmdline.cmdError("Only one result set file allowed");
 
         if ( cmdline.getNumPositional() == 1 && resultsFilename != null )
-            cmdline.cmdError("Either result set file or --file - not both") ;
+            cmdline.cmdError("Either result set file or --file - not both");
 
         if ( resultsFilename == null )
             // One positional argument.
-            resultsFilename = cmdline.getPositionalArg(0) ;
+            resultsFilename = cmdline.getPositionalArg(0);
 
         // Guess format
         if ( resultsFilename != null )
-            inputFormat = ResultsFormat.guessSyntax(resultsFilename) ;
+            inputFormat = ResultsFormat.guessSyntax(resultsFilename);
 
         // Set format
         if ( cmdline.contains(resultsInputFmtDecl) )
         {
-            String rFmt = cmdline.getValue(resultsInputFmtDecl) ;
-            inputFormat = ResultsFormat.lookup(rFmt) ;
+            String rFmt = cmdline.getValue(resultsInputFmtDecl);
+            inputFormat = ResultsFormat.lookup(rFmt);
             if ( inputFormat == null )
-                cmdline.cmdError("Unrecognized output format: "+rFmt) ;
+                cmdline.cmdError("Unrecognized output format: "+rFmt);
         }
     }
 
@@ -90,45 +90,45 @@ public class ModResultsIn extends ModBase
     public ResultSet getResultSet()
     {
         if ( resultSet != null )
-            return resultSet ;
+            return resultSet;
 
         if ( resultsFilename == null )
         {
-            System.err.println("No result file name" ) ;
-            throw new TerminationException(1) ;
+            System.err.println("No result file name" );
+            throw new TerminationException(1);
         }
 
         try
         {
             if ( resultsFilename.equals("--") )
-                return ResultSetFactory.load(System.in, inputFormat) ;
-            ResultSet rs = ResultSetFactory.load(resultsFilename, inputFormat) ;
+                return ResultSetFactory.load(System.in, inputFormat);
+            ResultSet rs = ResultSetFactory.load(resultsFilename, inputFormat);
             if ( rs == null )
             {
-                System.err.println("Failed to read the result set") ;
-                throw new TerminationException(9) ;
+                System.err.println("Failed to read the result set");
+                throw new TerminationException(9);
             }
-            resultSet = rs ;
-            return resultSet ;
+            resultSet = rs;
+            return resultSet;
         }
         catch (NotFoundException ex)
         {
-            System.err.println("File not found: "+resultsFilename) ;
-            throw new TerminationException(9) ;
+            System.err.println("File not found: "+resultsFilename);
+            throw new TerminationException(9);
         }
         catch (ARQInternalErrorException intEx)
         {
-            System.err.println(intEx.getMessage()) ;
+            System.err.println(intEx.getMessage());
             if ( intEx.getCause() != null )
             {
-                System.err.println("Cause:") ;
-                intEx.getCause().printStackTrace(System.err) ;
-                System.err.println() ;
+                System.err.println("Cause:");
+                intEx.getCause().printStackTrace(System.err);
+                System.err.println();
             }
-            intEx.printStackTrace(System.err) ;
-            throw new TerminationException(99) ;
+            intEx.printStackTrace(System.err);
+            throw new TerminationException(99);
         }
     }
 
-    public ResultsFormat getInputFormat() { return inputFormat ; }
+    public ResultsFormat getInputFormat() { return inputFormat; }
 }

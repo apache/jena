@@ -26,10 +26,10 @@ import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdArgModule;
 import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.cmd.ModBase;
-import org.apache.jena.query.ResultSet ;
-import org.apache.jena.sparql.core.Prologue ;
-import org.apache.jena.sparql.resultset.ResultsFormat ;
-import org.apache.jena.sparql.util.QueryExecUtils ;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.sparql.core.Prologue;
+import org.apache.jena.sparql.resultset.ResultsFormat;
+import org.apache.jena.sparql.util.QueryExecUtils;
 
 public class ModResultsOut extends ModBase {
     protected final ArgDecl resultsFmtDecl = new ArgDecl(ArgDecl.HasValue, "results", "out", "rfmt");
@@ -51,7 +51,7 @@ public class ModResultsOut extends ModBase {
         cmdLine.getUsage().startCategory("Results");
         cmdLine.add(resultsFmtDecl,
                     "--results=",
-                    "Results format (Result set: text, XML, JSON, CSV, TSV; Graph: RDF serialization)") ;
+                    "Results format (Result set: text, XML, JSON, CSV, TSV; Graph: RDF serialization)");
     }
 
     public void checkCommandLine(CmdArgModule cmdLine) {}

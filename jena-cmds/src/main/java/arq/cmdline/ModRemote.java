@@ -30,14 +30,14 @@ import org.apache.jena.cmd.ModBase;
 public class ModRemote extends ModBase
 {
     protected final 
-    ArgDecl serviceDecl = new ArgDecl(ArgDecl.HasValue, "service") ;
+    ArgDecl serviceDecl = new ArgDecl(ArgDecl.HasValue, "service");
     
     // Or --serviceType GET, POST, SOAP
     protected final 
-    ArgDecl postServiceDecl = new ArgDecl(ArgDecl.NoValue, "post", "POST") ;
+    ArgDecl postServiceDecl = new ArgDecl(ArgDecl.NoValue, "post", "POST");
     
-    private String serviceURL ;
-    private boolean usePost ;
+    private String serviceURL;
+    private boolean usePost;
     
     public void checkCommandLine(CmdArgModule cmdLine)
     {}
@@ -45,31 +45,31 @@ public class ModRemote extends ModBase
     @Override
     public void processArgs(CmdArgModule cmdLine)
     {
-        serviceURL = cmdLine.getValue(serviceDecl) ;
-        usePost = cmdLine.contains(postServiceDecl) ;
+        serviceURL = cmdLine.getValue(serviceDecl);
+        usePost = cmdLine.contains(postServiceDecl);
     }
     
     @Override
     public void registerWith(CmdGeneral cmdLine)
     {
-        cmdLine.getUsage().startCategory("Remote") ;
+        cmdLine.getUsage().startCategory("Remote");
         cmdLine.add(serviceDecl,
                     "--service=",
-                    "Service endpoint URL") ;
+                    "Service endpoint URL");
         cmdLine.add(postServiceDecl,
                     "--post",
-                    "Force use of HTTP POST") ;
+                    "Force use of HTTP POST");
 
     }
 
     public String getServiceURL()
     {
-        return serviceURL ;
+        return serviceURL;
     }
 
     public boolean usePost()
     {
-        return usePost ;
+        return usePost;
     }
     
     

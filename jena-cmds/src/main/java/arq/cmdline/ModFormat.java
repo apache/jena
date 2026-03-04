@@ -21,7 +21,6 @@
 
 package arq.cmdline;
 
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,65 +29,47 @@ import org.apache.jena.cmd.CmdArgModule;
 import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.cmd.ModBase;
 
-public class ModFormat extends ModBase
-{
-    protected final 
-    ArgDecl resultsFmtDecl = new ArgDecl(ArgDecl.HasValue, "fmt", "format") ;
+public class ModFormat extends ModBase {
+    protected final ArgDecl resultsFmtDecl = new ArgDecl(ArgDecl.HasValue, "fmt", "format");
 
-    private String format = "N-TRIPLES" ;
-    
+    private String format = "N-TRIPLES";
+
     public ModFormat() {}
-    
+
     @Override
-    public void processArgs(CmdArgModule cmdline) throws IllegalArgumentException
-    {
-        if ( cmdline.contains(resultsFmtDecl) )
-        {
-            String rFmt = cmdline.getValue(resultsFmtDecl) ;
-            format = lookup(rFmt) ;
+    public void processArgs(CmdArgModule cmdline) throws IllegalArgumentException {
+        if ( cmdline.contains(resultsFmtDecl) ) {
+            String rFmt = cmdline.getValue(resultsFmtDecl);
+            format = lookup(rFmt);
             if ( format == null )
-                cmdline.cmdError("Unrecognized format: "+rFmt) ;
+                cmdline.cmdError("Unrecognized format: " + rFmt);
         }
     }
-    
+
     @Override
-    public void registerWith(CmdGeneral cmdLine)
-    {
-        cmdLine.getUsage().startCategory("Output format") ;
-        cmdLine.add(resultsFmtDecl,
-                    "--format",
-                    "Format (Result sets: text, XML, JSON; Graph: RDF serialization)") ;  
+    public void registerWith(CmdGeneral cmdLine) {
+        cmdLine.getUsage().startCategory("Output format");
+        cmdLine.add(resultsFmtDecl, "--format", "Format (Result sets: text, XML, JSON; Graph: RDF serialization)");
     }
 
-    public void checkCommandLine(CmdArgModule cmdLine)
-    {}
+    public void checkCommandLine(CmdArgModule cmdLine) {}
 
-    public String getFormat() { return format ; } 
-    
-    public String getFormat(String defaultFormat)
-    { 
+    public String getFormat() {
+        return format;
+    }
+
+    public String getFormat(String defaultFormat) {
         if ( format == null )
-            return defaultFormat ;
-        return format ;
-    }
-  
-    private String lookup(String fmt)
-    {
-    		return formats.stream().filter(fmt::equalsIgnoreCase).findFirst().orElse("TURTLE");
+            return defaultFormat;
+        return format;
     }
 
-    static final List<String> formats = Arrays.asList(
-        "RDF/XML",
-        "RDF/XML-ABBREV",
-        "N-TRIPLE",
-        "N-TRIPLES",
-        "N3",
-        "N3-PP" ,
-        "N3-PLAIN" ,
-        "N3-TRIPLES" ,
-        "N3-TRIPLE" ,
-        "TURTLE" ,
-        //"Turtle" ,
-        "TTL"
-        ) ;
+    private String lookup(String fmt) {
+        return formats.stream().filter(fmt::equalsIgnoreCase).findFirst().orElse("TURTLE");
+    }
+
+    static final List<String> formats = Arrays.asList("RDF/XML", "RDF/XML-ABBREV", "N-TRIPLE", "N-TRIPLES", "N3", "N3-PP", "N3-PLAIN",
+                                                      "N3-TRIPLES", "N3-TRIPLE", "TURTLE",
+                                                      // "Turtle" ,
+                                                      "TTL");
 }

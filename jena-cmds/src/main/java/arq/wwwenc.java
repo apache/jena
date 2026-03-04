@@ -24,13 +24,13 @@ package arq;
 import java.io.IOException;
 
 import org.apache.jena.atlas.io.IO;
-import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.lib.StrUtils;
 
 public class wwwenc
 {
     /* http://en.wikipedia.org/wiki/Percent-encoding
      * Reserved characters after percent-encoding 
-     *   !    *   "   '   (   )   ;   :   @   &   =   +   $   ,   /   ?   %   #   [   ]
+     *   !    *   "   '   (   )  ;   :   @   &   =   +   $   ,   /   ?   %   #   [   ]
      *   %21  %2A %22 %27 %28 %29 %3B %3A %40 %26 %3D %2B %24 %2C %2F %3F %25 %23 %5B %5D
      * These loose any reserved meaning if encoded.
      * 
@@ -57,20 +57,20 @@ public class wwwenc
              '*' , '+' , ',' , ';' , '=',
              // general trouble
              '<', '>', '{', '}', '|', '\\', '`', '^'
-            } ;
+            };
         
         if ( args.length == 0 ) {
             String x = IO.readWholeFileAsUTF8(System.in);
-            String y = StrUtils.encodeHex(x, '%', encode) ;
-            System.out.println(y) ;
+            String y = StrUtils.encodeHex(x, '%', encode);
+            System.out.println(y);
             return;
         }       
         for ( String x : args) {
             // Not URLEncoder which does www-form-encoding.
-            String y = StrUtils.encodeHex(x, '%', encode) ;
-            System.out.println(y) ;
-//            String s2 = URLEncoder.encode(s, "utf-8") ;
-//            System.out.println(s2) ;
+            String y = StrUtils.encodeHex(x, '%', encode);
+            System.out.println(y);
+//            String s2 = URLEncoder.encode(s, "utf-8");
+//            System.out.println(s2);
 
         }
     }

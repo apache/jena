@@ -24,35 +24,35 @@ package arq.cmdline;
 import org.apache.jena.cmd.CmdArgModule;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.cmd.CmdGeneral;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.shared.JenaException ;
-import org.apache.jena.shared.NotFoundException ;
-import org.apache.jena.sparql.ARQException ;
-import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab ;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.shared.JenaException;
+import org.apache.jena.shared.NotFoundException;
+import org.apache.jena.sparql.ARQException;
+import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab;
 
 /** Add assembler to a general dataset description */
-public class ModDatasetAssembler extends ModDataset
-{
-    private ModAssembler modAssembler = new ModAssembler() ;
+public class ModDatasetAssembler extends ModDataset {
+    private ModAssembler modAssembler = new ModAssembler();
 
     @Override
     public Dataset createDataset() {
         if ( modAssembler.getAssemblerFile() == null )
-            return null ;
-        
+            return null;
+
         try {
-            dataset = (Dataset)modAssembler.create(DatasetAssemblerVocab.tDataset) ;
+            dataset = (Dataset)modAssembler.create(DatasetAssemblerVocab.tDataset);
             if ( dataset == null )
-                throw new CmdException("No dataset description found in: "+modAssembler.getAssemblerFile()) ;
+                throw new CmdException("No dataset description found in: " + modAssembler.getAssemblerFile());
+        } catch (CmdException | ARQException ex) {
+            throw ex;
+        } catch (NotFoundException ex) {
+            throw new CmdException("Not found: " + ex.getMessage());
+        } catch (JenaException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new CmdException("Error creating dataset", ex);
         }
-        catch (CmdException | ARQException ex) { throw ex ; }
-        catch (NotFoundException ex)
-        { throw new CmdException("Not found: "+ex.getMessage()) ; }
-        catch (JenaException ex)
-        { throw ex ; }
-        catch (Exception ex)
-        { throw new CmdException("Error creating dataset", ex) ; }
-        return dataset ;
+        return dataset;
     }
 
     @Override
@@ -64,8 +64,8 @@ public class ModDatasetAssembler extends ModDataset
     public void processArgs(CmdArgModule cmdLine) {
         modAssembler.processArgs(cmdLine);
     }
-    
+
     public String getAssemblerFile() {
-        return modAssembler.getAssemblerFile() ;
+        return modAssembler.getAssemblerFile();
     }
 }

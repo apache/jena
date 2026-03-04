@@ -147,7 +147,7 @@ public class qexpr {
 
         // ==== Do it
 
-        for ( int i = 0 ; i < cl.getNumPositional() ; i++ ) {
+        for ( int i = 0; i < cl.getNumPositional(); i++ ) {
             String exprStr = cl.getPositionalArg(i);
             exprStr = cl.indirect(exprStr);
 
@@ -185,7 +185,7 @@ public class qexpr {
                         ARQ.getContext().set(ARQConstants.sysCurrentTime, NodeFactoryExtra.nowAsDateTime());
                         FunctionEnv env = ExecutionContext.create(ARQ.getContext().copy());
                         NodeValue r = expr.eval(null, env);
-                        // System.out.println(r.asQuotedString()) ;
+                        // System.out.println(r.asQuotedString());
                         Node n = r.asNode();
                         String s = NodeFmtLib.displayStr(n);
                         System.out.println(s);

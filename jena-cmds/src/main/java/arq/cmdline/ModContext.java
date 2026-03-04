@@ -21,27 +21,27 @@
 
 package arq.cmdline;
 
-import java.io.PrintStream ;
+import java.io.PrintStream;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdArgModule;
 import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.cmd.ModBase;
-import org.apache.jena.query.ARQ ;
-import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.sparql.util.MappingRegistry ;
-import org.apache.jena.sparql.util.Symbol ;
-import org.apache.jena.sys.JenaSystem ;
+import org.apache.jena.query.ARQ;
+import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.MappingRegistry;
+import org.apache.jena.sparql.util.Symbol;
+import org.apache.jena.sys.JenaSystem;
 
 /** Set Context items */
 public class ModContext extends ModBase
 {
     static { JenaSystem.init(); }
 
-    protected final ArgDecl setDecl = new ArgDecl(ArgDecl.HasValue, "set", "define", "defn", "def") ;
+    protected final ArgDecl setDecl = new ArgDecl(ArgDecl.HasValue, "set", "define", "defn", "def");
 
-    private Context context = new Context() ;
+    private Context context = new Context();
 
     public ModContext() {}
     

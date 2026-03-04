@@ -54,18 +54,16 @@ public class ModLangOutput extends ModBase
 
     @Override
     public void processArgs(CmdArgModule cmdLine) {
-        {
-            int x = 0;
-            if ( cmdLine.contains(argPretty) )
-                x++;
-            if ( cmdLine.contains(argStream) )
-                x++;
-            if ( cmdLine.contains(argOutput) )
-                x++;
+        int x = 0;
+        if ( cmdLine.contains(argPretty) )
+            x++;
+        if ( cmdLine.contains(argStream) )
+            x++;
+        if ( cmdLine.contains(argOutput) )
+            x++;
 
-            if ( x >= 2 )
-                throw new CmdException("Multiple output choices given: Use one of --stream, --output and --formatted/--pretty");
-        }
+        if ( x >= 2 )
+            throw new CmdException("Multiple output choices given: Use one of --stream, --output and --formatted/--pretty");
 
         if ( cmdLine.contains(argPretty) ) {
             String langName = cmdLine.getValue(argPretty);

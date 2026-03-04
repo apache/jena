@@ -21,42 +21,42 @@
 
 package arq.cmdline;
 
-import org.apache.jena.query.Syntax ;
-import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.query.Syntax;
+import org.apache.jena.sparql.core.DatasetGraph;
 
 public abstract class CmdUpdate extends CmdARQ
 {
-    protected ModDataset modDataset = null ;
-    protected Syntax updateSyntax = Syntax.syntaxARQ ;
+    protected ModDataset modDataset = null;
+    protected Syntax updateSyntax = Syntax.syntaxARQ;
 
     protected CmdUpdate(String[] argv)
     {
-        super(argv) ;
-        modDataset = setModDataset() ;
-        addModule(modDataset) ;
+        super(argv);
+        modDataset = setModDataset();
+        addModule(modDataset);
     }
 
     protected ModDataset setModDataset() {
-        return new ModDatasetGeneralAssembler() ;
+        return new ModDatasetGeneralAssembler();
     }
 
     @Override
     protected void processModulesAndArgs()
     {
-        super.processModulesAndArgs() ;
+        super.processModulesAndArgs();
         if ( super.cmdStrictMode )
-            updateSyntax = Syntax.syntaxSPARQL_11 ;
+            updateSyntax = Syntax.syntaxSPARQL_11;
     }
 
     @Override
     protected final void exec() {
-        DatasetGraph dataset = modDataset.getDatasetGraph() ;
+        DatasetGraph dataset = modDataset.getDatasetGraph();
         if ( dataset == null )
-            dataset = dealWithNoDataset() ;
-        execUpdate(dataset) ;
+            dataset = dealWithNoDataset();
+        execUpdate(dataset);
     }
 
-    protected abstract DatasetGraph dealWithNoDataset() ;
+    protected abstract DatasetGraph dealWithNoDataset();
 
-    protected abstract void execUpdate(DatasetGraph graphStore) ;
+    protected abstract void execUpdate(DatasetGraph graphStore);
 }

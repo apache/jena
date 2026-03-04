@@ -22,30 +22,30 @@
 package arq.cmdline;
 
 import org.apache.jena.cmd.ModBase;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.sparql.core.DatasetGraph;
 
 public abstract class ModDataset extends ModBase
 {
-    protected boolean createAttempted = false ;
-    protected Dataset dataset = null ;
+    protected boolean createAttempted = false;
+    protected Dataset dataset = null;
     
     public ModDataset() {}
     
     final
     public Dataset getDataset() { 
         if ( ! createAttempted )
-            dataset = createDataset() ;
-        createAttempted = true ;
-        return dataset ;
+            dataset = createDataset();
+        createAttempted = true;
+        return dataset;
     }
     
     public DatasetGraph getDatasetGraph() {
-        Dataset ds = getDataset() ;
+        Dataset ds = getDataset();
         if ( ds == null )
-            return null ;
-        return ds.asDatasetGraph() ;
+            return null;
+        return ds.asDatasetGraph();
     }
 
-    public abstract Dataset createDataset() ; 
+    public abstract Dataset createDataset(); 
 }

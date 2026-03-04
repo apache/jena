@@ -21,7 +21,7 @@
 
 package arq.cmdline;
 
-import org.apache.jena.atlas.lib.Timer ;
+import org.apache.jena.atlas.lib.Timer;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdArgModule;
 import org.apache.jena.cmd.CmdGeneral;
@@ -31,17 +31,17 @@ import org.apache.jena.cmd.ModBase;
 public class ModTime extends ModBase
 {
 
-    protected final ArgDecl timeDecl = new ArgDecl(ArgDecl.NoValue, "time") ;
+    protected final ArgDecl timeDecl = new ArgDecl(ArgDecl.NoValue, "time");
     
-    protected Timer timer = new Timer() ;
+    protected Timer timer = new Timer();
     
-    private boolean timing = false ;
+    private boolean timing = false;
     
     @Override
     public void registerWith(CmdGeneral cmdLine)
     {
-        cmdLine.getUsage().startCategory("Time") ;
-        cmdLine.add(timeDecl, "--time", "Time the operation") ;
+        cmdLine.getUsage().startCategory("Time");
+        cmdLine.add(timeDecl, "--time", "Time the operation");
     }
     
     public void checkCommandLine(CmdArgModule cmdLine)
@@ -50,26 +50,26 @@ public class ModTime extends ModBase
     @Override
     public void processArgs(CmdArgModule cmdLine)
     {
-        timing = cmdLine.contains(timeDecl) ;
+        timing = cmdLine.contains(timeDecl);
     }
     
-    public boolean timingEnabled() { return timing ; }
+    public boolean timingEnabled() { return timing; }
     
-    public void setTimingEnabled(boolean timingEnabled) { timing = timingEnabled ; }
+    public void setTimingEnabled(boolean timingEnabled) { timing = timingEnabled; }
     
     public void startTimer()
-    { timer.startTimer() ; } 
+    { timer.startTimer(); } 
     
     public long endTimer()
-    { return timer.endTimer() ; } 
+    { return timer.endTimer(); } 
     
     public long readTimer() 
-    { return timer.readTimer() ; }
+    { return timer.readTimer(); }
     
     public long getTimeInterval()
-    { return timer.getTimeInterval() ; }
+    { return timer.getTimeInterval(); }
     
     public String timeStr(long timeInterval)
-    { return Timer.timeStr(timeInterval) ; }
+    { return Timer.timeStr(timeInterval); }
     
 }
