@@ -30,6 +30,7 @@ import org.apache.jena.http.HttpEnv;
 import org.apache.jena.query.*;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.web.HttpNames;
+import org.apache.jena.sparql.adapter.ParseCheckUtils;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.http.Params;
@@ -49,15 +50,11 @@ public abstract class ExecHTTPBuilder<X, Y> {
     protected String serviceURL = null;
     private Query query = null;
     protected String queryString = null;
-    protected boolean parseCheck = true;
+    protected Boolean parseCheck = null;
     private HttpClient httpClient = null;
     protected Map<String, String> httpHeaders = new HashMap<>();
     protected Params params = Params.create();
     private ContextAccumulator contextAcc = ContextAccumulator.newBuilder(()->ARQ.getContext());
-
-    // Accept choice by the application. Deprecated - Superseded by acceptHeader(String) which sets all header fields explicitly.
-    @Deprecated(forRemoval = true)
-    protected String appAcceptHeader     = null;
 
     protected String selectAcceptHeader  = WebContent.defaultSparqlResultsHeader;
     protected String askAcceptHeader     = WebContent.defaultSparqlAskHeader;
@@ -91,6 +88,10 @@ public abstract class ExecHTTPBuilder<X, Y> {
         return thisBuilder();
     }
 
+    protected boolean effectiveParseCheck() {
+        return ParseCheckUtils.effectiveParseCheck(parseCheck, contextAcc);
+    }
+
     /** Set the query - this also sets the query string to agree with the query argument. */
     public Y query(Query query) {
         Objects.requireNonNull(query);
@@ -105,14 +106,14 @@ public abstract class ExecHTTPBuilder<X, Y> {
      */
     public Y query(String queryStr) {
         Objects.requireNonNull(queryStr);
-        Query query = parseCheck ? QueryFactory.create(queryStr) : null;
+        Query query = effectiveParseCheck() ? QueryFactory.create(queryStr) : null;
         setQuery(query, queryStr);
         return thisBuilder();
     }
 
     public Y query(String queryStr, Syntax syntax) {
         Objects.requireNonNull(queryStr);
-        Query query = QueryFactory.create(queryStr, syntax);
+        Query query = effectiveParseCheck() ? QueryFactory.create(queryStr, syntax) : null;
         setQuery(query, queryStr);
         return thisBuilder();
     }
@@ -266,10 +267,8 @@ public abstract class ExecHTTPBuilder<X, Y> {
     }
 
     /** Setting this header overrides any other header. */
-    @SuppressWarnings("removal")
     public Y acceptHeader(String acceptHeader) {
         Objects.requireNonNull(acceptHeader);
-        this.appAcceptHeader = acceptHeader;
         this.selectAcceptHeader = acceptHeader;
         this.askAcceptHeader = acceptHeader;
         this.graphAcceptHeader = acceptHeader;

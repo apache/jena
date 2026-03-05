@@ -21,6 +21,8 @@
 
 package org.apache.jena.sparql.exec;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -41,6 +43,7 @@ public class UpdateExecBuilderAdapter
     implements UpdateExecBuilder
 {
     protected UpdateExecutionBuilder builder;
+    protected List<UpdateExecTransform> updateExecTransforms = new ArrayList<>();
 
     protected UpdateExecBuilderAdapter(UpdateExecutionBuilder delegate) {
         super();
@@ -129,9 +132,19 @@ public class UpdateExecBuilderAdapter
     }
 
     @Override
+    public UpdateExecBuilder transformExec(UpdateExecTransform updateExecTransform) {
+        Objects.requireNonNull(updateExecTransform);
+        updateExecTransforms.add(updateExecTransform);
+        return this;
+    }
+
+    @Override
     public UpdateExec build() {
         UpdateExecution updateExec = builder.build();
         UpdateExec result = UpdateExecAdapter.adapt(updateExec);
+        for (UpdateExecTransform updateExecTransform : updateExecTransforms) {
+            result = updateExecTransform.transform(result);
+        }
         return result;
     }
 }
