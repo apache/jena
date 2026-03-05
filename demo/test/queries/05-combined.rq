@@ -8,7 +8,7 @@ PREFIX luc: <urn:jena:lucene:index#>
 
 SELECT ?entity ?score ?field ?value ?count
 WHERE {
-    { (?entity ?score) luc:query ("iron ore") }
+    { (?entity ?score) luc:query ("default" "iron ore") }
     UNION
-    { (?field ?value ?count) luc:facet ("iron ore" '["state", "status"]' 10) }
+    { (?field ?value ?count) luc:facet ("default" "iron ore" '["state", "status"]' 10) }
 }

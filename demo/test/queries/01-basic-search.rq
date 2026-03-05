@@ -7,6 +7,6 @@ PREFIX luc: <urn:jena:lucene:index#>
 
 SELECT ?entity ?score
 WHERE {
-    (?entity ?score) luc:query ("copper")
+    (?entity ?score) luc:query ("default" "copper")
 }
 ORDER BY DESC(?score)

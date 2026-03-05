@@ -148,7 +148,7 @@ public class TestShaclEntityPerDocument {
             "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "PREFIX ex: <" + NS + ">\n" +
             "SELECT ?s WHERE {\n" +
-            "  (?s ?score) luc:query ('machine learning') .\n" +
+            "  (?s ?score) luc:query ('default' 'machine learning') .\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);

@@ -24,22 +24,19 @@ package org.apache.jena.query.text;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.atlas.json.JSON;
-import org.apache.jena.atlas.json.JsonArray;
-import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.QueryBuildException;
 import org.apache.jena.query.QueryExecException;
+import org.apache.jena.query.text.cql.CqlExpression;
+import org.apache.jena.query.text.cql.CqlParser;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
@@ -63,13 +60,13 @@ import org.slf4j.LoggerFactory;
 /**
  * SPARQL property function for SHACL-mode text queries ({@code luc:query}).
  * <p>
- * Supports structured filter arguments for faceted navigation:
+ * Argument format:
  * <pre>
- * (?s ?score) luc:query (property? "query" '{"field":["val"]}'? limit?)
+ * (?s ?score ?literal ?totalHits) luc:query ("indexId" property* "query" cqlFilter? sortSpec? limit? highlight?)
  * </pre>
  * <p>
- * When filters are present, uses {@link SearchExecution} to share state
- * with {@code luc:facet} in the same query.
+ * The first string literal is the index ID (required). CQL filters are JSON objects
+ * with an {@code "op"} key. Sort specs are JSON with a {@code "field"} key.
  */
 public class ShaclTextQueryPF extends PropertyFunctionBase {
     private static final Logger log = LoggerFactory.getLogger(ShaclTextQueryPF.class);
@@ -82,8 +79,6 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
     @Override
     public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt) {
         super.build(argSubject, predicate, argObject, execCxt);
-        DatasetGraph dsg = execCxt.getDataset();
-        textIndex = chooseTextIndex(execCxt, dsg);
 
         if (argSubject.isList()) {
             int size = argSubject.getArgListSize();
@@ -100,18 +95,28 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
         }
     }
 
-    private static TextIndexLucene chooseTextIndex(ExecutionContext execCxt, DatasetGraph dsg) {
+    private static TextIndexLucene chooseTextIndex(ExecutionContext execCxt, DatasetGraph dsg, String indexId) {
+        // Try registry first
+        Object regObj = execCxt.getContext().get(TextQuery.textIndexRegistry);
+        if (regObj instanceof TextIndexRegistry registry) {
+            if (indexId != null) {
+                return registry.get(indexId);
+            }
+            return registry.getDefault();
+        }
+
+        // Fall back to single index
         Object obj = execCxt.getContext().get(TextQuery.textIndex);
-        if (obj instanceof TextIndexLucene) {
-            return (TextIndexLucene) obj;
+        if (obj instanceof TextIndexLucene tl) {
+            return tl;
         }
         if (obj != null) {
             Log.warn(ShaclTextQueryPF.class, "Context setting '" + TextQuery.textIndex + "' is not a TextIndexLucene");
         }
         if (dsg instanceof DatasetGraphText) {
             TextIndex ti = ((DatasetGraphText) dsg).getTextIndex();
-            if (ti instanceof TextIndexLucene) {
-                return (TextIndexLucene) ti;
+            if (ti instanceof TextIndexLucene tl) {
+                return tl;
             }
             Log.warn(ShaclTextQueryPF.class, "TextIndex is not a TextIndexLucene");
         }
@@ -129,14 +134,6 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
             IndentedLineBuffer objBuff = new IndentedLineBuffer();
             argObject.output(objBuff, null);
             log.trace("exec: {} luc:query {}", subjBuff, objBuff);
-        }
-
-        if (textIndex == null) {
-            if (!warningIssued) {
-                Log.warn(getClass(), "No text index - no text search performed");
-                warningIssued = true;
-            }
-            return IterLib.result(binding, execCxt);
         }
 
         argSubject = Substitute.substitute(argSubject, binding);
@@ -182,10 +179,20 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
         if (args == null)
             return IterLib.noResults(execCxt);
 
+        // Resolve text index using indexId
+        textIndex = chooseTextIndex(execCxt, execCxt.getDataset(), args.indexId);
+        if (textIndex == null) {
+            if (!warningIssued) {
+                Log.warn(getClass(), "No text index - no text search performed");
+                warningIssued = true;
+            }
+            return IterLib.result(binding, execCxt);
+        }
+
         // Use SearchExecution for shared state with luc:facet
         SearchExecution se = SearchExecution.getOrCreate(
-            execCxt, args.props, args.queryString,
-            args.filters, textIndex, null, null);
+            execCxt, args.indexId, args.props, args.queryString,
+            args.cqlFilter, args.sortSpecs, textIndex, null, null);
 
         int limit = args.limit > 0 ? args.limit : 10000;
         List<TextHit> allHits = se.getHits(limit, args.highlight);
@@ -240,10 +247,26 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
         return QueryIterPlainWrapper.create(bIter, execCxt);
     }
 
+    /**
+     * Parse object arguments.
+     * <p>
+     * Arg order: (indexId property* queryString cqlFilter? sortSpec? limit? highlight?)
+     * <ul>
+     *   <li>First literal = index ID (required)</li>
+     *   <li>URIs = properties to search</li>
+     *   <li>Next plain literal = query string</li>
+     *   <li>JSON with "op" key = CQL filter</li>
+     *   <li>JSON with "field" key = sort spec</li>
+     *   <li>Integer = limit</li>
+     *   <li>"highlight:..." = highlight options</li>
+     * </ul>
+     */
     private QueryArgs parseArgs(PropFuncArg argObject) {
         List<Resource> props = new ArrayList<>();
+        String indexId = null;
         String queryString = null;
-        Map<String, List<String>> filters = null;
+        CqlExpression cqlFilter = null;
+        List<SortSpec> sortSpecs = null;
         int limit = -1;
         String highlight = null;
 
@@ -254,7 +277,7 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
                 return null;
             }
             queryString = o.getLiteralLexicalForm();
-            return new QueryArgs(props, queryString, filters, limit, highlight);
+            return new QueryArgs(TextIndexRegistry.DEFAULT_ID, props, queryString, cqlFilter, sortSpecs, limit, highlight);
         }
 
         List<Node> list = argObject.getArgList();
@@ -263,6 +286,15 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
 
         int idx = 0;
 
+        // First literal = index ID
+        if (idx < list.size() && list.get(idx).isLiteral()) {
+            String lex = list.get(idx).getLiteralLexicalForm();
+            if (!lex.startsWith("{") && !lex.startsWith("[") && !isJsonLike(lex)) {
+                indexId = lex;
+                idx++;
+            }
+        }
+
         // Collect property URIs
         while (idx < list.size() && list.get(idx).isURI()) {
             Property prop = ResourceFactory.createProperty(list.get(idx).getURI());
@@ -270,7 +302,7 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
             idx++;
         }
 
-        // Query string
+        // Query string (next non-JSON literal)
         if (idx < list.size() && list.get(idx).isLiteral()) {
             String lex = list.get(idx).getLiteralLexicalForm();
             if (!lex.startsWith("{") && !lex.startsWith("[")) {
@@ -284,13 +316,26 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
             return null;
         }
 
-        // Remaining args: JSON filters, limit, highlight
+        if (indexId == null) {
+            indexId = TextIndexRegistry.DEFAULT_ID;
+        }
+
+        // Remaining args: CQL filter, sort spec, limit, highlight
         while (idx < list.size()) {
             Node n = list.get(idx);
             if (n.isLiteral()) {
                 String lex = n.getLiteralLexicalForm();
                 if (lex.startsWith("{")) {
-                    filters = parseJsonFilters(lex);
+                    if (isCqlFilter(lex)) {
+                        cqlFilter = CqlParser.parse(lex);
+                    } else if (SortSpecParser.isSortSpec(lex)) {
+                        sortSpecs = SortSpecParser.parse(lex);
+                    }
+                } else if (lex.startsWith("[")) {
+                    // Array sort spec
+                    if (SortSpecParser.isSortSpec(lex)) {
+                        sortSpecs = SortSpecParser.parse(lex);
+                    }
                 } else if (lex.startsWith("highlight:")) {
                     highlight = lex.substring("highlight:".length());
                 } else {
@@ -298,7 +343,6 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
                         int v = Integer.parseInt(lex);
                         limit = (v < 0) ? -1 : v;
                     } catch (NumberFormatException e) {
-                        // Try as NodeFactoryExtra for typed literals
                         try {
                             int v = NodeFactoryExtra.nodeToInt(n);
                             limit = (v < 0) ? -1 : v;
@@ -311,39 +355,37 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
             idx++;
         }
 
-        return new QueryArgs(props, queryString, filters, limit, highlight);
+        return new QueryArgs(indexId, props, queryString, cqlFilter, sortSpecs, limit, highlight);
     }
 
     /**
-     * Parse a JSON object string into a filter map.
-     * Expected format: {"field": ["value1", "value2"], "field2": ["value3"]}
+     * Check if a JSON string is a CQL filter (has an "op" key).
      */
-    static Map<String, List<String>> parseJsonFilters(String jsonStr) {
-        Map<String, List<String>> filters = new LinkedHashMap<>();
-        JsonObject json = JSON.parse(jsonStr);
-        for (String key : json.keys()) {
-            JsonArray vals = json.get(key).getAsArray();
-            List<String> values = new ArrayList<>();
-            for (int i = 0; i < vals.size(); i++) {
-                values.add(vals.get(i).getAsString().value());
-            }
-            filters.put(key, values);
-        }
-        return filters;
+    private static boolean isCqlFilter(String json) {
+        return json.contains("\"op\"");
+    }
+
+    private static boolean isJsonLike(String s) {
+        return s.startsWith("{") || s.startsWith("[");
     }
 
     private static class QueryArgs {
+        final String indexId;
         final List<Resource> props;
         final String queryString;
-        final Map<String, List<String>> filters;
+        final CqlExpression cqlFilter;
+        final List<SortSpec> sortSpecs;
         final int limit;
         final String highlight;
 
-        QueryArgs(List<Resource> props, String queryString,
-                  Map<String, List<String>> filters, int limit, String highlight) {
+        QueryArgs(String indexId, List<Resource> props, String queryString,
+                  CqlExpression cqlFilter, List<SortSpec> sortSpecs,
+                  int limit, String highlight) {
+            this.indexId = indexId;
             this.props = props;
             this.queryString = queryString;
-            this.filters = filters;
+            this.cqlFilter = cqlFilter;
+            this.sortSpecs = sortSpecs;
             this.limit = limit;
             this.highlight = highlight;
         }

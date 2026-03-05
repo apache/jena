@@ -343,11 +343,18 @@ code {
   background: var(--amber-hover);
 }
 
+.limit-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
 .limit-control {
   display: flex;
   align-items: center;
   gap: 0.4em;
-  margin-top: 0.5rem;
 }
 
 .limit-label {
@@ -494,6 +501,23 @@ code {
   padding: 0.1em 0.45em;
   border-radius: var(--radius-sm);
   flex-shrink: 0;
+}
+
+.facet-toggle-btn {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+  padding: 0.35em 0;
+  cursor: pointer;
+  text-align: right;
+  opacity: 0.85;
+}
+.facet-toggle-btn:hover {
+  opacity: 1;
+  color: var(--amber);
 }
 
 /* ── Results Area ── */

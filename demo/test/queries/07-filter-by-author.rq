@@ -1,6 +1,6 @@
 # Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 # Filter by sequence path field: find reports by a specific author
-# Uses the authorName keyword field (populated via sequence path) as a filter.
+# Uses the authorName keyword field (populated via sequence path) as a CQL2-JSON filter.
 # Only reports authored by "Dr Sarah Jones" are returned.
 
 PREFIX luc: <urn:jena:lucene:index#>
@@ -8,7 +8,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?entity ?score ?label
 WHERE {
-    (?entity ?score) luc:query ('*' '{"authorName": ["Dr Sarah Jones"]}') .
+    (?entity ?score) luc:query ("default" "*" '{"op":"=","args":[{"property":"authorName"},"Dr Sarah Jones"]}') .
     ?entity rdfs:label ?label .
 }
 ORDER BY DESC(?score)

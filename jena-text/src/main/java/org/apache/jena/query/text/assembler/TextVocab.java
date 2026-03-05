@@ -35,6 +35,8 @@ public class TextVocab
     public static final Resource textDataset        = Vocab.resource(NS, "TextDataset") ;
     public static final Property pDataset           = Vocab.property(NS, "dataset") ;
     public static final Property pIndex             = Vocab.property(NS, "index") ;
+    public static final Property pIndexes           = Vocab.property(NS, "indexes") ;
+    public static final Property pIndexId           = Vocab.property(NS, "indexId") ;
     public static final Property pTextDocProducer   = Vocab.property(NS, "textDocProducer") ;
 
     public static final Resource textIndex          = Vocab.resource(NS, "TextIndex") ;

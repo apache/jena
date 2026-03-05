@@ -30,7 +30,6 @@
       <a class="nav-tab" href="index.html">Search</a>
       <a class="nav-tab" href="config.html">Configuration</a>
       <a class="nav-tab is-tab-active" href="stats.html">Stats</a>
-      <a class="nav-tab" href="about.html">About</a>
     </div>
   </nav>
 
@@ -81,34 +80,31 @@
 
           <h2 class="config-section-title">Facet Breakdown</h2>
 
-          <template x-for="fieldName in stats.facetFields" :key="fieldName">
-            <div>
-              <template x-if="(stats.facets[fieldName] || []).length > 0">
-                <div class="shape-section">
-                  <div class="shape-title" x-text="fieldName"></div>
-                  <p class="shape-target">
-                    <span x-text="(stats.facets[fieldName] || []).length"></span> distinct values
-                  </p>
-                  <table class="facet-breakdown">
-                    <thead>
-                      <tr>
-                        <th>Value</th>
-                        <th>Count</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <template x-for="fv in stats.facets[fieldName]" :key="fv.value">
-                        <tr>
-                          <td x-text="fv.value"></td>
-                          <td x-text="fv.count"></td>
-                        </tr>
-                      </template>
-                    </tbody>
-                  </table>
-                </div>
+          <table class="config-table">
+            <thead>
+              <tr>
+                <th>Facet</th>
+                <th>Distinct Values</th>
+                <th>Top 10 Values</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template x-for="fieldName in stats.facetFields" :key="fieldName">
+                <tr x-show="(stats.facets[fieldName] || []).length > 0">
+                  <td x-text="fieldName" style="font-weight:600;white-space:nowrap"></td>
+                  <td style="font-family:var(--font-mono);color:var(--amber)" x-text="(stats.facets[fieldName] || []).length"></td>
+                  <td>
+                    <template x-for="fv in (stats.facets[fieldName] || []).slice(0, 10)" :key="fv.value">
+                      <span style="display:inline-flex;align-items:center;gap:0.2em;margin-right:0.75em;font-size:0.8rem">
+                        <span x-text="fv.value"></span>
+                        <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--text-muted);background:var(--bg-elevated);padding:0.1em 0.35em;border-radius:3px" x-text="fv.count.toLocaleString()"></span>
+                      </span>
+                    </template>
+                  </td>
+                </tr>
               </template>
-            </div>
-          </template>
+            </tbody>
+          </table>
         </div>
       </template>
 

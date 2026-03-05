@@ -39,6 +39,7 @@ public class TextQuery
     public static final String IRI                = "http://jena.apache.org/#text" ;
 
     public static final Symbol textIndex    = Symbol.create(NS+"index") ;
+    public static final Symbol textIndexRegistry = Symbol.create(NS+"indexRegistry") ;
     public static final String PATH         = "org.apache.jena.query.text";
 
     static { JenaSystem.init(); }

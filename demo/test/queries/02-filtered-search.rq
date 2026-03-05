@@ -1,12 +1,12 @@
 # Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
-# Search with structured filters.
+# Search with CQL2-JSON filters.
 # Finds entities matching "copper" that are in Queensland (state=QLD).
-# Filters use JSON syntax: AND across fields, OR within a field.
+# Filters use OGC CQL2-JSON syntax: {"op": "=", "args": [{"property": "field"}, "value"]}
 
 PREFIX luc: <urn:jena:lucene:index#>
 
 SELECT ?entity ?score
 WHERE {
-    (?entity ?score) luc:query ("copper" '{"state": ["QLD"]}')
+    (?entity ?score) luc:query ("default" "copper" '{"op":"=","args":[{"property":"state"},"QLD"]}')
 }
 ORDER BY DESC(?score)

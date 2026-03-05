@@ -35,7 +35,7 @@ import org.apache.lucene.analysis.Analyzer;
 public class ShaclIndexMapping {
 
     public enum FieldType {
-        TEXT, KEYWORD, INT, LONG, DOUBLE
+        TEXT, KEYWORD, INT, LONG, DOUBLE, LATLON
     }
 
     public static class FieldDef {
@@ -188,6 +188,18 @@ public class ShaclIndexMapping {
 
     public List<IndexProfile> getProfilesForClass(Node cls) {
         return classLookup.getOrDefault(cls, Collections.emptyList());
+    }
+
+    /** Find a FieldDef by field name across all profiles. Returns null if not found. */
+    public FieldDef findField(String fieldName) {
+        for (IndexProfile profile : profiles) {
+            for (FieldDef field : profile.getFields()) {
+                if (field.getFieldName().equals(fieldName)) {
+                    return field;
+                }
+            }
+        }
+        return null;
     }
 
     /** Return all field names marked as facetable across all profiles. */
