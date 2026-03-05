@@ -43,7 +43,12 @@ public class RefFutureImpl<T>
 
     @Override
     public RefFuture<T> acquire() {
-        return wrap(getDelegate().acquire());
+        return acquire(null);
+    }
+
+    @Override
+    public RefFuture<T> acquire(Object comment) {
+        return wrap(getDelegate().acquire(comment));
     }
 
     /**
@@ -65,7 +70,7 @@ public class RefFutureImpl<T>
     }
 
     /** Create a ref that upon close cancels the future or closes the ref when it is available s*/
-    public static <T> RefFuture<T> fromFuture(CompletableFuture<Ref<T>> future, Object synchronizer) {
+    public static <T> RefFuture<T> fromFuture(CompletableFuture<Ref<T>> future, Synchronizer synchronizer) {
       return wrap(RefImpl.create(future.thenApply(Ref::get), synchronizer, () -> cancelFutureOrCloseRef(future), null));
     }
 
@@ -100,5 +105,22 @@ public class RefFutureImpl<T>
         } catch (CancellationException | InterruptedException | ExecutionException e) {
             logger.warn("Exception raised during close", e);
         }
+    }
+
+    @Override
+    public String toString() {
+        CompletableFuture<T> future = this.get();
+        String status;
+        if (future.isDone()) {
+            try {
+                T value = future.get();
+                status = "" + value;
+            } catch (InterruptedException | ExecutionException e) {
+                status = "failed: " + e;
+            }
+        } else {
+            status = "pending...";
+        }
+        return "RefFuture [" + status + "]";
     }
 }
