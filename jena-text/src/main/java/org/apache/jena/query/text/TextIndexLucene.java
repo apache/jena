@@ -1653,7 +1653,10 @@ public class TextIndexLucene implements TextIndex {
                 if (result.pushed() != null) {
                     combined.add(result.pushed(), BooleanClause.Occur.MUST);
                 }
-                // residual is ignored at query time (could be applied post-hoc)
+                if (result.residual() != null) {
+                    log.warn("CQL filter has residual expressions that cannot be pushed to Lucene and will be ignored: {}",
+                        result.residual().toCanonical());
+                }
             }
 
             int maxHits = limit > 0 ? limit : MAX_N;
@@ -1715,6 +1718,10 @@ public class TextIndexLucene implements TextIndex {
                 if (cr.pushed() != null) {
                     combined.add(cr.pushed(), BooleanClause.Occur.MUST);
                 }
+                if (cr.residual() != null) {
+                    log.warn("CQL filter has residual expressions that cannot be pushed to Lucene and will be ignored: {}",
+                        cr.residual().toCanonical());
+                }
             }
 
             Facets facets;
@@ -1769,6 +1776,10 @@ public class TextIndexLucene implements TextIndex {
                 CqlToLuceneCompiler.CompileResult cr = compiler.compile(cqlFilter);
                 if (cr.pushed() != null) {
                     bq.add(cr.pushed(), BooleanClause.Occur.MUST);
+                }
+                if (cr.residual() != null) {
+                    log.warn("CQL filter has residual expressions that cannot be pushed to Lucene and will be ignored: {}",
+                        cr.residual().toCanonical());
                 }
             }
             BooleanQuery query = bq.build();
