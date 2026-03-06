@@ -50,17 +50,17 @@ public class ShaclTextDocProducer implements TextDocProducer {
     private static final Node RDF_TYPE = RDF.type.asNode();
 
     private final DatasetGraph baseDataset;
-    private final TextIndexLucene indexer;
+    private final ShaclTextIndexLucene indexer;
     private final ShaclIndexMapping mapping;
 
     private final ThreadLocal<Boolean> inTransaction = ThreadLocal.withInitial(() -> Boolean.FALSE);
 
     public ShaclTextDocProducer(DatasetGraph baseDataset, TextIndex textIndex, ShaclIndexMapping mapping) {
         this.baseDataset = baseDataset;
-        if (!(textIndex instanceof TextIndexLucene)) {
-            throw new TextIndexException("ShaclTextDocProducer requires a TextIndexLucene instance");
+        if (!(textIndex instanceof ShaclTextIndexLucene)) {
+            throw new TextIndexException("ShaclTextDocProducer requires a ShaclTextIndexLucene instance");
         }
-        this.indexer = (TextIndexLucene) textIndex;
+        this.indexer = (ShaclTextIndexLucene) textIndex;
         this.mapping = mapping;
     }
 

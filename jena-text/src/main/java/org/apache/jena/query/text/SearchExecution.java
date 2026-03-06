@@ -48,7 +48,7 @@ public class SearchExecution {
     private final String queryString;
     private final CqlExpression filter;
     private final List<SortSpec> sortSpecs;
-    private final TextIndexLucene textIndex;
+    private final ShaclTextIndexLucene textIndex;
     private final String graphURI;
     private final String lang;
 
@@ -61,7 +61,7 @@ public class SearchExecution {
 
     public SearchExecution(String indexId, List<Resource> props, String queryString,
                            CqlExpression filter, List<SortSpec> sortSpecs,
-                           TextIndexLucene textIndex, String graphURI, String lang) {
+                           ShaclTextIndexLucene textIndex, String graphURI, String lang) {
         this.indexId = indexId != null ? indexId : TextIndexRegistry.DEFAULT_ID;
         this.props = props != null ? new ArrayList<>(props) : new ArrayList<>();
         this.queryString = queryString;
@@ -80,7 +80,7 @@ public class SearchExecution {
                                               String indexId, List<Resource> props,
                                               String queryString, CqlExpression filter,
                                               List<SortSpec> sortSpecs,
-                                              TextIndexLucene textIndex,
+                                              ShaclTextIndexLucene textIndex,
                                               String graphURI, String lang) {
         String key = buildKey(indexId, props, queryString, filter, sortSpecs);
         Symbol symbol = Symbol.create(TextQuery.NS + "searchExecution/" + key);

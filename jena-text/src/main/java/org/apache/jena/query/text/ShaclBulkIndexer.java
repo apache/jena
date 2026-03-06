@@ -56,7 +56,7 @@ public class ShaclBulkIndexer {
     private static final Node RDF_TYPE = RDF.type.asNode();
 
     private final DatasetGraph baseDataset;
-    private final TextIndexLucene textIndex;
+    private final ShaclTextIndexLucene textIndex;
     private final ShaclIndexMapping mapping;
 
     private long entityCount = 0;
@@ -65,10 +65,10 @@ public class ShaclBulkIndexer {
 
     public ShaclBulkIndexer(DatasetGraph baseDataset, TextIndex textIndex, ShaclIndexMapping mapping) {
         this.baseDataset = baseDataset;
-        if (!(textIndex instanceof TextIndexLucene)) {
-            throw new TextIndexException("ShaclBulkIndexer requires a TextIndexLucene instance");
+        if (!(textIndex instanceof ShaclTextIndexLucene)) {
+            throw new TextIndexException("ShaclBulkIndexer requires a ShaclTextIndexLucene instance");
         }
-        this.textIndex = (TextIndexLucene) textIndex;
+        this.textIndex = (ShaclTextIndexLucene) textIndex;
         this.mapping = mapping;
     }
 

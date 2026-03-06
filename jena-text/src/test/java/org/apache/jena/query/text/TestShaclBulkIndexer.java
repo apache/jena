@@ -59,7 +59,7 @@ public class TestShaclBulkIndexer {
     private static final Node TOPIC_PRED = NodeFactory.createURI(NS + "topic");
 
     private Dataset baseDataset;
-    private TextIndexLucene textIndex;
+    private ShaclTextIndexLucene textIndex;
     private ShaclIndexMapping mapping;
 
     @Before
@@ -107,7 +107,7 @@ public class TestShaclBulkIndexer {
         config.setValueStored(true);
 
         ByteBuffersDirectory dir = new ByteBuffersDirectory();
-        textIndex = new TextIndexLucene(dir, config);
+        textIndex = new ShaclTextIndexLucene(dir, config);
 
         // Create a plain dataset — NO text wrapper, simulating bulk load
         baseDataset = DatasetFactory.create();

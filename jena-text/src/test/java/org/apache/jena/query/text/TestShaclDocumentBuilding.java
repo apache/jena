@@ -38,7 +38,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests that {@link TextIndexLucene#docFromMapping(Entity, IndexProfile)} produces
+ * Tests that {@link ShaclTextIndexLucene#docFromMapping(Entity, IndexProfile)} produces
  * correct Lucene field types for TEXT, KEYWORD, INT, LONG, DOUBLE fields.
  */
 public class TestShaclDocumentBuilding {
@@ -51,7 +51,7 @@ public class TestShaclDocumentBuilding {
     private static final Node PAGES_PRED = NodeFactory.createURI(NS + "pages");
     private static final Node RATING_PRED = NodeFactory.createURI(NS + "rating");
 
-    private TextIndexLucene textIndex;
+    private ShaclTextIndexLucene textIndex;
     private IndexProfile testProfile;
 
     @Before
@@ -94,7 +94,7 @@ public class TestShaclDocumentBuilding {
         config.setShaclMapping(mapping);
         config.setFacetFields(Collections.singletonList("category"));
 
-        textIndex = new TextIndexLucene(new ByteBuffersDirectory(), config);
+        textIndex = new ShaclTextIndexLucene(new ByteBuffersDirectory(), config);
     }
 
     @After

@@ -134,7 +134,7 @@ public class ShaclTextIndexAssembler extends AssemblerBase {
                 config.setMaxFacetHits(mfhNode.asLiteral().getInt());
             }
 
-            return TextDatasetFactory.createLuceneIndex(directory, config);
+            return new ShaclTextIndexLucene(directory, config);
         } catch (IOException e) {
             IO.exception(e);
             return null;

@@ -86,7 +86,7 @@ public class TestTextFacetPF {
         config.setValueStored(true);
 
         ByteBuffersDirectory dir = new ByteBuffersDirectory();
-        TextIndexLucene textIndex = new TextIndexLucene(dir, config);
+        ShaclTextIndexLucene textIndex = new ShaclTextIndexLucene(dir, config);
 
         Dataset baseDs = DatasetFactory.create();
         ShaclTextDocProducer producer = new ShaclTextDocProducer(

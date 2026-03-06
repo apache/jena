@@ -26,7 +26,7 @@ import static org.junit.Assert.*;
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.query.text.ShaclIndexMapping;
 import org.apache.jena.query.text.ShaclIndexMapping.FieldDef;
-import org.apache.jena.query.text.TextIndexLucene;
+import org.apache.jena.query.text.ShaclTextIndexLucene;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
@@ -85,7 +85,7 @@ public class TestShaclAssembler {
         Model model = createModel();
         Resource indexSpec = buildShaclIndexSpec(model);
 
-        TextIndexLucene index = (TextIndexLucene) Assembler.general().open(indexSpec);
+        ShaclTextIndexLucene index = (ShaclTextIndexLucene) Assembler.general().open(indexSpec);
         try {
             assertTrue("Should be in SHACL mode", index.isShaclMode());
             ShaclIndexMapping mapping = index.getShaclMapping();
@@ -105,7 +105,7 @@ public class TestShaclAssembler {
         Model model = createModel();
         Resource indexSpec = buildShaclIndexSpec(model);
 
-        TextIndexLucene index = (TextIndexLucene) Assembler.general().open(indexSpec);
+        ShaclTextIndexLucene index = (ShaclTextIndexLucene) Assembler.general().open(indexSpec);
         try {
             assertNotNull(index.getDocDef());
             assertEquals("uri", index.getDocDef().getEntityField());
@@ -147,7 +147,7 @@ public class TestShaclAssembler {
             .addProperty(TextVocab.pDirectory, model.createLiteral("mem"))
             .addProperty(TextVocab.pShapes, shapesList);
 
-        TextIndexLucene index = (TextIndexLucene) Assembler.general().open(indexSpec);
+        ShaclTextIndexLucene index = (ShaclTextIndexLucene) Assembler.general().open(indexSpec);
         try {
             ShaclIndexMapping mapping = index.getShaclMapping();
             FieldDef wroteByField = null;
@@ -197,7 +197,7 @@ public class TestShaclAssembler {
             .addProperty(TextVocab.pDirectory, model.createLiteral("mem"))
             .addProperty(TextVocab.pShapes, shapesList);
 
-        TextIndexLucene index = (TextIndexLucene) Assembler.general().open(indexSpec);
+        ShaclTextIndexLucene index = (ShaclTextIndexLucene) Assembler.general().open(indexSpec);
         try {
             ShaclIndexMapping mapping = index.getShaclMapping();
             FieldDef authorNameField = null;

@@ -69,7 +69,7 @@ public class TestShaclPathSupport {
     private static final Node CATEGORY_PRED = NodeFactory.createURI(NS + "category");
 
     private Dataset dataset;
-    private TextIndexLucene textIndex;
+    private ShaclTextIndexLucene textIndex;
 
     @Before
     public void setUp() {
@@ -118,7 +118,7 @@ public class TestShaclPathSupport {
         config.setValueStored(true);
 
         ByteBuffersDirectory dir = new ByteBuffersDirectory();
-        textIndex = new TextIndexLucene(dir, config);
+        textIndex = new ShaclTextIndexLucene(dir, config);
 
         Dataset baseDs = DatasetFactory.create();
         ShaclTextDocProducer producer = new ShaclTextDocProducer(

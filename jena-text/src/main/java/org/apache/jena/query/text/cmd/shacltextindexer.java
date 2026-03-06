@@ -47,7 +47,7 @@ public class shacltextindexer extends CmdARQ {
     public static final ArgDecl assemblerDescDecl = new ArgDecl(ArgDecl.HasValue, "desc", "dataset");
 
     protected DatasetGraphText dataset = null;
-    protected TextIndexLucene textIndex = null;
+    protected ShaclTextIndexLucene textIndex = null;
     protected ShaclIndexMapping shaclMapping = null;
 
     static public void main(String... argv) {
@@ -95,14 +95,11 @@ public class shacltextindexer extends CmdARQ {
         TextIndex idx = dataset.getTextIndex();
         if (idx == null)
             throw new CmdException("Dataset has no text index");
-        if (!(idx instanceof TextIndexLucene))
-            throw new CmdException("Text index is not a Lucene index");
-
-        textIndex = (TextIndexLucene) idx;
-        if (!textIndex.isShaclMode())
-            throw new CmdException("Text index is not configured with SHACL shapes (text:shapes). " +
+        if (!(idx instanceof ShaclTextIndexLucene))
+            throw new CmdException("Text index is not a SHACL Lucene index. " +
                 "Use 'textindexer' for classic triple-per-document indexes.");
 
+        textIndex = (ShaclTextIndexLucene) idx;
         shaclMapping = textIndex.getShaclMapping();
     }
 

@@ -101,7 +101,7 @@ public class TestSortSpec {
         config.setShaclMapping(mapping);
 
         ByteBuffersDirectory dir = new ByteBuffersDirectory();
-        TextIndexLucene textIndex = new TextIndexLucene(dir, config);
+        ShaclTextIndexLucene textIndex = new ShaclTextIndexLucene(dir, config);
 
         List<SortSpec> specs = List.of(
             new SortSpec("year", true),
@@ -140,7 +140,7 @@ public class TestSortSpec {
         config.setShaclMapping(mapping);
 
         ByteBuffersDirectory dir = new ByteBuffersDirectory();
-        TextIndexLucene textIndex = new TextIndexLucene(dir, config);
+        ShaclTextIndexLucene textIndex = new ShaclTextIndexLucene(dir, config);
 
         assertNull(textIndex.buildLuceneSort(null));
         assertNull(textIndex.buildLuceneSort(Collections.emptyList()));
@@ -166,7 +166,7 @@ public class TestSortSpec {
         config.setShaclMapping(mapping);
 
         ByteBuffersDirectory dir = new ByteBuffersDirectory();
-        TextIndexLucene textIndex = new TextIndexLucene(dir, config);
+        ShaclTextIndexLucene textIndex = new ShaclTextIndexLucene(dir, config);
 
         try {
             textIndex.buildLuceneSort(List.of(new SortSpec("title", false)));

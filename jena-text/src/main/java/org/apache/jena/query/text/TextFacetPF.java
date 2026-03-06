@@ -66,7 +66,7 @@ import org.slf4j.LoggerFactory;
 public class TextFacetPF extends PropertyFunctionBase {
     private static final Logger log = LoggerFactory.getLogger(TextFacetPF.class);
 
-    private TextIndexLucene textIndex = null;
+    private ShaclTextIndexLucene textIndex = null;
     private boolean warningIssued = false;
 
     public TextFacetPF() {}
@@ -90,30 +90,32 @@ public class TextFacetPF extends PropertyFunctionBase {
         }
     }
 
-    private static TextIndexLucene chooseTextIndex(ExecutionContext execCxt, DatasetGraph dsg, String indexId) {
+    private static ShaclTextIndexLucene chooseTextIndex(ExecutionContext execCxt, DatasetGraph dsg, String indexId) {
         // Try registry first
         Object regObj = execCxt.getContext().get(TextQuery.textIndexRegistry);
         if (regObj instanceof TextIndexRegistry registry) {
-            if (indexId != null) {
-                return registry.get(indexId);
+            TextIndexLucene idx = indexId != null ? registry.get(indexId) : registry.getDefault();
+            if (idx instanceof ShaclTextIndexLucene shaclIdx) {
+                return shaclIdx;
             }
-            return registry.getDefault();
+            Log.warn(TextFacetPF.class, "Text index is not a ShaclTextIndexLucene - faceting not supported");
+            return null;
         }
 
         // Fall back to single index
         Object obj = execCxt.getContext().get(TextQuery.textIndex);
-        if (obj instanceof TextIndexLucene tl) {
-            return tl;
+        if (obj instanceof ShaclTextIndexLucene shaclIdx) {
+            return shaclIdx;
         }
         if (obj != null) {
-            Log.warn(TextFacetPF.class, "Context setting '" + TextQuery.textIndex + "' is not a TextIndexLucene");
+            Log.warn(TextFacetPF.class, "Context setting '" + TextQuery.textIndex + "' is not a ShaclTextIndexLucene");
         }
         if (dsg instanceof DatasetGraphText) {
             TextIndex ti = ((DatasetGraphText) dsg).getTextIndex();
-            if (ti instanceof TextIndexLucene tl) {
-                return tl;
+            if (ti instanceof ShaclTextIndexLucene shaclIdx) {
+                return shaclIdx;
             }
-            Log.warn(TextFacetPF.class, "TextIndex is not a TextIndexLucene - faceting not supported");
+            Log.warn(TextFacetPF.class, "TextIndex is not a ShaclTextIndexLucene - faceting not supported");
         }
         Log.warn(TextFacetPF.class, "Failed to find the text index");
         return null;
