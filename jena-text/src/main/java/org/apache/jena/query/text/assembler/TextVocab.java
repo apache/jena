@@ -41,6 +41,7 @@ public class TextVocab
 
     public static final Resource textIndex          = Vocab.resource(NS, "TextIndex") ;
     public static final Resource textIndexLucene    = Vocab.resource(NS, "TextIndexLucene") ;
+    public static final Resource textIndexShacl     = Vocab.resource(NS, "TextIndexShacl") ;
     public static final Property pLanguage          = Vocab.property(NS, "language") ;
     public static final Property pDirectory         = Vocab.property(NS, "directory") ;         // Lucene
     public static final Property pMultilingualSupport   = Vocab.property(NS, "multilingualSupport") ;

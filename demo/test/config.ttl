@@ -32,7 +32,7 @@ PREFIX ex:      <http://example.org/mining/>
 :base_dataset rdf:type tdb2:DatasetTDB ;
     tdb2:location "DB" .
 
-:index rdf:type text:TextIndexLucene ;
+:index rdf:type text:TextIndexShacl ;
     text:directory <file:Lucene> ;
     text:shapes ( :MiningReportShape :BoreholeShape :SiteShape ) ;
     text:storeValues true ;

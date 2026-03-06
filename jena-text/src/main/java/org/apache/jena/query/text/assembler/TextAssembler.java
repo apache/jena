@@ -33,6 +33,7 @@ public class TextAssembler
         
         Assembler.general().implementWith(TextVocab.entityMap,        new EntityDefinitionAssembler()) ;
         Assembler.general().implementWith(TextVocab.textIndexLucene,  new TextIndexLuceneAssembler()) ;
+        Assembler.general().implementWith(TextVocab.textIndexShacl,   new ShaclTextIndexAssembler()) ;
         Assembler.general().implementWith(TextVocab.standardAnalyzer, new StandardAnalyzerAssembler()) ;
         Assembler.general().implementWith(TextVocab.simpleAnalyzer,   new SimpleAnalyzerAssembler()) ;
         Assembler.general().implementWith(TextVocab.keywordAnalyzer,  new KeywordAnalyzerAssembler()) ;

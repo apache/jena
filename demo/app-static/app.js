@@ -143,8 +143,9 @@ function parseTurtle(text) {
 }
 
 function extractConfig(store) {
-    const indexNodes = getSubjects(store, RDF + 'type', TEXT + 'TextIndexLucene');
-    if (indexNodes.length === 0) throw new Error('No text:TextIndexLucene found in config');
+    let indexNodes = getSubjects(store, RDF + 'type', TEXT + 'TextIndexShacl');
+    if (indexNodes.length === 0) indexNodes = getSubjects(store, RDF + 'type', TEXT + 'TextIndexLucene');
+    if (indexNodes.length === 0) throw new Error('No text:TextIndexShacl or text:TextIndexLucene found in config');
     const indexNode = indexNodes[0];
 
     const storeValues = getLiteral(store, indexNode, TEXT + 'storeValues') === 'true';
