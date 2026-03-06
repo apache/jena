@@ -58,7 +58,7 @@ public class AsyncHttpRDF {
 
     /** Get a graph, asynchronously */
     public static CompletableFuture<Graph> asyncGetGraph(String url) {
-        return asyncGetGraph(HttpEnv.getDftHttpClient(), url);
+        return asyncGetGraph(HttpEnv.getHttpClient(url), url);
     }
 
     /** Get a graph, asynchronously */
@@ -73,7 +73,7 @@ public class AsyncHttpRDF {
 
     /** Get a dataset, asynchronously */
     public static CompletableFuture<DatasetGraph> asyncGetDatasetGraph(String url) {
-        return asyncGetDatasetGraph(HttpEnv.getDftHttpClient(), url);
+        return asyncGetDatasetGraph(HttpEnv.getHttpClient(url), url);
     }
 
     /** Get a dataset, asynchronously */
@@ -91,7 +91,7 @@ public class AsyncHttpRDF {
      * The dataset is updated inside a transaction.
      */
     public static CompletableFuture<Void> asyncLoadDatasetGraph(String url, DatasetGraph dsg) {
-        return asyncLoadDatasetGraph(HttpEnv.getDftHttpClient(), url, dsg);
+        return asyncLoadDatasetGraph(HttpEnv.getHttpClient(url), url, dsg);
     }
 
     /**
