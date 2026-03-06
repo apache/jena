@@ -274,7 +274,7 @@ public class TestQuery extends AbstractFusekiTest {
 
     @Test
     public void query_describe_conneg() throws IOException {
-        HttpClient client = HttpEnv.httpClientBuilder().build();
+        HttpClient client = HttpEnv.getDftHttpClient();
         String query = "DESCRIBE ?s WHERE {?s ?p ?o}";
         for (MediaType type : rdfOfferTest.entries()) {
             String contentType = type.toHeaderString();

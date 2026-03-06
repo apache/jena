@@ -45,27 +45,48 @@ public class HttpEnv {
      */
     public static /* final */ int urlLimit = 2 * 1024;
 
-    public static HttpClient getDftHttpClient() { return httpClient; }
+    public static HttpClient getDftHttpClient() { return getBuildDftHttpClient(); }
     public static void setDftHttpClient(HttpClient dftHttpClient) { httpClient = dftHttpClient; }
 
     /** Return the {@link HttpClient} based on URL and a possible pre-selected {@link HttpClient}. */
     public static HttpClient getHttpClient(String url, HttpClient specificHttpClient) {
         if ( specificHttpClient != null )
              return specificHttpClient;
+        return getHttpClient(url);
+    }
+
+    /** Return the {@link HttpClient} based on URL or the system default ({@link HttpEnv#getDftHttpClient}). */
+    public static HttpClient getHttpClient(String url) {
         HttpClient requestHttpClient = RegistryHttpClient.get().find(url);
         if ( requestHttpClient == null )
             requestHttpClient = getDftHttpClient();
         return requestHttpClient;
     }
 
-    private static HttpClient httpClient = buildDftHttpClient();
+    // Delay initialization until runtime even if doing GraalVM native code of Java AOT caching.
+    // The HTTP subsystem must be initialized at runtime.
+    // The LazyHolder pattern (Bill Pugh singleton pattern) does not work, The class
+    // is findable by class analysis and a candidate for build-time execution.
+    //
+    // An AtomicReference could be used if there was a Supplier version of
+    // compareAndSet (c.f ConcurrentHashMap.computeIfAbsent).
 
-    private static HttpClient buildDftHttpClient() {
-        return httpClientBuilder().build();
+    private static volatile HttpClient httpClient = null;
+
+    // Get httpClient, building it (at runtime) if it is not initialized.
+    private static HttpClient getBuildDftHttpClient() {
+        if ( httpClient == null ) {
+            synchronized(HttpEnv.class) {
+                if ( httpClient == null )
+                    httpClient = httpClientBuilder().build();
+            }
+        }
+        return httpClient;
     }
 
     public static final String UserAgent = ARQ.VERSION.contains("devel") ? "ApacheJena" : "ApacheJena/"+ARQ.VERSION;
 
+    /** Build an {@link HttpClient}, which follows redirects for https-http redirects */
     public static HttpClient.Builder httpClientBuilder() {
         return HttpClient.newBuilder()
                 // By default, the client has polling and connection-caching.
