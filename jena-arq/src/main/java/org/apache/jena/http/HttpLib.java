@@ -810,7 +810,7 @@ public class HttpLib {
         HttpRequest.Builder builder =
                 HttpRequest.newBuilder().uri(toRequestURI(datasetURL)).method(HttpNames.METHOD_HEAD, BodyPublishers.noBody());
         HttpRequest request = builder.build();
-        HttpClient httpClient = HttpEnv.getDftHttpClient();
+        HttpClient httpClient = HttpEnv.getHttpClient(datasetURL);
         HttpResponse<InputStream> response = execute(httpClient, request);
         handleResponseNoBody(response);
 
