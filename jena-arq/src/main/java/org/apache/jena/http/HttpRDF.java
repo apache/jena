@@ -63,7 +63,7 @@ public class HttpRDF {
      * @throws HttpException
      */
     public static Graph httpGetGraph(String url) {
-        return httpGetGraph(HttpEnv.getDftHttpClient(), url);
+        return httpGetGraph(HttpEnv.getHttpClient(url), url);
     }
 
     /**
@@ -72,7 +72,7 @@ public class HttpRDF {
      * @throws HttpException
      */
     public static Graph httpGetGraph(String url, String acceptHeader) {
-        return httpGetGraph(HttpEnv.getDftHttpClient(), url, acceptHeader);
+        return httpGetGraph(HttpEnv.getHttpClient(url), url, acceptHeader);
     }
 
     /**
@@ -104,7 +104,7 @@ public class HttpRDF {
      * @throws HttpException
      */
     public static void httpGetToStream(String url, String acceptHeader, StreamRDF dest) {
-        httpGetToStream(HttpEnv.getDftHttpClient(), url, acceptHeader, dest);
+        httpGetToStream(HttpEnv.getHttpClient(url), url, acceptHeader, dest);
     }
 
     /**
@@ -170,7 +170,7 @@ public class HttpRDF {
     }
 
     public static void httpPostGraph(String url, Graph graph) {
-        httpPostGraph(HttpEnv.getDftHttpClient(), url, graph, HttpEnv.defaultTriplesFormat);
+        httpPostGraph(HttpEnv.getHttpClient(url), url, graph, HttpEnv.defaultTriplesFormat);
     }
 
     public static void httpPostGraph(HttpClient httpClient, String url, Graph graph, RDFFormat format) {
@@ -185,7 +185,7 @@ public class HttpRDF {
 
     /** Post a graph and expect an RDF graph back as the result. */
     public static Graph httpPostGraphRtn(String url, Graph graph) {
-        return httpPostGraphRtn(HttpEnv.getDftHttpClient(), url, graph,  HttpEnv.defaultTriplesFormat, null);
+        return httpPostGraphRtn(HttpEnv.getHttpClient(url), url, graph,  HttpEnv.defaultTriplesFormat, null);
     }
 
     /** Post a graph and expect an RDF graph back as the result. */
@@ -209,7 +209,7 @@ public class HttpRDF {
     }
 
     public static void httpPutGraph(String url, Graph graph) {
-        httpPutGraph(HttpEnv.getDftHttpClient(), url, graph, HttpEnv.defaultTriplesFormat);
+        httpPutGraph(HttpEnv.getHttpClient(url), url, graph, HttpEnv.defaultTriplesFormat);
     }
 
     public static void httpPutGraph(HttpClient httpClient, String url, Graph graph, RDFFormat fmt) {
@@ -254,7 +254,7 @@ public class HttpRDF {
     }
 
     public static void httpDeleteGraph(String url) {
-        httpDeleteGraph(HttpEnv.getDftHttpClient(), url);
+        httpDeleteGraph(HttpEnv.getHttpClient(url), url);
     }
 
     public static void httpDeleteGraph(HttpClient httpClient, String url) {

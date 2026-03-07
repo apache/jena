@@ -438,7 +438,8 @@ public class RDFParser {
         }
 
         TypedInputStream in;
-        // Need more control than LocatorURL provides to get the Accept header in and the HttpCLient.
+        // Need more control than LocatorURL provides to get the Accept header
+        // in and the HttpCLient setup.
         // So map now.
         urlStr = streamManager.mapURI(urlStr);
         if ( urlStr.startsWith("http://") || urlStr.startsWith("https://") ) {
@@ -450,7 +451,7 @@ public class RDFParser {
                 b.setHeader(HttpNames.hAccept, acceptHeader);
             });
             // Setup of the HTTP client, if not provided by RDFParserBuilder
-            final var httpClientToUse = ( httpClient != null ) ? httpClient : HttpEnv.getDftHttpClient();
+            final var httpClientToUse = ( httpClient != null ) ? httpClient : HttpEnv.getHttpClient(urlStr);
             HttpResponse<InputStream> response = HttpLib.execute(httpClientToUse, request);
             in = HttpLib.handleResponseTypedInputStream(response);
         } else {
