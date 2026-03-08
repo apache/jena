@@ -1,0 +1,3 @@
+<http://example.org/outer> <http://example.org/before> "BEFORE nested" .
+<http://example.org/outer> <http://example.org/propTripleTermOuter> <<( <http://ex/outer-s1> <http://example.org/propTripleTermInner> <<( <http://ex/inner-s2> <http://example.org/p2> <http://TRIPLE/o2> )>> )>> .
+<http://example.org/outer> <http://example.org/after> "AFTER" .

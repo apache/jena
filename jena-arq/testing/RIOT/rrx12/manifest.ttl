@@ -1,0 +1,227 @@
+##  Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
+PREFIX test:   <http://www.w3.org/2001/sw/DataAccess/tests/>
+PREFIX rdft:   <http://www.w3.org/ns/rdftest#>
+PREFIX tr:     <https://w3c.github.io/rdf-tests/rdf/rdf12/rdf-xml/eval#>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+tr:manifest rdf:type mf:Manifest ;
+  rdfs:label "Apache Jena RRX 1.2 Tests" ;
+  mf:assumedTestBase <https://w3c.github.io/rdf-tests/rdf/rdf12/rdf-xml/eval/> ;
+  mf:entries
+  (
+      tr:rrx12-rdf-version-1
+      tr:rrx12-rdf-version-2
+      tr:rrx12-its-version-1
+      tr:rrx12-its-version-2
+
+      tr:rrx12-tt-Basic
+      tr:rrx12-tt-Compact1
+      tr:rrx12-tt-Compact2
+      tr:rrx12-tt-Before
+      tr:rrx12-tt-After
+      tr:rrx12-tt-BeforeAfter
+      tr:rrx12-tt-Several
+      tr:rrx12-tt-Nested
+      tr:rrx12-tt-error1
+      tr:rrx12-tt-error2
+      tr:rrx12-tt-error3
+      tr:rrx12-tt-error4
+
+      tr:rrx12-annotation-01
+      tr:rrx12-annotation-02
+
+      tr:rrx12-basedir-NoVersion
+      tr:rrx12-basedir-AtTop
+      tr:rrx12-basedir-OnNode
+      tr:rrx12-basedir-OnProperty
+      tr:rrx12-basedir-InlineItsVersion
+      tr:rrx12-basedir-PropertyAttr
+      tr:rrx12-basedir-PropertyAttrLocal
+      tr:rrx12-basedir-error-bad-dir
+  ) .
+
+## rdf:version
+tr:rrx12-rdf-version-1 rdf:type rdft:TestXMLEval ;
+  mf:name "rrx12-rdf-version-1.rdf" ;
+  mf:comment "rdf:version (1)" ;
+  mf:action <rrx12-rdf-version-1.rdf> ;
+  mf:result <rrx12-rdf-version-1.nt> ;
+  .
+                      
+tr:rrx12-rdf-version-2 rdf:type rdft:TestXMLEval ;
+  mf:name "rrx12-rdf-version-2.rdf" ;
+  mf:comment "rdf:version (2)" ;
+  mf:action <rrx12-rdf-version-2.rdf> ;
+  mf:result <rrx12-rdf-version-2.nt> ;
+  .
+                      
+## its:version
+tr:rrx12-its-version-1 rdf:type rdft:TestXMLEval ;
+  mf:name "rrx12-its-version-1.rdf" ;
+  mf:comment "its:version (1)" ;
+  mf:action <rrx12-its-version-1.rdf> ;
+  mf:result <rrx12-its-version-1.nt> ;
+  .
+                      
+tr:rrx12-its-version-2 rdf:type rdft:TestXMLEval ;
+  mf:name "rrx12-its-version-2.rdf" ;
+  mf:comment "its:version (2)" ;
+  mf:action <rrx12-its-version-2.rdf> ;
+  mf:result <rrx12-its-version-2.nt> ;
+  .
+
+## Triple terms
+tr:rrx12-tt-Basic rdf:type rdft:TestXMLEval ;
+  mf:name "rrx12-tt-Basic.rdf" ;
+  mf:comment "RDF 1.2 rrx12-tt-Basic";
+  mf:action <rrx12-tt-Basic.rdf> ;
+  mf:result <rrx12-tt-Basic.nt> ;
+  .
+
+tr:rrx12-tt-Compact1 rdf:type rdft:TestXMLEval ;
+  mf:name "rrx12-tt-Compact1.rdf" ;
+  mf:comment "RDF 1.2 rrx12-tt-Compact1";
+  mf:action <rrx12-tt-Compact1.rdf> ;
+  mf:result <rrx12-tt-Compact1.nt> ;
+  .
+
+tr:rrx12-tt-Compact2 rdf:type rdft:TestXMLEval ;
+  mf:name "rrx12-tt-Compact2.rdf" ;
+  mf:comment "RDF 1.2 rrx12-tt-Compact2";
+  mf:action <rrx12-tt-Compact2.rdf> ;
+  mf:result <rrx12-tt-Compact2.nt> ;
+  .
+
+tr:rrx12-tt-Before rdf:type rdft:TestXMLEval ;
+  mf:name "rrx12-tt-Before.rdf" ;
+  mf:comment "RDF 1.2 rrx12-tt-Before";
+  mf:action <rrx12-tt-Before.rdf> ;
+  mf:result <rrx12-tt-Before.nt> ;
+  .
+
+tr:rrx12-tt-After rdf:type rdft:TestXMLEval ;
+  mf:name "rrx12-tt-After.rdf" ;
+  mf:comment "RDF 1.2 rrx12-tt-After";
+  mf:action <rrx12-tt-After.rdf> ;
+  mf:result <rrx12-tt-After.nt> ;
+  .
+
+tr:rrx12-tt-BeforeAfter rdf:type rdft:TestXMLEval ;
+  mf:name "rrx12-tt-BeforeAfter.rdf" ;
+  mf:comment "RDF 1.2 rrx12-tt-BeforeAfter";
+  mf:action <rrx12-tt-BeforeAfter.rdf> ;
+  mf:result <rrx12-tt-BeforeAfter.nt> ;
+  .
+
+tr:rrx12-tt-Several rdf:type rdft:TestXMLEval ;
+  mf:name "rrx12-tt-Several.rdf" ;
+  mf:comment "RDF 1.2 rrx12-tt-Several";
+  mf:action <rrx12-tt-Several.rdf> ;
+  mf:result <rrx12-tt-Several.nt> ;
+  .
+
+tr:rrx12-tt-Nested rdf:type rdft:TestXMLEval ;
+  mf:name "rrx12-tt-Nested.rdf" ;
+  mf:comment "RDF 1.2 rrx12-tt-Nested";
+  mf:action <rrx12-tt-Nested.rdf> ;
+  mf:result <rrx12-tt-Nested.nt> ;
+  .
+
+tr:rrx12-tt-error1 rdf:type rdft:TestXMLNegativeSyntax ;
+  mf:name "rrx12-tt-error1.rdf" ;
+  mf:comment "RDF 1.2 rrx12-tt-error1";
+  mf:action <rrx12-tt-error1.rdf> ;
+  .
+
+tr:rrx12-tt-error2 rdf:type rdft:TestXMLNegativeSyntax ;
+  mf:name "rrx12-tt-error2.rdf" ;
+  mf:comment "RDF 1.2 rrx12-tt-error2";
+  mf:action <rrx12-tt-error2.rdf> ;
+  .
+
+tr:rrx12-tt-error3 rdf:type rdft:TestXMLNegativeSyntax ;
+  mf:name "rrx12-tt-error3.rdf" ;
+  mf:comment "RDF 1.2 rrx12-tt-error3";
+  mf:action <rrx12-tt-error3.rdf> ;
+  .
+
+tr:rrx12-tt-error4 rdf:type rdft:TestXMLNegativeSyntax ;
+  mf:name "rrx12-tt-error4.rdf" ;
+  mf:comment "RDF 1.2 rrx12-tt-error4";
+  mf:action <rrx12-tt-error3.rdf> ;
+  .
+
+## Annotations
+tr:rrx12-annotation-01 rdf:type rdft:TestXMLEval ;
+  mf:name "rrx12-annotation-01.rdf" ;
+  mf:comment "RDF 1.2 annotation";
+  mf:action <rrx12-annotation-01.rdf> ;
+  mf:result <rrx12-annotation-01.nt> ;
+  .
+
+tr:rrx12-annotation-02 rdf:type rdft:TestXMLEval ;
+  mf:name "rrx12-annotation-02.rdf" ;
+  mf:comment "RDF 1.2 annotationNodeID";
+  mf:action <rrx12-annotation-02.rdf> ;
+  mf:result <rrx12-annotation-02.nt> ;
+  .
+
+## Language base direction
+tr:rrx12-basedir-NoVersion rdf:type rdft:TestXMLEval ;
+  mf:name "rrx12-basedir-NoVersion.rdf" ;
+  mf:comment "RDF 1.2 rrx12-basedir-NoVersion";
+  mf:action <rrx12-basedir-NoVersion.rdf> ;
+  mf:result <rrx12-basedir-NoVersion.nt> ;
+  .
+
+tr:rrx12-basedir-AtTop rdf:type rdft:TestXMLEval ;
+  mf:name "rrx12-basedir-AtTop.rdf" ;
+  mf:comment "RDF 1.2 rrx12-basedir-AtTop";
+  mf:action <rrx12-basedir-AtTop.rdf> ;
+  mf:result <rrx12-basedir-AtTop.nt> ;
+  .
+
+tr:rrx12-basedir-OnNode rdf:type rdft:TestXMLEval ;
+  mf:name "rrx12-basedir-OnNode.rdf" ;
+  mf:comment "RDF 1.2 rrx12-basedir-OnNode";
+  mf:action <rrx12-basedir-OnNode.rdf> ;
+  mf:result <rrx12-basedir-OnNode.nt> ;
+  .
+
+tr:rrx12-basedir-OnProperty rdf:type rdft:TestXMLEval ;
+  mf:name "rrx12-basedir-OnProperty.rdf" ;
+  mf:comment "RDF 1.2 rrx12-basedir-OnProperty";
+  mf:action <rrx12-basedir-OnProperty.rdf> ;
+  mf:result <rrx12-basedir-OnProperty.nt> ;
+  .
+
+tr:rrx12-basedir-InlineItsVersion rdf:type rdft:TestXMLEval ;
+  mf:name "rrx12-basedir-InlineItsVersion.rdf" ;
+  mf:comment "RDF 1.2 rrx12-basedir-InlineItsVersion";
+  mf:action <rrx12-basedir-InlineItsVersion.rdf> ;
+  mf:result <rrx12-basedir-InlineItsVersion.nt> ;
+  .
+
+tr:rrx12-basedir-PropertyAttr rdf:type rdft:TestXMLEval ;
+  mf:name "rrx12-basedir-PropertyAttr.rdf" ;
+  mf:comment "RDF 1.2 rrx12-basedir-PropertyAttr";
+  mf:action <rrx12-basedir-PropertyAttr.rdf> ;
+  mf:result <rrx12-basedir-PropertyAttr.nt> ;
+  .
+
+tr:rrx12-basedir-PropertyAttrLocal rdf:type rdft:TestXMLEval ;
+  mf:name "rrx12-basedir-PropertyAttr.rdf" ;
+  mf:comment "RDF 1.2 rrx12-basedir-PropertyAttr";
+  mf:action <rrx12-basedir-PropertyAttrLocal.rdf> ;
+  mf:result <rrx12-basedir-PropertyAttrLocal.nt> ;
+  .
+
+tr:rrx12-basedir-error-bad-dir rdf:type rdft:TestXMLNegativeSyntax ;
+  mf:name "rrx12-basedir-error-bad-dir.rdf" ;
+  mf:comment "RDF 1.2 rrx12-basedir-error-bad-dir";
+  mf:action <rrx12-basedir-error-bad-dir.rdf> ;
+  .

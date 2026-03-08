@@ -1,0 +1,6 @@
+_:Bec6fa6e70ce5de1dffc2123f1e522831 <http://example.org/object> "OBJ" .
+<http://example/subject> <http://example.org/property> _:Bec6fa6e70ce5de1dffc2123f1e522831 .
+<http://example/base#reif> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
+<http://example/base#reif> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://example/subject> .
+<http://example/base#reif> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://example.org/property> .
+<http://example/base#reif> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> _:Bec6fa6e70ce5de1dffc2123f1e522831 .

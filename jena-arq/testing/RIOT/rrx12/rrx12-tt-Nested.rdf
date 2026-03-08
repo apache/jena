@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!-- Nested -->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:tt="http://TRIPLE/"
+         xmlns:ex="http://example.org/"
+         rdf:version='1.2'>
+  <rdf:Description rdf:about="http://example.org/outer">
+    <ex:before>BEFORE nested</ex:before>
+
+    <ex:propTripleTermOuter rdf:parseType="Triple">
+      <rdf:Description rdf:about="http://ex/outer-s1">
+
+        <ex:propTripleTermInner rdf:parseType="Triple">
+          <rdf:Description rdf:about="http://ex/inner-s2">
+            <ex:p2 rdf:resource="http://TRIPLE/o2"/>
+          </rdf:Description>
+        </ex:propTripleTermInner>
+
+      </rdf:Description>
+    </ex:propTripleTermOuter>
+
+    <ex:after>AFTER</ex:after>
+  </rdf:Description>
+</rdf:RDF>

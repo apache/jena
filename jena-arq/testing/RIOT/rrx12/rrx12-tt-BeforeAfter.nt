@@ -1,0 +1,5 @@
+<http://example.org/outer> <http://example.org/before> "BEFORE1" .
+<http://example.org/outer> <http://example.org/before> "BEFORE2" .
+<http://example.org/outer> <http://example.org/propTripleTerm> <<( <http://TRIPLE/s> <http://TRIPLE/p> "literal o2" )>> .
+<http://example.org/outer> <http://example.org/after> "AFTER1" .
+<http://example.org/outer> <http://example.org/after> "AFTER2" .

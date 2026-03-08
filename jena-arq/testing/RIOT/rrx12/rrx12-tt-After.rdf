@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!-- rrx12-tt-After -->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:tt="http://TRIPLE/"
+         xmlns:ex="http://example.org/"
+         rdf:version='1.2'>
+  <rdf:Description rdf:about="http://example.org/outer">
+    <ex:propTripleTerm rdf:parseType="Triple">
+      <rdf:Description rdf:about="http://TRIPLE/s">
+        <tt:p>literal o2</tt:p>
+      </rdf:Description>
+    </ex:propTripleTerm>
+    <ex:after>AFTER (with TT)</ex:after>
+  </rdf:Description>
+</rdf:RDF>

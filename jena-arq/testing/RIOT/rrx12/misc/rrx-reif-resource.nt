@@ -1,0 +1,5 @@
+_:Bfe68b6531c50229faac5890307baab2f <http://example.org/prop1> <http://example.org/object> .
+<http://example/base#reify> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
+<http://example/base#reify> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> _:Bfe68b6531c50229faac5890307baab2f .
+<http://example/base#reify> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://example.org/prop1> .
+<http://example/base#reify> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://example.org/object> .
