@@ -188,7 +188,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 
 	public void testRDFDefaultNamespace() throws IOException {
 		check(file1, "xmlns=['\"]" + RDF.getURI() + "['\"].*"
-				+ "xmlns:j.cook.up=['\"]" + RDF.getURI() + "['\"]", Change
+				+ "xmlns:(j\\.cook.up|j\\.fixup)=['\"]" + RDF.getURI() + "['\"]", Change
 				.setPrefix("", RDF.getURI()));
 	}
 

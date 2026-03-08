@@ -19,24 +19,21 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.system;
+package org.apache.jena.vocabulary;
 
-import org.junit.platform.suite.api.SelectClasses;
-import org.junit.platform.suite.api.Suite;
+/**
+ * See <a href="https://www.w3.org/TR/its20/">Internationalization Tag Set (ITS) Version 2.0</a>
+ */
+public class ITS {
+    /**
+     * The namespace as a string
+     * NB the namespace does not end in '/' or '#'.
+     */
+    public static final String uri = "http://www.w3.org/2005/11/its";
 
-@Suite
-@SelectClasses({
-    TestCounter.class
-    , TestThreadAction.class
-    , TestTxnLifecycle.class
-    , TestTxnOp.class
-    , TestTxn.class
-    , TestTxnThread.class
-    , TestReadXML.class
-    , TestPrefixes.class
-    , TestPrefixLib.class
-    , TestRDFStarTranslation.class
-    , TestFindNamespaces.class
-})
+    // There are no resources in this vocabulary.
+    // ITS = Internationalization Tag Set
 
-public class TS_System {}
+    public static final String version = "version";
+    public static final String dir = "dir";
+}

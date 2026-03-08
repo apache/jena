@@ -21,6 +21,8 @@
 
 package org.apache.jena.rdfxml.xmloutput.impl;
 
+import static java.lang.String.format;
+
 /*
  * Want todo List - easy efficiency gains in listSubjects() and
  * modelListSubjects() by removing those subjects that we have already
@@ -137,6 +139,7 @@ import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.PropertyNotFoundException ;
 import org.apache.jena.util.XML10Char;
 import org.apache.jena.util.iterator.* ;
+import org.apache.jena.vocabulary.ITS;
 import org.apache.jena.vocabulary.RDF ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -173,12 +176,12 @@ class Unparser {
         objectTable = new HashMap<>();
         StmtIterator ss = m.listStatements();
         try {
+            // Track number of time a (blank) node will be used
+            // Recurse into triple terms.
             while (ss.hasNext()) {
                 Statement s = ss.nextStatement();
-                RDFNode rn = s.getObject();
-                if (rn instanceof Resource) {
-                    increaseObjectCount((Resource) rn);
-                }
+                RDFNode obj = s.getObject();
+                processRDFNode(obj, false);
             }
         } finally {
             ss.close();
@@ -214,8 +217,7 @@ class Unparser {
 
                     Property ppred = model.createProperty(rpred.getURI());
 
-                    Statement statement = model.createStatement(rsubj, ppred,
-                            nobj);
+                    Statement statement = model.createStatement(rsubj, ppred, nobj);
                     res2statement.put(r, statement);
                     statement2res.put(statement, r);
                 } catch (Exception ignored) {
@@ -224,6 +226,56 @@ class Unparser {
         } finally {
             ss.close();
         }
+    }
+
+    private void processRDFNode(RDFNode obj, boolean inTripleTerm) {
+        if ( obj.isResource() ) {
+            Resource r = obj.asResource();
+            increaseObjectCount(r);
+            if ( inTripleTerm && r.isAnon() )
+                // Force it to be printed
+                increaseObjectCount(r);
+        }
+        if ( obj.isStatementTerm() ) {
+            processTripleTerm(obj.asStatementTerm());
+            return;
+        }
+        if ( obj.isLiteral() ) {
+            if ( obj.asLiteral().getBaseDirection() != null ) {
+                hasTextDirectionLiterals = true;
+                // We will need a namespace prefix.
+                // Ideally, there is one in the model can be added to rdf:RDF as usual.
+                itsPrefix = model.getNsURIPrefix(ITS.uri);
+                if ( itsPrefix == null ) {
+                    // Not in model.
+                    // This is added to rdf:RDF, along with [its]:version
+                    itsInsertNs = true;
+                    itsPrefix = syntheticNamespaceForITS();
+                }
+            }
+        }
+    }
+
+    private void processTripleTerm(StatementTerm sTerm) {
+        Statement tripleTerm = sTerm.asStatementTerm().getStatement();
+        processTripleTermsOneLevel(tripleTerm);
+
+        if ( tripleTerm.getObject().isStatementTerm() ) {
+            StatementTerm sTerm2 = tripleTerm.getObject().asStatementTerm();
+            processTripleTerm(sTerm2);
+        }
+    }
+
+    private void processTripleTermsOneLevel(Statement stmt) {
+        RDFNode ttSubj = stmt.getSubject();
+        if ( ttSubj.isAnon() ) {
+            Resource r = ttSubj.asResource();
+                // XXX !!! twice to make sure it is printed and not compacted.
+            if ( r.isAnon() )
+                increaseObjectCount(r);
+            increaseObjectCount(r);
+        }
+        processRDFNode(stmt.getObject(), true);
     }
 
     /**
@@ -242,6 +294,25 @@ class Unparser {
         outputName = u.str();
     }
 
+    // Determine a prefix for the ITS
+    private String syntheticNamespaceForITS() {
+        if ( itsPrefix != null )
+            return itsPrefix;
+        int count = 0;
+        String nsPrefix = "its";
+        // Find an unused prefix.
+        for(;;) {
+            if ( model.getNsPrefixURI(nsPrefix) == null)
+                break;
+            nsPrefix = "its." + (count++);
+            if ( count > 10_000 )
+                // Safety
+                throw new JenaException("Can't determine an XML namepsace prefix for ITS");
+        }
+        prettyWriter.setNsPrefix(nsPrefix, ITS.uri);
+        return nsPrefix;
+    }
+
     /**
      * Should be called exactly once for each Unparser. Calling it a second time
      * will have undesired results.
@@ -249,20 +320,13 @@ class Unparser {
     void write() {
         prettyWriter.workOutNamespaces();
         wRDF();
-        /*
-         * System.out.print("Coverage = "); for (int i=0;i<codeCoverage.length;i++)
-         * System.out.print(" c[" + i + "] = " + codeCoverage[i]+ ";");
-         * System.out.println();
-         */
     }
 
     /**
      * Set a list of types of objects that will be expanded at the top-level of
      * the file.
      *
-     * @param types
-     *            An array of rdf:Class'es.
-     *
+     * @param types An array of rdf:Class'es.
      */
     void setTopLevelTypes(Resource types[]) {
         pleasingTypes = types;
@@ -316,9 +380,17 @@ class Unparser {
 
     // Reification stuff.
 
-    Map<Resource, Statement> res2statement;
+    private Map<Resource, Statement> res2statement;
 
-    Map<Statement, Resource> statement2res;
+    private Map<Statement, Resource> statement2res;
+
+    // ITS (text direction)
+    // The data has text direction literals.
+    private boolean hasTextDirectionLiterals = false;
+    // The model does not have an its: namespace so we need to add it.
+    private boolean itsInsertNs = false;
+    // The prefix decided on (its:: may be already used by the model)
+    private String itsPrefix = null;
 
     /*
      * The top-down recursive descent unparser. The methods starting in w all
@@ -338,6 +410,20 @@ class Unparser {
         print(prettyWriter.rdfEl("RDF"));
         indentPlus();
         printNameSpaceDefn();
+        if ( hasTextDirectionLiterals ) {
+            indentPlus();
+            if ( itsInsertNs ) {
+                tab();
+                print("xmlns:" );
+                print(itsPrefix);
+                print("=");
+                print(q(ITS.uri));
+            }
+            // Put the version in.
+            tab();
+            print(format("%s:%s=%s", itsPrefix, ITS.version, q("2.0")));
+            indentMinus();
+        }
         if (xmlBase != null) {
             setOutputName(xmlBase);
             tab();
@@ -384,16 +470,141 @@ class Unparser {
      * others (e.g. choice 1). For embedded XML choice 2 is obligatory. For
      * untyped, anonymous resource valued items choice 3 is used. Choice 1 is
      * the fall back.
+     *
+     * Do triple term first to protect the later (original) functions that may not expect triple terms
      */
-    private boolean wPropertyElt(WType wt, Property prop, Statement s,
-            RDFNode val) {
-        return wPropertyEltCompact(wt, prop, s, val) || // choice 4
+    private boolean wPropertyElt(WType wt, Property prop, Statement s, RDFNode val) {
+        return wPropertyEltTripleTerm(wt, prop, s, val)  ||  // RDF Triple term
+               wPropertyEltCompact(wt, prop, s, val) || // choice 4
                wPropertyEltCollection(wt, prop, s, val) || // choice RDF collections
-                wPropertyEltLiteral(wt, prop, s, val) || // choice 2
-                wPropertyEltResource(wt, prop, s, val) || // choice 3
-                wPropertyEltDatatype(wt, prop, s, val) ||
-                wPropertyEltValue(wt, prop, s, val);
-        // choice 1.
+               wPropertyEltLiteral(wt, prop, s, val) || // choice 2
+               wPropertyEltResource(wt, prop, s, val) || // choice 3
+               wPropertyEltDatatype(wt, prop, s, val) ||
+               wPropertyEltValue(wt, prop, s, val);    // choice 1.
+
+    }
+
+    private boolean wPropertyEltTripleTerm(WType wt, Property prop, Statement statement, RDFNode val) {
+        if ( ! ( val instanceof StatementTerm sTerm ) )
+            return false;
+        done(statement);
+        wPropertyTripleTerm(wt, prop, sTerm.getStatement(), statement);
+        return true;
+    }
+
+    private void wPropertyTripleTerm(WType wt, Property prop, Statement triple, Statement containingStatement) {
+        // parseType="Triple"
+        tab();
+        print("<");
+        wt.wTypeStart(prop);
+        if ( containingStatement != null )
+            wIdAttrReified(containingStatement);
+        maybeNewline();
+        print(" ");
+        printRdfAt("parseType");
+        print("=" + q("Triple"));
+        print(">");
+        indentPlus();
+        tab();
+        // Print the triple term
+        wTripleTerm(wt, triple);
+
+        // End property.
+        indentMinus();
+        tab();
+
+        print("</");
+        wt.wTypeEnd(prop);
+        print(">");
+    }
+
+    private void wTripleTerm(WType wt, Statement triple) {
+        // Don't use the asserted triple printing mechanism.
+        // - it tracks asserted triples that have been printed
+        //   the triple of a triple term may also be asserted and need to be printed twice.
+        // - it looks in the (asserted) model for properties and objects
+
+        Resource subject = triple.getSubject();
+
+        print("<");
+        printRdfAt("Description");
+        // rdf:NodeID= or rdf:about= , not wIdAttrOpt ID= (check)
+        boolean x = wNodeIDAttr(subject) || wAboutAttr(subject);
+        print(">");
+        indentPlus();
+
+        Property property = triple.getPredicate();
+        RDFNode object = triple.getObject();
+        wTripleTermPropertyObject(property, object);
+
+        indentMinus();
+        tab();
+        print("</");
+        printRdfAt("Description");
+        print(">");
+    }
+
+    private void wTripleTermPropertyObject(Property property, RDFNode object) {
+        tab();
+
+        if ( object.isStatementTerm() ) {
+            indentPlus();
+            wPropertyTripleTerm(wtype, property, object.asStatementTerm().getStatement(), null);
+            //wTripleTerm(wtype, object.asStatementTerm().getStatement());
+            indentMinus();
+            return;
+        }
+
+        print("<");
+        wtype.wTypeStart(property);
+
+        // Could split up!
+
+        // "/>" forms.
+        if ( object.isURIResource() ) {
+            // parse type resource
+            //wResourceAttr
+            print(" ");
+            printRdfAt("resource");
+            print("=");
+            String uri = object.asResource().getURI();
+            wURIreference(uri);
+            print("/>");
+            return;
+        }
+        if ( object.isAnon() ) {
+            print(" ");
+            printRdfAt("nodeID");
+            print("=");
+            // Corner(?) case
+            // Could use <property rdf:parseType="Resource"></property>
+            print(q(prettyWriter.anonId(object.asResource())));
+            print("/>");
+            return;
+        }
+        // Forms that have text.
+        if ( object.isLiteral() ) {
+            Literal literal = object.asLiteral() ;
+            String lang = literal.getLanguage();
+            if ( Util.isLangString(literal) || Util.isDirLangString(literal) ) {
+                // has language tag
+                // And don't print datatype;
+                wLangAndBaseDirection(literal);
+            } else if ( !Util.isSimpleString(literal) ) {
+                maybeNewline();
+                wDatatype(literal.getDatatypeURI());
+            }
+            print(">");
+            String escLex = Util.substituteEntitiesInElementContent(literal.getLexicalForm());
+            print(escLex);
+        } else {
+            throw new JenaException("Triple terms not supported in RDF/XML");
+        }
+
+        // End property.
+        print("</");
+        wtype.wTypeEnd(property);
+        print(">");
     }
 
     /*
@@ -403,9 +614,10 @@ class Unparser {
         // Conditions
         if (!(val instanceof Resource))
             return false;
+
         Resource r = (Resource) val;
         if ( r.isStatementTerm() )
-            throw new JenaException("Triple terms not supported in RDF/XML");
+            return false;
 
         if (!(allPropsAreAttr(r) || doing.contains(r)))
             return false;
@@ -497,8 +709,7 @@ class Unparser {
     /*
      * [6.12.3] propertyElt ::= '<' propName idAttr? parseResource '>' propertyElt* '</' propName '>'
      */
-    private boolean wPropertyEltResource(WType wt, Property prop, Statement s,
-            RDFNode r) {
+    private boolean wPropertyEltResource(WType wt, Property prop, Statement s, RDFNode r) {
         if (prettyWriter.sParseTypeResourcePropertyElt)
             return false;
         if (r instanceof Literal)
@@ -529,8 +740,7 @@ class Unparser {
     /*
      * [6.12] propertyElt ::= '<' propName idAttr? '>' value '</' propName '>'
      */
-    private boolean wPropertyEltValue(WType wt, Property prop, Statement s,
-            RDFNode r) {
+    private boolean wPropertyEltValue(WType wt, Property prop, Statement s, RDFNode r) {
         return wPropertyEltValueString(wt, prop, s, r)
                 || wPropertyEltValueObj(wt, prop, s, r);
     }
@@ -538,19 +748,16 @@ class Unparser {
     /*
      * [6.12] propertyElt ::= '<' propName idAttr? '>' value '</' propName '>'
      */
-    private boolean wPropertyEltValueString(WType wt, Property prop,
-            Statement s, RDFNode r) {
+    private boolean wPropertyEltValueString(WType wt, Property prop, Statement s, RDFNode r) {
         if (r instanceof Literal) {
             done(s);
             Literal lt = (Literal) r;
-            String lang = lt.getLanguage();
             tab();
             print("<");
             wt.wTypeStart(prop);
             wIdAttrReified(s);
             maybeNewline();
-            if (lang != null && lang.length() > 0)
-                print(" xml:lang=" + q(lang));
+            wLangAndBaseDirection(lt);
             maybeNewline();
             print(">");
             wValueString(lt);
@@ -561,6 +768,23 @@ class Unparser {
         }
         return false;
 
+    }
+
+    private void wLangAndBaseDirection(Literal literal) {
+        String lang = literal.getLanguage();
+        if ( lang == null || lang.isEmpty() )
+            return;
+        String baseDir = literal.getBaseDirection();
+//        if ( baseDir != null ) {
+//            if  ( itsInsertNs )
+//                print(format(" xmlns:%s=\"%s\"", itsPrefix, ITS.uri));
+//        }
+        print(" xml:lang=" + q(lang));
+        if ( baseDir != null ) {
+            // done in rdf:RDFs
+            //print(format(" %s:%s=%s", itsPrefix, ITS.version, q("2.0")));
+            print(format(" %s:%s=%s", itsPrefix, ITS.dir, q(baseDir)));
+        }
     }
 
     /*
@@ -575,8 +799,7 @@ class Unparser {
      * [6.12] propertyElt ::= '<' propName idAttr? '>' value '</' propName '>'
      * [6.17.1] value ::= obj
      */
-    private boolean wPropertyEltValueObj(WType wt, Property prop, Statement s,
-            RDFNode r) {
+    private boolean wPropertyEltValueObj(WType wt, Property prop, Statement s, RDFNode r) {
         if (r instanceof Resource && !prettyWriter.sResourcePropertyElt) {
             Resource res = (Resource) r;
             done(s);
@@ -603,8 +826,7 @@ class Unparser {
     /*
      *  '<' propName idAttr? parseCollection '>' obj* '</' propName '>'
      */
-    private boolean wPropertyEltCollection(WType wt, Property prop,
-            Statement s, RDFNode r) {
+    private boolean wPropertyEltCollection(WType wt, Property prop, Statement s, RDFNode r) {
         Statement list[][] = getRDFList(r);
         if (list == null)
             return false;
@@ -837,8 +1059,7 @@ class Unparser {
      * [6.13.2] typedNode ::=
      *       '<' typeName idAboutAttr? bagIdAttr? propAttr*'>' propertyElt* '</' typeName '>'
      */
-    private boolean wTypedNodeOrDescriptionLong(WType wt, Resource ty,
-            Resource r, List<Statement> li) {
+    private boolean wTypedNodeOrDescriptionLong(WType wt, Resource ty, Resource r, List<Statement> li) {
         Iterator<Statement> it = li.iterator();
         while (it.hasNext()) {
             done(it.next());
@@ -924,7 +1145,6 @@ class Unparser {
 
         }
         return false;
-
     }
 
     /*
@@ -1211,6 +1431,11 @@ class Unparser {
         if (!r.isAnon())
             return false;
         Integer v = objectTable.get(r);
+//        if ( v == null )
+//            return true;
+//        return !prettyWriter.sResourcePropertyElt &&
+//               v.intValue() <= 1 &&
+//               !haveReified.contains(r);
         return v == null
                 || ((!prettyWriter.sResourcePropertyElt) && v.intValue() <= 1 && (!haveReified
                         .contains(r)));
@@ -1501,11 +1726,9 @@ class Unparser {
     }
 
     /**
-     * @param n
-     *            The value of some rdf:type (precondition).
+     * @param n The value of some rdf:type (precondition).
      * @return The split point or -1.
      */
-
     private int isOKType(RDFNode n) {
 
         if (!(n instanceof Resource))
