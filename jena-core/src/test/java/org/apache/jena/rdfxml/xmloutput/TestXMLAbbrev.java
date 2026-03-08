@@ -140,7 +140,7 @@ public class TestXMLAbbrev extends XMLOutputTestBase
     {
         check("testing/abbreviated/cookup.rdf",
               null,
-              "j.cook.up",
+              "(j\\.fixup|j\\.cook\\.up)",
               Change.blockRules( "" )
                 );
     }

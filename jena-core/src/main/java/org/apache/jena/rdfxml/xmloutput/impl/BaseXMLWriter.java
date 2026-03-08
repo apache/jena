@@ -119,12 +119,12 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     /**
         Counter used for allocating Jena transient namespace declarations.
     */
-	private int jenaPrefixCount;
+	private int jenaPrefixCount = 0;
 
 	static String RDFNS = RDF.getURI();
 
 
-	static private final Pattern jenaNamespace = Pattern.compile("j\\.([1-9][0-9]*|cook\\.up)");
+	static private final Pattern jenaNamespace = Pattern.compile("j\\.([1-9][0-9]*|cook\\.up|fixup)");
 
 	String xmlBase = null;
 
@@ -213,8 +213,10 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     }
 
     private void addNameSpaces( Model model )  {
-        NsIterator nsIter = model.listNameSpaces();
-        while (nsIter.hasNext()) this.addNameSpace( nsIter.nextNs() );
+        Set<String> ns = FindNamespacesRDFXML.namespacesForRDFXML(model);
+        ns.forEach(u->addNameSpace(u));
+//        NsIterator nsIter = model.listNameSpaces();
+//        while (nsIter.hasNext()) this.addNameSpace( nsIter.nextNs() );
     }
 
     private void primeNamespace(Model model) {
@@ -300,9 +302,8 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
             }
             if ( val == null ) {
                 // just in case the prefix has already been used, look for a free
-                // one.
-                // (the usual source of such prefixes is reading in a model we wrote
-                // out earlier)
+                // one (the usual source of such prefixes is reading in a model we
+                // wrote out earlier)
                 do {
                     val = "j." + (jenaPrefixCount++);
                 } while (prefixesUsed.contains(val));
@@ -312,7 +313,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         }
     }
 
-	final synchronized public void setNsPrefix(String prefix, String ns) {
+    final public void setNsPrefix(String prefix, String ns) {
         if (checkLegalPrefix(prefix)) {
             nameSpaces.set11(ns, prefix);
         }
@@ -400,24 +401,26 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			}
 		}
         String prefix = ns.get( namespace );
-		boolean cookUp = false;
+		boolean synthNS = false;
 		if (prefix == null) {
             checkURI( namespace );
-            logger.warn("Internal error: unexpected QName URI: <" + namespace + ">.  Fixing up.",
-        				new BrokenException( "unexpected QName URI " + namespace ));
-			cookUp = true;
+            logger.warn("Internal error: QNamed needed but no namespace for URI: <" + namespace + ">. Fixing up."
+                        //Development: , new BrokenException( "unexpected QName URI " + namespace )
+                        );
+			synthNS = true;
 		} else if (prefix.length() == 0) {
 			if (type == ATTR || type == FASTATTR)
-				cookUp = true;
+				synthNS = true;
 			else
 				return local;
 		}
-		if (cookUp) return cookUpAttribution( type, namespace, local );
+		if (synthNS) return fixupQName( type, namespace, local );
 		return prefix + ":" + local;
 	}
 
-    private String cookUpAttribution( int type, String namespace, String local ) {
-        String prefix = "j.cook.up";
+    private String fixupQName( int type, String namespace, String local ) {
+        //String prefix = "j.cook.up";  // "Traditional" name.
+        String prefix = "j.fixup";
         switch (type) {
             case FASTATTR :
             case ATTR :
@@ -429,7 +432,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
                 return prefix + ":" + local;
             case FAST :
               //  logger.error("Unreachable code - reached.");
-                throw new BrokenException( "cookup reached final FAST" );
+                throw new BrokenException( "NS generation reached final FAST" );
         }
     }
 
