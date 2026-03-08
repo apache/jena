@@ -1,0 +1,2 @@
+<http://example.org/outer> <http://example.org/propTripleTerm> <<( <http://TRIPLE/s> <http://TRIPLE/p> "literal o2" )>> .
+<http://example.org/outer> <http://example.org/after> "AFTER (with TT)" .

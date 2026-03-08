@@ -1,0 +1,1 @@
+<http://example.org/outer> <http://example.org/propTripleTerm> <<( <http://TRIPLE/s> <http://TRIPLE/object> "OBJ" )>> .

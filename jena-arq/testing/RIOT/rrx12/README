@@ -1,0 +1,5 @@
+== Tests for RDF 1.2 features
+
+.. and RDF 1.1 features which are related to the RDF 1.2 feature processing.
+
+The tests here are basic feature tests and supplement the tests from rdf-tests CG.

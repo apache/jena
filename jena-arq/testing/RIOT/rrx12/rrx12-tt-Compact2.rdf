@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!-- rrx12-tt-Compact2 -->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:tt="http://TRIPLE/"
+         xmlns:ex="http://example.org/"
+         rdf:version='1.2'>
+  <rdf:Description rdf:about="http://example.org/outer">
+    <ex:propTripleTerm rdf:parseType="Triple">
+      <ex:TYPE rdf:about="http://TRIPLE/s"/>
+    </ex:propTripleTerm>
+  </rdf:Description>
+</rdf:RDF>

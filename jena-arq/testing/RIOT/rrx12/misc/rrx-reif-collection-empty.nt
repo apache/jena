@@ -1,0 +1,5 @@
+<http://example/s> <http://example.org/p> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+<http://example/base#local> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
+<http://example/base#local> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://example/s> .
+<http://example/base#local> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://example.org/p> .
+<http://example/base#local> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
