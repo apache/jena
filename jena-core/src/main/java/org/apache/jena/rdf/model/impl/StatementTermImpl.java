@@ -112,4 +112,12 @@ public class StatementTermImpl extends EnhNode implements StatementTerm {
             return this;
         return new StatementTermImpl(statement, (ModelCom)m);
     }
+
+    @Override
+    public String toString() {
+        return "<<( " + statement.getSubject().toString()
+                + " " + statement.getPredicate().toString()
+                + " " + statement.getObject()
+                +" )>>";
+    }
 }

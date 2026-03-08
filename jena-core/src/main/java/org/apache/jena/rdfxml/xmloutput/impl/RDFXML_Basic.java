@@ -96,7 +96,7 @@ public class RDFXML_Basic extends BaseXMLWriter {
         }
 
 	protected void writePredicate(Statement stmt, final PrintWriter writer)
-		 {
+	{
 		final Property predicate = stmt.getPredicate();
 		final RDFNode object = stmt.getObject();
 
@@ -106,16 +106,25 @@ public class RDFXML_Basic extends BaseXMLWriter {
 					SplitRDFXML.namespace(predicate),
 					SplitRDFXML.localname(predicate)));
 
-		if (object instanceof Resource) {
-			writer.print(" ");
-			writeResourceReference(((Resource) object), writer);
-			writer.println("/>");
-		} else {
-			writeLiteral((Literal) object, writer);
-			writer.println(
-				"</"
-					+ endElementTag(SplitRDFXML.namespace(predicate), SplitRDFXML.localname(predicate))
-					+ ">");
+		switch(object) {
+		    case Resource resource ->{
+	            writer.print(" ");
+	            writeResourceReference(resource, writer);
+	            writer.println("/>");
+		    }
+		    case Literal literal ->{
+	            writeLiteral(literal, writer);
+	            writer.println("</"+ endElementTag(SplitRDFXML.namespace(predicate), SplitRDFXML.localname(predicate)) + ">");
+		    }
+		    case StatementTerm triple ->{
+		        writeTripleTerm(triple, writer);
+		        writer.print(space);
+		        writer.print(space);
+		        writer.println("</"+ endElementTag(SplitRDFXML.namespace(predicate), SplitRDFXML.localname(predicate)) + ">");
+		    }
+		    default->{
+		        throw new JenaException("Bad object: "+object);
+		    }
 		}
 	}
 
@@ -183,5 +192,23 @@ public class RDFXML_Basic extends BaseXMLWriter {
 		writer.print(">");
 		writer.print( Util.substituteEntitiesInElementContent( form ) );
 	}
+
+    protected void writeTripleTerm(StatementTerm triple, PrintWriter writer) {
+        writer.print(" " + rdfAt("parseType") + "=" + attributeQuoted( "Triple" )+">");
+        writer.println();
+        Statement stmt = triple.getStatement();
+        Resource subject = stmt.getSubject();
+        writer.print(space);
+        writer.print(space);
+        writeDescriptionHeader( subject, writer );
+
+        writer.print(space);
+        writer.print(space);
+        writePredicate( stmt, writer );
+
+        writer.print(space);
+        writer.print(space);
+        writeDescriptionTrailer( subject, writer );
+    }
 
 }
