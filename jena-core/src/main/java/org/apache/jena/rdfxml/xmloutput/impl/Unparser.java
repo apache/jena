@@ -44,9 +44,9 @@ package org.apache.jena.rdfxml.xmloutput.impl;
  *
  * [6.2] obj ::= description | container
  *
- * [6.3] description ::= '<rdf:Description' idAboutAttr? bagIdAttr? propAttr* '/>' |
- *                       '<rdf:Description' idAboutAttr? bagIdAttr? propAttr* '>' propertyElt* '</rdf:Description>' |
- *                       typedNode
+ * [6.3] description ::= '<rdf:Description' idAboutAttr? bagIdAttr? propAttr* '/>'
+ *                     | '<rdf:Description' idAboutAttr? bagIdAttr? propAttr* '>' propertyElt* '</rdf:Description>'
+ *                     | typedNode
  *
  * [6.4] container ::= sequence | bag | alternative
  *
@@ -64,17 +64,18 @@ package org.apache.jena.rdfxml.xmloutput.impl;
  *
  * [6.11] typeAttr ::= ' type="' URI-reference '"'
  *
- * [6.12] propertyElt  ::= '<' propName idAttr? '>' value '</' propName '>' | '<' propName
- * idAttr? parseLiteral '>' literal '</' propName '>' | '<' propName idAttr?
- * parseResource '>' propertyElt* '</' propName '>' | '<' propName idRefAttr?
- * bagIdAttr? propAttr* '/>'
+ * [6.12] propertyElt  ::=
+ *         '<' propName idAttr? '>' value '</' propName '>'
+ *       | '<' propName idAttr? parseLiteral '>' literal '</' propName '>'
+ *       | '<' propName idAttr? parseResource '>' propertyElt* '</' propName '>'
+ *       | '<' propName idRefAttr? bagIdAttr? propAttr* '/>'
+ *       | '<' propName idAttr? parseCollection '>' obj* '</' propName '>'
  *
+ *  [daml.2] parseCollection ::= ' parseType="rdf:collection"'
  *
- * | '<' propName idAttr? parseCollection '>' obj* '</'
- * propName '>' [daml.2] parseCollection ::= ' parseType="rdf:collection"'
- *
- * [6.13] typedNode ::= '<' typeName idAboutAttr? bagIdAttr? propAttr* '/>' | '<'
- * typeName idAboutAttr? bagIdAttr? propAttr* '>' propertyElt* '</' typeName * '>'
+ * [6.13] typedNode ::=
+ *        '<' typeName idAboutAttr? bagIdAttr? propAttr* '/>'
+ *      | '<' typeName idAboutAttr? bagIdAttr? propAttr* '>' propertyElt* '</' typeName * '>'
  *
  * [6.14] propName ::= Qname
  *
@@ -98,9 +99,11 @@ package org.apache.jena.rdfxml.xmloutput.impl;
  *
  * [6.24] string ::= (any XML text, with "<", ">", and "&" escaped)
  *
- * [6.25] sequence ::= '<rdf:Seq' idAttr? '>' member* '</rdf:Seq>' | '<rdf:Seq' idAttr? memberAttr* '/>'
+ * [6.25] sequence ::= '<rdf:Seq' idAttr? '>' member* '</rdf:Seq>'
+ *                   | '<rdf:Seq' idAttr? memberAttr* '/>'
  *
- * [6.26] bag ::= '<rdf:Bag' idAttr? '>' member* '</rdf:Bag>' | '<rdf:Bag' idAttr? memberAttr* '/>'
+ * [6.26] bag ::= '<rdf:Bag' idAttr? '>' member* '</rdf:Bag>'
+ *               | '<rdf:Bag' idAttr? memberAttr* '/>'
  *
  * [6.27] alternative ::= '<rdf:Alt' idAttr? '>' member+ '</rdf:Alt>' | '<rdf:Alt' idAttr? memberAttr? '/>'
  *
@@ -108,7 +111,9 @@ package org.apache.jena.rdfxml.xmloutput.impl;
  *
  * [6.29] referencedItem ::= '<rdf:li' resourceAttr '/>'
  *
- * [6.30] inlineItem ::= '<rdf:li' '>' value </rdf:li>' | '<rdf:li' parseLiteral '>' literal </rdf:li>' | '<rdf:li' parseResource '>' propertyElt* </rdf:li>'
+ * [6.30] inlineItem ::= '<rdf:li' '>' value </rdf:li>'
+ *                     | '<rdf:li' parseLiteral '>' literal </rdf:li>'
+ *                     | '<rdf:li' parseResource '>' propertyElt* </rdf:li>'
  *
  * [6.31] memberAttr ::= ' rdf:_n="' string '"' (where n is an integer)
  *
@@ -142,8 +147,7 @@ import org.slf4j.LoggerFactory ;
 class Unparser {
     static private Property LI = new PropertyImpl(RDF.getURI(), "li");
 
-    static private Property DESCRIPTION = new PropertyImpl(RDF.getURI(),
-            "Description");
+    static private Property DESCRIPTION = new PropertyImpl(RDF.getURI(), "Description");
 
     static protected Logger logger = LoggerFactory.getLogger(Unparser.class);
 
@@ -365,11 +369,13 @@ class Unparser {
     }
 
     /*
-     * [6.12] propertyElt ::= '<' propName idAttr? '>' value '</' propName '>' | '<'
-     * propName idAttr? parseLiteral '>' literal '</' propName '>' | '<'
-     * propName idAttr? parseResource '>' propertyElt* '</' propName '>' | '<'
-     * propName idRefAttr? bagIdAttr? propAttr* '/>'
-     *  | '<' * propName idAttr? parseDamlCollection '>' obj* '</' propName '>' [daml.2]
+     * [6.12] propertyElt ::= '<' propName idAttr? '>' value '</' propName '>' |
+     *                        '<' propName idAttr? parseLiteral '>' literal '</' propName '>' |
+     *                        '<' propName idAttr? parseResource '>' propertyElt* '</' propName '>' |
+     *                        '<' propName idRefAttr? bagIdAttr? propAttr* '/>' |
+     *                        '<' propName idAttr? parseDamlCollection '>' obj* '</' propName '>' [daml.2]
+     *                        '<' propName idAttr? parseTriple '>' obj '</' propName '>' [RDF 1.2
+     *
      *    parseDamlCollection ::= ' parseType="rdf:collection"'
      *
      * For RDF collections we prefer the special syntax otherwise: We prefer
@@ -391,11 +397,9 @@ class Unparser {
     }
 
     /*
-     * [6.12.4] propertyElt ::= '<' propName idRefAttr? bagIdAttr? propAttr*
-     * '/>'
+     * [6.12.4] propertyElt ::= '<' propName idRefAttr? bagIdAttr? propAttr* '/>'
      */
-    private boolean wPropertyEltCompact(WType wt, Property prop, Statement s,
-            RDFNode val) {
+    private boolean wPropertyEltCompact(WType wt, Property prop, Statement s, RDFNode val) {
         // Conditions
         if (!(val instanceof Resource))
             return false;
@@ -430,8 +434,7 @@ class Unparser {
     }
 
     /*
-     * [6.12.2] propertyElt ::= '<' propName idAttr? parseLiteral '>' literal '</'
-     * propName '>'
+     * [6.12.2] propertyElt ::= '<' propName idAttr? parseLiteral '>' literal '</' propName '>'
      */
     private boolean wPropertyEltLiteral(WType wt, Property prop, Statement statement, RDFNode rdfNode) {
         // Is the rule blocked?
@@ -492,8 +495,7 @@ class Unparser {
     }
 
     /*
-     * [6.12.3] propertyElt ::= '<' propName idAttr? parseResource '>'
-     * propertyElt* '</' propName '>'
+     * [6.12.3] propertyElt ::= '<' propName idAttr? parseResource '>' propertyElt* '</' propName '>'
      */
     private boolean wPropertyEltResource(WType wt, Property prop, Statement s,
             RDFNode r) {
@@ -599,8 +601,7 @@ class Unparser {
     }
 
     /*
-     *  '<' propName idAttr? parseCollection '>'
-     * obj* '</' propName '>'
+     *  '<' propName idAttr? parseCollection '>' obj* '</' propName '>'
      */
     private boolean wPropertyEltCollection(WType wt, Property prop,
             Statement s, RDFNode r) {
@@ -661,21 +662,28 @@ class Unparser {
     }
 
     /*
-     * [6.2] obj ::= description | container [6.3] description ::= '<rdf:Description'
-     * idAboutAttr? bagIdAttr? propAttr* '/>' | '<rdf:Description' idAboutAttr?
-     * bagIdAttr? propAttr* '>' propertyElt* '</rdf:Description>' | typedNode
-     * [6.4] container ::= sequence | bag | alternative We use: [6.2a] obj ::=
-     * description | container | typedNode [6.3a] description ::= '<rdf:Description'
-     * idAboutAttr? bagIdAttr? propAttr* '/>' | '<rdf:Description' idAboutAttr?
-     * bagIdAttr? propAttr* '>' propertyElt* '</rdf:Description>'
+     * [6.2] obj ::= description | container
+     *
+     * [6.3] description ::=
+     *      '<rdf:Description'idAboutAttr? bagIdAttr? propAttr* '/>'
+     *    | '<rdf:Description' idAboutAttr? bagIdAttr? propAttr* '>' propertyElt* '</rdf:Description>'
+     *    | typedNode
+     *
+     * [6.4] container ::= sequence | bag | alternative
+     *
+     * We use:
+     *
+     * [6.2a] obj ::= description | container | typedNode
+     *
+     * [6.3a] description ::=
+     *       '<rdf:Description' idAboutAttr? bagIdAttr? propAttr* '/>'
+     *     | '<rdf:Description' idAboutAttr? bagIdAttr? propAttr* '>' propertyElt* '</rdf:Description>'
      *
      * This method has got somewhat messy. If we are not at the topLevel we may
      * choose to not expand a node but just use a typedNode ::= '<' typeName
      * idAboutAttr '/>' rule. This rules also applies to Bags that we feel
-     * unconfortable with, such as a Bag arising from a BagId rule that we don't
+     * uncomfortable with, such as a Bag arising from a BagId rule that we don't
      * handle properly.
-     *
-     *
      */
     private boolean wObj(Resource r, boolean topLevel) {
         try {
@@ -729,18 +737,18 @@ class Unparser {
     };
 
     /*
-     * [6.3a] description ::= '<rdf:Description' idAboutAttr? bagIdAttr?
-     * propAttr* '/>' | '<rdf:Description' idAboutAttr? bagIdAttr? propAttr*
-     * '>' propertyElt* '</rdf:Description>'
+     * [6.3a] description ::=
+     *        '<rdf:Description' idAboutAttr? bagIdAttr? propAttr* '/>'
+     *      | '<rdf:Description' idAboutAttr? bagIdAttr? propAttr* '>' propertyElt* '</rdf:Description>'
      */
     private boolean wDescription(Resource r) {
         return wTypedNodeOrDescription(wdesc, DESCRIPTION, r);
     }
 
     /*
-     * [6.13] typedNode ::= '<' typeName idAboutAttr? bagIdAttr? propAttr* '/>' | '<'
-     * typeName idAboutAttr? bagIdAttr? propAttr* '>' propertyElt* '</'
-     * typeName '>'
+     * [6.13] typedNode ::=
+     *        '<' typeName idAboutAttr? bagIdAttr? propAttr* '/>'
+     *      | '<' typeName idAboutAttr? bagIdAttr? propAttr* '>' propertyElt* '</' typeName '>'
      */
     private boolean wTypedNode(Resource r) {
         Statement st = getType(r);
@@ -780,8 +788,7 @@ class Unparser {
     }
 
     /*
-     * [6.13.1] typedNode ::= '<' typeName idAboutAttr? bagIdAttr? propAttr*
-     * '/>'
+     * [6.13.1] typedNode ::= '<' typeName idAboutAttr? bagIdAttr? propAttr* '/>'
      */
     private boolean wTypedNodeOrDescriptionCompact(WType wt, Resource ty,
             Resource r, List<Statement> li) {
@@ -827,8 +834,8 @@ class Unparser {
     }
 
     /*
-     * [6.13.2] typedNode ::= '<' typeName idAboutAttr? bagIdAttr? propAttr*
-     * '>' propertyElt* '</' typeName '>'
+     * [6.13.2] typedNode ::=
+     *       '<' typeName idAboutAttr? bagIdAttr? propAttr*'>' propertyElt* '</' typeName '>'
      */
     private boolean wTypedNodeOrDescriptionLong(WType wt, Resource ty,
             Resource r, List<Statement> li) {
@@ -874,8 +881,9 @@ class Unparser {
     }
 
     /*
-     * [6.5] idAboutAttr ::= idAttr | aboutAttr | aboutEachAttr we use [6.5a]
-     * idAboutAttr ::= idAttr | aboutAttr
+     * [6.5]  idAboutAttr ::= idAttr | aboutAttr | aboutEachAttr
+     * we use
+     * [6.5a] idAboutAttr ::= idAttr | aboutAttr
      */
     private Set<Resource> idDone = new HashSet<>();
 
@@ -885,7 +893,9 @@ class Unparser {
 
     /**
      * Returns false if the resource is not genuinely anonymous and cannot be
-     * referred to using an ID. [6.6] idAttr ::= ' ID="' IDsymbol '"'
+     * referred to using an ID.
+     *
+     * [6.6] idAttr ::= ' ID="' IDsymbol '"'
      */
     private boolean wIdAttrOpt(Resource r) {
 
@@ -1584,7 +1594,7 @@ class Unparser {
         }
 
         // Now all the pleasing resources are in the buckets.
-        // Add all their iterators togethor:
+        // Add all their iterators together:
 
         return WrappedIterator.createIteratorIterator(
             		new Map1Iterator<>(bkt -> bkt.iterator(),
@@ -1720,5 +1730,4 @@ class Unparser {
         return resIt;
 
     }
-
 }
