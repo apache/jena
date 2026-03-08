@@ -17,6 +17,7 @@
 
 import js from '@eslint/js'
 import pluginVue from 'eslint-plugin-vue'
+import globals from 'globals'
 
 export default [
   js.configs.recommended,
@@ -46,6 +47,7 @@ export default [
     'languageOptions': {
       'ecmaVersion': 2021,
       'globals': {
+        ...globals.browser,
         'process': true,
         'describe': true,
         'it': true,
