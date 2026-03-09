@@ -71,7 +71,7 @@
     <ver.jakarta.json>2.0.1</ver.jakarta.json>
 
     <!-- These two must be in-step -->
-    <ver.jetty>12.1.6</ver.jetty>
+    <ver.jetty>12.1.7</ver.jetty>
     <ver.jakarta-servlet>6.1.0</ver.jakarta-servlet>
 
     <!--
@@ -130,7 +130,7 @@
     <ver.plugin.compiler>3.15.0</ver.plugin.compiler>
     <ver.plugin.surefire>3.5.5</ver.plugin.surefire>
     <ver.plugin.javadoc>3.12.0</ver.plugin.javadoc>
-    <ver.plugin.shade>3.6.1</ver.plugin.shade>
+    <ver.plugin.shade>3.6.2</ver.plugin.shade>
     <ver.plugin.enforcer>3.6.2</ver.plugin.enforcer>
     <ver.plugin.cyclonedx>2.9.1</ver.plugin.cyclonedx>
     <ver.plugin.spdx>0.7.0</ver.plugin.spdx>
