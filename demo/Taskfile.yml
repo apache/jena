@@ -5,12 +5,14 @@ version: '3'
 vars:
   VERSION: 6.1.0-SNAPSHOT
   FUSEKI_JAR: ../jena-fuseki2/jena-fuseki-server/target/jena-fuseki-server-{{.VERSION}}.jar
-  SERVER_URL: http://localhost:3030
+  SERVER_URL: http://localhost:3031
   IMAGE_NAME: '{{.IMAGE_NAME | default "fuseki-ai"}}'
   IMAGE_TAG: '{{.IMAGE_TAG | default .VERSION}}'
   GHCR_OWNER: '{{.GHCR_OWNER | default "aiworkerjohns"}}'
 
 tasks:
+  # ── Shared ───────────────────────────────────────────────
+
   build:
     desc: Build the Fuseki server JAR (includes jena-text)
     dir: ..
@@ -22,65 +24,31 @@ tasks:
     cmds:
       - pkill -f "jena-fuseki-server" && echo "Server stopped" || echo "No server running"
 
-  # ── Drillhole (GSWA Geochemistry) ──────────────────────────
+  overview:
+    desc: Serve the project overview presentation
+    cmds:
+      - echo "Serving at http://localhost:8001"
+      - cmd: python3 -m http.server 8001 --directory project-overview
+
+  # ── Mining ───────────────────────────────────────────────
 
   serve:
-    desc: Start Fuseki with the drillhole config
-    dir: drillhole
-    cmds:
-      - java -jar ../{{.FUSEKI_JAR}} --config config.ttl
-
-  load:
-    desc: "Load one drillhole file via GSP (usage: task load -- Drillholes_DHGeochemistry_SS_Observation_1.nq)"
-    cmds:
-      - |
-        curl -s -X POST "{{.SERVER_URL}}/geochem/data" \
-          -H "Content-Type: application/n-quads" \
-          --data-binary @drillhole/{{.CLI_ARGS}}
-      - echo "Loaded drillhole/{{.CLI_ARGS}}"
-
-  load-batch:
-    desc: "Load multiple drillhole files (usage: task load-batch -- 5 to load first 5 files)"
-    cmds:
-      - |
-        count={{.CLI_ARGS}}
-        i=0
-        for f in drillhole/Drillholes_DHGeochemistry_SS_Observation_*.nq; do
-          [ "$i" -ge "$count" ] && break
-          echo "Loading $f ($((i+1))/$count)..."
-          curl -s -X POST "{{.SERVER_URL}}/geochem/data" \
-            -H "Content-Type: application/n-quads" \
-            --data-binary @"$f"
-          i=$((i+1))
-        done
-        echo "Loaded $i files"
-
-  clean:
-    desc: Remove drillhole TDB2 and Lucene data directories
-    dir: drillhole
-    cmds:
-      - rm -rf DB Lucene
-      - echo "Cleaned drillhole DB and Lucene directories"
-
-  # ── Test (mining demo) ─────────────────────────────────────
-
-  test-serve:
-    desc: Start Fuseki with the test mining config (port 3031)
+    desc: Start Fuseki with the mining config (port 3031)
     dir: test
     cmds:
       - java -jar ../{{.FUSEKI_JAR}} --port 3031 --config config.ttl
 
-  test-load:
-    desc: Load the test mining dataset via GSP (port 3031)
+  load:
+    desc: Load the mining dataset via GSP
     cmds:
       - |
-        curl -s -X PUT "http://localhost:3031/mining/data?default" \
+        curl -s -X PUT "{{.SERVER_URL}}/mining/data?default" \
           -H "Content-Type: text/turtle" \
           --data-binary @test/data/mining.ttl
       - echo "Loaded test/data/mining.ttl"
 
-  test-query:
-    desc: Run all test queries against the mining server (port 3031)
+  query:
+    desc: Run all test queries against the mining server
     dir: test
     cmds:
       - for:
@@ -93,42 +61,27 @@ tasks:
           - queries/07-filter-by-author.rq
         cmd: |
           echo "=== {{.ITEM}} ==="
-          curl -s -X POST "http://localhost:3031/mining/query" \
+          curl -s -X POST "{{.SERVER_URL}}/mining/query" \
             -H "Content-Type: application/sparql-query" \
             -H "Accept: text/tab-separated-values" \
             --data-binary @{{.ITEM}}
           echo ""
 
-  test-clean:
-    desc: Remove test mining TDB2 and Lucene data directories
-    dir: test
-    cmds:
-      - rm -rf DB Lucene
-      - echo "Cleaned test DB and Lucene directories"
-
-  # ── Static Apps ────────────────────────────────────────────
-
-  app-static:
-    desc: Serve the static demo app with drillhole config (default)
-    cmds:
-      - ln -sfn ../drillhole/config.ttl app-static/config.ttl
-      - echo "Serving at http://localhost:8000 (drillhole → localhost:3030)"
-      - cmd: python3 -m http.server 8000 --directory app-static
-
-  app-mining:
-    desc: Serve the static demo app with mining config (port 3031)
+  app:
+    desc: Serve the static demo app with mining config
     cmds:
       - ln -sfn ../test/config.ttl app-static/config.ttl
       - echo "Serving at http://localhost:8000 (mining → localhost:3031)"
       - cmd: python3 -m http.server 8000 --directory app-static
 
-  overview:
-    desc: Serve the project overview presentation
+  clean:
+    desc: Remove mining TDB2 and Lucene data directories
+    dir: test
     cmds:
-      - echo "Serving at http://localhost:8001"
-      - cmd: python3 -m http.server 8001 --directory project-overview
+      - rm -rf DB Lucene
+      - echo "Cleaned mining DB and Lucene directories"
 
-  # ── Docker ─────────────────────────────────────────────────
+  # ── Docker (Fuseki server image) ─────────────────────────
 
   image-build:
     desc: "Build Docker image (optionally: task image-build IMAGE_NAME=myapp IMAGE_TAG=latest)"
@@ -139,7 +92,7 @@ tasks:
       - rm -f jena-fuseki-server.jar
 
   image-push:
-    desc: "Build and push image to ACR (usage: task image-push ACR_NAME=myregistry)"
+    desc: "Build and push image to ACR (usage: task image-push ACR_NAME=gswadevacr)"
     requires:
       vars: [ACR_NAME]
     deps: [image-build]
@@ -184,7 +137,7 @@ tasks:
     cmds:
       - docker compose up
 
-  # ── Loader / Reindexer ────────────────────────────────────
+  # ── Loader / Reindexer ──────────────────────────────────
 
   loader-build:
     desc: Build the loader/reindexer Docker image
