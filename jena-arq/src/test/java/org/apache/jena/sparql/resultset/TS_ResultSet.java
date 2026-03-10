@@ -27,8 +27,8 @@ import org.junit.platform.suite.api.Suite;
 @Suite
 @SelectClasses({
     TestResultSet.class
-    , TestResultSetFormat1.class
-    , TestResultSetFormat2.class
+    , TestResultSetWriting.class
+    , TestResultSetParsing.class
 })
 public class TS_ResultSet
 {

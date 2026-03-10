@@ -40,6 +40,7 @@ import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.resultset.ResultSetException;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.FmtUtils;
 
 public class RowSetWriterCSV implements RowSetWriter {
 
@@ -125,8 +126,8 @@ public class RowSetWriterCSV implements RowSetWriter {
     }
 
     private static void output(AWriter w, Node n, NodeToLabel bnodes) {
-        // String str = FmtUtils.stringForNode(n) ;
-        String str = "?";
+        String str;
+        // Without quotes.
         if ( n.isLiteral() )
             str = n.getLiteralLexicalForm();
         else if ( n.isURI() )
@@ -134,9 +135,11 @@ public class RowSetWriterCSV implements RowSetWriter {
         else if ( n.isBlank() ) {
             str = bnodes.get(null, n);
             // Comes with leading "_:"
-            str = str.substring(2);
+        } else if ( n.isTripleTerm() ) {
+            str = FmtUtils.stringForNode(n) ;
+        } else {
+            str = "?";
         }
-
         str = csvSafe(str);
         w.write(str);
         w.flush();
