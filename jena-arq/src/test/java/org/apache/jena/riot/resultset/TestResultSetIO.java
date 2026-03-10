@@ -110,8 +110,18 @@ public class TestResultSetIO {
         ResultSetMgr.write(out2, rsw, lang);
         rsw.reset();
         in = new ByteArrayInputStream(out2.toByteArray());
-        ResultSet rs2 = ResultSetMgr.read(in, lang);
-        assertTrue(ResultsCompare.equalsByTerm(rsw, rs2));
+        ResultSetRewindable rsw2 = ResultSetMgr.read(in, lang).rewindable();
+
+//        if ( ! ResultsCompare.equalsByTerm(rsw, rsw2) ) {
+//            ResultSetMgr.write(System.out, rsw, ResultSetLang.RS_JSON);
+//            System.out.println("--");
+//            ResultSetMgr.write(System.out, rsw2, ResultSetLang.RS_JSON);
+//        }
+
+        rsw.reset();
+        rsw2.reset();
+
+        assertTrue(ResultsCompare.equalsByTerm(rsw, rsw2));
     }
 }
 

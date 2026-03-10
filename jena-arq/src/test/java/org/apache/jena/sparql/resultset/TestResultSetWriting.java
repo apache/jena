@@ -25,8 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -54,7 +52,7 @@ import org.apache.jena.vocabulary.XSD;
 
 @ParameterizedClass
 @MethodSource("provideArgs")
-public class TestResultSetFormat1
+public class TestResultSetWriting
 {
     static { JenaSystem.init(); }
 
@@ -100,7 +98,7 @@ public class TestResultSetFormat1
     	"""
     	+"  (row (?x <" + RDF.type.toString() + ">))\n"
     	+"  (row (?x <" + RDFS.label.toString() + ">))\n"
-        +"    (row (?x <" + XSD.integer.toString() + ">))\n"
+        +"  (row (?x <" + XSD.integer.toString() + ">))\n"
         +"  (row (?x <" + OWL.sameAs.toString() + ">))\n"
     	+"""
     	  (row )
@@ -111,7 +109,7 @@ public class TestResultSetFormat1
 
     static String $rs8 = """
     	(resultset (?x)
-    	  (row (?x \"has \\t tab character\"))
+    	  (row (?x "has \\t tab character"))
     	)
     	""";
 
@@ -123,26 +121,30 @@ public class TestResultSetFormat1
 
     static String $rs10 = """
     	(resultset (?x)
-    	  (row (?x \"Includes a raw	tab character\"))
+    	  (row (?x "Includes a raw	tab character"))
     	)
     	""";
 
     static String $rs11 = """
     	(resultset (?x)
-    	  (row (?x \"Includes \\n new line\"))
+    	  (row (?x "Includes \\n new line"))
     	)
     	""";
+
+    static String $rs12 = "(resultset (?x) (row (?x 'abc'@en--ltr)) )";
+
+    static String $rs13 = """
+            (resultset (?x)
+               (row (?x <<( <x:s> <x:p> <x:o> )>> ))
+            )
+            """;
 
 
     private static Stream<Arguments> provideArgs() {
         List<Arguments> x = List.of(Arguments.of($rs0), Arguments.of($rs1), Arguments.of($rs2), Arguments.of($rs3), Arguments.of($rs4),
                                     Arguments.of($rs5), Arguments.of($rs6), Arguments.of($rs7), Arguments.of($rs8), Arguments.of($rs9),
-                                    Arguments.of($rs10), Arguments.of($rs11));
+                                    Arguments.of($rs10), Arguments.of($rs11), Arguments.of($rs12), Arguments.of($rs13) );
         return x.stream();
-    }
-
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { {$rs0}, {$rs1}, {$rs2}, {$rs3}, {$rs4}, {$rs5}, {$rs6}, {$rs7}, {$rs8}, {$rs9}, {$rs10}, {$rs11} } );
     }
 
     @Parameter(0)

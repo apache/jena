@@ -27,11 +27,13 @@ import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.impl.LiteralLabel ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.riot.tokens.Token ;
+import org.apache.jena.riot.tokens.TokenType;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerText;
 import org.apache.jena.sparql.sse.SSE ;
@@ -68,15 +70,24 @@ public class NodeFactoryExtra {
      */
     public static Node parseNode(String nodeString, PrefixMap pmap) {
         Tokenizer tokenizer = TokenizerText.create().fromString(nodeString).build();
+        Node node = parseNode(nodeString, tokenizer, pmap);
+        if ( tokenizer.hasNext() )
+            throw new RiotException("Trailing characters in string: " + nodeString) ;
+        return node;
+    }
+
+    private static Node parseNode(String nodeString, Tokenizer tokenizer, PrefixMap pmap) {
         if ( !tokenizer.hasNext() )
             throw new RiotException("Empty RDF term") ;
         Token token = tokenizer.next() ;
+        if ( token.hasType(TokenType.L_TRIPLE) ) {
+            // Triple term.
+            Node n = parseTripleTerm(nodeString, tokenizer, pmap);
+            return n;
+        }
         Node node = token.asNode(pmap) ;
         if ( node == null )
             throw new RiotException("Bad RDF Term: " + nodeString) ;
-
-        if ( tokenizer.hasNext() )
-            throw new RiotException("Trailing characters in string: " + nodeString) ;
         if ( node.isURI() ) {
             // Lightly test for bad URIs.
             String x = node.getURI() ;
@@ -84,6 +95,17 @@ public class NodeFactoryExtra {
                 throw new RiotException("Space(s) in  IRI: " + nodeString) ;
         }
         return node ;
+    }
+
+    private static Node parseTripleTerm(String nodeString, Tokenizer tokenizer, PrefixMap pmap) {
+        Node s = parseNode(nodeString, tokenizer, pmap);
+        Node p = parseNode(nodeString, tokenizer, pmap);
+        Node o = parseNode(nodeString, tokenizer, pmap);
+        Token tok = tokenizer.next();
+        if ( ! tok.hasType(TokenType.R_TRIPLE) )
+            throw new RiotException("Bad triple term: " + nodeString) ;
+        Triple t = Triple.create(s, p, o);
+        return NodeFactory.createTripleTerm(t);
     }
 
     /**

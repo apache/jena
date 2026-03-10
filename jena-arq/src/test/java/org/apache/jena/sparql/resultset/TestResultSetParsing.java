@@ -43,7 +43,7 @@ import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sys.JenaSystem;
 
-public class TestResultSetFormat2 {
+public class TestResultSetParsing {
 
     static { JenaSystem.init(); }
 
