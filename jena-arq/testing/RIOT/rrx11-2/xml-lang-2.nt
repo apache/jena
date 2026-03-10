@@ -1,0 +1,3 @@
+<http://example/subject> <http://example.org/property> "ABC"@fr .
+<http://example/subjecto> <http://example.org/property1> "ABC"@fr .
+<http://example/subjecto> <http://example.org/property2> "XYZ"@de .
