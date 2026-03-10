@@ -1,0 +1,142 @@
+##  Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
+PREFIX test:   <http://www.w3.org/2001/sw/DataAccess/tests/>
+PREFIX rdft:   <http://www.w3.org/ns/rdftest#>
+PREFIX tr:     <https://w3c.github.io/rdf-tests/rdf/rdf12/rdf-xml/eval#>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+tr:manifest rdf:type mf:Manifest ;
+  rdfs:label "Apache Jena RRX Tests (Extra)" ;
+  mf:assumedTestBase <https://w3c.github.io/rdf-tests/rdf/rdf12/rdf-xml/eval/> ;
+  mf:entries
+  (
+      tr:rrx-xml-lang-1
+      tr:rrx-xml-lang-2
+      
+      tr:rrx-property-resource-1
+      tr:rrx-property-resource-2
+      tr:rrx-propertyattr-no-content-1
+      tr:rrx-propertyattr-no-content-2
+      tr:rrx-property-resource-1
+      tr:rrx-property-resource-2
+
+      tr:rrx-error-top-attr-unknown
+      tr:rrx-error-top-attr-illgeal
+      tr:rrx-error-propertyattr-and-content-1
+      tr:rrx-error-propertyattr-and-content-2
+      
+      tr:rrx-reif11-propertyattr-1
+      tr:rrx-reif11-propertyattr-2
+      tr:rrx-reif11-collection-empty
+      tr:rrx-reif11-collection-one-compound
+      tr:rrx-reif11-resource
+  ).
+
+tr:rrx-xml-lang-1 rdf:type rdft:TestXMLEval ;
+  mf:name "xml-lang-1.rdf" ;
+  mf:comment "xml:lang (1)" ;
+  mf:action <xml-lang-1.rdf> ;
+  mf:result <xml-lang-1.nt> ;
+  .
+                      
+tr:rrx-xml-lang-2 rdf:type rdft:TestXMLEval ;
+  mf:name "xml-lang-2.rdf" ;
+  mf:comment "xml:lang (2)" ;
+  mf:action <xml-lang-2.rdf> ;
+  mf:result <xml-lang-2.nt> ;
+  .
+
+
+tr:rrx-property-resource-1 rdf:type rdft:TestXMLEval ;
+  mf:name "property-resource-1.rdf" ;
+  mf:comment "Content and also a property attribute (1)" ;
+  mf:action <property-resource-1.rdf> ;
+  mf:result <property-resource-1.nt> ;
+  .
+
+tr:rrx-property-resource-2 rdf:type rdft:TestXMLEval ;
+  mf:name "property-resource-2.rdf" ;
+  mf:comment "Content and also a property attribute (2)" ;
+  mf:action <property-resource-2.rdf> ;
+  mf:result <property-resource-2.nt> ;
+  .
+
+tr:rrx-propertyattr-no-content-1 rdf:type rdft:TestXMLEval ;
+  mf:name "propertyattr-no-content-1.rdf" ;
+  mf:comment "Content and also a property attribute (1)" ;
+  mf:action <propertyattr-no-content-1.rdf> ;
+  mf:result <propertyattr-no-content-1.nt> ;
+  .
+
+tr:rrx-propertyattr-no-content-2 rdf:type rdft:TestXMLEval ;
+  mf:name "propertyattr-no-content-2.rdf" ;
+  mf:comment "Content and also a property attribute (2)" ;
+  mf:action <propertyattr-no-content-2.rdf> ;
+  mf:result <propertyattr-no-content-2.nt> ;
+  .
+
+tr:rrx-error-top-attr-unknown rdf:type rdft:TestXMLNegativeSyntax ;
+  mf:name "error-top-attr-unknown.rdf" ;
+  mf:comment "Unknown attribute on top node element";
+  mf:action <error-top-attr-unknown.rdf> ;
+  .
+
+tr:rrx-error-top-attr-illgeal rdf:type rdft:TestXMLNegativeSyntax ;
+  mf:name "error-top-attr-illegal.rdf" ;
+  mf:comment "Illegal rdf: attribute on top node element";
+  mf:action <error-top-attr-illegal.rdf> ;
+  .
+
+tr:rrx-error-propertyattr-and-content-1 rdf:type rdft:TestXMLNegativeSyntax ;
+  mf:name "error-propertyattr-and-content-1.rdf" ;
+  mf:comment "Content and also a property attribute (1)" ;
+  mf:action <error-propertyattr-and-content-1.rdf> ;
+  .
+
+tr:rrx-error-propertyattr-and-content-2 rdf:type rdft:TestXMLNegativeSyntax ;
+  mf:name "error-propertyattr-and-content-2.rdf" ;
+  mf:comment "Content and also a property attribute (2)" ;
+  mf:action <error-propertyattr-and-content-2.rdf> ;
+  .
+
+
+
+
+
+tr:rrx-reif11-propertyattr-1 rdf:type rdft:TestXMLEval ;
+  mf:name "reif11-propertyattr-1.rdf" ;
+  mf:comment "RDF 1.1 Reification of property attribute";
+  mf:action <reif11-propertyattr-1.rdf> ;
+  mf:result <reif11-propertyattr-1.nt> ;
+  .
+
+tr:rrx-reif11-propertyattr-2 rdf:type rdft:TestXMLEval ;
+  mf:name "reif11-propertyattr-2.rdf" ;
+  mf:comment "RDF 1.1 Reification of property attribute (typed node)";
+  mf:action <reif11-propertyattr-2.rdf> ;
+  mf:result <reif11-propertyattr-2.nt> ;
+  .
+
+tr:rrx-reif11-collection-empty rdf:type rdft:TestXMLEval ;
+  mf:name "reif11-collection-empty.rdf" ;
+  mf:comment "RDF 1.1 Reification of an empty collction";
+  mf:action <reif11-collection-empty.rdf> ;
+  mf:result <reif11-collection-empty.nt> ;
+  .
+
+tr:rrx-reif11-collection-one-compound rdf:type rdft:TestXMLEval ;
+  mf:name "reif11-collection-one-compound.rdf" ;
+  mf:comment "RDF 1.1 Reification of a collection of one rdf:Description element";
+  mf:action <reif11-collection-one-compound.rdf> ;
+  mf:result <reif11-collection-one-compound.nt> ;
+  .
+
+tr:rrx-reif11-resource rdf:type rdft:TestXMLEval ;
+  mf:name "reif11-resource.rdf" ;
+  mf:comment "RDF 1.1 Reification and rdf:resource";
+  mf:action <reif11-resource.rdf> ;
+  mf:result <reif11-resource.nt> ;
+  .

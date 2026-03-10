@@ -1,0 +1,2 @@
+_:B0b3a9f111f518729ba3eb74e37faef0e <http://example/attr> "attrVal" .
+<http://example/s> <http://example/p> _:B0b3a9f111f518729ba3eb74e37faef0e .
