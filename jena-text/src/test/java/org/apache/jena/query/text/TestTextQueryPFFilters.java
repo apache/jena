@@ -36,14 +36,13 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.vocabulary.RDF;
-import org.apache.jena.vocabulary.RDFS;
 import org.apache.lucene.store.ByteBuffersDirectory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests for luc:query filter support and JSON filter parsing.
+ * Tests for luc:query with CQL filter support.
  */
 public class TestTextQueryPFFilters {
 
@@ -86,7 +85,7 @@ public class TestTextQueryPFFilters {
         config.setValueStored(true);
 
         ByteBuffersDirectory dir = new ByteBuffersDirectory();
-        TextIndexLucene textIndex = new TextIndexLucene(dir, config);
+        ShaclTextIndexLucene textIndex = new ShaclTextIndexLucene(dir, config);
 
         Dataset baseDs = DatasetFactory.create();
         ShaclTextDocProducer producer = new ShaclTextDocProducer(
@@ -131,7 +130,7 @@ public class TestTextQueryPFFilters {
     public void testLucQueryWithoutFilters() {
         String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "SELECT ?s ?score WHERE {\n" +
-            "  (?s ?score) luc:query (\"learning\" 10)\n" +
+            "  (?s ?score) luc:query (\"default\" \"learning\" 10)\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);
@@ -153,10 +152,11 @@ public class TestTextQueryPFFilters {
     }
 
     @Test
-    public void testLucQueryWithSingleFilter() {
+    public void testLucQueryWithCqlEqualFilter() {
         String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "SELECT ?s ?score WHERE {\n" +
-            "  (?s ?score) luc:query (\"learning\" '{\"category\": [\"technology\"]}' 20)\n" +
+            "  (?s ?score) luc:query (\"default\" \"learning\" " +
+            "    '{\"op\":\"=\",\"args\":[{\"property\":\"category\"},\"technology\"]}' 20)\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);
@@ -179,10 +179,14 @@ public class TestTextQueryPFFilters {
     }
 
     @Test
-    public void testLucQueryWithMultiFieldFilter() {
+    public void testLucQueryWithCqlAndFilter() {
         String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "SELECT ?s WHERE {\n" +
-            "  (?s ?score) luc:query (\"learning\" '{\"category\": [\"technology\"], \"author\": [\"Smith\"]}' 20)\n" +
+            "  (?s ?score) luc:query (\"default\" \"learning\" " +
+            "    '{\"op\":\"and\",\"args\":[" +
+            "      {\"op\":\"=\",\"args\":[{\"property\":\"category\"},\"technology\"]}," +
+            "      {\"op\":\"=\",\"args\":[{\"property\":\"author\"},\"Smith\"]}" +
+            "    ]}' 20)\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);
@@ -205,10 +209,11 @@ public class TestTextQueryPFFilters {
     }
 
     @Test
-    public void testLucQueryWithFilterNoMatches() {
+    public void testLucQueryWithCqlNoMatches() {
         String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "SELECT ?s WHERE {\n" +
-            "  (?s ?score) luc:query (\"learning\" '{\"category\": [\"nonexistent\"]}' 20)\n" +
+            "  (?s ?score) luc:query (\"default\" \"learning\" " +
+            "    '{\"op\":\"=\",\"args\":[{\"property\":\"category\"},\"nonexistent\"]}' 20)\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);
@@ -220,24 +225,5 @@ public class TestTextQueryPFFilters {
         } finally {
             dataset.end();
         }
-    }
-
-    @Test
-    public void testParseJsonFilters() {
-        Map<String, List<String>> filters = ShaclTextQueryPF.parseJsonFilters(
-            "{\"category\": [\"Technology\", \"Science\"], \"author\": [\"Smith\"]}");
-
-        assertEquals(2, filters.size());
-        assertEquals(Arrays.asList("Technology", "Science"), filters.get("category"));
-        assertEquals(Arrays.asList("Smith"), filters.get("author"));
-    }
-
-    @Test
-    public void testParseJsonFiltersSingleValue() {
-        Map<String, List<String>> filters = ShaclTextQueryPF.parseJsonFilters(
-            "{\"category\": [\"Technology\"]}");
-
-        assertEquals(1, filters.size());
-        assertEquals(Arrays.asList("Technology"), filters.get("category"));
     }
 }

@@ -58,7 +58,7 @@ public class TestNativeFacetCounts {
     private static final Node AUTHOR_PRED = NodeFactory.createURI(NS + "author");
 
     private Dataset dataset;
-    private TextIndexLucene textIndex;
+    private ShaclTextIndexLucene textIndex;
 
     @Before
     public void setUp() {
@@ -89,7 +89,7 @@ public class TestNativeFacetCounts {
         config.setValueStored(true);
 
         ByteBuffersDirectory dir = new ByteBuffersDirectory();
-        textIndex = new TextIndexLucene(dir, config);
+        textIndex = new ShaclTextIndexLucene(dir, config);
 
         Dataset baseDs = DatasetFactory.create();
         ShaclTextDocProducer producer = new ShaclTextDocProducer(

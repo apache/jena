@@ -1,0 +1,97 @@
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+# https://taskfile.dev
+version: '3'
+
+vars:
+  VERSION: 6.1.0-SNAPSHOT
+  FUSEKI_JAR: ../../jena-fuseki2/jena-fuseki-server/target/jena-fuseki-server-{{.VERSION}}.jar
+  SERVER_URL: http://localhost:3030
+  DATASET: geochem
+  GRAPH_URI: https://linked.data.gov.au/dataset/gswa/DRILLHOLES/Observation
+
+tasks:
+  build:
+    desc: Build the Fuseki server JAR (includes jena-text)
+    dir: ../..
+    cmds:
+      - mvn clean install -pl jena-fuseki2/jena-fuseki-server -am -DskipTests
+
+  serve:
+    desc: Start Fuseki with the drillhole config
+    cmds:
+      - java -jar {{.FUSEKI_JAR}} --config config.ttl
+
+  load-vocab:
+    desc: Load class/property labels (run before loading data)
+    cmds:
+      - |
+        curl -s -X POST "{{.SERVER_URL}}/{{.DATASET}}/data?default" \
+          -H "Content-Type: text/turtle" \
+          --data-binary @vocab.ttl
+      - echo "Loaded vocab.ttl"
+
+  load:
+    desc: "Load an NQ file directly (usage: task load -- 1)"
+    cmds:
+      - |
+        FILE="Drillholes_DHGeochemistry_SS_Observation_{{.CLI_ARGS}}.nq"
+        if [ ! -f "$FILE" ]; then
+          echo "File not found: $FILE"
+          exit 1
+        fi
+        echo "Loading $FILE into named graph (unionDefaultGraph merges into default)..."
+        curl -s -X POST "{{.SERVER_URL}}/{{.DATASET}}/data" \
+          -H "Content-Type: application/n-quads" \
+          --data-binary @"$FILE"
+      - echo "Loaded Drillholes_DHGeochemistry_SS_Observation_{{.CLI_ARGS}}.nq"
+
+  load-all:
+    desc: "Load NQ files (usage: task load-all, load-all -- 5, load-all -- 10-20)"
+    cmds:
+      - |
+        RANGE="{{.CLI_ARGS}}"
+        TOTAL=$(ls Drillholes_DHGeochemistry_SS_Observation_*.nq 2>/dev/null | wc -l | tr -d ' ')
+        if [ -z "$RANGE" ]; then
+          START=1; END=$TOTAL
+        elif echo "$RANGE" | grep -q '-'; then
+          START=$(echo "$RANGE" | cut -d- -f1)
+          END=$(echo "$RANGE" | cut -d- -f2)
+        else
+          START=$RANGE; END=$TOTAL
+        fi
+        COUNT_TO_LOAD=$((END - START + 1))
+        echo "Loading files ${START}-${END} (${COUNT_TO_LOAD} of ${TOTAL} NQ files)"
+        LOADED=0
+        for i in $(seq "$START" "$END"); do
+          FILE="Drillholes_DHGeochemistry_SS_Observation_${i}.nq"
+          if [ ! -f "$FILE" ]; then
+            continue
+          fi
+          RESULT=$(curl -s -X POST "{{.SERVER_URL}}/{{.DATASET}}/data" \
+            -H "Content-Type: application/n-quads" \
+            --data-binary @"$FILE")
+          QUADS=$(echo "$RESULT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('quadCount',0))" 2>/dev/null)
+          LOADED=$((LOADED + 1))
+          printf "[%d/%d] File %d: %s quads\n" "$LOADED" "$COUNT_TO_LOAD" "$i" "$QUADS"
+        done
+        echo "Done. Loaded ${LOADED} files."
+
+  setup:
+    desc: "Instructions to set up the drillhole demo"
+    cmds:
+      - echo "1. Start Fuseki with 'task serve' in another terminal"
+      - echo "2. Load vocab with 'task load-vocab'"
+      - echo "3. Load data with 'task load -- 1' (NQ files loaded directly)"
+
+  clean:
+    desc: Remove TDB2 and Lucene data directories
+    cmds:
+      - rm -rf DB Lucene
+      - echo "Cleaned DB and Lucene directories"
+
+  app:
+    desc: Serve the static demo app (Alpine.js)
+    cmds:
+      - ln -sfn ../drillhole/config.ttl ../app-static/config.ttl
+      - echo "Serving at http://localhost:8000 (drillhole → localhost:3030)"
+      - cmd: python3 -m http.server 8000 --directory ../app-static

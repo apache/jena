@@ -28,6 +28,8 @@ import org.apache.jena.query.text.assembler.TestTextIndexLuceneAssembler;
 import org.apache.jena.query.text.changes.TestDatasetMonitor;
 import org.apache.jena.query.text.assembler.TestGenericAnalyzerAssembler;
 import org.apache.jena.query.text.assembler.TestPropListsAssembler;
+import org.apache.jena.query.text.cql.TestCqlParser;
+import org.apache.jena.query.text.cql.TestCqlToLuceneCompiler;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -89,6 +91,12 @@ import org.junit.runners.Suite.SuiteClasses;
     , TestShaclPathSupport.class
     , TestTextQueryPFFilters.class
     , TestShaclBulkIndexer.class
+
+    // CQL and multi-index tests
+    , TestCqlParser.class
+    , TestCqlToLuceneCompiler.class
+    , TestSortSpec.class
+    , TestTextIndexRegistry.class
 })
 
 public class TS_Text

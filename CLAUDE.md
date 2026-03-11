@@ -86,6 +86,8 @@ Key dependency chain: `jena-base` → `jena-core` → `jena-arq` → `jena-tdb2`
 
 All new code is additive — upstream code paths are unmodified.
 
+**Backward compatibility policy**: The classic `text:query` mode (upstream) must remain untouched. Within SHACL mode (`luc:query` / `luc:facet`), **no backward compatibility is required**. Breaking changes are expected as the query syntax and implementation are refined. Do not maintain multiple syntaxes or support previous commit-era formats — only the target model matters. Once stable, backward compatibility will be considered for release.
+
 ### Key SHACL Mode Classes (jena-text)
 
 | Class | Role |

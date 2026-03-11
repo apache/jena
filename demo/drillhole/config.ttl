@@ -34,7 +34,7 @@ PREFIX exg:     <http://example.com/>
     tdb2:location "DB" ;
     tdb2:unionDefaultGraph true .
 
-:index rdf:type text:TextIndexLucene ;
+:index rdf:type text:TextIndexShacl ;
     text:directory <file:Lucene> ;
     text:shapes ( :GeochemAnalysisShape ) ;
     text:storeValues true ;

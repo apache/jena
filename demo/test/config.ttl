@@ -30,14 +30,14 @@ PREFIX ex:      <http://example.org/mining/>
     text:index   :index .
 
 :base_dataset rdf:type tdb2:DatasetTDB ;
-    tdb2:location "DB" ;
-    tdb2:unionDefaultGraph true .
+    tdb2:location "DB" .
 
-:index rdf:type text:TextIndexLucene ;
+:index rdf:type text:TextIndexShacl ;
     text:directory <file:Lucene> ;
     text:shapes ( :MiningReportShape :BoreholeShape :SiteShape ) ;
     text:storeValues true ;
-    text:maxFacetHits 50000 .
+    text:maxFacetHits 50000 ;
+    idx:fusekiBase "http://localhost:3031" .
 
 ## --- Shapes ---
 

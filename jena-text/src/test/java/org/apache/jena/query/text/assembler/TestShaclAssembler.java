@@ -24,11 +24,9 @@ package org.apache.jena.query.text.assembler;
 import static org.junit.Assert.*;
 
 import org.apache.jena.assembler.Assembler;
-import org.apache.jena.assembler.exceptions.AssemblerException;
 import org.apache.jena.query.text.ShaclIndexMapping;
 import org.apache.jena.query.text.ShaclIndexMapping.FieldDef;
-import org.apache.jena.query.text.TextIndexException;
-import org.apache.jena.query.text.TextIndexLucene;
+import org.apache.jena.query.text.ShaclTextIndexLucene;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
@@ -77,7 +75,7 @@ public class TestShaclAssembler {
 
         // Build the index spec
         return model.createResource(EX + "index")
-            .addProperty(RDF.type, TextVocab.textIndexLucene)
+            .addProperty(RDF.type, TextVocab.textIndexShacl)
             .addProperty(TextVocab.pDirectory, model.createLiteral("mem"))
             .addProperty(TextVocab.pShapes, shapesList);
     }
@@ -87,7 +85,7 @@ public class TestShaclAssembler {
         Model model = createModel();
         Resource indexSpec = buildShaclIndexSpec(model);
 
-        TextIndexLucene index = (TextIndexLucene) Assembler.general().open(indexSpec);
+        ShaclTextIndexLucene index = (ShaclTextIndexLucene) Assembler.general().open(indexSpec);
         try {
             assertTrue("Should be in SHACL mode", index.isShaclMode());
             ShaclIndexMapping mapping = index.getShaclMapping();
@@ -107,7 +105,7 @@ public class TestShaclAssembler {
         Model model = createModel();
         Resource indexSpec = buildShaclIndexSpec(model);
 
-        TextIndexLucene index = (TextIndexLucene) Assembler.general().open(indexSpec);
+        ShaclTextIndexLucene index = (ShaclTextIndexLucene) Assembler.general().open(indexSpec);
         try {
             assertNotNull(index.getDocDef());
             assertEquals("uri", index.getDocDef().getEntityField());
@@ -145,11 +143,11 @@ public class TestShaclAssembler {
 
         RDFNode shapesList = model.createList(new RDFNode[]{ bookShape });
         Resource indexSpec = model.createResource(EX + "index")
-            .addProperty(RDF.type, TextVocab.textIndexLucene)
+            .addProperty(RDF.type, TextVocab.textIndexShacl)
             .addProperty(TextVocab.pDirectory, model.createLiteral("mem"))
             .addProperty(TextVocab.pShapes, shapesList);
 
-        TextIndexLucene index = (TextIndexLucene) Assembler.general().open(indexSpec);
+        ShaclTextIndexLucene index = (ShaclTextIndexLucene) Assembler.general().open(indexSpec);
         try {
             ShaclIndexMapping mapping = index.getShaclMapping();
             FieldDef wroteByField = null;
@@ -195,11 +193,11 @@ public class TestShaclAssembler {
 
         RDFNode shapesList = model.createList(new RDFNode[]{ bookShape });
         Resource indexSpec = model.createResource(EX + "index")
-            .addProperty(RDF.type, TextVocab.textIndexLucene)
+            .addProperty(RDF.type, TextVocab.textIndexShacl)
             .addProperty(TextVocab.pDirectory, model.createLiteral("mem"))
             .addProperty(TextVocab.pShapes, shapesList);
 
-        TextIndexLucene index = (TextIndexLucene) Assembler.general().open(indexSpec);
+        ShaclTextIndexLucene index = (ShaclTextIndexLucene) Assembler.general().open(indexSpec);
         try {
             ShaclIndexMapping mapping = index.getShaclMapping();
             FieldDef authorNameField = null;
@@ -216,52 +214,6 @@ public class TestShaclAssembler {
             assertEquals("Should have 2 leaf predicates", 2, authorNameField.getPredicates().size());
         } finally {
             index.close();
-        }
-    }
-
-    @Test
-    public void testBothShapesAndEntityMapThrows() {
-        Model model = createModel();
-
-        // entityMap
-        Resource entityMap = model.createResource(EX + "entMap")
-            .addProperty(RDF.type, TextVocab.entityMap)
-            .addProperty(TextVocab.pEntityField, "uri")
-            .addProperty(TextVocab.pDefaultField, "text")
-            .addProperty(TextVocab.pMap,
-                model.createList(new RDFNode[]{
-                    model.createResource()
-                        .addProperty(TextVocab.pField, "text")
-                        .addProperty(TextVocab.pPredicate, RDFS.label)
-                }));
-
-        // shapes list
-        Resource bookShape = model.createResource(EX + "BookShape2")
-            .addProperty(model.createProperty(SH, "targetClass"), model.createResource(EX + "Book"))
-            .addProperty(
-                model.createProperty(SH, "property"),
-                model.createResource()
-                    .addProperty(model.createProperty(IndexVocab.NS, "fieldName"), "text")
-                    .addProperty(model.createProperty(IndexVocab.NS, "defaultSearch"), model.createTypedLiteral(true))
-                    .addProperty(model.createProperty(SH, "path"), RDFS.label)
-            );
-        RDFNode shapesList = model.createList(new RDFNode[]{ bookShape });
-
-        // Both specified — should throw
-        Resource indexSpec = model.createResource(EX + "badIndex")
-            .addProperty(RDF.type, TextVocab.textIndexLucene)
-            .addProperty(TextVocab.pDirectory, model.createLiteral("mem"))
-            .addProperty(TextVocab.pEntityMap, entityMap)
-            .addProperty(TextVocab.pShapes, shapesList);
-
-        try {
-            Assembler.general().open(indexSpec);
-            fail("Should have thrown an exception");
-        } catch (AssemblerException e) {
-            // Assembler wraps our TextIndexException
-            assertTrue("Cause should be TextIndexException",
-                e.getCause() instanceof TextIndexException);
-            assertTrue(e.getCause().getMessage().contains("Cannot specify both"));
         }
     }
 

@@ -200,23 +200,8 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                 cacheQueries = cqNode.asLiteral().getBoolean();
             }
 
-            // Determine indexing mode: SHACL shapes or classic entityMap
-            Statement shapesStmt = root.getProperty(pShapes);
-            Resource entityMapResource = GraphUtils.getResourceValue(root, pEntityMap);
-
-            if (shapesStmt != null && entityMapResource != null)
-                throw new TextIndexException("Cannot specify both text:shapes and text:entityMap on " + root);
-
-            EntityDefinition docDef;
-            ShaclIndexMapping shaclMapping = null;
-
-            if (shapesStmt != null) {
-                shaclMapping = ShaclIndexAssembler.parseShapes(a, shapesStmt.getObject().asResource());
-                docDef = ShaclIndexAssembler.deriveEntityDefinition(shaclMapping);
-            } else {
-                Resource r = GraphUtils.getResourceValue(root, pEntityMap) ;
-                docDef = (EntityDefinition) a.open(r) ;
-            }
+            Resource r = GraphUtils.getResourceValue(root, pEntityMap) ;
+            EntityDefinition docDef = (EntityDefinition) a.open(r) ;
 
             TextIndexConfig config = new TextIndexConfig(docDef);
             config.setAnalyzer(analyzer);
@@ -227,21 +212,6 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
             config.setValueStored(storeValues);
             config.setIgnoreIndexErrors(ignoreIndexErrs);
             docDef.setCacheQueries(cacheQueries);
-
-            if (shaclMapping != null) {
-                config.setShaclMapping(shaclMapping);
-                // Derive facet fields from mapping
-                config.setFacetFields(shaclMapping.getFacetFieldNames());
-                // Parse maxFacetHits if specified
-                Statement maxFacetHitsStatement = root.getProperty(pMaxFacetHits);
-                if (null != maxFacetHitsStatement) {
-                    RDFNode mfhNode = maxFacetHitsStatement.getObject();
-                    if (! mfhNode.isLiteral()) {
-                        throw new TextIndexException("text:maxFacetHits property must be an int : " + mfhNode);
-                    }
-                    config.setMaxFacetHits(mfhNode.asLiteral().getInt());
-                }
-            }
 
             return TextDatasetFactory.createLuceneIndex(directory, config) ;
         } catch (IOException e) {

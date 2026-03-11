@@ -33,6 +33,8 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.QueryBuildException;
 import org.apache.jena.query.QueryExecException;
+import org.apache.jena.query.text.cql.CqlExpression;
+import org.apache.jena.query.text.cql.CqlParser;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
@@ -51,29 +53,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * SPARQL property function for facet counts with structured filter support.
+ * SPARQL property function for facet counts ({@code luc:facet}).
  * <p>
  * <b>Syntax:</b>
  * <pre>
- * (?field ?value ?count) text:facet (property? "query" '["field1","field2"]' '{"field":"[val]"}'? maxValues?)
+ * (?field ?value ?count) luc:facet ("indexId" property? "query" '["field1","field2"]' cqlFilter? maxValues? minCount?)
  * </pre>
  * <p>
- * <b>Arguments:</b>
- * <ol>
- *   <li>Optional: One or more property URIs to search</li>
- *   <li>Required: Query string (plain literal)</li>
- *   <li>Required: Facet fields as JSON array: '["category", "author"]'</li>
- *   <li>Optional: Filters as JSON object: '{"category": ["Technology"]}'</li>
- *   <li>Optional: Max facet values per field (integer, default 10)</li>
- * </ol>
- * <p>
- * When used together with text:query in the same BGP with matching parameters,
- * they share a SearchExecution instance to avoid duplicate Lucene queries.
+ * The first string literal is the index ID (required). CQL filters are JSON
+ * objects with an {@code "op"} key.
  */
 public class TextFacetPF extends PropertyFunctionBase {
     private static final Logger log = LoggerFactory.getLogger(TextFacetPF.class);
 
-    private TextIndexLucene textIndex = null;
+    private ShaclTextIndexLucene textIndex = null;
     private boolean warningIssued = false;
 
     public TextFacetPF() {}
@@ -81,8 +74,6 @@ public class TextFacetPF extends PropertyFunctionBase {
     @Override
     public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt) {
         super.build(argSubject, predicate, argObject, execCxt);
-        DatasetGraph dsg = execCxt.getDataset();
-        textIndex = chooseTextIndex(execCxt, dsg);
 
         if (argSubject.isList()) {
             int size = argSubject.getArgListSize();
@@ -94,25 +85,37 @@ public class TextFacetPF extends PropertyFunctionBase {
         if (argObject.isList()) {
             List<Node> list = argObject.getArgList();
             if (list.isEmpty()) {
-                throw new QueryBuildException("Object list must contain at least a query string and facet fields");
+                throw new QueryBuildException("Object list must contain at least an index ID, query string and facet fields");
             }
         }
     }
 
-    private static TextIndexLucene chooseTextIndex(ExecutionContext execCxt, DatasetGraph dsg) {
+    private static ShaclTextIndexLucene chooseTextIndex(ExecutionContext execCxt, DatasetGraph dsg, String indexId) {
+        // Try registry first
+        Object regObj = execCxt.getContext().get(TextQuery.textIndexRegistry);
+        if (regObj instanceof TextIndexRegistry registry) {
+            TextIndexLucene idx = indexId != null ? registry.get(indexId) : registry.getDefault();
+            if (idx instanceof ShaclTextIndexLucene shaclIdx) {
+                return shaclIdx;
+            }
+            Log.warn(TextFacetPF.class, "Text index is not a ShaclTextIndexLucene - faceting not supported");
+            return null;
+        }
+
+        // Fall back to single index
         Object obj = execCxt.getContext().get(TextQuery.textIndex);
-        if (obj instanceof TextIndexLucene) {
-            return (TextIndexLucene) obj;
+        if (obj instanceof ShaclTextIndexLucene shaclIdx) {
+            return shaclIdx;
         }
         if (obj != null) {
-            Log.warn(TextFacetPF.class, "Context setting '" + TextQuery.textIndex + "' is not a TextIndexLucene");
+            Log.warn(TextFacetPF.class, "Context setting '" + TextQuery.textIndex + "' is not a ShaclTextIndexLucene");
         }
         if (dsg instanceof DatasetGraphText) {
             TextIndex ti = ((DatasetGraphText) dsg).getTextIndex();
-            if (ti instanceof TextIndexLucene) {
-                return (TextIndexLucene) ti;
+            if (ti instanceof ShaclTextIndexLucene shaclIdx) {
+                return shaclIdx;
             }
-            Log.warn(TextFacetPF.class, "TextIndex is not a TextIndexLucene - faceting not supported");
+            Log.warn(TextFacetPF.class, "TextIndex is not a ShaclTextIndexLucene - faceting not supported");
         }
         Log.warn(TextFacetPF.class, "Failed to find the text index");
         return null;
@@ -122,18 +125,6 @@ public class TextFacetPF extends PropertyFunctionBase {
     public QueryIterator exec(Binding binding,
                               PropFuncArg argSubject, Node predicate, PropFuncArg argObject,
                               ExecutionContext execCxt) {
-        if (textIndex == null) {
-            if (!warningIssued) {
-                Log.warn(getClass(), "No text index - no facet counts available");
-                warningIssued = true;
-            }
-            return IterLib.noResults(execCxt);
-        }
-
-        if (!textIndex.isFacetingEnabled()) {
-            Log.warn(getClass(), "Faceting is not enabled on this text index. Configure facet fields in the index definition.");
-            return IterLib.noResults(execCxt);
-        }
 
         argSubject = Substitute.substitute(argSubject, binding);
         argObject = Substitute.substitute(argObject, binding);
@@ -174,18 +165,31 @@ public class TextFacetPF extends PropertyFunctionBase {
             return IterLib.noResults(execCxt);
         }
 
-        // Get facet counts (via SearchExecution if filters present, direct otherwise)
+        // Resolve text index using indexId
+        textIndex = chooseTextIndex(execCxt, execCxt.getDataset(), args.indexId);
+        if (textIndex == null) {
+            if (!warningIssued) {
+                Log.warn(getClass(), "No text index - no facet counts available");
+                warningIssued = true;
+            }
+            return IterLib.noResults(execCxt);
+        }
+
+        if (!textIndex.isFacetingEnabled()) {
+            Log.warn(getClass(), "Faceting is not enabled on this text index. Configure facet fields in the index definition.");
+            return IterLib.noResults(execCxt);
+        }
+
+        // Get facet counts via SearchExecution for shared state
         Map<String, List<FacetValue>> facetCounts;
         try {
-            log.debug("TextFacetPF: filters={} queryString='{}' facetFields={}", args.filters, args.queryString, args.facetFields);
-            if (args.filters != null && !args.filters.isEmpty()) {
-                SearchExecution se = SearchExecution.getOrCreate(
-                    execCxt, args.props, args.queryString,
-                    args.filters, textIndex, null, null);
-                facetCounts = se.getFacetCounts(args.facetFields, args.maxValues, args.minCount);
-            } else {
-                facetCounts = textIndex.getFacetCounts(args.queryString, args.facetFields, args.maxValues, args.minCount);
-            }
+            log.debug("TextFacetPF: indexId={} cqlFilter={} queryString='{}' facetFields={}",
+                args.indexId, args.cqlFilter, args.queryString, args.facetFields);
+
+            SearchExecution se = SearchExecution.getOrCreate(
+                execCxt, args.indexId, args.props, args.queryString,
+                args.cqlFilter, null, textIndex, null, null);
+            facetCounts = se.getFacetCounts(args.facetFields, args.maxValues, args.minCount);
         } catch (Exception e) {
             log.error("Error getting facet counts: {}", e.getMessage());
             return IterLib.noResults(execCxt);
@@ -225,35 +229,38 @@ public class TextFacetPF extends PropertyFunctionBase {
     }
 
     /**
-     * Parse the object argument list into structured facet parameters.
+     * Parse the object argument list.
      * <p>
-     * Argument order:
-     * 1. While arg is URI: collect as properties
-     * 2. First plain literal (not JSON, not integer): query string
-     * 3. Remaining literals:
-     *    - starts with '[': JSON array of facet field names
-     *    - starts with '{': JSON object of filter map
-     *    - parseable as integer: maxValues
+     * Arg order: (indexId property* queryString facetFields cqlFilter? maxValues? minCount?)
      */
     private FacetArgs parseObjectArgs(PropFuncArg argObject) {
         List<Resource> props = new ArrayList<>();
+        String indexId = null;
         String queryString = null;
         List<String> facetFields = new ArrayList<>();
-        Map<String, List<String>> filters = null;
+        CqlExpression cqlFilter = null;
         int maxValues = 10;
         int minCount = 0;
         boolean maxValuesSet = false;
 
         if (argObject.isNode()) {
-            // Single arg - must be a query string, but we need facet fields too
-            log.warn("text:facet requires at least a query string and facet fields");
+            log.warn("luc:facet requires at least an index ID, query string and facet fields");
             return null;
         }
 
         List<Node> list = argObject.getArgList();
         int idx = 0;
 
-        // 1. Collect property URIs
+        // 1. First literal = index ID
+        if (idx < list.size() && list.get(idx).isLiteral()) {
+            String lex = list.get(idx).getLiteralLexicalForm();
+            if (!lex.startsWith("{") && !lex.startsWith("[") && !isInteger(lex)) {
+                indexId = lex;
+                idx++;
+            }
+        }
+
+        // 2. Collect property URIs
         while (idx < list.size() && list.get(idx).isURI()) {
             Node n = list.get(idx);
             Property prop = ResourceFactory.createProperty(n.getURI());
@@ -261,7 +268,7 @@ public class TextFacetPF extends PropertyFunctionBase {
             idx++;
         }
 
-        // 2. Query string (first plain literal that's not JSON and not an integer)
+        // 3. Query string (first non-JSON, non-integer literal after URIs)
         if (idx < list.size() && list.get(idx).isLiteral()) {
             String lex = list.get(idx).getLiteralLexicalForm();
             if (!lex.startsWith("[") && !lex.startsWith("{") && !isInteger(lex)) {
@@ -270,8 +277,11 @@ public class TextFacetPF extends PropertyFunctionBase {
             }
         }
 
-        // 3. Parse remaining: JSON arrays, JSON objects, and integers
-        // First integer = maxValues, second integer = minCount
+        if (indexId == null) {
+            indexId = TextIndexRegistry.DEFAULT_ID;
+        }
+
+        // 4. Parse remaining: JSON arrays, JSON objects (CQL), and integers
         while (idx < list.size()) {
             Node n = list.get(idx);
             if (n.isLiteral()) {
@@ -283,8 +293,10 @@ public class TextFacetPF extends PropertyFunctionBase {
                         facetFields.add(arr.get(i).getAsString().value());
                     }
                 } else if (lex.startsWith("{")) {
-                    // JSON object: filter map
-                    filters = parseJsonFilters(lex);
+                    // JSON object: CQL filter (has "op" key)
+                    if (lex.contains("\"op\"")) {
+                        cqlFilter = CqlParser.parse(lex);
+                    }
                 } else if (isInteger(lex)) {
                     if (!maxValuesSet) {
                         maxValues = Integer.parseInt(lex);
@@ -293,36 +305,17 @@ public class TextFacetPF extends PropertyFunctionBase {
                         minCount = Integer.parseInt(lex);
                     }
                 } else {
-                    // Unrecognized literal - could be a query string if we haven't seen one
                     if (queryString == null) {
                         queryString = lex;
                     } else {
-                        log.warn("Unexpected argument in text:facet: {}", lex);
+                        log.warn("Unexpected argument in luc:facet: {}", lex);
                     }
                 }
             }
             idx++;
         }
 
-        return new FacetArgs(props, queryString, facetFields, filters, maxValues, minCount);
-    }
-
-    /**
-     * Parse a JSON object string into a filter map.
-     * Expected format: {"field": ["value1", "value2"], "field2": ["value3"]}
-     */
-    static Map<String, List<String>> parseJsonFilters(String jsonStr) {
-        Map<String, List<String>> filters = new java.util.LinkedHashMap<>();
-        org.apache.jena.atlas.json.JsonObject json = JSON.parse(jsonStr);
-        for (String key : json.keys()) {
-            JsonArray vals = json.get(key).getAsArray();
-            List<String> values = new ArrayList<>();
-            for (int i = 0; i < vals.size(); i++) {
-                values.add(vals.get(i).getAsString().value());
-            }
-            filters.put(key, values);
-        }
-        return filters;
+        return new FacetArgs(indexId, props, queryString, facetFields, cqlFilter, maxValues, minCount);
     }
 
     private static boolean isInteger(String s) {
@@ -335,19 +328,21 @@ public class TextFacetPF extends PropertyFunctionBase {
     }
 
     private static class FacetArgs {
+        final String indexId;
         final List<Resource> props;
         final String queryString;
         final List<String> facetFields;
-        final Map<String, List<String>> filters;
+        final CqlExpression cqlFilter;
         final int maxValues;
         final int minCount;
 
-        FacetArgs(List<Resource> props, String queryString, List<String> facetFields,
-                  Map<String, List<String>> filters, int maxValues, int minCount) {
+        FacetArgs(String indexId, List<Resource> props, String queryString, List<String> facetFields,
+                  CqlExpression cqlFilter, int maxValues, int minCount) {
+            this.indexId = indexId;
             this.props = props;
             this.queryString = queryString;
             this.facetFields = facetFields;
-            this.filters = filters;
+            this.cqlFilter = cqlFilter;
             this.maxValues = maxValues;
             this.minCount = minCount;
         }

@@ -54,7 +54,7 @@ public class TestShaclEntityPerDocument {
     private static final Node AUTHOR_PRED = NodeFactory.createURI(NS + "author");
 
     private Dataset dataset;
-    private TextIndexLucene textIndex;
+    private ShaclTextIndexLucene textIndex;
 
     @Before
     public void setUp() {
@@ -85,7 +85,7 @@ public class TestShaclEntityPerDocument {
         config.setValueStored(true);
 
         ByteBuffersDirectory dir = new ByteBuffersDirectory();
-        textIndex = new TextIndexLucene(dir, config);
+        textIndex = new ShaclTextIndexLucene(dir, config);
 
         Dataset baseDs = DatasetFactory.create();
         ShaclTextDocProducer producer = new ShaclTextDocProducer(
@@ -148,7 +148,7 @@ public class TestShaclEntityPerDocument {
             "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "PREFIX ex: <" + NS + ">\n" +
             "SELECT ?s WHERE {\n" +
-            "  (?s ?score) luc:query ('machine learning') .\n" +
+            "  (?s ?score) luc:query ('default' 'machine learning') .\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);

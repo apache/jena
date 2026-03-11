@@ -8,7 +8,8 @@ const CONFIG_PATH = 'config.ttl';
 const FUSEKI_BASE = 'http://localhost:3030';
 const RESULT_LIMITS = [10, 100, 1000, 10000];
 const DEFAULT_LIMIT = 10;
-const MAX_FACET_VALUES = 50;
+const FACET_LIMITS = [10, 25, 50, 100, 500];
+const DEFAULT_FACET_LIMIT = 10;
 
 // ---------------------------------------------------------------------------
 // RDF namespace constants
@@ -52,6 +53,26 @@ function escapeHtml(text) {
 
 function timeStamp() {
     return new Date().toLocaleTimeString('en-GB', { hour12: false });
+}
+
+/**
+ * Convert selected facet filters to CQL2-JSON string.
+ * Input: {field: [val1, val2], ...} → CQL2-JSON with AND across fields, IN/= within.
+ * Returns null if no filters are active.
+ */
+function buildCqlFilter(selected) {
+    const clauses = [];
+    for (const [field, values] of Object.entries(selected)) {
+        if (!values || values.length === 0) continue;
+        if (values.length === 1) {
+            clauses.push({op: '=', args: [{property: field}, values[0]]});
+        } else {
+            clauses.push({op: 'in', args: [{property: field}, values]});
+        }
+    }
+    if (clauses.length === 0) return null;
+    if (clauses.length === 1) return JSON.stringify(clauses[0]);
+    return JSON.stringify({op: 'and', args: clauses});
 }
 
 // ---------------------------------------------------------------------------
@@ -122,12 +143,16 @@ function parseTurtle(text) {
 }
 
 function extractConfig(store) {
-    const indexNodes = getSubjects(store, RDF + 'type', TEXT + 'TextIndexLucene');
-    if (indexNodes.length === 0) throw new Error('No text:TextIndexLucene found in config');
+    let indexNodes = getSubjects(store, RDF + 'type', TEXT + 'TextIndexShacl');
+    if (indexNodes.length === 0) indexNodes = getSubjects(store, RDF + 'type', TEXT + 'TextIndexLucene');
+    if (indexNodes.length === 0) throw new Error('No text:TextIndexShacl or text:TextIndexLucene found in config');
     const indexNode = indexNodes[0];
 
     const storeValues = getLiteral(store, indexNode, TEXT + 'storeValues') === 'true';
     const maxFacetHits = parseInt(getLiteral(store, indexNode, TEXT + 'maxFacetHits') || '0', 10);
+
+    // Allow config.ttl to override FUSEKI_BASE via idx:fusekiBase on the index node
+    const fusekiBase = getLiteral(store, indexNode, IDX + 'fusekiBase') || FUSEKI_BASE;
 
     const serviceNodes = getSubjects(store, RDF + 'type', FUSEKI + 'Service');
     let datasetName = 'dataset';
@@ -202,7 +227,7 @@ function extractConfig(store) {
     }
 
     return {
-        endpoint: `${FUSEKI_BASE}/${datasetName}/query`,
+        endpoint: `${fusekiBase}/${datasetName}/query`,
         storeValues,
         maxFacetHits,
         shapes,
@@ -230,10 +255,13 @@ function searchApp() {
         q: '',
         limit: DEFAULT_LIMIT,
         resultLimits: RESULT_LIMITS,
+        maxFacetValues: DEFAULT_FACET_LIMIT,
+        facetLimits: FACET_LIMITS,
         selected: {},
         facetFields: [],
         predicateToFacet: {},
         facets: {},
+        facetExpanded: {},
         cards: [],
         error: null,
         loading: false,
@@ -334,6 +362,12 @@ function searchApp() {
             return (this.selected[field] || []).includes(value);
         },
 
+        visibleFacets(fieldName) {
+            const all = this.facets[fieldName] || [];
+            if (this.facetExpanded[fieldName] || all.length <= 5) return all;
+            return all.slice(0, 5);
+        },
+
         // --- SPARQL execution ---
 
         async runSparql(query) {
@@ -354,21 +388,16 @@ function searchApp() {
         buildSearchQuery() {
             const term = this.q.trim() || '*';
             const escaped = escapeSparql(term);
-            const active = {};
-            for (const [k, v] of Object.entries(this.selected)) {
-                if (v && v.length > 0) active[k] = v;
-            }
-            const filterArg = Object.keys(active).length > 0
-                ? ` '${JSON.stringify(active)}'`
-                : '';
+            const cqlFilter = buildCqlFilter(this.selected);
+            const filterArg = cqlFilter ? ` '${cqlFilter}'` : '';
             const facetFieldsJson = JSON.stringify(this.facetFields);
 
             return `${SPARQL_PREFIXES}
 SELECT ?entity ?score ?totalHits ?field ?value ?count
 WHERE {
-    { (?entity ?score ?_lit ?totalHits) luc:query ('${escaped}'${filterArg} ${this.limit}) }
+    { (?entity ?score ?_lit ?totalHits) luc:query ('default' '${escaped}'${filterArg} ${this.limit}) }
     UNION
-    { (?field ?value ?count) luc:facet ('${escaped}' '${facetFieldsJson}'${filterArg} ${MAX_FACET_VALUES}) }
+    { (?field ?value ?count) luc:facet ('default' '${escaped}' '${facetFieldsJson}'${filterArg} ${this.maxFacetValues}) }
 }`;
         },
 
@@ -629,9 +658,9 @@ function statsApp() {
                 const statsQuery = `${SPARQL_PREFIXES}
 SELECT ?entity ?score ?totalHits ?field ?value ?count
 WHERE {
-    { (?entity ?score ?_lit ?totalHits) luc:query ('*' 0) }
+    { (?entity ?score ?_lit ?totalHits) luc:query ('default' '*' 0) }
     UNION
-    { (?field ?value ?count) luc:facet ('*' '${facetFieldsJson}' 0) }
+    { (?field ?value ?count) luc:facet ('default' '*' '${facetFieldsJson}' 0) }
 }`;
                 const statsData = await this.runSparql(endpoint, statsQuery);
                 const statsMs = performance.now() - t0;

@@ -69,7 +69,7 @@ public class TestShaclPathSupport {
     private static final Node CATEGORY_PRED = NodeFactory.createURI(NS + "category");
 
     private Dataset dataset;
-    private TextIndexLucene textIndex;
+    private ShaclTextIndexLucene textIndex;
 
     @Before
     public void setUp() {
@@ -118,7 +118,7 @@ public class TestShaclPathSupport {
         config.setValueStored(true);
 
         ByteBuffersDirectory dir = new ByteBuffersDirectory();
-        textIndex = new TextIndexLucene(dir, config);
+        textIndex = new ShaclTextIndexLucene(dir, config);
 
         Dataset baseDs = DatasetFactory.create();
         ShaclTextDocProducer producer = new ShaclTextDocProducer(
@@ -191,7 +191,7 @@ public class TestShaclPathSupport {
         String queryStr =
             "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "SELECT ?s WHERE {\n" +
-            "  (?s ?score) luc:query ('machine') .\n" +
+            "  (?s ?score) luc:query ('default' 'machine') .\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);
@@ -241,7 +241,7 @@ public class TestShaclPathSupport {
             "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "PREFIX ex: <" + NS + ">\n" +
             "SELECT ?s WHERE {\n" +
-            "  (?s ?score) luc:query ('machine') .\n" +
+            "  (?s ?score) luc:query ('default' 'machine') .\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);
@@ -301,7 +301,7 @@ public class TestShaclPathSupport {
         String queryStr =
             "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "SELECT ?s WHERE {\n" +
-            "  (?s ?score) luc:query ('learning OR physics OR deep' '{\"authorName\": [\"Jane Smith\"]}') .\n" +
+            "  (?s ?score) luc:query ('default' 'learning OR physics OR deep' '{\"op\":\"=\",\"args\":[{\"property\":\"authorName\"},\"Jane Smith\"]}') .\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);

@@ -83,7 +83,24 @@ public class TextDatasetFactory
         // Also set on dsg
         Context c = dsgt.getContext() ;
         c.set(TextQuery.textIndex, textIndex) ;
+        // Auto-wrap single index into a registry
+        if (textIndex instanceof TextIndexLucene luceneIndex) {
+            TextIndexRegistry registry = TextIndexRegistry.single(luceneIndex);
+            c.set(TextQuery.textIndexRegistry, registry);
+        }
         return dsgt ;
+    }
+
+    /** Create a text-indexed DatasetGraph with a multi-index registry */
+    public static DatasetGraph create(DatasetGraph dsg, TextIndexRegistry registry,
+                                      boolean closeIndexOnDSGClose, TextDocProducer producer) {
+        TextIndexLucene defaultIndex = registry.getDefault();
+        if (producer == null) producer = new TextDocProducerTriples(defaultIndex);
+        DatasetGraph dsgt = new DatasetGraphText(dsg, defaultIndex, producer, closeIndexOnDSGClose);
+        Context c = dsgt.getContext();
+        c.set(TextQuery.textIndex, defaultIndex);
+        c.set(TextQuery.textIndexRegistry, registry);
+        return dsgt;
     }
 
     /**

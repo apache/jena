@@ -30,7 +30,6 @@
       <a class="nav-tab is-tab-active" href="index.html">Search</a>
       <a class="nav-tab" href="config.html">Configuration</a>
       <a class="nav-tab" href="stats.html">Stats</a>
-      <a class="nav-tab" href="about.html">About</a>
     </div>
   </nav>
 
@@ -70,14 +69,25 @@
                 </div>
               </div>
 
-              <div class="limit-control">
-                <label class="limit-label">Show</label>
-                <select class="limit-select" x-model.number="limit" @change="search()">
-                  <template x-for="n in resultLimits" :key="n">
-                    <option :value="n" x-text="n.toLocaleString()"></option>
-                  </template>
-                </select>
-                <span class="limit-label">results</span>
+              <div class="limit-row">
+                <div class="limit-control">
+                  <label class="limit-label">Show</label>
+                  <select class="limit-select" x-model.number="limit" @change="search()">
+                    <template x-for="n in resultLimits" :key="n">
+                      <option :value="n" x-text="n.toLocaleString()"></option>
+                    </template>
+                  </select>
+                  <span class="limit-label">results</span>
+                </div>
+                <div class="limit-control">
+                  <label class="limit-label">Top</label>
+                  <select class="limit-select" x-model.number="maxFacetValues" @change="search()">
+                    <template x-for="n in facetLimits" :key="n">
+                      <option :value="n" x-text="n.toLocaleString()"></option>
+                    </template>
+                  </select>
+                  <span class="limit-label">facets</span>
+                </div>
               </div>
 
               <template x-if="hasActiveFilters()">
@@ -91,7 +101,7 @@
                   <template x-if="(facets[fieldName] || []).length > 0">
                     <details class="facet-group" open>
                       <summary class="facet-group-label" x-text="fieldName"></summary>
-                      <template x-for="fv in facets[fieldName]" :key="fv.value">
+                      <template x-for="fv in visibleFacets(fieldName)" :key="fv.value">
                         <label class="facet-option">
                           <input type="checkbox"
                                  :checked="isSelected(fieldName, fv.value)"
@@ -99,6 +109,14 @@
                           <span class="facet-value" x-text="fv.value"></span>
                           <span class="facet-count" x-text="fv.count"></span>
                         </label>
+                      </template>
+                      <template x-if="(facets[fieldName] || []).length > 5">
+                        <button class="facet-toggle-btn"
+                                @click="facetExpanded[fieldName] = !facetExpanded[fieldName]">
+                          <span x-text="facetExpanded[fieldName]
+                            ? '\u25B4 Show less'
+                            : '\u25BE Show all ' + (facets[fieldName] || []).length"></span>
+                        </button>
                       </template>
                     </details>
                   </template>

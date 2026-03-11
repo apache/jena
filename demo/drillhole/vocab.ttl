@@ -11,3 +11,5 @@ sosa:Result               rdfs:label "Result" .
 sosa:Procedure            rdfs:label "Procedure" .
 sosa:Sensor               rdfs:label "Sensor" .
 sosa:ObservableProperty   rdfs:label "Observable Property" .
+
+<https://linked.data.gov.au/dataset/gswa/unit/ppm>  rdfs:label "ppm" .
