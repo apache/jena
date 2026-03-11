@@ -47,49 +47,53 @@ public class RDFFormat {
     public static final RDFFormatVariant ValueEncoding  = new RDFFormatVariant("Value") ;
 
     /** Turtle - pretty form */
-    public static final RDFFormat        TURTLE_PRETTY  = new RDFFormat(Lang.TURTLE, PRETTY) ;
+    public static final RDFFormat TURTLE_PRETTY     = new RDFFormat(Lang.TURTLE, PRETTY) ;
     /** Turtle - default form */
-    public static final RDFFormat        TURTLE         = TURTLE_PRETTY ;
+    public static final RDFFormat TURTLE            = TURTLE_PRETTY ;
     /** Turtle - short name */
-    public static final RDFFormat        TTL            = TURTLE_PRETTY ;
+    public static final RDFFormat  TTL              = TURTLE_PRETTY ;
     /** Turtle - write in blocks of triples, with same subject, no nested object or RDF lists */
-    public static final RDFFormat        TURTLE_BLOCKS  = new RDFFormat(Lang.TURTLE, BLOCKS) ;
+    public static final RDFFormat  TURTLE_BLOCKS    = new RDFFormat(Lang.TURTLE, BLOCKS) ;
     /** Turtle - one line per triple  */
-    public static final RDFFormat        TURTLE_FLAT    = new RDFFormat(Lang.TURTLE, FLAT) ;
+    public static final RDFFormat  TURTLE_FLAT      = new RDFFormat(Lang.TURTLE, FLAT) ;
     /** Turtle - with fixed indentation width and linebreaks after each sequence element */
-    public static final RDFFormat        TURTLE_LONG    = new RDFFormat(Lang.TURTLE, LONG) ;
+    public static final RDFFormat  TURTLE_LONG      = new RDFFormat(Lang.TURTLE, LONG) ;
 
     /** N-Triples in UTF-8 */
-    public static final RDFFormat        NTRIPLES_UTF8  = new RDFFormat(Lang.NTRIPLES, UTF8) ;
+    public static final RDFFormat  NTRIPLES_UTF8    = new RDFFormat(Lang.NTRIPLES, UTF8) ;
     /** N-Triples - RDF 1.1 form - UTF-8 */
-    public static final RDFFormat        NTRIPLES       = NTRIPLES_UTF8 ;
+    public static final RDFFormat  NTRIPLES         = NTRIPLES_UTF8 ;
     /** N-Triples - RDF 1.1 form - UTF-8 */
-    public static final RDFFormat        NT             = NTRIPLES ;
+    public static final RDFFormat  NT               = NTRIPLES ;
     /** N-Triples - Use ASCII */
-    public static final RDFFormat        NTRIPLES_ASCII = new RDFFormat(Lang.NTRIPLES, ASCII) ;
+    public static final RDFFormat  NTRIPLES_ASCII   = new RDFFormat(Lang.NTRIPLES, ASCII) ;
+    /** N-Triples in UTF-8 with short blank node identifiers */
+    public static final RDFFormat  NTRIPLES_PRETTY = new RDFFormat(Lang.NTRIPLES, PRETTY) ;
 
     /** N-Quads in UTF-8 */
-    public static final RDFFormat        NQUADS_UTF8    = new RDFFormat(Lang.NQUADS, UTF8) ;
+    public static final RDFFormat  NQUADS_UTF8      = new RDFFormat(Lang.NQUADS, UTF8) ;
     /** N-Quads - RDF 1.1 form - UTF-8 */
-    public static final RDFFormat        NQUADS         = NQUADS_UTF8 ;
+    public static final RDFFormat  NQUADS           = NQUADS_UTF8 ;
     /** N-Quads - RDF 1.1 form - UTF-8 */
-    public static final RDFFormat        NQ             = NQUADS ;
+    public static final RDFFormat  NQ               = NQUADS ;
     /** N-Quads - Use ASCII */
-    public static final RDFFormat        NQUADS_ASCII   = new RDFFormat(Lang.NQUADS, ASCII) ;
+    public static final RDFFormat  NQUADS_ASCII     = new RDFFormat(Lang.NQUADS, ASCII) ;
+    /** N-Quads in UTF-8 with short blank node identifiers */
+    public static final RDFFormat  NQUADS_PRETTY    = new RDFFormat(Lang.NTRIPLES, PRETTY) ;
 
     /** TriG - pretty form */
-    public static final RDFFormat        TRIG_PRETTY    = new RDFFormat(Lang.TRIG, PRETTY) ;
+    public static final RDFFormat  TRIG_PRETTY      = new RDFFormat(Lang.TRIG, PRETTY) ;
     /** TriG - default form */
-    public static final RDFFormat        TRIG           = TRIG_PRETTY ;
+    public static final RDFFormat  TRIG             = TRIG_PRETTY ;
     /** TriG - write in blocks of triples, with same subject, no nested object or RDF lists */
-    public static final RDFFormat        TRIG_BLOCKS    = new RDFFormat(Lang.TRIG, BLOCKS) ;
+    public static final RDFFormat  TRIG_BLOCKS      = new RDFFormat(Lang.TRIG, BLOCKS) ;
     /** TriG - one line per triple  */
-    public static final RDFFormat        TRIG_FLAT      = new RDFFormat(Lang.TRIG, FLAT) ;
+    public static final RDFFormat  TRIG_FLAT        = new RDFFormat(Lang.TRIG, FLAT) ;
     /** TriG - with fixed indentation width and linebreaks after each sequence element */
-    public static final RDFFormat        TRIG_LONG      = new RDFFormat(Lang.TRIG, LONG) ;
+    public static final RDFFormat  TRIG_LONG        = new RDFFormat(Lang.TRIG, LONG) ;
 
     /** SHACL Compact Syntax */
-    public static final RDFFormat        SHACLC         = new RDFFormat(Lang.SHACLC);
+    public static final RDFFormat  SHACLC         =  new RDFFormat(Lang.SHACLC);
     //
     // JSONLD related
     //
@@ -97,13 +101,13 @@ public class RDFFormat {
     // ---- JSONLD 1.1 / Titanium
 
     /** JSON LD 1.1 - multi-line JSON - prefixes and native types. */
-    public static RDFFormat             JSONLD11_PRETTY  = new RDFFormat(Lang.JSONLD11, RDFFormat.PRETTY);
+    public static final RDFFormat JSONLD11_PRETTY  = new RDFFormat(Lang.JSONLD11, RDFFormat.PRETTY);
     /** JSON LD 1.1 - multi-line JSON */
-    public static RDFFormat             JSONLD11_PLAIN  = new RDFFormat(Lang.JSONLD11, RDFFormat.PLAIN);
+    public static final RDFFormat JSONLD11_PLAIN  = new RDFFormat(Lang.JSONLD11, RDFFormat.PLAIN);
     /** JSON LD 1.1 - single-line JSON */
-    public static RDFFormat             JSONLD11_FLAT   = new RDFFormat(Lang.JSONLD11, RDFFormat.FLAT);
+    public static final RDFFormat JSONLD11_FLAT   = new RDFFormat(Lang.JSONLD11, RDFFormat.FLAT);
     /** JSON LD 1.1 default form - multi-line JSON */
-    public static RDFFormat             JSONLD11        = JSONLD11_PRETTY;
+    public static final RDFFormat JSONLD11        = JSONLD11_PRETTY;
 
 
 // ---- JSONLD 1.0 / jsonld-java -- support removed in Jena 5

@@ -21,23 +21,29 @@
 
 package org.apache.jena.riot.writer;
 
+import static org.apache.jena.atlas.lib.CharSpace.UTF8;
+
 import java.io.OutputStream;
 import java.io.Writer;
 import java.util.Iterator;
+import java.util.Objects;
 
+import org.apache.jena.atlas.io.AWriter;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.CharSpace;
-import static org.apache.jena.atlas.lib.CharSpace.*;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.out.NodeFormatter;
+import org.apache.jena.riot.out.NodeFormatterNT;
 import org.apache.jena.riot.system.PrefixMap;
-import org.apache.jena.riot.system.StreamRDFOps;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
+import org.apache.jena.riot.system.StreamRDFOps;
 import org.apache.jena.sparql.util.Context;
 
 public class NTriplesWriter extends WriterGraphRIOTBase {
+
     public static void write(OutputStream out, Iterator<Triple> iter) {
         write(out, iter, CharSpace.UTF8);
     }
@@ -47,10 +53,14 @@ public class NTriplesWriter extends WriterGraphRIOTBase {
         write$(s, iter);
     }
 
+    /** @deprecated Use RIOT and language {@link Lang#NTRIPLES} */
+    @Deprecated(forRemoval = true)
     public static void write(Writer out, Iterator<Triple> iter) {
         write(out, iter, CharSpace.UTF8);
     }
 
+    /** @deprecated Use RIOT and language {@link Lang#NTRIPLES} */
+    @Deprecated(forRemoval = true)
     public static void write(Writer out, Iterator<Triple> iter, CharSpace charSpace) {
         StreamRDF s = StreamRDFLib.writer(out, charSpace);
         write$(s, iter);
@@ -62,13 +72,14 @@ public class NTriplesWriter extends WriterGraphRIOTBase {
         s.finish();
     }
 
-    private final CharSpace charSpace;
+    protected final CharSpace charSpace;
 
     public NTriplesWriter() {
         this(UTF8);
     }
 
     public NTriplesWriter(CharSpace charSpace) {
+        Objects.requireNonNull(charSpace);
         this.charSpace = charSpace;
     }
 
@@ -79,24 +90,31 @@ public class NTriplesWriter extends WriterGraphRIOTBase {
 
     @Override
     public void write(Writer out, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
-        Iterator<Triple> iter = graph.find(null, null, null);
-        if ( charSpace == UTF8 )
-            write(out, iter);
-        else {
-            StreamRDF s = new WriterStreamRDFPlain(IO.wrap(out), ASCII);
-            write$(s, iter);
-        }
+        Iterator<Triple> iter = graph.find();
+        NodeFormatter nodeFmt = createNodeFormatter();
+        AWriter w = IO.wrap(out);
+        StreamRDF s = new WriterStreamRDFPlain(IO.wrap(out), nodeFmt);
+        write$(s, iter);
     }
 
     @Override
     public void write(OutputStream out, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
-        Iterator<Triple> iter = graph.find(null, null, null);
-        if ( charSpace == UTF8 )
-            write(out, iter);
-        else {
-            StreamRDF s = new WriterStreamRDFPlain(IO.wrapASCII(out), ASCII);
-            write$(s, iter);
-        }
+        Iterator<Triple> iter = graph.find();
+        NodeFormatter nodeFmt = createNodeFormatter();
+        AWriter w = createAWriter(out);
+        StreamRDF s = new WriterStreamRDFPlain(w, nodeFmt);
+        write$(s, iter);
+    }
 
+    protected NodeFormatter createNodeFormatter() {
+        NodeFormatter nodeFmt =new NodeFormatterNT(charSpace);
+        return nodeFmt;
+    }
+
+    protected AWriter createAWriter(OutputStream out) {
+        return switch(charSpace) {
+            case ASCII -> IO.wrapASCII(out);
+            case UTF8 -> IO.wrapUTF8(out);
+        };
     }
 }

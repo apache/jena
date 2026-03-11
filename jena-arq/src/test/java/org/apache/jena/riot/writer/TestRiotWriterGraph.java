@@ -51,6 +51,7 @@ public class TestRiotWriterGraph extends AbstractWriterTest {
 
                  Arguments.of(RDFFormat.NTRIPLES_UTF8),
                  Arguments.of(RDFFormat.NTRIPLES_ASCII),
+                 Arguments.of(RDFFormat.NTRIPLES_PRETTY),
                  Arguments.of(RDFFormat.NTRIPLES),
                  Arguments.of(RDFFormat.TURTLE),
                  Arguments.of(RDFFormat.TURTLE_PRETTY),
@@ -78,6 +79,7 @@ public class TestRiotWriterGraph extends AbstractWriterTest {
                  Arguments.of(RDFFormat.TRIG_LONG),
                  Arguments.of(RDFFormat.NQUADS_UTF8),
                  Arguments.of(RDFFormat.NQUADS_ASCII),
+                 Arguments.of(RDFFormat.NQUADS_PRETTY),
                  Arguments.of(RDFFormat.NQUADS),
 
                  Arguments.of(RDFFormat.RDF_PROTO),
