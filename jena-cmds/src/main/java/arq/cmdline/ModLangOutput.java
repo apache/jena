@@ -76,6 +76,12 @@ public class ModLangOutput extends ModBase
                 printRegistered(System.err);
                 throw new CmdException("No output set: '"+langName+"'");
             }
+
+            // Formats unused used for "pretty"
+            if ( Lang.NTRIPLES.equals(formattedOutput.getLang()) )
+                formattedOutput = RDFFormat.NTRIPLES_PRETTY;
+            if ( Lang.NQUADS.equals(formattedOutput.getLang()) )
+                    formattedOutput = RDFFormat.NQUADS_PRETTY;
         }
 
         if ( cmdLine.contains(argStream) ) {
