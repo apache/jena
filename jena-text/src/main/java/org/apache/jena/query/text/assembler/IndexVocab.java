@@ -47,6 +47,7 @@ public class IndexVocab {
     public static final Resource IntField       = Vocab.resource(NS, "IntField");
     public static final Resource LongField      = Vocab.resource(NS, "LongField");
     public static final Resource DoubleField    = Vocab.resource(NS, "DoubleField");
+    public static final Resource LatLonField    = Vocab.resource(NS, "LatLonField");
 
     // Shape-level properties
     public static final Property pField             = Vocab.property(NS, "field");

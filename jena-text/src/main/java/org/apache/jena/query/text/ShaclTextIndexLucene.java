@@ -24,6 +24,10 @@ package org.apache.jena.query.text;
 import java.io.IOException;
 import java.util.*;
 
+import org.apache.jena.geosparql.implementation.GeometryWrapper;
+import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
+import org.apache.jena.geosparql.implementation.parsers.wkt.WKTReader;
+import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.text.cql.CqlExpression;
 import org.apache.jena.query.text.cql.CqlToLuceneCompiler;
@@ -40,12 +44,14 @@ import org.apache.lucene.facet.sortedset.SortedSetDocValuesFacetField;
 import org.apache.lucene.facet.sortedset.SortedSetDocValuesReaderState;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.StoredFields;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.util.BytesRef;
+import org.locationtech.jts.geom.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -201,7 +207,101 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
                 }
                 break;
             }
+
+            case LATLON: {
+                String wktValue = value.toString();
+                List<IndexableField> spatialFields = parseWktToLuceneFields(fieldName, wktValue, fieldDef.isStored());
+                for (IndexableField f : spatialFields) {
+                    doc.add(f);
+                }
+                break;
+            }
         }
+    }
+
+    /**
+     * Parse a WKT literal into Lucene indexable fields for spatial queries.
+     * <p>
+     * Handles CRS detection and normalisation via {@link GeometryWrapper}:
+     * <ul>
+     *   <li>CRS84 (bare WKT, no prefix) and EPSG:4326 — axis order handled by GeometryWrapper</li>
+     *   <li>GDA94/GDA2020 (EPSG:4283/7844) — treated as WGS84-equivalent</li>
+     *   <li>Other CRS — transformed to WGS84 via {@link GeometryWrapper#convertSRS}</li>
+     * </ul>
+     * Supports Point and Polygon geometries.
+     */
+    static List<IndexableField> parseWktToLuceneFields(String fieldName, String wktValue, boolean stored) {
+        List<IndexableField> fields = new ArrayList<>();
+
+        try {
+            WKTReader reader = WKTReader.extract(wktValue);
+            String srsUri = reader.getSrsURI();
+
+            // Build a GeometryWrapper for CRS-aware coordinate handling
+            GeometryWrapper wrapper = new GeometryWrapper(
+                reader.getGeometry(), srsUri, WKTDatatype.URI,
+                reader.getDimensionInfo());
+
+            // Convert to WGS84 if not already in WGS84/CRS84
+            if (!isWgs84OrCrs84(srsUri)) {
+                wrapper = wrapper.convertSRS(SRS_URI.WGS84_CRS);
+            }
+
+            // getXYGeometry() normalises all CRSes to x=lon, y=lat (standard JTS convention)
+            Geometry geom = wrapper.getXYGeometry();
+
+            if (geom instanceof Point point) {
+                double lat = point.getY();
+                double lon = point.getX();
+                Collections.addAll(fields, LatLonShape.createIndexableFields(fieldName, lat, lon));
+            } else if (geom instanceof org.locationtech.jts.geom.Polygon jtsPoly) {
+                org.apache.lucene.geo.Polygon lucenePoly = jtsPolygonToLucene(jtsPoly);
+                Collections.addAll(fields, LatLonShape.createIndexableFields(fieldName, lucenePoly));
+            } else {
+                log.warn("Unsupported geometry type for LATLON field '{}': {}", fieldName, geom.getGeometryType());
+                return fields;
+            }
+
+            if (stored) {
+                fields.add(new StoredField(fieldName, wktValue));
+            }
+        } catch (Exception e) {
+            log.warn("Failed to parse WKT for field '{}': {} — {}", fieldName, wktValue, e.getMessage());
+        }
+
+        return fields;
+    }
+
+    private static boolean isWgs84OrCrs84(String srsUri) {
+        return SRS_URI.DEFAULT_WKT_CRS84.equals(srsUri)
+            || SRS_URI.WGS84_CRS.equals(srsUri)
+            || "http://www.opengis.net/def/crs/EPSG/0/4283".equals(srsUri)
+            || "http://www.opengis.net/def/crs/EPSG/0/7844".equals(srsUri);
+    }
+
+    /** Convert a JTS Polygon (x=lon, y=lat from getXYGeometry) to a Lucene Polygon. */
+    private static org.apache.lucene.geo.Polygon jtsPolygonToLucene(org.locationtech.jts.geom.Polygon jtsPoly) {
+        Coordinate[] shellCoords = jtsPoly.getExteriorRing().getCoordinates();
+        double[] lats = new double[shellCoords.length];
+        double[] lons = new double[shellCoords.length];
+        for (int i = 0; i < shellCoords.length; i++) {
+            lats[i] = shellCoords[i].y;  // y = lat
+            lons[i] = shellCoords[i].x;  // x = lon
+        }
+
+        org.apache.lucene.geo.Polygon[] holes = new org.apache.lucene.geo.Polygon[jtsPoly.getNumInteriorRing()];
+        for (int h = 0; h < jtsPoly.getNumInteriorRing(); h++) {
+            Coordinate[] holeCoords = jtsPoly.getInteriorRingN(h).getCoordinates();
+            double[] holeLats = new double[holeCoords.length];
+            double[] holeLons = new double[holeCoords.length];
+            for (int i = 0; i < holeCoords.length; i++) {
+                holeLats[i] = holeCoords[i].y;
+                holeLons[i] = holeCoords[i].x;
+            }
+            holes[h] = new org.apache.lucene.geo.Polygon(holeLats, holeLons);
+        }
+
+        return new org.apache.lucene.geo.Polygon(lats, lons, holes);
     }
 
     // ---- Entity update/delete ----

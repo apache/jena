@@ -113,7 +113,17 @@ code {
   min-height: 3.25rem;
   display: flex;
   align-items: stretch;
-  padding: 0 1.5rem;
+  padding: 0 0.75rem;
+  position: relative;
+  z-index: 50;
+  overflow: visible !important;
+}
+
+/* Override Bulma navbar overflow clipping so dropdowns can escape */
+.site-navbar .navbar-brand,
+.site-navbar .navbar-end,
+.site-navbar .navbar-dropdown-wrapper {
+  overflow: visible !important;
 }
 
 .site-navbar .navbar-brand {
@@ -191,6 +201,146 @@ code {
   height: 2px;
   background: var(--amber);
   border-radius: 1px 1px 0 0;
+}
+
+/* Navbar end (right side) */
+.navbar-end {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  gap: 0.25rem;
+  overflow: visible !important;
+}
+
+.navbar-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  padding: 0 0.75rem;
+  min-height: 3.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: color 0.2s ease;
+  user-select: none;
+}
+
+.navbar-toggle:hover {
+  color: var(--text-primary);
+}
+
+.navbar-toggle input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 3px;
+  background: var(--bg-input);
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.navbar-toggle input[type="checkbox"]:checked {
+  background: var(--amber);
+  border-color: var(--amber);
+}
+
+.navbar-toggle input[type="checkbox"]:checked::after {
+  content: '\2713';
+  position: absolute;
+  top: -1px;
+  left: 1.5px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--bg-base);
+}
+
+/* Tests dropdown */
+.navbar-dropdown-wrapper {
+  position: relative;
+  overflow: visible !important;
+}
+
+.tests-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+  padding: 0 1rem;
+  min-height: 3.25rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: color 0.2s ease;
+}
+
+.tests-btn:hover {
+  color: var(--text-primary);
+}
+
+.dropdown-caret {
+  font-size: 1.5rem;
+  display: inline-block;
+  transition: transform 0.15s ease;
+  margin-left: 0.25em;
+}
+
+.dropdown-caret.is-open {
+  transform: rotate(180deg);
+}
+
+.tests-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 280px;
+  max-height: 70vh;
+  overflow-y: auto;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 0.35rem 0;
+  z-index: 100;
+}
+
+.dropdown-group {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  padding: 0.6rem 0.85rem 0.25rem;
+  user-select: none;
+}
+
+.dropdown-group:not(:first-child) {
+  border-top: 1px solid var(--border-subtle);
+  margin-top: 0.25rem;
+  padding-top: 0.6rem;
+}
+
+.dropdown-item {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  padding: 0.35rem 0.85rem;
+  text-decoration: none;
+  transition: background 0.1s ease, color 0.1s ease;
+}
+
+.dropdown-item:hover {
+  background: var(--bg-elevated);
+  color: var(--amber);
 }
 
 /* Burger menu for mobile */
@@ -273,18 +423,66 @@ code {
 
 .section {
   background: var(--bg-base);
-  padding-top: 1rem;
-  padding-bottom: 0;
+  padding: 1rem 0.5rem 0;
+}
+
+.container.is-fluid {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
 }
 
 .section .columns {
   align-items: flex-start;
+  gap: 0.5rem;
 }
 
 /* ── Independent Column Scrolling ── */
 .search-layout > .column {
   height: calc(100vh - 5.1rem);
   overflow-y: auto;
+}
+
+/* Left panel: ~31% */
+.search-layout > .left-panel,
+.columns > .left-panel {
+  flex: none;
+  width: 25%;
+}
+
+/* Right panel: ~41% */
+.search-layout > .right-panel,
+.columns > .right-panel {
+  flex: none;
+  width: 41%;
+}
+
+/* ── Resize Handle ── */
+.resize-handle {
+  flex: none;
+  width: 4px;
+  align-self: stretch;
+  margin-left: -0.5rem;
+  margin-right: -0.5rem;
+  cursor: col-resize;
+  background: transparent;
+  position: relative;
+  z-index: 2;
+  border-radius: 2px;
+  transition: background 0.15s ease;
+}
+
+.resize-handle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -6px;
+  right: -6px;
+}
+
+.resize-handle:hover,
+.resize-handle.is-dragging {
+  background: var(--amber);
 }
 
 /* ── Sidebar Panel ── */
@@ -671,6 +869,18 @@ code {
   border: 1px solid var(--border);
 }
 
+.rtag-location {
+  background: var(--teal-dim);
+  color: var(--teal);
+  border: 1px solid rgba(77, 184, 164, 0.25);
+  cursor: pointer;
+}
+
+.rtag-location:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(77, 184, 164, 0.2);
+}
+
 /* ── Config Page ── */
 .config-title {
   font-weight: 700;
@@ -1044,6 +1254,145 @@ code {
   background: none;
   padding: 0;
   white-space: pre;
+}
+
+/* ── Map Panel ── */
+.map-panel {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.map-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.map-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.btn-map-tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.3em 0.6em;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.btn-map-tool:hover {
+  border-color: var(--teal);
+  color: var(--teal);
+}
+
+.btn-map-tool.is-active {
+  background: var(--teal-dim);
+  border-color: var(--teal);
+  color: var(--teal);
+}
+
+.btn-map-clear {
+  color: var(--red);
+  border-color: rgba(196, 92, 92, 0.25);
+  background: var(--red-dim);
+}
+
+.btn-map-clear:hover {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.map-tool-icon {
+  font-size: 0.9em;
+  line-height: 1;
+}
+
+.bbox-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--teal);
+  background: var(--teal-dim);
+  padding: 0.2em 0.5em;
+  border-radius: var(--radius-sm);
+}
+
+#search-map {
+  height: 350px;
+  border-radius: var(--radius-md);
+  z-index: 0;
+}
+
+/* Dark theme overrides for Leaflet controls */
+.leaflet-control-layers,
+.leaflet-bar {
+  border-color: var(--border) !important;
+}
+
+.leaflet-control-layers-expanded {
+  background: var(--bg-raised) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-md) !important;
+  font-family: var(--font-body) !important;
+  font-size: 0.8rem !important;
+}
+
+.leaflet-control-layers-separator {
+  border-color: var(--border) !important;
+}
+
+.leaflet-bar a {
+  background: var(--bg-raised) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border) !important;
+}
+
+.leaflet-bar a:hover {
+  background: var(--bg-elevated) !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: var(--bg-raised) !important;
+  color: var(--text-primary) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: var(--shadow-md) !important;
+  font-family: var(--font-body) !important;
+  font-size: 0.8rem !important;
+}
+
+.leaflet-popup-tip {
+  background: var(--bg-raised) !important;
+}
+
+.leaflet-popup-close-button {
+  color: var(--text-muted) !important;
+}
+
+.map-popup-type {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+/* ── Card Highlight ── */
+.result-card.is-highlighted {
+  border-color: var(--amber) !important;
+  box-shadow: 0 0 0 2px var(--amber-dim), var(--shadow-md) !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 /* ── Custom Scrollbar ── */

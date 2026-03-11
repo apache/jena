@@ -24,13 +24,19 @@ package org.apache.jena.query.text.cql;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.jena.atlas.json.JSON;
+import org.apache.jena.atlas.json.JsonArray;
+import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.query.text.ShaclIndexMapping;
 import org.apache.jena.query.text.ShaclIndexMapping.FieldDef;
 import org.apache.jena.query.text.ShaclIndexMapping.FieldType;
 import org.apache.jena.query.text.TextIndexException;
 import org.apache.lucene.document.DoublePoint;
 import org.apache.lucene.document.IntPoint;
+import org.apache.lucene.document.LatLonShape;
 import org.apache.lucene.document.LongPoint;
+import org.apache.lucene.document.ShapeField;
+import org.apache.lucene.geo.Polygon;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.*;
 import org.apache.lucene.util.BytesRef;
@@ -66,7 +72,7 @@ public class CqlToLuceneCompiler {
             case CqlExpression.CqlIn in -> compileIn(in);
             case CqlExpression.CqlBetween btw -> compileBetween(btw);
             case CqlExpression.CqlLike like -> compileLike(like);
-            case CqlExpression.CqlSpatial spatial -> new CompileResult(null, spatial);
+            case CqlExpression.CqlSpatial spatial -> compileSpatial(spatial);
         };
     }
 
@@ -246,13 +252,69 @@ public class CqlToLuceneCompiler {
             new WildcardQuery(new Term(field.getFieldName(), lucenePattern)), null);
     }
 
+    private CompileResult compileSpatial(CqlExpression.CqlSpatial spatial) {
+        // Only s_intersects is supported for now
+        if (!"s_intersects".equals(spatial.op())) {
+            return new CompileResult(null, spatial);
+        }
+
+        FieldDef field = findField(spatial.property());
+        if (field == null || field.getFieldType() != FieldType.LATLON) {
+            return new CompileResult(null, spatial);
+        }
+
+        String fieldName = field.getFieldName();
+        String geomJson = String.valueOf(spatial.geometry());
+
+        try {
+            JsonObject geomObj = JSON.parse(geomJson);
+
+            if (geomObj.hasKey("bbox")) {
+                JsonArray bbox = geomObj.get("bbox").getAsArray();
+                if (bbox.size() != 4) {
+                    throw new TextIndexException("bbox must have exactly 4 values [swLon, swLat, neLon, neLat], got " + bbox.size());
+                }
+                double swLon = bbox.get(0).getAsNumber().value().doubleValue();
+                double swLat = bbox.get(1).getAsNumber().value().doubleValue();
+                double neLon = bbox.get(2).getAsNumber().value().doubleValue();
+                double neLat = bbox.get(3).getAsNumber().value().doubleValue();
+
+                Query q = LatLonShape.newBoxQuery(fieldName, ShapeField.QueryRelation.INTERSECTS,
+                    swLat, neLat, swLon, neLon);
+                return new CompileResult(q, null);
+            }
+
+            if (geomObj.hasKey("type") && "Polygon".equals(geomObj.get("type").getAsString().value())) {
+                JsonArray coordinates = geomObj.get("coordinates").getAsArray();
+                // First element is the exterior ring; CQL2/GeoJSON uses [lon, lat] order
+                JsonArray ring = coordinates.get(0).getAsArray();
+                double[] lats = new double[ring.size()];
+                double[] lons = new double[ring.size()];
+                for (int i = 0; i < ring.size(); i++) {
+                    JsonArray coord = ring.get(i).getAsArray();
+                    lons[i] = coord.get(0).getAsNumber().value().doubleValue();
+                    lats[i] = coord.get(1).getAsNumber().value().doubleValue();
+                }
+                Polygon poly = new Polygon(lats, lons);
+                Query q = LatLonShape.newGeometryQuery(fieldName, ShapeField.QueryRelation.INTERSECTS, poly);
+                return new CompileResult(q, null);
+            }
+
+            return new CompileResult(null, spatial);
+        } catch (TextIndexException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new TextIndexException("Failed to parse spatial geometry JSON: " + e.getMessage(), e);
+        }
+    }
+
     private Query buildEqualQuery(String fieldName, FieldType ft, Object value) {
         return switch (ft) {
             case KEYWORD, TEXT -> new TermQuery(new Term(fieldName, String.valueOf(value)));
             case INT -> IntPoint.newExactQuery(fieldName, toInt(value));
             case LONG -> LongPoint.newExactQuery(fieldName, toLong(value));
             case DOUBLE -> DoublePoint.newExactQuery(fieldName, toDouble(value));
-            default -> throw new TextIndexException("Cannot build equal query for field type: " + ft);
+            case LATLON -> throw new TextIndexException("Equality queries not supported on LATLON field '" + fieldName + "'");
         };
     }
 
@@ -280,7 +342,7 @@ public class CqlToLuceneCompiler {
                 yield DoublePoint.newRangeQuery(fieldName, lo, hi);
             }
             case KEYWORD, TEXT -> null; // Range queries on keywords not supported
-            default -> null;
+            case LATLON -> null; // Range queries not applicable to spatial fields
         };
     }
 

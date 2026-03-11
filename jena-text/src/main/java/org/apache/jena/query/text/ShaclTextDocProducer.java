@@ -199,6 +199,8 @@ public class ShaclTextDocProducer implements TextDocProducer {
                 case DOUBLE:
                     try { return Double.parseDouble(obj.getLiteralLexicalForm()); }
                     catch (NumberFormatException e) { return null; }
+                case LATLON:
+                    return obj.getLiteralLexicalForm();
                 default:
                     return obj.getLiteralLexicalForm();
             }

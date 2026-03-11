@@ -93,5 +93,6 @@ tasks:
     desc: Serve the static demo app (Alpine.js)
     cmds:
       - ln -sfn ../drillhole/config.ttl ../app-static/config.ttl
+      - ln -sfn ../drillhole/tests.json ../app-static/tests.json
       - echo "Serving at http://localhost:8000 (drillhole → localhost:3030)"
       - cmd: python3 -m http.server 8000 --directory ../app-static

@@ -59,6 +59,7 @@ tasks:
           - queries/05-combined.rq
           - queries/06-sequence-path-facet.rq
           - queries/07-filter-by-author.rq
+          - queries/08-spatial-bbox.rq
         cmd: |
           echo "=== {{.ITEM}} ==="
           curl -s -X POST "{{.SERVER_URL}}/mining/query" \
@@ -71,6 +72,7 @@ tasks:
     desc: Serve the static demo app with mining config
     cmds:
       - ln -sfn ../test/config.ttl app-static/config.ttl
+      - ln -sfn ../test/tests.json app-static/tests.json
       - echo "Serving at http://localhost:8000 (mining → localhost:3031)"
       - cmd: python3 -m http.server 8000 --directory app-static
 

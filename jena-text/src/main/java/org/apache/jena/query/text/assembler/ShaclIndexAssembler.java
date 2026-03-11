@@ -372,6 +372,7 @@ public class ShaclIndexAssembler {
         if (IndexVocab.IntField.getURI().equals(uri)) return FieldType.INT;
         if (IndexVocab.LongField.getURI().equals(uri)) return FieldType.LONG;
         if (IndexVocab.DoubleField.getURI().equals(uri)) return FieldType.DOUBLE;
+        if (IndexVocab.LatLonField.getURI().equals(uri)) return FieldType.LATLON;
         throw new TextIndexException("Unknown idx:fieldType: " + uri);
     }
 
