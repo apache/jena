@@ -30,6 +30,14 @@ tasks:
       - echo "Serving at http://localhost:8001"
       - cmd: python3 -m http.server 8001 --directory project-overview
 
+  test:
+    desc: Run Playwright screenshot tests and generate report
+    dir: testing
+    cmds:
+      - npx playwright test
+      - npx tsx lib/report.ts
+      - echo "Report written to testing/results/report.md"
+
   # ── Mining ───────────────────────────────────────────────
 
   serve:
