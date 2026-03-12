@@ -1,0 +1,240 @@
+[
+  {
+    "group": "Full-Text Search",
+    "label": "All entities",
+    "params": "",
+    "resultCount": 522,
+    "screenshotFile": "full-text-search-all-entities.png"
+  },
+  {
+    "group": "Full-Text Search",
+    "label": "Search: \"copper\"",
+    "params": "?q=copper",
+    "resultCount": 21,
+    "screenshotFile": "full-text-search-search-copper.png"
+  },
+  {
+    "group": "Full-Text Search",
+    "label": "Search: \"gold mine\"",
+    "params": "?q=gold+mine",
+    "resultCount": 156,
+    "screenshotFile": "full-text-search-search-gold-mine.png"
+  },
+  {
+    "group": "Full-Text Search",
+    "label": "Search: \"iron ore exploration\"",
+    "params": "?q=iron+ore+exploration",
+    "resultCount": 59,
+    "screenshotFile": "full-text-search-search-iron-ore-exploration.png"
+  },
+  {
+    "group": "Full-Text Search",
+    "label": "Search: \"diamond drill\"",
+    "params": "?q=diamond+drill",
+    "resultCount": 203,
+    "screenshotFile": "full-text-search-search-diamond-drill.png"
+  },
+  {
+    "group": "Single Facet",
+    "label": "commodity = Gold",
+    "params": "?commodity=Gold",
+    "resultCount": 176,
+    "screenshotFile": "single-facet-commodity-gold.png"
+  },
+  {
+    "group": "Single Facet",
+    "label": "state = NSW",
+    "params": "?state=NSW",
+    "resultCount": 89,
+    "screenshotFile": "single-facet-state-nsw.png"
+  },
+  {
+    "group": "Single Facet",
+    "label": "status = Historical",
+    "params": "?status=Historical",
+    "resultCount": 81,
+    "screenshotFile": "single-facet-status-historical.png"
+  },
+  {
+    "group": "Single Facet",
+    "label": "operator = BHP",
+    "params": "?operator=BHP",
+    "resultCount": 24,
+    "screenshotFile": "single-facet-operator-bhp.png"
+  },
+  {
+    "group": "Multi-Value Facet",
+    "label": "commodity = Lead OR Copper",
+    "params": "?commodity=Lead&commodity=Copper",
+    "resultCount": 124,
+    "screenshotFile": "multi-value-facet-commodity-lead-or-copper.png"
+  },
+  {
+    "group": "Multi-Value Facet",
+    "label": "state = WA OR QLD",
+    "params": "?state=WA&state=QLD",
+    "resultCount": 327,
+    "screenshotFile": "multi-value-facet-state-wa-or-qld.png"
+  },
+  {
+    "group": "Cross-Field Filters",
+    "label": "Gold in WA",
+    "params": "?commodity=Gold&state=WA",
+    "resultCount": 75,
+    "screenshotFile": "cross-field-filters-gold-in-wa.png"
+  },
+  {
+    "group": "Cross-Field Filters",
+    "label": "Copper in QLD + Active",
+    "params": "?commodity=Copper&state=QLD&status=Active",
+    "resultCount": 3,
+    "screenshotFile": "cross-field-filters-copper-in-qld-active.png"
+  },
+  {
+    "group": "Cross-Field Filters",
+    "label": "Reports by Newmont",
+    "params": "?entityType=Mining+Report&operator=Newmont",
+    "resultCount": 22,
+    "screenshotFile": "cross-field-filters-reports-by-newmont.png"
+  },
+  {
+    "group": "FTS + Filters",
+    "label": "\"copper\" in QLD",
+    "params": "?q=copper&state=QLD",
+    "resultCount": 15,
+    "screenshotFile": "fts-filters-copper-in-qld.png"
+  },
+  {
+    "group": "FTS + Filters",
+    "label": "\"gold\" reports only",
+    "params": "?q=gold&entityType=Mining+Report",
+    "resultCount": 52,
+    "screenshotFile": "fts-filters-gold-reports-only.png"
+  },
+  {
+    "group": "FTS + Filters",
+    "label": "\"exploration\" in WA",
+    "params": "?q=exploration&state=WA",
+    "resultCount": 10,
+    "screenshotFile": "fts-filters-exploration-in-wa.png"
+  },
+  {
+    "group": "Entity Types",
+    "label": "Sites only",
+    "params": "?entityType=Site",
+    "resultCount": 107,
+    "screenshotFile": "entity-types-sites-only.png"
+  },
+  {
+    "group": "Entity Types",
+    "label": "Boreholes only",
+    "params": "?entityType=Borehole",
+    "resultCount": 207,
+    "screenshotFile": "entity-types-boreholes-only.png"
+  },
+  {
+    "group": "Entity Types",
+    "label": "Reports only",
+    "params": "?entityType=Mining+Report",
+    "resultCount": 208,
+    "screenshotFile": "entity-types-reports-only.png"
+  },
+  {
+    "group": "Sequence Path (Author)",
+    "label": "Author: Dr Sarah Jones",
+    "params": "?authorName=Dr+Sarah+Jones",
+    "resultCount": 2,
+    "screenshotFile": "sequence-path-author-author-dr-sarah-jones.png"
+  },
+  {
+    "group": "Sequence Path (Author)",
+    "label": "Author: James Williams",
+    "params": "?authorName=James+Williams",
+    "resultCount": 2,
+    "screenshotFile": "sequence-path-author-author-james-williams.png"
+  },
+  {
+    "group": "Spatial: Bbox Filter",
+    "label": "Australia bbox (all spatial)",
+    "params": "?bbox=112,-44,154,-10",
+    "resultCount": 309,
+    "screenshotFile": "spatial-bbox-filter-australia-bbox-all-spatial.png"
+  },
+  {
+    "group": "Spatial: Bbox Filter",
+    "label": "Queensland bbox",
+    "params": "?bbox=138,-29,154,-10",
+    "resultCount": 77,
+    "screenshotFile": "spatial-bbox-filter-queensland-bbox.png"
+  },
+  {
+    "group": "Spatial: Bbox Filter",
+    "label": "Western Australia bbox",
+    "params": "?bbox=112,-35,129,-14",
+    "resultCount": 120,
+    "screenshotFile": "spatial-bbox-filter-western-australia-bbox.png"
+  },
+  {
+    "group": "Spatial: Bbox Filter",
+    "label": "NSW + SA bbox",
+    "params": "?bbox=129,-38,154,-28",
+    "resultCount": 66,
+    "screenshotFile": "spatial-bbox-filter-nsw-sa-bbox.png"
+  },
+  {
+    "group": "Spatial: Bbox Filter",
+    "label": "Excludes PNG (Aus only)",
+    "params": "?bbox=112,-44,154,-10",
+    "resultCount": 309,
+    "screenshotFile": "spatial-bbox-filter-excludes-png-aus-only.png"
+  },
+  {
+    "group": "Spatial + FTS",
+    "label": "\"mine\" in QLD bbox",
+    "params": "?q=mine&bbox=138,-29,154,-10",
+    "resultCount": 24,
+    "screenshotFile": "spatial-fts-mine-in-qld-bbox.png"
+  },
+  {
+    "group": "Spatial + FTS",
+    "label": "\"mine\" in WA bbox",
+    "params": "?q=mine&bbox=112,-35,129,-14",
+    "resultCount": 38,
+    "screenshotFile": "spatial-fts-mine-in-wa-bbox.png"
+  },
+  {
+    "group": "Spatial + Facets",
+    "label": "Sites in QLD bbox",
+    "params": "?entityType=Site&bbox=138,-29,154,-10",
+    "resultCount": 24,
+    "screenshotFile": "spatial-facets-sites-in-qld-bbox.png"
+  },
+  {
+    "group": "Spatial + Facets",
+    "label": "Boreholes in WA bbox",
+    "params": "?entityType=Borehole&bbox=112,-35,129,-14",
+    "resultCount": 81,
+    "screenshotFile": "spatial-facets-boreholes-in-wa-bbox.png"
+  },
+  {
+    "group": "Spatial + Facets",
+    "label": "Gold + Aus bbox",
+    "params": "?commodity=Gold&bbox=112,-44,154,-10",
+    "resultCount": 96,
+    "screenshotFile": "spatial-facets-gold-aus-bbox.png"
+  },
+  {
+    "group": "Spatial + FTS + Facets",
+    "label": "\"mine\" sites in QLD bbox",
+    "params": "?q=mine&entityType=Site&bbox=138,-29,154,-10",
+    "resultCount": 24,
+    "screenshotFile": "spatial-fts-facets-mine-sites-in-qld-bbox.png"
+  },
+  {
+    "group": "Spatial + FTS + Facets",
+    "label": "\"mine\" in WA + state=WA bbox",
+    "params": "?q=mine&state=WA&bbox=112,-35,129,-14",
+    "resultCount": 38,
+    "screenshotFile": "spatial-fts-facets-mine-in-wa-state-wa-bbox.png"
+  }
+]
