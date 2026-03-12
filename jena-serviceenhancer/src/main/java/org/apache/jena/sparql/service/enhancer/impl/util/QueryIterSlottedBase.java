@@ -21,70 +21,83 @@
 
 package org.apache.jena.sparql.service.enhancer.impl.util;
 
-import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.atlas.io.Printable;
-import org.apache.jena.atlas.iterator.IteratorSlotted;
+import java.util.NoSuchElementException;
+
 import org.apache.jena.atlas.lib.Lib;
-import org.apache.jena.shared.PrefixMapping;
-import org.apache.jena.sparql.engine.Plan;
-import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.serializer.SerializationContext;
-import org.apache.jena.sparql.util.QueryOutputUtils;
+import org.apache.jena.sparql.engine.iterator.QueryIter;
 
 /**
- * QueryIterator implementation based on IteratorSlotted.
- * Its purpose is to ease wrapping a non-QueryIterator as one based
- * on a {@link IteratorSlotted#moveToNext} method analogous
- * to guava's AbstractIterator.
+ * Abstract implementation of {@link QueryIter} that delegates computation of the next element to {@link QueryIterSlottedBase#moveToNext()}.
  */
 public abstract class QueryIterSlottedBase
-    extends IteratorSlotted<Binding>
-    implements QueryIterator
+    extends QueryIter
 {
-    @Override
-    public Binding nextBinding() {
-        Binding result = isFinished()
-                ? null
-                : next();
-        return result;
+    private boolean slotIsSet = false;
+    private boolean hasMore = true;
+    private Binding slot = null;
+
+    public QueryIterSlottedBase(ExecutionContext execCxt) {
+        super(execCxt);
     }
 
     @Override
-    protected boolean hasMore() {
-        return !isFinished();
+    protected final boolean hasNextBinding() {
+        if ( slotIsSet )
+            return true;
+
+        if (!hasMore) {
+            return false;
+        }
+    //    boolean r = hasMore();
+    //    if ( !r ) {
+    //        close();
+    //        return false;
+    //    }
+
+        slot = moveToNext();
+        // if ( slot == null ) {
+        if (!hasMore) {
+            close();
+            return false;
+        }
+
+        slotIsSet = true;
+        return true;
+    }
+
+    protected final Binding endOfData() {
+        hasMore = false;
+        return null;
     }
 
     @Override
-    public String toString(PrefixMapping pmap)
-    { return QueryOutputUtils.toString(this, pmap); }
+    public final Binding moveToNextBinding() {
+        if ( !hasNext() )
+            throw new NoSuchElementException(Lib.className(this));
 
-    // final stops it being overridden and missing the output() route.
-    @Override
-    public final String toString()
-    { return Printable.toString(this); }
-
-    /** Normally overridden for better information */
-    @Override
-    public void output(IndentedWriter out)
-    {
-        out.print(Plan.startMarker);
-        out.print(Lib.className(this));
-        out.print(Plan.finishMarker);
+        Binding obj = slot;
+        slot = null;
+        slotIsSet = false;
+        return obj;
     }
 
     @Override
-    public void cancel() {
-        close();
+    protected final void closeIterator() {
+        // Called by QueryIterBase.close()
+        slotIsSet = false;
+        slot = null;
+
+        closeIteratorActual();
     }
 
-    @Override
-    public void output(IndentedWriter out, SerializationContext sCxt) {
-        output(out);
-//	        out.println(Lib.className(this) + "/" + Lib.className(iterator));
-//	        out.incIndent();
-//	        // iterator.output(out, sCxt);
-//	        out.decIndent();
-//	        // out.println(Utils.className(this)+"/"+Utils.className(iterator));
-    }
+    protected abstract void closeIteratorActual();
+
+    /**
+     * Method that must return the next non-null element.
+     * A return value of null indicates that the iterator's end has been reached.
+     */
+    protected abstract Binding moveToNext();
+
 }

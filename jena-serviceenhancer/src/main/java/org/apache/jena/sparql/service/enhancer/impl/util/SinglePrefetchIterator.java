@@ -68,8 +68,12 @@ public abstract class SinglePrefetchIterator<T>
         }
         catch(Exception e) {
             current = null;
-            throw new RuntimeException("Prefetching data failed. Reason: " + e.getMessage(), e);
+            handleException(e);
         }
+    }
+
+    protected void handleException(Throwable e) {
+        throw new RuntimeException("Prefetching data failed. Reason: " + e.getMessage(), e);
     }
 
     @Override
