@@ -94,11 +94,11 @@ tasks:
   # ── Docker (Fuseki server image) ─────────────────────────
 
   image-build:
-    desc: "Build Docker image (optionally: task image-build IMAGE_NAME=myapp IMAGE_TAG=latest)"
+    desc: "Build Docker image for linux/amd64 (optionally: task image-build IMAGE_NAME=myapp IMAGE_TAG=latest)"
     dir: test
     cmds:
       - cp ../{{.FUSEKI_JAR}} jena-fuseki-server.jar
-      - docker build -t {{.IMAGE_NAME}}:{{.IMAGE_TAG}} .
+      - docker buildx build --platform linux/amd64 -t {{.IMAGE_NAME}}:{{.IMAGE_TAG}} --load .
       - rm -f jena-fuseki-server.jar
 
   image-push:
@@ -150,11 +150,11 @@ tasks:
   # ── Loader / Reindexer ──────────────────────────────────
 
   loader-build:
-    desc: Build the loader/reindexer Docker image
+    desc: Build the loader/reindexer Docker image for linux/amd64
     dir: loader
     cmds:
       - cp ../{{.FUSEKI_JAR}} jena-fuseki-server.jar
-      - docker build -t fuseki-loader:{{.IMAGE_TAG}} .
+      - docker buildx build --platform linux/amd64 -t fuseki-loader:{{.IMAGE_TAG}} --load .
       - rm -f jena-fuseki-server.jar
 
   loader-ghcr-push:
