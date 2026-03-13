@@ -97,8 +97,11 @@ public class FusekiMain {
      * @param args Command line syntax
      */
     public static FusekiServer.Builder builder(FusekiModules fusekiModules, String... args) {
+        FusekiModules fmods = fusekiModules;
+        if ( fmods == null )
+            fmods = FusekiRunner.fmodsMain();
         FusekiServer.Builder builder = FusekiServer.create();
-        FusekiArgs.applyArgs(builder, fusekiModules, args);
+        FusekiArgs.applyArgs(builder, fmods, args);
         return builder;
     }
 }
