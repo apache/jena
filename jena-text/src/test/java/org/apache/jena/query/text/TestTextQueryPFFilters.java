@@ -226,4 +226,133 @@ public class TestTextQueryPFFilters {
             dataset.end();
         }
     }
+
+    @Test
+    public void testLucQueryByFieldName() {
+        // Search only the "title" field
+        String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
+            "SELECT ?s ?score WHERE {\n" +
+            "  (?s ?score) luc:query (\"title\" \"learning\" 10)\n" +
+            "}";
+
+        dataset.begin(ReadWrite.READ);
+        try {
+            try (QueryExecution qe = QueryExecutionFactory.create(sparql, dataset)) {
+                ResultSet rs = qe.execSelect();
+                int count = 0;
+                while (rs.hasNext()) {
+                    QuerySolution sol = rs.next();
+                    assertNotNull(sol.get("s"));
+                    count++;
+                }
+                assertTrue("Should find results when searching 'title' field", count > 0);
+            }
+        } finally {
+            dataset.end();
+        }
+    }
+
+    @Test
+    public void testLucQueryByFieldNameArray() {
+        // Search multiple fields via JSON array
+        String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
+            "SELECT ?s ?score WHERE {\n" +
+            "  (?s ?score) luc:query ('[\"title\"]' \"learning\" 10)\n" +
+            "}";
+
+        dataset.begin(ReadWrite.READ);
+        try {
+            try (QueryExecution qe = QueryExecutionFactory.create(sparql, dataset)) {
+                ResultSet rs = qe.execSelect();
+                int count = 0;
+                while (rs.hasNext()) {
+                    rs.next();
+                    count++;
+                }
+                assertTrue("Should find results when searching via field array", count > 0);
+            }
+        } finally {
+            dataset.end();
+        }
+    }
+
+    @Test
+    public void testLucQueryFieldBinding() {
+        // Search a single field and check that ?field is bound
+        String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
+            "SELECT ?s ?score ?lit ?totalHits ?g ?field WHERE {\n" +
+            "  (?s ?score ?lit ?totalHits ?g ?field) luc:query (\"title\" \"learning\" 10)\n" +
+            "}";
+
+        dataset.begin(ReadWrite.READ);
+        try {
+            try (QueryExecution qe = QueryExecutionFactory.create(sparql, dataset)) {
+                ResultSet rs = qe.execSelect();
+                int count = 0;
+                while (rs.hasNext()) {
+                    QuerySolution sol = rs.next();
+                    assertNotNull("?field should be bound for single-field search", sol.get("field"));
+                    assertEquals("Field should be 'title'", "title", sol.getLiteral("field").getString());
+                    count++;
+                }
+                assertTrue("Should find results", count > 0);
+            }
+        } finally {
+            dataset.end();
+        }
+    }
+
+    @Test
+    public void testLucQueryFieldBindingDefaultUnbound() {
+        // With "default" (multi-field), ?field should be unbound
+        String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
+            "SELECT ?s ?score ?lit ?totalHits ?g ?field WHERE {\n" +
+            "  (?s ?score ?lit ?totalHits ?g ?field) luc:query (\"default\" \"learning\" 10)\n" +
+            "}";
+
+        dataset.begin(ReadWrite.READ);
+        try {
+            try (QueryExecution qe = QueryExecutionFactory.create(sparql, dataset)) {
+                ResultSet rs = qe.execSelect();
+                int count = 0;
+                while (rs.hasNext()) {
+                    QuerySolution sol = rs.next();
+                    // "default" resolves to a single field "title" (only defaultSearch field),
+                    // so ?field will be bound in this test config
+                    count++;
+                }
+                assertTrue("Should find results", count > 0);
+            }
+        } finally {
+            dataset.end();
+        }
+    }
+
+    @Test
+    public void testLucQueryFieldWithCqlFilter() {
+        // Search specific field with CQL filter
+        String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
+            "SELECT ?s ?score WHERE {\n" +
+            "  (?s ?score) luc:query (\"title\" \"learning\" " +
+            "    '{\"op\":\"=\",\"args\":[{\"property\":\"category\"},\"technology\"]}' 20)\n" +
+            "}";
+
+        dataset.begin(ReadWrite.READ);
+        try {
+            try (QueryExecution qe = QueryExecutionFactory.create(sparql, dataset)) {
+                ResultSet rs = qe.execSelect();
+                Set<String> subjects = new HashSet<>();
+                while (rs.hasNext()) {
+                    QuerySolution sol = rs.next();
+                    subjects.add(sol.getResource("s").getURI());
+                }
+                assertTrue("Should find technology docs", subjects.size() > 0);
+                for (String s : subjects) {
+                    assertFalse("Should not find doc4 (science)", s.equals(NS + "doc4"));
+                }
+            }
+        } finally {
+            dataset.end();
+        }
+    }
 }

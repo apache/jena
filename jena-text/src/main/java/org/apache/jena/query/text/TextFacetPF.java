@@ -35,9 +35,6 @@ import org.apache.jena.query.QueryBuildException;
 import org.apache.jena.query.QueryExecException;
 import org.apache.jena.query.text.cql.CqlExpression;
 import org.apache.jena.query.text.cql.CqlParser;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Substitute;
 import org.apache.jena.sparql.core.Var;
@@ -57,11 +54,11 @@ import org.slf4j.LoggerFactory;
  * <p>
  * <b>Syntax:</b>
  * <pre>
- * (?field ?value ?count) luc:facet ("indexId" property? "query" '["field1","field2"]' cqlFilter? maxValues? minCount?)
+ * (?field ?value ?count) luc:facet (fieldSpec queryString '["field1","field2"]' cqlFilter? maxValues? minCount?)
  * </pre>
  * <p>
- * The first string literal is the index ID (required). CQL filters are JSON
- * objects with an {@code "op"} key.
+ * The first string literal is the field specification for text query scoping
+ * (same as luc:query). CQL filters are JSON objects with an {@code "op"} key.
  */
 public class TextFacetPF extends PropertyFunctionBase {
     private static final Logger log = LoggerFactory.getLogger(TextFacetPF.class);
@@ -85,16 +82,16 @@ public class TextFacetPF extends PropertyFunctionBase {
         if (argObject.isList()) {
             List<Node> list = argObject.getArgList();
             if (list.isEmpty()) {
-                throw new QueryBuildException("Object list must contain at least an index ID, query string and facet fields");
+                throw new QueryBuildException("Object list must contain at least a query string and facet fields");
             }
         }
     }
 
-    private static ShaclTextIndexLucene chooseTextIndex(ExecutionContext execCxt, DatasetGraph dsg, String indexId) {
+    private static ShaclTextIndexLucene chooseTextIndex(ExecutionContext execCxt, DatasetGraph dsg) {
         // Try registry first
         Object regObj = execCxt.getContext().get(TextQuery.textIndexRegistry);
         if (regObj instanceof TextIndexRegistry registry) {
-            TextIndexLucene idx = indexId != null ? registry.get(indexId) : registry.getDefault();
+            TextIndexLucene idx = registry.getDefault();
             if (idx instanceof ShaclTextIndexLucene shaclIdx) {
                 return shaclIdx;
             }
@@ -165,8 +162,8 @@ public class TextFacetPF extends PropertyFunctionBase {
             return IterLib.noResults(execCxt);
         }
 
-        // Resolve text index using indexId
-        textIndex = chooseTextIndex(execCxt, execCxt.getDataset(), args.indexId);
+        // Resolve text index (always uses default)
+        textIndex = chooseTextIndex(execCxt, execCxt.getDataset());
         if (textIndex == null) {
             if (!warningIssued) {
                 Log.warn(getClass(), "No text index - no facet counts available");
@@ -183,11 +180,11 @@ public class TextFacetPF extends PropertyFunctionBase {
         // Get facet counts via SearchExecution for shared state
         Map<String, List<FacetValue>> facetCounts;
         try {
-            log.debug("TextFacetPF: indexId={} cqlFilter={} queryString='{}' facetFields={}",
-                args.indexId, args.cqlFilter, args.queryString, args.facetFields);
+            log.debug("TextFacetPF: searchFields={} cqlFilter={} queryString='{}' facetFields={}",
+                args.searchFields, args.cqlFilter, args.queryString, args.facetFields);
 
             SearchExecution se = SearchExecution.getOrCreate(
-                execCxt, args.indexId, args.props, args.queryString,
+                execCxt, args.searchFields, args.queryString,
                 args.cqlFilter, null, textIndex, null, null);
             facetCounts = se.getFacetCounts(args.facetFields, args.maxValues, args.minCount);
         } catch (Exception e) {
@@ -231,11 +228,10 @@ public class TextFacetPF extends PropertyFunctionBase {
     /**
      * Parse the object argument list.
      * <p>
-     * Arg order: (indexId property* queryString facetFields cqlFilter? maxValues? minCount?)
+     * Arg order: (fieldSpec queryString facetFields cqlFilter? maxValues? minCount?)
      */
     private FacetArgs parseObjectArgs(PropFuncArg argObject) {
-        List<Resource> props = new ArrayList<>();
-        String indexId = null;
+        List<String> searchFields = new ArrayList<>();
         String queryString = null;
         List<String> facetFields = new ArrayList<>();
         CqlExpression cqlFilter = null;
@@ -244,31 +240,29 @@ public class TextFacetPF extends PropertyFunctionBase {
         boolean maxValuesSet = false;
 
         if (argObject.isNode()) {
-            log.warn("luc:facet requires at least an index ID, query string and facet fields");
+            log.warn("luc:facet requires at least a query string and facet fields");
             return null;
         }
 
         List<Node> list = argObject.getArgList();
         int idx = 0;
 
-        // 1. First literal = index ID
+        // 1. First literal = field spec
         if (idx < list.size() && list.get(idx).isLiteral()) {
             String lex = list.get(idx).getLiteralLexicalForm();
-            if (!lex.startsWith("{") && !lex.startsWith("[") && !isInteger(lex)) {
-                indexId = lex;
+            if (lex.startsWith("[")) {
+                // Could be field spec array or facet fields array — check context
+                // If no query string has been seen, treat first array-like literal as field spec
+                // only if it's followed by another literal (the query string)
+                // For simplicity: first non-JSON, non-integer literal = field spec
+                // JSON arrays are handled below as facet fields
+            } else if (!lex.startsWith("{") && !isInteger(lex)) {
+                searchFields.add(lex);
                 idx++;
             }
         }
 
-        // 2. Collect property URIs
-        while (idx < list.size() && list.get(idx).isURI()) {
-            Node n = list.get(idx);
-            Property prop = ResourceFactory.createProperty(n.getURI());
-            props.add(prop);
-            idx++;
-        }
-
-        // 3. Query string (first non-JSON, non-integer literal after URIs)
+        // 2. Query string (first non-JSON, non-integer literal)
         if (idx < list.size() && list.get(idx).isLiteral()) {
             String lex = list.get(idx).getLiteralLexicalForm();
             if (!lex.startsWith("[") && !lex.startsWith("{") && !isInteger(lex)) {
@@ -277,11 +271,11 @@ public class TextFacetPF extends PropertyFunctionBase {
             }
         }
 
-        if (indexId == null) {
-            indexId = TextIndexRegistry.DEFAULT_ID;
+        if (searchFields.isEmpty()) {
+            searchFields.add("default");
         }
 
-        // 4. Parse remaining: JSON arrays, JSON objects (CQL), and integers
+        // 3. Parse remaining: JSON arrays (facet fields), JSON objects (CQL), and integers
         while (idx < list.size()) {
             Node n = list.get(idx);
             if (n.isLiteral()) {
@@ -315,7 +309,7 @@ public class TextFacetPF extends PropertyFunctionBase {
             idx++;
         }
 
-        return new FacetArgs(indexId, props, queryString, facetFields, cqlFilter, maxValues, minCount);
+        return new FacetArgs(searchFields, queryString, facetFields, cqlFilter, maxValues, minCount);
     }
 
     private static boolean isInteger(String s) {
@@ -328,18 +322,16 @@ public class TextFacetPF extends PropertyFunctionBase {
     }
 
     private static class FacetArgs {
-        final String indexId;
-        final List<Resource> props;
+        final List<String> searchFields;
         final String queryString;
         final List<String> facetFields;
         final CqlExpression cqlFilter;
         final int maxValues;
         final int minCount;
 
-        FacetArgs(String indexId, List<Resource> props, String queryString, List<String> facetFields,
+        FacetArgs(List<String> searchFields, String queryString, List<String> facetFields,
                   CqlExpression cqlFilter, int maxValues, int minCount) {
-            this.indexId = indexId;
-            this.props = props;
+            this.searchFields = searchFields;
             this.queryString = queryString;
             this.facetFields = facetFields;
             this.cqlFilter = cqlFilter;

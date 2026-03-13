@@ -29,9 +29,9 @@ import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.geosparql.implementation.parsers.wkt.WKTReader;
 import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.text.cql.CqlExpression;
 import org.apache.jena.query.text.cql.CqlToLuceneCompiler;
-import org.apache.jena.rdf.model.Resource;
 import org.apache.lucene.document.*;
 import org.apache.lucene.facet.FacetResult;
 import org.apache.lucene.facet.Facets;
@@ -47,7 +47,9 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.StoredFields;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.util.BytesRef;
@@ -99,6 +101,50 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
 
     public boolean isShaclMode() {
         return true;
+    }
+
+    // ---- Field-scoped query support ----
+
+    /**
+     * Resolve field spec strings to validated Lucene field names.
+     * "default" resolves to all defaultSearch fields; explicit names are validated.
+     */
+    public List<String> resolveSearchFields(List<String> fieldNames) {
+        if (fieldNames == null || fieldNames.isEmpty()
+                || (fieldNames.size() == 1 && "default".equals(fieldNames.get(0)))) {
+            List<String> defaults = shaclMapping.getDefaultSearchFieldNames();
+            if (defaults.isEmpty()) {
+                log.warn("No defaultSearch fields configured; falling back to primary field");
+                return List.of(getDocDef().getPrimaryField());
+            }
+            return defaults;
+        }
+        for (String name : fieldNames) {
+            if (shaclMapping.findField(name) == null) {
+                throw new TextIndexException("Unknown search field: '" + name + "'. "
+                    + "Available fields: " + shaclMapping.getAllFieldNames());
+            }
+        }
+        return fieldNames;
+    }
+
+    /**
+     * Parse a query string targeting specific fields.
+     * Uses MultiFieldQueryParser for multiple fields, standard QueryParser for single.
+     */
+    protected Query parseQueryForFields(String queryString, List<String> fields) throws ParseException {
+        if ("*".equals(queryString)) {
+            return new MatchAllDocsQuery();
+        }
+        if (fields.size() == 1) {
+            QueryParser qp = new QueryParser(fields.get(0), getQueryAnalyzer());
+            qp.setAllowLeadingWildcard(true);
+            return qp.parse(queryString);
+        }
+        String[] fieldArray = fields.toArray(new String[0]);
+        MultiFieldQueryParser mqp = new MultiFieldQueryParser(fieldArray, getQueryAnalyzer());
+        mqp.setAllowLeadingWildcard(true);
+        return mqp.parse(queryString);
     }
 
     // ---- Document building ----
@@ -362,14 +408,24 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
     }
 
     public Map<String, List<FacetValue>> getFacetCounts(List<String> facetFieldsToQuery, int maxValues) {
-        return getFacetCounts(null, facetFieldsToQuery, maxValues);
+        return getFacetCounts(null, null, facetFieldsToQuery, maxValues);
     }
 
     public Map<String, List<FacetValue>> getFacetCounts(String queryString, List<String> facetFieldsToQuery, int maxValues) {
-        return getFacetCounts(queryString, facetFieldsToQuery, maxValues, 0);
+        return getFacetCounts(queryString, null, facetFieldsToQuery, maxValues, 0);
     }
 
     public Map<String, List<FacetValue>> getFacetCounts(String queryString, List<String> facetFieldsToQuery, int maxValues, int minCount) {
+        return getFacetCounts(queryString, null, facetFieldsToQuery, maxValues, minCount);
+    }
+
+    public Map<String, List<FacetValue>> getFacetCounts(String queryString, List<String> searchFields,
+            List<String> facetFieldsToQuery, int maxValues) {
+        return getFacetCounts(queryString, searchFields, facetFieldsToQuery, maxValues, 0);
+    }
+
+    public Map<String, List<FacetValue>> getFacetCounts(String queryString, List<String> searchFields,
+            List<String> facetFieldsToQuery, int maxValues, int minCount) {
         Map<String, List<FacetValue>> result = new HashMap<>();
 
         if (facetFieldsToQuery == null || facetFieldsToQuery.isEmpty()) {
@@ -380,11 +436,13 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
             IndexSearcher searcher = new IndexSearcher(indexReader);
             SortedSetDocValuesReaderState state = new DefaultSortedSetDocValuesReaderState(indexReader, facetsConfig);
 
+            List<String> resolved = resolveSearchFields(searchFields);
+
             Facets facets;
             if (queryString == null || queryString.isEmpty()) {
                 facets = new SortedSetDocValuesFacetCounts(state);
             } else {
-                Query query = parseQuery(queryString, getQueryAnalyzer());
+                Query query = parseQueryForFields(queryString, resolved);
                 FacetsCollector fc = new FacetsCollector();
                 searcher.search(query, fc);
                 facets = new SortedSetDocValuesFacetCounts(state, fc);
@@ -420,11 +478,11 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
     public Map<String, List<FacetValue>> getFacetCountsWithFilters(
             String queryString, List<String> facetFieldsToQuery,
             Map<String, List<String>> filters, int maxValues) {
-        return getFacetCountsWithFilters(queryString, facetFieldsToQuery, filters, maxValues, 0);
+        return getFacetCountsWithFilters(queryString, null, facetFieldsToQuery, filters, maxValues, 0);
     }
 
     public Map<String, List<FacetValue>> getFacetCountsWithFilters(
-            String queryString, List<String> facetFieldsToQuery,
+            String queryString, List<String> searchFields, List<String> facetFieldsToQuery,
             Map<String, List<String>> filters, int maxValues, int minCount) {
 
         log.debug("getFacetCountsWithFilters: query='{}' filters={}", queryString, filters);
@@ -440,10 +498,12 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
             SortedSetDocValuesReaderState state =
                 new DefaultSortedSetDocValuesReaderState(indexReader, facetsConfig);
 
+            List<String> resolved = resolveSearchFields(searchFields);
+
             BooleanQuery.Builder combined = new BooleanQuery.Builder();
 
             if (queryString != null && !queryString.isEmpty()) {
-                combined.add(parseQuery(queryString, getQueryAnalyzer()), BooleanClause.Occur.MUST);
+                combined.add(parseQueryForFields(queryString, resolved), BooleanClause.Occur.MUST);
             }
 
             if (filters != null) {
@@ -501,14 +561,58 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
         return result;
     }
 
+    // ---- Field-scoped query ----
+
+    /**
+     * Query using resolved field names (SHACL mode).
+     * Replaces the inherited query(List&lt;Resource&gt;...) path for SHACL mode.
+     */
+    public List<TextHit> queryByFields(List<String> resolvedFields, String qs,
+            String graphURI, String lang, int limit, String highlight) {
+        try (IndexReader indexReader = DirectoryReader.open(getDirectory())) {
+            IndexSearcher searcher = new IndexSearcher(indexReader);
+
+            Query query;
+            if (qs == null || qs.isEmpty()) {
+                query = new MatchAllDocsQuery();
+            } else {
+                query = parseQueryForFields(qs, resolvedFields);
+            }
+
+            int maxHits = limit > 0 ? limit : MAX_N;
+            TopDocs topDocs = searcher.search(query, maxHits);
+
+            Node fieldNode = resolvedFields.size() == 1
+                ? NodeFactory.createLiteralString(resolvedFields.get(0)) : null;
+            List<TextHit> results = new ArrayList<>();
+            String entityField = getDocDef().getEntityField();
+            StoredFields storedFields = searcher.storedFields();
+            for (ScoreDoc sd : topDocs.scoreDocs) {
+                Document doc = storedFields.document(sd.doc);
+                String uri = doc.get(entityField);
+                if (uri != null) {
+                    Node entityNode = TextQueryFuncs.stringToNode(uri);
+                    results.add(new TextHit(entityNode, sd.score, null, null, fieldNode));
+                }
+            }
+            return results;
+        } catch (IOException ex) {
+            throw new TextIndexException("queryByFields", ex);
+        } catch (ParseException ex) {
+            throw new TextIndexParseException(qs, ex.getMessage());
+        }
+    }
+
     // ---- Filtered queries ----
 
-    public List<TextHit> queryWithFilters(List<Resource> props, String qs,
+    public List<TextHit> queryWithFilters(List<String> searchFields, String qs,
             Map<String, List<String>> filters, String graphURI, String lang,
             int limit, String highlight) {
 
+        List<String> resolved = resolveSearchFields(searchFields);
+
         if (filters == null || filters.isEmpty()) {
-            return query(props, qs, graphURI, lang, limit, highlight);
+            return queryByFields(resolved, qs, graphURI, lang, limit, highlight);
         }
 
         try (IndexReader indexReader = DirectoryReader.open(getDirectory())) {
@@ -517,7 +621,7 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
             BooleanQuery.Builder combined = new BooleanQuery.Builder();
 
             if (qs != null && !qs.isEmpty()) {
-                combined.add(parseQuery(qs, getQueryAnalyzer()), BooleanClause.Occur.MUST);
+                combined.add(parseQueryForFields(qs, resolved), BooleanClause.Occur.MUST);
             }
 
             for (Map.Entry<String, List<String>> entry : filters.entrySet()) {
@@ -539,6 +643,8 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
             int maxHits = limit > 0 ? limit : MAX_N;
             TopDocs topDocs = searcher.search(combined.build(), maxHits);
 
+            Node fieldNode = resolved.size() == 1
+                ? NodeFactory.createLiteralString(resolved.get(0)) : null;
             List<TextHit> results = new ArrayList<>();
             String entityField = getDocDef().getEntityField();
             StoredFields storedFields = searcher.storedFields();
@@ -547,7 +653,7 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
                 String uri = doc.get(entityField);
                 if (uri != null) {
                     Node entityNode = TextQueryFuncs.stringToNode(uri);
-                    results.add(new TextHit(entityNode, sd.score, null));
+                    results.add(new TextHit(entityNode, sd.score, null, null, fieldNode));
                 }
             }
             return results;
@@ -558,12 +664,13 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
         }
     }
 
-    public long countQuery(String queryString, Map<String, List<String>> filters) {
+    public long countQuery(String queryString, List<String> searchFields, Map<String, List<String>> filters) {
         try (IndexReader indexReader = DirectoryReader.open(getDirectory())) {
             IndexSearcher searcher = new IndexSearcher(indexReader);
+            List<String> resolved = resolveSearchFields(searchFields);
             BooleanQuery.Builder bq = new BooleanQuery.Builder();
             if (queryString != null && !queryString.isEmpty()) {
-                bq.add(parseQuery(queryString, getQueryAnalyzer()), BooleanClause.Occur.MUST);
+                bq.add(parseQueryForFields(queryString, resolved), BooleanClause.Occur.MUST);
             }
             if (filters != null) {
                 for (Map.Entry<String, List<String>> entry : filters.entrySet()) {
@@ -596,12 +703,14 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
 
     // ---- CQL-based query methods ----
 
-    public List<TextHit> queryWithCql(List<Resource> props, String qs,
+    public List<TextHit> queryWithCql(List<String> searchFields, String qs,
             CqlExpression cqlFilter, List<SortSpec> sortSpecs,
             String graphURI, String lang, int limit, String highlight) {
 
+        List<String> resolved = resolveSearchFields(searchFields);
+
         if (cqlFilter == null && (sortSpecs == null || sortSpecs.isEmpty())) {
-            return query(props, qs, graphURI, lang, limit, highlight);
+            return queryByFields(resolved, qs, graphURI, lang, limit, highlight);
         }
 
         try (IndexReader indexReader = DirectoryReader.open(getDirectory())) {
@@ -610,7 +719,7 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
             BooleanQuery.Builder combined = new BooleanQuery.Builder();
 
             if (qs != null && !qs.isEmpty()) {
-                combined.add(parseQuery(qs, getQueryAnalyzer()), BooleanClause.Occur.MUST);
+                combined.add(parseQueryForFields(qs, resolved), BooleanClause.Occur.MUST);
             }
 
             if (cqlFilter != null) {
@@ -635,6 +744,8 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
                 topDocs = searcher.search(combined.build(), maxHits);
             }
 
+            Node fieldNode = resolved.size() == 1
+                ? NodeFactory.createLiteralString(resolved.get(0)) : null;
             List<TextHit> results = new ArrayList<>();
             String entityField = getDocDef().getEntityField();
             StoredFields storedFields = searcher.storedFields();
@@ -643,7 +754,7 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
                 String uri = doc.get(entityField);
                 if (uri != null) {
                     Node entityNode = TextQueryFuncs.stringToNode(uri);
-                    results.add(new TextHit(entityNode, sd.score, null));
+                    results.add(new TextHit(entityNode, sd.score, null, null, fieldNode));
                 }
             }
             return results;
@@ -655,7 +766,7 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
     }
 
     public Map<String, List<FacetValue>> getFacetCountsWithCql(
-            String queryString, List<String> facetFieldsToQuery,
+            String queryString, List<String> searchFields, List<String> facetFieldsToQuery,
             CqlExpression cqlFilter, int maxValues, int minCount) {
 
         Map<String, List<FacetValue>> result = new HashMap<>();
@@ -669,10 +780,12 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
             SortedSetDocValuesReaderState state =
                 new DefaultSortedSetDocValuesReaderState(indexReader, facetsConfig);
 
+            List<String> resolved = resolveSearchFields(searchFields);
+
             BooleanQuery.Builder combined = new BooleanQuery.Builder();
 
             if (queryString != null && !queryString.isEmpty()) {
-                combined.add(parseQuery(queryString, getQueryAnalyzer()), BooleanClause.Occur.MUST);
+                combined.add(parseQueryForFields(queryString, resolved), BooleanClause.Occur.MUST);
             }
 
             if (cqlFilter != null) {
@@ -724,12 +837,13 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
         return result;
     }
 
-    public long countQueryWithCql(String queryString, CqlExpression cqlFilter) {
+    public long countQueryWithCql(String queryString, List<String> searchFields, CqlExpression cqlFilter) {
         try (IndexReader indexReader = DirectoryReader.open(getDirectory())) {
             IndexSearcher searcher = new IndexSearcher(indexReader);
+            List<String> resolved = resolveSearchFields(searchFields);
             BooleanQuery.Builder bq = new BooleanQuery.Builder();
             if (queryString != null && !queryString.isEmpty()) {
-                bq.add(parseQuery(queryString, getQueryAnalyzer()), BooleanClause.Occur.MUST);
+                bq.add(parseQueryForFields(queryString, resolved), BooleanClause.Occur.MUST);
             }
             if (cqlFilter != null) {
                 CqlToLuceneCompiler compiler = new CqlToLuceneCompiler(shaclMapping);
