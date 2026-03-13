@@ -191,6 +191,18 @@ public class Util extends Object {
         return ! Lib.isEmpty(lang);
     }
 
+    /** Test whether this literal has a language (rdf:langString or rdf:dirLangString) */
+    public static boolean hasLang(Literal n) {
+        String lang = n.getLanguage();
+        return ! Lib.isEmpty(lang);
+    }
+
+    /** Test whether this Literal has a text direction (rdf:dirLangString) */
+    public static boolean hasTextDirection(Literal n) {
+        String textDir = n.getBaseDirection();
+        return ! Lib.isEmpty(textDir);
+    }
+
     /** Return true if the literal is a simple string.
      *  <p>RDF 1.0 {@literal =>} it is a plain literal, with no language tag
      *  <p>RDF 1.1 {@literal =>} it has datatype xsd:string
@@ -199,17 +211,18 @@ public class Util extends Object {
         Objects.requireNonNull(lit);
         RDFDatatype dt = lit.getDatatype();
         if (  dt == null )
-            return ! isLangString(lit);
+            return ! hasLang(lit);
         return dt.equals(XSDDatatype.XSDstring);
     }
 
-    /** Return true if the literal has a language tag. */
+    /** Return true if the literal is a rdf:langString (not rdf:dirLangString) */
     public static boolean isLangString(Literal lit) {
         Objects.requireNonNull(lit);
         String lang = lit.getLanguage();
-        if ( lang == null )
+        if ( lang == null || lang.isEmpty() )
             return false;
-        return ! lang.equals("");
+        String textDir = lit.getBaseDirection();
+        return ! hasTextDirection(lit);
     }
 
     /** Return true if the literal is well-formed, has a language tag and a base direction. */
