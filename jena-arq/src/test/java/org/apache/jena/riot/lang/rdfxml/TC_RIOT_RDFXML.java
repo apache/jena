@@ -31,6 +31,8 @@ import org.apache.jena.riot.lang.rdfxml.rrx.TS_RRX;
 @SelectClasses({
     // Local tests, extensions and error reports.
     TS_RRX.class,
+    // Additional writer tests. RDF 1.2 features. Setup using Turtle.
+    TestOutputRDFXML.class,
 
     // jena-core legacy test (RDF 1.0)
     TS_ConvertedARP1.class

@@ -250,7 +250,8 @@ class Unparser {
                     // Not in model.
                     // This is added to rdf:RDF, along with [its]:version
                     itsInsertNs = true;
-                    itsPrefix = syntheticNamespaceForITS();
+                    itsPrefix = syntheticNamespaceForITS(model);
+                    prettyWriter.setNsPrefix(itsPrefix, ITS.uri);
                 }
             }
         }
@@ -295,9 +296,7 @@ class Unparser {
     }
 
     // Determine a prefix for the ITS
-    private String syntheticNamespaceForITS() {
-        if ( itsPrefix != null )
-            return itsPrefix;
+    private static String syntheticNamespaceForITS(Model model) {
         int count = 0;
         String nsPrefix = "its";
         // Find an unused prefix.
@@ -309,7 +308,6 @@ class Unparser {
                 // Safety
                 throw new JenaException("Can't determine an XML namepsace prefix for ITS");
         }
-        prettyWriter.setNsPrefix(nsPrefix, ITS.uri);
         return nsPrefix;
     }
 
@@ -685,7 +683,7 @@ class Unparser {
         Literal lit = ((Literal) r) ;
         if ( Util.isSimpleString(lit) )
             return false;
-        if ( Util.isLangString(lit) )
+        if ( Util.hasLang(lit) )    // rdf:langStrign and rdf:dirLangString
             return false;
 
         // print out with "datatype="

@@ -43,26 +43,26 @@ import java.io.PrintWriter;
  */
 public class RDFXML_Abbrev extends BaseXMLWriter implements RDFErrorHandler {
 
-	private Resource types[] =
-		new Resource[] {
-			OWL.Ontology,
-			//OWL.DataRange, named or orphaned dataranges unusual.
-			RDFS.Datatype,
-			RDFS.Class,
-			OWL.Class,
-			OWL.ObjectProperty,
-			RDF.Property,
-			OWL.DatatypeProperty,
-			OWL.TransitiveProperty,
-			OWL.SymmetricProperty,
-			OWL.FunctionalProperty,
-			OWL.InverseFunctionalProperty,
-			};
+    private Resource types[] =
+            new Resource[] {
+                OWL.Ontology,
+                //OWL.DataRange, named or orphaned dataranges unusual.
+                RDFS.Datatype,
+                RDFS.Class,
+                OWL.Class,
+                OWL.ObjectProperty,
+                RDF.Property,
+                OWL.DatatypeProperty,
+                OWL.TransitiveProperty,
+                OWL.SymmetricProperty,
+                OWL.FunctionalProperty,
+                OWL.InverseFunctionalProperty,
+    };
 
-	boolean sReification;
+    boolean sReification;
 
 
-	boolean sIdAttr;
+    boolean sIdAttr;
     boolean sDamlCollection;
     boolean sParseTypeCollectionPropertyElt;
     boolean sListExpand;
@@ -79,18 +79,18 @@ public class RDFXML_Abbrev extends BaseXMLWriter implements RDFErrorHandler {
     @Deprecated
     public RDFXML_Abbrev() {}
 
-	@Override
+    @Override
     protected void unblockAll() {
-		sDamlCollection = false;
-		sReification = false;
-		sResourcePropertyElt = false;
-		sParseTypeLiteralPropertyElt = false;
-		sParseTypeResourcePropertyElt = false;
-		sParseTypeCollectionPropertyElt = false;
-		sIdAttr = false;
-		sPropertyAttr = false;
+        sDamlCollection = false;
+        sReification = false;
+        sResourcePropertyElt = false;
+        sParseTypeLiteralPropertyElt = false;
+        sParseTypeResourcePropertyElt = false;
+        sParseTypeCollectionPropertyElt = false;
+        sIdAttr = false;
+        sPropertyAttr = false;
         sListExpand = false;
-	}
+    }
 
     {
         unblockAll();
@@ -100,7 +100,7 @@ public class RDFXML_Abbrev extends BaseXMLWriter implements RDFErrorHandler {
     @Override
     protected void blockRule(Resource r) {
         if (r.equals(RDFSyntax.sectionReification)) sReification=true;
-       // else if (r.equals(RDFSyntax.resourcePropertyElt)) sResourcePropertyElt=true;
+        // else if (r.equals(RDFSyntax.resourcePropertyElt)) sResourcePropertyElt=true;
         else if (r.equals(RDFSyntax.sectionListExpand)) sListExpand=true;
         else if (r.equals(RDFSyntax.parseTypeLiteralPropertyElt)) sParseTypeLiteralPropertyElt=true;
         else if (r.equals(RDFSyntax.parseTypeResourcePropertyElt)) sParseTypeResourcePropertyElt=true;
@@ -115,44 +115,37 @@ public class RDFXML_Abbrev extends BaseXMLWriter implements RDFErrorHandler {
             logger.warn("Cannot block rule <"+r.getURI()+">");
         }
     }
-	@Override
+    @Override
     Resource[] setTypes(Resource[] propValue) {
-		Resource[] rslt = types;
-		types = propValue;
-		return rslt;
-	}
+        Resource[] rslt = types;
+        types = propValue;
+        return rslt;
+    }
 
-	@Override
-    protected void writeBody(
-		Model model,
-		PrintWriter pw,
-		String base,
-		boolean useXMLBase) {
-		Unparser unp = new Unparser(this, base, model, pw);
+    @Override
+    protected void writeBody(Model model, PrintWriter pw, String base, boolean useXMLBase) {
+        Unparser unp = new Unparser(this, base, model, pw);
 
-		unp.setTopLevelTypes(types);
-		//unp.useNameSpaceDecl(nameSpacePrefices);
-		if (useXMLBase)
-			unp.setXMLBase(base);
-		unp.write();
-	}
+        unp.setTopLevelTypes(types);
+        //unp.useNameSpaceDecl(nameSpacePrefices);
+        if (useXMLBase)
+            unp.setXMLBase(base);
+        unp.write();
+    }
 
-	// Implemenatation of RDFErrorHandler
-	@Override
+    // Implementation of RDFErrorHandler
+    @Override
     public void error(Exception e) {
-		errorHandler.error(e);
-	}
+        errorHandler.error(e);
+    }
 
-	@Override
+    @Override
     public void warning(Exception e) {
-		errorHandler.warning(e);
-	}
+        errorHandler.warning(e);
+    }
 
-	@Override
+    @Override
     public void fatalError(Exception e) {
-		errorHandler.fatalError(e);
-	}
-
-
-
+        errorHandler.fatalError(e);
+    }
 }
