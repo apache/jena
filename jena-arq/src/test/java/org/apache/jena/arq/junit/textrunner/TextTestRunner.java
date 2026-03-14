@@ -116,14 +116,14 @@ public class TextTestRunner {
             // summary should be null only when producing EARL reports.
             //summary.printTo
             if ( summary.getTestsSkippedCount() > 0 ) {
-                out.println("Manifests:     "+executionStats.getContainerCount());
                 out.println("Tests pass:    "+executionStats.getTestPasses());
                 out.println("Tests fail:    "+executionStats.getTestFailures());
                 out.println("Tests skipped: "+summary.getTestsSkippedCount());
+                out.println("Manifests:     "+executionStats.getContainerCount());
             } else {
-                out.println("Manifests:  "+executionStats.getContainerCount());
                 out.println("Tests pass: "+executionStats.getTestPasses());
                 out.println("Tests fail: "+executionStats.getTestFailures());
+                out.println("Manifests:  "+executionStats.getContainerCount());
             }
         }
     }

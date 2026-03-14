@@ -69,7 +69,6 @@ public abstract class AbstractRunnerOfTests extends ParentRunner<Runner> {
     private void prepare(Class<? > klass, Function<ManifestEntry, Runnable> maker, String prefix) throws InitializationError {
         List<String> manifests = SetupManifests.getManifests(klass);
         if ( manifests.isEmpty() )
-            //System.err.println("No manifests: "+label);
             throw new InitializationError("No manifests");
         prepare(manifests, klass.getSimpleName(), maker, prefix);
     }
