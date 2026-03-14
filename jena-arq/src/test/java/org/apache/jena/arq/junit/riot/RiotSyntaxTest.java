@@ -57,10 +57,19 @@ public class RiotSyntaxTest extends AbstractManifestTest {
         this.baseIRI = ( baseIRI == null ) ? actionURI : baseIRI;
         this.expectLegalSyntax = positiveTest;
         this.lang = lang;
+
+        checkFileExists(actionURI);
+
         boolean silentWarnings = RiotTestsConfig.allowWarnings(manifestEntry);
         parser = ( baseIRI != null )
             ? ParsingStepForTest.parse(actionURI, baseIRI, lang, silentWarnings)
             : ParsingStepForTest.parse(actionURI, lang, silentWarnings);
+    }
+
+    private static void checkFileExists(String iriFilename) {
+        String inputFile = IRILib.IRIToFilename(iriFilename);
+        if ( ! FileOps.exists(inputFile) )
+            System.out.println("Not found: "+iriFilename);
     }
 
     @Override
@@ -89,6 +98,7 @@ public class RiotSyntaxTest extends AbstractManifestTest {
                 fail(reason);
             }
         } catch(RiotNotFoundException ex) {
+            System.out.println(ex.getMessage());
             throw ex;
         } catch(RiotException ex) {
             if ( expectLegalSyntax ) {

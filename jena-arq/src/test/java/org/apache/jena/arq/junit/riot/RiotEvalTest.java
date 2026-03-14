@@ -29,6 +29,8 @@ import java.util.function.Consumer;
 
 import org.apache.jena.arq.junit.manifest.AbstractManifestTest;
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
+import org.apache.jena.atlas.lib.FileOps;
+import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.system.ErrorHandlerFactory;
@@ -58,17 +60,26 @@ public class RiotEvalTest extends AbstractManifestTest {
         input = entry.getAction().getURI();
         output = positiveTest ? entry.getResult().getURI() : null;
 
+        checkFileExists(input);
+        if ( output != null )
+            checkFileExists(output);
+
         boolean silentWarnings = RiotTestsConfig.allowWarnings(manifestEntry);
         parser = ( baseIRI != null )
             ? ParsingStepForTest.parse(input, baseIRI, lang, silentWarnings)
             : ParsingStepForTest.parse(input, lang, silentWarnings);
     }
 
+    private static void checkFileExists(String iriFilename) {
+        String inputFile = IRILib.IRIToFilename(iriFilename);
+        if ( ! FileOps.exists(inputFile) )
+            System.out.println("Not found: "+iriFilename);
+    }
+
     @Override
     public void runTest()
     {
         // Could generalise run4() to cover both cases.
-        // run3() predates dataset reading and is more tested.
         if ( RDFLanguages.isTriples(lang) )
             run3();
         else
@@ -116,6 +127,8 @@ public class RiotEvalTest extends AbstractManifestTest {
                 System.out.println("--------");
             }
             assertTrue(b, "Graphs not isomorphic");
+        } catch (RiotNotFoundException ex) {
+            throw ex;
         } catch (RiotException ex) {
             if ( positiveTest )
                 throw ex;
