@@ -74,9 +74,20 @@ public interface QueryExecBuilder extends QueryExecMod {
         return substitution(Var.alloc(var), value);
     }
 
+    public QueryExecBuilder transformExec(QueryExecTransform queryExecTransform);
+
     /** Set the overall query execution timeout. */
     @Override
     public QueryExecBuilder timeout(long value, TimeUnit timeUnit);
+
+    @Override
+    public QueryExecBuilder timeout(long timeout);
+
+    @Override
+    public QueryExecBuilder initialTimeout(long timeout, TimeUnit timeUnit);
+
+    @Override
+    public QueryExecBuilder overallTimeout(long timeout, TimeUnit timeUnit);
 
     /**
      * Build the {@link QueryExec}. Further changes to he builder do not affect this

@@ -70,6 +70,9 @@ public interface UpdateExecBuilder {
         return substitution(Var.alloc(var), value);
     }
 
+    /** Add a transform that gets applied when building the UpdateExec instance. */
+    public UpdateExecBuilder transformExec(UpdateExecTransform updateExecTransform);
+
     public UpdateExecBuilder timeout(long value, TimeUnit timeUnit);
 
     public UpdateExec build();

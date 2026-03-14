@@ -236,10 +236,20 @@ public class Timeouts {
        return result;
     }
 
-    // Set times from context if not set directly. e..g Context provides default values.
-    // Contrast with SPARQLQueryProcessor where the context is limiting values of the protocol parameter.
+    /**
+     * Update unset values in the builder with values from the context.
+     *
+     * Set times from context if not set directly, i.e. context provides default values.
+     * Contrast with SPARQLQueryProcessor where the context is limiting values of the protocol parameter.
+     */
     public static void applyDefaultQueryTimeoutFromContext(TimeoutBuilderImpl builder, Context cxt) {
         Timeout queryTimeout = extractQueryTimeout(cxt);
+        applyDefaultTimeout(builder, queryTimeout);
+    }
+
+    /** Update unset values in the builder with values from the context. */
+    public static void applyDefaultUpdateTimeoutFromContext(TimeoutBuilderImpl builder, Context cxt) {
+        Timeout queryTimeout = extractUpdateTimeout(cxt);
         applyDefaultTimeout(builder, queryTimeout);
     }
 

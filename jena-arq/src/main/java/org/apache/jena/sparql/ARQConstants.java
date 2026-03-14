@@ -326,6 +326,14 @@ public class ARQConstants
     public static final Symbol registryExtensions =
         SystemARQ.allocSymbol("registryExtensions") ;
 
-    public static void init() {}
+    /** The registry of adapters that implement SPARQL operations
+     *  for different types of datasets. */
+    public static final Symbol registrySparqlAdapters =
+        SystemARQ.allocSymbol("registrySparqlAdapters") ;
 
+    /** Symbol for disabling parse checks of queries and updates when executing them against a dataset */
+    public static final Symbol parseCheck =
+        SystemARQ.allocSymbol("parseCheck") ;
+
+    public static void init() {}
 }
