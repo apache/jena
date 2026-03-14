@@ -1,0 +1,9 @@
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+# Spatial filter: sites within Australia bounding box
+# bbox = [swLon, swLat, neLon, neLat] = [112, -44, 154, -10]
+PREFIX luc: <urn:jena:lucene:index#>
+SELECT ?entity ?score WHERE {
+  (?entity ?score) luc:query ("default" "*"
+    '{"op":"s_intersects","args":[{"property":"location"},{"bbox":[112,-44,154,-10]}]}'
+    20)
+}

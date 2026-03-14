@@ -6,7 +6,7 @@
 
 const CONFIG_PATH = 'config.ttl';
 const FUSEKI_BASE = 'http://localhost:3030';
-const RESULT_LIMITS = [10, 100, 1000, 10000];
+const RESULT_LIMITS = [10, 100, 1000, 5000, 9999];
 const DEFAULT_LIMIT = 10;
 const FACET_LIMITS = [10, 25, 50, 100, 500];
 const DEFAULT_FACET_LIMIT = 10;
@@ -56,11 +56,18 @@ function timeStamp() {
 }
 
 /**
- * Convert selected facet filters to CQL2-JSON string.
- * Input: {field: [val1, val2], ...} → CQL2-JSON with AND across fields, IN/= within.
+ * Convert selected facet filters + optional spatial bbox to CQL2-JSON string.
+ * Input: {field: [val1, val2], ...}, bbox: [swLon, swLat, neLon, neLat] | null
  * Returns null if no filters are active.
  */
-function buildCqlFilter(selected) {
+/**
+ * Convert selected facet filters + optional spatial geometry to CQL2-JSON string.
+ * Input: {field: [val1, val2], ...}
+ *   bbox: [swLon, swLat, neLon, neLat] | null
+ *   polygon: [[lon, lat], ...] | null  (closed ring, CRS84 order)
+ * Returns null if no filters are active.
+ */
+function buildCqlFilter(selected, bbox, polygon) {
     const clauses = [];
     for (const [field, values] of Object.entries(selected)) {
         if (!values || values.length === 0) continue;
@@ -69,6 +76,18 @@ function buildCqlFilter(selected) {
         } else {
             clauses.push({op: 'in', args: [{property: field}, values]});
         }
+    }
+    if (bbox && bbox.length === 4) {
+        clauses.push({
+            op: 's_intersects',
+            args: [{property: 'location'}, {bbox: bbox}],
+        });
+    }
+    if (polygon && polygon.length >= 4) {
+        clauses.push({
+            op: 's_intersects',
+            args: [{property: 'location'}, {type: 'Polygon', coordinates: [polygon]}],
+        });
     }
     if (clauses.length === 0) return null;
     if (clauses.length === 1) return JSON.stringify(clauses[0]);
@@ -247,6 +266,60 @@ async function loadConfig() {
 }
 
 // ---------------------------------------------------------------------------
+// Test cases — loaded from tests.json (symlinked per demo scenario)
+// ---------------------------------------------------------------------------
+
+async function loadTestCases() {
+    try {
+        const resp = await fetch(`tests.json?t=${Date.now()}`);
+        if (!resp.ok) return [];
+        return resp.json();
+    } catch {
+        return [];
+    }
+}
+
+// ---------------------------------------------------------------------------
+// WKT parser — extracts Leaflet-compatible coordinates from WKT literals
+// ---------------------------------------------------------------------------
+
+function parseWktForLeaflet(wktString) {
+    let wkt = wktString.trim();
+    let isLatLon = false;
+
+    // Strip CRS prefix if present
+    if (wkt.startsWith('<')) {
+        const close = wkt.indexOf('>');
+        const crs = wkt.substring(1, close);
+        wkt = wkt.substring(close + 1).trim();
+        // EPSG:4326/4283/7844 use lat/lon axis order
+        if (crs.includes('4326') || crs.includes('4283') || crs.includes('7844')) {
+            isLatLon = true;
+        }
+    }
+    // Bare WKT (no CRS prefix) defaults to CRS84 = lon/lat
+
+    if (wkt.startsWith('POINT')) {
+        const m = wkt.match(/POINT\s*\(\s*([-\d.]+)\s+([-\d.]+)\s*\)/);
+        if (!m) return null;
+        const c1 = parseFloat(m[1]), c2 = parseFloat(m[2]);
+        return { type: 'point', lat: isLatLon ? c1 : c2, lon: isLatLon ? c2 : c1 };
+    }
+
+    if (wkt.startsWith('POLYGON')) {
+        const m = wkt.match(/POLYGON\s*\(\((.*?)\)\)/);
+        if (!m) return null;
+        const coords = m[1].split(',').map(pair => {
+            const [c1, c2] = pair.trim().split(/\s+/).map(Number);
+            return isLatLon ? [c1, c2] : [c2, c1]; // [lat, lon] for Leaflet
+        });
+        return { type: 'polygon', coords };
+    }
+
+    return null;
+}
+
+// ---------------------------------------------------------------------------
 // Alpine.js component: Search page
 // ---------------------------------------------------------------------------
 
@@ -270,6 +343,22 @@ function searchApp() {
         description: '',
         endpoint: '',
         queryLog: [],
+        spatialBbox: null,
+        spatialPolygon: null,
+        drawingBbox: false,
+        _drawRect: null,
+        _drawStart: null,
+        _bboxOverlay: null,
+        drawingPolygon: false,
+        polyPoints: [],
+        _polyMarkers: null,
+        _polyLine: null,
+        _polyOverlay: null,
+        mapMarkerCount: 0,
+        _map: null,
+        _mapLayers: null,
+        _mapMarkersByUri: {},
+        _highlightTimer: null,
 
         async init() {
             let config;
@@ -290,6 +379,18 @@ function searchApp() {
             window.addEventListener('popstate', async () => {
                 this.loadFromUrl();
                 await this.executeSearch();
+            });
+
+            // Initialize map when visible, invalidateSize on toggle
+            const self = this;
+            Alpine.effect(() => {
+                const show = Alpine.store('app').showMap;
+                if (show) {
+                    setTimeout(() => {
+                        if (self._map) self._map.invalidateSize();
+                        else self.initMap();
+                    }, 50);
+                }
             });
         },
 
@@ -314,6 +415,12 @@ function searchApp() {
                     params.append(f, v);
                 }
             }
+            if (this.spatialBbox) {
+                params.set('bbox', this.spatialBbox.join(','));
+            }
+            if (this.spatialPolygon) {
+                params.set('polygon', this.spatialPolygon.map(c => c.join(',')).join(';'));
+            }
             const qs = params.toString();
             const url = qs ? '?' + qs : window.location.pathname;
             history.pushState(null, '', url);
@@ -324,6 +431,28 @@ function searchApp() {
             this.q = params.get('q') || '';
             for (const f of this.facetFields) {
                 this.selected[f] = params.getAll(f);
+            }
+            const bboxStr = params.get('bbox');
+            if (bboxStr) {
+                const parts = bboxStr.split(',').map(Number);
+                if (parts.length === 4 && parts.every(n => !isNaN(n))) {
+                    this.spatialBbox = parts;
+                } else {
+                    this.spatialBbox = null;
+                }
+            } else {
+                this.spatialBbox = null;
+            }
+            const polyStr = params.get('polygon');
+            if (polyStr) {
+                const coords = polyStr.split(';').map(p => p.split(',').map(Number));
+                if (coords.length >= 3 && coords.every(c => c.length === 2 && c.every(n => !isNaN(n)))) {
+                    this.spatialPolygon = coords;
+                } else {
+                    this.spatialPolygon = null;
+                }
+            } else {
+                this.spatialPolygon = null;
             }
         },
 
@@ -350,12 +479,15 @@ function searchApp() {
             for (const f of this.facetFields) {
                 this.selected[f] = [];
             }
+            this.clearBbox();
+            this.clearPolygon();
             this.pushUrl();
             await this.executeSearch();
         },
 
         hasActiveFilters() {
-            return this.facetFields.some(f => (this.selected[f] || []).length > 0);
+            return this.spatialBbox != null || this.spatialPolygon != null ||
+                this.facetFields.some(f => (this.selected[f] || []).length > 0);
         },
 
         isSelected(field, value) {
@@ -388,7 +520,7 @@ function searchApp() {
         buildSearchQuery() {
             const term = this.q.trim() || '*';
             const escaped = escapeSparql(term);
-            const cqlFilter = buildCqlFilter(this.selected);
+            const cqlFilter = buildCqlFilter(this.selected, this.spatialBbox, this.spatialPolygon);
             const filterArg = cqlFilter ? ` '${cqlFilter}'` : '';
             const facetFieldsJson = JSON.stringify(this.facetFields);
 
@@ -498,6 +630,23 @@ WHERE {
                 }
                 for (const [pred, values] of Object.entries(card.properties)) {
                     if (pred === 'description') continue;
+                    if (pred === 'asWKT') {
+                        for (const v of values) {
+                            const geo = parseWktForLeaflet(v);
+                            if (geo) {
+                                const tooltip = geo.type === 'point'
+                                    ? `${geo.lat.toFixed(4)}, ${geo.lon.toFixed(4)}`
+                                    : geo.coords.map(c => `${c[0].toFixed(2)},${c[1].toFixed(2)}`).join(' ');
+                                card.tags.push({
+                                    pred: 'location', value: geo.type === 'point' ? 'Point' : 'Polygon',
+                                    facetField: null, isActive: false, clickable: false,
+                                    cssClass: 'rtag-location',
+                                    mapUri: card.uri, tooltip,
+                                });
+                            }
+                        }
+                        continue;
+                    }
                     const facetField = this.predicateToFacet[pred] || null;
                     for (const v of values) {
                         const active = facetField ? this.isSelected(facetField, v) : false;
@@ -538,6 +687,12 @@ WHERE {
                 } else {
                     filters.push(`(${escapeHtml(field)} = ${quoted.join(' OR ')})`);
                 }
+            }
+            if (this.spatialBbox) {
+                filters.push('bbox [' + this.spatialBbox.map(n => n.toFixed(1)).join(', ') + ']');
+            }
+            if (this.spatialPolygon) {
+                filters.push('polygon [' + this.spatialPolygon.length + ' vertices]');
             }
             if (filters.length > 0) {
                 parts.push('filtered by ' + filters.join(' AND '));
@@ -594,6 +749,7 @@ WHERE {
                     this.cards = [];
                 }
 
+                this.updateMap();
                 const totalSec = (performance.now() - loadStart) / 1000;
                 this.description = this.buildDescription(hits.length, totalHits, totalSec);
             } catch (e) {
@@ -609,6 +765,361 @@ WHERE {
             const elapsed = performance.now() - loadStart;
             const remaining = Math.max(0, 400 - elapsed);
             this._loadingTimer = setTimeout(() => { this.showLoading = false; }, remaining);
+        },
+
+        // --- Map ---
+
+        initMap() {
+            if (this._map) return;
+            const el = document.getElementById('search-map');
+            if (!el) return;
+
+            const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap', maxZoom: 19,
+            });
+            const topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenTopoMap', maxZoom: 17,
+            });
+            const satellite = L.tileLayer(
+                'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+                { attribution: '&copy; Esri', maxZoom: 19 }
+            );
+
+            this._map = L.map(el, { layers: [osm], zoomControl: true })
+                .setView([-25, 134], 4);
+
+            L.control.layers(
+                { 'OpenStreetMap': osm, 'Topographic': topo, 'Satellite': satellite },
+                null, { position: 'topright' }
+            ).addTo(this._map);
+
+            this._mapLayers = L.layerGroup().addTo(this._map);
+            this._setupBboxDrawHandlers();
+            this._setupPolygonDrawHandlers();
+            this.updateMapMarkers();
+            if (this.spatialBbox) this.showBboxOverlay();
+            if (this.spatialPolygon) this.showPolygonOverlay();
+        },
+
+        updateMap() {
+            if (!Alpine.store('app').showMap) return;
+            if (!this._map) {
+                this.$nextTick(() => this.initMap());
+                return;
+            }
+            this._map.invalidateSize();
+            this.updateMapMarkers();
+        },
+
+        updateMapMarkers() {
+            if (!this._mapLayers) return;
+            this._mapLayers.clearLayers();
+            this._mapMarkersByUri = {};
+            const bounds = [];
+            let mapped = 0;
+
+            for (const card of this.cards) {
+                const wktValues = card.properties.asWKT || [];
+                for (const wkt of wktValues) {
+                    const geo = parseWktForLeaflet(wkt);
+                    if (!geo) continue;
+
+                    let layer;
+                    if (geo.type === 'point') {
+                        layer = L.circleMarker([geo.lat, geo.lon], {
+                            radius: 7, fillColor: '#d4944c', color: '#d4944c',
+                            weight: 2, opacity: 1, fillOpacity: 0.6,
+                        });
+                        bounds.push([geo.lat, geo.lon]);
+                    } else if (geo.type === 'polygon') {
+                        layer = L.polygon(geo.coords, {
+                            fillColor: '#d4944c', color: '#d4944c',
+                            weight: 2, opacity: 0.8, fillOpacity: 0.2,
+                        });
+                        bounds.push(...geo.coords);
+                    }
+
+                    if (layer) {
+                        const popup = `<strong>${escapeHtml(card.label)}</strong>`
+                            + `<br><span class="map-popup-type">${escapeHtml(card.entityType)}</span>`;
+                        layer.bindPopup(popup);
+                        const uri = card.uri;
+                        layer.on('click', () => this.highlightCard(uri));
+                        this._mapLayers.addLayer(layer);
+                        this._mapMarkersByUri[uri] = layer;
+                        mapped++;
+                    }
+                }
+            }
+
+            this.mapMarkerCount = mapped;
+            if (bounds.length > 0) {
+                this._map.fitBounds(bounds, { padding: [30, 30], maxZoom: 10 });
+            }
+        },
+
+        focusMapMarker(uri) {
+            const layer = this._mapMarkersByUri[uri];
+            if (!layer || !this._map || !Alpine.store('app').showMap) return;
+            layer.openPopup();
+            if (layer.getLatLng) {
+                this._map.panTo(layer.getLatLng());
+            } else if (layer.getBounds) {
+                this._map.panTo(layer.getBounds().getCenter());
+            }
+        },
+
+        startResize(e) {
+            e.preventDefault();
+            const handle = e.currentTarget;
+            const rightPanel = handle.nextElementSibling;
+            const startX = e.clientX;
+            const startWidth = rightPanel.offsetWidth;
+            handle.classList.add('is-dragging');
+
+            const onMove = (ev) => {
+                const newWidth = Math.max(200, Math.min(window.innerWidth * 0.6, startWidth + (startX - ev.clientX)));
+                rightPanel.style.width = newWidth + 'px';
+                rightPanel.style.flex = 'none';
+                if (this._map) this._map.invalidateSize();
+            };
+            const onUp = () => {
+                handle.classList.remove('is-dragging');
+                document.removeEventListener('mousemove', onMove);
+                document.removeEventListener('mouseup', onUp);
+                if (this._map) this._map.invalidateSize();
+            };
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onUp);
+        },
+
+        startResizeLeft(e) {
+            e.preventDefault();
+            const handle = e.currentTarget;
+            const leftPanel = handle.previousElementSibling;
+            const startX = e.clientX;
+            const startWidth = leftPanel.offsetWidth;
+            handle.classList.add('is-dragging');
+
+            const onMove = (ev) => {
+                const newWidth = Math.max(150, Math.min(window.innerWidth * 0.4, startWidth + (ev.clientX - startX)));
+                leftPanel.style.width = newWidth + 'px';
+                leftPanel.style.flex = 'none';
+            };
+            const onUp = () => {
+                handle.classList.remove('is-dragging');
+                document.removeEventListener('mousemove', onMove);
+                document.removeEventListener('mouseup', onUp);
+            };
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onUp);
+        },
+
+        highlightCard(uri) {
+            clearTimeout(this._highlightTimer);
+            Alpine.store('app').highlightUri = uri;
+            const el = document.querySelector(`[data-uri="${CSS.escape(uri)}"]`);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            this._highlightTimer = setTimeout(() => { Alpine.store('app').highlightUri = null; }, 2000);
+        },
+
+        // --- Bbox drawing ---
+
+        enableBboxDraw() {
+            if (!this._map) return;
+            this.cancelPolygonDraw();
+            this.drawingBbox = true;
+            this._map.dragging.disable();
+            this._map.getContainer().style.cursor = 'crosshair';
+        },
+
+        cancelBboxDraw() {
+            if (!this._map) return;
+            this.drawingBbox = false;
+            this._drawStart = null;
+            if (this._drawRect) {
+                this._map.removeLayer(this._drawRect);
+                this._drawRect = null;
+            }
+            this._map.dragging.enable();
+            this._map.getContainer().style.cursor = '';
+        },
+
+        clearBbox() {
+            this.spatialBbox = null;
+            if (this._bboxOverlay && this._map) {
+                this._map.removeLayer(this._bboxOverlay);
+                this._bboxOverlay = null;
+            }
+        },
+
+        async clearBboxAndSearch() {
+            this.clearBbox();
+            this.pushUrl();
+            await this.executeSearch();
+        },
+
+        showBboxOverlay() {
+            if (!this._map || !this.spatialBbox) return;
+            if (this._bboxOverlay) this._map.removeLayer(this._bboxOverlay);
+            const [swLon, swLat, neLon, neLat] = this.spatialBbox;
+            this._bboxOverlay = L.rectangle(
+                [[swLat, swLon], [neLat, neLon]],
+                { color: '#4db8a4', weight: 2, fillOpacity: 0.08, dashArray: '6 4' }
+            ).addTo(this._map);
+        },
+
+        _setupBboxDrawHandlers() {
+            const map = this._map;
+            const self = this;
+
+            map.on('mousedown', function (e) {
+                if (!self.drawingBbox) return;
+                self._drawStart = e.latlng;
+                if (self._drawRect) map.removeLayer(self._drawRect);
+                self._drawRect = L.rectangle(
+                    [e.latlng, e.latlng],
+                    { color: '#4db8a4', weight: 2, fillOpacity: 0.12, dashArray: '6 4' }
+                ).addTo(map);
+            });
+
+            map.on('mousemove', function (e) {
+                if (!self.drawingBbox || !self._drawStart || !self._drawRect) return;
+                self._drawRect.setBounds(L.latLngBounds(self._drawStart, e.latlng));
+            });
+
+            map.on('mouseup', async function (e) {
+                if (!self.drawingBbox || !self._drawStart) return;
+                const bounds = L.latLngBounds(self._drawStart, e.latlng);
+                const sw = bounds.getSouthWest();
+                const ne = bounds.getNorthEast();
+
+                // Clean up drawing state
+                self.drawingBbox = false;
+                self._drawStart = null;
+                if (self._drawRect) {
+                    map.removeLayer(self._drawRect);
+                    self._drawRect = null;
+                }
+                map.dragging.enable();
+                map.getContainer().style.cursor = '';
+
+                // Ignore tiny drags (accidental clicks)
+                if (Math.abs(sw.lat - ne.lat) < 0.01 && Math.abs(sw.lng - ne.lng) < 0.01) return;
+
+                // Clear polygon if present — only one spatial filter at a time
+                self.clearPolygon();
+
+                // Set bbox as [swLon, swLat, neLon, neLat] — CQL2 order
+                self.spatialBbox = [
+                    Math.round(sw.lng * 1000) / 1000,
+                    Math.round(sw.lat * 1000) / 1000,
+                    Math.round(ne.lng * 1000) / 1000,
+                    Math.round(ne.lat * 1000) / 1000,
+                ];
+                self.showBboxOverlay();
+                self.pushUrl();
+                await self.executeSearch();
+            });
+        },
+
+        // --- Polygon drawing ---
+
+        enablePolygonDraw() {
+            if (!this._map) return;
+            this.cancelBboxDraw();
+            this.drawingPolygon = true;
+            this.polyPoints = [];
+            this._polyMarkers = L.layerGroup().addTo(this._map);
+            this._map.dragging.disable();
+            this._map.doubleClickZoom.disable();
+            this._map.getContainer().style.cursor = 'crosshair';
+        },
+
+        cancelPolygonDraw() {
+            if (!this._map) return;
+            this.drawingPolygon = false;
+            this.polyPoints = [];
+            if (this._polyMarkers) {
+                this._map.removeLayer(this._polyMarkers);
+                this._polyMarkers = null;
+            }
+            if (this._polyLine) {
+                this._map.removeLayer(this._polyLine);
+                this._polyLine = null;
+            }
+            this._map.dragging.enable();
+            this._map.doubleClickZoom.enable();
+            this._map.getContainer().style.cursor = '';
+        },
+
+        async finishPolygonDraw() {
+            if (!this._map || !this.drawingPolygon) return;
+            if (this.polyPoints.length < 3) return;
+
+            // Build closed ring in CQL2 [lon, lat] order
+            const ring = this.polyPoints.map(ll => [
+                Math.round(ll.lng * 1000) / 1000,
+                Math.round(ll.lat * 1000) / 1000,
+            ]);
+            ring.push([...ring[0]]);
+
+            this.cancelPolygonDraw();
+            this.clearBbox();
+
+            this.spatialPolygon = ring;
+            this.showPolygonOverlay();
+            this.pushUrl();
+            await this.executeSearch();
+        },
+
+        clearPolygon() {
+            this.spatialPolygon = null;
+            if (this._polyOverlay && this._map) {
+                this._map.removeLayer(this._polyOverlay);
+                this._polyOverlay = null;
+            }
+        },
+
+        async clearPolygonAndSearch() {
+            this.clearPolygon();
+            this.pushUrl();
+            await this.executeSearch();
+        },
+
+        showPolygonOverlay() {
+            if (!this._map || !this.spatialPolygon) return;
+            if (this._polyOverlay) this._map.removeLayer(this._polyOverlay);
+            // spatialPolygon is [[lon,lat], ...] — Leaflet needs [lat,lon]
+            const latlngs = this.spatialPolygon.map(c => [c[1], c[0]]);
+            this._polyOverlay = L.polygon(latlngs, {
+                color: '#4db8a4', weight: 2, fillOpacity: 0.08, dashArray: '6 4',
+            }).addTo(this._map);
+        },
+
+        _setupPolygonDrawHandlers() {
+            const map = this._map;
+            const self = this;
+
+            map.on('click', function (e) {
+                if (!self.drawingPolygon) return;
+                self.polyPoints.push(e.latlng);
+
+                // Add vertex marker
+                const marker = L.circleMarker(e.latlng, {
+                    radius: 4, fillColor: '#4db8a4', color: '#4db8a4',
+                    weight: 2, fillOpacity: 1,
+                });
+                if (self._polyMarkers) self._polyMarkers.addLayer(marker);
+
+                // Update preview polyline
+                if (self._polyLine) map.removeLayer(self._polyLine);
+                if (self.polyPoints.length >= 2) {
+                    self._polyLine = L.polyline(self.polyPoints, {
+                        color: '#4db8a4', weight: 2, dashArray: '6 4',
+                    }).addTo(map);
+                }
+            });
         },
     };
 }

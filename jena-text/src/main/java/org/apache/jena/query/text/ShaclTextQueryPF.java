@@ -29,6 +29,8 @@ import java.util.function.Function;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.atlas.json.JSON;
+import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
@@ -37,9 +39,6 @@ import org.apache.jena.query.QueryBuildException;
 import org.apache.jena.query.QueryExecException;
 import org.apache.jena.query.text.cql.CqlExpression;
 import org.apache.jena.query.text.cql.CqlParser;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Substitute;
 import org.apache.jena.sparql.core.Var;
@@ -62,11 +61,12 @@ import org.slf4j.LoggerFactory;
  * <p>
  * Argument format:
  * <pre>
- * (?s ?score ?literal ?totalHits) luc:query ("indexId" property* "query" cqlFilter? sortSpec? limit? highlight?)
+ * (?s ?score ?literal ?totalHits ?graph ?field) luc:query (fieldSpec queryString cqlFilter? sortSpec? limit? highlight?)
  * </pre>
  * <p>
- * The first string literal is the index ID (required). CQL filters are JSON objects
- * with an {@code "op"} key. Sort specs are JSON with a {@code "field"} key.
+ * The first string literal is the field specification: {@code "default"} searches all
+ * defaultSearch fields, a bare field name searches that field, and a JSON array
+ * like {@code '["title","description"]'} searches multiple fields.
  */
 public class ShaclTextQueryPF extends PropertyFunctionBase {
     private static final Logger log = LoggerFactory.getLogger(ShaclTextQueryPF.class);
@@ -95,11 +95,11 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
         }
     }
 
-    private static ShaclTextIndexLucene chooseTextIndex(ExecutionContext execCxt, DatasetGraph dsg, String indexId) {
+    private static ShaclTextIndexLucene chooseTextIndex(ExecutionContext execCxt, DatasetGraph dsg) {
         // Try registry first
         Object regObj = execCxt.getContext().get(TextQuery.textIndexRegistry);
         if (regObj instanceof TextIndexRegistry registry) {
-            TextIndexLucene idx = indexId != null ? registry.get(indexId) : registry.getDefault();
+            TextIndexLucene idx = registry.getDefault();
             if (idx instanceof ShaclTextIndexLucene shaclIdx) {
                 return shaclIdx;
             }
@@ -141,7 +141,7 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
         argSubject = Substitute.substitute(argSubject, binding);
         argObject = Substitute.substitute(argObject, binding);
 
-        Node s = null, score = null, literal = null, totalHitsNode = null, graph = null, prop = null;
+        Node s = null, score = null, literal = null, totalHitsNode = null, graph = null, field = null;
 
         if (argSubject.isList()) {
             s = argSubject.getArg(0);
@@ -166,9 +166,9 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
                     throw new QueryExecException("Hit graph is not a variable: " + argSubject);
             }
             if (argSubject.getArgListSize() > 5) {
-                prop = argSubject.getArg(5);
-                if (!prop.isVariable())
-                    throw new QueryExecException("Hit prop is not a variable: " + argSubject);
+                field = argSubject.getArg(5);
+                if (!field.isVariable())
+                    throw new QueryExecException("Hit field is not a variable: " + argSubject);
             }
         } else {
             s = argSubject.getArg();
@@ -181,8 +181,8 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
         if (args == null)
             return IterLib.noResults(execCxt);
 
-        // Resolve text index using indexId
-        textIndex = chooseTextIndex(execCxt, execCxt.getDataset(), args.indexId);
+        // Resolve text index (always uses default)
+        textIndex = chooseTextIndex(execCxt, execCxt.getDataset());
         if (textIndex == null) {
             if (!warningIssued) {
                 Log.warn(getClass(), "No text index - no text search performed");
@@ -193,7 +193,7 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
 
         // Use SearchExecution for shared state with luc:facet
         SearchExecution se = SearchExecution.getOrCreate(
-            execCxt, args.indexId, args.props, args.queryString,
+            execCxt, args.searchFields, args.queryString,
             args.cqlFilter, args.sortSpecs, textIndex, null, null);
 
         int limit = args.limit > 0 ? args.limit : 10000;
@@ -213,7 +213,7 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
         }
 
         long totalHits = totalHitsNode != null ? se.getTotalHits() : -1;
-        QueryIterator qIter = resultsToQueryIterator(binding, s, score, literal, totalHitsNode, totalHits, graph, prop, hits, execCxt);
+        QueryIterator qIter = resultsToQueryIterator(binding, s, score, literal, totalHitsNode, totalHits, graph, field, hits, execCxt);
         if (args.limit >= 0)
             qIter = new QueryIterSlice(qIter, 0, args.limit, execCxt);
         return qIter;
@@ -221,7 +221,7 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
 
     private QueryIterator resultsToQueryIterator(Binding binding, Node subj, Node score, Node literal,
                                                   Node totalHitsNode, long totalHits,
-                                                  Node graph, Node prop, Collection<TextHit> results,
+                                                  Node graph, Node field, Collection<TextHit> results,
                                                   ExecutionContext execCxt) {
         Var sVar = Var.isVar(subj) ? Var.alloc(subj) : null;
         Var scoreVar = (score == null) ? null : Var.alloc(score);
@@ -230,7 +230,7 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
         Node totalHitsValue = totalHitsVar != null
             ? NodeFactory.createLiteralDT(String.valueOf(totalHits), XSDDatatype.XSDlong) : null;
         Var graphVar = (graph == null) ? null : Var.alloc(graph);
-        Var propVar = (prop == null) ? null : Var.alloc(prop);
+        Var fieldVar = (field == null) ? null : Var.alloc(field);
 
         Function<TextHit, Binding> converter = (TextHit hit) -> {
             if (score == null && literal == null && totalHitsVar == null)
@@ -241,7 +241,7 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
             if (literalVar != null && hit.getLiteral() != null) bmap.add(literalVar, hit.getLiteral());
             if (totalHitsVar != null) bmap.add(totalHitsVar, totalHitsValue);
             if (graphVar != null && hit.getGraph() != null) bmap.add(graphVar, hit.getGraph());
-            if (propVar != null && hit.getProp() != null) bmap.add(propVar, hit.getProp());
+            if (fieldVar != null && hit.getProp() != null) bmap.add(fieldVar, hit.getProp());
             return bmap.build();
         };
 
@@ -252,10 +252,9 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
     /**
      * Parse object arguments.
      * <p>
-     * Arg order: (indexId property* queryString cqlFilter? sortSpec? limit? highlight?)
+     * Arg order: (fieldSpec queryString cqlFilter? sortSpec? limit? highlight?)
      * <ul>
-     *   <li>First literal = index ID (required)</li>
-     *   <li>URIs = properties to search</li>
+     *   <li>First literal = field spec ("default", field name, or JSON array of field names)</li>
      *   <li>Next plain literal = query string</li>
      *   <li>JSON with "op" key = CQL filter</li>
      *   <li>JSON with "field" key = sort spec</li>
@@ -264,8 +263,7 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
      * </ul>
      */
     private QueryArgs parseArgs(PropFuncArg argObject) {
-        List<Resource> props = new ArrayList<>();
-        String indexId = null;
+        List<String> searchFields = new ArrayList<>();
         String queryString = null;
         CqlExpression cqlFilter = null;
         List<SortSpec> sortSpecs = null;
@@ -279,7 +277,8 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
                 return null;
             }
             queryString = o.getLiteralLexicalForm();
-            return new QueryArgs(TextIndexRegistry.DEFAULT_ID, props, queryString, cqlFilter, sortSpecs, limit, highlight);
+            searchFields.add("default");
+            return new QueryArgs(searchFields, queryString, cqlFilter, sortSpecs, limit, highlight);
         }
 
         List<Node> list = argObject.getArgList();
@@ -288,20 +287,21 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
 
         int idx = 0;
 
-        // First literal = index ID
+        // First literal = field spec
         if (idx < list.size() && list.get(idx).isLiteral()) {
             String lex = list.get(idx).getLiteralLexicalForm();
-            if (!lex.startsWith("{") && !lex.startsWith("[") && !isJsonLike(lex)) {
-                indexId = lex;
+            if (lex.startsWith("[")) {
+                // JSON array of field names
+                JsonArray arr = JSON.parseAny(lex).getAsArray();
+                for (int i = 0; i < arr.size(); i++) {
+                    searchFields.add(arr.get(i).getAsString().value());
+                }
+                idx++;
+            } else if (!lex.startsWith("{") && !isJsonLike(lex)) {
+                // Bare field name or "default"
+                searchFields.add(lex);
                 idx++;
             }
-        }
-
-        // Collect property URIs
-        while (idx < list.size() && list.get(idx).isURI()) {
-            Property prop = ResourceFactory.createProperty(list.get(idx).getURI());
-            props.add(prop);
-            idx++;
         }
 
         // Query string (next non-JSON literal)
@@ -318,8 +318,8 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
             return null;
         }
 
-        if (indexId == null) {
-            indexId = TextIndexRegistry.DEFAULT_ID;
+        if (searchFields.isEmpty()) {
+            searchFields.add("default");
         }
 
         // Remaining args: CQL filter, sort spec, limit, highlight
@@ -357,7 +357,7 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
             idx++;
         }
 
-        return new QueryArgs(indexId, props, queryString, cqlFilter, sortSpecs, limit, highlight);
+        return new QueryArgs(searchFields, queryString, cqlFilter, sortSpecs, limit, highlight);
     }
 
     /**
@@ -372,19 +372,17 @@ public class ShaclTextQueryPF extends PropertyFunctionBase {
     }
 
     private static class QueryArgs {
-        final String indexId;
-        final List<Resource> props;
+        final List<String> searchFields;
         final String queryString;
         final CqlExpression cqlFilter;
         final List<SortSpec> sortSpecs;
         final int limit;
         final String highlight;
 
-        QueryArgs(String indexId, List<Resource> props, String queryString,
+        QueryArgs(List<String> searchFields, String queryString,
                   CqlExpression cqlFilter, List<SortSpec> sortSpecs,
                   int limit, String highlight) {
-            this.indexId = indexId;
-            this.props = props;
+            this.searchFields = searchFields;
             this.queryString = queryString;
             this.cqlFilter = cqlFilter;
             this.sortSpecs = sortSpecs;

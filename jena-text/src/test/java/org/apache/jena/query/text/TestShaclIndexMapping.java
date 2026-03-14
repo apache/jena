@@ -168,4 +168,44 @@ public class TestShaclIndexMapping {
         ShaclIndexMapping mapping = createTestMapping();
         assertEquals(2, mapping.getProfiles().size());
     }
+
+    @Test
+    public void testGetDefaultSearchFieldNames() {
+        ShaclIndexMapping mapping = createTestMapping();
+        List<String> defaults = mapping.getDefaultSearchFieldNames();
+        assertTrue("title should be a default search field", defaults.contains("title"));
+    }
+
+    @Test
+    public void testGetAllFieldNames() {
+        ShaclIndexMapping mapping = createTestMapping();
+        Set<String> all = mapping.getAllFieldNames();
+        assertTrue(all.contains("title"));
+        assertTrue(all.contains("category"));
+        assertTrue(all.contains("year"));
+    }
+
+    @Test(expected = TextIndexException.class)
+    public void testConflictingFieldTypes() {
+        // Same field name with different types should throw
+        FieldDef textTitle = new FieldDef("title", FieldType.TEXT, null,
+            true, true, false, false, false, true,
+            Collections.singleton(TITLE_PRED));
+        IndexProfile p1 = new IndexProfile(
+            NodeFactory.createURI(NS + "Shape1"),
+            Collections.singleton(BOOK_CLASS),
+            "uri", "docType",
+            Collections.singletonList(textTitle));
+
+        FieldDef keywordTitle = new FieldDef("title", FieldType.KEYWORD, null,
+            true, true, false, false, false, true,
+            Collections.singleton(TITLE_PRED));
+        IndexProfile p2 = new IndexProfile(
+            NodeFactory.createURI(NS + "Shape2"),
+            Collections.singleton(ARTICLE_CLASS),
+            "uri", "docType",
+            Collections.singletonList(keywordTitle));
+
+        new ShaclIndexMapping(Arrays.asList(p1, p2));
+    }
 }

@@ -106,6 +106,13 @@
       <artifactId>lucene-facet</artifactId>
     </dependency>
 
+    <!-- GeoSPARQL - for WKT parsing and CRS handling in spatial indexing -->
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-geosparql</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
     <dependency>
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>

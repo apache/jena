@@ -26,8 +26,6 @@ import static org.junit.Assert.*;
 import java.util.*;
 
 import org.apache.jena.query.text.cql.CqlExpression;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
 import org.junit.Test;
 
 /**
@@ -37,19 +35,13 @@ public class TestSearchExecution {
 
     @Test
     public void testBuildKeyConsistentOrder() {
-        List<Resource> props1 = Arrays.asList(
-            ResourceFactory.createResource("http://example.org/b"),
-            ResourceFactory.createResource("http://example.org/a")
-        );
-        List<Resource> props2 = Arrays.asList(
-            ResourceFactory.createResource("http://example.org/a"),
-            ResourceFactory.createResource("http://example.org/b")
-        );
+        List<String> fields1 = Arrays.asList("description", "title");
+        List<String> fields2 = Arrays.asList("title", "description");
 
-        String key1 = SearchExecution.buildKey("default", props1, "test query", null, null);
-        String key2 = SearchExecution.buildKey("default", props2, "test query", null, null);
+        String key1 = SearchExecution.buildKey(fields1, "test query", null, null);
+        String key2 = SearchExecution.buildKey(fields2, "test query", null, null);
 
-        assertEquals("Key should be the same regardless of property order", key1, key2);
+        assertEquals("Key should be the same regardless of field order", key1, key2);
     }
 
     @Test
@@ -57,26 +49,26 @@ public class TestSearchExecution {
         CqlExpression filter1 = new CqlExpression.CqlComparison("=", "state", "WA");
         CqlExpression filter2 = new CqlExpression.CqlComparison("=", "state", "WA");
 
-        String key1 = SearchExecution.buildKey("default", null, "test", filter1, null);
-        String key2 = SearchExecution.buildKey("default", null, "test", filter2, null);
+        String key1 = SearchExecution.buildKey(null, "test", filter1, null);
+        String key2 = SearchExecution.buildKey(null, "test", filter2, null);
 
         assertEquals("Same CQL filter should produce same key", key1, key2);
     }
 
     @Test
     public void testBuildKeyDifferentQueries() {
-        String key1 = SearchExecution.buildKey("default", null, "query1", null, null);
-        String key2 = SearchExecution.buildKey("default", null, "query2", null, null);
+        String key1 = SearchExecution.buildKey(null, "query1", null, null);
+        String key2 = SearchExecution.buildKey(null, "query2", null, null);
 
         assertNotEquals("Different queries should produce different keys", key1, key2);
     }
 
     @Test
-    public void testBuildKeyDifferentIndexIds() {
-        String key1 = SearchExecution.buildKey("reports", null, "test", null, null);
-        String key2 = SearchExecution.buildKey("ocr", null, "test", null, null);
+    public void testBuildKeyDifferentFields() {
+        String key1 = SearchExecution.buildKey(List.of("title"), "test", null, null);
+        String key2 = SearchExecution.buildKey(List.of("description"), "test", null, null);
 
-        assertNotEquals("Different index IDs should produce different keys", key1, key2);
+        assertNotEquals("Different fields should produce different keys", key1, key2);
     }
 
     @Test
@@ -84,23 +76,23 @@ public class TestSearchExecution {
         List<SortSpec> sort1 = List.of(new SortSpec("year", true));
         List<SortSpec> sort2 = List.of(new SortSpec("year", false));
 
-        String key1 = SearchExecution.buildKey("default", null, "test", null, sort1);
-        String key2 = SearchExecution.buildKey("default", null, "test", null, sort2);
+        String key1 = SearchExecution.buildKey(null, "test", null, sort1);
+        String key2 = SearchExecution.buildKey(null, "test", null, sort2);
 
         assertNotEquals("Different sort specs should produce different keys", key1, key2);
     }
 
     @Test
-    public void testBuildKeyNullProps() {
-        String key1 = SearchExecution.buildKey("default", null, "test", null, null);
-        String key2 = SearchExecution.buildKey("default", new ArrayList<>(), "test", null, null);
+    public void testBuildKeyNullFields() {
+        String key1 = SearchExecution.buildKey(null, "test", null, null);
+        String key2 = SearchExecution.buildKey(new ArrayList<>(), "test", null, null);
 
-        assertEquals("Null and empty props should produce the same key", key1, key2);
+        assertEquals("Null and empty fields should produce the same key", key1, key2);
     }
 
     @Test
     public void testBuildKeyNullQuery() {
-        String key = SearchExecution.buildKey("default", null, null, null, null);
+        String key = SearchExecution.buildKey(null, null, null, null);
         assertNotNull(key);
         assertTrue(key.contains("|qs="));
     }
@@ -114,8 +106,8 @@ public class TestSearchExecution {
         CqlExpression and1 = new CqlExpression.CqlAnd(List.of(a, b));
         CqlExpression and2 = new CqlExpression.CqlAnd(List.of(b, a));
 
-        String key1 = SearchExecution.buildKey("default", null, "test", and1, null);
-        String key2 = SearchExecution.buildKey("default", null, "test", and2, null);
+        String key1 = SearchExecution.buildKey(null, "test", and1, null);
+        String key2 = SearchExecution.buildKey(null, "test", and2, null);
 
         assertEquals("AND with different arg order should produce same key", key1, key2);
     }

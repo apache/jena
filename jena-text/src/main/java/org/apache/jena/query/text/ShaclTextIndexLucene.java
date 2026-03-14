@@ -24,10 +24,14 @@ package org.apache.jena.query.text;
 import java.io.IOException;
 import java.util.*;
 
+import org.apache.jena.geosparql.implementation.GeometryWrapper;
+import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
+import org.apache.jena.geosparql.implementation.parsers.wkt.WKTReader;
+import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.text.cql.CqlExpression;
 import org.apache.jena.query.text.cql.CqlToLuceneCompiler;
-import org.apache.jena.rdf.model.Resource;
 import org.apache.lucene.document.*;
 import org.apache.lucene.facet.FacetResult;
 import org.apache.lucene.facet.Facets;
@@ -40,12 +44,16 @@ import org.apache.lucene.facet.sortedset.SortedSetDocValuesFacetField;
 import org.apache.lucene.facet.sortedset.SortedSetDocValuesReaderState;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.StoredFields;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.util.BytesRef;
+import org.locationtech.jts.geom.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,6 +101,50 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
 
     public boolean isShaclMode() {
         return true;
+    }
+
+    // ---- Field-scoped query support ----
+
+    /**
+     * Resolve field spec strings to validated Lucene field names.
+     * "default" resolves to all defaultSearch fields; explicit names are validated.
+     */
+    public List<String> resolveSearchFields(List<String> fieldNames) {
+        if (fieldNames == null || fieldNames.isEmpty()
+                || (fieldNames.size() == 1 && "default".equals(fieldNames.get(0)))) {
+            List<String> defaults = shaclMapping.getDefaultSearchFieldNames();
+            if (defaults.isEmpty()) {
+                log.warn("No defaultSearch fields configured; falling back to primary field");
+                return List.of(getDocDef().getPrimaryField());
+            }
+            return defaults;
+        }
+        for (String name : fieldNames) {
+            if (shaclMapping.findField(name) == null) {
+                throw new TextIndexException("Unknown search field: '" + name + "'. "
+                    + "Available fields: " + shaclMapping.getAllFieldNames());
+            }
+        }
+        return fieldNames;
+    }
+
+    /**
+     * Parse a query string targeting specific fields.
+     * Uses MultiFieldQueryParser for multiple fields, standard QueryParser for single.
+     */
+    protected Query parseQueryForFields(String queryString, List<String> fields) throws ParseException {
+        if ("*".equals(queryString)) {
+            return new MatchAllDocsQuery();
+        }
+        if (fields.size() == 1) {
+            QueryParser qp = new QueryParser(fields.get(0), getQueryAnalyzer());
+            qp.setAllowLeadingWildcard(true);
+            return qp.parse(queryString);
+        }
+        String[] fieldArray = fields.toArray(new String[0]);
+        MultiFieldQueryParser mqp = new MultiFieldQueryParser(fieldArray, getQueryAnalyzer());
+        mqp.setAllowLeadingWildcard(true);
+        return mqp.parse(queryString);
     }
 
     // ---- Document building ----
@@ -201,7 +253,101 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
                 }
                 break;
             }
+
+            case LATLON: {
+                String wktValue = value.toString();
+                List<IndexableField> spatialFields = parseWktToLuceneFields(fieldName, wktValue, fieldDef.isStored());
+                for (IndexableField f : spatialFields) {
+                    doc.add(f);
+                }
+                break;
+            }
         }
+    }
+
+    /**
+     * Parse a WKT literal into Lucene indexable fields for spatial queries.
+     * <p>
+     * Handles CRS detection and normalisation via {@link GeometryWrapper}:
+     * <ul>
+     *   <li>CRS84 (bare WKT, no prefix) and EPSG:4326 — axis order handled by GeometryWrapper</li>
+     *   <li>GDA94/GDA2020 (EPSG:4283/7844) — treated as WGS84-equivalent</li>
+     *   <li>Other CRS — transformed to WGS84 via {@link GeometryWrapper#convertSRS}</li>
+     * </ul>
+     * Supports Point and Polygon geometries.
+     */
+    static List<IndexableField> parseWktToLuceneFields(String fieldName, String wktValue, boolean stored) {
+        List<IndexableField> fields = new ArrayList<>();
+
+        try {
+            WKTReader reader = WKTReader.extract(wktValue);
+            String srsUri = reader.getSrsURI();
+
+            // Build a GeometryWrapper for CRS-aware coordinate handling
+            GeometryWrapper wrapper = new GeometryWrapper(
+                reader.getGeometry(), srsUri, WKTDatatype.URI,
+                reader.getDimensionInfo());
+
+            // Convert to WGS84 if not already in WGS84/CRS84
+            if (!isWgs84OrCrs84(srsUri)) {
+                wrapper = wrapper.convertSRS(SRS_URI.WGS84_CRS);
+            }
+
+            // getXYGeometry() normalises all CRSes to x=lon, y=lat (standard JTS convention)
+            Geometry geom = wrapper.getXYGeometry();
+
+            if (geom instanceof Point point) {
+                double lat = point.getY();
+                double lon = point.getX();
+                Collections.addAll(fields, LatLonShape.createIndexableFields(fieldName, lat, lon));
+            } else if (geom instanceof org.locationtech.jts.geom.Polygon jtsPoly) {
+                org.apache.lucene.geo.Polygon lucenePoly = jtsPolygonToLucene(jtsPoly);
+                Collections.addAll(fields, LatLonShape.createIndexableFields(fieldName, lucenePoly));
+            } else {
+                log.warn("Unsupported geometry type for LATLON field '{}': {}", fieldName, geom.getGeometryType());
+                return fields;
+            }
+
+            if (stored) {
+                fields.add(new StoredField(fieldName, wktValue));
+            }
+        } catch (Exception e) {
+            log.warn("Failed to parse WKT for field '{}': {} — {}", fieldName, wktValue, e.getMessage());
+        }
+
+        return fields;
+    }
+
+    private static boolean isWgs84OrCrs84(String srsUri) {
+        return SRS_URI.DEFAULT_WKT_CRS84.equals(srsUri)
+            || SRS_URI.WGS84_CRS.equals(srsUri)
+            || "http://www.opengis.net/def/crs/EPSG/0/4283".equals(srsUri)
+            || "http://www.opengis.net/def/crs/EPSG/0/7844".equals(srsUri);
+    }
+
+    /** Convert a JTS Polygon (x=lon, y=lat from getXYGeometry) to a Lucene Polygon. */
+    private static org.apache.lucene.geo.Polygon jtsPolygonToLucene(org.locationtech.jts.geom.Polygon jtsPoly) {
+        Coordinate[] shellCoords = jtsPoly.getExteriorRing().getCoordinates();
+        double[] lats = new double[shellCoords.length];
+        double[] lons = new double[shellCoords.length];
+        for (int i = 0; i < shellCoords.length; i++) {
+            lats[i] = shellCoords[i].y;  // y = lat
+            lons[i] = shellCoords[i].x;  // x = lon
+        }
+
+        org.apache.lucene.geo.Polygon[] holes = new org.apache.lucene.geo.Polygon[jtsPoly.getNumInteriorRing()];
+        for (int h = 0; h < jtsPoly.getNumInteriorRing(); h++) {
+            Coordinate[] holeCoords = jtsPoly.getInteriorRingN(h).getCoordinates();
+            double[] holeLats = new double[holeCoords.length];
+            double[] holeLons = new double[holeCoords.length];
+            for (int i = 0; i < holeCoords.length; i++) {
+                holeLats[i] = holeCoords[i].y;
+                holeLons[i] = holeCoords[i].x;
+            }
+            holes[h] = new org.apache.lucene.geo.Polygon(holeLats, holeLons);
+        }
+
+        return new org.apache.lucene.geo.Polygon(lats, lons, holes);
     }
 
     // ---- Entity update/delete ----
@@ -262,14 +408,24 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
     }
 
     public Map<String, List<FacetValue>> getFacetCounts(List<String> facetFieldsToQuery, int maxValues) {
-        return getFacetCounts(null, facetFieldsToQuery, maxValues);
+        return getFacetCounts(null, null, facetFieldsToQuery, maxValues);
     }
 
     public Map<String, List<FacetValue>> getFacetCounts(String queryString, List<String> facetFieldsToQuery, int maxValues) {
-        return getFacetCounts(queryString, facetFieldsToQuery, maxValues, 0);
+        return getFacetCounts(queryString, null, facetFieldsToQuery, maxValues, 0);
     }
 
     public Map<String, List<FacetValue>> getFacetCounts(String queryString, List<String> facetFieldsToQuery, int maxValues, int minCount) {
+        return getFacetCounts(queryString, null, facetFieldsToQuery, maxValues, minCount);
+    }
+
+    public Map<String, List<FacetValue>> getFacetCounts(String queryString, List<String> searchFields,
+            List<String> facetFieldsToQuery, int maxValues) {
+        return getFacetCounts(queryString, searchFields, facetFieldsToQuery, maxValues, 0);
+    }
+
+    public Map<String, List<FacetValue>> getFacetCounts(String queryString, List<String> searchFields,
+            List<String> facetFieldsToQuery, int maxValues, int minCount) {
         Map<String, List<FacetValue>> result = new HashMap<>();
 
         if (facetFieldsToQuery == null || facetFieldsToQuery.isEmpty()) {
@@ -280,11 +436,13 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
             IndexSearcher searcher = new IndexSearcher(indexReader);
             SortedSetDocValuesReaderState state = new DefaultSortedSetDocValuesReaderState(indexReader, facetsConfig);
 
+            List<String> resolved = resolveSearchFields(searchFields);
+
             Facets facets;
             if (queryString == null || queryString.isEmpty()) {
                 facets = new SortedSetDocValuesFacetCounts(state);
             } else {
-                Query query = parseQuery(queryString, getQueryAnalyzer());
+                Query query = parseQueryForFields(queryString, resolved);
                 FacetsCollector fc = new FacetsCollector();
                 searcher.search(query, fc);
                 facets = new SortedSetDocValuesFacetCounts(state, fc);
@@ -320,11 +478,11 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
     public Map<String, List<FacetValue>> getFacetCountsWithFilters(
             String queryString, List<String> facetFieldsToQuery,
             Map<String, List<String>> filters, int maxValues) {
-        return getFacetCountsWithFilters(queryString, facetFieldsToQuery, filters, maxValues, 0);
+        return getFacetCountsWithFilters(queryString, null, facetFieldsToQuery, filters, maxValues, 0);
     }
 
     public Map<String, List<FacetValue>> getFacetCountsWithFilters(
-            String queryString, List<String> facetFieldsToQuery,
+            String queryString, List<String> searchFields, List<String> facetFieldsToQuery,
             Map<String, List<String>> filters, int maxValues, int minCount) {
 
         log.debug("getFacetCountsWithFilters: query='{}' filters={}", queryString, filters);
@@ -340,10 +498,12 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
             SortedSetDocValuesReaderState state =
                 new DefaultSortedSetDocValuesReaderState(indexReader, facetsConfig);
 
+            List<String> resolved = resolveSearchFields(searchFields);
+
             BooleanQuery.Builder combined = new BooleanQuery.Builder();
 
             if (queryString != null && !queryString.isEmpty()) {
-                combined.add(parseQuery(queryString, getQueryAnalyzer()), BooleanClause.Occur.MUST);
+                combined.add(parseQueryForFields(queryString, resolved), BooleanClause.Occur.MUST);
             }
 
             if (filters != null) {
@@ -401,14 +561,58 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
         return result;
     }
 
+    // ---- Field-scoped query ----
+
+    /**
+     * Query using resolved field names (SHACL mode).
+     * Replaces the inherited query(List&lt;Resource&gt;...) path for SHACL mode.
+     */
+    public List<TextHit> queryByFields(List<String> resolvedFields, String qs,
+            String graphURI, String lang, int limit, String highlight) {
+        try (IndexReader indexReader = DirectoryReader.open(getDirectory())) {
+            IndexSearcher searcher = new IndexSearcher(indexReader);
+
+            Query query;
+            if (qs == null || qs.isEmpty()) {
+                query = new MatchAllDocsQuery();
+            } else {
+                query = parseQueryForFields(qs, resolvedFields);
+            }
+
+            int maxHits = limit > 0 ? limit : MAX_N;
+            TopDocs topDocs = searcher.search(query, maxHits);
+
+            Node fieldNode = resolvedFields.size() == 1
+                ? NodeFactory.createLiteralString(resolvedFields.get(0)) : null;
+            List<TextHit> results = new ArrayList<>();
+            String entityField = getDocDef().getEntityField();
+            StoredFields storedFields = searcher.storedFields();
+            for (ScoreDoc sd : topDocs.scoreDocs) {
+                Document doc = storedFields.document(sd.doc);
+                String uri = doc.get(entityField);
+                if (uri != null) {
+                    Node entityNode = TextQueryFuncs.stringToNode(uri);
+                    results.add(new TextHit(entityNode, sd.score, null, null, fieldNode));
+                }
+            }
+            return results;
+        } catch (IOException ex) {
+            throw new TextIndexException("queryByFields", ex);
+        } catch (ParseException ex) {
+            throw new TextIndexParseException(qs, ex.getMessage());
+        }
+    }
+
     // ---- Filtered queries ----
 
-    public List<TextHit> queryWithFilters(List<Resource> props, String qs,
+    public List<TextHit> queryWithFilters(List<String> searchFields, String qs,
             Map<String, List<String>> filters, String graphURI, String lang,
             int limit, String highlight) {
 
+        List<String> resolved = resolveSearchFields(searchFields);
+
         if (filters == null || filters.isEmpty()) {
-            return query(props, qs, graphURI, lang, limit, highlight);
+            return queryByFields(resolved, qs, graphURI, lang, limit, highlight);
         }
 
         try (IndexReader indexReader = DirectoryReader.open(getDirectory())) {
@@ -417,7 +621,7 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
             BooleanQuery.Builder combined = new BooleanQuery.Builder();
 
             if (qs != null && !qs.isEmpty()) {
-                combined.add(parseQuery(qs, getQueryAnalyzer()), BooleanClause.Occur.MUST);
+                combined.add(parseQueryForFields(qs, resolved), BooleanClause.Occur.MUST);
             }
 
             for (Map.Entry<String, List<String>> entry : filters.entrySet()) {
@@ -439,6 +643,8 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
             int maxHits = limit > 0 ? limit : MAX_N;
             TopDocs topDocs = searcher.search(combined.build(), maxHits);
 
+            Node fieldNode = resolved.size() == 1
+                ? NodeFactory.createLiteralString(resolved.get(0)) : null;
             List<TextHit> results = new ArrayList<>();
             String entityField = getDocDef().getEntityField();
             StoredFields storedFields = searcher.storedFields();
@@ -447,7 +653,7 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
                 String uri = doc.get(entityField);
                 if (uri != null) {
                     Node entityNode = TextQueryFuncs.stringToNode(uri);
-                    results.add(new TextHit(entityNode, sd.score, null));
+                    results.add(new TextHit(entityNode, sd.score, null, null, fieldNode));
                 }
             }
             return results;
@@ -458,12 +664,13 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
         }
     }
 
-    public long countQuery(String queryString, Map<String, List<String>> filters) {
+    public long countQuery(String queryString, List<String> searchFields, Map<String, List<String>> filters) {
         try (IndexReader indexReader = DirectoryReader.open(getDirectory())) {
             IndexSearcher searcher = new IndexSearcher(indexReader);
+            List<String> resolved = resolveSearchFields(searchFields);
             BooleanQuery.Builder bq = new BooleanQuery.Builder();
             if (queryString != null && !queryString.isEmpty()) {
-                bq.add(parseQuery(queryString, getQueryAnalyzer()), BooleanClause.Occur.MUST);
+                bq.add(parseQueryForFields(queryString, resolved), BooleanClause.Occur.MUST);
             }
             if (filters != null) {
                 for (Map.Entry<String, List<String>> entry : filters.entrySet()) {
@@ -496,12 +703,14 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
 
     // ---- CQL-based query methods ----
 
-    public List<TextHit> queryWithCql(List<Resource> props, String qs,
+    public List<TextHit> queryWithCql(List<String> searchFields, String qs,
             CqlExpression cqlFilter, List<SortSpec> sortSpecs,
             String graphURI, String lang, int limit, String highlight) {
 
+        List<String> resolved = resolveSearchFields(searchFields);
+
         if (cqlFilter == null && (sortSpecs == null || sortSpecs.isEmpty())) {
-            return query(props, qs, graphURI, lang, limit, highlight);
+            return queryByFields(resolved, qs, graphURI, lang, limit, highlight);
         }
 
         try (IndexReader indexReader = DirectoryReader.open(getDirectory())) {
@@ -510,7 +719,7 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
             BooleanQuery.Builder combined = new BooleanQuery.Builder();
 
             if (qs != null && !qs.isEmpty()) {
-                combined.add(parseQuery(qs, getQueryAnalyzer()), BooleanClause.Occur.MUST);
+                combined.add(parseQueryForFields(qs, resolved), BooleanClause.Occur.MUST);
             }
 
             if (cqlFilter != null) {
@@ -535,6 +744,8 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
                 topDocs = searcher.search(combined.build(), maxHits);
             }
 
+            Node fieldNode = resolved.size() == 1
+                ? NodeFactory.createLiteralString(resolved.get(0)) : null;
             List<TextHit> results = new ArrayList<>();
             String entityField = getDocDef().getEntityField();
             StoredFields storedFields = searcher.storedFields();
@@ -543,7 +754,7 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
                 String uri = doc.get(entityField);
                 if (uri != null) {
                     Node entityNode = TextQueryFuncs.stringToNode(uri);
-                    results.add(new TextHit(entityNode, sd.score, null));
+                    results.add(new TextHit(entityNode, sd.score, null, null, fieldNode));
                 }
             }
             return results;
@@ -555,7 +766,7 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
     }
 
     public Map<String, List<FacetValue>> getFacetCountsWithCql(
-            String queryString, List<String> facetFieldsToQuery,
+            String queryString, List<String> searchFields, List<String> facetFieldsToQuery,
             CqlExpression cqlFilter, int maxValues, int minCount) {
 
         Map<String, List<FacetValue>> result = new HashMap<>();
@@ -569,10 +780,12 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
             SortedSetDocValuesReaderState state =
                 new DefaultSortedSetDocValuesReaderState(indexReader, facetsConfig);
 
+            List<String> resolved = resolveSearchFields(searchFields);
+
             BooleanQuery.Builder combined = new BooleanQuery.Builder();
 
             if (queryString != null && !queryString.isEmpty()) {
-                combined.add(parseQuery(queryString, getQueryAnalyzer()), BooleanClause.Occur.MUST);
+                combined.add(parseQueryForFields(queryString, resolved), BooleanClause.Occur.MUST);
             }
 
             if (cqlFilter != null) {
@@ -624,12 +837,13 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
         return result;
     }
 
-    public long countQueryWithCql(String queryString, CqlExpression cqlFilter) {
+    public long countQueryWithCql(String queryString, List<String> searchFields, CqlExpression cqlFilter) {
         try (IndexReader indexReader = DirectoryReader.open(getDirectory())) {
             IndexSearcher searcher = new IndexSearcher(indexReader);
+            List<String> resolved = resolveSearchFields(searchFields);
             BooleanQuery.Builder bq = new BooleanQuery.Builder();
             if (queryString != null && !queryString.isEmpty()) {
-                bq.add(parseQuery(queryString, getQueryAnalyzer()), BooleanClause.Occur.MUST);
+                bq.add(parseQueryForFields(queryString, resolved), BooleanClause.Occur.MUST);
             }
             if (cqlFilter != null) {
                 CqlToLuceneCompiler compiler = new CqlToLuceneCompiler(shaclMapping);

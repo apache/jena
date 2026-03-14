@@ -138,6 +138,11 @@ PREFIX ex:      <http://example.org/mining/>
         idx:fieldType idx:IntField ;
         idx:sortable true ;
         sh:path ex:depth ;
+    ] ;
+    sh:property [
+        idx:fieldName "location" ;
+        idx:fieldType idx:LatLonField ;
+        sh:path <http://www.opengis.net/ont/geosparql#asWKT> ;
     ] .
 
 :SiteShape
@@ -172,4 +177,9 @@ PREFIX ex:      <http://example.org/mining/>
         idx:fieldType idx:KeywordField ;
         idx:facetable true ;
         sh:path ex:status ;
+    ] ;
+    sh:property [
+        idx:fieldName "location" ;
+        idx:fieldType idx:LatLonField ;
+        sh:path <http://www.opengis.net/ont/geosparql#asWKT> ;
     ] .

@@ -25,7 +25,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import org.apache.jena.query.text.cql.CqlExpression;
-import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.util.Symbol;
 import org.slf4j.Logger;
@@ -34,8 +33,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Shared execution state between luc:query and luc:facet property functions.
  * <p>
- * When both PFs appear in the same query with matching parameters (same index ID,
- * properties, query string, and CQL filter), they share a single SearchExecution
+ * When both PFs appear in the same query with matching parameters (same
+ * search fields, query string, and CQL filter), they share a single SearchExecution
  * instance stored in the ExecutionContext. This avoids executing the Lucene query twice.
  * <p>
  * Hits and facet counts are computed lazily on first access.
@@ -43,8 +42,7 @@ import org.slf4j.LoggerFactory;
 public class SearchExecution {
     private static final Logger log = LoggerFactory.getLogger(SearchExecution.class);
 
-    private final String indexId;
-    private final List<Resource> props;
+    private final List<String> searchFields;
     private final String queryString;
     private final CqlExpression filter;
     private final List<SortSpec> sortSpecs;
@@ -59,11 +57,10 @@ public class SearchExecution {
     private boolean hitsComputed = false;
     private boolean facetCountsComputed = false;
 
-    public SearchExecution(String indexId, List<Resource> props, String queryString,
+    public SearchExecution(List<String> searchFields, String queryString,
                            CqlExpression filter, List<SortSpec> sortSpecs,
                            ShaclTextIndexLucene textIndex, String graphURI, String lang) {
-        this.indexId = indexId != null ? indexId : TextIndexRegistry.DEFAULT_ID;
-        this.props = props != null ? new ArrayList<>(props) : new ArrayList<>();
+        this.searchFields = searchFields != null ? new ArrayList<>(searchFields) : new ArrayList<>();
         this.queryString = queryString;
         this.filter = filter;
         this.sortSpecs = sortSpecs != null ? List.copyOf(sortSpecs) : List.of();
@@ -77,12 +74,12 @@ public class SearchExecution {
      * If one already exists with the same key, it is reused.
      */
     public static SearchExecution getOrCreate(ExecutionContext execCxt,
-                                              String indexId, List<Resource> props,
+                                              List<String> searchFields,
                                               String queryString, CqlExpression filter,
                                               List<SortSpec> sortSpecs,
                                               ShaclTextIndexLucene textIndex,
                                               String graphURI, String lang) {
-        String key = buildKey(indexId, props, queryString, filter, sortSpecs);
+        String key = buildKey(searchFields, queryString, filter, sortSpecs);
         Symbol symbol = Symbol.create(TextQuery.NS + "searchExecution/" + key);
 
         Object existing = execCxt.getContext().get(symbol);
@@ -91,7 +88,7 @@ public class SearchExecution {
             return (SearchExecution) existing;
         }
 
-        SearchExecution se = new SearchExecution(indexId, props, queryString, filter,
+        SearchExecution se = new SearchExecution(searchFields, queryString, filter,
             sortSpecs, textIndex, graphURI, lang);
         execCxt.getContext().put(symbol, se);
         log.trace("Created new SearchExecution for key: {}", key);
@@ -99,20 +96,17 @@ public class SearchExecution {
     }
 
     /**
-     * Build a cache key from index ID, properties, query string, CQL filter, and sort specs.
+     * Build a cache key from search fields, query string, CQL filter, and sort specs.
      */
-    static String buildKey(String indexId, List<Resource> props, String queryString,
+    static String buildKey(List<String> searchFields, String queryString,
                            CqlExpression filter, List<SortSpec> sortSpecs) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("idx=").append(indexId != null ? indexId : "default");
-
-        if (props != null && !props.isEmpty()) {
-            List<String> sortedProps = props.stream()
-                .map(r -> r.getURI())
+        if (searchFields != null && !searchFields.isEmpty()) {
+            List<String> sorted = searchFields.stream()
                 .sorted()
                 .collect(Collectors.toList());
-            sb.append("|props=").append(String.join(",", sortedProps));
+            sb.append("fields=").append(String.join(",", sorted));
         }
 
         sb.append("|qs=").append(queryString != null ? queryString : "");
@@ -136,9 +130,10 @@ public class SearchExecution {
         if (!hitsComputed) {
             try {
                 if (filter == null && (sortSpecs == null || sortSpecs.isEmpty())) {
-                    hits = textIndex.query(props, queryString, graphURI, lang, limit, highlight);
+                    List<String> resolved = textIndex.resolveSearchFields(searchFields);
+                    hits = textIndex.queryByFields(resolved, queryString, graphURI, lang, limit, highlight);
                 } else {
-                    hits = textIndex.queryWithCql(props, queryString, filter, sortSpecs,
+                    hits = textIndex.queryWithCql(searchFields, queryString, filter, sortSpecs,
                         graphURI, lang, limit, highlight);
                 }
             } catch (Exception e) {
@@ -158,10 +153,10 @@ public class SearchExecution {
         if (!facetCountsComputed) {
             try {
                 if (filter == null) {
-                    facetCounts = textIndex.getFacetCounts(queryString, facetFields, maxValues, minCount);
+                    facetCounts = textIndex.getFacetCounts(queryString, searchFields, facetFields, maxValues, minCount);
                 } else {
                     facetCounts = textIndex.getFacetCountsWithCql(
-                        queryString, facetFields, filter, maxValues, minCount);
+                        queryString, searchFields, facetFields, filter, maxValues, minCount);
                 }
             } catch (Exception e) {
                 log.error("Error computing facet counts: {}", e.getMessage());
@@ -178,7 +173,7 @@ public class SearchExecution {
     public synchronized long getTotalHits() {
         if (totalHits < 0) {
             try {
-                totalHits = textIndex.countQueryWithCql(queryString, filter);
+                totalHits = textIndex.countQueryWithCql(queryString, searchFields, filter);
             } catch (Exception e) {
                 log.error("Error computing total hits: {}", e.getMessage());
                 totalHits = 0;
@@ -195,12 +190,8 @@ public class SearchExecution {
         return queryString;
     }
 
-    public List<Resource> getProps() {
-        return props;
-    }
-
-    public String getIndexId() {
-        return indexId;
+    public List<String> getSearchFields() {
+        return searchFields;
     }
 
     public List<SortSpec> getSortSpecs() {

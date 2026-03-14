@@ -97,6 +97,9 @@ import org.junit.runners.Suite.SuiteClasses;
     , TestCqlToLuceneCompiler.class
     , TestSortSpec.class
     , TestTextIndexRegistry.class
+
+    // Spatial filtering
+    , TestSpatialFiltering.class
 })
 
 public class TS_Text

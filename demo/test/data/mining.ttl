@@ -4,6 +4,7 @@
 @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix dct:   <http://purl.org/dc/terms/> .
 @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix geo:   <http://www.opengis.net/ont/geosparql#> .
 
 ## --- Classes ---
 
@@ -18,42 +19,56 @@ ex:site-mount-isa a ex:Site ;
     dct:description "Major polymetallic mining complex in northwest Queensland producing copper, lead and zinc since 1923. One of the most significant base metal deposits in the world." ;
     ex:commodity "Copper", "Lead", "Zinc" ;
     ex:state "QLD" ;
-    ex:status "Active" .
+    ex:status "Active" ;
+    geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(-20.73 139.49)"^^geo:wktLiteral .
 
 ex:site-olympic-dam a ex:Site ;
     rdfs:label "Olympic Dam" ;
     dct:description "Underground mine in South Australia producing copper, uranium, gold and silver. Hosts one of the world's largest known ore deposits within an iron oxide copper-gold system." ;
     ex:commodity "Copper", "Uranium", "Gold" ;
     ex:state "SA" ;
-    ex:status "Active" .
+    ex:status "Active" ;
+    geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((-30.50 136.80, -30.50 136.96, -30.36 136.96, -30.36 136.80, -30.50 136.80))"^^geo:wktLiteral .
 
 ex:site-boddington a ex:Site ;
     rdfs:label "Boddington Gold Mine" ;
     dct:description "Large open-pit gold-copper mine in the Darling Range of Western Australia. Currently the largest gold mine in the country by production volume." ;
     ex:commodity "Gold", "Copper" ;
     ex:state "WA" ;
-    ex:status "Active" .
+    ex:status "Active" ;
+    geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(-32.77 116.35)"^^geo:wktLiteral .
 
 ex:site-broken-hill a ex:Site ;
     rdfs:label "Broken Hill Mine" ;
     dct:description "Historic lead-zinc-silver mining district in far western New South Wales. Mining commenced in 1883, making it one of the longest continuously operating mining fields in Australia." ;
     ex:commodity "Lead", "Zinc", "Silver" ;
     ex:state "NSW" ;
-    ex:status "Historical" .
+    ex:status "Historical" ;
+    geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((-32.00 141.40, -32.00 141.55, -31.90 141.55, -31.90 141.40, -32.00 141.40))"^^geo:wktLiteral .
 
 ex:site-cadia-valley a ex:Site ;
     rdfs:label "Cadia Valley Operations" ;
     dct:description "Underground panel cave and open-pit gold-copper mine near Orange, New South Wales. One of Australia's largest gold operations, extracting from a porphyry copper-gold deposit." ;
     ex:commodity "Gold", "Copper" ;
     ex:state "NSW" ;
-    ex:status "Active" .
+    ex:status "Active" ;
+    geo:asWKT "POLYGON((148.90 -33.55, 149.10 -33.55, 149.10 -33.40, 148.90 -33.40, 148.90 -33.55))"^^geo:wktLiteral .
 
 ex:site-pilbara-iron a ex:Site ;
     rdfs:label "Pilbara Iron Ore Hub" ;
     dct:description "Cluster of open-pit iron ore mines in the Pilbara region of Western Australia. Produces high-grade hematite ore for export, connected by private rail to port facilities." ;
     ex:commodity "Iron Ore" ;
     ex:state "WA" ;
-    ex:status "Active" .
+    ex:status "Active" ;
+    geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((-22.8 118.0, -22.8 119.2, -21.8 119.2, -21.8 118.0, -22.8 118.0))"^^geo:wktLiteral .
+
+ex:site-ok-tedi a ex:Site ;
+    rdfs:label "Ok Tedi Mine" ;
+    dct:description "Large open-pit copper-gold mine in the Star Mountains of Papua New Guinea. One of the largest copper and gold deposits in the world, operating since 1984." ;
+    ex:commodity "Copper", "Gold" ;
+    ex:state "PNG" ;
+    ex:status "Active" ;
+    geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(-5.20 141.13)"^^geo:wktLiteral .
 
 ## --- Boreholes ---
 
@@ -62,7 +77,8 @@ ex:bh-mia-001 a ex:Borehole ;
     dct:description "Diamond drill hole targeting the copper-rich silica dolomite zone at 400m depth. Core recovery 95%. Intersected significant chalcopyrite mineralisation below 380m." ;
     ex:commodity "Copper" ;
     ex:state "QLD" ;
-    ex:depth 450 .
+    ex:depth 450 ;
+    geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(-20.74 139.50)"^^geo:wktLiteral .
 
 ex:bh-mia-002 a ex:Borehole ;
     rdfs:label "MIA-DDH-002 Mount Isa Exploration Hole" ;
@@ -83,7 +99,8 @@ ex:bh-bod-001 a ex:Borehole ;
     dct:description "Deep diamond drill hole investigating the primary gold-copper mineralisation at depth beneath the existing open pit. Targeted the diorite-hosted stockwork zone below the supergene blanket." ;
     ex:commodity "Gold" ;
     ex:state "WA" ;
-    ex:depth 600 .
+    ex:depth 600 ;
+    geo:asWKT "POINT(116.36 -32.78)"^^geo:wktLiteral .
 
 ex:bh-bh-001 a ex:Borehole ;
     rdfs:label "BHM-DDH-001 Broken Hill Legacy Drill Hole" ;
@@ -104,7 +121,8 @@ ex:bh-pil-001 a ex:Borehole ;
     dct:description "Shallow reverse circulation hole in the channel iron deposit. Sampled the Tertiary pisolitic limonite horizon for iron grade and contaminant analysis." ;
     ex:commodity "Iron Ore" ;
     ex:state "WA" ;
-    ex:depth 150 .
+    ex:depth 150 ;
+    geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(-22.35 118.60)"^^geo:wktLiteral .
 
 ## --- Authors ---
 ## Authors are separate entities linked to reports via ex:authoredBy (on reports)

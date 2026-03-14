@@ -30,6 +30,14 @@ tasks:
       - echo "Serving at http://localhost:8001"
       - cmd: python3 -m http.server 8001 --directory project-overview
 
+  test:
+    desc: Run Playwright screenshot tests and generate report
+    dir: testing
+    cmds:
+      - npx playwright test
+      - npx tsx lib/report.ts
+      - echo "Report written to testing/results/report.md"
+
   # ── Mining ───────────────────────────────────────────────
 
   serve:
@@ -59,6 +67,7 @@ tasks:
           - queries/05-combined.rq
           - queries/06-sequence-path-facet.rq
           - queries/07-filter-by-author.rq
+          - queries/08-spatial-bbox.rq
         cmd: |
           echo "=== {{.ITEM}} ==="
           curl -s -X POST "{{.SERVER_URL}}/mining/query" \
@@ -71,6 +80,7 @@ tasks:
     desc: Serve the static demo app with mining config
     cmds:
       - ln -sfn ../test/config.ttl app-static/config.ttl
+      - ln -sfn ../test/tests.json app-static/tests.json
       - echo "Serving at http://localhost:8000 (mining → localhost:3031)"
       - cmd: python3 -m http.server 8000 --directory app-static
 
@@ -84,11 +94,11 @@ tasks:
   # ── Docker (Fuseki server image) ─────────────────────────
 
   image-build:
-    desc: "Build Docker image (optionally: task image-build IMAGE_NAME=myapp IMAGE_TAG=latest)"
+    desc: "Build Docker image for linux/amd64 (optionally: task image-build IMAGE_NAME=myapp IMAGE_TAG=latest)"
     dir: test
     cmds:
       - cp ../{{.FUSEKI_JAR}} jena-fuseki-server.jar
-      - docker build -t {{.IMAGE_NAME}}:{{.IMAGE_TAG}} .
+      - docker buildx build --platform linux/amd64 -t {{.IMAGE_NAME}}:{{.IMAGE_TAG}} --load .
       - rm -f jena-fuseki-server.jar
 
   image-push:
@@ -140,11 +150,11 @@ tasks:
   # ── Loader / Reindexer ──────────────────────────────────
 
   loader-build:
-    desc: Build the loader/reindexer Docker image
+    desc: Build the loader/reindexer Docker image for linux/amd64
     dir: loader
     cmds:
       - cp ../{{.FUSEKI_JAR}} jena-fuseki-server.jar
-      - docker build -t fuseki-loader:{{.IMAGE_TAG}} .
+      - docker buildx build --platform linux/amd64 -t fuseki-loader:{{.IMAGE_TAG}} --load .
       - rm -f jena-fuseki-server.jar
 
   loader-ghcr-push:

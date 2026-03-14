@@ -1,0 +1,12 @@
+[
+  { "group": "Full-Text Search" },
+  { "label": "All observations", "params": "" },
+  { "label": "Search: \"gold\"", "params": "?q=gold" },
+  { "label": "Search: \"copper\"", "params": "?q=copper" },
+
+  { "group": "Facets" },
+  { "label": "Element facet", "params": "" },
+
+  { "group": "Entity Types" },
+  { "label": "All geochem analyses", "params": "?entityType=GeochemAnalysis" }
+]

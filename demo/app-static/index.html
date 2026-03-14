@@ -9,9 +9,16 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="app.css">
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/n3@1.22.3/browser/n3.min.js"></script>
   <script src="app.js"></script>
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.store('app', { showLog: true, showMap: true, highlightUri: null });
+    });
+  </script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
 </head>
 <body>
@@ -31,6 +38,22 @@
       <a class="nav-tab" href="config.html">Configuration</a>
       <a class="nav-tab" href="stats.html">Stats</a>
     </div>
+    <div class="navbar-end" x-data>
+      <div class="navbar-dropdown-wrapper" id="tests-wrapper" style="display:none">
+        <button class="tests-btn" type="button" id="tests-toggle">
+          Tests <span class="dropdown-caret" id="tests-caret">&#9662;</span>
+        </button>
+        <div class="tests-dropdown" id="tests-menu"></div>
+      </div>
+      <label class="navbar-toggle">
+        <input type="checkbox" :checked="$store.app.showMap" @change="$store.app.showMap = !$store.app.showMap">
+        <span>Map</span>
+      </label>
+      <label class="navbar-toggle">
+        <input type="checkbox" :checked="$store.app.showLog" @change="$store.app.showLog = !$store.app.showLog">
+        <span>SPARQL Log</span>
+      </label>
+    </div>
   </nav>
 
   <section class="section">
@@ -43,17 +66,20 @@
       </template>
 
       <div class="columns mb-0" x-show="!error">
-        <div class="column is-3"></div>
+        <div class="column left-panel"></div>
         <div class="column">
           <p class="results-description" x-html="description"></p>
         </div>
-        <div class="column is-3"></div>
+        <div class="column right-panel" x-show="$store.app.showMap || $store.app.showLog">
+          <p class="results-description" x-show="$store.app.showMap"
+             x-text="mapMarkerCount + ' of ' + cards.length + ' results mapped'"></p>
+        </div>
       </div>
 
       <div class="columns search-layout">
 
         <!-- Sidebar: search + facets -->
-        <div class="column is-3">
+        <div class="column left-panel">
           <div class="facet-sidebar">
             <div class="sidebar-panel">
               <div class="sidebar-header">Search &amp; Filter</div>
@@ -71,22 +97,20 @@
 
               <div class="limit-row">
                 <div class="limit-control">
-                  <label class="limit-label">Show</label>
+                  <label class="limit-label">Results</label>
                   <select class="limit-select" x-model.number="limit" @change="search()">
                     <template x-for="n in resultLimits" :key="n">
                       <option :value="n" x-text="n.toLocaleString()"></option>
                     </template>
                   </select>
-                  <span class="limit-label">results</span>
                 </div>
                 <div class="limit-control">
-                  <label class="limit-label">Top</label>
+                  <label class="limit-label">Facets</label>
                   <select class="limit-select" x-model.number="maxFacetValues" @change="search()">
                     <template x-for="n in facetLimits" :key="n">
                       <option :value="n" x-text="n.toLocaleString()"></option>
                     </template>
                   </select>
-                  <span class="limit-label">facets</span>
                 </div>
               </div>
 
@@ -127,6 +151,9 @@
           </div>
         </div>
 
+        <!-- Resize handle: left -->
+        <div class="resize-handle" @mousedown="startResizeLeft($event)"></div>
+
         <!-- Main content: results -->
         <div class="column">
 
@@ -137,7 +164,8 @@
           </template>
 
           <template x-for="card in cards" :key="card.uri">
-            <div class="result-card">
+            <div class="result-card" :data-uri="card.uri"
+                 :class="{ 'is-highlighted': $store.app.highlightUri === card.uri }">
               <div class="result-card-header">
                 <span class="result-card-label" x-text="card.label"></span>
                 <span class="result-card-score">
@@ -159,9 +187,10 @@
                 <template x-for="tag in card.tags" :key="tag.pred + ':' + tag.value">
                   <span class="rtag" :class="tag.cssClass"
                         x-text="tag.value"
-                        :tabindex="tag.clickable ? 0 : -1"
-                        @click="tag.clickable && toggleFacet(tag.facetField, tag.value)"
-                        @keydown.enter="tag.clickable && toggleFacet(tag.facetField, tag.value)">
+                        :title="tag.tooltip || ''"
+                        :tabindex="(tag.clickable || tag.mapUri) ? 0 : -1"
+                        @click="tag.mapUri ? focusMapMarker(tag.mapUri) : (tag.clickable && toggleFacet(tag.facetField, tag.value))"
+                        @keydown.enter="tag.mapUri ? focusMapMarker(tag.mapUri) : (tag.clickable && toggleFacet(tag.facetField, tag.value))">
                   </span>
                 </template>
               </div>
@@ -170,27 +199,88 @@
 
         </div>
 
-        <!-- SPARQL log panel -->
-        <div class="column is-3">
-          <div class="query-log-sidebar">
-            <div class="query-log-panel">
-              <div class="sidebar-header">SPARQL Log</div>
+        <!-- Resize handle -->
+        <div class="resize-handle" @mousedown="startResize($event)"
+             x-show="$store.app.showMap || $store.app.showLog"></div>
 
-              <template x-if="queryLog.length === 0">
-                <p class="query-log-empty">Queries will appear here as you search.</p>
-              </template>
+        <!-- Right panel: map + log -->
+        <div class="column right-panel" x-show="$store.app.showMap || $store.app.showLog" x-transition.opacity>
 
-              <template x-for="(entry, i) in queryLog" :key="i">
-                <div class="query-log-entry" :class="{ 'is-new': i === 0 }">
-                  <div class="query-log-meta">
-                    <span class="query-log-timestamp" x-text="entry.time"></span>
-                    <span class="query-log-label" x-text="entry.label"></span>
-                  </div>
-                  <pre class="query-log-code"><code x-text="entry.query"></code></pre>
-                </div>
-              </template>
+          <div class="map-panel" x-show="$store.app.showMap">
+            <div class="map-header">
+              <span class="sidebar-header" style="margin-bottom:0">Map</span>
+              <div class="map-controls">
+                <template x-if="!drawingPolygon">
+                  <button class="btn-map-tool" type="button"
+                          :class="{ 'is-active': drawingBbox }"
+                          @click="drawingBbox ? cancelBboxDraw() : enableBboxDraw()"
+                          title="Draw bounding box to filter results spatially">
+                    <span class="map-tool-icon">&#9633;</span> Bbox
+                  </button>
+                </template>
+                <template x-if="!drawingBbox">
+                  <button class="btn-map-tool" type="button"
+                          :class="{ 'is-active': drawingPolygon }"
+                          @click="drawingPolygon ? cancelPolygonDraw() : enablePolygonDraw()"
+                          title="Click map to place vertices, then press Done to apply filter">
+                    <span class="map-tool-icon">&#11040;</span> Polygon
+                  </button>
+                </template>
+                <template x-if="drawingPolygon && polyPoints.length >= 3">
+                  <button class="btn-map-tool is-active" type="button"
+                          @click="finishPolygonDraw()"
+                          title="Close polygon and apply spatial filter">
+                    &#10003; Done
+                  </button>
+                </template>
+                <template x-if="drawingPolygon">
+                  <span class="bbox-label"
+                        x-text="polyPoints.length + ' point' + (polyPoints.length !== 1 ? 's' : '') + (polyPoints.length < 3 ? ' (need 3+)' : '')">
+                  </span>
+                </template>
+                <template x-if="spatialBbox && !drawingBbox && !drawingPolygon">
+                  <button class="btn-map-tool btn-map-clear" type="button"
+                          @click="clearBboxAndSearch()"
+                          title="Remove bbox filter">
+                    &#10005; Bbox
+                  </button>
+                </template>
+                <template x-if="spatialPolygon && !drawingBbox && !drawingPolygon">
+                  <button class="btn-map-tool btn-map-clear" type="button"
+                          @click="clearPolygonAndSearch()"
+                          title="Remove polygon filter">
+                    &#10005; Polygon
+                  </button>
+                </template>
+                <template x-if="spatialBbox && !drawingBbox && !drawingPolygon">
+                  <span class="bbox-label" x-text="spatialBbox.map(n => n.toFixed(1)).join(', ')"></span>
+                </template>
+                <template x-if="spatialPolygon && !drawingBbox && !drawingPolygon">
+                  <span class="bbox-label" x-text="(spatialPolygon.length - 1) + ' vertices'"></span>
+                </template>
+              </div>
             </div>
+            <div id="search-map"></div>
           </div>
+
+          <div class="query-log-panel" x-show="$store.app.showLog">
+            <div class="sidebar-header">SPARQL Log</div>
+
+            <template x-if="queryLog.length === 0">
+              <p class="query-log-empty">Queries will appear here as you search.</p>
+            </template>
+
+            <template x-for="(entry, i) in queryLog" :key="i">
+              <div class="query-log-entry" :class="{ 'is-new': i === 0 }">
+                <div class="query-log-meta">
+                  <span class="query-log-timestamp" x-text="entry.time"></span>
+                  <span class="query-log-label" x-text="entry.label"></span>
+                </div>
+                <pre class="query-log-code"><code x-text="entry.query"></code></pre>
+              </div>
+            </template>
+          </div>
+
         </div>
 
       </div>
@@ -204,6 +294,30 @@
       burger.addEventListener('click', () => {
         burger.classList.toggle('is-active');
         menu.classList.toggle('is-active');
+      });
+
+      // Tests dropdown — loaded from tests.json, vanilla JS toggle
+      const testsWrapper = document.getElementById('tests-wrapper');
+      const testsMenu = document.getElementById('tests-menu');
+      const testsToggle = document.getElementById('tests-toggle');
+      const testsCaret = document.getElementById('tests-caret');
+      loadTestCases().then(cases => {
+        if (!cases || cases.length === 0) return;
+        testsMenu.innerHTML = cases.map(tc => {
+          if (tc.group) return '<div class="dropdown-group">' + tc.group + '</div>';
+          return '<a class="dropdown-item" href="index.html' + (tc.params || '') + '">' + tc.label + '</a>';
+        }).join('');
+        testsWrapper.style.display = '';
+      });
+      testsToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const open = testsMenu.style.display !== 'block';
+        testsMenu.style.display = open ? 'block' : 'none';
+        testsCaret.classList.toggle('is-open', open);
+      });
+      document.addEventListener('click', () => {
+        testsMenu.style.display = 'none';
+        testsCaret.classList.remove('is-open');
       });
 
       requestAnimationFrame(() => {

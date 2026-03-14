@@ -150,6 +150,7 @@ public class ShaclIndexMapping {
 
     public ShaclIndexMapping(List<IndexProfile> profiles) {
         this.profiles = Collections.unmodifiableList(new ArrayList<>(profiles));
+        validateFieldNameUniqueness();
 
         // Build predicate → (profile, field) lookup
         Map<Node, List<ProfileField>> predMap = new HashMap<>();
@@ -200,6 +201,50 @@ public class ShaclIndexMapping {
             }
         }
         return null;
+    }
+
+    /** Return all field names marked as defaultSearch across all profiles. */
+    public List<String> getDefaultSearchFieldNames() {
+        List<String> result = new ArrayList<>();
+        Set<String> seen = new HashSet<>();
+        for (IndexProfile profile : profiles) {
+            for (FieldDef field : profile.getFields()) {
+                if (field.isDefaultSearch() && seen.add(field.getFieldName())) {
+                    result.add(field.getFieldName());
+                }
+            }
+        }
+        return result;
+    }
+
+    /** Return all field names across all profiles. */
+    public Set<String> getAllFieldNames() {
+        Set<String> result = new LinkedHashSet<>();
+        for (IndexProfile profile : profiles) {
+            for (FieldDef field : profile.getFields()) {
+                result.add(field.getFieldName());
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Validate that field names are consistent across profiles.
+     * The same field name may appear in multiple profiles (e.g. "title" in both
+     * BookShape and ArticleShape), but must have the same FieldType when shared.
+     */
+    private void validateFieldNameUniqueness() {
+        Map<String, FieldType> seen = new HashMap<>();
+        for (IndexProfile profile : profiles) {
+            for (FieldDef field : profile.getFields()) {
+                FieldType prev = seen.put(field.getFieldName(), field.getFieldType());
+                if (prev != null && prev != field.getFieldType()) {
+                    throw new TextIndexException(
+                        "Field name '" + field.getFieldName() +
+                        "' has conflicting types: " + prev + " vs " + field.getFieldType());
+                }
+            }
+        }
     }
 
     /** Return all field names marked as facetable across all profiles. */
