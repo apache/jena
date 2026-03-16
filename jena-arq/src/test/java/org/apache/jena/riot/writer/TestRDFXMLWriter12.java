@@ -19,7 +19,7 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.riot.lang.rdfxml;
+package org.apache.jena.riot.writer;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -32,7 +32,7 @@ import org.apache.jena.sparql.util.IsoMatcher;
 import org.apache.jena.sys.JenaSystem;
 
 /** RDFXML writer tests using Turtle to setup the test case. */
-public class TestOutputRDFXML {
+public class TestRDFXMLWriter12 {
 
     static { JenaSystem.init(); }
 

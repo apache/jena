@@ -60,7 +60,7 @@ import org.apache.jena.riot.system.StreamRDFWriter;
 
 @ParameterizedClass
 @MethodSource("provideArgs")
-public class TestExtraRRX {
+public class TestExtraRRX11 {
 
     private static String DIR = "testing/RIOT/rrx11-files/";
 
@@ -78,7 +78,7 @@ public class TestExtraRRX {
     private String label;
     private Lang lang;
 
-    public TestExtraRRX(TestArgs args) {
+    public TestExtraRRX11(TestArgs args) {
         this.label = args.label;
         this.lang = args.lang;
     }
@@ -266,7 +266,6 @@ public class TestExtraRRX {
     private void checkForErroNoCompare(String filename) {
         checkForError(filename, false);
     }
-
 
     /**
      * Run test, expecting an error. If the second argument is true, also Compare to
