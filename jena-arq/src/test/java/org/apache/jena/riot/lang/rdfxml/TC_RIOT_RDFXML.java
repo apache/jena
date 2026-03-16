@@ -31,11 +31,12 @@ import org.apache.jena.riot.lang.rdfxml.rrx.TS_RRX;
 @SelectClasses({
     // Local tests, extensions and error reports.
     TS_RRX.class,
-    // Additional writer tests. RDF 1.2 features. Setup using Turtle.
-    TestOutputRDFXML.class,
 
     // jena-core legacy test (RDF 1.0)
-    TS_ConvertedARP1.class
+    TS_ConvertedARP1.class,
+
+    TM_RRX11.class,
+    TM_RRX12.class
 })
 
 /**
@@ -54,5 +55,9 @@ import org.apache.jena.riot.lang.rdfxml.rrx.TS_RRX;
  * <p>
  * ARP1 is ARP is the RDFXML parser using IRIx in Jena4 from Jena 4.7.0.
  * RRX SAX is the default RDF/XML parser since Jena 5.0.0.
+ * <p>
+ * TM_RRX11 - more RDF 1.1 tests (from RRX 1.2 development) in "RIOT/rrx11-2"
+ * TM_RRX12 - RDF 1.2 tests in "RIOT/rrx12"
+ *
  */
 public class TC_RIOT_RDFXML {}

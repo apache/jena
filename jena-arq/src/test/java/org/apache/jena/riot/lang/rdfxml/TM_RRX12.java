@@ -1,0 +1,65 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ *   SPDX-License-Identifier: Apache-2.0
+ */
+
+package org.apache.jena.riot.lang.rdfxml;
+
+import static org.apache.jena.arq.junit.Scripts.withAltParserFactory;
+
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.*;
+
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.lang.rdfxml.rrx.ReaderRDFXML_SAX;
+import org.apache.jena.riot.lang.rdfxml.rrx_stax_ev.ReaderRDFXML_StAX_EV;
+import org.apache.jena.riot.lang.rdfxml.rrx_stax_sr.ReaderRDFXML_StAX_SR;
+
+// RDF 1.2 tests
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TM_RRX12 {
+
+    //private static String DIR = "testing/RIOT/rrx12";
+    private static String DIR = "testing/RIOT/rrx12";
+    private static String MANIFEST_RDFXML = DIR+"/manifest.ttl";
+
+    @TestFactory
+    @Order(1)
+    @DisplayName("RIOT RRX12 SAX")
+    public Stream<DynamicNode> testFactory1() {
+        return withAltParserFactory(Lang.RDFXML, ReaderRDFXML_SAX.factory, MANIFEST_RDFXML);
+    }
+
+    @TestFactory
+    @Order(2)
+    @DisplayName("RIOT RRX12 StAXev")
+    public Stream<DynamicNode> testFactory2() {
+        return withAltParserFactory(Lang.RDFXML, ReaderRDFXML_StAX_EV.factory, MANIFEST_RDFXML);
+    }
+
+    @TestFactory
+    @Order(3)
+    @DisplayName("RIOT RRX12 StAXsr")
+    public Stream<DynamicNode> testFactory3() {
+        return withAltParserFactory(Lang.RDFXML, ReaderRDFXML_StAX_SR.factory, MANIFEST_RDFXML);
+    }
+
+    // --- Move somewhere
+}

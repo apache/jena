@@ -39,8 +39,8 @@ import org.junit.platform.suite.api.Suite;
     Test_RRX_W3C_StAXev.class,
     Test_RRX_W3C_StAXsr.class,
 
-    // Additional RRX specific tests.
-    TestExtraRRX.class
+    // Additional RRX specific tests. "rrx11-files"
+    TestExtraRRX11.class
 })
 
 public class TS_RRX {}

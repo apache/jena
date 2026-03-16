@@ -37,6 +37,8 @@ import org.junit.platform.suite.api.Suite;
 
     , TestWriterRDFXML.class
     , TestWriterRDFXML_Properties.class
+    // Additional writer tests. RDF 1.2 features. Setup using Turtle.
+    , TestRDFXMLWriter12.class
 
     , TestTriXWriter.class
     , TestRDFJSON.class
