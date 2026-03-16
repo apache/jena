@@ -53,7 +53,9 @@ public class XMLBaselessContext extends AbsXMLContext implements ARPErrorNumbers
         case ERR_RESOLVING_AGAINST_RELATIVE_BASE:
             errmsg = "Resolving against relative URI <"+baseURI+">";
             break;
-            default:
+        case ERR_RDF12:
+            errmsg = "RDF 1.2 not supported by ARP";
+        default:
                 throw new IllegalArgumentException("Unknown error code: "+eno);
         }
     }

@@ -25,22 +25,24 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.jena.rdfxml.arp1.ARPErrorNumbers;
+import org.apache.jena.rdfxml.arp1.ParseException;
 import org.apache.jena.rdfxml.arp1.states.Frame;
+import org.apache.jena.vocabulary.ITS;
 import org.xml.sax.SAXParseException;
 
 abstract public class QNameLexer implements Names, ARPErrorNumbers {
     final int bad;
     final int select;
     final Frame frame;
-    
-    
+
+
     public QNameLexer(Frame f, int good, int bad) {
         bad &= ~good;
         this.bad = bad;
         this.select = good|bad;
         this.frame = f;
     }
-    
+
     private int xml(String wanted, int fl) {
         return
              (fl &select)== fl
@@ -51,12 +53,12 @@ abstract public class QNameLexer implements Names, ARPErrorNumbers {
     abstract boolean isInRdfns(Taint taintMe) throws SAXParseException;
     abstract void error(Taint taintMe,int rslt) throws SAXParseException;
     abstract void deprecatedAttribute(Taint me,int rslt) throws SAXParseException;
-    
+
 
     abstract String getLocalName();
     abstract String getUri();
     abstract String getQName();
-    
+
     private int rdf(Taint taintMe,String wanted, int fl) throws SAXParseException {
         if ((fl &select)== fl
           && wanted.equals(getLocalName())) {
@@ -96,7 +98,7 @@ abstract public class QNameLexer implements Names, ARPErrorNumbers {
             // How disgusting.
             // When xmlns="eg:a"
             // xmlns is the prefix ...
-            if (this.getUri().equals(xmlnsns)) 
+            if (this.getUri().equals(xmlnsns))
                 return A_XMLNS;
             throw e;
         }
@@ -125,33 +127,50 @@ abstract public class QNameLexer implements Names, ARPErrorNumbers {
             return rdf(taintMe,"ID",A_ID);
         case 'n': /* nodeID */
             return rdf(taintMe,"nodeID",A_NODEID);
-        case 'a': /* about aboutEach aboutEachPrefix */
-            switch (getLocalName().length()) {
-            case 5:
-                return rdf(taintMe,"about",A_ABOUT);
-            case 9:
-                return rdf(taintMe,"aboutEach",A_DEPRECATED);
-            case 15:
-                return rdf(taintMe,"aboutEachPrefix",A_DEPRECATED);
+        case 'a': {
+            switch (getLocalName()) {
+                case "about":
+                    return rdf(taintMe,"about",A_ABOUT);
+                case "aboutEach":
+                    return rdf(taintMe,"aboutEach",A_DEPRECATED);
+                case "aboutEachPrefix":
+                    return rdf(taintMe,"aboutEachPrefix",A_DEPRECATED);
+                case "annotationId", "annotation": {
+                    throw new ParseException(ARPErrorNumbers.ERR_RDF12, location(), "RDF 1.2 not supported by ARP: rdf:"+getLocalName());
+                }
             }
             break;
+        }
         case 'r': /* resource */
             return rdf(taintMe,"resource",A_RESOURCE);
         case 'R': /* resource */
             return rdf(taintMe,"RDF",E_RDF);
-        case 'd': /* datatype */
+        case 'd': { /* datatype */
+            if ( ITS.uri.equals(getUri()) && "dir".equals(getLocalName()) )
+                throw new ParseException(ARPErrorNumbers.ERR_RDF12, location(), "RDF 1.2 not supported by ARP: its:"+getLocalName());
             return rdf(taintMe,"datatype",A_DATATYPE);
+        }
         case 't': /* type */
             return rdf(taintMe,"type",A_TYPE);
         case 'p': /* parseType */
             return rdf(taintMe,"parseType",A_PARSETYPE);
         case 'D': /* Description */
             return rdf(taintMe,"Description",E_DESCRIPTION);
+        case 'v':
+            if ( "version".equals(getLocalName()) ) {
+                if ( rdfns.equals(getUri()) )
+                    throw new ParseException(ARPErrorNumbers.ERR_RDF12, location(), "RDF 1.2 not supported by ARP: rdf:"+getLocalName());
+                if ( ITS.uri.equals(getUri()) ) {}
+                throw new ParseException(ARPErrorNumbers.ERR_RDF12, location(), "RDF 1.2 not supported by ARP: rdf:"+getLocalName());
+            }
         }
         return 0;
     }
 
-    
+    private ARPLocation location() {
+        return new ARPLocation(frame.arp.getLocator());
+    }
+
 //    static final Set rdfnames = new HashSet();
 //    static {
 //        rdfnames.add("Description");
@@ -227,6 +246,6 @@ abstract public class QNameLexer implements Names, ARPErrorNumbers {
         return knownRDFProperties.contains(name);
     }
 
-    
+
 
 }

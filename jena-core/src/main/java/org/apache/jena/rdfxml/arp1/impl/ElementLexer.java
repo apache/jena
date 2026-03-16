@@ -67,7 +67,6 @@ public class ElementLexer extends QNameLexer  {
                 r==E_LI?ERR_LI_AS_TYPE:
                 ERR_BAD_RDF_ELEMENT,
                 getQName() + " is not allowed as an element tag here.");
-
     }
     @Override
     void deprecatedAttribute(Taint me,int r) throws SAXParseException {
