@@ -23,6 +23,8 @@ package org.apache.jena.rdfxml.arp1.states;
 
 import java.util.ArrayList;
 
+import org.apache.jena.rdfxml.arp1.ARPErrorNumbers;
+import org.apache.jena.rdfxml.arp1.ParseException;
 import org.apache.jena.rdfxml.arp1.impl.*;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
@@ -174,10 +176,15 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
             }
             return new WantPropertyElement(this, x);
         }
+        if (pt.equals("Triple")) {
+            ARPLocation aLoc = new ARPLocation(arp.getLocator());
+            throw new ParseException(ARPErrorNumbers.ERR_RDF12, aLoc, "RDF 1.2 not supported by ARP: rdf:parseType=\"Triple\"");
+        }
         if (!pt.equals("Literal")) {
             warning(WARN_UNKNOWN_PARSETYPE, "Unknown rdf:parseType: '" + pt
                     + "' (treated as 'Literal')");
         }
+
         return new OuterXMLLiteral(this, x, pt);
     }
 

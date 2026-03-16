@@ -826,7 +826,6 @@ public abstract class AbstractTestGraph extends GraphTestBase {
     }
 
     private void testIsomorphismFile(int n, String lang, String suffix, boolean result) {
-
         Graph g1 = getNewGraph();
         Graph g2 = getNewGraph();
         Model m1 = ModelFactory.createModelForGraph(g1);

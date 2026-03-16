@@ -522,6 +522,12 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
      */
     public int ERR_RESOLVING_AGAINST_RELATIVE_BASE = 215;
 
+    /**
+     * RDF 1.2 feature -- ParserType="Triple", rdf:version
+     * Not supported by ARP.
+     */
+    public int ERR_RDF12 = 216;
+
       /**   No longer used. (E300)
        * @deprecated Not used.
     **/

@@ -28,13 +28,13 @@ public interface Names {
 
     String xmlns = "http://www.w3.org/XML/1998/namespace".intern();
     String xmlnsns = "http://www.w3.org/2000/xmlns/";
-    
+
     int A_XMLBASE = 1;
 
     int A_XMLLANG = 2;
 
     int A_XML_OTHER = 4;
-    
+
     int A_XMLNS = 32768;
 
     int A_ID = 8;
@@ -52,8 +52,15 @@ public interface Names {
     int A_TYPE = 512;
 
     int A_DEPRECATED = 1024;
-    
+
     int A_BAGID = 16384;
+
+    // RDF 1.2 rdf:version. Not supported by ARP
+    int A_VERSION = 64*1024;
+
+    // XML International Tag Set ("its:") - not supported by ARP
+    int A_ITS_VERSION = 128*1024;
+    int A_ITS_DIR = 256*1024;
 
     int E_LI = 2048;
 
@@ -78,7 +85,7 @@ public interface Names {
     ANode RDF_OBJECT = URIReference.createNoChecks((rdfns + "object"));
 
     ANode RDF_NIL        = URIReference.createNoChecks(rdfns+"nil");
-    
+
     ANode RDF_FIRST = URIReference.createNoChecks(rdfns+"first");
     ANode RDF_REST       = URIReference.createNoChecks(rdfns+"rest");
 }
