@@ -18,24 +18,24 @@
  *
  *   SPDX-License-Identifier: Apache-2.0
  */
-
 package org.apache.jena.atlas.io;
 
 import java.io.StringWriter ;
 
-/** IndentLineBuffer is a buffer that records an indent level
- *  and uses that to insert a prefix at each line.
- *  It can also insert line numbers at the beginning of lines.
+/**
+ * IndentLineBuffer is a buffer that records an indent level and uses that to insert
+ * a prefix at each line. It can also insert line numbers at the beginning of lines.
  */
-
 public class IndentedLineBuffer extends IndentedWriter
 {
     protected final StringWriter sw ;
     public IndentedLineBuffer() { this(false) ; }
 
+    @Deprecated(forRemoval = true)
     public IndentedLineBuffer(boolean withLineNumbers) {
-        super(new StringWriter(), withLineNumbers) ;
+        super(new StringWriter()) ;
         sw = (StringWriter)super.out ;
+        setLineNumbers(withLineNumbers);
     }
 
     public String asString() { return sw.toString() ; }

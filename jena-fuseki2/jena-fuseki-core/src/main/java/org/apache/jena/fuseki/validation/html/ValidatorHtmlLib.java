@@ -52,12 +52,14 @@ public class ValidatorHtmlLib {
 
     public static void output(ServletOutputStream outStream, Consumer<IndentedLineBuffer> content, boolean lineNumbers) throws IOException {
         startFixed(outStream);
-        IndentedLineBuffer out = new IndentedLineBuffer(lineNumbers);
-        content.accept(out);
-        out.flush();
-        String x = htmlQuote(out.asString());
-        byte b[] = x.getBytes(StandardCharsets.UTF_8);
-        outStream.write(b);
+        try ( IndentedLineBuffer out = new IndentedLineBuffer() ) {
+            out.setLineNumbers(lineNumbers);
+            content.accept(out);
+            out.flush();
+            String x = htmlQuote(out.asString());
+            byte b[] = x.getBytes(StandardCharsets.UTF_8);
+            outStream.write(b);
+        }
         finishFixed(outStream);
     }
 

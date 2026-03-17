@@ -52,9 +52,9 @@ public class sse_query extends CmdARQ
     // 2 - This is then calls on the QueryExecution parts
     // 3 - Printing plan - uses a verbose prefix setting.  Scan to see what's in use.
     //      WriterOp.reducePrologue(prologue, op) => prologue.
-    
+
     protected final ArgDecl printDecl  = new ArgDecl(ArgDecl.HasValue, "print");
-    
+
     ModAlgebra    modAlgebra =  new ModAlgebra();
     ModDataset    modDataset =  new ModDatasetGeneralAssembler();
     ModResultsOut modResults =  new ModResultsOut();
@@ -63,12 +63,12 @@ public class sse_query extends CmdARQ
 
     boolean printOp      = false;
     boolean printPlan    = false;
-    
+
     public static void main (String... argv)
     {
         new sse_query(argv).mainRun();
     }
-    
+
     public sse_query(String[] argv)
     {
         super(argv);
@@ -88,18 +88,18 @@ public class sse_query extends CmdARQ
         for (String arg : getValues(printDecl))
         {
             if ( arg.equalsIgnoreCase("op") ||
-                      arg.equalsIgnoreCase("alg") || 
+                      arg.equalsIgnoreCase("alg") ||
                       arg.equalsIgnoreCase("algebra") ) { printOp = true; }
             else if ( arg.equalsIgnoreCase("plan"))     { printPlan = true; }
             else
                 throw new CmdException("Not a recognized print form: "+arg+" : Choices are: query, op, quad");
         }
-        
+
     }
-    
+
     @Override
     protected String getCommandName() { return Lib.className(this); }
-    
+
     @Override
     protected String getSummary() { return getCommandName()+" --data=<file> --query=<query>"; }
 
@@ -111,7 +111,7 @@ public class sse_query extends CmdARQ
         if ( needDivider ) System.out.println(divider);
         needDivider = true;
     }
-    
+
     @Override
     protected void exec()
     {
@@ -136,9 +136,11 @@ public class sse_query extends CmdARQ
             if ( printOp )
             {
                 divider();
-                IndentedWriter out = new IndentedWriter(System.out, true);
-                op.output(out);
-                out.flush();
+                try ( IndentedWriter out = new IndentedWriter(System.out))  {
+                    out.setLineNumbers(true);
+                    op.output(out);
+                    out.flush();
+                }
             }
 
             if ( printPlan )
@@ -146,9 +148,11 @@ public class sse_query extends CmdARQ
                 QueryIterator qIter = Algebra.exec(op, dsg);
                 Plan plan = new PlanOp(op, null, qIter);
                 divider();
-                IndentedWriter out = new IndentedWriter(System.out, false);
-                plan.output(out);
-                out.flush();
+                try ( IndentedWriter out = new IndentedWriter(System.out))  {
+                    out.setLineNumbers(true);
+                    plan.output(out);
+                    out.flush();
+                }
             }
             //return;
         }
@@ -159,6 +163,6 @@ public class sse_query extends CmdARQ
         long time = modTime.endTimer();
         if ( modTime.timingEnabled() )
             System.out.println("Time: "+modTime.timeStr(time));
-    }    
+    }
 
 }
