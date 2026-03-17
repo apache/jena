@@ -222,11 +222,12 @@ public class query extends CmdARQ
         try {
             Query query = getQuery();
             if ( isVerbose() ) {
-                IndentedWriter out = new IndentedWriter(resultsDest, true);
-                query.serialize(out);
-                out.setLineNumbers(false);
-                out.println();
-                out.flush();
+                try ( IndentedWriter out = new IndentedWriter(resultsDest) ) {
+                    out.setLineNumbers(true);
+                    query.serialize(out);
+                    out.setLineNumbers(false);
+                    out.println();
+                }
             }
 
             if ( isQuiet() )

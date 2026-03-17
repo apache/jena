@@ -21,7 +21,6 @@
 
 package arq.cmdline;
 
-
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdArgModule;
@@ -31,64 +30,65 @@ import org.apache.jena.query.Query;
 import org.apache.jena.query.Syntax;
 import org.apache.jena.sparql.util.QueryOutputUtils;
 
-public class ModQueryOut extends ModBase
-{
-    protected final ArgDecl queryOutputSyntaxDecl  = new ArgDecl(ArgDecl.HasValue, "out", "format");
-    protected final ArgDecl queryNumberDecl        = new ArgDecl(ArgDecl.NoValue, "num", "number");
+public class ModQueryOut extends ModBase {
+    protected final ArgDecl queryOutputSyntaxDecl = new ArgDecl(ArgDecl.HasValue, "out", "format");
+    protected final ArgDecl queryNumberDecl = new ArgDecl(ArgDecl.NoValue, "num", "number");
 
     private Syntax outputSyntax = Syntax.syntaxSPARQL;
     private boolean lineNumbers = false;
-    
+
     @Override
-    public void registerWith(CmdGeneral cmdLine)
-    {
+    public void registerWith(CmdGeneral cmdLine) {
         cmdLine.getUsage().startCategory("Output");
-        cmdLine.add(queryOutputSyntaxDecl, "--out, --format",  "Output syntax");
+        cmdLine.add(queryOutputSyntaxDecl, "--out, --format", "Output syntax");
         cmdLine.add(queryNumberDecl, "--num", "Print line numbers");
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdline) throws IllegalArgumentException
-    {
-        if ( cmdline.contains(queryOutputSyntaxDecl) )
-        {
+    public void processArgs(CmdArgModule cmdline) throws IllegalArgumentException {
+        if ( cmdline.contains(queryOutputSyntaxDecl) ) {
             // short name
             String s = cmdline.getValue(queryOutputSyntaxDecl);
             Syntax syn = Syntax.lookup(s);
             if ( syn == null )
-                cmdline.cmdError("Unrecognized syntax: "+s);
-            outputSyntax = syn; 
-        }        
-        
+                cmdline.cmdError("Unrecognized syntax: " + s);
+            outputSyntax = syn;
+        }
+
         lineNumbers = cmdline.contains(queryNumberDecl);
     }
-    
-    public Syntax getOutputSyntax()
-    {
+
+    public Syntax getOutputSyntax() {
         return outputSyntax;
     }
 
-    public void output(Query query)
-    { output(out(), query); }
-    
-    public void output(IndentedWriter out, Query query)
-    { QueryOutputUtils.printQuery(out, query, outputSyntax); }
-    
-    public void outputOp(Query query, boolean printOptimized)
-    { outputOp(out(), query, printOptimized); }
-
-    public void outputOp(IndentedWriter out, Query query, boolean printOptimized)
-    { QueryOutputUtils.printOp(out, query, printOptimized); }
-    
-    public void outputQuad(Query query, boolean printOptimized)
-    { outputQuad(out(), query, printOptimized); }
-    
-    public void outputQuad(IndentedWriter out, Query query, boolean printOptimized)
-    { QueryOutputUtils.printQuad(out, query, printOptimized); }
-    
-    private IndentedWriter out()
-    {
-        return new IndentedWriter(System.out, lineNumbers);
+    public void output(Query query) {
+        output(out(), query);
     }
-    
+
+    public void output(IndentedWriter out, Query query) {
+        QueryOutputUtils.printQuery(out, query, outputSyntax);
+    }
+
+    public void outputOp(Query query, boolean printOptimized) {
+        outputOp(out(), query, printOptimized);
+    }
+
+    public void outputOp(IndentedWriter out, Query query, boolean printOptimized) {
+        QueryOutputUtils.printOp(out, query, printOptimized);
+    }
+
+    public void outputQuad(Query query, boolean printOptimized) {
+        outputQuad(out(), query, printOptimized);
+    }
+
+    public void outputQuad(IndentedWriter out, Query query, boolean printOptimized) {
+        QueryOutputUtils.printQuad(out, query, printOptimized);
+    }
+
+    @SuppressWarnings("resource")
+    private IndentedWriter out() {
+        return new IndentedWriter(System.out).setLineNumbers(lineNumbers);
+    }
+
 }

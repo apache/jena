@@ -63,7 +63,7 @@ public class sse extends CmdARQ_SSE
         print = !contains(noPrintDecl);
         if ( contains(numberDecl) )
             lineNumbers = getValue(numberDecl).equalsIgnoreCase("on");
-        
+
         if ( contains(noResolveDecl) )
             SSE.setUseResolver(false);
     }
@@ -89,22 +89,22 @@ public class sse extends CmdARQ_SSE
     {
         if ( ! print )
             return;
-        
+
         if ( item == null )
         {
             System.err.println("No expression");
             throw new TerminationException(9);
         }
         divider();
-        IndentedWriter out = new IndentedWriter(System.out, lineNumbers);
-        
-        // Need to check if used.
-        //PrefixMapping pmap = SSE.getDefaultPrefixMapWrite();
-        PrefixMapping pmap = null;
-        SerializationContext sCxt = new SerializationContext(pmap);
-        ItemWriter.write(out, item, sCxt);
-        //item.output(out);
-        out.ensureStartOfLine();
-        out.flush();
+        try ( IndentedWriter out = new IndentedWriter(System.out) ) {
+            out.setLineNumbers(lineNumbers);
+            // Need to check if used.
+            //PrefixMapping pmap = SSE.getDefaultPrefixMapWrite();
+            PrefixMapping pmap = null;
+            SerializationContext sCxt = new SerializationContext(pmap);
+            ItemWriter.write(out, item, sCxt);
+            //item.output(out);
+            out.ensureStartOfLine();
+        }
     }
 }
