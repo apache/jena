@@ -119,6 +119,6 @@ public class RiotSyntaxTest extends AbstractManifestTest {
     }
 
     private void outputFailure(String reason, String fn, Throwable th) {
-        fail("Parsing succeeded in a bad syntax test");
+        fail("Parsing succeeded in a bad syntax test: "+fn);
     }
 }

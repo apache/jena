@@ -158,16 +158,24 @@ public class LangTurtleJCCParserBase {
     }
 
     protected Node createLiteral(String lexicalForm, String langTag, String datatypeURI, int line, int column) {
-        Node n = null ;
+        checkRDFString(lexicalForm, line, column);
         // Can't have type and lang tag in parsing.
+        // langTag include text direction, if any.
         if ( datatypeURI != null ) {
             RDFDatatype dType = TypeMapper.getInstance().getSafeTypeByName(datatypeURI) ;
-            n = profile.createTypedLiteral(lexicalForm, dType, line, column) ;
-        } else if ( langTag != null && !langTag.isEmpty() )
-            n = profile.createLangLiteral(lexicalForm, langTag, line, column) ;
-        else
-            n = profile.createStringLiteral(lexicalForm, line, column) ;
-        return n ;
+            return profile.createTypedLiteral(lexicalForm, dType, line, column) ;
+        }
+        if ( langTag != null && !langTag.isEmpty() ) {
+            // Extract text direction.
+            int idx = langTag.indexOf("--");
+            if ( idx >= 0 ) {
+                String textDir = langTag.substring(idx+2);
+                String langTagNoDir = langTag.substring(0, idx);
+                return profile.createLangDirLiteral(lexicalForm, langTagNoDir, textDir, line, column);
+            }
+            return profile.createLangLiteral(lexicalForm, langTag, line, column) ;
+        }
+        return profile.createStringLiteral(lexicalForm, line, column) ;
     }
 
     protected Node createTripleTerm(Node s, Node p, Node o, int line, int column) {
