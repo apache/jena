@@ -23,7 +23,6 @@ package org.apache.jena.riot;
 
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;
@@ -31,7 +30,6 @@ import org.junit.jupiter.api.TestFactory;
 import org.apache.jena.arq.TestConsts;
 import org.apache.jena.arq.junit.Scripts;
 import org.apache.jena.riot.lang.turtlejcc.TurtleJCC;
-import org.apache.jena.sys.JenaSystem;
 
 /** Execute turtle test with alt parser. */
 public class Scripts_AltTurtle {
@@ -39,12 +37,8 @@ public class Scripts_AltTurtle {
     @TestFactory
     @DisplayName("Scripts AltTurtle rdf-tests")
     public Stream<DynamicNode> testFactory() {
-        return Scripts.manifestTestFactoryRIOT(TestConsts.RDF12_TESTS_DIR+"rdf-turtle/manifest.ttl");
-    }
-
-    // If run on its own.
-    @BeforeAll public static void beforeAll() {
-        JenaSystem.init();
-        TurtleJCC.register();
+        return Scripts.withAltParserFactory(Lang.TURTLE,
+                                            TurtleJCC.factory,
+                                            TestConsts.RDF12_TESTS_DIR+"rdf-turtle/manifest.ttl");
     }
 }
