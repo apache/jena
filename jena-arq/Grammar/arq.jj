@@ -192,7 +192,7 @@ void ConstructQuery() : { Template t ;
  (
     // Full form.
     t = ConstructTemplate()
-      { getQuery().setConstructTemplate(t) ; }
+    { getQuery().setConstructTemplate(t) ; }
     ( DatasetClause() )*
     WhereClause()
     SolutionModifier()
@@ -200,18 +200,14 @@ void ConstructQuery() : { Template t ;
     // Abbreviated CONSTRUCT WHERE {}
     ( DatasetClause() )*
     <WHERE>
-    // Should have been "ConstructTemplate()"
-    <LBRACE>
-    ConstructQuads(acc) // Quads
-    <RBRACE>
-    SolutionModifier()
+    t = ConstructTemplate()
     {
-      t = new Template(acc) ;
       getQuery().setConstructTemplate(t) ;
-      // Create a query in the same shape as the query created by writing out in full.
-   ElementGroup elg = createQueryPattern(t);
+      // Create a query pattern in the same shape as the template.
+      ElementGroup elg = templateToQueryPattern(t);
       getQuery().setQueryPattern(elg) ;
     }
+    SolutionModifier()
  )
 }
 void DescribeQuery() : { Node n ; }
