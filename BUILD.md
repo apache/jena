@@ -5,7 +5,7 @@ It is not normally necessary to build from source. Apache Jena provides already-
 
 ## Binaries
 
-See http://jena.apache.org/download/
+See https://jena.apache.org/download/
 
 For most usage, there is no requirement to build from source. Use maven
 or other build system that can download from the central repositories.
@@ -17,7 +17,7 @@ or other build system that can download from the central repositories.
        <version>X.Y.Z</version>
     </dependency>
 
-The latest Apache Jena Fuseki can be obtained via http://jena.apache.org/download/.
+The latest Apache Jena Fuseki can be obtained via https://jena.apache.org/download/.
 
 There is also a package of libraries for offline installation.
 
@@ -37,11 +37,11 @@ or the Apache primary code repository for Jena:
 
 For the signed source of the latest release, go to:
 
-http://apache.org/dist/jena/source/
+https://apache.org/dist/jena/source/
 
 with previous versions available at:
 
-http://archive.apache.org/dist/jena/source/
+https://archive.apache.org/dist/jena/source/
 
 These are the formal files that define an Apache Jena release.
 
