@@ -29,19 +29,18 @@ import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.core.BasicPattern;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.Substitute;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.lang.LabelToNodeMap;
+import org.apache.jena.sparql.syntax.*;
 import org.apache.jena.sparql.util.NodeUtils;
 
 public class TemplateLib {
     // See also Substitute -- combine?
-    // Or is this specifc enough to CONSTRUCT/Update template processing?
-
-    // TODO We could eliminate some of the duplication in this class by writing
-    // generic methods and adding a shared super-interface to Triple and Quad
-
+    // Or is this specific enough to CONSTRUCT/Update template processing?
     /**
      * Take a template, as a list of quad patterns, a default graph, and an
      * iterator of bindings, and produce an iterator of quads that results from
@@ -65,7 +64,7 @@ public class TemplateLib {
             return quads ;
         Stream<Quad> remappedStream = quads.stream().map(q->
             !q.isDefaultGraph() ? q : Quad.create(dftGraph, q.getSubject(), q.getPredicate(), q.getObject())
-        ) ;
+        );
         return remappedStream.toList();
     }
 
@@ -148,7 +147,6 @@ public class TemplateLib {
         Quad q = quad;
         if ( s1 != s || p1 != p || o1 != o || g1 != g )
             q = Quad.create(g1, s1, p1, o1);
-
         Quad q2 = Substitute.substitute(q, b);
         return q2;
     }
@@ -175,7 +173,6 @@ public class TemplateLib {
         Triple t = triple;
         if ( s1 != s || p1 != p || o1 != o )
             t = Triple.create(s1, p1, o1);
-
         Triple t2 = Substitute.substitute(t, b);
         return t2;
     }
@@ -185,5 +182,55 @@ public class TemplateLib {
         if ( !bNodeMap.containsKey(n) )
             bNodeMap.put(n, NodeFactory.createBlankNode());
         return bNodeMap.get(n);
+    }
+
+    // ---- Template to query pattern
+    // Used by CONSTRUCTWHERE to convert a template into a query pattern of the same shape.
+
+    public static ElementGroup templateToQueryPattern(Template template){
+        ElementGroup elg = new ElementGroup();
+        Map<Node, BasicPattern> graphs = template.getGraphPattern();
+        for(Node gn: graphs.keySet()){
+            BasicPattern bgp = graphs.get(gn);
+            BasicPattern bgp2 = templateToQuery(bgp);
+            Element el = new ElementPathBlock(bgp2);
+            if(! Quad.defaultGraphNodeGenerated.equals(gn) ){
+                ElementGroup e = new ElementGroup();
+                e.addElement(el);
+                el = new ElementNamedGraph(gn, e);
+            }
+            elg.addElement(el);
+        }
+        return elg;
+    }
+
+    private static BasicPattern templateToQuery(BasicPattern bgp) {
+        BasicPattern bgp2 = new BasicPattern();
+        // Create anon vars.
+        LabelToNodeMap mapper = LabelToNodeMap.createVarMap();
+        Map<Node, Node> blankNodeReplacements = new HashMap<>();
+        for ( Triple t : bgp.getList() ) {
+            Node s = t.getSubject();
+            Node s2 = templateNodeToQueryPatternNode(s, mapper);
+            Node p = t.getPredicate();
+            Node p2 = templateNodeToQueryPatternNode(p, mapper);
+            Node o = t.getObject();
+            Node o2 = templateNodeToQueryPatternNode(o, mapper);
+            if ( s == s2 && p == p2 && o == o2 ) {
+                bgp2.add(t);
+                continue;
+            }
+            Triple t2 = Triple.create(s2, p2, o2);
+            bgp2.add(t2);
+        }
+        return bgp2;
+    }
+
+    // Rename blank nodes as anon variables for a query pattern.
+    private static Node templateNodeToQueryPatternNode(Node n, LabelToNodeMap map) {
+        if ( ! n.isBlank() )
+            return n;
+        Node n2 = map.asNode(n.getBlankNodeLabel());
+        return n2;
     }
 }
