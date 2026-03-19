@@ -34,7 +34,7 @@ public class RiotTestsConfig {
      */
 
     /*package*/  static boolean allowWarnings(ManifestEntry testEntry) {
-        if ( RiotTests.equalsType(testEntry.getTestType(), VocabLangRDF.TestPositiveRDFXML) ) {
+        if ( RiotTests.equalsType(testEntry.getTestType(), VocabLangRDF.TestEvalRDFXML) ) {
             // RDF/XML
             // Various warnings in eval tests.
 

@@ -50,10 +50,9 @@ public class VocabLangRDF
     public static final Resource TestPositiveSyntaxNT       = m_model.createResource( NS+"TestNTriplesPositiveSyntax" );
     public static final Resource TestNegativeSyntaxNT       = m_model.createResource( NS+"TestNTriplesNegativeSyntax" );
     public static final Resource TestEvalNT                 = m_model.createResource( NS+"TestNTriplesEval" );
-
     public static final Resource TestNegativeEvalNT         = m_model.createResource( NS+"TestNTriplesNegativeEval" );
-    public static final Resource TestPositiveSyntaxRJ       = m_model.createResource( NS+"TestRDFJSONPositiveSyntax" );
 
+    public static final Resource TestPositiveSyntaxRJ       = m_model.createResource( NS+"TestRDFJSONPositiveSyntax" );
     public static final Resource TestNegativeSyntaxRJ       = m_model.createResource( NS+"TestRDFJSONNegativeSyntax" );
     public static final Resource TestEvalRJ                 = m_model.createResource( NS+"TestRDFJSONEval" );
     public static final Resource TestNegativeEvalRJ         = m_model.createResource( NS+"TestRDFJSONNegativeEval" );
@@ -68,8 +67,10 @@ public class VocabLangRDF
     public static final Resource TestEvalTriG               = m_model.createResource( NS+"TestTrigEval" );
     public static final Resource TestNegativeEvalTriG       = m_model.createResource( NS+"TestTrigNegativeEval" );
 
-    public static final Resource TestPositiveRDFXML         = m_model.createResource( NS+"TestXMLEval" );
-    public static final Resource TestNegativeRDFXML         = m_model.createResource( NS+"TestXMLNegativeSyntax" );
+    public static final Resource TestPositiveSyntaxRDFXML   = m_model.createResource( NS+"TestXMLPositiveSyntax" );
+    public static final Resource TestNegativeSyntaxRDFXML   = m_model.createResource( NS+"TestXMLNegativeSyntax" );
+    public static final Resource TestEvalRDFXML             = m_model.createResource( NS+"TestXMLEval" );
+    public static final Resource TestNegativeEvalRDFXML     = m_model.createResource( NS+"TestXMLNegativeEval" );
 
     // Canonicalization tests
     public static final Resource TestNTriplesPositiveC14N   = m_model.createResource( NS+"TestNTriplesPositiveC14N" );
