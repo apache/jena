@@ -28,7 +28,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import org.apache.jena.assembler.JA;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.ARQException;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
 
@@ -113,5 +121,69 @@ public class TestContext {
         cxt.set(p1, 1L);
         // Bad. Long for Integer.
         assertThrows(ARQException.class, ()->cxt.getInt(p1, -2));
+    }
+
+    /**
+     * Test context parsing where the key is a literal.
+     *
+     * <pre>{@code
+     * PREFIX ja: <http://jena.hpl.hp.com/2005/11/Assembler#>
+     * PREFIX eg: <http://www.example.org/>
+     *
+     * [] ja:context [ ja:cxtName "key" ; ja:cxtValue true ] .
+     * }</pre>
+     */
+    @Test
+    public void testCxtAssemblerLiteral() {
+        Node keyNode = NodeFactory.createLiteralString("http://www.example.org/key");
+        Symbol keySym = Symbol.create(keyNode.getLiteralLexicalForm());
+        Context cxt = parseTestContext(keyNode);
+        assertTrue(cxt.isTrue(keySym));
+    }
+
+    /**
+     * Test context parsing where the key is a URI.
+     *
+     * <pre>{@code
+     * PREFIX ja: <http://jena.hpl.hp.com/2005/11/Assembler#>
+     * PREFIX eg: <http://www.example.org/>
+     *
+     * [] ja:context [ ja:cxtName eg:key ; ja:cxtValue true ] .
+     * }</pre>
+     */
+    @Test
+    public void testCxtAssemblerURI() {
+        Node keyNode = NodeFactory.createURI("http://www.example.org/key");
+        Symbol keySym = Symbol.create(keyNode.getURI());
+        Context cxt = parseTestContext(keyNode);
+        assertTrue(cxt.isTrue(keySym));
+    }
+
+    @Test
+    public void testCxtAssemblerInvalid() {
+        assertThrows(ARQException.class, () -> {
+            Node keyNode = NodeFactory.createBlankNode();
+            parseTestContext(keyNode);
+        });
+    }
+    /**
+     * Create a test context from the following RDF model.
+     *
+     * <pre>{@code
+     * PREFIX ja: <http://jena.hpl.hp.com/2005/11/Assembler#>
+     * PREFIX eg: <http://www.example.org/>
+     *
+     * [] ja:context [ ja:cxtName ${KEY_NODE} ; ja:cxtValue true ] .
+     * }</pre>
+     */
+    private static Context parseTestContext(Node key) {
+        Model model = ModelFactory.createDefaultModel();
+        RDFNode k = model.asRDFNode(key);
+        Resource cxtRes = model.createResource()
+            .addProperty(JA.cxtName, k)
+            .addLiteral(JA.cxtValue, true);
+        Resource r = model.createResource().addProperty(JA.context, cxtRes);
+        Context cxt = AssemblerUtils.parseContext(r);
+        return cxt;
     }
 }
