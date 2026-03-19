@@ -96,24 +96,10 @@ public class RiotTests
             if ( equalsType(testType, VocabLangRDF.TestNegativeSyntaxNQ) )
                 return new RiotSyntaxTest(entry, RDFLanguages.NQUADS, false);
 
-            // RDF/XML - W3C test suite
-            // This suite has eval tests (positive and warning - they have "warn" in the filename) and negative syntax tests.
-            if ( equalsType(testType, VocabLangRDF.TestPositiveRDFXML) ) {
-                if ( entryContainsSubstring(entry, "#xml-canon-test") ) {
-                    // Alternative location.
-                    // "rdf-tests-cg/rdf/rdf11/rdf-xml/xml-canon/" --> "RIOT/Lang/rdf-xml/xml-canon/"
-                    String actionURI = action.getURI().replaceAll("/rdf-tests-cg/rdf/rdf11/rdf-xml/xml-canon/", "/RIOT/Lang/rdf-xml/xml-canon/");
-                    String resultURI = result.getURI().replaceAll("/rdf-tests-cg/rdf/rdf11/rdf-xml/xml-canon/", "/RIOT/Lang/rdf-xml/xml-canon/");
-                    Node action2 = NodeFactory.createURI(actionURI);
-                    Node result2 = NodeFactory.createURI(resultURI);
-                    entry = ManifestEntry.alter(entry, testType, action2, result2);
-                }
-                String fn = entry.getAction().getURI();
-                // Adjust to changes in rdf-tests-cg layout.
-                String base = fn.replaceAll("^.*/rdf-xml/", "https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-xml/");
-                return new RiotEvalTest(entry, base, RDFLanguages.RDFXML, true);
-            }
-            if ( equalsType(testType, VocabLangRDF.TestNegativeRDFXML) )
+            // RDF/XML
+            if ( equalsType(testType, VocabLangRDF.TestPositiveSyntaxRDFXML) )
+                return new RiotSyntaxTest(entry, RDFLanguages.RDFXML, true);
+            if ( equalsType(testType, VocabLangRDF.TestNegativeSyntaxRDFXML) )
                 return new RiotSyntaxTest(entry, RDFLanguages.RDFXML, false);
 
             // Other: RDF/JSON
@@ -162,6 +148,31 @@ public class RiotTests
 //                String base = rebase(input, assumedRootURIex);
 //                return new RiotEvalTest(entry, base, RDFLanguages.RDFJSON, false);
 //            }
+
+            // RDF/XML - W3C test suite
+            // This suite has eval tests (positive and warning - they have "warn" in the filename) and negative syntax tests.
+            if ( equalsType(testType, VocabLangRDF.TestEvalRDFXML) ) {
+                if ( entryContainsSubstring(entry, "#xml-canon-test") ) {
+                    // Alternative location.
+                    // "rdf-tests-cg/rdf/rdf11/rdf-xml/xml-canon/" --> "RIOT/Lang/rdf-xml/xml-canon/"
+                    String actionURI = action.getURI().replaceAll("/rdf-tests-cg/rdf/rdf11/rdf-xml/xml-canon/", "/RIOT/Lang/rdf-xml/xml-canon/");
+                    String resultURI = result.getURI().replaceAll("/rdf-tests-cg/rdf/rdf11/rdf-xml/xml-canon/", "/RIOT/Lang/rdf-xml/xml-canon/");
+                    Node action2 = NodeFactory.createURI(actionURI);
+                    Node result2 = NodeFactory.createURI(resultURI);
+                    entry = ManifestEntry.alter(entry, testType, action2, result2);
+                }
+                String fn = entry.getAction().getURI();
+                // Adjust to changes in rdf-tests-cg layout.
+                String base = fn.replaceAll("^.*/rdf-xml/", "https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-xml/");
+                return new RiotEvalTest(entry, base, RDFLanguages.RDFXML, true);
+            }
+
+            if ( equalsType(testType, VocabLangRDF.TestNegativeEvalRDFXML) ) {
+                String fn = entry.getAction().getURI();
+                // Adjust to changes in rdf-tests-cg layout.
+                String base = fn.replaceAll("^.*/rdf-xml/", "https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-xml/");
+                return new RiotEvalTest(entry, base, RDFLanguages.RDFXML, false);
+            }
 
             // Canonicalization tests
             if ( equalsType(testType, VocabLangRDF.TestNTriplesPositiveC14N) ) {
