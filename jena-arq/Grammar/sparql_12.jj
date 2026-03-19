@@ -174,7 +174,7 @@ void ConstructQuery() : { Template t ;
  (
     // Full form.
     t = ConstructTemplate()
-      { getQuery().setConstructTemplate(t) ; }
+    { getQuery().setConstructTemplate(t) ; }
     ( DatasetClause() )*
     WhereClause()
     SolutionModifier()
@@ -182,20 +182,13 @@ void ConstructQuery() : { Template t ;
     // Abbreviated CONSTRUCT WHERE {}
     ( DatasetClause() )*
     <WHERE>
-    // Should have been "ConstructTemplate()"
-    <LBRACE>
-    (TriplesTemplate(acc))? // triples
-    <RBRACE>
-    SolutionModifier()
+    t = ConstructTemplate()
     {
-      t = new Template(acc.getBGP()) ;
       getQuery().setConstructTemplate(t) ;
-      // Create a query in the same shape as the query created by writing out in full.
-      ElementPathBlock epb = new ElementPathBlock(acc.getBGP()) ;
-      ElementGroup elg = new ElementGroup() ;
-      elg.addElement(epb) ;
+      ElementGroup elg = templateToQueryPattern(t);
       getQuery().setQueryPattern(elg) ;
     }
+    SolutionModifier()
  )
 }
 void DescribeQuery() : { Node n ; }

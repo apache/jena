@@ -20,7 +20,6 @@
  */
 
 package org.apache.jena.sparql.lang.arq;
-import java.util.Map;
 
 import org.apache.jena.atlas.json.io.JSONHandler ;
 import org.apache.jena.atlas.json.io.JSONHandlerBase ;
@@ -33,14 +32,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.RiotLib;
-import org.apache.jena.sparql.core.BasicPattern;
-import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.lang.SPARQLParserBase ;
-import org.apache.jena.sparql.syntax.Element;
-import org.apache.jena.sparql.syntax.ElementGroup;
-import org.apache.jena.sparql.syntax.ElementNamedGraph;
-import org.apache.jena.sparql.syntax.ElementPathBlock;
-import org.apache.jena.sparql.syntax.Template;
 
 public class ARQParserBase extends SPARQLParserBase
 {
@@ -85,20 +77,6 @@ public class ARQParserBase extends SPARQLParserBase
     protected void jsonValueNull(long currLine, long currCol)                    { handler.valueNull(currLine, currCol) ; }
 
     protected void jsonValueVar(String image, long currLine, long currCol)       { throw new NotImplemented("yet") ; }
-    protected ElementGroup createQueryPattern(Template template){
-        ElementGroup elg = new ElementGroup();
-        Map<Node, BasicPattern> graphs = template.getGraphPattern();
-        for(Node n: graphs.keySet()){
-          Element el = new ElementPathBlock(graphs.get(n));
-          if(! Quad.defaultGraphNodeGenerated.equals(n) ){
-        	ElementGroup e = new ElementGroup();
-        	e.addElement(el);
-            el = new ElementNamedGraph(n, e);
-          }
-          elg.addElement(el);
-        }
-        return elg;
-    }
 
     // CDT literals
     protected ParserProfile parserProfileForCDTs = null;

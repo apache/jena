@@ -24,15 +24,18 @@ package org.apache.jena.sparql.lang;
 import java.util.*;
 
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryParseException;
+import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.ARQInternalErrorException;
-import org.apache.jena.sparql.core.Prologue;
-import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.core.*;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.modify.UpdateSink;
 import org.apache.jena.sparql.modify.request.*;
+import org.apache.jena.sparql.syntax.*;
 import org.apache.jena.update.Update;
 
 /** Class that has all the parse event operations and other query/update specific things */
@@ -291,6 +294,21 @@ public class SPARQLParserBase extends QueryParserBase {
             throw new QueryParseException(msg, line , col);
         }
         values.add(rowBuilder.build());
+    }
+
+    protected ElementGroup templateToQueryPattern(Template template){
+        ElementGroup elg = new ElementGroup();
+        Map<Node, BasicPattern> graphs = template.getGraphPattern();
+        for(Node n: graphs.keySet()){
+            Element el = new ElementPathBlock(graphs.get(n));
+            if(! Quad.defaultGraphNodeGenerated.equals(n) ){
+                ElementGroup e = new ElementGroup();
+                e.addElement(el);
+                el = new ElementNamedGraph(n, e);
+            }
+            elg.addElement(el);
+        }
+        return elg;
     }
 
     private void pushLabelState() {
