@@ -36,6 +36,7 @@ import org.apache.jena.query.QuerySolutionMap;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.RDFDataMgr;
@@ -232,9 +233,17 @@ public class AssemblerUtils
         while ( rs.hasNext() )
         {
             QuerySolution soln = rs.next();
-            String name = soln.getLiteral("name").getLexicalForm();
+            RDFNode key = soln.get("name");
+            String name;
+            if (key.isLiteral()) {
+                String rawName = key.asLiteral().getLexicalForm();
+                name = MappingRegistry.mapPrefixName(rawName);
+            } else if (key.isURIResource()) {
+                name = key.asResource().getURI();
+            } else {
+                throw new ARQException("Value of ja:cxtName must be a literal or URI.");
+            }
             String value = soln.getLiteral("value").getLexicalForm();  // Works for numbers as well!
-            name = MappingRegistry.mapPrefixName(name);
             Symbol symbol = Symbol.create(name);
             if ( "undef".equalsIgnoreCase(value) )
                 context.remove(symbol);
