@@ -465,13 +465,19 @@ public class SSE {
             return new ParseHandlerPlain();
     }
 
+    private static Item itemANY1 = Item.createSymbol("_");
+    private static Item itemANY2 = Item.createSymbol("ANY");
+
     private static Node parseNode(Reader reader, PrefixMapping pmap) {
         if ( pmap == null )
             pmap = getPrefixMapRead();
         Item item = parse(reader, pmap);
         Item item2 = ItemLift.liftItem(item);
-        if ( !item2.isNode() )
+        if ( !item2.isNode() ) {
+            if ( item2.isSymbol() && ( item2.equals(itemANY1) || item2.equals(itemANY2) ) )
+                return Node.ANY;
             throw new SSE_ParseException("Not a node: " + item.shortString(), item.getLine(), item.getColumn());
+        }
         return item2.getNode();
     }
 
