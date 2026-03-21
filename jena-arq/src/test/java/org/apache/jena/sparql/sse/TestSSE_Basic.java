@@ -262,7 +262,7 @@ public class TestSSE_Basic
     @Test public void testTripleTermTag_4()  { testNode("(tripleterm (tripleterm :s :p :o ) :q (tripleterm :s :p :o))"); }
     @Test public void testTripleTermTag_5()  { testNode("(tripleterm <<( :s :p :o )>> :q <<( :s :p :o )>>)"); }
 
-    // Legal as  structure, can't be lifted.
+    // Legal as structure, can't be lifted.
     @Test public void testTripleTermTag_11()  { parseBadNoLift("(tripleterm :s)"); }
     @Test public void testTripleTermTag_12()  { parseBadNoLift("(tripleterm :s :p)"); }
     @Test public void testTripleTermTag_13()  { parseBadNoLift("(tripleterm (tripleterm :s :p :o) :q "); }

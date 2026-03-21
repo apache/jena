@@ -37,8 +37,7 @@ import org.apache.jena.sparql.sse.Tags;
 public class BuilderNode {
     /**
      * Build a node from an Item - it is assumed the item has been lifted for
-     * compound node items. This function does not convert compound node (qtriple
-     * etc).
+     * compound node items. This function does not convert compound node (qtriple etc).
      *
      * @see ItemLift#liftCompound
      */

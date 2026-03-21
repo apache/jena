@@ -107,6 +107,8 @@ public class Substitute {
     public static Triple substitute(Triple triple, Binding binding) {
         if ( isNotNeeded(binding) )
             return triple;
+        if ( triple.isConcrete() )
+            return triple;
 
         Node s = triple.getSubject();
         Node p = triple.getPredicate();
@@ -142,6 +144,8 @@ public class Substitute {
 
     public static Quad substitute(Quad quad, Binding binding) {
         if ( isNotNeeded(binding) )
+            return quad;
+        if ( quad.isConcrete() )
             return quad;
 
         Node g = quad.getGraph();

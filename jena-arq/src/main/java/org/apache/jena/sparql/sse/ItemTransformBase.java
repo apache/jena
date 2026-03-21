@@ -78,5 +78,4 @@ public class ItemTransformBase implements ItemTransform
     private Item xformNil(Item item) {
         return item;
     }
-
 }

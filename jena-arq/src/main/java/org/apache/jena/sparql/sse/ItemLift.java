@@ -30,20 +30,25 @@ import org.apache.jena.sparql.sse.builders.BuilderLib;
 /**
  * Lift and reverse.
  * <p>
- * All {@linkplain #liftItem} and {@link #lowerItem}
+ * All {@linkplain #liftItem} and {@linkplain #lowerItem}
  * <p>
  * Compound - processes nodes that become compound items -- (qtriple)
  * <p>
  * Symbol - processes nodes by special names. TRUE, FALSE
  */
 public class ItemLift {
+    private static final ItemTransform liftAll = new LiftAll();
+    private static final ItemTransform lowerAll = new LowerAll();
+    private static final ItemTransform liftCompound = new LiftCompound();
+    private static final ItemTransform lowerCompound = new LowerCompound();
+
     // ==== All conversions
     public static Item liftItem(Item item) {
-        return ItemTransformer.transform(new LiftAll(), item);
+        return ItemTransformer.transform(liftAll, item);
     }
 
     public static Item lowerItem(Item item) {
-        return ItemTransformer.transform(new LowerAll(), item);
+        return ItemTransformer.transform(lowerAll, item);
     }
 
     // Create an item for a node, applying any conversions for compound nodes.
@@ -62,7 +67,7 @@ public class ItemLift {
     // ==== Compound only
 
     public static Item liftCompound(Item item) {
-        return ItemTransformer.transform(new LiftCompound(), item);
+        return ItemTransformer.transform(liftCompound, item);
     }
 
     /** Reverse lift. */
@@ -78,7 +83,7 @@ public class ItemLift {
      * Reverse the lift transformation.
      */
     public static Item lowerCompound(Item item) {
-        return ItemTransformer.transform(new LowerCompound(), item);
+        return ItemTransformer.transform(lowerCompound, item);
     }
 
     private static Item lowerCompound(Node node, int line, int column) {
