@@ -5,7 +5,7 @@ version: '3'
 vars:
   VERSION: 6.1.0-SNAPSHOT
   FUSEKI_JAR: ../jena-fuseki2/jena-fuseki-server/target/jena-fuseki-server-{{.VERSION}}.jar
-  SERVER_URL: http://localhost:3031
+  SERVER_URL: http://localhost:3030
   IMAGE_NAME: '{{.IMAGE_NAME | default "fuseki-ai"}}'
   IMAGE_TAG: '{{.IMAGE_TAG | default .VERSION}}'
   GHCR_OWNER: '{{.GHCR_OWNER | default "aiworkerjohns"}}'
@@ -41,10 +41,10 @@ tasks:
   # ── Mining ───────────────────────────────────────────────
 
   serve:
-    desc: Start Fuseki with the mining config (port 3031)
+    desc: Start Fuseki with the mining config (port 3030)
     dir: test
     cmds:
-      - java -jar ../{{.FUSEKI_JAR}} --port 3031 --config config.ttl
+      - java -jar ../{{.FUSEKI_JAR}} --port 3030 --config config.ttl
 
   load:
     desc: Load the mining dataset via GSP
@@ -86,7 +86,7 @@ tasks:
     cmds:
       - ln -sfn ../test/config.ttl app-static/config.ttl
       - ln -sfn ../test/tests.json app-static/tests.json
-      - echo "Serving at http://localhost:8000 (mining → localhost:3031)"
+      - echo "Serving at http://localhost:8000 (mining → {{.SERVER_URL}})"
       - cmd: python3 -m http.server 8000 --directory app-static
 
   clean:
@@ -100,11 +100,9 @@ tasks:
 
   image-build:
     desc: "Build Docker image for linux/amd64 (optionally: task image-build IMAGE_NAME=myapp IMAGE_TAG=latest)"
-    dir: test
+    dir: ..
     cmds:
-      - cp ../{{.FUSEKI_JAR}} jena-fuseki-server.jar
-      - docker buildx build --platform linux/amd64 -t {{.IMAGE_NAME}}:{{.IMAGE_TAG}} --load .
-      - rm -f jena-fuseki-server.jar
+      - docker buildx build --platform linux/amd64 -f demo/test/Dockerfile -t {{.IMAGE_NAME}}:{{.IMAGE_TAG}} --load .
 
   image-push:
     desc: "Build and push image to ACR (usage: task image-push ACR_NAME=gswadevacr)"
@@ -128,9 +126,23 @@ tasks:
   docker-start:
     desc: Start Fuseki in Docker (detached)
     dir: test
+    env:
+      IMAGE_NAME: '{{.IMAGE_NAME}}'
+      IMAGE_TAG: '{{.IMAGE_TAG}}'
     cmds:
       - docker compose up -d
       - echo "Fuseki starting at {{.SERVER_URL}}"
+
+  docker-start-ghcr:
+    desc: Start Fuseki in Docker (detached) using the GHCR image
+    dir: test
+    env:
+      IMAGE_NAME: 'ghcr.io/{{.GHCR_OWNER}}/{{.IMAGE_NAME}}'
+      IMAGE_TAG: '{{.IMAGE_TAG}}'
+    cmds:
+      - docker compose pull fuseki
+      - docker compose up -d
+      - echo "Fuseki starting at {{.SERVER_URL}} using ghcr.io/{{.GHCR_OWNER}}/{{.IMAGE_NAME}}:{{.IMAGE_TAG}}"
 
   docker-stop:
     desc: Stop the Docker Fuseki container
@@ -149,18 +161,30 @@ tasks:
   docker-serve:
     desc: Start Fuseki in Docker (foreground with logs)
     dir: test
+    env:
+      IMAGE_NAME: '{{.IMAGE_NAME}}'
+      IMAGE_TAG: '{{.IMAGE_TAG}}'
     cmds:
+      - docker compose up
+
+  docker-serve-ghcr:
+    desc: Start Fuseki in Docker (foreground with logs) using the GHCR image
+    dir: test
+    env:
+      IMAGE_NAME: 'ghcr.io/{{.GHCR_OWNER}}/{{.IMAGE_NAME}}'
+      IMAGE_TAG: '{{.IMAGE_TAG}}'
+    cmds:
+      - docker compose pull fuseki
       - docker compose up
 
   # ── Loader / Reindexer ──────────────────────────────────
 
   loader-build:
-    desc: Build the loader/reindexer Docker image for linux/amd64
-    dir: loader
+    desc: Build the loader/reindexer Docker image (extends fuseki-ai)
+    deps: [image-build]
+    dir: ..
     cmds:
-      - cp ../{{.FUSEKI_JAR}} jena-fuseki-server.jar
-      - docker buildx build --platform linux/amd64 -t fuseki-loader:{{.IMAGE_TAG}} --load .
-      - rm -f jena-fuseki-server.jar
+      - docker buildx build --platform linux/amd64 -f demo/loader/Dockerfile --build-arg BASE_IMAGE={{.IMAGE_NAME}} --build-arg BASE_TAG={{.IMAGE_TAG}} -t fuseki-loader:{{.IMAGE_TAG}} --load .
 
   loader-ghcr-push:
     desc: Build and push loader image to GitHub CR

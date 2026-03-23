@@ -1,10 +1,11 @@
 # Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 
-FROM eclipse-temurin:21-jre-alpine
+ARG BASE_IMAGE=fuseki-ai
+ARG BASE_TAG=6.1.0-SNAPSHOT
 
-WORKDIR /app
-COPY jena-fuseki-server.jar .
-COPY entrypoint.sh .
-RUN chmod +x entrypoint.sh
+FROM ${BASE_IMAGE}:${BASE_TAG}
 
-ENTRYPOINT ["/app/entrypoint.sh"]
+COPY demo/loader/entrypoint.sh /fuseki/entrypoint.sh
+RUN chmod +x /fuseki/entrypoint.sh
+
+ENTRYPOINT ["/fuseki/entrypoint.sh"]

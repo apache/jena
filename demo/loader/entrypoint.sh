@@ -16,13 +16,13 @@ if [ "$MODE" = "all" ] || [ "$MODE" = "load" ]; then
     echo "No data files found in $INPUT_DIR"
     exit 1
   fi
-  java $JAVA_OPTS -cp /app/jena-fuseki-server.jar tdb2.tdbloader --loc "$DB_DIR" $FILES
+  java $JAVA_OPTS -cp /fuseki/jena-fuseki-server.jar tdb2.tdbloader --loc "$DB_DIR" $FILES
 fi
 
 # Step 2: Build SHACL Lucene index
 if [ "$MODE" = "all" ] || [ "$MODE" = "index" ]; then
   echo "=== SHACL Bulk Reindex ==="
-  java $JAVA_OPTS -cp /app/jena-fuseki-server.jar \
+  java $JAVA_OPTS -cp /fuseki/jena-fuseki-server.jar \
     org.apache.jena.query.text.cmd.shacltextindexer --desc="$CONFIG"
 fi
 

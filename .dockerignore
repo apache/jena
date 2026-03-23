@@ -1,0 +1,21 @@
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+.git
+.github
+.idea
+.vscode
+.mvn
+**/.DS_Store
+**/.pytest_cache
+**/.venv
+**/.cache
+**/node_modules
+**/target
+**/DB
+**/Lucene
+**/coverage
+**/*.log
+demo/
+!demo/test/config.ttl
+!demo/test/data/
+docs/

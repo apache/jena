@@ -11,8 +11,8 @@ using an Australian mining domain with reports, boreholes, sites, and authors.
 
 For Docker workflows:
 - Docker Desktop
-- **GitHub CR**: `gh` CLI authenticated with `write:packages` scope
-- **Azure CR**: `az` CLI authenticated
+- **GitHub CR**: `gh` CLI authenticated with `write:packages` scope (only for `task ghcr-push`)
+- **Azure CR**: `az` CLI authenticated (only for `task image-push`)
 
 ## Quick start
 
@@ -36,16 +36,26 @@ task stop
 ## Quick start (Docker)
 
 ```bash
-# Start the server using the pre-built image from GitHub CR
-docker compose up
+# Build the image with a multi-stage Docker build and start Fuseki locally
+task docker-start
 
 # Load data and run queries (in a separate terminal)
 task load
 task query
 
 # Stop
-docker compose down      # keep data
-docker compose down -v   # wipe data volumes
+task docker-stop         # keep data
+task docker-clean        # wipe data volumes
+```
+
+To run the same `docker-compose` service using an image published to GitHub Container Registry instead of building locally:
+
+```bash
+# Start Fuseki from GHCR
+task docker-start-ghcr
+
+# Stop
+task docker-stop
 ```
 
 ## Data model
@@ -134,7 +144,7 @@ Build the server Docker image locally:
 task image-build
 ```
 
-This produces `fuseki-ai:6.1.0-SNAPSHOT` by default. The image is based on `eclipse-temurin:21-jre-alpine` and includes the server config and demo mining dataset.
+This produces `fuseki-ai:6.1.0-SNAPSHOT` by default. The image is built with a multi-stage Docker build, compiling the Fuseki server jar inside Docker rather than requiring a host-built jar. The runtime image is based on `eclipse-temurin:21-jre-alpine` and includes the server config and demo mining dataset.
 
 Override the image name or tag:
 
@@ -160,6 +170,12 @@ The `gh` CLI must have the `write:packages` scope. Add it with:
 
 ```bash
 gh auth refresh -s write:packages
+```
+
+To run the published GHCR image with the demo `docker-compose.yml`:
+
+```bash
+task docker-start-ghcr
 ```
 
 ### Pushing to Azure Container Registry

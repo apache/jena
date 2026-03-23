@@ -1,0 +1,69 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+name: Build and push Docker images
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+  FUSEKI_IMAGE: ghcr.io/${{ github.repository_owner }}/fuseki-ai
+  LOADER_IMAGE: ghcr.io/${{ github.repository_owner }}/fuseki-loader
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract version from pom.xml
+        id: version
+        run: |
+          VERSION=$(grep -m1 '<version>' pom.xml | sed 's/.*<version>\(.*\)<\/version>.*/\1/')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push fuseki-ai image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: demo/test/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ${{ env.FUSEKI_IMAGE }}:${{ steps.version.outputs.version }}
+            ${{ env.FUSEKI_IMAGE }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push fuseki-loader image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: demo/loader/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          build-args: |
+            BASE_IMAGE=${{ env.FUSEKI_IMAGE }}
+            BASE_TAG=${{ steps.version.outputs.version }}
+          tags: |
+            ${{ env.LOADER_IMAGE }}:${{ steps.version.outputs.version }}
+            ${{ env.LOADER_IMAGE }}:latest
