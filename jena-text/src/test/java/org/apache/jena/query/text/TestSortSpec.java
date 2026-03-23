@@ -39,6 +39,8 @@ import org.junit.Test;
  */
 public class TestSortSpec {
 
+    private static final String FP = "urn:jena:lucene:field#";
+
     @Test
     public void testParseSingleAsc() {
         List<SortSpec> specs = SortSpecParser.parse("{\"field\":\"year\"}");
@@ -104,8 +106,8 @@ public class TestSortSpec {
         ShaclTextIndexLucene textIndex = new ShaclTextIndexLucene(dir, config);
 
         List<SortSpec> specs = List.of(
-            new SortSpec("year", true),
-            new SortSpec("state", false)
+            new SortSpec(FP + "year", true),
+            new SortSpec(FP + "state", false)
         );
 
         Sort sort = textIndex.buildLuceneSort(specs);
@@ -169,7 +171,7 @@ public class TestSortSpec {
         ShaclTextIndexLucene textIndex = new ShaclTextIndexLucene(dir, config);
 
         try {
-            textIndex.buildLuceneSort(List.of(new SortSpec("title", false)));
+            textIndex.buildLuceneSort(List.of(new SortSpec(FP + "title", false)));
         } finally {
             textIndex.close();
         }

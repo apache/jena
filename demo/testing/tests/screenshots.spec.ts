@@ -12,6 +12,7 @@ interface GroupEntry {
 interface TestEntry {
   label: string;
   params: string;
+  minResults?: number;
 }
 type Entry = GroupEntry | TestEntry;
 
@@ -70,7 +71,20 @@ for (const group of groups) {
   test.describe(group.name, () => {
     for (const tc of group.tests) {
       test(tc.label, async ({ page }) => {
-        const url = "index.html" + (tc.params || "");
+        // Build URL with properly encoded filter param
+        let url = "index.html";
+        const raw = tc.params || "";
+        if (raw) {
+          const parts = raw.replace(/^\?/, "").split("&");
+          const encoded = parts.map((part) => {
+            const eq = part.indexOf("=");
+            if (eq < 0) return part;
+            const key = part.substring(0, eq);
+            const val = part.substring(eq + 1);
+            return key + "=" + encodeURIComponent(val);
+          });
+          url += "?" + encoded.join("&");
+        }
         await page.goto(url, { waitUntil: "domcontentloaded" });
 
         // Wait for search results or empty notice (search complete)
@@ -109,12 +123,19 @@ for (const group of groups) {
           screenshotFile,
         });
 
-        // Basic assertion: screenshot was taken (file exists implicitly)
-        // and page did not show a connection error
+        // Assert: no connection/query errors
         const errorEl = page.locator(".notice-error");
         if (await errorEl.isVisible()) {
           const errorText = await errorEl.innerText();
           expect(errorText, "Page showed an error").toBeFalsy();
+        }
+
+        // Assert: minimum result count when specified
+        if (tc.minResults != null) {
+          expect(
+            resultCount,
+            `Expected at least ${tc.minResults} results for "${tc.label}" but got ${resultCount}`
+          ).toBeGreaterThanOrEqual(tc.minResults);
         }
       });
     }

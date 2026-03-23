@@ -78,7 +78,13 @@
             <span class="perf-badge" style="margin-left: 0.5rem;">Triple count: <span x-text="stats.countQueryMs.toFixed(0)"></span>ms</span>
           </p>
 
-          <h2 class="config-section-title">Facet Breakdown</h2>
+          <div class="config-header-row">
+            <h2 class="config-section-title" style="margin-bottom:0">Facet Breakdown</h2>
+            <div class="sparql-editor-view-toggle">
+              <button :class="{ active: nameMode === 'short' }" @click="nameMode = 'short'">Short Name</button>
+              <button :class="{ active: nameMode === 'full' }" @click="nameMode = 'full'">Full Name</button>
+            </div>
+          </div>
 
           <table class="config-table">
             <thead>
@@ -91,12 +97,13 @@
             <tbody>
               <template x-for="fieldName in stats.facetFields" :key="fieldName">
                 <tr x-show="(stats.facets[fieldName] || []).length > 0">
-                  <td x-text="fieldName" style="font-weight:600;white-space:nowrap"></td>
+                  <td style="font-weight:600;white-space:nowrap"
+                      x-text="nameMode === 'full' ? (stats.fieldIRIs[fieldName] || fieldName) : fieldName"></td>
                   <td style="font-family:var(--font-mono);color:var(--amber)" x-text="(stats.facets[fieldName] || []).length"></td>
                   <td>
                     <template x-for="fv in (stats.facets[fieldName] || []).slice(0, 10)" :key="fv.value">
                       <span style="display:inline-flex;align-items:center;gap:0.2em;margin-right:0.75em;font-size:0.8rem">
-                        <span x-text="fv.value"></span>
+                        <span x-text="nameMode === 'full' ? fv.value : (fv.label || fv.value)"></span>
                         <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--text-muted);background:var(--bg-elevated);padding:0.1em 0.35em;border-radius:3px" x-text="fv.count.toLocaleString()"></span>
                       </span>
                     </template>

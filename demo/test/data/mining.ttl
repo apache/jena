@@ -1,6 +1,10 @@
 ## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 
-@prefix ex:    <http://example.org/mining/> .
+@prefix ex:         <http://example.org/mining/> .
+@prefix commodity:  <http://example.org/mining/commodity/> .
+@prefix state:      <http://example.org/mining/state/> .
+@prefix operator:   <http://example.org/mining/operator/> .
+@prefix status:     <http://example.org/mining/status/> .
 @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix dct:   <http://purl.org/dc/terms/> .
 @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
@@ -12,62 +16,88 @@ ex:MiningReport rdfs:label "Mining Report" .
 ex:Borehole     rdfs:label "Borehole" .
 ex:Site         rdfs:label "Site" .
 
+## --- Vocabulary IRIs ---
+
+commodity:Copper    rdfs:label "Copper" .
+commodity:Lead      rdfs:label "Lead" .
+commodity:Zinc      rdfs:label "Zinc" .
+commodity:Gold      rdfs:label "Gold" .
+commodity:Silver    rdfs:label "Silver" .
+commodity:Uranium   rdfs:label "Uranium" .
+commodity:Iron-Ore  rdfs:label "Iron Ore" .
+
+state:QLD  rdfs:label "QLD" .
+state:SA   rdfs:label "SA" .
+state:WA   rdfs:label "WA" .
+state:NSW  rdfs:label "NSW" .
+state:PNG  rdfs:label "PNG" .
+
+operator:Glencore  rdfs:label "Glencore" .
+operator:BHP       rdfs:label "BHP" .
+operator:Newmont   rdfs:label "Newmont" .
+operator:Newcrest  rdfs:label "Newcrest" .
+operator:Rio-Tinto rdfs:label "Rio Tinto" .
+
+status:Active      rdfs:label "Active" .
+status:Historical  rdfs:label "Historical" .
+status:Current     rdfs:label "Current" .
+
 ## --- Sites ---
 
 ex:site-mount-isa a ex:Site ;
     rdfs:label "Mount Isa Mine" ;
     dct:description "Major polymetallic mining complex in northwest Queensland producing copper, lead and zinc since 1923. One of the most significant base metal deposits in the world." ;
-    ex:commodity "Copper", "Lead", "Zinc" ;
-    ex:state "QLD" ;
-    ex:status "Active" ;
+    ex:commodity commodity:Copper, commodity:Lead, commodity:Zinc ;
+    ex:state state:QLD ;
+    ex:status status:Active ;
     geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(-20.73 139.49)"^^geo:wktLiteral .
 
 ex:site-olympic-dam a ex:Site ;
     rdfs:label "Olympic Dam" ;
     dct:description "Underground mine in South Australia producing copper, uranium, gold and silver. Hosts one of the world's largest known ore deposits within an iron oxide copper-gold system." ;
-    ex:commodity "Copper", "Uranium", "Gold" ;
-    ex:state "SA" ;
-    ex:status "Active" ;
+    ex:commodity commodity:Copper, commodity:Uranium, commodity:Gold ;
+    ex:state state:SA ;
+    ex:status status:Active ;
     geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((-30.50 136.80, -30.50 136.96, -30.36 136.96, -30.36 136.80, -30.50 136.80))"^^geo:wktLiteral .
 
 ex:site-boddington a ex:Site ;
     rdfs:label "Boddington Gold Mine" ;
     dct:description "Large open-pit gold-copper mine in the Darling Range of Western Australia. Currently the largest gold mine in the country by production volume." ;
-    ex:commodity "Gold", "Copper" ;
-    ex:state "WA" ;
-    ex:status "Active" ;
+    ex:commodity commodity:Gold, commodity:Copper ;
+    ex:state state:WA ;
+    ex:status status:Active ;
     geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(-32.77 116.35)"^^geo:wktLiteral .
 
 ex:site-broken-hill a ex:Site ;
     rdfs:label "Broken Hill Mine" ;
     dct:description "Historic lead-zinc-silver mining district in far western New South Wales. Mining commenced in 1883, making it one of the longest continuously operating mining fields in Australia." ;
-    ex:commodity "Lead", "Zinc", "Silver" ;
-    ex:state "NSW" ;
-    ex:status "Historical" ;
+    ex:commodity commodity:Lead, commodity:Zinc, commodity:Silver ;
+    ex:state state:NSW ;
+    ex:status status:Historical ;
     geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((-32.00 141.40, -32.00 141.55, -31.90 141.55, -31.90 141.40, -32.00 141.40))"^^geo:wktLiteral .
 
 ex:site-cadia-valley a ex:Site ;
     rdfs:label "Cadia Valley Operations" ;
     dct:description "Underground panel cave and open-pit gold-copper mine near Orange, New South Wales. One of Australia's largest gold operations, extracting from a porphyry copper-gold deposit." ;
-    ex:commodity "Gold", "Copper" ;
-    ex:state "NSW" ;
-    ex:status "Active" ;
+    ex:commodity commodity:Gold, commodity:Copper ;
+    ex:state state:NSW ;
+    ex:status status:Active ;
     geo:asWKT "POLYGON((148.90 -33.55, 149.10 -33.55, 149.10 -33.40, 148.90 -33.40, 148.90 -33.55))"^^geo:wktLiteral .
 
 ex:site-pilbara-iron a ex:Site ;
     rdfs:label "Pilbara Iron Ore Hub" ;
     dct:description "Cluster of open-pit iron ore mines in the Pilbara region of Western Australia. Produces high-grade hematite ore for export, connected by private rail to port facilities." ;
-    ex:commodity "Iron Ore" ;
-    ex:state "WA" ;
-    ex:status "Active" ;
+    ex:commodity commodity:Iron-Ore ;
+    ex:state state:WA ;
+    ex:status status:Active ;
     geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((-22.8 118.0, -22.8 119.2, -21.8 119.2, -21.8 118.0, -22.8 118.0))"^^geo:wktLiteral .
 
 ex:site-ok-tedi a ex:Site ;
     rdfs:label "Ok Tedi Mine" ;
     dct:description "Large open-pit copper-gold mine in the Star Mountains of Papua New Guinea. One of the largest copper and gold deposits in the world, operating since 1984." ;
-    ex:commodity "Copper", "Gold" ;
-    ex:state "PNG" ;
-    ex:status "Active" ;
+    ex:commodity commodity:Copper, commodity:Gold ;
+    ex:state state:PNG ;
+    ex:status status:Active ;
     geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(-5.20 141.13)"^^geo:wktLiteral .
 
 ## --- Boreholes ---
@@ -75,52 +105,52 @@ ex:site-ok-tedi a ex:Site ;
 ex:bh-mia-001 a ex:Borehole ;
     rdfs:label "MIA-DDH-001 Mount Isa Diamond Drill Hole" ;
     dct:description "Diamond drill hole targeting the copper-rich silica dolomite zone at 400m depth. Core recovery 95%. Intersected significant chalcopyrite mineralisation below 380m." ;
-    ex:commodity "Copper" ;
-    ex:state "QLD" ;
+    ex:commodity commodity:Copper ;
+    ex:state state:QLD ;
     ex:depth 450 ;
     geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(-20.74 139.50)"^^geo:wktLiteral .
 
 ex:bh-mia-002 a ex:Borehole ;
     rdfs:label "MIA-DDH-002 Mount Isa Exploration Hole" ;
     dct:description "Exploration hole in the northern lead-zinc zone targeting Urquhart Shale stratigraphy. Encountered sphalerite and galena mineralisation between 210m and 290m." ;
-    ex:commodity "Lead", "Zinc" ;
-    ex:state "QLD" ;
+    ex:commodity commodity:Lead, commodity:Zinc ;
+    ex:state state:QLD ;
     ex:depth 320 .
 
 ex:bh-od-001 a ex:Borehole ;
     rdfs:label "OD-RC-001 Olympic Dam Reverse Circulation Hole" ;
     dct:description "Reverse circulation hole drilled into the Olympic Dam breccia complex. Targeted the hematite-quartz breccia unit hosting copper-uranium mineralisation." ;
-    ex:commodity "Copper", "Uranium" ;
-    ex:state "SA" ;
+    ex:commodity commodity:Copper, commodity:Uranium ;
+    ex:state state:SA ;
     ex:depth 280 .
 
 ex:bh-bod-001 a ex:Borehole ;
     rdfs:label "BOD-DDH-001 Boddington Deep Diamond Hole" ;
     dct:description "Deep diamond drill hole investigating the primary gold-copper mineralisation at depth beneath the existing open pit. Targeted the diorite-hosted stockwork zone below the supergene blanket." ;
-    ex:commodity "Gold" ;
-    ex:state "WA" ;
+    ex:commodity commodity:Gold ;
+    ex:state state:WA ;
     ex:depth 600 ;
     geo:asWKT "POINT(116.36 -32.78)"^^geo:wktLiteral .
 
 ex:bh-bh-001 a ex:Borehole ;
     rdfs:label "BHM-DDH-001 Broken Hill Legacy Drill Hole" ;
     dct:description "Historical diamond drill hole from the Broken Hill main lode. Part of the 1970s exploration campaign that delineated the southern extension of the orebody." ;
-    ex:commodity "Lead", "Silver" ;
-    ex:state "NSW" ;
+    ex:commodity commodity:Lead, commodity:Silver ;
+    ex:state state:NSW ;
     ex:depth 210 .
 
 ex:bh-cad-001 a ex:Borehole ;
     rdfs:label "CAD-DDH-001 Cadia Deep Exploration Hole" ;
     dct:description "Deep exploration hole targeting the Cadia East porphyry at depth. Intersected a thick zone of sheeted quartz-sulphide veins with elevated gold and copper grades from 620m." ;
-    ex:commodity "Gold", "Copper" ;
-    ex:state "NSW" ;
+    ex:commodity commodity:Gold, commodity:Copper ;
+    ex:state state:NSW ;
     ex:depth 850 .
 
 ex:bh-pil-001 a ex:Borehole ;
     rdfs:label "PIL-RC-001 Pilbara Iron Ore Reverse Circulation" ;
     dct:description "Shallow reverse circulation hole in the channel iron deposit. Sampled the Tertiary pisolitic limonite horizon for iron grade and contaminant analysis." ;
-    ex:commodity "Iron Ore" ;
-    ex:state "WA" ;
+    ex:commodity commodity:Iron-Ore ;
+    ex:state state:WA ;
     ex:depth 150 ;
     geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(-22.35 118.60)"^^geo:wktLiteral .
 
@@ -153,79 +183,79 @@ ex:author-patel a ex:Author ;
 ex:report-mia-2023 a ex:MiningReport ;
     rdfs:label "Mount Isa Copper Resource Estimation 2023" ;
     dct:description "Resource estimation for the Mount Isa copper deposit including updated geological model and grade interpolation using ordinary kriging." ;
-    ex:commodity "Copper" ;
-    ex:state "QLD" ;
-    ex:operator "Glencore" ;
-    ex:status "Current" ;
+    ex:commodity commodity:Copper ;
+    ex:state state:QLD ;
+    ex:operator operator:Glencore ;
+    ex:status status:Current ;
     ex:year 2023 ;
     ex:authoredBy ex:author-jones .
 
 ex:report-mia-2021 a ex:MiningReport ;
     rdfs:label "Mount Isa Lead-Zinc Exploration Summary" ;
     dct:description "Summary of exploration drilling in the northern extension of the Mount Isa lead-zinc orebody. Includes assay results and cross-sections." ;
-    ex:commodity "Lead", "Zinc" ;
-    ex:state "QLD" ;
-    ex:operator "Glencore" ;
-    ex:status "Current" ;
+    ex:commodity commodity:Lead, commodity:Zinc ;
+    ex:state state:QLD ;
+    ex:operator operator:Glencore ;
+    ex:status status:Current ;
     ex:year 2021 ;
     ex:authoredBy ex:author-chen .
 
 ex:report-od-2024 a ex:MiningReport ;
     rdfs:label "Olympic Dam Expansion Feasibility Study" ;
     dct:description "Feasibility study for the proposed underground expansion at Olympic Dam. Covers ore reserve estimation, mine design, and processing options for copper and uranium recovery." ;
-    ex:commodity "Copper", "Uranium" ;
-    ex:state "SA" ;
-    ex:operator "BHP" ;
-    ex:status "Current" ;
+    ex:commodity commodity:Copper, commodity:Uranium ;
+    ex:state state:SA ;
+    ex:operator operator:BHP ;
+    ex:status status:Current ;
     ex:year 2024 ;
     ex:authoredBy ex:author-jones .
 
 ex:report-bod-2022 a ex:MiningReport ;
     rdfs:label "Boddington Gold Production Report 2022" ;
     dct:description "Annual production report for Boddington gold mine covering gold and copper output, ore grade, mill throughput, and recovery rates." ;
-    ex:commodity "Gold", "Copper" ;
-    ex:state "WA" ;
-    ex:operator "Newmont" ;
-    ex:status "Current" ;
+    ex:commodity commodity:Gold, commodity:Copper ;
+    ex:state state:WA ;
+    ex:operator operator:Newmont ;
+    ex:status status:Current ;
     ex:year 2022 ;
     ex:authoredBy ex:author-patel .
 
 ex:report-bh-1985 a ex:MiningReport ;
     rdfs:label "Broken Hill Lead-Zinc Historical Assessment" ;
     dct:description "Historical assessment of the Broken Hill lead-zinc-silver deposit. Compilation of legacy drilling data, geological mapping, and ore reserve estimates from the early mining period." ;
-    ex:commodity "Lead", "Zinc", "Silver" ;
-    ex:state "NSW" ;
-    ex:operator "BHP" ;
-    ex:status "Historical" ;
+    ex:commodity commodity:Lead, commodity:Zinc, commodity:Silver ;
+    ex:state state:NSW ;
+    ex:operator operator:BHP ;
+    ex:status status:Historical ;
     ex:year 1985 ;
     ex:authoredBy ex:author-chen .
 
 ex:report-cad-2023 a ex:MiningReport ;
     rdfs:label "Cadia Valley Gold-Copper Resource Update" ;
     dct:description "Updated mineral resource estimate for Cadia Valley incorporating recent infill drilling. Revised geological interpretation of the Cadia East porphyry deposit." ;
-    ex:commodity "Gold", "Copper" ;
-    ex:state "NSW" ;
-    ex:operator "Newcrest" ;
-    ex:status "Current" ;
+    ex:commodity commodity:Gold, commodity:Copper ;
+    ex:state state:NSW ;
+    ex:operator operator:Newcrest ;
+    ex:status status:Current ;
     ex:year 2023 ;
     ex:authoredBy ex:author-patel .
 
 ex:report-pil-2024 a ex:MiningReport ;
     rdfs:label "Pilbara Iron Ore Reserves Statement 2024" ;
     dct:description "Annual ore reserves statement for the Pilbara iron ore operations. Covers proven and probable reserves, mine life projections, and grade reconciliation." ;
-    ex:commodity "Iron Ore" ;
-    ex:state "WA" ;
-    ex:operator "Rio Tinto" ;
-    ex:status "Current" ;
+    ex:commodity commodity:Iron-Ore ;
+    ex:state state:WA ;
+    ex:operator operator:Rio-Tinto ;
+    ex:status status:Current ;
     ex:year 2024 ;
     ex:authoredBy ex:author-williams .
 
 ex:report-pil-exploration a ex:MiningReport ;
     rdfs:label "Pilbara Greenfield Exploration Program Results" ;
     dct:description "Results from the greenfield exploration program targeting channel iron deposits in the eastern Pilbara. Includes reverse circulation drilling results and geophysical survey interpretation." ;
-    ex:commodity "Iron Ore" ;
-    ex:state "WA" ;
-    ex:operator "Rio Tinto" ;
-    ex:status "Current" ;
+    ex:commodity commodity:Iron-Ore ;
+    ex:state state:WA ;
+    ex:operator operator:Rio-Tinto ;
+    ex:status status:Current ;
     ex:year 2023 ;
     ex:authoredBy ex:author-williams .

@@ -1,66 +1,14 @@
 # SPARQL API Reference
 
-## Namespace Overview
+All property functions use the `luc:` namespace (`urn:jena:lucene:index#`).
 
-| Prefix | Namespace | Mode | Description |
-|--------|-----------|------|-------------|
-| `text:` | `http://jena.apache.org/text#` | Classic | Upstream Jena `text:query` — no filters, no facets |
-| `luc:` | `urn:jena:lucene:index#` | SHACL | `luc:query` (with filters) and `luc:facet` (facet counts) |
-
-Classic mode (`text:entityMap`) uses `text:query` only — this is the unmodified upstream Jena text search.
-
-SHACL mode (`text:shapes`) uses `luc:query` and `luc:facet` — these are new property functions with filter and faceting support.
+> **Note:** The upstream Jena `text:query` property function is unchanged and still available for classic mode (`text:entityMap`). See the [Apache Jena documentation](https://jena.apache.org/documentation/query/text-query.html) for its syntax. This reference covers only the SHACL mode property functions.
 
 ---
 
-## text:query — Text Search (Classic Mode)
+## luc:query — Text Search with Filters
 
-The upstream Jena text search property function. Works with `text:entityMap` configuration.
-
-### Syntax
-
-```
-(?s ?score ?literal ?graph ?prop) text:query (property* queryString limit?)
-```
-
-### Arguments (positional, left to right)
-
-| Position | Type | Required | Description |
-|----------|------|----------|-------------|
-| property | URI(s) | No | RDF predicate(s) to search. If omitted, searches the default field |
-| queryString | String literal | Yes | Lucene query string |
-| limit | Integer | No | Max results. Negative = no limit |
-
-### Return bindings
-
-| Variable | Required | Type | Description |
-|----------|----------|------|-------------|
-| ?s | Yes | URI | Matched entity |
-| ?score | No | float | Lucene relevance score |
-| ?literal | No | Literal | The matched text value |
-| ?graph | No | URI | Named graph of the match |
-| ?prop | No | URI | Which predicate matched |
-
-### Examples
-
-```sparql
-PREFIX text: <http://jena.apache.org/text#>
-
-# Simple search
-(?s ?score) text:query ("machine learning") .
-
-# Search a specific property
-(?s ?score) text:query (rdfs:label "machine learning") .
-
-# Search with limit
-(?s ?score) text:query ("machine learning" 20) .
-```
-
----
-
-## luc:query — Text Search with Filters (SHACL Mode)
-
-Extended search property function for SHACL-mode datasets. Supports field-scoped queries, JSON filter arguments, sort pushdown, and faceted navigation.
+Supports field-scoped queries, CQL2-JSON filter arguments, sort pushdown, and faceted navigation.
 
 ### Syntax
 
@@ -74,23 +22,23 @@ Extended search property function for SHACL-mode datasets. Supports field-scoped
 |----------|------|----------|-------------|
 | fieldSpec | String literal | No | Which indexed fields to search (see below). Default: `"default"` |
 | queryString | String literal | Yes | Lucene query string |
-| filter | JSON object literal | No | CQL filter: `'{"op":"=","args":[{"property":"category"},"Technology"]}'` |
-| sort | JSON literal | No | Sort spec: `'{"field":"year","order":"desc"}'` or `'[{"field":"year"},{"field":"title"}]'` |
+| filter | JSON object literal | No | CQL filter: `'{"op":"=","args":[{"property":"urn:jena:lucene:field#category"},"Technology"]}'` |
+| sort | JSON literal | No | Sort spec: `'{"field":"urn:jena:lucene:field#year","order":"desc"}'` |
 | limit | Integer | No | Max results. Negative = no limit |
 | highlight | String literal | No | Highlight options: `"highlight:m:3\|z:128\|s:→\|e:←\|f:÷"` |
 
 ### Field specification
 
-The `fieldSpec` argument controls which Lucene fields are searched:
+The `fieldSpec` argument controls which Lucene fields are searched. Field IRIs are required — the `idx:fieldName` (Lucene field name) is internal and not accepted here.
 
 | Value | Meaning |
 |-------|---------|
 | `"default"` | Search all fields marked `idx:defaultSearch true` in the index configuration |
-| `"title"` | Search only the `title` field (must be a valid `idx:fieldName`) |
-| `'["title","description"]'` | Search multiple specific fields (JSON array) |
+| `"urn:jena:lucene:field#title"` | Search only the field with this IRI |
+| `'["urn:jena:lucene:field#title","urn:jena:lucene:field#description"]'` | Search multiple specific fields (JSON array of IRIs) |
 | *(omitted)* | Same as `"default"` |
 
-Field names correspond to `idx:fieldName` values in the SHACL index configuration. They are validated at query time — an unknown field name produces an error.
+Field IRIs correspond to the named resource IRIs in the SHACL index configuration. They are validated at query time — an unknown IRI produces an error.
 
 ### Return bindings
 
@@ -98,19 +46,20 @@ Field names correspond to `idx:fieldName` values in the SHACL index configuratio
 |----------|----------|------|-------------|
 | ?s | Yes | URI | Matched entity |
 | ?score | No | float | Lucene relevance score |
-| ?literal | No | Literal | The matched text value |
+| ?literal | No | Node | Stored value for the matched field. KEYWORD fields return an IRI, TEXT fields return a string literal, numeric fields return typed literals |
 | ?totalHits | No | xsd:long | Total matching documents (same value on every row) |
 | ?graph | No | URI | Named graph of the match |
-| ?field | No | xsd:string | Which field matched (bound for single-field queries, unbound for multi-field) |
+| ?field | No | URI | Field IRI identifying the matched field (bound for single-field queries, unbound for multi-field) |
 
 The `?totalHits` binding returns the total number of documents matching the query and filters, regardless of the `limit` parameter. This is useful for displaying "Showing X of Y results" in search UIs. The value is computed efficiently using `IndexSearcher.count()` and is only evaluated when the variable is present in the subject.
 
-The `?field` binding returns the name of the Lucene field that was searched. For single-field queries (e.g., `"title"`), this is always bound to that field name as a literal. For multi-field queries (e.g., `"default"` resolving to multiple fields), it is unbound.
+The `?field` binding returns the IRI of the Lucene field that was searched. For fields defined as named resources in the configuration, the resource's own IRI is used. For fields defined on blank nodes, an auto-generated IRI of the form `urn:jena:lucene:field#{fieldName}` is used. For single-field queries, this is always bound. For multi-field queries, it is unbound.
 
 ### Examples
 
 ```sparql
 PREFIX luc: <urn:jena:lucene:index#>
+PREFIX field: <urn:jena:lucene:field#>
 
 # Simple search (all default fields)
 (?s ?score) luc:query ("machine learning") .
@@ -118,37 +67,37 @@ PREFIX luc: <urn:jena:lucene:index#>
 # Search with explicit "default"
 (?s ?score) luc:query ("default" "machine learning") .
 
-# Search a specific field
-(?s ?score) luc:query ("title" "machine learning") .
+# Search a specific field (by IRI)
+(?s ?score) luc:query ("urn:jena:lucene:field#title" "machine learning") .
 
-# Search multiple fields
-(?s ?score) luc:query ('["title", "description"]' "machine learning") .
+# Search multiple fields (JSON array of IRIs)
+(?s ?score) luc:query ('["urn:jena:lucene:field#title", "urn:jena:lucene:field#description"]' "machine learning") .
 
 # Search with limit
-(?s ?score) luc:query ("title" "machine learning" 20) .
+(?s ?score) luc:query ("urn:jena:lucene:field#title" "machine learning" 20) .
 
 # Search with total hit count
 (?s ?score ?literal ?totalHits) luc:query ("machine learning" 20) .
 
 # Search with field binding
-(?s ?score ?lit ?totalHits ?g ?field) luc:query ("title" "machine learning" 20) .
+(?s ?score ?lit ?totalHits ?g ?field) luc:query ("urn:jena:lucene:field#title" "machine learning" 20) .
 
 # Search with CQL filter (only Technology books)
-(?s ?score) luc:query ("default" "learning" '{"op":"=","args":[{"property":"category"},"Technology"]}' 20) .
+(?s ?score) luc:query ("default" "learning" '{"op":"=","args":[{"property":"urn:jena:lucene:field#category"},"Technology"]}' 20) .
 
 # Search with filter and total hit count
-(?s ?score ?_lit ?totalHits) luc:query ("default" "learning" '{"op":"=","args":[{"property":"category"},"Technology"]}' 20) .
+(?s ?score ?_lit ?totalHits) luc:query ("default" "learning" '{"op":"=","args":[{"property":"urn:jena:lucene:field#category"},"Technology"]}' 20) .
 
-# Search with sort
-(?s ?score) luc:query ("default" "learning" '{"field":"year","order":"desc"}' 10) .
+# Search with sort (by field IRI)
+(?s ?score) luc:query ("default" "learning" '{"field":"urn:jena:lucene:field#year","order":"desc"}' 10) .
 ```
 
 ### Filter JSON format (CQL2-JSON)
 
-Filters use CQL2-JSON syntax:
+Filters use CQL2-JSON syntax. The `property` value is a field IRI:
 
 ```json
-{"op": "=", "args": [{"property": "category"}, "Technology"]}
+{"op": "=", "args": [{"property": "urn:jena:lucene:field#category"}, "Technology"]}
 ```
 
 - `"="` — exact match on KEYWORD fields
@@ -158,8 +107,7 @@ Filters use CQL2-JSON syntax:
 
 ---
 
-## luc:facet — Facet Counts (SHACL Mode)
-
+## luc:facet — Facet Counts
 ### Syntax
 
 ```
@@ -172,7 +120,7 @@ Filters use CQL2-JSON syntax:
 |----------|------|----------|-------------|
 | fieldSpec | String literal | No | Which indexed fields to scope the text query (same as luc:query). Default: `"default"` |
 | queryString | String literal | Yes | Lucene query string |
-| facetFields | JSON array literal | Yes | Fields to facet on: `'["category", "author"]'` |
+| facetFields | JSON array literal | Yes | Field IRIs to facet on: `'["urn:jena:lucene:field#category"]'` |
 | filter | JSON object literal | No | CQL filter (same format as luc:query) |
 | maxValues | Integer | No | Max facet values per field. Default: 10. `0` = all values |
 | minCount | Integer | No | Exclude values with count below this. Default: 0 |
@@ -181,8 +129,8 @@ Filters use CQL2-JSON syntax:
 
 | Variable | Required | Type | Description |
 |----------|----------|------|-------------|
-| ?field | Yes | xsd:string | Facet field name |
-| ?value | No | xsd:string | Facet value |
+| ?field | Yes | URI | Field IRI identifying the facet field (auto-generated `urn:jena:lucene:field#{fieldName}` for blank node fields) |
+| ?value | No | Node | Facet value. KEYWORD fields return IRIs, TEXT fields return string literals |
 | ?count | No | xsd:long | Number of matching documents |
 
 ### Examples
@@ -191,22 +139,22 @@ Filters use CQL2-JSON syntax:
 PREFIX luc: <urn:jena:lucene:index#>
 
 # Basic facet counts
-(?f ?v ?c) luc:facet ("default" "learning" '["category"]' 10) .
+(?f ?v ?c) luc:facet ("default" "learning" '["urn:jena:lucene:field#category"]' 10) .
 
 # Multiple facet fields
-(?f ?v ?c) luc:facet ("default" "learning" '["category", "author"]' 10) .
+(?f ?v ?c) luc:facet ("default" "learning" '["urn:jena:lucene:field#category", "urn:jena:lucene:field#author"]' 10) .
 
 # With CQL filter applied
-(?f ?v ?c) luc:facet ("default" "learning" '["author"]' '{"op":"=","args":[{"property":"category"},"Technology"]}' 10) .
+(?f ?v ?c) luc:facet ("default" "learning" '["urn:jena:lucene:field#author"]' '{"op":"=","args":[{"property":"urn:jena:lucene:field#category"},"Technology"]}' 10) .
 
 # Return all facet values (maxValues=0)
-(?f ?v ?c) luc:facet ("default" "learning" '["category"]' 0) .
+(?f ?v ?c) luc:facet ("default" "learning" '["urn:jena:lucene:field#category"]' 0) .
 
 # With minCount threshold (exclude rare values)
-(?f ?v ?c) luc:facet ("default" "learning" '["author"]' 10 2) .
+(?f ?v ?c) luc:facet ("default" "learning" '["urn:jena:lucene:field#author"]' 10 2) .
 
 # Combine maxValues=0 with minCount
-(?f ?v ?c) luc:facet ("default" "learning" '["author"]' 0 2) .
+(?f ?v ?c) luc:facet ("default" "learning" '["urn:jena:lucene:field#author"]' 0 2) .
 ```
 
 ---
@@ -229,7 +177,8 @@ SELECT ?s ?score WHERE {
 
 # Query 2: facet counts
 SELECT ?field ?value ?count WHERE {
-    (?field ?value ?count) luc:facet ("default" "learning" '["category", "author"]' 10) .
+    (?field ?value ?count) luc:facet ("default" "learning"
+        '["urn:jena:lucene:field#category", "urn:jena:lucene:field#author"]' 10) .
 }
 ```
 
@@ -245,7 +194,8 @@ PREFIX luc: <urn:jena:lucene:index#>
 SELECT ?s ?score ?totalHits ?field ?value ?count WHERE {
     { (?s ?score ?_lit ?totalHits) luc:query ("default" "learning" 10) . }
     UNION
-    { (?field ?value ?count) luc:facet ("default" "learning" '["category"]' 10) . }
+    { (?field ?value ?count) luc:facet ("default" "learning"
+        '["urn:jena:lucene:field#category"]' 10) . }
 }
 ```
 
@@ -259,7 +209,8 @@ Placing both PFs in the same basic graph pattern produces a cartesian product:
 # WARNING: produces N × M rows
 SELECT ?s ?score ?field ?value ?count WHERE {
     (?s ?score) luc:query ("learning") .
-    (?field ?value ?count) luc:facet ("default" "learning" '["category"]' 10) .
+    (?field ?value ?count) luc:facet ("default" "learning"
+        '["urn:jena:lucene:field#category"]' 10) .
 }
 ```
 
@@ -271,7 +222,7 @@ With 100 hits and 10 facet values, this returns 1,000 rows — every hit paired 
 
 When `luc:query` and `luc:facet` appear in the same SPARQL query (whether in a BGP, UNION, or subquery) with matching parameters, they share a single Lucene execution internally. One Lucene query, one index reader snapshot, consistent results.
 
-The match is based on normalised keys — search field names are sorted, CQL filter maps are sorted by field name. If parameters differ, each PF executes independently.
+The match is based on normalised keys — search field IRIs are sorted, CQL filter maps are sorted by field. If parameters differ, each PF executes independently.
 
 This optimisation is transparent. It reduces Lucene index access but does not change SPARQL result semantics — the cartesian product concern (above) is a SPARQL join issue, not a Lucene execution issue.
 
@@ -279,7 +230,7 @@ This optimisation is transparent. It reduces Lucene index access but does not ch
 
 ## Lucene Query Syntax
 
-The query string argument in both `luc:query` and `text:query` uses the standard Lucene query parser. Key syntax:
+The query string argument in `luc:query` uses the standard Lucene query parser. Key syntax:
 
 | Syntax | Meaning | Example |
 |--------|---------|---------|
@@ -295,36 +246,9 @@ These are Lucene query parser conventions — not specific to Jena. Refer to the
 
 ---
 
-## Constructing Filters Dynamically (CDT)
-
-The JSON filter arguments in `luc:query` and `luc:facet` can be constructed dynamically in SPARQL using Jena's CDT (Composite Datatype) extension, avoiding hardcoded filter strings:
-
-```sparql
-PREFIX cdt: <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
-
-SELECT (FOLD(?filter, ?vals) AS ?filters)
-WHERE {
-  {
-    SELECT ?filter (FOLD(?value) AS ?vals)
-    WHERE {
-      VALUES (?filter ?value) {
-        ("category" "Technology")
-        ("category" "Science")
-        ("author"   "Smith")
-      }
-    }
-    GROUP BY ?filter
-  }
-}
-```
-
-This produces a `cdt:Map` value that serializes as `{"category": ["Technology", "Science"], "author": ["Smith"]}`, suitable for passing as a filter argument. CDT `FOLD` is a Jena extension (not standard SPARQL).
-
----
-
 ## Java API
 
-For programmatic access via `ShaclTextIndexLucene` (SHACL mode):
+For programmatic access via `ShaclTextIndexLucene`. The Java API accepts Lucene field names directly (these are the `idx:fieldName` values from the configuration):
 
 ```java
 // Open facets (all documents)
@@ -367,4 +291,4 @@ if (textIndex.isFacetingEnabled()) {
 }
 ```
 
-`isFacetingEnabled()` returns `true` when the index has facetable fields configured (SHACL mode with `idx:facetable true` fields).
+`isFacetingEnabled()` returns `true` when the index has facetable fields configured (`idx:facetable true` on one or more fields).

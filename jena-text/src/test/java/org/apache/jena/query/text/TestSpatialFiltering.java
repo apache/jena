@@ -50,6 +50,7 @@ import org.junit.Test;
 public class TestSpatialFiltering {
 
     private static final String NS = "http://example.org/";
+    private static final String FP = "urn:jena:lucene:field#";
     private static final String GEO = "http://www.opengis.net/ont/geosparql#";
     private static final Node SITE_CLASS = NodeFactory.createURI(NS + "Site");
     private static final Node TITLE_PRED = NodeFactory.createURI(NS + "title");
@@ -146,7 +147,7 @@ public class TestSpatialFiltering {
     public void testBboxReturnsEntitiesWithinBounds() {
         // Australia bbox: [112, -44, 154, -10] (swLon, swLat, neLon, neLat)
         CqlExpression filter = new CqlExpression.CqlSpatial(
-            "s_intersects", "location", "{\"bbox\":[112,-44,154,-10]}");
+            "s_intersects", FP + "location", "{\"bbox\":[112,-44,154,-10]}");
 
         List<TextHit> results = textIndex.queryWithCql(
             null, "*", filter, null, null, null, 100, null);
@@ -169,7 +170,7 @@ public class TestSpatialFiltering {
     public void testBboxExcludesEntitiesOutsideBounds() {
         // Small bbox around WA only: [115, -34, 120, -20]
         CqlExpression filter = new CqlExpression.CqlSpatial(
-            "s_intersects", "location", "{\"bbox\":[115,-34,120,-20]}");
+            "s_intersects", FP + "location", "{\"bbox\":[115,-34,120,-20]}");
 
         List<TextHit> results = textIndex.queryWithCql(
             null, "*", filter, null, null, null, 100, null);
@@ -189,7 +190,7 @@ public class TestSpatialFiltering {
     public void testCombinedTextAndSpatialFilter() {
         // Text search for "mine" + spatial filter for Australia
         CqlExpression filter = new CqlExpression.CqlSpatial(
-            "s_intersects", "location", "{\"bbox\":[112,-44,154,-10]}");
+            "s_intersects", FP + "location", "{\"bbox\":[112,-44,154,-10]}");
 
         List<TextHit> results = textIndex.queryWithCql(
             null, "mine", filter, null, null, null, 100, null);
@@ -212,7 +213,7 @@ public class TestSpatialFiltering {
         // Verify it's findable with a bbox around its location.
         // Cadia is at ~(-33.47, 148.99) in lat/lon
         CqlExpression filter = new CqlExpression.CqlSpatial(
-            "s_intersects", "location", "{\"bbox\":[148,-34,150,-33]}");
+            "s_intersects", FP + "location", "{\"bbox\":[148,-34,150,-33]}");
 
         List<TextHit> results = textIndex.queryWithCql(
             null, "*", filter, null, null, null, 100, null);
@@ -230,7 +231,7 @@ public class TestSpatialFiltering {
         // Mount Isa was indexed with EPSG:4326 (lat/lon order).
         // Verify it's at the correct location: lat=-20.73, lon=139.49
         CqlExpression filter = new CqlExpression.CqlSpatial(
-            "s_intersects", "location", "{\"bbox\":[139,-21,140,-20]}");
+            "s_intersects", FP + "location", "{\"bbox\":[139,-21,140,-20]}");
 
         List<TextHit> results = textIndex.queryWithCql(
             null, "*", filter, null, null, null, 100, null);
@@ -247,7 +248,7 @@ public class TestSpatialFiltering {
     public void testUnsupportedSpatialOpIsResidual() {
         // s_within is not yet supported — should produce residual, not error
         CqlExpression filter = new CqlExpression.CqlSpatial(
-            "s_within", "location", "{\"bbox\":[112,-44,154,-10]}");
+            "s_within", FP + "location", "{\"bbox\":[112,-44,154,-10]}");
 
         // Should not throw — residual ops are logged as warnings and ignored
         List<TextHit> results = textIndex.queryWithCql(

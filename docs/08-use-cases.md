@@ -31,11 +31,13 @@ flowchart LR
 # Simple search
 (?s ?score) luc:query ("climate change") .
 
-# Search narrowed to a publisher
-(?s ?score) luc:query ("climate change" '{"publisher": ["CSIRO"]}') .
+# Search narrowed to a publisher (CQL2-JSON filter)
+(?s ?score) luc:query ("default" "climate change"
+    '{"op":"=","args":[{"property":"urn:jena:lucene:field#publisher"},"CSIRO"]}') .
 
-# Multiple filters (AND across fields, OR within a field)
-(?s ?score) luc:query ("climate" '{"publisher": ["CSIRO", "BOM"], "category": ["Environment"]}') .
+# Multiple filters (AND across fields)
+(?s ?score) luc:query ("default" "climate"
+    '{"op":"and","args":[{"op":"=","args":[{"property":"urn:jena:lucene:field#publisher"},"CSIRO"]},{"op":"=","args":[{"property":"urn:jena:lucene:field#category"},"Environment"]}]}') .
 ```
 
 **Where this applies:**
@@ -65,10 +67,10 @@ flowchart LR
 
 ```sparql
 # Counts for category and publisher, top 10 values each
-(?field ?value ?count) luc:facet ("climate change" '["category", "publisher"]' 10) .
+(?field ?value ?count) luc:facet ("climate change" '["urn:jena:lucene:field#category", "urn:jena:lucene:field#publisher"]' 10) .
 
 # With minCount — only values with 5+ results
-(?field ?value ?count) luc:facet ("climate change" '["category"]' 10 5) .
+(?field ?value ?count) luc:facet ("climate change" '["urn:jena:lucene:field#category"]' 10 5) .
 ```
 
 **Where this applies:**
@@ -109,14 +111,14 @@ SELECT ?s ?score WHERE {
 
 # Query 2 — facets
 SELECT ?field ?value ?count WHERE {
-    (?field ?value ?count) luc:facet ("climate change" '["category", "publisher"]' 10) .
+    (?field ?value ?count) luc:facet ("climate change" '["urn:jena:lucene:field#category", "urn:jena:lucene:field#publisher"]' 10) .
 }
 
 # Alternative: single query via UNION (N+M rows, no cartesian product)
 SELECT ?s ?score ?field ?value ?count WHERE {
     { (?s ?score) luc:query ("climate change") . }
     UNION
-    { (?field ?value ?count) luc:facet ("climate change" '["category", "publisher"]' 10) . }
+    { (?field ?value ?count) luc:facet ("climate change" '["urn:jena:lucene:field#category", "urn:jena:lucene:field#publisher"]' 10) . }
 }
 ```
 
@@ -197,17 +199,13 @@ Field types control how each value is indexed:
 
 ---
 
-## Proposed Features
-
 ### Inverse and Sequence Paths
 
-Extends `sh:path` support · No breaking changes
-
-Currently only direct properties (`sh:path <uri>`) and alternatives (`sh:alternativePath`) can be indexed. This limits what data reaches the index without denormalising the RDF. Path extensions let the index follow relationships.
+Index values from related entities by following RDF relationships at index time — no materialised triples needed.
 
 ```mermaid
 flowchart LR
-    subgraph direct["Current: direct path only"]
+    subgraph direct["Direct path"]
         B1["ex:book1"] -- "rdfs:label" --> L1["'Machine Learning'"]
     end
 
@@ -227,35 +225,41 @@ flowchart LR
     style sequence fill:none,stroke:#b8d4f8
 ```
 
+```turtle
+PREFIX field: <urn:jena:lucene:field#>
+
+## Sequence path — index author name on the book
+field:authorName
+    idx:fieldName "authorName" ;
+    idx:fieldType idx:KeywordField ;
+    sh:path ( ex:writtenBy ex:name ) .
+
+## Inverse path — index who references this entity
+field:referencedBy
+    idx:fieldName "referencedBy" ;
+    idx:fieldType idx:KeywordField ;
+    sh:path [ sh:inversePath ex:references ] .
+```
+
 **Where this applies:**
-- Index an author's name directly on a book (sequence path: `ex:author / ex:name`) — avoids needing a denormalised `ex:authorName` property
-- Index incoming references (inverse path: `sh:inversePath ex:memberOf`) — find an organisation by searching its members' names
+- Index an author's name directly on a book — avoids needing a materialised `ex:authorName` triple
+- Index incoming references (inverse path) — find an organisation by searching its members
 - Index labels of linked entities — a dataset's theme label, a product's manufacturer name
+- **Replaces forward chaining** for search and faceted navigation use cases (see below)
 
 ---
 
-### Spatial Filtering — Bounding Box
+### Spatial Filtering
 
-Extends filter argument · No breaking changes
+Filter search results and facet counts by geographic region using CQL2-JSON spatial operators. Supports bounding box and polygon geometries via Lucene `LatLonShape`.
 
-Restrict search results and facet counts to entities within a geographic bounding box.
-
-```mermaid
-flowchart LR
-    Search["luc:query<br/>'climate change'"]
-    BBox["+ bbox filter:<br/>SW: -44°, 112°<br/>NE: -10°, 154°<br/>(Australia)"]
-    Results["Only results<br/>within the<br/>bounding box"]
-    Facets["Facet counts<br/>reflect spatial<br/>filter"]
-
-    Search --> Results
-    BBox -.-> Search
-    Search --> Facets
-
-    style Search fill:#1a6dd4,stroke:#0d4a94,color:#fff
-    style BBox fill:#fff3cd,stroke:#c89a06,color:#614a00
-    style Results fill:#d4edda,stroke:#28a745,color:#1a3d1a
-    style Facets fill:#d4edda,stroke:#28a745,color:#1a3d1a
+```sparql
+(?s ?score) luc:query ("default" "gold mine"
+    '{"op":"s_intersects","args":[{"property":"urn:jena:lucene:field#location"},{"bbox":[115,-35,120,-30]}]}'
+    20)
 ```
+
+See [Spatial Filtering](09-spatial.md) for configuration, CRS handling, and query examples.
 
 **Where this applies:**
 - Map-based data discovery (draw a region, see what's there)
@@ -263,6 +267,39 @@ flowchart LR
 - Location-scoped search (find datasets near a city or within a jurisdiction)
 
 ---
+
+### Replacing Forward Chaining
+
+Forward chaining (materialisation) pre-computes inferred triples and stores them in the graph. The SHACL index configuration achieves the same query-time outcome — fast, denormalised access to entity properties — without modifying source data.
+
+| Concern | Forward Chaining | Lucene Index Configuration |
+|---------|-----------------|---------------------------|
+| Source data modified? | Yes — extra triples added | No — source graph unchanged |
+| Staleness risk | High — must re-run pipeline on change | Low — index rebuilt from live graph |
+| Configuration | Code or rule files | Declarative TTL (SHACL paths) |
+| Multi-hop traversal | Materialised shortcut triples | Sequence paths in config |
+| Reverse traversal | Materialised inverse triples | Inverse paths in config |
+| Faceted counts | Not provided | Built-in via `luc:facet` |
+
+**Example:** Instead of materialising `ex:authorName` on every report via an ETL pipeline:
+
+```turtle
+## Forward chaining approach (modifies the graph)
+ex:report-001 ex:authorName "Dr Sarah Jones" .
+
+## Index configuration approach (graph unchanged)
+<#field-authorName>
+    idx:fieldName "authorName" ;
+    sh:path ( ex:authoredBy ex:name ) .
+```
+
+The indexer follows the path at index time and stores the result in the Lucene document. When the source data changes, the index updates automatically via the change listener.
+
+**Scope:** This replaces forward chaining for **search and faceted navigation**. It does not replace materialisation for standard SPARQL queries without the text index, OWL/RDFS entailment, or downstream systems that read the RDF graph directly.
+
+---
+
+## Proposed Features
 
 ### DrillSideways — Smarter Facet Counting
 

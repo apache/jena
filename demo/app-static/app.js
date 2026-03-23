@@ -55,6 +55,40 @@ function timeStamp() {
     return new Date().toLocaleTimeString('en-GB', { hour12: false });
 }
 
+function resolveFieldName(fieldUri, fieldIRIs) {
+    const fragment = shortName(fieldUri);
+    for (const [name, iri] of Object.entries(fieldIRIs || {})) {
+        if (shortName(iri) === fragment) return name;
+    }
+    return fragment;
+}
+
+function renderJsonTree(obj, indent) {
+    indent = indent || 0;
+    if (obj === null) return '<span class="jt-null">null</span>';
+    if (typeof obj === 'boolean') return `<span class="jt-bool">${obj}</span>`;
+    if (typeof obj === 'number') return `<span class="jt-num">${obj}</span>`;
+    if (typeof obj === 'string') return `<span class="jt-str">"${escapeHtml(obj)}"</span>`;
+    if (Array.isArray(obj)) {
+        if (obj.length === 0) return '<span class="jt-brace">[]</span>';
+        const items = obj.map((v, i) => {
+            const comma = i < obj.length - 1 ? ',' : '';
+            return `<div class="jt-item">${renderJsonTree(v, indent + 1)}${comma}</div>`;
+        }).join('');
+        return `<details open><summary class="jt-brace">[<span class="jt-count">${obj.length}</span>]</summary><div class="jt-indent">${items}</div><span class="jt-brace">]</span></details>`;
+    }
+    if (typeof obj === 'object') {
+        const keys = Object.keys(obj);
+        if (keys.length === 0) return '<span class="jt-brace">{}</span>';
+        const items = keys.map((k, i) => {
+            const comma = i < keys.length - 1 ? ',' : '';
+            return `<div class="jt-item"><span class="jt-key">"${escapeHtml(k)}"</span>: ${renderJsonTree(obj[k], indent + 1)}${comma}</div>`;
+        }).join('');
+        return `<details open><summary class="jt-brace">{<span class="jt-count">${keys.length}</span>}</summary><div class="jt-indent">${items}</div><span class="jt-brace">}</span></details>`;
+    }
+    return escapeHtml(String(obj));
+}
+
 /**
  * Convert selected facet filters + optional spatial bbox to CQL2-JSON string.
  * Input: {field: [val1, val2], ...}, bbox: [swLon, swLat, neLon, neLat] | null
@@ -67,31 +101,79 @@ function timeStamp() {
  *   polygon: [[lon, lat], ...] | null  (closed ring, CRS84 order)
  * Returns null if no filters are active.
  */
-function buildCqlFilter(selected, bbox, polygon) {
+function buildCqlFilter(selected, bbox, polygon, fieldIRIs) {
     const clauses = [];
     for (const [field, values] of Object.entries(selected)) {
         if (!values || values.length === 0) continue;
+        const prop = (fieldIRIs && fieldIRIs[field]) || field;
         if (values.length === 1) {
-            clauses.push({op: '=', args: [{property: field}, values[0]]});
+            clauses.push({op: '=', args: [{property: prop}, values[0]]});
         } else {
-            clauses.push({op: 'in', args: [{property: field}, values]});
+            clauses.push({op: 'in', args: [{property: prop}, values]});
         }
     }
     if (bbox && bbox.length === 4) {
+        const locProp = (fieldIRIs && fieldIRIs['location']) || 'location';
         clauses.push({
             op: 's_intersects',
-            args: [{property: 'location'}, {bbox: bbox}],
+            args: [{property: locProp}, {bbox: bbox}],
         });
     }
     if (polygon && polygon.length >= 4) {
+        const locProp = (fieldIRIs && fieldIRIs['location']) || 'location';
         clauses.push({
             op: 's_intersects',
-            args: [{property: 'location'}, {type: 'Polygon', coordinates: [polygon]}],
+            args: [{property: locProp}, {type: 'Polygon', coordinates: [polygon]}],
         });
     }
     if (clauses.length === 0) return null;
     if (clauses.length === 1) return JSON.stringify(clauses[0]);
     return JSON.stringify({op: 'and', args: clauses});
+}
+
+/**
+ * Parse a CQL2-JSON filter string back into app state.
+ * Returns { selected: {field: [values]}, bbox, polygon }.
+ */
+function parseCqlFilter(cqlString, fieldIRIs) {
+    const selected = {};
+    let bbox = null;
+    let polygon = null;
+    if (!cqlString) return { selected, bbox, polygon };
+
+    // Build reverse map: IRI → field name
+    const iriToName = {};
+    if (fieldIRIs) {
+        for (const [name, iri] of Object.entries(fieldIRIs)) {
+            iriToName[iri] = name;
+            // Also map by local name for cross-base matching
+            iriToName[shortName(iri)] = name;
+        }
+    }
+    const resolve = (prop) => iriToName[prop] || iriToName[shortName(prop)] || prop;
+
+    let cql;
+    try { cql = JSON.parse(cqlString); } catch { return { selected, bbox, polygon }; }
+
+    const clauses = (cql.op === 'and') ? cql.args : [cql];
+    for (const clause of clauses) {
+        if (!clause.op || !clause.args) continue;
+        if (clause.op === '=' && clause.args[0]?.property) {
+            const field = resolve(clause.args[0].property);
+            selected[field] = [clause.args[1]];
+        } else if (clause.op === 'in' && clause.args[0]?.property) {
+            const field = resolve(clause.args[0].property);
+            selected[field] = clause.args[1];
+        } else if (clause.op === 's_intersects') {
+            const geom = clause.args[1];
+            if (geom?.bbox) {
+                bbox = geom.bbox;
+            } else if (geom?.type === 'Polygon' && geom.coordinates) {
+                polygon = geom.coordinates[0];
+            }
+        }
+    }
+    return { selected, bbox, polygon };
 }
 
 // ---------------------------------------------------------------------------
@@ -185,6 +267,7 @@ function extractConfig(store) {
 
     const shapes = [];
     const facetFields = [];
+    const fieldIRIs = {};
     const predicateToFacet = {};
     const seenFacets = new Set();
 
@@ -209,8 +292,11 @@ function extractConfig(store) {
             const sortable = getLiteral(store, propNode, IDX + 'sortable') === 'true';
             const pathStr = pathNode ? pathToString(store, pathNode) : '?';
 
+            const fieldIRI = propNode.termType === 'NamedNode' ? propNode.value : null;
+
             shape.fields.push({
                 name: fieldName,
+                iri: fieldIRI,
                 path: pathStr,
                 fieldType: shortName(fieldType.value),
                 facetable,
@@ -222,6 +308,7 @@ function extractConfig(store) {
             if (facetable && !seenFacets.has(fieldName)) {
                 seenFacets.add(fieldName);
                 facetFields.push(fieldName);
+                if (fieldIRI) fieldIRIs[fieldName] = fieldIRI;
             }
 
             if (facetable && pathNode) {
@@ -251,6 +338,7 @@ function extractConfig(store) {
         maxFacetHits,
         shapes,
         facetFields,
+        fieldIRIs,
         predicateToFacet,
     };
 }
@@ -259,8 +347,6 @@ async function loadConfig() {
     const resp = await fetch(`${CONFIG_PATH}?t=${Date.now()}`);
     if (!resp.ok) throw new Error(`Failed to fetch ${CONFIG_PATH}: ${resp.status}`);
     const text = await resp.text();
-    console.log('[loadConfig] config.ttl (first 2000 chars):', text.substring(0, 2000));
-    console.log('[loadConfig] config.ttl length:', text.length);
     const store = await parseTurtle(text);
     return extractConfig(store);
 }
@@ -332,6 +418,7 @@ function searchApp() {
         facetLimits: FACET_LIMITS,
         selected: {},
         facetFields: [],
+        fieldIRIs: {},
         predicateToFacet: {},
         facets: {},
         facetExpanded: {},
@@ -359,6 +446,25 @@ function searchApp() {
         _mapLayers: null,
         _mapMarkersByUri: {},
         _highlightTimer: null,
+        _abortController: null,
+        editorOpen: false,
+        editorQuery: '',
+        editorResults: '',
+        editorRunning: false,
+        editorError: null,
+        editorEndpoint: '',
+        editorView: 'table',
+        editorData: null,
+        cqlOpen: false,
+        cqlJson: null,
+        cqlRaw: '',
+        cqlView: 'object',
+        _cqlRight: 0,
+        _cqlTop: 60,
+        _cqlWidth: 0,
+        _editorRight: 0,
+        _editorTop: 60,
+        _editorWidth: 0,
 
         async init() {
             let config;
@@ -371,6 +477,7 @@ function searchApp() {
 
             this.endpoint = config.endpoint;
             this.facetFields = config.facetFields;
+            this.fieldIRIs = config.fieldIRIs;
             this.predicateToFacet = config.predicateToFacet;
 
             this.loadFromUrl();
@@ -396,13 +503,111 @@ function searchApp() {
 
         // --- Query log ---
 
-        logQuery(label, query, durationMs) {
+        logQuery(label, query, durationMs, isSparql) {
             const dur = durationMs != null ? ` (${(durationMs / 1000).toFixed(2)}s)` : '';
+            const trimmed = query.trim();
+            const sparql = isSparql !== false && trimmed.toUpperCase().startsWith('PREFIX');
+            let isCql = false;
+            if (!sparql) {
+                try { const p = JSON.parse(trimmed); isCql = p && typeof p.op === 'string'; } catch {}
+            }
             this.queryLog.unshift({
                 time: timeStamp(),
                 label: label + dur,
-                query: query.trim(),
+                query: trimmed,
+                isSparql: sparql,
+                isCql,
             });
+        },
+
+        // --- SPARQL editor ---
+
+        openEditor(query) {
+            this.editorQuery = query;
+            this.editorEndpoint = this.endpoint;
+            this.editorResults = '';
+            this.editorData = null;
+            this.editorError = null;
+            this._editorWidth = Math.max(320, window.innerWidth * 0.5);
+            this._editorRight = 0;
+            this._editorTop = 60;
+            this.editorOpen = true;
+            this.$nextTick(() => this.runEditorQuery());
+        },
+
+        closeEditor() {
+            this.editorOpen = false;
+        },
+
+        async runEditorQuery() {
+            this.editorRunning = true;
+            this.editorError = null;
+            this.editorResults = '';
+            this.editorData = null;
+            try {
+                const resp = await fetch(this.editorEndpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/sparql-query',
+                        'Accept': 'application/sparql-results+json',
+                    },
+                    body: this.editorQuery,
+                });
+                if (!resp.ok) {
+                    this.editorError = `HTTP ${resp.status}: ${resp.statusText}`;
+                    return;
+                }
+                const text = await resp.text();
+                try {
+                    this.editorData = JSON.parse(text);
+                    this.editorResults = JSON.stringify(this.editorData, null, 2);
+                } catch {
+                    this.editorData = null;
+                    this.editorResults = text;
+                }
+            } catch (e) {
+                this.editorError = e.message;
+            } finally {
+                this.editorRunning = false;
+            }
+        },
+
+        editorHasTable() {
+            return this.editorData?.head?.vars && this.editorData?.results?.bindings;
+        },
+
+        editorTableVars() {
+            return this.editorData?.head?.vars || [];
+        },
+
+        editorTableRows() {
+            return (this.editorData?.results?.bindings || []).map(row => {
+                return this.editorTableVars().map(v => {
+                    const cell = row[v];
+                    if (!cell) return '';
+                    if (cell.type === 'uri') return shortName(cell.value);
+                    return cell.value;
+                });
+            });
+        },
+
+        // --- CQL viewer ---
+
+        openCql(jsonString) {
+            this.cqlRaw = jsonString;
+            try {
+                this.cqlJson = JSON.parse(jsonString);
+            } catch {
+                this.cqlJson = null;
+            }
+            this._cqlWidth = Math.max(320, window.innerWidth * 0.4);
+            this._cqlRight = 0;
+            this._cqlTop = 60;
+            this.cqlOpen = true;
+        },
+
+        closeCql() {
+            this.cqlOpen = false;
         },
 
         // --- URL management ---
@@ -410,17 +615,8 @@ function searchApp() {
         pushUrl() {
             const params = new URLSearchParams();
             if (this.q.trim()) params.set('q', this.q.trim());
-            for (const f of this.facetFields) {
-                for (const v of (this.selected[f] || [])) {
-                    params.append(f, v);
-                }
-            }
-            if (this.spatialBbox) {
-                params.set('bbox', this.spatialBbox.join(','));
-            }
-            if (this.spatialPolygon) {
-                params.set('polygon', this.spatialPolygon.map(c => c.join(',')).join(';'));
-            }
+            const cql = buildCqlFilter(this.selected, this.spatialBbox, this.spatialPolygon, this.fieldIRIs);
+            if (cql) params.set('filter', cql);
             const qs = params.toString();
             const url = qs ? '?' + qs : window.location.pathname;
             history.pushState(null, '', url);
@@ -429,31 +625,12 @@ function searchApp() {
         loadFromUrl() {
             const params = new URLSearchParams(window.location.search);
             this.q = params.get('q') || '';
+            const { selected, bbox, polygon } = parseCqlFilter(params.get('filter'), this.fieldIRIs);
             for (const f of this.facetFields) {
-                this.selected[f] = params.getAll(f);
+                this.selected[f] = selected[f] || [];
             }
-            const bboxStr = params.get('bbox');
-            if (bboxStr) {
-                const parts = bboxStr.split(',').map(Number);
-                if (parts.length === 4 && parts.every(n => !isNaN(n))) {
-                    this.spatialBbox = parts;
-                } else {
-                    this.spatialBbox = null;
-                }
-            } else {
-                this.spatialBbox = null;
-            }
-            const polyStr = params.get('polygon');
-            if (polyStr) {
-                const coords = polyStr.split(';').map(p => p.split(',').map(Number));
-                if (coords.length >= 3 && coords.every(c => c.length === 2 && c.every(n => !isNaN(n)))) {
-                    this.spatialPolygon = coords;
-                } else {
-                    this.spatialPolygon = null;
-                }
-            } else {
-                this.spatialPolygon = null;
-            }
+            this.spatialBbox = bbox;
+            this.spatialPolygon = polygon;
         },
 
         // --- Actions ---
@@ -500,9 +677,13 @@ function searchApp() {
             return all.slice(0, 5);
         },
 
+        _resolveFieldName(fieldUri) {
+            return resolveFieldName(fieldUri, this.fieldIRIs);
+        },
+
         // --- SPARQL execution ---
 
-        async runSparql(query) {
+        async runSparql(query, signal) {
             const resp = await fetch(this.endpoint, {
                 method: 'POST',
                 headers: {
@@ -510,6 +691,7 @@ function searchApp() {
                     'Accept': 'application/sparql-results+json',
                 },
                 body: query,
+                signal,
             });
             if (!resp.ok) throw new Error(`SPARQL error: ${resp.status} ${resp.statusText}`);
             return resp.json();
@@ -520,9 +702,10 @@ function searchApp() {
         buildSearchQuery() {
             const term = this.q.trim() || '*';
             const escaped = escapeSparql(term);
-            const cqlFilter = buildCqlFilter(this.selected, this.spatialBbox, this.spatialPolygon);
+            const cqlFilter = buildCqlFilter(this.selected, this.spatialBbox, this.spatialPolygon, this.fieldIRIs);
             const filterArg = cqlFilter ? ` '${cqlFilter}'` : '';
-            const facetFieldsJson = JSON.stringify(this.facetFields);
+            const facetIRIs = this.facetFields.map(f => this.fieldIRIs[f] || f);
+            const facetFieldsJson = JSON.stringify(facetIRIs);
 
             return `${SPARQL_PREFIXES}
 SELECT ?entity ?score ?totalHits ?field ?value ?count
@@ -536,15 +719,14 @@ WHERE {
         buildDetailQuery(uris) {
             const values = uris.map(u => `<${u}>`).join(' ');
             return `${SPARQL_PREFIXES}
-SELECT ?entity ?label ?type ?p ?o
+SELECT ?entity ?label ?p ?o ?oLabel
 WHERE {
     VALUES ?entity { ${values} }
     ?entity rdfs:label ?label .
-    ?entity rdf:type ?type .
-    FILTER(?type != rdfs:Resource)
     OPTIONAL {
       ?entity ?p ?o .
-      FILTER(?p != rdf:type && ?p != rdfs:label && !isBlank(?o))
+      FILTER(?p != rdfs:label && !isBlank(?o) && ?o != rdfs:Resource)
+      OPTIONAL { ?o rdfs:label ?oLabel }
     }
 }`;
         },
@@ -565,10 +747,15 @@ WHERE {
                         totalHits = parseInt(row.totalHits.value, 10);
                     }
                 } else if (row.field) {
-                    const f = row.field.value;
+                    // ?field is a URI — resolve to field name via IRI map or shortName fallback
+                    const fieldUri = row.field.value;
+                    const f = this._resolveFieldName(fieldUri);
                     if (!facets[f]) facets[f] = [];
+                    // ?value may be a URI (KEYWORD) or literal (TEXT) —
+                    // store the raw value for CQL filter matching
                     facets[f].push({
                         value: row.value.value,
+                        label: row.value.type === 'uri' ? shortName(row.value.value) : row.value.value,
                         count: parseInt(row.count.value, 10),
                     });
                 }
@@ -585,11 +772,11 @@ WHERE {
                 }
                 for (const sv of (this.selected[f] || [])) {
                     if (!values[sv]) {
-                        values[sv] = { value: sv, count: 0 };
+                        values[sv] = { value: sv, label: shortName(sv), count: 0 };
                     }
                 }
                 merged[f] = Object.values(values).sort((a, b) =>
-                    b.count - a.count || a.value.localeCompare(b.value)
+                    b.count - a.count || (a.label || a.value).localeCompare(b.label || b.value)
                 );
             }
             return merged;
@@ -600,11 +787,9 @@ WHERE {
             for (const row of (data.results?.bindings || [])) {
                 const uri = row.entity.value;
                 if (!entities[uri]) {
-                    const typeUri = row.type?.value || '';
                     entities[uri] = {
                         uri,
                         label: row.label.value,
-                        entityType: shortName(typeUri),
                         score: scores[uri] || 0,
                         description: null,
                         properties: {},
@@ -615,10 +800,12 @@ WHERE {
                 if (row.p && row.o) {
                     const pred = shortName(row.p.value);
                     const raw = row.o.value;
-                    const obj = row.o.type === 'uri' ? shortName(raw) : raw;
+                    const isUri = row.o.type === 'uri';
+                    const label = row.oLabel?.value;
+                    const display = label || (isUri ? shortName(raw) : raw);
                     if (!card.properties[pred]) card.properties[pred] = [];
-                    if (!card.properties[pred].includes(obj)) {
-                        card.properties[pred].push(obj);
+                    if (!card.properties[pred].some(e => e.raw === raw)) {
+                        card.properties[pred].push({ display, raw, isUri });
                     }
                 }
             }
@@ -626,13 +813,13 @@ WHERE {
             const cards = Object.values(entities);
             for (const card of cards) {
                 if (card.properties.description) {
-                    card.description = card.properties.description[0];
+                    card.description = card.properties.description[0].display;
                 }
                 for (const [pred, values] of Object.entries(card.properties)) {
                     if (pred === 'description') continue;
                     if (pred === 'asWKT') {
-                        for (const v of values) {
-                            const geo = parseWktForLeaflet(v);
+                        for (const pv of values) {
+                            const geo = parseWktForLeaflet(pv.raw);
                             if (geo) {
                                 const tooltip = geo.type === 'point'
                                     ? `${geo.lat.toFixed(4)}, ${geo.lon.toFixed(4)}`
@@ -648,11 +835,23 @@ WHERE {
                         continue;
                     }
                     const facetField = this.predicateToFacet[pred] || null;
-                    for (const v of values) {
-                        const active = facetField ? this.isSelected(facetField, v) : false;
+                    // Skip non-facetable literal values (e.g., depth, year, score)
+                    if (!facetField && !values.some(v => v.isUri)) continue;
+                    for (const pv of values) {
+                        // Find the matching facet value — match by label or raw IRI
+                        let matchValue = pv.display;
+                        if (facetField) {
+                            const facetValues = this.facets[facetField] || [];
+                            const match = facetValues.find(fv =>
+                                fv.value === pv.raw || fv.value === pv.display ||
+                                fv.label === pv.display);
+                            if (match) matchValue = match.value;
+                        }
+                        const active = facetField ? this.isSelected(facetField, matchValue) : false;
                         card.tags.push({
                             pred,
-                            value: v,
+                            value: matchValue,
+                            displayValue: pv.display,
                             facetField,
                             isActive: active,
                             clickable: !!facetField,
@@ -681,7 +880,7 @@ WHERE {
             const filters = [];
             for (const [field, values] of Object.entries(this.selected)) {
                 if (!values || values.length === 0) continue;
-                const quoted = values.map(v => `\u201c${escapeHtml(v)}\u201d`);
+                const quoted = values.map(v => `\u201c${escapeHtml(shortName(v))}\u201d`);
                 if (quoted.length === 1) {
                     filters.push(`${escapeHtml(field)} = ${quoted[0]}`);
                 } else {
@@ -713,6 +912,11 @@ WHERE {
         // --- Search execution ---
 
         async executeSearch() {
+            // Abort any in-flight search before starting a new one
+            if (this._abortController) this._abortController.abort();
+            this._abortController = new AbortController();
+            const signal = this._abortController.signal;
+
             this.loading = true;
             this.showLoading = true;
             clearTimeout(this._loadingTimer);
@@ -726,8 +930,13 @@ WHERE {
                 const searchLabel = (this.q.trim() || '*')
                     + (activeFilters > 0 ? ` + ${activeFilters} filter${activeFilters > 1 ? 's' : ''}` : '');
 
+                const cqlFilter = buildCqlFilter(this.selected, this.spatialBbox, this.spatialPolygon, this.fieldIRIs);
+                if (cqlFilter) {
+                    this.logQuery('CQL Filter', JSON.stringify(JSON.parse(cqlFilter), null, 2));
+                }
+
                 let t0 = performance.now();
-                const data = await this.runSparql(searchQuery);
+                const data = await this.runSparql(searchQuery, signal);
                 const searchMs = performance.now() - t0;
                 this.logQuery(`Search: ${searchLabel}`, searchQuery, searchMs);
 
@@ -740,7 +949,7 @@ WHERE {
                     const detailQuery = this.buildDetailQuery(uris);
 
                     t0 = performance.now();
-                    const detailData = await this.runSparql(detailQuery);
+                    const detailData = await this.runSparql(detailQuery, signal);
                     const detailMs = performance.now() - t0;
                     this.logQuery(`Details: ${uris.length} entities`, detailQuery, detailMs);
 
@@ -753,7 +962,11 @@ WHERE {
                 const totalSec = (performance.now() - loadStart) / 1000;
                 this.description = this.buildDescription(hits.length, totalHits, totalSec);
             } catch (e) {
-                if (e.name === 'TypeError' || (e.message && (e.message.includes('Failed to fetch') || e.message.includes('NetworkError')))) {
+                // Aborted requests are expected — silently ignore
+                if (e.name === 'AbortError') return;
+
+                console.error('executeSearch error:', e);
+                if (e.message && (e.message.includes('Failed to fetch') || e.message.includes('NetworkError'))) {
                     this.error = `Cannot connect to Fuseki at ${this.endpoint}. Is the server running?`;
                 } else {
                     this.error = `Query failed: ${e.message}`;
@@ -820,8 +1033,8 @@ WHERE {
 
             for (const card of this.cards) {
                 const wktValues = card.properties.asWKT || [];
-                for (const wkt of wktValues) {
-                    const geo = parseWktForLeaflet(wkt);
+                for (const pv of wktValues) {
+                    const geo = parseWktForLeaflet(pv.raw);
                     if (!geo) continue;
 
                     let layer;
@@ -840,8 +1053,7 @@ WHERE {
                     }
 
                     if (layer) {
-                        const popup = `<strong>${escapeHtml(card.label)}</strong>`
-                            + `<br><span class="map-popup-type">${escapeHtml(card.entityType)}</span>`;
+                        const popup = `<strong>${escapeHtml(card.label)}</strong>`;
                         layer.bindPopup(popup);
                         const uri = card.uri;
                         layer.on('click', () => this.highlightCard(uri));
@@ -854,7 +1066,7 @@ WHERE {
 
             this.mapMarkerCount = mapped;
             if (bounds.length > 0) {
-                this._map.fitBounds(bounds, { padding: [30, 30], maxZoom: 10 });
+                this._map.fitBounds(bounds, { padding: [30, 30], maxZoom: 10, animate: false });
             }
         },
 
@@ -965,7 +1177,7 @@ WHERE {
             const [swLon, swLat, neLon, neLat] = this.spatialBbox;
             this._bboxOverlay = L.rectangle(
                 [[swLat, swLon], [neLat, neLon]],
-                { color: '#4db8a4', weight: 2, fillOpacity: 0.08, dashArray: '6 4' }
+                { color: '#4db8a4', weight: 2, fillOpacity: 0.08, dashArray: '6 4', interactive: false }
             ).addTo(this._map);
         },
 
@@ -1094,6 +1306,7 @@ WHERE {
             const latlngs = this.spatialPolygon.map(c => [c[1], c[0]]);
             this._polyOverlay = L.polygon(latlngs, {
                 color: '#4db8a4', weight: 2, fillOpacity: 0.08, dashArray: '6 4',
+                interactive: false,
             }).addTo(this._map);
         },
 
@@ -1131,15 +1344,15 @@ WHERE {
 function configApp() {
     return {
         config: null,
+        configRaw: '',
+        configView: 'parsed',
         error: null,
 
         async init() {
             try {
                 this.config = await loadConfig();
-                console.log('[configApp] shapes:', this.config.shapes.length);
-                for (const s of this.config.shapes) {
-                    console.log(`[configApp] ${s.name}: ${s.fields.length} fields →`, s.fields.map(f => f.name));
-                }
+                const resp = await fetch(`${CONFIG_PATH}?t=${Date.now()}`);
+                this.configRaw = await resp.text();
             } catch (e) {
                 this.error = `Failed to load config: ${e.message}`;
             }
@@ -1156,16 +1369,19 @@ function statsApp() {
         stats: null,
         error: null,
         loading: true,
+        nameMode: 'short',
 
         async init() {
             try {
                 const config = await loadConfig();
                 const endpoint = config.endpoint;
                 const facetFields = config.facetFields;
+                const fieldIRIs = config.fieldIRIs;
                 const t0 = performance.now();
 
                 // 1. Total entities + facet counts in one query
-                const facetFieldsJson = JSON.stringify(facetFields);
+                const facetIRIs = facetFields.map(f => fieldIRIs[f] || f);
+                const facetFieldsJson = JSON.stringify(facetIRIs);
                 const statsQuery = `${SPARQL_PREFIXES}
 SELECT ?entity ?score ?totalHits ?field ?value ?count
 WHERE {
@@ -1184,10 +1400,11 @@ WHERE {
                         totalHits = parseInt(row.totalHits.value, 10);
                     }
                     if (row.field) {
-                        const f = row.field.value;
+                        const f = resolveFieldName(row.field.value, config.fieldIRIs);
                         if (!facets[f]) facets[f] = [];
                         facets[f].push({
                             value: row.value.value,
+                            label: row.value.type === 'uri' ? shortName(row.value.value) : row.value.value,
                             count: parseInt(row.count.value, 10),
                         });
                     }
@@ -1215,6 +1432,7 @@ WHERE {
                     facetableFields: facetFields.length,
                     facets,
                     facetFields,
+                    fieldIRIs: config.fieldIRIs,
                     statsQueryMs: statsMs,
                     countQueryMs: countMs,
                     totalMs,

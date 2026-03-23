@@ -2,6 +2,8 @@
 
 All configuration is done via Jena Assembler TTL files. The text index is configured as part of a `text:TextDataset`.
 
+> **Note:** The upstream Jena classic mode (`text:entityMap` / `text:query`) is unchanged and still available. See the [Apache Jena documentation](https://jena.apache.org/documentation/query/text-query.html) for its configuration. This reference covers only the SHACL-based entity-per-document configuration.
+
 ## Dataset wrapper
 
 ```turtle
@@ -20,49 +22,9 @@ All configuration is done via Jena Assembler TTL files. The text index is config
 
 ---
 
-## Classic Mode (text:entityMap)
+## Index Configuration
 
-The original triple-per-document model. Each RDF triple matching the entity map becomes a separate Lucene document. Uses `text:query` for search. No faceting support.
-
-```turtle
-<#index> a text:TextIndexLucene ;
-    text:directory <file:/path/to/lucene> ;   # or "mem" for in-memory
-    text:entityMap <#entMap> ;
-    text:storeValues true ;
-    .
-
-<#entMap> a text:EntityMap ;
-    text:entityField "uri" ;
-    text:defaultField "text" ;
-    text:langField "lang" ;
-    text:uidField "uid" ;
-    text:map (
-        [ text:field "text" ;     text:predicate rdfs:label ]
-        [ text:field "category" ; text:predicate ex:category ]
-        [ text:field "author" ;   text:predicate ex:author ]
-    ) .
-```
-
-### Properties
-
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `text:directory` | URI or `"mem"` | required | Lucene index location |
-| `text:entityMap` | Resource | required* | Entity map definition |
-| `text:storeValues` | boolean | false | Store literal values for retrieval |
-| `text:analyzer` | Resource | StandardAnalyzer | Default analyzer |
-| `text:queryAnalyzer` | Resource | same as analyzer | Analyzer for queries |
-| `text:multilingualSupport` | boolean | false | Enable multilingual indexing |
-| `text:ignoreIndexErrors` | boolean | false | Continue on indexing errors |
-| `text:cacheQueries` | boolean | true | Enable query caching |
-
-*Mutually exclusive with `text:shapes`.
-
----
-
-## SHACL Mode (text:shapes)
-
-Entity-per-document model. Each entity (identified by `rdf:type` matching `sh:targetClass`) gets one Lucene document containing all its fields. Uses `luc:query` for search with filters and `luc:facet` for facet counts.
+Each entity (identified by `rdf:type` matching `sh:targetClass`) gets one Lucene document containing all its fields. Uses `luc:query` for search with filters and `luc:facet` for facet counts.
 
 ```turtle
 @prefix text:  <http://jena.apache.org/text#> .
@@ -77,7 +39,7 @@ Entity-per-document model. Each entity (identified by `rdf:type` matching `sh:ta
     .
 ```
 
-### SHACL-mode properties
+### Index properties
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
@@ -85,7 +47,7 @@ Entity-per-document model. Each entity (identified by `rdf:type` matching `sh:ta
 | `text:maxFacetHits` | integer | 0 | Max docs for facet collection. 0 = unlimited |
 | `text:storeValues` | boolean | false | Store literal values for retrieval |
 
-*Mutually exclusive with `text:entityMap`.
+*Mutually exclusive with `text:entityMap` (classic mode).
 
 ### Shape definition
 
@@ -112,29 +74,55 @@ Each shape in the list defines a Lucene document profile:
     ] .
 ```
 
-Alternatively, fields can be provided as an RDF list via `idx:field`:
+Alternatively, fields can be defined as **named resources** with absolute IRIs and referenced from shapes. This is the recommended pattern — named resources are used as field identifiers in SPARQL queries (`luc:query` field specs, `luc:facet` facet field arrays, CQL2-JSON filter properties, and sort specs), enable field reuse across shapes, and support complex paths:
 
 ```turtle
-<#BookShape>
-    sh:targetClass ex:Book ;
-    idx:field ( <#TitleField> <#CategoryField> ) .
+@prefix field: <urn:jena:lucene:field#> .
 
-<#TitleField>
+## Named field resources — IRIs used as field identifiers in SPARQL
+field:title
     idx:fieldName "title" ;
     idx:fieldType idx:TextField ;
     idx:defaultSearch true ;
     sh:path rdfs:label .
 
-<#CategoryField>
+field:category
     idx:fieldName "category" ;
     idx:fieldType idx:KeywordField ;
     idx:facetable true ;
     sh:path ex:category .
+
+field:authorName
+    idx:fieldName "authorName" ;
+    idx:fieldType idx:KeywordField ;
+    idx:facetable true ;
+    sh:path ( ex:writtenBy ex:name ) .  ## sequence path
+
+field:referencedBy
+    idx:fieldName "referencedBy" ;
+    idx:fieldType idx:KeywordField ;
+    idx:multiValued true ;
+    sh:path [ sh:inversePath ex:references ] .  ## inverse path
+
+<#BookShape>
+    sh:targetClass ex:Book ;
+    sh:property field:title ;
+    sh:property field:category ;
+    sh:property field:authorName ;
+    sh:property field:referencedBy .
+
+## Same fields reused on a different shape
+<#ArticleShape>
+    sh:targetClass ex:Article ;
+    sh:property field:title ;
+    sh:property field:category .
 ```
+
+> **Important:** Field resource IRIs must be absolute. Relative IRIs (e.g., `<#field-title>` via `PREFIX : <#>`) resolve to environment-dependent values that differ between Docker, local development, and the browser. Use an absolute prefix like `<urn:jena:lucene:field#>` or any other stable IRI scheme.
 
 ### Path expressions
 
-Two forms are supported:
+Multiple path forms are supported:
 
 ```turtle
 # Direct predicate
@@ -143,9 +131,17 @@ sh:path rdfs:label ;
 # Alternative paths (field indexes multiple predicates)
 sh:path [ sh:alternativePath (rdfs:label skos:prefLabel dct:title) ] ;
 
+# Sequence path (traverse relationships — indexes the value at the end of the path)
+sh:path ( ex:authoredBy ex:name ) ;
+
+# Inverse path (follow a predicate in reverse)
+sh:path [ sh:inversePath ex:authored ] ;
+
 # Convenience shorthand (same as sh:path for single predicates)
 idx:path rdfs:label ;
 ```
+
+Sequence and inverse paths enable cross-entity indexing without forward chaining. For example, a sequence path `( ex:authoredBy ex:name )` on a report shape indexes the author's name directly on the report's Lucene document, without materialising an `ex:authorName` triple in the graph.
 
 ### Shape properties
 
@@ -174,13 +170,23 @@ idx:path rdfs:label ;
 
 | Type | Lucene fields | Stored as | Use case |
 |------|--------------|-----------|----------|
-| `idx:TextField` | `TextField` | analyzed text | Full-text search |
-| `idx:KeywordField` | `StringField` | exact string | Facets, filters, exact match |
-| `idx:IntField` | `IntPoint` | int | Numeric range queries |
-| `idx:LongField` | `LongPoint` | long | Large numeric values |
-| `idx:DoubleField` | `DoublePoint` | double | Floating point values |
+| `idx:TextField` | `TextField` | analyzed text | Full-text search. Returns string literals in bindings |
+| `idx:KeywordField` | `StringField` | exact string | Facets, filters, exact match. Returns IRIs in `?literal` and `?value` bindings when the stored value looks like a URI |
+| `idx:IntField` | `IntPoint` | int | Numeric range queries. Returns `xsd:integer` typed literals |
+| `idx:LongField` | `LongPoint` | long | Large numeric values. Returns `xsd:long` typed literals |
+| `idx:DoubleField` | `DoublePoint` | double | Floating point values. Returns `xsd:double` typed literals |
+| `idx:LatLonField` | `LatLonShape` | WKT geometry | Spatial filtering via CQL2-JSON `s_intersects`. See [Spatial Filtering](09-spatial.md) |
 
 When `idx:facetable true` is set on a KeywordField, a `SortedSetDocValuesFacetField` is automatically added. When `idx:sortable true` is set, a `SortedDocValuesField` (for keywords) or `NumericDocValuesField` (for numerics) is added.
+
+### Field IRIs
+
+Each field definition has an associated IRI that serves as its external identity. This IRI is used in SPARQL queries — as the `fieldSpec` in `luc:query`, in the `facetFields` JSON array for `luc:facet`, as the `property` value in CQL2-JSON filters, and as the `field` value in sort specs. The `idx:fieldName` property is the internal Lucene field name and is not accepted in these contexts.
+
+- **Named resource fields**: If the field is defined as a named resource (URI node) in the configuration, its IRI is used directly. Use an absolute IRI prefix to ensure portability.
+- **Blank node fields**: Fields defined on blank nodes (e.g., via `sh:property [ ... ]`) get an auto-generated IRI: `urn:jena:lucene:field#{fieldName}`.
+
+This IRI is deterministic and stable — it depends only on `idx:fieldName`, not on blank node identity.
 
 ---
 

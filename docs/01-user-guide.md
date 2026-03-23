@@ -2,16 +2,11 @@
 
 ## Overview
 
-The `jena-text` module provides full-text search over RDF data using Apache Lucene. This fork adds **native faceted search** — the ability to get categorised counts alongside text search results, the same pattern used by e-commerce sites, library catalogues, and data portals.
+The `jena-text` module provides full-text search over RDF data using Apache Lucene. This fork adds **entity-per-document indexing with native faceted search** — the ability to get categorised counts alongside text search results, the same pattern used by e-commerce sites, library catalogues, and data portals.
 
-Two indexing modes are available:
+SHACL shapes define entity types with typed fields. Each entity matching a shape's `sh:targetClass` gets one Lucene document containing all its fields. Search uses `luc:query` (with CQL2-JSON filters) and `luc:facet` (for facet counts).
 
-| Mode | Config property | SPARQL prefix | Document model | Best for |
-|------|----------------|---------------|---------------|----------|
-| **Classic** | `text:entityMap` | `text:` | One Lucene doc per RDF triple | Backward compatible, simple text search |
-| **SHACL** | `text:shapes` | `luc:` | One Lucene doc per entity | Faceted navigation, numeric fields, filtering |
-
-Classic mode uses `text:query` (upstream Jena, unchanged). SHACL mode uses `luc:query` and `luc:facet` for search with filters and facet counts.
+> **Note:** The upstream Jena `text:query` / `text:entityMap` (classic mode) is unchanged and still available. This documentation covers only the SHACL mode added by this fork.
 
 ---
 
@@ -19,33 +14,10 @@ Classic mode uses `text:query` (upstream Jena, unchanged). SHACL mode uses `luc:
 
 ### 1. Define your index configuration
 
-**Classic mode** — standard Jena text search:
-
-```turtle
-@prefix text: <http://jena.apache.org/text#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-
-<#index> a text:TextIndexLucene ;
-    text:directory "mem" ;
-    text:entityMap <#entMap> ;
-    text:storeValues true ;
-    .
-
-<#entMap> a text:EntityMap ;
-    text:entityField "uri" ;
-    text:defaultField "text" ;
-    text:map (
-        [ text:field "text" ; text:predicate rdfs:label ]
-        [ text:field "category" ; text:predicate <http://example.org/category> ]
-        [ text:field "author" ; text:predicate <http://example.org/author> ]
-    ) .
-```
-
-**SHACL mode** — entity-per-document with faceting and typed fields:
-
 ```turtle
 @prefix text:  <http://jena.apache.org/text#> .
 @prefix idx:   <urn:jena:lucene:index#> .
+@prefix field: <urn:jena:lucene:field#> .
 @prefix sh:    <http://www.w3.org/ns/shacl#> .
 @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix ex:    <http://example.org/> .
@@ -56,34 +28,50 @@ Classic mode uses `text:query` (upstream Jena, unchanged). SHACL mode uses `luc:
     text:storeValues true ;
     .
 
+## Named field resources — their IRIs identify fields in SPARQL queries
+field:title
+    idx:fieldName "title" ;
+    idx:fieldType idx:TextField ;
+    idx:defaultSearch true ;
+    sh:path rdfs:label .
+
+field:category
+    idx:fieldName "category" ;
+    idx:fieldType idx:KeywordField ;
+    idx:facetable true ;
+    idx:multiValued true ;
+    sh:path ex:category .
+
+field:author
+    idx:fieldName "author" ;
+    idx:fieldType idx:KeywordField ;
+    idx:facetable true ;
+    sh:path ex:author .
+
+field:authorName
+    idx:fieldName "authorName" ;
+    idx:fieldType idx:KeywordField ;
+    idx:facetable true ;
+    sh:path ( ex:writtenBy ex:name ) .  ## sequence path — indexes author name on the book
+
+field:year
+    idx:fieldName "year" ;
+    idx:fieldType idx:IntField ;
+    idx:sortable true ;
+    sh:path ex:year .
+
 <#BookShape>
     sh:targetClass ex:Book ;
-    sh:property [
-        idx:fieldName "title" ;
-        idx:fieldType idx:TextField ;
-        idx:defaultSearch true ;
-        sh:path rdfs:label ;
-    ] ;
-    sh:property [
-        idx:fieldName "category" ;
-        idx:fieldType idx:KeywordField ;
-        idx:facetable true ;
-        idx:multiValued true ;
-        sh:path ex:category ;
-    ] ;
-    sh:property [
-        idx:fieldName "author" ;
-        idx:fieldType idx:KeywordField ;
-        idx:facetable true ;
-        sh:path ex:author ;
-    ] ;
-    sh:property [
-        idx:fieldName "year" ;
-        idx:fieldType idx:IntField ;
-        idx:sortable true ;
-        sh:path ex:year ;
-    ] .
+    sh:property field:title ;
+    sh:property field:category ;
+    sh:property field:author ;
+    sh:property field:authorName ;
+    sh:property field:year .
 ```
+
+Each field is a **named resource** with a stable, absolute IRI (e.g., `urn:jena:lucene:field#category`). This IRI is used in SPARQL queries to identify fields — in `luc:query` field specs, `luc:facet` facet field arrays, CQL2-JSON filter properties, and sort specs. The `idx:fieldName` property defines the internal Lucene field name and is not used in SPARQL.
+
+Fields defined as blank nodes get auto-generated IRIs (`urn:jena:lucene:field#{fieldName}`). Named resources are recommended — they enable field reuse across multiple shapes and support sequence/inverse paths for cross-entity indexing without forward chaining (see [Configuration Reference](03-configuration.md)).
 
 ### 2. Load data
 
@@ -110,18 +98,6 @@ INSERT DATA {
 
 ### 3. Search
 
-**Classic mode — `text:query`:**
-
-```sparql
-PREFIX text: <http://jena.apache.org/text#>
-
-SELECT ?s ?score WHERE {
-    (?s ?score) text:query ("machine learning") .
-}
-```
-
-**SHACL mode — `luc:query`:**
-
 ```sparql
 PREFIX luc: <urn:jena:lucene:index#>
 
@@ -130,13 +106,14 @@ SELECT ?s ?score WHERE {
 }
 ```
 
-### 4. Get facet counts (SHACL mode only)
+### 4. Get facet counts
 
 ```sparql
 PREFIX luc: <urn:jena:lucene:index#>
 
 SELECT ?field ?value ?count WHERE {
-    (?field ?value ?count) luc:facet ("machine learning" '["category", "author"]' 10) .
+    (?field ?value ?count) luc:facet ("default" "machine learning"
+        '["urn:jena:lucene:field#category", "urn:jena:lucene:field#author"]' 10) .
 }
 ```
 
@@ -144,19 +121,26 @@ Returns rows like:
 
 | ?field | ?value | ?count |
 |--------|--------|--------|
-| "category" | "Technology" | 3 |
-| "category" | "Science" | 1 |
-| "author" | "Smith" | 2 |
-| "author" | "Jones" | 1 |
+| `<urn:jena:lucene:field#category>` | `<http://example.org/Technology>` | 3 |
+| `<urn:jena:lucene:field#category>` | `<http://example.org/Science>` | 1 |
+| `<urn:jena:lucene:field#author>` | `<http://example.org/Smith>` | 2 |
+| `<urn:jena:lucene:field#author>` | `<http://example.org/Jones>` | 1 |
 
-### 5. Search with facet filtering (SHACL mode only)
+`?field` returns the field IRI (the named resource from config). `?value` returns IRIs for KEYWORD fields, string literals for TEXT fields.
+
+The `facetFields` array requires field IRIs — the full IRI of each field resource as defined in the configuration.
+
+### 5. Search with facet filtering
+Filters use CQL2-JSON syntax. The `property` value must be a field IRI:
 
 ```sparql
 PREFIX luc: <urn:jena:lucene:index#>
 
 # Only return results where category is "Technology"
 SELECT ?s ?score WHERE {
-    (?s ?score) luc:query ("learning" '{"category": ["Technology"]}' 20) .
+    (?s ?score) luc:query ("default" "learning"
+        '{"op":"=","args":[{"property":"urn:jena:lucene:field#category"},"Technology"]}'
+        20) .
 }
 ```
 
@@ -168,9 +152,10 @@ PREFIX luc: <urn:jena:lucene:index#>
 # Get author counts, but only for Technology books
 SELECT ?field ?value ?count WHERE {
     (?field ?value ?count) luc:facet (
+        "default"
         "learning"
-        '["author"]'
-        '{"category": ["Technology"]}'
+        '["urn:jena:lucene:field#author"]'
+        '{"op":"=","args":[{"property":"urn:jena:lucene:field#category"},"Technology"]}'
         10
     ) .
 }
@@ -200,7 +185,8 @@ PREFIX luc: <urn:jena:lucene:index#>
 SELECT ?s ?score ?totalHits ?field ?value ?count WHERE {
     { (?s ?score ?_lit ?totalHits) luc:query ("learning" 10) }
     UNION
-    { (?field ?value ?count) luc:facet ("learning" '["category"]' 10) }
+    { (?field ?value ?count) luc:facet ("learning"
+        '["urn:jena:lucene:field#category"]' 10) }
 }
 ```
 
@@ -208,15 +194,33 @@ SELECT ?s ?score ?totalHits ?field ?value ?count WHERE {
 
 ## Filter Semantics
 
-Filters use JSON syntax:
+Filters use CQL2-JSON syntax. The `property` value is a field IRI.
+
+Single equality:
 
 ```json
-{"category": ["Technology", "Science"], "author": ["Smith"]}
+{"op": "=", "args": [{"property": "urn:jena:lucene:field#category"}, "Technology"]}
 ```
 
-- **Within a field:** values are OR'd — matches Technology OR Science
-- **Across fields:** fields are AND'd — must match category AND author
-- This is the standard faceted navigation pattern
+Multiple values (OR within a field):
+
+```json
+{"op": "or", "args": [
+    {"op": "=", "args": [{"property": "urn:jena:lucene:field#category"}, "Technology"]},
+    {"op": "=", "args": [{"property": "urn:jena:lucene:field#category"}, "Science"]}
+]}
+```
+
+Multiple fields (AND across fields):
+
+```json
+{"op": "and", "args": [
+    {"op": "=", "args": [{"property": "urn:jena:lucene:field#category"}, "Technology"]},
+    {"op": "=", "args": [{"property": "urn:jena:lucene:field#author"}, "Smith"]}
+]}
+```
+
+See [SPARQL API Reference](02-sparql-api.md) for the full CQL2-JSON syntax.
 
 ---
 
@@ -226,7 +230,7 @@ Filters use JSON syntax:
 |--------|-------|--------|
 | `maxValues` | `luc:facet` arg | Max facet values per field. `0` = return all values |
 | `minCount` | `luc:facet` arg | Exclude values with count below this threshold |
-| `text:maxFacetHits` | Assembler config (SHACL only) | Limit internal Lucene search for facet collection. `0` = unlimited |
+| `text:maxFacetHits` | Assembler config | Limit internal Lucene search for facet collection. `0` = unlimited |
 | `text:storeValues` | Assembler config | Store literal values for retrieval in results |
 
 ---
@@ -261,6 +265,7 @@ PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
 PREFIX text:    <http://jena.apache.org/text#>
 PREFIX idx:     <urn:jena:lucene:index#>
+PREFIX field:   <urn:jena:lucene:field#>
 PREFIX sh:      <http://www.w3.org/ns/shacl#>
 PREFIX ex:      <http://example.org/>
 
@@ -286,26 +291,29 @@ PREFIX ex:      <http://example.org/>
     text:storeValues true ;
     .
 
+field:title
+    idx:fieldName "title" ;
+    idx:fieldType idx:TextField ;
+    idx:defaultSearch true ;
+    sh:path rdfs:label .
+
+field:category
+    idx:fieldName "category" ;
+    idx:fieldType idx:KeywordField ;
+    idx:facetable true ;
+    sh:path ex:category .
+
+field:author
+    idx:fieldName "author" ;
+    idx:fieldType idx:KeywordField ;
+    idx:facetable true ;
+    sh:path ex:author .
+
 <#BookShape>
     sh:targetClass ex:Book ;
-    sh:property [
-        idx:fieldName "title" ;
-        idx:fieldType idx:TextField ;
-        idx:defaultSearch true ;
-        sh:path rdfs:label ;
-    ] ;
-    sh:property [
-        idx:fieldName "category" ;
-        idx:fieldType idx:KeywordField ;
-        idx:facetable true ;
-        sh:path ex:category ;
-    ] ;
-    sh:property [
-        idx:fieldName "author" ;
-        idx:fieldType idx:KeywordField ;
-        idx:facetable true ;
-        sh:path ex:author ;
-    ] .
+    sh:property field:title ;
+    sh:property field:category ;
+    sh:property field:author .
 ```
 
 ### Start the Server
@@ -354,16 +362,16 @@ curl -s -X POST "http://localhost:3030/ds" \
     -H "Accept: application/json" \
     -d 'PREFIX luc: <urn:jena:lucene:index#>
 SELECT ?f ?v ?c WHERE {
-  (?f ?v ?c) luc:facet ("learning" '\''["category", "author"]'\'' 10)
+  (?f ?v ?c) luc:facet ("learning" '\''["urn:jena:lucene:field#category", "urn:jena:lucene:field#author"]'\'' 10)
 } ORDER BY ?f DESC(?c)'
 
-# Search with filter
+# Search with CQL2-JSON filter
 curl -s -X POST "http://localhost:3030/ds" \
     -H "Content-Type: application/sparql-query" \
     -H "Accept: application/json" \
     -d 'PREFIX luc: <urn:jena:lucene:index#>
 SELECT ?s ?score WHERE {
-  (?s ?score) luc:query ("learning" '\''{"category": ["Technology"]}'\'' 20)
+  (?s ?score) luc:query ("default" "learning" '\''{"op":"=","args":[{"property":"urn:jena:lucene:field#category"},"Technology"]}'\'' 20)
 } ORDER BY DESC(?score)'
 ```
 
@@ -395,7 +403,7 @@ If data is loaded into named graphs (e.g. N-Quads), the SHACL indexer reads from
 ### No Facet Results
 
 1. **Check that fields have `idx:facetable true`** in the shape definition
-2. **Verify field names match** between the shape config and the `luc:facet` JSON array argument
+2. **Verify field IRIs match** — the `luc:facet` JSON array requires field IRIs (the full IRI of each field resource)
 3. **Rebuild the index** if faceting was enabled after data was loaded — SortedSetDocValues are built at write time
 
 ### "No Fuseki dispatch" Error
@@ -424,19 +432,3 @@ Using `/ds/query` or `/ds/update` with unnamed endpoints will fail. Either:
 - Set `text:maxFacetHits` in the assembler config to limit facet collection scope for large indexes
 - Use `maxValues` and `minCount` arguments in `luc:facet` to reduce result size
 - See [Architecture — Performance Characteristics](04-architecture.md#performance-characteristics) for tuning guidance
-
----
-
-## Classic vs SHACL Mode
-
-| Aspect | Classic (`text:entityMap`) | SHACL (`text:shapes`) |
-|--------|--------------------------|----------------------|
-| SPARQL prefix | `text:query` | `luc:query`, `luc:facet` |
-| Document model | One Lucene doc per triple | One Lucene doc per entity |
-| Faceting | Not supported | Native facet counts via `luc:facet` |
-| Filters | Not supported | JSON filter arg on `luc:query` |
-| Field types | Text only | Text, Keyword, Int, Long, Double |
-| Numeric fields | No | Yes |
-| Per-field config | Limited (analyzer only) | Full (stored, indexed, facetable, sortable, multiValued) |
-| Existing data | Works with existing indexes | Requires reindex |
-| Backward compat | Full (upstream Jena) | New feature |

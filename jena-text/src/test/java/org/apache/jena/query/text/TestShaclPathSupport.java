@@ -297,11 +297,11 @@ public class TestShaclPathSupport {
 
     @Test
     public void testFilterBySequencePathField() {
-        // Filter by authorName="Jane Smith" via JSON filter on luc:query
+        // Filter by authorName="Jane Smith" via JSON filter on luc:query (using field IRI)
         String queryStr =
             "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "SELECT ?s WHERE {\n" +
-            "  (?s ?score) luc:query ('default' 'learning OR physics OR deep' '{\"op\":\"=\",\"args\":[{\"property\":\"authorName\"},\"Jane Smith\"]}') .\n" +
+            "  (?s ?score) luc:query ('default' 'learning OR physics OR deep' '{\"op\":\"=\",\"args\":[{\"property\":\"urn:jena:lucene:field#authorName\"},\"Jane Smith\"]}') .\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);

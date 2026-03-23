@@ -86,6 +86,11 @@ def escape_ttl(s: str) -> str:
     return s.replace("\\", "\\\\").replace('"', '\\"')
 
 
+def to_iri_local(s: str) -> str:
+    """Convert a label to a URI-safe local name (spaces → hyphens)."""
+    return s.replace(" ", "-")
+
+
 def pick_region(rng: random.Random) -> Region:
     return rng.choices(REGIONS, weights=REGION_WEIGHTS)[0]
 
@@ -144,12 +149,35 @@ def use_epsg4326(rng: random.Random) -> bool:
     return rng.random() < 0.85
 
 
-def generate_site(rng: random.Random, idx: int, region: Region) -> tuple[str, tuple[float, float]]:
-    """Returns (turtle_block, (lat, lon)) so boreholes can cluster nearby."""
+def collect_vocab_iris(
+    commodities: set[str],
+    states: set[str],
+    operators: set[str],
+    statuses: set[str],
+) -> str:
+    """Emit rdfs:label triples for all vocabulary IRIs."""
+    lines = ["## --- Vocabulary IRIs ---\n"]
+    for c in sorted(commodities):
+        lines.append(f'commodity:{to_iri_local(c)} rdfs:label "{escape_ttl(c)}" .')
+    lines.append("")
+    for s in sorted(states):
+        lines.append(f'state:{to_iri_local(s)} rdfs:label "{s}" .')
+    lines.append("")
+    for o in sorted(operators):
+        lines.append(f'operator:{to_iri_local(o)} rdfs:label "{escape_ttl(o)}" .')
+    lines.append("")
+    for st in sorted(statuses):
+        lines.append(f'status:{to_iri_local(st)} rdfs:label "{escape_ttl(st)}" .')
+    lines.append("")
+    return "\n".join(lines)
+
+
+def generate_site(rng: random.Random, idx: int, region: Region) -> tuple[str, tuple[float, float], list[str]]:
+    """Returns (turtle_block, (lat, lon), commodities) so boreholes can cluster nearby."""
     name = f"{rng.choice(SITE_NAMES)} {rng.choice(SITE_ADJECTIVES)}"
     commodities = pick_region_commodities(rng, region)
     status = rng.choice(STATUSES)
-    commodity_values = " , ".join(f'"{escape_ttl(c)}"' for c in commodities)
+    commodity_values = " , ".join(f'commodity:{to_iri_local(c)}' for c in commodities)
 
     # Geometry: point or polygon
     is_polygon = region.geometry == "mix" and rng.random() < 0.40
@@ -157,9 +185,7 @@ def generate_site(rng: random.Random, idx: int, region: Region) -> tuple[str, tu
 
     if is_polygon:
         verts = random_polygon_in_region(rng, region)
-        wkt = format_polygon_epsg4326(verts[0][0], verts[0][1]) if False else (
-            format_polygon_epsg4326(verts) if epsg else format_polygon_crs84(verts)
-        )
+        wkt = format_polygon_epsg4326(verts) if epsg else format_polygon_crs84(verts)
         # Use centroid for borehole clustering
         lat = sum(v[0] for v in verts[:-1]) / (len(verts) - 1)
         lon = sum(v[1] for v in verts[:-1]) / (len(verts) - 1)
@@ -171,11 +197,11 @@ def generate_site(rng: random.Random, idx: int, region: Region) -> tuple[str, tu
         ex:site-{idx:04d} a ex:Site ;
             rdfs:label "{escape_ttl(name)} Mine" ;
             ex:commodity {commodity_values} ;
-            ex:state "{region.state}" ;
-            ex:status "{status}" ;
+            ex:state state:{to_iri_local(region.state)} ;
+            ex:status status:{to_iri_local(status)} ;
             geo:asWKT {wkt} .
     """)
-    return (ttl, (lat, lon))
+    return (ttl, (lat, lon), commodities)
 
 
 def generate_borehole(
@@ -202,7 +228,7 @@ def generate_borehole(
         commodities = pick_region_commodities(rng, region)
         state = region.state
 
-    commodity_values = " , ".join(f'"{escape_ttl(c)}"' for c in commodities)
+    commodity_values = " , ".join(f'commodity:{to_iri_local(c)}' for c in commodities)
 
     # Always POINT geometry for boreholes
     epsg = use_epsg4326(rng)
@@ -212,7 +238,7 @@ def generate_borehole(
         ex:bh-{idx:04d} a ex:Borehole ;
             rdfs:label "{label} {drill_type} Drill Hole" ;
             ex:commodity {commodity_values} ;
-            ex:state "{state}" ;
+            ex:state state:{to_iri_local(state)} ;
             ex:depth {depth} ;
             geo:asWKT {wkt} .
     """)
@@ -231,15 +257,15 @@ def generate_report(rng: random.Random, idx: int, region: Region) -> str:
         f"{report_type} for the {site_name} {primary.lower()} project "
         f"in {region.state}. Prepared by {operator}."
     )
-    commodity_values = " , ".join(f'"{escape_ttl(c)}"' for c in commodities)
+    commodity_values = " , ".join(f'commodity:{to_iri_local(c)}' for c in commodities)
     return textwrap.dedent(f"""\
         ex:report-{idx:04d} a ex:MiningReport ;
             rdfs:label "{escape_ttl(title)}" ;
             dct:description "{escape_ttl(description)}" ;
             ex:commodity {commodity_values} ;
-            ex:state "{region.state}" ;
-            ex:operator "{escape_ttl(operator)}" ;
-            ex:status "{status}" ;
+            ex:state state:{to_iri_local(region.state)} ;
+            ex:operator operator:{to_iri_local(operator)} ;
+            ex:status status:{to_iri_local(status)} ;
             ex:year {year} .
     """)
 
@@ -257,35 +283,74 @@ def main():
     n_boreholes = max(1, (args.count - n_sites) // 2)
     n_reports = args.count - n_sites - n_boreholes
 
+    # Collect all vocabulary values for rdfs:label emission
+    all_commodities: set[str] = set()
+    all_states: set[str] = set()
+    all_operators: set[str] = set()
+    all_statuses: set[str] = set()
+
+    # Pre-generate to collect vocab, then emit
+    site_blocks: list[str] = []
+    site_locations: list[tuple[float, float, Region]] = []
+    borehole_blocks: list[str] = []
+    report_blocks: list[str] = []
+
+    for i in range(n_sites):
+        region = pick_region(rng)
+        ttl, (lat, lon), commodities = generate_site(rng, i, region)
+        site_locations.append((lat, lon, region))
+        site_blocks.append(ttl)
+        all_commodities.update(commodities)
+        all_states.add(region.state)
+        # Sites use STATUSES list
+        # (status is embedded in ttl, but we know the full set)
+
+    for i in range(n_boreholes):
+        region = pick_region(rng)
+        ttl = generate_borehole(rng, i, region, site_locations)
+        borehole_blocks.append(ttl)
+
+    for i in range(n_reports):
+        region = pick_region(rng)
+        ttl = generate_report(rng, i, region)
+        report_blocks.append(ttl)
+
+    # Collect all possible vocab values (superset for labels)
+    all_commodities.update(ALL_COMMODITIES)
+    all_states.update(r.state for r in REGIONS)
+    all_operators.update(OPERATORS)
+    all_statuses.update(STATUSES)
+    all_statuses.update(REPORT_STATUSES)
+
+    print("## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0")
+    print()
     print("## Generated synthetic mining data")
     print(f"## {args.count} entities: {n_sites} sites, {n_boreholes} boreholes, {n_reports} reports")
     print()
-    print("@prefix ex:    <http://example.org/mining/> .")
+    print("@prefix ex:         <http://example.org/mining/> .")
+    print("@prefix commodity:  <http://example.org/mining/commodity/> .")
+    print("@prefix state:      <http://example.org/mining/state/> .")
+    print("@prefix operator:   <http://example.org/mining/operator/> .")
+    print("@prefix status:     <http://example.org/mining/status/> .")
     print("@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .")
     print("@prefix dct:   <http://purl.org/dc/terms/> .")
     print("@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .")
     print("@prefix geo:   <http://www.opengis.net/ont/geosparql#> .")
     print()
 
-    # Generate sites first — track locations for borehole clustering
-    site_locations: list[tuple[float, float, Region]] = []
+    print(collect_vocab_iris(all_commodities, all_states, all_operators, all_statuses))
 
     print("## --- Sites ---\n")
-    for i in range(n_sites):
-        region = pick_region(rng)
-        ttl, (lat, lon) = generate_site(rng, i, region)
-        site_locations.append((lat, lon, region))
-        print(ttl)
+    for block in site_blocks:
+        print(block)
 
     print("## --- Boreholes ---\n")
-    for i in range(n_boreholes):
-        region = pick_region(rng)
-        print(generate_borehole(rng, i, region, site_locations))
+    for block in borehole_blocks:
+        print(block)
 
     print("## --- Mining Reports ---\n")
-    for i in range(n_reports):
-        region = pick_region(rng)
-        print(generate_report(rng, i, region))
+    for block in report_blocks:
+        print(block)
 
 
 if __name__ == "__main__":

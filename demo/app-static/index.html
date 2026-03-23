@@ -51,7 +51,7 @@
       </label>
       <label class="navbar-toggle">
         <input type="checkbox" :checked="$store.app.showLog" @change="$store.app.showLog = !$store.app.showLog">
-        <span>SPARQL Log</span>
+        <span>Log</span>
       </label>
     </div>
   </nav>
@@ -120,17 +120,35 @@
                 </button>
               </template>
 
+              <template x-if="spatialBbox || spatialPolygon">
+                <details class="facet-group" open>
+                  <summary class="facet-group-label">spatial</summary>
+                  <template x-if="spatialBbox">
+                    <label class="facet-option spatial-filter-active">
+                      <input type="checkbox" checked @change="clearBbox(); search()">
+                      <span class="facet-value">Bounding box</span>
+                    </label>
+                  </template>
+                  <template x-if="spatialPolygon">
+                    <label class="facet-option spatial-filter-active">
+                      <input type="checkbox" checked @change="clearPolygon(); search()">
+                      <span class="facet-value">Polygon</span>
+                    </label>
+                  </template>
+                </details>
+              </template>
+
               <template x-for="fieldName in facetFields" :key="fieldName">
                 <div>
                   <template x-if="(facets[fieldName] || []).length > 0">
                     <details class="facet-group" open>
-                      <summary class="facet-group-label" x-text="fieldName"></summary>
+                      <summary class="facet-group-label" x-text="fieldName" :title="fieldIRIs[fieldName] || fieldName"></summary>
                       <template x-for="fv in visibleFacets(fieldName)" :key="fv.value">
                         <label class="facet-option">
                           <input type="checkbox"
                                  :checked="isSelected(fieldName, fv.value)"
                                  @change="toggleFacet(fieldName, fv.value)">
-                          <span class="facet-value" x-text="fv.value"></span>
+                          <span class="facet-value" x-text="fv.label || fv.value" :title="fv.value"></span>
                           <span class="facet-count" x-text="fv.count"></span>
                         </label>
                       </template>
@@ -183,10 +201,9 @@
               </template>
 
               <div class="result-tags">
-                <span class="rtag rtag-type" x-text="card.entityType"></span>
                 <template x-for="tag in card.tags" :key="tag.pred + ':' + tag.value">
                   <span class="rtag" :class="tag.cssClass"
-                        x-text="tag.value"
+                        x-text="tag.displayValue || tag.value"
                         :title="tag.tooltip || ''"
                         :tabindex="(tag.clickable || tag.mapUri) ? 0 : -1"
                         @click="tag.mapUri ? focusMapMarker(tag.mapUri) : (tag.clickable && toggleFacet(tag.facetField, tag.value))"
@@ -264,14 +281,16 @@
           </div>
 
           <div class="query-log-panel" x-show="$store.app.showLog">
-            <div class="sidebar-header">SPARQL Log</div>
+            <div class="sidebar-header">Log</div>
 
             <template x-if="queryLog.length === 0">
               <p class="query-log-empty">Queries will appear here as you search.</p>
             </template>
 
             <template x-for="(entry, i) in queryLog" :key="i">
-              <div class="query-log-entry" :class="{ 'is-new': i === 0 }">
+              <div class="query-log-entry" :class="{ 'is-new': i === 0, 'is-sparql': entry.isSparql, 'is-cql': entry.isCql }"
+                   @click="entry.isSparql ? openEditor(entry.query) : (entry.isCql && openCql(entry.query))"
+                   :title="entry.isSparql ? 'Click to open in editor' : (entry.isCql ? 'Click to view CQL' : '')">
                 <div class="query-log-meta">
                   <span class="query-log-timestamp" x-text="entry.time"></span>
                   <span class="query-log-label" x-text="entry.label"></span>
@@ -284,6 +303,109 @@
         </div>
 
       </div>
+
+      <!-- SPARQL Editor (must be inside x-data scope) -->
+      <div class="sparql-editor" x-show="editorOpen" x-cloak
+           @click.outside="closeEditor()"
+           :style="`right:${_editorRight}px; top:${_editorTop}px; width:${_editorWidth}px`">
+        <div class="sparql-editor-header" @mousedown.prevent="
+          const startX = $event.clientX, startY = $event.clientY;
+          const startR = _editorRight, startT = _editorTop;
+          const move = e => { _editorRight = startR - (e.clientX - startX); _editorTop = startT + (e.clientY - startY); };
+          const up = () => { window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); };
+          window.addEventListener('mousemove', move); window.addEventListener('mouseup', up);
+        ">
+          <span>SPARQL Editor</span>
+          <button class="sparql-editor-close" @click="closeEditor()">&times;</button>
+        </div>
+        <div class="sparql-editor-resize" @mousedown.prevent="
+          const startX = $event.clientX, startW = _editorWidth;
+          const move = e => { _editorWidth = Math.max(320, startW - (e.clientX - startX)); };
+          const up = () => { window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); };
+          window.addEventListener('mousemove', move); window.addEventListener('mouseup', up);
+        "></div>
+        <div class="sparql-editor-body">
+          <textarea class="sparql-editor-input" x-model="editorQuery"
+                    @keydown.ctrl.enter="runEditorQuery()"
+                    @keydown.meta.enter="runEditorQuery()"></textarea>
+          <div class="sparql-editor-toolbar">
+            <button class="sparql-editor-run" @click="runEditorQuery()" :disabled="editorRunning">
+              <span x-text="editorRunning ? 'Running...' : 'Run (Ctrl+Enter)'"></span>
+            </button>
+            <template x-if="editorHasTable()">
+              <div class="sparql-editor-view-toggle">
+                <button :class="{ active: editorView === 'table' }" @click="editorView = 'table'">Table</button>
+                <button :class="{ active: editorView === 'json' }" @click="editorView = 'json'">JSON</button>
+              </div>
+            </template>
+            <input class="sparql-editor-endpoint-input" type="text" x-model="editorEndpoint"
+                   @keydown.ctrl.enter="runEditorQuery()" @keydown.meta.enter="runEditorQuery()">
+          </div>
+          <template x-if="editorError">
+            <pre class="sparql-editor-error" x-text="editorError"></pre>
+          </template>
+          <template x-if="editorResults && editorView === 'json'">
+            <pre class="sparql-editor-results"><code x-text="editorResults"></code></pre>
+          </template>
+          <template x-if="editorHasTable() && editorView === 'table'">
+            <div class="sparql-editor-table-wrap">
+              <table class="sparql-editor-table">
+                <thead>
+                  <tr>
+                    <template x-for="v in editorTableVars()" :key="v">
+                      <th x-text="'?' + v"></th>
+                    </template>
+                  </tr>
+                </thead>
+                <tbody>
+                  <template x-for="(row, ri) in editorTableRows()" :key="ri">
+                    <tr>
+                      <template x-for="(cell, ci) in row" :key="ci">
+                        <td x-text="cell"></td>
+                      </template>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <!-- CQL Viewer -->
+      <div class="cql-viewer" x-show="cqlOpen" x-cloak
+           @click.outside="closeCql()"
+           :style="`right:${_cqlRight}px; top:${_cqlTop}px; width:${_cqlWidth}px`">
+        <div class="cql-viewer-header" @mousedown.prevent="
+          const startX = $event.clientX, startY = $event.clientY;
+          const startR = _cqlRight, startT = _cqlTop;
+          const move = e => { _cqlRight = startR - (e.clientX - startX); _cqlTop = startT + (e.clientY - startY); };
+          const up = () => { window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); };
+          window.addEventListener('mousemove', move); window.addEventListener('mouseup', up);
+        ">
+          <span>CQL Filter</span>
+          <div class="cql-viewer-actions">
+            <div class="sparql-editor-view-toggle">
+              <button :class="{ active: cqlView === 'object' }" @click="cqlView = 'object'">Object</button>
+              <button :class="{ active: cqlView === 'raw' }" @click="cqlView = 'raw'">Raw</button>
+            </div>
+            <template x-if="cqlView === 'object'">
+              <button class="cql-viewer-btn" @click="$refs.cqlTree.querySelectorAll('details').forEach(d => d.open = true)">Expand all</button>
+            </template>
+            <template x-if="cqlView === 'object'">
+              <button class="cql-viewer-btn" @click="$refs.cqlTree.querySelectorAll('details').forEach(d => d.open = false)">Collapse all</button>
+            </template>
+            <button class="cql-viewer-close" @click="closeCql()">&times;</button>
+          </div>
+        </div>
+        <template x-if="cqlView === 'object'">
+          <div class="cql-viewer-body" x-ref="cqlTree" x-html="cqlJson ? renderJsonTree(cqlJson) : ''"></div>
+        </template>
+        <template x-if="cqlView === 'raw'">
+          <pre class="cql-viewer-raw"><code x-text="cqlRaw"></code></pre>
+        </template>
+      </div>
+
     </div>
   </section>
 
@@ -305,7 +427,17 @@
         if (!cases || cases.length === 0) return;
         testsMenu.innerHTML = cases.map(tc => {
           if (tc.group) return '<div class="dropdown-group">' + tc.group + '</div>';
-          return '<a class="dropdown-item" href="index.html' + (tc.params || '') + '">' + tc.label + '</a>';
+          let href = 'index.html';
+          if (tc.params) {
+            const parts = tc.params.replace(/^\?/, '').split('&');
+            const encoded = parts.map(p => {
+              const eq = p.indexOf('=');
+              if (eq < 0) return p;
+              return p.substring(0, eq) + '=' + encodeURIComponent(p.substring(eq + 1));
+            });
+            href += '?' + encoded.join('&');
+          }
+          return '<a class="dropdown-item" href="' + href + '">' + tc.label + '</a>';
         }).join('');
         testsWrapper.style.display = '';
       });

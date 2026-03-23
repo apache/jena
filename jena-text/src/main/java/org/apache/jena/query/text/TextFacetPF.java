@@ -202,17 +202,20 @@ public class TextFacetPF extends PropertyFunctionBase {
         Var valueVar = valueNode != null ? Var.alloc(valueNode) : null;
         Var countVar = countNode != null ? Var.alloc(countNode) : null;
 
+        ShaclIndexMapping mapping = textIndex.getShaclMapping();
         List<Binding> bindings = new ArrayList<>();
 
         for (Map.Entry<String, List<FacetValue>> entry : facetCounts.entrySet()) {
             String field = entry.getKey();
+            ShaclIndexMapping.FieldDef fd = mapping.findFieldByName(field);
             for (FacetValue fv : entry.getValue()) {
                 BindingBuilder builder = Binding.builder(binding);
                 if (fieldVar != null) {
-                    builder.add(fieldVar, NodeFactory.createLiteralString(field));
+                    builder.add(fieldVar, fd != null ? fd.getFieldIRI()
+                        : NodeFactory.createLiteralString(field));
                 }
                 if (valueVar != null) {
-                    builder.add(valueVar, NodeFactory.createLiteralString(fv.getValue()));
+                    builder.add(valueVar, facetValueNode(fd, fv.getValue()));
                 }
                 if (countVar != null) {
                     builder.add(countVar, NodeFactory.createLiteralDT(
@@ -223,6 +226,24 @@ public class TextFacetPF extends PropertyFunctionBase {
         }
 
         return QueryIterPlainWrapper.create(bindings.iterator(), execCxt);
+    }
+
+    private static Node facetValueNode(ShaclIndexMapping.FieldDef fd, String value) {
+        if (fd == null) return NodeFactory.createLiteralString(value);
+        return switch (fd.getFieldType()) {
+            case KEYWORD -> looksLikeUri(value)
+                ? NodeFactory.createURI(value)
+                : NodeFactory.createLiteralString(value);
+            case TEXT    -> NodeFactory.createLiteralString(value);
+            case INT     -> NodeFactory.createLiteralDT(value, XSDDatatype.XSDinteger);
+            case LONG    -> NodeFactory.createLiteralDT(value, XSDDatatype.XSDlong);
+            case DOUBLE  -> NodeFactory.createLiteralDT(value, XSDDatatype.XSDdouble);
+            case LATLON  -> NodeFactory.createLiteralString(value);
+        };
+    }
+
+    private static boolean looksLikeUri(String value) {
+        return value.contains("://") || value.startsWith("urn:");
     }
 
     /**

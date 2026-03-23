@@ -39,6 +39,8 @@ import org.junit.Test;
  */
 public class TestCqlToLuceneCompiler {
 
+    private static final String FP = "urn:jena:lucene:field#";
+
     private CqlToLuceneCompiler compiler;
 
     @Before
@@ -66,7 +68,7 @@ public class TestCqlToLuceneCompiler {
 
     @Test
     public void testEqualKeyword() {
-        CqlExpression expr = new CqlExpression.CqlComparison("=", "state", "WA");
+        CqlExpression expr = new CqlExpression.CqlComparison("=", FP + "state", "WA");
         CqlToLuceneCompiler.CompileResult r = compiler.compile(expr);
 
         assertNotNull("Should push down keyword equal", r.pushed());
@@ -76,7 +78,7 @@ public class TestCqlToLuceneCompiler {
 
     @Test
     public void testNotEqualKeyword() {
-        CqlExpression expr = new CqlExpression.CqlComparison("<>", "state", "WA");
+        CqlExpression expr = new CqlExpression.CqlComparison("<>", FP + "state", "WA");
         CqlToLuceneCompiler.CompileResult r = compiler.compile(expr);
 
         assertNotNull(r.pushed());
@@ -86,7 +88,7 @@ public class TestCqlToLuceneCompiler {
 
     @Test
     public void testEqualInt() {
-        CqlExpression expr = new CqlExpression.CqlComparison("=", "year", 2020);
+        CqlExpression expr = new CqlExpression.CqlComparison("=", FP + "year", 2020);
         CqlToLuceneCompiler.CompileResult r = compiler.compile(expr);
 
         assertNotNull(r.pushed());
@@ -95,7 +97,7 @@ public class TestCqlToLuceneCompiler {
 
     @Test
     public void testGreaterThanInt() {
-        CqlExpression expr = new CqlExpression.CqlComparison(">", "year", 2020);
+        CqlExpression expr = new CqlExpression.CqlComparison(">", FP + "year", 2020);
         CqlToLuceneCompiler.CompileResult r = compiler.compile(expr);
 
         assertNotNull(r.pushed());
@@ -104,7 +106,7 @@ public class TestCqlToLuceneCompiler {
 
     @Test
     public void testRangeDouble() {
-        CqlExpression expr = new CqlExpression.CqlComparison(">=", "depth", 100.0);
+        CqlExpression expr = new CqlExpression.CqlComparison(">=", FP + "depth", 100.0);
         CqlToLuceneCompiler.CompileResult r = compiler.compile(expr);
 
         assertNotNull(r.pushed());
@@ -113,7 +115,7 @@ public class TestCqlToLuceneCompiler {
 
     @Test
     public void testNonIndexedFieldIsResidual() {
-        CqlExpression expr = new CqlExpression.CqlComparison("=", "notes", "important");
+        CqlExpression expr = new CqlExpression.CqlComparison("=", FP + "notes", "important");
         CqlToLuceneCompiler.CompileResult r = compiler.compile(expr);
 
         assertNull("Non-indexed field should not push", r.pushed());
@@ -132,8 +134,8 @@ public class TestCqlToLuceneCompiler {
     @Test
     public void testAndPartialPush() {
         // state=WA is pushable, notes=x is not (not indexed)
-        CqlExpression pushable = new CqlExpression.CqlComparison("=", "state", "WA");
-        CqlExpression residual = new CqlExpression.CqlComparison("=", "notes", "important");
+        CqlExpression pushable = new CqlExpression.CqlComparison("=", FP + "state", "WA");
+        CqlExpression residual = new CqlExpression.CqlComparison("=", FP + "notes", "important");
         CqlExpression and = new CqlExpression.CqlAnd(List.of(pushable, residual));
 
         CqlToLuceneCompiler.CompileResult r = compiler.compile(and);
@@ -144,8 +146,8 @@ public class TestCqlToLuceneCompiler {
 
     @Test
     public void testAndFullPush() {
-        CqlExpression a = new CqlExpression.CqlComparison("=", "state", "WA");
-        CqlExpression b = new CqlExpression.CqlComparison(">", "year", 2020);
+        CqlExpression a = new CqlExpression.CqlComparison("=", FP + "state", "WA");
+        CqlExpression b = new CqlExpression.CqlComparison(">", FP + "year", 2020);
         CqlExpression and = new CqlExpression.CqlAnd(List.of(a, b));
 
         CqlToLuceneCompiler.CompileResult r = compiler.compile(and);
@@ -156,8 +158,8 @@ public class TestCqlToLuceneCompiler {
 
     @Test
     public void testOrAllPushable() {
-        CqlExpression a = new CqlExpression.CqlComparison("=", "state", "WA");
-        CqlExpression b = new CqlExpression.CqlComparison("=", "state", "OR");
+        CqlExpression a = new CqlExpression.CqlComparison("=", FP + "state", "WA");
+        CqlExpression b = new CqlExpression.CqlComparison("=", FP + "state", "OR");
         CqlExpression or = new CqlExpression.CqlOr(List.of(a, b));
 
         CqlToLuceneCompiler.CompileResult r = compiler.compile(or);
@@ -168,8 +170,8 @@ public class TestCqlToLuceneCompiler {
 
     @Test
     public void testOrPartiallyPushableBecomesResidual() {
-        CqlExpression pushable = new CqlExpression.CqlComparison("=", "state", "WA");
-        CqlExpression residual = new CqlExpression.CqlComparison("=", "notes", "x");
+        CqlExpression pushable = new CqlExpression.CqlComparison("=", FP + "state", "WA");
+        CqlExpression residual = new CqlExpression.CqlComparison("=", FP + "notes", "x");
         CqlExpression or = new CqlExpression.CqlOr(List.of(pushable, residual));
 
         CqlToLuceneCompiler.CompileResult r = compiler.compile(or);
@@ -180,7 +182,7 @@ public class TestCqlToLuceneCompiler {
 
     @Test
     public void testNotPushable() {
-        CqlExpression inner = new CqlExpression.CqlComparison("=", "state", "WA");
+        CqlExpression inner = new CqlExpression.CqlComparison("=", FP + "state", "WA");
         CqlExpression not = new CqlExpression.CqlNot(inner);
 
         CqlToLuceneCompiler.CompileResult r = compiler.compile(not);
@@ -192,7 +194,7 @@ public class TestCqlToLuceneCompiler {
 
     @Test
     public void testNotResidual() {
-        CqlExpression inner = new CqlExpression.CqlComparison("=", "notes", "x");
+        CqlExpression inner = new CqlExpression.CqlComparison("=", FP + "notes", "x");
         CqlExpression not = new CqlExpression.CqlNot(inner);
 
         CqlToLuceneCompiler.CompileResult r = compiler.compile(not);
@@ -203,7 +205,7 @@ public class TestCqlToLuceneCompiler {
 
     @Test
     public void testInKeyword() {
-        CqlExpression in = new CqlExpression.CqlIn("state", List.of("WA", "OR", "CA"));
+        CqlExpression in = new CqlExpression.CqlIn(FP + "state", List.of("WA", "OR", "CA"));
         CqlToLuceneCompiler.CompileResult r = compiler.compile(in);
 
         assertNotNull(r.pushed());
@@ -213,7 +215,7 @@ public class TestCqlToLuceneCompiler {
 
     @Test
     public void testInNumeric() {
-        CqlExpression in = new CqlExpression.CqlIn("year", List.of(2020, 2021, 2022));
+        CqlExpression in = new CqlExpression.CqlIn(FP + "year", List.of(2020, 2021, 2022));
         CqlToLuceneCompiler.CompileResult r = compiler.compile(in);
 
         assertNotNull(r.pushed());
@@ -222,7 +224,7 @@ public class TestCqlToLuceneCompiler {
 
     @Test
     public void testBetweenInt() {
-        CqlExpression btw = new CqlExpression.CqlBetween("year", 2020, 2025);
+        CqlExpression btw = new CqlExpression.CqlBetween(FP + "year", 2020, 2025);
         CqlToLuceneCompiler.CompileResult r = compiler.compile(btw);
 
         assertNotNull(r.pushed());
@@ -231,7 +233,7 @@ public class TestCqlToLuceneCompiler {
 
     @Test
     public void testBetweenDouble() {
-        CqlExpression btw = new CqlExpression.CqlBetween("depth", 10.0, 100.0);
+        CqlExpression btw = new CqlExpression.CqlBetween(FP + "depth", 10.0, 100.0);
         CqlToLuceneCompiler.CompileResult r = compiler.compile(btw);
 
         assertNotNull(r.pushed());
@@ -240,7 +242,7 @@ public class TestCqlToLuceneCompiler {
 
     @Test
     public void testLikeKeyword() {
-        CqlExpression like = new CqlExpression.CqlLike("name", "Gold%");
+        CqlExpression like = new CqlExpression.CqlLike(FP + "name", "Gold%");
         CqlToLuceneCompiler.CompileResult r = compiler.compile(like);
 
         assertNotNull(r.pushed());
@@ -250,7 +252,7 @@ public class TestCqlToLuceneCompiler {
 
     @Test
     public void testSpatialAlwaysResidual() {
-        CqlExpression spatial = new CqlExpression.CqlSpatial("s_intersects", "geometry", "{}");
+        CqlExpression spatial = new CqlExpression.CqlSpatial("s_intersects", FP + "geometry", "{}");
         CqlToLuceneCompiler.CompileResult r = compiler.compile(spatial);
 
         assertNull(r.pushed());

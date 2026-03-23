@@ -839,15 +839,15 @@ code {
 }
 
 .rtag-active {
-  background: var(--green-dim);
-  color: var(--green);
-  border: 1px solid rgba(90, 173, 122, 0.25);
+  background: var(--steel-dim);
+  color: var(--steel);
+  border: 1px solid rgba(91, 140, 184, 0.25);
   cursor: pointer;
 }
 
 .rtag-active:hover {
   transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(90, 173, 122, 0.2);
+  box-shadow: 0 2px 6px rgba(91, 140, 184, 0.2);
 }
 
 .rtag-clickable {
@@ -881,12 +881,358 @@ code {
   box-shadow: 0 2px 6px rgba(77, 184, 164, 0.2);
 }
 
+/* ── Log entries ── */
+
+.query-log-entry.is-sparql {
+  cursor: pointer;
+}
+.query-log-entry.is-sparql:hover {
+  background: rgba(91, 140, 184, 0.08);
+}
+
+/* ── SPARQL Editor ── */
+
+.sparql-editor {
+  position: fixed;
+  right: 0;
+  top: 60px;
+  height: 80vh;
+  z-index: 1000;
+  background: var(--bg-raised);
+  border: 2px solid var(--text-secondary);
+  border-radius: 6px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  min-width: 320px;
+}
+
+.sparql-editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--surface-alt);
+  border-bottom: 1px solid var(--border);
+  cursor: move;
+  user-select: none;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+.sparql-editor-close {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: var(--muted);
+  padding: 0 4px;
+  line-height: 1;
+}
+.sparql-editor-close:hover {
+  color: var(--text);
+}
+
+.sparql-editor-resize {
+  position: absolute;
+  left: -3px;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  cursor: col-resize;
+  z-index: 1;
+}
+
+.sparql-editor-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 8px;
+  gap: 8px;
+}
+
+.sparql-editor-input {
+  flex: 0 0 auto;
+  min-height: 360px;
+  max-height: 50vh;
+  resize: vertical;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-input);
+  color: var(--text);
+  tab-size: 2;
+  white-space: pre;
+  overflow: auto;
+}
+.sparql-editor-input:focus {
+  outline: none;
+  border-color: var(--steel);
+}
+
+.sparql-editor-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.sparql-editor-run {
+  padding: 5px 14px;
+  background: var(--steel);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.sparql-editor-run:hover {
+  opacity: 0.9;
+}
+.sparql-editor-run:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.sparql-editor-endpoint-input {
+  width: 300px;
+  margin-left: auto;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.75rem;
+  padding: 5px 8px;
+  background: var(--bg-input);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  min-width: 0;
+}
+.sparql-editor-endpoint-input:focus {
+  outline: none;
+  border-color: var(--steel);
+}
+
+.sparql-editor-view-toggle {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.sparql-editor-view-toggle button {
+  background: var(--bg-elevated);
+  border: none;
+  color: var(--text-secondary);
+  padding: 5px 12px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+.sparql-editor-view-toggle button.active {
+  background: var(--steel);
+  color: #fff;
+}
+.sparql-editor-view-toggle button:hover:not(.active) {
+  background: var(--bg-base);
+  color: var(--text);
+}
+
+.sparql-editor-table-wrap {
+  flex: 1;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+.sparql-editor-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+}
+.sparql-editor-table th {
+  position: sticky;
+  top: 0;
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  text-align: left;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.sparql-editor-table td {
+  padding: 4px 10px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sparql-editor-table tr:hover td {
+  background: var(--bg-elevated);
+}
+
+.sparql-editor-error {
+  padding: 8px;
+  background: rgba(200, 50, 50, 0.1);
+  color: #c44;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+.sparql-editor-results {
+  flex: 1;
+  overflow: auto;
+  padding: 10px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  margin: 0;
+  white-space: pre;
+}
+
+/* ── CQL Viewer ── */
+
+.cql-viewer {
+  position: fixed;
+  right: 0;
+  top: 60px;
+  height: 80vh;
+  z-index: 1000;
+  background: var(--bg-raised);
+  border: 2px solid var(--text-secondary);
+  border-radius: 6px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  min-width: 320px;
+}
+.cql-viewer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+  cursor: move;
+  user-select: none;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text);
+  border-radius: 4px 4px 0 0;
+}
+.cql-viewer-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.cql-viewer-btn {
+  background: var(--bg-base);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  padding: 3px 10px;
+  font-size: 0.7rem;
+  border-radius: 3px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.cql-viewer-btn:hover {
+  color: var(--text);
+  border-color: var(--text-secondary);
+}
+.cql-viewer-close {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: var(--muted);
+  padding: 0 4px;
+  line-height: 1;
+}
+.cql-viewer-close:hover {
+  color: var(--text);
+}
+.cql-viewer-body {
+  flex: 1;
+  overflow: auto;
+  padding: 12px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+
+/* JSON tree */
+.jt-indent { padding-left: 18px; }
+.jt-item { }
+.jt-key { color: var(--steel); }
+.jt-str { color: #a8d89f; }
+.jt-num { color: #d4a55a; }
+.jt-bool { color: #c792ea; }
+.jt-null { color: var(--muted); font-style: italic; }
+.jt-brace { color: var(--text-secondary); cursor: pointer; }
+.jt-count {
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-left: 4px;
+}
+details > summary { list-style: none; display: inline; }
+details > summary::-webkit-details-marker { display: none; }
+details > summary .jt-count::before { content: '▶ '; font-size: 0.6rem; color: var(--muted); }
+details[open] > summary .jt-count::before { content: '▼ '; }
+
+.cql-viewer-raw {
+  flex: 1;
+  overflow: auto;
+  padding: 12px;
+  margin: 0;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-all;
+  color: var(--text);
+}
+
+.query-log-entry.is-cql {
+  cursor: pointer;
+}
+.query-log-entry.is-cql:hover {
+  background: var(--bg-elevated);
+}
+
 /* ── Config Page ── */
+.config-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
 .config-title {
   font-weight: 700;
   font-size: 1.5rem;
   color: var(--text-primary);
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
+}
+.config-raw {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 16px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--text);
+  overflow: auto;
+  white-space: pre;
+  margin: 0;
 }
 
 .stat-cards {

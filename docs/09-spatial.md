@@ -7,17 +7,19 @@ SHACL-mode text search supports spatial filtering via WKT literals indexed as Lu
 Add a `LatLonField` to your shape definition, pointing at the `geo:asWKT` predicate:
 
 ```turtle
-PREFIX idx: <urn:jena:lucene:index#>
-PREFIX sh:  <http://www.w3.org/ns/shacl#>
-PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX idx:   <urn:jena:lucene:index#>
+PREFIX field: <urn:jena:lucene:field#>
+PREFIX sh:    <http://www.w3.org/ns/shacl#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+
+field:location
+    idx:fieldName "location" ;
+    idx:fieldType idx:LatLonField ;
+    sh:path geo:asWKT .
 
 :SiteShape
     sh:targetClass ex:Site ;
-    sh:property [
-        idx:fieldName "location" ;
-        idx:fieldType idx:LatLonField ;
-        sh:path geo:asWKT ;
-    ] ;
+    sh:property field:location ;
     # ... other fields ...
 ```
 
@@ -65,7 +67,7 @@ PREFIX luc: <urn:jena:lucene:index#>
 
 SELECT ?entity ?score WHERE {
     (?entity ?score) luc:query ("default" "*"
-        '{"op":"s_intersects","args":[{"property":"location"},{"bbox":[112,-44,154,-10]}]}'
+        '{"op":"s_intersects","args":[{"property":"urn:jena:lucene:field#location"},{"bbox":[112,-44,154,-10]}]}'
         20)
 }
 ```
@@ -77,7 +79,7 @@ The `bbox` array follows the CQL2 convention: `[swLon, swLat, neLon, neLat]`.
 ```sparql
 SELECT ?entity ?score WHERE {
     (?entity ?score) luc:query ("default" "gold mine"
-        '{"op":"s_intersects","args":[{"property":"location"},{"bbox":[115,-35,120,-30]}]}'
+        '{"op":"s_intersects","args":[{"property":"urn:jena:lucene:field#location"},{"bbox":[115,-35,120,-30]}]}'
         20)
 }
 ```
@@ -91,7 +93,7 @@ Spatial filters can be combined with property filters using `and`:
 ```sparql
 SELECT ?entity ?score WHERE {
     (?entity ?score) luc:query ("default" "*"
-        '{"op":"and","args":[{"op":"=","args":[{"property":"state"},"WA"]},{"op":"s_intersects","args":[{"property":"location"},{"bbox":[115,-35,120,-30]}]}]}'
+        '{"op":"and","args":[{"op":"=","args":[{"property":"urn:jena:lucene:field#state"},"WA"]},{"op":"s_intersects","args":[{"property":"urn:jena:lucene:field#location"},{"bbox":[115,-35,120,-30]}]}]}'
         20)
 }
 ```

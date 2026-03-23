@@ -48,6 +48,7 @@ import org.junit.Test;
 public class TestTextFacetPF {
 
     private static final String NS = "http://example.org/";
+    private static final String FP = "urn:jena:lucene:field#";
     private static final Node BOOK_CLASS = NodeFactory.createURI(NS + "Book");
     private static final Node TITLE_PRED = NodeFactory.createURI(NS + "title");
     private static final Node CATEGORY_PRED = NodeFactory.createURI(NS + "category");
@@ -101,23 +102,23 @@ public class TestTextFacetPF {
         dataset.begin(ReadWrite.WRITE);
         try {
             Model model = dataset.getDefaultModel();
-            addBook(model, "doc1", "Introduction to Machine Learning", "technology", "Smith");
-            addBook(model, "doc2", "Deep Learning Neural Networks", "technology", "Jones");
-            addBook(model, "doc3", "Machine Learning for Beginners", "technology", "Smith");
-            addBook(model, "doc4", "Learning About Quantum Physics", "science", "Wilson");
-            addBook(model, "doc5", "Machine Learning in Biology", "science", "Smith");
+            addBook(model, "doc1", "Introduction to Machine Learning", NS + "category/technology", NS + "author/Smith");
+            addBook(model, "doc2", "Deep Learning Neural Networks", NS + "category/technology", NS + "author/Jones");
+            addBook(model, "doc3", "Machine Learning for Beginners", NS + "category/technology", NS + "author/Smith");
+            addBook(model, "doc4", "Learning About Quantum Physics", NS + "category/science", NS + "author/Wilson");
+            addBook(model, "doc5", "Machine Learning in Biology", NS + "category/science", NS + "author/Smith");
             dataset.commit();
         } finally {
             dataset.end();
         }
     }
 
-    private void addBook(Model model, String id, String title, String category, String author) {
+    private void addBook(Model model, String id, String title, String categoryUri, String authorUri) {
         Resource book = ResourceFactory.createResource(NS + id);
         model.add(book, RDF.type, ResourceFactory.createResource(NS + "Book"));
         model.add(book, ResourceFactory.createProperty(NS + "title"), title);
-        model.add(book, ResourceFactory.createProperty(NS + "category"), category);
-        model.add(book, ResourceFactory.createProperty(NS + "author"), author);
+        model.add(book, ResourceFactory.createProperty(NS + "category"), ResourceFactory.createResource(categoryUri));
+        model.add(book, ResourceFactory.createProperty(NS + "author"), ResourceFactory.createResource(authorUri));
     }
 
     @After
@@ -131,7 +132,7 @@ public class TestTextFacetPF {
     public void testBasicFacetCounts() {
         String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "SELECT ?f ?v ?c WHERE {\n" +
-            "  (?f ?v ?c) luc:facet (\"default\" \"learning\" '[\"category\"]' 10)\n" +
+            "  (?f ?v ?c) luc:facet (\"default\" \"learning\" '[\"" + FP + "category\"]' 10)\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);
@@ -154,10 +155,33 @@ public class TestTextFacetPF {
     }
 
     @Test
+    public void testFacetFieldIsURI() {
+        String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
+            "SELECT ?f ?v ?c WHERE {\n" +
+            "  (?f ?v ?c) luc:facet (\"default\" \"learning\" '[\"" + FP + "category\"]' 10)\n" +
+            "}";
+
+        dataset.begin(ReadWrite.READ);
+        try {
+            try (QueryExecution qe = QueryExecutionFactory.create(sparql, dataset)) {
+                ResultSet rs = qe.execSelect();
+                while (rs.hasNext()) {
+                    QuerySolution sol = rs.next();
+                    assertTrue("?f should be a URI", sol.get("f").isURIResource());
+                    assertEquals("urn:jena:lucene:field#category",
+                        sol.getResource("f").getURI());
+                }
+            }
+        } finally {
+            dataset.end();
+        }
+    }
+
+    @Test
     public void testFacetCountsWithMultipleFields() {
         String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "SELECT ?f ?v ?c WHERE {\n" +
-            "  (?f ?v ?c) luc:facet (\"default\" \"learning\" '[\"category\", \"author\"]' 10)\n" +
+            "  (?f ?v ?c) luc:facet (\"default\" \"learning\" '[\"" + FP + "category\", \"" + FP + "author\"]' 10)\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);
@@ -168,9 +192,9 @@ public class TestTextFacetPF {
                 boolean foundAuthor = false;
                 while (rs.hasNext()) {
                     QuerySolution sol = rs.next();
-                    String field = sol.getLiteral("f").getString();
-                    if ("category".equals(field)) foundCategory = true;
-                    if ("author".equals(field)) foundAuthor = true;
+                    String fieldUri = sol.getResource("f").getURI();
+                    if (fieldUri.endsWith("#category")) foundCategory = true;
+                    if (fieldUri.endsWith("#author")) foundAuthor = true;
                 }
                 assertTrue("Should have category facets", foundCategory);
                 assertTrue("Should have author facets", foundAuthor);
@@ -184,7 +208,7 @@ public class TestTextFacetPF {
     public void testFacetCountsWithFilters() {
         String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "SELECT ?f ?v ?c WHERE {\n" +
-            "  (?f ?v ?c) luc:facet (\"default\" \"learning\" '[\"author\"]' '{\"op\":\"=\",\"args\":[{\"property\":\"category\"},\"technology\"]}' 10)\n" +
+            "  (?f ?v ?c) luc:facet (\"default\" \"learning\" '[\"" + FP + "author\"]' '{\"op\":\"=\",\"args\":[{\"property\":\"" + FP + "category\"},\"" + NS + "category/technology\"]}' 10)\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);
@@ -194,7 +218,7 @@ public class TestTextFacetPF {
                 int count = 0;
                 while (rs.hasNext()) {
                     QuerySolution sol = rs.next();
-                    assertEquals("author", sol.getLiteral("f").getString());
+                    assertTrue(sol.getResource("f").getURI().endsWith("#author"));
                     count++;
                 }
                 assertTrue("Should have filtered author facets", count > 0);
@@ -208,7 +232,7 @@ public class TestTextFacetPF {
     public void testFacetCountsWithMaxValues() {
         String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "SELECT ?f ?v ?c WHERE {\n" +
-            "  (?f ?v ?c) luc:facet (\"default\" \"learning\" '[\"author\"]' 1)\n" +
+            "  (?f ?v ?c) luc:facet (\"default\" \"learning\" '[\"" + FP + "author\"]' 1)\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);
@@ -231,7 +255,7 @@ public class TestTextFacetPF {
     public void testFacetCountsWithMinCount() {
         String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "SELECT ?f ?v ?c WHERE {\n" +
-            "  (?f ?v ?c) luc:facet (\"default\" \"learning\" '[\"author\"]' 10 2)\n" +
+            "  (?f ?v ?c) luc:facet (\"default\" \"learning\" '[\"" + FP + "author\"]' 10 2)\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);
@@ -256,7 +280,7 @@ public class TestTextFacetPF {
     public void testFacetCountsWithMaxValuesZero() {
         String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "SELECT ?f ?v ?c WHERE {\n" +
-            "  (?f ?v ?c) luc:facet (\"default\" \"learning\" '[\"author\"]' 0)\n" +
+            "  (?f ?v ?c) luc:facet (\"default\" \"learning\" '[\"" + FP + "author\"]' 0)\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);
@@ -279,7 +303,7 @@ public class TestTextFacetPF {
     public void testFacetCountsWithMinCountAndMaxValues() {
         String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "SELECT ?f ?v ?c WHERE {\n" +
-            "  (?f ?v ?c) luc:facet (\"default\" \"learning\" '[\"author\"]' 0 2)\n" +
+            "  (?f ?v ?c) luc:facet (\"default\" \"learning\" '[\"" + FP + "author\"]' 0 2)\n" +
             "}";
 
         dataset.begin(ReadWrite.READ);
@@ -289,7 +313,9 @@ public class TestTextFacetPF {
                 int count = 0;
                 while (rs.hasNext()) {
                     QuerySolution sol = rs.next();
-                    assertEquals("Smith", sol.getLiteral("v").getString());
+                    assertTrue("?v should be a URI for KEYWORD field",
+                        sol.get("v").isURIResource());
+                    assertEquals(NS + "author/Smith", sol.getResource("v").getURI());
                     count++;
                 }
                 assertEquals("Only Smith should pass combined filter", 1, count);

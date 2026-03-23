@@ -121,7 +121,7 @@ When `luc:query` and `luc:facet` appear in the same SPARQL query, both build a n
 - Use `@Override`, proper generic types, no `@author` tags
 - No compiler warnings (use `@SuppressWarnings` as needed)
 - Don't mix reformatting with functional changes
-- All source files require Apache License 2.0 header (enforced by RAT plugin, skip with `-Drat.skip`)
+- **All source files require Apache License 2.0 header** (enforced by RAT plugin, skip with `-Drat.skip`). This includes generated/data files like `.ttl`. Use `## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0` as the first line for Turtle files. The `task build` command runs a full build **with** RAT checks — files missing headers will fail the build.
 
 ## Documentation
 

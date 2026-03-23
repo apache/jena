@@ -25,22 +25,6 @@ The `ShaclTextDocProducer` uses a `ThreadLocal<Boolean>` for transaction trackin
 
 ## Planned Extensions
 
-### Spatial filtering (bbox)
-
-Combine text search with a bounding-box spatial filter so that facet counts and search results are scoped to a geographic region. Proposed in the [January 2026 review](archive/2026-01-23-david-review.md) as an optional structured argument:
-
-```sparql
-(?f ?v ?c) luc:facet ("climate" '["category"]' '{"bbox": [40.0, -75.0, 41.0, -74.0]}') .
-```
-
-The bbox would become a Lucene spatial `MUST` filter combined with the text query. Would require:
-- A spatial field type (e.g., `LatLonPoint`) in the SHACL field type enum
-- Indexing coordinates into the entity document
-- Parsing the bbox argument in `ShaclTextQueryPF` and `TextFacetPF`
-- Integration with or independence from the existing `jena-geosparql` module (Lucene's native spatial may be simpler than bridging to JTS/SIS)
-
-This does not change the query or response models — it extends the existing filter argument with a spatial dimension.
-
 ### Deferrable extensions
 
 The following features do not change the existing query or response models. Each can be added later as either an opt-in parameter on an existing PF or as a new PF, with no breaking changes. They are listed here for completeness but are not prioritised.

@@ -42,69 +42,85 @@
 
       <template x-if="config">
         <div>
-          <h1 class="config-title">Index Configuration</h1>
-
-          <div class="stat-cards">
-            <div class="stat-card">
-              <div class="stat-value" x-text="config.shapes.length"></div>
-              <div class="stat-label">Shapes</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value" x-text="config.facetFields.length"></div>
-              <div class="stat-label">Facetable Fields</div>
+          <div class="config-header-row">
+            <h1 class="config-title">Index Configuration</h1>
+            <div class="sparql-editor-view-toggle">
+              <button :class="{ active: configView === 'parsed' }" @click="configView = 'parsed'">Parsed</button>
+              <button :class="{ active: configView === 'raw' }" @click="configView = 'raw'">Raw TTL</button>
             </div>
           </div>
 
-          <h2 class="config-section-title">Global Settings</h2>
-          <table class="config-table settings-table">
-            <tbody>
-              <tr>
-                <th>Store values</th>
-                <td x-text="config.storeValues"></td>
-              </tr>
-              <tr>
-                <th>Max facet hits</th>
-                <td x-text="config.maxFacetHits"></td>
-              </tr>
-            </tbody>
-          </table>
+          <template x-if="configView === 'raw'">
+            <pre class="config-raw"><code x-text="configRaw"></code></pre>
+          </template>
 
-          <hr class="config-divider">
+          <template x-if="configView === 'parsed'">
+            <div>
+              <div class="stat-cards">
+                <div class="stat-card">
+                  <div class="stat-value" x-text="config.shapes.length"></div>
+                  <div class="stat-label">Shapes</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-value" x-text="config.facetFields.length"></div>
+                  <div class="stat-label">Facetable Fields</div>
+                </div>
+              </div>
 
-          <template x-for="shape in config.shapes" :key="shape.name">
-            <div class="shape-section">
-              <div class="shape-title" x-text="shape.name"></div>
-              <p class="shape-target">
-                Target class: <code x-text="shape.targetClass"></code>
-                &mdash; <span x-text="shape.fields.length"></span> fields
-              </p>
-
-              <table class="config-table">
-                <thead>
-                  <tr>
-                    <th>Field</th>
-                    <th>Path</th>
-                    <th>Type</th>
-                    <th>Facetable</th>
-                    <th>Multi-valued</th>
-                    <th>Default</th>
-                    <th>Sortable</th>
-                  </tr>
-                </thead>
+              <h2 class="config-section-title">Global Settings</h2>
+              <table class="config-table settings-table">
                 <tbody>
-                  <template x-for="f in shape.fields" :key="f.name">
-                    <tr>
-                      <td x-text="f.name"></td>
-                      <td><code x-text="f.path"></code></td>
-                      <td x-text="f.fieldType"></td>
-                      <td x-html="f.facetable ? '<span class=\'bool-yes\'>&#10003;</span>' : '<span class=\'bool-no\'>&mdash;</span>'"></td>
-                      <td x-html="f.multiValued ? '<span class=\'bool-yes\'>&#10003;</span>' : '<span class=\'bool-no\'>&mdash;</span>'"></td>
-                      <td x-html="f.defaultSearch ? '<span class=\'bool-yes\'>&#10003;</span>' : '<span class=\'bool-no\'>&mdash;</span>'"></td>
-                      <td x-html="f.sortable ? '<span class=\'bool-yes\'>&#10003;</span>' : '<span class=\'bool-no\'>&mdash;</span>'"></td>
-                    </tr>
-                  </template>
+                  <tr>
+                    <th>Store values</th>
+                    <td x-text="config.storeValues"></td>
+                  </tr>
+                  <tr>
+                    <th>Max facet hits</th>
+                    <td x-text="config.maxFacetHits"></td>
+                  </tr>
                 </tbody>
               </table>
+
+              <hr class="config-divider">
+
+              <template x-for="shape in config.shapes" :key="shape.name">
+                <div class="shape-section">
+                  <div class="shape-title" x-text="shape.name"></div>
+                  <p class="shape-target">
+                    Target class: <code x-text="shape.targetClass"></code>
+                    &mdash; <span x-text="shape.fields.length"></span> fields
+                  </p>
+
+                  <table class="config-table">
+                    <thead>
+                      <tr>
+                        <th>Field</th>
+                        <th>IRI</th>
+                        <th>Path</th>
+                        <th>Type</th>
+                        <th>Facetable</th>
+                        <th>Multi-valued</th>
+                        <th>Default</th>
+                        <th>Sortable</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <template x-for="f in shape.fields" :key="f.name">
+                        <tr>
+                          <td x-text="f.name"></td>
+                          <td><code x-text="f.iri ? shortName(f.iri) : '(blank)'" :title="f.iri || ''"></code></td>
+                          <td><code x-text="f.path"></code></td>
+                          <td x-text="f.fieldType"></td>
+                          <td x-html="f.facetable ? '<span class=\'bool-yes\'>&#10003;</span>' : '<span class=\'bool-no\'>&mdash;</span>'"></td>
+                          <td x-html="f.multiValued ? '<span class=\'bool-yes\'>&#10003;</span>' : '<span class=\'bool-no\'>&mdash;</span>'"></td>
+                          <td x-html="f.defaultSearch ? '<span class=\'bool-yes\'>&#10003;</span>' : '<span class=\'bool-no\'>&mdash;</span>'"></td>
+                          <td x-html="f.sortable ? '<span class=\'bool-yes\'>&#10003;</span>' : '<span class=\'bool-no\'>&mdash;</span>'"></td>
+                        </tr>
+                      </template>
+                    </tbody>
+                  </table>
+                </div>
+              </template>
             </div>
           </template>
         </div>

@@ -28,6 +28,7 @@ import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.geosparql.implementation.parsers.wkt.WKTReader;
 import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.text.cql.CqlExpression;
@@ -109,9 +110,23 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
      * Resolve field spec strings to validated Lucene field names.
      * "default" resolves to all defaultSearch fields; explicit names are validated.
      */
-    public List<String> resolveSearchFields(List<String> fieldNames) {
-        if (fieldNames == null || fieldNames.isEmpty()
-                || (fieldNames.size() == 1 && "default".equals(fieldNames.get(0)))) {
+    /**
+     * Resolve facet field IRIs to Lucene field names.
+     * Unknown identifiers are passed through unchanged.
+     */
+    public List<String> resolveFacetFieldNames(List<String> fieldIRIs) {
+        if (fieldIRIs == null) return null;
+        List<String> resolved = new ArrayList<>(fieldIRIs.size());
+        for (String iri : fieldIRIs) {
+            ShaclIndexMapping.FieldDef fd = shaclMapping.findField(iri);
+            resolved.add(fd != null ? fd.getFieldName() : iri);
+        }
+        return resolved;
+    }
+
+    public List<String> resolveSearchFields(List<String> fieldIRIs) {
+        if (fieldIRIs == null || fieldIRIs.isEmpty()
+                || (fieldIRIs.size() == 1 && "default".equals(fieldIRIs.get(0)))) {
             List<String> defaults = shaclMapping.getDefaultSearchFieldNames();
             if (defaults.isEmpty()) {
                 log.warn("No defaultSearch fields configured; falling back to primary field");
@@ -119,13 +134,16 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
             }
             return defaults;
         }
-        for (String name : fieldNames) {
-            if (shaclMapping.findField(name) == null) {
-                throw new TextIndexException("Unknown search field: '" + name + "'. "
+        List<String> resolved = new ArrayList<>(fieldIRIs.size());
+        for (String iri : fieldIRIs) {
+            ShaclIndexMapping.FieldDef fd = shaclMapping.findField(iri);
+            if (fd == null) {
+                throw new TextIndexException("Unknown search field: '" + iri + "'. "
                     + "Available fields: " + shaclMapping.getAllFieldNames());
             }
+            resolved.add(fd.getFieldName());
         }
-        return fieldNames;
+        return resolved;
     }
 
     /**
@@ -426,6 +444,7 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
 
     public Map<String, List<FacetValue>> getFacetCounts(String queryString, List<String> searchFields,
             List<String> facetFieldsToQuery, int maxValues, int minCount) {
+        facetFieldsToQuery = resolveFacetFieldNames(facetFieldsToQuery);
         Map<String, List<FacetValue>> result = new HashMap<>();
 
         if (facetFieldsToQuery == null || facetFieldsToQuery.isEmpty()) {
@@ -485,6 +504,7 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
             String queryString, List<String> searchFields, List<String> facetFieldsToQuery,
             Map<String, List<String>> filters, int maxValues, int minCount) {
 
+        facetFieldsToQuery = resolveFacetFieldNames(facetFieldsToQuery);
         log.debug("getFacetCountsWithFilters: query='{}' filters={}", queryString, filters);
         Map<String, List<FacetValue>> result = new HashMap<>();
 
@@ -561,6 +581,38 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
         return result;
     }
 
+    // ---- Value and field node helpers ----
+
+    private Node extractValueNode(Document doc, List<String> resolvedFields) {
+        for (String fieldName : resolvedFields) {
+            String storedValue = doc.get(fieldName);
+            if (storedValue == null) continue;
+            ShaclIndexMapping.FieldDef fd = shaclMapping.findFieldByName(fieldName);
+            if (fd == null) continue;
+            return switch (fd.getFieldType()) {
+                case KEYWORD -> looksLikeUri(storedValue)
+                    ? NodeFactory.createURI(storedValue)
+                    : NodeFactory.createLiteralString(storedValue);
+                case TEXT    -> NodeFactory.createLiteralString(storedValue);
+                case INT     -> NodeFactory.createLiteralDT(storedValue, XSDDatatype.XSDinteger);
+                case LONG    -> NodeFactory.createLiteralDT(storedValue, XSDDatatype.XSDlong);
+                case DOUBLE  -> NodeFactory.createLiteralDT(storedValue, XSDDatatype.XSDdouble);
+                case LATLON  -> null;
+            };
+        }
+        return null;
+    }
+
+    private static boolean looksLikeUri(String value) {
+        return value.contains("://") || value.startsWith("urn:");
+    }
+
+    private Node resolveFieldNode(List<String> resolvedFields) {
+        if (resolvedFields.size() != 1) return null;
+        ShaclIndexMapping.FieldDef fd = shaclMapping.findFieldByName(resolvedFields.get(0));
+        return fd != null ? fd.getFieldIRI() : null;
+    }
+
     // ---- Field-scoped query ----
 
     /**
@@ -582,8 +634,7 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
             int maxHits = limit > 0 ? limit : MAX_N;
             TopDocs topDocs = searcher.search(query, maxHits);
 
-            Node fieldNode = resolvedFields.size() == 1
-                ? NodeFactory.createLiteralString(resolvedFields.get(0)) : null;
+            Node fieldNode = resolveFieldNode(resolvedFields);
             List<TextHit> results = new ArrayList<>();
             String entityField = getDocDef().getEntityField();
             StoredFields storedFields = searcher.storedFields();
@@ -592,7 +643,8 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
                 String uri = doc.get(entityField);
                 if (uri != null) {
                     Node entityNode = TextQueryFuncs.stringToNode(uri);
-                    results.add(new TextHit(entityNode, sd.score, null, null, fieldNode));
+                    Node valueNode = extractValueNode(doc, resolvedFields);
+                    results.add(new TextHit(entityNode, sd.score, valueNode, null, fieldNode));
                 }
             }
             return results;
@@ -643,8 +695,7 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
             int maxHits = limit > 0 ? limit : MAX_N;
             TopDocs topDocs = searcher.search(combined.build(), maxHits);
 
-            Node fieldNode = resolved.size() == 1
-                ? NodeFactory.createLiteralString(resolved.get(0)) : null;
+            Node fieldNode = resolveFieldNode(resolved);
             List<TextHit> results = new ArrayList<>();
             String entityField = getDocDef().getEntityField();
             StoredFields storedFields = searcher.storedFields();
@@ -653,7 +704,8 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
                 String uri = doc.get(entityField);
                 if (uri != null) {
                     Node entityNode = TextQueryFuncs.stringToNode(uri);
-                    results.add(new TextHit(entityNode, sd.score, null, null, fieldNode));
+                    Node valueNode = extractValueNode(doc, resolved);
+                    results.add(new TextHit(entityNode, sd.score, valueNode, null, fieldNode));
                 }
             }
             return results;
@@ -744,8 +796,7 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
                 topDocs = searcher.search(combined.build(), maxHits);
             }
 
-            Node fieldNode = resolved.size() == 1
-                ? NodeFactory.createLiteralString(resolved.get(0)) : null;
+            Node fieldNode = resolveFieldNode(resolved);
             List<TextHit> results = new ArrayList<>();
             String entityField = getDocDef().getEntityField();
             StoredFields storedFields = searcher.storedFields();
@@ -754,7 +805,8 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
                 String uri = doc.get(entityField);
                 if (uri != null) {
                     Node entityNode = TextQueryFuncs.stringToNode(uri);
-                    results.add(new TextHit(entityNode, sd.score, null, null, fieldNode));
+                    Node valueNode = extractValueNode(doc, resolved);
+                    results.add(new TextHit(entityNode, sd.score, valueNode, null, fieldNode));
                 }
             }
             return results;
@@ -769,6 +821,7 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
             String queryString, List<String> searchFields, List<String> facetFieldsToQuery,
             CqlExpression cqlFilter, int maxValues, int minCount) {
 
+        facetFieldsToQuery = resolveFacetFieldNames(facetFieldsToQuery);
         Map<String, List<FacetValue>> result = new HashMap<>();
 
         if (facetFieldsToQuery == null || facetFieldsToQuery.isEmpty()) {
@@ -880,7 +933,9 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
             SortSpec spec = sortSpecs.get(i);
             SortField.Type sortType = SortField.Type.STRING; // default
 
+            // Resolve field identifier (IRI) to Lucene field name
             ShaclIndexMapping.FieldDef fd = shaclMapping.findField(spec.field());
+            String luceneFieldName = fd != null ? fd.getFieldName() : spec.field();
             if (fd != null) {
                 sortType = switch (fd.getFieldType()) {
                     case KEYWORD -> SortField.Type.STRING;
@@ -894,7 +949,7 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
                 };
             }
 
-            fields[i] = new SortField(spec.field(), sortType, spec.descending());
+            fields[i] = new SortField(luceneFieldName, sortType, spec.descending());
         }
         return new Sort(fields);
     }

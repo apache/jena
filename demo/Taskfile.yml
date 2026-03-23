@@ -54,6 +54,11 @@ tasks:
           -H "Content-Type: text/turtle" \
           --data-binary @test/data/mining.ttl
       - echo "Loaded test/data/mining.ttl"
+      - |
+        curl -s -X POST "{{.SERVER_URL}}/mining/data?default" \
+          -H "Content-Type: text/turtle" \
+          --data-binary @test/data/generated.ttl
+      - echo "Loaded test/data/generated.ttl"
 
   query:
     desc: Run all test queries against the mining server
