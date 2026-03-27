@@ -103,6 +103,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
     // Demo data validation
     , TestDemoDataParsing.class
+    , TestDemoMiningScenarios.class
 })
 
 public class TS_Text

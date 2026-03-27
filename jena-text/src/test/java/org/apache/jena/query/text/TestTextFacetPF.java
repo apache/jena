@@ -205,6 +205,33 @@ public class TestTextFacetPF {
     }
 
     @Test
+    public void testFacetWildcard() {
+        String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
+            "SELECT ?f ?v ?c WHERE {\n" +
+            "  (?f ?v ?c) luc:facet (\"default\" \"learning\" '[\"*\"]' 10)\n" +
+            "}";
+
+        dataset.begin(ReadWrite.READ);
+        try {
+            try (QueryExecution qe = QueryExecutionFactory.create(sparql, dataset)) {
+                ResultSet rs = qe.execSelect();
+                boolean foundCategory = false;
+                boolean foundAuthor = false;
+                while (rs.hasNext()) {
+                    QuerySolution sol = rs.next();
+                    String fieldUri = sol.getResource("f").getURI();
+                    if (fieldUri.endsWith("#category")) foundCategory = true;
+                    if (fieldUri.endsWith("#author")) foundAuthor = true;
+                }
+                assertTrue("Wildcard should return category facets", foundCategory);
+                assertTrue("Wildcard should return author facets", foundAuthor);
+            }
+        } finally {
+            dataset.end();
+        }
+    }
+
+    @Test
     public void testFacetCountsWithFilters() {
         String sparql = "PREFIX luc: <urn:jena:lucene:index#>\n" +
             "SELECT ?f ?v ?c WHERE {\n" +
