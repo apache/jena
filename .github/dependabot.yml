@@ -8,6 +8,8 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
+    cooldown:
+      default-days: 7
     groups:
       maven-patch-group:
         update-types:
@@ -30,6 +32,8 @@ updates:
       interval: monthly
       day: "tuesday"
     open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: "npm"
     directory: "/jena-fuseki2/jena-fuseki-ui"
@@ -37,6 +41,8 @@ updates:
       interval: "weekly"
       day: "wednesday"
     versioning-strategy: increase-if-necessary
+    cooldown:
+      default-days: 7
     groups:
       npm-patch-group:
         update-types:
