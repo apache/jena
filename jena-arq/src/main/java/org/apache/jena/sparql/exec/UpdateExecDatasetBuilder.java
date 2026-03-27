@@ -30,9 +30,11 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.Timeouts;
 import org.apache.jena.sparql.engine.Timeouts.Timeout;
 import org.apache.jena.sparql.engine.Timeouts.TimeoutBuilderImpl;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.dispatch.UpdateDispatcherRegistry;
 import org.apache.jena.sparql.modify.UpdateEngineFactory;
 import org.apache.jena.sparql.modify.UpdateEngineRegistry;
 import org.apache.jena.sparql.syntax.syntaxtransform.UpdateTransformOps;
@@ -89,7 +91,7 @@ public class UpdateExecDatasetBuilder implements UpdateExecBuilder {
 
     /** Hint has no effect on update execs over datasets. */
     @Override
-    public UpdateExecBuilder parseCheck(boolean parseCheck) {
+    public UpdateExecDatasetBuilder parseCheck(boolean parseCheck) {
         return this;
     }
 
@@ -166,9 +168,11 @@ public class UpdateExecDatasetBuilder implements UpdateExecBuilder {
         if ( f == null )
             throw new UpdateException("Failed to find an UpdateEngine");
 
+        Timeouts.applyDefaultUpdateTimeoutFromContext(timeoutBuilder, cxt);
         Timeout timeout = timeoutBuilder.build();
+        Timeouts.setUpdateTimeout(cxt, timeout);
 
-        UpdateExec uExec = new UpdateExecDataset(actualUpdate, dataset, initialBinding, cxt, f, timeout);
+        UpdateExec uExec = UpdateDispatcherRegistry.create(actualUpdate, dataset, cxt);
         return uExec;
     }
 

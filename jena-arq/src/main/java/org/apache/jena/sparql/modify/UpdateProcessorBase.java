@@ -63,6 +63,11 @@ public class UpdateProcessorBase implements UpdateProcessor
     }
 
     @Override
+    public UpdateRequest getUpdateRequest() {
+        return request;
+    }
+
+    @Override
     public void execute() {
         UpdateEngine uProc = factory.create(datasetGraph, context);
         uProc.startRequest();

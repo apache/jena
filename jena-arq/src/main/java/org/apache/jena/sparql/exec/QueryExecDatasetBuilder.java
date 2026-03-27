@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.*;
@@ -34,12 +33,11 @@ import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.engine.QueryEngineFactory;
-import org.apache.jena.sparql.engine.QueryEngineRegistry;
-import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.Timeouts;
 import org.apache.jena.sparql.engine.Timeouts.Timeout;
 import org.apache.jena.sparql.engine.Timeouts.TimeoutBuilderImpl;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.dispatch.QueryDispatcherRegistry;
 import org.apache.jena.sparql.syntax.syntaxtransform.QueryTransformOps;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.ContextAccumulator;
@@ -189,12 +187,6 @@ public class QueryExecDatasetBuilder implements QueryExecMod, QueryExecBuilder {
         query.ensureResultVars();
         Context cxt = getContext();
 
-        QueryEngineFactory qeFactory = QueryEngineRegistry.findFactory(query, dataset, cxt);
-        if ( qeFactory == null ) {
-            Log.warn(QueryExecDatasetBuilder.class, "Failed to find a QueryEngineFactory");
-            return null;
-        }
-
         // Initial bindings / parameterized query
         Query queryActual = query;
         String queryStringActual = queryString;
@@ -204,17 +196,22 @@ public class QueryExecDatasetBuilder implements QueryExecMod, QueryExecBuilder {
             queryStringActual = null;
         }
 
+        if ( dataset != null )
+            cxt.set(ARQConstants.sysCurrentDataset, DatasetFactory.wrap(dataset));
+        if ( queryActual != null )
+            cxt.set(ARQConstants.sysCurrentQuery, queryActual);
+
+        // Place the effective timeout into the context
         Timeouts.applyDefaultQueryTimeoutFromContext(this.timeoutBuilder, cxt);
+        Timeout timeout = timeoutBuilder.build();
+        Timeouts.setQueryTimeout(cxt, timeout);
 
         if ( dataset != null )
             cxt.set(ARQConstants.sysCurrentDataset, DatasetFactory.wrap(dataset));
         if ( queryActual != null )
             cxt.set(ARQConstants.sysCurrentQuery, queryActual);
 
-        Timeout timeout = timeoutBuilder.build();
-
-        QueryExec qExec = new QueryExecDataset(queryActual, queryStringActual, dataset, cxt, qeFactory,
-                                               timeout, initialBinding);
+        QueryExec qExec = QueryDispatcherRegistry.create(queryActual, dataset, cxt);
         return qExec;
     }
 }

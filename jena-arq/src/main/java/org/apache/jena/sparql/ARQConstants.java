@@ -326,6 +326,13 @@ public class ARQConstants
     public static final Symbol registryExtensions =
         SystemARQ.allocSymbol("registryExtensions") ;
 
-    public static void init() {}
+    /** The query dispatcher registry key */
+    public static final Symbol registryQueryDispatchers =
+        SystemARQ.allocSymbol("registryQueryDispatchers") ;
 
+    /** The update dispatcher registry key */
+    public static final Symbol registryUpdateDispatchers =
+        SystemARQ.allocSymbol("registryUpdateDispatchers") ;
+
+    public static void init() {}
 }
