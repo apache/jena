@@ -18,4 +18,5 @@
 demo/
 !demo/test/config.ttl
 !demo/test/data/
+!demo/loader/entrypoint.sh
 docs/
