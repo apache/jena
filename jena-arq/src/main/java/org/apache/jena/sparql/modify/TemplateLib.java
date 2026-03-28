@@ -39,8 +39,6 @@ import org.apache.jena.sparql.syntax.*;
 import org.apache.jena.sparql.util.NodeUtils;
 
 public class TemplateLib {
-    // See also Substitute -- combine?
-    // Or is this specific enough to CONSTRUCT/Update template processing?
     /**
      * Take a template, as a list of quad patterns, a default graph, and an
      * iterator of bindings, and produce an iterator of quads that results from
