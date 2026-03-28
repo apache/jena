@@ -34,6 +34,9 @@ import org.apache.jena.riot.out.NodeToLabel;
  * N-triple streams which have very large numbers of blank nodes.
  */
 public class NTriplesWriterPretty extends NTriplesWriter {
+
+    public NTriplesWriterPretty() {}
+
     @Override
     protected NodeFormatter createNodeFormatter() {
         NodeFormatter nodeFmt = new NodeFormatterNT() {
