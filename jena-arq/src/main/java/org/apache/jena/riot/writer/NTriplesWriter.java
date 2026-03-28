@@ -107,7 +107,7 @@ public class NTriplesWriter extends WriterGraphRIOTBase {
     }
 
     protected NodeFormatter createNodeFormatter() {
-        NodeFormatter nodeFmt =new NodeFormatterNT(charSpace);
+        NodeFormatter nodeFmt = new NodeFormatterNT(charSpace);
         return nodeFmt;
     }
 
