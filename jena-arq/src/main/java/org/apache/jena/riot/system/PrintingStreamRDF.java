@@ -28,6 +28,7 @@ import org.apache.jena.atlas.io.IO;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.riot.out.NodeFormatterTTL;
+import org.apache.jena.riot.out.NodeToLabel;
 import org.apache.jena.riot.writer.WriterStreamRDFFlat;
 import org.apache.jena.riot.writer.WriterStreamRDFPlain;
 import org.apache.jena.sparql.core.Quad;
@@ -43,7 +44,6 @@ import org.apache.jena.sparql.core.Quad;
  * Consider using {@link WriterStreamRDFFlat} for performance.
  * <p>
  *
- *
  * Use via
  * <pre>
  * StreamRDFLib.print(System.out);
@@ -51,8 +51,9 @@ import org.apache.jena.sparql.core.Quad;
  */
 public class PrintingStreamRDF extends WriterStreamRDFPlain
 {
-    private PrefixMap prefixMap = PrefixMapFactory.create();
-    private NodeFormatter pretty =  new NodeFormatterTTL(null, prefixMap);
+    private final PrefixMap prefixMap = PrefixMapFactory.create();
+    private final NodeToLabel nodeMapper = NodeToLabel.createScopeByDocument();
+    private NodeFormatter pretty =  new NodeFormatterTTL(null, prefixMap, nodeMapper );
 
     public PrintingStreamRDF(OutputStream out) {
         super(IO.wrapUTF8(out));
@@ -64,6 +65,14 @@ public class PrintingStreamRDF extends WriterStreamRDFPlain
 
     public PrintingStreamRDF(AWriter out) {
         super(out);
+    }
+
+    /**
+     * Print, with prefixes already loaded (not printed).
+     */
+    public PrintingStreamRDF(AWriter out, PrefixMap prefixes) {
+        super(out);
+        prefixMap.putAll(prefixes);
     }
 
     @Override
@@ -84,7 +93,7 @@ public class PrintingStreamRDF extends WriterStreamRDFPlain
         out.println();
         flush();
         // Reset the formatter because of the new base URI.
-        pretty = new NodeFormatterTTL(base, prefixMap);
+        pretty = new NodeFormatterTTL(base, prefixMap, nodeMapper);
     }
 
     @Override
@@ -94,7 +103,6 @@ public class PrintingStreamRDF extends WriterStreamRDFPlain
         out.print(version);
         out.println();
     }
-
 
     @Override
     public void prefix(String prefix, String iri) {
