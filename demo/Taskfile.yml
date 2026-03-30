@@ -83,6 +83,7 @@ tasks:
             --data-binary @{{.ITEM}}
           echo ""
 
+
   app:
     desc: Serve the static demo app with mining config
     cmds:

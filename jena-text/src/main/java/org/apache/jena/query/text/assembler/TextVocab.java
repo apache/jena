@@ -78,6 +78,7 @@ public class TextVocab
     public static final Resource simpleAnalyzer     = Vocab.resource(NS, "SimpleAnalyzer");
     public static final Resource keywordAnalyzer    = Vocab.resource(NS, "KeywordAnalyzer");
     public static final Resource lowerCaseKeywordAnalyzer    = Vocab.resource(NS, "LowerCaseKeywordAnalyzer");
+    public static final Resource edgeNGramAnalyzer   = Vocab.resource(NS, "EdgeNGramAnalyzer");
     public static final Resource localizedAnalyzer    = Vocab.resource(NS, "LocalizedAnalyzer");
     public static final Resource configurableAnalyzer = Vocab.resource(NS, "ConfigurableAnalyzer");
 
@@ -113,6 +114,8 @@ public class TextVocab
     public static final Property pDefTokenizer      = Vocab.property(NS, "defineTokenizer");
     public static final Property pAddLang           = Vocab.property(NS, "addLang");
     public static final Property pUseAnalyzer       = Vocab.property(NS, "useAnalyzer");
+    public static final Property pMinGram            = Vocab.property(NS, "minGram");
+    public static final Property pMaxGram            = Vocab.property(NS, "maxGram");
     public static final Property pSearchFor         = Vocab.property(NS, "searchFor");
     public static final Property pAuxIndex          = Vocab.property(NS, "auxIndex");
     public static final Property pIndexAnalyzer     = Vocab.property(NS, "indexAnalyzer");

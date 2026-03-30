@@ -82,12 +82,16 @@
 
 **Decision:** JSON object for filters, JSON array for facet field lists.
 
+For the public SPARQL/API contract, field references are always IRIs. The internal Lucene field name from `idx:fieldName` is not exposed to users. The only plain strings that remain in the external syntax are the Lucene query string itself and the special `"default"` fieldSpec shorthand.
+
 ```sparql
-(?s ?sc) luc:query ("learning" '{"category": ["Technology"]}') .
-(?f ?v ?c) luc:facet ("learning" '["category", "author"]') .
+(?s ?sc) luc:query ("default" "learning"
+    '{"op":"=","args":[{"property":"urn:jena:lucene:field#category"},"Technology"]}') .
+(?f ?v ?c) luc:facet ("default" "learning"
+    '["urn:jena:lucene:field#category", "urn:jena:lucene:field#author"]') .
 ```
 
-**Rationale:** JSON is the lingua franca of web APIs. Application code generating SPARQL queries can construct filter JSON from UI state (e.g., selected facet checkboxes) trivially. The `{` and `[` prefixes make reliable detection in the argument list straightforward.
+**Rationale:** JSON is the lingua franca of web APIs. Application code generating SPARQL queries can construct filter JSON from UI state (e.g., selected facet checkboxes) trivially. The `{` and `[` prefixes make reliable detection in the argument list straightforward. Using field IRIs in these structures keeps the external API stable even if internal Lucene field names change.
 
 ---
 

@@ -88,6 +88,7 @@ import org.junit.runners.Suite.SuiteClasses;
     , TestShaclTextDocProducer.class
     , TestShaclAssembler.class
     , TestShaclEntityPerDocument.class
+    , TestPerFieldQueryAnalyzer.class
     , TestShaclPathSupport.class
     , TestTextQueryPFFilters.class
     , TestShaclBulkIndexer.class

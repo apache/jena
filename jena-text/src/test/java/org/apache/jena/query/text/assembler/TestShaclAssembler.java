@@ -165,6 +165,57 @@ public class TestShaclAssembler {
     }
 
     @Test
+    public void testQueryAnalyzerAssembled() {
+        Model model = createModel();
+
+        // Shape with a field that has idx:analyzer (edge n-gram) and idx:queryAnalyzer (lowercase keyword)
+        Resource bookShape = model.createResource(EX + "BookShape")
+            .addProperty(model.createProperty(SH, "targetClass"), model.createResource(EX + "Book"))
+            .addProperty(
+                model.createProperty(SH, "property"),
+                model.createResource()
+                    .addProperty(model.createProperty(IndexVocab.NS, "fieldName"), "title")
+                    .addProperty(model.createProperty(IndexVocab.NS, "defaultSearch"), model.createTypedLiteral(true))
+                    .addProperty(model.createProperty(SH, "path"), RDFS.label)
+            )
+            .addProperty(
+                model.createProperty(SH, "property"),
+                model.createResource()
+                    .addProperty(model.createProperty(IndexVocab.NS, "fieldName"), "identifier")
+                    .addProperty(model.createProperty(IndexVocab.NS, "fieldType"), IndexVocab.TextField)
+                    .addProperty(model.createProperty(IndexVocab.NS, "analyzer"),
+                        model.createResource().addProperty(RDF.type, TextVocab.edgeNGramAnalyzer))
+                    .addProperty(model.createProperty(IndexVocab.NS, "queryAnalyzer"),
+                        model.createResource().addProperty(RDF.type, TextVocab.lowerCaseKeywordAnalyzer))
+                    .addProperty(model.createProperty(SH, "path"), model.createResource(EX + "identifier"))
+            );
+
+        RDFNode shapesList = model.createList(new RDFNode[]{ bookShape });
+        Resource indexSpec = model.createResource(EX + "index")
+            .addProperty(RDF.type, TextVocab.textIndexShacl)
+            .addProperty(TextVocab.pDirectory, model.createLiteral("mem"))
+            .addProperty(TextVocab.pShapes, shapesList);
+
+        ShaclTextIndexLucene index = (ShaclTextIndexLucene) Assembler.general().open(indexSpec);
+        try {
+            ShaclIndexMapping mapping = index.getShaclMapping();
+            FieldDef idField = null;
+            for (FieldDef f : mapping.getProfiles().get(0).getFields()) {
+                if ("identifier".equals(f.getFieldName())) {
+                    idField = f;
+                }
+            }
+            assertNotNull("Should have identifier field", idField);
+            assertNotNull("identifier should have index analyzer", idField.getAnalyzer());
+            assertNotNull("identifier should have query analyzer", idField.getQueryAnalyzer());
+            assertNotSame("index and query analyzers should be different instances",
+                idField.getAnalyzer(), idField.getQueryAnalyzer());
+        } finally {
+            index.close();
+        }
+    }
+
+    @Test
     public void testSequencePathParsed() {
         Model model = createModel();
 

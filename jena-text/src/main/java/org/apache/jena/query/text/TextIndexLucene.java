@@ -130,10 +130,21 @@ public class TextIndexLucene implements TextIndex {
         if ( docDef.getLangField() != null )
             analyzerPerField.put(docDef.getLangField(), new KeywordAnalyzer()) ;
 
+        // Build separate per-field maps for index and query analyzers.
+        // idx:analyzer is used for indexing; idx:queryAnalyzer overrides at query time
+        // (e.g. edge n-gram index analyzer with keyword query analyzer for prefix search).
+        Map<String, Analyzer> queryAnalyzerPerField = new HashMap<>(analyzerPerField);
+
         for (String field : docDef.fields()) {
             Analyzer _analyzer = docDef.getAnalyzer(field);
             if (_analyzer != null) {
                 analyzerPerField.put(field, _analyzer);
+                // Default: use the same analyzer for querying unless overridden
+                queryAnalyzerPerField.put(field, _analyzer);
+            }
+            Analyzer _queryAnalyzer = docDef.getQueryAnalyzer(field);
+            if (_queryAnalyzer != null) {
+                queryAnalyzerPerField.put(field, _queryAnalyzer);
             }
         }
 
@@ -145,7 +156,10 @@ public class TextIndexLucene implements TextIndex {
             indexDefault = Util.usingIndexAnalyzers() ? new IndexingMultilingualAnalyzer(defaultAnalyzer) : queryDefault;
         }
         this.indexAnalyzer = new PerFieldAnalyzerWrapper(indexDefault, analyzerPerField) ;
-        this.queryAnalyzer = (null != config.getQueryAnalyzer()) ? config.getQueryAnalyzer() : new PerFieldAnalyzerWrapper(queryDefault, analyzerPerField) ;
+        if (null != config.getQueryAnalyzer() && !queryAnalyzerPerField.isEmpty()) {
+            log.warn("Global text:queryAnalyzer is set — per-field idx:queryAnalyzer overrides will be ignored");
+        }
+        this.queryAnalyzer = (null != config.getQueryAnalyzer()) ? config.getQueryAnalyzer() : new PerFieldAnalyzerWrapper(queryDefault, queryAnalyzerPerField) ;
         this.queryParserType = config.getQueryParser() ;
         log.debug("TextIndexLucene defaultAnalyzer: {}, indexAnalyzer: {}, queryAnalyzer: {}, queryParserType: {}", defaultAnalyzer, indexAnalyzer, queryAnalyzer, queryParserType);
         this.ftText = config.isValueStored() ? TextField.TYPE_STORED : TextField.TYPE_NOT_STORED ;

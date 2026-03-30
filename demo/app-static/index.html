@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="app.css">
   <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/n3@1.22.3/browser/n3.min.js"></script>
+  <script src="app-config.js"></script>
   <script src="app.js"></script>
   <script>
     document.addEventListener('alpine:init', () => {
@@ -92,6 +93,21 @@
                 </div>
                 <div class="control">
                   <button class="btn-search" type="button" @click="search()">Search</button>
+                </div>
+              </div>
+
+              <div class="field">
+                <div class="control">
+                  <input class="input" type="text" x-model="identifier"
+                         list="identifier-suggestions"
+                         placeholder="Identifier search, e.g. report-mia-2023"
+                         @input="updateIdentifierSuggestions()"
+                         @keydown.enter="search()">
+                  <datalist id="identifier-suggestions">
+                    <template x-for="suggestion in identifierSuggestions" :key="suggestion">
+                      <option :value="suggestion"></option>
+                    </template>
+                  </datalist>
                 </div>
               </div>
 
@@ -200,17 +216,30 @@
                 </p>
               </template>
 
-              <div class="result-tags">
-                <template x-for="tag in card.tags" :key="tag.pred + ':' + tag.value">
-                  <span class="rtag" :class="tag.cssClass"
-                        x-text="tag.displayValue || tag.value"
-                        :title="tag.tooltip || ''"
-                        :tabindex="(tag.clickable || tag.mapUri) ? 0 : -1"
-                        @click="tag.mapUri ? focusMapMarker(tag.mapUri) : (tag.clickable && toggleFacet(tag.facetField, tag.value))"
-                        @keydown.enter="tag.mapUri ? focusMapMarker(tag.mapUri) : (tag.clickable && toggleFacet(tag.facetField, tag.value))">
-                  </span>
-                </template>
-              </div>
+              <template x-if="card.rows.length > 0">
+                <table class="result-props">
+                  <tbody>
+                    <template x-for="row in card.rows" :key="row.property">
+                      <tr>
+                        <th x-text="row.property"></th>
+                        <td>
+                          <div class="prop-values">
+                            <template x-for="value in row.values" :key="row.property + ':' + value.value">
+                              <button class="prop-chip" :class="value.cssClass"
+                                      type="button"
+                                      :title="value.tooltip || ''"
+                                      :disabled="!(value.clickable || value.mapUri)"
+                                      @click="value.mapUri ? focusMapMarker(value.mapUri) : (value.clickable && toggleFacet(value.facetField, value.value))">
+                                <span x-text="value.displayValue || value.value"></span>
+                              </button>
+                            </template>
+                          </div>
+                        </td>
+                      </tr>
+                    </template>
+                  </tbody>
+                </table>
+              </template>
             </div>
           </template>
 

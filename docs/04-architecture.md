@@ -94,14 +94,14 @@ sequenceDiagram
     participant SE as SearchExecution
     participant L as Lucene Index
 
-    S->>QP: luc:query ("learning" '{"category":["Tech"]}')
-    QP->>SE: getOrCreate(key = "qs=learning|filters=category:Tech")
+    S->>QP: luc:query ("default" "learning" '{"op":"=","args":[{"property":"urn:jena:lucene:field#category"},"Tech"]}')
+    QP->>SE: getOrCreate(key = "qs=learning|filters=urn:jena:lucene:field#category:Tech")
     SE->>L: Execute query (first access, lazy)
     L-->>SE: Hits + reader snapshot
     SE-->>QP: Hit URIs + scores
     QP-->>S: (?s ?score) bindings
 
-    S->>FP: luc:facet ("learning" '["category"]')
+    S->>FP: luc:facet ("default" "learning" '["urn:jena:lucene:field#category"]')
     FP->>SE: getOrCreate(same key) — reuses existing
     SE-->>FP: Facet counts (from same snapshot)
     FP-->>S: (?field ?value ?count) bindings

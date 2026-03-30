@@ -45,6 +45,7 @@ public class ShaclIndexMapping {
         private final String fieldName;
         private final FieldType fieldType;
         private final Analyzer analyzer;
+        private final Analyzer queryAnalyzer;
         private final boolean stored;
         private final boolean indexed;
         private final boolean facetable;
@@ -59,7 +60,7 @@ public class ShaclIndexMapping {
                         boolean stored, boolean indexed, boolean facetable,
                         boolean sortable, boolean multiValued, boolean defaultSearch,
                         Set<Node> predicates) {
-            this(fieldName, fieldType, analyzer, stored, indexed, facetable,
+            this(fieldName, fieldType, analyzer, null, stored, indexed, facetable,
                  sortable, multiValued, defaultSearch, predicates, null, null);
         }
 
@@ -67,7 +68,7 @@ public class ShaclIndexMapping {
                         boolean stored, boolean indexed, boolean facetable,
                         boolean sortable, boolean multiValued, boolean defaultSearch,
                         Set<Node> predicates, Path path) {
-            this(fieldName, fieldType, analyzer, stored, indexed, facetable,
+            this(fieldName, fieldType, analyzer, null, stored, indexed, facetable,
                  sortable, multiValued, defaultSearch, predicates, path, null);
         }
 
@@ -75,9 +76,19 @@ public class ShaclIndexMapping {
                         boolean stored, boolean indexed, boolean facetable,
                         boolean sortable, boolean multiValued, boolean defaultSearch,
                         Set<Node> predicates, Path path, Node fieldIRI) {
+            this(fieldName, fieldType, analyzer, null, stored, indexed, facetable,
+                 sortable, multiValued, defaultSearch, predicates, path, fieldIRI);
+        }
+
+        public FieldDef(String fieldName, FieldType fieldType, Analyzer analyzer,
+                        Analyzer queryAnalyzer,
+                        boolean stored, boolean indexed, boolean facetable,
+                        boolean sortable, boolean multiValued, boolean defaultSearch,
+                        Set<Node> predicates, Path path, Node fieldIRI) {
             this.fieldName = Objects.requireNonNull(fieldName);
             this.fieldType = fieldType != null ? fieldType : FieldType.TEXT;
             this.analyzer = analyzer;
+            this.queryAnalyzer = queryAnalyzer;
             this.stored = stored;
             this.indexed = indexed;
             this.facetable = facetable;
@@ -93,6 +104,7 @@ public class ShaclIndexMapping {
         public String getFieldName()       { return fieldName; }
         public FieldType getFieldType()     { return fieldType; }
         public Analyzer getAnalyzer()       { return analyzer; }
+        public Analyzer getQueryAnalyzer()  { return queryAnalyzer; }
         public boolean isStored()           { return stored; }
         public boolean isIndexed()          { return indexed; }
         public boolean isFacetable()        { return facetable; }

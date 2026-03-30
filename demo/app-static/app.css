@@ -813,72 +813,86 @@ code {
   margin-bottom: 0.75rem;
 }
 
-.result-tags {
+.result-props {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.76rem;
+}
+
+.result-props th,
+.result-props td {
+  padding: 0.36rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  vertical-align: top;
+}
+
+.result-props tr:first-child th,
+.result-props tr:first-child td {
+  border-top: 0;
+}
+
+.result-props th {
+  width: 7.5rem;
+  padding-right: 0.9rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.prop-values {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 0.35rem;
 }
 
-/* ── Tag/Badge System ── */
-.rtag {
+.prop-chip {
   display: inline-flex;
   align-items: center;
-  font-size: 0.7rem;
-  font-weight: 600;
-  padding: 0.25em 0.6em;
-  border-radius: var(--radius-sm);
-  text-decoration: none;
-  line-height: 1.4;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  padding: 0.14rem 0.44rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.74rem;
+  line-height: 1.35;
 }
 
-.rtag-type {
-  background: var(--steel-dim);
-  color: var(--steel);
-  border: 1px solid rgba(91, 140, 184, 0.25);
+.prop-chip:disabled {
+  opacity: 1;
 }
 
-.rtag-active {
-  background: var(--steel-dim);
-  color: var(--steel);
-  border: 1px solid rgba(91, 140, 184, 0.25);
-  cursor: pointer;
-}
-
-.rtag-active:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(91, 140, 184, 0.2);
-}
-
-.rtag-clickable {
-  background: var(--amber-dim);
+.prop-chip-clickable {
   color: var(--amber);
-  border: 1px solid rgba(212, 148, 76, 0.25);
+  border-color: rgba(212, 148, 76, 0.25);
+  background: var(--amber-dim);
   cursor: pointer;
 }
 
-.rtag-clickable:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(212, 148, 76, 0.2);
+.prop-chip-clickable:hover {
   color: var(--amber-hover);
 }
 
-.rtag-neutral {
-  background: var(--bg-elevated);
-  color: var(--text-secondary);
-  border: 1px solid var(--border);
-}
-
-.rtag-location {
-  background: var(--teal-dim);
-  color: var(--teal);
-  border: 1px solid rgba(77, 184, 164, 0.25);
+.prop-chip-active {
+  color: var(--steel);
+  border-color: rgba(91, 140, 184, 0.25);
+  background: var(--steel-dim);
   cursor: pointer;
 }
 
-.rtag-location:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(77, 184, 164, 0.2);
+.prop-chip-location {
+  color: var(--teal);
+  border-color: rgba(77, 184, 164, 0.25);
+  background: var(--teal-dim);
+  cursor: pointer;
+}
+
+.prop-chip-neutral {
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
 }
 
 /* ── Log entries ── */

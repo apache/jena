@@ -38,6 +38,7 @@ import org.apache.lucene.analysis.Analyzer;
 public class EntityDefinition {
     private final Map<Node, String>             predicateToField = new HashMap<>();
     private final Map<String, Analyzer>         fieldToAnalyzer  = new HashMap<>();
+    private final Map<String, Analyzer>         fieldToQueryAnalyzer = new HashMap<>();
     private final ListValuedMap<String, Node>   fieldToPredicate = MultiMapUtils.newListValuedHashMap();
     private final Map<String, Boolean>          fieldToNoIndex   = new HashMap<>();
     private final Collection<String>            fields           = Collections.unmodifiableCollection(fieldToPredicate.keys());
@@ -150,6 +151,14 @@ public class EntityDefinition {
 
     public Analyzer getAnalyzer(String field) {
         return fieldToAnalyzer.get(field);
+    }
+
+    public void setQueryAnalyzer(String field, Analyzer analyzer) {
+        fieldToQueryAnalyzer.put(field, analyzer);
+    }
+
+    public Analyzer getQueryAnalyzer(String field) {
+        return fieldToQueryAnalyzer.get(field);
     }
 
     public void setNoIndex(String field, boolean b) {

@@ -58,6 +58,7 @@ public class IndexVocab {
     public static final Property pFieldName     = Vocab.property(NS, "fieldName");
     public static final Property pFieldType     = Vocab.property(NS, "fieldType");
     public static final Property pAnalyzer      = Vocab.property(NS, "analyzer");
+    public static final Property pQueryAnalyzer = Vocab.property(NS, "queryAnalyzer");
     public static final Property pStored        = Vocab.property(NS, "stored");
     public static final Property pIndexed       = Vocab.property(NS, "indexed");
     public static final Property pFacetable     = Vocab.property(NS, "facetable");

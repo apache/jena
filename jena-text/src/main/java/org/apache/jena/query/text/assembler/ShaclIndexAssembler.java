@@ -155,11 +155,18 @@ public class ShaclIndexAssembler {
             fieldType = parseFieldType(ftStmt.getObject());
         }
 
-        // idx:analyzer (optional)
+        // idx:analyzer (optional — used for indexing; also used for querying if idx:queryAnalyzer is not set)
         Analyzer analyzer = null;
         Statement analyzerStmt = fieldRes.getProperty(IndexVocab.pAnalyzer);
         if (analyzerStmt != null && analyzerStmt.getObject().isResource()) {
             analyzer = (Analyzer) a.open(analyzerStmt.getObject().asResource());
+        }
+
+        // idx:queryAnalyzer (optional — overrides idx:analyzer at query time)
+        Analyzer queryAnalyzer = null;
+        Statement queryAnalyzerStmt = fieldRes.getProperty(IndexVocab.pQueryAnalyzer);
+        if (queryAnalyzerStmt != null && queryAnalyzerStmt.getObject().isResource()) {
+            queryAnalyzer = (Analyzer) a.open(queryAnalyzerStmt.getObject().asResource());
         }
 
         // Boolean flags with defaults
@@ -183,7 +190,7 @@ public class ShaclIndexAssembler {
         Node fieldIRI = fieldRes.isURIResource() ? fieldRes.asNode() : null;
 
         log.debug("Parsed field: {} type={} path={} facetable={}", fieldName, fieldType, path, facetable);
-        return new FieldDef(fieldName, fieldType, analyzer, stored, indexed,
+        return new FieldDef(fieldName, fieldType, analyzer, queryAnalyzer, stored, indexed,
                            facetable, sortable, multiValued, defaultSearch, predicates, path, fieldIRI);
     }
 
@@ -358,6 +365,9 @@ public class ShaclIndexAssembler {
                 }
                 if (field.getAnalyzer() != null) {
                     defn.setAnalyzer(field.getFieldName(), field.getAnalyzer());
+                }
+                if (field.getQueryAnalyzer() != null) {
+                    defn.setQueryAnalyzer(field.getFieldName(), field.getQueryAnalyzer());
                 }
             }
         }

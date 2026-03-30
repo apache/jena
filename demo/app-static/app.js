@@ -5,7 +5,8 @@
 // ---------------------------------------------------------------------------
 
 const CONFIG_PATH = 'config.ttl';
-const FUSEKI_BASE = 'http://localhost:3030';
+const APP_CONFIG = window.APP_CONFIG || {};
+const FUSEKI_BASE = APP_CONFIG.fusekiBase || 'http://localhost:3030';
 const RESULT_LIMITS = [10, 100, 1000, 5000, 9999];
 const DEFAULT_LIMIT = 10;
 const FACET_LIMITS = [10, 25, 50, 100, 500];
@@ -252,9 +253,6 @@ function extractConfig(store) {
     const storeValues = getLiteral(store, indexNode, TEXT + 'storeValues') === 'true';
     const maxFacetHits = parseInt(getLiteral(store, indexNode, TEXT + 'maxFacetHits') || '0', 10);
 
-    // Allow config.ttl to override FUSEKI_BASE via idx:fusekiBase on the index node
-    const fusekiBase = getLiteral(store, indexNode, IDX + 'fusekiBase') || FUSEKI_BASE;
-
     const serviceNodes = getSubjects(store, RDF + 'type', FUSEKI + 'Service');
     let datasetName = 'dataset';
     if (serviceNodes.length > 0) {
@@ -333,7 +331,7 @@ function extractConfig(store) {
     }
 
     return {
-        endpoint: `${fusekiBase}/${datasetName}/query`,
+        endpoint: `${FUSEKI_BASE}/${datasetName}/query`,
         storeValues,
         maxFacetHits,
         shapes,
@@ -412,6 +410,8 @@ function parseWktForLeaflet(wktString) {
 function searchApp() {
     return {
         q: '',
+        identifier: '',
+        identifierSuggestions: [],
         limit: DEFAULT_LIMIT,
         resultLimits: RESULT_LIMITS,
         maxFacetValues: DEFAULT_FACET_LIMIT,
@@ -447,6 +447,7 @@ function searchApp() {
         _mapMarkersByUri: {},
         _highlightTimer: null,
         _abortController: null,
+        _identifierSuggestTimer: null,
         editorOpen: false,
         editorQuery: '',
         editorResults: '',
@@ -615,6 +616,7 @@ function searchApp() {
         pushUrl() {
             const params = new URLSearchParams();
             if (this.q.trim()) params.set('q', this.q.trim());
+            if (this.identifier.trim()) params.set('id', this.identifier.trim());
             const cql = buildCqlFilter(this.selected, this.spatialBbox, this.spatialPolygon, this.fieldIRIs);
             if (cql) params.set('filter', cql);
             const qs = params.toString();
@@ -625,6 +627,7 @@ function searchApp() {
         loadFromUrl() {
             const params = new URLSearchParams(window.location.search);
             this.q = params.get('q') || '';
+            this.identifier = params.get('id') || '';
             const { selected, bbox, polygon } = parseCqlFilter(params.get('filter'), this.fieldIRIs);
             for (const f of this.facetFields) {
                 this.selected[f] = selected[f] || [];
@@ -638,6 +641,36 @@ function searchApp() {
         async search() {
             this.pushUrl();
             await this.executeSearch();
+        },
+
+        updateIdentifierSuggestions() {
+            clearTimeout(this._identifierSuggestTimer);
+            const term = this.identifier.trim();
+            if (!term) {
+                this.identifierSuggestions = [];
+                return;
+            }
+            this._identifierSuggestTimer = setTimeout(() => {
+                this.fetchIdentifierSuggestions(term);
+            }, 150);
+        },
+
+        async fetchIdentifierSuggestions(term) {
+            const trimmed = term.trim();
+            if (!trimmed) {
+                this.identifierSuggestions = [];
+                return;
+            }
+            try {
+                const data = await this.runSparql(this.buildIdentifierSuggestionQuery(trimmed));
+                if (this.identifier.trim() !== trimmed) return;
+                const seen = new Set();
+                this.identifierSuggestions = (data.results?.bindings || [])
+                    .map(row => row.identifier?.value)
+                    .filter(value => value && !seen.has(value) && seen.add(value));
+            } catch {
+                if (this.identifier.trim() === trimmed) this.identifierSuggestions = [];
+            }
         },
 
         async toggleFacet(field, value) {
@@ -681,6 +714,10 @@ function searchApp() {
             return resolveFieldName(fieldUri, this.fieldIRIs);
         },
 
+        identifierFieldSpec() {
+            return this.fieldIRIs.identifier || 'urn:jena:lucene:field#identifier';
+        },
+
         // --- SPARQL execution ---
 
         async runSparql(query, signal) {
@@ -700,7 +737,9 @@ function searchApp() {
         // --- Query builders ---
 
         buildSearchQuery() {
-            const term = this.q.trim() || '*';
+            const identifier = this.identifier.trim();
+            const term = identifier || this.q.trim() || '*';
+            const searchField = identifier ? this.identifierFieldSpec() : 'default';
             const escaped = escapeSparql(term);
             const cqlFilter = buildCqlFilter(this.selected, this.spatialBbox, this.spatialPolygon, this.fieldIRIs);
             const filterArg = cqlFilter ? ` '${cqlFilter}'` : '';
@@ -710,10 +749,23 @@ function searchApp() {
             return `${SPARQL_PREFIXES}
 SELECT ?entity ?score ?totalHits ?field ?value ?count
 WHERE {
-    { (?entity ?score ?_lit ?totalHits) luc:query ('default' '${escaped}'${filterArg} ${this.limit}) }
+    { (?entity ?score ?_lit ?totalHits) luc:query ('${searchField}' '${escaped}'${filterArg} ${this.limit}) }
     UNION
-    { (?field ?value ?count) luc:facet ('default' '${escaped}' '${facetFieldsJson}'${filterArg} ${this.maxFacetValues}) }
+    { (?field ?value ?count) luc:facet ('${searchField}' '${escaped}' '${facetFieldsJson}'${filterArg} ${this.maxFacetValues}) }
 }`;
+        },
+
+        buildIdentifierSuggestionQuery(identifier) {
+            const escaped = escapeSparql(identifier);
+            const fieldSpec = this.identifierFieldSpec();
+            return `${SPARQL_PREFIXES}
+SELECT DISTINCT ?identifier
+WHERE {
+    (?entity ?score) luc:query ('${fieldSpec}' '${escaped}' 8) .
+    ?entity ex:identifier ?identifier .
+}
+ORDER BY LCASE(STR(?identifier))
+LIMIT 8`;
         },
 
         buildDetailQuery(uris) {
@@ -791,9 +843,10 @@ WHERE {
                         uri,
                         label: row.label.value,
                         score: scores[uri] || 0,
+                        identifier: null,
                         description: null,
                         properties: {},
-                        tags: [],
+                        rows: [],
                     };
                 }
                 const card = entities[uri];
@@ -817,6 +870,22 @@ WHERE {
                 }
                 for (const [pred, values] of Object.entries(card.properties)) {
                     if (pred === 'description') continue;
+                    if (pred === 'identifier') {
+                        card.rows.push({
+                            property: 'id',
+                            values: values.map(pv => ({
+                                value: pv.raw,
+                                displayValue: pv.display,
+                                facetField: null,
+                                isActive: false,
+                                clickable: false,
+                                mapUri: null,
+                                tooltip: '',
+                                cssClass: 'prop-chip-neutral',
+                            })),
+                        });
+                        continue;
+                    }
                     if (pred === 'asWKT') {
                         for (const pv of values) {
                             const geo = parseWktForLeaflet(pv.raw);
@@ -824,11 +893,18 @@ WHERE {
                                 const tooltip = geo.type === 'point'
                                     ? `${geo.lat.toFixed(4)}, ${geo.lon.toFixed(4)}`
                                     : geo.coords.map(c => `${c[0].toFixed(2)},${c[1].toFixed(2)}`).join(' ');
-                                card.tags.push({
-                                    pred: 'location', value: geo.type === 'point' ? 'Point' : 'Polygon',
-                                    facetField: null, isActive: false, clickable: false,
-                                    cssClass: 'rtag-location',
-                                    mapUri: card.uri, tooltip,
+                                card.rows.push({
+                                    property: 'location',
+                                    values: [{
+                                        value: geo.type === 'point' ? 'Point' : 'Polygon',
+                                        displayValue: geo.type === 'point' ? 'Point' : 'Polygon',
+                                        facetField: null,
+                                        isActive: false,
+                                        clickable: false,
+                                        mapUri: card.uri,
+                                        tooltip,
+                                        cssClass: 'prop-chip-location',
+                                    }],
                                 });
                             }
                         }
@@ -837,6 +913,7 @@ WHERE {
                     const facetField = this.predicateToFacet[pred] || null;
                     // Skip non-facetable literal values (e.g., depth, year, score)
                     if (!facetField && !values.some(v => v.isUri)) continue;
+                    const rowValues = [];
                     for (const pv of values) {
                         // Find the matching facet value — match by label or raw IRI
                         let matchValue = pv.display;
@@ -848,16 +925,23 @@ WHERE {
                             if (match) matchValue = match.value;
                         }
                         const active = facetField ? this.isSelected(facetField, matchValue) : false;
-                        card.tags.push({
-                            pred,
+                        rowValues.push({
                             value: matchValue,
                             displayValue: pv.display,
                             facetField,
                             isActive: active,
                             clickable: !!facetField,
-                            cssClass: !facetField ? 'rtag-neutral'
-                                : active ? 'rtag-active'
-                                : 'rtag-clickable',
+                            mapUri: null,
+                            tooltip: '',
+                            cssClass: !facetField ? 'prop-chip-neutral'
+                                : active ? 'prop-chip-active'
+                                : 'prop-chip-clickable',
+                        });
+                    }
+                    if (rowValues.length > 0) {
+                        card.rows.push({
+                            property: pred,
+                            values: rowValues,
                         });
                     }
                 }
@@ -871,7 +955,10 @@ WHERE {
         buildDescription(hitCount, totalHits, totalSec) {
             const parts = [];
             const q = this.q.trim();
-            if (q) {
+            const identifier = this.identifier.trim();
+            if (identifier) {
+                parts.push(`Identifier search for <strong>\u201c${escapeHtml(identifier)}\u201d</strong>`);
+            } else if (q) {
                 parts.push(`Search for <strong>\u201c${escapeHtml(q)}\u201d</strong>`);
             } else {
                 parts.push('Showing <strong>all entities</strong>');
@@ -927,7 +1014,8 @@ WHERE {
                 const searchQuery = this.buildSearchQuery();
                 const activeFilters = Object.entries(this.selected)
                     .filter(([, v]) => v && v.length > 0).length;
-                const searchLabel = (this.q.trim() || '*')
+                const searchTerm = this.identifier.trim() || this.q.trim() || '*';
+                const searchLabel = searchTerm
                     + (activeFilters > 0 ? ` + ${activeFilters} filter${activeFilters > 1 ? 's' : ''}` : '');
 
                 const cqlFilter = buildCqlFilter(this.selected, this.spatialBbox, this.spatialPolygon, this.fieldIRIs);

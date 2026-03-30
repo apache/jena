@@ -25,6 +25,8 @@ This documentation covers the faceted search and entity-per-document indexing fe
 
 All proposed extensions are additive — no breaking changes to existing query or response models.
 
+Public API rule: external field references are always IRIs in `luc:query`, `luc:facet`, CQL filter `property` entries, sort specs, and returned `?field` bindings. Internal Lucene field names from `idx:fieldName` remain implementation details, except for the special `"default"` fieldSpec shorthand and ordinary Lucene query strings supplied as search text.
+
 ### Component Architecture (current implementation)
 
 ```mermaid

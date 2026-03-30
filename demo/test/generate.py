@@ -81,6 +81,46 @@ REPORT_TYPES = [
     "Geophysical Survey Report", "Metallurgical Testwork Report",
 ]
 
+AUTHOR_GIVEN_NAMES = [
+    "Sarah", "Wei", "James", "Priya", "Emma", "Michael", "Aisha", "Liam",
+    "Olivia", "Noah", "Charlotte", "Arjun",
+]
+
+AUTHOR_FAMILY_NAMES = [
+    "Jones", "Chen", "Williams", "Patel", "Nguyen", "Taylor", "Singh",
+    "Murphy", "Campbell", "Roberts", "Brown", "Evans",
+]
+
+AUTHOR_TITLES = ["Dr", "Prof", ""]
+
+AFFILIATIONS = [
+    "CSIRO Mineral Resources",
+    "Geoscience Australia",
+    "BHP Technical Services",
+    "Rio Tinto Technical Services",
+    "South32 Geology",
+    "Mineral Resources Exploration",
+    "University of Queensland",
+    "Curtin Centre for Exploration Targeting",
+]
+
+STATE_CODE_TO_NAME = {
+    "WA": "Western Australia",
+    "QLD": "Queensland",
+    "NSW": "New South Wales",
+    "SA": "South Australia",
+    "NT": "Northern Territory",
+    "TAS": "Tasmania",
+    "VIC": "Victoria",
+}
+
+
+@dataclass
+class Author:
+    iri_local: str
+    name: str
+    affiliation: str
+
 
 def escape_ttl(s: str) -> str:
     return s.replace("\\", "\\\\").replace('"', '\\"')
@@ -172,12 +212,56 @@ def collect_vocab_iris(
     return "\n".join(lines)
 
 
+def make_site_identifier(state: str, idx: int) -> str:
+    return f"SITE-{state}-{idx:04d}"
+
+
+def make_borehole_identifier(state: str, idx: int) -> str:
+    return f"BH-{state}-{idx:06d}"
+
+
+def make_report_identifier(state: str, year: int, idx: int) -> str:
+    return f"RPT-{state}-{year}-{idx:04d}"
+
+
+def state_name(state_code: str) -> str:
+    return STATE_CODE_TO_NAME.get(state_code, state_code)
+
+
+def generate_authors(rng: random.Random, n_reports: int) -> list[Author]:
+    count = max(6, min(18, n_reports // 12))
+    authors: list[Author] = []
+    used_names: set[str] = set()
+
+    while len(authors) < count:
+        title = rng.choice(AUTHOR_TITLES)
+        given = rng.choice(AUTHOR_GIVEN_NAMES)
+        family = rng.choice(AUTHOR_FAMILY_NAMES)
+        name = " ".join(part for part in [title, given, family] if part)
+        if name in used_names:
+            continue
+        used_names.add(name)
+        authors.append(
+            Author(
+                iri_local=f"author-{len(authors):03d}",
+                name=name,
+                affiliation=rng.choice(AFFILIATIONS),
+            )
+        )
+    return authors
+
+
 def generate_site(rng: random.Random, idx: int, region: Region) -> tuple[str, tuple[float, float], list[str]]:
     """Returns (turtle_block, (lat, lon), commodities) so boreholes can cluster nearby."""
     name = f"{rng.choice(SITE_NAMES)} {rng.choice(SITE_ADJECTIVES)}"
+    identifier = make_site_identifier(region.state, idx)
     commodities = pick_region_commodities(rng, region)
     status = rng.choice(STATUSES)
     commodity_values = " , ".join(f'commodity:{to_iri_local(c)}' for c in commodities)
+    description = (
+        f"{name} Mine is a synthetic {', '.join(c.lower() for c in commodities)} "
+        f"site in {state_name(region.state)} with {status.lower()} status."
+    )
 
     # Geometry: point or polygon
     is_polygon = region.geometry == "mix" and rng.random() < 0.40
@@ -196,6 +280,8 @@ def generate_site(rng: random.Random, idx: int, region: Region) -> tuple[str, tu
     ttl = textwrap.dedent(f"""\
         ex:site-{idx:04d} a ex:Site ;
             rdfs:label "{escape_ttl(name)} Mine" ;
+            ex:identifier "{identifier}" ;
+            dct:description "{escape_ttl(description)}" ;
             ex:commodity {commodity_values} ;
             ex:state state:{to_iri_local(region.state)} ;
             ex:status status:{to_iri_local(status)} ;
@@ -228,7 +314,12 @@ def generate_borehole(
         commodities = pick_region_commodities(rng, region)
         state = region.state
 
+    identifier = make_borehole_identifier(state, idx)
     commodity_values = " , ".join(f'commodity:{to_iri_local(c)}' for c in commodities)
+    description = (
+        f"Synthetic {drill_type.lower()} borehole {identifier} in {state_name(state)} "
+        f"targeting {', '.join(c.lower() for c in commodities)} mineralisation to {depth}m."
+    )
 
     # Always POINT geometry for boreholes
     epsg = use_epsg4326(rng)
@@ -237,6 +328,8 @@ def generate_borehole(
     return textwrap.dedent(f"""\
         ex:bh-{idx:04d} a ex:Borehole ;
             rdfs:label "{label} {drill_type} Drill Hole" ;
+            ex:identifier "{identifier}" ;
+            dct:description "{escape_ttl(description)}" ;
             ex:commodity {commodity_values} ;
             ex:state state:{to_iri_local(state)} ;
             ex:depth {depth} ;
@@ -244,30 +337,35 @@ def generate_borehole(
     """)
 
 
-def generate_report(rng: random.Random, idx: int, region: Region) -> str:
+def generate_report(rng: random.Random, idx: int, region: Region, authors: list[Author]) -> tuple[str, int, Author]:
     commodities = pick_region_commodities(rng, region)
     primary = commodities[0]
     operator = rng.choice(OPERATORS)
     status = rng.choice(REPORT_STATUSES)
     year = rng.randint(1980, 2024)
+    identifier = make_report_identifier(region.state, year, idx)
     report_type = rng.choice(REPORT_TYPES)
     site_name = f"{rng.choice(SITE_NAMES)} {rng.choice(SITE_ADJECTIVES)}"
     title = f"{site_name} {primary} {report_type} {year}"
+    author = rng.choice(authors)
     description = (
         f"{report_type} for the {site_name} {primary.lower()} project "
-        f"in {region.state}. Prepared by {operator}."
+        f"in {state_name(region.state)}. Prepared by {operator} and authored by {author.name}."
     )
     commodity_values = " , ".join(f'commodity:{to_iri_local(c)}' for c in commodities)
-    return textwrap.dedent(f"""\
+    ttl = textwrap.dedent(f"""\
         ex:report-{idx:04d} a ex:MiningReport ;
             rdfs:label "{escape_ttl(title)}" ;
+            ex:identifier "{identifier}" ;
             dct:description "{escape_ttl(description)}" ;
             ex:commodity {commodity_values} ;
             ex:state state:{to_iri_local(region.state)} ;
             ex:operator operator:{to_iri_local(operator)} ;
             ex:status status:{to_iri_local(status)} ;
-            ex:year {year} .
+            ex:year {year} ;
+            ex:authoredBy ex:{author.iri_local} .
     """)
+    return (ttl, year, author)
 
 
 def main():
@@ -294,6 +392,8 @@ def main():
     site_locations: list[tuple[float, float, Region]] = []
     borehole_blocks: list[str] = []
     report_blocks: list[str] = []
+    author_to_reports: dict[str, list[str]] = {}
+    authors = generate_authors(rng, n_reports)
 
     for i in range(n_sites):
         region = pick_region(rng)
@@ -312,8 +412,9 @@ def main():
 
     for i in range(n_reports):
         region = pick_region(rng)
-        ttl = generate_report(rng, i, region)
+        ttl, _year, author = generate_report(rng, i, region, authors)
         report_blocks.append(ttl)
+        author_to_reports.setdefault(author.iri_local, []).append(f"ex:report-{i:04d}")
 
     # Collect all possible vocab values (superset for labels)
     all_commodities.update(ALL_COMMODITIES)
@@ -347,6 +448,22 @@ def main():
     print("## --- Boreholes ---\n")
     for block in borehole_blocks:
         print(block)
+
+    print("## --- Authors ---\n")
+    for author in authors:
+        reports = author_to_reports.get(author.iri_local, [])
+        lines = [
+            f"ex:{author.iri_local} a ex:Author ;",
+            f'    rdfs:label "{escape_ttl(author.name)}" ;',
+            f'    ex:name "{escape_ttl(author.name)}" ;',
+            f'    ex:affiliation "{escape_ttl(author.affiliation)}"',
+        ]
+        if reports:
+            lines[-1] += " ;"
+            lines.append(f"    ex:authored {', '.join(reports)}")
+        lines[-1] += " ."
+        print("\n".join(lines))
+        print()
 
     print("## --- Mining Reports ---\n")
     for block in report_blocks:

@@ -259,6 +259,67 @@ Filter search results and facet counts by geographic region using CQL2-JSON spat
     20)
 ```
 
+---
+
+### Identifier Prefix Search and Typeahead
+
+Support identifier-heavy workflows where users know the beginning of a code but not the full value yet. Typical examples are borehole, report, specimen, or sample identifiers such as `BH123456`, `RPT-BH-1985-001`, or `GSWA-12345-A`.
+
+```mermaid
+flowchart LR
+    User["User types:<br/>BH12"]
+    PrefixField["identifier field<br/>indexed with EdgeNGram"]
+    QueryAnalyzer["queryAnalyzer:<br/>LowerCaseKeywordAnalyzer"]
+    Matches["Matches returned:<br/>BH123456<br/>BH123789<br/>BH120001"]
+
+    User --> QueryAnalyzer
+    QueryAnalyzer --> PrefixField
+    PrefixField --> Matches
+
+    style User fill:#f8f9fa,stroke:#999,color:#333
+    style PrefixField fill:#1a6dd4,stroke:#0d4a94,color:#fff
+    style QueryAnalyzer fill:#fff3cd,stroke:#c89a06,color:#614a00
+    style Matches fill:#d4edda,stroke:#28a745,color:#1a3d1a
+```
+
+The intended pattern is:
+
+- index the identifier field with an edge n-gram analyzer so prefixes are searchable
+- query that field with a non-ngram keyword-style analyzer so user input is treated as a single prefix term
+- return the canonical stored identifier value for display in the UI dropdown
+
+Example configuration:
+
+```turtle
+PREFIX field: <urn:jena:lucene:field#>
+PREFIX text:  <http://jena.apache.org/text#>
+PREFIX idx:   <urn:jena:lucene:index#>
+
+field:identifier
+    idx:fieldName "identifier" ;
+    idx:fieldType idx:TextField ;
+    idx:analyzer [ a text:EdgeNGramAnalyzer ] ;
+    idx:queryAnalyzer [ a text:LowerCaseKeywordAnalyzer ] ;
+    sh:path ex:identifier .
+```
+
+Example query:
+
+```sparql
+PREFIX luc: <urn:jena:lucene:index#>
+
+SELECT ?s ?score WHERE {
+    (?s ?score) luc:query ("urn:jena:lucene:field#identifier" "BH12") .
+}
+```
+
+This should match identifiers that begin with `BH12`, not only exact full-string matches.
+
+**Where this applies:**
+- Drillhole and borehole IDs where operators type a known prefix
+- Report or sample identifiers with stable institutional prefixes
+- Search UIs with an autocomplete dropdown that narrows as the user types
+
 See [Spatial Filtering](09-spatial.md) for configuration, CRS handling, and query examples.
 
 **Where this applies:**
