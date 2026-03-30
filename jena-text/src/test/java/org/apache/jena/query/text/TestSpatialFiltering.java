@@ -112,6 +112,10 @@ public class TestSpatialFiltering {
             addSite(model, "boddington", "Boddington Gold Mine",
                 "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(-32.77 116.35)");
 
+            // Multipart site in WA — two disjoint footprints stored as a MultiPolygon
+            addSite(model, "pilbara-cluster", "Pilbara Cluster Project",
+                "<http://www.opengis.net/def/crs/EPSG/0/4326> MULTIPOLYGON(((-22.30 118.20, -22.30 118.30, -22.20 118.30, -22.20 118.20, -22.30 118.20)),((-22.45 118.45, -22.45 118.55, -22.35 118.55, -22.35 118.45, -22.45 118.45)))");
+
             // Cadia Valley, NSW — CRS84 (bare WKT, lon/lat order)
             addSite(model, "cadia-valley", "Cadia Valley Operations",
                 "POINT(148.99 -33.47)");
@@ -182,8 +186,27 @@ public class TestSpatialFiltering {
 
         // Only Boddington is in WA bbox
         assertTrue("Boddington should be in results", uris.contains(NS + "boddington"));
+        assertTrue("Pilbara Cluster should be in results", uris.contains(NS + "pilbara-cluster"));
         assertFalse("Mount Isa should NOT be in WA bbox", uris.contains(NS + "mount-isa"));
         assertFalse("Olympic Dam should NOT be in WA bbox", uris.contains(NS + "olympic-dam"));
+    }
+
+    @Test
+    public void testMultiPolygonMatchesAnyMemberPolygon() {
+        CqlExpression filter = new CqlExpression.CqlSpatial(
+            "s_intersects", FP + "location", "{\"bbox\":[118.24,-22.28,118.28,-22.22]}");
+
+        List<TextHit> results = textIndex.queryWithCql(
+            null, "*", filter, null, null, null, 100, null);
+
+        Set<String> uris = new HashSet<>();
+        for (TextHit hit : results) {
+            uris.add(hit.getNode().getURI());
+        }
+
+        assertTrue("Pilbara Cluster should match when the bbox intersects one member polygon",
+            uris.contains(NS + "pilbara-cluster"));
+        assertFalse("Boddington should NOT be in the Pilbara bbox", uris.contains(NS + "boddington"));
     }
 
     @Test
@@ -282,6 +305,15 @@ public class TestSpatialFiltering {
             ShaclTextIndexLucene.parseWktToLuceneFields("location", wkt, false);
 
         assertFalse("Should produce fields for a polygon", fields.isEmpty());
+    }
+
+    @Test
+    public void testParseWktToLuceneFieldsMultiPolygon() {
+        String wkt = "<http://www.opengis.net/def/crs/EPSG/0/4326> MULTIPOLYGON(((-22.30 118.20, -22.30 118.30, -22.20 118.30, -22.20 118.20, -22.30 118.20)),((-22.45 118.45, -22.45 118.55, -22.35 118.55, -22.35 118.45, -22.45 118.45)))";
+        List<org.apache.lucene.index.IndexableField> fields =
+            ShaclTextIndexLucene.parseWktToLuceneFields("location", wkt, false);
+
+        assertFalse("Should produce fields for a multipolygon", fields.isEmpty());
     }
 
     @Test

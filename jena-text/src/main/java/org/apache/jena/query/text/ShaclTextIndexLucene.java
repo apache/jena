@@ -292,7 +292,7 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
      *   <li>GDA94/GDA2020 (EPSG:4283/7844) — treated as WGS84-equivalent</li>
      *   <li>Other CRS — transformed to WGS84 via {@link GeometryWrapper#convertSRS}</li>
      * </ul>
-     * Supports Point and Polygon geometries.
+     * Supports Point, Polygon, and MultiPolygon geometries.
      */
     static List<IndexableField> parseWktToLuceneFields(String fieldName, String wktValue, boolean stored) {
         List<IndexableField> fields = new ArrayList<>();
@@ -321,6 +321,13 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
             } else if (geom instanceof org.locationtech.jts.geom.Polygon jtsPoly) {
                 org.apache.lucene.geo.Polygon lucenePoly = jtsPolygonToLucene(jtsPoly);
                 Collections.addAll(fields, LatLonShape.createIndexableFields(fieldName, lucenePoly));
+            } else if (geom instanceof MultiPolygon multiPolygon) {
+                for (int i = 0; i < multiPolygon.getNumGeometries(); i++) {
+                    org.locationtech.jts.geom.Polygon jtsPoly =
+                        (org.locationtech.jts.geom.Polygon) multiPolygon.getGeometryN(i);
+                    org.apache.lucene.geo.Polygon lucenePoly = jtsPolygonToLucene(jtsPoly);
+                    Collections.addAll(fields, LatLonShape.createIndexableFields(fieldName, lucenePoly));
+                }
             } else {
                 log.warn("Unsupported geometry type for LATLON field '{}': {}", fieldName, geom.getGeometryType());
                 return fields;
