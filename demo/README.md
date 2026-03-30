@@ -277,7 +277,7 @@ task app-setup
 task app
 ```
 
-Opens at `http://localhost:8000`. The app queries the Fuseki endpoint at `localhost:3030/mining` — start the server first with `task serve` or `docker compose up`, then load data with `task load`.
+Opens at `http://localhost:8000` by default. The app reads its backend base URL from `app-config.js`, which `task app` generates from `FUSEKI_PORT`, then queries `http://localhost:${FUSEKI_PORT}/mining/query` — start the server first with `task serve` or `docker compose up`, then load data with `task load`.
 
 Configure via environment variables:
 - `FUSEKI_ENDPOINT` — SPARQL endpoint URL (default: `http://localhost:3030/mining/query`)
