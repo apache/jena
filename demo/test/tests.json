@@ -39,6 +39,7 @@
   { "label": "Australia bbox (all spatial)", "params": "?filter={\"op\":\"s_intersects\",\"args\":[{\"property\":\"location\"},{\"bbox\":[112,-44,154,-10]}]}", "minResults": 10 },
   { "label": "Queensland bbox", "params": "?filter={\"op\":\"s_intersects\",\"args\":[{\"property\":\"location\"},{\"bbox\":[138,-29,154,-10]}]}", "minResults": 5 },
   { "label": "Western Australia bbox", "params": "?filter={\"op\":\"s_intersects\",\"args\":[{\"property\":\"location\"},{\"bbox\":[112,-35,129,-14]}]}", "minResults": 5 },
+  { "label": "Pilbara multipart bbox", "params": "?q=Pilbara&filter={\"op\":\"s_intersects\",\"args\":[{\"property\":\"location\"},{\"bbox\":[118.24,-22.28,118.28,-22.22]}]}", "minResults": 1 },
   { "label": "NSW + SA bbox", "params": "?filter={\"op\":\"s_intersects\",\"args\":[{\"property\":\"location\"},{\"bbox\":[129,-38,154,-28]}]}", "minResults": 3 },
   { "label": "Excludes PNG (Aus only)", "params": "?filter={\"op\":\"s_intersects\",\"args\":[{\"property\":\"location\"},{\"bbox\":[112,-44,154,-10]}]}", "minResults": 10 },
 

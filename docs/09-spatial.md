@@ -29,6 +29,7 @@ field:location
 
 - **Point** — `POINT(x y)`
 - **Polygon** — `POLYGON((x1 y1, x2 y2, ...))` (with optional holes)
+- **MultiPolygon** — `MULTIPOLYGON(((...)), ((...)), ...)` indexed as multiple polygons on the same Lucene field
 
 Other geometry types (MultiPoint, LineString, etc.) are logged as warnings and skipped during indexing.
 

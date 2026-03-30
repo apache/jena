@@ -92,6 +92,14 @@ ex:site-pilbara-iron a ex:Site ;
     ex:status status:Active ;
     geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((-22.8 118.0, -22.8 119.2, -21.8 119.2, -21.8 118.0, -22.8 118.0))"^^geo:wktLiteral .
 
+ex:site-pilbara-cluster a ex:Site ;
+    rdfs:label "Pilbara Cluster Project" ;
+    dct:description "Multipart Pilbara tenement example represented as a MultiPolygon footprint with two disjoint lease areas for spatial indexing demos." ;
+    ex:commodity commodity:Iron-Ore, commodity:Gold ;
+    ex:state state:WA ;
+    ex:status status:Active ;
+    geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> MULTIPOLYGON(((-22.30 118.20, -22.30 118.30, -22.20 118.30, -22.20 118.20, -22.30 118.20)),((-22.45 118.45, -22.45 118.55, -22.35 118.55, -22.35 118.45, -22.45 118.45)))"^^geo:wktLiteral .
+
 ex:site-ok-tedi a ex:Site ;
     rdfs:label "Ok Tedi Mine" ;
     dct:description "Large open-pit copper-gold mine in the Star Mountains of Papua New Guinea. One of the largest copper and gold deposits in the world, operating since 1984." ;
