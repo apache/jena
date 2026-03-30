@@ -47,7 +47,7 @@ import org.apache.lucene.util.BytesRef;
  * <p>
  * Expressions referencing indexed fields are pushed down to Lucene;
  * non-indexed fields or unsupported operations become residual CQL
- * for post-processing. Spatial ops are always residual.
+ * for post-processing.
  */
 public class CqlToLuceneCompiler {
 
@@ -347,7 +347,8 @@ public class CqlToLuceneCompiler {
     }
 
     private FieldDef findField(String fieldIRI) {
-        return mapping.findField(fieldIRI);
+        FieldDef field = mapping.findField(fieldIRI);
+        return field != null ? field : mapping.findFieldByName(fieldIRI);
     }
 
     private static int toInt(Object v) {

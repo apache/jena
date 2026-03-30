@@ -5,7 +5,9 @@ version: '3'
 vars:
   VERSION: 6.1.0-SNAPSHOT
   FUSEKI_JAR: ../jena-fuseki2/jena-fuseki-server/target/jena-fuseki-server-{{.VERSION}}.jar
-  SERVER_URL: http://localhost:3030
+  FUSEKI_PORT: '{{.FUSEKI_PORT | default "3035"}}'
+  APP_PORT: '{{.APP_PORT | default "8080"}}'
+  SERVER_URL: http://localhost:{{.FUSEKI_PORT}}
   IMAGE_NAME: '{{.IMAGE_NAME | default "fuseki-ai"}}'
   IMAGE_TAG: '{{.IMAGE_TAG | default .VERSION}}'
   GHCR_OWNER: '{{.GHCR_OWNER | default "aiworkerjohns"}}'
@@ -41,10 +43,10 @@ tasks:
   # ── Mining ───────────────────────────────────────────────
 
   serve:
-    desc: Start Fuseki with the mining config (port 3030)
+    desc: Start Fuseki with the mining config
     dir: test
     cmds:
-      - java -jar ../{{.FUSEKI_JAR}} --port 3030 --config config.ttl
+      - java -jar ../{{.FUSEKI_JAR}} --port {{.FUSEKI_PORT}} --config config.ttl
 
   load:
     desc: Load the mining dataset via GSP
@@ -86,8 +88,33 @@ tasks:
     cmds:
       - ln -sfn ../test/config.ttl app-static/config.ttl
       - ln -sfn ../test/tests.json app-static/tests.json
-      - echo "Serving at http://localhost:8000 (mining → {{.SERVER_URL}})"
-      - cmd: python3 -m http.server 8000 --directory app-static
+      - |
+        printf "window.APP_CONFIG = {\n  fusekiBase: '/fuseki',\n};\n" > app-static/app-config.js
+      - pkill -f "serve_app.py --port {{.APP_PORT}}" || true
+      - echo "Serving at http://localhost:{{.APP_PORT}} (mining proxy → {{.SERVER_URL}})"
+      - cmd: python3 serve_app.py --port {{.APP_PORT}} --directory app-static --backend {{.SERVER_URL}}
+
+  refresh:
+    desc: Clean, restart Fuseki, reload demo data, then launch the app
+    cmds:
+      - pkill -f "serve_app.py --port {{.APP_PORT}}" || true
+      - pkill -f "jena-fuseki-server.*--port {{.FUSEKI_PORT}}" || true
+      - task clean
+      - |
+        cd test
+        rm -f fuseki.log
+        nohup java -jar ../{{.FUSEKI_JAR}} --port {{.FUSEKI_PORT}} --config config.ttl > fuseki.log 2>&1 &
+      - |
+        for i in $(seq 1 30); do
+          if curl -sf "{{.SERVER_URL}}/$/ping" >/dev/null 2>&1; then
+            exit 0
+          fi
+          sleep 1
+        done
+        echo "Fuseki failed to start; see demo/test/fuseki.log"
+        exit 1
+      - task load FUSEKI_PORT={{.FUSEKI_PORT}}
+      - task app FUSEKI_PORT={{.FUSEKI_PORT}} APP_PORT={{.APP_PORT}}
 
   clean:
     desc: Remove mining TDB2 and Lucene data directories

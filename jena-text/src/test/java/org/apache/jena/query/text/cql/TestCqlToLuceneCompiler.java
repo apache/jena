@@ -53,6 +53,8 @@ public class TestCqlToLuceneCompiler {
             true, true, false, true, false, false, Collections.emptySet());
         FieldDef nameField = new FieldDef("name", FieldType.KEYWORD, null,
             true, true, false, false, false, false, Collections.emptySet());
+        FieldDef locationField = new FieldDef("location", FieldType.LATLON, null,
+            true, true, false, false, false, false, Collections.emptySet());
         FieldDef notIndexedField = new FieldDef("notes", FieldType.TEXT, null,
             true, false, false, false, false, false, Collections.emptySet());
 
@@ -60,7 +62,7 @@ public class TestCqlToLuceneCompiler {
             NodeFactory.createURI("http://example.org/Shape"),
             Collections.singleton(NodeFactory.createURI("http://example.org/Thing")),
             "uri", "docType",
-            Arrays.asList(stateField, yearField, depthField, nameField, notIndexedField));
+            Arrays.asList(stateField, yearField, depthField, nameField, locationField, notIndexedField));
 
         ShaclIndexMapping mapping = new ShaclIndexMapping(Collections.singletonList(profile));
         compiler = new CqlToLuceneCompiler(mapping);
@@ -251,11 +253,22 @@ public class TestCqlToLuceneCompiler {
     }
 
     @Test
-    public void testSpatialAlwaysResidual() {
-        CqlExpression spatial = new CqlExpression.CqlSpatial("s_intersects", FP + "geometry", "{}");
+    public void testSpatialPolygonByFieldNamePushesDown() {
+        String polygon = "{\"type\":\"Polygon\",\"coordinates\":[[[118.2,-22.3],[118.3,-22.3],[118.3,-22.2],[118.2,-22.2],[118.2,-22.3]]]}";
+        CqlExpression spatial = new CqlExpression.CqlSpatial("s_intersects", "location", polygon);
         CqlToLuceneCompiler.CompileResult r = compiler.compile(spatial);
 
-        assertNull(r.pushed());
-        assertNotNull(r.residual());
+        assertNotNull(r.pushed());
+        assertNull(r.residual());
+    }
+
+    @Test
+    public void testSpatialBboxByFieldIriPushesDown() {
+        String bbox = "{\"bbox\":[118.2,-22.3,118.3,-22.2]}";
+        CqlExpression spatial = new CqlExpression.CqlSpatial("s_intersects", FP + "location", bbox);
+        CqlToLuceneCompiler.CompileResult r = compiler.compile(spatial);
+
+        assertNotNull(r.pushed());
+        assertNull(r.residual());
     }
 }

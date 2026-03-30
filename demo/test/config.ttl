@@ -38,7 +38,7 @@ PREFIX ex:      <http://example.org/mining/>
     text:shapes ( :MiningReportShape :BoreholeShape :SiteShape ) ;
     text:storeValues true ;
     text:maxFacetHits 50000 ;
-    idx:fusekiBase "http://localhost:3030" .
+    idx:fusekiBase "http://localhost:3035" .
 
 ## --- Field definitions (named resources — IRIs used in SPARQL bindings) ---
 

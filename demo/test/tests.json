@@ -36,23 +36,27 @@
   { "label": "Author: James Williams", "params": "?filter={\"op\":\"=\",\"args\":[{\"property\":\"authorName\"},\"James Williams\"]}", "minResults": 1 },
 
   { "group": "Spatial: Bbox Filter" },
-  { "label": "Australia bbox (all spatial)", "params": "?filter={\"op\":\"s_intersects\",\"args\":[{\"property\":\"location\"},{\"bbox\":[112,-44,154,-10]}]}", "minResults": 10 },
-  { "label": "Queensland bbox", "params": "?filter={\"op\":\"s_intersects\",\"args\":[{\"property\":\"location\"},{\"bbox\":[138,-29,154,-10]}]}", "minResults": 5 },
-  { "label": "Western Australia bbox", "params": "?filter={\"op\":\"s_intersects\",\"args\":[{\"property\":\"location\"},{\"bbox\":[112,-35,129,-14]}]}", "minResults": 5 },
-  { "label": "Pilbara multipart bbox", "params": "?q=Pilbara&filter={\"op\":\"s_intersects\",\"args\":[{\"property\":\"location\"},{\"bbox\":[118.24,-22.28,118.28,-22.22]}]}", "minResults": 1 },
-  { "label": "NSW + SA bbox", "params": "?filter={\"op\":\"s_intersects\",\"args\":[{\"property\":\"location\"},{\"bbox\":[129,-38,154,-28]}]}", "minResults": 3 },
-  { "label": "Excludes PNG (Aus only)", "params": "?filter={\"op\":\"s_intersects\",\"args\":[{\"property\":\"location\"},{\"bbox\":[112,-44,154,-10]}]}", "minResults": 10 },
+  { "label": "Australia bbox (all spatial)", "params": "?filter={\"op\":\"s_intersects\",\"args\":[{\"property\":\"urn:jena:lucene:field#location\"},{\"bbox\":[112,-44,154,-10]}]}", "minResults": 10 },
+  { "label": "Queensland bbox", "params": "?filter={\"op\":\"s_intersects\",\"args\":[{\"property\":\"urn:jena:lucene:field#location\"},{\"bbox\":[138,-29,154,-10]}]}", "minResults": 5 },
+  { "label": "Western Australia bbox", "params": "?filter={\"op\":\"s_intersects\",\"args\":[{\"property\":\"urn:jena:lucene:field#location\"},{\"bbox\":[112,-35,129,-14]}]}", "minResults": 5 },
+  { "label": "Pilbara multipart bbox", "params": "?q=Pilbara&filter={\"op\":\"s_intersects\",\"args\":[{\"property\":\"urn:jena:lucene:field#location\"},{\"bbox\":[118.24,-22.28,118.28,-22.22]}]}", "minResults": 1 },
+  { "label": "NSW + SA bbox", "params": "?filter={\"op\":\"s_intersects\",\"args\":[{\"property\":\"urn:jena:lucene:field#location\"},{\"bbox\":[129,-38,154,-28]}]}", "minResults": 3 },
+  { "label": "Excludes PNG (Aus only)", "params": "?filter={\"op\":\"s_intersects\",\"args\":[{\"property\":\"urn:jena:lucene:field#location\"},{\"bbox\":[112,-44,154,-10]}]}", "minResults": 10 },
+
+  { "group": "Spatial: Polygon Filter" },
+  { "label": "Pilbara multipolygon lease A", "params": "?filter={\"op\":\"s_intersects\",\"args\":[{\"property\":\"urn:jena:lucene:field#location\"},{\"type\":\"Polygon\",\"coordinates\":[[[118.20,-22.30],[118.30,-22.30],[118.30,-22.20],[118.20,-22.20],[118.20,-22.30]]]}]}", "minResults": 1 },
+  { "label": "Pilbara lease B + nearby points", "params": "?filter={\"op\":\"s_intersects\",\"args\":[{\"property\":\"urn:jena:lucene:field#location\"},{\"type\":\"Polygon\",\"coordinates\":[[[118.45,-22.45],[118.55,-22.45],[118.55,-22.35],[118.45,-22.35],[118.45,-22.45]]]}]}", "minResults": 3 },
 
   { "group": "Spatial + FTS" },
-  { "label": "\"mine\" in QLD bbox", "params": "?q=mine&filter={\"op\":\"s_intersects\",\"args\":[{\"property\":\"location\"},{\"bbox\":[138,-29,154,-10]}]}", "minResults": 1 },
-  { "label": "\"mine\" in WA bbox", "params": "?q=mine&filter={\"op\":\"s_intersects\",\"args\":[{\"property\":\"location\"},{\"bbox\":[112,-35,129,-14]}]}", "minResults": 1 },
+  { "label": "\"mine\" in QLD bbox", "params": "?q=mine&filter={\"op\":\"s_intersects\",\"args\":[{\"property\":\"urn:jena:lucene:field#location\"},{\"bbox\":[138,-29,154,-10]}]}", "minResults": 1 },
+  { "label": "\"mine\" in WA bbox", "params": "?q=mine&filter={\"op\":\"s_intersects\",\"args\":[{\"property\":\"urn:jena:lucene:field#location\"},{\"bbox\":[112,-35,129,-14]}]}", "minResults": 1 },
 
   { "group": "Spatial + Facets" },
-  { "label": "Sites in QLD bbox", "params": "?filter={\"op\":\"and\",\"args\":[{\"op\":\"=\",\"args\":[{\"property\":\"entityType\"},\"http://example.org/mining/Site\"]},{\"op\":\"s_intersects\",\"args\":[{\"property\":\"location\"},{\"bbox\":[138,-29,154,-10]}]}]}", "minResults": 1 },
-  { "label": "Boreholes in WA bbox", "params": "?filter={\"op\":\"and\",\"args\":[{\"op\":\"=\",\"args\":[{\"property\":\"entityType\"},\"http://example.org/mining/Borehole\"]},{\"op\":\"s_intersects\",\"args\":[{\"property\":\"location\"},{\"bbox\":[112,-35,129,-14]}]}]}", "minResults": 1 },
-  { "label": "Gold + Aus bbox", "params": "?filter={\"op\":\"and\",\"args\":[{\"op\":\"=\",\"args\":[{\"property\":\"commodity\"},\"http://example.org/mining/commodity/Gold\"]},{\"op\":\"s_intersects\",\"args\":[{\"property\":\"location\"},{\"bbox\":[112,-44,154,-10]}]}]}", "minResults": 3 },
+  { "label": "Sites in QLD bbox", "params": "?filter={\"op\":\"and\",\"args\":[{\"op\":\"=\",\"args\":[{\"property\":\"entityType\"},\"http://example.org/mining/Site\"]},{\"op\":\"s_intersects\",\"args\":[{\"property\":\"urn:jena:lucene:field#location\"},{\"bbox\":[138,-29,154,-10]}]}]}", "minResults": 1 },
+  { "label": "Boreholes in WA bbox", "params": "?filter={\"op\":\"and\",\"args\":[{\"op\":\"=\",\"args\":[{\"property\":\"entityType\"},\"http://example.org/mining/Borehole\"]},{\"op\":\"s_intersects\",\"args\":[{\"property\":\"urn:jena:lucene:field#location\"},{\"bbox\":[112,-35,129,-14]}]}]}", "minResults": 1 },
+  { "label": "Gold + Aus bbox", "params": "?filter={\"op\":\"and\",\"args\":[{\"op\":\"=\",\"args\":[{\"property\":\"commodity\"},\"http://example.org/mining/commodity/Gold\"]},{\"op\":\"s_intersects\",\"args\":[{\"property\":\"urn:jena:lucene:field#location\"},{\"bbox\":[112,-44,154,-10]}]}]}", "minResults": 3 },
 
   { "group": "Spatial + FTS + Facets" },
-  { "label": "\"mine\" sites in QLD bbox", "params": "?q=mine&filter={\"op\":\"and\",\"args\":[{\"op\":\"=\",\"args\":[{\"property\":\"entityType\"},\"http://example.org/mining/Site\"]},{\"op\":\"s_intersects\",\"args\":[{\"property\":\"location\"},{\"bbox\":[138,-29,154,-10]}]}]}", "minResults": 1 },
-  { "label": "\"mine\" in WA + state=WA bbox", "params": "?q=mine&filter={\"op\":\"and\",\"args\":[{\"op\":\"=\",\"args\":[{\"property\":\"state\"},\"http://example.org/mining/state/WA\"]},{\"op\":\"s_intersects\",\"args\":[{\"property\":\"location\"},{\"bbox\":[112,-35,129,-14]}]}]}", "minResults": 1 }
+  { "label": "\"mine\" sites in QLD bbox", "params": "?q=mine&filter={\"op\":\"and\",\"args\":[{\"op\":\"=\",\"args\":[{\"property\":\"entityType\"},\"http://example.org/mining/Site\"]},{\"op\":\"s_intersects\",\"args\":[{\"property\":\"urn:jena:lucene:field#location\"},{\"bbox\":[138,-29,154,-10]}]}]}", "minResults": 1 },
+  { "label": "\"mine\" in WA + state=WA bbox", "params": "?q=mine&filter={\"op\":\"and\",\"args\":[{\"op\":\"=\",\"args\":[{\"property\":\"state\"},\"http://example.org/mining/state/WA\"]},{\"op\":\"s_intersects\",\"args\":[{\"property\":\"urn:jena:lucene:field#location\"},{\"bbox\":[112,-35,129,-14]}]}]}", "minResults": 1 }
 ]
