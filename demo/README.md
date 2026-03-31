@@ -66,6 +66,7 @@ The demo data (`data/mining.ttl`) contains:
 - **7 Boreholes** — drill holes linked to sites
 - **8 Mining Reports** — geological and production reports
 - **4 Authors** — people who authored the reports
+- **1 Multi-identifier demo report** — includes `""`, `94130`, and `DAG2011/00113216`
 
 ### Relationships
 
@@ -117,6 +118,7 @@ it finds entities that link *to* the report.
 | `05-combined.rq` | Search + facets in one query (UNION pattern) |
 | `06-sequence-path-facet.rq` | Facet counts on `authorName` (sequence path field) |
 | `07-filter-by-author.rq` | Filter results by `authorName` = "Dr Sarah Jones" |
+| `09-matchraw-multivalue.rq` | Multi-valued identifier search showing `?matchRaw` on dirty identifier data |
 
 ### Expected results for path queries
 
@@ -132,6 +134,14 @@ authorName  "Prof Wei Chen"    2
 ```
 report-mia-2023  "Mount Isa Copper Resource Estimation 2023"
 report-od-2024   "Olympic Dam Expansion Feasibility Study"
+```
+
+**Query 09** should return the demo report with `?matchRaw = "94130"` on every row,
+even though the entity also carries an empty identifier value:
+```
+report-identifier-demo  "94130"  ""
+report-identifier-demo  "94130"  "94130"
+report-identifier-demo  "94130"  "DAG2011/00113216"
 ```
 
 ## Server image

@@ -110,6 +110,7 @@ field:depth
 field:identifier
     idx:fieldName "identifier" ;
     idx:fieldType idx:TextField ;
+    idx:multiValued true ;
     idx:defaultSearch true ;
     idx:analyzer [ a text:EdgeNGramAnalyzer ] ;
     idx:queryAnalyzer [ a text:LowerCaseKeywordAnalyzer ] ;

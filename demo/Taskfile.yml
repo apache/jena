@@ -5,8 +5,8 @@ version: '3'
 vars:
   VERSION: 6.1.0-SNAPSHOT
   FUSEKI_JAR: ../jena-fuseki2/jena-fuseki-server/target/jena-fuseki-server-{{.VERSION}}.jar
-  FUSEKI_PORT: '{{.FUSEKI_PORT | default "3030"}}'
-  APP_PORT: '{{.APP_PORT | default "8000"}}'
+  FUSEKI_PORT: '{{.FUSEKI_PORT | default "3035"}}'
+  APP_PORT: '{{.APP_PORT | default "8080"}}'
   SERVER_URL: http://localhost:{{.FUSEKI_PORT}}
   IMAGE_NAME: '{{.IMAGE_NAME | default "fuseki-ai"}}'
   IMAGE_TAG: '{{.IMAGE_TAG | default .VERSION}}'

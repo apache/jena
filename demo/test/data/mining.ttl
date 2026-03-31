@@ -285,3 +285,16 @@ ex:report-pil-exploration a ex:MiningReport ;
     ex:status status:Current ;
     ex:year 2023 ;
     ex:authoredBy ex:author-williams .
+
+# Demo case for multi-valued identifier search.
+# The empty identifier is intentionally present to model dirty source data.
+ex:report-identifier-demo a ex:MiningReport ;
+    rdfs:label "Multi Identifier Drillhole Record Demo" ;
+    ex:identifier "", "94130", "DAG2011/00113216" ;
+    dct:description "Demo report carrying multiple identifier values on one entity, including an empty identifier and two usable identifiers for the same drillhole record." ;
+    ex:commodity commodity:Gold ;
+    ex:state state:WA ;
+    ex:operator operator:Newmont ;
+    ex:status status:Current ;
+    ex:year 2011 ;
+    ex:authoredBy ex:author-patel .

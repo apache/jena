@@ -1,0 +1,14 @@
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+# Demonstrates luc:query raw-value binding for a multi-valued identifier field.
+# The demo entity has identifiers "", "94130", and "DAG2011/00113216".
+# ?matchRaw should be bound to "94130" rather than the empty stored value.
+
+PREFIX luc: <urn:jena:lucene:index#>
+PREFIX ex:  <http://example.org/mining/>
+
+SELECT ?entity ?score ?matchRaw ?identifier
+WHERE {
+    (?entity ?score ?matchRaw) luc:query ("urn:jena:lucene:field#identifier" "94130" 10) .
+    ?entity ex:identifier ?identifier .
+}
+ORDER BY ?identifier

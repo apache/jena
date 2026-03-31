@@ -35,6 +35,9 @@
   { "label": "Author: Dr Sarah Jones", "params": "?filter={\"op\":\"=\",\"args\":[{\"property\":\"authorName\"},\"Dr Sarah Jones\"]}", "minResults": 1 },
   { "label": "Author: James Williams", "params": "?filter={\"op\":\"=\",\"args\":[{\"property\":\"authorName\"},\"James Williams\"]}", "minResults": 1 },
 
+  { "group": "Identifier Search" },
+  { "label": "Identifier: 94130 (multi-valued demo record)", "params": "?id=94130", "minResults": 1 },
+
   { "group": "Spatial: Bbox Filter" },
   { "label": "Australia bbox (all spatial)", "params": "?filter={\"op\":\"s_intersects\",\"args\":[{\"property\":\"location\"},{\"bbox\":[112,-44,154,-10]}]}", "minResults": 10 },
   { "label": "Queensland bbox", "params": "?filter={\"op\":\"s_intersects\",\"args\":[{\"property\":\"location\"},{\"bbox\":[138,-29,154,-10]}]}", "minResults": 5 },
