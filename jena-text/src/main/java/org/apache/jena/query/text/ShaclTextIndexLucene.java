@@ -46,12 +46,15 @@ import org.apache.lucene.facet.sortedset.SortedSetDocValuesReaderState;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexableField;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.StoredFields;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
+import org.apache.lucene.store.ByteBuffersDirectory;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.util.BytesRef;
 import org.locationtech.jts.geom.*;
@@ -587,10 +590,11 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
 
     // ---- Value and field node helpers ----
 
-    private Node extractValueNode(Document doc, List<String> resolvedFields) {
+    private Node extractValueNode(Document doc, List<String> resolvedFields, Query valueQuery) {
         for (String fieldName : resolvedFields) {
-            String storedValue = doc.get(fieldName);
-            if (storedValue == null) continue;
+            String[] storedValues = doc.getValues(fieldName);
+            if (storedValues == null || storedValues.length == 0) continue;
+            String storedValue = selectStoredValue(fieldName, storedValues, valueQuery);
             ShaclIndexMapping.FieldDef fd = shaclMapping.findFieldByName(fieldName);
             if (fd == null) continue;
             return switch (fd.getFieldType()) {
@@ -605,6 +609,36 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
             };
         }
         return null;
+    }
+
+    private String selectStoredValue(String fieldName, String[] storedValues, Query valueQuery) {
+        if (storedValues.length == 1 || valueQuery == null) {
+            return storedValues[0];
+        }
+        for (String storedValue : storedValues) {
+            if (storedValue != null && matchesStoredValue(fieldName, storedValue, valueQuery)) {
+                return storedValue;
+            }
+        }
+        return storedValues[0];
+    }
+
+    private boolean matchesStoredValue(String fieldName, String storedValue, Query valueQuery) {
+        try (Directory dir = new ByteBuffersDirectory()) {
+            IndexWriterConfig config = new IndexWriterConfig(getAnalyzer());
+            try (IndexWriter writer = new IndexWriter(dir, config)) {
+                Document valueDoc = new Document();
+                valueDoc.add(new Field(fieldName, storedValue, TextField.TYPE_STORED));
+                writer.addDocument(valueDoc);
+                writer.commit();
+            }
+            try (IndexReader reader = DirectoryReader.open(dir)) {
+                IndexSearcher searcher = new IndexSearcher(reader);
+                return searcher.count(valueQuery) > 0;
+            }
+        } catch (IOException ex) {
+            throw new TextIndexException("matchesStoredValue", ex);
+        }
     }
 
     private static boolean looksLikeUri(String value) {
@@ -647,7 +681,7 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
                 String uri = doc.get(entityField);
                 if (uri != null) {
                     Node entityNode = TextQueryFuncs.stringToNode(uri);
-                    Node valueNode = extractValueNode(doc, resolvedFields);
+                    Node valueNode = extractValueNode(doc, resolvedFields, query);
                     results.add(new TextHit(entityNode, sd.score, valueNode, null, fieldNode));
                 }
             }
@@ -676,8 +710,10 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
 
             BooleanQuery.Builder combined = new BooleanQuery.Builder();
 
+            Query valueQuery = null;
             if (qs != null && !qs.isEmpty()) {
-                combined.add(parseQueryForFields(qs, resolved), BooleanClause.Occur.MUST);
+                valueQuery = parseQueryForFields(qs, resolved);
+                combined.add(valueQuery, BooleanClause.Occur.MUST);
             }
 
             for (Map.Entry<String, List<String>> entry : filters.entrySet()) {
@@ -708,7 +744,7 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
                 String uri = doc.get(entityField);
                 if (uri != null) {
                     Node entityNode = TextQueryFuncs.stringToNode(uri);
-                    Node valueNode = extractValueNode(doc, resolved);
+                    Node valueNode = extractValueNode(doc, resolved, valueQuery);
                     results.add(new TextHit(entityNode, sd.score, valueNode, null, fieldNode));
                 }
             }
@@ -774,8 +810,10 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
 
             BooleanQuery.Builder combined = new BooleanQuery.Builder();
 
+            Query valueQuery = null;
             if (qs != null && !qs.isEmpty()) {
-                combined.add(parseQueryForFields(qs, resolved), BooleanClause.Occur.MUST);
+                valueQuery = parseQueryForFields(qs, resolved);
+                combined.add(valueQuery, BooleanClause.Occur.MUST);
             }
 
             if (cqlFilter != null) {
@@ -809,7 +847,7 @@ public class ShaclTextIndexLucene extends TextIndexLucene {
                 String uri = doc.get(entityField);
                 if (uri != null) {
                     Node entityNode = TextQueryFuncs.stringToNode(uri);
-                    Node valueNode = extractValueNode(doc, resolved);
+                    Node valueNode = extractValueNode(doc, resolved, valueQuery);
                     results.add(new TextHit(entityNode, sd.score, valueNode, null, fieldNode));
                 }
             }
