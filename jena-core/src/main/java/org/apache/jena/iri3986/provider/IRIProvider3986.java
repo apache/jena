@@ -60,11 +60,36 @@ public class IRIProvider3986 implements IRIProvider {
 
         @Override
         public boolean isReference() {
-            if ( iri.isRootless() )
-                return true;
-            // isHierarchical.
-            // There is always a path even if it's ""
-            return iri.hasScheme();
+            if ( ! iri.hasScheme() )
+                return false;
+
+            // Check for some scheme-specific errors.
+            for ( Violation violation : iri.violations() ) {
+                // A few URI scheme error - c.f. RDF Reference IRI
+                Issue issue = violation.issue();
+                boolean isStrict = Issues.isStrict(issue);
+                if ( isStrict ) {
+                    Severity severity = Violations.severities().get(violation.issue());
+                    switch(severity) {
+                        case INVALID, ERROR -> { return false; }
+                        default -> {}
+                    }
+                }
+
+                // A choice of a few issues to regard as unsuitable.
+                switch(issue) {
+                    case ParseError,
+                        http_empty_host, http_no_host,
+                        iri_password, iri_scheme_name_is_not_lowercase, iri_user_info_present,
+                        urn_bad_nid,
+                        //urn_bad_nss, // Allow: Use of "urn:abc:" as a prefix.
+                        urn_bad_components,
+                        urn_x_namespace, urn_bad_informal_namespace
+                            -> { return false; }
+                    default -> {}
+                }
+            }
+            return true;
         }
 
         @Override
@@ -205,6 +230,7 @@ public class IRIProvider3986 implements IRIProvider {
             Issue issue = v.issue();
             boolean isStrict = Issues.isStrict(issue);
             // Any special cases.
+            // See also IRIx3986.isReference()
 //            switch(issue) {
 //                case urn_nid, urn_nss, urn_uuid_bad_pattern, uuid_bad_pattern:
 //                    ...

@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.rfc3986.Issue;
+import org.apache.jena.rfc3986.Violation;
 
 class Issues {
 
@@ -52,6 +53,10 @@ class Issues {
     private enum STRICT_MODE { STRICT, NON_STRICT }
 
     private static Map<IssueGroup, STRICT_MODE> strictnessMap = new ConcurrentHashMap<>();
+
+    /*package*/ static boolean isStrict(Violation violation) {
+        return isStrict(violation.issue());
+    }
 
     /*package*/ static boolean isStrict(Issue issue) {
         Objects.requireNonNull(issue);

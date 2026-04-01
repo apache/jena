@@ -121,19 +121,15 @@ public abstract class IRIx {
     public abstract String scheme();
 
     /**
-     * An <em>RDF Reference</em> is an URI which has scheme.
-     * If it is hierarchical, it should have a non-empty host authority.
-     * It may have a query component and may have a fragment component.
-     * This not a term in
+     * An <em>RDF Reference IRI</em>, defined in RDF 1.2 Concepts section
+     * <a href="https://www.w3.org/TR/rdf12-concepts/#reference-iris">3.3.1 RDF Reference IRIs</a>,
+     * is an URI (IRI) that is suitable for use as a resource identifier.
+     * <p>
+     * The terminology is not defined in
      * <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>
      * and it is not the same as "absolute URI".
-     * This is a change from
-     * <a href="https://tools.ietf.org/html/rfc2396">RFC 2396</a>
-     * where an absolute URI means "has scheme".
      * <p>
-     * In RDF data, it is a
-     * <a href="https://www.w3.org/TR/rdf11-concepts/#section-IRIs">useful concept</a>.
-     * It is either an absolute URI, but if it is hierarchical, it must have a host.
+     * In RDF data, it must be legal syntax and should follow the rules of the IRI scheme.
      * <p>
      * Examples:
      * <ul>
@@ -165,6 +161,10 @@ public abstract class IRIx {
      *     and a <a href="https://tools.ietf.org/html/rfc8141#section-2.3.3">f-component</a> (which is a URI fragment).
      *     </ul>
      * </ul>
+     * <p>
+     * The operation {@code isReference} reflects common usage in data published on the web.
+     * It only checks for basic schema errors. It is not a complete analysis of <em>RDF Reference IRI</em>.
+     * See {@link #handleViolations} for more detailed information of scheme errors and warnings.
      */
     public abstract boolean isReference();
 

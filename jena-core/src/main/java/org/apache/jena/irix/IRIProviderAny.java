@@ -50,7 +50,7 @@ public class IRIProviderAny  implements IRIProvider {
 
         @Override
         public boolean isReference() {
-            return true;
+            return false;
         }
 
         @Override
