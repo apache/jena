@@ -56,6 +56,14 @@ public class TestIRIxReference extends AbstractTestIRIx_3986 {
 
     @Test public void reference_10() { reference("wm:/abc", true); }
 
+    // Not references
+
+    @Test public void reference_90() { reference("http://user@host/", false); }
+    @Test public void reference_91() { reference("http://user:passwd@host/", false); }
+
+    @Test public void reference_95() { reference("urn:X-ns:abc", false); }
+
+
     private void reference(String uriStr, boolean expected) {
         IRIx iri = test_create(uriStr);
         assertEquals("IRI = "+uriStr, expected, iri.isReference());

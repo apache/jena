@@ -89,7 +89,7 @@ public class JenaSeveritySettings {
         SeverityMap.setSeverity(severityMap, Issue.oid_bad_syntax,                    Severity.ERROR);
         SeverityMap.setSeverity(severityMap, Issue.oid_scheme_not_registered,         Severity.WARNING);
 
-        // Performs a completeness check.
+        // SeverityMap performs a completeness check.
         return SeverityMap.create("Jena settings", severityMap);
     }
 }

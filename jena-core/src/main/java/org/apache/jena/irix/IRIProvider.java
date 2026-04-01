@@ -23,8 +23,7 @@ package org.apache.jena.irix;
 
 /**
  * Provider: an implementation of a factory for IRIs.
- * This is not an application interface - is the plugin for the provider to jena.
- *
+ * This is not an application interface; it is the plugin for the provider to jena.
  *
  * @see IRIxResolver
  */
@@ -41,7 +40,7 @@ public interface IRIProvider {
     /**
      * Check an IRI, throw {@link IRIException} if the string does not conform to the
      * grammar of <a href="https://www.w3.org/TR/rdf12-concepts/#iri-abnf">RFC
-     * 3986/3987</a>,  or violates additional rules of a URI scheme know to the
+     * 3986/3987</a>,  or violates additional rules of a URI scheme known to the
      * provider.
      */
     public void check(String iriStr) throws IRIException;

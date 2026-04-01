@@ -64,6 +64,8 @@ public class TestURISchemes {
     // == http:, https:
     @Test public void scheme_http_empty_host_1() { schemeViolation("http:///abc",  URIScheme.HTTP, Issue.http_empty_host); }
     @Test public void scheme_http_empty_host_2() { schemeViolation("https:///abc", URIScheme.HTTPS, Issue.http_empty_host); }
+    @Test public void scheme_http_empty_host_3() { schemeViolation("https://", URIScheme.HTTPS, Issue.http_empty_host); }
+    @Test public void scheme_http_empty_host_4() { schemeViolation("https:", URIScheme.HTTPS, Issue.http_no_host); }
     // Including good, bad IPv4 addresses
     //@Test public void scheme_addr_v4_1() { schemeViolation("http://10.11.12.1300/abc", URIScheme.GENERAL, Issue.iri_bad_ipv4_address); }
     // RFC 3986 has the syntax of IPv6 addresses in the grammar.

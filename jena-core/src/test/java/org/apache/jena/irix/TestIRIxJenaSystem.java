@@ -26,6 +26,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,12 +37,13 @@ import org.junit.runners.Parameterized;
 /**
  * Test of parsing and schema violations.
  * <p>
- * This is the test suite that compares results with jena-iri.
+ *
  * See also {@link TestIRIxSyntaxRFC3986} for RDF 3986 syntax only parsing.
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(Parameterized.class)
 public class TestIRIxJenaSystem extends AbstractTestIRIx_3986 {
+    // Up until jena 5.6.0, this was the test suite that compares results with jena-iri.
     public TestIRIxJenaSystem(String name, IRIProvider provider) {
         super(name, provider);
     }
@@ -97,63 +100,63 @@ public class TestIRIxJenaSystem extends AbstractTestIRIx_3986 {
     // ---- bad
 
     // Leading ':'
-    @Test public void bad_scheme_1() { bad(":segment"); }
+    @Test public void bad_scheme_1() { badSyntax(":segment"); }
 
     // Bad scheme
-    @Test public void bad_scheme_2() { bad("://host/xyz"); }
+    @Test public void bad_scheme_2() { badSyntax("://host/xyz"); }
 
     // Bad scheme
-    @Test public void bad_scheme_3() { bad("1://host/xyz"); }
+    @Test public void bad_scheme_3() { badSyntax("1://host/xyz"); }
 
     // Bad scheme
-    @Test public void bad_scheme_4() { bad("a~b://host/xyz"); }
+    @Test public void bad_scheme_4() { badSyntax("a~b://host/xyz"); }
 
     // Bad scheme
-    @Test public void bad_scheme_5() { bad("aβ://host/xyz"); }
+    @Test public void bad_scheme_5() { badSyntax("aβ://host/xyz"); }
 
     // Bad scheme
-    @Test public void bad_scheme_6() { bad("_:xyz"); }
+    @Test public void bad_scheme_6() { badSyntax("_:xyz"); }
 
     // Bad scheme
-    @Test public void bad_scheme_7() { bad("a_b:xyz"); }
+    @Test public void bad_scheme_7() { badSyntax("a_b:xyz"); }
 
     // Space!
-    @Test public void bad_chars_1() { bad("http://abcdef:80/xyz /abc"); }
+    @Test public void bad_chars_1() { badSyntax("http://abcdef:80/xyz /abc"); }
 
     // colons
-    @Test public void bad_host_1() { bad("http://abcdef:80:/xyz"); }
+    @Test public void bad_host_1() { badSyntax("http://abcdef:80:/xyz"); }
 
     // Bad IPv6
-    @Test public void bad_ipv6_1() { bad("http://[::80/xyz"); }
+    @Test public void bad_ipv6_1() { badSyntax("http://[::80/xyz"); }
 
     // Bad IPv6
-    @Test public void bad_ipv6_2() { bad("http://host]/xyz"); }
+    @Test public void bad_ipv6_2() { badSyntax("http://host]/xyz"); }
 
     // Bad IPv6
-    @Test public void bad_ipv6_3() { bad("http://[]/xyz"); }
+    @Test public void bad_ipv6_3() { badSyntax("http://[]/xyz"); }
 
     // Multiple @
-    @Test public void bad_authority_1() { bad("ftp://abc@def@host/abc"); }
+    @Test public void bad_authority_1() { badSyntax("ftp://abc@def@host/abc"); }
 
     // Multiple colon in authority
-    @Test public void bad_authority_2() { bad("http://abc:def:80/abc"); }
+    @Test public void bad_authority_2() { badSyntax("http://abc:def:80/abc"); }
 
     // Bad %-encoding.
-    @Test public void bad_percent_1() { bad("http://example/abc%ZZdef"); }
+    @Test public void bad_percent_1() { badSyntax("http://example/abc%ZZdef"); }
 
-    @Test public void bad_percent_2() { bad("http://abc%ZZdef/"); }
-
-    // Bad %-encoded
-    @Test public void bad_percent_3() { bad("http://example/xyz%"); }
+    @Test public void bad_percent_2() { badSyntax("http://abc%ZZdef/"); }
 
     // Bad %-encoded
-    @Test public void bad_percent_4() { bad("http://example/xyz%A"); }
+    @Test public void bad_percent_3() { badSyntax("http://example/xyz%"); }
 
     // Bad %-encoded
-    @Test public void bad_percent_5() { bad("http://example/xyz%A?"); }
+    @Test public void bad_percent_4() { badSyntax("http://example/xyz%A"); }
+
+    // Bad %-encoded
+    @Test public void bad_percent_5() { badSyntax("http://example/xyz%A?"); }
 
     // [] not allowed.
-    @Test public void bad_frag_1() { bad("http://eg.com/test.txt#xpointer(/unit[5])"); }
+    @Test public void bad_frag_1() { badSyntax("http://eg.com/test.txt#xpointer(/unit[5])"); }
 
     @Test public void equality_01() {
         String s = "https://jena.apache.org/";
@@ -164,26 +167,26 @@ public class TestIRIxJenaSystem extends AbstractTestIRIx_3986 {
     }
 
     // HTTP scheme specific rules.
-    @Test public void parse_http_01()   { badSpecific("http:///file/name.txt"); }
+    @Test public void parse_http_01()   { badBySchemeOnCreate("http:///file/name.txt"); }
 
     // HTTP scheme specific rules.
-    @Test public void parse_http_02()   { badSpecific("HTTP:///file/name.txt"); }
+    @Test public void parse_http_02()   { badBySchemeOnCreate("HTTP:///file/name.txt"); }
 
     // This is legal with path and no authority.
     //@Test public void parse_http_02a()   { badSpecific("http:/file/name.txt"); }
 
-    @Test public void parse_http_03()   { badSpecific("http://user@host/file/name.txt"); }
+    @Test public void parse_http_03()   { badByScheme("http://user@host/file/name.txt", 0, 1); }
 
     @Test public void parse_http_04()   { good("nothttp://user@host/file/name.txt"); }
 
     @Test public void parse_http_05()   { good("nothttp://user@/file/name.txt"); }
 
-    @Test public void parse_http_06() { badSpecific("http://user@host:8081/abc/def?qs=ghi#jkl"); }
+    @Test public void parse_http_06() { badByScheme("http://user@host:8081/abc/def?qs=ghi#jkl", 0, 1); }
 
     @Test public void parse_file_01() { good("file:///file/name.txt"); }
 
     // This is legal by RFC 8089, but not by earlier versions of the "file:" scheme.
-    @Test public void parse_file_02() { badSpecific("file://host/file/name.txt"); }
+    @Test public void parse_file_02() { badByScheme("file://host/file/name.txt", 0, 1); }
 
     // This is legal by RFC 8089 (jena-iri, based on the original RFC 1738, fails this with missing authority).
     @Test public void parse_file_03() { good("file:/file/name.txt"); }
@@ -216,34 +219,34 @@ public class TestIRIxJenaSystem extends AbstractTestIRIx_3986 {
     //  urn:2char:1char
     // urn:NID:NSS where NID is at least 2 alphas, and at most 32 long
 
-    @Test public void parse_urn_bad_01() { badSpecific("urn:"); }
+    @Test public void parse_urn_bad_01() { badBySchemeOnCreate("urn:"); }
 
-    @Test public void parse_urn_bad_02() { badSpecific("urn:x:abc"); }
+    @Test public void parse_urn_bad_02() { badBySchemeOnCreate("urn:x:abc"); }
 
-    @Test public void parse_urn_bad_03() { badSpecific("urn:abc:"); }
+    @Test public void parse_urn_bad_03() { badBySchemeOnCreate("urn:abc:"); }
 
     // 33 chars
-    @Test public void parse_urn_bad_04() { badSpecific("urn:abcdefghij-123456789-123456789-yz:a"); }
+    @Test public void parse_urn_bad_04() { badBySchemeOnCreate("urn:abcdefghij-123456789-123456789-yz:a"); }
 
     // Bad by URN specific rule for the query components.
-    @Test public void parse_urn_bad_05() { badSpecific("urn:local:abc/def?query=foo"); }
+    @Test public void parse_urn_bad_05() { badBySchemeOnCreate("urn:local:abc/def?query=foo"); }
 
     // URNs are defined in RFC 8141 referring to RFC 3986 (URI - ASCII)
     /**
      * Allow UCSCHARs in the NSS, and the RFC 8141 components.
      */
     private static boolean I_URN = true;
-    private void parse_internation_urn(String string) {
+    private void parse_international_urn(String string) {
         if ( I_URN )
             good(string);
         else
-            badSpecific(string);
+            badBySchemeOnCreate(string);
     }
 
-    @Test public void parse_intn_urn_01()    { parse_internation_urn("urn:NID:αβγ"); }
-    @Test public void parse_intn_urn_02()    { parse_internation_urn("urn:nid:nss#αβγ"); }
-    @Test public void parse_intn_urn_03()    { parse_internation_urn("urn:nid:nss?=αβγ"); }
-    @Test public void parse_intn_urn_04()    { parse_internation_urn("urn:nid:nss?+αβγ"); }
+    @Test public void parse_intn_urn_01()    { parse_international_urn("urn:NID:αβγ"); }
+    @Test public void parse_intn_urn_02()    { parse_international_urn("urn:nid:nss#αβγ"); }
+    @Test public void parse_intn_urn_03()    { parse_international_urn("urn:nid:nss?=αβγ"); }
+    @Test public void parse_intn_urn_04()    { parse_international_urn("urn:nid:nss?+αβγ"); }
 
     private static String testUUID = "aa045fc2-a781-11eb-9041-afa3877612ee";
 
@@ -257,7 +260,7 @@ public class TestIRIxJenaSystem extends AbstractTestIRIx_3986 {
         if ( UUID_8141 )
             good(string);
         else
-            badSpecific(string);
+            badBySchemeOnCreate(string);
     }
 
     // -- uuid:
@@ -266,24 +269,24 @@ public class TestIRIxJenaSystem extends AbstractTestIRIx_3986 {
 
     @Test public void parse_uuid_02() { good("uuid:"+(uppercase(testUUID))); }
 
-    @Test public void parse_uuid_bad_01() { badSpecific("uuid:06e775ac-2c38-11b2-801c-8086f2cc00c9?query=foo"); }
+    @Test public void parse_uuid_bad_01() { badByScheme("uuid:06e775ac-2c38-11b2-801c-8086f2cc00c9?query=foo", 1, 0); }
 
     // Too short
-    @Test public void parse_uuid_bad_02() { badSpecific("uuid:06e775ac-2c38-11b2"); }
+    @Test public void parse_uuid_bad_02() { badByScheme("uuid:06e775ac-2c38-11b2", 1, 0); }
 
     // Too long
-    @Test public void parse_uuid_bad_03() { badSpecific("uuid:06e775ac-2c38-11b2-9999"); }
+    @Test public void parse_uuid_bad_03() { badByScheme("uuid:06e775ac-2c38-11b2-9999", 1, 0); }
 
     // Bad character
-    @Test public void parse_uuid_bad_04() { badSpecific("uuid:06e775ac-ZZZZ-11b2-801c-8086f2cc00c9"); }
+    @Test public void parse_uuid_bad_04() { badByScheme("uuid:06e775ac-ZZZZ-11b2-801c-8086f2cc00c9", 1, 0); }
 
     // For the ad-hoc "uuid:" do not allow r/q/f components.
 
-    @Test public void parse_uuid_bad_10() { badSpecific("uuid:"+testUUID+ "?+chars"); }
+    @Test public void parse_uuid_bad_10() { badByScheme("uuid:"+testUUID+ "?+chars", 1, 0); }
 
-    @Test public void parse_uuid_bad_11() { badSpecific("uuid:"+testUUID+ "?=chars"); }
+    @Test public void parse_uuid_bad_11() { badByScheme("uuid:"+testUUID+ "?=chars", 1, 0); }
 
-    @Test public void parse_uuid_bad_12() { badSpecific("uuid:"+testUUID+"#frag"); }
+    @Test public void parse_uuid_bad_12() { badByScheme("uuid:"+testUUID+"#frag", 1, 0); }
 
 
     // -- urn:uuid:
@@ -337,28 +340,31 @@ public class TestIRIxJenaSystem extends AbstractTestIRIx_3986 {
 
     // Always bad.
     // Query string, not a component.
-    @Test public void parse_urn_uuid_bad_01() { badSpecific("urn:uuid:06e775ac-2c38-11b2-801c-8086f2cc00c9?query=foo"); }
+    @Test public void parse_urn_uuid_bad_01() { badBySchemeOnCreate("urn:uuid:06e775ac-2c38-11b2-801c-8086f2cc00c9?query=foo"); }
 
+    // XXX ???? Hard error?
     // Bad length
-    @Test public void parse_urn_uuid_bad_02() { badSpecific("urn:uuid:06e775ac"); }
+    @Test public void parse_urn_uuid_bad_02() { badByScheme("urn:uuid:06e775ac", 1, 0); }
 
+    // XXX ???? Hard error?
     // Bad character
-    @Test public void parse_urn_uuid_bad_03() { badSpecific("urn:uuid:06e775ac-ZZZZ-11b2-801c-8086f2cc00c9"); }
+    @Test public void parse_urn_uuid_bad_03() { badByScheme("urn:uuid:06e775ac-ZZZZ-11b2-801c-8086f2cc00c9", 1, 0); }
 
     // Always bad. At least one char.
-    @Test public void parse_urn_uuid_bad_04() { badSpecific("urn:uuid:" + testUUID + "?="); }
+    @Test public void parse_urn_uuid_bad_04() { badBySchemeOnCreate("urn:uuid:" + testUUID + "?="); }
 
     // Always bad. At least one char.
-    @Test public void parse_urn_uuid_bad_05() { badSpecific("urn:uuid:" + testUUID + "?+"); }
+    @Test public void parse_urn_uuid_bad_05() { badBySchemeOnCreate("urn:uuid:" + testUUID + "?+"); }
 
-    @Test public void parse_urn_uuid_bad_06() { badSpecific("urn:uuid:" + testUUID + "?"); }
+    @Test public void parse_urn_uuid_bad_06() { badBySchemeOnCreate("urn:uuid:" + testUUID + "?"); }
 
-    @Test public void parse_urn_uuid_bad_07() { badSpecific("urn:uuid:" + testUUID + "?abc"); }
+    @Test public void parse_urn_uuid_bad_07() { badBySchemeOnCreate("urn:uuid:" + testUUID + "?abc"); }
 
     // Not ASCII in the NSS part
-    @Test public void parse_urn_uuid_bad_12() { badSpecific("urn:uuid:" + testUUID + "#αβγ"); }
-    @Test public void parse_urn_uuid_bad_13() { badSpecific("urn:uuid:" + testUUID + "?=αβγ"); }
-    @Test public void parse_urn_uuid_bad_14() { badSpecific("urn:uuid:" + testUUID + "?+αβγ"); }
+    // XXX Check legality; align to "uuid:"
+    @Test public void parse_urn_uuid_bad_12() { good("urn:uuid:" + testUUID + "#αβγ"); }
+    @Test public void parse_urn_uuid_bad_13() { good("urn:uuid:" + testUUID + "?=αβγ"); }
+    @Test public void parse_urn_uuid_bad_14() { good("urn:uuid:" + testUUID + "?+αβγ"); }
 
     private void good(String string) {
         IRIx iri = test_create(string);
@@ -369,15 +375,36 @@ public class TestIRIxJenaSystem extends AbstractTestIRIx_3986 {
     }
 
     // Expect an IRIParseException
-    private void bad(String string) {
+    private void badSyntax(String string) {
         try {
             IRIx iri = test_create(string);
-            if ( ! iri.isReference())
-                fail("Did not fail: "+string);
+            fail("Did not fail: "+string);
         } catch (IRIException ex) {}
     }
 
-    private void badSpecific(String string) {
-        bad(string);
+    private void badBySchemeOnCreate(String string) {
+        try {
+            test_create(string);
+            fail("<"+string+">: Expected an exception when created");
+        } catch (IRIException ex) {}
+    }
+
+    // See also org.apache.jena.rfc3986.TestURISchemes that tests
+    // which errors and warning are expected.
+
+    private void badByScheme(String string, int expectedNumErrors, int expectedNumWarnings) {
+        IRIx iri = test_create(string);
+        // This is after the "error on create" step in IRIProvider3986.
+        AtomicInteger errors = new AtomicInteger(0);
+        AtomicInteger warnings = new AtomicInteger(0);
+        iri.handleViolations((isError, str) -> {
+            if ( isError )
+                errors.incrementAndGet();
+            else
+                warnings.incrementAndGet();
+        });
+        //System.out.printf("(e=%d, w=%d) %s\n", errors.get(), warnings.get(),  string);
+        assertEquals("errors", expectedNumErrors, errors.get());
+        assertEquals("warnings", expectedNumWarnings, warnings.get());
     }
 }
