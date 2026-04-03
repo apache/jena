@@ -26,13 +26,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.Timeouts.Timeout;
 import org.apache.jena.sparql.engine.Timeouts.TimeoutBuilderImpl;
+import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.modify.UpdateEngineFactory;
 import org.apache.jena.sparql.modify.UpdateEngineRegistry;
 import org.apache.jena.sparql.syntax.syntaxtransform.UpdateTransformOps;
@@ -40,7 +41,6 @@ import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.ContextAccumulator;
 import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.update.Update;
-import org.apache.jena.update.UpdateException;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
 
@@ -163,8 +163,10 @@ public class UpdateExecDatasetBuilder implements UpdateExecBuilder {
 
         Context cxt = getContext();
         UpdateEngineFactory f = UpdateEngineRegistry.get().find(dataset, cxt);
-        if ( f == null )
-            throw new UpdateException("Failed to find an UpdateEngine");
+        if ( f == null ) {
+            Log.warn(UpdateExecDatasetBuilder.class, "Failed to find an UpdateEngine");
+            return null;
+        }
 
         Timeout timeout = timeoutBuilder.build();
 

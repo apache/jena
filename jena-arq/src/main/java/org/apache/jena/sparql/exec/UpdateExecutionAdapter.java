@@ -21,6 +21,8 @@
 
 package org.apache.jena.sparql.exec;
 
+import java.util.Objects;
+
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.update.UpdateExecution;
 
@@ -29,6 +31,7 @@ public class UpdateExecutionAdapter implements UpdateExecution {
     private final UpdateExec updateExec;
 
     public static UpdateExecution adapt(UpdateExec updateExec) {
+        Objects.requireNonNull(updateExec);
         if ( updateExec instanceof UpdateExecAdapter ) {
             return ((UpdateExecAdapter)updateExec).get();
         }
