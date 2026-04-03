@@ -177,7 +177,7 @@ public class uparse extends CmdARQ
         finally { LogCtl.setLevel(QueryParserBase.ParserLoggerName, "INFO"); }
     }
 
-    public static class UpdateCheckException extends QueryException {
+    private static class UpdateCheckException extends QueryException {
         public UpdateCheckException() { super(); }
         public UpdateCheckException(Throwable cause) { super(cause); }
         public UpdateCheckException(String msg) { super(msg); }

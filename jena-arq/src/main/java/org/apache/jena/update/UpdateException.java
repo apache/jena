@@ -21,13 +21,12 @@
 
 package org.apache.jena.update;
 
-import org.apache.jena.sparql.ARQException ;
+import org.apache.jena.sparql.ARQException;
 
-/** Exception root for SPARQL Update */ 
-public class UpdateException extends ARQException
-{
-    public UpdateException() { super() ; }
-    public UpdateException(Throwable cause) { super(cause) ; }
-    public UpdateException(String msg) { super(msg) ; }
-    public UpdateException(String msg, Throwable cause) { super(msg, cause) ; }
+/** Exception root for SPARQL Update */
+public class UpdateException extends ARQException {
+    public UpdateException() { super(); }
+    public UpdateException(Throwable cause) { super(cause); }
+    public UpdateException(String msg) { super(msg); }
+    public UpdateException(String msg, Throwable cause) { super(msg, cause); }
 }

@@ -22,6 +22,7 @@
 package org.apache.jena.sparql.exec;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.json.JsonObject;
@@ -44,6 +45,7 @@ public class QueryExecutionAdapter implements QueryExecution
     private final Dataset dataset;
 
     public static QueryExecution adapt(QueryExec qExec) {
+        Objects.requireNonNull(qExec);
         if ( qExec instanceof QueryExecAdapter) {
             return ((QueryExecAdapter)qExec).get();
         }
