@@ -30,11 +30,9 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import jakarta.servlet.http.HttpServletRequest;
-
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryException;
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.sparql.core.DatasetDescription;
 
@@ -44,9 +42,9 @@ import org.apache.jena.sparql.core.DatasetDescription;
 public class SPARQLProtocol {
 
     /**
-     * Form a message from a {@link QueryException}.
+     * Form a message from an {@link Exception}.
      */
-    public static String messageForException(QueryException ex) {
+    public static String messageForException(Exception ex) {
         if ( ex.getMessage() != null )
             return ex.getMessage();
         if ( ex.getCause() != null )
