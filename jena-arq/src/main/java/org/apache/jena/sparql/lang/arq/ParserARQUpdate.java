@@ -26,11 +26,11 @@ import java.io.Reader;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.query.QueryException;
 import org.apache.jena.query.QueryParseException;
-import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.lang.UpdateParser;
 import org.apache.jena.sparql.lang.arq.javacc.ARQParser;
 import org.apache.jena.sparql.modify.UpdateSink;
+import org.apache.jena.update.UpdateException;
 
 public class ParserARQUpdate extends UpdateParser {
     public ParserARQUpdate() {}
@@ -50,18 +50,14 @@ public class ParserARQUpdate extends UpdateParser {
             int col = parser.token.endColumn;
             int line = parser.token.endLine;
             throw new QueryParseException(tErr.getMessage(), line, col);
-        }
-
-        catch (QueryException ex) {
+        } catch (QueryException | UpdateException ex) {
             throw ex;
-        } catch (JenaException ex) {
-            throw new QueryException(ex.getMessage(), ex);
         } catch (Error err) {
             // The token stream can throw errors.
             throw new QueryParseException(err.getMessage(), err, -1, -1);
         } catch (Throwable th) {
             Log.error(this, "Unexpected throwable: ", th);
-            throw new QueryException(th.getMessage(), th);
+            throw new UpdateException(th.getMessage(), th);
         }
     }
 }

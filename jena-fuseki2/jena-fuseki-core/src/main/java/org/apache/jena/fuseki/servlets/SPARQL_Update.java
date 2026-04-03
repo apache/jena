@@ -42,7 +42,6 @@ import java.util.Enumeration;
 import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
-
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.atlas.lib.StrUtils;
@@ -52,13 +51,12 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.irix.IRIx;
 import org.apache.jena.irix.IRIxResolver;
-import org.apache.jena.query.QueryBuildException;
+import org.apache.jena.query.QueryException;
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.query.Syntax;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.shared.OperationDeniedException;
-import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.sparql.modify.UsingList;
 import org.apache.jena.update.UpdateAction;
 import org.apache.jena.update.UpdateException;
@@ -230,24 +228,20 @@ public class SPARQL_Update extends ActionService
             else
                 UpdateAction.execute(req, action.getActiveDSG());
             action.commit();
-        } catch (UpdateException ex) {
-            ActionLib.consumeBody(action);
-            abortSilent(action);
-            incCounter(action.getEndpoint().getCounters(), UpdateExecErrors);
-            ServletOps.errorOccurred(ex.getMessage());
         } catch (QueryParseException ex) {
             ActionLib.consumeBody(action);
             abortSilent(action);
+            incCounter(action.getEndpoint().getCounters(), UpdateExecErrors);
             String msg = messageForParseException(ex);
             action.log.warn(format("[%d] Parse error: %s", action.id, msg));
-            ServletOps.errorBadRequest(messageForException(ex));
-        } catch (QueryBuildException|QueryExceptionHTTP ex) {
+            ServletOps.errorBadRequest(msg);
+        } catch (UpdateException | QueryException ex) {
             ActionLib.consumeBody(action);
             abortSilent(action);
-            // Counter inc'ed further out.
+            incCounter(action.getEndpoint().getCounters(), UpdateExecErrors);
             String msg = messageForException(ex);
             action.log.warn(format("[%d] Bad request: %s", action.id, msg));
-            ServletOps.errorBadRequest(messageForException(ex));
+            ServletOps.errorBadRequest(msg);
         } catch (OperationDeniedException ex) {
             ActionLib.consumeBody(action);
             abortSilent(action);
