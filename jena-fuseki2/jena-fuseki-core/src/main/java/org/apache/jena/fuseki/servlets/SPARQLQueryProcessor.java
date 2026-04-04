@@ -256,9 +256,17 @@ public abstract class SPARQLQueryProcessor extends ActionService
         }
 
         Query query = null;
+
         try {
+            // Using the request for the base URL exposes information about the host,
+            // and the host may be behind a firewall, with the request going to a proxy/gateway.
+            // The request URL is not the firewall public host name.
+
+            String requestBase = QueryParseBase;
+            // BAD: base = action.getRequest().getRequestURL().toString();
+
             // NB syntax is ARQ (a superset of SPARQL)
-            query = QueryFactory.create(queryString, QueryParseBase, Syntax.syntaxARQ);
+            query = QueryFactory.create(queryString, requestBase, Syntax.syntaxARQ);
             queryStringLog = formatForLog(query);
             validateQuery(action, query);
         } catch (ActionErrorException ex) {

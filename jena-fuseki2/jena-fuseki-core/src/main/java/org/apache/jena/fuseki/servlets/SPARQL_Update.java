@@ -66,7 +66,7 @@ import org.apache.jena.web.HttpSC;
 
 public class SPARQL_Update extends ActionService
 {
-    // Base URI used to isolate parsing from the current directory of the server.
+    // Base URI used to isolate parsing from the current host name
     private static final String UpdateParseBase = Fuseki.BaseParserSPARQL;
     private static final IRIxResolver resolver = IRIxResolver.create()
                                                             .base(UpdateParseBase)
@@ -213,9 +213,17 @@ public class SPARQL_Update extends ActionService
         // If it isn't, we need to read the entire update request before performing any updates, because
         // we have to attempt to make the request atomic in the face of malformed updates.
         UpdateRequest req = null;
+
+        // Using the request for the base URL exposes information about the host,
+        // and the host may be behind a firewall, with the request going to a proxy/gateway.
+        // The request URL is not the firewall public host name.
+
+        String requestBase = UpdateParseBase;
+        // BAD: base = action.getRequest().getRequestURL().toString();
+
         if (!action.isTransactional()) {
             try {
-                req = UpdateFactory.read(usingList, input, UpdateParseBase, Syntax.syntaxARQ);
+                req = UpdateFactory.read(usingList, input, requestBase, Syntax.syntaxARQ);
             }
             catch (UpdateException ex) { ServletOps.errorBadRequest(ex.getMessage()); return; }
             catch (QueryParseException ex) { ServletOps.errorBadRequest(messageForException(ex)); return; }
@@ -224,7 +232,7 @@ public class SPARQL_Update extends ActionService
         action.beginWrite();
         try {
             if (req == null )
-                UpdateAction.parseExecute(usingList, action.getActiveDSG(), input, UpdateParseBase, Syntax.syntaxARQ);
+                UpdateAction.parseExecute(usingList, action.getActiveDSG(), input, requestBase, Syntax.syntaxARQ);
             else
                 UpdateAction.execute(req, action.getActiveDSG());
             action.commit();
