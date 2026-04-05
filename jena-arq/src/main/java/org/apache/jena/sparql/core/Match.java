@@ -33,22 +33,22 @@ public class Match {
     /**
      * Match a quad. A quad matches g/s/p/o if each component matches the corresponding node.
      */
-    public static boolean match(Quad quad, Node g, Node s, Node p, Node o) {
+    public static boolean match(Quad quad, Node matchG, Node matchS, Node matchP, Node matchO) {
         return
-            match(quad.getGraph(), g) &&
-            match(quad.getSubject(), s) &&
-            match(quad.getPredicate(), p) &&
-            match(quad.getObject(), o);
+            match(quad.getGraph(), matchG) &&
+            match(quad.getSubject(), matchS) &&
+            match(quad.getPredicate(), matchP) &&
+            match(quad.getObject(), matchO);
     }
 
     /**
      * Match a triple. A triple matches s/p/o if each component matches the corresponding node.
      */
-    public static boolean match(Triple triple, Node s, Node p, Node o) {
+    public static boolean match(Triple triple, Node matchS, Node matchP, Node matchO) {
         return
-            match(triple.getSubject(), s) &&
-            match(triple.getPredicate(), p) &&
-            match(triple.getObject(), o);
+            match(triple.getSubject(), matchS) &&
+            match(triple.getPredicate(), matchP) &&
+            match(triple.getObject(), matchO);
     }
 
     /**
