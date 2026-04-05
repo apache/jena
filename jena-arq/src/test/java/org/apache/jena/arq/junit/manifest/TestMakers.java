@@ -21,7 +21,6 @@
 
 package org.apache.jena.arq.junit.manifest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.jena.arq.junit.SurpressedTest;
@@ -40,17 +39,13 @@ public class TestMakers {
     public static TestMaker testMakerSPARQL = SparqlTests::makeSPARQLTest;
     public static TestMaker testMakerRIOT = RiotTests::makeRIOTTest;
 
-    private final List<TestMaker> installed = new ArrayList<>();
     private static TestMakers systemSetup = systemSetup();
 
     // The test makers in the codebase for W3C tests.
     // Add more with "install"
     private static TestMakers systemSetup() {
-        TestMakers maker = new TestMakers();
-        maker.add(testMakerSPARQL);
-        maker.add(testMakerRIOT);
-        maker.add(SemanticsTests::makeSemanticsTest);
-        return maker;
+        List<TestMaker> testMakers = List.of(testMakerSPARQL, testMakerRIOT, SemanticsTests::makeSemanticsTest);
+        return new TestMakers(testMakers);
     }
 
     /**
@@ -60,19 +55,40 @@ public class TestMakers {
         systemSetup.add(testMaker);
     }
 
+    public static void reset() {
+        systemSetup = systemSetup();
+    }
+
+    /**
+     * Directly set the system setup.
+     */
+    public static void set(List<TestMaker> testMakers) {
+        systemSetup = new TestMakers(List.copyOf(testMakers));;
+    }
+
     /** Return the system-wide instance of {@link TestMakers}. */
     public static TestMakers system() {
         return systemSetup;
+    }
+
+    private final List<TestMaker> installed;
+
+    private TestMakers(List<TestMaker> testMakers) {
+        installed = testMakers;
     }
 
     public void add(TestMaker testMaker) {
         installed.add(testMaker);
     }
 
+    public void clear() {
+        installed.clear();
+    }
+
     /**
      * Return a function that takes a {@link ManifestEntry} and provides a test maker.
-     * The function iterates through the installed {@link TestMaker TestMakers}
-     * until it finds one that
+     * The test maker iterates through the installed {@link TestMaker TestMakers}
+     * for each entry until it finds one that return non-null.
      * If no test maker is found, return a {@link SurpressedTest}.
      */
     public TestMaker testMaker() {
