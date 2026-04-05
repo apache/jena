@@ -43,7 +43,6 @@ import java.nio.CharBuffer;
 
 public class BlockUTF8
 {
-    // Looking in java.lang.StringCoding (Sun RT) is illuminating.
     // The actual encode/decode code is in sun.nio.cs.UTF_8.(Decoder|Encoder)
     // which has special cases for ByteBuffer, ByteBuffer with array (needs offsets)
     // and byte[] <-> char[]

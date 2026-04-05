@@ -39,7 +39,7 @@ import org.apache.jena.riot.SysRIOT;
  * <p>
  * There is no way to write these illegal characters.
  * Percent-encoding is an encoding, not an escape mechanism.
- * It put actual 3 characters %-X-X.into the URI.
+ * It put actual 3 characters %-X-X into the URI.
  * Even if the character is put in with a Unicode \-u escape, it is not a legal URI
  * and will fail URI parsing.
  */
