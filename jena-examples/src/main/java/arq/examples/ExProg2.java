@@ -72,7 +72,7 @@ public class ExProg2
         // Print query with line numbers
         // Prefix mapping just helps serialization
         query.getPrefixMapping().setNsPrefix("dc", DC.getURI());
-        query.serialize(new IndentedWriter(System.out, true));
+        query.serialize(IndentedWriter.stdout.clone().setLineNumbers(true)) ;
         System.out.println();
 
         try (QueryExecution qexec = QueryExecutionFactory.create(query, model)) {
