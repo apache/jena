@@ -27,7 +27,8 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node ;
 
 
-/** A DatasetGraph base class for pure quad-centric storage.
+/**
+ * A DatasetGraph base class for pure quad-centric storage.
  */
 public abstract class DatasetGraphQuads extends DatasetGraphBase
 {

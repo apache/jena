@@ -29,7 +29,7 @@ import org.apache.jena.arq.TestConsts;
 import org.apache.jena.arq.junit.Scripts;
 
 /** Run the RDF Test CG test suites for RDF syntaxes
- * @see Scripts_c14n
+ * @see Scripts_C14N
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class Scripts_RIOT_rdf_tests_std {

@@ -69,7 +69,7 @@ public class NQuadsWriter extends WriterDatasetRIOTBase {
         s.finish();
     }
 
-    private final CharSpace charSpace;
+    protected final CharSpace charSpace;
 
     public NQuadsWriter() {
         this(CharSpace.UTF8);

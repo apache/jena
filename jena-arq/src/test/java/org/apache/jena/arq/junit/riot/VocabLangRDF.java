@@ -35,9 +35,11 @@ public class VocabLangRDF
     /** <p>The namespace of the vocabulary as a string</p> */
     public static final String NS = "http://www.w3.org/ns/rdftest#";
 
-    /** <p>The namespace of the vocabulary as a string</p>
-     *  @see #NS */
-    public static String getURI() {return NS;}
+    /**
+     * The namespace of the vocabulary as a string.
+     * @see #NS
+     */
+    public static String getURI() { return NS; }
 
     /** <p>The namespace of the vocabulary as a resource</p> */
     public static final Resource NAMESPACE = m_model.createResource( NS );

@@ -90,7 +90,7 @@ public class TextTestRunner {
 
         if ( produceEarlReport ) {
             // Build report, no output.
-            launcher.registerTestExecutionListeners(executionStats);
+            launcher.registerTestExecutionListeners(executionStats, summaryListener);
         } else {
             launcher.registerTestExecutionListeners(executionStats, printExecListener, summaryListener);
         }
@@ -98,11 +98,10 @@ public class TextTestRunner {
         // Run, which calls the TestFactory which generates the tests from the manifest.
         launcher.execute(request);
 
-        // For skips tests.
         TestExecutionSummary summary = summaryListener.getSummary();
 
         if ( produceEarlReport ) {
-            //RDFWriter.source(earlReport.getModel()).format(RDFFormat.TURTLE).output(System.out);
+            // out.println("Tests skipped: "+summary.getTestsSkippedCount());
             EarlReporter.clearEarlReport();
         } else {
             out.println();
@@ -113,7 +112,6 @@ public class TextTestRunner {
                 out.printf("** Failures: %s\n", executionStats.getTestFailures());
                 out.println();
             }
-            // summary should be null only when producing EARL reports.
             //summary.printTo
             if ( summary.getTestsSkippedCount() > 0 ) {
                 out.println("Tests pass:    "+executionStats.getTestPasses());

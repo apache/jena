@@ -50,40 +50,34 @@ public class Bytes
     }
 
     /** Compare two byte arrays which may be of different lengths */
-    public static int compare(byte[] x1, byte[] x2)
-    {
+    public static int compare(byte[] x1, byte[] x2) {
         int n = Math.min(x1.length, x2.length);
 
-        for ( int i = 0; i < n; i++ )
-        {
+        for ( int i = 0 ; i < n ; i++ ) {
             byte b1 = x1[i];
             byte b2 = x2[i];
             if ( b1 == b2 )
                 continue;
             // Treat as unsigned values in the bytes.
-            return (b1&0xFF) - (b2&0xFF);
+            return (b1 & 0xFF) - (b2 & 0xFF);
         }
 
         return x1.length - x2.length;
     }
 
-    public static int compareByte(byte b1, byte b2)
-    {
-        return (b1&0xFF) - (b2&0xFF);
+    public static int compareByte(byte b1, byte b2) {
+        return (b1 & 0xFF) - (b2 & 0xFF);
     }
 
-    public static byte[] copyOf(byte[] bytes)
-    {
+    public static byte[] copyOf(byte[] bytes) {
         return copyOf(bytes, 0, bytes.length);
     }
 
-    public static byte[] copyOf(byte[] bytes, int start)
-    {
-        return copyOf(bytes, start, bytes.length-start);
+    public static byte[] copyOf(byte[] bytes, int start) {
+        return copyOf(bytes, start, bytes.length - start);
     }
 
-    public static byte[] copyOf(byte[] bytes, int start, int length)
-    {
+    public static byte[] copyOf(byte[] bytes, int start, int length) {
         byte[] newByteArray = new byte[length];
         System.arraycopy(bytes, start, newByteArray, 0, length);
         return newByteArray;
@@ -129,8 +123,7 @@ public class Bytes
      * @param b Byte Array
      * @param idx Starting point of bytes
      */
-    public static final int getInt(byte[]b, int idx)
-    {
+    public static final int getInt(byte[]b, int idx) {
         return assembleInt(b[idx+0],
                            b[idx+1],
                            b[idx+2],
@@ -147,8 +140,7 @@ public class Bytes
      * @param b Byte Array
      * @param idx Starting point of bytes
      */
-    public static final long getLong(byte[]b, int idx)
-    {
+    public static final long getLong(byte[]b, int idx) {
         return assembleLong(b[idx+0],
                             b[idx+1],
                             b[idx+2],
@@ -157,7 +149,6 @@ public class Bytes
                             b[idx+5],
                             b[idx+6],
                             b[idx+7]);
-
     }
 
     /** Put an int into a byte array
@@ -172,8 +163,7 @@ public class Bytes
      * @param b byte array
      * @param idx starting point
      */
-    public static final void setInt(int x, byte[]b, int idx)
-    {
+    public static final void setInt(int x, byte[]b, int idx) {
 //        b[idx+0] = byte3(value);
 //        b[idx+1] = byte2(value);
 //        b[idx+2] = byte1(value);
@@ -182,9 +172,7 @@ public class Bytes
       b[idx+1] = (byte)((x >> 16)&0xFF);
       b[idx+2] = (byte)((x >>  8)&0xFF);
       b[idx+3] = (byte)(x &0xFF);
-
     }
-
 
     /** Put a long into a byte array
      * @param value The integer
@@ -228,7 +216,7 @@ public class Bytes
     }
 
     /** Make a long order of args -- high to low */
-    static private Long assembleLong(byte b7, byte b6, byte b5, byte b4, byte b3, byte b2, byte b1, byte b0) {
+    static private long assembleLong(byte b7, byte b6, byte b5, byte b4, byte b3, byte b2, byte b1, byte b0) {
         return ((b7 & 0xFFL) << 56) |
                ((b6 & 0xFFL) << 48) |
                ((b5 & 0xFFL) << 40) |
@@ -239,10 +227,10 @@ public class Bytes
                ((b0 & 0xFFL) <<  0);
     }
 
-    private static byte byte3(int x) { return (byte)(x >> 24); }
-    private static byte byte2(int x) { return (byte)(x >> 16); }
-    private static byte byte1(int x) { return (byte)(x >>  8); }
-    private static byte byte0(int x) { return (byte)(x >>  0); }
+//    private static byte byte3(int x) { return (byte)(x >> 24); }
+//    private static byte byte2(int x) { return (byte)(x >> 16); }
+//    private static byte byte1(int x) { return (byte)(x >>  8); }
+//    private static byte byte0(int x) { return (byte)(x >>  0); }
 
     /** Return the UTF-8 bytes for a string */
     public static byte[] string2bytes(String x) {
@@ -337,23 +325,19 @@ public class Bytes
     }
 
     /** Return a hex string representing the byte. */
-    public static String asHex(byte b)
-    {
+    public static String asHex(byte b) {
         return asHexUC(b);
     }
 
-    public static String asHexUC(byte b)
-    {
+    public static String asHexUC(byte b) {
         return asHex(b, Chars.hexDigitsUC);
     }
 
-    public static String asHexLC(byte b)
-    {
+    public static String asHexLC(byte b) {
         return asHex(b, Chars.hexDigitsLC);
     }
 
-    private static String asHex(byte b, char[] hexDigits)
-    {
+    private static String asHex(byte b, char[] hexDigits) {
         int hi = (b & 0xF0) >> 4;
         int lo = b & 0xF;
         char[] chars = new char[2];
@@ -362,16 +346,14 @@ public class Bytes
         return new String(chars);
     }
 
-
-    public static int hexCharToInt(char c)
-    {
+    public static int hexCharToInt(char c) {
         if ( '0' <= c && c <= '9' )
-            return c-'0';
+            return c - '0';
         else if ( 'A' <= c && c <= 'F' )
-            return c-'A'+10;
+            return c - 'A' + 10;
         else if ( 'a' <= c && c <= 'f' )
-            return c-'a'+10;
+            return c - 'a' + 10;
         else
-            throw new IllegalArgumentException("Bad index char : "+c);
+            throw new IllegalArgumentException("Bad index char : " + c);
     }
 }

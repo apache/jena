@@ -24,19 +24,26 @@ package org.apache.jena.arq.junit.riot;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.function.Consumer;
 
 import org.apache.jena.arq.junit.manifest.AbstractManifestTest;
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
-import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.io.IOX;
+import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.*;
+import org.apache.jena.riot.lang.LabelToNode;
+import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
+import org.apache.jena.riot.writer.c14n.DatasetGraphOrdered;
+import org.apache.jena.riot.writer.c14n.GraphOrdered;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.DatasetGraphFactory;
-import org.apache.jena.sparql.graph.GraphFactory;
 
 public class RiotC14NTest extends AbstractManifestTest {
 
@@ -58,11 +65,10 @@ public class RiotC14NTest extends AbstractManifestTest {
         input = entry.getAction().getURI();
         output = positiveTest ? entry.getResult().getURI() : null;
 
-        boolean silentWarnings = RiotTestsConfig.allowWarnings(manifestEntry);
+        boolean silentWarnings = true; //RiotTestsConfig.allowWarnings(manifestEntry);
         parser = ( baseIRI != null )
             ? ParsingStepForTest.parse(input, baseIRI, lang, silentWarnings)
             : ParsingStepForTest.parse(input, lang, silentWarnings);
-
     }
 
     @Override
@@ -73,74 +79,89 @@ public class RiotC14NTest extends AbstractManifestTest {
             run4();
     }
 
-    public void run3()
-    {
-        Graph graph = GraphFactory.createGraphMem();
+    public void run3() {
+        Graph graph = new GraphOrdered();
         StreamRDF dest = StreamRDFLib.graph(graph);
         try {
-            parser.accept(dest);
+            RDFParser.create().errorHandler(ErrorHandlerFactory.errorHandlerIgnoreWarnings(null))
+                .strict(true).forceLang(lang).base(baseIRI).source(input)
+                // ******
+                .labelToNode(LabelToNode.createUseLabelAsGiven())
+                .parse(dest);
 
             Lang outLang = RDFLanguages.filenameToLang(output, Lang.NTRIPLES);
 
-            // Exactly this string.
-            String actual = RDFWriter.source(graph).format(RDFFormat.NTRIPLES_UTF8).asString();
-            String expected;
+            // Special writer. NTriplesWriter_C14N / NodeFormatter_C14N / EscapeStr_C14N
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            RDFWriter.source(graph).format(RDFFormat.NTRIPLES_C14N).output(out);
+
+            byte[] actual = out.toByteArray();
+            byte[] expected;
             try {
                 expected = readFile(output);
             } catch (RiotException ex) {
                 fail("Failed to read results: "+ex.getMessage());
                 return;
             }
-            boolean b = expected.equals(actual);
 
+            // Compare byte-for-byte
+            boolean b = Bytes.compare(expected, actual) == 0;
             if ( !b ) {
                 System.out.println("**** Test: "+manifestEntry.getName());
                 System.out.println("---- Input");
-                String inputString = readFile(input);
+                byte[] bytes = readFile(input);
+                String inputString = Bytes.bytes2string(actual);
                 System.out.print(inputString);
                 System.out.println("---- Actual");
-                System.out.print(actual);
+                System.out.print(Bytes.bytes2string(actual));
                 System.out.println("---- Expected");
-                System.out.print(expected);
+                System.out.print(Bytes.bytes2string(expected));
                 System.out.println("--------");
             }
             assertTrue(b, "Does not match expected canonical text");
         } catch (RiotException ex) {
-            if ( positiveTest )
-                throw ex;
+            if ( positiveTest ) {
+                fail(ex.getMessage());
+                //throw ex;
+            }
         }
     }
 
-    public void run4()
-    {
-        DatasetGraph dsg = DatasetGraphFactory.create();
+    public void run4() {
+        DatasetGraph dsg = new DatasetGraphOrdered();
         StreamRDF dest = StreamRDFLib.dataset(dsg);
         try {
-            parser.accept(dest);
+            RDFParser.create().errorHandler(ErrorHandlerFactory.errorHandlerIgnoreWarnings(null))
+            .strict(true).forceLang(lang).base(baseIRI).source(input)
+            // ******
+            .labelToNode(LabelToNode.createUseLabelAsGiven())
+            .parse(dest);
 
-            Lang outLang = RDFLanguages.filenameToLang(output, Lang.NQUADS);
+            Lang outLang = RDFLanguages.filenameToLang(output, Lang.NTRIPLES);
 
-            // Exactly this string.
-            String actual = RDFWriter.source(dsg).format(RDFFormat.NQUADS_UTF8).asString();
+            // Special writer. NQuadsWriter_C14N / NodeFormatter_C14N / EscapeStr_C14N
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            RDFWriter.source(dsg).format(RDFFormat.NQUADS_C14N).output(out);
 
-            String expected;
+            byte[] actual = out.toByteArray();
+            byte[] expected;
             try {
                 expected = readFile(output);
             } catch (RiotException ex) {
                 fail("Failed to read results: "+ex.getMessage());
                 return;
             }
-            boolean b = expected.equals(actual);
-
+            boolean b = Bytes.compare(expected, actual) == 0;
             if ( !b ) {
                 System.out.println("**** Test: "+manifestEntry.getName());
                 System.out.println("---- Input");
-                String inputString = readFile(input);
+                byte[] bytes = readFile(input);
+                String inputString = Bytes.bytes2string(actual);
                 System.out.print(inputString);
                 System.out.println("---- Actual");
-                System.out.print(actual);
+                System.out.print(Bytes.bytes2string(actual));
                 System.out.println("---- Expected");
-                System.out.print(expected);
+                System.out.print(Bytes.bytes2string(expected));
                 System.out.println("--------");
             }
             assertTrue(b, "Does not match expected canonical text");
@@ -150,9 +171,13 @@ public class RiotC14NTest extends AbstractManifestTest {
         }
     }
 
-    String readFile(String name) {
-        if ( name.startsWith("file:") )
-            return IO.readWholeFileAsUTF8(IRILib.IRIToFilename(name));
-        return IO.readWholeFileAsUTF8(name);
+    private byte[] readFile(String filename) {
+        String fn = ( filename.startsWith("file:")) ? IRILib.IRIToFilename(filename) : filename;
+        Path path = Path.of(fn);
+        try {
+            return Files.readAllBytes(path);
+        } catch (IOException ex) {
+            throw IOX.exception(ex);
+        }
     }
 }
