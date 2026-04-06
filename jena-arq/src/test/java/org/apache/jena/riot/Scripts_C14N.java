@@ -23,7 +23,6 @@ package org.apache.jena.riot;
 
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;
@@ -32,21 +31,20 @@ import org.apache.jena.arq.TestConsts;
 import org.apache.jena.arq.junit.Scripts;
 
 /** Canonicalization tests - N-triples and N-Quads */
-@Disabled
-public class Scripts_c14n {
+public class Scripts_C14N {
 
     //static final String DIR="testing/rdf-tests-cg/";
 
     // Canonicalization tests
 
     @TestFactory
-    @DisplayName("rdf-tests CG - N-Quads Canonicalization")
+    @DisplayName("rdf-tests - N-Quads Canonicalization")
     public Stream<DynamicNode> testFactory_n_quads_c14n() {
         return Scripts.manifestTestFactory(TestConsts.RDF12_TESTS_DIR+"rdf-n-quads/c14n/manifest.ttl");
     }
 
     @TestFactory
-    @DisplayName("rdf-tests CG - N-Triples Canonicalization")
+    @DisplayName("rdf-tests - N-Triples Canonicalization")
     public Stream<DynamicNode> testFactory_n_Triples_c14n() {
         return Scripts.manifestTestFactory(TestConsts.RDF12_TESTS_DIR+"rdf-n-triples/c14n/manifest.ttl");
     }

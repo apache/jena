@@ -46,6 +46,9 @@ public class RDFFormat {
     /** Variant for RDF Thrift using values */
     public static final RDFFormatVariant ValueEncoding  = new RDFFormatVariant("Value") ;
 
+    /** Variant for RDF Canonicalization output (N-Triples and N-Quads) */
+    public static final RDFFormatVariant CANONICAL      = new RDFFormatVariant("canonical");
+
     /** Turtle - pretty form */
     public static final RDFFormat TURTLE_PRETTY     = new RDFFormat(Lang.TURTLE, PRETTY) ;
     /** Turtle - default form */
@@ -69,6 +72,8 @@ public class RDFFormat {
     public static final RDFFormat  NTRIPLES_ASCII   = new RDFFormat(Lang.NTRIPLES, ASCII) ;
     /** N-Triples in UTF-8 with short blank node identifiers */
     public static final RDFFormat  NTRIPLES_PRETTY = new RDFFormat(Lang.NTRIPLES, PRETTY) ;
+    /** N-Triples in UTF-8 and canonical form. */
+    public static final RDFFormat  NTRIPLES_C14N   = new RDFFormat(Lang.NTRIPLES, CANONICAL) ;
 
     /** N-Quads in UTF-8 */
     public static final RDFFormat  NQUADS_UTF8      = new RDFFormat(Lang.NQUADS, UTF8) ;
@@ -80,6 +85,8 @@ public class RDFFormat {
     public static final RDFFormat  NQUADS_ASCII     = new RDFFormat(Lang.NQUADS, ASCII) ;
     /** N-Quads in UTF-8 with short blank node identifiers */
     public static final RDFFormat  NQUADS_PRETTY    = new RDFFormat(Lang.NTRIPLES, PRETTY) ;
+    /** N-Quads in UTF-8 and canonical form. */
+    public static final RDFFormat  NQUADS_C14N      = new RDFFormat(Lang.NTRIPLES, CANONICAL) ;
 
     /** TriG - pretty form */
     public static final RDFFormat  TRIG_PRETTY      = new RDFFormat(Lang.TRIG, PRETTY) ;

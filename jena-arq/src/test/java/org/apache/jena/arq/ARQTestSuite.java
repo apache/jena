@@ -69,7 +69,7 @@ import org.apache.jena.util.TS_UtilsARQ;
     Scripts_RIOT_extra.class,
     Scripts_AltTurtle.class,
 
-    Scripts_c14n.class,
+    Scripts_C14N.class,
 
     // ARQ, SPARQL 1.0, SPARQL 1.1, SPARQL 1.2 - main engine, default in-memory dataset.
     Scripts_SPARQL.class,
