@@ -71,7 +71,7 @@
     <ver.jakarta.json>2.0.1</ver.jakarta.json>
 
     <!-- These two must be in-step -->
-    <ver.jetty>12.1.7</ver.jetty>
+    <ver.jetty>12.1.8</ver.jetty>
     <ver.jakarta-servlet>6.1.0</ver.jakarta-servlet>
 
     <!--
@@ -103,7 +103,7 @@
 
     <ver.dexxcollection>0.7</ver.dexxcollection>
     <ver.micrometer>1.16.4</ver.micrometer>
-    <ver.roaringbitmap>1.6.13</ver.roaringbitmap>
+    <ver.roaringbitmap>1.6.14</ver.roaringbitmap>
     <ver.opencsv>5.12.0</ver.opencsv>
 
     <!-- Testing -->
@@ -801,7 +801,7 @@
       <dependency>
         <groupId>io.github.bonigarcia</groupId>
         <artifactId>webdrivermanager</artifactId>
-        <version>6.3.3</version>
+        <version>6.3.4</version>
         <scope>test</scope>
       </dependency>
       <!-- END jena-fuseki-mod-geosparql -->
