@@ -29,8 +29,10 @@ import org.junit.jupiter.api.Test;
 import org.apache.jena.atlas.io.StringWriterI;
 import org.apache.jena.atlas.lib.CharSpace;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.PrefixMapFactory;
+import org.apache.jena.riot.writer.c14n.NodeFormatter_C14N;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
 
@@ -46,16 +48,17 @@ public class TestNodeFmt
     private static NodeFormatter nodeFormatterNTutf8 = new NodeFormatterNT(CharSpace.UTF8);
     private static NodeFormatter nodeFormatterNTascii = new NodeFormatterNT(CharSpace.ASCII);
     private static NodeFormatter nodeFormatterTTL = new NodeFormatterTTL(base, prefixMap);
+    private static NodeFormatter nodeFormatterC14N = new NodeFormatter_C14N();
 
     public static void test(NodeFormatter nodeFormatter, String str)
     {
         test(nodeFormatter, str, str);
     }
 
-    public static void test(NodeFormatter nodeFormatter, String nStr , String str)
+    public static void test(NodeFormatter nodeFormatter, String inputStr , String expectedStr)
     {
-        Node n = NodeFactoryExtra.parseNode(nStr);
-        test(nodeFormatter, n, str);
+        Node n = NodeFactoryExtra.parseNode(inputStr);
+        test(nodeFormatter, n, expectedStr);
     }
 
     public static void test(NodeFormatter nodeFormatter, Node n , String str)
@@ -83,13 +86,10 @@ public class TestNodeFmt
 
     @Test public void nodefmt_nt_10()  { test(nodeFormatterNTutf8, "'Ω'", "\"Ω\""); }
     @Test public void nodefmt_nt_11()  { test(nodeFormatterNTascii, "'Ω'", "\"\\u03A9\""); }
-
-    @Test public void nodefmt_nt_12()        { test(nodeFormatterNTascii,"<http://example/>"); }
-    @Test public void nodefmt_nt_13()        { test(nodeFormatterNTascii, "\"abc\"^^<http://example/dt>"); }
-
-    @Test public void nodefmt_nt_14()        { test(nodeFormatterNTascii, "'é'", "\"\\u00E9\""); }
-
-    @Test public void nodefmt_nt_15()        { test(nodeFormatterNTascii, "'\\n\\t\\f'", "\"\\n\\t\\f\""); }
+    @Test public void nodefmt_nt_12()  { test(nodeFormatterNTascii,"<http://example/>"); }
+    @Test public void nodefmt_nt_13()  { test(nodeFormatterNTascii, "\"abc\"^^<http://example/dt>"); }
+    @Test public void nodefmt_nt_14()  { test(nodeFormatterNTascii, "'é'", "\"\\u00E9\""); }
+    @Test public void nodefmt_nt_15()  { test(nodeFormatterNTascii, "'\\n\\t\\f'", "\"\\n\\t\\f\""); }
 
     // RDF 1.1 sensitive.
     // xsd:strings output without ^^
@@ -102,6 +102,23 @@ public class TestNodeFmt
         // Same in RDF 1.0 and RDF 1.1
         test(nodeFormatterNTutf8, "'abc'^^rdf:langString",  "\"abc\"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#langString>");
     }
+
+    @Test public void nodefmt_rdf12_01() {
+        test(nodeFormatterNTutf8, "'abc'^^rdf:dirLangString",  "\"abc\"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#dirLangString>");
+    }
+
+    // C14N -- Canonicalization. Java escaping make this messy.
+    private static Node blankNode = NodeFactory.createBlankNode("ABC");
+
+    @Test public void nodefmt_c14n_00()        { test(nodeFormatterC14N, "'--\\u0009--'", "\"--\\t--\""); }
+    @Test public void nodefmt_c14n_01()        { test(nodeFormatterC14N, "'--\\u0008\\u0009\\u000A\\u000C\\u000D\\u0022\\u005C--'", "\"--\\b\\t\\n\\f\\r\\\"\\\\--\""); }
+    @Test public void nodefmt_c14n_02()        { test(nodeFormatterC14N, "'--\\b\\t\\n\\f\\r\\\"\\\\--'", "\"--\\b\\t\\n\\f\\r\\\"\\\\--\""); }
+    @Test public void nodefmt_c14n_03()        { test(nodeFormatterC14N, "'xyz'@EN-GB--ltr", "\"xyz\"@en-gb--ltr"); }
+    @Test public void nodefmt_c14n_04()        { test(nodeFormatterC14N, "'\\u0000\\u0001\\u0002\\u0003\\u0004\\u0005\\u0006\\u0007\\u000B\\u007F'",
+                                                                         "\"\\u0000\\u0001\\u0002\\u0003\\u0004\\u0005\\u0006\\u0007\\u000B\\u007F\""); }
+    @Test public void nodefmt_c14n_05()        { test(nodeFormatterC14N, "'\\u000E\\u000F\\u0010\\u0011\\u0012\\u0013\\u0014\\u0015\\u0015\\u0016\\u0017\\u0018\\u0019\\u001A\\u001B\\u001C\\u001D\\u001F'",
+                                                                         "\"\\u000E\\u000F\\u0010\\u0011\\u0012\\u0013\\u0014\\u0015\\u0015\\u0016\\u0017\\u0018\\u0019\\u001A\\u001B\\u001C\\u001D\\u001F\""); }
+    @Test public void nodefmt_c14n_06()        { test(nodeFormatterC14N, blankNode, "_:ABC"); }
 
     @Test public void nodefmt_ttl_01()  { test(nodeFormatterTTL, "?x"); }
     @Test public void nodefmt_ttl_02()  { test(nodeFormatterTTL, "?xyz"); }
