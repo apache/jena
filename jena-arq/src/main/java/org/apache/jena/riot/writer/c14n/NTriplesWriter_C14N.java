@@ -27,6 +27,6 @@ import org.apache.jena.riot.writer.NTriplesWriter;
 public class NTriplesWriter_C14N extends NTriplesWriter {
     @Override
     protected NodeFormatter createNodeFormatter() {
-        return new NodeFormatter_C14N(charSpace);
+        return new NodeFormatter_C14N();
     }
 }

@@ -24,6 +24,7 @@ package org.apache.jena.riot.writer.c14n;
 import org.apache.jena.atlas.io.AWriter;
 import org.apache.jena.atlas.lib.CharSpace;
 import org.apache.jena.atlas.lib.EscapeStr;
+import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.riot.out.NodeFormatterBase;
 import org.apache.jena.riot.out.quoted.QuotedStringOutput;
 import org.apache.jena.riot.out.quoted.QuotedStringOutputNT;
@@ -37,7 +38,7 @@ public class NodeFormatter_C14N extends NodeFormatterBase
 
     public NodeFormatter_C14N() { this(CharSpace.UTF8); }
 
-    public NodeFormatter_C14N(CharSpace charSpace) {
+    protected NodeFormatter_C14N(CharSpace charSpace) {
         quotedStringProc = new QuotedStringOutputNT(charSpace) {
             @Override
             public void writeStr(AWriter writer, String str) {
@@ -83,15 +84,18 @@ public class NodeFormatter_C14N extends NodeFormatterBase
     public void formatLitLang(AWriter w, String lex, String langTag) {
         writeEscaped(w, lex);
         w.print('@');
-        w.print(langTag);
+        String lcLangTag = Lib.lowercase(langTag);
+        w.print(lcLangTag);
     }
 
     @Override
     public void formatLitLangDir(AWriter w, String lex, String langTag, String direction) {
         writeEscaped(w, lex);
         w.print('@');
-        w.print(langTag);
+        String lcLangTag = Lib.lowercase(langTag);
+        w.print(lcLangTag);
         w.print("--");
+        // direction is always lowercase anyway.
         w.print(direction);
     }
 

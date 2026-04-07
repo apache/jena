@@ -27,6 +27,6 @@ import org.apache.jena.riot.writer.NQuadsWriter;
 public class NQuadsWriter_C14N extends NQuadsWriter {
     @Override
     protected NodeFormatter createNodeFormatter() {
-        return new NodeFormatter_C14N(charSpace);
+        return new NodeFormatter_C14N();
     }
 }
