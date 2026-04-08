@@ -27,10 +27,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.json.JsonArray;
@@ -337,6 +339,36 @@ public class TestQueryExecHTTP {
                     .build() ) {
             long x = Iter.count(qExec.select());
             assertEquals(2, x);
+        }
+    }
+
+    // Aborting a streaming QueryExecHTTP must not block on close and must not
+    // leave the server unable to serve subsequent queries (GH-3837).
+    @Test
+    @Timeout(value = 10, unit = TimeUnit.SECONDS)
+    public void query_abort_no_wedge() {
+        DatasetGraph dsg2 = DatasetGraphFactory.createTxnMem();
+        for (int i = 0; i < 500; i++)
+            dsg2.add(parseQuad("(_ <http://example/s" + i + "> <http://example/p> <http://example/o" + i + ">)"));
+        FusekiServer server2 = FusekiServer.create().port(0).add("/ds2", dsg2).build();
+        server2.start();
+        String url2 = "http://localhost:" + server2.getPort() + "/ds2";
+        try {
+            for (int i = 0; i < 10; i++) {
+                try (QueryExecHTTP qExec = QueryExecHTTP.newBuilder()
+                        .endpoint(url2).queryString("SELECT * { ?s ?p ?o }").build()) {
+                    qExec.select();
+                    qExec.abort();
+                }
+            }
+            // Server must still respond after the burst of aborted queries.
+            try (QueryExecHTTP qExec = QueryExecHTTP.newBuilder()
+                    .endpoint(url2).queryString("SELECT (COUNT(*) AS ?n) { ?s ?p ?o }").build()) {
+                RowSet rs = qExec.select();
+                assertTrue(rs.hasNext());
+            }
+        } finally {
+            server2.stop();
         }
     }
 }

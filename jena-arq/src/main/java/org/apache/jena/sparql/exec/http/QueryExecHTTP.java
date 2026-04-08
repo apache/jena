@@ -762,12 +762,16 @@ public class QueryExecHTTP implements QueryExec {
     private void closeRetainedConnection() {
         if (retainedConnection != null) {
             try {
-                // This call may take a long time if the response has not been consumed
-                // as HTTP client will consume the remaining response so it can re-use the
-                // connection. If we're closing when we're not at the end of the stream then
-                // issue a warning to the logs
-                if (retainedConnection.read() != -1)
+                if (isAborted) {
+                    // Don't drain on abort - cancel the request and close without reading.
+                    cancelFuture(future);
+                } else if (retainedConnection.read() != -1) {
+                    // This call may take a long time if the response has not been consumed
+                    // as HTTP client will consume the remaining response so it can re-use the
+                    // connection. If we're closing when we're not at the end of the stream then
+                    // issue a warning to the logs
                     Log.warn(this, "HTTP response not fully consumed, if HTTP Client is reusing connections (its default behaviour) then it will consume the remaining response data which may take a long time and cause this application to become unresponsive");
+                }
                 retainedConnection.close();
             } catch (RuntimeIOException | java.io.IOException e) {
                 // If we are closing early and the underlying stream is chunk encoded
