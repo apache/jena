@@ -22,11 +22,13 @@
 package org.apache.jena.atlas.lib;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.StringWriter;
 
 import org.junit.jupiter.api.Test ;
 
+import org.apache.jena.atlas.AtlasException;
 import org.apache.jena.atlas.io.AWriter;
 import org.apache.jena.atlas.io.IO;
 
@@ -74,7 +76,6 @@ public class TestEscapeStr {
         String output = sw.toString();
         assertEquals(expected, output);
     }
-
 
     // Multiline quoting.
     // One character
@@ -152,8 +153,30 @@ public class TestEscapeStr {
     @Test public void unescape_unicode_12()   { test_unesc_unicode("\\(\\)", "\\(\\)") ; }
     @Test public void unescape_unicode_13()   { test_unesc_unicode("\\\\", "\\\\") ; }
 
+    // See also TestEscapeStr
+    // \-u{...} style Unicode escapes
+    @Test public void unescape_unicode_20()   { test_unesc_unicode("\\u{41}", "A") ; }
+    @Test public void unescape_unicode_21()   { test_unesc_unicode("\\u{000000}", "\u0000") ; }
+    @Test public void unescape_unicode_22()   { test_unesc_unicode("\\u{1F0A1}", "🂡") ; }
+    @Test public void unescape_unicode_23()   { test_unesc_unicode("\\u{01F0A1}", "🂡") ; }
+    @Test public void unescape_unicode_24()   { test_unesc_unicode("\\u{10FFFF}", 0x10FFFF) ; }
+
+    @Test public void unescape_unicode_30()   { assertThrows(AtlasException.class, ()->test_unesc_unicode("\\u{}", "")) ; }
+    @Test public void unescape_unicode_31()   { assertThrows(AtlasException.class, ()->test_unesc_unicode("\\u{123456789}", "")) ; }
+    @Test public void unescape_unicode_32()   { assertThrows(AtlasException.class, ()->test_unesc_unicode("\\u{000000000}", "")) ; }
+    // If the limit is 6
+    @Test public void unescape_unicode_33()   { assertThrows(AtlasException.class, ()->test_unesc_unicode("\\u{1234567}", "")) ; }
+    @Test public void unescape_unicode_34()   { assertThrows(AtlasException.class, ()->test_unesc_unicode("\\u{0000000}", "")) ; }
+
+
     private void test_unesc_unicode(String input, String expected) {
         String output = EscapeStr.unescapeUnicode(input) ;
         assertEquals(expected, output);
+    }
+
+    private void test_unesc_unicode(String input, int expected) {
+        String output = EscapeStr.unescapeUnicode(input) ;
+        int codepoint = output.codePointAt(0);
+        assertEquals(expected, codepoint);
     }
 }

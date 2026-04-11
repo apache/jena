@@ -1590,16 +1590,14 @@ public class TestTokenizerText {
     public void turtle_bad_surrogate_09() {
         // Wrong way round: low-hig);
 		assertThrows(RiotParseException.class, ()->
-					 surrogate("'\\uc800\\ud800'")
-					 );
+					 surrogate("'\\uc800\\ud800'"));
     }
 
     @Test
     public void turtle_bad_surrogate_10() {
 		assertThrows(RiotParseException.class, ()->
-        // Wrong way round: low-high
-        surrogate("'a\\uc800\\ud800z'")
-					 );
+            // Wrong way round: low-high
+            surrogate("'a\\uc800\\ud800z'"));
     }
 
     // Compilation failure - illegal escape character
@@ -1621,16 +1619,14 @@ public class TestTokenizerText {
     public void turtle_bad_surrogate_13() {
         // escaped low - raw high
 		assertThrows(RiotParseException.class, ()->
-        surrogate("'\\uc800\ud800'")
-					 );
+            surrogate("'\\uc800\ud800'"));
     }
 
     @Test
     public void turtle_bad_surrogate_14() {
         // escaped low - raw high
 		assertThrows(RiotParseException.class, ()->
-        surrogate("'a\\uc800\ud800z'")
-					 );
+            surrogate("'a\\uc800\ud800z'"));
     }
 
     private void surrogate(String string) {
@@ -1638,6 +1634,33 @@ public class TestTokenizerText {
         assertTrue(tokenizer.hasNext());
         tokenizer.next();
         assertFalse(tokenizer.hasNext());
+    }
+
+    // \-u{...} style Unicode escapes
+    @Test public void unescape_unicode_20()   { test_unesc_unicode("\\u{41}", "A") ; }
+    @Test public void unescape_unicode_21()   { test_unesc_unicode("\\u{000000}", "\u0000") ; }
+    @Test public void unescape_unicode_22()   { test_unesc_unicode("\\u{1F0A1}", "🂡") ; }
+    @Test public void unescape_unicode_23()   { test_unesc_unicode("\\u{01F0A1}", "🂡") ; }
+    @Test public void unescape_unicode_24()   { test_unesc_unicode("\\u{10FFFF}", 0x10FFFF) ; }
+
+    @Test public void unescape_unicode_30()   { assertThrows(RiotParseException.class, ()->test_unesc_unicode("\\u{}", "")) ; }
+    @Test public void unescape_unicode_31()   { assertThrows(RiotParseException.class, ()->test_unesc_unicode("\\u{123456789}", "")) ; }
+    @Test public void unescape_unicode_32()   { assertThrows(RiotParseException.class, ()->test_unesc_unicode("\\u{000000000}", "")) ; }
+    // If the limit is 6
+    @Test public void unescape_unicode_33()   { assertThrows(RiotParseException.class, ()->test_unesc_unicode("\\u{1234567}", "")) ; }
+    @Test public void unescape_unicode_34()   { assertThrows(RiotParseException.class, ()->test_unesc_unicode("\\u{0000000}", "")) ; }
+
+    private void test_unesc_unicode(String string, String expected) {
+        string = "'"+string+"'";
+        tokenizeAndTestExact(string, StringType.STRING1, expected);
+    }
+
+    private void test_unesc_unicode(String string, int expected) {
+        string = "'"+string+"'";
+        Tokenizer tokenizer = tokenizer(string);
+        Token token = testNextToken(tokenizer, TokenType.STRING);
+        int codepoint = token.getImage().codePointAt(0);
+        assertEquals(expected, codepoint);
     }
 
     @Test

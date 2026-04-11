@@ -31,6 +31,7 @@ import org.apache.jena.atlas.AtlasException;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.PeekReader;
 import org.apache.jena.atlas.lib.Chars;
+import org.apache.jena.atlas.lib.Hex;
 import org.apache.jena.riot.RiotParseException;
 import org.apache.jena.riot.system.ErrorHandler;
 import org.apache.jena.riot.system.RiotChars;
@@ -679,8 +680,8 @@ public final class TokenizerText implements Tokenizer
         }
     }
 
-//    // Only high then low is allowed.
-//    // Casting int to char is a 16 bit silent truncation (bytecode "i2c").
+    // Only high then low is allowed.
+    // Casting int to char is a 16 bit silent truncation (bytecode "i2c").
     private char checkCodepoint(char previousCP, char ch) {
         if ( ! Character.isSurrogate(ch) ) {
             if ( previousCP == NO_CODEPOINT )
@@ -741,7 +742,7 @@ public final class TokenizerText implements Tokenizer
                         checkRDFString(str);
                     return str;
                 case CH_RSLASH:
-                    ch = readUnicodeEscape();
+                    ch = readUnicodeEscapeOnly();
                     // Don't check legality of ch (strict syntax at this point).
                     // IRI parsing will catch errors.
                     break;
@@ -946,7 +947,7 @@ public final class TokenizerText implements Tokenizer
             insertCodepointDirect(ch);
             reader.readChar();
         } else if ( ch == CH_RSLASH ) {
-            ch = readCharEscape();  // Does not allow Unicode escapes.
+            ch = readCharEscapePLX();  // Does not allow Unicode escapes.
             insertCodepointDirect(ch);
         } else
             throw new ARQInternalErrorException("Not a '\\' or a '%' character");
@@ -957,7 +958,7 @@ public final class TokenizerText implements Tokenizer
      * An RDF String is a sequence of codepoints in the range U+0000 to U+10FFFF, excluding surrogates.
      * Because this is java, we test for no non-paired surrogates.
      * A surrogate pair is high-low.
-     * This check is performed in readIRI, readStrignQuote1, and readStringQuote3
+     * If enabled, this check is performed in readIRI, readStringQuote1, and readStringQuote3
      */
     private void checkRDFString(String string) {
         for ( int i = 0 ; i < string.length() ; i++ ) {
@@ -1436,13 +1437,13 @@ public final class TokenizerText implements Tokenizer
     // ---- Escape sequences
 
     // Read a unicode escape : does not allow \\ bypass
-    private final int readUnicodeEscape() {
+    private final int readUnicodeEscapeOnly() {
         int ch = reader.readChar();
         if ( ch == EOF )
             fatal("Broken escape sequence");
 
         switch (ch) {
-            case 'u': return readUnicode4Escape();
+            case 'u': return readUnicode4OrDelimEscape(); //readUnicode4Escape();
             case 'U': return readUnicode8Escape();
             default:
                 fatal("Illegal unicode escape sequence value: \\%c (0x%02X)", ch, ch);
@@ -1450,6 +1451,7 @@ public final class TokenizerText implements Tokenizer
         return 0;
     }
 
+    // Validating the character is a defined Unicode scalar value happens in insertCodePoint.
     private final int readLiteralEscape() {
         int c = reader.readChar();
         if ( c == EOF )
@@ -1464,7 +1466,7 @@ public final class TokenizerText implements Tokenizer
             case '"':   return '"';
             case '\'':  return '\'';
             case '\\':  return '\\';
-            case 'u':   return readUnicode4Escape();
+            case 'u':   return readUnicode4OrDelimEscape();
             case 'U':   return readUnicode8Escape();
             default:
                 fatal("Illegal escape sequence value: %c (0x%02X)",c , c);
@@ -1472,7 +1474,7 @@ public final class TokenizerText implements Tokenizer
         }
     }
 
-    private final int readCharEscape() {
+    private final int readCharEscapePLX() { // Prefix name escapes
         // PN_LOCAL_ESC ::= '\' ( '_' | '~' | '.' | '-' | '!' | '$' | '&' | "'"
         //                | '(' | ')' | '*' | '+' | ',' | ';' | '=' | '/' | '?' | '#' | '@' | '%' )
 
@@ -1492,12 +1494,52 @@ public final class TokenizerText implements Tokenizer
         }
     }
 
+    // Either \-uXXXX or \-u{...}
+    private final int readUnicode4OrDelimEscape() {
+        int nextCh = reader.peekChar();
+        if ( nextCh == CH_LBRACE ) {
+            return readUnicodeDelimitedHex();
+        } else {
+            return readUnicode4Escape();
+        }
+    }
+
+    private final int readUnicodeDelimitedHex() {
+        // The peeked '{'
+        reader.readChar();
+        int value = 0;
+        int n = 0;
+        for (;;) {
+            // read. No need to peek as we will move on one character
+            int ch = reader.readChar();
+            if ( ch == EOF )
+                fatal("Truncated delimited hex escape sequence");
+            int v = Hex.hexDigitToInt(ch, -1);
+            if ( v == -1 ) {
+                if ( ch == CH_RBRACE ) {
+                    break;
+                } else
+                    fatal("Broken delimited hex escape sequence");
+            }
+            value = (value<<4)+v ;
+            n++;
+            // Do this check here to catch overruns.
+            // 6 (max unicode range) or 8 (max 32 bit).
+            if ( n > 6 )
+                fatal("Delimited hex escape sequence too long");
+        }
+        if ( n == 0 )
+            fatal("Empty delimited hex escape sequence");
+        return value;
+    }
+
     private final int readUnicode4Escape() {
         return readHexSequence(4);
     }
 
     private final int readUnicode8Escape() {
         int ch8 = readHexSequence(8);
+        // Check > 0x10FFFF
         if ( ! Character.isValidCodePoint(ch8) )
             fatal("Illegal code point from \\U sequence value: 0x%08X", ch8);
         return ch8;

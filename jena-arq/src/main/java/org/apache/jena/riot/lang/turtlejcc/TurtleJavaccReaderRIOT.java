@@ -78,6 +78,10 @@ public class TurtleJavaccReaderRIOT implements ReaderRIOT {
             parser.parse();
             output.finish();
         }
+        catch (RiotParseException ex) {
+            profile.getErrorHandler().error(ex.getMessage(), ex.getLine(), ex.getCol());
+            throw ex;
+        }
         catch (ParseException ex) {
             profile.getErrorHandler().error(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn);
             throw new RiotParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn);
