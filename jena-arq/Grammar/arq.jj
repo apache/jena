@@ -2393,7 +2393,13 @@ TOKEN :
 | < #QUOTE_3D: "\"\"\"">
 | < #QUOTE_3S: "'''">
 | <ECHAR: "\\" ( "t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'") >
-| < #UCHAR: <UCHAR4> | <UCHAR8> >
+| < #UCHAR: <UCHAR4> | <UCHAR8> | <UCHAR_DELIM> >
+| < #UCHAR_DELIM: "\\" "u" <LBRACE>
+                          // W3C EBNF does not have a "{1,6}" syntax.
+                          // <HEX> (<HEX> (<HEX> (<HEX> (<HEX> (<HEX>)? )? )? )? )?
+                          // Or be lax here and check the length in escape processing.
+                          (<HEX>)+
+                          <RBRACE> >
 | < #UCHAR4: "\\" "u" <HEX> <HEX> <HEX> <HEX> >
 | < #UCHAR8: "\\" "U" <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> >
 | < STRING_LITERAL1:

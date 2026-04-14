@@ -361,3 +361,57 @@ WHERE
    }
 EOF
 
+# Delimited escape sequences \{H..H}
+##     @Test public void unescape_unicode_20()   { test_unesc_unicode("\\u{41}", "A") ; }
+
+##     @Test public void unescape_unicode_21()   { test_unesc_unicode("\\u{000000}", "\u0000") ; }
+##     @Test public void unescape_unicode_22()   { test_unesc_unicode("\\u{1F0A1}", "🂡") ; }
+##     @Test public void unescape_unicode_23()   { test_unesc_unicode("\\u{01F0A1}", "🂡") ; }
+##     @Test public void unescape_unicode_24()   { test_unesc_unicode("\\u{10FFFF}", 0x10FFFF) ; }
+
+N=0
+N=$((N+1)) ; testGood $ARQ $(fname "syntax-delim-hex-escape-" $N arq) <<EOF
+PREFIX : <http://example/>
+ASK { :s :p "\\u{41}" }
+EOF
+
+N=$((N+1)) ; testGood $ARQ $(fname "syntax-delim-hex-escape-" $N arq) <<EOF
+PREFIX : <http://example/>
+ASK { :s :p "\\u{0}" }
+EOF
+
+N=$((N+1)) ; testGood $ARQ $(fname "syntax-delim-hex-escape-" $N arq) <<EOF
+PREFIX : <http://example/>
+ASK { :s :p "\\u{1F0A1}" }
+EOF
+
+N=$((N+1)) ; testGood $ARQ $(fname "syntax-delim-hex-escape-" $N arq) <<EOF
+PREFIX : <http://example/>
+ASK { :s :p "\\u{01F0A1}" }
+EOF
+
+N=$((N+1)) ; testGood $ARQ $(fname "syntax-delim-hex-escape-" $N arq) <<EOF
+PREFIX : <http://example/>
+ASK { :s :p "\\u{10FFFF}" }
+EOF
+
+N=0
+N=$((N+1)) ; testBad $ARQ $(fname "syntax-delim-hex-escape-bad-" $N arq) <<EOF
+PREFIX : <http://example/>
+ASK { :s :p "\\u{}" }
+EOF
+
+N=$((N+1)) ; testBad $ARQ $(fname "syntax-delim-hex-escape-bad-" $N arq) <<EOF
+PREFIX : <http://example/>
+ASK { :s :p "\\u{12345678}" }
+EOF
+
+N=$((N+1)) ; testBad $ARQ $(fname "syntax-delim-hex-escape-bad-" $N arq) <<EOF
+PREFIX : <http://example/>
+ASK { :s :p "\\u{00000000}" }
+EOF
+
+N=$((N+1)) ; testBad $ARQ $(fname "syntax-delim-hex-escape-bad-" $N arq) <<EOF
+PREFIX : <http://example/>
+ASK { :s :p "\\u{1234567}" }
+EOF
