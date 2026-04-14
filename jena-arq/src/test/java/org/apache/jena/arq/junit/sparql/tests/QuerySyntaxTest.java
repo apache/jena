@@ -58,7 +58,7 @@ public class QuerySyntaxTest extends AbstractManifestTest {
         } catch (QueryException qEx) {
             if ( expectLegalSyntax ) {
                 String filename = SparqlTestLib.getAction(manifestEntry);
-                System.out.printf("==== Syntax test %s : %s\n", FileOps.basename(filename), "expected postive, got negative");
+                System.out.printf("==== Syntax test %s : %s\n", FileOps.basename(filename), "expected positive, got negative");
                 LibTest.printFile(filename);
                 throw qEx;
             }

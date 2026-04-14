@@ -1,0 +1,2 @@
+PREFIX : <http://example/>
+ASK { :s :p "\u{12345678}" }
