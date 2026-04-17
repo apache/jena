@@ -130,19 +130,16 @@ public class ResourceUtils {
     public static <T extends Resource> List<T> removeEquiv( List<T> l, Property p, Resource ref ) {
         List<T> equiv = new ArrayList<>();
 
-        for ( T r : l )
-        {
-            if ( r.hasProperty( p, ref ) && ref.hasProperty( p, r ) )
-            {
+        for ( T r : l ) {
+            if ( r.hasProperty(p, ref) && ref.hasProperty(p, r) ) {
                 // resource r is equivalent to the reference resource
-                equiv.add( r );
+                equiv.add(r);
             }
         }
 
-        l.removeAll( equiv );
+        l.removeAll(equiv);
         return equiv;
     }
-
 
     /**
      * <p>Answer a list of lists, which is a partition of the given
@@ -203,9 +200,7 @@ public class ResourceUtils {
         // Statement reconstruction work of the Model layer.
         String oldURI = old.getURI() ;
         if ( oldURI != null && oldURI.equals(uri) )
-        {
             return old ;
-        }
         Node resAsNode = old.asNode() ;
         Model model = old.getModel() ;
         Graph graph = model.getGraph() ;
@@ -213,72 +208,62 @@ public class ResourceUtils {
         Resource newRes = model.createResource(uri) ;
         Node newResAsNode = newRes.asNode() ;
 
-
-        boolean changeOccured = false ;
+        boolean changeOccurred = false ;
         List<Triple> triples = new ArrayList<>(WINDOW_SIZE) ;
 
         // An optimization to prevent concatenating the two find() operations together every time through the outer loop
         boolean onFirstIterator = true;
 
-        // It's possible there are triples (old wossname old) that are in triples twice. It doesn't matter.
-        ExtendedIterator<Triple> it = rawGraph.find(resAsNode, Node.ANY, Node.ANY) ;
-        try
-        {
-            if ( !it.hasNext() )
-            {
-                it.close() ;
-                onFirstIterator = false ;
-                it = rawGraph.find(Node.ANY, Node.ANY, resAsNode) ;
+        ExtendedIterator<Triple> it = rawGraph.find(resAsNode, Node.ANY, Node.ANY);
+        try {
+            if ( !it.hasNext() ) {
+                it.close();
+                onFirstIterator = false;
+                it = rawGraph.find(Node.ANY, Node.ANY, resAsNode);
             }
-            changeOccured = it.hasNext() ;
+            changeOccurred = it.hasNext();
 
-            while ( it.hasNext() )
-            {
-                int count = 0 ;
-                while ( it.hasNext() && count < WINDOW_SIZE )
-                {
-                    triples.add(it.next()) ;
-                    count++ ;
+            while (it.hasNext()) {
+                int count = 0;
+                while (it.hasNext() && count < WINDOW_SIZE) {
+                    triples.add(it.next());
+                    count++;
                 }
 
-                it.close() ;
+                it.close();
 
-                // Iterate over the triples collection twice (this may be more efficient than interleaving deletes and adds)
-                for ( Triple t : triples )
-                {
-                    rawGraph.delete(t) ;
+                // Iterate over the triples collection twice (this may be more
+                // efficient than interleaving deletes and adds)
+                for ( Triple t : triples ) {
+                    rawGraph.delete(t);
                 }
 
-                for ( Triple t : triples )
-                {
-                    Node oldS = t.getSubject(), oldO = t.getObject() ;
-                    Node newS = oldS.equals(resAsNode) ? newResAsNode : oldS ;
-                    Node newO = oldO.equals(resAsNode) ? newResAsNode : oldO ;
+                for ( Triple t : triples ) {
+                    Node oldS = t.getSubject(), oldO = t.getObject();
+                    Node newS = oldS.equals(resAsNode) ? newResAsNode : oldS;
+                    Node newO = oldO.equals(resAsNode) ? newResAsNode : oldO;
 
                     rawGraph.add(Triple.create(newS, t.getPredicate(), newO));
                 }
                 triples.clear();
 
-                it = onFirstIterator ? rawGraph.find(resAsNode, Node.ANY, Node.ANY) : rawGraph.find(Node.ANY, Node.ANY, resAsNode) ;
-                if ( onFirstIterator && !it.hasNext() )
-                {
-                    it.close() ;
-                    onFirstIterator = false ;
-                    it = rawGraph.find(Node.ANY, Node.ANY, resAsNode) ;
+                it = onFirstIterator ? rawGraph.find(resAsNode, Node.ANY, Node.ANY) : rawGraph.find(Node.ANY, Node.ANY, resAsNode);
+                if ( onFirstIterator && !it.hasNext() ) {
+                    it.close();
+                    onFirstIterator = false;
+                    it = rawGraph.find(Node.ANY, Node.ANY, resAsNode);
                 }
             }
-        }
-        finally
-        {
-            it.close() ;
+        } finally {
+            it.close();
         }
 
-        // If we were underneath an InfGraph, and at least one triple changed, then we have to rebind.
-        if ( rawGraph != graph && changeOccured )
-        {
-            ((InfGraph) graph).rebind() ;
+        // If we were underneath an InfGraph, and at least one triple changed, then
+        // we have to rebind.
+        if ( rawGraph != graph && changeOccurred ) {
+            ((InfGraph)graph).rebind();
         }
-        return newRes ;
+        return newRes;
     }
 
 
@@ -323,13 +308,4 @@ public class ResourceUtils {
 
         return m;
     }
-
-
-    // Internal implementation methods
-    //////////////////////////////////
-
-    //==============================================================================
-    // Inner class definitions
-    //==============================================================================
-
 }
