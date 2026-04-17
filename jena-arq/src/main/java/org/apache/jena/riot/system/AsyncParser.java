@@ -383,7 +383,7 @@ public class AsyncParser {
 
         private void parse(RDFParserBuilder parser) {
             try {
-                // If an error occured then all parser are invoked anyway because any
+                // If an error occurred then all parser are invoked anyway because any
                 // resources they own need yet to be closed.
                 // At this point, however, the parser's sink will always fail and
                 // any further errors will be suppressed.

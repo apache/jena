@@ -30,7 +30,7 @@ package org.apache.jena.query.text.changes;
  * if a quad was present.
  * <p>
  * A {@code QuadAction} can be an {@code ADD} or {@code DELETE}, indicating a change
- * to the {@code DatasetGraph} actually occured (this assumes checking is done -
+ * to the {@code DatasetGraph} actually occurred (this assumes checking is done -
  * {@link TextDatasetChanges} generators may not check - see implementation for details).
  * Otherwise a {@code NO_ADD}, {@code NO_DELETE} {@code QuadAction} is used.
  */
