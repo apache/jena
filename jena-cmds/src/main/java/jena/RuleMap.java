@@ -196,7 +196,7 @@ public class RuleMap {
                 }
             }
         } catch (Throwable t) {
-            System.err.println("An error occured: \n" + t);
+            System.err.println("An error occurred: \n" + t);
             t.printStackTrace();
         }
     }
