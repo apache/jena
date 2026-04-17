@@ -1152,12 +1152,12 @@ public class Iter<T> implements IteratorCloseable<T> {
 
     /** Limit the number of elements. */
     public Iter<T> limit(long N) {
-        return Iter.iter(limit(null, N));
+        return Iter.iter(limit(get(), N));
     }
 
     /** Skip over a number of elements. */
     public Iter<T> skip(long N) {
-        return Iter.iter(skip(null, N));
+        return Iter.iter(skip(get(), N));
     }
 
     /** Count the iterator (this is destructive on the iterator) */
