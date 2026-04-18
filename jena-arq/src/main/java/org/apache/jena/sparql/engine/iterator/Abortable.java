@@ -21,4 +21,13 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-public interface Abortable { public void abort(); }
+public interface Abortable {
+    /**
+     * Signal an abort.
+     * This operation is thread-safe can be called asynchorously.
+     * <p>
+     * Abort does not mean the implementation immediately stops processing,
+     * only that underlying process will stop as soon as possible.
+     */
+    public void abort();
+}
