@@ -109,7 +109,7 @@ public class RunnerPrintShex extends org.apache.jena.shex.runner.AbstractRunnerF
             System.out.println("-- --");
             Shex.printSchema(System.out, schema2);
             System.out.println("== ==");
-            fail("ShEx schames not equivalent");
+            fail("ShEx schemas not equivalent");
         }
     }
 

@@ -135,8 +135,38 @@ public class EscapeStr
             }
 
             // Normal case!
-            out.print(c);
+            if ( ! Character.isSurrogate(c) ) {
+                out.print(c);
+                continue;
+            }
+
+            // Surrogate. Check if high-low (legal).
+
+            if ( i < len-1 ) {
+                // Peek
+                char c2 = s.charAt(i+1);
+                if ( Character.isSurrogatePair(c, c2)) {
+                    // Accept c2
+                    i++;
+                    // Valid surrogate pair!
+                    // Print both surrogates raw, and let the character encoder deal with it.
+                    out.print(c);
+                    out.print(c2);
+                    continue;
+                }
+                // The next character could be a low surrogate making this a lone-low surrogate then legal
+            }
+            // Bad surrogate. low-high, or end of string.
+            // c2 is read again.
+            outputReplacement(out, c);
+            continue;
         }
+    }
+
+    private static void outputReplacement(AWriter out, char c) {
+        // This is our policy instead of Java's default of a single '?' (done deep inside UTF_8.Encoder)
+        //out.printf("\\u%04X", (int)c);
+        out.print("\\uFFFD");
     }
 
     /** Write a string with Unicode to ASCII conversion using \-u escapes */

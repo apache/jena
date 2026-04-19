@@ -141,6 +141,10 @@ public class TestEscapeStr {
         assertEquals(expected, output);
     }
 
+    private void test_escape(String input, String expected) {
+        String output = EscapeStr.stringEsc(input);
+        assertEquals(expected, output);
+    }
     @Test public void unescape_unicode_1()   { test_unesc_unicode("", "") ; }
     @Test public void unescape_unicode_2()   { test_unesc_unicode("abc\\u0020def", "abc def") ; }
     @Test public void unescape_unicode_3()   { test_unesc_unicode("\\u0020", " ") ; }
@@ -153,7 +157,6 @@ public class TestEscapeStr {
     @Test public void unescape_unicode_12()   { test_unesc_unicode("\\(\\)", "\\(\\)") ; }
     @Test public void unescape_unicode_13()   { test_unesc_unicode("\\\\", "\\\\") ; }
 
-    // See also TestEscapeStr
     // \-u{...} style Unicode escapes
     @Test public void unescape_unicode_20()   { test_unesc_unicode("\\u{41}", "A") ; }
     @Test public void unescape_unicode_21()   { test_unesc_unicode("\\u{000000}", "\u0000") ; }
@@ -168,6 +171,22 @@ public class TestEscapeStr {
     @Test public void unescape_unicode_33()   { assertThrows(AtlasException.class, ()->test_unesc_unicode("\\u{1234567}", "")) ; }
     @Test public void unescape_unicode_34()   { assertThrows(AtlasException.class, ()->test_unesc_unicode("\\u{0000000}", "")) ; }
 
+    // Escaped surrogates, good and bad.
+    // Use java character escapes to put the surrogates into the java string.
+    // 🂡 is U+D83C U+DCA1
+    @Test public void escape_unicode_50()   { test_escape("\uD83C\uDCA1", "🂡"); }
+    @Test public void escape_unicode_51()   { test_escape("abc\uD83C\uDCA1xyz", "abc🂡xyz"); }
+    // low, then high -> illegal
+    @Test public void escape_unicode_55()   { test_escape("\uDCA1\uD83C", "\\uFFFD\\uFFFD"); }
+    @Test public void escape_unicode_56()   { test_escape("\uDCA1\uD83C@", "\\uFFFD\\uFFFD@"); }
+    // Lone surrogate
+    @Test public void escape_unicode_60()   { test_escape("\uD83C", "\\uFFFD"); }
+    @Test public void escape_unicode_61()   { test_escape("abc\uD83Cxyz", "abc\\uFFFDxyz"); }
+    @Test public void escape_unicode_62()   { test_escape("\uDCA1", "\\uFFFD"); }
+    @Test public void escape_unicode_63()   { test_escape("abc\uDCA1xyz", "abc\\uFFFDxyz"); }
+
+    // low, then high/low -> one illegal, encode legal pair.
+    @Test public void escape_unicode_59()   { test_escape("\uDCA1\uD83C\uDCA1", "\\uFFFD🂡"); }
 
     private void test_unesc_unicode(String input, String expected) {
         String output = EscapeStr.unescapeUnicode(input) ;
