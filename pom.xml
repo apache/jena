@@ -85,7 +85,7 @@
 
     <ver.caffeine>3.2.3</ver.caffeine>
     <!-- Most of Jena uses other libraries for equivalent functionality. -->
-    <ver.guava>33.5.0-jre</ver.guava>
+    <ver.guava>33.6.0-jre</ver.guava>
 
     <ver.gson>2.13.2</ver.gson>
     <ver.lucene>10.3.1</ver.lucene>
