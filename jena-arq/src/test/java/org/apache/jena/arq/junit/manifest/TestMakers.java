@@ -21,6 +21,7 @@
 
 package org.apache.jena.arq.junit.manifest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.jena.arq.junit.SurpressedTest;
@@ -52,7 +53,9 @@ public class TestMakers {
      * Add a test maker to the system-wide test makers list
      */
     public static void install(TestMaker testMaker) {
-        systemSetup.add(testMaker);
+        List<TestMaker> next = new ArrayList<>(systemSetup.installed);
+        next.add(testMaker);
+        set(next);
     }
 
     public static void reset() {
@@ -75,10 +78,6 @@ public class TestMakers {
 
     private TestMakers(List<TestMaker> testMakers) {
         installed = testMakers;
-    }
-
-    public void add(TestMaker testMaker) {
-        installed.add(testMaker);
     }
 
     public void clear() {
