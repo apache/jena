@@ -103,7 +103,10 @@ public class BinaryDataFileRandomAccess implements BinaryDataFile {
     public void truncate(long length) {
         checkOpen();
         switchToWriteMode();
-        try { file.setLength(length); }
+        try {
+            file.setLength(length);
+            writePosition = length;
+        }
         catch (IOException ex) { IO.exception(ex); }
     }
 
