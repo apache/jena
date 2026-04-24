@@ -47,7 +47,7 @@ public class StrLanguageIn extends ConstraintTerm {
     }
 
     @Override
-    public ReportItem validate(ValidationContext vCxt, Node n) {
+    protected ReportItem validate(ValidationContext vCxt, Node n) {
         if ( ! n.isLiteral() )
             return new ReportItem(toString()+": Not a literal",n);
         String langTag = n.getLiteralLanguage();

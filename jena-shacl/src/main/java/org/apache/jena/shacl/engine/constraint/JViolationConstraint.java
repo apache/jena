@@ -49,7 +49,7 @@ public class JViolationConstraint extends ConstraintTerm {
     }
 
     @Override
-    public ReportItem validate(ValidationContext vCxt, Node n) {
+    protected ReportItem validate(ValidationContext vCxt, Node n) {
         if ( ! generateViolation )
             return null;
         return new ReportItem("Violation");

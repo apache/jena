@@ -56,7 +56,7 @@ public class InConstraint extends ConstraintTerm {
     }
 
     @Override
-    public ReportItem validate(ValidationContext vCxt, Node n) {
+    protected ReportItem validate(ValidationContext vCxt, Node n) {
         if ( values.contains(n) )
             return null;
         String errMsg = toString()+" : RDF term "+displayStr(n)+" not in expected values";

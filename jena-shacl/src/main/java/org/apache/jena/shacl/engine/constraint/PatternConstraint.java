@@ -66,7 +66,7 @@ public class PatternConstraint extends ConstraintTerm {
     }
 
     @Override
-    public ReportItem validate(ValidationContext vCxt, Node n) {
+    protected ReportItem validate(ValidationContext vCxt, Node n) {
         if ( n.isBlank() ) {
             String msg = toString()+": Blank node: "+ShLib.displayStr(n);
             return new ReportItem(msg, n);

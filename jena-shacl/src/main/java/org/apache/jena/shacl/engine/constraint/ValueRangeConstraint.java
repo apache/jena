@@ -51,7 +51,8 @@ public abstract class ValueRangeConstraint extends ConstraintTerm {
     }
 
     @Override
-    final public ReportItem validate(ValidationContext vCxt, Node n) {
+    protected
+    final ReportItem validate(ValidationContext vCxt, Node n) {
         NodeValue nv = NodeValue.makeNode(n);
         ValueSpace vs = NodeValue.classifyValueOp(nodeValue, nv);
         try {

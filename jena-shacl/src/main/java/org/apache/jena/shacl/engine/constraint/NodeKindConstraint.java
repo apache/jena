@@ -39,25 +39,28 @@ import org.apache.jena.shacl.vocabulary.SHACL;
 public class NodeKindConstraint extends ConstraintTerm {
 
     //sh:NodeKind: sh:BlankNode, sh:IRI, sh:Literal sh:BlankNodeOrIRI, sh:BlankNodeOrLiteral and sh:IRIOrLiteral.
+    // SHACL 1.2 -- sh:TripleTerm
 
     private final Node kind;
     private final boolean canBeIRI;
     private final boolean canBeBlankNode;
     private final boolean canBeLiteral;
+    private final boolean canBeTripleTerm;
 
     public NodeKindConstraint(Node kind) {
         Objects.requireNonNull(kind);
         if ( ! kind.isURI() )
             throw new IllegalArgumentException("NodeKindConstraint; not an IRI for the kind kind");
         this.kind = kind;
-        this.canBeIRI       = kind.equals(SHACL.IRI)       || kind.equals(SHACL.BlankNodeOrIRI)     || kind.equals(SHACL.IRIOrLiteral);
-        this.canBeBlankNode = kind.equals(SHACL.BlankNode) || kind.equals(SHACL.BlankNodeOrIRI)     || kind.equals(SHACL.BlankNodeOrLiteral);
-        this.canBeLiteral   = kind.equals(SHACL.Literal)   || kind.equals(SHACL.BlankNodeOrLiteral) || kind.equals(SHACL.IRIOrLiteral);
+        this.canBeIRI         = kind.equals(SHACL.IRI)       || kind.equals(SHACL.BlankNodeOrIRI)     || kind.equals(SHACL.IRIOrLiteral);
+        this.canBeBlankNode   = kind.equals(SHACL.BlankNode) || kind.equals(SHACL.BlankNodeOrIRI)     || kind.equals(SHACL.BlankNodeOrLiteral);
+        this.canBeLiteral     = kind.equals(SHACL.Literal)   || kind.equals(SHACL.BlankNodeOrLiteral) || kind.equals(SHACL.IRIOrLiteral);
+        this.canBeTripleTerm  = kind.equals(SHACL.TripleTerm);
 
-        if ( ! canBeIRI && ! canBeBlankNode && ! canBeLiteral )
+        if ( ! canBeIRI && ! canBeBlankNode && ! canBeLiteral && ! canBeTripleTerm )
             throw new IllegalArgumentException(
                 "NodeKind["+kind.getLocalName()+"] : "+
-                "not one of sh:BlankNode, sh:IRI, sh:Literal sh:BlankNodeOrIRI, sh:BlankNodeOrLiteral and sh:IRIOrLiteral");
+                "not one of sh:BlankNode, sh:IRI, sh:Literal sh:BlankNodeOrIRI, sh:BlankNodeOrLiteral, sh:IRIOrLiteral, or sh:TripleTerm");
     }
 
     public  Node getKind() { return kind; }
@@ -88,10 +91,11 @@ public class NodeKindConstraint extends ConstraintTerm {
     }
 
     @Override
-    public ReportItem validate(ValidationContext vCxt, Node n) {
-        if ( canBeIRI && n.isURI() )          return null;
-        if ( canBeBlankNode && n.isBlank() )  return null;
-        if ( canBeLiteral && n.isLiteral() )  return null;
+    protected ReportItem validate(ValidationContext vCxt, Node n) {
+        if ( canBeIRI && n.isURI() )                return null;
+        if ( canBeBlankNode && n.isBlank() )        return null;
+        if ( canBeLiteral && n.isLiteral() )        return null;
+        if ( canBeTripleTerm && n.isTripleTerm() )  return null;
         String msg = toString()+" : Expected "+kind.getLocalName()+" for "+displayStr(n);
         return new ReportItem(msg, n);
     }

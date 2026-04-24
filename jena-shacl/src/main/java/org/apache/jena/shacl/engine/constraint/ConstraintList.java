@@ -33,37 +33,35 @@ import org.apache.jena.shacl.validation.event.ConstraintEvaluatedOnFocusNodeEven
 import org.apache.jena.shacl.validation.event.ConstraintEvaluatedOnSinglePathNodeEvent;
 import org.apache.jena.sparql.path.Path;
 
-/* Constraint that does not need access to the data other than the nodes supplied. e.g. sh:datatype. */
-public abstract class ConstraintTerm implements Constraint {
+public abstract class ConstraintList implements Constraint {
 
-    public ConstraintTerm() {}
+    protected ConstraintList() {}
 
     @Override
     final
     public void validatePropertyShape(ValidationContext vCxt, Graph data, Shape shape, Node focusNode, Path path, Set<Node> valueNodes) {
-        valueNodes.forEach(x->applyConstraintTerm(vCxt, shape, focusNode, path, x));
+        valueNodes.forEach(x->applyConstraintList(vCxt, shape, focusNode, path, data, x));
     }
 
     @Override
     final
     public void validateNodeShape(ValidationContext vCxt, Graph data, Shape shape, Node focusNode) {
-        applyConstraintTerm(vCxt, shape, focusNode, null, focusNode);
+        applyConstraintList(vCxt, shape, focusNode, null, data, focusNode);
     }
 
-    private void applyConstraintTerm(ValidationContext vCxt, Shape shape, Node focusNode, Path path, Node term) {
-        ReportItem item = validate(vCxt, term);
+    private void applyConstraintList(ValidationContext vCxt, Shape shape, Node focusNode, Path path, Graph data, Node listHead) {
+        ReportItem item = validateList(vCxt, data, listHead);
         boolean passed = (item == null);
         if (path == null) {
             vCxt.notifyValidationListener(() -> new ConstraintEvaluatedOnFocusNodeEvent(vCxt, shape, focusNode, this, passed));
         } else {
             vCxt.notifyValidationListener(() -> new ConstraintEvaluatedOnSinglePathNodeEvent(vCxt, shape, focusNode, this, path,
-                                            term, passed));
+                                                                                             listHead, passed));
         }
-        if ( passed ) {
+        if ( passed )
             return;
-        }
         vCxt.reportEntry(item, shape, focusNode, path, this);
     }
 
-    protected abstract ReportItem validate(ValidationContext vCxt, Node n) ;
+    protected abstract ReportItem validateList(ValidationContext vCxt, Graph data, Node n) ;
 }

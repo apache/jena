@@ -55,6 +55,11 @@ public interface ConstraintVisitor {
     void visit(ConstraintComponentSPARQL constraint);
     void visit(SparqlConstraint constraint);
 
+    void visit(ListMemberShape constraint);
+    void visit(ListMinLength constraint);
+    void visit(ListMaxLength constraint);
+    void visit(ListUniqueMembers constraint);
+
     // Other Constraints
     void visit(JViolationConstraint constraint);
     void visit(JLogConstraint constraint);

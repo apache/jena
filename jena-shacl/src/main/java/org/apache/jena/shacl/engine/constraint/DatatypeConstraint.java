@@ -75,7 +75,7 @@ public class DatatypeConstraint extends ConstraintTerm {
     }
 
     @Override
-    public ReportItem validate(ValidationContext vCxt, Node n) {
+    protected ReportItem validate(ValidationContext vCxt, Node n) {
         if ( n.isLiteral() && dtURI.equals(n.getLiteralDatatypeURI()) ) {
             // Must be valid for the type
             if ( ! rdfDatatype.isValid(n.getLiteralLexicalForm()) ) {
@@ -131,6 +131,7 @@ public class DatatypeConstraint extends ConstraintTerm {
 
     @Override
     public String toString() {
+        // DRY (with ListMmeberShape, others?
         String x;
         if ( datatype.isURI() ) {
             if ( dtURI.startsWith(XSD.getURI()) )

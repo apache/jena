@@ -51,8 +51,9 @@ public class ShXone extends ConstraintOpN {
         int c = 0;
         for ( Shape sh : others ) {
             ValidationContext vCxt2 = ValidationContext.create(vCxt);
+            vCxt2.setVerbose(false);
             ValidationProc.execValidateShape(vCxt2, data, sh, node);
-            boolean innerConforms = vCxt2.generateReport().conforms();
+            boolean innerConforms = ! vCxt2.hasViolation();
             if ( innerConforms ) {
                 c++;
                 // Choice: count all vs break as soon as error detected

@@ -29,6 +29,7 @@ import org.apache.jena.graph.NodeFactory;
 // Vocabulary for http://www.w3.org/ns/shacl#
 // schemagen then converted to Node level.
 // then add SHACL-AF
+// Then SHACL 1.2 added
 
 public class SHACL {
     private static Node createResource(String uri) { return NodeFactory.createURI(uri); }
@@ -231,6 +232,39 @@ public class SHACL {
     /** <p>Specifies the node kind (e.g. IRI or literal) each value node.</p> */
     public static final Node nodeKind = createProperty( "http://www.w3.org/ns/shacl#nodeKind" );
 
+    /** SHACL 1.2: sh:memberShape */
+    public static final Node memberShape = createProperty( "http://www.w3.org/ns/shacl#memberShape" );
+
+    /** SHACL 1.2: minListLength */
+    public static final Node minListLength = createProperty( "http://www.w3.org/ns/shacl#minListLength" );
+
+    /** SHACL 1.2: maxListLength */
+    public static final Node maxListLength = createProperty( "http://www.w3.org/ns/shacl#maxListLength" );
+
+    /** SHACL 1.2: uniqueMembers */
+    public static final Node uniqueMembers = createProperty( "http://www.w3.org/ns/shacl#uniqueMembers" );
+
+    /** <p>Node kind -- literal.</p> */
+    public static final Node Literal = createResource( "http://www.w3.org/ns/shacl#Literal" );
+
+    /** <p>Node kind -- IRI.</p> */
+    public static final Node IRI = createResource( "http://www.w3.org/ns/shacl#IRI" );
+
+    /** <p>Node kind -- blank node.</p> */
+    public static final Node BlankNode = createResource( "http://www.w3.org/ns/shacl#BlankNode" );
+
+    /** <p>Node kind -- triple term</p> */
+    public static final Node TripleTerm = createResource( "http://www.w3.org/ns/shacl#TripleTerm" );
+
+    /** <p>Node kind -- IRI or literal.</p> */
+    public static final Node IRIOrLiteral = createResource( "http://www.w3.org/ns/shacl#IRIOrLiteral" );
+
+    /** <p>Node kind -- blank node or IRI.</p> */
+    public static final Node BlankNodeOrIRI = createResource( "http://www.w3.org/ns/shacl#BlankNodeOrIRI" );
+
+    /** <p>Node kind -- blank nodes or literals.</p> */
+    public static final Node BlankNodeOrLiteral = createResource( "http://www.w3.org/ns/shacl#BlankNodeOrLiteral" );
+
     /** <p>The validator(s) used to evaluate a constraint in the context of a node shape.</p> */
     public static final Node nodeValidator = createProperty( "http://www.w3.org/ns/shacl#nodeValidator" );
 
@@ -430,15 +464,6 @@ public class SHACL {
 
     public static final Node AndConstraintComponent_and = createResource( "http://www.w3.org/ns/shacl#AndConstraintComponent-and" );
 
-    /** <p>The node kind of all blank nodes.</p> */
-    public static final Node BlankNode = createResource( "http://www.w3.org/ns/shacl#BlankNode" );
-
-    /** <p>The node kind of all blank nodes or IRIs.</p> */
-    public static final Node BlankNodeOrIRI = createResource( "http://www.w3.org/ns/shacl#BlankNodeOrIRI" );
-
-    /** <p>The node kind of all blank nodes or literals.</p> */
-    public static final Node BlankNodeOrLiteral = createResource( "http://www.w3.org/ns/shacl#BlankNodeOrLiteral" );
-
     /** <p>A constraint component that can be used to verify that each value node is
      *  an instance of a given type.</p>
      */
@@ -498,12 +523,6 @@ public class SHACL {
     public static final Node HasValueConstraintComponent = createResource( "http://www.w3.org/ns/shacl#HasValueConstraintComponent" );
 
     public static final Node HasValueConstraintComponent_hasValue = createResource( "http://www.w3.org/ns/shacl#HasValueConstraintComponent-hasValue" );
-
-    /** <p>The node kind of all IRIs.</p> */
-    public static final Node IRI = createResource( "http://www.w3.org/ns/shacl#IRI" );
-
-    /** <p>The node kind of all IRIs or literals.</p> */
-    public static final Node IRIOrLiteral = createResource( "http://www.w3.org/ns/shacl#IRIOrLiteral" );
 
     /** <p>A constraint component that can be used to exclusively enumerate the permitted
      *  value nodes.</p>
@@ -574,9 +593,6 @@ public class SHACL {
     public static final Node LessThanOrEqualsConstraintComponent = createResource( "http://www.w3.org/ns/shacl#LessThanOrEqualsConstraintComponent" );
 
     public static final Node LessThanOrEqualsConstraintComponent_lessThanOrEquals = createResource( "http://www.w3.org/ns/shacl#LessThanOrEqualsConstraintComponent-lessThanOrEquals" );
-
-    /** <p>The node kind of all literals.</p> */
-    public static final Node Literal = createResource( "http://www.w3.org/ns/shacl#Literal" );
 
     /** <p>A constraint component that can be used to restrict the maximum number of
      *  value nodes.</p>
@@ -652,6 +668,14 @@ public class SHACL {
     public static final Node NodeKindConstraintComponent = createResource( "http://www.w3.org/ns/shacl#NodeKindConstraintComponent" );
 
     public static final Node NodeKindConstraintComponent_nodeKind = createResource( "http://www.w3.org/ns/shacl#NodeKindConstraintComponent-nodeKind" );
+
+    public static final Node MemberShapeConstraintComponent = createResource( "http://www.w3.org/ns/shacl#MemberShapeConstraintComponent" );
+
+    public static final Node ListMinLengthConstraintComponent = createResource( "http://www.w3.org/ns/shacl#ListMinLengthConstraintComponent" );
+
+    public static final Node ListMaxLengthConstraintComponent = createResource( "http://www.w3.org/ns/shacl#ListMaxLengthConstraintComponent" );
+
+    public static final Node UniqueMembersConstraintComponent = createResource( "http://www.w3.org/ns/shacl#UniqueMembersConstraintComponent" );
 
     /** <p>A node shape is a shape that specifies constraint that need to be met with
      *  respect to focus nodes.</p>

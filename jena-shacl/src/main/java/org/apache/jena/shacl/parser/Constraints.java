@@ -108,6 +108,11 @@ public class Constraints {
         dispatch.put( SHACL.in,                (g, s, p, o) -> new InConstraint(list(g,o)) );
         dispatch.put( SHACL.closed,            (g, s, p, o) -> new ClosedConstraint(g,s,booleanValue(o)) );
 
+        dispatch.put( SHACL.memberShape,       (g, s, p, o) -> new ListMemberShape(o));
+        dispatch.put( SHACL.minListLength,     (g, s, p, o) -> new ListMinLength(o));
+        dispatch.put( SHACL.maxListLength,     (g, s, p, o) -> new ListMaxLength(o));
+        dispatch.put( SHACL.uniqueMembers,     (g, s, p, o) -> new ListUniqueMembers(o));
+
         // Below
         //dispatch.put( SHACL.not,                (g, s, p, o) -> notImplemented(p) );
         //dispatch.put( SHACL.and,                (g, s, p, o) -> notImplemented(p) );
@@ -202,6 +207,10 @@ public class Constraints {
             Shape other = ShapesParser.parseShapeStep(traversed, parsed, g, o);
             if ( other instanceof PropertyShape )
                 throw new ShaclParseException("Object of sh:node must be a node shape, not a property shape");
+            if ( other == null ) {
+                System.err.print("sh:node - no such shape");
+                return null;
+            }
             return new ShNode(other);
         }
 
