@@ -21,6 +21,8 @@
 
 package shacl;
 
+import java.util.List;
+
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
@@ -36,11 +38,14 @@ import org.apache.jena.shacl.ShaclValidator;
 import org.apache.jena.shacl.ValidationReport;
 import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.lib.ShLib;
+import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sys.JenaSystem;
 
 /** SHACL validation.
- * <p>
- * Usage: <code>shacl validate [--text] --shapes SHAPES --data DATA</code>
+ * <pre>
+ * Usage: <code>shacl validate [--text] [-v|--verbose] [--target=] --shapes SHAPES --data DATA</code>
+ * Usage: <code>shacl validate [--text] [-v|--verbose] [--target=] FILE</code>
+ * </pre>
  */
 public class shacl_validate extends CmdMain {
 
@@ -55,8 +60,10 @@ public class shacl_validate extends CmdMain {
     private ArgDecl argShapes      = new ArgDecl(true, "--shapes", "--shapesfile", "--shapefile", "-s");
     private ArgDecl argTargetNode  = new ArgDecl(true, "--target", "--node", "-n", "-t");
 
-    private String  datafile = null;
-    private String  shapesfile = null;
+    // Allow multiple files for each - combine into one graph each for data and for shapes.
+    private List<String> datafiles = null;
+    private List<String> shapesfiles = null;
+    private String shapesURL = null;
     private String  targetNode = null;  // Parse later.
     private boolean textOutput = false;
 
@@ -75,44 +82,43 @@ public class shacl_validate extends CmdMain {
 
     @Override
     protected String getSummary() {
-        return getCommandName()+" [--target URI] --shapes shapesFile --data dataFile";
+        return getCommandName()+" [--target URI] [--shapes shapesFile --data dataFile] [FILE ...]";
     }
 
     @Override
     protected void processModulesAndArgs() {
          super.processModulesAndArgs();
 
-         datafile = super.getValue(argData);
-         shapesfile = super.getValue(argShapes);
+         // --data can be empty in which case shapes and data are in the shapes files.
+         datafiles = super.getValues(argData);
+         shapesfiles = super.getValues(argShapes);
 
-         // No -- arguments, use act on single file of shapes and data.
-         if ( datafile == null && shapesfile == null ) {
-             if ( positionals.size() == 1 ) {
-                 datafile = positionals.get(0);
-                 shapesfile = positionals.get(0);
-             }
+         // If there are no arguments, act the commandline positional arguments as shapes and data.
+         if ( datafiles.isEmpty() && shapesfiles.isEmpty() ) {
+             if ( positionals.isEmpty() )
+                 throw new CmdException("No input");
+             shapesfiles = positionals;
          }
-
-         if ( datafile == null )
-             throw new CmdException("Usage: "+getSummary());
-         if ( shapesfile == null )
-             shapesfile = datafile;
+         if ( shapesfiles == null || shapesfiles.isEmpty() )
+             throw new CmdException("No shapes files");
 
          textOutput = super.hasArg(argOutputText);
 
-         if ( contains(argTargetNode) ) {
+         if ( contains(argTargetNode) )
              targetNode = getValue(argTargetNode);
-         }
+
+         // For imports.
+         shapesURL = shapesfiles.getFirst();
     }
 
     @Override
     protected void exec() {
-        Graph shapesGraph = load(shapesfile, "shapes file");
+        Graph shapesGraph = load(shapesfiles);
         Graph dataGraph;
-        if ( datafile.equals(shapesfile) )
+        if ( datafiles.isEmpty() )
             dataGraph = shapesGraph;
         else
-            dataGraph = load(datafile, "data file");
+            dataGraph = load(datafiles);
 
         Node node = null;
         if ( targetNode != null ) {
@@ -120,7 +126,7 @@ public class shacl_validate extends CmdMain {
             node = NodeFactory.createURI(x);
         }
 
-        shapesGraph = Imports.withImports(shapesfile, shapesGraph);
+        shapesGraph = Imports.withImports(shapesURL, shapesGraph);
 
         if ( isVerbose() )
             ValidationContext.VERBOSE = true;
@@ -138,14 +144,17 @@ public class shacl_validate extends CmdMain {
             RDFDataMgr.write(System.out, report.getGraph(), Lang.TTL);
     }
 
-    private Graph load(String filename, String scope) {
-        try {
-            Graph graph = RDFDataMgr.loadGraph(filename);
-            return graph;
-        } catch (RiotException ex) {
-            System.err.println("Loading "+scope);
-            throw ex;
-        }
+    private Graph load(List<String> files) {
+        Graph graph = GraphFactory.createDefaultGraph();
+        files.forEach(fn-> {
+            try {
+                RDFDataMgr.read(graph, fn);
+            } catch (RiotException ex) {
+                System.err.println("Error loading "+fn);
+                throw ex;
+            }
+        });
+        return graph;
     }
 
     @Override
