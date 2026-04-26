@@ -24,6 +24,7 @@ package org.apache.jena.sparql.exec.http;
 import static org.apache.jena.atlas.lib.StrUtils.strjoinNL;
 import static org.apache.jena.sparql.sse.SSE.parseQuad;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.concurrent.TimeUnit;
@@ -43,7 +44,7 @@ import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 
 /**
  * Tests for {@link QueryExecHTTP} with no authentication.
- * See  {@link TestQueryExecHTTP} for most of the tests.
+ * See {@link TestQueryExecHTTP} for most of the tests.
  */
 public class TestQueryExecCleanServer {
     // Unlike TestQueryExecutionHTTP these tests run a clean server each time.
@@ -104,10 +105,12 @@ public class TestQueryExecCleanServer {
                                             // Short!
                                             .timeout(10, TimeUnit.MILLISECONDS)
                                             .build() ) {
-            assertThrows(QueryExceptionHTTP.class, ()->{
+            QueryExceptionHTTP ex = assertThrows(QueryExceptionHTTP.class, ()->{
                 long x = Iter.count(qExec.select());
                 assertEquals(2, x);
             });
+            // Client side timeout.
+            assertNull(ex.getResponseHeaders());
         }
     }
 }
