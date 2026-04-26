@@ -57,7 +57,7 @@ public class HttpException extends RuntimeException {
     public static HttpException create(HttpResponse<?> response) {
         return HttpException.builder()
                 .statusCode(response.statusCode())
-                .httpHeaders(response.headers())
+                .httpResponseHeaders(response.headers())
                 .build();
     }
 
@@ -69,6 +69,7 @@ public class HttpException extends RuntimeException {
         return HttpException.builder()
                 .statusCode(other.getStatusCode())
                 .statusLine(other.getStatusLine())
+                .httpResponseHeaders(other.getHttpResponseHeaders())
                 .responseMessage(other.getResponse())
                 .cause(other.getCause())
                 .build();
@@ -107,40 +108,16 @@ public class HttpException extends RuntimeException {
             return this;
         }
 
-        public Builder httpHeaders(HttpHeaders httpHeaders) {
+        public Builder httpResponseHeaders(HttpHeaders httpHeaders) {
             this.httpHeaders = httpHeaders;
             return this;
         }
         public HttpException build() {
-            return new HttpException(statusCode, statusLine, responseMessage, cause);
+            return new HttpException(statusCode, statusLine, httpHeaders, responseMessage, cause);
         }
     }
 
     // HTTP/2 does not have an information message.
-
-    /** @deprecated Use {@link HttpException#create(int)} */
-    @Deprecated
-    public HttpException(int statusCode) {
-        this(statusCode, null, null, null, null);
-    }
-
-    /** @deprecated Use {@link HttpException#builder()} */
-    @Deprecated
-    public HttpException(int statusCode, String statusLine) {
-        this(statusCode, statusLine, null, null, null);
-    }
-
-    /** @deprecated Use {@link HttpException#create(HttpResponse)} or {@link HttpException#builder()} */
-    @Deprecated
-    public HttpException(int statusCode, String statusLine, String responseMessage) {
-        this(statusCode, statusLine, null, responseMessage, null);
-    }
-
-    /** @deprecated Use {@link HttpException#create(HttpResponse)} or {@link HttpException#builder()} */
-    @Deprecated
-    public HttpException(int statusCode, String statusLine, String responseMessage, Throwable cause) {
-        this(statusCode, statusLine, null, responseMessage, cause);
-    }
 
     private HttpException(int statusCode, String statusLine, HttpHeaders responseHttpHeaders, String responseBody, Throwable cause) {
         super(exMessage(statusCode, statusLine), cause);
@@ -156,9 +133,33 @@ public class HttpException extends RuntimeException {
         return statusCode+" - "+HttpSC.getMessage(statusCode);
     }
 
+    /** @deprecated Use {@link HttpException#create(int)} */
+    @Deprecated(forRemoval = true)
+    public HttpException(int statusCode) {
+        this(statusCode, null, null, null, null);
+    }
+
+    /** @deprecated Use {@link HttpException#builder()} */
+    @Deprecated(forRemoval = true)
+    public HttpException(int statusCode, String statusLine) {
+        this(statusCode, statusLine, null, null, null);
+    }
+
+    /** @deprecated Use {@link HttpException#create(HttpResponse)} or {@link HttpException#builder()} */
+    @Deprecated(forRemoval = true)
+    public HttpException(int statusCode, String statusLine, String responseMessage) {
+        this(statusCode, statusLine, null, responseMessage, null);
+    }
+
+    /** @deprecated Use {@link HttpException#create(HttpResponse)} or {@link HttpException#builder()} */
+    @Deprecated(forRemoval = true)
+    public HttpException(int statusCode, String statusLine, String responseMessage, Throwable cause) {
+        this(statusCode, statusLine, null, responseMessage, cause);
+    }
+
     /** @deprecated Use {@link HttpException#error(String)} */
     @Deprecated
-    private HttpException(String message) {
+    public HttpException(String message) {
         super(message);
         this.statusCode = -1;
         this.statusLine = null ;
@@ -168,7 +169,7 @@ public class HttpException extends RuntimeException {
 
     /** @deprecated Use {@link HttpException#error(String, Throwable)} */
     @Deprecated
-    private HttpException(String message, Throwable cause) {
+    public HttpException(String message, Throwable cause) {
         super(message, cause);
         this.statusCode = -1;
         this.statusLine = null ;
@@ -214,7 +215,7 @@ public class HttpException extends RuntimeException {
     /**
      * The response headers.
      */
-    public HttpHeaders getHttpResponseHeader() {
+    public HttpHeaders getHttpResponseHeaders() {
         return responseHeaders;
     }
 

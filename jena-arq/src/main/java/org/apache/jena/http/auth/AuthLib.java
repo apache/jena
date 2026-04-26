@@ -40,7 +40,6 @@ import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.http.AsyncHttpRDF;
 import org.apache.jena.http.HttpLib;
 import org.apache.jena.riot.web.HttpNames;
-import org.apache.jena.web.HttpSC;
 
 public class AuthLib {
     /**
@@ -101,7 +100,7 @@ public class AuthLib {
             passwordRecord = AuthEnv.get().getUsernamePassword(request.uri());
             if ( passwordRecord == null )
                 // No entry.
-                throw HttpException.create(HttpSC.UNAUTHORIZED_401);
+                throw HttpException.create(httpResponse401);
         }
 
         // Request target - no query string.

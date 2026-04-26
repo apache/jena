@@ -24,11 +24,14 @@ package org.apache.jena.sparql.exec.http;
 import static org.apache.jena.sparql.sse.SSE.parseQuad;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.net.http.HttpHeaders;
 import java.util.Iterator;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -42,10 +45,13 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.Syntax;
+import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.sparql.exec.RowSet;
+import org.apache.jena.web.HttpSC;
 
 /**
  * Tests for {@link QueryExecHTTP} with no authentication.
@@ -97,6 +103,25 @@ public class TestQueryExecHTTP {
             assertFalse(rs.hasNext());
             assertTrue(qExec.getHttpResponseContentType().startsWith("application/sparql-results+json"));
         }
+    }
+
+    @Test
+    public void query_select_bad_01() {
+        LogCtl.withLevel(Fuseki.actionLog, "ERROR", ()->{
+
+            // Make a bad request
+            try ( QueryExecHTTP qExec = QueryExecHTTP.newBuilder().endpoint(dsURL).queryString("SELECT * { JUNK }").build() ) {
+                QueryExceptionHTTP ex = Assertions.assertThrows(QueryExceptionHTTP.class, ()->qExec.select());
+                assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
+                assertNotNull(ex.getResponseHeaders());
+                HttpHeaders headers = ex.getResponseHeaders();
+                // Fuseki includes the parse error.
+                assertNotNull(headers);
+                var x = headers.firstValue(HttpNames.hContentType);
+                assertFalse(x.isEmpty());
+                assertNotNull(x.get());
+            }
+        });
     }
 
     @Test

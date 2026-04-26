@@ -283,7 +283,7 @@ public class HttpLib {
     static HttpException exception(HttpResponse<InputStream> response, int httpStatusCode) {
         InputStream in = response.body();
         if ( in == null )
-            return HttpException.create(httpStatusCode);
+            return HttpException.create(response);
         try {
             String msg;
             try {
@@ -293,7 +293,11 @@ public class HttpLib {
             } catch (RuntimeIOException e) {
                 msg = null;
             }
-            return HttpException.builder().statusCode(httpStatusCode).responseMessage(msg).build();
+            return HttpException.builder()
+                    .statusCode(httpStatusCode)
+                    .responseMessage(msg)
+                    .httpResponseHeaders(response.headers())
+                    .build();
         } finally { IO.close(in); }
     }
 
