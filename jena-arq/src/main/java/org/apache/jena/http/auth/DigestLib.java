@@ -77,7 +77,7 @@ class DigestLib {
     private static Pair<String, String> getUserNameAndPassword(HttpClient httpClient) {
         Optional<Authenticator> optAuth = httpClient.authenticator();
         if ( optAuth.isEmpty() )
-            throw new HttpException("Username/password required but not present in HttpClient");
+            throw HttpException.error("Username/password required but not present in HttpClient");
         // We just want the PasswordAuthentication!
         PasswordAuthentication x = optAuth.orElseThrow().requestPasswordAuthenticationInstance(null,
                                                                                                null,

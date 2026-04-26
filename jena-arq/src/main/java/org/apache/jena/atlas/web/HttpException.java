@@ -21,6 +21,9 @@
 
 package org.apache.jena.atlas.web;
 
+import java.net.http.HttpHeaders;
+import java.net.http.HttpResponse;
+
 import org.apache.jena.web.HttpSC;
 
 /**
@@ -29,26 +32,122 @@ import org.apache.jena.web.HttpSC;
 public class HttpException extends RuntimeException {
     private final int statusCode;
     private final String statusLine;
-    private final String response;
+    // The body of the response, if any.
+    private final HttpHeaders responseHeaders;
+    private final String responseBody;
+
+    /** System error setting up the HTTP request */
+    public static HttpException error(String exceptionMessage) {
+        return new HttpException(exceptionMessage);
+    }
+
+    /** System error setting up the HTTP request */
+    public static HttpException error(String exceptionMessage, Throwable cause) {
+        return new HttpException(exceptionMessage, cause);
+    }
+
+    /** HTTP error */
+    public static HttpException create(int httpStatusCode) {
+        return HttpException.builder()
+                .statusCode(httpStatusCode)
+                .build();
+    }
+
+    /** HTTP error */
+    public static HttpException create(HttpResponse<?> response) {
+        return HttpException.builder()
+                .statusCode(response.statusCode())
+                .httpHeaders(response.headers())
+                .build();
+    }
+
+    /**
+     * Replicate the details of an {@code HttpException};
+     * the stacktrace will be the callers location.
+     */
+    public static HttpException create(HttpException other) {
+        return HttpException.builder()
+                .statusCode(other.getStatusCode())
+                .statusLine(other.getStatusLine())
+                .responseMessage(other.getResponse())
+                .cause(other.getCause())
+                .build();
+    }
+
+    public static Builder builder() {
+        return new HttpException.Builder();
+    }
+
+    public static class Builder {
+        private int statusCode = -1;
+        private String statusLine = null;
+        private String responseMessage = null;
+        private Throwable cause = null;
+        private HttpHeaders httpHeaders = null;
+
+        public Builder() {}
+
+        public Builder statusCode(int statusCode) {
+            this.statusCode = statusCode;
+            return this;
+        }
+
+        public Builder statusLine(String statusLine) {
+            this.statusLine = statusLine;
+            return this;
+        }
+
+        public Builder responseMessage(String responseMessage) {
+            this.responseMessage = responseMessage;
+            return this;
+        }
+
+        public Builder cause(Throwable cause) {
+            this.cause = cause;
+            return this;
+        }
+
+        public Builder httpHeaders(HttpHeaders httpHeaders) {
+            this.httpHeaders = httpHeaders;
+            return this;
+        }
+        public HttpException build() {
+            return new HttpException(statusCode, statusLine, responseMessage, cause);
+        }
+    }
 
     // HTTP/2 does not have an information message.
+
+    /** @deprecated Use {@link HttpException#create(int)} */
+    @Deprecated
     public HttpException(int statusCode) {
-        this(statusCode, null);
+        this(statusCode, null, null, null, null);
     }
 
+    /** @deprecated Use {@link HttpException#builder()} */
+    @Deprecated
     public HttpException(int statusCode, String statusLine) {
-        this(statusCode, statusLine, null, null);
+        this(statusCode, statusLine, null, null, null);
     }
 
+    /** @deprecated Use {@link HttpException#create(HttpResponse)} or {@link HttpException#builder()} */
+    @Deprecated
     public HttpException(int statusCode, String statusLine, String responseMessage) {
-        this(statusCode, statusLine, responseMessage, null);
+        this(statusCode, statusLine, null, responseMessage, null);
     }
 
+    /** @deprecated Use {@link HttpException#create(HttpResponse)} or {@link HttpException#builder()} */
+    @Deprecated
     public HttpException(int statusCode, String statusLine, String responseMessage, Throwable cause) {
+        this(statusCode, statusLine, null, responseMessage, cause);
+    }
+
+    private HttpException(int statusCode, String statusLine, HttpHeaders responseHttpHeaders, String responseBody, Throwable cause) {
         super(exMessage(statusCode, statusLine), cause);
         this.statusCode = statusCode;
         this.statusLine = statusLine ;
-        this.response = responseMessage;
+        this.responseHeaders = responseHttpHeaders;
+        this.responseBody = responseBody;
     }
 
     private static String exMessage(int statusCode, String statusLine) {
@@ -57,25 +156,34 @@ public class HttpException extends RuntimeException {
         return statusCode+" - "+HttpSC.getMessage(statusCode);
     }
 
-    public HttpException(String message) {
+    /** @deprecated Use {@link HttpException#error(String)} */
+    @Deprecated
+    private HttpException(String message) {
         super(message);
         this.statusCode = -1;
         this.statusLine = null ;
-        this.response = null;
+        this.responseHeaders = null;
+        this.responseBody = null;
     }
 
-    public HttpException(String message, Throwable cause) {
+    /** @deprecated Use {@link HttpException#error(String, Throwable)} */
+    @Deprecated
+    private HttpException(String message, Throwable cause) {
         super(message, cause);
         this.statusCode = -1;
         this.statusLine = null ;
-        this.response = null;
+        this.responseHeaders = null;
+        this.responseBody = null;
     }
 
+    /** @deprecated Use {@link HttpException#builder()} */
+    @Deprecated
     public HttpException(Throwable cause) {
         super(cause);
         this.statusCode = -1;
         this.statusLine = null ;
-        this.response = null;
+        this.responseHeaders = null;
+        this.responseBody = null;
     }
 
     /**
@@ -100,6 +208,14 @@ public class HttpException extends RuntimeException {
      * @return The payload, or null if no payload
      */
     public String getResponse() {
-        return response;
+        return responseBody;
     }
+
+    /**
+     * The response headers.
+     */
+    public HttpHeaders getHttpResponseHeader() {
+        return responseHeaders;
+    }
+
 }

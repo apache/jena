@@ -182,10 +182,9 @@ public class AsyncHttpRDF {
         } catch (CompletionException ex) {
             Throwable cause = ex.getCause();
             if ( cause != null ) {
-
                 // Pass on our own HttpException instances such as 401 Unauthorized.
                 if ( cause instanceof HttpException httpEx ) {
-                    throw new HttpException(httpEx.getStatusCode(), httpEx.getStatusLine(), httpEx.getResponse(), cause);
+                    throw HttpException.create(httpEx);
                 }
 
                 final String msg = cause.getMessage();
@@ -195,17 +194,17 @@ public class AsyncHttpRDF {
                     if ( msg != null &&
                             ( msg.contains("too many authentication attempts") ||
                               msg.contains("No credentials provided") ) ) {
-                        throw new HttpException(401, HttpSC.getMessage(401), null, cause);
+                        throw HttpException.builder().statusCode(HttpSC.UNAUTHORIZED_401).cause(cause).build();
                     }
                     if (httpRequest != null) {
-                        throw new HttpException(httpRequest.method()+" "+httpRequest.uri().toString(), cause);
+                        throw HttpException.error(httpRequest.method()+" "+httpRequest.uri().toString(), cause);
                     }
                 }
 
-                throw new HttpException(msg, cause);
+                throw HttpException.error(msg, cause);
             }
             // Note: CompletionException without cause should never happen.
-            throw new HttpException(ex);
+            throw HttpException.builder().cause(ex).build();
         }
     }
 
