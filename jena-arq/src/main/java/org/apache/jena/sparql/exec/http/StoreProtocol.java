@@ -183,7 +183,7 @@ public abstract class StoreProtocol<X extends StoreProtocol<X>> {
 
     // Setup problems.
     protected static RuntimeException exception(String msg) {
-        return new HttpException(msg);
+        return HttpException.error(msg);
     }
 
     final protected String service() { return serviceEndpoint; }

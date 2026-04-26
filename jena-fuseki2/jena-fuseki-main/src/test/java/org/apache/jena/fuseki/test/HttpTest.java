@@ -98,7 +98,7 @@ public class HttpTest {
     public static void expectQuery(Runnable action, int expected) {
         try {
             action.run();
-            throw new HttpException("Expected QueryExceptionHTTP["+expected+"]");
+            throw HttpException.error("Expected QueryExceptionHTTP["+expected+"]");
         } catch (QueryExceptionHTTP ex) {
             if ( ex.getStatusCode() != expected )
                 throw ex;

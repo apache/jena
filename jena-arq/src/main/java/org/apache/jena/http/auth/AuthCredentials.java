@@ -43,7 +43,7 @@ public class AuthCredentials {
         // Checks.
         URI uri = location.getURI();
         if ( uri.getRawQuery() != null || uri.getRawFragment() != null )
-            throw new HttpException("Endpoint URI must not have query string or fragment: "+uri);
+            throw HttpException.error("Endpoint URI must not have query string or fragment: "+uri);
         authRegistry.put(location, pwRecord);
         prefixes.add(uri.toString(), location);
     }

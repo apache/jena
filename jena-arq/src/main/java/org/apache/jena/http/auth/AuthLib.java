@@ -101,7 +101,7 @@ public class AuthLib {
             passwordRecord = AuthEnv.get().getUsernamePassword(request.uri());
             if ( passwordRecord == null )
                 // No entry.
-                throw new HttpException(HttpSC.UNAUTHORIZED_401);
+                throw HttpException.create(HttpSC.UNAUTHORIZED_401);
         }
 
         // Request target - no query string.
@@ -126,7 +126,7 @@ public class AuthLib {
                 // Not handled. Pass back the 401.
                 return CompletableFuture.completedFuture(httpResponse401);
             default:
-                throw new HttpException("Not an authentication scheme -- "+aHeader.authScheme);
+                throw HttpException.error("Not an authentication scheme -- "+aHeader.authScheme);
         }
 
         // Failed to generate a request modifier for a retry.

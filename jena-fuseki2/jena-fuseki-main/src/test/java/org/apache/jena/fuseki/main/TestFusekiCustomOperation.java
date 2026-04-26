@@ -248,7 +248,7 @@ public class TestFusekiCustomOperation {
         // Service endpoint name : GET
         String s1 = HttpOp.httpGetString(svcCall);
         if ( s1 == null )
-            throw new HttpException(HttpSC.NOT_FOUND_404, "Not Found");
+            throw HttpException.create(HttpSC.NOT_FOUND_404);
         assertValidResponseBody(customHandlerBodyGet, s1);
 
         // Service endpoint name : POST
