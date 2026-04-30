@@ -26,9 +26,10 @@ import java.io.RandomAccessFile;
 import org.apache.jena.atlas.lib.Closeable;
 import org.apache.jena.atlas.lib.Sync;
 
-/** An append-only, read-anywhere, binary file.
- * A {@code BinaryDataFile} does not record the length and assumes the
- * entries are self-defining.
+/**
+ * An append-only, read-anywhere, binary file.
+ * A {@code BinaryDataFile} does not record the length of items in the file
+ * and assumes the entries are self-defining.
  *
  *  @see RandomAccessFile
  */
