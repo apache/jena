@@ -42,7 +42,7 @@ public class BinaryDataFileRandomAccess implements BinaryDataFile {
     protected RandomAccessFile file;
     protected boolean readMode;
     protected long readPosition;
-    protected long writePosition;
+    protected long writePosition;       // This is the position of the end of the written area.
     private final String filename;
 
     public BinaryDataFileRandomAccess(String filename) {
@@ -93,10 +93,13 @@ public class BinaryDataFileRandomAccess implements BinaryDataFile {
         return x;
     }
 
-    // Move the RandomAccess file pointer.
+    // Move the RandomAccess file pointer
     private void seek(long posn) {
-        try { file.seek(posn); }
-        catch (IOException ex) { IO.exception(ex); }
+        try {
+            if ( posn > writePosition )
+                throw new RuntimeIOException("Seek beyond the end of the allocated file area [seek="+posn+",writePosition="+writePosition+"]");
+            file.seek(posn);
+        } catch (IOException ex) { IO.exception(ex); }
     }
 
     @Override
@@ -104,6 +107,8 @@ public class BinaryDataFileRandomAccess implements BinaryDataFile {
         checkOpen();
         switchToWriteMode();
         try {
+            if ( length > writePosition )
+                throw new RuntimeIOException("Truncate beyond the end of the allocated file area [length="+length+",writePosition="+writePosition+"]");
             file.setLength(length);
             writePosition = length;
         }
