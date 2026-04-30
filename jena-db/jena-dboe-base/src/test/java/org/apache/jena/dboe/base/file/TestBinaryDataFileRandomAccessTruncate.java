@@ -26,12 +26,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.file.Path;
 import java.util.Arrays;
 
-import org.apache.jena.atlas.lib.FileOps;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Regression test: {@link BinaryDataFileRandomAccess#truncate(long)} must reset
@@ -51,19 +52,19 @@ import org.junit.jupiter.api.Test;
  */
 public class TestBinaryDataFileRandomAccessTruncate {
 
-    private static final String FILE = "target/test-bdfra-truncate-writepos";
-
-    private BinaryDataFile file;
+    @TempDir Path tempDir;
+    private BinaryDataFile file = null;
+    private String FILE = null;
+    private static int counter = 0 ;
 
     @BeforeEach public void before() {
-        FileOps.delete(FILE);
+        FILE = tempDir.resolve("truncate-"+(++counter)).toString();
         file = new BinaryDataFileRandomAccess(FILE);
         file.open();
     }
 
     @AfterEach public void after() {
         file.close();
-        FileOps.delete(FILE);
     }
 
     /**

@@ -41,6 +41,8 @@ import org.junit.platform.suite.api.Suite;
     , TestBinaryDataRAFInitial.class
     , TestBinaryDataRAF.class
     , TestBinaryDataFileWriteBufferedFile.class
+    , TestBinaryDataFileRandomAccessTruncate.class
+    , TestBinaryDataFileRandomAccess.class
 
     , TestProcessFileLock.class
 })
