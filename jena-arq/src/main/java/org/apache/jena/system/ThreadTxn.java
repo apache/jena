@@ -33,18 +33,17 @@ import org.apache.jena.sparql.core.Transactional ;
  * forked transaction sees is outside the creating thread which may itself be in a
  * transaction. Warning: creating a write transaction inside a write transaction
  * will cause deadlock.
- */ 
+ */
 public class ThreadTxn {
 
-    /** Create a thread-backed delayed transaction action. 
+    /** Create a thread-backed delayed transaction action.
      * Call {@link ThreadAction#run} to perform the read transaction.
      */
     public static ThreadAction threadTxn(Transactional trans, TxnType txnType, Runnable action) {
         return create(trans, txnType, action, true, true) ;
     }
 
-
-    /** Create a thread-backed delayed READ transaction action. 
+    /** Create a thread-backed delayed READ transaction action.
      * Call {@link ThreadAction#run} to perform the read transaction.
      */
     public static ThreadAction threadTxnRead(Transactional trans, Runnable action) {
@@ -59,7 +58,7 @@ public class ThreadTxn {
     public static ThreadAction threadTxnWrite(Transactional trans, Runnable action) {
         return threadTxn(trans, TxnType.WRITE, action) ;
     }
-   
+
     /** Create a thread-backed delayed WRITE-abort action (mainly for testing). */
     public static ThreadAction threadTxnWriteAbort(Transactional trans, Runnable action) {
         return create(trans, TxnType.WRITE, action, true, false) ;
@@ -71,11 +70,11 @@ public class ThreadTxn {
             , action
             , afterAction(trans, txnType, isCommitAfter) ) ;
     }
-    
+
     private static Runnable beforeAction(Transactional trans, TxnType txnType, boolean isCommit) {
         return ()-> trans.begin(txnType) ;
     }
-    
+
     private static Runnable afterAction(Transactional trans, TxnType txnType, boolean isCommit) {
         return () -> {
             // Finish transaction (if no throwable)
