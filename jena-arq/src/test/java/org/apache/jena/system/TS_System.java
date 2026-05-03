@@ -26,15 +26,16 @@ import org.junit.platform.suite.api.Suite;
 
 @Suite
 @SelectClasses({
-    TestCounter.class
+    TestPrefixes.class
+    , TestPrefixLib.class
+
+    , TestTxnCounter.class
     , TestThreadAction.class
     , TestTxnLifecycle.class
     , TestTxnOp.class
     , TestTxn.class
     , TestTxnThread.class
     , TestReadXML.class
-    , TestPrefixes.class
-    , TestPrefixLib.class
     , TestRDFStarTranslation.class
     , TestFindNamespaces.class
 })

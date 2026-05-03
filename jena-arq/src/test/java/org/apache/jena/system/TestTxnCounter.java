@@ -31,7 +31,7 @@ import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.JenaTransactionException ;
 
 // TestTxn also tests counters.
-public class TestCounter {
+public class TestTxnCounter {
     private TxnCounter counter = new TxnCounter(0) ;
 
     @Test
