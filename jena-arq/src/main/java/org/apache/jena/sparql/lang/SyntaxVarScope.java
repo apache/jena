@@ -42,18 +42,21 @@ public class SyntaxVarScope {
      *
      * Syntax Form In-scope variables
      * <pre>
-     * Basic Graph Pattern (BGP) v occurs in the BGP
-     * Path                      v occurs in the path
-     * Group { P1 P2 ... }       v is in-scope if in-scope in one or more of P1, P2, ...
-     * GRAPH term { P }          v is term or v is in-scope in P
-     * { P1 } UNION { P2 }       v is in-scope in P1 or in-scope in P2
-     * OPTIONAL {P}              v is in-scope in P
-     * SERVICE term {P}          v is term or v is in-scope in P
-     * (expr AS v) for BIND, SELECT and GROUP BY   v is in-scope
-     * SELECT ..v .. { P }       v is in-scope if v is mentioned as a project variable
-     * SELECT * { P }            v is in-scope in P
-     * VALUES var (values)       v is in-scope
-     * VALUES varlist (values)   v is in-scope if v is in varlist
+     * Basic Graph Pattern (BGP)  v occurs in the BGP
+     * Path                       v occurs in the path
+     * Group { P1 P2 ... }        v is in-scope if in-scope in one or more of P1, P2, ...
+     * GRAPH term { P }           v is term or v is in-scope in P
+     * { P1 } UNION { P2 }        v is in-scope in P1 or in-scope in P2
+     * OPTIONAL {P}               v is in-scope in P
+     * SERVICE term {P}           v is term or v is in-scope in P
+     * BIND (expr AS v)           v is in-scope
+     * SELECT .. v .. { P }       v is in-scope
+     * SELECT ... (expr AS v)     v is in-scope
+     * SELECT * { P }             v is in-scope in P
+     * GROUP BY ... v             v is in-scope
+     * GROUP BY ... (expr AS v)   v is in-scope
+     * VALUES var (values)        v is in-scope
+     * VALUES varlist (values)    v is in-scope if v is in varlist
      * </pre>
      */
     //@formatter:on
@@ -75,10 +78,14 @@ public class SyntaxVarScope {
         // Does not include variables in trailing VALUES.
         // A trailing VALUES is joined to the query results, including SELECT clause,
         // and so does not affect scope at this level.
-        Collection<Var> vars = PatternVars.vars(query.getQueryPattern());
+        Collection<Var> scopeSelectClause = query.hasGroupBy()
+                ? query.getGroupBy().getVars()
+                : PatternVars.vars(query.getQueryPattern());
 
-        // SELECT expressions
-        checkExprListAssignment(vars, query.getProject());
+        // Catches SELECT (AS ?z) WHERE { ?z } GROUP ?z
+        // and reuse SELECT (AS ?z) (AS ?z) WHERE { ... }
+        // "Variable used when already in-scope"
+        checkExprListAssignment(scopeSelectClause, query.getProject());
 
         // Check for SELECT * GROUP BY
         // Legal in ARQ, not in SPARQL 1.1, 1.2
@@ -87,7 +94,9 @@ public class SyntaxVarScope {
                 throw new QueryParseException("SELECT * not legal with GROUP BY", -1, -1);
         }
 
+        // Non-group variable passed into GROUP expression and used in SELECT
         // Check any variable in an expression is in scope (if GROUP BY)
+        // SELECT  WHERE { ... } GROUP BY (expression)
         checkExprVarGroupBy(query);
     }
 
@@ -126,23 +135,31 @@ public class SyntaxVarScope {
         });
     }
 
+    // When there is a GROUP BY, check the SELECT usage of variables
+    // from inside a GROUP BY that are not group variables.
+    // These are the aggregate restrictions from section 11.4
     private static void checkExprVarGroupBy(Query query) {
         if ( query.hasGroupBy() ) {
             VarExprList groupKey = query.getGroupBy();
-
-            // Copy - we need to add variables
-            // SELECT (count(*) AS ?C) (?C+1 as ?D)
+            // Mutated so copy.
             List<Var> inScopeVars = new ArrayList<>(groupKey.getVars());
             VarExprList exprList = query.getProject();
 
+            // Look in the SELECT expressions
             for ( Var v : exprList.getVars() ) {
-                // In scope?
+                // Check expression, if any.
                 Expr e = exprList.getExpr(v);
                 if ( e == null ) {
-                    if ( !inScopeVars.contains(v) ) {
+                    // No expression - it's a projection of a group variable.
+                    if ( ! inScopeVars.contains(v) ) {
                         throw new QueryParseException("Non-group key variable in SELECT: " + v, -1, -1);
                     }
                 } else {
+                    // (expression AS v) - can't assign in-use.
+                    if ( inScopeVars.contains(v) )
+                        // BeSame test as above, better error message
+                        throw new QueryParseException("Assignment to an in-scope variable in SELECT: " + v, -1, -1);
+                    // Check expression
                     Set<Var> eVars = e.getVarsMentioned();
                     for ( Var v2 : eVars ) {
                         if ( !inScopeVars.contains(v2) ) {
