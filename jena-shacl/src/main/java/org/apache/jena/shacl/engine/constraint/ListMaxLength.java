@@ -30,12 +30,19 @@ import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.parser.ConstraintVisitor;
 import org.apache.jena.shacl.validation.ReportItem;
 import org.apache.jena.shacl.vocabulary.SHACL;
+import org.apache.jena.system.GList;
+import org.apache.jena.system.RDFDataException;
 
 /** sh:memberShape */
 
 public class ListMaxLength extends ConstraintList {
 
-    public ListMaxLength(Node node) {}
+    private final long maxLength;
+
+    public ListMaxLength(int maxLength) {
+        this.maxLength = maxLength;
+    }
+
 
     @Override
     public void visit(ConstraintVisitor visitor){
@@ -48,8 +55,19 @@ public class ListMaxLength extends ConstraintList {
     }
 
     @Override
-    protected ReportItem validateList(ValidationContext vCxt, Graph data, Node headNode) {
-        throw new NotImplemented();
+    protected ReportItem validateList(ValidationContext vCxt, Graph data, Node listNode) {
+        try {
+            GList.isWellformedListEx(data, listNode);
+        } catch (RDFDataException ex) {
+            return new ReportItem(ex.getMessage());
+        }
+
+        long listLength = GList.listLength(data, listNode);
+        if ( listLength > maxLength ) {
+            String msg = toString()+": Invalid list length: expected max "+maxLength+": Got length = "+listLength;
+            return new ReportItem(msg);
+        }
+        return null;
     }
 
     @Override

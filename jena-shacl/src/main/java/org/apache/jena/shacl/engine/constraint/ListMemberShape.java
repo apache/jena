@@ -37,8 +37,8 @@ import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.validation.ReportItem;
 import org.apache.jena.shacl.validation.ValidationProc;
 import org.apache.jena.shacl.vocabulary.SHACL;
-import org.apache.jena.sparql.util.graph.GNode;
-import org.apache.jena.sparql.util.graph.GraphList;
+import org.apache.jena.system.GList;
+import org.apache.jena.system.RDFDataException;
 
 /** sh:memberShape */
 
@@ -61,7 +61,7 @@ public class ListMemberShape extends ConstraintList {
     }
 
     @Override
-    protected ReportItem validateList(ValidationContext vCxt, Graph data, Node headNode) {
+    protected ReportItem validateList(ValidationContext vCxt, Graph data, Node listNode) {
         Shape memberShape = vCxt.getShapes().getShape(shape);
         if ( memberShape == null ) {
             // XXX
@@ -69,14 +69,29 @@ public class ListMemberShape extends ConstraintList {
             // No shape. Error?
             return null;
         }
-        // XXX Check for valid lists.
-        GNode gNode = GNode.create(data, headNode);
-        List<Node> members = GraphList.members(gNode);
+        // Checks for valid lists.
+        List<Node> members;
+        try {
+            members = GList.members(data, listNode);
+        } catch (RDFDataException ex) {
+            String errMsg = ex.getMessage();
+            return new ReportItem(errMsg);
+        }
 
-        members.forEach(x->{
-            ValidationProc.execValidateShape(vCxt, data, memberShape, x);
-        });
+        // DRY : execute in isolated context e.g. sh:xone (etc), sh:node, QualifiedValueShape,
+        ValidationContext vCxt2 = ValidationContext.create(vCxt);
         // XXX Isolate validation and wrap violations?
+        // 1 - ensure the base focusNode
+        // 2 - stop at first violation?
+        members.forEach(x->{
+            ValidationProc.execValidateShape(vCxt2, data, memberShape, x);
+        });
+        boolean innerConforms = vCxt2.generateReport().conforms();
+        if ( ! innerConforms ) {
+            // XXX sh:detail
+            return new ReportItem("One or more members does not conform to shape "+memberShape);
+        }
+
         return null;
     }
 

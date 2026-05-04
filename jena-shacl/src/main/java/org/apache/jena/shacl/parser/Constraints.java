@@ -109,8 +109,8 @@ public class Constraints {
         dispatch.put( SHACL.closed,            (g, s, p, o) -> new ClosedConstraint(g,s,booleanValue(o)) );
 
         dispatch.put( SHACL.memberShape,       (g, s, p, o) -> new ListMemberShape(o));
-        dispatch.put( SHACL.minListLength,     (g, s, p, o) -> new ListMinLength(o));
-        dispatch.put( SHACL.maxListLength,     (g, s, p, o) -> new ListMaxLength(o));
+        dispatch.put( SHACL.minListLength,     (g, s, p, o) -> new ListMinLength(intValue(o)) );
+        dispatch.put( SHACL.maxListLength,     (g, s, p, o) -> new ListMaxLength(intValue(o)) );
         dispatch.put( SHACL.uniqueMembers,     (g, s, p, o) -> new ListUniqueMembers(o));
 
         // Below
