@@ -316,6 +316,13 @@ public class GList {
         return elt;
     }
 
+    public static boolean isListNode(Graph graph, Node node) {
+        if ( node.equals(NIL) )
+            return true;
+        // Well-formedness check.
+        return isCons(graph, node);
+    }
+
     /**
      * Run over a list, checking for cycles and well-formed list cons cells.
      * Call an action on each element if {@ocde elementAction} is not null.
@@ -470,15 +477,6 @@ public class GList {
 //                return elt;
 //            }
 //        }
-    }
-
-
-
-    private static boolean isListNode(Graph graph, Node node) {
-        if ( node.equals(NIL) )
-            return true;
-        // Well-formedness check.
-        return isCons(graph, node);
     }
 
     private static boolean isCons (Graph graph, Node node) {

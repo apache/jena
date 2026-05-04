@@ -29,12 +29,21 @@ import org.junit.platform.suite.api.Suite;
     TestPrefixes.class
     , TestPrefixLib.class
 
-    , TestTxnCounter.class
+    , TestG_Basic.class
+    , TestG_SP .class
+    , TestG_PO .class
+    , TestG_Triple.class
+    , TestG_Quad.class
+    , TestG_Classes.class
+
+    , TestGCopy.class
+
+    , TestTxn.class
     , TestThreadAction.class
     , TestTxnLifecycle.class
     , TestTxnOp.class
-    , TestTxn.class
     , TestTxnThread.class
+    , TestTxnCounter.class
     , TestReadXML.class
     , TestRDFStarTranslation.class
     , TestFindNamespaces.class

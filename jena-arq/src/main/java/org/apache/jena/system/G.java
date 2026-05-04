@@ -40,8 +40,6 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.engine.iterator.IterAbortable;
 import org.apache.jena.sparql.graph.NodeConst;
-import org.apache.jena.sparql.util.graph.GNode;
-import org.apache.jena.sparql.util.graph.GraphList;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.WrappedIterator;
 
@@ -270,7 +268,7 @@ public class G {
      */
     public static Node getPO(Graph graph, Node predicate, Node object) {
         Objects.requireNonNull(graph, "graph");
-        return object(first(find(graph, Node.ANY, predicate, object)));
+        return subject(first(find(graph, Node.ANY, predicate, object)));
     }
 
     /**
@@ -287,7 +285,7 @@ public class G {
      */
     public static boolean hasOnePO(Graph graph, Node predicate, Node object) {
         Objects.requireNonNull(graph, "graph");
-        return findUniqueTriple(graph, Node.ANY, predicate, object) != null;
+        return findZeroOneTriple(graph, Node.ANY, predicate, object) != null;
     }
 
     /**
@@ -374,6 +372,12 @@ public class G {
         return iterSP(graph, subject, predicate).toList();
     }
 
+    /** Return a set of all objects for subject-predicate */
+    public static Set<Node> allSP(Graph graph, Node subject, Node predicate) {
+        Objects.requireNonNull(graph, "graph");
+        return find(graph, subject, predicate, null).mapWith(Triple::getObject).toSet();
+    }
+
     /** Count matches of subject-predicate (which can be wildcards). */
     public static long countSP(Graph graph, Node subject, Node predicate) {
         Objects.requireNonNull(graph, "graph");
@@ -397,6 +401,12 @@ public class G {
     public static List<Node> listPO(Graph graph, Node predicate, Node object) {
         Objects.requireNonNull(graph, "graph");
         return iterPO(graph, predicate, object).toList();
+    }
+
+    /** Return a set of all subjects for predicate-object */
+    public static Set<Node> allPO(Graph graph, Node predicate, Node object) {
+        Objects.requireNonNull(graph, "graph");
+        return find(graph, null, predicate, object).mapWith(Triple::getSubject).toSet();
     }
 
     /** Count matches of predicate-object (which can be wildcards). */
@@ -499,34 +509,30 @@ public class G {
     public static List<Node> rdfList(Graph graph, Node node) {
         Objects.requireNonNull(graph, "graph");
         Objects.requireNonNull(node, "node");
-        GNode gNode = GNode.create(graph, node);
-        if ( ! GraphList.isListNode(gNode) )
-            return null;
-        return GraphList.members(gNode);
+        List<Node> nodes = GList.members(graph, node);
+        return nodes;
     }
 
     /** Return a the length of an RDF list. */
     public static int listLength(Graph graph, Node node) {
         Objects.requireNonNull(graph, "graph");
         Objects.requireNonNull(node, "node");
-        GNode gNode = GNode.create(graph, node);
-        if ( ! GraphList.isListNode(gNode) )
+        if ( ! GList.isListNode(graph, node) )
             return -1;
-        return GraphList.length(gNode);
+        return (int)GList.listLength(graph, node);
     }
 
     /**
-     * Return a java list where the {@code node} is an RDF list of nodes or a single
-     * node (returned a singleton list).
+     * Return a java list where the {@code node} is an RDF list of nodes,
+     * of if the node is not a list, return the node as a list of one.
      */
     public static List<Node> getOneOrList(Graph graph, Node node) {
         Objects.requireNonNull(graph, "graph");
         Objects.requireNonNull(node, "node");
-        GNode gNode = GNode.create(graph, node);
         // An element on its own is a list of one
-        if ( ! GraphList.isListNode(gNode) )
+        if ( ! GList.isListNode(graph, node) )
             return List.of(node);
-        return GraphList.members(gNode);
+        return GList.members(graph, node);
     }
 
     // Sub-class / super-class
@@ -645,18 +651,6 @@ public class G {
         types.forEach(t->
             find(graph, null, rdfType, t).mapWith(Triple::getSubject).forEach(acc::add)
             );
-    }
-
-    /** Return a set of all objects for subject-predicate */
-    public static Set<Node> allSP(Graph graph, Node subject, Node predicate) {
-        Objects.requireNonNull(graph, "graph");
-        return find(graph, subject, predicate, null).mapWith(Triple::getObject).toSet();
-    }
-
-    /** Return a set of all subjects for predicate-object */
-    public static Set<Node> allPO(Graph graph, Node predicate, Node object) {
-        Objects.requireNonNull(graph, "graph");
-        return find(graph, null, predicate, object).mapWith(Triple::getSubject).toSet();
     }
 
     // --- Graph walking.
@@ -841,15 +835,15 @@ public class G {
 
     /**
      * Creates a copy of the given graph.
-     * If the graph implements Copyable<Graph> then the copy method is called.
+     * If the graph implements {@code Copyable<Graph>} then the copy method is called.
      * Otherwise, a new system default memory-based graph is created and the triples are copied
      * into it.
      * @param src the graph to copy
      * @return a copy of the graph
      */
-    @SuppressWarnings("unchecked")
     public static Graph copy(Graph src) {
         if(src instanceof Copyable<?> copyable) {
+            @SuppressWarnings("unchecked")
             Copyable<Graph> copyableGraph = (Copyable<Graph>)copyable;
             return copyableGraph.copy();
         }
