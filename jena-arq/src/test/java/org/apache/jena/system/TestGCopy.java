@@ -33,7 +33,7 @@ import org.apache.jena.mem.GraphMemFast;
 import org.apache.jena.memvalue.GraphMemValue;
 import org.apache.jena.sparql.sse.SSE;
 
-public class GTest {
+public class TestGCopy {
 
     @Test
     public void copy() {
