@@ -30,12 +30,18 @@ import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.parser.ConstraintVisitor;
 import org.apache.jena.shacl.validation.ReportItem;
 import org.apache.jena.shacl.vocabulary.SHACL;
+import org.apache.jena.system.GList;
+import org.apache.jena.system.RDFDataException;
 
 /** sh:memberShape */
 
 public class ListMinLength extends ConstraintList {
 
-    public ListMinLength(Node node) { }
+    private final long minLength;
+
+    public ListMinLength(int minLength) {
+        this.minLength = minLength;
+    }
 
     @Override
     public void visit(ConstraintVisitor visitor){
@@ -48,8 +54,19 @@ public class ListMinLength extends ConstraintList {
     }
 
     @Override
-    protected ReportItem validateList(ValidationContext vCxt, Graph data, Node headNode) {
-        throw new NotImplemented();
+    protected ReportItem validateList(ValidationContext vCxt, Graph data, Node listNode) {
+        try {
+            GList.isWellformedListEx(data, listNode);
+        } catch (RDFDataException ex) {
+            return new ReportItem(ex.getMessage());
+        }
+
+        long listLength = GList.listLength(data, listNode);
+        if ( listLength < minLength ) {
+            String msg = toString()+": Invalid list length: expected min "+minLength+": Got length = "+listLength;
+            return new ReportItem(msg);
+        }
+        return null;
     }
 
     @Override
