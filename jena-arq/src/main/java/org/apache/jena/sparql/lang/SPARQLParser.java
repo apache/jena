@@ -25,11 +25,12 @@ import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.query.Syntax;
 
-/** This class provides the root of lower level access to all the parsers.
- *  Each subclass hides the details of the per-language exception handlers and other
- *  javacc details to provide a methods that deal with setting up Query objects
- *  and using QueryException exceptions for problems. */
-
+/**
+ * This class provides the root of lower level access to all the parsers. Each
+ * subclass hides the details of the per-language exception handlers and other javacc
+ * details to provide a methods that deal with setting up Query objects and using
+ * {@link QueryParseException} exceptions for problems.
+ */
 public abstract class SPARQLParser
 {
     public final Query parse(Query query, String queryString) throws QueryParseException {
