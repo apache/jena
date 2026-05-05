@@ -34,11 +34,12 @@ import org.apache.jena.query.text.*;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.rdf.model.Statement ;
-import org.apache.jena.sparql.util.graph.GraphUtils ;
 import org.apache.lucene.analysis.Analyzer ;
 import org.apache.lucene.store.*;
 
 import static org.apache.jena.query.text.assembler.TextVocab.*;
+import static org.apache.jena.sparql.util.graph.GraphUtils.checkExactlyOneProperty;
+import static org.apache.jena.sparql.util.graph.GraphUtils.getResourceValue;
 
 public class TextIndexLuceneAssembler extends AssemblerBase {
     /*
@@ -53,7 +54,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
     @Override
     public TextIndex open(Assembler a, Resource root, Mode mode) {
         try {
-            if ( !GraphUtils.exactlyOneProperty(root, pDirectory) )
+            if ( !checkExactlyOneProperty(root, pDirectory) )
                 throw new TextIndexException("No 'text:directory' property on " + root) ;
 
             Directory directory ;
@@ -200,7 +201,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                 cacheQueries = cqNode.asLiteral().getBoolean();
             }
 
-            Resource r = GraphUtils.getResourceValue(root, pEntityMap) ;
+            Resource r = getResourceValue(root, pEntityMap) ;
             EntityDefinition docDef = (EntityDefinition)a.open(r) ;
             TextIndexConfig config = new TextIndexConfig(docDef);
             config.setAnalyzer(analyzer);

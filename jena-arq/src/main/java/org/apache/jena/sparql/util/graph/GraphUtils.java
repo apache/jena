@@ -142,7 +142,41 @@ public class GraphUtils {
         return values;
     }
 
+    /** @deprecated */
+    @Deprecated(forRemoval=true)
     public static boolean exactlyOneProperty(Resource r, Property p) {
+        StmtIterator sIter = r.listProperties(p);
+        try {
+            if ( !sIter.hasNext() )
+                return false;
+            sIter.next();
+            if ( sIter.hasNext() )
+                return false;
+        }
+        finally {
+            sIter.close();
+        }
+        return true;
+    }
+
+    /** Returns for exactly one object of a subject-property, else return false. */
+    public static boolean checkExactlyOneProperty(Resource r, Property p) {
+        StmtIterator sIter = r.listProperties(p);
+        try {
+            if ( !sIter.hasNext() )
+                return false;
+            sIter.next();
+            if ( sIter.hasNext() )
+                return false;
+        }
+        finally {
+            sIter.close();
+        }
+        return true;
+    }
+
+    /** Check for exactly one object of a subject-property. Throw an exception is this condition is not correct. */
+    public static void exactlyOnePropertyEx(Resource r, Property p) {
         StmtIterator sIter = r.listProperties(p);
         try {
             if ( !sIter.hasNext() )
@@ -154,9 +188,10 @@ public class GraphUtils {
         finally {
             sIter.close();
         }
-        return true;
     }
 
+    /** @deprecated Use {@link #atMostOneProperty} which always returns a boolean and does not throw exceptions. */
+    @Deprecated(forRemoval = true)
     public static boolean atmostOneProperty(Resource r, Property p) {
         StmtIterator sIter = r.listProperties(p);
         try {
@@ -172,8 +207,24 @@ public class GraphUtils {
         return true;
     }
 
+    /** Check whether the resource-property pair has zero or one values. Return true or false. */
+    public static boolean atMostOneProperty(Resource r, Property p) {
+        StmtIterator sIter = r.listProperties(p);
+        try {
+            if ( !sIter.hasNext() )
+                return true;
+            sIter.next();
+            if ( sIter.hasNext() )
+                return false;
+        }
+        finally {
+            sIter.close();
+        }
+        return true;
+    }
+
     public static boolean getBooleanValue(Resource r, Property p) {
-        if ( !GraphUtils.atmostOneProperty(r, p) )
+        if ( !GraphUtils.atMostOneProperty(r, p) )
             throw new NotUniqueException(r, p);
         Statement s = r.getProperty(p);
         if ( s == null )
@@ -249,7 +300,7 @@ public class GraphUtils {
     }
 
     public static RDFNode getAsRDFNode(Resource r, Property p) {
-        if ( !atmostOneProperty(r, p) )
+        if ( !atMostOneProperty(r, p) )
             throw new NotUniqueException(r, p);
         Statement s = r.getProperty(p);
         if ( s == null )
@@ -258,7 +309,7 @@ public class GraphUtils {
     }
 
     public static Resource getResourceValue(Resource r, Property p) {
-        if ( !atmostOneProperty(r, p) )
+        if ( !atMostOneProperty(r, p) )
             throw new NotUniqueException(r, p);
         Statement s = r.getProperty(p);
         if ( s == null )
@@ -319,7 +370,7 @@ public class GraphUtils {
         return distinctIterator;
     }
 
-    static class IterSO extends NiceIterator<Node> {
+    private static class IterSO extends NiceIterator<Node> {
         private ExtendedIterator<Triple> it;
         private boolean tripleConsumed;
         private Triple triple;

@@ -21,7 +21,7 @@
 
 package org.apache.jena.tdb2.assembler;
 
-import static org.apache.jena.sparql.util.graph.GraphUtils.exactlyOneProperty;
+import static org.apache.jena.sparql.util.graph.GraphUtils.checkExactlyOneProperty;
 import static org.apache.jena.sparql.util.graph.GraphUtils.getAsFilename;
 import static org.apache.jena.tdb2.assembler.VocabTDB2.pLocation;
 import static org.apache.jena.tdb2.assembler.VocabTDB2.pUnionDefaultGraph;
@@ -54,7 +54,7 @@ public class DatasetAssemblerTDB2 extends DatasetAssembler
     }
 
     public static DatasetGraph make(Assembler a, Resource root) {
-        if ( !exactlyOneProperty(root, pLocation) )
+        if ( !checkExactlyOneProperty(root, pLocation) )
             throw new AssemblerException(root, "No location given");
 
         String dir = getAsFilename(root, pLocation);
