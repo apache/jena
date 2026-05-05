@@ -28,21 +28,22 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
- * Common interface for {@link JenaMap} and {@link JenaSet}. *
+ * Operations shared between the map ({@link JenaMap}) and the set
+ * ({@link JenaSet}) collections used in the {@code mem} triple store
+ * implementations.
+ * <p>
+ * These collections trade some flexibility for speed: they expose only the
+ * operations needed by triple-store internals (no full {@link java.util.Map}
+ * or {@link java.util.Set} contract). They are not thread-safe.
  *
- * @param <E> the type of the keys/elements in the collection
+ * @param <E> the type of the keys (or elements, for sets) in the collection
  */
-public interface JenaMapSetCommon<E> {
+public interface JenaMapSetCommon<E> extends Sized {
 
     /**
      * Clear the collection.
      */
     void clear();
-
-    /**
-     * @return the number of elements in the collection
-     */
-    int size();
 
     /**
      * @return true if the collection is empty
@@ -75,7 +76,10 @@ public interface JenaMapSetCommon<E> {
 
     /**
      * Removes a key from the collection.
-     * Attention: Implementations may assume that the key is present.
+     * <p>
+     * Attention: implementations may assume the key is present and may produce
+     * undefined behavior (including silently corrupting internal state) if it
+     * is not. Use {@link #tryRemove(Object)} when in doubt.
      *
      * @param key the key to remove
      */

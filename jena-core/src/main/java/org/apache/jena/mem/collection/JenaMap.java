@@ -30,6 +30,7 @@ import java.util.stream.StreamSupport;
 
 /**
  * A map from keys of type {@code K} to values of type {@code V}.
+ * Not thread-safe and does not allow {@code null} keys.
  *
  * @param <K> the type of the keys in the map
  * @param <V> the type of the values in the map

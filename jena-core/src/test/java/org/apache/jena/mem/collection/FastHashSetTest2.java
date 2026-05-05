@@ -23,8 +23,6 @@ package org.apache.jena.mem.collection;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import static org.apache.jena.testing_framework.GraphHelper.node;
@@ -55,13 +53,33 @@ public class FastHashSetTest2 {
 
     @Test
     public void testAddAndGetIndexWithSameHashCode() {
-        assertEquals(0, sut.addAndGetIndex("a", 0));
-        assertEquals(1, sut.addAndGetIndex("b", 0));
-        assertEquals(2, sut.addAndGetIndex("c", 0));
+        final var a = new Object() {
+            @Override
+            public int hashCode() {
+                return 0;
+            }
+        };
+        final var b = new Object() {
+            @Override
+            public int hashCode() {
+                return 0;
+            }
+        };
+        final var c = new Object() {
+            @Override
+            public int hashCode() {
+                return 0;
+            }
+        };
 
-        assertEquals(~0, sut.addAndGetIndex("a", 0));
-        assertEquals(~1, sut.addAndGetIndex("b", 0));
-        assertEquals(~2, sut.addAndGetIndex("c", 0));
+        var objectHashSet = new FastObjectHashSet();
+        assertEquals(0, objectHashSet.addAndGetIndex(a));
+        assertEquals(1, objectHashSet.addAndGetIndex(b));
+        assertEquals(2, objectHashSet.addAndGetIndex(c));
+
+        assertEquals(~0, objectHashSet.addAndGetIndex(a));
+        assertEquals(~1, objectHashSet.addAndGetIndex(b));
+        assertEquals(~2, objectHashSet.addAndGetIndex(c));
     }
 
     @Test
@@ -188,127 +206,44 @@ public class FastHashSetTest2 {
     }
 
     @Test
-    public void testindexedKeyIterator() {
+    public void testForEachKeyVisitsEveryKeyWithItsIndex() {
         var items = List.of("a", "b", "c", "d", "e");
-
         sut = new FastStringHashSet(3);
         for (String item : items) {
             sut.addAndGetIndex(item);
         }
 
-        var iterator = sut.indexedKeyIterator();
-        for (var i=0; i<items.size(); i++) {
-            assertTrue(iterator.hasNext());
-            var indexedKey = iterator.next();
-            assertEquals(items.get(i), indexedKey.key());
-            assertEquals(i, indexedKey.index());
-        }
-        assertFalse(iterator.hasNext());
-    }
+        final java.util.Map<String, Integer> seen = new java.util.HashMap<>();
+        sut.forEachKey(seen::put);
 
-    @Test
-    public void testindexedKeyIteratorEmpty() {
-        sut = new FastStringHashSet(3);
-        var iterator = sut.indexedKeyIterator();
-        assertFalse(iterator.hasNext());
-    }
-
-    @Test
-    public void testIndexedKeySpliterator() {
-        var items = List.of("a", "b", "c", "d", "e");
-
-        sut = new FastStringHashSet(3);
-        for (String item : items) {
-            sut.addAndGetIndex(item);
-        }
-
-        var iterator = sut.indexedKeySpliterator();
-        for (var i=0; i<items.size(); i++) {
-            final var index = i;
-            assertTrue(iterator.tryAdvance(indexedKey -> {
-                assertEquals(items.get(index), indexedKey.key());
-                assertEquals(index, indexedKey.index());
-            }));
-        }
-        assertFalse(iterator.tryAdvance(indexedKey -> {
-            fail("There should be no more elements in the iterator");
-        }));
-    }
-
-    @Test
-    public void testIndexedKeyStream() {
-        var items = List.of("a", "b", "c", "d", "e");
-
-        sut = new FastStringHashSet(3);
-        for (String item : items) {
-            sut.addAndGetIndex(item);
-        }
-
-        var indexedKeys = sut.indexedKeyStream().toList();
-        assertEquals(items.size(), indexedKeys.size());
-        for (var i=0; i<items.size(); i++) {
-            assertEquals(items.get(i), indexedKeys.get(i).key());
-            assertEquals(i, indexedKeys.get(i).index());
+        assertEquals(items.size(), seen.size());
+        for (var i = 0; i < items.size(); i++) {
+            // forEachKey reports the stable insertion index per key.
+            assertEquals(Integer.valueOf(i), seen.get(items.get(i)));
         }
     }
 
     @Test
-    public void testIndexedKeyStreamParallel() {
-        Integer checkSum = 0;
-        final var items = new ArrayList<Integer>();
-        for (var i = 0; i < 1000; i++) {
-            items.add(i);
-            checkSum+= i;
-        }
-
-        sut = new FastStringHashSet();
-        for (var value : items) {
-            sut.addAndGetIndex(value.toString());
-        }
-
-        final var sum = sut.indexedKeyStreamParallel()
-                        .map(pair -> Integer.parseInt(pair.key()))
-                        .reduce(0, Integer::sum);
-        assertEquals(checkSum, sum);
+    public void testForEachKeyOnEmptySetIsNoOp() {
+        sut = new FastStringHashSet(3);
+        sut.forEachKey((k, i) -> fail("consumer must not be called on empty set"));
     }
 
     @Test
-    public void testIndexedKeySpliteratorAdvanceThrowsConcurrentModificationException() {
+    public void testForEachKeySkipsRemovedSlots() {
         sut = new FastStringHashSet(3);
-        sut.tryAdd("a");
-        var spliterator = sut.indexedKeySpliterator();
-        sut.tryAdd("b");
-        assertThrows(ConcurrentModificationException.class, () -> spliterator.tryAdvance(t -> {
-        }));
-    }
+        sut.addAndGetIndex("a");
+        sut.addAndGetIndex("b");
+        sut.addAndGetIndex("c");
+        // Remove the middle entry; forEachKey must not visit the freed slot.
+        sut.tryRemove("b");
 
-    @Test
-    public void testIndexedKeySpliteratorForEachRemainingThrowsConcurrentModificationException() {
-        sut = new FastStringHashSet(3);
-        sut.tryAdd("a");
-        var spliterator = sut.indexedKeySpliterator();
-        sut.tryAdd("b");
-        assertThrows(ConcurrentModificationException.class, () -> spliterator.forEachRemaining(t -> {
-        }));
-    }
-
-    @Test
-    public void testIndexedKeyIteratorForEachRemainingThrowsConcurrentModificationException() {
-        sut = new FastStringHashSet(3);
-        sut.tryAdd("a");
-        var spliterator = sut.indexedKeyIterator();
-        sut.tryAdd("b");
-        assertThrows(ConcurrentModificationException.class, () -> spliterator.forEachRemaining(t -> {
-        }));
-    }
-
-    @Test
-    public void testIndexedKeyIteratorNextThrowsConcurrentModificationException() {
-        sut = new FastStringHashSet(3);
-        sut.tryAdd("a");
-        var spliterator = sut.indexedKeyIterator();
-        sut.tryAdd("b");
-        assertThrows(ConcurrentModificationException.class, spliterator::next);
+        final var keys = new java.util.ArrayList<String>();
+        sut.forEachKey((k, i) -> keys.add(k));
+        assertEquals(2, keys.size());
+        assertTrue(keys.contains("a"));
+        assertTrue(keys.contains("c"));
+        assertFalse(keys.contains("b"));
     }
 
     private static class FastObjectHashSet extends FastHashSet<Object> {

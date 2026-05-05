@@ -25,21 +25,28 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.mem.collection.FastHashMap;
 
 /**
- * Map from nodes to triple bunches.
+ * {@link FastHashMap} specialized to map a {@link Node} to its associated
+ * {@link FastTripleBunch}. Used by {@link FastTripleStore} to maintain the
+ * three subject/predicate/object indices.
  */
 public class FastHashedBunchMap
         extends FastHashMap<Node, FastTripleBunch>
         implements Copyable<FastHashedBunchMap> {
 
+    /**
+     * Creates an empty bunch map with the default initial capacity.
+     */
     public FastHashedBunchMap() {
         super();
     }
 
     /**
-     * Copy constructor.
-     * The new map will contain all the same nodes as keys of the map to copy, but copies of the bunches as values .
+     * Copy constructor. The new map has the same node keys as
+     * {@code mapToCopy}; each value is replaced by a deep copy of the
+     * corresponding bunch (via {@link FastTripleBunch#copy()}) so that
+     * mutations of either map cannot affect the other.
      *
-     * @param mapToCopy
+     * @param mapToCopy the source map
      */
     private FastHashedBunchMap(final FastHashedBunchMap mapToCopy) {
         super(mapToCopy, FastTripleBunch::copy);

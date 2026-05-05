@@ -24,7 +24,6 @@ import org.apache.jena.mem.iterator.SparseArrayIterator;
 import org.apache.jena.mem.spliterator.SparseArraySpliterator;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
-import java.util.ConcurrentModificationException;
 import java.util.Spliterator;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
@@ -207,19 +206,11 @@ public abstract class HashCommonMap<K, V> extends HashCommonBase<K> implements J
 
     @Override
     public ExtendedIterator<V> valueIterator() {
-        final var initialSize = size;
-        final Runnable checkForConcurrentModification = () -> {
-            if (size != initialSize) throw new ConcurrentModificationException();
-        };
-        return new SparseArrayIterator<>(values, checkForConcurrentModification);
+        return new SparseArrayIterator<>(values, this);
     }
 
     @Override
     public Spliterator<V> valueSpliterator() {
-        final var initialSize = size;
-        final Runnable checkForConcurrentModification = () -> {
-            if (size != initialSize) throw new ConcurrentModificationException();
-        };
-        return new SparseArraySpliterator<>(values, checkForConcurrentModification);
+        return new SparseArraySpliterator<>(values, this);
     }
 }

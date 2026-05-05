@@ -54,7 +54,7 @@ public class ArrayBunch implements TripleBunch {
      * The new bunch will contain all the same triples of the bunch to copy.
      * But it will reserve only the space needed to contain them. Growing is still possible.
      *
-     * @param bunchToCopy
+     * @param bunchToCopy the bunch to copy
      */
     private ArrayBunch(final ArrayBunch bunchToCopy) {
         this.elements = new Triple[bunchToCopy.size];
@@ -168,11 +168,7 @@ public class ArrayBunch implements TripleBunch {
 
     @Override
     public Spliterator<Triple> keySpliterator() {
-        final var initialSize = size;
-        final Runnable checkForConcurrentModification = () -> {
-            if (size != initialSize) throw new ConcurrentModificationException();
-        };
-        return new ArraySpliterator<>(elements, size, checkForConcurrentModification);
+        return new ArraySpliterator<>(elements, size, this);
     }
 
     @Override

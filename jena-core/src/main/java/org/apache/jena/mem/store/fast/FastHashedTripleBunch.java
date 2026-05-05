@@ -25,13 +25,21 @@ import org.apache.jena.mem.collection.FastHashSet;
 import org.apache.jena.mem.collection.JenaSet;
 
 /**
- * A set of triples - backed by {@link FastHashSet}.
+ * Hashed implementation of {@link FastTripleBunch} built on top of
+ * {@link FastHashSet}. Used by {@link FastTripleStore} once a bunch grows
+ * past the size threshold at which a linear-scan {@link FastArrayBunch}
+ * stops being faster.
  */
 public class FastHashedTripleBunch extends FastHashSet<Triple> implements FastTripleBunch {
+
     /**
-     * Create a new triple bunch from the given set of triples.
+     * Create a new hashed bunch pre-populated from the given set of triples.
+     * The initial capacity is chosen at 1.5x the source size, so the new bunch
+     * fits the existing triples and has some headroom for growth before it
+     * needs to rehash.
      *
-     * @param set the set of triples
+     * @param set the source set of triples (typically the array bunch being
+     *            promoted)
      */
     public FastHashedTripleBunch(final JenaSet<Triple> set) {
         super((set.size() >> 1) + set.size()); //it should not only fit but also have some space for growth
@@ -39,15 +47,18 @@ public class FastHashedTripleBunch extends FastHashSet<Triple> implements FastTr
     }
 
     /**
-     * Copy constructor.
-     * The new bunch will contain all the same triples of the bunch to copy.
+     * Copy constructor. The new bunch contains the same triples as
+     * {@code bunchToCopy}.
      *
-     * @param bunchToCopy
+     * @param bunchToCopy the source bunch
      */
     private FastHashedTripleBunch(final FastHashedTripleBunch bunchToCopy) {
         super(bunchToCopy);
     }
 
+    /**
+     * Creates an empty hashed bunch with the default initial capacity.
+     */
     public FastHashedTripleBunch() {
         super();
     }

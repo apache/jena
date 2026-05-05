@@ -29,27 +29,39 @@ import org.apache.jena.mem.collection.JenaSetHashOptimized;
 import java.util.function.Predicate;
 
 /**
- * A bunch of triples - a stripped-down set with specialized methods. A
- * bunch is expected to store triples that share some useful property
- * (such as having the same subject or predicate).
+ * Set-like container for a "bunch" of triples that share some useful
+ * property - typically they all have the same subject, predicate or object,
+ * because the bunch is the value of a node-keyed map in a
+ * {@link FastTripleStore}.
+ * <p>
+ * The interface is a stripped-down set with a few extras tuned for the
+ * triple-store hot path; concrete implementations are
+ * {@link FastArrayBunch} (linear scan, used while the bunch is small) and
+ * {@link FastHashedTripleBunch} (hashed, used once the bunch grows past a
+ * threshold).
  */
 public interface FastTripleBunch extends JenaSetHashOptimized<Triple>, Copyable<FastTripleBunch> {
     /**
-     * Answer true iff this bunch is implemented as an array.
-     * This field is used to optimize some operations by avoiding the need for instanceOf tests.
+     * Answer {@code true} iff this bunch is backed by a flat array (i.e. is
+     * a {@link FastArrayBunch}). Exposed as an explicit method so callers can
+     * avoid {@code instanceof} checks on this hot path.
      *
-     * @return true iff this bunch is implemented as an arrays
+     * @return {@code true} if this bunch is array-backed
      */
     boolean isArray();
 
     /**
-     * This method is used to optimize _PO match operations.
-     * The {@link JenaMapSetCommon#anyMatch(Predicate)} method is faster if there are only a few matches.
-     * This method is faster if there are many matches and the set is ordered in an unfavorable way.
-     * _PO matches usually fall into this category.
+     * Predicate test that scans elements in hash-table order rather than
+     * dense insertion order. Tuned for {@code _PO} (any-predicate-object)
+     * matches.
+     * <p>
+     * {@link JenaMapSetCommon#anyMatch(Predicate)} is faster when matches
+     * are rare or absent; this method is faster when many matches exist and
+     * the dense ordering would force scanning past clustered non-matches
+     * before finding a hit. Both variants short-circuit on the first match.
      *
-     * @param predicate the predicate to match
-     * @return true if any triple in the bunch matches the predicate
+     * @param predicate the predicate to test against each triple
+     * @return {@code true} if any triple in the bunch satisfies the predicate
      */
     boolean anyMatchRandomOrder(Predicate<Triple> predicate);
 }

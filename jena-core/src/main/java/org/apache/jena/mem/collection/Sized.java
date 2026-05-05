@@ -18,32 +18,18 @@
  *
  *   SPDX-License-Identifier: Apache-2.0
  */
+
 package org.apache.jena.mem.collection;
 
 /**
- * Set interface specialized for the use cases in triple-store implementations.
- * Not thread-safe; does not allow {@code null} elements.
- *
- * @param <E> the element type of the set
+ * Base interface for sized collections.
+ * It is typically used to detect concurrent modifications in iterators and spliterators
+ * by snapshotting the size at construction time and rechecking it at each advance/forEach boundary.
  */
-public interface JenaSet<E> extends JenaMapSetCommon<E> {
+public interface Sized {
 
     /**
-     * Add the key to the set if it is not already present.
-     *
-     * @param key the key to add
-     * @return {@code true} if the key was added, {@code false} if it was already present
+     * @return the number of elements in the collection
      */
-    boolean tryAdd(E key);
-
-    /**
-     * Add the key to the set without checking whether it is already present.
-     * <p>
-     * Attention: this method must only be used if the caller has ensured that
-     * the key is not already in the set; otherwise the set's invariants will
-     * break (duplicates may be inserted).
-     *
-     * @param key the key to add
-     */
-    void addUnchecked(E key);
+    int size();
 }

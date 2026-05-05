@@ -24,9 +24,11 @@ import org.apache.jena.graph.Node;
 import org.junit.Test;
 
 import java.util.function.UnaryOperator;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import static org.apache.jena.testing_framework.GraphHelper.node;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class FastHashMapTest2 {
 
@@ -111,6 +113,69 @@ public class FastHashMapTest2 {
         assertEquals(0, (int) original.get(node("s")));
         assertEquals(1, (int) original.get(node("s1")));
         assertEquals(2, (int) original.get(node("s2")));
+    }
+
+    @Test
+    public void testPutAndGetIndexAssignsSequentialIndicesAndReturnsExistingForRepeats() {
+        var sut = new FastNodeHashMap();
+        // First-time puts assign new indices.
+        final int i0 = sut.putAndGetIndex(node("s"), 100);
+        final int i1 = sut.putAndGetIndex(node("s1"), 200);
+        final int i2 = sut.putAndGetIndex(node("s2"), 300);
+        assertEquals(0, i0);
+        assertEquals(1, i1);
+        assertEquals(2, i2);
+        assertEquals(100, (int) sut.getValueAt(i0));
+        assertEquals(200, (int) sut.getValueAt(i1));
+        assertEquals(300, (int) sut.getValueAt(i2));
+    }
+
+    @Test
+    public void testPutAndGetIndexOverwritesValueForExistingKey() {
+        var sut = new FastNodeHashMap();
+        final int i0 = sut.putAndGetIndex(node("s"), 100);
+        // Re-putting the same key returns the SAME index but with the new value.
+        final int i0Again = sut.putAndGetIndex(node("s"), 999);
+        assertEquals(i0, i0Again);
+        assertEquals(999, (int) sut.get(node("s")));
+        assertEquals(1, sut.size());
+    }
+
+    @Test
+    public void testForEachKeyVisitsEveryEntryWithItsIndex() {
+        var sut = new FastNodeHashMap();
+        sut.putAndGetIndex(node("a"), 0);
+        sut.putAndGetIndex(node("b"), 1);
+        sut.putAndGetIndex(node("c"), 2);
+
+        final HashMap<Node, Integer> seen = new HashMap<>();
+        sut.forEachKey(seen::put);
+
+        assertEquals(3, seen.size());
+        assertEquals(Integer.valueOf(0), seen.get(node("a")));
+        assertEquals(Integer.valueOf(1), seen.get(node("b")));
+        assertEquals(Integer.valueOf(2), seen.get(node("c")));
+    }
+
+    @Test
+    public void testForEachKeySkipsRemovedSlots() {
+        var sut = new FastNodeHashMap();
+        sut.putAndGetIndex(node("a"), 0);
+        sut.putAndGetIndex(node("b"), 1);
+        sut.putAndGetIndex(node("c"), 2);
+        sut.tryRemove(node("b"));
+
+        final HashSet<Node> visited = new HashSet<>();
+        sut.forEachKey((k, i) -> visited.add(k));
+        assertEquals(2, visited.size());
+        assertTrue(visited.contains(node("a")));
+        assertTrue(visited.contains(node("c")));
+    }
+
+    @Test
+    public void testForEachKeyOnEmptyMapIsNoOp() {
+        var sut = new FastNodeHashMap();
+        sut.forEachKey((k, i) -> fail("consumer must not be called on an empty map"));
     }
 
     private static class FastNodeHashMap extends FastHashMap<Node, Object> {
