@@ -97,8 +97,7 @@ public class EagerStoreStrategy implements StoreStrategy {
      */
     private void indexAll() {
         // Initialize the index by adding all triples to the index
-        triples.indexedKeyIterator().forEachRemaining(entry ->
-                addToIndex(entry.key(), entry.index()));
+        triples.forEachKey(this::addToIndex);
     }
 
     /**
@@ -108,15 +107,15 @@ public class EagerStoreStrategy implements StoreStrategy {
      */
     private void indexAllParallel() {
         final var futureIndexSubjects = CompletableFuture.runAsync(() ->
-                triples.indexedKeyIterator().forEachRemaining(entry ->
-                        addIndex(spoBitmaps[0], entry.key().getSubject(), entry.index())));
+                triples.forEachKey((triple, index) ->
+                        addIndex(spoBitmaps[0], triple.getSubject(), index)));
 
         final var futureIndexPredicates = CompletableFuture.runAsync(() ->
-                triples.indexedKeyIterator().forEachRemaining(entry ->
-                        addIndex(spoBitmaps[1], entry.key().getPredicate(), entry.index())));
+                triples.forEachKey((triple, index) ->
+                        addIndex(spoBitmaps[1], triple.getPredicate(), index)));
 
-        triples.indexedKeyIterator().forEachRemaining(entry ->
-                addIndex(spoBitmaps[2], entry.key().getObject(), entry.index()));
+        triples.forEachKey((triple, index) ->
+                addIndex(spoBitmaps[2], triple.getObject(), index));
 
         CompletableFuture.allOf(futureIndexSubjects, futureIndexPredicates).join();
     }

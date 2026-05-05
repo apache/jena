@@ -68,20 +68,43 @@ import java.util.stream.StreamSupport;
  */
 public class FastTripleStore implements TripleStore {
 
+    /**
+     * Object-bunch size above which {@code _PO} matches consider a
+     * secondary lookup in the predicate bunch.
+     */
     protected static final int THRESHOLD_FOR_SECONDARY_LOOKUP = 400;
+    /**
+     * Maximum size of a subject-keyed array bunch before it is promoted
+     * to a hashed bunch. Lower than the predicate/object threshold because
+     * the subject map is the primary entry point for {@code contains}.
+     */
     protected static final int MAX_ARRAY_BUNCH_SIZE_SUBJECT = 16;
+    /**
+     * Maximum size of a predicate- or object-keyed array bunch before it is
+     * promoted to a hashed bunch.
+     */
     protected static final int MAX_ARRAY_BUNCH_SIZE_PREDICATE_OBJECT = 32;
-    final FastHashedBunchMap subjects;
-    final FastHashedBunchMap predicates;
-    final FastHashedBunchMap objects;
+    private final FastHashedBunchMap subjects;
+    private final FastHashedBunchMap predicates;
+    private final FastHashedBunchMap objects;
     private int size = 0;
 
+    /**
+     * Creates a new, empty fast triple store.
+     */
     public FastTripleStore() {
         subjects = new FastHashedBunchMap();
         predicates = new FastHashedBunchMap();
         objects = new FastHashedBunchMap();
     }
 
+    /**
+     * Copy constructor used by {@link #copy()}; produces an independent store
+     * by deep-copying each of the three index maps (which in turn deep-copy
+     * their bunches).
+     *
+     * @param tripleStoreToCopy the source store
+     */
     private FastTripleStore(final FastTripleStore tripleStoreToCopy) {
         subjects = tripleStoreToCopy.subjects.copy();
         predicates = tripleStoreToCopy.predicates.copy();
@@ -380,6 +403,11 @@ public class FastTripleStore implements TripleStore {
         return new FastTripleStore(this);
     }
 
+    /**
+     * Array bunch used as the value in the subject-keyed map: every triple in
+     * the bunch shares the same subject, so equality only needs to compare
+     * predicate and object.
+     */
     protected static class ArrayBunchWithSameSubject extends FastArrayBunch {
 
         public ArrayBunchWithSameSubject() {
@@ -402,6 +430,11 @@ public class FastTripleStore implements TripleStore {
         }
     }
 
+    /**
+     * Array bunch used as the value in the predicate-keyed map: every triple
+     * in the bunch shares the same predicate, so equality only needs to
+     * compare subject and object.
+     */
     protected static class ArrayBunchWithSamePredicate extends FastArrayBunch {
 
         public ArrayBunchWithSamePredicate() {
@@ -424,6 +457,11 @@ public class FastTripleStore implements TripleStore {
         }
     }
 
+    /**
+     * Array bunch used as the value in the object-keyed map: every triple in
+     * the bunch shares the same object, so equality only needs to compare
+     * subject and predicate.
+     */
     protected static class ArrayBunchWithSameObject extends FastArrayBunch {
 
         public ArrayBunchWithSameObject() {

@@ -21,10 +21,33 @@
 
 package org.apache.jena.mem;
 
+import org.junit.Test;
+
+import static org.apache.jena.testing_framework.GraphHelper.triple;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+
+/**
+ * Concrete instantiation of {@link AbstractGraphMemTest} that exercises
+ * {@link GraphMemFast} (a {@link GraphMem} backed by a
+ * {@link org.apache.jena.mem.store.fast.FastTripleStore}). The shared
+ * contract assertions live in the abstract base; this class only adds tests
+ * that are specific to the {@code GraphMemFast} variant.
+ */
 public class GraphMemFastTest extends AbstractGraphMemTest {
 
     @Override
     protected GraphMem createGraph() {
         return new GraphMemFast();
+    }
+
+    @Test
+    public void copyReturnsAGraphMemFastInstance() {
+        sut.add(triple("s p o"));
+        final var copy = sut.copy();
+        // The override on GraphMemFast must preserve the runtime type so
+        // callers don't lose subclass-specific functionality through copy().
+        assertTrue("copy() must return a GraphMemFast", copy instanceof GraphMemFast);
+        assertNotSame(sut, copy);
     }
 }

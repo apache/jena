@@ -32,26 +32,41 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
- * An ArrayBunch implements TripleBunch with a linear search of a short-ish
- * array of Triples. The array grows by factor 2.
+ * Linear-scan implementation of {@link FastTripleBunch} backed by a packed
+ * {@link Triple} array. Used as long as a bunch stays small; once it grows
+ * past the configured threshold (see {@link FastTripleStore}) it is replaced
+ * with a {@link FastHashedTripleBunch}.
+ * <p>
+ * The array grows by a factor of two when full. Equality of triples within a
+ * bunch is delegated to {@link #areEqual(Triple, Triple)}, which subclasses
+ * specialize to compare only the two nodes that are <em>not</em> already
+ * implied by the enclosing map's key. This avoids redundant equality checks
+ * on the shared subject/predicate/object.
+ * <p>
+ * Not thread-safe.
  */
 public abstract class FastArrayBunch implements FastTripleBunch {
 
     private static final int INITIAL_SIZE = 4;
 
+    /** Number of valid entries in {@link #elements}. */
     protected int size = 0;
+    /** Packed array of triples; entries from {@code 0} to {@code size-1} are live. */
     protected Triple[] elements;
 
+    /**
+     * Creates an empty bunch with the default initial capacity.
+     */
     protected FastArrayBunch() {
         elements = new Triple[INITIAL_SIZE];
     }
 
     /**
-     * Copy constructor.
-     * The new bunch will contain all the same triples of the bunch to copy.
-     * But it will reserve only the space needed to contain them. Growing is still possible.
+     * Copy constructor. The new bunch contains the same triples as
+     * {@code bunchToCopy}; its backing array is sized to fit exactly,
+     * but can grow further if needed.
      *
-     * @param bunchToCopy
+     * @param bunchToCopy the source bunch
      */
     protected FastArrayBunch(final FastArrayBunch bunchToCopy) {
         this.elements = new Triple[bunchToCopy.size];
@@ -59,7 +74,17 @@ public abstract class FastArrayBunch implements FastTripleBunch {
         this.size = bunchToCopy.size;
     }
 
-    public abstract boolean areEqual(final Triple a, final Triple b);
+    /**
+     * Compare two triples for equality within this bunch.
+     * <p>
+     * Subclasses specialize this to skip the already-shared component
+     * (subject, predicate or object) and compare only the remaining two.
+     *
+     * @param a first triple
+     * @param b second triple
+     * @return {@code true} if the triples are considered equal in this bunch
+     */
+    protected abstract boolean areEqual(final Triple a, final Triple b);
 
     @Override
     public boolean containsKey(Triple t) {
@@ -127,6 +152,7 @@ public abstract class FastArrayBunch implements FastTripleBunch {
         for (int i = 0; i < size; i++) {
             if (areEqual(t, elements[i])) {
                 elements[i] = elements[--size];
+                elements[size] = null;
                 return true;
             }
         }
@@ -138,6 +164,7 @@ public abstract class FastArrayBunch implements FastTripleBunch {
         for (int i = 0; i < size; i++) {
             if (areEqual(t, elements[i])) {
                 elements[i] = elements[--size];
+                elements[size] = null;
                 return;
             }
         }
@@ -174,11 +201,7 @@ public abstract class FastArrayBunch implements FastTripleBunch {
 
     @Override
     public Spliterator<Triple> keySpliterator() {
-        final var initialSize = size;
-        final Runnable checkForConcurrentModification = () -> {
-            if (size != initialSize) throw new ConcurrentModificationException();
-        };
-        return new ArraySpliterator<>(elements, size, checkForConcurrentModification);
+        return new ArraySpliterator<>(elements, size, this);
     }
 
     @Override

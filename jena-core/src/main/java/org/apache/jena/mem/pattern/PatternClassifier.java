@@ -25,14 +25,15 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 
 /**
- * Classify a triple match into one of the 8 match patterns.
+ * Utility class that classifies a triple match into one of the eight
+ * {@link MatchPattern} values.
  * <p>
- * The classification is based on the concrete-ness of the subject, predicate and object.
- * A concrete node is one that is not a variable.
+ * The classification is based on which of the subject, predicate and object
+ * are <em>concrete</em> (anything that is not a variable / wildcard /
+ * {@code null}) and which are wildcards. The result is used by triple-store
+ * implementations to dispatch to the most efficient lookup path.
  * <p>
- * The classification is used to select the most efficient implementation of a triple store.
- * <p>
- * This is a utility class; there is no need to instantiate it.
+ * All operations are stateless; this class is not meant to be instantiated.
  *
  * @see MatchPattern
  */
@@ -41,8 +42,16 @@ public class PatternClassifier {
     private PatternClassifier() {
     }
 
+    /**
+     * Classify a triple match.
+     *
+     * @param tripleMatch the match triple, possibly containing wildcard nodes
+     * @return the corresponding {@link MatchPattern}
+     */
     public static MatchPattern classify(Triple tripleMatch) {
-        if (tripleMatch.isConcrete()) {
+        if (tripleMatch.getSubject().isConcrete()
+                && tripleMatch.getPredicate().isConcrete()
+                && tripleMatch.getObject().isConcrete()) {
             return MatchPattern.SUB_PRE_OBJ;
         } else {
             if (tripleMatch.getSubject().isConcrete()) {
@@ -73,6 +82,15 @@ public class PatternClassifier {
         }
     }
 
+    /**
+     * Classify a triple match given as three nodes.
+     * Any {@code null} or non-concrete node is treated as a wildcard.
+     *
+     * @param sm subject node, or {@code null}/wildcard
+     * @param pm predicate node, or {@code null}/wildcard
+     * @param om object node, or {@code null}/wildcard
+     * @return the corresponding {@link MatchPattern}
+     */
     public static MatchPattern classify(Node sm, Node pm, Node om) {
         if (null != sm && sm.isConcrete()) {
             if (null != pm && pm.isConcrete()) {
@@ -103,6 +121,5 @@ public class PatternClassifier {
                 }
             }
         }
-
     }
 }

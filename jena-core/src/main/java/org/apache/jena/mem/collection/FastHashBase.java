@@ -24,58 +24,80 @@ import org.apache.jena.mem.iterator.SparseArrayIterator;
 import org.apache.jena.mem.spliterator.SparseArraySpliterator;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
-import java.util.ConcurrentModificationException;
 import java.util.Spliterator;
 import java.util.function.Predicate;
 
 /**
- * This is the base class for {@link FastHashSet} and {@link FastHashSet}.
- * It only grows but never shrinks.
- * This map does not guarantee any order. Although due to the way it is implemented the elements have a certain order.
- * This map does not allow null keys.
- * This map is not thread safe.
+ * Base class for {@link FastHashSet} and {@link FastHashMap}.
+ * The collection grows on demand but never shrinks. It does not guarantee any
+ * iteration order (although the implementation does produce a stable order
+ * for a given insertion/deletion history). It does not allow {@code null}
+ * keys and is not thread-safe.
+ * <h2>Internal layout</h2>
+ * <ul>
+ *   <li><b>positions</b>: power-of-two sized array used as the open-addressing
+ *   probe table (like in {@link java.util.HashMap}). It is indexed by
+ *   {@code hashCode &amp; (positions.length - 1)}. A value of {@code 0} marks
+ *   an empty slot - faster to test than a {@code null} reference. Non-empty
+ *   slots store the bitwise complement ({@code ~}) of the index of the entry
+ *   in the {@code keys}/{@code hashCodesOrDeletedIndices} arrays, so a real
+ *   stored index of {@code 0} encodes as {@code -1} and is therefore distinct
+ *   from "empty".</li>
+ *   <li><b>keys</b>: dense array of keys, generally filled from index 0 up to
+ *   {@code keysPos}. Slots emptied by deletion become {@code null} and are
+ *   reused before the array is grown. The dense layout enables fast iteration.</li>
+ *   <li><b>hashCodesOrDeletedIndices</b>: parallel array to {@code keys}. For
+ *   live entries it stores the cached hash code of the key. For deleted slots
+ *   it stores the index of the previously deleted slot, forming a freelist
+ *   whose head is {@code lastDeletedIndex} ({@code -1} if empty).</li>
+ *   <li><b>keysPos</b> / <b>removedKeysCount</b>: high-water mark and freelist
+ *   length, respectively; the live size is {@code keysPos - removedKeysCount}.</li>
+ * </ul>
+ * The {@code keys} and {@code hashCodesOrDeletedIndices} arrays grow together
+ * by approximately a factor of 1.5 (similar to {@link java.util.ArrayList}).
  * <p>
- * The positions array stores negative indices to the entries and hashCode arrays.
- * The positions array is implemented as a power of two sized array. (like in {@link java.util.HashMap}) This allows
- * to use a fast modulo operation to calculate the index. The indices of the positions array are derived from the
- * hashCodes.
- * Any position 0 indicates an empty element. The comparison with 0 is faster than comparing elements with null.
- * <p>
- * The keys are stored in a keys array and the hashCodesOrDeletedIndices array
- * stores the hashCodes of the keys.
- * hashCodesOrDeletedIndices is also used to store the indices of the deleted keys to save memory. It works like a
- * linked list of deleted keys. The index of the previously deleted key is stored in the hashCodesOrDeletedIndices
- * array. lastDeletedIndex is the index of the last deleted key in the hashCodesOrDeletedIndices array and serves as
- * the head of the linked list of deleted keys.
- * These two arrays grow together. They grow like {@link java.util.ArrayList} with a factor of 1.5.
- * <p>
- * keysPos is the index of the next free position in the keys array.
- * The keys array is usually completely filled from index 0 to keysPos. Exceptions are the deleted keys.
- * Indices that have been deleted are reused for new keys before the keys array is extended.
- * The dense nature of the keys array enables fast iteration.
- * <p>
- * The index of a key in the keys array never changes. So the index of a key can be used as a handle to the key and
- * for random access.
+ * Once a key is inserted, its index in the {@code keys} array never changes
+ * until it is removed. The index can therefore be used as a stable handle for
+ * O(1) random access, e.g. to coordinate parallel arrays of associated data.
  *
  * @param <K> the type of the keys
  */
 public abstract class FastHashBase<K> implements JenaMapSetCommon<K> {
+    /** Initial size of the {@link #positions} probe table. */
     protected static final int MINIMUM_HASHES_SIZE = 16;
+    /** Initial size of the {@link #keys} / {@link #hashCodesOrDeletedIndices} arrays. */
     protected static final int MINIMUM_ELEMENTS_SIZE = 8;
+    /** High-water mark in {@link #keys}; one past the largest slot ever used. */
     protected int keysPos = 0;
+    /** Dense array of stored keys; {@code null} marks a freed slot. */
     protected K[] keys;
+    /**
+     * For live entries: cached {@link Object#hashCode()} of the corresponding key.
+     * For freed slots: index of the previously freed slot (singly-linked freelist
+     * whose head is {@link #lastDeletedIndex}).
+     */
     protected int[] hashCodesOrDeletedIndices;
+    /** Head of the freelist of removed slots, or {@code -1} if the freelist is empty. */
     protected int lastDeletedIndex = -1;
+    /** Number of freelist entries (i.e. slots in {@link #keys} currently {@code null}). */
     protected int removedKeysCount = 0;
 
     /**
-     * The negative indices to the entries and hashCode arrays.
-     * The indices of the positions array are derived from the hashCodes.
-     * Any position 0 indicates an empty element.
+     * Probe table mapping a hash bucket to an entry index in {@link #keys}.
+     * A slot's value is the bitwise complement ({@code ~}) of the entry index;
+     * a value of {@code 0} marks an empty slot.
      */
     protected int[] positions;
 
-    protected FastHashBase(int initialSize) {
+    /**
+     * Creates a base collection sized to hold at least {@code initialSize}
+     * entries before growing.
+     *
+     * @param initialSize the initial capacity of the keys array; the probe
+     *                    table is sized to the next power of two at least
+     *                    twice as large
+     */
+    protected FastHashBase(final int initialSize) {
         var positionsSize = Integer.highestOneBit(initialSize << 1);
         if (positionsSize < initialSize << 1) {
             positionsSize <<= 1;
@@ -85,6 +107,11 @@ public abstract class FastHashBase<K> implements JenaMapSetCommon<K> {
         this.hashCodesOrDeletedIndices = new int[initialSize];
     }
 
+    /**
+     * Creates a base collection with the default minimum capacities
+     * ({@link #MINIMUM_HASHES_SIZE} for the probe table and
+     * {@link #MINIMUM_ELEMENTS_SIZE} for the keys array).
+     */
     protected FastHashBase() {
         this.positions = new int[MINIMUM_HASHES_SIZE];
         this.keys = newKeysArray(MINIMUM_ELEMENTS_SIZE);
@@ -95,17 +122,17 @@ public abstract class FastHashBase<K> implements JenaMapSetCommon<K> {
      * Copy constructor.
      * The new map will contain all the same keys of the map to copy.
      *
-     * @param baseToCopy
+     * @param baseToCopy instance to copy
      */
-    protected <T extends FastHashBase<?>> FastHashBase(final T baseToCopy)  {
+    protected <T extends FastHashBase<K>> FastHashBase(final T baseToCopy)  {
         this.positions = new int[baseToCopy.positions.length];
         System.arraycopy(baseToCopy.positions, 0, this.positions, 0, baseToCopy.positions.length);
 
         this.hashCodesOrDeletedIndices = new int[baseToCopy.hashCodesOrDeletedIndices.length];
-        System.arraycopy(baseToCopy.hashCodesOrDeletedIndices, 0, this.hashCodesOrDeletedIndices, 0, baseToCopy.hashCodesOrDeletedIndices.length);
+        System.arraycopy(baseToCopy.hashCodesOrDeletedIndices, 0, this.hashCodesOrDeletedIndices, 0, baseToCopy.keysPos);
 
         this.keys = newKeysArray(baseToCopy.keys.length);
-        System.arraycopy(baseToCopy.keys, 0, this.keys, 0, baseToCopy.keys.length);
+        System.arraycopy(baseToCopy.keys, 0, this.keys, 0, baseToCopy.keysPos);
 
         this.keysPos = baseToCopy.keysPos;
         this.lastDeletedIndex = baseToCopy.lastDeletedIndex;
@@ -143,6 +170,17 @@ public abstract class FastHashBase<K> implements JenaMapSetCommon<K> {
         return -1;
     }
 
+    private void fillPositionsArray(int newSize) {
+        this.positions = new int[newSize];
+        var pos = keysPos - 1;
+        while (-1 < pos) {
+            if (null != keys[pos]) {
+                this.positions[findEmptySlotWithoutEqualityCheck(hashCodesOrDeletedIndices[pos])] = ~pos;
+            }
+            pos--;
+        }
+    }
+
     /**
      * Grows the positions array if needed.
      */
@@ -151,13 +189,7 @@ public abstract class FastHashBase<K> implements JenaMapSetCommon<K> {
         if (newSize < 0) {
             return;
         }
-        final var oldPositions = this.positions;
-        this.positions = new int[newSize];
-        for (int oldPosition : oldPositions) {
-            if (0 != oldPosition) {
-                this.positions[findEmptySlotWithoutEqualityCheck(hashCodesOrDeletedIndices[~oldPosition])] = oldPosition;
-            }
-        }
+        fillPositionsArray(newSize);
     }
 
     /**
@@ -170,13 +202,7 @@ public abstract class FastHashBase<K> implements JenaMapSetCommon<K> {
         if (newSize < 0) {
             return false;
         }
-        final var oldPositions = this.positions;
-        this.positions = new int[newSize];
-        for (int oldPosition : oldPositions) {
-            if (0 != oldPosition) {
-                this.positions[findEmptySlotWithoutEqualityCheck(hashCodesOrDeletedIndices[~oldPosition])] = oldPosition;
-            }
-        }
+        fillPositionsArray(newSize);
         return true;
     }
 
@@ -245,21 +271,23 @@ public abstract class FastHashBase<K> implements JenaMapSetCommon<K> {
     }
 
     /**
-     * Removes the element at the given position.
+     * Remove the given element and return the index it occupied before removal.
      *
-     * @param e the element
-     * @return the index of the removed element or -1 if the element was not found
+     * @param e the element to remove
+     * @return the former index of the element, or {@code -1} if it was not present
      */
     public final int removeAndGetIndex(final K e) {
         return removeAndGetIndex(e, e.hashCode());
     }
 
     /**
-     * Removes the element at the given position.
+     * Remove the given element and return the index it occupied before removal.
+     * Lets the caller supply the precomputed hash code to avoid an extra
+     * {@code hashCode()} call.
      *
-     * @param e        the element
-     * @param hashCode the hash code of the element. This is a performance optimization.
-     * @return the index of the removed element or -1 if the element was not found
+     * @param e        the element to remove
+     * @param hashCode {@code e.hashCode()}
+     * @return the former index of the element, or {@code -1} if it was not present
      */
     public final int removeAndGetIndex(final K e, final int hashCode) {
         final var pIndex = findPosition(e, hashCode);
@@ -281,18 +309,19 @@ public abstract class FastHashBase<K> implements JenaMapSetCommon<K> {
     }
 
     /**
-     * Removes the element at the given position.
+     * Removes the entry referenced by the {@code positions} slot at index
+     * {@code here} and rehashes the affected probe chain.
      * <p>
-     * This is an implementation of Knuth's Algorithm R from tAoCP vol3, p 527,
-     * with exchanging of the roles of i and j so that they can be usefully renamed
-     * to <i>here</i> and <i>scan</i>.
+     * This is an implementation of Knuth's Algorithm R from <em>The Art of
+     * Computer Programming</em>, vol. 3, p. 527, with the roles of {@code i}
+     * and {@code j} swapped so they can be usefully renamed to <i>here</i>
+     * and <i>scan</i>.
      * <p>
-     * It relies on linear probing but doesn't require a distinguished REMOVED
-     * value. Since we resize the table when it gets fullish, we don't worry [much]
-     * about the overhead of the linear probing.
-     * <p>
+     * It relies on linear probing but doesn't require a distinguished
+     * {@code REMOVED} sentinel. Since the table is resized once it gets
+     * fullish, the overhead of linear probing is not a concern.
      *
-     * @param here the index in the positions array
+     * @param here the index in the {@link #positions} array of the slot to clear
      */
     protected void removeFrom(int here) {
         final var pIndex = ~positions[here];
@@ -345,9 +374,14 @@ public abstract class FastHashBase<K> implements JenaMapSetCommon<K> {
     }
 
     /**
-     * Attentions: Due to the ordering of the keys, this method may be slow
-     * if matching elements are at the start of the list.
-     * Try to use {@link #anyMatchRandomOrder(Predicate)} instead.
+     * {@inheritDoc}
+     * <p>
+     * Iterates the keys in dense (insertion-order-ish) order. This is fast when
+     * matches are rare or expected near the end of the array, but can be slow
+     * when matches are clustered at the start of the array. For workloads
+     * where many matches are expected, prefer {@link #anyMatchRandomOrder(Predicate)},
+     * which scans in probe-table order and tends to find matches sooner when
+     * they are abundant.
      */
     @Override
     public final boolean anyMatch(Predicate<K> predicate) {
@@ -362,11 +396,16 @@ public abstract class FastHashBase<K> implements JenaMapSetCommon<K> {
     }
 
     /**
-     * This method can be faster than {@link #anyMatch(Predicate)} if one expects
-     * to find many matches. But it is slower if one expects to find no matches or just a single one.
+     * Like {@link #anyMatch(Predicate)} but scans the probe table rather than
+     * the dense {@code keys} array, yielding a roughly hash-based order.
+     * <p>
+     * This is faster than {@link #anyMatch(Predicate)} when many matches are
+     * expected (the predicate is more likely to short-circuit early), but
+     * slower when no or only a single match exists (each iteration must
+     * test against an empty slot first).
      *
-     * @param predicate the predicate to apply to elements of this collection
-     * @return {@code true} if any element of the collection matches the predicate
+     * @param predicate the predicate to apply
+     * @return {@code true} if any element matches the predicate
      */
     public final boolean anyMatchRandomOrder(Predicate<K> predicate) {
         var pIndex = positions.length - 1;
@@ -381,14 +420,22 @@ public abstract class FastHashBase<K> implements JenaMapSetCommon<K> {
 
     @Override
     public final ExtendedIterator<K> keyIterator() {
-        final var initialSize = size();
-        final Runnable checkForConcurrentModification = () ->
-        {
-            if (size() != initialSize) throw new ConcurrentModificationException();
-        };
-        return new SparseArrayIterator<>(keys, keysPos, checkForConcurrentModification);
+        return new SparseArrayIterator<>(keys, keysPos, this);
     }
 
+    /**
+     * Locates the slot in {@link #positions} that holds {@code e} (with the
+     * given precomputed hash code).
+     * <p>
+     * If the key is present, returns the (non-negative) probe-table slot
+     * index. If the key is absent, returns the bitwise complement of the
+     * empty probe-table slot at which the key would be inserted, allowing
+     * insertion to proceed without a second probe walk.
+     *
+     * @param e        the key to locate
+     * @param hashCode {@code e.hashCode()}
+     * @return the position index if found, or {@code ~insertionPosition} if not
+     */
     protected final int findPosition(final K e, final int hashCode) {
         var pIndex = calcStartIndexByHashCode(hashCode);
         while (true) {
@@ -405,6 +452,15 @@ public abstract class FastHashBase<K> implements JenaMapSetCommon<K> {
         }
     }
 
+    /**
+     * Locates the next empty slot in {@link #positions} along the probe chain
+     * for the given hash code, without checking any existing entries for
+     * equality. Used after a positions-array resize, when no duplicates can
+     * exist in the rebuilt table.
+     *
+     * @param hashCode the hash code being placed
+     * @return the index of an empty slot in the probe table
+     */
     protected final int findEmptySlotWithoutEqualityCheck(final int hashCode) {
         var pIndex = calcStartIndexByHashCode(hashCode);
         while (true) {
@@ -435,11 +491,63 @@ public abstract class FastHashBase<K> implements JenaMapSetCommon<K> {
 
     @Override
     public final Spliterator<K> keySpliterator() {
-        final var initialSize = this.size();
-        final Runnable checkForConcurrentModification = () ->
-        {
-            if (this.size() != initialSize) throw new ConcurrentModificationException();
-        };
-        return new SparseArraySpliterator<>(keys, keysPos, checkForConcurrentModification);
+        return new SparseArraySpliterator<>(keys, keysPos, this);
+    }
+
+    /**
+     * Gets the key at the given index.
+     * Array bounds are not checked. The caller must ensure the index is valid and corresponds to a non-null key.
+     *
+     * @param i the index
+     * @return the key at the given index
+     */
+    public K getKeyAt(int i) {
+        return keys[i];
+    }
+
+    /**
+     * Returns the index of the entry holding {@code key}, or {@code -1} if not present.
+     *
+     * @param key the key to look up
+     * @return the entry index, or {@code -1} if the key is absent
+     */
+    public int indexOf(K key) {
+        final var pIndex = findPosition(key, key.hashCode());
+        if (pIndex < 0) {
+            return -1;
+        } else {
+            return ~positions[pIndex];
+        }
+    }
+
+    /**
+     * Functional interface used by {@link #forEachKey} to receive each live
+     * key along with the stable index it occupies.
+     *
+     * @param <K> the key type
+     */
+    @FunctionalInterface
+    public interface KeyAndIndexConsumer<K> {
+        /**
+         * Receive a single key and its index.
+         *
+         * @param key   the key
+         * @param index the stable index of the key in the underlying array
+         */
+        void accept(K key, int index);
+    }
+
+    /**
+     * Sequentially invokes {@code consumer} for every live key with its index.
+     * Skips freed slots.
+     *
+     * @param consumer receives each key/index pair
+     */
+    public void forEachKey(KeyAndIndexConsumer<K> consumer) {
+        for (int i = 0; i < keysPos; i++) {
+            if(keys[i] != null) {
+                consumer.accept(keys[i], i);
+            }
+        }
     }
 }

@@ -171,14 +171,14 @@ public abstract class AbstractJenaMapNodeTest {
     public void testKeyIteratorEmpty() {
         var iter = sut.keyIterator();
         assertFalse(iter.hasNext());
-        assertThrows(NoSuchElementException.class, () -> iter.next());
+        assertThrows(NoSuchElementException.class, iter::next);
     }
 
     @Test
     public void testValueIteratorEmpty2() {
         var iter = sut.valueIterator();
         assertFalse(iter.hasNext());
-        assertThrows(NoSuchElementException.class, () -> iter.next());
+        assertThrows(NoSuchElementException.class, iter::next);
     }
 
     @Test
@@ -577,7 +577,7 @@ public abstract class AbstractJenaMapNodeTest {
     @Test
     public void computeIfAbsend1000Nodes() {
         for (int i = 0; i < 1000; i++) {
-            sut.computeIfAbsent(node("s" + i), () -> new Object());
+            sut.computeIfAbsent(node("s" + i), Object::new);
         }
         assertEquals(1000, sut.size());
     }
@@ -612,39 +612,5 @@ public abstract class AbstractJenaMapNodeTest {
             assertTrue(sut.tryRemove(t));
         }
         assertTrue(sut.isEmpty());
-    }
-
-
-    private static class HashCommonNodeMap extends HashCommonMap<Node, Object> {
-        public HashCommonNodeMap() {
-            super(10);
-        }
-
-        @Override
-        protected Node[] newKeysArray(int size) {
-            return new Node[size];
-        }
-
-        @Override
-        public void clear() {
-            super.clear(10);
-        }
-
-        @Override
-        protected Object[] newValuesArray(int size) {
-            return new Object[size];
-        }
-    }
-
-    private static class FastNodeHashMap extends FastHashMap<Node, Object> {
-        @Override
-        protected Node[] newKeysArray(int size) {
-            return new Node[size];
-        }
-
-        @Override
-        protected Object[] newValuesArray(int size) {
-            return new Object[size];
-        }
     }
 }

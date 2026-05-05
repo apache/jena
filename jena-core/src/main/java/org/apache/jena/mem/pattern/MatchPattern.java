@@ -22,8 +22,17 @@
 package org.apache.jena.mem.pattern;
 
 /**
- * A pattern for matching triples.
- * The pattern is defined by the wildcard positions for the subject, predicate and object.
+ * Categorizes a triple-match pattern by which of the subject, predicate and
+ * object slots are concrete and which are wildcards (i.e. {@code Node.ANY}
+ * or {@code null}).
+ * <p>
+ * The eight enum values cover every possible combination. Triple-store
+ * implementations dispatch on this enum to pick the most efficient lookup
+ * path for each kind of pattern (e.g. a fully concrete {@link #SUB_PRE_OBJ}
+ * is answered directly from the triple set, while a partially open pattern
+ * such as {@link #ANY_PRE_OBJ} is answered through an index intersection).
+ *
+ * @see PatternClassifier
  */
 public enum MatchPattern {
     /**

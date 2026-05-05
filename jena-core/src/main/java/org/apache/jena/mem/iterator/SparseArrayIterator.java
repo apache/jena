@@ -21,34 +21,55 @@
 
 package org.apache.jena.mem.iterator;
 
+import org.apache.jena.mem.collection.Sized;
 import org.apache.jena.util.iterator.NiceIterator;
 
-import java.util.Iterator;
+import java.util.ConcurrentModificationException;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 
 /**
- * An iterator over a sparse array, that skips null entries.
+ * Iterator over a sparse array, walking from high index to low and skipping
+ * {@code null} entries. Detects concurrent modifications by snapshotting
+ * {@code set.size()} at construction time and rechecking it on each call to
+ * {@link #next()} / {@link #forEachRemaining(Consumer)}; throws
+ * {@link ConcurrentModificationException} if the size has changed.
  *
  * @param <E> the type of the array elements
  */
-public class SparseArrayIterator<E> extends NiceIterator<E> implements Iterator<E> {
+public class SparseArrayIterator<E> extends NiceIterator<E> {
 
     private final E[] entries;
-    private final Runnable checkForConcurrentModification;
+    private final Sized set;
+    private final int sizeOfSetAtStart;
     private int pos;
     private boolean hasNext = false;
 
-    public SparseArrayIterator(final E[] entries, final Runnable checkForConcurrentModification) {
+    /**
+     * Iterate over the whole array.
+     *
+     * @param entries the backing array (not copied)
+     * @param set     the owning collection used to detect concurrent modifications
+     */
+    public SparseArrayIterator(final E[] entries, final Sized set) {
         this.entries = entries;
         this.pos = entries.length - 1;
-        this.checkForConcurrentModification = checkForConcurrentModification;
+        this.set = set;
+        this.sizeOfSetAtStart = set.size();
     }
 
-    public SparseArrayIterator(final E[] entries, int toIndexExclusive, final Runnable checkForConcurrentModification) {
+    /**
+     * Iterate over {@code entries[0 .. toIndexExclusive)} (in reverse order).
+     *
+     * @param entries          the backing array (not copied)
+     * @param toIndexExclusive exclusive upper bound on the iterated slice
+     * @param set              the owning collection used to detect concurrent modifications
+     */
+    public SparseArrayIterator(final E[] entries, int toIndexExclusive, final Sized set) {
         this.entries = entries;
         this.pos = toIndexExclusive - 1;
-        this.checkForConcurrentModification = checkForConcurrentModification;
+        this.set = set;
+        this.sizeOfSetAtStart = set.size();
     }
 
     /**
@@ -62,13 +83,11 @@ public class SparseArrayIterator<E> extends NiceIterator<E> implements Iterator<
     public boolean hasNext() {
         while (-1 < pos) {
             if (null != entries[pos]) {
-                hasNext = true;
-                return true;
+                return hasNext = true;
             }
             pos--;
         }
-        hasNext = false;
-        return false;
+        return hasNext = false;
     }
 
     /**
@@ -79,7 +98,7 @@ public class SparseArrayIterator<E> extends NiceIterator<E> implements Iterator<
      */
     @Override
     public E next() {
-        this.checkForConcurrentModification.run();
+        if (sizeOfSetAtStart != set.size()) throw new ConcurrentModificationException();
         if (hasNext || hasNext()) {
             hasNext = false;
             return entries[pos--];
@@ -95,6 +114,6 @@ public class SparseArrayIterator<E> extends NiceIterator<E> implements Iterator<
             }
             pos--;
         }
-        this.checkForConcurrentModification.run();
+        if (sizeOfSetAtStart != set.size()) throw new ConcurrentModificationException();
     }
 }

@@ -25,7 +25,6 @@ import org.apache.jena.mem.spliterator.SparseArraySpliterator;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
-import java.util.ConcurrentModificationException;
 import java.util.Spliterator;
 import java.util.function.Predicate;
 
@@ -36,7 +35,7 @@ import java.util.function.Predicate;
  *
  * @param <E> the element type
  */
-public abstract class HashCommonBase<E> {
+public abstract class HashCommonBase<E> implements JenaMapSetCommon<E> {
     /**
      * Jeremy suggests, from his experiments, that load factors more than
      * 0.6 leave the table too dense, and little advantage is gained below 0.4.
@@ -78,7 +77,7 @@ public abstract class HashCommonBase<E> {
      * Copy constructor.
      * The new table will contain all the same keys of the table to copy.
      *
-     * @param baseToCopy
+     * @param baseToCopy the table to copy
      */
     protected HashCommonBase(final HashCommonBase<E> baseToCopy) {
         this.keys = newKeysArray(baseToCopy.keys.length);
@@ -209,18 +208,10 @@ public abstract class HashCommonBase<E> {
     }
 
     public ExtendedIterator<E> keyIterator() {
-        final var initialSize = size;
-        final Runnable checkForConcurrentModification = () -> {
-            if (size != initialSize) throw new ConcurrentModificationException();
-        };
-        return new SparseArrayIterator<>(keys, checkForConcurrentModification);
+        return new SparseArrayIterator<>(keys, this);
     }
 
     public Spliterator<E> keySpliterator() {
-        final var initialSize = size;
-        final Runnable checkForConcurrentModification = () -> {
-            if (size != initialSize) throw new ConcurrentModificationException();
-        };
-        return new SparseArraySpliterator<>(keys, checkForConcurrentModification);
+        return new SparseArraySpliterator<>(keys, this);
     }
 }

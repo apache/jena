@@ -25,39 +25,56 @@ import org.apache.jena.mem.iterator.SparseArrayIterator;
 import org.apache.jena.mem.spliterator.SparseArraySpliterator;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
-import java.util.ConcurrentModificationException;
 import java.util.Spliterator;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 /**
- * Map which grows, if needed but never shrinks.
- * This map does not guarantee any order. Although due to the way it is implemented the elements have a certain order.
- * This map does not allow null keys.
- * This map is not thread safe.
- * It´s purpose is to support fast add, remove, contains and stream / iterate operations.
- * Only remove operations are not as fast as in {@link java.util.HashMap}
- * Iterating over this map does not get much faster again after removing elements because the map is not compacted.
+ * Hash map specialization built on top of {@link FastHashBase}.
+ * Grows on demand but never shrinks, does not guarantee iteration order,
+ * does not allow {@code null} keys, and is not thread-safe.
+ * <p>
+ * Optimized for fast {@code add} / {@code containsKey} / {@code stream} /
+ * iterate operations. Removal is somewhat slower than in
+ * {@link java.util.HashMap} because of the back-shifting performed on the
+ * probe table. Iteration speed does not recover after many removals because
+ * the dense {@code keys} array is not compacted.
+ *
+ * @param <K> the key type
+ * @param <V> the value type
  */
-public abstract class FastHashMap<K, V> extends FastHashBase<K> implements JenaMap<K, V> {
+public abstract class FastHashMap<K, V> extends FastHashBase<K> implements JenaMapIndexed<K, V> {
 
+    /**
+     * Parallel array to {@code keys} holding the value associated with each
+     * stored key. {@code values[i]} is the value for {@code keys[i]} when
+     * {@code keys[i]} is non-null.
+     */
     protected V[] values;
 
+    /**
+     * Creates a map with the given initial key-array capacity.
+     *
+     * @param initialSize the initial capacity of the keys/values arrays
+     */
     protected FastHashMap(int initialSize) {
         super(initialSize);
         this.values = newValuesArray(keys.length);
     }
 
+    /**
+     * Creates a map with the default initial capacity.
+     */
     protected FastHashMap() {
         super();
         this.values = newValuesArray(keys.length);
     }
 
     /**
-     * Copy constructor.
-     * The new map will contain all the same keys and values of the map to copy.
+     * Copy constructor. The new map contains the same keys and the same
+     * value references as {@code mapToCopy}.
      *
-     * @param mapToCopy
+     * @param mapToCopy the source map
      */
     protected FastHashMap(final FastHashMap<K, V> mapToCopy) {
         super(mapToCopy);
@@ -66,10 +83,13 @@ public abstract class FastHashMap<K, V> extends FastHashBase<K> implements JenaM
     }
 
     /**
-     * Copy constructor with value processor.
+     * Copy constructor that transforms each value via {@code valueProcessor}.
+     * Useful when the values are mutable and need to be deep-copied to keep
+     * the new map independent from the source.
      *
-     * @param mapToCopy
-     * @param valueProcessor
+     * @param mapToCopy      the source map
+     * @param valueProcessor function applied to every non-null value to obtain
+     *                       the value to put in the new map
      */
     protected FastHashMap(final FastHashMap<K, V> mapToCopy, final UnaryOperator<V> valueProcessor) {
         super(mapToCopy);
@@ -82,6 +102,12 @@ public abstract class FastHashMap<K, V> extends FastHashBase<K> implements JenaM
         }
     }
 
+    /**
+     * Gets a new array of values with the given size.
+     *
+     * @param size the size of the array
+     * @return the new array
+     */
     protected abstract V[] newValuesArray(int size);
 
     @Override
@@ -106,12 +132,10 @@ public abstract class FastHashMap<K, V> extends FastHashBase<K> implements JenaM
 
     @Override
     public boolean tryPut(K key, V value) {
+        growPositionsArrayIfNeeded();
         final var hashCode = key.hashCode();
-        var pIndex = findPosition(key, hashCode);
+        final var pIndex = findPosition(key, hashCode);
         if (pIndex < 0) {
-            if (tryGrowPositionsArrayIfNeeded()) {
-                pIndex = findPosition(key, hashCode);
-            }
             final var eIndex = getFreeKeyIndex();
             keys[eIndex] = key;
             values[eIndex] = value;
@@ -126,12 +150,10 @@ public abstract class FastHashMap<K, V> extends FastHashBase<K> implements JenaM
 
     @Override
     public void put(K key, V value) {
+        growPositionsArrayIfNeeded();
         final var hashCode = key.hashCode();
-        var pIndex = findPosition(key, hashCode);
+        final var pIndex = findPosition(key, hashCode);
         if (pIndex < 0) {
-            if (tryGrowPositionsArrayIfNeeded()) {
-                pIndex = findPosition(key, hashCode);
-            }
             final var eIndex = getFreeKeyIndex();
             keys[eIndex] = key;
             values[eIndex] = value;
@@ -142,8 +164,27 @@ public abstract class FastHashMap<K, V> extends FastHashBase<K> implements JenaM
         }
     }
 
+    @Override
+    public int putAndGetIndex(K key, V value) {
+        growPositionsArrayIfNeeded();
+        final int hashCode = key.hashCode();
+        final var pIndex = findPosition(key, hashCode);
+        final int eIndex;
+        if (pIndex < 0) {
+            eIndex = getFreeKeyIndex();
+            keys[eIndex] = key;
+            hashCodesOrDeletedIndices[eIndex] = hashCode;
+            positions[~pIndex] = ~eIndex;
+        } else {
+            eIndex = ~positions[pIndex];
+        }
+        values[eIndex] = value;
+        return eIndex;
+    }
+
     /**
      * Returns the value at the given index.
+     * Array bounds are not checked. The caller must ensure the index is valid and corresponds to a non-null key.
      *
      * @param i index
      * @return value
@@ -178,12 +219,12 @@ public abstract class FastHashMap<K, V> extends FastHashBase<K> implements JenaM
         var pIndex = findPosition(key, hashCode);
         if (pIndex < 0) {
             if (tryGrowPositionsArrayIfNeeded()) {
-                pIndex = findPosition(key, hashCode);
+                pIndex = ~findEmptySlotWithoutEqualityCheck(hashCode);
             }
+            final var value = absentValueSupplier.get();
             final var eIndex = getFreeKeyIndex();
             keys[eIndex] = key;
             hashCodesOrDeletedIndices[eIndex] = hashCode;
-            final var value = absentValueSupplier.get();
             values[eIndex] = value;
             positions[~pIndex] = ~eIndex;
             return value;
@@ -194,18 +235,20 @@ public abstract class FastHashMap<K, V> extends FastHashBase<K> implements JenaM
 
     @Override
     public void compute(K key, UnaryOperator<V> valueProcessor) {
-        final int hashCode = key.hashCode();
+        final var hashCode = key.hashCode();
         var pIndex = findPosition(key, hashCode);
         if (pIndex < 0) {
             final var value = valueProcessor.apply(null);
             if (value == null)
                 return;
+            if(tryGrowPositionsArrayIfNeeded()) {
+                pIndex = ~findEmptySlotWithoutEqualityCheck(hashCode);
+            }
             final var eIndex = getFreeKeyIndex();
             keys[eIndex] = key;
             hashCodesOrDeletedIndices[eIndex] = hashCode;
             values[eIndex] = value;
             positions[~pIndex] = ~eIndex;
-            tryGrowPositionsArrayIfNeeded();
         } else {
             var eIndex = ~positions[pIndex];
             final var value = valueProcessor.apply(values[eIndex]);
@@ -217,24 +260,13 @@ public abstract class FastHashMap<K, V> extends FastHashBase<K> implements JenaM
         }
     }
 
-
     @Override
     public ExtendedIterator<V> valueIterator() {
-        final var initialSize = size();
-        final Runnable checkForConcurrentModification = () ->
-        {
-            if (size() != initialSize) throw new ConcurrentModificationException();
-        };
-        return new SparseArrayIterator<>(values, keysPos, checkForConcurrentModification);
+        return new SparseArrayIterator<>(values, keysPos, this);
     }
 
     @Override
     public Spliterator<V> valueSpliterator() {
-        final var initialSize = this.size();
-        final Runnable checkForConcurrentModification = () ->
-        {
-            if (this.size() != initialSize) throw new ConcurrentModificationException();
-        };
-        return new SparseArraySpliterator<>(values, keysPos, checkForConcurrentModification);
+        return new SparseArraySpliterator<>(values, keysPos, this);
     }
 }

@@ -30,16 +30,27 @@ import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 
 /**
- * Iterator that iterates over the entries of sets which are contained in the given iterator of sets.
+ * Flat-map style iterator that yields every element of every {@link JenaSet}
+ * produced by the given parent iterator. Empty inner sets are silently
+ * skipped. Equivalent in spirit to a one-level {@code flatMap} but tailored
+ * to the {@link JenaSet} API and to {@link NiceIterator}.
  *
- * @param <E> the type of the elements
+ * @param <E> the element type of the inner sets
  */
 public class IteratorOfJenaSets<E> extends NiceIterator<E> {
 
-    final Iterator<? extends JenaSet<E>> parentIterator;
+    /** Source iterator producing the sets to flatten. */
+    private final Iterator<? extends JenaSet<E>> parentIterator;
 
-    ExtendedIterator<E> currentIterator;
+    /** Iterator over the keys of the set currently being consumed. */
+    private ExtendedIterator<E> currentIterator;
 
+    /**
+     * Create a flat iterator over the elements of every set produced by
+     * {@code parentIterator}.
+     *
+     * @param parentIterator the source iterator of sets
+     */
     public IteratorOfJenaSets(Iterator<? extends JenaSet<E>> parentIterator) {
         this.parentIterator = parentIterator;
         this.currentIterator = parentIterator.hasNext()

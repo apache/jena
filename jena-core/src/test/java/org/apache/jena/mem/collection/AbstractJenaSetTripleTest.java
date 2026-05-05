@@ -106,7 +106,7 @@ public abstract class AbstractJenaSetTripleTest {
     public void testKeyIteratorEmpty() {
         var iter = sut.keyIterator();
         assertFalse(iter.hasNext());
-        assertThrows(NoSuchElementException.class, () -> iter.next());
+        assertThrows(NoSuchElementException.class, iter::next);
     }
 
     @Test
@@ -114,7 +114,7 @@ public abstract class AbstractJenaSetTripleTest {
         sut.tryAdd(triple("s o p"));
         var iter = sut.keyIterator();
         sut.tryAdd(triple("s o p2"));
-        assertThrows(ConcurrentModificationException.class, () -> iter.next());
+        assertThrows(ConcurrentModificationException.class, iter::next);
     }
 
     @Test
@@ -362,29 +362,4 @@ public abstract class AbstractJenaSetTripleTest {
         }
         assertTrue(sut.isEmpty());
     }
-
-
-    private static class HashCommonTripleSet extends HashCommonSet<Triple> {
-        public HashCommonTripleSet() {
-            super(10);
-        }
-
-        @Override
-        protected Triple[] newKeysArray(int size) {
-            return new Triple[size];
-        }
-
-        @Override
-        public void clear() {
-            super.clear(10);
-        }
-    }
-
-    private static class FastTripleHashSet extends FastHashSet<Triple> {
-        @Override
-        protected Triple[] newKeysArray(int size) {
-            return new Triple[size];
-        }
-    }
-
 }

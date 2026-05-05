@@ -30,6 +30,7 @@ import org.apache.jena.mem.spliterator.ArraySubSpliteratorTest;
 import org.apache.jena.mem.spliterator.SparseArraySpliteratorTest;
 import org.apache.jena.mem.spliterator.SparseArraySubSpliteratorTest;
 import org.apache.jena.mem.store.fast.FastArrayBunchTest;
+import org.apache.jena.mem.store.fast.FastHashedBunchMapTest;
 import org.apache.jena.mem.store.fast.FastHashedTripleBunchTest;
 import org.apache.jena.mem.store.fast.FastTripleStoreTest;
 import org.apache.jena.mem.store.legacy.*;
@@ -62,7 +63,9 @@ import org.junit.runners.Suite;
     // store/fast
     FastTripleStoreTest.class,
     FastArrayBunchTest.class,
+    FastHashedBunchMapTest.class,
     FastHashedTripleBunchTest.class,
+
 
     // store/roaring
     RoaringTripleStoreTest.class,
