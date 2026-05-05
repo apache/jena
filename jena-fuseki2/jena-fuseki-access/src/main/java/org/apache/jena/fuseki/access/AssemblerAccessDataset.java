@@ -42,9 +42,9 @@ public class AssemblerAccessDataset extends AssemblerBase {
      */
     @Override
     public Dataset open(Assembler a, Resource root, Mode mode) {
-        if ( ! GraphUtils.exactlyOneProperty(root, VocabSecurity.pSecurityRegistry) )
+        if ( ! GraphUtils.checkExactlyOneProperty(root, VocabSecurity.pSecurityRegistry) )
             throw new AssemblerException(root, "Expected exactly one access:registry property");
-        if ( ! GraphUtils.exactlyOneProperty(root, VocabSecurity.pDataset) )
+        if ( ! GraphUtils.checkExactlyOneProperty(root, VocabSecurity.pDataset) )
             throw new AssemblerException(root, "Expected exactly one access:dataset property");
 
         RDFNode rnRegistry = root.getProperty(VocabSecurity.pSecurityRegistry).getObject();

@@ -21,7 +21,7 @@
 
 package org.apache.jena.rdfpatch.filelog;
 
-import static org.apache.jena.sparql.util.graph.GraphUtils.exactlyOneProperty;
+import static org.apache.jena.sparql.util.graph.GraphUtils.checkExactlyOneProperty;
 
 import java.util.List;
 
@@ -69,7 +69,7 @@ public class AssemblerFileLog extends AssemblerBase {
 
     @Override
     public Object open(Assembler a, Resource root, Mode mode) {
-        if ( !exactlyOneProperty(root, VocabPatch.pDataset) )
+        if ( !checkExactlyOneProperty(root, VocabPatch.pDataset) )
             throw new AssemblerException(root, "No dataset to be logged");
         if ( !root.hasProperty(VocabPatch.pLogFile) )
             throw new AssemblerException(root, "No log file");

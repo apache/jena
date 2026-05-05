@@ -109,9 +109,9 @@ public class AssemblerSecurityRegistry extends AssemblerBase {
 
     /** Format:: access:entry [ :user "user2"; :graphs (<http://host/graphname3> ) ] */
     private void parseStruct(MultiValuedMap<String, Node> map, Resource root, Resource r) {
-        if ( ! GraphUtils.exactlyOneProperty(r, VocabSecurity.pUser) )
+        if ( ! GraphUtils.checkExactlyOneProperty(r, VocabSecurity.pUser) )
             throw new AssemblerException(root, "Expected exactly one access:user property for "+r);
-        if ( ! GraphUtils.exactlyOneProperty(r, VocabSecurity.pGraphs) )
+        if ( ! GraphUtils.checkExactlyOneProperty(r, VocabSecurity.pGraphs) )
             throw new AssemblerException(root, "Expected exactly one access:graphs property for "+r);
 
         String user = GraphUtils.getStringValue(r, VocabSecurity.pUser);
