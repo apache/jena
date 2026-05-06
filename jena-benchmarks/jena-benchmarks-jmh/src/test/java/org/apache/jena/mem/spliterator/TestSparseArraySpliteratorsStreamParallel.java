@@ -29,6 +29,7 @@ import java.util.stream.StreamSupport;
 import org.apache.jena.atlas.iterator.ActionCount;
 import org.apache.jena.jmh.JmhDefaultOptions;
 
+import org.apache.jena.mem.collection.Sized;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -77,11 +78,17 @@ public class TestSparseArraySpliteratorsStreamParallel {
                 throw new RuntimeException("Concurrent modification detected");
             }
         };
+        final var sized = new Sized() {
+            @Override
+            public int size() {
+                return elementsCount;
+            }
+        };
         return switch (param1_iteratorImplementation) {
             case "memvalue.SparseArraySpliterator" ->
                     new org.apache.jena.memvalue.SparseArraySpliterator<>(arrayWithNulls, count, checkForConcurrentModification);
             case "mem2.SparseArraySpliterator" ->
-                    new SparseArraySpliterator<>(arrayWithNulls, checkForConcurrentModification);
+                    new SparseArraySpliterator<>(arrayWithNulls, sized);
             default ->
                     throw new IllegalArgumentException("Unknown spliterator implementation: " + param1_iteratorImplementation);
         };
