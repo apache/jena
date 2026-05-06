@@ -20,6 +20,8 @@
  */
 package org.apache.jena.mem.collection;
 
+import java.util.function.Consumer;
+
 /**
  * Implementation of {@link JenaSet} based on {@link HashCommonBase}.
  */
@@ -38,7 +40,7 @@ public abstract class HashCommonSet<K> extends HashCommonBase<K> implements Jena
      * Copy constructor.
      * The new set will contain all the same keys of the set to copy.
      *
-     * @param setToCopy
+     * @param setToCopy the set to copy
      */
     protected HashCommonSet(final HashCommonSet<K> setToCopy) {
         super(setToCopy);
@@ -105,6 +107,17 @@ public abstract class HashCommonSet<K> extends HashCommonBase<K> implements Jena
                     break;
                 }
             }
+        }
+    }
+
+    @Override
+    public void forEach(Consumer<? super K> action) {
+        var pos = keys.length - 1;
+        while (-1 < pos) {
+            if (null != keys[pos]) {
+                action.accept(keys[pos]);
+            }
+            pos--;
         }
     }
 }

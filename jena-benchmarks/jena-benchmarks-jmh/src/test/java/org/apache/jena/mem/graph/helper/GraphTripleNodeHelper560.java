@@ -48,6 +48,7 @@ public class GraphTripleNodeHelper560 implements GraphTripleNodeHelper<Graph, Tr
             case GraphMemRoaringLazyParallel -> new GraphMem2Roaring(IndexingStrategy.LAZY_PARALLEL);
             case GraphMemRoaringMinimal -> new GraphMem2Roaring(IndexingStrategy.MINIMAL);
             case GraphMemRoaringManual -> new GraphMem2Roaring(IndexingStrategy.MANUAL);
+            default -> throw new IllegalStateException("Unexpected value: " + graphClass);
         };
     }
 

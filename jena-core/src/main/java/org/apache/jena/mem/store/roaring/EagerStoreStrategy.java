@@ -19,18 +19,14 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.mem.store.roaring.strategies;
+package org.apache.jena.mem.store.roaring;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.mem.pattern.MatchPattern;
-import org.apache.jena.mem.pattern.PatternClassifier;
-import org.apache.jena.mem.store.roaring.NodesToBitmapsMap;
-import org.apache.jena.mem.store.roaring.RoaringBitmapTripleIterator;
-import org.apache.jena.mem.store.roaring.TripleSet;
+import org.apache.jena.mem.store.strategies.StoreStrategy;
 import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.util.iterator.NiceIterator;
 import org.roaringbitmap.FastAggregation;
-import org.roaringbitmap.ImmutableBitmapDataProvider;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.concurrent.CompletableFuture;
@@ -43,7 +39,6 @@ import java.util.stream.Stream;
  */
 public class EagerStoreStrategy implements StoreStrategy {
     private static final RoaringBitmap EMPTY_BITMAP = new RoaringBitmap();
-    private static final String UNSUPPORTED_PATTERN_CLASSIFIER = "Unsupported pattern classifier: %s";
 
     final NodesToBitmapsMap[] spoBitmaps;
     final TripleSet triples;
@@ -172,125 +167,176 @@ public class EagerStoreStrategy implements StoreStrategy {
     }
 
     @Override
-    public boolean containsMatch(final Triple tripleMatch, final MatchPattern pattern) {
-        switch (pattern) {
-
-            case SUB_ANY_ANY:
-                return spoBitmaps[0].containsKey(tripleMatch.getSubject());
-            case ANY_PRE_ANY:
-                return spoBitmaps[1].containsKey(tripleMatch.getPredicate());
-            case ANY_ANY_OBJ:
-                return spoBitmaps[2].containsKey(tripleMatch.getObject());
-
-            case SUB_PRE_ANY: {
-                final var subjectBitmap = spoBitmaps[0].get(tripleMatch.getSubject());
-                if (null == subjectBitmap)
-                    return false;
-
-                final var predicateBitmap = spoBitmaps[1].get(tripleMatch.getPredicate());
-                if (null == predicateBitmap)
-                    return false;
-
-                return RoaringBitmap.intersects(subjectBitmap, predicateBitmap);
-            }
-
-            case ANY_PRE_OBJ: {
-                final var predicateBitmap = spoBitmaps[1].get(tripleMatch.getPredicate());
-                if (null == predicateBitmap)
-                    return false;
-
-                final var objectBitmap = spoBitmaps[2].get(tripleMatch.getObject());
-                if (null == objectBitmap)
-                    return false;
-
-                return RoaringBitmap.intersects(objectBitmap, predicateBitmap);
-            }
-
-            case SUB_ANY_OBJ: {
-                final var subjectBitmap = spoBitmaps[0].get(tripleMatch.getSubject());
-                if (null == subjectBitmap)
-                    return false;
-
-                final var objectBitmap = spoBitmaps[2].get(tripleMatch.getObject());
-                if (null == objectBitmap)
-                    return false;
-
-                return RoaringBitmap.intersects(subjectBitmap, objectBitmap);
-            }
-
-            default:
-                throw new IllegalStateException(String.format(UNSUPPORTED_PATTERN_CLASSIFIER, PatternClassifier.classify(tripleMatch)));
-        }
+    public boolean containsSubAnyAny(Node s) {
+        return spoBitmaps[0].containsKey(s);
     }
 
     @Override
-    public Stream<Triple> streamMatch(final Triple tripleMatch, final MatchPattern pattern) {
-        return this.getBitmapForMatch(tripleMatch, pattern)
-                .stream().mapToObj(triples::getKeyAt);
+    public boolean containsAnyPreAny(Node p) {
+        return spoBitmaps[1].containsKey(p);
     }
 
     @Override
-    public ExtendedIterator<Triple> findMatch(final Triple tripleMatch, final MatchPattern pattern) {
-        return new RoaringBitmapTripleIterator(this.getBitmapForMatch(tripleMatch, pattern), triples);
+    public boolean containsAnyAnyObj(Node o) {
+        return spoBitmaps[2].containsKey(o);
     }
 
-    /**
-     * Get the bitmap for the given triple match and pattern.
-     * This method retrieves the appropriate bitmap based on the match pattern.
-     *
-     * @param tripleMatch  the triple to match
-     * @param matchPattern the pattern to match against
-     * @return the bitmap for the match
-     */
-    private ImmutableBitmapDataProvider getBitmapForMatch(final Triple tripleMatch, final MatchPattern matchPattern) {
-        switch (matchPattern) {
+    @Override
+    public boolean containsSubPreAny(Node s, Node p) {
+        final var subjectBitmap = spoBitmaps[0].get(s);
+        if (null == subjectBitmap)
+            return false;
 
-            case SUB_ANY_ANY:
-                return spoBitmaps[0].getOrDefault(tripleMatch.getSubject(), EMPTY_BITMAP);
-            case ANY_PRE_ANY:
-                return spoBitmaps[1].getOrDefault(tripleMatch.getPredicate(), EMPTY_BITMAP);
-            case ANY_ANY_OBJ:
-                return spoBitmaps[2].getOrDefault(tripleMatch.getObject(), EMPTY_BITMAP);
+        final var predicateBitmap = spoBitmaps[1].get(p);
+        if (null == predicateBitmap)
+            return false;
 
-            case SUB_PRE_ANY: {
-                final var subjectBitmap = spoBitmaps[0].get(tripleMatch.getSubject());
-                if (null == subjectBitmap)
-                    return EMPTY_BITMAP;
-
-                final var predicateBitmap = spoBitmaps[1].get(tripleMatch.getPredicate());
-                if (null == predicateBitmap)
-                    return EMPTY_BITMAP;
-
-                return FastAggregation.naive_and(subjectBitmap, predicateBitmap);
-            }
-
-            case ANY_PRE_OBJ: {
-                final var predicateBitmap = spoBitmaps[1].get(tripleMatch.getPredicate());
-                if (null == predicateBitmap)
-                    return EMPTY_BITMAP;
-
-                final var objectBitmap = spoBitmaps[2].get(tripleMatch.getObject());
-                if (null == objectBitmap)
-                    return EMPTY_BITMAP;
-
-                return FastAggregation.naive_and(predicateBitmap, objectBitmap);
-            }
-
-            case SUB_ANY_OBJ: {
-                final var subjectBitmap = spoBitmaps[0].get(tripleMatch.getSubject());
-                if (null == subjectBitmap)
-                    return EMPTY_BITMAP;
-
-                final var objectBitmap = spoBitmaps[2].get(tripleMatch.getObject());
-                if (null == objectBitmap)
-                    return EMPTY_BITMAP;
-
-                return FastAggregation.naive_and(subjectBitmap, objectBitmap);
-            }
-
-            default:
-                throw new IllegalStateException(String.format(UNSUPPORTED_PATTERN_CLASSIFIER, PatternClassifier.classify(tripleMatch)));
-        }
+        return RoaringBitmap.intersects(subjectBitmap, predicateBitmap);
     }
 
+    @Override
+    public boolean containsSubAnyObj(Node s, Node o) {
+        final var subjectBitmap = spoBitmaps[0].get(s);
+        if (null == subjectBitmap)
+            return false;
+
+        final var objectBitmap = spoBitmaps[2].get(o);
+        if (null == objectBitmap)
+            return false;
+
+        return RoaringBitmap.intersects(subjectBitmap, objectBitmap);
+    }
+
+    @Override
+    public boolean containsAnyPreObj(Node p, Node o) {
+        final var predicateBitmap = spoBitmaps[1].get(p);
+        if (null == predicateBitmap)
+            return false;
+
+        final var objectBitmap = spoBitmaps[2].get(o);
+        if (null == objectBitmap)
+            return false;
+
+        return RoaringBitmap.intersects(predicateBitmap, objectBitmap);
+    }
+
+    @Override
+    public Stream<Triple> streamSubAnyAny(Node s) {
+        final var tArray = triples.getTriples();
+        return spoBitmaps[0].getOrDefault(s, EMPTY_BITMAP)
+                .stream().mapToObj(i -> tArray[i]);
+    }
+
+    @Override
+    public Stream<Triple> streamAnyPreAny(Node p) {
+        final var tArray = triples.getTriples();
+        return spoBitmaps[1].getOrDefault(p, EMPTY_BITMAP)
+                .stream().mapToObj(i -> tArray[i]);
+    }
+
+    @Override
+    public Stream<Triple> streamAnyAnyObj(Node o) {
+        final var tArray = triples.getTriples();
+        return spoBitmaps[2].getOrDefault(o, EMPTY_BITMAP)
+                .stream().mapToObj(i -> tArray[i]);
+    }
+
+    @Override
+    public Stream<Triple> streamSubPreAny(Node s, Node p) {
+        final var subjectBitmap = spoBitmaps[0].get(s);
+        if (null == subjectBitmap)
+            return Stream.empty();
+
+        final var predicateBitmap = spoBitmaps[1].get(p);
+        if (null == predicateBitmap)
+            return Stream.empty();
+
+        final var tArray = triples.getTriples();
+        return FastAggregation.naive_and(subjectBitmap, predicateBitmap)
+                .stream().mapToObj(i -> tArray[i]);
+    }
+
+    @Override
+    public Stream<Triple> streamSubAnyObj(Node s, Node o) {
+        final var subjectBitmap = spoBitmaps[0].get(s);
+        if (null == subjectBitmap)
+            return Stream.empty();
+
+        final var objectBitmap = spoBitmaps[2].get(o);
+        if (null == objectBitmap)
+            return Stream.empty();
+
+        final var tArray = triples.getTriples();
+        return FastAggregation.naive_and(subjectBitmap, objectBitmap)
+                .stream().mapToObj(i -> tArray[i]);
+    }
+
+    @Override
+    public Stream<Triple> streamAnyPreObj(Node p, Node o) {
+        final var predicateBitmap = spoBitmaps[1].get(p);
+        if (null == predicateBitmap)
+            return Stream.empty();
+
+        final var objectBitmap = spoBitmaps[2].get(o);
+        if (null == objectBitmap)
+            return Stream.empty();
+
+        final var tArray = triples.getTriples();
+        return FastAggregation.naive_and(predicateBitmap, objectBitmap)
+                .stream().mapToObj(i -> tArray[i]);
+    }
+
+    @Override
+    public ExtendedIterator<Triple> findSubAnyAny(Node s) {
+        return new RoaringBitmapTripleIterator(spoBitmaps[0].getOrDefault(s, EMPTY_BITMAP), triples);
+    }
+
+    @Override
+    public ExtendedIterator<Triple> findAnyPreAny(Node p) {
+        return new RoaringBitmapTripleIterator(spoBitmaps[1].getOrDefault(p, EMPTY_BITMAP), triples);
+    }
+
+    @Override
+    public ExtendedIterator<Triple> findAnyAnyObj(Node o) {
+        return new RoaringBitmapTripleIterator(spoBitmaps[2].getOrDefault(o, EMPTY_BITMAP), triples);
+    }
+
+    @Override
+    public ExtendedIterator<Triple> findSubPreAny(Node s, Node p) {
+        final var subjectBitmap = spoBitmaps[0].get(s);
+        if (null == subjectBitmap)
+            return NiceIterator.emptyIterator();
+
+        final var predicateBitmap = spoBitmaps[1].get(p);
+        if (null == predicateBitmap)
+            return NiceIterator.emptyIterator();
+
+        return new RoaringBitmapTripleIterator(FastAggregation.naive_and(subjectBitmap, predicateBitmap), triples);
+    }
+
+    @Override
+    public ExtendedIterator<Triple> findSubAnyObj(Node s, Node o) {
+        final var subjectBitmap = spoBitmaps[0].get(s);
+        if (null == subjectBitmap)
+            return NiceIterator.emptyIterator();
+
+        final var objectBitmap = spoBitmaps[2].get(o);
+        if (null == objectBitmap)
+            return NiceIterator.emptyIterator();
+
+        return new RoaringBitmapTripleIterator(FastAggregation.naive_and(subjectBitmap, objectBitmap), triples);
+    }
+
+    @Override
+    public ExtendedIterator<Triple> findAnyPreObj(Node p, Node o) {
+        final var predicateBitmap = spoBitmaps[1].get(p);
+        if (null == predicateBitmap)
+            return NiceIterator.emptyIterator();
+
+        final var objectBitmap = spoBitmaps[2].get(o);
+        if (null == objectBitmap)
+            return NiceIterator.emptyIterator();
+
+        return new RoaringBitmapTripleIterator(FastAggregation.naive_and(predicateBitmap, objectBitmap), triples);
+    }
 }

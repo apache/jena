@@ -41,7 +41,7 @@ public abstract class AbstractTripleStoreTest {
     protected abstract TripleStore createTripleStore();
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         sut = createTripleStore();
     }
 

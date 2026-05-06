@@ -44,7 +44,7 @@ public abstract class AbstractJenaSetTripleTest {
     protected abstract JenaSet<Triple> createTripleSet();
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         sut = createTripleSet();
     }
 

@@ -51,7 +51,8 @@ public class ArraySubSpliteratorTest {
         Integer[] array = new Integer[]{1};
         Spliterator<Integer> spliterator = new ArraySubSpliterator<>(array, dummySetForConcurrencyCheck);
         var itemsFound = new ArrayList<>();
-        while (spliterator.tryAdvance((i) -> itemsFound.add(1)));
+        //noinspection StatementWithEmptyBody
+        while (spliterator.tryAdvance((i) -> itemsFound.add(1))) { /* noop */ }
         assertEquals(1, itemsFound.size());
         assertTrue(itemsFound.contains(1));
     }
@@ -61,7 +62,8 @@ public class ArraySubSpliteratorTest {
         Integer[] array = new Integer[]{1, 2};
         Spliterator<Integer> spliterator = new ArraySubSpliterator<>(array, dummySetForConcurrencyCheck);
         var itemsFound = new ArrayList<>();
-        while (spliterator.tryAdvance(itemsFound::add));
+        //noinspection StatementWithEmptyBody
+        while (spliterator.tryAdvance(itemsFound::add)) { /* noop */ }
         assertEquals(2, itemsFound.size());
         assertTrue(itemsFound.contains(1));
         assertTrue(itemsFound.contains(2));
@@ -72,7 +74,8 @@ public class ArraySubSpliteratorTest {
         Integer[] array = new Integer[]{1, 2, 3};
         Spliterator<Integer> spliterator = new ArraySubSpliterator<>(array, dummySetForConcurrencyCheck);
         var itemsFound = new ArrayList<>();
-        while (spliterator.tryAdvance(itemsFound::add));
+        //noinspection StatementWithEmptyBody
+        while (spliterator.tryAdvance(itemsFound::add)) { /* noop */ }
         assertEquals(3, itemsFound.size());
         assertTrue(itemsFound.contains(1));
         assertTrue(itemsFound.contains(2));

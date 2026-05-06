@@ -277,20 +277,7 @@ public abstract class FastHashBase<K> implements JenaMapSetCommon<K> {
      * @return the former index of the element, or {@code -1} if it was not present
      */
     public final int removeAndGetIndex(final K e) {
-        return removeAndGetIndex(e, e.hashCode());
-    }
-
-    /**
-     * Remove the given element and return the index it occupied before removal.
-     * Lets the caller supply the precomputed hash code to avoid an extra
-     * {@code hashCode()} call.
-     *
-     * @param e        the element to remove
-     * @param hashCode {@code e.hashCode()}
-     * @return the former index of the element, or {@code -1} if it was not present
-     */
-    public final int removeAndGetIndex(final K e, final int hashCode) {
-        final var pIndex = findPosition(e, hashCode);
+        final var pIndex = findPosition(e, e.hashCode());
         if (pIndex < 0) {
             return -1;
         }

@@ -59,6 +59,7 @@ public class SparseArraySpliteratorTest {
             Integer[] array = new Integer[]{1};
             Spliterator<Integer> spliterator = new SparseArraySpliterator<>(array, dummySetForConcurrencyCheck);
             var itemsFound = new ArrayList<>();
+            //noinspection StatementWithEmptyBody
             while (spliterator.tryAdvance( itemsFound::add)) { /*empty*/ }
             assertEquals(1, itemsFound.size());
             assertTrue(itemsFound.contains(1));
@@ -67,6 +68,7 @@ public class SparseArraySpliteratorTest {
             Integer[] array = new Integer[]{1, null};
             Spliterator<Integer> spliterator = new SparseArraySpliterator<>(array, dummySetForConcurrencyCheck);
             var itemsFound = new ArrayList<>();
+            //noinspection StatementWithEmptyBody
             while (spliterator.tryAdvance(itemsFound::add)) { /*empty*/ }
             assertEquals(1, itemsFound.size());
             assertTrue(itemsFound.contains(1));
@@ -75,6 +77,7 @@ public class SparseArraySpliteratorTest {
             Integer[] array = new Integer[]{null, 1};
             Spliterator<Integer> spliterator = new SparseArraySpliterator<>(array, dummySetForConcurrencyCheck);
             var itemsFound = new ArrayList<>();
+            //noinspection StatementWithEmptyBody
             while (spliterator.tryAdvance(itemsFound::add)) { /*empty*/ }
             assertEquals(1, itemsFound.size());
             assertTrue(itemsFound.contains(1));
@@ -87,6 +90,7 @@ public class SparseArraySpliteratorTest {
             Integer[] array = new Integer[]{1, 2};
             Spliterator<Integer> spliterator = new SparseArraySpliterator<>(array, dummySetForConcurrencyCheck);
             var itemsFound = new ArrayList<>();
+            //noinspection StatementWithEmptyBody
             while (spliterator.tryAdvance(itemsFound::add)) { /*empty*/ }
             assertEquals(2, itemsFound.size());
             assertTrue(itemsFound.contains(1));
@@ -96,6 +100,7 @@ public class SparseArraySpliteratorTest {
             Integer[] array = new Integer[]{1, null, 2};
             Spliterator<Integer> spliterator = new SparseArraySpliterator<>(array, dummySetForConcurrencyCheck);
             var itemsFound = new ArrayList<>();
+            //noinspection StatementWithEmptyBody
             while (spliterator.tryAdvance(itemsFound::add)) { /*empty*/ }
             assertEquals(2, itemsFound.size());
             assertTrue(itemsFound.contains(1));
@@ -105,6 +110,7 @@ public class SparseArraySpliteratorTest {
             Integer[] array = new Integer[]{1, null, null, 2};
             Spliterator<Integer> spliterator = new SparseArraySpliterator<>(array, dummySetForConcurrencyCheck);
             var itemsFound = new ArrayList<>();
+            //noinspection StatementWithEmptyBody
             while (spliterator.tryAdvance(itemsFound::add)) { /*empty*/ }
             assertEquals(2, itemsFound.size());
             assertTrue(itemsFound.contains(1));
@@ -114,6 +120,7 @@ public class SparseArraySpliteratorTest {
             Integer[] array = new Integer[]{null, 1, null, 2};
             Spliterator<Integer> spliterator = new SparseArraySpliterator<>(array, dummySetForConcurrencyCheck);
             var itemsFound = new ArrayList<>();
+            //noinspection StatementWithEmptyBody
             while (spliterator.tryAdvance(itemsFound::add)) { /*empty*/ }
             assertEquals(2, itemsFound.size());
             assertTrue(itemsFound.contains(1));
@@ -123,6 +130,7 @@ public class SparseArraySpliteratorTest {
             Integer[] array = new Integer[]{null, 1, null, null, 2};
             Spliterator<Integer> spliterator = new SparseArraySpliterator<>(array, dummySetForConcurrencyCheck);
             var itemsFound = new ArrayList<>();
+            //noinspection StatementWithEmptyBody
             while (spliterator.tryAdvance(itemsFound::add)) { /*empty*/ }
             assertEquals(2, itemsFound.size());
             assertTrue(itemsFound.contains(1));
@@ -136,6 +144,7 @@ public class SparseArraySpliteratorTest {
             Integer[] array = new Integer[]{1, 2, 3};
             Spliterator<Integer> spliterator = new SparseArraySpliterator<>(array, dummySetForConcurrencyCheck);
             var itemsFound = new ArrayList<>();
+            //noinspection StatementWithEmptyBody
             while (spliterator.tryAdvance(itemsFound::add)) { /*empty*/ }
             assertEquals(3, itemsFound.size());
             assertTrue(itemsFound.contains(1));
@@ -146,6 +155,7 @@ public class SparseArraySpliteratorTest {
             Integer[] array = new Integer[]{1, null, 2, 3};
             Spliterator<Integer> spliterator = new SparseArraySpliterator<>(array, dummySetForConcurrencyCheck);
             var itemsFound = new ArrayList<>();
+            //noinspection StatementWithEmptyBody
             while (spliterator.tryAdvance(itemsFound::add)) { /*empty*/ }
             assertEquals(3, itemsFound.size());
             assertTrue(itemsFound.contains(1));
@@ -156,6 +166,7 @@ public class SparseArraySpliteratorTest {
             Integer[] array = new Integer[]{1, null, null, 2, 3};
             Spliterator<Integer> spliterator = new SparseArraySpliterator<>(array, dummySetForConcurrencyCheck);
             var itemsFound = new ArrayList<>();
+            //noinspection StatementWithEmptyBody
             while (spliterator.tryAdvance(itemsFound::add)) { /*empty*/ }
             assertEquals(3, itemsFound.size());
             assertTrue(itemsFound.contains(1));
@@ -166,6 +177,7 @@ public class SparseArraySpliteratorTest {
             Integer[] array = new Integer[]{null, 1, null, 2, null, 3};
             Spliterator<Integer> spliterator = new SparseArraySpliterator<>(array, dummySetForConcurrencyCheck);
             var itemsFound = new ArrayList<>();
+            //noinspection StatementWithEmptyBody
             while (spliterator.tryAdvance(itemsFound::add)) { /*empty*/ }
             assertEquals(3, itemsFound.size());
             assertTrue(itemsFound.contains(1));
@@ -176,6 +188,7 @@ public class SparseArraySpliteratorTest {
             Integer[] array = new Integer[]{null, 1, null, null, 2, null, 3};
             Spliterator<Integer> spliterator = new SparseArraySpliterator<>(array, dummySetForConcurrencyCheck);
             var itemsFound = new ArrayList<>();
+            //noinspection StatementWithEmptyBody
             while (spliterator.tryAdvance(itemsFound::add)) { /*empty*/ }
             assertEquals(3, itemsFound.size());
             assertTrue(itemsFound.contains(1));

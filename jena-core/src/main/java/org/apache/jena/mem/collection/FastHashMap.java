@@ -85,7 +85,7 @@ public abstract class FastHashMap<K, V> extends FastHashBase<K> implements JenaM
     /**
      * Copy constructor that transforms each value via {@code valueProcessor}.
      * Useful when the values are mutable and need to be deep-copied to keep
-     * the new map independent from the source.
+     * the new map independent of the source.
      *
      * @param mapToCopy      the source map
      * @param valueProcessor function applied to every non-null value to obtain

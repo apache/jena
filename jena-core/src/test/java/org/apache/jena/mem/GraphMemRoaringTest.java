@@ -50,25 +50,17 @@ public class GraphMemRoaringTest extends AbstractGraphMemTest {
 
     @Override
     protected GraphMem createGraph() {
-        switch (indexingStrategy) {
-            case EAGER, LAZY, LAZY_PARALLEL, MINIMAL:
-                return new GraphMemRoaring(indexingStrategy);
-            case MANUAL:
-                return setupGraphWithSpyForSpecialManualStrategy();
-            default:
-                throw new IllegalArgumentException("Unsupported indexing strategy: " + indexingStrategy);
-        }
+        return switch (indexingStrategy) {
+            case EAGER, LAZY, LAZY_PARALLEL, MINIMAL -> new GraphMemRoaring(indexingStrategy);
+            case MANUAL -> setupGraphWithSpyForSpecialManualStrategy();
+        };
     }
 
     private static boolean isPatternRequiringIndexing(final Triple tripleMatch) {
-        switch(PatternClassifier.classify(tripleMatch)) {
-            case SUB_PRE_ANY, SUB_ANY_OBJ, SUB_ANY_ANY, ANY_PRE_OBJ, ANY_PRE_ANY, ANY_ANY_OBJ:
-                return true;
-            case ANY_ANY_ANY, SUB_PRE_OBJ:
-                return false;
-            default:
-                throw new IllegalArgumentException("Unknown pattern classification: " + PatternClassifier.classify(tripleMatch));
-        }
+        return switch (PatternClassifier.classify(tripleMatch)) {
+            case SUB_PRE_ANY, SUB_ANY_OBJ, SUB_ANY_ANY, ANY_PRE_OBJ, ANY_PRE_ANY, ANY_ANY_OBJ -> true;
+            case ANY_ANY_ANY, SUB_PRE_OBJ -> false;
+        };
     }
 
     private GraphMemRoaring setupGraphWithSpyForSpecialManualStrategy() {
@@ -90,7 +82,7 @@ public class GraphMemRoaringTest extends AbstractGraphMemTest {
             realGraph.clearIndex();
             // Return the result of the store with the index
             return result;
-        }).when(spyGraph).contains(Mockito.argThat(t -> isPatternRequiringIndexing(t)));
+        }).when(spyGraph).contains(Mockito.argThat(GraphMemRoaringTest::isPatternRequiringIndexing));
 
         // Mock {@link Graph#find(Triple)}
         Mockito.doAnswer(invocation -> {
@@ -106,7 +98,7 @@ public class GraphMemRoaringTest extends AbstractGraphMemTest {
             realGraph.clearIndex();
             // Return the result of the store with the index
             return result;
-        }).when(spyGraph).find(Mockito.argThat(t -> isPatternRequiringIndexing(t)));
+        }).when(spyGraph).find(Mockito.argThat(GraphMemRoaringTest::isPatternRequiringIndexing));
 
         var triplePatternMatcher = new TriplePatternArgumentCollectMatcher();
 
@@ -128,9 +120,9 @@ public class GraphMemRoaringTest extends AbstractGraphMemTest {
             // Return the result of the store with the index
             return result;
         }).when(spyGraph)
-                .stream(Mockito.argThat(triplePatternMatcher::matches),
-                        Mockito.argThat(triplePatternMatcher::matches),
-                        Mockito.argThat(triplePatternMatcher::matches));
+                .stream(Mockito.argThat(triplePatternMatcher),
+                        Mockito.argThat(triplePatternMatcher),
+                        Mockito.argThat(triplePatternMatcher));
 
         return spyGraph;
     }
@@ -140,7 +132,7 @@ public class GraphMemRoaringTest extends AbstractGraphMemTest {
      * and check if the pattern requires indexing.
      * This matcher is used to mock the behavior of methods that take a triple pattern as argument.
      */
-    private class TriplePatternArgumentCollectMatcher implements org.mockito.ArgumentMatcher<Node> {
+    private static class TriplePatternArgumentCollectMatcher implements org.mockito.ArgumentMatcher<Node> {
         final Node[] nodes = new Node[3];
         int index = 0;
 
@@ -212,7 +204,7 @@ public class GraphMemRoaringTest extends AbstractGraphMemTest {
     }
 
     @Test
-    public void testLazyInitiallization() {
+    public void testLazyInitialization() {
         // Given
         final var sut = getSutAsGraphMem2Roaring();
         sut.add(triple("s p o"));

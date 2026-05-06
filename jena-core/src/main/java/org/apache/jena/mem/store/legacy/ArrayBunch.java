@@ -180,4 +180,10 @@ public class ArrayBunch implements TripleBunch {
     public ArrayBunch copy() {
         return new ArrayBunch(this);
     }
+
+    @Override
+    public void forEach(Consumer<? super Triple> action) {
+        var i = size;
+        while (0 < i--) action.accept(elements[i]);
+    }
 }

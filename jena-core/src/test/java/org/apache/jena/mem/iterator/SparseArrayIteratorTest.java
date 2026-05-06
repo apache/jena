@@ -54,7 +54,7 @@ public class SparseArrayIteratorTest {
     }
 
     @Test
-    public void testConstrucorWithToIndexConstraint3() {
+    public void testConstructorWithToIndexConstraint3() {
         String[] entries = new String[]{"first", "second", "third"};
         iterator = new SparseArrayIterator<>(entries, 3, dummySetForConcurrencyCheck);
 
@@ -68,7 +68,7 @@ public class SparseArrayIteratorTest {
     }
 
     @Test
-    public void testConstrucorWithToIndexConstraint2() {
+    public void testConstructorWithToIndexConstraint2() {
         String[] entries = new String[]{"first", "second", "third"};
         iterator = new SparseArrayIterator<>(entries, 2, dummySetForConcurrencyCheck);
 
@@ -80,7 +80,7 @@ public class SparseArrayIteratorTest {
     }
 
     @Test
-    public void testConstrucorWithToIndexConstraint1() {
+    public void testConstructorWithToIndexConstraint1() {
         String[] entries = new String[]{"first", "second", "third"};
         iterator = new SparseArrayIterator<>(entries, 1, dummySetForConcurrencyCheck);
 
@@ -90,7 +90,7 @@ public class SparseArrayIteratorTest {
     }
 
     @Test
-    public void testConstrucorWithToIndexConstraint0() {
+    public void testConstructorWithToIndexConstraint0() {
         String[] entries = new String[]{"first", "second", "third"};
         iterator = new SparseArrayIterator<>(entries, 0, dummySetForConcurrencyCheck);
 

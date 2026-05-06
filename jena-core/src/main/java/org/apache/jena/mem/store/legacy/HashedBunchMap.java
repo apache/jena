@@ -36,7 +36,7 @@ public class HashedBunchMap extends HashCommonMap<Node, TripleBunch> {
      * Copy constructor.
      * The new map will contain all the same nodes as keys of the map to copy, but copies of the bunches as values .
      *
-     * @param mapToCopy
+     * @param mapToCopy the map to copy
      */
     private HashedBunchMap(final HashedBunchMap mapToCopy) {
         super(mapToCopy, TripleBunch::copy);

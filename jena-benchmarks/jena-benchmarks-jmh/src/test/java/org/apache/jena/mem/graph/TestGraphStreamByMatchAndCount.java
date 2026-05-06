@@ -54,18 +54,18 @@ public class TestGraphStreamByMatchAndCount {
 
     @Param({
             "GraphMemFast (current)",
-            "GraphMemValue (current)",
-//            "GraphMemRoaring EAGER (current)",
+            "GraphMemIndexedSet EAGER (current)",
+//            "GraphMemIndexedSet LAZY (current)",
+//            "GraphMemIndexedSet LAZY_PARALLEL (current)",
+//            "GraphMemIndexedSet MINIMAL (current)",
+            "GraphMemRoaring EAGER (current)",
 //            "GraphMemRoaring LAZY (current)",
 //            "GraphMemRoaring LAZY_PARALLEL (current)",
 //            "GraphMemRoaring MINIMAL (current)",
-//            "GraphMemValue (Jena 5.6.0)",
-            "GraphMemFast (Jena 5.6.0)",
-            "GraphMemValue (Jena 5.6.0)",
     })
     public String param1_GraphImplementation;
 
-    @Param({"800"})
+    @Param({"10000"})
     public int param2_sampleSize;
     Function<String, Object> graphStreamByMatchAndCount;
     private Graph sutCurrent;
@@ -167,15 +167,15 @@ public class TestGraphStreamByMatchAndCount {
                     roaringGraph.initializeIndexParallel();
                 }
 
+                /* Shuffle is import because the order might play a role. We want to test the performance of the
+                   contains method regardless of the order */
+                java.util.Collections.shuffle(triples, new Random(4721));
+
                 /*clone the triples because they should not be the same objects*/
                 this.triplesToFindCurrent = new ArrayList<>(param2_sampleSize);
-                var sampleIncrement = triples.size() / param2_sampleSize;
-                for (var i = 0; i < triples.size(); i += sampleIncrement) {
+                for (var i = 0; i < Math.min(triples.size(), param2_sampleSize); i++) {
                     this.triplesToFindCurrent.add(Releases.current.cloneTriple(triples.get(i)));
                 }
-                /* Shuffle is import because the order might play a role. We want to test the performance of the
-                       contains method regardless of the order */
-                java.util.Collections.shuffle(this.triplesToFindCurrent, new Random(4721));
             }
             break;
             case JENA_5_6_0: {
@@ -185,15 +185,15 @@ public class TestGraphStreamByMatchAndCount {
                 var triples = Releases.v560.readTriples(param0_GraphUri);
                 triples.forEach(this.sut560::add);
 
+                /* Shuffle is import because the order might play a role. We want to test the performance of the
+                   contains method regardless of the order */
+                java.util.Collections.shuffle(triples, new Random(4721));
+
                 /*clone the triples because they should not be the same objects*/
                 this.triplesToFind560 = new ArrayList<>(param2_sampleSize);
-                var sampleIncrement = triples.size() / param2_sampleSize;
-                for (var i = 0; i < triples.size(); i += sampleIncrement) {
+                for (var i = 0; i < Math.min(triples.size(), param2_sampleSize); i++) {
                     this.triplesToFind560.add(Releases.v560.cloneTriple(triples.get(i)));
                 }
-                /* Shuffle is import because the order might play a role. We want to test the performance of the
-                       contains method regardless of the order */
-                java.util.Collections.shuffle(this.triplesToFind560, new Random(4721));
             }
             break;
             default:

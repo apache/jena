@@ -44,7 +44,7 @@ public abstract class AbstractJenaMapNodeTest {
     protected abstract JenaMap<Node, Object> createNodeMap();
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         sut = createNodeMap();
     }
 
@@ -575,7 +575,7 @@ public abstract class AbstractJenaMapNodeTest {
     }
 
     @Test
-    public void computeIfAbsend1000Nodes() {
+    public void computeIfAbsent1000Nodes() {
         for (int i = 0; i < 1000; i++) {
             sut.computeIfAbsent(node("s" + i), Object::new);
         }

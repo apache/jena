@@ -28,7 +28,7 @@ import org.apache.jena.graph.Triple;
 public class FastHashSetTest extends AbstractJenaSetTripleTest {
     @Override
     protected JenaSet<Triple> createTripleSet() {
-        return new FastHashSet<Triple>() {
+        return new FastHashSet<>() {
             @Override
             protected Triple[] newKeysArray(int size) {
                 return new Triple[size];

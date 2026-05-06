@@ -44,6 +44,27 @@ public class Context {
                 this.graphClass = GraphClass.GraphMemLegacy;
                 this.jenaVersion = JenaVersion.CURRENT;
                 break;
+            case "GraphMemIndexedSet (current)":
+            case "GraphMemIndexedSet EAGER (current)":
+                this.graphClass = GraphClass.GraphMemIndexedSetEager;
+                this.jenaVersion = JenaVersion.CURRENT;
+                break;
+            case "GraphMemIndexedSet LAZY (current)":
+                this.graphClass = GraphClass.GraphMemIndexedSetLazy;
+                this.jenaVersion = JenaVersion.CURRENT;
+                break;
+            case "GraphMemIndexedSet LAZY_PARALLEL (current)":
+                this.graphClass = GraphClass.GraphMemIndexedSetLazyParallel;
+                this.jenaVersion = JenaVersion.CURRENT;
+                break;
+            case "GraphMemIndexedSet MINIMAL (current)":
+                this.graphClass = GraphClass.GraphMemIndexedSetMinimal;
+                this.jenaVersion = JenaVersion.CURRENT;
+                break;
+            case "GraphMemIndexedSet MANUAL (current)":
+                this.graphClass = GraphClass.GraphMemIndexedSetManual;
+                this.jenaVersion = JenaVersion.CURRENT;
+                break;
             case "GraphMemRoaring (current)":
             case "GraphMemRoaring EAGER (current)":
                 this.graphClass = GraphClass.GraphMemRoaringEager;
@@ -96,6 +117,11 @@ public class Context {
         GraphMemValue,
         GraphMemFast,
         GraphMemLegacy,
+        GraphMemIndexedSetEager,
+        GraphMemIndexedSetLazy,
+        GraphMemIndexedSetLazyParallel,
+        GraphMemIndexedSetMinimal,
+        GraphMemIndexedSetManual,
         GraphMemRoaringEager,
         GraphMemRoaringLazy,
         GraphMemRoaringLazyParallel,

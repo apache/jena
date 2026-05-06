@@ -30,7 +30,7 @@ import org.apache.jena.mem.collection.FastHashSet;
  */
 public class TripleSet
         extends FastHashSet<Triple>
-        implements Copyable<TripleSet> {
+        implements Copyable<TripleSet>, IndexedTripleSource {
 
     public TripleSet() {
         super();
@@ -53,5 +53,10 @@ public class TripleSet
     @Override
     public TripleSet copy() {
         return new TripleSet(this);
+    }
+
+    @Override
+    public Triple[] getTriples() {
+        return keys;
     }
 }
