@@ -49,7 +49,7 @@ public abstract class HashCommonMap<K, V> extends HashCommonBase<K> implements J
      * Copy constructor.
      * The new map will contain all the same keys and values of the map to copy.
      *
-     * @param mapToCopy
+     * @param mapToCopy the map to copy
      */
     protected HashCommonMap(final HashCommonMap<K, V> mapToCopy) {
         super(mapToCopy);
@@ -60,8 +60,9 @@ public abstract class HashCommonMap<K, V> extends HashCommonBase<K> implements J
     /**
      * Copy constructor with value processor.
      *
-     * @param mapToCopy
-     * @param valueProcessor
+     * @param mapToCopy the map to copy
+     * @param valueProcessor operator to copy the values of the map to copy. It will be applied to each value of the map
+     *                       to copy, and the result will be used as the value in the new map.
      */
     protected HashCommonMap(final HashCommonMap<K, V> mapToCopy, final UnaryOperator<V> valueProcessor) {
         super(mapToCopy);

@@ -25,7 +25,7 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.mem.IndexingStrategy;
 import org.apache.jena.mem.pattern.PatternClassifier;
 import org.apache.jena.mem.store.TripleStore;
-import org.apache.jena.mem.store.roaring.strategies.*;
+import org.apache.jena.mem.store.strategies.*;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.NiceIterator;
 import org.apache.jena.util.iterator.SingletonIterator;
@@ -57,7 +57,6 @@ import java.util.stream.Stream;
  */
 public class RoaringTripleStore implements TripleStore {
 
-    private static final String UNKNOWN_PATTERN_CLASSIFIER = "Unknown pattern classifier: %s";
     final TripleSet triples; // In this special set, each element has an index
     private StoreStrategy currentStrategy;
     private final IndexingStrategy indexingStrategy;
@@ -115,8 +114,6 @@ public class RoaringTripleStore implements TripleStore {
                     -> new ManualStoreStrategy();
             case MINIMAL
                     -> new MinimalStoreStrategy(triples);
-            default
-                    -> throw new IllegalArgumentException("Unknown indexing strategy: " + indexingStrategy);
         };
     }
 
@@ -212,26 +209,20 @@ public class RoaringTripleStore implements TripleStore {
 
     @Override
     public boolean contains(Triple tripleMatch) {
-        final var matchPattern = PatternClassifier.classify(tripleMatch);
-        switch (matchPattern) {
+        return switch (PatternClassifier.classify(tripleMatch)) {
 
-            case SUB_ANY_ANY,
-                 ANY_PRE_ANY,
-                 ANY_ANY_OBJ,
-                 SUB_PRE_ANY,
-                 ANY_PRE_OBJ,
-                 SUB_ANY_OBJ:
-                return currentStrategy.containsMatch(tripleMatch, matchPattern);
+            case SUB_PRE_OBJ -> this.triples.containsKey(tripleMatch);
 
-            case SUB_PRE_OBJ:
-                return this.triples.containsKey(tripleMatch);
+            case SUB_ANY_ANY -> currentStrategy.containsSubAnyAny(tripleMatch.getSubject());
+            case ANY_PRE_ANY -> currentStrategy.containsAnyPreAny(tripleMatch.getPredicate());
+            case ANY_ANY_OBJ -> currentStrategy.containsAnyAnyObj(tripleMatch.getObject());
 
-            case ANY_ANY_ANY:
-                return !this.isEmpty();
+            case SUB_PRE_ANY -> currentStrategy.containsSubPreAny(tripleMatch.getSubject(), tripleMatch.getPredicate());
+            case SUB_ANY_OBJ -> currentStrategy.containsSubAnyObj(tripleMatch.getSubject(), tripleMatch.getObject());
+            case ANY_PRE_OBJ -> currentStrategy.containsAnyPreObj(tripleMatch.getPredicate(), tripleMatch.getObject());
 
-            default:
-                throw new IllegalStateException(String.format(UNKNOWN_PATTERN_CLASSIFIER, PatternClassifier.classify(tripleMatch)));
-        }
+            case ANY_ANY_ANY -> !this.isEmpty();
+        };
     }
 
     @Override
@@ -241,50 +232,43 @@ public class RoaringTripleStore implements TripleStore {
 
     @Override
     public Stream<Triple> stream(Triple tripleMatch) {
-        var pattern = PatternClassifier.classify(tripleMatch);
-        switch (pattern) {
+        return switch (PatternClassifier.classify(tripleMatch)) {
 
-            case SUB_PRE_OBJ:
-                return this.triples.containsKey(tripleMatch) ? Stream.of(tripleMatch) : Stream.empty();
+            case SUB_PRE_OBJ ->
+                this.triples.containsKey(tripleMatch) ? Stream.of(tripleMatch) : Stream.empty();
 
-            case SUB_PRE_ANY,
-                 SUB_ANY_OBJ,
-                 SUB_ANY_ANY,
-                 ANY_PRE_OBJ,
-                 ANY_PRE_ANY,
-                 ANY_ANY_OBJ:
-                return this.currentStrategy.streamMatch(tripleMatch, pattern);
+            case SUB_ANY_ANY -> currentStrategy.streamSubAnyAny(tripleMatch.getSubject());
+            case ANY_PRE_ANY -> currentStrategy.streamAnyPreAny(tripleMatch.getPredicate());
+            case ANY_ANY_OBJ -> currentStrategy.streamAnyAnyObj(tripleMatch.getObject());
 
-            case ANY_ANY_ANY:
-                return this.stream();
+            case SUB_PRE_ANY -> currentStrategy.streamSubPreAny(tripleMatch.getSubject(), tripleMatch.getPredicate());
+            case SUB_ANY_OBJ -> currentStrategy.streamSubAnyObj(tripleMatch.getSubject(), tripleMatch.getObject());
+            case ANY_PRE_OBJ -> currentStrategy.streamAnyPreObj(tripleMatch.getPredicate(), tripleMatch.getObject());
 
-            default:
-                throw new IllegalStateException("Unknown pattern classifier: " + PatternClassifier.classify(tripleMatch));
-        }
+            case ANY_ANY_ANY -> this.triples.keyStream();
+        };
     }
 
     @Override
     public ExtendedIterator<Triple> find(Triple tripleMatch) {
-        var pattern = PatternClassifier.classify(tripleMatch);
-        switch (pattern) {
+        return switch (PatternClassifier.classify(tripleMatch)) {
 
-            case SUB_PRE_OBJ:
-                return this.triples.containsKey(tripleMatch) ? new SingletonIterator<>(tripleMatch) : NiceIterator.emptyIterator();
+            case SUB_PRE_OBJ ->
+                this.triples.containsKey(tripleMatch)
+                        ? new SingletonIterator<>(tripleMatch)
+                        : NiceIterator.emptyIterator();
 
-            case SUB_PRE_ANY,
-                 SUB_ANY_OBJ,
-                 SUB_ANY_ANY,
-                 ANY_PRE_OBJ,
-                 ANY_PRE_ANY,
-                 ANY_ANY_OBJ:
-                return currentStrategy.findMatch(tripleMatch, pattern);
+            case SUB_ANY_ANY -> currentStrategy.findSubAnyAny(tripleMatch.getSubject());
+            case ANY_PRE_ANY -> currentStrategy.findAnyPreAny(tripleMatch.getPredicate());
+            case ANY_ANY_OBJ -> currentStrategy.findAnyAnyObj(tripleMatch.getObject());
 
-            case ANY_ANY_ANY:
-                return this.triples.keyIterator();
+            case SUB_PRE_ANY -> currentStrategy.findSubPreAny(tripleMatch.getSubject(), tripleMatch.getPredicate());
+            case SUB_ANY_OBJ -> currentStrategy.findSubAnyObj(tripleMatch.getSubject(), tripleMatch.getObject());
+            case ANY_PRE_OBJ -> currentStrategy.findAnyPreObj(tripleMatch.getPredicate(), tripleMatch.getObject());
 
-            default:
-                throw new IllegalStateException("Unknown pattern classifier: " + PatternClassifier.classify(tripleMatch));
-        }
+            case ANY_ANY_ANY -> this.triples.keyIterator();
+
+        };
     }
 
     @Override

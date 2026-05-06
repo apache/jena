@@ -228,4 +228,10 @@ public abstract class FastArrayBunch implements FastTripleBunch {
     public void removeUnchecked(Triple key, int hashCode) {
         removeUnchecked(key);
     }
+
+    @Override
+    public void forEach(Consumer<? super Triple> action) {
+        var i = size;
+        while (0 < i--) action.accept(elements[i]);
+    }
 }

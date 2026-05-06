@@ -34,7 +34,6 @@ import org.openjdk.jmh.runner.Runner;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 import java.util.function.Function;
 
 import static org.junit.Assert.assertNotNull;
@@ -53,14 +52,14 @@ public class TestGraphFindByMatchAndGetFirst {
 
     @Param({
             "GraphMemFast (current)",
-            "GraphMemValue (current)",
-//            "GraphMemRoaring EAGER (current)",
+            "GraphMemIndexedSet EAGER (current)",
+//            "GraphMemIndexedSet LAZY (current)",
+//            "GraphMemIndexedSet LAZY_PARALLEL (current)",
+//            "GraphMemIndexedSet MINIMAL (current)",
+            "GraphMemRoaring EAGER (current)",
 //            "GraphMemRoaring LAZY (current)",
 //            "GraphMemRoaring LAZY_PARALLEL (current)",
 //            "GraphMemRoaring MINIMAL (current)",
-//            "GraphMemValue (Jena 5.6.0)",
-            "GraphMemFast (Jena 5.6.0)",
-            "GraphMemValue (Jena 5.6.0)",
     })
     public String param1_GraphImplementation;
     java.util.function.Function<String, Object> graphFind;
@@ -166,9 +165,6 @@ public class TestGraphFindByMatchAndGetFirst {
 
                 /*clone the triples because they should not be the same objects*/
                 this.triplesToFindCurrent = Releases.current.cloneTriples(triples);
-                    /* Shuffle is import because the order might play a role. We want to test the performance of the
-                       contains method regardless of the order */
-                java.util.Collections.shuffle(this.triplesToFindCurrent, new Random(4721));
             }
             break;
             case JENA_5_6_0: {
@@ -180,9 +176,6 @@ public class TestGraphFindByMatchAndGetFirst {
 
                 /*clone the triples because they should not be the same objects*/
                 this.triplesToFind560 = Releases.v560.cloneTriples(triples);
-                    /* Shuffle is import because the order might play a role. We want to test the performance of the
-                       contains method regardless of the order */
-                java.util.Collections.shuffle(this.triplesToFind560, new Random(4721));
             }
             break;
             default:

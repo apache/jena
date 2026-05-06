@@ -27,10 +27,8 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.mem.GraphMemFast;
-import org.apache.jena.mem.GraphMemLegacy;
-import org.apache.jena.mem.GraphMemRoaring;
-import org.apache.jena.mem.IndexingStrategy;
+import org.apache.jena.mem.*;
+import org.apache.jena.memvalue.GraphMemValue;
 import org.apache.jena.riot.RDFDataMgr;
 
 public class GraphTripleNodeHelperCurrent implements GraphTripleNodeHelper<Graph, Triple, Node> {
@@ -39,9 +37,14 @@ public class GraphTripleNodeHelperCurrent implements GraphTripleNodeHelper<Graph
     @Override
     public Graph createGraph(Context.GraphClass graphClass) {
         return switch (graphClass) {
-            case GraphMemValue -> new org.apache.jena.memvalue.GraphMemValue();
+            case GraphMemValue -> new GraphMemValue();
             case GraphMemFast -> new GraphMemFast();
             case GraphMemLegacy -> new GraphMemLegacy();
+            case GraphMemIndexedSetEager -> new GraphMemIndexedSet(IndexingStrategy.EAGER);
+            case GraphMemIndexedSetLazy -> new GraphMemIndexedSet(IndexingStrategy.LAZY);
+            case GraphMemIndexedSetLazyParallel -> new GraphMemIndexedSet(IndexingStrategy.LAZY_PARALLEL);
+            case GraphMemIndexedSetMinimal -> new GraphMemIndexedSet(IndexingStrategy.MINIMAL);
+            case GraphMemIndexedSetManual -> new GraphMemIndexedSet(IndexingStrategy.MANUAL);
             case GraphMemRoaringEager -> new GraphMemRoaring(IndexingStrategy.EAGER);
             case GraphMemRoaringLazy -> new GraphMemRoaring(IndexingStrategy.LAZY);
             case GraphMemRoaringLazyParallel -> new GraphMemRoaring(IndexingStrategy.LAZY_PARALLEL);
@@ -54,7 +57,7 @@ public class GraphTripleNodeHelperCurrent implements GraphTripleNodeHelper<Graph
     public List<Triple> readTriples(String graphUri) {
         var list = new ArrayList<Triple>();
         @SuppressWarnings("deprecation")
-        var g1 = new org.apache.jena.memvalue.GraphMemValue() {
+        var g1 = new GraphMemValue() {
             @Override
             public void add(Triple t) {
                 list.add(t);
@@ -66,7 +69,7 @@ public class GraphTripleNodeHelperCurrent implements GraphTripleNodeHelper<Graph
 
     @Override
     public List<Triple> cloneTriples(List<Triple> triples) {
-        var list = new java.util.ArrayList<Triple>(triples.size());
+        var list = new ArrayList<Triple>(triples.size());
         triples.forEach(triple -> list.add(cloneTriple(triple)));
         return list;
     }

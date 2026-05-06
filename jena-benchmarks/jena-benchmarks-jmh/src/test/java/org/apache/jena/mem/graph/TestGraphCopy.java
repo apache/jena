@@ -46,6 +46,10 @@ public class TestGraphCopy {
 
     @Param({
             "GraphMemFast (current)",
+            "GraphMemIndexedSet EAGER (current)",
+//            "GraphMemIndexedSet LAZY (current)",
+//            "GraphMemIndexedSet LAZY_PARALLEL (current)",
+//            "GraphMemIndexedSet MINIMAL (current)",
 //            "GraphMemRoaring EAGER (current)",
 //            "GraphMemRoaring LAZY (current)",
 //            "GraphMemRoaring LAZY_PARALLEL (current)",
@@ -55,7 +59,7 @@ public class TestGraphCopy {
 
     @Param({
             "copy",
-            "findAndAddAll",
+//            "findAndAddAll",
     })
     public String param2_CopyOrConstruct;
 

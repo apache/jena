@@ -46,7 +46,7 @@ public abstract class AbstractGraphMemTest {
     protected abstract GraphMem createGraph();
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         sut = createGraph();
     }
 

@@ -40,18 +40,21 @@ import java.util.function.Consumer;
 public class RoaringBitmapTripleIterator extends NiceIterator<Triple> {
     protected static final int BUFFER_SIZE = 64;
     private final ImmutableBitmapDataProvider bitmap;
-    private final FastHashSet<Triple> triples;
+    private final IndexedTripleSource source;
+    private final Triple[] triples;
     private final int initialSize;
     private final BatchIterator batchIterator;
     private final int[] buffer = new int[BUFFER_SIZE];
     private int bufferIndex = -1;
     private boolean batchIteratorHasBeenUsed = false;
 
-    public RoaringBitmapTripleIterator(final ImmutableBitmapDataProvider bitmap, final FastHashSet<Triple> triples) {
+
+    public RoaringBitmapTripleIterator(final ImmutableBitmapDataProvider bitmap, final IndexedTripleSource source) {
         this.bitmap = bitmap;
         this.batchIterator = bitmap.getBatchIterator();
-        this.triples = triples;
-        this.initialSize = triples.size();
+        this.source = source;
+        this.initialSize = source.size();
+        this.triples = source.getTriples();
     }
 
     @Override
@@ -69,10 +72,10 @@ public class RoaringBitmapTripleIterator extends NiceIterator<Triple> {
 
     @Override
     public Triple next() {
-        if (triples.size() != initialSize) throw new ConcurrentModificationException();
+        if (source.size() != initialSize) throw new ConcurrentModificationException();
 
         if (this.hasNext())
-            return triples.getKeyAt(buffer[--bufferIndex]);
+            return triples[buffer[--bufferIndex]];
 
         throw new NoSuchElementException();
     }
@@ -81,17 +84,17 @@ public class RoaringBitmapTripleIterator extends NiceIterator<Triple> {
     public void forEachRemaining(Consumer<? super Triple> action) {
         if (batchIteratorHasBeenUsed) {
             while (-1 < --bufferIndex) {
-                action.accept(triples.getKeyAt(buffer[bufferIndex]));
+                action.accept(triples[buffer[bufferIndex]]);
             }
             while (batchIterator.hasNext()) {
                 bufferIndex = batchIterator.nextBatch(buffer);
                 while (-1 < --bufferIndex) {
-                    action.accept(triples.getKeyAt(buffer[bufferIndex]));
+                    action.accept(triples[buffer[bufferIndex]]);
                 }
             }
         } else {
-            bitmap.forEach((int index) -> action.accept(triples.getKeyAt(index)));
+            bitmap.forEach((int index) -> action.accept(triples[index]));
         }
-        if (triples.size() != initialSize) throw new ConcurrentModificationException();
+        if (source.size() != initialSize) throw new ConcurrentModificationException();
     }
 }

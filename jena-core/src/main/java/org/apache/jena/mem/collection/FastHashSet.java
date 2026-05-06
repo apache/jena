@@ -21,6 +21,8 @@
 
 package org.apache.jena.mem.collection;
 
+import java.util.function.Consumer;
+
 /**
  * Hash set specialization built on top of {@link FastHashBase}.
  * Grows on demand but never shrinks, does not guarantee iteration order,
@@ -124,14 +126,12 @@ public abstract class FastHashSet<K> extends FastHashBase<K> implements JenaSetI
         positions[findEmptySlotWithoutEqualityCheck(hashCode)] = ~eIndex;
     }
 
-    /**
-     * Gets the key at the given index.
-     *
-     * @param i the index
-     * @return the key at the given index
-     */
     @Override
-    public K getKeyAt(int i) {
-        return keys[i];
+    public void forEach(Consumer<? super K> action) {
+        for (int i = 0; i < keysPos; i++) {
+            if(keys[i] != null) {
+                action.accept(keys[i]);
+            }
+        }
     }
 }

@@ -20,13 +20,19 @@
  */
 package org.apache.jena.mem.collection;
 
+import org.jspecify.annotations.NonNull;
+
+import java.util.Iterator;
+import java.util.Spliterator;
+import java.util.function.Consumer;
+
 /**
  * Set interface specialized for the use cases in triple-store implementations.
  * Not thread-safe; does not allow {@code null} elements.
  *
  * @param <E> the element type of the set
  */
-public interface JenaSet<E> extends JenaMapSetCommon<E> {
+public interface JenaSet<E> extends JenaMapSetCommon<E>, Iterable<E>  {
 
     /**
      * Add the key to the set if it is not already present.
@@ -46,4 +52,19 @@ public interface JenaSet<E> extends JenaMapSetCommon<E> {
      * @param key the key to add. ({@code null} is not allowed)
      */
     void addUnchecked(E key);
+
+    @Override
+    default void forEach(Consumer<? super E> action) {
+        this.keySpliterator().forEachRemaining(action);
+    }
+
+    @Override
+    default Spliterator<E> spliterator() {
+        return this.keySpliterator();
+    }
+
+    @Override
+    default @NonNull Iterator<E> iterator() {
+        return this.keyIterator();
+    }
 }

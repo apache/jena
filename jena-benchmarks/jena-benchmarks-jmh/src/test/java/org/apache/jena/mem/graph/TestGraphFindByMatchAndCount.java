@@ -21,11 +21,14 @@
 
 package org.apache.jena.mem.graph;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.jmh.JmhDefaultOptions;
 import org.apache.jena.mem.GraphMemRoaring;
+import org.apache.jena.mem.collection.FastHashSet;
 import org.apache.jena.mem.graph.helper.Context;
 import org.apache.jena.mem.graph.helper.Releases;
 
@@ -33,11 +36,7 @@ import org.junit.Test;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
-import java.util.function.Function;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -54,146 +53,253 @@ public class TestGraphFindByMatchAndCount {
 
     @Param({
             "GraphMemFast (current)",
-            "GraphMemValue (current)",
-//            "GraphMemRoaring EAGER (current)",
+            "GraphMemIndexedSet EAGER (current)",
+//            "GraphMemIndexedSet LAZY (current)",
+//            "GraphMemIndexedSet LAZY_PARALLEL (current)",
+//            "GraphMemIndexedSet MINIMAL (current)",
+            "GraphMemRoaring EAGER (current)",
 //            "GraphMemRoaring LAZY (current)",
 //            "GraphMemRoaring LAZY_PARALLEL (current)",
 //            "GraphMemRoaring MINIMAL (current)",
-//            "GraphMemValue (Jena 5.6.0)",
-            "GraphMemFast (Jena 5.6.0)",
-            "GraphMemValue (Jena 5.6.0)",
     })
     public String param1_GraphImplementation;
 
-    @Param({"800"})
-    public int param2_sampleSize;
-    Function<String, Object> graphFindByMatchesAndCount;
+    private Context testContext;
+
     private Graph sutCurrent;
+    private NodeSet subjectsToFindCurrent;
+    private NodeSet predicateToFindCurrent;
+    private NodeSet objectsToFindCurrent;
+    private NodeTupleSet subjectPredicateToFindCurrent;
+    private NodeTupleSet subjectObjectsToFindCurrent;
+    private NodeTupleSet predicateObjectsToFindCurrent;
+
     private org.apache.shadedJena560.graph.Graph sut560;
-    private List<Triple> triplesToFindCurrent;
-    private List<org.apache.shadedJena560.graph.Triple> triplesToFind560;
+    private NodeSet560 subjectsToFind560;
+    private NodeSet560 predicateToFind560;
+    private NodeSet560 objectsToFind560;
+    private NodeTupleSet560 subjectPredicateToFind560;
+    private NodeTupleSet560 subjectObjectsToFind560;
+    private NodeTupleSet560 predicateObjectsToFind560;
 
     @Benchmark
-    public Object graphFindS__() {
-        return graphFindByMatchesAndCount.apply("S__");
-    }
-
-    @Benchmark
-    public Object graphFind_P_() {
-        return graphFindByMatchesAndCount.apply("_P_");
-    }
-
-    @Benchmark
-    public Object graphFind__O() {
-        return graphFindByMatchesAndCount.apply("__O");
-    }
-
-    @Benchmark
-    public Object graphFindSP_() {
-        return graphFindByMatchesAndCount.apply("SP_");
-    }
-
-    @Benchmark
-    public Object graphFindS_O() {
-        return graphFindByMatchesAndCount.apply("S_O");
-    }
-
-    @Benchmark
-    public Object graphFind_PO() {
-        return graphFindByMatchesAndCount.apply("_PO");
-    }
-
-
-    private int graphFindByMatchesAndCount(String pattern) {
-        var findFunction = getFindFunctionByPatternCurrent(pattern);
+    public int findAndCountS__() {
         var total = 0;
-        for (Triple sample : this.triplesToFindCurrent) {
-            total += (int) Iter.count(findFunction.apply(sample));
+        switch (testContext.getJenaVersion()) {
+            case CURRENT: {
+                for(var s: subjectsToFindCurrent) {
+                    total += (int) Iter.count(sutCurrent.find(Triple.createMatch(s, null, null)));
+                }
+            }
+            break;
+            case JENA_5_6_0: {
+                for(var s: subjectsToFind560) {
+                    total += (int) Iter.count(sut560.find(org.apache.shadedJena560.graph.Triple.createMatch(s, null, null)));
+                }
+            }
+            break;
+            default: throw new IllegalArgumentException("Unknown Jena version: " + testContext.getJenaVersion());
         }
         return total;
     }
 
-    private Object graphFindByMatchesAndCount560(String pattern) {
-        var findFunction = getFindFunctionByPattern560(pattern);
+    @Benchmark
+    public int findAndCount_P_() {
         var total = 0;
-        for (org.apache.shadedJena560.graph.Triple sample : this.triplesToFind560) {
-            total += (int) Iter.count(findFunction.apply(sample));
+        switch (testContext.getJenaVersion()) {
+            case CURRENT: {
+                for(var p: predicateToFindCurrent) {
+                    total += (int) Iter.count(sutCurrent.find(Triple.createMatch(null, p, null)));
+                }
+            }
+            break;
+            case JENA_5_6_0: {
+                for(var p: predicateToFind560) {
+                    total += (int) Iter.count(sut560.find(org.apache.shadedJena560.graph.Triple.createMatch(null, p, null)));
+                }
+            }
+            break;
+            default: throw new IllegalArgumentException("Unknown Jena version: " + testContext.getJenaVersion());
         }
         return total;
     }
 
-    Function<Triple, Iterator<Triple>> getFindFunctionByPatternCurrent(String pattern) {
-        return switch (pattern) {
-            case "S__" -> t -> sutCurrent.find(t.getSubject(), null, null);
-            case "_P_" -> t -> sutCurrent.find(null, t.getPredicate(), null);
-            case "__O" -> t -> sutCurrent.find(null, null, t.getObject());
-            case "SP_" -> t -> sutCurrent.find(t.getSubject(), t.getPredicate(), null);
-            case "S_O" -> t -> sutCurrent.find(t.getSubject(), null, t.getObject());
-            case "_PO" -> t -> sutCurrent.find(null, t.getPredicate(), t.getObject());
-            default -> throw new IllegalArgumentException("Unknown pattern: " + pattern);
-        };
+    @Benchmark
+    public int findAndCount__O() {
+        var total = 0;
+        switch (testContext.getJenaVersion()) {
+            case CURRENT: {
+                for(var o: objectsToFindCurrent) {
+                    total += (int) Iter.count(sutCurrent.find(Triple.createMatch(null, null, o)));
+                }
+            }
+            break;
+            case JENA_5_6_0: {
+                for(var o: objectsToFind560) {
+                    total += (int) Iter.count(sut560.find(org.apache.shadedJena560.graph.Triple.createMatch(null, null, o)));
+                }
+            }
+            break;
+            default: throw new IllegalArgumentException("Unknown Jena version: " + testContext.getJenaVersion());
+        }
+        return total;
     }
 
-    Function<org.apache.shadedJena560.graph.Triple, Iterator<org.apache.shadedJena560.graph.Triple>> getFindFunctionByPattern560(String pattern) {
-        return switch (pattern) {
-            case "S__" -> t -> sut560.find(t.getSubject(), null, null);
-            case "_P_" -> t -> sut560.find(null, t.getPredicate(), null);
-            case "__O" -> t -> sut560.find(null, null, t.getObject());
-            case "SP_" -> t -> sut560.find(t.getSubject(), t.getPredicate(), null);
-            case "S_O" -> t -> sut560.find(t.getSubject(), null, t.getObject());
-            case "_PO" -> t -> sut560.find(null, t.getPredicate(), t.getObject());
-            default -> throw new IllegalArgumentException("Unknown pattern: " + pattern);
-        };
+    @Benchmark
+    public int findAndCountSP_() {
+        var total = 0;
+        switch (testContext.getJenaVersion()) {
+            case CURRENT: {
+                for(var pair: subjectPredicateToFindCurrent) {
+                    total += (int) Iter.count(sutCurrent.find(Triple.createMatch(pair.getLeft(), pair.getRight(), null)));
+                }
+            }
+            break;
+            case JENA_5_6_0: {
+                for(var pair: subjectPredicateToFind560) {
+                    total += (int) Iter.count(sut560.find(org.apache.shadedJena560.graph.Triple.createMatch(pair.getLeft(), pair.getRight(), null)));
+                }
+            }
+            break;
+            default: throw new IllegalArgumentException("Unknown Jena version: " + testContext.getJenaVersion());
+        }
+        return total;
+    }
+
+    @Benchmark
+    public int findAndCountS_O() {
+        var total = 0;
+        switch (testContext.getJenaVersion()) {
+            case CURRENT: {
+                for(var pair: subjectObjectsToFindCurrent) {
+                    total += (int) Iter.count(sutCurrent.find(Triple.createMatch(pair.getLeft(), null, pair.getRight())));
+                }
+            }
+            break;
+            case JENA_5_6_0: {
+                for(var pair: subjectObjectsToFind560) {
+                    total += (int) Iter.count(sut560.find(org.apache.shadedJena560.graph.Triple.createMatch(pair.getLeft(), null, pair.getRight())));
+                }
+            }
+            break;
+            default: throw new IllegalArgumentException("Unknown Jena version: " + testContext.getJenaVersion());
+        }
+        return total;
+    }
+
+    @Benchmark
+    public int findAndCount_PO() {
+        var total = 0;
+        switch (testContext.getJenaVersion()) {
+            case CURRENT: {
+                for(var pair: predicateObjectsToFindCurrent) {
+                    total += (int) Iter.count(sutCurrent.find(Triple.createMatch(null, pair.getLeft(), pair.getRight())));
+                }
+            }
+            break;
+            case JENA_5_6_0: {
+                for(var pair: predicateObjectsToFind560) {
+                    total += (int) Iter.count(sut560.find(org.apache.shadedJena560.graph.Triple.createMatch(null, pair.getLeft(), pair.getRight())));
+                }
+            }
+            break;
+            default: throw new IllegalArgumentException("Unknown Jena version: " + testContext.getJenaVersion());
+        }
+        return total;
     }
 
     @Setup(Level.Trial)
     public void setupTrial() {
-        Context trialContext = new Context(param1_GraphImplementation);
-        switch (trialContext.getJenaVersion()) {
+        testContext = new Context(param1_GraphImplementation);
+        switch (testContext.getJenaVersion()) {
             case CURRENT: {
-                this.sutCurrent = Releases.current.createGraph(trialContext.getGraphClass());
-                this.graphFindByMatchesAndCount = this::graphFindByMatchesAndCount;
+                this.sutCurrent = Releases.current.createGraph(testContext.getGraphClass());
 
                 var triples = Releases.current.readTriples(param0_GraphUri);
                 triples.forEach(this.sutCurrent::add);
 
                 // init index if needed
                 if(this.sutCurrent instanceof GraphMemRoaring roaringGraph
-                    && !roaringGraph.isIndexInitialized()) {
-                        roaringGraph.initializeIndexParallel();
+                        && !roaringGraph.isIndexInitialized()) {
+                    roaringGraph.initializeIndexParallel();
                 }
 
                 /*clone the triples because they should not be the same objects*/
-                this.triplesToFindCurrent = new ArrayList<>(param2_sampleSize);
-                var sampleIncrement = triples.size() / param2_sampleSize;
-                for (var i = 0; i < triples.size(); i += sampleIncrement) {
-                    this.triplesToFindCurrent.add(Releases.current.cloneTriple(triples.get(i)));
+                List<Triple> triplesToFindCurrent = Releases.current.cloneTriples(triples);
+                subjectsToFindCurrent = new NodeSet();
+                predicateToFindCurrent = new NodeSet();
+                objectsToFindCurrent = new NodeSet();
+                subjectPredicateToFindCurrent = new NodeTupleSet();
+                subjectObjectsToFindCurrent = new NodeTupleSet();
+                predicateObjectsToFindCurrent = new NodeTupleSet();
+                for(var t: triplesToFindCurrent) {
+                    subjectsToFindCurrent.tryAdd(t.getSubject());
+                    predicateToFindCurrent.tryAdd(t.getPredicate());
+                    objectsToFindCurrent.tryAdd(t.getObject());
+                    subjectPredicateToFindCurrent.tryAdd(Pair.of(t.getSubject(), t.getPredicate()));
+                    subjectObjectsToFindCurrent.tryAdd(Pair.of(t.getSubject(), t.getObject()));
+                    predicateObjectsToFindCurrent.tryAdd(Pair.of(t.getPredicate(), t.getObject()));
                 }
-                    /* Shuffle is import because the order might play a role. We want to test the performance of the
-                       contains method regardless of the order */
-                java.util.Collections.shuffle(this.triplesToFindCurrent, new Random(4721));
             }
             break;
             case JENA_5_6_0: {
-                this.sut560 = Releases.v560.createGraph(trialContext.getGraphClass());
-                this.graphFindByMatchesAndCount = this::graphFindByMatchesAndCount560;
+                this.sut560 = Releases.v560.createGraph(testContext.getGraphClass());
 
                 var triples = Releases.v560.readTriples(param0_GraphUri);
                 triples.forEach(this.sut560::add);
 
-                /*clone the triples because they should not be the same objects*/
-                this.triplesToFind560 = new ArrayList<>(param2_sampleSize);
-                var sampleIncrement = triples.size() / param2_sampleSize;
-                for (var i = 0; i < triples.size(); i += sampleIncrement) {
-                    this.triplesToFind560.add(Releases.v560.cloneTriple(triples.get(i)));
-                }
                     /* Shuffle is import because the order might play a role. We want to test the performance of the
                        contains method regardless of the order */
-                java.util.Collections.shuffle(this.triplesToFind560, new Random(4721));
+                List<org.apache.shadedJena560.graph.Triple> triplesToFind560 = Releases.v560.cloneTriples(triples);
+                subjectsToFind560 = new NodeSet560();
+                predicateToFind560 = new NodeSet560();
+                objectsToFind560 = new NodeSet560();
+                subjectPredicateToFind560 = new NodeTupleSet560();
+                subjectObjectsToFind560 = new NodeTupleSet560();
+                predicateObjectsToFind560 = new NodeTupleSet560();
+                for(var t: triplesToFind560) {
+                    subjectsToFind560.tryAdd(t.getSubject());
+                    predicateToFind560.tryAdd(t.getPredicate());
+                    objectsToFind560.tryAdd(t.getObject());
+                    subjectPredicateToFind560.tryAdd(Pair.of(t.getSubject(), t.getPredicate()));
+                    subjectObjectsToFind560.tryAdd(Pair.of(t.getSubject(), t.getObject()));
+                    predicateObjectsToFind560.tryAdd(Pair.of(t.getPredicate(), t.getObject()));
+                }
             }
             break;
             default:
-                throw new IllegalArgumentException("Unknown Jena version: " + trialContext.getJenaVersion());
+                throw new IllegalArgumentException("Unknown Jena version: " + testContext.getJenaVersion());
+        }
+    }
+
+    private static class NodeSet extends FastHashSet<Node> {
+        @Override
+        protected Node[] newKeysArray(int size) {
+            return new Node[size];
+        }
+    }
+
+    private static class NodeSet560 extends FastHashSet<org.apache.shadedJena560.graph.Node> {
+        @Override
+        protected org.apache.shadedJena560.graph.Node[] newKeysArray(int size) {
+            return new org.apache.shadedJena560.graph.Node[size];
+        }
+    }
+
+    private static class NodeTupleSet extends FastHashSet<Pair<Node, Node>> {
+        @SuppressWarnings("unchecked")
+        @Override
+        protected Pair<Node, Node>[] newKeysArray(int size) {
+
+            return new Pair[size];
+        }
+    }
+
+    private static class NodeTupleSet560 extends FastHashSet<Pair<org.apache.shadedJena560.graph.Node, org.apache.shadedJena560.graph.Node>> {
+        @SuppressWarnings("unchecked")
+        @Override
+        protected Pair<org.apache.shadedJena560.graph.Node, org.apache.shadedJena560.graph.Node>[] newKeysArray(int size) {
+            return new Pair[size];
         }
     }
 

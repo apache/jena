@@ -86,9 +86,7 @@ public class IteratorOfJenaSetsTest {
     public void testForEachRemaining() {
         sut = new IteratorOfJenaSets<>(parentIterator);
         var findings = new ArrayList<String>();
-        sut.forEachRemaining(element -> {
-            findings.add(element);
-        });
+        sut.forEachRemaining(findings::add);
         assertEquals(6, findings.size());
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder("1.1", "1.2", "2.1", "2.2", "3.1", "3.2"));
     }

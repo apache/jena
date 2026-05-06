@@ -31,15 +31,24 @@ package org.apache.jena.mem.collection;
 public interface JenaSetIndexed<E> extends JenaSetHashOptimized<E> {
 
     /**
-     * Add an element and return the index it was stored at. If the element
-     * is already present, returns a negative value (typically the bitwise
-     * complement of the existing index).
+     * Add an element and return the index it was stored at.
+     * If the element is already present, returns the bitwise complement
+     * ({@code ~existingIndex}) of the existing index, so callers can
+     * distinguish "newly inserted" from "already present" while still
+     * recovering the index in both cases.
      *
      * @param key      the element to add. ({@code null} is not allowed)
-     * @return the index of the inserted element, or a negative value if the
-     *         element was already present
+     * @return the new index, or {@code ~existingIndex} if already present
      */
     int addAndGetIndex(final E key);
+
+    /**
+     * Remove the given element and return the index it occupied before removal.
+     *
+     * @param key the element to remove
+     * @return the former index of the element, or {@code -1} if it was not present
+     */
+    int removeAndGetIndex(final E key);
 
     /**
      * Returns the element stored at the given index.

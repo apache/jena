@@ -25,6 +25,7 @@ import java.util.Iterator;
 
 import org.apache.jena.graph.impl.GraphBase ;
 import org.apache.jena.mem.GraphMemFast;
+import org.apache.jena.mem.GraphMemIndexedSet;
 import org.apache.jena.mem.GraphMemLegacy;
 import org.apache.jena.mem.GraphMemRoaring;
 import org.apache.jena.sys.JenaSystem;
@@ -148,6 +149,22 @@ public class GraphMemFactory
      */
     public static Graph createGraphMemRoaring()
     { return new GraphMemRoaring(); }
+
+    /**
+     * A graph that stores triples in memory. This class is not thread-safe.
+     * <p>
+     * <ul>
+     * <li>This graph provides term equality.</li>
+     * <li>Iterator over this graph does not provide Iterator.remove</li>
+     * </ul>
+     * <p>
+     * {@link GraphMemIndexedSet} is supposed to replace {@link GraphMemRoaring}
+     * in the future.
+     * <p>
+     * See {@link GraphMemIndexedSet} for details.
+     */
+    public static Graph createGraphMemIndexedSet()
+    { return new GraphMemIndexedSet(); }
 
     private final static Graph emptyGraph = new GraphBase() {
         @Override

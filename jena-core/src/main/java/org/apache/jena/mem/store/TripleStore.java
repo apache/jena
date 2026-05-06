@@ -28,73 +28,93 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 import java.util.stream.Stream;
 
 /**
- * A triple store is a collection of triples that supports access to
- * triples matching a triple pattern.
+ * Storage abstraction used by the {@code mem2} in-memory graph implementations.
+ * A {@code TripleStore} is a set-like collection of {@link Triple}s that also
+ * supports pattern-based lookup ({@link #find}, {@link #stream(Triple)},
+ * {@link #contains}). Implementations are expected to be efficient for the
+ * lookup patterns described in
+ * {@link org.apache.jena.mem.pattern.MatchPattern}.
+ * <p>
+ * Implementations are not required to be thread-safe.
  */
 public interface TripleStore extends Copyable<TripleStore> {
 
     /**
-     * Add a triple to the map.
+     * Add a triple to the store. Does nothing if the triple is already present.
      *
-     * @param triple to add
+     * @param triple the triple to add
      */
     void add(final Triple triple);
 
     /**
-     * Remove a triple from the map.
+     * Remove a triple from the store. Does nothing if the triple is not present.
      *
-     * @param triple to remove
+     * @param triple the triple to remove
      */
     void remove(final Triple triple);
 
     /**
-     * Remove all triples from the map.
+     * Remove all triples from the store. After this call, {@link #isEmpty()}
+     * returns {@code true} and any associated indices are emptied.
      */
     void clear();
 
     /**
-     * Return the number of triples in the map.
+     * Returns the number of triples in the store.
+     *
+     * @return the number of triples
      */
     int countTriples();
 
     /**
-     * Return true if the map is empty.
+     * Returns {@code true} if the store contains no triples.
+     *
+     * @return {@code true} if empty
      */
     boolean isEmpty();
 
 
     /**
-     * Answer true if the graph contains any triple matching <code>t</code>.
+     * Returns {@code true} if the store contains any triple matching the given
+     * pattern. The pattern may contain wildcards (e.g. {@code Node.ANY}).
      *
-     * @param tripleMatch triple match pattern, which may be contained
+     * @param tripleMatch the triple pattern to match
+     * @return {@code true} if at least one matching triple exists
      */
     boolean contains(final Triple tripleMatch);
 
     /**
-     * Returns a {@link Stream} of all triples in the graph.
-     * Note: {@link Stream#parallel()} is supported.
+     * Returns a {@link Stream} of all triples in the store.
+     * The returned stream supports {@link Stream#parallel()}.
      *
-     * @return a stream  of triples in this graph.
+     * @return a stream over every triple in this store
      */
     Stream<Triple> stream();
 
     /**
-     * Returns a {@link Stream} of Triples matching the given pattern.
-     * Note: {@link Stream#parallel()} is supported.
+     * Returns a {@link Stream} of every triple in the store matching the
+     * given pattern. The returned stream supports {@link Stream#parallel()}.
      *
-     * @param tripleMatch triple match pattern
-     * @return a stream  of triples in this graph matching the pattern.
+     * @param tripleMatch the triple pattern to match (may contain wildcards)
+     * @return a stream over the matching triples
      */
     Stream<Triple> stream(final Triple tripleMatch);
 
     /**
-     * Returns an {@link ExtendedIterator} of all triples in the graph matching the given triple match.
+     * Returns an {@link ExtendedIterator} over every triple in the store
+     * matching the given pattern.
+     *
+     * @param tripleMatch the triple pattern to match (may contain wildcards)
+     * @return an iterator over the matching triples
      */
     ExtendedIterator<Triple> find(final Triple tripleMatch);
 
     /**
-     * Return a new triple store that is a copy of this one.
-     * Since Nodes and Triples are immutable and shared, the copy can share the same Nodes and Triples.
+     * Returns an independent copy of this store.
+     * Since {@link org.apache.jena.graph.Node}s and {@link Triple}s are
+     * immutable, the copy may share node and triple instances with the
+     * original; only the container/index data structures are duplicated so
+     * that mutations in either store do not affect the other.
      *
      * @return an independent copy of this store
      */

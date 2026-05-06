@@ -24,54 +24,61 @@ package org.apache.jena.mem;
 import org.apache.jena.graph.Graph;
 
 /**
- * An enumeration that represents different indexing strategies for a graph.
- * The indexing strategy determines how triples are indexed to support pattern matching.
- * It is assumed that the graph contains a set of triples, and all operations that do not involve
- * pattern matching are performed directly on this set, not on the indices.
- * <br>
- * Pattern matching refers to operations like {@link Graph#find}, {@link Graph#remove} or {@link Graph#contains}
- * that may take a triple pattern as argument, such as "S__", "SP_", "S_O", "_P_", "_PO", or "__O",
- * instead of a concrete triple "SPO".
- * In the case of a concrete triple these operations should be performed directly on the set of triples
- * and not rely on the indices.
+ * Indexing strategies supported by {@link org.apache.jena.mem.store.indexed.IndexedSetTripleStore}
+ * and {@link org.apache.jena.mem.store.roaring.RoaringTripleStore}.
+ * The indexing strategy determines how (and when) the auxiliary
+ * subject/predicate/object index is maintained for pattern-matching operations.
+ * <p>
+ * The graph always keeps a flat set of triples. Operations that do not involve
+ * pattern matching (size, iterating all triples, lookup of a fully concrete
+ * triple, etc.) are evaluated directly against this set and are unaffected by
+ * the indexing strategy.
+ * <p>
+ * Pattern matching refers to {@link Graph#find}, {@link Graph#remove} or
+ * {@link Graph#contains} called with a triple pattern such as
+ * {@code S__}, {@code SP_}, {@code S_O}, {@code _P_}, {@code _PO} or
+ * {@code __O} (where {@code _} denotes a wildcard).
+ * Lookups for fully concrete triples ({@code SPO}) are always answered
+ * directly from the triple set and never use the index.
  */
 public enum IndexingStrategy {
 
     /**
-     * Starts with an index as any other in-memory graph.
-     * {@link Graph#add}, {@link Graph#delete} and {@link Graph#clear()} update the index immediately.
-     * Clearing the index just rebuilds it from the set of triples.
+     * The index is always present.
+     * {@link Graph#add}, {@link Graph#delete} and {@link Graph#clear()} update
+     * the index immediately. Calling {@code clearIndex} simply discards the
+     * existing index, which is then rebuilt from the triple set.
      */
     EAGER,
 
     /**
-     * Starts with no index and builds it on demand when pattern matches are requested.
-     * After initialization, the index behaves like EAGER.
-     * Index may be cleared manually, then it is rebuilt on demand.
+     * The index is built on demand the first time a pattern match is requested.
+     * Once built, behaves like {@link #EAGER}. Calling {@code clearIndex}
+     * discards the index; it will be rebuilt on demand the next time a
+     * pattern match is performed.
      */
     LAZY,
 
     /**
-     * Starts with no index and builds it on demand when pattern matches are requested.
-     * After initialization, the index behaves like EAGER.
-     * Index may be cleared manually, then it is rebuilt on demand.
-     * This strategy uses parallel processing to build the index.
+     * Like {@link #LAZY}, but the on-demand index build uses parallel
+     * processing for faster initialization on large graphs.
      */
     LAZY_PARALLEL,
 
     /**
-     * Starts with no index and throws an exception if a pattern match is requested,
-     * but the index has not been initialized manually yet.
-     * After initialization, the index behaves like EAGER.
-     * Index may be cleared manually, then it has to be initialized again manually.
+     * The index is never built automatically. Pattern-match operations throw
+     * an {@link UnsupportedOperationException} until the index is initialized
+     * explicitly (e.g. via
+     * {@link org.apache.jena.mem.GraphMemIndexedSet#initializeIndex()}).
+     * After initialization, behaves like {@link #EAGER}.
      */
     MANUAL,
 
     /**
-     * Starts with no index and uses filtering on the triple set,
-     * as long as the index has not been initialized.
-     * After initialization, the index behaves like EAGER.
-     * Index may be cleared manually, then filtering is used again until the index is initialized again.
+     * No index is built. Pattern-match operations are evaluated by linearly
+     * filtering the triple set, which is space-efficient but slower for large
+     * graphs. The index can be initialized explicitly to switch to eager
+     * behavior; calling {@code clearIndex} reverts to filtering again.
      */
     MINIMAL
 }
