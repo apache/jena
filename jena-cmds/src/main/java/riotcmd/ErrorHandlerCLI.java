@@ -32,21 +32,29 @@ import org.slf4j.Logger;
  */
 class ErrorHandlerCLI implements ErrorHandler {
 
-    /** Logs warnings and errors while tracking the counts of each and optionally throwing exceptions when errors and/or warnings are encounted */
-    static ErrorHandlerCLI errorHandlerTracking(Logger log, boolean silentWarnings, boolean failOnError, boolean failOnWarning)
-    { return new ErrorHandlerCLI(log, silentWarnings, failOnError, failOnWarning); }
+    /**
+     * Logs warnings and errors while tracking the counts of each and optionally
+     * throwing exceptions when errors and/or warnings are encountered.
+     */
+    static ErrorHandlerCLI errorHandlerTracking(Logger log, boolean silentWarnings,
+                                                boolean failOnError, boolean failOnWarning, Runnable onMessage) {
+        return new ErrorHandlerCLI(log, silentWarnings, failOnError, failOnWarning, onMessage);
+    }
 
     private final Logger log ;
     private final boolean silentWarnings;
     private final boolean failOnError;
     private final boolean failOnWarning;
-    private long errorCount, warningCount;
+    private final Runnable onMessage;
+    private long errorCount = 0;
+    private long warningCount = 0;
 
-    public ErrorHandlerCLI(Logger log, boolean silentWarnings, boolean failOnError, boolean failOnWarning) {
+    private ErrorHandlerCLI(Logger log, boolean silentWarnings, boolean failOnError, boolean failOnWarning, Runnable onMessage) {
         this.log = log ;
         this.silentWarnings = silentWarnings;
         this.failOnError = failOnError;
         this.failOnWarning = failOnWarning;
+        this.onMessage = onMessage;
     }
 
     /** report a warning  */
@@ -95,21 +103,32 @@ class ErrorHandlerCLI implements ErrorHandler {
         return hadErrors() || hadWarnings();
     }
 
+    private void onLogMessage() {
+        if ( onMessage != null )
+            onMessage.run();
+    }
+
     /** report a warning */
     private void logWarning(String message, long line, long col) {
-        if ( log != null )
-            log.warn(fmtMessage(message, line, col)) ;
+        if ( log == null )
+            return;
+        onLogMessage();
+        log.warn(fmtMessage(message, line, col)) ;
     }
 
     /** report an error */
     private void logError(String message, long line, long col) {
-        if ( log != null )
-            log.error(fmtMessage(message, line, col)) ;
+        if ( log == null )
+            return;
+        onLogMessage();
+        log.error(fmtMessage(message, line, col)) ;
     }
 
     /** report a catastrophic error */
     private void logFatal(String message, long line, long col) {
-        if ( log != null )
-            logError(message, line, col) ;
+        if ( log == null )
+            return;
+        onLogMessage();
+        logError(message, line, col) ;
     }
 }
