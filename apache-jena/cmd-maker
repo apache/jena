@@ -17,7 +17,7 @@
 ## limitations under the License.
 
 # Not xloader
-## xloader (forerly "TDB 1 tdbloader2") is slightly different.
+## xloader (formerly, "TDB 1 tdbloader2") is slightly different.
 ##   The main program is not a java program
 ##   It is split into several scripts that leverage a mixture of 
 ##   POSIX and java tools and should be maintained separately
@@ -36,7 +36,6 @@ jena.schemagen
 arq.rdfdiff
 arq.sparql
 arq.arq
-arq.juuid
 arq.rsparql
 arq.rset
 arq.qparse

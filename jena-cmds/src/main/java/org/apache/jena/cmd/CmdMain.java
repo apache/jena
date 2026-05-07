@@ -90,7 +90,6 @@ public abstract class CmdMain extends CmdGeneral
         return 0;
     }
 
-
     protected abstract void exec();
 
     protected final void mainMethod() {

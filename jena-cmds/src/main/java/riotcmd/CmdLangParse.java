@@ -126,27 +126,13 @@ public abstract class CmdLangParse extends CmdMain {
         void postParse();
     }
 
-    protected static class ParseRecord {
-        // Display name (filename as given on the command line)
-        final String filename;
-        // Resolved filename as a URL string.
-        final String sourceURL;
-        final boolean success;
-        final long timeMillis;
-        final long triples;
-        final long quads;
-        final long tuples = 0;
-        final ErrorHandlerCLI errHandler;
-
-        public ParseRecord(String filename, String sourceURL, boolean successful, long timeMillis, long countTriples, long countQuads,
-                           ErrorHandlerCLI errHandler) {
-            this.filename = filename;
-            this.sourceURL = sourceURL;
-            this.success = successful;
-            this.timeMillis = timeMillis;
-            this.triples = countTriples;
-            this.quads = countQuads;
-            this.errHandler = errHandler;
+    protected record ParseRecord(String filename, String sourceURL, boolean success, long timeMillis,
+                                 long triples, long quads, long tuples, ErrorHandlerCLI errHandler) {
+        // Default tuples to 0
+        ParseRecord(String filename, String sourceURL, boolean success, long timeMillis,
+                    long triples, long quads,
+                    ErrorHandlerCLI errHandler) {
+            this(filename, sourceURL, success, timeMillis,triples, quads, 0L, errHandler);
         }
     }
 
@@ -364,14 +350,6 @@ public abstract class CmdLangParse extends CmdMain {
         if ( passRelativeURIs )
             stopOnWarnings = false;
 
-        ErrorHandlerCLI errHandler = new ErrorHandlerCLI
-                (ErrorHandlerFactory.stdLogger
-                , passRelativeURIs      // Silent warnings if allowing relative URIs.
-                , true                  // Fail on error
-                , stopOnWarnings        // Fail on warnings
-                );
-        builder.errorHandler(errHandler);
-
         // Make into a cmd flag. (input and output subflags?)
         final boolean labelsAsGiven = false;
 // NodeToLabel labels = SyntaxLabels.createNodeToLabel() ;
@@ -381,20 +359,30 @@ public abstract class CmdLangParse extends CmdMain {
             builder.labelToNode(LabelToNode.createUseLabelAsGiven());
 
         // Build parser output additions.
-        StreamRDF s = parserOutputStream;
-        if ( setupRDFS != null ) {
-            // Remove literals as subjects
-            s = RDFSFactory.removeGeneralizedRDF(s);
-            // Generate RDFS (this feeds into the stream created above).
-            s = RDFSFactory.streamRDFS(s, setupRDFS);
-            // Parser sends data to RDFS, which goes to the filter, then to parserOutputStream
+        StreamRDFCounting parserOut;
+        {
+            StreamRDF s = parserOutputStream;
+            if ( setupRDFS != null ) {
+                // Remove literals as subjects
+                s = RDFSFactory.removeGeneralizedRDF(s);
+                // Generate RDFS (this feeds into the stream created above).
+                s = RDFSFactory.streamRDFS(s, setupRDFS);
+                // Parser sends data to RDFS, which goes to the filter, then to parserOutputStream
+            }
+            // If added here, count is quads and triples seen in the input.
+            if ( modLangParse.mergeQuads() )
+                s = new QuadsToTriples(s);
+            parserOut = StreamRDFLib.count(s);
+            s = null;
         }
-        // If added here, count is quads and triples seen in the input.
-        if ( modLangParse.mergeQuads() )
-            s = new QuadsToTriples(s);
-        StreamRDFCounting parserOut = StreamRDFLib.count(s);
-        s = null;
 
+        ErrorHandlerCLI errHandler = ErrorHandlerCLI.errorHandlerTracking(ErrorHandlerFactory.stdLogger,
+                                                                          passRelativeURIs,         // Silent warnings if allowing relative URIs.
+                                                                          true,                     // Fail on error
+                                                                          stopOnWarnings,           // Fail on warnings
+                                                                          ()->parserOut.finish()    // Flush to align log messages
+                                                                          );
+        builder.errorHandler(errHandler);
         boolean successful = true;
 
         modTime.startTimer();
@@ -412,8 +400,9 @@ public abstract class CmdLangParse extends CmdMain {
             successful = false;
         }
         parserOut.finish();
-        long x = modTime.endTimer();
-        ParseRecord outcome = new ParseRecord(filenameLabel, sourceURL, successful, x, parserOut.countTriples(), parserOut.countQuads(), errHandler);
+        long elapsedTime_ms = modTime.endTimer();
+        ParseRecord outcome = new ParseRecord(filenameLabel, sourceURL, successful, elapsedTime_ms,
+                                              parserOut.countTriples(), parserOut.countQuads(), errHandler);
         return outcome;
     }
 
