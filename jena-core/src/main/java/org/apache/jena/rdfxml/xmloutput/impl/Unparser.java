@@ -181,7 +181,9 @@ class Unparser {
             while (ss.hasNext()) {
                 Statement s = ss.nextStatement();
                 RDFNode obj = s.getObject();
-                processRDFNode(obj, false);
+                boolean foundTripleTerm = processRDFNode(obj, false);
+                if ( foundTripleTerm )
+                    hasTripleTerms = true;
             }
         } finally {
             ss.close();
@@ -228,7 +230,8 @@ class Unparser {
         }
     }
 
-    private void processRDFNode(RDFNode obj, boolean inTripleTerm) {
+    // Return true for "RDF 1.2 triple term found"
+    private boolean processRDFNode(RDFNode obj, boolean inTripleTerm) {
         if ( obj.isResource() ) {
             Resource r = obj.asResource();
             increaseObjectCount(r);
@@ -238,29 +241,33 @@ class Unparser {
         }
         if ( obj.isStatementTerm() ) {
             processTripleTerm(obj.asStatementTerm());
-            return;
+            return true;
         }
         if ( obj.isLiteral() ) {
             if ( obj.asLiteral().getBaseDirection() != null ) {
-                hasTextDirectionLiterals = true;
-                // We will need a namespace prefix.
-                // Ideally, there is one in the model can be added to rdf:RDF as usual.
-                itsPrefix = model.getNsURIPrefix(ITS.uri);
-                if ( itsPrefix == null ) {
-                    // Not in model.
-                    // This is added to rdf:RDF, along with [its]:version
-                    itsInsertNs = true;
-                    itsPrefix = syntheticNamespaceForITS(model);
-                    prettyWriter.setNsPrefix(itsPrefix, ITS.uri);
+                if ( ! hasTextDirectionLiterals ) {
+                    // Haven't encountered a text direction so far.
+                    hasTextDirectionLiterals = true;
+                    // We will need a namespace prefix.
+                    // Ideally, there is one in the model can be added to rdf:RDF as usual.
+                    itsPrefix = model.getNsURIPrefix(ITS.uri);
+                    if ( itsPrefix == null ) {
+                        // Not in model.
+                        // This is added to rdf:RDF, along with [its]:version
+                        itsInsertNs = true;
+                        itsPrefix = syntheticNamespaceForITS(model);
+                        prettyWriter.setNsPrefix(itsPrefix, ITS.uri);
+                    }
                 }
             }
+            // Does not imply rdf:version
         }
+        return false;
     }
 
     private void processTripleTerm(StatementTerm sTerm) {
         Statement tripleTerm = sTerm.asStatementTerm().getStatement();
         processTripleTermsOneLevel(tripleTerm);
-
         if ( tripleTerm.getObject().isStatementTerm() ) {
             StatementTerm sTerm2 = tripleTerm.getObject().asStatementTerm();
             processTripleTerm(sTerm2);
@@ -271,7 +278,7 @@ class Unparser {
         RDFNode ttSubj = stmt.getSubject();
         if ( ttSubj.isAnon() ) {
             Resource r = ttSubj.asResource();
-                // XXX !!! twice to make sure it is printed and not compacted.
+                // !!! increaseObjectCount twice to make sure it is printed and not compacted.
             if ( r.isAnon() )
                 increaseObjectCount(r);
             increaseObjectCount(r);
@@ -382,6 +389,9 @@ class Unparser {
 
     private Map<Statement, Resource> statement2res;
 
+    // RDF 1.2 triple terms.
+    private boolean hasTripleTerms = false;
+
     // ITS (text direction)
     // The data has text direction literals.
     private boolean hasTextDirectionLiterals = false;
@@ -408,6 +418,16 @@ class Unparser {
         print(prettyWriter.rdfEl("RDF"));
         indentPlus();
         printNameSpaceDefn();
+
+        // Code ready to be enabled.
+        if ( false && hasTripleTerms ) {
+            indentPlus();
+            tab();
+            print(prettyWriter.rdfEl("version"));
+            print(format("=%s", q("1.2")));
+            indentMinus();
+        }
+
         if ( hasTextDirectionLiterals ) {
             indentPlus();
             if ( itsInsertNs ) {
@@ -457,8 +477,8 @@ class Unparser {
      *                        '<' propName idAttr? parseLiteral '>' literal '</' propName '>' |
      *                        '<' propName idAttr? parseResource '>' propertyElt* '</' propName '>' |
      *                        '<' propName idRefAttr? bagIdAttr? propAttr* '/>' |
-     *                        '<' propName idAttr? parseDamlCollection '>' obj* '</' propName '>' [daml.2]
-     *                        '<' propName idAttr? parseTriple '>' obj '</' propName '>' [RDF 1.2
+     *                        '<' propName idAttr? parseDamlCollection '>' obj* '</' propName '>' [daml.2 - unsupported]
+     *                        '<' propName idAttr? parseTriple '>' obj '</' propName '>' [RDF ]
      *
      *    parseDamlCollection ::= ' parseType="rdf:collection"'
      *
@@ -779,7 +799,7 @@ class Unparser {
 //        }
         print(" xml:lang=" + q(lang));
         if ( baseDir != null ) {
-            // done in rdf:RDFs
+            // done in rdf:RDF
             //print(format(" %s:%s=%s", itsPrefix, ITS.version, q("2.0")));
             print(format(" %s:%s=%s", itsPrefix, ITS.dir, q(baseDir)));
         }
