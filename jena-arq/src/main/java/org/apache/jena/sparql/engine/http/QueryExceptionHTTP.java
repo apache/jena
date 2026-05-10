@@ -63,7 +63,7 @@ public class QueryExceptionHTTP extends QueryException
         }
     }
 
-    /** @deprecated Use {@ink #wrap(HttpException)} */
+    /** @deprecated Use {@link #rewrap(HttpException)} */
     @Deprecated
     public QueryExceptionHTTP(int responseCode, String messageBody, final HttpException ex) {
         super(ex.getMessage(), ex.getCause());
@@ -80,7 +80,7 @@ public class QueryExceptionHTTP extends QueryException
 
     /** The message for the reason for this exception
      * @return message
-     * @deprecate Use {@link #getResponseBody}
+     * @deprecated Use {@link #getResponseBody}
      */
     @Deprecated
     public String getResponseMessage() { return responseBody; }
@@ -91,7 +91,7 @@ public class QueryExceptionHTTP extends QueryException
 
     /** The response for this exception if available from HTTP
      * @return response or {@code null} if no HTTP response was received
-     * @deprecate Use {@link #getResponseBody}
+     * @deprecated Use {@link #getResponseBody}
      */
     @Deprecated
     public String getResponse() { return getResponseBody(); }
