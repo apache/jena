@@ -40,6 +40,7 @@ import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.cmd.CmdMain;
+import org.apache.jena.cmd.TerminationException;
 import org.apache.jena.irix.IRIException;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.irix.IRIxResolver;
@@ -261,9 +262,11 @@ public abstract class CmdLangParse extends CmdMain {
         }
 
         // exit(1) if there were any errors.
+        // pr.success is true if the indicates the parser completed it's run
+        // (no failure-on-error or unexpected exceptions).
         for ( ParseRecord pr : outcomes ) {
-            if ( !pr.success || pr.errHandler.hadIssues() )
-                throw new CmdException();
+            if ( !pr.success || pr.errHandler.hadErrors() )
+                throw new TerminationException(1);
         }
     }
 
