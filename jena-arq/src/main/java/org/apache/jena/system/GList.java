@@ -58,8 +58,9 @@ import org.apache.jena.vocabulary.RDF;
  * List arising from parsing Turtle or TriG syntax for lists will be cycle-free.
  * <p>
  * <b>This class is <em>not</em> public API</b>.
- *
- * @see GraphList - uses a findable abstaction ({@link GNode}to work on a graph or lists of triples.
+ *  <p>
+ *  See also {@link GraphList} which uses a "findable" abstraction in combination
+ *  with {@link GNode} to work on a graph or lists of triples.
  */
 public class GList {
 
