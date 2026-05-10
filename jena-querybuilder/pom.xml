@@ -23,7 +23,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>jena-querybuilder</artifactId>
-  <name>Apache Jena - Extras - Query Builder</name>
+  <name>Apache Jena - Query Builder</name>
   <description>A utility package to simplify the building of ARQ queries in code.  Provides both a simple builder interface for queries as well as simple prepared statement processing.</description>
 
   <parent>
