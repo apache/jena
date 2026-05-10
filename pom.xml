@@ -81,7 +81,7 @@
     <ver.shiro>2.1.0</ver.shiro>
 
     <ver.protobuf>4.34.1</ver.protobuf>
-    <ver.libthrift>0.22.0</ver.libthrift>
+    <ver.libthrift>0.23.0</ver.libthrift>
 
     <ver.caffeine>3.2.3</ver.caffeine>
     <!-- Most of Jena uses other libraries for equivalent functionality. -->
