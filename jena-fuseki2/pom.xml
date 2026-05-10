@@ -28,11 +28,11 @@
     <version>6.2.0-SNAPSHOT</version>
   </parent> 
 
-  <name>Apache Jena - Fuseki - A SPARQL 1.1 Server</name>
+  <name>Apache Jena - Fuseki</name>
   <artifactId>jena-fuseki</artifactId>
   <version>6.2.0-SNAPSHOT</version>
 
-  <description>Fuseki is a SPARQL 1.1 Server which provides the SPARQL query, 
+  <description>Fuseki is a SPARQL Server which provides the SPARQL query, 
   SPARQL update and SPARQL graph store protocols.
   </description>
 
