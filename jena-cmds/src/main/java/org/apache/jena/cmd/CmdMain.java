@@ -62,27 +62,31 @@ public abstract class CmdMain extends CmdGeneral
     /** Run command */
     public int mainRun(boolean exitOnSuccess, boolean exitOnFailure) {
         try { mainMethod(); }
-        catch (TerminationException ex) { System.exit(ex.getCode()); }
-        catch (IllegalArgumentException ex)
-        {
+        catch (TerminationException ex) {
+            int rc = ex.getCode();
+            if ( exitOnFailure )
+                System.exit(rc);
+            return rc;
+        }
+        catch (IllegalArgumentException ex) {
             ex.printStackTrace(System.err);
-            if ( exitOnFailure ) System.exit(1);
+            if ( exitOnFailure )
+                System.exit(1);
             return 1;
         }
-        catch (CmdException ex)
-        {
+        catch (CmdException ex) {
             if ( ex.getMessage() != null && ex.getMessage().length() > 0 )
                 System.err.println(ex.getMessage());
-            //ex.printStackTrace();
             if ( ex.getCause() != null )
                 ex.getCause().printStackTrace(System.err);
-            if ( exitOnFailure ) System.exit(1);
+            if ( exitOnFailure )
+                System.exit(1);
             return 1;
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             ex.printStackTrace(System.err);
-            if ( exitOnFailure ) System.exit(2);
+            if ( exitOnFailure )
+                System.exit(2);
             return 2;
         }
         if ( exitOnSuccess )

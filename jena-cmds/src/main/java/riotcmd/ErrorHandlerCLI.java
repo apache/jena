@@ -99,10 +99,6 @@ class ErrorHandlerCLI implements ErrorHandler {
         return this.warningCount > 0;
     }
 
-    boolean hadIssues() {
-        return hadErrors() || hadWarnings();
-    }
-
     private void onLogMessage() {
         if ( onMessage != null )
             onMessage.run();
