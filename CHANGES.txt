@@ -1,3 +1,40 @@
+==== Apache Jena 6.1.0
+Released: 2026-05-11
+Issues: https://s.apache.org/jena-6.1.0-issues
+Announcement:
+https://lists.apache.org/thread/73m3r8tk42hky9tkc5tfwpgyt0opq399
+
+== Jena 6.1.0
+
+This version of Jena has support for RDF 1.2 syntax, input and output.
+RDF/XML support has recently been added to complete the RDF 1.2 formats. 
+SPARQL 1.2 query, update and result set formats are up-to-date for the 
+features for RDF 1.2
+
+All RDF 1.1 usage of Jena remains unaffected.
+
+The RDF and SPARQL Working Group is in the final stages of completing 
+it's work. This includes the various test suites.
+
+The working group is seeking feedback from all RDF users.
+
+== Contributions to Jena 6.1.0:
+
+Contributors:
+
+@lance-sp
+   https://github.com/apache/jena/issue/3877
+Fix for transaction abort in TDB2
+
+@Aklakan
+   https://github.com/apache/jena/pull/3807
+Allow URIs as values of ja:cxtName
+
+@pjfanning
+   https://github.com/apache/jena/pull/3808
+Improvements to BUILD.md
+
+
 ==== Apache Jena 6.0.0
 Released: 2026-02-04
 Issues: https://s.apache.org/jena-6.0.0-issues
