@@ -83,7 +83,7 @@
     <ver.protobuf>4.34.1</ver.protobuf>
     <ver.libthrift>0.23.0</ver.libthrift>
 
-    <ver.caffeine>3.2.3</ver.caffeine>
+    <ver.caffeine>3.2.4</ver.caffeine>
     <!-- Most of Jena uses other libraries for equivalent functionality. -->
     <ver.guava>33.6.0-jre</ver.guava>
 
