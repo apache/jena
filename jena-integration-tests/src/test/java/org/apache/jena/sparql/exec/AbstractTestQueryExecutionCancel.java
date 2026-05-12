@@ -82,7 +82,7 @@ public abstract class AbstractTestQueryExecutionCancel {
 
     private static final String ns = "http://example/ns#";
 
-    static Model m = GraphFactory.makeJenaDefaultModel();
+    static Model m = GraphFactory.makeDefaultModel();
     static Resource r1 = m.createResource();
     static Property p1 = m.createProperty(ns+"p1");
     static Property p2 = m.createProperty(ns+"p2");

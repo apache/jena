@@ -51,7 +51,7 @@ public class GraphFactory {
      * This affects {@link #createDefaultGraph}.
      * @deprecated Do not use.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static void setDftGraphSameTerm(boolean value) {
         defaultSameTerm = value;
     }
@@ -89,15 +89,19 @@ public class GraphFactory {
     }
 
     /**
-     * Create a graph - ARQ-wide default type.
+     * Create a graph.
      * <p>
      * From Jena5, this is "same-term"
      */
     public static Graph createDefaultGraph() {
-        return createJenaDefaultGraph();
+        return GraphMemFactory.createDefaultGraph();
     }
 
-    /** Create a graph - the Jena default graph for ARQ and RIOT */
+    /**
+     * Create a graph - the Jena default graph.
+     * @deprecated use {@link #createDefaultGraph()}
+     */
+    @Deprecated(forRemoval = true)
     public static Graph createJenaDefaultGraph() {
         return GraphMemFactory.createDefaultGraph();
     }
@@ -106,12 +110,15 @@ public class GraphFactory {
         return GraphSink.instance();
     }
 
-    /** Guaranteed call-through to Jena's ModelFactory operation */
+    /**
+     * @deprecated use {@link #makeDefaultModel()}
+     */
+    @Deprecated(forRemoval = true)
     public static Model makeJenaDefaultModel() {
-        return ModelFactory.createDefaultModel();
+        return makeDefaultModel();
     }
 
-    /** Create a model over a default graph (ARQ-wide for default graph type) */
+    /** Create a model over a default graph (system-wide for default graph type) */
     public static Model makeDefaultModel() {
         return ModelFactory.createModelForGraph(createDefaultGraph());
     }

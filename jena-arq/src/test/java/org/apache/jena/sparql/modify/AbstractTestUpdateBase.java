@@ -43,7 +43,7 @@ public abstract class AbstractTestUpdateBase
     protected void namedGraphData(DatasetGraph gStore, Node uri, Graph data) {
         Graph g = gStore.getGraph(uri);
         if ( g == null ) {
-            gStore.addGraph(uri, GraphFactory.createJenaDefaultGraph());
+            gStore.addGraph(uri, GraphFactory.createDefaultGraph());
             g = gStore.getGraph(uri);
         } else
             g.clear();
