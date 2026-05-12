@@ -21,6 +21,7 @@
 
 package org.apache.jena.sparql.service.enhancer.claimingcache;
 
+import java.time.Duration;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
@@ -353,7 +354,7 @@ public class AsyncClaimingCacheImplGuava<K, V>
         // TODO This should become a test case that tests the eviction guard feature
 
         AsyncClaimingCacheImplGuava<String, String> cache = AsyncClaimingCacheImplGuava.<String, String>newBuilder(
-                CacheBuilder.newBuilder().maximumSize(10).expireAfterWrite(1, TimeUnit.SECONDS))
+                CacheBuilder.newBuilder().maximumSize(10).expireAfterWrite(Duration.ofSeconds(1)))
             .setCacheLoader(key -> "Loaded " + key)
             .setAtomicRemovalListener(n -> System.out.println("Evicted " + n.getKey()))
             .setClaimListener((k, v) -> System.out.println("Claimed: " + k))
