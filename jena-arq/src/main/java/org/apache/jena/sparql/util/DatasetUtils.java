@@ -195,7 +195,7 @@ public class DatasetUtils
         // Merge into background graph
         if ( uriList != null && ! uriList.isEmpty() ) {
             // Isolate from syntax errors
-            Graph gTmp = GraphFactory.createJenaDefaultGraph();
+            Graph gTmp = GraphFactory.createDefaultGraph();
             for ( Iterator<String> iter = uriList.iterator() ; iter.hasNext() ; ) {
                 String sourceURI = iter.next();
                 String absURI = baseURI(sourceURI, absBaseURI);
@@ -210,7 +210,7 @@ public class DatasetUtils
                 String sourceURI = iter.next();
                 String absURI = baseURI(sourceURI, absBaseURI);
                 // Read into a tmp graph in case of syntax errors.
-                Graph gTmp = GraphFactory.createJenaDefaultGraph();
+                Graph gTmp = GraphFactory.createDefaultGraph();
                 RDFDataMgr.read(gTmp, sourceURI, absBaseURI, null);
                 Node gn = NodeFactory.createURI(sourceURI);
                 dsg.addGraph(gn, gTmp);

@@ -50,12 +50,12 @@ public class TestAPI
 {
     private static final String ns = "http://example/ns#";
 
-    static Model m = GraphFactory.makeJenaDefaultModel();
+    static Model m = GraphFactory.makeDefaultModel();
     static Resource r1 = m.createResource();
     static Property p1 = m.createProperty(ns+"p1");
     static Property p2 = m.createProperty(ns+"p2");
     static Property p3 = m.createProperty(ns+"p3");
-    static Model dft = GraphFactory.makeJenaDefaultModel();
+    static Model dft = GraphFactory.makeDefaultModel();
     static Resource s = dft.createResource(ns+"s");
     static Property p = dft.createProperty(ns+"p");
     static Resource o = dft.createResource(ns+"o");

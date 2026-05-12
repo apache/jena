@@ -55,7 +55,7 @@ public class RDFOutput
      * @return Model Model contains the results
      */
     public Model asModel(ResultSet resultSet) {
-        Model m = GraphFactory.makeJenaDefaultModel();
+        Model m = GraphFactory.makeDefaultModel();
         asRDF(m, resultSet);
         if ( m.getNsPrefixURI("rs") == null )
             m.setNsPrefix("rs", ResultSetGraphVocab.getURI());
@@ -130,7 +130,7 @@ public class RDFOutput
 
     // Boolean results
     public Model asModel(boolean result) {
-        Model m = GraphFactory.makeJenaDefaultModel();
+        Model m = GraphFactory.makeDefaultModel();
         encodeAsRDF(m, result);
         addPrefixes(m);
         return m;
