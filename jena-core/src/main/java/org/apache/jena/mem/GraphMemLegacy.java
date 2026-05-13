@@ -22,12 +22,15 @@
 package org.apache.jena.mem;
 
 import org.apache.jena.mem.store.TripleStore;
+import org.apache.jena.mem.store.legacy.ArrayBunch;
+import org.apache.jena.mem.store.legacy.HashedBunchMap;
 import org.apache.jena.mem.store.legacy.LegacyTripleStore;
 
 /**
  * A graph that stores triples in memory. This class is not thread-safe.
  * <p>
- * Purpose: Use this graph implementation if you want to maintain the 'old' behavior of GraphMem or if your memory
+ * Purpose: Use this graph implementation if you want to maintain the 'old' behavior of GraphMem,
+ * while being "same term", or if your memory
  * constraints prevent you from utilizing more memory-intensive solutions.
  * <p>
  * Slightly improved performance compared to {@link org.apache.jena.memvalue.GraphMemValue}
@@ -42,7 +45,7 @@ import org.apache.jena.mem.store.legacy.LegacyTripleStore;
  * <p>
  * This implementation is based on the original {@link org.apache.jena.memvalue.GraphMemValue} implementation.
  * The main difference is that it strictly uses term equality for all nodes.
- * The inner workings of the used structures like ArrayBunch and HashedBunchMap are not changed.
+ * The inner workings of the used structures like {@link ArrayBunch} and {@link HashedBunchMap} are not changed.
  */
 public class GraphMemLegacy extends GraphMem {
 
