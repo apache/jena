@@ -189,6 +189,7 @@ public abstract class FastHashMap<K, V> extends FastHashBase<K> implements JenaM
      * @param i index
      * @return value
      */
+    @Override
     public V getValueAt(int i) {
         return values[i];
     }
