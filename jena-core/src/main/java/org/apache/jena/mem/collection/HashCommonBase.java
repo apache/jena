@@ -101,14 +101,15 @@ public abstract class HashCommonBase<E> implements JenaMapSetCommon<E> {
         threshold = (int) (keys.length * LOAD_FACTOR);
     }
 
+    @Override
     public int size() {
         return size;
     }
 
+    @Override
     public boolean isEmpty() {
         return size == 0;
     }
-
 
     /**
      * Subclasses must implement to answer a new Key[size] array.
@@ -155,6 +156,7 @@ public abstract class HashCommonBase<E> implements JenaMapSetCommon<E> {
      * Remove the object <code>key</code> from this hash's keys if it
      * is present (if it's absent, do nothing).
      */
+    @Override
     public boolean tryRemove(final E key) {
         int slot = findSlot(key);
         if (slot < 0) {
@@ -168,6 +170,7 @@ public abstract class HashCommonBase<E> implements JenaMapSetCommon<E> {
      * Remove the object <code>key</code> from this hash's keys if it
      * is present (if it's absent, do nothing).
      */
+    @Override
     public void removeUnchecked(final E key) {
         int slot = findSlot(key);
         if (slot < 0) {
@@ -192,10 +195,12 @@ public abstract class HashCommonBase<E> implements JenaMapSetCommon<E> {
         }
     }
 
+    @Override
     public boolean containsKey(final E key) {
         return findSlot(key) < 0;
     }
 
+    @Override
     public boolean anyMatch(final Predicate<E> predicate) {
         var pos = keys.length - 1;
         while (-1 < pos) {
@@ -207,10 +212,12 @@ public abstract class HashCommonBase<E> implements JenaMapSetCommon<E> {
         return false;
     }
 
+    @Override
     public ExtendedIterator<E> keyIterator() {
         return new SparseArrayIterator<>(keys, this);
     }
 
+    @Override
     public Spliterator<E> keySpliterator() {
         return new SparseArraySpliterator<>(keys, this);
     }
