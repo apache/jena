@@ -34,20 +34,19 @@ import org.apache.jena.util.iterator.NullIterator ;
 /**
  * A factory class for creating memory Graphs.
  * <p>
- * Apache Jena is migrating to term semantics graph for consistency across all in-memory and persistent storage graphs.
- * <p>
  * All the graphs that this factory creates are <strong>not thread-safe</strong>.
- * Note that if the memory Graph is structurally modified at any time after
- * the iterator has been created by any of the {@code find*} or {@code stream*} methods, the iterator may throw
- * a {@link java.util.ConcurrentModificationException ConcurrentModificationException}
- * if continued with it after this modification.
- * This may happen even if the queried data does not relate directly to the modified data
- * (i.e. when triple search pattern does not match added or deleted triple).
+ * Note that if the memory Graph is structurally modified at any time after the
+ * iterator has been created by any of the {@code find*} or {@code stream*} methods,
+ * the iterator may throw a {@link java.util.ConcurrentModificationException
+ * ConcurrentModificationException} if continued with it after this modification.
+ * This may happen even if the queried data does not relate directly to the modified
+ * data (i.e. when triple search pattern does not match added or deleted triple).
  * <p>
- * The good practice is to explicitly close any {@link ExtendedIterator} immediately after a read operation.
- * For GraphMem implementations {@code ExtendedIterator}'s materializing methods (such as {@link ExtendedIterator#toList()})
- * could be used safely without explicit close. The same is true for {@link java.util.stream.Stream Java Stream}'s
- * terminal operations.
+ * The good practice is to explicitly close any {@link ExtendedIterator} immediately
+ * after a read operation. For GraphMem implementations {@code ExtendedIterator}'s
+ * materializing methods (such as {@link ExtendedIterator#toList()}) could be used
+ * safely without explicit close. The same is true for {@link java.util.stream.Stream
+ * Java Stream}'s terminal operations.
  */
 public class GraphMemFactory
 {
@@ -58,6 +57,11 @@ public class GraphMemFactory
     /**
      * Answer a memory-based graph.
      * This is the system default.
+     * This implementation of {@link Graph} is not thread-safe;
+     * the application is responsible for thread control.
+     * <p>
+     * Use {@code GraphFactory.createTxnGraph} for a memory graph
+     * with transaction support.
      */
     public static Graph createDefaultGraph() {
         return createDefaultGraphSameTerm();
@@ -75,7 +79,7 @@ public class GraphMemFactory
     }
 
     /**
-     * Answer a memory-based graph with "same value" semantics
+     * Answer a memory-based graph with "same value" semantics.
      * used in Jena2, Jena3 and Jena4 for in-memory graphs.
      * Jena5 changed to "same term" semantics.
      * This method will continue to provide a "same value" graph.
@@ -88,7 +92,7 @@ public class GraphMemFactory
     }
 
     /**
-     * Answer a memory-based graph with "same term" semantics
+     * Answer a memory-based graph with "same term" semantics.
      * This method will continue to provide the preferred
      * general purpose "same term" graph.
      */
@@ -122,7 +126,9 @@ public class GraphMemFactory
      * This graph implementation provides improved performance with a minor increase in memory usage.
      * <p>
      * See {@link GraphMemFast} for details.
+     * @deprecated Use {@link #createDefaultGraph()}
      */
+    @Deprecated(forRemoval=true)
     public static Graph createGraphMem2() {
         return new GraphMemFast();
     }
