@@ -22,6 +22,7 @@
 package arq;
 
 import org.apache.jena.query.ResultSet;
+import org.apache.jena.sparql.resultset.ResultSetException;
 import org.apache.jena.sparql.util.QueryExecUtils;
 import arq.cmdline.CmdARQ;
 import arq.cmdline.ModResultsIn;
@@ -57,8 +58,13 @@ public class rset extends CmdARQ {
 
     @Override
     protected void exec() {
-        ResultSet rs = modInput.getResultSet();
-        QueryExecUtils.outputResultSet(rs, null, modOutput.getResultsFormat(), System.out);
+        try {
+            ResultSet rs = modInput.getResultSet();
+            QueryExecUtils.outputResultSet(rs, null, modOutput.getResultsFormat(), System.out);
+        } catch (ResultSetException ex) {
+            System.err.println(ex.getMessage());
+        }
+
     }
 
     @Override

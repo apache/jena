@@ -23,30 +23,38 @@ package org.apache.jena.riot.rowset.rw;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.junit.jupiter.api.Test;
+
+import org.apache.commons.lang3.Strings;
 import org.apache.jena.atlas.io.IOX;
 import org.apache.jena.atlas.lib.Bytes;
+import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.rowset.RowSetReader;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.exec.RowSetOps;
+import org.apache.jena.sparql.resultset.ResultSetException;
 import org.apache.jena.sys.JenaSystem;
-import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Addition tests for result readers.
- * The SPARQl test suite cover most usage. This class adds tests
+ * The SPARQL test suite cover most usage. This class adds tests.
  */
 public class TestRowSetReader {
     static { JenaSystem.init(); }
 
-    // Check "abc"^^rdf:langString and "abc"^^rdf:dirLangString and "
+    // Check "abc"^^rdf:langString and "abc"^^rdf:dirLangString - i.e. incomplete forms.
     @Test public void resultSet_json_1() {
         String r = """
                 {
@@ -69,6 +77,49 @@ public class TestRowSetReader {
         RowSet rowset = read(r, ResultSetLang.RS_JSON);
         assertNotNull(rowset);
         assertEquals(2, RowSetOps.count(rowset));
+    }
+
+    // Check error handling of bad JSON
+    @Test public void resultSet_json_bad_vars() {
+        // Trailing comma in "vars" array. This is only a warning.
+        String r = """
+                { "head": { "vars": [ "x", "y" , ] } ,
+                  "results": {
+                    "bindings": [
+                      {
+                        "x": { "type": "literal" , "value": "A" } ,
+                        "y": { "type": "literal" , "value": "B" }
+                      }
+                    ]
+                  }
+                }
+                """;
+        Logger log = LoggerFactory.getLogger(RowSetReaderJSONStreaming.class);
+        LogCtl.withLevel(log, "ERROR", ()->{
+            RowSet rowset = read(r, ResultSetLang.RS_JSON);
+            assertNotNull(rowset);
+            assertEquals(1, RowSetOps.count(rowset));
+        });
+    }
+
+    // Check error handling of bad JSON
+    @Test public void resultSet_json_bad_bindings() {
+        // Trailing comma in "bindings" array. This is an error. It might be file truncation.
+        String r = """
+                { "head": { "vars": [ "x", "y" ] } ,
+                  "results": {
+                    "bindings": [
+                      {
+                        "x": { "type": "literal" , "value": "A" } ,
+                        "y": { "type": "literal" , "value": "B" } ,
+                      }
+                    ]
+                  }
+                }
+                """;
+        ResultSetException ex = assertThrows(ResultSetException.class, ()-> read(r, ResultSetLang.RS_JSON));
+        String msg = ex.getMessage();
+        assertTrue(Strings.CI.containsAny(msg, "JSON Syntax error:"));
     }
 
     @Test public void resultSet_xml_1() {

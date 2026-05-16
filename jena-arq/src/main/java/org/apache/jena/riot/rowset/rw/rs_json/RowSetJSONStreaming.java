@@ -35,9 +35,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
@@ -82,7 +80,6 @@ public class RowSetJSONStreaming<E> extends IteratorSlotted<Binding> implements 
 
         Gson gson = new Gson();
         JsonReader reader = gson.newJsonReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-
         // Set up handling of unexpected json elements
         UnexpectedJsonEltHandler unexpectedJsonHandler = (_gson, _reader) -> {
             ErrorHandlers.relay(errorHandler, validationSettings.unexpectedJsonElementSeverity, () ->
@@ -94,7 +91,7 @@ public class RowSetJSONStreaming<E> extends IteratorSlotted<Binding> implements 
         // Experiments with an decoder/encoder that returned Bindings directly without
         // wrapping them as RsJsonEltDft did not show a significant performance difference
         // that would justify supporting alternative encoder/decoder pairs.
-        RsJsonEltEncoder<RsJsonEltDft> eltEncoder = new RsJsonEltEncoderDft(labelMap, null, unexpectedJsonHandler);
+        RsJsonEltEncoder<RsJsonEltDft> eltEncoder = new RsJsonEltEncoderDft(labelMap, null, unexpectedJsonHandler, errorHandler);
         RsJsonEltDecoder<RsJsonEltDft> eltDecoder = RsJsonEltDecoderDft.INSTANCE;
         IteratorRsJSON<RsJsonEltDft> eltIt = new IteratorRsJSON<>(gson, reader, eltEncoder);
 
@@ -335,35 +332,58 @@ public class RowSetJSONStreaming<E> extends IteratorSlotted<Binding> implements 
 
     /* Parsing (gson-based) ------------------------------------------------ */
 
+    private static Type stringListType = new TypeToken<List<String>>() {}.getType();
     /** Parse the vars element from head - may return null */
-    static List<Var> parseHeadVars(Gson gson, JsonReader reader) throws IOException {
+    static List<Var> parseHeadVars(Gson gson, JsonReader reader, ErrorHandler errorHandler) throws IOException {
         List<Var> result = null;
-        Type stringListType = new TypeToken<List<String>>() {}.getType();
-        JsonObject headJson = gson.fromJson(reader, JsonObject.class);
+        JsonObject headJson = fromJsonReader(gson, reader, jsonObjectToken, errorHandler);
         JsonElement varsJson = headJson.get(kVars);
         if (varsJson != null) {
-            List<String> varNames = gson.fromJson(varsJson, stringListType);
+            // A list ending in "," (bad JSON) cause a java null at the end of the array.
+            List<String> varNames = fromGsonElement(gson, varsJson, stringListType, errorHandler);
+            // GSON in lenient mode parses trailing comma and returns a java null.
+            if ( ! varNames.isEmpty() && varNames.getLast() == null ) {
+                errorHandler.warning("Bad JSON: \"vars\" array ends in a comma", -1, -1);
+                //throw new ResultSetException("Bad JSON: Array ends in a comma");
+                varNames.removeLast();
+            }
             result = Var.varList(varNames);
         }
         return result;
     }
 
+    static TypeToken<JsonObject> jsonObjectToken = TypeToken.get(JsonObject.class);
     static Binding parseBinding(
             Gson gson, JsonReader reader, LabelToNode labelMap,
-            Function<JsonObject, Node> onUnknownRdfTermType) throws IOException {
-        JsonObject obj = gson.fromJson(reader, JsonObject.class);
-
+            Function<JsonObject, Node> onUnknownRdfTermType,
+            ErrorHandler errorHandler) throws IOException {
+        JsonObject obj = fromJsonReader(gson, reader, jsonObjectToken, errorHandler);
         BindingBuilder bb = BindingFactory.builder();
-
         for (Entry<String, JsonElement> e : obj.entrySet()) {
             Var v = Var.alloc(e.getKey());
             JsonElement nodeElt = e.getValue();
-
             Node node = parseOneTerm(nodeElt, labelMap, onUnknownRdfTermType);
             bb.add(v, node);
         }
-
         return bb.build();
+    }
+
+    static JsonObject fromJsonReader(Gson gson, JsonReader reader, TypeToken<JsonObject> typeOfT, ErrorHandler errorHandler) {
+        try {
+            return gson.fromJson(reader, typeOfT);
+        } catch (JsonParseException ex) {
+            errorHandler.fatal("JSON Syntax error: "+ex.getMessage(), -1, -1);
+            return null;
+        }
+    }
+
+    static <T> T fromGsonElement(Gson gson, JsonElement jsonElement, Type type, ErrorHandler errorHandler) {
+        try {
+            return gson.fromJson(jsonElement, type);
+        } catch (JsonParseException ex) {
+            errorHandler.fatal("JSON Syntax error: "+ex.getMessage(), -1, -1);
+            return null;
+        }
     }
 
     static Node parseOneTerm(JsonElement jsonElt, LabelToNode labelMap, Function<JsonObject, Node> onUnknownRdfTermType) {
@@ -557,19 +577,23 @@ public class RowSetJSONStreaming<E> extends IteratorSlotted<Binding> implements 
         protected LabelToNode labelMap;
         protected Function<JsonObject, Node> unknownRdfTermTypeHandler;
         protected UnexpectedJsonEltHandler unexpectedJsonHandler;
+        protected final ErrorHandler errorHandler;
 
         public RsJsonEltEncoderDft(LabelToNode labelMap,
                 Function<JsonObject, Node> unknownRdfTermTypeHandler,
-                UnexpectedJsonEltHandler unexpectedJsonHandler) {
+                UnexpectedJsonEltHandler unexpectedJsonHandler,
+                ErrorHandler errorHandler
+                ) {
             super();
             this.labelMap = labelMap;
             this.unknownRdfTermTypeHandler = unknownRdfTermTypeHandler;
             this.unexpectedJsonHandler = unexpectedJsonHandler;
+            this.errorHandler = errorHandler;
         }
 
         @Override
         public RsJsonEltDft newHeadElt(Gson gson, JsonReader reader) throws IOException {
-            List<Var> vars = parseHeadVars(gson, reader);
+            List<Var> vars = parseHeadVars(gson, reader, errorHandler);
             return new RsJsonEltDft(vars);
         }
 
@@ -581,7 +605,7 @@ public class RowSetJSONStreaming<E> extends IteratorSlotted<Binding> implements 
 
         @Override
         public RsJsonEltDft newBindingElt(Gson gson, JsonReader reader) throws IOException {
-            Binding binding = parseBinding(gson, reader, labelMap, unknownRdfTermTypeHandler);
+            Binding binding = parseBinding(gson, reader, labelMap, unknownRdfTermTypeHandler, errorHandler);
             return new RsJsonEltDft(binding);
         }
 
@@ -592,7 +616,7 @@ public class RowSetJSONStreaming<E> extends IteratorSlotted<Binding> implements 
 
         @Override
         public RsJsonEltDft newUnknownElt(Gson gson, JsonReader reader) throws IOException {
-            JsonElement jsonElement = unexpectedJsonHandler == null
+            JsonElement jsonElement = (unexpectedJsonHandler == null)
                     ? null
                     : unexpectedJsonHandler.apply(gson, reader);
             return new RsJsonEltDft(jsonElement);
