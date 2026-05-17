@@ -391,13 +391,13 @@ public interface ARQParserConstants {
   /** RegularExpression Id. */
   int ECHAR = 185;
   /** RegularExpression Id. */
-  int UCHAR = 186;
+  int UCHAR4 = 186;
   /** RegularExpression Id. */
-  int UCHAR_DELIM = 187;
+  int UCHAR8 = 187;
   /** RegularExpression Id. */
-  int UCHAR4 = 188;
+  int UCHAR_DELIM = 188;
   /** RegularExpression Id. */
-  int UCHAR8 = 189;
+  int UCHAR = 189;
   /** RegularExpression Id. */
   int STRING_LITERAL1 = 190;
   /** RegularExpression Id. */
@@ -698,10 +698,10 @@ public interface ARQParserConstants {
     "\"\\\"\\\"\\\"\"",
     "\"\\\'\\\'\\\'\"",
     "<ECHAR>",
-    "<UCHAR>",
-    "<UCHAR_DELIM>",
     "<UCHAR4>",
     "<UCHAR8>",
+    "<UCHAR_DELIM>",
+    "<UCHAR>",
     "<STRING_LITERAL1>",
     "<STRING_LITERAL2>",
     "<STRING_LITERAL_LONG1>",
