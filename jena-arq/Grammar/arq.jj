@@ -21,9 +21,10 @@
 // ARQ/SPARQL 1.1 Grammar - native syntax for the query engine
 options
 {
-    // \ u processed after parsing in strings and IRIs, nowhere else.
-    JAVA_UNICODE_ESCAPE = false ;
-    UNICODE_INPUT = true ;
+// SPARQL 1.2 (not SPARQL 1.1 or 1.0)
+// \-u and \-U processed after parsing in strings and IRIs, nowhere else.
+  JAVA_UNICODE_ESCAPE = false ;
+  UNICODE_INPUT = true ;
   STATIC = false ;
 //  DEBUG_PARSER          = true ;
 //  DEBUG_TOKEN_MANAGER   = true ;
@@ -2160,6 +2161,8 @@ Node BlankNode() : { Token t = null ; }
 //  <LBRACKET> <RBRACKET> { return createBNode(t.beginLine, t.beginColumn) ; }
   t = <ANON> { return createBNode(t.beginLine, t.beginColumn) ; }
 }
+// IRIREF must be the last rule. The production of the HTML uses this as the
+// signal to switch from rules to terminals.
 String IRIREF() : { Token t ; }
 {
   t = <IRIref>
@@ -2392,16 +2395,16 @@ TOKEN :
 | < DOUBLE_NEGATIVE: <MINUS> <DOUBLE> >
 | < #QUOTE_3D: "\"\"\"">
 | < #QUOTE_3S: "'''">
-| <ECHAR: "\\" ( "t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'") >
-| < #UCHAR: <UCHAR4> | <UCHAR8> | <UCHAR_DELIM> >
+| < #ECHAR: "\\" ( "t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'") >
+| < #UCHAR4: "\\" "u" <HEX> <HEX> <HEX> <HEX> >
+| < #UCHAR8: "\\" "U" <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> >
 | < #UCHAR_DELIM: "\\" "u" <LBRACE>
                           // W3C EBNF does not have a "{1,6}" syntax.
                           // <HEX> (<HEX> (<HEX> (<HEX> (<HEX> (<HEX>)? )? )? )? )?
                           // Or be lax here and check the length in escape processing.
                           (<HEX>)+
                           <RBRACE> >
-| < #UCHAR4: "\\" "u" <HEX> <HEX> <HEX> <HEX> >
-| < #UCHAR8: "\\" "U" <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> >
+| < #UCHAR: <UCHAR4> | <UCHAR8> | <UCHAR_DELIM> >
 | < STRING_LITERAL1:
       // Single quoted string
       "'" ( (~["'","\\","\n","\r"]) | <ECHAR> | <UCHAR> )* "'" >

@@ -343,11 +343,11 @@ public interface SPARQLParser12Constants {
   /** RegularExpression Id. */
   int ECHAR = 161;
   /** RegularExpression Id. */
-  int UCHAR = 162;
+  int UCHAR4 = 162;
   /** RegularExpression Id. */
-  int UCHAR4 = 163;
+  int UCHAR8 = 163;
   /** RegularExpression Id. */
-  int UCHAR8 = 164;
+  int UCHAR = 164;
   /** RegularExpression Id. */
   int STRING_LITERAL1 = 165;
   /** RegularExpression Id. */
@@ -620,9 +620,9 @@ public interface SPARQLParser12Constants {
     "\"\\\"\\\"\\\"\"",
     "\"\\\'\\\'\\\'\"",
     "<ECHAR>",
-    "<UCHAR>",
     "<UCHAR4>",
     "<UCHAR8>",
+    "<UCHAR>",
     "<STRING_LITERAL1>",
     "<STRING_LITERAL2>",
     "<STRING_LITERAL_LONG1>",

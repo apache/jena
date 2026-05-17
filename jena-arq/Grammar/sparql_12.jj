@@ -21,11 +21,10 @@
 // ARQ/SPARQL 1.1 Grammar - native syntax for the query engine
 options
 {
-    // Standards with \ u everywhere, \U in strings and IRIs only.
-    // \ u processed in the input stream
-    // SPARQL 1.0 and 1.1
-    JAVA_UNICODE_ESCAPE = true ;
-    UNICODE_INPUT = false ;
+// SPARQL 1.2 (not SPARQL 1.1 or 1.0)
+// \-u and \-U processed after parsing in strings and IRIs, nowhere else.
+  JAVA_UNICODE_ESCAPE = false ;
+  UNICODE_INPUT = true ;
   STATIC = false ;
 //  DEBUG_PARSER          = true ;
 //  DEBUG_TOKEN_MANAGER   = true ;
@@ -1853,6 +1852,8 @@ Node BlankNode() : { Token t = null ; }
 //  <LBRACKET> <RBRACKET> { return createBNode(t.beginLine, t.beginColumn) ; }
   t = <ANON> { return createBNode(t.beginLine, t.beginColumn) ; }
 }
+// IRIREF must be the last rule. The production of the HTML uses this as the
+// signal to switch from rules to terminals.
 String IRIREF() : { Token t ; }
 {
   t = <IRIref>
@@ -2060,11 +2061,10 @@ TOKEN :
 | < DOUBLE_NEGATIVE: <MINUS> <DOUBLE> >
 | < #QUOTE_3D: "\"\"\"">
 | < #QUOTE_3S: "'''">
-| <ECHAR: "\\" ( "t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'") >
-// Done instream by JavaCC
-| < #UCHAR: <UCHAR8> >
+| < #ECHAR: "\\" ( "t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'") >
 | < #UCHAR4: "\\" "u" <HEX> <HEX> <HEX> <HEX> >
 | < #UCHAR8: "\\" "U" <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> >
+| < #UCHAR: <UCHAR4> | <UCHAR8> >
 | < STRING_LITERAL1:
       // Single quoted string
       "'" ( (~["'","\\","\n","\r"]) | <ECHAR> | <UCHAR> )* "'" >

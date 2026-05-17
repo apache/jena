@@ -5,7 +5,8 @@
 // The presense of a token in the file does not mean it is actually used.
 
 [<EOF>]          ::=
-[<IRIref>]   ::= '<' ([^<>"{}|^`\]-[#x00-#x20])* '>'
+[<IRIref>]   ::= '<' [^<>"{}|^`\]-[#x00-#x20] | <UCHAR> ) * '>'
+
 <PNAME_NS>   ::= <PN_PREFIX>? ':'
 <PNAME_LN>   ::= <PNAME_NS> <PN_LOCAL>
 <BLANK_NODE_LABEL> ::= '_:' ( <PN_CHARS_U> | [0-9] ) ((<PN_CHARS>|'.')* <PN_CHARS>)?
@@ -31,15 +32,14 @@
 <DECIMAL_NEGATIVE> ::= <MINUS> <DECIMAL>
 <DOUBLE_NEGATIVE>  ::= <MINUS> <DOUBLE>
 
+<STRING_LITERAL1> ::= "'" ( ([^#x27#x5C#xA#xD]) | <ECHAR> | <UCHAR> )* "'"
+<STRING_LITERAL2> ::= '"' ( ([^#x22#x5C#xA#xD]) | <ECHAR> | <UCHAR> )* '"'
 
-<STRING_LITERAL1> ::= "'" ( ([^#x27#x5C#xA#xD]) | <ECHAR> )* "'"
-<STRING_LITERAL2> ::= '"' ( ([^#x22#x5C#xA#xD]) | <ECHAR> )* '"'
+<STRING_LITERAL_LONG1> ::= "'''" ( ( "'" | "''" )? ( [^'\] | <ECHAR> | <UCHAR> ) )* "'''"
+<STRING_LITERAL_LONG2> ::= '"""' ( ( '"' | '""' )? ( [^"\] | <ECHAR> | <UCHAR> ) )* '"""'
 
-<STRING_LITERAL_LONG1> ::= "'''" ( ( "'" | "''" )? ( [^'\] | <ECHAR> ) )* "'''"
-<STRING_LITERAL_LONG2> ::= '"""' ( ( '"' | '""' )? ( [^"\] | <ECHAR> ) )* '"""'
-
-<ECHAR>           ::= '\' [tbnrf\"']
-// The print value is the whitespace trimmed value after ::=
+<ECHAR>        ::= '\' [tbnrf\"']
+<UCHAR>        ::= ('\u' HEX HEX HEX HEX) | ('\U' HEX HEX HEX HEX HEX HEX HEX HEX)
 
 [<KW_A>]       ::= 'a'
 

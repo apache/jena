@@ -5986,6 +5986,8 @@ lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
     throw new Error("Missing return statement in function");
 }
 
+// IRIREF must be the last rule. The production of the HTML uses this as the
+// signal to switch from rules to terminals.
   final public String IRIREF() throws ParseException {Token t ;
     t = jj_consume_token(IRIref);
 {if ("" != null) return resolveQuotedIRI(t.image, t.beginLine, t.beginColumn) ;}
@@ -5994,7 +5996,7 @@ lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
 
   /** Generated Token Manager. */
   public SPARQLParser12TokenManager token_source;
-  JavaCharStream jj_input_stream;
+  SimpleCharStream jj_input_stream;
   /** Current token. */
   public Token token;
   /** Next token. */
@@ -6046,7 +6048,7 @@ lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
   }
   /** Constructor with InputStream and supplied encoding */
   public SPARQLParser12(java.io.InputStream stream, String encoding) {
-	 try { jj_input_stream = new JavaCharStream(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
+	 try { jj_input_stream = new SimpleCharStream(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
 	 token_source = new SPARQLParser12TokenManager(jj_input_stream);
 	 token = new Token();
 	 jj_ntk = -1;
@@ -6070,7 +6072,7 @@ lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
 
   /** Constructor. */
   public SPARQLParser12(java.io.Reader stream) {
-	 jj_input_stream = new JavaCharStream(stream, 1, 1);
+	 jj_input_stream = new SimpleCharStream(stream, 1, 1);
 	 token_source = new SPARQLParser12TokenManager(jj_input_stream);
 	 token = new Token();
 	 jj_ntk = -1;
@@ -6081,7 +6083,7 @@ lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
   /** Reinitialise. */
   public void ReInit(java.io.Reader stream) {
 	if (jj_input_stream == null) {
-	   jj_input_stream = new JavaCharStream(stream, 1, 1);
+	   jj_input_stream = new SimpleCharStream(stream, 1, 1);
 	} else {
 	   jj_input_stream.ReInit(stream, 1, 1);
 	}

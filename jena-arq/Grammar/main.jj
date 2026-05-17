@@ -54,18 +54,10 @@
 
 options
 {
-#ifdef SPARQL_12
-    // Standards with \ u everywhere, \U in strings and IRIs only.
-    // \ u processed in the input stream
-    // SPARQL 1.0 and 1.1
-    JAVA_UNICODE_ESCAPE   = true ;
-    UNICODE_INPUT         = false ;
-#endif
-#ifdef ARQ
-    // \ u processed after parsing in strings and IRIs, nowhere else.
-    JAVA_UNICODE_ESCAPE   = false ;
-    UNICODE_INPUT         = true ;
-#endif
+// SPARQL 1.2 (not SPARQL 1.1 or 1.0)
+// \-u and \-U processed after parsing in strings and IRIs, nowhere else.
+  JAVA_UNICODE_ESCAPE   = false ;
+  UNICODE_INPUT         = true ;
 
   STATIC                = false ;
 //  DEBUG_PARSER          = true ;
@@ -2658,6 +2650,8 @@ Node BlankNode() :  { Token t = null ; }
 
 }
 
+// IRIREF must be the last rule. The production of the HTML uses this as the
+// signal to switch from rules to terminals.
 String IRIREF() : { Token t ; }
 {
   t = <IRIref>
@@ -2959,22 +2953,22 @@ TOKEN :
 
 | < #QUOTE_3D: "\"\"\"">
 | < #QUOTE_3S: "'''">
-| <ECHAR: "\\" ( "t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'") >
+| < #ECHAR:    "\\" ( "t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'") >
+| < #UCHAR4:   "\\" "u" <HEX> <HEX> <HEX> <HEX> >
+| < #UCHAR8:   "\\" "U" <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> >
 #ifdef SPARQL_12
-// Done instream by JavaCC
-| < #UCHAR:      <UCHAR8> >
+| < #UCHAR:    <UCHAR4> | <UCHAR8> >
 #endif
 #ifdef ARQ
-| < #UCHAR:      <UCHAR4> | <UCHAR8> | <UCHAR_DELIM> >
 | < #UCHAR_DELIM: "\\" "u" <LBRACE>
                           // W3C EBNF does not have a "{1,6}" syntax.
                           // <HEX> (<HEX> (<HEX> (<HEX> (<HEX> (<HEX>)? )? )? )? )?
                           // Or be lax here and check the length in escape processing.
                           (<HEX>)+
                           <RBRACE> >
+| < #UCHAR:      <UCHAR4> | <UCHAR8> | <UCHAR_DELIM> >
 #endif
-| < #UCHAR4:     "\\" "u" <HEX> <HEX> <HEX> <HEX> >
-| < #UCHAR8:     "\\" "U" <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> >
+
 
 | < STRING_LITERAL1: 
       // Single quoted string
