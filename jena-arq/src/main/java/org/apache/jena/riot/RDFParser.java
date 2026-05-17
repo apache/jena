@@ -314,12 +314,21 @@ public class RDFParser {
         return dataset;
     }
 
+    public static class SetupException extends RiotException {
+        public SetupException(String msg)                { super(msg) ; }
+        public SetupException(String msg, Throwable th)  { super(msg, th) ; }
+    }
+
+    private static RiotException setupException(String msg) {
+        return new SetupException(msg);
+    }
+
     /**
      * Parse the source, sending the results to a {@link StreamRDF}.
      */
     public void parse(StreamRDF destination) {
         if ( !canUseThisParser )
-            throw new RiotException("Parser has been used once and can not be used again");
+            throw setupException("Parser has been used once and can not be used again");
         // Consuming mode.
         canUseThisParser = (inputStream == null && javaReader == null);
         // FactoryRDF is stateful in the LabelToNode mapping.
@@ -357,7 +366,7 @@ public class RDFParser {
             if ( forceLang != null ) {
                 ReaderRIOTFactory r = RDFParserRegistry.getFactory(forceLang);
                 if ( r == null )
-                    throw new RiotException("No parser registered for language: " + forceLang);
+                    throw setupException("No parser registered for language: " + forceLang);
                 ct = forceLang.getContentType();
                 readerRiot = createReader(r, forceLang);
             } else {
@@ -377,11 +386,16 @@ public class RDFParser {
                 else
                     target = baseURI;
                 ct = WebContent.determineCT(input.getContentType(), hintLang, target);
-                if ( ct == null )
-                    throw new RiotException("Failed to determine the content type: (URI=" + baseURI + " : stream=" + input.getContentType()+")");
+                if ( ct == null ) {
+                    String inputCT = input.getContentType();
+                    String msg = (inputCT != null)
+                            ? "Failed to determine the content type for " + baseURI + " : stream=" + input.getContentType()
+                            : "Failed to determine the content type for " + baseURI;
+                    throw setupException(msg);
+                }
                 readerRiot = createReader(ct);
                 if ( readerRiot == null )
-                    throw new RiotException("No parser registered for content type: " + ct.getContentTypeStr());
+                    throw setupException("No parser registered for content type: " + ct.getContentTypeStr());
             }
             read(readerRiot, input, null, baseURI, context, ct, destination);
         }
@@ -395,11 +409,11 @@ public class RDFParser {
             lang = forceLang;
         ContentType ct = WebContent.determineCT(null, lang, baseURI);
         if ( ct == null )
-            throw new RiotException("Failed to determine the RDF syntax (.lang or .base required)");
+            throw setupException("Failed to determine the RDF syntax (.lang or .base required)");
 
         ReaderRIOT readerRiot = createReader(ct);
         if ( readerRiot == null )
-            throw new RiotException("No parser registered for content type: " + ct.getContentTypeStr());
+            throw setupException("No parser registered for content type: " + ct.getContentTypeStr());
         Reader jr = javaReader;
         if ( stringToParse != null )
             jr = new StringReader(stringToParse);
