@@ -56,6 +56,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sys.JenaSystem;
+import org.slf4j.Logger;
 
 /** Common framework for running RIOT parsers */
 public abstract class CmdLangParse extends CmdMain {
@@ -162,8 +163,7 @@ public abstract class CmdLangParse extends CmdMain {
 
         try {
             exec$();
-        }
-        finally {
+        } finally {
             SysRIOT.setStrictMode(oldStrictValue);
         }
     }
@@ -265,8 +265,9 @@ public abstract class CmdLangParse extends CmdMain {
         // pr.success is true if the indicates the parser completed it's run
         // (no failure-on-error or unexpected exceptions).
         for ( ParseRecord pr : outcomes ) {
-            if ( !pr.success || pr.errHandler.hadErrors() )
+            if ( !pr.success || pr.errHandler.hadErrors() ) {
                 throw new TerminationException(1);
+            }
         }
     }
 
@@ -363,28 +364,29 @@ public abstract class CmdLangParse extends CmdMain {
 
         // Build parser output additions.
         StreamRDFCounting parserOut;
-        {
-            StreamRDF s = parserOutputStream;
-            if ( setupRDFS != null ) {
-                // Remove literals as subjects
-                s = RDFSFactory.removeGeneralizedRDF(s);
-                // Generate RDFS (this feeds into the stream created above).
-                s = RDFSFactory.streamRDFS(s, setupRDFS);
-                // Parser sends data to RDFS, which goes to the filter, then to parserOutputStream
-            }
-            // If added here, count is quads and triples seen in the input.
-            if ( modLangParse.mergeQuads() )
-                s = new QuadsToTriples(s);
-            parserOut = StreamRDFLib.count(s);
-            s = null;
+        StreamRDF s = parserOutputStream;
+        if ( setupRDFS != null ) {
+            // Remove literals as subjects
+            s = RDFSFactory.removeGeneralizedRDF(s);
+            // Generate RDFS (this feeds into the stream created above).
+            s = RDFSFactory.streamRDFS(s, setupRDFS);
+            // Parser sends data to RDFS, which goes to the filter, then to parserOutputStream
         }
+        // If added here, count is quads and triples seen in the input.
+        if ( modLangParse.mergeQuads() )
+            s = new QuadsToTriples(s);
+        parserOut = StreamRDFLib.count(s);
+        // Not used beyond this point.
+        s = null;
 
-        ErrorHandlerCLI errHandler = ErrorHandlerCLI.errorHandlerTracking(ErrorHandlerFactory.stdLogger,
-                                                                          passRelativeURIs,         // Silent warnings if allowing relative URIs.
-                                                                          true,                     // Fail on error
-                                                                          stopOnWarnings,           // Fail on warnings
-                                                                          ()->parserOut.finish()    // Flush to align log messages
-                                                                          );
+        Logger logger = ErrorHandlerFactory.stdLogger;
+        ErrorHandlerCLI errHandler = ErrorHandlerCLI
+                .errorHandlerTracking(logger,
+                                      passRelativeURIs,         // Silence warnings if allowing relative URIs.
+                                      true,                     // Fail on error
+                                      stopOnWarnings,           // Fail on warnings
+                                      ()->parserOut.finish()    // Flush to align log messages
+                                      );
         builder.errorHandler(errHandler);
         boolean successful = true;
 
@@ -395,7 +397,13 @@ public abstract class CmdLangParse extends CmdMain {
             parser.parse(parserOut);
             successful = true;
         } catch (RiotNotFoundException ex) {
-            errHandler.error(ex.getMessage(), -1, -1);
+            logger.error(ex.getMessage(), -1, -1);
+            successful = false;
+        } catch (RDFParser.SetupException ex) {
+            logger.error(ex.getMessage());
+            successful = false;
+        } catch (RiotParseException ex) {
+            // is this reliable enough?
             successful = false;
         } catch (RiotException ex) {
             successful = false;

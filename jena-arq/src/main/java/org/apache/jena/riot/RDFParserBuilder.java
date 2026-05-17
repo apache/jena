@@ -232,9 +232,10 @@ public class RDFParserBuilder {
     }
 
     /**
-     * Set the hint {@link Lang}. This is the RDF syntax used when there is no way to
-     * deduce the syntax (e.g. read from a InputStream, not recognized file extension, no
-     * recognized HTTP Content-Type provided).
+     * Set the hint {@link Lang}. This is the RDF syntax used when there is no other way to
+     * deduce the syntax (e.g. read from a InputStream, or the file extension is not recognized,
+     * or the HTTP Content-Type does not make sense).
+     * To force the choice of language, use {@link #forceLang(Lang)}
      *
      * @param lang
      * @return this
