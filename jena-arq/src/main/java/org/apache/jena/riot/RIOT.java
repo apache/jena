@@ -22,6 +22,7 @@
 package org.apache.jena.riot ;
 
 import org.apache.jena.atlas.lib.Version;
+import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.writer.DirectiveStyle;
@@ -58,6 +59,10 @@ public class RIOT {
 
     public static Context getContext() {
         return systemGlobalContext;
+    }
+
+    public static boolean isStrictMode() {
+        return ARQ.isStrictMode();
     }
 
     public static void init() {

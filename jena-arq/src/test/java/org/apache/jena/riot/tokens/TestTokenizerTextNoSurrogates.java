@@ -21,17 +21,30 @@
 
 package org.apache.jena.riot.tokens;
 
-import org.junit.platform.suite.api.SelectClasses;
-import org.junit.platform.suite.api.Suite;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@Suite
-@SelectClasses({
-      TestTokenForNode.class
-    , TestTokenizerText.class
-    , TestTokenizerTextNoSurrogates.class
-    , TestTokenizerTextAllowEscSurrogates.class
-})
+import org.apache.jena.riot.RiotException;
 
-public class TS_Tokens
-{ }
+// Tests for the variant of TokenizerText that handles escaped surrogates
+public class TestTokenizerTextNoSurrogates extends AbstractTestTokenizerTextSurrogates {
 
+    @Override
+    protected Tokenizer tokenizer(String string) {
+        return TokenizerText.fromString(string);
+    }
+
+    // Reject all use of surrogates.
+
+    // Structurally bad.
+    @Override
+    protected void surrogateBad(String string) {
+        assertThrows(RiotException.class, ()->surrogateTest(string));
+    }
+
+    // Validly encoded into escape sequences.
+    // Jena now rejects all surrogates, via any route.
+    @Override
+    protected void surrogateValidEsc(String string) {
+        assertThrows(RiotException.class, ()->surrogateTest(string));
+    }
+}

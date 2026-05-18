@@ -139,47 +139,38 @@ public class ARQ
     /** Prefix for ARQ-defined parameter names */
     public static final String arqSymbolPrefix = "arq";
 
-    /** Stick exactly to the spec.
-     */
+    /** Stick exactly to the spec. */
     public static final Symbol strictSPARQL =
         SystemARQ.allocSymbol("strictSPARQL");
 
-    /** Controls bNode labels as &lt;_:...&gt; or not -
-     * that is a pseudo URIs.
-     * This does not affect [] or _:a bNodes as variables in queries.
+    /**
+     * Controls bNode labels as &lt;_:...&gt; or not - that is a pseudo URIs. This
+     * does not affect [] or _:a bNodes as variables in queries.
      */
+    public static final Symbol constantBNodeLabels = SystemARQ.allocSymbol("constantBNodeLabels");
 
-    public static final Symbol constantBNodeLabels =
-        SystemARQ.allocSymbol("constantBNodeLabels");
-
-    /** Enable built-in property functions - also called "magic properties".
-     * These are properties in triple patterns that need
-     * calculation, not matching.  See ARQ documentation for more details.
-     * rdfs:member and http://jena.apache.org/ARQ/list#member are provided.
+    /**
+     * Enable built-in property functions - also called "magic properties". These are
+     * properties in triple patterns that need calculation, not matching. See ARQ
+     * documentation for more details. rdfs:member and
+     * http://jena.apache.org/ARQ/list#member are provided.
      */
+    public static final Symbol enablePropertyFunctions = SystemARQ.allocSymbol("enablePropertyFunctions");
 
-    public static final Symbol enablePropertyFunctions =
-        SystemARQ.allocSymbol("enablePropertyFunctions");
+    /** Enable logging of execution timing. */
+    public static final Symbol enableExecutionTimeLogging = SystemARQ.allocSymbol("enableExecutionTimeLogging");
 
-    /** Enable logging of execution timing.
+    /**
+     * If true, XML result sets written will contain the graph bNode label.
+     * See also {@link #inputGraphBNodeLabels}.
      */
+    public static final Symbol outputGraphBNodeLabels = SystemARQ.allocSymbol("outputGraphBNodeLabels");
 
-    public static final Symbol enableExecutionTimeLogging =
-        SystemARQ.allocSymbol("enableExecutionTimeLogging");
-
-    /** If true, XML result sets written will contain the graph bNode label
-     *  See also inputGraphBNodeLabels
+    /**
+     * If true, XML result sets will use the bNode label in the result set itself.
+     * See also {@link #outputGraphBNodeLabels}.
      */
-
-    public static final Symbol outputGraphBNodeLabels =
-        SystemARQ.allocSymbol("outputGraphBNodeLabels");
-
-    /** If true, XML result sets will use the bNode label in the result set itself.
-     *  See also outputGraphBNodeLabels
-     */
-
-    public static final Symbol inputGraphBNodeLabels =
-        SystemARQ.allocSymbol("inputGraphBNodeLabels");
+    public static final Symbol inputGraphBNodeLabels = SystemARQ.allocSymbol("inputGraphBNodeLabels");
 
     /** Turn on processing of blank node labels in queries */
     public static void enableBlankNodeResultLabels() { enableBlankNodeResultLabels(true); }
