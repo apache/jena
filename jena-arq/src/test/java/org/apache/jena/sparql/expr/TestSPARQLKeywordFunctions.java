@@ -205,7 +205,7 @@ public class TestSPARQLKeywordFunctions
     @Test public void substr_30()   { test("substr('\\uD83D\\uDC6A', 1)",           "'\\uD83D\\uDC6A'"); }
     // Same using Java string escapes.
     @Test public void substr_30b()  { test("substr('\uD83D\uDC6A', 1)",             "'\uD83D\uDC6A'"); }
-    @Test public void substr_31()   { test("substr('\\uD83D\\uDC6A', 2)",                       kwEmptyString); }
+    @Test public void substr_31()   { test("substr('\\uD83D\\uDC6A', 2)",           kwEmptyString); }
 
     @Test public void substr_32()   { test("substr('ABC\\uD83D\\uDC6ADEF', 4, 1)",  "'\\uD83D\\uDC6A'"); }
     @Test public void substr_33()   { test("substr('\\uD83D\\uDC6A!', -1, 3)",      "'\\uD83D\\uDC6A'"); }

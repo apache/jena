@@ -180,6 +180,13 @@ public class Chars
     // REPLACEMENT CHARACTER
     public static final char REPLACEMENT     = 0xFFFD ;
 
+    /** Test for a surrogate codepoint */
+    public static boolean isSurrogate(int ch) {
+        // The Character class only has char tests.
+        // The range D800-DFFF (high/leading: D800-DBFF, low/trailing: DC00-DFFF)
+        return ch >= Character.MIN_HIGH_SURROGATE && ch <= Character.MAX_LOW_SURROGATE;
+    }
+
     // "Not a character" - a Unicode non-character codepoint that is not legal in UTF-8.
     public static final char NotACharacter   = 0xFFFF ;
     // Detect byte order by contrast (BOM reversed) - a Unicode non-character codepoint that is not legal in UTF-8.

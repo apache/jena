@@ -298,12 +298,18 @@ public class TestLangTurtle
 
     @Test public void turtle_surrogate_1() {
         // escaped high, escaped low
-        parseOneTriple("<x:s> <x:p> '\\ud800\\udc00' . ");
+        // If accepting escaped surrogates.
+        // parseOneTriple("<x:s> <x:p> '\\ud800\\udc00' . ");
+        // If not accepting escaped surrogates
+        parseException(ExFatal.class, ()->parseOneTriple("<x:s> <x:p> '\\ud800\\udc00' . "));
     }
 
     @Test public void turtle_surrogate_2() {
         // escaped high, raw low
-        parseOneTriple("<x:s> <x:p> '\\ud800\udc00' . ");
+        // If accepting escaped surrogates.
+        // parseOneTriple("<x:s> <x:p> '\\ud800\udc00' . ");
+        // If not accepting escaped surrogates
+        parseException(ExFatal.class, ()->parseOneTriple("<x:s> <x:p> '\\ud800\udc00' . "));
     }
 
     // Compilation failure. (maven+openjdk - OK in Eclipse, and test correct)
@@ -339,7 +345,7 @@ public class TestLangTurtle
     @Test
     public void turtle_bad_surrogate_5() {
         // Wrong way round: low-high
-        parseException(ExFatal.class, ()->parseOneTriple("<x:s> <x:p> '\\uc800\\ud800' . "));
+        parseException(ExFatal.class, ()->parseOneTriple("<x:s> <x:p> '\\udc00\\ud800' . "));
     }
 
     // Compilation failure. Can't write \ud800
@@ -352,7 +358,7 @@ public class TestLangTurtle
     @Test
     public void turtle_bad_surrogate_7() {
         // escaped low - raw high
-        parseException(ExFatal.class, ()->parseOneTriple("<x:s> <x:p> '\\uc800\ud800' . "));
+        parseException(ExFatal.class, ()->parseOneTriple("<x:s> <x:p> '\\ud800\ud800' . "));
     }
 
     // No Formulae. Not trig.
