@@ -78,7 +78,7 @@ for $g (@g) {
 
     $rulebody =~ s!^\s*!! ;
     $rulebody =~ s!\s*$!! ;
-
+    $rulebody =~ s! <EOF>$!! ;    
     
     # Remove outer brackets
 #    $rulebody =~ s!^\((.*)\)$!$1! ;
