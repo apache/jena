@@ -88,7 +88,11 @@ public class SyntaxVarScope {
         checkExprListAssignment(scopeSelectClause, query.getProject());
 
         // Check for SELECT * GROUP BY
-        // Legal in ARQ, not in SPARQL 1.1, 1.2
+        //   - not legal in SPARQL 1.1
+        // Check for SELECT * aggregator (e.g. SELECT * {} HAVING (count(*)>0) )
+        //   - not legal in SPARQL 1.2, unclear in SPARQL 1.1
+        // Legal in ARQ
+        //   Query.hasGroupBy() includes a check of aggregators
         if ( !Syntax.syntaxARQ.equals(query.getSyntax()) ) {
             if ( query.isQueryResultStar() && query.hasGroupBy() )
                 throw new QueryParseException("SELECT * not legal with GROUP BY", -1, -1);
