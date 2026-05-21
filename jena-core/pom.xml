@@ -81,6 +81,14 @@
       <scope>test</scope>
     </dependency>
 
+    <!--
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    -->
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jcl-over-slf4j</artifactId>
@@ -111,13 +119,6 @@
 
     <resources>
 
-      <!-- Legacy -->
-      <resource>
-        <directory>etc</directory>
-        <targetPath>etc</targetPath>
-        <filtering>false</filtering>
-      </resource>
-
       <resource>
         <filtering>false</filtering>
         <directory>src/main/resources</directory>
@@ -140,17 +141,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <!-- 
-             Choose the provider if necessary. 
-             Necessary if surefire is not reporting during test runs.
-        -->
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.maven.surefire</groupId>
-            <artifactId>surefire-junit47</artifactId>
-            <version>${ver.plugin.surefire}</version>
-          </dependency>
-        </dependencies>
         <configuration>
           <!-- One possibility
           <argLine>-javaagent:${org.mockito:mockito-core:jar} -Xshare:off</argLine>
@@ -158,7 +148,8 @@
           <!-- Without needing ${org.mockito:mockito-core:jar} -->
           <argLine>-XX:+EnableDynamicAgentLoading -Xshare:off</argLine>
           <includes>
-            <include>org/apache/jena/test/JenaCoreTestAll.java</include>
+            <include>org/apache/jena/test/JenaCoreTestAll_JU6.java</include>
+            <include>org/apache/jena/test/JenaCoreTestAll_JU4.java</include>
           </includes>
         </configuration>
       </plugin>

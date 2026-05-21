@@ -21,17 +21,18 @@
 
 package org.apache.jena.util;
 
-import org.apache.jena.rdf.model.test.ModelTestBase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.test.JenaTestLib;
 
 @SuppressWarnings("deprecation")
-public class TestLocators extends ModelTestBase {
+public class TestLocators {
     private static final ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
     private static final ClassLoader otherClassLoader = new ClassLoader() {};
 
-    public TestLocators(String name) {
-        super(name);
-    }
-
+    @Test
     public void testClassLoaderLocatorEquality() {
         Locator A1 = new LocatorClassLoader(systemClassLoader);
         Locator A2 = new LocatorClassLoader(systemClassLoader);
@@ -39,24 +40,23 @@ public class TestLocators extends ModelTestBase {
         testLocatorEquality(A1, A2, B);
     }
 
-    /**
-     * A1 and A2 should be equal, but both different from B.
-     */
     private void testLocatorEquality(Locator A1, Locator A2, Locator B) {
         assertEquals(A1, A1);
         assertEquals(A2, A2);
         assertEquals(A1, A2);
         assertEquals(A2, A1);
         assertEquals(B, B);
-        assertDiffer(A1, B);
-        assertDiffer(B, A1);
+        JenaTestLib.assertDiffer(A1, B);
+        JenaTestLib.assertDiffer(B, A1);
     }
 
+    @Test
     public void testClassLoaderLocatorHashcode() {
         assertEquals(systemClassLoader.hashCode(), new LocatorClassLoader(systemClassLoader).hashCode());
         assertEquals(otherClassLoader.hashCode(), new LocatorClassLoader(otherClassLoader).hashCode());
     }
 
+    @Test
     public void testLocatorFileEquality() {
         Locator A1 = new LocatorFile("foo/bar");
         Locator A2 = new LocatorFile("foo/bar");
@@ -64,6 +64,7 @@ public class TestLocators extends ModelTestBase {
         testLocatorEquality(A1, A2, B);
     }
 
+    @Test
     public void testLocatorFileHashcode() {
         testLocatorFileHashCode("foo/bar");
         testLocatorFileHashCode("bill/ben");
@@ -74,17 +75,15 @@ public class TestLocators extends ModelTestBase {
         assertEquals(dirName.hashCode(), new LocatorFile(dirName).hashCode());
     }
 
+    @Test
     public void testLocatorURLEquality() {
         Locator A1 = new LocatorURL();
         Locator A2 = new LocatorURL();
         assertEquals(A1, A2);
-        assertDiffer(A1, "");
+        JenaTestLib.assertDiffer(A1, "");
     }
 
-    /**
-     * There all equal. Pick a value that will at least be discriminating among other
-     * types (so `0` isn't a good answer).
-     */
+    @Test
     public void testLocatorURLHashcode() {
         assertEquals(LocatorURL.class.hashCode(), new LocatorURL().hashCode());
     }

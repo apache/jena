@@ -21,21 +21,11 @@
 
 package org.apache.jena.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
-import junit.framework.JUnit4TestAdapter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-/**
- * Tests of splitting with RDF/XML rules, where the local name is more restricted
- * (e.g. can not start with a digit because XML qnames can have a digit immediately
- * after the ":"). This in turn leads to unexpected namespace strings.
- */
 public class TestSplitIRI_XML {
-    public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(TestSplitIRI_XML.class);
-    }
 
     @Test
     public void splitNS_01() {
@@ -58,15 +48,12 @@ public class TestSplitIRI_XML {
     }
 
     @Test
-    public void splitNS_05()  // Illegal URI
-    {
+    public void splitNS_05() {
         split("http://example", "http://", "example");
     }
 
     @Test
-    public void splitNS_06()   // localname must be at least the NCStartChar - not
-                               // empty
-    {
+    public void splitNS_06() {
         split("mailto:me", "mailto:m", "e");
     }
 
@@ -90,7 +77,6 @@ public class TestSplitIRI_XML {
         split("http://bio2rdf.org/pdb:Pentane-3,4-diol-5-phosphate", "http://bio2rdf.org/pdb:Pentane-3,4-", "diol-5-phosphate");
     }
 
-    // Don't split inside a %encoding.
     @Test
     public void splitNS_11() {
         split("http://host/abc%AAdef", "http://host/abc%AA", "def");
@@ -116,8 +102,6 @@ public class TestSplitIRI_XML {
         no_split("http://host/abc%AA22");
     }
 
-    // Other schemes
-
     @Test
     public void splitNS_50() {
         split("file:///x/y", "file:///x/", "y");
@@ -134,9 +118,7 @@ public class TestSplitIRI_XML {
     }
 
     @Test
-    public void splitNS_53()
-    // Not ideal but some URI schemes dislike a URI with just the scheme
-    {
+    public void splitNS_53() {
         split("file:foo", "file:", "foo");
     }
 
@@ -144,9 +126,6 @@ public class TestSplitIRI_XML {
     public void splitNS_54() {
         split("file:c:/foo", "file:c:/", "foo");
     }
-
-    // urn:uuid:d871c7f4-2926-11b2-8073-a5e169788449 - legal type 1 uuid as urn
-    // uuid:3cf3e43a-3a5d-40d8-a93c-8697b162a1c0 - legal type 4 uuid as uri
 
     @Test
     public void splitNS_55() {
@@ -163,27 +142,22 @@ public class TestSplitIRI_XML {
         split("urn:abc:def", "urn:abc:", "def");
     }
 
-    // --------
-
     static void no_split(String string) {
         split(string, null, null);
     }
 
     static void split(String uriStr, String namespace, String localname) {
-        if ( namespace == null && localname != null )
+        if (namespace == null && localname != null)
             fail("Bad test - namespace is null but local name is not");
-        if ( namespace != null && localname == null )
+        if (namespace != null && localname == null)
             fail("Bad test - namespace is not null but local name is");
 
         int idx = SplitIRI.splitXML(uriStr);
-        if ( idx == uriStr.length() ) {
-            // No split.
-            if ( namespace != null )
+        if (idx == uriStr.length()) {
+            if (namespace != null)
                 fail("Expected a split (" + namespace + "," + localname + ") - but none found");
             return;
-
         }
-        // Split
         String ns = uriStr.substring(0, idx);
         String ln = uriStr.substring(idx);
         assertEquals(namespace, ns);

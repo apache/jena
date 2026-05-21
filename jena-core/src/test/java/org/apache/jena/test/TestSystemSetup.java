@@ -21,10 +21,9 @@
 
 package org.apache.jena.test;
 
-import junit.framework.TestCase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class TestSystemSetup extends TestCase {
+public class TestSystemSetup {
 
     // Check any settings that must have particular values in a release.
 

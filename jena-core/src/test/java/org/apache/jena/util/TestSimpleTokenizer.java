@@ -21,58 +21,41 @@
 
 package org.apache.jena.util;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
-/**
- * Test for the trivial tokenizer utility.
- */
-public class TestSimpleTokenizer extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
 
-    /**
-     * Boilerplate for junit
-     */
-    public TestSimpleTokenizer(String name) {
-        super(name);
-    }
+import org.junit.jupiter.api.Test;
 
-    /**
-     * Boilerplate for junit. This is its own test suite
-     */
-    public static TestSuite suite() {
-        return new TestSuite(TestSimpleTokenizer.class);
-    }
+public class TestSimpleTokenizer {
 
-    /**
-     * Test tokenizer on a basic example or two.
-     */
+    @Test
     public void testTokenizer() {
         SimpleTokenizer tokenizer = new SimpleTokenizer("a(foo,bar)  'i am a literal' so there", "()[], \t\n\r'", "'", true);
-        assertEquals(tokenizer.nextToken(), "a");
-        assertEquals(tokenizer.nextToken(), "(");
-        assertEquals(tokenizer.nextToken(), "foo");
-        assertEquals(tokenizer.nextToken(), ",");
-        assertEquals(tokenizer.nextToken(), "bar");
-        assertEquals(tokenizer.nextToken(), ")");
-        assertEquals(tokenizer.nextToken(), " ");
-        assertEquals(tokenizer.nextToken(), " ");
-        assertEquals(tokenizer.nextToken(), "'");
-        assertEquals(tokenizer.nextToken(), "i am a literal");
-        assertEquals(tokenizer.nextToken(), "'");
-        assertEquals(tokenizer.nextToken(), " ");
-        assertEquals(tokenizer.nextToken(), "so");
-        assertEquals(tokenizer.nextToken(), " ");
-        assertEquals(tokenizer.nextToken(), "there");
-        assertTrue(!tokenizer.hasMoreTokens());
+        assertEquals("a", tokenizer.nextToken());
+        assertEquals("(", tokenizer.nextToken());
+        assertEquals("foo", tokenizer.nextToken());
+        assertEquals(",", tokenizer.nextToken());
+        assertEquals("bar", tokenizer.nextToken());
+        assertEquals(")", tokenizer.nextToken());
+        assertEquals(" ", tokenizer.nextToken());
+        assertEquals(" ", tokenizer.nextToken());
+        assertEquals("'", tokenizer.nextToken());
+        assertEquals("i am a literal", tokenizer.nextToken());
+        assertEquals("'", tokenizer.nextToken());
+        assertEquals(" ", tokenizer.nextToken());
+        assertEquals("so", tokenizer.nextToken());
+        assertEquals(" ", tokenizer.nextToken());
+        assertEquals("there", tokenizer.nextToken());
+        assertFalse(tokenizer.hasMoreTokens());
 
         tokenizer = new SimpleTokenizer("a(foo,bar)  'i am a literal' so there", "()[], \t\n\r'", "'", false);
-        assertEquals(tokenizer.nextToken(), "a");
-        assertEquals(tokenizer.nextToken(), "foo");
-        assertEquals(tokenizer.nextToken(), "bar");
-        assertEquals(tokenizer.nextToken(), "i am a literal");
-        assertEquals(tokenizer.nextToken(), "so");
-        assertEquals(tokenizer.nextToken(), "there");
-        assertTrue(!tokenizer.hasMoreTokens());
+        assertEquals("a", tokenizer.nextToken());
+        assertEquals("foo", tokenizer.nextToken());
+        assertEquals("bar", tokenizer.nextToken());
+        assertEquals("i am a literal", tokenizer.nextToken());
+        assertEquals("so", tokenizer.nextToken());
+        assertEquals("there", tokenizer.nextToken());
+        assertFalse(tokenizer.hasMoreTokens());
 
     }
 

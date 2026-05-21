@@ -22,11 +22,15 @@
 package org.apache.jena.reasoner.rulesys.test;
 
 import junit.framework.TestSuite;
-import org.apache.jena.ontology.*;
-import org.apache.jena.rdf.model.*;
-import org.apache.jena.rdf.model.test.ModelTestBase;
+import org.apache.jena.ontology.OntModel;
+import org.apache.jena.ontology.OntModelSpec;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.ModelTestLib;
+import org.apache.jena.rdf.model.Property;
 import org.apache.jena.shared.PrefixMapping;
-import org.apache.jena.vocabulary.*;
+import org.apache.jena.test.JenaTestBase;
+import org.apache.jena.vocabulary.RDF;
 
 /**
     Test that restriction inference works even when the restriction isn't given an
@@ -34,7 +38,7 @@ import org.apache.jena.vocabulary.*;
     layering problem).
 */
 @SuppressWarnings("removal")
-public class TestRestrictionsDontNeedTyping extends ModelTestBase
+public class TestRestrictionsDontNeedTyping extends JenaTestBase
     {
 
     public static TestSuite suite() {
@@ -62,7 +66,7 @@ public class TestRestrictionsDontNeedTyping extends ModelTestBase
         {
         Model m = model( "V owl:equivalentClass _R; _R owl:onProperty P; _R owl:allValuesFrom T; X rdf:type V; X P t" );
         OntModel ont = ModelFactory.createOntologyModel( owlSpec, m );
-        assertTrue( ont.contains( resource( "t" ), RDF.type, resource( "T" ) ) );
+        assertTrue( ont.contains( ModelTestLib.resource( "t" ), RDF.type, ModelTestLib.resource( "T" ) ) );
         }
 
     public void testSomeValuesFromMiniRules()
@@ -78,7 +82,7 @@ public class TestRestrictionsDontNeedTyping extends ModelTestBase
         {
         Model m = model( "V owl:equivalentClass _R; _R owl:onProperty P; _R owl:someValuesFrom T; X P t; t rdf:type T" );
         OntModel ont = ModelFactory.createOntologyModel( owlSpec, m );
-        assertTrue( ont.contains( resource( "X" ), RDF.type, resource( "V" ) ) );
+        assertTrue( ont.contains( ModelTestLib.resource( "X" ), RDF.type, ModelTestLib.resource( "V" ) ) );
         }
 
     public void testCardinalityFullRules()
@@ -94,13 +98,13 @@ public class TestRestrictionsDontNeedTyping extends ModelTestBase
         {
         Model m = model( "V owl:equivalentClass _R; _R rdf:type owl:Restriction; _R owl:onProperty P; _R owl:cardinality 1; X rdf:type V" );
         OntModel ont = ModelFactory.createOntologyModel( owlSpec, m );
-        assertEquals( 1, ont.listStatements( resource( "X" ), property( "P" ), ANY ).toList().size() );
+        assertEquals( 1, ont.listStatements( ModelTestLib.resource( "X" ), ModelTestLib.property( "P" ), ANY ).toList().size() );
         }
 
     Model model( String statements )
         {
         Model result = ModelFactory.createDefaultModel();
         result.setNsPrefixes( PrefixMapping.Extended );
-        return modelAdd( result, statements );
+        return ModelTestLib.modelAdd( result, statements );
         }
     }

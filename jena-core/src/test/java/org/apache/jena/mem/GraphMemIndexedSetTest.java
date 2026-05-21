@@ -31,7 +31,7 @@ import org.mockito.Mockito;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.apache.jena.testing_framework.GraphHelper.triple;
+import static org.apache.jena.junit.GraphHelper.triple;
 import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)

@@ -29,8 +29,8 @@ import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.apache.jena.testing_framework.GraphHelper.node;
-import static org.apache.jena.testing_framework.GraphHelper.triple;
+import static org.apache.jena.junit.GraphHelper.node;
+import static org.apache.jena.junit.GraphHelper.triple;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 

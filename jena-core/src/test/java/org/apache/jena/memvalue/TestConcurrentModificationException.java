@@ -21,70 +21,57 @@
 
 package org.apache.jena.memvalue;
 
-import java.util.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import junit.framework.*;
+import java.util.ConcurrentModificationException;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.graph.Triple;
-import org.apache.jena.graph.test.NodeCreateUtils;
-import org.apache.jena.rdf.model.test.ModelTestBase;
+import org.apache.jena.junit.NodeCreateUtils;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
-public abstract class TestConcurrentModificationException extends ModelTestBase
+public abstract class TestConcurrentModificationException
     {
-    public TestConcurrentModificationException( String name )
-        { super( name ); }
 
     public abstract TripleBunch getBunch();
-    
-    public static TestSuite suite()
-        { 
-        TestSuite result = new TestSuite();
-        result.addTestSuite( TestArrayBunchCME.class );
-        result.addTestSuite( TestHashedBunchCME.class ); 
-        return result;
-        }
 
-    public static class TestArrayBunchCME extends TestConcurrentModificationException
-        {
-        public TestArrayBunchCME(String name)
-            { super( name ); }
-
-        @Override public TripleBunch getBunch()
-            { return new ArrayBunch(); }
-        }
-
-    public static class TestHashedBunchCME extends TestConcurrentModificationException
-        {
-        public TestHashedBunchCME(String name)
-            { super( name ); }
-
+    public static class TestArrayBunchCME extends TestConcurrentModificationException {
         @Override
-        public TripleBunch getBunch()
-            { return new HashedTripleBunch( new ArrayBunch() ); }
+        public TripleBunch getBunch() {
+            return new ArrayBunch();
         }
+    }
 
-    public void testAddThenNextThrowsCME()
-        { 
+    public static class TestHashedBunchCME extends TestConcurrentModificationException {
+        @Override
+        public TripleBunch getBunch() {
+            return new HashedTripleBunch(new ArrayBunch());
+        }
+    }
+
+    @Test public void testAddThenNextThrowsCME() {
         TripleBunch b = getBunch();
-        b.add( NodeCreateUtils.createTriple( "a P b" ) );
-        b.add( NodeCreateUtils.createTriple( "c Q d" ) );
+        b.add(NodeCreateUtils.createTriple("a P b"));
+        b.add(NodeCreateUtils.createTriple("c Q d"));
         ExtendedIterator<Triple> it = b.iterator();
         it.next();
-        b.add( NodeCreateUtils.createTriple( "change its state" ) );
-        try { it.next(); fail( "should have thrown ConcurrentModificationException" ); }
-        catch (ConcurrentModificationException e) { pass(); } 
-        }
+        b.add(NodeCreateUtils.createTriple("change its state"));
+        assertThrows(ConcurrentModificationException.class, ()->{
+            it.next();
+        });
+    }
 
-    public void testDeleteThenNextThrowsCME()
-        { 
+    @Test public void testDeleteThenNextThrowsCME() {
         TripleBunch b = getBunch();
-        b.add( NodeCreateUtils.createTriple( "a P b" ) );
-        b.add( NodeCreateUtils.createTriple( "c Q d" ) );
-        b.add( NodeCreateUtils.createTriple( "e R f" ) );
+        b.add(NodeCreateUtils.createTriple("a P b"));
+        b.add(NodeCreateUtils.createTriple("c Q d"));
+        b.add(NodeCreateUtils.createTriple("e R f"));
         ExtendedIterator<Triple> it = b.iterator();
         it.next();
-        b.remove( NodeCreateUtils.createTriple( "a P b" ) );
-        try { it.next(); fail( "should have thrown ConcurrentModificationException" ); }
-        catch (ConcurrentModificationException e) { pass(); } 
-        }
+        b.remove(NodeCreateUtils.createTriple("a P b"));
+        assertThrows(ConcurrentModificationException.class, ()->{
+            it.next();
+        });
+    }
     }

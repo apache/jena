@@ -21,23 +21,21 @@
 
 package org.apache.jena.irix;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer;
 
 /**
  * Tests that don't easily go in other TestIRIx suites.
  */
-@RunWith(Parameterized.class)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestIRIxOther extends AbstractTestIRIx_3986 {
 
-    public TestIRIxOther(String name, IRIProvider provider) {
-        super(name, provider);
-    }
+    public TestIRIxOther() { super(); }
 
     @Test public void scheme_unknown_1() {
         good("mysteryScheme://authority/path/file");

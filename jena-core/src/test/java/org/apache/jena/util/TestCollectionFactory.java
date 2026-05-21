@@ -21,31 +21,26 @@
 
 package org.apache.jena.util;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.*;
 
-import junit.framework.TestSuite;
-import org.apache.jena.rdf.model.test.ModelTestBase;
+import org.apache.jena.test.JenaTestLib;
+import org.junit.jupiter.api.Test;
 
-/**
- * TestHashUtils - test that the hash utility returns a map.
- */
-public class TestCollectionFactory extends ModelTestBase {
-    public TestCollectionFactory(String name) {
-        super(name);
-    }
+public class TestCollectionFactory {
 
-    public static TestSuite suite() {
-        return new TestSuite(TestCollectionFactory.class);
-    }
-
+    @Test
     public void testHashMapExists() {
-        assertInstanceOf(Map.class, CollectionFactory.createHashedMap());
+        JenaTestLib.assertInstanceOf(Map.class, CollectionFactory.createHashedMap());
     }
 
+    @Test
     public void testHashMapSized() {
-        assertInstanceOf(Map.class, CollectionFactory.createHashedMap(42));
+        JenaTestLib.assertInstanceOf(Map.class, CollectionFactory.createHashedMap(42));
     }
 
+    @Test
     public void testHashMapCopy() {
         Map<String, String> map = new HashMap<>();
         map.put("here", "Bristol");
@@ -54,10 +49,12 @@ public class TestCollectionFactory extends ModelTestBase {
         assertEquals(map, copy);
     }
 
+    @Test
     public void testHashSetExists() {
-        assertInstanceOf(Set.class, CollectionFactory.<Object> createHashedSet());
+        JenaTestLib.assertInstanceOf(Set.class, CollectionFactory.<Object>createHashedSet());
     }
 
+    @Test
     public void testHashSetCopy() {
         Set<String> s = new HashSet<>();
         s.add("jelly");
@@ -65,4 +62,5 @@ public class TestCollectionFactory extends ModelTestBase {
         Set<String> copy = CollectionFactory.createHashedSet(s);
         assertEquals(s, copy);
     }
+
 }

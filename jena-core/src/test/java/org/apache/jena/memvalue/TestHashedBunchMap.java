@@ -21,27 +21,21 @@
 
 package org.apache.jena.memvalue;
 
-import org.apache.jena.rdf.model.test.ModelTestBase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestHashedBunchMap extends ModelTestBase
-    { // TODO should extend this a lot
-    public TestHashedBunchMap( String name )
-        { super( name ); }
-    
-    public void testSize()
-        {
-        HashCommon<Object> b = new HashedBunchMap();
-        }
+import org.junit.jupiter.api.Test;
 
-    public void testClearSetsSizeToZero()
-        {
+public class TestHashedBunchMap {
+
+    @Test
+    public void testClearSetsSizeToZero() {
         TripleBunch a = new ArrayBunch();
         HashedBunchMap b = new HashedBunchMap();
         b.clear();
-        assertEquals( 0, b.size() );
-        b.put( "key",  a );
-        assertEquals( 1, b.size() );
+        assertEquals(0, b.size());
+        b.put("key", a);
+        assertEquals(1, b.size());
         b.clear();
-        assertEquals( 0, b.size() );
-        }
+        assertEquals(0, b.size());
     }
+}

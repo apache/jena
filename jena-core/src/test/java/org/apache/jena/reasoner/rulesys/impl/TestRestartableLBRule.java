@@ -23,10 +23,11 @@ package org.apache.jena.reasoner.rulesys.impl;
 
 import java.util.Iterator;
 
+import org.junit.Test;
+
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.TransactionHandler;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.impl.GraphBase;
@@ -38,13 +39,8 @@ import org.apache.jena.shared.JenaException;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.WrappedIterator;
 import org.apache.jena.vocabulary.RDF;
-import org.junit.Test;
 
 public class TestRestartableLBRule extends TestCase {
-
-    public static TestSuite suite() {
-        return new TestSuite(TestRestartableLBRule.class);
-    }
 
     private static  Graph createGraphForTest() {
         return GraphMemFactory.createDefaultGraph();

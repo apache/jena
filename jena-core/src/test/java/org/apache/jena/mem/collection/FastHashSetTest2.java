@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static org.apache.jena.testing_framework.GraphHelper.node;
+import static org.apache.jena.junit.GraphHelper.node;
 import static org.junit.Assert.*;
 
 /**

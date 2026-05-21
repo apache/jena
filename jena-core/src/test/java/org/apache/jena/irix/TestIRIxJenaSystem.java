@@ -22,17 +22,15 @@
 package org.apache.jena.irix;
 
 import static org.apache.jena.atlas.lib.Lib.uppercase;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer;
 
 /**
  * Test of parsing and schema violations.
@@ -40,13 +38,10 @@ import org.junit.runners.Parameterized;
  *
  * See also {@link TestIRIxSyntaxRFC3986} for RDF 3986 syntax only parsing.
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@RunWith(Parameterized.class)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestIRIxJenaSystem extends AbstractTestIRIx_3986 {
     // Up until jena 5.6.0, this was the test suite that compares results with jena-iri.
-    public TestIRIxJenaSystem(String name, IRIProvider provider) {
-        super(name, provider);
-    }
+    public TestIRIxJenaSystem() { super(); }
 
     // Assumes full authority parsing and not scheme-specific checks.
 
@@ -404,7 +399,7 @@ public class TestIRIxJenaSystem extends AbstractTestIRIx_3986 {
                 warnings.incrementAndGet();
         });
         //System.out.printf("(e=%d, w=%d) %s\n", errors.get(), warnings.get(),  string);
-        assertEquals("errors", expectedNumErrors, errors.get());
-        assertEquals("warnings", expectedNumWarnings, warnings.get());
+        assertEquals(errors.get(), expectedNumErrors, "errors");
+        assertEquals(warnings.get(), expectedNumWarnings, "warnings");
     }
 }

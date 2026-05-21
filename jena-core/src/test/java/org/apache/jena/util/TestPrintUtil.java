@@ -24,22 +24,15 @@ package org.apache.jena.util;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
+import org.junit.jupiter.api.Test;
 
-public class TestPrintUtil extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
 
-    public TestPrintUtil(String name) {
-        super(name);
-    }
+public class TestPrintUtil {
 
-    public static TestSuite suite() {
-        return new TestSuite(TestPrintUtil.class);
-    }
-
-    // Minimal test of formating a URI with prefixes
+    @Test
     public void testPrefixUse() {
         String NS = "http://jena.hpl.hp.com/example#";
         String name = "r1";

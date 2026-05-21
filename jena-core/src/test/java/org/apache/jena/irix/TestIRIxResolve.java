@@ -21,18 +21,16 @@
 
 package org.apache.jena.irix;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer;
 
-@RunWith(Parameterized.class)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestIRIxResolve extends AbstractTestIRIx_3986 {
 
-    public TestIRIxResolve(String name, IRIProvider provider) {
-        super(name, provider);
-    }
+    public TestIRIxResolve() { super(); }
 
     // -- Resolving
     @Test public void resolve_http_01() { resolve("http://example/", "path", "http://example/path"); }

@@ -31,6 +31,7 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.reasoner.ReasonerFactory;
 import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
 import org.apache.jena.shared.impl.JenaParameters;
+import org.apache.jena.test.JenaTestBase;
 import org.apache.jena.vocabulary.OWLResults;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.ReasonerVocabulary;
@@ -40,7 +41,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Test the default RDFS reasoner against the current set of working group tests
  */
-public class TestCurrentRDFWG extends ReasonerTestBase {
+public class TestCurrentRDFWG extends JenaTestBase {
 
     /** Location of the test file directory */
     public static final String TEST_DIR = "testing/wg20031010/";
@@ -81,7 +82,7 @@ public class TestCurrentRDFWG extends ReasonerTestBase {
     public static TestSuite suite() {
         TestSuite suite = new TestSuite();
         try {
-            Resource config = newResource()
+            Resource config = ReasonerTestLib.newResource()
             .addProperty(ReasonerVocabulary.PROPsetRDFSLevel, "full");
             constructRDFWGtests(suite, RDFSRuleReasonerFactory.theInstance(), config);
 

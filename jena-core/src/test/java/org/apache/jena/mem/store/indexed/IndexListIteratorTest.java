@@ -29,7 +29,7 @@ import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 
-import static org.apache.jena.testing_framework.GraphHelper.triple;
+import static org.apache.jena.junit.GraphHelper.triple;
 import static org.junit.Assert.*;
 
 /**

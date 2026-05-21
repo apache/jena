@@ -1,0 +1,117 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ *   SPDX-License-Identifier: Apache-2.0
+ */
+
+package org.apache.jena.graph;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
+import org.apache.jena.graph.impl.GraphPlain;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+@SuppressWarnings("deprecation")
+public class TestGraphPlain {
+
+    private static Graph graph;
+
+    @BeforeClass
+    public static void setUp() {
+        // GraphMem is the old in-memory graph which has value-based indexing.
+        // It is not the default graph implementation.
+        graph = new org.apache.jena.memvalue.GraphMemValue();
+        GraphTestLib.graphAdd(graph, "s p o; s p 1; s p 01");
+    }
+
+    @Test
+    public void contains1() {
+        Triple triple = GraphTestLib.triple("s p 001");
+        assertTrue(graph.contains(triple));
+        Graph plain = GraphPlain.plain(graph);
+        assertFalse(plain.contains(triple));
+    }
+
+    @Test
+    public void contains2() {
+        Triple triple = GraphTestLib.triple("s p 1");
+        assertTrue(graph.contains(triple));
+        Graph plain = GraphPlain.plain(graph);
+        assertTrue(plain.contains(triple));
+    }
+
+    @Test
+    public void contains3() {
+        Triple triple = GraphTestLib.triple("s1 p 1");
+        assertFalse(graph.contains(triple));
+        Graph plain = GraphPlain.plain(graph);
+        assertFalse(plain.contains(triple));
+    }
+
+    @Test
+    public void contains4() {
+        Node s = GraphTestLib.node("s");
+        Node p = GraphTestLib.node("p");
+        Node x = GraphTestLib.node("001");
+
+        assertTrue(graph.contains(s, p, x));
+        Graph plain = GraphPlain.plain(graph);
+        assertFalse(plain.contains(s, p, x));
+    }
+
+    @Test
+    public void find1() {
+        find_test(graph, 2);
+        Graph plain = GraphPlain.plain(graph);
+        find_test(plain, 1);
+    }
+
+    @Test
+    public void find2() {
+        Graph plain = GraphPlain.plain(graph);
+        Node s = GraphTestLib.node("s");
+        Node p = GraphTestLib.node("p");
+        Node x = GraphTestLib.node("001");
+        List<Triple> list = plain.find(s, p, x).toList();
+        assertEquals(0, list.size());
+    }
+
+    @Test
+    public void find3() {
+        Graph plain = GraphPlain.plain(graph);
+        Node s = GraphTestLib.node("s");
+        Node p = GraphTestLib.node("p");
+        Node x = GraphTestLib.node("??");
+        List<Triple> list = plain.find(s, p, x).toList();
+        assertEquals(3, list.size());
+    }
+
+    private static void find_test(Graph testGraph, int n) {
+        Triple triple = GraphTestLib.triple("?? p 1");
+        ExtendedIterator<Triple> iter = testGraph.find(triple);
+        // assertTrue(iter.hasNext());
+        List<Triple> list = iter.toList();
+        assertEquals(n, list.size());
+    }
+}

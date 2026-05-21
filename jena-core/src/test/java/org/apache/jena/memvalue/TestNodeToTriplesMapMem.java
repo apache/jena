@@ -25,27 +25,15 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.Node_URI;
-import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.*;
 import org.apache.jena.graph.Triple.Field;
-import org.apache.jena.graph.test.GraphTestBase;
 
-/**
- * TestNodeToTriplesMap: added, post-hoc, by kers once NTM got rather complicated. So
- * these tests may be (are, at the moment) incomplete.
- */
-public class TestNodeToTriplesMapMem extends GraphTestBase {
-    public TestNodeToTriplesMapMem(String name) {
-        super(name);
-    }
+import static org.junit.jupiter.api.Assertions.*;
 
-    public static TestSuite suite() {
-        return new TestSuite(TestNodeToTriplesMapMem.class);
-    }
+public class TestNodeToTriplesMapMem {
 
     protected NodeToTriplesMapMem ntS = new NodeToTriplesMapMem(Field.fieldSubject, Field.fieldPredicate, Field.fieldObject);
 
@@ -53,25 +41,28 @@ public class TestNodeToTriplesMapMem extends GraphTestBase {
 
     protected NodeToTriplesMapMem ntO = new NodeToTriplesMapMem(Field.fieldObject, Field.fieldPredicate, Field.fieldSubject);
 
-    protected static final Node x = node("x");
+    protected static final Node x = GraphTestLib.node("x");
 
-    protected static final Node y = node("y");
+    protected static final Node y = GraphTestLib.node("y");
 
+    @Test
     public void testZeroSize() {
         testZeroSize("fresh NTM", ntS);
     }
 
     protected void testZeroSize(String title, NodeToTriplesMapMem nt) {
-        assertEquals(title + " should have size 0", 0, nt.size());
-        assertEquals(title + " should be isEmpty()", true, nt.isEmpty());
-        assertEquals(title + " should have empty domain", false, nt.domain().hasNext());
+        assertEquals(0, nt.size(), title + " should have size 0");
+        assertEquals(true, nt.isEmpty(), title + " should be isEmpty()");
+        assertEquals(false, nt.domain().hasNext(), title + " should have empty domain");
     }
 
+    @Test
     public void testAddOne() {
-        ntS.add(triple("x P y"));
+        ntS.add(GraphTestLib.triple("x P y"));
         testJustOne(x, ntS);
     }
 
+    @Test
     public void testAddOneTwice() {
         addTriples(ntS, "x P y; x P y");
         testJustOne(x, ntS);
@@ -83,6 +74,7 @@ public class TestNodeToTriplesMapMem extends GraphTestBase {
         assertEquals(just(x), Iter.toSet(nt.domain()));
     }
 
+    @Test
     public void testAddTwoUnshared() {
         addTriples(ntS, "x P a; y Q b");
         assertEquals(2, ntS.size());
@@ -90,6 +82,7 @@ public class TestNodeToTriplesMapMem extends GraphTestBase {
         assertEquals(both(x, y), Iter.toSet(ntS.domain()));
     }
 
+    @Test
     public void testAddTwoShared() {
         addTriples(ntS, "x P a; x Q b");
         assertEquals(2, ntS.size());
@@ -97,43 +90,49 @@ public class TestNodeToTriplesMapMem extends GraphTestBase {
         assertEquals(just(x), Iter.toSet(ntS.domain()));
     }
 
+    @Test
     public void testClear() {
         addTriples(ntS, "x P a; x Q b; y R z");
         ntS.clear();
         testZeroSize("cleared NTM", ntS);
     }
 
+    @Test
     public void testAllIterator() {
         String triples = "x P b; y P d; y P f";
         addTriples(ntS, triples);
-        assertEquals(tripleSet(triples), Iter.toSet(ntS.iterateAll()));
+        assertEquals(GraphTestLib.tripleSet(triples), Iter.toSet(ntS.iterateAll()));
     }
 
+    @Test
     public void testOneIterator() {
         addTriples(ntS, "x P b; y P d; y P f");
-        assertEquals(tripleSet("x P b"), ntS.iterator(x, null).toSet());
-        assertEquals(tripleSet("y P d; y P f"), ntS.iterator(y, null).toSet());
+        assertEquals(GraphTestLib.tripleSet("x P b"), ntS.iterator(x, null).toSet());
+        assertEquals(GraphTestLib.tripleSet("y P d; y P f"), ntS.iterator(y, null).toSet());
     }
 
+    @Test
     public void testRemove() {
         addTriples(ntS, "x P b; y P d; y R f");
-        ntS.remove(triple("y P d"));
+        ntS.remove(GraphTestLib.triple("y P d"));
         assertEquals(2, ntS.size());
-        assertEquals(tripleSet("x P b; y R f"), ntS.iterateAll().toSet());
+        assertEquals(GraphTestLib.tripleSet("x P b; y R f"), ntS.iterateAll().toSet());
     }
 
+    @Test
     public void testRemoveByIterator() {
         addTriples(ntS, "x nice a; a nasty b; x nice c");
         addTriples(ntS, "y nice d; y nasty e; y nice f");
         Iterator<Triple> it = ntS.iterateAll();
         while (it.hasNext()) {
             Triple t = it.next();
-            if ( t.getPredicate().equals(node("nasty")) )
+            if ( t.getPredicate().equals(GraphTestLib.node("nasty")) )
                 it.remove();
         }
-        assertEquals(tripleSet("x nice a; x nice c; y nice d; y nice f"), ntS.iterateAll().toSet());
+        assertEquals(GraphTestLib.tripleSet("x nice a; x nice c; y nice d; y nice f"), ntS.iterateAll().toSet());
     }
 
+    @Test
     public void testRemoveByIteratorTriggerMove() {
         /* need hash collisions to be able to test moves caused by iterator#remove */
         var nodeA = new Node_URI("A") {
@@ -175,70 +174,78 @@ public class TestNodeToTriplesMapMem extends GraphTestBase {
         assertEquals(expectedRemainingTripples, ntS.iterateAll().toSet());
     }
 
+    @Test
     public void testIteratorWIthPatternOnEmpty() {
-        assertEquals(tripleSet(""), ntS.iterateAll(triple("a P b")).toSet());
+        assertEquals(GraphTestLib.tripleSet(""), ntS.iterateAll(GraphTestLib.triple("a P b")).toSet());
     }
 
+    @Test
     public void testIteratorWIthPatternOnSomething() {
         addTriples(ntS, "x P a; y P b; y R c");
-        assertEquals(tripleSet("x P a"), ntS.iterateAll(triple("x P ??")).toSet());
-        assertEquals(tripleSet("y P b; y R c"), ntS.iterateAll(triple("y ?? ??")).toSet());
-        assertEquals(tripleSet("x P a; y P b"), ntS.iterateAll(triple("?? P ??")).toSet());
-        assertEquals(tripleSet("y R c"), ntS.iterateAll(triple("?? ?? c")).toSet());
+        assertEquals(GraphTestLib.tripleSet("x P a"), ntS.iterateAll(GraphTestLib.triple("x P ??")).toSet());
+        assertEquals(GraphTestLib.tripleSet("y P b; y R c"), ntS.iterateAll(GraphTestLib.triple("y ?? ??")).toSet());
+        assertEquals(GraphTestLib.tripleSet("x P a; y P b"), ntS.iterateAll(GraphTestLib.triple("?? P ??")).toSet());
+        assertEquals(GraphTestLib.tripleSet("y R c"), ntS.iterateAll(GraphTestLib.triple("?? ?? c")).toSet());
     }
 
+    @Test
     public void testUnspecificRemoveS() {
         addTriples(ntS, "x P a; y Q b; z R c");
-        ntS.remove(triple("x P a"));
-        assertEquals(tripleSet("y Q b; z R c"), ntS.iterateAll().toSet());
+        ntS.remove(GraphTestLib.triple("x P a"));
+        assertEquals(GraphTestLib.tripleSet("y Q b; z R c"), ntS.iterateAll().toSet());
     }
 
+    @Test
     public void testUnspecificRemoveP() {
         addTriples(ntP, "x P a; y Q b; z R c");
-        ntP.remove(triple("y Q b"));
-        assertEquals(tripleSet("x P a; z R c"), ntP.iterateAll().toSet());
+        ntP.remove(GraphTestLib.triple("y Q b"));
+        assertEquals(GraphTestLib.tripleSet("x P a; z R c"), ntP.iterateAll().toSet());
     }
 
+    @Test
     public void testUnspecificRemoveO() {
         addTriples(ntO, "x P a; y Q b; z R c");
-        ntO.remove(triple("z R c"));
-        assertEquals(tripleSet("x P a; y Q b"), ntO.iterateAll().toSet());
+        ntO.remove(GraphTestLib.triple("z R c"));
+        assertEquals(GraphTestLib.tripleSet("x P a; y Q b"), ntO.iterateAll().toSet());
     }
 
+    @Test
     public void testAddBooleanResult() {
-        assertEquals(true, ntS.add(triple("x P y")));
-        assertEquals(false, ntS.add(triple("x P y")));
+        assertEquals(true, ntS.add(GraphTestLib.triple("x P y")));
+        assertEquals(false, ntS.add(GraphTestLib.triple("x P y")));
         /* */
-        assertEquals(true, ntS.add(triple("y Q z")));
-        assertEquals(false, ntS.add(triple("y Q z")));
+        assertEquals(true, ntS.add(GraphTestLib.triple("y Q z")));
+        assertEquals(false, ntS.add(GraphTestLib.triple("y Q z")));
         /* */
-        assertEquals(true, ntS.add(triple("y R s")));
-        assertEquals(false, ntS.add(triple("y R s")));
+        assertEquals(true, ntS.add(GraphTestLib.triple("y R s")));
+        assertEquals(false, ntS.add(GraphTestLib.triple("y R s")));
     }
 
+    @Test
     public void testRemoveBooleanResult() {
-        assertEquals(false, ntS.remove(triple("x P y")));
-        ntS.add(triple("x P y"));
-        assertEquals(false, ntS.remove(triple("x Q y")));
-        assertEquals(true, ntS.remove(triple("x P y")));
-        assertEquals(false, ntS.remove(triple("x P y")));
+        assertEquals(false, ntS.remove(GraphTestLib.triple("x P y")));
+        ntS.add(GraphTestLib.triple("x P y"));
+        assertEquals(false, ntS.remove(GraphTestLib.triple("x Q y")));
+        assertEquals(true, ntS.remove(GraphTestLib.triple("x P y")));
+        assertEquals(false, ntS.remove(GraphTestLib.triple("x P y")));
     }
 
+    @Test
     public void testContains() {
         addTriples(ntS, "x P y; a P b");
-        assertTrue(ntS.contains(triple("x P y")));
-        assertTrue(ntS.contains(triple("a P b")));
-        assertFalse(ntS.contains(triple("x P z")));
-        assertFalse(ntS.contains(triple("y P y")));
-        assertFalse(ntS.contains(triple("x R y")));
-        assertFalse(ntS.contains(triple("e T f")));
-        assertFalse(ntS.contains(triple("_x F 17")));
+        assertTrue(ntS.contains(GraphTestLib.triple("x P y")));
+        assertTrue(ntS.contains(GraphTestLib.triple("a P b")));
+        assertFalse(ntS.contains(GraphTestLib.triple("x P z")));
+        assertFalse(ntS.contains(GraphTestLib.triple("y P y")));
+        assertFalse(ntS.contains(GraphTestLib.triple("x R y")));
+        assertFalse(ntS.contains(GraphTestLib.triple("e T f")));
+        assertFalse(ntS.contains(GraphTestLib.triple("_x F 17")));
     }
 
     // TODO more here
 
     protected void addTriples(NodeToTriplesMapMem nt, String facts) {
-        Triple[] t = tripleArray(facts);
+        Triple[] t = GraphTestLib.tripleArray(facts);
         for ( Triple aT : t ) {
             nt.add(aT);
         }

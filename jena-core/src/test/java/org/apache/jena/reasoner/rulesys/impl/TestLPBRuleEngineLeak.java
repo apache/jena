@@ -24,16 +24,10 @@ package org.apache.jena.reasoner.rulesys.impl;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.junit.Test;
 
-import org.apache.jena.graph.GraphMemFactory;
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.Triple;
+import junit.framework.TestCase;
+import org.apache.jena.graph.*;
 import org.apache.jena.reasoner.rulesys.FBRuleInfGraph;
 import org.apache.jena.reasoner.rulesys.FBRuleReasoner;
 import org.apache.jena.reasoner.rulesys.Rule;
@@ -42,10 +36,6 @@ import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 
 public class TestLPBRuleEngineLeak extends TestCase {
-	public static TestSuite suite() {
-		return new TestSuite(TestLPBRuleEngineLeak.class);
-	}
-
 	protected Node a = NodeFactory.createURI("a");
 	protected Node b = NodeFactory.createURI("b");
 	protected Node nohit = NodeFactory.createURI("nohit");

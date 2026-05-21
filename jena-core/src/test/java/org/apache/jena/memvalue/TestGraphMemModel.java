@@ -21,21 +21,23 @@
 
 package org.apache.jena.memvalue;
 
-import static org.apache.jena.testing_framework.GraphHelper.txnBegin;
-import static org.apache.jena.testing_framework.GraphHelper.txnCommit;
-import static org.apache.jena.testing_framework.GraphHelper.txnRollback;
-import static org.apache.jena.testing_framework.GraphHelper.txnRun;
+import static org.apache.jena.junit.GraphHelper.txnBegin;
+import static org.apache.jena.junit.GraphHelper.txnCommit;
+import static org.apache.jena.junit.GraphHelper.txnRollback;
+import static org.apache.jena.junit.GraphHelper.txnRun;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.JUnit4TestAdapter;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.*;
 import org.apache.jena.graph.impl.LiteralLabelFactory;
-import org.apache.jena.graph.test.AbstractTestGraph;
-import org.apache.jena.testing_framework.NodeCreateUtils;
+import org.apache.jena.junit.NodeCreateUtils;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
 /**
@@ -46,14 +48,7 @@ import org.apache.jena.util.iterator.ExtendedIterator;
  * Jena5+ : Only {@link GraphMemValue} supports this. Other graph are "same term", not
  * "same value" and language tags are held in canonical form.
  */
-public class TestGraphMemModel extends AbstractTestGraph {
-    public TestGraphMemModel(String name) {
-        super(name);
-    }
-
-    public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(TestGraphMemModel.class);
-    }
+public class TestGraphMemModel extends BaseTestGraph_JU6 {
 
     @Override
     public Graph getNewGraph() {
@@ -63,7 +58,7 @@ public class TestGraphMemModel extends AbstractTestGraph {
     @Test
     public void testSizeAfterRemove() {
         Graph g = getGraphWith("x p y");
-        ExtendedIterator<Triple> it = g.find(triple("x ?? ??"));
+        ExtendedIterator<Triple> it = g.find(GraphTestLib.triple("x ?? ??"));
         it.removeNext();
         assertEquals(0, g.size());
     }
@@ -75,17 +70,17 @@ public class TestGraphMemModel extends AbstractTestGraph {
     public void testContainsByValue() {
         Graph g1 = getGraphWith("x P '1'xsd:integer");
 
-        boolean b = g1.contains(triple("x P '01'xsd:int"));
+        boolean b = g1.contains(GraphTestLib.triple("x P '01'xsd:int"));
         if ( !b )
             System.err.println("No value match: " + g1.getClass().getSimpleName());
 
-        assertTrue(g1.contains(triple("x P '01'xsd:int")));
+        assertTrue(g1.contains(GraphTestLib.triple("x P '01'xsd:int")));
         //
         Graph g2 = getGraphWith("x P '1'xsd:int");
-        assertTrue(g2.contains(triple("x P '1'xsd:integer")));
+        assertTrue(g2.contains(GraphTestLib.triple("x P '1'xsd:integer")));
         //
         Graph g3 = getGraphWith("x P '123'xsd:string");
-        assertTrue(g3.contains(triple("x P '123'")));
+        assertTrue(g3.contains(GraphTestLib.triple("x P '123'")));
     }
 
     // From the contract tests
@@ -105,52 +100,54 @@ public class TestGraphMemModel extends AbstractTestGraph {
         Node SL = NodeCreateUtils.create("SL");
         Node P = NodeCreateUtils.create("P");
 
-        try {
-            g.add(Triple.create(SB, P, ab));
-            g.add(Triple.create(SS, P, as));
-            g.add(Triple.create(SI, P, ai));
-            g.add(Triple.create(SL, P, al));
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
-        assertEquals(String.format("Should have found 4 elements, does %s really implement literal typing", g.getClass()), 4,
-                     Iter.toSet(g.find(Node.ANY, P, NodeCreateUtils.create("42"))).size());
+        g.add(Triple.create(SB, P, ab));
+        g.add(Triple.create(SS, P, as));
+        g.add(Triple.create(SI, P, ai));
+        g.add(Triple.create(SL, P, al));
+
+        assertEquals( 4,
+                      Iter.toSet(g.find(Node.ANY, P, NodeCreateUtils.create("42"))).size(),
+                      String.format("Should have found 4 elements, does %s really implement literal typing", g.getClass()) );
     }
 
     @Test
     public void test_Contains_Node_Node_Node_ByValue() {
-        Node x = node("x");
-        Node P = node("P");
-        Graph g1 = graphWith("x P '1'xsd:integer");
-        txnRun(g1, () -> assertTrue(String.format("literal type equality failed, does %s really implement literal typing", g1.getClass()),
-                                    g1.contains(x, P, node("'01'xsd:int"))));
-        //
-        Graph g2 = graphWith("x P '1'xsd:int");
-        txnRun(g2, () -> {
-            assertTrue("Literal equality with '1'xsd:integer failed", g2.contains(x, P, node("'1'xsd:integer")));
+        Node x = GraphTestLib.node("x");
+        Node P = GraphTestLib.node("P");
+        Graph g1 = GraphTestLib.graphWith("x P '1'xsd:integer");
+        txnRun(g1, () -> {
+            assertTrue(g1.contains(x, P, GraphTestLib.node("'01'xsd:int")),
+                       String.format("literal type equality failed, does %s really implement literal typing", g1.getClass()));
         });
         //
-        Graph g3 = graphWith("x P '123'xsd:string");
+        Graph g2 = GraphTestLib.graphWith("x P '1'xsd:int");
+        txnRun(g2, () -> {
+            assertTrue(g2.contains(x, P, GraphTestLib.node("'1'xsd:integer")),"Literal equality with '1'xsd:integer failed");
+        });
+        //
+        Graph g3 = GraphTestLib.graphWith("x P '123'xsd:string");
         txnRun(g3, () -> {
-            assertTrue("Literal equality with '123' failed", g3.contains(x, P, node("'123'")));
+            assertTrue(g3.contains(x, P, GraphTestLib.node("'123'")), "Literal equality with '123' failed");
         });
     }
 
     @Test
     public void test_Contains_Triple_ByValue() {
-        Graph g1 = graphWith("x P '1'xsd:integer");
+        Graph g1 = GraphTestLib.graphWith("x P '1'xsd:integer");
         txnRun(g1, () -> {
-            assertTrue(String.format("did not find x P '01'xsd:int, does %s really implement literal typing", g1.getClass()),
-                       g1.contains(triple("x P '01'xsd:int")));
+            assertTrue(
+                       g1.contains(GraphTestLib.triple("x P '01'xsd:int")),
+                       String.format("did not find x P '01'xsd:int, does %s really implement literal typing", g1.getClass())
+                    );
         });
         //
-        Graph g2 = graphWith("x P '1'xsd:int");
+        Graph g2 = GraphTestLib.graphWith("x P '1'xsd:int");
         txnRun(g2, () -> {
-            assertTrue("did not find x P '1'xsd:integer", g2.contains(triple("x P '1'xsd:integer")));
+            assertTrue( g2.contains(GraphTestLib.triple("x P '1'xsd:integer")), "did not find x P '1'xsd:integer" );
         });
         //
-        Graph g3 = graphWith("x P '123'xsd:string");
-        txnRun(g3, () -> assertTrue("did not find x P '123'xsd:string", g3.contains(triple("x P '123'"))));
+        Graph g3 = GraphTestLib.graphWith("x P '123'xsd:string");
+        txnRun(g3, () -> assertTrue(g3.contains(GraphTestLib.triple("x P '123'")), "did not find x P '123'xsd:string" ));
     }
 
     @Test
@@ -189,19 +186,15 @@ public class TestGraphMemModel extends AbstractTestGraph {
             }
             txnCommit(g);
             txnBegin(g);
-            assertEquals(
-                    String.format(
-                            "Should have found 4 elements, does %s really implement literal typing",
-                            g.getClass()),
-                    4, Iter.toSet(g.find(Triple.create(Node.ANY, P,
-                            NodeCreateUtils.create("42")))).size());
+            assertEquals(4, Iter.toSet(g.find(Triple.create(Node.ANY, P, NodeCreateUtils.create("42")))).size(),
+                         String.format("Should have found 4 elements, does %s really implement literal typing", g.getClass()));
             txnRollback(g);
         }
 
     @Test
     public void test_Find_Triple_MatchLanguagedLiteralCaseInsensitive() {
-        Graph g = graphWith("a p 'chat'en");
-        Node chaten = node("'chat'en"), chatEN = node("'chat'EN");
+        Graph g = GraphTestLib.graphWith("a p 'chat'en");
+        Node chaten = GraphTestLib.node("'chat'en"), chatEN = GraphTestLib.node("'chat'EN");
         assertEquals(chaten, chatEN);
         assertTrue(chaten.sameValueAs(chatEN));
         assertEquals(chaten.getIndexingValue(), chatEN.getIndexingValue());
@@ -214,14 +207,14 @@ public class TestGraphMemModel extends AbstractTestGraph {
     private void literalTypingBasedFindTest(final String data, final int size, final String search, final String results,
                                             boolean reqLitType) {
         if ( !reqLitType ) {
-            Graph g = graphWith(data);
+            Graph g = GraphTestLib.graphWith(data);
 
             Node literal = NodeCreateUtils.create(search);
             //
             txnBegin(g);
-            assertEquals("graph has wrong size", size, g.size());
+            assertEquals(size, g.size(), "graph has wrong size");
             Set<Node> got = g.find(Node.ANY, Node.ANY, literal).mapWith(t -> t.getObject()).toSet();
-            assertEquals(nodeSet(results), got);
+            assertEquals(GraphTestLib.nodeSet(results), got);
             txnRollback(g);
         }
     }
@@ -264,15 +257,15 @@ public class TestGraphMemModel extends AbstractTestGraph {
         ExtendedIterator<Triple> it = g.find(Node.ANY, Node.ANY, Node.ANY);
         it.removeNext();
         it.removeNext();
-        assertFalse(g.find(node("x"), Node.ANY, Node.ANY).hasNext());
-        assertFalse(g.find(Node.ANY, node("R"), Node.ANY).hasNext());
-        assertFalse(g.find(Node.ANY, Node.ANY, node("y")).hasNext());
+        assertFalse(g.find(GraphTestLib.node("x"), Node.ANY, Node.ANY).hasNext());
+        assertFalse(g.find(Node.ANY, GraphTestLib.node("R"), Node.ANY).hasNext());
+        assertFalse(g.find(Node.ANY, Node.ANY, GraphTestLib.node("y")).hasNext());
     }
 
     @Test
     public void testBrokenSubject() {
         Graph g = getGraphWith("x brokenSubject y");
-        ExtendedIterator<Triple> it = g.find(node("x"), Node.ANY, Node.ANY);
+        ExtendedIterator<Triple> it = g.find(GraphTestLib.node("x"), Node.ANY, Node.ANY);
         it.removeNext();
         assertFalse(g.find(Node.ANY, Node.ANY, Node.ANY).hasNext());
     }
@@ -280,7 +273,7 @@ public class TestGraphMemModel extends AbstractTestGraph {
     @Test
     public void testBrokenPredicate() {
         Graph g = getGraphWith("x brokenPredicate y");
-        ExtendedIterator<Triple> it = g.find(Node.ANY, node("brokenPredicate"), Node.ANY);
+        ExtendedIterator<Triple> it = g.find(Node.ANY, GraphTestLib.node("brokenPredicate"), Node.ANY);
         it.removeNext();
         assertFalse(g.find(Node.ANY, Node.ANY, Node.ANY).hasNext());
     }
@@ -288,7 +281,7 @@ public class TestGraphMemModel extends AbstractTestGraph {
     @Test
     public void testBrokenObject() {
         Graph g = getGraphWith("x brokenObject y");
-        ExtendedIterator<Triple> it = g.find(Node.ANY, Node.ANY, node("y"));
+        ExtendedIterator<Triple> it = g.find(Node.ANY, Node.ANY, GraphTestLib.node("y"));
         it.removeNext();
         assertFalse(g.find(Node.ANY, Node.ANY, Node.ANY).hasNext());
     }

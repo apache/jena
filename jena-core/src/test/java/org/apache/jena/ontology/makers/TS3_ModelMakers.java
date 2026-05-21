@@ -26,7 +26,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    TestSimpleGraphMaker.class,
+    TestGraphMaker.class,
     TestModelMakerImpl.class
 })
 public class TS3_ModelMakers {}

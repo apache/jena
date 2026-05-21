@@ -40,13 +40,8 @@ import org.apache.jena.vocabulary.RDF;
 import org.junit.Test;
 
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 public class TestLPBRuleCloseBug extends TestCase {
-    public static TestSuite suite() {
-        return new TestSuite(TestLPBRuleCloseBug.class);
-    }
-    
     /**
      * Test case for JENA-2184.
      */
@@ -73,11 +68,11 @@ public class TestLPBRuleCloseBug extends TestCase {
 
         ExtendedIterator<Triple> sInfIter = infGraph.find(x1, RDF.Nodes.type, clsSUB);
         assertTrue( sInfIter.hasNext() );
-        
+
         // Closing without having read from the iterator
-        // Forces a close of LPInterpreter instances including on behind the tabled goal for the find 
+        // Forces a close of LPInterpreter instances including on behind the tabled goal for the find
         sInfIter.close();
-        
+
         // This query depends on the above tabled goal which was not complete before the close()
         ExtendedIterator<Triple> cInfIter = infGraph.find(x1, RDF.Nodes.type, clsCLASS);
         boolean foundClass = cInfIter.hasNext();

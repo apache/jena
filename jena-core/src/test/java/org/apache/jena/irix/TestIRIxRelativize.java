@@ -21,18 +21,16 @@
 
 package org.apache.jena.irix;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer;
 
-@RunWith(Parameterized.class)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestIRIxRelativize extends AbstractTestIRIx_3986 {
 
-    public TestIRIxRelativize(String name, IRIProvider provider) {
-        super(name, provider);
-    }
+    public TestIRIxRelativize() { super(); }
 
     @Test public void relativize_http_01() { testRelativize("http://host/dir/", "http://host/dir/file", "file"); }
 
@@ -86,7 +84,7 @@ public class TestIRIxRelativize extends AbstractTestIRIx_3986 {
         IRIx path = IRIx.create(pathStr);
         IRIx rel = base.relativize(path);
         String result = (rel==null)?null:rel.str();
-        assertEquals("Base=<"+baseStr+"> IRI=<"+pathStr+">", expected, result);
+        assertEquals(expected, result, "Base=<"+baseStr+"> IRI=<"+pathStr+">");
         if ( expected != null ) {
             IRIx path2 = base.resolve(rel);
             assertEquals(path, path2);

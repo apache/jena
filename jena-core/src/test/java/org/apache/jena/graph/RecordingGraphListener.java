@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.testing_framework.AbstractRecordingListener;
+import org.apache.jena.junit.AbstractRecordingListener;
 
 /**
  * This testing listener records the event names and data, and provides a method for

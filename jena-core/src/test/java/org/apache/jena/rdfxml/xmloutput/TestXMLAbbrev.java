@@ -23,20 +23,16 @@ package org.apache.jena.rdfxml.xmloutput;
 
 import java.io.IOException;
 
-/**
-    The tests testReaderAndWriter includes for the language
-    "RDF/XML-ABBREV". Extracted from TestXMLFeatures as part
-    of a clarification exercise intended to extend the testing to
-    allow for the entity-including option.
- */
-public class TestXMLAbbrev extends XMLOutputTestBase
+public class TestXMLAbbrev extends BaseTestXMLOutput
 {
-    public TestXMLAbbrev( String name )
-    { super( name, "RDF/XML-ABBREV" ); }
+    @Override
+    protected String getLang() {
+        return  "RDF/XML-ABBREV";
+    }
 
     public void testNoPropAttr() throws IOException
     {
-        check(TestXMLFeatures.file1,
+        checkY(BaseTestXMLFeatures.file1,
               null,
               "prop1=",
               Change.blockRules( "propertyAttr" )
@@ -45,7 +41,7 @@ public class TestXMLAbbrev extends XMLOutputTestBase
 
     public void testNoRdfCollection() throws IOException
     {
-        check("testing/abbreviated/collection.rdf",
+        checkY("testing/abbreviated/collection.rdf",
               null,
               "[\"']Collection[\"']",
               Change.blockRules( "parseTypeCollectionPropertyElt" )
@@ -54,7 +50,7 @@ public class TestXMLAbbrev extends XMLOutputTestBase
 
     public void testNoLi() throws IOException
     {
-        check("testing/abbreviated/container.rdf",
+        checkY("testing/abbreviated/container.rdf",
               null,
               "rdf:li",
               Change.blockRules( "section-List-Expand" )
@@ -63,43 +59,43 @@ public class TestXMLAbbrev extends XMLOutputTestBase
 
     public void testNoID() throws IOException
     {
-        check("testing/abbreviated/container.rdf",
-              "rdf:ID",
-              Change.blockRules( "idAttr" ),
-              "http://example.org/foo"
+        checkB("testing/abbreviated/container.rdf",
+               "rdf:ID",
+               Change.blockRules( "idAttr" ),
+               "http://example.org/foo"
                 );
     }
 
     public void testNoID2() throws IOException
     {
-        check("testing/abbreviated/container.rdf",
-              "rdf:ID",
-              Change.blockRules( "idAttr" ),
-              "http://example.org/foo#"
+        checkB("testing/abbreviated/container.rdf",
+               "rdf:ID",
+               Change.blockRules( "idAttr" ),
+               "http://example.org/foo#"
                 );
     }
 
     public void testNoID3() throws IOException {
         // Minimal version of testNoID2
-        check("testing/abbreviated/rdf-id.rdf",
-              "rdf:ID",
-              Change.blockRules("idAttr"),
-              "http://example.org/foo#"
+        checkB("testing/abbreviated/rdf-id.rdf",
+               "rdf:ID",
+               Change.blockRules("idAttr"),
+               "http://example.org/foo#"
                 );
     }
 
     public void testNoResource() throws IOException
     {
-        check("testing/abbreviated/container.rdf",
-              "['\"]Resource[\"']",
-              Change.blockRules( "parseTypeResourcePropertyElt" ),
-              "http://example.org/foo#"
+        checkB("testing/abbreviated/container.rdf",
+               "['\"]Resource[\"']",
+               Change.blockRules( "parseTypeResourcePropertyElt" ),
+               "http://example.org/foo#"
                 );
     }
 
     public void testPropAttrs() throws IOException
     {
-        check("testing/abbreviated/namespaces.rdf",
+        checkY("testing/abbreviated/namespaces.rdf",
               ":prop0 *=",
               null,
               Change.blockRules( ""  )
@@ -108,7 +104,7 @@ public class TestXMLAbbrev extends XMLOutputTestBase
 
     public void testNoPropAttrs() throws IOException
     {
-        check("testing/abbreviated/namespaces.rdf",
+        checkY("testing/abbreviated/namespaces.rdf",
               null,
               ":prop0 *=",
               Change.none()
@@ -125,7 +121,7 @@ public class TestXMLAbbrev extends XMLOutputTestBase
                     public void code(RDFWriter w){}
                 },base);
         /* */
-        check(filename,
+        checkZ(filename,
               null,
               "rdf:subject",
               null,
@@ -138,7 +134,7 @@ public class TestXMLAbbrev extends XMLOutputTestBase
 
     public void testNoCookUp() throws IOException
     {
-        check("testing/abbreviated/cookup.rdf",
+        checkY("testing/abbreviated/cookup.rdf",
               null,
               "(j\\.fixup|j\\.cook\\.up)",
               Change.blockRules( "" )

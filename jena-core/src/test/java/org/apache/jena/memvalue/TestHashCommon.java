@@ -21,20 +21,21 @@
 
 package org.apache.jena.memvalue;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import org.apache.jena.rdf.model.test.ModelTestBase;
+import org.junit.jupiter.api.Test;
 
-public class TestHashCommon extends ModelTestBase
+public class TestHashCommon
     {
     protected static final Item item2X = new Item( 2, "X" );
     protected static final Item item1Y = new Item( 1, "Y" );
     protected static final Item item2Z = new Item( 2, "Z" );
 
-    public TestHashCommon( String name )
-        { super( name ); }
 
     static class ProbeHashCommon extends HashCommon<Object>
         {
@@ -53,9 +54,6 @@ public class TestHashCommon extends ModelTestBase
         public int capacity()
             { return capacity; }
 
-        /*
-            Leaving the hashcode alone makes testing simpler.
-        */
         @Override protected int improveHashCode( int hashCode )
             { return hashCode; }
 
@@ -79,6 +77,7 @@ public class TestHashCommon extends ModelTestBase
             { return s + "#" + n; }
         }
 
+    @Test
     public void testCheckTestDataConstruction()
         {
         ProbeHashCommon h = probeWith( "1:2:x 4:7:y -1:5:z" );
@@ -87,6 +86,7 @@ public class TestHashCommon extends ModelTestBase
         assertEquals( new Item( 5, "z" ), h.getItemForTestingAt( h.top() ) );
         }
 
+    @Test
     public void testHashcodeUsedAsIndex()
         {
         ProbeHashCommon htb = new ProbeHashCommon( 10 );
@@ -99,6 +99,7 @@ public class TestHashCommon extends ModelTestBase
             }
         }
 
+    @Test
     public void testRemoveNoMove()
         {
         ProbeHashCommon h = probeWith( "1:1:Y 2:2:Z" );
@@ -107,6 +108,7 @@ public class TestHashCommon extends ModelTestBase
         assertAlike( probeWith( "1:1:Y" ), h );
         }
 
+    @Test
     public void testRemoveSimpleMove()
         {
         ProbeHashCommon h = probeWith( "0:0:X 1:2:Y -1:2:Z" );
@@ -115,6 +117,7 @@ public class TestHashCommon extends ModelTestBase
         assertAlike( probeWith( "0:0:X 1:2:Z" ), h );
         }
 
+    @Test
     public void testRemoveCircularMove()
         {
         ProbeHashCommon h = probeWith( "0:2:X 1:1:Y 2:2:Z" );
@@ -123,6 +126,7 @@ public class TestHashCommon extends ModelTestBase
         assertAlike( probeWith( "1:2:X 2:2:Z"), h );
         }
 
+    @Test
     public void testKeyIterator()
         {
         ProbeHashCommon h = probeWith( "0:0:X" );
@@ -130,26 +134,13 @@ public class TestHashCommon extends ModelTestBase
         assertEquals( itemSet( "0:X" ), elements );
         }
 
-    /**
-        Assert that the two probe HashCommon's are "alike", that is, that they
-        have key arrays of equal size and are element-by-element equal.
-        Otherwise, fail (preferably with an appropriate message).
-    */
     private void assertAlike( ProbeHashCommon desired, ProbeHashCommon got )
         {
-        assertEquals( "capacities must be equal", desired.capacity(), got.capacity() );
+        assertEquals(desired.capacity(), got.capacity(), "capacities must be equal" );
         for (int i = 0; i < desired.capacity(); i += 1)
             assertEquals( desired.getItemForTestingAt( i ), got.getItemForTestingAt( i ) );
         }
 
-    /**
-        Answer a probe with the specified items. <code>items</code> is a
-        space-separated string of item descriptions. Each description is a
-        colon-separated sequence <code>index:hash:label</code>: the
-        item <code>(hash, label)</code> will be placed at <code>index</code>.
-        Negative index values are interpreted as indexs from the <i>end</code>
-        of the key array, by adding the probe's capacity to them.
-    */
     protected ProbeHashCommon probeWith( String items )
         {
         ProbeHashCommon result = new ProbeHashCommon( 10 );

@@ -23,7 +23,7 @@ package org.apache.jena.mem.collection;
 import org.apache.jena.graph.Triple;
 import org.junit.Test;
 
-import static org.apache.jena.testing_framework.GraphHelper.triple;
+import static org.apache.jena.junit.GraphHelper.triple;
 import static org.junit.Assert.*;
 
 

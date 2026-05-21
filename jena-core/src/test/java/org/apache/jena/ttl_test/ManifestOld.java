@@ -26,10 +26,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.jena.irix.IRIs;
+import org.apache.jena.junit.TestUtils;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.util.FileManager;
-import org.apache.jena.util.junit.ManifestOldItemHandler;
-import org.apache.jena.util.junit.TestUtils;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.TestManifest;

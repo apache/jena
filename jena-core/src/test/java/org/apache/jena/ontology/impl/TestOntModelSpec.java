@@ -22,10 +22,10 @@
 package org.apache.jena.ontology.impl;
 
 import org.apache.jena.ontology.OntModelSpec;
-import org.apache.jena.rdf.model.test.ModelTestBase;
+import org.apache.jena.test.JenaTestBase;
 
 @SuppressWarnings("removal")
-public class TestOntModelSpec extends ModelTestBase
+public class TestOntModelSpec extends JenaTestBase
     {
     public TestOntModelSpec( String name )
         { super( name ); }

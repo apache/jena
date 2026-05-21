@@ -41,14 +41,11 @@ import org.apache.jena.ontology.OntProperty;
 import org.apache.jena.ontology.OntResource;
 import org.apache.jena.ontology.Ontology;
 import org.apache.jena.ontology.impl.OWLProfile.SupportsCheck;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFList;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.test.ModelTestBase;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.reasoner.rulesys.test.TestRuleSystemBugs;
 import org.apache.jena.reasoner.test.TestUtil;
+import org.apache.jena.test.JenaTestBase;
+import org.apache.jena.test.JenaTestLib;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
@@ -74,7 +71,7 @@ import java.util.Map;
  */
 @SuppressWarnings("removal")
 public class TestOntModel
-    extends ModelTestBase
+    extends JenaTestBase
 {
     // Constants
     //////////////////////////////////
@@ -192,8 +189,8 @@ public class TestOntModel
     public void testWritesPrefixes() {
         OntModel om = ModelFactory.createOntologyModel();
         om.setNsPrefix( "spoo", "http://spoo.spoo.com/spoo#" );
-        om.add( statement( om, "ping http://spoo.spoo.com/spoo#pang pilly" ) );
-        om.add( statement( om, "gg " + OWL.getURI() + "hh ii" ) );
+        om.add( ModelTestLib.statement( om, "ping http://spoo.spoo.com/spoo#pang pilly" ) );
+        om.add( ModelTestLib.statement( om, "gg " + OWL.getURI() + "hh ii" ) );
         StringWriter sw = new StringWriter();
         om.write( sw , "RDF/XML");
         String s = sw.getBuffer().toString();
@@ -359,15 +356,15 @@ public class TestOntModel
         OntResource r0 = m.getOntResource( NS + "a" );
         assertNull( r0 );
         OntResource r1 = m.createOntResource( NS + "aaa" );
-        assertInstanceOf( OntResource.class, r1 );
+        JenaTestLib.assertInstanceOf( OntResource.class, r1 );
         Resource r2a = m.getResource( NS + "a" );
         Resource r2b = m.getResource( NS + "b" );
         Property p = m.getProperty( NS + "p" );
         m.add( r2a, p, r2b );
         r0 = m.getOntResource( NS + "a" );
-        assertInstanceOf( OntResource.class, r0 );
+        JenaTestLib.assertInstanceOf( OntResource.class, r0 );
         OntResource r3 = m.getOntResource( r2b );
-        assertInstanceOf( OntResource.class, r3 );
+        JenaTestLib.assertInstanceOf( OntResource.class, r3 );
     }
 
     public void testGetOntClass() {
@@ -833,7 +830,7 @@ public class TestOntModel
         Iterator<DataRange> i = m.listDataRanges();
         assertTrue( "Should be at least one DataRange", i.hasNext() );
         Object dr = i.next();
-        assertInstanceOf( DataRange.class, dr );
+        JenaTestLib.assertInstanceOf( DataRange.class, dr );
         assertFalse( "Should no more DataRange", i.hasNext() );
     }
 

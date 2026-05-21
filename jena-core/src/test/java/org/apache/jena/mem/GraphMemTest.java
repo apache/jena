@@ -27,8 +27,8 @@ import org.junit.Test;
 
 import java.util.stream.Stream;
 
-import static org.apache.jena.testing_framework.GraphHelper.node;
-import static org.apache.jena.testing_framework.GraphHelper.triple;
+import static org.apache.jena.junit.GraphHelper.node;
+import static org.apache.jena.junit.GraphHelper.triple;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 

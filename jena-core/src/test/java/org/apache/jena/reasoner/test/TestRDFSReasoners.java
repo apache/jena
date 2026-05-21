@@ -21,25 +21,33 @@
 
 package org.apache.jena.reasoner.test;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.reasoner.*;
+import org.apache.jena.reasoner.InfGraph;
+import org.apache.jena.reasoner.Reasoner;
+import org.apache.jena.reasoner.ReasonerFactory;
+import org.apache.jena.reasoner.ValidityReport;
 import org.apache.jena.reasoner.ValidityReport.Report;
 import org.apache.jena.reasoner.rulesys.RDFSFBRuleReasonerFactory;
 import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
-import org.apache.jena.vocabulary.*;
+import org.apache.jena.test.JenaTestBase;
+import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.ReasonerVocabulary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Test the set of admissable RDFS reasoners.
  */
-public class TestRDFSReasoners extends ReasonerTestBase {
+public class TestRDFSReasoners extends JenaTestBase {
 
     /** Base URI for the test names */
     public static final String NAMESPACE = "http://www.hpl.hp.com/semweb/2003/query_tester/";
@@ -49,45 +57,53 @@ public class TestRDFSReasoners extends ReasonerTestBase {
     /**
      * Boilerplate for junit
      */
-    public TestRDFSReasoners( String name ) {
-        super( name );
+    public TestRDFSReasoners(String name) {
+        super(name);
     }
 
     /**
-     * Boilerplate for junit.
-     * This is its own test suite
+     * Boilerplate for junit. This is its own test suite
      */
     public static TestSuite suite() {
         TestSuite suite = new TestSuite();
         try {
             // FB reasoner doesn't support validation so the full set of wg tests are
             // commented out
-//            constructRDFWGtests(suite, RDFSFBRuleReasonerFactory.theInstance(), null);
+// constructRDFWGtests(suite, RDFSFBRuleReasonerFactory.theInstance(), null);
             constructQuerytests(suite, "rdfs/manifest-nodirect-noresource.rdf", RDFSFBRuleReasonerFactory.theInstance(), null);
 
-            Resource config = newResource().addProperty(ReasonerVocabulary.PROPenableCMPScan, "true" ); // TODO make boolean value work
-//            config.addProperty(ReasonerVocabulary.PROPtraceOn, true);
+            Resource config = ReasonerTestLib.newResource().addProperty(ReasonerVocabulary.PROPenableCMPScan, "true"); // TODO
+                                                                                                                       // make
+                                                                                                                       // boolean
+                                                                                                                       // value
+                                                                                                                       // work
+// config.addProperty(ReasonerVocabulary.PROPtraceOn, true);
             constructRDFWGtests(suite, RDFSRuleReasonerFactory.theInstance(), null);
             constructQuerytests(suite, "rdfs/manifest-standard.rdf", RDFSRuleReasonerFactory.theInstance(), config);
 
             suite.addTest(new TestRDFSMisc(RDFSRuleReasonerFactory.theInstance(), null));
 
-            Resource configFull = newResource().addProperty(ReasonerVocabulary.PROPsetRDFSLevel, ReasonerVocabulary.RDFS_FULL);
+            Resource configFull = ReasonerTestLib.newResource().addProperty(ReasonerVocabulary.PROPsetRDFSLevel,
+                                                                            ReasonerVocabulary.RDFS_FULL);
             constructQuerytests(suite, "rdfs/manifest.rdf", RDFSRuleReasonerFactory.theInstance(), configFull);
 
-            // This test was needed for the brief time the rdfs12 rules might have been in the standard
-            // That's no longer true but left comment out because we might want them for OWL someday
-//            constructQuerytests(suite, "rdfs/manifest-rdfs12.rdf", RDFSRuleReasonerFactory.theInstance(), configFull);
+            // This test was needed for the brief time the rdfs12 rules might have
+            // been in the standard
+            // That's no longer true but left comment out because we might want them
+            // for OWL someday
+// constructQuerytests(suite, "rdfs/manifest-rdfs12.rdf",
+// RDFSRuleReasonerFactory.theInstance(), configFull);
 
-            Resource configSimple = newResource().addProperty(ReasonerVocabulary.PROPsetRDFSLevel, ReasonerVocabulary.RDFS_SIMPLE);
+            Resource configSimple = ReasonerTestLib.newResource().addProperty(ReasonerVocabulary.PROPsetRDFSLevel,
+                                                                              ReasonerVocabulary.RDFS_SIMPLE);
             constructQuerytests(suite, "rdfs/manifest-simple.rdf", RDFSRuleReasonerFactory.theInstance(), configSimple);
 
             // Single test case used in debugging, subsumed by above
-//            constructSingleQuerytests(suite,
-//                                      "rdfs/manifest.rdf",
-//                                      "http://www.hpl.hp.com/semweb/2003/query_tester/rdfs/test13",
-//                                      RDFSRuleReasonerFactory.theInstance(),
-//                                      configFull);
+// constructSingleQuerytests(suite,
+// "rdfs/manifest.rdf",
+// "http://www.hpl.hp.com/semweb/2003/query_tester/rdfs/test13",
+// RDFSRuleReasonerFactory.theInstance(),
+// configFull);
 
         } catch (IOException e) {
             // failed to even built the test harness
@@ -99,7 +115,8 @@ public class TestRDFSReasoners extends ReasonerTestBase {
     /**
      * Build a single named query test
      */
-    private static void constructSingleQuerytests(TestSuite suite, String manifest, String test, ReasonerFactory rf, Resource config) throws IOException {
+    private static void constructSingleQuerytests(TestSuite suite, String manifest, String test, ReasonerFactory rf,
+                                                  Resource config) throws IOException {
         ReasonerTester tester = new ReasonerTester(manifest);
         Reasoner r = rf.create(config);
         suite.addTest(new TestReasonerFromManifest(tester, test, r));
@@ -111,9 +128,8 @@ public class TestRDFSReasoners extends ReasonerTestBase {
     private static void constructQuerytests(TestSuite suite, String manifest, ReasonerFactory rf, Resource config) throws IOException {
         ReasonerTester tester = new ReasonerTester(manifest);
         Reasoner r = rf.create(config);
-        for ( String test : tester.listTests() )
-        {
-            suite.addTest( new TestReasonerFromManifest( tester, test, r ) );
+        for ( String test : tester.listTests() ) {
+            suite.addTest(new TestReasonerFromManifest(tester, test, r));
         }
     }
 
@@ -122,27 +138,24 @@ public class TestRDFSReasoners extends ReasonerTestBase {
      */
     private static void constructRDFWGtests(TestSuite suite, ReasonerFactory rf, Resource config) throws IOException {
         WGReasonerTester tester = new WGReasonerTester("Manifest.rdf");
-        for ( String test : tester.listTests() )
-        {
-            suite.addTest( new TestReasonerWG( tester, test, rf, config ) );
+        for ( String test : tester.listTests() ) {
+            suite.addTest(new TestReasonerWG(tester, test, rf, config));
         }
     }
-
 
     /**
      * Build the query tests for the given reasoner.
      */
     public static void constructQuerytests(TestSuite suite, String manifest, Reasoner reasoner) throws IOException {
         ReasonerTester tester = new ReasonerTester(manifest);
-        for ( String test : tester.listTests() )
-        {
-            suite.addTest( new TestReasonerFromManifest( tester, test, reasoner ) );
+        for ( String test : tester.listTests() ) {
+            suite.addTest(new TestReasonerFromManifest(tester, test, reasoner));
         }
     }
 
     /**
-     * Inner class defining a test framework for invoking a single locally
-     * defined query-over-inference test.
+     * Inner class defining a test framework for invoking a single locally defined
+     * query-over-inference test.
      */
     static class TestReasonerFromManifest extends TestCase {
 
@@ -163,7 +176,6 @@ public class TestRDFSReasoners extends ReasonerTestBase {
             this.reasoner = reasoner;
         }
 
-
         /**
          * The test runner
          */
@@ -175,8 +187,8 @@ public class TestRDFSReasoners extends ReasonerTestBase {
     }
 
     /**
-     * Inner class defining a test framework for invoking a single
-     * RDFCore working group test.
+     * Inner class defining a test framework for invoking a single RDFCore working
+     * group test.
      */
     static class TestReasonerWG extends TestCase {
 
@@ -193,8 +205,7 @@ public class TestRDFSReasoners extends ReasonerTestBase {
         Resource config;
 
         /** Constructor */
-        TestReasonerWG(WGReasonerTester tester, String test,
-                                 ReasonerFactory reasonerFactory, Resource config) {
+        TestReasonerWG(WGReasonerTester tester, String test, ReasonerFactory reasonerFactory, Resource config) {
             super(test);
             this.tester = tester;
             this.test = test;
@@ -213,8 +224,8 @@ public class TestRDFSReasoners extends ReasonerTestBase {
     }
 
     /**
-     * Inner class defining the misc extra tests needed to check out a
-     * candidate RDFS reasoner.
+     * Inner class defining the misc extra tests needed to check out a candidate RDFS
+     * reasoner.
      */
     static class TestRDFSMisc extends TestCase {
 
@@ -237,17 +248,17 @@ public class TestRDFSReasoners extends ReasonerTestBase {
         @Override
         public void runTest() throws IOException {
             ReasonerTester tester = new ReasonerTester("rdfs/manifest.rdf");
-            // Test effect of switching off property scan - should break container property test case
-            Resource configuration = newResource();
-            if (config != null) {
-                for (StmtIterator i = config.listProperties(); i.hasNext();) {
+            // Test effect of switching off property scan - should break container
+            // property test case
+            Resource configuration = ReasonerTestLib.newResource();
+            if ( config != null ) {
+                for ( StmtIterator i = config.listProperties() ; i.hasNext() ; ) {
                     Statement s = i.nextStatement();
                     configuration.addProperty(s.getPredicate(), s.getObject());
                 }
             }
             configuration.addProperty(ReasonerVocabulary.PROPenableCMPScan, "false");
-            assertTrue("scanproperties off",
-                        !tester.runTest(NAMESPACE + "rdfs/test17", reasonerFactory, null, configuration));
+            assertTrue("scanproperties off", !tester.runTest(NAMESPACE + "rdfs/test17", reasonerFactory, null, configuration));
 
             // Check capabilities description
             Reasoner r = reasonerFactory.create(null);
@@ -256,30 +267,30 @@ public class TestRDFSReasoners extends ReasonerTestBase {
             assertTrue(r.supportsProperty(RDFS.range));
 
             // Datatype tests
-            assertTrue( ! doTestRDFSDTRange("dttest1.nt", reasonerFactory));
-            assertTrue( ! doTestRDFSDTRange("dttest2.nt", reasonerFactory));
-            assertTrue( doTestRDFSDTRange("dttest3.nt", reasonerFactory));
+            assertTrue(!doTestRDFSDTRange("dttest1.nt", reasonerFactory));
+            assertTrue(!doTestRDFSDTRange("dttest2.nt", reasonerFactory));
+            assertTrue(doTestRDFSDTRange("dttest3.nt", reasonerFactory));
         }
 
         /**
-         * Helper for dt range testing - loads a file, validates it using RDFS/DT
-         * and returns error status of the result
+         * Helper for dt range testing - loads a file, validates it using RDFS/DT and
+         * returns error status of the result
          */
         private boolean doTestRDFSDTRange(String file, ReasonerFactory rf) throws IOException {
             String langType = "RDF/XML";
-            if (file.endsWith(".nt")) {
+            if ( file.endsWith(".nt") ) {
                 langType = "N-TRIPLE";
-            } else if (file.endsWith("n3")) {
+            } else if ( file.endsWith("n3") ) {
                 langType = "N3";
             }
             Model m = ModelFactory.createDefaultModel();
-            Reader reader = new BufferedReader(new FileReader("testing/reasoners/rdfs/"+file, StandardCharsets.UTF_8));
+            Reader reader = new BufferedReader(new FileReader("testing/reasoners/rdfs/" + file, StandardCharsets.UTF_8));
             m.read(reader, WGReasonerTester.BASE_URI + file, langType);
             InfGraph g = rf.create(null).bind(m.getGraph());
             ValidityReport report = g.validate();
-            if (!report.isValid()) {
+            if ( !report.isValid() ) {
                 logger.debug("Validation error report:");
-                for (Iterator<Report> i = report.getReports(); i.hasNext(); ) {
+                for ( Iterator<Report> i = report.getReports() ; i.hasNext() ; ) {
                     logger.debug(i.next().toString());
                 }
             }

@@ -22,21 +22,12 @@
 package org.apache.jena.util;
 
 import static org.apache.jena.util.SplitIRI.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import junit.framework.JUnit4TestAdapter;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-/**
- * Test splitting IRI strings using Turtle rules. Includes the generally splitting
- * for display - the difference is that for Turtle, some characters need escaping.
- */
 public class TestSplitIRI_TTL {
-    public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(TestSplitIRI_TTL.class);
-    }
 
-    // Basics
     @Test
     public void split_basic_00() {
         testSplit("http://example/foo", "http://example/".length());
@@ -87,7 +78,6 @@ public class TestSplitIRI_TTL {
         testPrefixLocalnameTTL("http://example/xyz/_1.2.3.4", "http://example/xyz/", "\\_1.2.3.4");
     }
 
-    // Relative URIs
     @Test
     public void split_rel_1() {
         testPrefixLocalnameTTL("xyz/_1.2.3.4", "xyz/", "\\_1.2.3.4");
@@ -103,7 +93,6 @@ public class TestSplitIRI_TTL {
         testPrefixLocalnameTTL("", "", "");
     }
 
-    // Bizarre but legal URIs
     @Test
     public void split_weird_1() {
         testPrefixLocalnameTTL("abc:def", "abc:", "def");
@@ -114,7 +103,6 @@ public class TestSplitIRI_TTL {
         testPrefixLocalnameTTL("", "", "");
     }
 
-    // Trailing '.' - split with escape.
     @Test
     public void split_weird_3() {
         testPrefixLocalnameTTL("http://example/abc#x.", "http://example/abc#", "x\\.");
@@ -125,8 +113,6 @@ public class TestSplitIRI_TTL {
         testPrefixLocalnameTTL("http://example/", "http://example/", "");
     }
 
-    // Turtle details.
-    // "." leading dot is not legal.
     @Test
     public void split_ttl_01() {
         testPrefixLocalnameTTL("http://example/foo#bar:baz", "http://example/foo#", "bar:baz");
@@ -142,13 +128,11 @@ public class TestSplitIRI_TTL {
         testPrefixLocalnameTTL("http://example/.2.3.4", "http://example/.", "2.3.4");
     }
 
-    // "." leading dot is not legal.
     @Test
     public void split_ttl_04() {
         testPrefixLocalnameTTL("abc:xyz/.def", "abc:xyz/.", "def");
     }
 
-    // "-" leading dash is not legal.
     @Test
     public void split_ttl_05() {
         testPrefixLocalnameTTL("abc:xyz/-def", "abc:xyz/-", "def");
@@ -159,14 +143,11 @@ public class TestSplitIRI_TTL {
         testPrefixLocalnameTTL("abc:xyz/-.-.-def", "abc:xyz/-.-.-", "def");
     }
 
-    // Turtle-escape.
     @Test
     public void split_ttl_07() {
         testPrefixLocalnameTTL("http://example/id=89", "http://example/", "id\\=89");
     }
 
-    // Turtle details, including escaping.
-    // Test for PrefixLocalnameEsc
     @Test
     public void split_ttl_esc_01() {
         testPrefixLocalnameTTL("http://example/id=89", "http://example/", "id\\=89");
@@ -177,7 +158,6 @@ public class TestSplitIRI_TTL {
         testPrefixLocalnameTTL("http://example/a,b", "http://example/", "a\\,b");
     }
 
-    // Trailing '.' Legal if escaped.
     @Test
     public void split_ttl_esc_03() {
         testPrefixLocalnameTTL("http://example/2.3.", "http://example/", "2.3\\.");
@@ -188,7 +168,6 @@ public class TestSplitIRI_TTL {
         testPrefixLocalnameTTL("http://example/abc#x.", "http://example/abc#", "x\\.");
     }
 
-    // URNs split differently.
     @Test
     public void split_urn_01() {
         testPrefixLocalnameTTL("urn:foo:bar", "urn:foo:", "bar");
@@ -204,7 +183,6 @@ public class TestSplitIRI_TTL {
         testPrefixLocalnameTTL("urn:example:bar#frag", "urn:example:bar#", "frag");
     }
 
-    // Fragments, including Turtle escapes.
     @Test
     public void split_frag_01() {
         testPrefixLocalnameTTL("http://example/foo#bar:baz", "http://example/foo#", "bar:baz");
@@ -232,7 +210,7 @@ public class TestSplitIRI_TTL {
 
     private void testSplit(String string, int expected) {
         int i = splitpoint(string);
-        Assert.assertEquals(expected, i);
+        assertEquals(expected, i);
     }
 
     private void testPrefixLocalnameTTL(String string, String expectedNamespace, String expectedLocalname) {
@@ -241,9 +219,9 @@ public class TestSplitIRI_TTL {
 
     private void checkPrefixLocalname(String string, String expectedNamespace, String actualNamespace, String expectedLocalname,
                                       String actualLocalName) {
-        if ( expectedNamespace != null )
-            Assert.assertEquals(expectedNamespace, actualNamespace);
-        if ( expectedLocalname != null )
-            Assert.assertEquals(expectedLocalname, actualLocalName);
+        if (expectedNamespace != null)
+            assertEquals(expectedNamespace, actualNamespace);
+        if (expectedLocalname != null)
+            assertEquals(expectedLocalname, actualLocalName);
     }
 }

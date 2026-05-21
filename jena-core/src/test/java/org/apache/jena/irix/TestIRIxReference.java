@@ -21,18 +21,16 @@
 
 package org.apache.jena.irix;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer;
 
-@RunWith(Parameterized.class)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestIRIxReference extends AbstractTestIRIx_3986 {
 
-    public TestIRIxReference(String name, IRIProvider provider) {
-        super(name, provider);
-    }
+    public TestIRIxReference() { super(); }
 
     // --- Use in RDF
 
@@ -66,7 +64,7 @@ public class TestIRIxReference extends AbstractTestIRIx_3986 {
 
     private void reference(String uriStr, boolean expected) {
         IRIx iri = test_create(uriStr);
-        assertEquals("IRI = "+uriStr, expected, iri.isReference());
+        assertEquals(expected, iri.isReference(), "IRI = "+uriStr);
     }
 
 

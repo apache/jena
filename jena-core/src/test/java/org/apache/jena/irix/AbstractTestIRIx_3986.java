@@ -21,14 +21,10 @@
 
 package org.apache.jena.irix;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 
 import org.apache.jena.iri3986.provider.IRIProvider3986;
 import org.apache.jena.iri3986.provider.JenaSeveritySettings;
@@ -41,16 +37,11 @@ import org.apache.jena.rfc3986.Violations;
  */
 public class AbstractTestIRIx_3986 {
 
-    @Parameters(name = "{index}: {0}")
-    public static Iterable<Object[]> data() {
-        List<Object[]> data = new ArrayList<>();
-        data.add(new Object[]{"IRI3986", new IRIProvider3986()});
-
-        // Does not pass the test suite.
-        //data.add(new Object[]{"JDK.URI", new IRIProviderJDK()});
+    public AbstractTestIRIx_3986() {
+        // Use the IRIProvider3986 for these tests.
+        this.provider = new IRIProvider3986();
         // Wire up IRIProvider3986 error/warning controls.
         Violations.setSystemSeverityMap(JenaSeveritySettings.jenaSystemSettings());
-        return data;
     }
 
     protected IRIProvider getProvider() {
@@ -81,7 +72,7 @@ public class AbstractTestIRIx_3986 {
     private static boolean StrictFILE;
     private static boolean StrictDID;
 
-    @BeforeClass static public void beforeClass_StoreSystemProvider() {
+    @BeforeAll static public void beforeClass_StoreSystemProvider() {
         systemProvider = SystemIRIx.getProvider();
         StrictHTTP = systemProvider.isStrictMode("http");
         StrictURN  = systemProvider.isStrictMode("urn");
@@ -89,21 +80,21 @@ public class AbstractTestIRIx_3986 {
         StrictDID  = systemProvider.isStrictMode("did");
     }
 
-    @AfterClass static public void afterClass_RestoreSystemProvider() {
+    @AfterAll static public void afterClass_RestoreSystemProvider() {
         systemProvider.strictMode("http", StrictHTTP);
         systemProvider.strictMode("urn",  StrictURN);
         systemProvider.strictMode("file", StrictFILE);
         systemProvider.strictMode("did",  StrictDID);
     }
 
-    @Before public void beforeTest_setStrict() {
+    @BeforeEach public void beforeTest_setStrict() {
         provider.strictMode("http", true);
         provider.strictMode("urn",  true);
         provider.strictMode("file", true);
         provider.strictMode("did",  true);
     }
 
-    @After public void afterTest_restoreSystemProvider() {
+    @AfterEach public void afterTest_restoreSystemProvider() {
         restore();
     }
 

@@ -33,7 +33,7 @@ import java.util.ConcurrentModificationException;
 import java.util.NoSuchElementException;
 import java.util.stream.StreamSupport;
 
-import static org.apache.jena.testing_framework.GraphHelper.triple;
+import static org.apache.jena.junit.GraphHelper.triple;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
@@ -122,8 +122,9 @@ public abstract class AbstractJenaSetTripleTest {
         sut.tryAdd(triple("s o p"));
         var spliterator = sut.keySpliterator();
         sut.tryAdd(triple("t o p2"));
-        assertThrows(ConcurrentModificationException.class, () -> spliterator.tryAdvance(t -> {
-        }));
+        assertThrows(ConcurrentModificationException.class,
+                     () -> spliterator.tryAdvance(t -> {})
+                     );
     }
 
     @Test

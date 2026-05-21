@@ -24,8 +24,9 @@ package org.apache.jena.reasoner.rulesys.impl;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import org.junit.Test;
+
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.apache.jena.graph.*;
 import org.apache.jena.reasoner.rulesys.FBRuleInfGraph;
 import org.apache.jena.reasoner.rulesys.FBRuleReasoner;
@@ -33,13 +34,8 @@ import org.apache.jena.reasoner.rulesys.Rule;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
-import org.junit.Test;
 
 public class TestLPBRuleEngine extends TestCase {
-	public static TestSuite suite() {
-		return new TestSuite(TestLPBRuleEngine.class);
-	}
-
 	protected Node a = NodeFactory.createURI("a");
 	protected Node p = NodeFactory.createURI("p");
 	protected Node C1 = NodeFactory.createURI("C1");

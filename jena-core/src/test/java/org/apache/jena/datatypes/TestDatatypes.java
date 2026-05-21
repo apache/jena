@@ -21,11 +21,7 @@
 
 package org.apache.jena.datatypes;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -36,7 +32,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.XSD;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestDatatypes {
 
@@ -71,8 +67,6 @@ public class TestDatatypes {
     public void registration_05() {
         checkRegistration1("dayTimeDuration", XSD.dayTimeDuration);
     }
-
-    // xsd:dateTimeStamp
 
     @Test
     public void dateTimeStamp_01() {
@@ -110,7 +104,6 @@ public class TestDatatypes {
         invalid(xsdDateTimeStamp, "2015-02-23T15:21:18.665+15:00");
     }
 
-    // xsd:yearMonthDuration
     @Test
     public void yearMonthDuration_01() {
         valid(xsdDuration, "P1Y");
@@ -147,7 +140,6 @@ public class TestDatatypes {
         invalid(xsdYearMonthDuration, "P1D");
     }
 
-    // xsd:dayTimeDuration
     @Test
     public void dayTimeDuration_01() {
         valid(xsdDuration, "PT0S");
@@ -215,8 +207,6 @@ public class TestDatatypes {
 
     @Test
     public void language_04() {
-        // non-ASCII characters are not allowed
-        // (here: "goose" in Polish)
         invalid(xsdLanguage, "gęś");
     }
 
@@ -359,22 +349,22 @@ public class TestDatatypes {
 
     private void testValueToLex(Object value, XSDDatatype datatype) {
         Node node = NodeFactory.createLiteralByValue(value, datatype);
-        assertTrue("Not valid lexical form " + value + " -> " + node, datatype.isValid(node.getLiteralLexicalForm()));
+        assertTrue(datatype.isValid(node.getLiteralLexicalForm()), "Not valid lexical form " + value + " -> " + node);
     }
 
     private void testLiteralIsCorrectType(Object value, XSDDatatype datatype) {
         Node node = NodeFactory.createLiteralByValue(value, datatype);
-        assertEquals("If passing object of type " + value.getClass().getSimpleName() + " as " + datatype.toString()
-                     + " it needs to be treated as " + datatype.getJavaClass().getSimpleName(), node.getLiteralValue().getClass(),
-                     datatype.getJavaClass());
+        assertEquals(datatype.getJavaClass(), node.getLiteralValue().getClass(),
+                     "If passing object of type " + value.getClass().getSimpleName() + " as " + datatype.toString()
+                      + " it needs to be treated as " + datatype.getJavaClass().getSimpleName());
     }
 
     private void valid(XSDDatatype xsddatatype, String string) {
-        assertTrue("Expected valid: " + string, xsddatatype.isValid(string));
+        assertTrue(xsddatatype.isValid(string), "Expected valid: " + string);
     }
 
     private void invalid(XSDDatatype xsddatatype, String string) {
-        assertFalse("Expected invalid: " + string, xsddatatype.isValid(string));
+        assertFalse(xsddatatype.isValid(string), "Expected invalid: " + string);
     }
 
     private void checkRegistration1(String localName, Resource r) {
