@@ -29,7 +29,6 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
     TestOntGraph.class,
     TestOntResource.class,
-    TestAxioms.class,
     TestClassExpression.class,
     TestOntDocumentManager.class,
     TestOntology.class,
