@@ -1,3 +1,13 @@
+package org.apache.jena.datatypes;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.datatypes.xsd.XSDDuration;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.junit.jupiter.api.Test;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,19 +29,7 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.datatypes;
-
-import org.apache.jena.datatypes.xsd.XSDDatatype;
-import org.apache.jena.datatypes.xsd.XSDDuration;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
-import org.junit.Assert;
-import org.junit.Test;
-
-/** Tests on values */
 public class TestDatatypeValues {
-
-    // Duration.
 
     @Test
     public void duration_01() {
@@ -109,13 +107,12 @@ public class TestDatatypeValues {
         XSDDuration dur2 = (XSDDuration)d2.getLiteralValue();
         int cmp = dur1.compare(dur2);
 
-        Assert.assertEquals("Compare: " + lex1 + " and " + lex2, expected, cmp);
+        assertEquals(expected, cmp, "Compare: " + lex1 + " and " + lex2);
         if ( cmp == 0 ) {
-            Assert.assertEquals("Not hash compatible: " + lex1 + " and " + lex2, d1.getLiteral().getValueHashCode(),
-                                d2.getLiteral().getValueHashCode());
-            Assert.assertTrue("Not equal: " + lex1 + " and " + lex2, d1.sameValueAs(d2));
+            assertEquals(d1.getLiteral().getValueHashCode(), d2.getLiteral().getValueHashCode(), "Not hash compatible: " + lex1 + " and " + lex2);
+            assertTrue(d1.sameValueAs(d2), "Not equal: " + lex1 + " and " + lex2);
         } else {
-            Assert.assertFalse("Equal: " + lex1 + " and " + lex2, d1.sameValueAs(d2));
+            assertFalse(d1.sameValueAs(d2), "Equal: " + lex1 + " and " + lex2);
         }
     }
 }

@@ -20,45 +20,46 @@
  */
 package org.apache.jena.memvalue;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.graph.GraphTestLib;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-
-import org.junit.Test;
-
-import static org.apache.jena.graph.test.GraphTestBase.node;
-import static org.apache.jena.graph.test.GraphTestBase.triple;
-import static org.junit.Assert.*;
 
 public class FieldFilterTest {
 
     @Test
     public void filterOnTwoNodes() {
-        var sut = FieldFilter.filterOn(Triple.Field.fieldSubject, node("a"), Triple.Field.fieldPredicate, node("P"));
+        var sut = FieldFilter.filterOn(Triple.Field.fieldSubject, GraphTestLib.node("a"), Triple.Field.fieldPredicate, GraphTestLib.node("P"));
         assertTrue(sut.hasFilter());
         var filter = sut.getFilter();
-        assertTrue(filter.test(triple( "a P b" )));
-        assertFalse(filter.test(triple( "c P b" )));
-        assertFalse(filter.test(triple( "a Q b" )));
+        assertTrue(filter.test(GraphTestLib.triple( "a P b" )));
+        assertFalse(filter.test(GraphTestLib.triple( "c P b" )));
+        assertFalse(filter.test(GraphTestLib.triple( "a Q b" )));
     }
 
     @Test
     public void filterOnFirstNode() {
-        var sut = FieldFilter.filterOn(Triple.Field.fieldSubject, node("a"), Triple.Field.fieldPredicate, Node.ANY);
+        var sut = FieldFilter.filterOn(Triple.Field.fieldSubject, GraphTestLib.node("a"), Triple.Field.fieldPredicate, Node.ANY);
         assertTrue(sut.hasFilter());
         var filter = sut.getFilter();
-        assertTrue(filter.test(triple( "a P b" )));
-        assertFalse(filter.test(triple( "c P b" )));
-        assertTrue(filter.test(triple( "a Q b" )));
+        assertTrue(filter.test(GraphTestLib.triple( "a P b" )));
+        assertFalse(filter.test(GraphTestLib.triple( "c P b" )));
+        assertTrue(filter.test(GraphTestLib.triple( "a Q b" )));
     }
 
     @Test
     public void filterOnSecondNode() {
-        var sut = FieldFilter.filterOn(Triple.Field.fieldSubject, Node.ANY, Triple.Field.fieldPredicate, node("P"));
+        var sut = FieldFilter.filterOn(Triple.Field.fieldSubject, Node.ANY, Triple.Field.fieldPredicate, GraphTestLib.node("P"));
         assertTrue(sut.hasFilter());
         var filter = sut.getFilter();
-        assertTrue(filter.test(triple( "a P b" )));
-        assertTrue(filter.test(triple( "c P b" )));
-        assertFalse(filter.test(triple( "a Q b" )));
+        assertTrue(filter.test(GraphTestLib.triple( "a P b" )));
+        assertTrue(filter.test(GraphTestLib.triple( "c P b" )));
+        assertFalse(filter.test(GraphTestLib.triple( "a Q b" )));
     }
 
     @Test

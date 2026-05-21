@@ -23,9 +23,9 @@ package org.apache.jena.ttl_test.test.turtle;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import org.apache.jena.junit.TestUtils;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.ttl_test.TestFactoryManifestOld;
-import org.apache.jena.util.junit.TestUtils;
 import org.apache.jena.vocabulary.RDF;
 
 public class TurtleTestFactory extends TestFactoryManifestOld {

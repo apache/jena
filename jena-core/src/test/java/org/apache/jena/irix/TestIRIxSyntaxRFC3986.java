@@ -22,23 +22,21 @@
 package org.apache.jena.irix;
 
 import static org.apache.jena.atlas.lib.Lib.uppercase;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer;
 
 /**
  * Basic tests of RFC 3986 syntax. Scheme-rules are not checked.
  *
  * {@link TestIRIxJenaSystem} contains tests with more scheme errors and warnings. It also compares to jena-iri.
  */
-@RunWith(Parameterized.class)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestIRIxSyntaxRFC3986 extends AbstractTestIRIx_3986 {
 
-    public TestIRIxSyntaxRFC3986(String name, IRIProvider provider) {
-        super(name, provider);
-    }
+    public TestIRIxSyntaxRFC3986() { super(); }
 
     @Test public void http_01()      { parse("http://example/abc"); }
 
@@ -54,26 +52,21 @@ public class TestIRIxSyntaxRFC3986 extends AbstractTestIRIx_3986 {
 
     // ---- Compliance with HTTP RFC7230. https://tools.ietf.org/html/rfc7230#section-2.7
 
-    @Test(expected=IRIException.class)
-    public void http_51() { parse("http:"); }
+    @Test public void http_51() { assertThrows(IRIException.class, ()-> parse("http:")); }
 
-    @Test(expected=IRIException.class)
-    public void http_52() { parse("http:/"); }
+    @Test public void http_52() { assertThrows(IRIException.class, ()-> parse("http:/")); }
 
-    @Test(expected=IRIException.class)
-    public void http_53() { parse("http://"); }
+    @Test public void http_53() { assertThrows(IRIException.class, ()-> parse("http://")); }
 
     @Test public void http_54() { parse("http://x"); }
 
-    @Test(expected=IRIException.class)
-    public void http_55()   { parse("http:abc"); }
+    @Test public void http_55()   { assertThrows(IRIException.class, ()-> parse("http:abc")); }
 
-    @Test(expected=IRIException.class)
-    public void http_56()   { parse("http:///abc"); }
+    @Test public void http_56()   { assertThrows(IRIException.class, ()-> parse("http:///abc")); }
 
-    @Test(expected=IRIException.class)
+    @Test
     // [] not in IPv6 address
-    public void http_57()   { parse("http://h/ab[]"); }
+    public void http_57()   { assertThrows(IRIException.class, ()-> parse("http://h/ab[]")); }
 
     @Test public void http_58() { parse("http://example/~jena/file"); }
 
@@ -81,11 +74,9 @@ public class TestIRIxSyntaxRFC3986 extends AbstractTestIRIx_3986 {
 
     @Test public void urn_01() { parse("urn:NID:NSS"); }
 
-    @Test(expected=IRIException.class)
-    public void urn_02() { parse("urn:x:abcd"); }
+    @Test public void urn_02() { assertThrows(IRIException.class, ()-> parse("urn:x:abcd")); }
 
-    @Test(expected=IRIException.class)
-    public void urn_03() { parse("urn:ex:"); }
+    @Test public void urn_03() { assertThrows(IRIException.class, ()-> parse("urn:ex:")); }
 
     @Test public void urn_04()  { notStrict("urn", ()->parse("urn:x:abc")); }
 

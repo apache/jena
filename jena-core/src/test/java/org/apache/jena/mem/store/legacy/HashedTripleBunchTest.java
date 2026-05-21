@@ -25,7 +25,7 @@ import org.apache.jena.mem.collection.AbstractJenaSetTripleTest;
 import org.apache.jena.mem.collection.JenaSet;
 import org.junit.Test;
 
-import static org.apache.jena.testing_framework.GraphHelper.triple;
+import static org.apache.jena.junit.GraphHelper.triple;
 import static org.junit.Assert.assertEquals;
 
 public class HashedTripleBunchTest extends AbstractJenaSetTripleTest {

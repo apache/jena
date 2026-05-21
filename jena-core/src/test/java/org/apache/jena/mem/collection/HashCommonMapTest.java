@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import java.util.function.UnaryOperator;
 
-import static org.apache.jena.testing_framework.GraphHelper.node;
+import static org.apache.jena.junit.GraphHelper.node;
 import static org.junit.Assert.assertEquals;
 
 public class HashCommonMapTest extends AbstractJenaMapNodeTest {

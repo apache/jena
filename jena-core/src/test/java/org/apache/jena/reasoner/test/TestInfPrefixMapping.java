@@ -21,17 +21,17 @@
 
 package org.apache.jena.reasoner.test;
 
-import junit.framework.*;
+import junit.framework.TestSuite;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.test.ModelTestBase;
 import org.apache.jena.reasoner.InfGraph;
+import org.apache.jena.test.JenaTestBase;
 
 /**
      Needs extending; relys on knowing that the only InfGraph currently used is
      the Jena-provided base. Needs to be made into an abstract test and
      parametrised with the InfGraph being tested (hence getInfGraph).
 */
-public class TestInfPrefixMapping extends ModelTestBase
+public class TestInfPrefixMapping extends JenaTestBase
     {
     public TestInfPrefixMapping( String name )
         { super( name ); }

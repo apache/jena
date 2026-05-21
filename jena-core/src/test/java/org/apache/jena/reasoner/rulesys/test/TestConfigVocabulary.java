@@ -21,15 +21,18 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
-import org.apache.jena.rdf.model.*;
-import org.apache.jena.rdf.model.test.ModelTestBase;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.reasoner.ReasonerRegistry;
-import org.apache.jena.vocabulary.*;
+import org.apache.jena.test.JenaTestBase;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.ReasonerVocabulary;
 
 /**
     Tests for configuration vocabulary added as part of ModelSpec removal
 */
-public class TestConfigVocabulary extends ModelTestBase
+public class TestConfigVocabulary extends JenaTestBase
     {
     public TestConfigVocabulary( String name )
         { super( name ); }
@@ -43,7 +46,7 @@ public class TestConfigVocabulary extends ModelTestBase
         assertIsProperty( "configurationProperty", ReasonerVocabulary.configurationP );
         assertIsProperty( "individualAsThing", ReasonerVocabulary.individualAsThingP );
         }
-    
+
     public void testPropVocavulary()
         {
         assertIsPropProperty( "derivationLogging", ReasonerVocabulary.PROPderivationLogging );

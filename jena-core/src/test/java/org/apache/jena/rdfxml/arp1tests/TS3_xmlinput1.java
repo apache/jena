@@ -33,17 +33,17 @@ public class TS3_xmlinput1 extends TestSuite
     private TS3_xmlinput1()
     {
         super("RDF/XML Input ARP1");
-        addTest( org.apache.jena.rdfxml.arp1tests.TestURIs.suite());
-        addTest( org.apache.jena.rdfxml.arp1tests.TestSuiteWG_RDFXML.suite());
-        addTest( org.apache.jena.rdfxml.arp1tests.TestSuiteWG_RDFXML_ARP.suite());
+        addTest( TestURIs.suite());
+        addTest( TestSuiteWG_RDFXML.suite());
+        addTest( TestSuiteWG_RDFXML_ARP.suite());
 
-        addTest( org.apache.jena.rdfxml.arp1tests.TestsARP.suite());
+        addTest( TestsARP.suite());
         addTest( org.apache.jena.rdfxml.arp1tests.states.TestARPStates.suite());
 
-        addTest( org.apache.jena.rdfxml.arp1tests.TestsTainting.suite());
-        addTest( org.apache.jena.rdfxml.arp1tests.TestsSAX2RDF.suite());
-        addTest( org.apache.jena.rdfxml.arp1tests.TestsStAX2Model.suite());
-        addTest( org.apache.jena.rdfxml.arp1tests.TestRDFXML_URI.suite());
+        addTest( TestsTainting.suite());
+        addTest( TestsSAX2RDF.suite());
+        addTest( TestsStAX2Model.suite());
+        addTest( TestRDFXML_URI.suite());
     }
 
     private void addTest(String name, TestSuite tc) {

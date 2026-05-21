@@ -21,18 +21,16 @@
 
 package org.apache.jena.irix;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer;
 
-@RunWith(Parameterized.class)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestIRIxNormalize extends AbstractTestIRIx_3986 {
 
-    public TestIRIxNormalize(String name, IRIProvider provider) {
-        super(name, provider);
-    }
+    public TestIRIxNormalize() { super(); }
 
     @Test
     public void normalize_01() {

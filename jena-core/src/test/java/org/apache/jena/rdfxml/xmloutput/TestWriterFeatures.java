@@ -26,24 +26,22 @@ import java.io.StringReader;
 import java.io.StringWriter;
 
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelTestLib;
 import org.apache.jena.rdf.model.RDFWriterI;
-import org.apache.jena.rdf.model.test.ModelTestBase;
 import org.apache.jena.util.FileManager;
 
-public class TestWriterFeatures extends ModelTestBase
-{
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-    public TestWriterFeatures(String name)
-    {
-        super(name);
-    }
+public class TestWriterFeatures
+{
 
     private static String testFileBase = "file:testing/abbreviated";
 
     private void checkReadWriteRead(String filename, String writerName,
                                     String propertyName, String propertyValue)
     {
-            Model model = createMemModel();
+            Model model = ModelTestLib.createMemModel();
             FileManager.getInternal().readModelInternal(model, filename );
 
             String contents = null;
@@ -58,7 +56,7 @@ public class TestWriterFeatures extends ModelTestBase
             } catch (IOException ex) { /* ignore : StringWriter */ }
 
             try ( StringReader sr = new StringReader( contents ) ) {
-                Model model2 = createMemModel();
+                Model model2 = ModelTestLib.createMemModel();
                 model2.read( new StringReader( contents ), filename );
                 assertTrue( model.isIsomorphicWith( model2 ) );
             }
@@ -71,15 +69,19 @@ public class TestWriterFeatures extends ModelTestBase
     }
 
     // test the tests !
+    @Test
     public void testEntity_0()
     { checkReadWriteRead(testFileBase+"/entities_1.ttl", "showXmlDeclaration", "true"); }
 
+    @Test
     public void testEntity_1()
     { checkReadWriteRead(testFileBase+"/entities_1.ttl", "showDoctypeDeclaration", "true"); }
 
+    @Test
     public void testEntity_2()
     { checkReadWriteRead(testFileBase+"/entities_2.ttl", "showDoctypeDeclaration", "true"); }
 
+    @Test
     public void testEntity_3()
     { checkReadWriteRead(testFileBase+"/entities_3.ttl", "showDoctypeDeclaration", "true"); }
 }

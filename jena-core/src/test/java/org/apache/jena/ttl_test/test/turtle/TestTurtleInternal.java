@@ -25,9 +25,9 @@ import junit.framework.*;
 
 import java.io.*;
 
+import org.apache.jena.junit.TestUtils;
 import org.apache.jena.ttl_test.turtle.TurtleEventNull;
 import org.apache.jena.ttl_test.turtle.javacc.TurtleParser;
-import org.apache.jena.util.junit.TestUtils;
 
 public class TestTurtleInternal extends TestSuite
 {

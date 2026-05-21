@@ -25,20 +25,20 @@ import java.io.*;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.ModelTestLib;
 import org.apache.jena.rdf.model.impl.Util;
-import org.apache.jena.rdf.model.test.ModelTestBase;
 import org.apache.jena.shared.CannotEncodeCharacterException;
-import org.apache.jena.vocabulary.RDF;
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
      Tests to ensure that certain literals are either encoded properly or reported
      as exceptions.
 */
-public class TestLiteralEncoding extends ModelTestBase
-    {
-    public TestLiteralEncoding( String name )
-        { super( name ); }
-    
+public class TestLiteralEncoding {
+
+    @Test
     public void testX()
         {
         assertEquals( "", Util.substituteEntitiesInElementContent( "" ) );
@@ -58,7 +58,7 @@ public class TestLiteralEncoding extends ModelTestBase
         assertEquals( "a&amp;b&gt;c", Util.substituteEntitiesInElementContent( "a&b>c" ) );
         assertEquals( "a&amp;b&lt;c", Util.substituteEntitiesInElementContent( "a&b<c" ) );
     //
-        // Encoding in content output : protect CR but raw NL is fine. 
+        // Encoding in content output : protect CR but raw NL is fine.
         assertEquals( "&#xD;", Util.substituteEntitiesInElementContent( "\r" ) );
         assertEquals( "\n", Util.substituteEntitiesInElementContent( "\n" ) );
     //
@@ -66,7 +66,7 @@ public class TestLiteralEncoding extends ModelTestBase
         assertEquals( "&lt;", Util.substituteStandardEntities( "<" ) );
         assertEquals( "&gt;", Util.substituteStandardEntities( ">" ) );
         assertEquals( "&amp;", Util.substituteStandardEntities( "&" ) );
-        assertEquals( "&apos;", Util.substituteStandardEntities( "\'" ) );
+        assertEquals( "&apos;", Util.substituteStandardEntities( "'" ) );
         assertEquals( "&quot;", Util.substituteStandardEntities( "\"" ) );
         assertEquals( "&#xA;", Util.substituteStandardEntities( "\n" ) );
         assertEquals( "&#xD;", Util.substituteStandardEntities( "\r" ) );
@@ -74,65 +74,63 @@ public class TestLiteralEncoding extends ModelTestBase
     //
         assertEquals( "a&lt;b&amp;c&gt;d", Util.substituteStandardEntities( "a<b&c>d" ) );
         }
-    
+
     public void testLexicalEncodingException(String lang)
         {
-        for (char ch = 0; ch < 32; ch += 1) 
+        for (char ch = 0; ch < 32; ch += 1)
             if (ch != '\n' && ch != '\t' && ch != '\r')
                 testThrowsBadCharacterException( ch, lang );
         testThrowsBadCharacterException( (char)0xFFFF, lang );
         testThrowsBadCharacterException( (char)0xFFFE, lang );
-        
+
         }
-    
-    
+
+    @Test
     public void testBasicLexicalEncodingException()
-    {
-    	testLexicalEncodingException("RDF/XML");
-    }
-    
-    // TODO: add test for bad char in property attribute.
+        {
+        testLexicalEncodingException("RDF/XML");
+        }
+
+    @Test
     public void testPrettyLexicalEncodingException()
     {
-    	testLexicalEncodingException("RDF/XML-ABBREV");
+        testLexicalEncodingException("RDF/XML-ABBREV");
     }
     private void testThrowsBadCharacterException( char badChar, String lang )
         {
         String badString = "" + badChar;
 
         Model m = ModelFactory.createDefaultModel();
-        m.createResource().addProperty(RDF.value, badString);
+        m.createResource().addProperty(org.apache.jena.vocabulary.RDF.value, badString);
         Writer w = new Writer(){
-			@Override
+            @Override
             public void close() throws IOException {}
-			@Override
+            @Override
             public void flush() throws IOException {}
-			@Override
+            @Override
             public void write(char[] arg0, int arg1, int arg2) throws IOException {}
         };
-        try 
-            { 
-        	m.write(w,lang);
-//            Util.substituteEntitiesInElementContent( badString ); 
-            fail( "should trap bad character: (char)" + (int) badChar ); 
+        try
+            {
+            m.write(w,lang);
+            fail( "should trap bad character: (char)" + (int) badChar );
             }
-        catch (CannotEncodeCharacterException e) 
-            { 
-            assertEquals( badChar, e.getBadChar() ); 
+        catch (CannotEncodeCharacterException e)
+            {
+            assertEquals( badChar, e.getBadChar() );
             assertEquals( "XML", e.getEncodingContext() );
             }
         }
-    
+
+    @Test
     public void testNoApparentCData()
         {
-        Model m = modelWithStatements( "a R ']]>'" );
+        Model m = ModelTestLib.modelWithStatements( "a R ']]>'" );
         StringWriter s = new StringWriter();
         m.write( s, "RDF/XML-ABBREV" );
-        Model m2 = modelWithStatements( "" );
+        Model m2 = ModelTestLib.modelWithStatements( "" );
         m2.read( new StringReader( s.toString() ), null, "RDF/XML" );
-        assertIsoModels( m, m2 );
-        //assertTrue( s.toString().contains( "]]&gt;" ) );  // Java 1.5-ism
-        //assertFalse( s.toString().contains( "]]>" ) );
+        org.apache.jena.rdf.model.ModelTestLib.assertIsoModels( m, m2 );
         assertTrue( s.toString().contains( "]]&gt;" ) );
         assertFalse( s.toString().contains( "]]>" ) );
         }

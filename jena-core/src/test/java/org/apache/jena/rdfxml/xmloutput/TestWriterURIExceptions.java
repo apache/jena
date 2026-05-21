@@ -23,21 +23,21 @@ package org.apache.jena.rdfxml.xmloutput;
 
 import java.io.StringWriter;
 
-import junit.framework.TestCase;
 import org.apache.jena.irix.IRIException;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
      Added as a place to put the test(s) which ensure that thrown URI exceptions
      carry the bad URI with them.
 */
-public class TestWriterURIExceptions extends TestCase
+public class TestWriterURIExceptions
     {
-    public TestWriterURIExceptions( String name )
-        { super( name ); }
-
-        public void testBadURIExceptionContainsBadURIInMessage() {
+    @Test
+    public void testBadURIExceptionContainsBadURIInMessage() {
             String badURI = "http://host/path[]";   // [] are illegal in IRIs in this position.
             Model m = ModelFactory.createDefaultModel();
             m.add(m.createResource(badURI), m.createProperty("eg:BC"), m.createResource("eg:CD"));
@@ -45,7 +45,7 @@ public class TestWriterURIExceptions extends TestCase
                 m.write(new StringWriter(), "RDF/XML");
                 fail("should detect bad URI " + badURI);
             } catch (IRIException e) {
-                assertTrue("message must contain failing URI", e.getMessage().indexOf(badURI) > 0);
+                assertTrue(e.getMessage().indexOf(badURI) > 0, "message must contain failing URI");
             }
         }
     }

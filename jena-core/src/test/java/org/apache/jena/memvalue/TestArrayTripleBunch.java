@@ -21,12 +21,8 @@
 
 package org.apache.jena.memvalue;
 
-public class TestArrayTripleBunch extends TestTripleBunch
-    {
-    public TestArrayTripleBunch( String name )
-        { super( name ); }
-    
+public class TestArrayTripleBunch extends AbstractTestTripleBunch {
+
     @Override
-    public TripleBunch getBunch()
-        { return new ArrayBunch(); }
-    }
+    public TripleBunch getBunch() { return new ArrayBunch(); }
+}

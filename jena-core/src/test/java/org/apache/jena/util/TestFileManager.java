@@ -23,29 +23,20 @@ package org.apache.jena.util;
 
 import java.io.InputStream;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.shared.NotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.jupiter.api.Test;
 
-public class TestFileManager extends TestCase {
-    static Logger log = LoggerFactory.getLogger(TestFileManager.class);
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestFileManager {
     static final String testingDir = "testing/FileManager";
     static final String filename = "fmgr-test-file";
     static final String filenameNonExistent = "fmgr-test-file-1421";
     static final String fileModel = "foo.n3";
     static final String zipname = testingDir + "/fmgr-test.zip";
 
-    public TestFileManager(String name) {
-        super(name);
-    }
-
-    public static TestSuite suite() {
-        return new TestSuite(TestFileManager.class);
-    }
-
+    @Test
     public void testFileManagerFileLocator() {
         FileManager fileManager = new FileManagerImpl();
         fileManager.addLocatorFile();
@@ -54,6 +45,7 @@ public class TestFileManager extends TestCase {
         closeInputStream(in);
     }
 
+    @Test
     public void testFileManagerFileLocatorWithDir() {
         FileManager fileManager = new FileManagerImpl();
         fileManager.addLocatorFile(testingDir);
@@ -62,17 +54,18 @@ public class TestFileManager extends TestCase {
         closeInputStream(in);
     }
 
+    @Test
     public void testFileManagerNoFile() {
         FileManager fileManager = new FileManagerImpl();
         fileManager.addLocatorFile();
         try {
-            // Tests either way round - exception or a null return.
             InputStream in = fileManager.open(filenameNonExistent);
             closeInputStream(in);
-            assertNull("Found non-existant file: " + filenameNonExistent, in);
+            assertNull(in, "Found non-existant file: " + filenameNonExistent);
         } catch (NotFoundException ex) {}
     }
 
+    @Test
     public void testFileManagerLocatorClassLoader() {
         FileManager fileManager = new FileManagerImpl();
         fileManager.addLocatorClassLoader(fileManager.getClass().getClassLoader());
@@ -81,16 +74,18 @@ public class TestFileManager extends TestCase {
         closeInputStream(in);
     }
 
+    @Test
     public void testFileManagerLocatorClassLoaderNotFound() {
         FileManager fileManager = new FileManagerImpl();
         fileManager.addLocatorClassLoader(fileManager.getClass().getClassLoader());
         try {
             InputStream in = fileManager.open("not/java/lang/String.class");
             closeInputStream(in);
-            assertNull("Found non-existant class", in);
+            assertNull(in, "Found non-existant class");
         } catch (NotFoundException ex) {}
     }
 
+    @Test
     public void testFileManagerLocatorZip() {
         FileManager fileManager = new FileManagerImpl();
         try {
@@ -103,6 +98,7 @@ public class TestFileManager extends TestCase {
         closeInputStream(in);
     }
 
+    @Test
     public void testFileManagerLocatorZipNonFound() {
         FileManager fileManager = new FileManagerImpl();
         try {
@@ -113,29 +109,29 @@ public class TestFileManager extends TestCase {
         try {
             InputStream in = fileManager.open(filenameNonExistent);
             closeInputStream(in);
-            assertNull("Found non-existant zip file member", in);
+            assertNull(in, "Found non-existant zip file member");
         } catch (NotFoundException ex) {}
     }
 
+    @Test
     public void testFileManagerClone() {
         FileManager fileManager1 = new FileManagerImpl();
         FileManager fileManager2 = fileManager1.clone();
 
-        // Should not affect fileManager2
         fileManager1.addLocatorFile();
         {
             InputStream in = fileManager1.open(testingDir + "/" + filename);
             assertNotNull(in);
             closeInputStream(in);
         }
-        // Should not work.
         try {
             InputStream in = fileManager2.open(testingDir + "/" + filename);
             closeInputStream(in);
-            assertNull("Found file via wrong FileManager", in);
+            assertNull(in, "Found file via wrong FileManager");
         } catch (NotFoundException ex) {}
     }
 
+    @Test
     public void testLocationMappingURLtoFileOpen() {
         @SuppressWarnings("deprecation")
         LocationMapper locMap = new LocationMapper(TestLocationMapper.mapping);
@@ -146,6 +142,7 @@ public class TestFileManager extends TestCase {
         closeInputStream(in);
     }
 
+    @Test
     public void testLocationMappingURLtoFileOpenNotFound() {
         @SuppressWarnings("deprecation")
         LocationMapper locMap = new LocationMapper(TestLocationMapper.mapping);
@@ -154,10 +151,11 @@ public class TestFileManager extends TestCase {
         try {
             InputStream in = fileManager.open("http://example.org/file");
             closeInputStream(in);
-            assertNull("Found nont-existant URL", null);
+            assertNull(null, "Found nont-existant URL");
         } catch (NotFoundException ex) {}
     }
 
+    @Test
     public void testCache1() {
         FileManager fileManager = new FileManagerImpl();
         fileManager.addLocatorFile(testingDir);
@@ -166,6 +164,7 @@ public class TestFileManager extends TestCase {
         assertNotSame(m1, m2);
     }
 
+    @Test
     @SuppressWarnings("deprecation")
     public void testCache2() {
         FileManager fileManager = FileManager.getInternal();
@@ -176,6 +175,7 @@ public class TestFileManager extends TestCase {
         assertSame(m1, m2);
     }
 
+    @Test
     @SuppressWarnings("deprecation")
     public void testCache3() {
         FileManager fileManager = FileManager.getInternal();
@@ -198,26 +198,11 @@ public class TestFileManager extends TestCase {
         assertNotSame(m3, m4);
     }
 
-// public void testFileManagerLocatorURL()
-// {
-// FileManager fileManager = new FileManagerImpl();
-// fileManager.addLocatorURL();
-// InputStream in = fileManager.open("http:///www.bbc.co.uk/");
-// //assertNotNull(in);
-// // Proxies matter.
-// if ( in == null )
-// log.warn("Failed to contact http:///www.bbc.co.uk/: maybe due to proxy issues");
-//
-// try { if ( in != null ) in.close(); }
-// catch (Exception ex) {}
-// }
-
-    // -------- Helpers
-
     private void closeInputStream(InputStream in) {
         try {
-            if ( in != null )
+            if (in != null)
                 in.close();
         } catch (Exception ex) {}
     }
+
 }

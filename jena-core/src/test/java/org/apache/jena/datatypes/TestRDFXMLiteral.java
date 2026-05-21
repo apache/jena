@@ -21,42 +21,35 @@
 
 package org.apache.jena.datatypes;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.vocabulary.RDF;
+import org.junit.jupiter.api.Test;
 
 public class TestRDFXMLiteral {
-    // Different RDF terms with the same value.
 
     @Test
     public void rdfxmlLiteral_1() {
-        // Normalization -> different terms, same value
         test("<x></x>", "<x/>", false, false, true);
     }
 
     @Test
     public void rdfxmlLiteral_2() {
-        // Normalization -> different terms, same value
         test("<x b='8' a='123'></x>", "<x     a='123' b='8'/>", false, false, true);
     }
 
     @Test
     public void rdfxmlLiteral_3() {
-        // Same term.
         test("<x a:b='8' xmlns:a='http://ex/'></x>", "<x a:b='8' xmlns:a='http://ex/'></x>", true, true, true);
     }
 
     @Test
     public void rdfxmlLiteral_4() {
-        // Different term by trivial white space (removed by XML Node normalization)
         test("<x b='8' xmlns:a='http://ex/'></x>", "<x   b='8'  xmlns:a='http://ex/'    ></x>", false, false, true);
     }
 
-    // Lexical forms do not conform to the lexical space of legal XML fragments.
     @Test
     public void rdfxmlLiteral_illgeal_1() {
         test("<x>", "<x>", true, true, true);
@@ -67,8 +60,6 @@ public class TestRDFXMLiteral {
         test("<x>", "<y>", false, false, false);
     }
 
-    // ----
-
     private static void test(String lex1, String lex2, boolean javaEquals, boolean sameTerm, boolean sameValue) {
         Node n1 = NodeFactory.createLiteralDT(lex1, RDF.dtXMLLiteral);
         Node n2 = NodeFactory.createLiteralDT(lex2, RDF.dtXMLLiteral);
@@ -76,5 +67,4 @@ public class TestRDFXMLiteral {
         assertEquals(sameTerm, n1.sameTermAs(n2));
         assertEquals(sameValue, n1.sameValueAs(n2));
     }
-
 }

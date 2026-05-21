@@ -25,7 +25,7 @@ import org.apache.jena.mem.store.TripleStore;
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertEquals;
-import static org.apache.jena.testing_framework.GraphHelper.triple;
+import static org.apache.jena.junit.GraphHelper.triple;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 

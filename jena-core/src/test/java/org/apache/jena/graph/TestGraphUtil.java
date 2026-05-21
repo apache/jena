@@ -23,7 +23,6 @@ package org.apache.jena.graph;
 
 import static org.junit.Assert.assertEquals;
 
-import org.apache.jena.graph.test.GraphTestBase;
 import org.junit.Test;
 
 // Test for the compare by src.size and step dst case.
@@ -35,7 +34,7 @@ public class TestGraphUtil {
     private static Graph make(int N) {
         Graph graph = GraphMemFactory.createDefaultGraph();
         for ( int i = 0; i < N; i++ ) {
-            Triple t = GraphTestBase.triple("a P 'x"+i+"'");
+            Triple t = GraphTestLib.triple("a P 'x"+i+"'");
             graph.add(t);
         }
         return graph;

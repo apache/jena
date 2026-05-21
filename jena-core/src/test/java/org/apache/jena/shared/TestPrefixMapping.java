@@ -21,53 +21,44 @@
 
 package org.apache.jena.shared;
 
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.assembler.JA;
 import org.apache.jena.shared.impl.PrefixMappingImpl;
-import org.apache.jena.vocabulary.DC_11;
-import org.apache.jena.vocabulary.OWL;
-import org.apache.jena.vocabulary.RDF;
-import org.apache.jena.vocabulary.RDFS;
-import org.apache.jena.vocabulary.RSS;
-import org.apache.jena.vocabulary.VCARD;
+import org.apache.jena.vocabulary.*;
 
-/**
-    Tests PrefixMappingImpl by subclassing AbstractTestPrefixMapping, qv.
-*/
-
-public class TestPrefixMapping extends AbstractTestPrefixMapping
-    {
-    public TestPrefixMapping( String name )
-        { super( name ); }
-
-    public static TestSuite suite()
-        { return new TestSuite( TestPrefixMapping.class ); }
+public class TestPrefixMapping extends BaseTestPrefixMapping {
 
     @Override
-    protected PrefixMapping getMapping()
-        { return new PrefixMappingImpl(); }
-
-    public void testStandard()
-        { testStandard( PrefixMapping.Standard ); }
-
-    public void testExtended()
-        { testExtended( PrefixMapping.Extended ); }
-
-    public void testStandard( PrefixMapping st )
-        {
-        assertEquals( RDF.getURI(), st.getNsPrefixURI( "rdf" ) );
-        assertEquals( RDFS.getURI(), st.getNsPrefixURI( "rdfs" ) );
-        assertEquals( DC_11.getURI(), st.getNsPrefixURI( "dc" ) );
-        assertEquals( OWL.getURI(), st.getNsPrefixURI( "owl" ) );
-        }
-
-    public void testExtended( PrefixMapping st )
-        {
-        testStandard( st );
-        assertEquals( RSS.getURI(), st.getNsPrefixURI( "rss" ) );
-        assertEquals( VCARD.getURI(), st.getNsPrefixURI( "vcard" ) );
-        assertEquals( JA.getURI(), st.getNsPrefixURI( "ja" ) );
-        assertEquals( "http://www.example.org/", st.getNsPrefixURI( "eg" ) );
-        }
-
+    protected PrefixMapping getMapping() {
+        return new PrefixMappingImpl();
     }
+
+    @Test
+    public void testStandard() {
+        runTestStandard(PrefixMapping.Standard);
+    }
+
+    @Test
+    public void testExtended() {
+        runTestExtended(PrefixMapping.Extended);
+    }
+
+    public void runTestStandard(PrefixMapping st) {
+        assertEquals(RDF.getURI(), st.getNsPrefixURI("rdf"));
+        assertEquals(RDFS.getURI(), st.getNsPrefixURI("rdfs"));
+        assertEquals(DC_11.getURI(), st.getNsPrefixURI("dc"));
+        assertEquals(OWL.getURI(), st.getNsPrefixURI("owl"));
+    }
+
+    public void runTestExtended(PrefixMapping st) {
+        runTestStandard(st);
+        assertEquals(RSS.getURI(), st.getNsPrefixURI("rss"));
+        assertEquals(VCARD.getURI(), st.getNsPrefixURI("vcard"));
+        assertEquals(JA.getURI(), st.getNsPrefixURI("ja"));
+        assertEquals("http://www.example.org/", st.getNsPrefixURI("eg"));
+    }
+
+}

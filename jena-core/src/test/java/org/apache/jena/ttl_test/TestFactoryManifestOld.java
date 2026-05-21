@@ -24,10 +24,9 @@ package org.apache.jena.ttl_test;
 import java.util.Iterator;
 
 import junit.framework.*;
+import org.apache.jena.junit.TestUtils;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.shared.JenaException;
-import org.apache.jena.util.junit.ManifestOldItemHandler;
-import org.apache.jena.util.junit.TestUtils;
 import org.slf4j.LoggerFactory;
 
 public abstract class TestFactoryManifestOld implements ManifestOldItemHandler {

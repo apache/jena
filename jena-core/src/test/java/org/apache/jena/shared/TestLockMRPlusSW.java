@@ -27,59 +27,50 @@ import static java.util.concurrent.Executors.defaultThreadFactory;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.apache.jena.test.JenaTestBase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class TestLockMRPlusSW extends JenaTestBase {
+public class TestLockMRPlusSW {
 
-	public TestLockMRPlusSW(final String name) {
-		super(name);
-	}
+    @Test
+    public void testMultipleReadersAtATime() {
+        final Lock testLock = new LockMRPlusSW();
+        testLock.enterCriticalSection(true);
+        final AtomicBoolean secondReaderHasLock = new AtomicBoolean();
+        // new reader
+        defaultThreadFactory().newThread(() -> {
+            testLock.enterCriticalSection(true);
+            secondReaderHasLock.set(true);
+        }).start();
+        // the only way to fail is to timeout
+        await().untilTrue(secondReaderHasLock);
+    }
 
-	public static TestSuite suite() {
-		return new TestSuite(TestLockMRPlusSW.class);
-	}
+    @Test
+    public void testOneWriterAtATime() throws InterruptedException {
+        final Lock testLock = new LockMRPlusSW();
+        testLock.enterCriticalSection(false);
+        final AtomicBoolean secondWriterHasLock = new AtomicBoolean();
+        // new writer
+        defaultThreadFactory().newThread(() -> {
+            testLock.enterCriticalSection(false);
+            secondWriterHasLock.set(true);
+        }).start();
+        sleep(5000);
+        assertFalse(secondWriterHasLock.get(), "Multiple writers were allowed!");
+    }
 
-	@Test
-	public void testMultipleReadersAtATime() {
-		final Lock testLock = new LockMRPlusSW();
-		testLock.enterCriticalSection(true);
-		final AtomicBoolean secondReaderHasLock = new AtomicBoolean();
-		// new reader
-		defaultThreadFactory().newThread(() -> {
-			testLock.enterCriticalSection(true);
-			secondReaderHasLock.set(true);
-		}).start();
-		// the only way to fail is to timeout
-		await().untilTrue(secondReaderHasLock);
-	}
-
-	@Test
-	public void testOneWriterAtATime() throws InterruptedException {
-		final Lock testLock = new LockMRPlusSW();
-		testLock.enterCriticalSection(false);
-		final AtomicBoolean secondWriterHasLock = new AtomicBoolean();
-		// new writer
-		defaultThreadFactory().newThread(() -> {
-			testLock.enterCriticalSection(false);
-			secondWriterHasLock.set(true);
-		}).start();
-		sleep(5000);
-		assertFalse("Multiple writers were allowed!", secondWriterHasLock.get());
-	}
-
-	@Test
-	public void testAWriterDoesNotBlockReaders() {
-		final Lock testLock = new LockMRPlusSW();
-		testLock.enterCriticalSection(false);
-		final AtomicBoolean readerHasLock = new AtomicBoolean();
-		// new reader
-		defaultThreadFactory().newThread(() -> {
-			testLock.enterCriticalSection(true);
-			readerHasLock.set(true);
-		}).start();
-		await().untilTrue(readerHasLock);
-	}
+    @Test
+    public void testAWriterDoesNotBlockReaders() {
+        final Lock testLock = new LockMRPlusSW();
+        testLock.enterCriticalSection(false);
+        final AtomicBoolean readerHasLock = new AtomicBoolean();
+        // new reader
+        defaultThreadFactory().newThread(() -> {
+            testLock.enterCriticalSection(true);
+            readerHasLock.set(true);
+        }).start();
+        await().untilTrue(readerHasLock);
+    }
 }

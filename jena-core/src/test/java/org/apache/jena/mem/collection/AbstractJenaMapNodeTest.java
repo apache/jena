@@ -33,7 +33,7 @@ import java.util.ConcurrentModificationException;
 import java.util.NoSuchElementException;
 import java.util.stream.StreamSupport;
 
-import static org.apache.jena.testing_framework.GraphHelper.node;
+import static org.apache.jena.junit.GraphHelper.node;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 

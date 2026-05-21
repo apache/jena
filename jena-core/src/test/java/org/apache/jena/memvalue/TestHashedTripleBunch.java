@@ -20,144 +20,121 @@
  */
 
 package org.apache.jena.memvalue;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-import org.apache.jena.graph.*;
+import org.junit.jupiter.api.Test;
 
-public class TestHashedTripleBunch extends TestTripleBunch
-    {
-    public TestHashedTripleBunch( String name )
-        { super( name ); }
+import org.apache.jena.graph.GraphTestLib;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 
-    protected static class HTB extends HashedTripleBunch
-        {
-        public HTB( TripleBunch b )
-            { super( b ); }
+public class TestHashedTripleBunch extends AbstractTestTripleBunch {
+    protected static class HTB extends HashedTripleBunch {
+        public HTB(TripleBunch b) {
+            super(b);
+        }
 
         @Override
-        protected int improveHashCode( int hashCode )
-            { return hashCode; }
-        }
-
-    @Override
-    public TripleBunch getBunch()
-        { return new HashedTripleBunch( emptyBunch ); }
-
-    HashedTripleBunch htb = new HTB( emptyBunch );
-
-    static class TripleWithHash extends Triple
-        {
-        final int hash;
-
-        TripleWithHash( int hash, Node s, Node p, Node o )
-            {
-            super( s, p, o );
-            this.hash = hash;
-            }
-
-        public static TripleWithHash create( int n, String s )
-            {
-            Triple t = triple( s );
-            return new TripleWithHash( n, t.getSubject(), t.getPredicate(), t.getObject() );
-            }
-
-        @Override
-        public int hashCode()
-            { return hash; }
-        }
-
-    public void testHashcodeUsedAsIndex()
-        {
-        HashedTripleBunch htb = new HTB( emptyBunch );
-        int limit = htb.currentCapacity();
-        for (int i = 0; i < limit; i += 1)
-            {
-            TripleWithHash t = TripleWithHash.create( i, "s p o" );
-            htb.add( t );
-            assertSame( t, htb.getItemForTestingAt( i ) );
-            }
-        }
-
-    public void testRemovePerformsShiftFromTop()
-        {
-        int capacity = htb.currentCapacity();
-        testRemovePerformsShift( capacity - 1, capacity );
-        }
-
-    public void testRemovePerformsShiftFromMiddle()
-        {
-        int capacity = htb.currentCapacity();
-        testRemovePerformsShift( capacity - 3, capacity );
-        }
-
-    public void testRemovePerformsShiftWrappingLowestTwo()
-        {
-        int capacity = htb.currentCapacity();
-        testRemovePerformsShift( 0, capacity );
-        }
-    public void testRemovePerformsShiftWrappingLowest()
-        {
-        int capacity = htb.currentCapacity();
-        testRemovePerformsShift( 1, capacity );
-        }
-
-    private void testRemovePerformsShift( int most, int capacity )
-        {
-        int next = most - 1; if (next < 0) next += capacity;
-        int least = most - 2; if (least < 0) least += capacity;
-        TripleWithHash t1 = TripleWithHash.create( most, "s p o" );
-        TripleWithHash t2 = TripleWithHash.create( next, "a b c" );
-        TripleWithHash t3 = TripleWithHash.create( most, "x y z" );
-        htb.add( t1 );
-        htb.add( t2 );
-        htb.add( t3 );
-        assertSame( t1, htb.getItemForTestingAt( most ) );
-        assertSame( t2, htb.getItemForTestingAt( next ) );
-        assertSame( t3, htb.getItemForTestingAt( least ) );
-    //
-        htb.remove( t1 );
-        assertSame( t3, htb.getItemForTestingAt( most ) );
-        assertSame( t2, htb.getItemForTestingAt( next ) );
-        assertSame( null, htb.getItemForTestingAt( least ) );
-        }
-
-    public void testIteratorRemovePerformsShiftAndDeliversElementFromTop()
-        {
-        int capacity = htb.currentCapacity();
-        testIteratorRemovePerformsShiftAndDeliversElement( capacity - 1, capacity );
-        }
-
-    public void testIteratorRemovePerformsShiftAndDeliversElementFromMiddle()
-        {
-        int capacity = htb.currentCapacity();
-        testIteratorRemovePerformsShiftAndDeliversElement( capacity - 3, capacity );
-        }
-
-//    public void testIteratorRemovePerformsShiftAndDeliversElementWrappingLowest()
-//        {
-//        int capacity = htb.currentCapacity();
-//        testIteratorRemovePerformsShiftAndDeliversElement( 1, capacity );
-//        }
-//
-//    public void testIteratorRemovePerformsShiftAndDeliversElementWrappingLowestTwo()
-//        {
-//        int capacity = htb.currentCapacity();
-//        testIteratorRemovePerformsShiftAndDeliversElement( 0, capacity );
-//        }
-
-    private void testIteratorRemovePerformsShiftAndDeliversElement( int most, int capacity )
-        {
-//        int next = most - 1; if (next < 0) next += capacity;
-//        int least = most - 2; if (least < 0) least += capacity;
-//        TripleWithHash t1 = TripleWithHash.create( most, "s p o" );
-//        TripleWithHash t2 = TripleWithHash.create( next, "a b c" );
-//        TripleWithHash t3 = TripleWithHash.create( most, "x y z" );
-//        htb.add( t1 );
-//        htb.add( t2 );
-//        htb.add( t3 );
-//        ExtendedIterator it = htb.iterator();
-//        assertSame( t1, it.next() );
-//        it.remove();
-//        assertSame( t3, it.next() );
-//        assertSame( t2, it.next() );
+        protected int improveHashCode(int hashCode) {
+            return hashCode;
         }
     }
+
+    @Override
+    public TripleBunch getBunch() {
+        return new HashedTripleBunch(emptyBunch);
+    }
+
+    HashedTripleBunch htb = new HTB(emptyBunch);
+
+    static class TripleWithHash extends Triple {
+        final int hash;
+
+        TripleWithHash(int hash, Node s, Node p, Node o) {
+            super(s, p, o);
+            this.hash = hash;
+        }
+
+        public static TripleWithHash create(int n, String s) {
+            Triple t = GraphTestLib.triple(s);
+            return new TripleWithHash(n, t.getSubject(), t.getPredicate(), t.getObject());
+        }
+
+        @Override
+        public int hashCode() {
+            return hash;
+        }
+    }
+
+    @Test
+    public void testHashcodeUsedAsIndex() {
+        HashedTripleBunch htb = new HTB(emptyBunch);
+        int limit = htb.currentCapacity();
+        for ( int i = 0 ; i < limit ; i += 1 ) {
+            TripleWithHash t = TripleWithHash.create(i, "s p o");
+            htb.add(t);
+            assertSame(t, htb.getItemForTestingAt(i));
+        }
+    }
+
+    @Test
+    public void testRemovePerformsShiftFromTop() {
+        int capacity = htb.currentCapacity();
+        testRemovePerformsShift(capacity - 1, capacity);
+    }
+
+    @Test
+    public void testRemovePerformsShiftFromMiddle() {
+        int capacity = htb.currentCapacity();
+        testRemovePerformsShift(capacity - 3, capacity);
+    }
+
+    @Test
+    public void testRemovePerformsShiftWrappingLowestTwo() {
+        int capacity = htb.currentCapacity();
+        testRemovePerformsShift(0, capacity);
+    }
+
+    @Test
+    public void testRemovePerformsShiftWrappingLowest() {
+        int capacity = htb.currentCapacity();
+        testRemovePerformsShift(1, capacity);
+    }
+
+    private void testRemovePerformsShift(int most, int capacity) {
+        int next = most - 1;
+        if ( next < 0 )
+            next += capacity;
+        int least = most - 2;
+        if ( least < 0 )
+            least += capacity;
+        TripleWithHash t1 = TripleWithHash.create(most, "s p o");
+        TripleWithHash t2 = TripleWithHash.create(next, "a b c");
+        TripleWithHash t3 = TripleWithHash.create(most, "x y z");
+        htb.add(t1);
+        htb.add(t2);
+        htb.add(t3);
+        assertSame(t1, htb.getItemForTestingAt(most));
+        assertSame(t2, htb.getItemForTestingAt(next));
+        assertSame(t3, htb.getItemForTestingAt(least));
+        //
+        htb.remove(t1);
+        assertSame(t3, htb.getItemForTestingAt(most));
+        assertSame(t2, htb.getItemForTestingAt(next));
+        assertSame(null, htb.getItemForTestingAt(least));
+    }
+
+    @Test
+    public void testIteratorRemovePerformsShiftAndDeliversElementFromTop() {
+        int capacity = htb.currentCapacity();
+        testIteratorRemovePerformsShiftAndDeliversElement(capacity - 1, capacity);
+    }
+
+    @Test
+    public void testIteratorRemovePerformsShiftAndDeliversElementFromMiddle() {
+        int capacity = htb.currentCapacity();
+        testIteratorRemovePerformsShiftAndDeliversElement(capacity - 3, capacity);
+    }
+
+    private void testIteratorRemovePerformsShiftAndDeliversElement(int most, int capacity) {}
+}

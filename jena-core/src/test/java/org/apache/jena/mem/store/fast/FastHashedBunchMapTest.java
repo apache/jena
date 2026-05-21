@@ -23,8 +23,8 @@ package org.apache.jena.mem.store.fast;
 import org.apache.jena.graph.Node;
 import org.junit.Test;
 
-import static org.apache.jena.testing_framework.GraphHelper.node;
-import static org.apache.jena.testing_framework.GraphHelper.triple;
+import static org.apache.jena.junit.GraphHelper.node;
+import static org.apache.jena.junit.GraphHelper.triple;
 import static org.junit.Assert.*;
 
 /**

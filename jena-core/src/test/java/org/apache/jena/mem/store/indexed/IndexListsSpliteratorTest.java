@@ -27,7 +27,7 @@ import org.junit.Test;
 import java.util.*;
 import java.util.stream.StreamSupport;
 
-import static org.apache.jena.testing_framework.GraphHelper.triple;
+import static org.apache.jena.junit.GraphHelper.triple;
 import static org.junit.Assert.*;
 
 /**

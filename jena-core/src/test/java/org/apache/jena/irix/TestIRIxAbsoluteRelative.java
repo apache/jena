@@ -21,18 +21,16 @@
 
 package org.apache.jena.irix;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer;
 
-@RunWith(Parameterized.class)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestIRIxAbsoluteRelative extends AbstractTestIRIx_3986 {
 
-    public TestIRIxAbsoluteRelative(String name, IRIProvider provider) {
-        super(name, provider);
-    }
+    public TestIRIxAbsoluteRelative() { super(); }
 
     // -- isAbsolute, isRelative : These are not opposites in RFC 3986. (String, isAbsolute, isRelative)
 
@@ -47,7 +45,7 @@ public class TestIRIxAbsoluteRelative extends AbstractTestIRIx_3986 {
     // Create - is it suitable for an RDF reference?
     private void test_abs_rel(String uriStr, boolean isAbsolute, boolean isRelative) {
         IRIx iri = test_create(uriStr);
-        assertEquals("Absolute test: IRI = "+uriStr, isAbsolute, iri.isAbsolute());
-        assertEquals("Relative test: IRI = "+uriStr, isRelative, iri.isRelative());
+        assertEquals( isAbsolute, iri.isAbsolute(), "Absolute test: IRI = "+uriStr);
+        assertEquals(isRelative, iri.isRelative(), "Relative test: IRI = "+uriStr);
     }
 }

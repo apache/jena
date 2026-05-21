@@ -26,24 +26,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.jena.graph.GraphMemFactory;
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.Triple;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import org.apache.jena.graph.*;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
-import org.apache.jena.rdf.model.InfModel;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.NodeIterator;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.ResIterator;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.reasoner.InfGraph;
 import org.apache.jena.reasoner.Reasoner;
 import org.apache.jena.reasoner.ReasonerFactory;
@@ -51,13 +40,11 @@ import org.apache.jena.reasoner.ReasonerRegistry;
 import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
 import org.apache.jena.reasoner.transitiveReasoner.TransitiveReasoner;
 import org.apache.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
+import org.apache.jena.test.JenaTestLib;
 import org.apache.jena.util.FileManager;
 import org.apache.jena.util.PrintUtil;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
-
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * Test cases for transitive reasoner (includes some early RDFS reasoner checks)
@@ -76,11 +63,16 @@ public class TestReasoners extends TestCase {
      * This is its own test suite
      */
     public static TestSuite suite() {
+        JenaTestLib.setup();
         return new TestSuite(TestReasoners.class);
     }
 
     private static  Graph createGraphForTest() {
         return GraphMemFactory.createDefaultGraph();
+    }
+
+    public static void beforeSuite() {
+        JenaTestLib.setup();
     }
 
     /**

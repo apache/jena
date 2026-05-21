@@ -21,9 +21,10 @@
 
 package org.apache.jena.langtagx;
 
-import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.langtag.LangTag;
 import org.apache.jena.shared.JenaException;
@@ -54,9 +55,9 @@ public class TestLangTagX {
         LangTagX.requireValidLanguageTag("en-gb");
     }
 
-    @Test(expected = JenaException.class)
+    @Test
     public void require_langtag_02() {
-        LangTagX.requireValidLanguageTag("en-ab-xy");
+        assertThrows(JenaException.class, ()->LangTagX.requireValidLanguageTag("en-ab-xy"));
     }
 
     @Test
@@ -65,10 +66,10 @@ public class TestLangTagX {
         assertNotNull(langTag);
     }
 
-    @Test(expected = JenaException.class)
+    @Test
     public void langtag_02() {
-        LangTag langTag = LangTagX.createLanguageTag("en-ab-xy");
-        assertNotNull(langTag);
+        assertThrows(JenaException.class, ()->
+            LangTagX.createLanguageTag("en-ab-xy"));
     }
 
     @Test
@@ -90,9 +91,10 @@ public class TestLangTagX {
         assertEquals("", fmt);
     }
 
-    @Test(expected = JenaException.class)
+    @Test
     public void langtag_format_04() {
-        String fmt = LangTagX.formatLanguageTag("   ");
-        assertEquals("", fmt);
+        assertThrows(JenaException.class, ()->{
+            String fmt = LangTagX.formatLanguageTag("   ");
+        });
     }
 }

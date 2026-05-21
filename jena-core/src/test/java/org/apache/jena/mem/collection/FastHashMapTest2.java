@@ -27,7 +27,7 @@ import java.util.function.UnaryOperator;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import static org.apache.jena.testing_framework.GraphHelper.node;
+import static org.apache.jena.junit.GraphHelper.node;
 import static org.junit.Assert.*;
 
 public class FastHashMapTest2 {

@@ -22,21 +22,12 @@
 package org.apache.jena.util;
 
 import static org.apache.jena.util.SplitIRI.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import junit.framework.JUnit4TestAdapter;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-/**
- * Test splitting IRI strings using the display rules. See {SplitIRI} for details.
- * Display is convenience - namespace+localname may not reconstruct the IRI.
- */
 public class TestSplitIRI_Display {
-    public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(TestSplitIRI_Display.class);
-    }
 
-    // Basics
     @Test
     public void split_basic_00() {
         testSplit("http://example/foo", "http://example/".length());
@@ -87,7 +78,6 @@ public class TestSplitIRI_Display {
         testPrefixLocalname("http://example/xyz/_1.2.3.4", "http://example/xyz/", "_1.2.3.4");
     }
 
-    // Relative URIs
     @Test
     public void split_rel_1() {
         testPrefixLocalname("xyz/_1.2.3.4", "xyz/", "_1.2.3.4");
@@ -103,7 +93,6 @@ public class TestSplitIRI_Display {
         testPrefixLocalname("", "", "");
     }
 
-    // Bizarre but legal URIs
     @Test
     public void split_weird_1() {
         testPrefixLocalname("abc:def", "abc:", "def");
@@ -114,8 +103,6 @@ public class TestSplitIRI_Display {
         testPrefixLocalname("", "", "");
     }
 
-    // Turtle details.
-    // "." leading dot is not legal.
     @Test
     public void split_ttl_01() {
         testPrefixLocalname("http://example/foo#bar:baz", "http://example/foo#", "bar:baz");
@@ -131,13 +118,11 @@ public class TestSplitIRI_Display {
         testPrefixLocalname("http://example/.2.3.4", "http://example/.", "2.3.4");
     }
 
-    // "." leading dot is not legal.
     @Test
     public void split_ttl_04() {
         testPrefixLocalname("abc:xyz/.def", "abc:xyz/.", "def");
     }
 
-    // "-" leading dash is not legal.
     @Test
     public void split_ttl_05() {
         testPrefixLocalname("abc:xyz/-def", "abc:xyz/-", "def");
@@ -153,7 +138,6 @@ public class TestSplitIRI_Display {
         testPrefixLocalname("http://example/id=89", "http://example/", "id=89");
     }
 
-    // URNs split differently.
     @Test
     public void split_urn_01() {
         testPrefixLocalname("urn:foo:bar", "urn:foo:", "bar");
@@ -171,37 +155,35 @@ public class TestSplitIRI_Display {
 
     private void testSplit(String string, int expected) {
         int i = splitpoint(string);
-        Assert.assertEquals(expected, i);
+        assertEquals(expected, i);
     }
 
     private void testPrefixLocalnameNoSplit(String string) {
         int i = splitpoint(string);
         String msg = string;
-        if ( i != -1 ) {
-            // Better error message.
+        if (i != -1) {
             String ns = namespaceTTL(string);
             String ln = localnameTTL(string);
             msg = "Unexpected split of '" + string + "' into (" + ns + ", " + ln + ") [index=" + i + "]";
         }
-        Assert.assertEquals(msg, -1, i);
+        assertEquals(-1, i, msg);
     }
 
-    // Don't worry about local name escaping.
     private void testPrefixLocalname(String string, String expectedNamespace, String expectedLocalname) {
         String actualNamespace = namespace(string);
         String actualLocalName = localname(string);
         checkPrefixLocalname(string, expectedNamespace, actualNamespace, expectedLocalname, actualLocalName);
-        if ( expectedNamespace != null && expectedLocalname != null ) {
+        if (expectedNamespace != null && expectedLocalname != null) {
             String x = actualNamespace + actualLocalName;
-            Assert.assertEquals(string, x);
+            assertEquals(string, x);
         }
     }
 
     private void checkPrefixLocalname(String string, String expectedNamespace, String actualNamespace, String expectedLocalname,
                                       String actualLocalName) {
-        if ( expectedNamespace != null )
-            Assert.assertEquals(expectedNamespace, actualNamespace);
-        if ( expectedLocalname != null )
-            Assert.assertEquals(expectedLocalname, actualLocalName);
+        if (expectedNamespace != null)
+            assertEquals(expectedNamespace, actualNamespace);
+        if (expectedLocalname != null)
+            assertEquals(expectedLocalname, actualLocalName);
     }
 }

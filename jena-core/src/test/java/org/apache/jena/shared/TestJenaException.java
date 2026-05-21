@@ -21,25 +21,19 @@
 
 package org.apache.jena.shared;
 
-import junit.framework.TestSuite;
-import org.apache.jena.test.JenaTestBase;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
-    Introduced to test that nested Jena exceptions preserve the
-    caught exception's message.
-*/
-public class TestJenaException extends JenaTestBase
-    {
-    public TestJenaException(String name)
-        { super(name); }
-
-    public static TestSuite suite()
-        { return new TestSuite( TestJenaException.class );  }
-        
-    public void testRethrownMessage()
-        {
-        Exception e = new Exception( "kings and queens" );
-        JenaException j = new JenaException( e );
-        assertTrue( j.getMessage().endsWith( e.getMessage() ) );
-        }
+ Introduced to test that nested Jena exceptions preserve the
+ caught exception's message.
+ */
+public class TestJenaException {
+    @Test
+    public void testRethrownMessage() {
+        Exception e = new Exception("kings and queens");
+        JenaException j = new JenaException(e);
+        assertTrue(j.getMessage().endsWith(e.getMessage()));
+    }
 }

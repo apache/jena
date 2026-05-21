@@ -22,8 +22,8 @@
 package org.apache.jena.reasoner.test;
 
 import junit.framework.TestSuite;
+import org.apache.jena.graph.AbstractTestGraph;
 import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.test.AbstractTestGraph;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.reasoner.InfGraph;
 

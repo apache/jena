@@ -24,20 +24,20 @@ package org.apache.jena.rdfxml.xmloutput;
 import java.io.*;
 
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.rdf.model.test.ModelTestBase;
 import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Abbrev;
 import org.apache.jena.rdfxml.xmloutput.impl.BaseXMLWriter;
 import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Basic;
 import org.apache.jena.vocabulary.RDF;
 
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
     Tests for entities being created corresponding to prefixes.
 */
-public class TestEntityOutput extends ModelTestBase
-    {
-    public TestEntityOutput( String name )
-        { super( name ); }
+public class TestEntityOutput {
 
+    @Test
     public void testSettingWriterEntityProperty()
         {
         FakeBaseWriter w = new FakeBaseWriter();
@@ -53,6 +53,7 @@ public class TestEntityOutput extends ModelTestBase
         assertEquals( false, w.getShowDoctypeDeclaration() );
         }
 
+    @Test
     public void testKnownEntityNames()
         {
         BaseXMLWriter w = new FakeBaseWriter();
@@ -73,20 +74,11 @@ public class TestEntityOutput extends ModelTestBase
         assertEquals( false, w.isPredefinedEntityName( "acute" ) );
         }
 
+    @Test
     public void testRDFNamespaceMissing()
         {
-        Model m = createMemModel();
-        modelAdd( m, "x R fake:uri#bogus" );
-        m.setNsPrefix( "spoo", "fake:uri#" );
-        m.setNsPrefix( "eh", "eh:/" );
-        String s = checkedModelToString( m );
-        assertMatches( "<!DOCTYPE rdf:RDF \\[", s );
-        assertMatches( "<!ENTITY spoo 'fake:uri#'>", s );
-        assertMatches( "rdf:resource=\"&spoo;bogus\"", s );
-        }
-    public void testUsesEntityForPrefix()
-        {
-        Model m = modelWithStatements( "x R fake:uri#bogus" );
+        Model m = ModelTestLib.createMemModel();
+        ModelTestLib.modelAdd( m, "x R fake:uri#bogus" );
         m.setNsPrefix( "spoo", "fake:uri#" );
         m.setNsPrefix( "eh", "eh:/" );
         String s = checkedModelToString( m );
@@ -95,6 +87,19 @@ public class TestEntityOutput extends ModelTestBase
         assertMatches( "rdf:resource=\"&spoo;bogus\"", s );
         }
 
+    @Test
+    public void testUsesEntityForPrefix()
+        {
+        Model m = ModelTestLib.modelWithStatements( "x R fake:uri#bogus" );
+        m.setNsPrefix( "spoo", "fake:uri#" );
+        m.setNsPrefix( "eh", "eh:/" );
+        String s = checkedModelToString( m );
+        assertMatches( "<!DOCTYPE rdf:RDF \\[", s );
+        assertMatches( "<!ENTITY spoo 'fake:uri#'>", s );
+        assertMatches( "rdf:resource=\"&spoo;bogus\"", s );
+        }
+
+    @Test
     public void testCatchesBadEntities()
         {
         testCatchesBadEntity( "amp" );
@@ -104,59 +109,50 @@ public class TestEntityOutput extends ModelTestBase
         testCatchesBadEntity( "quot" );
         }
 
-    /* Old code produced:
-<!DOCTYPE rdf:RDF [
-  <!ENTITY dd 'http://www.example.org/a"b#'>
-  <!ENTITY ampersand 'http://www.example.org/a?a&b#'>
-  <!ENTITY espace 'http://www.example.org/a%20space#'>
-  <!ENTITY zz 'http://www.example.org/a'b#'>
-  <!ENTITY rdf 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>]>
-     *
-     */
     /**
      * See
      * http://www.w3.org/TR/xml/#NT-EntityValue
      * " & and % ' are all legal URI chars, but illegal
      * in entity defn.
-     * @throws IOException
      */
+    @Test
     public void testDifficultChars() throws IOException
     {
-        Model m = createMemModel();
+        Model m = ModelTestLib.createMemModel();
         m.read("file:testing/abbreviated/entities.rdf");
         try ( StringWriter w = new StringWriter() ) {
             @SuppressWarnings("deprecation")
-            RDFWriterI wr = new RDFXML_Basic();
+            org.apache.jena.rdf.model.RDFWriterI wr = new RDFXML_Basic();
             wr.setProperty("showDoctypeDeclaration", "true");
             wr.write(m, w, "http://example.org/");
             Reader r = new StringReader(w.toString());
-            Model m2 = createMemModel();
+            Model m2 = ModelTestLib.createMemModel();
             m2.read(r,"http://example.org/");
-            assertIsoModels("showDoctypeDeclaration problem", m, m2);
+            org.apache.jena.rdf.model.ModelTestLib.assertIsoModels("showDoctypeDeclaration problem", m, m2);
         }
     }
 
+    @Test
     public void testCRinLiterals()
     {
-        Model m = createMemModel();
+        Model m = ModelTestLib.createMemModel();
         Resource r = m.createResource("http://example/r");
         Property p = m.createProperty("http://example/p");
         m.add(r, p, "abc\r\nxyz");
         StringWriter w = new StringWriter();
         m.write(w, "RDF/XML");
-        Model m2 = createMemModel();
+        Model m2 = ModelTestLib.createMemModel();
         m2.read(new StringReader(w.toString()), "RDF/XML");
         assertTrue(m.isIsomorphicWith(m2));
     }
 
     private void testCatchesBadEntity( String bad )
         {
-        Model m = modelWithStatements( "ampsersand spelt '&'; x R goo:spoo/noo" );
+        Model m = ModelTestLib.modelWithStatements( "ampsersand spelt '&'; x R goo:spoo/noo" );
         m.setNsPrefix( "rdf", RDF.getURI() );
         m.setNsPrefix( bad, "goo:spoo" );
         m.setNsPrefix( "eh", "eh:/" );
         String s = checkedModelToString( m );
-        //assertTrue( s.toString().contains( "<!DOCTYPE rdf:RDF [" ) ); // java5-ism
         assertTrue( s.toString().contains( "<!DOCTYPE rdf:RDF [" ) );
         assertMismatches( "<!ENTITY " + bad + " ", s );
         assertMismatches( "rdf:resource=\"&" + bad + ";noo\"", s );
@@ -164,9 +160,9 @@ public class TestEntityOutput extends ModelTestBase
 
     private void checkModelFromXML( Model shouldBe, String s )
         {
-        Model m = createMemModel();
+        Model m = ModelTestLib.createMemModel();
         m.read( new StringReader( s ), null, "RDF/XML" );
-        assertIsoModels( "model should be read back correctly", shouldBe, m );
+        org.apache.jena.rdf.model.ModelTestLib.assertIsoModels( "model should be read back correctly", shouldBe, m );
         }
 
     private String checkedModelToString( Model m )
@@ -180,7 +176,7 @@ public class TestEntityOutput extends ModelTestBase
         {
         StringWriter s = new StringWriter();
         @SuppressWarnings("deprecation")
-        RDFWriterI w = new RDFXML_Abbrev();
+        org.apache.jena.rdf.model.RDFWriterI w = new RDFXML_Abbrev();
         w.setProperty( "showDoctypeDeclaration", Boolean.TRUE );
         w.write( m, s, null );
         return s.toString();
