@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.StringWriter;
 
-import org.junit.jupiter.api.Test ;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.AtlasException;
 import org.apache.jena.atlas.io.AWriter;
@@ -41,32 +41,32 @@ public class TestEscapeStr {
     private static char D_QUOTE = '"';
 
     // General, for double quoted strings.
-    @Test public void escape_str_01()   { test_esc("", "") ; }
-    @Test public void escape_str_02()   { test_esc("A", "A") ; }
-    @Test public void escape_str_03()   { test_esc("\n", "\\n") ; }
-    @Test public void escape_str_04()   { test_esc("A\tB", "A\\tB") ; }
-    @Test public void escape_str_05()   { test_esc("\"", "\\\"") ; }
-    @Test public void escape_str_06()   { test_esc("'", "'") ; }
+    @Test public void escape_str_01()   { test_esc("", ""); }
+    @Test public void escape_str_02()   { test_esc("A", "A"); }
+    @Test public void escape_str_03()   { test_esc("\n", "\\n"); }
+    @Test public void escape_str_04()   { test_esc("A\tB", "A\\tB"); }
+    @Test public void escape_str_05()   { test_esc("\"", "\\\""); }
+    @Test public void escape_str_06()   { test_esc("'", "'"); }
 
     private static void test_esc(String input, String expected) {
-        String output = EscapeStr.stringEsc(input) ;
+        String output = EscapeStr.stringEsc(input);
         assertEquals(expected, output, ()->"Failed at escape");
         String output2 = EscapeStr.unescapeStr(output);
         assertEquals(input, output2, ()->"Failed at unescape");
     }
 
     // Single line
-    @Test public void escape_str_single_01()   { test_esc1("a'x",  S_QUOTE,  "a\\'x") ; }
-    @Test public void escape_str_single_02()   { test_esc1("a\"x", D_QUOTE,  "a\\\"x") ; }
+    @Test public void escape_str_single_01()   { test_esc1("a'x",  S_QUOTE,  "a\\'x"); }
+    @Test public void escape_str_single_02()   { test_esc1("a\"x", D_QUOTE,  "a\\\"x"); }
 
-    @Test public void escape_str_single_03()   { test_esc1("a\"x", S_QUOTE,  "a\"x") ; }
-    @Test public void escape_str_single_04()   { test_esc1("a'x",  D_QUOTE,  "a'x") ; }
+    @Test public void escape_str_single_03()   { test_esc1("a\"x", S_QUOTE,  "a\"x"); }
+    @Test public void escape_str_single_04()   { test_esc1("a'x",  D_QUOTE,  "a'x"); }
 
-    @Test public void escape_str_single_05()   { test_esc1("a'",   S_QUOTE,  "a\\'") ; }
-    @Test public void escape_str_single_06()   { test_esc1("a\"",  D_QUOTE,  "a\\\"") ; }
+    @Test public void escape_str_single_05()   { test_esc1("a'",   S_QUOTE,  "a\\'"); }
+    @Test public void escape_str_single_06()   { test_esc1("a\"",  D_QUOTE,  "a\\\""); }
 
-    @Test public void escape_str_single_07()   { test_esc1("\"",  S_QUOTE,  "\"") ; }
-    @Test public void escape_str_single_08()   { test_esc1("'",   D_QUOTE,  "'") ; }
+    @Test public void escape_str_single_07()   { test_esc1("\"",  S_QUOTE,  "\""); }
+    @Test public void escape_str_single_08()   { test_esc1("'",   D_QUOTE,  "'"); }
 
     private static void test_esc1(String input, char quoteChar, String expected) {
         StringWriter sw = new StringWriter();
@@ -79,43 +79,43 @@ public class TestEscapeStr {
 
     // Multiline quoting.
     // One character
-    @Test public void escape_str_multi_01()    { test_esc3("a'x",  S_QUOTE,  "a'x") ; }
-    @Test public void escape_str_multi_02()    { test_esc3("a\"x", D_QUOTE,  "a\"x") ; }
+    @Test public void escape_str_multi_01()    { test_esc3("a'x",  S_QUOTE,  "a'x"); }
+    @Test public void escape_str_multi_02()    { test_esc3("a\"x", D_QUOTE,  "a\"x"); }
 
-    @Test public void escape_str_multi_03()    { test_esc3("'x", S_QUOTE, "'x") ; }
-    @Test public void escape_str_multi_04()    { test_esc3("'x", D_QUOTE, "'x") ; }
+    @Test public void escape_str_multi_03()    { test_esc3("'x", S_QUOTE, "'x"); }
+    @Test public void escape_str_multi_04()    { test_esc3("'x", D_QUOTE, "'x"); }
 
     // Last character
-    @Test public void escape_str_multi_05()    { test_esc3("a'", S_QUOTE, "a\\'") ; }
-    @Test public void escape_str_multi_06()    { test_esc3("a'", D_QUOTE, "a'") ; }
+    @Test public void escape_str_multi_05()    { test_esc3("a'", S_QUOTE, "a\\'"); }
+    @Test public void escape_str_multi_06()    { test_esc3("a'", D_QUOTE, "a'"); }
 
-    @Test public void escape_str_multi_07()    { test_esc3("a\"", S_QUOTE, "a\"") ; }
-    @Test public void escape_str_multi_08()    { test_esc3("a\"", D_QUOTE, "a\\\"") ; }
+    @Test public void escape_str_multi_07()    { test_esc3("a\"", S_QUOTE, "a\""); }
+    @Test public void escape_str_multi_08()    { test_esc3("a\"", D_QUOTE, "a\\\""); }
 
-    @Test public void escape_str_multi_09()    { test_esc3("'", S_QUOTE, "\\'") ; }
-    @Test public void escape_str_multi_10()    { test_esc3("'", D_QUOTE, "'") ; }
+    @Test public void escape_str_multi_09()    { test_esc3("'", S_QUOTE, "\\'"); }
+    @Test public void escape_str_multi_10()    { test_esc3("'", D_QUOTE, "'"); }
 
-    @Test public void escape_str_multi_11()    { test_esc3("\"", S_QUOTE, "\"") ; }
-    @Test public void escape_str_multi_12()    { test_esc3("\"", D_QUOTE, "\\\"") ; }
+    @Test public void escape_str_multi_11()    { test_esc3("\"", S_QUOTE, "\""); }
+    @Test public void escape_str_multi_12()    { test_esc3("\"", D_QUOTE, "\\\""); }
 
     // 2 in a row
-    @Test public void escape_str_multi_2q_1()  { test_esc3("a''z", S_QUOTE, "a''z") ; }
-    @Test public void escape_str_multi_2q_2()  { test_esc3("a''z", D_QUOTE, "a''z") ; }
-    @Test public void escape_str_multi_2q_3()  { test_esc3("a''",  S_QUOTE, "a'\\'") ; }
-    @Test public void escape_str_multi_2q_4()  { test_esc3("a''",  D_QUOTE, "a''") ; }
+    @Test public void escape_str_multi_2q_1()  { test_esc3("a''z", S_QUOTE, "a''z"); }
+    @Test public void escape_str_multi_2q_2()  { test_esc3("a''z", D_QUOTE, "a''z"); }
+    @Test public void escape_str_multi_2q_3()  { test_esc3("a''",  S_QUOTE, "a'\\'"); }
+    @Test public void escape_str_multi_2q_4()  { test_esc3("a''",  D_QUOTE, "a''"); }
 
     // 3 in a row.
-    @Test public void escape_str_multi_3q_1()  { test_esc3("a'''z", S_QUOTE, "a''\\'z") ; }
-    @Test public void escape_str_multi_3q_2()  { test_esc3("a'''z", D_QUOTE, "a'''z") ; }
-    @Test public void escape_str_multi_3q_3()  { test_esc3("a'''",  S_QUOTE, "a''\\'") ; }
-    @Test public void escape_str_multi_3q_4()  { test_esc3("a'''",  D_QUOTE, "a'''") ; }
+    @Test public void escape_str_multi_3q_1()  { test_esc3("a'''z", S_QUOTE, "a''\\'z"); }
+    @Test public void escape_str_multi_3q_2()  { test_esc3("a'''z", D_QUOTE, "a'''z"); }
+    @Test public void escape_str_multi_3q_3()  { test_esc3("a'''",  S_QUOTE, "a''\\'"); }
+    @Test public void escape_str_multi_3q_4()  { test_esc3("a'''",  D_QUOTE, "a'''"); }
 
     // 4 in a row.
-    @Test public void escape_str_multi_4q_1()    { test_esc3("a''''z", S_QUOTE, "a''\\''z") ; }
-    @Test public void escape_str_multi_4q_2()    { test_esc3("a''''z", D_QUOTE, "a''''z") ; }
+    @Test public void escape_str_multi_4q_1()    { test_esc3("a''''z", S_QUOTE, "a''\\''z"); }
+    @Test public void escape_str_multi_4q_2()    { test_esc3("a''''z", D_QUOTE, "a''''z"); }
 
-    @Test public void escape_str_multi_4q_3()    { test_esc3("a''''", S_QUOTE, "a''\\'\\'") ; }
-    @Test public void escape_str_multi_4q_4()    { test_esc3("a''''", D_QUOTE, "a''''") ; }
+    @Test public void escape_str_multi_4q_3()    { test_esc3("a''''", S_QUOTE, "a''\\'\\'"); }
+    @Test public void escape_str_multi_4q_4()    { test_esc3("a''''", D_QUOTE, "a''''"); }
 
     // Unicode replacement char U+FFFD - write in Unicode escape form.
     @Test public void escape_str_repacementChar_1()    { test_esc1("abc\uFFFDdef", S_QUOTE, "abc\\uFFFDdef"); }
@@ -131,71 +131,92 @@ public class TestEscapeStr {
     }
 
     // Unescape
-    @Test public void unescape_str_10()   { test_unesc("\\u0041", "A") ; }
-    @Test public void unescape_str_11()   { test_unesc("\\U00000041", "A") ; }
-    @Test public void unescape_str_12()   { test_unesc("12\\u004134", "12A34") ; }
-    @Test public void unescape_str_13()   { test_unesc("12\\U0000004134", "12A34") ; }
+    @Test public void unescape_str_10()   { test_unesc("\\u0041", "A"); }
+    @Test public void unescape_str_11()   { test_unesc("\\U00000041", "A"); }
+    @Test public void unescape_str_12()   { test_unesc("12\\u004134", "12A34"); }
+    @Test public void unescape_str_13()   { test_unesc("12\\U0000004134", "12A34"); }
 
     private void test_unesc(String input, String expected) {
-        String output = EscapeStr.unescapeStr(input) ;
+        String output = EscapeStr.unescapeStr(input);
         assertEquals(expected, output);
     }
 
-    private void test_escape(String input, String expected) {
+    private void test_escape_string(String input, String expected) {
         String output = EscapeStr.stringEsc(input);
         assertEquals(expected, output);
     }
-    @Test public void unescape_unicode_1()   { test_unesc_unicode("", "") ; }
-    @Test public void unescape_unicode_2()   { test_unesc_unicode("abc\\u0020def", "abc def") ; }
-    @Test public void unescape_unicode_3()   { test_unesc_unicode("\\u0020", " ") ; }
-    @Test public void unescape_unicode_4()   { test_unesc_unicode("abc\\U00000020def", "abc def") ; }
-    @Test public void unescape_unicode_5()   { test_unesc_unicode("\\U00000020", " ") ; }
+
+    @Test public void unescape_unicode_1()   { test_unesc_unicode("", ""); }
+    @Test public void unescape_unicode_2()   { test_unesc_unicode("abc\\u0020def", "abc def"); }
+    @Test public void unescape_unicode_3()   { test_unesc_unicode("\\u0020", " "); }
+    @Test public void unescape_unicode_4()   { test_unesc_unicode("abc\\U00000020def", "abc def"); }
+    @Test public void unescape_unicode_5()   { test_unesc_unicode("\\U00000020", " "); }
 
     // Leaves non-unicode untouched.
-    @Test public void unescape_unicode_10()   { test_unesc_unicode("\\1\\2", "\\1\\2") ; }
-    @Test public void unescape_unicode_11()   { test_unesc_unicode("\\n\\t", "\\n\\t") ; }
-    @Test public void unescape_unicode_12()   { test_unesc_unicode("\\(\\)", "\\(\\)") ; }
-    @Test public void unescape_unicode_13()   { test_unesc_unicode("\\\\", "\\\\") ; }
+    @Test public void unescape_unicode_10()   { test_unesc_unicode("\\1\\2", "\\1\\2"); }
+    @Test public void unescape_unicode_11()   { test_unesc_unicode("\\n\\t", "\\n\\t"); }
+    @Test public void unescape_unicode_12()   { test_unesc_unicode("\\(\\)", "\\(\\)"); }
+    @Test public void unescape_unicode_13()   { test_unesc_unicode("\\\\", "\\\\"); }
 
     // \-u{...} style Unicode escapes
-    @Test public void unescape_unicode_20()   { test_unesc_unicode("\\u{41}", "A") ; }
-    @Test public void unescape_unicode_21()   { test_unesc_unicode("\\u{000000}", "\u0000") ; }
-    @Test public void unescape_unicode_22()   { test_unesc_unicode("\\u{1F0A1}", "🂡") ; }
-    @Test public void unescape_unicode_23()   { test_unesc_unicode("\\u{01F0A1}", "🂡") ; }
-    @Test public void unescape_unicode_24()   { test_unesc_unicode("\\u{10FFFF}", 0x10FFFF) ; }
+    @Test public void unescape_unicode_20()   { test_unesc_unicode("\\u{41}", "A"); }
+    @Test public void unescape_unicode_21()   { test_unesc_unicode("\\u{000000}", "\u0000"); }
+    @Test public void unescape_unicode_22()   { test_unesc_unicode("\\u{1F0A1}", "🂡"); }
+    @Test public void unescape_unicode_23()   { test_unesc_unicode("\\u{01F0A1}", "🂡"); }
+    @Test public void unescape_unicode_24()   { test_unesc_unicode("\\u{10FFFF}", 0x10FFFF); }
 
-    @Test public void unescape_unicode_30()   { assertThrows(AtlasException.class, ()->test_unesc_unicode("\\u{}", "")) ; }
-    @Test public void unescape_unicode_31()   { assertThrows(AtlasException.class, ()->test_unesc_unicode("\\u{123456789}", "")) ; }
-    @Test public void unescape_unicode_32()   { assertThrows(AtlasException.class, ()->test_unesc_unicode("\\u{000000000}", "")) ; }
+    @Test public void unescape_unicode_30()   { test_unesc_unicode_bad("\\u{}"); }
+    @Test public void unescape_unicode_31()   { test_unesc_unicode_bad("\\u{123456789}"); }
+    @Test public void unescape_unicode_32()   { test_unesc_unicode_bad("\\u{000000000}"); }
     // If the limit is 6
-    @Test public void unescape_unicode_33()   { assertThrows(AtlasException.class, ()->test_unesc_unicode("\\u{1234567}", "")) ; }
-    @Test public void unescape_unicode_34()   { assertThrows(AtlasException.class, ()->test_unesc_unicode("\\u{0000000}", "")) ; }
+    @Test public void unescape_unicode_33()   { test_unesc_unicode_bad("\\u{1234567}"); }
+    @Test public void unescape_unicode_34()   { test_unesc_unicode_bad("\\u{0000000}"); }
+
+    // Surrogates via \-u, \-U and \-u{}
+    @Test public void unescape_unicode_40()   { test_unesc_unicode_bad("\\uD83C\\uDCA1"); }
+    @Test public void unescape_unicode_41()   { test_unesc_unicode_bad("\\U0000D83C\\U0000DCA1"); }
+    @Test public void unescape_unicode_42()   { test_unesc_unicode_bad("\\u{00D83C}\\u{00DCA1}"); }
+
+    // Not valid surrogate pairs.
+    @Test public void unescape_unicode_50()   { test_unesc_unicode_bad("\\uD83Cxyz"); }
+    @Test public void unescape_unicode_51()   { test_unesc_unicode_bad("\\U0000D83Cxyz"); }
+    @Test public void unescape_unicode_52()   { test_unesc_unicode_bad("\\u{00D83C}xyz"); }
+
+    @Test public void unescape_unicode_60()   { test_unesc_unicode_bad("abc\\uDCA1xyz"); }
+    @Test public void unescape_unicode_61()   { test_unesc_unicode_bad("abc\\U0000DCA1xyz"); }
+    @Test public void unescape_unicode_62()   { test_unesc_unicode_bad("abc\\u{00DCA1}xyz"); }
 
     // Escaped surrogates, good and bad.
     // Use java character escapes to put the surrogates into the java string.
     // 🂡 is U+D83C U+DCA1
-    @Test public void escape_unicode_50()   { test_escape("\uD83C\uDCA1", "🂡"); }
-    @Test public void escape_unicode_51()   { test_escape("abc\uD83C\uDCA1xyz", "abc🂡xyz"); }
+    @Test public void escape_unicode_70()   { test_escape_string("\uD83C\uDCA1", "🂡"); }
+    @Test public void escape_unicode_71()   { test_escape_string("abc\uD83C\uDCA1xyz", "abc🂡xyz"); }
     // low, then high -> illegal
-    @Test public void escape_unicode_55()   { test_escape("\uDCA1\uD83C", "\\uFFFD\\uFFFD"); }
-    @Test public void escape_unicode_56()   { test_escape("\uDCA1\uD83C@", "\\uFFFD\\uFFFD@"); }
+    @Test public void escape_unicode_75()   { test_escape_string("\uDCA1\uD83C", "\\uFFFD\\uFFFD"); }
+    @Test public void escape_unicode_76()   { test_escape_string("\uDCA1\uD83C@", "\\uFFFD\\uFFFD@"); }
     // Lone surrogate
-    @Test public void escape_unicode_60()   { test_escape("\uD83C", "\\uFFFD"); }
-    @Test public void escape_unicode_61()   { test_escape("abc\uD83Cxyz", "abc\\uFFFDxyz"); }
-    @Test public void escape_unicode_62()   { test_escape("\uDCA1", "\\uFFFD"); }
-    @Test public void escape_unicode_63()   { test_escape("abc\uDCA1xyz", "abc\\uFFFDxyz"); }
+    @Test public void escape_unicode_80()   { test_escape_string("\uD83C", "\\uFFFD"); }
+    @Test public void escape_unicode_81()   { test_escape_string("abc\uD83Cxyz", "abc\\uFFFDxyz"); }
+    @Test public void escape_unicode_82()   { test_escape_string("\uDCA1", "\\uFFFD"); }
+    @Test public void escape_unicode_83()   { test_escape_string("abc\uDCA1xyz", "abc\\uFFFDxyz"); }
+    // Illegal then legal
+    @Test public void escape_unicode_84()   { test_escape_string("\uDCA1\uD83C\uDCA1", "\\uFFFD🂡"); }
+
 
     // low, then high/low -> one illegal, encode legal pair.
-    @Test public void escape_unicode_59()   { test_escape("\uDCA1\uD83C\uDCA1", "\\uFFFD🂡"); }
 
     private void test_unesc_unicode(String input, String expected) {
-        String output = EscapeStr.unescapeUnicode(input) ;
+        String output = EscapeStr.unescapeUnicode(input);
         assertEquals(expected, output);
     }
 
     private void test_unesc_unicode(String input, int expected) {
-        String output = EscapeStr.unescapeUnicode(input) ;
+        String output = EscapeStr.unescapeUnicode(input);
         int codepoint = output.codePointAt(0);
         assertEquals(expected, codepoint);
+    }
+
+    private void test_unesc_unicode_bad(String input) {
+        assertThrows(AtlasException.class, ()->EscapeStr.unescapeUnicode(input));
     }
 }

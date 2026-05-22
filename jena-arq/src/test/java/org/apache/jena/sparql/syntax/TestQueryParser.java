@@ -45,39 +45,51 @@ public class TestQueryParser {
         LogCtl.withLevel(loggerSPARQL, "fatal", action);
     }
 
-    // Single backslash so a Java string escape, raw surrogate in the string.
+    // These are  U+0001F46A 👪 - FAMILY
+    // As surrogate pair: 0xD83D 0xDC6A
+
+    @Test
+    public void syntax_unicode_raw_uri() {
+        testParse("SELECT * { <http://example/👪> ?p ?o}");
+    }
+
+    @Test
+    public void syntax_unicode_raw_string() {
+        testParse("SELECT * { ?s ?p '👪'}");
+    }
+
+    // Single backslash so a Java string escape, surrogate in the string.
     @Test
     public void syntax_unicode_raw_surrogate_uri() {
-        QueryParseException ex = assertThrows(QueryParseException.class,  ()->testParse("SELECT * { <http://example/\uD800> ?p ?o}"));
+        QueryParseException ex = assertThrows(QueryParseException.class, ()->testParse("SELECT * { <http://example/\uD83D> ?p ?o}"));
         assertTrue(ex.getMessage().contains("surrogate"));
     }
 
     @Test
     public void syntax_unicode_raw_surrogate_string() {
-        QueryParseException ex = assertThrows(QueryParseException.class,  ()->testParse("SELECT * { ?s ?p '\uD800' }"));
+        QueryParseException ex = assertThrows(QueryParseException.class, ()->testParse("SELECT * { ?s ?p '\uDC6A' }"));
         assertTrue(ex.getMessage().contains("surrogate"));
     }
 
     // Double backslash so the query string has an escape in it.
     @Test
     public void syntax_unicode_escaped_surrogate_uri() {
-        QueryParseException ex = assertThrows(QueryParseException.class,  ()->testParse("SELECT * { <http://example/\\uD800> ?p ?o}"));
+        QueryParseException ex = assertThrows(QueryParseException.class, ()->testParse("SELECT * { <http://example/\\uD83D> ?p ?o}"));
         assertTrue(ex.getMessage().contains("surrogate"));
     }
 
     @Test
     public void syntax_unicode_escaped_surrogate_strings() {
-        QueryParseException ex = assertThrows(QueryParseException.class,  ()->testParse("SELECT * { ?s ?p '\\uD800'}"));
+        QueryParseException ex = assertThrows(QueryParseException.class, ()->testParse("SELECT * { ?s ?p '\\uD83D'}"));
         assertTrue(ex.getMessage().contains("surrogate"));
     }
 
     @Test
     public void syntax_unicode_surrogate_pair_by_unicode_escape() {
-        // Allow - because Java strings may have surrogate pairs so we allow them in unicode escapes if paired.
-        testParse("SELECT * { ?s ?p '\\uD801\\uDC37'}");
-
-//        QueryParseException ex = assertThrows(QueryParseException.class,  ()->testParse("SELECT * { ?s ?p '\\uD801\\uDC37'}"));
-//        assertTrue(ex.getMessage().contains("surrogate"));
+//        // Allow - because Java strings may have surrogate pairs so we allow them in unicode escapes if paired.
+//        testParse("SELECT * { ?s ?p '\\uD801\\uDC37'}");
+        QueryParseException ex = assertThrows(QueryParseException.class,  ()->testParse("SELECT * { ?s ?p '\\uD801\\uDC37'}"));
+        assertTrue(ex.getMessage().contains("Surrogate"));
     }
 
     private static void testParse(String string) {

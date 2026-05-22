@@ -24,7 +24,6 @@ package org.apache.jena.sparql.expr;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -199,17 +198,15 @@ public class TestSPARQLKeywordFunctions
     // As surrogate pair: 0xD83D 0xDC6A
     // Written here in forms which protect against binary file corruption.
 
-    //@Test public void substr_30()   { test("substr('👪', 1)",           "'👪'"); }
+    @Test public void substr_30()   { test("substr('👪', 1)",           "'👪'"); }
+    // Written using \-u escapes in SPARQL. Tests for supplemental codepoint handling.
+    @Test public void substr_31()   { test("substr('\uD83D\uDC6A', 1)",           "'\uD83D\uDC6A'"); }
+    @Test public void substr_32()   { test("substr('\uD83D\uDC6A', 2)",           kwEmptyString); }
+    @Test public void substr_33()   { test("substr('ABC\uD83D\uDC6ADEF', 4, 1)",  "'\uD83D\uDC6A'"); }
+    @Test public void substr_34()   { test("substr('\uD83D\uDC6A!', -1, 3)",      "'\uD83D\uDC6A'"); }
+    @Test public void substr_35()   { test("substr('\uD83D\uDC6A!', -1, 4)",      "'\uD83D\uDC6A!'"); }
 
-    // Written using \-u escapes in SPARQL.
-    @Test public void substr_30()   { test("substr('\\uD83D\\uDC6A', 1)",           "'\\uD83D\\uDC6A'"); }
-    // Same using Java string escapes.
-    @Test public void substr_30b()  { test("substr('\uD83D\uDC6A', 1)",             "'\uD83D\uDC6A'"); }
-    @Test public void substr_31()   { test("substr('\\uD83D\\uDC6A', 2)",           kwEmptyString); }
-
-    @Test public void substr_32()   { test("substr('ABC\\uD83D\\uDC6ADEF', 4, 1)",  "'\\uD83D\\uDC6A'"); }
-    @Test public void substr_33()   { test("substr('\\uD83D\\uDC6A!', -1, 3)",      "'\\uD83D\\uDC6A'"); }
-    @Test public void substr_34()   { test("substr('\\uD83D\\uDC6A!', -1, 4)",      "'\\uD83D\\uDC6A!'"); }
+    // Now (1.2) numeric escape sequences do not allow surrogates. See TestQueryParser.
 
     // STRLEN
     @Test public void strlen_01()   { test("strlen('abc')",    "3"); }
@@ -701,10 +698,6 @@ public class TestSPARQLKeywordFunctions
 
     private void testEvalException(String exprStr) {
         Expr expr = ExprUtils.parse(exprStr);
-        try {
-            NodeValue r = expr.eval(null, LibTestExpr.createTest());
-            fail("No exception raised");
-        }
-        catch (ExprEvalException ex) {}
+        assertThrows(ExprEvalException.class,()->expr.eval(null, LibTestExpr.createTest()));
     }
 }
