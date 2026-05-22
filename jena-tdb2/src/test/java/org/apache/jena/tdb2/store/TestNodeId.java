@@ -23,6 +23,7 @@ package org.apache.jena.tdb2.store;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.ByteBuffer;
 
@@ -129,4 +130,37 @@ public class TestNodeId
         assertEquals(expected, nid1);
     }
 
+    @Test public void nodeId_compare_01() {
+        // Same value - should be equal (0)
+        NodeId n1 = NodeIdFactory.createPtrLong(42, 100L);
+        NodeId n2 = NodeIdFactory.createPtrLong(42, 100L);
+        assertEquals(0, NodeId.compare(n1, n2));
+        assertEquals(0, n1.compareTo(n2));
+        assertTrue(n1.equals(n2));
+    }
+
+    @Test public void nodeId_compare_02() {
+        // Different value1 - value2 should not affect ordering
+        NodeId n1 = NodeIdFactory.createPtrLong(3, 1000L);
+        NodeId n2 = NodeIdFactory.createPtrLong(7, 50L);
+        assertTrue(NodeId.compare(n1, n2) < 0);
+        assertTrue(n1.compareTo(n2) < 0);
+
+        // Reverse direction
+        assertTrue(NodeId.compare(n2, n1) > 0);
+        assertTrue(n2.compareTo(n1) > 0);
+    }
+
+    @Test public void nodeId_compare_03() {
+        // Same value1, different value2 - should compare on value2
+        NodeId n1 = NodeIdFactory.createPtrLong(5, 100L);
+        NodeId n2 = NodeIdFactory.createPtrLong(5, 200L);
+        assertTrue(NodeId.compare(n1, n2) < 0);
+        assertTrue(n1.compareTo(n2) < 0);
+
+        // Reverse direction
+        assertTrue(NodeId.compare(n2, n1) > 0);
+        assertTrue(n2.compareTo(n1) > 0);
+    }
 }
+
