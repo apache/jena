@@ -21,6 +21,8 @@
 
 package org.apache.jena.atlas.lib;
 
+import static org.apache.jena.atlas.lib.Chars.isSurrogate;
+
 import org.apache.jena.atlas.AtlasException;
 import org.apache.jena.atlas.io.AWriter;
 import org.apache.jena.atlas.io.OutputUtils;
@@ -222,7 +224,7 @@ public class EscapeStr
             char ch = s.charAt(i);
 
             if ( ch != escape ) {
-                sb.append(ch);
+                insertCodepoint(sb, ch);
                 continue;
             }
 
@@ -244,7 +246,10 @@ public class EscapeStr
                 if ( i+4 >= s.length() )
                     throw new AtlasException("\\u escape too short");
                 int x4 = Hex.hexStringToInt(s, i+1, 4);
-                sb.append((char)x4);
+                if ( isSurrogate(x4) )
+                    throw new AtlasException(String.format("Surrogate code point in \\u sequence. Value: 0x%04X", x4));
+                // Do direct.
+                insertCodepoint(sb, (char)x4);
                 // Jump 1 2 3 4 -- already skipped \ and u
                 i = i+4;
                 continue;
@@ -253,19 +258,9 @@ public class EscapeStr
                 if ( i+8 >= s.length() )
                     throw new AtlasException("\\U escape too short");
                 int ch8 = Hex.hexStringToInt(s, i+1, 8);
-                if ( Character.charCount(ch8) == 1 )
-                    sb.append((char)ch8);
-                else {
-                    // See also TokenerText.insertCodepoint and TokenerText.readUnicodeEscape
-                    // Convert to UTF-16. Note that the rest of any system this is used
-                    // in must also respect codepoints and surrogate pairs.
-                    if ( !Character.isDefined(ch8) && !Character.isSupplementaryCodePoint(ch8) )
-                        throw new AtlasException(String.format("Illegal codepoint: 0x%04X", ch8));
-                    if ( ch8 > Character.MAX_CODE_POINT )
-                        throw new AtlasException(String.format("Illegal code point in \\U sequence value: 0x%08X", ch8));
-                    char[] chars = Character.toChars(ch8);
-                    sb.append(chars);
-                }
+                if ( isSurrogate(ch8) )
+                    throw new AtlasException(String.format("Surrogate code point in \\U sequence. Value: 0x%08X", ch8));
+                insertCodepoint(sb, ch8);
                 // Jump 1 2 3 4 5 6 7 8 -- already skipped \ and U
                 i = i+8;
                 continue;
@@ -275,8 +270,8 @@ public class EscapeStr
             // If so, \X-anything else is legal as a literal "\" and "X"
 
             if ( pointCodeOnly ) {
-                sb.append('\\');
-                sb.append(ch2);
+                insertCodepoint(sb, '\\');
+                insertCodepoint(sb, ch2);
                 continue;
             }
 
@@ -294,7 +289,7 @@ public class EscapeStr
             }
 
             if ( actualCh != 0 ) {
-                sb.append(actualCh);
+                insertCodepoint(sb, actualCh);
                 continue;
             }
 
@@ -336,20 +331,26 @@ public class EscapeStr
         }
         if ( j == 0 )
             throw new AtlasException("Empty \\u{} sequence");
-
-        int ch8 = value;
-        if ( Character.charCount(ch8) == 1 )
-            sb.append((char)ch8);
-        else {
-            if ( !Character.isDefined(ch8) && !Character.isSupplementaryCodePoint(ch8) )
-                throw new AtlasException(String.format("Illegal codepoint: 0x%04X", ch8));
-            if ( ch8 > Character.MAX_CODE_POINT )
-                throw new AtlasException(String.format("Illegal code point in \\u{..} sequence value: 0x%08X", ch8));
-            char[] chars = Character.toChars(ch8);
-            sb.append(chars);
-        }
+        if ( isSurrogate(value) )
+            throw new AtlasException(String.format("Surrogate code point in \\u{} sequence: 0x%08X", value));
+        insertCodepoint(sb, value);
         // Looking at the closing '}'
         i = i+j;
         return i;
+    }
+
+    private static void insertCodepoint(StringBuilder sb, int cp) {
+        if ( Character.charCount(cp) == 1 )
+            sb.append((char)cp);
+        else {
+            if ( !Character.isDefined(cp) && !Character.isSupplementaryCodePoint(cp) )
+                throw new AtlasException(String.format("Illegal codepoint: 0x%04X", cp));
+            char[] chars = Character.toChars(cp);
+            sb.append(chars);
+        }
+    }
+
+    private static void insertCodepoint(StringBuilder sb, char cp) {
+        sb.append(cp);
     }
 }
