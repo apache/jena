@@ -25,6 +25,7 @@ import static java.util.Objects.requireNonNull;
 import static org.apache.jena.atlas.lib.PropertyUtils.loadFromFile;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
@@ -70,15 +71,13 @@ import org.apache.jena.sparql.util.ContextAccumulator;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.system.G;
 import org.apache.jena.system.RDFDataException;
-import org.eclipse.jetty.ee11.servlet.DefaultServlet;
-import org.eclipse.jetty.ee11.servlet.FilterHolder;
-import org.eclipse.jetty.ee11.servlet.ServletContextHandler;
-import org.eclipse.jetty.ee11.servlet.ServletHolder;
+import org.eclipse.jetty.ee11.servlet.*;
 import org.eclipse.jetty.ee11.servlet.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.security.UserStore;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.ErrorHandler;
+import org.eclipse.jetty.util.resource.Resource;
 import org.slf4j.Logger;
 
 /**
@@ -1839,8 +1838,22 @@ public class FusekiServer {
             if ( staticContentDir != null ) {
                 DefaultServlet staticServlet = new DefaultServlet();
                 ServletHolder staticContent = new ServletHolder(staticServlet);
-                staticContent.setInitParameter("baseResource", staticContentDir);
                 //staticContent.setInitParameter("cacheControl", "false");
+                if ( staticContentDir.startsWith("jar:") ) {
+                    staticContent.setInitParameter("baseResource", staticContentDir);
+                } else {
+                    try {
+                        // Use URLResourceFactory instead of ResourceFactory.of(context) (which yields PathResource)
+                        // to work around a Windows bug in Jetty 12.1.9 PathResource.resolve(URI) where
+                        // path.resolve(uri.getPath()) fails for absolute Windows paths.
+                        // See: https://github.com/jetty/jetty.project/pull/15020
+                        java.net.URL url = Path.of(staticContentDir).toUri().toURL();
+                        Resource base = new org.eclipse.jetty.util.resource.URLResourceFactory().newResource(url);
+                        context.setBaseResource(base);
+                    } catch (MalformedURLException e) {
+                        staticContent.setInitParameter("baseResource", staticContentDir);
+                    }
+                }
                 context.addServlet(staticContent, "/");
             } else {
                 // Backstop servlet
