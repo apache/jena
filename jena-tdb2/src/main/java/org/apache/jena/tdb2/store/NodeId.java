@@ -21,7 +21,6 @@
 
 package org.apache.jena.tdb2.store;
 
-import static org.apache.jena.sparql.expr.Expr.CMP_EQUAL;
 import static org.apache.jena.tdb2.store.NodeIdType.*;
 
 import org.apache.jena.atlas.lib.BitsLong;
