@@ -66,8 +66,8 @@ public interface JenaMapIndexed<K, V> extends JenaMap<K, V> {
      * If the key is already present, its value is updated and the existing
      * index is returned.
      *
-     * @param key   the key to put
-     * @param value the value to put
+     * @param key   the key to put. ({@code null} is not allowed)
+     * @param value the value to put. ({@code null} is not allowed)
      * @return the index of the entry holding {@code key}
      */
     int putAndGetIndex(K key, V value);

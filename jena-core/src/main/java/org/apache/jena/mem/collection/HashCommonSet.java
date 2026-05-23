@@ -46,6 +46,7 @@ public abstract class HashCommonSet<K> extends HashCommonBase<K> implements Jena
 
     @Override
     public boolean tryAdd(K key) {
+        assert(key != null);
         final var slot = findSlot(key);
         if (slot < 0) return false;
         keys[slot] = key;
@@ -55,6 +56,7 @@ public abstract class HashCommonSet<K> extends HashCommonBase<K> implements Jena
 
     @Override
     public void addUnchecked(K key) {
+        assert(key != null);
         final var slot = findSlot(key);
         if (slot < 0) return;
         keys[slot] = key;

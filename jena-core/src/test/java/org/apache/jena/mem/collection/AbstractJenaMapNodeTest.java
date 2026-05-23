@@ -51,7 +51,7 @@ public abstract class AbstractJenaMapNodeTest {
     @Test
     public void isEmpty() {
         assertTrue(sut.isEmpty());
-        sut.tryPut(node("s"), null);
+        sut.tryPut(node("s"), "v");
         assertFalse(sut.isEmpty());
     }
 
@@ -89,7 +89,7 @@ public abstract class AbstractJenaMapNodeTest {
 
     @Test
     public void testTryRemove() {
-        sut.put(node("s"), null);
+        sut.put(node("s"), "v");
         assertTrue(sut.tryRemove(node("s")));
         assertEquals(0, sut.size());
         assertFalse(sut.tryRemove(node("s")));
@@ -97,7 +97,7 @@ public abstract class AbstractJenaMapNodeTest {
 
     @Test
     public void testRemoveUnchecked() {
-        sut.put(node("s"), null);
+        sut.put(node("s"), "v");
         sut.removeUnchecked(node("s"));
         assertEquals(0, sut.size());
     }
@@ -154,7 +154,7 @@ public abstract class AbstractJenaMapNodeTest {
 
     @Test
     public void testClear() {
-        sut.put(node("s"), null);
+        sut.put(node("s"), "v");
         sut.clear();
         assertEquals(0, sut.size());
     }
@@ -162,7 +162,7 @@ public abstract class AbstractJenaMapNodeTest {
     @Test
     public void testContainKey() {
         assertFalse(sut.containsKey(node("s")));
-        sut.put(node("s"), null);
+        sut.put(node("s"), "v");
         assertTrue(sut.containsKey(node("s")));
         assertFalse(sut.containsKey(node("s2")));
     }
@@ -183,34 +183,34 @@ public abstract class AbstractJenaMapNodeTest {
 
     @Test
     public void testKeyIteratorNextThrowsConcurrentModificationException() {
-        sut.put(node("s"), null);
+        sut.put(node("s"), "v");
         var iter = sut.keyIterator();
-        sut.put(node("s2"), null);
+        sut.put(node("s2"), "v2");
         assertThrows(ConcurrentModificationException.class, iter::next);
     }
 
     @Test
     public void testKeySpliteratorAdvanceThrowsConcurrentModificationException() {
-        sut.put(node("s"), null);
+        sut.put(node("s"), "v");
         var spliterator = sut.keySpliterator();
-        sut.put(node("s2"), null);
+        sut.put(node("s2"), "v1");
         assertThrows(ConcurrentModificationException.class, () -> spliterator.tryAdvance(t -> {
         }));
     }
 
     @Test
     public void testValueIteratorNextThrowsConcurrentModificationException() {
-        sut.put(node("s"), null);
+        sut.put(node("s"), "v");
         var iter = sut.keyIterator();
-        sut.put(node("s2"), null);
+        sut.put(node("s2"), "v2");
         assertThrows(ConcurrentModificationException.class, iter::next);
     }
 
     @Test
     public void testValueSpliteratorAdvanceThrowsConcurrentModificationException() {
-        sut.put(node("s"), null);
+        sut.put(node("s"), "v1");
         var spliterator = sut.valueSpliterator();
-        sut.put(node("s2"), null);
+        sut.put(node("s2"), "v2");
         assertThrows(ConcurrentModificationException.class, () -> spliterator.tryAdvance(t -> {
         }));
     }
@@ -219,7 +219,7 @@ public abstract class AbstractJenaMapNodeTest {
     public void testKeyIterator1() {
         final var n0 = node("s");
 
-        sut.put(n0, null);
+        sut.put(n0, "v");
 
         final var iter = sut.keyIterator();
         assertThat(iter.toList(), IsIterableContainingInAnyOrder.containsInAnyOrder(n0));
@@ -241,8 +241,8 @@ public abstract class AbstractJenaMapNodeTest {
         final var n0 = node("s");
         final var n1 = node("s2");
 
-        sut.put(n0, null);
-        sut.put(n1, null);
+        sut.put(n0, "v0");
+        sut.put(n1, "v1");
 
         final var iter = sut.keyIterator();
         assertThat(iter.toList(), IsIterableContainingInAnyOrder.containsInAnyOrder(n0, n1));
@@ -266,9 +266,9 @@ public abstract class AbstractJenaMapNodeTest {
         final var n1 = node("s2");
         final var n2 = node("s3");
 
-        sut.put(n0, null);
-        sut.put(n1, null);
-        sut.put(n2, null);
+        sut.put(n0, "v0");
+        sut.put(n1, "v1");
+        sut.put(n2, "v2");
 
         final var iter = sut.keyIterator();
         assertThat(iter.toList(), IsIterableContainingInAnyOrder.containsInAnyOrder(n0, n1, n2));
@@ -304,7 +304,7 @@ public abstract class AbstractJenaMapNodeTest {
     public void testKeySpliterator1() {
         final var n0 = node("s");
 
-        sut.put(n0, null);
+        sut.put(n0, "v0");
 
         final var spliterator = sut.keySpliterator();
         final var list = StreamSupport.stream(spliterator, false).toList();
@@ -325,8 +325,8 @@ public abstract class AbstractJenaMapNodeTest {
         final var n0 = node("s");
         final var n1 = node("s2");
 
-        sut.put(n0, null);
-        sut.put(n1, null);
+        sut.put(n0, "v0");
+        sut.put(n1, "v1");
 
         final var spliterator = sut.keySpliterator();
         final var list = StreamSupport.stream(spliterator, false).toList();
@@ -349,9 +349,9 @@ public abstract class AbstractJenaMapNodeTest {
         final var n1 = node("s2");
         final var n2 = node("s3");
 
-        sut.put(n0, null);
-        sut.put(n1, null);
-        sut.put(n2, null);
+        sut.put(n0, "v0");
+        sut.put(n1, "v1");
+        sut.put(n2, "v2");
 
         final var spliterator = sut.keySpliterator();
         final var list = StreamSupport.stream(spliterator, false).toList();
@@ -385,7 +385,7 @@ public abstract class AbstractJenaMapNodeTest {
     public void testKeyStream1() {
         final var n0 = node("s");
 
-        sut.put(n0, null);
+        sut.put(n0, "v");
 
         final var stream = sut.keyStream();
         assertThat(stream.toList(), IsIterableContainingInAnyOrder.containsInAnyOrder(n0));
@@ -404,8 +404,8 @@ public abstract class AbstractJenaMapNodeTest {
         final var n0 = node("s");
         final var n1 = node("s2");
 
-        sut.put(n0, null);
-        sut.put(n1, null);
+        sut.put(n0, "v");
+        sut.put(n1, "v2");
 
         final var stream = sut.keyStream();
         assertThat(stream.toList(), IsIterableContainingInAnyOrder.containsInAnyOrder(n0, n1));
@@ -426,9 +426,9 @@ public abstract class AbstractJenaMapNodeTest {
         final var n1 = node("s2");
         final var n2 = node("s3");
 
-        sut.put(n0, null);
-        sut.put(n1, null);
-        sut.put(n2, null);
+        sut.put(n0, "v");
+        sut.put(n1, "v2");
+        sut.put(n2, "v3");
 
         final var stream = sut.keyStream();
         assertThat(stream.toList(), IsIterableContainingInAnyOrder.containsInAnyOrder(n0, n1, n2));
@@ -460,7 +460,7 @@ public abstract class AbstractJenaMapNodeTest {
     public void testKeyStreamParallel1() {
         final var n0 = node("s");
 
-        sut.put(n0, null);
+        sut.put(n0, "v");
 
         final var stream = sut.keyStreamParallel();
         assertThat(stream.toList(), IsIterableContainingInAnyOrder.containsInAnyOrder(n0));
@@ -479,8 +479,8 @@ public abstract class AbstractJenaMapNodeTest {
         final var n0 = node("s");
         final var n1 = node("s2");
 
-        sut.put(n0, null);
-        sut.put(n1, null);
+        sut.put(n0, "v");
+        sut.put(n1, "v2");
 
         final var stream = sut.keyStreamParallel();
         assertThat(stream.toList(), IsIterableContainingInAnyOrder.containsInAnyOrder(n0, n1));
@@ -501,9 +501,9 @@ public abstract class AbstractJenaMapNodeTest {
         final var n1 = node("s2");
         final var n2 = node("s3");
 
-        sut.put(n0, null);
-        sut.put(n1, null);
-        sut.put(n2, null);
+        sut.put(n0, "v");
+        sut.put(n1, "v1");
+        sut.put(n2, "v2");
 
         final var stream = sut.keyStreamParallel();
         assertThat(stream.toList(), IsIterableContainingInAnyOrder.containsInAnyOrder(n0, n1, n2));
@@ -522,11 +522,11 @@ public abstract class AbstractJenaMapNodeTest {
     @Test
     public void testSize() {
         assertEquals(0, sut.size());
-        sut.put(node("s"), null);
+        sut.put(node("s"), "v");
         assertEquals(1, sut.size());
-        sut.put(node("s2"), null);
+        sut.put(node("s2"), "v2");
         assertEquals(2, sut.size());
-        sut.put(node("s3"), null);
+        sut.put(node("s3"), "v3");
         assertEquals(3, sut.size());
     }
 
@@ -535,7 +535,7 @@ public abstract class AbstractJenaMapNodeTest {
         assertFalse(sut.anyMatch(t -> true));
         assertFalse(sut.anyMatch(t -> false));
 
-        sut.put(node("s"), null);
+        sut.put(node("s"), "v");
         assertTrue(sut.anyMatch(t -> true));
         assertFalse(sut.anyMatch(t -> false));
     }
@@ -546,9 +546,9 @@ public abstract class AbstractJenaMapNodeTest {
         final var n1 = node("s2");
         final var n2 = node("s3");
 
-        sut.put(n0, null);
-        sut.put(n1, null);
-        sut.put(n2, null);
+        sut.put(n0, "v");
+        sut.put(n1, "v1");
+        sut.put(n2, "v2");
 
         final var list = new ArrayList<Node>();
         sut.anyMatch(n -> {
@@ -561,7 +561,7 @@ public abstract class AbstractJenaMapNodeTest {
     @Test
     public void put1000Nodes() {
         for (int i = 0; i < 1000; i++) {
-            sut.put(node("s" + i), null);
+            sut.put(node("s" + i), "v" + i);
         }
         assertEquals(1000, sut.size());
     }
@@ -569,7 +569,7 @@ public abstract class AbstractJenaMapNodeTest {
     @Test
     public void tryPut1000Nodes() {
         for (int i = 0; i < 1000; i++) {
-            sut.tryPut(node("s" + i), null);
+            sut.tryPut(node("s" + i), "v" + i);
         }
         assertEquals(1000, sut.size());
     }
@@ -587,7 +587,7 @@ public abstract class AbstractJenaMapNodeTest {
         final var nodes = new ArrayList<Node>();
         for (int i = 0; i < 1000; i++) {
             final var n = node("s" + i);
-            sut.put(n, null);
+            sut.put(n, "v" + i);
             nodes.add(n);
         }
         assertEquals(1000, sut.size());
@@ -603,7 +603,7 @@ public abstract class AbstractJenaMapNodeTest {
         final var nodes = new ArrayList<Node>();
         for (int i = 0; i < 1000; i++) {
             final var n = node("s" + i);
-            sut.tryPut(n, null);
+            sut.tryPut(n, "v" + i);
             nodes.add(n);
         }
         assertEquals(1000, sut.size());

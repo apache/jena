@@ -109,6 +109,6 @@ public class ArraySubSpliterator<E> implements Spliterator<E> {
 
     @Override
     public int characteristics() {
-        return DISTINCT | SIZED | SUBSIZED | NONNULL | IMMUTABLE;
+        return DISTINCT | SIZED | SUBSIZED | NONNULL ;
     }
 }

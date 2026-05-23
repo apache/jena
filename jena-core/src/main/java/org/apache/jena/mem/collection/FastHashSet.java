@@ -69,6 +69,7 @@ public abstract class FastHashSet<K> extends FastHashBase<K> implements JenaSetI
 
     @Override
     public boolean tryAdd(K key, int hashCode) {
+        assert(key != null);
         growPositionsArrayIfNeeded();
         final var pIndex = findPosition(key, hashCode);
         if (pIndex < 0) {
@@ -93,6 +94,7 @@ public abstract class FastHashSet<K> extends FastHashBase<K> implements JenaSetI
      */
     @Override
     public int addAndGetIndex(K key) {
+        assert(key != null);
         growPositionsArrayIfNeeded();
         final var hashCode = key.hashCode();
         final var pIndex = findPosition(key, hashCode);
@@ -113,10 +115,11 @@ public abstract class FastHashSet<K> extends FastHashBase<K> implements JenaSetI
     }
 
     @Override
-    public void addUnchecked(K value, int hashCode) {
+    public void addUnchecked(K key, int hashCode) {
+        assert(key != null);
         growPositionsArrayIfNeeded();
         final var eIndex = getFreeKeyIndex();
-        keys[eIndex] = value;
+        keys[eIndex] = key;
         hashCodesOrDeletedIndices[eIndex] = hashCode;
         positions[findEmptySlotWithoutEqualityCheck(hashCode)] = ~eIndex;
     }

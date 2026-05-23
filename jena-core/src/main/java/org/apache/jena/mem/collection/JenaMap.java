@@ -30,7 +30,8 @@ import java.util.stream.StreamSupport;
 
 /**
  * A map from keys of type {@code K} to values of type {@code V}.
- * Not thread-safe and does not allow {@code null} keys.
+ * Not thread-safe and does not allow {@code null} keys
+ * and does not allow {@code null} values.
  *
  * @param <K> the type of the keys in the map
  * @param <V> the type of the values in the map
@@ -40,8 +41,8 @@ public interface JenaMap<K, V> extends JenaMapSetCommon<K> {
     /**
      * Try to put a key-value pair into the map. If the key is already present, the value is updated.
      *
-     * @param key   the key to put
-     * @param value the value to put
+     * @param key   the key to put. ({@code null} is not allowed)
+     * @param value the value to put. ({@code null} is not allowed)
      * @return true if the key-value pair was put into the map, false if the key was already present
      */
     boolean tryPut(K key, V value);
@@ -49,8 +50,8 @@ public interface JenaMap<K, V> extends JenaMapSetCommon<K> {
     /**
      * Put a key-value pair into the map. If the key is already present, the value is updated.
      *
-     * @param key   the key to put
-     * @param value the value to put
+     * @param key   the key to put. ({@code null} is not allowed)
+     * @param value the value to put. ({@code null} is not allowed)
      */
     void put(K key, V value);
 

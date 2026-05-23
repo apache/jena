@@ -232,7 +232,7 @@ public class ArraySubSpliteratorTest {
     public void characteristics() {
         Integer[] array = new Integer[]{1, 2, 3, 4, 5};
         Spliterator<Integer> spliterator = new ArraySubSpliterator<>(array, dummySetForConcurrencyCheck);
-        assertEquals(DISTINCT | SIZED | SUBSIZED | NONNULL | IMMUTABLE, spliterator.characteristics());
+        assertEquals(DISTINCT | SIZED | SUBSIZED | NONNULL, spliterator.characteristics());
     }
 
     @Test

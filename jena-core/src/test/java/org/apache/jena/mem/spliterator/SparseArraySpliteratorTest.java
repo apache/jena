@@ -441,7 +441,7 @@ public class SparseArraySpliteratorTest {
     public void characteristics() {
         Integer[] array = new Integer[]{1, 2, 3, 4, 5};
         Spliterator<Integer> spliterator = new SparseArraySpliterator<>(array, dummySetForConcurrencyCheck);
-        assertEquals(DISTINCT | NONNULL | IMMUTABLE, spliterator.characteristics());
+        assertEquals(DISTINCT | NONNULL, spliterator.characteristics());
     }
 
     @Test
