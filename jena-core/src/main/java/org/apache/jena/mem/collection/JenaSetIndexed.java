@@ -35,7 +35,7 @@ public interface JenaSetIndexed<E> extends JenaSetHashOptimized<E> {
      * is already present, returns a negative value (typically the bitwise
      * complement of the existing index).
      *
-     * @param key      the element to add
+     * @param key      the element to add. ({@code null} is not allowed)
      * @return the index of the inserted element, or a negative value if the
      *         element was already present
      */

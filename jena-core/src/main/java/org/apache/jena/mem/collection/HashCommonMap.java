@@ -84,6 +84,8 @@ public abstract class HashCommonMap<K, V> extends HashCommonBase<K> implements J
 
     @Override
     public boolean tryPut(K key, V value) {
+        assert(key != null);
+        assert(value != null);
         final var slot = findSlot(key);
         if (slot < 0) {
             values[~slot] = value;
@@ -97,6 +99,8 @@ public abstract class HashCommonMap<K, V> extends HashCommonBase<K> implements J
 
     @Override
     public void put(K key, V value) {
+        assert(key != null);
+        assert(value != null);
         final var slot = findSlot(key);
         if (slot < 0) {
             values[~slot] = value;
@@ -126,6 +130,7 @@ public abstract class HashCommonMap<K, V> extends HashCommonBase<K> implements J
         final var slot = findSlot(key);
         if (slot < 0) return values[~slot];
         final var value = absentValueSupplier.get();
+        assert(value != null);
         keys[slot] = key;
         values[slot] = value;
         if (++size > threshold) grow();

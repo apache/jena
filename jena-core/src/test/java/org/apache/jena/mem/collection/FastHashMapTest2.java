@@ -35,11 +35,11 @@ public class FastHashMapTest2 {
     @Test
     public void testConstructWithInitialSizeAndAdd() {
         var sut = new FastNodeHashMap(3);
-        sut.put(node("s"), null);
-        sut.put(node("s1"), null);
-        sut.put(node("s2"), null);
-        sut.put(node("s3"), null);
-        sut.put(node("s4"), null);
+        sut.put(node("s"), "v");
+        sut.put(node("s1"), "v1");
+        sut.put(node("s2"), "v2");
+        sut.put(node("s3"), "v3");
+        sut.put(node("s4"), "v4");
         assertEquals(5, sut.size());
     }
 

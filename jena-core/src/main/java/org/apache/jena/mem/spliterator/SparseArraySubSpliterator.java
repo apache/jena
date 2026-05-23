@@ -118,6 +118,6 @@ public class SparseArraySubSpliterator<E> implements Spliterator<E> {
 
     @Override
     public int characteristics() {
-        return DISTINCT | NONNULL | IMMUTABLE;
+        return DISTINCT | NONNULL ;
     }
 }

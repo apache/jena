@@ -132,6 +132,8 @@ public abstract class FastHashMap<K, V> extends FastHashBase<K> implements JenaM
 
     @Override
     public boolean tryPut(K key, V value) {
+        assert(key != null);
+        assert(value != null);
         growPositionsArrayIfNeeded();
         final var hashCode = key.hashCode();
         final var pIndex = findPosition(key, hashCode);
@@ -150,6 +152,8 @@ public abstract class FastHashMap<K, V> extends FastHashBase<K> implements JenaM
 
     @Override
     public void put(K key, V value) {
+        assert(key != null);
+        assert(value != null);
         growPositionsArrayIfNeeded();
         final var hashCode = key.hashCode();
         final var pIndex = findPosition(key, hashCode);
@@ -166,6 +170,8 @@ public abstract class FastHashMap<K, V> extends FastHashBase<K> implements JenaM
 
     @Override
     public int putAndGetIndex(K key, V value) {
+        assert(key != null);
+        assert(value != null);
         growPositionsArrayIfNeeded();
         final int hashCode = key.hashCode();
         final var pIndex = findPosition(key, hashCode);

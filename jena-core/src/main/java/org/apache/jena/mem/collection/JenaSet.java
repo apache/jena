@@ -31,7 +31,7 @@ public interface JenaSet<E> extends JenaMapSetCommon<E> {
     /**
      * Add the key to the set if it is not already present.
      *
-     * @param key the key to add
+     * @param key the key to add. ({@code null} is not allowed)
      * @return {@code true} if the key was added, {@code false} if it was already present
      */
     boolean tryAdd(E key);
@@ -43,7 +43,7 @@ public interface JenaSet<E> extends JenaMapSetCommon<E> {
      * the key is not already in the set; otherwise the set's invariants will
      * break (duplicates may be inserted).
      *
-     * @param key the key to add
+     * @param key the key to add. ({@code null} is not allowed)
      */
     void addUnchecked(E key);
 }

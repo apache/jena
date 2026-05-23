@@ -36,8 +36,8 @@ public interface JenaSetHashOptimized<E> extends JenaSet<E> {
      * Add an element with the given precomputed hash code if it is not
      * already present.
      *
-     * @param key      the element to add
-     * @param hashCode {@code key.hashCode()}
+     * @param key      the element to add. ({@code null} is not allowed)
+     * @param hashCode {@code key.hashCode()}.
      * @return {@code true} if added, {@code false} if already present
      */
     boolean tryAdd(E key, int hashCode);
@@ -46,8 +46,8 @@ public interface JenaSetHashOptimized<E> extends JenaSet<E> {
      * Add an element with the given precomputed hash code without checking
      * whether it is already present. The caller MUST ensure the key is absent.
      *
-     * @param key      the element to add
-     * @param hashCode {@code key.hashCode()}
+     * @param key      the element to add. ({@code null} is not allowed)
+     * @param hashCode {@code key.hashCode()}. ({@code null} is not allowed)
      */
     void addUnchecked(E key, int hashCode);
 
