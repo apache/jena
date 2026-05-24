@@ -1839,6 +1839,8 @@ public class FusekiServer {
                 DefaultServlet staticServlet = new DefaultServlet();
                 ServletHolder staticContent = new ServletHolder(staticServlet);
                 //staticContent.setInitParameter("cacheControl", "false");
+                // << Jetty 12.1.9 issue
+                // When a fixed Jetty is available, replace block with   staticContent.setInitParameter("baseResource", staticContentDir);
                 if ( staticContentDir.startsWith("jar:") ) {
                     staticContent.setInitParameter("baseResource", staticContentDir);
                 } else {
@@ -1854,6 +1856,7 @@ public class FusekiServer {
                         staticContent.setInitParameter("baseResource", staticContentDir);
                     }
                 }
+                //  >> Jetty 12.1.9 issue
                 context.addServlet(staticContent, "/");
             } else {
                 // Backstop servlet
