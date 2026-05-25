@@ -119,10 +119,14 @@
 
     <!-- GeoSPARQL related -->
     <ver.kryo>5.6.2</ver.kryo>
-    <!-- Used in /jena-fuseki-geosparql -->
+    <!-- Used in jena-fuseki-geosparql -->
     <ver.jcommander>1.82</ver.jcommander>
     <ver.sis>1.4</ver.sis>
     <ver.jts>1.20.0</ver.jts>
+    <ver.jdom2>2.0.6.1</ver.jdom2>
+    <!-- Used in jena-fuseki-mod-geosparql -->
+    <ver.selenium-java>4.44.0</ver.selenium-java>
+    <ver.webdrivermanager>6.3.4</ver.webdrivermanager>
 
     <!-- Plugins -->
     <ver.plugin.rat>0.18</ver.plugin.rat>
@@ -777,7 +781,7 @@
       <dependency>
         <groupId>org.jdom</groupId>
         <artifactId>jdom2</artifactId>
-        <version>2.0.6.1</version>
+        <version>${ver.jdom2}</version>
       </dependency>
 
       <!-- END jena geosparql -->
@@ -787,14 +791,14 @@
       <dependency>
         <groupId>org.seleniumhq.selenium</groupId>
         <artifactId>selenium-java</artifactId>
-        <version>4.44.0</version>
+        <version>${ver.selenium-java}</version>
         <scope>test</scope>
       </dependency>
 
       <dependency>
         <groupId>io.github.bonigarcia</groupId>
         <artifactId>webdrivermanager</artifactId>
-        <version>6.3.4</version>
+        <version>${ver.webdrivermanager}</version>
         <scope>test</scope>
       </dependency>
       <!-- END jena-fuseki-mod-geosparql -->
