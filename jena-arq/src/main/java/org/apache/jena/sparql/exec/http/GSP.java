@@ -72,10 +72,6 @@ public class GSP extends StoreProtocol<GSP> {
     // 2 - Graph operation, GSP naming, graph name.
     private String              graphName       = null;
 
-    // Legacy, deprecated.
-    // 3 - Dataset operation without ?default or ?graph=
-    private boolean             datasetGraph    = false;
-
     /**
      * Create a request to the remote serviceURL (without a URL query string).
      * Call {@link #defaultGraph()} or {@link #graphName(String)} to select the target graph.
@@ -317,24 +313,12 @@ public class GSP extends StoreProtocol<GSP> {
         return HttpLib.requestURL(serviceEndpoint, queryStringForGraph(graphName));
     }
 
-    final protected void internalDataset() {
-        // Set as dataset request.
-        // Checking is done by validateDatasetOperation.
-        // The dataset operations have "Dataset" in the name, so less point having
-        // required dataset(). We can't use GET() because the return type
-        // would be "Graph or DatasetGraph"
-        // Reconsider if graph synonyms provided.
-        this.datasetGraph = true;
-    }
-
     final protected void validateDatasetOperation() {
         Objects.requireNonNull("Service Endpoint", serviceEndpoint);
         if ( defaultGraph )
             throw exception("Default graph specified for dataset operation");
         if ( graphName != null )
             throw exception("A graph name specified for dataset operation");
-        if ( ! datasetGraph )
-            throw exception("Dataset request not specified for dataset operation");
     }
 
     /** Send a file of triples to a URL. */
