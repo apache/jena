@@ -710,6 +710,10 @@ public class HttpAction
         return request.getInputStream();
     }
 
+    public boolean hasRequestQueryString() {
+        return request.getQueryString() != null;
+    }
+
     public String getRequestQueryString() {
         return request.getQueryString();
     }

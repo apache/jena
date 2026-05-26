@@ -65,27 +65,33 @@ public class Fuseki {
     /** Version of this Fuseki instance */
     static public final String  VERSION           = Version.versionForClass(Fuseki.class).orElse("<development>");
 
-    /** Supporting Graph Store Protocol direct naming.
+    /**
+     * Supporting Graph Store Protocol direct naming.
      * <p>
      *  A GSP "direct name" is a request, not using ?default or ?graph=, that names the graph
      *  by the request URL so it is of the form {@code http://server/dataset/graphname...}.
      *  There are two cases: looking like a service {@code http://server/dataset/service} and
      *  a longer URL that can't be a service {@code http://server/dataset/segment/segment/...}.
      *  <p>
-     *  GSP "direct name" is usually off.  It is a rare feature and because of hard wiring to the URL
-     *  quite sensitive to request route.
+     *  GSP "direct name" is not part of the standard default Fuseki configuration.
+     *  It needs to enabled by configuration using {@code fuseki:operation fuseki:gsp-direct-r}
+     *  or {@code  fuseki:operation fuseki:gsp-direct-rw}.
+     *
+     *  It conflicts with having static file and overalpping service endpoint names.
+     *  Service endpoint names takes precidence.
      *  <p>
      *  The following places use this switch:
      *  <ul>
-     *  <li>{@code FusekiFilter} for the "clearly not a service" case
-     *  <li>{@code ServiceRouterServlet}, end of dispatch (after checking for http://server/dataset/service)
-     *  <li>{@code SPARQL_GSP.determineTarget} This is all-purpose code - should not get there because of other checks.
+     *  <li>{@code Dispatcher}.
+     *  <li>{@code GraphTarget.determineTargetGSP} This is all-purpose code - should not get there because of other checks.
+     *  <li>{@code OperationRegistry} where it endbles operation registry.
+     *  <li>{@code FusekiServer.Builder.applyAccessControl}
      *  </ul>
      *  <p>
      * <b>Note</b><br/>
-     * GSP Direct Naming was implemented to provide two implementations for the SPARQL 1.1 implementation report.
+     * GSP Direct Naming was primarily implemented to provide two implementations for the SPARQL 1.1 implementation report.
      */
-    static public final boolean GSP_DIRECT_NAMING = false;
+    static public final boolean GSP_DIRECT_NAMING = true;
 
     /** Are we in development mode?  That means a SNAPSHOT, or no VERSION
      * because maven has not filtered the fuseki-properties.xml file.

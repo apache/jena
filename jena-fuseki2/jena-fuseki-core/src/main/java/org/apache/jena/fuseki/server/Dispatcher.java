@@ -29,6 +29,8 @@ import static org.apache.jena.fuseki.server.Operation.Query;
 import static org.apache.jena.fuseki.server.Operation.Update;
 import static org.apache.jena.fuseki.servlets.ActionExecLib.allocHttpAction;
 
+import java.util.List;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -133,7 +135,6 @@ public class Dispatcher {
      *   </ul>
      * <li>Allow authentication for the dispatch choice.
      * </ul>
-     *
      */
     public static boolean dispatch(HttpServletRequest request, HttpServletResponse response) {
         DataAccessPointRegistry registry = DataAccessPointRegistry.get(request.getServletContext());
@@ -144,8 +145,14 @@ public class Dispatcher {
         if ( dap == null ) {
             if ( LogDispatch )
                 LOG.debug("No dispatch for '"+request.getRequestURI()+"'");
+            // Don't handle.
             return false;
         }
+        // Data access point found.
+        // The request HttpAction is created and logging started.
+        // Only if the service endpoint can not be found will this return false;
+        // that enables static files under the dataset URL prefix.
+
         // The execution code is in ActionExecLib.execAction
         return process(dap, request, response);
     }
@@ -170,24 +177,32 @@ public class Dispatcher {
             LOG.info("Filter: Request URI = " + request.getRequestURI());
             LOG.info("Filter: Action URI  = " + uri);
         }
-        DataAccessPoint dap = locateDataAccessPoint(uri, registry);
+        boolean hasQueryString = (request.getQueryString() != null);
+        DataAccessPoint dap = locateDataAccessPoint(uri, registry, hasQueryString);
         // At this point, we are going to dispatch to the DataAccessPoint.
         // It still may not have a handler for the service on this dataset.
         // See #chooseProcessor(HttpAction) for locating the endpoint.
         return dap;
     }
 
+
+    /*package:testing*/ static DataAccessPoint locateDataAccessPointTest(String uri, DataAccessPointRegistry registry) {
+        return locateDataAccessPoint(uri, registry, false);
+    }
+
     /**
-     * Identity the Fuseki service for the request
+     * Identity the Fuseki service for the request.
      */
-    /*package:testing*/ static DataAccessPoint locateDataAccessPoint(String uri, DataAccessPointRegistry registry) {
+    private static DataAccessPoint locateDataAccessPoint(String uri, DataAccessPointRegistry registry, boolean hasQueryString) {
         // Cases:
         // /dataset
         // /dataset/endpoint
         // /path/.../dataset/
         // /path/.../dataset/endpoint
+        // if these fail,
+        // optionally, try GSP_DIRECT_NAMING
 
-        // Direct match.
+        // Dataset match.
         if ( registry.isRegistered(uri) )
             // Cases: /, /dataset and /path/dataset where /path is not the servlet context path.
             return registry.get(uri);
@@ -202,7 +217,20 @@ public class Dispatcher {
         if ( registry.isRegistered(datasetUri) )
             // Cases: /dataset/sparql and /path/dataset/sparql
             return registry.get(datasetUri);
+        // Not found by the fixed patterns of /../dataset and /../dataset/service
 
+        if ( Fuseki.GSP_DIRECT_NAMING && ! hasQueryString ) {
+            // Precaution: Reserved for the Fuseki server admin operations.
+            if ( uri.startsWith("/$/") )
+                return null;
+            DataAccessPoint dap = registry.getByPrefix(uri);
+            if ( dap == null )
+                return null;
+            if ( dap.getDataService().hasOperation(Operation.GSP_Direct_RW) )
+              return dap;
+            if ( dap.getDataService().hasOperation(Operation.GSP_Direct_R) )
+                return dap;
+        }
         return null;
     }
 
@@ -232,6 +260,7 @@ public class Dispatcher {
         return dispatchAction(action);
     }
 
+    // Collapse.
     /**
      * Determine and call the {@link ActionProcessor} to handle this
      * {@link HttpAction}, including access control at the dataset and service levels.
@@ -243,10 +272,12 @@ public class Dispatcher {
     }
 
     /**
-     * Find the ActionProcessor or return null if there can't determine one.
-     *
+     * Find the ActionProcessor or return null if we can't determine one.
+     * <p>
+     * The data access point has already been found and the request action created.
+     * Code form here either executes a request or rejects it. It does not pass it along the servlet filter chain.
      * This function sends the appropriate HTTP error response on failure to choose an endpoint.
-     *
+     * <p>
      * Returning null indicates an HTTP error response, and the HTTP response has been done.
      *
      * Process:
@@ -282,6 +313,23 @@ public class Dispatcher {
         // There may be multiple operations for an endpointName of this data service.
 
         Endpoint endpoint = chooseEndpoint(action, dataService, endpointName);
+
+        if ( endpoint == null && Fuseki.GSP_DIRECT_NAMING) {
+            if ( true ) { //! action.hasRequestQueryString() ) {
+                // If GSP direct naming is enabled, it can hide static files with the same prefix.
+                // Find operation.
+                // It should exist because the DataAccessPoint decision in locateDataAccessPoint checked.
+                List<Endpoint> x1 = dataService.getEndpoints(Operation.GSP_Direct_RW);
+                if ( ! x1.isEmpty() ) {
+                    endpoint = x1.getFirst();
+                } else {
+                    List<Endpoint> x2 = dataService.getEndpoints(Operation.GSP_Direct_R);
+                    if ( ! x2.isEmpty() )
+                        endpoint = x2.getFirst();
+                }
+            }
+        }
+
         if ( endpoint == null ) {
             if ( DEBUG )
                 FmtLog.info(LOG, "Dispatch: no endpoint");

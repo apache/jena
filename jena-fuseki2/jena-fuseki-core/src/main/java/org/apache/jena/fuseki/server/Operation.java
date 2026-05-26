@@ -82,6 +82,9 @@ public class Operation {
     public static final Operation GSP_R    = alloc(FusekiVocabG.opGSP_r,   "gsp-r",   "Graph Store Protocol (Read)");
     public static final Operation GSP_RW   = alloc(FusekiVocabG.opGSP_rw,  "gsp-rw",  "Graph Store Protocol");
 
+    public static final Operation GSP_Direct_R    = alloc(FusekiVocabG.opGSP_direct_r,   "gsp-direct-r",   "Graph Store Protocol (Direct naming, Read)");
+    public static final Operation GSP_Direct_RW   = alloc(FusekiVocabG.opGSP_direct_rw,  "gsp-direct-rw",  "Graph Store Protocol (Direct naming)");
+
     public static final Operation Shacl    = alloc(FusekiVocabG.opShacl,   "SHACL",   "SHACL Validation");
     public static final Operation Upload   = alloc(FusekiVocabG.opUpload,  "upload",  "File Upload");
     public static final Operation Patch    = alloc(FusekiVocabG.opPatch,   "patch",   "RDF Patch");

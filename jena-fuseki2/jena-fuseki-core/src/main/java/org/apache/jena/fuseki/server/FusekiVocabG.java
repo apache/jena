@@ -76,23 +76,24 @@ public class FusekiVocabG
     public static final Node pServiceShaclEP                = property("serviceShacl");
     public static final Node pServiceReadWriteGraphStoreEP  = property("serviceReadWriteGraphStore");
     public static final Node pServiceReadGraphStoreEP       = property("serviceReadGraphStore");
-    // No longer used.
-//    public static final Node pServiceReadWriteQuadsEP       = property("serviceReadWriteQuads");
-//    public static final Node pServiceReadQuadsEP            = property("serviceReadQuads");
 
     // Operation names : the standard operations.
     // "alt" names are the same but using "_" not "-".
-    public static final Node opQuery       = resource("query");
-    public static final Node opUpdate      = resource("update");
-    public static final Node opUpload      = resource("upload");
-    public static final Node opGSP_r       = resource("gsp-r");
-    public static final Node opGSP_r_alt   = resource("gsp_r");
-    public static final Node opGSP_rw      = resource("gsp-rw");
-    public static final Node opGSP_rw_alt  = resource("gsp_rw");
-    public static final Node opNoOp        = resource("no-op");
-    public static final Node opNoOp_alt    = resource("no_op");
-    public static final Node opShacl       = resource("shacl");
-    public static final Node opPatch       = resource("patch");
+    public static final Node opQuery            = resource("query");
+    public static final Node opUpdate           = resource("update");
+    public static final Node opUpload           = resource("upload");
+    public static final Node opGSP_r            = resource("gsp-r");
+    public static final Node opGSP_r_alt        = resource("gsp_r");
+    public static final Node opGSP_rw           = resource("gsp-rw");
+    public static final Node opGSP_rw_alt       = resource("gsp_rw");
+
+    public static final Node opGSP_direct_r     = resource("gsp-direct-r");
+    public static final Node opGSP_direct_rw    = resource("gsp-direct-rw");
+
+    public static final Node opNoOp             = resource("no-op");
+    public static final Node opNoOp_alt         = resource("no_op");
+    public static final Node opShacl            = resource("shacl");
+    public static final Node opPatch            = resource("patch");
 
     public static final Node opPREFIXES_R       = resource("prefixes-r");
     public static final Node opPREFIXES_RW      = resource("prefixes-rw");

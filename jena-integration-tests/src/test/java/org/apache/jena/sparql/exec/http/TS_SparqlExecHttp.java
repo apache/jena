@@ -28,6 +28,7 @@ import org.junit.platform.suite.api.Suite;
 @SelectClasses({
     TestGSP.class
     , TestDSP.class
+    , TestGSPDirect.class
     , TestModelStore.class
     //, TestModelStore2.class
     , TestQueryExecHTTP.class

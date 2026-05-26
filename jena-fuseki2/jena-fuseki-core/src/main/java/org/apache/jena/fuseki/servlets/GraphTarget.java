@@ -36,9 +36,9 @@ import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.sparql.core.DatasetGraph;
 
 /**
- * Target of GSP operations.<br/>
+ * Target of GSP operations.
+ * <p>
  * Extensions: "?graph=union" and "?graph=default"
- *
  */
 public class GraphTarget {
 
@@ -66,11 +66,16 @@ public class GraphTarget {
             if ( ! allowDirectNaming )
                 ServletOps.errorBadRequest("Neither default graph nor named graph specified");
 
-            // Direct naming.
-            String directName = action.getRequestRequestURL().toString();
-            if ( action.getRequestRequestURI().equals(action.getDatasetName()) )
-                // No name (should have been a quads operations).
+            // GSP Direct Naming.
+            String directName = GSPLib.fullURI(action);
+            String requestURI = action.getRequestRequestURI();
+
+            // NB Use URI here - no host/port.
+            if ( directName == null || requestURI.equals(action.getDatasetName()) )
                 ServletOps.errorBadRequest("Neither default graph nor named graph specified and no direct name");
+            if ( action.getDatasetName().startsWith(requestURI) )
+                ServletOps.errorBadRequest("Direct name does not have the dataset name as a prefix: "+requestURI);
+
             Node gn = NodeFactory.createURI(directName);
             return createNamed(dsg, gn);
         }
