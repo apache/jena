@@ -73,6 +73,22 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
         return super.get(key);
     }
 
+    /**
+     * Find a {@link DataAccessPoint} which as {@code uri} as a prefix to its name.
+     * If there are multiple possible matches, which is returned is not defined.
+     */
+    public DataAccessPoint getByPrefix(String prefix) {
+        if ( prefix == null )
+            return null;
+        for ( String dapName : keys() ) {
+            if ( prefix.startsWith(dapName) ) {
+                // First match.
+                return get(dapName);
+            }
+        }
+        return null;
+    }
+
     // Debugging
     public void print() {
         print(null);

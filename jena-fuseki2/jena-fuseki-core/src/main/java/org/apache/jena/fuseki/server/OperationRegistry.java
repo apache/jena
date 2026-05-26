@@ -26,7 +26,6 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import jakarta.servlet.ServletContext;
-
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.servlets.*;
@@ -49,6 +48,10 @@ public class OperationRegistry {
     private static final ActionService uploadServlet   = new UploadRDF();
     private static final ActionService gspServlet_R    = new GSP_R();
     private static final ActionService gspServlet_RW   = new GSP_RW();
+    private static final ActionService gspDirect_R     = new GSP_Direct_R();
+    private static final ActionService gspDirect_RW    = new GSP_Direct_RW();
+
+
     private static final ActionService rdfPatch        = new PatchApply();
     private static final ActionService noOperation     = new NoOpActionService();
     private static final ActionService shaclValidation = new SHACL_Validation();
@@ -73,6 +76,11 @@ public class OperationRegistry {
         stdOpReg.register(Operation.Update,  WebContent.contentTypeSPARQLUpdate, updateServlet);
         stdOpReg.register(Operation.GSP_R,   null, gspServlet_R);
         stdOpReg.register(Operation.GSP_RW,  null, gspServlet_RW);
+
+        if ( Fuseki.GSP_DIRECT_NAMING ) {
+            stdOpReg.register(Operation.GSP_Direct_R,  null, gspDirect_R);
+            stdOpReg.register(Operation.GSP_Direct_RW, null, gspDirect_RW);
+        }
 
         stdOpReg.register(Operation.Patch,   WebContent.contentTypePatch, rdfPatch);
         stdOpReg.register(Operation.Shacl,   null, shaclValidation);

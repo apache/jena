@@ -66,11 +66,14 @@ import org.apache.jena.sparql.graph.GraphFactory;
  */
 public class GSP extends StoreProtocol<GSP> {
 
-    // One, and only one of these two, must be set at the point the terminating operation is called.
+    // One, and only one of these three, must be set at the point the terminating operation is called.
     // 1 - Graph operation, GSP naming, default graph
-    private boolean             defaultGraph    = false;
-    // 2 - Graph operation, GSP naming, graph name.
-    private String              graphName       = null;
+    private boolean defaultGraph    = false;
+    // 2 - Graph operation, GSP indirect naming, graph name.
+    private String  graphName       = null;
+    // 3 - Graph operation, GSP direct naming
+    // This must align to the service URL.
+    private String  directGraphName = null;
 
     /**
      * Create a request to the remote serviceURL (without a URL query string).
@@ -79,6 +82,7 @@ public class GSP extends StoreProtocol<GSP> {
      * @param service
      */
     public static GSP service(String service) {
+        Objects.requireNonNull(service);
         return new GSP().endpoint(service);
     }
 
@@ -101,7 +105,6 @@ public class GSP extends StoreProtocol<GSP> {
     public GSP graphName(String graphName) {
         Objects.requireNonNull(graphName);
         this.graphName = graphName;
-        this.defaultGraph = false;
         return this;
     }
 
@@ -113,7 +116,6 @@ public class GSP extends StoreProtocol<GSP> {
             throw exception("Not an acceptable graph name: "+this.graphName);
         Node gn = RiotLib.blankNodeToIri(graphName);
         this.graphName = gn.getURI();
-        this.defaultGraph = false;
         return this;
     }
 
@@ -124,14 +126,25 @@ public class GSP extends StoreProtocol<GSP> {
         return this;
     }
 
+    /** Send request for a named graph using GSP direct naming. */
+    public GSP directGraphName(String directGraphName) {
+        Objects.requireNonNull(directGraphName);
+        if ( ! directGraphName.startsWith(serviceEndpoint) )
+            throw exception("Graph name for GSP direct naming does not start with the service URL: "+directGraphName);
+        clearOperation();
+        this.directGraphName = directGraphName;
+        return this;
+    }
+
     private void clearOperation() {
         this.defaultGraph = false;
         this.graphName = null;
+        this.directGraphName = null;
     }
 
     final protected void validateGraphOperation() {
         Objects.requireNonNull("Service Endpoint", serviceEndpoint);
-        if ( ! defaultGraph && graphName == null )
+        if ( ! defaultGraph && graphName == null && directGraphName == null )
             throw exception("Need either default graph or a graph name");
     }
 
@@ -306,19 +319,13 @@ public class GSP extends StoreProtocol<GSP> {
     // Only valid when the request has been correctly setup.
 
     final protected String graphName()           { return graphName; }
-    final protected boolean isDefaultGraph()     { return graphName == null; }
-    final protected boolean isGraphOperation()   { return defaultGraph || graphName != null; }
+    final protected boolean isDefaultGraph()     { return defaultGraph; }
+    final protected boolean isDirectOperation()  { return directGraphName != null ; }
 
     private String graphRequestURL() {
+        if ( directGraphName != null )
+            return directGraphName;
         return HttpLib.requestURL(serviceEndpoint, queryStringForGraph(graphName));
-    }
-
-    final protected void validateDatasetOperation() {
-        Objects.requireNonNull("Service Endpoint", serviceEndpoint);
-        if ( defaultGraph )
-            throw exception("Default graph specified for dataset operation");
-        if ( graphName != null )
-            throw exception("A graph name specified for dataset operation");
     }
 
     /** Send a file of triples to a URL. */

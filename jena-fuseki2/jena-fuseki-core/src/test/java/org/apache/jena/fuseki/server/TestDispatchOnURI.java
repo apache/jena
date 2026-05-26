@@ -119,12 +119,12 @@ public class TestDispatchOnURI {
     }
 
     private void testNoDispatch(String requestURI, DataAccessPointRegistry registry) {
-        DataAccessPoint dap = Dispatcher.locateDataAccessPoint(requestURI, registry);
+        DataAccessPoint dap = Dispatcher.locateDataAccessPointTest(requestURI, registry);
         assertNull(dap, "Expected no dispatch for "+requestURI);
     }
 
     private void testDispatch(String requestURI, DataAccessPointRegistry registry, String expectedDataset, String expectedEndpoint) {
-        DataAccessPoint dap = Dispatcher.locateDataAccessPoint(requestURI, registry);
+        DataAccessPoint dap = Dispatcher.locateDataAccessPointTest(requestURI, registry);
         if ( dap == null ) {
             if ( expectedDataset != null )
                 fail("No DataAccessPoint: expected to find a match: "+requestURI+" -> ("+expectedDataset+", "+expectedEndpoint+")");

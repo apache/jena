@@ -149,14 +149,10 @@ public class ActionLib {
         String uri = request.getRequestURI();
         ServletContext servletCxt = request.getServletContext();
         if ( servletCxt == null )
-            return request.getRequestURI();
-
+            return uri;
         String contextPath = servletCxt.getContextPath();
-        if ( contextPath == null )
+        if ( contextPath == null || contextPath.isEmpty() )
             return uri;
-        if ( contextPath.isEmpty())
-            return uri;
-
         String x = uri;
         if ( uri.startsWith(contextPath) )
             x = uri.substring(contextPath.length());

@@ -22,15 +22,11 @@
 package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format;
-import static org.apache.jena.fuseki.servlets.GraphTarget.determineTargetGSP;
 
 import java.io.IOException;
-import java.io.OutputStream;
 
 import jakarta.servlet.ServletOutputStream;
-
 import org.apache.jena.atlas.web.MediaType;
-import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.web.HttpNames;
@@ -48,7 +44,7 @@ public class GSP_R extends GSP_Base {
         if ( isQuads(action) )
             execGetQuads(action);
         else
-            execGetGSP(action);
+            GSPLib.execGetGSP(action, this::decideDataset);
     }
 
     protected void execGetQuads(HttpAction action) {
@@ -88,49 +84,6 @@ public class GSP_R extends GSP_Base {
         }
     }
 
-    protected void execGetGSP(HttpAction action) {
-        ActionLib.setCommonHeaders(action);
-        MediaType mediaType = ActionLib.contentNegotationRDF(action);
-
-        OutputStream output;
-        try { output = action.getResponseOutputStream(); }
-        catch (IOException ex) { ServletOps.errorOccurred(ex); output = null; }
-
-        Lang lang = RDFLanguages.contentTypeToLang(mediaType.getContentTypeStr());
-        if ( lang == null )
-            lang = RDFLanguages.TURTLE;
-
-        action.beginRead();
-        if ( action.verbose )
-            action.log.info(format("[%d]   Get: Content-Type=%s, Charset=%s => %s",
-                            action.id, mediaType.getContentTypeStr(), mediaType.getCharset(), lang.getName()));
-        try {
-            DatasetGraph dsg = decideDataset(action);
-            GraphTarget target = determineTargetGSP(dsg, action);
-            if ( action.log.isDebugEnabled() )
-                action.log.debug("GET->"+target);
-            boolean exists = target.exists();
-            if ( ! exists )
-                ServletOps.errorNotFound("No such graph: "+target.label());
-            Graph graph = target.graph();
-            // Special case RDF/XML to be the plain (faster, less readable) form
-            try {
-                // Use the preferred MIME type.
-                ActionLib.graphResponse(action, graph, lang);
-                ServletOps.success(action);
-            } catch (OperationDeniedException ex) {
-                throw ex;
-            } catch (JenaException ex) {
-                // ActionLib.graphResponse has special handling for RDF/XML but for
-                // other syntax forms unexpected errors mean we may or may not have
-                // written some output because of output buffering.
-                // Attempt to send an error - which may not work.
-                // "406 Not Acceptable" - Accept header issue; target is fine.
-                ServletOps.error(HttpSC.NOT_ACCEPTABLE_406, "Failed to write output: "+ex.getMessage());
-            }
-        } finally { action.endRead(); }
-    }
-
     @Override
     protected void doOptions(HttpAction action) {
         ActionLib.setCommonHeadersForOptions(action);
@@ -143,7 +96,7 @@ public class GSP_R extends GSP_Base {
         if ( isQuads(action) )
             execHeadQuads(action);
         else
-            execHeadGSP(action);
+            GSPLib.execHeadGSP(action, this::decideDataset);
     }
 
     protected void execHeadQuads(HttpAction action) {
@@ -152,25 +105,6 @@ public class GSP_R extends GSP_Base {
         if ( action.verbose )
             action.log.info(format("[%d]   Head: Content-Type=%s", action.id, mediaType.getContentTypeStr()));
         ServletOps.success(action);
-    }
-
-    protected void execHeadGSP(HttpAction action) {
-        ActionLib.setCommonHeaders(action);
-        MediaType mediaType = ActionLib.contentNegotationRDF(action);
-        if ( action.verbose )
-            action.log.info(format("[%d]   Head: Content-Type=%s", action.id, mediaType.getContentTypeStr()));
-        // Check graph not 404.
-        action.beginRead();
-        try {
-            DatasetGraph dsg = decideDataset(action);
-            GraphTarget target = determineTargetGSP(dsg, action);
-            if ( action.log.isDebugEnabled() )
-                action.log.debug("HEAD->"+target);
-            boolean exists = target.exists();
-            if ( ! exists )
-                ServletOps.errorNotFound("No such graph: "+target.label());
-            ServletOps.success(action);
-        } finally { action.endRead(); }
     }
 
     @Override
