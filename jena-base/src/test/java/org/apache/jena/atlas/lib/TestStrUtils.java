@@ -88,6 +88,16 @@ public class TestStrUtils
         assertEquals(expectedLastChar, lastChar);
     }
 
+    @Test public void contains_ignorecase_1() {
+        boolean b = StrUtils.containsIgnoreCase("foobar", "FOO");
+        assertTrue(b);
+    }
+
+    @Test public void contains_ignorecase_2() {
+        boolean b = StrUtils.containsIgnoreCase("foobar", "OO");
+        assertTrue(b);
+    }
+
     @Test public void prefix_ignorecase_1() {
         boolean b = StrUtils.strStartsWithIgnoreCase("foobar", "FOO");
         assertTrue(b);
