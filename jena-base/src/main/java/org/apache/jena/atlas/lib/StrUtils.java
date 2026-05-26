@@ -119,6 +119,19 @@ public class StrUtils //extends StringUtils
         return str1.contains(str2) ;
     }
 
+    /**
+     * Does one string, str1, contain another string, str2, ignoring the case of letters?
+     *
+     * @param str1
+     * @param str2
+     * @return true if str1 contains str2, ignoring the case of letters
+     */
+    public static boolean containsIgnoreCase(String str1, String str2) {
+        str1 = Lib.uppercase(str1);
+        str2 = Lib.uppercase(str2);
+        return str1.contains(str2);
+    }
+
     public final static String replace(String string, String target, String replacement) {
         return string.replace(target, replacement) ;
     }
