@@ -21,6 +21,8 @@
 
 package org.apache.jena.fuseki.mod.ui;
 
+import static org.apache.jena.fuseki.Fuseki.serverFunctionPath;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Set;
@@ -115,11 +117,11 @@ public class FMod_UI implements FusekiModule {
         }
 
         builder.staticFileBase(uiAppLocation)       // Set the UI files area.
-               .addServlet("/$/validate/query",     new QueryValidator())
-               .addServlet("/$/validate/update",    new UpdateValidator())
-               .addServlet("/$/validate/iri",       new IRIValidator())
-               .addServlet("/$/validate/langtag",   new LangTagValidator())
-               .addServlet("/$/validate/data",      new DataValidator())
+               .addServlet(serverFunctionPath("/validate/query"),     new QueryValidator())
+               .addServlet(serverFunctionPath("/validate/update"),    new UpdateValidator())
+               .addServlet(serverFunctionPath("/validate/iri"),       new IRIValidator())
+               .addServlet(serverFunctionPath("/validate/langtag"),   new LangTagValidator())
+               .addServlet(serverFunctionPath("/validate/data"),      new DataValidator())
                .enableStats(true);
         // LOG.info("Fuseki UI loaded");
     }

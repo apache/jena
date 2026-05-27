@@ -21,6 +21,8 @@
 
 package org.apache.jena.fuseki.mod.admin;
 
+import static org.apache.jena.fuseki.Fuseki.serverFunctionPath;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
@@ -194,11 +196,11 @@ public class FMod_Admin implements FusekiModule {
         // Security is performed by FMod_Shiro.
         ActionCtl actionBackup = new ActionBackup();
         builder
-                .addServlet("/$/datasets/*", new ActionDatasets())
-                .addServlet("/$/server", new ActionServerStatus())
-                .addServlet("/$/backup/*", actionBackup)
-                .addServlet("/$/backups/*", actionBackup)
-                .addServlet("/$/backups-list", new ActionBackupList())
+                .addServlet(serverFunctionPath("/datasets/*"), new ActionDatasets())
+                .addServlet(serverFunctionPath("/server"), new ActionServerStatus())
+                .addServlet(serverFunctionPath("/backup/*"), actionBackup)
+                .addServlet(serverFunctionPath("/backups/*"), actionBackup)
+                .addServlet(serverFunctionPath("/backups-list"), new ActionBackupList())
 
                 // Enables the task subsystem
                 .enableTasks(true)

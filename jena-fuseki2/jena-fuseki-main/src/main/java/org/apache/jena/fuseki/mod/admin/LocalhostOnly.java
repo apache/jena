@@ -21,6 +21,8 @@
 
 package org.apache.jena.fuseki.mod.admin;
 
+import static org.apache.jena.fuseki.Fuseki.serverFunctionPath;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -56,7 +58,9 @@ public class LocalhostOnly implements Filter {
     public LocalhostOnly() { }
 
     // "permit" and "deny" lists
-    private List<String> secured = Arrays.asList("/$/backup", "/$/compact", "/$/datasets");
+    private List<String> secured = Arrays.asList(serverFunctionPath("/backup"),
+                                                 serverFunctionPath("/compact"),
+                                                 serverFunctionPath("/datasets"));
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
