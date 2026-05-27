@@ -138,6 +138,8 @@ public class FusekiServer {
 
     /** Return a fresh builder configured according to the the argument list */
     public static Builder builder(String...args) {
+        if ( args == null || args.length == 0 )
+            return new Builder();
         return new Builder().applyArgs(args);
     }
 

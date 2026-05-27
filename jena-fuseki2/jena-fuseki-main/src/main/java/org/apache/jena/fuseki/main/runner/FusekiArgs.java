@@ -22,6 +22,7 @@
 package org.apache.jena.fuseki.main.runner;
 
 import static arq.cmdline.ModAssembler.assemblerDescDecl;
+import static org.apache.jena.fuseki.Fuseki.serverFunctionPath;
 import static org.apache.jena.fuseki.main.runner.SetupType.*;
 
 import java.nio.file.Path;
@@ -593,11 +594,11 @@ public class FusekiArgs extends CmdGeneral {
 
         if ( serverArgs.validators ) {
             // Validators.
-            builder.addServlet("/$/validate/query",     new QueryValidator());
-            builder.addServlet("/$/validate/update",    new UpdateValidator());
-            builder.addServlet("/$/validate/iri",       new IRIValidator());
-            builder.addServlet("/$/validate/langtag",   new LangTagValidator());
-            builder.addServlet("/$/validate/data",      new DataValidator());
+            builder.addServlet(serverFunctionPath("/validate/query"),     new QueryValidator());
+            builder.addServlet(serverFunctionPath("/validate/update"),    new UpdateValidator());
+            builder.addServlet(serverFunctionPath("/validate/iri"),       new IRIValidator());
+            builder.addServlet(serverFunctionPath("/validate/langtag"),   new LangTagValidator());
+            builder.addServlet(serverFunctionPath("/validate/data"),      new DataValidator());
         }
 
         // Apply argument for the database services

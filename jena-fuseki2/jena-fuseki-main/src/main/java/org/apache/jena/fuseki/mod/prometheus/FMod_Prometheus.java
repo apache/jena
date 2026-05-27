@@ -21,6 +21,8 @@
 
 package org.apache.jena.fuseki.mod.prometheus;
 
+import static org.apache.jena.fuseki.Fuseki.serverFunctionPath;
+
 import java.util.Set;
 
 import org.apache.jena.fuseki.Fuseki;
@@ -56,7 +58,7 @@ public class FMod_Prometheus implements FusekiModule {
     @Override public void prepare(FusekiServer.Builder serverBuilder, Set<String> datasetNames, Model configModel) {
         metricsProvider = new PrometheusMetricsProvider();
         serverBuilder.setServletAttribute(Fuseki.attrMetricsProvider, metricsProvider);
-        serverBuilder.addServlet("/$/metrics", new ActionMetrics());
+        serverBuilder.addServlet(serverFunctionPath("/metrics"), new ActionMetrics());
     }
 
     @Override public void server(FusekiServer server) {

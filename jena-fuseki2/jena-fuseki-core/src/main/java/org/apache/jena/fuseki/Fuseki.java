@@ -43,27 +43,27 @@ public class Fuseki {
     // General fixed constants.
 
     /** Path as package name */
-    static public final String PATH               = "org.apache.jena.fuseki";
+    public static final String PATH               = "org.apache.jena.fuseki";
 
     /** a unique IRI for the Fuseki namespace */
-    static public final String FusekiIRI          = "http://jena.apache.org/Fuseki";
+    public static final String FusekiIRI          = "http://jena.apache.org/Fuseki";
 
     /**
      * A Fuseki base IRI for {@link Symbol Symbols}
      */
-    static public final String FusekiSymbolIRI    = "http://jena.apache.org/fuseki#";
+    public static final String FusekiSymbolIRI    = "http://jena.apache.org/fuseki#";
 
     /** Dummy base URI string for parsing SPARQL Query and Update requests */
-    static public final String BaseParserSPARQL   = "http://server/unset-base/";
+    public static final String BaseParserSPARQL   = "http://server/unset-base/";
 
     /** Dummy base URI string for parsing SPARQL Query and Update requests */
-    static public final String BaseUpload         = "http://server/unset-base/";
+    public static final String BaseUpload         = "http://server/unset-base/";
 
     /** The name of the Fuseki server.*/
-    static public final String  NAME              = "Apache Jena Fuseki";
+    public static final String  NAME              = "Apache Jena Fuseki";
 
     /** Version of this Fuseki instance */
-    static public final String  VERSION           = Version.versionForClass(Fuseki.class).orElse("<development>");
+    public static final String  VERSION           = Version.versionForClass(Fuseki.class).orElse("<development>");
 
     /**
      * Supporting Graph Store Protocol direct naming.
@@ -91,12 +91,28 @@ public class Fuseki {
      * <b>Note</b><br/>
      * GSP Direct Naming was primarily implemented to provide two implementations for the SPARQL 1.1 implementation report.
      */
-    static public final boolean GSP_DIRECT_NAMING = true;
+    public static final boolean GSP_DIRECT_NAMING = true;
+
+    /**
+     * Path prefix reserved for admin and server operations such as /$/ping
+     */
+    public static final String reservedPathPrefix = "/$/";
+    /**
+     * Return a URL in the server function area.
+     */
+    public static String serverFunctionPath(String path) {
+        if ( path.startsWith(reservedPathPrefix) )
+            return path;
+        if ( path.startsWith("/") )
+            return "/$"+path;
+        else
+            return reservedPathPrefix+path;
+    }
 
     /** Are we in development mode?  That means a SNAPSHOT, or no VERSION
      * because maven has not filtered the fuseki-properties.xml file.
      */
-    public static boolean   developmentMode;
+    public static boolean developmentMode;
     static {
         // See ServletBase.setCommonheaders
         // If it look like a SNAPSHOT, or it's not set, we are in development mode.
@@ -104,8 +120,9 @@ public class Fuseki {
     }
 
     // @formatter:off
-    public static boolean   outputJettyServerHeader     = developmentMode;
-    public static boolean   outputFusekiServerHeader    = developmentMode;
+    public static boolean outputJettyServerHeader   = developmentMode;
+    public static boolean outputFusekiServerHeader  = developmentMode;
+    // @formatter:on
 
     /**
      * Initialize is class.
@@ -114,7 +131,7 @@ public class Fuseki {
     public static void initConsts() {}
 
     /** An identifier for the HTTP Fuseki server instance */
-    static public final String  serverHttpName          = NAME + " (" + VERSION + ")";
+    public static final String  serverHttpName          = NAME + " (" + VERSION + ")";
 
     /** Logger name for operations */
     public static final String  actionLogName     = PATH + ".Fuseki";
@@ -171,7 +188,8 @@ public class Fuseki {
     public static final Logger  compactLog        = LoggerFactory.getLogger(compactLogName);
 
     // There isn't an ideal status code for a cancelled query.
-    // HTTP 408 "Request timeout" which is about connection management, not for general timeouts.
+    // HTTP 408 "Request timeout" is not appropriate.
+    // It is about connection management, not for general timeouts.
     public static int SC_QueryCancelled                 = HttpSC.SERVICE_UNAVAILABLE_503;
 
     // Servlet context attribute names used by the core engine.
