@@ -8133,10 +8133,10 @@ vite-node@3.2.4:
     pathe "^2.0.3"
     vite "^5.0.0 || ^6.0.0 || ^7.0.0-0"
 
-vite-plugin-istanbul@^8.0.0:
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/vite-plugin-istanbul/-/vite-plugin-istanbul-8.0.0.tgz#912ba31da0111bc47093f28c7a497fd0d36ec348"
-  integrity sha512-r6L7cg2iwPqNnY/rWFyemWeDTIKRZjekEWS90e2FsTjDYH4UdTS6hvW1nEX1B++PKPCnqCaj5BJTDn5Cy5jYoQ==
+vite-plugin-istanbul@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/vite-plugin-istanbul/-/vite-plugin-istanbul-9.0.0.tgz#850a59fe58a19ef85fc9090b3b2a8c88840b4954"
+  integrity sha512-Ia0GYwVAYZMyGM9vZFAb1+xy/s+aFWBO0lWfpuBbl9XyHEm1rVCBtpk+52G2M54t272q9b07CMlwSuew7DNhqQ==
   dependencies:
     "@babel/generator" "^7.29.1"
     "@istanbuljs/load-nyc-config" "^1.1.0"
