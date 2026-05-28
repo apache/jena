@@ -455,8 +455,13 @@ public class ProcBuildNodeTableX {
         public void version(String version) {}
 
         @Override
-        public void finish() {
+        public void flush() {
             IO.flush(outputData);
+        }
+
+        @Override
+        public void finish() {
+            flush();
         }
     }
 }

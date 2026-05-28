@@ -79,6 +79,12 @@ public class StreamRDF2 implements StreamRDF {
     }
 
     @Override
+    public void flush() {
+        sink1.flush();
+        sink2.flush();
+    }
+
+    @Override
     public void finish() {
         sink1.finish();
         sink2.finish();

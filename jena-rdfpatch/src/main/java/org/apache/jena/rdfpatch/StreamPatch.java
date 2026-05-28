@@ -56,7 +56,6 @@ public class StreamPatch implements StreamRDF {
         }
     }
 
-
     @Override
     public void finish() {
         if ( depth == 1 ) {

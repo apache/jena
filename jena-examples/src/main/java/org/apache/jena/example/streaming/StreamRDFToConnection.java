@@ -78,7 +78,7 @@ public class StreamRDFToConnection implements StreamRDF {
     /**
      * Flushes the buffer to the connection.
      */
-    private void flush() {
+    private void flushInternal() {
         UpdateBuilder builder = new UpdateBuilder();
         builder.addPrefixes(model);
         builder.addInsert(model);
@@ -122,7 +122,7 @@ public class StreamRDFToConnection implements StreamRDF {
 
     @Override
     public void finish() {
-        flush();
+        flushInternal();
     }
 
     public static void main(String[] args) {

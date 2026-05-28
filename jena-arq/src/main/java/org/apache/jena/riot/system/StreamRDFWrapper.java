@@ -60,6 +60,10 @@ public class StreamRDFWrapper implements StreamRDF
     { other.version(versionString); }
 
     @Override
+    public void flush()
+    { other.flush(); }
+
+    @Override
     public void finish()
     { other.finish() ; }
 }

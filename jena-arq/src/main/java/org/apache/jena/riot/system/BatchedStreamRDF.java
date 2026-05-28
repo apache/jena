@@ -123,7 +123,8 @@ public class BatchedStreamRDF implements StreamRDF {
         batchQuads.add(Quad);
     }
 
-    private void flush() {
+    @Override
+    public void flush() {
         finishBatchTriple(currentSubject);
         finishBatchQuad(currentGraph, currentSubject);
     }

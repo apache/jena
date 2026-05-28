@@ -213,14 +213,19 @@ public class ProcIngestDataX {
         public void start() {}
 
         @Override
+        public void flush() {
+            writerTriples.flush();
+            writerQuads.flush();
+
+        }
+
+        @Override
         public void finish() {}
 
         // @Override
         public void finishBulk() {
-            writerTriples.flush();
-            writerQuads.flush();
+            flush();
             nodeTable.sync();
-
             // dsg.getStoragePrefixes().sync();
         }
 
