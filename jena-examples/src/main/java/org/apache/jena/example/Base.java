@@ -22,9 +22,16 @@
 package org.apache.jena.example;
 
 
+import java.io.IOException;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 // Imports
 ///////////////
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.help.HelpFormatter;
+import org.apache.jena.atlas.io.IOX;
 
 /**
  * <p>Base file for <em>Getting Started</em> examples. A place to put shared
@@ -102,8 +109,12 @@ public abstract class Base
             commandLine = new DefaultParser().parse( Base.getOptions(), args );
         }
         catch (ParseException e) {
-            HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp( "", options );
+            try {
+                String cmdSyntax = "Example("+args.toString()+")";
+                HelpFormatter.builder().get().printHelp(cmdSyntax, null, options, null, true);
+            } catch (IOException ioException) {
+                throw IOX.exception(ioException);
+            }
             System.exit( 1 );
         }
 
