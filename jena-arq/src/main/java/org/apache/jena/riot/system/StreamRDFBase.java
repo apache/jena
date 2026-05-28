@@ -44,5 +44,9 @@ public class StreamRDFBase implements StreamRDF {
     public void version(String version) {}
 
     @Override
+    public void flush() {}
+
+    @Override
     public void finish() {}
+
 }

@@ -44,15 +44,17 @@ public interface StreamRDF
 //    /** Generalized emitted */
 //    public void tuple(Tuple<Node> tuple) ;
 //
-    /** base declaration seen */
+    /** Base declaration seen */
     public void base(String base) ;
 
-    /** prefix declaration seen */
+    /** Prefix declaration seen */
     public void prefix(String prefix, String iri) ;
 
-    /** version declaration seen */
-
+    /** Version declaration seen */
     public void version(String version);
+
+    /** Flush the stream */
+    public default void flush() {}
 
     /** Finish processing */
     public void finish() ;

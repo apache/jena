@@ -56,12 +56,14 @@ abstract class WriterStreamRDFBatched extends WriterStreamRDFBase
     protected final void startData()    { reset(); }
 
     @Override
-    protected final void endData()      { flush(); }
+    protected final void endData() {
+        flushBatch();
+        finalizeRun();
+    }
 
-    private void flush() {
+    private void flushBatch() {
         finishBatchTriples(currentSubject);
         finishBatchQuad(currentGraph, currentSubject);
-        finalizeRun();
     }
 
     @Override

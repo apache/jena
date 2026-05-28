@@ -165,8 +165,12 @@ public class StreamRDFLib
         { sink.send(triple); }
 
         @Override
-        public void finish()
+        public void flush()
         { sink.flush(); }
+
+        @Override
+        public void finish()
+        { flush(); }
     }
 
     private static class ParserOutputSinkQuads extends StreamRDFBase
@@ -181,8 +185,12 @@ public class StreamRDFLib
         { sink.send(quad); }
 
         @Override
-        public void finish()
+        public void flush()
         { sink.flush(); }
+
+        @Override
+        public void finish()
+        { flush(); }
     }
 
     private static class ParserOutputGraph extends StreamRDFBase {

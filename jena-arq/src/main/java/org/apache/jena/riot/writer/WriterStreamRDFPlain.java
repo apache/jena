@@ -72,9 +72,13 @@ public class WriterStreamRDFPlain implements StreamRDF {
     @Override
     public void start() {}
 
+    public void flushOutput() {
+        IO.flush(out);
+    }
+
     @Override
     public void finish() {
-        IO.flush(out);
+        flushOutput();
     }
 
     @Override

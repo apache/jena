@@ -86,6 +86,8 @@ public class StreamWriterTriX implements StreamRDF {
         depth ++;
     }
 
+    @Override public void flush() { }
+
     @Override public void finish() {
         depth--;
         if ( depth != 0 )

@@ -25,13 +25,18 @@ import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.core.Quad ;
 
 /**
- * {@link StreamRDF} that throws an exception on each operation except {@code start()} and {@code finish()}.
+ * {@link StreamRDF} that throws an exception on each operation except
+ * {@code start()}, {@code flush()}, and {@code finish()}.
+ *
  * @see StreamRDFBase
  */
 public class StreamRDFReject implements StreamRDF
 {
     @Override
     public void start() {}
+
+    @Override
+    public void flush() {}
 
     @Override
     public void finish() {}

@@ -161,7 +161,12 @@ public class StreamRDF2Thrift implements StreamRDF, AutoCloseable
     }
 
     @Override
-    public void finish() {
+    public void flush() {
         TRDF.flush(protocol);
+    }
+
+    @Override
+    public void finish() {
+        flush();
     }
 }

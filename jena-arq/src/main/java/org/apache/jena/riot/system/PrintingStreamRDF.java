@@ -129,16 +129,12 @@ public class PrintingStreamRDF extends WriterStreamRDFPlain
     @Override
     public void triple(Triple triple) {
         super.triple(triple);
-        flush();
+        flushOutput();
     }
 
     @Override
     public void quad(Quad quad) {
         super.quad(quad);
-        flush();
-    }
-
-    public void flush() {
-        IO.flush(out) ;
+        flushOutput();
     }
 }
