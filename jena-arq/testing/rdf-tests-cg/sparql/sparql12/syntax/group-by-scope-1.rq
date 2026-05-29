@@ -1,0 +1,5 @@
+# ?z is not exposed by the GROUP BY and can be use in the SELECT clause.
+
+PREFIX : <http://example/>
+
+SELECT (123 AS ?z) WHERE { ?s :p ?z } GROUP BY ?s

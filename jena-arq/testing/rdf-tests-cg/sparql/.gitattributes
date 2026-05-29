@@ -1,0 +1,7 @@
+# Files needing the exact end-of-line as LF given in the file.
+
+sparql10/regex/regex-dot-all.srx                             text eol=lf
+sparql10/regex/regex-start-end-multiline.srx                 text eol=lf
+sparql10/regex/regex-char-class-expression.srx               text eol=lf
+sparql10/regex/regex-negative-char-class-expression.srx      text eol=lf
+sparql10/regex/regex-ignore-whitespaces-class-expression.srx text eol=lf

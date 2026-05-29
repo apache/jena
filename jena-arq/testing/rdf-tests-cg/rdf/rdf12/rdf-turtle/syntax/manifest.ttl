@@ -28,6 +28,10 @@ trs:manifest  rdf:type mf:Manifest ;
         trs:turtle12-2
         trs:turtle12-3
         trs:turtle12-4
+        trs:turtle12-5
+        trs:turtle12-6
+        trs:turtle12-7
+        trs:turtle12-8
 
         trs:turtle12-inside-1
         trs:turtle12-inside-2
@@ -109,6 +113,15 @@ trs:manifest  rdf:type mf:Manifest ;
         trs:turtle12-version-bad-04
         trs:turtle12-version-bad-05
         trs:turtle12-version-bad-06
+
+## Surrogate handling
+        trs:turtle12-surrogate-pair-bad-01
+        trs:turtle12-surrogate-pair-bad-02
+        trs:turtle12-surrogates-bad-01
+        trs:turtle12-surrogates-bad-02
+        trs:turtle12-surrogates-bad-03
+        trs:turtle12-surrogates-bad-04
+        trs:turtle12-surrogates-bad-05
     ) .
 
 ## Good Syntax
@@ -131,6 +144,26 @@ trs:turtle12-3 rdf:type rdft:TestTurtlePositiveSyntax ;
 trs:turtle12-4 rdf:type rdft:TestTurtlePositiveSyntax ;
     mf:name      "Turtle 1.2 - reified triple outside triple" ;
     mf:action    <turtle12-syntax-basic-04.ttl> ;
+    .
+
+trs:turtle12-5 rdf:type rdft:TestTurtlePositiveSyntax ;
+    mf:name      "Turtle 1.2 - reified triple with literal object" ;
+    mf:action    <turtle12-syntax-basic-05.ttl> ;
+    .
+
+trs:turtle12-6 rdf:type rdft:TestTurtlePositiveSyntax ;
+    mf:name      "Turtle 1.2 - reified triple with keyword object" ;
+    mf:action    <turtle12-syntax-basic-06.ttl> ;
+    .
+
+trs:turtle12-7 rdf:type rdft:TestTurtlePositiveSyntax ;
+    mf:name      "Turtle 1.2 - triple term with literal object" ;
+    mf:action    <turtle12-syntax-basic-07.ttl> ;
+    .
+
+trs:turtle12-8 rdf:type rdft:TestTurtlePositiveSyntax ;
+    mf:name      "Turtle 1.2 - triple term with keyword object" ;
+    mf:action    <turtle12-syntax-basic-08.ttl> ;
     .
 
 trs:turtle12-inside-1 rdf:type rdft:TestTurtlePositiveSyntax ;
@@ -344,22 +377,22 @@ trs:nt-ttl12-bad-05 rdf:type rdft:TestTurtleNegativeSyntax ;
     mf:action    <nt-ttl12-bad-syntax-05.ttl> ;
     .
 
-trs:nt-ttl12-bad-06 rdf:type rdft:TestNTriplesNegativeSyntax ;
+trs:nt-ttl12-bad-06 rdf:type rdft:TestTurtleNegativeSyntax ;
     mf:name      "N-Triples 1.2 as Turtle 1.2 - Bad - reified triple as predicate" ;
     mf:action    <nt-ttl12-bad-syntax-06.ttl> ;
     .
 
-trs:nt-ttl12-bad-07 rdf:type rdft:TestNTriplesNegativeSyntax ;
+trs:nt-ttl12-bad-07 rdf:type rdft:TestTurtleNegativeSyntax ;
     mf:name      "N-Triples 1.2 as Turtle 1.2 - Bad - reified triple, literal subject" ;
     mf:action    <nt-ttl12-bad-syntax-07.ttl> ;
     .
 
-trs:nt-ttl12-bad-08 rdf:type rdft:TestNTriplesNegativeSyntax ;
+trs:nt-ttl12-bad-08 rdf:type rdft:TestTurtleNegativeSyntax ;
     mf:name      "N-Triples 1.2 as Turtle 1.2 - Bad - reified triple, literal predicate" ;
     mf:action    <nt-ttl12-bad-syntax-08.ttl> ;
     .
 
-trs:nt-ttl12-bad-09 rdf:type rdft:TestNTriplesNegativeSyntax ;
+trs:nt-ttl12-bad-09 rdf:type rdft:TestTurtleNegativeSyntax ;
     mf:name      "N-Triples 1.2 as Turtle 1.2 - Bad - reified triple, blank node predicate" ;
     mf:action    <nt-ttl12-bad-syntax-09.ttl> ;
     .
@@ -387,7 +420,7 @@ trs:turtle12-version-02 rdf:type rdft:TestTurtlePositiveSyntax ;
    .
 
 trs:turtle12-version-03 rdf:type rdft:TestTurtlePositiveSyntax ;
-   mf:name      "Turtle 1.2 - VERSION in data " ;
+   mf:name      "Turtle 1.2 - VERSION in data" ;
    mf:action    <turtle12-version-03.ttl> ;
    .
 
@@ -446,3 +479,40 @@ trs:turtle12-version-bad-06 rdf:type rdft:TestTurtleNegativeSyntax ;
    mf:action    <turtle12-version-bad-06.ttl> ;
    .
 
+## Surrogates
+
+
+trs:turtle12-surrogate-pair-bad-01 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "Turtle 1.2 - Bad - Surrogate pair numeric escape sequence" ;
+   mf:action    <turtle12-surrogate-pair-bad-01.ttl>
+   .
+   
+trs:turtle12-surrogate-pair-bad-02 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "Turtle 1.2 - Bad - Surrogate pair via numeric escape sequence" ;
+   mf:action    <turtle12-surrogate-pair-bad-02.ttl>
+   .
+
+trs:turtle12-surrogates-bad-01 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "Turtle 1.2 - Bad - Surrogates - wrong order" ;
+   mf:action    <turtle12-surrogates-bad-01.ttl>;
+   .
+
+trs:turtle12-surrogates-bad-02 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "Turtle 1.2 - Bad - Surrogates - high-high" ;
+   mf:action    <turtle12-surrogates-bad-02.ttl>;
+   .
+
+trs:turtle12-surrogates-bad-03 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "Turtle 1.2 - Bad - Surrogates - low-low" ;
+   mf:action    <turtle12-surrogates-bad-03.ttl>;
+   .
+
+trs:turtle12-surrogates-bad-04 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "Turtle 1.2 - Bad - Surrogates - lone high surrogate" ;
+   mf:action    <turtle12-surrogates-bad-04.ttl>;
+   .
+
+trs:turtle12-surrogates-bad-05 rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name      "Turtle 1.2 - Bad - Surrogates - lone low surrogate" ;
+   mf:action    <turtle12-surrogates-bad-05.ttl>;
+   .

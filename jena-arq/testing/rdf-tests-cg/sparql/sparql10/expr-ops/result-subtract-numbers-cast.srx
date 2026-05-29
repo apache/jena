@@ -1,0 +1,187 @@
+<?xml version="1.0"?>
+<sparql
+    xmlns="http://www.w3.org/2005/sparql-results#">
+  <head>
+    <variable name="left"/>
+    <variable name="right"/>
+    <variable name="result"/>
+  </head>
+  <results>
+    <result>
+      <binding name="left">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">3</literal>
+      </binding>
+      <binding name="right">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">3</literal>
+      </binding>
+      <binding name="result">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="left">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">3</literal>
+      </binding>
+      <binding name="right">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">3</literal>
+      </binding>
+      <binding name="result">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="left">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">3</literal>
+      </binding>
+      <binding name="right">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#double">3</literal>
+      </binding>
+      <binding name="result">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#double">0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="left">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">3</literal>
+      </binding>
+      <binding name="right">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#float">3</literal>
+      </binding>
+      <binding name="result">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#float">0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="left">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#double">3</literal>
+      </binding>
+      <binding name="right">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">3</literal>
+      </binding>
+      <binding name="result">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#double">0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="left">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#double">3</literal>
+      </binding>
+      <binding name="right">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#double">3</literal>
+      </binding>
+      <binding name="result">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#double">0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="left">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#double">3</literal>
+      </binding>
+      <binding name="right">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#float">3</literal>
+      </binding>
+      <binding name="result">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#double">0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="left">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#double">3</literal>
+      </binding>
+      <binding name="right">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">3</literal>
+      </binding>
+      <binding name="result">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#double">0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="left">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#float">3</literal>
+      </binding>
+      <binding name="right">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#double">3</literal>
+      </binding>
+      <binding name="result">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#double">0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="left">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#float">3</literal>
+      </binding>
+      <binding name="right">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">3</literal>
+      </binding>
+      <binding name="result">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#float">0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="left">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#float">3</literal>
+      </binding>
+      <binding name="right">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#float">3</literal>
+      </binding>
+      <binding name="result">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#float">0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="left">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#float">3</literal>
+      </binding>
+      <binding name="right">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">3</literal>
+      </binding>
+      <binding name="result">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#float">0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="left">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">3</literal>
+      </binding>
+      <binding name="right">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">3</literal>
+      </binding>
+      <binding name="result">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="left">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">3</literal>
+      </binding>
+      <binding name="right">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#double">3</literal>
+      </binding>
+      <binding name="result">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#double">0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="left">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">3</literal>
+      </binding>
+      <binding name="right">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#float">3</literal>
+      </binding>
+      <binding name="result">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#float">0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="left">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">3</literal>
+      </binding>
+      <binding name="right">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">3</literal>
+      </binding>
+      <binding name="result">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">0</literal>
+      </binding>
+    </result>
+  </results>
+</sparql>

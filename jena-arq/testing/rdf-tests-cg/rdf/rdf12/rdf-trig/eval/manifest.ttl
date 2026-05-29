@@ -101,12 +101,6 @@ trs:trig12-rt-08 rdf:type rdft:TestTrigEval ;
    mf:result    <trig12-eval-rt-08.nq> ;
    .
 
-trs:trig12-4 rdf:type rdft:TestTrigEval ;
-   mf:name      "TriG 1.2 - object reification with identifier" ;
-   mf:action    <trig12-eval-04.trig> ;
-   mf:result    <trig12-eval-04.nq> ;
-   .
-
 trs:trig12-bnode-1 rdf:type rdft:TestTrigEval ;
    mf:name      "TriG 1.2 - blank node label" ;
    mf:action    <trig12-eval-bnode-1.trig> ;

@@ -1,0 +1,11 @@
+PREFIX :  <http://example/>
+
+SELECT ?s WHERE {
+    VALUES ?o {
+        <<( :s :p "o" )>>
+        <<( :s :p 1 )>>
+        <<( :s :p true )>>
+        <<( :s :p <<( :st :pt :ot )>> )>>
+    }
+    ?s :p ?o .
+}

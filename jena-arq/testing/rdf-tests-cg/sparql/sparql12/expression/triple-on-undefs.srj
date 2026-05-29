@@ -1,0 +1,75 @@
+{
+    "head": {
+        "vars": [
+            "subject",
+            "predicate",
+            "object",
+            "triple"
+        ]
+    },
+    "results": {
+        "bindings": [
+            {
+                "subject": {
+                    "value": "http://example/a",
+                    "type": "uri"
+                },
+                "predicate": {
+                    "value": "http://example/b",
+                    "type": "uri"
+                },
+                "object": {
+                    "value": "http://example/c",
+                    "type": "uri"
+                },
+                "triple": {
+                    "value": {
+                        "subject": {
+                            "value": "http://example/a",
+                            "type": "uri"
+                        },
+                        "predicate": {
+                            "value": "http://example/b",
+                            "type": "uri"
+                        },
+                        "object": {
+                            "value": "http://example/c",
+                            "type": "uri"
+                        }
+                    },
+                    "type": "triple"
+                }
+            },
+            {
+                "predicate": {
+                    "value": "http://example/b",
+                    "type": "uri"
+                },
+                "object": {
+                    "value": "http://example/c",
+                    "type": "uri"
+                }
+            },
+            {
+                "subject": {
+                    "value": "http://example/a",
+                    "type": "uri"
+                },
+                "object": {
+                    "value": "http://example/c",
+                    "type": "uri"
+                }
+            },
+            {
+                "subject": {
+                    "value": "http://example/a",
+                    "type": "uri"
+                },
+                "predicate": {
+                    "value": "http://example/b",
+                    "type": "uri"
+                }
+            }
+        ]
+    }
+}

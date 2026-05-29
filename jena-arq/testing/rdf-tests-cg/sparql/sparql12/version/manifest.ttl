@@ -1,0 +1,76 @@
+@prefix :       <https://w3c.github.io/rdf-tests/sparql/sparql12/version/manifest#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:  <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Version announcement" ;
+    mf:entries
+    (
+    :version-01
+    :version-02
+    :version-03
+    :version-04
+    :version-05
+    :version-06
+    :version-bad-01
+    :version-bad-02
+    :version-bad-03
+    ) .
+
+
+:version-01 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "version-01.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <version-01.rq> .
+
+:version-02 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "version-02.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <version-02.rq> .
+
+:version-03 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "version-03.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <version-03.rq> .
+
+:version-04 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "version-04.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <version-04.rq> .
+
+:version-05 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "version-05.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <version-05.rq> .
+
+:version-06 rdf:type   mf:PositiveSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "version-06.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <version-06.rq> .
+
+:version-bad-01 rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "version-bad-01.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <version-bad-01.rq> .
+
+:version-bad-02 rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "version-bad-02.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <version-bad-02.rq> .
+
+:version-bad-03 rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "version-bad-03.rq" ;
+   mf:specVersion "sparql-1.2";
+   mf:action      <version-bad-03.rq> .

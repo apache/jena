@@ -1901,13 +1901,13 @@
    mf:action    <trig-syntax-bad-base-03.trig> ;
    .
 
-<#trig-syntax-bad-bnode-01> rdf:type rdft:TestNTriplesNegativeSyntax ;
+<#trig-syntax-bad-bnode-01> rdf:type rdft:TestTrigNegativeSyntax ;
    mf:name      "trig-syntax-bad-bnode-01" ;
    rdfs:comment "Colon in bnode label not allowed (negative test)" ;
    mf:action    <trig-syntax-bad-bnode-01.trig> ;
    .
 
-<#trig-syntax-bad-bnode-02> rdf:type rdft:TestNTriplesNegativeSyntax ;
+<#trig-syntax-bad-bnode-02> rdf:type rdft:TestTrigNegativeSyntax ;
    mf:name      "trig-syntax-bad-bnode-02" ;
    rdfs:comment "Colon in bnode label not allowed (negative test)" ;
    mf:action    <trig-syntax-bad-bnode-02.trig> ;

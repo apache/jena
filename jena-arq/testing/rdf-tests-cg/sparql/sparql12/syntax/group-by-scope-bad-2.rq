@@ -1,0 +1,3 @@
+# ?z reused in SELECT clause
+
+SELECT (123 AS ?z) WHERE { } GROUP BY ?z

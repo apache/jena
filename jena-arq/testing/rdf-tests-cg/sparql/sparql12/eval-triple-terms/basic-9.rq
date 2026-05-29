@@ -1,0 +1,6 @@
+PREFIX :  <http://example/>
+
+SELECT ?s WHERE {
+    ?s :p ?o .
+    FILTER (?o IN (<<( :s :p "o" )>>, <<( :s :p 1 )>>, <<( :s :p true )>>, <<( :s :p <<( :st :pt :ot )>> )>>))
+}

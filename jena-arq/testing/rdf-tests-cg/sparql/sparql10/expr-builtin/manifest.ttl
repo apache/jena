@@ -19,6 +19,7 @@
       :lang-case-insensitive-eq
       :lang-case-insensitive-ne
       :sameTerm-simple :sameTerm-eq :sameTerm-not-eq
+      :case-insensitive-booleans
     ).
 
 :dawg-isLiteral-1 a mf:QueryEvaluationTest ;
@@ -270,3 +271,12 @@
      dawgt:approval dawgt:Approved ;
      dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0118/04-dawg-minutes.html> ;
     mf:result  <result-sameTerm-not-eq.ttl> .
+
+:case-insensitive-booleans rdf:type mf:QueryEvaluationTest ;
+    mf:name "case-insensitive booleans";
+    rdfs:comment    "Boolean keywords are case insensitive, and produce valid boolean literals" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <case-insensitive-booleans.rq> ] ;
+    mf:result  <case-insensitive-booleans.srx>
+    .

@@ -48,6 +48,8 @@
         :sha1-02
         :sha256-01
         :sha256-02
+        :sha384-01
+        :sha384-02
         :sha512-01
         :sha512-02
         :minutes
@@ -67,9 +69,11 @@
         :now01
         :rand01
         :iri01
+        :iri02
         :if01
         :if02
         :coalesce01
+        :coalesce-empty
         :strbefore01a
         :strbefore02
         :strafter01a
@@ -77,6 +81,7 @@
         :replace01
         :replace02
         :replace03
+        :replace-case-insensitive
         :uuid01
         :uuid02
         :struuid01
@@ -485,6 +490,26 @@
     mf:result  <sha256-02.srx> ;
     .
 
+:sha384-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "SHA384()" ;
+    mf:feature sparql:sha384 ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3> ;
+    mf:action
+         [ qt:query  <sha384-01.rq> ;
+           qt:data   <data.ttl> ] ;
+    mf:result  <sha384-01.srx> ;
+    .
+
+:sha384-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "SHA384() on Unicode data" ;
+    mf:feature sparql:sha384 ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3> ;
+    mf:action
+         [ qt:query  <sha384-02.rq> ;
+           qt:data   <hash-unicode.ttl> ] ;
+    mf:result  <sha384-02.srx> ;
+    .
+
 :sha512-01 rdf:type mf:QueryEvaluationTest ;
     mf:name    "SHA512()" ;
     mf:feature sparql:sha512 ;
@@ -697,6 +722,16 @@
     mf:result  <iri01.srx> ;
     .
 
+:iri02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "IRI()/URI() when the input is an IRI" ;
+    mf:feature sparql:iri ;
+    mf:feature sparql:uri ;
+    mf:action
+         [ qt:query  <iri02.rq> ;
+           qt:data   <data.ttl> ] ;
+    mf:result  <iri02.srx> ;
+    .
+
 :if01 rdf:type mf:QueryEvaluationTest ;
     mf:name    "IF()" ;
     mf:feature sparql:if ;
@@ -728,6 +763,15 @@
          [ qt:query  <coalesce01.rq> ;
            qt:data   <data-coalesce.ttl> ] ;
     mf:result  <coalesce01.srx> ;
+    .
+
+:coalesce-empty rdf:type mf:QueryEvaluationTest ;
+    mf:name    "COALESCE() without arguments" ;
+    mf:feature sparql:coalesce ;
+    mf:action
+         [ qt:query  <coalesce-empty.rq> ;
+           qt:data   <data-coalesce.ttl> ] ;
+    mf:result  <coalesce-empty.srx> ;
     .
 
 :strbefore01a rdf:type mf:QueryEvaluationTest ;
@@ -807,6 +851,14 @@
     mf:result  <replace03.srx> ;
     .
 
+:replace-case-insensitive rdf:type mf:QueryEvaluationTest ;
+    mf:name    "REPLACE() with the 'i' option" ;
+    mf:feature sparql:replace ;
+    mf:action
+         [ qt:query  <replace-case-insensitive.rq> ] ;
+    mf:result  <replace-case-insensitive.srx> ;
+    .
+
 :uuid01 rdf:type mf:QueryEvaluationTest ;
     mf:name    "UUID() pattern match" ;
     mf:feature sparql:uuid ;
@@ -840,4 +892,3 @@
            qt:data   <data-empty.nt> ] ;
     mf:result  <struuid01.srx> ;
     .
-

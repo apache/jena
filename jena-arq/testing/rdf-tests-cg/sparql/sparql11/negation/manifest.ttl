@@ -20,6 +20,7 @@
     :exists-02
     :full-minuend
     :partial-minuend
+    :graph-minus
    ) .
 
 
@@ -120,3 +121,10 @@
            qt:data   <part-minuend.ttl> ] ;
     mf:result  <part-minuend.srx> .
 
+:graph-minus rdf:type mf:QueryEvaluationTest ;
+    mf:name    "outer GRAPH operator does not affect MINUS disjointness" ;
+    mf:description "The outer GRAPH operator variable is not implied when checking that sides of the MINUS are disjoint." ;
+    mf:action
+         [ qt:query  <graph-minus.rq> ;
+           qt:graphData   <graph-minus.ttl> ] ;
+    mf:result  <graph-minus.srx> .

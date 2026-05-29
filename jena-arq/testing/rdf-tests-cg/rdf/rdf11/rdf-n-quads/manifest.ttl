@@ -421,13 +421,13 @@
    mf:action    <nt-syntax-bad-base-01.nq> ;
    .
 
-<#nt-syntax-bad-bnode-01> a rdft:TestNTriplesNegativeSyntax ;
+<#nt-syntax-bad-bnode-01> a rdft:TestNQuadsNegativeSyntax ;
    mf:name      "nt-syntax-bad-bnode-01" ;
    rdfs:comment "Colon in bnode label not allowed (negative test)" ;
    mf:action    <nt-syntax-bad-bnode-01.nq> ;
    .
 
-<#nt-syntax-bad-bnode-02> a rdft:TestNTriplesNegativeSyntax ;
+<#nt-syntax-bad-bnode-02> a rdft:TestNQuadsNegativeSyntax ;
    mf:name      "nt-syntax-bad-bnode-02" ;
    rdfs:comment "Colon in bnode label not allowed (negative test)" ;
    mf:action    <nt-syntax-bad-bnode-02.nq> ;

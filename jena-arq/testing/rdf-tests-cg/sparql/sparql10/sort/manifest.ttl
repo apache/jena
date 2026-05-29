@@ -15,6 +15,7 @@
     :dawg-sort-numbers
     :dawg-sort-builtin
     :dawg-sort-function
+    :sort-not-projected
     ).
 
 :dawg-sort-1 a mf:QueryEvaluationTest;
@@ -147,3 +148,10 @@
     dawgt:approval dawgt:Approved ;
          mf:result  <result-sort-function.ttl> .
 
+:sort-not-projected a mf:QueryEvaluationTest;
+	 mf:name "sort on a non-projected variable" ;
+         rdfs:comment "ORDER BY is applied before the projection so can access non-projected variables" ;
+         mf:action
+            [ qt:query  <sort-not-projected.rq> ;
+              qt:data   <data-sort-not-projected.ttl> ] ;
+         mf:result  <result-sort-not-projected.ttl> .

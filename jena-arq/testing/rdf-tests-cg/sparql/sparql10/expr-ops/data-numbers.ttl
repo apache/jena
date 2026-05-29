@@ -1,0 +1,7 @@
+@prefix : <http://example.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:integer :p "3"^^xsd:integer .
+:decimal :p "3"^^xsd:decimal .
+:float :p "3"^^xsd:float .
+:fdouble :p "3"^^xsd:double .

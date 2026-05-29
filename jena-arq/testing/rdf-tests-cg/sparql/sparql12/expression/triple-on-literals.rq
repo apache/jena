@@ -1,0 +1,18 @@
+PREFIX : <http://example/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?subject ?predicate ?object ?triple {
+  VALUES (?subject ?predicate ?object) {
+    (:a :b :c)
+    (true :b :c)
+    (:a true :c)
+    (:a :b true)
+    (1 :b :c)
+    (:a 2 :c)
+    (:a :b 3)
+    ("a"^^:type :b :c)
+    (:a "b"^^:type :c)
+    (:a :b "c"^^:type)
+  }
+  BIND(TRIPLE(?subject, ?predicate, ?object) AS ?triple)
+}

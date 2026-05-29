@@ -1,0 +1,5 @@
+SELECT ?g ?t {
+    GRAPH ?g {
+        VALUES (?g ?t) { (UNDEF "foo") ( <empty.ttl> "bar") }
+    }
+}

@@ -1,0 +1,17 @@
+{ "head": {
+    "vars": [ "r1" , "r2" , "r3" , "r4" , "r5" , "r6" , "r7" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "r1": { "type": "literal" , "xml:lang": "en" , "its:dir": "ltr" , "value": "ab" } ,
+        "r2": { "type": "literal" , "value": "ab" } ,
+        "r3": { "type": "literal" , "value": "ab" } ,
+        "r4": { "type": "literal" , "value": "ab" } ,
+        "r5": { "type": "literal" , "xml:lang": "en" , "its:dir": "ltr" , "value": "abc" } ,
+        "r6": { "type": "literal" , "value": "abc" } ,
+        "r7": { "type": "literal" , "value": "abc" }
+      }
+    ]
+  }
+}

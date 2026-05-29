@@ -1,0 +1,43 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix :       <https://w3c.github.io/rdf-tests/sparql/sparql12/syntax/manifest#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:  <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+:manifest  rdf:type mf:Manifest ;
+    rdfs:label "Syntax" ;
+    mf:entries
+    (
+      :nested-aggregate-functions
+      :duplicated-values-variable
+      :group-by-scope-1
+      :group-by-scope-bad-1
+      :group-by-scope-bad-2
+      :group-by-scope-bad-3
+    ) .
+
+:nested-aggregate-functions rdf:type mf:NegativeSyntaxTest ;
+    mf:name "Nested aggregate functions" ;
+    mf:comment "The expression argument of an aggregate function can not contain an aggregate function." ;
+    mf:action <nested-aggregate-functions.rq> .
+
+:duplicated-values-variable rdf:type mf:NegativeSyntaxTest ;
+    mf:name "Duplicated variable in a VALUES clause" ;
+    mf:action <duplicated-values-variable.rq> .
+
+:group-by-scope-1 rdf:type mf:PositiveSyntaxTest ;
+    mf:name "GROUP BY in-scope" ;
+    mf:action <group-by-scope-1.rq> .
+    
+:group-by-scope-bad-1 rdf:type mf:NegativeSyntaxTest ;
+    mf:name "GROUP BY variable in-scope (1)" ;
+    mf:action <group-by-scope-bad-1.rq> .
+
+:group-by-scope-bad-2 rdf:type mf:NegativeSyntaxTest ;
+    mf:name "GROUP BY variable in-scope (2)" ;
+    mf:action <group-by-scope-bad-2.rq> .
+
+:group-by-scope-bad-3 rdf:type mf:NegativeSyntaxTest ;
+    mf:name "GROUP BY expression in-scope" ;
+    mf:action <group-by-scope-bad-3.rq> .

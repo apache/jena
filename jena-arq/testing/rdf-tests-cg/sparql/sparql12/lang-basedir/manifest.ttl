@@ -1,11 +1,11 @@
 @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix :       <https://w3c.github.io/rdf-tests/sparql/sparql12/lang-basedir#> .
+@prefix :       <https://w3c.github.io/rdf-tests/sparql/sparql12/lang-basedir/manifest#> .
 @prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
 @prefix dawgt:  <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
 
-:manifest  rdf:type mf:Manifest ;
+<>  rdf:type mf:Manifest ;
     rdfs:label "Language and base direction" ;
     mf:entries
     (
@@ -13,8 +13,13 @@
     :haslangdir
     :lang
     :langdir
+    :langdir-literal
+    :langdir-literal-invalid
     :strlang
     :strlangdir
+    :datatype
+    :concat
+    :contains
     ) .
 
 
@@ -57,14 +62,28 @@
            qt:data   <data-lang.ttl> ] ;
     mf:result  <langdir.srj> ;
     .
-    
+
+:langdir-literal  rdf:type mf:QueryEvaluationTest ;
+    mf:name "LANGDIR with inline literals";
+    rdfs:comment    "Function LANGDIR" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <langdir-literal.rq> ] ;
+    mf:result  <langdir-literal.srj> ;
+    .
+
+:langdir-literal-invalid rdf:type mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "Literal with invalid base direction" ;
+   rdfs:comment   "Invalid base direction in a literal" ;
+   mf:action      <langdir-literal-invalid.rq> .
+
 :strlang rdf:type mf:QueryEvaluationTest ;
     mf:name "STRLANG";
     rdfs:comment    "Function STRLANG" ;
     dawgt:approval dawgt:Proposed ;
     mf:action
-         [ qt:query  <strlang.rq> ;
-           qt:data   <data-empty.ttl> ] ;
+         [ qt:query  <strlang.rq> ] ;
     mf:result  <strlang.srj> ;
     .
 
@@ -73,7 +92,30 @@
     rdfs:comment    "Function STRLANGDIR" ;
     dawgt:approval dawgt:Proposed ;
     mf:action
-         [ qt:query  <strlangdir.rq> ;
-           qt:data   <data-empty.ttl> ] ;
+         [ qt:query  <strlangdir.rq> ] ;
     mf:result  <strlangdir.srj> ;
+    .
+
+:datatype rdf:type mf:QueryEvaluationTest ;
+    mf:name "DATATYPE and rdf:dirLangString";
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <datatype.rq> ] ;
+    mf:result  <datatype.srj> ;
+    .
+
+:concat rdf:type mf:QueryEvaluationTest ;
+    mf:name "CONCAT and rdf:dirLangString";
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <concat.rq> ] ;
+    mf:result  <concat.srj> ;
+    .
+
+:contains rdf:type mf:QueryEvaluationTest ;
+    mf:name "CONTAINS and rdf:dirLangString";
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <contains.rq> ] ;
+    mf:result  <contains.srj> ;
     .
