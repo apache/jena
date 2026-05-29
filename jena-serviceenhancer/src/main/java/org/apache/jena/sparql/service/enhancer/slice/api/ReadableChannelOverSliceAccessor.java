@@ -48,6 +48,7 @@ public class ReadableChannelOverSliceAccessor<A>
     @Override
     public int read(A array, int position, int length) throws IOException {
         accessor.claimByOffsetRange(posInSlice, posInSlice + length);
+        // unsafeRead because the read was scheduled over cached data ranges that were protected from eviction.
         int result = accessor.unsafeRead(array, position, posInSlice, length);
         if (result > 0) {
             posInSlice += result;

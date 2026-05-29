@@ -64,20 +64,20 @@ public interface Ref<T>
     T get();
 
     /**
-     * Return the object on which reference acquisition, release and the close action
-     * are synchronized on.
+     * Return a consumer that can synchronize the running of actions.
+     * Reference acquisition, release and the close action need to be synchronized on.
      */
-    Object getSynchronizer();
-
-    /**
-     * Acquire a new reference with a given comment object
-     * Acquiration fails if isAlive() returns false
-     */
-    Ref<T> acquire(Object purpose);
+    Synchronizer getSynchronizer();
 
     default Ref<T> acquire() {
         return acquire(null);
     }
+
+    /**
+     * Acquire a new reference with a given comment object
+     * Acquisition fails if isAlive() returns false
+     */
+    Ref<T> acquire(Object comment);
 
     /**
      * A reference may itself be closed, but references to it may keep it alive
@@ -91,7 +91,7 @@ public interface Ref<T>
      */
     boolean isClosed();
 
-    // Overrides the throws declaration of Autoclose
+    /** Closes this Ref. Overrides the throws declaration of Autoclose */
     @Override
     void close();
 
