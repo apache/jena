@@ -113,7 +113,28 @@ public class TestTurtleWriter {
 
     @Test
     public void bnode_cycles() {
-        Model m = RDFDataMgr.loadModel("testing/DAWG-Final/construct/data-ident.ttl");
+        String data = """
+            @prefix foaf:       <http://xmlns.com/foaf/0.1/> .
+            @prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+            @prefix rdfs:	    <http://www.w3.org/2000/01/rdf-schema#> .
+
+            _:alice
+                rdf:type        foaf:Person ;
+                foaf:name       "Alice" ;
+                foaf:mbox       <mailto:alice@work> ;
+                foaf:knows      _:bob ;
+                .
+
+            _:bob
+                rdf:type        foaf:Person ;
+                foaf:name       "Bob" ;
+                foaf:knows      _:alice ;
+                foaf:mbox       <mailto:bob@work> ;
+                foaf:mbox       <mailto:bob@home> ;
+                .
+            """;
+
+        Model m = RDFParser.fromString(data, Lang.TTL).toModel();
         assertTrue(m.size() > 0);
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();

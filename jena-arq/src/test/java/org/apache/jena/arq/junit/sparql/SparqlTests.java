@@ -77,9 +77,6 @@ public class SparqlTests {
 
         // ---- Query syntax tests
         if ( equalsType(testType, TestManifest.PositiveSyntaxTest) ) {
-            if ( entryContainsSubstring(entry, "codepoint-escapes#codepoint-esc-07") )
-                // \U escape outside a string or URI.
-                return null;
             return new QuerySyntaxTest(entry, querySyntax, true);
         }
         if ( equalsType(testType, TestManifest_11.PositiveSyntaxTest11) )
@@ -90,13 +87,8 @@ public class SparqlTests {
             return new QuerySyntaxTest(entry, Syntax.syntaxARQ, true);
         }
 
-        //"codepoint-escapes#codepoint-esc-bad-07"
-
         // == Bad
         if ( equalsType(testType, TestManifest.NegativeSyntaxTest) ) {
-            if ( entryContainsSubstring(entry, "codepoint-escapes#codepoint-esc-bad-03") )
-                // \U escape outside a string or URI.
-                return null;
             return new QuerySyntaxTest(entry, querySyntax, false);
         }
         if ( equalsType(testType, TestManifest_11.NegativeSyntaxTest11) ) {

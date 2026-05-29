@@ -25,50 +25,38 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.*;
 
-import org.apache.jena.arq.TestConsts;
 import org.apache.jena.arq.junit.Scripts;
-import org.apache.jena.sparql.engine.ref.QueryEngineRef;
+import org.apache.jena.arq.junit.sparql.SparqlTests;
 import org.apache.jena.sparql.expr.E_Function;
 import org.apache.jena.sparql.expr.NodeValue;
 
-public class Scripts_RefEngine {
+public class Scripts_ARQ {
+    private static boolean bVerboseWarnings;
+    private static boolean bWarnOnUnknownFunction;
 
     @BeforeAll
     public static void beforeClass() {
+        bVerboseWarnings = NodeValue.VerboseWarnings;
+        bWarnOnUnknownFunction = E_Function.WarnOnUnknownFunction;
         NodeValue.VerboseWarnings = false;
         E_Function.WarnOnUnknownFunction = false;
-        QueryEngineRef.register();
     }
 
     @AfterAll
     public static void afterClass() {
-        NodeValue.VerboseWarnings = true;
-        E_Function.WarnOnUnknownFunction = true;
-        QueryEngineRef.unregister();
+        NodeValue.VerboseWarnings = bVerboseWarnings;
+        E_Function.WarnOnUnknownFunction = bWarnOnUnknownFunction;
     }
 
     @TestFactory
-    @DisplayName("RefEngine - ARQ-SPARQL")
-    public Stream<DynamicNode> testFactoryRefARQ() {
-        return Scripts.manifestTestFactorySPARQL(TestConsts.testDirARQ+"manifest-ref-arq.ttl");
+    @DisplayName("ARQ-SPARQL")
+    public Stream<DynamicNode> testFactorySPARQL_ARQ() {
+        return all("testing/ARQ/manifest-arq.ttl");
     }
 
-
-    @TestFactory
-    @DisplayName("RefEngine - SPARQL 1.0")
-    public Stream<DynamicNode> testFactoryRefSPARQL10() {
-        return Scripts.manifestTestFactorySPARQL(TestConsts.SPARQL10_TESTS_DIR+"manifest-evaluation.ttl");
-    }
-
-    @TestFactory
-    @DisplayName("RefEngine - SPARQL 1.1")
-    public Stream<DynamicNode> testFactoryRefSPARQL11() {
-        return Scripts.manifestTestFactorySPARQL(TestConsts.SPARQL11_TESTS_DIR+"manifest-sparql11-query.ttl");
-    }
-
-    @TestFactory
-    @DisplayName("RefEngine - SPARQL 1.2")
-    public Stream<DynamicNode> testFactoryRefSPARQL12() {
-        return Scripts.manifestTestFactorySPARQL(TestConsts.SPARQL12_TESTS_DIR+"manifest.ttl");
+    private static Stream<DynamicNode> all(String... manifests) {
+        if ( manifests == null || manifests.length == 0 )
+            throw new ARQException("No manifest files");
+        return Scripts.all(SparqlTests::makeSPARQLTest, manifests);
     }
 }

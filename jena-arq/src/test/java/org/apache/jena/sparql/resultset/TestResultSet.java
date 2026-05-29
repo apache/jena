@@ -168,8 +168,7 @@ public class TestResultSet {
         ResultSetFormatter.outputAsJSON(arr, rs1);
         rs1.reset();
         ByteArrayInputStream ins = new ByteArrayInputStream(arr.toByteArray());
-        ResultSet rs2 = ResultSetFactory.fromJSON(ins);    // Test using the DAWG
-                                                           // examples
+        ResultSet rs2 = ResultSetFactory.fromJSON(ins);
         assertTrue(ResultsCompare.equalsByTerm(rs1, rs2));
     }
 
