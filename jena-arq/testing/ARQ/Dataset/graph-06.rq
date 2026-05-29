@@ -1,6 +1,0 @@
-SELECT  ?s ?p ?o
-FROM <dft.ttl> 
-FROM NAMED  <a.ttl>
-FROM NAMED  <b.ttl>
-WHERE
-    { GRAPH ?g { ?s ?p ?o } }

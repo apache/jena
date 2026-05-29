@@ -1,3 +1,0 @@
-PREFIX : <http://example/> 
-
-SELECT * { :a :p/:p ?x }

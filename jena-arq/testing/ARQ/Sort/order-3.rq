@@ -1,5 +1,0 @@
-PREFIX  jfn:     <http://jena.apache.org/ARQ/function#>
-
-SELECT ?o
-WHERE { ?s ?p ?o }
-ORDER BY jfn:strlen(?o)

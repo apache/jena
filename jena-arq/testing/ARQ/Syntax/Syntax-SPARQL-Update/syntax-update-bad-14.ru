@@ -1,1 +1,0 @@
-INSERT { } WHERE { BIND(1 AS ?X)  BIND(1 AS ?X) }

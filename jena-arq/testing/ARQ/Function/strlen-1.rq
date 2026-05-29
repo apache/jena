@@ -1,7 +1,0 @@
-PREFIX  jfn:  <http://jena.apache.org/ARQ/function#>
-PREFIX  : <http://example/> 
-
-SELECT ?p ?v
-{ :x ?p ?v . 
-  FILTER ( jfn:strlen(?v) = 1 )
-}

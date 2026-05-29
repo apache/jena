@@ -1,5 +1,0 @@
-SELECT  *
-WHERE
-    { ?y ?a ?b .
-      ?x ?y ?z .
-    }

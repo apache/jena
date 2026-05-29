@@ -1,8 +1,0 @@
-PREFIX : <http://example.org/>
-
-SELECT *
-{ 
-   OPTIONAL { ?x :p ?o2 }
-   OPTIONAL { ?x :qq ?o1 }
-   FILTER(?x = :x)
-}

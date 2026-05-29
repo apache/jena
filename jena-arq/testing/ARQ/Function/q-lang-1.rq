@@ -1,7 +1,0 @@
-PREFIX  jfn:  <http://jena.apache.org/ARQ/function#>
-PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-
-SELECT ?v
-{ ?x ?p ?v .
-  FILTER jfn:langeq(?v, "EN" )
-}

@@ -1,8 +1,0 @@
-PREFIX : <http://example/> 
-
-SELECT ?x
-{
-  ?x a :X .
-  OPTIONAL { ?x :q ?v . LET (?marker := true ) }
-  FILTER (! bound(?marker) )
-}

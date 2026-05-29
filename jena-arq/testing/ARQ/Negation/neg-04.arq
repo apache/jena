@@ -1,7 +1,0 @@
-PREFIX :    <http://example/> 
-PREFIX ns:  <http://example/ns#> 
-
-ASK
-{
-    FILTER (EXISTS{:x4 :q []})
-}

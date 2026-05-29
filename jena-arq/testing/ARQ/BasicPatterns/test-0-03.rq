@@ -1,3 +1,0 @@
-SELECT  ?select
-WHERE
-    { ?x <http://localhost/p1> ?select }

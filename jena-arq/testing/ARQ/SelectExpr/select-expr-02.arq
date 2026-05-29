@@ -1,7 +1,0 @@
-PREFIX : <http://example/> 
-
-SELECT ?v (?v+10 AS ?w)
-{
-  ?x a :X .
-  OPTIONAL { ?x :p ?v }
-}

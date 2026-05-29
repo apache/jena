@@ -1,5 +1,0 @@
-PREFIX  prefix: <http://rdf.hp.com>
-SELECT  *
-WHERE
-# ILLEGAL
-{ prefix:/r-1 ?y "v-1-2" }

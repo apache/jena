@@ -1,1 +1,0 @@
-CLEAR SILENT GRAPH <graph>

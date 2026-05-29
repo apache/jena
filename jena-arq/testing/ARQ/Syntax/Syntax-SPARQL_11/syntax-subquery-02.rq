@@ -1,4 +1,0 @@
-SELECT * { 
-   {} 
-   {SELECT * { ?s ?p ?o } }
-}

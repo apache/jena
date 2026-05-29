@@ -1,3 +1,0 @@
-PREFIX : <http://example/> 
-
-SELECT DISTINCT * { :a :p [ :p  ?x ] }

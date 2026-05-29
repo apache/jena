@@ -1,6 +1,0 @@
-PREFIX  jfn:  <http://jena.apache.org/ARQ/function#>
-
-SELECT ?v
-{ ?x ?p ?v .
-  FILTER ( ! jfn:langeq(?v, "en" ) )
-}

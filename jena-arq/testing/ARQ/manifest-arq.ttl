@@ -22,70 +22,18 @@
 <>  rdf:type mf:Manifest ;
     rdfs:label "ARQ - Scripts" ;
     mf:include (
-    	## Syntax tests are in <Syntax/manifest-syntax.ttl>
-    	## but called by a different test suite for separate
-    	## testing runs
-
-        <Basic/manifest.ttl>
-        <BasicPatterns/manifest.ttl>
-
-        <Optional/manifest.ttl>
-        <Union/manifest.ttl>
-
-        <Algebra/manifest.ttl>
-        <Optimization/manifest.ttl>
-        <OptFilterEquality/manifest.ttl>
-
-        <Select/manifest.ttl>
-        <Construct/manifest.ttl>
-        <Describe/manifest.ttl>
-        <Ask/manifest.ttl>
-
-        <Dataset/manifest.ttl>
-
-        <Bound/manifest.ttl>
-        <Expr/manifest.ttl>
-
-        <Expr/manifest.ttl>
-        <Expr1/manifest.ttl>
-        <Expr2/manifest.ttl>
-        <ExprBuiltIns/manifest.ttl>
-        <ExprDatatypes/manifest.ttl>
-        <ExprEquals/manifest.ttl>
-        <ExprRegex/manifest.ttl>
-    	<OpenWorld/manifest.ttl>
-
-        <Function/manifest.ttl>
+        ## ARQ : Features and extensions
+        <Syntax-ARQ/manifest.ttl>
+        <Syntax-Lateral/manifest.ttl>
+       <Lateral/manifest.ttl>
+        <Serialization/manifest.ttl>
         <PropertyFunctions/manifest.ttl>
-        <TypePromotion/manifest.ttl>
 
-        <OrderBy/manifest.ttl> # DAWG tests/data/sort
-        <ValueTesting/manifest.ttl>
-        <SolutionSeq/manifest.ttl>
-
-        <Planning/manifest.ttl>
-
-        <General/manifest.ttl>
-
-        <Distinct/manifest.ttl>
-        <Sort/manifest.ttl>
-        ## References the src-examples area - does not work in build.
-        ##<Examples/manifest.ttl>
-       
-    ## Engines
-        <EngineRef/manifest.ttl>
+        ## Engines
         <EngineMain/manifest.ttl>
+        <EngineRef/manifest.ttl>
 
-    ## SPARQL 1.1
-        <Assign/manifest.ttl>
-        <SelectExpr/manifest.ttl>
-        <GroupBy/manifest.ttl>
-        <SubQuery/manifest.ttl>
-        <Paths/manifest.ttl>
-        <Negation/manifest.ttl>
-
-    ## Addition misc tests
+        ## Unclear.
         <Extra/manifest.ttl>
-
+        <ValueTesting/manifest.ttl>
     ) .
-

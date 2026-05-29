@@ -1,3 +1,0 @@
-CONSTRUCT 
-FROM <file>
-WHERE { ?s ?p 1816 }

@@ -1,6 +1,0 @@
-PREFIX :   <http://example.org/ns#>
-
-CONSTRUCT
-    { ?s :m ?o. GRAPH ?g { ?sg :m ?og  }  }
-WHERE
-    { ?s :p ?o. GRAPH ?g { ?sg :p ?og  }  }

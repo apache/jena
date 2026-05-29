@@ -1,7 +1,0 @@
-PREFIX :    <http://example/> 
-PREFIX ns:  <http://example/ns#> 
-
-SELECT ?x ?z
-{
-    EXISTS{?x :p ?z}
-}
