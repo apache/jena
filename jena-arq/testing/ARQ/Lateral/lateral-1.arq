@@ -2,5 +2,5 @@ PREFIX : <http://example/>
 
 SELECT ?s ?label {
   ?s :p ?o
-  LATERAL {  SELECT * { ?s :label ?label } LIMIT 2 }
+  LATERAL {  SELECT * { ?s :label ?label } ORDER BY ?s LIMIT 2 }
 }

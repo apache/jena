@@ -37,6 +37,9 @@ public class TestConsts {
     public static final String SPARQL11_TESTS_DIR = CG_TESTS_DIR+"sparql/sparql11/";
     public static final String SPARQL12_TESTS_DIR = CG_TESTS_DIR+"sparql/sparql12/";
 
+    public static final String testDirARQ     = "testing/ARQ/";
+    public static final String testDirUpdate  = "testing/Update/";
+
     // Other RIOT tests by manifest
     public static final String RIOT_TESTS_DIR = "testing/RIOT/Lang/";
 }

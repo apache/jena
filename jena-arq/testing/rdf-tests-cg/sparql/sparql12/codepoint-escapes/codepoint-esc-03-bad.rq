@@ -1,0 +1,6 @@
+# Codepoint escape in prefixed name : PN_LOCAL
+PREFIX ns: <http://example/ns#>
+
+SELECT * {
+    ?x ns:a\u0062c ?o
+}

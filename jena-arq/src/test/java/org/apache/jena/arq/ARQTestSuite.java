@@ -75,6 +75,7 @@ import org.apache.jena.util.TS_UtilsARQ;
     Scripts_SPARQL.class,
     Scripts_RefEngine.class,
     Scripts_SPARQL_Dataset.class,
+    Scripts_ARQ.class,
 
     // Composite datatypes extension
     Scripts_CDTs.class
@@ -83,12 +84,7 @@ import org.apache.jena.util.TS_UtilsARQ;
     //, org.apache.jena.arq.examples.TC_Examples.class
 })
 public class ARQTestSuite {
-    static {
-        JenaSystem.init();
-    }
-
-    public static final String testDirARQ                  = "testing/ARQ";
-    public static final String testDirUpdate               = "testing/Update";
+    static { JenaSystem.init(); }
 
     public static final String log4jPropertiesResourceName = "log4j2.properties";
 

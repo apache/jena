@@ -34,11 +34,16 @@ import org.junit.jupiter.api.Test;
 import org.apache.jena.query.ResultSetFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.util.JenaXMLInput;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 public class TestReadXML {
+
+    private static String DIR = "file:testing/xml-input-setup/";
+
+    static { JenaSystem.init(); }
 
     // SAX
     @Test public void sax_setup() {
@@ -58,14 +63,14 @@ public class TestReadXML {
     @Test public void rdfxml_dtd_http_migration() {
         // DTD http does not exist, no error because it was ignored
         Model model = ModelFactory.createDefaultModel();
-        model.read("file:testing/xml/rdfxml-dtd-http.rdf");
+        model.read(DIR+"rdfxml-dtd-http.rdf");
     }
 
     // SAX : When allowing DTDs in RDF/XML, and ignoring external ones.
     @Test public void rdfxml_dtd_file_migration() {
         // DTD http does not exist, no error because it was ignored
         Model model = ModelFactory.createDefaultModel();
-        model.read("file:testing/xml/rdfxml-dtd-file.rdf");
+        model.read(DIR+"rdfxml-dtd-file.rdf");
     }
 
     // StAX - best available option is ignore DTDs
@@ -93,21 +98,21 @@ public class TestReadXML {
     }
 
     @Test public void srx_dtd_http() {
-        ResultSetFactory.load("file:testing/xml/srx-dtd-http.srx");
+        ResultSetFactory.load(DIR+"srx-dtd-http.srx");
     }
 
     @Test public void srx_dtd_file() {
-        ResultSetFactory.load("file:testing/xml/srx-dtd-file.srx");
+        ResultSetFactory.load(DIR+"srx-dtd-file.srx");
     }
 
     // TriX uses StAX
     @Test public void trix_dtd_http() {
         Model model = ModelFactory.createDefaultModel();
-        model.read("file:testing/xml/trix-dtd-http.trix");
+        model.read(DIR+"trix-dtd-http.trix");
     }
 
     @Test public void trix_dtd_file() {
         Model model = ModelFactory.createDefaultModel();
-        model.read("file:testing/xml/trix-dtd-file.trix");
+        model.read(DIR+"trix-dtd-file.trix");
     }
 }

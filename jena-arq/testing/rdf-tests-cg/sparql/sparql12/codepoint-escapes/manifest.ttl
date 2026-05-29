@@ -8,61 +8,93 @@
 <>  rdf:type mf:Manifest ;
     rdfs:label "SPARQL Codepoint-Escaping Tests" ;
     mf:entries
-    ( 
-    :codepoint-esc-01
-    :codepoint-esc-02
-    :codepoint-esc-bad-03
-    :codepoint-esc-04
-    :codepoint-esc-05
-    :codepoint-esc-06
-    :codepoint-esc-07
-    :codepoint-esc-08
+    (
+        :codepoint-esc-01-bad
+        :codepoint-esc-02-bad
+        :codepoint-esc-03-bad
+        :codepoint-esc-04-bad
+        :codepoint-esc-05
+        :codepoint-esc-06
+        :codepoint-esc-07
+
+        :surrogate-esc-01-bad
+        :surrogate-esc-02-bad
+        :surrogate-esc-03-bad
+        :surrogate-esc-04-bad
+        :surrogate-esc-05-bad
     ) .
 
 
-:codepoint-esc-01 rdf:type   mf:PositiveSyntaxTest ;
+:codepoint-esc-01-bad rdf:type   mf:NegativeSyntaxTest ;
    dawgt:approval dawgt:Proposed ;
-   mf:name        "codepoint-esc-01.rq" ;
-   mf:action      <codepoint-esc-01.rq> .
+   mf:name        "codepoint-esc-01-bad.rq" ;
+   rdfs:comment   "Whole query in codepoint escapes" ;
+   mf:action      <codepoint-esc-01-bad.rq> .
 
-:codepoint-esc-02 rdf:type   mf:PositiveSyntaxTest ;
+:codepoint-esc-02-bad rdf:type   mf:NegativeSyntaxTest ;
    dawgt:approval dawgt:Proposed ;
-   mf:name        "codepoint-esc-02.rq" ;
-   rdfs:comment   "codepoint escape for the backslash of a PN_LOCAL_ESC in the PN_LOCAL part of a PrefixedName" ;
-   mf:action      <codepoint-esc-02.rq> .
+   mf:name        "codepoint-esc-02-bad.rq" ;
+   rdfs:comment   "Codepoint escape in PNAME_NS of a prefixed name" ;
+   mf:action      <codepoint-esc-02-bad.rq> .
 
-:codepoint-esc-bad-03 rdf:type   mf:NegativeSyntaxTest ;
+:codepoint-esc-03-bad rdf:type   mf:NegativeSyntaxTest ;
    dawgt:approval dawgt:Proposed ;
-   mf:name        "codepoint-esc-bad-03.rq" ;
-   rdfs:comment   "codepoint escape that results in an invalid backslash escape (requires handling codepoint escaping before backslash escaping)" ;
-   mf:action      <codepoint-esc-bad-03.rq> .
+   mf:name        "codepoint-esc-03-bad.rq" ;
+   rdfs:comment   "Codepoint escape in PN_LOCAL of a prefixed name" ;
+   mf:action      <codepoint-esc-03-bad.rq> .
 
-:codepoint-esc-04 rdf:type   mf:PositiveSyntaxTest ;
+:codepoint-esc-04-bad rdf:type   mf:NegativeSyntaxTest ;
    dawgt:approval dawgt:Proposed ;
-   mf:name        "codepoint-esc-04.rq" ;
-   rdfs:comment   "codepoint escape that results in a valid backslash escape" ;
-   mf:action      <codepoint-esc-04.rq> .
+   mf:name        "codepoint-esc-04-bad.rq" ;
+   rdfs:comment   "Codepoint escape in variable" ;
+   mf:action      <codepoint-esc-04-bad.rq> .
 
 :codepoint-esc-05 rdf:type   mf:PositiveSyntaxTest ;
    dawgt:approval dawgt:Proposed ;
    mf:name        "codepoint-esc-05.rq" ;
+   rdfs:comment   "Codepoint escape in IRI" ;
    mf:action      <codepoint-esc-05.rq> .
 
 :codepoint-esc-06 rdf:type   mf:PositiveSyntaxTest ;
    dawgt:approval dawgt:Proposed ;
    mf:name        "codepoint-esc-06.rq" ;
-   rdfs:comment   "codepoint escape for the percent sign in the PL_LOCAL part of a PrefixedName" ;
+   rdfs:comment   "Codepoint escape in string - double quoted string" ;
    mf:action      <codepoint-esc-06.rq> .
 
 :codepoint-esc-07 rdf:type   mf:PositiveSyntaxTest ;
    dawgt:approval dawgt:Proposed ;
    mf:name        "codepoint-esc-07.rq" ;
-   rdfs:comment   "codepoint escape for whitespace separating the projection tokens: SELECT * WHERE" ;
+   rdfs:comment   "Codepoint escape in string - single quoted string" ;
    mf:action      <codepoint-esc-07.rq> .
 
-:codepoint-esc-08 rdf:type   mf:PositiveSyntaxTest ;
-   dawgt:approval dawgt:Proposed ;
-   mf:name        "codepoint-esc-08.rq" ;
-   rdfs:comment   "codepoint escape for the starting double-quote of a literal" ;
-   mf:action      <codepoint-esc-08.rq> .
 
+:surrogate-esc-01-bad rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "surrogate-esc-01-bad.rq" ;
+   rdfs:comment   "Surrogate pair - not accepted" ;
+   mf:action      <surrogate-esc-01-bad.rq> .
+
+:surrogate-esc-02-bad rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "surrogate-esc-02-bad.rq" ;
+   rdfs:comment   "Surrogate - low-high - not accepted" ;
+   mf:action      <surrogate-esc-02-bad.rq> .
+
+
+:surrogate-esc-03-bad rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "surrogate-esc-03-bad.rq" ;
+   rdfs:comment   "Surrogate - lone high escape sequence" ;
+   mf:action      <surrogate-esc-03-bad.rq> .
+   
+:surrogate-esc-04-bad rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "surrogate-esc-04-bad.rq" ;
+   rdfs:comment   "Surrogate - lone low escape sequence" ;
+   mf:action      <surrogate-esc-04-bad.rq> .
+
+:surrogate-esc-05-bad rdf:type   mf:NegativeSyntaxTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "surrogate-esc-05-bad.rq" ;
+   rdfs:comment   "Surrogate pair - IRI" ;
+   mf:action      <surrogate-esc-05-bad.rq> .

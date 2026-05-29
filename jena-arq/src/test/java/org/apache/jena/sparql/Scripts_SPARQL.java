@@ -49,15 +49,7 @@ public class Scripts_SPARQL {
         E_Function.WarnOnUnknownFunction = bWarnOnUnknownFunction;
     }
 
-    @TestFactory
-    @DisplayName("ARQ-SPARQL")
-    public Stream<DynamicNode> testFactorySPARQL_ARQ() {
-        return all("testing/ARQ/Syntax/manifest-syntax.ttl",
-                   "testing/ARQ/manifest-arq.ttl",
-                   "testing/ARQ/Serialization/manifest.ttl");
-    }
-
-    // Test from rdf-tests (and other replaces).
+    // Test from rdf-tests
     @TestFactory
     @DisplayName("SPARQL 1.0")
     public Stream<DynamicNode> testFactorySPARQL_10() {

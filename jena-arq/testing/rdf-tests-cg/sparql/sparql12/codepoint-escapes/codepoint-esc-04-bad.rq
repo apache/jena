@@ -1,0 +1,7 @@
+# Codepoint escape in variable
+
+PREIFX ns: <http://example/ns#>
+
+SELECT * {
+    ?a\u0062c ns:abc ?o
+}

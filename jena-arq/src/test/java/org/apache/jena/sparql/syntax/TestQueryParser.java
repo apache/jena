@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.QueryParseException;
@@ -75,13 +76,15 @@ public class TestQueryParser {
     @Test
     public void syntax_unicode_escaped_surrogate_uri() {
         QueryParseException ex = assertThrows(QueryParseException.class, ()->testParse("SELECT * { <http://example/\\uD83D> ?p ?o}"));
-        assertTrue(ex.getMessage().contains("surrogate"));
+        boolean check = StrUtils.containsIgnoreCase(ex.getMessage(), "surrogate");
+        assertTrue(check);
     }
 
     @Test
     public void syntax_unicode_escaped_surrogate_strings() {
         QueryParseException ex = assertThrows(QueryParseException.class, ()->testParse("SELECT * { ?s ?p '\\uD83D'}"));
-        assertTrue(ex.getMessage().contains("surrogate"));
+        boolean check = StrUtils.containsIgnoreCase(ex.getMessage(), "surrogate");
+        assertTrue(check);
     }
 
     @Test

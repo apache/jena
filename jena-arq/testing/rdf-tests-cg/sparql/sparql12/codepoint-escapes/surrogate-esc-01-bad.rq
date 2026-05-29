@@ -1,0 +1,5 @@
+## Surrogate pair. Not legal.
+
+SELECT * {
+    ?s ?p "\uD83C\uDCA1" .
+}

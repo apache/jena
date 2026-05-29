@@ -35,6 +35,7 @@ import org.apache.jena.arq.junit.Scripts;
 public class Scripts_RIOT_rdf_tests_std {
     // Excludes the semantics tests.
     // Excludes canonicalization tests (separate)
+    // RDF 1.2 tests include RDF 1.1 tests
 
     @Order(1)
     @TestFactory
@@ -68,9 +69,17 @@ public class Scripts_RIOT_rdf_tests_std {
     @TestFactory
     @DisplayName("rdf-tests CG - RDF/XML")
     public Stream<DynamicNode> testFactory_rdf_xml() {
-        // Caution! RDF 1.1 until RRX updated.
+        // Caution! RDF 1.1 until RDF/XML tests fixed
         return Scripts.manifestTestFactory(TestConsts.RDF11_TESTS_DIR+"rdf-xml/manifest.ttl");
     }
+
+//    @Order(5)
+//    @TestFactory
+//    @DisplayName("rdf-tests CG - RDF/XML RDF 1.2")
+//    public Stream<DynamicNode> testFactory_rdf_xml() {
+//        return Scripts.manifestTestFactory(TestConsts.RDF12_TESTS_DIR+"manifest.ttl");
+//    }
+
 
     // Canonicalization tests in Scripts_RIOT_c14n_tests
 
