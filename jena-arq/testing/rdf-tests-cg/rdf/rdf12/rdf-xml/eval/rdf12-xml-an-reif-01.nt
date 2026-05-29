@@ -1,0 +1,6 @@
+<http://example.org/> <http://example.org/stuff/1.0/prop> "blah" .
+<http://example.org/triple1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies> <<( <http://example.org/> <http://example.org/stuff/1.0/prop> "blah" )>> .
+<http://example.org/triples/#reif> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
+<http://example.org/triples/#reif> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://example.org/> .
+<http://example.org/triples/#reif> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://example.org/stuff/1.0/prop> .
+<http://example.org/triples/#reif> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> "blah" .

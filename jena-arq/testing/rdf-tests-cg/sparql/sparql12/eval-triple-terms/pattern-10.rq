@@ -1,0 +1,13 @@
+PREFIX :  <http://example/>
+
+SELECT DISTINCT ?s WHERE {
+    { <<?s ?p "o">> ?p2 ?z }
+    UNION
+    { <<?s ?p 1>> ?p2 ?z }
+    UNION
+    { <<?s ?p true>> ?p2 ?z }
+    UNION
+    { <<?s ?p << ?st ?pt ?ot >> >> ?p2 ?z }
+    UNION
+    { <<?s ?p <<( ?st ?pt ?ot )>> >> ?p2 ?z }
+}

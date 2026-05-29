@@ -1,0 +1,5 @@
+PREFIX : <http://example/>
+
+SELECT ?v (LANGDIR(?v) AS ?langdir) WHERE {
+  VALUES ?v { "a"@en "l"@en--ltr "r"@en--rtl }
+}

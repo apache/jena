@@ -58,6 +58,8 @@ trs:manifest  rdf:type mf:Manifest ;
         trs:rdf12-xml-an-14
         trs:rdf12-xml-an-15
         trs:rdf12-xml-an-16
+        
+        trs:rdf12-xml-an-reif-01
     ) .
 
 # Initial Text Direction
@@ -242,3 +244,9 @@ trs:rdf12-xml-an-16 rdf:type rdft:TestXMLEval;
   mf:comment  """rdf:annotationNodeID and parseType="Collection".""";
   mf:action   <rdf12-xml-an-16.rdf>;
   mf:result   <rdf12-xml-an-16.nt> .
+
+trs:rdf12-xml-an-reif-01 rdf:type rdft:TestXMLEval;
+  mf:name     "rdf12-xml-an-reif-01.rdf";
+  mf:comment  "RDF 1.1 reification and RDF 1.2 annotation";
+  mf:action   <rdf12-xml-an-reif-01.rdf>;
+  mf:result   <rdf12-xml-an-reif-01.nt> .

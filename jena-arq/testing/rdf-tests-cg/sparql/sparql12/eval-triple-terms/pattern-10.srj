@@ -1,0 +1,23 @@
+{ "head": {
+    "vars": [ "s" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "s": { "type": "uri" , "value": "http://example/s1" }
+      },
+      {
+        "s": { "type": "uri" , "value": "http://example/s2" }
+      },
+      {
+        "s": { "type": "uri" , "value": "http://example/s3" }
+      },
+      {
+        "s": { "type": "uri" , "value": "http://example/s4" }
+      },
+      {
+        "s": { "type": "uri" , "value": "http://example/s5" }
+      }
+    ]
+  }
+}

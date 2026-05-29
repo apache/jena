@@ -28,6 +28,7 @@
     :agg-groupconcat-03
     :agg-groupconcat-04
     :agg-groupconcat-05
+    :agg-groupconcat-06
     :agg-sum-01
     :agg-sum-02
     :agg-avg-01

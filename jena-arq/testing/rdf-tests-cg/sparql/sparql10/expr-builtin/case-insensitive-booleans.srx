@@ -1,0 +1,16 @@
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+    <head>
+        <variable name="t" />
+        <variable name="f" />
+    </head>
+    <results>
+        <result>
+            <binding name="t">
+                <literal datatype="http://www.w3.org/2001/XMLSchema#boolean">true</literal>
+            </binding>
+            <binding name="f">
+                <literal datatype="http://www.w3.org/2001/XMLSchema#boolean">false</literal>
+            </binding>
+        </result>
+    </results>
+</sparql>

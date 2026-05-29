@@ -21,6 +21,9 @@
         :basic-4
         :basic-5
         :basic-6
+        :basic-7
+        :basic-8
+        :basic-9
 
         :pattern-1
         :pattern-2
@@ -33,6 +36,8 @@
         :pattern-8
         :pattern-8-nomatch
         :pattern-9
+        :pattern-10
+        :pattern-11
 
         :construct-1
         :construct-2
@@ -48,8 +53,6 @@
 
         :op-1
         :op-2
-        :op-3
-        :op-4
 
         :order-1
         :order-2
@@ -149,6 +152,32 @@
     mf:result  <basic-6.srj>
     .
 
+:basic-7 rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Proposed ;
+    mf:name      "Annotated triple - match constant reified triple" ;
+    mf:action [
+       qt:query  <basic-7.rq> ;
+       qt:data   <data-8.ttl>
+    ] ;
+    mf:result  <basic-7.srj>
+    .
+
+:basic-8 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Triple terms - in VALUES" ;
+    mf:action
+        [ qt:query  <basic-8.rq> ;
+          qt:data   <data-10.ttl> ] ;
+    mf:result  <basic-8.srj>
+    .
+
+:basic-9 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Triple terms - in expressions and equality" ;
+    mf:action
+        [ qt:query  <basic-9.rq> ;
+          qt:data   <data-10.ttl> ] ;
+    mf:result  <basic-9.srj>
+    .
+
 :pattern-1 rdf:type mf:QueryEvaluationTest ;
     dawgt:approval dawgt:Proposed ;
     mf:name    "Reified triples - Asserted and reified triple" ;
@@ -246,6 +275,22 @@
         [ qt:query  <pattern-09.rq> ;
           qt:data   <data-5.ttl> ] ;
     mf:result  <pattern-09.srj>
+    .
+
+:pattern-10 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Reified triples - Pattern - literals or triple terms" ;
+    mf:action
+        [ qt:query  <pattern-10.rq> ;
+          qt:data   <data-9.ttl> ] ;
+    mf:result  <pattern-10.srj>
+    .
+
+:pattern-11 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Triple terms - Pattern - literals or triple terms" ;
+    mf:action
+        [ qt:query  <pattern-11.rq> ;
+          qt:data   <data-10.ttl> ] ;
+    mf:result  <pattern-11.srj>
     .
 
 ## CONSTRUCT
@@ -351,24 +396,6 @@
         [ qt:query  <op-2.rq> ;
           qt:data   <data-7.ttl> ] ;
     mf:result  <op-2.srj> ;
-    .
-
-:op-3  rdf:type mf:QueryEvaluationTest ;
-    dawgt:approval dawgt:Proposed ;
-    mf:name    "Reified triples - Embedded triple - value-inequality" ;
-    mf:action
-        [ qt:query  <op-3.rq> ;
-          qt:data   <data-7.ttl> ] ;
-    mf:result  <op-3.srj> ;
-    .
-
-:op-4  rdf:type mf:QueryEvaluationTest ;
-    dawgt:approval dawgt:Proposed ;
-    mf:name    "Reified triples - Embedded triple - value-inequality" ;
-    mf:action
-        [ qt:query  <op-4.rq> ;
-          qt:data   <data-7.ttl> ] ;
-    mf:result  <op-4.srj> ;
     .
 
 ## ORDER BY

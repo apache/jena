@@ -15,6 +15,7 @@
     :exists03
     :exists04
     :exists05
+    :exists-graph-variable
   ).
 
 
@@ -77,6 +78,17 @@
          [ qt:query  <exists05.rq> ;
            qt:data   <exists01.ttl> ;
           ] ;
-    mf:result  <exists05.srx>  
-    .           
-    
+    mf:result  <exists05.srx>
+    .
+
+:exists-graph-variable rdf:type mf:QueryEvaluationTest ;
+    mf:name "GRAPH variable inside of EXISTS is bound to external variable";
+	mf:feature sparql:exists ;
+    mf:action
+         [ qt:query     <exists-graph-variable.rq> ;
+           qt:data      <exists-graph-variable.ttl> ;
+           qt:graphData <exists-graph-variable.ttl>
+          ] ;
+    mf:result  <exists-graph-variable.srx>
+    .
+

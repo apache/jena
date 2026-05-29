@@ -1,0 +1,10 @@
+prefix : <http://example/>
+
+SELECT ?a WHERE {
+  GRAPH ?g {
+    ?a :p :o
+    MINUS {
+        ?b :p :o
+    }
+  }
+}

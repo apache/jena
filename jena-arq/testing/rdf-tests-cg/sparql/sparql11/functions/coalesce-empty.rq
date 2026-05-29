@@ -1,0 +1,1 @@
+SELECT (COALESCE() AS ?err) WHERE {}

@@ -1,0 +1,1 @@
+SELECT (COUNT(COUNT(*)) AS ?c) WHERE {}

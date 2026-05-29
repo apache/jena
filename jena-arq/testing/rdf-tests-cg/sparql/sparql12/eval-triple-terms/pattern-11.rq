@@ -1,0 +1,11 @@
+PREFIX :  <http://example/>
+
+SELECT ?s WHERE {
+    { ?s ?p <<( ?st ?pt "o" )>> }
+    UNION
+    { ?s ?p <<( ?st ?pt 1 )>> }
+    UNION
+    { ?s ?p <<( ?st ?pt true )>> }
+    UNION
+    { ?s ?p <<( ?st ?pt <<( ?st2 ?pt2 ?ot2 )>> )>> }
+}

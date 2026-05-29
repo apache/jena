@@ -1,0 +1,8 @@
+VERSION "1.2"
+PREFIX : <http://example/>
+VERSION "1.2-basic"
+VERSION "1.2"
+
+SELECT * {
+  ?s ?p ?o .
+}

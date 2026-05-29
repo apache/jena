@@ -1,0 +1,3 @@
+PREFIX : <http://example/>
+# Bad low-high, not high-low
+:s :p "\uDCA1\uD83C" .

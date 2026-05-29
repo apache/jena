@@ -1773,13 +1773,13 @@
    mf:action    <turtle-syntax-bad-base-03.ttl> ;
    .
 
-<#turtle-syntax-bad-bnode-01> rdf:type rdft:TestNTriplesNegativeSyntax ;
+<#turtle-syntax-bad-bnode-01> rdf:type rdft:TestTurtleNegativeSyntax ;
    mf:name      "turtle-syntax-bad-bnode-01" ;
    rdfs:comment "Colon in bnode label not allowed (negative test)" ;
    mf:action    <turtle-syntax-bad-bnode-01.ttl> ;
    .
 
-<#turtle-syntax-bad-bnode-02> rdf:type rdft:TestNTriplesNegativeSyntax ;
+<#turtle-syntax-bad-bnode-02> rdf:type rdft:TestTurtleNegativeSyntax ;
    mf:name      "turtle-syntax-bad-bnode-02" ;
    rdfs:comment "Colon in bnode label not allowed (negative test)" ;
    mf:action    <turtle-syntax-bad-bnode-02.ttl> ;

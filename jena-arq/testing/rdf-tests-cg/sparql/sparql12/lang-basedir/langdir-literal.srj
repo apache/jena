@@ -1,0 +1,20 @@
+{ "head": {
+  "vars": ["v" , "langdir" ]
+},
+  "results": {
+    "bindings": [
+      {
+        "v": { "type": "literal" , "value": "a", "xml:lang": "en"},
+        "langdir": { "type": "literal" , "value": "" }
+      },
+      {
+        "v": { "type": "literal" , "value": "l", "xml:lang": "en", "its:dir": "ltr"},
+        "langdir": { "type": "literal" , "value": "ltr" }
+      },
+      {
+        "v": { "type": "literal" , "value": "r", "xml:lang": "en", "its:dir": "rtl"},
+        "langdir": { "type": "literal" , "value": "rtl" }
+      }
+    ]
+  }
+}

@@ -40,4 +40,6 @@ trs:manifest  rdf:type mf:Manifest ;
     <expression/manifest.ttl>
     <lang-basedir/manifest.ttl>
     <rdf11/manifest.ttl>
+    <version/manifest.ttl>
+    <syntax/manifest.ttl>
   ) .

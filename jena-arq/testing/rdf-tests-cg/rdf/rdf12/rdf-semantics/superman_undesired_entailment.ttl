@@ -1,3 +1,0 @@
-prefix : <http://example.com/ns#>
-
-:clark :reports <<( :clark :can :fly )>>.

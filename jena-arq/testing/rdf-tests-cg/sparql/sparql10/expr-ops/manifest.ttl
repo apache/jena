@@ -15,6 +15,13 @@
         :dateTime-ge-2
         :dateTime-lt-2
         :dateTime-gt-2
+        :add-numbers-cast
+        :subtract-numbers-cast
+        :multiply-numbers-cast
+        :divide-numbers-cast
+        :unplus-2
+        :unminus-2
+        :add-literals
     ).
 
 
@@ -125,4 +132,59 @@
             [ qt:query  <query-gt-2.rq> ;
               qt:data   <data-dateTime.ttl> ] ;
          mf:result  <result-dateTime-gt-2.srx>
+      .
+
+:add-numbers-cast a mf:QueryEvaluationTest ;
+         mf:name    "+ operator on number mixed datatypes" ;
+         mf:action
+            [ qt:query  <query-add-numbers-cast.rq> ;
+              qt:data   <data-numbers.ttl> ] ;
+         mf:result  <result-add-numbers-cast.srx>
+      .
+
+:subtract-numbers-cast a mf:QueryEvaluationTest ;
+         mf:name    "- operator on number mixed datatypes" ;
+         mf:action
+            [ qt:query  <query-subtract-numbers-cast.rq> ;
+              qt:data   <data-numbers.ttl> ] ;
+         mf:result  <result-subtract-numbers-cast.srx>
+      .
+
+:multiply-numbers-cast a mf:QueryEvaluationTest ;
+         mf:name    "* operator on number mixed datatypes" ;
+         mf:action
+            [ qt:query  <query-multiply-numbers-cast.rq> ;
+              qt:data   <data-numbers.ttl> ] ;
+         mf:result  <result-multiply-numbers-cast.srx>
+      .
+
+:divide-numbers-cast a mf:QueryEvaluationTest ;
+         mf:name    "/ operator on number mixed datatypes" ;
+         mf:action
+            [ qt:query  <query-divide-numbers-cast.rq> ;
+              qt:data   <data-numbers.ttl> ] ;
+         mf:result  <result-divide-numbers-cast.srx>
+      .
+
+:unplus-2 a mf:QueryEvaluationTest ;
+         mf:name    "Unary Plus with various datatype" ;
+         mf:action
+            [ qt:query  <query-unplus-2.rq> ;
+              qt:data   <data-numbers.ttl> ] ;
+         mf:result  <result-unplus-2.srx>
+      .
+
+:unminus-2 a mf:QueryEvaluationTest ;
+         mf:name    "Unary Minus with various datatype" ;
+         mf:action
+            [ qt:query  <query-unminus-2.rq> ;
+              qt:data   <data-numbers.ttl> ] ;
+         mf:result  <result-unminus-2.srx>
+      .
+
+:add-literals a mf:QueryEvaluationTest ;
+         mf:name    "Add literal numbers with + and - prefixes" ;
+         mf:action
+            [ qt:query  <query-add-literals.rq> ] ;
+         mf:result  <result-add-literals.srx>
       .

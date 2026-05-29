@@ -12,8 +12,8 @@ version '1.2'
 
 :s :p 2 .
 
-VERSION "abc"
-version "abc"
-@version "abc" .
+VERSION "1.2-basic"
+version "1.2-basic"
+@version "1.2-basic" .
 
 :s :p 3 .

@@ -1,0 +1,4 @@
+# ?z reused in SELECT clause
+
+PREFIX : <http://example/>
+SELECT (123 AS ?z) WHERE { :s :p ?z } GROUP BY ?z

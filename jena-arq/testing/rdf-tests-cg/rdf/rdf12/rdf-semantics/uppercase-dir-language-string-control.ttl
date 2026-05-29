@@ -1,3 +1,0 @@
-prefix : <http://example.com/ns#>
-
-:a :b "hello"@en-US--ltr.

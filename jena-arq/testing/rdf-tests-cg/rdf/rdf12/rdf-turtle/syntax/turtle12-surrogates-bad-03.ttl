@@ -1,0 +1,3 @@
+PREFIX : <http://example/>
+## Surrogates : low-low
+:s :p "\uDCA1\uDCA2" .

@@ -1,0 +1,5 @@
+# ?z defined by expression in group key.
+
+PREFIX : <http://example/>
+
+SELECT (123 AS ?z) WHERE { } GROUP BY (1 AS ?z)

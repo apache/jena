@@ -1,0 +1,9 @@
+SELECT 
+    (CONCAT("a"@en--ltr, "b"@en--ltr) AS ?r1) 
+    (CONCAT("a"@en--ltr, "b"@en--rtl) AS ?r2) 
+    (CONCAT("a"@en--ltr, "b"@en) AS ?r3) 
+    (CONCAT("a"@en, "b"@en--ltr) AS ?r4) 
+    (CONCAT("a"@en--ltr, "b"@en--ltr, "c"@en--ltr) AS ?r5) 
+    (CONCAT("a"@en--ltr, "b", "c"@en--ltr) AS ?r6) 
+    (CONCAT("a"@en, "b", "c"@en--ltr) AS ?r7) 
+WHERE {}

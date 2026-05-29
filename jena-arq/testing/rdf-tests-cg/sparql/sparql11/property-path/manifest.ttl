@@ -41,6 +41,12 @@
     :values_and_path
     :nps_inverse
     :nps_direct_and_inverse
+    :nps_a
+    :nps_a_inverse
+    :zero_or_more_set_start
+    :zero_or_more_set_end
+    :zero_or_one_set_start
+    :zero_or_one_set_end
  ) .
 
 
@@ -304,10 +310,51 @@
           qt:data  <nps_inverse.ttl> ] ;
     mf:result  <nps_inverse.srx> .
 
-
 :nps_direct_and_inverse rdf:type mf:QueryEvaluationTest ;
     mf:name "Negated Property Set with both direct and inverse properties" ;
     mf:action
         [ qt:query <nps_direct_and_inverse.rq> ;
           qt:data  <nps_direct_and_inverse.ttl> ] ;
     mf:result  <nps_direct_and_inverse.srx> .
+
+:nps_a_inverse rdf:type mf:QueryEvaluationTest ;
+    mf:name "Negated Property Set with the inverse rdf:type property written using '^a'" ;
+    mf:action
+        [ qt:query <nps_a_inverse.rq> ;
+          qt:data  <nps_a_inverse.ttl> ] ;
+    mf:result  <nps_a_inverse.srx> .
+
+:nps_a rdf:type mf:QueryEvaluationTest ;
+    mf:name "Negated Property Set with the rdf:type property written using 'a'" ;
+    mf:action
+        [ qt:query <nps_a.rq> ;
+          qt:data  <nps_a.ttl> ] ;
+    mf:result  <nps_a.srx> .
+
+:zero_or_more_set_start rdf:type mf:QueryEvaluationTest ;
+    mf:name "* with start being a constant on the empty dataset" ;
+    mf:action
+        [ qt:query <zero_or_more_set_start.rq> ;
+          qt:data  <empty.ttl> ] ;
+    mf:result  <zero_or_more_set_start.srx> .
+
+:zero_or_more_set_end rdf:type mf:QueryEvaluationTest ;
+    mf:name "* with end being a constant on the empty dataset" ;
+    mf:action
+        [ qt:query <zero_or_more_set_end.rq> ;
+          qt:data  <empty.ttl> ] ;
+    mf:result  <zero_or_more_set_end.srx> .
+
+:zero_or_one_set_start rdf:type mf:QueryEvaluationTest ;
+    mf:name "? with start being a constant on the empty dataset" ;
+    mf:action
+        [ qt:query <zero_or_one_set_start.rq> ;
+          qt:data  <empty.ttl> ] ;
+    mf:result  <zero_or_one_set_start.srx> .
+
+:zero_or_one_set_end rdf:type mf:QueryEvaluationTest ;
+    mf:name "? with end being a constant on the empty dataset" ;
+    mf:action
+        [ qt:query <zero_or_one_set_end.rq> ;
+          qt:data  <empty.ttl> ] ;
+    mf:result  <zero_or_one_set_end.srx> .
