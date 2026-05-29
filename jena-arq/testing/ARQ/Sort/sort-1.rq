@@ -1,7 +1,0 @@
-PREFIX :   <http://example/>
-SELECT ?index ?x ?v
-   {
-    ?x :i ?index
-    OPTIONAL { ?x :p ?v }
-   }
-ORDER BY ?v

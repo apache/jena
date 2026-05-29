@@ -1,1 +1,0 @@
-SELECT * { {} OPTIONAL {SELECT * { ?s ?p ?o }} }

@@ -1,5 +1,0 @@
-SELECT  *
-WHERE
-    { ?x ?y "v-1-1" .
-      ?x ?y "v-1-2" .
-    }

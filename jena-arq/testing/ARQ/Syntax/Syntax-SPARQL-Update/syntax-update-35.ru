@@ -1,1 +1,0 @@
-DELETE WHERE { ?s ?p ?o }

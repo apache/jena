@@ -1,8 +1,0 @@
-PREFIX  jfn:  <http://jena.apache.org/ARQ/function#>
-PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX     :  <http://example.org/> 
-
-SELECT DISTINCT ?p
-{ ?s ?p ?o
-  FILTER ( jfn:namespace(?p) = str(rdf:) )
-}

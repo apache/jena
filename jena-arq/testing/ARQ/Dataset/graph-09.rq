@@ -1,4 +1,0 @@
-PREFIX : <.>
-
-SELECT ?x
-  { GRAPH <a.ttl> { } }

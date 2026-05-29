@@ -1,1 +1,0 @@
-SELECT (AVG(?x) AS ?y) {}

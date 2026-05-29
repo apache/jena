@@ -1,2 +1,0 @@
-@prefix : <http://example.org/ns#> .
-:aRoot :q :a .

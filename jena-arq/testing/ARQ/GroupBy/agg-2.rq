@@ -1,2 +1,0 @@
-SELECT (sum(?x) AS ?S) (count(*) AS ?C) 
-{ ?s ?p ?x FILTER (false) } 

@@ -1,1 +1,0 @@
-SELECT (GROUP_CONCAT(?x) AS ?y) {}
