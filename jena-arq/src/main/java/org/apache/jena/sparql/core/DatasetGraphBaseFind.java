@@ -82,11 +82,45 @@ abstract public class DatasetGraphBaseFind extends DatasetGraphBase
         return Iter.append(iter1, iter2);
     }
 
+    @Override
+    public Stream<Quad> stream(Node g, Node s, Node p, Node o) {
+        if ( Quad.isDefaultGraph(g))
+            return streamInDftGraph(s, p, o) ;
+        if ( ! isWildcard(g) )
+            return streamNG(g, s, p, o) ;
+        return streamAny(s, p, o) ;
+    }
+
+    /** Stream equivalent of {@link #findNG(Node, Node, Node, Node)}. */
+    public Stream<Quad> streamNG(Node g, Node s, Node p , Node o) {
+        Stream<Quad> stream ;
+        if ( Quad.isUnionGraph(g))
+            stream = streamQuadsInUnionGraph(s, p, o) ;
+        else if ( isWildcard(g) )
+            stream = streamInAnyNamedGraphs(s, p, o) ;
+        else if ( Quad.isDefaultGraph(g) )
+            stream = streamInDftGraph(s, p, o) ;
+        else
+            // Not wildcard, not union graph, not default graph.
+            stream = streamInSpecificNamedGraph(g, s, p, o) ;
+        if ( stream == null )
+            return Stream.empty() ;
+        return stream ;
+    }
+
+    protected Stream<Quad> streamAny(Node s, Node p, Node o) {
+        return Stream.concat(streamInDftGraph(s, p, o), streamInAnyNamedGraphs(s, p, o)) ;
+    }
+
     /** Find matches in the default graph.
      *  Return as quads; the default graph is {@link Quad#defaultGraphIRI}
      *  To get Triples, use {@code DatasetGraph.getDefaultGraph().find(...)}.
      */
     protected abstract Iterator<Quad> findInDftGraph(Node s, Node p , Node o) ;
+
+    /** Stream equivalent of {@link #findInDftGraph}.
+     */
+    protected abstract Stream<Quad> streamInDftGraph(Node s, Node p, Node o) ;
 
     /** Find matches in the notional union of all named graphs - return as triples.
      * No duplicates - the union graph is a <em>set</em> of triples.
@@ -110,6 +144,11 @@ abstract public class DatasetGraphBaseFind extends DatasetGraphBase
         return findUnionGraphTriples(s,p,o).map(t -> Quad.create(Quad.unionGraph, t)).iterator() ;
     }
 
+    /** Stream equivalent of {@link #findQuadsInUnionGraph}. */
+    public Stream<Quad> streamQuadsInUnionGraph(Node s, Node p , Node o) {
+        return findUnionGraphTriples(s,p,o).map(t -> Quad.create(Quad.unionGraph, t)) ;
+    }
+
     /** Find matches in the notional union of all named graphs - return as triples.
      * No duplicates - the union graph is a <em>set</em> of triples.
      * See {@link #findInAnyNamedGraphs}, where there may be duplicates.
@@ -118,15 +157,21 @@ abstract public class DatasetGraphBaseFind extends DatasetGraphBase
      * may be possible to avoid "distinct".
      */
     private Stream<Triple> findUnionGraphTriples(Node s, Node p , Node o) {
-        return Iter.asStream(findInAnyNamedGraphs(s,p,o)).map(Quad::asTriple).distinct() ;
+        return streamInAnyNamedGraphs(s,p,o).map(Quad::asTriple).distinct() ;
     }
 
     /** Find in a specific named graph - {@code g} is a ground term (IRI or bNode), not a wild card (or null). */
     protected abstract Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p , Node o) ;
+
+    /** Stream equivalent of {@link #findInSpecificNamedGraph}. */
+    protected abstract Stream<Quad> streamInSpecificNamedGraph(Node g, Node s, Node p, Node o) ;
 
     /** Find in any named graph - return quads.
      * If a triple matches in two different graph, return a quad for each.
      * See {@link #findInUnionGraph} for matching without duplicate triples.
      */
     protected abstract Iterator<Quad> findInAnyNamedGraphs(Node s, Node p , Node o) ;
+
+    /** Stream equivalent of {@link #findInAnyNamedGraphs}. */
+    protected abstract Stream<Quad> streamInAnyNamedGraphs(Node s, Node p, Node o) ;
 }

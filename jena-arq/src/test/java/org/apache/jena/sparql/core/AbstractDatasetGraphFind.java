@@ -286,6 +286,111 @@ public abstract class AbstractDatasetGraphFind {
         assertTrue(x.contains(q5));
     }
 
+    // stream(g,s,p,o) must route to the same primitives as find(g,s,p,o) and yield the same
+    // results, regardless of whether the implementation is stream-native, graph-backed, or
+    // iterator-native (bridging default). These mirror the find_* tests above.
+
+    @Test public void stream_specific_01() {
+        List<Quad> x = dsg.stream(g1, null, null, null).toList();
+        assertEquals(2, x.size());
+        assertTrue(x.contains(q4));
+        assertTrue(x.contains(q3));
+    }
+
+    @Test public void stream_specific_02() {
+        List<Quad> x = dsg.stream(g1, null, null, NodeConst.nodeOne).toList();
+        assertEquals(1, x.size());
+        assertTrue(x.contains(q4));
+    }
+
+    @Test public void stream_dft_01() {
+        List<Quad> x = dsg.stream(Quad.defaultGraphIRI, null, null, null).toList();
+        assertEquals(2, x.size());
+        assertTrue(x.contains(q1));
+        assertTrue(x.contains(q2));
+    }
+
+    @Test public void stream_dft_02() {
+        List<Quad> x = dsg.stream(Quad.defaultGraphIRI, null, null, NodeConst.nodeOne).toList();
+        assertEquals(0, x.size());
+    }
+
+    @Test public void stream_dft_03() {
+        List<Quad> x = dsg.stream(Quad.defaultGraphIRI, null, null, NodeConst.nodeZero).toList();
+        assertEquals(1, x.size());
+        assertTrue(x.contains(q2));
+    }
+
+    @Test public void stream_union_01() {
+        List<Quad> x = dsg.stream(Quad.unionGraph, null, null, null).toList();
+        assertEquals(3, x.size());
+        assertTrue(x.stream().allMatch(q->q.getGraph().equals(Quad.unionGraph)));
+        List<Triple> z = x.stream().map(Quad::asTriple).toList();
+        assertTrue(z.contains(q4.asTriple()));
+        assertTrue(z.contains(q5.asTriple()));
+        assertTrue(x.contains(Quad.create(Quad.unionGraph, q4.asTriple())));
+        assertFalse(x.contains(Quad.create(Quad.unionGraph, q2.asTriple())));
+    }
+
+    /** stream(g,s,p,o) and find(g,s,p,o) must agree for every access pattern. */
+    @Test public void stream_matches_find() {
+        Node[][] patterns = {
+                { null,                 null, null, null },           // findAny / streamAny
+                { Quad.defaultGraphIRI, null, null, null },           // default graph
+                { g1,                   null, null, null },           // specific named graph
+                { Quad.unionGraph,      null, null, null },           // union graph (distinct)
+                { null,                 s,    p,    o    },            // pattern across all
+                { null,                 null, null, NodeConst.nodeOne },
+                { Quad.unionGraph,      null, null, o    },            // union graph, with object
+        };
+        for ( Node[] pat : patterns ) {
+            List<Quad> viaFind   = toList(dsg.find(pat[0], pat[1], pat[2], pat[3]));
+            List<Quad> viaStream = dsg.stream(pat[0], pat[1], pat[2], pat[3]).toList();
+            assertEqualsUnordered(viaFind, viaStream);
+        }
+    }
+
+    // DatasetGraphBaseFind specific: the stream-first union helpers and streamNG.
+
+    @Test public void stream_dsgFind_union_02() {
+        assumeTrue(dsg instanceof DatasetGraphBaseFind, ()->"Not a DatasetGraphBaseFind");
+        DatasetGraphBaseFind dsgx = (DatasetGraphBaseFind)dsg;
+        List<Triple> x = dsgx.streamQuadsInUnionGraph(null, null, null).map(Quad::asTriple).toList();
+        assertEquals(3, x.size());
+        assertTrue(x.contains(q4.asTriple()));
+        assertTrue(x.contains(q5.asTriple()));
+        assertTrue(x.contains(q10.asTriple()));
+    }
+
+    @Test public void stream_dsgFind_union_03() {
+        assumeTrue(dsg instanceof DatasetGraphBaseFind, ()->"Not a DatasetGraphBaseFind");
+        DatasetGraphBaseFind dsgx = (DatasetGraphBaseFind)dsg;
+        List<Triple> x1 = dsgx.streamQuadsInUnionGraph(null, null, null).map(Quad::asTriple).toList();
+        List<Triple> x2 = toList(dsgx.findInUnionGraph(null, null, null));
+        assertEqualsUnordered(x1, x2);
+        List<Quad> x3 = dsgx.streamQuadsInUnionGraph(null, null, null).toList();
+        assertEquals(3, x3.size());
+        assertTrue(x3.stream().allMatch(q->q.getGraph().equals(Quad.unionGraph)));
+    }
+
+    @Test public void stream_dsgFind_union_05() {
+        assumeTrue(dsg instanceof DatasetGraphBaseFind, ()->"Not a DatasetGraphBaseFind");
+        DatasetGraphBaseFind dsgx = (DatasetGraphBaseFind)dsg;
+        List<Triple> x1 = dsgx.streamQuadsInUnionGraph(null, null, o).map(Quad::asTriple).toList();
+        List<Triple> x2 = quadsToDistinctTriples(dsg.find(Quad.unionGraph, null, null, o));
+        assertEqualsUnordered(x1, x2);
+        assertEquals(1, x2.size());
+    }
+
+    @Test public void stream_dsgFind_ng() {
+        assumeTrue(dsg instanceof DatasetGraphBaseFind, ()->"Not a DatasetGraphBaseFind");
+        DatasetGraphBaseFind dsgx = (DatasetGraphBaseFind)dsg;
+        assertEqualsUnordered(toList(dsgx.findNG(null, null, null, null)),
+                dsgx.streamNG(null, null, null, null).toList());
+        assertEqualsUnordered(toList(dsgx.findNG(null, s, p, o)),
+                dsgx.streamNG(null, s, p, o).toList());
+    }
+
     public static <T> void assertEqualsUnordered(List<T> list1, List<T> list2) {
         if ( ! ListUtils.equalsUnordered(list1, list2) )
             fail(msg(null, list1, list2));

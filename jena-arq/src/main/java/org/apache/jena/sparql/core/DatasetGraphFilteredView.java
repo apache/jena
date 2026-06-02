@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.logging.Log;
@@ -90,6 +91,12 @@ public class DatasetGraphFilteredView extends DatasetGraphReadOnly implements Da
             return iter;
         return Iter.filter(iter, this::filter);
     }
+
+    private Stream<Quad> filter(Stream<Quad> stream) {
+        if ( this.quadFilter == null )
+            return stream;
+        return stream.filter(this::filter);
+    }
     
     // Need to intercept these because otherwise that are a GraphView of the wrapped "dsg", not this one.  
 
@@ -147,6 +154,14 @@ public class DatasetGraphFilteredView extends DatasetGraphReadOnly implements Da
 
     @Override public boolean contains(Node g, Node s, Node p , Node o) {
         return filter(super.find(g, s, p, o)).hasNext();
+    }
+
+    @Override public Stream<Quad> stream(Node g, Node s, Node p, Node o) {
+        return filter(super.stream(g, s, p, o));
+    }
+
+    @Override public Stream<Quad> stream() {
+        return filter(super.stream());
     }
 
     @Override public boolean contains(Quad quad) {

@@ -23,6 +23,7 @@ package org.apache.jena.sparql.core;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Graph;
@@ -37,6 +38,8 @@ import org.apache.jena.sparql.graph.GraphSink;
 import org.apache.jena.sparql.graph.GraphZero;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
+
+import java.util.stream.Collectors;
 
 /** Tests for
  * {@link DatasetGraphZero},
@@ -285,5 +288,48 @@ public class TestSpecialDatasets {
         Graph g = dsg.getDefaultGraph();
         TransactionHandler h = g.getTransactionHandler();
         assertThrows(JenaException.class,()-> h.commit() );
+    }
+
+    // -- one : DatasetGraphOne wraps a single graph as the default graph.
+    //    Exercises the direct stream(g,s,p,o) override.
+
+    private static Node o2 = SSE.parseNode(":o2");
+
+    private static DatasetGraph oneWithData() {
+        Graph g = GraphFactory.createGraphMem();
+        g.add(triple);                          // (:s :p :o)
+        g.add(SSE.parseTriple("(:s :p :o2)"));
+        return DatasetGraphFactory.wrap(g);
+    }
+
+    @Test public void one_stream_all() {
+        DatasetGraph dsg = oneWithData();
+        assertEquals(2, dsg.stream().count());
+        assertEquals(Iter.toSet(dsg.find()), dsg.stream().collect(Collectors.toSet()));
+    }
+
+    @Test public void one_stream_dft() {
+        DatasetGraph dsg = oneWithData();
+        assertEquals(2, dsg.stream(Quad.defaultGraphIRI, null, null, null).count());
+        assertEquals(1, dsg.stream(Quad.defaultGraphIRI, null, null, o2).count());
+    }
+
+    @Test public void one_stream_named_empty() {
+        DatasetGraph dsg = oneWithData();
+        // DatasetGraphOne has no named graphs: a specific named graph streams nothing.
+        assertEquals(0, dsg.stream(gn, null, null, null).count());
+    }
+
+    @Test public void one_stream_matches_find() {
+        DatasetGraph dsg = oneWithData();
+        Node[][] patterns = {
+            { null,                 null, null, null },
+            { Quad.defaultGraphIRI, null, null, null },
+            { gn,                   null, null, null },
+            { null,                 null, null, o2   },
+        };
+        for ( Node[] p : patterns )
+            assertEquals(Iter.toSet(dsg.find(p[0], p[1], p[2], p[3])),
+                         dsg.stream(p[0], p[1], p[2], p[3]).collect(Collectors.toSet()));
     }
 }

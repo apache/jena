@@ -23,6 +23,7 @@ package org.apache.jena.dboe.transaction.txn;
 
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import org.apache.jena.atlas.iterator.IteratorWrapper;
 
@@ -42,6 +43,12 @@ public class IteratorTxnTracker<T> extends IteratorWrapper<T> {
     @Override public T next()           { check() ; return super.next() ; }
 
     @Override public void remove()      { check() ; super.remove() ; }
+
+    @Override
+    public void forEachRemaining(Consumer<? super T> action) {
+        check() ;
+        super.forEachRemaining(action) ;
+    }
 
     private void check() {
         Transaction txn = txnSystem.getThreadTransaction();

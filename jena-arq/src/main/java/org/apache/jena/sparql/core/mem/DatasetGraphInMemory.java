@@ -32,6 +32,7 @@ import java.util.concurrent.atomic.AtomicLong ;
 import java.util.concurrent.locks.ReentrantLock ;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.graph.Graph;
@@ -321,6 +322,11 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
         return quadsIndex().find(g, s, p, o).iterator();
     }
 
+    private Stream<Quad> quadsStreamer(final Node g, final Node s, final Node p, final Node o) {
+        if (isUnionGraph(g)) return streamInUnionGraph$(s, p, o);
+        return quadsIndex().find(g, s, p, o);
+    }
+
     /**
      * Union graph is the merge of named graphs.
      */
@@ -329,8 +335,20 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
         return access(() -> quadsIndex().findInUnionGraph(s, p, o).iterator());
     }
 
+    /**
+     * Union graph is the merge of named graphs.
+     */
+    // Temp - Should this be replaced by DatasetGraphBaseFind code?
+    private Stream<Quad> streamInUnionGraph$(final Node s, final Node p, final Node o) {
+        return access(() -> quadsIndex().findInUnionGraph(s, p, o));
+    }
+
     private Iterator<Quad> triplesFinder(final Node s, final Node p, final Node o) {
         return G.triples2quadsDftGraph(defaultGraph().find(s, p, o).iterator());
+    }
+
+    private Stream<Quad> triplesStreamer(final Node s, final Node p, final Node o) {
+        return G.triples2quadsDftGraph(defaultGraph().find(s, p, o));
     }
 
     @Override
@@ -437,12 +455,27 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     }
 
     @Override
+    protected Stream<Quad> streamInDftGraph(Node s, Node p, Node o) {
+        return access(() -> triplesStreamer(s, p, o));
+    }
+
+    @Override
     protected Iterator<Quad> findInSpecificNamedGraph(final Node g, final Node s, final Node p, final Node o) {
         return access(() -> quadsFinder(g, s, p, o));
     }
 
     @Override
+    protected Stream<Quad> streamInSpecificNamedGraph(Node g, Node s, Node p, Node o) {
+        return access(() -> quadsStreamer(g, s, p, o));
+    }
+
+    @Override
     protected Iterator<Quad> findInAnyNamedGraphs(final Node s, final Node p, final Node o) {
         return findInSpecificNamedGraph(ANY, s, p, o);
+    }
+
+    @Override
+    protected Stream<Quad> streamInAnyNamedGraphs(Node s, Node p, Node o) {
+        return streamInSpecificNamedGraph(ANY, s, p, o);
     }
 }

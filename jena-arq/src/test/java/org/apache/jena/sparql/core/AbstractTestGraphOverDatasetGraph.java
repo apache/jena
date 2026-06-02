@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Iterator;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -111,6 +112,32 @@ public abstract class AbstractTestGraphOverDatasetGraph
             iter.next();
         assertEquals(2, g.size());
     }
+
+    // ---- Graph#stream() over a dataset must match Graph#find() (GraphView.stream override).
+
+    @Test
+    public void graphDSG_stream_dft() {
+        Graph g = makeDefaultGraph(baseDSG);
+        assertEquals(1, g.stream(null, null, null).count());
+        assertEquals(SSE.parseTriple("(<s> <p> 0)"), g.stream().findFirst().orElse(null));
+        assertEquals(Iter.toSet(g.find(null, null, null)), g.stream(null, null, null).collect(Collectors.toSet()));
+    }
+
+    @Test
+    public void graphDSG_stream_named() {
+        Graph g = makeNamedGraph(baseDSG, gn1);
+        assertEquals(1, g.stream(null, null, null).count());
+        assertEquals(Iter.toSet(g.find(null, null, null)), g.stream(null, null, null).collect(Collectors.toSet()));
+    }
+
+    @Test
+    public void graphDSG_stream_union() {
+        Graph g = makeNamedGraph(baseDSG, Quad.unionGraph);
+        // The union view de-duplicates the triple shared by g2 and g3 -> 2 distinct triples.
+        assertEquals(2, g.stream(null, null, null).count());
+        assertEquals(Iter.toSet(g.find(null, null, null)), g.stream(null, null, null).collect(Collectors.toSet()));
+    }
+
 
     // ---- prefixes
 

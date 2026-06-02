@@ -22,6 +22,7 @@
 package org.apache.jena.sparql.core;
 
 import java.util.Iterator ;
+import java.util.stream.Stream;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Sync ;
@@ -123,6 +124,24 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
         Node g = graphNode(graphName) ;
         Iterator<Triple> iter = G.quads2triples(dsg.find(g, s, p, o)) ;
         return WrappedIterator.createNoRemove(iter) ;
+    }
+
+    /**
+     * Stream equivalent of {@link #graphBaseFind} / {@link #graphUnionFind}: route through DatasetGraph#stream
+     * so stream-native dataset (e.g. an in-memory one) stays on streams rather than iterator-wrapping.
+     * @param s subject match
+     * @param p predicate match
+     * @param o object match
+     * @return stream of matching triples
+     */
+    @Override
+    public Stream<Triple> stream(Node s, Node p, Node o) {
+        Node g = graphNode(graphName) ;
+        Stream<Triple> stream = G.quads2triples(dsg.stream(g, s, p, o)) ;
+        if ( Quad.isUnionGraph(graphName) )
+            // Suppress duplicates after projecting to triples.
+            stream = stream.distinct() ;
+        return stream ;
     }
 
     private static Node graphNode(Node gn) {

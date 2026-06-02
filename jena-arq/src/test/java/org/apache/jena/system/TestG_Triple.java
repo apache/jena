@@ -35,6 +35,8 @@ import org.apache.jena.riot.RDFParser;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sys.JenaSystem;
 
+import java.util.stream.Stream;
+
 public class TestG_Triple {
 
 	static { JenaSystem.init(); }
@@ -99,5 +101,12 @@ public class TestG_Triple {
 	private static Graph graph(String ttlBody) {
 		String setup = "PREFIX :     <http://example/>\n";
 		return RDFParser.fromString(setup+ttlBody, Lang.TURTLE).toGraph();
+	}
+
+	@Test
+	public void quads2triples() {
+		var quad = SSE.parseQuad("(:g :s :p :o)");
+		var triple = G.quads2triples(Stream.of(quad)).findFirst().orElseThrow();
+		assertEquals(SSE.parseTriple("(:s :p :o)"), triple);
 	}
 }

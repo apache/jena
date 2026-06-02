@@ -23,6 +23,7 @@ package org.apache.jena.riot.writer.c14n;
 
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.stream.Stream;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Graph;
@@ -63,6 +64,16 @@ public class DatasetGraphOrdered extends DatasetGraphQuads {
        Iterator<Quad> iterator = Iter.filter(quads.iterator(),
                                              quad -> (matches(quad, g, s, p, o) && ! Quad.isDefaultGraph(g)));
         return iterator;
+    }
+
+    @Override
+    public Stream<Quad> stream(Node g, Node s, Node p, Node o) {
+        return quads.stream().filter(quad -> matches(quad, g, s, p, o));
+    }
+
+    @Override
+    public Stream<Quad> stream() {
+        return quads.stream();
     }
 
     @Override

@@ -22,6 +22,7 @@
 package org.apache.jena.sparql.core;
 
 import java.util.Iterator;
+import java.util.stream.Stream;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Graph;
@@ -203,15 +204,32 @@ public class DatasetGraphOne extends DatasetGraphBaseFind {
     }
 
     @Override
+    protected Stream<Quad> streamInDftGraph(Node s, Node p, Node o) {
+        return G.triples2quadsDftGraph(graph.stream(s, p, o));
+    }
+
+    @Override
     protected Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p, Node o) {
         // There are no named graphs
         return Iter.nullIterator();
     }
 
     @Override
+    protected Stream<Quad> streamInSpecificNamedGraph(Node g, Node s, Node p, Node o) {
+        // There are no named graphs
+        return Stream.empty();
+    }
+
+    @Override
     protected Iterator<Quad> findInAnyNamedGraphs(Node s, Node p, Node o) {
         // There are no named graphs
         return Iter.nullIterator();
+    }
+
+    @Override
+    protected Stream<Quad> streamInAnyNamedGraphs(Node s, Node p, Node o) {
+        // There are no named graphs
+        return Stream.empty();
     }
 
     protected static boolean isDefaultGraph(Quad quad) {

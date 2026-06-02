@@ -22,6 +22,7 @@
 package org.apache.jena.sparql.core;
 
 import java.util.Iterator;
+import java.util.stream.Stream;
 
 import org.apache.jena.atlas.lib.Sync;
 import org.apache.jena.graph.Graph;
@@ -210,6 +211,14 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
     @Override
     public Iterator<Quad> findNG(Node g, Node s, Node p, Node o)
     { return getR().findNG(g, s, p, o); }
+
+    @Override
+    public Stream<Quad> stream(Node g, Node s, Node p, Node o)
+    { return getR().stream(g, s, p, o); }
+
+    @Override
+    public Stream<Quad> stream()
+    { return getR().stream(); }
 
     @Override
     public boolean contains(Quad quad)

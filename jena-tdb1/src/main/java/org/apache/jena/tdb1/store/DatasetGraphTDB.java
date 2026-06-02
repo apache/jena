@@ -23,6 +23,7 @@ package org.apache.jena.tdb1.store;
 
 
 import java.util.Iterator ;
+import java.util.stream.Stream;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Closeable ;
@@ -84,12 +85,24 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     { return G.triples2quadsDftGraph(getTripleTable().find(s, p, o)) ; }
 
     @Override
+    protected Stream<Quad> streamInDftGraph(Node s, Node p, Node o)
+    { return Iter.asStream(findInDftGraph(s, p, o)) ; }
+
+    @Override
     protected Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p, Node o)
     { return getQuadTable().find(g, s, p, o) ; }
 
     @Override
+    protected Stream<Quad> streamInSpecificNamedGraph(Node g, Node s, Node p, Node o)
+    { return Iter.asStream(findInSpecificNamedGraph(g, s, p, o)) ; }
+
+    @Override
     protected Iterator<Quad> findInAnyNamedGraphs(Node s, Node p, Node o)
     { return getQuadTable().find(Node.ANY, s, p, o) ; }
+
+    @Override
+    protected Stream<Quad> streamInAnyNamedGraphs(Node s, Node p, Node o)
+    { return Iter.asStream(findInAnyNamedGraphs(s, p, o)) ; }
 
     @Override
     protected void addToDftGraph(Node s, Node p, Node o)

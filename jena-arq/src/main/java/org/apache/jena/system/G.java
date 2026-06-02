@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.Copyable;
@@ -792,6 +793,10 @@ public class G {
     public static Iter<Triple> quads2triples(Iterator<Quad> iter)
     { return Iter.iter(iter).map(Quad::asTriple); }
 
+    /** Project quads to triples */
+    public static Stream<Triple> quads2triples(Stream<Quad> stream)
+    { return stream.map(Quad::asTriple); }
+
     /** Project quad to graph name */
     public static Iterator<Node> quad2graphName(Iterator<Quad> iter)
     { return Iter.map(iter, Quad::getGraph); }
@@ -897,6 +902,11 @@ public class G {
         return Iter.iter(iter).map(t -> Quad.create(graphNode, t));
     }
 
+    /** Convert a stream of triples into quads for the specified graph name. */
+    public static Stream<Quad> triples2quads(Node graphNode, Stream<Triple> stream) {
+        return stream.map(t -> Quad.create(graphNode, t));
+    }
+
     /**
      * Convert an iterator of triples into quads for the default graph. This is
      * {@link Quad#defaultGraphIRI}, not {@link Quad#defaultGraphNodeGenerated}, which is
@@ -904,6 +914,15 @@ public class G {
      */
     public static Iter<Quad> triples2quadsDftGraph(Iterator<Triple> iter) {
         return triples2quads(Quad.defaultGraphIRI, iter);
+    }
+
+    /**
+     * Convert a stream of triples into quads for the default graph. This is
+     * {@link Quad#defaultGraphIRI}, not {@link Quad#defaultGraphNodeGenerated}, which is
+     * for quads outside a dataset, usually the output of parsers.
+     */
+    public static Stream<Quad> triples2quadsDftGraph(Stream<Triple> stream) {
+        return triples2quads(Quad.defaultGraphIRI, stream);
     }
 
     /**

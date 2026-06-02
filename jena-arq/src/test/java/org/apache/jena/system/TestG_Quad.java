@@ -34,6 +34,8 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sys.JenaSystem;
 
+import java.util.stream.Stream;
+
 public class TestG_Quad {
 
 	static { JenaSystem.init(); }
@@ -68,5 +70,18 @@ public class TestG_Quad {
 	private static DatasetGraph dataset(String trigBody) {
 		String setup = "PREFIX :     <http://example/>\n";
 		return RDFParser.fromString(setup+trigBody, Lang.TRIG).toDatasetGraph();
+	}
+
+	@Test
+	public void triples2quads() {
+		var quad = SSE.parseQuad("(:g :s :p :o)");
+		var q = G.triples2quads(quad.getGraph(), Stream.of(quad.asTriple())).findFirst().orElseThrow();
+		assertEquals(quad, q);
+	}
+
+	@Test void triples2quadsDftGraph() {
+		var triple = SSE.parseTriple("(:s :p :o)");
+		var quad = G.triples2quadsDftGraph(Stream.of(triple)).findFirst().orElseThrow();
+		assertEquals(Quad.create(Quad.defaultGraphIRI, triple), quad);
 	}
 }

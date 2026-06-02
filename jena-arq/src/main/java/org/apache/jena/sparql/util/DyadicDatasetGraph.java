@@ -30,6 +30,7 @@ import static org.apache.jena.sparql.core.Quad.defaultGraphIRI;
 
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.PairOfSameType;
@@ -205,6 +206,20 @@ public abstract class DyadicDatasetGraph extends PairOfSameType<DatasetGraph> im
 
     protected Iterator<Quad> findInOneGraph(Node g, Node s, Node p, Node o) {
         return G.triples2quads(g, getGraph(g).find(s, p, o));
+    }
+
+    @Override
+    public Stream<Quad> stream(Node g, Node s, Node p, Node o) {
+        if ( g.isConcrete() )
+            return streamInOneGraph(g, s, p, o);
+        return Stream.concat(
+                Iter.asStream(listGraphNodes()).flatMap(gn -> streamInOneGraph(gn, s, p, o)),
+                streamInOneGraph(defaultGraphIRI, s, p, o)
+        );
+    }
+
+    protected Stream<Quad> streamInOneGraph(Node g, Node s, Node p, Node o) {
+        return G.triples2quads(g, getGraph(g).stream(s, p, o));
     }
 
     @Override

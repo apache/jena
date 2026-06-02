@@ -22,6 +22,7 @@
 package org.apache.jena.dboe.storage.system;
 
 import java.util.Iterator;
+import java.util.stream.Stream;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.dboe.storage.DatabaseRDF;
@@ -45,6 +46,7 @@ import org.apache.jena.sparql.core.DatasetGraphBaseFind;
 import org.apache.jena.sparql.core.DatasetGraphTriplesQuads;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.Transactional;
+import org.apache.jena.system.G;
 
 /** Alternative: DatasetGraph over RDFStorage, using DatasetGraphBaseFind
  *  Collapses DatasetGraphTriplesQuads into this adapter class.
@@ -131,7 +133,12 @@ public class DatasetGraphStorage extends DatasetGraphBaseFind implements Databas
 
     @Override
     protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o) {
-        return Iter.map(findStorage(s, p, o), t -> Quad.create(Quad.defaultGraphIRI, t));
+        return G.triples2quadsDftGraph(findStorage(s, p, o));
+    }
+
+    @Override
+    protected Stream<Quad> streamInDftGraph(Node s, Node p, Node o) {
+        return Iter.asStream(findInDftGraph(s, p, o));
     }
 
     @Override
@@ -140,9 +147,19 @@ public class DatasetGraphStorage extends DatasetGraphBaseFind implements Databas
     }
 
     @Override
+    protected Stream<Quad> streamInSpecificNamedGraph(Node g, Node s, Node p, Node o) {
+        return Iter.asStream(findInSpecificNamedGraph(g, s, p, o));
+    }
+
+    @Override
     protected Iterator<Quad> findInAnyNamedGraphs(Node s, Node p, Node o) {
         // Implementations may wish to do better.
         return findStorage(Node.ANY, s, p, o);
+    }
+
+    @Override
+    protected Stream<Quad> streamInAnyNamedGraphs(Node s, Node p, Node o) {
+        return Iter.asStream(findInAnyNamedGraphs(s, p, o));
     }
 
     @Override
