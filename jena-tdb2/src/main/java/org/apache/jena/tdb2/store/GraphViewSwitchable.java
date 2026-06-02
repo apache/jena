@@ -28,6 +28,8 @@ import org.apache.jena.sparql.core.GraphView;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
+import java.util.stream.Stream;
+
 /**
  * A GraphView that is sensitive to {@link DatasetGraphSwitchable} switching.
  * This ensures that a graph object remains valid as the {@link DatasetGraphSwitchable} switches.
@@ -91,6 +93,11 @@ public class GraphViewSwitchable extends GraphView {
     protected ExtendedIterator<Triple> graphBaseFind(Node s, Node p, Node o) {
         // This breaks the cycle because super.find will call here again.
         return getBaseGraph().find(s, p, o);
+    }
+
+    @Override
+    public Stream<Triple> stream(Node s, Node p, Node o) {
+        return getBaseGraph().stream(s, p, o);
     }
 
     private DatasetGraphTDB getDSG() {

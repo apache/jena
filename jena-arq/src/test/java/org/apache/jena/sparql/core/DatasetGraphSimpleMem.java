@@ -24,6 +24,7 @@ package org.apache.jena.sparql.core;
 import static org.apache.jena.system.G.nullAsAny;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
@@ -90,33 +91,60 @@ public class DatasetGraphSimpleMem extends DatasetGraphTriplesQuads implements T
         return false;
     }
 
-    @Override
-    public Iterator<Quad> findInDftGraph(Node s, Node p, Node o) {
+    private List<Quad> collectInDftGraph(Node s, Node p, Node o) {
         List<Quad> results = new ArrayList<>();
         for ( Triple t : triples )
             if ( matches(t, s, p, o) )
                 // ?? Quad.defaultGraphNodeGenerated
                 // Quad.defaultGraphIRI
                 results.add(Quad.create(Quad.defaultGraphIRI, t));
-        return results.iterator();
+        return results;
     }
 
     @Override
-    public Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p, Node o) {
+    public Iterator<Quad> findInDftGraph(Node s, Node p, Node o) {
+        return collectInDftGraph(s, p, o).iterator();
+    }
+
+    @Override
+    protected Stream<Quad> streamInDftGraph(Node s, Node p, Node o) {
+        return collectInDftGraph(s, p, o).stream();
+    }
+
+    private List<Quad> collectInSpecificNamedGraph(Node g, Node s, Node p, Node o) {
         List<Quad> results = new ArrayList<>();
         for ( Quad q : quads )
             if ( matches(q, g, s, p, o) )
                 results.add(q);
-        return results.iterator();
+        return results;
     }
 
     @Override
-    public Iterator<Quad> findInAnyNamedGraphs(Node s, Node p, Node o) {
+    public Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p, Node o) {
+        return collectInSpecificNamedGraph(g, s, p, o).iterator();
+    }
+
+    @Override
+    protected Stream<Quad> streamInSpecificNamedGraph(Node g, Node s, Node p, Node o) {
+        return collectInSpecificNamedGraph(g, s, p, o).stream();
+    }
+
+    private List<Quad> collectInAnyNamedGraphs(Node s, Node p, Node o) {
         List<Quad> results = new ArrayList<>();
         for ( Quad q : quads )
             if ( matches(q, Node.ANY, s, p, o) )
                 results.add(q);
-        return results.iterator();
+        return results;
+    }
+
+    @Override
+    public Iterator<Quad> findInAnyNamedGraphs(Node s, Node p, Node o) {
+        return collectInAnyNamedGraphs(s, p, o).iterator();
+    }
+
+    @Override
+    protected Stream<Quad> streamInAnyNamedGraphs(Node s, Node p, Node o) {
+        return collectInAnyNamedGraphs(s, p, o).stream();
     }
 
     private boolean matches(Triple t, Node s, Node p, Node o) {

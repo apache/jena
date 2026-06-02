@@ -21,14 +21,15 @@
 
 package org.apache.jena.system.buffering;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.graph.Node;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedClass;
 import org.junit.jupiter.params.provider.Arguments;
@@ -40,6 +41,8 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @ParameterizedClass
@@ -189,5 +192,60 @@ public class TestBufferingDatasetGraph {
         assertFalse(buffered.isEmpty());
         buffered.reset();
         assertTrue(buffered.isEmpty());
+    }
+
+    // ---- stream() must agree with find(), including for named graphs.
+
+    @Test public void stream_buffered_named_graph() {
+        Quad q = SSE.parseQuad("(:g :s :p :o)");     // a buffered, un-flushed named-graph quad
+        buffered.execute(() -> {
+            buffered.add(q);
+            Node g = q.getGraph();
+            assertEquals(1L, buffered.stream(g, Node.ANY, Node.ANY, Node.ANY).count());               // specific named graph
+            assertEquals(1L, buffered.stream().count());                                              // all quads
+            assertEquals(1L, buffered.stream(Quad.unionGraph, Node.ANY, Node.ANY, Node.ANY).count()); // union graph
+            // find(unionGraph, ...) shares the same primitive: guard against the iterator regression.
+            assertEquals(1L, Iter.count(buffered.find(Quad.unionGraph, Node.ANY, Node.ANY, Node.ANY)));
+            // Whole dataset: stream() returns exactly what find() returns.
+            assertEquals(Iter.toSet(buffered.find()), buffered.stream().collect(Collectors.toSet()));
+        });
+    }
+
+    @Test public void stream_matches_find_overlay() {
+        Node g1 = SSE.parseNode(":g1");
+        Node g2 = SSE.parseNode(":g2");
+        Node s  = SSE.parseNode(":s");
+        Quad baseG1  = SSE.parseQuad("(:g1 :s :p 1)");
+        Quad baseG2  = SSE.parseQuad("(:g2 :s :p 2)");                                  // deleted in the buffer
+        Quad baseDft = Quad.create(Quad.defaultGraphIRI, SSE.parseTriple("(:s :p 3)"));
+        Quad addG1   = SSE.parseQuad("(:g1 :s :p 4)");                                  // buffered add (named)
+        Quad addDft  = Quad.create(Quad.defaultGraphIRI, SSE.parseTriple("(:s :p 5)")); // buffered add (default)
+
+        buffered.executeWrite(() -> {
+            base.add(baseG1); base.add(baseG2); base.add(baseDft);
+            buffered.add(addG1); buffered.add(addDft); buffered.delete(baseG2);
+
+            // The buffered overlay (base + added - deleted) must be identical via stream() and find().
+            Node[][] patterns = {
+                { Node.ANY,             Node.ANY, Node.ANY, Node.ANY },   // everything
+                { Quad.defaultGraphIRI, Node.ANY, Node.ANY, Node.ANY },   // default graph
+                { g1,                   Node.ANY, Node.ANY, Node.ANY },   // specific named graph (base + added)
+                { g2,                   Node.ANY, Node.ANY, Node.ANY },   // named graph emptied by a buffered delete
+                { Quad.unionGraph,      Node.ANY, Node.ANY, Node.ANY },   // union of named graphs (distinct triples)
+                { Node.ANY,             s,        Node.ANY, Node.ANY },   // pattern spanning graphs
+            };
+            for ( Node[] pat : patterns ) {
+                Set<Quad> viaFind   = Iter.toSet(buffered.find(pat[0], pat[1], pat[2], pat[3]));
+                Set<Quad> viaStream = buffered.stream(pat[0], pat[1], pat[2], pat[3]).collect(Collectors.toSet());
+                assertEquals(viaFind, viaStream, () -> "stream() != find() for " + Arrays.toString(pat));
+            }
+
+            // Concrete overlay expectations. (Union parity is covered by the loop above; its exact
+            // contents are left to find()/stream() agreement, since BufferingDatasetGraph's
+            // "any named graph" view also surfaces the default graph - pre-existing, out of scope here.)
+            assertEquals(2L, buffered.stream(g1, Node.ANY, Node.ANY, Node.ANY).count());                   // base + buffered add
+            assertEquals(0L, buffered.stream(g2, Node.ANY, Node.ANY, Node.ANY).count());                   // fully deleted
+            assertEquals(2L, buffered.stream(Quad.defaultGraphIRI, Node.ANY, Node.ANY, Node.ANY).count()); // base + buffered add
+        });
     }
 }

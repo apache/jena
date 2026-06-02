@@ -22,12 +22,14 @@
 package org.apache.jena.sparql.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -175,6 +177,36 @@ public class TestDatasetGraphFilteredView {
             assertEquals(3,x0);
             long x1 = Iter.count(dsg.find(g2, null, null, null));
             assertEquals(2,x1);
+        });
+    }
+
+    // stream() must apply the same filter as find(). DatasetGraphWrapper.stream(...) forwards to
+    // the wrapped dataset, so these guard against the filter being bypassed for stream access.
+
+    @Test public void filtered_stream_2() {
+        Predicate<Quad> filter = x->x.getGraph().equals(g2);
+        Txn.executeRead(basedsg(),()->{
+            DatasetGraph dsg = new DatasetGraphFilteredView(basedsg(),filter, Collections.singleton(g1));
+            assertEquals(2, dsg.stream(null, null, null, null).count());
+            assertEquals(2, dsg.stream(g2, null, null, null).count());
+            assertEquals(2, dsg.stream(null, s2, null, null).count());
+            assertEquals(0, dsg.stream(g1, null, null, null).count());
+            // No leakage: stream() returns exactly the filtered find() result.
+            assertEquals(Iter.toSet(dsg.find()), dsg.stream().collect(Collectors.toSet()));
+        });
+    }
+
+    @Test public void filtered_stream_matches_find() {
+        Predicate<Quad> filter = x-> x.getSubject().equals(s2) || x.getSubject().equals(s1);
+        Txn.executeRead(basedsg(),()->{
+            DatasetGraph dsg = new DatasetGraphFilteredView(basedsg(),filter, Arrays.asList(g1, g2));
+            // Sanity: the unfiltered base really does contain more quads than the filtered view.
+            assertEquals(3, dsg.stream().count());
+            assertTrue(Iter.count(basedsg().find()) > 3);
+            // stream() and find() agree under filtering, for the whole dataset and per-pattern.
+            assertEquals(Iter.toSet(dsg.find()), dsg.stream().collect(Collectors.toSet()));
+            assertEquals(Iter.toSet(dsg.find(g2, null, null, null)),
+                         dsg.stream(g2, null, null, null).collect(Collectors.toSet()));
         });
     }
 
