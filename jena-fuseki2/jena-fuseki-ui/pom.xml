@@ -33,8 +33,7 @@
     </parent>
 
     <properties> 
-        <node.version>v22.18.0</node.version>
-        <!--<node.version>v24.11.0</node.version>-->
+        <node.version>v24.16.0</node.version>
         <yarn.version>v1.22.17</yarn.version>
         <automatic.module.name>org.apache.jena.fuseki.ui</automatic.module.name>
 
@@ -42,8 +41,8 @@
              Allow for skipping the tests.
              The test frameworks need various software components to 
              be available on the host running maven. This isn't always 
-             practical. This property allows the UI to be built on suchi
-	     machines by skipping the tests.
+             practical. This property allows the UI to be built on such
+	           machines by skipping the tests.
              It is set "true" by profile "ui-skip-tests"
         -->
         <skip.ui.tests>false</skip.ui.tests>
