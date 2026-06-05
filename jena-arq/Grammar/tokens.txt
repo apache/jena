@@ -5,7 +5,7 @@
 // The presense of a token in the file does not mean it is actually used.
 
 [<EOF>]          ::=
-[<IRIref>]   ::= '<' [^<>"{}|^`\]-[#x00-#x20] | <UCHAR> ) * '>'
+[<IRIref>]   ::= '<' ( [^<>"{}|^`\]-[#x00-#x20] | <UCHAR> ) * '>'
 
 <PNAME_NS>   ::= <PN_PREFIX>? ':'
 <PNAME_LN>   ::= <PNAME_NS> <PN_LOCAL>
