@@ -445,7 +445,11 @@ public class HttpLib {
         String path = uri.getRawPath();
         if ( path == null || path.isEmpty() )
             path = "/";
-        return path;
+        String target = path;
+        String qs = uri.getRawQuery();
+        if ( qs != null )
+            target = target+"?"+qs;
+        return target;
     }
 
     /** Return a HttpRequest */

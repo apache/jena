@@ -21,7 +21,7 @@
 
 package org.apache.jena.http.auth;
 
-import static org.apache.jena.http.auth.AuthHttp.A1_MD5;
+import static org.apache.jena.http.auth.AuthHttp.A1;
 import static org.apache.jena.http.auth.AuthHttp.A2_auth;
 import static org.apache.jena.http.auth.AuthHttp.H;
 import static org.apache.jena.http.auth.AuthHttp.KD;
@@ -47,19 +47,32 @@ class DigestLib {
                                                      String username, String password,
                                                      String method, String requestTarget,
                                                      String cnonce, String nc, String authType) {
-        String a1 = A1_MD5(username, auth.realm, password) ;
+        DigestAlgorithm dAlgo = getAlgorithm(auth);
+        if ( dAlgo == null )
+            // Unrecognized algorithm name.
+            return null;
+        String a1 = A1(username, auth.realm, password, dAlgo) ;
         if ( auth.qop == null ) {
             // RFC 2069
             // Firefox seems to prefer this form??
-            return KD(H(a1), auth.nonce+":"+H(A2_auth(method, requestTarget))) ;
+            return KD(H(a1, dAlgo), auth.nonce+":"+H(A2_auth(method, requestTarget), dAlgo), dAlgo) ;
         }
         else {
             Objects.nonNull(cnonce) ;
             Objects.nonNull(nc) ;
-            return KD(H(a1),
-                      auth.nonce+":"+nc+":"+cnonce+":"+authType+":"+H(A2_auth(method, requestTarget))
+            return KD(H(a1, dAlgo),
+                      auth.nonce+":"+nc+":"+cnonce+":"+authType+":"+H(A2_auth(method, requestTarget), dAlgo),
+                      dAlgo
                     ) ;
         }
+    }
+
+    public static DigestAlgorithm getAlgorithm(AuthChallenge challenge) {
+        if ( challenge.algorithm == null )
+            // Default by RFC 7616
+            return DigestAlgorithm.MD5;
+        // null means ignore.
+        return DigestAlgorithm.fromString(challenge.algorithm);
     }
 
     private static Random nonceGenerator = new SecureRandom();
@@ -105,10 +118,16 @@ class DigestLib {
             String responseField = calcDigestChallengeResponse(aHeader, user, password,
                                                                method, requestTarget,
                                                                clientNonce, nc, "auth");
+            if ( responseField == null ) {
+                return null;
+                // Unrecognized algorithm. RFC says "ignore request"
+            }
+
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("Digest ");
             field(stringBuilder, true, "username", user, true);
             field(stringBuilder, false, "realm", aHeader.realm, true);
+            field(stringBuilder, false, "algorithm", aHeader.algorithm, false);
             field(stringBuilder, false, "nonce", aHeader.nonce, true);
             field(stringBuilder, false, "uri", requestTarget, true);
             field(stringBuilder, false, "qop", "auth", false);
