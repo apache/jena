@@ -133,6 +133,10 @@ public class AuthBearerFilter implements Filter {
 
             // ---- "Authorization:" header present.
             AuthHeader authHeader = getAuthToken(request, auth);
+            if ( authHeader == null ) {
+                ServletOps.errorBadRequest("Bad syntax in Authorization header");
+                return;
+            }
 
             // Test for Authorization: Bearer ..."
             if ( ! authHeader.isBearerAuth() ) {

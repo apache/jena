@@ -38,6 +38,8 @@ public class AuthChallenge {
     public final String nonce;
     public final String opaque;
     public final String qop;
+    public final String algorithm;
+
     // May be null;
     public final Map<String, String> authParams;
 
@@ -80,13 +82,14 @@ public class AuthChallenge {
                                      get(auth, AuthHttp.strNonce), // Required for digest, not for basic.
                                      get(auth, AuthHttp.strOpaque),
                                      get(auth, AuthHttp.strQop),
+                                     get(auth, AuthHttp.strAlgorithm),
                                      auth.getAuthParams());
         } catch (NullPointerException ex) {
             return null;
         }
     }
 
-    private AuthChallenge(AuthScheme authScheme, AuthHeader authHeader, String realm, String nonce, String opaque, String qop, Map<String, String> authParams) {
+    private AuthChallenge(AuthScheme authScheme, AuthHeader authHeader, String realm, String nonce, String opaque, String qop, String algorithm, Map<String, String> authParams) {
         Objects.requireNonNull(authScheme);
         Objects.requireNonNull(authHeader);
         this.authScheme = authScheme;
@@ -95,6 +98,7 @@ public class AuthChallenge {
         this.nonce = nonce;
         this.opaque = opaque;
         this.qop = qop;
+        this.algorithm = algorithm;
         this.authParams = authParams;
     }
 

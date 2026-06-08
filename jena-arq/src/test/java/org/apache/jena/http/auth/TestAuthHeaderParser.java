@@ -41,7 +41,6 @@ public class TestAuthHeaderParser {
         return AuthHeader.parseChallenge(input);
     }
 
-
     @Test public void parse_empty() {
         AuthHeader auth = parseAuth("");
         assertNull(auth.getAuthScheme());
@@ -162,7 +161,6 @@ public class TestAuthHeaderParser {
         assertNull(map);
     }
 
-
     @Test public void parse_bearer_bad_01() {
         AuthHeader auth = parseAuth("Bearer ");
         assertTrue(auth.isBearerAuth());
@@ -190,8 +188,6 @@ public class TestAuthHeaderParser {
         assertEquals("UnKnOwN", auth.getAuthSchemeName());
         assertEquals("a=b", auth.getUnknown());
     }
-
-
 
     @Test public void parse_challenge_01() {
         AuthHeader auth = parseChallenge("Bearer realm=\"somewhere\"");
@@ -236,5 +232,4 @@ public class TestAuthHeaderParser {
         assertNotNull(map);
         assertEquals("hades", map.get("realm"));
     }
-
 }

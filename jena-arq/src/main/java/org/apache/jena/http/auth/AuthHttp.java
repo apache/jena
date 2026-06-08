@@ -23,33 +23,40 @@ package org.apache.jena.http.auth;
 
 import java.util.Objects ;
 
-import org.apache.commons.codec.digest.DigestUtils ;
-
-/** Constants and operations from RFC 2617 (digest, now RFC 7616; basic, now RFC 7617), using MD5 (the default) */
+/**
+ * Constants and operations from RFC 2617 (digest, now RFC 7616; basic, now RFC 7617)
+ * Original digest authentication: RFC 2069
+ */
 class AuthHttp {
-    public static String strUsername = "username";
-    public static String strRealm    = "realm";
-    public static String strNonce    = "nonce";
-    public static String strNc       = "nc";
-    public static String strCNonce   = "cnonce";
-    public static String strQop      = "qop";
-    public static String strResponse = "response";
-    public static String strOpaque   = "opaque";
-    public static String strUri      = "uri";
+    // Field names
+    public static final String strUsername      = "username";
+    public static final String strRealm         = "realm";
+    public static final String strNonce         = "nonce";
+    public static final String strNc            = "nc";
+    public static final String strCNonce        = "cnonce";
+    public static final String strQop           = "qop";
+    public static final String strResponse      = "response";
+    public static final String strOpaque        = "opaque";
+    public static final String strUri           = "uri";
+    public static final String strAlgorithm     = "algorithm";
 
-    public static String KD(String data) {
-        return H(data) ;
+    // Algorithm names.
+    public static final String algortihmSHA256           = "SHA-256";
+    public static final String algortihmSHA256_sess      = "SHA-256-sess";
+    public static final String algortihmSHA512_256       = "SHA-512-256";
+    public static final String algortihmSHA512_256_sess  = "SHA-512-256-sess";
+    public static final String algortihmMD5              = "MD5";
+    public static final String algortihmMD5_sess         = "MD5-sess";
+
+    public static String KD(String secret, String data, DigestAlgorithm digestAlgorithm) {
+        return H(secret+":"+data, digestAlgorithm) ;
     }
 
-    public static String KD(String secret, String data) {
-        return H(secret+":"+data) ;
+    public static String H(String string, DigestAlgorithm algorithm) {
+        return algorithm.digest.apply(string);
     }
 
-    public static String H(String string) {
-        return DigestUtils.md5Hex(string) ;
-    }
-
-    public static String A1_MD5(String username, String realm, String password) {
+    public static String A1(String username, String realm, String password, DigestAlgorithm digestAlgorithm) {
         Objects.requireNonNull(username) ;
         Objects.requireNonNull(realm) ;
         Objects.requireNonNull(password) ;
@@ -57,14 +64,14 @@ class AuthHttp {
         return s ;
     }
 
-    public static String A1_MD5_sess(String username, String realm, String password, String nonce, String cnonce) {
+    public static String A1_sess(String username, String realm, String password, String nonce, String cnonce, DigestAlgorithm digestAlgorithm) {
         Objects.requireNonNull(username) ;
         Objects.requireNonNull(realm) ;
         Objects.requireNonNull(password) ;
         Objects.requireNonNull(nonce) ;
         Objects.requireNonNull(cnonce) ;
         String s = username+":"+realm+":"+password ;
-        String x = H(s)+":"+nonce+":"+cnonce ;
+        String x = H(s, digestAlgorithm)+":"+nonce+":"+cnonce ;
         return s ;
     }
 
