@@ -18,14 +18,15 @@
  *
  *   SPDX-License-Identifier: Apache-2.0
  */
+
 package org.apache.jena.mem.store.fast;
 
 import org.apache.jena.graph.Node;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.jena.junit.GraphHelper.node;
 import static org.apache.jena.junit.GraphHelper.triple;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit tests for {@link FastHashedBunchMap}: a {@link Node}-keyed map of

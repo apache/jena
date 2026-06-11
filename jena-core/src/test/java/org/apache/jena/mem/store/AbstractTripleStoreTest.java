@@ -21,18 +21,21 @@
 
 package org.apache.jena.mem.store;
 
+import static org.apache.jena.junit.GraphHelper.node;
+import static org.apache.jena.junit.GraphHelper.triple;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.datatypes.xsd.impl.XSDDouble;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.hamcrest.collection.IsEmptyCollection;
 import org.hamcrest.collection.IsIterableContainingInAnyOrder;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.apache.jena.junit.GraphHelper.node;
-import static org.apache.jena.junit.GraphHelper.triple;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
 
 public abstract class AbstractTripleStoreTest {
 
@@ -40,7 +43,7 @@ public abstract class AbstractTripleStoreTest {
 
     protected abstract TripleStore createTripleStore();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         sut = createTripleStore();
     }
@@ -53,7 +56,6 @@ public abstract class AbstractTripleStoreTest {
         assertEquals(0, sut.countTriples());
         assertTrue(sut.isEmpty());
     }
-
 
     @Test
     public void testDelete() {

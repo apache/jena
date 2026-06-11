@@ -20,12 +20,13 @@
  */
 package org.apache.jena.mem.pattern;
 
-import org.apache.jena.graph.Node;
-import org.junit.Test;
-
 import static org.apache.jena.junit.GraphHelper.node;
 import static org.apache.jena.junit.GraphHelper.triple;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.graph.Node;
 
 /**
  * Unit tests for {@link PatternClassifier}: maps a triple match into one of

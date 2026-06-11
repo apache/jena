@@ -20,15 +20,18 @@
  */
 package org.apache.jena.mem.collection;
 
-import org.apache.jena.graph.Node;
-import org.junit.Test;
+import static org.apache.jena.junit.GraphHelper.node;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import java.util.function.UnaryOperator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.function.UnaryOperator;
 
-import static org.apache.jena.junit.GraphHelper.node;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.graph.Node;
 
 public class FastHashMapTest2 {
 

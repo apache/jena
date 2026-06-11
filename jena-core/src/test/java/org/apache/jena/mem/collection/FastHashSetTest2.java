@@ -20,13 +20,14 @@
  */
 package org.apache.jena.mem.collection;
 
-import org.junit.Before;
-import org.junit.Test;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import static org.apache.jena.junit.GraphHelper.node;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This test shall test only the parts of the {@link FastHashSet} which are not tested by the {@link AbstractJenaSetTripleTest}.
@@ -35,7 +36,7 @@ public class FastHashSetTest2 {
 
     private FastHashSet<String> sut;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         sut = new FastStringHashSet();
     }

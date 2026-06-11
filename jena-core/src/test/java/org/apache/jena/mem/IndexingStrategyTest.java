@@ -21,10 +21,11 @@
 package org.apache.jena.mem;
 
 import org.apache.jena.mem.store.indexed.IndexedSetTripleStore;
-import org.junit.Test;
 
 import static org.apache.jena.junit.GraphHelper.triple;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for the {@link IndexingStrategy} enum: verifies the five
@@ -52,9 +53,9 @@ public class IndexingStrategyTest {
         }
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void valueOfRejectsUnknownNames() {
-        IndexingStrategy.valueOf("NOT_A_STRATEGY");
+        assertThrows(IllegalArgumentException.class, ()->IndexingStrategy.valueOf("NOT_A_STRATEGY"));
     }
 
     @Test

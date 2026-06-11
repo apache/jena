@@ -18,6 +18,7 @@
  *
  *   SPDX-License-Identifier: Apache-2.0
  */
+
 package org.apache.jena.mem.store.fast;
 
 import org.apache.jena.graph.Triple;

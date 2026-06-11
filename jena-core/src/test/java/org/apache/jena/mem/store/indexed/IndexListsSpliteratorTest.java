@@ -18,17 +18,18 @@
  *
  *   SPDX-License-Identifier: Apache-2.0
  */
+
 package org.apache.jena.mem.store.indexed;
 
 import org.apache.jena.graph.Triple;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.*;
 import java.util.stream.StreamSupport;
 
 import static org.apache.jena.junit.GraphHelper.triple;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit tests for {@link IndexListsSpliterator}: walks the intersection of
@@ -43,7 +44,7 @@ public class IndexListsSpliteratorTest {
     private IndexList listB;
     private List<Triple> commonTriples;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         triples = new TripleSet();
         reverseA = new int[64];
@@ -126,7 +127,7 @@ public class IndexListsSpliteratorTest {
 
         final var asSetA = new HashSet<>(firstHalf);
         for (final var t : secondHalf) {
-            assertFalse("split must be disjoint", asSetA.contains(t));
+            assertFalse(asSetA.contains(t), "split must be disjoint");
         }
     }
 
@@ -167,21 +168,20 @@ public class IndexListsSpliteratorTest {
         // estimateSize is the remaining range of the smaller list, which is
         // an upper bound on the intersection.
         final long est = sp.estimateSize();
-        assertTrue("estimate must bound actual intersection",
-                est >= commonTriples.size());
+        assertTrue(est >= commonTriples.size(), "estimate must bound actual intersection");
     }
 
-    @Test(expected = ConcurrentModificationException.class)
+    @Test
     public void tryAdvanceDetectsConcurrentModification() {
         final var sp = new IndexListsSpliterator(triples, listA, reverseA, listB, reverseB);
         triples.addAndGetIndex(triple("z z z"));
-        sp.tryAdvance(t -> {});
+        assertThrows(ConcurrentModificationException.class, () -> sp.tryAdvance(t -> {}));
     }
 
-    @Test(expected = ConcurrentModificationException.class)
+    @Test
     public void forEachRemainingDetectsConcurrentModification() {
         final var sp = new IndexListsSpliterator(triples, listA, reverseA, listB, reverseB);
         triples.addAndGetIndex(triple("z z z"));
-        sp.forEachRemaining(t -> {});
+        assertThrows(ConcurrentModificationException.class, () -> sp.forEachRemaining(t -> {}));
     }
 }

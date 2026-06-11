@@ -18,11 +18,12 @@
  *
  *   SPDX-License-Identifier: Apache-2.0
  */
+
 package org.apache.jena.mem.store.indexed;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit tests for {@link IndexList}: append-only int list with O(1)
@@ -66,7 +67,7 @@ public class IndexListTest {
         for (int i = 0; i < 100; i++) {
             assertEquals(i * 7, list.getIndexAt(i));
         }
-        assertTrue("backing array must have grown", list.getIndices().length >= 100);
+        assertTrue(list.getIndices().length >= 100, "backing array must have grown");
     }
 
     @Test

@@ -18,16 +18,18 @@
  *
  *   SPDX-License-Identifier: Apache-2.0
  */
+
 package org.apache.jena.mem.store.fast;
+
+import static org.apache.jena.junit.GraphHelper.triple;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.mem.store.AbstractTripleStoreTest;
 import org.apache.jena.mem.store.TripleStore;
-import org.junit.Test;
-
-import static junit.framework.TestCase.assertEquals;
-import static org.apache.jena.junit.GraphHelper.triple;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class FastTripleStoreTest extends AbstractTripleStoreTest {
 

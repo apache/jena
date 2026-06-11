@@ -28,6 +28,7 @@ import org.junit.platform.suite.api.Suite;
 import org.apache.jena.datatypes.TS6_dt;
 import org.apache.jena.irix.TS6_IRIx2;
 import org.apache.jena.langtagx.TS6_LangTagX;
+import org.apache.jena.mem.TS6_GraphMem;
 import org.apache.jena.memvalue.TS6_GraphMemValue;
 import org.apache.jena.rdfxml.xmloutput.TS6_xmloutput;
 import org.apache.jena.shared.TS6_SharedPackage;
@@ -40,10 +41,12 @@ import org.apache.jena.vocabulary.TS6_Vocabularies;
     TestSystemSetup.class,
 
     // Same order as JenaCoreTestAll_JU4
+    // There should be a corresponding line commented out in JenaCoreTestAll_JU4
     TS6_IRIx2.class,
     TS6_LangTagX.class,
     TS6_dt.class,
 
+    TS6_GraphMem.class,
     TS6_GraphMemValue.class,
 
     TS6_xmloutput.class,

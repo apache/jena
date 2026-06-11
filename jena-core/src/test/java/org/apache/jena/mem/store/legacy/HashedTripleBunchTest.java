@@ -18,15 +18,17 @@
  *
  *   SPDX-License-Identifier: Apache-2.0
  */
+
 package org.apache.jena.mem.store.legacy;
+
+import static org.apache.jena.junit.GraphHelper.triple;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Triple;
 import org.apache.jena.mem.collection.AbstractJenaSetTripleTest;
 import org.apache.jena.mem.collection.JenaSet;
-import org.junit.Test;
-
-import static org.apache.jena.junit.GraphHelper.triple;
-import static org.junit.Assert.assertEquals;
 
 public class HashedTripleBunchTest extends AbstractJenaSetTripleTest {
 

@@ -23,13 +23,11 @@ package org.apache.jena.mem;
 
 import static org.apache.jena.junit.GraphHelper.node;
 import static org.apache.jena.junit.GraphHelper.triple;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.datatypes.xsd.impl.XSDDouble;
 import org.apache.jena.graph.NodeFactory;
@@ -45,7 +43,7 @@ public abstract class AbstractGraphMemTest {
 
     protected abstract GraphMem createGraph();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         sut = createGraph();
     }
@@ -1048,6 +1046,10 @@ public abstract class AbstractGraphMemTest {
 
     @Test
     public void testDeleteAll() {
+        deleteAllWorker() ;
+    }
+
+    protected void deleteAllWorker() {
         for(var subjects=1; subjects <= 8 ; subjects++) {
             for(var predicates=1; predicates <= 8 ; predicates++) {
                 for(var objects=1; objects <= 8 ; objects++) {

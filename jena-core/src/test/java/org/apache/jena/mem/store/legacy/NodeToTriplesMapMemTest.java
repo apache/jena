@@ -18,12 +18,12 @@
  *
  *   SPDX-License-Identifier: Apache-2.0
  */
+
 package org.apache.jena.mem.store.legacy;
 
 import org.apache.jena.graph.Triple;
 import org.apache.jena.mem.collection.AbstractJenaSetTripleTest;
 import org.apache.jena.mem.collection.JenaSet;
-
 
 public class NodeToTriplesMapMemTest extends AbstractJenaSetTripleTest {
 

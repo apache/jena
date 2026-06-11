@@ -18,17 +18,18 @@
  *
  *   SPDX-License-Identifier: Apache-2.0
  */
+
 package org.apache.jena.mem.store.indexed;
 
 import org.apache.jena.graph.Triple;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.*;
 import java.util.stream.StreamSupport;
 
 import static org.apache.jena.junit.GraphHelper.triple;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit tests for {@link IndexListSpliterator}: walks an {@link IndexList},
@@ -41,7 +42,7 @@ public class IndexListSpliteratorTest {
     private IndexList list;
     private List<Triple> expected;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         triples = new TripleSet();
         list = new IndexList();
@@ -89,7 +90,7 @@ public class IndexListSpliteratorTest {
     public void trySplitProducesNonOverlappingHalves() {
         final var sp = new IndexListSpliterator(triples, list);
         final var prefix = sp.trySplit();
-        assertNotNull("a list of 8 must split", prefix);
+        assertNotNull(prefix, "a list of 8 must split");
 
         final var firstHalf = new ArrayList<Triple>();
         final var secondHalf = new ArrayList<Triple>();
@@ -105,7 +106,7 @@ public class IndexListSpliteratorTest {
         // The two halves are disjoint
         final var asSetA = new HashSet<>(firstHalf);
         for (final var t : secondHalf) {
-            assertFalse("split must be disjoint", asSetA.contains(t));
+            assertFalse(asSetA.contains(t), "split must be disjoint");
         }
     }
 
@@ -140,17 +141,17 @@ public class IndexListSpliteratorTest {
         assertEquals(expected.size() - 1L, sp.getExactSizeIfKnown());
     }
 
-    @Test(expected = ConcurrentModificationException.class)
+    @Test
     public void tryAdvanceDetectsConcurrentModification() {
         final var sp = new IndexListSpliterator(triples, list);
         triples.addAndGetIndex(triple("s99 p o"));
-        sp.tryAdvance(t -> {});
+        assertThrows(ConcurrentModificationException.class, () -> sp.tryAdvance(t -> {}));
     }
 
-    @Test(expected = ConcurrentModificationException.class)
+    @Test
     public void forEachRemainingDetectsConcurrentModification() {
         final var sp = new IndexListSpliterator(triples, list);
         triples.addAndGetIndex(triple("s99 p o"));
-        sp.forEachRemaining(t -> {});
+        assertThrows(ConcurrentModificationException.class, () -> sp.forEachRemaining(t -> {}));
     }
 }
