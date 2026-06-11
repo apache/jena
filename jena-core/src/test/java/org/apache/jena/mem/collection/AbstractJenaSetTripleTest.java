@@ -24,8 +24,8 @@ package org.apache.jena.mem.collection;
 import org.apache.jena.graph.Triple;
 import org.hamcrest.collection.IsEmptyCollection;
 import org.hamcrest.collection.IsIterableContainingInAnyOrder;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,7 +35,7 @@ import java.util.stream.StreamSupport;
 
 import static org.apache.jena.junit.GraphHelper.triple;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class AbstractJenaSetTripleTest {
 
@@ -43,7 +43,7 @@ public abstract class AbstractJenaSetTripleTest {
 
     protected abstract JenaSet<Triple> createTripleSet();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         sut = createTripleSet();
     }

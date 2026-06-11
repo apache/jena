@@ -21,11 +21,11 @@
 
 package org.apache.jena.mem;
 
-import org.junit.Test;
-
 import static org.apache.jena.junit.GraphHelper.triple;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Concrete instantiation of {@link AbstractGraphMemTest} that exercises
@@ -47,7 +47,7 @@ public class GraphMemFastTest extends AbstractGraphMemTest {
         final var copy = sut.copy();
         // The override on GraphMemFast must preserve the runtime type so
         // callers don't lose subclass-specific functionality through copy().
-        assertTrue("copy() must return a GraphMemFast", copy instanceof GraphMemFast);
+        assertTrue(copy instanceof GraphMemFast, "copy() must return a GraphMemFast");
         assertNotSame(sut, copy);
     }
 }

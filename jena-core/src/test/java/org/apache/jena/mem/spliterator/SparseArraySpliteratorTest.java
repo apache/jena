@@ -20,15 +20,17 @@
  */
 package org.apache.jena.mem.spliterator;
 
-import org.apache.jena.mem.collection.FastHashSet;
-import org.apache.jena.mem.collection.JenaSet;
-import org.junit.Test;
+import static java.util.Spliterator.DISTINCT;
+import static java.util.Spliterator.NONNULL;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.Spliterator;
 
-import static java.util.Spliterator.*;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.mem.collection.FastHashSet;
+import org.apache.jena.mem.collection.JenaSet;
 
 public class SparseArraySpliteratorTest {
 
@@ -418,8 +420,8 @@ public class SparseArraySpliteratorTest {
     }
 
     private void assertBetween(long min, long max, long estimateSize) {
-        assertTrue("estimateSize=" + estimateSize + " min=" + min + " max=" + max, estimateSize >= min);
-        assertTrue("estimateSize=" + estimateSize + " min=" + min + " max=" + max, estimateSize <= max);
+        assertTrue(estimateSize >= min, "estimateSize=" + estimateSize + " min=" + min + " max=" + max);
+        assertTrue(estimateSize <= max, "estimateSize=" + estimateSize + " min=" + min + " max=" + max);
     }
 
     @Test

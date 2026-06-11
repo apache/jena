@@ -18,14 +18,15 @@
  *
  *   SPDX-License-Identifier: Apache-2.0
  */
+
 package org.apache.jena.mem.store.indexed;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.apache.jena.junit.GraphHelper.triple;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit tests for {@link TripleSet}: hash set of triples extended with a
@@ -59,7 +60,7 @@ public class TripleSetTest {
         // Re-adding the same triple returns the bitwise-complement of the
         // existing index.
         final int reAdd = set.addAndGetIndex(t1);
-        assertTrue("re-add must return ~existingIndex", reAdd < 0);
+        assertTrue(reAdd < 0, "re-add must return ~existingIndex");
         assertEquals(i1, ~reAdd);
         assertEquals(2, set.size());
     }
@@ -88,9 +89,8 @@ public class TripleSetTest {
             set.addAndGetIndex(triple("s" + i + " p o"));
         }
 
-        assertTrue("hook must fire at least once when growing", callCount.get() > 0);
-        assertTrue("reported size must be a positive integer (the new array length)",
-                lastReportedSize.get() > 0);
+        assertTrue(callCount.get() > 0, "hook must fire at least once when growing");
+        assertTrue(lastReportedSize.get() > 0, "reported size must be a positive integer (the new array length)");
     }
 
     @Test

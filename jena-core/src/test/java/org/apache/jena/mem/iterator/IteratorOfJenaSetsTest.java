@@ -20,16 +20,19 @@
  */
 package org.apache.jena.mem.iterator;
 
-import org.hamcrest.collection.IsIterableContainingInAnyOrder;
-import org.junit.Before;
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.mem.collection.FastHashSet;
 import org.apache.jena.mem.collection.JenaSet;
-import java.util.*;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 
 public class IteratorOfJenaSetsTest {
 
@@ -37,7 +40,7 @@ public class IteratorOfJenaSetsTest {
     private IteratorOfJenaSets<String> sut;
     private Iterator<JenaSet<String>> parentIterator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         parentIterator = Arrays.asList(
                 new StringSet("1.1", "1.2"),

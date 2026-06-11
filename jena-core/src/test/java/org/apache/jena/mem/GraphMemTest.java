@@ -20,17 +20,20 @@
  */
 package org.apache.jena.mem;
 
-import org.apache.jena.graph.Triple;
-import org.apache.jena.mem.store.TripleStore;
-import org.apache.jena.util.iterator.NullIterator;
-import org.junit.Test;
+import static org.apache.jena.junit.GraphHelper.node;
+import static org.apache.jena.junit.GraphHelper.triple;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 import java.util.stream.Stream;
 
-import static org.apache.jena.junit.GraphHelper.node;
-import static org.apache.jena.junit.GraphHelper.triple;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.graph.Triple;
+import org.apache.jena.mem.store.TripleStore;
+import org.apache.jena.util.iterator.NullIterator;
 
 public class GraphMemTest {
 

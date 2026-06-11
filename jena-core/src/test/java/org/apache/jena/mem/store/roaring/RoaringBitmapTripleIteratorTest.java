@@ -18,11 +18,12 @@
  *
  *   SPDX-License-Identifier: Apache-2.0
  */
+
 package org.apache.jena.mem.store.roaring;
 
 import org.apache.jena.graph.Triple;
 import org.hamcrest.collection.IsIterableContainingInAnyOrder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.ConcurrentModificationException;
@@ -31,10 +32,9 @@ import java.util.NoSuchElementException;
 
 import static org.apache.jena.junit.GraphHelper.triple;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class RoaringBitmapTripleIteratorTest {
-
 
     private static TripleSet createTripleSet() {
         return new TripleSet();

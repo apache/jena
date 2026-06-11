@@ -18,16 +18,17 @@
  *
  *   SPDX-License-Identifier: Apache-2.0
  */
+
 package org.apache.jena.mem.store.indexed;
 
 import org.apache.jena.graph.Triple;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
 import static org.apache.jena.junit.GraphHelper.triple;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit tests for {@link IndexListsIterator}: lazily walks the intersection
@@ -39,7 +40,7 @@ public class IndexListsIteratorTest {
     private int[] reverseA;
     private int[] reverseB;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         triples = new TripleSet();
         // pre-size reverse arrays generously; the test triples will get
@@ -106,7 +107,7 @@ public class IndexListsIteratorTest {
         assertFalse(it.hasNext());
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void nextThrowsWhenIntersectionExhausted() {
         final int idx1 = addTriple("a b c");
         final int idx2 = addTriple("d e f");
@@ -118,7 +119,7 @@ public class IndexListsIteratorTest {
 
         final var it = new IndexListsIterator(triples,
                 listA, reverseA, listB, reverseB);
-        it.next();
+        assertThrows(NoSuchElementException.class, () -> it.next());
     }
 
     @Test
@@ -194,7 +195,7 @@ public class IndexListsIteratorTest {
                 new HashSet<>(collected));
     }
 
-    @Test(expected = ConcurrentModificationException.class)
+    @Test
     public void nextDetectsConcurrentModification() {
         final int idx1 = addTriple("a b c");
 
@@ -206,6 +207,6 @@ public class IndexListsIteratorTest {
         final var it = new IndexListsIterator(triples,
                 listA, reverseA, listB, reverseB);
         triples.addAndGetIndex(triple("z z z"));
-        it.next();
+        assertThrows(ConcurrentModificationException.class, () -> it.next());
     }
 }

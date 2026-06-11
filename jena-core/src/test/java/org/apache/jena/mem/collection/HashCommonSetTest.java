@@ -21,10 +21,10 @@
 package org.apache.jena.mem.collection;
 
 import org.apache.jena.graph.Triple;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.jena.junit.GraphHelper.triple;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class HashCommonSetTest extends AbstractJenaSetTripleTest {

@@ -18,11 +18,12 @@
  *
  *   SPDX-License-Identifier: Apache-2.0
  */
+
 package org.apache.jena.mem.store.indexed;
 
 import org.apache.jena.graph.Triple;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
@@ -30,7 +31,7 @@ import java.util.HashSet;
 import java.util.NoSuchElementException;
 
 import static org.apache.jena.junit.GraphHelper.triple;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit tests for {@link IndexListIterator}: iterates an {@link IndexList} of
@@ -45,7 +46,7 @@ public class IndexListIteratorTest {
     private Triple t3;
     private int idx2;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         triples = new TripleSet();
         list = new IndexList();
@@ -80,11 +81,11 @@ public class IndexListIteratorTest {
         assertFalse(it.hasNext());
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void nextThrowsWhenExhausted() {
         final var emptyList = new IndexList();
         final var it = new IndexListIterator(triples, emptyList);
-        it.next();
+        assertThrows(NoSuchElementException.class, () -> it.next());
     }
 
     @Test
@@ -99,20 +100,20 @@ public class IndexListIteratorTest {
         assertEquals(expected, collected);
     }
 
-    @Test(expected = ConcurrentModificationException.class)
+    @Test
     public void nextDetectsConcurrentModification() {
         final var it = new IndexListIterator(triples, list);
         // Adding a new triple to the canonical set after constructing the
         // iterator must invalidate it.
         triples.addAndGetIndex(triple("s4 p4 o4"));
-        it.next();
+        assertThrows(ConcurrentModificationException.class, () -> it.next());
     }
 
-    @Test(expected = ConcurrentModificationException.class)
+    @Test
     public void forEachRemainingDetectsConcurrentModification() {
         final var it = new IndexListIterator(triples, list);
         triples.addAndGetIndex(triple("s5 p5 o5"));
-        it.forEachRemaining(t -> {});
+        assertThrows(ConcurrentModificationException.class, () -> it.forEachRemaining(t -> {}));
     }
 
     @Test

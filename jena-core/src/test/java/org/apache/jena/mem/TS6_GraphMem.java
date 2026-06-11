@@ -21,6 +21,9 @@
 
 package org.apache.jena.mem;
 
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+
 import org.apache.jena.mem.collection.*;
 import org.apache.jena.mem.iterator.IteratorOfJenaSetsTest;
 import org.apache.jena.mem.iterator.SparseArrayIteratorTest;
@@ -38,11 +41,8 @@ import org.apache.jena.mem.store.legacy.*;
 import org.apache.jena.mem.store.roaring.RoaringBitmapTripleIteratorTest;
 import org.apache.jena.mem.store.roaring.RoaringTripleStoreTest;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses( {
     // spliterator/
     SparseArraySubSpliteratorTest.class,
     ArraySubSpliteratorTest.class,
@@ -94,9 +94,9 @@ import org.junit.runners.Suite;
     // --
     GraphMemLegacyTest.class,
     GraphMemFastTest.class,
-    GraphMemIndexedSetTest.class,
+    GraphMemIndexedSetTest.class, //5 less - 5 indexing strategies.
     GraphMemRoaringTest.class,
     GraphMemTest.class,
     IndexingStrategyTest.class
 } )
-public class TS4_GraphMem {}
+public class TS6_GraphMem {}

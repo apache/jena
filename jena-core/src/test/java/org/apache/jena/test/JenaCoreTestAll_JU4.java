@@ -47,8 +47,7 @@ public class JenaCoreTestAll_JU4 extends TestCase {
         addTest(ts,  "Enhanced",            org.apache.jena.enhanced.TS3_enh.suite());
         addTest(ts,  "Graph",               adaptJUnit4(org.apache.jena.graph.TS3_graph.class));
 
-        addTest(ts,  "Mem",                 adaptJUnit4(org.apache.jena.mem.TS4_GraphMem.class));
-
+//JU6        addTest(ts,  "Mem",                 adaptJUnit4(org.apache.jena.mem.TS4_GraphMem.class));
 //JU6        addTest(ts,  "MemValue",            adaptJUnit4(org.apache.jena.memvalue.TS3_GraphMemValue.class));
 
         // ** COMPLEX

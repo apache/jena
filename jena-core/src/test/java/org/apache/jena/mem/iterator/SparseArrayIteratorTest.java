@@ -20,13 +20,14 @@
  */
 package org.apache.jena.mem.iterator;
 
-import org.apache.jena.mem.collection.FastHashSet;
-import org.apache.jena.mem.collection.JenaSet;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.NoSuchElementException;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.mem.collection.FastHashSet;
+import org.apache.jena.mem.collection.JenaSet;
 
 public class SparseArrayIteratorTest {
 

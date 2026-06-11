@@ -21,12 +21,12 @@
 package org.apache.jena.mem.collection;
 
 import org.apache.jena.graph.Node;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.function.UnaryOperator;
 
 import static org.apache.jena.junit.GraphHelper.node;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class HashCommonMapTest extends AbstractJenaMapNodeTest {
 

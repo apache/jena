@@ -18,36 +18,45 @@
  *
  *   SPDX-License-Identifier: Apache-2.0
  */
+
 package org.apache.jena.mem.store.indexed;
+
+import static org.apache.jena.junit.GraphHelper.triple;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import org.apache.jena.graph.Triple;
 import org.apache.jena.mem.IndexingStrategy;
 import org.apache.jena.mem.pattern.PatternClassifier;
 import org.apache.jena.mem.store.AbstractTripleStoreTest;
 import org.apache.jena.mem.store.TripleStore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.mockito.Mockito;
 
-import java.util.Arrays;
-import java.util.Collection;
-
-import static org.apache.jena.junit.GraphHelper.triple;
-import static org.junit.Assert.*;
-
-@RunWith(Parameterized.class)
+@ParameterizedClass
+@MethodSource("provideArgs")
 public class IndexedSetTripleStoreTest extends AbstractTripleStoreTest {
 
-    @Parameterized.Parameter
+    public static Stream<Arguments> provideArgs() {
+        List<Arguments> args = Arrays.stream(IndexingStrategy.values())
+                .map(strategy -> Arguments.of(strategy))
+                .toList();
+        return args.stream();
+    }
+
     public IndexingStrategy indexingStrategy;
 
-    @Parameterized.Parameters(name = "{0}")
-    public static Collection<Object[]> data() {
-        return Arrays.stream(IndexingStrategy.values())
-                .map(strategy -> new Object[]{strategy})
-                .toList();
-    }
+    public IndexedSetTripleStoreTest(IndexingStrategy indexingStrategy) { this.indexingStrategy = indexingStrategy; }
 
     @Override
     protected TripleStore createTripleStore() {
