@@ -81,7 +81,7 @@ for $g (@g) {
     $rulebody =~ s! <EOF>$!! ;    
     
     # Remove outer brackets
-#    $rulebody =~ s!^\((.*)\)$!$1! ;
+    #    $rulebody =~ s!^\((.*)\)$!$1! ;
 
     next if $rulename eq '' ;
 
@@ -115,18 +115,18 @@ for $t (@t) {
 
     # Inline?
     if ( $tokenname =~ /^\[\<\w*\>\]/ ) {
-	warn "Duplicate inline (token): $tokenname\n" if defined($inline{$tokenname}) ;
-	$tokenname =~ s/^\[//g ;
-	$tokenname =~ s/\]$//g ;
-	$tokenbody =~ s/"/'/g ; # '" -- But not literal " -- how?
+        warn "Duplicate inline (token): $tokenname\n" if defined($inline{$tokenname}) ;
+        $tokenname =~ s/^\[//g ;
+        $tokenname =~ s/\]$//g ;
+        $tokenbody =~ s/"/'/g ; # '" -- But not literal " -- how?
         $tokenbody =~ s/\<\>\'\{\}/\<\>\"\{\}/ ; # '" IRI fixup
-	$inline{$tokenname} = $tokenbody ;
+        $inline{$tokenname} = $tokenbody ;
 
-	#print "INLINE: ",$tokenname," => ",$tokenbody,"\n" ;
+        #print "INLINE: ",$tokenname," => ",$tokenbody,"\n" ;
     } else {
-	push @rules, $tokenname ;
-	warn "Duplicate rule (token): $tokenname\n" if defined($tokenMap{$tokenname}) ;
-	$ruleMap{$tokenname} = $tokenbody ; 
+        push @rules, $tokenname ;
+        warn "Duplicate rule (token): $tokenname\n" if defined($tokenMap{$tokenname}) ;
+        $ruleMap{$tokenname} = $tokenbody ; 
     }
     
 }
@@ -144,9 +144,9 @@ if ( ! $TABLE ) {
     print "<title>SPARQL Grammar</title>\n" ;
     print "<style type=\"text/css\">\n" ;
 
- # .token inline
- # .ruleHead
- # .ruleBody
+    # .token inline
+    # .ruleHead
+    # .ruleBody
 
     print <<'EOF' ;
 div.grammarTable table * { border-width: 0 ; }
@@ -159,9 +159,9 @@ div.grammarTable table * tr { border: 1px solid black ; }
 .gRuleLabel  { font-family: monospace ; }
 EOF
 
-     print "</style>\n" ;
-     print "</head>\n";
-     print "<body>\n";
+    print "</style>\n" ;
+    print "</head>\n";
+    print "<body>\n";
 
     print "\n" ;
 } ## End TABLE
@@ -185,9 +185,9 @@ for $r (@rules) {
 
 
     if ( $DEBUG ) {
-	print STDERR "\n" ;
-	print STDERR "Rule: $rulename\n" ; 
-	print STDERR "Body: $rulebody\n" ; 
+        print STDERR "\n" ;
+        print STDERR "Rule: $rulename\n" ; 
+        print STDERR "Body: $rulebody\n" ; 
     }
 
     $ruleBodyStr = $rulebody ;
@@ -196,41 +196,41 @@ for $r (@rules) {
     
     # Inlines
     for $k (keys %inline) {
-	$s = '<span class="token">' . esc($inline{$k}) . '</span>' ;
-	$k = esc($k) ;
-	# Assumes escaped <> round tokens.
-	$k = quotemeta $k ;
-	$ruleBodyStr =~ s/$k/$s/g ;
+        $s = '<span class="token">' . esc($inline{$k}) . '</span>' ;
+        $k = esc($k) ;
+        # Assumes escaped <> round tokens.
+        $k = quotemeta $k ;
+        $ruleBodyStr =~ s/$k/$s/g ;
     }
 
     if ( $DEBUG ) {
-	print STDERR "After inlining\n" ;
-	print STDERR $ruleBodyStr,"\n" ; ; 
+        print STDERR "After inlining\n" ;
+        print STDERR $ruleBodyStr,"\n" ; ; 
     }
 
     # Add hrefs - issue if one is a substring of another \W helps.
 
     for $k (keys %ruleMap) {
-	$s = '<a href="#r' . sane($k) . '">' . esc($k) . '</a>' ;
+        $s = '<a href="#r' . sane($k) . '">' . esc($k) . '</a>' ;
 
-	$k = esc($k) ;
-	$k = quotemeta $k ;
+        $k = esc($k) ;
+        $k = quotemeta $k ;
 
-## 	if ( $DEBUG )
-## 	{
-## 	  print STDERR "K:$k\n" ;  
-## 	}
+##      if ( $DEBUG )
+##      {
+##        print STDERR "K:$k\n" ;  
+##      }
 
 
-	$ruleBodyStr =~ s/(?=\W)(\s*)$k(\s*)(?=\W)/$1$s$2/g ;
-	$ruleBodyStr =~ s/^$k(\s*)(?=\W)/$s$1/g ;
-	$ruleBodyStr =~ s/(?=\W)(\s*)$k$/$1$s/g ;
-	$ruleBodyStr =~ s/^$k$/$s/g ;
+        $ruleBodyStr =~ s/(?=\W)(\s*)$k(\s*)(?=\W)/$1$s$2/g ;
+        $ruleBodyStr =~ s/^$k(\s*)(?=\W)/$s$1/g ;
+        $ruleBodyStr =~ s/(?=\W)(\s*)$k$/$1$s/g ;
+        $ruleBodyStr =~ s/^$k$/$s/g ;
     }
     
     if ( $DEBUG ) {
-	print STDERR "After hrefs\n" ;
-	print STDERR $ruleBodyStr,"\n" ; ; 
+        print STDERR "After hrefs\n" ;
+        print STDERR $ruleBodyStr,"\n" ; ; 
     }
 
     #exit if $ruleNum > 2 ;
@@ -238,11 +238,11 @@ for $r (@rules) {
     $ruleId = sane("r".$rulename) ;
 
     if($rulename eq 'IRIREF') {
-	print $indent,"  </tbody></table>\n" ;
-	print $indent,"</div>\n" ;
-	print $indent,"<p>Productions for terminals:</p>\n" ;
-	print $indent,"<div class=\"grammarTable\">\n" ;
-	print $indent,"  <table><tbody>\n" ;
+        print $indent,"  </tbody></table>\n" ;
+        print $indent,"</div>\n" ;
+        print $indent,"<p>Productions for terminals:</p>\n" ;
+        print $indent,"<div class=\"grammarTable\">\n" ;
+        print $indent,"  <table><tbody>\n" ;
     }
 
     print "\n" ;
@@ -259,9 +259,9 @@ for $r (@rules) {
     $rn =~ s!>$!!; 
     
     print $indentRule,
-	'  <td><code><span class="doc-ref" id="',$ruleId,'">',
-	esc($rn),
-	'</span></code></td>',"\n";
+        '  <td><code><span class="doc-ref" id="',$ruleId,'">',
+        esc($rn),
+        '</span></code></td>',"\n";
     
     print $indentRule,"  <td>&nbsp;&nbsp;::=&nbsp;&nbsp;</td>\n" ;
     
@@ -270,8 +270,8 @@ for $r (@rules) {
 
     print $indentRule,"</tr>\n" ;
 
-#    $rule{$rulename, $rulebody) ;
-#    print $rulename , "\n" ;
+    #    $rule{$rulename, $rulebody) ;
+    #    print $rulename , "\n" ;
 }
 
 print $indent,"  </tbody></table>\n" ;
@@ -287,6 +287,7 @@ sub readFile {
     my $f = $_[0] ;
     open(F, "$f") || die "$f: $!"; 
     my $s = <F> ;
+    $s =~ s/\t/ /g;
     return $s ;
 }
 
@@ -299,9 +300,9 @@ sub esc {
 }
 
 sub sane {
-   my $a = $_[0] ;
-   $a =~ s/\W//g ;
-   return $a ;
+    my $a = $_[0] ;
+    $a =~ s/\W//g ;
+    return $a ;
 }
 
 sub code {
@@ -332,7 +333,7 @@ sub fixupRule {
     $body =~ s!\(\s+(\<span[^>]*\>[^<>]*\</span\>)\s+\)!$1!g ;
 
     # There aren't any of these
-##    $body =~ s!\(\s+(\S*)\s+\)!$1!g ;
+    ##    $body =~ s!\(\s+(\S*)\s+\)!$1!g ;
 
     # Remove <> around tokens.
     $body =~ s/&lt;(\w+)&gt;/$1/g ;
@@ -340,85 +341,85 @@ sub fixupRule {
     # Specials
     # Split long bodies
     if ( $head eq "CallExpression" ||
-	 $head eq "UnaryExpression" ||
-	 $head eq "<NCCHAR1p>" ||
-	 $head eq "PatternElement" ||
-	 $head eq "BuiltInCall" )
+         $head eq "UnaryExpression" ||
+         $head eq "<NCCHAR1p>" ||
+         $head eq "PatternElement" ||
+         $head eq "BuiltInCall" )
     {
-	$body =~ s%\|%\<br/\>\|%g ;
-	$body =~ s/^\s+// ;
-	$body = "&nbsp;&nbsp;".$body ;
+        $body =~ s%\|%\<br/\>\|%g ;
+        $body =~ s/^\s+// ;
+        $body = "&nbsp;&nbsp;".$body ;
     }
 
-     if ( $head eq "Aggregate" )
-     {
-	 # Strip outer ()
-	 $body =~ s/^\(\s*(.*)\s*\)$/$1/ ;	
-	 ## Be careful of nested | in COUNT
- 	 $body =~ s%(\| \<span class="token")%\<br/\>$1%g ;
- 	 $body =~ s/^\s+// ;
- 	 $body = "&nbsp;&nbsp;".$body ;
-     }
+    if ( $head eq "Aggregate" )
+    {
+        # Strip outer ()
+        $body =~ s/^\(\s*(.*)\s*\)$/$1/ ;       
+        ## Be careful of nested | in COUNT
+        $body =~ s%(\| \<span class="token")%\<br/\>$1%g ;
+        $body =~ s/^\s+// ;
+        $body = "&nbsp;&nbsp;".$body ;
+    }
 
 
     if (  $head eq "BuiltInCall" )
     {
-	# Undo <br/> for BNODE, RAND
-	# <br/>| <a href="#rNIL">NIL</a> )
-	$body =~ s%\<br/\>\| *\<a href="#rNIL"\>NIL\</a\>%\| \<a href="#rNIL"\>NIL\</a\>%g ;
+        # Undo <br/> for BNODE, RAND
+        # <br/>| <a href="#rNIL">NIL</a> )
+        $body =~ s%\<br/\>\| *\<a href="#rNIL"\>NIL\</a\>%\| \<a href="#rNIL"\>NIL\</a\>%g ;
     }
 
 ##     if ( $head eq "RelationalExpression" ||
-## 	 $head eq "AdditiveExpression" ||
-## 	 $head eq "MultiplicativeExpression" ||
-## 	 $head eq "ConditionalOrExpression")
+##       $head eq "AdditiveExpression" ||
+##       $head eq "MultiplicativeExpression" ||
+##       $head eq "ConditionalOrExpression")
 ##     {
-## 	$body =~ s%\*\(%<br/>\(% ;
+##      $body =~ s%\*\(%<br/>\(% ;
 ##     }
 
     # These failed the outer () test because they have nested () in them
     if (  $head eq "QueryPattern" ||
           $head eq "OrderCondition" )
     {
-	# Remove outer ()
-	$body =~ s/^\((.*)\)$/$1/ ;	
+        # Remove outer ()
+        $body =~ s/^\((.*)\)$/$1/ ;     
     }
 
     if (  $head eq "Query" )
     {
-	$body =~ s! \(!<br/>\(! ;
-	$body =~ s!\) !\)<br/>! ;
+        $body =~ s! \(!<br/>\(! ;
+        $body =~ s!\) !\)<br/>! ;
     }
 
     if (  $head =~ m/(Select|Construct|Describe|Ask)Query/ )
     {
-	# Put a line break before the DatasetClause
-	# <a href="#rDatasetClause">DatasetClause</a>
-	$c = '<a href="#rDatasetClause">DatasetClause</a>' ;
-	$c = quotemeta $c ;
-	# Expects the dataset clause to be unbracketted
-	$body =~ s!(\(\s*$c)!<br/>$1! ;
+        # Put a line break before the DatasetClause
+        # <a href="#rDatasetClause">DatasetClause</a>
+        $c = '<a href="#rDatasetClause">DatasetClause</a>' ;
+        $c = quotemeta $c ;
+        # Expects the dataset clause to be unbracketted
+        $body =~ s!(\(\s*$c)!<br/>$1! ;
     }
 
     if ( $head eq "OrderCondition" )
     {
-	$body =~ s!\)\s*\|\s*\(!\)<br/>\| \(! ;
-	$body = "  ".$body ;
+        $body =~ s!\)\s*\|\s*\(!\)<br/>\| \(! ;
+        $body = "  ".$body ;
     }
 
     #Rules where an outer () is unnecessary.
     if ( $head eq "GroupCondition" ||
-	 $head eq "LimitOffsetClauses" ||
-	 $head eq "GraphOrDefault" ||
-	 $head eq "ArgList" ||
-	 $head eq "ExpressionList" ||
-	 $head eq "PathPrimary" ||
-	 $head eq "PathMod" ||
-	 $head eq "PathPrimary" ||
-	 $head eq "PathNegatedPropertySet" || 
-	 $head eq "PathOneInPropertySet")
+         $head eq "LimitOffsetClauses" ||
+         $head eq "GraphOrDefault" ||
+         $head eq "ArgList" ||
+         $head eq "ExpressionList" ||
+         $head eq "PathPrimary" ||
+         $head eq "PathMod" ||
+         $head eq "PathPrimary" ||
+         $head eq "PathNegatedPropertySet" || 
+         $head eq "PathOneInPropertySet")
     {
-	$body =~ s/^\(\s*(.*)\s*\)$/$1/ ;	
+        $body =~ s/^\(\s*(.*)\s*\)$/$1/ ;       
     }
     return $body ;
 }

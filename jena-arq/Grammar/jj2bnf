@@ -53,8 +53,9 @@ $grammar =~ s!^[\n\s]*!\n! ;
 # Merge alts
 $grammar =~ s!\n\s*\|!\ |!g ;
 
-# Tab after |
-$grammar =~ s!\|\t!\| !g ;
+## readFile replaces tabs with spaces.
+## # Tab after |
+## $grammar =~ s!\|\t!\| !g ;
 
 $tokens =~ s!//.*!!g ;
 $tokens =~ s!\r!!g ;
@@ -82,7 +83,7 @@ for $g (@g) {
     $rulebody =~ s! <EOF>$!! ;
     
     # Remove outer brackets
-#    $rulebody =~ s!^\((.*)\)$!$1! ;
+    #    $rulebody =~ s!^\((.*)\)$!$1! ;
 
     next if $rulename eq '' ;
 
@@ -90,9 +91,9 @@ for $g (@g) {
     warn "Duplicate rule (grammar): $rulename\n" if defined($ruleMap{$rulename}) ;
     $ruleMap{$rulename} = $rulebody ;
 
-##     print "----------\n" ;
-##     print $rulename,"\n" ;
-##     print $rulebody,"\n" ;
+    ##     print "----------\n" ;
+    ##     print $rulename,"\n" ;
+    ##     print $rulebody,"\n" ;
 }
 
 # Tokens
@@ -115,23 +116,26 @@ for $t (@t) {
 
     # Inline?
     if ( $tokenname =~ /^\[\<\w*\>\]/ ) {
-	warn "Duplicate inline (token): $tokenname\n" if defined($inline{$tokenname}) ;
-	$tokenname =~ s/^\[//g ;
-	$tokenname =~ s/\]$//g ;
-	$tokenbody =~ s/"/'/g ; # '" -- But not literal " -- how?
+        warn "Duplicate inline (token): $tokenname\n" if defined($inline{$tokenname}) ;
+        $tokenname =~ s/^\[//g ;
+        $tokenname =~ s/\]$//g ;
+        $tokenbody =~ s/"/'/g ; # '" -- But not literal " -- how?
         $tokenbody =~ s/\<\>\'\{\}/\<\>\"\{\}/ ; # '" IRI fixup
-	$inline{$tokenname} = $tokenbody ;
 
-	#print "INLINE: ",$tokenname," => ",$tokenbody,"\n" ;
+        ## IRIREF - special case of inline but with nested terminal name.
+        $tokenbody =~ s/<UCHAR>/UCHAR/ ; #
+        
+        $inline{$tokenname} = $tokenbody ;
+        #print "INLINE: ",$tokenname," => ",$tokenbody,"\n" ;
     } else {
-	## Remove < > aroudn a token name.
-	my $inlinePlain = $tokenname ;
-	$inlinePlain =~ s%^<%%;
-	$inlinePlain =~ s%>$%%;
-	$inline{$tokenname} = $inlinePlain ;
-	push @rules, $tokenname ;
-	warn "Duplicate rule (token): $tokenname\n" if defined($tokenMap{$tokenname}) ;
-	$ruleMap{$tokenname} = $tokenbody ; 
+        ## Remove < > around a token name.
+        my $inlinePlain = $tokenname ;
+        $inlinePlain =~ s%^<%%;
+        $inlinePlain =~ s%>$%%;
+        $inline{$tokenname} = $inlinePlain ;
+        push @rules, $tokenname ;
+        warn "Duplicate rule (token): $tokenname\n" if defined($tokenMap{$tokenname}) ;
+        $ruleMap{$tokenname} = $tokenbody ; 
     }
 }
 
@@ -144,30 +148,30 @@ for $r (@rules) {
     $rulebody = $ruleMap{$rulename} ;
 
     if ( $DEBUG ) {
-	print STDERR "\n" ;
-	print STDERR "Rule: $rulename\n" ; 
-	print STDERR "Body: $rulebody\n" ; 
+        print STDERR "\n" ;
+        print STDERR "Rule: $rulename\n" ; 
+        print STDERR "Body: $rulebody\n" ; 
     }
 
     $ruleBodyStr = $rulebody ;
-##    # Escape HTML chars before adding markup.
-#    $ruleBodyStr = esc($ruleBodyStr) ;
+    ##    # Escape HTML chars before adding markup.
+    #    $ruleBodyStr = esc($ruleBodyStr) ;
     
     # Inlines
     for $k (keys %inline) {
-## 	$s = esc($inline{$k}) ;
-## 	$k = esc($k) ;
-## 	# Assumes escaped <> round tokens.
-## 	$k = quotemeta $k ;
-## 	$ruleBodyStr =~ s/$k/$s/g ;
+##      $s = esc($inline{$k}) ;
+##      $k = esc($k) ;
+##      # Assumes escaped <> round tokens.
+##      $k = quotemeta $k ;
+##      $ruleBodyStr =~ s/$k/$s/g ;
 
-	$s = $inline{$k};
-	$ruleBodyStr =~ s/$k/$s/g ;
+        $s = $inline{$k};
+        $ruleBodyStr =~ s/$k/$s/g ;
     }
 
     if ( $DEBUG ) {
-	print STDERR "After inlining\n" ;
-	print STDERR $ruleBodyStr,"\n" ; ; 
+        print STDERR "After inlining\n" ;
+        print STDERR $ruleBodyStr,"\n" ; ; 
     }
 
     # Add hrefs - issue if one is a substring of another \W helps.
@@ -177,9 +181,9 @@ for $r (@rules) {
     ##$ruleId = sane("r".$rulename) ;
 
     if($rulename eq 'IRIREF') {
-	print "\n";
-	print "\@terminals\n";
-	print "\n" ;
+        print "\n";
+        print "\@terminals\n";
+        print "\n" ;
     }
     ## First part of output.
     ## $rlabel = '[' . $ruleNum .  ']' ;
@@ -196,14 +200,15 @@ for $r (@rules) {
     ## printf "%-5s  %-25s ::= %s\n", $rlabel, $rn, $ruleBodyStr ;
     printf "%-25s ::= %s\n", $rn, $ruleBodyStr ;
 
-#    $rule{$rulename, $rulebody) ;
-#    print $rulename , "\n" ;
+    #    $rule{$rulename, $rulebody) ;
+    #    print $rulename , "\n" ;
 }
 
 sub readFile {
     my $f = $_[0] ;
     open(F, "$f") || die "$f: $!"; 
     my $s = <F> ;
+    $s =~ s/\t/ /g;
     return $s ;
 }
 
@@ -216,9 +221,9 @@ sub esc {
 }
 
 sub sane {
-   my $a = $_[0] ;
-   $a =~ s/\W//g ;
-   return $a ;
+    my $a = $_[0] ;
+    $a =~ s/\W//g ;
+    return $a ;
 }
 
 sub fixupRule {
@@ -240,47 +245,47 @@ sub fixupRule {
     # Specials
     # Split long bodies
     if ( $head eq "CallExpression" ||
-	 $head eq "UnaryExpression" ||
- 	 $head eq "<PN_CHARS_BASE>" ||
- 	 $head eq "PatternElement" ||
- 	 $head eq "BuiltInCall" ||
-	 $head eq "Aggregate" )
+         $head eq "UnaryExpression" ||
+         $head eq "<PN_CHARS_BASE>" ||
+         $head eq "PatternElement" ||
+         $head eq "BuiltInCall" ||
+         $head eq "Aggregate" )
     {
-	## Except BNODE, STRLEN etc
-	## [138]  	RegexExpression	  ::=  	'REGEX' '(' Expression ',' Expression ( ',' Expression )? ')'
-	## [139]  	SubstringExpression	  ::=  	'SUBSTR' '(' Expression ',' Expression ( ',' Expression )? ')'
-	## [140]  	StrReplaceExpression	  ::=  	'REPLACE' '(' Expression ',' Expression ',' Expression ( ',' Expression )? ')'
-	## [141]  	ExistsFunc	  ::=  	'EXISTS' GroupGraphPattern
-	## [142]  	NotExistsFunc	  ::=  	'NOT' 'EXISTS' GroupGraphPattern
-	##        | 'BNODE' ( '(' Expression ')' | <NIL> )
+        ## Except BNODE, STRLEN etc
+## [138]        RegexExpression   ::=   'REGEX' '(' Expression ',' Expression ( ',' Expression )? ')'
+## [139]        SubstringExpression       ::=   'SUBSTR' '(' Expression ',' Expression ( ',' Expression )? ')'
+## [140]        StrReplaceExpression      ::=   'REPLACE' '(' Expression ',' Expression ',' Expression ( ',' Expression )? ')'
+## [141]        ExistsFunc        ::=   'EXISTS' GroupGraphPattern
+## [142]        NotExistsFunc     ::=   'NOT' 'EXISTS' GroupGraphPattern
+##        | 'BNODE' ( '(' Expression ')' | <NIL> )
 
-	print STDERR "A:",$body,"\n" if $p ;
+        print STDERR "A:",$body,"\n" if $p ;
 
-	## Fix up for BNODE that uses "|" - put in marker.
-	$body =~ s%'BNODE' \( '\(' Expression '\)' \| NIL \)%XXX-BNODE-XXX%;
-	
-	## Alternative more general removal: NB space-) - matched the BNF parens
-	##$body =~ s%'BNODE'.*? \)%XXX-BNODE-XXX%;
-	
-	$body =~ s%\|\s*%\n                          |   %g ;
-	
-	## Replace marker
-	$body =~ s%XXX-BNODE-XXX%'BNODE' \( '(' Expression ')' \| NIL \)%;
+        ## Fix up for BNODE that uses "|" - put in marker.
+        $body =~ s%'BNODE' \( '\(' Expression '\)' \| NIL \)%XXX-BNODE-XXX%;
+        
+        ## Alternative more general removal: NB space-) - matched the BNF parens
+        ##$body =~ s%'BNODE'.*? \)%XXX-BNODE-XXX%;
+        
+        $body =~ s%\|\s*%\n                          |   %g ;
+        
+        ## Replace marker
+        $body =~ s%XXX-BNODE-XXX%'BNODE' \( '(' Expression ')' \| NIL \)%;
     }
 
-     if ( $head eq "Aggregate" )
-     {
-	 # Strip outer ()
-	 $body =~ s/^\(\s*(.*)\s*\)$/$1/ ;	
- 	 $body =~ s/^\s+// ;
-     }
+    if ( $head eq "Aggregate" )
+    {
+        # Strip outer ()
+        $body =~ s/^\(\s*(.*)\s*\)$/$1/ ;       
+        $body =~ s/^\s+// ;
+    }
 
     # These failed the outer () test because they have nested () in them
     if (  $head eq "QueryPattern" ||
           $head eq "OrderCondition" )
     {
-	# Remove outer ()
-	$body =~ s/^\((.*)\)$/$1/ ;	
+        # Remove outer ()
+        $body =~ s/^\((.*)\)$/$1/ ;     
     }
 
     ## Split?
@@ -290,17 +295,17 @@ sub fixupRule {
 
     #Rules where an outer () is unnecessary.
     if ( $head eq "GroupCondition" ||
-	 $head eq "LimitOffsetClauses" ||
-	 $head eq "GraphOrDefault" ||
-	 $head eq "ArgList" ||
-	 $head eq "ExpressionList" ||
-	 $head eq "PathPrimary" ||
-	 $head eq "PathMod" ||
-	 $head eq "PathPrimary" ||
-	 $head eq "PathNegatedPropertySet" || 
-	 $head eq "PathOneInPropertySet")
+         $head eq "LimitOffsetClauses" ||
+         $head eq "GraphOrDefault" ||
+         $head eq "ArgList" ||
+         $head eq "ExpressionList" ||
+         $head eq "PathPrimary" ||
+         $head eq "PathMod" ||
+         $head eq "PathPrimary" ||
+         $head eq "PathNegatedPropertySet" || 
+         $head eq "PathOneInPropertySet")
     {
-	$body =~ s/^\(\s*(.*)\s*\)$/$1/ ;	
+        $body =~ s/^\(\s*(.*)\s*\)$/$1/ ;       
     }
 
     return $body ;
