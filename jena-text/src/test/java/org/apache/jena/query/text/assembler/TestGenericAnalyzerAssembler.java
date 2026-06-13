@@ -21,7 +21,7 @@
 
 package org.apache.jena.query.text.assembler;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -34,7 +34,7 @@ import org.apache.lucene.analysis.core.SimpleAnalyzer;
 import org.apache.lucene.analysis.core.StopAnalyzer;
 import org.apache.lucene.analysis.fr.FrenchAnalyzer;
 import org.apache.lucene.analysis.shingle.ShingleAnalyzerWrapper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestGenericAnalyzerAssembler {
 

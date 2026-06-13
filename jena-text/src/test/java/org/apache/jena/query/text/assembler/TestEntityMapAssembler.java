@@ -21,10 +21,15 @@
 
 package org.apache.jena.query.text.assembler;
 
-import static org.junit.Assert.assertEquals ;
-import static org.junit.Assert.assertTrue ;
+import static org.junit.jupiter.api.Assertions.assertEquals ;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue ;
 
 import java.util.Collection ;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.atlas.lib.InternalErrorException ;
@@ -41,19 +46,16 @@ import org.apache.jena.vocabulary.RDFS ;
 import org.apache.lucene.analysis.core.KeywordAnalyzer ;
 import org.apache.lucene.analysis.core.SimpleAnalyzer ;
 import org.apache.lucene.analysis.standard.StandardAnalyzer ;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
 
 /**
  * Test assembler for EntityMap
  */
 public class TestEntityMapAssembler {
-    
+
     // Suppress warnings
-    @BeforeClass public static void beforeClass() { LogCtl.setError(EntityDefinitionAssembler.class); }
-    @AfterClass  public static void afterClass()  { LogCtl.setInfo(EntityDefinitionAssembler.class); }
-    
+    @BeforeAll public static void beforeClass() { LogCtl.setError(EntityDefinitionAssembler.class); }
+    @AfterAll  public static void afterClass()  { LogCtl.setInfo(EntityDefinitionAssembler.class); }
+
     private static final String TESTBASE = "http://example.org/test/";
     private static final Resource spec1;
     private static final Resource spec2;
@@ -66,32 +68,32 @@ public class TestEntityMapAssembler {
     private static final Resource specNoDefaultField;
     private static final Resource specNoMapProperty;
     private static final Resource specNoPrimaryFieldDef;
-    
+
     @Test public void EntityHasPrimaryField() {
         EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
         EntityDefinition entityDef = entDefAssem.open(null, spec1, null);
         assertEquals(SPEC1_DEFAULT_FIELD, entityDef.getPrimaryField());
     }
-    
+
     @Test public void EntityHasEntityField() {
         EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
         EntityDefinition entityDef = entDefAssem.open(null, spec1, null);
-        assertEquals(SPEC1_ENTITY_FIELD, entityDef.getEntityField());        
+        assertEquals(SPEC1_ENTITY_FIELD, entityDef.getEntityField());
     }
-    
+
     @Test public void EntityHasMapEntries() {
         EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
         EntityDefinition entityDef = entDefAssem.open(null, spec1, null);
         assertEquals(SPEC1_PREDICATE.asNode(), getOne(entityDef,SPEC1_DEFAULT_FIELD));
     }
-    
+
     private static Object getOne(EntityDefinition entityDef, String field) {
         Collection<Node> x = entityDef.getPredicates(field) ;
         if ( x == null || x.size() == 0 )
             return null ;
         if ( x.size() != 1 )
             throw new InternalErrorException("Not unique: "+field) ;
-        return x.iterator().next() ; 
+        return x.iterator().next() ;
     }
 
     @Test public void EntityHasMultipleMapEntries() {
@@ -100,67 +102,62 @@ public class TestEntityMapAssembler {
         assertEquals(SPEC2_PREDICATE1.asNode(), getOne(entityDef,SPEC2_DEFAULT_FIELD));
         assertEquals(SPEC2_PREDICATE2.asNode(), getOne(entityDef, SPEC2_FIELD2));
     }
-    
+
     @Test public void EntityHasMapEntryWithSimpleAnalyzer() {
         EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
         EntityDefinition entityDef = entDefAssem.open(Assembler.general(), spec3,  null);
         assertEquals(SimpleAnalyzer.class, entityDef.getAnalyzer(SPEC1_DEFAULT_FIELD).getClass());
     }
-    
+
     @Test public void EntityHasMapEntryWithStandardAnalyzerAndStopWords() {
         EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
         EntityDefinition entityDef = entDefAssem.open(Assembler.general(), spec4,  null);
         assertEquals(StandardAnalyzer.class, entityDef.getAnalyzer(SPEC1_DEFAULT_FIELD).getClass());
     }
-    
+
     @Test public void EntityHasMapEntryWithKeywordAnalyzer() {
         EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
         EntityDefinition entityDef = entDefAssem.open(Assembler.general(), spec5,  null);
         assertEquals(KeywordAnalyzer.class, entityDef.getAnalyzer(SPEC1_DEFAULT_FIELD).getClass());
-    }    
-    
+    }
+
     @Test public void EntityHasMapEntryWithLowerCaseKeywordAnalyzer() {
         EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
         EntityDefinition entityDef = entDefAssem.open(Assembler.general(), spec6,  null);
         assertEquals(LowerCaseKeywordAnalyzer.class, entityDef.getAnalyzer(SPEC1_DEFAULT_FIELD).getClass());
-    }    
-    
+    }
+
     @Test public void EntityHasMapEntryWithConfigurableAnalyzer() {
         EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
         EntityDefinition entityDef = entDefAssem.open(Assembler.general(), spec7,  null);
         assertEquals(ConfigurableAnalyzer.class, entityDef.getAnalyzer(SPEC1_DEFAULT_FIELD).getClass());
-    }    
-    
-    @Test(expected=TextIndexException.class) public void errorOnNoEntityField() {
-        EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
-        entDefAssem.open(null, specNoEntityField, null);
     }
-    
-    @Test(expected=TextIndexException.class) public void errorOnNoDefaultField() {
+
+    @Test public void errorOnNoEntityField() {
         EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
-        entDefAssem.open(null, specNoDefaultField, null);
+        assertThrows(TextIndexException.class, ()->entDefAssem.open(null, specNoEntityField, null));
     }
-    
-    @Test(expected=TextIndexException.class) public void errorOnNoMapProperty() {
+
+    @Test public void errorOnNoDefaultField() {
         EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
-        entDefAssem.open(null, specNoMapProperty, null);
+        assertThrows(TextIndexException.class, ()->entDefAssem.open(null, specNoDefaultField, null));
     }
-    
-    @Test(expected=TextIndexException.class) public void errorOnNoPrimaryFieldDef() {
+
+    @Test public void errorOnNoMapProperty() {
         EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
-        try {
-            entDefAssem.open(null, specNoPrimaryFieldDef, null);
-        } catch (TextIndexException e) {
+        assertThrows(TextIndexException.class, ()->entDefAssem.open(null, specNoMapProperty, null));
+    }
+
+    @Test public void errorOnNoPrimaryFieldDef() {
+        EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
+        TextIndexException e = assertThrows(TextIndexException.class, ()->entDefAssem.open(null, specNoPrimaryFieldDef, null));
             assertTrue(e.getMessage().contains(SPEC1_DEFAULT_FIELD));
-            throw e ;
-        }    
-        
     }
-    
+
     private static final String SPEC1_ENTITY_FIELD = "spec1EntityField";
     private static final String SPEC1_DEFAULT_FIELD = "spec1DefaultField";
     private static final Property SPEC1_PREDICATE = RDFS.label;
-    
+
     private static final String SPEC2_ENTITY_FIELD = "spec2EntityField";
     private static final String SPEC2_DEFAULT_FIELD = "spec2DefaultField";
     private static final String SPEC2_FIELD2 = "spec2Field2";
@@ -170,9 +167,9 @@ public class TestEntityMapAssembler {
         JenaSystem.init();
         TextAssembler.init();
         Model model = ModelFactory.createDefaultModel();
-        
+
         // create a simple entity map specification
-        
+
         spec1 = model.createResource(TESTBASE + "spec1")
                      .addProperty(TextVocab.pEntityField, SPEC1_ENTITY_FIELD)
                      .addProperty(TextVocab.pDefaultField, SPEC1_DEFAULT_FIELD)
@@ -184,9 +181,9 @@ public class TestEntityMapAssembler {
                                                      .addProperty(TextVocab.pPredicate, SPEC1_PREDICATE)
                                           }))
                      ;
-        
+
         // create an entity map specification with multiple map entries
-        
+
         spec2 = model.createResource(TESTBASE + "spec2")
                      .addProperty(TextVocab.pEntityField, SPEC2_ENTITY_FIELD)
                      .addProperty(TextVocab.pDefaultField, SPEC2_DEFAULT_FIELD)
@@ -199,12 +196,12 @@ public class TestEntityMapAssembler {
                                                 model.createResource()
                                                      .addProperty(TextVocab.pField, SPEC2_FIELD2)
                                                      .addProperty(TextVocab.pPredicate, SPEC2_PREDICATE2),
-                                                    
+
                                           }))
                      ;
-        
+
         // create a simple entity map specification using a keyword analyzer
-        
+
                 spec3 = model.createResource(TESTBASE + "spec3")
                              .addProperty(TextVocab.pEntityField, SPEC1_ENTITY_FIELD)
                              .addProperty(TextVocab.pDefaultField, SPEC1_DEFAULT_FIELD)
@@ -214,13 +211,13 @@ public class TestEntityMapAssembler {
                                                         model.createResource()
                                                              .addProperty(TextVocab.pField, SPEC1_DEFAULT_FIELD)
                                                              .addProperty(TextVocab.pPredicate, SPEC1_PREDICATE)
-                                                             .addProperty(TextVocab.pAnalyzer, 
+                                                             .addProperty(TextVocab.pAnalyzer,
                                                                           model.createResource()
                                                                                .addProperty(RDF.type, TextVocab.simpleAnalyzer))
                                                   }))
                              ;
                 // create a simple entity map specification using a standard analyzer with stop words
-                
+
                 spec4 = model.createResource(TESTBASE + "spec4")
                              .addProperty(TextVocab.pEntityField, SPEC1_ENTITY_FIELD)
                              .addProperty(TextVocab.pDefaultField, SPEC1_DEFAULT_FIELD)
@@ -230,13 +227,13 @@ public class TestEntityMapAssembler {
                                                         model.createResource()
                                                              .addProperty(TextVocab.pField, SPEC1_DEFAULT_FIELD)
                                                              .addProperty(TextVocab.pPredicate, SPEC1_PREDICATE)
-                                                             .addProperty(TextVocab.pAnalyzer, 
+                                                             .addProperty(TextVocab.pAnalyzer,
                                                                           model.createResource()
                                                                                .addProperty(RDF.type, TextVocab.standardAnalyzer))
                                                                                .addProperty(TextVocab.pStopWords, toList(model, "and the but"))
-                                                  }));        
+                                                  }));
         // create a simple entity map specification using a keyword analyzer
-        
+
                 spec5 = model.createResource(TESTBASE + "spec5")
                              .addProperty(TextVocab.pEntityField, SPEC1_ENTITY_FIELD)
                              .addProperty(TextVocab.pDefaultField, SPEC1_DEFAULT_FIELD)
@@ -246,13 +243,13 @@ public class TestEntityMapAssembler {
                                                         model.createResource()
                                                              .addProperty(TextVocab.pField, SPEC1_DEFAULT_FIELD)
                                                              .addProperty(TextVocab.pPredicate, SPEC1_PREDICATE)
-                                                             .addProperty(TextVocab.pAnalyzer, 
+                                                             .addProperty(TextVocab.pAnalyzer,
                                                                           model.createResource()
                                                                                .addProperty(RDF.type, TextVocab.keywordAnalyzer))
                                                   }));
-                
+
         // create a simple entity map specification using a lowercase keyword analyzer
-        
+
                 spec6 = model.createResource(TESTBASE + "spec6")
                              .addProperty(TextVocab.pEntityField, SPEC1_ENTITY_FIELD)
                              .addProperty(TextVocab.pDefaultField, SPEC1_DEFAULT_FIELD)
@@ -262,14 +259,14 @@ public class TestEntityMapAssembler {
                                                         model.createResource()
                                                              .addProperty(TextVocab.pField, SPEC1_DEFAULT_FIELD)
                                                              .addProperty(TextVocab.pPredicate, SPEC1_PREDICATE)
-                                                             .addProperty(TextVocab.pAnalyzer, 
+                                                             .addProperty(TextVocab.pAnalyzer,
                                                                           model.createResource()
                                                                                .addProperty(RDF.type, TextVocab.lowerCaseKeywordAnalyzer))
                                                   }));
-                
+
 
         // create an entity map specification using a configurable analyzer
-        
+
                 spec7 = model.createResource(TESTBASE + "spec7")
                              .addProperty(TextVocab.pEntityField, SPEC1_ENTITY_FIELD)
                              .addProperty(TextVocab.pDefaultField, SPEC1_DEFAULT_FIELD)
@@ -279,15 +276,15 @@ public class TestEntityMapAssembler {
                                                         model.createResource()
                                                              .addProperty(TextVocab.pField, SPEC1_DEFAULT_FIELD)
                                                              .addProperty(TextVocab.pPredicate, SPEC1_PREDICATE)
-                                                             .addProperty(TextVocab.pAnalyzer, 
+                                                             .addProperty(TextVocab.pAnalyzer,
                                                                           model.createResource()
                                                                                .addProperty(RDF.type, TextVocab.configurableAnalyzer)
                                                                                .addProperty(TextVocab.pTokenizer, TextVocab.standardTokenizer))
                                                   }));
-                
+
         // bad assembler spec
-                
-        specNoEntityField = 
+
+        specNoEntityField =
                 model.createResource(TESTBASE + "specNoEntityField")
                      .addProperty(TextVocab.pDefaultField, SPEC1_DEFAULT_FIELD)
                      .addProperty(TextVocab.pMap,
@@ -298,10 +295,10 @@ public class TestEntityMapAssembler {
                                                      .addProperty(TextVocab.pPredicate, SPEC1_PREDICATE)
                                           }))
                      ;
-        
+
         // bad assembler spec
-        
-        specNoDefaultField = 
+
+        specNoDefaultField =
                 model.createResource(TESTBASE + "specNoDefaultField")
                      .addProperty(TextVocab.pDefaultField, SPEC1_DEFAULT_FIELD)
                      .addProperty(TextVocab.pMap,
@@ -313,13 +310,13 @@ public class TestEntityMapAssembler {
                                           }))
                      ;
         // bad assembler spec
-        specNoMapProperty = 
+        specNoMapProperty =
                 model.createResource(TESTBASE + "specNoMapProperty")
                      .addProperty(TextVocab.pEntityField, SPEC1_ENTITY_FIELD)
                      .addProperty(TextVocab.pDefaultField, SPEC1_DEFAULT_FIELD)
                      ;
-        
-        // bad assembler spec        
+
+        // bad assembler spec
         specNoPrimaryFieldDef =
                 model.createResource(TESTBASE + "noPrimaryFieldDef")
                      .addProperty(TextVocab.pEntityField, SPEC1_ENTITY_FIELD)
@@ -333,7 +330,7 @@ public class TestEntityMapAssembler {
                                           }))
                      ;
     }
-    
+
     private static Resource toList(Model model, String string) {
         String[] members = string.split("\\s");
         Resource current = RDF.nil;
@@ -341,8 +338,8 @@ public class TestEntityMapAssembler {
             Resource previous = current;
             current = model.createResource();
             current.addProperty(RDF.rest, previous);
-            current.addProperty(RDF.first, members[i]);            
+            current.addProperty(RDF.first, members[i]);
         }
-        return current;    
+        return current;
     }
 }

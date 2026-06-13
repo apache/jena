@@ -28,9 +28,9 @@ import org.apache.jena.query.text.assembler.TextAssembler;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -88,8 +88,7 @@ public class TestDatasetWithLuceneTextIndexWithLangField extends AbstractTestDat
                     );
     }
     
-    @Before
-    public void before() {
+    @BeforeEach public void before() {
         Reader reader = new StringReader(SPEC);
         Model specModel = ModelFactory.createDefaultModel();
         specModel.read(reader, "", "TURTLE");
@@ -98,8 +97,7 @@ public class TestDatasetWithLuceneTextIndexWithLangField extends AbstractTestDat
         dataset = (Dataset) Assembler.general().open(root);
     }
     
-    @After
-    public void after() {
+    @AfterEach public void after() {
         dataset.close();
     }
     

@@ -35,9 +35,9 @@ import org.apache.jena.query.text.assembler.TextAssembler ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.Resource ;
-import org.junit.After ;
-import org.junit.Before ;
-import org.junit.Test ;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * This class defines a setup configuration for a dataset that uses a simple analyzer with a Lucene index.
@@ -113,13 +113,12 @@ public class TestDatasetWithSimpleAnalyzer extends AbstractTestDatasetWithTextIn
         if (indexDir.exists()) TextSearchUtil.emptyAndDeleteDirectory(indexDir);
     }    
 
-    @Before 
+    @BeforeEach 
     public void beforeClass() {
         init();
     }    
     
-    @After
-    public void afterClass() {
+    @AfterEach public void afterClass() {
         deleteOldFiles();
     }
     

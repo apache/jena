@@ -21,9 +21,9 @@
 
 package org.apache.jena.query.text;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.Reader ;
 import java.io.StringReader ;
@@ -49,9 +49,9 @@ import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.Resource ;
-import org.junit.After ;
-import org.junit.Before ;
-import org.junit.Test ;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TestTextHighlighting extends AbstractTestDatasetWithTextIndexBase {
 
@@ -106,8 +106,7 @@ public class TestTextHighlighting extends AbstractTestDatasetWithTextIndexBase {
                     );
     }
 
-    @Before
-    public void before() {
+    @BeforeEach public void before() {
         Reader reader = new StringReader(SPEC);
         Model specModel = ModelFactory.createDefaultModel();
         specModel.read(reader, "", "TURTLE");
@@ -116,8 +115,7 @@ public class TestTextHighlighting extends AbstractTestDatasetWithTextIndexBase {
         dataset = (Dataset) Assembler.general().open(root);
     }
 
-    @After
-    public void after() {
+    @AfterEach public void after() {
         dataset.close();
     }
 

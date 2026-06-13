@@ -24,16 +24,15 @@ package org.apache.jena.query.text;
 import java.util.Set ;
 
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.junit.Before ;
-import org.junit.Test ;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * This class defines a setup configuration for a dataset that uses an ASCII folding lowercase keyword analyzer with a Lucene index.
  */
 public class TestDatasetWithConfigurableAnalyzer extends TestDatasetWithLowerCaseKeywordAnalyzer {
     @Override
-    @Before
-    public void before() {
+    @BeforeEach public void before() {
         init(StrUtils.strjoinNL(
             "text:ConfigurableAnalyzer ;",
             "text:tokenizer text:KeywordTokenizer ;",

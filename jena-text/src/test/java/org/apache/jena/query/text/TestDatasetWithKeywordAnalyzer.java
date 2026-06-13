@@ -26,16 +26,15 @@ import java.util.HashSet ;
 import java.util.Set ;
 
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.junit.Before ;
-import org.junit.Test ;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * This class defines a setup configuration for a dataset that uses a keyword analyzer with a Lucene index.
  */
 public class TestDatasetWithKeywordAnalyzer extends AbstractTestDatasetWithAnalyzer {
     @Override
-    @Before
-    public void before() {
+    @BeforeEach public void before() {
         init("text:KeywordAnalyzer");
     }
     

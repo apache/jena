@@ -25,8 +25,8 @@ import static org.apache.jena.query.text.changes.TextQuadAction.ADD;
 import static org.apache.jena.query.text.changes.TextQuadAction.DELETE;
 import static org.apache.jena.query.text.changes.TextQuadAction.NO_ADD;
 import static org.apache.jena.query.text.changes.TextQuadAction.NO_DELETE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List ;
 
@@ -37,7 +37,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE ;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
 
 public class TestDatasetMonitor
 {
@@ -185,15 +185,16 @@ public class TestDatasetMonitor
 
     private static void check(ChangesCounter changes, long adds, long deletes, long noAdds, long noDeletes)
     {
-        assertEquals("Adds",        adds, changes.countAdd) ;
-        assertEquals("Deletes",     deletes, changes.countDelete) ;
-        assertEquals("NoAdds",      noAdds, changes.countNoAdd) ;
-        assertEquals("NoDeletes",   noDeletes, changes.countNoDelete) ;
+        assertEquals(adds, changes.countAdd, "Adds") ;
+        assertEquals(deletes, changes.countDelete, "Deletes");
+        assertEquals(noAdds, changes.countNoAdd, "NoAdds");
+        assertEquals(noDeletes, changes.countNoDelete, "NoDeletes");
     }
 
     private static void check(List<Pair<TextQuadAction, Quad>> record, int indx, TextQuadAction quadAction, Quad quad)
     {
-        assertTrue("Index "+indx+" out of range [0,"+record.size()+")", 0 <= indx && indx < record.size() ) ;
+        assertTrue(0 <= indx && indx < record.size(),
+                "Index "+indx+" out of range [0,"+record.size()+")");
         Pair<TextQuadAction, Quad> pair = record.get(indx) ;
         assertEquals(quadAction, pair.getLeft()) ;
         assertEquals(quad, pair.getRight()) ;

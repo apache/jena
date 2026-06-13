@@ -31,8 +31,8 @@ import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.tdb2.assembler.VocabTDB2;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.RDFS ;
-import org.junit.After ;
-import org.junit.Before ;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 public abstract class AbstractTestTextAssembler {
 
@@ -132,15 +132,13 @@ public abstract class AbstractTestTextAssembler {
         indexDir = new File("target/test/testasm/simpleIndexLiteralDir"); if (indexDir.exists()) TextSearchUtil.emptyAndDeleteDirectory(indexDir);
     }
 
-    @Before
-    public void before() {
+    @BeforeEach public void before() {
         deleteFiles();
 
         TextSearchUtil.createEmptyIndex(new File("target/test/testasm/DB"));
     }
 
-    @After
-    public void after() {
+    @AfterEach public void after() {
         deleteFiles();
     }
 

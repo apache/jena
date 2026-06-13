@@ -21,9 +21,9 @@
 
 package org.apache.jena.query.text;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -104,13 +104,14 @@ public abstract class AbstractTestDatasetWithTextIndexBase {
             ResultSetRewindable results = rs.rewindable();
 //            ResultSetFormatter.out(results);
 //            results.reset();
-            assertEquals(label, expectedNumResults > 0, results.hasNext());
+            assertEquals(expectedNumResults > 0, results.hasNext(), label);
             int count;
             for (count=0; results.hasNext(); count++) {
                 String entityURI = results.next().getResource("s").getURI();
-                assertTrue(label + ": unexpected result: " + entityURI, expectedEntityURIs.contains(entityURI));
+                assertTrue(expectedEntityURIs.contains(entityURI),
+                           label + ": unexpected result: " + entityURI);
             }
-            assertEquals(label, expectedNumResults, count);
+            assertEquals(expectedNumResults, count, label);
         }
         finally {
             dataset.end() ;
@@ -147,7 +148,7 @@ public abstract class AbstractTestDatasetWithTextIndexBase {
         dataset.begin(ReadWrite.READ);
         try(QueryExecution qexec = QueryExecutionFactory.create(query, dataset)) {
             ResultSet results = qexec.execSelect() ;
-            assertFalse(label, results.hasNext());
+            assertFalse(results.hasNext(), label);
         }
         finally {
             dataset.end() ;

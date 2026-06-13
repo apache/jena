@@ -21,13 +21,17 @@
 
 package org.apache.jena.query.text;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List ;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Creator;
@@ -47,10 +51,6 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.ByteBuffersDirectory;
 import org.apache.lucene.store.Directory ;
-import org.junit.Test ;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
 /** Text dataset tests using TDB1 and TDB2 transactionally, including context unionDefaultGraph.
  * <p>
@@ -65,17 +65,15 @@ import org.junit.runners.Parameterized.Parameters;
  * <p>Union graph support by context is required for these tests.
  */
 @SuppressWarnings("removal")
-@RunWith(Parameterized.class)
+@ParameterizedClass
+@MethodSource("provideArgs")
 public class TestTextTxnTDB
 {
-    @Parameters(name = "{index}: {0}")
-    public static Collection<Object[]>  data() {
+    public static Stream<Arguments> provideArgs() {
         Creator<Dataset> tdb1Factory = ()->TDB1Factory.createDataset();
         Creator<Dataset> tdb2Factory = ()->TDB2Factory.createDataset();
-        return Arrays.asList( new Object[][]{
-            { "TDB1", tdb1Factory } ,
-            { "TDB2", tdb2Factory }
-        });
+        return Stream.of(Arguments.of("TDB1", tdb1Factory),
+                         Arguments.of("TDB2", tdb2Factory));
     }
 
     private final Creator<Dataset> factory;

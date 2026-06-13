@@ -21,8 +21,8 @@
 
 package org.apache.jena.query.text;
 
-import static org.junit.Assert.assertFalse ;
-import static org.junit.Assert.assertTrue ;
+import static org.junit.jupiter.api.Assertions.assertFalse ;
+import static org.junit.jupiter.api.Assertions.assertTrue ;
 
 import java.util.ArrayList ;
 import java.util.List ;
@@ -41,7 +41,7 @@ import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.vocabulary.RDFS ;
 import org.apache.lucene.analysis.standard.StandardAnalyzer ;
 import org.apache.lucene.store.ByteBuffersDirectory ;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
 
 /**
  * Spin up multiple threads against a multiple-reader/single-writer Dataset to test that the Lucene index handles concurrency properly.

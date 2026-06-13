@@ -21,14 +21,18 @@
 
 package org.apache.jena.query.text;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List ;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Creator;
@@ -46,10 +50,6 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.ByteBuffersDirectory;
 import org.apache.lucene.store.Directory ;
-import org.junit.Test ;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
 /** Text dataset tests using datasets transactionally, named unionDefaultGraph.
  * <p>
@@ -63,22 +63,20 @@ import org.junit.runners.Parameterized.Parameters;
  * TDB2 is transactional only.
  * <p>Union graph support by context is required for these tests.
  */
-@SuppressWarnings("removal")
-@RunWith(Parameterized.class)
+@ParameterizedClass
+@MethodSource("provideArgs")
 public class TestTextTxn
 {
-    @Parameters(name = "{index}: {0}")
-    public static Collection<Object[]>  data() {
+    @SuppressWarnings("removal")
+    public static Stream<Arguments> provideArgs() {
         Creator<Dataset> plainFactory = ()->DatasetFactory.create();
         Creator<Dataset> timFactory = ()->DatasetFactory.createTxnMem();
         Creator<Dataset> tdb1Factory = ()->TDB1Factory.createDataset();
         Creator<Dataset> tdb2Factory = ()->TDB2Factory.createDataset();
-        return Arrays.asList( new Object[][]{
-            { "Plain", plainFactory, false } ,
-            { "TIM",   timFactory, false } ,
-            { "TDB1", tdb1Factory, true } ,
-            { "TDB2", tdb2Factory, true }
-        });
+        return Stream.of(Arguments.of( "Plain", plainFactory, true),
+                         Arguments.of( "TIM",   timFactory, true ) ,
+                         Arguments.of( "TDB1", tdb1Factory, true ) ,
+                         Arguments.of( "TDB2", tdb2Factory, true ));
     }
 
     private final Creator<Dataset> factory;

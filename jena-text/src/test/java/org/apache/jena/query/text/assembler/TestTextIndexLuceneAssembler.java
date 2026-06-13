@@ -28,8 +28,8 @@ import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.vocabulary.RDFS ;
 import org.apache.lucene.analysis.core.KeywordAnalyzer ;
 import org.apache.lucene.store.ByteBuffersDirectory ;
-import org.junit.Test ;
-import static org.junit.Assert.* ;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.* ;
 
 public class TestTextIndexLuceneAssembler extends AbstractTestTextAssembler {
 
