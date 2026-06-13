@@ -23,20 +23,20 @@ package org.apache.jena.tdb1.index;
 
 import static org.apache.jena.tdb1.base.record.RecordLib.intToRecord;
 import static org.apache.jena.tdb1.index.IndexTestLib.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.apache.jena.tdb1.base.record.Record;
 import org.apache.jena.tdb1.base.record.RecordLib;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 public abstract class AbstractTestIndex 
 {
     Index index = null ;
     
-    @After public void afterTest()
+    @AfterEach public void afterTest()
     { 
         if ( index != null )
             index.close();

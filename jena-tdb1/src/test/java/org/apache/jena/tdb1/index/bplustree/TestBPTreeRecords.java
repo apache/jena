@@ -21,10 +21,10 @@
 
 package org.apache.jena.tdb1.index.bplustree;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.jena.tdb1.base.block.BlockMgr;
 import org.apache.jena.tdb1.base.block.BlockMgrFactory;
@@ -35,49 +35,49 @@ import org.apache.jena.tdb1.base.record.RecordLib;
 import org.apache.jena.tdb1.base.recordbuffer.RecordBufferPage;
 import org.apache.jena.tdb1.base.recordbuffer.RecordBufferPageMgr;
 import org.apache.jena.tdb1.sys.SystemTDB;
-import org.junit.After ;
-import org.junit.AfterClass;
-import org.junit.Before ;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class TestBPTreeRecords
 {
     static private boolean oldNullOut ;
     static private boolean oldCheckingNode ;
     static private boolean oldCheckingBTree ;
-    
+
     static private int blockSize ;
     static private RecordFactory recordFactory ;
-    
+
     static private int bufSizeRecord ;
     static private BlockMgr blkMgrRecords  ;
     static private RecordBufferPageMgr recordBufferPageMgr  ;
     static private BPlusTree bPlusTree ;
-    
-    @BeforeClass public static void beforeClass()
+
+    @BeforeAll public static void beforeClass()
     {
         oldNullOut = SystemTDB.NullOut ;
         SystemTDB.NullOut = true ;
-        
+
         oldCheckingNode = BPlusTreeParams.CheckingNode ;
         BPlusTreeParams.CheckingNode = true ;
-        
+
         oldCheckingBTree = BPlusTreeParams.CheckingTree ;
         BPlusTreeParams.CheckingTree = true ;
-        
+
         blockSize =  4*8 ;  // Which is 6 int records
         recordFactory = new RecordFactory(4, 0) ;
-        
+
         bufSizeRecord = RecordBufferPage.calcRecordSize(recordFactory, blockSize) ;
         blkMgrRecords = BlockMgrFactory.createMem("BPTreeRecords", blockSize) ;
         recordBufferPageMgr = new RecordBufferPageMgr(recordFactory, blkMgrRecords) ;
-        
+
         // B+Tree order does not matter.
         bPlusTree = BPlusTree.attach(new BPlusTreeParams(3, recordFactory), null, blkMgrRecords) ;
     }
-    
-    @AfterClass public static void afterClass()
+
+    @AfterAll public static void afterClass()
     {
         SystemTDB.NullOut = oldNullOut ;
         BPlusTreeParams.CheckingTree = oldCheckingNode ;
@@ -91,10 +91,10 @@ public class TestBPTreeRecords
         check(bpr) ;
         bpr.release() ;
     }
-    
-    @Before public void before() { blkMgrRecords.beginUpdate() ; }
-    @After public void after() { blkMgrRecords.endUpdate() ; }
-    
+
+    @BeforeEach public void before() { blkMgrRecords.beginUpdate() ; }
+    @AfterEach public void after() { blkMgrRecords.endUpdate() ; }
+
 
     @Test public void bpt_records_2()
     {
@@ -119,7 +119,7 @@ public class TestBPTreeRecords
         check(bpr) ;
         bpr.release() ;
     }
-    
+
     @Test public void bpt_records_4()
     {
         BPTreeRecords bpr = make() ;
@@ -128,15 +128,15 @@ public class TestBPTreeRecords
         check(bpr) ;
         bpr.release() ;
     }
-    
+
     @Test public void bpt_records_5()
     {
         BPTreeRecords bpr = make() ;
         int N =  bpr.getMaxSize() ;
-        
+
         for ( int i = bpr.getMaxSize()-1 ; i >= 0 ; i-- )
             insert(bpr, (i+0x20)) ;
-        
+
         delete(bpr, (1+0x20)) ;
         assertEquals(N-1, bpr.getCount()) ;
         check(bpr) ;
@@ -144,7 +144,7 @@ public class TestBPTreeRecords
         delete(bpr, (2+0x20)) ;
         assertEquals(N-2, bpr.getCount()) ;
         check(bpr) ;
-        
+
         delete(bpr, bpr.getLowRecord()) ;
         assertEquals(N-3, bpr.getCount()) ;
         check(bpr) ;
@@ -152,15 +152,15 @@ public class TestBPTreeRecords
         bpr.internalDelete(bpr.getHighRecord()) ;
         assertEquals(N-4, bpr.getCount()) ;
         check(bpr) ;
-        
+
         bpr.release() ;
     }
-    
+
     @Test public void bpt_records_6()
     {
         BPTreeRecords bpr = make() ;
         fill(bpr) ;
-        
+
         // No match.
         assertNull(bpr.internalSearch(RecordLib.intToRecord(0x20))) ;
 
@@ -171,14 +171,14 @@ public class TestBPTreeRecords
         r = bpr.getLowRecord() ;
         r2 = search(bpr, r) ;
         assertTrue(Record.keyEQ(r, r2)) ;
-        
+
         r = bpr.getHighRecord() ;
         r2 = search(bpr, r) ;
         assertTrue(Record.keyEQ(r, r2)) ;
-        
+
         bpr.release() ;
     }
-    
+
     @Test public void bpt_shift_1()
     {
         BPTreeRecords bpr1 = make() ;
@@ -190,20 +190,20 @@ public class TestBPTreeRecords
         //assertTrue(Record.keyEQ(r, RecordTestLib.intToRecord(10))) ;
         contains(bpr1) ;
         contains(bpr2, 10) ;
-        
+
         bpr1.release() ;
         bpr2.release() ;
 
     }
-    
+
     @Test public void bpt_shift_2()
     {
         BPTreeRecords bpr1 = make() ;
         BPTreeRecords bpr2 = make() ;
-        
+
         insert(bpr1, 10) ;
         Record r = bpr2.shiftLeft(bpr1, null) ;
-        
+
         assertTrue(Record.keyEQ(r, RecordLib.intToRecord(10))) ;
         contains(bpr1) ;
         contains(bpr2, 10) ;
@@ -215,13 +215,13 @@ public class TestBPTreeRecords
     {
         BPTreeRecords bpr1 = make() ;
         BPTreeRecords bpr2 = make() ;
-        
+
         insert(bpr1, 10, 20) ;
         insert(bpr2, 99) ;
-        
+
         Record r = bpr1.shiftRight(bpr2, null) ;
 
-        assertTrue(r+" != "+RecordLib.intToRecord(10), Record.keyEQ(r, RecordLib.intToRecord(10))) ;
+        assertTrue(Record.keyEQ(r, RecordLib.intToRecord(10)), r+" != "+RecordLib.intToRecord(10)) ;
         contains(bpr1, 10) ;
         contains(bpr2, 20, 99) ;
         bpr1.release() ;
@@ -232,27 +232,27 @@ public class TestBPTreeRecords
     {
         BPTreeRecords bpr1 = make() ;
         BPTreeRecords bpr2 = make() ;
-        
+
         insert(bpr1, 10, 20) ;
         insert(bpr2, 5) ;
-        
+
         Record r = bpr2.shiftLeft(bpr1, null) ;
         assertTrue(Record.keyEQ(r, RecordLib.intToRecord(10))) ;
-        
+
         contains(bpr1, 20) ;
         contains(bpr2, 5, 10) ;
         bpr1.release() ;
         bpr2.release() ;
     }
-    
+
     @Test public void bpt_merge_1()
     {
         BPTreeRecords bpr1 = make() ;
         BPTreeRecords bpr2 = make() ;
-        
+
         insert(bpr1, 10, 20) ;
         insert(bpr2, 99) ;
-        
+
         BPTreeRecords bpr3 = (BPTreeRecords)bpr1.merge(bpr2, null) ;
         contains(bpr1, 10, 20, 99) ;
         contains(bpr2) ;
@@ -265,10 +265,10 @@ public class TestBPTreeRecords
     {
         BPTreeRecords bpr1 = make() ;
         BPTreeRecords bpr2 = make() ;
-        
+
         insert(bpr1, 10, 20) ;
         insert(bpr2, 5) ;
-        
+
         BPTreeRecords bpr3 = (BPTreeRecords)bpr2.merge(bpr1, null) ;
         contains(bpr1) ;
         contains(bpr2, 5, 10, 20) ;
@@ -276,15 +276,15 @@ public class TestBPTreeRecords
         bpr1.release() ;
         bpr2.release() ;
     }
-    
+
     private static void check(BPTreeRecords bpr)
     {
         assertTrue(bpr.getCount() >= 0 ) ;
         assertTrue(bpr.getCount() <= bpr.getMaxSize() ) ;
-        
+
         assertEquals(bpr.getRecordBuffer().getLow(), bpr.getLowRecord()) ;
         assertEquals(bpr.getRecordBuffer().getHigh(), bpr.getHighRecord()) ;
-        
+
         for ( int i = 1 ; i < bpr.getCount() ; i++ )
         {
             Record r1 = bpr.getRecordBuffer().get(i-1) ;
@@ -298,7 +298,7 @@ public class TestBPTreeRecords
         return search(bpr, RecordLib.intToRecord(x)) ;
     }
 
-    
+
     private static Record search(BPTreeRecords bpr, Record r)
     {
         return bpr.internalSearch(r) ;
@@ -311,12 +311,12 @@ public class TestBPTreeRecords
             bpr.internalInsert( RecordLib.intToRecord( value ) );
         }
     }
-    
+
     private static void insert(BPTreeRecords bpr, Record r)
     {
         bpr.internalInsert(r) ;
     }
-    
+
 
     private static void delete(BPTreeRecords bpr, int ... values)
     {
@@ -325,12 +325,12 @@ public class TestBPTreeRecords
             delete( bpr, RecordLib.intToRecord( value ) );
         }
     }
-    
+
     private static void delete(BPTreeRecords bpr, Record r)
     {
         bpr.internalDelete(r) ;
     }
-    
+
 
     private static void contains(BPTreeRecords bpr, int ... values)
     {
@@ -344,7 +344,7 @@ public class TestBPTreeRecords
         RecordBufferPage page = recordBufferPageMgr.create() ;
         return new BPTreeRecords(bPlusTree, page) ;
     }
-    
+
     private static void fill(BPTreeRecords bpr)
     {
         RecordBuffer rb = bpr.getRecordBuffer() ;

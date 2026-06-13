@@ -21,8 +21,8 @@
 
 package org.apache.jena.tdb1.store.tupletable;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Iterator;
 import java.util.List;
@@ -33,7 +33,7 @@ import org.apache.jena.atlas.lib.tuple.TupleFactory ;
 import org.apache.jena.tdb1.base.record.RecordFactory;
 import org.apache.jena.tdb1.store.NodeId;
 import org.apache.jena.tdb1.sys.SystemTDB;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 
 public class TestTupleTable

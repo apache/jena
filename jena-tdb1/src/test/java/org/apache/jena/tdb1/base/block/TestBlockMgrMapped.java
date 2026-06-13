@@ -25,9 +25,9 @@ import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.tdb1.ConfigTest;
 import org.apache.jena.tdb1.base.file.BlockAccess;
 import org.apache.jena.tdb1.base.file.BlockAccessMapped;
-import org.junit.After ;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 
 public class TestBlockMgrMapped extends AbstractTestBlockMgr
 {
@@ -35,7 +35,7 @@ public class TestBlockMgrMapped extends AbstractTestBlockMgr
     
     // Windows is iffy about deleting memory mapped files.
     
-    @After public void after1()     { clearBlockMgr() ; }
+    @AfterEach public void after1()     { clearBlockMgr() ; }
     
     private void clearBlockMgr()
     {
@@ -47,8 +47,8 @@ public class TestBlockMgrMapped extends AbstractTestBlockMgr
         }
     }
     
-    @BeforeClass static public void remove1() { FileOps.deleteSilent(filename) ; }
-    @AfterClass  static public void remove2() { FileOps.deleteSilent(filename) ; }
+    @BeforeAll static public void remove1() { FileOps.deleteSilent(filename) ; }
+    @AfterAll  static public void remove2() { FileOps.deleteSilent(filename) ; }
     
     @Override
     protected BlockMgr make()

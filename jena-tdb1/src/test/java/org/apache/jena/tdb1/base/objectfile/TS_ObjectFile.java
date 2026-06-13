@@ -21,15 +21,15 @@
 
 package org.apache.jena.tdb1.base.objectfile;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses({
     TestObjectFileMem.class
     , TestObjectFileDisk.class
     , TestObjectFileBuffering.class
-    , TestStringFileMem.class 
+    , TestStringFileMem.class
     , TestStringFileDisk.class
 })
 

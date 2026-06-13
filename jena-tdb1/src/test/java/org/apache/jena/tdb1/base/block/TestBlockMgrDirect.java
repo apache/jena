@@ -25,15 +25,15 @@ import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.tdb1.ConfigTest;
 import org.apache.jena.tdb1.base.file.BlockAccess;
 import org.apache.jena.tdb1.base.file.BlockAccessDirect;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 
 public class TestBlockMgrDirect extends AbstractTestBlockMgr
 {
     static final String filename = ConfigTest.getTestingDir()+"/block-mgr" ;
     
-    @BeforeClass static public void remove1() { FileOps.delete(filename) ; } 
-    @AfterClass  static public void remove2() { FileOps.delete(filename) ; }
+    @BeforeAll static public void remove1() { FileOps.delete(filename) ; } 
+    @AfterAll  static public void remove2() { FileOps.delete(filename) ; }
     
     @Override
     protected BlockMgr make()

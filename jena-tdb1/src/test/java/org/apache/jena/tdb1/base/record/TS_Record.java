@@ -21,16 +21,18 @@
 
 package org.apache.jena.tdb1.base.record;
 
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+
 import org.apache.jena.tdb1.base.buffer.TestPtrBuffer;
 import org.apache.jena.tdb1.base.buffer.TestRecordBuffer;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses({
+
     TestRecord.class ,
     TestPtrBuffer.class ,
-    TestRecordBuffer.class 
+    TestRecordBuffer.class
 })
 
 

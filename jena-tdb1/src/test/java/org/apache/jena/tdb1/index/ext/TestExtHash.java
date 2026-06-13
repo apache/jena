@@ -28,8 +28,8 @@ import org.apache.jena.tdb1.base.record.RecordFactory;
 import org.apache.jena.tdb1.index.AbstractTestIndex;
 import org.apache.jena.tdb1.index.Index;
 import org.apache.jena.tdb1.sys.SystemTDB;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 
 public class TestExtHash extends AbstractTestIndex
 {
@@ -37,7 +37,7 @@ public class TestExtHash extends AbstractTestIndex
     static boolean originalNullOut ; 
     static boolean b ; 
 
-    @BeforeClass static public void setup()
+    @BeforeAll static public void setup()
     {
         originalNullOut = SystemTDB.NullOut ;
         SystemTDB.NullOut = true ;
@@ -47,7 +47,7 @@ public class TestExtHash extends AbstractTestIndex
         BlockMgrFactory.AddTracker = false ;
     }
     
-    @AfterClass static public void teardown()
+    @AfterAll static public void teardown()
     {
         BlockMgrFactory.AddTracker = b  ;
         SystemTDB.NullOut = originalNullOut ;

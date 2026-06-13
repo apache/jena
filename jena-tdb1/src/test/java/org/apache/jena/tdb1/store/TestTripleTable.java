@@ -21,10 +21,10 @@
 
 package org.apache.jena.tdb1.store;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Iterator ;
 
@@ -34,16 +34,16 @@ import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.jena.tdb1.base.file.Location;
 import org.apache.jena.tdb1.setup.DatasetBuilderStd;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test ;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class TestTripleTable
 {
     private static String levelInfo;  
     private static String levelExec;  
     
-    @BeforeClass public static void beforeClass() {
+    @BeforeAll public static void beforeClass() {
         levelInfo = LogCtl.getLevel("org.apache.jena.tdb.info");
         levelExec = LogCtl.getLevel("org.apache.jena.tdb.exec");
         
@@ -51,7 +51,7 @@ public class TestTripleTable
         LogCtl.setLevel("org.apache.jena.tdb.exec", "WARN");
         
     }
-    @AfterClass public static void afterClass() {
+    @AfterAll public static void afterClass() {
         LogCtl.setLevel("org.apache.jena.tdb.info", levelInfo);
         LogCtl.setLevel("org.apache.jena.tdb.exec", levelExec);
     }

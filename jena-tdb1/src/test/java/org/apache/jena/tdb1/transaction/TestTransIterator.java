@@ -21,8 +21,8 @@
 
 package org.apache.jena.tdb1.transaction;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.Iterator ;
 
@@ -32,7 +32,7 @@ import org.apache.jena.tdb1.base.record.RecordLib;
 import org.apache.jena.tdb1.index.IndexTestLib;
 import org.apache.jena.tdb1.index.RangeIndex;
 import org.apache.jena.tdb1.index.bplustree.BPlusTree;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
 
 public class TestTransIterator
 {

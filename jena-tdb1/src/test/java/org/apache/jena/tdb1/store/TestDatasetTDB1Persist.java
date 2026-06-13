@@ -21,9 +21,9 @@
 
 package org.apache.jena.tdb1.store;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays ;
 import java.util.List ;
@@ -38,10 +38,10 @@ import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.jena.tdb1.ConfigTest;
 import org.apache.jena.tdb1.base.file.Location;
 import org.apache.jena.tdb1.sys.TDBInternal;
-import org.junit.After ;
-import org.junit.AfterClass ;
-import org.junit.Before ;
-import org.junit.Test ;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** Testing persistence  */
 @SuppressWarnings("removal")
@@ -57,7 +57,7 @@ public class TestDatasetTDB1Persist
 
     GraphLocation graphLocation = null ;
 
-    @Before public void before()
+    @BeforeEach public void before()
     {
         TDBInternal.reset() ;
     	String dirname = ConfigTest.getCleanDir() ;
@@ -65,14 +65,14 @@ public class TestDatasetTDB1Persist
         graphLocation.createDataset() ;
     }
 
-    @After public void after()
+    @AfterEach public void after()
     {
     	if ( graphLocation != null )
     		graphLocation.release() ;
     	graphLocation.clearDirectory() ;	// Does not have the desired effect on Windows.
     }
 
-    @AfterClass public static void afterClass() { TDBInternal.reset() ; }
+    @AfterAll public static void afterClass() { TDBInternal.reset() ; }
 
     @Test public void dataset1()
     {

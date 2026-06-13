@@ -23,14 +23,16 @@ package org.apache.jena.tdb1.transaction;
 
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.tdb1.TDB1Factory;
-import org.junit.Assert ;
-import org.junit.Test ;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("removal")
 public class TestTransactionMiscTDB1 {
     @Test public void support() {
         DatasetGraph dsg = TDB1Factory.createDatasetGraph() ;
-        Assert.assertTrue(dsg.supportsTransactions()) ;
-        Assert.assertTrue(dsg.supportsTransactionAbort()) ;
+        assertTrue(dsg.supportsTransactions()) ;
+        assertTrue(dsg.supportsTransactionAbort()) ;
     }
 }

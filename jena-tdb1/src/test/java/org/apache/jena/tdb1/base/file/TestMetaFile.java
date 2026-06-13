@@ -21,25 +21,25 @@
 
 package org.apache.jena.tdb1.base.file;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File ;
 
 import org.apache.jena.tdb1.ConfigTest;
 import org.apache.jena.tdb1.sys.Names;
-import org.junit.After ;
-import org.junit.Before ;
-import org.junit.Test ;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TestMetaFile
 {
     String testfile = null ;
     String testfileMeta = null ;
     
-    @Before public void before()
+    @BeforeEach public void before()
     {
         testfile = ConfigTest.getTestingDir()+"/file" ;
         testfileMeta = ConfigTest.getTestingDir()+"/file."+Names.extMeta ;
@@ -70,7 +70,7 @@ public class TestMetaFile
 
     // Test MetaBase
     
-    @After public void afterClass()
+    @AfterEach public void afterClass()
     { clear() ; }
     
     private void clear()

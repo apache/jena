@@ -21,8 +21,8 @@
 
 package org.apache.jena.tdb1.store;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
@@ -35,7 +35,7 @@ import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.tdb1.TDB1;
 import org.apache.jena.tdb1.TDB1Factory;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
 
 /** Tests of datasets, prefixes, special URIs etc (see also {@link org.apache.jena.sparql.graph.GraphsTests} */
 @SuppressWarnings("removal")

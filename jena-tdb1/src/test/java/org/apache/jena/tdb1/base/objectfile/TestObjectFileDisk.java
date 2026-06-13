@@ -25,13 +25,13 @@ import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.tdb1.ConfigTest;
 import org.apache.jena.tdb1.base.file.BufferChannel;
 import org.apache.jena.tdb1.base.file.BufferChannelFile;
-import org.junit.AfterClass ;
+import org.junit.jupiter.api.AfterAll;
 
 public class TestObjectFileDisk extends AbstractTestObjectFile
 {
     static String filename = ConfigTest.getTestingDir()+"/test-objectfile" ;
 
-    @AfterClass public static void cleanup() { FileOps.deleteSilent(filename) ; } 
+    @AfterAll public static void cleanup() { FileOps.deleteSilent(filename) ; } 
     
     @Override
     protected ObjectFile make()

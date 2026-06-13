@@ -21,8 +21,8 @@
 
 package org.apache.jena.tdb1.transaction ;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
@@ -43,9 +43,9 @@ import org.apache.jena.tdb1.sys.Names;
 import org.apache.jena.tdb1.sys.StoreConnection;
 import org.apache.jena.tdb1.sys.SystemTDB;
 import org.apache.jena.tdb1.sys.TDBInternal;
-import org.junit.After ;
-import org.junit.Before ;
-import org.junit.Test ;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** Test of re-attaching to a pre-existing database */
 @SuppressWarnings("removal")
@@ -63,7 +63,7 @@ public class TestTransRestart {
     private static Quad quad1 = SSE.parseQuad("(_ <foo:bar> rdfs:label 'foo')") ;
     private static Quad quad2 = SSE.parseQuad("(_ <foo:bar> rdfs:label 'bar')") ;
 
-    @Before public void setup() {
+    @BeforeEach public void setup() {
         TDBInternal.reset();
         path = ConfigTest.getCleanDir() ;
         location = Location.create (path) ;
@@ -73,7 +73,7 @@ public class TestTransRestart {
             setupPlain() ;
     }
 
-    @After public void teardown()
+    @AfterEach public void teardown()
     {
         cleanup() ;
     }

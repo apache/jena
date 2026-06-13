@@ -23,13 +23,13 @@ package org.apache.jena.tdb1.base.objectfile;
 
 import static org.apache.jena.tdb1.base.BufferTestLib.sameValue;
 import static org.apache.jena.tdb1.base.objectfile.AbstractTestObjectFile.fill;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 import java.nio.ByteBuffer ;
 
 import org.apache.jena.tdb1.base.file.BufferChannel;
 import org.apache.jena.tdb1.base.file.BufferChannelMem;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
 
 public class TestObjectFileBuffering
 {

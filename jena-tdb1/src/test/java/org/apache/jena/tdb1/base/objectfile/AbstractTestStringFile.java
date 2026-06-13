@@ -21,129 +21,135 @@
 
 package org.apache.jena.tdb1.base.objectfile;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import org.junit.After ;
-import org.junit.Before ;
-import org.junit.Test ;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public abstract class AbstractTestStringFile
-{
-    StringFile f = null ;
-    
-    @Before public void setup() { f = createStringFile() ; }
-    @After public void teardown() { removeStringFile(f) ; }
-    
-    protected abstract StringFile createStringFile() ;
-    protected abstract void removeStringFile(StringFile f) ;
+public abstract class AbstractTestStringFile {
+    StringFile f = null;
 
-    @Test public void object_file_01()
-    {
-        String x1 = "abc" ;
-        long id1 = f.write(x1) ;
-        test(id1, x1) ;
-        test(0, x1) ;
+    @BeforeEach
+    public void setup() {
+        f = createStringFile();
     }
 
-    @Test public void object_file_02()
-    {
-        String x1 = "" ;
-        
-        long id1 = f.write(x1) ;
-        test(id1, x1) ;
-        test(0, x1) ;
+    @AfterEach
+    public void teardown() {
+        removeStringFile(f);
     }
 
-    @Test public void object_file_03()
-    {
-        String x1 = "abbbbbbc" ;
-        String x2 = "deeeef" ;
-        
-        long id1 = f.write(x1) ;
-        long id2 = f.write(x2) ;
-        
-        assertNotEquals("Node Ids", id1, id2) ;
-        
-        test(id1, x1) ;
-        test(id2, x2) ;
-        test(0, x1) ;
+    protected abstract StringFile createStringFile();
+
+    protected abstract void removeStringFile(StringFile f);
+
+    @Test
+    public void object_file_01() {
+        String x1 = "abc";
+        long id1 = f.write(x1);
+        test(id1, x1);
+        test(0, x1);
     }
-    
-    @Test public void object_file_04()
-    {
-        String x1 = "abbbbbbc" ;
-        String x2 = "deeeef" ;
-        
-        long id1 = f.write(x1) ;
-        long id2 = f.write(x2) ;
+
+    @Test
+    public void object_file_02() {
+        String x1 = "";
+
+        long id1 = f.write(x1);
+        test(id1, x1);
+        test(0, x1);
+    }
+
+    @Test
+    public void object_file_03() {
+        String x1 = "abbbbbbc";
+        String x2 = "deeeef";
+
+        long id1 = f.write(x1);
+        long id2 = f.write(x2);
+
+        assertNotEquals(id1, id2, "Node Ids");
+
+        test(id1, x1);
+        test(id2, x2);
+        test(0, x1);
+    }
+
+    @Test
+    public void object_file_04() {
+        String x1 = "abbbbbbc";
+        String x2 = "deeeef";
+
+        long id1 = f.write(x1);
+        long id2 = f.write(x2);
         // Read in opposite order
-        test(id2, x2) ;
-        test(id1, x1) ;
+        test(id2, x2);
+        test(id1, x1);
     }
 
-    @Test public void object_file_05()
-    {
-        String x = "孫子兵法" ;
-        
-        long id = f.write(x) ;
-        test(0, x) ;
+    @Test
+    public void object_file_05() {
+        String x = "孫子兵法";
+
+        long id = f.write(x);
+        test(0, x);
     }
-    
-    @Test public void object_file_06()
-    {
-        String x1 = "abbbbbbc" ;
-        String x2 = "孫子兵法" ;
-        
-        long id1 = f.write(x1) ;
-        f.flush() ;
-        long id2 = f.write(x2) ;
+
+    @Test
+    public void object_file_06() {
+        String x1 = "abbbbbbc";
+        String x2 = "孫子兵法";
+
+        long id1 = f.write(x1);
+        f.flush();
+        long id2 = f.write(x2);
         // No flush.
-       
-        assertNotEquals("Node Ids", id1, id2) ;
-        String z = f.read(id2) ;
-        
-        test(id2, x2) ;
-        test(id1, x1) ;
-        test(0, x1) ;
-    }
-    
-    @Test public void object_file_07()
-    {
-        String x1 = "abbbbbbc" ;
-        String x2 = "孫子兵法" ;
-        
-        long id1 = f.write(x1) ;
-        long id2 = f.write(x2) ;
-        f.flush() ;
-        
-        assertNotEquals("Node Ids", id1, id2) ;
-        
-        test(id2, x2) ;
-        test(id1, x1) ;
-        test(0, x1) ;
+
+        assertNotEquals(id1, id2, "Node Ids");
+        String z = f.read(id2);
+
+        test(id2, x2);
+        test(id1, x1);
+        test(0, x1);
     }
 
-    @Test public void object_file_08()
-    {
-        String x1 = "abbbbbbc" ;
-        String x2 = "孫子兵法" ;
-        
-        long id1 = f.write(x1) ;
-        f.flush() ;
-        long id2 = f.write(x2) ;
-        f.flush() ;
-        
-        assertNotEquals("Node Ids", id1, id2) ;
-        
-        test(id2, x2) ;
-        test(id1, x1) ;
-        test(0, x1) ;
+    @Test
+    public void object_file_07() {
+        String x1 = "abbbbbbc";
+        String x2 = "孫子兵法";
+
+        long id1 = f.write(x1);
+        long id2 = f.write(x2);
+        f.flush();
+
+        assertNotEquals(id1, id2, "Node Ids");
+
+        test(id2, x2);
+        test(id1, x1);
+        test(0, x1);
     }
 
-    private void test(long id, String x)
-    {
-        String y = f.read(id) ;
-        assertEquals(x, y) ;
+    @Test
+    public void object_file_08() {
+        String x1 = "abbbbbbc";
+        String x2 = "孫子兵法";
+
+        long id1 = f.write(x1);
+        f.flush();
+        long id2 = f.write(x2);
+        f.flush();
+
+        assertNotEquals(id1, id2, "Node Ids");
+
+        test(id2, x2);
+        test(id1, x1);
+        test(0, x1);
+    }
+
+    private void test(long id, String x) {
+        String y = f.read(id);
+        assertEquals(x, y);
     }
 }

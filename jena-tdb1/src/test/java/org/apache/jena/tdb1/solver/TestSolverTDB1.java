@@ -21,14 +21,14 @@
 
 package org.apache.jena.tdb1.solver;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
@@ -58,7 +58,7 @@ public class TestSolverTDB1 {
     static Dataset dataset = null;
     static PrefixMapping pmap = null;
 
-    @BeforeClass
+    @BeforeAll
     static public void beforeClass() {
         dataset = TDB1Factory.createDataset();
         dataset.begin(ReadWrite.WRITE);
@@ -130,7 +130,7 @@ public class TestSolverTDB1 {
     // ------
 
     private static void equals(RowSet rs1, RowSet rs2) {
-//        same(rs1, rs2, true);
+// same(rs1, rs2, true);
     }
 
     private static void same(RowSet rs1, RowSet rs2, boolean result) {

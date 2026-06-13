@@ -23,11 +23,11 @@ package org.apache.jena.tdb1.base.record;
 
 import static org.apache.jena.tdb1.base.record.RecordLib.intToRecord;
 import static org.apache.jena.tdb1.base.record.RecordLib.recordToInt;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestRecord
 {

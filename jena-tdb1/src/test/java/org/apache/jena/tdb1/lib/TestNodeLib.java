@@ -22,12 +22,12 @@
 package org.apache.jena.tdb1.lib;
 
 import static org.apache.jena.tdb1.lib.NodeLib.hash;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
 
 public class TestNodeLib
 {

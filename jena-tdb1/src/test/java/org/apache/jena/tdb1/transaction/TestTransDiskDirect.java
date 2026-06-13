@@ -24,13 +24,13 @@ package org.apache.jena.tdb1.transaction;
 import org.apache.jena.tdb1.base.block.FileMode;
 import org.apache.jena.tdb1.sys.LibTestOps;
 import org.apache.jena.tdb1.sys.SystemTDB;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 
 public class TestTransDiskDirect extends AbstractTestTransSequentialDisk
 {
     static FileMode mode = SystemTDB.fileMode() ;  
-    @BeforeClass public static void beforeClass() { LibTestOps.setFileMode(FileMode.direct) ; }
-    @AfterClass  public static void afterClass()  { LibTestOps.setFileMode(mode) ; }
+    @BeforeAll public static void beforeClass() { LibTestOps.setFileMode(FileMode.direct) ; }
+    @AfterAll  public static void afterClass()  { LibTestOps.setFileMode(mode) ; }
 }
 

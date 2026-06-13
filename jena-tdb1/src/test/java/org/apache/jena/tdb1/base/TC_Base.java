@@ -21,15 +21,16 @@
 
 package org.apache.jena.tdb1.base;
 
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+
 import org.apache.jena.tdb1.base.block.TS_Block;
 import org.apache.jena.tdb1.base.file.TS_File;
 import org.apache.jena.tdb1.base.record.TS_Record;
 import org.apache.jena.tdb1.base.recordfile.TS_RecordFile;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses({
       TS_Block.class
     , TS_File.class
     , TS_Record.class

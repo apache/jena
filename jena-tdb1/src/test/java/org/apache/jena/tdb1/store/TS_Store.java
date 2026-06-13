@@ -21,16 +21,17 @@
 
 package org.apache.jena.tdb1.store;
 
+    import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+
 import org.apache.jena.tdb1.base.block.FileMode;
 import org.apache.jena.tdb1.sys.LibTestOps;
 import org.apache.jena.tdb1.sys.SystemTDB;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses({
     TestNodeId.class
     , TestTripleTable.class
     , TestGraphTDB1.class
@@ -52,18 +53,16 @@ import org.junit.runners.Suite ;
 } )
 public class TS_Store
 {
-    static FileMode mode ;
+    static FileMode mode;
 
-    @BeforeClass
-    public static void beforeClass()
-    {
-        mode = SystemTDB.fileMode() ;
+    @BeforeAll
+    public static void beforeClass() {
+        mode = SystemTDB.fileMode();
     }
 
-    @AfterClass
-    public static void afterClass()
-    {
-        if ( ! SystemTDB.fileMode().equals(mode) )
-            LibTestOps.setFileMode(mode) ;
+    @AfterAll
+    public static void afterClass() {
+        if ( !SystemTDB.fileMode().equals(mode) )
+            LibTestOps.setFileMode(mode);
     }
 }

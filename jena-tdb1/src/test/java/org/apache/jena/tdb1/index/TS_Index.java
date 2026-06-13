@@ -21,23 +21,23 @@
 
 package org.apache.jena.tdb1.index;
 
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+
 import org.apache.jena.tdb1.index.bplustree.TestBPTreeRecords;
 import org.apache.jena.tdb1.index.bplustree.TestBPlusTree;
 import org.apache.jena.tdb1.index.bplustree.TestBPlusTreeRewriter;
 import org.apache.jena.tdb1.index.ext.TestExtHash;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses({
     TestBPlusTree.class,
     TestBPTreeRecords.class,
     TestBPlusTreeRewriter.class,
-    
+
     TestExtHash.class,
     TestIndexMem.class
-    
+
 } )
 
 public class TS_Index

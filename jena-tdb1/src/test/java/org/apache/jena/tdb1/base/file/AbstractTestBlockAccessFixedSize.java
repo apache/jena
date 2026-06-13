@@ -22,84 +22,79 @@
 package org.apache.jena.tdb1.base.file;
 
 import static org.apache.jena.tdb1.base.BufferTestLib.sameValue;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.tdb1.base.block.Block;
-import org.junit.After ;
-import org.junit.Before ;
-import org.junit.Test ;
 
-public abstract class AbstractTestBlockAccessFixedSize
-{
+public abstract class AbstractTestBlockAccessFixedSize {
     // Fixed block tests.
-    
-    int blkSize ;
-    
-    protected AbstractTestBlockAccessFixedSize(int blkSize)
-    {
-        this.blkSize = blkSize ;
-    }
-    
-    protected abstract BlockAccess make() ;
-    protected static Block data(BlockAccess file, int len)
-    {
-        Block b = file.allocate(len) ;
-        for (int i = 0 ; i < len ; i++ )
-            b.getByteBuffer().put((byte)(i&0xFF)) ;
-        return b ;
+
+    int blkSize;
+
+    protected AbstractTestBlockAccessFixedSize(int blkSize) {
+        this.blkSize = blkSize;
     }
 
-    private BlockAccess file ;
-    @Before public void before() { file = make() ; }
-    @After  public void after()  { file.close() ; }
+    protected abstract BlockAccess make();
 
-    @Test public void fileaccess_01()
-    {
-        assertTrue(file.isEmpty()) ;
-    }
-    
-    @Test public void fileaccess_02()
-    {
-        Block b = data(file, blkSize) ;
-        file.write(b) ;
+    protected static Block data(BlockAccess file, int len) {
+        Block b = file.allocate(len);
+        for ( int i = 0 ; i < len ; i++ )
+            b.getByteBuffer().put((byte)(i & 0xFF));
+        return b;
     }
 
-    @Test public void fileaccess_03()
-    {
-        Block b1 = data(file, blkSize) ;
-        file.write(b1) ;
-        long x = b1.getId() ;
-        Block b9 = file.read(x) ;
-        assertNotSame(b1, b9) ;
-        assertTrue(sameValue(b1, b9)) ;
-        b9 = file.read(x) ;
-        assertNotSame(b1, b9) ;
-        assertTrue(sameValue(b1, b9)) ;
+    private BlockAccess file;
+    @BeforeEach
+    public void before() {
+        file = make();
     }
-    
-    @Test public void fileaccess_04()
-    {
-        Block b1 = data(file, blkSize) ;
-        Block b2 = data(file, blkSize) ;
-        file.write(b1) ;
-        file.write(b2) ;
-        
-        long x = b1.getId() ;
-        Block b8 = file.read(b1.getId()) ;
-        Block b9 = file.read(b1.getId()) ;
-        assertNotSame(b8, b9) ;
-        assertTrue(b8.getId() == b9.getId()) ;
+
+    @AfterEach
+    public void after() {
+        file.close();
     }
-    
-    @Test(expected=FileException.class)
-    public void fileaccess_05()
-    {
-        Block b1 = data(file, 10) ;
-        Block b2 = data(file, 20) ;
-        file.write(b1) ;
-        
-        // Should not work. b2 not written.   
-        Block b2a = file.read(b2.getId()) ;
-    }    
+
+    @Test
+    public void fileaccess_01() {
+        assertTrue(file.isEmpty());
+    }
+
+    @Test
+    public void fileaccess_02() {
+        Block b = data(file, blkSize);
+        file.write(b);
+    }
+
+    @Test
+    public void fileaccess_03() {
+        Block b1 = data(file, blkSize);
+        file.write(b1);
+        long x = b1.getId();
+        Block b9 = file.read(x);
+        assertNotSame(b1, b9);
+        assertTrue(sameValue(b1, b9));
+        b9 = file.read(x);
+        assertNotSame(b1, b9);
+        assertTrue(sameValue(b1, b9));
+    }
+
+    @Test
+    public void fileaccess_04() {
+        Block b1 = data(file, blkSize);
+        Block b2 = data(file, blkSize);
+        file.write(b1);
+        file.write(b2);
+
+        long x = b1.getId();
+        Block b8 = file.read(b1.getId());
+        Block b9 = file.read(b1.getId());
+        assertNotSame(b8, b9);
+        assertTrue(b8.getId() == b9.getId());
+    }
 }

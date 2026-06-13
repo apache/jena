@@ -21,17 +21,17 @@
 
 package org.apache.jena.tdb1.store.nodetable;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
 import org.apache.jena.tdb1.TDB1Exception;
 import org.apache.jena.tdb1.store.NodeId;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public abstract class AbstractTestNodeTable
 {

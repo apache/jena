@@ -21,7 +21,7 @@
 
 package org.apache.jena.tdb1.solver;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Iterator;
 
@@ -37,7 +37,7 @@ import org.apache.jena.tdb1.store.NodeId;
 import org.apache.jena.tdb1.store.nodetable.NodeTable;
 import org.apache.jena.tdb1.store.nodetupletable.NodeTupleTable;
 import org.apache.jena.tdb1.sys.TDBInternal;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("removal")
 public class TestStats {

@@ -21,19 +21,24 @@
 
 package org.apache.jena.tdb1.base.file;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import org.apache.jena.tdb1.TDB1Exception;
 import org.apache.jena.tdb1.sys.ProcessUtils;
-import org.junit.Assert;
-import org.junit.Assume;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
 /**
  * Tests for {@link LocationLock}
@@ -42,10 +47,10 @@ public class TestLocationLock {
 
     private static boolean negativePidsTreatedAsAlive = false;
 
-    @Rule
-    public TemporaryFolder tempDir = new TemporaryFolder();
+    @TempDir
+    public Path tempDir;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         negativePidsTreatedAsAlive = ProcessUtils.negativePidsTreatedAsAlive();
     }
@@ -54,111 +59,111 @@ public class TestLocationLock {
     public void location_lock_mem() {
         Location mem = Location.mem();
         LocationLock lock = mem.getLock();
-        Assert.assertFalse(lock.canLock());
-        Assert.assertFalse(lock.isLocked());
-        Assert.assertFalse(lock.isOwned());
-        Assert.assertFalse(lock.canObtain());
+        assertFalse(lock.canLock());
+        assertFalse(lock.isLocked());
+        assertFalse(lock.isOwned());
+        assertFalse(lock.canObtain());
     }
 
     @Test
     public void location_lock_dir_01() {
-        Location dir = Location.create(tempDir.getRoot().getAbsolutePath());
+        Location dir = Location.create(tempDir.toAbsolutePath().toString());
         LocationLock lock = dir.getLock();
-        Assert.assertTrue(lock.canLock());
-        Assert.assertFalse(lock.isLocked());
-        Assert.assertFalse(lock.isOwned());
-        Assert.assertTrue(lock.canObtain());
+        assertTrue(lock.canLock());
+        assertFalse(lock.isLocked());
+        assertFalse(lock.isOwned());
+        assertTrue(lock.canObtain());
 
         // Try to obtain the lock
         lock.obtain();
-        Assert.assertTrue(lock.isLocked());
-        Assert.assertTrue(lock.isOwned());
+        assertTrue(lock.isLocked());
+        assertTrue(lock.isOwned());
 
         // Release the lock
         lock.release();
-        Assert.assertFalse(lock.isLocked());
-        Assert.assertFalse(lock.isOwned());
+        assertFalse(lock.isLocked());
+        assertFalse(lock.isOwned());
     }
 
     @Test
     public void location_lock_dir_02() throws IOException {
-        Assume.assumeTrue(negativePidsTreatedAsAlive);
+        assumeTrue(negativePidsTreatedAsAlive);
 
-        Location dir = Location.create(tempDir.getRoot().getAbsolutePath());
+        Location dir = Location.create(tempDir.toAbsolutePath().toString());
         LocationLock lock = dir.getLock();
-        Assert.assertTrue(lock.canLock());
-        Assert.assertFalse(lock.isLocked());
-        Assert.assertFalse(lock.isOwned());
-        Assert.assertTrue(lock.canObtain());
+        assertTrue(lock.canLock());
+        assertFalse(lock.isLocked());
+        assertFalse(lock.isOwned());
+        assertTrue(lock.canObtain());
 
         // Write a fake PID to the lock file
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(dir.getPath("tdb.lock"), StandardCharsets.UTF_8))) {
             writer.write(Integer.toString(-1234)); // Fake PID that would never
                                                    // be valid
         }
-        Assert.assertTrue(lock.isLocked());
-        Assert.assertFalse(lock.isOwned());
-        Assert.assertFalse(lock.canObtain());
+        assertTrue(lock.isLocked());
+        assertFalse(lock.isOwned());
+        assertFalse(lock.canObtain());
     }
 
-    @Test(expected = TDB1Exception.class)
+    @Test
     public void location_lock_dir_error_01() throws IOException {
-        Assume.assumeTrue(negativePidsTreatedAsAlive);
+        assumeTrue(negativePidsTreatedAsAlive);
 
-        Location dir = Location.create(tempDir.getRoot().getAbsolutePath());
+        Location dir = Location.create(tempDir.toAbsolutePath().toString());
         LocationLock lock = dir.getLock();
-        Assert.assertTrue(lock.canLock());
-        Assert.assertFalse(lock.isLocked());
-        Assert.assertFalse(lock.isOwned());
-        Assert.assertTrue(lock.canObtain());
+        assertTrue(lock.canLock());
+        assertFalse(lock.isLocked());
+        assertFalse(lock.isOwned());
+        assertTrue(lock.canObtain());
 
         // Write a fake PID to the lock file
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(dir.getPath("tdb.lock"), StandardCharsets.UTF_8))) {
             // Fake PID that would never be valid
             writer.write(Integer.toString(-1234));
         }
-        Assert.assertTrue(lock.isLocked());
-        Assert.assertFalse(lock.isOwned());
+        assertTrue(lock.isLocked());
+        assertFalse(lock.isOwned());
 
         // Attempting to obtain the lock should now error
-        Assert.assertFalse(lock.canObtain());
-        lock.obtain();
+        assertFalse(lock.canObtain());
+        assertThrows(TDB1Exception.class, ()->lock.obtain());
     }
 
-    @Test(expected = TDB1Exception.class)
+    @Test
     public void location_lock_dir_error_02() throws IOException {
-        Assume.assumeTrue(negativePidsTreatedAsAlive);
+        assumeTrue(negativePidsTreatedAsAlive);
 
-        Location dir = Location.create(tempDir.getRoot().getAbsolutePath());
+        Location dir = Location.create(tempDir.toAbsolutePath().toString());
         LocationLock lock = dir.getLock();
-        Assert.assertTrue(lock.canLock());
-        Assert.assertFalse(lock.isLocked());
-        Assert.assertFalse(lock.isOwned());
-        Assert.assertTrue(lock.canObtain());
+        assertTrue(lock.canLock());
+        assertFalse(lock.isLocked());
+        assertFalse(lock.isOwned());
+        assertTrue(lock.canObtain());
 
         // Write a fake PID to the lock file
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(dir.getPath("tdb.lock"), StandardCharsets.UTF_8))) {
             // Fake PID that would never be valid
             writer.write(Integer.toString(-1234));
         }
-        Assert.assertTrue(lock.isLocked());
-        Assert.assertFalse(lock.isOwned());
+        assertTrue(lock.isLocked());
+        assertFalse(lock.isOwned());
 
         // Attempting to release a lock we don't own should error
-        Assert.assertFalse(lock.canObtain());
-        lock.release();
+        assertFalse(lock.canObtain());
+        assertThrows(TDB1Exception.class, ()->lock.release());
     }
 
     @Test
     public void location_lock_dir_error_03() throws IOException {
-        Assume.assumeTrue(negativePidsTreatedAsAlive);
+        assumeTrue(negativePidsTreatedAsAlive);
 
-        Location dir = Location.create(tempDir.getRoot().getAbsolutePath());
+        Location dir = Location.create(tempDir.toAbsolutePath().toString());
         LocationLock lock = dir.getLock();
-        Assert.assertTrue(lock.canLock());
-        Assert.assertFalse(lock.isLocked());
-        Assert.assertFalse(lock.isOwned());
-        Assert.assertTrue(lock.canObtain());
+        assertTrue(lock.canLock());
+        assertFalse(lock.isLocked());
+        assertFalse(lock.isOwned());
+        assertTrue(lock.canObtain());
 
         // Write a TDB1 format lock file
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(dir.getPath("tdb.lock"), StandardCharsets.UTF_8))) {
@@ -168,13 +173,9 @@ public class TestLocationLock {
         }
 
         // Trying to get the owner should error accordingly
-        try {
-            lock.canObtain();
-            Assert.fail("Expected the lock file to be considered invalid");
-        } catch (FileException e) {
-            String errMsg = e.getMessage();
-            Assert.assertNotNull(errMsg);
-            Assert.assertTrue(errMsg.contains("appear to be for a TDB2 database"));
-        }
+        FileException e = assertThrows(FileException.class, ()->lock.canObtain());
+        String errMsg = e.getMessage();
+        assertNotNull(errMsg);
+        assertTrue(errMsg.contains("appear to be for a TDB2 database"));
     }
 }

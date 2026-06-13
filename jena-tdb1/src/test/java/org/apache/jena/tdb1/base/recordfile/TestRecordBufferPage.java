@@ -21,7 +21,7 @@
 
 package org.apache.jena.tdb1.base.recordfile;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.jena.tdb1.base.block.BlockMgr;
 import org.apache.jena.tdb1.base.block.BlockMgrFactory;
@@ -31,9 +31,9 @@ import org.apache.jena.tdb1.base.record.RecordFactory;
 import org.apache.jena.tdb1.base.recordbuffer.RecordBufferPage;
 import org.apache.jena.tdb1.base.recordbuffer.RecordBufferPageMgr;
 import org.apache.jena.tdb1.sys.SystemTDB;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class TestRecordBufferPage
 {
@@ -44,13 +44,13 @@ public class TestRecordBufferPage
     static RecordFactory factory = new RecordFactory(2, 0) ; 
     
     static boolean originalNullOut ; 
-    @BeforeClass static public void beforeClass()
+    @BeforeAll static public void beforeClass()
     {
         originalNullOut = SystemTDB.NullOut ;
         SystemTDB.NullOut = true ;    
     }
     
-    @AfterClass static public void afterClass()
+    @AfterAll static public void afterClass()
     {
         SystemTDB.NullOut = originalNullOut ;    
     }

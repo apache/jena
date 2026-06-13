@@ -25,13 +25,13 @@ import org.apache.jena.tdb1.base.record.RecordLib;
 import org.apache.jena.tdb1.index.AbstractTestRangeIndex;
 import org.apache.jena.tdb1.index.RangeIndex;
 import org.apache.jena.tdb1.sys.SystemTDB;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 
 public class TestBPlusTree extends AbstractTestRangeIndex
 {
     static boolean originalNullOut ; 
-    @BeforeClass static public void beforeClass()
+    @BeforeAll static public void beforeClass()
     {
         BPlusTreeParams.CheckingNode = true ;
         //BPlusTreeParams.CheckingTree = true ;   // Breaks with block tracking.
@@ -39,7 +39,7 @@ public class TestBPlusTree extends AbstractTestRangeIndex
         SystemTDB.NullOut = true ;    
     }
     
-    @AfterClass static public void afterClass()
+    @AfterAll static public void afterClass()
     {
         SystemTDB.NullOut = originalNullOut ;    
     }

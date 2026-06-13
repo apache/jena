@@ -21,11 +21,11 @@
 
 package org.apache.jena.tdb1.base.block;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses({
     TestBlockMgrMem.class
     , TestBlockMgrDirect.class
     , TestBlockMgrMapped.class

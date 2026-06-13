@@ -26,10 +26,10 @@ import static org.apache.jena.atlas.lib.RandomLib.random ;
 import static org.apache.jena.atlas.test.Gen.permute ;
 import static org.apache.jena.atlas.test.Gen.rand ;
 import static org.apache.jena.atlas.test.Gen.strings ;
-import static org.junit.Assert.assertEquals ;
-import static org.junit.Assert.assertFalse ;
-import static org.junit.Assert.assertNotNull ;
-import static org.junit.Assert.assertTrue ;
+import static org.junit.jupiter.api.Assertions.assertEquals ;
+import static org.junit.jupiter.api.Assertions.assertFalse ;
+import static org.junit.jupiter.api.Assertions.assertNotNull ;
+import static org.junit.jupiter.api.Assertions.assertTrue ;
 
 import java.util.Iterator ;
 import java.util.List ;
@@ -43,13 +43,13 @@ import org.apache.jena.tdb1.base.record.RecordFactory;
 public class ExtHashTestBase
 {
     public static final RecordFactory factory = new RecordFactory(4, 4) ;
-    
+
     public static void randTests(int maxValue, int maxNumKeys, int iterations, boolean showProgess)
     {
         ExtHashTest test = new ExtHashTest(maxValue, maxNumKeys) ;
         RepeatExecution.repeatExecutions(test, iterations, showProgess) ;
     }
-    
+
     static class ExtHashTest implements ExecGenerator
     {
         int maxNumKeys ;
@@ -58,10 +58,10 @@ public class ExtHashTestBase
         {
             if ( maxValue <= maxNumKeys )
                 throw new IllegalArgumentException("ExtHashTest: Max value less than number of keys") ;
-            this.maxValue = maxValue ; 
+            this.maxValue = maxValue ;
             this.maxNumKeys = maxNumKeys ;
         }
-        
+
         @Override
         public void executeOneTest()
         {
@@ -79,7 +79,7 @@ public class ExtHashTestBase
         int[] r2 = permute(r1) ;
         runTest(r1, r2) ;
     }
-        
+
     public static void runTest(int[] r1, int[] r2)
     {
         try {
@@ -100,20 +100,20 @@ public class ExtHashTestBase
     {
         return ExtHash.createMem(factory, 128) ;
     }
-    
+
     public static Record intToRecord(int v)
     {
         byte[] key = Bytes.packInt(v) ;
         byte[] val = Bytes.packInt(v+100) ;
         return factory.create(key, val) ;
     }
-    
+
     public static Record intToRecordKey(int v)
     {
         byte[] key = Bytes.packInt(v) ;
         return factory.create(key) ;
     }
-    
+
     public static ExtHash create(int...recs)
     {
         ExtHash extHash = make() ;
@@ -121,7 +121,7 @@ public class ExtHashTestBase
         {
             Record r = intToRecord(i) ;
             extHash.add(r) ;
-            
+
             if ( false ) extHash.dump() ;
         }
         return extHash ;
@@ -137,7 +137,7 @@ public class ExtHashTestBase
         return extHash ;
     }
 
-    
+
     public static void check(ExtHash extHash, int...recs)
     {
         extHash.check();
@@ -148,18 +148,18 @@ public class ExtHashTestBase
         }
         List<Integer> y = unique(asList(recs)) ;
         int x = (int)extHash.size() ;
-        assertEquals(y.size(), x); 
+        assertEquals(y.size(), x);
     }
 
-    
+
     public static void check(Iterator<Integer> iter, int...recs)
     {
         for ( int i : recs )
         {
-            assertTrue("Iterator shorter than test answers", iter.hasNext()) ;
+            assertTrue(iter.hasNext(), "Iterator shorter than test answers") ;
             int j = iter.next() ;
             assertEquals(i,j) ;
         }
-        assertFalse("Iterator longer than test answers", iter.hasNext()) ;
+        assertFalse(iter.hasNext(), "Iterator longer than test answers") ;
     }
 }

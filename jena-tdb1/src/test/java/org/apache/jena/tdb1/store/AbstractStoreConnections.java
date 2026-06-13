@@ -21,9 +21,14 @@
 
 package org.apache.jena.tdb1.store;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.query.Dataset ;
@@ -34,15 +39,12 @@ import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.tdb1.ConfigTest;
 import org.apache.jena.tdb1.TDB1;
+import org.apache.jena.tdb1.TDB1Exception;
 import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb1.base.file.Location;
 import org.apache.jena.tdb1.sys.StoreConnection;
 import org.apache.jena.tdb1.sys.TDBInternal;
 import org.apache.jena.tdb1.transaction.DatasetGraphTxn;
-import org.apache.jena.tdb1.transaction.TDBTransactionException;
-import org.junit.After ;
-import org.junit.Before ;
-import org.junit.Test ;
 
 @SuppressWarnings("removal")
 public abstract class AbstractStoreConnections
@@ -61,13 +63,13 @@ public abstract class AbstractStoreConnections
 
     String DIR = null ;
 
-    @Before public void before()
+    @BeforeEach public void before()
     {
         TDBInternal.reset() ;
         DIR = ConfigTest.getCleanDir() ;
     }
 
-    @After public void after() {}
+    @AfterEach public void after() {}
 
     protected StoreConnection getStoreConnection() {
         return StoreConnection.make(DIR) ;
@@ -103,20 +105,20 @@ public abstract class AbstractStoreConnections
         assertTrue(sConn2.isValid());
     }
 
-    @Test(expected = TDBTransactionException.class)
+    @Test
     public void store_2() {
         // Expel.
         StoreConnection sConn = getStoreConnection() ;
         DatasetGraphTxn dsgR1 = sConn.begin(TxnType.READ) ;
-        StoreConnection.release(sConn.getLocation()) ;
+        assertThrows(TDB1Exception.class, ()->StoreConnection.release(sConn.getLocation())) ;
     }
 
-    @Test(expected = TDBTransactionException.class)
+    @Test
     public void store_3() {
         // Expel.
         StoreConnection sConn = getStoreConnection() ;
         DatasetGraphTxn dsgR1 = sConn.begin(TxnType.WRITE) ;
-        StoreConnection.release(sConn.getLocation()) ;
+        assertThrows(TDB1Exception.class, ()->StoreConnection.release(sConn.getLocation())) ;
     }
 
     @Test

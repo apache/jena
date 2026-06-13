@@ -26,8 +26,8 @@ import java.io.File ;
 import org.apache.jena.tdb1.ConfigTest;
 import org.apache.jena.tdb1.sys.StoreConnection;
 import org.apache.jena.tdb1.sys.TDBInternal;
-import org.junit.After ;
-import org.junit.Before ;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 /** Basic tests and tests of ordering (single thread) */
 public abstract class AbstractTestTransSequentialDisk extends AbstractTestTransSeq
@@ -35,18 +35,18 @@ public abstract class AbstractTestTransSequentialDisk extends AbstractTestTransS
     protected String DIR = null ;
 
     // Subclasses must implement.
-//    @BeforeClass public static void beforeClass() {}
-//    @AfterClass  public static void afterClass()  {}
+//    @BeforeAll public static void beforeClass() {}
+//    @AfterAll  public static void afterClass()  {}
 
     @SuppressWarnings("removal")
-    @Before public void before()
+    @BeforeEach public void before()
     {
         TDBInternal.reset() ;
         DIR = ConfigTest.getCleanDir() ;
         File d = new File(DIR) ;
     }
 
-    @After public void after() {}
+    @AfterEach public void after() {}
 
     @Override
     protected StoreConnection getStoreConnection()

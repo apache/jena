@@ -21,11 +21,11 @@
 
 package org.apache.jena.tdb1.graph;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses({
     TestPrefixMapTDB1.class
     , TestPrefixMappingTDB1.class
     , TestDatasetGraphTDB1.class
@@ -33,7 +33,4 @@ import org.junit.runners.Suite ;
     , TestGraphsTDB1_insideTxn.class
     , TestGraphOverDatasetTDB1.class
 })
-public class TS_GraphTDB1
-{
-
-}
+public class TS_GraphTDB1 {}

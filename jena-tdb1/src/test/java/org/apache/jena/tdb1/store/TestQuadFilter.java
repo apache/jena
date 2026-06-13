@@ -21,8 +21,8 @@
 
 package org.apache.jena.tdb1.store;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.function.Predicate;
 
@@ -38,7 +38,7 @@ import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb1.store.nodetable.NodeTable;
 import org.apache.jena.tdb1.sys.SystemTDB;
 import org.apache.jena.tdb1.sys.TDBInternal;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("removal")
 public class TestQuadFilter

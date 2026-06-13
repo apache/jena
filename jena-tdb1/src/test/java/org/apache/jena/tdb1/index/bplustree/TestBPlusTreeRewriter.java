@@ -34,9 +34,9 @@ import org.apache.jena.tdb1.base.record.Record;
 import org.apache.jena.tdb1.base.record.RecordFactory;
 import org.apache.jena.tdb1.index.SetupIndex;
 import org.apache.jena.tdb1.sys.Names;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class TestBPlusTreeRewriter
 {
@@ -48,8 +48,8 @@ public class TestBPlusTreeRewriter
     
     // The BPlusTreeRewriter works directly on storage.
     static boolean b ; 
-    @BeforeClass public static void beforeClass()   { b = BlockMgrFactory.AddTracker ; BlockMgrFactory.AddTracker = false ; }
-    @AfterClass  public static void afterClass()    { BlockMgrFactory.AddTracker = b  ;}
+    @BeforeAll public static void beforeClass()   { b = BlockMgrFactory.AddTracker ; BlockMgrFactory.AddTracker = false ; }
+    @AfterAll  public static void afterClass()    { BlockMgrFactory.AddTracker = b  ;}
     
     @Test public void bpt_rewrite_01()  { runTest(2, 0) ; }
     @Test public void bpt_rewrite_02()  { runTest(3, 0) ; }
