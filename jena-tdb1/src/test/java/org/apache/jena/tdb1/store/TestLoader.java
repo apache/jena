@@ -21,8 +21,8 @@
 
 package org.apache.jena.tdb1.store ;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStream ;
 import java.util.List ;
@@ -42,9 +42,9 @@ import org.apache.jena.tdb1.TDB1Loader;
 import org.apache.jena.tdb1.base.file.Location;
 import org.apache.jena.tdb1.setup.DatasetBuilderStd;
 import org.apache.jena.tdb1.sys.TDBInternal;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("removal")
 public class TestLoader {
@@ -54,15 +54,14 @@ public class TestLoader {
     private static final Node   p   = NodeFactory.createURI("p") ;
     private static final Node   o   = NodeFactory.createURI("o") ;
 
-    @BeforeClass
+    @BeforeAll
     static public void beforeClass() {
         DIR = ConfigTest.getTestingDataRoot()+"/Loader/" ;
         LogCtl.disable(ARQ.logExecName) ;
         LogCtl.disable(TDB1.logLoaderName) ;
     }
 
-    @AfterClass
-    static public void afterClass() {
+    @AfterAll     static public void afterClass() {
         LogCtl.enable(ARQ.logExecName) ;
         LogCtl.enable(TDB1.logLoaderName) ;
         TDBInternal.reset();

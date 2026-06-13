@@ -21,32 +21,30 @@
 
 package org.apache.jena.tdb1.setup;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonObject ;
 import org.apache.jena.tdb1.TDB1Exception;
 import org.apache.jena.tdb1.base.block.FileMode;
-import org.junit.Test ;
 
 public class TestStoreParams {
 
     @Test public void store_params_01() {
-        assertEqualsStoreParams(StoreParams.getDftStoreParams(), StoreParams.getDftStoreParams()) ; 
+        assertEqualsStoreParams(StoreParams.getDftStoreParams(), StoreParams.getDftStoreParams()) ;
     }
-    
+
     @Test public void store_params_02() {
         StoreParams input = StoreParams.getDftStoreParams() ;
         StoreParams sp = StoreParams.builder(input).build() ;
-        assertEqualsStoreParams(StoreParams.getDftStoreParams(), sp) ; 
+        assertEqualsStoreParams(StoreParams.getDftStoreParams(), sp) ;
     }
 
     @Test public void store_params_03() {
         StoreParams sp = StoreParams.builder().build() ;
-        assertEqualsStoreParams(StoreParams.getDftStoreParams(), sp) ; 
+        assertEqualsStoreParams(StoreParams.getDftStoreParams(), sp) ;
     }
 
     @Test public void store_params_04() {
@@ -54,7 +52,7 @@ public class TestStoreParams {
         StoreParams params2 = roundTrip(params) ;
         assertEqualsStoreParams(params,params2) ;
     }
-    
+
     @Test public void store_params_05() {
         Double initialCapacityFactor = Double.valueOf(0.125);
         StoreParams params = StoreParams.builder().nodeCacheInitialCapacityFactor(initialCapacityFactor).build();
@@ -74,7 +72,7 @@ public class TestStoreParams {
     }
 
     // ----
-    
+
     @Test public void store_params_10() {
         StoreParams params = StoreParams.builder().fileMode(FileMode.direct).blockSize(1024).build() ;
         StoreParams params2 = roundTrip(params) ;
@@ -100,20 +98,22 @@ public class TestStoreParams {
     }
 
     @Test public void store_params_13() {
-        String xs = "{ \"tdb.triple_indexes\" : [ \"POS\" , \"PSO\"] } " ; 
+        String xs = "{ \"tdb.triple_indexes\" : [ \"POS\" , \"PSO\"] } " ;
         JsonObject x = JSON.parse(xs) ;
         StoreParams params = StoreParamsCodec.decode(x) ;
         String[] expected =  { "POS" , "PSO" } ;
         assertArrayEquals(expected, params.getTripleIndexes()) ;
     }
 
-    @Test(expected=TDB1Exception.class)
+    @Test
     public void store_params_14() {
-        String xs = "{ \"tdb.triples_indexes\" : [ \"POS\" , \"PSO\"] } " ; // Misspelt. 
+        String xs = "{ \"tdb.triples_indexes\" : [ \"POS\" , \"PSO\"] } " ; // Misspelt.
         JsonObject x = JSON.parse(xs) ;
-        StoreParams params = StoreParamsCodec.decode(x) ;
-        String[] expected =  { "POS" , "PSO" } ;
-        assertArrayEquals(expected, params.getTripleIndexes()) ;
+        assertThrows(TDB1Exception.class, ()-> {
+            StoreParams params = StoreParamsCodec.decode(x) ;
+        });
+//        String[] expected =  { "POS" , "PSO" } ;
+//        assertArrayEquals(expected, params.getTripleIndexes()) ;
     }
 
     // Check that setting gets recorded and propagated.
@@ -123,7 +123,7 @@ public class TestStoreParams {
         assertTrue(params.isSetBlockReadCacheSize()) ;
         assertFalse(params.isSetBlockWriteCacheSize()) ;
     }
-    
+
     @Test public void store_params_21() {
         StoreParams params1 = StoreParams.builder().blockReadCacheSize(0).build();
         assertTrue(params1.isSetBlockReadCacheSize()) ;
@@ -149,18 +149,18 @@ public class TestStoreParams {
         assertTrue(params3.isSetBlockWriteCacheSize()) ;
         assertEquals(5, params3.getBlockReadCacheSize().intValue()) ;   // From params2
         assertEquals(1, params3.getBlockWriteCacheSize().intValue()) ;  // From params1, not params2(unset)
-        
+
     }
 
-    
+
     // --------
-    
+
     private static StoreParams roundTrip(StoreParams params) {
         JsonObject obj = StoreParamsCodec.encodeToJson(params) ;
         StoreParams params2 = StoreParamsCodec.decode(obj) ;
         return params2 ;
     }
-    
+
     private static void assertEqualsStoreParams(StoreParams params1, StoreParams params2) {
         assertTrue(StoreParams.sameValues(params1, params2)) ;
     }

@@ -22,23 +22,23 @@
 package org.apache.jena.tdb1.base.objectfile;
 
 import static org.apache.jena.tdb1.base.BufferTestLib.sameValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.ByteBuffer ;
 
-import org.junit.After ;
-import org.junit.Before ;
-import org.junit.Test ;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public abstract class AbstractTestObjectFile
 {
     ObjectFile file ;
 
-    @Before public void before() { file = make() ; }
-    @After public void after() { release(file); }
+    @BeforeEach public void before() { file = make() ; }
+    @AfterEach public void after() { release(file); }
 
     // Test 02 and 04 were for alloc-write.
     

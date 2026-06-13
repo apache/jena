@@ -21,7 +21,7 @@
 
 package org.apache.jena.tdb1.transaction;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
@@ -31,8 +31,8 @@ import org.apache.jena.tdb1.base.block.Block;
 import org.apache.jena.tdb1.base.file.BufferChannel;
 import org.apache.jena.tdb1.base.file.BufferChannelMem;
 import org.apache.jena.tdb1.sys.FileRef;
-import org.junit.Before ;
-import org.junit.Test ;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TestJournal
 {
@@ -62,7 +62,7 @@ public class TestJournal
     static FileRef testRef2 = FileRef.create("TEST2") ;
     
     Journal journal ;
-    @Before public void before()
+    @BeforeEach public void before()
     {
         BufferChannel mem = BufferChannelMem.create("journal") ;
         journal = new Journal(mem) ;

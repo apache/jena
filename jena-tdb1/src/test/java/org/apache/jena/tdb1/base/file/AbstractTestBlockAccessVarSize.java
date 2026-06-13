@@ -21,10 +21,10 @@
 
 package org.apache.jena.tdb1.base.file;
 
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.jena.tdb1.base.BufferTestLib.*;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 import org.apache.jena.tdb1.base.block.Block;
 

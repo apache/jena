@@ -21,9 +21,9 @@
 
 package org.apache.jena.tdb1.graph;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Map ;
 
@@ -42,18 +42,18 @@ import org.apache.jena.tdb1.sys.DatasetControl;
 import org.apache.jena.tdb1.sys.DatasetControlMRSW;
 import org.apache.jena.tdb1.sys.SystemTDB;
 import org.apache.jena.tdb1.sys.TDBInternal;
-import org.junit.* ;
+import  org.junit.jupiter.api.*;
 
 @SuppressWarnings("removal")
 public class TestPrefixMappingTDB1 extends AbstractTestPrefixMappingView
 {
     static DatasetPrefixesTDB last = null ;
 
-    @BeforeClass public static void beforeClass() {}
-    @AfterClass public static void afterClass()   { TDBInternal.reset() ; ConfigTest.deleteTestingDir() ; }
+    @BeforeAll public static void beforeClass() {}
+    @AfterAll public static void afterClass()   { TDBInternal.reset() ; ConfigTest.deleteTestingDir() ; }
 
-    @Before public void before() { TDBInternal.reset() ; create(); }
-    @After public  void after()  { }
+    @BeforeEach public void before() { TDBInternal.reset() ; create(); }
+    @AfterEach public  void after()  { }
 
     @Override
     protected PrefixMapping create() {

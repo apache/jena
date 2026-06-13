@@ -22,17 +22,17 @@
 package org.apache.jena.tdb1.graph;
 
 import org.apache.jena.query.ReadWrite ;
-import org.junit.After ;
-import org.junit.Before ;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 public class TestGraphsTDB1_insideTxn extends AbstractTestGraphsTDB1
 {
-    @Before public void before() 
+    @BeforeEach public void before() 
     {
         getDataset().begin(ReadWrite.READ) ;
     }
 
-    @After public void after() 
+    @AfterEach public void after() 
     {
         getDataset().end() ;
     }

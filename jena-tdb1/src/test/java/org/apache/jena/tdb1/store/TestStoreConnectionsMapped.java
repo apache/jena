@@ -25,23 +25,22 @@ import org.apache.jena.tdb1.base.block.FileMode;
 import org.apache.jena.tdb1.sys.LibTestOps;
 import org.apache.jena.tdb1.sys.SystemTDB;
 import org.apache.jena.tdb1.sys.TDBInternal;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 
 @SuppressWarnings("removal")
 public class TestStoreConnectionsMapped extends AbstractStoreConnections
 {
     static FileMode mode ;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClassFileMode()
     {
         mode = SystemTDB.fileMode() ;
         LibTestOps.setFileMode(FileMode.mapped) ;
     }
 
-    @AfterClass
-    public static void afterClassFileMode()
+    @AfterAll     public static void afterClassFileMode()
     {
         LibTestOps.setFileMode(mode) ;
         TDBInternal.reset();

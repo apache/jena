@@ -23,7 +23,7 @@ package org.apache.jena.tdb1.base.file;
 
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.tdb1.ConfigTest;
-import org.junit.AfterClass ;
+import org.junit.jupiter.api.AfterAll;
 
 public class TestBlockAccessMapped extends AbstractTestBlockAccessFixedSize
 {
@@ -35,7 +35,7 @@ public class TestBlockAccessMapped extends AbstractTestBlockAccessFixedSize
         super(BlockSize) ;
     }
 
-    @AfterClass public static void cleanup() { FileOps.deleteSilent(filename) ; } 
+    @AfterAll public static void cleanup() { FileOps.deleteSilent(filename) ; } 
     
     static int counter = 0 ;
     

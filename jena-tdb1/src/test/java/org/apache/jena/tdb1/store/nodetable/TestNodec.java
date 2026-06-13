@@ -21,24 +21,24 @@
 
 package org.apache.jena.tdb1.store.nodetable;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.ByteBuffer;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import org.apache.jena.atlas.lib.ByteBufferLib;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.sse.SSE;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
-@RunWith(Parameterized.class)
-public class TestNodec
-{
+@ParameterizedClass
+@MethodSource("provideArgs")
+public class TestNodec {
     static private final String asciiBase             = "abc";
     static private final String latinBase             = "Àéíÿ";
     static private final String latinExtraBase        = "ỹﬁﬂ";      // fi-ligature, fl-ligature
@@ -49,9 +49,8 @@ public class TestNodec
     static private final String chineseBase           = "孫子兵法"; // The Art of War
     static private final String japaneseBase          = "日本";     // Japanese
 
-    @Parameters(name="{0}")
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][]{{"NodecSSE", new NodecSSE()}});
+    public static Stream<Arguments> provideArgs() {
+        return Stream.of(Arguments.of("NodecSSE", new NodecSSE()));
     }
 
     private Nodec nodec;

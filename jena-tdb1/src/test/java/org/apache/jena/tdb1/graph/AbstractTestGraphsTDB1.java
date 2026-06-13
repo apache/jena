@@ -27,21 +27,21 @@ import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import org.apache.jena.sparql.graph.GraphsTests ;
 import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb1.sys.SystemTDB;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 
 @SuppressWarnings("removal")
 public abstract class AbstractTestGraphsTDB1 extends GraphsTests
 {
     private static ReorderTransformation reorder  ;
 
-    @BeforeClass public static void setupClass()
+    @BeforeAll public static void setupClass()
     {
         reorder = SystemTDB.defaultReorderTransform ;
         SystemTDB.defaultReorderTransform = ReorderLib.identity() ;
     }
 
-    @AfterClass public static void afterClass() {  SystemTDB.defaultReorderTransform = reorder ; }
+    @AfterAll public static void afterClass() {  SystemTDB.defaultReorderTransform = reorder ; }
 
     @Override
     protected Dataset createDataset()

@@ -21,14 +21,14 @@
 
 package org.apache.jena.tdb1.setup;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.tdb1.ConfigTest;
 import org.apache.jena.tdb1.base.file.Location;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
 
 //TestParamsCreate
 /** This test suite uses on-disk structures and can be slow */ 

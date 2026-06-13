@@ -21,15 +21,10 @@
 
 package org.apache.jena.tdb1.base.recordfile;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestRecordBufferPage.class
-})
+@Suite
+@SelectClasses({TestRecordBufferPage.class})
 
-public class TS_RecordFile
-{
-
-}
+public class TS_RecordFile {}

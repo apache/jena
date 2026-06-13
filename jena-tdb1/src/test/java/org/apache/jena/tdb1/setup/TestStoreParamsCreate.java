@@ -22,7 +22,7 @@
 package org.apache.jena.tdb1.setup;
 
 import static org.apache.jena.tdb1.setup.StoreParamsConst.TDB_CONFIG_FILE;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.nio.file.Files ;
 import java.nio.file.Path ;
@@ -32,9 +32,9 @@ import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.tdb1.ConfigTest;
 import org.apache.jena.tdb1.base.file.Location;
 import org.apache.jena.tdb1.sys.StoreConnection;
-import org.junit.After ;
-import org.junit.Before ;
-import org.junit.Test ;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * This test suite uses on-disk structures, does a lot of clean/create/sync
@@ -53,28 +53,28 @@ public class TestStoreParamsCreate {
         .blockReadCacheSize(4)
         .build();
 
-    @Before public void clearupTest() {
+    @BeforeEach public void clearupTest() {
         // Flush and clean.
         StoreConnection.expel(loc, true) ;
         FileOps.clearAll(DB_DIR);
     }
 
-    @After public void expelDatabase() {
+    @AfterEach public void expelDatabase() {
         StoreConnection.expel(loc, true) ;
     }
 
     @Test public void params_create_01() {
         StoreConnection.make(loc, null) ;
         // Check.  Default setup, no params.
-        assertTrue("DB directory", Files.exists(db)) ;
-        assertFalse("Config file unexpectedly found", Files.exists(cfg)) ;
+        assertTrue(Files.exists(db), "DB directory") ;
+        assertFalse(Files.exists(cfg), "Config file unexpectedly found") ;
     }
 
     @Test public void params_create_02() {
         StoreConnection.make(loc, pApp) ;
         // Check.  Custom setup.
-        assertTrue("DB directory", Files.exists(db)) ;
-        assertTrue("Config file not found: "+cfg, Files.exists(cfg)) ;
+        assertTrue(Files.exists(db), "DB directory") ;
+        assertTrue(Files.exists(cfg), "Config file not found: "+cfg) ;
         StoreParams pLoc = StoreParamsCodec.read(loc) ;
         assertTrue(StoreParams.sameValues(pLoc, pApp)) ;
     }

@@ -23,13 +23,13 @@ package org.apache.jena.tdb1.base.file;
 
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.tdb1.ConfigTest;
-import org.junit.AfterClass ;
+import org.junit.jupiter.api.AfterAll;
 
 public class TestChannelFile extends AbstractTestChannel
 {
     static String filename = ConfigTest.getTestingDir()+"/test-storage" ;
 
-    @AfterClass public static void cleanup() { FileOps.deleteSilent(filename) ; } 
+    @AfterAll public static void cleanup() { FileOps.deleteSilent(filename) ; } 
     
     @Override
     protected BufferChannel open()

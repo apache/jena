@@ -21,43 +21,42 @@
 
 package org.apache.jena.tdb1.transaction;
 
-import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.logging.LogCtl ;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.sparql.transaction.AbstractTestTransactionLifecycle ;
+import org.apache.jena.atlas.lib.FileOps;
+import org.apache.jena.atlas.logging.LogCtl;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.sparql.transaction.AbstractTestTransactionLifecycle;
 import org.apache.jena.tdb1.ConfigTest;
 import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb1.sys.SystemTDB;
 import org.apache.jena.tdb1.sys.TDBInternal;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 
 @SuppressWarnings("removal")
-public class TestTransactionTDB1 extends AbstractTestTransactionLifecycle
-{
-    private String DIR = null ;
-    private static String level = null ;
+public class TestTransactionTDB1 extends AbstractTestTransactionLifecycle {
+    private String DIR = null;
+    private static String level = null;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClassLoggingOff() {
         level = LogCtl.getLevel(SystemTDB.errlog.getName());
         LogCtl.setLevel(SystemTDB.errlog.getName(), "OFF");
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClassLoggingOn() {
         LogCtl.setLevel(SystemTDB.errlog.getName(), level);
     }
 
-    @Before
+    @BeforeEach
     public void before() {
         TDBInternal.reset();
         DIR = ConfigTest.getCleanDir();
     }
 
-    @After
+    @AfterEach
     public void after() {
         TDBInternal.reset();
         FileOps.clearDirectory(DIR);
@@ -68,4 +67,3 @@ public class TestTransactionTDB1 extends AbstractTestTransactionLifecycle
         return TDB1Factory.createDataset(DIR);
     }
 }
-

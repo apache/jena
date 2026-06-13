@@ -21,10 +21,10 @@
 
 package org.apache.jena.tdb1;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.sparql.core.DatasetGraph ;
@@ -34,9 +34,9 @@ import org.apache.jena.tdb1.base.file.Location;
 import org.apache.jena.tdb1.sys.TDBInternal;
 import org.apache.jena.tdb1.sys.TDBMaker;
 import org.apache.jena.tdb1.transaction.DatasetGraphTransaction;
-import org.junit.After ;
-import org.junit.Before ;
-import org.junit.Test ;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("removal")
 public class TestTDB1Factory
@@ -46,14 +46,13 @@ public class TestTDB1Factory
     static Quad quad1 = SSE.parseQuad("(_ <s> <p> 1)") ;
     static Quad quad2 = SSE.parseQuad("(_ <s> <p> 1)") ;
 
-    @Before
+    @BeforeEach
     public void before() {
         TDBInternal.reset();
         FileOps.clearDirectory(DIR);
     }
 
-    @After
-    public void after() {
+    @AfterEach     public void after() {
         TDBInternal.reset();
         FileOps.clearDirectory(DIR);
     }
@@ -112,33 +111,33 @@ public class TestTDB1Factory
 
     @Test public void testTDBFresh01() {
         boolean b = TDB1Factory.inUseLocation(DIR) ;
-        assertFalse("Expect false before any creation attempted", b) ;
+        assertFalse(b, "Expect false before any creation attempted") ;
     }
 
     @Test public void testTDBFresh02() {
         boolean b = TDB1Factory.inUseLocation(DIR) ;
-        assertFalse("Expect false before any creation attempted", b) ;
+        assertFalse(b, "Expect false before any creation attempted") ;
         TDB1Factory.createDataset(DIR) ;
         b = TDB1Factory.inUseLocation(DIR) ;
-        assertTrue("Expected true after creation attempted", b) ;
+        assertTrue(b, "Expected true after creation attempted") ;
         TDBInternal.expel(Location.create(DIR), true);
     }
 
     @Test public void testTDBFresh03() {
         boolean b = TDB1Factory.inUseLocation(DIR) ;
-        assertFalse("Expect true before any creation attempted", b) ;
+        assertFalse(b, "Expect true before any creation attempted") ;
         TDB1Factory.createDataset(DIR) ;
         b = TDB1Factory.inUseLocation(DIR) ;
-        assertTrue("Expected true after creation attempted", b) ;
+        assertTrue(b, "Expected true after creation attempted") ;
         TDBInternal.expel(Location.create(DIR), true);
         b = TDB1Factory.inUseLocation(DIR) ;
-        assertTrue("Expected true even after StoreConenction reset", b) ;
+        assertTrue(b, "Expected true even after StoreConenction reset") ;
     }
 
     @Test public void testTDBFresh11() {
         Location loc = Location.mem() ;
         boolean b = TDB1Factory.inUseLocation(loc) ;
-        assertFalse("Expect false before any creation attempted", b) ;
+        assertFalse(b, "Expect false before any creation attempted") ;
     }
 
     @Test public void testTDBFresh22() {
@@ -146,7 +145,7 @@ public class TestTDB1Factory
         boolean b = TDB1Factory.inUseLocation(loc) ;
         TDB1Factory.createDataset(loc) ;
         b = TDB1Factory.inUseLocation(loc) ;
-        assertFalse("Expected false for a unique memory location", b) ;
+        assertFalse(b, "Expected false for a unique memory location") ;
     }
 
     @Test public void testTDBFresh23() {
@@ -154,6 +153,6 @@ public class TestTDB1Factory
         boolean b = TDB1Factory.inUseLocation(loc) ;
         TDB1Factory.createDataset(loc) ;
         b = TDB1Factory.inUseLocation(loc) ;
-        assertTrue("Expected true for a named memory location", b) ;
+        assertTrue(b, "Expected true for a named memory location") ;
     }
 }

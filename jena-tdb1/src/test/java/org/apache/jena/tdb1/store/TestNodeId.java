@@ -21,21 +21,21 @@
 
 package org.apache.jena.tdb1.store;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
 
 public class TestNodeId
 {
-//    @BeforeClass public static void beforeClass() {
+//    @BeforeAll public static void beforeClass() {
 //        // If running just this test suite, then this happens before SystemTDB initialization.
 //        Lib.setenv("tdb:store.enableInlineLiterals", "true") ;
 //    }
@@ -234,9 +234,8 @@ public class TestNodeId
 
     private void test(String x) { test(x, x) ; }
 
-    private void test(String x, String expected)
-    {
-        test(x, NodeFactoryExtra.parseNode(expected)) ;
+    private void test(String x, String expected) {
+        test(x, NodeFactoryExtra.parseNode(expected));
     }
 
     private void test(String x, Node correct)
@@ -246,22 +245,22 @@ public class TestNodeId
         boolean b = NodeId.hasInlineDatatype(n) ;
 
         if ( nodeId != null )
-            assertTrue("Converted NodeId but datatype test was false", b) ;
+            assertTrue(b, "Converted NodeId but datatype test was false") ;
 
         if ( correct == null )
         {
-            assertNull("Expected no encoding: got: "+nodeId, nodeId) ;
+            assertNull(nodeId, "Expected no encoding: got: "+nodeId) ;
             return ;
         }
-        assertNotNull("Expected inlining: "+n, nodeId) ;
+        assertNotNull(nodeId, "Expected inlining: "+n) ;
         Node n2 = NodeId.extract(nodeId) ;
-        assertNotNull("Expected recovery", n2) ;
+        assertNotNull(n2, "Expected recovery") ;
 
         String s = "("+correct.getLiteralLexicalForm()+","+n2.getLiteralLexicalForm()+")" ;
 
-        assertTrue("Not same value: "+s, correct.sameValueAs(n2)) ;
+        assertTrue(correct.sameValueAs(n2), "Not same value: "+s) ;
 
         // Term equality.
-        assertEquals("Not same term", correct, n2) ;
+        assertEquals(correct, n2, "Not same term") ;
     }
 }

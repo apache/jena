@@ -24,19 +24,19 @@ package org.apache.jena.tdb1.transaction;
 import org.apache.jena.tdb1.base.file.Location;
 import org.apache.jena.tdb1.sys.StoreConnection;
 import org.apache.jena.tdb1.sys.TDBInternal;
-import org.junit.After ;
-import org.junit.Before ;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 /** Basic tests and tests of ordering (single thread) */
 @SuppressWarnings("removal")
 public class TestTransMem extends AbstractTestTransSeq
 {
-    @Before public void before()
+    @BeforeEach public void before()
     {
         TDBInternal.reset() ;
     }
 
-    @After public void after() {}
+    @AfterEach public void after() {}
 
     @Override
     protected StoreConnection getStoreConnection()

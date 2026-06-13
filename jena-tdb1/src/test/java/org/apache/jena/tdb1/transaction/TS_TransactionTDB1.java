@@ -21,20 +21,20 @@
 
 package org.apache.jena.tdb1.transaction;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses({
       TestJournal.class
     , TestTransIterator.class
     , TestObjectFileTransMem.class
     , TestObjectFileTransStorage.class
-    
+
     // ObjectFileTransComplex is not used by TDB currently.
     , TestObjectFileTransComplexMem.class
     , TestObjectFileTransComplexStorage.class
-    
+
     , TestTransMem.class
     , TestTransDiskDirect.class
     , TestTransDiskMapped.class

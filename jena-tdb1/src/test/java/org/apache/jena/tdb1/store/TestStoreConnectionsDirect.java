@@ -24,24 +24,20 @@ package org.apache.jena.tdb1.store;
 import org.apache.jena.tdb1.base.block.FileMode;
 import org.apache.jena.tdb1.sys.LibTestOps;
 import org.apache.jena.tdb1.sys.SystemTDB;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 
-public class TestStoreConnectionsDirect extends AbstractStoreConnections
-{
-    static FileMode mode ;   
+public class TestStoreConnectionsDirect extends AbstractStoreConnections {
+    static FileMode mode;
 
-    @BeforeClass
-    public static void beforeClassFileMode()
-    {
-        mode = SystemTDB.fileMode() ;
-        LibTestOps.setFileMode(FileMode.direct) ;
+    @BeforeAll
+    public static void beforeClassFileMode() {
+        mode = SystemTDB.fileMode();
+        LibTestOps.setFileMode(FileMode.direct);
     }
 
-    @AfterClass
-    public static void afterClassFileMode()
-    {
-        LibTestOps.setFileMode(mode) ;
+    @AfterAll
+    public static void afterClassFileMode() {
+        LibTestOps.setFileMode(mode);
     }
 }
-

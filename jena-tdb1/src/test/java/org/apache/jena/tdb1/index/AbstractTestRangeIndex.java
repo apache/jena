@@ -27,22 +27,21 @@ import static org.apache.jena.tdb1.index.IndexTestLib.add;
 import static org.apache.jena.tdb1.index.IndexTestLib.randTest;
 import static org.apache.jena.tdb1.index.IndexTestLib.testInsert;
 import static org.apache.jena.tdb1.index.IndexTestLib.testInsertDelete;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List ;
 
 import org.apache.jena.tdb1.base.record.RecordLib;
-import org.junit.After ;
-import org.junit.Test ;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 public abstract class AbstractTestRangeIndex {
     private RangeIndex rIndex = null ;
 
-    @After
-    public void afterTest() {
+    @AfterEach     public void afterTest() {
         if ( rIndex != null )
             rIndex.close() ;
         rIndex = null ;

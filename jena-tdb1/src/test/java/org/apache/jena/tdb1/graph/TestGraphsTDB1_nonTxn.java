@@ -21,17 +21,17 @@
 
 package org.apache.jena.tdb1.graph;
 
-import org.junit.After ;
-import org.junit.Before ;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 public class TestGraphsTDB1_nonTxn extends AbstractTestGraphsTDB1
 {
     // Non-transactional.
-    @Before public void before()
+    @BeforeEach public void before()
     {
     }
 
-    @After public void after()
+    @AfterEach public void after()
     {
     }
 }

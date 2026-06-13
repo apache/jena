@@ -21,9 +21,9 @@
 
 package org.apache.jena.tdb1.store;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Graph ;
@@ -221,7 +221,7 @@ public class Test_SPARQL_TDB1
         UpdateAction.execute(req, ds);
 
         Model m = ds.getNamedModel("http://example/g2");
-        assertEquals("Did not find 1 statement in named graph", 1, m.size());
+        assertEquals(1, m.size(), "Did not find 1 statement in named graph");
     }
 
     private int count(Dataset dataset) {

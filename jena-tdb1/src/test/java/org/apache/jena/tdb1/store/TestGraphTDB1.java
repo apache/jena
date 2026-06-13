@@ -26,10 +26,10 @@ import org.apache.jena.sparql.graph.AbstractTestGraphAddDelete ;
 import org.apache.jena.tdb1.ConfigTest;
 import org.apache.jena.tdb1.base.file.Location;
 import org.apache.jena.tdb1.sys.TDBInternal;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 
 /** Programmatic tests on persistent graph */
 @SuppressWarnings("removal")
@@ -37,7 +37,7 @@ public class TestGraphTDB1 extends AbstractTestGraphAddDelete
 {
     static GraphLocation graphLocation = null ;
 
-    @BeforeClass public static void beforeClass()
+    @BeforeAll public static void beforeClass()
     {
         TDBInternal.reset() ;
         graphLocation = new GraphLocation(Location.create(ConfigTest.getCleanDir())) ;
@@ -48,7 +48,7 @@ public class TestGraphTDB1 extends AbstractTestGraphAddDelete
     }
     // ----------
 
-    @AfterClass public static void afterClass()
+    @AfterAll public static void afterClass()
     {
         graphLocation.release() ;
         TDBInternal.reset() ;
@@ -57,13 +57,13 @@ public class TestGraphTDB1 extends AbstractTestGraphAddDelete
     }
 
     static Graph graph = null ;
-    @Before public void before()
+    @BeforeEach public void before()
     {
         if ( graph != null )
             graph.clear() ;
     }
 
-    @After public void after()
+    @AfterEach public void after()
     {
     }
 
