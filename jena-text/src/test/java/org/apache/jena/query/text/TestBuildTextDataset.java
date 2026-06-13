@@ -21,8 +21,8 @@
 
 package org.apache.jena.query.text ;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.* ;
@@ -32,7 +32,7 @@ import org.apache.jena.tdb1.TDB1;
 import org.apache.jena.vocabulary.RDFS ;
 import org.apache.lucene.store.ByteBuffersDirectory ;
 import org.apache.lucene.store.Directory ;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
 
 /** Test the examples of building a test dataset */
 public class TestBuildTextDataset
@@ -101,7 +101,7 @@ public class TestBuildTextDataset
         finally {
             dataset.end() ;
         }
-        assertEquals("Unexpected result count", 2, x) ;
+        assertEquals(2, x, "Unexpected result count") ;
     }
 
     public static Dataset createCode() {

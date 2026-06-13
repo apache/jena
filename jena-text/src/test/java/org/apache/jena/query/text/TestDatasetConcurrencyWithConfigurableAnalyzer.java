@@ -21,6 +21,8 @@
 
 package org.apache.jena.query.text;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -29,18 +31,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.vocabulary.RDFS;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 
 public class TestDatasetConcurrencyWithConfigurableAnalyzer extends AbstractTestDatasetWithAnalyzer {
     @Override
-    @Before
-    public void before () {
+    @BeforeEach public void before () {
         init(StrUtils.strjoinNL(
                 "text:ConfigurableAnalyzer ;",
                 "text:tokenizer text:WhitespaceTokenizer ;",
@@ -82,13 +83,13 @@ public class TestDatasetConcurrencyWithConfigurableAnalyzer extends AbstractTest
                     results.add(executorService.submit(() -> testOneQuery(probe)));;
                 }
                 for (int j = 0; j < parallelism; j++) {
-                    Assert.assertTrue("Probe " + i + " failed", results.get(j).get());
+                    assertTrue(results.get(j).get(), "Probe " + i + " failed");
                 }
             }
         } catch (InterruptedException e) {
             // exit silently on interrupt
         } catch (ExecutionException e) {
-            Assert.assertTrue("Concurrency exception: " + e.getMessage(), false);
+            assertTrue(false, "Concurrency exception: " + e.getMessage());
         }
     }
 }

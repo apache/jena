@@ -21,7 +21,12 @@
 
 package org.apache.jena.query.text.assembler;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.assembler.exceptions.AssemblerException;
@@ -32,9 +37,6 @@ import org.apache.jena.query.text.changes.TextQuadAction;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.vocabulary.RDF;
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
  * Test the text dataset assembler.
@@ -49,12 +51,12 @@ public class TestTextDatasetAssembler extends AbstractTestTextAssembler {
     private static final Resource noIndexPropertySpec;
     private static final Resource customTextDocProducerSpec;
 
-    @BeforeClass public static void clearBefore() {
+    @BeforeAll public static void clearBefore() {
         org.apache.jena.tdb1.sys.TDBInternal.reset();
         org.apache.jena.tdb2.sys.TDBInternal.reset();
     }
 
-    @After public void clearAfter() {
+    @AfterEach public void clearAfter() {
         org.apache.jena.tdb1.sys.TDBInternal.reset();
         org.apache.jena.tdb2.sys.TDBInternal.reset();
     }
@@ -66,14 +68,14 @@ public class TestTextDatasetAssembler extends AbstractTestTextAssembler {
         dataset.close();
     }
 
-    @Test(expected = AssemblerException.class)
+    @Test
     public void testErrorOnNoDataset() {
-        Assembler.general().open(noDatasetPropertySpec);
+        assertThrows(AssemblerException.class, ()->Assembler.general().open(noDatasetPropertySpec));
     }
 
-    @Test(expected = AssemblerException.class)
+    @Test
     public void testErrorOnNoIndex() {
-        Assembler.general().open(noIndexPropertySpec);
+        assertThrows(AssemblerException.class, ()->Assembler.general().open(noIndexPropertySpec));
     }
 
     @Test

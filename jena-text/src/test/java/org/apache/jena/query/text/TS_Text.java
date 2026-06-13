@@ -21,18 +21,14 @@
 
 package org.apache.jena.query.text;
 
-import org.apache.jena.query.text.assembler.TestEntityMapAssembler;
-import org.apache.jena.query.text.assembler.TestTextDatasetAssembler;
-import org.apache.jena.query.text.assembler.TestTextIndexLuceneAssembler;
-import org.apache.jena.query.text.changes.TestDatasetMonitor;
-import org.apache.jena.query.text.assembler.TestGenericAnalyzerAssembler;
-import org.apache.jena.query.text.assembler.TestPropListsAssembler;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@SuiteClasses({
+import org.apache.jena.query.text.assembler.*;
+import org.apache.jena.query.text.changes.TestDatasetMonitor;
+
+@Suite
+@SelectClasses({
 
     TestBuildTextDataset.class
     , TestDatasetMonitor.class

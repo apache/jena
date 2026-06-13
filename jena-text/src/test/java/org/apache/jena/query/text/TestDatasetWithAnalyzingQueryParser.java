@@ -25,10 +25,10 @@ import java.util.Set ;
 
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.LogCtl;
-import org.junit.AfterClass;
-import org.junit.Before ;
-import org.junit.BeforeClass;
-import org.junit.Test ;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * This class defines a setup configuration for a dataset that uses an ASCII folding lowercase keyword analyzer with a Lucene index.
@@ -38,17 +38,16 @@ public class TestDatasetWithAnalyzingQueryParser extends TestDatasetWithConfigur
     private static String loggerLevel;
 
     /** Suppress a warning message - see {@link TextIndexLucene#parseQuery} */
-    @BeforeClass public static void beforeClass() {
+    @BeforeAll public static void beforeClass() {
         loggerLevel = LogCtl.getLevel(TextIndexLucene.class);
         LogCtl.setLevel(TextIndexLucene.class, "ERROR");
     }
-    @AfterClass public static void afterClass() {
+    @AfterAll public static void afterClass() {
         LogCtl.setLevel(TextIndexLucene.class, loggerLevel);
     }
 
     @Override
-    @Before
-    public void before() {
+    @BeforeEach public void before() {
         init(StrUtils.strjoinNL(
             "text:ConfigurableAnalyzer ;",
             "text:tokenizer text:KeywordTokenizer ;",

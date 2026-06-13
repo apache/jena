@@ -35,9 +35,9 @@ import org.apache.jena.query.text.assembler.TextAssembler ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.Resource ;
-import org.junit.After ;
-import org.junit.Before ;
-import org.junit.Test ;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.SKOS;
@@ -158,13 +158,11 @@ public class TestTextPropLists02 extends AbstractTestDatasetWithTextIndexBase {
         if (indexDir.exists()) TextSearchUtil.emptyAndDeleteDirectory(indexDir);
     }
 
-    @Before
-    public void beforeClass() {
+    @BeforeEach public void beforeClass() {
         init();
     }
 
-    @After
-    public void afterClass() {
+    @AfterEach public void afterClass() {
         deleteOldFiles();
     }
 

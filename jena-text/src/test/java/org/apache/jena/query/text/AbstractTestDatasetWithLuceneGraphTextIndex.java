@@ -26,8 +26,8 @@ import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.vocabulary.RDFS ;
 import org.apache.lucene.store.Directory ;
 import org.apache.lucene.store.ByteBuffersDirectory ;
-import org.junit.After ;
-import org.junit.Before ;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 
 /**
@@ -36,8 +36,7 @@ import org.junit.Before ;
 @SuppressWarnings("removal")
 public class AbstractTestDatasetWithLuceneGraphTextIndex extends AbstractTestDatasetWithGraphTextIndex {
 
-    @Before
-    public void init() {
+    @BeforeEach public void init() {
         Dataset ds1 = TDB1Factory.createDataset() ;
         Directory dir = new ByteBuffersDirectory() ;
         EntityDefinition eDef = new EntityDefinition("iri", "text");
@@ -48,8 +47,7 @@ public class AbstractTestDatasetWithLuceneGraphTextIndex extends AbstractTestDat
         dataset = TextDatasetFactory.create(ds1, tidx) ;
     }
 
-    @After
-    public void teardown() {
+    @AfterEach public void teardown() {
         dataset.close();
     }
 

@@ -31,8 +31,8 @@ import org.apache.jena.query.text.assembler.TextAssembler ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.Resource ;
-import org.junit.After ;
-import org.junit.Before ;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * This abstract class defines a setup configuration for a dataset that uses a specific analyzer with a Lucene index.
@@ -103,11 +103,9 @@ public abstract class AbstractTestDatasetWithAnalyzer extends AbstractTestDatase
         init(analyzer, "text:QueryParser");
     }   
     
-    @Before
-    abstract public void before();
+    @BeforeEach abstract public void before();
     
-    @After
-    public void after() {
+    @AfterEach public void after() {
         dataset.close();
     }
 

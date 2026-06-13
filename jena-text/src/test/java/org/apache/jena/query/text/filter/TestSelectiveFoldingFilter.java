@@ -21,7 +21,8 @@
 
 package org.apache.jena.query.text.filter;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -30,11 +31,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.apache.lucene.analysis.CharArraySet;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * Test {@link SelectiveFoldingFilter}.
@@ -45,8 +47,7 @@ public class TestSelectiveFoldingFilter {
     private StringReader inputText;
     private CharArraySet whitelisted;
 
-    @Before
-    public void setUp() {
+    @BeforeEach public void setUp() {
         inputText = new StringReader("Señora Siobhán, look at that façade");
     }
 
@@ -96,9 +97,9 @@ public class TestSelectiveFoldingFilter {
         assertTrue(tokens.equals(expected));
     }
 
-    @Test(expected = NullPointerException.class)
-    public void testNullWhiteListThrowsError() throws IOException {
-        collectTokens(inputText, null);
+    @Test
+    public void testNullWhiteListThrowsError() {
+        assertThrows(NullPointerException.class, ()->collectTokens(inputText, null));
     }
 
     @Test

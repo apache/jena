@@ -32,7 +32,7 @@ import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.junit.Test ;
+import org.junit.jupiter.api.Test;
 
 /**
  * This abstract class defines tests of the graph-specific indexing.

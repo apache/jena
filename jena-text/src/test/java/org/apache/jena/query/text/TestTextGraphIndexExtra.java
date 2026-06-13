@@ -21,6 +21,10 @@
 
 package org.apache.jena.query.text;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.* ;
@@ -30,8 +34,6 @@ import org.apache.jena.system.Txn ;
 import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.vocabulary.RDFS ;
 import org.apache.lucene.store.ByteBuffersDirectory ;
-import org.junit.Assert ;
-import org.junit.Test ;
 
 @SuppressWarnings("removal")
 public class TestTextGraphIndexExtra {
@@ -116,7 +118,7 @@ public class TestTextGraphIndexExtra {
         ds = textDataset(ds);
         populate(ds);
         int x = sparqlQuery(ds, queryStr);
-        Assert.assertEquals(expected, x);
+        assertEquals(expected, x);
     }
 
 }
