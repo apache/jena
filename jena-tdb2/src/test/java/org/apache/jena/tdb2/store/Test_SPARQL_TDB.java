@@ -22,6 +22,7 @@
 package org.apache.jena.tdb2.store;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.junit.jupiter.api.Test;
 
@@ -30,8 +31,16 @@ import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.query.*;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.ReadWrite;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.sparql.algebra.Table;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.RowSet;
@@ -41,7 +50,11 @@ import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.TDB2;
 import org.apache.jena.tdb2.TDB2Factory;
-import org.apache.jena.update.*;
+import org.apache.jena.update.UpdateAction;
+import org.apache.jena.update.UpdateExecution;
+import org.apache.jena.update.UpdateExecutionFactory;
+import org.apache.jena.update.UpdateFactory;
+import org.apache.jena.update.UpdateRequest;
 
 /**
  * Test SPARQL
@@ -155,6 +168,70 @@ public class Test_SPARQL_TDB {
             RowSet rs = QueryExec.dataset(dsg).query(qs).select();
             RowSetOps.consume(rs);
         });
+    }
+
+    /** Test skip scan with union default graph constant. */
+    @Test
+    public void sparql8() {
+        DatasetGraph dsg = TDB2Factory.createDataset().asDatasetGraph();
+        Txn.executeWrite(dsg, () -> {
+            dsg.add(SSE.parseQuad("(<g> <s> <p> 123)"));
+        });
+        dsg.getContext().setTrue(TDB2.symUnionDefaultGraph);
+
+        Table actual = Txn.calculateRead(dsg, () -> QueryExec.dataset(dsg)
+            .query("SELECT DISTINCT ?p { ?s ?p ?o }").table());
+        assertEquals(1, actual.size());
+    }
+
+    /** Test whether passing a blank node from a skip scan result to
+     * another skip scan retrieval works. */
+    @Test
+    public void sparql9() {
+        DatasetGraph dsg = TDB2Factory.createDataset().asDatasetGraph();
+        Txn.executeWrite(dsg, () -> {
+            dsg.add(SSE.parseQuad("(<g> <s1> <p1> _:x)"));
+            dsg.add(SSE.parseQuad("(<g> <s2> <p2> :o)"));
+        });
+        dsg.getContext().setTrue(TDB2.symUnionDefaultGraph);
+
+        Table actualTable = Txn.calculateRead(dsg, () -> QueryExec.dataset(dsg)
+            .query("""
+                SELECT ?p {
+                    {
+                      { SELECT DISTINCT ?o { ?s ?p ?o } } # Should match _:x
+                      FILTER(isBlank(?o))
+                    }
+                    LATERAL {
+                      { SELECT DISTINCT ?p ?o { ?s ?p ?o } }
+                    }
+                }
+            """).table());
+        Table expectedTable = SSE.parseTable("(table (vars ?p) (row (?p <p1>)))");
+        assertEquals(expectedTable, actualTable);
+    }
+
+    /** Test that index access optimization does not break non-deterministic functions. */
+    @Test
+    public void sparql10() {
+        DatasetGraph dsg = TDB2Factory.createDataset().asDatasetGraph();
+        int n = 100;
+        Txn.executeWrite(dsg, () -> {
+            for (int i = 0; i < n; ++i) {
+                dsg.add(SSE.parseQuad("(<g> <s1> <p1> :o" + i + ")"));
+            }
+        });
+        dsg.getContext().setTrue(TDB2.symUnionDefaultGraph);
+
+        Table actualTable = Txn.calculateRead(dsg, () -> QueryExec.dataset(dsg)
+            .query("""
+                SELECT DISTINCT ?p ?x {
+                  ?s ?p ?o
+                  BIND(rand() AS ?x)
+                }
+            """).table());
+        // Extremely unlikely that rand() would return the same value n times!
+        assertNotEquals(actualTable.size(), 1);
     }
 
     private static void add(Dataset dataset, String graphName, Triple triple) {

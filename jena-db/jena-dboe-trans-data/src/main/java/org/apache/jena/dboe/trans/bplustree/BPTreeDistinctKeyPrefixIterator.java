@@ -57,10 +57,30 @@ class BPTreeDistinctKeyPrefixIterator implements Iterator<Record> {
         return new BPTreeDistinctKeyPrefixIterator(node, keyPrefixLength, minRecord, maxRecord);
     }
 
+    /** Create an iterator of distinct keys over a custom sub-range. Arguments must not be null. */
+    public static Iterator<Record> create(BPTreeNode node, int keyPrefixLength, Record minRecord, Record maxRecord) {
+        Objects.requireNonNull(minRecord);
+        Objects.requireNonNull(maxRecord);
+
+        Record nodeMinRecord = node.minRecord();
+        Record nodeMaxRecord = node.maxRecord();
+        // If there's no records just return a null iterator
+        if (nodeMinRecord == null) {
+            return Iter.nullIter();
+        }
+
+        // Pad records to make their lengths match those of the nodes.
+        Record paddedMinRecord = Record.padRight(minRecord, nodeMinRecord);
+        Record paddedMaxRecord = Record.padRight(maxRecord, nodeMaxRecord);
+
+        return new BPTreeDistinctKeyPrefixIterator(node, keyPrefixLength, paddedMinRecord, paddedMaxRecord);
+    }
+
     // Convert path to a stack of iterators
     private final Deque<Iterator<BPTreePage>> stack = new ArrayDeque<>();
     private Iterator<Record> current;
-    private Record slot = null, minRecord, maxRecord;
+    private Record slot = null;
+    private final Record minRecord, maxRecord, maxRecordPlusOne;
     private byte[] lastPrefix = null;
     private boolean finished = false;
 
@@ -70,6 +90,7 @@ class BPTreeDistinctKeyPrefixIterator implements Iterator<Record> {
         this.keyPrefixLength = keyPrefixLength;
         this.minRecord = minRecord;
         this.maxRecord = maxRecord;
+        this.maxRecordPlusOne = Record.incrementKey(maxRecord);
 
         BPTreeRecords r = loadStack(node);
         current = getRecordsIterator(r);
@@ -143,6 +164,12 @@ class BPTreeDistinctKeyPrefixIterator implements Iterator<Record> {
         return getRecordsIterator(r);
     }
 
+    protected final int comparePrefix(Record a, Record b) {
+        // Need to compare unsigned in general:
+        // E.g. [0, 5] is less than [0, -1] because the latter must be treated as [0, 255].
+        return Arrays.compareUnsigned(a.getKey(), 0, this.keyPrefixLength, b.getKey(), 0, this.keyPrefixLength);
+    }
+
     protected final boolean haveSamePrefix(Record a, Record b) {
         return Arrays.compare(a.getKey(), 0, this.keyPrefixLength, b.getKey(), 0, this.keyPrefixLength) == 0;
     }
@@ -157,12 +184,18 @@ class BPTreeDistinctKeyPrefixIterator implements Iterator<Record> {
         } else {
             // Check whether we need to scan the whole page or can process it by skipping or singleton yield
             Record lowRecord = records.getLowRecord();
-            if (haveSamePrefix(lowRecord, records.getHighRecord())) {
-                // If the low and high keys for this page have the same prefix then just return a singleton iterator
-                iter = Iter.singletonIterator(lowRecord);
+            Record highRecord= records.getHighRecord();
+            if (haveSamePrefix(lowRecord, highRecord)) {
+                // Check that the prefix is in range
+                if (comparePrefix(lowRecord, minRecord) >= 0 && comparePrefix(highRecord, maxRecord) <= 0) {
+                    // If the low and high keys for this page have the same prefix then just return a singleton iterator
+                    iter = Iter.singletonIterator(lowRecord);
+                } else {
+                    iter = Iter.nullIterator();
+                }
             } else {
                 // Otherwise need to scan the whole page
-                iter = records.getRecordBuffer().iterator();
+                iter = records.getRecordBuffer().iterator(minRecord, maxRecordPlusOne);
             }
         }
         records.bpTree.finishReadBlkMgr();
@@ -173,7 +206,7 @@ class BPTreeDistinctKeyPrefixIterator implements Iterator<Record> {
         AccessPath path = new AccessPath(null);
         node.bpTree.startReadBlkMgr();
 
-        node.internalMinRecord(path);
+        node.internalSearch(path, minRecord);
         List<AccessStep> steps = path.getPath();
         for (AccessStep step : steps) {
             BPTreeNode n = step.node;
