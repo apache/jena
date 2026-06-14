@@ -607,15 +607,7 @@ public class Iter<T> implements IteratorCloseable<T> {
      *  returned iterator.
      */
     public static <T> Iterator<T> dropWhile(Iterator<T> iter, Predicate<T> predicate) {
-        PeekIterator<T> iter2 = new PeekIterator<>(iter);
-        for(;;) {
-            T elt = iter2.peek();
-            if ( elt == null )
-                return Iter.nullIterator();
-            if ( ! predicate.test(elt) )
-                break;
-        }
-        return iter2;
+        return new IteratorDropWhile<T>(iter, predicate);
     }
 
     /** Create an iterator such that elements from the front until
