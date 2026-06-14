@@ -20,7 +20,6 @@
  */
 package org.apache.jena.sparql.engine.join;
 
-import java.lang.reflect.Array;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,17 +45,14 @@ public class ImmutableUniqueList<T> extends AbstractList<T> {
      * and it can be continued to be used.
      */
     public static final class Builder<T> {
-        private Class<T> itemClass;
-
         /**
          * The keys collection upgrades itself from ArrayList to
          * LinkedHashSet upon adding a sufficient number of items.
          */
         private Collection<T> items;
 
-        Builder(Class<T> itemClass) {
+        Builder() {
             super();
-            this.itemClass = itemClass;
         }
 
         private void alloc(int n) {
@@ -69,13 +65,13 @@ public class ImmutableUniqueList<T> extends AbstractList<T> {
         }
 
         public Builder<T> add(T item) {
-            if (!(items instanceof Set)) {
-                if ( items == null || ! items.contains(item) ) {
+            if (items instanceof Set) {
+                items.add(item);
+            } else {
+                if (items == null || !items.contains(item)) {
                     alloc(1);
                     items.add(item) ;
                 }
-            } else {
-                items.add(item);
             }
             return this ;
         }
@@ -120,39 +116,54 @@ public class ImmutableUniqueList<T> extends AbstractList<T> {
         public ImmutableUniqueList<T> build() {
             T[] finalItems;
             if (items == null) {
-                finalItems = (T[])Array.newInstance(itemClass, 0);
+                finalItems = (T[])new Object[0];
             } else {
-                finalItems = (T[])Array.newInstance(itemClass, items.size());
+                finalItems = (T[])new Object[items.size()];
                 items.toArray(finalItems);
             }
             return new ImmutableUniqueList<>(INDEX_THRESHOLD, finalItems);
         }
     }
 
-    public static <T> Builder<T> newUniqueListBuilder(Class<T> itemClass) {
-        return new Builder<>(itemClass);
+    public static <T> Builder<T> newUniqueListBuilder() {
+        return new Builder<>();
     }
 
+    @Deprecated(forRemoval = true)
+    public static <T> Builder<T> newUniqueListBuilder(Class<T> itemType) {
+        return newUniqueListBuilder();
+    }
+
+    public static <T> ImmutableUniqueList<T> createUniqueList(Collection<T> items) {
+        return ImmutableUniqueList.<T>newUniqueListBuilder().addAll(items).build();
+    }
+
+    public static <T> ImmutableUniqueList<T> createUniqueList(T[] items) {
+        return ImmutableUniqueList.<T>newUniqueListBuilder().addAll(items).build();
+    }
+
+    @Deprecated(forRemoval = true)
     public static <T> ImmutableUniqueList<T> createUniqueList(Class<T> itemClass, Collection<T> items) {
-        return ImmutableUniqueList.<T>newUniqueListBuilder(itemClass).addAll(items).build();
+        return createUniqueList(items);
     }
 
+    @Deprecated(forRemoval = true)
     public static <T> ImmutableUniqueList<T> createUniqueList(Class<T> itemClass, T[] items) {
-        return ImmutableUniqueList.<T>newUniqueListBuilder(itemClass).addAll(items).build();
+        return createUniqueList(items);
     }
 
     /** Subclasses may access the keys array but must never modify it! */
-    protected final T[] elementData;
+    protected final Object[] elementData;
     protected final int indexThreshold;
 
     /** keyToIdx mapping is initialized lazily in {@link #indexOf(Object)} */
-    private transient Map<T, Integer> elementToIndex;
+    private transient Map<Object, Integer> elementToIndex;
 
-    protected ImmutableUniqueList(T[] elementData) {
+    protected ImmutableUniqueList(Object[] elementData) {
         this(INDEX_THRESHOLD, elementData);
     }
 
-    protected ImmutableUniqueList(int indexThreshold, T[] elementData) {
+    protected ImmutableUniqueList(int indexThreshold, Object[] elementData) {
         super();
         this.indexThreshold = indexThreshold;
         this.elementData = elementData ;
@@ -163,8 +174,9 @@ public class ImmutableUniqueList<T> extends AbstractList<T> {
 
     public int length()               { return size(); }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public T get(int i)               { return elementData[i]; }
+    public T get(int i)               { return (T)elementData[i]; }
 
     @Override
     public boolean contains(Object o) { return indexOf(o) != -1; }
@@ -179,9 +191,9 @@ public class ImmutableUniqueList<T> extends AbstractList<T> {
                 result = elementToIndex.getOrDefault(o, -1);
             } else {
                 // Compute the map from element to its index
-                Map<T, Integer> map = new HashMap<>();
+                Map<Object, Integer> map = new HashMap<>();
                 for (int i = 0; i < elementData.length; ++i) {
-                    T key = elementData[i];
+                    Object key = elementData[i];
                     map.put(key, i);
                 }
                 result = map.getOrDefault(o, -1);

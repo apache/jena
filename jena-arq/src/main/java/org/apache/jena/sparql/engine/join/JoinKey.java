@@ -62,7 +62,7 @@ public final class JoinKey extends ImmutableUniqueList<Var>
         private ImmutableUniqueList.Builder<Var> delegate;
 
         Builder() {
-            this.delegate = newUniqueListBuilder(Var.class);
+            this.delegate = newUniqueListBuilder();
         }
 
         public Builder add(Var var) {
@@ -139,15 +139,15 @@ public final class JoinKey extends ImmutableUniqueList<Var>
         return keys.length == 0 ? empty() : new JoinKey(keys);
     }
 
-    private JoinKey(Var[] keys) {
+    private JoinKey(Object[] keys) {
         super(keys);
     }
 
     /** Get a single variable for this key.
      *  For any one key, it always returns the same var */
     public Var getVarKey() {
-        if ( elementData.length == 0 )
+        if ( length() == 0 )
             return null ;
-        return elementData[0] ;
+        return get(0);
     }
 }

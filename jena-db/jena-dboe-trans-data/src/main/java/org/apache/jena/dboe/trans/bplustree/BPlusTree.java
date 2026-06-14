@@ -329,6 +329,14 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         return BPTreeDistinctKeyPrefixIterator.create(root, keyPrefixLength);
     }
 
+    public Iterator<Record> distinctByKeyPrefix(int keyPrefixLength, Record fromRecInclusive, Record toRecInclusive) {
+        startReadBlkMgr();
+        BPTreeNode root = getRootRead();
+        releaseRootRead(root);
+        finishReadBlkMgr();
+        return BPTreeDistinctKeyPrefixIterator.create(root, keyPrefixLength, fromRecInclusive, toRecInclusive);
+    }
+
     /*
     @Override
     public <X> Iterator<X> iterator(Record minRec, Record maxRec, RecordMapper<X> mapper) {
