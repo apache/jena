@@ -23,6 +23,7 @@ package org.apache.jena.fuseki.main;
 
 import org.apache.jena.fuseki.main.sys.JettyLib;
 import org.eclipse.jetty.ee11.servlet.ServletContextHandler;
+//import org.eclipse.jetty.ee11.servlet.ServletContextHandler;
 import org.eclipse.jetty.http.HttpScheme;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.*;
@@ -50,21 +51,27 @@ public class JettyHttps {
     */
 
     /**
-     * Create a HTTPS Jetty server for the {@link ServletContextHandler}
+     * Create a HTTPS Jetty server for the {@link Handler}.
+     * <p>
+     * {@link Handler} is a Jetty feature,
+     * This can be a {@link ServletContextHandler} - the Jetty support for standard servlets.
      * <p>
      * If httpPort is -1, don't add http otherwise make http redirect to https.
      */
-    public static Server jettyServerHttps(ServletContextHandler handler, String keystore, String certPassword,
+    public static Server jettyServerHttps(Handler handler, String keystore, String certPassword,
                                           int httpPort, int httpsPort) {
         return jettyServerHttps(handler, keystore, certPassword, httpPort, httpsPort, -1,  -1);
     }
 
     /**
-     * Create a HTTPS Jetty server for the {@link ServletContextHandler}
+     * Create a HTTPS Jetty server for the {@link Handler}.
+     * <p>
+     * {@link Handler} is a Jetty feature,
+     * This can be a {@link ServletContextHandler} - the Jetty support for standard servlets.
      * <p>
      * If httpPort is -1, don't add http otherwise make http redirect to https.
      */
-    public static Server jettyServerHttps(ServletContextHandler handler, String keystore, String certPassword,
+    public static Server jettyServerHttps(Handler handler, String keystore, String certPassword,
                                           int httpPort, int httpsPort,
                                           int minThreads, int maxThreads) {
         // Server handling http and https.
