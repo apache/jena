@@ -25,7 +25,6 @@ import static java.util.Objects.requireNonNull;
 import static org.apache.jena.atlas.lib.PropertyUtils.loadFromFile;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
@@ -77,7 +76,6 @@ import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.security.UserStore;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.ErrorHandler;
-import org.eclipse.jetty.util.resource.Resource;
 import org.slf4j.Logger;
 
 /**
@@ -1841,24 +1839,28 @@ public class FusekiServer {
                 DefaultServlet staticServlet = new DefaultServlet();
                 ServletHolder staticContent = new ServletHolder(staticServlet);
                 //staticContent.setInitParameter("cacheControl", "false");
-                // << Jetty 12.1.9 issue
-                // When a fixed Jetty is available, replace block with   staticContent.setInitParameter("baseResource", staticContentDir);
-                if ( staticContentDir.startsWith("jar:") ) {
-                    staticContent.setInitParameter("baseResource", staticContentDir);
-                } else {
-                    try {
-                        // Use URLResourceFactory instead of ResourceFactory.of(context) (which yields PathResource)
-                        // to work around a Windows bug in Jetty 12.1.9 PathResource.resolve(URI) where
-                        // path.resolve(uri.getPath()) fails for absolute Windows paths.
-                        // See: https://github.com/jetty/jetty.project/pull/15020
-                        java.net.URL url = Path.of(staticContentDir).toUri().toURL();
-                        Resource base = new org.eclipse.jetty.util.resource.URLResourceFactory().newResource(url);
-                        context.setBaseResource(base);
-                    } catch (MalformedURLException e) {
-                        staticContent.setInitParameter("baseResource", staticContentDir);
-                    }
-                }
-                //  >> Jetty 12.1.9 issue
+                // Jetty other than 12.1.9
+                staticContent.setInitParameter("baseResource", staticContentDir);
+
+//                // == Jetty 12.1.9 (only) issue
+//                // When a fixed Jetty is available, replace block with
+//                  //   staticContent.setInitParameter("baseResource", staticContentDir);
+//                if ( staticContentDir.startsWith("jar:") ) {
+//                    staticContent.setInitParameter("baseResource", staticContentDir);
+//                } else {
+//                    try {
+//                        // Use URLResourceFactory instead of ResourceFactory.of(context) (which yields PathResource)
+//                        // to work around a Windows bug in Jetty 12.1.9 PathResource.resolve(URI) where
+//                        // path.resolve(uri.getPath()) fails for absolute Windows paths.
+//                        // See: https://github.com/jetty/jetty.project/pull/15020
+//                        java.net.URL url = Path.of(staticContentDir).toUri().toURL();
+//                        org.eclipse.jetty.util.resource.Resource base = new org.eclipse.jetty.util.resource.URLResourceFactory().newResource(url);
+//                        context.setBaseResource(base);
+//                    } catch (java.net.MalformedURLException e) {
+//                        staticContent.setInitParameter("baseResource", staticContentDir);
+//                    }
+//                }
+//                // == Jetty 12.1.9 issue
                 context.addServlet(staticContent, "/");
             } else {
                 // Backstop servlet
