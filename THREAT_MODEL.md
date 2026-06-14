@@ -19,11 +19,11 @@ limitations under the License.
 ## §1 Header
 
 - **Project:** Apache Jena (`apache/jena`), `main`, against which this draft was written. A monorepo: the RDF/SPARQL Java framework (`jena-core`, `jena-arq`, `jena-base`, RIOT parsers, `jena-tdb1`/`jena-tdb2` stores, SHACL/ShEx, GeoSPARQL, text index) **and** the Fuseki HTTP server (`jena-fuseki2`).
-- **Date:** 2026-06-02. **Status:** draft — for Apache Jena PMC review. **Author:** ASF Security team (drafted via the Scovetta threat-model rubric), for PMC ratification.
+- **Date:** 2026-06-02 (v0); 2026-06 (v1, PMC-reviewed). **Status:** v1 — reviewed by the Jena PMC (Rob Vesse + Andy Seaborne) on apache/jena#3966; their inline suggestions are folded in and their answers to the §14 questions promote the load-bearing claims to *(maintainer)* (see §14). **Author:** ASF Security team (drafted via the Scovetta rubric); now PMC-reviewed.
 - **Version binding:** versioned with the project; a report against version *N* is triaged against the model as it stood at *N*.
 - **Reporting cross-reference:** §8-property violations → report privately per ASF process (`security@apache.org` → `private@jena.apache.org`); §3/§9 findings are closed citing this document.
 - **Provenance legend:** *(documented)* = Jena's own docs/repo; *(maintainer)* = confirmed by a Jena PMC member through this process (andy@ has ratified destination + the help-with-model request); *(inferred)* = reasoned from architecture, not yet confirmed — each has a matching §14 open question.
-- **Draft confidence:** ~12 documented / ~2 maintainer / ~34 inferred.
+- **Confidence:** v1, PMC-reviewed — rvesse + afs answered every §14 question and folded their inline edits in; the high-value query-surface claims (SERVICE/SSRF, file/URI, JS functions, XXE, JSON-LD remote-context, the resource line) are now *(maintainer)*.
 - **What Jena is:** Apache Jena is a Java framework for building Semantic-Web / linked-data applications over RDF. It provides an in-process API to RDF data held in memory or in a native store (TDB), the ARQ SPARQL query/update engine, RIOT parsers/serialisers for RDF syntaxes (Turtle, RDF/XML, JSON-LD, N-Triples, …), and **Fuseki** — a standalone HTTP server exposing SPARQL query, SPARQL Update, and the Graph Store Protocol over the network. *(documented — README, jena.apache.org; maintainer — andy@ 2026-06-01: "an HTTP-based data server (Fuseki) and a Java API to RDF data stored in memory and in a custom database")*
 
 ## §2 Scope and intended use
@@ -44,7 +44,7 @@ limitations under the License.
 | Fuseki HTTP server | `jena-fuseki2` — SPARQL query / Update / Graph Store Protocol, admin `/$/*` | network (listens) | **In — primary boundary** *(documented)* |
 | SPARQL engine (ARQ) | `jena-arq` — query/update eval, `SERVICE` federation, custom functions | network out (SERVICE), file (file: URLs) | **In — high value** *(inferred)* |
 | RDF I/O (RIOT) | `jena-arq`/`jena-core` parsers (RDF/XML, Turtle, JSON-LD, …) | parses untrusted RDF | **In — XXE / parser-DoS surface** *(inferred)* |
-| Stores | `jena-tdb1`, `jena-tdb2`, `jena-text` | filesystem | **In (engine's use); on-disk store is operator-trusted** *(inferred)* |
+| Stores + text index | `jena-tdb1`, `jena-tdb2`; **`jena-text` (Lucene)** | filesystem | **In.** On-disk store is operator-trusted and private to the owning process *(maintainer)*; the Lucene text index is reachable from SPARQL via `text:query` — an in-model query surface *(maintainer — afs flagged jena-text)* |
 | IRI / langtag | `jena-iri3986`, `jena-langtag`, `jena-base` | none | **In (input parsing)** *(inferred)* |
 | Validation / extensions | `jena-shacl`, `jena-shex`, `jena-geosparql`, `jena-serviceenhancer` | SERVICE | **In (reachable from queries)** *(inferred)* |
 | Client/API helpers | `jena-rdfconnection`, `jena-querybuilder`, `jena-rdfpatch`, `jena-commonsrdf`, `jena-ontapi` | none | **In as libraries (memory/correctness)** *(inferred)* |
@@ -63,7 +63,7 @@ limitations under the License.
 
 - **Primary boundary: the Fuseki SPARQL endpoint.** Queries arrive over HTTP from (by default) **anonymous** clients. The boundary question is what an anonymous/low-privilege SPARQL query can reach: read data it shouldn't, **write** (SPARQL Update / GSP) without authorisation, make Fuseki issue outbound requests (`SERVICE` → SSRF), read local files (`file:` URLs / FROM), execute code (ARQ custom/JavaScript functions if enabled), or exhaust resources. *(inferred; public-query default documented)*
 - **Admin boundary:** the `/$/*` admin surface is localhost-only by default *(documented)*; exposing it to the network (without configuring authentication/authorisation) is an operator misconfiguration.
-- **RDF-parse boundary:** any endpoint that **parses** caller-supplied RDF (Update bodies, GSP PUT/POST, content negotiation) runs RIOT on untrusted bytes — the XXE (RDF/XML), JSON-LD Context, and parser-DoS surface. *(inferred)*
+- **RDF-parse boundary:** any endpoint that **parses** caller-supplied RDF (Update bodies, GSP PUT/POST, content negotiation) runs RIOT on untrusted bytes. RDF/XML external-entity (XXE) processing is **off by default** *(maintainer — afs)*. **JSON-LD `@context` resolution, however, fetches remote files by default** — a remote-read/SSRF surface inherited from the JSON-LD dependency (W3C JSON-LD WG mitigation in progress); safer than XXE but real *(maintainer — afs)*. Plus the general parser-DoS surface *(inferred)*.
 - **Reachability preconditions:**
   - A finding in ARQ/RIOT/stores is **in-model** iff reachable from a Fuseki request at the relevant role (default: anonymous query; authenticated for Update). *(inferred)*
   - A finding reachable only through the **in-process Java API** with caller-supplied trusted input is `OUT-OF-MODEL: trusted-input` (the embedding app owns it). *(inferred)*
@@ -100,9 +100,10 @@ Per-surface trust table *(Fuseki defaults documented; the rest inferred):*
 | --- | --- | --- | --- |
 | Fuseki SPARQL query endpoint | SPARQL query text | **yes (anonymous by default)** | Shiro ACLs if data is sensitive; SERVICE/file/JS-function restrictions; query timeout |
 | Fuseki SPARQL Update / GSP | update text / RDF body | **yes — must be authorised** | read-only-by-default or Shiro-gated write; RDF parse hardening |
-| RDF parse (RIOT) anywhere | RDF/XML, Turtle, JSON-LD, … | **yes** | external-entity (XXE) off; bounded nesting/size |
-| `SERVICE <url>` in a query | target URL | **yes** | Disable if not desired; SSRF egress controls / allow-list if enabled |
-| `FROM` / `FROM NAMED` / `file:` URI | dataset URI | **yes** | block `file:` and arbitrary fetch from untrusted queries |
+| RDF parse (RIOT) anywhere | RDF/XML, Turtle, JSON-LD, … | **yes** | RDF/XML XXE off by default *(maintainer)*; bounded nesting/size |
+| JSON-LD `@context` resolution (RIOT) | `@context` URL | **yes** | remote-context fetch is **on by default** (SSRF / remote-read) — restrict on untrusted-input endpoints *(maintainer — afs)* |
+| `SERVICE <url>` (federation) | target URL | **yes — enabled by default; SSRF is conceded `VALID`** *(maintainer)* | no allow-list yet — disable `SERVICE` or add egress controls on untrusted endpoints |
+| `FROM` / `FROM NAMED` URI | dataset URI | **dataset-impl-dependent** *(maintainer)* | with TDB2 these are in-dataset graph names, **not fetched**; only an arbitrary-URI-configured dataset reads `file:`/remote |
 | Fuseki admin `/$/*` | dataset mgmt, backups | **must not be on the public net** | localhost-only (default) / operator network |
 | Java API (`QueryExecution`, `Model.read`) | query / RDF from the app | no — the embedding app's trust | app validates its own untrusted inputs |
 
@@ -128,11 +129,11 @@ Per-surface trust table *(Fuseki defaults documented; the rest inferred):*
 ## §9 Security properties the project does *not* provide
 
 - **No protection if the operator exposes the admin surface, ships the example `admin`/`pw` setup, or runs without TLS** — deployment hardening (pending §5a rulings). *(documented that the example setup is not for production)*
-- **No defense when ARQ JavaScript/custom functions are enabled on an untrusted endpoint** — enabling code-executing functions and exposing them to anonymous queries is operator-chosen code execution (by-design, like a trusted extension), pending confirmation. *(inferred)* **False friend:** a SPARQL endpoint being "read-only" does not by itself prevent SSRF (`SERVICE`) or local-file read (`file:`) unless those are separately restricted.
+- **No defense when ARQ JavaScript/custom functions are enabled on an untrusted endpoint** — JS functions are opt-in with an explicit allow-list (`eval()` etc. blacklisted regardless); custom Java functions require the operator to add trusted code to the class path. Reachable code execution is **`by-design-operator-enabled`** *(maintainer — rvesse)*. **False friend:** a SPARQL endpoint being "read-only" does not by itself prevent SSRF (`SERVICE`) unless `SERVICE` is separately restricted.
 - **No SPARQL-injection defense for the embedding application** — an app that concatenates untrusted input into a query string owns that bug (use parameterised queries / `QueryBuilder`). *(inferred)*
 - **No transport security / authentication unless the operator configures Shiro + TLS.** *(documented/inferred)*
-- **No generic-DoS / query-complexity guarantee** beyond query time limits. *(inferred)*
-- **Well-known classes left to the caller/operator:** SSRF via `SERVICE`, local-file disclosure via `file:`/FROM, XXE in RDF/XML, SPARQL injection (embedding app), and algorithmic-complexity DoS via crafted queries. *(inferred — Jena's published CVE history clusters here; confirm in §14)*
+- **No generic-DoS / query-complexity guarantee** beyond operator-set query timeouts + reverse-proxy size limits; a trivial query can compute a huge cross-product, which is inherent to spec-compliant SPARQL, not a Jena bug *(maintainer — rvesse)*.
+- **Well-known classes — note the split:** **SSRF via `SERVICE`** from an anonymous query against the default config is a **conceded `VALID` attack vector** *(maintainer — rvesse)*, not merely operator-disclaimed (there is no allow-list yet; operators must disable `SERVICE` or add egress controls). Left to the caller/operator: SPARQL injection (embedding app), algorithmic-complexity DoS (operator timeouts), and — only for a dataset explicitly configured for arbitrary-URI access — `file:`/remote read. With a TDB2 store, `FROM`/`FROM NAMED` access only in-dataset graphs and do **not** fetch URIs *(maintainer — rvesse)*. JSON-LD `@context` remote fetch is a separate remote-read surface (§4/§6).
 
 ## §10 Downstream responsibilities (operator/deployer)
 
@@ -161,9 +162,11 @@ Per-surface trust table *(Fuseki defaults documented; the rest inferred):*
 
 - "Fuseki SPARQL endpoint is open without auth" — public **query** is the documented default; restricting it is the operator's Shiro config. A report is `VALID` only if a *configured* restriction is bypassed or an *update/admin* surface is anonymously reachable. *(documented default)*
 - "Default `admin`/`pw`, no TLS" — the example setup, documented as not-for-production → `OUT-OF-MODEL: non-default-build`. *(documented)*
-- "SPARQL query consumes lots of CPU/memory" — pending the §8 resource line; likely operator-tuned (query timeout). *(inferred)*
-- "ARQ can call JavaScript / custom functions" — only if the operator enabled them; on a trusted/admin endpoint that's by-design. `OUT-OF-MODEL: trusted-input` / `non-default-build` unless reachable anonymously. *(inferred — confirm the default)*
-- "Embedding app built an injectable SPARQL string" — the app's bug, not Jena's. `OUT-OF-MODEL: trusted-input`. *(inferred)*
+- "SPARQL query consumes lots of CPU/memory" — operator-tuned via query timeout + reverse-proxy size limits; a tiny query computing a huge cross-product is inherent to spec-compliant SPARQL (affects every engine), not a Jena bug *(maintainer — rvesse)*.
+- "ARQ can call JavaScript / custom functions" — only if the operator enabled them, with a JS allow-list / operator-supplied Java code; `by-design-operator-enabled`. `OUT-OF-MODEL: trusted-input` / `non-default-build` unless reachable anonymously *(maintainer — rvesse)*.
+- "Embedding app built an injectable SPARQL string" — the app's bug, not Jena's; parameterised queries are the recommended pattern. `OUT-OF-MODEL: trusted-input` *(maintainer — rvesse)*.
+- "Fuseki/TDB has a memory leak" — unbounded memory growth under continuous read/write load is a known issue; the WAL guarantees no data loss on crash/restart. A recurring mailing-list topic, not a vulnerability *(maintainer — rvesse; TDB FAQ)*.
+- "TDB database is far larger on disk than the input" — sparse files (metrics vary by tool/filesystem) plus TDB2's MVCC trees orphaning old blocks per write; expected. The `compaction` operation reclaims space (run periodically) *(maintainer — rvesse; TDB FAQ)*.
 
 ## §12 Conditions that would change this model
 
@@ -186,21 +189,23 @@ Per-surface trust table *(Fuseki defaults documented; the rest inferred):*
 | `KNOWN-NON-FINDING` | Matches a §11a entry. | §11a |
 | `MODEL-GAP` | Cannot be routed — triggers §12. | §12 |
 
-## §14 Open questions for the maintainers
+## §14 Open questions — RESOLVED by the Jena PMC (2026-06)
 
-**Wave 1 — scope & Fuseki defaults:**
-1. Confirm scope is the `apache/jena` monorepo with **Fuseki + ARQ + RIOT + TDB** as the in-model core, and `jena-examples`/tests/benchmarks out. → §2/§3.
-2. **SPARQL Update / Graph Store write default:** does a Fuseki dataset ship **read-only** by default, or can it be update-enabled-and-unauthenticated? (Decides whether anonymous write is in-model or a misconfig.) → §5a/§8.
-3. Confirm the documented default — public query, localhost-only admin, example `admin`/`pw` is not-for-production (`non-default-build`). → §5a/§11a.
+Reviewed on [apache/jena#3966](https://github.com/apache/jena/pull/3966) by **Rob Vesse (`@rvesse`)** and **Andy Seaborne (`@afs`)**, who folded their inline suggestions into the model and answered the open questions. Confirmed claims are promoted to *(maintainer)*; the answers below are the durable record.
 
-**Wave 2 — the high-value query surfaces (the Jena CVE classes):**
-4. **`SERVICE` federation (SSRF):** is it enabled by default, and can it be disabled / allow-listed? Is an SSRF via `SERVICE` from an anonymous query `VALID`? → §8/§9/§10.
-5. **`file:` / arbitrary-URI access** via FROM / FROM NAMED / SERVICE: is local-file read from an untrusted query prevented by default? → §8/§9.
-6. **ARQ JavaScript / custom functions:** opt-in? If enabled and reachable anonymously, is code execution `VALID` or by-design-operator-enabled? → §5a/§9/§11a.
-7. **RIOT / RDF-XML XXE:** are external entities (and `file:` fetches) disabled by default in the parsers? → §8.
+**Wave 1 — scope & Fuseki defaults**
+1. **Scope** *(maintainer)*: the `apache/jena` monorepo with Fuseki + ARQ + RIOT + TDB as the in-model core, `jena-examples`/tests/benchmarks out. afs added that the **Lucene-based text index (`jena-text`)**, reachable from SPARQL via `text:query`, is in scope (§2/§6).
+2. **Update default** *(maintainer — rvesse)*: deployment-dependent. Fuseki started **without a config file** is **read-only unless `--update`** is passed. With a config file, only the operations the config declares are available (Update must be explicitly configured) — though the documentation's example configs do include update services.
+3. **Defaults** *(maintainer)*: confirmed — public SPARQL query, localhost-only admin, example `admin`/`pw` + no-TLS explicitly not-for-production (`non-default-build`).
 
-**Wave 3 — resources, API, meta:**
-8. **Resource/DoS line** (your volume concern): is an expensive SPARQL query or huge RDF body a bug, or operator-tuned via query-timeout/result-limits? Where's the line? → §8/§11a.
-9. Confirm the **in-process Java API** is modeled as trusted-caller (embedding-app SPARQL injection is the app's bug), and that parameterised queries are the recommended pattern. → §3/§9.
-10. Any other recurring scanner/fuzzer false positives to seed §11a? → §11a.
-11. **Meta:** Jena has no in-repo `SECURITY.md`/`AGENTS.md`; this engagement adds them + `THREAT_MODEL.md`, wiring `AGENTS.md → SECURITY.md → THREAT_MODEL.md`. The Fuseki security docs live on the website. Confirm the in-repo model is canonical and references the website docs; confirm revision ownership. → §1.
+**Wave 2 — high-value query surfaces (the Jena CVE classes)**
+4. **`SERVICE` federation (SSRF)** *(maintainer — rvesse)*: **enabled by default**, **disableable** in config, **no allow-list capability currently** (a noted hardening gap; the Service Enhancer module may help). The PMC **concedes SSRF via `SERVICE` is a valid attack vector** and that the docs should call it out more explicitly → an SSRF from an anonymous query against a default config is **`VALID`**, not merely disclaimed.
+5. **`file:` / arbitrary-URI read** via `FROM`/`FROM NAMED`/`SERVICE` *(maintainer — rvesse)*: **depends on the dataset implementation.** With a persistent store like **TDB2, `FROM`/`FROM NAMED` only resolve graphs *within the dataset* — the URIs are treated as graph names and are *not* fetched.** Fuseki *can* be configured to allow arbitrary-URI access (a documentation/hardening point), but that is not the TDB-backed default.
+6. **ARQ JavaScript / custom functions** *(maintainer — rvesse)*: **opt-in**, with an **explicit allow-list of permitted JS functions** (`eval()` etc. blacklisted regardless of the allow-list). Custom **Java** functions require the operator to add code to the class path — operator responsibility to trust it. Reachable code execution is **`by-design-operator-enabled`**, not a Jena vulnerability.
+7. **RIOT / RDF-XML XXE** *(maintainer — afs's area; parsers rewritten recently)*: external-entity processing is **off by default** and afs (the authority here) believes the parsers are safe against untrusted RDF. **JSON-LD context resolution, however, fetches remote files by default** — a behavior of the JSON-LD dependency (the W3C JSON-LD WG is working on documenting/mitigating it); safer than XXE but a genuine remote-read/SSRF surface (§4/§6).
+
+**Wave 3 — resources, API, meta**
+8. **Resource/DoS** *(maintainer — rvesse)*: **operator-tuned** via query timeout (server or per-dataset) + reverse-proxy request-size limits. Super-linear cost is **not a bug** — a tiny query can compute a massive cross-product (`SELECT * WHERE { ?a ?b ?c . ?d ?e ?f . ?g ?h ?i }`), and as a spec-compliant SPARQL engine Jena is no different from any other here. (The earlier "super-linear" framing is dropped.)
+9. **In-process Java API** *(maintainer — rvesse)*: trusted-caller — an embedding app that concatenates untrusted input into SPARQL owns that injection; **parameterised queries are the recommended pattern**.
+10. **§11a recurring non-findings** *(maintainer — rvesse, from the TDB FAQ)*: (a) **"Fuseki/TDB has a memory leak"** — unbounded memory growth under continuous read/write load is a known issue; the WAL ensures no data is lost on crash/restart. (b) **"Database is much larger on disk than the input"** — sparse files (disk-usage metrics vary by tool/filesystem) plus TDB2's MVCC trees orphaning old blocks on each write; expected, and a **compaction** operation reclaims the space (recommended periodically).
+11. **Meta** *(maintainer)*: the in-repo `THREAT_MODEL.md` is canonical and references the website Fuseki security docs; the PMC owns revision.
