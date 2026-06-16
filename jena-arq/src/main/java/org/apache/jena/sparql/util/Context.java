@@ -89,6 +89,8 @@ public class Context {
     }
 
     protected void mapPutAll(Context other) {
+        if ( other == null )
+            return;
         if ( readonly )
             throw new ARQException("Context is readonly");
         other.mapForEach(context::put);

@@ -27,21 +27,62 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.jena.graph.Node ;
+import org.apache.jena.sparql.modify.request.UpdateWithUsing;
+import org.apache.jena.update.Update;
+import org.apache.jena.update.UpdateException;
+import org.apache.jena.update.UpdateRequest;
 
 public class UsingList
 {
     public UsingList() { }
-    
+
     private List<Node> using = new ArrayList<>() ;
     private List<Node> usingNamed = new ArrayList<>() ;
-    
+
     public void addUsing(Node node)                      { using.add(node) ; }
     public void addAllUsing(Collection<Node> nodes)      { using.addAll(nodes); }
     public void addUsingNamed(Node node)                 { usingNamed.add(node) ; }
     public void addAllUsingNamed(Collection<Node> nodes) { usingNamed.addAll(nodes); }
-    
+
     public List<Node> getUsing()                         { return Collections.unmodifiableList(using) ; }
     public List<Node> getUsingNamed()                    { return Collections.unmodifiableList(usingNamed) ; }
-    
+
     public boolean usingIsPresent()                      { return using.size() > 0 || usingNamed.size() > 0 ; }
+
+    /**
+     * This modifies the {@link Update Updates} of the {@link UpdateRequest}.
+     * The using list may come from the protocol so this
+     * operation converts a request+protocol into a
+     * self-contained UpdateRequest.
+     */
+    public static UpdateRequest modifyUpdateForUsingList(UpdateRequest updateRequest, UsingList usingList) {
+        if ( usingList == null || ! usingList.usingIsPresent() )
+            return updateRequest;
+        UpdateRequest request = new UpdateRequest();
+        updateRequest.forEach(update->{
+            Update update2 = modifyUpdateForUsingList(update, usingList);
+            request.add(update2);
+        });
+        return request;
+    }
+
+    /**
+     * This modifies the {@link Update}.
+     * The using list may come from the protocol so this
+     * operation converts a request+protocol into a
+     * self-contained UpdateRequest.
+     */
+    public static Update modifyUpdateForUsingList(Update update, UsingList usingList) {
+        if ( usingList == null || ! usingList.usingIsPresent() )
+            return update;
+        if ( ! ( update instanceof UpdateWithUsing upu ) )
+            return update;
+        if ( upu.getUsing().size() != 0 || upu.getUsingNamed().size() != 0 || upu.getWithIRI() != null )
+            throw new UpdateException("SPARQL Update: Protocol using-graph-uri or using-named-graph-uri present where update request has USING, USING NAMED or WITH");
+        for ( Node node : usingList.getUsing() )
+            upu.addUsing(node);
+        for ( Node node : usingList.getUsingNamed() )
+            upu.addUsingNamed(node);
+        return update;
+    }
 }

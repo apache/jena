@@ -91,6 +91,13 @@ public class StreamManager {
     }
 
     /**
+     * Set the {@code StreamManager} in the context.
+     */
+    public static void set(Context context, StreamManager streamManager) {
+        context.set(SysRIOT.sysStreamManager, streamManager);
+    }
+
+    /**
      * Set the global {@code StreamManager}.
      */
     public static void setGlobal(StreamManager streamManager) {

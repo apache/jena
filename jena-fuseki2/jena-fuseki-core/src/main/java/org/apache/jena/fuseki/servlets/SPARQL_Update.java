@@ -58,6 +58,8 @@ import org.apache.jena.query.Syntax;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.shared.OperationDeniedException;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.exec.UpdateExec;
 import org.apache.jena.sparql.modify.UsingList;
 import org.apache.jena.update.UpdateAction;
 import org.apache.jena.update.UpdateException;
@@ -213,18 +215,17 @@ public class SPARQL_Update extends ActionService
         // If the dsg is transactional, then we can parse and execute the update in a streaming fashion.
         // If it isn't, we need to read the entire update request before performing any updates, because
         // we have to attempt to make the request atomic in the face of malformed updates.
-        UpdateRequest req = null;
+        UpdateRequest updateRequest = null;
 
         // Using the request for the base URL exposes information about the host,
         // and the host may be behind a firewall, with the request going to a proxy/gateway.
         // The request URL is not the firewall public host name.
-
         String requestBase = UpdateParseBase;
-        // BAD: base = action.getRequest().getRequestURL().toString();
 
         if (!action.isTransactional()) {
+            // No abort. We need to know the request is valid - parse it now.
             try {
-                req = UpdateFactory.read(usingList, input, requestBase, Syntax.syntaxARQ);
+                updateRequest = UpdateFactory.read(usingList, input, requestBase, Syntax.syntaxARQ);
             }
             catch (UpdateException ex) { ServletOps.errorBadRequest(ex.getMessage()); return; }
             catch (QueryParseException ex) { ServletOps.errorBadRequest(messageForException(ex)); return; }
@@ -232,10 +233,15 @@ public class SPARQL_Update extends ActionService
 
         action.beginWrite();
         try {
-            if (req == null )
-                UpdateAction.parseExecute(usingList, action.getActiveDSG(), input, requestBase, Syntax.syntaxARQ);
-            else
-                UpdateAction.execute(req, action.getActiveDSG());
+            if (updateRequest == null ) {
+                // streaming path.
+                UpdateAction.parseExecute(usingList, action.getActiveDSG(), input, requestBase, Syntax.syntaxARQ, action.getContext());
+            }
+            else {
+                // Non-streaming path. The request has been parsed.
+                UpdateRequest updateRequest2 = UsingList.modifyUpdateForUsingList(updateRequest, usingList);
+                executeRequest(action, updateRequest2, usingList, action.getActiveDSG());
+            }
             action.commit();
         } catch (QueryParseException ex) {
             ActionLib.consumeBody(action);
@@ -262,6 +268,15 @@ public class SPARQL_Update extends ActionService
                 ServletOps.errorOccurred(ex.getMessage(), ex);
             }
         } finally { action.endWrite(); }
+    }
+
+    private static void executeRequest(HttpAction action, UpdateRequest request, UsingList usingList, DatasetGraph dsg) {
+        UpdateRequest request2 = UsingList.modifyUpdateForUsingList(request, usingList);
+        UpdateExec.newBuilder()
+                .context(action.getContext())
+                .dataset(action.getActiveDSG())
+                .update(request2)
+                .execute();
     }
 
     /**

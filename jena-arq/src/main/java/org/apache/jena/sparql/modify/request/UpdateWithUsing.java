@@ -30,6 +30,7 @@ import org.apache.jena.sparql.util.Iso ;
 import org.apache.jena.sparql.util.NodeIsomorphismMap ;
 import org.apache.jena.update.Update ;
 
+/** An update operation that can have USING/USING NAMED clauses */
 public abstract class UpdateWithUsing extends Update
 {
     private Node withIRI = null ;
@@ -38,15 +39,15 @@ public abstract class UpdateWithUsing extends Update
 
     private List<Node> usingView = Collections.unmodifiableList(using) ;
     private List<Node> usingNamedView = Collections.unmodifiableList(usingNamed) ;
-    
+
     public UpdateWithUsing() {}
 
     public void addUsing(Node node)         { using.add(node) ; }
     public void addUsingNamed(Node node)    { usingNamed.add(node) ; }
-    
+
     public List<Node> getUsing()            { return usingView ; }
     public List<Node> getUsingNamed()       { return usingNamedView ; }
-    
+
     public Node getWithIRI()                { return withIRI ; }
     public void setWithIRI(Node node)       { this.withIRI = node ; }
 
@@ -65,5 +66,5 @@ public abstract class UpdateWithUsing extends Update
         if ( ! Iso.isomorphicNodes(usingNamed, other.usingNamed, isoMap) )
             return false ;
         return true ;
-    } 
+    }
 }

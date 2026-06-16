@@ -33,25 +33,24 @@ import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.modify.UpdateSink;
 import org.apache.jena.util.FileUtils;
 
-/** 
+/**
  * This class provides the root of lower level access to all the update parsers.
  * Each subclass hides the details of the per-language exception handlers and other
- * javacc details.    
+ * javacc details.
  */
 
 public abstract class UpdateParser
 {
     protected UpdateParser() {}
-    
-    /** Parse a string */ 
+
+    /** Parse a string */
     public final void parse(UpdateSink sink, Prologue prologue, String updateString) throws QueryParseException {
         Reader r = new StringReader(updateString);
         executeParse(sink, prologue, r);
     }
 
-    /** Parse an input stream */ 
+    /** Parse an input stream */
     public final void parse(UpdateSink sink, Prologue prologue, InputStream input) throws QueryParseException {
-        // BOM processing moved to the grammar.
         Reader r = FileUtils.asBufferedUTF8(input);
         executeParse(sink, prologue, r);
     }
@@ -65,7 +64,7 @@ public abstract class UpdateParser
 
     // Subclass action.
     protected abstract void executeParse(UpdateSink sink, Prologue prologue, Reader r);
-    
+
     public static boolean canParse(Syntax syntaxURI) {
         return UpdateParserRegistry.get().containsFactory(syntaxURI);
     }

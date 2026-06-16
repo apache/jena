@@ -38,6 +38,7 @@ import org.apache.jena.sparql.modify.UpdateSink;
 import org.apache.jena.sparql.modify.UsingList;
 import org.apache.jena.sparql.modify.UsingUpdateSink;
 import org.apache.jena.sparql.modify.request.UpdateWithUsing;
+import org.apache.jena.sparql.util.Context;
 
 /**
  * A class of forms for executing SPARQL Update operations. parse means the update
@@ -83,7 +84,19 @@ public class UpdateAction {
      */
     public static void readExecute(String filename, DatasetGraph dataset) {
         UpdateRequest req = UpdateFactory.read(filename);
-        execute$(req, dataset);
+        execute$(req, dataset, null);
+    }
+
+    /**
+     * Read a file containing SPARQL Update operations, and execute the operations.
+     *
+     * @param filename
+     * @param dataset
+     * @param context
+     */
+    public static void readExecute(String filename, DatasetGraph dataset, Context context) {
+        UpdateRequest req = UpdateFactory.read(filename);
+        execute$(req, dataset, context);
     }
 
     /**
@@ -168,7 +181,7 @@ public class UpdateAction {
      * @param dataset
      */
     public static void execute(UpdateRequest request, DatasetGraph dataset) {
-        execute$(request, dataset);
+        execute$(request, dataset, null);
     }
 
     /**
@@ -177,9 +190,22 @@ public class UpdateAction {
      * @param request
      * @param dataset
      * @param inputBinding
+     * @deprecated To be removed
      */
+    @Deprecated(forRemoval = true)
     public static void execute(UpdateRequest request, Dataset dataset, QuerySolution inputBinding) {
-        execute$(request, dataset.asDatasetGraph());
+        execute$(request, dataset.asDatasetGraph(), null);
+    }
+
+    /**
+     * Execute SPARQL Update operations.
+     *
+     * @param request
+     * @param dataset
+     * @param context
+     */
+    public static void execute(UpdateRequest request, Dataset dataset, Context context) {
+        execute$(request, dataset.asDatasetGraph(), context);
     }
 
     private static DatasetGraph toDatasetGraph(Graph graph) {
@@ -188,8 +214,8 @@ public class UpdateAction {
 
     // All non-streaming updates come through here.
 
-    private static void execute$(UpdateRequest request, DatasetGraph datasetGraph) {
-        UpdateExec uProc = UpdateExec.newBuilder().update(request).dataset(datasetGraph).build();
+    private static void execute$(UpdateRequest request, DatasetGraph datasetGraph, Context context) {
+        UpdateExec uProc = UpdateExec.newBuilder().update(request).dataset(datasetGraph).context(context).build();
         if ( uProc == null )
             throw new ARQException("No suitable update procesors are registered/able to execute your updates");
         uProc.execute();
@@ -232,13 +258,24 @@ public class UpdateAction {
      * @param dataset
      */
     public static void execute(Update update, DatasetGraph dataset) {
-        execute$(update, dataset);
+        execute$(update, dataset, null);
     }
 
-    private static void execute$(Update update, DatasetGraph datasetGraph) {
+    /**
+     * Execute a single SPARQL Update operation.
+     *
+     * @param update
+     * @param dataset
+     * @param context
+     */
+    public static void execute(Update update, DatasetGraph dataset, Context context) {
+        execute$(update, dataset, context);
+    }
+
+    private static void execute$(Update update, DatasetGraph datasetGraph, Context context) {
         UpdateRequest request = new UpdateRequest();
         request.add(update);
-        execute$(request, datasetGraph);
+        execute$(request, datasetGraph, context);
     }
 
     // Streaming Updates:
@@ -306,16 +343,35 @@ public class UpdateAction {
     /**
      * Parse update operations into a DatasetGraph by parsing from an InputStream.
      *
-     * @param usingList A list of USING or USING NAMED statements that be added to
-     *     all {@link UpdateWithUsing} queries
+     * @param usingList A list of USING or USING NAMED statements that are added to all {@link UpdateWithUsing} queries
      * @param dataset The dataset to apply the changes to
      * @param input The source of the update request (must be UTF-8).
      * @param baseURI The base URI for resolving relative URIs (may be
      *     <code>null</code>)
      * @param syntax The update language syntax
      */
+
     public static void parseExecute(UsingList usingList, DatasetGraph dataset, InputStream input, String baseURI, Syntax syntax) {
-        UpdateProcessorStreaming uProc = UpdateStreaming.createStreaming(dataset);
+        parseExecute$(usingList, dataset, input, baseURI, syntax, null);
+    }
+
+    /**
+     * Parse update operations into a DatasetGraph by parsing from an InputStream.
+     *
+     * @param usingList A list of USING or USING NAMED statements that are added to all {@link UpdateWithUsing} queries
+     * @param dataset The dataset to apply the changes to
+     * @param input The source of the update request (must be UTF-8).
+     * @param baseURI The base URI for resolving relative URIs (may be
+     *     <code>null</code>)
+     * @param syntax The update language syntax
+     * @param context
+     */
+    public static void parseExecute(UsingList usingList, DatasetGraph dataset, InputStream input, String baseURI, Syntax syntax, Context context) {
+        parseExecute$(usingList, dataset, input, baseURI, syntax, context);
+    }
+
+    private static void parseExecute$(UsingList usingList, DatasetGraph dataset, InputStream input, String baseURI, Syntax syntax, Context context) {
+        UpdateProcessorStreaming uProc = UpdateStreaming.createStreaming(dataset, context);
         if ( uProc == null )
             throw new ARQException("No suitable update procesors are registered/able to execute your updates");
 

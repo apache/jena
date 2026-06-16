@@ -231,7 +231,8 @@ public class Responses
             if ( ! ResultSetWriterRegistry.isRegistered(lang) )
                 ServletOps.errorBadRequest("No results writer for "+serializationType);
 
-            Context cxt = action.getContext().copy();
+            // No need to copy because each Action has it's own context which is not shared.
+            Context cxt = action.getContext();
             String charset = charsetUTF8;
             String jsonCallback = null;
 
