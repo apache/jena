@@ -53,7 +53,12 @@ public interface BasicTask extends Abortable {
     // XXX this might be different from whether the task actually transitioned into aborting state.
     boolean isAborting();
 
-    default boolean isTerminated() {
+    /**
+     * Whether the task has terminated.
+     *
+     * @implNote The original name {@code isTerminated} collided with the package−private method in {@link Thread}.
+     */
+    default boolean hasTerminated() {
         TaskState state = getTaskState();
         return TaskState.TERMINATED.equals(state);
     }
