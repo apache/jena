@@ -24,6 +24,7 @@ package org.apache.jena.sparql.modify;
 import static org.apache.jena.sparql.modify.TemplateLib.remapDefaultGraph;
 import static org.apache.jena.sparql.modify.TemplateLib.template;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -44,6 +45,8 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.core.*;
 import org.apache.jena.sparql.engine.Timeouts;
@@ -142,7 +145,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         boolean auto = autoSilent && !isClear;
         executeOperation( auto || update.isSilent(), () -> {
             if ( g != null && !datasetGraph.containsGraph(g) )
-                    throw errorEx("No such graph: " + g);
+                throw errorEx("No such graph: " + g);
             if ( isClear ) {
                 if ( g == null || datasetGraph.containsGraph(g) )
                     graphOrThrow(datasetGraph, g).clear();
@@ -190,6 +193,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         // LOAD SILENT? iri ( INTO GraphRef )?
         String source = update.getSource();
         Node dest = update.getDest();
+
         executeOperation(update.isSilent(), ()->{
             Graph graph = graphOrThrow(datasetGraph, dest);
             // We must load buffered if silent so that the dataset graph sees
@@ -198,39 +202,30 @@ public class UpdateEngineWorker implements UpdateVisitor
             try {
                 boolean loadBuffered = update.isSilent() || ! datasetGraph.supportsTransactionAbort();
                 if ( dest == null ) {
-                    // LOAD SILENT? iri
+                    // LOAD SILENT? iri -- no INTO
                     // Quads accepted (extension).
                     if ( loadBuffered ) {
                         DatasetGraph dsg2 = DatasetGraphFactory.create();
-                        RDFDataMgr.read(dsg2, source);
+                        loadReadQuads(source, dsg2, context);
+                        // Parsing seceded.
                         dsg2.find().forEachRemaining(datasetGraph::add);
                     } else {
-                        RDFDataMgr.read(datasetGraph, source);
+                        // Transactional and not SILENT.
+                        loadReadQuads(source, datasetGraph, context);
                     }
                     return;
                 }
                 // LOAD SILENT? iri INTO GraphRef
-                // Load triples. To give a decent error message and also not have the usual
-                // parser behaviour of just selecting default graph triples when the
-                // destination is a graph, we need to do the same steps as RDFParser.parseURI,
-                // with different checking.
+                // Load triples.
                 TypedInputStream input = RDFDataMgr.open(source);
-                String contentType = input.getContentType();
-                Lang lang = RDFDataMgr.determineLang(source, contentType, Lang.TTL);
-                if ( lang == null )
-                    throw new UpdateException("Failed to determine the syntax for '"+source+"'");
-                if ( ! RDFLanguages.isTriples(lang) )
-                    throw new UpdateException("Attempt to load quads into a graph");
-                RDFParser parser = RDFParser
-                        .source(input.getInputStream())
-                        .forceLang(lang)
-                        .build();
+                Lang lang = determineLang(source, input);
+
                 if ( loadBuffered ) {
                     Graph g = GraphFactory.createGraphMem();
-                    parser.parse(g);
+                    loadReadTriples(input, lang, g, context);
                     GraphUtil.addInto(graph, g);
                 } else {
-                    parser.parse(graph);
+                    loadReadTriples(input, lang, graph, context);
                 }
             } catch (RiotException ex) {
                 if ( !update.isSilent() ) {
@@ -238,6 +233,43 @@ public class UpdateEngineWorker implements UpdateVisitor
                 }
             }
         });
+    }
+
+    // To give a decent error message, and also not have the usual
+    // parser behaviour of just selecting default graph triples when
+    // the destination is a graph, we need to do the same steps as
+    // RDFParser.parseURI with different checking.
+    private static Lang determineLang(String source, TypedInputStream input) {
+        String contentType = input.getContentType();
+        Lang lang = RDFDataMgr.determineLang(source, contentType, Lang.TTL);
+        if ( lang == null )
+            throw new UpdateException("Failed to determine the syntax for '"+source+"'");
+        if ( ! RDFLanguages.isTriples(lang) )
+            throw new UpdateException("Attempt to load quads into a graph");
+        return lang;
+    }
+
+    /** Load data into a dataset graph. The context has the stream manager. */
+    private static void loadReadQuads(String source, DatasetGraph destination, Context context) {
+        StreamRDF parserDest = StreamRDFLib.dataset(destination);
+        // RDFParser picks up the stream manager from the context if not set.
+        //StreamManager streamMgr = StreamManager.get(context);
+        RDFParser.source(source)
+                //.streamManager(streamMgr)
+                .context(context)
+                .parse(parserDest);
+    }
+
+    /** Load data into a graph. The context has the stream manager. */
+    private static void loadReadTriples(InputStream input,  Lang lang, Graph destination, Context context) {
+        StreamRDF parserDest = StreamRDFLib.graph(destination);
+        // RDFParser picks up the stream manager from the context if not set.
+        //StreamManager streamMgr = StreamManager.get(context);
+        RDFParser.source(input)
+                .forceLang(lang)
+                //.streamManager(streamMgr)
+                .context(context)
+                .parse(parserDest);
     }
 
     @Override

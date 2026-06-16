@@ -35,7 +35,6 @@ public class UpdateLoad extends Update
     private final Node dest;
     private boolean silent;
 
-
     public UpdateLoad(String source, String dest) {
         this(source, NodeFactory.createURI(dest), false);
     }

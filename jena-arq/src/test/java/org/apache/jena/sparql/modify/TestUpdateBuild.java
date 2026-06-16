@@ -23,16 +23,21 @@ package org.apache.jena.sparql.modify;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.query.ARQ;
+import org.apache.jena.riot.system.streammgr.StreamManager;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.UpdateExec;
 import org.apache.jena.sparql.sse.SSE;
+import org.apache.jena.sparql.util.Context;
+import org.apache.jena.update.UpdateException;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
 
@@ -104,5 +109,19 @@ public class TestUpdateBuild {
                 .execute();
         });
         assertEquals(2, Iter.count(dsg.find()));
+    }
+
+    @Test public void update_build_context_1() {
+        DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
+        assertTrue(dsg.isEmpty());
+        Context context = ARQ.getContext().copy();
+        StreamManager streamManager = new StreamManager();
+        StreamManager.set(context, streamManager);
+        UpdateExec upExec = UpdateExec.newBuilder()
+            .context(context)
+            .dataset(dsg)
+            .update("LOAD <file:testing/Update/empty.nt>")
+            .build();
+        assertThrows(UpdateException.class, () -> dsg.execute( ()->upExec.execute() ));
     }
 }

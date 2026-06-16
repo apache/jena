@@ -28,15 +28,15 @@ import org.apache.jena.sparql.modify.request.UpdateVisitor ;
 import org.apache.jena.update.Update ;
 
 /**
- * UpdateSink that sends every Update to a worker except for the quads 
- * of INSERT DATA, DELETE DATA which do to special sinks.
+ * UpdateSink that sends every Update to a worker except for the quads
+ * of INSERT DATA, DELETE DATA which go to special sinks.
  */
 public class UpdateVisitorSink implements UpdateSink
 {
     private final UpdateVisitor worker;
     private final Sink<Quad> addSink;
     private final Sink<Quad> delSink;
-    
+
     public UpdateVisitorSink(UpdateVisitor worker, Sink<Quad> addSink, Sink<Quad> delSink) {
         this.worker = worker;
         this.addSink = addSink;
@@ -47,7 +47,7 @@ public class UpdateVisitorSink implements UpdateSink
     public void send(Update update) {
         update.visit(worker);
     }
-    
+
     // The sink for INSERT DATA, DELETE DATA to go straight to sink handlers.
     @Override
     public QuadDataAccSink createInsertDataSink() {

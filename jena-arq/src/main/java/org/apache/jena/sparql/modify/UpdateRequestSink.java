@@ -28,10 +28,14 @@ import org.apache.jena.sparql.modify.request.UpdateDataInsert ;
 import org.apache.jena.update.Update ;
 import org.apache.jena.update.UpdateRequest ;
 
+/**
+ * Accumulate {@link Update Updates} (the individual update operations) in an
+ * {@link UpdateRequest}.
+ */
 public class UpdateRequestSink implements UpdateSink
 {
     private final UpdateRequest updateRequest;
-    
+
     public UpdateRequestSink(UpdateRequest updateRequest) {
         this.updateRequest = updateRequest;
     }
@@ -44,7 +48,7 @@ public class UpdateRequestSink implements UpdateSink
     @Override
     public void flush()
     { }
-    
+
     @Override
     public void close()
     { }
@@ -53,7 +57,6 @@ public class UpdateRequestSink implements UpdateSink
     public QuadDataAccSink createInsertDataSink() {
         QuadDataAcc quads = new QuadDataAcc();
         send(new UpdateDataInsert(quads));
-
         return quads;
     }
 
@@ -61,7 +64,6 @@ public class UpdateRequestSink implements UpdateSink
     public QuadDataAccSink createDeleteDataSink() {
         QuadDataAcc quads = new QuadDataAcc();
         send(new UpdateDataDelete(quads));
-
         return quads;
     }
 }

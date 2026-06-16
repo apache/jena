@@ -35,7 +35,6 @@ import java.util.function.BiConsumer;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.web.AcceptList;
@@ -50,7 +49,10 @@ import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.http.HttpMethod;
 import org.apache.jena.riot.*;
-import org.apache.jena.riot.system.*;
+import org.apache.jena.riot.system.ErrorHandler;
+import org.apache.jena.riot.system.ErrorHandlerFactory;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -237,6 +239,7 @@ public class ActionLib {
             RDFParser.create()
                 .errorHandler(errorHandler)
                 .source(input)
+                .context(action.getContext())
                 .lang(lang)
                 .base(base)
                 .parse(dest);

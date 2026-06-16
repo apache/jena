@@ -145,7 +145,7 @@ public abstract class SPARQLQueryProcessor extends ActionService
         } catch (ActionErrorException ex) {
             throw ex;
         }
-        // Query not yet parsed.
+        // Query has not yet been parsed.
     }
 
     /**

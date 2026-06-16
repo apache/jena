@@ -56,7 +56,7 @@ import org.apache.jena.fuseki.main.sys.TestFusekiModules;
   , TestHttpOptions.class
   , TestQuery.class
   , TestSPARQLProtocol.class
-  , TestUpdate.class
+  , TestSPARQLUpdate.class
 
   , TestPatchFuseki.class
   , TestFusekiCustomScriptFunc.class

@@ -610,12 +610,12 @@ public class RDFParserBuilder {
         else
             parserBaseURI = null;
 
-        StreamManager sMgr = streamManager;
-        if ( sMgr == null )
-            sMgr = StreamManager.get(context);
+        StreamManager streamMgr = streamManager;
+        if ( streamMgr == null )
+            streamMgr = StreamManager.get(context);
 
         // Can't build the profile here as it is Lang/conneg dependent.
-        return new RDFParser(uri, path, stringToParse, inputStream, javaReader, sMgr,
+        return new RDFParser(uri, path, stringToParse, inputStream, javaReader, streamMgr,
                              appAcceptHeader, httpHeaders,
                              httpClient,
                              hintLang, forceLang,

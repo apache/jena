@@ -51,6 +51,7 @@ import org.apache.jena.fuseki.system.ActionCategory;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.riot.WebContent;
+import org.apache.jena.riot.system.streammgr.StreamManager;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -128,11 +129,18 @@ public class HttpAction
         this.log = log;
         this.category = category;
         this.request = request;
+
         this.response = new HttpServletResponseTracker(this, response);
         this.contextPath = request.getServletContext().getContextPath();
         this.actionURI = ActionLib.actionURI(request);
         this.serviceDispatchRegistry = OperationRegistry.get(request.getServletContext());
         this.dataAccessPointRegistry = DataAccessPointRegistry.get(request.getServletContext());
+
+        // Per HttpAction isolated Context with StreamManager set to resolve only URLs (http:, ftp:)
+        // This is the only copy needed. Manipulation of the context
+        // during the action execution can modify this copy.
+        this.context = Fuseki.getContext().copy();
+        StreamManager.set(context, Fuseki.webStreamManager);
     }
 
     /**
@@ -177,9 +185,9 @@ public class HttpAction
      */
     private void setDataset(DatasetGraph dsg) {
         this.dsg = dsg;
-        this.context = Context.mergeCopy(Fuseki.getContext(), dsg.getContext());
         if ( dsg == null )
             return;
+        context.putAll(dsg.getContext());
         setTransactionalPolicy(dsg);
     }
 
@@ -278,8 +286,8 @@ public class HttpAction
      * @param endpoint {@link Endpoint}
      */
     public void setEndpoint(Endpoint endpoint) {
-        if ( endpoint != null )
-            this.context = Context.mergeCopy(getContext(), endpoint.getContext());
+        if ( endpoint != null && endpoint.getContext() != null )
+            context.putAll(endpoint.getContext());
         this.endpoint = endpoint;
     }
 

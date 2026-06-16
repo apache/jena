@@ -77,6 +77,11 @@ public abstract class QueryEngineBase implements OpEval, Closeable
         if ( ! query.hasDatasetDescription() )
             throw new QueryExecException("No dataset and no dataset description for query");
 
+        // dsg == null.
+        // This is the only case where the code will process FROM/FROM NAMED by
+        // reading resources. When dgs != null, FROM/FROM NAMED pick graphs from
+        // the dataset and form a dynamic dataset.
+
         // DatasetDescription : Build it.
         String baseURI = query.getBaseURI();
         if ( baseURI == null )

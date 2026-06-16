@@ -232,7 +232,7 @@ public class Fuseki {
     public static final StreamManager webStreamManager;
     static {
         webStreamManager = new StreamManager();
-        // Only know how to handle http URLs
+        // Only know how to handle http and ftp URLs
         webStreamManager.addLocator(new LocatorHTTP());
         webStreamManager.addLocator(new LocatorFTP());
     }
