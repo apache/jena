@@ -433,8 +433,8 @@ public class SpatialIndexerService extends BaseActionREST {
             status.addProperty("isIndexing", false);
             time = 0;
         } else {
-            status.addProperty("isIndexing", !task.isTerminated());
-            if (!task.isTerminated()) {
+            status.addProperty("isIndexing", !task.hasTerminated());
+            if (!task.hasTerminated()) {
                 status.addProperty("isAborting", task.isAborting());
                 time = !task.isAborting() ? task.getStartTime() : task.getAbortTime();
             } else {

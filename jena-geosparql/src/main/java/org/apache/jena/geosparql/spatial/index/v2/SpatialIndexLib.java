@@ -226,7 +226,7 @@ public class SpatialIndexLib {
 
         BasicTask task = cxt.compute(SpatialIndexConstants.symSpatialIndexTask, (key, priorTaskObj) -> {
             BasicTask priorTask = (BasicTask)priorTaskObj;
-            if (priorTask != null && !priorTask.isTerminated()) {
+            if (priorTask != null && !priorTask.hasTerminated()) {
                 throw new RuntimeException("A spatial indexing task is already active for this dataset. Wait for completion or abort it.");
             }
 
@@ -331,8 +331,8 @@ public class SpatialIndexLib {
     public static BasicTask scheduleOnceCleanTask(DatasetGraph dsg, TaskListener<BasicTask> taskListener) {
         Context cxt = dsg.getContext();
         BasicTask task = cxt.compute(SpatialIndexConstants.symSpatialIndexTask, (key, priorTaskObj) -> {
-            BasicTask priorTask = (BasicTask) priorTaskObj;
-            if (priorTask != null && !priorTask.isTerminated()) {
+            BasicTask priorTask = (BasicTask)priorTaskObj;
+            if (priorTask != null && !priorTask.hasTerminated()) {
                 throw new RuntimeException("A spatial indexing task is already active for this dataset. Wait for completion or abort it.");
             }
 
