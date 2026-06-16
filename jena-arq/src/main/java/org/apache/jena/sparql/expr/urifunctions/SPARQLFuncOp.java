@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.jena.atlas.lib.*;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.expr.*;
@@ -229,7 +230,7 @@ public class SPARQLFuncOp {
     public static NodeValue sparql_isNumeric(NodeValue nv)  { return NodeFunctions.isNumeric(nv); }
     public static NodeValue sparql_str(NodeValue nv)        { return NodeFunctions.str(nv); }
 
-    public static NodeValue sparql_lang(NodeValue nv)       { return NodeFunctions.str(nv); }
+    public static NodeValue sparql_lang(NodeValue nv)       { return NodeFunctions.lang(nv); }
     public static NodeValue sparql_langdir(NodeValue nv)    { return NodeFunctions.langdir(nv); }
     public static NodeValue sparql_haslang(NodeValue nv)    { return NodeFunctions.hasLang(nv); }
     public static NodeValue sparql_haslangdir(NodeValue nv) { return NodeFunctions.hasLangDir(nv); }
@@ -245,7 +246,7 @@ public class SPARQLFuncOp {
     public static NodeValue arq_uri(NodeValue nv, NodeValue nvBase) { return NodeFunctions.iri(nv, nvBase.getString()); }
 
     // Only BNODE(), not BNODE(str)
-    public static NodeValue sparql_bnode() { return null; }
+    public static NodeValue sparql_bnode() { return NodeValue.makeNode(NodeFactory.createBlankNode()); }
 
     // Not a function - depends on "current row".
     //public static NodeValue sparql_bnode(NodeValue nv) { return null; }
@@ -328,7 +329,7 @@ public class SPARQLFuncOp {
     public static NodeValue sparql_object(NodeValue tripleTerm)                     { return TripleTermOps.tripleObject(tripleTerm); }
     public static NodeValue sparql_isTriple(NodeValue nv)                           { return TripleTermOps.isTriple(nv); }
 
-    public static NodeValue sparql_md5(NodeValue nv)    { return NodeValueDigest.calculateDigest(nv, "MD-5"); }
+    public static NodeValue sparql_md5(NodeValue nv)    { return NodeValueDigest.calculateDigest(nv, "MD5"); }
     public static NodeValue sparql_sha1(NodeValue nv)   { return NodeValueDigest.calculateDigest(nv, "SHA-1"); }
     public static NodeValue sparql_sha224(NodeValue nv) { return NodeValueDigest.calculateDigest(nv, "SHA-224"); }
     public static NodeValue sparql_sha256(NodeValue nv) { return NodeValueDigest.calculateDigest(nv, "SHA-256"); }
