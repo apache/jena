@@ -14,17 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-# Apache Jena — Threat Model (v0 draft)
+# Apache Jena — Threat Model (v1)
 
 ## §1 Header
 
-- **Project:** Apache Jena (`apache/jena`), `main`, against which this draft was written. A monorepo: the RDF/SPARQL Java framework (`jena-core`, `jena-arq`, `jena-base`, RIOT parsers, `jena-tdb1`/`jena-tdb2` stores, SHACL/ShEx, GeoSPARQL, text index) **and** the Fuseki HTTP server (`jena-fuseki2`).
+- **Project:** Apache Jena (`apache/jena`), `main`, against which this draft was written. A monorepo: the RDF/SPARQL Java framework (`jena-core`, `jena-arq`, `jena-base`, RIOT parsers, `jena-tdb1`/`jena-tdb2` stores, SHACL (`jena-shacl`), ShEx (`jena-shex`), GeoSPARQL `jena-geosparql`, text index `jena-text` **and** the Fuseki HTTP server (`jena-fuseki2`).
 - **Date:** 2026-06-02 (v0); 2026-06 (v1, PMC-reviewed). **Status:** v1 — reviewed by the Jena PMC (Rob Vesse + Andy Seaborne) on apache/jena#3966; their inline suggestions are folded in and their answers to the §14 questions promote the load-bearing claims to *(maintainer)* (see §14). **Author:** ASF Security team (drafted via the Scovetta rubric); now PMC-reviewed.
 - **Version binding:** versioned with the project; a report against version *N* is triaged against the model as it stood at *N*.
 - **Reporting cross-reference:** §8-property violations → report privately per ASF process (`security@apache.org` → `private@jena.apache.org`); §3/§9 findings are closed citing this document.
 - **Provenance legend:** *(documented)* = Jena's own docs/repo; *(maintainer)* = confirmed by a Jena PMC member through this process (andy@ has ratified destination + the help-with-model request); *(inferred)* = reasoned from architecture, not yet confirmed — each has a matching §14 open question.
 - **Confidence:** v1, PMC-reviewed — rvesse + afs answered every §14 question and folded their inline edits in; the high-value query-surface claims (SERVICE/SSRF, file/URI, JS functions, XXE, JSON-LD remote-context, the resource line) are now *(maintainer)*.
-- **What Jena is:** Apache Jena is a Java framework for building Semantic-Web / linked-data applications over RDF. It provides an in-process API to RDF data held in memory or in a native store (TDB), the ARQ SPARQL query/update engine, RIOT parsers/serialisers for RDF syntaxes (Turtle, RDF/XML, JSON-LD, N-Triples, …), and **Fuseki** — a standalone HTTP server exposing SPARQL query, SPARQL Update, and the Graph Store Protocol over the network. *(documented — README, jena.apache.org; maintainer — andy@ 2026-06-01: "an HTTP-based data server (Fuseki) and a Java API to RDF data stored in memory and in a custom database")*
+- **What Jena is:** Apache Jena is a Java framework for building Semantic-Web / linked-data applications using RDF and SPARQL. It provides an in-process API to RDF data held in memory or in a native store (TDB), the ARQ SPARQL query/update engine, RIOT parsers/serialisers for RDF syntaxes (Turtle, RDF/XML, JSON-LD, N-Triples, …), and **Fuseki** — a standalone HTTP server exposing SPARQL query, SPARQL Update, and the Graph Store Protocol over the network. *(documented — README, jena.apache.org; maintainer — andy@ 2026-06-01: "an HTTP-based data server (Fuseki) and a Java API to RDF data stored in memory and in a custom database")*
 
 ## §2 Scope and intended use
 
@@ -46,7 +46,8 @@ limitations under the License.
 | RDF I/O (RIOT) | `jena-arq`/`jena-core` parsers (RDF/XML, Turtle, JSON-LD, …) | parses untrusted RDF | **In — XXE / parser-DoS surface** *(inferred)* |
 | Stores + text index | `jena-tdb1`, `jena-tdb2`; **`jena-text` (Lucene)** | filesystem | **In.** On-disk store is operator-trusted and private to the owning process *(maintainer)*; the Lucene text index is reachable from SPARQL via `text:query` — an in-model query surface *(maintainer — afs flagged jena-text)* |
 | IRI / langtag | `jena-iri3986`, `jena-langtag`, `jena-base` | none | **In (input parsing)** *(inferred)* |
-| Validation / extensions | `jena-shacl`, `jena-shex`, `jena-geosparql`, `jena-serviceenhancer` | SERVICE | **In (reachable from queries)** *(inferred)* |
+| Extensions | `jena-geosparql`, `jena-serviceenhancer` | SERVICE | **In (reachable from queries)** *(inferred)* |
+| Validations | `jena-shacl`, `jena-shex` | HTTP GET requests |
 | Client/API helpers | `jena-rdfconnection`, `jena-querybuilder`, `jena-rdfpatch`, `jena-commonsrdf`, `jena-ontapi` | none | **In as libraries (memory/correctness)** *(inferred)* |
 | CLI tools | `jena-cmds` | filesystem | **In iff fed untrusted input; usually operator-run** *(inferred)* |
 | Examples / tests / benchmarks | `jena-examples`, `jena-integration-tests`, `jena-benchmarks` | n/a | **Out** *(see §3)* |
@@ -107,7 +108,7 @@ Per-surface trust table *(Fuseki defaults documented; the rest inferred):*
 | Fuseki admin `/$/*` | dataset mgmt, backups | **must not be on the public net** | localhost-only (default) / operator network |
 | Java API (`QueryExecution`, `Model.read`) | query / RDF from the app | no — the embedding app's trust | app validates its own untrusted inputs |
 
-- **Size/shape/rate:** query-cost / result-size / parser-nesting bounds — to confirm (Andy's volume concern); §8 resource line. *(inferred)*
+- **Size/shape/rate:** query-cost / result-size / parser-nesting bounds; §8 resource line. *(inferred)*
 
 ## §7 Adversary model
 
@@ -165,7 +166,7 @@ Per-surface trust table *(Fuseki defaults documented; the rest inferred):*
 - "SPARQL query consumes lots of CPU/memory" — operator-tuned via query timeout + reverse-proxy size limits; a tiny query computing a huge cross-product is inherent to spec-compliant SPARQL (affects every engine), not a Jena bug *(maintainer — rvesse)*.
 - "ARQ can call JavaScript / custom functions" — only if the operator enabled them, with a JS allow-list / operator-supplied Java code; `by-design-operator-enabled`. `OUT-OF-MODEL: trusted-input` / `non-default-build` unless reachable anonymously *(maintainer — rvesse)*.
 - "Embedding app built an injectable SPARQL string" — the app's bug, not Jena's; parameterised queries are the recommended pattern. `OUT-OF-MODEL: trusted-input` *(maintainer — rvesse)*.
-- "Fuseki/TDB has a memory leak" — unbounded memory growth under continuous read/write load is a known issue; the WAL guarantees no data loss on crash/restart. A recurring mailing-list topic, not a vulnerability *(maintainer — rvesse; TDB FAQ)*.
+- "Fuseki/TDB1 has a memory leak" — unbounded memory growth under continuous read/write load is a known issue; the WAL guarantees no data loss on crash/restart. A recurring mailing-list topic, not a vulnerability *(maintainer — rvesse; TDB FAQ)*.
 - "TDB database is far larger on disk than the input" — sparse files (metrics vary by tool/filesystem) plus TDB2's MVCC trees orphaning old blocks per write; expected. The `compaction` operation reclaims space (run periodically) *(maintainer — rvesse; TDB FAQ)*.
 
 ## §12 Conditions that would change this model
