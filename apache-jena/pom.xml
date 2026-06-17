@@ -163,6 +163,34 @@
       <optional>true</optional>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-vector</artifactId>
+      <version>6.2.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-vector</artifactId>
+      <version>6.2.0-SNAPSHOT</version>
+      <classifier>sources</classifier>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-hybrid-search</artifactId>
+      <version>6.2.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-hybrid-search</artifactId>
+      <version>6.2.0-SNAPSHOT</version>
+      <classifier>sources</classifier>
+      <optional>true</optional>
+    </dependency>
+
   </dependencies>
 
   <build>

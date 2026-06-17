@@ -61,6 +61,18 @@
 
     <dependency>
       <groupId>org.apache.jena</groupId>
+      <artifactId>jena-vector</artifactId>
+      <version>6.2.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-hybrid-search</artifactId>
+      <version>6.2.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki-access</artifactId>
       <version>6.2.0-SNAPSHOT</version>
     </dependency>

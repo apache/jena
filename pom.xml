@@ -217,6 +217,8 @@
         <module>apache-jena-libs</module>
 
         <module>jena-text</module>
+        <module>jena-vector</module>
+        <module>jena-hybrid-search</module>
         <module>jena-serviceenhancer</module>
         <module>jena-cmds</module>
         <module>jena-geosparql</module>
@@ -275,6 +277,8 @@
         <module>apache-jena-libs</module>
 
         <module>jena-text</module>
+        <module>jena-vector</module>
+        <module>jena-hybrid-search</module>
         <module>jena-serviceenhancer</module>
         <module>jena-cmds</module>
         <module>jena-geosparql</module>
