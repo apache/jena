@@ -18,7 +18,7 @@ limitations under the License.
 
 ## §1 Header
 
-- **Project:** Apache Jena (`apache/jena`), `main`, against which this draft was written. A monorepo: the RDF/SPARQL Java framework (`jena-core`, `jena-arq`, `jena-base`, RIOT parsers, `jena-tdb1`/`jena-tdb2` stores, SHACL (`jena-shacl`), ShEx (`jena-shex`), GeoSPARQL `jena-geosparql`, text index `jena-text` **and** the Fuseki HTTP server (`jena-fuseki2`).
+- **Project:** Apache Jena (`apache/jena`), `main`, against which this threat model was written. A monorepo: the RDF/SPARQL Java framework (`jena-core`, `jena-arq`, `jena-base`, RIOT parsers, `jena-tdb1`/`jena-tdb2` stores, SHACL (`jena-shacl`), ShEx (`jena-shex`), GeoSPARQL `jena-geosparql`, text index `jena-text` **and** the Fuseki HTTP server (`jena-fuseki2`).
 - **Date:** 2026-06-02 (v0); 2026-06 (v1, PMC-reviewed). **Status:** v1 — reviewed by the Jena PMC (Rob Vesse + Andy Seaborne) on apache/jena#3966; their inline suggestions are folded in and their answers to the §14 questions promote the load-bearing claims to *(maintainer)* (see §14). **Author:** ASF Security team (drafted via the Scovetta rubric); now PMC-reviewed.
 - **Version binding:** versioned with the project; a report against version *N* is triaged against the model as it stood at *N*.
 - **Reporting cross-reference:** §8-property violations → report privately per ASF process (`security@apache.org` → `private@jena.apache.org`); §3/§9 findings are closed citing this document.
