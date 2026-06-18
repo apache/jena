@@ -19,35 +19,39 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.ttl_test.test.turtle;
+package org.apache.jena.core_ttl.tests;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.RDFReaderI;
-import org.apache.jena.ttl_test.turtle.TurtleReader;
 
-public class TestTurtleReader extends TestCase {
+/**
+ * Check the test Turtle reader is wired in.
+ */
+public class TestTurtleReader {
 
-    public static TestSuite suite() {
-        return new TestSuite(TestTurtleReader.class, "Basic Turtle tests");
-    }
-
-    public void test0() {
-        RDFReaderI r = new TurtleReader();
-        assertNotNull(r);
-    }
-
-    public void test1() {
+    @Test public void test_read() {
         Model m = ModelFactory.createDefaultModel();
         m.read("file:testing/Turtle/simple.ttl", "TTL");
         assertFalse(m.isEmpty());
     }
 
-    public void test2() {
+    @Test public void test_i18n() {
         Model m = ModelFactory.createDefaultModel();
         m.read("file:testing/Turtle/i18n.ttl", "TTL");
         assertFalse(m.isEmpty());
+    }
+
+    @SuppressWarnings("deprecation")
+    public@Test  void testReaderNames() {
+        Model m = ModelFactory.createDefaultModel();
+        assertNotNull(m.getReader("TURTLE"));
+        assertNotNull(m.getReader("Turtle"));
+        assertNotNull(m.getReader("TTL"));
+        assertNotNull(m.getReader("N3"));
     }
 }

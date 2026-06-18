@@ -19,7 +19,7 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.ttl_test.turtle;
+package org.apache.jena.core_ttl.parser;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;

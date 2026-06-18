@@ -19,30 +19,15 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.ttl_test.test.turtle;
+package org.apache.jena.core_ttl.parser;
 
-import junit.framework.TestCase;
-import org.apache.jena.rdf.model.*;
-import org.apache.jena.ttl_test.turtle.TurtleParseException;
-import org.apache.jena.ttl_test.turtle.TurtleReader;
+import org.apache.jena.graph.Triple;
 
-public class TestItemBadSyntax extends TestCase {
-    String uri;
-    public TestItemBadSyntax(String name, String uri) {
-        super(name);
-        this.uri = uri;
-    }
 
-    @Override
-    public void runTest() {
-        Model model = ModelFactory.createDefaultModel();
-        RDFReaderI t = new TurtleReader();
-        try {
-            t.read(model, uri);
-            fail("Bad syntax test succeed in parsing the file");
-        } catch (TurtleParseException ex) {
-            return;
-        }
-
-    }
+public interface TurtleEventHandler
+{
+    public void triple(int line, int col, Triple triple);
+    public void prefix(int line, int col, String prefix, String iri);
+    public void startFormula(int line, int col);
+    public void endFormula(int line, int col);
 }

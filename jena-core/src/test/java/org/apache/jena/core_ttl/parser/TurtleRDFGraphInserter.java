@@ -19,43 +19,45 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.ttl_test.turtle;
+package org.apache.jena.core_ttl.parser;
 
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 
 
-public class TurtleEventDump implements TurtleEventHandler
+public class TurtleRDFGraphInserter implements TurtleEventHandler
 {
+    Graph graph = null;
+    public TurtleRDFGraphInserter(Graph graph) { this.graph = graph; }
     
     @Override
     public void triple(int line, int col, Triple triple)
     {
-        System.out.print(mark(line, col));
-        System.out.print(" ");
-        System.out.println(triple.toString());
-    }
-    
-    @Override
-    public void startFormula(int line, int col)
-    {
-        System.out.print(mark(line, col));
-        System.out.println("{");
-    }
-    
-    @Override
-    public void endFormula(int line, int col)
-    {
-        System.out.print(mark(line, col));
-        System.out.println("}");
+        //Check it's valid triple.
+        Node s = triple.getSubject();
+        Node p = triple.getPredicate();
+        Node o = triple.getObject();
+        
+        if ( ! ( s.isURI() || s.isBlank() ) )
+            throw new TurtleParseException("["+line+", "+col+"] : Error: Subject is not a URI or blank node");
+        if ( ! p.isURI() )
+            throw new TurtleParseException("["+line+", "+col+"] : Error: Predicate is not a URI");
+        if ( ! ( o.isURI() || o.isBlank() || o.isLiteral() ) ) 
+            throw new TurtleParseException("["+line+", "+col+"] : Error: Object is not a URI, blank node or literal");
+        
+        graph.add(triple);
     }
 
-    private String mark(int line, int col) { return "["+line+", "+col+"]"; }
+    @Override
+    public void startFormula(int line, int col)
+    { throw new TurtleParseException("["+line+", "+col+"] : Error: Formula found"); }
+
+    @Override
+    public void endFormula(int line, int col)
+    { throw new TurtleParseException("["+line+", "+col+"] : Error: Formula found"); }
 
     @Override
     public void prefix(int line, int col, String prefix, String iri)
-    { 
-        System.out.print(mark(line, col));
-        System.out.print(" @prefix ");
-        System.out.println(prefix+": => "+iri);
-    }
+    { graph.getPrefixMapping().setNsPrefix(prefix, iri); }
 }

@@ -19,11 +19,41 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.ttl_test;
+package org.apache.jena.core_ttl.parser;
 
-import org.apache.jena.rdf.model.Resource;
+import java.util.HashMap;
+import java.util.Map;
 
-public interface ManifestOldItemHandler {
-    /** Handle an item in a manifest */
-    public boolean processManifestItem(Resource manifest, Resource item, String testName, Resource action, Resource result);
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+
+/** Map from _:* form to bNodes
+ */
+
+public class LabelToNodeMap
+{
+    Map<String, Node> bNodeLabels = new HashMap<>();
+    
+    public LabelToNodeMap()
+    {}
+
+    public Node asNode(String label)
+    {
+        Node n = bNodeLabels.get(label);
+        if ( n != null )
+            return n;
+        n = allocNode();
+        bNodeLabels.put(label, n);
+        return n;
+    }
+    
+    public Node allocNode()
+    {
+        return NodeFactory.createBlankNode();
+    }
+    
+    public void clear()
+    {
+        bNodeLabels.clear();
+    }
 }

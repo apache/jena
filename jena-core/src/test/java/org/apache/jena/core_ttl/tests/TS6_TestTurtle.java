@@ -19,19 +19,23 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.ttl_test.turtle;
+package org.apache.jena.core_ttl.tests;
 
-import org.apache.jena.shared.JenaException;
+import org.junit.platform.suite.api.BeforeSuite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-/** QueryParseException is root exception for all (intentional) exceptions
- *  from the various parsers where the error is to do with the syntax of a query.
- */
+import org.apache.jena.test.JenaTestLib;
 
-
-public class TurtleParseException extends JenaException
-{
-    public TurtleParseException() { super(); }
-    public TurtleParseException(Throwable cause) { super(cause); }
-    public TurtleParseException(String msg) { super(msg); }
-    public TurtleParseException(String msg, Throwable cause) { super(msg, cause); }
+// Jena core basic turtle - only used reading data in the test suite.
+@Suite
+@SelectClasses({
+    TestTurtleReader.class,
+    TestTurtleInternal.class,
+    TurtleSuite.class
+})
+public class TS6_TestTurtle {
+    @BeforeSuite public static void beforeSuite() {
+        JenaTestLib.setup();
+    }
 }

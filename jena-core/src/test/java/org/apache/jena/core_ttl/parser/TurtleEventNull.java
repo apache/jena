@@ -19,29 +19,18 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.ttl_test.test.turtle;
+package org.apache.jena.core_ttl.parser;
 
-import junit.framework.TestCase;
-import org.apache.jena.rdf.model.*;
-import org.apache.jena.ttl_test.turtle.TurtleParseException;
-import org.apache.jena.ttl_test.turtle.TurtleReader;
+import org.apache.jena.graph.Triple;
 
-public class TestItemSyntax extends TestCase {
-    String uri;
-    public TestItemSyntax(String name, String uri) {
-        super(name);
-        this.uri = uri;
-    }
-
+public class TurtleEventNull implements TurtleEventHandler
+{
     @Override
-    public void runTest() {
-        Model model = ModelFactory.createDefaultModel();
-        RDFReaderI t = new TurtleReader();
-        try {
-            t.read(model, uri);
-        } catch (TurtleParseException ex) {
-            throw ex;
-        }
-    }
-
+    public void triple(int line, int col, Triple triple)  {}
+    @Override
+    public void startFormula(int line, int col)           {}
+    @Override
+    public void endFormula(int line, int col)             {}
+    @Override
+    public void prefix(int line, int col, String prefix, String iri) {}
 }

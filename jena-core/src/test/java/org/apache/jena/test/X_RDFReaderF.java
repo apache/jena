@@ -25,13 +25,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.jena.atlas.lib.Creator;
+import org.apache.jena.core_ttl.TurtleTestReader;
 import org.apache.jena.rdf.model.RDFReaderF;
 import org.apache.jena.rdf.model.RDFReaderI;
 import org.apache.jena.rdf.model.impl.NTripleReader;
 import org.apache.jena.rdfxml.arp1.RDFXMLReader;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.NoReaderForLangException;
-import org.apache.jena.ttl_test.turtle.TurtleReader;
 
 /**
  * For jena-core tests only.
@@ -76,7 +76,7 @@ public class X_RDFReaderF extends Object implements RDFReaderF {
         @SuppressWarnings("removal")
         Creator<RDFReaderI> rdfxmlReader = RDFXMLReader::new;
         Creator<RDFReaderI> ntReader     = NTripleReader::new;
-        Creator<RDFReaderI> turtleReader = TurtleReader::new;
+        Creator<RDFReaderI> turtleReader = TurtleTestReader::new;
 
         custom.put("RDF", rdfxmlReader);
         custom.put("RDF/XML", rdfxmlReader);

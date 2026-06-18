@@ -21,7 +21,7 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.ttl_test.turtle.javacc;
+package org.apache.jena.core_ttl.parser.javacc;
 
 /**
  * An implementation of interface CharStream, where the stream is assumed to

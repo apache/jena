@@ -19,12 +19,13 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.ttl_test;
+package org.apache.jena.core_ttl;
 
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.io.*;
 
+import org.apache.jena.core_ttl.parser.ParserTurtle;
 import org.apache.jena.graph.GraphEvents;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.rdf.model.*;
@@ -33,13 +34,12 @@ import org.apache.jena.util.FileUtils;
 import org.slf4j.LoggerFactory;
 
 /**
- * Abstract class that sorts out input streams, readers and base URIs, to call a
- * single worker function with model, UTF8 reader and visited base
+ * A jena-core style RDFReaderI for the jena-core test-only Turtle parser.
  */
-public abstract class JenaReaderBase implements RDFReaderI {
+public class TurtleTestReader implements RDFReaderI {
     protected RDFErrorHandler errorHandler = null;
 
-    public JenaReaderBase() {}
+    public TurtleTestReader() {}
 
     @Override
     final public void read(Model model, Reader r, String base) {
@@ -110,5 +110,9 @@ public abstract class JenaReaderBase implements RDFReaderI {
         }
     }
 
-    protected abstract void readWorker(Model model, Reader reader, String base) throws Exception;
+    protected void readWorker(Model model, Reader reader, String base)
+    {
+        ParserTurtle p =  new ParserTurtle();
+        p.parse( model.getGraph(), base, reader );
+    }
 }
