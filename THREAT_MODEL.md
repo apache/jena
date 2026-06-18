@@ -47,7 +47,7 @@ limitations under the License.
 | Stores + text index | `jena-tdb1`, `jena-tdb2`; **`jena-text` (Lucene)** | filesystem | **In.** On-disk store is operator-trusted and private to the owning process *(maintainer)*; the Lucene text index is reachable from SPARQL via `text:query` — an in-model query surface *(maintainer — afs flagged jena-text)* |
 | IRI / langtag | `jena-iri3986`, `jena-langtag`, `jena-base` | none | **In (input parsing)** *(inferred)* |
 | Extensions | `jena-geosparql`, `jena-serviceenhancer` | SERVICE | **In (reachable from queries)** *(inferred)* |
-| Validations | `jena-shacl`, `jena-shex` | HTTP GET requests |
+| Validations | `jena-shacl`, `jena-shex` | HTTP GET requests (imports) | **In (import-fetch = SSRF surface)** *(maintainer — afs)* |
 | Client/API helpers | `jena-rdfconnection`, `jena-querybuilder`, `jena-rdfpatch`, `jena-commonsrdf`, `jena-ontapi` | none | **In as libraries (memory/correctness)** *(inferred)* |
 | CLI tools | `jena-cmds` | filesystem | **In iff fed untrusted input; usually operator-run** *(inferred)* |
 | Examples / tests / benchmarks | `jena-examples`, `jena-integration-tests`, `jena-benchmarks` | n/a | **Out** *(see §3)* |
@@ -148,10 +148,8 @@ Per-surface trust table *(Fuseki defaults documented; the rest inferred):*
 
 ## §11 Known misuse patterns
 
-*(Draft one-liners — expand before publishing.)*
-
 - Exposing a public, update-enabled SPARQL endpoint with no auth. *(inferred)*
-- Leaving `SERVICE`/`file:` reachable from anonymous queries (SSRF / file read). *(inferred)*
+- Leaving `SERVICE` reachable from anonymous queries (SSRF / file read). *(inferred)*
 - Enabling ARQ JS functions on a public endpoint. *(inferred)*
 - Shipping the example `admin`/`pw` / no-TLS Fuseki setup to production. *(documented as not-for-prod)*
 - Building SPARQL by concatenating untrusted strings in an embedding app. *(inferred)*
