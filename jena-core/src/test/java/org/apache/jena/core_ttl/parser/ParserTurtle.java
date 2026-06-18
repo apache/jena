@@ -19,15 +19,15 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.ttl_test.turtle;
+package org.apache.jena.core_ttl.parser;
 
 import java.io.InputStream;
 import java.io.Reader;
 
+import org.apache.jena.core_ttl.parser.javacc.ParseException;
+import org.apache.jena.core_ttl.parser.javacc.TokenMgrError;
+import org.apache.jena.core_ttl.parser.javacc.TurtleParser;
 import org.apache.jena.graph.Graph;
-import org.apache.jena.ttl_test.turtle.javacc.ParseException;
-import org.apache.jena.ttl_test.turtle.javacc.TokenMgrError;
-import org.apache.jena.ttl_test.turtle.javacc.TurtleParser;
 import org.apache.jena.util.FileUtils;
 
 

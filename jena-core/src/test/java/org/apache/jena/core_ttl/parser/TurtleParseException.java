@@ -19,15 +19,19 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.ttl_test.turtle;
+package org.apache.jena.core_ttl.parser;
 
-import org.apache.jena.graph.Triple;
+import org.apache.jena.shared.JenaException;
+
+/** QueryParseException is root exception for all (intentional) exceptions
+ *  from the various parsers where the error is to do with the syntax of a query.
+ */
 
 
-public interface TurtleEventHandler
+public class TurtleParseException extends JenaException
 {
-    public void triple(int line, int col, Triple triple);
-    public void prefix(int line, int col, String prefix, String iri);
-    public void startFormula(int line, int col);
-    public void endFormula(int line, int col);
+    public TurtleParseException() { super(); }
+    public TurtleParseException(Throwable cause) { super(cause); }
+    public TurtleParseException(String msg) { super(msg); }
+    public TurtleParseException(String msg, Throwable cause) { super(msg, cause); }
 }

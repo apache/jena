@@ -77,9 +77,9 @@ public class JenaCoreTestAll_JU4 extends TestCase {
         addTest(ts,  "Ontology",            adaptJUnit4(org.apache.jena.ontology.impl.TS3_ont.class));
 
         // Local TTL parser for tests - not fully compliant.
-        addTest(ts,  "Turtle",              adaptJUnit4(org.apache.jena.ttl_test.test.turtle.TS_TestTurtle.class));
+//JU6        addTest(ts,  "Turtle",              adaptJUnit4(org.apache.jena.ttl_test.test_turtle.TS_TestTurtle.class));
         // ** Generated tests
-        addTest(ts,  "Turtle:Manifest",     org.apache.jena.ttl_test.test.turtle.TurtleTestSuiteManifest.suite());
+//JU6        addTest(ts,  "Turtle:Manifest",     org.apache.jena.ttl_test.test_turtle.TurtleTestSuiteManifest.suite());
         return ts;
     }
 

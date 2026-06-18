@@ -21,9 +21,9 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.ttl_test.turtle.javacc;
+package org.apache.jena.core_ttl.parser.javacc;
 
-import org.apache.jena.ttl_test.turtle.*;
+import org.apache.jena.core_ttl.parser.*;
 import org.apache.jena.graph.*;
 
 public class TurtleParser extends TurtleParserBase implements TurtleParserConstants {

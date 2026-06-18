@@ -21,8 +21,8 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.ttl_test.turtle.javacc;
-import org.apache.jena.ttl_test.turtle.*;
+package org.apache.jena.core_ttl.parser.javacc;
+import org.apache.jena.core_ttl.parser.*;
 import org.apache.jena.graph.*;
 
 /** Token Manager. */
