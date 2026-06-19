@@ -46,7 +46,7 @@ public class SerializationTest extends AbstractManifestTest
     @Override
     public void runTest()
     {
-        Query query = SparqlTestLib.queryFromEntry(manifestEntry);
+        Query query = SparqlTestLib.queryFromEntry(manifestEntry, null);
         // Whatever was read in.
         runTestWorker(query, query.getSyntax()) ;
     }

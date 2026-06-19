@@ -19,78 +19,102 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.vocabulary ;
+package org.apache.jena.vocabulary;
 
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
 
 public class TestManifest {
-    /** <p>The RDF model that holds the vocabulary terms</p> */
-    private static final Model m_model = ModelFactory.createDefaultModel();
 
-    /** <p>The namespace of the vocabulary as a string</p> */
+    /** The namespace of the vocabulary as a string */
     public static final String NS = "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#";
 
-    /** <p>The namespace of the vocabulary as a string</p>
-     *  @see #NS */
-    public static String getURI() {return NS;}
+    /**
+     * The namespace of the vocabulary as a string
+     */
+    public static String getURI() { return NS; }
 
-    /** <p>The namespace of the vocabulary as a resource</p> */
-    public static final Resource NAMESPACE = m_model.createResource( NS );
+    /** The namespace of the vocabulary as a resource */
+    public static final Resource NAMESPACE = ResourceFactory.createResource(NS);
 
-    /** <p>The expected outcome</p> */
-    public static final Property result = m_model.createProperty( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#result" );
+    /** Spec Version label */
+    public static final Property specVersion = ResourceFactory.createProperty(NS+"specVersion");
 
-    /** <p>Action to perform</p> */
-    public static final Property action = m_model.createProperty( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action" );
+    /** The expected outcome */
+    public static final Property result = ResourceFactory.createProperty(NS+"result");
 
-    /** <p>Optional name of this entry</p> */
-    public static final Property name = m_model.createProperty( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#name" );
+    /** Action to perform */
+    public static final Property action = ResourceFactory.createProperty(NS+"action");
 
-    /** <p>Connects the manifest resource to rdf:type list of entries</p> */
-    public static final Property entries = m_model.createProperty( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#entries" );
+    /** Optional name of this entry */
+    public static final Property name = ResourceFactory.createProperty(NS+"name");
 
-    /** <p>Connects the manifest resource to rdf:type list of manifests</p> */
-    public static final Property include = m_model.createProperty( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#include" );
+    /** Connects the manifest resource to rdf:type list of entries */
+    public static final Property entries = ResourceFactory.createProperty(NS+"entries");
+
+    /** Connects the manifest resource to rdf:type list of manifests */
+    public static final Property include = ResourceFactory.createProperty(NS+"include");
 
     /** Assumed base for the tests in the manifest */
-    public static final Property assumedTestBase = m_model.createProperty( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#assumedTestBase" );
+    public static final Property assumedTestBase = ResourceFactory.createProperty(NS+"assumedTestBase");
 
-    /** <p>The given mf:result for a mf:ReducedCardinalityTest is the results as if the
-     *  REDUCED keyword were omitted. To pass a mf:ReducedCardinalityTest, an implementation
-     *  must produce a result set with each solution in the expected results appearing
-     *  at least once and no more than the number of times it appears in the expected
-     *  results. Of course, there must also be no results produced that are not in
-     *  the expected results.</p>
+    /**
+     * The given mf:result for a mf:ReducedCardinalityTest is the results as if the
+     * REDUCED keyword were omitted. To pass a mf:ReducedCardinalityTest, an
+     * implementation must produce a result set with each solution in the expected
+     * results appearing at least once and no more than the number of times it
+     * appears in the expected results. Of course, there must also be no results
+     * produced that are not in the expected results.
      */
-    public static final Resource ReducedCardinalityTest = m_model.createResource( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#ReducedCardinalityTest" );
+    public static final Resource ReducedCardinalityTest = ResourceFactory.createResource(NS+"ReducedCardinalityTest");
 
-    /** <p>A type of test specifically for query evaluation testing. Query evaluation
-     *  tests are required to have an associated input dataset, a query, and an expected
-     *  output dataset.</p>
+    /**
+     * A type of test specifically for query evaluation testing. Query evaluation
+     * tests are required to have an associated input dataset, a query, and an
+     * expected output dataset.
      */
-    public static final Resource QueryEvaluationTest = m_model.createResource( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#QueryEvaluationTest" );
+    public static final Resource QueryEvaluationTest = ResourceFactory.createResource(NS+"QueryEvaluationTest");
 
-    /** <p>A type of test specifically for syntax testing. Syntax tests are not required
-     *  to have an associated result, only an action. Negative syntax tests are tests
-     *  of which the result should be a parser error.</p>
+    /**
+     * A type of test specifically for syntax testing. Syntax tests are not required
+     * to have an associated result, only an action. Negative syntax tests are tests
+     * of which the result should be a parser error.
      */
-    public static final Resource NegativeSyntaxTest = m_model.createResource( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeSyntaxTest" );
+    public static final Resource NegativeSyntaxTest = ResourceFactory.createResource(NS+"NegativeSyntaxTest");
 
-    /** <p>A type of test specifically for syntax testing. Syntax tests are not required
-     *  to have an associated result, only an action.</p>
+    /**
+     * A type of test specifically for syntax testing. Syntax tests are not required
+     * to have an associated result, only an action.
      */
-    public static final Resource PositiveSyntaxTest = m_model.createResource( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveSyntaxTest" );
+    public static final Resource PositiveSyntaxTest = ResourceFactory.createResource(NS+"PositiveSyntaxTest");
 
-    /** <p>One entry in rdf:type list of entries</p> */
-    public static final Resource ManifestEntry = m_model.createResource( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#ManifestEntry" );
+    /**
+     * A type of test specifically for update syntax testing.
+     */
+    public static final Resource PositiveUpdateSyntaxTest = ResourceFactory.createResource(NS+"PositiveUpdateSyntaxTest");
+    public static final Resource PositiveUpdateSyntaxTest11 = ResourceFactory.createResource(NS+"PositiveUpdateSyntaxTest11");
 
-    /** <p>The class of manifests</p> */
-    public static final Resource Manifest = m_model.createResource( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#Manifest" );
+    /**
+     * A type of test specifically for update syntax testing.
+     *  Negative syntax tests are tests of which the result should be a parser error.
+     */
+    public static final Resource NegativeUpdateSyntaxTest = ResourceFactory.createResource(NS+"NegativeUpdateSyntaxTest");
+    public static final Resource NegativeUpdateSyntaxTest11 = ResourceFactory.createResource(NS+"NegativeUpdateSyntaxTest11");
 
-    public static final Resource accepted = m_model.createResource( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#accepted" );
+    /** The class of all SPARQL Update evaluation tests */
+    public static final Resource UpdateEvaluationTest = ResourceFactory.createResource( NS+"UpdateEvaluationTest" );
 
-    public static final Resource proposed = m_model.createResource( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#proposed" );
+    /** One entry in rdf:type list of entries */
+    public static final Resource ManifestEntry = ResourceFactory.createResource(NS+"ManifestEntry");
 
-    public static final Resource rejected = m_model.createResource( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#rejected" );
+    /** The class of manifests */
+    public static final Resource Manifest = ResourceFactory.createResource(NS+"Manifest");
+
+    public static final Resource accepted = ResourceFactory.createResource(NS+"accepted");
+
+    public static final Resource proposed = ResourceFactory.createResource(NS+"proposed");
+
+    public static final Resource rejected = ResourceFactory.createResource(NS+"rejected");
 
 }

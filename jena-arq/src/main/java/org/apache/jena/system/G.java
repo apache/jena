@@ -167,6 +167,14 @@ public class G {
         return x.getLiteralLexicalForm();
     }
 
+    /** Get a string, or null, assuming the node is an xsd:string literal. */
+    public static String asOptionalString(Node x) {
+        if ( x == null )
+            return null;
+        return asString(x);
+    }
+
+
     /** Does the graph match the s/p/o pattern? */
     public static boolean contains(Graph graph, Node subject, Node predicate, Node object) {
         Objects.requireNonNull(graph, "graph");

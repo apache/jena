@@ -30,8 +30,7 @@ public class OmittedTest extends SkipTest {
     public final boolean verbose;
 
     public OmittedTest(ManifestEntry entry) {
-        super(entry);
-        this.verbose = false;
+        this(entry, false);
     }
 
     public OmittedTest(ManifestEntry entry, boolean verbose) {

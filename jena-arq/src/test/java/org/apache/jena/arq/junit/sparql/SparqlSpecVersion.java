@@ -19,23 +19,32 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.sparql.vocabulary;
+package org.apache.jena.arq.junit.sparql;
 
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.shared.JenaException;
 
-/**
- * Additional or changed vocabulary for rdf-tests SPARQL area.
- */
-@Deprecated(forRemoval = true)
-public class TestManifest_12 {
+public enum SparqlSpecVersion {
+    SPARQL_10("sparql-1.0"),
+    SPARQL_11("sparql-1.1"),
+    SPARQL_12("sparql-1.2"),
+    ARQ("ARQ")
+    ;
 
-    /** The namespace of the vocabulary as a string */
-    public static final String NS = "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#";
+    private final String specVersion;
 
-    @Deprecated(forRemoval = true)
-    public static final Resource PositiveSyntaxTest12 = ResourceFactory.createResource(NS+"PositiveSyntaxTest12");
+    SparqlSpecVersion(String string) {
+        this.specVersion = string;
+    }
 
-    @Deprecated(forRemoval = true)
-    public static final Resource NegativeSyntaxTest12 = ResourceFactory.createResource(NS+"NegativeSyntaxTest12");
+    static SparqlSpecVersion get(String label) {
+        if ( label == null )
+            return null;
+        return switch(label) {
+            case "sparql-1.0" -> SPARQL_10;
+            case "sparql-1.1" -> SPARQL_11;
+            case "sparql-1.2" -> SPARQL_12;
+            case "ARQ", "arq" -> ARQ;
+            default -> { throw new JenaException("Unrecognized version label: "+label); }
+        };
+    }
 }
