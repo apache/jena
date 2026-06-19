@@ -35,7 +35,6 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.Syntax;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.sparql.vocabulary.TestManifestUpdate_11;
 import org.apache.jena.sparql.vocabulary.TestManifestX;
 import org.apache.jena.sparql.vocabulary.TestManifest_11;
 import org.apache.jena.sparql.vocabulary.TestManifest_12;
@@ -56,49 +55,97 @@ public class SparqlTests {
             return null;
         }
 
-        Syntax querySyntax = defaultForSyntaxTests;
+        Syntax sparqlSyntax = defaultForSyntaxTests;
 
-        // Syntax to use for tests where the file extension .rq/.ru applies.
-        Syntax querySyntax11 = querySyntax;
-        Syntax updateSyntax11 = querySyntax;
-        Syntax querySyntax12 = querySyntax;
-
-        if ( querySyntax != null ) {
-            if ( ! querySyntax.equals(Syntax.syntaxARQ) &&
-                 ! querySyntax.equals(Syntax.syntaxSPARQL_10) &&
-                 ! querySyntax.equals(Syntax.syntaxSPARQL_11) &&
-                 ! querySyntax.equals(Syntax.syntaxSPARQL_12) )
-                throw new TestSetupException("Unknown syntax: "+querySyntax);
+        if ( sparqlSyntax != null ) {
+            if ( ! sparqlSyntax.equals(Syntax.syntaxARQ) &&
+                 ! sparqlSyntax.equals(Syntax.syntaxSPARQL_10) &&
+                 ! sparqlSyntax.equals(Syntax.syntaxSPARQL_11) &&
+                 ! sparqlSyntax.equals(Syntax.syntaxSPARQL_12) )
+                throw new TestSetupException("Unknown syntax: "+sparqlSyntax);
         }
 
         Node testType = entry.getTestType();
-        if ( testType == null )
-            testType = TestManifest.QueryEvaluationTest.asNode();
+        SparqlSpecVersion specVersion = SparqlSpecVersion.get(entry.getSpecVersion());
 
+        if ( testType == null ) {
+            System.err.println("No type: "+entry.getManifest().getFileName()+ (entry.getName()==null?"": " : "+entry.getName()) );
+
+            testType = TestManifest.QueryEvaluationTest.asNode();
+            if ( specVersion == null ) {
+                specVersion = SparqlSpecVersion.ARQ;
+            }
+        }
+
+        return adaptDispatch(entry, testType, specVersion, sparqlSyntax);
+    }
+
+    // Allows us to isolate the places where deprecation warnings occur.
+    @SuppressWarnings("removal")
+    private static Runnable adaptDispatch(ManifestEntry entry, Node testType , SparqlSpecVersion specVersion, Syntax sparqlSyntax) {
+
+        // Legacy test type conversion.
+        if ( equalsType(testType, TestManifest_11.PositiveSyntaxTest11) ) {
+            testType = TestManifest.PositiveSyntaxTest.asNode();
+            specVersion = SparqlSpecVersion.SPARQL_11;
+        }
+        else if ( equalsType(testType, TestManifest_11.NegativeSyntaxTest11) ) {
+            testType = TestManifest.NegativeSyntaxTest.asNode();
+            specVersion = SparqlSpecVersion.SPARQL_11;
+
+        }
+        else if ( equalsType(testType, TestManifest_12.PositiveSyntaxTest12) ) {
+            testType = TestManifest.PositiveSyntaxTest.asNode();
+            specVersion = SparqlSpecVersion.SPARQL_12;
+        }
+        else if ( equalsType(testType, TestManifest_12.NegativeSyntaxTest12) ) {
+            testType = TestManifest.NegativeSyntaxTest.asNode();
+            specVersion = SparqlSpecVersion.SPARQL_12;
+        }
+
+        if ( specVersion == null ) {
+            if ( Scripts.entryContainsSubstring(entry, "testing/ARQ") )
+                specVersion = SparqlSpecVersion.ARQ;
+            else if ( Scripts.entryContainsSubstring(entry, "testing/SPARQL-CDTs") )
+                specVersion = SparqlSpecVersion.ARQ;
+        }
+
+        if ( specVersion != null ) {
+            switch (specVersion) {
+                case SPARQL_10 -> sparqlSyntax =  Syntax.syntaxSPARQL_10;
+                case SPARQL_11 -> sparqlSyntax =  Syntax.syntaxSPARQL_11;
+                case SPARQL_12 -> sparqlSyntax =  Syntax.syntaxSPARQL_12;
+                case ARQ -> sparqlSyntax = Syntax.syntaxARQ;
+            }
+        }
+
+        // --
+
+        // Now dispatch on testType, with setting by syntax.
+        // Split so the adaptions can be isolated and warnings ignored.
+
+        return dispatch(entry, testType, sparqlSyntax);
+    }
+
+    private static Runnable dispatch(ManifestEntry entry, Node testType , Syntax sparqlSyntax) {
         // ---- Query syntax tests
-        if ( equalsType(testType, TestManifest.PositiveSyntaxTest) ) {
-            return new QuerySyntaxTest(entry, querySyntax, true);
-        }
-        if ( equalsType(testType, TestManifest_11.PositiveSyntaxTest11) )
-            return new QuerySyntaxTest(entry, querySyntax11, true);
-        if ( equalsType(testType, TestManifest_12.PositiveSyntaxTest12) )
-            return new QuerySyntaxTest(entry, querySyntax12, true);
-        if ( equalsType(testType, TestManifestX.PositiveSyntaxTestARQ) ) {
-            return new QuerySyntaxTest(entry, Syntax.syntaxARQ, true);
-        }
+        if ( equalsType(testType, TestManifest.PositiveSyntaxTest) )
+            return new QuerySyntaxTest(entry, sparqlSyntax, true);
 
         // == Bad
         if ( equalsType(testType, TestManifest.NegativeSyntaxTest) ) {
-            return new QuerySyntaxTest(entry, querySyntax, false);
+            return new QuerySyntaxTest(entry, sparqlSyntax, false);
         }
-        if ( equalsType(testType, TestManifest_11.NegativeSyntaxTest11) ) {
-            // Special override
-            Syntax syn = querySyntax11;
-            // Some of these are things that ARQ deals with but aren't SPARQL 1.1 so force SPARQL 1.1
-            if ( Scripts.entryContainsSubstring(entry, "/Syntax-SPARQL_11/syn-bad-") )
-                syn = Syntax.syntaxSPARQL_11;
-            return new QuerySyntaxTest(entry, syn, false);
-        }
+        // XXX [rdf-tests]
+//        if ( equalsType(testType, TestManifest_11.NegativeSyntaxTest11) ) {
+//            // XXX [specVersion] Checking as expected - then migrate
+//            // Special override
+//            Syntax syn = querySyntax11;
+//            // Some of these are things that ARQ deals with but aren't SPARQL 1.1 so force SPARQL 1.1
+//            if ( Scripts.entryContainsSubstring(entry, "/Syntax-SPARQL_11/syn-bad-") )
+//                syn = Syntax.syntaxSPARQL_11;
+//            return new QuerySyntaxTest(entry, syn, false);
+//        }
 
         if ( equalsType(testType, TestManifestX.NegativeSyntaxTestARQ) )
             return new QuerySyntaxTest(entry, Syntax.syntaxARQ, false);
@@ -107,7 +154,6 @@ public class SparqlTests {
         if ( equalsType(testType, TestManifest.QueryEvaluationTest) ) {
             // Locally not supported.
             // Omitted tests.
-
             // Two BNODE in the SELECT
             if ( entryContainsSubstring(entry, "functions/manifest#bnode01") )
                 return new OmittedTest(entry);
@@ -116,32 +162,37 @@ public class SparqlTests {
                 return new OmittedTest(entry);
 
             // Query evaluation tests.
-            return new QueryEvalTest(entry);
+            return new QueryEvalTest(entry, sparqlSyntax);
         }
         if ( equalsType(testType, TestManifestX.TestQuery) )
-            return new QueryEvalTest(entry);
+            return new QueryEvalTest(entry, sparqlSyntax);
 
         // ---- Update syntax tests
-        if ( equalsType(testType, TestManifest_11.PositiveUpdateSyntaxTest11) )
-            return new UpdateSyntaxTest(entry, updateSyntax11, true);
+//        if ( equalsType(testType, TestManifest_11.PositiveUpdateSyntaxTest11) )
+//            return new UpdateSyntaxTest(entry, sparqlSyntax, true);
+
         if ( equalsType(testType, TestManifestX.PositiveUpdateSyntaxTestARQ) )
             return new UpdateSyntaxTest(entry, Syntax.syntaxARQ, true);
 
-        if ( equalsType(testType, TestManifest_11.NegativeUpdateSyntaxTest11) )
-            return new UpdateSyntaxTest(entry, querySyntax11, false);
+//        if ( equalsType(testType, TestManifest_11.NegativeUpdateSyntaxTest11) )
+//            return new UpdateSyntaxTest(entry, sparqlSyntax, false);
+
         if ( equalsType(testType, TestManifestX.NegativeUpdateSyntaxTestARQ) )
             return new UpdateSyntaxTest(entry, Syntax.syntaxARQ, false);
 
-        if ( equalsType(testType, TestManifest_12.PositiveUpdateSyntaxTest) )
-            return new UpdateSyntaxTest(entry, Syntax.syntaxARQ, true);
-        if ( equalsType(testType, TestManifest_12.NegativeUpdateSyntaxTest) )
-            return new UpdateSyntaxTest(entry, Syntax.syntaxARQ, false);
+        if ( equalsType(testType, TestManifest.PositiveUpdateSyntaxTest) )
+            return new UpdateSyntaxTest(entry, sparqlSyntax, true);
+        if ( equalsType(testType, TestManifest.PositiveUpdateSyntaxTest11) )
+            return new UpdateSyntaxTest(entry, sparqlSyntax, true);
+
+        if ( equalsType(testType, TestManifest.NegativeUpdateSyntaxTest) )
+            return new UpdateSyntaxTest(entry, sparqlSyntax, false);
+        if ( equalsType(testType, TestManifest.NegativeUpdateSyntaxTest11) )
+            return new UpdateSyntaxTest(entry, sparqlSyntax, false);
 
         // ---- Update evaluation tests
-        if ( equalsType(testType, TestManifestUpdate_11.UpdateEvaluationTest) )
-            return new UpdateEvalTest(entry);
-        if ( equalsType(testType, TestManifest_11.UpdateEvaluationTest) )
-            return new UpdateEvalTest(entry);
+        if ( equalsType(testType, TestManifest.UpdateEvaluationTest) )
+            return new UpdateEvalTest(entry, sparqlSyntax);
 
         // ---- Other
 
@@ -150,14 +201,14 @@ public class SparqlTests {
 
         // Reduced is funny.
         if ( equalsType(testType, TestManifest.ReducedCardinalityTest) )
-            return new QueryEvalTest(entry);
+            return new QueryEvalTest(entry, sparqlSyntax);
 
         if ( equalsType(testType, TestManifestX.TestSurpressed) )
             return new SurpressedTest(entry);
 
-        if ( equalsType(testType, TestManifest_11.CSVResultFormatTest) ) {
-            Log.warn("Tests", "Skip CSV test: "+entry.getName());
-            return null;
+        if ( equalsType(testType, TestManifestX.CSVResultFormatTest) ) {
+            Log.warn("Tests", "Skip CSV query for test: "+entry.getName());
+            return new OmittedTest(entry);
         }
 
         return null;
@@ -167,7 +218,7 @@ public class SparqlTests {
         return typeNode.equals(typeResource.asNode());
     }
 
-    /** Make tests, execution only */
+    /** Make tests, execution only, any syntax version */
     static public Runnable makeSPARQLTestExecOnly(ManifestEntry entry, Creator<Dataset> maker) {
         Node testType = entry.getTestType();
         if ( testType == null )
@@ -176,9 +227,9 @@ public class SparqlTests {
         if ( testType != null ) {
             // -- Query Evaluation Tests
             if ( equalsType(testType, TestManifest.QueryEvaluationTest) )
-                return new QueryEvalTest(entry, maker);
+                return new QueryEvalTest(entry, null, maker);
             if ( equalsType(testType, TestManifestX.TestQuery) )
-                return new QueryEvalTest(entry, maker);
+                return new QueryEvalTest(entry, null, maker);
 
 //            // -- Update Evaluation tests
 //            if ( equalsType(testType, TestManifestUpdate_11.UpdateEvaluationTest) )

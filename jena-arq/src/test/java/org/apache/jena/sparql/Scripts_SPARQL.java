@@ -60,7 +60,7 @@ public class Scripts_SPARQL {
     @DisplayName("SPARQL 1.1")
     public Stream<DynamicNode> testFactorySPARQL_11() {
         return all(TestConsts.SPARQL11_TESTS_DIR+"manifest-sparql11-query.ttl",
-                   // Not CSV tests - no comparision supported.
+                   // No CSV tests - no comparision supported.
                    // No XML results - part of SPARQL 1.0.
                    TestConsts.SPARQL11_TESTS_DIR+"json-res/manifest.ttl",
                    TestConsts.SPARQL11_TESTS_DIR+"manifest-sparql11-update.ttl");

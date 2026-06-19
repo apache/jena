@@ -106,10 +106,6 @@ class SparqlTestLib {
         throw new TestSetupException("Can't determine the query. Not a blank node or a URI. "+entry.getAction());
     }
 
-    static Query queryFromEntry(ManifestEntry entry) {
-        return queryFromEntry(entry, null);
-    }
-
     /** read a query, forcing syntax */
     static Query queryFromEntry(ManifestEntry entry, Syntax syntax) {
         if ( queryFile(entry) == null ) {

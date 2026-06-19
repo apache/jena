@@ -48,13 +48,15 @@ import org.apache.jena.vocabulary.RDFS ;
 public class UpdateEvalTest extends AbstractManifestTest
 {
     private final Creator<Dataset> creator;
+    private final Syntax syntax;
 
-    public UpdateEvalTest(ManifestEntry entry) {
-        this(entry, ()->DatasetFactory.create());
+    public UpdateEvalTest(ManifestEntry entry, Syntax syntax) {
+        this(entry, syntax, ()->DatasetFactory.create());
     }
 
-    public UpdateEvalTest(ManifestEntry entry, Creator<Dataset> maker) {
+    public UpdateEvalTest(ManifestEntry entry, Syntax syntax, Creator<Dataset> maker) {
         super(entry);
+        this.syntax = syntax;
         this.creator = maker;
     }
 
@@ -64,7 +66,7 @@ public class UpdateEvalTest extends AbstractManifestTest
         Dataset output = getDataset(DatasetFactory.create(), manifestEntry.getGraph(), manifestEntry.getResult()) ;
 
         String updateFile = G.getOneSP(manifestEntry.getGraph(), manifestEntry.getAction(), TestManifestUpdate_11.request.asNode()).getURI();
-        UpdateRequest request = UpdateFactory.read(updateFile, Syntax.syntaxARQ) ;
+        UpdateRequest request = UpdateFactory.read(updateFile, syntax) ;
         UpdateAction.execute(request, input) ;
         boolean b = datasetSame(input, output, false) ;
         if ( ! b )

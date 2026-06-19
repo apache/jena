@@ -35,8 +35,9 @@ import org.apache.jena.vocabulary.LocationMappingVocab;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Code for using the general facilities of the location mapper/ filemanager subsystem
- *  and set up for Jena usage. e.g. find a location mapper with RDf description.
+/**
+ * Code for using the general facilities of the location mapper/ filemanager subsystem
+ * and set up for Jena usage. e.g. find a location mapper with RDf description.
  */
 public class JenaIOEnvironment
 {

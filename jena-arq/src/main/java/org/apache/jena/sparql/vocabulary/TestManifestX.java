@@ -21,63 +21,61 @@
 
 package org.apache.jena.sparql.vocabulary ;
 
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.Property ;
 import org.apache.jena.rdf.model.Resource ;
 
 /** More TestManifest */
 public class TestManifestX {
-    /** <p>The RDF model that holds the vocabulary terms</p> */
-    private static Model m_model = ModelFactory.createDefaultModel();
-
-    /** <p>The namespace of the vocabulary as a string</p> */
+    /** The namespace of the vocabulary as a string */
     public static final String NS = "http://jena.hpl.hp.com/2005/05/test-manifest-extra#";
 
-    /** <p>The namespace of the vocabulary as a string</p>
+    /** The namespace of the vocabulary as a strings
      *  @see #NS */
     public static String getURI() {return NS;}
 
-    /** <p>The namespace of the vocabulary as a resource</p> */
-    public static final Resource NAMESPACE = m_model.createResource( NS );
+    /** The namespace of the vocabulary as a resource */
+    public static final Resource NAMESPACE = ResourceFactory.createResource( NS );
 
-    /** <p>Syntax of the query</p> */
-    public static final Property dataSyntax = m_model.createProperty( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#dataSyntax" );
+    /** Syntax of the query */
+    public static final Property dataSyntax = ResourceFactory.createProperty( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#dataSyntax" );
 
-    /** <p>Default type of a test</p> */
-    public static final Property defaultTestType = m_model.createProperty( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#defaultTestType" );
+    /** Default type of a test */
+    public static final Property defaultTestType = ResourceFactory.createProperty( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#defaultTestType" );
 
-    /** <p>Include another manifest file.</p> */
-    public static final Property include = m_model.createProperty( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#include" );
+    /** Include another manifest file. */
+    public static final Property include = ResourceFactory.createProperty( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#include" );
 
-    /** <p>Option for an action</p> */
-    public static final Property option = m_model.createProperty( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#option" );
+    /** Option for an action */
+    public static final Property option = ResourceFactory.createProperty( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#option" );
 
-    /** <p>Syntax of the query</p> */
-    public static final Property querySyntax = m_model.createProperty( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#querySyntax" );
+    /** Syntax of the query */
+    public static final Property querySyntax = ResourceFactory.createProperty( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#querySyntax" );
 
-    /** <p>Whether to create a text index</p> */
-    public static final Property textIndex = m_model.createProperty( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#textIndex" );
+    /** Whether to create a text index */
+    public static final Property textIndex = ResourceFactory.createProperty( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#textIndex" );
 
-    /** <p>Syntax tests which expect a parse failure</p> */
-    public static final Resource NegativeSyntaxTestARQ = m_model.createResource( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#NegativeSyntaxTestARQ" );
+    /** Syntax tests which expect a parse failure */
+    public static final Resource NegativeSyntaxTestARQ = ResourceFactory.createResource( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#NegativeSyntaxTestARQ" );
 
-    /** <p>Syntax tests (query)</p> */
-    public static final Resource PositiveSyntaxTestARQ = m_model.createResource( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#PositiveSyntaxTestARQ" );
+    /** Syntax tests (query) */
+    public static final Resource PositiveSyntaxTestARQ = ResourceFactory.createResource( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#PositiveSyntaxTestARQ" );
 
-    /** <p>Syntax tests which expect a parse failure</p> */
-    public static final Resource NegativeUpdateSyntaxTestARQ = m_model.createResource( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#NegativeUpdateSyntaxTestARQ" );
+    /** Syntax tests which expect a parse failure */
+    public static final Resource NegativeUpdateSyntaxTestARQ = ResourceFactory.createResource( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#NegativeUpdateSyntaxTestARQ" );
 
-    /** <p>Syntax tests (query)</p> */
-    public static final Resource PositiveUpdateSyntaxTestARQ = m_model.createResource( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#PositiveUpdateSyntaxTestARQ" );
+    /** Syntax tests (query) */
+    public static final Resource PositiveUpdateSyntaxTestARQ = ResourceFactory.createResource( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#PositiveUpdateSyntaxTestARQ" );
 
-    /** <p>The class of test that are Query tests (query, data, results)</p> */
-    public static final Resource TestQuery = m_model.createResource( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#TestQuery" );
+    /** The class of test that are Query tests (query, data, results) */
+    public static final Resource TestQuery = ResourceFactory.createResource( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#TestQuery" );
 
-    /** <p>Query serialization tests</p> */
-    public static final Resource TestSerialization = m_model.createResource( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#TestSerialization" );
+    /** Query serialization tests */
+    public static final Resource TestSerialization = ResourceFactory.createResource( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#TestSerialization" );
 
-    /** <p>Query test not to be run</p> */
-    public static final Resource TestSurpressed = m_model.createResource( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#TestSurpressed" );
+    /** Query test not to be run */
+    public static final Resource TestSurpressed = ResourceFactory.createResource( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#TestSurpressed" );
 
+    /** CSV Test (i.e query, with results in CSV) - an extension */
+    public static final Resource CSVResultFormatTest = ResourceFactory.createResource( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#CSVResultFormatTest" );
 }

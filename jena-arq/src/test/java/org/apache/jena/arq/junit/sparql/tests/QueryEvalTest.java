@@ -68,6 +68,7 @@ public class QueryEvalTest extends AbstractManifestTest {
     private final SPARQLResult results;
     private final QueryTestItem testItem;
     private final Creator<Dataset> creator;
+    private final Syntax syntax;
     /**
      * Whether to test result sets "by value" or "by term".
      * <p>
@@ -79,15 +80,16 @@ public class QueryEvalTest extends AbstractManifestTest {
      */
     public static boolean compareResultSetsByValue = true;
 
-    public QueryEvalTest(ManifestEntry entry, Creator<Dataset> maker) {
-        super(entry);
-        testItem = QueryTestItem.create(entry, TestManifest.QueryEvaluationTest.asNode());
-        results = testItem.getResults();
-        creator = maker;
+    public QueryEvalTest(ManifestEntry entry, Syntax syntax) {
+        this(entry, syntax, ()->DatasetFactory.createGeneral());
     }
 
-    public QueryEvalTest(ManifestEntry entry) {
-        this(entry, ()->DatasetFactory.createGeneral());
+    public QueryEvalTest(ManifestEntry entry, Syntax syntax, Creator<Dataset> maker) {
+        super(entry);
+        this.syntax = syntax;
+        this.testItem = QueryTestItem.create(entry, TestManifest.QueryEvaluationTest.asNode());
+        this.results = testItem.getResults();
+        this.creator = maker;
     }
 
     @Override
@@ -95,10 +97,9 @@ public class QueryEvalTest extends AbstractManifestTest {
         Query query;
         try {
             try {
-                query = SparqlTestLib.queryFromEntry(manifestEntry);
+                query = SparqlTestLib.queryFromEntry(manifestEntry, syntax);
             } catch (QueryParseException qEx) {
-                System.err.println("Parse failure in eval test: " + qEx.getMessage());
-                //setupFailure("Parse failure: " + qEx.getMessage());
+                setupFailure("Parse failure: " + qEx.getMessage());
                 fail("Parse failure: " + qEx.getMessage());
                 // Keep Java quiet!
                 throw qEx;
@@ -143,9 +144,12 @@ public class QueryEvalTest extends AbstractManifestTest {
     protected Dataset setUpDataset(Query query, QueryTestItem testItem) {
         try {
             if ( doesQueryHaveDataset(query) && doesTestItemHaveDataset(testItem) ) {
-                // known case - constructwhere04
+                // known cases where there is a dataset and FROM/FROM NAMED
+                //   sparql11/construct/constructwhere04
+                //   sparql/sparql10/datasets
                 // otherwise maybe a test error.
-                if ( ! entryContainsSubstring(testItem.getManifestEntry(), "manifest#constructwhere04") ) {
+                if ( ! entryContainsSubstring(testItem.getManifestEntry(), "/construct/manifest#constructwhere04")
+                        &&  ! entryContainsSubstring(testItem.getManifestEntry(), "/dataset/manifest#") ) {
                     // Only warn if there are results to test
                     // Syntax tests may have FROM etc and a manifest data file.
                     if ( testItem.getResultFile() != null )

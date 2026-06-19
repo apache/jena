@@ -67,12 +67,13 @@ public class Manifest
             log.error("Error reading manifest: "+filenameOrURI);
             throw new TestSetupException("Error reading manifest: "+filenameOrURI);
         }
-        Manifest manifest = new Manifest(manifestRDF);
+        Manifest manifest = new Manifest(manifestRDF, filenameOrURI);
         return manifest;
     }
 
-    private Manifest(Graph manifestRDF) {
-        manifestGraph = manifestRDF;
+    private Manifest(Graph manifestRDF, String filenameOrURI) {
+        this.manifestGraph = manifestRDF;
+        this.filenameOrURI = filenameOrURI;
         manifest = getManifestNode(manifestGraph, filenameOrURI);
         parseManifest();
         parseIncludes();
@@ -128,9 +129,10 @@ public class Manifest
         items.forEach(entry->{
             String testName = getLiteral(entry, TestManifest.name.asNode());
             Node testType = G.getZeroOrOneSP(manifestGraph, entry, RDF.Nodes.type);
-            Node action = G.getZeroOrOneSP(manifestGraph, entry,  TestManifest.action.asNode());
-            Node result = G.getZeroOrOneSP(manifestGraph, entry,  TestManifest.result.asNode());
-            ManifestEntry manifestEntry = new ManifestEntry(this, entry, testName, testType, action, result);
+            String specVersion = G.asOptionalString(G.getZeroOrOneSP(manifestGraph, entry, TestManifest.specVersion.asNode()));
+            Node action = G.getZeroOrOneSP(manifestGraph, entry, TestManifest.action.asNode());
+            Node result = G.getZeroOrOneSP(manifestGraph, entry, TestManifest.result.asNode());
+            ManifestEntry manifestEntry = new ManifestEntry(this, entry, testName, testType, specVersion, action, result);
             entries.add(manifestEntry);
         });
     }
@@ -150,8 +152,7 @@ public class Manifest
         });
     }
 
-    private void parseOneIncludesList(Node r)
-    {
+    private void parseOneIncludesList(Node r) {
         if ( r == null )
             return;
         if ( r.equals(RDF.Nodes.nil) )
@@ -164,7 +165,7 @@ public class Manifest
             includedFiles.add(r.getURI());
             return;
         }
-        if ( ! r.isBlank() )
+        if ( !r.isBlank() )
             return;
         // Blank node - assumed to be a list.
         List<Node> includes = G.listMembers(manifestGraph, r);
@@ -173,25 +174,28 @@ public class Manifest
                 parseOneIncludesList(inc);
                 continue;
             }
-            log.warn("Include: not a URI or blank node: "+inc);
+            log.warn("Include: not a URI or blank node: " + inc);
         }
     }
 
+    /**
+     * Get a string.
+     * Return null if not found or if the resource (first argument) is null or if the
+     * resource does not have that property.
+     * Return the lexical form of the literal.
+     */
     private String getLiteral(Node r, Node p) {
         if ( r == null )
             return null;
         Node n = G.getZeroOrOneSP(manifestGraph, r, p);
         if ( n == null )
             return null;
-
         if ( n.isLiteral() )
             return n.getLiteralLexicalForm();
-
         throw new TestSetupException("Manifest problem (not a Literal): " + r + " => " + p);
     }
 
-    private String getLiteralOrURI(Node r, Node p)
-    {
+    private String getLiteralOrURI(Node r, Node p) {
         if ( r == null )
             return null;
         Node n = G.getZeroOrOneSP(manifestGraph, r, p);
