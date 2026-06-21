@@ -19,7 +19,7 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.rdf12.parse;
+package org.apache.jena.rdf12;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -45,7 +45,7 @@ import org.apache.jena.sparql.core.BasicPattern;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.vocabulary.RDF;
 
-public class TestSPARQL12Parse {
+public class TestSPARQL12TripleTerms {
 
     static { JenaSystem.init(); }
 

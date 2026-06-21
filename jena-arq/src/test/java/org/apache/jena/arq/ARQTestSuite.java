@@ -29,48 +29,49 @@ import org.junit.platform.suite.api.Suite;
 
 import org.apache.jena.atlas.TC_Atlas_ARQ;
 import org.apache.jena.atlas.legacy.BaseTest2;
-import org.apache.jena.http.auth.TS_HttpAuth;
-import org.apache.jena.rdfs.TS_InfRdfs;
 import org.apache.jena.riot.*;
+import org.apache.jena.riot.lang.rdfxml.Scripts_ARP1_RDFXML;
+import org.apache.jena.riot.lang.rdfxml.Scripts_RRX11;
+import org.apache.jena.riot.lang.rdfxml.Scripts_RRX12;
+import org.apache.jena.riot.lang.rdfxml.Scripts_RRX_RDFXML;
 import org.apache.jena.sparql.*;
 import org.apache.jena.sparql.expr.E_Function;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sys.JenaSystem;
-import org.apache.jena.system.TS_System;
-import org.apache.jena.system.buffering.TS_Buffering;
-import org.apache.jena.util.TS_UtilsARQ;
+import org.apache.jena.system.TC_System;
 
 /**
- * All the ARQ tests
+ * All the ARQ tests, group by TC.
  */
 
 @Suite
 @SelectClasses({
+    // All TC_*.
+    // Should cover all TS_*
+    // Should not have any TS here (if in doubt, put in TC_System
+
+    TC_System.class,
+
     TC_Atlas_ARQ.class,
-
-    TS_UtilsARQ.class,
-
-    TC_Riot.class,
-
-    TS_System.class,
-    TS_Buffering.class,
-
-    TS_InfRdfs.class,
-    TS_HttpAuth.class,
+    TC_RIOT.class,
 
     // Main ARQ java tests
     TC_ARQ.class,
 
-    // All scripted tests.
-
+    // All Scripts_*
     // RIOT
     // rdf-tests CG - RDF language tests
     Scripts_RIOT_rdf_tests_std.class,
     Scripts_RIOT_extra.class,
     Scripts_AltTurtle.class,
 
-    Scripts_C14N.class,
+    // RDF/XML
+    Scripts_ARP1_RDFXML.class,
+    Scripts_RRX_RDFXML.class,
+    Scripts_RRX11.class,
+    Scripts_RRX12.class,
 
+    Scripts_C14N.class,
     // ARQ, SPARQL 1.0, SPARQL 1.1, SPARQL 1.2 - main engine, default in-memory dataset.
     Scripts_SPARQL.class,
     Scripts_RefEngine.class,

@@ -26,6 +26,8 @@ import org.junit.platform.suite.api.Suite;
 
 import org.apache.jena.riot.adapters.TS_RIOTAdapters;
 import org.apache.jena.riot.lang.TS_Lang;
+import org.apache.jena.riot.lang.rdfxml.converted_legacy.TS_ConvertedARP1;
+import org.apache.jena.riot.lang.rdfxml.rrx.TS_RRX;
 import org.apache.jena.riot.out.TS_Out;
 import org.apache.jena.riot.process.TS_Process;
 import org.apache.jena.riot.protobuf.TS_RDFProtobuf;
@@ -51,7 +53,6 @@ import org.apache.jena.riot.writer.TS_RiotWriter;
     , TS_RIOTAdapters.class
     , TS_Process.class
     , TS_RiotWriter.class
-    , TS_RiotSystem.class
     , TS_IRIxProviders.class
     , TS_RiotWeb.class
     , TS_ResultSetRIOT.class
@@ -59,8 +60,13 @@ import org.apache.jena.riot.writer.TS_RiotWriter;
     , TS_RDFThrift.class
     , TS_RowSetRIOT.class
 
+    // Local tests, extensions and error reports.
+    , TS_RRX.class
+    // jena-core legacy test (RDF 1.0)
+    , TS_ConvertedARP1.class
+
     // Scripted parser tests in ARQTestSuite.
 })
 
-public class TC_Riot
+public class TC_RIOT
 { }

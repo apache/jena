@@ -27,7 +27,6 @@ import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
 import org.apache.jena.atlas.legacy.BaseTest2;
-import org.apache.jena.riot.lang.rdfxml.TC_RIOT_RDFXML;
 
 @Suite
 @SelectClasses({
@@ -55,8 +54,6 @@ import org.apache.jena.riot.lang.rdfxml.TC_RIOT_RDFXML;
     // Thrift is done in the "thrift" package
     , TestParserFactory.class
     , TestCollectorStream.class
-
-    , TC_RIOT_RDFXML.class
 })
 
 public class TS_Lang
