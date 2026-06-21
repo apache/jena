@@ -40,10 +40,9 @@ public class OntModelAssemblerTest {
     public void testAssembleSimpleOntModel() {
         var assembler = RDFIOTestUtils.readStringAsModel(
                 """
-                        @prefix : <http://ex.com#> .
-                        @prefix oa: <https://jena.apache.org/ontapi/Assembler#> .
-                        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-                        
+                        PREFIX : <http://ex.com#>
+                        PREFIX oa: <https://jena.apache.org/ontapi/Assembler#>
+                        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
                         :model a oa:OntModel .
                         """, "ttl"
         );
@@ -58,19 +57,18 @@ public class OntModelAssemblerTest {
     public void testAssembleOntModelWithBaseModelAndSpec() {
         var assembler = RDFIOTestUtils.readStringAsModel(
                 """
-                        @prefix : <http://ex.com#> .
-                        @prefix oa: <https://jena.apache.org/ontapi/Assembler#> .
-                        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-                        @prefix ja: <http://jena.hpl.hp.com/2005/11/Assembler#> .
-                        
+                        PREFIX : <http://ex.com#>
+                        PREFIX oa: <https://jena.apache.org/ontapi/Assembler#>
+                        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                        PREFIX ja: <http://jena.hpl.hp.com/2005/11/Assembler#>
                         :spec a oa:OntSpecification ;
                             oa:specificationName "OWL1_LITE_MEM_RDFS_INF" .
                         
                         :base a ja:MemoryModel ;
                             ja:content [
                                 ja:literalContent ""\"
-                                    @prefix : <http://ex.com#> .
-                                    @prefix owl: <http://www.w3.org/2002/07/owl#> .
+                                    PREFIX : <http://ex.com#>
+                                    PREFIX owl: <http://www.w3.org/2002/07/owl#>
                                     :C a owl:Class .
                                 ""\" ;
                                 ja:contentEncoding "TTL"
@@ -92,19 +90,18 @@ public class OntModelAssemblerTest {
     public void testAssembleOntModelWithHierarchy() {
         var assembler = RDFIOTestUtils.readStringAsModel(
                 """
-                        @prefix : <http://ex.com#> .
-                        @prefix oa: <https://jena.apache.org/ontapi/Assembler#> .
-                        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-                        @prefix ja: <http://jena.hpl.hp.com/2005/11/Assembler#> .
-                        
+                        PREFIX : <http://ex.com#>
+                        PREFIX oa: <https://jena.apache.org/ontapi/Assembler#>
+                        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                        PREFIX ja: <http://jena.hpl.hp.com/2005/11/Assembler#>
                         :spec a oa:OntSpecification ;
                             oa:specificationName "OWL1_LITE_MEM_RDFS_INF" .
                         
                         :base1 a ja:MemoryModel ;
                             ja:content [
                                 ja:literalContent ""\"
-                                    @prefix : <http://ex.com#> .
-                                    @prefix owl: <http://www.w3.org/2002/07/owl#> .
+                                    PREFIX : <http://ex.com#>
+                                    PREFIX owl: <http://www.w3.org/2002/07/owl#>
                                     : a owl:Ontology .
                                     :A a owl:Class .
                                 ""\" ;
@@ -114,8 +111,8 @@ public class OntModelAssemblerTest {
                         :base2 a ja:MemoryModel ;
                             ja:content [
                                 ja:literalContent ""\"
-                                    @prefix : <http://ex.com/v1#> .
-                                    @prefix owl: <http://www.w3.org/2002/07/owl#> .
+                                    PREFIX : <http://ex.com/v1#>
+                                    PREFIX owl: <http://www.w3.org/2002/07/owl#>
                                     : a owl:Ontology .
                                     :B a owl:Class .
                                 ""\" ;
@@ -152,11 +149,10 @@ public class OntModelAssemblerTest {
         var srcUri2 = src2.toUri();
         var assembler = RDFIOTestUtils.readStringAsModel(
                 String.format("""
-                        @prefix : <http://ex.com#> .
-                        @prefix oa: <https://jena.apache.org/ontapi/Assembler#> .
-                        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-                        @prefix ja: <http://jena.hpl.hp.com/2005/11/Assembler#> .
-                        
+                        PREFIX : <http://ex.com#>
+                        PREFIX oa: <https://jena.apache.org/ontapi/Assembler#>
+                        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                        PREFIX ja: <http://jena.hpl.hp.com/2005/11/Assembler#>
                         :repo a oa:DocumentGraphRepository ;
                             oa:graph :g .
                         :g a oa:Graph ;
@@ -175,7 +171,7 @@ public class OntModelAssemblerTest {
         Assertions.assertEquals("http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine", model.getID().getImportsIRI());
         var imports = model.imports().toList();
         Assertions.assertEquals(1, imports.size());
-        Assertions.assertEquals("http://www.w3.org/TR/2003/PR-owl-guide-20031209/food", imports.get(0).getID().getImportsIRI());
+        Assertions.assertEquals("http://www.w3.org/TR/2003/PR-owl-guide-20031209/food", imports.getFirst().getID().getImportsIRI());
 
         var resultRepository = Assembler.general().open(assembler.getResource("http://ex.com#repo"));
         Assertions.assertInstanceOf(DocumentGraphRepository.class, resultRepository);

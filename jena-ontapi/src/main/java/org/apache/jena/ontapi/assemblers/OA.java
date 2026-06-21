@@ -31,6 +31,7 @@ public class OA {
     public static final Property graph = property("graph");
     public static final Property graphIRI = property("graphIRI");
     public static final Property graphLocation = property("graphLocation");
+    public static final Property locationMappings = property("locationMappings");
     public static final Property specificationName = property("specificationName");
     public static final Property personalityName = property("personalityName");
     public static final Property schema = property("schema");

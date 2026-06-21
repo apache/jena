@@ -34,12 +34,18 @@ public class DocumentGraphRepositoryAssembler extends AssemblerBase {
     /**
      * example:
      * <pre>{@code
-     * @prefix : <http://ex.com#> .
-     * @prefix oa: <https://jena.apache.org/ontapi/Assembler#> .
-     * @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+     * PREFIX : <http://ex.com#>
+     * PREFIX oa: <https://jena.apache.org/ontapi/Assembler#>
+     * PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+     * PREFIX ja: <http://jena.hpl.hp.com/2005/11/Assembler#>
+     * PREFIX lm: <http://jena.hpl.hp.com/2004/08/location-mapping#>
      *
      * :repo a oa:DocumentGraphRepository ;
-     *      oa:graph :g1, :g2 .
+     *      oa:graph :g1, :g2 ;
+     *      oa:locationMappings :mappingModel .
+     *
+     * :mappingModel a ja:DefaultModel ;
+     *      ja:externalContent <file:ontologies/location-mapping.ttl> .
      *
      * :g1 a oa:Graph ;
      *      oa:graphIRI "vocab1" ;
@@ -64,6 +70,10 @@ public class DocumentGraphRepositoryAssembler extends AssemblerBase {
                     String location = graph.getProperty(OA.graphLocation).getString();
                     repo.addMapping(id, location);
                 });
+
+        model.listStatements(root, OA.locationMappings, (RDFNode) null)
+                .mapWith(stmt -> stmt.getObject().asResource())
+                .forEach(mappings -> repo.addMappings(a.openModel(mappings, mode)));
 
         return repo;
     }

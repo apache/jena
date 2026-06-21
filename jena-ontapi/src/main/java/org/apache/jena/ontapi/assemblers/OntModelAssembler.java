@@ -37,10 +37,10 @@ public class OntModelAssembler extends AssemblerBase {
     /**
      * examples:
      * <pre>{@code
-     * @prefix : <http://ex.com#> .
-     * @prefix oa: <https://jena.apache.org/ontapi/Assembler#> .
-     * @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-     * @prefix ja: <http://jena.hpl.hp.com/2005/11/Assembler#> .
+     * PREFIX : <http://ex.com#>
+     * PREFIX oa: <https://jena.apache.org/ontapi/Assembler#>
+     * PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+     * PREFIX ja: <http://jena.hpl.hp.com/2005/11/Assembler#>
      *
      * :spec a oa:OntSpecification ;
      *      oa:specificationName "OWL1_LITE_MEM_RDFS_INF" .
@@ -48,8 +48,8 @@ public class OntModelAssembler extends AssemblerBase {
      * :base a ja:MemoryModel ;
      *      ja:content [
      *          ja:literalContent """
-     *              @prefix : <http://ex.com#> .
-     *              @prefix owl: <http://www.w3.org/2002/07/owl#> .
+     *              PREFIX : <http://ex.com#>
+     *              PREFIX owl: <http://www.w3.org/2002/07/owl#>
      *              :C a owl:Class .
      *          """ ;
      *          ja:contentEncoding "TTL"
@@ -60,10 +60,10 @@ public class OntModelAssembler extends AssemblerBase {
      *      oa:baseModel :base .
      * }</pre>
      * <pre>{@code
-     * @prefix : <http://ex.com#> .
-     * @prefix oa: <https://jena.apache.org/ontapi/Assembler#> .
-     * @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-     * @prefix ja: <http://jena.hpl.hp.com/2005/11/Assembler#> .
+     * PREFIX : <http://ex.com#>
+     * PREFIX oa: <https://jena.apache.org/ontapi/Assembler#>
+     * PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+     * PREFIX ja: <http://jena.hpl.hp.com/2005/11/Assembler#>
      *
      * :repo a oa:DocumentGraphRepository ;
      *      oa:graph :g .

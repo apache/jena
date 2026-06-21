@@ -43,16 +43,16 @@ public class OntSpecificationAssembler extends AssemblerBase {
     /**
      * examples:
      * <pre>{@code
-     * @prefix : <http://ex.com#> .
-     * @prefix oa: <https://jena.apache.org/ontapi/Assembler#> .
-     * @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+     * PREFIX : <http://ex.com#>
+     * PREFIX oa: <https://jena.apache.org/ontapi/Assembler#>
+     * PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
      * <p>
      * :spec a oa:OntSpecification ;
      *      oa:specificationName "OWL1_LITE_MEM_RDFS_INF" .
      * }</pre>
      * <pre>{@code
-     * @prefix : <http://ex.com#> .
-     * @prefix oa: <https://jena.apache.org/ontapi/Assembler#> .
+     * PREFIX : <http://ex.com#>
+     * PREFIX oa: <https://jena.apache.org/ontapi/Assembler#>
      *
      * :reasoner a oa:ReasonerFactory ;
      *      oa:reasonerURL <http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner> .
@@ -62,17 +62,17 @@ public class OntSpecificationAssembler extends AssemblerBase {
      *      oa:reasonerFactory :reasoner .
      * }</pre>
      * <pre>{@code
-     * @prefix : <http://ex.com#> .
-     * @prefix oa: <https://jena.apache.org/ontapi/Assembler#> .
-     * @prefix owl: <http://www.w3.org/2002/07/owl#> .
-     * @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-     * @prefix ja: <http://jena.hpl.hp.com/2005/11/Assembler#> .
+     * PREFIX : <http://ex.com#>
+     * PREFIX oa: <https://jena.apache.org/ontapi/Assembler#>
+     * PREFIX owl: <http://www.w3.org/2002/07/owl#>
+     * PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+     * PREFIX ja: <http://jena.hpl.hp.com/2005/11/Assembler#>
      *
      * :content a ja:Content ;
      *      ja:literalContent """
-     *          @prefix : <http://ex.com#> .
-     *          @prefix owl: <http://www.w3.org/2002/07/owl#> .
-     *          @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+     *          PREFIX : <http://ex.com#>
+     *          PREFIX owl: <http://www.w3.org/2002/07/owl#>
+     *          PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
      *          :Person a owl:Class .
      *          :Employee a owl:Class ; rdfs:subClassOf :Person .
      *      """ ;
