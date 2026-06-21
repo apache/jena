@@ -45,7 +45,7 @@ import org.apache.jena.sparql.util.IsoMatcher;
  * Testing of RDF 1.2 parsing.
  * Also - compare the output of Lang.TRURLE and TurtleJCC.TTL.JCC.
  */
-public class TestRDF12LangSyntax {
+public class TestRDF12LangDirSyntax {
     // -- The tests
 
     // Details of a test entry - it may contain information relevant to only some kinds of test.

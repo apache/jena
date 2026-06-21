@@ -34,7 +34,8 @@ import org.apache.jena.riot.lang.rdfxml.rrx_stax_sr.ReaderRDFXML_StAX_SR;
 
 /** Non-RDF1.2 tests */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TM_RRX11 {
+public class Scripts_RRX11 {
+    // Manifest driven RDF 1.1 tests of RRX
     private static String DIR = "testing/RIOT/rrx11-2";
     private static String MANIFEST_MISC_RDFXML = DIR+"/manifest.ttl";
 

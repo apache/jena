@@ -23,6 +23,8 @@ package org.apache.jena.sparql;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 import org.apache.jena.query.TS_Query;
 import org.apache.jena.rdf12.TS_RDF12;
@@ -44,7 +46,6 @@ import org.apache.jena.sparql.expr.TS_Expr;
 import org.apache.jena.sparql.function.library.TS_LibraryFunctions;
 import org.apache.jena.sparql.function.scripting.TS_FunctionScripting;
 import org.apache.jena.sparql.function.user.TS_UserFunctions;
-import org.apache.jena.sparql.graph.TS_Graph;
 import org.apache.jena.sparql.lang.TS_LangSPARQL;
 import org.apache.jena.sparql.lib.TS_SparqlLib;
 import org.apache.jena.sparql.modify.TS_Update;
@@ -53,27 +54,10 @@ import org.apache.jena.sparql.path.TS_Path;
 import org.apache.jena.sparql.pfunction.library.TS_PFunction;
 import org.apache.jena.sparql.resultset.TS_ResultSet;
 import org.apache.jena.sparql.solver.TS_Solver;
-import org.apache.jena.sparql.sse.TS_SSE;
 import org.apache.jena.sparql.syntax.TS_Syntax;
-import org.apache.jena.sparql.transaction.TS_Transaction;
-import org.apache.jena.sparql.util.TS_DyadicDatasetGraphs;
-import org.apache.jena.sparql.util.TS_Util;
-import org.apache.jena.sparql.util.compose.TS_DatasetCollectors;
-import org.apache.jena.sparql.util.iso.TS_Iso;
-
-import org.junit.platform.suite.api.SelectClasses;
-import org.junit.platform.suite.api.Suite;
 @Suite
 @SelectClasses({
-
-    TS_SSE.class
-    , TS_LangSPARQL.class
-
-    , TS_Graph.class
-    , TS_DyadicDatasetGraphs.class
-    , TS_DatasetCollectors.class
-    , TS_Util.class
-    , TS_Iso.class
+    TS_LangSPARQL.class
 
     , TS_Expr.class
     , TS_LibraryFunctions.class
@@ -99,7 +83,6 @@ import org.junit.platform.suite.api.Suite;
     , TS_DatasetTxnMem.class
     , TS_Path.class
     , TS_Update.class
-    , TS_Transaction.class
     , TS_SparqlLib.class
 
     // Outside org.apache.jena.sparql

@@ -43,7 +43,7 @@ public class TestSPARQL12Results {
         ResultSetFormatter.consume(rs);
     }
 
-    // Believed Stardog format JSON results.
+    // Believed to be Stardog format JSON results.
     // It uses "s", "p" and "o" for the RDF term results.
     // It uses "statement" for "triple".
     @Test public void parse_alt_2() {

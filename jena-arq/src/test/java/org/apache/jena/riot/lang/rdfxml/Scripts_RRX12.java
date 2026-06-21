@@ -34,7 +34,7 @@ import org.apache.jena.riot.lang.rdfxml.rrx_stax_sr.ReaderRDFXML_StAX_SR;
 
 // RDF 1.2 tests
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TM_RRX12 {
+public class Scripts_RRX12 {
 
     //private static String DIR = "testing/RIOT/rrx12";
     private static String DIR = "testing/RIOT/rrx12";

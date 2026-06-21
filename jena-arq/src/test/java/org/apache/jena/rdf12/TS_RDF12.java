@@ -24,18 +24,23 @@ package org.apache.jena.rdf12;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
-import org.apache.jena.rdf12.parse.TS_RDFStar_Parse;
-
-// Currently, RDF1.2 and SPARQL 1.2 specific tests.
-// Split sometime / replace with scripted tests.
+/**
+ * Basic testing of RDF 1.2 features to test the machinery.
+ *
+ * The rdf-tests should do full coverage so the tests here
+ * are a precursor, with more focused error reporting.
+ */
 @Suite
 @SelectClasses({
-    TS_RDFStar_Parse.class,
+    TestNQuadsTripleTerms.class,
+    TestNTriplesTripleTerms.class,
+    TestTrigParseTripleTerms.class,
+    TestTurtleTripleTermsParse.class,
+    TestSPARQL12TripleTerms.class,
 
-    TestRDF12LangSyntax.class,
+    TestRDF12LangDirSyntax.class,
     TestSPARQL12Syntax.class,
     TestSPARQL12Eval.class,
     TestSPARQL12Results.class
 })
-public class TS_RDF12 {
-}
+public class TS_RDF12 {}

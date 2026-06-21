@@ -26,6 +26,10 @@ import org.junit.platform.suite.api.Suite;
 
 /**
  * Detailed RRX tests, not manifest driven.
+ * TS_RRX runs local RRX tests by comparing the different RRX parsers
+ *  to ARP1. These test check for the same number of warning as well.
+ * The TestRDFXML_RRX_* are running on extra local files. The
+ * TestExtraRRX11 is running on the RDF 1.0 test suite that ARP1 has used.
  */
 @Suite
 @SelectClasses( {
@@ -34,13 +38,14 @@ import org.junit.platform.suite.api.Suite;
     Test_RRX_Local_StAXev.class,
     Test_RRX_Local_StAXsr.class,
     // RDF 1.1 test suite as detailed tests.
-    // See Scripts_RIOT_
     Test_RRX_W3C_SAX.class,
     Test_RRX_W3C_StAXev.class,
     Test_RRX_W3C_StAXsr.class,
 
-    // Additional RRX specific tests. "rrx11-files"
+    // Additional RRX specific tests. Uses "rrx11-files"
     TestExtraRRX11.class
+
+    // See also Scripts_RIOT_
 })
 
 public class TS_RRX {}

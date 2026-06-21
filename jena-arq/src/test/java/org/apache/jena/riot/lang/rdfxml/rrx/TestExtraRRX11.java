@@ -43,7 +43,6 @@ import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.IOX;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.lang.rdfxml.RRX;
-import org.apache.jena.riot.lang.rdfxml.rrx.RunTestRDFXML11.ErrorHandlerCollector;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.riot.system.StreamRDF;

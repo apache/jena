@@ -31,7 +31,6 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -57,13 +56,13 @@ public class RunTestRDFXML11 {
      * These are also run from {@link org.apache.jena.riot.lang.rdfxml.Scripts_RRX_RDFXML}.
      * Here, the exact warnings and errors are checked.
      */
-    static List<String> w3cTestFiles() {
+    public static List<String> w3cTestFiles() {
         Path DIR = Path.of("testing/rdf-tests-cg/rdf/rdf11/rdf-xml");
         List<String> files = allTestFiles(DIR);
         return files;
     }
 
-    static List<String> allTestFiles(Path directory) {
+    private static List<String> allTestFiles(Path directory) {
         if ( !Files.exists(directory) ) {
             System.err.println("No such directory: "+directory);
             return List.of();
@@ -92,7 +91,7 @@ public class RunTestRDFXML11 {
      *
      * Check the files on disk agree with the built-in order list.
      */
-    static List<String> localTestFiles() {
+   public static List<String> localTestFiles() {
         Path LOCAL_DIR = Path.of("testing/RIOT/rrx11/");
         Set<String> found;
         try {
@@ -224,55 +223,10 @@ public class RunTestRDFXML11 {
     }
 
 
-    static List<RRX_TestFileArgs> makeTestSetup(String label, ReaderRIOTFactory rdfxmlFactory,  List<String> testfiles) {
+   public static List<RRX_TestFileArgs> makeTestSetup(String label, ReaderRIOTFactory rdfxmlFactory,  List<String> testfiles) {
         return testfiles.stream()
                 .map(fn->new RRX_TestFileArgs(label, fn, rdfxmlFactory))
                 .toList();
-    }
-
-    static class ErrorHandlerCollector implements ErrorHandler {
-        List<String> warnings = new ArrayList<>();
-        List<String> errors = new ArrayList<>();
-        List<String> fatals = new ArrayList<>();
-
-        @Override
-        public void warning(String message, long line, long col) {
-            warnings.add(message);
-        }
-
-        @Override
-        public void error(String message, long line, long col) {
-            errors.add(message);
-            throw new RiotException(message);
-        }
-
-        @Override
-        public void fatal(String message, long line, long col) {
-            fatals.add(message);
-            throw new RiotException(message);
-        }
-
-        public boolean anySet() {
-            return ! ( warnings.isEmpty() && errors.isEmpty() && fatals.isEmpty() );
-        }
-
-        public void reset() {
-            warnings.clear();
-            errors.clear();
-            fatals.clear();
-        }
-
-        public String summary() {
-            if ( fatals.isEmpty() )
-                return format("E:%d W:%d", errors.size(), warnings.size());
-            return format("E:%d W:%d F:%d", errors.size(), warnings.size(), fatals.size());
-        }
-
-        public void print(PrintStream out) {
-            warnings.forEach(s -> out.println("W: " + s));
-            errors.forEach(s -> out.println("E: " + s));
-            fatals.forEach(s -> out.println("F: " + s));
-        }
     }
 
     // If true, print if there were any warnings/errors. If false, print only if different counts.
@@ -322,15 +276,6 @@ public class RunTestRDFXML11 {
         parseFile(testSubjectFactory, errorHandlerReference, filename);
     }
 
-    /**
-     * Run a test, expecting a graph as the result.
-     */
-    static void runTestExpectGraph(String testLabel,
-                                   ReaderRIOTFactory testSubjectFactory, String subjectLabel,
-                                   Graph expectedGraph, String filename) {
-        runTestExpectGraph(testLabel, testSubjectFactory, subjectLabel, expectedGraph, filename, null);
-    }
-
     /** Run a test expecting a RiotException. */
     static void runTestExpectFailure(String testLabel,
                                      ReaderRIOTFactory testSubjectFactory, String subjectLabel,
@@ -357,15 +302,24 @@ public class RunTestRDFXML11 {
 
     /**
      * Run a test, expecting a graph as the result.
+     */
+    static void unused_runTestExpectGraph(String testLabel,
+                                   ReaderRIOTFactory testSubjectFactory, String subjectLabel,
+                                   Graph expectedGraph, String filename) {
+        runTestExpectGraph(testLabel, testSubjectFactory, subjectLabel, expectedGraph, filename, null);
+    }
+
+    /**
+     * Run a test, expecting a graph as the result.
      * Compare with the expected error handler if that argument is not null.
      */
     private static void runTestExpectGraph(String testLabel,
                                            ReaderRIOTFactory testSubjectFactory, String subjectLabel,
                                            Graph expectedGraph, String filename,
                                            ErrorHandlerCollector expectedErrorHandler) {
-        ErrorHandlerCollector errorHandlerTest = new ErrorHandlerCollector();
+        ErrorHandlerCollector actualErrorHandler = new ErrorHandlerCollector();
         try {
-            Graph actualGraph = parseFile(testSubjectFactory, errorHandlerTest, filename);
+            Graph actualGraph = parseFile(testSubjectFactory, actualErrorHandler, filename);
             // "same" graph output?
             if ( ! expectedGraph.isIsomorphicWith(actualGraph) ) {
                 output.println("---- "+testLabel+" : "+filename);
@@ -378,7 +332,7 @@ public class RunTestRDFXML11 {
                 fail("Graph1 not isomorphic to graph2");
             }
             if ( expectedErrorHandler != null )
-                checkErrorHandler(testLabel, expectedErrorHandler, errorHandlerTest);
+                checkErrorHandler(testLabel, expectedErrorHandler, actualErrorHandler);
             return;
         } catch (RiotException ex) {
 //            output.println("## "+testLabel);
@@ -395,11 +349,11 @@ public class RunTestRDFXML11 {
                                              ReaderRIOTFactory testSubjectFactory, String subjectLabel,
                                              String filename,
                                              ErrorHandlerCollector expectedErrorHandler) {
-        ErrorHandlerCollector errorHandlerTest = new ErrorHandlerCollector();
+        ErrorHandlerCollector actualErrorHandler = new ErrorHandlerCollector();
         try {
-            Graph actualGraph = parseFile(testSubjectFactory, errorHandlerTest, filename);
+            Graph actualGraph = parseFile(testSubjectFactory, actualErrorHandler, filename);
             if ( expectedErrorHandler != null )
-                checkErrorHandler(testLabel, expectedErrorHandler, errorHandlerTest);
+                checkErrorHandler(testLabel, expectedErrorHandler, actualErrorHandler);
             return;
         } catch(RiotException ex) {
             output.println("## "+testLabel);
@@ -407,7 +361,6 @@ public class RunTestRDFXML11 {
             fail("Unexpected parse error: "+ex.getMessage());
         }
     }
-
 
     /** Run a test expecting a RiotException. Check the error handler. */
     private static void runTestExpectFailure(String testLabel,
