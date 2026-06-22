@@ -22,14 +22,13 @@
 package org.apache.jena.sparql.service.enhancer.impl.util;
 
 import java.util.Collection;
-import java.util.NavigableSet;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
 import com.google.common.collect.ContiguousSet;
 import com.google.common.collect.DiscreteDomain;
 import com.google.common.collect.Range;
+import com.google.common.collect.RangeSet;
+import com.google.common.collect.TreeRangeSet;
 
 /**
  * Utility methods for working with (fixed-size) pages.
@@ -51,6 +50,29 @@ public class PageUtils {
         return pageId * pageSize;
     }
 
+    /**
+     * Convert a range in item-offset space to page-id space.
+     * For example, the offset range [1000,2000) with a page size of 1000 will become the page index range [1,2).
+     */
+    public static Range<Long> touchedPageIndexRange(Range<Long> range, long pageSize) {
+        DiscreteDomain<Long> discreteDomain = DiscreteDomain.longs();
+        ContiguousSet<Long> set = ContiguousSet.create(range, discreteDomain);
+        long start = getPageIndexForOffset(set.first(), pageSize);
+        long end = getPageIndexForOffset(set.last(), pageSize);
+        Range<Long> rawRange = Range.closed(start, end);
+        Range<Long> canonicalRange = rawRange.canonical(discreteDomain);
+        return canonicalRange;
+    }
+
+    /**
+     * Similar to {@link #touchedPageIndexRange(Range, long)} but for a set of ranges.
+     */
+    public static RangeSet<Long> touchedPageIndexRangeSet(Collection<Range<Long>> offsetRanges, long pageSize) {
+        RangeSet<Long> result = TreeRangeSet.create();
+        offsetRanges.forEach(offsetRange -> result.add(touchedPageIndexRange(offsetRange, pageSize)));
+        return result;
+    }
+
     /** Return a stream of the page indices touched by the range w.r.t. the page size */
     public static LongStream touchedPageIndices(Range<Long> range, long pageSize) {
         ContiguousSet<Long> set = ContiguousSet.create(range, DiscreteDomain.longs());
@@ -61,14 +83,4 @@ public class PageUtils {
                         getPageIndexForOffset(set.last(), pageSize));
         return result;
     }
-
-    public static NavigableSet<Long> touchedPageIndices(Collection<Range<Long>> ranges, long pageSize) {
-        NavigableSet<Long> result = ranges.stream()
-            .flatMapToLong(range -> PageUtils.touchedPageIndices(range, pageSize))
-            .boxed()
-            .collect(Collectors.toCollection(TreeSet::new));
-
-        return result;
-    }
-
 }

@@ -101,6 +101,7 @@ public class BindingUtils {
      * If the node value is null then null is returned.
      * If the node value is not a number literal then an {@link ExprEvalException} is raised. */
     public static Number getNumberOrNull(Binding binding, Var var) {
+        Objects.requireNonNull(binding);
         Node node = binding.get(var);
         Number result = NodeUtilsExtra.getNumberOrNull(node);
         return result;
