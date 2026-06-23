@@ -65,10 +65,15 @@ public class SRSInfoTest {
     //public static final double OS_Y2 = 1256558.4455361878;
 
     // SIS 1.4
-    public static final double OS_X1 = -104009.35713717458;
+    //public static final double OS_X1 = -104009.35713717458;
+    //public static final double OS_X2 = 688806.0073395987;
+    //public static final double OS_Y1 = -16627.734528042376;
+    //public static final double OS_Y2 = 1256558.445536187;
+    // SIS 1.5
+    public static final double OS_X1 = -104728.76470298576;
     public static final double OS_X2 = 688806.0073395987;
-    public static final double OS_Y1 = -16627.734528042376;
-    public static final double OS_Y2 = 1256558.445536187;
+    public static final double OS_Y1 = -16627.734527606517;
+    public static final double OS_Y2 = 1256616.3207024988;
 
     /**
      * Test of buildDomainEnvelope method, of class SRSInfo.

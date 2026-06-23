@@ -80,20 +80,8 @@ public class SRSRegistryTest {
 
             String srsURI = SRS_URI.DEFAULT_WKT_CRS84;
 
-            String default_CRS_WKT = "GeodeticCRS[\"WGS 84\",\n"
-                    + "  Datum[\"World Geodetic System 1984\",\n"
-                    + "    Ellipsoid[\"WGS 84\", 6378137.0, 298.257223563]],\n"
-                    + "  CS[ellipsoidal, 2],\n"
-                    + "    Axis[\"Geodetic longitude (Lon)\", east],\n"
-                    + "    Axis[\"Geodetic latitude (Lat)\", north],\n"
-                    + "    Unit[\"degree\", 0.017453292519943295],\n"
-                    + "  Scope[\"Horizontal component of 3D system. Used by the GPS satellite navigation system and for NATO military geodetic surveying.\"],\n"
-                    + "  Area[\"World.\"],\n"
-                    + "  BBox[-90.00, -180.00, 90.00, 180.00],\n"
-                    + "  Id[\"CRS\", 84, Citation[\"WMS\"], URI[\"urn:ogc:def:crs:OGC:1.3:CRS84\"]]]";
-
-            CoordinateReferenceSystem expResult = CRS.fromWKT(default_CRS_WKT);
-            CoordinateReferenceSystem result = SRSRegistry.getCRS(srsURI);          
+            CoordinateReferenceSystem expResult = CRS.forCode("CRS:84");
+            CoordinateReferenceSystem result = SRSRegistry.getCRS(srsURI);
             assertEquals(expResult.toWKT(), result.toWKT());
         } catch (FactoryException ex) {
 
