@@ -50,8 +50,7 @@ public class DistanceFF extends FunctionBase3 {
                 throw new ExprEvalException("Not a IRI: " + FmtUtils.stringForNode(v3.asNode()));
             }
 
-            //GeoSPARQL uses the Euclidean distance regardless of SRS URI.
-            double distance = geometry1.distanceEuclidean(geometry2, v3.asNode().getURI());
+            double distance = geometry1.distance(geometry2, v3.asNode().getURI());
 
             return NodeValue.makeDouble(distance);
         } catch (DatatypeFormatException ex) {
