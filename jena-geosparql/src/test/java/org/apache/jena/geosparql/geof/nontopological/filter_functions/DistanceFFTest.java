@@ -87,31 +87,50 @@ public class DistanceFFTest {
     }
 
     /**
-     * Test of exec method, of class DistanceFF.
+     * Geographic SRS with angular units throws because great circle distance only supports linear units.
      */
-    @Test
-    public void testExec_geographic_radians() {
+    @Test(expected = ExprEvalException.class)
+    public void testExec_geographic_radians_exception() {
 
         NodeValue v1 = NodeValue.makeNode("Point(11.41 53.63)", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeNode("Point(11.57 48.13)", WKTDatatype.INSTANCE);
         NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.RADIAN_URL));
         DistanceFF instance = new DistanceFF();
-        double expResult = 0.096034;
+        double result = instance.exec(v1, v2, v3).getDouble();
+    }
+
+    /**
+     * Test of exec method, of class DistanceFF.
+     * Geographic SRS (CRS84 default WKT) with linear units should use great circle distance,
+     * as per GeoSPARQL 1.1
+     */
+    @Test
+    public void testExec_geographic_kilometres() {
+
+        NodeValue v1 = NodeValue.makeNode("Point(11.41 53.63)", WKTDatatype.INSTANCE);
+        NodeValue v2 = NodeValue.makeNode("Point(11.57 48.13)", WKTDatatype.INSTANCE);
+        NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.KILOMETRE_URN));
+        DistanceFF instance = new DistanceFF();
+        double expResult = 611.6755;
         double result = instance.exec(v1, v2, v3).getDouble();
         assertEquals(expResult, result, 0.0001);
     }
 
     /**
      * Test of exec method, of class DistanceFF.
+     * Geographic SRS (EPSG:4326) with linear units should use great circle distance,
+     * as per GeoSPARQL 1.1.
      */
-    @Test(expected = ExprEvalException.class)
-    public void testExec_geographic_metres_exception() {
+    @Test
+    public void testExec_geographic_kilometres_epsg4326() {
 
-        NodeValue v1 = NodeValue.makeNode("Point(11.41 53.63)", WKTDatatype.INSTANCE);
-        NodeValue v2 = NodeValue.makeNode("Point(11.57 48.13)", WKTDatatype.INSTANCE);
+        NodeValue v1 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 20.0)", WKTDatatype.INSTANCE);
+        NodeValue v2 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10.0 21.0)", WKTDatatype.INSTANCE);
         NodeValue v3 = NodeValue.makeNode(NodeFactory.createURI(Unit_URI.KILOMETRE_URN));
         DistanceFF instance = new DistanceFF();
+        double expResult = 109.5057;
         double result = instance.exec(v1, v2, v3).getDouble();
+        assertEquals(expResult, result, 0.0001);
     }
 
     /**
@@ -139,7 +158,7 @@ public class DistanceFFTest {
      */
     @Test(expected = ExprEvalException.class)
     public void testExec_conversion_exception_units() {
-        // Still receive an expection as the units of v1 and v3 don't align.
+        // Still receive an exception: SRS transform disabled, so geographic v1 cannot transform projected v2.
         GeoSPARQLConfig.allowGeometrySRSTransformation(false);     // Disable default config.
         NodeValue v1 = NodeValue.makeNode("Point(11.57 48.13)", WKTDatatype.INSTANCE);
         NodeValue v2 = NodeValue.makeNode("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(90 60)", WKTDatatype.INSTANCE);
