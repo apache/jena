@@ -87,7 +87,8 @@ public class DistanceFFTest {
     }
 
     /**
-     * Geographic SRS with angular units throws because great circle distance only supports linear units.
+     * Geographic SRS with angular units. An exception is thrown
+     * because great circle distance only supports linear units.
      */
     @Test(expected = ExprEvalException.class)
     public void testExec_geographic_radians_exception() {
