@@ -48,8 +48,6 @@ import org.apache.jena.sparql.engine.binding.BindingFactory;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.QueryExecBuilder;
 import org.apache.jena.sparql.exec.RowSet;
-import org.apache.jena.sparql.util.graph.GNode;
-import org.apache.jena.sparql.util.graph.GraphList;
 import org.apache.jena.system.G;
 import org.apache.jena.vocabulary.RDFS;
 
@@ -108,21 +106,11 @@ import org.apache.jena.vocabulary.RDFS;
         List<Node> results = new ArrayList<>();
 
         nodes.forEach(node->{
-            List<Node> members = listMembers(graph, node);
-            if ( members != null )
-                results.addAll(members);
-            else
-                results.add(node);
+            // Returns a List.of(node) if not an RDF List.
+            List<Node> values = G.getOneOrList(graph, node);
+            results.addAll(values);
         });
         return results;
-    }
-
-    private static List<Node> listMembers(Graph graph, Node node) {
-        GNode gnode = new GNode(graph, node);
-        if ( ! GraphList.isListNode(gnode) )
-            return null;
-        List<Node> list = GraphList.members(gnode);
-        return list;
     }
 
     // Node presentation

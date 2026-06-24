@@ -110,7 +110,7 @@ public class Manifest
         Node entriesNode = G.getZeroOrOneSP(manifestGraph, manifest, TestManifest.entries.asNode());
         if ( entriesNode == null )
             return;
-        List<Node> items = G.rdfList(manifestGraph, entriesNode);
+        List<Node> items = G.listMembers(manifestGraph, entriesNode);
 
         List<Node> missingEntries = items.stream().filter(entry -> ! G.contains(manifestGraph, entry, null, null)).toList();
         if ( ! missingEntries.isEmpty() ) {
@@ -167,7 +167,7 @@ public class Manifest
         if ( ! r.isBlank() )
             return;
         // Blank node - assumed to be a list.
-        List<Node> includes = G.rdfList(manifestGraph, r);
+        List<Node> includes = G.listMembers(manifestGraph, r);
         for ( Node inc : includes ) {
             if ( inc.isBlank() || inc.isURI() ) {
                 parseOneIncludesList(inc);

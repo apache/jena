@@ -305,7 +305,7 @@ public class Constraints {
 
     /** Return the list elements of an RDF list start at {@code node} */
     private static List<Node> list(Graph g, Node node) {
-        return G.rdfList(g, node);
+        return G.listMembers(g, node);
     }
 
     private static List<String> listString(Graph g, Node node) {
