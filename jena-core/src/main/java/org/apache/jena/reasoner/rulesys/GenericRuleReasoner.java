@@ -387,6 +387,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
         } else if (mode == BACKWARD) {
             graph = new LPBackwardRuleInfGraph(this, getBruleStore(), data, schemaArg);
             ((LPBackwardRuleInfGraph)graph).setTraceOn(traceOn);
+            ((LPBackwardRuleInfGraph)graph).setFunctorFiltering(filterFunctors);
         } else {
             List<Rule> ruleSet = ((FBRuleInfGraph)schemaArg).getRules();
             FBRuleInfGraph fbgraph = new FBRuleInfGraph(this, ruleSet, schemaArg);
