@@ -167,7 +167,7 @@
                   <template #cell(status)="data">
                     <div class="progress">
                       <div
-                        :class="`progress-bar bg-${getFileStatus(data.item)}`"
+                        :class="['progress-bar', `bg-${getFileStatus(data.item)}`, { 'progress-bar-striped': data.item.active, 'progress-bar-animated': data.item.active }]"
                         :style="`width: ${data.item.progress}%`"
                         :aria-valuenow="`${data.item.progress}`"
                         aria-valuemin="0"
@@ -384,7 +384,7 @@ export default {
         return 'success'
       }
       if (file.active) {
-        return 'warning'
+        return 'primary'
       }
       return ''
     },
