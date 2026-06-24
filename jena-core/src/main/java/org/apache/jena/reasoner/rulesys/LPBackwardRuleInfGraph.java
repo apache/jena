@@ -58,6 +58,9 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
     /** Cache of temporary property values inferred through getTemp calls */
     protected TempNodeCache tempNodecache;
 
+    /** Flag, if true then functor-valued literals are filtered from find results */
+    protected boolean filterFunctors = true;
+
     static Logger logger = LoggerFactory.getLogger(LPBackwardRuleInfGraph.class);
 
 //  =======================================================================
@@ -172,7 +175,11 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
         if (continuation != null) {
             result = result.andThen(continuation.find(pattern));
         }
-        return result.filterDrop(Functor.acceptFilter);
+        if (filterFunctors) {
+            return result.filterDrop(Functor.acceptFilter);
+        } else {
+            return result;
+        }
     }
 
     /**
@@ -258,6 +265,14 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
         } else {
             return derivations.getAll(t);
         }
+    }
+
+    /**
+     * Set to true to cause functor-valued literals to be dropped from rule output.
+     * Default is true.
+     */
+    public void setFunctorFiltering(boolean param) {
+        filterFunctors = param;
     }
 
     /**

@@ -326,6 +326,33 @@ public class TestGenericRules extends TestCase {
     }
 
     /**
+     * Test that functor filtering is honored in backward mode.
+     */
+    public void testBackwardFunctorFilter() {
+        Graph data = createGraphForTest();
+        data.add(Triple.create(a, r, b));
+        data.add(Triple.create(a, p, s));
+        List<Rule> rules = Rule.parseRules( "[r0: (?x q func(?y, ?z)) <- (?x r ?y) (?x p ?z)]" );
+        GenericRuleReasoner reasoner = (GenericRuleReasoner)GenericRuleReasonerFactory.theInstance().create(null);
+        reasoner.setRules(rules);
+        reasoner.setMode(GenericRuleReasoner.BACKWARD);
+
+        // Default: functors are filtered out
+        InfGraph infgraph = reasoner.bind(data);
+        TestUtil.assertIteratorValues(this,
+              infgraph.find(null, q, null), new Object[] {
+              } );
+
+        // With filtering disabled: functor triples should be visible
+        reasoner.setFunctorFiltering(false);
+        infgraph = reasoner.bind(data);
+        TestUtil.assertIteratorValues(this,
+              infgraph.find(null, q, null), new Object[] {
+                  Triple.create(a, q, Functor.makeFunctorNode("func", new Node[]{b, s}))
+              } );
+    }
+
+    /**
      * Test recursive rules involving functors
      * May lock up in there is a bug.
      */
