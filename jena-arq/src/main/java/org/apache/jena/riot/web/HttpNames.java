@@ -63,9 +63,9 @@ public class HttpNames
     // XXX Rename as mtCharset?
     public static final String charset              = "charset" ;
     // RDF .1.2+ SPARQL 1.2+ HTTP header parameters
-    public static final String mtParamVersion         = "version" ;
+    public static final String mtParamVersion       = "version" ;
     // RFC 6906 -- https://www.rfc-editor.org/rfc/rfc6906
-    public static final String mtParamProfile         = "profile" ;
+    public static final String mtParamProfile       = "profile" ;
 
     // GSP parameter names
     public static final String paramGraph           = "graph" ;
@@ -99,7 +99,7 @@ public class HttpNames
     public static final String paramForceAccept     = "force-accept" ;  // Force the accept header at the last moment
     public static final String paramTimeout         = "timeout" ;
 
-    // Replace by enum HttpMethods
+    // Replace by enum HttpMethod
     public static final String METHOD_DELETE        = "DELETE";
     public static final String METHOD_HEAD          = "HEAD";
     public static final String METHOD_GET           = "GET";
