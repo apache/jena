@@ -47,6 +47,7 @@ public class VocabLangRDF
     public static final Resource TestPositiveSyntaxTTL      = m_model.createResource( NS+"TestTurtlePositiveSyntax" );
     public static final Resource TestNegativeSyntaxTTL      = m_model.createResource( NS+"TestTurtleNegativeSyntax" );
     public static final Resource TestEvalTTL                = m_model.createResource( NS+"TestTurtleEval" );
+    @Deprecated
     public static final Resource TestNegativeEvalTTL        = m_model.createResource( NS+"TestTurtleNegativeEval" );
 
     public static final Resource TestPositiveSyntaxNT       = m_model.createResource( NS+"TestNTriplesPositiveSyntax" );
@@ -67,6 +68,7 @@ public class VocabLangRDF
     public static final Resource TestPositiveSyntaxTriG     = m_model.createResource( NS+"TestTrigPositiveSyntax" );
     public static final Resource TestNegativeSyntaxTriG     = m_model.createResource( NS+"TestTrigNegativeSyntax" );
     public static final Resource TestEvalTriG               = m_model.createResource( NS+"TestTrigEval" );
+    @Deprecated
     public static final Resource TestNegativeEvalTriG       = m_model.createResource( NS+"TestTrigNegativeEval" );
 
     public static final Resource TestPositiveSyntaxRDFXML   = m_model.createResource( NS+"TestXMLPositiveSyntax" );
