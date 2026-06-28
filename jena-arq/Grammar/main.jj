@@ -3066,6 +3066,7 @@ TOKEN:
           ["\u3001"-"\uD7FF"] | ["\uF900"-"\uFFFD"] 
           // [#x10000-#xEFFFF]
 #ifdef ARQ
+          // \-U not legal here so as an extension allow surrogate pairs.
           // Put in surrogate pairs because by the time javacc sees codepoints,
           // they are in UTF-16.
           | <SURROGATE_PAIR>
