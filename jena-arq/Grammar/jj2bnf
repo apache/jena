@@ -30,6 +30,8 @@ if ( $#ARGV != 1 )
     exit 1 ;
 }
 
+$WithNumbers = 1 ;
+
 $/ = undef ;
 # Just table or full page.
 
@@ -122,9 +124,6 @@ for $t (@t) {
         $tokenbody =~ s/"/'/g ; # '" -- But not literal " -- how?
         $tokenbody =~ s/\<\>\'\{\}/\<\>\"\{\}/ ; # '" IRI fixup
 
-        ## IRIREF - special case of inline but with nested terminal name.
-        $tokenbody =~ s/<UCHAR>/UCHAR/ ; #
-        
         $inline{$tokenname} = $tokenbody ;
         #print "INLINE: ",$tokenname," => ",$tokenbody,"\n" ;
     } else {
@@ -159,11 +158,11 @@ for $r (@rules) {
     
     # Inlines
     for $k (keys %inline) {
-##      $s = esc($inline{$k}) ;
-##      $k = esc($k) ;
-##      # Assumes escaped <> round tokens.
-##      $k = quotemeta $k ;
-##      $ruleBodyStr =~ s/$k/$s/g ;
+        ##      $s = esc($inline{$k}) ;
+        ##      $k = esc($k) ;
+        ##      # Assumes escaped <> round tokens.
+        ##      $k = quotemeta $k ;
+        ##      $ruleBodyStr =~ s/$k/$s/g ;
 
         $s = $inline{$k};
         $ruleBodyStr =~ s/$k/$s/g ;
@@ -196,12 +195,14 @@ for $r (@rules) {
     ## Third part of the output.
     $ruleBodyStr = fixupRule($rulename, $ruleBodyStr) ;
 
-    ##Why no NL needed?
-    ## printf "%-5s  %-25s ::= %s\n", $rlabel, $rn, $ruleBodyStr ;
-    printf "%-25s ::= %s\n", $rn, $ruleBodyStr ;
-
-    #    $rule{$rulename, $rulebody) ;
-    #    print $rulename , "\n" ;
+    if ( $WithNumbers ) {
+	## 5 spaces for the line number text, 2 gap = 7
+	$ruleNumStr = sprintf("%-5s", '[' . $ruleNum .  ']');
+	printf "%s  %-25s ::= %s\n", $ruleNumStr, $rn, $ruleBodyStr ;
+    } else {
+	## No number label
+	printf "%-25s ::= %s\n", $rn, $ruleBodyStr ;
+    }
 }
 
 sub readFile {
@@ -237,7 +238,7 @@ sub fixupRule {
     $body =~ s/^\(\s+([^\(]*)\s+\)$/$1/ ;
 
     # There aren't any of these
-##    $body =~ s!\(\s+(\S*)\s+\)!$1!g ;
+    ##    $body =~ s!\(\s+(\S*)\s+\)!$1!g ;
 
     # Remove <> around tokens.
     $body =~ s/&lt;(\w+)&gt;/$1/g ;
@@ -252,12 +253,12 @@ sub fixupRule {
          $head eq "Aggregate" )
     {
         ## Except BNODE, STRLEN etc
-## [138]        RegexExpression   ::=   'REGEX' '(' Expression ',' Expression ( ',' Expression )? ')'
-## [139]        SubstringExpression       ::=   'SUBSTR' '(' Expression ',' Expression ( ',' Expression )? ')'
-## [140]        StrReplaceExpression      ::=   'REPLACE' '(' Expression ',' Expression ',' Expression ( ',' Expression )? ')'
-## [141]        ExistsFunc        ::=   'EXISTS' GroupGraphPattern
-## [142]        NotExistsFunc     ::=   'NOT' 'EXISTS' GroupGraphPattern
-##        | 'BNODE' ( '(' Expression ')' | <NIL> )
+        ## [138]        RegexExpression   ::=   'REGEX' '(' Expression ',' Expression ( ',' Expression )? ')'
+        ## [139]        SubstringExpression       ::=   'SUBSTR' '(' Expression ',' Expression ( ',' Expression )? ')'
+        ## [140]        StrReplaceExpression      ::=   'REPLACE' '(' Expression ',' Expression ',' Expression ( ',' Expression )? ')'
+        ## [141]        ExistsFunc        ::=   'EXISTS' GroupGraphPattern
+        ## [142]        NotExistsFunc     ::=   'NOT' 'EXISTS' GroupGraphPattern
+        ##        | 'BNODE' ( '(' Expression ')' | <NIL> )
 
         print STDERR "A:",$body,"\n" if $p ;
 
@@ -266,8 +267,15 @@ sub fixupRule {
         
         ## Alternative more general removal: NB space-) - matched the BNF parens
         ##$body =~ s%'BNODE'.*? \)%XXX-BNODE-XXX%;
-        
-        $body =~ s%\|\s*%\n                          |   %g ;
+
+	if ( $WithNumbers ) {
+	    ## Align spaces with the number label
+	    ## With number label
+	    $body =~ s%\|\s*%\n                                   | %g ;
+	} else {
+	    ## No number label
+	    $body =~ s%\|\s*%\n                            | %g ;
+	}
         
         ## Replace marker
         $body =~ s%XXX-BNODE-XXX%'BNODE' \( '(' Expression ')' \| NIL \)%;
@@ -289,9 +297,9 @@ sub fixupRule {
     }
 
     ## Split?
-##     if (  $head eq "Query" )
-##     {
-##     }
+    ##     if (  $head eq "Query" )
+    ##     {
+    ##     }
 
     #Rules where an outer () is unnecessary.
     if ( $head eq "GroupCondition" ||
