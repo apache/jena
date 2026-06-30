@@ -22,10 +22,15 @@
 package org.apache.jena.rdf12;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Graph;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFFormat;
+import org.apache.jena.riot.RDFParser;
+import org.apache.jena.riot.RDFWriter;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.exec.QueryExec;
@@ -33,6 +38,7 @@ import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.exec.RowSetOps;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.sse.SSE_ParseException;
+import org.apache.jena.sparql.util.IsoMatcher;
 import org.apache.jena.system.Txn;
 
 /**
@@ -88,6 +94,29 @@ public abstract class AbstratTestSPARQL12Eval {
         test("SELECT * { << ?x ?y ?z >> . }", 1);
     }
 
+
+    @Test public void eval_sparql12_construct1() {
+        String s = """
+                PREFIX : <http://example/>
+                :s :p <<( _:b0 :q :x2 )>> .
+                :s :p <<( _:b1 :q :x1 )>> .
+                """;
+        Graph expected = RDFParser.fromString(s, Lang.TTL).toGraph();
+        testConstruct("PREFIX : <http://example/> CONSTRUCT { :s :p <<( _:b :q ?x )>> } WHERE { VALUES ?x { :x1 :x2 } }",
+                      expected);
+    }
+
+    @Test public void eval_sparql12_construct2() {
+        String s = """
+                PREFIX : <http://example/>
+                << _:b1 :q :x1 >> .
+                << _:b2 :q :x2 >> .
+                """;
+        Graph expected = RDFParser.fromString(s, Lang.TTL).toGraph();
+        testConstruct("PREFIX : <http://example/> CONSTRUCT { << _:b :q ?x >> } WHERE { VALUES ?x { :x1 :x2 } }",
+                      expected);
+    }
+
     private void test(String queryString, int expected) {
         DatasetGraph dsg = dsg();
         Txn.executeRead(dsg, ()->{
@@ -99,6 +128,23 @@ public abstract class AbstratTestSPARQL12Eval {
         });
     }
 
+    private void testConstruct(String queryString, Graph expected) {
+        DatasetGraph dsg = dsg();
+        Txn.executeRead(dsg, ()->{
+            try( QueryExec qExec = QueryExec.dataset(dsg).query(queryString).build() ) {
+                Graph actual = qExec.construct();
+                boolean b = IsoMatcher.isomorphic(expected, actual);
+                if ( !b ) {
+                    System.err.println("==== Expected");
+                    RDFWriter.source(expected).format(RDFFormat.TURTLE_FLAT).output(System.err);
+                    System.err.println("==== Actual");
+                    RDFWriter.source(actual).format(RDFFormat.TURTLE_FLAT).output(System.err);
+                    System.err.println("====");
+                    fail("CONSTRUCT results are not isomorphic to expecte results");
+                }
+            }
+        });
+    }
 
 
 }
