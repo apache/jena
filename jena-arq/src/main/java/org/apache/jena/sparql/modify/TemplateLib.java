@@ -124,62 +124,55 @@ public class TemplateLib {
         Node p = quad.getPredicate();
         Node o = quad.getObject();
 
-        Node g1 = g;
-        Node s1 = s;
-        Node p1 = p;
-        Node o1 = o;
+        Node g1 = subst(g, b, bNodeMap, false);
+        Node s1 = subst(s, b, bNodeMap, true);
+        Node p1 = subst(p, b, bNodeMap, false);
+        Node o1 = subst(o, b, bNodeMap, true);
 
-        // replace blank nodes.
-        if ( g1.isBlank() || Var.isBlankNodeVar(g1) )
-            g1 = newBlank(g1, bNodeMap);
-
-        if ( s1.isBlank() || Var.isBlankNodeVar(s1) )
-            s1 = newBlank(s1, bNodeMap);
-
-        if ( p1.isBlank() || Var.isBlankNodeVar(p1) )
-            p1 = newBlank(p1, bNodeMap);
-
-        if ( o1.isBlank() || Var.isBlankNodeVar(o1) )
-            o1 = newBlank(o1, bNodeMap);
-
-        Quad q = quad;
-        if ( s1 != s || p1 != p || o1 != o || g1 != g )
-            q = Quad.create(g1, s1, p1, o1);
-        Quad q2 = Substitute.substitute(q, b);
-        return q2;
+      if ( s1 == s && p1 == p && o1 == o && g1 == g )
+          return quad;
+      return Quad.create(g1, s1, p1, o1);
     }
 
     /** Substitute into a triple, with rewriting of bNodes */
     public static Triple subst(Triple triple, Binding b, Map<Node, Node> bNodeMap) {
+        // Transfer to quads.
         Node s = triple.getSubject();
         Node p = triple.getPredicate();
         Node o = triple.getObject();
 
-        Node s1 = s;
-        Node p1 = p;
-        Node o1 = o;
+        Node s1 = subst(s, b, bNodeMap, true);
+        Node p1 = subst(p, b, bNodeMap, false);
+        Node o1 = subst(o, b, bNodeMap, true);
 
-        if ( s1.isBlank() || Var.isBlankNodeVar(s1) )
-            s1 = newBlank(s1, bNodeMap);
-
-        if ( p1.isBlank() || Var.isBlankNodeVar(p1) )
-            p1 = newBlank(p1, bNodeMap);
-
-        if ( o1.isBlank() || Var.isBlankNodeVar(o1) )
-            o1 = newBlank(o1, bNodeMap);
-
-        Triple t = triple;
-        if ( s1 != s || p1 != p || o1 != o )
-            t = Triple.create(s1, p1, o1);
-        Triple t2 = Substitute.substitute(t, b);
-        return t2;
+        if ( s1 == s && p1 == p && o1 == o )
+            return triple;
+        return Triple.create(s1, p1, o1);
     }
 
-    /** generate a blank node consistently */
+    // Deep node processing, with blank node rewrite and variable substitution.
+    public static Node subst(Node n, Binding b, Map<Node, Node> bNodeMap, boolean allowTripleTerms) {
+        if ( n.isURI() || n.isLiteral() )
+            return n;
+        if ( Var.isVar(n))
+            return Substitute.substitute(Var.alloc(n), b);
+        if ( n.isBlank() || Var.isBlankNodeVar(n) )
+            return newBlank(n, bNodeMap);
+        if ( allowTripleTerms && n.isTripleTerm() ) {
+            Triple t1 = subst(n.getTriple(), b, bNodeMap);
+            return NodeFactory.createTripleTerm(t1);
+        }
+        return n;
+    }
+
+    /** Generate a blank node consistently */
     private static Node newBlank(Node n, Map<Node, Node> bNodeMap) {
-        if ( !bNodeMap.containsKey(n) )
-            bNodeMap.put(n, NodeFactory.createBlankNode());
-        return bNodeMap.get(n);
+        Node n2 = bNodeMap.get(n);
+        if ( n2 != null )
+            return n2;
+        Node bNew = NodeFactory.createBlankNode();
+        bNodeMap.put(n, bNew);
+        return bNew;
     }
 
     // ---- Template to query pattern

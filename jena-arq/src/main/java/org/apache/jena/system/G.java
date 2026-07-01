@@ -505,22 +505,43 @@ public class G {
     }
 
     // ---- RDF list.
+    // Most ways to call GList.xxx
 
-    /** Return a java list for an RDF list of data. */
+    /** @deprecated use {@link #listMembers(Graph, Node)} */
+    @Deprecated(forRemoval = true)
     public static List<Node> rdfList(Graph graph, Node node) {
+        return listMembers(graph, node);
+    }
+
+    /** Return a java list of an RDF list of data. */
+    public static List<Node> listMembers(Graph graph, Node node) {
         Objects.requireNonNull(graph, "graph");
         Objects.requireNonNull(node, "node");
         List<Node> nodes = GList.members(graph, node);
         return nodes;
     }
 
-    /** Return a the length of an RDF list. */
+    /** Return a the length of an RDF list. Return -1 if it is not a list. */
     public static int listLength(Graph graph, Node node) {
         Objects.requireNonNull(graph, "graph");
         Objects.requireNonNull(node, "node");
         if ( ! GList.isListNode(graph, node) )
             return -1;
         return (int)GList.listLength(graph, node);
+    }
+
+    /**
+     * Test whether node looks like a list (RDF Collection).
+     * The test is whether node is {@code rdf:nil}
+     * or has exactly one of each of {@code rdf:first}
+     * and {@code rdf:next}.
+     * Multiple occurrences of {@code rdf:first}
+     * or {@code rdf:next} are considered errors.
+     */
+    public static boolean isList(Graph graph, Node node) {
+        Objects.requireNonNull(graph, "graph");
+        Objects.requireNonNull(node, "node");
+        return GList.isListNode(graph, node);
     }
 
     /**

@@ -102,7 +102,7 @@ public class ShaclPaths {
             return PathFactory.pathLink(node);
 
         if ( isList(graph, node) ) {
-            List<Node> nodes = G.rdfList(graph, node);
+            List<Node> nodes = G.listMembers(graph, node);
             if ( nodes.isEmpty() )
                 throw new ShaclParseException("Empty list for path sequence");
             Path path = null;
@@ -158,7 +158,7 @@ public class ShaclPaths {
                 if ( ! isList(graph, x) ) {
                     throw new ShaclParseException("Not a list for path alternativePath");
                 }
-                List<Node> nodes = G.rdfList(graph, x);
+                List<Node> nodes = G.listMembers(graph, x);
                 Path path = null;
                 for ( Node n : nodes ) {
                     Path p = path(graph, n);

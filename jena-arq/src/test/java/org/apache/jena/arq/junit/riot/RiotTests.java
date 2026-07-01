@@ -39,6 +39,7 @@ import org.apache.jena.vocabulary.TestManifest;
 public class RiotTests
 {
     /** Create a RIOT language test - or return null for "unrecognized" */
+    @SuppressWarnings("deprecation")
     public static Runnable makeRIOTTest(ManifestEntry entry) {
         //Resource manifest = entry.getManifest();
         Node item = entry.getEntry();
@@ -76,6 +77,11 @@ public class RiotTests
             if ( equalsType(testType, VocabLangRDF.TestNegativeSyntaxTTL) )
                 return new RiotSyntaxTest(entry, RDFLanguages.TURTLE, false);
 
+            // XXX Remove of rdf-test update
+            // These are parse errors
+            if ( equalsType(testType, VocabLangRDF.TestNegativeEvalTTL) )
+                return new RiotSyntaxTest(entry, RDFLanguages.TURTLE, false);
+
             // TRIG
             if ( equalsType(testType, VocabLangRDF.TestPositiveSyntaxTriG) ) {
                 String base = rebase(input, assumedBase);
@@ -83,6 +89,10 @@ public class RiotTests
             }
             if ( equalsType(testType, VocabLangRDF.TestNegativeSyntaxTriG) )
                 return new RiotSyntaxTest(entry, RDFLanguages.TRIG, false);
+
+            // XXX Remove of rdf-test update
+            if ( equalsType(testType, VocabLangRDF.TestNegativeEvalTriG) )
+                return new RiotSyntaxTest(entry, RDFLanguages.TURTLE, false);
 
             // NT
             if ( equalsType(testType, VocabLangRDF.TestPositiveSyntaxNT) )
@@ -117,19 +127,22 @@ public class RiotTests
                 String base = rebase(input, assumedBase);
                 return new RiotEvalTest(entry, base, RDFLanguages.TURTLE, true);
             }
-            if ( equalsType(testType, VocabLangRDF.TestNegativeEvalTTL) ) {
-                String base = rebase(input, assumedBase);
-                return new RiotEvalTest(entry, base, RDFLanguages.TURTLE, false);
-            }
-
             if ( equalsType(testType, VocabLangRDF.TestEvalTriG) ) {
                 String base = rebase(input, assumedBase);
                 return new RiotEvalTest(entry, base, RDFLanguages.TRIG, true);
             }
-            if ( equalsType(testType, VocabLangRDF.TestNegativeEvalTriG) ) {
-                String base = rebase(input, assumedBase);
-                return new RiotEvalTest(entry, base, RDFLanguages.TRIG, false);
-            }
+
+//          // XXX Remove of rdf-test update
+//            if ( equalsType(testType, VocabLangRDF.TestNegativeEvalTTL) ) {
+//                String base = rebase(input, assumedBase);
+//                return new RiotEvalTest(entry, base, RDFLanguages.TURTLE, false);
+//            }
+
+//            // XXX Remove of rdf-test update
+//            if ( equalsType(testType, VocabLangRDF.TestNegativeEvalTriG) ) {
+//                String base = rebase(input, assumedBase);
+//                return new RiotEvalTest(entry, base, RDFLanguages.TRIG, false);
+//            }
 
             if ( equalsType(testType, VocabLangRDF.TestEvalNT) ) {
                 String base = entry.getAction().getURI();//rebase(input, assumedRootURI);

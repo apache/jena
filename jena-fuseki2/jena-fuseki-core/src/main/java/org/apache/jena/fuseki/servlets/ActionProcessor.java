@@ -34,7 +34,7 @@ public interface ActionProcessor {
     public default void process(HttpAction action) {
         switch ( action.getRequestMethod() ) {
             case METHOD_GET ->       execGet(action);
-            //case METHOD_QUERY ->     execQuery(action);
+            case METHOD_QUERY ->     execQuery(action);
             case METHOD_POST ->      execPost(action);
             case METHOD_PATCH ->     execPatch(action);
             case METHOD_PUT ->       execPut(action);
@@ -50,6 +50,7 @@ public interface ActionProcessor {
     // A common override is "executeLifecycle(action);"
     public default void execHead(HttpAction action)     { execAny(METHOD_HEAD,    action); }
     public default void execGet(HttpAction action)      { execAny(METHOD_GET,     action); }
+    public default void execQuery(HttpAction action)    { execAny(METHOD_QUERY,   action); }
     public default void execPost(HttpAction action)     { execAny(METHOD_POST,    action); }
     public default void execPatch(HttpAction action)    { execAny(METHOD_PATCH,   action); }
     public default void execPut(HttpAction action)      { execAny(METHOD_PUT,     action); }
