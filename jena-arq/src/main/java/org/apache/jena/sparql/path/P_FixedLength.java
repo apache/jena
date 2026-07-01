@@ -43,6 +43,9 @@ public class P_FixedLength extends P_Path1 {
     }
 
     @Override
+    public boolean hasZeroLengthComponent() { return count == 0; }
+
+    @Override
     public int hashCode() {
         return hashFixedLength ^ (int)count ^ getSubPath().hashCode();
     }

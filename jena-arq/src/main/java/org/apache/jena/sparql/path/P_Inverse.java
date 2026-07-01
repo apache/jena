@@ -24,9 +24,15 @@ package org.apache.jena.sparql.path;
 import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 public class P_Inverse extends P_Path1 {
+    private final boolean hasZeroLength;
+
     public P_Inverse(Path p) {
         super(p);
+        this.hasZeroLength = p.hasZeroLengthComponent();
     }
+
+    @Override
+    public boolean hasZeroLengthComponent() { return hasZeroLength; }
 
     @Override
     public void visit(PathVisitor visitor) {

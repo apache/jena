@@ -46,6 +46,9 @@ public abstract class PathBase implements Path
     protected static final int hashShortest     = 0x205 ;
 
 
+    // Return true if this path can match in zero steps
+    public boolean hasZeroLengthComponent() { return false; }
+
     @Override
     public abstract int hashCode() ;
 
