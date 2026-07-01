@@ -21,12 +21,16 @@
 
 package org.apache.jena.sparql.path;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.GraphMemFactory;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.riot.Lang;
@@ -83,6 +87,76 @@ public class TestPathQuery {
         // Same results for the test data, not in general.
         String qsExpected = "PREFIX : <http://example/> SELECT ?s ?o { { ?s :p ?o } UNION { ?s :p [:p ?o]} }";
         test(graph1, qsPath, qsExpected);
+    }
+
+    @Test public void testZeroPath_emptyGraph_01() {
+        // ?v <p>{0} ?v with VALUES ?v {1} on empty graph. Should be 0 rows returned.
+        String qs = "SELECT * WHERE { VALUES ?v { 1 } ?v <http://example.com/p>{0} ?v }";
+        assertEquals(0, rowCount(GraphMemFactory.createDefaultGraph(), qs));
+    }
+
+    @Test public void testZeroPath_emptyGraph_02() {
+        // ?v <p>? ?v with VALUES ?v {1} on empty graph. Should be be 0 rows returned.
+        String qs = "SELECT * WHERE { VALUES ?v { 1 } ?v <http://example.com/p>? ?v }";
+        assertEquals(0, rowCount(GraphMemFactory.createDefaultGraph(), qs));
+    }
+
+    @Test public void testZeroPath_emptyGraph_03() {
+        // ?v <p>* ?v with VALUES ?v {1} on empty graph. Should be be 0 rows returned.
+        String qs = "SELECT * WHERE { VALUES ?v { 1 } ?v <http://example.com/p>* ?v }";
+        assertEquals(0, rowCount(GraphMemFactory.createDefaultGraph(), qs));
+    }
+
+    @Test public void testZeroPath_nodeInGraph_01() {
+        String qs = "PREFIX : <http://example/> SELECT * WHERE { VALUES ?v { :s } ?v <http://example.com/p>? ?v }";
+        assertEquals(1, rowCount(graph1, qs));
+    }
+
+    @Test public void testZeroPath_nodeInGraph_02() {
+        String qs = "PREFIX : <http://example/> SELECT * WHERE { VALUES ?v { :s } ?v <http://example.com/p>* ?v }";
+        assertEquals(1, rowCount(graph1, qs));
+    }
+
+    @Test public void testZeroPath_nodeInGraph_03() {
+        String qs = "PREFIX : <http://example/> SELECT * WHERE { VALUES ?v { :s } ?v <http://example.com/p>{0} ?v }";
+        assertEquals(1, rowCount(graph1, qs));
+    }
+
+    @Test public void testZeroPath_nodeAsObjectOnly_01() {
+        // Node is present only as an object in the graph.
+        // graph1 contains ":s :p 123", so 123 should appear only as an object.
+        String qs = "SELECT * WHERE { VALUES ?v { 123 } ?v <http://example.com/p>? ?v }";
+        assertEquals(1, rowCount(graph1, qs));
+    }
+
+    @Test public void testZeroPath_emptyGraph_04() {
+        // {0,3} has min=0 so it is a zero-length path.
+        String qs = "SELECT * WHERE { VALUES ?v { 1 } ?v <http://example.com/p>{0,3} ?v }";
+        assertEquals(0, rowCount(GraphMemFactory.createDefaultGraph(), qs));
+    }
+
+    @Test public void testZeroPath_emptyGraph_05() {
+        // p?|q has a zero-length branch.
+        String qs = "SELECT * WHERE { VALUES ?v { 1 } ?v (<http://example.com/p>?|<http://example.com/q>) ?v }";
+        assertEquals(0, rowCount(GraphMemFactory.createDefaultGraph(), qs));
+    }
+
+    @Test public void testNonZeroPath_selfLoop_returnsResult() {
+        // A non-zero-length path that reaches s from s via a self-loop
+        // must not be zeroed out by the zero-length fix.
+        Graph g = GraphMemFactory.createDefaultGraph();
+        g.add(Triple.create(
+            NodeFactory.createURI("http://example/s"),
+            NodeFactory.createURI("http://example/p"),
+            NodeFactory.createURI("http://example/s")));
+        String qs = "PREFIX : <http://example/> SELECT * WHERE { VALUES ?v { :s } ?v :p{1} ?v }";
+        assertEquals(1, rowCount(g, qs));
+    }
+
+    private long rowCount(Graph graph, String queryString) {
+        Query query = QueryFactory.create(queryString);
+        RowSet rs = QueryExec.graph(graph).query(query).select();
+        return RowSetOps.count(rs);
     }
 
     private void test(Graph graph12, String qsPath, String qsExpected) {

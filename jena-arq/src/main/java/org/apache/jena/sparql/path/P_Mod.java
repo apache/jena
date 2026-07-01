@@ -62,6 +62,9 @@ public class P_Mod extends P_Path1 {
         return false;
     }
 
+    @Override
+    public boolean hasZeroLengthComponent() { return min == 0 || min == UNSET; }
+
     public boolean isFixedLength() {
         return max == min && min >= 0;
     }

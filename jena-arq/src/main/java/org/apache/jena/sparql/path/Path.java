@@ -29,4 +29,7 @@ public interface Path
     public void visit(PathVisitor visitor) ;
     public boolean equalTo(Path path2, NodeIsomorphismMap isoMap) ;
     public String toString(Prologue prolog) ;
+
+    // Return true if this path can match in zero steps
+    public default boolean hasZeroLengthComponent() { return false; }
 }
