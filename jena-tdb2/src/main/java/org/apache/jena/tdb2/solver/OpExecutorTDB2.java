@@ -47,9 +47,11 @@ import org.apache.jena.sparql.engine.optimizer.reorder.ReorderProc;
 import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation;
 import org.apache.jena.sparql.expr.ExprList;
 import org.apache.jena.sparql.mgt.Explain;
+import org.apache.jena.tdb2.solver.index.OpExecutorTDB2SkipScan;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
 import org.apache.jena.tdb2.store.GraphTDB;
 import org.apache.jena.tdb2.store.NodeId;
+import org.apache.jena.tdb2.sys.SystemTDB;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,11 +94,36 @@ public class OpExecutorTDB2 extends OpExecutor
 
     // Retrieving nodes isn't so bad because they will be needed anyway.
     // And if their duplicates, likely to be cached.
-    // Need to work with SolverLib which wraps the NodeId bindgins with a converter.
+    // Need to work with SolverLib which wraps the NodeId bindings with a converter.
 
     @Override
     protected QueryIterator execute(OpDistinct opDistinct, QueryIterator input) {
+        if ( isForTDB ) {
+            boolean isSkipScanEnabled = execCxt.getContext().isTrueOrUndef(SystemTDB.symSkipScan);
+            if ( isSkipScanEnabled ) {
+                QueryIterator qIter = OpExecutorTDB2SkipScan.tryExec(opDistinct, input, execCxt);
+                if ( qIter != null ) {
+                    return qIter;
+                }
+            }
+        }
+
         return super.execute(opDistinct, input);
+    }
+
+    @Override
+    protected QueryIterator execute(OpGroup opGroup, QueryIterator input) {
+        if ( isForTDB ) {
+            boolean isSkipScanEnabled = execCxt.getContext().isTrueOrUndef(SystemTDB.symSkipScan);
+            if ( isSkipScanEnabled ) {
+                QueryIterator qIter = OpExecutorTDB2SkipScan.tryExec(opGroup, input, execCxt);
+                if ( qIter != null ) {
+                    return qIter;
+                }
+            }
+        }
+
+        return super.execute(opGroup, input);
     }
 
     @Override

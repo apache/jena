@@ -23,25 +23,42 @@ package org.apache.jena.tdb2.store;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.Test;
-
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.query.*;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.ReadWrite;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFFormat;
+import org.apache.jena.sparql.algebra.Table;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.exec.RowSetOps;
 import org.apache.jena.sparql.sse.SSE;
+import org.apache.jena.system.AutoTxn;
 import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.TDB2;
 import org.apache.jena.tdb2.TDB2Factory;
-import org.apache.jena.update.*;
+import org.apache.jena.update.UpdateAction;
+import org.apache.jena.update.UpdateExecution;
+import org.apache.jena.update.UpdateExecutionFactory;
+import org.apache.jena.update.UpdateFactory;
+import org.apache.jena.update.UpdateRequest;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test SPARQL
@@ -155,6 +172,73 @@ public class Test_SPARQL_TDB {
             RowSet rs = QueryExec.dataset(dsg).query(qs).select();
             RowSetOps.consume(rs);
         });
+    }
+
+    // Optimized index access - distinct with single tuple query.
+    @Test
+    public void sparql8() {
+        DatasetGraph tdbDsg = create().asDatasetGraph();
+        DatasetGraph refDsg = DatasetGraphFactory.createTxnMem();
+        try (AutoTxn refTxn = Txn.autoTxn(refDsg, ReadWrite.WRITE);
+             AutoTxn tdbTxn = Txn.autoTxn(tdbDsg, ReadWrite.WRITE)) {
+            for (int v = 0; v < 3; ++v) {
+                Node g = v == 0 ? Quad.defaultGraphIRI : NodeFactory.createURI("http://www.example.org/g" + v);
+                for (int y = 0; y < 5; ++y) {
+                    Node p = NodeFactory.createURI("http://www.example.org/p" + y);
+                    for (int x = 0; x < (y+1)*100; ++x) {
+                        Node s = NodeFactory.createURI("http://www.example.org/s" + x);
+                        for (int z = 0; z < 5; ++z) {
+                            Node o1 = NodeFactory.createURI("http://www.example.org/s" + z);
+                            Node o2 = NodeFactory.createURI("http://www.example.org/o" + z);
+                            refDsg.add(g, s, p, o1);
+                            refDsg.add(g, s, p, o2);
+                        }
+                    }
+                }
+            }
+            tdbDsg.addAll(refDsg);
+            refTxn.commit();
+            tdbTxn.commit();
+        }
+
+        if (false) {
+            Txn.executeRead(refDsg, () -> {
+                RDFDataMgr.write(System.out, refDsg, RDFFormat.TRIG_PRETTY);
+            });
+        }
+
+        // Model m = ds.getNamedModel(graphName);
+        // String qs = "SELECT DISTINCT ?p { GRAPH ?g { ?s ?p ?o } }";
+        // String qs = "SELECT DISTINCT ?g ?p { GRAPH ?g { ?s ?p ?o } }";
+        // String qs = "SELECT DISTINCT ?g ?p { GRAPH <urn:x-arq:DefaultGraph> { ?s ?p ?s } }";
+        // String qs = "SELECT (COUNT(DISTINCT ?p) AS ?c) { GRAPH <urn:x-arq:DefaultGraph> { ?s ?p ?s } }";
+        String queryStr = """
+            SELECT ?g (COUNT(DISTINCT ?p) AS ?c) {
+              GRAPH ?g { ?s ?p <http://www.example.org/s1> }
+            }
+            GROUP BY ?g
+            ORDER BY ?g ?c
+        """;
+//        String queryStr = """
+//            SELECT DISTINCT ?g ?s ?p {
+//              GRAPH ?g { ?s ?p <http://www.example.org/s1> }
+//            }
+//            ORDER BY ?g ?s ?p
+//        """;
+        // queryStr = "SELECT * { GRAPH ?g { ?s ?p ?o } } ORDER BY ?g ?s ?p ?o";
+        Query query = QueryFactory.create(queryStr);
+        Table expected = Txn.calculateRead(refDsg, () -> QueryExec.dataset(refDsg).query(query).table());
+        Table actual = Txn.calculateRead(tdbDsg, () -> QueryExec.dataset(tdbDsg).query(query).table());
+
+        if (!expected.equals(actual)) {
+            System.out.println(ResultSetFormatter.asText(ResultSet.adapt(expected.toRowSet())));
+            System.out.println(ResultSetFormatter.asText(ResultSet.adapt(actual.toRowSet())));
+
+            System.out.println("Exected size: " + expected.size());
+            System.out.println("Actual size: " + actual.size());
+        }
+
+        assertEquals(expected, actual);
     }
 
     private static void add(Dataset dataset, String graphName, Triple triple) {
