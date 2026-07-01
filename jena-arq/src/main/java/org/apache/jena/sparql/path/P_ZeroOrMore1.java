@@ -41,6 +41,9 @@ public class P_ZeroOrMore1 extends P_Path1 {
     }
 
     @Override
+    public boolean hasZeroLengthComponent() { return true; }
+
+    @Override
     public void visit(PathVisitor visitor) {
         visitor.visit(this) ;
     }

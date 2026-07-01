@@ -24,9 +24,15 @@ package org.apache.jena.sparql.path;
 import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 public class P_Alt extends P_Path2 {
+    private final boolean hasZeroLength;
+
     public P_Alt(Path p1, Path p2) {
         super(p1, p2);
+        this.hasZeroLength = p1.hasZeroLengthComponent() || p2.hasZeroLengthComponent();
     }
+
+    @Override
+    public boolean hasZeroLengthComponent() { return hasZeroLength; }
 
     @Override
     public void visit(PathVisitor visitor) {

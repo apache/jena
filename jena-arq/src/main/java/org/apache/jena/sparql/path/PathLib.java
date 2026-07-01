@@ -132,7 +132,7 @@ public class PathLib
 
         // Both constants.
         if ( !Var.isVar(s) && !Var.isVar(o) )
-            return evalGroundedPath(binding, graph, s, path, o, execCxt);
+            return evalGroundedPath(binding, graph, s, path, o, path.hasZeroLengthComponent(), execCxt);
 
         // One variable, one constant
         if ( Var.isVar(s) ) {
@@ -164,7 +164,7 @@ public class PathLib
     // Subject and object are nodes.
     private static QueryIterator evalGroundedPath(Binding binding,
                                                   Graph graph, Node subject, Path path, Node object,
-                                                  ExecutionContext execCxt) {
+                                                  boolean pathHasZeroLength, ExecutionContext execCxt) {
         Iterator<Node> iter = PathEval.eval(graph, subject, path, execCxt.getContext()) ;
         // Now count the number of matches.
 
@@ -174,6 +174,12 @@ public class PathLib
             if ( n.sameValueAs(object) )
                 count++ ;
         }
+
+        // SPARQL requires zero-length path endpoints to exist in nodes(G); suppress spurious
+        // zero-step matches when subject is absent from the active graph.
+        if ( count > 0 && subject.sameValueAs(object)
+                && pathHasZeroLength && !isNodeInGraph(graph, subject) )
+            count = 0;
 
         return new QueryIterYieldN(count, binding, execCxt) ;
     }
@@ -296,5 +302,11 @@ public class PathLib
         iter = Iter.filter(iter, filter) ;
         long x = Iter.count(iter) ;
         return (int)x ;
+    }
+
+    /** Return true if {@code node} appears as a subject or object in {@code graph}. */
+    private static boolean isNodeInGraph(Graph graph, Node node) {
+        return graph.contains(node, Node.ANY, Node.ANY)
+            || graph.contains(Node.ANY, Node.ANY, node);
     }
 }
