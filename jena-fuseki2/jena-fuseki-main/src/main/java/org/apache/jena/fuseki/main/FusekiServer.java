@@ -117,7 +117,7 @@ public class FusekiServer {
     /**
      * Construct a Fuseki server from command line arguments.
      * The return server has not been started.
-     * @deprecated Use {@link FusekiMain#construct} or {@link FusekiRunner#basic()}
+     * @deprecated Use {@link FusekiMain#construct} or {@link FusekiRunner#serverBasic()}
      */
     @Deprecated
     static public FusekiServer construct(String... args) {
@@ -127,7 +127,7 @@ public class FusekiServer {
     /**
      * Run a Fuseki server using the command line arguments for setup
      * The returned server has been started.
-     * @deprecated Use {@link FusekiMain#run} or {@link FusekiRunner#basic()}
+     * @deprecated Use {@link FusekiMain#run} or {@link FusekiRunner#serverBasic()}
      */
     @Deprecated
     static public FusekiServer run(String...args) {

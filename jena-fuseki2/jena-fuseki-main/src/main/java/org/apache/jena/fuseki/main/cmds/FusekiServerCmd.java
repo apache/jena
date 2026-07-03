@@ -21,9 +21,11 @@
 
 package org.apache.jena.fuseki.main.cmds;
 
-/** 
+/**
  * Old name used in the fuseki-server script up to v5.6.0
+ * @deprecated Do not use. Equivalent to {@link FusekiServerUICmd}
  */
+@Deprecated(forRemoval = true)
 public class FusekiServerCmd {
     static public void main(String... args) {
         FusekiServerUICmd.main(args);
