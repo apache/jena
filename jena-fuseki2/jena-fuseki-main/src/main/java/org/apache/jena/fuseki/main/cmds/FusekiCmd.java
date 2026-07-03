@@ -21,7 +21,12 @@
 
 package org.apache.jena.fuseki.main.cmds;
 
-/** Reserved. Entry point used by the combined jar and "--jar" (from v6.0.0) */
+/**
+ * Reserved. Entry point used by the combined jar and "--jar" (from v6.0.0)
+ * @deprecated Do not use. Equivalent to {@link FusekiServerUICmd}
+ */
+
+@Deprecated(forRemoval = true)
 public class FusekiCmd {
     static public void main(String... args) {
         FusekiServerUICmd.main(args);

@@ -24,23 +24,19 @@ package org.apache.jena.fuseki.main.cmds;
 import org.apache.jena.fuseki.main.FusekiMain;
 import org.apache.jena.fuseki.main.runner.FusekiRunner;
 
-/**
- * Fuseki command that runs a Fuseki server with all function except with UI.
- * Shiro is configured using the command line {@code --shiro=...}
- * or using environment {@code FUSEKI_SHIRO}.
+/** Fuseki command that runs a minimal Fuseki server. No addition modules, no UI.
  * <p>
  * Use {@code --conf=} for multiple datasets and specific service names.
  * <p>
  * The command line dataset setup only supports a single dataset.
  */
-
-public class FusekiServerPlainCmd {
+public class FusekiServerBasicCmd {
     /**
      * Build and run, a server based on command line syntax. This operation does not
-     * return. See {@link FusekiMain#build} to build a server in code using command line
+     * return. See {@link FusekiMain#build} to build a server using command line
      * syntax but not start it.
      */
     static public void main(String... args) {
-        RunFuseki.run(args, FusekiRunner::execServerPlain);
+        RunFuseki.run(args, FusekiRunner::execBasic);
     }
 }

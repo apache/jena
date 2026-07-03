@@ -75,12 +75,12 @@ public class TestFusekiStart {
     }
 
     @Test public void runner_01() {
-        FusekiServer server = FusekiRunner.basic().runAsync("--port=0", "--empty");
+        FusekiServer server = FusekiRunner.serverBasic().runAsync("--port=0", "--empty");
         server.stop();
     }
 
     @Test public void runner_02() {
-        FusekiServer server = FusekiRunner.main().runAsync("--port=0", "--empty");
+        FusekiServer server = FusekiRunner.serverMain().runAsync("--port=0", "--empty");
         server.stop();
     }
 

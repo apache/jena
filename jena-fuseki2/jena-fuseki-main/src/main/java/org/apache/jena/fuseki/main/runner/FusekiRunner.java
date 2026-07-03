@@ -72,20 +72,20 @@ public class FusekiRunner {
      */
 
     enum FusekiForm {
-        BASIC("basic"), MAIN("main"), SERVER_PLAIN("server/plain"), SERVER("server/ui");
+        SERVER_BASIC("server/basic"), SERVER_MAIN("server/main"), SERVER_PLAIN("server/plain"), SERVER_UI("server/ui");
         final String fusekiFormName;
         FusekiForm(String string) { this.fusekiFormName = string; }
     }
 
     /** Minimal server - e.g. embedded use and testing. */
     public static void execBasic(String...args) {
-        announcementExec(FusekiForm.BASIC);
+        announcementExec(FusekiForm.SERVER_BASIC);
         runnerBasic().exec(args);
     }
 
     /** Basic server */
     public static void execMain(String...args) {
-        announcementExec(FusekiForm.MAIN);
+        announcementExec(FusekiForm.SERVER_MAIN);
         runnerMain().exec(args);
     }
 
@@ -97,19 +97,22 @@ public class FusekiRunner {
 
     /** General server, with UI */
     public static void execServerUI(String...args) {
-        announcementExec(FusekiForm.SERVER);
+        announcementExec(FusekiForm.SERVER_UI);
         runnerServerUI().exec(args);
     }
 
     /** Minimal server - e.g. embedded use and testing */
     public static FusekiServer runAsyncBasic(String...args) {
-        announcementAsync(FusekiForm.BASIC);
+        announcementAsync(FusekiForm.SERVER_BASIC);
         return runnerBasic().runAsync(args);
     }
 
-    /** Basic server */
+    /**
+     * Server with ping, Shiro and Prometheus.
+     * See {@link FusekiRunner#serverMain()}.
+     */
     public static FusekiServer runAsyncMain(String...args) {
-        announcementAsync(FusekiForm.MAIN);
+        announcementAsync(FusekiForm.SERVER_MAIN);
         return runnerMain().runAsync(args);
     }
 
@@ -121,19 +124,24 @@ public class FusekiRunner {
 
     /** General server, with UI */
     public static FusekiServer runAsyncServerUI(String...args) {
-        announcementAsync(FusekiForm.SERVER);
+        announcementAsync(FusekiForm.SERVER_UI);
         return runnerServerUI().runAsync(args);
     }
 
     // @formatter:off
+
     /** Minimal server - e.g. embedded use and testing */
-    public static Runner basic()       { return runnerBasic(); }
+    public static Runner serverBasic() { return runnerBasic(); }
+
     /** Basic server */
-    public static Runner main()        { return runnerMain(); }
+    public static Runner serverMain()  { return runnerMain(); }
+
     /** All available server functionality, except admin functionality; no UI; Shiro configuration by command line or environment variable. */
     public static Runner serverPlain() { return runnerServerPlain(); }
+
     /** General server, with UI */
     public static Runner serverUI()    { return runnerServerUI(); }
+
     // @formatter:on
 
     // Banners

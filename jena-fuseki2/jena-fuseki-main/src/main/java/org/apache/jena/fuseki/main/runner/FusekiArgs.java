@@ -211,7 +211,7 @@ public class FusekiArgs extends CmdGeneral {
     }
 
     private void argumentsSetup() {
-        modVersion.addClass("Fuseki", Fuseki.class);
+        //modVersion.addClass("Fuseki", Fuseki.class);
 
         getUsage().startCategory("Fuseki");
         add(argConfig, "--config=FILE",

@@ -58,7 +58,7 @@ public class TestFusekiServer {
         String runBase = serverBase+"1";
         setup(runBase);
         // Build-run command line
-        FusekiServer server = FusekiRunner.basic().runAsync("--port=0", "--empty");
+        FusekiServer server = FusekiRunner.serverBasic().runAsync("--port=0", "--empty");
         try {
             int port = server.getPort();
             assertNotEquals(0, port, "Port is zero after async start");
