@@ -34,11 +34,11 @@ import org.apache.shiro.web.env.WebEnvironment;
  * locations for a {@code shiro.ini} file. It will return the first found in a list
  * of possible file names.
  */
-class ShiroEnvironmentLoaderListener extends EnvironmentLoaderListener{
+class FusekiShiroEnvironmentLoaderListener extends EnvironmentLoaderListener{
 
     private List<String> locations;
 
-    /*package*/ ShiroEnvironmentLoaderListener(List<String> locations) {
+    /*package*/ FusekiShiroEnvironmentLoaderListener(List<String> locations) {
         this.locations = locations;
     }
 
@@ -51,8 +51,10 @@ class ShiroEnvironmentLoaderListener extends EnvironmentLoaderListener{
      */
     @Override
     protected void customizeEnvironment(WebEnvironment environment) {
-        if ( locations == null )
+        if ( locations == null ) {
+            super.customizeEnvironment(environment);
             return;
+        }
 
         // Look for shiro.ini
         if ( environment instanceof ResourceBasedWebEnvironment ) {
