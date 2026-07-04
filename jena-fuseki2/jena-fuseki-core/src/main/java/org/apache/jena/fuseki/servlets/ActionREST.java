@@ -23,9 +23,9 @@ package org.apache.jena.fuseki.servlets;
 
 import static org.apache.jena.atlas.lib.Lib.uppercase;
 import static org.apache.jena.fuseki.servlets.ActionExecLib.incCounter;
-import static org.apache.jena.riot.web.HttpNames.*;
 
 import org.apache.jena.fuseki.server.CounterName;
+import org.apache.jena.http.HttpMethod;
 import org.apache.jena.sparql.core.DatasetGraph;
 
 /** Common point for operations that are "REST"ish (use GET/PUT etc as operations). */
@@ -40,14 +40,14 @@ public abstract class ActionREST extends ActionService
         // Intercept to put counters around calls.
         String method = uppercase(action.getRequestMethod());
         switch(method) {
-            case METHOD_GET ->      doGet$(action);
-            case METHOD_HEAD ->     doHead$(action);
-            case METHOD_POST ->     doPost$(action);
-            case METHOD_PATCH ->    doPatch$(action);
-            case METHOD_PUT ->      doPut$(action);
-            case METHOD_DELETE ->   doDelete$(action);
-            case METHOD_OPTIONS ->  doOptions$(action);
-            case METHOD_TRACE ->    doTrace$(action);
+            case HttpMethod.METHOD_GET ->      doGet$(action);
+            case HttpMethod.METHOD_HEAD ->     doHead$(action);
+            case HttpMethod.METHOD_POST ->     doPost$(action);
+            case HttpMethod.METHOD_PATCH ->    doPatch$(action);
+            case HttpMethod.METHOD_PUT ->      doPut$(action);
+            case HttpMethod.METHOD_DELETE ->   doDelete$(action);
+            case HttpMethod.METHOD_OPTIONS ->  doOptions$(action);
+            case HttpMethod.METHOD_TRACE ->    doTrace$(action);
             default -> ServletOps.errorNotImplemented("Unknown method: "+method);
         }
     }
@@ -152,7 +152,6 @@ public abstract class ActionREST extends ActionService
     protected abstract void doOptions(HttpAction action);
 
     // If not final in ActionBase
-    @Override public void process(HttpAction action)      { executeLifecycle(action); }
-
-    @Override public void execAny(String methodName, HttpAction action)     { executeLifecycle(action); }
+    @Override public void process(HttpAction action)                        { executeLifecycle(action); }
+    @Override public void execAny(HttpMethod method, HttpAction action)     { executeLifecycle(action); }
 }

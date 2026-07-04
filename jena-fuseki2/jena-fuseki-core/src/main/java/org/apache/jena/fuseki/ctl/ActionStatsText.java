@@ -31,8 +31,8 @@ import org.apache.jena.atlas.io.IO;
 import org.apache.jena.fuseki.server.*;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
+import org.apache.jena.http.HttpMethod;
 import org.apache.jena.riot.WebContent;
-import org.apache.jena.riot.web.HttpNames;
 
 // Unused - left in case it should be resurrected.
 public class ActionStatsText extends ActionCtl
@@ -42,8 +42,8 @@ public class ActionStatsText extends ActionCtl
     @Override
     public void validate(HttpAction action) {
         switch(action.getRequestMethod() ) {
-            case HttpNames.METHOD_GET:
-            case HttpNames.METHOD_POST:
+            case HttpMethod.METHOD_GET:
+            case HttpMethod.METHOD_POST:
                 return;
             default:
                 ServletOps.errorMethodNotAllowed(action.getRequestMethod());

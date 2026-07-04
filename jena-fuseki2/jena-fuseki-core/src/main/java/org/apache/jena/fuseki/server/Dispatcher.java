@@ -40,6 +40,7 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.auth.Auth;
 import org.apache.jena.fuseki.servlets.*;
 import org.apache.jena.fuseki.system.ActionCategory;
+import org.apache.jena.http.HttpMethod;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.web.HttpSC;
 import org.slf4j.Logger;
@@ -438,7 +439,7 @@ public class Dispatcher {
             } else if ( GSP_RW.equals(operation) ) {
                 // If asking for GSP_RW, but only GSP_R is available ...
                 // ... if OPTIONS, use GSP_R.
-                if ( action.getRequestMethod().equals(HttpNames.METHOD_OPTIONS) && epSet.contains(GSP_R) )
+                if ( action.getRequestMethod().equals(HttpMethod.METHOD_OPTIONS) && epSet.contains(GSP_R) )
                         return GSP_R;
                 // ... else 405
                 if ( epSet.contains(GSP_R) )
@@ -569,8 +570,8 @@ public class Dispatcher {
     private static boolean isReadMethod(HttpServletRequest request) {
         String method = request.getMethod();
         // REST dataset.
-        boolean isGET = method.equals(HttpNames.METHOD_GET);
-        boolean isHEAD = method.equals(HttpNames.METHOD_HEAD);
+        boolean isGET = method.equals(HttpMethod.METHOD_GET);
+        boolean isHEAD = method.equals(HttpMethod.METHOD_HEAD);
         return isGET || isHEAD;
     }
 }

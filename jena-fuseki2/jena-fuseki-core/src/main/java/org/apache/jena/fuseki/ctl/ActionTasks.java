@@ -21,8 +21,6 @@
 
 package org.apache.jena.fuseki.ctl;
 import static java.lang.String.format;
-import static org.apache.jena.riot.web.HttpNames.METHOD_GET;
-import static org.apache.jena.riot.web.HttpNames.METHOD_POST;
 
 import org.apache.jena.atlas.json.JsonBuilder;
 import org.apache.jena.atlas.json.JsonValue;
@@ -31,6 +29,7 @@ import org.apache.jena.fuseki.async.AsyncTask;
 import org.apache.jena.fuseki.servlets.ActionLib;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
+import org.apache.jena.http.HttpMethod;
 
 public class ActionTasks extends ActionCtl
 {
@@ -60,9 +59,9 @@ public class ActionTasks extends ActionCtl
         }
 
         String method = action.getRequestMethod();
-        if ( method.equals(METHOD_GET) )
+        if ( method.equals(HttpMethod.METHOD_GET) )
             execGet(action, name);
-        else if ( method.equals(METHOD_POST) )
+        else if ( method.equals(HttpMethod.METHOD_POST) )
             execPost(action, name);
         else
             ServletOps.errorMethodNotAllowed(action.getRequestMethod());

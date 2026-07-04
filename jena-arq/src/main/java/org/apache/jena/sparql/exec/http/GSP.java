@@ -29,8 +29,8 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.http.HttpLib;
+import org.apache.jena.http.HttpMethod;
 import org.apache.jena.http.HttpRDF;
-import org.apache.jena.http.Push;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.RDFLanguages;
@@ -184,7 +184,7 @@ public class GSP extends StoreProtocol<GSP> {
         String url = graphRequestURL();
         String fileExtContentType = contentTypeFromFilename(file);
         HttpClient hc = requestHttpClient(serviceEndpoint, url);
-        uploadTriples(hc, url, file, fileExtContentType, httpHeaders, Push.POST);
+        uploadTriples(hc, url, file, fileExtContentType, httpHeaders, HttpMethod.POST);
     }
 
 //    /**
@@ -234,7 +234,7 @@ public class GSP extends StoreProtocol<GSP> {
         String url = graphRequestURL();
         String fileExtContentType = contentTypeFromFilename(file);
         HttpClient hc = requestHttpClient(serviceEndpoint, url);
-        uploadTriples(hc, url, file, fileExtContentType, httpHeaders, Push.PUT);
+        uploadTriples(hc, url, file, fileExtContentType, httpHeaders, HttpMethod.PUT);
     }
 
 //    /**
@@ -330,7 +330,7 @@ public class GSP extends StoreProtocol<GSP> {
 
     /** Send a file of triples to a URL. */
     private static void uploadTriples(HttpClient httpClient, String gspUrl, String file, String fileExtContentType,
-                                      Map<String, String> headers, Push mode) {
+                                      Map<String, String> headers, HttpMethod method) {
         Lang lang = RDFLanguages.contentTypeToLang(fileExtContentType);
         if ( lang == null )
             throw new ARQException("Not a recognized as an RDF format: "+fileExtContentType);
@@ -338,6 +338,6 @@ public class GSP extends StoreProtocol<GSP> {
             throw new ARQException("Can't load quads into a graph");
         if ( ! RDFLanguages.isTriples(lang) )
             throw new ARQException("Not an RDF format: "+file+" (lang="+lang+")");
-        pushFile(httpClient, gspUrl, file, fileExtContentType, headers, mode);
+        pushFile(httpClient, gspUrl, file, fileExtContentType, headers, method);
     }
 }

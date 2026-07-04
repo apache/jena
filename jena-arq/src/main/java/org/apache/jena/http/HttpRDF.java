@@ -180,7 +180,7 @@ public class HttpRDF {
     public static void httpPostGraph(HttpClient httpClient, String url, Graph graph,
                                      RDFFormat format, Map<String, String> httpHeaders) {
         BodyPublisher bodyPublisher = graphToHttpBody(graph, format);
-        pushBody(httpClient, url, Push.POST, bodyPublisher, format, httpHeaders);
+        pushBody(httpClient, url, HttpMethod.POST, bodyPublisher, format, httpHeaders);
     }
 
     /** Post a graph and expect an RDF graph back as the result. */
@@ -191,7 +191,7 @@ public class HttpRDF {
     /** Post a graph and expect an RDF graph back as the result. */
     public static Graph httpPostGraphRtn(HttpClient httpClient, String url, Graph graph, RDFFormat format, Map<String, String> httpHeaders) {
         BodyPublisher bodyPublisher = graphToHttpBody(graph, HttpEnv.defaultTriplesFormat);
-        HttpResponse<InputStream> httpResponse = pushWithResponse(httpClient, url, Push.POST, bodyPublisher, format, httpHeaders);
+        HttpResponse<InputStream> httpResponse = pushWithResponse(httpClient, url, HttpMethod.POST, bodyPublisher, format, httpHeaders);
         Graph graphResponse = GraphFactory.createDefaultGraph();
         StreamRDF dest = StreamRDFLib.graph(graphResponse);
         httpResponseToStreamRDF(url, httpResponse, dest);
@@ -205,7 +205,7 @@ public class HttpRDF {
     public static void httpPostDataset(HttpClient httpClient, String url, DatasetGraph dataset,
                                        RDFFormat format, Map<String, String> httpHeaders) {
         BodyPublisher bodyPublisher = datasetToHttpBody(dataset, format);
-        pushBody(httpClient, url, Push.POST, bodyPublisher, format, httpHeaders);
+        pushBody(httpClient, url, HttpMethod.POST, bodyPublisher, format, httpHeaders);
     }
 
     public static void httpPutGraph(String url, Graph graph) {
@@ -219,7 +219,7 @@ public class HttpRDF {
     public static void httpPutGraph(HttpClient httpClient, String url, Graph graph,
                                     RDFFormat format, Map<String, String> httpHeaders) {
         BodyPublisher bodyPublisher = graphToHttpBody(graph, format);
-        pushBody(httpClient, url, Push.PUT, bodyPublisher, format, httpHeaders);
+        pushBody(httpClient, url, HttpMethod.PUT, bodyPublisher, format, httpHeaders);
     }
 
     public static void httpPutDataset(HttpClient httpClient, String url, DatasetGraph dataset, RDFFormat format) {
@@ -229,28 +229,28 @@ public class HttpRDF {
     public static void httpPutDataset(HttpClient httpClient, String url, DatasetGraph dataset,
                                       RDFFormat format, Map<String, String> httpHeaders) {
         BodyPublisher bodyPublisher = datasetToHttpBody(dataset, format);
-        pushBody(httpClient, url, Push.PUT, bodyPublisher, format, httpHeaders);
+        pushBody(httpClient, url, HttpMethod.PUT, bodyPublisher, format, httpHeaders);
     }
 
     // Shared between push* and put*
-    private static void pushBody(HttpClient httpClient, String url, Push style, BodyPublisher bodyPublisher,
+    private static void pushBody(HttpClient httpClient, String url, HttpMethod method, BodyPublisher bodyPublisher,
                                  RDFFormat format, Map<String, String> httpHeaders) {
         String contentType = format.getLang().getHeaderString();
         if ( httpHeaders == null )
             httpHeaders = Collections.singletonMap(HttpNames.hContentType, contentType);
         else
             httpHeaders.put(HttpNames.hContentType, contentType);
-        HttpLib.httpPushData(httpClient, style, url, HttpLib.setHeaders(httpHeaders), bodyPublisher);
+        HttpLib.httpPushData(httpClient, method, url, HttpLib.setHeaders(httpHeaders), bodyPublisher);
     }
 
-    private static HttpResponse<InputStream> pushWithResponse(HttpClient httpClient, String url, Push style, BodyPublisher bodyPublisher,
+    private static HttpResponse<InputStream> pushWithResponse(HttpClient httpClient, String url, HttpMethod method, BodyPublisher bodyPublisher,
                                                               RDFFormat format, Map<String, String> httpHeaders) {
         String contentType = format.getLang().getHeaderString();
         if ( httpHeaders == null )
             httpHeaders = Collections.singletonMap(HttpNames.hContentType, contentType);
         else
             httpHeaders.put(HttpNames.hContentType, contentType);
-        return HttpLib.httpPushWithResponse(httpClient, style, url, HttpLib.setHeaders(httpHeaders), bodyPublisher);
+        return HttpLib.httpPushWithResponse(httpClient, method, url, HttpLib.setHeaders(httpHeaders), bodyPublisher);
     }
 
     public static void httpDeleteGraph(String url) {

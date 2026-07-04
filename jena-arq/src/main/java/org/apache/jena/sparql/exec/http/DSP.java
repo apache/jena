@@ -26,8 +26,8 @@ import java.util.Map;
 
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.http.HttpEnv;
+import org.apache.jena.http.HttpMethod;
 import org.apache.jena.http.HttpRDF;
-import org.apache.jena.http.Push;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.RDFLanguages;
@@ -103,7 +103,7 @@ public class DSP extends StoreProtocol<DSP>{
             throw new IllegalArgumentException("No such file: "+file);
         String fileExtContentType = contentTypeFromFilename(file);
         HttpClient hc = requestHttpClient(serviceEndpoint, serviceEndpoint);
-        uploadQuads(hc, serviceEndpoint, file, fileExtContentType, httpHeaders, Push.POST);
+        uploadQuads(hc, serviceEndpoint, file, fileExtContentType, httpHeaders, HttpMethod.POST);
     }
 
     /** POST a dataset */
@@ -124,7 +124,7 @@ public class DSP extends StoreProtocol<DSP>{
             throw new IllegalArgumentException("No such file: "+file);
         String fileExtContentType = contentTypeFromFilename(file);
         HttpClient hc = requestHttpClient(serviceEndpoint, serviceEndpoint);
-        uploadQuads(hc, serviceEndpoint, file, fileExtContentType, httpHeaders, Push.PUT);
+        uploadQuads(hc, serviceEndpoint, file, fileExtContentType, httpHeaders, HttpMethod.PUT);
     }
 
     /** PUT a dataset */
@@ -145,10 +145,10 @@ public class DSP extends StoreProtocol<DSP>{
      * Send a file of quads to a URL. The Content-Type is inferred from the file
      * extension.
      */
-    private static void uploadQuads(HttpClient httpClient, String endpoint, String file, String fileExtContentType, Map<String, String> headers, Push mode) {
+    private static void uploadQuads(HttpClient httpClient, String endpoint, String file, String fileExtContentType, Map<String, String> headers, HttpMethod method) {
         Lang lang = RDFLanguages.contentTypeToLang(fileExtContentType);
         if ( !RDFLanguages.isQuads(lang) && !RDFLanguages.isTriples(lang) )
             throw new ARQException("Not an RDF format: " + file + " (lang=" + lang + ")");
-        pushFile(httpClient, endpoint, file, fileExtContentType, headers, mode);
+        pushFile(httpClient, endpoint, file, fileExtContentType, headers, method);
     }
 }

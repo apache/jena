@@ -44,6 +44,7 @@ import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.http.HttpMethod;
 import org.apache.jena.query.*;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -116,13 +117,13 @@ public abstract class SPARQLQueryProcessor extends ActionService
     public void validate(HttpAction action) {
         String method = uppercase(action.getRequestMethod());
 
-        if ( HttpNames.METHOD_OPTIONS.equals(method) )
+        if ( HttpMethod.METHOD_OPTIONS.equals(method) )
             return;
 
-        if ( !HttpNames.METHOD_POST.equals(method) && !HttpNames.METHOD_GET.equals(method) )
+        if ( !HttpMethod.METHOD_POST.equals(method) && !HttpMethod.METHOD_GET.equals(method) )
             ServletOps.errorMethodNotAllowed("Not a GET or POST request");
 
-        if ( HttpNames.METHOD_GET.equals(method) && action.getRequestQueryString() == null ) {
+        if ( HttpMethod.METHOD_GET.equals(method) && action.getRequestQueryString() == null ) {
             ServletOps.warning(action, "Service Description / SPARQL Query / " + action.getRequestRequestURI());
             ServletOps.errorNotFound("Service Description: " + action.getRequestRequestURI());
         }
@@ -198,7 +199,7 @@ public abstract class SPARQLQueryProcessor extends ActionService
     @Override
     public final void execute(HttpAction action) {
         // GET
-        if ( action.getRequestMethod().equals(HttpNames.METHOD_GET) ) {
+        if ( action.getRequestMethod().equals(HttpMethod.METHOD_GET) ) {
             executeWithParameter(action);
             return;
         }
