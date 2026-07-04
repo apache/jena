@@ -21,94 +21,121 @@
 
 package org.apache.jena.riot.web;
 
+import org.apache.jena.http.HttpMethod;
+
 public class HttpNames
 {
     // See also Guava com.google.common.net.HttpHeaders
     // (org.apache.jena.ext.com.google.common.net.HttpHeaders)
 
-    public static final String hAccept              = "Accept" ;
-    public static final String hAcceptCharset       = "Accept-Charset" ;
-    public static final String hAcceptRanges        = "Accept-Ranges" ;
-    public static final String hAcceptEncoding      = "Accept-Encoding" ;
+    public static final String hAccept              = "Accept";
+    public static final String hAcceptCharset       = "Accept-Charset";
+    public static final String hAcceptRanges        = "Accept-Ranges";
+    public static final String hAcceptEncoding      = "Accept-Encoding";
 
-    public static final String hAllow               = "Allow" ;
+    public static final String hAllow               = "Allow";
     public static final String hAuthorization       = "Authorization";
     public static final String hWWWAuthenticate     = "WWW-Authenticate";
-    public static final String hContentEncoding     = "Content-Encoding" ;
-    public static final String hContentLength       = "Content-Length" ;
-    public static final String hContentLocation     = "Content-Location" ;
-    public static final String hContentRange        = "Content-Range" ;
-    public static final String hContentType         = "Content-Type" ;
-    public static final String hPragma              = "Pragma" ;
-    public static final String hCacheControl        = "Cache-Control" ;
-    public static final String hRetryAfter          = "Retry-After" ;
-    public static final String hServer              = "Server" ;
-    public static final String hLocation            = "Location" ;
-    public static final String hVary                = "Vary" ;
-    public static final String hUserAgent           = "User-Agent" ;
+    public static final String hContentEncoding     = "Content-Encoding";
+    public static final String hContentLength       = "Content-Length";
+    public static final String hContentLocation     = "Content-Location";
+    public static final String hContentRange        = "Content-Range";
+    public static final String hContentType         = "Content-Type";
+    public static final String hPragma              = "Pragma";
+    public static final String hCacheControl        = "Cache-Control";
+    public static final String hRetryAfter          = "Retry-After";
+    public static final String hServer              = "Server";
+    public static final String hLocation            = "Location";
+    public static final String hVary                = "Vary";
+    public static final String hUserAgent           = "User-Agent";
 
     // CORS:
     //   http://www.w3.org/TR/cors/  http://esw.w3.org/CORS_Enabled
-    public static final String hAccessControlAllowOrigin        = "Access-Control-Allow-Origin" ;
-    public static final String hAccessControlExposeHeaders      = "Access-Control-Expose-Headers" ;
-    public static final String hAccessControlMaxAge             = "Access-Control-Max-Age" ;
-    public static final String hAccessControlAllowCredentials   = "Access-Control-Allow-Credentials" ;
-    public static final String hAccessControlAllowMethods       = "Access-Control-Allow-Methods" ;
-    public static final String hAccessControlAllowHeaders       = "Access-Control-Allow-Headers" ;
-    public static final String hOrigin                          = "Origin" ;
-    public static final String hAccessControlRequestMethod      = "Access-Control-Request-Method" ;
-    public static final String hAccessControlRequestHeaders     = "Access-Control-Request-Headers" ;
+    public static final String hOrigin                          = "Origin";
+    public static final String hAccessControlAllowOrigin        = "Access-Control-Allow-Origin";
+    public static final String hAccessControlExposeHeaders      = "Access-Control-Expose-Headers";
+    public static final String hAccessControlMaxAge             = "Access-Control-Max-Age";
+    public static final String hAccessControlAllowCredentials   = "Access-Control-Allow-Credentials";
+    public static final String hAccessControlAllowMethods       = "Access-Control-Allow-Methods";
+    public static final String hAccessControlAllowHeaders       = "Access-Control-Allow-Headers";
+    public static final String hAccessControlRequestMethod      = "Access-Control-Request-Method";
+    public static final String hAccessControlRequestHeaders     = "Access-Control-Request-Headers";
 
     // Media type parameters.
     // XXX Rename as mtCharset?
-    public static final String charset              = "charset" ;
+    public static final String charset              = "charset";
     // RDF .1.2+ SPARQL 1.2+ HTTP header parameters
-    public static final String mtParamVersion       = "version" ;
+    public static final String mtParamVersion       = "version";
     // RFC 6906 -- https://www.rfc-editor.org/rfc/rfc6906
-    public static final String mtParamProfile       = "profile" ;
+    public static final String mtParamProfile       = "profile";
 
     // GSP parameter names
-    public static final String paramGraph           = "graph" ;
-    public static final String paramGraphDefault    = "default" ;
+    public static final String paramGraph           = "graph";
+    public static final String paramGraphDefault    = "default";
 
     // Special names for GSP targets (use in ?graph=)
-    public static final String graphTargetDefault   = "default" ;
-    public static final String graphTargetUnion     = "union" ;
+    public static final String graphTargetDefault   = "default";
+    public static final String graphTargetUnion     = "union";
 
     // SPARQL query parameter names
-    public static final String paramQuery           = "query" ;
-    public static final String paramQueryRef        = "query-ref" ;
-    public static final String paramDefaultGraphURI = "default-graph-uri" ;
-    public static final String paramNamedGraphURI   = "named-graph-uri" ;
-    public static final String paramTarget          = "target" ;
+    public static final String paramQuery           = "query";
+    public static final String paramQueryRef        = "query-ref";
+    public static final String paramDefaultGraphURI = "default-graph-uri";
+    public static final String paramNamedGraphURI   = "named-graph-uri";
+    public static final String paramTarget          = "target";
 
     // SPARQL Update parameter names
-    public static final String paramUpdate          = "update" ;
-    public static final String paramRequest         = "request" ;   // Alternative name.
-    public static final String paramUsingGraphURI        = "using-graph-uri" ;
-    public static final String paramUsingNamedGraphURI   = "using-named-graph-uri" ;
+    public static final String paramUpdate          = "update";
+    public static final String paramRequest         = "request";   // Alternative name.
+    public static final String paramUsingGraphURI        = "using-graph-uri";
+    public static final String paramUsingNamedGraphURI   = "using-named-graph-uri";
 
     // Jena parameter names (SPARQL protocol extensions)
-    public static final String paramStyleSheet      = "stylesheet" ;
-    public static final String paramLang            = "lang" ;
-    public static final String paramAccept          = "accept" ;        // Unused
-    public static final String paramOutput1         = "output" ;
-    public static final String paramOutput2         = "format" ;        // Alternative name
-    public static final String paramOutput3         = "results" ;       // Alternative name
-    public static final String paramCallback        = "callback" ;
-    public static final String paramForceAccept     = "force-accept" ;  // Force the accept header at the last moment
-    public static final String paramTimeout         = "timeout" ;
+    public static final String paramStyleSheet      = "stylesheet";
+    public static final String paramLang            = "lang";
+    public static final String paramAccept          = "accept";        // Unused
+    public static final String paramOutput1         = "output";
+    public static final String paramOutput2         = "format";        // Alternative name
+    public static final String paramOutput3         = "results";       // Alternative name
+    public static final String paramCallback        = "callback";
+    public static final String paramForceAccept     = "force-accept";  // Force the accept header at the last moment
+    public static final String paramTimeout         = "timeout";
 
-    // Replace by enum HttpMethod
-    public static final String METHOD_DELETE        = "DELETE";
-    public static final String METHOD_HEAD          = "HEAD";
-    public static final String METHOD_GET           = "GET";
-    public static final String METHOD_QUERY         = "QUERY" ;
-    public static final String METHOD_OPTIONS       = "OPTIONS";
-    public static final String METHOD_PATCH         = "PATCH" ;
-    public static final String METHOD_POST          = "POST";
-    public static final String METHOD_PUT           = "PUT";
-    public static final String METHOD_TRACE         = "TRACE";
+    /** @deprecated Use {@link HttpMethod#METHOD_DELETE} instead */
+    @Deprecated(forRemoval = true)
+    public static final String METHOD_DELETE        = HttpMethod.METHOD_DELETE;
+
+    /** @deprecated Use {@link HttpMethod#METHOD_HEAD} instead */
+    @Deprecated(forRemoval = true)
+    public static final String METHOD_HEAD          = HttpMethod.METHOD_HEAD;
+
+    /** @deprecated Use {@link HttpMethod#METHOD_GET} instead */
+    @Deprecated(forRemoval = true)
+    public static final String METHOD_GET           = HttpMethod.METHOD_GET;
+
+    /** @deprecated Use {@link HttpMethod#METHOD_QUERY} instead */
+    @Deprecated(forRemoval = true)
+    public static final String METHOD_QUERY         = HttpMethod.METHOD_QUERY;
+
+    /** @deprecated Use {@link HttpMethod#METHOD_OPTIONS} instead */
+    @Deprecated(forRemoval = true)
+    public static final String METHOD_OPTIONS       = HttpMethod.METHOD_OPTIONS;
+
+    /** @deprecated Use {@link HttpMethod#METHOD_PATCH} instead */
+    @Deprecated(forRemoval = true)
+    public static final String METHOD_PATCH         = HttpMethod.METHOD_PATCH;
+
+    /** @deprecated Use {@link HttpMethod#METHOD_POST} instead */
+    @Deprecated(forRemoval = true)
+    public static final String METHOD_POST          = HttpMethod.METHOD_POST;
+
+    /** @deprecated Use {@link HttpMethod#METHOD_PUT} instead */
+    @Deprecated(forRemoval = true)
+    public static final String METHOD_PUT           = HttpMethod.METHOD_PUT;
+
+    /** @deprecated Use {@link HttpMethod#METHOD_TRACE} instead */
+    @Deprecated(forRemoval = true)
+    public static final String METHOD_TRACE         = HttpMethod.METHOD_TRACE;
 
     public static final String HEADER_IFMODSINCE    = "If-Modified-Since";
     public static final String HEADER_LASTMOD       = "Last-Modified";

@@ -21,9 +21,11 @@
 
 package org.apache.jena.fuseki.servlets;
 
-/** An {@link ActionService} that denies service. 
+import org.apache.jena.http.HttpMethod;
+
+/** An {@link ActionService} that denies service.
  *  Used to turn things off.
- */ 
+ */
 public class NoOpActionService extends ActionService {
 
     @Override
@@ -35,6 +37,9 @@ public class NoOpActionService extends ActionService {
     public void execute(HttpAction action) {
         ServletOps.errorBadRequest(action.getActionURI());
     }
-    
-    @Override public void execAny(String methodName, HttpAction action)     { executeLifecycle(action); }
+
+    @Override
+    public void execAny(HttpMethod method, HttpAction action) {
+        executeLifecycle(action);
+    }
 }

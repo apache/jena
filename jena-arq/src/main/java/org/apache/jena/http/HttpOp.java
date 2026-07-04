@@ -22,11 +22,7 @@
 package org.apache.jena.http;
 
 import static org.apache.jena.http.HttpLib.*;
-import static org.apache.jena.http.Push.PATCH;
-import static org.apache.jena.http.Push.POST;
-import static org.apache.jena.http.Push.PUT;
-import static org.apache.jena.riot.web.HttpNames.METHOD_HEAD;
-import static org.apache.jena.riot.web.HttpNames.METHOD_OPTIONS;
+import static org.apache.jena.http.HttpMethod.*;
 
 import java.io.InputStream;
 import java.net.Authenticator;
@@ -370,12 +366,12 @@ public class HttpOp {
      * @see BodyPublishers#ofString
      */
     public static void httpPatch(HttpClient httpClient, String url, String contentType, BodyPublisher body) {
-        execPushData(httpClient, PATCH, url, contentType, body);
+        execPushData(httpClient, PATCH,  url, contentType, body);
     }
 
     /** Push data. POST, PUT, PATCH request with no response body data. */
-    private static void execPushData(HttpClient httpClient, Push style, String url, String contentType, BodyPublisher body) {
-        HttpLib.httpPushData(httpClient, style, url, setContentTypeHeader(contentType), body);
+    private static void execPushData(HttpClient httpClient, HttpMethod method, String url, String contentType, BodyPublisher body) {
+        HttpLib.httpPushData(httpClient, method, url, setContentTypeHeader(contentType), body);
     }
 
     // ---- DELETE
@@ -408,7 +404,7 @@ public class HttpOp {
     public static String httpOptions(HttpClient httpClient, String url) {
         // Need to access the response headers
         HttpRequest.Builder builder =
-                HttpLib.requestBuilderFor(url).uri(toRequestURI(url)).method(METHOD_OPTIONS, BodyPublishers.noBody());
+                HttpLib.requestBuilderFor(url).uri(toRequestURI(url)).method(OPTIONS.method(), BodyPublishers.noBody());
         HttpRequest request = builder.build();
         HttpResponse<InputStream> response = execute(httpClient, request);
         String allowValue = HttpLib.responseHeader(response, HttpNames.hAllow);
@@ -452,7 +448,7 @@ public class HttpOp {
      */
     public static String httpHead(HttpClient httpClient, String url, String acceptHeader) {
         HttpRequest.Builder builder =
-                HttpLib.requestBuilderFor(url).uri(toRequestURI(url)).method(METHOD_HEAD, BodyPublishers.noBody());
+                HttpLib.requestBuilderFor(url).uri(toRequestURI(url)).method(HEAD.method(), BodyPublishers.noBody());
         HttpLib.acceptHeader(builder, acceptHeader);
         HttpRequest request = builder.build();
         HttpResponse<InputStream> response = execute(httpClient, request);

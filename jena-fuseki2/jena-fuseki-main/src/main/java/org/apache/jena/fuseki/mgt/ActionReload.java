@@ -28,9 +28,9 @@ import org.apache.jena.fuseki.main.FusekiLib;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
+import org.apache.jena.http.HttpMethod;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFParser;
-import org.apache.jena.riot.web.HttpNames;
 
 /**
  * Administration action to reload the server's dataset configuration.
@@ -43,7 +43,7 @@ public class ActionReload extends ActionCtl {
 
     @Override
     public void validate(HttpAction action) {
-        if ( action.getRequestMethod() != HttpNames.METHOD_POST ) {
+        if ( action.getRequestMethod() != HttpMethod.METHOD_POST ) {
             ServletOps.errorMethodNotAllowed(action.getRequestMethod());
         }
     }

@@ -21,13 +21,13 @@
 
 package org.apache.jena.http;
 
-import static org.apache.jena.riot.web.HttpNames.METHOD_PATCH;
-import static org.apache.jena.riot.web.HttpNames.METHOD_POST;
-import static org.apache.jena.riot.web.HttpNames.METHOD_PUT;
-
-/** Enum for HTTP push operations */
+/**
+ *  Enum for HTTP push operation
+ *  @deprecated Use {@link HttpMethod}
+ */
+@Deprecated(forRemoval = true)
 public enum Push {
-    PUT(METHOD_PUT), POST(METHOD_POST), PATCH(METHOD_PATCH);
+    PUT(HttpMethod.METHOD_PUT), POST(HttpMethod.METHOD_POST), PATCH(HttpMethod.METHOD_PATCH);
     private final String method;
 
     Push(String method) {

@@ -21,14 +21,11 @@
 
 package org.apache.jena.fuseki.ctl;
 
-import static org.apache.jena.riot.web.HttpNames.METHOD_DELETE;
-import static org.apache.jena.riot.web.HttpNames.METHOD_GET;
-import static org.apache.jena.riot.web.HttpNames.METHOD_POST;
-
 import org.apache.jena.atlas.json.JsonValue;
 import org.apache.jena.fuseki.servlets.ActionLib;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
+import org.apache.jena.http.HttpMethod;
 
 /** Base for actions that are container and also have actions on items */
 public abstract class ActionContainerItem extends ActionCtl {
@@ -39,11 +36,11 @@ public abstract class ActionContainerItem extends ActionCtl {
     final
     public void execute(HttpAction action) {
         String method = action.getRequestMethod();
-        if ( method.equals(METHOD_GET) )
+        if ( method.equals(HttpMethod.METHOD_GET) )
             performGet(action);
-        else if ( method.equals(METHOD_POST) )
+        else if ( method.equals(HttpMethod.METHOD_POST) )
             performPost(action);
-        else if ( method.equals(METHOD_DELETE) )
+        else if ( method.equals(HttpMethod.METHOD_DELETE) )
             performDelete(action);
         else
             ServletOps.errorMethodNotAllowed(action.getRequestMethod());
@@ -103,11 +100,11 @@ public abstract class ActionContainerItem extends ActionCtl {
 
     /** DELETE request on an item in the container */
     protected void execDeleteContainer(HttpAction action) {
-        ServletOps.errorMethodNotAllowed(METHOD_DELETE, "DELETE applied to a container");
+        ServletOps.errorMethodNotAllowed(HttpMethod.METHOD_DELETE, "DELETE applied to a container");
     }
 
     /** DELETE request on an item in the container */
     protected void execDeleteItem(HttpAction action) {
-        ServletOps.errorMethodNotAllowed(METHOD_DELETE);
+        ServletOps.errorMethodNotAllowed(HttpMethod.METHOD_DELETE);
     }
 }

@@ -695,19 +695,49 @@ public class HttpLib {
         return httpClient.sendAsync(httpRequest, BodyHandlers.ofInputStream());
     }
 
-    /** Push data. POST, PUT, PATCH request with no response body data. */
-    public static void httpPushData(HttpClient httpClient, Push style, String url, Consumer<HttpRequest.Builder> modifier, BodyPublisher body) {
-        HttpResponse<InputStream> response = httpPushWithResponse(httpClient, style, url, modifier, body);
+    /**
+     * Push data. POST, PUT, PATCH request with no response body data.
+     * @deprecated Use {@link #httpPushData(HttpClient, HttpMethod, String, Consumer, BodyPublisher)}
+     */
+    @Deprecated(forRemoval = true)
+    public static void httpPushData(HttpClient httpClient, @SuppressWarnings("removal") Push style, String url, Consumer<HttpRequest.Builder> modifier, BodyPublisher body) {
+        HttpResponse<InputStream> response = httpPushWithResponse(httpClient, style.method(), url, modifier, body);
         handleResponseNoBody(response);
     }
 
-    // Worker
-    public static HttpResponse<InputStream> httpPushWithResponse(HttpClient httpClient, Push style, String url,
+    /** Push data. POST, PUT, PATCH request with no response body data. */
+    public static void httpPushData(HttpClient httpClient, HttpMethod method, String url, Consumer<HttpRequest.Builder> modifier, BodyPublisher body) {
+        HttpResponse<InputStream> response = httpPushWithResponse(httpClient, method, url, modifier, body);
+        handleResponseNoBody(response);
+    }
+
+    /**
+     * Push data. POST, PUT, PATCH request with no response body data.
+     * @deprecated Use {@link #httpPushWithResponse(HttpClient, HttpMethod, String, Consumer, BodyPublisher)}
+     */
+    @Deprecated(forRemoval = true)
+    public static HttpResponse<InputStream> httpPushWithResponse(HttpClient httpClient, @SuppressWarnings("removal") Push style, String url,
                                                                  Consumer<HttpRequest.Builder> modifier, BodyPublisher body) {
+        return httpPushWithResponse(httpClient, style.method(), url, modifier, body);
+
+    }
+    // Worker
+    public static HttpResponse<InputStream> httpPushWithResponse(HttpClient httpClient, HttpMethod method, String url,
+                                                                 Consumer<HttpRequest.Builder> modifier, BodyPublisher body) {
+        switch(method) {
+            case POST,PUT, PATCH -> {}
+            default -> { throw HttpException.error("Method not suitable for push operation: "+method); }
+        }
+        return httpPushWithResponse(httpClient, method.method(), url, modifier, body);
+    }
+
+
+    private static HttpResponse<InputStream> httpPushWithResponse(HttpClient httpClient, String method, String url,
+                                                                  Consumer<HttpRequest.Builder> modifier, BodyPublisher body) {
         URI uri = toRequestURI(url);
         HttpRequest.Builder builder = requestBuilderFor(url);
         builder.uri(uri);
-        builder.method(style.method(), body);
+        builder.method(method, body);
         if ( modifier != null )
             modifier.accept(builder);
         HttpResponse<InputStream> response = execute(httpClient, builder.build());
@@ -817,7 +847,7 @@ public class HttpLib {
      */
     public static boolean isFuseki(String datasetURL) {
         HttpRequest.Builder builder =
-                HttpRequest.newBuilder().uri(toRequestURI(datasetURL)).method(HttpNames.METHOD_HEAD, BodyPublishers.noBody());
+                HttpRequest.newBuilder().uri(toRequestURI(datasetURL)).method(HttpMethod.METHOD_HEAD, BodyPublishers.noBody());
         HttpRequest request = builder.build();
         HttpClient httpClient = HttpEnv.getHttpClient(datasetURL);
         HttpResponse<InputStream> response = execute(httpClient, request);

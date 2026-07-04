@@ -32,12 +32,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.fuseki.Fuseki;
-import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.fuseki.servlets.ActionErrorException;
 import org.apache.jena.fuseki.servlets.ActionLib;
 import org.apache.jena.fuseki.servlets.ServletBase;
 import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.fuseki.validation.json.ValidationAction;
+import org.apache.jena.http.HttpMethod;
 
 import static org.apache.jena.riot.WebContent.*;
 import org.apache.jena.web.HttpSC;
@@ -96,7 +96,7 @@ public abstract class ValidatorBaseJson extends ServletBase {
         setCommonHeaders(response);
         String method = request.getMethod();
         // All GET and HEAD operations are sensitive to conneg so ...
-        if ( HttpNames.METHOD_GET.equalsIgnoreCase(method) || HttpNames.METHOD_HEAD.equalsIgnoreCase(method) )
+        if ( HttpMethod.METHOD_GET.equalsIgnoreCase(method) || HttpMethod.METHOD_HEAD.equalsIgnoreCase(method) )
             setVaryHeader(response);
     }
 

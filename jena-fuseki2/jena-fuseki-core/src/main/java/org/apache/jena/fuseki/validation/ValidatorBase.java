@@ -45,7 +45,7 @@ import org.apache.jena.fuseki.servlets.ServletBase;
 import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.fuseki.system.ConNeg;
 import org.apache.jena.fuseki.validation.json.ValidationAction;
-import org.apache.jena.riot.web.HttpNames;
+import org.apache.jena.http.HttpMethod;
 import org.apache.jena.web.HttpSC;
 import org.slf4j.Logger;
 
@@ -107,7 +107,7 @@ public abstract class ValidatorBase extends ServletBase {
         setCommonHeaders(response);
         String method = request.getMethod();
         // All GET and HEAD operations are sensitive to conneg so ...
-        if ( HttpNames.METHOD_GET.equalsIgnoreCase(method) || HttpNames.METHOD_HEAD.equalsIgnoreCase(method) )
+        if ( HttpMethod.METHOD_GET.equalsIgnoreCase(method) || HttpMethod.METHOD_HEAD.equalsIgnoreCase(method) )
             setVaryHeader(response);
     }
 

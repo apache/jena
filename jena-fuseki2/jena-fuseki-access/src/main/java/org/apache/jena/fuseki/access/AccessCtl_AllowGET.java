@@ -25,6 +25,7 @@ import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.fuseki.servlets.ActionService;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
+import org.apache.jena.http.HttpMethod;
 
 /**
  * Wrapper for an {@link ActionService} that rejects a request with a "write" HTTP
@@ -50,7 +51,7 @@ public class AccessCtl_AllowGET extends ActionService {
     public void execute(HttpAction action) {
         other.execute(action);
     }
-    
+
     // Allow
     @Override
     public void execHead(HttpAction action) {
@@ -62,17 +63,14 @@ public class AccessCtl_AllowGET extends ActionService {
     public void execGet(HttpAction action) {
         executeLifecycle(action);
     }
-    
+
     // Deny all others.
     @Override
-    public void execAny(String methodName, HttpAction action) {
+    public void execAny(HttpMethod method, HttpAction action) {
         if ( label == null )
             ServletOps.errorBadRequest("Not supported");
         else
             ServletOps.errorBadRequest(label+" : not supported");
         throw new InternalErrorException("AccessCtl_AllowGET: "+ "didn't reject request");
     }
-
-    
-    
 }

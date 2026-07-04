@@ -61,7 +61,6 @@ curl -v -XPOST 'http://localhost:3030/'"${DS}"'/?using-named-graph-uri=http%3A%2
         }
     }
 
-
     @Test public void update1() {
         FusekiServer server = server();
         String serviceURL = server.datasetURL(DS);

@@ -22,7 +22,6 @@ package org.apache.jena.fuseki.main;
 
 import static org.apache.jena.fuseki.servlets.CrossOriginFilter.*;
 import static org.apache.jena.http.HttpLib.handleResponseNoBody;
-import static org.apache.jena.riot.web.HttpNames.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -50,6 +49,7 @@ import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.http.HttpLib;
+import org.apache.jena.http.HttpMethod;
 import org.apache.jena.riot.web.HttpNames;
 
 /**
@@ -110,7 +110,7 @@ public class TestCrossOriginFilter {
             assertSetEquals(allowHeaders, expectedHeaders);
 
             Set<String> allowMethods = getHeaderSet(response, ACCESS_CONTROL_ALLOW_METHODS_HEADER);
-            Set<String> expectedMethods = Set.of(METHOD_GET, METHOD_POST, METHOD_PUT, METHOD_DELETE, METHOD_HEAD, METHOD_PATCH, METHOD_OPTIONS);
+            Set<String> expectedMethods = Set.of(HttpMethod.METHOD_GET, HttpMethod.METHOD_POST, HttpMethod.METHOD_PUT, HttpMethod.METHOD_DELETE, HttpMethod.METHOD_HEAD, HttpMethod.METHOD_PATCH, HttpMethod.METHOD_OPTIONS);
             assertSetEquals(allowMethods, expectedMethods);
 
             String allowOriginHeader = getHeader(response, ACCESS_CONTROL_ALLOW_ORIGIN_HEADER);
@@ -284,7 +284,7 @@ public class TestCrossOriginFilter {
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(URL))
-                .method(METHOD_OPTIONS, BodyPublishers.noBody())
+                .method(HttpMethod.METHOD_OPTIONS, BodyPublishers.noBody())
                 .headers(headers)
                 .build();
         try {

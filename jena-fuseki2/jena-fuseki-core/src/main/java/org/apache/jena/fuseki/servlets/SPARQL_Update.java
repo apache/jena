@@ -49,6 +49,7 @@ import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.http.HttpMethod;
 import org.apache.jena.irix.IRIx;
 import org.apache.jena.irix.IRIxResolver;
 import org.apache.jena.query.QueryException;
@@ -85,7 +86,7 @@ public class SPARQL_Update extends ActionService
 
     @Override
     public void execGet(HttpAction action) {
-        ServletOps.errorMethodNotAllowed(HttpNames.METHOD_GET, "SPARQL Update is not supported with GET. Use POST or PATCH instead");
+        ServletOps.errorMethodNotAllowed(HttpMethod.METHOD_GET, "SPARQL Update is not supported with GET. Use POST or PATCH instead");
     }
 
     @Override
@@ -121,10 +122,10 @@ public class SPARQL_Update extends ActionService
     public void validate(HttpAction action) {
         //HttpServletRequest request = action.getRequest();
 
-        if ( HttpNames.METHOD_OPTIONS.equals(action.getRequestMethod()) )
+        if ( HttpMethod.METHOD_OPTIONS.equals(action.getRequestMethod()) )
             return;
 
-        if ( ! HttpNames.METHOD_POST.equalsIgnoreCase(action.getRequestMethod()) && ! HttpNames.METHOD_PATCH.equalsIgnoreCase(action.getRequestMethod()) )
+        if ( ! HttpMethod.METHOD_POST.equalsIgnoreCase(action.getRequestMethod()) && ! HttpMethod.METHOD_PATCH.equalsIgnoreCase(action.getRequestMethod()) )
             ServletOps.errorMethodNotAllowed("SPARQL Update : use POST or PATCH");
 
         ContentType ct = updateContentType(action);

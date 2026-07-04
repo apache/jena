@@ -26,7 +26,7 @@ import org.apache.jena.fuseki.servlets.ActionREST;
 import org.apache.jena.fuseki.servlets.BaseActionREST;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
-import org.apache.jena.riot.web.HttpNames;
+import org.apache.jena.http.HttpMethod;
 import org.apache.jena.sparql.core.DatasetGraph;
 
 import java.util.Iterator;
@@ -84,9 +84,9 @@ public abstract class ActionPrefixesBase extends BaseActionREST {
 
         // Per HTTP operation validation.
         switch ( action.getRequestMethod() ) {
-            case HttpNames.METHOD_GET -> validatePrefixesGET(action);
-            case HttpNames.METHOD_POST -> validatePrefixesPOST(action);
-            case HttpNames.METHOD_DELETE -> validatePrefixesDELETE(action);
+            case HttpMethod.METHOD_GET -> validatePrefixesGET(action);
+            case HttpMethod.METHOD_POST -> validatePrefixesPOST(action);
+            case HttpMethod.METHOD_DELETE -> validatePrefixesDELETE(action);
         }
     }
 

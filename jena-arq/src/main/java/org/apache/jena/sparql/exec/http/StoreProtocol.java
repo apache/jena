@@ -35,7 +35,7 @@ import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.http.HttpLib;
-import org.apache.jena.http.Push;
+import org.apache.jena.http.HttpMethod;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.system.StreamRDFWriter;
 import org.apache.jena.riot.web.HttpNames;
@@ -236,13 +236,13 @@ public abstract class StoreProtocol<X extends StoreProtocol<X>> {
 
     /** Send a file. fileContentType takes precedence over this.contentType.*/
     protected static void pushFile(HttpClient httpClient, String endpoint, String file, String fileContentType,
-                                   Map<String, String> httpHeaders, Push style) {
+                                   Map<String, String> httpHeaders, HttpMethod method) {
         try {
             Path path = Path.of(file);
             if ( fileContentType != null )
                 httpHeaders.put(HttpNames.hContentType, fileContentType);
             BodyPublisher body = BodyPublishers.ofFile(path);
-            HttpLib.httpPushData(httpClient, style, endpoint, HttpLib.setHeaders(httpHeaders), body);
+            HttpLib.httpPushData(httpClient, method, endpoint, HttpLib.setHeaders(httpHeaders), body);
         } catch (FileNotFoundException ex) {
             throw new NotFoundException(file);
         }

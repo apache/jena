@@ -29,6 +29,7 @@ import java.io.InputStream;
 
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.fuseki.server.CounterName;
+import org.apache.jena.http.HttpMethod;
 import org.apache.jena.rdfpatch.PatchException;
 import org.apache.jena.rdfpatch.RDFChanges;
 import org.apache.jena.rdfpatch.changes.*;
@@ -57,8 +58,8 @@ public class PatchApply extends ActionREST {
     public void validate(HttpAction action) {
         String method = action.getRequest().getMethod();
         switch(method) {
-            case HttpNames.METHOD_POST:
-            case HttpNames.METHOD_PATCH:
+            case HttpMethod.METHOD_POST:
+            case HttpMethod.METHOD_PATCH:
                 break;
             default:
                 ServletOps.errorMethodNotAllowed(method+" : Patch must use POST or PATCH");

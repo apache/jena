@@ -23,7 +23,6 @@ package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format;
 import static org.apache.jena.atlas.lib.Lib.equalsOrNulls;
-import static org.apache.jena.riot.web.HttpNames.METHOD_POST;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -49,6 +48,7 @@ import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.system.ConNeg;
 import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.http.HttpMethod;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.system.*;
 import org.apache.jena.riot.web.HttpNames;
@@ -398,7 +398,7 @@ public class ActionLib {
 
     public static boolean isHTMLForm(HttpAction action) {
         String method = action.getRequestMethod();
-        if ( ! method.equals(METHOD_POST) )
+        if ( ! method.equals(HttpMethod.METHOD_POST) )
             return false;
 
         String ct = getContentMediaType(action);

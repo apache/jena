@@ -19,24 +19,33 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.riot.web;
+package org.apache.jena.http;
 
 import static org.apache.jena.atlas.lib.Lib.uppercase;
 
 public enum HttpMethod {
-    // METHOD_ only for transition/rename.
-    METHOD_DELETE("DELETE"),
-    METHOD_HEAD("HEAD"),
-    METHOD_GET("GET"),
-    METHOD_QUERY("QUERY"),
-    METHOD_OPTIONS("OPTIONS"),
-    METHOD_PATCH("PATCH"),
-    METHOD_POST("POST"),
-    METHOD_PUT("PUT"),
-    METHOD_TRACE("TRACE")
+    DELETE("DELETE"),
+    HEAD("HEAD"),
+    GET("GET"),
+    QUERY("QUERY"),
+    OPTIONS("OPTIONS"),
+    PATCH("PATCH"),
+    POST("POST"),
+    PUT("PUT"),
+    TRACE("TRACE")
     ;
 
     private final String method;
+
+    public static final String METHOD_DELETE        = "DELETE";
+    public static final String METHOD_HEAD          = "HEAD";
+    public static final String METHOD_GET           = "GET";
+    public static final String METHOD_QUERY         = "QUERY" ;
+    public static final String METHOD_OPTIONS       = "OPTIONS";
+    public static final String METHOD_PATCH         = "PATCH" ;
+    public static final String METHOD_POST          = "POST";
+    public static final String METHOD_PUT           = "PUT";
+    public static final String METHOD_TRACE         = "TRACE";
 
     private HttpMethod(String name) {
         this.method = name;
