@@ -28,14 +28,14 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FusekiTest {
 
     /** Check whether str is a comma separated list of expected (unordered) */
-    public static void assertStringList(String str, String... expected) {
-        str = str.replace(" ", "");
+    public static void assertStringList(String actual, String... expected) {
+        String str = actual.replace(" ", "");
         String[] x = str.split(",");
         for ( String ex : expected ) {
             assertTrue(containsStr(ex, x), "Got: "+str+" - Does not contain "+ex);
         }
         for ( String s : x ) {
-            assertTrue(containsStr(s, expected), "Got: "+str+" - Not expected "+s);
+            assertTrue(containsStr(s, expected), "Got: "+str+" - Did not expect "+s);
         }
     }
 

@@ -73,7 +73,8 @@ public abstract class SPARQLQueryProcessor extends ActionService
 
     @Override
     public void execOptions(HttpAction action) {
-        ActionLib.doOptionsGetPost(action);
+        ActionLib.setCommonHeadersForOptions(action);
+        action.setResponseHeader(HttpNames.hAllow, "HEAD,GET,QUERY,POST,OPTIONS");
         ServletOps.success(action);
     }
 
@@ -85,6 +86,10 @@ public abstract class SPARQLQueryProcessor extends ActionService
     }
 
     @Override public void execPost(HttpAction action) {
+        executeLifecycle(action);
+    }
+
+    @Override public void execQuery(HttpAction action) {
         executeLifecycle(action);
     }
 
@@ -120,8 +125,12 @@ public abstract class SPARQLQueryProcessor extends ActionService
         if ( HttpMethod.METHOD_OPTIONS.equals(method) )
             return;
 
-        if ( !HttpMethod.METHOD_POST.equals(method) && !HttpMethod.METHOD_GET.equals(method) )
-            ServletOps.errorMethodNotAllowed("Not a GET or POST request");
+        switch(method) {
+            case HttpMethod.METHOD_POST, HttpMethod.METHOD_GET,HttpMethod.METHOD_QUERY -> {}
+            default -> {
+                ServletOps.errorMethodNotAllowed("Not a GET, POST or QUERY request");
+            }
+        }
 
         if ( HttpMethod.METHOD_GET.equals(method) && action.getRequestQueryString() == null ) {
             ServletOps.warning(action, "Service Description / SPARQL Query / " + action.getRequestRequestURI());
@@ -155,8 +164,6 @@ public abstract class SPARQLQueryProcessor extends ActionService
         ContentType ct = FusekiNetLib.getContentType(request);
         boolean mustHaveQueryParam = true;
         if ( ct != null ) {
-            String incoming = ct.getContentTypeStr();
-
             if ( matchContentType(ctSPARQLQuery, ct) ) {
                 mustHaveQueryParam = false;
                 // Drop through.
@@ -164,7 +171,7 @@ public abstract class SPARQLQueryProcessor extends ActionService
                 // Nothing specific to do
             }
             else
-                ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Unsupported: " + incoming);
+                ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Unsupported: " + ct);
         }
 
         // GET/POST of a form at this point.
