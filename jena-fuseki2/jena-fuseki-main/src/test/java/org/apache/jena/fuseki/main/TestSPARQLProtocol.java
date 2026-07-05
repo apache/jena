@@ -21,17 +21,25 @@
 
 package org.apache.jena.fuseki.main;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.net.http.HttpRequest.BodyPublisher;
+import java.net.http.HttpRequest.BodyPublishers;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.http.HttpOp;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.riot.WebContent;
+import org.apache.jena.riot.resultset.ResultSetLang;
+import org.apache.jena.riot.rowset.RowSetReader;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.exec.RowSetOps;
@@ -60,8 +68,8 @@ public class TestSPARQLProtocol extends AbstractFusekiTest
         GSP.service(serviceGSP()).graphName(gn1).PUT(graph2);
     }
 
-    static String query(String base, String queryString) {
-        return base + "?query=" + Convert.encWWWForm(queryString);
+    static String httpQueryString(String queryString) {
+        return "?query=" + Convert.encWWWForm(queryString);
     }
 
     @Test
@@ -97,5 +105,40 @@ public class TestSPARQLProtocol extends AbstractFusekiTest
         UpdateRequest update = UpdateFactory.create("INSERT DATA {}");
         UpdateExecution proc = UpdateExecutionFactory.createRemoteForm(update, serviceUpdate());
         proc.execute();
+    }
+
+    // Using QUERY and query string in URL
+    @Test
+    public void query_method_qs() {
+        String qs = httpQueryString("SELECT * { ?s ?p ?o }");
+        String URL = serviceQuery()+qs;
+
+        TypedInputStream results = HttpOp.httpQueryStream(URL, WebContent.contentTypeResultsJSON);
+
+        assertEquals(results.getContentType(), WebContent.contentTypeResultsJSON);
+        RowSet rs = RowSetReader.createReader(ResultSetLang.RS_JSON).read(results.getInputStream(), null);
+    }
+
+    // Using QUERY + body
+    @Test
+    public void query_method_body() {
+        String qs = "SELECT * { ?s ?p ?o }";
+        String URL = serviceQuery();
+        BodyPublisher bodyPublisher = BodyPublishers.ofString(qs);
+
+        try ( TypedInputStream results =
+                HttpOp.httpQueryStream(URL, WebContent.contentTypeSPARQLQuery, bodyPublisher, WebContent.contentTypeResultsJSON) ) {
+            assertEquals(results.getContentType(), WebContent.contentTypeResultsJSON);
+            RowSet rs = RowSetReader.createReader(ResultSetLang.RS_JSON).read(results.getInputStream(), null);
+        }
+    }
+
+    // Using PATCH + body
+    @Test
+    public void patch_method_body() {
+        String update = "INSERT DATA {}";
+        String URL = serviceUpdate();
+        BodyPublisher bodyPublisher = BodyPublishers.ofString(update);
+        HttpOp.httpPatch(URL, WebContent.contentTypeSPARQLUpdate, bodyPublisher);
     }
 }

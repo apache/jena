@@ -80,7 +80,7 @@ public class SPARQL_Update extends ActionService
     @Override
     public void execOptions(HttpAction action) {
         ActionLib.setCommonHeadersForOptions(action);
-        action.setResponseHeader(HttpNames.hAllow, "POST,PATCH,OPTIONS");
+        action.setResponseHeader(HttpNames.hAllow, "HEAD,POST,PATCH,OPTIONS");
         ServletOps.success(action);
     }
 

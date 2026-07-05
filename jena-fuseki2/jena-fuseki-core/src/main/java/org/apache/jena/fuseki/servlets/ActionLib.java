@@ -466,6 +466,7 @@ public class ActionLib {
     }
 
     // Packing of OPTIONS.
+    // Query (SPARQLQueryProcessor) and update (SPARQL_Update) do special handling to allow add QUERY and PATCH.
 
     public static void doOptionsGet(HttpAction action) {
         setCommonHeadersForOptions(action);

@@ -30,26 +30,26 @@ public class TestHttpOptions extends AbstractFusekiTest
     @Test
     public void options_query() {
         String v = HttpOp.httpOptions(serviceQuery());
-        FusekiTest.assertStringList(v, "GET", "OPTIONS", "POST");
+        FusekiTest.assertStringList(v, "GET", "QUERY", "OPTIONS", "POST", "HEAD");
     }
 
     @Test
     public void options_update() {
         String v = HttpOp.httpOptions(serviceUpdate());
-        FusekiTest.assertStringList(v, "OPTIONS", "POST", "PATCH");
+        FusekiTest.assertStringList(v, "OPTIONS", "POST", "PATCH", "HEAD");
     }
 
     @Test
     public void options_dataset_01() {
         String v = HttpOp.httpOptions(databaseURL());
         // Not DELETE
-        FusekiTest.assertStringList(v, "HEAD", "GET", "OPTIONS", "POST", "PUT");
+        FusekiTest.assertStringList(v, "GET", "OPTIONS", "POST", "PUT", "HEAD");
     }
 
     @Test
     public void options_dataset_02() {
         String v = HttpOp.httpOptions(serviceGSP());
-        FusekiTest.assertStringList(v, "GET", "OPTIONS", "HEAD", "POST", "PUT");
+        FusekiTest.assertStringList(v, "GET", "OPTIONS", "POST", "PUT", "HEAD");
     }
 
     @Test
