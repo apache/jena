@@ -156,20 +156,19 @@ public class BlockAccessMapped extends BlockAccessBase
 
         synchronized (this) {
             try {
-                // Need to put the alloc AND the slice/reset inside a sync.
+                // Need to put the alloc AND the slice inside a sync.
                 ByteBuffer segBuffer = allocSegment(seg) ;
-                // Now slice the buffer to get the ByteBuffer to return
-                segBuffer.position(segOff) ;
-                segBuffer.limit(segOff+blockSize) ;
-                ByteBuffer dst = segBuffer.slice() ;
-
-                // And then reset limit to max for segment.
-                segBuffer.limit(segBuffer.capacity()) ;
+                // Slice from a cleared duplicate: never touches the shared
+                // segment buffer's position/limit, and does not depend on them
+                // either. The old position/limit/slice/reset sequence could
+                // leave a shrunken limit on the shared buffer if anything threw
+                // before the reset, poisoning every later access to a higher
+                // block in the segment ("newPosition > limit").
+                ByteBuffer dst = segBuffer.duplicate().clear().slice(segOff, blockSize) ;
                 // Extend block count when we allocate above end.
                 numFileBlocks = Math.max(numFileBlocks, id+1) ;
                 return dst ;
-            } catch (IllegalArgumentException ex) {
-                // Shouldn't (ha!) happen because the second "limit" resets
+            } catch (RuntimeException ex) {
                 log.error("Id: "+id) ;
                 log.error("Seg="+seg) ;
                 log.error("Segoff="+segOff) ;
