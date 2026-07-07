@@ -38,7 +38,8 @@ import org.slf4j.LoggerFactory;
     public static final Logger shiroLog = LoggerFactory.getLogger(Fuseki.PATH + ".Shiro");
 
     static void shiroEnvironment(ServletContext servletContext, List<String> possibleShiroIniFiles) {
-        // Shiro environment initialization, done here because we don't have webapp listeners.
+        // Shiro environment initialization, done here because
+        // we don't have webapp listeners.
         EnvironmentLoaderListener shiroListener = new FusekiShiroEnvironmentLoaderListener(possibleShiroIniFiles);
         // Silence these - handle the errors ourselves.
         LogCtl.disable(org.apache.shiro.web.env.IniWebEnvironment.class);

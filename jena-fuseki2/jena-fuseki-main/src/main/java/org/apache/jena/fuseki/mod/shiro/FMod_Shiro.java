@@ -77,18 +77,18 @@ public class FMod_Shiro implements FusekiModule {
     /** Shiro configuration file given a a command line argument. */
     private String argShiroFile = null;
 
-    /** Control for whether to have Jetty/Jakarta sessions,
-     * which are then used by Shiro.
-     * But they don't get cleared up and keep hold of RAM.
+    /**
+     * Control for whether to have Jetty/Jakarta sessions.
+     * But the HTTP sessions don't get cleared up and keep hold of RAM.
      * See <a href="https://github.com/apache/jena/issues/4033">GH-4033</a>.
      * <p>
-     * If {@code true}, then disable Shiro session creation on every request,
-     * and don't create a Jetty sever session manager.
+     * If NO_SESSIONS is {@code true}, then disable Shiro session creation
+     * on every request, and don't create a Jetty sever session manager.
      * <p>
      * It the future, it is likely that this flag is dropped
-     * and the code support only "disabled sessions".
+     * and the code support only "no sessions" for {@code FMod_Shiro}.
      */
-    private static final boolean DISABLE_SESSIONS = false;
+    private static final boolean NO_SESSIONS = true;
 
     public FMod_Shiro() {}
 
@@ -147,10 +147,10 @@ public class FMod_Shiro implements FusekiModule {
         return null;
     }
 
-     /**
-      * Determine the Shiro configuration file.
-      * This applies whether command line arguments used for programmatic setup.
-      */
+    /**
+     * Determine the Shiro configuration file.
+     * This applies whether command line arguments used for programmatic setup.
+     */
     @Override
     public void prepare(FusekiServer.Builder serverBuilder, Set<String> datasetNames, Model configModel) {
         String shiroConfig = decideShiroConfiguration(serverBuilder);
@@ -162,27 +162,30 @@ public class FMod_Shiro implements FusekiModule {
         if ( ! ResourceUtils.resourceExists(shiroResourceName) )
             throw new FusekiConfigException("Shiro resource does not exist");
 
-        Filter filter = new FusekiShiroFilter(shiroResourceName, DISABLE_SESSIONS);
+        Filter filter = new FusekiShiroFilter(shiroResourceName, NO_SESSIONS);
         // This is a "before" filter.
         serverBuilder.addFilter("/*", filter);
         serverBuilder.setServletAttribute(Fuseki.attrShiroResource, shiroResourceName);
         // Clear.
         this.argShiroFile = null;
+        FmtLog.info(shiroConfigLog, "Shiro configuration: %s", shiroResourceName);
     }
 
+    // When NO_SESSIONS becomes permanent, serverBeforeStarting(), addHttpSessionListener() can be removed.
     @Override
     public void serverBeforeStarting(FusekiServer server) {
+        if ( NO_SESSIONS )
+            return;
+
         try {
             String x =(String)server.getServletContext().getAttribute(Fuseki.attrShiroResource);
-            if ( x != null )
-                FmtLog.info(shiroConfigLog, "Shiro configuration: %s", x);
-            //            else
-            //                FmtLog.info(shiroConfigLog, "No Shiro configuration");
+            if ( x == null )
+                return ;
         } catch (ClassCastException ex) {
             FmtLog.warn(shiroConfigLog, "Unexpected Shiro configuration: %s", server.getServletContext().getAttribute(Fuseki.attrShiroResource));
         }
 
-        if ( ! DISABLE_SESSIONS ) {
+        if ( ! NO_SESSIONS ) {
             // If shiro requires a session handler.
             // This needs the Jetty server to have been created.
             // Allocate a Jakarta SessionHandler
@@ -192,7 +195,7 @@ public class FMod_Shiro implements FusekiModule {
                 ServletContextHandler servletContextHandler = (ServletContextHandler)(jettyServer.getHandler());
                 if ( servletContextHandler.getSessionHandler() == null ) {
                     SessionHandler sessionHandler = new SessionHandler();
-                    if ( true )
+                    if ( false )
                         addHttpSessionListener(sessionHandler);
                     servletContextHandler.setHandler(sessionHandler);
                 }
@@ -203,10 +206,8 @@ public class FMod_Shiro implements FusekiModule {
         }
     }
 
-
     // Later:
-    // Reload shirio.ini file and reset.
-//    // Currently, no actual - the server admin area does not move during the run of a server.
+    // Reload shiro.ini file and reset. See FusekiShiroEnvironmentLoader.
 //    /** {@inheritDoc} */
 //    @Override
 //    public void serverReload(FusekiServer server) { }

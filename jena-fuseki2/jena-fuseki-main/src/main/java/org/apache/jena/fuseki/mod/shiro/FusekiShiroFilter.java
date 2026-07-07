@@ -38,12 +38,12 @@ import org.apache.shiro.web.servlet.ShiroFilter;
 /*package*/ class FusekiShiroFilter extends ShiroFilter {
 
     private final String shiroInitializationResource;
-    private final boolean disableSessions;
+    private final boolean disableShiroSessions;
 
-    /*package*/ FusekiShiroFilter(String shiroResourceName, boolean disableSessions) {
+    /*package*/ FusekiShiroFilter(String shiroResourceName, boolean disableShiroSessions) {
         // Shiro file -- URLs are "file:<no encoding>"
         this.shiroInitializationResource = shiroResourceName;
-        this.disableSessions = disableSessions;
+        this.disableShiroSessions = disableShiroSessions;
     }
 
     @Override
@@ -64,7 +64,7 @@ import org.apache.shiro.web.servlet.ShiroFilter;
 
     @Override
     protected ServletRequest prepareServletRequest(ServletRequest request, ServletResponse response, FilterChain chain) {
-        if ( disableSessions ) {
+        if ( disableShiroSessions ) {
             // GH-4033 : https://github.com/apache/jena/issues/4033
             // See NoSessionCreationFilter
             request.setAttribute(DefaultSubjectContext.SESSION_CREATION_ENABLED, Boolean.FALSE);
