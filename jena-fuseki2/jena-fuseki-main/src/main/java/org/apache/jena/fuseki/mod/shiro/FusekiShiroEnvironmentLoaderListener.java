@@ -42,6 +42,20 @@ class FusekiShiroEnvironmentLoaderListener extends EnvironmentLoaderListener{
         this.locations = locations;
     }
 
+    // Public lifecycle
+//    @Override
+//    public WebEnvironment createEnvironment(ServletContext sc) {
+//        return super.createEnvironment(sc);
+//    }
+//    @Override
+//    public WebEnvironment initEnvironment(ServletContext servletContext) throws IllegalStateException {
+//        return super.initEnvironment(servletContext);
+//    }
+//    @Override
+//    public void destroyEnvironment(ServletContext sc) {
+//        super.destroyEnvironment(sc);
+//    }
+
     /**
      * When given multiple locations for the shiro.ini file, and
      * if a {@link ResourceBasedWebEnvironment}, check the list of configuration
@@ -76,4 +90,10 @@ class FusekiShiroEnvironmentLoaderListener extends EnvironmentLoaderListener{
             env.setConfigLocations(configLocationsHere);
         }
     }
+
+    // customizeEnvironment/finalizeEnvironment pair
+//    @Override
+//    protected void finalizeEnvironment(WebEnvironment environment) {
+//        super.finalizeEnvironment(environment);
+//    }
 }
