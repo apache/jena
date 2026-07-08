@@ -61,13 +61,21 @@ RUN ./download.sh --chksum sha1 "$JAR_URL"
 
 ## -- Make reduced Java JDK
 
-ARG JDEPS_EXTRA="jdk.crypto.cryptoki,jdk.crypto.ec"
+## Provides locale data. Jdeps does not detect it because of SPI, so add it here.
+ARG JDEPS_EXTRA="jdk.crypto.cryptoki,jdk.crypto.ec,jdk.localedata"
+
+## Optional: comma-separated list of locale language tags to keep from jdk.localedata,
+## e.g. "en,fr,de,fi". Leave empty to include all locales.
+ARG JDK_LOCALES=""
+
 RUN \
   JDEPS="$(jdeps --multi-release base --print-module-deps --ignore-missing-deps ${FUSEKI_JAR})"  && \
+  if [ -n "${JDK_LOCALES}" ] ; then LOCALE_OPT="--include-locales=${JDK_LOCALES}" ; else LOCALE_OPT="" ; fi && \
   jlink \
         --compress 2 --strip-debug --no-header-files --no-man-pages \
         --output "${JAVA_MINIMAL}" \
-        --add-modules "${JDEPS},${JDEPS_EXTRA}"
+        --add-modules "${JDEPS},${JDEPS_EXTRA}" \
+        ${LOCALE_OPT}
 
 ADD entrypoint.sh .
 ADD log4j2.properties .

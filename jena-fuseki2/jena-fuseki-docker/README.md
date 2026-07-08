@@ -77,6 +77,19 @@ The default layout in the container is:
 | /fuseki/log4j2.properties | Logging configuration                    |
 | /fuseki/databases/ | Directory for a volume for persistent databases |
 
+## Locales
+
+The image includes locale data for _all_ locales so that features such as
+[ARQ collation](https://jena.apache.org/documentation/query/collation.html)
+work correctly for languages other than English.
+
+To reduce image size, restrict the build to a subset of locales with the
+`JDK_LOCALES` build argument and a comma-separated list of language tags to include:
+
+    docker-compose build --build-arg JENA_VERSION=5.3.0 --build-arg JDK_LOCALES=en,fr,de,fi
+
+Leave `JDK_LOCALES` unset (the default) to include every locale.
+
 ## Setting JVM arguments
 
 Use `JAVA_OPTIONS`:
