@@ -211,6 +211,21 @@ public class NodeUtils
      */
     public static boolean isDirLangString(Node n) { return Util.isDirLangString(n); }
 
+    /**
+     * Determines whether a triple is valid as a RDF statement.
+     * <p>
+     * This function reflects the fact that the {@link Triple} API is flexible in
+     * allowing any Node type in any position (including non-RDF node types like
+     * Variable) and as such not all Triples can be safely converted into Statements
+     * </p>
+     * @param triple Triple
+     * @return true if a valid as a statement
+     */
+    public static boolean isValidAsRDF(Triple triple) {
+        if ( triple == null )
+            return false;
+        return isValidAsRDF(triple.getSubject(), triple.getPredicate(), triple.getObject());
+    }
 
     /**
      * Determines whether a triple (as s/p/o) is valid as a RDF statement.
@@ -222,7 +237,7 @@ public class NodeUtils
      * @param s Subject
      * @param p Predicate
      * @param o Object
-     * @return True if a valid as a statement
+     * @return true if a valid as a statement
      */
     public static boolean isValidAsRDF(Node s, Node p, Node o) {
         if ( s == null || ( ! s.isBlank() && ! s.isURI() ) )
@@ -231,7 +246,28 @@ public class NodeUtils
             return false;
         if ( o == null || ( ! o.isBlank() && ! o.isURI() && ! o.isLiteral() && !o.isTripleTerm() ) )
             return false;
+
+        if ( o.isTripleTerm() ) {
+            Triple tt = o.getTriple();
+            return isValidAsRDF(tt.getSubject(), tt.getPredicate(), tt.getObject());
+        }
         return true;
+    }
+
+    /**
+     * Determines whether a quad is valid as a RDF statement.
+     * <p>
+     * This function reflects the fact that the {@link Triple} API is flexible in
+     * allowing any Node type in any position (including non-RDF node types like
+     * Variable) and as such not all quads can be safely converted into Statements
+     * </p>
+     * @param quad Quad
+     * @return true if a valid as a graph name and statement
+     */
+    public static boolean isValidAsRDF(Quad quad) {
+        if ( quad == null )
+            return false;
+        return isValidAsRDF(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject());
     }
 
     /**
@@ -239,12 +275,13 @@ public class NodeUtils
      * <p>
      * This function reflects the fact that the {@link Triple} API is flexible in
      * allowing any Node type in any position (including non-RDF node types like
-     * Variable) and as such not all Triples can be safely converted into Statements
+     * Variable) and as such not all quads can be safely converted into Statements
      * </p>
+     * @param g Graph
      * @param s Subject
      * @param p Predicate
      * @param o Object
-     * @return True if a valid as a statement
+     * @return true if a valid as a graph name and statement
      */
     public static boolean isValidAsRDF(Node g, Node s, Node p, Node o) {
         if ( g == null || ( ! g.isURI() && ! g.isBlank() ) )
