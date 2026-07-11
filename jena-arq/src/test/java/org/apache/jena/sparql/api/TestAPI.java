@@ -71,7 +71,7 @@ public class TestAPI
     }
 
     @Test
-    public void test_API1() {
+    public void testSelect1() {
         String qs = "SELECT * {?s ?p ?o}";
         try (QueryExecution qExec = QueryExecution.model(m).query(qs).build()) {
             ResultSet rs = qExec.execSelect();
@@ -81,6 +81,38 @@ public class TestAPI
             Set<Statement> s1 = qr.getModel().listStatements().toSet();
             Set<Statement> s2 = m.listStatements().toSet();
             assertEquals(s1, s2);
+        }
+    }
+
+    @Test
+    public void testConstruct1() {
+
+        String qs = "CONSTRUCT {?s ?p ?o} WHERE { ?s ?p ?o }";
+        try (QueryExecution qExec = QueryExecution.model(m).query(qs).build()) {
+            Model m2 = qExec.execConstruct();
+            assertTrue(!m2.isEmpty(), () -> "No results");
+            assertTrue(m.isIsomorphicWith(m2), ()-> "Not isonorphic");
+        }
+    }
+
+    @Test
+    public void testConstructBad1() {
+        String qs =  """
+                PREFIX :     <http://example/>
+                PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                CONSTRUCT {
+                    << 456 :p :o >> .
+                    ?x :p :o .
+                    :s ?x :o .
+                    :tt1 :p <<( ?x :c2 :c3 )>> .
+                    :tt2 :p <<( :c1 ?x :c3 )>> .
+                    :tt3 :p <<( :c1 :c2 <<( ?x :d2 :d3 )>> )>> .
+                 } WHERE { BIND(123 AS ?x) }
+                """;
+        // Bad triples in result. They should be filtered out.
+        try (QueryExecution qExec = QueryExecution.model(m).query(qs).build()) {
+            Model m2 = qExec.execConstruct();
+            assertTrue(m2.isEmpty(), () -> "Expected empty graph");
         }
     }
 
