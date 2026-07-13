@@ -78,13 +78,12 @@ public class TemplateLib {
 
                 List<Triple> tripleList = new ArrayList<>(triples.size());
                 for ( Triple triple : triples ) {
-                    Triple q = subst(triple, b, bNodeMap);
-                    if ( !q.isConcrete() || ! NodeUtils.isValidAsRDF(q.getSubject(), q.getPredicate(), q.getObject()) ) {
-                        // Log.warn(TemplateLib.class, "Unbound quad:
-                        // "+FmtUtils.stringForQuad(quad)) ;
+                    Triple triple2 = subst(triple, b, bNodeMap);
+                    if ( !triple2.isConcrete() || ! NodeUtils.isValidAsRDF(triple2.getSubject(), triple2.getPredicate(), triple2.getObject()) ) {
+                        // Log.warn(TemplateLib.class, "Unbound triple:"+FmtUtils.stringForTriple(triple)) ;
                         continue;
                     }
-                    tripleList.add(q);
+                    tripleList.add(triple2);
                 }
                 return tripleList.iterator();
             }
@@ -136,7 +135,6 @@ public class TemplateLib {
 
     /** Substitute into a triple, with rewriting of bNodes */
     public static Triple subst(Triple triple, Binding b, Map<Node, Node> bNodeMap) {
-        // Transfer to quads.
         Node s = triple.getSubject();
         Node p = triple.getPredicate();
         Node o = triple.getObject();
