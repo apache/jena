@@ -49,7 +49,8 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
     { return new LabelToNode(new FixedScopePolicy(), nodeAllocatorHash()); }
 
     /**
-     * Allocation from a single scope; just the label matters.  Use this policy if repeated runs must give identical allocations
+     * Allocation from a single scope; just the label matters.
+     * Use this policy if repeated runs must give identical allocations
      * @param seed Seed
      */
     public static LabelToNode createScopeByDocumentHash(UUID seed)
@@ -61,7 +62,7 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
      * blank node allocation style but the map can grow to arbitrary size.
      * <p>
      * This was the policy up to Jena 2.10.0 but it occasionally ran into problems at
-     * very large scale because it generates and remembers a new UUIDs for new each
+     * very large scale because it generates and remembers a new UUID for new each
      * blank node. The policy changed to {@link #createScopeByDocumentHash} which
      * calculates the blank node label needed without needing to retain previous
      * allocations.
