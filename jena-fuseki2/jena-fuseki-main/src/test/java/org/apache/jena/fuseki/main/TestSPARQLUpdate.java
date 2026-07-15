@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.FileOps;
+import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.rdflink.RDFLink;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
@@ -36,12 +37,6 @@ import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.UpdateExec;
 
 public class TestSPARQLUpdate {
-/*
-curl -v -XPOST 'http://localhost:3030/'"${DS}"'/?using-named-graph-uri=http%3A%2F%2Fexample%2Fpeople' \
-     -H 'Content-type: application/sparql-update' \
-     --data-binary 'WITH <http://example/addresses> DELETE { ?person ?p  "Bill" } WHERE {}'
- */
-
     private static String PREFIXES = """
             PREFIX : <http://example/>
             """;
@@ -63,18 +58,18 @@ curl -v -XPOST 'http://localhost:3030/'"${DS}"'/?using-named-graph-uri=http%3A%2
         return server;
     }
 
+    @Test public void update1() {
+        FusekiServer server = server();
+        String serviceURL = server.datasetURL(DS);
+        UpdateExec.service(serviceURL).update(PREFIXES+"INSERT DATA { :s :p :o }").execute();
+    }
+
     @Test public void update2() {
         FusekiServer server = server();
         String serviceURL = server.datasetURL(DS);
         try ( RDFLink link = RDFLink.connect(serviceURL) ) {
             link.update(PREFIXES+"INSERT DATA { :s :p :o }");
         }
-    }
-
-    @Test public void update1() {
-        FusekiServer server = server();
-        String serviceURL = server.datasetURL(DS);
-        UpdateExec.service(serviceURL).update(PREFIXES+"INSERT DATA { :s :p :o }").execute();
     }
 
     @Test public void updateError1() {
@@ -92,11 +87,12 @@ curl -v -XPOST 'http://localhost:3030/'"${DS}"'/?using-named-graph-uri=http%3A%2
 
         // This will resolve to the same place in the test server.
         String FN = "testing/Files/data.ttl";
-        String loadFile = Path.of(FN).toAbsolutePath().toString();
-        assertTrue(FileOps.exists(loadFile), "No test file");
+        String loadFileName = Path.of(FN).toAbsolutePath().toString();
+        assertTrue(FileOps.exists(loadFileName), "No test file");
+        String loadFileIRI = IRILib.filenameToIRI(loadFileName);
 
         FusekiTestLib.expect400(()-> {
-            UpdateExec.service(serviceURL).update("LOAD <file:"+loadFile+">").execute(); });
+            UpdateExec.service(serviceURL).update("LOAD <file:"+loadFileIRI+">").execute(); });
         boolean hasTriples= QueryExec.service(serviceURL).query("ASK { ?s ?p ?o }").ask();
         assertFalse(hasTriples, "Dataset not empty");
     }
@@ -109,13 +105,13 @@ curl -v -XPOST 'http://localhost:3030/'"${DS}"'/?using-named-graph-uri=http%3A%2
 
         // This will resolve to the same place in the test server.
         String FN = "testing/Files/data.ttl";
-        String loadFile = Path.of(FN).toAbsolutePath().toString();
-        assertTrue(FileOps.exists(loadFile), "No test file");
+        String loadFileName = Path.of(FN).toAbsolutePath().toString();
+        assertTrue(FileOps.exists(loadFileName), "No test file");
+        String loadFileIRI = IRILib.filenameToIRI(loadFileName);
 
         FusekiTestLib.expect400(()-> {
-            UpdateExec.service(serviceURL).update("LOAD <file:"+loadFile+">").execute(); });
+            UpdateExec.service(serviceURL).update("LOAD <file:"+loadFileIRI+">").execute(); });
         boolean hasTriples= QueryExec.service(serviceURL).query("ASK { ?s ?p ?o }").ask();
         assertFalse(hasTriples, "Dataset not empty");
     }
-
 }
