@@ -30,17 +30,20 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
+import org.apache.jena.atlas.lib.FileOps;
+import org.apache.jena.tdb1.ConfigTest;
 import org.apache.jena.tdb1.TDB1Exception;
 import org.apache.jena.tdb1.base.file.Location;
 import org.apache.jena.tdb1.base.file.LocationLock;
 import org.apache.jena.tdb1.sys.ProcessUtils;
 import org.apache.jena.tdb1.sys.StoreConnection;
+import org.apache.jena.tdb1.sys.TDBInternal;
 
 /**
  * Tests for {@link LocationLock} in conjunction with {@link StoreConnection}s
@@ -49,17 +52,33 @@ public class TestLocationLockStoreConnection {
 
     private static boolean negativePidsTreatedAsAlive = false;
 
-    @TempDir
-    public Path tempDir;
+    // Do not use @TempDir - deleted files don't get cleaned up
+    // immediately on MS Windows and JUnit6 checks this when
+    // cleaning @TempDir
+    // See beforeEach, afterEach.
+    public String tempDir;
 
     @BeforeAll
     public static void setup() {
         negativePidsTreatedAsAlive = ProcessUtils.negativePidsTreatedAsAlive();
     }
 
+    @BeforeEach
+    public void beforeEach() {
+        tempDir = ConfigTest.getCleanDir()+"/store-location";
+        FileOps.ensureDir(tempDir);
+    }
+
+    @SuppressWarnings("removal")
+    @AfterEach
+    public void afterEach() {
+        TDBInternal.reset();
+        FileOps.clearDirectory(tempDir);
+    }
+
     @Test
     public void location_lock_store_connection_01() {
-        Location dir = Location.create(tempDir.toAbsolutePath().toString());
+        Location dir = Location.create(tempDir);
         LocationLock lock = dir.getLock();
         assertTrue(lock.canLock());
         assertFalse(lock.isLocked());
@@ -83,7 +102,7 @@ public class TestLocationLockStoreConnection {
     public void location_lock_store_connection_02() throws IOException {
         assumeTrue(negativePidsTreatedAsAlive);
 
-        Location dir = Location.create(tempDir.toAbsolutePath().toString());
+        Location dir = Location.create(tempDir);
         LocationLock lock = dir.getLock();
         assertTrue(lock.canLock());
         assertFalse(lock.isLocked());
