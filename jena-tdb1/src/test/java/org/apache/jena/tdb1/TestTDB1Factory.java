@@ -41,18 +41,20 @@ import org.junit.jupiter.api.Test;
 @SuppressWarnings("removal")
 public class TestTDB1Factory
 {
-    String DIR = ConfigTest.getCleanDir() ;
+    private String DIR;
 
-    static Quad quad1 = SSE.parseQuad("(_ <s> <p> 1)") ;
-    static Quad quad2 = SSE.parseQuad("(_ <s> <p> 1)") ;
+    static final Quad quad1 = SSE.parseQuad("(_ <s> <p> 1)") ;
+    static final Quad quad2 = SSE.parseQuad("(_ <s> <p> 1)") ;
 
     @BeforeEach
     public void before() {
-        TDBInternal.reset();
+        DIR = ConfigTest.getCleanDir()+"/TestTDB1Factory";
         FileOps.clearDirectory(DIR);
+        TDBInternal.reset();
     }
 
-    @AfterEach     public void after() {
+    @AfterEach
+    public void after() {
         TDBInternal.reset();
         FileOps.clearDirectory(DIR);
     }
@@ -111,7 +113,7 @@ public class TestTDB1Factory
 
     @Test public void testTDBFresh01() {
         boolean b = TDB1Factory.inUseLocation(DIR) ;
-        assertFalse(b, "Expect false before any creation attempted") ;
+        assertFalse(b, "Expected false before any creation attempted") ;
     }
 
     @Test public void testTDBFresh02() {
