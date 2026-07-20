@@ -36,10 +36,10 @@ import org.apache.jena.sparql.vocabulary.VocabTestQuery;
 import org.apache.jena.system.G;
 
 /**
- * Manifest to JUnit5 using {@link DynamicNode}.
+ * Manifest to JUnit using {@link DynamicNode}.
  * <p>
- * Each manifest file generates a JUnit5 {@link DynamicContainer}
- * and each test generates a JUnit5 {@link DynamicTest} in that
+ * Each manifest file generates a JUnit {@link DynamicContainer}
+ * and each test generates a JUnit {@link DynamicTest} in that
  * {@link DynamicContainer}.
  * <p>
  * Manifest files can contain other manifest files.

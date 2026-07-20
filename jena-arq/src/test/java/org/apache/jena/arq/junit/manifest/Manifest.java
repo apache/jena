@@ -54,7 +54,7 @@ public class Manifest
 
     public static Manifest parse(String filenameOrURI) {
         Graph manifestRDF;
-        // Exceptions from @TestFactories are swallowed by JUnit5.
+        // Exceptions from @TestFactories are swallowed by JUnit
         try {
             manifestRDF = RDFParser.source(filenameOrURI).toGraph();
         } catch (RiotException ex) {

@@ -68,7 +68,7 @@ class ManifestHolder {
             return x;
         } catch (RiotNotFoundException ex) {
             System.err.println("Not found: "+fn);
-            // Exceptions are swallowed by JUnit5.
+            // Exceptions are swallowed by JUnit
             throw new RiotNotFoundException("Manifest "+fn);
         } catch (TestSetupException ex) {
             System.exit(1);
