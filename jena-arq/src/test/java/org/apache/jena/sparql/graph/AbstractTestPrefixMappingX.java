@@ -34,7 +34,7 @@ import org.apache.jena.shared.PrefixMapping;
  * prefixMapping to be tested.
  */
 public abstract class AbstractTestPrefixMappingX {
-    // This is a copy of the jena-core class, converted to JUnit5.
+    // This is a copy of the jena-core class, converted to JUnit.
 
     public AbstractTestPrefixMappingX() {}
 

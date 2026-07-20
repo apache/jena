@@ -91,7 +91,7 @@ public class TestRDF12LangDirSyntax {
     /**
      * All tests, all details.
      * <p>
-     * These are then converted into parser tests and also output tests that get run by JUnit5.
+     * These are then converted into parser tests and also output tests that get run by JUnit.
      */
     private static Stream<OneTest> allTests() {
         return Stream.of(ntuplesTests(), turtleTests(), trigTests()).flatMap(x->x);
