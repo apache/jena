@@ -125,7 +125,7 @@
     <ver.jts>1.20.0</ver.jts>
     <ver.jdom2>2.0.6.1</ver.jdom2>
     <!-- Used in jena-fuseki-mod-geosparql -->
-    <ver.selenium-java>4.45.0</ver.selenium-java>
+    <ver.selenium-java>4.46.0</ver.selenium-java>
     <ver.webdrivermanager>6.3.4</ver.webdrivermanager>
 
     <!-- Plugins -->
