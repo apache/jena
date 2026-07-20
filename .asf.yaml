@@ -23,6 +23,6 @@ github:
     - rdf
     - sparql
   enabled_merge_buttons:
-    squash: false
+    squash: true
     rebase: true
     merge: false
