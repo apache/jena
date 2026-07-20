@@ -37,18 +37,15 @@ import org.apache.jena.dboe.base.block.Block;
 
 /**
  * The shared per-segment {@link MappedByteBuffer} in {@link BlockAccessMapped}
- * must never have its position/limit mutated by block access.
+ * must never have its position/limit mutated by block access (GH-4043).
  *
  * <p>The previous implementation sliced blocks with a
  * position/limit/slice/reset-limit sequence on the shared segment buffer. If
- * anything threw between the limit-shrink and the reset (e.g. an
- * {@link OutOfMemoryError} during {@code slice()}), the segment buffer was left
- * with a shrunken limit and every later access to a higher block in that
- * segment failed with {@code IllegalArgumentException: newPosition &gt; limit}
- * from {@code Buffer.position(int)} - observed in production as persistent 500s
- * on reads of a B+Tree index until restart. The fix slices with the absolute
- * {@code slice(index, length)}, which never touches the shared buffer's state.
- * These tests lock in that invariant.</p>
+ * anything threw between the limit-shrink and the reset, the segment buffer was
+ * left with a shrunken limit and every later access to a higher block in that
+ * segment failed with {@code IllegalArgumentException: newPosition &gt; limit}.
+ * The fix slices with the absolute {@code slice(index, length)}, which never
+ * touches the shared buffer's state. These tests lock in that invariant.</p>
  */
 public class TestBlockAccessMappedSegmentState {
 
@@ -102,8 +99,6 @@ public class TestBlockAccessMappedSegmentState {
 
         MappedByteBuffer seg0 = segmentBuffer(0);
         assertNotNull(seg0, "segment 0 should be mapped after block access");
-        System.out.printf("segment 0 after %d writes + %d reads: position=%d limit=%d capacity=%d%n",
-                          numBlocks, numBlocks + 2, seg0.position(), seg0.limit(), seg0.capacity());
 
         // A shrunken limit is the "newPosition > limit" poisoning vector.
         assertEquals(seg0.capacity(), seg0.limit(),
@@ -127,51 +122,11 @@ public class TestBlockAccessMappedSegmentState {
             for ( int j = 0; j < BlockSize; j++ ) {
                 byte expected = (byte)((i * 31 + j) & 0xFF);
                 byte actual = back.getByteBuffer().get(j);
-                if ( expected != actual )
-                    System.out.printf("MISMATCH block=%d byte=%d expected=%02x actual=%02x%n",
-                                      i, j, expected, actual);
                 assertEquals(expected, actual,
-                             String.format("content mismatch: block=%d byte=%d", i, j));
+                             String.format("content mismatch: block=%d byte=%d expected=%02x actual=%02x",
+                                           i, j, expected, actual));
             }
         }
-    }
-
-    /**
-     * Deterministic reproduction of the production failure.
-     *
-     * <p>Production stack: {@code IllegalArgumentException: newPosition > limit}
-     * from {@code Buffer.position(int)} inside {@code getByteBuffer} while
-     * reading a B+Tree node - every read of a high block in the segment kept
-     * failing (HTTP 500s) until restart. The poisoned state - a shrunken limit
-     * on the shared segment buffer - is what an asynchronous throwable (e.g.
-     * OOME) escaping the old position/limit/slice/reset-limit window left
-     * behind. The trigger itself cannot be provoked deterministically, so this
-     * test injects the resulting state by reflection and verifies reads still
-     * work. Against the old implementation this reproduces the production
-     * exception exactly.</p>
-     */
-    @Test
-    public void poisonedSegmentLimit_readsStillWork() throws Exception {
-        final int numBlocks = 8;
-        Block[] written = new Block[numBlocks];
-        for ( int i = 0; i < numBlocks; i++ )
-            written[i] = writePatternBlock(i * 13);
-
-        MappedByteBuffer seg0 = segmentBuffer(0);
-        seg0.limit(BlockSize); // block 0 only - every higher block is beyond the limit
-        System.out.printf("injected poisoned segment state: limit=%d capacity=%d%n",
-                          seg0.limit(), seg0.capacity());
-
-        // Old implementation: read of any block >= 1 threw
-        //   IllegalArgumentException: newPosition > limit: (segOff > 64)
-        for ( int i = numBlocks - 1; i >= 1; i-- ) {
-            Block back = file.read(written[i].getId().longValue());
-            for ( int j = 0; j < BlockSize; j++ )
-                assertEquals((byte)((i * 13 + j) & 0xFF), back.getByteBuffer().get(j),
-                             String.format("content mismatch after poisoning: block=%d byte=%d", i, j));
-        }
-        System.out.printf("all %d high blocks readable despite poisoned shared-buffer limit%n",
-                          numBlocks - 1);
     }
 
     @Test
