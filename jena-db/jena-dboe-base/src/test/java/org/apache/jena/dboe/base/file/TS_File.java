@@ -35,6 +35,7 @@ import org.junit.platform.suite.api.Suite;
     , TestBlockAccessByteArray.class
     , TestBlockAccessDirect.class
     , TestBlockAccessMapped.class
+    , TestBlockAccessMappedSegmentState.class
 
     , TestBinaryDataMem.class
     , TestBinaryDataFileWriteBufferedMem.class
