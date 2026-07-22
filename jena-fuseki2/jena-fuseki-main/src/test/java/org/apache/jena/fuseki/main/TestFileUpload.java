@@ -24,7 +24,9 @@ package org.apache.jena.fuseki.main;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.atlas.web.TypedInputStream;
+import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.http.HttpOp;
 import org.apache.jena.http.HttpRDF;
@@ -108,5 +110,15 @@ public class TestFileUpload  extends AbstractFusekiTest {
         DatasetGraph dsg = DSP.service(databaseURL()).GET();
         assertEquals(1, dsg.getDefaultGraph().size());
         assertEquals(2, dsg.getUnionGraph().size());
+    }
+
+    @Test
+    public void upload_gsp_bad_01() {
+        FileSender x = new FileSender(databaseURL());
+        x.add("D.ttl", "JUNK", "text/plain");
+
+        LogCtl.withLevel(Fuseki.actionLog, "FATAL", ()-> {
+            FusekiTestLib.expect400(()->x.send("POST"));
+        });
     }
 }

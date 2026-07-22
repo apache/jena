@@ -40,6 +40,7 @@ import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.fuseki.servlets.*;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.RiotParseException;
 import org.apache.jena.riot.lang.StreamRDFCounting;
 import org.apache.jena.riot.system.StreamRDF;
@@ -154,6 +155,8 @@ public class DataUploader {
             }
         }
         catch (ActionErrorException ex) { throw ex; }
+        // Parse error.
+        catch (RiotException ex)        { ServletOps.errorBadRequest(ex.getMessage()); }
         catch (Exception ex)            { ServletOps.errorOccurred(ex.getMessage()); }
         // Overall results.
         UploadDetails details = new UploadDetails(countingDest.count(), countingDest.countTriples(),countingDest.countQuads());
