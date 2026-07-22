@@ -67,7 +67,7 @@
     "globals": "^17.4.0",
     "jsdom": "^29.0.0",
     "json-server": "^0.17.4",
-    "nanoid": "^5.0.9",
+    "nanoid": "^6.0.0",
     "nodemon": "^3.0.1",
     "run-script-os": "^1.1.6",
     "sass-embedded": "^1.97.1",
