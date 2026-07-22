@@ -39,7 +39,7 @@ import org.apache.jena.sparql.engine.join.ImmutableUniqueList;
  * This builder is not thread safe.
  */
 public class TableBuilder {
-    private ImmutableUniqueList.Builder<Var> varsBuilder = ImmutableUniqueList.newUniqueListBuilder(Var.class);
+    private ImmutableUniqueList.Builder<Var> varsBuilder = ImmutableUniqueList.newUniqueListBuilder();
 
     private List<Binding> rows = new ArrayList<>();
     private boolean copyRowsOnNextMutation = false;
