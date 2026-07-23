@@ -54,8 +54,11 @@ import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.exec.http.GSP;
 import org.apache.jena.sparql.exec.http.QueryExecHTTP;
 import org.apache.jena.sparql.sse.SSE;
+import org.apache.jena.fuseki.main.sys.FusekiSystemConstants;
 import org.apache.jena.system.Txn;
 import org.apache.jena.update.UpdateExecution;
+import org.eclipse.jetty.io.ArrayByteBufferPool;
+import org.eclipse.jetty.server.Server;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 
@@ -83,6 +86,14 @@ public class TestFusekiServerBuild {
             assertFalse(server.getHttpPort() == 0 );
             assertTrue(server.getHttpsPort() == -1 );
         } finally { server.stop(); }
+    }
+
+    @Test public void fuseki_build_byte_buffer_pool() {
+        FusekiServer server = FusekiServer.create().port(0).build();
+        Server jettyServer = server.getJettyServer();
+        ArrayByteBufferPool pool = jettyServer.getBean(ArrayByteBufferPool.class);
+        assertNotNull(pool);
+        assertTrue(pool.getMaxCapacity() >= FusekiSystemConstants.jettyOutputBufferSize);
     }
 
     // The port in "testing/jetty.xml" is 1077
