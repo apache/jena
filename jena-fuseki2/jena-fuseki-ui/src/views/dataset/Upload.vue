@@ -182,6 +182,9 @@
                       {{ data.item.response.tripleCount }}
                     </span>
                     <span v-else class="small">0</span>
+                    <div v-if="data.item.error" class="small text-danger upload-error-message">
+                      {{ getUploadErrorMessage(data.item) }}
+                    </div>
                   </template>
                   <template #cell(actions)="data">
                     <button
@@ -368,7 +371,7 @@ export default {
     },
     upload: {
       handler () {
-        this.validateFiles()
+        this.validateFiles(false)
       },
       deep: true,
       immediate: false
@@ -425,29 +428,72 @@ export default {
       this.graphNameClasses = ['form-control', formValidationClass]
       return isValidGraphName
     },
-    validateFiles () {
+    /**
+     * Validate the selected upload files and update fileUploadClasses to reflect the result.
+     *
+     * @param {boolean} explicit - Whether this call comes from an explicit user action such as a
+     *   submit attempt. When true, an empty file list is flagged invalid. When false (e.g. a passive
+     *   change like removing a file), an empty list is only flagged invalid if it already was.
+     * @return {boolean} - true if at least one file is selected.
+     */
+    validateFiles (explicit = true) {
       if (this.upload.files !== null && this.upload.files.length > 0) {
-        this.fileUploadClasses = [
-          'btn',
-          'btn-success',
-          'is-valid'
-        ]
-        return true
+        this.fileUploadClasses = ['btn', 'btn-success', 'is-valid']
+      } else if (explicit || this.fileUploadClasses.includes('is-invalid')) {
+        this.fileUploadClasses = ['btn', 'btn-success', 'is-invalid']
+      } else {
+        this.fileUploadClasses = ['btn', 'btn-success']
       }
-      this.fileUploadClasses = [
-        'btn',
-        'btn-success',
-        'is-invalid'
-      ]
-      return false
+      return this.fileUploadClasses.includes('is-valid')
     },
+    /**
+     * Upload a single file via the vue-upload-component instance, surfacing any failure
+     * as a displayed error instead of an unhandled rejection.
+     *
+     * @param {object} file - The vue-upload-component file entry being uploaded.
+     * @param {object} component - The vue-upload-component instance (as passed to custom-action).
+     * @return {Promise<*>} - The resolved response from uploadHtml5, or undefined on failure.
+     */
     async handleUploadWithErrorHandling (file, component) {
       try {
-        return component
-          .uploadHtml5(file)
-          .catch(error => displayError(this, error))
-      } catch (error) {
-        displayError(this, error)
+        return await component.uploadHtml5(file)
+      } catch {
+        const uploadedFile = component.get(file) || file
+        displayError(this, this.getUploadErrorMessage(uploadedFile))
+      }
+    },
+    /**
+     * Build a human-readable error message for a failed upload file.
+     *
+     * Prefers the server's detailed error response body (plain text or a JSON object with
+     * a "message" field) over the generic vue-upload-component file.error code, falling
+     * back to a readable message per error code when no response body is available.
+     *
+     * @param {object} file - The vue-upload-component file entry, expected to carry
+     *   `error` (a vue-upload-component error code) and/or `response` (the server's body).
+     * @return {string} - A human-readable error message.
+     */
+    getUploadErrorMessage (file) {
+      const response = file && file.response
+      if (typeof response === 'string' && response.trim() !== '') {
+        return response.trim()
+      }
+      if (response && typeof response === 'object' && response.message) {
+        return response.message
+      }
+      switch (file && file.error) {
+        case 'network':
+          return 'Upload failed: could not reach the server. Please check your connection and try again.'
+        case 'timeout':
+          return 'Upload failed: the request timed out.'
+        case 'abort':
+          return 'Upload was cancelled.'
+        case 'denied':
+          return 'Upload was rejected by the server.'
+        case 'server':
+          return 'Upload failed: the server encountered an error while processing the file.'
+        default:
+          return 'Upload failed.'
       }
     }
   }
