@@ -19,6 +19,7 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
+
 package org.apache.jena.sparql.service.enhancer.slice.impl;
 
 import java.util.List;
@@ -26,16 +27,16 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import com.google.common.collect.RangeMap;
-import com.google.common.collect.RangeSet;
 import org.apache.jena.sparql.service.enhancer.slice.api.ArrayOps;
 import org.apache.jena.sparql.service.enhancer.slice.api.Slice;
 import org.apache.jena.sparql.service.enhancer.slice.api.SliceMetaDataBasic;
 
+import com.google.common.collect.RangeMap;
+import com.google.common.collect.RangeSet;
+
 public abstract class SliceBase<A>
     implements Slice<A>
 {
-
     protected ArrayOps<A> arrayOps;
 
     // A read/write lock for synchronizing reads/writes to the slice
@@ -50,7 +51,6 @@ public abstract class SliceBase<A>
     }
 
     protected abstract SliceMetaDataBasic getMetaData();
-
 
     @Override
     public RangeSet<Long> getLoadedRanges() {

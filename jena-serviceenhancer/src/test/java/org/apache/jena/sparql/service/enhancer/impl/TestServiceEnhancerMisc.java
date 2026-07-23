@@ -7,21 +7,23 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- *
- *   SPDX-License-Identifier: Apache-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.apache.jena.sparql.service.enhancer.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.google.common.base.StandardSystemProperty;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.query.Dataset;
@@ -40,19 +42,26 @@ import org.apache.jena.riot.RDFParser;
 import org.apache.jena.sparql.algebra.Algebra;
 import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.OpAsQuery;
+import org.apache.jena.sparql.algebra.Table;
+import org.apache.jena.sparql.algebra.TableFactory;
 import org.apache.jena.sparql.algebra.Transform;
 import org.apache.jena.sparql.algebra.Transformer;
 import org.apache.jena.sparql.algebra.optimize.Optimize;
 import org.apache.jena.sparql.core.Substitute;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
+import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.sparql.exec.QueryExecDataset;
+import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.service.enhancer.algebra.TransformSE_JoinStrategy;
 import org.apache.jena.sparql.service.enhancer.init.ServiceEnhancerConstants;
-import org.junit.Assert;
-import org.junit.Test;
+import org.apache.jena.sparql.service.enhancer.init.ServiceEnhancerInit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Miscellaneous tests for many aspects of the service enhancer plugin. */
 public class TestServiceEnhancerMisc {
+    private static final Logger logger = LoggerFactory.getLogger(TestServiceEnhancerMisc.class);
 
     @Test
     public void testLargeCache01() {
@@ -65,7 +74,7 @@ public class TestServiceEnhancerMisc {
         int evalRowCount = AbstractTestServiceEnhancerResultSetLimits.testWithCleanCaches(model, queryStr, 1000000000);
         int cachedRowCount = AbstractTestServiceEnhancerResultSetLimits.testCore(model, queryStr, 1000000000);
 
-        Assert.assertEquals(evalRowCount, cachedRowCount);
+        assertEquals(evalRowCount, cachedRowCount);
     }
 
     /** A query where it's whole graph pattern is subject to caching */
@@ -77,14 +86,14 @@ public class TestServiceEnhancerMisc {
 
         Model model = AbstractTestServiceEnhancerResultSetLimits.createModel(1000);
         int rows = AbstractTestServiceEnhancerResultSetLimits.testCore(model, "SELECT * { SERVICE <cache:> { SELECT DISTINCT ?p { ?s ?p ?o } } }", 100);
-        Assert.assertEquals(3, rows);
+        assertEquals(3, rows);
 
         // TODO We need to ensure that no backend request is made
         // We could register a custom service executor that does the counting
         // And/Or the test runner could return a stats object which includes the number of backend requests
 
         int cachedRows = AbstractTestServiceEnhancerResultSetLimits.testCore(model, "SELECT * { SERVICE <cache:> { SELECT DISTINCT ?p { ?s ?p ?o } } }", 100);
-        Assert.assertEquals(3, cachedRows);
+        assertEquals(3, cachedRows);
     }
 
     @Test
@@ -99,7 +108,7 @@ public class TestServiceEnhancerMisc {
 
         Model model = AbstractTestServiceEnhancerResultSetLimits.createModel(10);
         int rows = AbstractTestServiceEnhancerResultSetLimits.testWithCleanCaches(model, queryStr, 1000);
-        Assert.assertEquals(110, rows);
+        assertEquals(110, rows);
     }
 
     /** Tests that a loop join where the scoped visible variables on either side are disjoint
@@ -114,7 +123,7 @@ public class TestServiceEnhancerMisc {
 
         Model model = AbstractTestServiceEnhancerResultSetLimits.createModel(9);
         int rows = AbstractTestServiceEnhancerResultSetLimits.testWithCleanCaches(model, queryStr, 1000);
-        Assert.assertEquals(9, rows);
+        assertEquals(9, rows);
     }
 
     @Test
@@ -127,9 +136,9 @@ public class TestServiceEnhancerMisc {
 
         Model model = AbstractTestServiceEnhancerResultSetLimits.createModel(9);
         int referenceRowCount = AbstractTestServiceEnhancerResultSetLimits.testWithCleanCaches(model, queryStr, 1000);
-        Assert.assertEquals(9, referenceRowCount);
+        assertEquals(9, referenceRowCount);
         int actualRowCount = AbstractTestServiceEnhancerResultSetLimits.testCore(model, queryStr, 1000);
-        Assert.assertEquals(referenceRowCount, actualRowCount);
+        assertEquals(referenceRowCount, actualRowCount);
 
 /*
 -------------------------------
@@ -160,7 +169,7 @@ public class TestServiceEnhancerMisc {
 
         Model model = AbstractTestServiceEnhancerResultSetLimits.createModel(9);
         int actualRowCount = AbstractTestServiceEnhancerResultSetLimits.testWithCleanCaches(model, queryStr, 1000);
-        Assert.assertEquals(9, actualRowCount);
+        assertEquals(9, actualRowCount);
     }
 
     @Test
@@ -177,12 +186,27 @@ public class TestServiceEnhancerMisc {
         int referenceRowCount = AbstractTestServiceEnhancerResultSetLimits.testWithCleanCaches(model, queryStr, 1000);
         int actualRowCount = AbstractTestServiceEnhancerResultSetLimits.testCore(model, queryStr, 1000);
 
-        Assert.assertEquals(3, referenceRowCount);
-        Assert.assertEquals(referenceRowCount, actualRowCount);
+        assertEquals(3, referenceRowCount);
+        assertEquals(referenceRowCount, actualRowCount);
     }
 
     @Test
-    public void testCacheRefresh() {
+    public void testCacheRefresh_01a() {
+        String queryStr = String.join("\n",
+                "SELECT * {",
+                "  SERVICE <cache+clear:> { SELECT ?s { ?s a <urn:Department> } ORDER BY ?s OFFSET 7 LIMIT 2 }",
+                "}");
+
+        Model model = AbstractTestServiceEnhancerResultSetLimits.createModel(9);
+        int referenceRowCount = AbstractTestServiceEnhancerResultSetLimits.testWithCleanCaches(model, queryStr, 1000);
+        int actualRowCount = AbstractTestServiceEnhancerResultSetLimits.testCore(model, queryStr, 1000);
+
+        assertEquals(2, referenceRowCount);
+        assertEquals(referenceRowCount, actualRowCount);
+    }
+
+    @Test
+    public void testCacheRefresh_01b() {
         String queryStr = String.join("\n",
                 "SELECT * {",
                 "  SERVICE <cache+clear:> {",
@@ -195,8 +219,8 @@ public class TestServiceEnhancerMisc {
         int referenceRowCount = AbstractTestServiceEnhancerResultSetLimits.testWithCleanCaches(model, queryStr, 1000);
         int actualRowCount = AbstractTestServiceEnhancerResultSetLimits.testCore(model, queryStr, 1000);
 
-        Assert.assertEquals(3, referenceRowCount);
-        Assert.assertEquals(referenceRowCount, actualRowCount);
+        assertEquals(3, referenceRowCount);
+        assertEquals(referenceRowCount, actualRowCount);
     }
 
     @Test
@@ -214,10 +238,11 @@ public class TestServiceEnhancerMisc {
         queryStr = queryStr.replace("cache:", "cache+clear:");
         int actualRowCount = AbstractTestServiceEnhancerResultSetLimits.testCore(model, queryStr, 1000);
 
-        Assert.assertEquals(4, referenceRowCount);
-        Assert.assertEquals(referenceRowCount, actualRowCount);
+        assertEquals(4, referenceRowCount);
+        assertEquals(referenceRowCount, actualRowCount);
     }
 
+    /** Test case where LIMIT/OFFSET is used within the SERVICE <cache:> block. */
     @Test
     public void testCacheRefreshWithOffsetInside() {
         String queryStr = String.join("\n",
@@ -234,9 +259,9 @@ public class TestServiceEnhancerMisc {
         queryStr = queryStr.replace("cache:", "cache+clear:");
         int rows3 = AbstractTestServiceEnhancerResultSetLimits.testCore(model, queryStr, 1000);
 
-        Assert.assertEquals(4, rows);
-        Assert.assertEquals(rows, rows2);
-        Assert.assertEquals(rows, rows3);
+        assertEquals(4, rows);
+        assertEquals(rows, rows2);
+        assertEquals(rows, rows3);
     }
 
     @Test
@@ -263,7 +288,7 @@ public class TestServiceEnhancerMisc {
         Op op = Algebra.compile(QueryFactory.create(queryStr));
         Op op2 = Substitute.substitute(op, BindingFactory.binding(Var.alloc("s"), NodeFactory.createURI("urn:s")));
         Query actualQuery = OpAsQuery.asQuery(op2);
-        Assert.assertEquals(expectedQuery, actualQuery);
+        assertEquals(expectedQuery, actualQuery);
     }
 
     /** Tests for the presence of the function cacheInvalidate and expects it to return one binding
@@ -278,24 +303,22 @@ public class TestServiceEnhancerMisc {
         Dataset dataset = DatasetFactory.create();
         dataset.getContext().set(ServiceEnhancerConstants.enableMgmt, true);
         int actualRowCount = AbstractTestServiceEnhancerResultSetLimits.testWithCleanCaches(dataset, queryStr, 1000);
-        Assert.assertEquals(1, actualRowCount);
+        assertEquals(1, actualRowCount);
     }
 
     /** Tests whether cacheLs with empty argument only lists the ids */
     @Test
     public void testCacheMgmtList01() {
-
         // This call creates one cache entry
         testCacheRefreshWithOffsetInside();
 
         String queryStr = String.join("\n",
                 "PREFIX se: <http://jena.apache.org/service-enhancer#>",
                 "SELECT * WHERE {",
-                "  ?id se:cacheLs ()",
+                "  ?id se:cacheLs (?service ?queryStr)",
                 "}");
 
-        int actualRowCount = AbstractTestServiceEnhancerResultSetLimits.testCore(ModelFactory.createDefaultModel(), queryStr, 1000);
-        Assert.assertEquals(1, actualRowCount);
+        AbstractTestServiceEnhancerResultSetLimits.assertRowCount(1, ModelFactory.createDefaultModel(), queryStr, 1000);
     }
 
     /** Tests for the presence of the property function cacheLs */
@@ -312,7 +335,7 @@ public class TestServiceEnhancerMisc {
                 "}");
 
         int actualRowCount = AbstractTestServiceEnhancerResultSetLimits.testCore(ModelFactory.createDefaultModel(), queryStr, 1000);
-        Assert.assertEquals(1, actualRowCount);
+        assertEquals(1, actualRowCount);
     }
 
     @Test
@@ -339,7 +362,7 @@ public class TestServiceEnhancerMisc {
 
         int referenceRowCount = AbstractTestServiceEnhancerResultSetLimits.testWithCleanCaches(dataset, queryStr, 1000);
         int actualRowCount = AbstractTestServiceEnhancerResultSetLimits.testCore(dataset, queryStr, 1000);
-        Assert.assertEquals(referenceRowCount, actualRowCount);
+        assertEquals(referenceRowCount, actualRowCount);
     }
 
     @Test
@@ -356,7 +379,7 @@ public class TestServiceEnhancerMisc {
          Model model = AbstractTestServiceEnhancerResultSetLimits.createModel(9);
          int actualRowCount = AbstractTestServiceEnhancerResultSetLimits.testWithCleanCaches(model, queryStr, 1000);
 
-         Assert.assertEquals(6, actualRowCount);
+         assertEquals(6, actualRowCount);
     }
 
     @Test
@@ -387,7 +410,7 @@ public class TestServiceEnhancerMisc {
          Op op2 = Optimize.stdOptimizationFactory.create(ARQ.getContext()).rewrite(op);
          Op op3 = Transformer.transform(new TransformSE_JoinStrategy(), op2);
 
-         Assert.assertEquals(expectedStr, op3.toString());
+         assertEquals(expectedStr, op3.toString());
     }
 
     @Test
@@ -410,9 +433,9 @@ public class TestServiceEnhancerMisc {
              "}"); //.replace("loop:", "urn:x-arq:self");
 
         int referenceRowCount = AbstractTestServiceEnhancerResultSetLimits.testWithCleanCaches(dataset, queryStr, 1000);
-        Assert.assertEquals(3, referenceRowCount);
+        assertEquals(3, referenceRowCount);
         int actualRowCount = AbstractTestServiceEnhancerResultSetLimits.testCore(dataset, queryStr, 1000);
-        Assert.assertEquals(referenceRowCount, actualRowCount);
+        assertEquals(referenceRowCount, actualRowCount);
     }
 
     @Test
@@ -448,7 +471,7 @@ public class TestServiceEnhancerMisc {
         Op op2 = Optimize.stdOptimizationFactory.create(ARQ.getContext()).rewrite(op1);
         Op op3 = Transformer.transform(loopTransform, op2);
 
-        Assert.assertEquals(expectedStr, op3.toString());
+        assertEquals(expectedStr, op3.toString());
     }
 
     @Test
@@ -470,7 +493,7 @@ public class TestServiceEnhancerMisc {
                 + "}";
 
         int actualRowCount = AbstractTestServiceEnhancerResultSetLimits.testWithCleanCaches(dataset, queryStr, 1000);
-        Assert.assertEquals(4, actualRowCount);
+        assertEquals(4, actualRowCount);
     }
 
     /**
@@ -519,7 +542,119 @@ public class TestServiceEnhancerMisc {
                 rsSize = ResultSetFormatter.consume(rs);
             }
             // Expect the 3 labels of the test dataset
-            Assert.assertEquals(3, rsSize);
+            assertEquals(3, rsSize);
+        }
+    }
+
+    /** Test case where an attempt is made to cache slightly more items than the maximum cache size. */
+    @Test
+    public void testCacheEvictionCornerCase() {
+        // Investigation of some some very rare race conditions due to cache thrashing
+        // required around 100K+ tests.
+        int numTests = 100;
+        int maxCacheSize = 10;
+        int numExcessItems = 1; // Number of items by which to exceed the maximum cache size.
+        testCacheEvictionCornerCaseWorker(numTests, maxCacheSize, numExcessItems);
+        // IntStream.range(0, 20).boxed().toList().parallelStream().forEach(i -> testCacheEvictionCornerCaseWorker());
+    }
+
+    public void testCacheEvictionCornerCaseWorker(int numTests, int maxCacheSize, int numExcessItems) {
+        Model model = AbstractTestServiceEnhancerResultSetLimits.createModel(maxCacheSize + numExcessItems);
+        Dataset ds = DatasetFactory.wrap(model);
+        ServiceResponseCache cache = new ServiceResponseCache(1, 1, maxCacheSize);
+        ServiceResponseCache.set(ds.getContext(), cache);
+
+        String queryStr = """
+                SELECT * {
+                    { SELECT ?dept { ?dept a <urn:Department> } ORDER BY ?dept LIMIT $N }
+                    SERVICE <loop:cache:> { SELECT ?dept (COUNT(*) AS ?employees) { ?dept <urn:hasEmployee> ?emp } GROUP BY ?dept }
+                }
+                """.replace("$N", "" + (maxCacheSize + numExcessItems));
+        Query query = QueryFactory.create(queryStr);
+
+        Table prevTable = null;
+        for (int i = 0; i < numTests; ++i) {
+            Table thisTable;
+            try (QueryExec qe = QueryExecDataset.newBuilder()
+                .dataset(ds.asDatasetGraph())
+                .query(query)
+                .build()) {
+                thisTable = TableFactory.create(qe.select());
+            }
+
+            if (prevTable != null) {
+                if (!prevTable.equals(thisTable)) {
+                    System.err.println("Test failure on iteration #" + i);
+                }
+                assertEquals(prevTable, thisTable);
+            } else {
+                prevTable = thisTable;
+            }
+
+            if (i % 10 == 0) {
+                cache.invalidateAll();
+            }
+        }
+    }
+
+    @Test
+    public void testCacheEvictionCornerCase2() {
+        // Investigation of some some very rare race conditions due to cache thrashing.
+        // There was a bug in QueryIterBulkAndCache.moveToNext when backend requests were
+        // followed by cached ranges: In that case iterator ended too early not serving the cached data.
+        // Reproduction required around 100K+ iterations.
+        int numTests = 100;
+        int maxCacheSize = 10;
+        int numExcessItems = 1; // Number of items by which to exceed the maximum cache size.
+        testCacheEvictionCornerCaseWorker2(numTests, maxCacheSize, numExcessItems);
+        // IntStream.range(0, 20).boxed().toList().parallelStream().forEach(i -> testCacheEvictionCornerCaseWorker());
+    }
+
+    public void testCacheEvictionCornerCaseWorker2(int numTests, int maxCacheSize, int numExcessItems) {
+        Dataset ds = RDFDataMgr.loadDataset("linkedgeodata.sample.ttl");
+        ServiceResponseCache cache = new ServiceResponseCache(1, 1, maxCacheSize);
+        ServiceResponseCache.set(ds.getContext(), cache);
+
+        String queryStr = """
+                PREFIX owl: <http://www.w3.org/2002/07/owl#>
+                SELECT * {
+                    { SELECT ?t { ?t a owl:Class } LIMIT $N }
+                    SERVICE <loop:cache:bulk+2:> { SELECT ?s ?t { ?s a ?t } LIMIT 2 }
+                }
+                """.replace("$N", "" + (maxCacheSize + numExcessItems));
+        Query query = QueryFactory.create(queryStr);
+
+        Table prevTable = null;
+        for (int i = 0; i < numTests; ++i) {
+            Table thisTable;
+            try (QueryExec qe = QueryExecDataset.newBuilder()
+                .dataset(ds.asDatasetGraph())
+                .query(query)
+                .build()) {
+                ServiceEnhancerInit.wrapOptimizer(qe.getContext());
+
+                RowSet rs = qe.select();
+                thisTable = TableFactory.create(rs);
+            }
+
+            if (logger.isDebugEnabled()) {
+                logger.debug(ResultSetFormatter.asText(ResultSet.adapt(thisTable.toRowSet())));
+            }
+
+            if (prevTable != null) {
+                if (!prevTable.equals(thisTable)) {
+                    if (logger.isErrorEnabled()) {
+                        logger.error("Test failure on iteration #" + i);
+                    }
+                }
+                assertEquals(prevTable, thisTable);
+            } else {
+                prevTable = thisTable;
+            }
+
+//            if (i % 10 == 0) {
+//                cache.invalidateAll();
+//            }
         }
     }
 }
