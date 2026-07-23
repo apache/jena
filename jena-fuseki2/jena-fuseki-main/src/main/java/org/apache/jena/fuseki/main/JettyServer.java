@@ -50,6 +50,8 @@ import org.eclipse.jetty.ee11.servlet.FilterHolder;
 import org.eclipse.jetty.ee11.servlet.ServletContextHandler;
 import org.eclipse.jetty.ee11.servlet.ServletHolder;
 import org.eclipse.jetty.http.MimeTypes;
+import org.eclipse.jetty.io.ArrayByteBufferPool;
+import org.eclipse.jetty.io.ByteBufferPool;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.ErrorHandler;
@@ -473,8 +475,16 @@ public class JettyServer {
         maxThreads = Math.max(minThreads, maxThreads);
         // Args reversed: Jetty uses (max,min)
         threadPool = new QueuedThreadPool(maxThreads, minThreads);
-        Server server = new Server(threadPool);
+        // Server(ThreadPool) alone installs a default 64KB ArrayByteBufferPool; pass ours explicitly.
+        Server server = new Server(threadPool, null, newByteBufferPool());
         return server;
+    }
+
+    /** ByteBufferPool sized so its maximum pooled buffer capacity is at least
+     * {@link FusekiSystemConstants#jettyOutputBufferSize}. */
+    private static ByteBufferPool newByteBufferPool() {
+        int maxCapacity = FusekiSystemConstants.jettyOutputBufferSize;
+        return new ArrayByteBufferPool(0, 2048, maxCapacity, -1, -1, -1);
     }
 
     private static void serverAddConnectors(Server server, int port,  boolean loopback) {
