@@ -445,8 +445,15 @@ public class Context {
         return context;
     }
 
+    /** Set the current time in the context, overwriting any previous setting */
     public static void setCurrentDateTime(Context context) {
         context.set(ARQConstants.sysCurrentTime, NodeFactoryExtra.nowAsDateTime());
+    }
+
+    /** Set the current time in the context if there is no setting */
+    public static void setCurrentDateTimeIfUndef(Context context) {
+        if ( ! context.isDefined(ARQConstants.sysCurrentTime) )
+            setCurrentDateTime(context);
     }
 
     public static AtomicBoolean getCancelSignal(Context context) {

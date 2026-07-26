@@ -114,7 +114,7 @@ public class QueryExecDataset implements QueryExec
     }
 
     private void init() {
-        Context.setCurrentDateTime(context);
+        Context.setCurrentDateTimeIfUndef(context);
         if ( query != null )
             context.put(ARQConstants.sysCurrentQuery, query);
     }

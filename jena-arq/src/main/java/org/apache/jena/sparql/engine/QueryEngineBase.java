@@ -97,7 +97,7 @@ public abstract class QueryEngineBase implements OpEval, Closeable
         // so it can be changed after initialization.
         if ( context == null )
             context = Context.setupContextForDataset(context, dataset);
-        Context.setCurrentDateTime(context);
+        Context.setCurrentDateTimeIfUndef(context);
         this.query = null;
         setOp(op);
     }

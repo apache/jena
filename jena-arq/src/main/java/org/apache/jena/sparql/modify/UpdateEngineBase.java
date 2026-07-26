@@ -21,31 +21,27 @@
 
 package org.apache.jena.sparql.modify;
 
-import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.sparql.util.NodeFactoryExtra ;
 
 public abstract class UpdateEngineBase implements UpdateEngine
 {
     protected final DatasetGraph datasetGraph ;
     protected final Context context ;
 
-    public UpdateEngineBase(DatasetGraph datasetGraph, Context context)
-    {
+    public UpdateEngineBase(DatasetGraph datasetGraph, Context context) {
         this.datasetGraph = datasetGraph ;
         this.context = setupContext(context, datasetGraph) ;
     }
 
-    private Context setupContext(Context cxt, DatasetGraph dataset)
-    {
+    private Context setupContext(Context cxt, DatasetGraph dataset) {
         // The following setup is effectively the same as in QueryEngineBase
         Context result = cxt;
 
         if ( result == null )
             result = Context.setupContextForDataset(cxt, dataset);
 
-        result.set(ARQConstants.sysCurrentTime, NodeFactoryExtra.nowAsDateTime()) ;
+        Context.setCurrentDateTimeIfUndef(result);
         return result ;
     }
 }
