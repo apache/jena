@@ -80,10 +80,10 @@ public class FusekiCoreInfo {
                 sb.append("  Access = ");
                 StringJoiner sj2 = new StringJoiner(", ", "[ ", " ]");
                 dap.getDataService().getEndpoints(operation).stream()
-                .map(Endpoint::getAuthPolicy)
-                .map(auth-> auth==null?"*":auth.toString())
-                .sorted()
-                .forEach(sj2::add);
+                    .map(Endpoint::getAuthPolicy)
+                    .map(auth-> auth==null?"*":auth.toString())
+                    .sorted()
+                    .forEach(sj2::add);
                 sb.append(sj2.toString());
             }
             FmtLog.info(log,sb.toString());

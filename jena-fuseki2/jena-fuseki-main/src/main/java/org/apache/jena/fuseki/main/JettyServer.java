@@ -71,7 +71,6 @@ public class JettyServer {
     // Caution :
     //   there are small differences e.g. in building where order matters.
     //   Setting default (look for FusekiServerConstants)
-    //
 
     private static Logger LOG = LoggerFactory.getLogger("HTTP");
 

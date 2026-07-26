@@ -31,7 +31,7 @@ import org.apache.jena.sparql.util.TranslationTable;
  * The output formats for all query types.
  * Result sets, boolean graphs.
  * <p>
- * This does not include results sets as RDF is elsewhere which is provided for tests with {@link RDFInput} and {@link RDFOutput}.
+ * This does not include results sets as RDF. They are  provided for tests with {@link RDFInput} and {@link RDFOutput}.
  */
 
 public enum ResultsFormat {
@@ -67,7 +67,7 @@ public enum ResultsFormat {
     private final RDFFormat rdfFormat;
     //private final boolean supportsBoolean;
 
-    ResultsFormat(Lang resultSetLang, RDFFormat rdfFormat) {
+    private ResultsFormat(Lang resultSetLang, RDFFormat rdfFormat) {
         this.resultSetLang = resultSetLang;
         this.rdfFormat = rdfFormat;
 
@@ -136,6 +136,10 @@ public enum ResultsFormat {
         names.put("n-triples",   NT);
         names.put("ntriples",    NT);
         names.put("nt",          NT);
+
+        // Thrift/RDF
+        // Protobuf/RDF
+
 
         names.put("jsonld",      RDF_JSONLD) ;
         names.put("json-ld",     RDF_JSONLD) ;
