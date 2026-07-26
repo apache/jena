@@ -34,11 +34,17 @@ public interface UpdateExec extends UpdateProcessor
         return UpdateExecDatasetBuilder.create().dataset(dataset);
     }
 
+    /** @deprecated Use {@link #graph(Graph)} */
+    @Deprecated(forRemoval = true)
+    public static UpdateExecBuilder dataset(Graph graph) {
+        return graph(graph);
+    }
+
     /**
      * Create a {@link UpdateExecBuilder} for a graph.
      * The update must not involved named graphs.
      */
-    public static UpdateExecBuilder dataset(Graph graph) {
+    public static UpdateExecBuilder graph(Graph graph) {
         DatasetGraph dsg = DatasetGraphFactory.wrap(graph);
         return UpdateExecDatasetBuilder.create().dataset(dsg);
     }
