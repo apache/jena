@@ -105,7 +105,7 @@ public class TestUpdateExecutionCancel {
 
         assertThrows(QueryCancelledException.class,()->
             UpdateExec
-                .dataset(graph)
+                .graph(graph)
                 // No-op delete followed by insert indirectly tests that timeout is applied to overall update request.
                 .update("DELETE { <s> <p> <o> } WHERE { ?a ?b ?c }; INSERT { <s> <p> <o> } WHERE { ?a ?b ?c . ?d ?e ?f . ?g ?h ?i . }")
                 .timeout(50, TimeUnit.MILLISECONDS)
