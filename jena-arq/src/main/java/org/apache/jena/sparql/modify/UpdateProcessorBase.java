@@ -53,7 +53,7 @@ public class UpdateProcessorBase implements UpdateProcessor
         this.request = request ;
         this.datasetGraph = datasetGraph ;
         this.context = context;
-        Context.setCurrentDateTime(this.context) ;
+        Context.setCurrentDateTimeIfUndef(this.context) ;
         this.factory = factory ;
         this.timeout = timeout;
         Context.getOrSetCancelSignal(this.context) ;

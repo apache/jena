@@ -26,8 +26,9 @@ import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.update.UpdateProcessorStreaming;
 
-/** Class to hold the general state of a update request execution.
- *  See query ExecutionContext
+/**
+ * Class to hold the general state of a update request execution.
+ * See query ExecutionContext
  */
 public class UpdateProcessorStreamingBase implements UpdateProcessorStreaming
 {
@@ -37,12 +38,11 @@ public class UpdateProcessorStreamingBase implements UpdateProcessorStreaming
     protected final UpdateEngine proc;
     protected final Prologue prologue;
 
-    public UpdateProcessorStreamingBase(DatasetGraph datasetGraph, Prologue prologue, Context context, UpdateEngineFactory factory)
-    {
+    public UpdateProcessorStreamingBase(DatasetGraph datasetGraph, Prologue prologue, Context context, UpdateEngineFactory factory) {
         this.datasetGraph = datasetGraph;
         this.prologue = prologue;
         this.context = context;
-        Context.setCurrentDateTime(this.context);
+        Context.setCurrentDateTimeIfUndef(this.context);
         proc = factory.create(datasetGraph, context);
     }
 
