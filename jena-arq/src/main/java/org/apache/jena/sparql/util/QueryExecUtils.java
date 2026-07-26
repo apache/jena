@@ -283,7 +283,6 @@ public class QueryExecUtils {
         return;
     }
 
-
     private static RuntimeException noFormatException(String msg) {
         return new ARQException(msg);
     }
