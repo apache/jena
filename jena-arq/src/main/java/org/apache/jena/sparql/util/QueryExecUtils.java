@@ -201,7 +201,7 @@ public class QueryExecUtils {
         Lang rsLang = outputFormat.resultSetLang();
 
         if ( rsLang == null ) {
-            RDFFormat asRDF = outputFormat.rdfFormat();
+            RDFFormat asRDF = outputFormat.triplesFormat();
             Model model = RDFOutput.encodeAsModel(resultSet);
             RDFWriter.source(model).format(asRDF).output(output);
             return;
@@ -260,7 +260,7 @@ public class QueryExecUtils {
 
         Lang rsLang = outputFormat.resultSetLang();
         if ( rsLang == null ) {
-            RDFFormat asRDF = outputFormat.rdfFormat();
+            RDFFormat asRDF = outputFormat.triplesFormat();
             Model model = RDFOutput.encodeAsModel(resultBoolean);
             RDFWriter.source(model).format(asRDF).output(output);
             return;
@@ -270,15 +270,15 @@ public class QueryExecUtils {
     }
 
     private static void writeModel(Model model, ResultsFormat outputFormat, OutputStream output) {
-        RDFFormat rdfFormat = RDFFormat.TURTLE_PRETTY;
+        RDFFormat rdfFormat = outputFormat.triplesFormat();
         RDFWriter.source(model).format(rdfFormat).output(output);
         return;
     }
 
     private static void writeDataset(Dataset dataset, ResultsFormat outputFormat, OutputStream output) {
-        RDFFormat rdfFormat = outputFormat.rdfFormat();
+        RDFFormat rdfFormat = outputFormat.quadsFormat();
         if ( rdfFormat == null )
-            throw noFormatException("No dataset output format for : "+outputFormat.name());
+            throw noFormatException("No dataset output format for: "+outputFormat.name());
         RDFWriter.source(dataset).format(rdfFormat).output(output);
         return;
     }
