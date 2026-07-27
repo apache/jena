@@ -29,6 +29,7 @@ import org.junit.platform.suite.api.Suite;
     TestResultSet.class
     , TestResultSetWriting.class
     , TestResultSetParsing.class
+    , TestResultsFormat.class
 })
 public class TS_ResultSet
 {

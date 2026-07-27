@@ -28,49 +28,57 @@ import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.sparql.util.TranslationTable;
 
 /**
- * The output formats for all query types.
- * Result sets, boolean graphs.
+ * The output formats for all query types. This allows the APi to given a results
+ * choice before the kind of query is known.
  * <p>
- * This does not include results sets as RDF. They are  provided for tests with {@link RDFInput} and {@link RDFOutput}.
+ * This does not include results sets as RDF. They are provided for tests with
+ * {@link RDFInput} and {@link RDFOutput}.
+ * <p>
+ * A {@code ResultsFormat} item has three parts, result format, triples format (e.g.
+ * CONSTRUCT), and quads (for extended CONSTRUCT). These are stored in a lookup table
+ * for string to {@code ResultsFormat}, which is used by commands.
  */
 
 public enum ResultsFormat {
-    // Results formats, by surface syntax.
-    // Used by commands.
+    // Does not cover boolean results.
 
-    XML(ResultSetLang.RS_XML, RDFFormat.RDFXML_ABBREV),
-    JSON(ResultSetLang.RS_JSON, RDFFormat.JSONLD11),
-    TEXT(ResultSetLang.RS_Text, RDFFormat.TURTLE),
+    XML(ResultSetLang.RS_XML, RDFFormat.RDFXML_ABBREV, null),
+    JSON(ResultSetLang.RS_JSON, RDFFormat.JSONLD, RDFFormat.JSONLD),
+    TEXT(ResultSetLang.RS_Text, RDFFormat.TURTLE, RDFFormat.TRIG),
 
-    CSV(ResultSetLang.RS_CSV, null),
-    TSV(ResultSetLang.RS_TSV, null),
+    CSV(ResultSetLang.RS_CSV, null, null),
+    TSV(ResultSetLang.RS_TSV, null, null),
 
-    THRIFT(ResultSetLang.RS_Thrift, RDFFormat.RDF_THRIFT),
-    PROTOBUF(ResultSetLang.RS_Protobuf, RDFFormat.RDF_PROTO),
+    THRIFT(ResultSetLang.RS_Thrift, RDFFormat.RDF_THRIFT, RDFFormat.RDF_THRIFT),
+    PROTOBUF(ResultSetLang.RS_Protobuf, RDFFormat.RDF_PROTO, RDFFormat.RDF_PROTO),
 
     // result set as RDF is handled specially
-    TTL(null, RDFFormat.TURTLE),
-    NT(null, RDFFormat.NTRIPLES),
-    RDFXML(null, RDFFormat.RDFXML),
-    RDF_JSONLD(null, RDFFormat.JSONLD),
+    TTL(null, RDFFormat.TURTLE, null),
+    NT(null, RDFFormat.NTRIPLES, null),
+
+    TRIG(null, RDFFormat.TRIG, RDFFormat.TRIG),
+    NQ(null, RDFFormat.NQUADS, RDFFormat.NQUADS),
+
+    RDFXML(null, RDFFormat.RDFXML, null),
+    JSONLD(null, RDFFormat.JSONLD, RDFFormat.JSONLD),
 
     // Special name.
-    COUNT(null, null),
+    COUNT(null, null, null),
 
-    NONE(ResultSetLang.RS_None, RDFFormat.RDFNULL),
+    NONE(ResultSetLang.RS_None, RDFFormat.RDFNULL, RDFFormat.RDFNULL),
 
-    SSE(null, null),
-    TUPLES(null, null)
-    ;
+    SSE(null, null, null)
+   ;
 
     private final Lang resultSetLang;
-    private final RDFFormat rdfFormat;
+    private final RDFFormat triplesFormat;
+    private final RDFFormat quadsFormat;
     //private final boolean supportsBoolean;
 
-    private ResultsFormat(Lang resultSetLang, RDFFormat rdfFormat) {
+    private ResultsFormat(Lang resultSetLang, RDFFormat triplesFormat, RDFFormat quadsFormat) {
         this.resultSetLang = resultSetLang;
-        this.rdfFormat = rdfFormat;
-
+        this.triplesFormat = triplesFormat;
+        this.quadsFormat = quadsFormat;
         //this.supportsBoolean = supportsBoolean;
     }
 
@@ -78,18 +86,21 @@ public enum ResultsFormat {
         return resultSetLang;
     }
 
-    public RDFFormat rdfFormat() {
-        return rdfFormat;
+    public RDFFormat triplesFormat() {
+        return triplesFormat;
     }
 
-//
+    public RDFFormat quadsFormat() {
+        return quadsFormat;
+    }
+
 //    public boolean supportsBoolean() {
 //        return supportsBoolean;
 //    }
-//
-//    public boolean isResultSet() {
-//        return ResultSetLang.isRegistered(lang());
-//    }
+
+    public boolean isResultSet() {
+        return ResultSetLang.isRegistered(resultSetLang);
+    }
 
     /** Guess the syntax of a result set URL */
     public static ResultsFormat guessSyntax(String resultsFilename) {
@@ -107,7 +118,7 @@ public enum ResultsFormat {
     }
 
     /**
-     * Look up a short name for a result set FMT_
+     * Look up a short name for an output format.
      *
      * @param shortname Short name
      * @return ResultSetFormat
@@ -117,59 +128,50 @@ public enum ResultsFormat {
     }
 
     // Common names to symbol (used by arq.rset)
-    private static TranslationTable<ResultsFormat> names = new TranslationTable<>(true) ;
+    private static TranslationTable<ResultsFormat> names = new TranslationTable<>(true);
     static {
-        names.put("srx",         XML) ;
-        names.put("xml",         XML) ;
+        names.put("srx",         XML);
+        names.put("srj",         JSON);
+        names.put("srt",         THRIFT);
+        names.put("srp",         PROTOBUF);
+        names.put("srpb",        PROTOBUF);
 
-        names.put("json",        JSON) ;
-        names.put("srj",         JSON) ;
+        names.put("rt",          THRIFT);
+        names.put("trdf",        THRIFT);
 
-        names.put("srt",         THRIFT) ;
-        names.put("srp",         PROTOBUF) ;
+        names.put("rpb",         PROTOBUF);
+        names.put("pbrdf",       PROTOBUF);
 
-        names.put("rdfxml",      RDFXML) ;
-        names.put("rdf",         TTL) ;
+        names.put("rdfxml",      RDFXML);
+
+        names.put("xml",         XML);
+        names.put("json",        JSON);
+
+        names.put("rdf",         TTL);
         names.put("ttl",         TTL);
         names.put("turtle",      TTL);
+
+        names.put("trig",        TRIG);
 
         names.put("n-triples",   NT);
         names.put("ntriples",    NT);
         names.put("nt",          NT);
 
-        // Thrift/RDF
-        // Protobuf/RDF
+        names.put("n-quads",     NQ);
+        names.put("nquads",      NQ);
+        names.put("nq",          NQ);
 
+        names.put("jsonld",      JSONLD);
+        names.put("json-ld",     JSONLD);
 
-        names.put("jsonld",      RDF_JSONLD) ;
-        names.put("json-ld",     RDF_JSONLD) ;
+        names.put("sse",         SSE);
+        names.put("csv",         CSV);
+        names.put("tsv",         TSV);
 
-        names.put("sse",         SSE) ;
-        names.put("csv",         CSV) ;
-        names.put("tsv",         TSV) ;
-        names.put("text",        TEXT) ;
-        names.put("count",       COUNT) ;
-        names.put("tuples",      TUPLES) ;
-        names.put("none",        NONE) ;
+        names.put("text",        TEXT);
+        names.put("txt",         TEXT);
+        names.put("count",       COUNT);
 
-        //names.put("rdf",         ???) ;
-
-//        names.put("rdf",         RDF_XML) ;
-//        names.put("rdf/n3",      RDF_N3) ;
-//        names.put("rdf/xml",     RDF_XML) ;
-//        names.put("n3",          RDF_N3) ;
-//        names.put("ttl",         RDF_TTL) ;
-//        names.put("turtle",      RDF_TTL) ;
-//        names.put("graph",       RDF_TTL) ;
-//        names.put("nt",          RDF_NT) ;
-//        names.put("n-triples",   RDF_NT) ;
-//        names.put("ntriples",    RDF_NT) ;
-//        names.put("jsonld",      RDF_JSONLD) ;
-//        names.put("json-ld",     RDF_JSONLD) ;
-//
-//        names.put("nq",          RDF_NQ) ;
-//        names.put("nquads",      RDF_NQ) ;
-//        names.put("n-quads",     RDF_NQ) ;
-//        names.put("trig",        RDF_TRIG) ;
+        names.put("none",        NONE);
     }
 }
