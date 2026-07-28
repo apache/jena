@@ -195,7 +195,7 @@ public class FusekiArgs extends CmdGeneral {
     // Execute a step for the argument handlers.
     private static void runArgsHandlers( List<? extends FusekiServerArgsHandler> argsHandlers, Consumer<FusekiServerArgsHandler> action) {
         for (FusekiServerArgsHandler argsHandler : argsHandlers) {
-            action.accept( argsHandler);
+            action.accept(argsHandler);
         }
     }
     // -- Argument handling
