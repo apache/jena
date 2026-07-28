@@ -34,7 +34,6 @@
 
     <properties> 
         <node.version>v24.16.0</node.version>
-        <yarn.version>v1.22.17</yarn.version>
         <automatic.module.name>org.apache.jena.fuseki.ui</automatic.module.name>
 
         <!-- 
@@ -87,48 +86,50 @@
                 <version>2.0.1</version>
                 <executions>
                     <execution>
-                        <id>install node and yarn</id>
+                        <id>install node and corepack</id>
                         <goals>
-                            <goal>install-node-and-yarn</goal>
+                            <goal>install-node-and-corepack</goal>
                         </goals>
+                      <phase>generate-resources</phase>
                         <configuration>
                             <nodeVersion>${node.version}</nodeVersion>
-                            <yarnVersion>${yarn.version}</yarnVersion>
+                            <!-- The Yarn version is managed by Corepack via the "packageManager"
+                                 field in package.json -->
                         </configuration>
                     </execution>
                     <execution>
                         <id>yarn install</id>
                         <goals>
-                            <goal>yarn</goal>
+                            <goal>corepack</goal>
                         </goals>
                         <configuration>
-                            <arguments>install --frozen-lockfile</arguments>
+                            <arguments>yarn install --immutable</arguments>
                         </configuration>
                     </execution>
                     <execution>
                         <id>yarn run build</id>
                         <goals>
-                            <goal>yarn</goal>
+                            <goal>corepack</goal>
                         </goals>
                         <configuration>
-                            <arguments>run build</arguments>
+                            <arguments>yarn run build</arguments>
                         </configuration>
                     </execution>
                     <execution>
                         <id>yarn run test:unit</id>
                         <goals>
-                            <goal>yarn</goal>
+                            <goal>corepack</goal>
                         </goals>
                         <phase>test</phase>
                         <configuration>
                             <skip>${skip.ui.tests}</skip>
-                            <arguments>run test:unit</arguments>
+                            <arguments>yarn run test:unit</arguments>
                         </configuration>
                     </execution>
                     <execution>
                         <id>yarn run test:e2e</id>
                         <goals>
-                            <goal>yarn</goal>
+                            <goal>corepack</goal>
                         </goals>
                         <phase>test</phase>
                         <configuration>
@@ -137,7 +138,7 @@
                                 <PORT>${org.apache.jena.fuseki.ui.port}</PORT>
                                 <FUSEKI_PORT>${org.apache.jena.fuseki.port}</FUSEKI_PORT>
                             </environmentVariables>
-                            <arguments>run test:e2e</arguments>
+                            <arguments>yarn run test:e2e</arguments>
                         </configuration>
                     </execution>
                 </executions>
