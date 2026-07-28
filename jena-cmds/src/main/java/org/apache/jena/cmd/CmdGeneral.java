@@ -29,12 +29,10 @@ import org.apache.jena.atlas.io.IndentedWriter;
 public abstract class CmdGeneral extends CmdArgModule
 {
     protected ModGeneral modGeneral = new ModGeneral(this::printHelp);
-    protected ModVersion modVersion = new ModVersion(true);
 
     protected CmdGeneral(String[] argv) {
         super(argv);
         addModule(modGeneral);
-        addModule(modVersion);
     }
 
     @Override
@@ -46,17 +44,11 @@ public abstract class CmdGeneral extends CmdArgModule
     public boolean isVerbose() { return modGeneral.verbose; }
     public boolean isQuiet()   { return modGeneral.quiet; }
     public boolean isDebug()   { return modGeneral.debug; }
-    protected boolean help()      { return modGeneral.help; }
+    protected boolean help()   { return modGeneral.help; }
 
     final public void printHelp() {
         usage();
         throw new TerminationException(0);
-    }
-
-    @Override
-    protected void processModulesAndArgs() {
-        if ( modVersion.getVersionFlag() )
-            modVersion.printVersionAndExit();
     }
 
     public void add(ArgDecl argDecl, String argName, String msg) {

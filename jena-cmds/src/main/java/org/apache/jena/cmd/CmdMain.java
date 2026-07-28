@@ -43,8 +43,17 @@ public abstract class CmdMain extends CmdGeneral
     // gets a chance to create a logger.
     static { LogCtl.setLogging(); }
 
+    protected ModVersion modVersion = new ModVersion(true);
+
     protected CmdMain(String[] args) {
         super(args);
+        addModule(modVersion);
+    }
+
+    @Override
+    protected void processModulesAndArgs() {
+        if ( modVersion.getVersionFlag() )
+            modVersion.printVersionAndExit();
     }
 
     /** Run command - exit on failure */

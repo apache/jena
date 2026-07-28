@@ -23,6 +23,7 @@ package org.apache.jena.fuseki.main.cmds;
 
 import java.util.function.Consumer;
 
+import org.apache.jena.atlas.lib.Version;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.main.FusekiAbortException;
@@ -32,6 +33,7 @@ class RunFuseki {
     // This class wraps an entry point so that it can take control of logging setup.
     // This class does not depend via inheritance on any Jena code
     // and does not trigger Jena initialization.
+    //
     // FusekiLogging runs before any Jena code can trigger logging setup.
     //
     // Inheritance causes initialization in the super class first, before class
@@ -40,6 +42,14 @@ class RunFuseki {
     static { FusekiLogging.setLogging(); }
 
     public static void run(String[] args, Consumer<String[]> action) {
+        if ( args.length == 1) {
+            String arg = args[0];
+            if ( "--version".equals(arg) || "-version".equals(arg) ) {
+                Version.printVersion(System.out, "Fuseki", Version.versionForClass(Fuseki.class));
+                System.exit(0);
+            }
+        }
+
         try {
             action.accept(args);
         } catch (IllegalArgumentException | CmdException ex ) {
