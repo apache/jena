@@ -84,6 +84,44 @@ describe('upload', function () {
           .should('have.attr', 'aria-valuenow', 0)
       })
   })
+  it('accepts a blank graph name, and uploads to the dataset', function () {
+    cy.intercept('POST', '/skosmos/data', { statusCode: 200 }).as('upload')
+    cy
+      .get('input[type=file]')
+      .selectFile({
+          contents: Cypress.Buffer.from('@prefix ex: <http://example.org/> .\n  ex:ABC a ex:DEF .'),
+          fileName: 'blank-graph.ttl',
+          lastModified: Date.now()
+        },
+        {
+          force: true
+        })
+    // Typing and then clearing the graph name must not leave the field in an error state.
+    cy
+      .get('#dataset-graph-name')
+      .type('https://example.org/graph')
+      .clear()
+      .should('not.have.class', 'is-invalid')
+    cy
+      .get('button.upload-files')
+      .click({ force: true })
+    cy
+      .wait('@upload')
+      .its('request.url')
+      .should('not.contain', 'graph=')
+    cy
+      .get('.progress')
+      .eq(0)
+      .find('.progress-bar')
+      .eq(0)
+      .should('have.text', '1/1')
+  })
+  it('rejects an invalid graph name', function () {
+    cy
+      .get('#dataset-graph-name')
+      .type('not a uri')
+      .should('have.class', 'is-invalid')
+  })
   it('displays the progress for success and failure', function () {
     // Intercept upload calls.
     // Fails every other upload.

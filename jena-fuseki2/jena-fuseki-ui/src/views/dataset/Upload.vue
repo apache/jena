@@ -419,10 +419,18 @@ export default {
       }
     },
     validateForm () {
-      return this.validateGraphName() && this.validateFiles()
+      // Both are evaluated, so that the user sees every invalid field at once.
+      const isValidGraphName = this.validateGraphName()
+      const isValidFiles = this.validateFiles()
+      return isValidGraphName && isValidFiles
     },
     validateGraphName () {
       const graphName = this.$refs['dataset-graph-name'].value
+      // A blank graph name means the data is loaded into the the default graph.
+      if (!graphName || graphName.trim() === '') {
+        this.graphNameClasses = ['form-control']
+        return true
+      }
       const isValidGraphName = validateGraphName(graphName)
       const formValidationClass = isValidGraphName ? 'is-valid' : 'is-invalid'
       this.graphNameClasses = ['form-control', formValidationClass]
