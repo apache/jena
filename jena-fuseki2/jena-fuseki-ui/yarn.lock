@@ -2679,7 +2679,7 @@ aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.13.2.tgz#0aa167216965ac9474ccfa83892cfb6b3e1e52ef"
   integrity sha512-lHe62zvbTB5eEABUVi/AwVh0ZKY9rMMDhmm+eeyuuUQbQ3+J+fONVQOZyj+DdrvD4BY33uYniyRJ4UJIaSKAfw==
 
-axios@^1.16.0, axios@^1.6.1:
+axios@^1.18.1, axios@^1.6.1:
   version "1.18.1"
   resolved "https://registry.yarnpkg.com/axios/-/axios-1.18.1.tgz#d63f9863bcd8938815c86f9e2abd380189d96dfe"
   integrity sha512-3nTvFlvpn9Zu/RkHUqtc7/+al4UpRW5az71ap5zccp6e8RAYEzhMTecX8Dz1wWDYrPpUoB1HAQEGEAEvUr7S9g==
@@ -5098,10 +5098,10 @@ jju@^1.1.0:
   resolved "https://registry.yarnpkg.com/jju/-/jju-1.4.0.tgz#a3abe2718af241a2b2904f84a625970f389ae32a"
   integrity sha512-8wb9Yw966OSxApiCt0K3yNJL8pnNeIv+OEq2YMidz4FKP6nonSRoOXc80iXY4JaN2FC11B9qsNmDsm+ZOfMROA==
 
-joi@^18.2.1:
-  version "18.2.1"
-  resolved "https://registry.yarnpkg.com/joi/-/joi-18.2.1.tgz#a022e39496e25b010a6d4649975c160a4315bd79"
-  integrity sha512-2/OKlogiESf2Nh3TFCrRjrr9z1DRHeW0I+KReF67+4J0Ns+8hBtHRmoWAZ2OFU6I5+TWLEe6sVlSdXPjHm5UbQ==
+joi@^18.2.3:
+  version "18.2.3"
+  resolved "https://registry.yarnpkg.com/joi/-/joi-18.2.3.tgz#efdd1311496cd585730633fc57253a45641a3e85"
+  integrity sha512-N5A3KTWQpPWT4ExxxPlUx7WmykGXRzhNidWhV41d6Abu9YfI2NyWCJuxdPnslJCPWtbRpSVOWSnSS6GakLM/Rg==
   dependencies:
     "@hapi/address" "^5.1.1"
     "@hapi/formula" "^3.0.2"
@@ -7873,12 +7873,12 @@ w3c-xmlserializer@^5.0.0:
     xml-name-validator "^5.0.0"
 
 wait-on@^9.0.0:
-  version "9.0.10"
-  resolved "https://registry.yarnpkg.com/wait-on/-/wait-on-9.0.10.tgz#9c73ad1908b8e46e853e1271b2c9563f2c2d8e02"
-  integrity sha512-rCoJEhvMr0X6alHmwc9abbrA5ZrLZFKpFQVKPNFwl2h7DapXOGdmimIHDtLOWhT4PjhZhxFEtZoQgEXbkDWdZw==
+  version "9.1.0"
+  resolved "https://registry.yarnpkg.com/wait-on/-/wait-on-9.1.0.tgz#3872a460589e33f2c7a1c53cbbb83c437477073e"
+  integrity sha512-PymrLXHLBM1Ju/Xspb2ADUhbPSMvbnuNvy/mN2hWtpbJ3da0h3Ky1LqwKPG5QSVR57liyO0iUpfipYl/s5qNvA==
   dependencies:
-    axios "^1.16.0"
-    joi "^18.2.1"
+    axios "^1.18.1"
+    joi "^18.2.3"
     lodash "^4.18.1"
     minimist "^1.2.8"
     rxjs "^7.8.2"
