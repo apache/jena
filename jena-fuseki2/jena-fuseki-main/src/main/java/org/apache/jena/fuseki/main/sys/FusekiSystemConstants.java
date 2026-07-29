@@ -55,7 +55,7 @@ public class FusekiSystemConstants {
      * Setting for HttpConfiguration.setOutputBufferSize (set in
      * {@link JettyLib#httpConfiguration}).
      */
-    public static final int jettyOutputBufferSize = 5 * 1024 * 1024;
+    public static final int jettyOutputBufferSize = 2 * 1024 * 1024;
 
     /**
      * JettyrRequest header size.

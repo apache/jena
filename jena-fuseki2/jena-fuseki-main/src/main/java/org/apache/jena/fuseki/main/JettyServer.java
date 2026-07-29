@@ -484,7 +484,7 @@ public class JettyServer {
      * {@link FusekiSystemConstants#jettyOutputBufferSize}. */
     private static ByteBufferPool newByteBufferPool() {
         int maxCapacity = FusekiSystemConstants.jettyOutputBufferSize;
-        return new ArrayByteBufferPool(0, 2048, maxCapacity, -1, -1, -1);
+        return new ArrayByteBufferPool(0, -1, maxCapacity, -1, -1, -1);
     }
 
     private static void serverAddConnectors(Server server, int port,  boolean loopback) {
