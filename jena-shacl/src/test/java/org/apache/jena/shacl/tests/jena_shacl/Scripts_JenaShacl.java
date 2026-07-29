@@ -36,7 +36,7 @@ import org.apache.jena.shacl.testing.ShaclTests;
 
 @ParameterizedClass(name="{index}: {0}")
 @MethodSource("provideArgs")
-public class TestJenaShacl {
+public class Scripts_JenaShacl {
 
     private static Stream<Arguments> provideArgs() {
         String manifestFile = "src/test/files/local/manifest.ttl";
@@ -48,7 +48,7 @@ public class TestJenaShacl {
 
     private ShaclTestItem test;
 
-    public TestJenaShacl(String name,  ShaclTestItem test) {
+    public Scripts_JenaShacl(String name,  ShaclTestItem test) {
         this.test = test;
     }
 

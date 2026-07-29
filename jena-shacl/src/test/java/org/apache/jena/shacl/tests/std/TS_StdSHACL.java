@@ -27,8 +27,8 @@ import org.junit.platform.suite.api.Suite;
 @Suite
 @SelectClasses({
     // The W3C Working Group tests.
-    TestShaclCoreWG.class ,
-    TestShaclSparqlWG.class
+    Scripts_ShaclCoreWG.class ,
+    Scripts_ShaclSparqlWG.class
 } )
 
 public class TS_StdSHACL {
