@@ -65,9 +65,6 @@ public class SHACL {
      */
     public static final Node annotationVarName = createProperty( "http://www.w3.org/ns/shacl#annotationVarName" );
 
-    /** <p>The SPARQL ASK query to execute.</p> */
-    public static final Node ask = createProperty( "http://www.w3.org/ns/shacl#ask" );
-
     /** <p>The type that all value nodes must have.</p> */
     public static final Node class_ = createProperty( "http://www.w3.org/ns/shacl#class" );
 
@@ -365,6 +362,10 @@ public class SHACL {
 
     /** <p>The SPARQL SELECT query to execute.</p> */
     public static final Node select = createProperty( "http://www.w3.org/ns/shacl#select" );
+
+    /** <p>The SPARQL SELECT query to execute.</p> */
+    public static final Node ask = createProperty( "http://www.w3.org/ns/shacl#ask" );
+
 
     /** <p>Defines the severity that validation results produced by a shape must have.
      *  Defaults to sh:Violation.</p>

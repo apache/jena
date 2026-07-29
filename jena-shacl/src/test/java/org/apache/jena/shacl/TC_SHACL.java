@@ -34,13 +34,12 @@ import org.apache.jena.shacl.tests.std.TS_StdSHACL;
 @Suite
 @SelectClasses({
     TestValidationReport.class
+    , TestImports.class
+    , TestValidationListener.class
 
     , TS_StdSHACL.class
     , TS_JenaShacl.class
     , TS_Compact.class
-
-    , TestImports.class
-    , TestValidationListener.class
 } )
 
 public class TC_SHACL { }

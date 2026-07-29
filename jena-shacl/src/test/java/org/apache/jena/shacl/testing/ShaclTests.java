@@ -69,7 +69,7 @@ public class ShaclTests {
 
     private static String decideName(ShaclTestItem stc) {
         String fn = FileOps.basename(stc.origin());
-        return stc.name()+"("+fn+")";
+        return stc.name()+" ("+fn+")";
     }
 
     private static void manifest(String manifestFile, List<String> manifests, List<ShaclTestItem> testCases) {

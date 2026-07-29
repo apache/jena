@@ -19,17 +19,12 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.shacl.tests.jena_shacl;
+package org.apache.jena.shacl.engine.constraint;
 
-import org.junit.platform.suite.api.SelectClasses;
-import org.junit.platform.suite.api.Suite;
+import org.apache.jena.shacl.ShaclException;
 
-@Suite
-@SelectClasses({
-    // jena tests
-    TestJenaShaclByCode.class,
-    Scripts_JenaShacl.class
-} )
-public class TS_JenaShacl {
-
+public class ShaclPrebindingException extends ShaclException {
+    public ShaclPrebindingException(String msg) {
+        super(msg);
+    }
 }

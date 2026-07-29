@@ -50,8 +50,7 @@ import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.path.P_Link;
 import org.apache.jena.sparql.path.Path;
 import org.apache.jena.sparql.path.PathFactory;
-import org.apache.jena.sparql.syntax.Element;
-import org.apache.jena.sparql.syntax.ElementPathBlock;
+import org.apache.jena.sparql.syntax.*;
 import org.apache.jena.sparql.syntax.syntaxtransform.ElementTransformCopyBase;
 import org.apache.jena.sparql.syntax.syntaxtransform.QueryTransformOps;
 import org.apache.jena.sparql.util.ModelUtils;
@@ -111,6 +110,16 @@ import org.apache.jena.sparql.util.ModelUtils;
         if ( path != null && !(path instanceof P_Link ) )
             query = QueryTransformOps.transform(query, new ElementTransformPath(SparqlConstraint.varPath, path));
 
+        // Check for disallowed syntax forms:
+        // MINUS, SERVICE
+        // "SPARQL queries MUST not contain a MINUS clause"
+        // "SPARQL queries MUST not contain a VALUES clause that mentions any potentially pre-bound variable"
+        // "SPARQL queries MUST not use the syntax form ​​AS ?var for any potentially pre-bound variable"
+        // "Furthermore, SPARQL queries SHOULD not contain a federated query (SERVICE)."
+
+        // VALUES and AS cause QueryScopeException happen during durign execution.
+
+        checkQuerySyntaxPreBinding(query);
 
         if ( USE_QueryTransformOps ) {
             // Done with QueryTransformOps.transform
@@ -120,12 +129,11 @@ import org.apache.jena.sparql.util.ModelUtils;
             Query query2 = QueryTransformOps.replaceVars(query, substitutions);
             qExec = QueryExecutionFactory.create(query2, model);
         } else {
+            // Use QueryExecution substitute (not initialBinding)
             // Done with pre-binding.
             QuerySolutionMap qsm = parameterMapToPreBinding(parameterMap, focusNode, path, model);
             if ( query.isAskType() )
                 qsm.add("value", ModelUtils.convertGraphNodeToRDFNode(valueNode, model));
-            //qExec = QueryExecution.create().query(query).model(model).initialBinding(qsm).build();
-
             // ---- Dataset needed for the shapes graph
             Resource shapesGraphResource = model.createResource("foo");
             qsm.add("currentShape", ModelUtils.convertGraphNodeToRDFNode(shape.getShapeNode(), model));
@@ -139,6 +147,8 @@ import org.apache.jena.sparql.util.ModelUtils;
         }
 
         // ASK validator.
+        // XXX Wrap in query solution, with $this and ?value.
+
         if ( qExec.getQuery().isAskType() ) {
             boolean askResult = qExec.execAsk();
             if ( ! askResult ) {
@@ -189,6 +199,15 @@ import org.apache.jena.sparql.util.ModelUtils;
             vCxt.reportEntry(msg, shape, focusNode, rPath, value, reportConstraint, /*sh:sourceConstaint*/shape.getShapeNode());
         }
         return false;
+    }
+
+    private static ElementVisitor eltPrebindingCheckVisitor = new ElementVisitorBase() {
+        @Override public void visit(ElementMinus el)          { throw new ShaclPrebindingException("MINUS found in query for pre-binding"); }
+        @Override public void visit(ElementService el)        { throw new ShaclPrebindingException("SERBVICE found in query for pre-binding"); }
+    };
+
+    private static void checkQuerySyntaxPreBinding(Query query) {
+        ElementWalker.walk(query.getQueryPattern(), eltPrebindingCheckVisitor);
     }
 
     /** Result message: SELECT substitute */

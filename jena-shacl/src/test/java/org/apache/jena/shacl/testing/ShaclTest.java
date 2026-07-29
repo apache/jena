@@ -31,8 +31,10 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shacl.ShaclValidator;
 import org.apache.jena.shacl.Shapes;
 import org.apache.jena.shacl.ValidationReport;
+import org.apache.jena.shacl.engine.constraint.ShaclPrebindingException;
 import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.shacl.validation.VR;
+import org.apache.jena.sparql.syntax.syntaxtransform.QueryScopeException;
 
 public class ShaclTest {
 
@@ -50,10 +52,16 @@ public class ShaclTest {
                 try {
                     ValidationReport testReport = validate(ShaclValidator.get(), shapesGraph, dataGraph);
                     if ( testReport.conforms() )
-                        fail("Expect a test failure: "+test.origin());
-                } catch (RuntimeException ex) {
-                    // Ignore.
+                        fail("Expected a test failure: "+test.origin());
+                    else
+                        // !conforms expected
+                        return;
+                } catch ( QueryScopeException | ShaclPrebindingException ex) {
+                    // "Success"
+                    return;
                 }
+                // "Success"
+                return;
             }
 
             // Fails on unimplemented.

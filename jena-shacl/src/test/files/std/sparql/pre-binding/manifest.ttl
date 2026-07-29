@@ -10,22 +10,29 @@
 	mf:include <pre-binding-003.ttl> ;
 	mf:include <pre-binding-004.ttl> ;
 	mf:include <pre-binding-005.ttl> ;
-    # Prebinding $this inside nested SELECT
-## 	mf:include <pre-binding-006.ttl> ;
-	mf:include <pre-binding-007.ttl> ;
     
+    ## Test withdrawn in at SHACL 1.2
+## 	mf:include <pre-binding-006.ttl> ;
+
+	mf:include <pre-binding-007.ttl> ;
  	mf:include <shapesGraph-001.ttl> ;
 
     # MINUS
-## 	mf:include <unsupported-sparql-001.ttl> ;
+ 	mf:include <unsupported-sparql-001.ttl> ;
+
     # VALUES
-## 	mf:include <unsupported-sparql-002.ttl> ;
+ 	mf:include <unsupported-sparql-002.ttl> ;
+
     # SERVICE
-## 	mf:include <unsupported-sparql-003.ttl> ;
+ 	mf:include <unsupported-sparql-003.ttl> ;
+    
     # SELECT
+    ## Test withdrawn in at SHACL 1.2
 ## 	mf:include <unsupported-sparql-004.ttl> ;
+
     # BIND assign to $this
-## 	mf:include <unsupported-sparql-005.ttl> ;
+ 	mf:include <unsupported-sparql-005.ttl> ;
+
     # ASK validator reassign ?value
-## 	mf:include <unsupported-sparql-006.ttl> ;
+ 	mf:include <unsupported-sparql-006.ttl> ;
  .
