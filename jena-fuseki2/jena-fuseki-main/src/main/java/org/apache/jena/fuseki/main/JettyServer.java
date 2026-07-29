@@ -475,7 +475,7 @@ public class JettyServer {
         // Args reversed: Jetty uses (max,min)
         threadPool = new QueuedThreadPool(maxThreads, minThreads);
         // Server(ThreadPool) alone installs a default 64KB ArrayByteBufferPool; pass ours explicitly.
-        Server server = new Server(threadPool, null, newByteBufferPool());
+        Server server = new Server(threadPool, (Scheduler)null, newByteBufferPool());
         return server;
     }
 
