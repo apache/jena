@@ -1,3 +1,71 @@
+==== Apache Jena 6.2.0
+Released: 2026-07-31
+Issues: https://s.apache.org/jena-6.2.0-issues
+Announcement:
+https://lists.apache.org/thread/n7pz5vk9gyfrhmwnqnggotzxxv257hf4
+
+== Changes of Note:
+
+Working Group - RDF and SPARQL:
+
+Syntax (Turtle etc, SPARQL etc) are UTF-8 documents. UTF-8 does not 
+allow surrogate pairs. The RDF Working Group has decided not to allow 
+surrogate pairs via Unicode escapes.
+
+In GeoSPARQL:
+* upgrade SIS upgrade 1.4 -> 1.6
+* support non-Euclidean geometries
+
+In Fuseki:
+* Memory leak fix related to long-running servers using Apache Shiro
+
+In TDB:
+* Robustness fix for the database after system level error
+   This affects both TDB2 and TDB1.
+
+== Contributions
+
+ From @ThomasThelen:
+
+SIS upgrade 1.4 -> 1.6
+https://sis.apache.org/release-notes/1.5.html
+https://sis.apache.org/release-notes/1.6.html
+including bug fix for non-euclidean geometries
+
+GeoSPARQL and UI
+https://github.com/apache/jena/pull/4021
+UI : Use a dashed 'primary' color instead of 'warning' during file
+
+Fuseki UI : Use a dashed 'primary' color instead of 'warning' during file
+https://github.com/apache/jena/pull/4021
+
+Fuseki UI : Show parser error from fuseki when uploading files:
+https://github.com/apache/jena/pull/4052
+
+Reasoner fix:
+https://github.com/apache/jena/pull/4022
+
+Support non-Euclidean geometry:
+https://github.com/apache/jena/pull/4016
+
+Support more locales in the Fuseki docker image
+https://github.com/apache/jena/pull/4054
+
+Github actions fix:
+https://github.com/apache/jena/pull/4086
+
+ From @m3l0n-sq:
+* Robustness fix for the database after a system level error
+   (e.g. OOME elsewhere in the JVM)
+   https://github.com/apache/jena/issues/4043
+   https://github.com/apache/jena/pull4051
+This affects both TDB2 and TDB1.
+
+@jitsedesmet Jitse De Smet
+https://github.com/apache/jena/pull/4095
+"Fix invalid json in Lateral test results2
+
+
 ==== Apache Jena 6.1.0
 Released: 2026-05-11
 Issues: https://s.apache.org/jena-6.1.0-issues
