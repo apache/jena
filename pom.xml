@@ -138,6 +138,7 @@
     <ver.plugin.enforcer>3.6.3</ver.plugin.enforcer>
     <ver.plugin.cyclonedx>2.9.2</ver.plugin.cyclonedx>
     <ver.plugin.spdx>0.7.0</ver.plugin.spdx>
+    <ver.plugin.flatten>1.8.0</ver.plugin.flatten>
 
   </properties>
 
@@ -1081,6 +1082,11 @@
           <version>${ver.plugin.shade}</version>
         </plugin>
 
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>flatten-maven-plugin</artifactId>
+          <version>${ver.plugin.flatten}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
