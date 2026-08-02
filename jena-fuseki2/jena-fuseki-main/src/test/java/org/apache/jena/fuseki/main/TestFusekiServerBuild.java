@@ -25,10 +25,13 @@ import static org.apache.jena.fuseki.main.FusekiTestLib.expect400;
 import static org.apache.jena.fuseki.main.FusekiTestLib.expect404;
 import static org.apache.jena.fuseki.main.FusekiTestLib.expectQuery400;
 import static org.apache.jena.fuseki.main.FusekiTestLib.expectQuery404;
+import static org.apache.jena.fuseki.main.sys.FusekiSystemConstants.jettyOutputBufferSize;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.util.function.Consumer;
+
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.ServletContext;
 import org.apache.jena.atlas.iterator.Iter;
@@ -37,6 +40,7 @@ import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
+import org.apache.jena.fuseki.main.runner.FusekiRunner;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.Operation;
@@ -54,13 +58,11 @@ import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.exec.http.GSP;
 import org.apache.jena.sparql.exec.http.QueryExecHTTP;
 import org.apache.jena.sparql.sse.SSE;
-import org.apache.jena.fuseki.main.sys.FusekiSystemConstants;
 import org.apache.jena.system.Txn;
 import org.apache.jena.update.UpdateExecution;
 import org.eclipse.jetty.io.ArrayByteBufferPool;
 import org.eclipse.jetty.io.RetainableByteBuffer;
 import org.eclipse.jetty.server.Server;
-import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 
 public class TestFusekiServerBuild {
@@ -91,32 +93,39 @@ public class TestFusekiServerBuild {
 
     @Test public void fuseki_build_byte_buffer_pool() {
         FusekiServer server = FusekiServer.create().port(0).build();
+        // Not started.
         Server jettyServer = server.getJettyServer();
         ArrayByteBufferPool pool = jettyServer.getBean(ArrayByteBufferPool.class);
         assertNotNull(pool);
-        assertTrue(pool.getMaxCapacity() >= FusekiSystemConstants.jettyOutputBufferSize);
+        assertTrue(pool.getMaxCapacity() >= jettyOutputBufferSize);
+
+        RetainableByteBuffer.Mutable buffer = pool.acquire(jettyOutputBufferSize, true);
+        assertNotNull(buffer);
+        buffer.release();
     }
 
-    @Test public void fuseki_build_byte_buffer_pool_no_bucket_acquire() {
-        FusekiServer server = FusekiServer.create().port(0).build();
-        Server jettyServer = server.getJettyServer();
-        ArrayByteBufferPool pool = jettyServer.getBean(ArrayByteBufferPool.class);
+    @Test public void fuseki_byte_buffer_pool_request() {
+        FusekiServer server = FusekiRunner.serverBasic().construct("--port=0", "--mem", "/ds").start();
+        try {
+            String URL = server.datasetURL("/ds");
 
-        int size = FusekiSystemConstants.jettyOutputBufferSize;
-        RetainableByteBuffer.Mutable buffer = pool.acquire(size, true);
-        buffer.release();
+            Server jettyServer = server.getJettyServer();
+            ArrayByteBufferPool pool = jettyServer.getBean(ArrayByteBufferPool.class);
+            assertTrue(pool.getMaxCapacity() >= jettyOutputBufferSize);
 
-        assertTrue(pool.getNoBucketDirectAcquires().isEmpty());
-    }
+            // Before - nothing in the pool for a Fuseki-sized direct ByteBuffer.
+            int poolSizeBefore = pool.poolFor(jettyOutputBufferSize, true/*direct*/).size();
+            assertEquals(0, poolSizeBefore);
 
-    @Test public void byte_buffer_pool_default_capacity_fails_no_bucket_check() {
-        ArrayByteBufferPool defaultPool = new ArrayByteBufferPool();
-        int size = FusekiSystemConstants.jettyOutputBufferSize;
+            // The request causes a new ArrayByteBufferPool item which is returned and then pooled.
+            QueryExec.service(URL).query("ASK{}").ask();
 
-        RetainableByteBuffer.Mutable buffer = defaultPool.acquire(size, true);
-        buffer.release();
-
-        assertFalse(defaultPool.getNoBucketDirectAcquires().isEmpty());
+            // After - one item in the pool
+            int poolSizeAfter = pool.poolFor(jettyOutputBufferSize, true).size();
+            assertEquals(1, poolSizeAfter);
+        } finally {
+            server.stop();
+        }
     }
 
     // The port in "testing/jetty.xml" is 1077
