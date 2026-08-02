@@ -75,7 +75,7 @@ public class JettyHttps {
                                           int httpPort, int httpsPort,
                                           int minThreads, int maxThreads) {
         // Server handling http and https.
-        Server jettyServer = server(keystore, certPassword, httpPort, httpsPort, minThreads, maxThreads);
+        Server jettyServer = createJettyServerWithConnectors(keystore, certPassword, httpPort, httpsPort, minThreads, maxThreads);
         if ( httpPort > 0 ) {
             // Redirect http to https.
             // Order matters. Check https and bounce if http as first choice.
@@ -89,7 +89,7 @@ public class JettyHttps {
     /** Build the server - http and https connectors.
      * If httpPort is -1, don't add http.
      */
-    private static Server server(String keystore, String certPassword, int httpPort, int httpsPort, int minThreads, int maxThreads) {
+    private static Server createJettyServerWithConnectors(String keystore, String certPassword, int httpPort, int httpsPort, int minThreads, int maxThreads) {
         Server server = JettyServer.jettyServer(minThreads, maxThreads);
         if ( httpPort > 0 ) {
             ServerConnector plainConnector = httpConnector(server, httpPort, httpsPort);
