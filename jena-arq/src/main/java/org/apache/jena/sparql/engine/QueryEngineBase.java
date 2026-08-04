@@ -56,9 +56,9 @@ public abstract class QueryEngineBase implements OpEval, Closeable
         this(dsg, input, cxt);
         this.query = query;
         query.ensureResultVars();
+        dataset = prepareDataset(dsg, query);
         // Unoptimized so far.
         setOp(createOp(query));
-        dataset = prepareDataset(dsg, query);
     }
 
     private DatasetGraph prepareDataset(DatasetGraph originalDataset, Query query) {
@@ -96,8 +96,7 @@ public abstract class QueryEngineBase implements OpEval, Closeable
         // Ensure context setup - usually done in QueryExecutionBase
         // so it can be changed after initialization.
         if ( context == null )
-            context = Context.setupContextForDataset(context, dataset);
-        Context.setCurrentDateTimeIfUndef(context);
+            context = Context.setupContextForDataset(cxt, dataset);
         this.query = null;
         setOp(op);
     }
@@ -113,6 +112,12 @@ public abstract class QueryEngineBase implements OpEval, Closeable
         this.startBinding = input;
     }
 
+    // Call this after context is set.
+    private static void currentDateTime(Context context) {
+        if ( context != null )
+            Context.setCurrentDateTimeIfUndef(context);
+    }
+
     public Plan getPlan() {
         if ( plan == null )
             plan = createPlan();
@@ -120,6 +125,7 @@ public abstract class QueryEngineBase implements OpEval, Closeable
     }
 
     protected Plan createPlan() {
+        currentDateTime(context);
         // Decide the algebra to actually execute.
         Op op = queryOp;
         if ( !startBinding.isEmpty() ) {

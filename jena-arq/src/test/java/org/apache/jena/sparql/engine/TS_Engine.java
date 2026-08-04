@@ -28,6 +28,7 @@ import org.junit.platform.suite.api.Suite;
 @SelectClasses({
         TestQueryEngineMultiThreaded.class
       , TestQueryEngineFromContext.class
+      , TestQueryEngine.class
       , TestJsonEval.class
 })
 
