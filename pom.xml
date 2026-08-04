@@ -143,8 +143,8 @@
   </properties>
 
   <issueManagement>
-    <system>JIRA</system>
-    <url>https://issues.apache.org/jira/browse/JENA</url>
+    <system>Github issues</system>
+    <url>https://github.com/apache/jena/issues</url>
   </issueManagement>
 
   <mailingLists>
@@ -170,16 +170,6 @@
         <otherArchive>https://lists.apache.org/mod_mbox/jena-dev/</otherArchive>
         <otherArchive>https://www.mail-archive.com/dev@jena.apache.org/</otherArchive>
         <otherArchive>https://markmail.org/search/?q=list%3Aorg.apache.jena.dev</otherArchive>
-      </otherArchives>
-    </mailingList>
-    <mailingList>
-      <name>Jena Commits</name>
-      <post>commits@jena.apache.org</post>
-      <subscribe>commits-subscribe@jena.apache.org</subscribe>
-      <unsubscribe>commits-unsubscribe@jena.apache.org</unsubscribe>
-      <archive>https://lists.apache.org/list.html?commits@jena.apache.org</archive>
-      <otherArchives>
-        <otherArchive>https://mail-archives.apache.org/mod_mbox/jena-commits/</otherArchive>
       </otherArchives>
     </mailingList>
   </mailingLists>
