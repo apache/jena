@@ -106,7 +106,6 @@ public class QueryExecDataset implements QueryExec
         this.timeout2 = timeout.overallTimeoutMillis();
         // See also query substitution handled in QueryExecBuilder
         this.initialBinding = initialToEngine;
-
         // Cancel signal may originate from e.g. an update execution.
         this.cancelSignal = Context.getOrSetCancelSignal(context);
 
@@ -114,7 +113,6 @@ public class QueryExecDataset implements QueryExec
     }
 
     private void init() {
-        Context.setCurrentDateTimeIfUndef(context);
         if ( query != null )
             context.put(ARQConstants.sysCurrentQuery, query);
     }

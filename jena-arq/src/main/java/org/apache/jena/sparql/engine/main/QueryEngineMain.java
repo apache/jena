@@ -40,11 +40,11 @@ public class QueryEngineMain extends QueryEngineBase
     static public void register()       { QueryEngineRegistry.addFactory(factory) ; }
     static public void unregister()     { QueryEngineRegistry.removeFactory(factory) ; }
 
-    public QueryEngineMain(Op op, DatasetGraph dataset, Binding input, Context context)
-    { super(op, dataset, input, context) ; }
+    public QueryEngineMain(Op op, DatasetGraph dataset, Binding input, Context context) {
+        super(op, dataset, input, context);
+    }
 
-    public QueryEngineMain(Query query, DatasetGraph dataset, Binding input, Context context)
-    {
+    public QueryEngineMain(Query query, DatasetGraph dataset, Binding input, Context context) {
         super(query, dataset, input, context) ;
     }
 
