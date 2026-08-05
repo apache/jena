@@ -17,37 +17,18 @@
  */
 package org.apache.jena.ext.io.github.galbiston.rdf_tables.datatypes;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.jena.datatypes.xsd.impl.XSDBaseNumericType;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.ResourceFactory;
-import org.junit.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author Greg Albiston
  */
 public class DatatypeControllerTest {
-
-    public DatatypeControllerTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
 
     /**
      * Test of createLiteral DateTime method, of class DataTypeExtract.

@@ -21,14 +21,16 @@
 
 package org.apache.jena.fuseki.geosparql;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.beust.jcommander.JCommander;
 
-import org.junit.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.fuseki.geosparql.cli.ArgsConfig;
@@ -48,10 +50,7 @@ public class EmptyTest {
 
     private static GeosparqlServer SERVER;
 
-    public EmptyTest() {
-    }
-
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() throws DatasetException, SpatialIndexException {
         String[] args = {"-u", "--port", "4049"};
 
@@ -95,19 +94,9 @@ public class EmptyTest {
         }
     }
 
-
-
-    @AfterClass
+    @AfterAll
     public static void tearDownClass() {
         SERVER.shutdown();
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
     }
 
     /**

@@ -20,7 +20,7 @@
  */
 package org.apache.jena.fuseki.geosparql;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,7 +30,9 @@ import java.util.List;
 
 import com.beust.jcommander.JCommander;
 
-import org.junit.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.fuseki.geosparql.cli.ArgsConfig;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
@@ -45,10 +47,7 @@ public class TDBTest {
 
     private static GeosparqlServer SERVER;
 
-    public TDBTest() {
-    }
-
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() throws DatasetException, SpatialIndexException, IOException {
         Path tempTDBDir = Files.createTempDirectory("geospoarql");
         String[] args = {"-rf", "geosparql_test.rdf>xml", "-i", "-t", tempTDBDir.toAbsolutePath().toString(), "-t2", "--port", "4047"};
@@ -67,19 +66,11 @@ public class TDBTest {
         SERVER.start();
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownClass() {
         try {
             SERVER.shutdown();
         } catch (Throwable th) {}
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
     }
 
     /**

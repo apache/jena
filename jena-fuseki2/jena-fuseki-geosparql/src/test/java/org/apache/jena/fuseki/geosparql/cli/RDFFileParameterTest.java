@@ -25,33 +25,11 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.jena.riot.RDFFormat;
-import org.junit.After;
-import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 
 public class RDFFileParameterTest {
-
-    public RDFFileParameterTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
 
     /**
      * Test of convert method, of class RDFFileParameter.
@@ -88,13 +66,13 @@ public class RDFFileParameterTest {
     /**
      * Test of validate method, of class RDFFileParameter.
      */
-    @Test(expected = ParameterException.class)
+    @Test
     public void testValidate() {
         //System.out.println("validate");
         String name = "--rdf_file";
         String value = "test.rdf>xml#test";
         RDFFileParameter instance = new RDFFileParameter();
-        instance.validate(name, value);
+        assertThrows(ParameterException.class, () -> instance.validate(name, value));
     }
 
 }
