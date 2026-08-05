@@ -21,37 +21,15 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 
 import org.apache.jena.riot.RDFFormat;
-import org.junit.After;
-import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author Gerg
  */
 public class ArgsConfigTest {
-
-    public ArgsConfigTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
 
     /**
      * Test of getOutputFormat method, of class ArgsConfig.
@@ -232,23 +210,25 @@ public class ArgsConfigTest {
     /**
      * Test of getInputDelimiter method, of class ArgsConfig.
      */
-    @Test(expected = ParameterException.class)
+    @Test
     public void testGetInputDelimiter_reserved() {
         //System.out"getInputDelimiter_reserved");
         ArgsConfig args = new ArgsConfig();
 
         String[] argv = {"-i", "test.rdf", "-l", "|"};
-        JCommander.newBuilder()
-                .addObject(args)
-                .build()
-                .parse(argv);
+        assertThrows(ParameterException.class, () -> {
+            JCommander.newBuilder()
+                    .addObject(args)
+                    .build()
+                    .parse(argv);
 
-        String expResult = ",";
-        String result = args.getInputDelimiter();
+            String expResult = ",";
+            String result = args.getInputDelimiter();
 
-        ////System.out"Exp: " + expResult);
-        ////System.out"Res: " + result);
-        assertEquals(expResult, result);
+            ////System.out"Exp: " + expResult);
+            ////System.out"Res: " + result);
+            assertEquals(expResult, result);
+        });
     }
 
 }
