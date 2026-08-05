@@ -17,7 +17,7 @@
  */
 package org.apache.jena.ext.io.github.galbiston.rdf_tables.file;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.net.URL;
@@ -31,7 +31,8 @@ import org.apache.jena.ext.io.github.galbiston.rdf_tables.datatypes.PrefixContro
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -41,10 +42,7 @@ public class FileConverterTest {
 
     private static Model testModel;
 
-    public FileConverterTest() {
-    }
-
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() {
         URL u = FileConverterTest.class.getClassLoader().getResource("TestData.csv");
         // These URLs have the file name as an encoded string.
@@ -54,18 +52,6 @@ public class FileConverterTest {
         DatatypeController.addPrefixDatatypeURI("wkt", "http://www.opengis.net/ont/geosparql#wktLiteral");
         PrefixController.addPrefix("other", "http://example.org/other#");
         FileConverter.writeToModel(inputFile, testModel);
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
     }
 
     /**

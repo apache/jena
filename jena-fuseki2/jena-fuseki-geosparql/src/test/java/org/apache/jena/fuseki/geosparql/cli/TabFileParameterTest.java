@@ -24,33 +24,11 @@ import com.beust.jcommander.ParameterException;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.After;
-import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 
 public class TabFileParameterTest {
-
-    public TabFileParameterTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
 
     /**
      * Test of convert method, of class TabFileParameter.
@@ -87,13 +65,13 @@ public class TabFileParameterTest {
     /**
      * Test of validate method, of class TabFileParameter.
      */
-    @Test(expected = ParameterException.class)
+    @Test
     public void testValidate() {
         //System.out.println("validate");
         String name = "--tab_file";
         String value = "test.csv|COMMA#test";
         TabFileParameter instance = new TabFileParameter();
-        instance.validate(name, value);
+        assertThrows(ParameterException.class, () -> instance.validate(name, value));
     }
 
 }

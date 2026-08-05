@@ -20,15 +20,18 @@
  */
 package org.apache.jena.fuseki.geosparql;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.beust.jcommander.JCommander;
 
-import org.junit.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.geosparql.cli.ArgsConfig;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
 import org.apache.jena.query.Dataset;
@@ -43,14 +46,13 @@ public class MainTest {
 
     static { JenaSystem.init(); }
 
-    private static GeosparqlServer SERVER;
+    // A server per test, on a fresh port.
+    private GeosparqlServer server;
 
-    public MainTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws DatasetException, SpatialIndexException {
-        String[] args = {"-rf", "geosparql_test.rdf>xml", "-i", "--port", "4048"};
+    @BeforeEach
+    public void setUp() throws DatasetException, SpatialIndexException {
+        int port = WebLib.choosePort();
+        String[] args = {"-rf", "geosparql_test.rdf>xml", "-i", "--port", Integer.toString(port)};
 
         ArgsConfig argsConfig = new ArgsConfig();
         JCommander.newBuilder()
@@ -62,23 +64,15 @@ public class MainTest {
         Dataset dataset = DatasetOperations.setup(argsConfig);
 
         //Configure server
-        SERVER = new GeosparqlServer(argsConfig.getPort(), argsConfig.getDatsetName(), argsConfig.isLoopbackOnly(), dataset, argsConfig.isUpdateAllowed());
-        SERVER.start();
+        server = new GeosparqlServer(argsConfig.getPort(), argsConfig.getDatsetName(), argsConfig.isLoopbackOnly(), dataset, argsConfig.isUpdateAllowed());
+        server.start();
     }
 
-    @AfterClass
-    public static void tearDownClass() {
-        try {
-            SERVER.shutdown();
-        } catch (Throwable th) {}
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
+    @AfterEach
     public void tearDown() {
+        try {
+            server.shutdown();
+        } catch (Throwable th) {}
     }
 
     /**
@@ -96,7 +90,7 @@ public class MainTest {
 
         Runnable r = ()->{
             List<Resource> result = new ArrayList<>();
-            try (QueryExecution qe = QueryExecution.service(SERVER.getLocalServiceURL()).query(query).build()) {
+            try (QueryExecution qe = QueryExecution.service(server.getLocalServiceURL()).query(query).build()) {
                 ResultSet rs = qe.execSelect();
 
                 while (rs.hasNext()) {
