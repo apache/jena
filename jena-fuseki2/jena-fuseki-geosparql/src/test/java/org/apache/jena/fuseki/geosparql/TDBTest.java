@@ -30,10 +30,11 @@ import java.util.List;
 
 import com.beust.jcommander.JCommander;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.geosparql.cli.ArgsConfig;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
 import org.apache.jena.query.Dataset;
@@ -45,12 +46,14 @@ import org.apache.jena.rdf.model.ResourceFactory;
 
 public class TDBTest {
 
-    private static GeosparqlServer SERVER;
+    // A server per test, on a fresh port.
+    private GeosparqlServer server;
 
-    @BeforeAll
-    public static void setUpClass() throws DatasetException, SpatialIndexException, IOException {
+    @BeforeEach
+    public void setUp() throws DatasetException, SpatialIndexException, IOException {
         Path tempTDBDir = Files.createTempDirectory("geospoarql");
-        String[] args = {"-rf", "geosparql_test.rdf>xml", "-i", "-t", tempTDBDir.toAbsolutePath().toString(), "-t2", "--port", "4047"};
+        int port = WebLib.choosePort();
+        String[] args = {"-rf", "geosparql_test.rdf>xml", "-i", "-t", tempTDBDir.toAbsolutePath().toString(), "-t2", "--port", Integer.toString(port)};
 
         ArgsConfig argsConfig = new ArgsConfig();
         JCommander.newBuilder()
@@ -62,14 +65,14 @@ public class TDBTest {
         Dataset dataset = DatasetOperations.setup(argsConfig);
 
         //Configure server
-        SERVER = new GeosparqlServer(argsConfig.getPort(), argsConfig.getDatsetName(), argsConfig.isLoopbackOnly(), dataset, argsConfig.isUpdateAllowed());
-        SERVER.start();
+        server = new GeosparqlServer(argsConfig.getPort(), argsConfig.getDatsetName(), argsConfig.isLoopbackOnly(), dataset, argsConfig.isUpdateAllowed());
+        server.start();
     }
 
-    @AfterAll
-    public static void tearDownClass() {
+    @AfterEach
+    public void tearDown() {
         try {
-            SERVER.shutdown();
+            server.shutdown();
         } catch (Throwable th) {}
     }
 
@@ -87,7 +90,7 @@ public class TDBTest {
                 + "    <http://example.org/Geometry#PolygonH> geo:sfContains ?obj .\n"
                 + "}ORDER by ?obj";
         List<Resource> result = new ArrayList<>();
-        try (QueryExecution qe = QueryExecution.service(SERVER.getLocalServiceURL()).query(query).build()) {
+        try (QueryExecution qe = QueryExecution.service(server.getLocalServiceURL()).query(query).build()) {
             ResultSet rs = qe.execSelect();
 
             while (rs.hasNext()) {
