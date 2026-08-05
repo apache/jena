@@ -25,12 +25,13 @@ import static org.apache.jena.sparql.sse.SSE.parseQuad;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.main.ConfigureTests;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.http.HttpLib;
@@ -43,10 +44,11 @@ import org.apache.jena.update.UpdateRequest;
 
 public class TestUpdateExecHTTP {
 
-    private static FusekiServer server = null;
-    private static String URL;
+    private FusekiServer server = null;
+    private final boolean verbose = ConfigureTests.VerboseServer;
+    private String URL;
     private static String dsName = "/ds";
-    private static String dsURL;
+    private String dsURL;
     private static Quad q0 = parseQuad("(_ :s :p :o)");
     private static Quad q1 = parseQuad("(:g1 :s :p 1)");
     private static Quad q2 = parseQuad("(:g2 :s :p 2)");
@@ -56,11 +58,11 @@ public class TestUpdateExecHTTP {
             LogCtl.enable(Fuseki.actionLog);
     }
 
-    @BeforeAll public static void beforeClass() {
+    @BeforeEach public void beforeTest() {
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
         server = FusekiServer.create()
             .port(0)
-            .verbose(true)
+            .verbose(verbose)
             .add(dsName, dsg)
             .build();
         server.start();
@@ -69,22 +71,22 @@ public class TestUpdateExecHTTP {
         dsURL = "http://localhost:"+port+dsName;
     }
 
-    @AfterAll public static void afterClass() {
+    @AfterEach public void afterTest() {
         if ( server != null ) {
             try { server.stop(); } finally { server = null; }
         }
     }
 
-    private static void clear() {
+    private void clear() {
         UpdateExecHTTP.service(service())
             .updateString("CLEAR ALL")
             .build()
             .execute();
     }
 
-    private static String service() { return dsURL; }
-    private static String serviceQuery() { return dsURL+"/query"; }
-    private static String serviceUpdate() { return dsURL+"/update"; }
+    private String service() { return dsURL; }
+    private String serviceQuery() { return dsURL+"/query"; }
+    private String serviceUpdate() { return dsURL+"/update"; }
 
     @Test public void update_1() {
         UpdateExecHTTP uExec = UpdateExecHTTP.service(service())

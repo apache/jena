@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,23 +55,19 @@ public class TestService2 {
     public static Context minimalContext() { return CtlService.minimalContext(); }
     // ----
 
-    private static String SERVICE;
-    private static EnvTest env;
+    private String SERVICE;
+    private EnvTest env;
     // Local dataset for execution of SERVICE. Can be used to carry a context.
     private static final DatasetGraph localDataset() {return DatasetGraphZero.create(); }
 
-    @BeforeAll public static void beforeClass() {
+    @BeforeEach public void before() {
         // Also edit src/test/resources/log4j2.properties to get logging output.
         // FusekiLogging.setLogging();
         env = EnvTest.create("/ds");
         SERVICE = env.datasetURL();
     }
 
-    @BeforeEach public void before() {
-        env.clear();
-    }
-
-    @AfterAll public static void afterClass() {
+    @AfterEach public void after() {
         EnvTest.stop(env);
     }
 
@@ -149,7 +146,7 @@ public class TestService2 {
         assertEquals(expected, n);
     }
 
-    private static void runWithModifier(String key, HttpRequestModifier modifier, Runnable action) {
+    private void runWithModifier(String key, HttpRequestModifier modifier, Runnable action) {
         RegistryRequestModifier.get().add(SERVICE, modifier);
         try {
             action.run();

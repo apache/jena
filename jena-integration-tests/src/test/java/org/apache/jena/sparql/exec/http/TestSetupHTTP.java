@@ -24,8 +24,7 @@ package org.apache.jena.sparql.exec.http;
 import java.net.http.HttpClient;
 import java.time.Duration;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -38,19 +37,18 @@ import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.sse.SSE;
-import org.apache.jena.system.Txn;
 
 public class TestSetupHTTP  {
-    private static FusekiServer server;
-    private static DatasetGraph serverdsg = DatasetGraphFactory.createTxnMem();
-    private static HttpClient httpClient;
-    private static String URL;
+    private FusekiServer server;
+    private DatasetGraph serverdsg = DatasetGraphFactory.createTxnMem();
+    private HttpClient httpClient;
+    private String URL;
     // ---- Test data.
     private static Graph g = SSE.parseGraph("(graph (:s :p :o))");
     private static DatasetGraph dsg = SSE.parseDatasetGraph("(dataset (:g :s :p 123))");
 
-    @BeforeAll
-    public static void beforeClass() {
+    @BeforeEach
+    public void beforeTest() {
         server = FusekiServer.create().loopback(true)
             .port(0)
             .add("/ds", serverdsg)
@@ -61,15 +59,10 @@ public class TestSetupHTTP  {
                 .build();
     }
 
-    @BeforeEach
-    public void beforeTest() {
-        // Clear server
-        Txn.executeWrite(serverdsg, ()->serverdsg.clear());
-    }
-
-    @AfterAll
-    public static void afterClass() {
-        server.stop();
+    @AfterEach
+    public void afterTest() {
+        if ( server != null )
+            server.stop();
     }
 
     @Test public void setup_GSP() {

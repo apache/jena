@@ -33,6 +33,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -77,25 +78,22 @@ public class TestService {
     @BeforeAll
     public static void enableAllowServiceExecution() {
         CtlService.enableAllowServiceExecution();
-        env = EnvTest.create("/ds");
-        SERVICE = env.datasetURL();
     }
 
     @AfterAll
     public static void resetAllowServiceExecution() {
-        EnvTest.stop(env);
         CtlService.resetAllowServiceExecution();
     }
 
     public static Context minimalContext() { return CtlService.minimalContext(); }
     // ----
 
-    private static String SERVICE;
-    private static EnvTest env;
+    private String SERVICE;
+    private EnvTest env;
     // Local dataset for execution of SERVICE. Can be used to carry a context.
     private static final DatasetGraph localDataset() {return DatasetGraphZero.create(); }
 
-    /*package*/ static ElementService makeElt(EnvTest env) {
+    /*package*/ ElementService makeElt(EnvTest env) {
         Node serviceNode = NodeFactory.createURI(env.datasetURL());
         ElementGroup elt = new ElementGroup();
         Element elt1 = new ElementTriplesBlock(bgp);
@@ -120,7 +118,7 @@ public class TestService {
         return opService;
     }
 
-    /*package*/ static OpService makeOpElt(EnvTest env) {
+    /*package*/ OpService makeOpElt(EnvTest env) {
         Node serviceNode = NodeFactory.createURI(env.datasetURL());
 
         ElementGroup elt = new ElementGroup();
@@ -138,7 +136,12 @@ public class TestService {
     static String logLevelFuseki = LogCtl.getLevel(Fuseki.class);
 
     @BeforeEach public void before() {
-        env.clear();
+        env = EnvTest.create("/ds");
+        SERVICE = env.datasetURL();
+    }
+
+    @AfterEach public void after() {
+        EnvTest.stop(env);
     }
 
     private static Element subElt = null;
@@ -505,7 +508,7 @@ public class TestService {
         assertTrue(row.contains("temp"));
     }
 
-    private static void runWithModifier(String key, HttpRequestModifier modifier, Runnable action) {
+    private void runWithModifier(String key, HttpRequestModifier modifier, Runnable action) {
         RegistryRequestModifier.get().add(SERVICE, modifier);
         try {
             action.run();

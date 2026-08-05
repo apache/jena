@@ -25,11 +25,10 @@ import static org.apache.jena.fuseki.main.FusekiTestLib.expectOK;
 import static org.apache.jena.fuseki.main.FusekiTestLib.expectQuery401;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.rdfconnection.LibSec;
 import org.apache.jena.rdfconnection.RDFConnection;
@@ -44,12 +43,10 @@ import org.apache.jena.web.AuthSetup;
  * requirement to log in by no other restrictions.
  */
 public class TestPasswdOnly {
-    protected static FusekiServer server;
-    protected static int port;
-    private static AuthSetup auth1;
+    protected FusekiServer server;
+    protected int port;
 
-    @BeforeAll public static void beforeClass () {
-        port = WebLib.choosePort();
+    @BeforeEach public void beforeTest() {
         server = FusekiServer.create()
             //.verbose(true)
             .port(0)
@@ -60,10 +57,9 @@ public class TestPasswdOnly {
             .build();
         server.start();
         port = server.getPort();
-        auth1 = new AuthSetup("localhost", port, "user1", "pw1", null);
     }
 
-    @AfterAll public static void afterClass () {
+    @AfterEach public void afterTest() {
         server.stop();
     }
 

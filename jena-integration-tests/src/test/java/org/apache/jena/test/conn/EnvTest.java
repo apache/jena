@@ -40,18 +40,14 @@ import org.eclipse.jetty.security.UserStore;
 /**
  * Helper for testing against a Fuseki server.
  * <p>
- * Example usage:
+ * A fresh server is created for each test ("server-per-test"):
  * <pre>
- *    private static EnvTest env;
- *    {@literal @BeforeAll} public static void beforeClass() {
+ *    private EnvTest env;
+ *    {@literal @BeforeEach} public void before() {
  *       env = EnvTest.create("/ds");
  *    }
  *
- *    {@literal @Before} public void before() {
- *       env.clear();
- *    }
- *
- *    {@literal @AfterAll} public static void afterClass() {
+ *    {@literal @AfterEach} public void after() {
  *       EnvTest.stop(env);
  *    }
  * </pre>

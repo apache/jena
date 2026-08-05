@@ -29,9 +29,8 @@ import java.net.URI;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.logging.Log;
@@ -55,9 +54,9 @@ public class TestAuthBearerRemote {
 
     private static String user = "user";
 
-    private static FusekiServer server = null;
-    private static String dsEndpoint;
-    private static URI dsEndpointURI;
+    private FusekiServer server = null;
+    private String dsEndpoint;
+    private URI dsEndpointURI;
 
     protected String endpoint() {
         return dsEndpoint;
@@ -67,11 +66,13 @@ public class TestAuthBearerRemote {
         return dsEndpointURI;
     }
 
-    @BeforeAll public static void beforeClass() {
+    @BeforeEach public void beforeTest() {
         server = server("/ds", DatasetGraphFactory.createTxnMem());
     }
 
-    @AfterAll public static void afterClass() {
+    @AfterEach
+    public void afterTest() {
+        AuthEnv.get().clearAuthEnv();
         dsEndpoint = null;
         dsEndpointURI = null;
         if ( server == null )
@@ -80,13 +81,8 @@ public class TestAuthBearerRemote {
             server.stop();
             server = null;
         } catch (Throwable th) {
-            Log.warn(TestAuthBearerRemote.class, "Exception in test suite shutdown", th);
+            Log.warn(TestAuthBearerRemote.class, "Exception in test shutdown", th);
         }
-    }
-
-    @AfterEach
-    public void afterTest() {
-        AuthEnv.get().clearAuthEnv();
     }
 
     // Client-side challenge callback.
@@ -101,7 +97,7 @@ public class TestAuthBearerRemote {
         AuthEnv.get().setBearerToken(requestTarget, token);
     }
 
-    private static FusekiServer server(String dsName, DatasetGraph dsg) {
+    private FusekiServer server(String dsName, DatasetGraph dsg) {
         // Server verified user function.
         Function<String, String> verifiedUser = token -> {
             String u = AuthBearerTestLib.subjectFromEncodedJWT(token);

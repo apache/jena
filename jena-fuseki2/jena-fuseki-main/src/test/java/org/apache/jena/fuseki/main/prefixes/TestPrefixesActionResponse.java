@@ -33,8 +33,8 @@ import com.google.gson.JsonParser;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.fuseki.main.FusekiServer;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -43,11 +43,11 @@ import org.junit.jupiter.api.Test;
  */
 public class TestPrefixesActionResponse {
 
-    private static FusekiServer server = null;
-    private static String serviceR = null;
+    private FusekiServer server = null;
+    private String serviceR = null;
 
-    @BeforeAll
-    public static void beforeAll() {
+    @BeforeEach
+    public void beforeTest() {
         String DATASET = "dataset";
         server = FusekiServer.create()
                 .port(0)
@@ -58,8 +58,8 @@ public class TestPrefixesActionResponse {
         serviceR = "http://localhost:"+port+"/"+DATASET+"/prefixes";
     }
 
-    @AfterAll
-    public static void afterAll() {
+    @AfterEach
+    public void afterTest() {
         if ( server != null )
             server.stop();
     }

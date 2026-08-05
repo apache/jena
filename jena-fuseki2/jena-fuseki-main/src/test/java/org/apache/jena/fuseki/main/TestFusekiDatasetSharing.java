@@ -29,8 +29,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Graph;
@@ -51,20 +51,20 @@ public class TestFusekiDatasetSharing {
 
     private  static String DIR = "testing/Config/";
 
-    private static FusekiServer server = null;
-    private static String URL_ds_named;
+    private FusekiServer server = null;
+    private String URL_ds_named;
     // Shared named storage with ds-named.
-    private static String URL_ds_rdfs_base_named;
+    private String URL_ds_rdfs_base_named;
     // Shared named storage with ds-named.
-    private static String URL_ds_view_base_named;
+    private String URL_ds_view_base_named;
 
-    private static String URL_ds_unnamed_1;
-    private static String URL_ds_unnamed_2;
+    private String URL_ds_unnamed_1;
+    private String URL_ds_unnamed_2;
 
-    private static String URL_ds_view_unnamed_1;
-    private static String URL_ds_view_unnamed_2;
+    private String URL_ds_view_unnamed_1;
+    private String URL_ds_view_unnamed_2;
 
-    @BeforeAll public static void beforeClass() {
+    @BeforeEach public void beforeTest() {
         NamedDatasetAssembler.sharedDatasetPool.clear();
         Graph g = RDFParser.source(DIR+"ds-sharing.ttl").lang(Lang.TTL).toGraph();
 
@@ -103,7 +103,7 @@ public class TestFusekiDatasetSharing {
         assertEquals(all1.size(), all2.size());
     }
 
-    @AfterAll public static void afterClass() {
+    @AfterEach public void afterTest() {
         if ( server != null )
             server.stop();
         NamedDatasetAssembler.sharedDatasetPool.clear();

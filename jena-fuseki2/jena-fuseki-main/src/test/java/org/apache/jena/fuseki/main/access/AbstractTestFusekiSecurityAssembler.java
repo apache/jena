@@ -31,7 +31,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -71,33 +71,30 @@ public abstract class AbstractTestFusekiSecurityAssembler {
     static final String DIR = "testing/Access/";
 
     private final String assemblerFile;
-    private static AtomicReference<String> user = new AtomicReference<>();
+    private final AtomicReference<String> user = new AtomicReference<>();
 
-    private static FusekiServer server;
-    private FusekiServer getServer() {
-        if ( server == null )
-            server = setup(assemblerFile, false);
-        return server;
-    }
-
-    @AfterAll
-    public static void afterClass() {
-        server.stop();
-        server = null;
-        user.set(null);
-    }
+    private FusekiServer server;
 
     @BeforeEach
-    public void before() {
+    public void beforeTest() {
+        user.set(null);
+        server = setup(assemblerFile, false);
+    }
+
+    @AfterEach
+    public void afterTest() {
+        if ( server != null ) {
+            server.stop();
+            server = null;
+        }
         user.set(null);
     }
 
     private String getURL() {
-        FusekiServer server = getServer();
         return server.datasetURL("/database");
     }
 
-    private static FusekiServer setup(String assembler, boolean sharedDatabase) {
+    private FusekiServer setup(String assembler, boolean sharedDatabase) {
         // This will have a warning because authentication is not set (no password
         // file, no security handler) and that's what we want - no authentication -
         // because we use "user.get()"in the tests.

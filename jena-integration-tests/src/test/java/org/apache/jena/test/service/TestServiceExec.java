@@ -25,7 +25,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.iterator.Iter;
@@ -47,19 +49,20 @@ public class TestServiceExec {
     public static Context minimalContext() { return CtlService.minimalContext(); }
     // ----
 
-    private static FusekiServer server;
-    public static String testDB;
+    private FusekiServer server;
+    public String testDB;
     private static DatasetGraph emptyLocal = DatasetGraphFactory.create();
 
-    @BeforeAll
-    public static void beforeClass() {
+    @BeforeEach
+    public void beforeTest() {
         DatasetGraph dsg = SSE.parseDatasetGraph("(dataset (graph (:s :p 1) (:s :p 2) (:s :p 3) ) )");
         server = FusekiServer.create().add("/ds", dsg).port(0).build();
         server.start();
         testDB = "http://localhost:"+server.getPort()+"/ds";
     }
 
-    public static void afterClass() {
+    @AfterEach
+    public void afterTest() {
         try {
             server.stop();
         } catch (Throwable th) {}

@@ -30,6 +30,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.web.HttpException;
+import org.apache.jena.fuseki.main.ConfigureTests;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
@@ -50,7 +51,7 @@ public class TestGSP {
     static String DIR = "testing/RDFLink/";
 
     private FusekiServer server = null;
-    private final boolean verbose = false;
+    private final boolean verbose = ConfigureTests.VerboseServer;
 
     private final String dsName = "/data";
 

@@ -29,8 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpRequest.BodyPublishers;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -51,26 +50,26 @@ import org.apache.jena.web.HttpSC;
 public class TestHttpOp {
 
     // replacement.
-    private static EnvTest env;
+    private EnvTest env;
     private static DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
 
-    @BeforeAll public static void beforeClass() {
+    @BeforeEach public void before() {
         env = EnvTest.create("/ds");
     }
 
-    @AfterAll public static void afterClass() {
+    @AfterEach public void after() {
         EnvTest.stop(env);
     }
 
     // Includes the trailing "/" so it is correct in itself.
-    private static String urlRoot() { return env.serverBaseURL(); }
+    private String urlRoot() { return env.serverBaseURL(); }
 
     /** URL : server and path */
-    private static String url(String path) { return env.serverPath(path); }
+    private String url(String path) { return env.serverPath(path); }
 
 
     /** URL : server, dataset name and path */
-    private static String datasetPath(String path) {
+    private String datasetPath(String path) {
         if ( ! path.startsWith("/") )
             path = "/"+path;
         return url(env.dsName())+path;
@@ -79,21 +78,17 @@ public class TestHttpOp {
     /** URL: the string holder. */
     private String PLAIN() { return env.stringHolderPath(); }
 
-    @BeforeEach public void before() {
-        env.clear();
-    }
-
     // Standard Fuseki names.
-    static String pingURL()         { return url("/$/ping"); }
-    static String gspServiceURL()   { return datasetPath("/data"); }
+    String pingURL()         { return url("/$/ping"); }
+    String gspServiceURL()   { return datasetPath("/data"); }
 
-    static String defaultGraphURL() { return gspServiceURL()+"?default"; }
-    static String namedGraphURL()   { return gspServiceURL()+"?graph=http://example/g"; }
-    static String sparqlURL()       { return datasetPath("sparql"); }    // No dataset
-    static String queryURL()        { return datasetPath("query"); }
-    static String updateURL()       { return datasetPath("update"); }
+    String defaultGraphURL() { return gspServiceURL()+"?default"; }
+    String namedGraphURL()   { return gspServiceURL()+"?graph=http://example/g"; }
+    String sparqlURL()       { return datasetPath("sparql"); }    // No dataset
+    String queryURL()        { return datasetPath("query"); }
+    String updateURL()       { return datasetPath("update"); }
 
-    static String simpleQuery() { return sparqlURL()+"?query="+IRILib.encodeUriComponent("ASK{}"); }
+    String simpleQuery() { return sparqlURL()+"?query="+IRILib.encodeUriComponent("ASK{}"); }
 
     // Basic operations
 

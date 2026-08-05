@@ -21,8 +21,8 @@
 
 package org.apache.jena.test.general;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.logging.LogCtl;
@@ -44,11 +44,11 @@ import org.apache.jena.web.HttpSC;
 public class TestRemoteEndToEnd {
     // JENA-2074, JENA-2061 - bad RDF/XML causes HTTP problems if streamed directly.
 
-    private static FusekiServer server = null;
-    private static String LOG_LEVEL = null;
+    private FusekiServer server = null;
+    private String LOG_LEVEL = null;
     private static String ActionLogName = Fuseki.actionLogName;
 
-    @BeforeAll public static void beforeClass() {
+    @BeforeEach public void beforeTest() {
         // Suppress warnings.
         LOG_LEVEL = LogCtl.getLevel(ActionLogName);
         LogCtl.setLevel(ActionLogName, "ERROR");
@@ -67,7 +67,7 @@ public class TestRemoteEndToEnd {
                     .port(0).build().start();
     }
 
-    @AfterAll public static void afterClass() {
+    @AfterEach public void afterTest() {
         try { server.stop(); } catch (Throwable th) {}
         LogCtl.setLevel(ActionLogName, LOG_LEVEL);
     }
@@ -80,7 +80,7 @@ public class TestRemoteEndToEnd {
         runTest("/ds2");
     }
 
-    private static void runTest(String dataset) {
+    private void runTest(String dataset) {
         int port = server.getPort();
         String URL = server.datasetURL(dataset);
 

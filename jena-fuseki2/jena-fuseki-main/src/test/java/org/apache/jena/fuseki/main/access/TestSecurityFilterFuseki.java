@@ -31,8 +31,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -77,15 +77,19 @@ public class TestSecurityFilterFuseki {
         return fusekiServer.datasetURL(dsName);
     }
 
-    @SuppressWarnings("removal")
-    private static DatasetGraph testdsg1 =  TDB1Factory.createDatasetGraph();
-    private static DatasetGraph testdsg2 =  DatabaseMgr.createDatasetGraph();
-    private static DatasetGraph testdsg3 =  DatasetGraphFactory.createTxnMem();
+    private DatasetGraph testdsg1;
+    private DatasetGraph testdsg2;
+    private DatasetGraph testdsg3;
 
-    private static FusekiServer fusekiServer;
+    private FusekiServer fusekiServer;
 
     // Set up Fuseki with two datasets, "data1" backed by TDB and "data2" backed by TDB2.
-    @BeforeAll public static void beforeClass() {
+    @SuppressWarnings("removal")
+    @BeforeEach public void beforeTest() {
+        testdsg1 = TDB1Factory.createDatasetGraph();
+        testdsg2 = DatabaseMgr.createDatasetGraph();
+        testdsg3 = DatasetGraphFactory.createTxnMem();
+
         addTestData(testdsg1);
         addTestData(testdsg2);
         addTestData(testdsg3);
@@ -119,7 +123,7 @@ public class TestSecurityFilterFuseki {
         fusekiServer.start();
     }
 
-    @AfterAll public static void afterClass() {
+    @AfterEach public void afterTest() {
         fusekiServer.stop();
     }
 

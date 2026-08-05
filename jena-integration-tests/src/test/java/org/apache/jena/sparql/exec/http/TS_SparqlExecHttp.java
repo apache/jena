@@ -30,7 +30,6 @@ import org.junit.platform.suite.api.Suite;
     , TestDSP.class
     , TestGSPDirect.class
     , TestModelStore.class
-    //, TestModelStore2.class
     , TestQueryExecHTTP.class
     , TestQueryExecCleanServer.class
     , TestUpdateExecHTTP.class

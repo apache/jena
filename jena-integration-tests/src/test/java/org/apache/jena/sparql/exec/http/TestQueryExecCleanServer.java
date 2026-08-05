@@ -36,6 +36,7 @@ import org.junit.jupiter.api.Test;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.main.ConfigureTests;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
@@ -57,6 +58,7 @@ public class TestQueryExecCleanServer {
     private static Quad q2 = parseQuad("(:g2 :s :p 2)");
 
     private FusekiServer server = null;
+    private final boolean verbose = ConfigureTests.VerboseServer;
 
     private String serverFusekiLogLevel = null;
 
@@ -67,7 +69,7 @@ public class TestQueryExecCleanServer {
         dsg.add(q2);
         server = FusekiServer.create()
             .port(0)
-            .verbose(true)
+            .verbose(verbose)
             .add(dsName, dsg)
             .build();
         server.start();

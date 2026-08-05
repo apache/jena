@@ -28,8 +28,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.http.HttpServlet;
@@ -41,13 +41,13 @@ import org.apache.jena.sparql.core.DatasetGraphFactory;
 /** Test Fuseki with plain servlet and handling a file area */
 public class TestPlainServer {
 
-    private static FusekiServer server = null;
-    private static int port;
+    private FusekiServer server = null;
+    private int port;
 
-    private static String serverURL;
+    private String serverURL;
 
-    @BeforeAll
-    public static void beforeClass() {
+    @BeforeEach
+    public void beforeTest() {
         server = FusekiServer.create()
             .port(0)
             .add("/ds", DatasetGraphFactory.createTxnMem())
@@ -79,8 +79,8 @@ public class TestPlainServer {
         }
     }
 
-    @AfterAll
-    public static void afterClass() {
+    @AfterEach
+    public void afterTest() {
         if ( server != null )
             server.stop();
     }

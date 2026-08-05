@@ -33,6 +33,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import org.apache.jena.fuseki.main.ConfigureTests;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.http.HttpOp;
 import org.apache.jena.riot.Lang;
@@ -47,7 +48,7 @@ public class TestDSP {
 
     private FusekiServer server = null;
     private final String dsName = "/data";
-    private final boolean verbose = false;
+    private final boolean verbose = ConfigureTests.VerboseServer;
 
 
     @BeforeEach public void makeServer() {

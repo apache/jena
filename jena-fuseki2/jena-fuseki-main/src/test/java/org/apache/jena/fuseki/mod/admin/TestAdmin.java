@@ -52,7 +52,7 @@ import org.junit.jupiter.api.Test;
  *  Tests of the admin functionality using a pre-configured dataset.
  *  This class does not test adding and deleting of datasets.
  */
-public class TestAdmin extends FusekiServerPerTestClass {
+public class TestAdmin extends FusekiServerPerTestStd {
 
     // --- Ping
 

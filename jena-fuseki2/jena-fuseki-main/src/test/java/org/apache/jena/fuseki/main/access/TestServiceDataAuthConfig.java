@@ -26,6 +26,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import org.apache.jena.fuseki.auth.Auth;
 import org.apache.jena.fuseki.auth.AuthPolicy;
+import org.apache.jena.fuseki.main.ConfigureTests;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.Endpoint;
@@ -56,6 +57,8 @@ public class TestServiceDataAuthConfig extends AbstractTestServiceDatasetAuth {
         return server;
     }
 
+    private static final boolean verbose = ConfigureTests.VerboseServer;
+
     public static FusekiServer build(int port, AuthPolicy policy) {
         AuthPolicy policy12 = Auth.policyAllowSpecific("user1", "user2");
         AuthPolicy policy13 = Auth.policyAllowSpecific("user1", "user3");
@@ -65,7 +68,7 @@ public class TestServiceDataAuthConfig extends AbstractTestServiceDatasetAuth {
         dSrvBuilder.addEndpoint(Endpoint.create(Operation.Update, null, policy13));
         DataService dSrv = dSrvBuilder.build();
         FusekiServer server = FusekiServer.create()
-            .verbose(true)
+            .verbose(verbose)
             .port(port)
             .passwordFile("testing/Access/passwd")
             //.serverAuthPolicy(policy)

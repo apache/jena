@@ -25,8 +25,8 @@ package org.apache.jena.http;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.iterator.Iter;
@@ -41,9 +41,9 @@ import org.apache.jena.test.conn.EnvTest;
 public class TestAsyncHttpRDF {
 
     static String data[] = { "(_ :s :p :o)", "(:g1 :s :p 1)", "(:g2 :s :p 2)"};
-    private static EnvTest env;
+    private EnvTest env;
 
-    @BeforeAll public static void beforeClass() {
+    @BeforeEach public void before() {
         env = EnvTest.create("/ds");
         DatasetGraph dsg = env.dsg();
         dsg.executeWrite(()->{
@@ -52,7 +52,7 @@ public class TestAsyncHttpRDF {
         });
     }
 
-    @AfterAll public static void afterClass() {
+    @AfterEach public void after() {
         EnvTest.stop(env);
     }
 

@@ -24,9 +24,8 @@ package org.apache.jena.http;
 import java.net.URI;
 import java.util.Objects;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.AuthScheme;
@@ -49,9 +48,9 @@ public class TestAuthDigestRemote extends AbstractTestAuthRemote {
     private static String user = "user";
     private static String password = "password";
 
-    private static FusekiServer server = null;
-    private static String dsEndpoint;
-    private static URI dsEndpointURI;
+    private FusekiServer server = null;
+    private String dsEndpoint;
+    private URI dsEndpointURI;
 
     @Override
     protected String endpoint() {
@@ -73,15 +72,12 @@ public class TestAuthDigestRemote extends AbstractTestAuthRemote {
         return password;
     }
 
-    @BeforeAll public static void beforeClass() {
+    @BeforeEach public void beforeTest() {
         server = server("/ds", DatasetGraphFactory.createTxnMem(), user, password);
     }
 
     @AfterEach public void after() {
         AuthEnv.get().unregisterUsernamePassword(dsEndpointURI);
-    }
-
-    @AfterAll public static void afterClass() {
         dsEndpoint = null;
         dsEndpointURI = null;
         if ( server == null )
@@ -90,11 +86,11 @@ public class TestAuthDigestRemote extends AbstractTestAuthRemote {
             server.stop();
             server = null;
         } catch (Throwable th) {
-            Log.warn(TestAuthDigestRemote.class, "Exception in test suite shutdown", th);
+            Log.warn(TestAuthDigestRemote.class, "Exception in test shutdown", th);
         }
     }
 
-    private static FusekiServer server(String dsName, DatasetGraph dsg, String user, String password) {
+    private FusekiServer server(String dsName, DatasetGraph dsg, String user, String password) {
         Objects.requireNonNull(user);
         Objects.requireNonNull(password);
         FusekiServer.Builder builder = FusekiServer.create()

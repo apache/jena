@@ -23,8 +23,7 @@ package org.apache.jena.sparql.exec.http;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -39,24 +38,20 @@ import org.apache.jena.test.conn.EnvTest;
 /** Test Service enable/disable */
 public class TestServiceOnOff {
 
-    private static String SERVICE;
-    private static String QUERY;
-    private static EnvTest env;
+    private String SERVICE;
+    private String QUERY;
+    private EnvTest env;
     // Local dataset for execution of SERVICE.
     private static final DatasetGraph localDataset() {return DatasetGraphZero.create(); }
 
-    @BeforeAll public static void beforeClass() {
+    @BeforeEach public void before() {
         //FusekiLogging.setLogging();
         env = EnvTest.create("/ds");
         SERVICE = env.datasetURL();
         QUERY = "ASK { SERVICE <"+SERVICE+"> {} }";
     }
 
-    @BeforeEach public void before() {
-        env.clear();
-    }
-
-    @AfterAll public static void afterClass() {
+    @AfterEach public void after() {
         EnvTest.stop(env);
     }
 

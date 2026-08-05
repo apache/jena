@@ -23,7 +23,7 @@ package org.apache.jena.test.rdflink;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,38 +41,36 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.RowSet;
-import org.apache.jena.system.Txn;
 import org.apache.jena.web.HttpSC.Code;
 
 public class TestRDFLinkHTTP extends AbstractTestRDFLink {
-    private static FusekiServer server;
-    private static DatasetGraph serverdsg = DatasetGraphFactory.createTxnMem();
-    protected static int PORT = 0;
+    private FusekiServer server;
+    private DatasetGraph serverdsg = DatasetGraphFactory.createTxnMem();
+    protected int PORT = 0;
 
     @BeforeAll
     public static void beforeClass() {
-        server = FusekiServer.create().loopback(true)
-            .port(PORT)
-            .add("/ds", serverdsg)
-            .build();
         LogCtl.setLevel(Fuseki.serverLogName,  "WARN");
         LogCtl.setLevel(Fuseki.actionLogName,  "WARN");
         LogCtl.setLevel(Fuseki.requestLogName, "WARN");
         LogCtl.setLevel(Fuseki.adminLogName,   "WARN");
         LogCtl.setLevel("org.eclipse.jetty",   "WARN");
-        server.start();
-        PORT = server.getPort();
     }
 
     @BeforeEach
     public void beforeTest() {
-        // Clear server
-        Txn.executeWrite(serverdsg, ()->serverdsg.clear());
+        server = FusekiServer.create().loopback(true)
+            .port(PORT)
+            .add("/ds", serverdsg)
+            .build();
+        server.start();
+        PORT = server.getPort();
     }
 
-    @AfterAll
-    public static void afterClass() {
-        server.stop();
+    @AfterEach
+    public void afterTest() {
+        if ( server != null )
+            server.stop();
     }
 
     @Override

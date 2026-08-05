@@ -25,8 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -37,16 +36,12 @@ import org.apache.jena.test.conn.EnvTest;
 public class TestHttpRDF {
     // The HttpRDF machinery (much of which is package visible) get tested by other
     // subsystems built on top of HttpRDF. This test suite is for the public API.
-    private static EnvTest env;
-    @BeforeAll public static void beforeClass() {
+    private EnvTest env;
+    @BeforeEach public void before() {
         env = EnvTest.create("/ds");
     }
 
-    @BeforeEach public void before() {
-        env.clear();
-    }
-
-    @AfterAll public static void afterClass() {
+    @AfterEach public void after() {
         EnvTest.stop(env);
     }
 

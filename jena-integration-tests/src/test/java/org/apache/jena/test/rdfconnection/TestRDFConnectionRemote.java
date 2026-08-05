@@ -21,7 +21,6 @@
 
 package org.apache.jena.test.rdfconnection;
 
-import static org.apache.jena.fuseki.main.ConfigureTests.OneServerPerTestSuite;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -42,107 +41,37 @@ import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionRemote;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
-import org.apache.jena.system.Txn;
 import org.apache.jena.update.UpdateException;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.web.HttpSC.Code;
 
 public class TestRDFConnectionRemote extends AbstractTestRDFConnection {
-    protected static FusekiServer server;
-    private static DatasetGraph serverdsg = DatasetGraphFactory.createTxnMem();
-    private static boolean localOneServerPerTestSuite = OneServerPerTestSuite;
-
-    // ==== Common code: TestFusekiStdSetup, TestFusekiStdReadOnlySetup, TestFusekiShaclValidation
-
-    private static Object lock = new Object();
-
-    private static void sync(Runnable action) {
-        synchronized(lock) {
-            action.run();
-        }
-    }
-
-    @BeforeAll
-    public static void beforeClass() {
-        if ( localOneServerPerTestSuite ) {
-            server = createServer().start();
-        }
-    }
-
-    @AfterAll
-    public static void afterClass() {
-        if ( localOneServerPerTestSuite )
-            stopServer(server);
-    }
-
-    // ====
+    protected FusekiServer server;
+    private final boolean verbose = ConfigureTests.VerboseServer;
 
     @BeforeEach
     public void beforeTest() {
-        if ( !ConfigureTests.OneServerPerTestSuite )
-            server = createServer();
-        // Clear server
-        Txn.executeWrite(serverdsg, ()->serverdsg.clear());
+        DatasetGraph serverdsg = DatasetGraphFactory.createTxnMem();
+        server = FusekiServer.create().loopback(true)
+                .verbose(verbose)
+                .port(0)
+                .add("/ds", serverdsg)
+                .start();
     }
 
-    // ====
-
     @AfterEach
-      public void afterTest() {
-          if ( !ConfigureTests.OneServerPerTestSuite ) {
-              finishWithServer(server);
-              server = null;
-          }
-      }
+    public void afterTest() {
+        if ( server != null ) {
+            server.stop();
+            server = null;
+        }
+    }
 
     @FunctionalInterface
     interface Action { void run(String datasetURL); }
 
     protected void withServer(Action action) {
-        FusekiServer server = server();
-        try {
-            String datasetURL = server.datasetURL("/ds");
-            sync(()-> {
-                action.run(datasetURL);
-            });
-        } finally {
-            finishWithServer(server);
-        }
-    }
-
-    private static FusekiServer createServer() {
-        serverdsg = DatasetGraphFactory.createTxnMem();
-        server = FusekiServer.create().loopback(true)
-                .verbose(true)
-                .port(0)
-                .add("/ds", serverdsg)
-                .build();
-        server.start();
-        return server;
-    }
-
-    private FusekiServer server() {
-        if ( localOneServerPerTestSuite )
-            return server;
-        else
-            return createServer().start();
-    }
-
-    private void finishWithServer(FusekiServer server) {
-        if ( ConfigureTests.OneServerPerTestSuite )
-            return;
-        stopServer(server);
-    }
-
-    private static void stopServer(FusekiServer server) {
-        if ( ! ConfigureTests.CloseTestServers )
-            return;
-        sync(()->server.stop());
-    }
-
-    private static void clearAll(RDFConnection conn) {
-        if ( !ConfigureTests.OneServerPerTestSuite )
-            try { conn.update("CLEAR ALL"); } catch (Throwable th) {}
+        action.run(server.datasetURL("/ds"));
     }
 
     // ====

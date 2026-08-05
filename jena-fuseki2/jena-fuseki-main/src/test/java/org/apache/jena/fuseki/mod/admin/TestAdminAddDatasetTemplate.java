@@ -55,7 +55,7 @@ import org.junit.jupiter.api.Test;
  * Tests of the admin functionality on an empty server and using the template mechanism.
  * See also {@link TestAdmin}.
  */
-public class TestAdminAddDatasetTemplate extends FusekiServerPerTestClass {
+public class TestAdminAddDatasetTemplate extends FusekiServerPerTestStd {
 
     @BeforeAll public static void loggingAdmin() {
         LogCtl.setLevel(Fuseki.adminLogName, "ERROR");

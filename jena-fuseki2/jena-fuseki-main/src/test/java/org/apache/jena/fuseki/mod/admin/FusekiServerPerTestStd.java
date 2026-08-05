@@ -27,7 +27,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.logging.LogCtl;
@@ -44,18 +46,19 @@ import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.awaitility.Awaitility;
 
 /**
- * Framework for running tests on a Fuseki server, with a single server for all tests.
+ * Framework for running tests on a Fuseki server with the standard setup
+ * (admin area, one dataset, task actions); a fresh server for each test.
  */
-public class FusekiServerPerTestClass {
+public class FusekiServerPerTestStd {
 
-    private static String serverURL = null;
-    private static FusekiServer server = null;
+    private String serverURL = null;
+    private FusekiServer server = null;
 
     @BeforeAll public static void logging() {
         FusekiLogging.setLogging();
     }
 
-    @BeforeAll public static void startServer() {
+    @BeforeEach public void startServer() {
         System.setProperty("FUSEKI_BASE", serverArea());
         FileOps.clearAll(serverArea());
 
@@ -67,13 +70,14 @@ public class FusekiServerPerTestClass {
         return "target/run";
     }
 
-    protected static DataAccessPointRegistry serverRegistry() {
+    protected DataAccessPointRegistry serverRegistry() {
         return server.getDataAccessPointRegistry();
     }
 
-    @AfterAll public static void stopServer() {
+    @AfterEach public void stopServer() {
         if ( server != null )
             server.stop();
+        server = null;
         serverURL = null;
         FusekiServerCtl.clearUpSystemState();
     }
@@ -90,7 +94,7 @@ public class FusekiServerPerTestClass {
         LogCtl.setLevel(Fuseki.compactLogName,"WARN");
     }
 
-    // For the one-per-class setup, include the usual modules for jena-fuseki-server.
+    // For the standard setup, include the usual modules for jena-fuseki-server.
     private static FusekiModules modulesSetup() {
         return FusekiRunner.fmodsServerUI();
     }
@@ -110,11 +114,11 @@ public class FusekiServerPerTestClass {
         return testServer;
     }
 
-    protected static String urlRoot() {
+    protected String urlRoot() {
         return serverURL;
     }
 
-    protected static String adminURL() {
+    protected String adminURL() {
         return serverURL + "$/";
     }
 
@@ -122,7 +126,7 @@ public class FusekiServerPerTestClass {
         return "dataset";
     }
 
-    protected FusekiServerPerTestClass() {}
+    protected FusekiServerPerTestStd() {}
 
     // One server per test.
 

@@ -27,8 +27,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.http.HttpClient;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -59,15 +58,15 @@ import org.eclipse.jetty.security.UserStore;
  */
 public class TestSecurityBuilderSetup {
 
-    private static FusekiServer fusekiServer = null;
-    private static String serverURL;
-    private static AuthSetup authSetup1;
-    private static AuthSetup authSetup2;
+    private FusekiServer fusekiServer = null;
+    private String serverURL;
+    private AuthSetup authSetup1;
+    private AuthSetup authSetup2;
     // Not in the user store.
-    private static AuthSetup authSetupX;
+    private AuthSetup authSetupX;
 
-    @BeforeAll
-    public static void beforeClass() {
+    @BeforeEach
+    public void beforeTest() {
         int port = WebLib.choosePort();
 
         authSetup1 = new AuthSetup("localhost", port, "user1", "pw1", "TripleStore");
@@ -110,21 +109,11 @@ public class TestSecurityBuilderSetup {
         fusekiServer.start();
 
         serverURL = fusekiServer.serverURL();
-
     }
 
-    @BeforeEach
-    public void before() {
-//        // Reset before every test and after the suite.
-//        HttpClient hc = HttpOp.createDefaultHttpClient();
-//        HttpOp.setDefaultHttpClient(hc);
-    }
-
-    @AfterAll
-    public static void afterClass() {
+    @AfterEach
+    public void afterTest() {
         fusekiServer.stop();
-//        HttpClient hc = HttpOp.createDefaultHttpClient();
-//        HttpOp.setDefaultHttpClient(hc);
     }
 
     // Server authentication.

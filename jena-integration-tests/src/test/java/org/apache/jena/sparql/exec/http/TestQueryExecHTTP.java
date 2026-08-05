@@ -30,15 +30,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.net.http.HttpHeaders;
 import java.util.Iterator;
 
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.main.ConfigureTests;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
@@ -58,10 +59,11 @@ import org.apache.jena.web.HttpSC;
  * See also {@link TestQueryExecCleanServer}.
  */
 public class TestQueryExecHTTP {
-    private static FusekiServer server = null;
-    private static String URL;
+    private FusekiServer server = null;
+    private final boolean verbose = ConfigureTests.VerboseServer;
+    private String URL;
     private static String dsName = "/ds";
-    private static String dsURL;
+    private String dsURL;
     private static Quad q0 = parseQuad("(_ :s :p :o)");
     private static Quad q1 = parseQuad("(:g1 :s :p 1)");
     private static Quad q2 = parseQuad("(:g2 :s :p 2)");
@@ -71,14 +73,14 @@ public class TestQueryExecHTTP {
             LogCtl.enable(Fuseki.actionLog);
         }
 
-    @BeforeAll public static void beforeClass() {
+    @BeforeEach public void beforeTest() {
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
         dsg.add(q0);
         dsg.add(q1);
         dsg.add(q2);
         server = FusekiServer.create()
             .port(0)
-            .verbose(true)
+            .verbose(verbose)
             .add(dsName, dsg)
             .build();
         server.start();
@@ -87,11 +89,12 @@ public class TestQueryExecHTTP {
         dsURL = "http://localhost:"+port+dsName;
     }
 
-    @AfterAll public static void afterClass() {
-        server.stop();
+    @AfterEach public void afterTest() {
+        if ( server != null )
+            server.stop();
     }
 
-    private static String serviceQuery() { return dsURL; }
+    private String serviceQuery() { return dsURL; }
 
     @Test
     public void query_select_01() {

@@ -33,6 +33,7 @@ import org.junit.jupiter.api.condition.EnabledIf;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.main.ConfigureTests;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.FusekiTestLib;
 import org.apache.jena.fuseki.server.DataService;
@@ -58,7 +59,7 @@ public class TestGSPDirect {
     }
 
     private FusekiServer server = null;
-    private final boolean verbose = false;
+    private final boolean verbose = ConfigureTests.VerboseServer;
 
     private final String dsName = "/graphs";
     private final String endpoint = "graphs";

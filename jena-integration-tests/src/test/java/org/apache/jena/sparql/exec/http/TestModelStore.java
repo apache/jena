@@ -27,8 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.StringReader;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -51,16 +50,12 @@ public class TestModelStore {
 
     static String DIR = "testing/RDFLink/";
 
-    private static EnvTest env;
-    @BeforeAll public static void beforeClass() {
+    private EnvTest env;
+    @BeforeEach public void before() {
         env = EnvTest.create("/ds");
     }
 
-    @BeforeEach public void before() {
-        env.clear();
-    }
-
-    @AfterAll public static void afterClass() {
+    @AfterEach public void after() {
         EnvTest.stop(env);
     }
 
@@ -69,10 +64,10 @@ public class TestModelStore {
 
     private String url(String path) { return env.datasetPath(path); }
 
-    static String gspServiceURL()   { return env.datasetPath("/data"); }
+    private String gspServiceURL()   { return env.datasetPath("/data"); }
 
-    static String defaultGraphURL() { return gspServiceURL()+"?default"; }
-    static String namedGraphURL()   { return gspServiceURL()+"?graph=http://example/g"; }
+    private String defaultGraphURL() { return gspServiceURL()+"?default"; }
+    private String namedGraphURL()   { return gspServiceURL()+"?graph=http://example/g"; }
 
     // Graph, with one triple in it.
     static Model graph = makeModel();
@@ -149,14 +144,34 @@ public class TestModelStore {
         assertTrue(s2.isEmpty());
     }
 
-    // Moved - investigation
-//    @Test public void gsp_dft_ct_1() {
-//        ModelStore.service(url("/ds")).defaultGraph().contentType(RDFFormat.RDFXML).PUT(DIR+"data-rdfxml");
-//    }
-//
-//    @Test public void gsp_dft_ct_2() {
-//        ModelStore.service(url("/ds")).defaultGraph().contentTypeHeader(WebContent.contentTypeRDFXML).PUT(DIR+"data-rdfxml");
-//    }
+    @Test public void gsp_dft_ct_1() {
+        ModelStore.service(url("/ds")).defaultGraph().contentType(RDFFormat.RDFXML).PUT(DIR+"data-rdfxml");
+    }
+
+    @Test public void gsp_dft_ct_2() {
+        ModelStore.service(url("/ds")).defaultGraph().contentTypeHeader(WebContent.contentTypeRDFXML).PUT(DIR+"data-rdfxml");
+    }
+
+    @Test public void gsp_post_get_ct_01() {
+        String graphName = "http://example/graph";
+        ModelStore.service(gspServiceURL())
+        .namedGraph(graphName)
+        .POST(graph);
+        Model m1 = ModelStore.service(gspServiceURL())
+                .defaultGraph()
+                .acceptHeader("application/rdf+xml")
+                .GET();
+        assertNotNull(m1);
+        assertTrue(m1.isEmpty());
+
+        Model m2 = ModelStore.service(gspServiceURL())
+                .namedGraph(graphName)
+                .acceptHeader("application/rdf+xml")
+                .GET();
+        assertNotNull(m2);
+        assertFalse(m2.isEmpty());
+        assertTrue(graph.isIsomorphicWith(m2));
+    }
 
     // ----------------------------------------
 

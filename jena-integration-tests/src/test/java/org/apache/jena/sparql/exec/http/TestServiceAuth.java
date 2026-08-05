@@ -30,6 +30,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -65,21 +66,17 @@ public class TestServiceAuth {
     public static Context minimalContext() { return CtlService.minimalContext(); }
     // ----
 
-    private static String SERVICE;
+    private String SERVICE;
     private static final String USER = "user13";
     private static final String PASSWORD = "pw13";
-    private static EnvTest env;
+    private EnvTest env;
 
-    @BeforeAll public static void beforeClass() {
+    @BeforeEach public void before() {
         env = EnvTest.createAuth("/ds", DatasetGraphFactory.createTxnMem(), USER, PASSWORD);
         SERVICE = env.datasetURL();
     }
 
-    @BeforeEach public void before() {
-        env.clear();
-    }
-
-    @AfterAll public static void afterClass() {
+    @AfterEach public void after() {
         EnvTest.stop(env);
     }
 

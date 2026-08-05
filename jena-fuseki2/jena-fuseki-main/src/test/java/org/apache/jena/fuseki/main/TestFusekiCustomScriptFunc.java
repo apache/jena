@@ -25,7 +25,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.StrUtils;
@@ -58,7 +60,8 @@ public class TestFusekiCustomScriptFunc {
     private static String scriptFunctionsOldValue = null;
 
     private static String dsName = "/ds" ;
-    private static FusekiServer server = null;
+
+    private FusekiServer server = null;
 
     @BeforeAll public static void enableScripting() {
         systemPropertyScriptingOldValue = System.getProperty(ARQ.systemPropertyScripting);
@@ -66,7 +69,17 @@ public class TestFusekiCustomScriptFunc {
         // Enable
         System.setProperty(ARQ.systemPropertyScripting, "true");
         ARQ.getContext().set(symFunctions,jsFunctions);
+    }
 
+    @AfterAll public static void disableScripting() {
+        if ( systemPropertyScriptingOldValue != null )
+            System.setProperty(ARQ.systemPropertyScripting, systemPropertyScriptingOldValue);
+        else
+            System.clearProperty(ARQ.systemPropertyScripting);
+        ARQ.getContext().set(ScriptLangSymbols.scriptFunctions("js"), scriptFunctionsOldValue);
+    }
+
+    @BeforeEach public void beforeTest() {
         Context context = Context.create().set(ARQ.symCustomFunctionScriptAllowList, "inc,dec");
 
         Endpoint ep1 = Endpoint.create().endpointName("script1").operation(Operation.Query).context(context).build();
@@ -83,15 +96,9 @@ public class TestFusekiCustomScriptFunc {
                 .build().start();
     }
 
-    @AfterAll public static void disableScripting() {
+    @AfterEach public void afterTest() {
         if ( server != null )
             server.stop();
-        if ( systemPropertyScriptingOldValue != null )
-            System.setProperty(ARQ.systemPropertyScripting, systemPropertyScriptingOldValue);
-        else
-            System.clearProperty(ARQ.systemPropertyScripting);
-        ARQ.getContext().set(ScriptLangSymbols.scriptFunctions("js"), scriptFunctionsOldValue);
-
     }
 
     @Test public void directCall() {
