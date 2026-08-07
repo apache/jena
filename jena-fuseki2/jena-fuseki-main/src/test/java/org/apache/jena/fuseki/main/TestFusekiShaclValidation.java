@@ -21,7 +21,6 @@
 
 package org.apache.jena.fuseki.main;
 
-import static org.apache.jena.fuseki.main.ConfigureTests.OneServerPerTestSuite;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -32,88 +31,34 @@ import org.apache.jena.http.HttpRDF;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shacl.ValidationReport;
-import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.DatasetGraphFactory;
 
 @TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestFusekiShaclValidation {
-    // Fuseki Main server
-    private static FusekiServer server = null;
     private static final String DIR = "testing/ShaclValidation/";
-
-    // ==== Common code: TestFusekiStdSetup, TestFusekiStdReadOnlySetup, TestFusekiShaclValidation
-
-    private static Object lock = new Object();
-
-    private static void sync(Runnable action) {
-        synchronized(lock) {
-            action.run();
-        }
-    }
-
-    @BeforeAll
-    public static void beforeClass() {
-        if ( OneServerPerTestSuite ) {
-            server = createServer().start();
-        }
-    }
-
-    @AfterAll
-    public static void afterClass() {
-        if ( OneServerPerTestSuite )
-            stopServer(server);
-    }
 
     @FunctionalInterface
     interface Action { void run(String datasetURL); }
 
     private void withServer(Action action) {
-        FusekiServer server = server();
+        FusekiServer server = createServer().start();
         try {
-            String datasetURL = server.datasetURL("/ds");
-            sync(()-> {
-                action.run(datasetURL);
-            });
+            action.run(server.datasetURL("/ds"));
         } finally {
-            finishWithServer(server);
+            server.stop();
         }
     }
 
     private static FusekiServer createServer() {
-        DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
-        synchronized(lock) {
-            server = FusekiServer.create()
-                    .verbose(ConfigureTests.VerboseServer)
-                    // With SHACL service.
-                    .parseConfigFile(DIR+"config-validation.ttl")
-                    .port(0)
-                    .build();
-        }
-        return server;
-    }
-
-    private FusekiServer server() {
-        if ( OneServerPerTestSuite )
-            return server;
-        else
-            return createServer().start();
-    }
-
-    private void finishWithServer(FusekiServer server) {
-        if ( ConfigureTests.OneServerPerTestSuite )
-            return;
-        stopServer(server);
-    }
-
-    private static void stopServer(FusekiServer server) {
-        if ( ! ConfigureTests.CloseTestServers )
-            return;
-        sync(()->server.stop());
+        return FusekiServer.create()
+                .verbose(ConfigureTests.VerboseServer)
+                // With SHACL service.
+                .parseConfigFile(DIR+"config-validation.ttl")
+                .port(0)
+                .build();
     }
 
     private static void clearAll(RDFConnection conn) {
-        if ( !ConfigureTests.OneServerPerTestSuite )
-            try { conn.update("CLEAR ALL"); } catch (Throwable th) {}
+        try { conn.update("CLEAR ALL"); } catch (Throwable th) {}
     }
 
     // ====

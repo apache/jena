@@ -22,7 +22,5 @@
 package org.apache.jena.fuseki.main;
 
 public class ConfigureTests {
-    public static final boolean OneServerPerTestSuite = false;
-    public static final boolean CloseTestServers = false;
     public static final boolean VerboseServer = false;
 }
