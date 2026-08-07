@@ -165,12 +165,12 @@ public class TestQuerySyntaxTransform
     }
 
     @Test public void transformTransformReplace_reifies_01() {
-        String queryString =
-                "PREFIX ex: <http://example.com/>\n" +
-                "CONSTRUCT {\n" +
-                "  ?this ex:seeAlso ex:Nothing {| ex:tempTriple true |} .\n" +
-                "}\n" +
-                "WHERE {}\n";
+        String queryString = """
+                PREFIX ex: <http://example.com/>
+                CONSTRUCT {
+                    ?this ex:seeAlso ex:Nothing {| ex:tempTriple true |} .
+                } WHERE {}
+                """ ;
         Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
 
         Node thing = SSE.parseNode("<http://www.w3.org/2002/07/owl#Thing>");
