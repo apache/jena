@@ -346,9 +346,8 @@ public class QueryTransformOps {
             return e2.getConstant().getNode();
         }
         // RDF 1.2 triple term (e.g. the object of an rdf:reifies triple from a {| ... |}
-        // annotation) may itself contain variables. Recurse into it so pre-binding a
-        // variable used inside a reified triple's annotation is applied consistently
-        // with the base triple, not silently skipped.
+        // annotation) may itself contain variables. Recurse into the triple term
+        // and replace any variables used inside a reified triple's annotation.
         if ( node.isTripleTerm() && ! node.isConcrete() ) {
             Triple triple = node.getTriple();
             Node s = transformOrSame(triple.getSubject(), exprTransform);
