@@ -21,11 +21,8 @@
 
 package org.apache.jena.fuseki.main;
 
-import static org.apache.jena.fuseki.main.ConfigureTests.OneServerPerTestSuite;
-
 import java.util.function.Consumer;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -46,8 +43,6 @@ public class TestFusekiStdReadOnlySetup {
 
     // This test suite is TestFusekiStdSetup, modified for read-only.
 
-    private static FusekiServer server = null;
-
     private static Graph data;
     private static DatasetGraph dataset;
 
@@ -60,71 +55,30 @@ public class TestFusekiStdReadOnlySetup {
         dataset.add(SSE.parseQuad("(:g :s :p 2 )"));
     }
 
-    private static Object lock = new Object();
-
-    private static void sync(Runnable action) {
-        synchronized(lock) {
-            action.run();
-        }
-    }
-
-    @BeforeAll
-    public static void beforeClass() {
-        if ( OneServerPerTestSuite ) {
-            server = createServer().start();
-        }
-    }
-
-    @AfterAll
-    public static void afterClass() {
-        if ( OneServerPerTestSuite )
-            stopServer(server);
-    }
+    // Each test runs against its own server, started and stopped by withServer.
 
     @FunctionalInterface
     interface Action { void run(String datasetURL); }
 
     private void withServer(Action action) {
-        FusekiServer server = server();
+        FusekiServer server = createServer().start();
         try {
             String datasetURL = server.datasetURL("/ds");
-            sync(()-> {
-                action.run(datasetURL);
-            });
+            action.run(datasetURL);
         } finally {
-            finishWithServer(server);
+            server.stop();
         }
     }
+
+    private static final boolean verbose = ConfigureTests.VerboseServer;
 
     private static FusekiServer createServer() {
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
-        synchronized(lock) {
-            server = FusekiServer.create()
-                    .verbose(ConfigureTests.VerboseServer)
-                    .add("/ds", dsg, false)
-                    .port(0)
-                    .build();
-        }
-        return server;
-    }
-
-    private FusekiServer server() {
-        if ( OneServerPerTestSuite )
-            return server;
-        else
-            return createServer().start();
-    }
-
-    private void finishWithServer(FusekiServer server) {
-        if ( ConfigureTests.OneServerPerTestSuite )
-            return;
-        stopServer(server);
-    }
-
-    private static void stopServer(FusekiServer server) {
-        if ( ! ConfigureTests.CloseTestServers )
-            return;
-        sync(()->server.stop());
+        return FusekiServer.create()
+                .verbose(verbose)
+                .add("/ds", dsg, false)
+                .port(0)
+                .build();
     }
 
     // ====
@@ -269,14 +223,12 @@ public class TestFusekiStdReadOnlySetup {
     }
 
     private static void exec(String url, String ep, Consumer<RDFLink> action) {
-        synchronized(lock) {
-            try {
-                execEx(url, ep, action);
-            } catch (HttpException ex) {
-                handleException(ex, ex.getStatusCode(), ex.getMessage());
-            } catch (QueryExceptionHTTP ex) {
-                handleException(ex, ex.getStatusCode(), ex.getMessage());
-            }
+        try {
+            execEx(url, ep, action);
+        } catch (HttpException ex) {
+            handleException(ex, ex.getStatusCode(), ex.getMessage());
+        } catch (QueryExceptionHTTP ex) {
+            handleException(ex, ex.getStatusCode(), ex.getMessage());
         }
     }
 
