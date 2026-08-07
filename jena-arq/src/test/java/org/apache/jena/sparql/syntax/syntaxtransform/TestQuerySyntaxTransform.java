@@ -22,21 +22,27 @@
 package org.apache.jena.sparql.syntax.syntaxtransform;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.Syntax;
 import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.ModelUtils;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
+import org.apache.jena.vocabulary.RDF;
 
 /** Test of variable replaced by value */
 public class TestQuerySyntaxTransform
@@ -156,6 +162,40 @@ public class TestQuerySyntaxTransform
         testQueryModel("CONSTRUCTWHERE { GRAPH ?g {?s ?p ?o } }",
                        "CONSTRUCT { GRAPH <urn:ex:g> { <urn:ex:z> ?p ?o } } WHERE { GRAPH <urn:ex:g> { <urn:ex:z> ?p ?o } }",
                        "s", "<urn:ex:z>", "g", "<urn:ex:g>");
+    }
+
+    @Test public void transformTransformReplace_reifies_01() {
+        String queryString = """
+                PREFIX ex: <http://example.com/>
+                CONSTRUCT {
+                    ?this ex:seeAlso ex:Nothing {| ex:tempTriple true |} .
+                } WHERE {}
+                """ ;
+        Query query = QueryFactory.create(queryString, Syntax.syntaxARQ);
+
+        Node thing = SSE.parseNode("<http://www.w3.org/2002/07/owl#Thing>");
+        Node seeAlso = SSE.parseNode("<http://example.com/seeAlso>");
+        Node nothing = SSE.parseNode("<http://example.com/Nothing>");
+
+        Query transformed = QueryTransformOps.replaceVars(query, Map.of(Var.alloc("this"), thing));
+        List<Quad> quads = transformed.getConstructTemplate().getQuads();
+
+        boolean hasBaseTriple = quads.stream().anyMatch(q ->
+                q.getSubject().equals(thing) && q.getPredicate().equals(seeAlso) && q.getObject().equals(nothing));
+        assertTrue(hasBaseTriple, "Base triple should have ?this substituted");
+
+        boolean hasCorrectReifiesTriple = quads.stream().anyMatch(q -> {
+            if ( ! RDF.Nodes.reifies.equals(q.getPredicate()) )
+                return false;
+            Node obj = q.getObject();
+            if ( ! obj.isTripleTerm() )
+                return false;
+            Triple reified = obj.getTriple();
+            return reified.getSubject().equals(thing)
+                && reified.getPredicate().equals(seeAlso)
+                && reified.getObject().equals(nothing);
+        });
+        assertTrue(hasCorrectReifiesTriple, "rdf:reifies triple's quoted triple should also have ?this substituted");
     }
 
     @Test public void transformSubstituteupdate_01() {
