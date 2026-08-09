@@ -203,13 +203,14 @@ public class ActionLib {
     /**
      * Parse RDF content from the body of the request of the action, ends the
      * request, and sends a 400 if there is a parse error.
+     * Parse errors are logged as "fatal" and become 400/{@link ActionErrorException}
      *
      * @throws ActionErrorException ActionErrorException
      */
     public static void parseOrError(HttpAction action, StreamRDF dest, Lang lang, String base) {
         try {
             parse(action, dest, lang, base);
-        } catch (RiotParseException ex) {
+        } catch (RiotException ex) {
             ActionLib.consumeBody(action);
             ServletOps.errorParseError(ex);
         }
@@ -218,7 +219,7 @@ public class ActionLib {
     /**
      * Parse RDF content. This wraps up the parse step reading from an action.
      * It includes handling compression if the {@code Content-Encoding} header is present
-     * @throws RiotParseException RiotParseException
+     * @throws RiotException
      */
     public static void parse(HttpAction action, StreamRDF dest, Lang lang, String base) {
         try {
@@ -229,7 +230,7 @@ public class ActionLib {
 
     /**
      * Parse RDF content. This wraps up the parse step reading from an input stream.
-     * @throws RiotParseException RiotParseException
+     * @throws RiotException RiotException
      */
     public static void parse(HttpAction action, StreamRDF dest, InputStream input, Lang lang, String base) {
         try {

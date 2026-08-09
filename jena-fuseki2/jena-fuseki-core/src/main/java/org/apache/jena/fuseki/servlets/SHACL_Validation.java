@@ -31,10 +31,13 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.shacl.ShaclValidator;
 import org.apache.jena.shacl.Shapes;
 import org.apache.jena.shacl.ValidationReport;
+import org.apache.jena.system.G;
+import org.apache.jena.vocabulary.OWL1;
 import org.apache.jena.web.HttpSC;
 
 /**
@@ -48,6 +51,8 @@ import org.apache.jena.web.HttpSC;
  */
 public class SHACL_Validation extends BaseActionREST { //ActionREST {
 
+    private static final Node owlImports = OWL1.imports.asNode();
+
     public SHACL_Validation() {}
 
     @Override
@@ -60,20 +65,39 @@ public class SHACL_Validation extends BaseActionREST { //ActionREST {
 
         String targetNodeStr = action.getRequestParameter(HttpNames.paramTarget);
 
+        Graph shapesGraph;
+        try {
+            shapesGraph = ActionLib.readFromRequest(action, Lang.TTL);
+            if ( G.contains(shapesGraph, null, owlImports, null) ) {
+                action.log.error(format("[%d] shacl: owl:imports not supported for remote validation", action.id));
+                // Does not return.
+                ServletOps.errorBadRequest("owl:imports not allowed");
+            }
+        } catch (RiotException ex) {
+            shapesGraph = null;
+            // Does not return.
+            ServletOps.errorBadRequest(ex.getMessage());
+        }
+
         action.beginRead();
         try {
             GraphTarget graphTarget = determineTarget(action.getActiveDSG(), action);
-            if ( ! graphTarget.exists() )
+            if ( ! graphTarget.exists() ) {
+                action.log.error(format("[%d] shacl: No data graph", action.id));
+                // Does not return.
                 ServletOps.errorNotFound("No data graph: "+graphTarget.label());
-            Graph data = graphTarget.graph();
-            Graph shapesGraph = ActionLib.readFromRequest(action, Lang.TTL);
+            }
 
+            Graph data = graphTarget.graph();
             Node targetNode = null;
             if ( targetNodeStr != null ) {
                 String x = data.getPrefixMapping().expandPrefix(targetNodeStr);
                 targetNode = NodeFactory.createURI(x);
             }
 
+            // This does not resolve owl:imports.
+            // Doing so would lead to SSRF (server-side request forgery)
+            // with the server making a URL access on the users behalf.
             Shapes shapes = Shapes.parse(shapesGraph);
             ValidationReport report = ( targetNode == null )
                 ? ShaclValidator.get().validate(shapesGraph, data)

@@ -28,7 +28,6 @@ import java.io.PrintWriter;
 
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
-
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.json.JSON;
@@ -40,7 +39,7 @@ import org.apache.jena.atlas.web.MediaType;
 import org.apache.jena.fuseki.system.ConNeg;
 import org.apache.jena.fuseki.system.UploadDetails;
 import org.apache.jena.fuseki.system.UploadDetails.PreState;
-import org.apache.jena.riot.RiotParseException;
+import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.web.HttpSC;
@@ -211,7 +210,7 @@ public class ServletOps {
         action.log.warn(string, thorwable);
     }
 
-    public static void errorParseError(RiotParseException ex) {
+    public static void errorParseError(RiotException ex) {
         error(HttpSC.BAD_REQUEST_400, "Parse Error: "+ex.getMessage());
     }
 

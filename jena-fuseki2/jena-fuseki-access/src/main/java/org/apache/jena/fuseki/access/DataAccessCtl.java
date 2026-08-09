@@ -103,11 +103,13 @@ public class DataAccessCtl {
      * {@link DatasetGraphAccessControl} or because it has the context settings.
      */
     public static boolean isAccessControlled(DatasetGraph dsg) {
+        if ( dsg == null )
+            return false;
         if ( dsg instanceof DatasetGraphAccessControl )
             return true;
 //        if ( dsg.getContext().isDefined(DataAccessCtl.symControlledAccess) )
 //            return true;
-        if ( dsg.getContext().isDefined(DataAccessCtl.symAuthorizationService) )
+        if ( dsg.getContext() != null && dsg.getContext().isDefined(DataAccessCtl.symAuthorizationService) )
             return true;
         return false;
     }

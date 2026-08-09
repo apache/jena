@@ -24,8 +24,12 @@ package org.apache.jena.fuseki.main;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
+import org.apache.jena.atlas.logging.LogCtl;
+import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.http.HttpRDF;
 import org.apache.jena.rdfconnection.RDFConnection;
@@ -181,6 +185,17 @@ public class TestFusekiShaclValidation {
                     conn.update("CLEAR ALL");
                 }
             }
+        });
+    }
+
+    @Test
+    public void shacl_imports() {
+        LogCtl.withLevel(Fuseki.actionLog, "FATAL", ()->{
+            withServer((datasetURL)->{
+                FusekiTestLib.expect400(()->{
+                    validateReport(datasetURL+"/shacl?default", DIR+"shapes-imports.ttl");
+                });
+            });
         });
     }
 
