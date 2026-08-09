@@ -24,6 +24,7 @@ package org.apache.jena.sparql.syntax.syntaxtransform;
 import java.util.*;
 
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryVisitor;
@@ -336,14 +337,27 @@ public class QueryTransformOps {
     // Transform a variable node.
     // Returns the argument java object for "no transform"
     private static Node transformOrSame(Node node, ExprTransform exprTransform) {
-        if ( ! Var.isVar(node) )
-            return node;
-        Expr e2 = exprTransform.transform(node);
-        if ( e2 == null )
-            return node;
-        if ( ! e2.isConstant() )
-            return node;
-        return e2.getConstant().getNode();
+        if ( Var.isVar(node) ) {
+            Expr e2 = exprTransform.transform(node);
+            if ( e2 == null )
+                return node;
+            if ( ! e2.isConstant() )
+                return node;
+            return e2.getConstant().getNode();
+        }
+        // RDF 1.2 triple term (e.g. the object of an rdf:reifies triple from a {| ... |}
+        // annotation) may itself contain variables. Recurse into the triple term
+        // and replace any variables used inside a reified triple's annotation.
+        if ( node.isTripleTerm() && ! node.isConcrete() ) {
+            Triple triple = node.getTriple();
+            Node s = transformOrSame(triple.getSubject(), exprTransform);
+            Node p = transformOrSame(triple.getPredicate(), exprTransform);
+            Node o = transformOrSame(triple.getObject(), exprTransform);
+            if ( s == triple.getSubject() && p == triple.getPredicate() && o == triple.getObject() )
+                return node;
+            return NodeFactory.createTripleTerm(s, p, o);
+        }
+        return node;
     }
 
     static class QueryShallowCopy implements QueryVisitor {
