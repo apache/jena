@@ -30,7 +30,8 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
-// import '@cypress/code-coverage/support'
+// required to populate coverage/ with results
+import '@cypress/code-coverage/support'
 
 // Import commands.js using ES2015 syntax:
 import './commands'
