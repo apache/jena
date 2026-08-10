@@ -184,6 +184,8 @@ import Yasqe from '@zazuko/yasqe'
 import Yasr from '@zazuko/yasr'
 import GeoPlugin from 'yasgui-geo-tg'
 import { createShareableLink } from '@/utils/query'
+import { displayError } from '@/utils'
+import { DEFAULT_PREFIXES } from '@/utils/prefixes'
 import { nextTick } from 'vue'
 import currentDatasetMixin from '@/mixins/current-dataset'
 import currentDatasetMixinNavigationGuards from '@/mixins/current-dataset-navigation-guards'
@@ -206,6 +208,9 @@ WHERE {
   OPTIONAL { ?class rdfs:comment ?description}
 }
 LIMIT 25`
+
+// The shared defaults in the {text, uri} shape the badge template uses.
+const defaultPrefixes = () => DEFAULT_PREFIXES.map(p => ({ text: p.prefix, uri: p.uri }))
 
 export default {
   name: 'DatasetQuery',
@@ -247,12 +252,7 @@ export default {
           text: 'Selection of classes'
         }
       ],
-      prefixes: [
-        { uri: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#', text: 'rdf' },
-        { uri: 'http://www.w3.org/2000/01/rdf-schema#', text: 'rdfs' },
-        { uri: 'http://www.w3.org/2002/07/owl#', text: 'owl' },
-        { uri: 'http://www.w3.org/2001/XMLSchema#', text: 'xsd' }
-      ],
+      prefixes: defaultPrefixes(),
       currentQueryPrefixes: [],
       currentDatasetUrl: ''
     }
@@ -264,6 +264,24 @@ export default {
         return ''
       }
       return `/${this.datasetName}/${this.services.query['srv.endpoints'][0]}`
+    },
+
+    /**
+     * The current dataset's prefixes service, or null if it does not declare one.
+     *
+     * @returns {{endpoint: string, writable: boolean}|null}
+     */
+    prefixesService () {
+      if (!this.services) {
+        return null
+      }
+      const svc = this.services['prefixes-rw'] || this.services['prefixes-r'] || null
+      return svc
+        ? {
+            endpoint: svc['srv.endpoints'][0],
+            writable: !!this.services['prefixes-rw']
+          }
+        : null
     }
   },
 
@@ -342,6 +360,9 @@ export default {
         this.yasqe.options.requestConfig.endpoint = this.$fusekiService.getFusekiUrl(val)
       }
     },
+    prefixesService: function (val, oldVal) {
+      this.loadPrefixes()
+    },
     contentTypeSelect: function (val, oldVal) {
       if (this.yasqe) {
         this.yasqe.options.requestConfig.acceptHeaderSelect = this.contentTypeSelect
@@ -388,6 +409,27 @@ export default {
       } else {
         this.yasqe.addPrefixes(newPrefix)
         this.currentQueryPrefixes.push(prefix.uri)
+      }
+    },
+    /**
+     * Replaces the default prefix list with the prefixes of the current
+     * dataset. The defaults are restored when the dataset has no prefixes
+     * service, when its prefix store is empty, and when fetching fails.
+     */
+    async loadPrefixes () {
+      if (!this.prefixesService) {
+        this.prefixes = defaultPrefixes()
+        return
+      }
+      try {
+        const res = await this.$fusekiService
+          .getPrefixes(this.datasetName, this.prefixesService.endpoint)
+        this.prefixes = res.data.length !== 0
+          ? res.data.map(p => ({ text: p.prefix, uri: p.uri }))
+          : defaultPrefixes()
+      } catch (error) {
+        this.prefixes = defaultPrefixes()
+        displayError(this, error)
       }
     }
   }

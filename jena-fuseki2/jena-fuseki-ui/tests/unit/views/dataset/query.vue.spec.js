@@ -25,8 +25,10 @@ const $routeMock = {
   query: {}
 }
 
-const mountFunction = options => {
-  const mountOptions = Object.assign(options || {}, {
+const mountFunction = (options = {}) => {
+  const { mocks, ...mountOptions } = options
+  return mount(Query, {
+    ...mountOptions,
     shallow: true,
     global: {
       mocks: {
@@ -35,12 +37,14 @@ const mountFunction = options => {
           getFusekiUrl () {
             return FAKE_FUSEKI_URL
           }
-        }
+        },
+        $toast: {
+          error () {},
+          notification () {}
+        },
+        ...mocks
       }
     }
-  })
-  return mount(Query, {
-    ...mountOptions
   })
 }
 
@@ -130,5 +134,172 @@ describe('Query view', () => {
     expect(await requestConfig.endpoint).equals(FAKE_FUSEKI_URL)
     // See issue https://github.com/apache/jena/issues/1611
     expect(requestConfig.acceptHeaderGraph).equals(wrapper.vm.$data.contentTypeGraph)
+  })
+
+  describe('prefixes service', () => {
+    const datasetName = 'test'
+    const querySvc = { 'srv.type': 'query', 'srv.endpoints': ['sparql'] }
+    const prefixesR = { 'srv.type': 'prefixes-r', 'srv.endpoints': ['prefixes'] }
+    const prefixesRW = { 'srv.type': 'prefixes-rw', 'srv.endpoints': ['updatePrefixes'] }
+    const serverDataWith = services => ({
+      datasets: [
+        {
+          'ds.name': `/${datasetName}`,
+          'ds.services': services
+        }
+      ]
+    })
+    const fusekiServiceMock = getPrefixes => ({
+      getFusekiUrl () {
+        return FAKE_FUSEKI_URL
+      },
+      getPrefixes
+    })
+
+    it('detects no prefixes service when the dataset does not declare one', async () => {
+      const wrapper = mountFunction({
+        props: { datasetName }
+      })
+      expect(wrapper.vm.prefixesService).equals(null)
+      wrapper.vm.serverData = serverDataWith([querySvc])
+      await nextTick()
+      expect(wrapper.vm.prefixesService).equals(null)
+    })
+
+    it('detects a read-only prefixes service', async () => {
+      const wrapper = mountFunction({
+        props: { datasetName }
+      })
+      wrapper.vm.serverData = serverDataWith([querySvc, prefixesR])
+      await nextTick()
+      expect(wrapper.vm.prefixesService).deep.equals({
+        endpoint: 'prefixes',
+        writable: false
+      })
+    })
+
+    it('prefers the read-write prefixes service over the read-only one', async () => {
+      const wrapper = mountFunction({
+        props: { datasetName }
+      })
+      wrapper.vm.serverData = serverDataWith([querySvc, prefixesR, prefixesRW])
+      await nextTick()
+      expect(wrapper.vm.prefixesService).deep.equals({
+        endpoint: 'updatePrefixes',
+        writable: true
+      })
+    })
+
+    it('does not fetch prefixes when there is no prefixes service', async () => {
+      const getPrefixes = vi.fn()
+      const wrapper = mountFunction({
+        props: { datasetName },
+        mocks: { $fusekiService: fusekiServiceMock(getPrefixes) }
+      })
+      const defaults = JSON.parse(JSON.stringify(wrapper.vm.prefixes))
+      wrapper.vm.serverData = serverDataWith([querySvc])
+      await nextTick()
+      await flushPromises()
+      expect(getPrefixes.mock.calls.length).equals(0)
+      expect(wrapper.vm.prefixes).deep.equals(defaults)
+    })
+
+    it('replaces the default prefixes with the dataset prefixes', async () => {
+      const getPrefixes = vi.fn().mockResolvedValue({
+        data: [
+          { prefix: 'foaf', uri: 'http://xmlns.com/foaf/0.1/' }
+        ]
+      })
+      const wrapper = mountFunction({
+        props: { datasetName },
+        mocks: { $fusekiService: fusekiServiceMock(getPrefixes) }
+      })
+      wrapper.vm.serverData = serverDataWith([querySvc, prefixesR])
+      await nextTick()
+      await flushPromises()
+      expect(getPrefixes.mock.calls.length).equals(1)
+      expect(getPrefixes.mock.calls[0]).deep.equals([datasetName, 'prefixes'])
+      expect(wrapper.vm.prefixes).deep.equals([
+        { text: 'foaf', uri: 'http://xmlns.com/foaf/0.1/' }
+      ])
+    })
+
+    it('keeps the default prefixes and reports the error when fetching fails', async () => {
+      const getPrefixes = vi.fn().mockRejectedValue(new Error('403 Forbidden'))
+      const toastError = vi.fn()
+      const wrapper = mountFunction({
+        props: { datasetName },
+        mocks: {
+          $fusekiService: fusekiServiceMock(getPrefixes),
+          $toast: { error: toastError, notification () {} }
+        }
+      })
+      const defaults = JSON.parse(JSON.stringify(wrapper.vm.prefixes))
+      wrapper.vm.serverData = serverDataWith([querySvc, prefixesR])
+      await nextTick()
+      await flushPromises()
+      expect(getPrefixes.mock.calls.length).equals(1)
+      expect(toastError.mock.calls.length).equals(1)
+      expect(wrapper.vm.prefixes).deep.equals(defaults)
+    })
+
+    it('falls back to the default prefixes when the prefix store is empty', async () => {
+      const getPrefixes = vi.fn().mockResolvedValue({ data: [] })
+      const wrapper = mountFunction({
+        props: { datasetName },
+        mocks: { $fusekiService: fusekiServiceMock(getPrefixes) }
+      })
+      const defaults = JSON.parse(JSON.stringify(wrapper.vm.prefixes))
+      wrapper.vm.serverData = serverDataWith([querySvc, prefixesR])
+      await nextTick()
+      await flushPromises()
+      expect(getPrefixes.mock.calls.length).equals(1)
+      expect(wrapper.vm.prefixes).deep.equals(defaults)
+    })
+
+    it('restores the default prefixes when the dataset has no prefixes service', async () => {
+      const getPrefixes = vi.fn().mockResolvedValue({
+        data: [
+          { prefix: 'foaf', uri: 'http://xmlns.com/foaf/0.1/' }
+        ]
+      })
+      const wrapper = mountFunction({
+        props: { datasetName },
+        mocks: { $fusekiService: fusekiServiceMock(getPrefixes) }
+      })
+      const defaults = JSON.parse(JSON.stringify(wrapper.vm.prefixes))
+      wrapper.vm.serverData = serverDataWith([querySvc, prefixesR])
+      await nextTick()
+      await flushPromises()
+      expect(wrapper.vm.prefixes).deep.equals([
+        { text: 'foaf', uri: 'http://xmlns.com/foaf/0.1/' }
+      ])
+      // Simulate navigating to a dataset that declares no prefixes service.
+      wrapper.vm.serverData = serverDataWith([querySvc])
+      await nextTick()
+      await flushPromises()
+      expect(wrapper.vm.prefixes).deep.equals(defaults)
+    })
+
+    it('does not reload prefixes when the SPARQL endpoint input changes', async () => {
+      const getPrefixes = vi.fn().mockResolvedValue({
+        data: [
+          { prefix: 'foaf', uri: 'http://xmlns.com/foaf/0.1/' }
+        ]
+      })
+      const wrapper = mountFunction({
+        props: { datasetName },
+        mocks: { $fusekiService: fusekiServiceMock(getPrefixes) }
+      })
+      wrapper.vm.serverData = serverDataWith([querySvc, prefixesR])
+      await nextTick()
+      await flushPromises()
+      expect(getPrefixes.mock.calls.length).equals(1)
+      // Editing the free-text SPARQL Endpoint field must not refetch.
+      wrapper.vm.currentDatasetUrl = '/other/sparql'
+      await nextTick()
+      await flushPromises()
+      expect(getPrefixes.mock.calls.length).equals(1)
+    })
   })
 })
