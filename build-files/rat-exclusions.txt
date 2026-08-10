@@ -110,6 +110,7 @@ jena-fuseki2/jena-fuseki-ui/**/*.json
 jena-fuseki2/jena-fuseki-ui/node_modules/**/*
 jena-fuseki2/jena-fuseki-ui/node/**/*
 jena-fuseki2/jena-fuseki-ui/yarn.lock
+jena-fuseki2/jena-fuseki-ui/.yarnrc.yml
 jena-fuseki2/jena-fuseki-ui/.browserslistrc
 jena-fuseki2/jena-fuseki-ui/.editorconfig
 jena-fuseki2/jena-fuseki-ui/yarn-error.log
