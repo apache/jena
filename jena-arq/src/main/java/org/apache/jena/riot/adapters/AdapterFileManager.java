@@ -335,7 +335,7 @@ public class AdapterFileManager implements org.apache.jena.util.FileManager
      */
     @Override
     public InputStream open(String filenameOrURI) {
-        return streamManager.open(filenameOrURI);
+        return streamManager.openEx(filenameOrURI);
     }
 
     /** Apply the mapping of a filename or URI */
