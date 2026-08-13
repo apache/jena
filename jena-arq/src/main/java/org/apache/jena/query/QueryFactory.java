@@ -206,10 +206,8 @@ public class QueryFactory {
         if ( streamManager == null )
             streamManager = StreamManager.get();
 
-        InputStream in = streamManager.open(url);
-        if ( in == null )
-            throw new NotFoundException("Not found: " + url);
-        String qStr = IO.readWholeFileAsUTF8(streamManager.open(url));
+        InputStream in = streamManager.openEx(url, ()->new NotFoundException("Not found: " + url));
+        String qStr = IO.readWholeFileAsUTF8(in);
         if ( baseURI == null )
             baseURI = url;
         if ( langURI == null )

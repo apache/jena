@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.jena.atlas.lib.Creator;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.riot.RiotNotFoundException;
@@ -123,10 +124,10 @@ public class StreamManager {
     }
 
     /**
-     * Open a file using the locators of this StreamManager.
+     * Open a file or URL using the locators of this StreamManager.
      * Returns null if not found.
      */
-    public TypedInputStream open(String filenameOrURI) {
+    public TypedInputStream openOrNull(String filenameOrURI) {
         if ( log.isDebugEnabled() )
             log.debug("open(" + filenameOrURI + ")");
 
@@ -136,6 +137,25 @@ public class StreamManager {
             log.debug("open: mapped to " + uri);
 
         return openNoMapOrNull(uri);
+    }
+
+    /**
+     * Open a file or URL using the locators of this StreamManager.
+     * Call an exception provider if the file or URI  is not found.
+     */
+    public TypedInputStream openEx(String filenameOrURI, Creator<? extends RuntimeException> handlerCreator) {
+        TypedInputStream input = openOrNull(filenameOrURI);
+        if ( input == null )
+            throw handlerCreator.create();
+        return input ;
+    }
+
+    /**
+     * Open a file or URL using the locators of this StreamManager.
+     * Throw {@link RiotNotFoundException} if the file or URI is not found.
+     */
+    public TypedInputStream openEx(String filenameOrURI) {
+        return openEx(filenameOrURI, ()->new RiotNotFoundException("Not found: "+filenameOrURI));
     }
 
     /** Test whether a mapping exists */

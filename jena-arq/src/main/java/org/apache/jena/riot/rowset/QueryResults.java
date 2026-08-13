@@ -119,7 +119,7 @@ public class QueryResults {
    /** Read a row set from a URL or filename. */
    public RowSet read(String urlOrFilename) {
        Objects.nonNull(urlOrFilename);
-       try ( TypedInputStream in = StreamManager.get(context).open(urlOrFilename) ) {
+       try ( TypedInputStream in = StreamManager.get(context).openEx(urlOrFilename)) {
            Lang lang = determinLang(in, urlOrFilename);
            return readResultSet(in.getInputStream(), lang);
        }
@@ -137,7 +137,7 @@ public class QueryResults {
    /** Read a row set or boolean from a URL or filename. */
    public QueryExecResult readAny(String urlOrFilename) {
        Objects.nonNull(urlOrFilename);
-       try ( TypedInputStream in = StreamManager.get(context).open(urlOrFilename) ) {
+       try ( TypedInputStream in = StreamManager.get(context).openEx(urlOrFilename) ) {
            Lang lang = determinLang(in, urlOrFilename);
            return readAny(in.getInputStream(), lang);
        }

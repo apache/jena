@@ -134,7 +134,7 @@ public class ResultsReader {
     /** Read a result set from a URL or filename. */
     public ResultSet read(String urlOrFilename) {
         Objects.nonNull(urlOrFilename);
-        try ( TypedInputStream in = StreamManager.get(context).open(urlOrFilename) ) {
+        try ( TypedInputStream in = StreamManager.get(context).openEx(urlOrFilename) ) {
             Lang lang = determinLang(in, urlOrFilename);
             return readResults(in, lang).getResultSet();
         }
@@ -152,7 +152,7 @@ public class ResultsReader {
     /** Read a result set from a URL or filename. */
     public RowSet readRowSet(String urlOrFilename) {
         Objects.nonNull(urlOrFilename);
-        try ( TypedInputStream in = StreamManager.get(context).open(urlOrFilename) ) {
+        try ( TypedInputStream in = StreamManager.get(context).openEx(urlOrFilename) ) {
             Lang lang = determinLang(in, urlOrFilename);
             return readAny(in.getInputStream(), lang).rowSet();
         }
@@ -170,7 +170,7 @@ public class ResultsReader {
     /** Read a result set or boolean from a URL or filename. */
     public SPARQLResult readAny(String urlOrFilename) {
         Objects.nonNull(urlOrFilename);
-        try ( TypedInputStream in = StreamManager.get(context).open(urlOrFilename) ) {
+        try ( TypedInputStream in = StreamManager.get(context).openEx(urlOrFilename) ) {
             Lang lang = determinLang(in, urlOrFilename);
             return readResults(in.getInputStream(), lang);
         }

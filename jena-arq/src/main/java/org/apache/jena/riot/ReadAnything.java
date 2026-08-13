@@ -57,7 +57,7 @@ public class ReadAnything {
     /** Read something RDF/SPARQL like */
     public static SPARQLResult read(String url, Context context) {
         Objects.requireNonNull(url);
-        TypedInputStream in = StreamManager.get(context).open(url);
+        TypedInputStream in = StreamManager.get(context).openEx(url);
         if ( in == null )
             throw new NotFoundException(url);
         ContentType ct = WebContent.determineCT(in.getContentType(), null, url);

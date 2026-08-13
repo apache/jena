@@ -515,6 +515,7 @@ public class RDFDataMgr
      * Performs content negotiation, including looking at file extension.
      * @param filenameOrURI
      * @return TypedInputStream
+     * @throws RiotNotFoundException
      */
     public static TypedInputStream open(String filenameOrURI)
     { return open(filenameOrURI, StreamManager.get()); }
@@ -525,9 +526,10 @@ public class RDFDataMgr
      * @param filenameOrURI
      * @param streamManager
      * @return TypedInputStream
+     * @throws RiotNotFoundException
      */
     public static TypedInputStream open(String filenameOrURI, StreamManager streamManager) {
-        TypedInputStream in = streamManager.open(filenameOrURI);
+        TypedInputStream in = streamManager.openEx(filenameOrURI);
         if ( in == null )
             throw new RiotNotFoundException("Not found: "+filenameOrURI);
         return in;
