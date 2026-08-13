@@ -24,7 +24,6 @@ package org.apache.jena.sparql.modify;
 import static org.apache.jena.sparql.modify.TemplateLib.remapDefaultGraph;
 import static org.apache.jena.sparql.modify.TemplateLib.template;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -47,6 +46,7 @@ import org.apache.jena.riot.*;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
+import org.apache.jena.riot.system.streammgr.StreamManager;
 import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.core.*;
 import org.apache.jena.sparql.engine.Timeouts;
@@ -66,15 +66,17 @@ import org.apache.jena.sparql.util.Context;
 import org.apache.jena.update.UpdateException;
 
 /** Implementation of general purpose update request execution */
-public class UpdateEngineWorker implements UpdateVisitor
-{
+public class UpdateEngineWorker implements UpdateVisitor {
     protected final DatasetGraph datasetGraph;
     protected final boolean autoSilent = true;  // DROP and CREATE
     protected final Context context;
 
     protected final Timeout timeout;
 
-    /** Used to compute the remaining overall time that may be spent in query execution. */
+    /**
+     * Used to compute the remaining overall time that may be spent in query
+     * execution.
+     */
     protected long startTimeMillis = -1;
 
     /** The currently executing query exec. */
@@ -89,10 +91,11 @@ public class UpdateEngineWorker implements UpdateVisitor
     }
 
     public void abort() {
-        if (cancelSignal.compareAndSet(false, true)) {
+        if ( cancelSignal.compareAndSet(false, true) ) {
             synchronized (this) {
-                // If the change of the cancel signal happened here then abort the activeQExec.
-                if (activeQExec != null) {
+                // If the change of the cancel signal happened here then abort the
+                // activeQExec.
+                if ( activeQExec != null ) {
                     activeQExec.abort();
                 }
             }
@@ -103,19 +106,21 @@ public class UpdateEngineWorker implements UpdateVisitor
         synchronized (this) {
             this.activeQExec = qExec;
             // Cancel the qExec immediately if the cancel signal is true.
-            if (cancelSignal.get()) {
+            if ( cancelSignal.get() ) {
                 activeQExec.abort();
             }
         }
     }
 
     @Override
-    public void visit(UpdateDrop update)
-    { execDropClear(update, false); }
+    public void visit(UpdateDrop update) {
+        execDropClear(update, false);
+    }
 
     @Override
-    public void visit(UpdateClear update)
-    { execDropClear(update, true); }
+    public void visit(UpdateClear update) {
+        execDropClear(update, true);
+    }
 
     protected void execDropClear(UpdateDropClear update, boolean isClear) {
         if ( update.isAll() ) {
@@ -139,11 +144,11 @@ public class UpdateEngineWorker implements UpdateVisitor
     protected void execDropClear(UpdateDropClear update, Node g, boolean isClear) {
         // DROP always works.
         // """
-        //   After successful completion of this operation, the specified graphs are no
-        //   longer available for further graph update operations.
+        // After successful completion of this operation, the specified graphs are no
+        // longer available for further graph update operations.
         // """
         boolean auto = autoSilent && !isClear;
-        executeOperation( auto || update.isSilent(), () -> {
+        executeOperation(auto || update.isSilent(), () -> {
             if ( g != null && !datasetGraph.containsGraph(g) )
                 throw errorEx("No such graph: " + g);
             if ( isClear ) {
@@ -180,11 +185,12 @@ public class UpdateEngineWorker implements UpdateVisitor
         // Most datasets implementations have "auto-create" so CREATE is a no-op.
         // But dataset of separate graphs needs this (check!) to trigger the graph.
         // This is "copy-in" of zero triples.
-        executeOperation(update.isSilent(), () ->
-                { try { datasetGraph.addGraph(g, GraphFactory.createDefaultGraph()); }
-                  catch(UnsupportedOperationException ex) {
-                      throw new UpdateException("CREATE of named graph not supported");
-                }
+        executeOperation(update.isSilent(), () -> {
+            try {
+                datasetGraph.addGraph(g, GraphFactory.createDefaultGraph());
+            } catch (UnsupportedOperationException ex) {
+                throw new UpdateException("CREATE of named graph not supported");
+            }
         });
     }
 
@@ -194,13 +200,13 @@ public class UpdateEngineWorker implements UpdateVisitor
         String source = update.getSource();
         Node dest = update.getDest();
 
-        executeOperation(update.isSilent(), ()->{
+        executeOperation(update.isSilent(), () -> {
             Graph graph = graphOrThrow(datasetGraph, dest);
             // We must load buffered if silent so that the dataset graph sees
             // all or no triples/quads when there is a parse error
             // (no nested transaction abort).
             try {
-                boolean loadBuffered = update.isSilent() || ! datasetGraph.supportsTransactionAbort();
+                boolean loadBuffered = update.isSilent() || !datasetGraph.supportsTransactionAbort();
                 if ( dest == null ) {
                     // LOAD SILENT? iri -- no INTO
                     // Quads accepted (extension).
@@ -217,8 +223,17 @@ public class UpdateEngineWorker implements UpdateVisitor
                 }
                 // LOAD SILENT? iri INTO GraphRef
                 // Load triples.
-                TypedInputStream input = RDFDataMgr.open(source);
+
+                // Must read triples to give a decent error messages, and also not have
+                // the usual parser behaviour of just selecting default graph triples
+                // when the destination is a graph. We need to do the same steps as
+                // RDFParser.parseURI with different checking.
+
+                StreamManager streamManager = StreamManager.get(context);
+                TypedInputStream input = streamManager.openEx(source);
                 Lang lang = determineLang(source, input);
+                if ( ! RDFLanguages.isTriples(lang) )
+                    throw new UpdateException("Language "+lang+" not recognized for loading triples");
 
                 if ( loadBuffered ) {
                     Graph g = GraphFactory.createGraphMem();
@@ -235,16 +250,12 @@ public class UpdateEngineWorker implements UpdateVisitor
         });
     }
 
-    // To give a decent error message, and also not have the usual
-    // parser behaviour of just selecting default graph triples when
-    // the destination is a graph, we need to do the same steps as
-    // RDFParser.parseURI with different checking.
     private static Lang determineLang(String source, TypedInputStream input) {
         String contentType = input.getContentType();
         Lang lang = RDFDataMgr.determineLang(source, contentType, Lang.TTL);
         if ( lang == null )
-            throw new UpdateException("Failed to determine the syntax for '"+source+"'");
-        if ( ! RDFLanguages.isTriples(lang) )
+            throw new UpdateException("Failed to determine the syntax for '" + source + "'");
+        if ( !RDFLanguages.isTriples(lang) )
             throw new UpdateException("Attempt to load quads into a graph");
         return lang;
     }
@@ -252,29 +263,21 @@ public class UpdateEngineWorker implements UpdateVisitor
     /** Load data into a dataset graph. The context has the stream manager. */
     private static void loadReadQuads(String source, DatasetGraph destination, Context context) {
         StreamRDF parserDest = StreamRDFLib.dataset(destination);
-        // RDFParser picks up the stream manager from the context if not set.
-        //StreamManager streamMgr = StreamManager.get(context);
-        RDFParser.source(source)
-                //.streamManager(streamMgr)
-                .context(context)
-                .parse(parserDest);
+        RDFParser.source(source).context(context).parse(parserDest);
     }
 
-    /** Load data into a graph. The context has the stream manager. */
-    private static void loadReadTriples(InputStream input,  Lang lang, Graph destination, Context context) {
+    // Read triples after control of Lang
+    private static void loadReadTriples(TypedInputStream input, Lang lang, Graph destination, Context context) {
         StreamRDF parserDest = StreamRDFLib.graph(destination);
-        // RDFParser picks up the stream manager from the context if not set.
-        //StreamManager streamMgr = StreamManager.get(context);
         RDFParser.source(input)
-                .forceLang(lang)
-                //.streamManager(streamMgr)
-                .context(context)
-                .parse(parserDest);
+            .forceLang(lang)
+            .context(context)
+            .parse(parserDest);
     }
 
     @Override
     public void visit(UpdateAdd update) {
-        executeOperation(update.isSilent(), ()->{
+        executeOperation(update.isSilent(), () -> {
             // ADD SILENT? (DEFAULT or GRAPH) TO (DEFAULT or GRAPH)
             validateBinaryGraphOp(update);
             if ( update.getSrc().equals(update.getDest()) )
@@ -286,7 +289,7 @@ public class UpdateEngineWorker implements UpdateVisitor
 
     @Override
     public void visit(UpdateCopy update) {
-        executeOperation(update.isSilent(), ()->{
+        executeOperation(update.isSilent(), () -> {
             // COPY SILENT? (DEFAULT or GRAPH) TO (DEFAULT or GRAPH)
             validateBinaryGraphOp(update);
             if ( update.getSrc().equals(update.getDest()) )
@@ -299,7 +302,7 @@ public class UpdateEngineWorker implements UpdateVisitor
 
     @Override
     public void visit(UpdateMove update) {
-        executeOperation(update.isSilent(), ()->{
+        executeOperation(update.isSilent(), () -> {
             // MOVE SILENT? (DEFAULT or GRAPH) TO (DEFAULT or GRAPH)
             validateBinaryGraphOp(update);
             if ( update.getSrc().equals(update.getDest()) )
@@ -374,7 +377,7 @@ public class UpdateEngineWorker implements UpdateVisitor
     public void visit(UpdateDeleteWhere update) {
         List<Quad> quads = update.getQuads();
         // Removed from SPARQL : Convert bNodes to named variables first.
-        //quads = convertBNodesToVariables(quads);
+        // quads = convertBNodesToVariables(quads);
 
         // Convert quads to a pattern.
         Element el = elementFromQuads(quads);
@@ -392,8 +395,7 @@ public class UpdateEngineWorker implements UpdateVisitor
             Iterator<Binding> it = db.iterator();
             execDelete(datasetGraph, quads, null, it);
             Iter.close(it);
-        }
-        finally {
+        } finally {
             db.close();
         }
     }
@@ -413,10 +415,10 @@ public class UpdateEngineWorker implements UpdateVisitor
         if ( dsg == null && withGraph != null ) {
             // Subtle difference : WITH <uri>... WHERE {}
             // and an empty/unknown graph <uri>
-            //   rewrite with GRAPH -> no match.
-            //   redo as dataset with different default graph -> match
+            // rewrite with GRAPH -> no match.
+            // redo as dataset with different default graph -> match
             // SPARQL is unclear about what happens when the graph does not exist.
-            //   but the rewrite with ElementNamedGraph is closer to SPARQL.
+            // but the rewrite with ElementNamedGraph is closer to SPARQL.
             // Better, treat as
             // WHERE { GRAPH <with> { ... } }
             // This is the SPARQL wording (which is a bit loose).
@@ -461,8 +463,7 @@ public class UpdateEngineWorker implements UpdateVisitor
             Iterator<Binding> it2 = db.iterator();
             execInsert(datasetGraph, update.getInsertQuads(), withGraph, it2);
             Iter.close(it2);
-        }
-        finally {
+        } finally {
             db.close();
         }
     }
@@ -497,7 +498,8 @@ public class UpdateEngineWorker implements UpdateVisitor
         return el;
     }
 
-    // JENA-1059 : optimization : process templates for ground triples and do these once.
+    // JENA-1059 : optimization : process templates for ground triples and do these
+    // once.
     // execDelete; execInsert
     // Quads involving only IRIs and literals do not change from binding to
     // binding so any inserts, rather than repeatedly if they are going to be
@@ -505,17 +507,19 @@ public class UpdateEngineWorker implements UpdateVisitor
     // instantiation to instantiation.
     /**
      * Split quads into ground terms (no variables) and templated quads.
+     *
      * @param quads
      * @return Pair of (ground quads, templated quads)
      */
     private static Pair<List<Quad>, List<Quad>> split(Collection<Quad> quads) {
         // Guess size.
-        //    Pre-size in case large (i.e. 10K+).
+        // Pre-size in case large (i.e. 10K+).
         List<Quad> constQuads = new ArrayList<>(quads.size());
-        //    ... in which case we assume the templated triples are small / non-existent.
+        // ... in which case we assume the templated triples are small /
+        // non-existent.
         List<Quad> templateQuads = new ArrayList<>();
-        quads.forEach((q)-> {
-            if ( constQuad(q))
+        quads.forEach((q) -> {
+            if ( constQuad(q) )
                 constQuads.add(q);
             else
                 templateQuads.add(q);
@@ -524,8 +528,7 @@ public class UpdateEngineWorker implements UpdateVisitor
     }
 
     private static boolean constQuad(Quad quad) {
-        return constTerm(quad.getGraph())     && constTerm(quad.getSubject()) &&
-               constTerm(quad.getPredicate()) && constTerm(quad.getObject());
+        return constTerm(quad.getGraph()) && constTerm(quad.getSubject()) && constTerm(quad.getPredicate()) && constTerm(quad.getObject());
     }
 
     private static boolean constTerm(Node n) {
@@ -537,15 +540,16 @@ public class UpdateEngineWorker implements UpdateVisitor
         execDelete(dsg, p.getLeft(), p.getRight(), dftGraph, bindings);
     }
 
-    protected static void execDelete(DatasetGraph dsg, List<Quad> onceQuads, List<Quad> templateQuads, Node dftGraph, Iterator<Binding> bindings) {
+    protected static void execDelete(DatasetGraph dsg, List<Quad> onceQuads, List<Quad> templateQuads, Node dftGraph,
+                                     Iterator<Binding> bindings) {
         if ( onceQuads != null && bindings.hasNext() ) {
             onceQuads = remapDefaultGraph(onceQuads, dftGraph);
-            onceQuads.forEach(q->deleteFromDatasetGraph(dsg, q));
+            onceQuads.forEach(q -> deleteFromDatasetGraph(dsg, q));
         }
         Iterator<Quad> it = template(templateQuads, dftGraph, bindings);
         if ( it == null )
             return;
-        it.forEachRemaining(q->deleteFromDatasetGraph(dsg, q));
+        it.forEachRemaining(q -> deleteFromDatasetGraph(dsg, q));
     }
 
     protected static void execInsert(DatasetGraph dsg, List<Quad> quads, Node dftGraph, Iterator<Binding> bindings) {
@@ -553,15 +557,16 @@ public class UpdateEngineWorker implements UpdateVisitor
         execInsert(dsg, p.getLeft(), p.getRight(), dftGraph, bindings);
     }
 
-    protected static void execInsert(DatasetGraph dsg, List<Quad> onceQuads, List<Quad> templateQuads, Node dftGraph, Iterator<Binding> bindings) {
+    protected static void execInsert(DatasetGraph dsg, List<Quad> onceQuads, List<Quad> templateQuads, Node dftGraph,
+                                     Iterator<Binding> bindings) {
         if ( onceQuads != null && bindings.hasNext() ) {
             onceQuads = remapDefaultGraph(onceQuads, dftGraph);
-            onceQuads.forEach((q)->addToDatasetGraph(dsg, q));
+            onceQuads.forEach((q) -> addToDatasetGraph(dsg, q));
         }
         Iterator<Quad> it = template(templateQuads, dftGraph, bindings);
         if ( it == null )
             return;
-        it.forEachRemaining((q)->addToDatasetGraph(dsg, q));
+        it.forEachRemaining((q) -> addToDatasetGraph(dsg, q));
     }
 
     // Catch all individual adds of quads
@@ -615,34 +620,32 @@ public class UpdateEngineWorker implements UpdateVisitor
 
     private void updateRemainingQueryTimeout(Context context) {
         Timeout finalTimeout = null;
-        if (timeout.hasOverallTimeout()) {
+        if ( timeout.hasOverallTimeout() ) {
             long remainingOverallTimeoutMillis = -1;
-            if (startTimeMillis < 0) {
+            if ( startTimeMillis < 0 ) {
                 startTimeMillis = System.currentTimeMillis();
                 remainingOverallTimeoutMillis = timeout.overallTimeoutMillis();
             } else {
                 long currentTimeMillis = System.currentTimeMillis();
                 long elapsedMillis = currentTimeMillis - startTimeMillis;
                 remainingOverallTimeoutMillis -= elapsedMillis;
-                if (remainingOverallTimeoutMillis < 0) {
+                if ( remainingOverallTimeoutMillis < 0 ) {
                     remainingOverallTimeoutMillis = 0;
                 }
             }
             finalTimeout = new Timeout(timeout.initialTimeoutMillis(), remainingOverallTimeoutMillis);
-        } else if(timeout.hasInitialTimeout()) {
+        } else if ( timeout.hasInitialTimeout() ) {
             finalTimeout = new Timeout(timeout.initialTimeoutMillis(), -1);
         }
 
-        // Override any prior queryTimeout symbol with a fresh value computed from the configured updateTimeout.
+        // Override any prior queryTimeout symbol with a fresh value computed from
+        // the configured updateTimeout.
         Timeouts.setQueryTimeout(context, finalTimeout);
     }
 
     /**
-     * Execute.
-     * <br/>
-     * Return true if successful.
-     * <br/>
-     *
+     * Execute. <br/>
+     * Return true if successful. <br/>
      * Otherwise if not silent: throw UpdateException, if silent, return false
      */
     private boolean executeOperation(boolean isSilent, Runnable action) {
@@ -661,7 +664,7 @@ public class UpdateEngineWorker implements UpdateVisitor
             return datasetGraph.getDefaultGraph();
         Graph g = datasetGraph.getGraph(gn);
         if ( g == null )
-            throw errorEx("No such graph in this dataset: "+gn);
+            throw errorEx("No such graph in this dataset: " + gn);
         return g;
     }
 
