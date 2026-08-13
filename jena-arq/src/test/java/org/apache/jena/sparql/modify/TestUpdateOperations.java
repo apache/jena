@@ -55,6 +55,7 @@ import org.apache.jena.vocabulary.RDF;
 
 // Most of the testing of SPARQL Update is scripts and uses the SPARQL-WG test suite.
 // Here are a few additional tests
+
 public class TestUpdateOperations
 {
     private static final String DIR = "testing/Update";
@@ -74,96 +75,95 @@ public class TestUpdateOperations
         ErrorHandlerFactory.setDefaultErrorHandler(eh);
     }
 
-    @Test public void load1() {
+    @Test public void loadTriples() {
         DatasetGraph gs = graphStore();
-        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D.nt>");
+        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D-triple.nt>");
         UpdateAction.execute(req, gs);
         assertEquals(1, gs.getDefaultGraph().size());
         assertFalse( gs.listGraphNodes().hasNext());
     }
 
-    @Test public void load2() {
+    @Test public void loadTriplesInto() {
         DatasetGraph gs = graphStore();
-        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D.nt> INTO GRAPH <"+gName.getURI()+">");
+        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D-triple.nt> INTO GRAPH <"+gName.getURI()+">");
         UpdateAction.execute(req, gs);
     }
 
-    // Quad loading
-
-    @Test public void load3() {
+    // Bad: loading quads into a graph
+    @Test public void loadQuadsInto() {
         DatasetGraph gs = graphStore();
-        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D.nq>");
-        UpdateAction.execute(req, gs);
-        assertEquals(0, gs.getDefaultGraph().size());
-        gs.containsGraph(NodeFactory.createURI("http://example/"));
-        assertEquals(1, gs.getGraph(gName).size());
-    }
-
-    // Bad: loading quads into a named graph
-    @Test
-    public void load4() {
-        DatasetGraph gs = graphStore();
-        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D.nq> INTO GRAPH <"+gName.getURI()+">");
+        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D-quad.nq> INTO GRAPH <"+gName.getURI()+">");
         assertThrows(UpdateException.class,()-> UpdateAction.execute(req, gs) );
     }
 
-    @Test public void load5() {
+    @Test public void loadQuadsIntoSilent() {
         DatasetGraph gs = graphStore();
-        UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D.nq> INTO GRAPH <"+gName.getURI()+">");
+        UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D-quad.nq> INTO GRAPH <"+gName.getURI()+">");
         UpdateAction.execute(req, gs);
         assertEquals(0, Iter.count(gs.find()));
     }
 
-    @Test
-    public void load6() {
-        DatasetGraph gs = graphStore();
-        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D-bad.nq>");
-        assertThrows(UpdateException.class,()-> UpdateAction.execute(req, gs));
-    }
-
-    @Test public void load7() {
-        DatasetGraph gs = graphStore();
-        UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D-bad.nq>");
-        UpdateAction.execute(req, gs);
-        assertEquals(0, Iter.count(gs.find()));
-    }
-
-    @Test
-    public void load8() {
+    @Test public void loadTriplesIntoBad() {
         DatasetGraph gs = graphStore();
         UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D-bad.nt> INTO GRAPH <"+gName.getURI()+">");
         assertThrows(UpdateException.class,()-> UpdateAction.execute(req, gs));
     }
 
-    @Test public void load9() {
+    @Test public void loadTriplesIntoBadSilent() {
         DatasetGraph gs = graphStore();
         UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D-bad.nt> INTO GRAPH <"+gName.getURI()+">");
         UpdateAction.execute(req, gs);
         assertEquals(0, Iter.count(gs.find()));
     }
 
-    @Test
-    public void load10() {
+    // Quad loading (extension)
+
+    @Test public void loadQuads() {
         DatasetGraph gs = graphStore();
-        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D-quads.nt> INTO GRAPH <"+gName.getURI()+">");
+        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D-quad.nq>");
+        UpdateAction.execute(req, gs);
+        assertEquals(0, gs.getDefaultGraph().size());
+        gs.containsGraph(NodeFactory.createURI("http://example/"));
+        assertEquals(1, gs.getGraph(gName).size());
+    }
+
+    @Test public void loadBadQuads() {
+        DatasetGraph gs = graphStore();
+        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D-bad.nq>");
         assertThrows(UpdateException.class,()-> UpdateAction.execute(req, gs));
     }
 
-    @Test public void load11() {
+    @Test public void loadBadQuadsSilent() {
         DatasetGraph gs = graphStore();
-        UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D-quads.nt> INTO GRAPH <"+gName.getURI()+">");
+        UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D-bad.nq>");
+        UpdateAction.execute(req, gs);
+        assertEquals(0, Iter.count(gs.find()));
+    }
+
+    // Called "N-triples" but the data is quads
+
+    @Test public void loadQuadsNTIntoGraph() {
+        DatasetGraph gs = graphStore();
+        // N-Quads pretending to be N-Triples.
+        UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D-bad-quad.nt> INTO GRAPH <"+gName.getURI()+">");
+        assertThrows(UpdateException.class,()-> UpdateAction.execute(req, gs));
+    }
+
+    @Test public void loadQuadsNTIntoGraphSilent() {
+        DatasetGraph gs = graphStore();
+        UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D-bad-quad.nt> INTO GRAPH <"+gName.getURI()+">");
         UpdateAction.execute(req, gs);
         assertEquals(0, Iter.count(gs.find()));
     }
 
     @Test
-    public void load12() {
+    public void loadNotFound() {
         DatasetGraph gs = graphStore();
         UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D-not-found.nt>");
         assertThrows(UpdateException.class,()-> UpdateAction.execute(req, gs));
     }
 
-    @Test public void load13() {
+    @Test public void loadNotFoundSilent() {
         DatasetGraph gs = graphStore();
         UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D-not-found.nt>");
         UpdateAction.execute(req, gs);
@@ -171,13 +171,13 @@ public class TestUpdateOperations
     }
 
     @Test
-    public void load14() {
+    public void loadNotFoundInto() {
         DatasetGraph gs = graphStore();
         UpdateRequest req = UpdateFactory.create("LOAD <"+DIR+"/D-not-found.nt> INTO GRAPH <"+gName.getURI()+">");
-        assertThrows(UpdateException.class,()-> UpdateAction.execute(req, gs));
+        assertThrows(UpdateException.class, ()-> UpdateAction.execute(req, gs));
     }
 
-    @Test public void load15() {
+    @Test public void loadNotFoundIntoSilent() {
         DatasetGraph gs = graphStore();
         UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D-not-found.nt> INTO GRAPH <"+gName.getURI()+">");
         UpdateAction.execute(req, gs);

@@ -81,7 +81,8 @@ public class TestSPARQLUpdate {
         );
     }
 
-    @Test public void updateLoadFile_1() {
+    @Test public void updateLoadNoInto() {
+        // LOAD , no INTO
         FusekiServer server = server();
         String serviceURL = server.datasetURL(DS);
 
@@ -92,13 +93,13 @@ public class TestSPARQLUpdate {
         String loadFileIRI = IRILib.filenameToIRI(loadFileName);
 
         FusekiTestLib.expect400(()-> {
-            UpdateExec.service(serviceURL).update("LOAD <file:"+loadFileIRI+">").execute(); });
-        boolean hasTriples= QueryExec.service(serviceURL).query("ASK { ?s ?p ?o }").ask();
+            UpdateExec.service(serviceURL).update("LOAD <"+loadFileIRI+">").execute(); });
+        boolean hasTriples = QueryExec.service(serviceURL).query("ASK { ?s ?p ?o }").ask();
         assertFalse(hasTriples, "Dataset not empty");
     }
 
-    @Test public void updateLoadFile_2() {
-        // No abort.
+    @Test public void updateLoadInto() {
+        // LOAD with INTO
         DatasetGraph dsgTesting = DatasetGraphFactory.createGeneral();
         FusekiServer server = server(dsgTesting);
         String serviceURL = server.datasetURL(DS);
@@ -110,8 +111,8 @@ public class TestSPARQLUpdate {
         String loadFileIRI = IRILib.filenameToIRI(loadFileName);
 
         FusekiTestLib.expect400(()-> {
-            UpdateExec.service(serviceURL).update("LOAD <file:"+loadFileIRI+">").execute(); });
-        boolean hasTriples= QueryExec.service(serviceURL).query("ASK { ?s ?p ?o }").ask();
+            UpdateExec.service(serviceURL).update("LOAD <"+loadFileIRI+"> INTO GRAPH <http://host/graph>").execute(); });
+        boolean hasTriples = QueryExec.service(serviceURL).query("ASK { ?s ?p ?o }").ask();
         assertFalse(hasTriples, "Dataset not empty");
     }
 }
