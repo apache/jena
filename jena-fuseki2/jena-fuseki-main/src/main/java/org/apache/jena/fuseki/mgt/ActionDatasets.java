@@ -28,7 +28,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO;
@@ -36,11 +35,9 @@ import org.apache.jena.atlas.json.JsonBuilder;
 import org.apache.jena.atlas.json.JsonValue;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.lib.InternalErrorException;
-import org.apache.jena.atlas.lib.NotImplemented;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
-import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.build.DatasetDescriptionMap;
 import org.apache.jena.fuseki.build.FusekiConfig;
@@ -51,13 +48,8 @@ import org.apache.jena.fuseki.server.*;
 import org.apache.jena.fuseki.servlets.ActionLib;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
-import org.apache.jena.fuseki.system.FusekiNetLib;
-import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryFactory;
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.rdf.model.impl.Util;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
@@ -65,12 +57,7 @@ import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
-import org.apache.jena.sparql.exec.QueryExec;
-import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.util.FmtUtils;
-import org.apache.jena.system.G;
-import org.apache.jena.tdb1.TDB1;
-import org.apache.jena.tdb2.TDB2;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.web.HttpSC;
 
@@ -140,21 +127,15 @@ public class ActionDatasets extends ActionContainerItem {
                 Model modelFromRequest = ModelFactory.createDefaultModel();
                 StreamRDF dest = StreamRDFLib.graph(modelFromRequest.getGraph());
 
-                boolean templatedRequest = false;
-
                 try {
                     if ( hasParams || WebContent.isHtmlForm(ct) ) {
+                        // ?dbType=...&dbName=...
                         assemblerFromForm(action, dest);
-                        templatedRequest = true;
-                        // dbName, dbType
                     } else if ( WebContent.isMultiPartForm(ct) ) {
-                        // Cannot be enabled.
                         ServletOps.errorBadRequest("Service configuration from a multipart upload not supported");
-                        //assemblerFromUpload(action, dest);
                     } else {
-                        if ( ! FusekiAdmin.allowConfigFiles() )
-                            ServletOps.errorBadRequest("Service configuration from an upload file not supported");
-                        assemblerFromBody(action, dest);
+                        action.log.error(format("[%d] Service configuration from an upload file not supported", action.id));
+                        ServletOps.errorBadRequest("Service configuration from an upload file not supported");
                     }
                 } catch (RiotException ex) {
                     ActionLib.consumeBody(action);
@@ -186,7 +167,7 @@ public class ActionDatasets extends ActionContainerItem {
                 final String datasetPath;
                 {
                     String datasetName = object.getLexicalForm();
-                    // This duplicates the code FusekiBuilder.buildDataAccessPoint to give better error messages and HTTP status code."
+                    // This duplicates the code FusekiBuilder.buildDataAccessPoint to give better error messages and HTTP status code.
 
                     // ---- Check and canonicalize name.
                     // Various explicit check for better error messages.
@@ -231,19 +212,6 @@ public class ActionDatasets extends ActionContainerItem {
                 if ( action.getDataAccessPointRegistry().isRegistered(datasetPath) ) {
                     action.log.warn(format("[%d] Name already registered '%s'", action.id, datasetPath));
                     ServletOps.error(HttpSC.CONFLICT_409, format("Name already registered '%s'", datasetPath));
-                }
-
-                // -- Validate any TDB locations.
-                // If this is a templated request, there is no need to do this
-                // because the location is "datasetPath" which has been checked.
-                if ( ! templatedRequest ) {
-                    List<String> tdbLocations = tdbLocations(action, model.getGraph());
-                    for(String tdbLocation : tdbLocations ) {
-                        if ( ! isValidTDBLocation(tdbLocation) ) {
-                            action.log.warn(format("[%d] TDB database location not acceptable: '%s'", action.id, tdbLocation));
-                            ServletOps.error(HttpSC.BAD_REQUEST_400, format("TDB database location not acceptable: '%s'", tdbLocation));
-                        }
-                    }
                 }
 
                 // ----
@@ -318,21 +286,6 @@ public class ActionDatasets extends ActionContainerItem {
         if ( datasetPath.startsWith("/.."))
             return false;
         // Character restrictions done by Validators.serviceName
-        return true;
-    }
-
-    // This works for TDB1 as well.
-    private boolean isValidTDBLocation(String tdbLocation) {
-        Location location = Location.create(tdbLocation);
-        if ( location.isMem() )
-            return true;
-        // No ".."
-        if (tdbLocation.startsWith("..") || tdbLocation.contains("/..") ) {
-            // That test was too strict.
-            List<String> components = FileOps.pathComponents(tdbLocation);
-            if ( components.contains("..") )
-                return false;
-        }
         return true;
     }
 
@@ -502,10 +455,6 @@ public class ActionDatasets extends ActionContainerItem {
         }
     }
 
-    private static void assemblerFromBody(HttpAction action, StreamRDF dest) {
-        bodyAsGraph(action, dest);
-    }
-
     private static Map<String, String> dbTypeToTemplate = new HashMap<>();
     static {
         dbTypeToTemplate.put(tDatabaseTDB,  Template.templateTDB1_FN);
@@ -545,11 +494,6 @@ public class ActionDatasets extends ActionContainerItem {
         RDFParser.create().source(new StringReader(instance)).base("http://base/").lang(Lang.TTL).parse(dest);
     }
 
-    private static void assemblerFromUpload(HttpAction action, StreamRDF dest) {
-        throw new NotImplemented();
-        //DataUploader.incomingData(action, dest);
-    }
-
     // ---- Auxiliary functions
 
     private static Quad getOne(DatasetGraph dsg, Node g, Node s, Node p, Node o) {
@@ -570,61 +514,5 @@ public class ActionDatasets extends ActionContainerItem {
         if ( iter.hasNext() )
             return null;
         return stmt;
-    }
-
-    private static void bodyAsGraph(HttpAction action, StreamRDF dest) {
-        HttpServletRequest request = action.getRequest();
-        String base = ActionLib.wholeRequestURL(request);
-        ContentType ct = FusekiNetLib.getContentType(request);
-        Lang lang = RDFLanguages.contentTypeToLang(ct.getContentTypeStr());
-        if ( lang == null ) {
-            ServletOps.errorBadRequest("Unknown content type for triples: " + ct);
-            return;
-        }
-        dest.prefix("root", base+"#");
-        ActionLib.parse(action, dest, lang, base);
-    }
-
-    // ---- POST
-
-    private static final String NL = "\n";
-
-    @SuppressWarnings("removal")
-    private static final String queryStringLocations =
-            "PREFIX tdb1:   <"+TDB1.namespace+">"+NL+
-            "PREFIX tdb2:   <"+TDB2.namespace+">"+NL+
-            """
-            SELECT * {
-               ?x ( tdb2:location | tdb1:location) ?location
-            }
-            """ ;
-
-    private static final Query queryLocations = QueryFactory.create(queryStringLocations);
-
-    private static List<String> tdbLocations(HttpAction action, Graph configGraph) {
-        try ( QueryExec exec =  QueryExec.graph(configGraph).query(queryLocations).build() ) {
-            RowSet results = exec.select();
-            List<String> locations = new ArrayList<>();
-            results.forEach(b->{
-                Node loc = b.get("location");
-                String location;
-                if ( loc.isURI() )
-                    location = loc.getURI();
-                else if ( Util.isSimpleString(loc) )
-                    location = G.asString(loc);
-                else {
-                    //action.log.warn(format("[%d] Database location is not a string nor a URI", action.id));
-                    // No return
-                    ServletOps.errorBadRequest("TDB database location is not a string");
-                    location = null;
-                }
-                locations.add(location);
-            });
-            return locations;
-        } catch (Exception ex) {
-            // No return
-            ServletOps.errorBadRequest("TDB database location can not be deterined");
-            return null;
-        }
     }
 }

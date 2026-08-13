@@ -28,7 +28,6 @@ import org.junit.platform.suite.api.Suite;
 @SelectClasses({
     TestAdmin.class,
     TestAdminDatabaseOps.class,
-    TestAdminAddDatasetsConfigFile.class,
     TestAdminAddDatasetTemplate.class,
     TestFusekiReload.class,
 })

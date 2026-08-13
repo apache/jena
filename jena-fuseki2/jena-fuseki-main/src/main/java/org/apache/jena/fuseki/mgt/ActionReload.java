@@ -41,6 +41,8 @@ import org.apache.jena.riot.RDFParser;
  */
 public class ActionReload extends ActionCtl {
 
+    public ActionReload() {}
+
     @Override
     public void validate(HttpAction action) {
         if ( action.getRequestMethod() != HttpMethod.METHOD_POST ) {
