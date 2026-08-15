@@ -47,8 +47,23 @@ public class QuadDataAccSink extends QuadAccSink
     private void check(Node g, Node s, Node p, Node o) {
         if ( templateOnly(g) || templateOnly(s) || templateOnly(p) || templateOnly(o) )
             throw new QueryParseException("Variables not permitted in data", -1, -1);
-        if ( s.isLiteral() )
-            throw new QueryParseException("Literals not allowed as subjects in data", -1, -1);
+        checkTriple(s, p, o, false);
+    }
+
+    private void checkTriple(Node s, Node p, Node o, boolean insideTripleTerm) {
+        if ( s.isLiteral() ) {
+            if ( insideTripleTerm )
+                throw new QueryParseException("Literals not allowed as subjects in triple terms in data", -1, -1);
+            else
+                throw new QueryParseException("Literals not allowed as subjects in data", -1, -1);
+        }
+        if ( s.isTripleTerm() )
+            throw new QueryParseException("Triple terms not allowed as subjects in data", -1, -1);
+        if ( o.isTripleTerm() ) {
+            // Recurse
+            Triple t = o.getTriple();
+            checkTriple(t.getSubject(), t.getPredicate(), t.getObject(), true);
+        }
     }
 
     private boolean templateOnly(Node n) {

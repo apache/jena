@@ -35,6 +35,7 @@ import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.query.QueryParseException;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
@@ -182,6 +183,58 @@ public class TestUpdateOperations
         UpdateRequest req = UpdateFactory.create("LOAD SILENT <"+DIR+"/D-not-found.nt> INTO GRAPH <"+gName.getURI()+">");
         UpdateAction.execute(req, gs);
         assertEquals(0, Iter.count(gs.find()));
+    }
+
+    @Test public void insert_data_01() {
+        String x = "PREFIX : <http://example/> INSERT DATA { :a :p <<( :s :p :o )>>  .}";
+        UpdateFactory.create(x);
+    }
+
+    // Triple terms.
+    @Test public void insert_data_02() {
+        String x = "PREFIX : <http://example/> INSERT DATA { <<( :s :p :o )>>  :q :z . }";
+        assertThrows(QueryParseException.class, ()->UpdateFactory.create(x));
+    }
+
+    @Test public void insert_data_03() {
+        String x = "PREFIX : <http://example/> INSERT DATA { 'literal'  :q :z . }";
+        assertThrows(QueryParseException.class, ()->UpdateFactory.create(x));
+    }
+
+    @Test public void insert_data_04() {
+        String x = "PREFIX : <http://example/> INSERT DATA { :a :q <<( 'bad' :p :o )>> }";
+        assertThrows(QueryParseException.class, ()->UpdateFactory.create(x));
+    }
+
+    @Test public void insert_data_05() {
+        String x = "PREFIX : <http://example/> INSERT DATA { << :s :p :o >> :q :z }";
+        UpdateFactory.create(x);
+    }
+
+    // Variables.
+    @Test public void insert_data_10() {
+        String x = "PREFIX : <http://example/> INSERT DATA { :a :p <<( ?s :p :o )>>  .}";
+        assertThrows(QueryParseException.class, ()->UpdateFactory.create(x));
+    }
+
+    @Test public void insert_data_11() {
+        String x = "PREFIX : <http://example/> INSERT DATA { <<( :s :p ?o )>> :q :z . }";
+        assertThrows(QueryParseException.class, ()->UpdateFactory.create(x));
+    }
+
+    @Test public void insert_data_12() {
+        String x = "PREFIX : <http://example/> INSERT DATA { ?v :q :z . }";
+        assertThrows(QueryParseException.class, ()->UpdateFactory.create(x));
+    }
+
+    @Test public void insert_data_13() {
+        String x = "PREFIX : <http://example/> INSERT DATA { :a :q <<( ?v :p :o )>> }";
+        assertThrows(QueryParseException.class, ()->UpdateFactory.create(x));
+    }
+
+    @Test public void insert_data_14() {
+        String x = "PREFIX : <http://example/> INSERT DATA { << ?s :p :o >> :q :z }";
+        assertThrows(QueryParseException.class, ()->UpdateFactory.create(x));
     }
 
     @Test public void insert_where_01() {
