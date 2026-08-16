@@ -24,8 +24,6 @@ package org.apache.jena.sparql.service.enhancer.example;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.base.Stopwatch;
-
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -39,9 +37,13 @@ import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
 import org.apache.jena.sparql.service.enhancer.init.ServiceEnhancerConstants;
 import org.apache.jena.sparql.service.enhancer.init.ServiceEnhancerInit;
 
+import com.google.common.base.Stopwatch;
+
 /** Examples for setting up and using SERVICE caching */
 public class ServiceCachingExamples {
 
+    // This logger is initialized here only for the sake of examples.
+    // It will override any prior logger configuration.
     static { LogCtl.setLogging(); }
 
     public static void main(String[] args) {

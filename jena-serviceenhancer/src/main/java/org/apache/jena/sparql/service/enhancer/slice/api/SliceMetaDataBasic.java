@@ -23,14 +23,19 @@ package org.apache.jena.sparql.service.enhancer.slice.api;
 
 import java.util.List;
 
+import org.apache.jena.sparql.service.enhancer.impl.util.RangeUtils;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeMap;
 import com.google.common.collect.RangeSet;
 import com.google.common.collect.TreeRangeSet;
 
-import org.apache.jena.sparql.service.enhancer.impl.util.RangeUtils;
-
+/**
+ * Metadata about a sequence of data of possibly unknown size.
+ * Keeps track of which ranges of data have been loaded and the minimum/maximum known sizes.
+ * If the minimum and maximum size are equal then the size is considered known.
+ */
 public interface SliceMetaDataBasic {
     RangeSet<Long> getLoadedRanges();
     RangeMap<Long, List<Throwable>> getFailedRanges();
@@ -63,6 +68,7 @@ public interface SliceMetaDataBasic {
         return this;
     }
 
+    /** If minSize equals maxSize then its value is returned, -1 otherwise. */
     default long getKnownSize() {
         long minSize = getMinimumKnownSize();
         long maxSize = getMaximumKnownSize();
@@ -72,13 +78,12 @@ public interface SliceMetaDataBasic {
 
     default SliceMetaDataBasic setKnownSize(long size) {
         Preconditions.checkArgument(size >= 0, "Negative known size");
-
         setMinimumKnownSize(size);
         setMaximumKnownSize(size);
-
         return this;
     }
 
+    /** Get the ranges of missing data within the given range */
     default RangeSet<Long> getGaps(Range<Long> requestRange) {
         long maxKnownSize = getMaximumKnownSize();
         Range<Long> maxKnownRange = Range.closedOpen(0l, maxKnownSize);

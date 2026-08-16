@@ -7,23 +7,24 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- *
- *   SPDX-License-Identifier: Apache-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.apache.jena.sparql.service.enhancer.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
@@ -31,6 +32,7 @@ import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.ResultSetFactory;
+import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.query.ResultSetRewindable;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -43,8 +45,6 @@ import org.apache.jena.sparql.service.enhancer.init.ServiceEnhancerInit;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
-import org.junit.Assert;
-import org.junit.Test;
 
 public abstract class AbstractTestServiceEnhancerResultSetLimits {
 
@@ -86,7 +86,7 @@ public abstract class AbstractTestServiceEnhancerResultSetLimits {
     public void testLoop01_asc_limit1() {
         Model model = createModel(4);
         int rows = test(model, "SELECT * { { SELECT ?d { ?d a <urn:Department> } ORDER BY ASC(?d) } SERVICE <${mode}> { ?d <urn:hasEmployee> ?p }}", 1);
-        Assert.assertEquals(4, rows);
+        assertEquals(4, rows);
     }
 
     @Test
@@ -96,7 +96,7 @@ public abstract class AbstractTestServiceEnhancerResultSetLimits {
 
         Model model = createModel(4);
         int rows = test(model, "SELECT * { { SELECT ?d { ?d a <urn:Department> } ORDER BY ASC(?d) } SERVICE <${mode}> { ?d <urn:hasEmployee> ?p }}", 2);
-        Assert.assertEquals(7, rows);
+        assertEquals(7, rows);
     }
 
     /** Departments in descending order */
@@ -106,7 +106,7 @@ public abstract class AbstractTestServiceEnhancerResultSetLimits {
         Model model = createModel(4);
         int rows = test(model, "SELECT * { { SELECT ?d { ?d a <urn:Department> } ORDER BY DESC(?d) } SERVICE <${mode}> { ?d <urn:hasEmployee> ?p }}", 1);
         //int rows = test(model, "SELECT * { SELECT ?d { ?d a <urn:Department> } ORDER BY DESC(?d) }", 1);
-        Assert.assertEquals(4, rows);
+        assertEquals(4, rows);
     }
 
     @Test
@@ -116,7 +116,7 @@ public abstract class AbstractTestServiceEnhancerResultSetLimits {
 
         Model model = createModel(4);
         int rows = test(model, "SELECT * { { SELECT ?d { ?d a <urn:Department> } ORDER BY DESC(?d) } SERVICE <${mode}> { ?d <urn:hasEmployee> ?p }}", 2);
-        Assert.assertEquals(7, rows);
+        assertEquals(7, rows);
     }
 
 
@@ -129,7 +129,7 @@ public abstract class AbstractTestServiceEnhancerResultSetLimits {
 
         Model model = createModel(4);
         int rows = test(model, "SELECT * { { SELECT ?d { ?d a <urn:Department> } ORDER BY ASC(?d) } SERVICE <${mode}> { ?d <urn:hasEmployee> ?p }}", 10);
-        Assert.assertEquals(10, rows);
+        assertEquals(10, rows);
     }
 
 
@@ -155,17 +155,39 @@ public abstract class AbstractTestServiceEnhancerResultSetLimits {
     public static int testWithCleanCaches(Dataset dataset, String queryStr, int hiddenLimit) {
         ServiceResultSizeCache.get().invalidateAll();
         ServiceResponseCache.get().invalidateAll();
-
         int result = testCore(dataset, queryStr, hiddenLimit);
         return result;
     }
-
 
     public static int testCore(Model model, String queryStr, int hiddenLimit) {
         return testCore(identityWrap(model), queryStr, hiddenLimit);
     }
 
+    public static void assertRowCount(int expectedRowCount, Model model, String queryStr, int hiddenLimit) {
+        assertRowCount(expectedRowCount, identityWrap(model), queryStr, hiddenLimit);
+    }
+
+    public static void assertRowCount(int expectedRowCount, Dataset dataset, String queryStr, int hiddenLimit) {
+        ResultSetRewindable rs = exec(dataset, queryStr, hiddenLimit);
+        int actualSize = rs.size();
+        if (actualSize != expectedRowCount) {
+            rs.reset();
+            ResultSetFormatter.outputAsJSON(rs);
+        }
+        assertEquals(expectedRowCount, actualSize);
+    }
+
     public static int testCore(Dataset dataset, String queryStr, int hiddenLimit) {
+        ResultSetRewindable rs = exec(dataset, queryStr, hiddenLimit);
+        int result = rs.size();
+        return result;
+    }
+
+    /**
+     * Execute a query against a dataset and cut off result sets upon reaching "hiddenLimit" result rows.
+     * The returned ResultSetRewindable is not attached to any resources that might need closing.
+     */
+    public static ResultSetRewindable exec(Dataset dataset, String queryStr, int hiddenLimit) {
         Query query = QueryFactory.create(queryStr);
 
         // Set up a custom service executor registry that "secretly" slices
@@ -177,17 +199,16 @@ public abstract class AbstractTestServiceEnhancerResultSetLimits {
             return new QueryIterSlice(chain.createExecution(opExec, opOrig, binding, execCxt), 0, hiddenLimit, execCxt);
         });
 
-        int result;
+        ResultSetRewindable result;
         try (QueryExecution qe = QueryExecution.create(query, dataset)) {
             Context cxt = qe.getContext();
             // cxt.put(ARQ.enablePropertyFunctions, true);
             ServiceEnhancerInit.wrapOptimizer(cxt);
             ServiceExecutorRegistry.set(qe.getContext(), reg);
-            ResultSetRewindable rs = ResultSetFactory.makeRewindable(qe.execSelect());
+            result = ResultSetFactory.makeRewindable(qe.execSelect());
             // ResultSetFormatter.outputAsJSON(rs);
-            result = rs.size();
         }
-
         return result;
     }
+
 }
