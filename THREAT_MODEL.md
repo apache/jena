@@ -47,7 +47,7 @@ limitations under the License.
 | Stores + text index | `jena-tdb1`, `jena-tdb2`; **`jena-text` (Lucene)** | filesystem | **In.** On-disk store is operator-trusted and private to the owning process *(maintainer)*; the Lucene text index is reachable from SPARQL via `text:query` — an in-model query surface *(maintainer — afs flagged jena-text)* |
 | IRI / langtag | `jena-iri3986`, `jena-langtag`, `jena-base` | none | **In (input parsing)** *(inferred)* |
 | Extensions | `jena-geosparql`, `jena-serviceenhancer` | SERVICE | **In (reachable from queries)** *(inferred)* |
-| Validations | `jena-shacl`, `jena-shex` | HTTP GET requests (imports) | **In (import-fetch = SSRF surface)** *(maintainer — afs)* |
+| Validations | `jena-shacl` | HTTP GET requests | **In (no imports)** *(maintainer — afs)* |
 | Client/API helpers | `jena-rdfconnection`, `jena-querybuilder`, `jena-rdfpatch`, `jena-commonsrdf`, `jena-ontapi` | none | **In as libraries (memory/correctness)** *(inferred)* |
 | CLI tools | `jena-cmds` | filesystem | **In iff fed untrusted input; usually operator-run** *(inferred)* |
 | Examples / tests / benchmarks | `jena-examples`, `jena-integration-tests`, `jena-benchmarks` | n/a | **Out** *(see §3)* |
