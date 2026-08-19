@@ -23,27 +23,25 @@ package org.apache.jena.rdfxml.arp1tests;
 
 import junit.framework.TestSuite;
 
-public class TS3_xmlinput1 extends TestSuite
-{
-    static public TestSuite suite()
-    {
+public class TS3_xmlinput1 extends TestSuite {
+    static public TestSuite suite() {
         return new TS3_xmlinput1();
     }
 
-    private TS3_xmlinput1()
-    {
+    private TS3_xmlinput1() {
         super("RDF/XML Input ARP1");
-        addTest( TestURIs.suite());
-        addTest( TestSuiteWG_RDFXML.suite());
-        addTest( TestSuiteWG_RDFXML_ARP.suite());
+        addTest(TestURIs.suite());
+        addTest(TestSuiteWG_RDFXML.suite());
+        addTest(TestSuiteWG_RDFXML_ARP.suite());
 
-        addTest( TestsARP.suite());
-        addTest( org.apache.jena.rdfxml.arp1tests.states.TestARPStates.suite());
+        addTest(TestsARP.suite());
+        addTest(TestsARP2.suite());
+        addTest(org.apache.jena.rdfxml.arp1tests.states.TestARPStates.suite());
 
-        addTest( TestsTainting.suite());
-        addTest( TestsSAX2RDF.suite());
-        addTest( TestsStAX2Model.suite());
-        addTest( TestRDFXML_URI.suite());
+        addTest(TestsTainting.suite());
+        addTest(TestsSAX2RDF.suite());
+        addTest(TestsStAX2Model.suite());
+        addTest(TestRDFXML_URI.suite());
     }
 
     private void addTest(String name, TestSuite tc) {
