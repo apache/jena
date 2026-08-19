@@ -160,8 +160,8 @@ abstract public class QNameLexer implements Names, ARPErrorNumbers {
             if ( "version".equals(getLocalName()) ) {
                 if ( rdfns.equals(getUri()) )
                     throw new ParseException(ARPErrorNumbers.ERR_RDF12, location(), "RDF 1.2 not supported by ARP: rdf:"+getLocalName());
-                if ( ITS.uri.equals(getUri()) ) {}
-                throw new ParseException(ARPErrorNumbers.ERR_RDF12, location(), "RDF 1.2 not supported by ARP: rdf:"+getLocalName());
+                if ( ITS.uri.equals(getUri()) )
+                    throw new ParseException(ARPErrorNumbers.ERR_RDF12, location(), "RDF 1.2 not supported by ARP: rdf:"+getLocalName());
             }
         }
         return 0;
