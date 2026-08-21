@@ -23,14 +23,23 @@ package org.apache.jena.sparql.algebra.optimize;
 
 import static org.apache.jena.sparql.algebra.optimize.TransformTests.check;
 import static org.apache.jena.sparql.algebra.optimize.TransformTests.testOp;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QueryFactory;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.Transform;
 import org.apache.jena.sparql.algebra.TransformCopy;
 import org.apache.jena.sparql.algebra.op.OpTable;
+import org.apache.jena.sparql.sse.SSE;
 
 /** Tests of transforms related to filters */
 public class TestTransformFilters
@@ -272,23 +281,18 @@ public class TestTransformFilters
             ")");
     }
 
+    // A solution with ?x = <x> satisfies both disjuncts, so expanding would return
+    // it from both branches where the filter returns it once. Not transformed.
     @Test public void disjunction02() {
         testOp("(filter (|| (= ?x <x>) (!= ?x <y>)) (bgp ( ?s ?p ?x)) )",
                t_disjunction,
-               "(disjunction ",
-               "(assign ((?x <x>)) (bgp ( ?s ?p <x>)))",
-               "(filter (!= ?x <y>) (bgp ( ?s ?p ?x)))",
-            ")");
+               (String[])null);
     }
 
     @Test public void disjunction03() {
         testOp("(filter (|| (!= ?x <x>) (= ?x <y>)) (bgp ( ?s ?p ?x)) )",
                t_disjunction,
-               // Note - reordering of disjunction terms.
-               "(disjunction ",
-               "(assign ((?x <y>)) (bgp ( ?s ?p <y>)))",
-               "(filter (!= ?x <x>) (bgp ( ?s ?p ?x)))",
-            ")");
+               (String[])null);
     }
 
     @Test public void disjunction04() {
@@ -300,33 +304,101 @@ public class TestTransformFilters
     @Test public void disjunction05() {
         testOp("(filter (exprlist (|| (= ?x <y>) (!= ?x <x>)))    (bgp ( ?s ?p ?x)) )",
                t_disjunction,
-               "  (disjunction",
-               "    (assign ((?x <y>)) (bgp ( ?s ?p <y>)))",
-               "    (filter (!= ?x <x>) (bgp ( ?s ?p ?x)))",
-               ")"
-            );
+               (String[])null);
     }
 
     @Test public void disjunction06() {
         testOp("(filter (exprlist (lang ?x) (|| (= ?x <y>) (!= ?x <x>)))    (bgp ( ?s ?p ?x)) )",
                t_disjunction,
-               "(filter (lang ?x)",
-               "  (disjunction",
-               "    (assign ((?x <y>)) (bgp ( ?s ?p <y>)))",
-               "    (filter (!= ?x <x>) (bgp ( ?s ?p ?x)))",
-               "))"
-            );
+               (String[])null);
     }
 
     @Test public void disjunction07() {
         testOp("(filter (exprlist (|| (= ?x <y>) (!= ?x <x>)) (lang ?x) )    (bgp ( ?s ?p ?x)) )",
                t_disjunction,
-               "(filter (lang ?x)",
-               "  (disjunction",
-               "    (assign ((?x <y>)) (bgp ( ?s ?p <y>)))",
-               "    (filter (!= ?x <x>) (bgp ( ?s ?p ?x)))",
-               "))"
-            );
+               (String[])null);
+    }
+
+    // (A || A) is A: the repeated disjunct is dropped — two identical branches would
+    // return every solution twice — and the single equality then grounds the pattern.
+    @Test public void disjunction08() {
+        testOp("(filter (|| (= ?x <x>) (= ?x <x>)) (bgp ( ?s ?p ?x)) )",
+               t_disjunction,
+               "(assign ((?x <x>)) (bgp ( ?s ?p <x>)))");
+    }
+
+    // The same, for a disjunct shape the transform cannot ground: deduplicated to a
+    // single disjunct, there is nothing to expand and the filter is left alone.
+    @Test public void disjunction08a() {
+        testOp("(filter (|| (!= ?x <x>) (!= ?x <x>)) (bgp ( ?s ?p ?x)) )",
+               t_disjunction,
+               (String[])null);
+    }
+
+    // Different terms, same value: a solution with ?x = 1 satisfies both disjuncts.
+    @Test public void disjunction09() {
+        testOp("(filter (|| (= ?x 1) (= ?x \"01\"^^<http://www.w3.org/2001/XMLSchema#integer>)) (bgp ( ?s ?p ?x)) )",
+               t_disjunction,
+               (String[])null);
+    }
+
+    // Different variables: a solution can satisfy both disjuncts.
+    @Test public void disjunction10() {
+        testOp("(filter (|| (= ?x <x>) (= ?y <y>)) (bgp ( ?s ?p ?x) (?s ?q ?y)) )",
+               t_disjunction,
+               (String[])null);
+    }
+
+    // Simple literals are pairwise distinct values, so the expansion is sound.
+    @Test public void disjunction11() {
+        testOp("(filter (|| (= ?x \"a\") (= ?x \"b\")) (bgp ( ?s ?p ?x)) )",
+               t_disjunction,
+               "(disjunction ",
+               "(assign ((?x \"a\")) (bgp ( ?s ?p \"a\")))",
+               "(assign ((?x \"b\")) (bgp ( ?s ?p \"b\")))",
+            ")");
+    }
+
+    // An IRI and a number are distinct values, so the ?x IN (<x> 2) shape keeps its
+    // expansion; the numeric equality is not substitutable and stays a filter branch.
+    @Test public void disjunction12() {
+        testOp("(filter (|| (= ?x <x>) (= ?x 2)) (bgp ( ?s ?p ?x)) )",
+               t_disjunction,
+               "(disjunction ",
+               "(assign ((?x <x>)) (bgp ( ?s ?p <x>)))",
+               "(filter (= ?x 2) (bgp ( ?s ?p ?x)))",
+            ")");
+    }
+
+    // The expansion must not change the number of results: each solution once,
+    // however many disjuncts it satisfies. Executed, not matched on plan shape,
+    // with the default optimizer.
+    @Test public void disjunctionMultiplicity01() {
+        checkDisjunctionRowCount("FILTER(?x = <http://example/a> || ?x = <http://example/a>)", 1);
+    }
+
+    // Only s1 qualifies (x=a passes both disjuncts; x=b passes neither) — and it must
+    // come back once. The unsound expansion returned it from both branches.
+    @Test public void disjunctionMultiplicity02() {
+        checkDisjunctionRowCount("FILTER(?x = <http://example/a> || ?x != <http://example/b>)", 1);
+    }
+
+    @Test public void disjunctionMultiplicity03() {
+        checkDisjunctionRowCount("FILTER(?x = <http://example/a> || ?x = <http://example/b>)", 2);
+    }
+
+    private static void checkDisjunctionRowCount(String filter, int expected) {
+        Graph graph = SSE.parseGraph(StrUtils.strjoinNL
+            ("(graph"
+            ,"  (triple <http://example/s1> <http://example/p> <http://example/a>)"
+            ,"  (triple <http://example/s2> <http://example/p> <http://example/b>)"
+            ,")"));
+        String queryString = "SELECT * { ?s <http://example/p> ?x " + filter + " }";
+        Query query = QueryFactory.create(queryString);
+        try ( QueryExecution qExec = QueryExecutionFactory.create(query, ModelFactory.createModelForGraph(graph)) ) {
+            long count = Iter.count(qExec.execSelect());
+            assertEquals(expected, count, ()->"Row count differs from filter semantics: "+filter);
+        }
     }
 
     @Test public void oneOf1() {
