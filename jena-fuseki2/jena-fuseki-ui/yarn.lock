@@ -7781,9 +7781,9 @@ vue-router@^5.0.2:
     yaml "^2.9.0"
 
 vue-upload-component@^3.1.8:
-  version "3.1.17"
-  resolved "https://registry.yarnpkg.com/vue-upload-component/-/vue-upload-component-3.1.17.tgz#489f504eb65b518905815f7dbd64b262d7cd624b"
-  integrity sha512-1orTC5apoFzBz4ku2HAydpviaAOck+ABc83rGypIK/Bgl+TqhtoWsQOhXqbb7vDv7pKlvRVWwml9PM224HyhkA==
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/vue-upload-component/-/vue-upload-component-3.2.0.tgz#f74204f76b60136e2593b8cda090aed98e5af584"
+  integrity sha512-3pYD5Uv85FXRtYOT/VBR8q2azyCmSBEooCUAfUCMgtK6g8Fw0xw4A58oL5MniaaxfjUmPhYoS5vOpK0XLFmnHw==
 
 vue@^3.5.26:
   version "3.5.41"
