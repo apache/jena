@@ -2,7 +2,6 @@
   "name": "apache-jena-fuseki",
   "type": "module",
   "version": "1.0.0",
-  "private": false,
   "description": "Apache Jena Fuseki UI",
   "author": "Apache Jena Team",
   "license": "Apache-2.0",
@@ -11,14 +10,12 @@
     "serve": "vite preview",
     "build": "vite build",
     "test:unit": "vitest run --pool=threads --environment jsdom",
-    "test:e2e": "run-script-os",
-    "test:e2e:nix": "cross-env FUSEKI_PORT=\"${FUSEKI_PORT:=3030}\" PORT=\"${PORT:=8080}\" concurrently  --names 'SERVER,CLIENT,TESTS' --prefix-colors 'yellow,blue,green' --success 'first' --kill-others \"yarn run serve:fuseki\" \"yarn wait-on http://localhost:${FUSEKI_PORT}/$/ping && yarn run dev\" \"yarn wait-on http-get://localhost:${PORT}/index.html && cypress run $@\"",
-    "test:e2e:win32": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"if (-not $env:FUSEKI_PORT) { $env:FUSEKI_PORT='3030' }; if (-not $env:PORT) { $env:PORT='8080' }; $extra = $args -join ' '; concurrently --names SERVER,CLIENT,TESTS --prefix-colors yellow,blue,green --success first --kill-others 'yarn run serve:fuseki' ('yarn wait-on http://localhost:' + $env:FUSEKI_PORT + '/$/ping && yarn run dev') ('yarn wait-on http-get://localhost:' + $env:PORT + '/index.html && cypress run ' + $extra)\" --",
+    "test:e2e": "FUSEKI_PORT=\"${FUSEKI_PORT:-3030}\" PORT=\"${PORT:-8080}\" concurrently  --names 'SERVER,CLIENT,TESTS' --prefix-colors 'yellow,blue,green' --success 'first' --kill-others \"yarn run serve:fuseki\" \"yarn wait-on http://localhost:${FUSEKI_PORT:-3030}/\\$/ping && yarn run dev\" \"yarn wait-on http-get://localhost:${PORT:-8080}/index.html && cypress run $@\"",
     "lint": "eslint --fix src",
     "coverage:unit": "yarn run test:unit --coverage",
-    "coverage:e2e": "cross-env-shell CYPRESS_COVERAGE=true yarn run test:e2e",
+    "coverage:e2e": "CYPRESS_COVERAGE=true yarn run test:e2e",
     "serve:fuseki": "nodemon src/services/mock/json-server.js",
-    "serve:offline": "cross-env FUSEKI_PORT=\"${FUSEKI_PORT:=3030}\" PORT=\"${PORT:=8080}\" concurrently --names 'SERVER,CLIENT' --prefix-colors 'yellow,blue' --success 'first' --kill-others 'yarn run serve:fuseki' 'yarn wait-on http://localhost:${FUSEKI_PORT}/$/ping && yarn run dev'"
+    "serve:offline": "FUSEKI_PORT=\"${FUSEKI_PORT:-3030}\" PORT=\"${PORT:-8080}\" concurrently --names 'SERVER,CLIENT' --prefix-colors 'yellow,blue' --success 'first' --kill-others 'yarn run serve:fuseki' 'yarn wait-on http://localhost:${FUSEKI_PORT}/\\$/ping && yarn run dev'"
   },
   "dependencies": {
     "@codemirror/language": "^6.11.3",
@@ -27,13 +24,12 @@
     "@fortawesome/free-solid-svg-icons": "^7.0.0",
     "@fortawesome/vue-fontawesome": "^3.0.3",
     "@popperjs/core": "^2.11.8",
-    "@vue/compat": "^3.5.26",
+    "@vue/compiler-dom": "^3.5.41",
     "@zazuko/yasqe": "^4.6.0",
     "@zazuko/yasr": "^4.6.0",
     "axios": "^1.6.1",
     "bootstrap": "^5.3.2",
     "codemirror": "6.0.2",
-    "follow-redirects": "^1.15.4",
     "mitt": "^3.0.1",
     "qs": "6.15.3",
     "vue": "^3.5.26",
@@ -41,35 +37,40 @@
     "vue-upload-component": "^3.1.8",
     "yasgui-geo-tg": "Thib-G/yasgui-geo-tg#34cacd5"
   },
+  "dependenciesMeta": {
+    "@fortawesome/fontawesome-common-types": {
+      "built": true
+    },
+    "@fortawesome/free-solid-svg-icons": {
+      "built": true
+    },
+    "@parcel/watcher": {
+      "built": true
+    },
+    "cypress": {
+      "built": true
+    }
+  },
   "devDependencies": {
     "@babel/core": "^7.27.4",
     "@babel/preset-env": "^7.0.0",
     "@cypress/code-coverage": "^4.0.1",
-    "@cypress/vue": "^6.0.0",
     "@eslint/js": "^10.0.1",
-    "@types/codemirror": "^5.60.15",
     "@vitejs/plugin-vue": "^6.0.0",
     "@vitest/coverage-v8": "^4.1.8",
     "@vue/compiler-sfc": "^3.5.26",
-    "@vue/eslint-config-standard": "^9.0.1",
     "@vue/test-utils": "^2.4.1",
     "babel-loader": "^10",
     "concurrently": "^10.0.3",
-    "cross-env": "^10.0.0",
     "cypress": "^15.8.1",
     "cypress-vite": "^1.4.2",
     "eslint": "^10.0.1",
     "eslint-plugin-cypress": "7.0.0",
-    "eslint-plugin-import": "^2.28.1",
-    "eslint-plugin-promise": "^7.0.0",
     "eslint-plugin-vue": "^10.8.0",
-    "express": "^5.1.0",
     "globals": "^17.4.0",
     "jsdom": "^30.0.0",
     "json-server": "^0.17.4",
-    "nanoid": "^6.0.0",
     "nodemon": "^3.0.1",
-    "run-script-os": "^1.1.6",
     "sass-embedded": "^1.97.1",
     "sinon": "^22.0.0",
     "typescript": "^6.0.3",
@@ -85,5 +86,5 @@
     "picomatch": ">=4.0.4",
     "minimatch": ">=9.0.7"
   },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  "packageManager": "yarn@4.18.0+sha512.fcb8716fe7cd0eece141ffc18b92193a9df9204c1ba83189c288835223fc0bbe64af473bab0d5e9927a7daeb5caf2bb07eb2787cc9338ca040ea125f2a1f2f7e"
 }
