@@ -3,14 +3,14 @@
 []  a rs:ResultSet ;
     rs:resultVariable
                 "g" , "t" ;
-    rs:solution [ rs:binding  [ rs:value    <empty.ttl> ;
+    rs:solution [ rs:binding  [ rs:value    <data01.ttl> ;
                                 rs:variable "g"
                               ] ;
                   rs:binding  [ rs:value    "foo";
                                 rs:variable "t"
                               ]
                 ] ;
-    rs:solution [ rs:binding  [ rs:value    <empty.ttl> ;
+    rs:solution [ rs:binding  [ rs:value    <data01.ttl> ;
                                 rs:variable "g"
                               ] ;
                   rs:binding  [ rs:value    "bar";

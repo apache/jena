@@ -33,4 +33,3 @@ trs:manifest  rdf:type mf:Manifest ;
     <eval/manifest.ttl>
     <../../rdf11/rdf-xml/manifest.ttl>
   ) .
-

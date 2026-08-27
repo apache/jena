@@ -1,2 +1,2 @@
-# Bad IRI : good escape, bad charcater
+# Bad IRI : good escape, bad character
 {<http://example/\u0020> <http://example/p> <http://example/o> .}

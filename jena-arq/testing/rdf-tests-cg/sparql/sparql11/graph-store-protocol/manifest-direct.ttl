@@ -1,0 +1,468 @@
+@prefix : <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#> .
+@prefix dawg: <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+@prefix gsp: <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix cnt:    <http://www.w3.org/2011/content#> .
+@prefix ht:     <http://www.w3.org/2011/http#> .
+@prefix hts:    <http://www.w3.org/2011/http-statusCodes#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<> a mf:Manifest;
+    rdfs:label "SPARQL Graph Store Protocol - Direct Graph Identification";
+    mf:entries ( gsp:put_get_repeat_direct
+                 gsp:put_delete_get_delete_direct
+                 gsp:post_get_post_get_direct
+                 gsp:head_existing_direct
+               ) .
+
+gsp:put_get_repeat_direct rdf:type mf:GraphStoreProtocolTest ;
+    mf:name    "PUT/GET repetition on same graph using varying graph identification  (direct graph identification)" ;
+	mf:requires mf:DirectGraphIdentification ;
+    mf:action [
+        a ht:Connection ;
+        ht:connectionAuthority "www.example" ;
+        ht:requests ([
+                a ht:Request ;
+                ht:absolutePath "/gsp/person/1.ttl" ;
+                ht:headers ([
+                        a ht:RequestHeader ;
+                        ht:fieldName "content-type" ;
+                        ht:fieldValue "text/turtle; charset=utf-8"
+                    ]
+                ) ;
+                ht:body [
+                    a cnt:ContentAsText ;
+                    cnt:characterEncoding "UTF-8" ;
+                    cnt:chars """
+                        @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+                        @prefix v: <http://www.w3.org/2006/vcard/ns#> .
+                        
+                        <http://www.example/gsp/person/1> a foaf:Person;
+                            foaf:businessCard [
+                                a v:VCard;
+                                v:fn "John Doe"
+                            ].
+                    """
+                ] ;
+                ht:httpVersion "1.1" ;
+                ht:methodName "PUT" ;
+                ht:resp [
+                    a ht:Response ;
+                    mf:expectedStatus hts:Created
+                ]
+            ]
+            [
+                a ht:Request ;
+                ht:methodName "GET" ;
+                ht:httpVersion "1.1" ;
+                ht:absolutePath "/gsp/person/1.ttl" ;
+                ht:headers ([
+                        a ht:RequestHeader ;
+                        ht:fieldName "accept" ;
+                        ht:fieldValue "text/turtle"
+                    ]
+                ) ;
+                ht:resp [
+                    a ht:Response ;
+                    mf:expectedStatus hts:OK ;
+                    ht:headers ([
+                            a ht:ResponseHeader ;
+                            ht:fieldName "content-type" ;
+                            ht:fieldValue "text/turtle; charset=utf-8"
+                        ]
+                    ) ;
+                    ht:body [
+                        a cnt:ContentAsText ;
+                        cnt:characterEncoding "UTF-8" ;
+                        cnt:chars """
+                            @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+                            @prefix v: <http://www.w3.org/2006/vcard/ns#> .
+                        
+                            <http://www.example/gsp/person/1> a foaf:Person;
+                               foaf:businessCard [
+                                    a v:VCard;
+                                    v:fn "John Doe"
+                               ].
+                        """
+                    ] ;
+                ]
+            ]
+            [
+                a ht:Request ;
+                ht:methodName "PUT" ;
+                ht:httpVersion "1.1" ;
+                ht:absolutePath "/gsp/person/1.ttl" ;
+                ht:body [
+                    a cnt:ContentAsText ;
+                    cnt:characterEncoding "UTF-8" ;
+                    cnt:chars """
+                        @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+                        @prefix v: <http://www.w3.org/2006/vcard/ns#> .
+                    
+                        <http://www.example/gsp/person/1> a foaf:Person;
+                            foaf:businessCard [
+                                a v:VCard;
+                                v:fn "Jane Doe"
+                            ].
+                    """
+                ] ;
+                ht:headers ([
+                        a ht:RequestHeader ;
+                        ht:fieldName "content-type" ;
+                        ht:fieldValue "text/turtle; charset=utf-8"
+                    ]
+                ) ;
+                ht:resp [
+                    a ht:Response ;
+                    mf:expectedStatus hts:OK, hts:NoContent ;
+                ]
+            ]
+            [
+                a ht:Request ;
+                ht:methodName "GET" ;
+                ht:httpVersion "1.1" ;
+                ht:absolutePath "/gsp/person/1.ttl" ;
+                ht:headers ([
+                        a ht:RequestHeader ;
+                        ht:fieldName "accept" ;
+                        ht:fieldValue "text/turtle"
+                    ]
+                ) ;
+                ht:resp [
+                    a ht:Response ;
+                    mf:expectedStatus hts:OK ;
+                    ht:headers ([
+                            a ht:ResponseHeader ;
+                            ht:fieldName "content-type" ;
+                            ht:fieldValue "text/turtle; charset=utf-8"
+                        ]
+                    ) ;
+                    ht:body [
+                        a cnt:ContentAsText ;
+                        cnt:characterEncoding "UTF-8" ;
+                        cnt:chars """
+                            @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+                            @prefix v: <http://www.w3.org/2006/vcard/ns#> .
+                        
+                            <http://www.example/gsp/person/1> a foaf:Person;
+                               foaf:businessCard [
+                                    a v:VCard;
+                                    v:fn "Jane Doe"
+                               ] .
+                        """
+                    ] ;
+                ]
+            ]
+        )
+    ] ;
+    .
+
+gsp:put_delete_get_delete_direct rdf:type mf:GraphStoreProtocolTest ;
+    mf:name    "PUT initialization, then DELETE/GET/DELETE (direct graph identification)" ;
+	mf:requires mf:DirectGraphIdentification ;
+    mf:action [
+        a ht:Connection ;
+        ht:connectionAuthority "www.example" ;
+        ht:requests ([
+                a ht:Request ;
+                ht:methodName "PUT" ;
+                ht:httpVersion "1.1" ;
+                ht:absolutePath "/gsp/person/2.ttl" ;
+                ht:body [
+                    a cnt:ContentAsText ;
+                    cnt:characterEncoding "UTF-8" ;
+                    cnt:chars """
+                        @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+                        @prefix v: <http://www.w3.org/2006/vcard/ns#> .
+                    
+                        []  a foaf:Person;
+                            foaf:businessCard [
+                                a v:VCard;
+                                v:given-name "Alice"
+                            ] .
+                    """
+                ] ;
+                ht:headers ([
+                        a ht:RequestHeader ;
+                        ht:fieldName "content-type" ;
+                        ht:fieldValue "text/turtle; charset=utf-8"
+                    ]
+                ) ;
+                ht:resp [
+                    a ht:Response ;
+                    mf:expectedStatus hts:Created, hts:OK, hts:NoContent
+                ]
+            ]
+            [
+                a ht:Request ;
+                ht:methodName "DELETE" ;
+                ht:httpVersion "1.1" ;
+                ht:absolutePath "/gsp/person/2.ttl" ;
+                ht:resp [
+                    a ht:Response ;
+                    mf:expectedStatus hts:OK, hts:NoContent ;
+                ]
+            ]
+            [
+                a ht:Request ;
+                ht:methodName "GET" ;
+                ht:httpVersion "1.1" ;
+                ht:absolutePath "/gsp/person/2.ttl" ;
+                ht:resp [
+                    a ht:Response ;
+                    mf:expectedStatus hts:NotFound ;
+                ]
+            ]
+            [
+                a ht:Request ;
+                ht:methodName "DELETE" ;
+                ht:httpVersion "1.1" ;
+                ht:absolutePath "/gsp/person/2.ttl" ;
+                ht:resp [
+                    a ht:Response ;
+                    mf:expectedStatus hts:NotFound, hts:OK, hts:NoContent ;
+                ]
+            ]
+        )
+    ] ;
+    .
+
+gsp:post_get_post_get_direct rdf:type mf:GraphStoreProtocolTest ;
+    mf:name    "Two iterations os POST/GET, with the second using multipart/form-data (direct graph identification)" ;
+	mf:requires mf:DirectGraphIdentification ;
+    mf:action [
+        a ht:Connection ;
+        ht:connectionAuthority "www.example" ;
+        ht:requests (
+            [
+                a ht:Request ;
+                ht:methodName "POST" ;
+                ht:httpVersion "1.1" ;
+                ht:absolutePath "/gsp/person/1.ttl" ;
+                ht:body [
+                    a cnt:ContentAsText ;
+                    cnt:characterEncoding "UTF-8" ;
+                    cnt:chars """
+                            @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+                            @prefix v: <http://www.w3.org/2006/vcard/ns#> .
+                        
+                            <http://www.example/gsp/person/1> a foaf:Person;
+                               foaf:businessCard [
+                                    a v:VCard;
+                                    v:fn "Jane Doe"
+                               ] .
+                    """
+                ] ;
+                ht:headers ([
+                        a ht:RequestHeader ;
+                        ht:fieldName "content-type" ;
+                        ht:fieldValue "text/turtle; charset=utf-8"
+                    ]
+                ) ;
+                ht:resp [
+                    a ht:Response ;
+                    mf:expectedStatus hts:OK, hts:Created, hts:NoContent
+                ]
+            ]
+            [
+                a ht:Request ;
+                ht:methodName "GET" ;
+                ht:httpVersion "1.1" ;
+                ht:absolutePath "/gsp/person/1.ttl" ;
+                ht:headers ([
+                        a ht:RequestHeader ;
+                        ht:fieldName "accept" ;
+                        ht:fieldValue "text/turtle"
+                    ]
+                ) ;
+                ht:resp [
+                    a ht:Response ;
+                    mf:expectedStatus hts:OK ;
+                    ht:headers ([
+                            a ht:ResponseHeader ;
+                            ht:fieldName "content-type" ;
+                            ht:fieldValue "text/turtle; charset=utf-8"
+                        ]
+                    ) ;
+                    ht:body [
+                        a cnt:ContentAsText ;
+                        cnt:characterEncoding "UTF-8" ;
+                        cnt:chars """
+                            @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+                            @prefix v: <http://www.w3.org/2006/vcard/ns#> .
+                        
+                            <http://www.example/gsp/person/1> a foaf:Person;
+                               foaf:businessCard [
+                                    a v:VCard;
+                                    v:fn "Jane Doe"
+                               ] .
+                        """
+                    ] ;
+                ]
+            ]
+            [
+                a ht:Request ;
+                ht:methodName "POST" ;
+                ht:httpVersion "1.1" ;
+                ht:absolutePath "/gsp/person/1.ttl" ;
+                ht:body [
+                    a cnt:ContentAsText ;
+                    cnt:characterEncoding "UTF-8" ;
+                    cnt:chars """--a6fe4cd636164618814be9f8d3d1a0de\r
+Content-Disposition: form-data; name="lastName.ttl"; filename="lastName.ttl"\r
+Content-Type: text/turtle; charset=utf-8\r
+\r
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .\r
+<http://www.example/gsp/person/1> foaf:familyName "Doe" .\r
+\r
+--a6fe4cd636164618814be9f8d3d1a0de\r
+Content-Disposition: form-data; name="firstName.ttl"; filename="firstName.ttl"\r
+Content-Type: text/turtle; charset=utf-8\r
+\r
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .\r
+<http://www.example/gsp/person/1> foaf:givenName "Jane" .\r
+\r
+--a6fe4cd636164618814be9f8d3d1a0de--\r
+"""
+                ] ;
+                ht:headers ([
+                        a ht:RequestHeader ;
+                        ht:fieldName "content-type" ;
+                        ht:fieldValue "multipart/form-data; boundary=a6fe4cd636164618814be9f8d3d1a0de"
+                    ]
+                ) ;
+                ht:resp [
+                    a ht:Response ;
+                    mf:expectedStatus hts:OK, hts:NoContent
+                ]
+            ]
+            [
+                a ht:Request ;
+                ht:methodName "GET" ;
+                ht:httpVersion "1.1" ;
+                ht:absolutePath "/gsp/person/1.ttl" ;
+                ht:headers ([
+                        a ht:RequestHeader ;
+                        ht:fieldName "accept" ;
+                        ht:fieldValue "text/turtle"
+                    ]
+                ) ;
+                ht:resp [
+                    a ht:Response ;
+                    mf:expectedStatus hts:OK ;
+                    ht:headers ([
+                            a ht:ResponseHeader ;
+                            ht:fieldName "content-type" ;
+                            ht:fieldValue "text/turtle; charset=utf-8"
+                        ]
+                    ) ;
+                    ht:body [
+                        a cnt:ContentAsText ;
+                        cnt:characterEncoding "UTF-8" ;
+                        cnt:chars """
+                            @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+                            @prefix v: <http://www.w3.org/2006/vcard/ns#> .
+                        
+                            <http://www.example/gsp/person/1> a foaf:Person;
+                                foaf:givenName      "Jane";
+                                foaf:familyName     "Doe";
+                                foaf:businessCard [
+                                    a               v:VCard;
+                                    v:fn            "Jane Doe"
+                                ] .
+                        """
+                    ] ;
+                ]
+            ]
+        )
+    ] ;
+    .
+
+gsp:head_existing_direct rdf:type mf:GraphStoreProtocolTest ;
+    mf:name    "PUT initialization, then HEAD on existing graph (direct graph identification)" ;
+	mf:requires mf:DirectGraphIdentification ;
+    mf:action [
+        a ht:Connection ;
+        ht:connectionAuthority "www.example" ;
+        ht:requests ([
+                a ht:Request ;
+                ht:methodName "PUT" ;
+                ht:httpVersion "1.1" ;
+                ht:absolutePath "/gsp/person/1.ttl" ;
+                ht:headers ([
+                        a ht:RequestHeader ;
+                        ht:fieldName "content-type" ;
+                        ht:fieldValue "text/turtle; charset=utf-8"
+                    ]
+                ) ;
+                ht:body [
+                    a cnt:ContentAsText ;
+                    cnt:characterEncoding "UTF-8" ;
+                    cnt:chars """
+                        @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+                        @prefix v: <http://www.w3.org/2006/vcard/ns#> .
+                        
+                        <http://www.example/gsp/person/1> a foaf:Person;
+                            foaf:businessCard [
+                                a v:VCard;
+                                v:fn "John Doe"
+                            ].
+                    """
+                ] ;
+                ht:resp [
+                    a ht:Response ;
+                    mf:expectedStatus hts:OK, hts:Created, hts:NoContent
+                ]
+            ]
+            [
+                a ht:Request ;
+                ht:methodName "HEAD" ;
+                ht:httpVersion "1.1" ;
+                ht:absolutePath "/gsp/person/1.ttl" ;
+                ht:headers ([
+                        a ht:RequestHeader ;
+                        ht:fieldName "accept" ;
+                        ht:fieldValue "text/turtle; charset=utf-8"
+                    ]
+                ) ;
+                ht:resp [
+                    a ht:Response ;
+                    mf:expectedStatus hts:OK ;
+                    ht:headers ([
+                            a ht:ResponseHeader ;
+                            ht:fieldName "content-type" ;
+                            ht:fieldValue "text/turtle; charset=utf-8"
+                        ]
+                    ) ;
+                ]
+            ]
+        )
+    ] ;
+    .
+
+gsp:head_non_existing_direct rdf:type mf:GraphStoreProtocolTest ;
+    mf:name    "HEAD on non-existing graph (direct graph identification)" ;
+	mf:requires mf:DirectGraphIdentification ;
+    mf:action [
+        a ht:Connection ;
+        ht:connectionAuthority "www.example" ;
+        ht:requests ([
+                a ht:Request ;
+                ht:methodName "HEAD" ;
+                ht:httpVersion "1.1" ;
+                ht:absolutePath "/gsp/person/4.ttl" ;
+                ht:headers ([
+                        a ht:RequestHeader ;
+                        ht:fieldName "accept" ;
+                        ht:fieldValue "text/turtle; charset=utf-8"
+                    ]
+                ) ;
+                ht:resp [
+                    a ht:Response ;
+                    mf:expectedStatus hts:NotFound ;
+                ]
+            ]
+        )
+    ] ;
+    .

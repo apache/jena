@@ -4,9 +4,11 @@
 @prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
 @prefix dawgt:  <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+@prefix sparql: <http://www.w3.org/ns/sparql#> .
 
 <>  rdf:type mf:Manifest ;
     rdfs:label "Syntax Query" ;
+    mf:specVersion sparql:version-1.1 ;
     rdfs:comment "Syntax tests Syntax SPARQL 1.1" ;
     mf:entries
     ( 
@@ -458,13 +460,13 @@
    mf:action  <syntax-BINDscope6.rq> ;.
 
 :test_61a rdf:type   mf:NegativeSyntaxTest11 ;
-    dawgt:approval dawgt:Approved ;
+   dawgt:approval dawgt:Approved ;
     dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-09-25#resolution_2> ;
     mf:name    "syntax-BINDscope7.rq" ;
     mf:action  <syntax-BINDscope7.rq> ;.
 
 :test_62a rdf:type   mf:NegativeSyntaxTest11 ;
-    dawgt:approval dawgt:Approved ;
+   dawgt:approval dawgt:Approved ;
     dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-09-25#resolution_2> ;
     mf:name    "syntax-BINDscope8.rq" ;
     mf:action  <syntax-BINDscope8.rq> ;.
@@ -640,13 +642,13 @@
 :test_codepoint_escape_bad_02 rdf:type   mf:NegativeSyntaxTest11 ;
    dawgt:approval dawgt:Proposed ;
    mf:name    "Invalid multi-pass codepoint escaping (\\u then \\U)" ;
-   mf:description "Unescaping one escape sequence must not produce content that is used in another escape sequence" ;
+   rdfs:comment "Unescaping one escape sequence must not produce content that is used in another escape sequence" ;
    mf:action  <syn-codepoint-escape-bad-04.rq> ;.
 
 :test_codepoint_escape_bad_03 rdf:type   mf:NegativeSyntaxTest11 ;
    dawgt:approval dawgt:Proposed ;
    mf:name    "Invalid multi-pass codepoint escaping (\\U then \\u)" ;
-   mf:description "Unescaping one escape sequence must not produce content that is used in another escape sequence" ;
+   rdfs:comment "Unescaping one escape sequence must not produce content that is used in another escape sequence" ;
    mf:action  <syn-codepoint-escape-bad-05.rq> ;.
 
 :test_codepoint_boundaries_04 rdf:type mf:PositiveSyntaxTest11 ;
@@ -662,13 +664,13 @@
 :test_codepoint_invalid_escaped_bad_06 rdf:type mf:NegativeSyntaxTest11 ;
    dawgt:approval dawgt:Proposed ;
    mf:name    "\\u unicode codepoint escaping in literal using partial surrogate pair" ;
-   mf:description "Using a codepoint that is half of a surrogate pair (in the range U+D800–U+DFFF) without a corresponding codepoint is illegal" ;
+   rdfs:comment "Using a codepoint that is half of a surrogate pair (in the range U+D800–U+DFFF) without a corresponding codepoint is illegal" ;
    mf:action  <syn-invalid-codepoint-escaped-bad-01.rq> ;.
 
 :test_bad_values_too_many rdf:type mf:NegativeSyntaxTest11 ;
-    mf:name "Too many values in a VALUE clause compared to the number of variables" ;
-    mf:action <syn-bad-values-too-many.rq> .
+   mf:name "Too many values in a VALUE clause compared to the number of variables" ;
+   mf:action <syn-bad-values-too-many.rq> .
 
 :test_bad_values_too_few rdf:type mf:NegativeSyntaxTest11 ;
-    mf:name "Too few values in a VALUE clause compared to the number of variables" ;
-    mf:action <syn-bad-values-too-few.rq> .
+   mf:name "Too few values in a VALUE clause compared to the number of variables" ;
+   mf:action <syn-bad-values-too-few.rq> .

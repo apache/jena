@@ -1,5 +1,5 @@
 SELECT ?g ?t {
     GRAPH ?g {
-        VALUES (?g ?t) { (UNDEF "foo") ( <empty.ttl> "bar") }
+        VALUES (?g ?t) { (UNDEF "foo") ( <data01.ttl> "bar") }
     }
 }

@@ -34,4 +34,3 @@ trs:manifest  rdf:type mf:Manifest ;
     <syntax/manifest.ttl>
     <../../rdf11/rdf-turtle/manifest.ttl>
   ) .
-

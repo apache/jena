@@ -1,6 +1,8 @@
 # Codepoint escape in an IRI
 
-SELECT * {
-  ## /abc
-  <http://example/\u0061\U00000062\u0063> ?p ?o .
+SELECT ?v {
+  VALUES ?v {
+    # abc👾
+    <http://example/\u0061\U00000062\u0063\U0001F47E>
+  }
 }

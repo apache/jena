@@ -1,0 +1,11 @@
+PREFIX : <http://example/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+:s1 rdf:reifies <<( :s1 :p1 "foo" )>> .
+:s2 rdf:reifies <<( :s1 :p1 "foo"@en )>> .
+:s3 rdf:reifies <<( :s1 :p1 "foo"^^:dt )>> .
+:s4 rdf:reifies <<( :s1 :p1 true )>> .
+:s5 rdf:reifies <<( :s1 :p1 false )>> .
+:s6 rdf:reifies <<( :s1 :p1 1 )>> .
+:s7 rdf:reifies <<( :s1 :p1 1.0 )>> .
+:s8 rdf:reifies <<( :s1 :p1 1e0 )>> .

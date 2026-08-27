@@ -4,9 +4,11 @@
 @prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
 @prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+@prefix sparql: <http://www.w3.org/ns/sparql#> .
 
 <>  rdf:type mf:Manifest ;
     rdfs:label "Syntax 2" ;
+    mf:specVersion sparql:version-1.0 ;
     rdfs:comment "Syntax tests syntax-sparql2" ;
     mf:entries
     ( :syntax-general-01 :syntax-general-02 :syntax-general-03

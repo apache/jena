@@ -22,6 +22,7 @@
 package org.apache.jena.sparql.vocabulary ;
 
 import org.apache.jena.rdf.model.* ;
+import org.apache.jena.vocabulary.TestManifest;
 
 /**
  * Vocabulary definitions from test-manifest-1_1.ttl
@@ -29,25 +30,21 @@ import org.apache.jena.rdf.model.* ;
 @Deprecated(forRemoval = true)
 public class TestManifest_11 {
 
-    /** A type of test specifically for syntax testing for SPARQL 1.1. */
-    @Deprecated(forRemoval = true)
-    public static final Resource NegativeSyntaxTest11 = ResourceFactory.createResource( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeSyntaxTest11" );
-
-    /** A type of test specifically for syntax testing of SPARQL Update. Syntax tests
-     *  are not required to have an associated result, only an action. Negative syntax
-     *  tests are tests of which the result should be a parser error.
-     */
-    @Deprecated(forRemoval = true)
-    public static final Resource NegativeUpdateSyntaxTest11 = ResourceFactory.createResource( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeUpdateSyntaxTest11" );
+    public static final String NS = TestManifest.NS;
 
     /** A type of test specifically for syntax testing for SPARQL 1.1. */
     @Deprecated(forRemoval = true)
-    public static final Resource PositiveSyntaxTest11 = ResourceFactory.createResource( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveSyntaxTest11" );
+    public static final Resource PositiveSyntaxTest11 = ResourceFactory.createResource( NS+"PositiveSyntaxTest11" );
 
-    /** A type of test specifically for syntax testing of SPARQL Update. Syntax tests
-     *  are not required to have an associated result, only an action.
-     */
     @Deprecated(forRemoval = true)
-    public static final Resource PositiveUpdateSyntaxTest11 = ResourceFactory.createResource( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveUpdateSyntaxTest11" );
+    public static final Resource PositiveUpdateSyntaxTest11 = ResourceFactory.createResource( NS+"PositiveUpdateSyntaxTest11" );
+
+    /** A type of test specifically for syntax testing for SPARQL 1.1. */
+    @Deprecated(forRemoval = true)
+    public static final Resource NegativeSyntaxTest11 = ResourceFactory.createResource( NS+"NegativeSyntaxTest11" );
+
+    @Deprecated(forRemoval = true)
+    public static final Resource NegativeUpdateSyntaxTest11 = ResourceFactory.createResource( NS+"NegativeUpdateSyntaxTest11" );
+
 }
 

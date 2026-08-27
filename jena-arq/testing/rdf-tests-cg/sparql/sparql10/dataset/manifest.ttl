@@ -4,9 +4,11 @@
 @prefix dawgt:  <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
 @prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix sparql: <http://www.w3.org/ns/sparql#> .
 
 <>  rdf:type mf:Manifest ;
     rdfs:label "dataset" ;
+    mf:specVersion sparql:version-1.0 ;
     rdfs:comment "Tests for GRAPH" ;
     mf:entries
     (
@@ -30,7 +32,8 @@
     dawgt:approval dawgt:Approved ;
     dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0047/31-dawg-minutes> ;
     mf:action
-            [ qt:query  <dataset-01.rq> ] ;
+            [ qt:query       <dataset-01.rq> ;
+              qt:graphData   <data-g1.ttl> ] ;
     mf:result  <dataset-01.ttl> ;
     .
 
@@ -40,7 +43,8 @@
     dawgt:approval dawgt:Approved ;
     dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0047/31-dawg-minutes> ;
     mf:action
-            [ qt:query       <dataset-02.rq> ] ;
+            [ qt:query       <dataset-02.rq> ;
+              qt:graphData   <data-g1.ttl> ] ;
     mf:result  <dataset-02.ttl> ;
     .
 
@@ -50,7 +54,8 @@
     dawgt:approval dawgt:Approved ;
     dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0047/31-dawg-minutes> ;
     mf:action
-            [ qt:query       <dataset-03.rq> ] ;
+            [ qt:query       <dataset-03.rq> ;
+              qt:graphData   <data-g1.ttl> ] ;
     mf:result  <dataset-03.ttl> ;
     .
 
@@ -60,7 +65,8 @@
     dawgt:approval dawgt:Approved ;
     dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0047/31-dawg-minutes> ;
     mf:action
-            [ qt:query       <dataset-04.rq> ] ;
+            [ qt:query       <dataset-04.rq> ;
+              qt:graphData   <data-g1.ttl> ] ;
     mf:result  <dataset-04.ttl> ;
     .
 
@@ -70,7 +76,9 @@
     dawgt:approval dawgt:Approved ;
     dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0047/31-dawg-minutes> ;
     mf:action
-            [ qt:query        <dataset-05.rq> ] ;
+            [ qt:query       <dataset-05.rq> ;
+              qt:graphData   <data-g1.ttl> ;
+              qt:graphData   <data-g2.ttl> ] ;
     mf:result  <dataset-05.ttl> ;
     .
 
@@ -80,7 +88,9 @@
     dawgt:approval dawgt:Approved ;
     dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0047/31-dawg-minutes> ;
     mf:action
-            [ qt:query        <dataset-06.rq> ] ;
+            [ qt:query       <dataset-06.rq> ;
+              qt:graphData   <data-g1.ttl> ;
+              qt:graphData   <data-g2.ttl> ] ;
     mf:result  <dataset-06.ttl> ;
     .
 
@@ -90,7 +100,9 @@
     dawgt:approval dawgt:Approved ;
     dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0047/31-dawg-minutes> ;
     mf:action
-            [ qt:query        <dataset-07.rq> ] ;
+            [ qt:query       <dataset-07.rq> ;
+              qt:graphData   <data-g1.ttl> ;
+              qt:graphData   <data-g2.ttl> ] ;
     mf:result  <dataset-07.ttl> ;
     .
 
@@ -100,7 +112,9 @@
     dawgt:approval dawgt:Approved ;
     dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0047/31-dawg-minutes> ;
     mf:action
-            [ qt:query        <dataset-08.rq> ] ;
+            [ qt:query       <dataset-08.rq> ;
+              qt:graphData   <data-g1.ttl> ;
+              qt:graphData   <data-g2.ttl> ] ;
     mf:result  <dataset-08.ttl> ;
     .
 
@@ -110,7 +124,9 @@
     dawgt:approval dawgt:Approved ;
     dawgt:approvedBy <http://www.w3.org/2007/10/09-dawg-minutes.html> ;
     mf:action
-            [ qt:query        <dataset-09b.rq> ] ;
+            [ qt:query       <dataset-09b.rq> ;
+              qt:graphData   <data-g3-dup.ttl> ;
+              qt:graphData   <data-g3.ttl> ] ;
     mf:result  <dataset-09.ttl> ;
     .
 
@@ -120,7 +136,9 @@
     dawgt:approval dawgt:Approved ;
     dawgt:approvedBy <http://www.w3.org/2007/10/09-dawg-minutes.html> ;
     mf:action
-            [ qt:query        <dataset-10b.rq> ] ;
+            [ qt:query       <dataset-10b.rq> ;
+              qt:graphData   <data-g3-dup.ttl> ;
+              qt:graphData   <data-g3.ttl> ] ;
     mf:result  <dataset-10.ttl> ;
     .
 
@@ -130,7 +148,11 @@
     dawgt:approval dawgt:Approved ;
     dawgt:approvedBy <http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0118/04-dawg-minutes.html> ;
     mf:action
-            [ qt:query        <dataset-11.rq> ] ;
+            [ qt:query       <dataset-11.rq> ;
+              qt:graphData   <data-g1.ttl> ;
+              qt:graphData   <data-g2.ttl> ;
+              qt:graphData   <data-g3.ttl> ;
+              qt:graphData   <data-g4.ttl> ] ;
     mf:result  <dataset-11.ttl> ;
     .
 
@@ -140,6 +162,14 @@
     dawgt:approval dawgt:Approved ;
     dawgt:approvedBy <http://www.w3.org/2007/10/09-dawg-minutes.html> ;
     mf:action
-            [ qt:query        <dataset-12b.rq> ] ;
+            [ qt:query       <dataset-12b.rq> ;
+              qt:graphData   <data-g1-dup.ttl> ;
+              qt:graphData   <data-g2-dup.ttl> ;
+              qt:graphData   <data-g3-dup.ttl> ;
+              qt:graphData   <data-g4-dup.ttl> ;
+              qt:graphData   <data-g1.ttl> ;
+              qt:graphData   <data-g2.ttl> ;
+              qt:graphData   <data-g3.ttl> ;
+              qt:graphData   <data-g4.ttl> ] ;
     mf:result  <dataset-12.ttl> ;
     .

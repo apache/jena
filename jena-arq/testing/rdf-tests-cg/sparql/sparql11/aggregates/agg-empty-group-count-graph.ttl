@@ -6,17 +6,17 @@
 []    rdf:type      rs:ResultSet ;
       rs:resultVariable  "g" ;
       rs:resultVariable  "c" ;
-      rs:solution   [ rs:binding    [ rs:value      <empty.ttl> ;
+      rs:solution   [ rs:binding    [ rs:value      <singleton.ttl> ;
                                       rs:variable   "g"
                                     ] ;
                       rs:binding    [ rs:value      "0"^^xsd:integer ;
                                       rs:variable   "c"
                                     ]
                     ] ;
-      rs:solution   [ rs:binding    [ rs:value      <singleton.ttl> ;
+      rs:solution   [ rs:binding    [ rs:value      <pair.ttl> ;
                                       rs:variable   "g"
                                     ] ;
-                      rs:binding    [ rs:value      "1"^^xsd:integer ;
+                      rs:binding    [ rs:value      "2"^^xsd:integer ;
                                       rs:variable   "c"
                                     ]
                     ] .

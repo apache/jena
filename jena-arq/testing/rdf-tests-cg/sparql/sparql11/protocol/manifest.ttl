@@ -9,9 +9,11 @@
 @prefix hts:    <http://www.w3.org/2011/http-statusCodes#> .
 @prefix sd:     <http://www.w3.org/ns/sparql-service-description#> .
 @prefix ut:     <http://www.w3.org/2009/sparql/tests/test-update#> .
+@prefix sparql: <http://www.w3.org/ns/sparql#> .
 
 <>  rdf:type mf:Manifest ;
     rdfs:label "SPARQL Protocol" ;
+    mf:specVersion sparql:version-1.1 ;
     rdfs:comment """
     	This manifest encodes tests for the SPARQL Protocol. Each test record
     	has one or more ht:Requests that must be run in order to produce the

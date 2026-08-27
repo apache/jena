@@ -1,0 +1,16 @@
+_:b0 <http://example/p> <http://example/o> .
+_:b0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies> <<( <http://example/s1> <http://example/p1> "foo"@en )>> .
+_:b1 <http://example/p> <http://example/o> .
+_:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies> <<( <http://example/s1> <http://example/p1> "1"^^<http://www.w3.org/2001/XMLSchema#integer> )>> .
+_:b2 <http://example/p> <http://example/o> .
+_:b2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies> <<( <http://example/s1> <http://example/p1> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> )>> .
+_:b3 <http://example/p> <http://example/o> .
+_:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies> <<( <http://example/s1> <http://example/p1> "foo"^^<http://example/dt> )>> .
+_:b4 <http://example/p> <http://example/o> .
+_:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies> <<( <http://example/s1> <http://example/p1> "foo" )>> .
+_:b5 <http://example/p> <http://example/o> .
+_:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies> <<( <http://example/s1> <http://example/p1> "1.0"^^<http://www.w3.org/2001/XMLSchema#decimal> )>> .
+_:b6 <http://example/p> <http://example/o> .
+_:b6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies> <<( <http://example/s1> <http://example/p1> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> )>> .
+_:b7 <http://example/p> <http://example/o> .
+_:b7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies> <<( <http://example/s1> <http://example/p1> "1e0"^^<http://www.w3.org/2001/XMLSchema#double> )>> .

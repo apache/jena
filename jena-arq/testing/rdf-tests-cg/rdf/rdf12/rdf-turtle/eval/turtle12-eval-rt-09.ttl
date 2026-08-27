@@ -1,0 +1,10 @@
+PREFIX : <http://example/>
+
+<< :s1 :p1 "foo" >> :p :o .
+<< :s1 :p1 "foo"@en >> :p :o .
+<< :s1 :p1 "foo"^^:dt >> :p :o .
+<< :s1 :p1 true >> :p :o .
+<< :s1 :p1 false >> :p :o .
+<< :s1 :p1 1 >> :p :o .
+<< :s1 :p1 1.0 >> :p :o .
+<< :s1 :p1 1e0 >> :p :o .

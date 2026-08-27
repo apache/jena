@@ -4,9 +4,11 @@
 @prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
 @prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+@prefix sparql: <http://www.w3.org/ns/sparql#> .
 
 <>  rdf:type mf:Manifest ;
     rdfs:label "Boolean Effective Value" ;
+    mf:specVersion sparql:version-1.0 ;
     rdfs:comment "Test of boolean expressions" ;
     mf:entries
     ( :dawg-boolean-literal :dawg-bev-1 :dawg-bev-2 :dawg-bev-3 :dawg-bev-4 :dawg-bev-5 :dawg-bev-6 ) .

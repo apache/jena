@@ -4,9 +4,11 @@
 @prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
 @prefix dawgt:  <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+@prefix sparql: <http://www.w3.org/ns/sparql#> .
 
 <>  rdf:type mf:Manifest ;
     rdfs:label "SPARQL Codepoint-Escaping Tests" ;
+    mf:specVersion sparql:version-1.2 ;
     mf:entries
     (
         :codepoint-esc-01-bad
@@ -16,6 +18,8 @@
         :codepoint-esc-05
         :codepoint-esc-06
         :codepoint-esc-07
+        :codepoint-esc-08
+        :codepoint-esc-09
 
         :surrogate-esc-01-bad
         :surrogate-esc-02-bad
@@ -49,23 +53,40 @@
    rdfs:comment   "Codepoint escape in variable" ;
    mf:action      <codepoint-esc-04-bad.rq> .
 
-:codepoint-esc-05 rdf:type   mf:PositiveSyntaxTest ;
+:codepoint-esc-05 rdf:type   mf:QueryEvaluationTest;
    dawgt:approval dawgt:Proposed ;
    mf:name        "codepoint-esc-05.rq" ;
    rdfs:comment   "Codepoint escape in IRI" ;
-   mf:action      <codepoint-esc-05.rq> .
+   mf:action      [ qt:query <codepoint-esc-05.rq> ] ;
+   mf:result      <codepoint-esc-05.srx> .
 
-:codepoint-esc-06 rdf:type   mf:PositiveSyntaxTest ;
+:codepoint-esc-06 rdf:type   mf:QueryEvaluationTest ;
    dawgt:approval dawgt:Proposed ;
    mf:name        "codepoint-esc-06.rq" ;
    rdfs:comment   "Codepoint escape in string - double quoted string" ;
-   mf:action      <codepoint-esc-06.rq> .
+   mf:action      [ qt:query <codepoint-esc-06.rq> ] ;
+   mf:result      <codepoint-esc-06.srx> .
 
-:codepoint-esc-07 rdf:type   mf:PositiveSyntaxTest ;
+:codepoint-esc-07 rdf:type   mf:QueryEvaluationTest ;
    dawgt:approval dawgt:Proposed ;
    mf:name        "codepoint-esc-07.rq" ;
    rdfs:comment   "Codepoint escape in string - single quoted string" ;
-   mf:action      <codepoint-esc-07.rq> .
+   mf:action      [ qt:query <codepoint-esc-07.rq> ] ;
+   mf:result      <codepoint-esc-07.srx> .
+
+:codepoint-esc-08 rdf:type   mf:QueryEvaluationTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "codepoint-esc-08.rq" ;
+   rdfs:comment   "Codepoint escape in string - special characters" ;
+   mf:action      [ qt:query <codepoint-esc-08.rq> ] ;
+   mf:result      <codepoint-esc-08.nt> .
+
+:codepoint-esc-09 rdf:type   mf:QueryEvaluationTest ;
+   dawgt:approval dawgt:Proposed ;
+   mf:name        "codepoint-esc-09.rq" ;
+   rdfs:comment   "Codepoint escape in string - parsing rules" ;
+   mf:action      [ qt:query <codepoint-esc-09.rq> ] ;
+   mf:result      <codepoint-esc-09.srx> .
 
 
 :surrogate-esc-01-bad rdf:type   mf:NegativeSyntaxTest ;
@@ -79,7 +100,6 @@
    mf:name        "surrogate-esc-02-bad.rq" ;
    rdfs:comment   "Surrogate - low-high - not accepted" ;
    mf:action      <surrogate-esc-02-bad.rq> .
-
 
 :surrogate-esc-03-bad rdf:type   mf:NegativeSyntaxTest ;
    dawgt:approval dawgt:Proposed ;

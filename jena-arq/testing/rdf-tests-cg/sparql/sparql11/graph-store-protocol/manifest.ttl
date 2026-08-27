@@ -1,0 +1,68 @@
+@prefix : <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#> .
+@prefix dawg: <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+@prefix gsp: <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix cnt:    <http://www.w3.org/2011/content#> .
+@prefix ht:     <http://www.w3.org/2011/http#> .
+@prefix hts:    <http://www.w3.org/2011/http-statusCodes#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sparql: <http://www.w3.org/ns/sparql#> .
+
+<> a mf:Manifest;
+    rdfs:label "SPARQL Graph Store Protocol";
+    mf:specVersion sparql:version-1.1 ;
+    rdfs:comment """
+        This manifests included here encode tests for the SPARQL Graph Store Protocol.
+        Each test record has one or more ht:Requests that must be run in order
+        to produce the expected results.
+        
+        Expected results are encoded in the ht:Response. The ht:Response may
+        have a `mf:expectedStatus` property, describing the expected HTTP
+        status code or class of status code (pointing to values
+        like `hts:Created` or `hts:StatusCode2xx`);
+        
+        The ht:Response may have a `mf:expectedLocation` property whose value
+        is a literal. In the presence of this property, the current response
+        must have a `Location` header field value. Futher, the literal value
+        must be used as a template variable and replaced in subsequent requests
+        with the header field value (replacement occurring in the request URI
+        as well as the request bodies).
+        
+        The ht:Response may include expected RDF response content, described
+        by `ht:headers` and `ht:body`. When present, the graph resulting from
+        parsing the ht:body content appropriately for the RDF format described
+        by the Content-Type header must be graph isomorphic to the one in the
+        response to the Graph Store Protocol request.
+
+        Each request has a ht:absolutePath value that starts with `/gsp`.
+        A program using this manifest data to run the tests must replace this
+        value with whatever path prefix is appropriate for the Graph Store
+        Protocol endpoint being tested.
+        
+        Each test uses the `mf:requires` property to indicate that the test
+        requires the Graph Store Protocol endpoint being tested to support
+        the listed features in order for the test to run:
+        
+        * mf:DirectGraphIdentification
+        
+          Direct identification of graphs using a request path whose prefix
+          matches the endpoint (e.g. </gsp/person/1.ttl>).
+        
+        * mf:IndirectGraphIdentification
+        
+          Indirect identification of graphs using a request query parameter
+          with encoded graph URI (e.g. </gsp?graph=http%3A%2F%2Fwww.example%2Fgsp%2Fperson%2F1.ttl>).
+        
+        * mf:requires mf:POSTGraphCreation
+        
+          Support for a POST request to the endpoint (e.g. </gsp>) causing the
+          Graph Store to create a new graph, and return its IRI in the
+          response's Location header.
+        
+    """ ;
+    mf:include (
+        <manifest-direct.ttl>
+        <manifest-indirect.ttl>
+    )
+    .

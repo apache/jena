@@ -1,0 +1,14 @@
+# Codepoint escape are not reused during parsing
+
+SELECT ?v {
+  VALUES ?v {
+    "abc\u005Cdef"
+    "abc\u005Ctuv"
+    "\u005CA"
+    "\\u005C"
+    "\u005C\u005C"
+    "\\\u005C"
+    "\\\\"
+    "\u005Cn"
+  }
+}

@@ -48,6 +48,7 @@ trs:manifest  rdf:type mf:Manifest ;
         trs:trig12-annotation-10
         trs:trig12-annotation-11
         trs:trig12-annotation-12
+        trs:trig12-annotation-13
         trs:trig12-reified-triples-annotation-01
         trs:trig12-reified-triples-annotation-02
         trs:trig12-reified-triples-annotation-03
@@ -185,18 +186,24 @@ trs:trig12-annotation-12 rdf:type rdft:TestTrigEval ;
    mf:result    <trig12-eval-annotation-12.nq> ;
    .
 
+trs:trig12-annotation-13 rdf:type rdft:TestTrigEval ;
+   mf:name      "TriG 1.2 - Annotation form with IRI reifier" ;
+   mf:action    <trig12-eval-annotation-13.trig> ;
+   mf:result    <trig12-eval-annotation-13.nq> ;
+   .
+
 trs:trig12-reified-triples-annotation-01 rdf:type rdft:TestTrigEval ;
    mf:name      "TriG 1.2 - Annotation with reified triples" ;
    mf:action    <trig12-eval-reified-triples-annotation-01.trig> ;
    mf:result    <trig12-eval-reified-triples-annotation-01.nq> ;
    .
-   
+
 trs:trig12-reified-triples-annotation-02 rdf:type rdft:TestTrigEval ;
    mf:name      "TriG 1.2 - Annotation on triple with reified triple subject" ;
    mf:action    <trig12-eval-reified-triples-annotation-02.trig> ;
    mf:result    <trig12-eval-reified-triples-annotation-02.nq> ;
    .
-   
+
 trs:trig12-reified-triples-annotation-03 rdf:type rdft:TestTrigEval ;
    mf:name      "TriG 1.2 - Annotation on triple with reified triple object" ;
    mf:action    <trig12-eval-reified-triples-annotation-03.trig> ;

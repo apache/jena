@@ -1,12 +1,12 @@
 PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs:	<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
 
 ## Manifest of all RDF 1.1 test suites
 
 <> a mf:Manifest ;
-  rdfs:label "RDF 1.1 tests" ;
-  rdfs:comment """
+    rdfs:label "RDF 1.1 tests" ;
+    rdfs:comment """
     These test suites are a product previous RDF working groups,
     and has been maintained by the
     [RDF Test Curation Community Group](https://www.w3.org/community/rdf-tests/).
@@ -15,12 +15,12 @@ PREFIX mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
 
     Conformance with RDF 1.1 specifications can be determined via successfully running the
     tests for relevant specifications.
-  """;
-  mf:include (
-    <rdf-n-triples/manifest.ttl>
-    <rdf-n-quads/manifest.ttl>
-    <rdf-mt/manifest.ttl>
-    <rdf-turtle/manifest.ttl>
-    <rdf-trig/manifest.ttl>
-    <rdf-xml/manifest.ttl>
-	) .
+    """;
+    mf:include (
+        <rdf-n-triples/manifest.ttl>
+        <rdf-n-quads/manifest.ttl>
+        <rdf-mt/manifest.ttl>
+        <rdf-turtle/manifest.ttl>
+        <rdf-trig/manifest.ttl>
+        <rdf-xml/manifest.ttl>
+    ) .
