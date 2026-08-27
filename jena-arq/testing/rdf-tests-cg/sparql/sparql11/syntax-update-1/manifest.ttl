@@ -4,9 +4,11 @@
 @prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
 @prefix dawgt:  <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+@prefix sparql: <http://www.w3.org/ns/sparql#> .
 
 <>  rdf:type mf:Manifest ;
     rdfs:label "Syntax Update 1" ;
+    mf:specVersion sparql:version-1.1 ;
     rdfs:comment "Syntax tests Syntax SPARQL Update" ;
     mf:entries
     ( 
@@ -380,8 +382,8 @@
    mf:action  <syntax-update-bad-12.ru> ;.
 
 :test_53 rdf:type   mf:PositiveUpdateSyntaxTest11 ;
-    dawgt:approval dawgt:Approved ;
-    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_3> ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_3> ;
    mf:name    "syntax-update-53.ru" ;
    mf:action  <syntax-update-53.ru> ;.
 

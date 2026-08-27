@@ -1,0 +1,3 @@
+# GRAPH tests
+
+GRAPH <http://example/g> { }

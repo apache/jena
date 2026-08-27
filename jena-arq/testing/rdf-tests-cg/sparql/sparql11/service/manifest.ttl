@@ -5,9 +5,11 @@
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
 @prefix dawgt:  <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
 @prefix sd:     <http://www.w3.org/ns/sparql-service-description#> .
+@prefix sparql: <http://www.w3.org/ns/sparql#> .
 
 <>  rdf:type mf:Manifest ;
     rdfs:label "SPARQL Service" ;
+    mf:specVersion sparql:version-1.1 ;
     mf:entries
     ( 
 :service1

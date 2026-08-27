@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+    <head>
+        <variable name="v"/>
+    </head>
+    <results>
+        <result>
+            <binding name="v">
+                <literal>abc\def</literal>
+            </binding>
+        </result>
+        <result>
+            <binding name="v">
+                <literal>abc\tuv</literal>
+            </binding>
+        </result>
+        <result>
+            <binding name="v">
+                <literal>\A</literal>
+            </binding>
+        </result>
+        <result>
+            <binding name="v">
+                <literal>\u005C</literal>
+            </binding>
+        </result>
+        <result>
+            <binding name="v">
+                <literal>\\</literal>
+            </binding>
+        </result>
+        <result>
+            <binding name="v">
+                <literal>\\</literal>
+            </binding>
+        </result>
+        <result>
+            <binding name="v">
+                <literal>\\</literal>
+            </binding>
+        </result>
+        <result>
+            <binding name="v">
+                <literal>\n</literal>
+            </binding>
+        </result>
+    </results>
+</sparql>

@@ -55,6 +55,9 @@ public class TestManifestX {
     /** Whether to create a text index */
     public static final Property textIndex = ResourceFactory.createProperty( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#textIndex" );
 
+
+
+
     /** Syntax tests which expect a parse failure */
     public static final Resource NegativeSyntaxTestARQ = ResourceFactory.createResource( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#NegativeSyntaxTestARQ" );
 
@@ -66,6 +69,8 @@ public class TestManifestX {
 
     /** Syntax tests (query) */
     public static final Resource PositiveUpdateSyntaxTestARQ = ResourceFactory.createResource( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#PositiveUpdateSyntaxTestARQ" );
+
+
 
     /** The class of test that are Query tests (query, data, results) */
     public static final Resource TestQuery = ResourceFactory.createResource( "http://jena.hpl.hp.com/2005/05/test-manifest-extra#TestQuery" );

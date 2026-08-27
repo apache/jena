@@ -4,8 +4,10 @@
 @prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
 @prefix dawgt:  <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+@prefix sparql: <http://www.w3.org/ns/sparql#> .
 
 <>  rdf:type mf:Manifest ;
+    mf:specVersion sparql:version-1.1 ;
     rdfs:comment "Bindings" ;
     mf:entries
     ( 
@@ -141,10 +143,9 @@
     [
         qt:query  <graph.rq> ;
         qt:data   <empty.ttl> ;
-        qt:graphData   <empty.ttl> ;
+        qt:graphData   <data01.ttl> ;
         qt:graphData   <data02.ttl>
     ] ;
     mf:result  <graph.ttl> .
-
 
 

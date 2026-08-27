@@ -96,21 +96,12 @@ rdft:TestTriGPositiveSyntax a rdfs:Class;
 
 rdft:TestTrigEval a rdfs:Class;
    rdfs:label "TriG Positive Evaluation"@en;
-   rdfs:comment "A positive TriG evaluation test."@en .
-
-rdft:TestTrigNegativeEval a rdfs:Class;
-   rdfs:label "TriG Negative Evaluation"@en;
-   rdfs:comment "A negative TriG evaluation test."@en;
+   rdfs:comment "A positive TriG evaluation test."@en ;
    rdfs:subClassOf rdft:TestEval .
 
 rdft:TestTurtleEval a rdfs:Class;
    rdfs:label "Turtle Positive Evaluation"@en;
    rdfs:comment "A positive Turtle evaluation test."@en;
-   rdfs:subClassOf rdft:TestEval .
-
-rdft:TestTurtleNegativeEval a rdfs:Class;
-   rdfs:label "Turtle Negative Evaluation"@en;
-   rdfs:comment "A negative Turtle evaluation test."@en;
    rdfs:subClassOf rdft:TestEval .
 
 rdft:TestTurtleNegativeSyntax a rdfs:Class;
@@ -125,7 +116,8 @@ rdft:TestTurtlePositiveSyntax a rdfs:Class;
 
 rdft:TestXMLNegativeSyntax a rdfs:Class;
    rdfs:label "RDF/XML Negative Syntax"@en;
-   rdfs:comment "A negative RDF/XML syntax test."@en .
+   rdfs:comment "A negative RDF/XML syntax test."@en ;
+   rdfs:subClassOf rdft:TestSyntax .
 
 rdft:XMLEval a rdfs:Class;
    rdfs:label "RDF/XML Evaluation"@en;

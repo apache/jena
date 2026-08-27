@@ -1,0 +1,8 @@
+<http://example/s1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies> <<( <http://example/s1> <http://example/p1> "foo" )>> .
+<http://example/s2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies> <<( <http://example/s1> <http://example/p1> "foo"@en )>> .
+<http://example/s3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies> <<( <http://example/s1> <http://example/p1> "foo"^^<http://example/dt> )>> .
+<http://example/s4> <http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies> <<( <http://example/s1> <http://example/p1> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> )>> .
+<http://example/s5> <http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies> <<( <http://example/s1> <http://example/p1> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> )>> .
+<http://example/s6> <http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies> <<( <http://example/s1> <http://example/p1> "1"^^<http://www.w3.org/2001/XMLSchema#integer> )>> .
+<http://example/s7> <http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies> <<( <http://example/s1> <http://example/p1> "1.0"^^<http://www.w3.org/2001/XMLSchema#decimal> )>> .
+<http://example/s8> <http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies> <<( <http://example/s1> <http://example/p1> "1e0"^^<http://www.w3.org/2001/XMLSchema#double> )>> .

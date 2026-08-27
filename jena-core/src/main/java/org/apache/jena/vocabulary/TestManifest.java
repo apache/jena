@@ -93,14 +93,12 @@ public class TestManifest {
      * A type of test specifically for update syntax testing.
      */
     public static final Resource PositiveUpdateSyntaxTest = ResourceFactory.createResource(NS+"PositiveUpdateSyntaxTest");
-    public static final Resource PositiveUpdateSyntaxTest11 = ResourceFactory.createResource(NS+"PositiveUpdateSyntaxTest11");
 
     /**
      * A type of test specifically for update syntax testing.
      *  Negative syntax tests are tests of which the result should be a parser error.
      */
     public static final Resource NegativeUpdateSyntaxTest = ResourceFactory.createResource(NS+"NegativeUpdateSyntaxTest");
-    public static final Resource NegativeUpdateSyntaxTest11 = ResourceFactory.createResource(NS+"NegativeUpdateSyntaxTest11");
 
     /** The class of all SPARQL Update evaluation tests */
     public static final Resource UpdateEvaluationTest = ResourceFactory.createResource( NS+"UpdateEvaluationTest" );

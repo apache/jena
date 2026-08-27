@@ -39,7 +39,7 @@
 		<syntax-fed/manifest.ttl>
 		<service-description/manifest.ttl>
 		<protocol/manifest.ttl>
-		<http-rdf-update/manifest.ttl>
+		<graph-store-protocol/manifest.ttl>
 	) ;
 	mf:includedSpecifications (
 		<http://www.w3.org/TR/sparql11-query/>
@@ -120,5 +120,5 @@
 
 <http://www.w3.org/TR/sparql11-http-rdf-update/> rdfs:label "SPARQL 1.1 Graph Store HTTP Protocol" ;
 	mf:conformanceRequirement (
-		<http-rdf-update/manifest.ttl>
+		<graph-store-protocol/manifest.ttl>
 	).

@@ -7,9 +7,11 @@
 @prefix sd:    <http://www.w3.org/ns/sparql-service-description#> .
 @prefix ent:    <http://www.w3.org/ns/entailment/> .
 @prefix pr:    <http://www.w3.org/ns/owl-profile/> .
+@prefix sparql: <http://www.w3.org/ns/sparql#> .
 
 <>  rdf:type mf:Manifest ;
     rdfs:label "entailment regime test cases" ;
+    mf:specVersion sparql:version-1.1 ;
     mf:entries
     ( 
       :bind01

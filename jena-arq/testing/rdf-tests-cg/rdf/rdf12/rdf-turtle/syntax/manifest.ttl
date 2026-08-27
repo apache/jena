@@ -3,14 +3,14 @@
 ## [1] https://www.w3.org/Consortium/Legal/2008/04-testsuite-license
 ## [2] https://www.w3.org/Consortium/Legal/2008/03-bsd-license
 
-PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
-PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#> 
-PREFIX mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> 
-PREFIX rdft:   <http://www.w3.org/ns/rdftest#> 
-PREFIX trs:    <https://w3c.github.io/rdf-tests/rdf/rdf12/rdf-turtle/syntax#> 
-PREFIX dct:    <http://purl.org/dc/terms/> 
-PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#> 
-PREFIX foaf:   <http://xmlns.com/foaf/0.1/> 
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
+PREFIX rdft:   <http://www.w3.org/ns/rdftest#>
+PREFIX trs:    <https://w3c.github.io/rdf-tests/rdf/rdf12/rdf-turtle/syntax#>
+PREFIX dct:    <http://purl.org/dc/terms/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+PREFIX foaf:   <http://xmlns.com/foaf/0.1/>
 PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
 
 trs:manifest  rdf:type mf:Manifest ;
@@ -18,8 +18,8 @@ trs:manifest  rdf:type mf:Manifest ;
    skos:prefLabel "La suite des tests pour la syntaxe RDF 1.2 Turtle"@fr ;
    skos:prefLabel "Conjunto de pruebas para la sintaxis RDF 1.2 Turtle"@es ;
    mf:assumedTestBase <https://w3c.github.io/rdf-tests/rdf/rdf12/rdf-turtle/syntax/> ;
-   dct:issued "2023-07-20"^^xsd:date ; 
-   dct:modified "2025-06-10"^^xsd:date ; 
+   dct:issued "2023-07-20"^^xsd:date ;
+   dct:modified "2025-06-10"^^xsd:date ;
    dct:licence <https://www.w3.org/Consortium/Legal/2008/03-bsd-license> ;
    dct:creator [ foaf:homepage <https://w3c.github.io/rdf12-wg/> ; foaf:name "W3C RDF & SPARQL Working Group" ] ;
     mf:entries
@@ -63,7 +63,7 @@ trs:manifest  rdf:type mf:Manifest ;
         trs:turtle12-ann-6
         trs:turtle12-ann-7
         trs:turtle12-ann-8
-        
+
         trs:turtle12-bad-ann-1
         trs:turtle12-bad-ann-2
 
@@ -351,12 +351,12 @@ trs:nt-ttl12-nested-1 rdf:type rdft:TestTurtlePositiveSyntax ;
    .
 
 ## Bad syntax
- 
+
 trs:nt-ttl12-bad-01 rdf:type rdft:TestTurtleNegativeSyntax ;
     mf:name      "N-Triples 1.2 as Turtle 1.2 - Bad - triple term as predicate" ;
     mf:action    <nt-ttl12-bad-syntax-01.ttl> ;
     .
-    
+
 trs:nt-ttl12-bad-02 rdf:type rdft:TestTurtleNegativeSyntax ;
     mf:name      "N-Triples 1.2 as Turtle 1.2 - Bad - triple term, literal subject" ;
     mf:action    <nt-ttl12-bad-syntax-02.ttl> ;
@@ -486,7 +486,7 @@ trs:turtle12-surrogate-pair-bad-01 rdf:type rdft:TestTurtleNegativeSyntax ;
    mf:name      "Turtle 1.2 - Bad - Surrogate pair numeric escape sequence" ;
    mf:action    <turtle12-surrogate-pair-bad-01.ttl>
    .
-   
+
 trs:turtle12-surrogate-pair-bad-02 rdf:type rdft:TestTurtleNegativeSyntax ;
    mf:name      "Turtle 1.2 - Bad - Surrogate pair via numeric escape sequence" ;
    mf:action    <turtle12-surrogate-pair-bad-02.ttl>

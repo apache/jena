@@ -5,9 +5,11 @@
 @prefix ut:     <http://www.w3.org/2009/sparql/tests/test-update#> .
 @prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
 @prefix sd:      <http://www.w3.org/ns/sparql-service-description#> .
+@prefix sparql: <http://www.w3.org/ns/sparql#> .
 
 <>  rdf:type mf:Manifest ;
     rdfs:label "Basic Update" ;
+    mf:specVersion sparql:version-1.1 ;
     rdfs:comment "Basic SPARQL 1.1 Update test cases" ;
     mf:entries
     ( 
