@@ -37,6 +37,7 @@ import org.junit.platform.suite.api.Suite;
     TestTrigParseTripleTerms.class,
     TestTurtleTripleTermsParse.class,
     TestSPARQL12TripleTerms.class,
+    TestSPARQL12TripleTermsExec.class,
 
     TestRDF12LangDirSyntax.class,
     TestSPARQL12Syntax.class,

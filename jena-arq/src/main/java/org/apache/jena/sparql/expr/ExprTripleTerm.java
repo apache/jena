@@ -94,8 +94,12 @@ public class ExprTripleTerm extends ExprNode {
     @Override
     public Expr applyNodeTransform(NodeTransform transform) {
         Node n = transform.apply(tripleTerm);
+        if ( n == tripleTerm )
+            return this;
         return ExprLib.nodeToExpr(n);
     }
+
+    public Expr apply(ExprTransform transform) { return transform.transform(this); }
 
     @Override
     public boolean equals(Expr obj, boolean bySyntax) {

@@ -47,4 +47,12 @@ public interface ExprTransform
     public Expr transform(ExprNone exprNone);
     public Expr transform(ExprVar exprVar);
     public Expr transform(ExprAggregator eAgg);
+
+    /**
+     * Transform a triple term in an expression, e.g. {@code <<( ?s ?p ?o )>>}.
+     * The default is to leave the triple term unchanged. Transforms that rewrite
+     * nodes (e.g. variable renaming) need to override this in order to reach the
+     * components of the triple term.
+     */
+    public default Expr transform(ExprTripleTerm exprTripleTerm) { return exprTripleTerm; }
 }

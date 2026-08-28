@@ -52,6 +52,11 @@ public class NodeTransformExpr extends ExprTransformCopy {
         return transform(exprVar.getAsNode());
     }
 
+    @Override
+    public Expr transform(ExprTripleTerm exprTripleTerm) {
+        return exprTripleTerm.applyNodeTransform(transform);
+    }
+
     /** Transform node then create a {@link ExprVar} or {@link NodeValue}. */
     @Override
     public Expr transform(Node input) {

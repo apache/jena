@@ -73,6 +73,11 @@ public class ExprTransformNodeElement extends ExprTransformCopy {
     }
 
     @Override
+    public Expr transform(ExprTripleTerm exprTripleTerm) {
+        return exprTripleTerm.applyNodeTransform(nodeTransform);
+    }
+
+    @Override
     public Expr transform(ExprFunctionOp funcOp, ExprList args, Op opArg) {
         // Syntax phased only - ignore args and opArg
         Element elt = funcOp.getElement();
