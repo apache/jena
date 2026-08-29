@@ -45,14 +45,21 @@ public class OpProject extends OpModifier
 
     @Override
     public String getName() { return Tags.tagProject; }
-    @Override
-    public void visit(OpVisitor opVisitor)  { opVisitor.visit(this); }
-    @Override
-    public Op1 copy(Op subOp)                { return new OpProject(subOp, vars); }
 
     @Override
-    public Op apply(Transform transform, Op subOp)
-    { return transform.transform(this, subOp); }
+    public void visit(OpVisitor opVisitor) {
+        opVisitor.visit(this);
+    }
+
+    @Override
+    public Op1 copy(Op subOp) {
+        return new OpProject(subOp, vars);
+    }
+
+    @Override
+    public Op apply(Transform transform, Op subOp) {
+        return transform.transform(this, subOp);
+    }
 
     @Override
     public int hashCode() {

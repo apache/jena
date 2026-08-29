@@ -34,5 +34,6 @@ public class ExprTransformBase implements ExprTransform
     @Override public Expr transform(NodeValue nv)                                             { return nv; }
     @Override public Expr transform(ExprNone exprNone)                                        { return exprNone; }
     @Override public Expr transform(ExprVar ev)                                               { return ev; }
+    @Override public Expr transform(ExprTripleTerm exprTripleTerm)                            { return exprTripleTerm; }
     @Override public Expr transform(ExprAggregator eAgg)                                      { return eAgg; }
 }

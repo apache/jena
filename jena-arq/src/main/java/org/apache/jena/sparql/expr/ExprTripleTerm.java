@@ -54,8 +54,6 @@ public class ExprTripleTerm extends ExprNode {
 //        this.nvTripleTerm = ( tripleTerm.isConcrete() ) ?  NodeValue.makeNode(tripleTerm) : null;
 //    }
 
-    @Override public void visit(ExprVisitor visitor) { visitor.visit(this); }
-
     @Override public NodeValue eval(Binding binding, FunctionEnv env) {
         if ( nvTripleTerm != null )
             return nvTripleTerm;
@@ -89,6 +87,13 @@ public class ExprTripleTerm extends ExprNode {
             return this;
         Node nodeTriple = NodeFactory.createTripleTerm(t2);
         return new ExprTripleTerm(nodeTriple);
+    }
+
+    @Override
+    public void visit(ExprVisitor visitor) { visitor.visit(this); }
+
+    public Expr apply(ExprTransform exprTransform) {
+        return exprTransform.transform(this);
     }
 
     @Override

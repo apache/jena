@@ -483,9 +483,8 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
     }
 
     @Override
-    public void visit(ExprTripleTerm tripleTerm) {
-        //Expr e = tripleTerm.apply(exprTransform) ;
-        Expr e = tripleTerm;
+    public void visit(ExprTripleTerm exprTripleTerm) {
+        Expr e = exprTripleTerm.apply(exprTransform);
         push(exprStack, e) ;
     }
 

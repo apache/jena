@@ -374,6 +374,23 @@ public class TestVarRename
         rename(str1, str2, "x");
     }
 
+    @Test public void rename_tripleterms_01() {
+        String str1 = "(extend (?x <<(?s ?p ?o)>>) (table unit))";
+        String str2 = "(extend (?x <<(?/s ?/p ?/o)>> ) (table unit))";
+        rename(str1, str2, true, "x");
+    }
+
+    @Test public void rename_tripleterms_02() {
+        String str1 = "(extend (?x <<(?s ?p <<( ?x ?b ?c )>> )>>) (table unit))";
+        String str2 = "(extend (?x <<(?/s ?/p <<( ?x ?/b ?/c )>> )>> ) (table unit))";
+        rename(str1, str2, true, "x");
+    }
+
+    @Test public void rename_tripleterms_03() {
+        String str1 = "(triple (tripleterm ?s ?p ?o)  :q ?z )";
+        String str2 = "(triple (tripleterm ?s ?/p ?o) :q ?/z )";
+        rename(str1, str2, "s", "o");
+    }
 
     private void checkRename(String queryString, String opExpectedString)
     {
@@ -393,17 +410,17 @@ public class TestVarRename
         assertEquals(opExpected, opRenamed);
     }
 
-    private void reverse(String string, String string2, boolean repeatedly) {
-        Op opOrig = SSE.parseOp(string);
-        Op opExpected = SSE.parseOp(string2);
+    private void reverse(String input, String expected, boolean repeatedly) {
+        Op opOrig = SSE.parseOp(input);
+        Op opExpected = SSE.parseOp(expected);
         Op opActual = Rename.reverseVarRename(opOrig, repeatedly);
         assertEquals(opExpected, opActual);
     }
-    private void rename(String string, String string2, boolean reversable, String... varNames) {
+    private void rename(String input, String expected, boolean reversable, String... varNames) {
         Set<Var> s = new HashSet<>();
         for ( String vn : varNames )
             s.add(Var.alloc(vn));
-        rename(string, string2, reversable, s);
+        rename(input, expected, reversable, s);
     }
     private void rename(String inputStr, String expectedStr, boolean reversable, Set<Var> constant) {
         Op opOrig = SSE.parseOp(inputStr);
