@@ -99,7 +99,7 @@ public class TransformScopeRename {
                 // Need to find the right project
                 // We already stripped outer modifier.
                 if ( projectCount >= projectRenameDepth )
-                    // Inner ones already done.
+                    // subOp already done.
                     subOp = Rename.renameVars(subOp, opProject.getVars());
                 return super.transform(opProject, subOp);
             }

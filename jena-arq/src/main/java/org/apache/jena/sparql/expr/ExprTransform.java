@@ -46,5 +46,6 @@ public interface ExprTransform
 
     public Expr transform(ExprNone exprNone);
     public Expr transform(ExprVar exprVar);
+    public Expr transform(ExprTripleTerm exprTripleTerm);
     public Expr transform(ExprAggregator eAgg);
 }
