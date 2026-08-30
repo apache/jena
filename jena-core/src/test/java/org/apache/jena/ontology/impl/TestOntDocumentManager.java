@@ -23,12 +23,9 @@
 ///////////////
 package org.apache.jena.ontology.impl;
 
-
 // Imports
 ///////////////
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntDocumentManager;
 import org.apache.jena.ontology.OntDocumentManager.ReadFailureHandler;
@@ -43,7 +40,6 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.rdf.model.impl.RDFReaderFImpl;
-import org.apache.jena.reasoner.test.TestUtil;
 import org.apache.jena.test.X_RDFReaderF;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.OntDocManagerVocab;
@@ -58,7 +54,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.test.JenaTestLib;
 
 /**
  * <p>
@@ -67,8 +73,9 @@ import java.util.Set;
  */
 @SuppressWarnings("removal")
 public class TestOntDocumentManager
-    extends TestCase
 {
+
+    static { JenaTestLib.setup(); }
 
     static { RDFReaderFImpl.alternative(new X_RDFReaderF()); }
 
@@ -97,39 +104,16 @@ public class TestOntDocumentManager
         {  "testing/ontology/testImport5",  cnt(2),             T,          "file:testing/ontology/testImport5/ont-policy.rdf" }
     };
 
-
     // Instance variables
     //////////////////////////////////
-
 
     // Constructors
     //////////////////////////////////
 
-    public TestOntDocumentManager( String s ) {
-        super( s );
-    }
-
-    public static TestSuite suite() {
-        TestSuite suite = new TestSuite( "TestOntDocumentManager" );
-
-        // add the fixed test cases
-        suite.addTestSuite( TestOntDocumentManager.class );
-
-        // add the data-driven test cases
-        for ( Object[] aS_testData : s_testData )
-        {
-            suite.addTest( new DocManagerImportTest( (String) aS_testData[0], ( (Integer) aS_testData[1] ).intValue(),
-                                                     ( (Boolean) aS_testData[2] ).booleanValue(),
-                                                     (String) aS_testData[3] ) );
-        }
-        return suite;
-    }
-
-
     // External signature methods
     //////////////////////////////////
 
-    @Override
+    @BeforeEach
     public void setUp() {
         // ensure the ont doc manager is in a consistent state
         OntDocumentManager.getInstance().reset( true );
@@ -148,23 +132,27 @@ public class TestOntDocumentManager
         }
     }
 
+    @Test
     public void testConstruct0() {
         OntDocumentManager m = new OntDocumentManager();
         assertNotNull( m );
         assertEquals( m.getMetadataSearchPath(), OntDocumentManager.DEFAULT_METADATA_PATH );
     }
 
+    @Test
     public void testConstruct1() {
         OntDocumentManager mgr = new OntDocumentManager( "" );
-        assertTrue( "Should be no specification loaded", !mgr.listDocuments().hasNext() );
+        assertTrue( !mgr.listDocuments().hasNext(), "Should be no specification loaded" );
     }
 
+    @Test
     public void testConstruct2() {
         // make sure we don't fail on null
         OntDocumentManager mgr = new OntDocumentManager( (String) null );
-        assertTrue( "Should be no specification loaded", !mgr.listDocuments().hasNext() );
+        assertTrue( !mgr.listDocuments().hasNext(), "Should be no specification loaded" );
     }
 
+    @Test
     public void testConstruct3() {
         Model m = ModelFactory.createDefaultModel();
         Resource r = m.createResource();
@@ -173,17 +161,19 @@ public class TestOntDocumentManager
         r.addProperty( OntDocManagerVocab.altURL, m.createResource("file:local.rdf") );
 
         OntDocumentManager mgr = new OntDocumentManager( m );
-        assertEquals( "cache URL not correct", "file:local.rdf", mgr.doAltURLMapping( "http://example.com/foo" ));
+        assertEquals( "file:local.rdf", mgr.doAltURLMapping( "http://example.com/foo" ), "cache URL not correct");
     }
 
+    @Test
     public void testInitialisation() {
         OntDocumentManager mgr = new OntDocumentManager( "ont-policy-test.rdf" );
 
-        assertTrue( "Should be at least one specification loaded", mgr.listDocuments().hasNext() );
-        assertNotNull( "cache URL for owl should not be null", mgr.doAltURLMapping( "http://www.w3.org/2002/07/owl" ));
-        assertEquals( "cache URL for owl not correct", "file:vocabularies/owl.owl", mgr.doAltURLMapping( "http://www.w3.org/2002/07/owl" ));
+        assertTrue( mgr.listDocuments().hasNext(), "Should be at least one specification loaded" );
+        assertNotNull( mgr.doAltURLMapping( "http://www.w3.org/2002/07/owl" ), "cache URL for owl should not be null");
+        assertEquals( "file:vocabularies/owl.owl", mgr.doAltURLMapping( "http://www.w3.org/2002/07/owl" ), "cache URL for owl not correct");
     }
 
+    @Test
     public void testGetInstance() {
         OntDocumentManager odm = OntDocumentManager.getInstance();
         assertNotNull( odm );
@@ -192,6 +182,7 @@ public class TestOntDocumentManager
         assertSame( odm, odm2 );
     }
 
+    @Test
     public void testSetMetadataSearchPath() {
         OntDocumentManager odm = new OntDocumentManager( "ont-policy-test.rdf" );
         assertEquals( "ont-policy-test.rdf", odm.getMetadataSearchPath() );
@@ -211,6 +202,7 @@ public class TestOntDocumentManager
         assertEquals( "ont-policy-test.rdf", odm.getLoadedPolicyURL() );
     }
 
+    @Test
     public void testConfigure0() {
         Model m = ModelFactory.createDefaultModel();
         Resource r = m.createResource();
@@ -219,12 +211,13 @@ public class TestOntDocumentManager
         r.addProperty( OntDocManagerVocab.altURL, m.createResource("file:local.rdf") );
 
         OntDocumentManager odm = new OntDocumentManager( "ont-policy-test.rdf" );
-        TestUtil.assertIteratorLength( odm.listDocuments(), 3 );
+        OntTestUtil.assertIteratorLength( odm.listDocuments(), 3 );
 
         odm.configure( m, false );
-        TestUtil.assertIteratorLength( odm.listDocuments(), 4 );
+        OntTestUtil.assertIteratorLength( odm.listDocuments(), 4 );
     }
 
+    @Test
     public void testConfigure1() {
         Model m = ModelFactory.createDefaultModel();
         Resource r = m.createResource();
@@ -233,12 +226,13 @@ public class TestOntDocumentManager
         r.addProperty( OntDocManagerVocab.altURL, m.createResource("file:local.rdf") );
 
         OntDocumentManager odm = new OntDocumentManager( "ont-policy-test.rdf" );
-        TestUtil.assertIteratorLength( odm.listDocuments(), 3 );
+        OntTestUtil.assertIteratorLength( odm.listDocuments(), 3 );
 
         odm.configure( m );
-        TestUtil.assertIteratorLength( odm.listDocuments(), 1 );
+        OntTestUtil.assertIteratorLength( odm.listDocuments(), 1 );
     }
 
+    @Test
     public void testConfigure2() {
         // create a simple policy
         Model m = ModelFactory.createDefaultModel();
@@ -249,10 +243,10 @@ public class TestOntDocumentManager
         OntDocumentManager mgr = new OntDocumentManager( (String) null );
         assertTrue( mgr.getCacheModels() );
         mgr.configure( m );
-        assertFalse( "Docmgr configure() should have updated cache models flag", mgr.getCacheModels() );
+        assertFalse( mgr.getCacheModels(), "Docmgr configure() should have updated cache models flag" );
     }
 
-
+    @Test
     public void testReset() {
         OntDocumentManager mgr = new OntDocumentManager( (String) null );
 
@@ -274,12 +268,14 @@ public class TestOntDocumentManager
         assertTrue( mgr.getCacheModels() );
     }
 
+    @Test
     public void testDoAltMapping() {
         OntDocumentManager odm = new OntDocumentManager( "ont-policy-test.rdf" );
         assertEquals( "file:vocabularies/owl.owl", odm.doAltURLMapping( "http://www.w3.org/2002/07/owl" ));
         assertEquals( "http://example.com/nocache", odm.doAltURLMapping( "http://example.com/nocache" ));
     }
 
+    @Test
     public void testAddModel0() {
         OntDocumentManager odm = OntDocumentManager.getInstance();
         Model m = ModelFactory.createDefaultModel();
@@ -289,6 +285,7 @@ public class TestOntDocumentManager
         assertSame( m, odm.getModel(uri));
     }
 
+    @Test
     public void testAddModel1() {
         OntDocumentManager odm = OntDocumentManager.getInstance();
         Model m0 = ModelFactory.createDefaultModel();
@@ -306,6 +303,7 @@ public class TestOntDocumentManager
         assertSame( m1, odm.getModel(uri));
     }
 
+    @Test
     public void testClearCache0() {
         OntDocumentManager odm = OntDocumentManager.getInstance();
         Model m = ModelFactory.createDefaultModel();
@@ -319,6 +317,7 @@ public class TestOntDocumentManager
     /**
      * Ensure that sub-model imports are not re-used after clearing the cache.
      */
+    @Test
     public void testClearCache1() {
         OntModelSpec spec = new OntModelSpec(OntModelSpec.OWL_MEM);
         spec.getDocumentManager().reset();
@@ -350,6 +349,7 @@ public class TestOntDocumentManager
         assertEquals( count0, subModel1.size() );
     }
 
+    @Test
     public void testForget() {
         OntDocumentManager odm = new OntDocumentManager( "ont-policy-test.rdf" );
         assertEquals( "file:vocabularies/owl.owl", odm.doAltURLMapping( "http://www.w3.org/2002/07/owl" ) );
@@ -364,6 +364,7 @@ public class TestOntDocumentManager
         assertNull( odm.getModel( "http://www.w3.org/2002/07/owl#" ));
     }
 
+    @Test
     public void testGetOntology() {
         OntDocumentManager odm = new OntDocumentManager( "ont-policy-test.rdf" );
         OntModel m = odm.getOntology( "http://www.w3.org/2002/07/owl", OntModelSpec.OWL_MEM );
@@ -373,6 +374,7 @@ public class TestOntDocumentManager
         assertSame( m, m1 );
     }
 
+    @Test
     public void testProcessImports() {
         OntDocumentManager odm = new OntDocumentManager( "ont-policy-test.rdf" );
         assertTrue( odm.getProcessImports() );
@@ -380,6 +382,7 @@ public class TestOntDocumentManager
         assertFalse( odm.getProcessImports() );
     }
 
+    @Test
     public void testCacheModels() {
         OntDocumentManager odm = new OntDocumentManager( "ont-policy-test.rdf" );
         assertTrue( odm.getCacheModels() );
@@ -387,13 +390,15 @@ public class TestOntDocumentManager
         assertFalse( odm.getCacheModels() );
     }
 
+    @Test
     public void testManualAssociation() {
         OntDocumentManager odm = new OntDocumentManager( (String) null );
 
         odm.addAltEntry( "http://www.w3.org/2002/07/owl", "file:foo.bar" );
-        assertEquals( "Failed to retrieve cache location", "file:foo.bar", odm.doAltURLMapping( "http://www.w3.org/2002/07/owl" ) );
+        assertEquals( "file:foo.bar", odm.doAltURLMapping( "http://www.w3.org/2002/07/owl" ), "Failed to retrieve cache location" );
     }
 
+    @Test
     public void testRelativeNames() {
         OntModel m = ModelFactory.createOntologyModel();
         m.getDocumentManager().addAltEntry(
@@ -405,71 +410,74 @@ public class TestOntDocumentManager
         assertFalse( m.getResource("file:testing/ontology/relativenames.rdf#A").canAs(OntClass.class));
     }
 
-
-
+    @Test
     public void testIgnoreImport() {
         OntDocumentManager odm = new OntDocumentManager();
-        TestUtil.assertIteratorLength( odm.listIgnoredImports(), 0 );
+        OntTestUtil.assertIteratorLength( odm.listIgnoredImports(), 0 );
 
         odm.addIgnoreImport( "file:testing/ontology/testImport3/c.owl" );
-        TestUtil.assertIteratorLength( odm.listIgnoredImports(), 1 );
+        OntTestUtil.assertIteratorLength( odm.listIgnoredImports(), 1 );
         assertTrue( odm.ignoringImport( "file:testing/ontology/testImport3/c.owl"));
         assertFalse( odm.ignoringImport( "file:testing/ontology/foo.owl"));
 
         OntModelSpec spec = new OntModelSpec( null, odm, null, ProfileRegistry.OWL_LANG );
         OntModel m = ModelFactory.createOntologyModel( spec, null );
-        assertNotNull( "Ontology model should not be null", m );
+        assertNotNull( m, "Ontology model should not be null" );
 
         m.read( "file:testing/ontology/testImport3/a.owl" );
-        assertEquals( "Marker count not correct", 2, countMarkers( m ));
+        assertEquals( 2, countMarkers( m ), "Marker count not correct");
 
         odm.removeIgnoreImport( "file:testing/ontology/testImport3/c.owl" );
-        TestUtil.assertIteratorLength( odm.listIgnoredImports(), 0 );
+        OntTestUtil.assertIteratorLength( odm.listIgnoredImports(), 0 );
         assertFalse( odm.ignoringImport( "file:testing/ontology/testImport3/c.owl"));
     }
 
     /** Simple case: a imports b, b imports c, remove c */
+    @Test
     public void testUnloadImport1() {
         OntModel m = ModelFactory.createOntologyModel();
         m.read( "file:testing/ontology/testImport3/a.owl" );
-        assertEquals( "Marker count not correct", 3, countMarkers( m ) );
+        assertEquals( 3, countMarkers( m ), "Marker count not correct" );
 
-        assertTrue( "c should be imported", m.hasLoadedImport( "file:testing/ontology/testImport3/c.owl" ) );
+        assertTrue( m.hasLoadedImport( "file:testing/ontology/testImport3/c.owl" ), "c should be imported" );
         m.getDocumentManager().unloadImport( m, "file:testing/ontology/testImport3/c.owl" );
-        assertEquals( "Marker count not correct", 2, countMarkers( m ) );
-        assertFalse( "c should not be imported", m.hasLoadedImport( "file:testing/ontology/testImport3/c.owl" ) );
+        assertEquals( 2, countMarkers( m ), "Marker count not correct" );
+        assertFalse( m.hasLoadedImport( "file:testing/ontology/testImport3/c.owl" ), "c should not be imported" );
     }
 
     /** case 2: a imports b, b imports c, remove b */
+    @Test
     public void testUnloadImport2() {
         OntModel m = ModelFactory.createOntologyModel();
         m.read( "file:testing/ontology/testImport3/a.owl" );
-        assertEquals( "Marker count not correct", 3, countMarkers( m ) );
+        assertEquals( 3, countMarkers( m ), "Marker count not correct" );
 
-        assertTrue( "c should be imported", m.hasLoadedImport( "file:testing/ontology/testImport3/c.owl" ) );
-        assertTrue( "b should be imported", m.hasLoadedImport( "file:testing/ontology/testImport3/b.owl" ) );
+        assertTrue( m.hasLoadedImport( "file:testing/ontology/testImport3/c.owl" ), "c should be imported" );
+        assertTrue( m.hasLoadedImport( "file:testing/ontology/testImport3/b.owl" ), "b should be imported" );
         m.getDocumentManager().unloadImport( m, "file:testing/ontology/testImport3/b.owl" );
-        assertEquals( "Marker count not correct", 1, countMarkers( m ) );
-        assertFalse( "c should not be imported", m.hasLoadedImport( "file:testing/ontology/testImport3/c.owl" ) );
-        assertFalse( "b should not be imported", m.hasLoadedImport( "file:testing/ontology/testImport3/b.owl" ) );
+        assertEquals( 1, countMarkers( m ), "Marker count not correct" );
+        assertFalse( m.hasLoadedImport( "file:testing/ontology/testImport3/c.owl" ), "c should not be imported" );
+        assertFalse( m.hasLoadedImport( "file:testing/ontology/testImport3/b.owl" ), "b should not be imported" );
     }
 
     /** case 3: a imports b, b imports c, a imports d, d imports c, remove b */
+    @Test
     public void testUnloadImport3() {
         OntModel m = ModelFactory.createOntologyModel();
         m.read( "file:testing/ontology/testImport6/a.owl" );
-        assertEquals( "Marker count not correct", 4, countMarkers( m ) );
+        assertEquals( 4, countMarkers( m ), "Marker count not correct" );
 
-        assertTrue( "c should be imported", m.hasLoadedImport( "file:testing/ontology/testImport6/c.owl" ) );
-        assertTrue( "b should be imported", m.hasLoadedImport( "file:testing/ontology/testImport6/b.owl" ) );
-        assertTrue( "d should be imported", m.hasLoadedImport( "file:testing/ontology/testImport6/d.owl" ) );
+        assertTrue( m.hasLoadedImport( "file:testing/ontology/testImport6/c.owl" ), "c should be imported" );
+        assertTrue( m.hasLoadedImport( "file:testing/ontology/testImport6/b.owl" ), "b should be imported" );
+        assertTrue( m.hasLoadedImport( "file:testing/ontology/testImport6/d.owl" ), "d should be imported" );
         m.getDocumentManager().unloadImport( m, "file:testing/ontology/testImport6/b.owl" );
-        assertEquals( "Marker count not correct", 3, countMarkers( m ) );
-        assertTrue( "c should be imported", m.hasLoadedImport( "file:testing/ontology/testImport6/c.owl" ) );
-        assertTrue( "d should be imported", m.hasLoadedImport( "file:testing/ontology/testImport6/d.owl" ) );
-        assertFalse( "b should not be imported", m.hasLoadedImport( "file:testing/ontology/testImport6/b.owl" ) );
+        assertEquals( 3, countMarkers( m ), "Marker count not correct" );
+        assertTrue( m.hasLoadedImport( "file:testing/ontology/testImport6/c.owl" ), "c should be imported" );
+        assertTrue( m.hasLoadedImport( "file:testing/ontology/testImport6/d.owl" ), "d should be imported" );
+        assertFalse( m.hasLoadedImport( "file:testing/ontology/testImport6/b.owl" ), "b should not be imported" );
     }
 
+    @Test
     public void testDynamicImports1() {
         OntModel m = ModelFactory.createOntologyModel();
         Resource a = m.getResource( "file:testing/ontology/testImport3/a.owl" );
@@ -477,12 +485,13 @@ public class TestOntDocumentManager
         m.add( a, m.getProfile().IMPORTS(), b );
 
         // not dymamically imported by default
-        assertEquals( "Marker count not correct", 0, countMarkers( m ) );
+        assertEquals( 0, countMarkers( m ), "Marker count not correct" );
 
-        assertFalse( "c should not be imported", m.hasLoadedImport( "file:testing/ontology/testImport3/c.owl" ) );
-        assertFalse( "b should not be imported", m.hasLoadedImport( "file:testing/ontology/testImport3/b.owl" ) );
+        assertFalse( m.hasLoadedImport( "file:testing/ontology/testImport3/c.owl" ), "c should not be imported" );
+        assertFalse( m.hasLoadedImport( "file:testing/ontology/testImport3/b.owl" ), "b should not be imported" );
     }
 
+    @Test
     public void testDynamicImports2() {
         OntModel m = ModelFactory.createOntologyModel();
         Resource a = m.getResource( "file:testing/ontology/testImport3/a.owl" );
@@ -493,19 +502,20 @@ public class TestOntDocumentManager
         m.add( a, m.getProfile().IMPORTS(), b );
 
         // dynamically imported
-        assertEquals( "Marker count not correct", 2, countMarkers( m ) );
+        assertEquals( 2, countMarkers( m ), "Marker count not correct" );
 
-        assertTrue( "c should be imported", m.hasLoadedImport( "file:testing/ontology/testImport3/c.owl" ) );
-        assertTrue( "b should be imported", m.hasLoadedImport( "file:testing/ontology/testImport3/b.owl" ) );
+        assertTrue( m.hasLoadedImport( "file:testing/ontology/testImport3/c.owl" ), "c should be imported" );
+        assertTrue( m.hasLoadedImport( "file:testing/ontology/testImport3/b.owl" ), "b should be imported" );
     }
 
+    @Test
     public void testDynamicImports3() {
         OntModel m = ModelFactory.createOntologyModel();
         m.read( "file:testing/ontology/testImport3/a.owl" );
-        assertEquals( "Marker count not correct", 3, countMarkers( m ) );
+        assertEquals( 3, countMarkers( m ), "Marker count not correct" );
 
-        assertTrue( "c should be imported", m.hasLoadedImport( "file:testing/ontology/testImport3/c.owl" ) );
-        assertTrue( "b should be imported", m.hasLoadedImport( "file:testing/ontology/testImport3/b.owl" ) );
+        assertTrue( m.hasLoadedImport( "file:testing/ontology/testImport3/c.owl" ), "c should be imported" );
+        assertTrue( m.hasLoadedImport( "file:testing/ontology/testImport3/b.owl" ), "b should be imported" );
 
         m.setDynamicImports( true );
 
@@ -513,28 +523,30 @@ public class TestOntDocumentManager
         Resource b = m.getResource( OntResolve.resolve("file:testing/ontology/testImport3/b.owl") );
         m.remove( m.createStatement( a, m.getProfile().IMPORTS(), b ) );
 
-        assertEquals( "Marker count not correct", 1, countMarkers( m ) );
-        assertFalse( "c should not be imported", m.hasLoadedImport( "file:testing/ontology/testImport3/c.owl" ) );
-        assertFalse( "b should not be imported", m.hasLoadedImport( "file:testing/ontology/testImport3/b.owl" ) );
+        assertEquals( 1, countMarkers( m ), "Marker count not correct" );
+        assertFalse( m.hasLoadedImport( "file:testing/ontology/testImport3/c.owl" ), "c should not be imported" );
+        assertFalse( m.hasLoadedImport( "file:testing/ontology/testImport3/b.owl" ), "b should not be imported" );
     }
 
+    @Test
     public void testSearchPath() {
         OntDocumentManager o1 = new OntDocumentManager( "ont-policy-test.rdf" );
-        assertEquals( "Did not return correct loaded search path", "ont-policy-test.rdf", o1.getLoadedPolicyURL() );
+        assertEquals( "ont-policy-test.rdf", o1.getLoadedPolicyURL(), "Did not return correct loaded search path" );
 
         OntDocumentManager o2 = new OntDocumentManager( "ont-policy-test.notexist.rdf;ont-policy-test.rdf" );
-        assertEquals( "Did not return correct loaded search path", "ont-policy-test.rdf", o2.getLoadedPolicyURL() );
+        assertEquals( "ont-policy-test.rdf", o2.getLoadedPolicyURL(), "Did not return correct loaded search path" );
 
         OntDocumentManager o3 = new OntDocumentManager( (String) null );
-        assertNull( "Most recent policy should be null", o3.getLoadedPolicyURL() );
+        assertNull( o3.getLoadedPolicyURL(), "Most recent policy should be null" );
 
         o3.setMetadataSearchPath( "ont-policy-test.rdf", true );
-        assertEquals( "Did not return correct loaded search path", "ont-policy-test.rdf", o2.getLoadedPolicyURL() );
+        assertEquals( "ont-policy-test.rdf", o2.getLoadedPolicyURL(), "Did not return correct loaded search path" );
 
         o3.setMetadataSearchPath( "ont-policy-test.notexist.rdf", true );
-        assertNull( "Most recent policy should be null", o3.getLoadedPolicyURL() );
+        assertNull( o3.getLoadedPolicyURL(), "Most recent policy should be null" );
     }
 
+    @Test
     public void testReadFailHandler0() {
         OntDocumentManager o1 = new OntDocumentManager( "ont-policy-test.rdf" );
         assertNull( o1.getReadFailureHandler() );
@@ -553,6 +565,7 @@ public class TestOntDocumentManager
      * is designed for domain names that are sure to be invalid. See
      * <a href="http://tools.ietf.org/html/rfc2606#section-2">tools.ietf.org/html/rfc2606#section-2</a>
      */
+    @Test
     public void testReadFailHandler1() {
         OntDocumentManager o1 = new OntDocumentManager( "ont-policy-test.rdf" );
 
@@ -569,6 +582,7 @@ public class TestOntDocumentManager
         assertTrue( rfh.m_seen );
     }
 
+    @Test
     public void testReadHook0() {
         TestReadHook rh = new TestReadHook( false );
         OntDocumentManager o1 = new OntDocumentManager( "ont-policy-test.rdf" );
@@ -585,10 +599,11 @@ public class TestOntDocumentManager
         OntModel m = ModelFactory.createOntologyModel( spec );
         m.read( new StringReader( source ), "http://example.com/foo#", "N3" );
 
-        assertEquals( "Wrong number of calls to before load hook", 3, rh.m_before );
-        assertEquals( "Wrong number of calls to after load hook", 3, rh.m_after );
+        assertEquals( 3, rh.m_before, "Wrong number of calls to before load hook" );
+        assertEquals( 3, rh.m_after, "Wrong number of calls to after load hook" );
     }
 
+    @Test
     public void testReadHook1() {
         TestReadHook rh = new TestReadHook( true );
         OntDocumentManager o1 = new OntDocumentManager( "ont-policy-test.rdf" );
@@ -602,10 +617,9 @@ public class TestOntDocumentManager
         OntModel m = ModelFactory.createOntologyModel( spec );
         m.read( new StringReader( source ), "http://example.com/foo#", "N3" );
 
-        assertEquals( "Wrong number of calls to before load hook", 1, rh.m_before );
-        assertEquals( "Wrong number of calls to after load hook", 1, rh.m_after );
+        assertEquals( 1, rh.m_before, "Wrong number of calls to before load hook" );
+        assertEquals( 1, rh.m_after, "Wrong number of calls to after load hook" );
     }
-
 
     /* count the number of marker statements in the combined model */
     public static int countMarkers( Model m ) {
@@ -620,9 +634,21 @@ public class TestOntDocumentManager
         return count;
     }
 
+    /**
+     * One dynamic test per row of {@code s_testData}. The JUnit3 suite() added
+     * the fixed test cases (now ordinary @Test methods) plus one
+     * DocManagerImportTest per row, so one row remains one test.
+     */
+    @TestFactory
+    public Stream<DynamicTest> docManagerImportTests() {
+        return Stream.of( s_testData )
+                     .map( row -> new DocManagerImportTest( (String) row[0], ((Integer) row[1]).intValue(),
+                                                            ((Boolean) row[2]).booleanValue(), (String) row[3] ) )
+                     .map( tc -> DynamicTest.dynamicTest( tc.getName(), tc::runTest ) );
+    }
+
     // Internal implementation methods
     //////////////////////////////////
-
 
     //==============================================================================
     // Inner class definitions
@@ -640,8 +666,8 @@ public class TestOntDocumentManager
      * total.
      */
     static class DocManagerImportTest
-        extends TestCase
     {
+        String m_name;
         String m_dir;
         int m_count;
         String m_path;
@@ -649,7 +675,7 @@ public class TestOntDocumentManager
 
         /* constuctor */
         DocManagerImportTest( String dir, int count, boolean processImports, String path ) {
-            super( dir );
+            m_name = dir;
             m_dir = dir;
             m_count = count;
             m_path = path;
@@ -658,7 +684,11 @@ public class TestOntDocumentManager
 
         // external contract methods
 
-        @Override
+        /** The name this case ran under in the JUnit3 suite. */
+        public String getName() {
+            return m_name;
+        }
+
         public void runTest() {
             OntDocumentManager dm = new OntDocumentManager();
 
@@ -671,7 +701,7 @@ public class TestOntDocumentManager
             // now load the model - we always start from a.owl in the given directory
             OntModelSpec spec = new OntModelSpec( null, dm, null, ProfileRegistry.OWL_LANG );
             OntModel m = ModelFactory.createOntologyModel( spec, null );
-            assertNotNull( "Ontology model should not be null", m );
+            assertNotNull( m, "Ontology model should not be null" );
 
             String filename = "file:" + m_dir + "/a.owl";
 
@@ -680,7 +710,7 @@ public class TestOntDocumentManager
             } catch (Throwable ex) {
                 m.read(filename);
             }
-            assertEquals( "Marker count not correct: "+filename, m_count, countMarkers( m ));
+            assertEquals( m_count, countMarkers( m ), "Marker count not correct: "+filename);
         }
     }
 

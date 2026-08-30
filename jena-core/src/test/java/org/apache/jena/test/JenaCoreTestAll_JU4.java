@@ -73,8 +73,8 @@ public class JenaCoreTestAll_JU4 extends TestCase {
         addTest(ts,  "Reasoners",           adaptJUnit4(org.apache.jena.reasoner.test.TS3_reasoners.class));
         addTest(ts,  "RuleReasoners",       adaptJUnit4(org.apache.jena.reasoner.rulesys.TS3_RuleReasoners.class));
 
-        addTest(ts,  "Ontology ModelMaker", adaptJUnit4(org.apache.jena.ontology.makers.TS3_ModelMakers.class));
-        addTest(ts,  "Ontology",            adaptJUnit4(org.apache.jena.ontology.impl.TS3_ont.class));
+//JU6        addTest(ts,  "Ontology ModelMaker", adaptJUnit4(org.apache.jena.ontology.makers.TS3_ModelMakers.class));
+//JU6        addTest(ts,  "Ontology",            adaptJUnit4(org.apache.jena.ontology.impl.TS3_ont.class));
 
         // Local TTL parser for tests - not fully compliant.
 //JU6        addTest(ts,  "Turtle",              adaptJUnit4(org.apache.jena.ttl_test.test_turtle.TS_TestTurtle.class));

@@ -23,17 +23,17 @@
 ///////////////
 package org.apache.jena.ontology.impl;
 
-
-
 // Imports
 ///////////////
-import junit.framework.*;
 import org.apache.jena.ontology.*;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.util.iterator.ClosableIterator;
 import org.apache.jena.util.iterator.NullIterator;
 import org.apache.jena.vocabulary.*;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.apache.jena.test.JenaTestLib;
 
 /**
  * <p>
@@ -41,9 +41,11 @@ import org.apache.jena.vocabulary.*;
  * </p>
  */
 @SuppressWarnings("removal")
-public class TestClassExpression
-    extends OntTestBase
+public class TestClassExpression extends OntTestBase
 {
+
+    static { JenaTestLib.setup(); }
+
     // Constants
     //////////////////////////////////
 
@@ -55,15 +57,6 @@ public class TestClassExpression
 
     // Constructors
     //////////////////////////////////
-
-    static public TestSuite suite() {
-        return new TestClassExpression( "TestClassExpression" );
-    }
-
-    public TestClassExpression( String name ) {
-        super( name );
-    }
-
 
     // External signature methods
     //////////////////////////////////
@@ -80,22 +73,22 @@ public class TestClassExpression
                     OntClass C = m.createClass( NS + "C" );
 
                     A.addSuperClass( B );
-                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.SUB_CLASS_OF() ) );
-                    assertEquals( "A should have super-class B", B, A.getSuperClass() );
+                    assertEquals( 1, A.getCardinality( prof.SUB_CLASS_OF() ), "Cardinality should be 1" );
+                    assertEquals( B, A.getSuperClass(), "A should have super-class B" );
 
                     A.addSuperClass( C );
-                    assertEquals( "Cardinality should be 2", 2, A.getCardinality( prof.SUB_CLASS_OF() ) );
+                    assertEquals( 2, A.getCardinality( prof.SUB_CLASS_OF() ), "Cardinality should be 2" );
                     iteratorTest( A.listSuperClasses(), new Object[] {C, B} );
 
                     A.setSuperClass( C );
-                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.SUB_CLASS_OF() ) );
-                    assertEquals( "A shuold have super-class C", C, A.getSuperClass() );
-                    assertTrue( "A shuold not have super-class B", !A.hasSuperClass( B, false ) );
+                    assertEquals( 1, A.getCardinality( prof.SUB_CLASS_OF() ), "Cardinality should be 1" );
+                    assertEquals( C, A.getSuperClass(), "A shuold have super-class C" );
+                    assertTrue( !A.hasSuperClass( B, false ), "A shuold not have super-class B" );
 
                     A.removeSuperClass( B );
-                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.SUB_CLASS_OF() ) );
+                    assertEquals( 1, A.getCardinality( prof.SUB_CLASS_OF() ), "Cardinality should be 1" );
                     A.removeSuperClass( C );
-                    assertEquals( "Cardinality should be 0", 0, A.getCardinality( prof.SUB_CLASS_OF() ) );
+                    assertEquals( 0, A.getCardinality( prof.SUB_CLASS_OF() ), "Cardinality should be 0" );
                 }
             },
             new OntTestCase( "OntClass.sub-class", true, true, true ) {
@@ -107,22 +100,22 @@ public class TestClassExpression
                     OntClass C = m.createClass( NS + "C" );
 
                     A.addSubClass( B );
-                    assertEquals( "Cardinality should be 1", 1, B.getCardinality( prof.SUB_CLASS_OF() ) );
-                    assertEquals( "A should have sub-class B", B, A.getSubClass() );
+                    assertEquals( 1, B.getCardinality( prof.SUB_CLASS_OF() ), "Cardinality should be 1" );
+                    assertEquals( B, A.getSubClass(), "A should have sub-class B" );
 
                     A.addSubClass( C );
-                    assertEquals( "Cardinality should be 2", 2, B.getCardinality( prof.SUB_CLASS_OF() ) + C.getCardinality( prof.SUB_CLASS_OF() ) );
+                    assertEquals( 2, B.getCardinality( prof.SUB_CLASS_OF() ) + C.getCardinality( prof.SUB_CLASS_OF() ), "Cardinality should be 2" );
                     iteratorTest( A.listSubClasses(), new Object[] {C, B} );
 
                     A.setSubClass( C );
-                    assertEquals( "Cardinality should be 1", 1, B.getCardinality( prof.SUB_CLASS_OF() ) + C.getCardinality( prof.SUB_CLASS_OF() ) );
-                    assertEquals( "A shuold have sub-class C", C, A.getSubClass() );
-                    assertTrue( "A shuold not have sub-class B", !A.hasSubClass( B, false ) );
+                    assertEquals( 1, B.getCardinality( prof.SUB_CLASS_OF() ) + C.getCardinality( prof.SUB_CLASS_OF() ), "Cardinality should be 1" );
+                    assertEquals( C, A.getSubClass(), "A shuold have sub-class C" );
+                    assertTrue( !A.hasSubClass( B, false ), "A shuold not have sub-class B" );
 
                     A.removeSubClass( B );
-                    assertTrue( "A should have sub-class C", A.hasSubClass( C, false ) );
+                    assertTrue( A.hasSubClass( C, false ), "A should have sub-class C" );
                     A.removeSubClass( C );
-                    assertTrue( "A should not have sub-class C", !A.hasSubClass( C, false ) );
+                    assertTrue( !A.hasSubClass( C, false ), "A should not have sub-class C" );
                 }
             },
             new OntTestCase( "OntClass.equivalentClass", true, true, false ) {
@@ -134,22 +127,22 @@ public class TestClassExpression
                     OntClass C = m.createClass( NS + "C" );
 
                     A.addEquivalentClass( B );
-                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.EQUIVALENT_CLASS() ) );
-                    assertEquals( "A have equivalentClass B", B, A.getEquivalentClass() );
+                    assertEquals( 1, A.getCardinality( prof.EQUIVALENT_CLASS() ), "Cardinality should be 1" );
+                    assertEquals( B, A.getEquivalentClass(), "A have equivalentClass B" );
 
                     A.addEquivalentClass( C );
-                    assertEquals( "Cardinality should be 2", 2, A.getCardinality( prof.EQUIVALENT_CLASS() ) );
+                    assertEquals( 2, A.getCardinality( prof.EQUIVALENT_CLASS() ), "Cardinality should be 2" );
                     iteratorTest( A.listEquivalentClasses(), new Object[] {C, B} );
 
                     A.setEquivalentClass( C );
-                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.EQUIVALENT_CLASS() ) );
-                    assertEquals( "A should have equivalentClass C", C, A.getEquivalentClass() );
-                    assertTrue( "A should not have equivalentClass B", !A.hasEquivalentClass( B ) );
+                    assertEquals( 1, A.getCardinality( prof.EQUIVALENT_CLASS() ), "Cardinality should be 1" );
+                    assertEquals( C, A.getEquivalentClass(), "A should have equivalentClass C" );
+                    assertTrue( !A.hasEquivalentClass( B ), "A should not have equivalentClass B" );
 
                     A.removeEquivalentClass( B );
-                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.EQUIVALENT_CLASS() ) );
+                    assertEquals( 1, A.getCardinality( prof.EQUIVALENT_CLASS() ), "Cardinality should be 1" );
                     A.removeEquivalentClass( C );
-                    assertEquals( "Cardinality should be 0", 0, A.getCardinality( prof.EQUIVALENT_CLASS() ) );
+                    assertEquals( 0, A.getCardinality( prof.EQUIVALENT_CLASS() ), "Cardinality should be 0" );
                 }
             },
             new OntTestCase( "OntClass.disjointWith", true, false, false ) {
@@ -161,22 +154,22 @@ public class TestClassExpression
                     OntClass C = m.createClass( NS + "C" );
 
                     A.addDisjointWith( B );
-                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.DISJOINT_WITH() ) );
-                    assertEquals( "A have be disjoint with B", B, A.getDisjointWith() );
+                    assertEquals( 1, A.getCardinality( prof.DISJOINT_WITH() ), "Cardinality should be 1" );
+                    assertEquals( B, A.getDisjointWith(), "A have be disjoint with B" );
 
                     A.addDisjointWith( C );
-                    assertEquals( "Cardinality should be 2", 2, A.getCardinality( prof.DISJOINT_WITH() ) );
+                    assertEquals( 2, A.getCardinality( prof.DISJOINT_WITH() ), "Cardinality should be 2" );
                     iteratorTest( A.listDisjointWith(), new Object[] {C,B} );
 
                     A.setDisjointWith( C );
-                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.DISJOINT_WITH() ) );
-                    assertEquals( "A should be disjoint with C", C, A.getDisjointWith() );
-                    assertTrue( "A should not be disjoint with B", !A.isDisjointWith( B ) );
+                    assertEquals( 1, A.getCardinality( prof.DISJOINT_WITH() ), "Cardinality should be 1" );
+                    assertEquals( C, A.getDisjointWith(), "A should be disjoint with C" );
+                    assertTrue( !A.isDisjointWith( B ), "A should not be disjoint with B" );
 
                     A.removeDisjointWith( B );
-                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.DISJOINT_WITH() ) );
+                    assertEquals( 1, A.getCardinality( prof.DISJOINT_WITH() ), "Cardinality should be 1" );
                     A.removeDisjointWith( C );
-                    assertEquals( "Cardinality should be 0", 0, A.getCardinality( prof.DISJOINT_WITH() ) );
+                    assertEquals( 0, A.getCardinality( prof.DISJOINT_WITH() ), "Cardinality should be 0" );
                 }
             },
             new OntTestCase( "EnumeratedClass.oneOf", true, false, false ) {
@@ -188,25 +181,25 @@ public class TestClassExpression
                     OntResource b = m.getResource( NS + "b" ).as( OntResource.class );
 
                     A.addOneOf( a );
-                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.ONE_OF() ) );
-                    assertEquals( "Size should be 1", 1, A.getOneOf().size() );
-                    assertTrue( "A should have a as enumerated member", A.getOneOf().contains( a ) );
+                    assertEquals( 1, A.getCardinality( prof.ONE_OF() ), "Cardinality should be 1" );
+                    assertEquals( 1, A.getOneOf().size(), "Size should be 1" );
+                    assertTrue( A.getOneOf().contains( a ), "A should have a as enumerated member" );
 
                     A.addOneOf( b );
-                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.ONE_OF() ) );
-                    assertEquals( "Size should be 2", 2, A.getOneOf().size() );
+                    assertEquals( 1, A.getCardinality( prof.ONE_OF() ), "Cardinality should be 1" );
+                    assertEquals( 2, A.getOneOf().size(), "Size should be 2" );
                     iteratorTest( A.listOneOf(), new Object[] {a,b} );
 
                     A.setOneOf( m.createList( new RDFNode[] {b} ) );
-                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.ONE_OF() ) );
-                    assertEquals( "Size should be 1", 1, A.getOneOf().size() );
-                    assertTrue( "A should have b in the enum", A.hasOneOf( b ) );
-                    assertTrue( "A should not have a in the enum", !A.hasOneOf( a ) );
+                    assertEquals( 1, A.getCardinality( prof.ONE_OF() ), "Cardinality should be 1" );
+                    assertEquals( 1, A.getOneOf().size(), "Size should be 1" );
+                    assertTrue( A.hasOneOf( b ), "A should have b in the enum" );
+                    assertTrue( !A.hasOneOf( a ), "A should not have a in the enum" );
 
                     A.removeOneOf( a );
-                    assertTrue( "Should have b as an enum value", A.hasOneOf( b ) );
+                    assertTrue( A.hasOneOf( b ), "Should have b as an enum value" );
                     A.removeOneOf( b );
-                    assertTrue( "Should not have b as an enum value", !A.hasOneOf( b ) );
+                    assertTrue( !A.hasOneOf( b ), "Should not have b as an enum value" );
                 }
             },
             new OntTestCase( "IntersectionClass.intersectionOf", true, true, false ) {
@@ -218,29 +211,29 @@ public class TestClassExpression
                     OntClass C = m.createClass( NS + "C" );
 
                     A.addOperand( B );
-                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.INTERSECTION_OF() ) );
-                    assertEquals( "Size should be 1", 1, A.getOperands().size() );
-                    assertTrue( "A should have a as intersection member", A.getOperands().contains( B ) );
+                    assertEquals( 1, A.getCardinality( prof.INTERSECTION_OF() ), "Cardinality should be 1" );
+                    assertEquals( 1, A.getOperands().size(), "Size should be 1" );
+                    assertTrue( A.getOperands().contains( B ), "A should have a as intersection member" );
 
                     A.addOperand( C );
-                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.INTERSECTION_OF() ) );
-                    assertEquals( "Size should be 2", 2, A.getOperands().size() );
+                    assertEquals( 1, A.getCardinality( prof.INTERSECTION_OF() ), "Cardinality should be 1" );
+                    assertEquals( 2, A.getOperands().size(), "Size should be 2" );
                     iteratorTest( A.listOperands(), new Object[] {B,C} );
 
                     ClosableIterator<? extends Resource> i = A.listOperands();
-                    assertTrue( "Argument should be an OntClass", i.next() instanceof OntClass );
+                    assertTrue( i.next() instanceof OntClass, "Argument should be an OntClass" );
                     i.close();
 
                     A.setOperands( m.createList( new RDFNode[] {C} ) );
-                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.INTERSECTION_OF() ) );
-                    assertEquals( "Size should be 1", 1, A.getOperands().size() );
-                    assertTrue( "A should have C in the intersection", A.hasOperand( C ) );
-                    assertTrue( "A should not have B in the intersection", !A.hasOperand( B ) );
+                    assertEquals( 1, A.getCardinality( prof.INTERSECTION_OF() ), "Cardinality should be 1" );
+                    assertEquals( 1, A.getOperands().size(), "Size should be 1" );
+                    assertTrue( A.hasOperand( C ), "A should have C in the intersection" );
+                    assertTrue( !A.hasOperand( B ), "A should not have B in the intersection" );
 
                     A.removeOperand( B );
-                    assertTrue( "Should have C as an operand", A.hasOperand( C ) );
+                    assertTrue( A.hasOperand( C ), "Should have C as an operand" );
                     A.removeOperand( C );
-                    assertTrue( "Should not have C as an operand", !A.hasOperand( C ) );
+                    assertTrue( !A.hasOperand( C ), "Should not have C as an operand" );
                 }
             },
             new OntTestCase( "UnionClass.unionOf", true, false, false ) {
@@ -252,29 +245,29 @@ public class TestClassExpression
                     OntClass C = m.createClass( NS + "C" );
 
                     A.addOperand( B );
-                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.UNION_OF() ) );
-                    assertEquals( "Size should be 1", 1, A.getOperands().size() );
-                    assertTrue( "A should have a as union member", A.getOperands().contains( B ) );
+                    assertEquals( 1, A.getCardinality( prof.UNION_OF() ), "Cardinality should be 1" );
+                    assertEquals( 1, A.getOperands().size(), "Size should be 1" );
+                    assertTrue( A.getOperands().contains( B ), "A should have a as union member" );
 
                     A.addOperand( C );
-                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.UNION_OF() ) );
-                    assertEquals( "Size should be 2", 2, A.getOperands().size() );
+                    assertEquals( 1, A.getCardinality( prof.UNION_OF() ), "Cardinality should be 1" );
+                    assertEquals( 2, A.getOperands().size(), "Size should be 2" );
                     iteratorTest( A.listOperands(), new Object[] {B,C} );
 
                     ClosableIterator<? extends Resource> i = A.listOperands();
-                    assertTrue( "Argument should be an OntClass", i.next() instanceof OntClass );
+                    assertTrue( i.next() instanceof OntClass, "Argument should be an OntClass" );
                     i.close();
 
                     A.setOperands( m.createList( new RDFNode[] {C} ) );
-                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.UNION_OF() ) );
-                    assertEquals( "Size should be 1", 1, A.getOperands().size() );
-                    assertTrue( "A should have C in the union", A.hasOperand( C ) );
-                    assertTrue( "A should not have B in the union", !A.hasOperand( B ) );
+                    assertEquals( 1, A.getCardinality( prof.UNION_OF() ), "Cardinality should be 1" );
+                    assertEquals( 1, A.getOperands().size(), "Size should be 1" );
+                    assertTrue( A.hasOperand( C ), "A should have C in the union" );
+                    assertTrue( !A.hasOperand( B ), "A should not have B in the union" );
 
                     A.removeOperand( B );
-                    assertTrue( "Should have C as an operand", A.hasOperand( C ) );
+                    assertTrue( A.hasOperand( C ), "Should have C as an operand" );
                     A.removeOperand( C );
-                    assertTrue( "Should not have C as an operand", !A.hasOperand( C ) );
+                    assertTrue( !A.hasOperand( C ), "Should not have C as an operand" );
                 }
             },
             new OntTestCase( "ComplementClass.complementOf", true, false, false ) {
@@ -287,30 +280,30 @@ public class TestClassExpression
                     boolean ex = false;
 
                     try { A.addOperand( B ); } catch (UnsupportedOperationException e) {ex = true;}
-                    assertTrue( "Should fail to add to a complement", ex );
+                    assertTrue( ex, "Should fail to add to a complement" );
 
                     ex = false;
                     try { A.addOperands( new NullIterator<Resource>() ); } catch (UnsupportedOperationException e) {ex = true;}
-                    assertTrue( "Should fail to add to a complement", ex );
+                    assertTrue( ex, "Should fail to add to a complement" );
 
                     ex = false;
                     try { A.setOperands( m.createList( new RDFNode[] {C} ) ); } catch (UnsupportedOperationException e) {ex = true;}
-                    assertTrue( "Should fail to set a list to a complement", ex );
+                    assertTrue( ex, "Should fail to set a list to a complement" );
 
                     A.setOperand( B );
-                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.COMPLEMENT_OF() ) );
-                    assertEquals( "Complement should be B", B, A.getOperand() );
+                    assertEquals( 1, A.getCardinality( prof.COMPLEMENT_OF() ), "Cardinality should be 1" );
+                    assertEquals( B, A.getOperand(), "Complement should be B" );
                     iteratorTest( A.listOperands(), new Object[] {B} );
 
                     A.setOperand( C );
-                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.COMPLEMENT_OF() ) );
-                    assertTrue( "A should have C in the complement", A.hasOperand( C ) );
-                    assertTrue( "A should not have B in the complement", !A.hasOperand( B ) );
+                    assertEquals( 1, A.getCardinality( prof.COMPLEMENT_OF() ), "Cardinality should be 1" );
+                    assertTrue( A.hasOperand( C ), "A should have C in the complement" );
+                    assertTrue( !A.hasOperand( B ), "A should not have B in the complement" );
 
                     A.removeOperand( B );
-                    assertTrue( "Should have C as an operand", A.hasOperand( C ) );
+                    assertTrue( A.hasOperand( C ), "Should have C as an operand" );
                     A.removeOperand( C );
-                    assertTrue( "Should not have C as an operand", !A.hasOperand( C ) );
+                    assertTrue( !A.hasOperand( C ), "Should not have C as an operand" );
                 }
             },
             new OntTestCase( "Restriction.onProperty", true, true, false ) {
@@ -323,22 +316,22 @@ public class TestClassExpression
 
                     Restriction A = m.createAllValuesFromRestriction( NS + "A", p, B  );
 
-                    assertEquals( "Restriction should be on property p", p, A.getOnProperty() );
-                    assertTrue( "Restriction should be on property p", A.onProperty( p ) );
-                    assertTrue( "Restriction should not be on property q", !A.onProperty( q ) );
-                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.ON_PROPERTY() ));
+                    assertEquals( p, A.getOnProperty(), "Restriction should be on property p" );
+                    assertTrue( A.onProperty( p ), "Restriction should be on property p" );
+                    assertTrue( !A.onProperty( q ), "Restriction should not be on property q" );
+                    assertEquals( 1, A.getCardinality( prof.ON_PROPERTY() ), "cardinality should be 1 ");
 
                     A.setOnProperty( q );
 
-                    assertEquals( "Restriction should be on property q", q, A.getOnProperty() );
-                    assertTrue( "Restriction should not be on property p", !A.onProperty( p ) );
-                    assertTrue( "Restriction should not on property q", A.onProperty( q ) );
-                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.ON_PROPERTY() ));
+                    assertEquals( q, A.getOnProperty(), "Restriction should be on property q" );
+                    assertTrue( !A.onProperty( p ), "Restriction should not be on property p" );
+                    assertTrue( A.onProperty( q ), "Restriction should not on property q" );
+                    assertEquals( 1, A.getCardinality( prof.ON_PROPERTY() ), "cardinality should be 1 ");
 
                     A.removeOnProperty( p );
-                    assertTrue( "Should have q as on property", A.onProperty( q ) );
+                    assertTrue( A.onProperty( q ), "Should have q as on property" );
                     A.removeOnProperty( q );
-                    assertTrue( "Should not have q as on property", !A.onProperty( q ) );
+                    assertTrue( !A.onProperty( q ), "Should not have q as on property" );
                 }
             },
             new OntTestCase( "AllValuesFromRestriction.allValuesFrom", true, true, false ) {
@@ -351,22 +344,22 @@ public class TestClassExpression
 
                     AllValuesFromRestriction A = m.createAllValuesFromRestriction( NS + "A", p, B  );
 
-                    assertEquals( "Restriction should be all values from B", B, A.getAllValuesFrom() );
-                    assertTrue( "Restriction should be all values from B", A.hasAllValuesFrom( B ) );
-                    assertTrue( "Restriction should not be all values from C", !A.hasAllValuesFrom( C ) );
-                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.ALL_VALUES_FROM() ));
+                    assertEquals( B, A.getAllValuesFrom(), "Restriction should be all values from B" );
+                    assertTrue( A.hasAllValuesFrom( B ), "Restriction should be all values from B" );
+                    assertTrue( !A.hasAllValuesFrom( C ), "Restriction should not be all values from C" );
+                    assertEquals( 1, A.getCardinality( prof.ALL_VALUES_FROM() ), "cardinality should be 1 ");
 
                     A.setAllValuesFrom( C );
 
-                    assertEquals( "Restriction should be all values from C", C, A.getAllValuesFrom() );
-                    assertTrue( "Restriction should not be all values from B", !A.hasAllValuesFrom( B ) );
-                    assertTrue( "Restriction should be all values from C", A.hasAllValuesFrom( C ) );
-                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.ALL_VALUES_FROM() ));
+                    assertEquals( C, A.getAllValuesFrom(), "Restriction should be all values from C" );
+                    assertTrue( !A.hasAllValuesFrom( B ), "Restriction should not be all values from B" );
+                    assertTrue( A.hasAllValuesFrom( C ), "Restriction should be all values from C" );
+                    assertEquals( 1, A.getCardinality( prof.ALL_VALUES_FROM() ), "cardinality should be 1 ");
 
                     A.removeAllValuesFrom( C );
 
-                    assertTrue( "Restriction should not be some values from C", !A.hasAllValuesFrom( C ) );
-                    assertEquals( "cardinality should be 0 ", 0, A.getCardinality( prof.ALL_VALUES_FROM() ));
+                    assertTrue( !A.hasAllValuesFrom( C ), "Restriction should not be some values from C" );
+                    assertEquals( 0, A.getCardinality( prof.ALL_VALUES_FROM() ), "cardinality should be 0 ");
                 }
             },
             new OntTestCase( "AllValuesFromRestriction.allValuesFrom.datatype", true, true, false ) {
@@ -377,22 +370,22 @@ public class TestClassExpression
 
                     AllValuesFromRestriction A = m.createAllValuesFromRestriction( NS + "A", p, XSD.gDay  );
 
-                    assertEquals( "Restriction should be all values from gDay", XSD.gDay, A.getAllValuesFrom() );
-                    assertTrue( "Restriction should be all values from gDay", A.hasAllValuesFrom( XSD.gDay ) );
-                    assertTrue( "Restriction should not be all values from decimal", !A.hasAllValuesFrom( XSD.decimal ) );
-                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.ALL_VALUES_FROM() ));
+                    assertEquals( XSD.gDay, A.getAllValuesFrom(), "Restriction should be all values from gDay" );
+                    assertTrue( A.hasAllValuesFrom( XSD.gDay ), "Restriction should be all values from gDay" );
+                    assertTrue( !A.hasAllValuesFrom( XSD.decimal ), "Restriction should not be all values from decimal" );
+                    assertEquals( 1, A.getCardinality( prof.ALL_VALUES_FROM() ), "cardinality should be 1 ");
 
                     A.setAllValuesFrom( XSD.gMonth );
 
-                    assertEquals( "Restriction should be all values from gMonth", XSD.gMonth, A.getAllValuesFrom() );
-                    assertTrue( "Restriction should not be all values from gDay", !A.hasAllValuesFrom( XSD.gDay ) );
-                    assertTrue( "Restriction should be all values from gMonth", A.hasAllValuesFrom( XSD.gMonth ) );
-                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.ALL_VALUES_FROM() ));
+                    assertEquals( XSD.gMonth, A.getAllValuesFrom(), "Restriction should be all values from gMonth" );
+                    assertTrue( !A.hasAllValuesFrom( XSD.gDay ), "Restriction should not be all values from gDay" );
+                    assertTrue( A.hasAllValuesFrom( XSD.gMonth ), "Restriction should be all values from gMonth" );
+                    assertEquals( 1, A.getCardinality( prof.ALL_VALUES_FROM() ), "cardinality should be 1 ");
 
                     A.removeAllValuesFrom( XSD.gMonth );
 
-                    assertTrue( "Restriction should not be some values from gMonth", !A.hasAllValuesFrom( XSD.gMonth ) );
-                    assertEquals( "cardinality should be 0 ", 0, A.getCardinality( prof.ALL_VALUES_FROM() ));
+                    assertTrue( !A.hasAllValuesFrom( XSD.gMonth ), "Restriction should not be some values from gMonth" );
+                    assertEquals( 0, A.getCardinality( prof.ALL_VALUES_FROM() ), "cardinality should be 0 ");
                 }
             },
             new OntTestCase( "AllValuesFromRestriction.allValuesFrom.literal", true, true, false ) {
@@ -403,10 +396,10 @@ public class TestClassExpression
 
                     AllValuesFromRestriction A = m.createAllValuesFromRestriction( NS + "A", p, RDFS.Literal  );
 
-                    assertEquals( "Restriction should be all values from literal", RDFS.Literal, A.getAllValuesFrom() );
-                    assertTrue( "Restriction should be all values from literal", A.hasAllValuesFrom( RDFS.Literal ) );
-                    assertTrue( "Restriction should not be all values from decimal", !A.hasAllValuesFrom( XSD.decimal ) );
-                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.ALL_VALUES_FROM() ));
+                    assertEquals( RDFS.Literal, A.getAllValuesFrom(), "Restriction should be all values from literal" );
+                    assertTrue( A.hasAllValuesFrom( RDFS.Literal ), "Restriction should be all values from literal" );
+                    assertTrue( !A.hasAllValuesFrom( XSD.decimal ), "Restriction should not be all values from decimal" );
+                    assertEquals( 1, A.getCardinality( prof.ALL_VALUES_FROM() ), "cardinality should be 1 ");
                 }
             },
             new OntTestCase( "AllValuesFromRestriction.allValuesFrom.datarange", true, false, false ) {
@@ -420,16 +413,16 @@ public class TestClassExpression
 
                     AllValuesFromRestriction A = m.createAllValuesFromRestriction( NS + "A", p, dr  );
 
-                    assertEquals( "Restriction should be all values from dr", dr, A.getAllValuesFrom() );
-                    assertTrue( "value should be a datarange", A.getAllValuesFrom() instanceof DataRange );
-                    assertTrue( "Restriction should be all values from dr", A.hasAllValuesFrom( dr ) );
-                    assertTrue( "Restriction should not be all values from decimal", !A.hasAllValuesFrom( XSD.decimal ) );
-                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.ALL_VALUES_FROM() ));
+                    assertEquals( dr, A.getAllValuesFrom(), "Restriction should be all values from dr" );
+                    assertTrue( A.getAllValuesFrom() instanceof DataRange, "value should be a datarange" );
+                    assertTrue( A.hasAllValuesFrom( dr ), "Restriction should be all values from dr" );
+                    assertTrue( !A.hasAllValuesFrom( XSD.decimal ), "Restriction should not be all values from decimal" );
+                    assertEquals( 1, A.getCardinality( prof.ALL_VALUES_FROM() ), "cardinality should be 1 ");
 
                     A.removeAllValuesFrom( dr );
 
-                    assertTrue( "Restriction should not be some values from gMonth", !A.hasAllValuesFrom( dr ) );
-                    assertEquals( "cardinality should be 0 ", 0, A.getCardinality( prof.ALL_VALUES_FROM() ));
+                    assertTrue( !A.hasAllValuesFrom( dr ), "Restriction should not be some values from gMonth" );
+                    assertEquals( 0, A.getCardinality( prof.ALL_VALUES_FROM() ), "cardinality should be 0 ");
                 }
             },
             new OntTestCase( "HasValueRestriction.hasValue", true, false, false ) {
@@ -444,24 +437,24 @@ public class TestClassExpression
 
                     HasValueRestriction A = m.createHasValueRestriction( NS + "A", p, b  );
 
-                    assertEquals( "Restriction should be has value b", b, A.getHasValue() );
+                    assertEquals( b, A.getHasValue(), "Restriction should be has value b" );
                     assertTrue( A.getHasValue() instanceof Individual );
-                    assertTrue( "Restriction should be to have value b", A.hasValue( b ) );
-                    assertTrue( "Restriction should not be have value c", !A.hasValue( c ) );
-                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.HAS_VALUE() ));
+                    assertTrue( A.hasValue( b ), "Restriction should be to have value b" );
+                    assertTrue( !A.hasValue( c ), "Restriction should not be have value c" );
+                    assertEquals( 1, A.getCardinality( prof.HAS_VALUE() ), "cardinality should be 1 ");
 
                     A.setHasValue( c );
 
-                    assertEquals( "Restriction should be has value c", c, A.getHasValue() );
-                    assertTrue( "Restriction should not be to have value b", !A.hasValue( b ) );
-                    assertTrue( "Restriction should not be have value c", A.hasValue( c ) );
-                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.HAS_VALUE() ));
+                    assertEquals( c, A.getHasValue(), "Restriction should be has value c" );
+                    assertTrue( !A.hasValue( b ), "Restriction should not be to have value b" );
+                    assertTrue( A.hasValue( c ), "Restriction should not be have value c" );
+                    assertEquals( 1, A.getCardinality( prof.HAS_VALUE() ), "cardinality should be 1 ");
 
                     A.removeHasValue( c );
 
-                    assertTrue( "Restriction should not be to have value b", !A.hasValue( b ) );
-                    assertTrue( "Restriction should not be have value c", !A.hasValue( c ) );
-                    assertEquals( "cardinality should be 0 ", 0, A.getCardinality( prof.HAS_VALUE() ));
+                    assertTrue( !A.hasValue( b ), "Restriction should not be to have value b" );
+                    assertTrue( !A.hasValue( c ), "Restriction should not be have value c" );
+                    assertEquals( 0, A.getCardinality( prof.HAS_VALUE() ), "cardinality should be 0 ");
                 }
             },
             new OntTestCase( "SomeValuesFromRestriction.someValuesFrom", true, true, false ) {
@@ -474,22 +467,22 @@ public class TestClassExpression
 
                     SomeValuesFromRestriction A = m.createSomeValuesFromRestriction( NS + "A", p, B  );
 
-                    assertEquals( "Restriction should be some values from B", B, A.getSomeValuesFrom() );
-                    assertTrue( "Restriction should be some values from B", A.hasSomeValuesFrom( B ) );
-                    assertTrue( "Restriction should not be some values from C", !A.hasSomeValuesFrom( C ) );
-                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.SOME_VALUES_FROM() ));
+                    assertEquals( B, A.getSomeValuesFrom(), "Restriction should be some values from B" );
+                    assertTrue( A.hasSomeValuesFrom( B ), "Restriction should be some values from B" );
+                    assertTrue( !A.hasSomeValuesFrom( C ), "Restriction should not be some values from C" );
+                    assertEquals( 1, A.getCardinality( prof.SOME_VALUES_FROM() ), "cardinality should be 1 ");
 
                     A.setSomeValuesFrom( C );
 
-                    assertEquals( "Restriction should be some values from C", C, A.getSomeValuesFrom() );
-                    assertTrue( "Restriction should not be some values from B", !A.hasSomeValuesFrom( B ) );
-                    assertTrue( "Restriction should be some values from C", A.hasSomeValuesFrom( C ) );
-                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.SOME_VALUES_FROM() ));
+                    assertEquals( C, A.getSomeValuesFrom(), "Restriction should be some values from C" );
+                    assertTrue( !A.hasSomeValuesFrom( B ), "Restriction should not be some values from B" );
+                    assertTrue( A.hasSomeValuesFrom( C ), "Restriction should be some values from C" );
+                    assertEquals( 1, A.getCardinality( prof.SOME_VALUES_FROM() ), "cardinality should be 1 ");
 
                     A.removeSomeValuesFrom( C );
 
-                    assertTrue( "Restriction should not be some values from C", !A.hasSomeValuesFrom( C ) );
-                    assertEquals( "cardinality should be 0 ", 0, A.getCardinality( prof.SOME_VALUES_FROM() ));
+                    assertTrue( !A.hasSomeValuesFrom( C ), "Restriction should not be some values from C" );
+                    assertEquals( 0, A.getCardinality( prof.SOME_VALUES_FROM() ), "cardinality should be 0 ");
                 }
             },
             new OntTestCase( "SomeValuesFromRestriction.SomeValuesFrom.datatype", true, true, false ) {
@@ -500,22 +493,22 @@ public class TestClassExpression
 
                     SomeValuesFromRestriction A = m.createSomeValuesFromRestriction( NS + "A", p, XSD.gDay  );
 
-                    assertEquals( "Restriction should be some values from gDay", XSD.gDay, A.getSomeValuesFrom() );
-                    assertTrue( "Restriction should be some values from gDay", A.hasSomeValuesFrom( XSD.gDay ) );
-                    assertTrue( "Restriction should not be some values from decimal", !A.hasSomeValuesFrom( XSD.decimal ) );
-                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.SOME_VALUES_FROM() ));
+                    assertEquals( XSD.gDay, A.getSomeValuesFrom(), "Restriction should be some values from gDay" );
+                    assertTrue( A.hasSomeValuesFrom( XSD.gDay ), "Restriction should be some values from gDay" );
+                    assertTrue( !A.hasSomeValuesFrom( XSD.decimal ), "Restriction should not be some values from decimal" );
+                    assertEquals( 1, A.getCardinality( prof.SOME_VALUES_FROM() ), "cardinality should be 1 ");
 
                     A.setSomeValuesFrom( XSD.gMonth );
 
-                    assertEquals( "Restriction should be some values from gMonth", XSD.gMonth, A.getSomeValuesFrom() );
-                    assertTrue( "Restriction should not be some values from gDay", !A.hasSomeValuesFrom( XSD.gDay ) );
-                    assertTrue( "Restriction should be some values from gMonth", A.hasSomeValuesFrom( XSD.gMonth ) );
-                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.SOME_VALUES_FROM() ));
+                    assertEquals( XSD.gMonth, A.getSomeValuesFrom(), "Restriction should be some values from gMonth" );
+                    assertTrue( !A.hasSomeValuesFrom( XSD.gDay ), "Restriction should not be some values from gDay" );
+                    assertTrue( A.hasSomeValuesFrom( XSD.gMonth ), "Restriction should be some values from gMonth" );
+                    assertEquals( 1, A.getCardinality( prof.SOME_VALUES_FROM() ), "cardinality should be 1 ");
 
                     A.removeSomeValuesFrom( XSD.gMonth );
 
-                    assertTrue( "Restriction should not be some values from gMonth", !A.hasSomeValuesFrom( XSD.gMonth ) );
-                    assertEquals( "cardinality should be 0 ", 0, A.getCardinality( prof.SOME_VALUES_FROM() ));
+                    assertTrue( !A.hasSomeValuesFrom( XSD.gMonth ), "Restriction should not be some values from gMonth" );
+                    assertEquals( 0, A.getCardinality( prof.SOME_VALUES_FROM() ), "cardinality should be 0 ");
                 }
             },
             new OntTestCase( "SomeValuesFromRestriction.SomeValuesFrom.literal", true, true, false ) {
@@ -526,10 +519,10 @@ public class TestClassExpression
 
                     SomeValuesFromRestriction A = m.createSomeValuesFromRestriction( NS + "A", p, RDFS.Literal  );
 
-                    assertEquals( "Restriction should be some values from literal", RDFS.Literal, A.getSomeValuesFrom() );
-                    assertTrue( "Restriction should be some values from literal", A.hasSomeValuesFrom( RDFS.Literal ) );
-                    assertTrue( "Restriction should not be some values from decimal", !A.hasSomeValuesFrom( XSD.decimal ) );
-                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.SOME_VALUES_FROM() ));
+                    assertEquals( RDFS.Literal, A.getSomeValuesFrom(), "Restriction should be some values from literal" );
+                    assertTrue( A.hasSomeValuesFrom( RDFS.Literal ), "Restriction should be some values from literal" );
+                    assertTrue( !A.hasSomeValuesFrom( XSD.decimal ), "Restriction should not be some values from decimal" );
+                    assertEquals( 1, A.getCardinality( prof.SOME_VALUES_FROM() ), "cardinality should be 1 ");
                 }
             },
             new OntTestCase( "SomeValuesFromRestriction.SomeValuesFrom.datarange", true, false, false ) {
@@ -543,16 +536,16 @@ public class TestClassExpression
 
                     SomeValuesFromRestriction A = m.createSomeValuesFromRestriction( NS + "A", p, dr  );
 
-                    assertEquals( "Restriction should be some values from dr", dr, A.getSomeValuesFrom() );
-                    assertTrue( "value should be a datarange", A.getSomeValuesFrom() instanceof DataRange );
-                    assertTrue( "Restriction should be some values from dr", A.hasSomeValuesFrom( dr ) );
-                    assertTrue( "Restriction should not be some values from decimal", !A.hasSomeValuesFrom( XSD.decimal ) );
-                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.SOME_VALUES_FROM() ));
+                    assertEquals( dr, A.getSomeValuesFrom(), "Restriction should be some values from dr" );
+                    assertTrue( A.getSomeValuesFrom() instanceof DataRange, "value should be a datarange" );
+                    assertTrue( A.hasSomeValuesFrom( dr ), "Restriction should be some values from dr" );
+                    assertTrue( !A.hasSomeValuesFrom( XSD.decimal ), "Restriction should not be some values from decimal" );
+                    assertEquals( 1, A.getCardinality( prof.SOME_VALUES_FROM() ), "cardinality should be 1 ");
 
                     A.removeSomeValuesFrom( dr );
 
-                    assertTrue( "Restriction should not be some values from gMonth", !A.hasSomeValuesFrom( dr ) );
-                    assertEquals( "cardinality should be 0 ", 0, A.getCardinality( prof.SOME_VALUES_FROM() ));
+                    assertTrue( !A.hasSomeValuesFrom( dr ), "Restriction should not be some values from gMonth" );
+                    assertEquals( 0, A.getCardinality( prof.SOME_VALUES_FROM() ), "cardinality should be 0 ");
                 }
             },
             new OntTestCase( "CardinalityRestriction.cardinality", true, true, false ) {
@@ -563,23 +556,23 @@ public class TestClassExpression
 
                     CardinalityRestriction A = m.createCardinalityRestriction( NS + "A", p, 3  );
 
-                    assertEquals( "Restriction should be cardinality 3", 3, A.getCardinality() );
-                    assertTrue( "Restriction should be cardinality 3", A.hasCardinality( 3 ) );
-                    assertTrue( "Restriction should not be cardinality 2", !A.hasCardinality( 2 ) );
-                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.CARDINALITY() ));
+                    assertEquals( 3, A.getCardinality(), "Restriction should be cardinality 3" );
+                    assertTrue( A.hasCardinality( 3 ), "Restriction should be cardinality 3" );
+                    assertTrue( !A.hasCardinality( 2 ), "Restriction should not be cardinality 2" );
+                    assertEquals( 1, A.getCardinality( prof.CARDINALITY() ), "cardinality should be 1 ");
 
                     A.setCardinality( 2 );
 
-                    assertEquals( "Restriction should be cardinality 2", 2, A.getCardinality() );
-                    assertTrue( "Restriction should not be cardinality 3", !A.hasCardinality( 3 ) );
-                    assertTrue( "Restriction should be cardinality 2", A.hasCardinality( 2 ) );
-                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.CARDINALITY() ));
+                    assertEquals( 2, A.getCardinality(), "Restriction should be cardinality 2" );
+                    assertTrue( !A.hasCardinality( 3 ), "Restriction should not be cardinality 3" );
+                    assertTrue( A.hasCardinality( 2 ), "Restriction should be cardinality 2" );
+                    assertEquals( 1, A.getCardinality( prof.CARDINALITY() ), "cardinality should be 1 ");
 
                     A.removeCardinality( 2 );
 
-                    assertTrue( "Restriction should not be cardinality 3", !A.hasCardinality( 3 ) );
-                    assertTrue( "Restriction should not be cardinality 2", !A.hasCardinality( 2 ) );
-                    assertEquals( "cardinality should be 0 ", 0, A.getCardinality( prof.CARDINALITY() ));
+                    assertTrue( !A.hasCardinality( 3 ), "Restriction should not be cardinality 3" );
+                    assertTrue( !A.hasCardinality( 2 ), "Restriction should not be cardinality 2" );
+                    assertEquals( 0, A.getCardinality( prof.CARDINALITY() ), "cardinality should be 0 ");
                 }
             },
             new OntTestCase( "MinCardinalityRestriction.minCardinality", true, true, false ) {
@@ -590,23 +583,23 @@ public class TestClassExpression
 
                     MinCardinalityRestriction A = m.createMinCardinalityRestriction( NS + "A", p, 3  );
 
-                    assertEquals( "Restriction should be min cardinality 3", 3, A.getMinCardinality() );
-                    assertTrue( "Restriction should be min cardinality 3", A.hasMinCardinality( 3 ) );
-                    assertTrue( "Restriction should not be min cardinality 2", !A.hasMinCardinality( 2 ) );
-                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.MIN_CARDINALITY() ));
+                    assertEquals( 3, A.getMinCardinality(), "Restriction should be min cardinality 3" );
+                    assertTrue( A.hasMinCardinality( 3 ), "Restriction should be min cardinality 3" );
+                    assertTrue( !A.hasMinCardinality( 2 ), "Restriction should not be min cardinality 2" );
+                    assertEquals( 1, A.getCardinality( prof.MIN_CARDINALITY() ), "cardinality should be 1 ");
 
                     A.setMinCardinality( 2 );
 
-                    assertEquals( "Restriction should be min cardinality 2", 2, A.getMinCardinality() );
-                    assertTrue( "Restriction should not be min cardinality 3", !A.hasMinCardinality( 3 ) );
-                    assertTrue( "Restriction should be min cardinality 2", A.hasMinCardinality( 2 ) );
-                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.MIN_CARDINALITY() ));
+                    assertEquals( 2, A.getMinCardinality(), "Restriction should be min cardinality 2" );
+                    assertTrue( !A.hasMinCardinality( 3 ), "Restriction should not be min cardinality 3" );
+                    assertTrue( A.hasMinCardinality( 2 ), "Restriction should be min cardinality 2" );
+                    assertEquals( 1, A.getCardinality( prof.MIN_CARDINALITY() ), "cardinality should be 1 ");
 
                     A.removeMinCardinality( 2 );
 
-                    assertTrue( "Restriction should not be cardinality 3", !A.hasMinCardinality( 3 ) );
-                    assertTrue( "Restriction should not be cardinality 2", !A.hasMinCardinality( 2 ) );
-                    assertEquals( "cardinality should be 0 ", 0, A.getCardinality( prof.MIN_CARDINALITY() ));
+                    assertTrue( !A.hasMinCardinality( 3 ), "Restriction should not be cardinality 3" );
+                    assertTrue( !A.hasMinCardinality( 2 ), "Restriction should not be cardinality 2" );
+                    assertEquals( 0, A.getCardinality( prof.MIN_CARDINALITY() ), "cardinality should be 0 ");
                 }
             },
             new OntTestCase( "MaxCardinalityRestriction.maxCardinality", true, true, false ) {
@@ -617,23 +610,23 @@ public class TestClassExpression
 
                     MaxCardinalityRestriction A = m.createMaxCardinalityRestriction( NS + "A", p, 3  );
 
-                    assertEquals( "Restriction should be max cardinality 3", 3, A.getMaxCardinality() );
-                    assertTrue( "Restriction should be max cardinality 3", A.hasMaxCardinality( 3 ) );
-                    assertTrue( "Restriction should not be max cardinality 2", !A.hasMaxCardinality( 2 ) );
-                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.MAX_CARDINALITY() ));
+                    assertEquals( 3, A.getMaxCardinality(), "Restriction should be max cardinality 3" );
+                    assertTrue( A.hasMaxCardinality( 3 ), "Restriction should be max cardinality 3" );
+                    assertTrue( !A.hasMaxCardinality( 2 ), "Restriction should not be max cardinality 2" );
+                    assertEquals( 1, A.getCardinality( prof.MAX_CARDINALITY() ), "cardinality should be 1 ");
 
                     A.setMaxCardinality( 2 );
 
-                    assertEquals( "Restriction should be max cardinality 2", 2, A.getMaxCardinality() );
-                    assertTrue( "Restriction should not be max cardinality 3", !A.hasMaxCardinality( 3 ) );
-                    assertTrue( "Restriction should be max cardinality 2", A.hasMaxCardinality( 2 ) );
-                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.MAX_CARDINALITY() ));
+                    assertEquals( 2, A.getMaxCardinality(), "Restriction should be max cardinality 2" );
+                    assertTrue( !A.hasMaxCardinality( 3 ), "Restriction should not be max cardinality 3" );
+                    assertTrue( A.hasMaxCardinality( 2 ), "Restriction should be max cardinality 2" );
+                    assertEquals( 1, A.getCardinality( prof.MAX_CARDINALITY() ), "cardinality should be 1 ");
 
                     A.removeMaxCardinality( 2 );
 
-                    assertTrue( "Restriction should not be cardinality 3", !A.hasMaxCardinality( 3 ) );
-                    assertTrue( "Restriction should not be cardinality 2", !A.hasMaxCardinality( 2 ) );
-                    assertEquals( "cardinality should be 0 ", 0, A.getCardinality( prof.MAX_CARDINALITY() ));
+                    assertTrue( !A.hasMaxCardinality( 3 ), "Restriction should not be cardinality 3" );
+                    assertTrue( !A.hasMaxCardinality( 2 ), "Restriction should not be cardinality 2" );
+                    assertEquals( 0, A.getCardinality( prof.MAX_CARDINALITY() ), "cardinality should be 0 ");
                 }
             },
             new OntTestCase( "QualifiedRestriction.hasClassQ", false, false, false ) {
@@ -646,19 +639,19 @@ public class TestClassExpression
                     String nameA = "ABCBA";
                     QualifiedRestriction A = m.createMaxCardinalityQRestriction( NS + nameA, p, 3, c  );
 
-                    assertEquals( "Restriction should hasClassQ c", c, A.getHasClassQ() );
-                    assertTrue( "Restriction should be hasClassQ c", A.hasHasClassQ( c ) );
-                    assertFalse( "Restriction should not be hasClassQ d", A.hasHasClassQ( d ) );
+                    assertEquals( c, A.getHasClassQ(), "Restriction should hasClassQ c" );
+                    assertTrue( A.hasHasClassQ( c ), "Restriction should be hasClassQ c" );
+                    assertFalse( A.hasHasClassQ( d ), "Restriction should not be hasClassQ d" );
 
                     A.setHasClassQ( d );
 
-                    assertEquals( "Restriction should hasClassQ d", d, A.getHasClassQ() );
-                    assertTrue( "Restriction should be hasClassQ d", A.hasHasClassQ( d ) );
-                    assertFalse( "Restriction should not be hasClassQ c", A.hasHasClassQ( c ) );
+                    assertEquals( d, A.getHasClassQ(), "Restriction should hasClassQ d" );
+                    assertTrue( A.hasHasClassQ( d ), "Restriction should be hasClassQ d" );
+                    assertFalse( A.hasHasClassQ( c ), "Restriction should not be hasClassQ c" );
 
-                    assertTrue( "Should be a qualified restriction", m.getResource( NS + nameA ).canAs( QualifiedRestriction.class ) );
+                    assertTrue( m.getResource( NS + nameA ).canAs( QualifiedRestriction.class ), "Should be a qualified restriction" );
                     A.removeHasClassQ( d );
-                    assertFalse( "Should not be a qualified restriction", m.getResource( NS + nameA ).canAs( QualifiedRestriction.class ) );
+                    assertFalse( m.getResource( NS + nameA ).canAs( QualifiedRestriction.class ), "Should not be a qualified restriction" );
                 }
             },
             new OntTestCase( "CardinalityQRestriction.cardinality", false, false, false ) {
@@ -669,19 +662,19 @@ public class TestClassExpression
 
                     CardinalityQRestriction A = m.createCardinalityQRestriction( NS + "A", p, 3, c  );
 
-                    assertEquals( "Restriction should cardinality 3", 3, A.getCardinalityQ() );
-                    assertTrue( "Restriction should be cardinality 3", A.hasCardinalityQ( 3 ) );
-                    assertFalse( "Restriction should not be cardinality 1", A.hasCardinalityQ( 1 ) );
+                    assertEquals( 3, A.getCardinalityQ(), "Restriction should cardinality 3" );
+                    assertTrue( A.hasCardinalityQ( 3 ), "Restriction should be cardinality 3" );
+                    assertFalse( A.hasCardinalityQ( 1 ), "Restriction should not be cardinality 1" );
 
                     A.setCardinalityQ( 1 );
 
-                    assertEquals( "Restriction should cardinality 1", 1, A.getCardinalityQ() );
-                    assertFalse( "Restriction should not be cardinality 3", A.hasCardinalityQ( 3 ) );
-                    assertTrue( "Restriction should be cardinality 1", A.hasCardinalityQ( 1 ) );
+                    assertEquals( 1, A.getCardinalityQ(), "Restriction should cardinality 1" );
+                    assertFalse( A.hasCardinalityQ( 3 ), "Restriction should not be cardinality 3" );
+                    assertTrue( A.hasCardinalityQ( 1 ), "Restriction should be cardinality 1" );
 
-                    assertTrue( "Should be a qualified cardinality restriction", m.getResource( NS + "A" ).canAs( CardinalityQRestriction.class ) );
+                    assertTrue( m.getResource( NS + "A" ).canAs( CardinalityQRestriction.class ), "Should be a qualified cardinality restriction" );
                     A.removeCardinalityQ( 1 );
-                    assertFalse( "Should not be a qualified cardinality restriction", m.getResource( NS + "A" ).canAs( CardinalityQRestriction.class ) );
+                    assertFalse( m.getResource( NS + "A" ).canAs( CardinalityQRestriction.class ), "Should not be a qualified cardinality restriction" );
                 }
             },
             new OntTestCase( "MinCardinalityQRestriction.minCardinality", false, false, false ) {
@@ -692,19 +685,19 @@ public class TestClassExpression
 
                     MinCardinalityQRestriction A = m.createMinCardinalityQRestriction( NS + "A", p, 3, c  );
 
-                    assertEquals( "Restriction should min cardinality 3", 3, A.getMinCardinalityQ() );
-                    assertTrue( "Restriction should be min cardinality 3", A.hasMinCardinalityQ( 3 ) );
-                    assertFalse( "Restriction should not be min cardinality 1", A.hasMinCardinalityQ( 1 ) );
+                    assertEquals( 3, A.getMinCardinalityQ(), "Restriction should min cardinality 3" );
+                    assertTrue( A.hasMinCardinalityQ( 3 ), "Restriction should be min cardinality 3" );
+                    assertFalse( A.hasMinCardinalityQ( 1 ), "Restriction should not be min cardinality 1" );
 
                     A.setMinCardinalityQ( 1 );
 
-                    assertEquals( "Restriction should min cardinality 1", 1, A.getMinCardinalityQ() );
-                    assertFalse( "Restriction should not be min cardinality 3", A.hasMinCardinalityQ( 3 ) );
-                    assertTrue( "Restriction should be min cardinality 1", A.hasMinCardinalityQ( 1 ) );
+                    assertEquals( 1, A.getMinCardinalityQ(), "Restriction should min cardinality 1" );
+                    assertFalse( A.hasMinCardinalityQ( 3 ), "Restriction should not be min cardinality 3" );
+                    assertTrue( A.hasMinCardinalityQ( 1 ), "Restriction should be min cardinality 1" );
 
-                    assertTrue( "Should be a qualified min cardinality restriction", m.getResource( NS + "A" ).canAs( MinCardinalityQRestriction.class ) );
+                    assertTrue( m.getResource( NS + "A" ).canAs( MinCardinalityQRestriction.class ), "Should be a qualified min cardinality restriction" );
                     A.removeMinCardinalityQ( 1 );
-                    assertFalse( "Should not be a qualified min cardinality restriction", m.getResource( NS + "A" ).canAs( MinCardinalityQRestriction.class ) );
+                    assertFalse( m.getResource( NS + "A" ).canAs( MinCardinalityQRestriction.class ), "Should not be a qualified min cardinality restriction" );
                 }
             },
             new OntTestCase( "MaxCardinalityQRestriction.maxCardinality", false, false, false ) {
@@ -715,19 +708,19 @@ public class TestClassExpression
 
                     MaxCardinalityQRestriction A = m.createMaxCardinalityQRestriction( NS + "A", p, 3, c  );
 
-                    assertEquals( "Restriction should max cardinality 3", 3, A.getMaxCardinalityQ() );
-                    assertTrue( "Restriction should be max cardinality 3", A.hasMaxCardinalityQ( 3 ) );
-                    assertFalse( "Restriction should not be max cardinality 1", A.hasMaxCardinalityQ( 1 ) );
+                    assertEquals( 3, A.getMaxCardinalityQ(), "Restriction should max cardinality 3" );
+                    assertTrue( A.hasMaxCardinalityQ( 3 ), "Restriction should be max cardinality 3" );
+                    assertFalse( A.hasMaxCardinalityQ( 1 ), "Restriction should not be max cardinality 1" );
 
                     A.setMaxCardinalityQ( 1 );
 
-                    assertEquals( "Restriction should max cardinality 1", 1, A.getMaxCardinalityQ() );
-                    assertFalse( "Restriction should not be max cardinality 3", A.hasMaxCardinalityQ( 3 ) );
-                    assertTrue( "Restriction should be max cardinality 1", A.hasMaxCardinalityQ( 1 ) );
+                    assertEquals( 1, A.getMaxCardinalityQ(), "Restriction should max cardinality 1" );
+                    assertFalse( A.hasMaxCardinalityQ( 3 ), "Restriction should not be max cardinality 3" );
+                    assertTrue( A.hasMaxCardinalityQ( 1 ), "Restriction should be max cardinality 1" );
 
-                    assertTrue( "Should be a qualified max cardinality restriction", m.getResource( NS + "A" ).canAs( MaxCardinalityQRestriction.class ) );
+                    assertTrue( m.getResource( NS + "A" ).canAs( MaxCardinalityQRestriction.class ), "Should be a qualified max cardinality restriction" );
                     A.removeMaxCardinalityQ( 1 );
-                    assertFalse( "Should not be a qualified max cardinality restriction", m.getResource( NS + "A" ).canAs( MaxCardinalityQRestriction.class ) );
+                    assertFalse( m.getResource( NS + "A" ).canAs( MaxCardinalityQRestriction.class ), "Should not be a qualified max cardinality restriction" );
                 }
             },
 
@@ -756,7 +749,7 @@ public class TestClassExpression
                     OntClass A = m.createClass( NS + "ClassA" );
                     OntClass C = m.createClass( NS + "ClassC" );
 
-                    assertTrue( "A should be equiv to C", A.hasEquivalentClass( C ) );
+                    assertTrue( A.hasEquivalentClass( C ), "A should be equiv to C" );
                 }
             },
             new OntTestCase( "OntClass.disjoint.fromFile", true, false, false ) {
@@ -769,7 +762,7 @@ public class TestClassExpression
                     OntClass A = m.createClass( NS + "ClassA" );
                     OntClass D = m.createClass( NS + "ClassD" );
 
-                    assertTrue( "A should be disjoint with D", A.isDisjointWith( D ) );
+                    assertTrue( A.isDisjointWith( D ), "A should be disjoint with D" );
                 }
             },
 
@@ -782,11 +775,11 @@ public class TestClassExpression
                     Individual y = m.createIndividual( NS + "y", b );
                     OntClass a = m.createEnumeratedClass( NS + "A", m.createList( new RDFNode[] {x, y} ) );
 
-                    assertTrue( "enumerated class test not correct",    a.isEnumeratedClass() );
-                    assertTrue( "intersection class test not correct",  !a.isIntersectionClass() );
-                    assertTrue( "union class test not correct",         !a.isUnionClass() );
-                    assertTrue( "complement class test not correct",    !a.isComplementClass() );
-                    assertTrue( "restriction test not correct",         !a.isRestriction() );
+                    assertTrue( a.isEnumeratedClass(), "enumerated class test not correct" );
+                    assertTrue( !a.isIntersectionClass(), "intersection class test not correct" );
+                    assertTrue( !a.isUnionClass(), "union class test not correct" );
+                    assertTrue( !a.isComplementClass(), "complement class test not correct" );
+                    assertTrue( !a.isRestriction(), "restriction test not correct" );
                 }
             },
             new OntTestCase( "OntClass.isIntersectionClass", true, true, false ) {
@@ -796,11 +789,11 @@ public class TestClassExpression
                     OntClass c = m.createClass( NS + "C" );
                     OntClass a = m.createIntersectionClass( NS + "A", m.createList( new RDFNode[] {b,c} ) );
 
-                    assertTrue( "enumerated class test not correct",    m_owlLiteLang || !a.isEnumeratedClass() );
-                    assertTrue( "intersection class test not correct",  a.isIntersectionClass() );
-                    assertTrue( "union class test not correct",         m_owlLiteLang || !a.isUnionClass() );
-                    assertTrue( "complement class test not correct",    m_owlLiteLang || !a.isComplementClass() );
-                    assertTrue( "restriction test not correct",         !a.isRestriction() );
+                    assertTrue( m_owlLiteLang || !a.isEnumeratedClass(), "enumerated class test not correct" );
+                    assertTrue( a.isIntersectionClass(), "intersection class test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isUnionClass(), "union class test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isComplementClass(), "complement class test not correct" );
+                    assertTrue( !a.isRestriction(), "restriction test not correct" );
                 }
             },
             new OntTestCase( "OntClass.isUnionClass", true, false, false ) {
@@ -810,11 +803,11 @@ public class TestClassExpression
                     OntClass c = m.createClass( NS + "C" );
                     OntClass a = m.createUnionClass( NS + "A", m.createList( new RDFNode[] {b,c} ) );
 
-                    assertTrue( "enumerated class test not correct",    !a.isEnumeratedClass() );
-                    assertTrue( "intersection class test not correct",  !a.isIntersectionClass() );
-                    assertTrue( "union class test not correct",         a.isUnionClass() );
-                    assertTrue( "complement class test not correct",    !a.isComplementClass() );
-                    assertTrue( "restriction test not correct",         !a.isRestriction() );
+                    assertTrue( !a.isEnumeratedClass(), "enumerated class test not correct" );
+                    assertTrue( !a.isIntersectionClass(), "intersection class test not correct" );
+                    assertTrue( a.isUnionClass(), "union class test not correct" );
+                    assertTrue( !a.isComplementClass(), "complement class test not correct" );
+                    assertTrue( !a.isRestriction(), "restriction test not correct" );
                 }
             },
             new OntTestCase( "OntClass.isComplementClass", true, false, false ) {
@@ -823,11 +816,11 @@ public class TestClassExpression
                     OntClass b = m.createClass( NS + "B" );
                     OntClass a = m.createComplementClass( NS + "A", b );
 
-                    assertTrue( "enumerated class test not correct",    !a.isEnumeratedClass() );
-                    assertTrue( "intersection class test not correct",  !a.isIntersectionClass() );
-                    assertTrue( "union class test not correct",         !a.isUnionClass() );
-                    assertTrue( "complement class test not correct",    a.isComplementClass() );
-                    assertTrue( "restriction test not correct",         !a.isRestriction() );
+                    assertTrue( !a.isEnumeratedClass(), "enumerated class test not correct" );
+                    assertTrue( !a.isIntersectionClass(), "intersection class test not correct" );
+                    assertTrue( !a.isUnionClass(), "union class test not correct" );
+                    assertTrue( a.isComplementClass(), "complement class test not correct" );
+                    assertTrue( !a.isRestriction(), "restriction test not correct" );
                 }
             },
             new OntTestCase( "OntClass.isRestriction", true, true, false ) {
@@ -835,11 +828,11 @@ public class TestClassExpression
                 public void ontTest( OntModel m ) {
                     OntClass a = m.createRestriction( null );
 
-                    assertTrue( "enumerated class test not correct",    m_owlLiteLang || !a.isEnumeratedClass() );
-                    assertTrue( "intersection class test not correct",  !a.isIntersectionClass() );
-                    assertTrue( "union class test not correct",         m_owlLiteLang || !a.isUnionClass() );
-                    assertTrue( "complement class test not correct",    m_owlLiteLang || !a.isComplementClass() );
-                    assertTrue( "restriction test not correct",         a.isRestriction() );
+                    assertTrue( m_owlLiteLang || !a.isEnumeratedClass(), "enumerated class test not correct" );
+                    assertTrue( !a.isIntersectionClass(), "intersection class test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isUnionClass(), "union class test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isComplementClass(), "complement class test not correct" );
+                    assertTrue( a.isRestriction(), "restriction test not correct" );
                 }
             },
 
@@ -849,22 +842,22 @@ public class TestClassExpression
                 public void ontTest( OntModel m ) {
                     OntClass a = m.createClass( NS + "A" );
 
-                    assertTrue( "enumerated class test not correct",    !a.isEnumeratedClass() );
-                    assertTrue( "intersection class test not correct",  !a.isIntersectionClass() );
-                    assertTrue( "union class test not correct",         !a.isUnionClass() );
-                    assertTrue( "complement class test not correct",    !a.isComplementClass() );
-                    assertTrue( "restriction test not correct",         !a.isRestriction() );
+                    assertTrue( !a.isEnumeratedClass(), "enumerated class test not correct" );
+                    assertTrue( !a.isIntersectionClass(), "intersection class test not correct" );
+                    assertTrue( !a.isUnionClass(), "union class test not correct" );
+                    assertTrue( !a.isComplementClass(), "complement class test not correct" );
+                    assertTrue( !a.isRestriction(), "restriction test not correct" );
 
                     OntClass b = m.createClass( NS + "B" );
                     Individual x = m.createIndividual( NS + "x", b );
                     Individual y = m.createIndividual( NS + "y", b );
                     a = a.convertToEnumeratedClass( m.createList( new RDFNode[] {x, y} ) );
 
-                    assertTrue( "enumerated class test not correct",    a.isEnumeratedClass() );
-                    assertTrue( "intersection class test not correct",  !a.isIntersectionClass() );
-                    assertTrue( "union class test not correct",         !a.isUnionClass() );
-                    assertTrue( "complement class test not correct",    !a.isComplementClass() );
-                    assertTrue( "restriction test not correct",         !a.isRestriction() );
+                    assertTrue( a.isEnumeratedClass(), "enumerated class test not correct" );
+                    assertTrue( !a.isIntersectionClass(), "intersection class test not correct" );
+                    assertTrue( !a.isUnionClass(), "union class test not correct" );
+                    assertTrue( !a.isComplementClass(), "complement class test not correct" );
+                    assertTrue( !a.isRestriction(), "restriction test not correct" );
                 }
             },
             new OntTestCase( "OntClass.toIntersectionClass", true, true, false ) {
@@ -872,21 +865,21 @@ public class TestClassExpression
                 public void ontTest( OntModel m ) {
                     OntClass a = m.createClass( NS + "A" );
 
-                    assertTrue( "enumerated class test not correct",    m_owlLiteLang || !a.isEnumeratedClass() );
-                    assertTrue( "intersection class test not correct",  !a.isIntersectionClass() );
-                    assertTrue( "union class test not correct",         m_owlLiteLang || !a.isUnionClass() );
-                    assertTrue( "complement class test not correct",    m_owlLiteLang || !a.isComplementClass() );
-                    assertTrue( "restriction test not correct",         !a.isRestriction() );
+                    assertTrue( m_owlLiteLang || !a.isEnumeratedClass(), "enumerated class test not correct" );
+                    assertTrue( !a.isIntersectionClass(), "intersection class test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isUnionClass(), "union class test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isComplementClass(), "complement class test not correct" );
+                    assertTrue( !a.isRestriction(), "restriction test not correct" );
 
                     OntClass b = m.createClass( NS + "B" );
                     OntClass c = m.createClass( NS + "C" );
                     a = a.convertToIntersectionClass( m.createList( new RDFNode[] {b,c} ) );
 
-                    assertTrue( "enumerated class test not correct",    m_owlLiteLang || !a.isEnumeratedClass() );
-                    assertTrue( "intersection class test not correct",  a.isIntersectionClass() );
-                    assertTrue( "union class test not correct",         m_owlLiteLang || !a.isUnionClass() );
-                    assertTrue( "complement class test not correct",    m_owlLiteLang || !a.isComplementClass() );
-                    assertTrue( "restriction test not correct",         !a.isRestriction() );
+                    assertTrue( m_owlLiteLang || !a.isEnumeratedClass(), "enumerated class test not correct" );
+                    assertTrue( a.isIntersectionClass(), "intersection class test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isUnionClass(), "union class test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isComplementClass(), "complement class test not correct" );
+                    assertTrue( !a.isRestriction(), "restriction test not correct" );
                 }
             },
             new OntTestCase( "OntClass.toUnionClass", true, false, false ) {
@@ -894,21 +887,21 @@ public class TestClassExpression
                 public void ontTest( OntModel m ) {
                     OntClass a = m.createClass( NS + "A" );
 
-                    assertTrue( "enumerated class test not correct",    !a.isEnumeratedClass() );
-                    assertTrue( "intersection class test not correct",  !a.isIntersectionClass() );
-                    assertTrue( "union class test not correct",         !a.isUnionClass() );
-                    assertTrue( "complement class test not correct",    !a.isComplementClass() );
-                    assertTrue( "restriction test not correct",         !a.isRestriction() );
+                    assertTrue( !a.isEnumeratedClass(), "enumerated class test not correct" );
+                    assertTrue( !a.isIntersectionClass(), "intersection class test not correct" );
+                    assertTrue( !a.isUnionClass(), "union class test not correct" );
+                    assertTrue( !a.isComplementClass(), "complement class test not correct" );
+                    assertTrue( !a.isRestriction(), "restriction test not correct" );
 
                     OntClass b = m.createClass( NS + "B" );
                     OntClass c = m.createClass( NS + "C" );
                     a = a.convertToUnionClass( m.createList( new RDFNode[] {b,c} ) );
 
-                    assertTrue( "enumerated class test not correct",    m_owlLiteLang || !a.isEnumeratedClass() );
-                    assertTrue( "intersection class test not correct",  !a.isIntersectionClass() );
-                    assertTrue( "union class test not correct",         m_owlLiteLang || a.isUnionClass() );
-                    assertTrue( "complement class test not correct",    m_owlLiteLang || !a.isComplementClass() );
-                    assertTrue( "restriction test not correct",         !a.isRestriction() );
+                    assertTrue( m_owlLiteLang || !a.isEnumeratedClass(), "enumerated class test not correct" );
+                    assertTrue( !a.isIntersectionClass(), "intersection class test not correct" );
+                    assertTrue( m_owlLiteLang || a.isUnionClass(), "union class test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isComplementClass(), "complement class test not correct" );
+                    assertTrue( !a.isRestriction(), "restriction test not correct" );
                 }
             },
             new OntTestCase( "OntClass.toComplementClass", true, false, false ) {
@@ -916,20 +909,20 @@ public class TestClassExpression
                 public void ontTest( OntModel m ) {
                     OntClass a = m.createClass( NS + "A" );
 
-                    assertTrue( "enumerated class test not correct",    !a.isEnumeratedClass() );
-                    assertTrue( "intersection class test not correct",  !a.isIntersectionClass() );
-                    assertTrue( "union class test not correct",         !a.isUnionClass() );
-                    assertTrue( "complement class test not correct",    !a.isComplementClass() );
-                    assertTrue( "restriction test not correct",         !a.isRestriction() );
+                    assertTrue( !a.isEnumeratedClass(), "enumerated class test not correct" );
+                    assertTrue( !a.isIntersectionClass(), "intersection class test not correct" );
+                    assertTrue( !a.isUnionClass(), "union class test not correct" );
+                    assertTrue( !a.isComplementClass(), "complement class test not correct" );
+                    assertTrue( !a.isRestriction(), "restriction test not correct" );
 
                     OntClass b = m.createClass( NS + "B" );
                     a = a.convertToComplementClass( b );
 
-                    assertTrue( "enumerated class test not correct",    m_owlLiteLang || !a.isEnumeratedClass() );
-                    assertTrue( "intersection class test not correct",  !a.isIntersectionClass() );
-                    assertTrue( "union class test not correct",         m_owlLiteLang || !a.isUnionClass() );
-                    assertTrue( "complement class test not correct",    m_owlLiteLang || a.isComplementClass() );
-                    assertTrue( "restriction test not correct",         !a.isRestriction() );
+                    assertTrue( m_owlLiteLang || !a.isEnumeratedClass(), "enumerated class test not correct" );
+                    assertTrue( !a.isIntersectionClass(), "intersection class test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isUnionClass(), "union class test not correct" );
+                    assertTrue( m_owlLiteLang || a.isComplementClass(), "complement class test not correct" );
+                    assertTrue( !a.isRestriction(), "restriction test not correct" );
                 }
             },
             new OntTestCase( "OntClass.toRestriction", true, true, false ) {
@@ -937,23 +930,22 @@ public class TestClassExpression
                 public void ontTest( OntModel m ) {
                     OntClass a = m.createClass( NS + "A" );
 
-                    assertTrue( "enumerated class test not correct",    m_owlLiteLang || !a.isEnumeratedClass() );
-                    assertTrue( "intersection class test not correct",  !a.isIntersectionClass() );
-                    assertTrue( "union class test not correct",         m_owlLiteLang || !a.isUnionClass() );
-                    assertTrue( "complement class test not correct",    m_owlLiteLang || !a.isComplementClass() );
-                    assertTrue( "restriction test not correct",         !a.isRestriction() );
+                    assertTrue( m_owlLiteLang || !a.isEnumeratedClass(), "enumerated class test not correct" );
+                    assertTrue( !a.isIntersectionClass(), "intersection class test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isUnionClass(), "union class test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isComplementClass(), "complement class test not correct" );
+                    assertTrue( !a.isRestriction(), "restriction test not correct" );
 
                     ObjectProperty p = m.createObjectProperty( NS + "p" );
                     a = a.convertToRestriction( p );
 
-                    assertTrue( "enumerated class test not correct",    m_owlLiteLang || !a.isEnumeratedClass() );
-                    assertTrue( "intersection class test not correct",  !a.isIntersectionClass() );
-                    assertTrue( "union class test not correct",         m_owlLiteLang || !a.isUnionClass() );
-                    assertTrue( "complement class test not correct",    m_owlLiteLang || !a.isComplementClass() );
-                    assertTrue( "restriction test not correct",         a.isRestriction() );
+                    assertTrue( m_owlLiteLang || !a.isEnumeratedClass(), "enumerated class test not correct" );
+                    assertTrue( !a.isIntersectionClass(), "intersection class test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isUnionClass(), "union class test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isComplementClass(), "complement class test not correct" );
+                    assertTrue( a.isRestriction(), "restriction test not correct" );
                 }
             },
-
 
             // restriction type testing
             new OntTestCase( "Restriction.isAllValuesFrom", true, true, false ) {
@@ -963,12 +955,12 @@ public class TestClassExpression
                     ObjectProperty p = m.createObjectProperty( NS + "p" );
                     Restriction a = m.createAllValuesFromRestriction( null, p, b );
 
-                    assertTrue( "all values from test not correct",   a.isAllValuesFromRestriction() );
-                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
-                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
-                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
-                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
-                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                    assertTrue( a.isAllValuesFromRestriction(), "all values from test not correct" );
+                    assertTrue( !a.isSomeValuesFromRestriction(), "some values from test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isHasValueRestriction(), "has value test not correct" );
+                    assertTrue( !a.isCardinalityRestriction(), "cardinality test not correct" );
+                    assertTrue( !a.isMinCardinalityRestriction(), "min cardinality test not correct" );
+                    assertTrue( !a.isMaxCardinalityRestriction(), "max cardinality test not correct" );
                 }
             },
             new OntTestCase( "Restriction.isSomeValuesFrom", true, true, false ) {
@@ -978,12 +970,12 @@ public class TestClassExpression
                     ObjectProperty p = m.createObjectProperty( NS + "p" );
                     Restriction a = m.createSomeValuesFromRestriction( null, p, b );
 
-                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
-                    assertTrue( "some values from test not correct",  a.isSomeValuesFromRestriction() );
-                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
-                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
-                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
-                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                    assertTrue( !a.isAllValuesFromRestriction(), "all values from test not correct" );
+                    assertTrue( a.isSomeValuesFromRestriction(), "some values from test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isHasValueRestriction(), "has value test not correct" );
+                    assertTrue( !a.isCardinalityRestriction(), "cardinality test not correct" );
+                    assertTrue( !a.isMinCardinalityRestriction(), "min cardinality test not correct" );
+                    assertTrue( !a.isMaxCardinalityRestriction(), "max cardinality test not correct" );
                 }
             },
             new OntTestCase( "Restriction.isHasValue", true, false, false ) {
@@ -994,12 +986,12 @@ public class TestClassExpression
                     ObjectProperty p = m.createObjectProperty( NS + "p" );
                     Restriction a = m.createHasValueRestriction( null, p, x );
 
-                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
-                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
-                    assertTrue( "has value test not correct",         m_owlLiteLang || a.isHasValueRestriction() );
-                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
-                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
-                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                    assertTrue( !a.isAllValuesFromRestriction(), "all values from test not correct" );
+                    assertTrue( !a.isSomeValuesFromRestriction(), "some values from test not correct" );
+                    assertTrue( m_owlLiteLang || a.isHasValueRestriction(), "has value test not correct" );
+                    assertTrue( !a.isCardinalityRestriction(), "cardinality test not correct" );
+                    assertTrue( !a.isMinCardinalityRestriction(), "min cardinality test not correct" );
+                    assertTrue( !a.isMaxCardinalityRestriction(), "max cardinality test not correct" );
                 }
             },
             new OntTestCase( "Restriction.isCardinality", true, true, false ) {
@@ -1008,12 +1000,12 @@ public class TestClassExpression
                     ObjectProperty p = m.createObjectProperty( NS + "p" );
                     Restriction a = m.createCardinalityRestriction( null, p, 3 );
 
-                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
-                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
-                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
-                    assertTrue( "cardinality test not correct",       a.isCardinalityRestriction() );
-                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
-                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                    assertTrue( !a.isAllValuesFromRestriction(), "all values from test not correct" );
+                    assertTrue( !a.isSomeValuesFromRestriction(), "some values from test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isHasValueRestriction(), "has value test not correct" );
+                    assertTrue( a.isCardinalityRestriction(), "cardinality test not correct" );
+                    assertTrue( !a.isMinCardinalityRestriction(), "min cardinality test not correct" );
+                    assertTrue( !a.isMaxCardinalityRestriction(), "max cardinality test not correct" );
                 }
             },
             new OntTestCase( "Restriction.isMinCardinality", true, true, false ) {
@@ -1022,12 +1014,12 @@ public class TestClassExpression
                     ObjectProperty p = m.createObjectProperty( NS + "p" );
                     Restriction a = m.createMinCardinalityRestriction( null, p, 1 );
 
-                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
-                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
-                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
-                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
-                    assertTrue( "min cardinality test not correct",   a.isMinCardinalityRestriction() );
-                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                    assertTrue( !a.isAllValuesFromRestriction(), "all values from test not correct" );
+                    assertTrue( !a.isSomeValuesFromRestriction(), "some values from test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isHasValueRestriction(), "has value test not correct" );
+                    assertTrue( !a.isCardinalityRestriction(), "cardinality test not correct" );
+                    assertTrue( a.isMinCardinalityRestriction(), "min cardinality test not correct" );
+                    assertTrue( !a.isMaxCardinalityRestriction(), "max cardinality test not correct" );
                 }
             },
             new OntTestCase( "Restriction.isMaxCardinality", true, true, false ) {
@@ -1036,12 +1028,12 @@ public class TestClassExpression
                     ObjectProperty p = m.createObjectProperty( NS + "p" );
                     Restriction a = m.createMaxCardinalityRestriction( null, p, 5 );
 
-                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
-                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
-                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
-                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
-                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
-                    assertTrue( "max cardinality test not correct",   a.isMaxCardinalityRestriction() );
+                    assertTrue( !a.isAllValuesFromRestriction(), "all values from test not correct" );
+                    assertTrue( !a.isSomeValuesFromRestriction(), "some values from test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isHasValueRestriction(), "has value test not correct" );
+                    assertTrue( !a.isCardinalityRestriction(), "cardinality test not correct" );
+                    assertTrue( !a.isMinCardinalityRestriction(), "min cardinality test not correct" );
+                    assertTrue( a.isMaxCardinalityRestriction(), "max cardinality test not correct" );
                 }
             },
 
@@ -1052,22 +1044,22 @@ public class TestClassExpression
                     ObjectProperty p = m.createObjectProperty( NS + "p" );
                     Restriction a = m.createRestriction( p );
 
-                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
-                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
-                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
-                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
-                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
-                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                    assertTrue( !a.isAllValuesFromRestriction(), "all values from test not correct" );
+                    assertTrue( !a.isSomeValuesFromRestriction(), "some values from test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isHasValueRestriction(), "has value test not correct" );
+                    assertTrue( !a.isCardinalityRestriction(), "cardinality test not correct" );
+                    assertTrue( !a.isMinCardinalityRestriction(), "min cardinality test not correct" );
+                    assertTrue( !a.isMaxCardinalityRestriction(), "max cardinality test not correct" );
 
                     OntClass b = m.createClass( NS + "B" );
                     a = a.convertToAllValuesFromRestriction( b );
 
-                    assertTrue( "all values from test not correct",   a.isAllValuesFromRestriction() );
-                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
-                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
-                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
-                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
-                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                    assertTrue( a.isAllValuesFromRestriction(), "all values from test not correct" );
+                    assertTrue( !a.isSomeValuesFromRestriction(), "some values from test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isHasValueRestriction(), "has value test not correct" );
+                    assertTrue( !a.isCardinalityRestriction(), "cardinality test not correct" );
+                    assertTrue( !a.isMinCardinalityRestriction(), "min cardinality test not correct" );
+                    assertTrue( !a.isMaxCardinalityRestriction(), "max cardinality test not correct" );
                 }
             },
             new OntTestCase( "Restriction.convertToSomeValuesFrom", true, true, false ) {
@@ -1076,22 +1068,22 @@ public class TestClassExpression
                     ObjectProperty p = m.createObjectProperty( NS + "p" );
                     Restriction a = m.createRestriction( p );
 
-                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
-                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
-                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
-                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
-                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
-                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                    assertTrue( !a.isAllValuesFromRestriction(), "all values from test not correct" );
+                    assertTrue( !a.isSomeValuesFromRestriction(), "some values from test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isHasValueRestriction(), "has value test not correct" );
+                    assertTrue( !a.isCardinalityRestriction(), "cardinality test not correct" );
+                    assertTrue( !a.isMinCardinalityRestriction(), "min cardinality test not correct" );
+                    assertTrue( !a.isMaxCardinalityRestriction(), "max cardinality test not correct" );
 
                     OntClass b = m.createClass( NS + "B" );
                     a = a.convertToSomeValuesFromRestriction( b );
 
-                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
-                    assertTrue( "some values from test not correct",  a.isSomeValuesFromRestriction() );
-                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
-                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
-                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
-                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                    assertTrue( !a.isAllValuesFromRestriction(), "all values from test not correct" );
+                    assertTrue( a.isSomeValuesFromRestriction(), "some values from test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isHasValueRestriction(), "has value test not correct" );
+                    assertTrue( !a.isCardinalityRestriction(), "cardinality test not correct" );
+                    assertTrue( !a.isMinCardinalityRestriction(), "min cardinality test not correct" );
+                    assertTrue( !a.isMaxCardinalityRestriction(), "max cardinality test not correct" );
                 }
             },
             new OntTestCase( "Restriction.convertToHasValue", true, false, false ) {
@@ -1100,23 +1092,23 @@ public class TestClassExpression
                     ObjectProperty p = m.createObjectProperty( NS + "p" );
                     Restriction a = m.createRestriction( p );
 
-                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
-                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
-                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
-                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
-                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
-                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                    assertTrue( !a.isAllValuesFromRestriction(), "all values from test not correct" );
+                    assertTrue( !a.isSomeValuesFromRestriction(), "some values from test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isHasValueRestriction(), "has value test not correct" );
+                    assertTrue( !a.isCardinalityRestriction(), "cardinality test not correct" );
+                    assertTrue( !a.isMinCardinalityRestriction(), "min cardinality test not correct" );
+                    assertTrue( !a.isMaxCardinalityRestriction(), "max cardinality test not correct" );
 
                     OntClass b = m.createClass( NS + "B" );
                     Individual x = m.createIndividual( b );
                     a = a.convertToHasValueRestriction( x );
 
-                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
-                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
-                    assertTrue( "has value test not correct",         m_owlLiteLang || a.isHasValueRestriction() );
-                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
-                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
-                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                    assertTrue( !a.isAllValuesFromRestriction(), "all values from test not correct" );
+                    assertTrue( !a.isSomeValuesFromRestriction(), "some values from test not correct" );
+                    assertTrue( m_owlLiteLang || a.isHasValueRestriction(), "has value test not correct" );
+                    assertTrue( !a.isCardinalityRestriction(), "cardinality test not correct" );
+                    assertTrue( !a.isMinCardinalityRestriction(), "min cardinality test not correct" );
+                    assertTrue( !a.isMaxCardinalityRestriction(), "max cardinality test not correct" );
                 }
             },
             new OntTestCase( "Restriction.convertCardinality", true, true, false ) {
@@ -1125,21 +1117,21 @@ public class TestClassExpression
                     ObjectProperty p = m.createObjectProperty( NS + "p" );
                     Restriction a = m.createRestriction( p );
 
-                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
-                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
-                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
-                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
-                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
-                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                    assertTrue( !a.isAllValuesFromRestriction(), "all values from test not correct" );
+                    assertTrue( !a.isSomeValuesFromRestriction(), "some values from test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isHasValueRestriction(), "has value test not correct" );
+                    assertTrue( !a.isCardinalityRestriction(), "cardinality test not correct" );
+                    assertTrue( !a.isMinCardinalityRestriction(), "min cardinality test not correct" );
+                    assertTrue( !a.isMaxCardinalityRestriction(), "max cardinality test not correct" );
 
                     a = a.convertToCardinalityRestriction( 3 );
 
-                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
-                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
-                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
-                    assertTrue( "cardinality test not correct",       a.isCardinalityRestriction() );
-                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
-                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                    assertTrue( !a.isAllValuesFromRestriction(), "all values from test not correct" );
+                    assertTrue( !a.isSomeValuesFromRestriction(), "some values from test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isHasValueRestriction(), "has value test not correct" );
+                    assertTrue( a.isCardinalityRestriction(), "cardinality test not correct" );
+                    assertTrue( !a.isMinCardinalityRestriction(), "min cardinality test not correct" );
+                    assertTrue( !a.isMaxCardinalityRestriction(), "max cardinality test not correct" );
                 }
             },
             new OntTestCase( "Restriction.convertMinCardinality", true, true, false ) {
@@ -1148,21 +1140,21 @@ public class TestClassExpression
                     ObjectProperty p = m.createObjectProperty( NS + "p" );
                     Restriction a = m.createRestriction( p );
 
-                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
-                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
-                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
-                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
-                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
-                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                    assertTrue( !a.isAllValuesFromRestriction(), "all values from test not correct" );
+                    assertTrue( !a.isSomeValuesFromRestriction(), "some values from test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isHasValueRestriction(), "has value test not correct" );
+                    assertTrue( !a.isCardinalityRestriction(), "cardinality test not correct" );
+                    assertTrue( !a.isMinCardinalityRestriction(), "min cardinality test not correct" );
+                    assertTrue( !a.isMaxCardinalityRestriction(), "max cardinality test not correct" );
 
                     a = a.convertToMinCardinalityRestriction( 3 );
 
-                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
-                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
-                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
-                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
-                    assertTrue( "min cardinality test not correct",   a.isMinCardinalityRestriction() );
-                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                    assertTrue( !a.isAllValuesFromRestriction(), "all values from test not correct" );
+                    assertTrue( !a.isSomeValuesFromRestriction(), "some values from test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isHasValueRestriction(), "has value test not correct" );
+                    assertTrue( !a.isCardinalityRestriction(), "cardinality test not correct" );
+                    assertTrue( a.isMinCardinalityRestriction(), "min cardinality test not correct" );
+                    assertTrue( !a.isMaxCardinalityRestriction(), "max cardinality test not correct" );
                 }
             },
             new OntTestCase( "Restriction.convertMaxCardinality", true, true, false ) {
@@ -1171,21 +1163,21 @@ public class TestClassExpression
                     ObjectProperty p = m.createObjectProperty( NS + "p" );
                     Restriction a = m.createRestriction( p );
 
-                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
-                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
-                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
-                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
-                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
-                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                    assertTrue( !a.isAllValuesFromRestriction(), "all values from test not correct" );
+                    assertTrue( !a.isSomeValuesFromRestriction(), "some values from test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isHasValueRestriction(), "has value test not correct" );
+                    assertTrue( !a.isCardinalityRestriction(), "cardinality test not correct" );
+                    assertTrue( !a.isMinCardinalityRestriction(), "min cardinality test not correct" );
+                    assertTrue( !a.isMaxCardinalityRestriction(), "max cardinality test not correct" );
 
                     a = a.convertToMaxCardinalityRestriction( 3 );
 
-                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
-                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
-                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
-                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
-                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
-                    assertTrue( "max cardinality test not correct",   a.isMaxCardinalityRestriction() );
+                    assertTrue( !a.isAllValuesFromRestriction(), "all values from test not correct" );
+                    assertTrue( !a.isSomeValuesFromRestriction(), "some values from test not correct" );
+                    assertTrue( m_owlLiteLang || !a.isHasValueRestriction(), "has value test not correct" );
+                    assertTrue( !a.isCardinalityRestriction(), "cardinality test not correct" );
+                    assertTrue( !a.isMinCardinalityRestriction(), "min cardinality test not correct" );
+                    assertTrue( a.isMaxCardinalityRestriction(), "max cardinality test not correct" );
                 }
             },
             new OntTestCase( "OntClass.listInstances", true, true, true ) {
@@ -1252,8 +1244,8 @@ public class TestClassExpression
                     iteratorTest( C.listDeclaredProperties( false ), new Object[] { p, q, s} );
                     iteratorTest( C.listDeclaredProperties( true ), new Object[] {s} );
 
-                    assertNotNull( "declared property should be an ont prop", C.listDeclaredProperties( true ).next() );
-                    assertNotNull( "declared property should be an ont prop", C.listDeclaredProperties( false ).next()  );
+                    assertNotNull( C.listDeclaredProperties( true ).next(), "declared property should be an ont prop" );
+                    assertNotNull( C.listDeclaredProperties( false ).next(), "declared property should be an ont prop" );
                 }
             },
             new OntTestCase( "DataRange.oneOf", true, false, false ) {
@@ -1266,22 +1258,22 @@ public class TestClassExpression
 
                     DataRange d0 = m.createDataRange( lits );
 
-                    assertTrue( "datarange should contain x", d0.hasOneOf( x ) );
-                    assertTrue( "datarange should contain y", d0.hasOneOf( y ) );
-                    assertFalse( "datarange should not contain z", d0.hasOneOf( z ) );
+                    assertTrue( d0.hasOneOf( x ), "datarange should contain x" );
+                    assertTrue( d0.hasOneOf( y ), "datarange should contain y" );
+                    assertFalse( d0.hasOneOf( z ), "datarange should not contain z" );
 
                     d0.removeOneOf( z );
-                    assertTrue( "datarange should contain x", d0.hasOneOf( x ) );
-                    assertTrue( "datarange should contain y", d0.hasOneOf( y ) );
-                    assertFalse( "datarange should not contain z", d0.hasOneOf( z ) );
+                    assertTrue( d0.hasOneOf( x ), "datarange should contain x" );
+                    assertTrue( d0.hasOneOf( y ), "datarange should contain y" );
+                    assertFalse( d0.hasOneOf( z ), "datarange should not contain z" );
 
                     d0.removeOneOf( x );
-                    assertFalse( "datarange should not contain x", d0.hasOneOf( x ) );
-                    assertTrue( "datarange should contain y", d0.hasOneOf( y ) );
-                    assertFalse( "datarange should not contain z", d0.hasOneOf( z ) );
+                    assertFalse( d0.hasOneOf( x ), "datarange should not contain x" );
+                    assertTrue( d0.hasOneOf( y ), "datarange should contain y" );
+                    assertFalse( d0.hasOneOf( z ), "datarange should not contain z" );
 
                     d0.addOneOf( z );
-                    assertEquals( "datarange should be size 2", 2, d0.getOneOf().size() );
+                    assertEquals( 2, d0.getOneOf().size(), "datarange should be size 2" );
                     iteratorTest( d0.listOneOf(), new Object[] {y,z} );
 
                     d0.setOneOf( m.createList( new RDFNode[] {x} ) );

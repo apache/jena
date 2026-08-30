@@ -21,10 +21,14 @@
 
 package org.apache.jena.ontology.makers;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphTestLib;
 import org.apache.jena.graph.Node;
@@ -35,13 +39,14 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.test.JenaTestLib;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.NullIterator;
-import org.junit.Assert;
 
 /**
  * Test ModelMakerImpl using a mock GraphMaker.
  */
-public class TestModelMakerImpl extends TestCase
+public class TestModelMakerImpl
 {
+	static { JenaTestLib.setup(); }
+
 	static class MockGraphMaker implements GraphMaker
 	{
 		List<String> history = new ArrayList<>();
@@ -150,14 +155,9 @@ public class TestModelMakerImpl extends TestCase
 	private Graph graph;
 	private GraphMaker graphMaker;
 
-	public TestModelMakerImpl( final String name )
-	{
-		super(name);
-	}
-
 	private void checkHistory( final List<String> expected )
 	{
-		Assert.assertEquals(expected, history());
+		assertEquals(expected, history());
 	}
 
 	private List<String> history()
@@ -165,7 +165,7 @@ public class TestModelMakerImpl extends TestCase
 		return ((MockGraphMaker) maker.getGraphMaker()).history;
 	}
 
-	@Override
+	@BeforeEach
 	public void setUp()
 	{
 		graph = GraphTestLib.graphWith("");
@@ -173,77 +173,89 @@ public class TestModelMakerImpl extends TestCase
 		maker = new ModelMakerImpl(graphMaker);
 	}
 
+	@Test
 	public void testClose()
 	{
 		maker.close();
 		checkHistory(JenaTestLib.listOfOne("close()"));
 	}
 
+	@Test
 	public void testCreateDefaultModel()
 	{
 		maker.createDefaultModel();
 		checkHistory(JenaTestLib.listOfOne("get()"));
 	}
 
+	@Test
 	public void testCreateFalse()
 	{
 		final Model m = maker.createModel("leaf", false);
 		checkHistory(JenaTestLib.listOfOne("create(leaf,false)"));
-		Assert.assertTrue(m.getGraph() == graph);
+		assertTrue(m.getGraph() == graph);
 	}
 
+	@Test
 	public void testCreateFreshModel()
 	{
 		maker.createFreshModel();
 		checkHistory(JenaTestLib.listOfOne("create()"));
 	}
 
+	@Test
 	public void testCreateNamed()
 	{
 		final Model m = maker.createModel("petal");
 		checkHistory(JenaTestLib.listOfOne("create(petal,false)"));
-		Assert.assertTrue(m.getGraph() == graph);
+		assertTrue(m.getGraph() == graph);
 	}
 
+	@Test
 	public void testCreateTrue()
 	{
 		final Model m = maker.createModel("stem", true);
 		checkHistory(JenaTestLib.listOfOne("create(stem,true)"));
-		Assert.assertTrue(m.getGraph() == graph);
+		assertTrue(m.getGraph() == graph);
 	}
 
+	@Test
 	public void testGetGraphMaker()
 	{
-		Assert.assertTrue(maker.getGraphMaker() == graphMaker);
+		assertTrue(maker.getGraphMaker() == graphMaker);
 	}
 
+	@Test
 	public void testListGraphs()
 	{
 		maker.listModels().close();
 		checkHistory(JenaTestLib.listOfOne("listModels()"));
 	}
 
+	@Test
 	public void testOpen()
 	{
 		final Model m = maker.openModel("trunk");
 		checkHistory(JenaTestLib.listOfOne("open(trunk,false)"));
-		Assert.assertTrue(m.getGraph() == graph);
+		assertTrue(m.getGraph() == graph);
 	}
 
+	@Test
 	public void testOpenFalse()
 	{
 		final Model m = maker.openModel("branch", false);
 		checkHistory(JenaTestLib.listOfOne("open(branch,false)"));
-		Assert.assertTrue(m.getGraph() == graph);
+		assertTrue(m.getGraph() == graph);
 	}
 
+	@Test
 	public void testOpenTrue()
 	{
 		final Model m = maker.openModel("bark", true);
 		checkHistory(JenaTestLib.listOfOne("open(bark,true)"));
-		Assert.assertTrue(m.getGraph() == graph);
+		assertTrue(m.getGraph() == graph);
 	}
 
+	@Test
 	public void testRemove()
 	{
 		maker.removeModel("London");

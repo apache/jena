@@ -25,9 +25,12 @@ package org.apache.jena.ontology.impl;
 
 // Imports
 ///////////////
-import junit.framework.*;
 import org.apache.jena.ontology.*;
 import org.apache.jena.rdf.model.RDFNode;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.apache.jena.test.JenaTestLib;
 
 /**
  * <p>
@@ -35,9 +38,11 @@ import org.apache.jena.rdf.model.RDFNode;
  * </p>
  */
 @SuppressWarnings("removal")
-public class TestAllDifferent
-    extends OntTestBase
+public class TestAllDifferent extends OntTestBase
 {
+
+    static { JenaTestLib.setup(); }
+
     // Constants
     //////////////////////////////////
 
@@ -49,15 +54,6 @@ public class TestAllDifferent
 
     // Constructors
     //////////////////////////////////
-
-    static public TestSuite suite() {
-        return new TestAllDifferent( "TestAllDifferent" );
-    }
-
-    public TestAllDifferent( String name ) {
-        super( name );
-    }
-
 
     // External signature methods
     //////////////////////////////////
@@ -74,26 +70,26 @@ public class TestAllDifferent
                     OntResource c = m.getResource( NS + "c" ).as( OntResource.class );
 
                     a.addDistinctMember( b );
-                    assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.DISTINCT_MEMBERS() ) );
-                    assertEquals( "List size should be 1", 1, a.getDistinctMembers().size() );
-                    assertTrue( "a should have b as distinct", a.hasDistinctMember( b ) );
+                    assertEquals( 1, a.getCardinality( prof.DISTINCT_MEMBERS() ), "Cardinality should be 1" );
+                    assertEquals( 1, a.getDistinctMembers().size(), "List size should be 1" );
+                    assertTrue( a.hasDistinctMember( b ), "a should have b as distinct" );
 
                     a.addDistinctMember( c );
-                    assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.DISTINCT_MEMBERS() ) );
-                    assertEquals( "List size should be 2", 2, a.getDistinctMembers().size() );
+                    assertEquals( 1, a.getCardinality( prof.DISTINCT_MEMBERS() ), "Cardinality should be 1" );
+                    assertEquals( 2, a.getDistinctMembers().size(), "List size should be 2" );
                     iteratorTest( a.listDistinctMembers(), new Object[] {b, c} );
 
-                    assertTrue( "a should have b as distinct", a.hasDistinctMember( b ) );
-                    assertTrue( "a should have c as distinct", a.hasDistinctMember( c ) );
+                    assertTrue( a.hasDistinctMember( b ), "a should have b as distinct" );
+                    assertTrue( a.hasDistinctMember( c ), "a should have c as distinct" );
 
                     a.setDistinctMembers( m.createList( new RDFNode[] {b} ) );
-                    assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.DISTINCT_MEMBERS() ) );
-                    assertEquals( "List size should be 1", 1, a.getDistinctMembers().size() );
-                    assertTrue( "a should have b as distinct", a.hasDistinctMember( b ) );
-                    assertTrue( "a should not have c as distinct", !a.hasDistinctMember( c ) );
+                    assertEquals( 1, a.getCardinality( prof.DISTINCT_MEMBERS() ), "Cardinality should be 1" );
+                    assertEquals( 1, a.getDistinctMembers().size(), "List size should be 1" );
+                    assertTrue( a.hasDistinctMember( b ), "a should have b as distinct" );
+                    assertTrue( !a.hasDistinctMember( c ), "a should not have c as distinct" );
 
                     a.removeDistinctMember( b );
-                    assertTrue( "a should have not b as distinct", !a.hasDistinctMember( b ) );
+                    assertTrue( !a.hasDistinctMember( b ), "a should have not b as distinct" );
                 }
             },
         };

@@ -26,8 +26,14 @@ package org.apache.jena.ontology.impl;
 // Imports
 ///////////////
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
+
+import org.apache.jena.test.JenaTestLib;
 import org.apache.jena.ontology.AllDifferent;
 import org.apache.jena.ontology.AnnotationProperty;
 import org.apache.jena.ontology.FunctionalProperty;
@@ -64,12 +70,12 @@ import java.util.List;
  */
 @SuppressWarnings("removal")
 public class TestListSyntaxCategories
-    extends TestCase
 {
+    static { JenaTestLib.setup(); }
+
     // Constants
     //////////////////////////////////
     public static final String NS = "http://jena.hpl.hp.com/testing/ontology#";
-
 
     // Static variables
     //////////////////////////////////
@@ -668,33 +674,25 @@ public class TestListSyntaxCategories
         },
     };
 
-
     // Instance variables
     //////////////////////////////////
 
     // Constructors
     //////////////////////////////////
 
-    public TestListSyntaxCategories( String name ) {
-        super( name );
-    }
-
-
-
     // External signature methods
     //////////////////////////////////
 
-    public static TestSuite suite() {
-        TestSuite s = new TestSuite( "TestListSyntaxCategories" );
-
-        for ( DoListTest testCase : testCases )
-        {
-            s.addTest( testCase );
-        }
-
-        return s;
+    /**
+     * One dynamic test per entry of the {@code testCases} table. The JUnit3
+     * original added each {@code DoListTest} to a {@code TestSuite}, so one
+     * entry remains one test.
+     */
+    @TestFactory
+    public Stream<DynamicTest> listSyntaxCategoryTests() {
+        return Stream.of( testCases )
+                     .map( tc -> DynamicTest.dynamicTest( tc.getName(), () -> { tc.setUp(); tc.runTest(); } ) );
     }
-
 
     // Internal implementation methods
     //////////////////////////////////
@@ -704,8 +702,8 @@ public class TestListSyntaxCategories
     //==============================================================================
 
     protected static class DoListTest
-        extends TestCase
     {
+        protected String m_name;
         protected String m_fileName;
         protected OntModelSpec m_spec;
         protected int m_count;
@@ -717,7 +715,7 @@ public class TestListSyntaxCategories
         }
 
         protected DoListTest( String name, String fileName, OntModelSpec spec, int count, String[] expected, boolean exExpected ) {
-            super( name );
+            m_name = name;
             m_fileName = fileName;
             m_spec = spec;
             m_count = count;
@@ -725,14 +723,16 @@ public class TestListSyntaxCategories
             m_exExpected = exExpected;
         }
 
-        @Override
+        /** The name this case ran under in the JUnit3 suite. */
+        public String getName() {
+            return m_name;
+        }
+
         public void setUp() {
             // ensure the ont doc manager is in a consistent state
             OntDocumentManager.getInstance().reset( true );
         }
 
-
-        @Override
         public void runTest() {
             Logger logger = LoggerFactory.getLogger( getClass() );
             OntModel m = ModelFactory.createOntologyModel( m_spec, null );
@@ -754,7 +754,7 @@ public class TestListSyntaxCategories
                 exOccurred = true;
             }
 
-            assertEquals( "Ontology exception" + (m_exExpected ? " was " : " was not ") + "expected", m_exExpected, exOccurred );
+            assertEquals( m_exExpected, exOccurred, "Ontology exception" + (m_exExpected ? " was " : " was not ") + "expected" );
 
             if (!exOccurred) {
                 List<Resource> expected = expected( m );
@@ -764,7 +764,7 @@ public class TestListSyntaxCategories
                 // now we walk the iterator
                 while (i.hasNext()) {
                     Resource res = i.next();
-                    assertTrue( "Should not fail node test on " + res, test( res ));
+                    assertTrue( test( res ), "Should not fail node test on " + res);
 
                     actual.add( res );
                     if (expected != null) {
@@ -796,10 +796,10 @@ public class TestListSyntaxCategories
                     }
                 }
 
-                assertEquals( getName() + ": wrong number of results returned", m_count, actual.size() );
+                assertEquals( m_count, actual.size(), getName() + ": wrong number of results returned" );
                 if (expected != null) {
-                    assertTrue( "Did not find all expected resources in iterator", expected.isEmpty() );
-                    assertEquals( "Found extraneous results, not in expected list", 0, extraneous );
+                    assertTrue( expected.isEmpty(), "Did not find all expected resources in iterator" );
+                    assertEquals( 0, extraneous, "Found extraneous results, not in expected list" );
                 }
             }
         }

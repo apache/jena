@@ -21,7 +21,13 @@
 
 package org.apache.jena.ontology.makers;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.Set;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Graph;
@@ -32,14 +38,11 @@ import org.apache.jena.ontology.models.GraphMaker;
 import org.apache.jena.ontology.models.SimpleGraphMaker;
 import org.apache.jena.shared.AlreadyExistsException;
 import org.apache.jena.shared.DoesNotExistException;
-import org.apache.jena.test.JenaTestBase;
 import org.apache.jena.test.JenaTestLib;
 
-public class TestGraphMaker extends JenaTestBase {
+public class TestGraphMaker {
 
-    public TestGraphMaker(String name) {
-        super(name);
-    }
+    static { JenaTestLib.setup(); }
 
     public GraphMaker getGraphMaker() {
         return new SimpleGraphMaker();
@@ -47,12 +50,12 @@ public class TestGraphMaker extends JenaTestBase {
 
     private GraphMaker gf;
 
-    @Override
+    @BeforeEach
     public void setUp() {
         gf = getGraphMaker();
     }
 
-    @Override
+    @AfterEach
     public void tearDown() {
         gf.close();
     }
@@ -61,17 +64,20 @@ public class TestGraphMaker extends JenaTestBase {
      * A trivial test that getGraph delivers a proper graph, not cheating with null,
      * and that getGraph() "always" delivers the same Graph.
      */
+    @Test
     public void testGetGraph() {
         Graph g1 = gf.getGraph();
-        assertFalse("should deliver a Graph", g1 == null);
+        assertFalse(g1 == null, "should deliver a Graph");
         assertSame(g1, gf.getGraph());
         g1.close();
     }
 
+    @Test
     public void testCreateGraph() {
         JenaTestLib.assertDiffer("each created graph must differ", gf.createGraph(), gf.createGraph());
     }
 
+    @Test
     public void testAnyName() {
         gf.createGraph("plain").close();
         gf.createGraph("with.dot").close();
@@ -81,42 +87,44 @@ public class TestGraphMaker extends JenaTestBase {
     /**
      * Test that we can't create a graph with the same name twice.
      */
+    @Test
     public void testCannotCreateTwice() {
         String name = jName("bonsai");
         gf.createGraph(name, true);
-        try {
-            gf.createGraph(name, true);
-            fail("should not be able to create " + name + " twice");
-        } catch (AlreadyExistsException e) {}
+        assertThrows(AlreadyExistsException.class,
+                     () -> gf.createGraph(name, true),
+                     "should not be able to create " + name + " twice");
     }
 
     private String jName(String name) {
         return "jena-test-AbstractTestGraphMaker-" + name;
     }
 
+    @Test
     public void testCanCreateTwice() {
         String name = jName("bridge");
         Graph g1 = gf.createGraph(name, true);
         Graph g2 = gf.createGraph(name, false);
-        assertTrue("graphs should be the same", sameGraph(g1, g2));
+        assertTrue(sameGraph(g1, g2), "graphs should be the same");
         Graph g3 = gf.createGraph(name);
-        assertTrue("graphs should be the same", sameGraph(g1, g3));
+        assertTrue(sameGraph(g1, g3), "graphs should be the same");
     }
 
     /**
      * Test that we cannot open a graph that does not exist.
      */
+    @Test
     public void testCannotOpenUncreated() {
         String name = jName("noSuchGraph");
-        try {
-            gf.openGraph(name, true);
-            fail(name + " should not exist");
-        } catch (DoesNotExistException e) {}
+        assertThrows(DoesNotExistException.class,
+                     () -> gf.openGraph(name, true),
+                     name + " should not exist");
     }
 
     /**
      * Test that we *can* open a graph that hasn't been created
      */
+    @Test
     public void testCanOpenUncreated() {
         String name = jName("willBeCreated");
         Graph g1 = gf.openGraph(name);
@@ -128,14 +136,14 @@ public class TestGraphMaker extends JenaTestBase {
      * Utility - test that a graph with the given name exists.
      */
     private void testExists(String name) {
-        assertTrue(name + " should exist", gf.hasGraph(name));
+        assertTrue(gf.hasGraph(name), name + " should exist");
     }
 
     /**
      * Utility - test that no graph with the given name exists.
      */
     private void testDoesNotExist(String name) {
-        assertFalse(name + " should exist", gf.hasGraph(name));
+        assertFalse(gf.hasGraph(name), name + " should exist");
     }
 
     /**
@@ -143,14 +151,15 @@ public class TestGraphMaker extends JenaTestBase {
      * graphs are "the same" here: we have a temporary work-around but it is not
      * sound.
      */
+    @Test
     public void testCanFindCreatedGraph() {
         String alpha = jName("alpha"), beta = jName("beta");
         Graph g1 = gf.createGraph(alpha, true);
         Graph h1 = gf.createGraph(beta, true);
         Graph g2 = gf.openGraph(alpha, true);
         Graph h2 = gf.openGraph(beta, true);
-        assertTrue("should find alpha", sameGraph(g1, g2));
-        assertTrue("should find beta", sameGraph(h1, h2));
+        assertTrue(sameGraph(g1, g2), "should find alpha");
+        assertTrue(sameGraph(h1, h2), "should find beta");
     }
 
     /**
@@ -169,6 +178,7 @@ public class TestGraphMaker extends JenaTestBase {
      * Test that we can remove a graph from the factory without disturbing another
      * graph's binding.
      */
+    @Test
     public void testCanRemoveGraph() {
         String alpha = jName("bingo"), beta = jName("brillo");
         gf.createGraph(alpha, true);
@@ -180,30 +190,32 @@ public class TestGraphMaker extends JenaTestBase {
         testDoesNotExist(alpha);
     }
 
+    @Test
     public void testHasnt() {
-        assertFalse("no such graph", gf.hasGraph("john"));
-        assertFalse("no such graph", gf.hasGraph("paul"));
-        assertFalse("no such graph", gf.hasGraph("george"));
+        assertFalse(gf.hasGraph("john"), "no such graph");
+        assertFalse(gf.hasGraph("paul"), "no such graph");
+        assertFalse(gf.hasGraph("george"), "no such graph");
         /* */
         gf.createGraph("john", true);
-        assertTrue("john now exists", gf.hasGraph("john"));
-        assertFalse("no such graph", gf.hasGraph("paul"));
-        assertFalse("no such graph", gf.hasGraph("george"));
+        assertTrue(gf.hasGraph("john"), "john now exists");
+        assertFalse(gf.hasGraph("paul"), "no such graph");
+        assertFalse(gf.hasGraph("george"), "no such graph");
         /* */
         gf.createGraph("paul", true);
-        assertTrue("john still exists", gf.hasGraph("john"));
-        assertTrue("paul now exists", gf.hasGraph("paul"));
-        assertFalse("no such graph", gf.hasGraph("george"));
+        assertTrue(gf.hasGraph("john"), "john still exists");
+        assertTrue(gf.hasGraph("paul"), "paul now exists");
+        assertFalse(gf.hasGraph("george"), "no such graph");
         /* */
         gf.removeGraph("john");
-        assertFalse("john has been removed", gf.hasGraph("john"));
-        assertTrue("paul still exists", gf.hasGraph("paul"));
-        assertFalse("no such graph", gf.hasGraph("george"));
+        assertFalse(gf.hasGraph("john"), "john has been removed");
+        assertTrue(gf.hasGraph("paul"), "paul still exists");
+        assertFalse(gf.hasGraph("george"), "no such graph");
     }
 
     // Up to Jena5, the graph created did open/close counting.
     // But only some graph implements provided this.
 
+    @Test
     public void testCarefulClose() {
         Graph x = gf.createGraph("x");
         Graph y = gf.openGraph("x");
@@ -216,6 +228,7 @@ public class TestGraphMaker extends JenaTestBase {
     /**
      * Test that a maker with no graphs lists no names.
      */
+    @Test
     public void testListNoGraphs() {
         Set<String> s = gf.listGraphs().toSet();
         if ( s.size() > 0 )
@@ -228,6 +241,7 @@ public class TestGraphMaker extends JenaTestBase {
      * the spelling that goes in is the one that comes out [should really be in a
      * separate test].
      */
+    @Test
     public void testListThreeGraphs() {
         String x = "x", y = "y/sub", z = "z:boo";
         Graph X = gf.createGraph(x);
@@ -244,6 +258,7 @@ public class TestGraphMaker extends JenaTestBase {
      * Test that a maker with some things put in and then some removed gets the right
      * things listed.
      */
+    @Test
     public void testListAfterDelete() {
         String x = "x_y", y = "y//zub", z = "a:b/c";
         Graph X = gf.createGraph(x);

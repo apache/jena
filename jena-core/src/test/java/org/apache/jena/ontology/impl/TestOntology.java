@@ -23,12 +23,13 @@
 ///////////////
 package org.apache.jena.ontology.impl;
 
-
 // Imports
 ///////////////
-import junit.framework.TestSuite;
 import org.apache.jena.ontology.*;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.apache.jena.test.JenaTestLib;
 
 /**
  * <p>
@@ -36,33 +37,22 @@ import org.apache.jena.ontology.*;
  * </p>
  */
 @SuppressWarnings("removal")
-public class TestOntology
-    extends OntTestBase
+public class TestOntology extends OntTestBase
 {
+
+    static { JenaTestLib.setup(); }
+
     // Constants
     //////////////////////////////////
 
     // Static variables
     //////////////////////////////////
 
-
-
     // Instance variables
     //////////////////////////////////
 
     // Constructors
     //////////////////////////////////
-
-    static public TestSuite suite() {
-        return new TestOntology( "TestOntology" );
-    }
-
-    public TestOntology( String name ) {
-        super( name );
-    }
-
-
-
 
     // External signature methods
     //////////////////////////////////
@@ -79,21 +69,21 @@ public class TestOntology
                     Ontology z = m.createOntology( NS + "z" );
 
                     x.addImport( y );
-                    assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.IMPORTS() ) );
-                    assertEquals( "x should import y", y, x.getImport() );
+                    assertEquals( 1, x.getCardinality( prof.IMPORTS() ), "Cardinality should be 1" );
+                    assertEquals( y, x.getImport(), "x should import y" );
 
                     x.addImport( z );
-                    assertEquals( "Cardinality should be 2", 2, x.getCardinality( prof.IMPORTS() ) );
+                    assertEquals( 2, x.getCardinality( prof.IMPORTS() ), "Cardinality should be 2" );
                     iteratorTest( x.listImports(), new Object[] {y,z} );
 
                     x.setImport( z );
-                    assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.IMPORTS() ) );
-                    assertEquals( "x should import z", z, x.getImport() );
+                    assertEquals( 1, x.getCardinality( prof.IMPORTS() ), "Cardinality should be 1" );
+                    assertEquals( z, x.getImport(), "x should import z" );
 
                     x.removeImport( y );
-                    assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.IMPORTS() ) );
+                    assertEquals( 1, x.getCardinality( prof.IMPORTS() ), "Cardinality should be 1" );
                     x.removeImport( z );
-                    assertEquals( "Cardinality should be 0", 0, x.getCardinality( prof.IMPORTS() ) );
+                    assertEquals( 0, x.getCardinality( prof.IMPORTS() ), "Cardinality should be 0" );
                 }
             },
             new OntTestCase( "Ontology.backwardCompatibleWith", true, true, false ) {
@@ -105,21 +95,21 @@ public class TestOntology
                     Ontology z = m.createOntology( NS + "z" );
 
                     x.addBackwardCompatibleWith( y );
-                    assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.BACKWARD_COMPATIBLE_WITH() ) );
-                    assertEquals( "x should be back comp with y", y, x.getBackwardCompatibleWith() );
+                    assertEquals( 1, x.getCardinality( prof.BACKWARD_COMPATIBLE_WITH() ), "Cardinality should be 1" );
+                    assertEquals( y, x.getBackwardCompatibleWith(), "x should be back comp with y" );
 
                     x.addBackwardCompatibleWith( z );
-                    assertEquals( "Cardinality should be 2", 2, x.getCardinality( prof.BACKWARD_COMPATIBLE_WITH() ) );
+                    assertEquals( 2, x.getCardinality( prof.BACKWARD_COMPATIBLE_WITH() ), "Cardinality should be 2" );
                     iteratorTest( x.listBackwardCompatibleWith(), new Object[] {y,z} );
 
                     x.setBackwardCompatibleWith( z );
-                    assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.BACKWARD_COMPATIBLE_WITH() ) );
-                    assertEquals( "x should be back comp with z", z, x.getBackwardCompatibleWith() );
+                    assertEquals( 1, x.getCardinality( prof.BACKWARD_COMPATIBLE_WITH() ), "Cardinality should be 1" );
+                    assertEquals( z, x.getBackwardCompatibleWith(), "x should be back comp with z" );
 
                     x.removeBackwardCompatibleWith( y );
-                    assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.BACKWARD_COMPATIBLE_WITH() ) );
+                    assertEquals( 1, x.getCardinality( prof.BACKWARD_COMPATIBLE_WITH() ), "Cardinality should be 1" );
                     x.removeBackwardCompatibleWith( z );
-                    assertEquals( "Cardinality should be 0", 0, x.getCardinality( prof.BACKWARD_COMPATIBLE_WITH() ) );
+                    assertEquals( 0, x.getCardinality( prof.BACKWARD_COMPATIBLE_WITH() ), "Cardinality should be 0" );
                 }
             },
             new OntTestCase( "Ontology.priorVersion", true, true, false ) {
@@ -131,21 +121,21 @@ public class TestOntology
                     Ontology z = m.createOntology( NS + "z" );
 
                     x.addPriorVersion( y );
-                    assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.PRIOR_VERSION() ) );
-                    assertEquals( "x should have prior y", y, x.getPriorVersion() );
+                    assertEquals( 1, x.getCardinality( prof.PRIOR_VERSION() ), "Cardinality should be 1" );
+                    assertEquals( y, x.getPriorVersion(), "x should have prior y" );
 
                     x.addPriorVersion( z );
-                    assertEquals( "Cardinality should be 2", 2, x.getCardinality( prof.PRIOR_VERSION() ) );
+                    assertEquals( 2, x.getCardinality( prof.PRIOR_VERSION() ), "Cardinality should be 2" );
                     iteratorTest( x.listPriorVersion(), new Object[] {y,z} );
 
                     x.setPriorVersion( z );
-                    assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.PRIOR_VERSION() ) );
-                    assertEquals( "x should have prior z", z, x.getPriorVersion() );
+                    assertEquals( 1, x.getCardinality( prof.PRIOR_VERSION() ), "Cardinality should be 1" );
+                    assertEquals( z, x.getPriorVersion(), "x should have prior z" );
 
                     x.removePriorVersion( y );
-                    assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.PRIOR_VERSION() ) );
+                    assertEquals( 1, x.getCardinality( prof.PRIOR_VERSION() ), "Cardinality should be 1" );
                     x.removePriorVersion( z );
-                    assertEquals( "Cardinality should be 0", 0, x.getCardinality( prof.PRIOR_VERSION() ) );
+                    assertEquals( 0, x.getCardinality( prof.PRIOR_VERSION() ), "Cardinality should be 0" );
                 }
             },
             new OntTestCase( "Ontology.incompatibleWith", true, true, false ) {
@@ -157,21 +147,21 @@ public class TestOntology
                     Ontology z = m.createOntology( NS + "z" );
 
                     x.addIncompatibleWith( y );
-                    assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.INCOMPATIBLE_WITH() ) );
-                    assertEquals( "x should be in comp with y", y, x.getIncompatibleWith() );
+                    assertEquals( 1, x.getCardinality( prof.INCOMPATIBLE_WITH() ), "Cardinality should be 1" );
+                    assertEquals( y, x.getIncompatibleWith(), "x should be in comp with y" );
 
                     x.addIncompatibleWith( z );
-                    assertEquals( "Cardinality should be 2", 2, x.getCardinality( prof.INCOMPATIBLE_WITH() ) );
+                    assertEquals( 2, x.getCardinality( prof.INCOMPATIBLE_WITH() ), "Cardinality should be 2" );
                     iteratorTest( x.listIncompatibleWith(), new Object[] {y,z} );
 
                     x.setIncompatibleWith( z );
-                    assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.INCOMPATIBLE_WITH() ) );
-                    assertEquals( "x should be incomp with z", z, x.getIncompatibleWith() );
+                    assertEquals( 1, x.getCardinality( prof.INCOMPATIBLE_WITH() ), "Cardinality should be 1" );
+                    assertEquals( z, x.getIncompatibleWith(), "x should be incomp with z" );
 
                     x.removeIncompatibleWith( y );
-                    assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.INCOMPATIBLE_WITH() ) );
+                    assertEquals( 1, x.getCardinality( prof.INCOMPATIBLE_WITH() ), "Cardinality should be 1" );
                     x.removeIncompatibleWith( z );
-                    assertEquals( "Cardinality should be 0", 0, x.getCardinality( prof.INCOMPATIBLE_WITH() ) );
+                    assertEquals( 0, x.getCardinality( prof.INCOMPATIBLE_WITH() ), "Cardinality should be 0" );
                 }
             },
         };

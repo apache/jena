@@ -21,23 +21,19 @@
 
 package org.apache.jena.ontology.impl;
 
-import junit.framework.TestSuite;
-import org.apache.jena.graph.AbstractTestGraph;
+import org.apache.jena.graph.BaseTestGraph_JU6;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.test.JenaTestLib;
 
 /**
     Ensure that an OntGraph passes the graph tests. Clunky because it has to go
     via OntModel - there doesn't appear to be an OntGraph class.
 */
 
-public class TestOntGraph extends AbstractTestGraph
+public class TestOntGraph extends BaseTestGraph_JU6
     {
-    public TestOntGraph( String name )
-        { super( name ); }
-
-    public static TestSuite suite()
-        { return new TestSuite( TestOntGraph.class ); }
+    static { JenaTestLib.setup(); }
 
     @Override
     @SuppressWarnings("removal")

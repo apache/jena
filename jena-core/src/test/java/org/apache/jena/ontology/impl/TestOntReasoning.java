@@ -23,7 +23,6 @@
 ///////////////
 package org.apache.jena.ontology.impl;
 
-
 // Imports
 ///////////////
 import java.io.ByteArrayInputStream;
@@ -34,11 +33,15 @@ import org.apache.jena.ontology.*;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.reasoner.Reasoner;
 import org.apache.jena.reasoner.ReasonerRegistry;
-import org.apache.jena.reasoner.test.TestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import junit.framework.TestCase;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.test.JenaTestLib;
 
 /**
  * <p>
@@ -47,8 +50,10 @@ import junit.framework.TestCase;
  */
 @SuppressWarnings("removal")
 public class TestOntReasoning
-    extends TestCase
 {
+
+    static { JenaTestLib.setup(); }
+
     // Constants
     //////////////////////////////////
     public static final String BASE = "http://jena.hpl.hp.com/testing/ontology";
@@ -63,20 +68,16 @@ public class TestOntReasoning
     // Constructors
     //////////////////////////////////
 
-    public TestOntReasoning( String name ) {
-        super( name );
-    }
-
     // External signature methods
     //////////////////////////////////
 
-    @Override
+    @BeforeEach
     public void setUp() {
         // ensure the ont doc manager is in a consistent state
         OntDocumentManager.getInstance().reset( true );
     }
 
-
+    @Test
     public void testSubClassDirectTransInf1a() {
         OntModel m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LITE_LANG );
 
@@ -93,6 +94,7 @@ public class TestOntReasoning
         iteratorTest( A.listSubClasses( true ), new Object[] {B, C} );
     }
 
+    @Test
     public void testSubClassDirectTransInf1b() {
         OntModel m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LITE_LANG );
 
@@ -110,6 +112,7 @@ public class TestOntReasoning
         iteratorTest( A.listSubClasses( true ), new Object[] {B, C} );
     }
 
+    @Test
     public void testSubClassDirectTransInf2a() {
         // test the code path for generating direct sc with no reasoner
         OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_LITE_MEM );
@@ -129,6 +132,7 @@ public class TestOntReasoning
         iteratorTest( A.listSubClasses( true ), new Object[] {B, C} );
     }
 
+    @Test
     public void testSubClassDirectTransInf2b() {
         // test the code path for generating direct sc with no reasoner
         OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_LITE_MEM );
@@ -149,6 +153,7 @@ public class TestOntReasoning
         iteratorTest( A.listSubClasses( true ), new Object[] {B, C} );
     }
 
+    @Test
     public void testListSuperClassesDirect() {
         String ns = "http://example.org/test#";
         OntModel m0 = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
@@ -162,10 +167,10 @@ public class TestOntReasoning
         c2.addEquivalentClass( c3 );
 
         // now c1 is the direct super-class of c2, even allowing for the equiv with c3
-        assertFalse( "pass 1: c0 should not be a direct super of c2", c2.hasSuperClass( c0, true ) );
-        assertFalse( "pass 1: c3 should not be a direct super of c2", c2.hasSuperClass( c3, true ) );
-        assertFalse( "pass 1: c2 should not be a direct super of c2", c2.hasSuperClass( c2, true ) );
-        assertTrue( "pass 1: c1 should be a direct super of c2", c2.hasSuperClass( c1, true ) );
+        assertFalse( c2.hasSuperClass( c0, true ), "pass 1: c0 should not be a direct super of c2" );
+        assertFalse( c2.hasSuperClass( c3, true ), "pass 1: c3 should not be a direct super of c2" );
+        assertFalse( c2.hasSuperClass( c2, true ), "pass 1: c2 should not be a direct super of c2" );
+        assertTrue( c2.hasSuperClass( c1, true ), "pass 1: c1 should be a direct super of c2" );
 
         // second pass - with inference
         m0 = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_RULE_INF );
@@ -179,12 +184,13 @@ public class TestOntReasoning
         c2.addEquivalentClass( c3 );
 
         // now c1 is the direct super-class of c2, even allowing for the equiv with c3
-        assertFalse( "pass 2: c0 should not be a direct super of c2", c2.hasSuperClass( c0, true ) );
-        assertFalse( "pass 2: c3 should not be a direct super of c2", c2.hasSuperClass( c3, true ) );
-        assertFalse( "pass 2: c2 should not be a direct super of c2", c2.hasSuperClass( c2, true ) );
-        assertTrue( "pass 2: c1 should be a direct super of c2", c2.hasSuperClass( c1, true ) );
+        assertFalse( c2.hasSuperClass( c0, true ), "pass 2: c0 should not be a direct super of c2" );
+        assertFalse( c2.hasSuperClass( c3, true ), "pass 2: c3 should not be a direct super of c2" );
+        assertFalse( c2.hasSuperClass( c2, true ), "pass 2: c2 should not be a direct super of c2" );
+        assertTrue( c2.hasSuperClass( c1, true ), "pass 2: c1 should be a direct super of c2" );
     }
 
+    @Test
     public void testSubPropertyDirectTransInf1a() {
         OntModel m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LITE_LANG );
 
@@ -201,6 +207,7 @@ public class TestOntReasoning
         iteratorTest( p.listSubProperties( true ), new Object[] {q,r} );
     }
 
+    @Test
     public void testSubPropertyDirectTransInf1b() {
         OntModel m = ModelFactory.createOntologyModel( ProfileRegistry.OWL_LITE_LANG );
 
@@ -218,6 +225,7 @@ public class TestOntReasoning
         iteratorTest( p.listSubProperties( true ), new Object[] {q,r} );
     }
 
+    @Test
     public void testSubPropertyDirectTransInf2a() {
         // test the code path for generating direct sc with no reasoner
         OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_LITE_MEM );
@@ -237,6 +245,7 @@ public class TestOntReasoning
         iteratorTest( p.listSubProperties( true ), new Object[] {q,r} );
     }
 
+    @Test
     public void testSubPropertyDirectTransInf2b() {
         // test the code path for generating direct sc with no reasoner
         OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_LITE_MEM );
@@ -257,6 +266,7 @@ public class TestOntReasoning
         iteratorTest( p.listSubProperties( true ), new Object[] {q,r} );
     }
 
+    @Test
     public void testListDeclaredProperties0() {
         OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_RULE_INF, null );
 
@@ -310,6 +320,7 @@ public class TestOntReasoning
     /**
      * Test LDP with anonymous classes
      */
+    @Test
     public void testListDeclaredProperties1() {
         OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
         OntProperty p = m.createOntProperty( NS + "p" );
@@ -317,10 +328,11 @@ public class TestOntReasoning
         Restriction r = m.createMinCardinalityRestriction( null, p, 1 );
         r.addSubClass( a );
         Iterator<OntProperty> i = a.listDeclaredProperties();
-        TestUtil.assertIteratorLength( a.listDeclaredProperties(), 1 );
+        OntTestUtil.assertIteratorLength( a.listDeclaredProperties(), 1 );
     }
 
     /** Test LDP with resources in different sub-models */
+    @Test
     public void testListDeclaredProperties2() {
         OntModel m0 = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
 
@@ -341,15 +353,16 @@ public class TestOntReasoning
         OntClass cc0 = m1.getOntClass( NS + "c0" );
         assertNotNull( cc0 );
 
-        TestUtil.assertIteratorValues( this, c1.listDeclaredProperties(), new Object[] {p0} );
-        TestUtil.assertIteratorValues( this, c0.listDeclaredProperties(false), new Object[] {p0} );
-        TestUtil.assertIteratorValues( this, cc0.listDeclaredProperties(false), new Object[] {p0} );
+        OntTestUtil.assertIteratorValues(c1.listDeclaredProperties(), new Object[] {p0} );
+        OntTestUtil.assertIteratorValues(c0.listDeclaredProperties(false), new Object[] {p0} );
+        OntTestUtil.assertIteratorValues(cc0.listDeclaredProperties(false), new Object[] {p0} );
     }
 
     /**
      * Problem reported by Andy Seaborne - combine abox and tbox in RDFS with
      * ontmodel
      */
+    @Test
     public void testRDFSAbox() {
         String sourceT =
             "<rdf:RDF "
@@ -389,10 +402,11 @@ public class TestOntReasoning
             inds.add(i.next());
         }
 
-        assertTrue("x should be an individual", inds.contains(m.getResource("http://example.org/foo#x")));
+        assertTrue(inds.contains(m.getResource("http://example.org/foo#x")), "x should be an individual");
 
     }
 
+    @Test
     public void testInvokeDirectClassReasoning() {
         OntModel m = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM_TRANS_INF, null);
         Resource a = m.createResource("http://example.org#A");
@@ -408,18 +422,20 @@ public class TestOntReasoning
         A.hasSuperClass(b, true);
     }
 
+    @Test
     public void testListIndividualsWithReasoner() {
         OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_RDFS_INF );
         OntClass C = m.createClass( NS + "C" );
         Resource a = m.createResource( NS + "a", C );
 
-        TestUtil.assertIteratorValues( this, m.listIndividuals(), new Object[] {a} );
+        OntTestUtil.assertIteratorValues(m.listIndividuals(), new Object[] {a} );
     }
 
     /**
      * Bug report by kers - maximal lower elements calculation not correct in models
      * with no reasoner. Manifests as direct sub-class bug.
      */
+    @Test
     public void testListSubClassesDirectNoReasoner() {
         OntModel m = ModelFactory.createOntologyModel( OntModelSpec.RDFS_MEM );
         OntClass r = m.createClass( NS + "r" );
@@ -447,10 +463,10 @@ public class TestOntReasoning
         r.addSubClass( f );
         r.addSubClass( g );
 
-        TestUtil.assertIteratorValues( this, r.listSubClasses( true ), new Object[] {a} );
+        OntTestUtil.assertIteratorValues(r.listSubClasses( true ), new Object[] {a} );
     }
 
-
+    @Test
     public void testOwlLiteClasses() {
         OntModel model = ModelFactory.createOntologyModel( OntModelSpec.OWL_LITE_MEM_TRANS_INF );
 
@@ -464,19 +480,19 @@ public class TestOntReasoning
         model.setStrictMode( true );
 
         for (OntResource r: new OntResource[] {b,p0,p1,p2}) {
-            assertFalse( r + " should not be an individual", r.canAs( Individual.class ));
+            assertFalse( r.canAs( Individual.class ), r + " should not be an individual");
         }
     }
 
     /** Bugrep from Benson Margulies: see
      * <a href="https://issues.apache.org/jira/browse/JENA-21">JENA-21</a>
      */
+    @Test
     public void testBM0() {
         OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_RDFS_INF );
         // should not throw NPE:
         m.listStatements( null, null, (RDFNode) null, null );
     }
-
 
     // Internal implementation methods
     //////////////////////////////////
@@ -495,23 +511,22 @@ public class TestOntReasoning
 
             // debugging
             if (!expList.contains( next )) {
-                logger.debug( getName() + " - Unexpected iterator result: " + next );
+                logger.debug( getClass().getSimpleName() + " - Unexpected iterator result: " + next );
             }
 
-            assertTrue( "Value " + next + " was not expected as a result from this iterator ", expList.contains( next ) );
-            assertTrue( "Value " + next + " was not removed from the list ", expList.remove( next ) );
+            assertTrue( expList.contains( next ), "Value " + next + " was not expected as a result from this iterator " );
+            assertTrue( expList.remove( next ), "Value " + next + " was not removed from the list " );
         }
 
         if (!(expList.size() == 0)) {
-            logger.debug( getName() + " Expected iterator results not found" );
+            logger.debug( getClass().getSimpleName() + " Expected iterator results not found" );
             for ( Object anExpList : expList )
             {
-                logger.debug( getName() + " - missing: " + anExpList );
+                logger.debug( getClass().getSimpleName() + " - missing: " + anExpList );
             }
         }
-        assertEquals( "There were expected elements from the iterator that were not found", 0, expList.size() );
+        assertEquals( 0, expList.size(), "There were expected elements from the iterator that were not found" );
     }
-
 
     //==============================================================================
     // Inner class definitions

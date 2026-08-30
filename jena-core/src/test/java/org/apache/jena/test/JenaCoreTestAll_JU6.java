@@ -31,6 +31,8 @@ import org.apache.jena.irix.TS6_IRIx2;
 import org.apache.jena.langtagx.TS6_LangTagX;
 import org.apache.jena.mem.TS6_GraphMem;
 import org.apache.jena.memvalue.TS6_GraphMemValue;
+import org.apache.jena.ontology.impl.TS6_ont;
+import org.apache.jena.ontology.makers.TS6_ModelMakers;
 import org.apache.jena.rdfxml.xmloutput.TS6_xmloutput;
 import org.apache.jena.shared.TS6_SharedPackage;
 import org.apache.jena.util.TS6_coreutil;
@@ -57,6 +59,9 @@ import org.apache.jena.vocabulary.TS6_Vocabularies;
 
     TS6_Vocabularies.class,
     TS6_SharedPackage.class,
+
+    TS6_ModelMakers.class,
+    TS6_ont.class,
 
     TS6_TestTurtle.class,
 

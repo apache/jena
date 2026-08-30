@@ -23,11 +23,9 @@
 ///////////////
 package org.apache.jena.ontology.impl;
 
-
 // Imports
 ///////////////
 
-import junit.framework.TestSuite;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
@@ -43,6 +41,9 @@ import org.apache.jena.vocabulary.RDFS;
 import java.io.StringReader;
 import java.util.Iterator;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.apache.jena.test.JenaTestLib;
 
 /**
  * <p>
@@ -50,31 +51,22 @@ import java.util.Iterator;
  * </p>
  */
 @SuppressWarnings("removal")
-public class TestIndividual
-    extends OntTestBase
+public class TestIndividual extends OntTestBase
 {
+
+    static { JenaTestLib.setup(); }
+
     // Constants
     //////////////////////////////////
 
     // Static variables
     //////////////////////////////////
 
-
-
     // Instance variables
     //////////////////////////////////
 
     // Constructors
     //////////////////////////////////
-
-    static public TestSuite suite() {
-        return new TestIndividual( "TestIndividual" );
-    }
-
-    public TestIndividual( String name ) {
-        super( name );
-    }
-
 
     // External signature methods
     //////////////////////////////////
@@ -93,22 +85,22 @@ public class TestIndividual
                     Individual z = m.createIndividual( A );
 
                     x.addSameAs( y );
-                    assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.SAME_AS() ) );
-                    assertEquals( "x should be the same as y", y, x.getSameAs() );
-                    assertTrue( "x should be the same as y", x.isSameAs( y ) );
+                    assertEquals( 1, x.getCardinality( prof.SAME_AS() ), "Cardinality should be 1" );
+                    assertEquals( y, x.getSameAs(), "x should be the same as y" );
+                    assertTrue( x.isSameAs( y ), "x should be the same as y" );
 
                     x.addSameAs( z );
-                    assertEquals( "Cardinality should be 2", 2, x.getCardinality( prof.SAME_AS() ) );
+                    assertEquals( 2, x.getCardinality( prof.SAME_AS() ), "Cardinality should be 2" );
                     iteratorTest( x.listSameAs(), new Object[] {z,y} );
 
                     x.setSameAs( z );
-                    assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.SAME_AS() ) );
-                    assertEquals( "x should be same indiv. as z", z, x.getSameAs() );
+                    assertEquals( 1, x.getCardinality( prof.SAME_AS() ), "Cardinality should be 1" );
+                    assertEquals( z, x.getSameAs(), "x should be same indiv. as z" );
 
                     x.removeSameAs( y );
-                    assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.SAME_AS() ) );
+                    assertEquals( 1, x.getCardinality( prof.SAME_AS() ), "Cardinality should be 1" );
                     x.removeSameAs( z );
-                    assertEquals( "Cardinality should be 0", 0, x.getCardinality( prof.SAME_AS() ) );
+                    assertEquals( 0, x.getCardinality( prof.SAME_AS() ), "Cardinality should be 0" );
                 }
             },
 
@@ -323,9 +315,9 @@ public class TestIndividual
                         "</rdf:RDF>";
                     m.read( new StringReader( SOURCE ), null );
                     Individual x = m.getIndividual( "http://jena.hpl.hp.com/test#x" );
-                    assertEquals( "Label on resource x", "a_label", x.getLabel( null) );
-                    assertEquals( "Label on resource x", "a_label", x.getLabel( "" ) );
-                    assertSame( "fr label on resource x", null, x.getLabel( "fr" ) );
+                    assertEquals( "a_label", x.getLabel( null), "Label on resource x" );
+                    assertEquals( "a_label", x.getLabel( "" ), "Label on resource x" );
+                    assertSame( null, x.getLabel( "fr" ), "fr label on resource x" );
                 }
             },
 
@@ -335,7 +327,7 @@ public class TestIndividual
                     OntModel defModel = ModelFactory.createOntologyModel();
                     OntClass c = defModel.createClass( "http://example.com/test#A" );
                     Individual i = c.createIndividual();
-                    assertTrue( "i should be an individual", i.isIndividual() );
+                    assertTrue( i.isIndividual(), "i should be an individual" );
                 }
             },
             /** User report of builtin classes showing up as individuals */
@@ -349,7 +341,7 @@ public class TestIndividual
 
                     for (Iterator<OntClass> it = m.listClasses(); it.hasNext(); ) {
                         OntClass ontClass = it.next();
-                        assertFalse( ontClass.getLocalName() + "should not be an individual", ontClass.isIndividual() );
+                        assertFalse( ontClass.isIndividual(), ontClass.getLocalName() + "should not be an individual" );
                     }
                 }
             },
@@ -364,7 +356,7 @@ public class TestIndividual
 
                     for (Iterator<OntClass> it=m.listClasses(); it.hasNext(); ) {
                         OntClass ontClass = it.next();
-                        assertFalse( ontClass.getLocalName() + "should not be an individual", ontClass.isIndividual() );
+                        assertFalse( ontClass.isIndividual(), ontClass.getLocalName() + "should not be an individual" );
                     }
                 }
             },
@@ -381,7 +373,7 @@ public class TestIndividual
 
                     for (Iterator<OntClass> it = m.listClasses(); it.hasNext(); ) {
                         OntClass ontClass = it.next();
-                        assertFalse( ontClass.getLocalName() + " should not be an individual", ontClass.isIndividual() );
+                        assertFalse( ontClass.isIndividual(), ontClass.getLocalName() + " should not be an individual" );
                     }
                 }
             },
@@ -397,7 +389,7 @@ public class TestIndividual
 
                     for (Iterator<OntClass> it = m.listClasses(); it.hasNext(); ) {
                         OntClass ontClass = it.next();
-                        assertFalse( ontClass.getLocalName() + " should not be an individual", ontClass.isIndividual() );
+                        assertFalse( ontClass.isIndividual(), ontClass.getLocalName() + " should not be an individual" );
                     }
                 }
             },
@@ -413,7 +405,7 @@ public class TestIndividual
 
                     for (Iterator<OntClass> it = m.listClasses(); it.hasNext(); ) {
                         OntClass ontClass = it.next();
-                        assertFalse( ontClass.getLocalName() + " should not be an individual", ontClass.isIndividual() );
+                        assertFalse( ontClass.isIndividual(), ontClass.getLocalName() + " should not be an individual" );
                     }
                 }
             },
@@ -429,8 +421,8 @@ public class TestIndividual
                     OntClass c2 = m.createClass(NS + "C2");
                     m.add( punned, RDF.type, c2 ); // punned is a class and and instance of c2
 
-                    assertFalse( "should not be an individual", c2.isIndividual() );
-                    assertTrue(  "should be an individual", punned.isIndividual() );
+                    assertFalse( c2.isIndividual(), "should not be an individual" );
+                    assertTrue( punned.isIndividual(), "should be an individual" );
                 }
             },
 
@@ -444,11 +436,10 @@ public class TestIndividual
                     OntClass c2 = m.createClass(NS + "C2");
                     m.add( punned, RDF.type, c2 ); // punned is a class and and instance of c2
 
-                    assertFalse( "should not be an individual", c2.isIndividual() );
-                    assertTrue(  "should be an individual", punned.isIndividual() );
+                    assertFalse( c2.isIndividual(), "should not be an individual" );
+                    assertTrue( punned.isIndividual(), "should be an individual" );
                 }
             }
-
 
         };
     }

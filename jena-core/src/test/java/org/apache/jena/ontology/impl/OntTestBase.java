@@ -19,29 +19,35 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-// Package
-///////////////
 package org.apache.jena.ontology.impl;
 
+import static org.junit.jupiter.api.Assertions.*;
 
-// Imports
-///////////////
 import java.util.*;
+import java.util.stream.Stream;
 
-import junit.framework.*;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
+
 import org.apache.jena.ontology.*;
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.reasoner.test.TestUtil;
-
+import org.apache.jena.test.JenaTestLib;
 
 /**
  * <p>
- * Generic test case for ontology unit testing
+ * Generic test case for ontology unit testing.
+ * </p>
+ * <p>
+ * JUnit6 counterpart of {@link OntTestBase}. The JUnit3 original was a
+ * {@code TestSuite} that built one {@code TestCase} per entry of
+ * {@link #getTests}; here the same array becomes one {@link DynamicTest} per
+ * entry, so the test count is unchanged. {@code OntTestCase} keeps the
+ * constructor and {@code ontTest} contract of the original, so sub-classes
+ * carry over unaltered.
  * </p>
  */
 @SuppressWarnings("removal")
 public abstract class OntTestBase
-    extends TestSuite
 {
     // Constants
     //////////////////////////////////
@@ -49,30 +55,24 @@ public abstract class OntTestBase
     public static final String BASE = "http://jena.hpl.hp.com/testing/ontology";
     public static final String NS = BASE + "#";
 
-
-    // Static variables
-    //////////////////////////////////
-
-    // Instance variables
-    //////////////////////////////////
-
-
-    // Constructors
-    //////////////////////////////////
-
-    public OntTestBase( String name ) {
-        super( name );
-        TestCase[] tc = getTests();
-
-        for ( TestCase aTc : tc )
-        {
-            addTest( aTc );
-        }
-    }
+    static { JenaTestLib.setup(); }
 
     // External signature methods
     //////////////////////////////////
 
+    /**
+     * One dynamic test per entry of {@link #getTests}. Each entry runs the three
+     * language profiles internally, exactly as {@code OntTestCase.runTest()} did
+     * under JUnit3, so one entry remains one test.
+     */
+    @TestFactory
+    public Stream<DynamicTest> ontTests() {
+        OntTestCase[] tc = getTests();
+        if (tc == null)
+            return Stream.empty();
+        return Arrays.stream( tc )
+                     .map( t -> DynamicTest.dynamicTest( t.getName(), () -> { t.setUp(); t.runTest(); } ) );
+    }
 
     // Internal implementation methods
     //////////////////////////////////
@@ -82,31 +82,34 @@ public abstract class OntTestBase
         return null;
     }
 
-
     //==============================================================================
     // Inner class definitions
     //==============================================================================
 
     protected abstract class OntTestCase
-        extends TestCase
     {
         protected boolean m_inOWL;
         protected boolean m_inOWLLite;
         protected boolean m_inRDFS;
         protected String m_langElement;
+        protected String m_name;
         protected boolean m_owlLang = true;
         protected boolean m_owlLiteLang = false;
         protected boolean m_rdfsLang = false;
 
         public OntTestCase( String langElement , boolean inOWL , boolean inOWLLite , boolean inRDFS  ) {
-            super( "Ontology API test " + langElement );
+            m_name = "Ontology API test " + langElement;
             m_langElement = langElement;
             m_inOWL = inOWL;
             m_inOWLLite = inOWLLite;
             m_inRDFS = inRDFS;
         }
 
-        @Override
+        /** The name this case ran under in the JUnit3 suite. */
+        public String getName() {
+            return m_name;
+        }
+
         public void runTest()
             throws Exception
         {
@@ -136,7 +139,7 @@ public abstract class OntTestBase
                 profileEx = true;
             }
 
-            assertEquals( "language element " + m_langElement + " was " + (inModel ? "" : "not") + " expected in model " + m.getProfile().getLabel(), inModel, !profileEx );
+            assertEquals( inModel, !profileEx, "language element " + m_langElement + " was " + (inModel ? "" : "not") + " expected in model " + m.getProfile().getLabel() );
         }
 
         /** Does the work in the test sub-class */
@@ -144,10 +147,9 @@ public abstract class OntTestBase
 
         /** Test that an iterator delivers the expected values */
         protected void iteratorTest( Iterator<?> i, Object[] expected ) {
-            TestUtil.assertIteratorValues( this, i, expected );
+            OntTestUtil.assertIteratorValues( i, expected );
         }
 
-        @Override
         public void setUp() {
             // ensure the ont doc manager is in a consistent state
             OntDocumentManager.getInstance().reset( true );
