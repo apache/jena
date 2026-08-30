@@ -23,12 +23,17 @@
 ///////////////
 package org.apache.jena.ontology.impl;
 
-
 // Imports
 ///////////////
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
+
+import org.apache.jena.test.JenaTestLib;
 import org.apache.jena.ontology.AllDifferent;
 import org.apache.jena.ontology.AllValuesFromRestriction;
 import org.apache.jena.ontology.AnnotationProperty;
@@ -62,8 +67,6 @@ import org.apache.jena.rdf.model.RDFList;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.OWL;
 
-
-
 /**
  * <p>
  * Unit test cases for creating values in ontology models
@@ -71,8 +74,9 @@ import org.apache.jena.vocabulary.OWL;
  */
 @SuppressWarnings("removal")
 public class TestCreateInOntModel
-    extends TestCase
 {
+    static { JenaTestLib.setup(); }
+
     // Constants
     //////////////////////////////////
     public static final String BASE = "http://jena.hpl.hp.com/testing/ontology";
@@ -402,11 +406,6 @@ public class TestCreateInOntModel
     // Constructors
     //////////////////////////////////
 
-    public TestCreateInOntModel( String name ) {
-        super( name );
-    }
-
-
     // External signature methods
     //////////////////////////////////
 
@@ -414,18 +413,16 @@ public class TestCreateInOntModel
         return "TestCreate";
     }
 
-    public static TestSuite suite() {
-        TestSuite s = new TestSuite( "TestCreate" );
-
-        for ( CreateTestCase testCase : testCases )
-        {
-            s.addTest( testCase );
-        }
-
-        return s;
+    /**
+     * One dynamic test per entry of the {@code testCases} table. The JUnit3
+     * original added each {@code CreateTestCase} to a {@code TestSuite}, so one
+     * entry remains one test.
+     */
+    @TestFactory
+    public Stream<DynamicTest> createInOntModelTests() {
+        return Stream.of( testCases )
+                     .map( tc -> DynamicTest.dynamicTest( tc.getName(), () -> { tc.setUp(); tc.runTest(); } ) );
     }
-
-
 
     // Internal implementation methods
     //////////////////////////////////
@@ -435,41 +432,43 @@ public class TestCreateInOntModel
     //==============================================================================
 
     protected static class CreateTestCase
-        extends TestCase
     {
+        protected String m_name;
         protected String m_lang;
         protected String m_uri;
 
         public CreateTestCase( String name, String lang, String uri ) {
-            super( name );
+            m_name = name;
             m_lang = lang;
             m_uri = uri;
         }
 
-        @Override
+        /** The name this case ran under in the JUnit3 suite. */
+        public String getName() {
+            return m_name;
+        }
+
         public void runTest() {
             OntModel m = ModelFactory.createOntologyModel( m_lang );
 
             // do the creation step
             OntResource r = doCreate( m );
-            assertNotNull( "Result of creation step should not be null", r );
+            assertNotNull( r, "Result of creation step should not be null" );
 
             if (m_uri == null) {
-                assertTrue( "Created resource should be anonymous", r.isAnon() );
+                assertTrue( r.isAnon(), "Created resource should be anonymous" );
             }
             else {
-                assertEquals( "Created resource has wrong uri", m_uri, r.getURI() );
+                assertEquals( m_uri, r.getURI(), "Created resource has wrong uri" );
             }
 
-            assertTrue( "Result test failed", test( r ));
+            assertTrue( test( r ), "Result test failed");
         }
 
-        @Override
         public void setUp() {
             // ensure the ont doc manager is in a consistent state
             OntDocumentManager.getInstance().reset( true );
         }
-
 
         /* get the resource */
         public OntResource doCreate( OntModel m ) {

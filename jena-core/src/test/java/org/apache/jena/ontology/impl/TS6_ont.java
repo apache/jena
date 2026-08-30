@@ -19,14 +19,37 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.ontology.makers;
+package org.apache.jena.ontology.impl;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.BeforeSuite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    TestGraphMaker.class,
-    TestModelMakerImpl.class
+import org.apache.jena.test.JenaTestLib;
+
+@Suite
+@SelectClasses({
+    TestOntGraph.class,
+    TestOntResource.class,
+    TestClassExpression.class,
+    TestOntDocumentManager.class,
+    TestOntology.class,
+    TestProperty.class,
+    TestListSyntaxCategories.class,
+    TestCreateInOntModel.class,
+    TestIndividual.class,
+    TestAllDifferent.class,
+    TestOntModelSpec.class,
+    TestOntReasoning.class,
+    TestOntModel.class,
+    TestOntClass.class,
+    TestFrameView.class,
+    TestOntTools.class,
 })
-public class TS3_ModelMakers {}
+
+public class TS6_ont {
+    @BeforeSuite
+    public static void beforeSuite() {
+        JenaTestLib.setup();
+    }
+}

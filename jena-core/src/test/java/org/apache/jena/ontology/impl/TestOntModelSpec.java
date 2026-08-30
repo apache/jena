@@ -21,15 +21,19 @@
 
 package org.apache.jena.ontology.impl;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.ontology.OntModelSpec;
-import org.apache.jena.test.JenaTestBase;
+import org.apache.jena.test.JenaTestLib;
 
 @SuppressWarnings("removal")
-public class TestOntModelSpec extends JenaTestBase
+public class TestOntModelSpec
     {
-    public TestOntModelSpec( String name )
-        { super( name ); }
+    static { JenaTestLib.setup(); }
 
+    @Test
     public void testEqualityAndDifference()
         {
         testEqualityAndDifference( OntModelSpec.OWL_MEM );
@@ -56,11 +60,13 @@ public class TestOntModelSpec extends JenaTestBase
         assertEquals( os, new OntModelSpec( os ) );
         }
 
+    @Test
     public void testAssembleRoot()
         {
         // TODO OntModelSpec.assemble( Resource root )
         }
 
+    @Test
     public void testAssembleModel()
         {
         // TODO OntModelSpec.assemble( Model model )

@@ -25,13 +25,16 @@ package org.apache.jena.ontology.impl;
 
 // Imports
 ///////////////
-import junit.framework.TestCase;
 import org.apache.jena.ontology.*;
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.reasoner.test.TestUtil;
 
+import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import org.apache.jena.test.JenaTestLib;
 
 /**
  * <p>
@@ -40,8 +43,10 @@ import org.apache.jena.reasoner.test.TestUtil;
  */
 @SuppressWarnings("removal")
 public class TestFrameView
-    extends TestCase
 {
+
+    static { JenaTestLib.setup(); }
+
     // Constants
     //////////////////////////////////
 
@@ -107,7 +112,7 @@ public class TestFrameView
     // External signature methods
     //////////////////////////////////
 
-    @Override
+    @BeforeEach
     public void setUp() {
         OntDocumentManager.getInstance().reset();
         OntDocumentManager.getInstance().clearCache();
@@ -120,7 +125,6 @@ public class TestFrameView
         infA = mInf.getOntClass( NS + "A" );
         infB = mInf.getOntClass( NS + "B" );
         infC = mInf.getOntClass( NS + "C" );
-
 
         noinfA = mNoInf.getOntClass( NS + "A" );
         noinfB = mNoInf.getOntClass( NS + "B" );
@@ -163,13 +167,13 @@ public class TestFrameView
         noinfPintersect = mNoInf.getObjectProperty( NS + "intersectP" );
     }
 
-    @Override
+    @AfterEach
     public void tearDown() {
         /* assistance with monitoring space leak
         System.gc();
         System.gc();
         Runtime r = Runtime.getRuntime();
-        System.out.println( getName() +
+        System.out.println( getClass().getSimpleName() +
                             " memory = " + r.freeMemory() +
                             ", alloc = " + r.totalMemory() +
                             ", % = " + Math.round( 100.0 * (double) r.freeMemory() / (double) r.totalMemory() ));
@@ -182,11 +186,13 @@ public class TestFrameView
 
     // OntClass.listDeclaredProperties() tests ...
 
+    @Test
     public void testLDP_noinfA_nodirect() {
-        TestUtil.assertIteratorValues( this, noinfA.listDeclaredProperties( false ),
+        OntTestUtil.assertIteratorValues(noinfA.listDeclaredProperties( false ),
                                        new Object[] {noinfPa, noinfQa, noinfG, noinfQb} );
     }
 
+    @Test
     public void testHasDP_noinfA_nodirect() {
         // we only need a small number of tests on hasDP because it's the
         // main componenet of listDP
@@ -194,195 +200,227 @@ public class TestFrameView
         assertFalse( noinfA.hasDeclaredProperty( noinfPb, false ) );
     }
 
+    @Test
     public void testLDP_noinfA_direct() {
-        TestUtil.assertIteratorValues( this, noinfA.listDeclaredProperties( true ),
+        OntTestUtil.assertIteratorValues(noinfA.listDeclaredProperties( true ),
                                        new Object[] {noinfPa, noinfQa, noinfG, noinfQb} );
     }
 
+    @Test
     public void testLDP_infA_nodirect() {
-        TestUtil.assertIteratorValues( this, infA.listDeclaredProperties( false ),
+        OntTestUtil.assertIteratorValues(infA.listDeclaredProperties( false ),
                                        new Object[] {infPa, infQa, infQb, noinfG} );
     }
 
+    @Test
     public void testLDP_infA_direct() {
-        TestUtil.assertIteratorValues( this, infA.listDeclaredProperties( true ),
+        OntTestUtil.assertIteratorValues(infA.listDeclaredProperties( true ),
                                        new Object[] {infPa, infQa, infQb, noinfG} );
     }
 
+    @Test
     public void testLDP_noinfB_nodirect() {
-        TestUtil.assertIteratorValues( this, noinfB.listDeclaredProperties( false ),
+        OntTestUtil.assertIteratorValues(noinfB.listDeclaredProperties( false ),
                                        new Object[] {noinfPa, noinfPb, noinfQa, noinfG, noinfQb} );
     }
 
+    @Test
     public void testLDP_noinfB_direct() {
-        TestUtil.assertIteratorValues( this, noinfB.listDeclaredProperties( true ),
+        OntTestUtil.assertIteratorValues(noinfB.listDeclaredProperties( true ),
                                        new Object[] {noinfPb} );
     }
 
+    @Test
     public void testLDP_infB_nodirect() {
-        TestUtil.assertIteratorValues( this, infB.listDeclaredProperties( false ),
+        OntTestUtil.assertIteratorValues(infB.listDeclaredProperties( false ),
                                        new Object[] {infPa, infPb, infQa, infQb, infG} );
     }
 
+    @Test
     public void testLDP_infB_direct() {
-        TestUtil.assertIteratorValues( this, infB.listDeclaredProperties( true ),
+        OntTestUtil.assertIteratorValues(infB.listDeclaredProperties( true ),
                                        new Object[] {infPb} );
     }
 
+    @Test
     public void testLDP_noinfC_nodirect() {
         // note that qB appears in the results because without inference it looks like a global
-        TestUtil.assertIteratorValues( this, noinfC.listDeclaredProperties( false ),
+        OntTestUtil.assertIteratorValues(noinfC.listDeclaredProperties( false ),
                                        new Object[] {noinfPa, noinfPb, noinfPc, noinfQa, noinfG, noinfQb} );
     }
 
+    @Test
     public void testLDP_noinfC_direct() {
-        TestUtil.assertIteratorValues( this, noinfC.listDeclaredProperties( true ),
+        OntTestUtil.assertIteratorValues(noinfC.listDeclaredProperties( true ),
                                        new Object[] {noinfPc} );
     }
 
+    @Test
     public void testLDP_infC_nodirect() {
-        TestUtil.assertIteratorValues( this, infC.listDeclaredProperties( false ),
+        OntTestUtil.assertIteratorValues(infC.listDeclaredProperties( false ),
                                        new Object[] {infPa, infPb, infPc, infQa, infQb, infG} );
     }
 
+    @Test
     public void testLDP_infC_direct() {
-        TestUtil.assertIteratorValues( this, infC.listDeclaredProperties( true ),
+        OntTestUtil.assertIteratorValues(infC.listDeclaredProperties( true ),
                                        new Object[] {infPc} );
     }
 
-
+    @Test
     public void testLDP_noinfAnn_nodirect() {
         // note that qB appears in the results because without inference it looks like a global
-        TestUtil.assertIteratorValues( this, noinfAnn.listDeclaredProperties( false ),
+        OntTestUtil.assertIteratorValues(noinfAnn.listDeclaredProperties( false ),
                                        new Object[] {noinfPann, noinfG, noinfQb} );
     }
 
+    @Test
     public void testLDP_noinfAnn_direct() {
-        TestUtil.assertIteratorValues( this, noinfAnn.listDeclaredProperties( true ),
+        OntTestUtil.assertIteratorValues(noinfAnn.listDeclaredProperties( true ),
                                        new Object[] {noinfPann, noinfG, noinfQb} );
     }
 
+    @Test
     public void testLDP_infAnn_nodirect() {
-        TestUtil.assertIteratorValues( this, infAnn.listDeclaredProperties( false ),
+        OntTestUtil.assertIteratorValues(infAnn.listDeclaredProperties( false ),
                                        new Object[] {noinfPann, noinfG} );
     }
 
+    @Test
     public void testLDP_infAnn_direct() {
-        TestUtil.assertIteratorValues( this, infAnn.listDeclaredProperties( true ),
+        OntTestUtil.assertIteratorValues(infAnn.listDeclaredProperties( true ),
                                        new Object[] {noinfPann, noinfG} );
     }
 
-
+    @Test
     public void testLDP_noinfUnion_nodirect() {
-        TestUtil.assertIteratorValues( this, noinfUnion1.listDeclaredProperties( false ),
+        OntTestUtil.assertIteratorValues(noinfUnion1.listDeclaredProperties( false ),
                 new Object[] {noinfG, noinfQb} );
-        TestUtil.assertIteratorValues( this, noinfUnion2.listDeclaredProperties( false ),
+        OntTestUtil.assertIteratorValues(noinfUnion2.listDeclaredProperties( false ),
                 new Object[] {noinfG, noinfQb} );
     }
 
+    @Test
     public void testLDP_infUnion_nodirect() {
-        TestUtil.assertIteratorValues( this, infUnion1.listDeclaredProperties( false ),
+        OntTestUtil.assertIteratorValues(infUnion1.listDeclaredProperties( false ),
                 new Object[] {infPunion, infG} );
-        TestUtil.assertIteratorValues( this, infUnion2.listDeclaredProperties( false ),
+        OntTestUtil.assertIteratorValues(infUnion2.listDeclaredProperties( false ),
                 new Object[] {infPunion, infG} );
     }
 
+    @Test
     public void testLDP_noinfIntersect_nodirect() {
-        TestUtil.assertIteratorValues( this, noinfIntersect1.listDeclaredProperties( false ),
+        OntTestUtil.assertIteratorValues(noinfIntersect1.listDeclaredProperties( false ),
                 new Object[] {noinfG, noinfQb} );
-        TestUtil.assertIteratorValues( this, noinfIntersect2.listDeclaredProperties( false ),
+        OntTestUtil.assertIteratorValues(noinfIntersect2.listDeclaredProperties( false ),
                 new Object[] {noinfG, noinfQb} );
     }
 
+    @Test
     public void testLDP_infIntersect_nodirect() {
-        TestUtil.assertIteratorValues( this, infIntersect1.listDeclaredProperties( false ),
+        OntTestUtil.assertIteratorValues(infIntersect1.listDeclaredProperties( false ),
                 new Object[] {infG} );
-        TestUtil.assertIteratorValues( this, infIntersect2.listDeclaredProperties( false ),
+        OntTestUtil.assertIteratorValues(infIntersect2.listDeclaredProperties( false ),
                 new Object[] {infG} );
     }
 
     // OntProperty.listDeclaringProperties() tests ...
 
+    @Test
     public void testLDC_noinfPa_nodirect() {
-        TestUtil.assertIteratorValues( this, noinfPa.listDeclaringClasses( false ),
+        OntTestUtil.assertIteratorValues(noinfPa.listDeclaringClasses( false ),
                 new Object[] {noinfA, noinfB, noinfC} );
     }
 
+    @Test
     public void testLDC_infPa_nodirect() {
-        TestUtil.assertIteratorValues( this, infPa.listDeclaringClasses( false ),
+        OntTestUtil.assertIteratorValues(infPa.listDeclaringClasses( false ),
                 new Object[] {infA, infB, infC} );
     }
 
+    @Test
     public void testLDC_noinfPb_nodirect() {
-        TestUtil.assertIteratorValues( this, noinfPb.listDeclaringClasses( false ),
+        OntTestUtil.assertIteratorValues(noinfPb.listDeclaringClasses( false ),
                 new Object[] {noinfB, noinfC} );
     }
 
+    @Test
     public void testLDC_infPb_nodirect() {
-        TestUtil.assertIteratorValues( this, infPb.listDeclaringClasses( false ),
+        OntTestUtil.assertIteratorValues(infPb.listDeclaringClasses( false ),
                 new Object[] {infC, infB} );
     }
 
+    @Test
     public void testLDC_noinfPc_nodirect() {
-        TestUtil.assertIteratorValues( this, noinfPc.listDeclaringClasses( false ),
+        OntTestUtil.assertIteratorValues(noinfPc.listDeclaringClasses( false ),
                 new Object[] {noinfC} );
     }
 
+    @Test
     public void testLDC_infPc_nodirect() {
-        TestUtil.assertIteratorValues( this, infPc.listDeclaringClasses( false ),
+        OntTestUtil.assertIteratorValues(infPc.listDeclaringClasses( false ),
                 new Object[] {infC} );
     }
 
+    @Test
     public void testLDC_noinfPa_direct() {
-        TestUtil.assertIteratorValues( this, noinfPa.listDeclaringClasses( true ),
+        OntTestUtil.assertIteratorValues(noinfPa.listDeclaringClasses( true ),
                 new Object[] {noinfA} );
     }
 
+    @Test
     public void testLDC_infPa_direct() {
-        TestUtil.assertIteratorValues( this, infPa.listDeclaringClasses( true ),
+        OntTestUtil.assertIteratorValues(infPa.listDeclaringClasses( true ),
                 new Object[] {infA} );
     }
 
+    @Test
     public void testLDC_noinfPb_direct() {
-        TestUtil.assertIteratorValues( this, noinfPb.listDeclaringClasses( true ),
+        OntTestUtil.assertIteratorValues(noinfPb.listDeclaringClasses( true ),
                 new Object[] {noinfB} );
     }
 
+    @Test
     public void testLDC_infPb_direct() {
-        TestUtil.assertIteratorValues( this, infPb.listDeclaringClasses( true ),
+        OntTestUtil.assertIteratorValues(infPb.listDeclaringClasses( true ),
                 new Object[] {infB} );
     }
 
+    @Test
     public void testLDC_noinfPc_direct() {
-        TestUtil.assertIteratorValues( this, noinfPc.listDeclaringClasses( true ),
+        OntTestUtil.assertIteratorValues(noinfPc.listDeclaringClasses( true ),
                 new Object[] {noinfC} );
     }
 
+    @Test
     public void testLDC_infPc_direct() {
-        TestUtil.assertIteratorValues( this, infPc.listDeclaringClasses( true ),
+        OntTestUtil.assertIteratorValues(infPc.listDeclaringClasses( true ),
                 new Object[] {infC} );
     }
 
+    @Test
     public void testLDC_noinfG_direct() {
-        TestUtil.assertIteratorValues( this, noinfG.listDeclaringClasses( true ),
+        OntTestUtil.assertIteratorValues(noinfG.listDeclaringClasses( true ),
                 new Object[] {noinfA, noinfAnn, noinfUnion1, noinfUnion2, mNoInf.getOntClass(NS+"Joint"),noinfIntersect1,noinfIntersect2}, 2 );
     }
 
+    @Test
     public void testLDC_infG_direct() {
-        TestUtil.assertIteratorValues( this, infG.listDeclaringClasses( true ),
+        OntTestUtil.assertIteratorValues(infG.listDeclaringClasses( true ),
                 new Object[] {infA, infAnn, mNoInf.getOntClass(NS+"Joint"),noinfIntersect1,noinfIntersect2}, 1 );
     }
 
+    @Test
     public void testLDC_noinfG_nodirect() {
-        TestUtil.assertIteratorValues( this, noinfG.listDeclaringClasses( false ),
+        OntTestUtil.assertIteratorValues(noinfG.listDeclaringClasses( false ),
                 new Object[] {noinfA, noinfB, noinfC, noinfUnion1, noinfUnion2, noinfAnn, mNoInf.getOntClass(NS+"Joint"),noinfIntersect1,noinfIntersect2}, 2 );
     }
 
+    @Test
     public void testLDC_infG_nodirect() {
-        TestUtil.assertIteratorValues( this, infG.listDeclaringClasses( false ),
+        OntTestUtil.assertIteratorValues(infG.listDeclaringClasses( false ),
                 new Object[] {infA, infB, infC, infAnn, noinfUnion1, noinfUnion2, mNoInf.getOntClass(NS+"Joint"),noinfIntersect1,noinfIntersect2}, 2 );
     }
-
 
     // Internal implementation methods
     //////////////////////////////////

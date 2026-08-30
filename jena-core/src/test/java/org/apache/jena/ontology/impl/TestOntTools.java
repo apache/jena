@@ -23,11 +23,9 @@
 ///////////////
 package org.apache.jena.ontology.impl;
 
-
 // Imports
 ///////////////
 
-import junit.framework.TestCase;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
@@ -41,6 +39,12 @@ import org.apache.jena.vocabulary.OWL;
 import java.util.List;
 import java.util.function.Predicate;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.test.JenaTestLib;
 
 /**
  * <p>
@@ -49,8 +53,10 @@ import java.util.function.Predicate;
  */
 @SuppressWarnings("removal")
 public class TestOntTools
-    extends TestCase
 {
+
+    static { JenaTestLib.setup(); }
+
     // Constants
     //////////////////////////////////
 
@@ -79,11 +85,8 @@ public class TestOntTools
     // External signature methods
     //////////////////////////////////
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    @Override
-    protected void setUp() {
+    @BeforeEach
+    public void setUp() {
         m_model = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_MICRO_RULE_INF );
         m_a = m_model.createClass( NS + "A" );
         m_b = m_model.createClass( NS + "B" );
@@ -98,6 +101,7 @@ public class TestOntTools
     /**
      * Test method for <code>org.apache.jena.ontology.OntTools#indexLCA</code>
      */
+    @Test
     public void testIndexLCA0() {
         m_a.addSubClass( m_b );
         m_a.addSubClass( m_c );
@@ -105,6 +109,7 @@ public class TestOntTools
         assertEquals( m_a, OntTools.getLCA( m_model, m_b, m_c ) );
     }
 
+    @Test
     public void testIndexLCA1() {
         m_a.addSubClass( m_b );
         m_a.addSubClass( m_c );
@@ -112,6 +117,7 @@ public class TestOntTools
         assertEquals( m_a, OntTools.getLCA( m_model, m_c, m_b ) );
     }
 
+    @Test
     public void testIndexLCA2() {
         m_a.addSubClass( m_b );
         m_a.addSubClass( m_c );
@@ -119,6 +125,7 @@ public class TestOntTools
         assertEquals( m_a, OntTools.getLCA( m_model, m_a, m_c ) );
     }
 
+    @Test
     public void testIndexLCA3() {
         m_a.addSubClass( m_b );
         m_a.addSubClass( m_c );
@@ -126,6 +133,7 @@ public class TestOntTools
         assertEquals( m_a, OntTools.getLCA( m_model, m_b, m_a ) );
     }
 
+    @Test
     public void testIndexLCA4() {
         m_a.addSubClass( m_b );
         m_a.addSubClass( m_c );
@@ -134,6 +142,7 @@ public class TestOntTools
         assertEquals( m_a, OntTools.getLCA( m_model, m_d, m_c ) );
     }
 
+    @Test
     public void testIndexLCA5() {
         m_a.addSubClass( m_b );
         m_a.addSubClass( m_c );
@@ -142,6 +151,7 @@ public class TestOntTools
         assertEquals( m_a, OntTools.getLCA( m_model, m_c, m_d ) );
     }
 
+    @Test
     public void testIndexLCA6() {
         m_a.addSubClass( m_b );
         m_a.addSubClass( m_c );
@@ -151,6 +161,7 @@ public class TestOntTools
         assertEquals( m_a, OntTools.getLCA( m_model, m_d, m_e ) );
     }
 
+    @Test
     public void testIndexLCA7() {
         m_a.addSubClass( m_b );
         m_a.addSubClass( m_c );
@@ -160,6 +171,7 @@ public class TestOntTools
         assertEquals( m_a, OntTools.getLCA( m_model, m_e, m_d ) );
     }
 
+    @Test
     public void testIndexLCA8() {
         m_a.addSubClass( m_b );
         m_a.addSubClass( m_c );
@@ -169,6 +181,7 @@ public class TestOntTools
         assertEquals( m_a, OntTools.getLCA( m_model, m_c, m_e ) );
     }
 
+    @Test
     public void testIndexLCA9() {
         m_a.addSubClass( m_b );
         m_a.addSubClass( m_c );
@@ -178,6 +191,7 @@ public class TestOntTools
         assertEquals( m_a, OntTools.getLCA( m_model, m_b, m_c ) );
     }
 
+    @Test
     public void testIndexLCA10() {
         m_a.addSubClass( m_b );
         m_a.addSubClass( m_c );
@@ -188,6 +202,7 @@ public class TestOntTools
         assertEquals( m_a, OntTools.getLCA( m_model, m_b, m_e ) );
     }
 
+    @Test
     public void testIndexLCA11() {
         m_a.addSubClass( m_b );
         m_a.addSubClass( m_c );
@@ -198,6 +213,7 @@ public class TestOntTools
         assertEquals( m_a, OntTools.getLCA( m_model, m_b, m_f ) );
     }
 
+    @Test
     public void testIndexLCA12() {
         m_a.addSubClass( m_b );
         m_a.addSubClass( m_c );
@@ -208,6 +224,7 @@ public class TestOntTools
         assertEquals( m_d, OntTools.getLCA( m_model, m_f, m_e ) );
     }
 
+    @Test
     public void testIndexLCA13() {
         m_a.addSubClass( m_b );
         m_a.addSubClass( m_c );
@@ -220,6 +237,7 @@ public class TestOntTools
     }
 
     /** Disconnected trees */
+    @Test
     public void testIndexLCA14() {
         m_a.addSubClass( m_b );
         m_a.addSubClass( m_c );
@@ -233,6 +251,7 @@ public class TestOntTools
 
     static final Predicate<Statement> ANY = s -> true;
 
+    @Test
     public void testShortestPath0() {
         Property p = m_model.createProperty( NS + "p" );
         m_a.addProperty( p, m_b );
@@ -241,6 +260,7 @@ public class TestOntTools
                   new Property[] {p} );
     }
 
+    @Test
     public void testShortestPath1() {
         Property p = m_model.createProperty( NS + "p" );
         m_a.addProperty( p, m_b );
@@ -250,6 +270,7 @@ public class TestOntTools
                   new Property[] {p,p} );
     }
 
+    @Test
     public void testShortestPath2() {
         Property p = m_model.createProperty( NS + "p" );
         // a - b - c
@@ -267,6 +288,7 @@ public class TestOntTools
                 new Property[] {p,p,p} );
     }
 
+    @Test
     public void testShortestPath3() {
         Property p = m_model.createProperty( NS + "p" );
         // a - b - c
@@ -284,6 +306,7 @@ public class TestOntTools
                 new Property[] {p,p,p} );
     }
 
+    @Test
     public void testShortestPath4() {
         Property p = m_model.createProperty( NS + "p" );
         Property q = m_model.createProperty( NS + "q" );
@@ -303,6 +326,7 @@ public class TestOntTools
     }
 
     /** Reflexive loop is allowed */
+    @Test
     public void testShortestPath5() {
         Property p = m_model.createProperty( NS + "p" );
         m_a.addProperty( p, m_a );
@@ -311,6 +335,7 @@ public class TestOntTools
                   new Property[] {p} );
     }
 
+    @Test
     public void testShortestPath6() {
         Property p = m_model.createProperty( NS + "p" );
         Property q = m_model.createProperty( NS + "q" );
@@ -323,6 +348,7 @@ public class TestOntTools
         assertNull( OntTools.findShortestPath( m_model, m_a, m_c, new OntTools.PredicatesFilter( new Property[] {p,q} ) ) );
     }
 
+    @Test
     public void testShortestPath7() {
         Property p = m_model.createProperty( NS + "p" );
         Property q = m_model.createProperty( NS + "q" );
@@ -338,6 +364,7 @@ public class TestOntTools
     }
 
     /** Find a literal target */
+    @Test
     public void testShortestPath8() {
         Property p = m_model.createProperty( NS + "p" );
         Property q = m_model.createProperty( NS + "q" );
@@ -357,6 +384,7 @@ public class TestOntTools
 
     /** Tests on {@link OntTools#namedHierarchyRoots(OntModel)} */
 
+    @Test
     public void testNamedHierarchyRoots0() {
         m_a.addSubClass( m_b );
         m_b.addSubClass( m_c );
@@ -371,6 +399,7 @@ public class TestOntTools
         assertTrue( nhr.contains( m_g ));
     }
 
+    @Test
     public void testNamedHierarchyRoots1() {
         m_a.addSubClass( m_b );
         m_b.addSubClass( m_c );
@@ -389,6 +418,7 @@ public class TestOntTools
         assertTrue( nhr.contains( m_g ));
     }
 
+    @Test
     public void testNamedHierarchyRoots2() {
         OntClass anon0 = m_model.createClass();
         OntClass anon1 = m_model.createClass();
@@ -411,6 +441,7 @@ public class TestOntTools
     }
 
     /** Test for no dups in the returned list */
+    @Test
     public void testNamedHierarchyRoots3() {
         OntClass anon0 = m_model.createClass();
         OntClass anon1 = m_model.createClass();
@@ -431,6 +462,7 @@ public class TestOntTools
     }
 
     /** Test for indirect route to a non-root node */
+    @Test
     public void testNamedHierarchyRoots4() {
         OntClass anon0 = m_model.createClass();
         OntClass anon1 = m_model.createClass();
@@ -460,11 +492,10 @@ public class TestOntTools
         int i = 0;
         for ( Statement aPath : path )
         {
-            assertEquals( "path position: " + i, expected[i], aPath.getPredicate() );
+            assertEquals( expected[i], aPath.getPredicate(), "path position: " + i );
             i++;
         }
     }
-
 
     //==============================================================================
     // Inner class definitions
