@@ -80,7 +80,7 @@
     -->
     <ver.shiro>2.2.1</ver.shiro>
 
-    <ver.protobuf>4.35.1</ver.protobuf>
+    <ver.protobuf>4.36.0</ver.protobuf>
     <ver.libthrift>0.24.0</ver.libthrift>
 
     <ver.caffeine>3.2.4</ver.caffeine>
