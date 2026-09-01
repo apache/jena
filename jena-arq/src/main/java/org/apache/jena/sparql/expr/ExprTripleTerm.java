@@ -60,6 +60,15 @@ public class ExprTripleTerm extends ExprNode {
         Triple t1 = tripleTerm.getTriple();
         Triple t2 = Substitute.substitute(t1, binding);
         if ( t2.isConcrete() ) {
+            Node s = t2.getSubject();
+            Node p = t2.getPredicate();
+            // Check it.
+            if ( s.isTripleTerm() )
+                throw new ExprEvalException("triple term: Subject is a triple term: "+s);
+            if ( !s.isURI() && !s.isBlank() )
+                throw new ExprEvalException("triple term: Subject is not a URI or blank node: "+s);
+            if ( !p.isURI() )
+                throw new ExprEvalException("triple term: Predicate is not a URI: "+p);
             Node tripleTerm2 = NodeFactory.createTripleTerm(t2);
             return NodeValue.makeNode(tripleTerm2);
         }

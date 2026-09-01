@@ -404,12 +404,12 @@ public class TestExpressions
     @Test public void tripleterm_02() { testEval("TRIPLE(BNODE(), <x:p>, 123)"); }
     @Test public void tripleterm_03() { testEval("TRIPLE(<x:s>, <x:p>, TRIPLE(<x:s1>, <x:p1>, <x:o1>))"); }
 
-    // Not symmetric RDF
+    // Not (symmetric) RDF
     @Test public void tripleterm_10() { assertThrows(ExprEvalException.class, ()->testEval("TRIPLE(<x:s>, BNODE(), <x:o>)")); }
 
-    // TRIPLE generates symmetric RDF (non-strict)
-    @Test public void tripleterm_20() { testEval("TRIPLE(123, <x:p>, <x:o>)"); }
-    @Test public void tripleterm_21() { testEval("TRIPLE(TRIPLE(<x:s>, <x:p>, <x:o>), <x:p>, <x:o>)"); }
+    // If TRIPLE generates only legal RDF (not symmetric) on normal mode.
+    @Test public void tripleterm_20() { assertThrows(ExprEvalException.class, ()-> testEval("TRIPLE(123, <x:p>, <x:o>)")); }
+    @Test public void tripleterm_21() { assertThrows(ExprEvalException.class, ()-> testEval("TRIPLE(TRIPLE(<x:s>, <x:p>, <x:o>), <x:p>, <x:o>)")); }
 
     // TRIPLE generates RDF triples (strict)
     @Test public void tripleterm_30() {
@@ -434,7 +434,6 @@ public class TestExpressions
         // Not keyword PROEPRTY
         assertThrows(QueryParseException.class, ()-> testURI("PROPERTY( TRIPLE(<x:s>, <x:p>, 123) )", "x:p") );
     }
-
 
     @Test public void boolean_129() { testBoolean("isURI(?x)", true, env); }
     @Test public void boolean_130() { testBoolean("isURI(?a)", false, env); }

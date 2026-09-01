@@ -1,0 +1,7 @@
+PREFIX : <http://example/>
+
+SELECT * WHERE {
+  ?s :p ?o .
+  BIND( <<( ?o :q :z )>> AS ?tt )
+}
+

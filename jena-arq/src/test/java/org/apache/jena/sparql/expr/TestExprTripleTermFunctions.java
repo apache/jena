@@ -38,7 +38,10 @@ import org.apache.jena.sys.JenaSystem;
 /**
  * Tests for TRIPLE, SUBJECT, PREDICATE, OBJECT, isTRIPLE
  */
-public class TestExprTripleTerms {
+public class TestExprTripleTermFunctions {
+
+    // "(triple s p o)" is the function call TRIPLE(s,p,o)
+    // "(tripleterm s p o)" is syntax <<( s p o )>>
 
     static { JenaSystem.init(); }
 
@@ -48,33 +51,48 @@ public class TestExprTripleTerms {
     }
 
     @Test
-    public void tripleTerm_Bad1() {
+    public void tripleFunction_Bad1() {
         assertThrows(ExprEvalException.class, ()-> eval("triple(:s1, 'bc', :o1)") );
     }
 
     @Test
-    public void tripleTerm_Access1() {
+    public void tripleFunction_Access1() {
         test("subject(triple(:s1, :p1, :o1))", ":s1");
     }
 
     @Test
-    public void tripleTerm_Access2() {
+    public void tripleFunction_Access2() {
         test("predicate(triple(:s1, :p1, :o1))", ":p1");
     }
 
     @Test
-    public void tripleTerm_Access3() {
+    public void tripleFunction_Access3() {
         test("object(triple(:s1, :p1, :o1))", ":o1");
     }
 
     @Test
-    public void tripleTerm_Test1() {
+    public void tripleFunction_Test1() {
         test("isTriple(triple(:s1, :p1, :o1))", "true");
     }
 
     @Test
-    public void tripleTerm_Test2() {
+    public void tripleFunction_Test2() {
         test("isTriple(:x)", "false");
+    }
+
+    @Test
+    public void tripleTerm_BadSubjectLiteral() {
+        assertThrows(ExprEvalException.class, ()-> eval("triple('abc', :p1, :o1)") );
+    }
+
+    @Test
+    public void tripleTerm_BadSubjectTripleTerm() {
+        assertThrows(ExprEvalException.class, ()-> eval("triple(triple(:s1, :p1, :o1), :p2, :o2)") );
+    }
+
+    @Test
+    public void tripleTerm_NotConcrete() {
+        assertThrows(ExprEvalException.class, ()-> eval("triple(:s, :p1, ?var)") );
     }
 
     private static Node eval(String string) {

@@ -44,4 +44,11 @@
               qt:data   <data-count-distinct-expr.ttl> ] ;
         mf:result  <count-distinct-expr.srj>
       ]
+      [  mf:name    "expr-triple-term" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <expr-triple-term.rq> ;
+              qt:data   <expr-triple-term.ttl> ] ;
+        mf:result  <expr-triple-term.srj>
+      ]
     ).
