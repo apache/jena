@@ -31,12 +31,6 @@ archive.md
 ## jena-core exclusions
 **/src-examples/data/*
 
-## jena-fuseki exclusions
-**/src/main/webapp/favicon.ico
-**/src/main/webapp/css/*
-**/src/main/webapp/fonts/*
-**/src/main/webapp/js/**/*
-
 ## SPARQLer (in jena-fuseki-main)
 **/sparqler/data/empty.nt
 **/sparqler/pages/robots.txt
