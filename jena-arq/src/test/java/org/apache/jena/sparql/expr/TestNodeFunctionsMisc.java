@@ -69,13 +69,13 @@ public class TestNodeFunctionsMisc {
     @Test public void testRDFtermEquals5() {
         Node n1 = SSE.parseNode("<<(:s :p 123)>>");
         Node n2 = SSE.parseNode("<<(:s :p 123)>>");
-        assertTrue(NodeFunctions.rdfTermEqual11_legacy(n1, n2));
+        assertTrue(n1.sameTermAs(n2));
     }
 
     @Test public void testRDFtermEquals6() {
         Node n1 = SSE.parseNode("<<(:s :p1 123)>>");
         Node n2 = SSE.parseNode("<<(:s :p2 123)>>");
-        assertFalse(NodeFunctions.rdfTermEqual11_legacy(n1, n2));
+        assertFalse(n1.sameTermAs(n2));
     }
 
     @Test public void testRDFtermEquals7() {
