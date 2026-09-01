@@ -20,9 +20,8 @@
  */
 package org.apache.jena.mem.collection;
 
-import org.jspecify.annotations.NonNull;
-
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 
@@ -64,7 +63,9 @@ public interface JenaSet<E> extends JenaMapSetCommon<E>, Iterable<E>  {
     }
 
     @Override
-    default @NonNull Iterator<E> iterator() {
-        return this.keyIterator();
+    default Iterator<E> iterator() {
+        Iterator<E> iter = this.keyIterator();
+        Objects.requireNonNull(iter);
+        return iter;
     }
 }

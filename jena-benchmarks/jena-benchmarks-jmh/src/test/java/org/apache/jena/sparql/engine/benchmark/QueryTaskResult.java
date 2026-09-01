@@ -20,12 +20,9 @@
  */
 package org.apache.jena.sparql.engine.benchmark;
 
-import org.jspecify.annotations.NonNull;
-
 public record QueryTaskResult(String queryString, String originalOpString, String optimizedOpString,
                               long resultSetSize) {
 
-    @NonNull
     @Override
     public String toString() {
         return String.join("\n",
