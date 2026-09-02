@@ -52,7 +52,7 @@
     }
   },
   "devDependencies": {
-    "@babel/core": "^7.27.4",
+    "@babel/core": "^8.0.1",
     "@babel/preset-env": "^7.0.0",
     "@cypress/code-coverage": "^4.0.1",
     "@eslint/js": "^10.0.1",
