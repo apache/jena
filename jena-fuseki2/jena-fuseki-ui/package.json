@@ -53,7 +53,7 @@
   },
   "devDependencies": {
     "@babel/core": "^8.0.1",
-    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-env": "^8.0.2",
     "@cypress/code-coverage": "^4.0.1",
     "@eslint/js": "^10.0.1",
     "@vitejs/plugin-vue": "^6.0.0",
