@@ -3609,7 +3609,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chokidar@npm:^3.5.2, chokidar@npm:^3.5.3":
+"chokidar@npm:^3.5.2":
   version: 3.6.0
   resolution: "chokidar@npm:3.6.0"
   dependencies:
@@ -4066,14 +4066,13 @@ __metadata:
   linkType: hard
 
 "cypress-vite@npm:^1.4.2":
-  version: 1.9.1
-  resolution: "cypress-vite@npm:1.9.1"
-  dependencies:
-    chokidar: "npm:^3.5.3"
-    debug: "npm:^4.4.3"
+  version: 1.10.2
+  resolution: "cypress-vite@npm:1.10.2"
   peerDependencies:
+    chokidar: ^2 || ^3 || ^4 || ^5
+    debug: ^2 || ^3 || ^4
     vite: ^2.9 || ^3 || ^4 || ^5 || ^6 || ^7 || ^8
-  checksum: 10c0/41e6ce57592514e7a51e592e5f6d017a17f4636117e7bfe9112e40294861092a3401931430a18abcc3aff5158b5fd6321ffc5544c20a6b710778f62ea2b06535
+  checksum: 10c0/41cb798e6f3e467032e6d286892ec0e83997fbbac767584931ecf268a2a2df6bf5d2995d00ccd9b860a6269ecd6870bc137b59c44537e4589be04588d52b84a4
   languageName: node
   linkType: hard
 
@@ -4171,7 +4170,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:*, debug@npm:4, debug@npm:4.4.3, debug@npm:^4, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.4, debug@npm:^4.4.0, debug@npm:^4.4.3":
+"debug@npm:*, debug@npm:4, debug@npm:4.4.3, debug@npm:^4, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.4, debug@npm:^4.4.0":
   version: 4.4.3
   resolution: "debug@npm:4.4.3"
   dependencies:
