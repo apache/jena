@@ -23,10 +23,9 @@ package org.apache.jena.graph;
 
 import junit.framework.*;
 import org.apache.jena.graph.impl.*;
-import org.apache.jena.test.JenaTestBase;
 import org.apache.jena.util.iterator.*;
 
-public class TestCoreGraphUtil extends JenaTestBase
+public class TestCoreGraphUtil extends TestCase
     {
     public TestCoreGraphUtil(String name)
         { super(name); }

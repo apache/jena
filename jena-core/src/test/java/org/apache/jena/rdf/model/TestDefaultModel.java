@@ -21,6 +21,7 @@
 
 package org.apache.jena.rdf.model;
 
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.jena.graph.GraphTestLib;
 import org.apache.jena.graph.Node;
@@ -28,10 +29,9 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.junit.NodeCreateUtils;
 import org.apache.jena.rdf.model.impl.ModelCom;
 import org.apache.jena.shared.PropertyNotFoundException;
-import org.apache.jena.test.JenaTestBase;
 import org.apache.jena.test.JenaTestLib;
 
-public class TestDefaultModel extends JenaTestBase {
+public class TestDefaultModel extends TestCase {
 
     public TestDefaultModel(String name) {
         super(name);

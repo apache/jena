@@ -21,10 +21,10 @@
 
 package org.apache.jena.graph;
 
+import junit.framework.TestCase;
 import org.apache.jena.junit.NodeCreateUtils;
-import org.apache.jena.test.JenaTestBase;
 
-public class TestGraphEvents extends JenaTestBase {
+public class TestGraphEvents extends TestCase {
     public TestGraphEvents(String name) {
         super(name);
     }

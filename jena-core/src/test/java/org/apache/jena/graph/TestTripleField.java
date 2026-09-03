@@ -21,12 +21,12 @@
 
 package org.apache.jena.graph;
 
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.jena.graph.Triple.*;
-import org.apache.jena.test.JenaTestBase;
 import org.apache.jena.test.JenaTestLib;
 
-public class TestTripleField extends JenaTestBase {
+public class TestTripleField extends TestCase {
     public TestTripleField(String name) {
         super(name);
     }

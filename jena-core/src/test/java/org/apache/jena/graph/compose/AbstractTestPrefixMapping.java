@@ -25,8 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import junit.framework.TestCase;
 import org.apache.jena.shared.PrefixMapping;
-import org.apache.jena.test.JenaTestBase;
 import org.apache.jena.test.JenaTestLib;
 
 /**
@@ -34,7 +34,7 @@ import org.apache.jena.test.JenaTestLib;
  * prefixMapping to be tested.
  */
 
-public abstract class AbstractTestPrefixMapping extends JenaTestBase {
+public abstract class AbstractTestPrefixMapping extends TestCase {
     public AbstractTestPrefixMapping(String name) {
         super(name);
     }

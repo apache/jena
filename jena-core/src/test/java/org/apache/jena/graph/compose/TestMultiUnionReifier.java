@@ -21,16 +21,16 @@
 
 package org.apache.jena.graph.compose;
 
+import junit.framework.TestCase;
 import org.apache.jena.graph.*;
 import org.apache.jena.junit.NodeCreateUtils;
 import org.apache.jena.rdf.model.impl.ReifierStd;
-import org.apache.jena.test.JenaTestBase;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
 /**
     Test the reifier for multi-unions.
 */
-public class TestMultiUnionReifier extends JenaTestBase {
+public class TestMultiUnionReifier extends TestCase {
     public TestMultiUnionReifier(String name) {
         super(name);
     }

@@ -21,12 +21,12 @@
 
 package org.apache.jena.graph;
 
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.jena.graph.compose.AbstractTestPrefixMapping;
 import org.apache.jena.shared.PrefixMapping;
-import org.apache.jena.test.JenaTestBase;
 
-public class TestGraphPrefixMapping extends JenaTestBase {
+public class TestGraphPrefixMapping extends TestCase {
     public TestGraphPrefixMapping(String name) {
         super(name);
     }

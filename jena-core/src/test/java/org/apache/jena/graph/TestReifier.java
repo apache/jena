@@ -23,6 +23,7 @@ package org.apache.jena.graph;
 
 import java.lang.reflect.Constructor;
 
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.junit.NodeCreateUtils;
@@ -31,7 +32,6 @@ import org.apache.jena.rdf.model.impl.ReifierStd;
 import org.apache.jena.shared.AlreadyReifiedException;
 import org.apache.jena.shared.CannotReifyException;
 import org.apache.jena.shared.JenaException;
-import org.apache.jena.test.JenaTestBase;
 import org.apache.jena.test.JenaTestLib;
 import org.apache.jena.vocabulary.RDF;
 
@@ -39,7 +39,7 @@ import org.apache.jena.vocabulary.RDF;
  * This class tests the reifiers of ordinary graphs. Old test suite - kept to ensure
  * compatibility for the one and only Standard mode
  */
-public class TestReifier extends JenaTestBase {
+public class TestReifier extends TestCase {
     protected final Class<? extends Graph> graphClass;
 
     public TestReifier(String name) {

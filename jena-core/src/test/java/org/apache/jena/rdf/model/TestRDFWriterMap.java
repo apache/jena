@@ -24,17 +24,17 @@ package org.apache.jena.rdf.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import junit.framework.TestCase;
 import org.apache.jena.Jena;
 import org.apache.jena.rdf.model.impl.NTripleWriter;
 import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Abbrev;
 import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Basic;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.NoWriterForLangException;
-import org.apache.jena.test.JenaTestBase;
 
 import org.junit.Assert;
 
-public class TestRDFWriterMap extends JenaTestBase {
+public class TestRDFWriterMap extends TestCase {
     public static class RDFWriterMap implements RDFWriterF {
         protected final Map<String, Class<RDFWriterI>> map = new HashMap<>();
 
