@@ -21,6 +21,7 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
@@ -29,7 +30,6 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.ModelTestLib;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.shared.PrefixMapping;
-import org.apache.jena.test.JenaTestBase;
 import org.apache.jena.vocabulary.RDF;
 
 /**
@@ -38,7 +38,7 @@ import org.apache.jena.vocabulary.RDF;
     layering problem).
 */
 @SuppressWarnings("removal")
-public class TestRestrictionsDontNeedTyping extends JenaTestBase
+public class TestRestrictionsDontNeedTyping extends TestCase
     {
 
     public static TestSuite suite() {

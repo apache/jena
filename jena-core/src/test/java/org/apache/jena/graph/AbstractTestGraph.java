@@ -24,13 +24,13 @@ package org.apache.jena.graph;
 import java.io.InputStream;
 import java.util.*;
 
+import junit.framework.TestCase;
 import org.apache.jena.junit.NodeCreateUtils;
 import org.apache.jena.memvalue.TrackingTripleIterator;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.impl.ReifierStd;
 import org.apache.jena.shared.JenaException;
-import org.apache.jena.test.JenaTestBase;
 import org.apache.jena.test.JenaTestLib;
 import org.apache.jena.util.CollectionFactory;
 import org.apache.jena.util.iterator.ClosableIterator;
@@ -41,7 +41,7 @@ import org.apache.jena.util.iterator.ExtendedIterator;
  * be a Graph. The abstract method getGraph must be overridden in subclasses to
  * deliver a Graph of interest.
  */
-public abstract class AbstractTestGraph extends JenaTestBase {
+public abstract class AbstractTestGraph extends TestCase {
     public AbstractTestGraph(String name) {
         super(name);
     }

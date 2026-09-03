@@ -22,9 +22,8 @@
 package org.apache.jena.graph;
 
 import junit.framework.*;
-import org.apache.jena.test.JenaTestBase;
 
-public class TestFactory extends JenaTestBase {
+public class TestFactory extends TestCase {
     public TestFactory(String name) {
         super(name);
     }

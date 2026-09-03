@@ -22,17 +22,17 @@
 package org.apache.jena.rdf.model;
 
 import org.apache.jena.shared.impl.JenaParameters;
-import org.apache.jena.test.JenaTestBase;
 import org.apache.jena.test.JenaTestLib;
 
 import org.junit.Assert;
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
  * Test for anonID generation. (Originally test for the debugging hack that switches
  * off anonID generation.)
  */
-public class TestAnonID extends JenaTestBase {
+public class TestAnonID extends TestCase {
 
     /**
      * Boilerplate for junit. This is its own test suite

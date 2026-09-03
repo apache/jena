@@ -22,15 +22,15 @@
 package org.apache.jena.graph;
 
 import junit.framework.Test;
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.jena.datatypes.BaseDatatype;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.graph.impl.LiteralLabelFactory;
-import org.apache.jena.test.JenaTestBase;
 
 // See also TestLiteralLabelSameValueAs, TestTypedLiterals
-public class TestLiteralLabels extends JenaTestBase {
+public class TestLiteralLabels extends TestCase {
     public TestLiteralLabels(String name) {
         super(name);
     }

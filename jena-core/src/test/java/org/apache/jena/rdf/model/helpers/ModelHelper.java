@@ -23,6 +23,7 @@ package org.apache.jena.rdf.model.helpers;
 
 import java.util.*;
 
+import junit.framework.TestCase;
 import org.junit.Ignore;
 
 import org.apache.jena.graph.GraphTestLib;
@@ -30,20 +31,19 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.junit.NodeCreateUtils;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.shared.PrefixMapping;
-import org.apache.jena.test.JenaTestBase;
 import org.apache.jena.util.CollectionFactory;
 
 /**
     provides useful functionality for testing models, eg building small models
     from strings, testing equality, etc.
 
-    Currently this class extends JenaTestBase and thus TestCase.
+    Currently this class extends TestCase.
 
     TODO: Refactoring should remove the TestCase dependency in future.
 
  */
 @Ignore // ignore this class as a test case.
-public class ModelHelper extends JenaTestBase
+public class ModelHelper extends TestCase
 {
 	private ModelHelper(String name)
 	{ super(name); }

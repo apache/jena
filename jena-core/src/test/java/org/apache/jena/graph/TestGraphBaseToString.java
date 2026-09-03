@@ -26,16 +26,16 @@ import static org.apache.jena.graph.impl.GraphBase.TOSTRING_TRIPLE_LIMIT;
 
 import java.util.*;
 
+import junit.framework.TestCase;
 import org.apache.jena.graph.impl.GraphBase;
 import org.apache.jena.junit.NodeCreateUtils;
-import org.apache.jena.test.JenaTestBase;
 import org.apache.jena.util.iterator.*;
 
 /**
  * Tests for the revisions to GraphBase.toString() to see that it's compact, ie
  * outputs no more than LIMIT triples.
  */
-public class TestGraphBaseToString extends JenaTestBase {
+public class TestGraphBaseToString extends TestCase {
     private static final class LittleGraphBase extends GraphBase {
         Set<Triple> triples = new HashSet<>();
 

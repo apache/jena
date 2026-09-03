@@ -24,13 +24,13 @@ package org.apache.jena.graph;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.jena.test.JenaTestBase;
+import junit.framework.TestCase;
 
 /**
  * These tests are for listeners that add or delete other listeners. It motivates the
  * use of, e.g. CopyOnWriteArrayList for storing listeners.
  */
-public class TestRegisterGraphListener extends JenaTestBase {
+public class TestRegisterGraphListener extends TestCase {
 
     private ComeAndGoListener all[];
     private Graph graph;

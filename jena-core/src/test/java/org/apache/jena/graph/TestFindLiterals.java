@@ -23,13 +23,13 @@ package org.apache.jena.graph;
 
 import java.util.Set;
 
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.impl.LiteralLabelFactory;
 import org.apache.jena.junit.NodeCreateUtils;
-import org.apache.jena.test.JenaTestBase;
 
-public class TestFindLiterals extends JenaTestBase {
+public class TestFindLiterals extends TestCase {
     public TestFindLiterals(String name) {
         super(name);
     }

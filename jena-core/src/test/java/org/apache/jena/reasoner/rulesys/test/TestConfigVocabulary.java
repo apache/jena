@@ -21,10 +21,10 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
+import junit.framework.TestCase;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.reasoner.ReasonerRegistry;
-import org.apache.jena.test.JenaTestBase;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.ReasonerVocabulary;
@@ -32,7 +32,7 @@ import org.apache.jena.vocabulary.ReasonerVocabulary;
 /**
     Tests for configuration vocabulary added as part of ModelSpec removal
 */
-public class TestConfigVocabulary extends JenaTestBase
+public class TestConfigVocabulary extends TestCase
     {
     public TestConfigVocabulary( String name )
         { super( name ); }

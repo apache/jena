@@ -23,16 +23,16 @@ package org.apache.jena.graph;
 
 import java.util.function.Function;
 
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.graph.impl.LiteralLabelFactory;
 import org.apache.jena.junit.NodeCreateUtils;
 import org.apache.jena.shared.PrefixMapping;
-import org.apache.jena.test.JenaTestBase;
 import org.apache.jena.test.JenaTestLib;
 
-public class TestTriple extends JenaTestBase {
+public class TestTriple extends TestCase {
 
     public TestTriple(String name) {
         super(name);

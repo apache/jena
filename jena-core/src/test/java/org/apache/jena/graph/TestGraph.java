@@ -27,16 +27,16 @@ package org.apache.jena.graph;
 */
 
 import junit.framework.Test;
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.jena.graph.impl.WrappedGraph;
 import org.apache.jena.mem.GraphMemFast;
 import org.apache.jena.mem.GraphMemLegacy;
 import org.apache.jena.mem.GraphMemRoaring;
 import org.apache.jena.memvalue.GraphMemValue;
-import org.apache.jena.test.JenaTestBase;
 
 @SuppressWarnings("deprecation")
-public class TestGraph extends JenaTestBase {
+public class TestGraph extends TestCase {
     public TestGraph(String name) {
         super(name);
     }

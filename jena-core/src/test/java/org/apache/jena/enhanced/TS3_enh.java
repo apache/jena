@@ -27,12 +27,12 @@
 
 package org.apache.jena.enhanced;
 
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.jena.graph.*;
 import org.apache.jena.junit.NodeCreateUtils;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.shared.JenaException;
-import org.apache.jena.test.JenaTestBase;
 
 /**
  * These tests give a small version of a model-like interface
@@ -52,7 +52,7 @@ import org.apache.jena.test.JenaTestBase;
  *These tests only test EnhNode polymorphism and not EnhGraph polymorphism.
  *EnhGraph polymorphism currently will not work.
  */
-public class TS3_enh extends JenaTestBase  {
+public class TS3_enh extends TestCase  {
 
 	static final private  Personality<RDFNode> split = new Personality<>();
 

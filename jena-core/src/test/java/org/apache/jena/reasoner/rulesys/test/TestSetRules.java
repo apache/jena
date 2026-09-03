@@ -23,17 +23,17 @@ package org.apache.jena.reasoner.rulesys.test;
 
 import java.util.*;
 
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.reasoner.*;
 import org.apache.jena.reasoner.rulesys.*;
 import org.apache.jena.reasoner.rulesys.impl.WrappedReasonerFactory;
-import org.apache.jena.test.JenaTestBase;
 
 /**
      TestSetRules - tests to bring setRules into existence on RuleReasonerFactory.
 */
-public class TestSetRules extends JenaTestBase
+public class TestSetRules extends TestCase
     {
 
     public TestSetRules( String name )

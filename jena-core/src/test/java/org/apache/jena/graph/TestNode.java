@@ -21,6 +21,7 @@
 
 package org.apache.jena.graph;
 
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.jena.atlas.lib.Creator;
 import org.apache.jena.datatypes.RDFDatatype;
@@ -31,7 +32,6 @@ import org.apache.jena.graph.impl.LiteralLabelFactory;
 import org.apache.jena.junit.NodeCreateUtils;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.PrefixMapping;
-import org.apache.jena.test.JenaTestBase;
 import org.apache.jena.test.JenaTestLib;
 import org.apache.jena.util.SplitIRI;
 import org.apache.jena.vocabulary.DC;
@@ -44,7 +44,7 @@ import org.apache.jena.vocabulary.VCARD;
  * Exercise nodes. Make sure that the different node types do not overlap and that
  * the test predicates work properly on the different node kinds.
  */
-public class TestNode extends JenaTestBase {
+public class TestNode extends TestCase {
     public TestNode(String name) {
         super(name);
     }

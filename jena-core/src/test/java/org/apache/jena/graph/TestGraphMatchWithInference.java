@@ -23,13 +23,12 @@ package org.apache.jena.graph;
 
 import junit.framework.*;
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.test.JenaTestBase;
 
 /**
  * Test that an inferred graph and an identical concrete graph compare as equal.
  */
 
-public class TestGraphMatchWithInference extends JenaTestBase {
+public class TestGraphMatchWithInference extends TestCase {
     public TestGraphMatchWithInference(String name) {
         super(name);
     }
