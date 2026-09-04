@@ -28,8 +28,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Node_Marker;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.function.FunctionEnvBase;
+import org.apache.jena.sparql.function.library.triple.TripleTermOps;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.ExprUtils;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
@@ -50,6 +53,25 @@ public class TestExprTripleTerms {
     @Test
     public void tripleTerm_Bad1() {
         assertThrows(ExprEvalException.class, ()-> eval("triple(:s1, 'bc', :o1)") );
+    }
+
+    @Test
+    public void tripleTerm_BadSubjectLiteral() {
+        assertThrows(ExprEvalException.class, ()-> eval("triple('abc', :p1, :o1)") );
+    }
+
+    @Test
+    public void tripleTerm_BadSubjectTripleTerm() {
+        assertThrows(ExprEvalException.class, ()-> eval("triple(triple(:s1, :p1, :o1), :p2, :o2)") );
+    }
+
+    @Test
+    public void tripleTerm_BadObjectExtensionNode() {
+        NodeValue subject = NodeValue.makeNode(NodeFactory.createURI("urn:s"));
+        NodeValue predicate = NodeValue.makeNode(NodeFactory.createURI("urn:p"));
+        NodeValue object = NodeValue.makeNode(Node_Marker.marker("object"));
+
+        assertThrows(ExprEvalException.class, ()-> TripleTermOps.fnTriple(subject, predicate, object));
     }
 
     @Test

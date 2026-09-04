@@ -34,7 +34,6 @@ import org.junit.jupiter.api.Test;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.query.ARQ;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.QueryParseException;
@@ -407,22 +406,9 @@ public class TestExpressions
     // Not symmetric RDF
     @Test public void tripleterm_10() { assertThrows(ExprEvalException.class, ()->testEval("TRIPLE(<x:s>, BNODE(), <x:o>)")); }
 
-    // TRIPLE generates symmetric RDF (non-strict)
-    @Test public void tripleterm_20() { testEval("TRIPLE(123, <x:p>, <x:o>)"); }
-    @Test public void tripleterm_21() { testEval("TRIPLE(TRIPLE(<x:s>, <x:p>, <x:o>), <x:p>, <x:o>)"); }
-
-    // TRIPLE generates RDF triples (strict)
-    @Test public void tripleterm_30() {
-        strictMode(()->assertThrows(ExprEvalException.class, ()-> {
-            strictMode(()->testEval("TRIPLE(123, <x:p>, <x:o>)"));
-        }));
-    }
-
-    @Test public void tripleterm_31() {
-        strictMode(()->assertThrows(ExprEvalException.class, ()-> {
-            strictMode(()->testEval("TRIPLE(TRIPLE(<x:s>, <x:p>, <x:o>), <x:p>, <x:o>)"));
-        }));
-    }
+    // TRIPLE only generates RDF triples.
+    @Test public void tripleterm_20() { assertThrows(ExprEvalException.class, ()->testEval("TRIPLE(123, <x:p>, <x:o>)")); }
+    @Test public void tripleterm_21() { assertThrows(ExprEvalException.class, ()->testEval("TRIPLE(TRIPLE(<x:s>, <x:p>, <x:o>), <x:p>, <x:o>)")); }
 
     // Accessors
     @Test public void tripleterm_50() { testURI("SUBJECT( TRIPLE(<x:s>, <x:p>, 123) )", "x:s"); }
@@ -530,17 +516,6 @@ public class TestExpressions
 
     private static void testSyntax(String exprString) {
         parseToEnd(exprString);
-    }
-
-    // Strict mode - just set the flag.
-    private static void strictMode(Runnable action) {
-        Object setting = ARQ.getContext().get(ARQ.strictSPARQL);
-        try {
-            ARQ.getContext().set(ARQ.strictSPARQL, true);
-            action.run();
-        } finally {
-            ARQ.getContext().set(ARQ.strictSPARQL, setting);
-        }
     }
 
     // "should evaluate", don't care what the result is.
