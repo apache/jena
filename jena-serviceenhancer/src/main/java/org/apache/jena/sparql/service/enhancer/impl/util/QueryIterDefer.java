@@ -24,20 +24,20 @@ package org.apache.jena.sparql.service.enhancer.impl.util;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.engine.iterator.QueryIteratorWrapper;
-import org.apache.jena.sparql.serializer.SerializationContext;
+import org.apache.jena.sparql.engine.iterator.QueryIter;
 
 /** Deferred (lazy) iterator which initializes a delegate from a supplier only when needed */
 public class QueryIterDefer
-    extends QueryIteratorWrapper
+    extends QueryIter
 {
     protected Supplier<QueryIterator> supplier;
+    protected QueryIterator iterator;
 
-    public QueryIterDefer(Supplier<QueryIterator> supplier) {
-        super(null);
+    public QueryIterDefer(ExecutionContext execCxt, Supplier<QueryIterator> supplier) {
+        super(execCxt);
         this.supplier = supplier;
     }
 
@@ -50,29 +50,26 @@ public class QueryIterDefer
     @Override
     protected boolean hasNextBinding() {
         ensureInitialized();
-        return super.hasNextBinding();
+        return iterator.hasNext();
     }
 
     @Override
     protected Binding moveToNextBinding() {
         ensureInitialized();
-        return super.moveToNextBinding();
+        return iterator.hasNext() ? iterator.next() : null;
     }
 
     @Override
-    public void output(IndentedWriter out) {
-        ensureInitialized();
-        super.output(out);
+    protected void requestCancel() {
+        if (iterator != null) {
+            iterator.cancel();
+        }
     }
 
     @Override
     protected void closeIterator() {
-        super.closeIterator();
-    }
-
-    @Override
-    public void output(IndentedWriter out, SerializationContext sCxt) {
-        ensureInitialized();
-        super.output(out, sCxt);
+        if (iterator != null) {
+            iterator.close();
+        }
     }
 }

@@ -21,15 +21,21 @@
 
 package org.apache.jena.sparql.service.enhancer.impl.util;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.NavigableSet;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
-
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.Rename;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 
 /**
  * Methods for working with scope levels of SPARQL variables.
@@ -44,6 +50,14 @@ public class VarScopeUtils {
             pos += delta;
         }
         String result = varName.substring(pos);
+        return result;
+    }
+
+    public static Set<String> getPlainNames(Collection<Var> vars) {
+        Set<String> result = vars.stream()
+                .map(Var::getName)
+                .map(VarScopeUtils::getPlainName)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
         return result;
     }
 
@@ -100,31 +114,53 @@ public class VarScopeUtils {
     }
 
     /**
+     * Map each plain variable name to the set of scope levels (ordered ascending).
+     */
+    public static Map<String, NavigableSet<Integer>> getScopeLevels(Collection<Var> vars) {
+        Map<String, NavigableSet<Integer>> result = new LinkedHashMap<>();
+        for (Var var : vars) {
+            String scopedName = var.getName();
+            String plainName = getPlainName(scopedName);
+            int level = getScopeLevel(scopedName);
+
+            NavigableSet<Integer> levels = result.computeIfAbsent(plainName, key -> new TreeSet<>());
+            levels.add(level);
+        }
+        return result;
+    }
+
+    /**
      * Return a mapping that reduces every variable's scope level by the minimum scope level
      * among the variables having the same base name.
-     * Consequently, for every variable name the minimum scope level will be normalized to 0.
+     * Consequently, the scope of every visible variable will be normalized to 0; for non-visible ones the scope becomes 1.
      * <p>
-     * Example: normalizeVarScopes({?a, ?/b, ?//c, ?////c}) yields:
+     * Example: normalizeVarScopes({?a, ?/b, ?//c, ?////c}, visible={a, c}) yields:
      * <ul>
      *   <li>?a -&gt; ?a</li>
-     *   <li>?/b -&gt; ?b</li>
+     *   <li>?//b -&gt; ?/b (normalized to 1 because b is not visible)</li>
      *   <li>?//c -&gt; ?c</li>
      *   <li>?////c -&gt; ?//c</li>
      * </ul>
      *
-     * @param vars A set of variables with arbitrary scope levels.
-     * @return A mapping that normalizes every variable's minimum scope to 0.
+     * @param mentionedScopedVars A set of variables with arbitrary scope levels.
+     * @return A mapping that normalizes every variable's minimum scope to either 0 or 1 depending on visibility.
      */
-    public static BiMap<Var, Var> normalizeVarScopes(Collection<Var> vars) {
-        Map<String, Integer> nameToMinLevel = getMinimumScopeLevels(vars);
+    public static BiMap<Var, Var> normalizeVarScopes(Collection<Var> mentionedScopedVars, Set<String> visibleUnscopedVarName) {
+        Map<String, Integer> nameToMinLevel = getMinimumScopeLevels(mentionedScopedVars);
         BiMap<Var, Var> result = HashBiMap.create();
-        for (Var from : vars) {
+        for (Var from : mentionedScopedVars) {
             String fromName = from.getName();
             int fromLevel = getScopeLevel(fromName);
 
             String plainName = getPlainName(fromName);
             int minLevel = nameToMinLevel.get(plainName);
             int normalizedLevel = fromLevel - minLevel;
+
+            // Increase the scope level by one for non-visible vars
+            if (!visibleUnscopedVarName.contains(plainName)) {
+                ++normalizedLevel;
+            }
+
             Var to = allocScoped(plainName, normalizedLevel);
             result.put(from, to);
         }
@@ -132,7 +168,7 @@ public class VarScopeUtils {
     }
 
     /**
-     * Similar to {@link #normalizeVarScopes(Collection)}, however reduces the scope levels of all variables
+     * Similar to {@link #normalizeVarScopes(Collection, Set)}, however reduces the scope levels of all variables
      * by the globally minimum scope level.
      * In other words, if the minimum scope level among all given variables is 'n' then the returned mapping
      * reduces every scope level by 'n'.

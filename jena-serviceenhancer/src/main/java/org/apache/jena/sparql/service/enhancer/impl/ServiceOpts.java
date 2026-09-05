@@ -24,13 +24,12 @@ package org.apache.jena.sparql.service.enhancer.impl;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
+import java.util.function.Predicate;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -38,7 +37,6 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.op.OpService;
-import org.apache.jena.sparql.service.enhancer.init.ServiceEnhancerConstants;
 
 /**
  * Utilities to exploit url scheme pattern to represent key value pairs.
@@ -58,18 +56,10 @@ import org.apache.jena.sparql.service.enhancer.init.ServiceEnhancerConstants;
  * </pre>
  */
 public class ServiceOpts {
-    // Use ':' as a separator unless it is preceeded by the escape char '\'
-    private static final Pattern SPLIT_PATTERN = Pattern.compile("(?<!(esc))(?:(esc){2})*(sep)"
-            .replace("(esc)", ":")
+    // Use ':' as a separator unless it is preceeded by the escape char ':'
+    // The regex matches the actual delimiter in group 1
+    private static final Pattern SPLIT_PATTERN = Pattern.compile("(?<!(sep))(?:(sep){2})*((sep))(?!(sep))"
             .replace("(sep)", ":"));
-
-    // Service options
-    public static final String SO_OPTIMIZE = "optimize";
-    public static final String SO_CACHE = "cache";
-    public static final String SO_BULK = "bulk";
-
-    // Undo scoping of variables
-    public static final String SO_LOOP = "loop";
 
     protected OpService opService;
     protected List<Entry<String, String>> options;
@@ -141,7 +131,7 @@ public class ServiceOpts {
             result = opService;
         } else {
             Node node = opService.getService();
-            String prefixStr = ServiceOpts.unparse(options);
+            String prefixStr = ServiceOpts.unparseOptions(options);
             if (!node.isURI()) {
                 Node uri = NodeFactory.createURI(prefixStr);
                 result = new OpService(uri, opService, false);
@@ -158,69 +148,92 @@ public class ServiceOpts {
         return "ServiceOpts [options=" + options + ", opService=" + opService + "]";
     }
 
-    public static List<Entry<String, String>> parseAsOptions(Node node) {
-        String iri = node.isURI() ? node.getURI() : null;
-        List<Entry<String, String>> result = iri == null ? null : parseAsOptions(iri);
+    public static List<Entry<String, String>> parseEntries(Node node) {
+        return node.isURI() ? parseEntries(node.getURI()) : null;
+    }
+
+    /** Split an iri by ':' and attempt to parse the splits as key=value pairs. */
+    public static List<String> parseEntriesRaw(String iri) {
+        List<String> result = new ArrayList<>();
+        Matcher matcher = SPLIT_PATTERN.matcher(iri);
+        int nextEntryStart = 0;
+        int group = 1; // The separator is in this group
+        while (matcher.find()) {
+            int delimStart = matcher.start(group);
+            int delimEnd = matcher.end(group);
+            if (delimStart > nextEntryStart) {
+                String entryStr = iri.substring(nextEntryStart, delimStart);
+                result.add(entryStr);
+            }
+            String delimStr = iri.substring(delimStart, delimEnd);
+            result.add(delimStr);
+            nextEntryStart = delimEnd;
+        }
+        // Add the entry after the last separator (if there is one)
+        int n = iri.length();
+        if (nextEntryStart < n) {
+            String entryStr = iri.substring(nextEntryStart, n);
+            result.add(entryStr);
+        }
         return result;
     }
 
     /** Split an iri by ':' and attempt to parse the splits as key=value pairs. */
-    public static List<Entry<String, String>> parseAsOptions(String iri) {
-        List<Entry<String, String>> result = new ArrayList<>();
-        String[] rawSplits = SPLIT_PATTERN.split(iri);
-        for (String rawSplit : rawSplits) {
-            String split = rawSplit.replace("\\\\", "\\");
+    public static List<Entry<String, String>> parseEntries(String iri) {
+        List<String> rawSplits = parseEntriesRaw(iri);
+        List<Entry<String, String>> result = rawSplits.stream().map(rawSplit -> {
+            String split = rawSplit.equals(":") ? "" : rawSplit.replace("::", ":");
             String[] kv = split.split("\\+", 2);
-            result.add(new SimpleEntry<>(kv[0], kv.length == 2 ? kv[1] : null));
-        }
-
+            return new SimpleEntry<>(kv[0], kv.length == 2 ? kv[1] : null);
+        }).collect(Collectors.toList());
         return result;
+    }
+
+    public static boolean isSeparator(String key) {
+        return "".equals(key);
     }
 
     public static String escape(String str) {
-        String result = str.replace("\\", "\\\\").replace(":", "\\:");
+        String result = isSeparator(str) ? ":" : str.replace(":", "::");
         return result;
     }
 
-    /** Convert a list of options back into an escaped string */
-    public static String unparse(List<Entry<String, String>> optionList) {
+    /** Convert a list of entries back into an escaped string. */
+    public static String unparseEntries(List<Entry<String, String>> entryList) {
+        String result = entryList.stream()
+            .map(ServiceOpts::unparseEntry)
+            .collect(Collectors.joining());
+        return result;
+    }
+
+    public static String unparseEntry(Entry<String, String> e) {
+        String result = escape(e.getKey()) + Optional.ofNullable(e.getValue()).map(v -> "+" + escape(v)).orElse("");
+        return result;
+    }
+
+    /**
+     * Differs from {@link #unparseEntries(List)} that the input is expected to be free from separators.
+     */
+    public static String unparseOptions(List<Entry<String, String>> optionList) {
         String result = optionList.stream()
-            .map(e -> escape(e.getKey()) + (Optional.ofNullable(e.getValue()).map(v -> "+" + escape(v)).orElse("")))
-            .collect(Collectors.joining(":"));
-
-        ListIterator<? extends Entry<String, String>> it = optionList.listIterator(optionList.size());
-        if (it.hasPrevious()) {
-            Entry<String, String> lastEntry = it.previous();
-            if (isKnownOption(lastEntry.getKey())) {
-                result += ":";
-            }
-        }
-
-            //.collect(Collectors.joining(":"));
+            .map(ServiceOpts::unparseEntry)
+            .map(x -> x + ":")
+            .collect(Collectors.joining());
         return result;
     }
 
-    public static boolean isKnownOption(String key) {
-        Set<String> knownOptions = new LinkedHashSet<>();
-        knownOptions.add(SO_CACHE);
-        knownOptions.add(SO_BULK);
-        knownOptions.add(SO_LOOP);
-        knownOptions.add(SO_OPTIMIZE);
-
-        return knownOptions.contains(key);
-    }
-
-    public static ServiceOpts getEffectiveService(OpService opService) {
+    public static ServiceOpts getEffectiveService(OpService opService, String fallbackServiceIri, Predicate<String> isKnownOption) {
         List<Entry<String, String>> opts = new ArrayList<>();
         OpService currentOp = opService;
         boolean isSilent;
         String serviceStr = null;
 
+        // The outer loop  descends into sub OpService instances as long as options are known
+        // SERVICE <cache:loop:> { } is equivalent to SERVICE <cache:> { SERVICE <loop:> { } }
         while (true) {
             isSilent = currentOp.getSilent();
             Node node = currentOp.getService();
-            List<Entry<String, String>> parts = ServiceOpts.parseAsOptions(node);
-
+            List<Entry<String, String>> parts = ServiceOpts.parseEntries(node);
             if (parts == null) { // node is not an iri
                 break;
             }
@@ -232,22 +245,28 @@ public class ServiceOpts {
             for (; i < n; ++i) {
                 Entry<String, String> e = parts.get(i);
                 String key = e.getKey();
-
-                if (isKnownOption(key)) {
+                if (isKnownOption.test(key)) {
                     opts.add(e);
+                    // Skip over the next separator (if there is one)
+                    int j = i + 1;
+                    if (j < n) {
+                        String nextKey = parts.get(j).getKey();
+                        isSeparator(nextKey);
+                        i = j;
+                    }
                 } else {
                     break;
                 }
             }
 
             List<Entry<String, String>> subList = parts.subList(i, n);
-            serviceStr = ServiceOpts.unparse(subList);
+            serviceStr = ServiceOpts.unparseEntries(subList);
             if (serviceStr.isEmpty()) {
                 Op subOp = opService.getSubOp();
                 if (subOp instanceof OpService) {
                     currentOp = (OpService)subOp;
                 } else {
-                    serviceStr = ServiceEnhancerConstants.SELF.getURI();
+                    serviceStr = fallbackServiceIri;
                     break;
                 }
             } else {
