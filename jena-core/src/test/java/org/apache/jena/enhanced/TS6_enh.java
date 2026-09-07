@@ -21,13 +21,20 @@
 
 package org.apache.jena.enhanced;
 
-import org.apache.jena.rdf.model.RDFNode;
+import org.junit.platform.suite.api.BeforeSuite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-/**
- * @see TestObject
- */
-public interface TestProperty extends RDFNode, TestNode {  
-   
-    boolean isProperty();
-    TestObject anObject();
+import org.apache.jena.test.JenaTestLib;
+
+@Suite
+@SelectClasses({
+    TestEnhanced.class
+})
+
+public class TS6_enh {
+    @BeforeSuite
+    public static void beforeSuite() {
+        JenaTestLib.setup();
+    }
 }

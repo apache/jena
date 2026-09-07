@@ -24,9 +24,9 @@ import org.apache.jena.graph.*;
 import org.apache.jena.rdf.model.RDFNode;
 
 /**
- * See {@link TestObject} for more detailed documentation.
+ * See {@link T_Object} for more detailed documentation.
  */
-public class TestObjectImpl extends TestCommonImpl implements TestObject {
+public class T_ObjectImpl extends T_CommonImpl implements T_Object {
 
     /** The  required field is the factory field, of
      * class Implementation.
@@ -40,14 +40,14 @@ public class TestObjectImpl extends TestCommonImpl implements TestObject {
             Note the constructor can/should be private.
         */
         @Override public EnhNode wrap(Node n,EnhGraph eg) 
-            { return new TestObjectImpl(n,eg); }
+            { return new T_ObjectImpl(n,eg); }
     
         @Override public boolean canWrap( Node n, EnhGraph eg )
             { return true; }
         };
     
-    /** Creates a new instance of TestAllImpl */
-    private TestObjectImpl(Node n,EnhGraph eg) {
+    /** Creates a new instance of T_AllImpl */
+    private T_ObjectImpl(Node n,EnhGraph eg) {
         super( n, eg );
     }
     
@@ -65,12 +65,12 @@ public class TestObjectImpl extends TestCommonImpl implements TestObject {
      * (If the underlying graph has changed for the worse will
      * users prefer an early and unambiguous exception at this point).
      * 
-     * @see org.apache.jena.enhanced.TestObject#aSubject()
+     * @see org.apache.jena.enhanced.T_Object#aSubject()
      */
     @Override
-    public TestSubject aSubject() {
+    public T_Subject aSubject() {
         if (!isObject())
             throw new IllegalStateException("Node is not the object of a triple.");
-        return enhGraph.getNodeAs(findObject().getSubject(),TestSubject.class);
+        return enhGraph.getNodeAs(findObject().getSubject(),T_Subject.class);
     }
 }

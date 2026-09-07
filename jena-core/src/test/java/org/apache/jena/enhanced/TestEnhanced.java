@@ -19,26 +19,34 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-/*
- * EnhancedTestSuite.java
- *
- * Created on 27 November 2002, 04:53
- */
-
 package org.apache.jena.enhanced;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import org.apache.jena.graph.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.GraphMemFactory;
+import org.apache.jena.graph.GraphTestLib;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.junit.NodeCreateUtils;
-import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.RDFVisitor;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.rdf.model.StatementTerm;
 import org.apache.jena.shared.JenaException;
+import org.apache.jena.test.JenaTestLib;
 
 /**
  * These tests give a small version of a model-like interface
- {@link TestModel} with different views
- * over the nodes in the graph {@link TestSubject},
- *{@link TestProperty} {@link TestObject}
+ {@link T_Model} with different views
+ * over the nodes in the graph {@link T_Subject},
+ *{@link T_Property} {@link T_Object}
  *Any node can be any one of these three, but the interface only works
  *if the node is the subject, property or object, respectively,
   of some triple in the graph.
@@ -52,7 +60,9 @@ import org.apache.jena.shared.JenaException;
  *These tests only test EnhNode polymorphism and not EnhGraph polymorphism.
  *EnhGraph polymorphism currently will not work.
  */
-public class TS3_enh extends TestCase  {
+public class TestEnhanced {
+
+    static { JenaTestLib.setup(); }
 
 	static final private  Personality<RDFNode> split = new Personality<>();
 
@@ -67,31 +77,23 @@ public class TS3_enh extends TestCase  {
             // Note this does not guarantee that the only implementations
             // of each interface will be the one specified.
             // See bitOfBoth.
-        split.add( TestObject.class, TestObjectImpl.factory );
-        split.add( TestSubject.class, TestSubjectImpl.factory );
-        split.add( TestProperty.class, TestPropertyImpl.factory );
+        split.add( T_Object.class, T_ObjectImpl.factory );
+        split.add( T_Subject.class, T_SubjectImpl.factory );
+        split.add( T_Property.class, T_PropertyImpl.factory );
 
-        combo.add( TestObject.class, TestAllImpl.factory );
-        combo.add( TestSubject.class, TestAllImpl.factory );
-        combo.add( TestProperty.class, TestAllImpl.factory );
+        combo.add( T_Object.class, T_AllImpl.factory );
+        combo.add( T_Subject.class, T_AllImpl.factory );
+        combo.add( T_Property.class, T_AllImpl.factory );
 
-        bitOfBoth.add( TestObject.class, TestObjectImpl.factory );
-        bitOfBoth.add( TestSubject.class, TestSubjectImpl.factory );
-        bitOfBoth.add( TestProperty.class, TestAllImpl.factory );
+        bitOfBoth.add( T_Object.class, T_ObjectImpl.factory );
+        bitOfBoth.add( T_Subject.class, T_SubjectImpl.factory );
+        bitOfBoth.add( T_Property.class, T_AllImpl.factory );
 
         // broken is misconfigured and must throw an exception.
-        broken.add(TestObject.class, TestObjectImpl.factory );
-        broken.add( TestSubject.class, TestSubjectImpl.factory );
-        broken.add( TestProperty.class, TestObjectImpl.factory );
+        broken.add(T_Object.class, T_ObjectImpl.factory );
+        broken.add( T_Subject.class, T_SubjectImpl.factory );
+        broken.add( T_Property.class, T_ObjectImpl.factory );
 	}
-    /** Creates a new instance of EnhancedTestSuite */
-    public TS3_enh(String name) {
-        super(name);
-    }
-
-    public static TestSuite suite() {
-        return new TestSuite(TS3_enh.class);
-    }
 
     // Create the graph to test.
     // These are model tests so use a same-value model.
@@ -103,6 +105,7 @@ public class TS3_enh extends TestCase  {
      * test that equals works on an EnhNode (after hedgehog introduced FrontsNode it
      * didn't).
      */
+    @Test
     public void testEquals() {
         EnhNode a = new EnhNode(NodeCreateUtils.create("eg:example"), null);
         assertEquals(a, a);
@@ -111,29 +114,29 @@ public class TS3_enh extends TestCase  {
     /**
      * View n as intf. This is supported iff rslt.
      */
-    private static <X extends RDFNode> void miniAsSupports(String title, TestNode n, Class<X> intf, boolean rslt ) {
-        assertTrue(title +":sanity",n instanceof Polymorphic<?>);
+    private static <X extends RDFNode> void miniAsSupports(String title, T_Node n, Class<X> intf, boolean rslt ) {
+        assertTrue(n instanceof Polymorphic<?>, title +":sanity");
 
         // It is always possible to view any node with any interface.
-        TestNode as1 = (TestNode)((EnhNode)n).viewAs(intf);
-        TestNode as2 = (TestNode)((EnhNode)n).viewAs(intf);
+        T_Node as1 = (T_Node)((EnhNode)n).viewAs(intf);
+        T_Node as2 = (T_Node)((EnhNode)n).viewAs(intf);
 
         // caching should ensure we get the same result both times.
-        assertTrue( title + ":idempotency", as1==as2 );
+        assertTrue( as1==as2, title + ":idempotency" );
 
         // Whether the interface is actually useable depends on the underlying
         // graph. This factoid is the rslt parameter.
-        assertEquals( title +":support",rslt,((EnhNode) as1).supports( intf ) );
+        assertEquals( rslt, ((EnhNode) as1).supports( intf ), title +":support" );
     }
 
-    private static void oneNodeAsSupports(String title, TestNode n, boolean rslts[] ) {
+    private static void oneNodeAsSupports(String title, T_Node n, boolean rslts[] ) {
     	// Try n with all three interfaces.
-        miniAsSupports(title+"/TestSubject",n,TestSubject.class,rslts[0]);
-        miniAsSupports(title+"/TestProperty",n,TestProperty.class,rslts[1]);
-        miniAsSupports(title+"/TestObject",n,TestObject.class,rslts[2]);
+        miniAsSupports(title+"/T_Subject",n,T_Subject.class,rslts[0]);
+        miniAsSupports(title+"/T_Property",n,T_Property.class,rslts[1]);
+        miniAsSupports(title+"/T_Object",n,T_Object.class,rslts[2]);
     }
 
-    private static void manyNodeAsSupports(String title, TestNode n[], boolean rslts[][] ) {
+    private static void manyNodeAsSupports(String title, T_Node n[], boolean rslts[][] ) {
     	// Try each n with each interface.
         for (int i=0;i<n.length;i++){
           oneNodeAsSupports(title+"["+i+"]",n[i],rslts[i]);
@@ -148,13 +151,13 @@ public class TS3_enh extends TestCase  {
      */
     private static void basic(String title, Personality<RDFNode> p) {
         Graph g = graphToTest();
-        TestModel model =  new TestModelImpl(g,p);
+        T_Model model =  new T_ModelImpl(g,p);
         // create some data
         GraphTestLib.graphAdd( g, "x R y;" );
 
-        // The graph has three nodes, extract them as TestNode's,
+        // The graph has three nodes, extract them as T_Node's,
         // using the minimalist ModelAPI.
-        TestNode nodes[] = new TestNode[]{
+        T_Node nodes[] = new T_Node[]{
             model.aSubject(),
             model.aProperty(),
             model.anObject()
@@ -171,9 +174,9 @@ public class TS3_enh extends TestCase  {
         GraphTestLib.graphAdd(g,"y R x;" );
 
         // The expected results are now different.
-        // (A node is appropriate for the TestSubject interface if it is
+        // (A node is appropriate for the T_Subject interface if it is
         // the subject of some triple in the graph, so the third node
-        // can now be a TestSubject).
+        // can now be a T_Subject).
         manyNodeAsSupports(title+"(b)",nodes,
            new boolean[][]{
                new boolean[]{true,false,true}, // nodes[0] is subj and obj, but not prop
@@ -184,9 +187,9 @@ public class TS3_enh extends TestCase  {
         g.delete( GraphTestLib.triple( "x R y" ) );
 
     	// The expected results are now different again.
-    	// (A node is appropriate for the TestSubject interface if it is
+    	// (A node is appropriate for the T_Subject interface if it is
     	// the subject of some triple in the graph, so the third node
-    	// can now be a TestSubject).
+    	// can now be a T_Subject).
 
         manyNodeAsSupports(title+"(c)",nodes,
            new boolean[][]{
@@ -211,7 +214,7 @@ public class TS3_enh extends TestCase  {
     // or not, we just try it.
     // Obviously sometimes it is broken, which should be reported using
     // an IllegalStateException.
-	private void canImplement(String title, TestNode n, int wh, boolean rslt ) {
+	private void canImplement(String title, T_Node n, int wh, boolean rslt ) {
 		try {
 			switch (wh) {
 				case S:
@@ -224,19 +227,19 @@ public class TS3_enh extends TestCase  {
 					n.asObject().aSubject();
 					break;
 			}
-			assertTrue("IllegalStateException expected.",rslt);
+			assertTrue(rslt, "IllegalStateException expected.");
 		}
 		catch (IllegalStateException e) {
-			assertFalse("IllegalStateException at the wrong time.",rslt);
+			assertFalse(rslt, "IllegalStateException at the wrong time.");
 		}
 	}
 
-	private void canImplement(String title, TestNode n, boolean rslts[] ) {
-		canImplement(title+"/TestSubject",n,S,rslts[0]);
-		canImplement(title+"/TestProperty",n,P,rslts[1]);
-		canImplement(title+"/TestObject",n,O,rslts[2]);
+	private void canImplement(String title, T_Node n, boolean rslts[] ) {
+		canImplement(title+"/T_Subject",n,S,rslts[0]);
+		canImplement(title+"/T_Property",n,P,rslts[1]);
+		canImplement(title+"/T_Object",n,O,rslts[2]);
 	}
-	private void canImplement(String title, TestNode n[], boolean rslts[][] ) {
+	private void canImplement(String title, T_Node n[], boolean rslts[][] ) {
 		for (int i=0;i<n.length;i++){
 		  canImplement(title+"["+i+"]",n[i],rslts[i]);
 		}
@@ -244,10 +247,10 @@ public class TS3_enh extends TestCase  {
 
     private void follow(String title, Personality<RDFNode> p) {
         Graph g = graphToTest();
-        TestModel model =  new TestModelImpl(g,p);
+        T_Model model =  new T_ModelImpl(g,p);
         // create some data
         GraphTestLib.graphAdd( g, "a b c;" );
-        TestNode nodes[] = new TestNode[]{
+        T_Node nodes[] = new T_Node[]{
             model.aSubject(),
             model.aProperty(),
             model.anObject()
@@ -285,7 +288,7 @@ public class TS3_enh extends TestCase  {
         });
 
         // Another twist.
-        canImplement(title+"(c)",new TestNode[]{
+        canImplement(title+"(c)",new T_Node[]{
             nodes[1].asSubject().aProperty(),
             nodes[2].asObject().aSubject(),
             nodes[0].asProperty().anObject()
@@ -295,55 +298,59 @@ public class TS3_enh extends TestCase  {
                new boolean[]{true,false,false},
                new boolean[]{false,false,true}
         });
-        assertTrue("Recreated node",nodes[0].asProperty().anObject().equals(nodes[2]));
+        assertTrue(nodes[0].asProperty().anObject().equals(nodes[2]), "Recreated node");
     }
 
+    @Test
     public void testSplitBasic() { basic("Split: ",split); }
 
+    @Test
     public void testComboBasic() { basic("Combo: ",combo); }
 
+    @Test
     public void testSplitFollow() { follow("Split: ",split); }
 
+    @Test
     public void testComboFollow() { follow("Combo: ",combo); }
 
+    @Test
     public void testBitOfBothBasic() { basic("bob: ",bitOfBoth); }
 
+    @Test
     public void testBitOfBothFollow() { follow("bob: ",bitOfBoth); }
 
+    @Test
     public  void testBitOfBothSurprise() {
     	// bitOfBoth is a surprising personality ...
     	// we can have two different java objects implementing the same interface.
 
 		Graph g = graphToTest();
-		TestModel model =  new TestModelImpl(g,bitOfBoth);
+		T_Model model =  new T_ModelImpl(g,bitOfBoth);
 		// create some data
 		GraphTestLib.graphAdd( g, "a a a;" );
-		TestSubject testSubjectImpl = model.aSubject();
-		assertTrue("BitOfBoth makes subjects using TestSubjectImpl",
-		         testSubjectImpl instanceof TestSubjectImpl);
-		TestProperty testAllImpl = testSubjectImpl.aProperty();
-    	assertTrue("BitOfBoth makes properties using TestAllImpl",
-    			 testAllImpl instanceof TestAllImpl);
-    	assertTrue("turning a TestAllImpl into a TestSubject is a no-op",
-    	          testAllImpl == testAllImpl.asSubject() );
-    	assertTrue("turning a TestAllImpl into a TestSubject is a no-op",
-    			  testSubjectImpl != testAllImpl.asSubject() );
-    	assertTrue("turning a TestAllImpl into a TestSubject is a no-op",
-    			  testSubjectImpl.asSubject() != testSubjectImpl.asSubject().asProperty().asSubject() );
+		T_Subject testSubjectImpl = model.aSubject();
+		assertTrue(testSubjectImpl instanceof T_SubjectImpl,
+		         "BitOfBoth makes subjects using T_SubjectImpl");
+		T_Property testAllImpl = testSubjectImpl.aProperty();
+    	assertTrue(testAllImpl instanceof T_AllImpl,
+    			 "BitOfBoth makes properties using T_AllImpl");
+    	assertTrue(testAllImpl == testAllImpl.asSubject(),
+    	          "turning a T_AllImpl into a T_Subject is a no-op");
+    	assertTrue(testSubjectImpl != testAllImpl.asSubject(),
+    			  "turning a T_AllImpl into a T_Subject is a no-op");
+    	assertTrue(testSubjectImpl.asSubject() != testSubjectImpl.asSubject().asProperty().asSubject(),
+    			  "turning a T_AllImpl into a T_Subject is a no-op");
 
     }
 
+    @Test
     public void testBrokenBasic() {
-    	try {
-    		// Any of the tests ought to work up and til the point
-    		// that they don't. At that point they need to detect the
-    		// error and throw the PersonalityConfigException.
-           basic("Broken: ",broken);
-           fail("broken is a misconfigured personality, but it wasn't detected.");
-    	}
-    	catch (PersonalityConfigException e ) {
-
-    	}
+        // Any of the tests ought to work up and til the point
+        // that they don't. At that point they need to detect the
+        // error and throw the PersonalityConfigException.
+        assertThrows(PersonalityConfigException.class,
+                     ()->basic("Broken: ",broken),
+                     "broken is a misconfigured personality, but it wasn't detected.");
     }
 
     static class Example extends EnhNode implements RDFNode {
@@ -388,15 +395,15 @@ public class TS3_enh extends TestCase  {
         { return null; }
     }
 
+    @Test
     public void testSimple() {
         Graph g = graphToTest();
         Personality<RDFNode> ours = BuiltinPersonalities.model.copy().add(Example.class, Example.factory);
         EnhGraph eg = new EnhGraph(g, ours);
-        Node n = NodeFactory.createURI("spoo:bar");
         EnhNode eNode = new EnhNode(NodeFactory.createURI("spoo:bar"), eg);
         EnhNode eBlank = new EnhNode(NodeFactory.createBlankNode(), eg);
-        assertTrue("URI node can be an Example", eNode.supports(Example.class));
-        assertFalse("Blank node cannot be an Example", eBlank.supports(Example.class));
+        assertTrue(eNode.supports(Example.class), "URI node can be an Example");
+        assertFalse(eBlank.supports(Example.class), "Blank node cannot be an Example");
     }
 
     static class AnotherExample {
@@ -413,6 +420,7 @@ public class TS3_enh extends TestCase  {
         };
     }
 
+    @Test
     public void testAlreadyLinkedViewException() {
         Graph g = graphToTest();
         Personality<RDFNode> ours = BuiltinPersonalities.model.copy().add(Example.class, Example.factory);
@@ -422,10 +430,9 @@ public class TS3_enh extends TestCase  {
         EnhNode multiplexed = new Example(n, eg);
         multiplexed.as(Property.class);
         eNode.viewAs(Example.class);
-        try {
-            eNode.addView(multiplexed);
-            fail("should raise an AlreadyLinkedViewException ");
-        } catch (AlreadyLinkedViewException e) {}
+        assertThrows(AlreadyLinkedViewException.class,
+                     ()->eNode.addView(multiplexed),
+                     "should raise an AlreadyLinkedViewException");
     }
 
     /**
@@ -433,21 +440,20 @@ public class TS3_enh extends TestCase  {
      * supported by the enhanced graph generates an UnsupportedPolymorphism
      * exception.
      */
+    @Test
     public void testNullPointerTrap() {
         Graph g = graphToTest();
         EnhGraph eg = new EnhGraph(g, new Personality<RDFNode>());
         Node n = NodeCreateUtils.create("eh:something");
         EnhNode en = new EnhNode(n, eg);
-        try {
-            en.as(Property.class);
-            fail("oops");
-        } catch (UnsupportedPolymorphismException e) {
-            assertEquals(en, e.getBadNode());
-            assertTrue("exception should have cuplprit graph", eg == ((EnhNode)e.getBadNode()).getGraph());
-            assertSame("exception should have culprit class", Property.class, e.getBadClass());
-        }
+        UnsupportedPolymorphismException e =
+            assertThrows(UnsupportedPolymorphismException.class, ()->en.as(Property.class));
+        assertEquals(en, e.getBadNode());
+        assertTrue(eg == ((EnhNode)e.getBadNode()).getGraph(), "exception should have cuplprit graph");
+        assertSame(Property.class, e.getBadClass(), "exception should have culprit class");
     }
 
+    @Test
     public void testNullPointerTrapInCanSupport() {
         Graph g = graphToTest();
         EnhGraph eg = new EnhGraph(g, new Personality<RDFNode>());
@@ -456,6 +462,7 @@ public class TS3_enh extends TestCase  {
         assertFalse(en.canAs(Property.class));
     }
 
+    @Test
     public void testAsToOwnClassWithNoModel() {
         Resource r = ResourceFactory.createResource();
         assertEquals(null, r.getModel());
@@ -463,20 +470,19 @@ public class TS3_enh extends TestCase  {
         assertSame(r, r.as(Resource.class));
     }
 
+    @Test
     public void testCanAsReturnsFalseIfNoModel() {
         Resource r = ResourceFactory.createResource();
         assertEquals(false, r.canAs(Example.class));
     }
 
+    @Test
     public void testAsThrowsPolymorphismExceptionIfNoModel() {
         Resource r = ResourceFactory.createResource();
-        try {
-            r.as(Example.class);
-            fail("should throw UnsupportedPolymorphismException");
-        } catch (UnsupportedPolymorphismException e) {
-            assertTrue(e.getBadNode() instanceof EnhNode);
-            assertEquals(null, ((EnhNode)e.getBadNode()).getGraph());
-            assertEquals(Example.class, e.getBadClass());
-        }
+        UnsupportedPolymorphismException e =
+            assertThrows(UnsupportedPolymorphismException.class, ()->r.as(Example.class));
+        assertTrue(e.getBadNode() instanceof EnhNode);
+        assertEquals(null, ((EnhNode)e.getBadNode()).getGraph());
+        assertEquals(Example.class, e.getBadClass());
     }
 }

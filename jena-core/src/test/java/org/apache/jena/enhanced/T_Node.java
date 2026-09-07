@@ -21,14 +21,13 @@
 
 package org.apache.jena.enhanced;
 
-/**
- * A minimalist model interface.
- * It allows you to access an arbitrary subject node, 
- * or property node, or object node from the graph.
- */
-public interface TestModel {
-    TestSubject aSubject();
-    TestProperty aProperty();
-    TestObject anObject();
-    
+public interface T_Node {
+	// Convenience routines for converting between different
+	// views using the subinterfaces,
+	// These are implemented in the base implementation class
+	// T_CommonImpl.
+    T_Subject asSubject();
+    T_Object asObject();
+    T_Property asProperty();
+
 }

@@ -21,23 +21,14 @@
 
 package org.apache.jena.enhanced;
 
-import org.apache.jena.rdf.model.RDFNode;
-
 /**
- * An interface for viewing object nodes in the graph.
+ * A minimalist model interface.
+ * It allows you to access an arbitrary subject node, 
+ * or property node, or object node from the graph.
  */
-public interface TestObject extends RDFNode, TestNode {
-
-    /**
-     * Checks whether this node is right now the object of some
-     * triple in the graph.
-     * @return true if this interface is currently working.
-     */
-    boolean isObject();
-
-    /** The subject of a triple of which I am object.
-     *
-     * @return the subject of a triple.
-     */
-    TestSubject aSubject();
+public interface T_Model {
+    T_Subject aSubject();
+    T_Property aProperty();
+    T_Object anObject();
+    
 }

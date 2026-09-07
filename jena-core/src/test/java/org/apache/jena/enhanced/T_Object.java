@@ -24,10 +24,20 @@ package org.apache.jena.enhanced;
 import org.apache.jena.rdf.model.RDFNode;
 
 /**
- * @see TestObject
+ * An interface for viewing object nodes in the graph.
  */
-public interface TestSubject  extends RDFNode, TestNode {
-    
-    boolean isSubject();
-    TestProperty aProperty();
+public interface T_Object extends RDFNode, T_Node {
+
+    /**
+     * Checks whether this node is right now the object of some
+     * triple in the graph.
+     * @return true if this interface is currently working.
+     */
+    boolean isObject();
+
+    /** The subject of a triple of which I am object.
+     *
+     * @return the subject of a triple.
+     */
+    T_Subject aSubject();
 }
