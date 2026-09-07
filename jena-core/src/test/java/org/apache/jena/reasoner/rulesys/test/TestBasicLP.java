@@ -1199,9 +1199,6 @@ public class TestBasicLP {
         }
         out.flush();
 
-        // PrintUtil.print renders a URI node with no matching prefix as <uri>. This
-        // expectation predates that and had gone stale unnoticed: the class was not
-        // reached by the JUnit 3 suite, so these tests had not been running.
         String testString = TestUtil.normalizeWhiteSpace("Rule testRule3 concluded (<a> <p> <C3>) <-\n" +
                 "    Rule testRule1 concluded (<C2> <p> <C3>) <-\n" +
                 "        Fact (<C1> <p> <C3>)\r\n" +

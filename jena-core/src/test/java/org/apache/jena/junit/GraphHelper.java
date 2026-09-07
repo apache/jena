@@ -24,9 +24,9 @@ package org.apache.jena.junit;
 /**
  * Foo set of static test helpers.  Generally included as a static.
  */
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.lang.reflect.Constructor;
 import java.util.*;
@@ -316,7 +316,7 @@ public class GraphHelper {
 	 * message containing <code>name</code>.
 	 */
 	public static void assertContains(String name, String s, Graph g) {
-		assertTrue(name + " must contain " + s, g.contains(triple(s)));
+		assertTrue(g.contains(triple(s)), name + " must contain " + s);
 	}
 
 	/**
@@ -336,7 +336,7 @@ public class GraphHelper {
         <code>name</code>.
 	 */
 	public static void assertOmits(String name, Graph g, String s) {
-		assertFalse(name + " must not contain " + s, g.contains(triple(s)));
+		assertFalse(g.contains(triple(s)), name + " must not contain " + s);
 	}
 
 	/**
@@ -363,7 +363,7 @@ public class GraphHelper {
 	 */
 	public static void testContains(Graph g, Triple[] triples) {
 		for (int i = 0; i < triples.length; i += 1)
-			assertTrue("contains " + triples[i], g.contains(triples[i]));
+			assertTrue(g.contains(triples[i]), "contains " + triples[i]);
 	}
 
 	/**
@@ -395,7 +395,7 @@ public class GraphHelper {
 	 */
 	public static void testOmits(Graph g, Triple[] triples) {
 		for (int i = 0; i < triples.length; i += 1)
-			assertFalse("", g.contains(triples[i]));
+			assertFalse(g.contains(triples[i]));
 	}
 
 	/**
@@ -404,7 +404,7 @@ public class GraphHelper {
 	 */
 	public static void testOmits(Graph g, List<Triple> triples) {
 		for (int i = 0; i < triples.size(); i += 1)
-			assertFalse("", g.contains(triples.get(i)));
+			assertFalse(g.contains(triples.get(i)));
 	}
 
 	/**
@@ -413,7 +413,7 @@ public class GraphHelper {
 	 */
 	public static void testOmits(Graph g, Iterator<Triple> it) {
 		while (it.hasNext())
-			assertFalse("", g.contains(it.next()));
+			assertFalse(g.contains(it.next()));
 	}
 
 	/**

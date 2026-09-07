@@ -24,7 +24,7 @@ package org.apache.jena.vocabulary;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class VocabTestLib {
 

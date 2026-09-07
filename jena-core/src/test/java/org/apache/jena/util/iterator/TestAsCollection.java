@@ -21,7 +21,7 @@
 
 package org.apache.jena.util.iterator;
 
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import java.util.Set;

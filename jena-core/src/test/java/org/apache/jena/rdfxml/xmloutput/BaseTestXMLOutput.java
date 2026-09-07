@@ -217,5 +217,4 @@ public abstract class BaseTestXMLOutput
         assertEquals(errorExpected, errorsFound, "Errors (not) detected.");
 
     }
-
-    }
+}

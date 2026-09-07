@@ -27,7 +27,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Statement;
@@ -103,14 +103,14 @@ public class AbstractRecordingListener {
 	public final void assertHas(Object... things) {
 		if (has(things) == false) {
 			int idx = differ(things);
-			Assert.fail("expected " + Arrays.asList(things) + " but got "
+			fail("expected " + Arrays.asList(things) + " but got "
 					+ history + " differ at position " + idx);
 		}
 	}
 
 	public final void assertEmpty() {
 		if (history.size() > 0) {
-			Assert.fail("Should be no history but got " + history);
+			fail("Should be no history but got " + history);
 		}
 	}
 
@@ -135,25 +135,25 @@ public class AbstractRecordingListener {
 
 	public final void assertHas(List<?> things) {
 		if (has(things) == false)
-			Assert.fail("expected " + things + " but got " + history);
+			fail("expected " + things + " but got " + history);
 	}
 
 	public final void assertContains(Object... things) {
 		if (contains(things) == false)
-			Assert.fail(String.format("expected %s but got %s",
+			fail(String.format("expected %s but got %s",
 					Arrays.asList(things), history));
 	}
 
 	public final void assertHasStart(Object... start) {
 		List<Object> L = Arrays.asList(start);
 		if (hasStart(L) == false)
-			Assert.fail("expected " + L + " at the beginning of " + history);
+			fail("expected " + L + " at the beginning of " + history);
 	}
 
 	public final void assertHasEnd(Object... end) {
 		List<Object> L = Arrays.asList(end);
 		if (hasEnd(L) == false)
-			Assert.fail("expected " + L + " at the end of " + history);
+			fail("expected " + L + " at the end of " + history);
 	}
 
 	public final void clear() {

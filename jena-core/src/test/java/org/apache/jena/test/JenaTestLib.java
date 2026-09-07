@@ -21,6 +21,8 @@
 
 package org.apache.jena.test;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -32,8 +34,6 @@ import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.util.CollectionFactory;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.WrappedIterator;
-
-import static junit.framework.TestCase.*;
 
 public class JenaTestLib {
 

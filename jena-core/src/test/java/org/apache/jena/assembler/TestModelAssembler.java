@@ -21,8 +21,6 @@
 
 package org.apache.jena.assembler;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
 
 import org.apache.jena.assembler.assemblers.ContentAssembler;

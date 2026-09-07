@@ -33,12 +33,6 @@ import org.apache.jena.rdf.model.Statement;
 
 /**
  * Collection of utilities to assist with unit testing.
- * <p>
- * The {@code assertIterator*} methods are derived from
- * {@link org.apache.jena.reasoner.test.TestUtil} so that this package can be
- * migrated to JUnit6 independently. The {@code junit.framework.TestCase}
- * argument of the originals has been dropped: it served only to label failure
- * messages and to name the logger, both of which JUnit6 reports for itself.
  */
 class OntTestUtil {
 

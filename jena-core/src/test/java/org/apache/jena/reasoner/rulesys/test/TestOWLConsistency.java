@@ -19,46 +19,32 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
+
 package org.apache.jena.reasoner.rulesys.test;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-//import java.util.*;
+import org.junit.jupiter.api.Test;
 
-
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import org.apache.jena.rdf.model.*;
-import org.apache.jena.reasoner.*;
+import org.apache.jena.rdf.model.InfModel;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.reasoner.Reasoner;
+import org.apache.jena.reasoner.ReasonerRegistry;
+import org.apache.jena.reasoner.ValidityReport;
 import org.apache.jena.util.FileManager;
 
 /**
  * Test the preliminary OWL validation rules.
  */
-public class TestOWLConsistency extends TestCase {
-     
+public class TestOWLConsistency {
+
     /** The tbox/ontology file to test against sample data */
     public static final String testTbox = "file:testing/reasoners/owl/tbox.owl";
-    
+
     /** A cached copy of the bound reasoner */
     public static Reasoner reasonerCache;
-     
-    /**
-     * Boilerplate for junit
-     */ 
-    public TestOWLConsistency( String name ) {
-        super( name ); 
-    }
-    
-    /**
-     * Boilerplate for junit.
-     * This is its own test suite
-     */
-    public static TestSuite suite() {
-        return new TestSuite( TestOWLConsistency.class ); 
-//        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestOWLConsistency( "testInconsistent5" ));
-//        return suite;
-    }  
 
     /**
      * Create, or retrieve from cache, an OWL reasoner already bound
@@ -71,75 +57,71 @@ public class TestOWLConsistency extends TestCase {
         }
         return reasonerCache;
     }
-    
+
     /**
      * Should be consistent.
      */
+    @Test
     public void testConsistent() {
         assertTrue(doTestOn("file:testing/reasoners/owl/consistentData.rdf"));
     }
-    
+
     /**
      * Should find problem due to overlap of disjoint classes.
      */
+    @Test
     public void testInconsistent1() {
-        assertTrue( ! doTestOn("file:testing/reasoners/owl/inconsistent1.rdf"));
+        assertFalse(doTestOn("file:testing/reasoners/owl/inconsistent1.rdf"));
     }
-    
+
     /**
      * Should find problem due to type violations
      */
+    @Test
     public void testInconsistent2() {
-        assertTrue( ! doTestOn("file:testing/reasoners/owl/inconsistent2.rdf"));
+        assertFalse(doTestOn("file:testing/reasoners/owl/inconsistent2.rdf"));
     }
-    
+
     /**
      * Should find problem due to count violations
      */
+    @Test
     public void testInconsistent3() {
-        assertTrue( ! doTestOn("file:testing/reasoners/owl/inconsistent3.rdf"));
+        assertFalse(doTestOn("file:testing/reasoners/owl/inconsistent3.rdf"));
     }
-    
+
     /**
      * Should find distinct values for a functional property
      */
+    @Test
     public void testInconsistent4() {
-        assertTrue( ! doTestOn("file:testing/reasoners/owl/inconsistent4.rdf"));
+        assertFalse(doTestOn("file:testing/reasoners/owl/inconsistent4.rdf"));
     }
-    
+
     /**
      * Should find type clash due to allValuesFrom rdfs:Literal
      */
+    @Test
     public void testInconsistent5() {
-        assertTrue( ! doTestOn("file:testing/reasoners/owl/inconsistent5.rdf"));
+        assertFalse(doTestOn("file:testing/reasoners/owl/inconsistent5.rdf"));
     }
-    
+
     /**
      * Should find distinct literal values for a functional property
      * via an indirect sameAs
      */
+    @Test
     public void testInconsistent7() {
-        assertTrue( ! doTestOn("file:testing/reasoners/owl/inconsistent7.rdf"));
+        assertFalse(doTestOn("file:testing/reasoners/owl/inconsistent7.rdf"));
     }
-    
+
     /**
      * Run a single consistency test on the given data file.
      */
     private boolean doTestOn(String dataFile) {
-//        System.out.println("Test: " + dataFile);
         Model data = FileManager.getInternal().loadModelInternal(dataFile);
         InfModel infmodel = ModelFactory.createInfModel(makeReasoner(), data);
         ValidityReport reportList = infmodel.validate();
-        /* Debug only
-        if (reportList.isValid()) {
-            System.out.println("No reported problems");
-        } else {
-            for (Iterator i = reportList.getReports(); i.hasNext(); ) {
-                ValidityReport.Report report = (ValidityReport.Report)i.next();
-                System.out.println("- "  + report);
-            }
-        }
-        */
         return reportList.isValid();
     }
 }

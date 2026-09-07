@@ -21,10 +21,9 @@
 
 package org.apache.jena.rdf.model.helpers;
 
-import java.util.*;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import junit.framework.TestCase;
-import org.junit.Ignore;
+import java.util.*;
 
 import org.apache.jena.graph.GraphTestLib;
 import org.apache.jena.graph.Node;
@@ -36,18 +35,9 @@ import org.apache.jena.util.CollectionFactory;
 /**
     provides useful functionality for testing models, eg building small models
     from strings, testing equality, etc.
-
-    Currently this class extends TestCase.
-
-    TODO: Refactoring should remove the TestCase dependency in future.
-
  */
-@Ignore // ignore this class as a test case.
-public class ModelHelper extends TestCase
+public class ModelHelper
 {
-	private ModelHelper(String name)
-	{ super(name); }
-
 	protected static Model aModel;
 
 	static {
@@ -175,7 +165,6 @@ public class ModelHelper extends TestCase
         @param title a String appearing at the beginning of the failure message
         @param wanted the model value that is expected
         @param got the model value to check
-        @exception junit.framework.AssertionFailedError the models are not isomorphic
 	 */
 	public static void assertIsoModels( String title, Model wanted, Model got )
 	{

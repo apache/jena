@@ -21,9 +21,9 @@
 
 package org.apache.jena.util.iterator;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertSame;
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -63,8 +63,8 @@ public class TestAndThen {
         ExtendedIterator<String> cat = L.andThen(M).andThen(R);
         cat.next();
         cat.close();
-        assertTrue("middle iterator should have been closed", M.isClosed());
-        assertTrue("final iterator should have been closed", R.isClosed());
+        assertTrue(M.isClosed(), "middle iterator should have been closed");
+        assertTrue(R.isClosed(), "final iterator should have been closed");
     }
 
     @Test

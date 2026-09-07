@@ -75,6 +75,7 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- Only for TS3_rdfxml_arp -->
     <dependency>
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
@@ -149,7 +150,7 @@
           <argLine>-XX:+EnableDynamicAgentLoading -Xshare:off</argLine>
           <includes>
             <include>org/apache/jena/test/JenaCoreTestAll_JU6.java</include>
-            <include>org/apache/jena/test/JenaCoreTestAll_JU4.java</include>
+            <include>org/apache/jena/test/JenaCoreTestAll_JU3.java</include>
           </includes>
         </configuration>
       </plugin>

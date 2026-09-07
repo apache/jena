@@ -28,7 +28,7 @@ import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.impl.ModelCom;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * A model assembler that creates a model with controllable supporting of
@@ -55,7 +55,7 @@ final class MockTransactionModel extends ModelAssembler {
             @Override
             public Model begin() {
                 history.add("begin");
-                Assert.assertTrue(isEmpty());
+                assertTrue(isEmpty());
                 return this;
             }
 
