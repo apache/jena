@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 import org.apache.jena.graph.*;
 import org.apache.jena.shared.PrefixMapping;
 
-public class TestPolyadicPrefixMapping extends AbstractTestPrefixMapping_JU6 {
+public class TestPolyadicPrefixMapping extends AbstractTestPrefixMapping {
 
     Graph gBase;
     Graph g1, g2;

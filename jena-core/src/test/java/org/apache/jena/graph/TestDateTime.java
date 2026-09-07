@@ -21,37 +21,32 @@
 
 package org.apache.jena.graph;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.apache.jena.datatypes.xsd.AbstractDateTime;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.datatypes.xsd.XSDDateTime;
 import org.apache.jena.rdf.model.*;
-import org.junit.Assert;
 
 /**
  * Tests behaviour of the AbstractDateTime support, specifically for comparison
  * operations. This complements the main tests in TestTypedLiterals.
  */
-public class TestDateTime extends TestCase {
+public class TestDateTime {
     /**
      * Boilerplate for junit
      */
-    public TestDateTime(String name) {
-        super(name);
-    }
 
     /**
      * This is its own test suite
      */
-    public static TestSuite suite() {
-        return new TestSuite(TestDateTime.class);
-    }
 
     static final XSDDateTime time0 = makeDateTime("2009-08-13T17:54:40.348Z");
     static final XSDDateTime time1 = makeDateTime("2009-08-13T18:54:39Z");
@@ -70,6 +65,7 @@ public class TestDateTime extends TestCase {
         return (XSDDateTime)XSDDatatype.XSDdateTime.parse(time);
     }
 
+    @Test
     public void testXSDOrder() {
         assertEquals(time0.compare(time1), AbstractDateTime.LESS_THAN);
         assertEquals(time1.compare(time2), AbstractDateTime.LESS_THAN);
@@ -87,6 +83,7 @@ public class TestDateTime extends TestCase {
         assertEquals(time5.compare(time10), AbstractDateTime.EQUAL);
     }
 
+    @Test
     public void testJavaOrder() {
         assertEquals(time0.compareTo(time1), AbstractDateTime.LESS_THAN);
         assertEquals(time1.compareTo(time2), AbstractDateTime.LESS_THAN);
@@ -98,6 +95,7 @@ public class TestDateTime extends TestCase {
         assertEquals(time7.compareTo(time8), AbstractDateTime.LESS_THAN);
     }
 
+    @Test
     public void testRoundTripping1() {
         Model m = ModelFactory.createDefaultModel();
         Property startTime = m.createProperty("http://jena.hpl.hp.com/test#startTime");
@@ -122,16 +120,19 @@ public class TestDateTime extends TestCase {
     }
 
     // Test that the string and calendar versions are the same.
+    @Test
     public void testRoundTripping2() {
         // String lex = "2013-04-16T15:40:07.3Z";
         testCalendarRT(1366126807300L);
     }
 
+    @Test
     public void testRoundTripping3() {
         // String lex = "2013-04-16T15:40:07.31Z";
         testCalendarRT(1366126807310L);
     }
 
+    @Test
     public void testRoundTripping4() {
         // String lex = "2013-04-16T15:40:07.301Z";
         testCalendarRT(1366126807301L);
@@ -143,8 +144,8 @@ public class TestDateTime extends TestCase {
         Literal lit1 = ResourceFactory.createTypedLiteral(cal);
         Literal lit2 = ResourceFactory.createTypedLiteral(lit1.getLexicalForm(), lit1.getDatatype());
 
-        Assert.assertEquals("equals: ", lit1, lit2);
-        Assert.assertEquals("hash code: ", lit1.hashCode(), lit2.hashCode());
+        assertEquals(lit1, lit2, "equals: ");
+        assertEquals(lit1.hashCode(), lit2.hashCode(), "hash code: ");
     }
 
 }

@@ -21,7 +21,7 @@
 
 package org.apache.jena.ontology.impl;
 
-import org.apache.jena.graph.BaseTestGraph_JU6;
+import org.apache.jena.graph.BaseTestGraph;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.test.JenaTestLib;
@@ -31,7 +31,7 @@ import org.apache.jena.test.JenaTestLib;
     via OntModel - there doesn't appear to be an OntGraph class.
 */
 
-public class TestOntGraph extends BaseTestGraph_JU6
+public class TestOntGraph extends BaseTestGraph
     {
     static { JenaTestLib.setup(); }
 

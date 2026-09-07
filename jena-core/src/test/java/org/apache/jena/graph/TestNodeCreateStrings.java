@@ -21,11 +21,10 @@
 
 package org.apache.jena.graph;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.apache.jena.rdf.model.impl.Util;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /** Testing making string-like RDF terms */
 public class TestNodeCreateStrings {

@@ -21,13 +21,12 @@
 
 package org.apache.jena.graph;
 
-import static org.junit.Assert.*;
-import junit.framework.JUnit4TestAdapter;
+import static org.junit.jupiter.api.Assertions.*;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.graph.impl.LiteralLabelFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 // See also TestTypedLiterals
 /**
@@ -36,13 +35,10 @@ import org.junit.Test;
 public class TestLiteralLabelSameValueAs {
     public TestLiteralLabelSameValueAs() {}
 
-    public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(TestLiteralLabelSameValueAs.class);
-    }
 
     private static void testSameValueAs(LiteralLabel lit1, LiteralLabel lit2, boolean sameValue) {
-        assertEquals("lit1 sameValueAs lit2", sameValue, lit1.sameValueAs(lit2));
-        assertEquals("lit2 sameValueAs lit1", sameValue, lit2.sameValueAs(lit1));
+        assertEquals(sameValue, lit1.sameValueAs(lit2), "lit1 sameValueAs lit2");
+        assertEquals(sameValue, lit2.sameValueAs(lit1), "lit2 sameValueAs lit1");
         if ( !sameValue ) {
             // ! SameValue => ! equals
             assertFalse(lit1.equals(lit2));

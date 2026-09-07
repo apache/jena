@@ -27,14 +27,14 @@ import org.junit.jupiter.api.Test;
 
 import java.util.StringTokenizer;
 
-import org.apache.jena.graph.BaseTestGraph_JU6;
+import org.apache.jena.graph.BaseTestGraph;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.NiceIterator;
 
-public abstract class TestDyadic extends BaseTestGraph_JU6 {
+public abstract class TestDyadic extends BaseTestGraph {
 
     static private ExtendedIterator<String> things(final String x) {
         return new NiceIterator<String>() {

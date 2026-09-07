@@ -21,13 +21,13 @@
 
 package org.apache.jena.graph;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.apache.jena.junit.NodeCreateUtils;
 import org.apache.jena.rdf.model.impl.Util;
 import org.apache.jena.vocabulary.RDF;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /** More tests for {@link Node Nodes}. */
 public class TestNodeExtras {
@@ -102,16 +102,20 @@ public class TestNodeExtras {
         assertFalse(nt1.sameValueAs(nt9));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void term_triple_bad_1() {
-        Node n = NodeFactory.createLiteralString("abc");
-        n.getTriple();
+        assertThrows(UnsupportedOperationException.class, ()->{
+            Node n = NodeFactory.createLiteralString("abc");
+            n.getTriple();
+        });
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void term_triple_bad_2() {
-        Node n = NodeFactory.createURI("http://example/abc");
-        n.getTriple();
+        assertThrows(UnsupportedOperationException.class, ()->{
+            Node n = NodeFactory.createURI("http://example/abc");
+            n.getTriple();
+        });
     }
 
     @Test

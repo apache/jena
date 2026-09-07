@@ -21,23 +21,21 @@
 
 package org.apache.jena.graph;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
 import org.apache.jena.graph.impl.GraphPlain;
 import org.apache.jena.util.iterator.ExtendedIterator;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("deprecation")
 public class TestGraphPlain {
 
     private static Graph graph;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         // GraphMem is the old in-memory graph which has value-based indexing.
         // It is not the default graph implementation.

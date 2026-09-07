@@ -21,11 +21,11 @@
 
 package org.apache.jena.graph;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.apache.jena.datatypes.xsd.impl.RDFDirLangString;
 import org.apache.jena.datatypes.xsd.impl.RDFLangString;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestNodeEdgeCases {
 

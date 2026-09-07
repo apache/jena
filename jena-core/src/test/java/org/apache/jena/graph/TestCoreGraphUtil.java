@@ -21,19 +21,15 @@
 
 package org.apache.jena.graph;
 
-import junit.framework.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.graph.impl.*;
 import org.apache.jena.util.iterator.*;
 
-public class TestCoreGraphUtil extends TestCase
+public class TestCoreGraphUtil
     {
-    public TestCoreGraphUtil(String name)
-        { super(name); }
-
-    public static TestSuite suite()
-    {
-        return new TestSuite(TestCoreGraphUtil.class);
-    }
 
     private static class Bool
         {
@@ -41,6 +37,7 @@ public class TestCoreGraphUtil extends TestCase
         Bool( boolean value ) { this.value = value; }
         }
 
+    @Test
     public void testFindAll()
         {
         final Bool foundAll = new Bool( false );
@@ -48,14 +45,14 @@ public class TestCoreGraphUtil extends TestCase
             {
             @Override public ExtendedIterator<Triple> graphBaseFind( Triple t )
                 {
-                assertEquals( Node.ANY, t.getSubject() );
-                assertEquals( Node.ANY, t.getPredicate() );
-                assertEquals( Node.ANY, t.getObject() );
+                assertEquals(Node.ANY, t.getSubject() );
+                assertEquals(Node.ANY, t.getPredicate() );
+                assertEquals(Node.ANY, t.getObject() );
                 foundAll.value = true;
                 return null;
                 }
             };
         GraphUtil.findAll( mock );
-        assertTrue( "find(ANY, ANY, ANY) called", foundAll.value );
+        assertTrue(foundAll.value, "find(ANY, ANY, ANY) called");
         }
     }

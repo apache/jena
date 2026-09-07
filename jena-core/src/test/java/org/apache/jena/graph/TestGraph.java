@@ -21,61 +21,24 @@
 
 package org.apache.jena.graph;
 
-/**
-    Tests that check GraphMem and WrappedGraph for correctness against the Graph
-    and reifier test suites.
-*/
+import org.junit.jupiter.api.Test;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.apache.jena.graph.impl.WrappedGraph;
-import org.apache.jena.mem.GraphMemFast;
-import org.apache.jena.mem.GraphMemLegacy;
-import org.apache.jena.mem.GraphMemRoaring;
-import org.apache.jena.memvalue.GraphMemValue;
 
-@SuppressWarnings("deprecation")
-public class TestGraph extends TestCase {
-    public TestGraph(String name) {
-        super(name);
-    }
-
-    /**
-     * Answer a test suite that runs the Graph tests on GraphMem and on
-     * WrappedGraphMem, the latter standing in for testing WrappedGraph.
-     */
-    public static TestSuite suite() {
-        TestSuite result = new TestSuite(TestGraph.class);
-
-        result.addTest(suite(MetaTestGraph.class, GraphMemValue.class));
-        result.addTest(suite(TestReifier.class, GraphMemValue.class));
-
-        result.addTest(suite(MetaTestGraph.class, WrappedGraphMem.class));
-        result.addTest(suite(TestReifier.class, WrappedGraphMem.class));
-
-        result.addTest(suite(MetaTestGraph.class, GraphMemFast.class));
-        result.addTest(suite(TestReifier.class, GraphMemFast.class));
-
-        result.addTest(suite(MetaTestGraph.class, GraphMemLegacy.class));
-        result.addTest(suite(TestReifier.class, GraphMemLegacy.class));
-
-        result.addTest(suite(MetaTestGraph.class, GraphMemRoaring.class));
-        result.addTest(suite(TestReifier.class, GraphMemRoaring.class));
-
-        result.addTest(TestGraphListener.suite());
-        result.addTestSuite(TestRegisterGraphListener.class);
-        return result;
-    }
-
-    public static TestSuite suite(Class<? extends Test> classWithTests, Class<? extends Graph> graphClass) {
-        return MetaTestGraph.suite(classWithTests, graphClass);
-    }
+/**
+ * Tests that check GraphMem and WrappedGraph for correctness against the Graph
+ * and reifier test suites.
+ * <p>
+ * The suites themselves are {@link MetaTestGraph}, {@link TestReifier} and
+ * {@link TestGraphListener}, parameterized over {@link GraphCreators#graphs}.
+ */
+public class TestGraph {
 
     /**
      * Trivial [incomplete] test that a Wrapped graph pokes through to the underlying
      * graph.
      */
+    @Test
     public void testWrappedSame() {
         Graph m = GraphMemFactory.createDefaultGraph();
         Graph w = new WrappedGraph(m);
@@ -83,15 +46,5 @@ public class TestGraph extends TestCase {
         GraphTestLib.assertIsomorphic(m, w);
         GraphTestLib.graphAdd(w, "i write this; you read that");
         GraphTestLib.assertIsomorphic(w, m);
-    }
-
-    /**
-     * Class to provide a constructor that produces a wrapper round a
-     * default choice of in-memory graph.
-     */
-    public static class WrappedGraphMem extends WrappedGraph {
-        public WrappedGraphMem() {
-            super(GraphMemFactory.createDefaultGraph());
-        }
     }
 }

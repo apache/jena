@@ -48,7 +48,7 @@ import org.apache.jena.util.iterator.ExtendedIterator;
  * Jena5+ : Only {@link GraphMemValue} supports this. Other graph are "same term", not
  * "same value" and language tags are held in canonical form.
  */
-public class TestGraphMemModel extends BaseTestGraph_JU6 {
+public class TestGraphMemModel extends BaseTestGraph {
 
     @Override
     public Graph getNewGraph() {

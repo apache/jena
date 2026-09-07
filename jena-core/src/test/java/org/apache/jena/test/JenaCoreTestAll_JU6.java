@@ -27,6 +27,7 @@ import org.junit.platform.suite.api.Suite;
 
 import org.apache.jena.core_ttl.tests.TS6_TestTurtle;
 import org.apache.jena.datatypes.TS6_dt;
+import org.apache.jena.graph.TS6_graph;
 import org.apache.jena.graph.compose.TS6_compose;
 import org.apache.jena.enhanced.TS6_enh;
 import org.apache.jena.irix.TS6_IRIx2;
@@ -53,6 +54,8 @@ import org.apache.jena.vocabulary.TS6_Vocabularies;
     TS6_dt.class,
 
     TS6_enh.class,
+
+    TS6_graph.class,
 
     TS6_GraphMem.class,
     TS6_GraphMemValue.class,
