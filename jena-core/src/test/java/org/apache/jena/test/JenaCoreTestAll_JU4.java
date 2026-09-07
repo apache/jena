@@ -53,7 +53,7 @@ public class JenaCoreTestAll_JU4 extends TestCase {
         // ** COMPLEX
         addTest(ts,  "Model1",              org.apache.jena.rdf.model.TS3_Model1.suite());
         // ** COMPLEX
-        addTest(ts,  "Default Model",       org.apache.jena.rdf.model.TestDefaultModel.suite());
+//JU6        addTest(ts,  "Default Model",       org.apache.jena.rdf.model.TestDefaultModel.suite());
 
         // Test suite building
         addTest(ts,  "XML Input [ARP1]",    org.apache.jena.rdfxml.arp1tests.TS3_xmlinput1.suite());

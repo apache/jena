@@ -21,8 +21,12 @@
 
 package org.apache.jena.rdf.model;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.graph.GraphTestLib;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
@@ -31,17 +35,9 @@ import org.apache.jena.rdf.model.impl.ModelCom;
 import org.apache.jena.shared.PropertyNotFoundException;
 import org.apache.jena.test.JenaTestLib;
 
-public class TestDefaultModel extends TestCase {
+public class TestDefaultModel_JU6 {
 
-    public TestDefaultModel(String name) {
-        super(name);
-    }
-
-    static public TestSuite suite() {
-        TestSuite ts = new TestSuite();
-        ts.addTestSuite(TestDefaultModel.class);
-        return ts;
-    }
+    static { JenaTestLib.setup(); }
 
     public Model newModel() {
         return ModelFactory.createDefaultModel();
@@ -49,39 +45,44 @@ public class TestDefaultModel extends TestCase {
 
     private Model model;
 
-    @Override
+    @BeforeEach
     public void setUp() {
         model = newModel();
     }
 
-    @Override
+    @AfterEach
     public void tearDown() {
         model.close();
     }
 
+    @Test
     public void testTransactions() {
         if ( model.supportsTransactions() )
             model.executeInTxn(() -> {});
     }
 
+    @Test
     public void testCreateResourceFromNode() {
         RDFNode S = model.getRDFNode(NodeCreateUtils.create("spoo:S"));
         JenaTestLib.assertInstanceOf(Resource.class, S);
         assertEquals("spoo:S", ((Resource)S).getURI());
     }
 
+    @Test
     public void testCreateLiteralFromNode() {
         RDFNode S = model.getRDFNode(NodeCreateUtils.create("42"));
         JenaTestLib.assertInstanceOf(Literal.class, S);
         assertEquals("42", ((Literal)S).getLexicalForm());
     }
 
+    @Test
     public void testCreateBlankFromNode() {
         RDFNode S = model.getRDFNode(NodeCreateUtils.create("_Blank"));
         JenaTestLib.assertInstanceOf(Resource.class, S);
         assertEquals(new AnonId("_Blank"), ((Resource)S).getId());
     }
 
+    @Test
     public void testIsEmpty() {
         Statement S1 = ModelTestLib.statement(model, "model rdf:type nonEmpty");
         Statement S2 = ModelTestLib.statement(model, "pinky rdf:type Pig");
@@ -96,6 +97,7 @@ public class TestDefaultModel extends TestCase {
         assertTrue(model.isEmpty());
     }
 
+    @Test
     public void testContainsResource() {
         ModelTestLib.modelAdd(model, "x R y; _a P _b");
         assertTrue(model.containsResource(ModelTestLib.resource(model, "x")));
@@ -112,6 +114,7 @@ public class TestDefaultModel extends TestCase {
      * Test the new version of getProperty(), which delivers null for not-found
      * properties.
      */
+    @Test
     public void testGetProperty() {
         ModelTestLib.modelAdd(model, "x P a; x P b; x R c");
         Resource x = ModelTestLib.resource(model, "x");
@@ -125,6 +128,7 @@ public class TestDefaultModel extends TestCase {
      * Tests {@link Resource#getProperty(Property, String)} and
      * {@link Resource#getRequiredProperty(Property, String)}.
      */
+    @Test
     public void testGetPropertyWithLanguage() {
         model.add(ModelTestLib.resource(model, "x"), ModelTestLib.property(model, "P"), "a", "pt");
         model.add(ModelTestLib.resource(model, "x"), ModelTestLib.property(model, "P"), "b", "en");
@@ -145,16 +149,16 @@ public class TestDefaultModel extends TestCase {
             final Resource x = ModelTestLib.resource(model, "x");
             assertEquals("a", x.getRequiredProperty(ModelTestLib.property(model, "P"), "pt").getString());
             assertEquals("b", x.getRequiredProperty(ModelTestLib.property(model, "P"), "en").getString());
-            try {
-                x.getRequiredProperty(ModelTestLib.property(model, "P"), "ja");
-                fail("Must thrown PropertyNotFoundException.");
-            } catch (PropertyNotFoundException e) {}
+            assertThrows(PropertyNotFoundException.class,
+                         ()->x.getRequiredProperty(ModelTestLib.property(model, "P"), "ja"),
+                         "Must thrown PropertyNotFoundException.");
             final Literal l = x.getRequiredProperty(ModelTestLib.property(model, "R")).getLiteral();
             assertTrue("d".equals(l.getString()) || "e".equals(l.getString()));
             assertTrue("de".equals(l.getLanguage()) || "fr".equals(l.getLanguage()));
         }
     }
 
+    @Test
     public void testToStatement() {
         Triple t = GraphTestLib.triple("a P b");
         Statement s = model.asStatement(t);
@@ -163,6 +167,7 @@ public class TestDefaultModel extends TestCase {
         assertEquals(GraphTestLib.node("b"), s.getObject().asNode());
     }
 
+    @Test
     public void testAsRDF() {
         testPresentAsRDFNode(GraphTestLib.node("a"), Resource.class);
         testPresentAsRDFNode(GraphTestLib.node("17"), Literal.class);
@@ -175,21 +180,21 @@ public class TestDefaultModel extends TestCase {
         JenaTestLib.assertInstanceOf(nodeClass, r);
     }
 
+    @Test
     public void testURINodeAsResource() {
         Node n = GraphTestLib.node("a");
         Resource r = model.wrapAsResource(n);
         assertSame(n, r.asNode());
     }
 
+    @Test
     public void testLiteralNodeAsResourceFails() {
-        try {
-            model.wrapAsResource(GraphTestLib.node("17"));
-            fail("should fail to convert literal to Resource");
-        } catch (UnsupportedOperationException e) {
-            JenaTestLib.pass();
-        }
+        assertThrows(UnsupportedOperationException.class,
+                     ()->model.wrapAsResource(GraphTestLib.node("17")),
+                     "should fail to convert literal to Resource");
     }
 
+    @Test
     public void testRemoveAll() {
         testRemoveAll("");
         testRemoveAll("a RR b");
@@ -200,7 +205,7 @@ public class TestDefaultModel extends TestCase {
     protected void testRemoveAll(String statements) {
         ModelTestLib.modelAdd(model, statements);
         assertSame(model, model.removeAll());
-        assertEquals("model should have size 0 following removeAll(): ", 0, model.size());
+        assertEquals(0, model.size(), "model should have size 0 following removeAll(): ");
     }
 
     /**
@@ -229,6 +234,7 @@ public class TestDefaultModel extends TestCase {
      * mean emptiness isn't available. This is why we go round the houses and test
      * that expected ~= initialContent + addedStuff - removed - initialContent.
      */
+    @Test
     public void testRemoveSPO() {
         ModelCom mc = (ModelCom)ModelFactory.createDefaultModel();
         for ( String[] aCase : cases ) {
@@ -249,6 +255,7 @@ public class TestDefaultModel extends TestCase {
         }
     }
 
+    @Test
     public void testIsClosedDelegatedToGraph() {
         Model m = newModel();
         assertFalse(m.isClosed());
