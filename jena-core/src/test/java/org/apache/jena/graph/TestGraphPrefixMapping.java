@@ -21,20 +21,16 @@
 
 package org.apache.jena.graph;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.graph.compose.AbstractTestPrefixMapping;
 import org.apache.jena.shared.PrefixMapping;
 
-public class TestGraphPrefixMapping extends TestCase {
-    public TestGraphPrefixMapping(String name) {
-        super(name);
-    }
+public class TestGraphPrefixMapping {
 
-    public static TestSuite suite() {
-        return new TestSuite(TestGraphPrefixMapping.class);
-    }
-
+    @Test
     public void testGraphPrefixMapping() {
         Graph g = GraphMemFactory.createDefaultGraph();
         AbstractTestPrefixMapping.testUseEasyPrefix("from Graph", g.getPrefixMapping());

@@ -21,11 +21,19 @@
 
 package org.apache.jena.graph;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.BeforeSuite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+import org.apache.jena.test.JenaTestLib;
+
+@Suite
+@SelectClasses({
+    // Parameterized over GraphCreators.graphs().
+    MetaTestGraph.class,
+    TestReifier.class,
+    TestGraphListener.class,
+
     TestFindLiterals.class,
     TestLiteralLabels.class,
     TestLiteralLabelSameValueAs.class,
@@ -33,7 +41,6 @@ import org.junit.runners.Suite;
     TestNodeCreateStrings.class,
     TestTriple.class,
     TestTripleField.class,
-    TestReifier.class,
     TestTypedLiterals.class,
     TestDateTime.class,
     TestFactory.class,
@@ -47,10 +54,13 @@ import org.junit.runners.Suite;
     TestNodeExtras.class,
     TestRDFStringLiterals.class,
     TestNodeEdgeCases.class,
-
-    // Has to be in a specific package.
-    org.apache.jena.graph.TestGraphUtil.class
-
+    TestGraphUtil.class,
+    TestRegisterGraphListener.class
 })
 
-public class TS3_graph { }
+public class TS6_graph {
+    @BeforeSuite
+    public static void beforeSuite() {
+        JenaTestLib.setup();
+    }
+}

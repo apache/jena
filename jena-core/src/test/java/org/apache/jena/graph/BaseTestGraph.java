@@ -21,10 +21,14 @@
 
 package org.apache.jena.graph;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.InputStream;
 import java.util.*;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.junit.NodeCreateUtils;
 import org.apache.jena.memvalue.TrackingTripleIterator;
 import org.apache.jena.rdf.model.Model;
@@ -36,15 +40,7 @@ import org.apache.jena.util.CollectionFactory;
 import org.apache.jena.util.iterator.ClosableIterator;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
-/**
- * AbstractTestGraph provides a bunch of basic tests for something that purports to
- * be a Graph. The abstract method getGraph must be overridden in subclasses to
- * deliver a Graph of interest.
- */
-public abstract class AbstractTestGraph extends TestCase {
-    public AbstractTestGraph(String name) {
-        super(name);
-    }
+public abstract class BaseTestGraph {
 
     /**
      * Returns a Graph to take part in the test. Must be overridden in a subclass.
@@ -57,13 +53,15 @@ public abstract class AbstractTestGraph extends TestCase {
         return g;
     }
 
+    @Test
     public void testCloseSetsIsClosed() {
         Graph g = getNewGraph();
-        assertFalse("unclosed Graph shouild not be isClosed()", g.isClosed());
+        Assertions.assertFalse(g.isClosed(), "unclosed Graph should not be isClosed()");
         g.close();
-        assertTrue("closed Graph should be isClosed()", g.isClosed());
+        Assertions.assertTrue(g.isClosed(), "closed Graph should be isClosed()");
     }
 
+    @Test
     public void testFindAndContains() {
         Graph g = getNewGraph();
         Node r = NodeCreateUtils.create("r"), s = NodeCreateUtils.create("s"), p = NodeCreateUtils.create("P");
@@ -72,6 +70,7 @@ public abstract class AbstractTestGraph extends TestCase {
         assertEquals(1, g.find(r, p, Node.ANY).toList().size());
     }
 
+    @Test
     public void testRepeatedSubjectDoesNotConceal() {
         Graph g = getGraphWith("s P o; s Q r");
         assertTrue(g.contains(GraphTestLib.triple("s P o")));
@@ -82,6 +81,7 @@ public abstract class AbstractTestGraph extends TestCase {
         assertTrue(g.contains(GraphTestLib.triple("?? Q ??")));
     }
 
+    @Test
     public void testFindByFluidTriple() {
         Graph g = getGraphWith("x y z ");
         Set<Triple> expect = GraphTestLib.tripleSet("x y z");
@@ -90,6 +90,7 @@ public abstract class AbstractTestGraph extends TestCase {
         assertEquals(expect, g.find(GraphTestLib.triple("x y ??")).toSet());
     }
 
+    @Test
     public void testContainsConcrete() {
         Graph g = getGraphWith("s P o; _x _R _y; x S 0");
         assertTrue(g.contains(GraphTestLib.triple("s P o")));
@@ -103,6 +104,7 @@ public abstract class AbstractTestGraph extends TestCase {
         assertFalse(g.contains(GraphTestLib.triple("x S 1")));
     }
 
+    @Test
     public void testContainsFluid() {
         Graph g = getGraphWith("x R y; a P b");
         assertTrue(g.contains(GraphTestLib.triple("?? R y")));
@@ -121,6 +123,7 @@ public abstract class AbstractTestGraph extends TestCase {
         assertFalse(g.contains(GraphTestLib.triple("a S ??")));
     }
 
+    @Test
     public void testMatchLanguagedLiteralCaseInsensitive() {
         Graph m = GraphTestLib.graphWith("a p 'chat'en");
         Node chaten = GraphTestLib.node("'chat'en"), chatEN = GraphTestLib.node("'chat'EN");
@@ -133,6 +136,7 @@ public abstract class AbstractTestGraph extends TestCase {
         assertEquals(1, m.find(Node.ANY, Node.ANY, chatEN).toList().size());
     }
 
+    @Test
     public void testMatchBothLanguagedLiteralsCaseInsensitive() {
         Graph m = GraphTestLib.graphWith("a p 'chat'en; a p 'chat'EN");
         Node chaten = GraphTestLib.node("'chat'en"), chatEN = GraphTestLib.node("'chat'EN");
@@ -149,9 +153,10 @@ public abstract class AbstractTestGraph extends TestCase {
     /**
      * test isEmpty - moved from the QueryHandler code.
      */
+    @Test
     public void testIsEmpty() {
         Graph g = getNewGraph();
-        if ( canBeEmpty(g) ) {
+        if (canBeEmpty(g)) {
             assertTrue(g.isEmpty());
             g.add(NodeCreateUtils.createTriple("S P O"));
             assertFalse(g.isEmpty());
@@ -166,6 +171,7 @@ public abstract class AbstractTestGraph extends TestCase {
         }
     }
 
+    @Test
     public void testAGraph() {
         String title = this.getClass().getName();
         Graph g = getNewGraph();
@@ -173,19 +179,19 @@ public abstract class AbstractTestGraph extends TestCase {
         GraphTestLib.graphAdd(g, "x R y; p S q; a T b");
         /* */
         GraphTestLib.assertContainsAll(title + ": simple graph", g, "x R y; p S q; a T b");
-        assertEquals(title + ": size", baseSize + 3, g.size());
+        Assertions.assertEquals(baseSize + 3, g.size(), title + ": size");
         GraphTestLib.graphAdd(g, "spindizzies lift cities; Diracs communicate instantaneously");
-        assertEquals(title + ": size after adding", baseSize + 5, g.size());
+        Assertions.assertEquals(baseSize + 5, g.size(), title + ": size after adding");
         g.delete(GraphTestLib.triple("x R y"));
         g.delete(GraphTestLib.triple("a T b"));
-        assertEquals(title + ": size after deleting", baseSize + 3, g.size());
+        Assertions.assertEquals(baseSize + 3, g.size(), title + ": size after deleting");
         GraphTestLib.assertContainsAll(title + ": modified simple graph", g, "p S q; spindizzies lift cities; Diracs communicate instantaneously");
         GraphTestLib.assertOmitsAll(title + ": modified simple graph", g, "x R y; a T b");
         /* */
         ClosableIterator<Triple> it = g.find(Node.ANY, GraphTestLib.node("lift"), Node.ANY);
-        assertTrue(title + ": finds some triple(s)", it.hasNext());
-        assertEquals(title + ": finds a 'lift' triple", GraphTestLib.triple("spindizzies lift cities"), it.next());
-        assertFalse(title + ": finds exactly one triple", it.hasNext());
+        Assertions.assertTrue(it.hasNext(), title + ": finds some triple(s)");
+        Assertions.assertEquals(GraphTestLib.triple("spindizzies lift cities"), it.next(), title + ": finds a 'lift' triple");
+        Assertions.assertFalse(it.hasNext(), title + ": finds exactly one triple");
         it.close();
     }
 
@@ -193,25 +199,32 @@ public abstract class AbstractTestGraph extends TestCase {
      * Test that Graphs have transaction support methods, and that if they fail on
      * some g they fail because they do not support the operation.
      */
+    @Test
     public void testHasTransactions() {
         Graph g = getNewGraph();
         TransactionHandler th = g.getTransactionHandler();
         th.transactionsSupported();
         try {
             th.begin();
-        } catch (UnsupportedOperationException x) {}
+        } catch (UnsupportedOperationException x) {
+        }
         try {
             th.abort();
-        } catch (UnsupportedOperationException x) {}
+        } catch (UnsupportedOperationException x) {
+        }
         try {
             th.begin();
             th.commit();
-        } catch (UnsupportedOperationException x) {}
+        } catch (UnsupportedOperationException x) {
+        }
         try {
-            th.execute(() -> {});
-        } catch (UnsupportedOperationException x) {}
+            th.execute(() -> {
+            });
+        } catch (UnsupportedOperationException x) {
+        }
     }
 
+    @Test
     public void testExecuteInTransactionCatchesThrowable() {
         Graph g = getNewGraph();
         TransactionHandler th = g.getTransactionHandler();
@@ -219,9 +232,11 @@ public abstract class AbstractTestGraph extends TestCase {
             th.executeAlways(() -> {
                 throw new Error();
             });
-        } catch (JenaException x) {}
+        } catch (JenaException x) {
+        }
     }
 
+    @Test
     public void testCalculateInTransactionCatchesThrowable() {
         Graph g = getNewGraph();
         TransactionHandler th = g.getTransactionHandler();
@@ -229,7 +244,8 @@ public abstract class AbstractTestGraph extends TestCase {
             th.calculateAlways(() -> {
                 throw new Error();
             });
-        } catch (JenaException x) {}
+        } catch (JenaException x) {
+        }
     }
 
     static final Triple[] tripleArray = GraphTestLib.tripleArray("S P O; A R B; X Q Y");
@@ -240,6 +256,7 @@ public abstract class AbstractTestGraph extends TestCase {
 
     static final Set<Triple> tripleSet = CollectionFactory.createHashedSet(Arrays.asList(setTriples));
 
+    @Test
     public void testBulkUpdate() {
         Graph g = getNewGraph();
         Graph items = GraphTestLib.graphWith("pigs might fly; dead can dance");
@@ -283,9 +300,10 @@ public abstract class AbstractTestGraph extends TestCase {
         GraphTestLib.testOmits(g, items);
         /* */
         GraphUtil.delete(g, tripleList);
-        assertEquals("graph has original size", initialSize, g.size());
+        Assertions.assertEquals(initialSize, g.size(), "graph has original size");
     }
 
+    @Test
     public void testAddWithReificationPreamble() {
         Graph g = getNewGraph();
         xSPO(g);
@@ -305,6 +323,7 @@ public abstract class AbstractTestGraph extends TestCase {
         ReifierStd.reifyAs(g, NodeCreateUtils.create("x"), NodeCreateUtils.createTriple("S P O"));
     }
 
+    @Test
     public void testRemove() {
         testRemove("?? ?? ??", "?? ?? ??");
         testRemove("S ?? ??", "S ?? ??");
@@ -325,7 +344,7 @@ public abstract class AbstractTestGraph extends TestCase {
             it.next();
             it.remove();
             it.close();
-            assertEquals("remove with " + findRemove + ":", 0, g.size());
+            Assertions.assertEquals(0, g.size(), "remove with " + findRemove + ":");
             assertFalse(g.contains(NodeCreateUtils.createTriple(findCheck)));
         } catch (UnsupportedOperationException e) {
             // No iterator remove.
@@ -333,6 +352,7 @@ public abstract class AbstractTestGraph extends TestCase {
         }
     }
 
+    @Test
     public void testFind() {
         Graph g = getNewGraph();
         GraphTestLib.graphAdd(g, "S P O");
@@ -344,6 +364,7 @@ public abstract class AbstractTestGraph extends TestCase {
         return g.isEmpty();
     }
 
+    @Test
     public void testEventRegister() {
         Graph g = getNewGraph();
         GraphEventManager gem = g.getEventManager();
@@ -353,6 +374,7 @@ public abstract class AbstractTestGraph extends TestCase {
     /**
      * Test that we can safely unregister a listener that isn't registered.
      */
+    @Test
     public void testEventUnregister() {
         getNewGraph().getEventManager().unregister(L);
     }
@@ -372,18 +394,21 @@ public abstract class AbstractTestGraph extends TestCase {
         return g;
     }
 
+    @Test
     public void testAddTriple() {
         Graph g = getAndRegister(L);
         g.add(SPO);
-        L.assertHas(new Object[]{"add", g, SPO});
+        L.assertHas(new Object[] {"add", g, SPO});
     }
 
+    @Test
     public void testDeleteTriple() {
         Graph g = getAndRegister(L);
         g.delete(SPO);
-        L.assertHas(new Object[]{"delete", g, SPO});
+        L.assertHas(new Object[] {"delete", g, SPO});
     }
 
+    @Test
     public void testListSubjects() {
         Set<Node> emptySubjects = listSubjects(getGraphWith(""));
         Graph g = getGraphWith("x P y; y Q z");
@@ -396,6 +421,7 @@ public abstract class AbstractTestGraph extends TestCase {
         return GraphUtil.listSubjects(g, Node.ANY, Node.ANY).toSet();
     }
 
+    @Test
     public void testListPredicates() {
         Set<Node> emptyPredicates = listPredicates(getGraphWith(""));
         Graph g = getGraphWith("x P y; y Q z");
@@ -408,6 +434,7 @@ public abstract class AbstractTestGraph extends TestCase {
         return GraphUtil.listPredicates(g, Node.ANY, Node.ANY).toSet();
     }
 
+    @Test
     public void testListObjects() {
         Set<Node> emptyObjects = listObjects(getGraphWith(""));
         Graph g = getGraphWith("x P y; y Q z");
@@ -434,23 +461,25 @@ public abstract class AbstractTestGraph extends TestCase {
      * Ensure that triples removed by calling .remove() on the iterator returned by a
      * find() will generate deletion notifications.
      */
+    @Test
     public void testEventDeleteByFind() {
         Graph g = getAndRegister(L);
         Triple toRemove = GraphTestLib.triple("remove this triple");
         g.add(toRemove);
         try {
             ExtendedIterator<Triple> rtr = g.find(toRemove);
-            assertTrue("ensure a(t least) one triple", rtr.hasNext());
+            Assertions.assertTrue(rtr.hasNext(), "ensure at least one triple");
             rtr.next();
             rtr.remove();
             rtr.close();
-            L.assertHas(new Object[]{"add", g, toRemove, "delete", g, toRemove});
+            L.assertHas(new Object[] {"add", g, toRemove, "delete", g, toRemove});
         } catch (UnsupportedOperationException ex) {
             // No iterator remove
         }
 
     }
 
+    @Test
     public void testTwoListeners() {
         RecordingListener L1 = new RecordingListener();
         RecordingListener L2 = new RecordingListener();
@@ -458,86 +487,97 @@ public abstract class AbstractTestGraph extends TestCase {
         GraphEventManager gem = g.getEventManager();
         gem.register(L1).register(L2);
         g.add(SPO);
-        L2.assertHas(new Object[]{"add", g, SPO});
-        L1.assertHas(new Object[]{"add", g, SPO});
+        L2.assertHas(new Object[] {"add", g, SPO});
+        L1.assertHas(new Object[] {"add", g, SPO});
     }
 
+    @Test
     public void testUnregisterWorks() {
         Graph g = getNewGraph();
         GraphEventManager gem = g.getEventManager();
         gem.register(L).unregister(L);
         g.add(SPO);
-        L.assertHas(new Object[]{});
+        L.assertHas(new Object[] {});
     }
 
+    @Test
     public void testRegisterTwice() {
         Graph g = getAndRegister(L);
         g.getEventManager().register(L);
         g.add(SPO);
-        L.assertHas(new Object[]{"add", g, SPO, "add", g, SPO});
+        L.assertHas(new Object[] {"add", g, SPO, "add", g, SPO});
     }
 
+    @Test
     public void testUnregisterOnce() {
         Graph g = getAndRegister(L);
         g.getEventManager().register(L).unregister(L);
         g.delete(SPO);
-        L.assertHas(new Object[]{"delete", g, SPO});
+        L.assertHas(new Object[] {"delete", g, SPO});
     }
 
+    @Test
     public void testBulkAddArrayEvent() {
         Graph g = getAndRegister(L);
         Triple[] triples = GraphTestLib.tripleArray("x R y; a P b");
         GraphUtil.add(g, triples);
-        L.assertHas(new Object[]{"add[]", g, triples});
+        L.assertHas(new Object[] {"add[]", g, triples});
     }
 
+    @Test
     public void testBulkAddList() {
         Graph g = getAndRegister(L);
         List<Triple> elems = Arrays.asList(GraphTestLib.tripleArray("bells ring loudly; pigs might fly"));
         GraphUtil.add(g, elems);
-        L.assertHas(new Object[]{"addList", g, elems});
+        L.assertHas(new Object[] {"addList", g, elems});
     }
 
+    @Test
     public void testBulkDeleteArray() {
         Graph g = getAndRegister(L);
         Triple[] triples = GraphTestLib.tripleArray("x R y; a P b");
         GraphUtil.delete(g, triples);
-        L.assertHas(new Object[]{"delete[]", g, triples});
+        L.assertHas(new Object[] {"delete[]", g, triples});
     }
 
+    @Test
     public void testBulkDeleteList() {
         Graph g = getAndRegister(L);
         List<Triple> elems = Arrays.asList(GraphTestLib.tripleArray("bells ring loudly; pigs might fly"));
         GraphUtil.delete(g, elems);
-        L.assertHas(new Object[]{"deleteList", g, elems});
+        L.assertHas(new Object[] {"deleteList", g, elems});
     }
 
+    @Test
     public void testBulkAddIterator() {
         Graph g = getAndRegister(L);
         Triple[] triples = GraphTestLib.tripleArray("I wrote this; you read that; I wrote this");
         GraphUtil.add(g, asIterator(triples));
-        L.assertHas(new Object[]{"addIterator", g, Arrays.asList(triples)});
+        L.assertHas(new Object[] {"addIterator", g, Arrays.asList(triples)});
     }
 
+    @Test
     public void testBulkDeleteIterator() {
         Graph g = getAndRegister(L);
         Triple[] triples = GraphTestLib.tripleArray("I wrote this; you read that; I wrote this");
         GraphUtil.delete(g, asIterator(triples));
-        L.assertHas(new Object[]{"deleteIterator", g, Arrays.asList(triples)});
+        L.assertHas(new Object[] {"deleteIterator", g, Arrays.asList(triples)});
     }
 
     public Iterator<Triple> asIterator(Triple[] triples) {
         return Arrays.asList(triples).iterator();
     }
 
+    @Test
     public void testBulkAddGraph() {
         Graph g = getAndRegister(L);
         Graph triples = GraphTestLib.graphWith("this type graph; I type slowly");
         GraphUtil.addInto(g, triples);
-        L.assertHas(new Object[]{"addGraph", g, triples});
+        L.assertHas(new Object[] {"addGraph", g, triples});
         GraphTestLib.testContains(g, triples);
     }
 
+    @Test
     public void testBulkAddGraph1() {
         Graph g1 = GraphTestLib.graphWith("pigs might fly; dead can dance");
         Graph g2 = GraphTestLib.graphWith("this type graph");
@@ -545,6 +585,7 @@ public abstract class AbstractTestGraph extends TestCase {
         GraphTestLib.testContains(g1, g2);
     }
 
+    @Test
     public void testBulkAddGraph2() {
         Graph g1 = GraphTestLib.graphWith("this type graph");
         Graph g2 = GraphTestLib.graphWith("pigs might fly; dead can dance");
@@ -552,14 +593,16 @@ public abstract class AbstractTestGraph extends TestCase {
         GraphTestLib.testContains(g1, g2);
     }
 
+    @Test
     public void testBulkDeleteGraph() {
         Graph g = getAndRegister(L);
         Graph triples = GraphTestLib.graphWith("this type graph; I type slowly");
         GraphUtil.deleteFrom(g, triples);
-        L.assertHas(new Object[]{"deleteGraph", g, triples});
+        L.assertHas(new Object[] {"deleteGraph", g, triples});
         GraphTestLib.testOmits(g, triples);
     }
 
+    @Test
     public void testBulkDeleteGraph1() {
         Graph g1 = GraphTestLib.graphWith("pigs might fly; dead can dance");
         Graph g2 = GraphTestLib.graphWith("pigs might fly");
@@ -567,6 +610,7 @@ public abstract class AbstractTestGraph extends TestCase {
         GraphTestLib.testOmits(g1, g2);
     }
 
+    @Test
     public void testBulkDeleteGraph2() {
         Graph g1 = GraphTestLib.graphWith("pigs might fly");
         Graph g2 = GraphTestLib.graphWith("pigs might fly; dead can dance");
@@ -574,25 +618,28 @@ public abstract class AbstractTestGraph extends TestCase {
         GraphTestLib.testOmits(g1, g2);
     }
 
+    @Test
     public void testGeneralEvent() {
         Graph g = getAndRegister(L);
-        Object value = new int[]{};
+        Object value = new int[] {};
         g.getEventManager().notifyEvent(g, value);
-        L.assertHas(new Object[]{"someEvent", g, value});
+        L.assertHas(new Object[] {"someEvent", g, value});
     }
 
+    @Test
     public void testRemoveAllEvent() {
         Graph g = getAndRegister(L);
         g.clear();
-        L.assertHas(new Object[]{"someEvent", g, GraphEvents.removeAll});
+        L.assertHas(new Object[] {"someEvent", g, GraphEvents.removeAll});
     }
 
+    @Test
     public void testRemoveSomeEvent() {
         Graph g = getAndRegister(L);
         Node S = GraphTestLib.node("S"), P = GraphTestLib.node("??"), O = GraphTestLib.node("??");
         g.remove(S, P, O);
         Object event = GraphEvents.remove(S, P, O);
-        L.assertHas(new Object[]{"someEvent", g, event});
+        L.assertHas(new Object[] {"someEvent", g, event});
     }
 
     /**
@@ -600,6 +647,7 @@ public abstract class AbstractTestGraph extends TestCase {
      * literals in subject positions is suppressed at present to avoid problems with
      * InfGraphs which try to prevent such constructs leaking out to the RDF layer.
      */
+    @Test
     public void testContainsNode() {
         Graph g = getNewGraph();
         GraphTestLib.graphAdd(g, "a P b; _c _Q _d; a 11 12");
@@ -622,6 +670,7 @@ public abstract class AbstractTestGraph extends TestCase {
         return GraphUtil.containsNode(g, node);
     }
 
+    @Test
     public void testSubjectsFor() {
         // First get the answer from the empty graph (not empty for an inf graph)
         Graph b = getGraphWith("");
@@ -637,7 +686,7 @@ public abstract class AbstractTestGraph extends TestCase {
         testSubjects(g, B, GraphTestLib.node("Q"), GraphTestLib.node("z"));
     }
 
-    protected void testSubjects(Graph g, Collection<Node> exclude, Node p, Node o, Node...expected) {
+    protected void testSubjects(Graph g, Collection<Node> exclude, Node p, Node o, Node... expected) {
         List<Node> R = GraphUtil.listSubjects(g, p, o).toList();
         R.removeAll(exclude);
         assertSameUnordered(R, exclude, expected);
@@ -660,6 +709,7 @@ public abstract class AbstractTestGraph extends TestCase {
 
     }
 
+    @Test
     public void testListSubjectsNoRemove() {
         Graph g = getGraphWith("a P b; b Q c; c R a");
         Iterator<Node> it = GraphUtil.listSubjects(g, Node.ANY, Node.ANY);
@@ -672,6 +722,7 @@ public abstract class AbstractTestGraph extends TestCase {
         }
     }
 
+    @Test
     public void testObjectsFor() {
         // First get the answer from the empty graph (not empty for an inf graph)
         Graph b = getGraphWith("");
@@ -686,11 +737,12 @@ public abstract class AbstractTestGraph extends TestCase {
         testObjects(g, B, GraphTestLib.node("z"), GraphTestLib.node("Q"));
     }
 
-    protected void testObjects(Graph g, Collection<Node> exclude, Node s, Node p, Node...expected) {
+    protected void testObjects(Graph g, Collection<Node> exclude, Node s, Node p, Node... expected) {
         List<Node> X = GraphUtil.listObjects(g, s, p).toList();
         assertSameUnordered(X, exclude, expected);
     }
 
+    @Test
     public void testPredicatesFor() {
         // First get the answer from the empty graph (not empty for an inf graph)
         Graph b = getGraphWith("");
@@ -706,11 +758,12 @@ public abstract class AbstractTestGraph extends TestCase {
         testPredicates(g, B, GraphTestLib.node("z"), GraphTestLib.node("y"));
     }
 
-    protected void testPredicates(Graph g, Collection<Node> exclude, Node s, Node o, Node...expected) {
+    protected void testPredicates(Graph g, Collection<Node> exclude, Node s, Node o, Node... expected) {
         List<Node> X = GraphUtil.listPredicates(g, s, o).toList();
         assertSameUnordered(X, exclude, expected);
     }
 
+    @Test
     public void testListObjectsNoRemove() {
         Graph g = getGraphWith("a P b; b Q c; c R a");
         Iterator<Node> it = GraphUtil.listObjects(g, Node.ANY, Node.ANY);
@@ -723,6 +776,7 @@ public abstract class AbstractTestGraph extends TestCase {
         }
     }
 
+    @Test
     public void testListPredicatesNoRemove() {
         Graph g = getGraphWith("a P b; b Q c; c R a");
         Iterator<Node> it = GraphUtil.listPredicates(g, Node.ANY, Node.ANY);
@@ -735,6 +789,7 @@ public abstract class AbstractTestGraph extends TestCase {
         }
     }
 
+    @Test
     public void testRemoveAll() {
         testRemoveAll("");
         testRemoveAll("a R b");
@@ -778,17 +833,18 @@ public abstract class AbstractTestGraph extends TestCase {
      * </ul>
      */
     protected String[][] cases = {{"x R y", "x R y", ""}, {"x R y; a P b", "x R y", "a P b"}, {"x R y; a P b", "?? R y", "a P b"},
-        {"x R y; a P b", "x R ??", "a P b"}, {"x R y; a P b", "x ?? y", "a P b"}, {"x R y; a P b", "?? ?? ??", ""},
-        {"x R y; a P b; c P d", "?? P ??", "x R y"}, {"x R y; a P b; x S y", "x ?? ??", "a P b"},};
+            {"x R y; a P b", "x R ??", "a P b"}, {"x R y; a P b", "x ?? y", "a P b"}, {"x R y; a P b", "?? ?? ??", ""},
+            {"x R y; a P b; c P d", "?? P ??", "x R y"}, {"x R y; a P b; x S y", "x ?? ??", "a P b"},};
 
     /**
      * Test that remove(s, p, o) works, in the presence of inferencing graphs that
      * mean emptyness isn't available. This is why we go round the houses and test
      * that expected ~= initialContent + addedStuff - removed - initialContent.
      */
+    @Test
     public void testRemoveSPO() {
-        for ( String[] aCase : cases ) {
-            for ( int j = 0 ; j < 3 ; j += 1 ) {
+        for (String[] aCase : cases) {
+            for (int j = 0; j < 3; j += 1) {
                 Graph content = getNewGraph();
                 Graph baseContent = copy(content);
                 GraphTestLib.graphAdd(content, aCase[0]);
@@ -802,13 +858,14 @@ public abstract class AbstractTestGraph extends TestCase {
     }
 
     /** testIsomorphism from file data */
+    @Test
     public void testIsomorphismFile() {
         testIsomorphismXMLFile(1, true);
         testIsomorphismXMLFile(2, true);
         testIsomorphismXMLFile(3, true);
-// testIsomorphismXMLFile(4,true); -- Uses daml:collection
+        // testIsomorphismXMLFile(4,true); -- Uses daml:collection
         testIsomorphismXMLFile(5, false);
-// testIsomorphismXMLFile(6,false); -- Uses daml:collection
+        // testIsomorphismXMLFile(6,false); -- Uses daml:collection
         testIsomorphismNTripleFile(7, true);
         testIsomorphismNTripleFile(8, false);
 
@@ -824,7 +881,7 @@ public abstract class AbstractTestGraph extends TestCase {
 
     private InputStream getInputStream(int n, int n2, String suffix) {
         String urlStr = String.format("regression/testModelEquals/%s-%s.%s", n, n2, suffix);
-        return AbstractTestGraph.class.getClassLoader().getResourceAsStream(urlStr);
+        return BaseTestGraph.class.getClassLoader().getResourceAsStream(urlStr);
     }
 
     private void testIsomorphismFile(int n, String lang, String suffix, boolean result) {
@@ -840,13 +897,13 @@ public abstract class AbstractTestGraph extends TestCase {
         m2.read(getInputStream(n, 2, suffix), "http://www.example.org/", lang);
 
         boolean rslt = g1.isIsomorphicWith(g2) == result;
-        if ( !rslt ) {
+        if (!rslt) {
             System.out.println("g1:");
             m1.write(System.out, "N-TRIPLE");
             System.out.println("g2:");
             m2.write(System.out, "N-TRIPLE");
         }
-        assertTrue("Isomorphism test failed", rslt);
+        Assertions.assertTrue(rslt, "Isomorphism test failed");
     }
 
     protected void add(Graph toUpdate, Graph toAdd) {
@@ -869,4 +926,5 @@ public abstract class AbstractTestGraph extends TestCase {
         result.close();
         return result;
     }
+
 }

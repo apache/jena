@@ -21,23 +21,18 @@
 
 package org.apache.jena.graph;
 
-import junit.framework.*;
-import org.apache.jena.rdf.model.*;
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 
 /**
  * Test that an inferred graph and an identical concrete graph compare as equal.
  */
 
-public class TestGraphMatchWithInference extends TestCase {
-    public TestGraphMatchWithInference(String name) {
-        super(name);
-    }
+public class TestGraphMatchWithInference {
 
-    public static TestSuite suite() {
-        TestSuite result = new TestSuite(TestGraphMatchWithInference.class);
-        return result;
-    }
-
+    @Test
     public void testBasic() {
         Model mrdfs = ModelFactory.createRDFSModel(ModelFactory.createDefaultModel());
         Model concrete = ModelFactory.createDefaultModel();

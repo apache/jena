@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.jena.graph.BaseTestGraph_JU6;
+import org.apache.jena.graph.BaseTestGraph;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphTestLib;
 import org.apache.jena.rdf.model.Model;
@@ -45,7 +45,7 @@ import org.apache.jena.rdf.model.ModelFactory;
  * Unit tests for multi-union graph.
  * </p>
  */
-public class TestMultiUnion extends BaseTestGraph_JU6
+public class TestMultiUnion extends BaseTestGraph
 {
 
     // External signature methods

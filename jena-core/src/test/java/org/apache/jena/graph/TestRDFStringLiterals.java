@@ -22,10 +22,9 @@
 package org.apache.jena.graph;
 
 import static org.apache.jena.graph.TextDirection.RTL;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
@@ -130,14 +129,18 @@ public class TestRDFStringLiterals {
         test(n, "abc", "en", RTL, RDF.dtDirLangString, "abc@en");
     }
 
-    @Test(expected = JenaException.class)
+    @Test
     public void dirLangString02() {
-        Node n = NodeFactory.createLiteralDirLang("abc", "en", "LTR");
+        assertThrows(JenaException.class, ()->{
+            Node n = NodeFactory.createLiteralDirLang("abc", "en", "LTR");
+        });
     }
 
-    @Test(expected = JenaException.class)
+    @Test
     public void dirLangString03() {
-        Node n = NodeFactory.createLiteralDirLang("abc", "en", "unk");
+        assertThrows(JenaException.class, ()->{
+            Node n = NodeFactory.createLiteralDirLang("abc", "en", "unk");
+        });
     }
 
     @Test
@@ -146,9 +149,11 @@ public class TestRDFStringLiterals {
         test(n, "abc", "en", null, RDF.dtLangString, "abc@en");
     }
 
-    @Test(expected = JenaException.class)
+    @Test
     public void dirLangString05() {
-        Node n = NodeFactory.createLiteralDirLang("abc", "en", "x");
+        assertThrows(JenaException.class, ()->{
+            Node n = NodeFactory.createLiteralDirLang("abc", "en", "x");
+        });
     }
 
     // -- Via createLiteralLang splitting lang tags on "--"
@@ -172,53 +177,67 @@ public class TestRDFStringLiterals {
         assertNotEquals(nDirLangString1, nDirLangString4);
     }
 
-    @Test(expected = JenaException.class)
+    @Test
     public void dirLangString11() {
-        Node n = NodeFactory.createLiteralLang("abc", "en--LTR");
+        assertThrows(JenaException.class, ()->{
+            Node n = NodeFactory.createLiteralLang("abc", "en--LTR");
+        });
     }
 
-    @Test(expected = JenaException.class)
+    @Test
     public void dirLangString12() {
-        Node n = NodeFactory.createLiteralLang("abc", "en--");
+        assertThrows(JenaException.class, ()->{
+            Node n = NodeFactory.createLiteralLang("abc", "en--");
+        });
     }
 
     // Errors
 
-    @Test(expected = JenaException.class)
+    @Test
     public void rdfStringBad01() {
-        // No lang but with a direction
-        Node n = NodeFactory.createLiteralDirLang("abc", null, TextDirection.LTR);
+        assertThrows(JenaException.class, ()->{
+            // No lang but with a direction
+            Node n = NodeFactory.createLiteralDirLang("abc", null, TextDirection.LTR);
+        });
     }
 
-    @Test(expected = JenaException.class)
+    @Test
     public void rdfStringBad02() {
-        // No lang but with a direction
-        Node n = NodeFactory.createLiteralDirLang("abc", "", TextDirection.LTR);
+        assertThrows(JenaException.class, ()->{
+            // No lang but with a direction
+            Node n = NodeFactory.createLiteralDirLang("abc", "", TextDirection.LTR);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void rdfStringBad03() {
-        Node n = NodeFactory.createLiteralString((String)null);
+        assertThrows(NullPointerException.class, ()->{
+            Node n = NodeFactory.createLiteralString((String)null);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void rdfStringBad04() {
-        Node n = NodeFactory.createLiteralLang((String)null, "en");
+        assertThrows(NullPointerException.class, ()->{
+            Node n = NodeFactory.createLiteralLang((String)null, "en");
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void rdfStringBad05() {
-        Node n = NodeFactory.createLiteralDirLang((String)null, "en", TextDirection.LTR);
+        assertThrows(NullPointerException.class, ()->{
+            Node n = NodeFactory.createLiteralDirLang((String)null, "en", TextDirection.LTR);
+        });
     }
 
     // ----
 
     private static void test(Node node, String lexicalForm, String lang, TextDirection textDir, RDFDatatype datatype,
                              String indexingValue) {
-        assertEquals("Lexical form:", lexicalForm, node.getLiteralLexicalForm());
-        assertEquals("Language:", lang, node.getLiteralLanguage());
-        assertEquals("Text Direction:", textDir, node.getLiteralBaseDirection());
-        assertEquals("Datatype:", datatype, node.getLiteralDatatype());
-        assertEquals("Indexing:", indexingValue, node.getIndexingValue());
+        assertEquals(lexicalForm, node.getLiteralLexicalForm(), "Lexical form:");
+        assertEquals(lang, node.getLiteralLanguage(), "Language:");
+        assertEquals(textDir, node.getLiteralBaseDirection(), "Text Direction:");
+        assertEquals(datatype, node.getLiteralDatatype(), "Datatype:");
+        assertEquals(indexingValue, node.getIndexingValue(), "Indexing:");
     }
 }

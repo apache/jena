@@ -21,12 +21,15 @@
 
 package org.apache.jena.graph;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import static org.apache.jena.graph.impl.GraphBase.TOSTRING_TRIPLE_BASE;
 import static org.apache.jena.graph.impl.GraphBase.TOSTRING_TRIPLE_LIMIT;
 
 import java.util.*;
 
-import junit.framework.TestCase;
 import org.apache.jena.graph.impl.GraphBase;
 import org.apache.jena.junit.NodeCreateUtils;
 import org.apache.jena.util.iterator.*;
@@ -35,7 +38,7 @@ import org.apache.jena.util.iterator.*;
  * Tests for the revisions to GraphBase.toString() to see that it's compact, ie
  * outputs no more than LIMIT triples.
  */
-public class TestGraphBaseToString extends TestCase {
+public class TestGraphBaseToString {
     private static final class LittleGraphBase extends GraphBase {
         Set<Triple> triples = new HashSet<>();
 
@@ -50,28 +53,28 @@ public class TestGraphBaseToString extends TestCase {
         }
     }
 
-    public TestGraphBaseToString(String name) {
-        super(name);
-    }
-
+    @Test
     public void testToStringBaseAndLimit() {
-        assertTrue("triple base count must be greater than 0", 0 < GraphBase.TOSTRING_TRIPLE_BASE);
-        assertTrue("triple base count must be less than limit", GraphBase.TOSTRING_TRIPLE_BASE < GraphBase.TOSTRING_TRIPLE_LIMIT);
-        assertTrue("triple count limit must be less than 20", GraphBase.TOSTRING_TRIPLE_LIMIT < 20);
+        assertTrue(0 < GraphBase.TOSTRING_TRIPLE_BASE, "triple base count must be greater than 0");
+        assertTrue(GraphBase.TOSTRING_TRIPLE_BASE < GraphBase.TOSTRING_TRIPLE_LIMIT, "triple base count must be less than limit");
+        assertTrue(GraphBase.TOSTRING_TRIPLE_LIMIT < 20, "triple count limit must be less than 20");
     }
 
+    @Test
     public void testEllipsisAbsentForSmallModels() {
         Graph g = new LittleGraphBase();
         addTriples(g, 1, TOSTRING_TRIPLE_BASE);
-        assertFalse("small model must not contain ellipsis cut-off", g.toString().contains("\\.\\.\\."));
+        assertFalse(g.toString().contains("\\.\\.\\."), "small model must not contain ellipsis cut-off");
     }
 
+    @Test
     public void testEllipsisPresentForLargeModels() {
         Graph g = new LittleGraphBase();
         addTriples(g, 1, TOSTRING_TRIPLE_LIMIT + 1);
-        assertFalse("large model must contain ellipsis cut-off", g.toString().contains("\\.\\.\\."));
+        assertFalse(g.toString().contains("\\.\\.\\."), "large model must contain ellipsis cut-off");
     }
 
+    @Test
     public void testStringTripleCount() {
         Graph g = new LittleGraphBase();
         int baseCount = TOSTRING_TRIPLE_BASE;

@@ -25,25 +25,29 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import junit.framework.TestSuite;
-import org.apache.jena.mem.GraphMemFast;
+import java.util.function.Supplier;
+
+import org.junit.jupiter.params.Parameter;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Version of graph tests that set up a listener that copies all changes and verifies
  * that after every notification modified graph and original are isomorphic.
  */
-public class TestGraphListener extends MetaTestGraph {
-    public TestGraphListener(String name) {
-        super(name);
-    }
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.graph.GraphCreators#graphMemFast")
+public class TestGraphListener extends BaseTestGraph {
 
-    public TestGraphListener(Class<? extends Graph> graphClass, String name) {
-        super(graphClass, name);
-    }
+    /**
+     * The implementation used for the listener's copy of the graph. Extending
+     * MetaTestGraph_JU6 would inherit its argument source as well as this one, running
+     * every test once per implementation on top of these.
+     */
+    @Parameter
+    protected Supplier<Graph> graphMaker;
 
-    public static TestSuite suite() {
-        return MetaTestGraph.suite(TestGraphListener.class, GraphMemFast.class);
-    }
+
     /**
      * A listener to check that a graph is being tracked correctly by its events.
      */
@@ -54,7 +58,7 @@ public class TestGraphListener extends MetaTestGraph {
         public CheckChanges(String description, Graph g) {
             original = g;
             desc = description;
-            copy = TestGraphListener.super.getNewGraph();
+            copy = graphMaker.get();
         }
 
         protected void verify() {

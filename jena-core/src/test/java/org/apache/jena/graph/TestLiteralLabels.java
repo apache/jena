@@ -21,59 +21,61 @@
 
 package org.apache.jena.graph;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.datatypes.BaseDatatype;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.graph.impl.LiteralLabelFactory;
 
 // See also TestLiteralLabelSameValueAs, TestTypedLiterals
-public class TestLiteralLabels extends TestCase {
-    public TestLiteralLabels(String name) {
-        super(name);
-    }
+public class TestLiteralLabels {
 
-    public static Test suite() {
-        return new TestSuite(TestLiteralLabels.class);
-    }
 
+    @Test
     public void testHashCode() {
         LiteralLabel ll = LiteralLabelFactory.createByValue("test", null);
         ll.hashCode();
     }
 
+    @Test
     public void testHashCode2() {
         LiteralLabel ll1 = LiteralLabelFactory.createByValue("test", null);
         LiteralLabel ll2 = LiteralLabelFactory.createByValue("test", null);
         assertEquals(ll1.hashCode(), ll2.hashCode());
     }
 
+    @Test
     public void testHashCodesForBase64Binary_1() {
         LiteralLabel A = GraphTestLib.node("'0123'http://www.w3.org/2001/XMLSchema#base64Binary").getLiteral();
         LiteralLabel B = GraphTestLib.node("'0123'http://www.w3.org/2001/XMLSchema#base64Binary").getLiteral();
         assertEquals(A.hashCode(), B.hashCode());
     }
 
+    @Test
     public void testHashCodesForBase64Binary_2() {
         LiteralLabel A = GraphTestLib.node("'illgeal'http://www.w3.org/2001/XMLSchema#base64Binary").getLiteral();
         LiteralLabel B = GraphTestLib.node("'illgeal'http://www.w3.org/2001/XMLSchema#base64Binary").getLiteral();
         assertEquals(A.hashCode(), B.hashCode());
     }
 
+    @Test
     public void testHashCodesForHexBinary_1() {
         LiteralLabel A = GraphTestLib.node("'0123'http://www.w3.org/2001/XMLSchema#hexBinary").getLiteral();
         LiteralLabel B = GraphTestLib.node("'0123'http://www.w3.org/2001/XMLSchema#hexBinary").getLiteral();
         assertEquals(A.hashCode(), B.hashCode());
     }
 
+    @Test
     public void testHashCodesForHexBinary_2() {
         LiteralLabel A = GraphTestLib.node("'illegal'http://www.w3.org/2001/XMLSchema#hexBinary").getLiteral();
         LiteralLabel B = GraphTestLib.node("'illegal'http://www.w3.org/2001/XMLSchema#hexBinary").getLiteral();
         assertEquals(A.hashCode(), B.hashCode());
     }
 
+    @Test
     public void testDatatypeIsEqualsNotCalledIfSecondOperandIsNotTyped() {
         RDFDatatype d = new BaseDatatype("eh:/FakeDataType") {
             @Override
@@ -87,6 +89,7 @@ public class TestLiteralLabels extends TestCase {
         assertFalse(A.sameValueAs(B));
     }
 
+    @Test
     public void testEquality1() {
         LiteralLabel A = LiteralLabelFactory.createTypedLiteral("xyz");
         LiteralLabel B = LiteralLabelFactory.createTypedLiteral("xyz");
@@ -95,6 +98,7 @@ public class TestLiteralLabels extends TestCase {
         assertEquals(A.hashCode(), B.hashCode());
     }
 
+    @Test
     public void testEquality2() {
         LiteralLabel A = LiteralLabelFactory.createTypedLiteral("xyz");
         LiteralLabel B = LiteralLabelFactory.createTypedLiteral("XYZ");
@@ -102,6 +106,7 @@ public class TestLiteralLabels extends TestCase {
         assertFalse(A.sameValueAs(B));
     }
 
+    @Test
     public void testEquality3() {
         LiteralLabel A = LiteralLabelFactory.createLang("xyz", "en-us");
         LiteralLabel B = LiteralLabelFactory.createLang("xyz", "en-uk");
@@ -109,6 +114,7 @@ public class TestLiteralLabels extends TestCase {
         assertFalse(A.sameValueAs(B));
     }
 
+    @Test
     public void testEquality4() {
         LiteralLabel A = LiteralLabelFactory.createLang("xyz", "en-UK");
         LiteralLabel B = LiteralLabelFactory.createLang("xyz", "en-uk");

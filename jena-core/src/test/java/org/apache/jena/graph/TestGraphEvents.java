@@ -21,20 +21,22 @@
 
 package org.apache.jena.graph;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.junit.NodeCreateUtils;
 
-public class TestGraphEvents extends TestCase {
-    public TestGraphEvents(String name) {
-        super(name);
-    }
+public class TestGraphEvents {
 
+    @Test
     public void testGraphEventContent() {
         testGraphEventContents("testing", "an example");
         testGraphEventContents("toasting", Boolean.TRUE);
         testGraphEventContents("tasting", NodeCreateUtils.createTriple("we are here"));
     }
 
+    @Test
     public void testGraphEventsRemove() {
         testGraphEventsRemove("s", "p", "o");
         testGraphEventsRemove("s", "p", "17");

@@ -21,17 +21,21 @@
 
 package org.apache.jena.graph;
 
-import java.lang.reflect.Constructor;
+import static org.junit.jupiter.api.Assertions.*;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import java.util.function.Supplier;
+
+import org.junit.jupiter.params.Parameter;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.junit.NodeCreateUtils;
-import org.apache.jena.mem.GraphMemFast;
 import org.apache.jena.rdf.model.impl.ReifierStd;
 import org.apache.jena.shared.AlreadyReifiedException;
 import org.apache.jena.shared.CannotReifyException;
-import org.apache.jena.shared.JenaException;
 import org.apache.jena.test.JenaTestLib;
 import org.apache.jena.vocabulary.RDF;
 
@@ -39,33 +43,15 @@ import org.apache.jena.vocabulary.RDF;
  * This class tests the reifiers of ordinary graphs. Old test suite - kept to ensure
  * compatibility for the one and only Standard mode
  */
-public class TestReifier extends TestCase {
-    protected final Class<? extends Graph> graphClass;
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.graph.GraphCreators#graphs")
+public class TestReifier {
 
-    public TestReifier(String name) {
-        super(name);
-        graphClass = null;
-    }
-
-    public TestReifier(Class<? extends Graph> graphClass, String name) {
-        super(name);
-        this.graphClass = graphClass;
-    }
+    @Parameter
+    protected Supplier<Graph> graphMaker;
 
     private Graph getGraph() {
-        try {
-            Constructor<? > cons = JenaTestLib.getConstructor(graphClass, new Class[]{});
-            if ( cons != null )
-                return (Graph)cons.newInstance();
-            Constructor<? > cons2 = JenaTestLib.getConstructor(graphClass, new Class[]{this.getClass()});
-            if ( cons2 != null )
-                return (Graph)cons2.newInstance(this);
-            throw new JenaException("no suitable graph constructor found for " + graphClass);
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new JenaException(e);
-        }
+        return graphMaker.get();
     }
 
     private final Graph getGraphWith(String facts) {
@@ -86,6 +72,7 @@ public class TestReifier extends TestCase {
         return graphWithUnless(!cond, facts);
     }
 
+    @Test
     public void testGetGraphNotNull() {
         assertNotNull(getGraph());
     }
@@ -93,6 +80,7 @@ public class TestReifier extends TestCase {
     /**
      * Check that the standard reifier will note, but not hide, reification quads.
      */
+    @Test
     public void testStandard() {
         Graph g = getGraph();
         assertFalse(ReifierStd.hasTriple(g, GraphTestLib.triple("s p o")));
@@ -111,6 +99,7 @@ public class TestReifier extends TestCase {
      * Test that the Standard reifier will expose implicit quads arising from
      * reifyAs().
      */
+    @Test
     public void testStandardExplode() {
         Graph g = getGraph();
         ReifierStd.reifyAs(g, GraphTestLib.node("a"), GraphTestLib.triple("p Q r"));
@@ -124,6 +113,7 @@ public class TestReifier extends TestCase {
      * Ensure that over-specifying a reification means that we don't get a triple
      * back. Goodness knows why this test wasn't in right from the beginning.
      */
+    @Test
     public void testOverspecificationSuppressesReification() {
         Graph g = getGraph();
         GraphTestLib.graphAdd(g, "x rdf:subject A; x rdf:predicate P; x rdf:object O; x rdf:type rdf:Statement");
@@ -132,14 +122,17 @@ public class TestReifier extends TestCase {
         assertEquals(null, ReifierStd.getTriple(g, GraphTestLib.node("x")));
     }
 
+    @Test
     public void testReificationSubjectClash() {
         testReificationClash("x rdf:subject SS");
     }
 
+    @Test
     public void testReificationPredicateClash() {
         testReificationClash("x rdf:predicate PP");
     }
 
+    @Test
     public void testReificationObjectClash() {
         testReificationClash("x rdf:object OO");
     }
@@ -158,6 +151,7 @@ public class TestReifier extends TestCase {
      * Test that reifying a triple explicitly has some effect on the graph only for
      * Standard reifiers.
      */
+    @Test
     public void testManifestQuads() {
         Graph g = getGraph();
         ReifierStd.reifyAs(g, GraphTestLib.node("A"), GraphTestLib.triple("S P O"));
@@ -165,65 +159,73 @@ public class TestReifier extends TestCase {
         GraphTestLib.assertIsomorphic(GraphTestLib.graphWith(reified), g);
     }
 
+    @Test
     public void testHiddenVsReification() {
         Graph g = getGraph();
         ReifierStd.reifyAs(g, GraphTestLib.node("A"), GraphTestLib.triple("S P O"));
         assertTrue(ReifierStd.findEither(g, Triple.ANY, false).hasNext());
     }
 
+    @Test
     public void testRetrieveTriplesByNode() {
         Graph G = getGraph();
         Node N = NodeFactory.createBlankNode(), M = NodeFactory.createBlankNode();
         ReifierStd.reifyAs(G, N, GraphTestLib.triple("x R y"));
-        assertEquals("gets correct triple", GraphTestLib.triple("x R y"), ReifierStd.getTriple(G, N));
+        assertEquals(GraphTestLib.triple("x R y"), ReifierStd.getTriple(G, N), "gets correct triple");
         ReifierStd.reifyAs(G, M, GraphTestLib.triple("p S q"));
         JenaTestLib.assertDiffer("the anon nodes must be distinct", N, M);
-        assertEquals("gets correct triple", GraphTestLib.triple("p S q"), ReifierStd.getTriple(G, M));
+        assertEquals(GraphTestLib.triple("p S q"), ReifierStd.getTriple(G, M), "gets correct triple");
 
-        assertTrue("node is known bound", ReifierStd.hasTriple(G, M));
-        assertTrue("node is known bound", ReifierStd.hasTriple(G, N));
-        assertFalse("node is known unbound", ReifierStd.hasTriple(G, NodeFactory.createURI("any:thing")));
+        assertTrue(ReifierStd.hasTriple(G, M), "node is known bound");
+        assertTrue(ReifierStd.hasTriple(G, N), "node is known bound");
+        assertFalse(ReifierStd.hasTriple(G, NodeFactory.createURI("any:thing")), "node is known unbound");
     }
 
+    @Test
     public void testRetrieveTriplesByTriple() {
         Graph G = getGraph();
         Triple T = GraphTestLib.triple("x R y"), T2 = GraphTestLib.triple("y R x");
         Node N = GraphTestLib.node("someNode");
         ReifierStd.reifyAs(G, N, T);
-        assertTrue("R must have T", ReifierStd.hasTriple(G, T));
-        assertFalse("R must not have T2", ReifierStd.hasTriple(G, T2));
+        assertTrue(ReifierStd.hasTriple(G, T), "R must have T");
+        assertFalse(ReifierStd.hasTriple(G, T2), "R must not have T2");
     }
 
+    @Test
     public void testReifyAs() {
         Graph G = getGraph();
         Node X = NodeFactory.createURI("some:uri");
-        assertEquals("node used", X, ReifierStd.reifyAs(G, X, GraphTestLib.triple("x R y")));
-        assertEquals("retrieves correctly", GraphTestLib.triple("x R y"), ReifierStd.getTriple(G, X));
+        assertEquals(X, ReifierStd.reifyAs(G, X, GraphTestLib.triple("x R y")), "node used");
+        assertEquals(GraphTestLib.triple("x R y"), ReifierStd.getTriple(G, X), "retrieves correctly");
     }
 
+    @Test
     public void testAllNodes() {
         Graph G = getGraph();
         ReifierStd.reifyAs(G, GraphTestLib.node("x"), GraphTestLib.triple("cows eat grass"));
         ReifierStd.reifyAs(G, GraphTestLib.node("y"), GraphTestLib.triple("pigs can fly"));
         ReifierStd.reifyAs(G, GraphTestLib.node("z"), GraphTestLib.triple("dogs may bark"));
-        assertEquals("", GraphTestLib.nodeSet("z y x"), Iter.toSet(ReifierStd.allNodes(G)));
+        assertEquals(GraphTestLib.nodeSet("z y x"), Iter.toSet(ReifierStd.allNodes(G)), "");
     }
 
+    @Test
     public void testRemoveByNode() {
         Graph G = getGraph();
         Node X = GraphTestLib.node("x"), Y = GraphTestLib.node("y");
         ReifierStd.reifyAs(G, X, GraphTestLib.triple("x R a"));
         ReifierStd.reifyAs(G, Y, GraphTestLib.triple("y R a"));
         ReifierStd.remove(G, X, GraphTestLib.triple("x R a"));
-        assertFalse("triple X has gone", ReifierStd.hasTriple(G, X));
-        assertEquals("triple Y still there", GraphTestLib.triple("y R a"), ReifierStd.getTriple(G, Y));
+        assertFalse(ReifierStd.hasTriple(G, X), "triple X has gone");
+        assertEquals(GraphTestLib.triple("y R a"), ReifierStd.getTriple(G, Y), "triple Y still there");
     }
 
+    @Test
     public void testRemoveFromNothing() {
         Graph G = getGraph();
         G.delete(GraphTestLib.triple("quint rdf:subject S"));
     }
 
+    @Test
     public void testException() {
         Graph G = getGraph();
         Node X = GraphTestLib.node("x");
@@ -235,6 +237,7 @@ public class TestReifier extends TestCase {
         } catch (AlreadyReifiedException e) {}
     }
 
+    @Test
     public void testKevinCaseA() {
         Graph G = getGraph();
         Node X = GraphTestLib.node("x"), a = GraphTestLib.node("a"), b = GraphTestLib.node("b"), c = GraphTestLib.node("c");
@@ -242,6 +245,7 @@ public class TestReifier extends TestCase {
         ReifierStd.reifyAs(G, X, Triple.create(a, b, c));
     }
 
+    @Test
     public void testKevinCaseB() {
         Graph G = getGraph();
         Node X = GraphTestLib.node("x"), Y = GraphTestLib.node("y");
@@ -255,6 +259,7 @@ public class TestReifier extends TestCase {
         }
     }
 
+    @Test
     public void testQuadRemove() {
         Graph g = getGraph();
         assertEquals(0, g.size());
@@ -274,6 +279,7 @@ public class TestReifier extends TestCase {
         assertEquals(0, g.size());
     }
 
+    @Test
     public void testEmpty() {
         Graph g = getGraph();
         assertTrue(g.isEmpty());
@@ -287,27 +293,33 @@ public class TestReifier extends TestCase {
         assertFalse(g.isEmpty());
     }
 
+    @Test
     public void testReifierEmptyFind() {
         Graph g = getGraph();
         assertEquals(GraphTestLib.tripleSet(""), ReifierStd.findExposed(g, Triple.ANY).toSet());
     }
 
+    @Test
     public void testReifierFindSubject() {
         testReifierFind("x rdf:subject S");
     }
 
+    @Test
     public void testReifierFindObject() {
         testReifierFind("x rdf:object O");
     }
 
+    @Test
     public void testReifierFindPredicate() {
         testReifierFind("x rdf:predicate P");
     }
 
+    @Test
     public void testReifierFindComplete() {
         testReifierFind("x rdf:predicate P; x rdf:subject S; x rdf:object O; x rdf:type rdf:Statement");
     }
 
+    @Test
     public void testReifierFindFilter() {
         Graph g = getGraph();
         GraphTestLib.graphAdd(g, "s rdf:subject S");
@@ -322,13 +334,6 @@ public class TestReifier extends TestCase {
         Graph g = getGraph();
         GraphTestLib.graphAdd(g, triples);
         assertEquals(GraphTestLib.tripleSet(triples), ReifierStd.findExposed(g, GraphTestLib.triple(pattern)).toSet());
-    }
-
-    public static TestSuite suite() {
-        TestSuite result = new TestSuite();
-        result.addTest(MetaTestGraph.suite(TestReifier.class, GraphMemFast.class));
-        result.setName(TestReifier.class.getSimpleName());
-        return result;
     }
 
 }

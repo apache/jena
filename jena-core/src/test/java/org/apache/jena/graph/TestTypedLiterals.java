@@ -21,13 +21,15 @@
 
 package org.apache.jena.graph;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.jena.datatypes.BaseDatatype;
 import org.apache.jena.datatypes.DatatypeFormatException;
@@ -41,13 +43,12 @@ import org.apache.jena.rdf.model.*;
 import org.apache.jena.shared.impl.JenaParameters;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.XSD;
-import org.junit.Assert;
 
 /**
  * Unit test for the typed literal machinery - including RDFDatatype, TypeMapper and
  * LiteralLabel. See also TestLiteralLabelSameValueAs
  */
-public class TestTypedLiterals extends TestCase {
+public class TestTypedLiterals {
 
     /** dummy model used as a literal factory */
     private Model m = ModelFactory.createDefaultModel();
@@ -56,20 +57,14 @@ public class TestTypedLiterals extends TestCase {
     /* static { Locale.setDefault(Locale.ITALY);
      * TimeZone.setDefault(TimeZone.getTimeZone("CEST")); } */
 
-    public TestTypedLiterals(String name) {
-        super(name);
-    }
-
     /**
      * This is its own test suite
      */
-    public static TestSuite suite() {
-        return new TestSuite(TestTypedLiterals.class);
-    }
 
     /**
      * Test the base functioning of unknown datatypes
      */
+    @Test
     public void testUnknownDatatype() {
         String typeURI = "urn:jena-dt:unknown";
         String typeURI2 = "urn:jena-dt:unknown2";
@@ -95,9 +90,9 @@ public class TestTypedLiterals extends TestCase {
         // Check typed accessors
         try {
             l3.getInt();
-            assertTrue("Allowed int conversion", false);
+            assertTrue(false, "Allowed int conversion");
         } catch (DatatypeFormatException e) {}
-        assertEquals("Extract value", l1.getValue(), new BaseDatatype.TypedValue("foo", typeURI));
+        assertEquals(l1.getValue(), new BaseDatatype.TypedValue("foo", typeURI), "Extract value");
 
         JenaParameters.enableSilentAcceptanceOfUnknownDatatypes = false;
         boolean foundException = false;
@@ -107,7 +102,7 @@ public class TestTypedLiterals extends TestCase {
             foundException = true;
         }
         JenaParameters.enableSilentAcceptanceOfUnknownDatatypes = originalFlag;
-        assertTrue("Detected unknown datatype", foundException);
+        assertTrue(foundException, "Detected unknown datatype");
 
         // Check we can create a literal of an unregistered java type without
         // anything blowing up
@@ -119,6 +114,7 @@ public class TestTypedLiterals extends TestCase {
     /**
      * Tests the base functioning of a user defined datatype
      */
+    @Test
     public void testUserDef() {
         // Register the user defined type for rationals
         RDFDatatype rtype = RationalType.theRationalType;
@@ -135,18 +131,19 @@ public class TestTypedLiterals extends TestCase {
         assertDiffer("values should be tested!", l1, l3);
 
         // Check typed accessors
-        assertSame("Datatype incorrect", l1.getDatatype(), rtype);
-        assertEquals("Datatype uri incorrect", l1.getDatatypeURI(), RationalType.theTypeURI);
+        assertSame(l1.getDatatype(), rtype, "Datatype incorrect");
+        assertEquals(l1.getDatatypeURI(), RationalType.theTypeURI, "Datatype uri incorrect");
         Object val = l1.getValue();
-        assertTrue("Value space check", val instanceof Rational);
-        assertTrue("Value check", ((Rational)val).getNumerator() == 3);
-        assertTrue("Value check", ((Rational)val).getDenominator() == 5);
+        assertTrue(val instanceof Rational, "Value space check");
+        assertTrue(((Rational)val).getNumerator() == 3, "Value check");
+        assertTrue(((Rational)val).getDenominator() == 5, "Value check");
         try {
             l1.getInt();
-            assertTrue("Allowed int conversion", false);
+            assertTrue(false, "Allowed int conversion");
         } catch (DatatypeFormatException e) {}
     }
 
+    @Test
     public void testRDFLangString_1() {
         // Registration
         RDFDatatype dt = TypeMapper.getInstance().getTypeByName(RDF.langString.getURI());
@@ -154,6 +151,7 @@ public class TestTypedLiterals extends TestCase {
         assertTrue(RDF.dtLangString == dt);
     }
 
+    @Test
     public void testRDFLangString_2() {
         // "abc"^^rdf:langString (no language tag)
         Literal ll1 = m.createTypedLiteral("abc", RDFLangString.rdfLangString);
@@ -165,6 +163,7 @@ public class TestTypedLiterals extends TestCase {
     /**
      * Tests basic XSD integer types()
      */
+    @Test
     public void testXSDbasics() {
         String xsdIntURI = "http://www.w3.org/2001/XMLSchema#int";
 
@@ -174,11 +173,11 @@ public class TestTypedLiterals extends TestCase {
         Literal l4 = m.createTypedLiteral("63");  // default map
 
         assertSameValueAs("Default map failed", l1, l2);
-        assertEquals("Value wrong", l1.getValue(), Integer.valueOf(42));
-        assertEquals("class wrong", l1.getValue().getClass(), Integer.class);
-        assertEquals("Value accessor problem", l1.getInt(), 42);
-        assertEquals("wrong type name", l2.getDatatypeURI(), xsdIntURI);
-        assertEquals("wrong type", l2.getDatatype(), XSDDatatype.XSDint);
+        assertEquals(l1.getValue(), Integer.valueOf(42), "Value wrong");
+        assertEquals(l1.getValue().getClass(), Integer.class, "class wrong");
+        assertEquals(l1.getInt(), 42, "Value accessor problem");
+        assertEquals(l2.getDatatypeURI(), xsdIntURI, "wrong type name");
+        assertEquals(l2.getDatatype(), XSDDatatype.XSDint, "wrong type");
         assertDiffer("Not value sensitive", l1, l4);
         checkIllegalLiteral("zap", XSDDatatype.XSDint);
         checkIllegalLiteral("42.1", XSDDatatype.XSDint);
@@ -191,12 +190,12 @@ public class TestTypedLiterals extends TestCase {
         l2 = m.createTypedLiteral("42.42", XSDDatatype.XSDfloat);
         Literal l3 = m.createTypedLiteral("42.42", XSDDatatype.XSDdouble);
 
-        assertEquals("class wrong", l1.getValue().getClass(), Double.class);
+        assertEquals(l1.getValue().getClass(), Double.class, "class wrong");
         assertFloatEquals("value wrong", ((Double)(l1.getValue())).floatValue(), 42.42);
-        assertEquals("class wrong", l2.getValue().getClass(), Float.class);
+        assertEquals(l2.getValue().getClass(), Float.class, "class wrong");
         assertFloatEquals("value wrong", ((Float)(l2.getValue())).floatValue(), 42.42);
         assertFloatEquals("Value accessor problem", l1.getFloat(), 42.42);
-        assertEquals("wrong type", l2.getDatatype(), XSDDatatype.XSDfloat);
+        assertEquals(l2.getDatatype(), XSDDatatype.XSDfloat, "wrong type");
         assertSameValueAs("equality fn", l1, l3);
 
         // Minimal check on long, short, byte
@@ -276,18 +275,19 @@ public class TestTypedLiterals extends TestCase {
         checkLegalLiteral("true", XSDDatatype.XSDboolean, Boolean.class, true);
         checkLegalLiteral("false", XSDDatatype.XSDboolean, Boolean.class, false);
         l1 = m.createTypedLiteral(true);
-        assertEquals("boolean mapping", XSDDatatype.XSDboolean, l1.getDatatype());
+        assertEquals(XSDDatatype.XSDboolean, l1.getDatatype(), "boolean mapping");
 
         // String types
         checkLegalLiteral("hello world", XSDDatatype.XSDstring, String.class, "hello world");
         l1 = m.createTypedLiteral("foo bar");
-        assertEquals("string mapping", XSDDatatype.XSDstring, l1.getDatatype());
+        assertEquals(XSDDatatype.XSDstring, l1.getDatatype(), "string mapping");
 
     }
 
     /**
      * Some selected equality tests which caused problems in WG tests
      */
+    @Test
     public void testMiscEquality() {
         Literal l1 = m.createTypedLiteral("10", "http://www.w3.org/2001/XMLSchema#integer");
         Literal l3 = m.createTypedLiteral("010", "http://www.w3.org/2001/XMLSchema#integer");
@@ -303,6 +303,7 @@ public class TestTypedLiterals extends TestCase {
      * Check that creating a typed literal from an object traps the interesting
      * special cases of String and Calendar.
      */
+    @Test
     public void testOverloads() {
         // First case string overloads an explicit type
         boolean old = JenaParameters.enableEagerLiteralValidation;
@@ -316,7 +317,7 @@ public class TestTypedLiterals extends TestCase {
             } catch (DatatypeFormatException e1) {
                 test1 = true;
             }
-            assertTrue("detected illegal string, direct", test1);
+            assertTrue(test1, "detected illegal string, direct");
 
             boolean test2 = false;
             try {
@@ -325,7 +326,7 @@ public class TestTypedLiterals extends TestCase {
             } catch (DatatypeFormatException e2) {
                 test2 = true;
             }
-            assertTrue("detected illegal string, overloaded", test2);
+            assertTrue(test2, "detected illegal string, overloaded");
 
             // Overloading of calendar convenience functions
             Calendar testCal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
@@ -333,7 +334,7 @@ public class TestTypedLiterals extends TestCase {
             testCal.set(Calendar.MILLISECOND, 0);   // ms field can be undefined on
                                                     // Linux
             Literal lc = m.createTypedLiteral((Object)testCal);
-            assertEquals("calendar overloading test", m.createTypedLiteral("1999-05-30T15:09:32Z", XSDDatatype.XSDdateTime), lc);
+            assertEquals(m.createTypedLiteral("1999-05-30T15:09:32Z", XSDDatatype.XSDdateTime), lc, "calendar overloading test");
 
         } finally {
             JenaParameters.enableEagerLiteralValidation = old;
@@ -343,6 +344,7 @@ public class TestTypedLiterals extends TestCase {
     /**
      * Test plain literal/xsd:string/xsd:int equality operations
      */
+    @Test
     public void testPlainSameValueAs() {
         Literal lString = m.createTypedLiteral("10", XSDDatatype.XSDstring);
         Literal lPlain = m.createTypedLiteral("10", (RDFDatatype)null);
@@ -353,7 +355,7 @@ public class TestTypedLiterals extends TestCase {
         assertSameValueAs("Null type = plain literal", lPlain, lPlain2);
         assertSameValueAs("Null type = plain literal", lPlain, lPlain3);
         assertSameValueAs("Null type = plain literal", lPlain2, lPlain3);
-        assertEquals("null type mean xsd:string", XSDDatatype.XSDstring, lPlain3.getDatatype());
+        assertEquals(XSDDatatype.XSDstring, lPlain3.getDatatype(), "null type mean xsd:string");
         assertDiffer("String != int", lString, lInt);
         assertDiffer("Plain != int", lPlain, lInt);
         assertDiffer("Plain != int", lPlain2, lInt);
@@ -365,6 +367,7 @@ public class TestTypedLiterals extends TestCase {
     /**
      * Test cases of numeric comparison.
      */
+    @Test
     public void testNumberSameValueAs() {
         Literal lDouble = m.createTypedLiteral("5", XSDDatatype.XSDdouble);
         Literal lDouble2 = m.createTypedLiteral("5.5", XSDDatatype.XSDdouble);
@@ -403,6 +406,7 @@ public class TestTypedLiterals extends TestCase {
     /**
      * Check basic handling of big integers and decimals
      */
+    @Test
     public void testBigNums() {
         Literal l1 = m.createTypedLiteral("12345678901234567890", XSDDatatype.XSDinteger);
         Literal l2 = m.createTypedLiteral("12345678901234567891", XSDDatatype.XSDinteger);
@@ -436,6 +440,7 @@ public class TestTypedLiterals extends TestCase {
      * Test case for retrieving a value like 3.00 from a probe like 3.0. This test is
      * value sensitive.
      */
+    @Test
     public void testDecimalFind() {
         Graph graph = GraphMemFactory.createDefaultGraphSameValue();
         RDFDatatype dt = XSDDatatype.XSDdecimal;
@@ -451,6 +456,7 @@ public class TestTypedLiterals extends TestCase {
     /**
      * Test the internal machinery of decimal normalization directly
      */
+    @Test
     public void testDecimalCanonicalize() {
         doTestDecimalCanonicalize("0.500", "0.5", BigDecimal.class);
         doTestDecimalCanonicalize("0.50", "0.5", BigDecimal.class);
@@ -474,67 +480,73 @@ public class TestTypedLiterals extends TestCase {
     /**
      * Test data/time wrappers
      */
+    @Test
     public void testDateTime_1() {
         // Duration
         Literal l1 = m.createTypedLiteral("P1Y2M3DT5H6M7.50S", XSDDatatype.XSDduration);
-        assertEquals("duration data type", XSDDatatype.XSDduration, l1.getDatatype());
-        assertEquals("duration java type", XSDDuration.class, l1.getValue().getClass());
-        assertEquals("duration value", 1, ((XSDDuration)l1.getValue()).getYears());
-        assertEquals("duration value", 2, ((XSDDuration)l1.getValue()).getMonths());
-        assertEquals("duration value", 3, ((XSDDuration)l1.getValue()).getDays());
-        assertEquals("duration value", 5, ((XSDDuration)l1.getValue()).getHours());
-        assertEquals("duration value", 6, ((XSDDuration)l1.getValue()).getMinutes());
-        assertEquals("duration value", 7, ((XSDDuration)l1.getValue()).getFullSeconds());
-        assertEquals("duration value", BigDecimal.valueOf(75, 1), ((XSDDuration)l1.getValue()).getBigSeconds());
+        assertEquals(XSDDatatype.XSDduration, l1.getDatatype(), "duration data type");
+        assertEquals(XSDDuration.class, l1.getValue().getClass(), "duration java type");
+        assertEquals(1, ((XSDDuration)l1.getValue()).getYears(), "duration value");
+        assertEquals(2, ((XSDDuration)l1.getValue()).getMonths(), "duration value");
+        assertEquals(3, ((XSDDuration)l1.getValue()).getDays(), "duration value");
+        assertEquals(5, ((XSDDuration)l1.getValue()).getHours(), "duration value");
+        assertEquals(6, ((XSDDuration)l1.getValue()).getMinutes(), "duration value");
+        assertEquals(7, ((XSDDuration)l1.getValue()).getFullSeconds(), "duration value");
+        assertEquals(BigDecimal.valueOf(75, 1), ((XSDDuration)l1.getValue()).getBigSeconds(), "duration value");
         assertFloatEquals("duration value", 18367.5, ((XSDDuration)l1.getValue()).getTimePart());
-        assertEquals("serialization", "P1Y2M3DT5H6M7.5S", l1.getValue().toString());
-        assertTrue("equality test", l1.sameValueAs(m.createTypedLiteral("P1Y2M3DT5H6M7.5S", XSDDatatype.XSDduration)));
-        assertTrue("inequality test", l1 != m.createTypedLiteral("P1Y2M2DT5H6M7.5S", XSDDatatype.XSDduration));
+        assertEquals("P1Y2M3DT5H6M7.5S", l1.getValue().toString(), "serialization");
+        assertTrue(l1.sameValueAs(m.createTypedLiteral("P1Y2M3DT5H6M7.5S", XSDDatatype.XSDduration)), "equality test");
+        assertTrue(l1 != m.createTypedLiteral("P1Y2M2DT5H6M7.5S", XSDDatatype.XSDduration), "inequality test");
     }
 
+    @Test
     public void testDateTime_2() {
         Literal l1 = m.createTypedLiteral("P1Y2M3DT5H0M", XSDDatatype.XSDduration);
-        assertEquals("serialization", "P1Y2M3DT5H", l1.getValue().toString());
+        assertEquals("P1Y2M3DT5H", l1.getValue().toString(), "serialization");
     }
 
+    @Test
     public void testDateTime_3() {
         Literal l1 = m.createTypedLiteral("P1Y", XSDDatatype.XSDduration);
-        assertEquals("duration data type", XSDDatatype.XSDduration, l1.getDatatype());
-        assertEquals("duration java type", XSDDuration.class, l1.getValue().getClass());
-        assertEquals("duration value", 1, ((XSDDuration)l1.getValue()).getYears());
-        assertEquals("serialization", "P1Y", l1.getValue().toString());
-        assertTrue("equality test", l1.sameValueAs(m.createTypedLiteral("P1Y", XSDDatatype.XSDduration)));
-        assertTrue("inequality test", l1 != m.createTypedLiteral("P1Y", XSDDatatype.XSDduration));
+        assertEquals(XSDDatatype.XSDduration, l1.getDatatype(), "duration data type");
+        assertEquals(XSDDuration.class, l1.getValue().getClass(), "duration java type");
+        assertEquals(1, ((XSDDuration)l1.getValue()).getYears(), "duration value");
+        assertEquals("P1Y", l1.getValue().toString(), "serialization");
+        assertTrue(l1.sameValueAs(m.createTypedLiteral("P1Y", XSDDatatype.XSDduration)), "equality test");
+        assertTrue(l1 != m.createTypedLiteral("P1Y", XSDDatatype.XSDduration), "inequality test");
     }
 
+    @Test
     public void testDateTime_4() {
         Literal l1 = m.createTypedLiteral("-P120D", XSDDatatype.XSDduration);
         Literal l2 = m.createTypedLiteral(l1.getValue());
         assertEquals("-P120D", l2.getLexicalForm());
     }
 
+    @Test
     public void testDateTime_5() {
         Literal d1 = m.createTypedLiteral("PT1H1M1S", XSDDatatype.XSDduration);
         Literal d2 = m.createTypedLiteral("PT1H1M1.1S", XSDDatatype.XSDduration);
-        assertTrue("duration compare", !d1.sameValueAs(d2));
+        assertTrue(!d1.sameValueAs(d2), "duration compare");
         XSDDuration dur1 = (XSDDuration)d1.getValue();
         XSDDuration dur2 = (XSDDuration)d2.getValue();
-        assertEquals("duration compare order", 1, dur2.compare(dur1));
+        assertEquals(1, dur2.compare(dur1), "duration compare order");
     }
 
+    @Test
     public void testDateTime_6() {
         // dateTime
         Literal l1 = m.createTypedLiteral("1999-05-31T02:09:32Z", XSDDatatype.XSDdateTime);
         XSDDateTime xdt = (XSDDateTime)l1.getValue();
-        assertEquals("dateTime data type", XSDDatatype.XSDdateTime, l1.getDatatype());
-        assertEquals("dateTime java type", XSDDateTime.class, l1.getValue().getClass());
-        assertEquals("dateTime value", 1999, xdt.getYears());
-        assertEquals("dateTime value", 5, xdt.getMonths());
-        assertEquals("dateTime value", 31, xdt.getDays());
-        assertEquals("dateTime value", 2, xdt.getHours());
-        assertEquals("dateTime value", 9, xdt.getMinutes());
-        assertEquals("dateTime value", 32, xdt.getFullSeconds());
-        assertEquals("serialization", "1999-05-31T02:09:32Z", l1.getValue().toString());
+        assertEquals(XSDDatatype.XSDdateTime, l1.getDatatype(), "dateTime data type");
+        assertEquals(XSDDateTime.class, l1.getValue().getClass(), "dateTime java type");
+        assertEquals(1999, xdt.getYears(), "dateTime value");
+        assertEquals(5, xdt.getMonths(), "dateTime value");
+        assertEquals(31, xdt.getDays(), "dateTime value");
+        assertEquals(2, xdt.getHours(), "dateTime value");
+        assertEquals(9, xdt.getMinutes(), "dateTime value");
+        assertEquals(32, xdt.getFullSeconds(), "dateTime value");
+        assertEquals("1999-05-31T02:09:32Z", l1.getValue().toString(), "serialization");
         Calendar cal = xdt.asCalendar();
         Calendar testCal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
         testCal.set(1999, 4, 31, 2, 9, 32);
@@ -548,21 +560,22 @@ public class TestTypedLiterals extends TestCase {
          * testCal.get(Calendar.MINUTE) ); assertEquals("calendar value",
          * cal.get(Calendar.SECOND), testCal.get(Calendar.SECOND) ); */
         testCal.set(Calendar.MILLISECOND, 0);   // ms field can be undefined on Linux
-        assertEquals("calendar value", cal, testCal);
-        assertEquals("equality test", l1, m.createTypedLiteral("1999-05-31T02:09:32Z", XSDDatatype.XSDdateTime));
-        assertTrue("inequality test", l1 != m.createTypedLiteral("1999-04-31T02:09:32Z", XSDDatatype.XSDdateTime));
+        assertEquals(cal, testCal, "calendar value");
+        assertEquals(l1, m.createTypedLiteral("1999-05-31T02:09:32Z", XSDDatatype.XSDdateTime), "equality test");
+        assertTrue(l1 != m.createTypedLiteral("1999-04-31T02:09:32Z", XSDDatatype.XSDdateTime), "inequality test");
 
         Calendar testCal2 = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
         testCal2.set(1999, 4, 30, 15, 9, 32);
         testCal2.set(Calendar.MILLISECOND, 0);   // ms field can be undefined on
                                                  // Linux
         Literal lc = m.createTypedLiteral(testCal2);
-        assertEquals("calendar 24 hour test", m.createTypedLiteral("1999-05-30T15:09:32Z", XSDDatatype.XSDdateTime), lc);
+        assertEquals(m.createTypedLiteral("1999-05-30T15:09:32Z", XSDDatatype.XSDdateTime), lc, "calendar 24 hour test");
 
-        assertEquals("calendar value", cal, testCal);
-        assertEquals("equality test", l1, m.createTypedLiteral("1999-05-31T02:09:32Z", XSDDatatype.XSDdateTime));
+        assertEquals(cal, testCal, "calendar value");
+        assertEquals(l1, m.createTypedLiteral("1999-05-31T02:09:32Z", XSDDatatype.XSDdateTime), "equality test");
     }
 
+    @Test
     public void testDateTime_7() {
         Calendar testCal3 = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
         testCal3.clear();
@@ -579,9 +592,10 @@ public class TestTypedLiterals extends TestCase {
         Resource r1 = m.getResource(uri1);
         Property p = m.getProperty(urip);
         XSDDateTime returnedDateTime = (XSDDateTime)r1.getProperty(p).getLiteral().getValue();
-        assertEquals("deserialized calendar value", testCal3, returnedDateTime.asCalendar());
+        assertEquals(testCal3, returnedDateTime.asCalendar(), "deserialized calendar value");
     }
 
+    @Test
     public void testDateTime_8() {
         // dateTime to calendar with milliseconds
         Calendar testCal4 = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
@@ -597,13 +611,14 @@ public class TestTypedLiterals extends TestCase {
     // Internal helper
     private void doDateTimeTest(Calendar cal, String lex, double time) {
         Literal lc4 = m.createTypedLiteral(cal);
-        assertEquals("serialization", lex, lc4.getValue().toString());
-        assertEquals("calendar ms test", m.createTypedLiteral(lex, XSDDatatype.XSDdateTime), lc4);
+        assertEquals(lex, lc4.getValue().toString(), "serialization");
+        assertEquals(m.createTypedLiteral(lex, XSDDatatype.XSDdateTime), lc4, "calendar ms test");
         XSDDateTime dt4 = (XSDDateTime)lc4.getValue();
-        assertTrue("Fraction time check", Math.abs(dt4.getSeconds() - time) < 0.0001);
+        assertTrue(Math.abs(dt4.getSeconds() - time) < 0.0001, "Fraction time check");
         assertEquals(dt4.asCalendar(), cal);
     }
 
+    @Test
     public void testDateTime_9() {
         // Years before 1000 : xsd:dateTime requires at least a four digit year.
         // GregorianCalendar does not handle negative years. (.get(YEAR) triggers
@@ -617,8 +632,8 @@ public class TestTypedLiterals extends TestCase {
             XSDDateTime xdtM = new XSDDateTime(calM1);
             LiteralLabel xdtM_ll = LiteralLabelFactory.createByValue(xdtM, XSDDatatype.XSDdateTime);
 
-            assertTrue("Pre-1000 calendar value", xdtM_ll.isWellFormed());
-            assertTrue("Pre-1000 calendar value", xdtM_ll.getLexicalForm().matches("^[0-9]{4}-.*"));
+            assertTrue(xdtM_ll.isWellFormed(), "Pre-1000 calendar value");
+            assertTrue(xdtM_ll.getLexicalForm().matches("^[0-9]{4}-.*"), "Pre-1000 calendar value");
         }
         // Illegal dateTimes
         boolean ok = false;
@@ -631,126 +646,135 @@ public class TestTypedLiterals extends TestCase {
         } finally {
             JenaParameters.enableEagerLiteralValidation = old;
         }
-        assertTrue("Early detection of invalid literals", ok);
+        assertTrue(ok, "Early detection of invalid literals");
     }
 
     // date
+    @Test
     public void testDateTime_10() {
         Literal l1 = m.createTypedLiteral("1999-05-31", XSDDatatype.XSDdate);
-        assertEquals("dateTime data type", XSDDatatype.XSDdate, l1.getDatatype());
-        assertEquals("dateTime java type", XSDDateTime.class, l1.getValue().getClass());
+        assertEquals(XSDDatatype.XSDdate, l1.getDatatype(), "dateTime data type");
+        assertEquals(XSDDateTime.class, l1.getValue().getClass(), "dateTime java type");
         XSDDateTime xdt = (XSDDateTime)l1.getValue();
-        assertEquals("dateTime value", 1999, xdt.getYears());
-        assertEquals("dateTime value", 5, xdt.getMonths());
-        assertEquals("dateTime value", 31, xdt.getDays());
+        assertEquals(1999, xdt.getYears(), "dateTime value");
+        assertEquals(5, xdt.getMonths(), "dateTime value");
+        assertEquals(31, xdt.getDays(), "dateTime value");
         try {
             xdt.getHours();
-            assertTrue("Failed to prevent illegal access", false);
+            assertTrue(false, "Failed to prevent illegal access");
         } catch (IllegalDateTimeFieldException e) {}
     }
 
     // time
+    @Test
     public void testDateTime_11() {
         Literal l1 = m.createTypedLiteral("12:56:32", XSDDatatype.XSDtime);
-        assertEquals("dateTime data type", XSDDatatype.XSDtime, l1.getDatatype());
-        assertEquals("dateTime java type", XSDDateTime.class, l1.getValue().getClass());
+        assertEquals(XSDDatatype.XSDtime, l1.getDatatype(), "dateTime data type");
+        assertEquals(XSDDateTime.class, l1.getValue().getClass(), "dateTime java type");
         XSDDateTime xdt = (XSDDateTime)l1.getValue();
-        assertEquals("dateTime value", 12, xdt.getHours());
-        assertEquals("dateTime value", 56, xdt.getMinutes());
-        assertEquals("dateTime value", 32, xdt.getFullSeconds());
+        assertEquals(12, xdt.getHours(), "dateTime value");
+        assertEquals(56, xdt.getMinutes(), "dateTime value");
+        assertEquals(32, xdt.getFullSeconds(), "dateTime value");
         try {
             xdt.getDays();
-            assertTrue("Failed to prevent illegal access", false);
+            assertTrue(false, "Failed to prevent illegal access");
         } catch (IllegalDateTimeFieldException e) {}
     }
 
     // gYearMonth
+    @Test
     public void testDateTime_12() {
         Literal l1 = m.createTypedLiteral("1999-05", XSDDatatype.XSDgYearMonth);
-        assertEquals("dateTime data type", XSDDatatype.XSDgYearMonth, l1.getDatatype());
-        assertEquals("dateTime java type", XSDDateTime.class, l1.getValue().getClass());
+        assertEquals(XSDDatatype.XSDgYearMonth, l1.getDatatype(), "dateTime data type");
+        assertEquals(XSDDateTime.class, l1.getValue().getClass(), "dateTime java type");
         XSDDateTime xdt = (XSDDateTime)l1.getValue();
-        assertEquals("dateTime value", 1999, xdt.getYears());
-        assertEquals("dateTime value", 5, xdt.getMonths());
+        assertEquals(1999, xdt.getYears(), "dateTime value");
+        assertEquals(5, xdt.getMonths(), "dateTime value");
         try {
             xdt.getDays();
-            assertTrue("Failed to prevent illegal access", false);
+            assertTrue(false, "Failed to prevent illegal access");
         } catch (IllegalDateTimeFieldException e) {}
 
         // gYear
     }
 
+    @Test
     public void testDateTime_13() {
         Literal l1 = m.createTypedLiteral("1999", XSDDatatype.XSDgYear);
-        assertEquals("dateTime data type", XSDDatatype.XSDgYear, l1.getDatatype());
-        assertEquals("dateTime java type", XSDDateTime.class, l1.getValue().getClass());
+        assertEquals(XSDDatatype.XSDgYear, l1.getDatatype(), "dateTime data type");
+        assertEquals(XSDDateTime.class, l1.getValue().getClass(), "dateTime java type");
         XSDDateTime xdt = (XSDDateTime)l1.getValue();
-        assertEquals("dateTime value", 1999, xdt.getYears());
+        assertEquals(1999, xdt.getYears(), "dateTime value");
         try {
             xdt.getMonths();
-            assertTrue("Failed to prevent illegal access", false);
+            assertTrue(false, "Failed to prevent illegal access");
         } catch (IllegalDateTimeFieldException e) {}
 
         // gMonth
     }
 
+    @Test
     public void testDateTime_14() {
         Literal l1 = m.createTypedLiteral("--05--", XSDDatatype.XSDgMonth);
-        assertEquals("dateTime data type", XSDDatatype.XSDgMonth, l1.getDatatype());
-        assertEquals("dateTime java type", XSDDateTime.class, l1.getValue().getClass());
+        assertEquals(XSDDatatype.XSDgMonth, l1.getDatatype(), "dateTime data type");
+        assertEquals(XSDDateTime.class, l1.getValue().getClass(), "dateTime java type");
         XSDDateTime xdt = (XSDDateTime)l1.getValue();
-        assertEquals("dateTime value", 5, xdt.getMonths());
+        assertEquals(5, xdt.getMonths(), "dateTime value");
         try {
             xdt.getYears();
-            assertTrue("Failed to prevent illegal access", false);
+            assertTrue(false, "Failed to prevent illegal access");
         } catch (IllegalDateTimeFieldException e) {}
 
     }
 
     // gMonthDay
+    @Test
     public void testDateTime_15() {
         Literal l1 = m.createTypedLiteral("--05-25", XSDDatatype.XSDgMonthDay);
-        assertEquals("dateTime data type", XSDDatatype.XSDgMonthDay, l1.getDatatype());
-        assertEquals("dateTime java type", XSDDateTime.class, l1.getValue().getClass());
+        assertEquals(XSDDatatype.XSDgMonthDay, l1.getDatatype(), "dateTime data type");
+        assertEquals(XSDDateTime.class, l1.getValue().getClass(), "dateTime java type");
         XSDDateTime xdt = (XSDDateTime)l1.getValue();
-        assertEquals("dateTime value", 5, xdt.getMonths());
-        assertEquals("dateTime value", 25, xdt.getDays());
+        assertEquals(5, xdt.getMonths(), "dateTime value");
+        assertEquals(25, xdt.getDays(), "dateTime value");
         try {
             xdt.getYears();
-            assertTrue("Failed to prevent illegal access", false);
+            assertTrue(false, "Failed to prevent illegal access");
         } catch (IllegalDateTimeFieldException e) {}
 
     }
 
     // gDay
+    @Test
     public void testDateTime_16() {
         Literal l1 = m.createTypedLiteral("---25", XSDDatatype.XSDgDay);
-        assertEquals("dateTime data type", XSDDatatype.XSDgDay, l1.getDatatype());
-        assertEquals("dateTime java type", XSDDateTime.class, l1.getValue().getClass());
+        assertEquals(XSDDatatype.XSDgDay, l1.getDatatype(), "dateTime data type");
+        assertEquals(XSDDateTime.class, l1.getValue().getClass(), "dateTime java type");
         XSDDateTime xdt = (XSDDateTime)l1.getValue();
-        assertEquals("dateTime value", 25, xdt.getDays());
+        assertEquals(25, xdt.getDays(), "dateTime value");
         try {
             xdt.getMonths();
-            assertTrue("Failed to prevent illegal access", false);
+            assertTrue(false, "Failed to prevent illegal access");
         } catch (IllegalDateTimeFieldException e) {}
 
     }
 
+    @Test
     public void testDateTime_17() {
         // Creation of datetime from a date object
         Calendar ncal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
         ncal.set(2003, 11, 8, 10, 50, 42);
         ncal.set(Calendar.MILLISECOND, 0);
         Literal l1 = m.createTypedLiteral(ncal);
-        assertEquals("DateTime from date", XSDDatatype.XSDdateTime, l1.getDatatype());
-        assertEquals("DateTime from date", XSDDateTime.class, l1.getValue().getClass());
-        assertEquals("DateTime from date", "2003-12-08T10:50:42Z", l1.getValue().toString());
+        assertEquals(XSDDatatype.XSDdateTime, l1.getDatatype(), "DateTime from date");
+        assertEquals(XSDDateTime.class, l1.getValue().getClass(), "DateTime from date");
+        assertEquals("2003-12-08T10:50:42Z", l1.getValue().toString(), "DateTime from date");
 
     }
 
     // Thanks to Greg Shueler for DST patch and test case
     ////// some of below code from java.util.GregorianCalendar javadoc///////
     // create a Pacific Standard Time time zone
+    @Test
     public void testDateTime_18() {
         SimpleTimeZone pdt = new SimpleTimeZone(-8 * 60 * 60 * 1000, "America/Los_Angeles");
 
@@ -763,24 +787,25 @@ public class TestTypedLiterals extends TestCase {
         ncal.set(Calendar.MILLISECOND, 0);
         // System.err.println("cal is: "+ncal);
         Literal l1 = m.createTypedLiteral(ncal);
-        assertEquals("DateTime from date", XSDDatatype.XSDdateTime, l1.getDatatype());
-        assertEquals("DateTime from date", XSDDateTime.class, l1.getValue().getClass());
-        assertEquals("DateTime from date", "2004-03-21T20:50:42Z", l1.getValue().toString());
+        assertEquals(XSDDatatype.XSDdateTime, l1.getDatatype(), "DateTime from date");
+        assertEquals(XSDDateTime.class, l1.getValue().getClass(), "DateTime from date");
+        assertEquals("2004-03-21T20:50:42Z", l1.getValue().toString(), "DateTime from date");
         // System.err.println("date is: "+ncal.getTime());
         ncal = new GregorianCalendar(pdt);
         ncal.set(2004, 03, 21, 12, 50, 42);// within daylight savings time
         ncal.set(Calendar.MILLISECOND, 0);
         // System.err.println("cal is: "+ncal);
         l1 = m.createTypedLiteral(ncal);
-        assertEquals("DateTime from date", XSDDatatype.XSDdateTime, l1.getDatatype());
-        assertEquals("DateTime from date", XSDDateTime.class, l1.getValue().getClass());
-        assertEquals("DateTime from date", "2004-04-21T19:50:42Z", l1.getValue().toString());
+        assertEquals(XSDDatatype.XSDdateTime, l1.getDatatype(), "DateTime from date");
+        assertEquals(XSDDateTime.class, l1.getValue().getClass(), "DateTime from date");
+        assertEquals("2004-04-21T19:50:42Z", l1.getValue().toString(), "DateTime from date");
         // System.err.println("date is: "+ncal.getTime());
     }
 
     /**
      * Test query applied to graphs containing typed values
      */
+    @Test
     public void testTypedContains() {
         Model model = ModelFactory.createModelSameValue();
         Property p = model.createProperty("urn:x-eg/p");
@@ -798,6 +823,7 @@ public class TestTypedLiterals extends TestCase {
     /**
      * Test the isValidLiteral machinery
      */
+    @Test
     public void testIsValidLiteral() {
         Literal l = m.createTypedLiteral("1000", XSDDatatype.XSDinteger);
         LiteralLabel ll = l.asNode().getLiteral();
@@ -863,11 +889,13 @@ public class TestTypedLiterals extends TestCase {
     }
 
     // These should not be used in data but we test they don't crash anything.
+    @Test
     public void testIsValidLiteral1() {
         Literal lit = m.createTypedLiteral("100", XSDDatatype.XSD + "#anyType");
         assertFalse(XSDDatatype.XSDinteger.isValidLiteral(lit.asNode().getLiteral()));
     }
 
+    @Test
     public void testIsValidLiteral2() {
         Literal lit = m.createTypedLiteral("100", XSDDatatype.XSD + "#anySimpleType");
         assertFalse(XSDDatatype.XSDinteger.isValidLiteral(lit.asNode().getLiteral()));
@@ -878,96 +906,103 @@ public class TestTypedLiterals extends TestCase {
     /**
      * Test binary types base64 and hexbinary
      */
+    @Test
     public void testBinary1() {
         // Check byte[] maps onto a binary type - specifically base64Binary.
         byte[] data = new byte[]{12, 42, 99};
         Literal l = m.createTypedLiteral(data);
         LiteralLabel ll = l.asNode().getLiteral();
 
-        assertTrue("binary test 1", ll.getDatatype() instanceof XSDbinary);
+        assertTrue(ll.getDatatype() instanceof XSDbinary, "binary test 1");
 
         // base64 is registered for byte[]
         // hexBinary is not registered as a type for byte[]
-        assertTrue("binary test 1a", ll.getDatatype() instanceof XSDbase64Binary);
-        assertEquals("binary test 1b", "DCpj", ll.getLexicalForm());
+        assertTrue(ll.getDatatype() instanceof XSDbase64Binary, "binary test 1a");
+        assertEquals("DCpj", ll.getLexicalForm(), "binary test 1b");
     }
 
+    @Test
     public void testBinary2() {
         // Check round tripping from value
         LiteralLabel l2 = m.createTypedLiteral("DCpj", XSDDatatype.XSDbase64Binary).asNode().getLiteral();
         Object data2 = l2.getValue();
-        assertTrue("binary test 3", data2 instanceof byte[]);
+        assertTrue(data2 instanceof byte[], "binary test 3");
         byte[] data2b = (byte[])data2;
-        assertEquals("binary test 4", data2b[0], data[0]);
-        assertEquals("binary test 5", data2b[1], data[1]);
-        assertEquals("binary test 6", data2b[2], data[2]);
+        assertEquals(data2b[0], data[0], "binary test 4");
+        assertEquals(data2b[1], data[1], "binary test 5");
+        assertEquals(data2b[2], data[2], "binary test 6");
     }
 
+    @Test
     public void testBinary3() {
         // Check hexBinary
         Literal l = m.createTypedLiteral(data, XSDDatatype.XSDhexBinary);
         LiteralLabel ll = l.asNode().getLiteral();
-        assertEquals("binary test 1b", ll.getDatatype(), XSDDatatype.XSDhexBinary);
-        assertEquals("binary test 2b", Hex.encodeHexString(data, false), ll.getLexicalForm());
+        assertEquals(ll.getDatatype(), XSDDatatype.XSDhexBinary, "binary test 1b");
+        assertEquals(Hex.encodeHexString(data, false), ll.getLexicalForm(), "binary test 2b");
 
         // Check round tripping from value
         LiteralLabel l2 = m.createTypedLiteral(ll.getLexicalForm(), XSDDatatype.XSDhexBinary).asNode().getLiteral();
         Object data2 = l2.getValue();
-        assertTrue("binary test 3b", data2 instanceof byte[]);
+        assertTrue(data2 instanceof byte[], "binary test 3b");
         byte[] data2b = ((byte[])data2);
-        assertEquals("binary test 4b", data2b[0], data[0]);
-        assertEquals("binary test 5b", data2b[1], data[1]);
-        assertEquals("binary test 6b", data2b[2], data[2]);
+        assertEquals(data2b[0], data[0], "binary test 4b");
+        assertEquals(data2b[1], data[1], "binary test 5b");
+        assertEquals(data2b[2], data[2], "binary test 6b");
         assertEquals(l2, ll);
     }
 
+    @Test
     public void testBinary4() {
         Literal la = m.createTypedLiteral("GpM7", XSDDatatype.XSDbase64Binary);
         Literal lb = m.createTypedLiteral("GpM7", XSDDatatype.XSDbase64Binary);
 
         la.sameValueAs(lb);
 
-        assertTrue("equality test", la.sameValueAs(lb));
+        assertTrue(la.sameValueAs(lb), "equality test");
 
         data = new byte[]{15, (byte)0xB7};
         Literal l = m.createTypedLiteral(data, XSDDatatype.XSDhexBinary);
-        assertEquals("hexBinary encoding", "0FB7", l.getLexicalForm());
+        assertEquals("0FB7", l.getLexicalForm(), "hexBinary encoding");
     }
 
+    @Test
     public void testBinaryIndexing1() {
         Literal x1 = m.createTypedLiteral("", XSDDatatype.XSDbase64Binary);
         Literal x2 = m.createTypedLiteral("", XSDDatatype.XSDbase64Binary);
-        assertEquals("base64Binary indexing hashCode", x1.asNode().getIndexingValue().hashCode(),
-                     x2.asNode().getIndexingValue().hashCode());
-        assertEquals("base64Binary indexing", x1.asNode().getIndexingValue(), x2.asNode().getIndexingValue());
+        assertEquals(x1.asNode().getIndexingValue().hashCode(), x2.asNode().getIndexingValue().hashCode(), "base64Binary indexing hashCode");
+        assertEquals(x1.asNode().getIndexingValue(), x2.asNode().getIndexingValue(), "base64Binary indexing");
     }
 
+    @Test
     public void testBinaryIndexing2() {
         Literal x1 = m.createTypedLiteral("GpM7", XSDDatatype.XSDbase64Binary);
         Literal x2 = m.createTypedLiteral("GpM7", XSDDatatype.XSDbase64Binary);
-        assertEquals("base64Binary indexing hashCode", x1.asNode().getIndexingValue().hashCode(),
-                     x2.asNode().getIndexingValue().hashCode());
-        assertEquals("base64Binary indexing", x1.asNode().getIndexingValue(), x2.asNode().getIndexingValue());
+        assertEquals(x1.asNode().getIndexingValue().hashCode(), x2.asNode().getIndexingValue().hashCode(), "base64Binary indexing hashCode");
+        assertEquals(x1.asNode().getIndexingValue(), x2.asNode().getIndexingValue(), "base64Binary indexing");
     }
 
+    @Test
     public void testBinaryIndexing3() {
         Literal x1 = m.createTypedLiteral("", XSDDatatype.XSDhexBinary);
         Literal x2 = m.createTypedLiteral("", XSDDatatype.XSDhexBinary);
-        assertEquals("hexBinary indexing hashCode", x1.asNode().getIndexingValue().hashCode(), x2.asNode().getIndexingValue().hashCode());
-        assertEquals("hexBinary indexing", x1.asNode().getIndexingValue(), x2.asNode().getIndexingValue());
+        assertEquals(x1.asNode().getIndexingValue().hashCode(), x2.asNode().getIndexingValue().hashCode(), "hexBinary indexing hashCode");
+        assertEquals(x1.asNode().getIndexingValue(), x2.asNode().getIndexingValue(), "hexBinary indexing");
     }
 
+    @Test
     public void testBinaryIndexing4() {
         Literal x1 = m.createTypedLiteral("AABB", XSDDatatype.XSDhexBinary);
         Literal x2 = m.createTypedLiteral("AABB", XSDDatatype.XSDhexBinary);
-        assertEquals("hexBinary indexing hashCode", x1.asNode().getIndexingValue().hashCode(), x2.asNode().getIndexingValue().hashCode());
-        assertEquals("hexBinary indexing", x1.asNode().getIndexingValue(), x2.asNode().getIndexingValue());
+        assertEquals(x1.asNode().getIndexingValue().hashCode(), x2.asNode().getIndexingValue().hashCode(), "hexBinary indexing hashCode");
+        assertEquals(x1.asNode().getIndexingValue(), x2.asNode().getIndexingValue(), "hexBinary indexing");
     }
 
     /**
      * Test that XSD anyURI is not sameValueAs XSD string (Xerces returns a string as
      * the value for both)
      */
+    @Test
     public void testXSDanyURI() {
         Node node1 = NodeFactory.createLiteralDT("http://example/", XSDDatatype.XSDanyURI);
         Node node2 = NodeFactory.createLiteralDT("http://example/", XSDDatatype.XSDstring);
@@ -977,15 +1012,17 @@ public class TestTypedLiterals extends TestCase {
     /**
      * Test a user error report concerning date/time literals from JENA-1503
      */
+    @Test
     public void testDateTimeBug3() {
         final String testLex = "-0001-02-03T04:05:06";
         Node n = NodeFactory.createLiteralDT(testLex, XSDDatatype.XSDdateTime);
-        assertEquals("Got wrong XSDDateTime representation!", testLex, n.getLiteralValue().toString());
+        assertEquals(testLex, n.getLiteralValue().toString(), "Got wrong XSDDateTime representation!");
     }
 
     /**
      * Test a user error report concerning date/time literals
      */
+    @Test
     public void testDateTimeBug() {
         // Bug in serialization
         String XSDDateURI = XSD.date.getURI();
@@ -1030,6 +1067,7 @@ public class TestTypedLiterals extends TestCase {
         return date;
     }
 
+    @Test
     public void testDateTimeBug2() throws Exception {
         String[] timezonelist = {"GMT", "America/New_York", "America/Chicago",};
 
@@ -1056,7 +1094,7 @@ public class TestTypedLiterals extends TestCase {
                 int xhr = xdt.getHours();
                 int dhr = cal.get(Calendar.HOUR_OF_DAY);
                 int dif = (xhr - dhr + offset) % 24;
-                Assert.assertEquals("Difference between cal and xdt", 0, dif);
+                assertEquals(0, dif, "Difference between cal and xdt");
 
 // //System.out.println("xhr="+xhr+",dhr="+dhr+",dif="+dif);
 // System.out.println(""
@@ -1073,6 +1111,7 @@ public class TestTypedLiterals extends TestCase {
     /**
      * Test global parameter flags.
      */
+    @Test
     public void testFlags() {
         boolean originalFlag = JenaParameters.enableEagerLiteralValidation;
         JenaParameters.enableEagerLiteralValidation = true;
@@ -1083,7 +1122,7 @@ public class TestTypedLiterals extends TestCase {
             foundException = true;
         }
         JenaParameters.enableEagerLiteralValidation = originalFlag;
-        assertTrue("Early datatype format exception", foundException);
+        assertTrue(foundException, "Early datatype format exception");
 
         JenaParameters.enableEagerLiteralValidation = false;
         foundException = false;
@@ -1092,7 +1131,7 @@ public class TestTypedLiterals extends TestCase {
             l = m.createTypedLiteral("fool", XSDDatatype.XSDint);
         } catch (DatatypeFormatException e1) {
             JenaParameters.enableEagerLiteralValidation = originalFlag;
-            assertTrue("Delayed datatype format validation", false);
+            assertTrue(false, "Delayed datatype format validation");
         }
         try {
             l.getValue();
@@ -1100,20 +1139,21 @@ public class TestTypedLiterals extends TestCase {
             foundException = true;
         }
         JenaParameters.enableEagerLiteralValidation = originalFlag;
-        assertTrue("Early datatype format exception", foundException);
+        assertTrue(foundException, "Early datatype format exception");
     }
 
     /**
      * Test that equality function takes lexical distinction into account.
      */
+    @Test
     public void testLexicalDistinction() {
         Literal l1 = m.createTypedLiteral("3.0", XSDDatatype.XSDdecimal);
         Literal l2 = m.createTypedLiteral("3.00", XSDDatatype.XSDdecimal);
         Literal l3 = m.createTypedLiteral("3.0", XSDDatatype.XSDdecimal);
         assertSameValueAs("lexical form does not affect value", l1, l2);
         assertSameValueAs("lexical form does not affect value", l3, l2);
-        assertTrue("lexical form affects equality", !l1.equals(l2));
-        assertTrue("lexical form affects equality", l1.equals(l3));
+        assertTrue(!l1.equals(l2), "lexical form affects equality");
+        assertTrue(l1.equals(l3), "lexical form affects equality");
 
         // This version will become illegal in the future and will be removed then
         l1 = m.createTypedLiteral("3", XSDDatatype.XSDint);
@@ -1121,13 +1161,14 @@ public class TestTypedLiterals extends TestCase {
         l3 = m.createTypedLiteral("3", XSDDatatype.XSDint);
         assertSameValueAs("lexical form does not affect value", l1, l2);
         assertSameValueAs("lexical form does not affect value", l3, l2);
-        assertTrue("lexical form affects equality", !l1.equals(l2));
-        assertTrue("lexical form affects equality", l1.equals(l3));
+        assertTrue(!l1.equals(l2), "lexical form affects equality");
+        assertTrue(l1.equals(l3), "lexical form affects equality");
     }
 
     /**
      * Test parse/unparse pairing for problem datatypes
      */
+    @Test
     public void testRoundTrip() {
         // Prior problem cases with unparsing
         doTestRoundTrip("13:20:00.000", XSDDatatype.XSDtime, false);
@@ -1161,17 +1202,18 @@ public class TestTypedLiterals extends TestCase {
         Literal l1 = m.createTypedLiteral(lex, dt);
         Object o1 = l1.getValue();
         Literal l2 = m.createTypedLiteral(o1);
-        assertTrue("value round trip", l1.sameValueAs(l2));
+        assertTrue(l1.sameValueAs(l2), "value round trip");
         Object o2 = l2.getValue();
-        assertTrue("value round trip2", o1.equals(o2));
+        assertTrue(o1.equals(o2), "value round trip2");
         if ( testType ) {
-            assertEquals("Datatype round trip", dt, l2.getDatatype());
+            assertEquals(dt, l2.getDatatype(), "Datatype round trip");
         }
     }
 
     /**
      * Test ability to override an apparent DateTime to be just a date
      */
+    @Test
     public void testDateOverride() {
         Calendar date = new GregorianCalendar(2007, 3, 4);
         date.setTimeZone(TimeZone.getTimeZone("GMT+0"));
@@ -1186,21 +1228,21 @@ public class TestTypedLiterals extends TestCase {
      * Test that two objects are not semantically the same
      */
     private void assertDiffer(String title, Literal x, Literal y) {
-        assertTrue(title, !x.sameValueAs(y));
+        assertTrue(!x.sameValueAs(y), title);
     }
 
     /**
      * Test that two objects are semantically the same
      */
     private void assertSameValueAs(String title, Literal x, Literal y) {
-        assertTrue(title, x.sameValueAs(y));
+        assertTrue(x.sameValueAs(y), title);
     }
 
     /**
      * Test two doubles are equal to within 0.001
      */
     private void assertFloatEquals(String title, double x, double y) {
-        assertTrue(title, Math.abs(x - y) < 0.001);
+        assertTrue(Math.abs(x - y) < 0.001, title);
     }
 
     /**
@@ -1210,7 +1252,7 @@ public class TestTypedLiterals extends TestCase {
         try {
             Literal l = m.createTypedLiteral(lex, dtype);
             l.getValue();
-            assertTrue("Failed to catch '" + lex + "' as an illegal " + dtype, false);
+            assertTrue(false, "Failed to catch '" + lex + "' as an illegal " + dtype);
         } catch (DatatypeFormatException e1) {
             // OK this is what we expected
         }

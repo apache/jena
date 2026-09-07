@@ -21,8 +21,10 @@
 
 package org.apache.jena.graph;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.lib.Creator;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.TypeMapper;
@@ -44,63 +46,62 @@ import org.apache.jena.vocabulary.VCARD;
  * Exercise nodes. Make sure that the different node types do not overlap and that
  * the test predicates work properly on the different node kinds.
  */
-public class TestNode extends TestCase {
-    public TestNode(String name) {
-        super(name);
-    }
-
-    public static TestSuite suite() {
-        return new TestSuite(TestNode.class);
-    }
+public class TestNode {
 
     private static final String U = "http://some.domain.name/magic/spells.incant";
     private static final String N = "Alice";
     private static final LiteralLabel L = LiteralLabelFactory.createLang("ashes are burning", "en");
     private static final String A = BlankNodeId.createFreshId();
 
+    @Test
     public void testBlanks() {
-        assertTrue("anonymous nodes are blank", NodeFactory.createBlankNode().isBlank());
-        assertFalse("anonymous nodes aren't literal", NodeFactory.createBlankNode().isLiteral());
-        assertFalse("anonymous nodes aren't URIs", NodeFactory.createBlankNode().isURI());
-        assertFalse("anonymous nodes aren't variables", NodeFactory.createBlankNode().isVariable());
-        assertEquals("anonymous nodes have the right id", NodeFactory.createBlankNode(A).getBlankNodeLabel(), A);
+        assertTrue(NodeFactory.createBlankNode().isBlank(), "anonymous nodes are blank");
+        assertFalse(NodeFactory.createBlankNode().isLiteral(), "anonymous nodes aren't literal");
+        assertFalse(NodeFactory.createBlankNode().isURI(), "anonymous nodes aren't URIs");
+        assertFalse(NodeFactory.createBlankNode().isVariable(), "anonymous nodes aren't variables");
+        assertEquals(NodeFactory.createBlankNode(A).getBlankNodeLabel(), A, "anonymous nodes have the right id");
     }
 
     @SuppressWarnings("deprecation")
+    @Test
     public void testLiterals() {
-        assertFalse("literal nodes aren't blank", NodeFactory.createLiteral(L).isBlank());
-        assertTrue("literal nodes are literal", NodeFactory.createLiteral(L).isLiteral());
-        assertFalse("literal nodes aren't variables", NodeFactory.createLiteral(L).isVariable());
-        assertFalse("literal nodes aren't URIs", NodeFactory.createLiteral(L).isURI());
-        assertEquals("literal nodes preserve value", NodeFactory.createLiteral(L).getLiteral(), L);
+        assertFalse(NodeFactory.createLiteral(L).isBlank(), "literal nodes aren't blank");
+        assertTrue(NodeFactory.createLiteral(L).isLiteral(), "literal nodes are literal");
+        assertFalse(NodeFactory.createLiteral(L).isVariable(), "literal nodes aren't variables");
+        assertFalse(NodeFactory.createLiteral(L).isURI(), "literal nodes aren't URIs");
+        assertEquals(NodeFactory.createLiteral(L).getLiteral(), L, "literal nodes preserve value");
     }
 
+    @Test
     public void testURIs() {
-        assertFalse("URI nodes aren't blank", NodeFactory.createURI(U).isBlank());
-        assertFalse("URI nodes aren't literal", NodeFactory.createURI(U).isLiteral());
-        assertFalse("URI nodes aren't variables", NodeFactory.createURI(U).isVariable());
-        assertTrue("URI nodes are URIs", NodeFactory.createURI(U).isURI());
-        assertEquals("URI nodes preserve URI", NodeFactory.createURI(U).getURI(), U);
+        assertFalse(NodeFactory.createURI(U).isBlank(), "URI nodes aren't blank");
+        assertFalse(NodeFactory.createURI(U).isLiteral(), "URI nodes aren't literal");
+        assertFalse(NodeFactory.createURI(U).isVariable(), "URI nodes aren't variables");
+        assertTrue(NodeFactory.createURI(U).isURI(), "URI nodes are URIs");
+        assertEquals(NodeFactory.createURI(U).getURI(), U, "URI nodes preserve URI");
     }
 
+    @Test
     public void testVariables() {
-        assertFalse("variable nodes aren't blank", NodeFactory.createVariable(N).isBlank());
-        assertFalse("variable nodes aren't literal", NodeFactory.createVariable(N).isLiteral());
-        assertFalse("variable nodes aren't URIs", NodeFactory.createVariable(N).isURI());
-        assertTrue("variable nodes are variable", NodeFactory.createVariable(N).isVariable());
-        assertEquals("variable nodes keep their name", N, NodeFactory.createVariable(N).getName());
-        assertEquals("variable nodes keep their name", N + "x", NodeFactory.createVariable(N + "x").getName());
+        assertFalse(NodeFactory.createVariable(N).isBlank(), "variable nodes aren't blank");
+        assertFalse(NodeFactory.createVariable(N).isLiteral(), "variable nodes aren't literal");
+        assertFalse(NodeFactory.createVariable(N).isURI(), "variable nodes aren't URIs");
+        assertTrue(NodeFactory.createVariable(N).isVariable(), "variable nodes are variable");
+        assertEquals(N, NodeFactory.createVariable(N).getName(), "variable nodes keep their name");
+        assertEquals(N + "x", NodeFactory.createVariable(N + "x").getName(), "variable nodes keep their name");
     }
 
+    @Test
     public void testANY() {
-        assertFalse("ANY nodes aren't blank", Node.ANY.isBlank());
-        assertFalse("ANY nodes aren't literals", Node.ANY.isLiteral());
-        assertFalse("ANY nodes aren't URIs", Node.ANY.isURI());
-        assertFalse("ANY nodes aren't variables", Node.ANY.isVariable());
-        assertFalse("ANY nodes aren't blank", Node.ANY.isBlank());
-        assertFalse("ANY nodes aren't blank", Node.ANY.isBlank());
+        assertFalse(Node.ANY.isBlank(), "ANY nodes aren't blank");
+        assertFalse(Node.ANY.isLiteral(), "ANY nodes aren't literals");
+        assertFalse(Node.ANY.isURI(), "ANY nodes aren't URIs");
+        assertFalse(Node.ANY.isVariable(), "ANY nodes aren't variables");
+        assertFalse(Node.ANY.isBlank(), "ANY nodes aren't blank");
+        assertFalse(Node.ANY.isBlank(), "ANY nodes aren't blank");
     }
 
+    @Test
     public void testNodeVariableConstructor() {
         assertEquals(NodeFactory.createVariable("hello"), new Node_Variable("hello"));
         assertEquals(NodeFactory.createVariable("world"), new Node_Variable("world"));
@@ -135,11 +136,12 @@ public class TestNode extends TestCase {
             {NodeFactory.createLiteral(LLang1), "9"}, {NodeFactory.createLiteral(LLang2), "10"},};
     }
 
+    @Test
     public void testNodeEquals() {
         Object[][] tests = eqTestCases();
         for ( Object[] I : tests ) {
-            assertFalse(I[0] + " should not equal null", I[0].equals(null));
-            assertFalse(I[0] + "should not equal 'String'", I[0].equals("String"));
+            assertFalse(I[0].equals(null), I[0] + " should not equal null");
+            assertFalse(I[0].equals("String"), I[0] + "should not equal 'String'");
             for ( Object[] J : tests ) {
                 testEquality(I[1].equals(J[1]), I[0], J[0]);
             }
@@ -149,7 +151,7 @@ public class TestNode extends TestCase {
     private void testEquality(boolean testEq, Object x, Object y) {
         String testName = getType(x) + " " + x + " and " + getType(y) + " " + y;
         if ( testEq )
-            assertEquals(testName + "should be equal", x, y);
+            assertEquals(x, y, testName + "should be equal");
         else
             JenaTestLib.assertDiffer(testName + " should differ", x, y);
     }
@@ -160,16 +162,17 @@ public class TestNode extends TestCase {
     }
 
     @SuppressWarnings("deprecation")
+    @Test
     public void testEquals() {
         JenaTestLib.assertDiffer("different variables", NodeFactory.createVariable("xx"), NodeFactory.createVariable("yy"));
-        assertEquals("same vars", NodeFactory.createVariable("aa"), NodeFactory.createVariable("aa"));
-        assertEquals("same URI", NodeFactory.createURI(U), NodeFactory.createURI(U));
-        assertEquals("same anon", NodeFactory.createBlankNode(A), NodeFactory.createBlankNode(A));
-        assertEquals("same literal", NodeFactory.createLiteral(L), NodeFactory.createLiteral(L));
-        assertFalse("distinct URIs", NodeFactory.createURI(U) == NodeFactory.createURI(U));
-        assertFalse("distinct hyphens", NodeFactory.createBlankNode(A) == NodeFactory.createBlankNode(A));
-        assertFalse("distinct literals", NodeFactory.createLiteral(L) == NodeFactory.createLiteral(L));
-        assertFalse("distinct vars", NodeFactory.createVariable("aa") == NodeFactory.createVariable("aa"));
+        assertEquals(NodeFactory.createVariable("aa"), NodeFactory.createVariable("aa"), "same vars");
+        assertEquals(NodeFactory.createURI(U), NodeFactory.createURI(U), "same URI");
+        assertEquals(NodeFactory.createBlankNode(A), NodeFactory.createBlankNode(A), "same anon");
+        assertEquals(NodeFactory.createLiteral(L), NodeFactory.createLiteral(L), "same literal");
+        assertFalse(NodeFactory.createURI(U) == NodeFactory.createURI(U), "distinct URIs");
+        assertFalse(NodeFactory.createBlankNode(A) == NodeFactory.createBlankNode(A), "distinct hyphens");
+        assertFalse(NodeFactory.createLiteral(L) == NodeFactory.createLiteral(L), "distinct literals");
+        assertFalse(NodeFactory.createVariable("aa") == NodeFactory.createVariable("aa"), "distinct vars");
     }
 
     /**
@@ -177,12 +180,13 @@ public class TestNode extends TestCase {
      * appropriate to that Node.
      */
     @SuppressWarnings("deprecation")
+    @Test
     public void testLabels() {
         String id = BlankNodeId.createFreshId();
-        assertEquals("get URI value", U, NodeFactory.createURI(U).getURI());
-        assertEquals("get blank value", id, NodeFactory.createBlankNode(id).getBlankNodeLabel());
-        assertEquals("get literal value", L, NodeFactory.createLiteral(L).getLiteral());
-        assertEquals("get variable name", N, NodeFactory.createVariable(N).getName());
+        assertEquals(U, NodeFactory.createURI(U).getURI(), "get URI value");
+        assertEquals(id, NodeFactory.createBlankNode(id).getBlankNodeLabel(), "get blank value");
+        assertEquals(L, NodeFactory.createLiteral(L).getLiteral(), "get literal value");
+        assertEquals(N, NodeFactory.createVariable(N).getName(), "get variable name");
     }
 
     /**
@@ -190,6 +194,7 @@ public class TestNode extends TestCase {
      * exception.
      */
     @SuppressWarnings("deprecation")
+    @Test
     public void testFailingLabels() {
         Node u = NodeFactory.createURI(U), b = NodeFactory.createBlankNode();
         Node l = NodeFactory.createLiteral(L), v = NodeFactory.createVariable(N);
@@ -244,11 +249,13 @@ public class TestNode extends TestCase {
         } catch (UnsupportedOperationException e) {}
     }
 
+    @Test
     public void testGetBlankNodeLabelString() {
         Node n = NodeFactory.createBlankNode();
         assertNotNull(n.getBlankNodeLabel());
     }
 
+    @Test
     public void testVariableSupport() {
         assertEquals(new Node_Variable("xxx"), new Node_Variable("xxx"));
         JenaTestLib.assertDiffer(new Node_Variable("xxx"), new Node_Variable("yyy"));
@@ -257,6 +264,7 @@ public class TestNode extends TestCase {
     /**
      * Test that the create method does sensible things on null and ""
      */
+    @Test
     public void testCreateBadString() {
         try {
             NodeCreateUtils.create(null);
@@ -271,51 +279,59 @@ public class TestNode extends TestCase {
     /**
      * Test that anonymous nodes are created with the correct labels
      */
+    @Test
     public void testCreateBlankNode() {
         String idA = "_xxx";
         String idB = "_yyy";
         Node a = NodeCreateUtils.create(idA);
         Node b = NodeCreateUtils.create(idB);
-        assertTrue("both must be bnodes", a.isBlank() && b.isBlank());
+        assertTrue(a.isBlank() && b.isBlank(), "both must be bnodes");
         assertEquals(NodeFactory.createBlankNode(idA).getBlankNodeLabel(), a.getBlankNodeLabel());
         assertEquals(NodeFactory.createBlankNode(idB).getBlankNodeLabel(), b.getBlankNodeLabel());
     }
 
+    @Test
     public void testCreateVariable() {
         String V = "wobbly";
         Node v = NodeCreateUtils.create("?" + V);
-        assertTrue("must be a variable", v.isVariable());
-        assertEquals("name must be correct", V, v.getName());
+        assertTrue(v.isVariable(), "must be a variable");
+        assertEquals(V, v.getName(), "name must be correct");
     }
 
+    @Test
     public void testCreateANY() {
-        assertEquals("?? must denote ANY", Node.ANY, NodeCreateUtils.create("??"));
+        assertEquals(Node.ANY, NodeCreateUtils.create("??"), "?? must denote ANY");
     }
 
+    @Test
     public void testCreatePlainLiteralSingleQuotes() {
         Node n = NodeCreateUtils.create("'xxx'");
         assertEquals("xxx", n.getLiteralLexicalForm());
         assertString(n);
     }
 
+    @Test
     public void testCreatePlainLiteralDoubleQuotes() {
         Node n = NodeCreateUtils.create("\"xxx\"");
         assertEquals("xxx", n.getLiteralLexicalForm());
         assertString(n);
     }
 
+    @Test
     public void testCreateLiteralBackslashEscape() {
         testStringConversion("xx\\x", "'xx\\\\x'");
         testStringConversion("xx\\x\\y", "'xx\\\\x\\\\y'");
         testStringConversion("\\xyz\\", "'\\\\xyz\\\\'");
     }
 
+    @Test
     public void testCreateLiteralQuoteEscapes() {
         testStringConversion("x\'y", "'x\\'y'");
         testStringConversion("x\"y", "'x\\\"y'");
         testStringConversion("x\'y\"z", "'x\\\'y\\\"z'");
     }
 
+    @Test
     public void testCreateLiteralOtherEscapes() {
         testStringConversion(" ", "'\\s'");
         testStringConversion("\t", "'\\t'");
@@ -329,6 +345,7 @@ public class TestNode extends TestCase {
         assertString(n);
     }
 
+    @Test
     public void testCreateLanguagedLiteralEN1() {
         Node n = NodeCreateUtils.create("'chat'en-UK");
         assertEquals("chat", n.getLiteralLexicalForm());
@@ -336,6 +353,7 @@ public class TestNode extends TestCase {
         assertEquals("en-UK", n.getLiteralLanguage());
     }
 
+    @Test
     public void testCreateLanguagedLiteralEN2() {
         Node n1 = NodeCreateUtils.create("'chat'en-UK");
         Node n2 = NodeCreateUtils.create("'chat'EN-UK");
@@ -344,6 +362,7 @@ public class TestNode extends TestCase {
         assertTrue(n1.equals(n2));
     }
 
+    @Test
     public void testCreateLanguagedLiteralXY() {
         Node n = NodeCreateUtils.create("\"chat\"xy-AB");
         assertEquals("chat", n.getLiteralLexicalForm());
@@ -351,6 +370,7 @@ public class TestNode extends TestCase {
         assertLangString(n);
     }
 
+    @Test
     public void testCreateTypedLiteralInteger() {
         Node n = NodeCreateUtils.create("'42'xsd:integer");
         assertEquals("42", n.getLiteralLexicalForm());
@@ -358,6 +378,7 @@ public class TestNode extends TestCase {
         assertEquals(expand("xsd:integer"), n.getLiteralDatatypeURI());
     }
 
+    @Test
     public void testCreateTypedLiteralBoolean() {
         Node n = NodeCreateUtils.create("\"true\"xsd:boolean");
         assertEquals("true", n.getLiteralLexicalForm());
@@ -365,16 +386,19 @@ public class TestNode extends TestCase {
         assertEquals(expand("xsd:boolean"), n.getLiteralDatatypeURI());
     }
 
+    @Test
     public void testGetPlainLiteralLexicalForm() {
         Node n = NodeCreateUtils.create("'stuff'");
         assertEquals("stuff", n.getLiteralLexicalForm());
     }
 
+    @Test
     public void testGetNumericLiteralLexicalForm() {
         Node n = NodeCreateUtils.create("17");
         assertEquals("17", n.getLiteralLexicalForm());
     }
 
+    @Test
     public void testTypesExpandPrefix() {
         testTypeExpandsPrefix("rdf:spoo");
         testTypeExpandsPrefix("rdfs:bar");
@@ -389,6 +413,7 @@ public class TestNode extends TestCase {
         assertEquals(wanted, n.getLiteralDatatypeURI());
     }
 
+    @Test
     public void testCreateURI() {
         String uri = "http://www.electric-hedgehog.net/";
         testCreateURI(uri);
@@ -400,6 +425,7 @@ public class TestNode extends TestCase {
         testCreateURI("owl:wol", OWL.getURI() + "wol");
     }
 
+    @Test
     public void testCreateURIOtherMap() {
         String myNS = "eh:foo/bar#", suffix = "something";
         PrefixMapping mine = PrefixMapping.Factory.create().setNsPrefix("mine", myNS);
@@ -421,11 +447,13 @@ public class TestNode extends TestCase {
         }
     }
 
+    @Test
     public void testCreatePrefixed() {
         PrefixMapping pm = PrefixMapping.Factory.create();
         NodeCreateUtils.create(pm, "xyz");
     }
 
+    @Test
     public void testToStringWithPrefixMapping() {
         PrefixMapping pm = PrefixMapping.Factory.create();
         String prefix = "spoo", ns = "abc:def/ghi#";
@@ -434,14 +462,16 @@ public class TestNode extends TestCase {
         assertEquals(prefix + ":" + suffix, NodeCreateUtils.create(ns + suffix).toString(pm));
     }
 
+    @Test
     public void testNodeHelp() {
-        assertTrue("node() making URIs", GraphTestLib.node("hello").isURI());
-        assertTrue("node() making literals", GraphTestLib.node("123").isLiteral());
-        assertTrue("node() making literals", GraphTestLib.node("'hello'").isLiteral());
-        assertTrue("node() making hyphens", GraphTestLib.node("_x").isBlank());
-        assertTrue("node() making variables", GraphTestLib.node("?x").isVariable());
+        assertTrue(GraphTestLib.node("hello").isURI(), "node() making URIs");
+        assertTrue(GraphTestLib.node("123").isLiteral(), "node() making literals");
+        assertTrue(GraphTestLib.node("'hello'").isLiteral(), "node() making literals");
+        assertTrue(GraphTestLib.node("_x").isBlank(), "node() making hyphens");
+        assertTrue(GraphTestLib.node("?x").isVariable(), "node() making variables");
     }
 
+    @Test
     public void testVisitorPatternNode() {
         NodeVisitor returnNode = new NodeVisitor() {
             @Override
@@ -509,6 +539,7 @@ public class TestNode extends TestCase {
         ng.visitWith(nv);
     }
 
+    @Test
     public void testVisitorPatternValue() {
         NodeVisitor checkValue = new NodeVisitor() {
             @Override
@@ -561,6 +592,7 @@ public class TestNode extends TestCase {
      * Test that the appropriate elements of the visitor are called exactly once;
      * this relies on the order of the visits in visitExamples.
      */
+    @Test
     public void testVisitorPatternCalled() {
         final String[] strings = new String[]{""};
         NodeVisitor checkCalled = new NodeVisitor() {
@@ -609,17 +641,18 @@ public class TestNode extends TestCase {
         };
         String desired = " uri variable blank literal any termTriple termGraph";
         visitExamples(checkCalled);
-        assertEquals("all visits must have been made", desired, strings[0]);
+        assertEquals(desired, strings[0], "all visits must have been made");
     }
 
+    @Test
     public void testSimpleMatches() {
         assertTrue(NodeCreateUtils.create("S").sameTermAs(NodeCreateUtils.create("S")));
-        assertFalse("", NodeCreateUtils.create("S").sameTermAs(NodeCreateUtils.create("T")));
+        assertFalse(NodeCreateUtils.create("S").sameTermAs(NodeCreateUtils.create("T")), "");
 
         assertTrue(NodeCreateUtils.create("_X").sameTermAs(NodeCreateUtils.create("_X")));
-        assertFalse("", NodeCreateUtils.create("_X").sameTermAs(NodeCreateUtils.create("_Y")));
+        assertFalse(NodeCreateUtils.create("_X").sameTermAs(NodeCreateUtils.create("_Y")), "");
         assertTrue(NodeCreateUtils.create("10").sameTermAs(NodeCreateUtils.create("10")));
-        assertFalse("", NodeCreateUtils.create("10").sameTermAs(NodeCreateUtils.create("11")));
+        assertFalse(NodeCreateUtils.create("10").sameTermAs(NodeCreateUtils.create("11")), "");
         // Jena6. nulls no longer allowed.
 
         try {
@@ -633,6 +666,7 @@ public class TestNode extends TestCase {
 //        assertFalse("", Node.ANY.sameTermAs(null));
     }
 
+    @Test
     public void testDataSameValue() {
         TypeMapper tm = TypeMapper.getInstance();
         RDFDatatype dt1 = tm.getTypeByValue(Integer.valueOf(10));
@@ -640,9 +674,10 @@ public class TestNode extends TestCase {
         Node a = NodeFactory.createLiteralDT("10", dt1);
         Node b = NodeFactory.createLiteralDT("10", dt2);
         JenaTestLib.assertDiffer("types must make a difference", a, b);
-        assertTrue("A and B must express the same value", a.sameValueAs(b));
+        assertTrue(a.sameValueAs(b), "A and B must express the same value");
     }
 
+    @Test
     public void testLiteralToString() {
         TypeMapper tm = TypeMapper.getInstance();
         RDFDatatype dtInt = tm.getTypeByValue(Integer.valueOf(10));
@@ -654,42 +689,51 @@ public class TestNode extends TestCase {
         assertEquals("\"10\"^^xsd:int", typed.toString());
     }
 
+    @Test
     public void testGetIndexingValueURI() {
         Node u = NodeCreateUtils.create("eh:/telephone");
         assertSame(u, u.getIndexingValue());
     }
 
+    @Test
     public void testGetIndexingValueBlank() {
         Node b = NodeCreateUtils.create("_television");
         assertSame(b, b.getIndexingValue());
     }
 
+    @Test
     public void testGetIndexingValuePlainString() {
         testIndexingValueLiteral(() -> NodeCreateUtils.create("'literally'"));
     }
 
+    @Test
     public void testGetIndexingValueLanguagedString() {
         testIndexingValueLiteral(() -> NodeCreateUtils.create("'chat'fr"));
     }
 
+    @Test
     public void testGetIndexingValueXSDString() {
         testIndexingValueLiteral(() -> NodeCreateUtils.create("'string'xsd:string"));
     }
 
     // JENA-1936
+    @Test
     public void testGetIndexingValueHexBinary1() {
         testIndexingValueLiteral(() -> NodeCreateUtils.create("''xsd:hexBinary"));
     }
 
+    @Test
     public void testGetIndexingValueHexBinary2() {
         testIndexingValueLiteral(() -> NodeCreateUtils.create("'ABCD'xsd:hexBinary"));
     }
 
+    @Test
     public void testGetIndexingValueBase64Binary1() {
         testIndexingValueLiteral(() -> NodeCreateUtils.create("''xsd:base64Binary"));
     }
 
     // "sure." encodes to "c3VyZS4="
+    @Test
     public void testGetIndexingValueBase64Binary2() {
         testIndexingValueLiteral(() -> NodeCreateUtils.create("'c3VyZS4='xsd:base64Binary"));
     }
@@ -706,15 +750,18 @@ public class TestNode extends TestCase {
         assertEquals(n1.getLiteral().getIndexingValue().hashCode(), n2.getIndexingValue().hashCode());
     }
 
+    @Test
     public void testGetLiteralValuePlainString() {
         Node s = NodeCreateUtils.create("'aString'");
         assertSame(s.getLiteral().getValue(), s.getLiteralValue());
     }
 
+    @Test
     public void testGetLiteralDatatypePlainString() {
         assertString(NodeCreateUtils.create("'plain'"));
     }
 
+    @Test
     public void testConcrete() {
         assertTrue(NodeCreateUtils.create("S").isConcrete());
         assertTrue(NodeCreateUtils.create("_P").isConcrete());
@@ -731,17 +778,19 @@ public class TestNode extends TestCase {
      * test that URI nodes have namespace/localname splits which are consistent with
      * Util.splitNamepace.
      */
+    @Test
     public void testNamespace() {
         for ( String uri : someURIs ) {
             int split = SplitIRI.splitXML(uri);
             Node n = NodeCreateUtils.create(uri);
-            assertEquals("check namespace", uri.substring(0, split), n.getNameSpace());
-            assertEquals("check localname", uri.substring(split), n.getLocalName());
+            assertEquals(uri.substring(0, split), n.getNameSpace(), "check namespace");
+            assertEquals(uri.substring(split), n.getLocalName(), "check localname");
         }
     }
 
     protected static String[] someNodes = {"42", "'hello'", "_anon", "'robotic'tick", "'teriffic'abc:def"};
 
+    @Test
     public void testHasURI() {
         for ( String someURI : someURIs ) {
             testHasURI(someURI);
@@ -753,8 +802,8 @@ public class TestNode extends TestCase {
 
     protected void testHasURI(String uri) {
         Node n = NodeCreateUtils.create(uri);
-        assertTrue(uri, !n.isURI() || n.hasURI(uri));
-        assertFalse(uri, n.hasURI(uri + "x"));
+        assertTrue(!n.isURI() || n.hasURI(uri), uri);
+        assertFalse(n.hasURI(uri + "x"), uri);
     }
 
     private static void assertString(Node n) {

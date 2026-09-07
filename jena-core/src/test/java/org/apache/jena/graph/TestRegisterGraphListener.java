@@ -21,16 +21,18 @@
 
 package org.apache.jena.graph;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import java.util.Iterator;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 /**
  * These tests are for listeners that add or delete other listeners. It motivates the
  * use of, e.g. CopyOnWriteArrayList for storing listeners.
  */
-public class TestRegisterGraphListener extends TestCase {
+public class TestRegisterGraphListener {
 
     private ComeAndGoListener all[];
     private Graph graph;
@@ -107,9 +109,6 @@ public class TestRegisterGraphListener extends TestCase {
         public void notifyEvent(Graph source, Object value) {}
 
     }
-    public TestRegisterGraphListener(String name) {
-        super(name);
-    }
 
     private void testAddingTriple(int addMe, ComeAndGoListener...allx) {
         graph = GraphTestLib.newGraph();
@@ -126,6 +125,7 @@ public class TestRegisterGraphListener extends TestCase {
         }
     }
 
+    @Test
     public void testAddOne() {
         testAddingTriple(2, new ComeAndGoListener() {
             @Override
@@ -135,6 +135,7 @@ public class TestRegisterGraphListener extends TestCase {
         }, new SimpleListener(), new SimpleListener());
     }
 
+    @Test
     public void testDelete2nd() {
         testAddingTriple(3, new ComeAndGoListener() {
             @Override
@@ -144,6 +145,7 @@ public class TestRegisterGraphListener extends TestCase {
         }, new SimpleListener(), new SimpleListener());
     }
 
+    @Test
     public void testDelete1st() {
         testAddingTriple(3, new SimpleListener(), new ComeAndGoListener() {
             @Override
@@ -153,6 +155,7 @@ public class TestRegisterGraphListener extends TestCase {
         }, new SimpleListener());
     }
 
+    @Test
     public void testDeleteSelf() {
         testAddingTriple(3, new ComeAndGoListener() {
             @Override
@@ -162,6 +165,7 @@ public class TestRegisterGraphListener extends TestCase {
         }, new SimpleListener(), new SimpleListener());
     }
 
+    @Test
     public void testDeleteAndAddSelf() {
         testAddingTriple(3, new ComeAndGoListener() {
             @Override

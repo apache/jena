@@ -25,12 +25,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import org.apache.jena.graph.BaseTestGraph_JU6;
+import org.apache.jena.graph.BaseTestGraph;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphTestLib;
 import org.apache.jena.graph.Triple;
 
-public class TestDelta extends BaseTestGraph_JU6 {
+public class TestDelta extends BaseTestGraph {
 
     private static final String DEFAULT_TRIPLES = "x R y; p S q";
 
