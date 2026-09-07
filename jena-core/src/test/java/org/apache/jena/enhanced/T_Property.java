@@ -21,13 +21,13 @@
 
 package org.apache.jena.enhanced;
 
-public interface TestNode {
-	// Convenience routines for converting between different
-	// views using the subinterfaces,
-	// These are implemented in the base implementation class
-	// TestCommonImpl.
-    TestSubject asSubject();
-    TestObject asObject();
-    TestProperty asProperty();
+import org.apache.jena.rdf.model.RDFNode;
 
+/**
+ * @see T_Object
+ */
+public interface T_Property extends RDFNode, T_Node {  
+   
+    boolean isProperty();
+    T_Object anObject();
 }

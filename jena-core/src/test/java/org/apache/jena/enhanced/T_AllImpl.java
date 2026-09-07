@@ -23,7 +23,7 @@ package org.apache.jena.enhanced;
 import org.apache.jena.graph.*;
 import org.apache.jena.rdf.model.*;
 
-public class TestAllImpl extends TestCommonImpl implements TestSubject, TestProperty, TestObject {
+public class T_AllImpl extends T_CommonImpl implements T_Subject, T_Property, T_Object {
 
     public static final Implementation factory = new Implementation() {
     @Override
@@ -31,12 +31,12 @@ public class TestAllImpl extends TestCommonImpl implements TestSubject, TestProp
         { return true; }
     @Override
     public EnhNode wrap(Node n,EnhGraph eg) {
-        return new TestAllImpl(n,eg);
+        return new T_AllImpl(n,eg);
     }
 };
 
-    /** Creates a new instance of TestAllImpl */
-    private TestAllImpl(Node n,EnhGraph eg) {
+    /** Creates a new instance of T_AllImpl */
+    private T_AllImpl(Node n,EnhGraph eg) {
         super( n, eg );
     }
 
@@ -44,9 +44,9 @@ public class TestAllImpl extends TestCommonImpl implements TestSubject, TestProp
         {
         // return convertTo( t ) != null;
         return
-            t == TestProperty.class ? isProperty()
-            : t == TestSubject.class ? isSubject()
-            : t == TestObject.class ? isObject()
+            t == T_Property.class ? isProperty()
+            : t == T_Subject.class ? isSubject()
+            : t == T_Object.class ? isObject()
             : false
            ;
         }
@@ -67,24 +67,24 @@ public class TestAllImpl extends TestCommonImpl implements TestSubject, TestProp
     }
 
     @Override
-    public TestObject anObject() {
+    public T_Object anObject() {
         if (!isProperty())
             throw new IllegalStateException("Node is not the property of a triple.");
-        return enhGraph.getNodeAs(findPredicate().getObject(),TestObject.class);
+        return enhGraph.getNodeAs(findPredicate().getObject(),T_Object.class);
     }
 
     @Override
-    public TestProperty aProperty() {
+    public T_Property aProperty() {
         if (!isSubject())
             throw new IllegalStateException("Node is not the subject of a triple.");
-        return enhGraph.getNodeAs(findSubject().getPredicate(),TestProperty.class);
+        return enhGraph.getNodeAs(findSubject().getPredicate(),T_Property.class);
     }
 
     @Override
-    public TestSubject aSubject() {
+    public T_Subject aSubject() {
         if (!isObject())
             throw new IllegalStateException("Node is not the object of a triple.");
-        return enhGraph.getNodeAs(findObject().getSubject(),TestSubject.class);
+        return enhGraph.getNodeAs(findObject().getSubject(),T_Subject.class);
     }
 
     @Override

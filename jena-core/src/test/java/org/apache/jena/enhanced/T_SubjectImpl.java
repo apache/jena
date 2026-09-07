@@ -20,41 +20,41 @@
  */
 
 package org.apache.jena.enhanced;
+
 import org.apache.jena.graph.*;
 import org.apache.jena.rdf.model.RDFNode;
-
 /**
- * @see TestObjectImpl
+ * @see T_ObjectImpl
  */
-public class TestPropertyImpl  extends TestCommonImpl implements TestProperty {
+public class T_SubjectImpl extends T_CommonImpl implements T_Subject {
 
     public static final Implementation factory = new Implementation() {
-        @Override public EnhNode wrap(Node n,EnhGraph eg) {
-            return new TestPropertyImpl(n,eg);
-        }    
+    @Override
+    public boolean canWrap( Node n, EnhGraph eg )
+        { return true; }
+    @Override
+    public EnhNode wrap(Node n,EnhGraph eg) {
+        return new T_SubjectImpl(n,eg);
+    }
+};
     
-        @Override public boolean canWrap( Node n, EnhGraph eg )
-            { return true; }
-    };
-    
-    /** Creates a new instance of TestAllImpl */
-    private TestPropertyImpl(Node n,EnhGraph eg) {
+    /** Creates a new instance of T_AllImpl */
+    private T_SubjectImpl(Node n,EnhGraph eg) {
         super( n, eg );
     }
     
     @Override public <X extends RDFNode> boolean supports( Class<X> t )
-        { return t.isInstance( this ) && isProperty(); }
+        { return t.isInstance( this ) && isSubject(); }
         
     @Override
-    public boolean isProperty() {
-        return findPredicate() != null;
-    }
-        
-    @Override
-    public TestObject anObject() {
-        if (!isProperty())
-            throw new IllegalStateException("Node is not the property of a triple.");
-        return enhGraph.getNodeAs(findPredicate().getObject(),TestObject.class);
+    public boolean isSubject() {
+        return findSubject() != null;
     }
     
+    @Override
+    public T_Property aProperty() {
+        if (!isSubject())
+            throw new IllegalStateException("Node is not the subject of a triple.");
+        return enhGraph.getNodeAs(findSubject().getPredicate(),T_Property.class);
+    }
 }

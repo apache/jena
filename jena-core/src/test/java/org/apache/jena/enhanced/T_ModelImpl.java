@@ -20,41 +20,41 @@
  */
 
 package org.apache.jena.enhanced;
-
 import org.apache.jena.graph.*;
 import org.apache.jena.rdf.model.RDFNode;
-/**
- * @see TestObjectImpl
- */
-public class TestSubjectImpl extends TestCommonImpl implements TestSubject {
+import org.apache.jena.util.iterator.*;
 
-    public static final Implementation factory = new Implementation() {
-    @Override
-    public boolean canWrap( Node n, EnhGraph eg )
-        { return true; }
-    @Override
-    public EnhNode wrap(Node n,EnhGraph eg) {
-        return new TestSubjectImpl(n,eg);
-    }
-};
+public class T_ModelImpl extends EnhGraph implements T_Model {
     
-    /** Creates a new instance of TestAllImpl */
-    private TestSubjectImpl(Node n,EnhGraph eg) {
-        super( n, eg );
+    /** Creates a new instance of T_ModelImpl */
+    public T_ModelImpl(Graph g, Personality<RDFNode> p) {
+        super(g,p);
     }
-    
-    @Override public <X extends RDFNode> boolean supports( Class<X> t )
-        { return t.isInstance( this ) && isSubject(); }
+    private Triple aTriple() 
+        {
+        ClosableIterator<Triple> it = null;
+        try 
+            {
+            it = graph.find( null, null, null );
+            return it.hasNext() ? it.next() : null;
+            }
+        finally 
+            { if (it != null) it.close(); }
+        }
         
     @Override
-    public boolean isSubject() {
-        return findSubject() != null;
+    public T_Object anObject() {
+        return getNodeAs(aTriple().getObject(),T_Object.class);
     }
     
     @Override
-    public TestProperty aProperty() {
-        if (!isSubject())
-            throw new IllegalStateException("Node is not the subject of a triple.");
-        return enhGraph.getNodeAs(findSubject().getPredicate(),TestProperty.class);
+    public T_Property aProperty() {
+        return getNodeAs(aTriple().getPredicate(),T_Property.class);
     }
+    
+    @Override
+    public T_Subject aSubject() {
+        return getNodeAs(aTriple().getSubject(),T_Subject.class);
+    }
+    
 }

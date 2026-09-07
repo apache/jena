@@ -25,15 +25,15 @@ import org.apache.jena.rdf.model.*;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.util.iterator.*;
 
-class TestCommonImpl extends EnhNode implements TestNode {
+class T_CommonImpl extends EnhNode implements T_Node {
 
-    /** Creates new TestCommonImpl */
-    TestCommonImpl(Node n, EnhGraph m ) {
+    /** Creates new T_CommonImpl */
+    T_CommonImpl(Node n, EnhGraph m ) {
         super(n,m);
     }
 
     /**
-       We can't return TestModel now, because it clashes with the getModel()
+       We can't return T_Model now, because it clashes with the getModel()
        in RDFNode, which we have to inherit because of the personality tests.
        Fortunately the EnhGraph test set doesn't /need/ getModel, so we give
        it return type Model and throw an exception if it's ever called.
@@ -71,18 +71,18 @@ class TestCommonImpl extends EnhNode implements TestNode {
         // Convenience routines, that wrap the generic
         // routines from EnhNode.
         @Override
-        public TestSubject asSubject() {
-            return asInternal(TestSubject.class);
+        public T_Subject asSubject() {
+            return asInternal(T_Subject.class);
         }
 
         @Override
-        public TestProperty asProperty() {
-            return asInternal(TestProperty.class);
+        public T_Property asProperty() {
+            return asInternal(T_Property.class);
         }
 
         @Override
-        public TestObject asObject() {
-            return asInternal(TestObject.class);
+        public T_Object asObject() {
+            return asInternal(T_Object.class);
         }
 
         public RDFNode inModel(Model m) {

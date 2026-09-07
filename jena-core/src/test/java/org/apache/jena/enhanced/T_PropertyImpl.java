@@ -22,39 +22,39 @@
 package org.apache.jena.enhanced;
 import org.apache.jena.graph.*;
 import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.util.iterator.*;
 
-public class TestModelImpl extends EnhGraph implements TestModel {
+/**
+ * @see T_ObjectImpl
+ */
+public class T_PropertyImpl  extends T_CommonImpl implements T_Property {
+
+    public static final Implementation factory = new Implementation() {
+        @Override public EnhNode wrap(Node n,EnhGraph eg) {
+            return new T_PropertyImpl(n,eg);
+        }    
     
-    /** Creates a new instance of TestModelImpl */
-    public TestModelImpl(Graph g, Personality<RDFNode> p) {
-        super(g,p);
+        @Override public boolean canWrap( Node n, EnhGraph eg )
+            { return true; }
+    };
+    
+    /** Creates a new instance of T_AllImpl */
+    private T_PropertyImpl(Node n,EnhGraph eg) {
+        super( n, eg );
     }
-    private Triple aTriple() 
-        {
-        ClosableIterator<Triple> it = null;
-        try 
-            {
-            it = graph.find( null, null, null );
-            return it.hasNext() ? it.next() : null;
-            }
-        finally 
-            { if (it != null) it.close(); }
-        }
+    
+    @Override public <X extends RDFNode> boolean supports( Class<X> t )
+        { return t.isInstance( this ) && isProperty(); }
         
     @Override
-    public TestObject anObject() {
-        return getNodeAs(aTriple().getObject(),TestObject.class);
+    public boolean isProperty() {
+        return findPredicate() != null;
     }
-    
+        
     @Override
-    public TestProperty aProperty() {
-        return getNodeAs(aTriple().getPredicate(),TestProperty.class);
-    }
-    
-    @Override
-    public TestSubject aSubject() {
-        return getNodeAs(aTriple().getSubject(),TestSubject.class);
+    public T_Object anObject() {
+        if (!isProperty())
+            throw new IllegalStateException("Node is not the property of a triple.");
+        return enhGraph.getNodeAs(findPredicate().getObject(),T_Object.class);
     }
     
 }
