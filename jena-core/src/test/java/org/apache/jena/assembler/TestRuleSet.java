@@ -21,6 +21,10 @@
 
 package org.apache.jena.assembler;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import java.util.*;
 
 import org.apache.jena.reasoner.rulesys.Rule;
@@ -28,26 +32,26 @@ import org.apache.jena.shared.BrokenException;
 import org.apache.jena.test.JenaTestLib;
 
 public class TestRuleSet extends AssemblerTestBase {
-    public TestRuleSet(String name) {
-        super(name);
-    }
 
     @Override
     protected Class<? extends Assembler> getAssemblerClass() {
         throw new BrokenException("TestAssemblers does not need this method");
     }
 
+    @Test
     public void testEmpty() {
         assertEquals(Collections.emptyList(), RuleSet.empty.getRules());
         assertEquals(RuleSet.empty, RuleSet.create(Collections.<Rule> emptyList()));
     }
 
+    @Test
     public void testEmptyRuleSet() {
         RuleSet s = RuleSet.create(Collections.<Rule> emptyList());
         assertEquals(Collections.emptyList(), s.getRules());
         assertNotSame(Collections.emptyList(), s.getRules());
     }
 
+    @Test
     public void testSingleRuleSet() {
         Rule rule = Rule.parseRule("[(?a P b) -> (?a rdf:type T)]");
         List<Rule> list = JenaTestLib.listOfOne(rule);
@@ -56,6 +60,7 @@ public class TestRuleSet extends AssemblerTestBase {
         assertNotSame(list, s.getRules());
     }
 
+    @Test
     public void testMultipleRuleSet() {
         Rule A = Rule.parseRule("[(?a P b) -> (?a rdf:type T)]");
         Rule B = Rule.parseRule("[(?a Q b) -> (?a rdf:type U)]");
@@ -65,12 +70,14 @@ public class TestRuleSet extends AssemblerTestBase {
         assertNotSame(rules, s.getRules());
     }
 
+    @Test
     public void testFactoryForString() {
         String ruleString = "[(?a P b) -> (?a rdf:type T)]";
         RuleSet s = RuleSet.create(ruleString);
         assertEquals(Rule.parseRules(ruleString), s.getRules());
     }
 
+    @Test
     public void testHashAndEquality() {
         String A = "[(?x breaks ?y) -> (?y brokenBy ?x)]";
         String B = "[(?a Q b) -> (?a rdf:type U)]";

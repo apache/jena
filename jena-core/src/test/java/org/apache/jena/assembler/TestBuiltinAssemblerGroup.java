@@ -21,15 +21,16 @@
 
 package org.apache.jena.assembler;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.assembler.assemblers.*;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.test.JenaTestLib;
 
 public class TestBuiltinAssemblerGroup extends AssemblerTestBase {
-    public TestBuiltinAssemblerGroup(String name) {
-        super(name);
-    }
 
     @Override
     protected Class<? extends Assembler> getAssemblerClass() {
@@ -37,6 +38,7 @@ public class TestBuiltinAssemblerGroup extends AssemblerTestBase {
     }
 
     @SuppressWarnings("removal")
+    @Test
     public void testGeneralRegistration() {
         assertAssemblerClass(JA.DefaultModel, DefaultModelAssembler.class);
         assertAssemblerClass(JA.PrefixMapping, PrefixMappingAssembler.class);
@@ -54,6 +56,7 @@ public class TestBuiltinAssemblerGroup extends AssemblerTestBase {
     }
 
     @SuppressWarnings("removal")
+    @Test
     public void testVariables() {
         JenaTestLib.assertInstanceOf(DefaultModelAssembler.class, Assembler.defaultModel);
         JenaTestLib.assertInstanceOf(PrefixMappingAssembler.class, Assembler.prefixMapping);
@@ -68,12 +71,14 @@ public class TestBuiltinAssemblerGroup extends AssemblerTestBase {
         JenaTestLib.assertInstanceOf(UnionModelAssembler.class, Assembler.unionModel);
     }
 
+    @Test
     public void testRecognisesAndAssemblesSinglePrefixMapping() {
         PrefixMapping wanted = PrefixMapping.Factory.create().setNsPrefix("P", "spoo:/");
         Resource r = resourceInModel("x ja:prefix 'P'; x ja:namespace 'spoo:/'");
         assertEquals(wanted, Assembler.general().open(r));
     }
 
+    @Test
     public void testRecognisesAndAssemblesMultiplePrefixMappings() {
         PrefixMapping wanted = PrefixMapping.Factory.create().setNsPrefix("P", "spoo:/").setNsPrefix("Q", "flarn:/");
         Resource r = resourceInModel("x ja:includes y; x ja:includes z; y ja:prefix 'P'; y ja:namespace 'spoo:/'; z ja:prefix 'Q'; z ja:namespace 'flarn:/'");

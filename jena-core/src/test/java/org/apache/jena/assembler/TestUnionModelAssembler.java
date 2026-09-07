@@ -21,6 +21,10 @@
 
 package org.apache.jena.assembler;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import java.util.*;
 
 import org.apache.jena.assembler.assemblers.*;
@@ -31,19 +35,18 @@ import org.apache.jena.shared.AddDeniedException;
 import org.apache.jena.test.JenaTestLib;
 
 public class TestUnionModelAssembler extends AssemblerTestBase {
-    public TestUnionModelAssembler(String name) {
-        super(name);
-    }
 
     @Override
     protected Class<? extends Assembler> getAssemblerClass() {
         return UnionModelAssembler.class;
     }
 
+    @Test
     public void testUnionModelAssemblerType() {
         testDemandsMinimalType(new UnionModelAssembler(), JA.UnionModel);
     }
 
+    @Test
     public void testUnionVocabulary() {
         assertSubclassOf(JA.UnionModel, JA.Model);
         assertDomain(JA.UnionModel, JA.subModel);
@@ -52,6 +55,7 @@ public class TestUnionModelAssembler extends AssemblerTestBase {
         assertRange(JA.Model, JA.rootModel);
     }
 
+    @Test
     public void testCreatesMultiUnion() {
         Resource root = resourceInModel("x rdf:type ja:UnionModel");
         Assembler a = new UnionModelAssembler();
@@ -88,6 +92,7 @@ public class TestUnionModelAssembler extends AssemblerTestBase {
         }
     }
 
+    @Test
     public void testCreatesUnionWithSubModels() {
         Resource root = resourceInModel("x rdf:type ja:UnionModel; x ja:subModel A; x ja:subModel B");
         Assembler a = new UnionModelAssembler();
@@ -104,6 +109,7 @@ public class TestUnionModelAssembler extends AssemblerTestBase {
         checkImmutable(m);
     }
 
+    @Test
     public void testSubModelsCheckObject() {
         Resource root = resourceInModel("x rdf:type ja:UnionModel; x ja:subModel 'A'");
         Assembler a = new UnionModelAssembler();
@@ -116,6 +122,7 @@ public class TestUnionModelAssembler extends AssemblerTestBase {
         }
     }
 
+    @Test
     public void testCreatesUnionWithBaseModel() {
         Resource root = resourceInModel("x rdf:type ja:UnionModel; x ja:subModel A; x ja:rootModel B");
         Assembler a = new UnionModelAssembler();

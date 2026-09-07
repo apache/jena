@@ -21,10 +21,20 @@
 
 package org.apache.jena.assembler;
 
-import java.lang.reflect.Field;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Arrays;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import org.junit.jupiter.api.Test;
+
 import java.util.List;
 
-import junit.framework.*;
 import org.apache.jena.assembler.assemblers.*;
 import org.apache.jena.ontology.*;
 import org.apache.jena.rdf.model.*;
@@ -32,54 +42,42 @@ import org.apache.jena.test.JenaTestLib;
 
 @SuppressWarnings("removal")
 public class TestOntModelAssembler extends AssemblerTestBase {
-    public TestOntModelAssembler(String name) {
-        super(name);
-    }
-
-    public static TestSuite suite() {
-        TestSuite result = new TestSuite();
-        result.addTestSuite(TestOntModelAssembler.class);
-        addParameterisedTests(result);
-        return result;
-    }
 
     @Override
     protected Class<? extends Assembler> getAssemblerClass() {
         return OntModelAssembler.class;
     }
 
+    @Test
     public void testOntModelAssemblerType() {
         testDemandsMinimalType(new OntModelAssembler(), JA.OntModel);
     }
 
-    protected static void addParameterisedTests(TestSuite result) {
-        Field[] fields = OntModelSpec.class.getFields();
-        for ( Field f : fields ) {
-            String name = f.getName();
-            if ( f.getType() == OntModelSpec.class ) {
-                try {
-                    result.addTest(createTest((OntModelSpec)f.get(null), name));
-                } catch (Exception e) {
-                    System.err.println("WARNING: failed to create test for OntModelSpec " + name);
-                }
-            }
-        }
+    /** One case per public {@code OntModelSpec} constant - was addParameterisedTests(). */
+    static Stream<Arguments> builtinSpecs() {
+        return Arrays.stream(OntModelSpec.class.getFields())
+                     .filter(f->f.getType() == OntModelSpec.class)
+                     .map(f->{
+                         try {
+                             return Arguments.of(Named.of(f.getName(), (OntModelSpec)f.get(null)), f.getName());
+                         } catch (IllegalAccessException e) {
+                             throw new RuntimeException(e);
+                         }
+                     });
     }
 
-    protected static Test createTest(final OntModelSpec spec, final String name) {
-        return new TestOntModelAssembler(name) {
-            @Override
-            public void runBare() {
-                Assembler a = new OntModelAssembler();
-                Model m = (Model)a.open(new FixedObjectAssembler(spec),
-                                        resourceInModel("x rdf:type ja:OntModel; x ja:ontModelSpec ja:" + name));
-                JenaTestLib.assertInstanceOf(OntModel.class, m);
-                OntModel om = (OntModel)m;
-                assertSame(spec, om.getSpecification());
-            }
-        };
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("builtinSpecs")
+    public void testBuiltinSpec(OntModelSpec spec, String name) {
+        Assembler a = new OntModelAssembler();
+        Model m = (Model)a.open(new FixedObjectAssembler(spec),
+                                resourceInModel("x rdf:type ja:OntModel; x ja:ontModelSpec ja:" + name));
+        JenaTestLib.assertInstanceOf(OntModel.class, m);
+        OntModel om = (OntModel)m;
+        assertSame(spec, om.getSpecification());
     }
 
+    @Test
     public void testAllDefaults() {
         Assembler a = new OntModelAssembler();
         Model m = a.openModel(resourceInModel("x rdf:type ja:OntModel"));
@@ -88,6 +86,7 @@ public class TestOntModelAssembler extends AssemblerTestBase {
         assertSame(OntModelSpec.OWL_MEM_RDFS_INF, om.getSpecification());
     }
 
+    @Test
     public void testBaseModel() {
         final Model baseModel = model("a P b");
         Assembler a = new OntModelAssembler();
@@ -104,6 +103,7 @@ public class TestOntModelAssembler extends AssemblerTestBase {
         assertSame(baseModel.getGraph(), om.getBaseModel().getGraph());
     }
 
+    @Test
     public void testSubModels() {
         final Model baseModel = model("a P b");
         Assembler a = new OntModelAssembler();
@@ -122,6 +122,7 @@ public class TestOntModelAssembler extends AssemblerTestBase {
         assertSame(baseModel.getGraph(), subModels.get(0).getBaseModel().getGraph());
     }
 
+    @Test
     public void testDefaultDocumentManager() {
         Assembler a = new OntModelAssembler();
         Resource root = resourceInModel("x rdf:type ja:OntModel");
@@ -129,6 +130,7 @@ public class TestOntModelAssembler extends AssemblerTestBase {
         assertSame(OntDocumentManager.getInstance(), om.getDocumentManager());
     }
 
+    @Test
     public void testUsesOntModelSpec() {
         Assembler a = new OntModelAssembler();
         Resource root = resourceInModel("x rdf:type ja:OntModel; x ja:ontModelSpec y");

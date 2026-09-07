@@ -21,6 +21,10 @@
 
 package org.apache.jena.assembler;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import java.util.*;
 
 import org.apache.jena.assembler.assemblers.RuleSetAssembler;
@@ -28,15 +32,13 @@ import org.apache.jena.rdf.model.*;
 import org.apache.jena.reasoner.rulesys.Rule;
 
 public class TestRuleSetAssembler extends AssemblerTestBase {
-    public TestRuleSetAssembler(String name) {
-        super(name);
-    }
 
     @Override
     protected Class<? extends Assembler> getAssemblerClass() {
         return RuleSetAssembler.class;
     }
 
+    @Test
     public void testRuleSetVocabulary() {
         assertSubclassOf(JA.RuleSet, JA.HasRules);
         assertDomain(JA.HasRules, JA.rule);
@@ -45,16 +47,19 @@ public class TestRuleSetAssembler extends AssemblerTestBase {
         assertRange(JA.RuleSet, JA.rules);
     }
 
+    @Test
     public void testRuleSetAssemblerType() {
         testDemandsMinimalType(new RuleSetAssembler(), JA.RuleSet);
     }
 
+    @Test
     public void testEmptyRuleSet() {
         Assembler a = new RuleSetAssembler();
         Resource root = resourceInModel("x rdf:type ja:RuleSet");
         assertEquals(RuleSet.empty, a.open(root));
     }
 
+    @Test
     public void testSingleRuleString() {
         Assembler a = new RuleSetAssembler();
         String ruleString = "[(?a P ?b) -> (?a Q ?b)]";
@@ -64,6 +69,7 @@ public class TestRuleSetAssembler extends AssemblerTestBase {
         assertEquals(expected, new HashSet<>(rules.getRules()));
     }
 
+    @Test
     public void testMultipleRuleStrings() {
         Assembler a = new RuleSetAssembler();
         String ruleStringA = "[(?a P ?b) -> (?a Q ?b)]";
@@ -76,6 +82,7 @@ public class TestRuleSetAssembler extends AssemblerTestBase {
         assertEquals(expected, new HashSet<>(rules.getRules()));
     }
 
+    @Test
     public void testRulesFrom() {
         Assembler a = new RuleSetAssembler();
         String rulesA = file("example.rules");
@@ -85,6 +92,7 @@ public class TestRuleSetAssembler extends AssemblerTestBase {
         assertEquals(expected, new HashSet<>(rules.getRules()));
     }
 
+    @Test
     public void testSubRules() {
         Assembler a = new RuleSetAssembler();
         String ruleStringA = "[(?a P ?b) -> (?a Q ?b)]";
@@ -95,6 +103,7 @@ public class TestRuleSetAssembler extends AssemblerTestBase {
         assertEquals(expected, new HashSet<>(rules.getRules()));
     }
 
+    @Test
     public void testTrapsBadRulesObject() {
         testTrapsBadRuleObject("ja:rules", "'y'");
         testTrapsBadRuleObject("ja:rulesFrom", "17");

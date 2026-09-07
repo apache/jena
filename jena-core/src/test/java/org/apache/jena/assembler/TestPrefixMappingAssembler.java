@@ -21,6 +21,10 @@
 
 package org.apache.jena.assembler;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.assembler.assemblers.PrefixMappingAssembler;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.shared.PrefixMapping;
@@ -42,19 +46,18 @@ import org.apache.jena.test.JenaTestLib;
  */
 
 public class TestPrefixMappingAssembler extends AssemblerTestBase {
-    public TestPrefixMappingAssembler(String name) {
-        super(name);
-    }
 
     @Override
     protected Class<? extends Assembler> getAssemblerClass() {
         return PrefixMappingAssembler.class;
     }
 
+    @Test
     public void testPrefixMappingAssemblerType() {
         testDemandsMinimalType(new PrefixMappingAssembler(), JA.PrefixMapping);
     }
 
+    @Test
     public void testConstructEmptyPrefixMapping() {
         Assembler a = new PrefixMappingAssembler();
         Resource root = resourceInModel("pm rdf:type ja:PrefixMapping");
@@ -62,6 +65,7 @@ public class TestPrefixMappingAssembler extends AssemblerTestBase {
         JenaTestLib.assertInstanceOf(PrefixMapping.class, pm);
     }
 
+    @Test
     public void testSimplePrefixMapping() {
         PrefixMapping wanted = PrefixMapping.Factory.create().setNsPrefix("pre", "some:prefix/");
         Assembler a = new PrefixMappingAssembler();
@@ -70,6 +74,7 @@ public class TestPrefixMappingAssembler extends AssemblerTestBase {
         assertSamePrefixMapping(wanted, pm);
     }
 
+    @Test
     public void testIncludesSingleMapping() {
         PrefixMapping wanted = PrefixMapping.Factory.create().setNsPrefix("pre", "some:prefix/");
         Assembler a = new PrefixMappingAssembler();
@@ -79,6 +84,7 @@ public class TestPrefixMappingAssembler extends AssemblerTestBase {
         assertSamePrefixMapping(wanted, pm);
     }
 
+    @Test
     public void testIncludesMultipleMappings() {
         PrefixMapping wanted = PrefixMapping.Factory.create().setNsPrefix("p1", "some:prefix/").setNsPrefix("p2", "other:prefix/")
                                                     .setNsPrefix("p3", "simple:prefix#");

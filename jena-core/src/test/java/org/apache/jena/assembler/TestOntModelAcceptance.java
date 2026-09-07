@@ -21,14 +21,15 @@
 
 package org.apache.jena.assembler;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.ontology.*;
 import org.apache.jena.rdf.model.*;
 
 @SuppressWarnings("removal")
 public class TestOntModelAcceptance extends AssemblerTestBase {
-    public TestOntModelAcceptance(String name) {
-        super(name);
-    }
 
     /**
      * Acceptance test inherited from ontology ModelSpec tests when ModelSpec went
@@ -36,6 +37,7 @@ public class TestOntModelAcceptance extends AssemblerTestBase {
      * some) reasoning. Probably unnecessary given the way the assembler unit test
      * suite works but belt-and-braces for now at least.
      */
+    @Test
     public void test_ijd_01() {
         Model m = ModelTestLib.modelWithStatements("x ja:ontModelSpec _o"
                                       + "; _o ja:reasonerFactory _f; _o ja:ontLanguage http://www.w3.org/2002/07/owl#"

@@ -21,25 +21,28 @@
 
 package org.apache.jena.assembler;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.assembler.assemblers.DefaultModelAssembler;
 import org.apache.jena.rdf.model.Model;
 
 public class TestDefaultModelAssembler extends AssemblerTestBase {
-    public TestDefaultModelAssembler(String name) {
-        super(name);
-    }
 
     @Override
     protected Class<? extends Assembler> getAssemblerClass() {
         return DefaultModelAssembler.class;
     }
 
+    @Test
     public void testDefaultModelAssembler() {
         Assembler a = Assembler.defaultModel;
         Model m = a.openModel(resourceInModel("x rdf:type ja:DefaultModel"));
         assertNotNull(m.getGraph());
     }
 
+    @Test
     public void testDefaultModelAssemblerType() {
         testDemandsMinimalType(Assembler.defaultModel, JA.DefaultModel);
     }

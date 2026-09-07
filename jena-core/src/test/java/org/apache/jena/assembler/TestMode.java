@@ -21,13 +21,11 @@
 
 package org.apache.jena.assembler;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestMode {
 

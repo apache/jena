@@ -21,6 +21,10 @@
 
 package org.apache.jena.assembler;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.assembler.assemblers.InfModelAssembler;
 import org.apache.jena.assembler.exceptions.NotUniqueException;
 import org.apache.jena.rdf.model.*;
@@ -29,34 +33,36 @@ import org.apache.jena.reasoner.rulesys.GenericRuleReasonerFactory;
 import org.apache.jena.test.JenaTestLib;
 
 public class TestInfModelAssembler extends AssemblerTestBase {
-    public TestInfModelAssembler(String name) {
-        super(name);
-    }
 
     @Override
     protected Class<? extends Assembler> getAssemblerClass() {
         return InfModelAssembler.class;
     }
 
+    @Test
     public void testLocationMapperAssemblerType() {
         testDemandsMinimalType(new InfModelAssembler(), JA.InfModel);
     }
 
+    @Test
     public void testMockReasonersDifferent() {
         Reasoner R = GenericRuleReasonerFactory.theInstance().create(null);
         assertNotSame(mockReasonerFactory(R), mockReasonerFactory(R));
     }
 
+    @Test
     public void testInfModel() {
         Assembler a = Assembler.infModel;
         Model m = a.openModel(resourceInModel("x rdf:type ja:InfModel"));
         JenaTestLib.assertInstanceOf(InfModel.class, m);
     }
 
+    @Test
     public void testInfModelType() {
         testDemandsMinimalType(Assembler.infModel, JA.InfModel);
     }
 
+    @Test
     public void testGetsReasoner() {
         Reasoner R = GenericRuleReasonerFactory.theInstance().create(null);
         final ReasonerFactory RF = mockReasonerFactory(R);
@@ -85,6 +91,7 @@ public class TestInfModelAssembler extends AssemblerTestBase {
         };
     }
 
+    @Test
     public void testGetsSpecifiedModel() {
         Model base = ModelFactory.createDefaultModel();
         Resource root = resourceInModel("x rdf:type ja:InfModel; x ja:baseModel M");
@@ -93,6 +100,7 @@ public class TestInfModelAssembler extends AssemblerTestBase {
         assertSame(base.getGraph(), inf.getRawModel().getGraph());
     }
 
+    @Test
     public void testDetectsMultipleBaseModels() {
         Model base = ModelFactory.createDefaultModel();
         Resource root = resourceInModel("x rdf:type ja:InfModel; x ja:baseModel M; x ja:baseModel M2");
@@ -106,6 +114,7 @@ public class TestInfModelAssembler extends AssemblerTestBase {
         }
     }
 
+    @Test
     public void testDetectsMultipleReasoners() {
         Resource root = resourceInModel("x rdf:type ja:InfModel; x ja:reasoner R; x ja:reasoner R2");
         Assembler mock = new FixedObjectAssembler(null);

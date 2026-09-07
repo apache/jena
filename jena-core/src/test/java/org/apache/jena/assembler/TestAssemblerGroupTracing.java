@@ -21,6 +21,10 @@
 
 package org.apache.jena.assembler;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.assembler.assemblers.*;
 import org.apache.jena.assembler.exceptions.AssemblerException;
 import org.apache.jena.rdf.model.ModelTestLib;
@@ -29,10 +33,8 @@ import org.apache.jena.shared.JenaException;
 import org.apache.jena.test.JenaTestLib;
 
 public class TestAssemblerGroupTracing extends AssemblerTestBase {
-    public TestAssemblerGroupTracing(String name) {
-        super(name);
-    }
 
+    @Test
     public void testFail() {
         Resource root = resourceInModel("x rdf:type A");
         AssemblerGroup g = AssemblerGroup.create();
