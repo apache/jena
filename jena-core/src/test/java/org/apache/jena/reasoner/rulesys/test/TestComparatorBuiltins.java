@@ -21,8 +21,10 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
@@ -37,16 +39,11 @@ import org.apache.jena.util.iterator.ClosableIterator;
 /**
  * Test cases for comparison operators, especially as applies to time values
  */
-public class TestComparatorBuiltins extends TestCase {
+public class TestComparatorBuiltins {
     
-    public TestComparatorBuiltins(String name) {
-        super(name);
-    }
+      
     
-    public static TestSuite suite() {
-        return new TestSuite( TestComparatorBuiltins.class ); 
-    }  
-    
+    @Test
     public void testComparatorNumbers() {
         doTestComparator("1", "2", XSDDatatype.XSDint);
         doTestComparator("1.0", "1.1", XSDDatatype.XSDfloat);
@@ -62,6 +59,7 @@ public class TestComparatorBuiltins extends TestCase {
                 NodeFactory.createLiteralDT("2", XSDDatatype.XSDlong) );
     }
     
+    @Test
     public void testComparatorTime() {
         doTestComparator("2000-03-04T20:00:00Z", "2000-03-05T20:00:00Z", XSDDatatype.XSDdateTime);
         doTestComparator("2000-03-04T20:00:00Z", "2000-03-04T21:00:00Z", XSDDatatype.XSDdateTime);
@@ -90,27 +88,27 @@ public class TestComparatorBuiltins extends TestCase {
     }
     
     public void doTestBuiltins(Node nLow, Node nHigh) {
-        assertTrue( call(new Equal(), nLow, nLow) );
-        assertFalse( call(new Equal(), nLow, nHigh) );
+        assertTrue(call(new Equal(), nLow, nLow) );
+        assertFalse(call(new Equal(), nLow, nHigh) );
         
-        assertFalse( call(new NotEqual(), nLow, nLow) );
-        assertTrue( call(new NotEqual(), nLow, nHigh) );
+        assertFalse(call(new NotEqual(), nLow, nLow) );
+        assertTrue(call(new NotEqual(), nLow, nHigh) );
 
-        assertTrue( call(new LE(), nLow, nHigh) );
-        assertFalse( call(new LE(), nHigh, nLow) );
-        assertTrue( call(new LE(), nLow, nLow) );
+        assertTrue(call(new LE(), nLow, nHigh) );
+        assertFalse(call(new LE(), nHigh, nLow) );
+        assertTrue(call(new LE(), nLow, nLow) );
         
-        assertTrue( call(new LessThan(), nLow, nHigh) );
-        assertFalse( call(new LessThan(), nHigh, nLow) );
-        assertFalse( call(new LessThan(), nLow, nLow) );
+        assertTrue(call(new LessThan(), nLow, nHigh) );
+        assertFalse(call(new LessThan(), nHigh, nLow) );
+        assertFalse(call(new LessThan(), nLow, nLow) );
         
-        assertFalse( call(new GE(), nLow, nHigh) );
-        assertTrue( call(new GE(), nHigh, nLow) );
-        assertTrue( call(new GE(), nLow, nLow) );
+        assertFalse(call(new GE(), nLow, nHigh) );
+        assertTrue(call(new GE(), nHigh, nLow) );
+        assertTrue(call(new GE(), nLow, nLow) );
         
-        assertFalse( call(new GreaterThan(), nLow, nHigh) );
-        assertTrue( call(new GreaterThan(), nHigh, nLow) );
-        assertFalse( call(new GreaterThan(), nLow, nLow) );
+        assertFalse(call(new GreaterThan(), nLow, nHigh) );
+        assertTrue(call(new GreaterThan(), nHigh, nLow) );
+        assertFalse(call(new GreaterThan(), nLow, nLow) );
         
     }
     

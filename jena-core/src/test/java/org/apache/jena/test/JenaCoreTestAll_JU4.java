@@ -62,7 +62,7 @@ public class JenaCoreTestAll_JU4 extends TestCase {
 //JU6        addTest(ts,  "Util",                adaptJUnit4(org.apache.jena.util.TS4_coreutil.class));
 //JU6        addTest(ts,  "Jena iterator",       adaptJUnit4(org.apache.jena.util.iterator.test.TS3_coreiter.class));
 
-        addTest(ts,  "Assembler",           adaptJUnit4(org.apache.jena.assembler.TS3_Assembler.class));
+//JU6        addTest(ts,  "Assembler",           adaptJUnit4(org.apache.jena.assembler.TS3_Assembler.class));
 
 //JU6        addTest(ts,  "Vocabularies",        adaptJUnit4(org.apache.jena.vocabulary.TS3_Vocabularies.class));
 //JU6        addTest(ts,  "Shared",              adaptJUnit4(org.apache.jena.shared.TS_SharedPackage.class));
@@ -70,8 +70,8 @@ public class JenaCoreTestAll_JU4 extends TestCase {
         // ** COMPLEX
 //JU6        addTest(ts,  "Composed graphs",     org.apache.jena.graph.compose.TS3_compose.suite() );
 
-        addTest(ts,  "Reasoners",           adaptJUnit4(org.apache.jena.reasoner.test.TS3_reasoners.class));
-        addTest(ts,  "RuleReasoners",       adaptJUnit4(org.apache.jena.reasoner.rulesys.TS3_RuleReasoners.class));
+//JU6        addTest(ts,  "Reasoners",           adaptJUnit4(org.apache.jena.reasoner.test.TS3_reasoners.class));
+//JU6        addTest(ts,  "RuleReasoners",       adaptJUnit4(org.apache.jena.reasoner.rulesys.TS3_RuleReasoners.class));
 
 //JU6        addTest(ts,  "Ontology ModelMaker", adaptJUnit4(org.apache.jena.ontology.makers.TS3_ModelMakers.class));
 //JU6        addTest(ts,  "Ontology",            adaptJUnit4(org.apache.jena.ontology.impl.TS3_ont.class));

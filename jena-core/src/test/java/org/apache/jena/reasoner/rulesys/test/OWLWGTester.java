@@ -38,7 +38,6 @@ import org.apache.jena.util.FileManager;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.ReasonerVocabulary;
 import org.junit.Assert;
-import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,7 +88,7 @@ public class OWLWGTester {
     protected Resource configuration;
 
     /** The test case which has invoke this test */
-    protected TestCase testcase;
+    protected Object testcase;
 
     /** The processing time used since testcase creation */
     protected static long timeCost = 0;
@@ -112,10 +111,10 @@ public class OWLWGTester {
     /**
      * Constructor
      * @param reasonerF the factory for the reasoner to be tested
-     * @param testcase the JUnit test case which is requesting this test
+     * @param testcase non-null if the caller wants a failed test to assert
      * @param configuration optional configuration information
      */
-    public OWLWGTester(ReasonerFactory reasonerF, TestCase testcase, Resource configuration) {
+    public OWLWGTester(ReasonerFactory reasonerF, Object testcase, Resource configuration) {
         this.reasonerF = reasonerF;
         this.testcase = testcase;
         this.configuration = configuration;

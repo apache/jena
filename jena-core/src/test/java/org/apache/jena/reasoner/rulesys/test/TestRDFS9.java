@@ -82,7 +82,7 @@ public class TestRDFS9 extends TestCase {
         Graph data = createGraphForTest();
         data.add(Triple.create(a, p, b));
         InfGraph igraph = ReasonerRegistry.getRDFSReasoner().bind(new Union(tdata, data));
-        TestUtil.assertIteratorValues(this, igraph.find(a, ty, null),
+        TestUtil.assertIteratorValues(  igraph.find(a, ty, null),
         new Object[] {
             Triple.create(a, ty, D),
             Triple.create(a, ty, RDFS.Resource.asNode()),
@@ -99,7 +99,7 @@ public class TestRDFS9 extends TestCase {
         }
         assertTrue(ok);
         igraph = ReasonerRegistry.getRDFSReasoner().bindSchema(tdata).bind(data);
-        TestUtil.assertIteratorValues(this, igraph.find(a, ty, null),
+        TestUtil.assertIteratorValues(  igraph.find(a, ty, null),
         new Object[] {
             Triple.create(a, ty, D),
             Triple.create(a, ty, RDFS.Resource.asNode()),

@@ -21,6 +21,8 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
+import junit.framework.TestCase;
+
 import junit.framework.*;
 
 import java.io.IOException;

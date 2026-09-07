@@ -21,13 +21,15 @@
 
 package org.apache.jena.reasoner.test;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.apache.jena.graph.*;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
@@ -50,22 +52,15 @@ import org.apache.jena.vocabulary.RDFS;
  * Test cases for transitive reasoner (includes some early RDFS reasoner checks)
  */
 @SuppressWarnings("removal")
-public class TestReasoners extends TestCase {
+public class TestReasoners {
     /**
      * Boilerplate for junit
      */
-    public TestReasoners( String name ) {
-        super( name );
-    }
 
     /**
      * Boilerplate for junit.
      * This is its own test suite
      */
-    public static TestSuite suite() {
-        JenaTestLib.setup();
-        return new TestSuite(TestReasoners.class);
-    }
 
     private static  Graph createGraphForTest() {
         return GraphMemFactory.createDefaultGraph();
@@ -78,15 +73,17 @@ public class TestReasoners extends TestCase {
     /**
      * Test the basic functioning of a Transitive closure cache
      */
+    @Test
     public void testTransitiveReasoner() throws IOException {
         ReasonerTester tester = new ReasonerTester("transitive/manifest.rdf");
         ReasonerFactory rf = TransitiveReasonerFactory.theInstance();
-        assertTrue("transitive reasoner tests", tester.runTests(rf, this, null));
+        assertTrue(tester.runTests(rf, this, null), "transitive reasoner tests");
     }
 
     /**
      * Test rebind operation for the transitive reasoner
      */
+    @Test
     public void testTransitiveRebind() {
         Graph data = createGraphForTest();
         Node C1 = NodeFactory.createURI("C1");
@@ -99,7 +96,7 @@ public class TestReasoners extends TestCase {
         assertTrue(reasoner.supportsProperty(RDFS.subClassOf));
         assertTrue(! reasoner.supportsProperty(RDFS.domain));
         InfGraph infgraph = reasoner.bind(data);
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
             infgraph.find(C1, null, null),
             new Object[] {
                 Triple.create(C1, RDFS.subClassOf.asNode(), C1),
@@ -117,13 +114,13 @@ public class TestReasoners extends TestCase {
         Node c = NodeFactory.createURI("c");
         infgraph.add(Triple.create(a, RDFS.subClassOf.asNode(), b));
         infgraph.add(Triple.create(b, RDFS.subClassOf.asNode(), c));
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
             infgraph.find(b, RDFS.subClassOf.asNode(), null),
             new Object[] {
                 Triple.create(b, RDFS.subClassOf.asNode(), c),
                 Triple.create(b, RDFS.subClassOf.asNode(), b)
             } );
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
             infgraph.find(a, RDFS.subClassOf.asNode(), null),
             new Object[] {
                 Triple.create(a, RDFS.subClassOf.asNode(), a),
@@ -135,13 +132,13 @@ public class TestReasoners extends TestCase {
         Node r = NodeFactory.createURI("r");
         infgraph.add(Triple.create(p, RDFS.subPropertyOf.asNode(), q));
         infgraph.add(Triple.create(q, RDFS.subPropertyOf.asNode(), r));
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
             infgraph.find(q, RDFS.subPropertyOf.asNode(), null),
             new Object[] {
                 Triple.create(q, RDFS.subPropertyOf.asNode(), q),
                 Triple.create(q, RDFS.subPropertyOf.asNode(), r)
             } );
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
             infgraph.find(p, RDFS.subPropertyOf.asNode(), null),
             new Object[] {
                 Triple.create(p, RDFS.subPropertyOf.asNode(), p),
@@ -153,6 +150,7 @@ public class TestReasoners extends TestCase {
     /**
      * Test delete operation for Transtive reasoner.
      */
+    @Test
     public void testTransitiveRemove() {
         Graph data = createGraphForTest();
         Node a = NodeFactory.createURI("a");
@@ -168,7 +166,7 @@ public class TestReasoners extends TestCase {
         data.add( Triple.create(d, RDFS.subClassOf.asNode(), e) );
         Reasoner reasoner = TransitiveReasonerFactory.theInstance().create(null);
         InfGraph infgraph = reasoner.bind(data);
-        TestUtil.assertIteratorValues(this, infgraph.find(a, RDFS.subClassOf.asNode(), null),
+        TestUtil.assertIteratorValues( infgraph.find(a, RDFS.subClassOf.asNode(), null),
             new Object[] {
                 Triple.create(a, closedP, a),
                 Triple.create(a, closedP, b),
@@ -177,14 +175,14 @@ public class TestReasoners extends TestCase {
                 Triple.create(a, closedP, d),
                 Triple.create(a, closedP, e)
             });
-        TestUtil.assertIteratorValues(this, infgraph.find(b, RDFS.subClassOf.asNode(), null),
+        TestUtil.assertIteratorValues( infgraph.find(b, RDFS.subClassOf.asNode(), null),
             new Object[] {
                 Triple.create(b, closedP, b),
                 Triple.create(b, closedP, d),
                 Triple.create(b, closedP, e)
             });
         infgraph.delete(Triple.create(b, closedP, d));
-        TestUtil.assertIteratorValues(this, infgraph.find(a, RDFS.subClassOf.asNode(), null),
+        TestUtil.assertIteratorValues( infgraph.find(a, RDFS.subClassOf.asNode(), null),
             new Object[] {
                 Triple.create(a, closedP, a),
                 Triple.create(a, closedP, b),
@@ -193,21 +191,21 @@ public class TestReasoners extends TestCase {
                 Triple.create(a, closedP, d),
                 Triple.create(a, closedP, e)
             });
-        TestUtil.assertIteratorValues(this, infgraph.find(b, RDFS.subClassOf.asNode(), null),
+        TestUtil.assertIteratorValues( infgraph.find(b, RDFS.subClassOf.asNode(), null),
             new Object[] {
                 Triple.create(b, closedP, b),
             });
         infgraph.delete(Triple.create(a, closedP, c));
-        TestUtil.assertIteratorValues(this, infgraph.find(a, RDFS.subClassOf.asNode(), null),
+        TestUtil.assertIteratorValues( infgraph.find(a, RDFS.subClassOf.asNode(), null),
             new Object[] {
                 Triple.create(a, closedP, a),
                 Triple.create(a, closedP, b)
             });
-        TestUtil.assertIteratorValues(this, infgraph.find(b, RDFS.subClassOf.asNode(), null),
+        TestUtil.assertIteratorValues( infgraph.find(b, RDFS.subClassOf.asNode(), null),
             new Object[] {
                 Triple.create(b, closedP, b)
             });
-        TestUtil.assertIteratorValues(this, data.find(null, RDFS.subClassOf.asNode(), null),
+        TestUtil.assertIteratorValues( data.find(null, RDFS.subClassOf.asNode(), null),
             new Object[] {
                 Triple.create(a, closedP, b),
                 Triple.create(c, closedP, d),
@@ -218,6 +216,7 @@ public class TestReasoners extends TestCase {
     /**
      * Test  metalevel add/remove subproperty operations for transitive reasoner.
      */
+    @Test
     public void testTransitiveMetaLevel() {
         doTestMetaLevel(TransitiveReasonerFactory.theInstance());
     }
@@ -225,6 +224,7 @@ public class TestReasoners extends TestCase {
     /**
      * Test  metalevel add/remove subproperty operations for rdsf reasoner.
      */
+    @Test
     public void testRDFSMetaLevel() {
         doTestMetaLevel(RDFSRuleReasonerFactory.theInstance());
     }
@@ -245,22 +245,22 @@ public class TestReasoners extends TestCase {
         data.add( Triple.create(c1, p, c2));
         Reasoner reasoner = rf.create(null);
         InfGraph infgraph = reasoner.bind(data);
-        TestUtil.assertIteratorValues(this, infgraph.find(c1, sC, null),
+        TestUtil.assertIteratorValues( infgraph.find(c1, sC, null),
             new Object[] {
             });
         infgraph.add(Triple.create(p, q, sC));
-        TestUtil.assertIteratorValues(this, infgraph.find(c1, sC, null),
+        TestUtil.assertIteratorValues( infgraph.find(c1, sC, null),
             new Object[] {
             });
         infgraph.add(Triple.create(q, sP, sP));
-        TestUtil.assertIteratorValues(this, infgraph.find(c1, sC, null),
+        TestUtil.assertIteratorValues( infgraph.find(c1, sC, null),
             new Object[] {
                 Triple.create(c1, sC, c1),
                 Triple.create(c1, sC, c2),
                 Triple.create(c1, sC, c3)
             });
         infgraph.delete(Triple.create(p, q, sC));
-        TestUtil.assertIteratorValues(this, infgraph.find(c1, sC, null),
+        TestUtil.assertIteratorValues( infgraph.find(c1, sC, null),
             new Object[] {
             });
     }
@@ -268,6 +268,7 @@ public class TestReasoners extends TestCase {
     /**
      * Check a complex graph's transitive reduction.
      */
+    @Test
     public void testTransitiveReduction() {
         Model test = FileManager.getInternal().loadModelInternal("testing/reasoners/bugs/subpropertyModel.n3");
         Property dp = test.getProperty(TransitiveReasoner.directSubPropertyOf.getURI());
@@ -296,7 +297,7 @@ public class TestReasoners extends TestCase {
                     Resource d2 = (Resource)directLinks.get(m);
 
                     if (im.contains(d1, dp, d2) && ! base.equals(d1) && !base.equals(d2)) {
-                        assertTrue("Triangle discovered in transitive reduction", false);
+                        assertTrue(false, "Triangle discovered in transitive reduction");
                     }
                 }
             }
@@ -311,6 +312,7 @@ public class TestReasoners extends TestCase {
      * solved just be not reusing reasoners.
      * @todo this test might be better moved to OntModel tests somewhere
      */
+    @Test
     public void testTransitiveSpecReuse() {
         OntModel om1 = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_TRANS_INF);
         Resource c1 = om1.createResource(PrintUtil.egNS + "Class1");
@@ -324,7 +326,7 @@ public class TestReasoners extends TestCase {
         StmtIterator si = om2.listStatements();
         boolean ok = ! si.hasNext();
         si.close();
-        assertTrue("Transitive reasoner state leak", ok);
+        assertTrue(ok, "Transitive reasoner state leak");
     }
 
     /**
@@ -333,6 +335,7 @@ public class TestReasoners extends TestCase {
      * model might lead to interference. This in fact used to happen with the transitive
      * reasoner. This is a test to check that the transitive reasoner state reuse has been fixed at source.
      */
+    @Test
     public void testTransitiveBindReuse() {
         Reasoner  r = ReasonerRegistry.getTransitiveReasoner();
         InfModel om1 = ModelFactory.createInfModel(r, ModelFactory.createDefaultModel());
@@ -347,13 +350,14 @@ public class TestReasoners extends TestCase {
         StmtIterator si = om2.listStatements();
         boolean ok = ! si.hasNext();
         si.close();
-        assertTrue("Transitive reasoner state leak", ok);
+        assertTrue(ok, "Transitive reasoner state leak");
     }
 
     /**
      * Test that two transitive engines are independent.
      * See JENA-1260
      */
+    @Test
     public void testTransitiveEngineSeparation() throws InterruptedException {
         String NS = "http://example.com/test#";
 
@@ -365,20 +369,21 @@ public class TestReasoners extends TestCase {
 
         InfModel simple = ModelFactory.createInfModel(reasoner, ModelFactory.createDefaultModel());
         simple.add(s, sp, p);
-        assertFalse( simple.contains(s, RDFS.subPropertyOf, p) );
+        assertFalse(simple.contains(s, RDFS.subPropertyOf, p) );
 
         InfModel withSP = ModelFactory.createInfModel(reasoner, ModelFactory.createDefaultModel());
         withSP.add(sp, RDFS.subPropertyOf, RDFS.subPropertyOf);
         withSP.add(s, sp, p);
-        assertTrue( withSP.contains(s, RDFS.subPropertyOf, p) );
+        assertTrue(withSP.contains(s, RDFS.subPropertyOf, p) );
 
         simple.add(q, sp, p);
-        assertFalse( simple.contains(q, RDFS.subPropertyOf, p) );
+        assertFalse(simple.contains(q, RDFS.subPropertyOf, p) );
     }
 
     /**
      * Test rebind operation for the RDFS reasoner
      */
+    @Test
     public void testRDFSRebind() {
         Graph data = createGraphForTest();
         Node C1 = NodeFactory.createURI("C1");
@@ -389,7 +394,7 @@ public class TestReasoners extends TestCase {
         data.add( Triple.create(C2, RDFS.subClassOf.asNode(), C3) );
         Reasoner reasoner = RDFSRuleReasonerFactory.theInstance().create(null);
         InfGraph infgraph = reasoner.bind(data);
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
             infgraph.find(C1, RDFS.subClassOf.asNode(), null),
             new Object[] {
                 Triple.create(C1, RDFS.subClassOf.asNode(), C1),
@@ -400,7 +405,7 @@ public class TestReasoners extends TestCase {
         data2.add( Triple.create(C1, RDFS.subClassOf.asNode(), C2) );
         data2.add( Triple.create(C2, RDFS.subClassOf.asNode(), C4) );
         infgraph.rebind(data2);
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
             infgraph.find(C1, RDFS.subClassOf.asNode(), null),
             new Object[] {
                 Triple.create(C1, RDFS.subClassOf.asNode(), C1),
@@ -414,6 +419,7 @@ public class TestReasoners extends TestCase {
      * This is an example to test that rebing is invoked correctly rather
      * than an RDFS-specific test.
      */
+    @Test
     public void testRDFSRemove() {
         InfModel m = ModelFactory.createRDFSModel(ModelFactory.createDefaultModel());
         String NS = PrintUtil.egNS;
@@ -425,32 +431,34 @@ public class TestReasoners extends TestCase {
         p.addProperty(RDFS.domain, D);
         i.addProperty(p, c);
         i.addProperty(p, d);
-        TestUtil.assertIteratorValues(this, i.listProperties(), new Object[] {
+        TestUtil.assertIteratorValues( i.listProperties(), new Object[] {
                 m.createStatement(i, p, c),
                 m.createStatement(i, p, d),
                 m.createStatement(i, RDF.type, D),
                 m.createStatement(i, RDF.type, RDFS.Resource),
         });
         i.removeAll(p);
-        TestUtil.assertIteratorValues(this, i.listProperties(), new Object[] {
+        TestUtil.assertIteratorValues( i.listProperties(), new Object[] {
         });
     }
 
     /**
      * Cycle bug in transitive reasoner
      */
+    @Test
     public void testTransitiveCycleBug() {
         Model m = FileManager.getInternal().loadModelInternal( "file:testing/reasoners/bugs/unbroken.n3" );
         OntModel om = ModelFactory.createOntologyModel( OntModelSpec.RDFS_MEM_TRANS_INF, m );
         OntClass rootClass = om.getOntClass( RDFS.Resource.getURI() );
         Resource c = m.getResource("c");
         Set<OntClass> direct = rootClass.listSubClasses( true ).toSet();
-        assertFalse( direct.contains( c ) );
+        assertFalse(direct.contains( c ) );
 
     }
     /**
      * Test the ModelFactory interface
      */
+    @Test
     public void testModelFactoryRDFS() {
         Model data = ModelFactory.createDefaultModel();
         Property p = data.createProperty("urn:example:p");
@@ -461,7 +469,7 @@ public class TestReasoners extends TestCase {
             .add(a, p, b);
         Model result = ModelFactory.createRDFSModel(data);
         StmtIterator i = result.listStatements( b, RDF.type, (RDFNode)null );
-        TestUtil.assertIteratorValues(this, i, new Object[] {
+        TestUtil.assertIteratorValues( i, new Object[] {
             data.createStatement(b, RDF.type, RDFS.Resource ),
             data.createStatement(b, RDF.type, C )
         });
@@ -471,6 +479,7 @@ public class TestReasoners extends TestCase {
     /**
      * Run test on findWithPremies for Transitive reasoner.
      */
+    @Test
     public void testTransitiveFindWithPremises() {
         doTestFindWithPremises(TransitiveReasonerFactory.theInstance());
     }
@@ -478,6 +487,7 @@ public class TestReasoners extends TestCase {
     /**
      * Run test on findWithPremies for RDFS reasoner.
      */
+    @Test
     public void testRDFSFindWithPremises() {
         doTestFindWithPremises(RDFSRuleReasonerFactory.theInstance());
     }
@@ -497,16 +507,16 @@ public class TestReasoners extends TestCase {
         premise.add( Triple.create(c1, sC, c2));
         Reasoner reasoner = rf.create(null);
         InfGraph infgraph = reasoner.bind(data);
-        TestUtil.assertIteratorValues(this, infgraph.find(c1, sC, null),
+        TestUtil.assertIteratorValues( infgraph.find(c1, sC, null),
             new Object[] {
             });
-        TestUtil.assertIteratorValues(this, infgraph.find(c1, sC, null, premise),
+        TestUtil.assertIteratorValues( infgraph.find(c1, sC, null, premise),
             new Object[] {
                 Triple.create(c1, sC, c2),
                 Triple.create(c1, sC, c3),
                 Triple.create(c1, sC, c1)
             });
-        TestUtil.assertIteratorValues(this, infgraph.find(c1, sC, null),
+        TestUtil.assertIteratorValues( infgraph.find(c1, sC, null),
             new Object[] {
             });
 

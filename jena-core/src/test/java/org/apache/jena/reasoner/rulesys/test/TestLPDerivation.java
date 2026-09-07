@@ -21,12 +21,14 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.apache.jena.graph.*;
 import org.apache.jena.reasoner.Derivation;
 import org.apache.jena.reasoner.InfGraph;
@@ -40,22 +42,16 @@ import org.apache.jena.util.iterator.ExtendedIterator;
  * Test the derivation tracing of the LP system.
  */
 
-public class TestLPDerivation extends TestCase {
+public class TestLPDerivation {
 
     /**
      * Boilerplate for junit
      */
-    public TestLPDerivation( String name ) {
-        super( name );
-    }
 
     /**
      * Boilerplate for junit.
      * This is its own test suite
      */
-    public static TestSuite suite() {
-        return new TestSuite( TestLPDerivation.class );
-    }
 
     private static  Graph createGraphForTest() {
         return GraphMemFactory.createDefaultGraph();
@@ -128,6 +124,7 @@ public class TestLPDerivation extends TestCase {
     /**
      * Test simple rule derivation.
      */
+    @Test
     public void testBasic() {
         doTest(
                 "(?x p ?y) <- (?x q ?y).", new Node[]{},    // Rules + tabling
@@ -145,6 +142,7 @@ public class TestLPDerivation extends TestCase {
     /**
      * Test simple rule derivation from pair
      */
+    @Test
     public void testBasic2() {
         doTest(
                 "(?x p ?y) <- (?x q ?y). (?x p ?y) <- (?x r ?y).",
@@ -163,6 +161,7 @@ public class TestLPDerivation extends TestCase {
     /**
      * Test composite derivation.
      */
+    @Test
     public void testComposite() {
         doTest(
                 "(?x p ?y) <- (?x q ?y) (?x r ?y).",  new Node[]{},    // Rules + tabling
@@ -182,6 +181,7 @@ public class TestLPDerivation extends TestCase {
     /**
      * Test Chain derivation.
      */
+    @Test
     public void testChain() {
         doTest(
                 "(?x s ?y) <- (?x r ?y). (?x p ?y) <- (?x q ?y) (?x s ?y). ",
@@ -202,6 +202,7 @@ public class TestLPDerivation extends TestCase {
     /**
      * Test tabled chaining
      */
+    @Test
     public void testTabled() {
         doTest(
                 "(?x p ?z) <- (?x p ?y) (?y p ?z).",

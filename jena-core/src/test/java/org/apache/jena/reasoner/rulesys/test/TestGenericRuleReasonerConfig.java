@@ -21,6 +21,10 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import static org.apache.jena.reasoner.rulesys.Rule.parseRule;
 
 import java.util.ArrayList;
@@ -39,15 +43,12 @@ import org.apache.jena.reasoner.rulesys.builtins.BaseBuiltin;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.ReasonerVocabulary;
 
-
 /**
     Your eyes will bleed with the number of backslashes required in the substitute
     strings.
 */
 public class TestGenericRuleReasonerConfig extends AssemblerTestBase
     {
-    public TestGenericRuleReasonerConfig( String name )
-        { super( name ); }
 
     @Override
     protected Model setRequiredPrefixes( Model x )
@@ -56,6 +57,7 @@ public class TestGenericRuleReasonerConfig extends AssemblerTestBase
         return super.setRequiredPrefixes( x );
         }
     
+    @Test
     public void testLoadsSingleRuleSetViaURL()
         { 
 //        testLoadsSingleRuleViaURL( "jms" );
@@ -68,9 +70,10 @@ public class TestGenericRuleReasonerConfig extends AssemblerTestBase
         Resource r = resourceInModel( "x <ns>:ruleSetURL <where>".replaceAll( "<ns>", ns ).replaceAll( "<where>", where ) );
         List<Rule> rules = Rule.rulesFromURL( where );
         GenericRuleReasoner grr = new GenericRuleReasoner( null, r );
-        assertEquals( rules, grr.getRules() );
+        assertEquals(rules, grr.getRules() );
         }    
     
+    @Test
     public void testLoadsSingleRuleFromString()
         { 
 //        testLoadsSingleRuleFromString( "jms" );
@@ -83,9 +86,10 @@ public class TestGenericRuleReasonerConfig extends AssemblerTestBase
         List<Rule> rules = Rule.parseRules( rule );
         Resource r = resourceInModel( "x <ns>:hasRule '<it>'".replaceAll( "<ns>", ns ).replaceAll( "<it>", rule.replaceAll( " ", "\\\\\\\\s" ) ) );
         GenericRuleReasoner grr = new GenericRuleReasoner( null, r );
-        assertEquals( rules, grr.getRules() );
+        assertEquals(rules, grr.getRules() );
         }
     
+    @Test
     public void testLoadsSingleRuleViaRuleSetStringString()
         { 
 //        testLoadsRulesViaRuleSetStrings( "jms" );
@@ -104,9 +108,10 @@ public class TestGenericRuleReasonerConfig extends AssemblerTestBase
            ;
         Resource r = resourceInModel( modelString );
         GenericRuleReasoner grr = new GenericRuleReasoner( null, r );
-        assertEquals( rules, new HashSet<>( grr.getRules() ) );
+        assertEquals(rules, new HashSet<>( grr.getRules() ) );
         }
     
+    @Test
     public void testLoadsMultipleRuleSetsViaRuleSetNode()
         {
 //        testLoadsMultipleRuleSetsViaRuleSetNode( "jms" );
@@ -119,7 +124,7 @@ public class TestGenericRuleReasonerConfig extends AssemblerTestBase
         String whereB = "file:testing/modelspecs/extra.rules";
         Resource r = resourceInModel( "x <ns>:ruleSet _a; _a <ns>:ruleSetURL <whereA>; _a <ns>:ruleSetURL <whereB>".replaceAll( "<ns>", ns ).replaceAll( "<whereA>", whereA ).replaceAll( "<whereB>", whereB ) );
         GenericRuleReasoner grr = new GenericRuleReasoner( null, r );
-        assertEquals( rulesFromTwoPlaces( whereA, whereB ), new HashSet<>( grr.getRules() ) );
+        assertEquals(rulesFromTwoPlaces( whereA, whereB ), new HashSet<>( grr.getRules() ) );
         }
 
     private Set<Rule> rulesFromTwoStrings( String ruleA, String ruleB )
@@ -137,6 +142,7 @@ public class TestGenericRuleReasonerConfig extends AssemblerTestBase
         return rules;
         }
 
+    @Test
     public void testRuleLoadingWithOverridenBuiltins() {
         List<Node> savedNode=new ArrayList<>();
         Builtin b= new BaseBuiltin() {
@@ -154,7 +160,6 @@ public class TestGenericRuleReasonerConfig extends AssemblerTestBase
             public void headAction(Node[] args, int length, RuleContext context) {
                 savedNode.add(getArg(0,args,context));
             }
-
 
         };
         BuiltinRegistry r=new OverrideBuiltinRegistry(BuiltinRegistry.theRegistry);

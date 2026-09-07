@@ -21,10 +21,13 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+
 import java.util.Iterator;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.apache.jena.graph.*;
 import org.apache.jena.reasoner.Derivation;
 import org.apache.jena.reasoner.Reasoner;
@@ -40,53 +43,50 @@ import org.apache.jena.shared.DeleteDeniedException;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
-
-public class FRuleEngineIFactoryTest extends TestCase {
+public class FRuleEngineIFactoryTest {
 
     /**
      * Boilerplate for junit.
      * This is its own test suite
      */
-    public static TestSuite suite() {
-        return new TestSuite( FRuleEngineIFactoryTest.class );
-    }
-
-    @Override
+    @AfterEach
     public void tearDown() {
         FRuleEngineIFactory.setInstance(new FRuleEngineIFactory());
     }
 
+    @Test
     public void testItShouldBeASingleton() {
         FRuleEngineIFactory instance = FRuleEngineIFactory.getInstance();
 
-        assertNotNull("A default instance must be created", instance);
+        assertNotNull(instance, "A default instance must be created");
 
-        assertSame("The same instance should have be returned",
-                instance, FRuleEngineIFactory.getInstance());
+        assertSame(instance, FRuleEngineIFactory.getInstance(), "The same instance should have be returned");
     }
 
+    @Test
     public void testItShouldLetYouReplaceTheSingletonInstance() {
         MyFRuleEngineIFactory anotherFactory  = new MyFRuleEngineIFactory();
         FRuleEngineIFactory.setInstance(anotherFactory);
 
-        assertSame("The instance should have been replaced",
-                   anotherFactory, FRuleEngineIFactory.getInstance());
+        assertSame(anotherFactory, FRuleEngineIFactory.getInstance(), "The instance should have been replaced");
     }
 
+    @Test
     public void testItShouldInstantiateAFRuleEngineIfUseRETEisFalse() {
         ForwardRuleInfGraphI infGraph = new DummyForwardRuleInfGraph();
         FRuleEngineI engine =
                 FRuleEngineIFactory.getInstance().createFRuleEngineI(infGraph, null, false);
 
-        assertSame("A FRuleEngine should have been instantiated", FRuleEngine.class, engine.getClass());
+        assertSame(FRuleEngine.class, engine.getClass(), "A FRuleEngine should have been instantiated");
     }
 
+    @Test
     public void testItShouldInstantiateAReteEngineIfUseRETEisTrue() {
         ForwardRuleInfGraphI infGraph = new DummyForwardRuleInfGraph();
         FRuleEngineI engine =
                 FRuleEngineIFactory.getInstance().createFRuleEngineI(infGraph, null, true);
 
-        assertSame("A RETEEngine should have been instantiated", RETEEngine.class, engine.getClass());
+        assertSame(RETEEngine.class, engine.getClass(), "A RETEEngine should have been instantiated");
     }
 
     private static final class MyFRuleEngineIFactory extends FRuleEngineIFactory {

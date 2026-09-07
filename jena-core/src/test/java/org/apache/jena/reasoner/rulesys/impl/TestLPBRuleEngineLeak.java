@@ -21,12 +21,14 @@
 
 package org.apache.jena.reasoner.rulesys.impl;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import java.lang.reflect.Field;
 import java.util.List;
 
-import org.junit.Test;
 
-import junit.framework.TestCase;
 import org.apache.jena.graph.*;
 import org.apache.jena.reasoner.rulesys.FBRuleInfGraph;
 import org.apache.jena.reasoner.rulesys.FBRuleReasoner;
@@ -35,7 +37,7 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 
-public class TestLPBRuleEngineLeak extends TestCase {
+public class TestLPBRuleEngineLeak {
 	protected Node a = NodeFactory.createURI("a");
 	protected Node b = NodeFactory.createURI("b");
 	protected Node nohit = NodeFactory.createURI("nohit");
@@ -84,7 +86,6 @@ public class TestLPBRuleEngineLeak extends TestCase {
 		// uuups, forgot to call it.hasNext(). But .close() should tidy
 		it2.close();
 		assertEquals(0, engine.activeInterpreters.size());
-
 
 		// OK, let's ask for something that is in the graph
 

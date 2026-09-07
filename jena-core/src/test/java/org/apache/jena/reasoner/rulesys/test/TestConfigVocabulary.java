@@ -21,7 +21,10 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.reasoner.ReasonerRegistry;
@@ -32,60 +35,61 @@ import org.apache.jena.vocabulary.ReasonerVocabulary;
 /**
     Tests for configuration vocabulary added as part of ModelSpec removal
 */
-public class TestConfigVocabulary extends TestCase
-    {
-    public TestConfigVocabulary( String name )
-        { super( name ); }
+public class TestConfigVocabulary {
 
+    @Test
     public void testExistingVocabulary()
         {
-        assertIsProperty( "name", ReasonerVocabulary.nameP );
-        assertIsProperty( "description", ReasonerVocabulary.descriptionP );
-        assertIsProperty( "version", ReasonerVocabulary.versionP );
-        assertIsProperty( "supports", ReasonerVocabulary.supportsP );
-        assertIsProperty( "configurationProperty", ReasonerVocabulary.configurationP );
-        assertIsProperty( "individualAsThing", ReasonerVocabulary.individualAsThingP );
+        assertIsProperty("name", ReasonerVocabulary.nameP );
+        assertIsProperty("description", ReasonerVocabulary.descriptionP );
+        assertIsProperty("version", ReasonerVocabulary.versionP );
+        assertIsProperty("supports", ReasonerVocabulary.supportsP );
+        assertIsProperty("configurationProperty", ReasonerVocabulary.configurationP );
+        assertIsProperty("individualAsThing", ReasonerVocabulary.individualAsThingP );
         }
 
+    @Test
     public void testPropVocavulary()
         {
-        assertIsPropProperty( "derivationLogging", ReasonerVocabulary.PROPderivationLogging );
-        assertIsPropProperty( "traceOn", ReasonerVocabulary.PROPtraceOn );
-        assertIsPropProperty( "ruleMode", ReasonerVocabulary.PROPruleMode );
-        assertIsPropProperty( "enableOWLTranslation", ReasonerVocabulary.PROPenableOWLTranslation );
-        assertIsPropProperty( "enableTGCCaching", ReasonerVocabulary.PROPenableTGCCaching );
-        assertIsPropProperty( "enableCMPScan", ReasonerVocabulary.PROPenableCMPScan );
-        assertIsPropProperty( "setRDFSLevel", ReasonerVocabulary.PROPsetRDFSLevel );
-        assertIsPropProperty( "enableFunctorFiltering", ReasonerVocabulary.PROPenableFunctorFiltering );
+        assertIsPropProperty("derivationLogging", ReasonerVocabulary.PROPderivationLogging );
+        assertIsPropProperty("traceOn", ReasonerVocabulary.PROPtraceOn );
+        assertIsPropProperty("ruleMode", ReasonerVocabulary.PROPruleMode );
+        assertIsPropProperty("enableOWLTranslation", ReasonerVocabulary.PROPenableOWLTranslation );
+        assertIsPropProperty("enableTGCCaching", ReasonerVocabulary.PROPenableTGCCaching );
+        assertIsPropProperty("enableCMPScan", ReasonerVocabulary.PROPenableCMPScan );
+        assertIsPropProperty("setRDFSLevel", ReasonerVocabulary.PROPsetRDFSLevel );
+        assertIsPropProperty("enableFunctorFiltering", ReasonerVocabulary.PROPenableFunctorFiltering );
         }
 
+    @Test
     public void testDirectVocabulary()
         {
-        assertIsDirectProperty( RDFS.subClassOf, ReasonerVocabulary.directSubClassOf );
-        assertIsDirectProperty( RDFS.subPropertyOf, ReasonerVocabulary.directSubPropertyOf );
-        assertIsDirectProperty( RDF.type, ReasonerVocabulary.directRDFType );
+        assertIsDirectProperty(RDFS.subClassOf, ReasonerVocabulary.directSubClassOf );
+        assertIsDirectProperty(RDFS.subPropertyOf, ReasonerVocabulary.directSubPropertyOf );
+        assertIsDirectProperty(RDF.type, ReasonerVocabulary.directRDFType );
         }
 
+    @Test
     public void testRuleSetVocabulary()
         {
-        assertIsProperty( "ruleSet", ReasonerVocabulary.ruleSet );
-        assertIsProperty( "ruleSetURL", ReasonerVocabulary.ruleSetURL );
-        assertIsProperty( "hasRule", ReasonerVocabulary.hasRule );
-        assertIsProperty( "schemaURL", ReasonerVocabulary.schemaURL );
+        assertIsProperty("ruleSet", ReasonerVocabulary.ruleSet );
+        assertIsProperty("ruleSetURL", ReasonerVocabulary.ruleSetURL );
+        assertIsProperty("hasRule", ReasonerVocabulary.hasRule );
+        assertIsProperty("schemaURL", ReasonerVocabulary.schemaURL );
         }
 
-    private void assertIsDirectProperty( Resource r, Property p )
+    private void assertIsDirectProperty(Resource r, Property p )
         {
-        assertEquals( ReasonerRegistry.makeDirect( r.getURI() ), p.getURI() );
+        assertEquals(ReasonerRegistry.makeDirect( r.getURI() ), p.getURI() );
         }
 
-    private void assertIsProperty( String name, Property p )
+    private void assertIsProperty(String name, Property p )
         {
-        assertEquals( ReasonerVocabulary.getJenaReasonerNS() + name, p.getURI() );
+        assertEquals(ReasonerVocabulary.getJenaReasonerNS() + name, p.getURI() );
         }
 
-    private void assertIsPropProperty( String name, Property p )
+    private void assertIsPropProperty(String name, Property p )
         {
-        assertEquals( ReasonerVocabulary.PropURI + "#" + name, p.getURI() );
+        assertEquals(ReasonerVocabulary.PropURI + "#" + name, p.getURI() );
         }
     }

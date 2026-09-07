@@ -21,7 +21,10 @@
 
 package org.apache.jena.reasoner.test;
 
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.graph.Graph;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.reasoner.InfGraph;
@@ -34,11 +37,6 @@ import org.apache.jena.reasoner.InfGraph;
 
 public class TestInfGraph extends AbstractTestGraph
     {
-    public TestInfGraph( String name )
-        { super( name ); }
-
-    public static TestSuite suite()
-        { return new TestSuite( TestInfGraph.class ); }
 
     @SuppressWarnings("removal")
     private InfGraph getInfGraph()
@@ -50,9 +48,10 @@ public class TestInfGraph extends AbstractTestGraph
     public Graph getNewGraph()
         { return getInfGraph(); }
 
+    @Test
     public void testInfGraph()
         {
         InfGraph ig = getInfGraph();
-        assertSame( ig.getPrefixMapping(), ig.getRawGraph().getPrefixMapping() );
+        assertSame(ig.getPrefixMapping(), ig.getRawGraph().getPrefixMapping() );
         }
     }

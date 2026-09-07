@@ -21,6 +21,10 @@
 
 package org.apache.jena.reasoner.rulesys.impl;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 
@@ -37,11 +41,8 @@ import org.apache.jena.reasoner.rulesys.GenericRuleReasoner;
 import org.apache.jena.reasoner.rulesys.Rule;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.vocabulary.RDF;
-import org.junit.Test;
 
-import junit.framework.TestCase;
-
-public class TestLPBRuleCloseBug extends TestCase {
+public class TestLPBRuleCloseBug {
     /**
      * Test case for JENA-2184.
      */
@@ -67,7 +68,7 @@ public class TestLPBRuleCloseBug extends TestCase {
         Node clsCLASS = NodeFactory.createURI("urn:ic:CLASS");
 
         ExtendedIterator<Triple> sInfIter = infGraph.find(x1, RDF.Nodes.type, clsSUB);
-        assertTrue( sInfIter.hasNext() );
+        assertTrue(sInfIter.hasNext() );
 
         // Closing without having read from the iterator
         // Forces a close of LPInterpreter instances including on behind the tabled goal for the find
@@ -76,7 +77,7 @@ public class TestLPBRuleCloseBug extends TestCase {
         // This query depends on the above tabled goal which was not complete before the close()
         ExtendedIterator<Triple> cInfIter = infGraph.find(x1, RDF.Nodes.type, clsCLASS);
         boolean foundClass = cInfIter.hasNext();
-        assertTrue( foundClass );
+        assertTrue(foundClass );
     }
 
 }

@@ -21,8 +21,10 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.rdf.model.Model;
@@ -38,24 +40,19 @@ import org.apache.jena.vocabulary.RDF;
     layering problem).
 */
 @SuppressWarnings("removal")
-public class TestRestrictionsDontNeedTyping extends TestCase
-    {
-
-    public static TestSuite suite() {
-        return new TestSuite( TestRestrictionsDontNeedTyping.class );
-    }
+public class TestRestrictionsDontNeedTyping {
 
     static final Property ANY = null;
 
-    public TestRestrictionsDontNeedTyping( String name )
-        { super( name ); }
-
+    @Test
     public void testAllValuesFromFullRules()
         { testAllValuesFrom( OntModelSpec.OWL_MEM_RULE_INF ); }
 
+    @Test
     public void testAllValuesFromMiniRules()
         { testAllValuesFrom( OntModelSpec.OWL_MEM_MINI_RULE_INF ); }
 
+    @Test
     public void testAllValuesFromMicroRules()
         {
         /* micro doesn't support this anyway */
@@ -66,15 +63,18 @@ public class TestRestrictionsDontNeedTyping extends TestCase
         {
         Model m = model( "V owl:equivalentClass _R; _R owl:onProperty P; _R owl:allValuesFrom T; X rdf:type V; X P t" );
         OntModel ont = ModelFactory.createOntologyModel( owlSpec, m );
-        assertTrue( ont.contains( ModelTestLib.resource( "t" ), RDF.type, ModelTestLib.resource( "T" ) ) );
+        assertTrue(ont.contains( ModelTestLib.resource( "t" ), RDF.type, ModelTestLib.resource( "T" ) ) );
         }
 
+    @Test
     public void testSomeValuesFromMiniRules()
         { testSomeValuesFrom( OntModelSpec.OWL_MEM_MINI_RULE_INF ); }
 
+    @Test
     public void testSomeValuesFromMicroRules()
         { testSomeValuesFrom( OntModelSpec.OWL_MEM_MICRO_RULE_INF ); }
 
+    @Test
     public void testSomeValuesFromFullRules()
         { testSomeValuesFrom( OntModelSpec.OWL_MEM_RULE_INF ); }
 
@@ -82,9 +82,10 @@ public class TestRestrictionsDontNeedTyping extends TestCase
         {
         Model m = model( "V owl:equivalentClass _R; _R owl:onProperty P; _R owl:someValuesFrom T; X P t; t rdf:type T" );
         OntModel ont = ModelFactory.createOntologyModel( owlSpec, m );
-        assertTrue( ont.contains( ModelTestLib.resource( "X" ), RDF.type, ModelTestLib.resource( "V" ) ) );
+        assertTrue(ont.contains( ModelTestLib.resource( "X" ), RDF.type, ModelTestLib.resource( "V" ) ) );
         }
 
+    @Test
     public void testCardinalityFullRules()
         { testCardinality( OntModelSpec.OWL_MEM_RULE_INF ); }
 
@@ -98,7 +99,7 @@ public class TestRestrictionsDontNeedTyping extends TestCase
         {
         Model m = model( "V owl:equivalentClass _R; _R rdf:type owl:Restriction; _R owl:onProperty P; _R owl:cardinality 1; X rdf:type V" );
         OntModel ont = ModelFactory.createOntologyModel( owlSpec, m );
-        assertEquals( 1, ont.listStatements( ModelTestLib.resource( "X" ), ModelTestLib.property( "P" ), ANY ).toList().size() );
+        assertEquals(1, ont.listStatements( ModelTestLib.resource( "X" ), ModelTestLib.property( "P" ), ANY ).toList().size() );
         }
 
     Model model( String statements )

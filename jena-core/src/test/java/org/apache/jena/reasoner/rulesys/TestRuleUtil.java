@@ -21,7 +21,7 @@
 
 package org.apache.jena.reasoner.rulesys;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -30,7 +30,7 @@ import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.reasoner.rulesys.test.TestComparatorBuiltins;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests more of comparison in org.apache.jena.reasoner.rulesys.Util/
@@ -73,10 +73,10 @@ public class TestRuleUtil {
     
     private void compare(Number num1, Number num2, int outcome) {
         int z1 = Util.compareNumbers(num1, num2);
-        assertEquals("compare(num1,num2)", outcome, z1);
+        assertEquals(outcome, z1, "compare(num1,num2)");
         // reverse
         int z2 = Util.compareNumbers(num2, num1);
-        assertEquals("compare(num2,num1)", outcome, -1 * z2);
+        assertEquals(outcome, -1 * z2, "compare(num2,num1)");
         
     }
 

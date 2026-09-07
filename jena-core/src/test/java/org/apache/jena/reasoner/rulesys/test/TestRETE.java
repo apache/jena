@@ -21,17 +21,19 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import java.util.*;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.apache.jena.graph.*;
 import org.apache.jena.reasoner.*;
 import org.apache.jena.reasoner.rulesys.*;
 import org.apache.jena.reasoner.rulesys.impl.*;
 import org.apache.jena.reasoner.test.TestUtil;
 
-public class TestRETE  extends TestCase {
+public class TestRETE {
 
     // Useful constants
     Node_RuleVariable x = new Node_RuleVariable("x", 0);
@@ -55,20 +57,11 @@ public class TestRETE  extends TestCase {
     /**
      * Boilerplate for junit
      */
-    public TestRETE( String name ) {
-        super( name );
-    }
 
     /**
      * Boilerplate for junit.
      * This is its own test suite
      */
-    public static TestSuite suite() {
-        return new TestSuite( TestRETE.class );
-//        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestRETE( "foo" ));
-//        return suite;
-    }
 
     private static  Graph createGraphForTest() {
         return GraphMemFactory.createDefaultGraph();
@@ -77,6 +70,7 @@ public class TestRETE  extends TestCase {
     /**
      * Test clause compiler and clause filter implementation.
      */
+    @Test
     public void testClauseFilter() {
         doTestClauseFilter( new TriplePattern(a, p, x),
                             Triple.create(a, p, b), new Node[]{b, null, null});
@@ -171,6 +165,7 @@ public class TestRETE  extends TestCase {
     /**
      * Minimal rule tester to check basic pattern match.
      */
+    @Test
     public void testRuleMatcher() {
         doRuleTest( "[r1: (?a p ?b), (?b q ?c) -> (?a, q, ?c)]" +
                        "[r2: (?a p ?b), (?b p ?c) -> (?a, p, ?c)]" +
@@ -246,13 +241,14 @@ public class TestRETE  extends TestCase {
             engine.addTriple( add, true );
         }
         engine.runAll();
-        TestUtil.assertIteratorValues(this, infgraph.find(null, null, null), expected);
+        TestUtil.assertIteratorValues( infgraph.find(null, null, null), expected);
     }
 
     /**
      * Check that the rulestate cloning keeps two descendent graphs independent.
      *
      */
+    @Test
     public void testRuleClone() {
         String rules = "[testRule1: (a p ?x) (b p ?x) -> (n1 p ?x) ]" +
                        "[testRule2: (?x q ?y) -> (?x p ?y)]";
@@ -273,7 +269,7 @@ public class TestRETE  extends TestCase {
         InfGraph infgraph1 = boundReasoner.bind(data1);
         InfGraph infgraph2 = boundReasoner.bind(data2);
 
-        TestUtil.assertIteratorValues(this, infgraph1.find(null, p, null),
+        TestUtil.assertIteratorValues( infgraph1.find(null, p, null),
             new Triple[] {
                 Triple.create(a, p, c),
                 Triple.create(a, p, d),
@@ -281,7 +277,7 @@ public class TestRETE  extends TestCase {
                 Triple.create(n1, p, c)
             });
 
-        TestUtil.assertIteratorValues(this, infgraph2.find(null, p, null),
+        TestUtil.assertIteratorValues( infgraph2.find(null, p, null),
             new Triple[] {
                 Triple.create(a, p, c),
                 Triple.create(a, p, d),

@@ -21,59 +21,62 @@
 
 package org.apache.jena.reasoner.test;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.Iterator;
 
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
-import org.junit.Assert;
-import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
+
 /**
  * Collection of utilities to assist with unit testing.
+ * <p>
+ * JUnit6 counterpart of the {@code assertIterator*} methods of {@link TestUtil}.
+ * The {@code junit.framework.TestCase} argument of the originals has been
+ * dropped: it served only to label failure messages and to name the logger,
+ * both of which JUnit6 reports for itself.
  */
 public class TestUtil {
-    
+
+    private static final Logger LOG = LoggerFactory.getLogger( TestUtil.class );
+
     /**
      * Helper method to test an iterator against a list of objects - order independent
-     * @param testCase The JUnit test case that is invoking this helper
      * @param it The iterator to test
      * @param vals The expected values of the iterator
      */
-    public static void assertIteratorValues(TestCase testCase, Iterator<?> it, Object[] vals) {
-        assertIteratorValues( testCase, it, vals, 0 );
+    public static void assertIteratorValues(Iterator<?> it, Object[] vals) {
+        assertIteratorValues( it, vals, 0 );
     }
-    
+
     /**
      * Helper method to test an iterator against a list of objects - order independent, and
-     * can optionally check the count of anonymous resources.  This allows us to test a 
-     * iterator of resource values which includes both URI nodes and bNodes. 
-     * @param testCase The JUnit test case that is invoking this helper
+     * can optionally check the count of anonymous resources.  This allows us to test a
+     * iterator of resource values which includes both URI nodes and bNodes.
      * @param it The iterator to test
      * @param vals The expected values of the iterator
      * @param countAnon If non zero, count the number of anonymous resources returned by <code>it</code>,
      * and don't check these resources against the expected <code>vals</code>.
      */
-    public static void assertIteratorValues(TestCase testCase, Iterator<?> it, Object[] vals, int countAnon ) {
-        Logger logger = LoggerFactory.getLogger( testCase.getClass() );
-        
+    public static void assertIteratorValues(Iterator<?> it, Object[] vals, int countAnon ) {
         boolean[] found = new boolean[vals.length];
         int anonFound = 0;
-        
+
         for (int i = 0; i < vals.length; i++) found[i] = false;
-        
-        
+
         while (it.hasNext()) {
             Object n = it.next();
             boolean gotit = false;
-            
+
             // do bNodes separately
             if (countAnon > 0 && isAnonValue( n )) {
                 anonFound++;
                 continue;
             }
-            
+
             for (int i = 0; i < vals.length; i++) {
                 if (n.equals(vals[i])) {
                     gotit = true;
@@ -81,24 +84,22 @@ public class TestUtil {
                 }
             }
             if (!gotit) {
-                logger.debug( testCase.getName() + " found unexpected iterator value: " + n);
+                LOG.debug( "found unexpected iterator value: " + n);
             }
-            Assert.assertTrue( testCase.getName() + " found unexpected iterator value: " + n, gotit);
+            assertTrue( gotit, "found unexpected iterator value: " + n);
         }
-        
+
         // check that no expected values were unfound
         for (int i = 0; i < vals.length; i++) {
             if (!found[i]) {
-//                for (int j = 0; j < vals.length; j += 1) System.err.println( "#" + j + ": " + vals[j] );
-                logger.debug( testCase.getName() + " failed to find expected iterator value: " + vals[i]);
+                LOG.debug( "failed to find expected iterator value: " + vals[i]);
             }
-            Assert.assertTrue(testCase.getName() + " failed to find expected iterator value: " + vals[i], found[i]);
+            assertTrue( found[i], "failed to find expected iterator value: " + vals[i]);
         }
-        
+
         // check we got the right no. of anons
-        Assert.assertEquals( testCase.getName() + " iterator test did not find the right number of anon. nodes", countAnon, anonFound );
+        assertEquals( countAnon, anonFound, "iterator test did not find the right number of anon. nodes" );
     }
-    
 
     /**
      * Replace all blocks of white space by a single space character, just
@@ -124,7 +125,7 @@ public class TestUtil {
         }
         return result.toString();
     }
-    
+
     /**
      * Check the length of an iterator.
      */
@@ -134,10 +135,9 @@ public class TestUtil {
             it.next();
             length++;
         }
-        Assert.assertEquals(expectedLength, length);
+        assertEquals(expectedLength, length);
     }
-    
-    
+
     /**
      * For the purposes of counting, a value is anonymous if (a) it is an anonymous resource,
      * or (b) it is a statement with a bNode subject or (c) it is a statement with a bNode

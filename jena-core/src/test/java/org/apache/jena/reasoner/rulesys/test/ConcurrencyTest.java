@@ -21,6 +21,10 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
@@ -38,16 +42,13 @@ import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.Lock;
 import org.apache.jena.util.PrintUtil;
 import org.apache.jena.util.iterator.ExtendedIterator;
-import org.junit.Assert;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * Test for deadlock and concurrency problems in rule engines.
  *
  * <p>Test inspired by suggestions from Timm Linder</p>
  */
-public class ConcurrencyTest  extends TestCase {
+public class ConcurrencyTest {
 
     // For routine jena tests we do minimal exercise here, otherwise too slow
     // If problems crop up then switch to full tests
@@ -68,17 +69,11 @@ public class ConcurrencyTest  extends TestCase {
     /**
      * Boilerplate for junit
      */
-    public ConcurrencyTest( String name ) {
-        super( name );
-    }
 
     /**
      * Boilerplate for junit.
      * This is its own test suite
      */
-    public static TestSuite suite() {
-        return new TestSuite( ConcurrencyTest.class );
-    }
 
     @SuppressWarnings("removal")
     private void runConcurrencyTest(Creator<OntModel> modelCreator, String runId) throws InterruptedException  {
@@ -87,7 +82,7 @@ public class ConcurrencyTest  extends TestCase {
                 doTestConcurrency(modelCreator.create());
             }
         } catch (JenaException e ) {
-            assertTrue(e.getMessage(), false);
+            assertTrue(false, e.getMessage());
         }
     }
 
@@ -181,13 +176,14 @@ public class ConcurrencyTest  extends TestCase {
                     System.err.println();
                 }
             }
-            Assert.assertTrue("Deadlock detected!", false);
+            assertTrue(false, "Deadlock detected!");
             /* end deadlock block */
-            assertTrue("Failed to terminate execution", false);
+            assertTrue(false, "Failed to terminate execution");
         }
     }
 
     @SuppressWarnings("removal")
+    @Test
     public void testWithOWLMemMicroRuleInfModel() throws InterruptedException {
         runConcurrencyTest( ()->ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF),
                             "OWL_MEM_MICRO_RULE_INF");

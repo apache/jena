@@ -21,8 +21,10 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 
 import java.util.*;
 
@@ -41,13 +43,12 @@ import org.apache.jena.vocabulary.ReasonerVocabulary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Test the packaging of all the reasoners into the GenericRuleReasoner.
  * The other tests check out this engine. These tests just need to touch
  * enough to validate the packaging.
  */
-public class TestGenericRules extends TestCase {
+public class TestGenericRules {
 
     protected static Logger logger = LoggerFactory.getLogger(TestFBRules.class);
 
@@ -77,20 +78,11 @@ public class TestGenericRules extends TestCase {
     /**
      * Boilerplate for junit
      */
-    public TestGenericRules( String name ) {
-        super( name );
-    }
 
     /**
      * Boilerplate for junit.
      * This is its own test suite
      */
-    public static TestSuite suite() {
-        return new TestSuite( TestGenericRules.class );
-//        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestGenericRules( "testFunctorLooping" ));
-//        return suite;
-    }
 
     private static  Graph createGraphForTest() {
         return GraphMemFactory.createDefaultGraph();
@@ -99,6 +91,7 @@ public class TestGenericRules extends TestCase {
     /**
      * Minimal rule tester to check basic pattern match, forward style.
      */
+    @Test
     public void testForward() {
         Graph test = createGraphForTest();
         test.add(Triple.create(a, p, b));
@@ -110,16 +103,17 @@ public class TestGenericRules extends TestCase {
 
         // Check data bind version
         InfGraph infgraph = reasoner.bind(test);
-        TestUtil.assertIteratorValues(this, infgraph.find(null, p, null), ans);
+        TestUtil.assertIteratorValues( infgraph.find(null, p, null), ans);
 
         // Check schema bind version
         infgraph = reasoner.bindSchema(test).bind(createGraphForTest());
-        TestUtil.assertIteratorValues(this, infgraph.find(null, p, null), ans);
+        TestUtil.assertIteratorValues( infgraph.find(null, p, null), ans);
     }
 
     /**
      * Minimal rule tester to check basic pattern match, backward style.
      */
+    @Test
     public void testBackward() {
         Graph test = createGraphForTest();
         test.add(Triple.create(a, p, b));
@@ -131,16 +125,17 @@ public class TestGenericRules extends TestCase {
 
         // Check data bind version
         InfGraph infgraph = reasoner.bind(test);
-        TestUtil.assertIteratorValues(this, infgraph.find(null, p, null), ans);
+        TestUtil.assertIteratorValues( infgraph.find(null, p, null), ans);
 
         // Check schema bind version
         infgraph = reasoner.bindSchema(test).bind(createGraphForTest());
-        TestUtil.assertIteratorValues(this, infgraph.find(null, p, null), ans);
+        TestUtil.assertIteratorValues( infgraph.find(null, p, null), ans);
     }
 
     /**
      * Test example hybrid rule.
      */
+    @Test
     public void testHybrid() {
         Graph data = createGraphForTest();
         data.add(Triple.create(a, r, b));
@@ -158,7 +153,7 @@ public class TestGenericRules extends TestCase {
 
         InfGraph infgraph = reasoner.bind(data);
         infgraph.setDerivationLogging(true);
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
               infgraph.find(null, p, null), new Object[] {
                   Triple.create(a, p, a),
                   Triple.create(a, p, b),
@@ -173,13 +168,14 @@ public class TestGenericRules extends TestCase {
 //        d.printTrace(out, true);
 //        out.close();
         assertTrue(d.getRule().getName().equals("r1b"));
-        TestUtil.assertIteratorValues(this, d.getMatches().iterator(), new Object[] { Triple.create(a, p, b) });
+        TestUtil.assertIteratorValues( d.getMatches().iterator(), new Object[] { Triple.create(a, p, b) });
         assertTrue(! di.hasNext());
     }
 
     /**
      * Test early detection of illegal backward rules.
      */
+    @Test
     public void testBRuleErrorHandling() {
         Graph data = createGraphForTest();
         List<Rule> rules = Rule.parseRules(
@@ -195,12 +191,13 @@ public class TestGenericRules extends TestCase {
         } catch (ReasonerException e) {
             foundException = true;
         }
-        assertTrue("Catching use of multi-headed brules", foundException);
+        assertTrue(foundException, "Catching use of multi-headed brules");
     }
 
     /**
      * Test example parameter setting
      */
+    @Test
     public void testParameters() {
         Graph data = createGraphForTest();
         data.add(Triple.create(a, r, b));
@@ -214,7 +211,7 @@ public class TestGenericRules extends TestCase {
         GenericRuleReasoner reasoner = (GenericRuleReasoner)GenericRuleReasonerFactory.theInstance().create(configuration);
 
         InfGraph infgraph = reasoner.bind(data);
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
               infgraph.find(null, p, null), new Object[] {
                   Triple.create(a, p, a),
                   Triple.create(a, p, b),
@@ -226,14 +223,14 @@ public class TestGenericRules extends TestCase {
         assertTrue(di.hasNext());
         RuleDerivation d = (RuleDerivation)di.next();
         assertTrue(d.getRule().getName().equals("r1b"));
-        TestUtil.assertIteratorValues(this, d.getMatches().iterator(), new Object[] { Triple.create(a, p, b) });
+        TestUtil.assertIteratorValues( d.getMatches().iterator(), new Object[] { Triple.create(a, p, b) });
         assertTrue(! di.hasNext());
 
         // Check retrieval of configuration
         Model m2 = ModelFactory.createDefaultModel();
         Resource newConfig = m2.createResource();
         reasoner.addDescription(m2, newConfig);
-        TestUtil.assertIteratorValues(this, newConfig.listProperties(), new Statement[] {
+        TestUtil.assertIteratorValues( newConfig.listProperties(), new Statement[] {
             m2.createStatement(newConfig, ReasonerVocabulary.PROPderivationLogging, "true"),
             m2.createStatement(newConfig, ReasonerVocabulary.PROPruleMode, "hybrid"),
             m2.createStatement(newConfig, ReasonerVocabulary.PROPruleSet, "testing/reasoners/genericRuleTest.rules")
@@ -243,7 +240,7 @@ public class TestGenericRules extends TestCase {
         reasoner.setParameter(ReasonerVocabulary.PROPderivationLogging, "false");
         newConfig = m2.createResource();
         reasoner.addDescription(m2, newConfig);
-        TestUtil.assertIteratorValues(this, newConfig.listProperties(), new Statement[] {
+        TestUtil.assertIteratorValues( newConfig.listProperties(), new Statement[] {
             m2.createStatement(newConfig, ReasonerVocabulary.PROPderivationLogging, "false"),
             m2.createStatement(newConfig, ReasonerVocabulary.PROPruleMode, "hybrid"),
             m2.createStatement(newConfig, ReasonerVocabulary.PROPruleSet, "testing/reasoners/genericRuleTest.rules")
@@ -261,7 +258,7 @@ public class TestGenericRules extends TestCase {
         Node an = NodeFactory.createURI(PrintUtil.egNS + "a");
         Node C = NodeFactory.createURI(PrintUtil.egNS + "C");
         Node D = NodeFactory.createURI(PrintUtil.egNS + "D");
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
               infgraph.find(null, null, null), new Object[] {
                 Triple.create(an, RDF.Nodes.type, C),
                 Triple.create(an, RDF.Nodes.type, D),
@@ -278,13 +275,14 @@ public class TestGenericRules extends TestCase {
         Resource Cc = im.createResource(PrintUtil.egNS + "C");
         im.add(Ac, RDFS.subClassOf, Bc);
         im.add(Bc, RDFS.subClassOf, Cc);
-        assertTrue("TGC enabled correctly", im.contains(Ac, RDFS.subClassOf, Cc));
+        assertTrue(im.contains(Ac, RDFS.subClassOf, Cc), "TGC enabled correctly");
 
      }
 
     /**
      * Check that the use of typed literals in the configuration also works
      */
+    @Test
     public void testTypedConfigParameters() {
         Model m = ModelFactory.createDefaultModel();
         Resource configuration= m.createResource(GenericRuleReasonerFactory.URI);
@@ -297,12 +295,13 @@ public class TestGenericRules extends TestCase {
         Resource Cc = im.createResource(PrintUtil.egNS + "C");
         im.add(Ac, RDFS.subClassOf, Bc);
         im.add(Bc, RDFS.subClassOf, Cc);
-        assertTrue("TGC enabled correctly", im.contains(Ac, RDFS.subClassOf, Cc));
+        assertTrue(im.contains(Ac, RDFS.subClassOf, Cc), "TGC enabled correctly");
     }
 
     /**
      * Test control of functor filtering
      */
+    @Test
     public void testHybridFunctorFilter() {
         Graph data = createGraphForTest();
         data.add(Triple.create(a, r, b));
@@ -313,13 +312,13 @@ public class TestGenericRules extends TestCase {
         reasoner.setMode(GenericRuleReasoner.HYBRID);
 
         InfGraph infgraph = reasoner.bind(data);
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
               infgraph.find(null, q, null), new Object[] {
               } );
 
         reasoner.setFunctorFiltering(false);
         infgraph = reasoner.bind(data);
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
               infgraph.find(null, q, null), new Object[] {
                   Triple.create(a, q, Functor.makeFunctorNode("func", new Node[]{b, s}))
               } );
@@ -328,6 +327,7 @@ public class TestGenericRules extends TestCase {
     /**
      * Test that functor filtering is honored in backward mode.
      */
+    @Test
     public void testBackwardFunctorFilter() {
         Graph data = createGraphForTest();
         data.add(Triple.create(a, r, b));
@@ -339,14 +339,14 @@ public class TestGenericRules extends TestCase {
 
         // Default: functors are filtered out
         InfGraph infgraph = reasoner.bind(data);
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
               infgraph.find(null, q, null), new Object[] {
               } );
 
         // With filtering disabled: functor triples should be visible
         reasoner.setFunctorFiltering(false);
         infgraph = reasoner.bind(data);
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
               infgraph.find(null, q, null), new Object[] {
                   Triple.create(a, q, Functor.makeFunctorNode("func", new Node[]{b, s}))
               } );
@@ -356,6 +356,7 @@ public class TestGenericRules extends TestCase {
      * Test recursive rules involving functors
      * May lock up in there is a bug.
      */
+    @Test
     public void testFunctorLooping() {
         doTestFunctorLooping(GenericRuleReasoner.FORWARD_RETE);
         doTestFunctorLooping(GenericRuleReasoner.HYBRID);
@@ -376,12 +377,13 @@ public class TestGenericRules extends TestCase {
 
         InfGraph infgraph = reasoner.bind(data);
         // The p should have been asserted but is invisible
-        assertFalse( infgraph.contains(Node.ANY, p, Node.ANY) );
+        assertFalse(infgraph.contains(Node.ANY, p, Node.ANY) );
     }
 
     /**
      * Test the @prefix and @include extensions to the rule parser
      */
+    @Test
     public void testExtendedRuleParser() {
         List<Rule> rules = Rule.rulesFromURL("file:testing/reasoners/ruleParserTest1.rules");
         GenericRuleReasoner reasoner = new GenericRuleReasoner(rules);
@@ -398,22 +400,23 @@ public class TestGenericRules extends TestCase {
         Property p = m.getProperty(NS2 + "p");
         Property a = m.getProperty(NS3 + "a");
         Resource foo = m.getResource(NS1 + "foo");
-        assertTrue("@prefix test", m.contains(A, p, foo));
+        assertTrue(m.contains(A, p, foo), "@prefix test");
 
         // Check RDFS rule inclusion
-        assertTrue("@include RDFS test", m.contains(A, RDFS.subClassOf, C));
-        assertTrue("@include test", m.contains(a,a,a));
+        assertTrue(m.contains(A, RDFS.subClassOf, C), "@include RDFS test");
+        assertTrue(m.contains(a,a,a), "@include test");
     }
 
     /**
      * Test that @include supports fileManger redirections
      */
+    @Test
     public void testIncludeRedirect() {
-        assertFalse( checkIncludeFound("file:testing/reasoners/importTest.rules") );
+        assertFalse(checkIncludeFound("file:testing/reasoners/importTest.rules") );
         LocationMapper lm = FileManager.getInternal().getLocationMapper();
         lm.addAltEntry("file:testing/reasoners/includeAlt.rules",
                      "file:testing/reasoners/include.rules");
-        assertTrue( checkIncludeFound("file:testing/reasoners/importTest.rules") );
+        assertTrue(checkIncludeFound("file:testing/reasoners/importTest.rules") );
         lm.removeAltEntry("file:testing/reasoners/includeAlt.rules");
     }
 
@@ -439,6 +442,7 @@ public class TestGenericRules extends TestCase {
     /**
      * Test add/remove support
      */
+    @Test
     public void testAddRemove() {
         doTestAddRemove(false);
         doTestAddRemove(true);
@@ -468,7 +472,7 @@ public class TestGenericRules extends TestCase {
         reasoner.setTransitiveClosureCaching(useTGC);
 
         InfGraph infgraph = reasoner.bind(data);
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
               infgraph.find(a, ty, null), new Object[] {
                   Triple.create(a, ty, C1),
                   Triple.create(a, ty, C2),
@@ -477,7 +481,7 @@ public class TestGenericRules extends TestCase {
 
         logger.debug("Checkpoint 1");
         infgraph.delete(Triple.create(C1, sC, C2));
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
               infgraph.find(a, ty, null), new Object[] {
                   Triple.create(a, ty, C1)
               } );
@@ -485,18 +489,18 @@ public class TestGenericRules extends TestCase {
         logger.debug("Checkpoint 2");
         infgraph.add(Triple.create(C1, sC, C3));
         infgraph.add(Triple.create(b, p, C2));
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
               infgraph.find(a, ty, null), new Object[] {
                   Triple.create(a, ty, C1),
                   Triple.create(a, ty, C3)
               } );
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
               infgraph.find(b, ty, null), new Object[] {
                   Triple.create(b, ty, C2),
                   Triple.create(b, ty, C3)
               } );
 
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
               data.find(null, null, null), new Object[] {
                   Triple.create(a, p, C1),
                   Triple.create(b, p, C2),
@@ -508,6 +512,7 @@ public class TestGenericRules extends TestCase {
     /**
      * Resolve a bug using remove in rules themselves.
      */
+    @Test
     public void testAddRemove2() {
         Graph data = createGraphForTest();
         data.add(Triple.create(a, p, Util.makeIntNode(0)));
@@ -526,7 +531,7 @@ public class TestGenericRules extends TestCase {
         reasoner.setMode(GenericRuleReasoner.FORWARD_RETE);
 
         InfGraph infgraph = reasoner.bind(data);
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
               infgraph.find(a, p, null), new Object[] {
                   Triple.create(a, p, Util.makeIntNode(2))
               } );

@@ -21,8 +21,11 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
@@ -85,32 +88,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-
 /**
  * Unit tests for reported bugs in the rule system.
  */
 @SuppressWarnings("removal")
-public class TestRuleSystemBugs extends TestCase {
+public class TestRuleSystemBugs {
 
     /**
      * Boilerplate for junit
      */
-    public TestRuleSystemBugs( String name ) {
-        super( name );
-    }
 
     /**
      * Boilerplate for junit.
      * This is its own test suite
      */
-    public static TestSuite suite() {
-        return new TestSuite( TestRuleSystemBugs.class );
-//        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestBugs( "testLayeredValidation" ));
-//        return suite;
-    }
-
-    @Override
+    @BeforeEach
     public void setUp() {
         // ensure the ont doc manager is in a consistent state
         OntDocumentManager.getInstance().reset( true );
@@ -120,6 +112,7 @@ public class TestRuleSystemBugs extends TestCase {
      * Report of NPE during processing on an ontology with a faulty intersection list,
      * from Hugh Winkler.
      */
+    @Test
     public void testIntersectionNPE() {
         Model base = ModelFactory.createDefaultModel();
         base.read("file:testing/reasoners/bugs/bad-intersection.owl");
@@ -131,13 +124,14 @@ public class TestRuleSystemBugs extends TestCase {
         } catch (ReasonerException e) {
             foundBadList = true;
         }
-        assertTrue("Correctly detected the illegal list", foundBadList);
+        assertTrue(foundBadList, "Correctly detected the illegal list");
     }
 
     /**
      * Report of functor literals leaking out of inference graphs and raising CCE
      * in iterators.
      */
+    @Test
     public void testFunctorCCE() {
         Model base = ModelFactory.createDefaultModel();
         base.read("file:testing/reasoners/bugs/cceTest.owl");
@@ -216,6 +210,7 @@ public class TestRuleSystemBugs extends TestCase {
     /**
      * Test for a reported bug in delete
      */
+    @Test
     public void testDeleteBug() {
         Model modelo = ModelFactory.createDefaultModel();
         modelo.read("file:testing/reasoners/bugs/deleteBug.owl");
@@ -231,6 +226,7 @@ public class TestRuleSystemBugs extends TestCase {
     /**
      * Test bug caused by caching of deductions models.
      */
+    @Test
     public void testDeteleBug2() {
         Model m = ModelFactory.createDefaultModel();
         String NS = PrintUtil.egNS;
@@ -252,13 +248,14 @@ public class TestRuleSystemBugs extends TestCase {
     /**
      * Test that prototype nodes are now hidden
      */
+    @Test
     public void testHide() {
         String NS = "http://jena.hpl.hp.com/bugs#";
         OntModel m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_RULE_INF, null);
         OntClass c = m.createClass(NS + "C");
         OntResource i = m.createIndividual(c);
         Iterator<Statement> res = m.listStatements(null, RDF.type, c);
-        TestUtil.assertIteratorValues(this, res, new Statement[] {
+        TestUtil.assertIteratorValues( res, new Statement[] {
             m.createStatement(i, RDF.type, c)
         });
     }
@@ -266,6 +263,7 @@ public class TestRuleSystemBugs extends TestCase {
     /**
      * Also want to have hidden rb:xsdRange
      */
+    @Test
     public void testHideXSDRange() {
         OntModelSpec[] specs = new OntModelSpec[] {
                 OntModelSpec.OWL_MEM_RULE_INF,
@@ -280,7 +278,7 @@ public class TestRuleSystemBugs extends TestCase {
             while (i.hasNext()) {
                 Resource r = i.next();
                 if (r.getURI() != null && r.getURI().startsWith(ReasonerVocabulary.RBNamespace)) {
-                    assertTrue("Rubrik internal property leaked out: " + r + "(" + os + ")", false);
+                    assertTrue(false, "Rubrik internal property leaked out: " + r + "(" + os + ")");
                 }
             }
         }
@@ -289,6 +287,7 @@ public class TestRuleSystemBugs extends TestCase {
     /**
      * Test problem with bindSchema not interacting properly with validation.
      */
+    @Test
     public void testBindSchemaValidate() {
         Reasoner reasoner = ReasonerRegistry.getOWLReasoner();
         Model schema = FileManager.getInternal().loadModelInternal("file:testing/reasoners/bugs/sbug.owl");
@@ -297,7 +296,7 @@ public class TestRuleSystemBugs extends TestCase {
         // Union version
         InfModel infu = ModelFactory.createInfModel(reasoner, data.union(schema));
         ValidityReport validity = infu.validate();
-        assertTrue( ! validity.isValid());
+        assertTrue(! validity.isValid());
         // debug print
 //        for (Iterator i = validity.getReports(); i.hasNext(); ) {
 //            System.out.println(" - " + i.next());
@@ -306,12 +305,13 @@ public class TestRuleSystemBugs extends TestCase {
         // bindSchema version
         InfModel inf = ModelFactory.createInfModel(reasoner.bindSchema(schema), data);
         validity = inf.validate();
-        assertTrue( ! validity.isValid());
+        assertTrue(! validity.isValid());
     }
 
     /**
      * Delete bug in generic rule reasoner.
      */
+    @Test
     public void testGenericDeleteBug() {
         Model data = ModelFactory.createDefaultModel();
         String NS = "urn:example:test:";
@@ -334,6 +334,7 @@ public class TestRuleSystemBugs extends TestCase {
     /**
      * RETE incremental processing bug.
      */
+    @Test
     public void testRETEInc() {
        String rule = "(?x ?p ?y) -> (?p rdf:type rdf:Property) .";
        Reasoner r = new GenericRuleReasoner(Rule.parseRules(rule));
@@ -354,6 +355,7 @@ public class TestRuleSystemBugs extends TestCase {
     /**
      * RETE incremental processing bug.
      */
+    @Test
     public void testRETEDec() {
        String rule = "(?x ?p ?y) -> (?p rdf:type rdf:Property) .";
        Reasoner r = new GenericRuleReasoner(Rule.parseRules(rule));
@@ -375,10 +377,10 @@ public class TestRuleSystemBugs extends TestCase {
         assertTrue(m.contains(prop, RDF.type, RDF.Property));
     }
 
-
     /**
      * Bug that exposed prototypes of owl:Thing despite hiding being switched on.
      */
+    @Test
     public void testHideOnOWLThing() {
         Reasoner r = ReasonerRegistry.getOWLReasoner();
         Model data = ModelFactory.createDefaultModel();
@@ -423,6 +425,7 @@ public class TestRuleSystemBugs extends TestCase {
     }
 
     /** Problem with bindSchema and validation rules */
+    @Test
     public void test_der_validation() {
         Model abox = FileManager.getInternal().loadModelInternal("file:testing/reasoners/owl/nondetbug.rdf");
         List<Rule> rules = FBRuleReasoner.loadRules("testing/reasoners/owl/nondetbug.rules");
@@ -430,7 +433,7 @@ public class TestRuleSystemBugs extends TestCase {
 //        r.setTraceOn(true);
         for (int i = 0; i < 10; i++) {
             InfModel im = ModelFactory.createInfModel(r, abox);
-            assertTrue("failed on count " + i, im.contains(null, ReasonerVocabulary.RB_VALIDATION_REPORT, (RDFNode)null));
+            assertTrue(im.contains(null, ReasonerVocabulary.RB_VALIDATION_REPORT, (RDFNode)null), "failed on count " + i);
         }
     }
 
@@ -486,12 +489,13 @@ public class TestRuleSystemBugs extends TestCase {
             }
         }
 
-        assertEquals( "Some expected results were not seen", 0, mask );
+        assertEquals(0, mask, "Some expected results were not seen");
     }
 
     /**
      * Bug report from David A Bigwood
      */
+    @Test
     public void test_domainInf() {
         // create an OntModel
         OntModel m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_RULE_INF, null );
@@ -505,16 +509,16 @@ public class TestRuleSystemBugs extends TestCase {
         UnionClass uc = m.createUnionClass(null, null);
         // add an operand
         uc.addOperand( c1 );
-        assertEquals( "Size should be 1", 1, uc.getOperands().size() );
-        assertTrue( "uc should have c1 as union member", uc.getOperands().contains( c1 ) );
+        assertEquals(1, uc.getOperands().size(), "Size should be 1");
+        assertTrue(uc.getOperands().contains( c1 ), "uc should have c1 as union member");
         // add another operand
         uc.addOperand( c2 );
-        assertEquals( "Size should be 2", 2, uc.getOperands().size() );
-        TestUtil.assertIteratorValues(this, uc.listOperands(), new Object[] { c1, c2 } );
+        assertEquals(2, uc.getOperands().size(), "Size should be 2");
+        TestUtil.assertIteratorValues( uc.listOperands(), new Object[] { c1, c2 } );
         // add a third operand
         uc.addOperand( c3 );
-        assertEquals( "Size should be 3", 3, uc.getOperands().size() );
-        TestUtil.assertIteratorValues(this,  uc.listOperands(), new Object[] { c1, c2, c3} );
+        assertEquals(3, uc.getOperands().size(), "Size should be 3");
+        TestUtil.assertIteratorValues(  uc.listOperands(), new Object[] { c1, c2, c3} );
         // add union class as domain of a property
         p1.addDomain(uc);
     }
@@ -522,6 +526,7 @@ public class TestRuleSystemBugs extends TestCase {
     /**
      * Bug report on bad conflict resolution between two non-monotonic rules.
      */
+    @Test
     public void testNonmonotonicCR() {
         String ruleSrc = "(eg:IndA eg:scoreA ?score), sum(?score 40 ?total), noValue(eg:IndA eg:flag_1 'true') -> drop(0), (eg:IndA eg:scoreA ?total), (eg:IndA eg:flag_1 'true')." +
         "(eg:IndA eg:scoreA ?score), sum(?score 33 ?total), noValue(eg:IndA eg:flag_2 'true') -> drop(0), (eg:IndA eg:scoreA ?total), (eg:IndA eg:flag_2 'true').";
@@ -534,12 +539,13 @@ public class TestRuleSystemBugs extends TestCase {
         GenericRuleReasoner reasoner = new GenericRuleReasoner(rules);
         InfModel inf = ModelFactory.createInfModel(reasoner, data);
         Iterator<RDFNode> values = inf.listObjectsOfProperty(i, scoreA);
-        TestUtil.assertIteratorValues(this, values, new Object[] { data.createTypedLiteral(173)});
+        TestUtil.assertIteratorValues( values, new Object[] { data.createTypedLiteral(173)});
     }
 
     /**
      * Bug report - intersection processing does not work incrementally.
      */
+    @Test
     public void testIncrementalIU() {
         OntModel ontmodel = ModelFactory.createOntologyModel(
                 OntModelSpec.OWL_MEM_MINI_RULE_INF );
@@ -564,13 +570,14 @@ public class TestRuleSystemBugs extends TestCase {
        // Works with rebind, bug is that it doesn't work without rebind
 //       ontmodel.rebind();
 
-       TestUtil.assertIteratorValues(this, classI.listInstances(), subind);
-       TestUtil.assertIteratorValues(this, classU.listInstances(), ind);
+       TestUtil.assertIteratorValues( classI.listInstances(), subind);
+       TestUtil.assertIteratorValues( classU.listInstances(), ind);
     }
 
     /**
      * Fact rules with non-empty bodyies failed to fire.
      */
+    @Test
     public void testFactRules() {
         Model facts = ModelFactory.createDefaultModel();
         String NS = PrintUtil.egNS;
@@ -591,6 +598,7 @@ public class TestRuleSystemBugs extends TestCase {
      * Test chainging rules from axioms which broke while trying to
      * fix about test case.
      */
+    @Test
     public void testFactChainRules() {
         Model facts = ModelFactory.createDefaultModel();
         String NS = PrintUtil.egNS;
@@ -606,7 +614,7 @@ public class TestRuleSystemBugs extends TestCase {
         reasoner.setTransitiveClosureCaching(true);
         InfModel inf = ModelFactory.createInfModel(reasoner, facts);
         Property egRange = inf.createProperty(NS + "range");
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
                     inf.listStatements(null, egRange, (RDFNode)null),
                     new Object[] {inf.createStatement(mother, egRange, female)} );
     }
@@ -614,6 +622,7 @@ public class TestRuleSystemBugs extends TestCase {
     /**
      * test remove operator in case with empty data.
      */
+    @Test
     public void testEmptyRemove() {
         List<Rule> rules = Rule.parseRules(
                 "-> (eg:i eg:prop eg:foo) ." +
@@ -623,13 +632,14 @@ public class TestRuleSystemBugs extends TestCase {
         InfModel im = ModelFactory.createInfModel(reasoner, ModelFactory.createDefaultModel());
         Resource i = im.createResource(PrintUtil.egNS + "i");
         Property guard = im.createProperty(PrintUtil.egNS + "guard");
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
                 im.listStatements(), new Object[] {im.createStatement(i, guard, "done")});
     }
 
     /**
      * test duplicate removal when using pure backward rules
      */
+    @Test
     public void testBackwardDupRemoval() {
         String NS = PrintUtil.egNS;
         Model base = ModelFactory.createDefaultModel();
@@ -651,6 +661,7 @@ public class TestRuleSystemBugs extends TestCase {
     /**
      * Test closure of grounded choice points
      */
+    @Test
     public void testGroundClosure() {
         Flag myFlag = new Flag();
         BuiltinRegistry.theRegistry.register(myFlag);
@@ -668,13 +679,14 @@ public class TestRuleSystemBugs extends TestCase {
         m.add(a, p, a);
         GenericRuleReasoner reasoner = new GenericRuleReasoner(Rule.parseRules(rules));
         InfModel infModel = ModelFactory.createInfModel(reasoner, m);
-        assertTrue( infModel.contains(a, q, b) );
-        assertTrue( ! myFlag.fired );
+        assertTrue(infModel.contains(a, q, b) );
+        assertTrue(! myFlag.fired );
     }
 
     /**
      * Test closure of grounded choice points
      */
+    @Test
     public void testGroundClosure2() {
         Flag myFlag = new Flag();
         BuiltinRegistry.theRegistry.register(myFlag);
@@ -687,12 +699,13 @@ public class TestRuleSystemBugs extends TestCase {
         Resource Paul = inf.getResource(NS + "Paul");
         Property parent = inf.getProperty(NS + "parent");
         assertTrue ( inf.contains(Paul, parent, Phil) );
-        assertTrue( ! myFlag.fired );
+        assertTrue(! myFlag.fired );
     }
 
     /**
      * Test case for a reported CME bug in the transitive reasoner
      */
+    @Test
     public void testCMEInTrans() {
         OntModel model =
             ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_TRANS_INF);
@@ -702,6 +715,7 @@ public class TestRuleSystemBugs extends TestCase {
     /**
      * Test case for reported problem in detecting cardinality violations
      */
+    @Test
     public void testIndCardValidation() {
         final String NS = "http://dummy#";
 
@@ -742,6 +756,7 @@ public class TestRuleSystemBugs extends TestCase {
     /**
      * Listeners on deductions graph should be preserved across rebind operations
      */
+    @Test
     public void testDeductionListener() {
         final String NS = PrintUtil.egNS;
 
@@ -794,6 +809,7 @@ public class TestRuleSystemBugs extends TestCase {
     /**
      * Problems with getDeductionsModel not rerunning prepare  at OntModel level
      */
+    @Test
     public void testOntModelGetDeductions() {
         List<Rule> rules = Rule.parseRules( "(?x rdfs:subClassOf ?y) (?i rdf:type ?x) -> (?i rdf:type ?y)." );
         GenericRuleReasoner reasoner = new GenericRuleReasoner(rules);
@@ -808,7 +824,7 @@ public class TestRuleSystemBugs extends TestCase {
         Model deductions = om.getDeductionsModel();
         i.removeRDFType(A);
         deductions = om.getDeductionsModel();
-        assertFalse("Deductions model updating correctly", deductions.contains(i, RDF.type, B));
+        assertFalse(deductions.contains(i, RDF.type, B), "Deductions model updating correctly");
     }
 
     /**
@@ -829,16 +845,17 @@ public class TestRuleSystemBugs extends TestCase {
     /**
      * Check ability to report literals as well as resources as culprits
      */
+    @Test
     public void testLiteralsInErrorReports() {
         RDFNode culprit = doTestLiteralsInErrorReports("-> (eg:a eg:p 42).  (?X rb:violation error('test', 'arg')) <- (?S eg:p ?X).");
-        assertEquals( culprit, ResourceFactory.createTypedLiteral( Integer.valueOf(42) ));
+        assertEquals(culprit, ResourceFactory.createTypedLiteral( Integer.valueOf(42) ));
         culprit = doTestLiteralsInErrorReports("-> (eg:a eg:p 'foo').  (?X rb:violation error('test', 'arg')) <- (?S eg:p ?X).");
-        assertEquals( culprit, ResourceFactory.createPlainLiteral("foo"));
+        assertEquals(culprit, ResourceFactory.createPlainLiteral("foo"));
         BuiltinRegistry.theRegistry.register( new SomeTriple() );
         culprit = doTestLiteralsInErrorReports("-> (eg:a eg:p 42).  (?X rb:violation error('test', 'arg')) <- (?S eg:p ?Y), someTriple(?X).");
-        assertTrue( culprit.isLiteral() );
+        assertTrue(culprit.isLiteral() );
         Object val = ((Literal)culprit).getValue();
-        assertTrue( val instanceof Triple);
+        assertTrue(val instanceof Triple);
     }
 
     private RDFNode doTestLiteralsInErrorReports(String rules) {
@@ -847,7 +864,7 @@ public class TestRuleSystemBugs extends TestCase {
         ValidityReport validity = im.validate();
         assertTrue (! validity.isValid());
         ValidityReport.Report report = (validity.getReports().next());
-        assertTrue( report.getExtension() instanceof RDFNode);
+        assertTrue(report.getExtension() instanceof RDFNode);
         return (RDFNode)report.getExtension();
     }
 
@@ -877,6 +894,7 @@ public class TestRuleSystemBugs extends TestCase {
      * Arguably this should be moved to ../test/TestRDFSReasoners but that requires more
      * fiddling with manifest files and declarative test specifications
      */
+    @Test
     public void testRDFSSimple() {
         doTestRDFSSimple(ReasonerVocabulary.RDFS_DEFAULT);
         doTestRDFSSimple(ReasonerVocabulary.RDFS_SIMPLE);
@@ -891,14 +909,14 @@ public class TestRuleSystemBugs extends TestCase {
         Reasoner reasoner = RDFSRuleReasonerFactory.theInstance().create(null);
         reasoner.setParameter(ReasonerVocabulary.PROPsetRDFSLevel, level);
         InfModel im = ModelFactory.createInfModel(reasoner, model);
-        assertTrue( im.contains(prop, RDFS.subPropertyOf, prop) );
+        assertTrue(im.contains(prop, RDFS.subPropertyOf, prop) );
     }
-
 
     /**
      * Layering one reasoner on another leads to exposed functors which
      * used to trip up validation
      */
+    @Test
     public void testLayeredValidation() {
         Model ont = FileManager.getInternal().loadModelInternal("testing/reasoners/bugs/layeredValidation.owl");
         InfModel infModel =
@@ -921,11 +939,11 @@ public class TestRuleSystemBugs extends TestCase {
      * Potential problem in handling of maxCardinality(0) assertions in the
      * presence of disjointness.
      */
+    @Test
     public void testMaxCard2() {
         doTestmaxCard2(OntModelSpec.OWL_MEM_MINI_RULE_INF);
         doTestmaxCard2(OntModelSpec.OWL_MEM_RULE_INF);
     }
-
 
     private void doTestmaxCard2(OntModelSpec spec) {
         String NS = "http://jena.hpl.hp.com/eg#";
@@ -933,7 +951,7 @@ public class TestRuleSystemBugs extends TestCase {
         OntModel model = ModelFactory.createOntologyModel(spec, base);
         OntClass event = model.getOntClass(NS + "Event");
         List<OntClass> subclasses = event.listSubClasses().toList();
-        assertFalse( subclasses.contains( OWL.Nothing ) );
+        assertFalse(subclasses.contains( OWL.Nothing ) );
         assertEquals(3, subclasses.size());
     }
 
