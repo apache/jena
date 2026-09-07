@@ -21,25 +21,23 @@
 
 package org.apache.jena.rdf.model;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import java.io.StringReader;
 
 import org.apache.jena.graph.GraphEvents;
-import org.apache.jena.rdf.model.helpers.ModelCreator;
 import org.apache.jena.rdf.model.helpers.RecordingModelListener;
-
 
 /**
  * TestReaderEvents - test that reader events are issued
  */
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestReaderEvents extends AbstractModelTestBase {
-    public TestReaderEvents(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
 
-    public TestReaderEvents() {
-        this(ModelCreator.plain, "TestReaderEvents");
-    }
-
+    @Test
     public void testNTriplesReaderEvents() {
         testReaderEvent("N-TRIPLE", "");
     }
@@ -55,6 +53,7 @@ public class TestReaderEvents extends AbstractModelTestBase {
         L.assertHasEnd(new Object[]{"someEvent", model, GraphEvents.finishRead});
     }
 
+    @Test
     public void testXMLReaderEvents() {
         final String emptyModel = "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'></rdf:RDF>";
         testReaderEvent("RDF/XML", emptyModel);

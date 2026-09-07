@@ -21,18 +21,15 @@
 
 package org.apache.jena.graph.compose;
 
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.graph.*;
 import org.apache.jena.shared.PrefixMapping;
 
-public class TestPolyadicPrefixMapping extends AbstractTestPrefixMapping {
-    public TestPolyadicPrefixMapping(String name) {
-        super(name);
-    }
-
-    public static TestSuite suite() {
-        return new TestSuite(TestPolyadicPrefixMapping.class);
-    }
+public class TestPolyadicPrefixMapping extends AbstractTestPrefixMapping_JU6 {
 
     Graph gBase;
     Graph g1, g2;
@@ -45,7 +42,7 @@ public class TestPolyadicPrefixMapping extends AbstractTestPrefixMapping {
     protected static final String alpha = "something:alpha#";
     protected static final String beta = "something:beta#";
 
-    @Override
+    @BeforeEach
     public void setUp() {
         gBase = GraphMemFactory.createDefaultGraph();
         g1 = GraphMemFactory.createDefaultGraph();
@@ -67,6 +64,7 @@ public class TestPolyadicPrefixMapping extends AbstractTestPrefixMapping {
      * base mapping over-rides all others (c) non-overridden mappings in other maps
      * are visible */
 
+    @Test
     public void testOnlyBaseMutated() {
         poly.getPrefixMapping().setNsPrefix("a", alpha);
         assertEquals(null, g1.getPrefixMapping().getNsPrefixURI("a"));
@@ -74,6 +72,7 @@ public class TestPolyadicPrefixMapping extends AbstractTestPrefixMapping {
         assertEquals(alpha, gBase.getPrefixMapping().getNsPrefixURI("a"));
     }
 
+    @Test
     public void testUpdatesVisible() {
         g1.getPrefixMapping().setNsPrefix("a", alpha);
         g2.getPrefixMapping().setNsPrefix("b", beta);
@@ -81,12 +80,14 @@ public class TestPolyadicPrefixMapping extends AbstractTestPrefixMapping {
         assertEquals(beta, poly.getPrefixMapping().getNsPrefixURI("b"));
     }
 
+    @Test
     public void testUpdatesOverridden() {
         g1.getPrefixMapping().setNsPrefix("x", alpha);
         poly.getPrefixMapping().setNsPrefix("x", beta);
         assertEquals(beta, poly.getPrefixMapping().getNsPrefixURI("x"));
     }
 
+    @Test
     public void testQNameComponents() {
         g1.getPrefixMapping().setNsPrefix("x", alpha);
         g2.getPrefixMapping().setNsPrefix("y", beta);
@@ -98,6 +99,7 @@ public class TestPolyadicPrefixMapping extends AbstractTestPrefixMapping {
      * Test that the default namespace of a sub-graph doesn't appear as a default
      * namespace of the polyadic graph.
      */
+    @Test
     public void testSubgraphsDontPolluteDefaultPrefix() {
         String imported = "http://imported#", local = "http://local#";
         g1.getPrefixMapping().setNsPrefix("", imported);
@@ -105,12 +107,14 @@ public class TestPolyadicPrefixMapping extends AbstractTestPrefixMapping {
         assertEquals(null, poly.getPrefixMapping().getNsURIPrefix(imported));
     }
 
+    @Test
     public void testPolyDoesntSeeImportedDefaultPrefix() {
         String imported = "http://imported#";
         g1.getPrefixMapping().setNsPrefix("", imported);
         assertEquals(null, poly.getPrefixMapping().getNsPrefixURI(""));
     }
 
+    @Test
     public void testPolyMapOverridesFromTheLeft() {
         g1.getPrefixMapping().setNsPrefix("a", "eh:/U1");
         g2.getPrefixMapping().setNsPrefix("a", "eh:/U2");
@@ -118,6 +122,7 @@ public class TestPolyadicPrefixMapping extends AbstractTestPrefixMapping {
         assertEquals("eh:/U1", a);
     }
 
+    @Test
     public void testPolyMapHandlesBase() {
         g1.getPrefixMapping().setNsPrefix("", "eh:/U1");
         g2.getPrefixMapping().setNsPrefix("", "eh:/U2");

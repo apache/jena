@@ -51,7 +51,7 @@ public class JenaCoreTestAll_JU4 extends TestCase {
 //JU6        addTest(ts,  "MemValue",            adaptJUnit4(org.apache.jena.memvalue.TS3_GraphMemValue.class));
 
         // ** COMPLEX
-        addTest(ts,  "Model1",              org.apache.jena.rdf.model.TS3_Model1.suite());
+//JU6        addTest(ts,  "Model1",              org.apache.jena.rdf.model.TS3_Model1.suite());
         // ** COMPLEX
 //JU6        addTest(ts,  "Default Model",       org.apache.jena.rdf.model.TestDefaultModel.suite());
 
@@ -68,7 +68,7 @@ public class JenaCoreTestAll_JU4 extends TestCase {
 //JU6        addTest(ts,  "Shared",              adaptJUnit4(org.apache.jena.shared.TS_SharedPackage.class));
 
         // ** COMPLEX
-        addTest(ts,  "Composed graphs",     org.apache.jena.graph.compose.TS3_compose.suite() );
+//JU6        addTest(ts,  "Composed graphs",     org.apache.jena.graph.compose.TS3_compose.suite() );
 
         addTest(ts,  "Reasoners",           adaptJUnit4(org.apache.jena.reasoner.test.TS3_reasoners.class));
         addTest(ts,  "RuleReasoners",       adaptJUnit4(org.apache.jena.reasoner.rulesys.TS3_RuleReasoners.class));

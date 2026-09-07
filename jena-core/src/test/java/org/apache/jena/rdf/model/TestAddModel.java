@@ -21,21 +21,25 @@
 
 package org.apache.jena.rdf.model;
 
-import org.apache.jena.rdf.model.helpers.ModelCreator;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import org.apache.jena.rdf.model.helpers.ModelHelper;
 import org.apache.jena.vocabulary.RDF;
-import org.junit.Assert;
 
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestAddModel extends AbstractModelTestBase {
     private Model model2;
 
-    public TestAddModel(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
-
     protected void assertContainsAll(final Model model, final Model model2) {
         for ( final StmtIterator s = model2.listStatements() ; s.hasNext() ; ) {
-            Assert.assertTrue(model.contains(s.nextStatement()));
+            assertTrue(model.contains(s.nextStatement()));
         }
     }
 
@@ -45,44 +49,49 @@ public class TestAddModel extends AbstractModelTestBase {
     }
 
     @Override
+    @BeforeEach
     public void setUp() {
         super.setUp();
         model2 = createModel();
     }
 
     @Override
+    @AfterEach
     public void tearDown() {
         super.tearDown();
         model2.close();
     }
 
+    @Test
     public void testAddByIterator() {
 
         ModelHelper.modelAdd(model, "a P b; c P d; x Q 1; y Q 2");
         model2.add(model.listStatements());
-        Assert.assertEquals(model.size(), model2.size());
+        assertEquals(model.size(), model2.size());
         assertSameStatements(model, model2);
         model.add(model.createResource(), RDF.value, model.createResource());
         model.add(model.createResource(), RDF.value, model.createResource());
         model.add(model.createResource(), RDF.value, model.createResource());
         final StmtIterator s = model.listStatements();
         model2.remove(s.nextStatement()).remove(s);
-        Assert.assertEquals(0, model2.size());
+        assertEquals(0, model2.size());
     }
 
+    @Test
     public void testAddByModel() {
 
         ModelHelper.modelAdd(model, "a P b; c P d; x Q 1; y Q 2");
         model2.add(model);
-        Assert.assertEquals(model.size(), model2.size());
+        assertEquals(model.size(), model2.size());
         assertSameStatements(model, model2);
     }
 
+    @Test
     public void testRemoveByModel() {
 
         ModelHelper.modelAdd(model, "a P b; c P d; x Q 1; y Q 2");
         model2.add(model).remove(model);
-        Assert.assertEquals(0, model2.size());
-        Assert.assertFalse(model2.listStatements().hasNext());
+        assertEquals(0, model2.size());
+        assertFalse(model2.listStatements().hasNext());
     }
 }

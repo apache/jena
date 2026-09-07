@@ -21,12 +21,21 @@
 
 package org.apache.jena.rdf.model;
 
-import junit.framework.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import org.apache.jena.shared.Lock;
 
-public class TestConcurrency extends TestSuite {
+/** Test suite to exercise the locking. */
+public class TestConcurrency {
 
-    // Test suite to exercise the locking
     static long SLEEP = 100;
     static int threadCount = 0;
 
@@ -34,179 +43,155 @@ public class TestConcurrency extends TestSuite {
     final static Model model1 = ModelFactory.createDefaultModel();
     final static Model model2 = ModelFactory.createDefaultModel();
 
-    public TestConcurrency() {
-        super("Model concurrency control");
-
-        if ( true ) {
+    /**
+     * The lock nesting cases: outer model and lock, inner model and lock, and whether
+     * entering the inner critical section is expected to fail. Lock promotion (READ
+     * then WRITE) fails only on the same model, inner and outer.
+     */
+    static Stream<Arguments> nestingCases() {
+        return Stream.of(
             // Same model: inner and outer
-            addTest(new Nesting("Lock nesting 1 - same model", model1, Lock.READ, Lock.READ, false));
-            addTest(new Nesting("Lock nesting 2 - same model", model1, Lock.WRITE, Lock.WRITE, false));
-            addTest(new Nesting("Lock nesting 3 - same model", model1, Lock.READ, Lock.WRITE, true));
-            addTest(new Nesting("Lock nesting 4 - same model", model1, Lock.WRITE, Lock.READ, false));
+            nesting("Lock nesting 1 - same model", model1, Lock.READ,  model1, Lock.READ,  false),
+            nesting("Lock nesting 2 - same model", model1, Lock.WRITE, model1, Lock.WRITE, false),
+            nesting("Lock nesting 3 - same model", model1, Lock.READ,  model1, Lock.WRITE, true),
+            nesting("Lock nesting 4 - same model", model1, Lock.WRITE, model1, Lock.READ,  false),
 
             // Different model: inner and outer
-            addTest(new Nesting("Lock nesting 1 - different models", model1, Lock.READ, model2, Lock.READ, false));
-            addTest(new Nesting("Lock nesting 2 - different models", model1, Lock.WRITE, model2, Lock.WRITE, false));
-            addTest(new Nesting("Lock nesting 3 - different models", model1, Lock.READ, model2, Lock.WRITE, false));
-            addTest(new Nesting("Lock nesting 4 - different models", model1, Lock.WRITE, model2, Lock.READ, false));
-        }
-        if ( true ) {
-            // Crude test
-            addTest(new Parallel("Parallel concurrency test"));
-        }
-
+            nesting("Lock nesting 1 - different models", model1, Lock.READ,  model2, Lock.READ,  false),
+            nesting("Lock nesting 2 - different models", model1, Lock.WRITE, model2, Lock.WRITE, false),
+            nesting("Lock nesting 3 - different models", model1, Lock.READ,  model2, Lock.WRITE, false),
+            nesting("Lock nesting 4 - different models", model1, Lock.WRITE, model2, Lock.READ,  false));
     }
 
-    static class Nesting extends TestCase {
-        Model outerModel;
-        Model innerModel;
-        boolean outerLock;
-        boolean innerLock;
-        boolean exceptionExpected;
+    private static Arguments nesting(String testName, Model outerModel, boolean outerLock,
+                                     Model innerModel, boolean innerLock, boolean exceptionExpected) {
+        return Arguments.of(Named.of(testName, testName), outerModel, outerLock, innerModel, innerLock, exceptionExpected);
+    }
 
-        // Same model
-        Nesting(String testName, Model model, boolean lock1, boolean lock2, boolean exExpected) {
-            this(testName, model, lock1, model, lock2, exExpected);
-        }
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("nestingCases")
+    public void testLockNesting(String testName, Model outerModel, boolean outerLock,
+                                Model innerModel, boolean innerLock, boolean exceptionExpected) {
+        boolean gotException = false;
+        try {
+            outerModel.enterCriticalSection(outerLock);
 
-        // Potentially different models
-        Nesting(String testName, Model model1, boolean lock1, Model model2, boolean lock2, boolean exExpected) {
-            super(testName);
-            outerModel = model1;
-            outerLock = lock1;
-            innerModel = model2;
-            innerLock = lock2;
-            exceptionExpected = exExpected;
-        }
-
-        @Override
-        protected void runTest() {
-            boolean gotException = false;
             try {
-                outerModel.enterCriticalSection(outerLock);
-
                 try {
-                    try {
-                        // Should fail if outerLock is READ and innerLock is WRITE
-                        // and its on the same model, inner and outer.
-                        innerModel.enterCriticalSection(innerLock);
+                    // Should fail if outerLock is READ and innerLock is WRITE
+                    // and its on the same model, inner and outer.
+                    innerModel.enterCriticalSection(innerLock);
 
-                    } finally {
-                        innerModel.leaveCriticalSection();
-                    }
-                } catch (Exception ex) {
-                    gotException = true;
+                } finally {
+                    innerModel.leaveCriticalSection();
                 }
-
-            } finally {
-                outerModel.leaveCriticalSection();
+            } catch (Exception ex) {
+                gotException = true;
             }
 
-            if ( exceptionExpected )
-                assertTrue("Failed to get expected lock promotion error", gotException);
-            else
-                assertTrue("Got unexpected lock promotion error", !gotException);
+        } finally {
+            outerModel.leaveCriticalSection();
         }
+
+        if ( exceptionExpected )
+            assertTrue(gotException, "Failed to get expected lock promotion error");
+        else
+            assertTrue(!gotException, "Got unexpected lock promotion error");
     }
 
-    static class Parallel extends TestCase {
-        int threadTotal = 10;
+    // Crude test
+    int threadTotal = 10;
 
-        Parallel(String testName) {
-            super(testName);
+    @Test
+    public void testParallel() {
+        Model model = ModelFactory.createDefaultModel();
+        Thread threads[] = new Thread[threadTotal];
+
+        boolean getReadLock = Lock.READ;
+        for ( int i = 0 ; i < threadTotal ; i++ ) {
+            String nextId = "T" + Integer.toString(++threadCount);
+            threads[i] = new Operation(model, getReadLock);
+            threads[i].setName(nextId);
+            threads[i].start();
+
+            getReadLock = !getReadLock;
         }
 
-        @Override
-        protected void runTest() {
-            Model model = ModelFactory.createDefaultModel();
-            Thread threads[] = new Thread[threadTotal];
+        boolean problems = false;
+        for ( int i = 0 ; i < threadTotal ; i++ ) {
+            try {
+                threads[i].join(200 * SLEEP);
+            } catch (InterruptedException intEx) {}
+        }
 
-            boolean getReadLock = Lock.READ;
-            for ( int i = 0 ; i < threadTotal ; i++ ) {
-                String nextId = "T" + Integer.toString(++threadCount);
-                threads[i] = new Operation(model, getReadLock);
-                threads[i].setName(nextId);
-                threads[i].start();
-
-                getReadLock = !getReadLock;
-            }
-
-            boolean problems = false;
-            for ( int i = 0 ; i < threadTotal ; i++ ) {
+        // Try again for any we missed.
+        for ( int i = 0 ; i < threadTotal ; i++ ) {
+            if ( threads[i].isAlive() )
                 try {
                     threads[i].join(200 * SLEEP);
                 } catch (InterruptedException intEx) {}
+            if ( threads[i].isAlive() ) {
+                System.out.println("Thread " + threads[i].getName() + " failed to finish");
+                problems = true;
             }
-
-            // Try again for any we missed.
-            for ( int i = 0 ; i < threadTotal ; i++ ) {
-                if ( threads[i].isAlive() )
-                    try {
-                        threads[i].join(200 * SLEEP);
-                    } catch (InterruptedException intEx) {}
-                if ( threads[i].isAlive() ) {
-                    System.out.println("Thread " + threads[i].getName() + " failed to finish");
-                    problems = true;
-                }
-            }
-
-            assertTrue("Some thread failed to finish", !problems);
         }
 
-        class Operation extends Thread {
-            Model model;
-            boolean readLock;
+        assertTrue(!problems, "Some thread failed to finish");
+    }
 
-            Operation(Model m, boolean withReadLock) {
-                model = m;
-                readLock = withReadLock;
-            }
+    class Operation extends Thread {
+        Model model;
+        boolean readLock;
 
-            @Override
-            public void run() {
-                for ( int i = 0 ; i < 2 ; i++ ) {
-                    try {
-                        model.enterCriticalSection(readLock);
-                        if ( readLock )
-                            readOperation(false);
-                        else
-                            writeOperation(false);
-                    } finally {
-                        model.leaveCriticalSection();
-                    }
+        Operation(Model m, boolean withReadLock) {
+            model = m;
+            readLock = withReadLock;
+        }
+
+        @Override
+        public void run() {
+            for ( int i = 0 ; i < 2 ; i++ ) {
+                try {
+                    model.enterCriticalSection(readLock);
+                    if ( readLock )
+                        readOperation(false);
+                    else
+                        writeOperation(false);
+                } finally {
+                    model.leaveCriticalSection();
                 }
             }
         }
-        // Operations ----------------------------------------------
+    }
+    // Operations ----------------------------------------------
 
-        volatile int writers = 0;
+    volatile int writers = 0;
 
-        // The example model operations
-        void doStuff(String label, boolean doThrow) {
-            String id = Thread.currentThread().getName();
-            // Puase a while to cause other threads to (try to) enter the region.
-            try {
-                Thread.sleep(SLEEP);
-            } catch (InterruptedException intEx) {}
-            if ( doThrow )
-                throw new RuntimeException(label);
-        }
+    // The example model operations
+    void doStuff(String label, boolean doThrow) {
+        String id = Thread.currentThread().getName();
+        // Puase a while to cause other threads to (try to) enter the region.
+        try {
+            Thread.sleep(SLEEP);
+        } catch (InterruptedException intEx) {}
+        if ( doThrow )
+            throw new RuntimeException(label);
+    }
 
-        // Example operations
+    // Example operations
 
-        public void readOperation(boolean doThrow) {
-            if ( writers > 0 )
-                System.err.println("Concurrency error: writers around!");
-            doStuff("read operation", false);
-            if ( writers > 0 )
-                System.err.println("Concurrency error: writers around!");
-        }
+    public void readOperation(boolean doThrow) {
+        if ( writers > 0 )
+            System.err.println("Concurrency error: writers around!");
+        doStuff("read operation", false);
+        if ( writers > 0 )
+            System.err.println("Concurrency error: writers around!");
+    }
 
-        public void writeOperation(boolean doThrow) {
-            writers++;
-            doStuff("write operation", false);
-            writers--;
+    public void writeOperation(boolean doThrow) {
+        writers++;
+        doStuff("write operation", false);
+        writers--;
 
-        }
     }
 }

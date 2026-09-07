@@ -21,18 +21,22 @@
 
 package org.apache.jena.rdf.model;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import org.apache.jena.graph.FrontsTriple;
-import org.apache.jena.rdf.model.helpers.ModelCreator;
 import org.apache.jena.rdf.model.helpers.ModelHelper;
 import org.apache.jena.test.JenaTestLib;
 import org.apache.jena.vocabulary.RDF;
-import org.junit.Assert;
 
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestStatements extends AbstractModelTestBase {
-    public TestStatements(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
 
+    @Test
     public void testOtherStuff() {
         final Model A = createModel();
         final Model B = createModel();
@@ -42,33 +46,35 @@ public class TestStatements extends AbstractModelTestBase {
         final RDFNode O = A.createResource("jena:O");
         A.add(S, P, O);
         B.add(S, P, O);
-        Assert.assertTrue("X1", A.isIsomorphicWith(B));
+        assertTrue(A.isIsomorphicWith(B), "X1");
         /* */
         A.add(R, RDF.subject, S);
         B.add(R, RDF.predicate, P);
-        Assert.assertFalse("X2", A.isIsomorphicWith(B));
+        assertFalse(A.isIsomorphicWith(B), "X2");
         /* */
         A.add(R, RDF.predicate, P);
         B.add(R, RDF.subject, S);
-        Assert.assertTrue("X3", A.isIsomorphicWith(B));
+        assertTrue(A.isIsomorphicWith(B), "X3");
         /* */
         A.add(R, RDF.object, O);
         B.add(R, RDF.type, RDF.Statement);
-        Assert.assertFalse("X4", A.isIsomorphicWith(B));
+        assertFalse(A.isIsomorphicWith(B), "X4");
         /* */
         A.add(R, RDF.type, RDF.Statement);
         B.add(R, RDF.object, O);
-        Assert.assertTrue("X5", A.isIsomorphicWith(B));
+        assertTrue(A.isIsomorphicWith(B), "X5");
     }
 
+    @Test
     public void testPortingBlankNodes() {
         final Model B = createModel();
         final Resource anon = model.createResource();
         final Resource bAnon = anon.inModel(B);
-        Assert.assertTrue("moved resource should still be blank", bAnon.isAnon());
-        Assert.assertEquals("move resource should equal original", anon, bAnon);
+        assertTrue(bAnon.isAnon(), "moved resource should still be blank");
+        assertEquals(anon, bAnon, "move resource should equal original");
     }
 
+    @Test
     public void testSet() {
         final Model A = createModel();
         createModel();
@@ -79,29 +85,31 @@ public class TestStatements extends AbstractModelTestBase {
         final Statement spo = A.createStatement(S, P, O);
         A.add(spo);
         final Statement sps = A.createStatement(S, P, S);
-        Assert.assertEquals(sps, spo.changeObject(S));
-        Assert.assertFalse(A.contains(spo));
-        Assert.assertTrue(A.contains(sps));
+        assertEquals(sps, spo.changeObject(S));
+        assertFalse(A.contains(spo));
+        assertTrue(A.contains(sps));
     }
 
     /**
      * Feeble test that toString'ing a Statement[Impl] will display the data-type of
      * its object if it has one.
      */
+    @Test
     public void testStatementPrintsType() {
         final String fakeURI = "fake:URI";
         final Resource S = model.createResource();
         final Property P = ModelHelper.property(model, "PP");
         final RDFNode O = model.createTypedLiteral("42", fakeURI);
         final Statement st = model.createStatement(S, P, O);
-        Assert.assertTrue(st.toString().indexOf(fakeURI) > 0);
+        assertTrue(st.toString().indexOf(fakeURI) > 0);
     }
 
+    @Test
     public void testStatmentMap1Selectors() {
         final Statement stmt = ModelHelper.statement("sub pred obj");
-        Assert.assertEquals(ModelHelper.resource("sub"), stmt.getSubject());
-        Assert.assertEquals(ModelHelper.resource("pred"), stmt.getPredicate());
-        Assert.assertEquals(ModelHelper.resource("obj"), stmt.getObject());
+        assertEquals(ModelHelper.resource("sub"), stmt.getSubject());
+        assertEquals(ModelHelper.resource("pred"), stmt.getPredicate());
+        assertEquals(ModelHelper.resource("obj"), stmt.getObject());
     }
 
     /**
@@ -109,16 +117,18 @@ public class TestStatements extends AbstractModelTestBase {
      * constructed by a different model should test equal to the resource extracted
      * from that statement, even if it's a bnode.
      */
+    @Test
     public void testStuff() {
         final Model red = createModel();
         final Model blue = createModel();
         final Resource r = red.createResource();
         final Property p = red.createProperty("");
         final Statement s = blue.createStatement(r, p, r);
-        Assert.assertEquals("subject preserved", r, s.getSubject());
-        Assert.assertEquals("object preserved", r, s.getObject());
+        assertEquals(r, s.getSubject(), "subject preserved");
+        assertEquals(r, s.getObject(), "object preserved");
     }
 
+    @Test
     public void testTripleWrapper() {
         JenaTestLib.assertInstanceOf(FrontsTriple.class, ModelHelper.statement(model, "s p o"));
     }

@@ -21,98 +21,106 @@
 
 package org.apache.jena.rdf.model;
 
-import org.apache.jena.rdf.model.helpers.ModelCreator;
-import org.apache.jena.rdf.model.helpers.ModelHelper;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import org.apache.jena.rdf.model.helpers.ModelHelper;
 
 /**
  * A revamped version of the regression set-operation tests.
  */
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestModelSetOperations extends AbstractModelTestBase {
     private Model model2;
 
-    public TestModelSetOperations(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
-
     @Override
+    @BeforeEach
     public void setUp() {
         super.setUp();
         model2 = createModel();
     }
 
     @Override
+    @AfterEach
     public void tearDown() {
         super.tearDown();
         model2.close();
     }
 
+    @Test
     public void testDifference() {
         ModelHelper.modelAdd(model, "a P b; w R x");
         ModelHelper.modelAdd(model2, "w R x; y S z");
         final Model dm = model.difference(model2);
         for ( final StmtIterator it = dm.listStatements() ; it.hasNext() ; ) {
             final Statement s = it.nextStatement();
-            Assert.assertTrue(model.contains(s) && !model2.contains(s));
+            assertTrue(model.contains(s) && !model2.contains(s));
         }
         for ( final StmtIterator it = model.union(model2).listStatements() ; it.hasNext() ; ) {
             final Statement s = it.nextStatement();
-            Assert.assertEquals(model.contains(s) && !model2.contains(s), dm.contains(s));
+            assertEquals(model.contains(s) && !model2.contains(s), dm.contains(s));
         }
-        Assert.assertTrue(dm.containsAny(model));
-        Assert.assertTrue(dm.containsAny(model.listStatements()));
-        Assert.assertFalse(dm.containsAny(model2));
-        Assert.assertFalse(dm.containsAny(model2.listStatements()));
-        Assert.assertTrue(model.containsAll(dm));
+        assertTrue(dm.containsAny(model));
+        assertTrue(dm.containsAny(model.listStatements()));
+        assertFalse(dm.containsAny(model2));
+        assertFalse(dm.containsAny(model2.listStatements()));
+        assertTrue(model.containsAll(dm));
 
     }
 
+    @Test
     public void testIntersection() {
 
         ModelHelper.modelAdd(model, "a P b; w R x");
         ModelHelper.modelAdd(model2, "w R x; y S z");
         final Model im = model.intersection(model2);
-        Assert.assertFalse(model.containsAll(model2));
-        Assert.assertFalse(model2.containsAll(model));
-        Assert.assertTrue(model.containsAll(im));
-        Assert.assertTrue(model2.containsAll(im));
+        assertFalse(model.containsAll(model2));
+        assertFalse(model2.containsAll(model));
+        assertTrue(model.containsAll(im));
+        assertTrue(model2.containsAll(im));
         for ( final StmtIterator it = im.listStatements() ; it.hasNext() ; ) {
             final Statement s = it.nextStatement();
-            Assert.assertTrue(model.contains(s) && model2.contains(s));
+            assertTrue(model.contains(s) && model2.contains(s));
         }
         for ( final StmtIterator it = im.listStatements() ; it.hasNext() ; ) {
-            Assert.assertTrue(model.contains(it.nextStatement()));
+            assertTrue(model.contains(it.nextStatement()));
         }
         for ( final StmtIterator it = im.listStatements() ; it.hasNext() ; ) {
-            Assert.assertTrue(model2.contains(it.nextStatement()));
+            assertTrue(model2.contains(it.nextStatement()));
         }
-        Assert.assertTrue(model.containsAll(im.listStatements()));
-        Assert.assertTrue(model2.containsAll(im.listStatements()));
+        assertTrue(model.containsAll(im.listStatements()));
+        assertTrue(model2.containsAll(im.listStatements()));
 
     }
 
+    @Test
     public void testUnion() {
 
         ModelHelper.modelAdd(model, "a P b; w R x");
         ModelHelper.modelAdd(model2, "w R x; y S z");
         final Model um = model.union(model2);
-        Assert.assertFalse(model.containsAll(model2));
-        Assert.assertFalse(model2.containsAll(model));
-        Assert.assertTrue(um.containsAll(model));
-        Assert.assertTrue(um.containsAll(model2));
+        assertFalse(model.containsAll(model2));
+        assertFalse(model2.containsAll(model));
+        assertTrue(um.containsAll(model));
+        assertTrue(um.containsAll(model2));
         for ( final StmtIterator it = um.listStatements() ; it.hasNext() ; ) {
             final Statement s = it.nextStatement();
-            Assert.assertTrue(model.contains(s) || model2.contains(s));
+            assertTrue(model.contains(s) || model2.contains(s));
         }
         for ( final StmtIterator it = model.listStatements() ; it.hasNext() ; ) {
-            Assert.assertTrue(um.contains(it.nextStatement()));
+            assertTrue(um.contains(it.nextStatement()));
         }
         for ( final StmtIterator it = model2.listStatements() ; it.hasNext() ; ) {
-            Assert.assertTrue(um.contains(it.nextStatement()));
+            assertTrue(um.contains(it.nextStatement()));
         }
-        Assert.assertTrue(um.containsAll(model.listStatements()));
-        Assert.assertTrue(um.containsAll(model2.listStatements()));
+        assertTrue(um.containsAll(model.listStatements()));
+        assertTrue(um.containsAll(model2.listStatements()));
 
     }
 }

@@ -21,13 +21,14 @@
 
 package org.apache.jena.rdf.model;
 
-import org.apache.jena.rdf.model.helpers.ModelCreator;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import org.apache.jena.vocabulary.RDF;
 
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestBagMethods extends AbstractContainerMethods {
-    public TestBagMethods(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
 
     @Override
     protected Container createContainer() {

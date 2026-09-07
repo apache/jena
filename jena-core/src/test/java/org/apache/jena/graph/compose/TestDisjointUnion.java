@@ -21,7 +21,10 @@
 
 package org.apache.jena.graph.compose;
 
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphTestLib;
 
@@ -29,13 +32,6 @@ import org.apache.jena.graph.GraphTestLib;
  * TestDisjointUnion - test that DisjointUnion works, as well as we can.
  */
 public class TestDisjointUnion extends TestDyadic {
-    public TestDisjointUnion(String name) {
-        super(name);
-    }
-
-    public static TestSuite suite() {
-        return new TestSuite(TestDisjointUnion.class);
-    }
 
     @Override
     public Graph getNewGraph() {
@@ -43,16 +39,19 @@ public class TestDisjointUnion extends TestDyadic {
         return new DisjointUnion(gBase, g1);
     }
 
+    @Test
     public void testEmptyUnion() {
         DisjointUnion du = new DisjointUnion(Graph.emptyGraph, Graph.emptyGraph);
         assertEquals(true, du.isEmpty());
     }
 
+    @Test
     public void testLeftUnion() {
         Graph g = GraphTestLib.graphWith("");
         testSingleComponent(g, new DisjointUnion(g, Graph.emptyGraph));
     }
 
+    @Test
     public void testRightUnion() {
         Graph g = GraphTestLib.graphWith("");
         testSingleComponent(g, new DisjointUnion(Graph.emptyGraph, g));
@@ -67,6 +66,7 @@ public class TestDisjointUnion extends TestDyadic {
         GraphTestLib.assertIsomorphic(g, du);
     }
 
+    @Test
     public void testBothComponents() {
         Graph L = GraphTestLib.graphWith(""), R = GraphTestLib.graphWith("");
         Graph du = new DisjointUnion(L, R);
@@ -77,6 +77,7 @@ public class TestDisjointUnion extends TestDyadic {
         GraphTestLib.assertIsomorphic(GraphTestLib.graphWith("x P y; A rdf:type Route"), du);
     }
 
+    @Test
     public void testRemoveBoth() {
         Graph L = GraphTestLib.graphWith("x R y; a P b"), R = GraphTestLib.graphWith("x R y; p Q r");
         Graph du = new DisjointUnion(L, R);
@@ -85,6 +86,7 @@ public class TestDisjointUnion extends TestDyadic {
         GraphTestLib.assertIsomorphic(GraphTestLib.graphWith("p Q r"), R);
     }
 
+    @Test
     public void testAddLeftOnlyIfNecessary() {
         Graph L = GraphTestLib.graphWith(""), R = GraphTestLib.graphWith("x R y");
         Graph du = new DisjointUnion(L, R);

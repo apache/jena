@@ -19,20 +19,29 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.rdf.model;
+package org.apache.jena.graph.compose;
 
-import junit.framework.TestSuite;
-import org.apache.jena.rdf.model.helpers.ModelCreator;
+import org.junit.platform.suite.api.BeforeSuite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
+import org.apache.jena.test.JenaTestLib;
 
-public class TS3_Model1 extends AbstractTestPackage {
-    // AbstractTestPackage creates a large test suite of many test classes.
+@Suite
+@SelectClasses({
+    TestDelta.class,
+    TestUnion.class,
+    TestDisjointUnion.class,
+    TestDifference.class,
+    TestIntersection.class,
+    TestMultiUnion.class,
 
-    static public TestSuite suite() {
-        return new TS3_Model1();
-    }
+    TestPolyadicPrefixMapping.class
+})
 
-    public TS3_Model1() {
-        super("Model", ModelCreator.plain);
+public class TS6_compose {
+    @BeforeSuite
+    public static void beforeSuite() {
+        JenaTestLib.setup();
     }
 }

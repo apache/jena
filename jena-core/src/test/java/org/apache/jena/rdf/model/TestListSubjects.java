@@ -21,20 +21,26 @@
 
 package org.apache.jena.rdf.model;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Assert;
-
-import org.apache.jena.rdf.model.helpers.ModelCreator;
 import org.apache.jena.rdf.model.helpers.ModelHelper;
 import org.apache.jena.shared.PropertyNotFoundException;
 import org.apache.jena.test.JenaTestLib;
 import org.apache.jena.util.iterator.WrappedIterator;
 import org.apache.jena.vocabulary.RDF;
 
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestListSubjects extends AbstractModelTestBase {
 
     static final String subjectPrefix = "http://aldabaran/test8/s";
@@ -57,14 +63,10 @@ public class TestListSubjects extends AbstractModelTestBase {
     String[] tvStrings = {"test8 testing string 1", "test8 testing string 2"};
     String[] langs = {"en", "fr"};
 
-    public TestListSubjects(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
-
     protected void assertEquiv(final Set<? extends Resource> set, final Iterator<? extends Resource> iterator) {
         final List<? extends Resource> L = WrappedIterator.create(iterator).toList();
-        Assert.assertEquals(set.size(), L.size());
-        Assert.assertEquals(set, new HashSet<>(L));
+        assertEquals(set.size(), L.size());
+        assertEquals(set, new HashSet<>(L));
     }
 
     protected void fillModel() {
@@ -120,10 +122,11 @@ public class TestListSubjects extends AbstractModelTestBase {
     // model.addLiteral( resource( "X" ), property( "P" ), new Object() );
     // List answers = model.listResourcesWithProperty( property( "P" ), d
     // ).toList();
-    // assertEquals( listOfOne( resource( "S" ) ), answers );
+    // assertEquals(listOfOne( resource( "S" ) ), answers );
     // }
 
     @Override
+    @BeforeEach
     public void setUp() {
         super.setUp();
         fillModel();
@@ -137,16 +140,18 @@ public class TestListSubjects extends AbstractModelTestBase {
         return result;
     }
 
+    @Test
     public void testGetRequiredProperty() {
         model.getRequiredProperty(subjects[1], predicates[1]);
         try {
             model.getRequiredProperty(subjects[1], RDF.value);
-            Assert.fail("should not find absent property");
+            fail("should not find absent property");
         } catch (final PropertyNotFoundException e) {
             JenaTestLib.pass();
         }
     }
 
+    @Test
     public void testListSubjects() {
         assertEquiv(subjectsTo(TestListSubjects.subjectPrefix, 5), model.listResourcesWithProperty(predicates[4]));
 
@@ -196,19 +201,19 @@ public class TestListSubjects extends AbstractModelTestBase {
 
         assertEquiv(subjectsTo(TestListSubjects.subjectPrefix, 0), model.listSubjectsWithProperty(predicates[0], tvStrings[1], langs[1]));
 
-        // assertEquiv( subjectsTo( subjectPrefix, 2 ),
+        // assertEquiv(subjectsTo( subjectPrefix, 2 ),
         // model.listResourcesWithProperty( predicates[0], tvLitObjs[0] ) );
         //
-        // assertEquiv( subjectsTo( subjectPrefix, 0 ),
+        // assertEquiv(subjectsTo( subjectPrefix, 0 ),
         // model.listResourcesWithProperty( predicates[0], tvLitObjs[1] ) );
         //
-        // assertEquiv( subjectsTo( subjectPrefix, 0 ),
+        // assertEquiv(subjectsTo( subjectPrefix, 0 ),
         // model.listResourcesWithProperty( predicates[0], tvResObjs[0] ) );
         //
-        // assertEquiv( subjectsTo( subjectPrefix, 0 ),
+        // assertEquiv(subjectsTo( subjectPrefix, 0 ),
         // model.listResourcesWithProperty( predicates[0], tvResObjs[1] ) );
 
-        // assertEquiv( new HashSet( Arrays.asList( objects ) ),
+        // assertEquiv(new HashSet( Arrays.asList( objects ) ),
         // model.listObjectsOfProperty( predicates[1] ) );
     }
 }

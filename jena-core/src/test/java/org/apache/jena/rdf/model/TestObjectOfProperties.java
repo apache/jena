@@ -21,10 +21,15 @@
 
 package org.apache.jena.rdf.model;
 
-import org.apache.jena.rdf.model.helpers.ModelCreator;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
 
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestObjectOfProperties extends AbstractModelTestBase {
     /* boolean predf[] = new boolean[num];
      * 
@@ -56,28 +61,24 @@ public class TestObjectOfProperties extends AbstractModelTestBase {
     // Literal tvLitObj[];
     // Resource tvResObj[] =;
 
-    public TestObjectOfProperties(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
-
     private void assertFoundAll(final boolean[] subjf) {
         for ( int i = 0 ; i < num ; i++ ) {
-            Assert.assertTrue("Should have found " + subject[i], subjf[i]);
+            assertTrue(subjf[i], "Should have found " + subject[i]);
         }
     }
 
     private void assertFoundNone(final boolean[] subjf) {
         for ( int i = 0 ; i < num ; i++ ) {
-            Assert.assertFalse("Should not have found " + subject[i], subjf[i]);
+            assertFalse(subjf[i], "Should not have found " + subject[i]);
         }
     }
 
     private void checkBooleanSubjects(final boolean[] subjf) {
         for ( int i = 0 ; i < num ; i++ ) {
             if ( subjf[i] ) {
-                Assert.assertFalse(i > 1);
+                assertFalse(i > 1);
             } else {
-                Assert.assertFalse(i < 2);
+                assertFalse(i < 2);
             }
         }
     }
@@ -93,15 +94,16 @@ public class TestObjectOfProperties extends AbstractModelTestBase {
             for ( int i = 0 ; i < num ; i++ ) {
                 if ( subj.equals(subject[i]) ) {
                     found = true;
-                    Assert.assertFalse("Should not have found " + subject[i] + " already", subjf[i]);
+                    assertFalse(subjf[i], "Should not have found " + subject[i] + " already");
                     subjf[i] = true;
                 }
             }
-            Assert.assertTrue("Should have found " + subj, found);
+            assertTrue(found, "Should have found " + subj);
         }
     }
 
     @Override
+    @BeforeEach
     public void setUp() {
         super.setUp();
         // tvLitObj = { model.createTypedLiteral(new LitTestObjF()),
@@ -156,6 +158,7 @@ public class TestObjectOfProperties extends AbstractModelTestBase {
 
     }
 
+    @Test
     public void testListObjectsOfProperty() {
         final boolean objf[] = new boolean[numObj];
 
@@ -166,18 +169,19 @@ public class TestObjectOfProperties extends AbstractModelTestBase {
             for ( int i = 0 ; i < numObj ; i++ ) {
                 if ( obj.equals(object[i]) ) {
                     found = true;
-                    Assert.assertFalse("Should not have found " + object[i] + " already", objf[i]);
+                    assertFalse(objf[i], "Should not have found " + object[i] + " already");
                     objf[i] = true;
                 }
             }
-            Assert.assertTrue("Should have found " + obj, found);
+            assertTrue(found, "Should have found " + obj);
         }
         for ( int i = 0 ; i < numObj ; i++ ) {
-            Assert.assertTrue("Should have found " + object[i], objf[i]);
+            assertTrue(objf[i], "Should have found " + object[i]);
         }
 
     }
 
+    @Test
     public void testListResourcesWIthProperty() {
         final boolean subjf[] = new boolean[num];
         processIterator(model.listResourcesWithProperty(predicate[4]), subjf);
@@ -235,6 +239,7 @@ public class TestObjectOfProperties extends AbstractModelTestBase {
         assertFoundNone(subjf);
     }
 
+    @Test
     public void testListSubjectsWithProperty() {
         final boolean subjf[] = new boolean[num];
         processIterator(model.listSubjectsWithProperty(predicate[0], tvStringArray[0]), subjf);

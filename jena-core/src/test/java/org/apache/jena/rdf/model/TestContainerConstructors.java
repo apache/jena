@@ -21,52 +21,60 @@
 
 package org.apache.jena.rdf.model;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.apache.jena.rdf.model.helpers.ModelCreator;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import org.apache.jena.vocabulary.RDF;
 
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestContainerConstructors extends AbstractModelTestBase {
-    public TestContainerConstructors(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
 
+    @Test
     public void testCreateAnonAlt() {
         final Alt tv = model.createAlt();
-        Assert.assertTrue(tv.isAnon());
-        Assert.assertTrue(model.contains(tv, RDF.type, RDF.Alt));
+        assertTrue(tv.isAnon());
+        assertTrue(model.contains(tv, RDF.type, RDF.Alt));
     }
 
+    @Test
     public void testCreateAnonBag() {
         final Bag tv = model.createBag();
-        Assert.assertTrue(tv.isAnon());
-        Assert.assertTrue(model.contains(tv, RDF.type, RDF.Bag));
+        assertTrue(tv.isAnon());
+        assertTrue(model.contains(tv, RDF.type, RDF.Bag));
     }
 
+    @Test
     public void testCreateAnonSeq() {
         final Seq tv = model.createSeq();
-        Assert.assertTrue(tv.isAnon());
-        Assert.assertTrue(model.contains(tv, RDF.type, RDF.Seq));
+        assertTrue(tv.isAnon());
+        assertTrue(model.contains(tv, RDF.type, RDF.Seq));
     }
 
+    @Test
     public void testCreateNamedAlt() {
         final String uri = "http://aldabaran/sirius";
         final Alt tv = model.createAlt(uri);
-        Assert.assertEquals(uri, tv.getURI());
-        Assert.assertTrue(model.contains(tv, RDF.type, RDF.Alt));
+        assertEquals(uri, tv.getURI());
+        assertTrue(model.contains(tv, RDF.type, RDF.Alt));
     }
 
+    @Test
     public void testCreateNamedBag() {
         final String uri = "http://aldabaran/foo";
         final Bag tv = model.createBag(uri);
-        Assert.assertEquals(uri, tv.getURI());
-        Assert.assertTrue(model.contains(tv, RDF.type, RDF.Bag));
+        assertEquals(uri, tv.getURI());
+        assertTrue(model.contains(tv, RDF.type, RDF.Bag));
     }
 
+    @Test
     public void testCreateNamedSeq() {
         final String uri = "http://aldabaran/andromeda";
         final Seq tv = model.createSeq(uri);
-        Assert.assertEquals(uri, tv.getURI());
-        Assert.assertTrue(model.contains(tv, RDF.type, RDF.Seq));
+        assertEquals(uri, tv.getURI());
+        assertTrue(model.contains(tv, RDF.type, RDF.Seq));
     }
 }

@@ -21,10 +21,17 @@
 
 package org.apache.jena.rdf.model;
 
-import org.apache.jena.rdf.model.helpers.ModelCreator;
-import org.apache.jena.vocabulary.RDF;
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import org.apache.jena.vocabulary.RDF;
+
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestIterators extends AbstractModelTestBase {
     int num = 5;
     Resource subject[] = new Resource[num];
@@ -34,11 +41,8 @@ public class TestIterators extends AbstractModelTestBase {
     String suri = "http://aldabaran/test6/s";
     String puri = "http://aldabaran/test6/";
 
-    public TestIterators(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
-
     @Override
+    @BeforeEach
     public void setUp() {
         super.setUp();
 
@@ -61,6 +65,7 @@ public class TestIterators extends AbstractModelTestBase {
      * bug detected in StatementIteratorImpl - next does not advance current, so
      * remove doesn't work with next; this test should expose the bug.
      */
+    @Test
     public void testIteratorRemove() {
         final StmtIterator it = model.listStatements();
         try {
@@ -68,7 +73,7 @@ public class TestIterators extends AbstractModelTestBase {
                 it.next();
                 it.remove();
             }
-            Assert.assertEquals("Remove failed", 0, model.size());
+            assertEquals(0, model.size(), "Remove failed");
         } catch (UnsupportedOperationException ex) {
             throw ex;
         } finally {
@@ -77,6 +82,7 @@ public class TestIterators extends AbstractModelTestBase {
 
     }
 
+    @Test
     public void testListObjects() {
         int count = 0;
         NodeIterator iter;
@@ -85,9 +91,10 @@ public class TestIterators extends AbstractModelTestBase {
             iter.nextNode();
             count++;
         }
-        Assert.assertEquals(num * num, count);
+        assertEquals(num * num, count);
     }
 
+    @Test
     public void testNamespaceIterator() {
         final boolean predf[] = new boolean[num];
         for ( int i = 0 ; i < num ; i++ ) {
@@ -100,17 +107,18 @@ public class TestIterators extends AbstractModelTestBase {
             for ( int i = 0 ; i < num ; i++ ) {
                 if ( ns.equals(predicate[i].getNameSpace()) ) {
                     found = true;
-                    Assert.assertFalse("Should not have found " + predicate[i] + " already.", predf[i]);
+                    assertFalse(predf[i], "Should not have found " + predicate[i] + " already.");
                     predf[i] = true;
                 }
             }
-            Assert.assertTrue("Should have found " + ns, found);
+            assertTrue(found, "Should have found " + ns);
         }
         for ( int i = 0 ; i < num ; i++ ) {
-            Assert.assertTrue("Should have found " + predicate[i], predf[i]);
+            assertTrue(predf[i], "Should have found " + predicate[i]);
         }
     }
 
+    @Test
     public void testObjectsOfProperty() {
 
         NodeIterator iter;
@@ -126,14 +134,15 @@ public class TestIterators extends AbstractModelTestBase {
         }
         for ( int i = 0 ; i < (num * num) ; i++ ) {
             if ( (i % num) == 0 ) {
-                Assert.assertTrue(object[i]);
+                assertTrue(object[i]);
             } else {
-                Assert.assertFalse(object[i]);
+                assertFalse(object[i]);
             }
         }
 
     }
 
+    @Test
     public void testObjectsOfPropertyAndValue() {
         NodeIterator iter;
         final boolean[] object = new boolean[num];
@@ -149,10 +158,11 @@ public class TestIterators extends AbstractModelTestBase {
             object[i] = true;
         }
         for ( int i = 0 ; i < (num) ; i++ ) {
-            Assert.assertTrue(object[i]);
+            assertTrue(object[i]);
         }
     }
 
+    @Test
     public void testResourceIterator() {
 
         final boolean subjf[] = new boolean[num];
@@ -169,14 +179,14 @@ public class TestIterators extends AbstractModelTestBase {
             for ( int i = 0 ; i < num ; i++ ) {
                 if ( subj.equals(subject[i]) ) {
                     found = true;
-                    Assert.assertFalse("Should not have found " + subject[i] + " already.", subjf[i]);
+                    assertFalse(subjf[i], "Should not have found " + subject[i] + " already.");
                     subjf[i] = true;
                 }
             }
-            Assert.assertTrue("Should have found " + subj, found);
+            assertTrue(found, "Should have found " + subj);
         }
         for ( int i = 0 ; i < num ; i++ ) {
-            Assert.assertTrue("Should have found " + subject[i], subjf[i]);
+            assertTrue(subjf[i], "Should have found " + subject[i]);
         }
 
         // System.err.println(
@@ -198,10 +208,11 @@ public class TestIterators extends AbstractModelTestBase {
 
     }
 
+    @Test
     public void testStatementIter() {
         final int numStmts = num * num;
         final boolean stmtf[] = new boolean[numStmts];
-        Assert.assertEquals(numStmts, model.size());
+        assertEquals(numStmts, model.size());
         for ( int i = 0 ; i < numStmts ; i++ ) {
             stmtf[i] = false;
         }
@@ -213,14 +224,14 @@ public class TestIterators extends AbstractModelTestBase {
             for ( int i = 0 ; i < numStmts ; i++ ) {
                 if ( stmt.equals(stmts[i]) ) {
                     found = true;
-                    Assert.assertFalse("Should not have found " + stmts[i] + " already.", stmtf[i]);
+                    assertFalse(stmtf[i], "Should not have found " + stmts[i] + " already.");
                     stmtf[i] = true;
                 }
             }
-            Assert.assertTrue("Should have found " + stmt, found);
+            assertTrue(found, "Should have found " + stmt);
         }
         for ( int i = 0 ; i < numStmts ; i++ ) {
-            Assert.assertTrue("Should have found " + stmts[i], stmtf[i]);
+            assertTrue(stmtf[i], "Should have found " + stmts[i]);
         }
     }
     // SEE the tests in model.test: TestReifiedStatements and

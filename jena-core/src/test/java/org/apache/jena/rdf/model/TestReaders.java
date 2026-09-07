@@ -21,46 +21,50 @@
 
 package org.apache.jena.rdf.model;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.NoRouteToHostException;
 import java.net.UnknownHostException;
 
-import org.junit.Assert;
-
-import org.apache.jena.rdf.model.helpers.ModelCreator;
 import org.apache.jena.rdf.model.impl.NTripleReader;
 import org.apache.jena.shared.JenaException;
 import org.slf4j.LoggerFactory;
 
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestReaders extends AbstractModelTestBase {
-    public TestReaders(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
 
-//    public TestReaders() {
-//        this(new TS3_Model1.PlainModelFactory(), "TestReaders");
-//    }
+    public TestReaders() {}
 
     /**
      * Test to ensure that the reader is set.
      */
+    @Test
     public void testGetNTripleReader() {
         final RDFReaderI reader = new NTripleReader();
-        Assert.assertNotNull(reader);
+        assertNotNull(reader);
     }
 
+    @Test
     public void testReadLocalNTriple() {
         model.read(getInputStream("TestReaders.nt"), "", "N-TRIPLE");
-        Assert.assertEquals("Wrong size model", 5, model.size());
+        assertEquals(5, model.size(), "Wrong size model");
         final StmtIterator iter = model.listStatements(null, null, "foo\"\\\n\r\tbar");
-        Assert.assertTrue("No next statement found", iter.hasNext());
+        assertTrue(iter.hasNext(), "No next statement found");
     }
 
+    @Test
     public void testReadLocalRDF() {
         model.read(getInputStream("TestReaders.rdf"), "http://example.org/");
     }
 
+    @Test
     public void testReadRemoteNTriple() {
         try {
             model.read("https://www.w3.org/2000/10/rdf-tests/rdfcore/" + "rdf-containers-syntax-vs-schema/test001.nt", "N-TRIPLE");
@@ -74,6 +78,7 @@ public class TestReaders extends AbstractModelTestBase {
         }
     }
 
+    @Test
     public void testReadRemoteRDF() {
         try {
             model.read("https://www.w3.org/2000/10/rdf-tests/rdfcore/" + "rdf-containers-syntax-vs-schema/test001.rdf");

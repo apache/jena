@@ -21,9 +21,12 @@
 
 package org.apache.jena.rdf.model;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.apache.jena.rdf.model.helpers.ModelCreator;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import org.apache.jena.rdf.model.helpers.ModelHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,38 +34,36 @@ import org.slf4j.LoggerFactory;
 /**
  * TestModelRead - test that the model.read operation(s) exist.
  */
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestModelRead extends AbstractModelTestBase {
     protected static Logger logger = LoggerFactory.getLogger(TestModelRead.class);
 
-    public TestModelRead(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
-
-    public TestModelRead() {
-        this(ModelCreator.plain, "TestModelRead");
-    }
-
+    @Test
     public void testDefaultLangXML() {
         final Model model = ModelFactory.createDefaultModel();
         model.read(getFileName("modelReading/plain.rdf"), null, null);
     }
 
+    @Test
     public void testLoadsSimpleModel() {
         final Model expected = createModel();
         expected.read(getFileName("modelReading/simple.n3"), "N3");
-        Assert.assertSame(model, model.read(getFileName("modelReading/simple.n3"), "base", "N3"));
+        assertSame(model, model.read(getFileName("modelReading/simple.n3"), "base", "N3"));
         ModelHelper.assertIsoModels(expected, model);
     }
 
+    @Test
     public void testReturnsSelf() {
 
-        Assert.assertSame(model, model.read(getFileName("modelReading/empty.n3"), "base", "N3"));
-        Assert.assertTrue(model.isEmpty());
+        assertSame(model, model.read(getFileName("modelReading/empty.n3"), "base", "N3"));
+        assertTrue(model.isEmpty());
     }
 
+    @Test
     public void testSimpleLoadExplicitBase() {
         final Model mBasedExplicit = createModel();
         mBasedExplicit.read(getFileName("modelReading/based.n3"), "http://example/", "N3");
-        ModelHelper.assertIsoModels(ModelHelper.modelWithStatements(this, "http://example/ ja:predicate ja:object"), mBasedExplicit);
+        ModelHelper.assertIsoModels(modelWithStatements("http://example/ ja:predicate ja:object"), mBasedExplicit);
     }
 }

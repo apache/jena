@@ -21,17 +21,13 @@
 
 package org.apache.jena.graph.compose;
 
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphTestLib;
 
 public class TestDifference extends TestDyadic
 {
-    public TestDifference( String name )
-    { super( name ); }
-
-    public static TestSuite suite()
-    { return new TestSuite( TestDifference.class ); }
 
     @Override
     public Graph getNewGraph()
@@ -44,74 +40,78 @@ public class TestDifference extends TestDyadic
         return new Difference( GraphTestLib.graphWith( s1 ), GraphTestLib.graphWith( s2 ) );
     }
 
+    @Test
     public void testStaticDifference() {
-        GraphTestLib.assertIsomorphic( GraphTestLib.graphWith( "" ), differenceOf( "", "" ) );
-        GraphTestLib.assertIsomorphic( GraphTestLib.graphWith( "x R y" ), differenceOf( "x R y", "" ) );
-        GraphTestLib.assertIsomorphic( GraphTestLib.graphWith( "" ), differenceOf( "", "x R y" ) );
-        GraphTestLib.assertIsomorphic( GraphTestLib.graphWith( "" ), differenceOf( "x R y", "x R y" ) );
-        GraphTestLib.assertIsomorphic( GraphTestLib.graphWith( "p R q" ), differenceOf( "x R y; p R q", "r A s; x R y" ) );
+        GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "" ), differenceOf( "", "" ) );
+        GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "x R y" ), differenceOf( "x R y", "" ) );
+        GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "" ), differenceOf( "", "x R y" ) );
+        GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "" ), differenceOf( "x R y", "x R y" ) );
+        GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "p R q" ), differenceOf( "x R y; p R q", "r A s; x R y" ) );
     }
 
+    @Test
     public void testDifferenceReflectsChangesToOperands() {
         Graph l = GraphTestLib.graphWith( "x R y" );
         Graph r = GraphTestLib.graphWith( "x R y" );
         Difference diff = new Difference( l, r );
         GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "" ), diff);
         r.delete( GraphTestLib.triple( "x R y" ) );
-        GraphTestLib.assertIsomorphic( GraphTestLib.graphWith( "x R y" ), diff );
+        GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "x R y" ), diff );
         l.add( GraphTestLib.triple( "x R z" ) );
-        GraphTestLib.assertIsomorphic( GraphTestLib.graphWith( "x R y; x R z" ), diff );
+        GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "x R y; x R z" ), diff );
         r.add( GraphTestLib.triple( "x R z" ) );
-        GraphTestLib.assertIsomorphic( GraphTestLib.graphWith( "x R y" ), diff );
+        GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "x R y" ), diff );
     }
 
+    @Test
     public void testAdd() {
         Graph l = GraphTestLib.graphWith( "x R y" );
         Graph r = GraphTestLib.graphWith( "x R y; x R z" );
         Difference diff = new Difference( l, r );
-        GraphTestLib.assertIsomorphic( GraphTestLib.graphWith( "" ), diff );
+        GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "" ), diff );
 
         // case 1: add to the left operand
         diff.add( GraphTestLib.triple( "p S q" ) );
-        GraphTestLib.assertIsomorphic( GraphTestLib.graphWith( "p S q" ), diff );
-        GraphTestLib.assertIsomorphic( GraphTestLib.graphWith( "x R y; p S q" ), l );
-        GraphTestLib.assertIsomorphic( GraphTestLib.graphWith( "x R y; x R z" ), r );
+        GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "p S q" ), diff );
+        GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "x R y; p S q" ), l );
+        GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "x R y; x R z" ), r );
 
         // case 2: remove from the right, and add to the left operand
         diff.add( GraphTestLib.triple( "x R z" ) );
-        GraphTestLib.assertIsomorphic( GraphTestLib.graphWith( "x R z; p S q" ), diff );
-        GraphTestLib.assertIsomorphic( GraphTestLib.graphWith( "x R y; x R z; p S q" ), l );
-        GraphTestLib.assertIsomorphic( GraphTestLib.graphWith( "x R y" ), r );
+        GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "x R z; p S q" ), diff );
+        GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "x R y; x R z; p S q" ), l );
+        GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "x R y" ), r );
 
         // case 3: remove from the right operand
         diff.add( GraphTestLib.triple( "x R y" ) );
-        GraphTestLib.assertIsomorphic( GraphTestLib.graphWith( "x R y; x R z; p S q" ), diff );
-        GraphTestLib.assertIsomorphic( GraphTestLib.graphWith( "x R y; x R z; p S q" ), l );
-        GraphTestLib.assertIsomorphic( GraphTestLib.graphWith( "" ), r );
+        GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "x R y; x R z; p S q" ), diff );
+        GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "x R y; x R z; p S q" ), l );
+        GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "" ), r );
     }
 
+    @Test
     public void testDelete() {
         Graph l = GraphTestLib.graphWith( "x R y; x R z" );
         Graph r = GraphTestLib.graphWith( "x R y" );
         Difference diff = new Difference( l, r );
-        GraphTestLib.assertIsomorphic( GraphTestLib.graphWith( "x R z" ), diff );
+        GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "x R z" ), diff );
 
         // case 1: remove non-existent triple is a no-op
         diff.delete( GraphTestLib.triple( "p S q" ) );
-        GraphTestLib.assertIsomorphic( GraphTestLib.graphWith( "x R z" ), diff );
-        GraphTestLib.assertIsomorphic( GraphTestLib.graphWith( "x R y; x R z" ), l );
-        GraphTestLib.assertIsomorphic( GraphTestLib.graphWith( "x R y" ), r );
+        GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "x R z" ), diff );
+        GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "x R y; x R z" ), l );
+        GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "x R y" ), r );
 
         // case 2: remove triple that exists in both - removes from left
         diff.delete( GraphTestLib.triple( "x R y" ) );
-        GraphTestLib.assertIsomorphic( GraphTestLib.graphWith( "x R z" ), diff );
-        GraphTestLib.assertIsomorphic( GraphTestLib.graphWith( "x R z" ), l );
-        GraphTestLib.assertIsomorphic( GraphTestLib.graphWith( "x R y" ), r );
+        GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "x R z" ), diff );
+        GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "x R z" ), l );
+        GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "x R y" ), r );
 
         // case 3: remove triple that exists in left is removed
         diff.delete( GraphTestLib.triple( "x R z" ) );
-        GraphTestLib.assertIsomorphic( GraphTestLib.graphWith( "" ), diff );
-        GraphTestLib.assertIsomorphic( GraphTestLib.graphWith( "" ), l );
-        GraphTestLib.assertIsomorphic( GraphTestLib.graphWith( "x R y" ), r );
+        GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "" ), diff );
+        GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "" ), l );
+        GraphTestLib.assertIsomorphic(GraphTestLib.graphWith( "x R y" ), r );
     }
 }

@@ -21,18 +21,20 @@
 
 package org.apache.jena.rdf.model;
 
-import org.apache.jena.graph.GraphMemFactory;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import org.apache.jena.graph.Graph;
-import org.apache.jena.rdf.model.helpers.ModelCreator;
+import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.rdf.model.helpers.ModelHelper;
 import org.apache.jena.rdf.model.impl.ModelCom;
 
-import org.junit.Assert;
-
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestContains extends AbstractModelTestBase {
-    public TestContains(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
 
     private Property prop(final String uri) {
         return ResourceFactory.createProperty("eh:/" + uri);
@@ -42,44 +44,47 @@ public class TestContains extends AbstractModelTestBase {
         return ResourceFactory.createResource("eh:/" + uri);
     }
 
+    @Test
     public void testContains() {
-        testContains(false, "", "x");
-        testContains(false, "a R b", "x");
-        testContains(false, "a R b; c P d", "x");
+        checkContains(false, "", "x");
+        checkContains(false, "a R b", "x");
+        checkContains(false, "a R b; c P d", "x");
         /* */
-        testContains(false, "a R b", "z");
+        checkContains(false, "a R b", "z");
         /* */
-        testContains(true, "x R y", "x");
-        testContains(true, "a P b", "P");
-        testContains(true, "i  Q  j", "j");
-        testContains(true, "x R y; a P b; i Q j", "y");
+        checkContains(true, "x R y", "x");
+        checkContains(true, "a P b", "P");
+        checkContains(true, "i  Q  j", "j");
+        checkContains(true, "x R y; a P b; i Q j", "y");
         /* */
-        testContains(true, "x R y; a P b; i Q j", "y");
-        testContains(true, "x R y; a P b; i Q j", "R");
-        testContains(true, "x R y; a P b; i Q j", "a");
+        checkContains(true, "x R y; a P b; i Q j", "y");
+        checkContains(true, "x R y; a P b; i Q j", "R");
+        checkContains(true, "x R y; a P b; i Q j", "a");
     }
 
-    public void testContains(final boolean yes, final String facts, final String resource) {
-        final Model m = ModelHelper.modelWithStatements(this, facts);
+    public void checkContains(final boolean yes, final String facts, final String resource) {
+        final Model m = modelWithStatements(facts);
         final RDFNode r = ModelHelper.rdfNode(m, resource);
-        if ( ModelHelper.modelWithStatements(this, facts).containsResource(r) != yes ) {
-            Assert.fail("[" + facts + "] should" + (yes ? "" : " not") + " contain " + resource);
+        if ( modelWithStatements(facts).containsResource(r) != yes ) {
+            fail("[" + facts + "] should" + (yes ? "" : " not") + " contain " + resource);
         }
     }
 
+    @Test
     public void testContainsWithNull() {
-        testCWN(false, "", null, null, null);
-        testCWN(true, "x R y", null, null, null);
-        testCWN(false, "x R y", null, null, res("z"));
-        testCWN(true, "x RR y", res("x"), prop("RR"), null);
-        testCWN(true, "a BB c", null, prop("BB"), res("c"));
-        testCWN(false, "a BB c", null, prop("ZZ"), res("c"));
+        checkCWN(false, "", null, null, null);
+        checkCWN(true, "x R y", null, null, null);
+        checkCWN(false, "x R y", null, null, res("z"));
+        checkCWN(true, "x RR y", res("x"), prop("RR"), null);
+        checkCWN(true, "a BB c", null, prop("BB"), res("c"));
+        checkCWN(false, "a BB c", null, prop("ZZ"), res("c"));
     }
 
-    public void testCWN(final boolean yes, final String facts, final Resource S, final Property P, final RDFNode O) {
-        Assert.assertEquals(yes, ModelHelper.modelWithStatements(this, facts).contains(S, P, O));
+    public void checkCWN(final boolean yes, final String facts, final Resource S, final Property P, final RDFNode O) {
+        assertEquals(yes, modelWithStatements(facts).contains(S, P, O));
     }
 
+    @Test
     public void testModelComContainsSPcallsContainsSPO() {
         final Graph g = GraphMemFactory.createDefaultGraph();
         final boolean[] wasCalled = {false};
@@ -91,7 +96,7 @@ public class TestContains extends AbstractModelTestBase {
                 return super.contains(s, p, o);
             }
         };
-        Assert.assertFalse(m.contains(ModelHelper.resource("r"), ModelHelper.property("p")));
-        Assert.assertTrue("contains(S,P) should call contains(S,P,O)", wasCalled[0]);
+        assertFalse(m.contains(ModelHelper.resource("r"), ModelHelper.property("p")));
+        assertTrue(wasCalled[0], "contains(S,P) should call contains(S,P,O)");
     }
 }

@@ -21,25 +21,27 @@
 
 package org.apache.jena.rdf.model;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.junit.Assert;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.impl.WrappedGraph;
 import org.apache.jena.junit.NodeCreateUtils;
-import org.apache.jena.rdf.model.helpers.ModelCreator;
 import org.apache.jena.rdf.model.helpers.ModelHelper;
 import org.apache.jena.test.JenaTestLib;
 
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestRemoveSPO extends AbstractModelTestBase {
 
-    public TestRemoveSPO(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
-
+    @Test
     public void testRemoveSPOCallsGraphDeleteTriple() {
         final List<Triple> deleted = new ArrayList<>();
         final Graph base = new WrappedGraph(model.getGraph()) {
@@ -50,10 +52,11 @@ public class TestRemoveSPO extends AbstractModelTestBase {
         };
         model = ModelFactory.createModelForGraph(base);
         model.remove(ModelHelper.resource("R"), ModelHelper.property("P"), ModelHelper.rdfNode(model, "17"));
-        Assert.assertEquals(JenaTestLib.listOfOne(NodeCreateUtils.createTriple("R P 17")), deleted);
+        assertEquals(JenaTestLib.listOfOne(NodeCreateUtils.createTriple("R P 17")), deleted);
     }
 
+    @Test
     public void testRemoveSPOReturnsModel() {
-        Assert.assertSame(model, model.remove(ModelHelper.resource("R"), ModelHelper.property("P"), ModelHelper.rdfNode(model, "17")));
+        assertSame(model, model.remove(ModelHelper.resource("R"), ModelHelper.property("P"), ModelHelper.rdfNode(model, "17")));
     }
 }

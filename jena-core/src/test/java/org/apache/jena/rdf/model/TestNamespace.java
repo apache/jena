@@ -21,6 +21,12 @@
 
 package org.apache.jena.rdf.model;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,16 +36,13 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.apache.jena.graph.compose.AbstractTestPrefixMapping;
-import org.apache.jena.rdf.model.helpers.ModelCreator;
 import org.apache.jena.rdf.model.helpers.ModelHelper;
 import org.apache.jena.rdf.model.impl.ModelCom;
 import org.apache.jena.util.CollectionFactory;
-import org.junit.Assert;
 
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestNamespace extends AbstractModelTestBase {
-    public TestNamespace(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
 
     /**
      * turn a semi-separated set of P=U definitions into a namespace map.
@@ -74,15 +77,17 @@ public class TestNamespace extends AbstractModelTestBase {
      * have a namespace definition for eg and rdf, and not for spoo so we see if we
      * can extract them (or not, for spoo).
      */
+    @Test
     public void testReadPrefixes() {
         model.read(getFileName("wg/rdf-ns-prefix-confusion/test0014.rdf"));
         final Map<String, String> ns = model.getNsPrefixMap();
         // System.err.println( ">> " + ns );
-        Assert.assertEquals("namespace eg", "http://example.org/", ns.get("eg"));
-        Assert.assertEquals("namespace rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#", ns.get("rdf"));
-        Assert.assertEquals("not present", null, ns.get("spoo"));
+        assertEquals("http://example.org/", ns.get("eg"), "namespace eg");
+        assertEquals("http://www.w3.org/1999/02/22-rdf-syntax-ns#", ns.get("rdf"), "namespace rdf");
+        assertEquals(null, ns.get("spoo"), "not present");
     }
 
+    @Test
     public void testUseEasyPrefix() {
         AbstractTestPrefixMapping.testUseEasyPrefix("default model", ModelFactory.createDefaultModel());
     }
@@ -94,6 +99,7 @@ public class TestNamespace extends AbstractModelTestBase {
      * used on properties don't reliably get used. Maybe they shouldn't be - but it
      * seems odd.
      */
+    @Test
     public void testWritePrefixes() throws IOException {
         ModelCom.addNamespaces(model, makePrefixes("fred=ftp://net.fred.org/;spoo=http://spoo.net/"));
         model.add(ModelHelper.statement(model, "http://spoo.net/S http://spoo.net/P http://spoo.net/O"));
@@ -106,8 +112,8 @@ public class TestNamespace extends AbstractModelTestBase {
 
         m2.read(bin, "http://example/base/", "RDF/XML");
         final Map<String, String> ns = m2.getNsPrefixMap();
-        Assert.assertEquals("namespace spoo", "http://spoo.net/", ns.get("spoo"));
-        Assert.assertEquals("namespace fred", "ftp://net.fred.org/", ns.get("fred"));
+        assertEquals("http://spoo.net/", ns.get("spoo"), "namespace spoo");
+        assertEquals("ftp://net.fred.org/", ns.get("fred"), "namespace fred");
     }
 
 }

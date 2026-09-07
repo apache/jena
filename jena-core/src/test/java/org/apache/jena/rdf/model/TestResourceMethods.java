@@ -21,14 +21,20 @@
 
 package org.apache.jena.rdf.model;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.rdf.model.helpers.ModelCreator;
 import org.apache.jena.shared.PropertyNotFoundException;
 import org.apache.jena.test.JenaTestLib;
 import org.apache.jena.vocabulary.RDF;
 
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestResourceMethods extends AbstractModelTestBase {
     protected Resource r;
 
@@ -38,11 +44,8 @@ public class TestResourceMethods extends AbstractModelTestBase {
 
     protected Resource tvResource;
 
-    public TestResourceMethods(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
-
     @Override
+    @BeforeEach
     public void setUp() {
         super.setUp();
         tvLiteral = model.createLiteral("test 12 string 2");
@@ -56,94 +59,113 @@ public class TestResourceMethods extends AbstractModelTestBase {
                  .addProperty(RDF.value, tvLiteral).addProperty(RDF.value, tvResource);
     }
 
+    @Test
     public void testAllSubjectsCorrect() {
         testHasSubjectR(model.listStatements());
         testHasSubjectR(r.listProperties());
     }
 
+    @Test
     public void testBoolean() {
-        Assert.assertTrue(r.hasLiteral(RDF.value, AbstractModelTestBase.tvBoolean));
+        assertTrue(r.hasLiteral(RDF.value, AbstractModelTestBase.tvBoolean));
     }
 
+    @Test
     public void testByte() {
-        Assert.assertTrue(r.hasLiteral(RDF.value, AbstractModelTestBase.tvByte));
+        assertTrue(r.hasLiteral(RDF.value, AbstractModelTestBase.tvByte));
     }
 
+    @Test
     public void testChar() {
-        Assert.assertTrue(r.hasLiteral(RDF.value, AbstractModelTestBase.tvChar));
+        assertTrue(r.hasLiteral(RDF.value, AbstractModelTestBase.tvChar));
     }
 
+    @Test
     public void testCorrectSubject() {
-        Assert.assertEquals(r, r.getRequiredProperty(RDF.value).getSubject());
+        assertEquals(r, r.getRequiredProperty(RDF.value).getSubject());
     }
 
+    @Test
     public void testCountsCorrect() {
-        Assert.assertEquals(13, Iter.toList(model.listStatements()).size());
-        Assert.assertEquals(13, Iter.toList(r.listProperties(RDF.value)).size());
-        Assert.assertEquals(0, Iter.toList(r.listProperties(RDF.type)).size());
+        assertEquals(13, Iter.toList(model.listStatements()).size());
+        assertEquals(13, Iter.toList(r.listProperties(RDF.value)).size());
+        assertEquals(0, Iter.toList(r.listProperties(RDF.type)).size());
     }
 
+    @Test
     public void testDouble() {
-        Assert.assertTrue(r.hasLiteral(RDF.value, AbstractModelTestBase.tvDouble));
+        assertTrue(r.hasLiteral(RDF.value, AbstractModelTestBase.tvDouble));
     }
 
+    @Test
     public void testFloat() {
-        Assert.assertTrue(r.hasLiteral(RDF.value, AbstractModelTestBase.tvFloat));
+        assertTrue(r.hasLiteral(RDF.value, AbstractModelTestBase.tvFloat));
     }
 
     protected void testHasSubjectR(final StmtIterator it) {
         while (it.hasNext()) {
-            Assert.assertEquals(r, it.nextStatement().getSubject());
+            assertEquals(r, it.nextStatement().getSubject());
         }
     }
 
+    @Test
     public void testInt() {
-        Assert.assertTrue(r.hasLiteral(RDF.value, AbstractModelTestBase.tvInt));
+        assertTrue(r.hasLiteral(RDF.value, AbstractModelTestBase.tvInt));
     }
 
+    @Test
     public void testLiteral() {
-        Assert.assertTrue(r.hasProperty(RDF.value, tvLiteral));
+        assertTrue(r.hasProperty(RDF.value, tvLiteral));
     }
 
+    @Test
     public void testLong() {
-        Assert.assertTrue(r.hasLiteral(RDF.value, AbstractModelTestBase.tvLong));
+        assertTrue(r.hasLiteral(RDF.value, AbstractModelTestBase.tvLong));
     }
 
+    @Test
     public void testNoSuchPropertyException() {
         try {
             r.getRequiredProperty(RDF.type);
-            Assert.fail("missing property should throw exception");
+            fail("missing property should throw exception");
         } catch (final PropertyNotFoundException e) {
             JenaTestLib.pass();
         }
     }
 
+    @Test
     public void testNoSuchPropertyNull() {
-        Assert.assertNull(r.getProperty(RDF.type));
+        assertNull(r.getProperty(RDF.type));
     }
 
+    @Test
     public void testObject() {
-        Assert.assertTrue(r.hasLiteral(RDF.value, AbstractModelTestBase.tvObject));
+        assertTrue(r.hasLiteral(RDF.value, AbstractModelTestBase.tvObject));
     }
 
+    @Test
     public void testRemoveProperties() {
         r.removeProperties();
-        Assert.assertEquals(false, model.listStatements(r, null, (RDFNode)null).hasNext());
+        assertEquals(false, model.listStatements(r, null, (RDFNode)null).hasNext());
     }
 
+    @Test
     public void testResource() {
-        Assert.assertTrue(r.hasProperty(RDF.value, tvResource));
+        assertTrue(r.hasProperty(RDF.value, tvResource));
     }
 
+    @Test
     public void testShort() {
-        Assert.assertTrue(r.hasLiteral(RDF.value, AbstractModelTestBase.tvShort));
+        assertTrue(r.hasLiteral(RDF.value, AbstractModelTestBase.tvShort));
     }
 
+    @Test
     public void testString() {
-        Assert.assertTrue(r.hasProperty(RDF.value, AbstractModelTestBase.tvString));
+        assertTrue(r.hasProperty(RDF.value, AbstractModelTestBase.tvString));
     }
 
+    @Test
     public void testStringWithLanguage() {
-        Assert.assertTrue(r.hasProperty(RDF.value, AbstractModelTestBase.tvString, lang));
+        assertTrue(r.hasProperty(RDF.value, AbstractModelTestBase.tvString, lang));
     }
 }

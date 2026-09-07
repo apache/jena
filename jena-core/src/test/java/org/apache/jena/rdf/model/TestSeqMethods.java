@@ -21,19 +21,22 @@
 
 package org.apache.jena.rdf.model;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.jena.rdf.model.helpers.ModelCreator;
 import org.apache.jena.test.JenaTestLib;
 import org.apache.jena.vocabulary.RDF;
-import org.junit.Assert;
-import junit.framework.TestSuite;
 
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestSeqMethods extends AbstractContainerMethods {
-    public static TestSuite suite() {
-        return new TestSuite(TestSeqMethods.class);
-    }
 
     protected LitTestObj aLitTestObj;
 
@@ -50,10 +53,6 @@ public class TestSeqMethods extends AbstractContainerMethods {
     protected static final String lang = "fr";
     protected static final int num = 10;
 
-    public TestSeqMethods(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
-
     protected boolean[] bools(final String s) {
         final boolean[] result = new boolean[s.length()];
         for ( int i = 0 ; i < s.length() ; i += 1 ) {
@@ -68,7 +67,7 @@ public class TestSeqMethods extends AbstractContainerMethods {
     }
 
     public void error(final String test, final int n) {
-        Assert.fail(test + " -- " + n);
+        fail(test + " -- " + n);
     }
 
     @Override
@@ -77,6 +76,7 @@ public class TestSeqMethods extends AbstractContainerMethods {
     }
 
     @Override
+    @BeforeEach
     public void setUp() {
         super.setUp();
         aLitTestObj = new LitTestObj(12345);
@@ -89,6 +89,7 @@ public class TestSeqMethods extends AbstractContainerMethods {
         tvSeq = model.createSeq();
     }
 
+    @Test
     public void testMoreIndexing() {
         final int num = 10;
         final Seq seq = model.createSeq();
@@ -98,18 +99,18 @@ public class TestSeqMethods extends AbstractContainerMethods {
 
         try {
             seq.add(0, false);
-            Assert.fail("cannot at at position 0");
+            fail("cannot at at position 0");
         } catch (final SeqIndexBoundsException e) {
             JenaTestLib.pass();
         }
 
         seq.add(num + 1, false);
-        Assert.assertEquals(num + 1, seq.size());
+        assertEquals(num + 1, seq.size());
 
         seq.remove(num + 1);
         try {
             seq.add(num + 2, false);
-            Assert.fail("cannot add past the end");
+            fail("cannot add past the end");
         } catch (final SeqIndexBoundsException e) {
             JenaTestLib.pass();
         }
@@ -117,10 +118,10 @@ public class TestSeqMethods extends AbstractContainerMethods {
         final int size = seq.size();
         for ( int i = 1 ; i <= (num - 1) ; i += 1 ) {
             seq.add(i, 1000 + i);
-            Assert.assertEquals(1000 + i, seq.getInt(i));
-            Assert.assertEquals(0, seq.getInt(i + 1));
-            Assert.assertEquals(size + i, seq.size());
-            Assert.assertEquals(num - i - 1, seq.getInt(size));
+            assertEquals(1000 + i, seq.getInt(i));
+            assertEquals(0, seq.getInt(i + 1));
+            assertEquals(size + i, seq.size());
+            assertEquals(num - i - 1, seq.getInt(size));
         }
     }
 
@@ -143,22 +144,26 @@ public class TestSeqMethods extends AbstractContainerMethods {
             }
         }
         //
-        Assert.assertFalse(nIter.hasNext());
-        Assert.assertEquals(retained, seq.iterator().toList());
+        assertFalse(nIter.hasNext());
+        assertEquals(retained, seq.iterator().toList());
     }
 
+    @Test
     public void testRemoveA() {
         testRemove(bools("tttffffftt"));
     }
 
+    @Test
     public void testRemoveB() {
         testRemove(bools("ftftttttft"));
     }
 
+    @Test
     public void testRemoveC() {
         testRemove(bools("ffffffffff"));
     }
 
+    @Test
     public void testSeq4() {
         final String test = "temp";
         int n = 58305;
@@ -290,6 +295,7 @@ public class TestSeqMethods extends AbstractContainerMethods {
         }
     }
 
+    @Test
     public void testSeq5() {
         final Seq seq5 = model.createSeq();
         final String test = "seq5";
@@ -342,6 +348,7 @@ public class TestSeqMethods extends AbstractContainerMethods {
         }
     }
 
+    @Test
     public void testSeq6() {
         final String test = "seq6";
         int n = 0;
@@ -472,6 +479,7 @@ public class TestSeqMethods extends AbstractContainerMethods {
         }
     }
 
+    @Test
     public void testSeq7() {
         final Seq seq7 = model.createSeq();
         final String test = "seq7";
@@ -741,6 +749,7 @@ public class TestSeqMethods extends AbstractContainerMethods {
         }
     }
 
+    @Test
     public void testSeqAccessByIndexing() {
         // LitTestObj tvObject = new LitTestObj(12345);
         final Literal tvLiteral = model.createLiteral("test 12 string 2");
@@ -753,124 +762,127 @@ public class TestSeqMethods extends AbstractContainerMethods {
         //
         final Seq seq = model.createSeq();
         seq.add(true);
-        Assert.assertEquals(true, seq.getBoolean(1));
+        assertEquals(true, seq.getBoolean(1));
         seq.add((byte)1);
-        Assert.assertEquals((byte)1, seq.getByte(2));
+        assertEquals((byte)1, seq.getByte(2));
         seq.add((short)2);
-        Assert.assertEquals((short)2, seq.getShort(3));
+        assertEquals((short)2, seq.getShort(3));
         seq.add(-1);
-        Assert.assertEquals(-1, seq.getInt(4));
+        assertEquals(-1, seq.getInt(4));
         seq.add(-2);
-        Assert.assertEquals(-2, seq.getLong(5));
+        assertEquals(-2, seq.getLong(5));
         seq.add('!');
-        Assert.assertEquals('!', seq.getChar(6));
+        assertEquals('!', seq.getChar(6));
         seq.add(123.456f);
-        Assert.assertEquals(123.456f, seq.getFloat(7), 0.00005);
+        assertEquals(123.456f, seq.getFloat(7), 0.00005);
         seq.add(12345.67890);
-        Assert.assertEquals(12345.67890, seq.getDouble(8), 0.00000005);
+        assertEquals(12345.67890, seq.getDouble(8), 0.00000005);
         seq.add("some string");
-        Assert.assertEquals("some string", seq.getString(9));
+        assertEquals("some string", seq.getString(9));
         seq.add(tvLitObj);
-        // assertEquals( tvLitObj, seq.getObject( 10, new LitTestObjF() ) );
+        // assertEquals(tvLitObj, seq.getObject( 10, new LitTestObjF() ) );
         seq.add(tvResource);
-        Assert.assertEquals(tvResource, seq.getResource(11));
+        assertEquals(tvResource, seq.getResource(11));
         // seq.add( tvResObj );
-        // assertEquals( tvResObj, seq.getResource( 12, new ResTestObjF() ) );
+        // assertEquals(tvResObj, seq.getResource( 12, new ResTestObjF() ) );
         seq.add(tvLiteral);
-        Assert.assertEquals(tvLiteral, seq.getLiteral(12));
+        assertEquals(tvLiteral, seq.getLiteral(12));
         seq.add(tvBag);
-        Assert.assertEquals(tvBag, seq.getBag(13));
+        assertEquals(tvBag, seq.getBag(13));
         seq.add(tvAlt);
-        Assert.assertEquals(tvAlt, seq.getAlt(14));
+        assertEquals(tvAlt, seq.getAlt(14));
         seq.add(tvSeq);
-        Assert.assertEquals(tvSeq, seq.getSeq(15));
+        assertEquals(tvSeq, seq.getSeq(15));
         //
         try {
             seq.getInt(16);
-            Assert.fail("there is no element 16");
+            fail("there is no element 16");
         } catch (final SeqIndexBoundsException e) {
             JenaTestLib.pass();
         }
         try {
             seq.getInt(0);
-            Assert.fail("there is no element 0");
+            fail("there is no element 0");
         } catch (final SeqIndexBoundsException e) {
             JenaTestLib.pass();
         }
     }
 
+    @Test
     public void testSeqAdd() {
         final Seq seq = model.createSeq();
-        Assert.assertEquals(0, seq.size());
-        Assert.assertTrue(model.contains(seq, RDF.type, RDF.Seq));
+        assertEquals(0, seq.size());
+        assertTrue(model.contains(seq, RDF.type, RDF.Seq));
         //
         seq.add(AbstractModelTestBase.tvBoolean);
-        Assert.assertTrue(seq.contains(AbstractModelTestBase.tvBoolean));
-        Assert.assertFalse(seq.contains(!AbstractModelTestBase.tvBoolean));
+        assertTrue(seq.contains(AbstractModelTestBase.tvBoolean));
+        assertFalse(seq.contains(!AbstractModelTestBase.tvBoolean));
         //
         seq.add(AbstractModelTestBase.tvByte);
-        Assert.assertTrue(seq.contains(AbstractModelTestBase.tvByte));
-        Assert.assertFalse(seq.contains((byte)101));
+        assertTrue(seq.contains(AbstractModelTestBase.tvByte));
+        assertFalse(seq.contains((byte)101));
         //
         seq.add(AbstractModelTestBase.tvShort);
-        Assert.assertTrue(seq.contains(AbstractModelTestBase.tvShort));
-        Assert.assertFalse(seq.contains((short)102));
+        assertTrue(seq.contains(AbstractModelTestBase.tvShort));
+        assertFalse(seq.contains((short)102));
         //
         seq.add(AbstractModelTestBase.tvInt);
-        Assert.assertTrue(seq.contains(AbstractModelTestBase.tvInt));
-        Assert.assertFalse(seq.contains(-101));
+        assertTrue(seq.contains(AbstractModelTestBase.tvInt));
+        assertFalse(seq.contains(-101));
         //
         seq.add(AbstractModelTestBase.tvLong);
-        Assert.assertTrue(seq.contains(AbstractModelTestBase.tvLong));
-        Assert.assertFalse(seq.contains(-102));
+        assertTrue(seq.contains(AbstractModelTestBase.tvLong));
+        assertFalse(seq.contains(-102));
         //
         seq.add(AbstractModelTestBase.tvChar);
-        Assert.assertTrue(seq.contains(AbstractModelTestBase.tvChar));
-        Assert.assertFalse(seq.contains('?'));
+        assertTrue(seq.contains(AbstractModelTestBase.tvChar));
+        assertFalse(seq.contains('?'));
         //
         seq.add(123.456f);
-        Assert.assertTrue(seq.contains(123.456f));
-        Assert.assertFalse(seq.contains(456.123f));
+        assertTrue(seq.contains(123.456f));
+        assertFalse(seq.contains(456.123f));
         //
         seq.add(-123.456d);
-        Assert.assertTrue(seq.contains(-123.456d));
-        Assert.assertFalse(seq.contains(-456.123d));
+        assertTrue(seq.contains(-123.456d));
+        assertFalse(seq.contains(-456.123d));
         //
         seq.add("a string");
-        Assert.assertTrue(seq.contains("a string"));
-        Assert.assertFalse(seq.contains("a necklace"));
+        assertTrue(seq.contains("a string"));
+        assertFalse(seq.contains("a necklace"));
         //
         seq.add(model.createLiteral("another string"));
-        Assert.assertTrue(seq.contains("another string"));
-        Assert.assertFalse(seq.contains("another necklace"));
+        assertTrue(seq.contains("another string"));
+        assertFalse(seq.contains("another necklace"));
         //
         seq.add(new LitTestObj(12345));
-        Assert.assertTrue(seq.contains(new LitTestObj(12345)));
-        Assert.assertFalse(seq.contains(new LitTestObj(54321)));
+        assertTrue(seq.contains(new LitTestObj(12345)));
+        assertFalse(seq.contains(new LitTestObj(54321)));
         //
         // Resource present = model.createResource( new ResTestObjF() );
         // Resource absent = model.createResource( new ResTestObjF() );
         // seq.add( present );
-        // assertTrue( seq.contains( present ) );
-        // assertFalse( seq.contains( absent ) );
+        // assertTrue(seq.contains( present ) );
+        // assertFalse(seq.contains( absent ) );
         //
-        Assert.assertEquals(11, seq.size());
+        assertEquals(11, seq.size());
     }
 
+    @Test
     public void testSeqAddInts() {
         final int num = 10;
         final Seq seq = model.createSeq();
         for ( int i = 0 ; i < num ; i += 1 ) {
             seq.add(i);
         }
-        Assert.assertEquals(num, seq.size());
+        assertEquals(num, seq.size());
         final List<RDFNode> L = seq.iterator().toList();
-        Assert.assertEquals(num, L.size());
+        assertEquals(num, L.size());
         for ( int i = 0 ; i < num ; i += 1 ) {
-            Assert.assertEquals(i, ((Literal)L.get(i)).getInt());
+            assertEquals(i, ((Literal)L.get(i)).getInt());
         }
     }
 
+    @Test
     public void testSeqInsertByIndexing() {
         // LitTestObj tvObject = new LitTestObj(12345);
         final Literal tvLiteral = model.createLiteral("test 12 string 2");
@@ -884,56 +896,57 @@ public class TestSeqMethods extends AbstractContainerMethods {
         final Seq seq = model.createSeq();
         seq.add(model.createResource());
         seq.add(1, true);
-        Assert.assertEquals(true, seq.getBoolean(1));
+        assertEquals(true, seq.getBoolean(1));
         seq.add(1, (byte)1);
-        Assert.assertEquals((byte)1, seq.getByte(1));
+        assertEquals((byte)1, seq.getByte(1));
         seq.add(1, (short)2);
-        Assert.assertEquals((short)2, seq.getShort(1));
+        assertEquals((short)2, seq.getShort(1));
         seq.add(1, -1);
-        Assert.assertEquals(-1, seq.getInt(1));
+        assertEquals(-1, seq.getInt(1));
         seq.add(1, -2);
-        Assert.assertEquals(-2, seq.getLong(1));
+        assertEquals(-2, seq.getLong(1));
         seq.add(1, '!');
-        Assert.assertEquals('!', seq.getChar(1));
+        assertEquals('!', seq.getChar(1));
         seq.add(1, 123.456f);
-        Assert.assertEquals(123.456f, seq.getFloat(1), 0.00005);
+        assertEquals(123.456f, seq.getFloat(1), 0.00005);
         seq.add(1, 12345.67890);
-        Assert.assertEquals(12345.67890, seq.getDouble(1), 0.00000005);
+        assertEquals(12345.67890, seq.getDouble(1), 0.00000005);
         seq.add(1, "some string");
-        Assert.assertEquals("some string", seq.getString(1));
+        assertEquals("some string", seq.getString(1));
         seq.add(1, tvLitObj);
-        // assertEquals( tvLitObj, seq.getObject( 1, new LitTestObjF() ) );
+        // assertEquals(tvLitObj, seq.getObject( 1, new LitTestObjF() ) );
         seq.add(1, tvResource);
-        Assert.assertEquals(tvResource, seq.getResource(1));
+        assertEquals(tvResource, seq.getResource(1));
         // seq.add( 1, tvResObj );
-        // assertEquals( tvResObj, seq.getResource( 1, new ResTestObjF() ) );
+        // assertEquals(tvResObj, seq.getResource( 1, new ResTestObjF() ) );
         seq.add(1, tvLiteral);
-        Assert.assertEquals(tvLiteral, seq.getLiteral(1));
+        assertEquals(tvLiteral, seq.getLiteral(1));
         seq.add(1, tvBag);
-        Assert.assertEquals(tvBag, seq.getBag(1));
+        assertEquals(tvBag, seq.getBag(1));
         seq.add(1, tvAlt);
-        Assert.assertEquals(tvAlt, seq.getAlt(1));
+        assertEquals(tvAlt, seq.getAlt(1));
         seq.add(1, tvSeq);
-        Assert.assertEquals(tvSeq, seq.getSeq(1));
+        assertEquals(tvSeq, seq.getSeq(1));
         //
-        Assert.assertEquals(0, seq.indexOf(1234543));
-        Assert.assertEquals(1, seq.indexOf(tvSeq));
-        Assert.assertEquals(2, seq.indexOf(tvAlt));
-        Assert.assertEquals(3, seq.indexOf(tvBag));
-        Assert.assertEquals(4, seq.indexOf(tvLiteral));
-        Assert.assertEquals(5, seq.indexOf(tvResource));
-        Assert.assertEquals(6, seq.indexOf(tvLitObj));
-        Assert.assertEquals(7, seq.indexOf("some string"));
-        Assert.assertEquals(8, seq.indexOf(12345.67890));
-        Assert.assertEquals(9, seq.indexOf(123.456f));
-        Assert.assertEquals(10, seq.indexOf('!'));
-        Assert.assertEquals(11, seq.indexOf(-2));
-        Assert.assertEquals(12, seq.indexOf(-1));
-        Assert.assertEquals(13, seq.indexOf((short)2));
-        Assert.assertEquals(14, seq.indexOf((byte)1));
-        Assert.assertEquals(15, seq.indexOf(true));
+        assertEquals(0, seq.indexOf(1234543));
+        assertEquals(1, seq.indexOf(tvSeq));
+        assertEquals(2, seq.indexOf(tvAlt));
+        assertEquals(3, seq.indexOf(tvBag));
+        assertEquals(4, seq.indexOf(tvLiteral));
+        assertEquals(5, seq.indexOf(tvResource));
+        assertEquals(6, seq.indexOf(tvLitObj));
+        assertEquals(7, seq.indexOf("some string"));
+        assertEquals(8, seq.indexOf(12345.67890));
+        assertEquals(9, seq.indexOf(123.456f));
+        assertEquals(10, seq.indexOf('!'));
+        assertEquals(11, seq.indexOf(-2));
+        assertEquals(12, seq.indexOf(-1));
+        assertEquals(13, seq.indexOf((short)2));
+        assertEquals(14, seq.indexOf((byte)1));
+        assertEquals(15, seq.indexOf(true));
     }
 
+    @Test
     public void testSet() {
         // NodeIterator nIter;
         // StmtIterator sIter;
@@ -951,82 +964,82 @@ public class TestSeqMethods extends AbstractContainerMethods {
         }
 
         seq.set(5, AbstractModelTestBase.tvBoolean);
-        Assert.assertEquals(AbstractModelTestBase.tvBoolean, seq.getBoolean(5));
-        Assert.assertEquals(3, seq.getInt(4));
-        Assert.assertEquals(5, seq.getInt(6));
-        Assert.assertEquals(num, seq.size());
+        assertEquals(AbstractModelTestBase.tvBoolean, seq.getBoolean(5));
+        assertEquals(3, seq.getInt(4));
+        assertEquals(5, seq.getInt(6));
+        assertEquals(num, seq.size());
 
         seq.set(5, AbstractModelTestBase.tvByte);
-        Assert.assertEquals(AbstractModelTestBase.tvByte, seq.getByte(5));
-        Assert.assertEquals(3, seq.getInt(4));
-        Assert.assertEquals(5, seq.getInt(6));
-        Assert.assertEquals(num, seq.size());
+        assertEquals(AbstractModelTestBase.tvByte, seq.getByte(5));
+        assertEquals(3, seq.getInt(4));
+        assertEquals(5, seq.getInt(6));
+        assertEquals(num, seq.size());
 
         seq.set(5, AbstractModelTestBase.tvShort);
-        Assert.assertEquals(AbstractModelTestBase.tvShort, seq.getShort(5));
-        Assert.assertEquals(3, seq.getInt(4));
-        Assert.assertEquals(5, seq.getInt(6));
-        Assert.assertEquals(num, seq.size());
+        assertEquals(AbstractModelTestBase.tvShort, seq.getShort(5));
+        assertEquals(3, seq.getInt(4));
+        assertEquals(5, seq.getInt(6));
+        assertEquals(num, seq.size());
 
         seq.set(5, AbstractModelTestBase.tvInt);
-        Assert.assertEquals(AbstractModelTestBase.tvInt, seq.getInt(5));
-        Assert.assertEquals(3, seq.getInt(4));
-        Assert.assertEquals(5, seq.getInt(6));
-        Assert.assertEquals(num, seq.size());
+        assertEquals(AbstractModelTestBase.tvInt, seq.getInt(5));
+        assertEquals(3, seq.getInt(4));
+        assertEquals(5, seq.getInt(6));
+        assertEquals(num, seq.size());
 
         seq.set(5, AbstractModelTestBase.tvLong);
-        Assert.assertEquals(AbstractModelTestBase.tvLong, seq.getLong(5));
-        Assert.assertEquals(3, seq.getInt(4));
-        Assert.assertEquals(5, seq.getInt(6));
-        Assert.assertEquals(num, seq.size());
+        assertEquals(AbstractModelTestBase.tvLong, seq.getLong(5));
+        assertEquals(3, seq.getInt(4));
+        assertEquals(5, seq.getInt(6));
+        assertEquals(num, seq.size());
 
         seq.set(5, AbstractModelTestBase.tvString);
-        Assert.assertEquals(AbstractModelTestBase.tvString, seq.getString(5));
-        Assert.assertEquals(3, seq.getInt(4));
-        Assert.assertEquals(5, seq.getInt(6));
-        Assert.assertEquals(num, seq.size());
+        assertEquals(AbstractModelTestBase.tvString, seq.getString(5));
+        assertEquals(3, seq.getInt(4));
+        assertEquals(5, seq.getInt(6));
+        assertEquals(num, seq.size());
 
         seq.set(5, AbstractModelTestBase.tvBoolean);
-        Assert.assertEquals(AbstractModelTestBase.tvBoolean, seq.getBoolean(5));
-        Assert.assertEquals(3, seq.getInt(4));
-        Assert.assertEquals(5, seq.getInt(6));
-        Assert.assertEquals(num, seq.size());
+        assertEquals(AbstractModelTestBase.tvBoolean, seq.getBoolean(5));
+        assertEquals(3, seq.getInt(4));
+        assertEquals(5, seq.getInt(6));
+        assertEquals(num, seq.size());
 
         seq.set(5, AbstractModelTestBase.tvFloat);
-        Assert.assertEquals(AbstractModelTestBase.tvFloat, seq.getFloat(5), 0.00005);
-        Assert.assertEquals(3, seq.getInt(4));
-        Assert.assertEquals(5, seq.getInt(6));
-        Assert.assertEquals(num, seq.size());
+        assertEquals(AbstractModelTestBase.tvFloat, seq.getFloat(5), 0.00005);
+        assertEquals(3, seq.getInt(4));
+        assertEquals(5, seq.getInt(6));
+        assertEquals(num, seq.size());
 
         seq.set(5, AbstractModelTestBase.tvDouble);
-        Assert.assertEquals(AbstractModelTestBase.tvDouble, seq.getDouble(5), 0.000000005);
-        Assert.assertEquals(3, seq.getInt(4));
-        Assert.assertEquals(5, seq.getInt(6));
-        Assert.assertEquals(num, seq.size());
+        assertEquals(AbstractModelTestBase.tvDouble, seq.getDouble(5), 0.000000005);
+        assertEquals(3, seq.getInt(4));
+        assertEquals(5, seq.getInt(6));
+        assertEquals(num, seq.size());
 
         seq.set(5, tvLiteral);
-        Assert.assertEquals(tvLiteral, seq.getLiteral(5));
-        Assert.assertEquals(3, seq.getInt(4));
-        Assert.assertEquals(5, seq.getInt(6));
-        Assert.assertEquals(num, seq.size());
+        assertEquals(tvLiteral, seq.getLiteral(5));
+        assertEquals(3, seq.getInt(4));
+        assertEquals(5, seq.getInt(6));
+        assertEquals(num, seq.size());
 
         seq.set(5, tvResource);
-        Assert.assertEquals(tvResource, seq.getResource(5));
-        Assert.assertEquals(3, seq.getInt(4));
-        Assert.assertEquals(5, seq.getInt(6));
-        Assert.assertEquals(num, seq.size());
+        assertEquals(tvResource, seq.getResource(5));
+        assertEquals(3, seq.getInt(4));
+        assertEquals(5, seq.getInt(6));
+        assertEquals(num, seq.size());
 
         seq.set(5, AbstractModelTestBase.tvLitObj);
-        // assertEquals( tvLitObj, seq.getObject( 5, new LitTestObjF() ) );
-        Assert.assertEquals(3, seq.getInt(4));
-        Assert.assertEquals(5, seq.getInt(6));
-        Assert.assertEquals(num, seq.size());
+        // assertEquals(tvLitObj, seq.getObject( 5, new LitTestObjF() ) );
+        assertEquals(3, seq.getInt(4));
+        assertEquals(5, seq.getInt(6));
+        assertEquals(num, seq.size());
 
         // seq.set( 5, tvResObj );
-        // assertEquals( tvResObj, seq.getResource( 5, new ResTestObjF() ) );
-        // assertEquals( 3, seq.getInt( 4 ) );
-        // assertEquals( 5, seq.getInt( 6 ) );
-        // assertEquals( num, seq.size() );
+        // assertEquals(tvResObj, seq.getResource( 5, new ResTestObjF() ) );
+        // assertEquals(3, seq.getInt( 4 ) );
+        // assertEquals(5, seq.getInt( 6 ) );
+        // assertEquals(num, seq.size() );
     }
 
 }

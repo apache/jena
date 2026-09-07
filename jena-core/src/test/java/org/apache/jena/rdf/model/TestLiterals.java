@@ -21,44 +21,47 @@
 
 package org.apache.jena.rdf.model;
 
-import org.apache.jena.rdf.model.helpers.ModelCreator;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import org.apache.jena.test.JenaTestLib;
 
-import org.junit.Assert;
-
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestLiterals extends AbstractModelTestBase {
-
-    public TestLiterals(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
 
     protected void assertInRange(final long min, final long x, final long max) {
         if ( (min <= x) && (x <= max) ) {
             return;
         } else {
-            Assert.fail("outside range: " + x + " min: " + min + " max: " + max);
+            fail("outside range: " + x + " min: " + min + " max: " + max);
         }
     }
 
     protected void assertOutsideRange(final long min, final long x, final long max) {
         if ( (min <= x) && (x <= max) ) {
-            Assert.fail("inside range: " + x + " min: " + min + " max: " + max);
+            fail("inside range: " + x + " min: " + min + " max: " + max);
         }
     }
 
+    @Test
     public void testBooleans() {
-        Assert.assertTrue(model.createTypedLiteral(true).getBoolean());
-        Assert.assertFalse(model.createTypedLiteral(false).getBoolean());
+        assertTrue(model.createTypedLiteral(true).getBoolean());
+        assertFalse(model.createTypedLiteral(false).getBoolean());
     }
 
     protected void testByte(final Model model, final byte tv) {
         final Literal l = model.createTypedLiteral(tv);
-        Assert.assertEquals(tv, l.getByte());
-        Assert.assertEquals(tv, l.getShort());
-        Assert.assertEquals(tv, l.getInt());
-        Assert.assertEquals(tv, l.getLong());
+        assertEquals(tv, l.getByte());
+        assertEquals(tv, l.getShort());
+        assertEquals(tv, l.getInt());
+        assertEquals(tv, l.getLong());
     }
 
+    @Test
     public void testByteLiterals() {
         testByte(model, (byte)0);
         testByte(model, (byte)-1);
@@ -67,9 +70,10 @@ public class TestLiterals extends AbstractModelTestBase {
     }
 
     protected void testCharacter(final Model model, final char tv) {
-        Assert.assertEquals(tv, model.createTypedLiteral(tv).getChar());
+        assertEquals(tv, model.createTypedLiteral(tv).getChar());
     }
 
+    @Test
     public void testCharacterLiterals() {
         testCharacter(model, 'A');
         testCharacter(model, 'a');
@@ -82,9 +86,10 @@ public class TestLiterals extends AbstractModelTestBase {
     }
 
     protected void testDouble(final Model model, final double tv) {
-        Assert.assertEquals(tv, model.createTypedLiteral(tv).getDouble(), AbstractModelTestBase.dDelta);
+        assertEquals(tv, model.createTypedLiteral(tv).getDouble(), AbstractModelTestBase.dDelta);
     }
 
+    @Test
     public void testDoubleLiterals() {
         testDouble(model, 0.0);
         testDouble(model, 1.0);
@@ -95,9 +100,10 @@ public class TestLiterals extends AbstractModelTestBase {
     }
 
     protected void testFloat(final Model model, final float tv) {
-        Assert.assertEquals(tv, model.createTypedLiteral(tv).getFloat(), AbstractModelTestBase.fDelta);
+        assertEquals(tv, model.createTypedLiteral(tv).getFloat(), AbstractModelTestBase.fDelta);
     }
 
+    @Test
     public void testFloatLiterals() {
         testFloat(model, 0.0f);
         testFloat(model, 1.0f);
@@ -117,21 +123,22 @@ public class TestLiterals extends AbstractModelTestBase {
     protected void testInt(final Model model, final int tv) {
         final Literal l = model.createTypedLiteral(tv);
         try {
-            Assert.assertEquals(tv, l.getByte());
+            assertEquals(tv, l.getByte());
             assertInRange(Byte.MIN_VALUE, tv, Byte.MAX_VALUE);
         } catch (final IllegalArgumentException e) {
             assertOutsideRange(Byte.MIN_VALUE, tv, Byte.MAX_VALUE);
         }
         try {
-            Assert.assertEquals(tv, l.getShort());
+            assertEquals(tv, l.getShort());
             assertInRange(Short.MIN_VALUE, tv, Short.MAX_VALUE);
         } catch (final IllegalArgumentException e) {
             assertOutsideRange(Short.MIN_VALUE, tv, Short.MAX_VALUE);
         }
-        Assert.assertEquals(tv, l.getInt());
-        Assert.assertEquals(tv, l.getLong());
+        assertEquals(tv, l.getInt());
+        assertEquals(tv, l.getLong());
     }
 
+    @Test
     public void testIntLiterals() {
         testInt(model, 0);
         testInt(model, -1);
@@ -141,11 +148,12 @@ public class TestLiterals extends AbstractModelTestBase {
 
     protected void testLanguagedString(final Model model, final String tv, final String lang) {
         final Literal l = model.createLiteral(tv, lang);
-        Assert.assertEquals(tv, l.getString());
-        Assert.assertEquals(tv, l.getLexicalForm());
-        Assert.assertEquals(lang, l.getLanguage());
+        assertEquals(tv, l.getString());
+        assertEquals(tv, l.getLexicalForm());
+        assertEquals(lang, l.getLanguage());
     }
 
+    @Test
     public void testLanguagedStringLiterals() {
         testLanguagedString(model, "", "en");
         testLanguagedString(model, "chat", "fr");
@@ -154,26 +162,27 @@ public class TestLiterals extends AbstractModelTestBase {
     protected void testLong(final Model model, final long tv) {
         final Literal l = model.createTypedLiteral(tv);
         try {
-            Assert.assertEquals(tv, l.getByte());
+            assertEquals(tv, l.getByte());
             assertInRange(Byte.MIN_VALUE, tv, Byte.MAX_VALUE);
         } catch (final IllegalArgumentException e) {
             assertOutsideRange(Byte.MIN_VALUE, tv, Byte.MAX_VALUE);
         }
         try {
-            Assert.assertEquals(tv, l.getShort());
+            assertEquals(tv, l.getShort());
             assertInRange(Short.MIN_VALUE, tv, Short.MAX_VALUE);
         } catch (final IllegalArgumentException e) {
             assertOutsideRange(Short.MIN_VALUE, tv, Short.MAX_VALUE);
         }
         try {
-            Assert.assertEquals(tv, l.getInt());
+            assertEquals(tv, l.getInt());
             assertInRange(Integer.MIN_VALUE, tv, Integer.MAX_VALUE);
         } catch (final IllegalArgumentException e) {
             assertOutsideRange(Integer.MIN_VALUE, tv, Integer.MAX_VALUE);
         }
-        Assert.assertEquals(tv, l.getLong());
+        assertEquals(tv, l.getLong());
     }
 
+    @Test
     public void testLongLiterals() {
         testLong(model, 0);
         testLong(model, -1);
@@ -183,11 +192,12 @@ public class TestLiterals extends AbstractModelTestBase {
 
     protected void testPlainString(final Model model, final String tv) {
         final Literal l = model.createLiteral(tv);
-        Assert.assertEquals(tv, l.getString());
-        Assert.assertEquals(tv, l.getLexicalForm());
-        Assert.assertEquals("", l.getLanguage());
+        assertEquals(tv, l.getString());
+        assertEquals(tv, l.getLexicalForm());
+        assertEquals("", l.getLanguage());
     }
 
+    @Test
     public void testPlainStringLiterals() {
         testPlainString(model, "");
         testPlainString(model, "A test string");
@@ -197,16 +207,17 @@ public class TestLiterals extends AbstractModelTestBase {
     protected void testShort(final Model model, final short tv) {
         final Literal l = model.createTypedLiteral(tv);
         try {
-            Assert.assertEquals(tv, l.getByte());
+            assertEquals(tv, l.getByte());
             assertInRange(Byte.MIN_VALUE, tv, Byte.MAX_VALUE);
         } catch (final IllegalArgumentException e) {
             assertOutsideRange(Byte.MIN_VALUE, tv, Byte.MAX_VALUE);
         }
-        Assert.assertEquals(tv, l.getShort());
-        Assert.assertEquals(tv, l.getInt());
-        Assert.assertEquals(tv, l.getLong());
+        assertEquals(tv, l.getShort());
+        assertEquals(tv, l.getInt());
+        assertEquals(tv, l.getLong());
     }
 
+    @Test
     public void testShortLiterals() {
         testShort(model, (short)0);
         testShort(model, (short)-1);
@@ -214,20 +225,21 @@ public class TestLiterals extends AbstractModelTestBase {
         testShort(model, Short.MAX_VALUE);
     }
 
+    @Test
     public void testStringLiteralEquality() {
-        Assert.assertEquals(model.createLiteral("A"), model.createLiteral("A"));
-        Assert.assertEquals(model.createLiteral("Alpha"), model.createLiteral("Alpha"));
+        assertEquals(model.createLiteral("A"), model.createLiteral("A"));
+        assertEquals(model.createLiteral("Alpha"), model.createLiteral("Alpha"));
         JenaTestLib.assertDiffer(model.createLiteral("Alpha"), model.createLiteral("Beta"));
         JenaTestLib.assertDiffer(model.createLiteral("A", "en"), model.createLiteral("A"));
         JenaTestLib.assertDiffer(model.createLiteral("A"), model.createLiteral("A", "en"));
         JenaTestLib.assertDiffer(model.createLiteral("A", "en"), model.createLiteral("A", "fr"));
-        Assert.assertEquals(model.createLiteral("A", "en"), model.createLiteral("A", "en"));
+        assertEquals(model.createLiteral("A", "en"), model.createLiteral("A", "en"));
     }
 
     // protected void testLiteralObject( Model model, int x )
     // {
     // LitTestObj tv = new LitTestObj( x );
     // LitTestObjF factory = new LitTestObjF();
-    // assertEquals( tv, model.createTypedLiteral( tv ).getObject( factory ) );
+    // assertEquals(tv, model.createTypedLiteral( tv ).getObject( factory ) );
     // }
 }

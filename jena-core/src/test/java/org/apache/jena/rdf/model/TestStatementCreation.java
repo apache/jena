@@ -21,11 +21,18 @@
 
 package org.apache.jena.rdf.model;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import org.apache.jena.datatypes.xsd.XSDDatatype;
-import org.apache.jena.rdf.model.helpers.ModelCreator;
 
-import org.junit.Assert;
-
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestStatementCreation extends AbstractModelTestBase {
 
     static final String subjURI = "http://aldabaran.hpl.hp.com/foo";
@@ -34,11 +41,8 @@ public class TestStatementCreation extends AbstractModelTestBase {
     protected Resource r;
     protected Property p;
 
-    public TestStatementCreation(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
-
     @Override
+    @BeforeEach
     public void setUp() {
         super.setUp();
         r = model.createResource(TestStatementCreation.subjURI);
@@ -46,100 +50,113 @@ public class TestStatementCreation extends AbstractModelTestBase {
     }
 
     @Override
+    @AfterEach
     public void tearDown() {
         r = null;
         p = null;
         super.tearDown();
     }
 
+    @Test
     public void testCreateStatementByteMax() {
         final Statement s = model.createLiteralStatement(r, p, Byte.MAX_VALUE);
-        Assert.assertEquals(r, s.getSubject());
-        Assert.assertEquals(p, s.getPredicate());
-        Assert.assertEquals(Byte.MAX_VALUE, s.getByte());
+        assertEquals(r, s.getSubject());
+        assertEquals(p, s.getPredicate());
+        assertEquals(Byte.MAX_VALUE, s.getByte());
     }
 
+    @Test
     public void testCreateStatementChar() {
         final Statement s = model.createLiteralStatement(r, p, '$');
-        Assert.assertEquals(r, s.getSubject());
-        Assert.assertEquals(p, s.getPredicate());
-        Assert.assertEquals('$', s.getChar());
+        assertEquals(r, s.getSubject());
+        assertEquals(p, s.getPredicate());
+        assertEquals('$', s.getChar());
     }
 
+    @Test
     public void testCreateStatementDouble() {
         final Statement s = model.createStatement(r, p, model.createTypedLiteral(12345.67890d));
-        Assert.assertEquals(r, s.getSubject());
-        Assert.assertEquals(p, s.getPredicate());
-        Assert.assertEquals(12345.67890d, s.getDouble(), 0.0000005);
+        assertEquals(r, s.getSubject());
+        assertEquals(p, s.getPredicate());
+        assertEquals(12345.67890d, s.getDouble(), 0.0000005);
     }
 
+    @Test
     public void testCreateStatementFactory() {
         final LitTestObj tv = new LitTestObj(Long.MIN_VALUE);
         final Statement s = model.createLiteralStatement(r, p, tv);
-        Assert.assertEquals(r, s.getSubject());
-        Assert.assertEquals(p, s.getPredicate());
-        // assertEquals( tv, s.getObject( new LitTestObjF() ) );
+        assertEquals(r, s.getSubject());
+        assertEquals(p, s.getPredicate());
+        // assertEquals(tv, s.getObject( new LitTestObjF() ) );
     }
 
+    @Test
     public void testCreateStatementFloat() {
         final Statement s = model.createStatement(r, p, model.createTypedLiteral(123.456f));
-        Assert.assertEquals(r, s.getSubject());
-        Assert.assertEquals(p, s.getPredicate());
-        Assert.assertEquals(123.456f, s.getFloat(), 0.0005);
+        assertEquals(r, s.getSubject());
+        assertEquals(p, s.getPredicate());
+        assertEquals(123.456f, s.getFloat(), 0.0005);
     }
 
+    @Test
     public void testCreateStatementIntMax() {
         final Statement s = model.createLiteralStatement(r, p, Integer.MAX_VALUE);
-        Assert.assertEquals(r, s.getSubject());
-        Assert.assertEquals(p, s.getPredicate());
-        Assert.assertEquals(Integer.MAX_VALUE, s.getInt());
+        assertEquals(r, s.getSubject());
+        assertEquals(p, s.getPredicate());
+        assertEquals(Integer.MAX_VALUE, s.getInt());
     }
 
+    @Test
     public void testCreateStatementLongMax() {
         final Statement s = model.createLiteralStatement(r, p, Long.MAX_VALUE);
-        Assert.assertEquals(r, s.getSubject());
-        Assert.assertEquals(p, s.getPredicate());
-        Assert.assertEquals(Long.MAX_VALUE, s.getLong());
+        assertEquals(r, s.getSubject());
+        assertEquals(p, s.getPredicate());
+        assertEquals(Long.MAX_VALUE, s.getLong());
     }
 
+    @Test
     public void testCreateStatementResource() {
         final Resource tv = model.createResource();
         final Statement s = model.createStatement(r, p, tv);
-        Assert.assertEquals(r, s.getSubject());
-        Assert.assertEquals(p, s.getPredicate());
-        Assert.assertEquals(tv, s.getResource());
+        assertEquals(r, s.getSubject());
+        assertEquals(p, s.getPredicate());
+        assertEquals(tv, s.getResource());
     }
 
+    @Test
     public void testCreateStatementShortMax() {
         final Statement s = model.createLiteralStatement(r, p, Short.MAX_VALUE);
-        Assert.assertEquals(r, s.getSubject());
-        Assert.assertEquals(p, s.getPredicate());
-        Assert.assertEquals(Short.MAX_VALUE, s.getShort());
+        assertEquals(r, s.getSubject());
+        assertEquals(p, s.getPredicate());
+        assertEquals(Short.MAX_VALUE, s.getShort());
     }
 
+    @Test
     public void testCreateStatementString() {
         final String string = "this is a plain string", lang = "en";
         final Statement s = model.createStatement(r, p, string);
-        Assert.assertEquals(r, s.getSubject());
-        Assert.assertEquals(p, s.getPredicate());
-        Assert.assertEquals(string, s.getString());
-        Assert.assertEquals(lang, model.createStatement(r, p, string, lang).getLanguage());
+        assertEquals(r, s.getSubject());
+        assertEquals(p, s.getPredicate());
+        assertEquals(string, s.getString());
+        assertEquals(lang, model.createStatement(r, p, string, lang).getLanguage());
     }
 
+    @Test
     public void testCreateStatementTrue() {
         final Statement s = model.createLiteralStatement(r, p, true);
-        Assert.assertEquals(r, s.getSubject());
-        Assert.assertEquals(p, s.getPredicate());
-        Assert.assertEquals(true, s.getBoolean());
+        assertEquals(r, s.getSubject());
+        assertEquals(p, s.getPredicate());
+        assertEquals(true, s.getBoolean());
     }
 
+    @Test
     public void testCreateStatementTypeLiteral() {
         final Model model = ModelFactory.createDefaultModel();
         final Resource R = model.createResource("http://example/r");
         final Property P = model.createProperty("http://example/p");
         model.add(R, P, "2", XSDDatatype.XSDinteger);
         final Literal L = ResourceFactory.createTypedLiteral("2", XSDDatatype.XSDinteger);
-        Assert.assertTrue(model.contains(R, P, L));
-        Assert.assertFalse(model.contains(R, P, "2"));
+        assertTrue(model.contains(R, P, L));
+        assertFalse(model.contains(R, P, "2"));
     }
 }
