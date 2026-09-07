@@ -33,11 +33,6 @@ import org.apache.jena.rdf.model.Statement;
 
 /**
  * Collection of utilities to assist with unit testing.
- * <p>
- * JUnit6 counterpart of the {@code assertIterator*} methods of {@link TestUtil}.
- * The {@code junit.framework.TestCase} argument of the originals has been
- * dropped: it served only to label failure messages and to name the logger,
- * both of which JUnit6 reports for itself.
  */
 public class TestUtil {
 
@@ -104,7 +99,7 @@ public class TestUtil {
     /**
      * Replace all blocks of white space by a single space character, just
      * used for creating test cases.
-     * 
+     *
      * @param src the original string
      * @return normalized version of src
      */

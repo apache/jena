@@ -19,33 +19,28 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.rdfxml.arp1tests;
+package org.apache.jena.test;
 
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class TS3_xmlinput1 extends TestSuite {
+/**
+ * Jena core test suite. JUnit3 remaining
+ */
+public class JenaCoreTestAll_JU3 extends TestCase {
+
     static public TestSuite suite() {
-        return new TS3_xmlinput1();
+        JenaTestLib.setup();
+
+        TestSuite ts = new TestSuite();
+        ts.setName("Jena Core [legacy]");
+        addTest(ts,  "XML Input [ARP1]",    org.apache.jena.rdfxml.arp1tests.TS3_rdfxml_arp.suite());
+        return ts;
     }
 
-    private TS3_xmlinput1() {
-        super("RDF/XML Input ARP1");
-        addTest(TestURIs.suite());
-        addTest(TestSuiteWG_RDFXML.suite());
-        addTest(TestSuiteWG_RDFXML_ARP.suite());
-
-        addTest(TestsARP.suite());
-        addTest(TestsARP2.suite());
-        addTest(org.apache.jena.rdfxml.arp1tests.states.TestARPStates.suite());
-
-        addTest(TestsTainting.suite());
-        addTest(TestsSAX2RDF.suite());
-        addTest(TestsStAX2Model.suite());
-        addTest(TestRDFXML_URI.suite());
-    }
-
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
+    private static void addTest(TestSuite ts, String name, TestSuite tc) {
+        if ( name != null )
+            tc.setName(name);
+        ts.addTest(tc);
     }
 }

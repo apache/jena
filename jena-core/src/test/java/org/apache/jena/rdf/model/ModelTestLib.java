@@ -21,9 +21,9 @@
 
 package org.apache.jena.rdf.model;
 
-import java.util.*;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Assert;
+import java.util.*;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphTestLib;
@@ -56,13 +56,11 @@ public class ModelTestLib  {
      * @param title a String appearing at the beginning of the failure message
      * @param wanted the model value that is expected
      * @param got the model value to check
-     * @exception junit.framework.AssertionFailedError if the models are not
-     *     isomorphic
      */
     public static void assertIsoModels(final String title, final Model wanted, final Model got) {
         if ( wanted.isIsomorphicWith(got) == false ) {
             final Map<Node, Object> map = CollectionFactory.createHashedMap();
-            Assert.fail(title + ": expected " + GraphTestLib.nice(wanted.getGraph(), map) + "\n but had "
+            fail(title + ": expected " + GraphTestLib.nice(wanted.getGraph(), map) + "\n but had "
                         + GraphTestLib.nice(got.getGraph(), map));
         }
     }

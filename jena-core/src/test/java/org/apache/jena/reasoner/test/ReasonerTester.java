@@ -42,7 +42,7 @@ import org.apache.jena.reasoner.TriplePattern;
 import org.apache.jena.reasoner.rulesys.Node_RuleVariable;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.vocabulary.RDF;
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -322,7 +322,7 @@ public class ReasonerTester {
         */
         // ... end of debugging hack
         if (testcase != null) {
-            Assert.assertTrue(description, correct);
+            assertTrue(correct, description);
         }
         return correct;
     }

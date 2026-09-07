@@ -59,7 +59,13 @@ import org.apache.jena.test.JenaTestLib;
     TestLPBRuleCloseBug.class,
 
     ConcurrencyTest.class,
-    TestRestrictionsDontNeedTyping.class
+    TestRestrictionsDontNeedTyping.class,
+
+    TestLPRDFS.class,
+    TestOWLConsistency.class,
+    TestRuleLoader.class,
+    TestRDFSRules.class,
+    TestRDFS9.class
 })
 
 public class TS6_RuleReasoners {

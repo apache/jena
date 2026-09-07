@@ -19,7 +19,15 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
+
 package org.apache.jena.reasoner.rulesys.test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.reasoner.rulesys.BuiltinRegistry;
 import org.apache.jena.reasoner.rulesys.MapBuiltinRegistry;
@@ -27,16 +35,11 @@ import org.apache.jena.reasoner.rulesys.Rule;
 import org.apache.jena.reasoner.rulesys.builtins.BaseBuiltin;
 import org.apache.jena.shared.RulesetNotFoundException;
 import org.apache.jena.shared.WrappedIOException;
-import org.junit.Test;
-
-import java.util.List;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
 
 /**
  * Tests for the rule loader
  */
-public class TestRuleLoader  {
+public class TestRuleLoader {
 
     private static BuiltinRegistry createBuiltinRegistry() {
         BuiltinRegistry br = new MapBuiltinRegistry();
@@ -49,9 +52,10 @@ public class TestRuleLoader  {
         return br;
     }
 
-    @Test(expected=RulesetNotFoundException.class)
+    @Test
     public void load_from_file_uri_non_existent() {
-        Rule.rulesFromURL("file:///no-such-file.txt");
+        assertThrows(RulesetNotFoundException.class,
+                     () -> Rule.rulesFromURL("file:///no-such-file.txt"));
     }
 
     @Test
@@ -61,9 +65,10 @@ public class TestRuleLoader  {
         assertEquals("file:testing/reasoners/includeAlt.rules", e.getURI());
     }
 
-    @Test(expected=WrappedIOException.class)
+    @Test
     public void load_from_file_bad_encoding() {
-        Rule.rulesFromURL("testing/reasoners/bugs/bad-encoding.rules");
+        assertThrows(WrappedIOException.class,
+                     () -> Rule.rulesFromURL("testing/reasoners/bugs/bad-encoding.rules"));
     }
 
     /**

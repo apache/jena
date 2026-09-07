@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.apache.jena.atlas.iterator.Iter;
 
@@ -125,7 +125,7 @@ public class RecordingListener implements GraphListener {
 
     public void assertHas(List<Object> things) {
         if ( has(things) == false )
-            Assert.fail("expected " + things + " but got " + history);
+            fail("expected " + things + " but got " + history);
     }
 
     public void assertHas(Object[] things) {
@@ -135,12 +135,12 @@ public class RecordingListener implements GraphListener {
     public void assertHasStart(Object[] start) {
         List<Object> L = Arrays.asList(start);
         if ( hasStart(L) == false )
-            Assert.fail("expected " + L + " at the beginning of " + history);
+            fail("expected " + L + " at the beginning of " + history);
     }
 
     public void assertHasEnd(Object[] end) {
         List<Object> L = Arrays.asList(end);
         if ( hasEnd(L) == false )
-            Assert.fail("expected " + L + " at the end of " + history);
+            fail("expected " + L + " at the end of " + history);
     }
 }

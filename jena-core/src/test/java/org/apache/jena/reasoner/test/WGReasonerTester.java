@@ -30,7 +30,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphMemFactory;
@@ -385,7 +385,7 @@ public class WGReasonerTester {
 //                System.out.println("**** expected");
 //                conclusions.write(System.out, "TTL");
 //            }
-            Assert.assertTrue("Test: " + test + "\n" +  description, correct);
+            assertTrue(correct, "Test: " + test + "\n" +  description);
         }
         return correct?goodResult:FAIL;
     }

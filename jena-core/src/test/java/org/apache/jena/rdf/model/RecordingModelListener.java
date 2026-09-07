@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.apache.jena.atlas.iterator.Iter;
 
@@ -104,7 +104,7 @@ public class RecordingModelListener implements ModelChangedListener {
 
     public void assertHas(Object[] things) {
         if ( has(things) == false )
-            Assert.fail("expected " + Arrays.asList(things) + " but got " + history);
+            fail("expected " + Arrays.asList(things) + " but got " + history);
     }
 
     public boolean has(List<? > things) {
@@ -121,19 +121,19 @@ public class RecordingModelListener implements ModelChangedListener {
 
     public void assertHas(List<? > things) {
         if ( has(things) == false )
-            Assert.fail("expected " + things + " but got " + history);
+            fail("expected " + things + " but got " + history);
     }
 
     public void assertHasStart(Object[] start) {
         List<Object> L = Arrays.asList(start);
         if ( hasStart(L) == false )
-            Assert.fail("expected " + L + " at the beginning of " + history);
+            fail("expected " + L + " at the beginning of " + history);
     }
 
     public void assertHasEnd(Object[] end) {
         List<Object> L = Arrays.asList(end);
         if ( hasEnd(L) == false )
-            Assert.fail("expected " + L + " at the end of " + history);
+            fail("expected " + L + " at the end of " + history);
     }
 
     public void clear() {

@@ -37,14 +37,6 @@ import org.apache.jena.test.JenaTestLib;
  * <p>
  * Generic test case for ontology unit testing.
  * </p>
- * <p>
- * JUnit6 counterpart of {@link OntTestBase}. The JUnit3 original was a
- * {@code TestSuite} that built one {@code TestCase} per entry of
- * {@link #getTests}; here the same array becomes one {@link DynamicTest} per
- * entry, so the test count is unchanged. {@code OntTestCase} keeps the
- * constructor and {@code ontTest} contract of the original, so sub-classes
- * carry over unaltered.
- * </p>
  */
 @SuppressWarnings("removal")
 public abstract class OntTestBase

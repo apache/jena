@@ -19,30 +19,37 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.util.iterator;
+package org.apache.jena.rdfxml.arp1tests;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.Iterator;
-import java.util.function.Predicate;
-
-import org.junit.jupiter.api.Test;
-
-import org.apache.jena.atlas.iterator.Iter;
+import junit.framework.TestSuite;
 import org.apache.jena.test.JenaTestLib;
 
-public class TestFilters {
+public class TS3_rdfxml_arp extends TestSuite {
 
-    protected Predicate<String> containsA = o -> contains(o, 'a');
+    static { JenaTestLib.setup(); }
 
-    @Test
-    public void testFilterIterator() {
-        Iterator<String> i = JenaTestLib.iteratorOfStrings("there's an a in some animals");
-        Iterator<String> it = new FilterIterator<>(containsA, i);
-        assertEquals(JenaTestLib.listOfStrings("an a animals"), Iter.toList(it));
+    static public TestSuite suite() {
+        return new TS3_rdfxml_arp();
     }
 
-    protected boolean contains(Object o, char ch) {
-        return o.toString().indexOf(ch) > -1;
+    private TS3_rdfxml_arp() {
+        super("RDF/XML Input ARP1");
+        addTest(TestURIs.suite());
+        addTest(TestSuiteWG_RDFXML.suite());
+        addTest(TestSuiteWG_RDFXML_ARP.suite());
+
+        addTest(TestsARP.suite());
+        addTest(TestsARP2.suite());
+        addTest(org.apache.jena.rdfxml.arp1tests.states.TestARPStates.suite());
+
+        addTest(TestsTainting.suite());
+        addTest(TestsSAX2RDF.suite());
+        addTest(TestsStAX2Model.suite());
+        addTest(TestRDFXML_URI.suite());
+    }
+
+    private void addTest(String name, TestSuite tc) {
+        tc.setName(name);
+        addTest(tc);
     }
 }

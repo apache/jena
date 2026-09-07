@@ -62,8 +62,7 @@ public class TestRDFSReasoners {
 
 
     /**
-     * The RDFS reasoner tests, one dynamic test per manifest entry. This was a
-     * hand-built {@code TestSuite} of {@code TestCase} subclasses.
+     * The RDFS reasoner tests, one dynamic test per manifest entry.
      */
     @TestFactory
     public Stream<DynamicTest> rdfsReasonerTests() {

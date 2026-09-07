@@ -19,51 +19,45 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
+
 package org.apache.jena.reasoner.rulesys.test;
 
-import java.util.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import org.apache.jena.graph.*;
+import java.util.Iterator;
+
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.GraphMemFactory;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.compose.Union;
-import org.apache.jena.reasoner.*;
+import org.apache.jena.reasoner.InfGraph;
+import org.apache.jena.reasoner.ReasonerRegistry;
 import org.apache.jena.reasoner.test.TestUtil;
-import org.apache.jena.vocabulary.*;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
 
 /**
  * Test harness used in debugging some issues with execution
  * of modified versions of rule rdfs9.
  */
-public class TestRDFS9 extends TestCase {
+public class TestRDFS9 {
 
-    /**
-     * Boilerplate for junit
-     */
-    public TestRDFS9( String name ) {
-        super( name );
-    }
-
-    /**
-     * Boilerplate for junit.
-     * This is its own test suite
-     */
-    public static TestSuite suite() {
-        return new TestSuite(TestRDFS9.class);
-    }
-
-    private static  Graph createGraphForTest() {
+    private static Graph createGraphForTest() {
         return GraphMemFactory.createDefaultGraph();
     }
 
     /**
      * Test a type inheritance example.
      */
+    @Test
     public void testRDFSInheritance() {
         Node C1 = NodeFactory.createURI("C1");
         Node C2 = NodeFactory.createURI("C2");
         Node C3 = NodeFactory.createURI("C3");
-        Node C4 = NodeFactory.createURI("C4");
         Node D = NodeFactory.createURI("D");
         Node a = NodeFactory.createURI("a");
         Node b = NodeFactory.createURI("b");

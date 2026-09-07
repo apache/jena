@@ -23,12 +23,11 @@ package org.apache.jena.junit;
 
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Basis for Jena test cases which provides assertFalse and assertDiffer.
  * Often the logic of the names is clearer than using a negation.
- * JUnit4.
  */
 public class TestUtils4 {
 	// do not instantiate, do not subclass.
@@ -104,9 +103,9 @@ public class TestUtils4 {
 	 * @param o2
 	 */
 	public static void assertEquivalent(String msg, Object o1, Object o2) {
-		assertEquals(msg, o1, o2);
-		assertEquals(msg, o2, o1);
-		assertEquals(msg, o1.hashCode(), o2.hashCode());
+		assertEquals(o1, o2, msg);
+		assertEquals(o2, o1, msg);
+		assertEquals(o1.hashCode(), o2.hashCode(), msg);
 	}
 
 	/**
@@ -116,8 +115,8 @@ public class TestUtils4 {
 	 * @param o2
 	 */
 	public static void assertNotEquivalent(String msg, Object o1, Object o2) {
-		assertNotEquals(msg, o1, o2);
-		assertNotEquals(msg, o2, o1);
+		assertNotEquals(o1, o2, msg);
+		assertNotEquals(o2, o1, msg);
 	}
 
 	// FIXME this is to be removed when testing is complete

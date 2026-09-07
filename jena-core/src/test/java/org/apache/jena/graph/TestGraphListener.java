@@ -41,7 +41,7 @@ public class TestGraphListener extends BaseTestGraph {
 
     /**
      * The implementation used for the listener's copy of the graph. Extending
-     * MetaTestGraph_JU6 would inherit its argument source as well as this one, running
+     * MetaTestGraph would inherit its argument source as well as this one, running
      * every test once per implementation on top of these.
      */
     @Parameter

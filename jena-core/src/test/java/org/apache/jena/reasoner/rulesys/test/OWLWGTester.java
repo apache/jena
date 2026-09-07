@@ -37,7 +37,7 @@ import org.apache.jena.shared.JenaException;
 import org.apache.jena.util.FileManager;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.ReasonerVocabulary;
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -225,7 +225,7 @@ public class OWLWGTester {
 
         // Signal the results
         if (testcase != null) {
-            Assert.assertTrue("Test: " + test + "\n" +  reasonerF.getURI() + "\n" + description, correct);
+            assertTrue(correct, "Test: " + test + "\n" +  reasonerF.getURI() + "\n" + description);
         }
         return correct;
     }
