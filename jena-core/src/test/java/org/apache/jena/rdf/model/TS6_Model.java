@@ -29,7 +29,56 @@ import org.apache.jena.test.JenaTestLib;
 
 @Suite
 @SelectClasses({
-    TestDefaultModel_JU6.class
+    TestDefaultModel.class,
+
+    // Not model-parameterized.
+    TestAnonID.class,
+    TestListStatements.class,
+    TestResourceFactory.class,
+    TestConcurrency.class,
+    TestModelFactory.class,
+    TestProperties.class,
+
+    // Parameterized over ModelCreators.creators().
+    TestContains.class,
+    TestStatements.class,
+    TestAddAndContains.class,
+    TestAddModel.class,
+    TestAltMethods.class,
+    TestBagMethods.class,
+    TestContainerConstructors.class,
+    TestContainers.class,
+    TestCopyInOutOfModel.class,
+    TestGetFromModel.class,
+    TestHiddenStatements.class,
+    TestIterators.class,
+    TestList.class,
+    TestListSubjects.class,
+    TestListSubjectsEtc.class,
+    TestLiteralImpl.class,
+    TestLiterals.class,
+    TestLiteralsInModel.class,
+    TestModel.class,
+    TestModelBulkUpdate.class,
+    TestModelEvents.class,
+    TestModelPolymorphism.class,
+    TestModelRead.class,
+    TestModelSetOperations.class,
+    TestNamespace.class,
+    TestObjectOfProperties.class,
+    TestObjects.class,
+    TestRDFNodes.class,
+    TestReaderEvents.class,
+    TestReaders.class,
+    TestRemoveSPO.class,
+    TestResourceImpl.class,
+    TestResourceMethods.class,
+    TestResources.class,
+    TestSeqMethods.class,
+    TestSimpleListStatements.class,
+    TestStatementCreation.class,
+    TestStatementMethods.class,
+    TestStatementTerms.class
 })
 
 public class TS6_Model {

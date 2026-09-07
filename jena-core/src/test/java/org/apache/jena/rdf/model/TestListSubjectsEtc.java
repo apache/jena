@@ -21,60 +21,66 @@
 
 package org.apache.jena.rdf.model;
 
-import org.apache.jena.rdf.model.helpers.ModelCreator;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import org.apache.jena.rdf.model.helpers.ModelHelper;
 import org.apache.jena.test.JenaTestLib;
-
-import org.junit.Assert;
 
 /**
  * TestListSubjectsEtc - tests for listSubjects, listObjects [and listPredicates, if
  * it were to exist] TODO make preperly generic, add missing test cases [we're
  * relying, at root, on SimpleQueryHandler]
  */
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestListSubjectsEtc extends AbstractModelTestBase {
-    public TestListSubjectsEtc(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
 
+    @Test
     public void testListObjectsNoRemove() {
-        final Model m = ModelHelper.modelWithStatements(this, "a P b; b Q c; c R a");
+        final Model m = modelWithStatements("a P b; b Q c; c R a");
         final NodeIterator it = m.listObjects();
         it.next();
         try {
             it.remove();
-            Assert.fail("listObjects should not support .remove()");
+            fail("listObjects should not support .remove()");
         } catch (final UnsupportedOperationException e) {
             JenaTestLib.pass();
         }
     }
 
+    @Test
     public void testListSubjectsNoRemove() {
-        final Model m = ModelHelper.modelWithStatements(this, "a P b; b Q c; c R a");
+        final Model m = modelWithStatements("a P b; b Q c; c R a");
         final ResIterator it = m.listSubjects();
         it.next();
         try {
             it.remove();
-            Assert.fail("listSubjects should not support .remove()");
+            fail("listSubjects should not support .remove()");
         } catch (final UnsupportedOperationException e) {
             JenaTestLib.pass();
         }
     }
 
+    @Test
     public void testListSubjectsWorksAfterRemoveProperties() {
-        final Model m = ModelHelper.modelWithStatements(this, "p1 before terminal; p2 before terminal");
+        final Model m = modelWithStatements("p1 before terminal; p2 before terminal");
         m.createResource("eh:/p1").removeProperties();
-        ModelHelper.assertIsoModels(ModelHelper.modelWithStatements(this, "p2 before terminal"), m);
-        Assert.assertEquals(ModelHelper.resourceSet("p2"), m.listSubjects().toSet());
+        ModelHelper.assertIsoModels(modelWithStatements("p2 before terminal"), m);
+        assertEquals(ModelHelper.resourceSet("p2"), m.listSubjects().toSet());
     }
 
+    @Test
     public void testListSubjectsWorksAfterRemovePropertiesWIthLots() {
-        final Model m = ModelHelper.modelWithStatements(this, "p2 before terminal");
+        final Model m = modelWithStatements("p2 before terminal");
         for ( int i = 0 ; i < 100 ; i += 1 ) {
             ModelHelper.modelAdd(m, "p1 hasValue " + i);
         }
         m.createResource("eh:/p1").removeProperties();
-        ModelHelper.assertIsoModels(ModelHelper.modelWithStatements(this, "p2 before terminal"), m);
-        Assert.assertEquals(ModelHelper.resourceSet("p2"), m.listSubjects().toSet());
+        ModelHelper.assertIsoModels(modelWithStatements("p2 before terminal"), m);
+        assertEquals(ModelHelper.resourceSet("p2"), m.listSubjects().toSet());
     }
 }

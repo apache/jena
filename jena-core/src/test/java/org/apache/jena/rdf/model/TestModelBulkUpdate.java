@@ -21,54 +21,59 @@
 
 package org.apache.jena.rdf.model;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.jena.rdf.model.helpers.ModelCreator;
 import org.apache.jena.rdf.model.helpers.ModelHelper;
-
-import org.junit.Assert;
 
 /**
  * Tests of the Model-level bulk update API.
  */
 
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestModelBulkUpdate extends AbstractModelTestBase {
-    public TestModelBulkUpdate(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
 
+    @Test
     public void testBulkByModel() {
-        Assert.assertEquals("precondition: model must be empty", 0, model.size());
-        final Model A = ModelHelper.modelWithStatements(this, "clouds offer rain; trees offer shelter");
-        final Model B = ModelHelper.modelWithStatements(this, "x R y; y Q z; z P x");
+        assertEquals(0, model.size(), "precondition: model must be empty");
+        final Model A = modelWithStatements("clouds offer rain; trees offer shelter");
+        final Model B = modelWithStatements("x R y; y Q z; z P x");
         model.add(A);
         ModelHelper.assertIsoModels(A, model);
         model.add(B);
         model.remove(A);
         ModelHelper.assertIsoModels(B, model);
         model.remove(B);
-        Assert.assertEquals("", 0, model.size());
+        assertEquals(0, model.size(), "");
     }
 
+    @Test
     public void testBulkRemoveSelf() {
-        final Model m = ModelHelper.modelWithStatements(this, "they sing together; he sings alone");
+        final Model m = modelWithStatements("they sing together; he sings alone");
         m.remove(m);
-        Assert.assertEquals("", 0, m.size());
+        assertEquals(0, m.size(), "");
     }
 
     public void testContains(final Model m, final List<Statement> statements) {
         for ( Statement statement : statements ) {
-            Assert.assertTrue("it should be here", m.contains(statement));
+            assertTrue(m.contains(statement), "it should be here");
         }
     }
 
     public void testContains(final Model m, final Statement[] statements) {
         for ( final Statement statement : statements ) {
-            Assert.assertTrue("it should be here", m.contains(statement));
+            assertTrue(m.contains(statement), "it should be here");
         }
     }
 
+    @Test
     public void testMBU() {
         final Statement[] sArray = ModelHelper.statements(model, "moon orbits earth; earth orbits sun");
         final List<Statement> sList = Arrays.asList(ModelHelper.statements(model, "I drink tea; you drink coffee"));
@@ -88,13 +93,13 @@ public class TestModelBulkUpdate extends AbstractModelTestBase {
 
     public void testOmits(final Model m, final List<Statement> statements) {
         for ( Statement statement : statements ) {
-            Assert.assertFalse("it should not be here", m.contains(statement));
+            assertFalse(m.contains(statement), "it should not be here");
         }
     }
 
     public void testOmits(final Model m, final Statement[] statements) {
         for ( final Statement statement : statements ) {
-            Assert.assertFalse("it should not be here", m.contains(statement));
+            assertFalse(m.contains(statement), "it should not be here");
         }
     }
 }

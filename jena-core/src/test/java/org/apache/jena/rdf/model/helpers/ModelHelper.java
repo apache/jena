@@ -48,7 +48,6 @@ public class ModelHelper extends TestCase
 	private ModelHelper(String name)
 	{ super(name); }
 
-
 	protected static Model aModel;
 
 	static {
@@ -57,13 +56,6 @@ public class ModelHelper extends TestCase
 	}
 
 	protected static final Model empty = ModelFactory.createDefaultModel();
-
-	protected static Model extendedModel(AbstractModelTestBase base)
-	{
-		Model result = base.createModel();
-		result.setNsPrefixes( PrefixMapping.Extended );
-		return result;
-	}
 
 	protected static String nice( RDFNode n )
 	{ return GraphTestLib.nice( n.asNode() ); }
@@ -166,26 +158,6 @@ public class ModelHelper extends TestCase
 		StringTokenizer semis = new StringTokenizer( facts, ";" );
 		while (semis.hasMoreTokens()) m.add( statement( m, semis.nextToken() ) );
 		return m;
-	}
-
-	/**
-        makes a model with a given reiifcation style, initialised with statements parsed
-        from a string.
-
-        @param facts a string in semicolon-separated "S P O" format
-        @return a model containing those facts
-	 */
-	public static Model modelWithStatements( AbstractModelTestBase base, String facts )
-	{ return modelAdd( createModel( base ), facts ); }
-
-	/**
-        make a model and give it Extended prefixes
-	 */
-	public static Model createModel( AbstractModelTestBase base )
-	{
-		Model result = base.createModel();
-		result.setNsPrefixes( PrefixMapping.Extended );
-		return result;
 	}
 
 	/**

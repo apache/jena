@@ -21,22 +21,23 @@
 
 package org.apache.jena.rdf.model;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.apache.jena.rdf.model.helpers.ModelCreator;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
 
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestModelPolymorphism extends AbstractModelTestBase {
 
-    public TestModelPolymorphism(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
-
+    @Test
     public void testPoly() {
         final Resource r = model.createResource("http://www.electric-hedgehog.net/a-o-s.html");
-        Assert.assertFalse("the Resouce should not be null", r == null);
-        Assert.assertTrue("the Resource can be a Property", r.canAs(Property.class));
+        assertFalse(r == null, "the Resouce should not be null");
+        assertTrue(r.canAs(Property.class), "the Resource can be a Property");
         final Property p = r.as(Property.class);
-        Assert.assertFalse("the Property should not be null", p == null);
-        Assert.assertFalse("the Resource and Property should not be identical", r == p);
+        assertFalse(p == null, "the Property should not be null");
+        assertFalse(r == p, "the Resource and Property should not be identical");
     }
 }

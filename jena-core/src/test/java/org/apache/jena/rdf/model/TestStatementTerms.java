@@ -21,17 +21,20 @@
 
 package org.apache.jena.rdf.model;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.apache.jena.rdf.model.helpers.ModelCreator;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import org.apache.jena.rdf.model.helpers.ModelHelper;
 import org.apache.jena.vocabulary.RDF;
 
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestStatementTerms extends AbstractModelTestBase {
-    public TestStatementTerms(ModelCreator modelFactory, String name) {
-        super(modelFactory, name);
-    }
 
+    @Test
     public void testStatementTerms() {
         String fakeURI = "fake:URI";
         Resource S = model.createResource();
@@ -39,14 +42,14 @@ public class TestStatementTerms extends AbstractModelTestBase {
         RDFNode O = model.createTypedLiteral("42", fakeURI);
 
         Statement stmt = model.createStatement(S, P, O);
-        Assert.assertTrue(model.isEmpty());
+        assertTrue(model.isEmpty());
 
         StatementTerm stmtTerm = model.createStatementTerm(stmt);
-        Assert.assertTrue(model.isEmpty());
+        assertTrue(model.isEmpty());
 
-        Assert.assertEquals(S, stmtTerm.getStatement().getSubject());
-        Assert.assertEquals(P, stmtTerm.getStatement().getPredicate());
-        Assert.assertEquals(O, stmtTerm.getStatement().getObject());
+        assertEquals(S, stmtTerm.getStatement().getSubject());
+        assertEquals(P, stmtTerm.getStatement().getPredicate());
+        assertEquals(O, stmtTerm.getStatement().getObject());
     }
 
     private static StatementTerm create(Model model) {
@@ -60,6 +63,7 @@ public class TestStatementTerms extends AbstractModelTestBase {
         return stmtTerm;
     }
 
+    @Test
     public void testStatementReifierAnon() {
         String fakeURI = "fake:URI";
         Resource S = model.createResource();
@@ -68,21 +72,22 @@ public class TestStatementTerms extends AbstractModelTestBase {
         Statement stmt = model.createStatement(S, P, O);
 
         Resource r = model.createReifier(stmt);
-        Assert.assertFalse(model.isEmpty());
-        Assert.assertEquals(1, model.size());
+        assertFalse(model.isEmpty());
+        assertEquals(1, model.size());
 
         Statement s = model.listStatements().next();
 
         RDFNode x = s.getObject();
-        Assert.assertTrue(s.getSubject().isAnon());
-        Assert.assertTrue(s.getPredicate().equals(RDF.reifies));
-        Assert.assertTrue(s.getObject().isStatementTerm());
+        assertTrue(s.getSubject().isAnon());
+        assertTrue(s.getPredicate().equals(RDF.reifies));
+        assertTrue(s.getObject().isStatementTerm());
 
         StatementTerm st = s.getObject().asStatementTerm();
-        Assert.assertTrue(st != null);
-        Assert.assertEquals(st.getStatement(), stmt);
+        assertTrue(st != null);
+        assertEquals(st.getStatement(), stmt);
     }
 
+    @Test
     public void testStatementReifierResource() {
         String fakeURI = "fake:URI";
         String reifURI = "reifier:URI";
@@ -95,13 +100,13 @@ public class TestStatementTerms extends AbstractModelTestBase {
         Statement stmt = model.createStatement(S, P, O);
 
         Resource r = model.createReifier(reifier, stmt);
-        Assert.assertEquals(reifURI, r.getURI());
+        assertEquals(reifURI, r.getURI());
 
-        Assert.assertFalse(model.isEmpty());
-        Assert.assertEquals(1, model.size());
+        assertFalse(model.isEmpty());
+        assertEquals(1, model.size());
 
         StatementTerm st = r.getProperty(RDF.reifies).getObject().asStatementTerm();
-        Assert.assertTrue(st != null);
-        Assert.assertEquals(st.getStatement(), stmt);
+        assertTrue(st != null);
+        assertEquals(st.getStatement(), stmt);
     }
 }

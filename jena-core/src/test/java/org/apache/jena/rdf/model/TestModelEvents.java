@@ -21,24 +21,29 @@
 
 package org.apache.jena.rdf.model;
 
-import java.util.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.*;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.rdf.listeners.ChangedListener;
 import org.apache.jena.rdf.listeners.NullListener;
 import org.apache.jena.rdf.listeners.ObjectListener;
 import org.apache.jena.rdf.listeners.StatementListener;
-import org.apache.jena.rdf.model.helpers.ModelCreator;
 import org.apache.jena.rdf.model.helpers.ModelHelper;
 import org.apache.jena.rdf.model.helpers.RecordingModelListener;
 import org.apache.jena.rdf.model.impl.StmtIteratorImpl;
 
-
 /**
  * Tests for model events and listeners.
  */
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestModelEvents extends AbstractModelTestBase {
     static class OL extends ObjectListener {
         private Object recorded;
@@ -61,9 +66,9 @@ public class TestModelEvents extends AbstractModelTestBase {
         }
 
         public void recent(final String wantHow, final Object value) {
-            Assert.assertTrue(RecordingModelListener.checkEquality(comparable(value), comparable(recorded)));
+            assertTrue(RecordingModelListener.checkEquality(comparable(value), comparable(recorded)));
             // Assert.assertEquals(comparable(value), comparable(recorded));
-            Assert.assertEquals(wantHow, how);
+            assertEquals(wantHow, how);
             recorded = how = null;
         }
 
@@ -109,10 +114,6 @@ public class TestModelEvents extends AbstractModelTestBase {
 
     protected RecordingModelListener SL;
 
-    public TestModelEvents(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
-
     public void another(final Map<Object, Integer> m, final Object x) {
         Integer n = m.get(x);
         if ( n == null ) {
@@ -135,32 +136,36 @@ public class TestModelEvents extends AbstractModelTestBase {
 
     public void assertSameBag(final List<Statement> wanted, final List<Statement> got) {
 
-        Assert.assertEquals(asBag(wanted), asBag(got));
+        assertEquals(asBag(wanted), asBag(got));
     }
 
     @Override
+    @BeforeEach
     public void setUp() {
         super.setUp();
         SL = new RecordingModelListener();
     }
 
+    @Test
     public void testAddInPieces() {
         model.register(SL);
         model.add(ModelHelper.resource(model, "S"), ModelHelper.property(model, "P"), ModelHelper.resource(model, "O"));
         SL.assertHas(new Object[]{"add", ModelHelper.statement(model, "S P O")});
     }
 
+    @Test
     public void testAddModel() {
         model.register(SL);
-        final Model m = ModelHelper.modelWithStatements(this, "NT beats S; S beats H; H beats D");
+        final Model m = modelWithStatements("NT beats S; S beats H; H beats D");
         model.add(m);
         SL.assertHas(new Object[]{"addModel", m});
     }
 
+    @Test
     public void testAddSingleStatements() {
         final Statement S1 = ModelHelper.statement(model, "S P O");
         final Statement S2 = ModelHelper.statement(model, "A B C");
-        Assert.assertFalse(SL.has(new Object[]{"add", S1}));
+        assertFalse(SL.has(new Object[]{"add", S1}));
         model.register(SL);
         model.add(S1);
         SL.assertHas(new Object[]{"add", S1});
@@ -170,6 +175,7 @@ public class TestModelEvents extends AbstractModelTestBase {
         SL.assertHas(new Object[]{"add", S1, "add", S2, "add", S1});
     }
 
+    @Test
     public void testAddStatementArray() {
         model.register(SL);
         final Statement[] s = ModelHelper.statements(model, "a P b; c Q d");
@@ -177,6 +183,7 @@ public class TestModelEvents extends AbstractModelTestBase {
         SL.assertHas(new Object[]{"add[]", Arrays.asList(s)});
     }
 
+    @Test
     public void testAddStatementIterator() {
         model.register(SL);
         final Statement[] sa = ModelHelper.statements(model, "x R y; a P b; x R y");
@@ -185,6 +192,7 @@ public class TestModelEvents extends AbstractModelTestBase {
         SL.assertHas(new Object[]{"addIterator", Arrays.asList(sa)});
     }
 
+    @Test
     public void testAddStatementList() {
         model.register(SL);
         final List<Statement> L = Arrays.asList(ModelHelper.statements(model, "b I g; model U g"));
@@ -192,41 +200,44 @@ public class TestModelEvents extends AbstractModelTestBase {
         SL.assertHas(new Object[]{"addList", L});
     }
 
+    @Test
     public void testChangedListener() {
         final ChangedListener CL = new ChangedListener();
         model.register(CL);
-        Assert.assertFalse(CL.hasChanged());
+        assertFalse(CL.hasChanged());
         model.add(ModelHelper.statement(model, "S P O"));
-        Assert.assertTrue(CL.hasChanged());
-        Assert.assertFalse(CL.hasChanged());
+        assertTrue(CL.hasChanged());
+        assertFalse(CL.hasChanged());
         model.remove(ModelHelper.statement(model, "ab CD ef"));
-        Assert.assertTrue(CL.hasChanged());
+        assertTrue(CL.hasChanged());
         model.add(ModelHelper.statements(model, "gh IJ kl"));
-        Assert.assertTrue(CL.hasChanged());
+        assertTrue(CL.hasChanged());
         model.remove(ModelHelper.statements(model, "mn OP qr"));
-        Assert.assertTrue(CL.hasChanged());
+        assertTrue(CL.hasChanged());
         model.add(asIterator(ModelHelper.statements(model, "st UV wx")));
-        Assert.assertTrue(CL.hasChanged());
-        Assert.assertFalse(CL.hasChanged());
+        assertTrue(CL.hasChanged());
+        assertFalse(CL.hasChanged());
         model.remove(asIterator(ModelHelper.statements(model, "yz AB cd")));
-        Assert.assertTrue(CL.hasChanged());
-        model.add(ModelHelper.modelWithStatements(this, "ef GH ij"));
-        Assert.assertTrue(CL.hasChanged());
-        model.remove(ModelHelper.modelWithStatements(this, "kl MN op"));
-        Assert.assertTrue(CL.hasChanged());
+        assertTrue(CL.hasChanged());
+        model.add(modelWithStatements("ef GH ij"));
+        assertTrue(CL.hasChanged());
+        model.remove(modelWithStatements("kl MN op"));
+        assertTrue(CL.hasChanged());
         model.add(Arrays.asList(ModelHelper.statements(model, "rs TU vw")));
-        Assert.assertTrue(CL.hasChanged());
+        assertTrue(CL.hasChanged());
         model.remove(Arrays.asList(ModelHelper.statements(model, "xy wh q")));
-        Assert.assertTrue(CL.hasChanged());
+        assertTrue(CL.hasChanged());
     }
 
+    @Test
     public void testDeleteModel() {
         model.register(SL);
-        final Model m = ModelHelper.modelWithStatements(this, "NT beats S; S beats H; H beats D");
+        final Model m = modelWithStatements("NT beats S; S beats H; H beats D");
         model.remove(m);
         SL.assertHas(new Object[]{"removeModel", m});
     }
 
+    @Test
     public void testDeleteStatementArray() {
         model.register(SL);
         final Statement[] s = ModelHelper.statements(model, "a P b; c Q d");
@@ -234,6 +245,7 @@ public class TestModelEvents extends AbstractModelTestBase {
         SL.assertHas(new Object[]{"remove[]", Arrays.asList(s)});
     }
 
+    @Test
     public void testDeleteStatementIterator() {
         model.register(SL);
         final Statement[] sa = ModelHelper.statements(model, "x R y; a P b; x R y");
@@ -242,6 +254,7 @@ public class TestModelEvents extends AbstractModelTestBase {
         SL.assertHas(new Object[]{"removeIterator", Arrays.asList(sa)});
     }
 
+    @Test
     public void testDeleteStatementList() {
         model.register(SL);
         final List<Statement> lst = Arrays.asList(ModelHelper.statements(model, "b I g; model U g"));
@@ -249,6 +262,7 @@ public class TestModelEvents extends AbstractModelTestBase {
         SL.assertHas(new Object[]{"removeList", lst});
     }
 
+    @Test
     public void testGeneralEvent() {
         model.register(SL);
         final Object e = new int[]{};
@@ -258,14 +272,15 @@ public class TestModelEvents extends AbstractModelTestBase {
 
     public void testGot(final WatchStatementListener sl, final String how, final String template) {
         assertSameBag(Arrays.asList(ModelHelper.statements(model, template)), sl.contents());
-        Assert.assertEquals(how, sl.getAddOrRem());
-        Assert.assertTrue(sl.contents().size() == 0);
+        assertEquals(how, sl.getAddOrRem());
+        assertTrue(sl.contents().size() == 0);
     }
 
     /**
      * Test that the null listener doesn't appear to do anything. Or at least doesn't
      * crash ....
      */
+    @Test
     public void testNullListener() {
         final ModelChangedListener NL = new NullListener();
         model.register(NL);
@@ -275,12 +290,13 @@ public class TestModelEvents extends AbstractModelTestBase {
         model.remove(ModelHelper.statements(model, "g H i; j K l"));
         model.add(asIterator(ModelHelper.statements(model, "model N o; p Q r")));
         model.remove(asIterator(ModelHelper.statements(model, "s T u; v W x")));
-        model.add(ModelHelper.modelWithStatements(this, "leaves fall softly"));
-        model.remove(ModelHelper.modelWithStatements(this, "water drips endlessly"));
+        model.add(modelWithStatements("leaves fall softly"));
+        model.remove(modelWithStatements("water drips endlessly"));
         model.add(Arrays.asList(ModelHelper.statements(model, "xx RR yy")));
         model.remove(Arrays.asList(ModelHelper.statements(model, "aa VV rr")));
     }
 
+    @Test
     public void testObjectListener() {
         final OL ll = new OL();
         model.register(ll);
@@ -297,10 +313,10 @@ public class TestModelEvents extends AbstractModelTestBase {
         model.remove(sList2);
         ll.recent("rem", sList2);
         /* */
-        final Model m1 = ModelHelper.modelWithStatements(this, "vv WW xx; yy ZZ aa");
+        final Model m1 = modelWithStatements("vv WW xx; yy ZZ aa");
         model.add(m1);
         ll.recent("add", m1);
-        final Model m2 = ModelHelper.modelWithStatements(this, "a B g; d E z");
+        final Model m2 = modelWithStatements("a B g; d E z");
         model.remove(m2);
         ll.recent("rem", m2);
         /* */
@@ -319,10 +335,12 @@ public class TestModelEvents extends AbstractModelTestBase {
         ll.recent("rem", asIterator(si2));
     }
 
+    @Test
     public void testRegistrationCompiles() {
-        Assert.assertSame(model, model.register(new RecordingModelListener()));
+        assertSame(model, model.register(new RecordingModelListener()));
     }
 
+    @Test
     public void testRemoveSingleStatements() {
         final Statement S = ModelHelper.statement(model, "D E F");
         model.register(SL);
@@ -331,6 +349,7 @@ public class TestModelEvents extends AbstractModelTestBase {
         SL.assertHas(new Object[]{"add", S, "remove", S});
     }
 
+    @Test
     public void testTripleListener() {
         final WatchStatementListener sl = new WatchStatementListener();
         model.register(sl);
@@ -354,12 +373,13 @@ public class TestModelEvents extends AbstractModelTestBase {
         model.remove(asIterator(ModelHelper.statements(model, "l M n; o P q")));
         testGot(sl, "rem", "l M n; o P q");
         /* */
-        model.add(ModelHelper.modelWithStatements(this, "r S t; u V w; x Y z"));
+        model.add(modelWithStatements("r S t; u V w; x Y z"));
         testGot(sl, "add", "r S t; u V w; x Y z");
-        model.remove(ModelHelper.modelWithStatements(this, "a E i; o U y"));
+        model.remove(modelWithStatements("a E i; o U y"));
         testGot(sl, "rem", "a E i; o U y");
     }
 
+    @Test
     public void testTwoListeners() {
         final Statement S = ModelHelper.statement(model, "S P O");
         final RecordingModelListener SL1 = new RecordingModelListener();
@@ -370,6 +390,7 @@ public class TestModelEvents extends AbstractModelTestBase {
         SL1.assertHas(new Object[]{"add", S});
     }
 
+    @Test
     public void testUnregisterWorks() {
         model.register(SL);
         model.unregister(SL);
@@ -377,6 +398,7 @@ public class TestModelEvents extends AbstractModelTestBase {
         SL.assertHas(new Object[]{});
     }
 
+    @Test
     public void testUnregistrationCompiles() {
         model.unregister(new RecordingModelListener());
     }

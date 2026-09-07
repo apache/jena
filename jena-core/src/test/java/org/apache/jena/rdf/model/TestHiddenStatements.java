@@ -21,19 +21,21 @@
 
 package org.apache.jena.rdf.model;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.apache.jena.rdf.model.helpers.ModelCreator;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import org.apache.jena.shared.PrefixMapping;
 
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestHiddenStatements extends AbstractModelTestBase {
-    public TestHiddenStatements(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
 
     public void assertSameMapping(final PrefixMapping L, final PrefixMapping R) {
         if ( sameMapping(L, R) == false ) {
-            Assert.fail("wanted " + L + " but got " + R);
+            fail("wanted " + L + " but got " + R);
         }
     }
 
@@ -47,6 +49,7 @@ public class TestHiddenStatements extends AbstractModelTestBase {
      * Test that withHiddenStatements copies the prefix mapping TODO add some extra
      * prefies for checking; should check for non- default models.
      */
+    @Test
     public void testPrefixCopied() {
         model.setNsPrefixes(PrefixMapping.Standard);
         assertSameMapping(PrefixMapping.Standard, model);

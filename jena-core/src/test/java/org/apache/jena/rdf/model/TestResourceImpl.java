@@ -21,72 +21,84 @@
 
 package org.apache.jena.rdf.model;
 
-import org.apache.jena.rdf.model.helpers.ModelCreator;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import org.apache.jena.rdf.model.helpers.ModelHelper;
 import org.apache.jena.test.JenaTestLib;
 import org.apache.jena.vocabulary.RDF;
-import org.junit.Assert;
 
 /**
  * TestResourceImpl - fresh tests, make sure as-ing works a bit.
  */
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestResourceImpl extends AbstractModelTestBase {
-    public TestResourceImpl(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
 
+    @Test
     public void testAddLiteralPassesLiteralUnmodified() {
         final Resource r = model.createResource();
         final Literal lit = model.createLiteral("spoo");
         r.addLiteral(RDF.value, lit);
-        Assert.assertTrue("model should contain unmodified literal", model.contains(null, RDF.value, lit));
+        assertTrue(model.contains(null, RDF.value, lit), "model should contain unmodified literal");
     }
 
+    @Test
     public void testAddTypedPropertyBoolean() {
         final Resource r = model.createResource();
         r.addLiteral(RDF.value, true);
-        Assert.assertEquals(model.createTypedLiteral(true), r.getProperty(RDF.value).getLiteral());
+        assertEquals(model.createTypedLiteral(true), r.getProperty(RDF.value).getLiteral());
     }
 
+    @Test
     public void testAddTypedPropertyChar() {
         final Resource r = model.createResource();
         r.addLiteral(RDF.value, 'x');
-        Assert.assertEquals(model.createTypedLiteral('x'), r.getProperty(RDF.value).getLiteral());
+        assertEquals(model.createTypedLiteral('x'), r.getProperty(RDF.value).getLiteral());
     }
 
+    @Test
     public void testAddTypedPropertyDouble() {
         final Resource r = model.createResource();
         r.addLiteral(RDF.value, 1.0d);
-        Assert.assertEquals(model.createTypedLiteral(1.0d), r.getProperty(RDF.value).getLiteral());
+        assertEquals(model.createTypedLiteral(1.0d), r.getProperty(RDF.value).getLiteral());
     }
 
+    @Test
     public void testAddTypedPropertyFloat() {
         final Resource r = model.createResource();
         r.addLiteral(RDF.value, 1.0f);
-        Assert.assertEquals(model.createTypedLiteral(1.0f), r.getProperty(RDF.value).getLiteral());
+        assertEquals(model.createTypedLiteral(1.0f), r.getProperty(RDF.value).getLiteral());
     }
 
+    @Test
     public void testAddTypedPropertyInt() {
         // Model model = ModelFactory.createDefaultModel();
         // Resource r = model.createResource();
         // r.addLiteral( RDF.value, 1 );
-        // assertEquals( model.createTypedLiteral( 1 ), r.getProperty( RDF.value
+        // assertEquals(model.createTypedLiteral( 1 ), r.getProperty( RDF.value
         // ).getLiteral() );
     }
 
+    @Test
     public void testAddTypedPropertyLong() {
         final Resource r = model.createResource();
         r.addLiteral(RDF.value, 1L);
-        Assert.assertEquals(model.createTypedLiteral(1L), r.getProperty(RDF.value).getLiteral());
+        assertEquals(model.createTypedLiteral(1L), r.getProperty(RDF.value).getLiteral());
     }
 
+    @Test
     public void testAddTypedPropertyObject() {
         final Object z = new Object();
         final Resource r = model.createResource();
         r.addLiteral(RDF.value, z);
-        Assert.assertEquals(model.createTypedLiteral(z), r.getProperty(RDF.value).getLiteral());
+        assertEquals(model.createTypedLiteral(z), r.getProperty(RDF.value).getLiteral());
     }
 
+    @Test
     public void testAddTypedPropertyString() {
 
     }
@@ -94,10 +106,11 @@ public class TestResourceImpl extends AbstractModelTestBase {
     /**
      * Test that a literal node cannot be as'ed into a resource.
      */
+    @Test
     public void testAsLiteral() {
         try {
             ModelHelper.literal(model, "17").as(Resource.class);
-            Assert.fail("literals cannot be resources");
+            fail("literals cannot be resources");
         } catch (final ResourceRequiredException e) {
             JenaTestLib.pass();
         }
@@ -106,92 +119,107 @@ public class TestResourceImpl extends AbstractModelTestBase {
     /**
      * Test that a non-literal node can be as'ed into a resource
      */
+    @Test
     public void testCannotAsNonLiteral() {
         ModelHelper.resource(model, "plumPie").as(Resource.class);
     }
 
+    @Test
     public void testGetLocalNameReturnsLocalName() {
-        Assert.assertEquals("xyz", ModelHelper.resource("eh:xyz").getLocalName());
+        assertEquals("xyz", ModelHelper.resource("eh:xyz").getLocalName());
     }
 
+    @Test
     public void testGetModel() {
 
-        Assert.assertSame(model, model.createResource("eh:/wossname").getModel());
+        assertSame(model, model.createResource("eh:/wossname").getModel());
     }
 
+    @Test
     public void testGetPropertyResourceValueReturnsNull() {
-        final Model model = ModelHelper.modelWithStatements(this, "x p 17");
+        final Model model = modelWithStatements("x p 17");
         final Resource r = model.createResource("eh:/x");
-        Assert.assertNull(r.getPropertyResourceValue(ModelHelper.property("q")));
-        Assert.assertNull(r.getPropertyResourceValue(ModelHelper.property("p")));
+        assertNull(r.getPropertyResourceValue(ModelHelper.property("q")));
+        assertNull(r.getPropertyResourceValue(ModelHelper.property("p")));
     }
 
+    @Test
     public void testGetPropertyResourceValueReturnsResource() {
-        final Model model = ModelHelper.modelWithStatements(this, "x p 17; x p y");
+        final Model model = modelWithStatements("x p 17; x p y");
         final Resource r = model.createResource("eh:/x");
         final Resource value = r.getPropertyResourceValue(ModelHelper.property("p"));
-        Assert.assertEquals(ModelHelper.resource("y"), value);
+        assertEquals(ModelHelper.resource("y"), value);
     }
 
+    @Test
     public void testHasTypedPropertyBoolean() {
         final Resource r = model.createResource();
         r.addLiteral(RDF.value, false);
-        Assert.assertTrue(r.hasLiteral(RDF.value, false));
+        assertTrue(r.hasLiteral(RDF.value, false));
     }
 
+    @Test
     public void testHasTypedPropertyChar() {
         final Resource r = model.createResource();
         r.addLiteral(RDF.value, 'x');
-        Assert.assertTrue(r.hasLiteral(RDF.value, 'x'));
+        assertTrue(r.hasLiteral(RDF.value, 'x'));
     }
 
+    @Test
     public void testHasTypedPropertyDouble() {
         final Resource r = model.createResource();
         r.addLiteral(RDF.value, 1.0d);
-        Assert.assertTrue(r.hasLiteral(RDF.value, 1.0d));
+        assertTrue(r.hasLiteral(RDF.value, 1.0d));
     }
 
+    @Test
     public void testHasTypedPropertyFloat() {
         final Resource r = model.createResource();
         r.addLiteral(RDF.value, 1.0f);
-        Assert.assertTrue(r.hasLiteral(RDF.value, 1.0f));
+        assertTrue(r.hasLiteral(RDF.value, 1.0f));
     }
 
+    @Test
     public void testHasTypedPropertyInt() {
         final Resource r = model.createResource();
         r.addLiteral(RDF.value, 1);
-        Assert.assertTrue(r.hasLiteral(RDF.value, 1));
+        assertTrue(r.hasLiteral(RDF.value, 1));
     }
 
+    @Test
     public void testHasTypedPropertyLong() {
 
         final Resource r = model.createResource();
         r.addLiteral(RDF.value, 1L);
-        Assert.assertTrue(r.hasLiteral(RDF.value, 1L));
+        assertTrue(r.hasLiteral(RDF.value, 1L));
     }
 
+    @Test
     public void testHasTypedPropertyObject() {
         final Object z = new Object();
         final Resource r = model.createResource();
         r.addLiteral(RDF.value, z);
-        Assert.assertTrue(r.hasLiteral(RDF.value, z));
+        assertTrue(r.hasLiteral(RDF.value, z));
     }
 
+    @Test
     public void testHasTypedPropertyString() {
 
     }
 
+    @Test
     public void testHasURI() {
-        Assert.assertTrue(ModelHelper.resource("eh:xyz").hasURI("eh:xyz"));
-        Assert.assertFalse(ModelHelper.resource("eh:xyz").hasURI("eh:1yz"));
-        Assert.assertFalse(ResourceFactory.createResource().hasURI("42"));
+        assertTrue(ModelHelper.resource("eh:xyz").hasURI("eh:xyz"));
+        assertFalse(ModelHelper.resource("eh:xyz").hasURI("eh:1yz"));
+        assertFalse(ResourceFactory.createResource().hasURI("42"));
     }
 
+    @Test
     public void testNameSpace() {
-        Assert.assertEquals("eh:", ModelHelper.resource("eh:xyz").getNameSpace());
-        Assert.assertEquals("http://d/", ModelHelper.resource("http://d/stuff").getNameSpace());
-        Assert.assertEquals("ftp://dd.com/12345", ModelHelper.resource("ftp://dd.com/12345").getNameSpace());
-        Assert.assertEquals("http://domain/spoo#", ModelHelper.resource("http://domain/spoo#anchor").getNameSpace());
-        Assert.assertEquals("ftp://abd/def#ghi#", ModelHelper.resource("ftp://abd/def#ghi#e11-2").getNameSpace());
+        assertEquals("eh:", ModelHelper.resource("eh:xyz").getNameSpace());
+        assertEquals("http://d/", ModelHelper.resource("http://d/stuff").getNameSpace());
+        assertEquals("ftp://dd.com/12345", ModelHelper.resource("ftp://dd.com/12345").getNameSpace());
+        assertEquals("http://domain/spoo#", ModelHelper.resource("http://domain/spoo#anchor").getNameSpace());
+        assertEquals("ftp://abd/def#ghi#", ModelHelper.resource("ftp://abd/def#ghi#e11-2").getNameSpace());
     }
 }

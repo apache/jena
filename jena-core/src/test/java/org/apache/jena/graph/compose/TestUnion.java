@@ -21,18 +21,12 @@
 
 package org.apache.jena.graph.compose;
 
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphTestLib;
 
 public class TestUnion extends TestDyadic {
-    public TestUnion(String name) {
-        super(name);
-    }
-
-    public static TestSuite suite() {
-        return new TestSuite(TestUnion.class);
-    }
 
     @Override
     public Graph getNewGraph() {
@@ -44,6 +38,7 @@ public class TestUnion extends TestDyadic {
         return new Union(GraphTestLib.graphWith(s1), GraphTestLib.graphWith(s2));
     }
 
+    @Test
     public void testStaticUnion() {
         GraphTestLib.assertIsomorphic(GraphTestLib.graphWith(""), unionOf("", ""));
         GraphTestLib.assertIsomorphic(GraphTestLib.graphWith("x R y"), unionOf("x R y", ""));
@@ -52,6 +47,7 @@ public class TestUnion extends TestDyadic {
         GraphTestLib.assertIsomorphic(GraphTestLib.graphWith("x R y"), unionOf("x R y", "x R y"));
     }
 
+    @Test
     public void testUnionReflectsChangesToOperands() {
         Graph l = GraphTestLib.graphWith("x R y");
         Graph r = GraphTestLib.graphWith("x R y");
@@ -72,6 +68,7 @@ public class TestUnion extends TestDyadic {
         GraphTestLib.assertIsomorphic(GraphTestLib.graphWith("x R z; p S q"), u);
     }
 
+    @Test
     public void testAdd() {
         Graph l = GraphTestLib.graphWith("x R y");
         Graph r = GraphTestLib.graphWith("x R y; p S q");
@@ -90,6 +87,7 @@ public class TestUnion extends TestDyadic {
         GraphTestLib.assertIsomorphic(GraphTestLib.graphWith("x R y; p S q"), r);
     }
 
+    @Test
     public void testDelete() {
         Graph l = GraphTestLib.graphWith("x R y; x R z");
         Graph r = GraphTestLib.graphWith("x R y; p S q");

@@ -21,24 +21,20 @@
 
 package org.apache.jena.graph.compose;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import java.util.StringTokenizer;
 
-import junit.framework.TestSuite;
-import org.apache.jena.graph.AbstractTestGraph;
+import org.apache.jena.graph.BaseTestGraph_JU6;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.NiceIterator;
 
-public abstract class TestDyadic extends AbstractTestGraph {
-    public TestDyadic(String name) {
-        super(name);
-    }
-
-    public static TestSuite suite() {
-        return new TestSuite(TestDyadic.class);
-    }
+public abstract class TestDyadic extends BaseTestGraph_JU6 {
 
     static private ExtendedIterator<String> things(final String x) {
         return new NiceIterator<String>() {
@@ -58,19 +54,21 @@ public abstract class TestDyadic extends AbstractTestGraph {
     /**
      * Test the things() iterator generating utility function.
      */
+    @Test
     public void testThings() {
         ExtendedIterator<String> it1 = things("now is the time");
         ExtendedIterator<String> it2 = things("now is the time");
         ExtendedIterator<String> mt1 = things("");
         ExtendedIterator<String> mt2 = things("");
-        assertEquals("mt1.hasNext()", false, mt1.hasNext());
-        assertEquals("mt2.hasNext()", false, mt2.hasNext());
-        assertEquals("andThen(mt1,mt2).hasNext()", false, mt1.andThen(mt2).hasNext());
-        assertEquals("butNot(it1,it2).hasNext()", false, CompositionBase.butNot(it1, it2).hasNext());
-        assertEquals("x y z @butNot z", true, CompositionBase.butNot(things("x y z"), things("z")).hasNext());
-        assertEquals("x y z @butNot a", true, CompositionBase.butNot(things("x y z"), things("z")).hasNext());
+        assertEquals(false, mt1.hasNext(), "mt1.hasNext()");
+        assertEquals(false, mt2.hasNext(), "mt2.hasNext()");
+        assertEquals(false, mt1.andThen(mt2).hasNext(), "andThen(mt1,mt2).hasNext()");
+        assertEquals(false, CompositionBase.butNot(it1, it2).hasNext(), "butNot(it1,it2).hasNext()");
+        assertEquals(true, CompositionBase.butNot(things("x y z"), things("z")).hasNext(), "x y z @butNot z");
+        assertEquals(true, CompositionBase.butNot(things("x y z"), things("z")).hasNext(), "x y z @butNot a");
     }
 
+    @Test
     public void testDyadicOperands() {
         Graph g = GraphMemFactory.createDefaultGraph();
         Graph h = GraphMemFactory.createDefaultGraph();

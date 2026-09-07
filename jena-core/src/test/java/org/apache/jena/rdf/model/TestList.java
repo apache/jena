@@ -21,6 +21,12 @@
 
 package org.apache.jena.rdf.model;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
+
 // Imports
 // /////////////
 import java.util.ArrayList;
@@ -28,9 +34,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.jena.rdf.model.helpers.ModelCreator;
 import org.apache.jena.vocabulary.RDF;
-import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +43,8 @@ import org.slf4j.LoggerFactory;
  * A collection of unit tests for the standard implementation of {@link RDFList} .
  * </p>
  */
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestList extends AbstractModelTestBase {
     // Constants
     // ////////////////////////////////
@@ -61,8 +67,8 @@ public class TestList extends AbstractModelTestBase {
                 logger.debug("TestList - Unexpected iterator result: " + next);
             }
 
-            Assert.assertTrue("Value " + next + " was not expected as a result from this iterator ", expList.contains(next));
-            Assert.assertTrue("Value " + next + " was not removed from the list ", expList.remove(next));
+            assertTrue(expList.contains(next), "Value " + next + " was not expected as a result from this iterator ");
+            assertTrue(expList.remove(next), "Value " + next + " was not removed from the list ");
         }
 
         if ( !(expList.size() == 0) ) {
@@ -71,7 +77,7 @@ public class TestList extends AbstractModelTestBase {
                 logger.debug("TestList - missing: " + object);
             }
         }
-        Assert.assertEquals("There were expected elements from the iterator that were not found", 0, expList.size());
+        assertEquals(0, expList.size(), "There were expected elements from the iterator that were not found");
     }
 
     // Static variables
@@ -107,15 +113,11 @@ public class TestList extends AbstractModelTestBase {
 
     // public ListTest( String n ) {super(n);}
 
-    public TestList(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
-
     protected void checkValid(final String testName, final RDFList l, final boolean validExpected) {
         l.setStrict(true);
         final boolean valid = l.isValid();
         // for debugging ... String s = l.getValidityErrorMessage();
-        Assert.assertEquals("Validity test " + testName + " returned wrong isValid() result", validExpected, valid);
+        assertEquals(validExpected, valid, "Validity test " + testName + " returned wrong isValid() result");
     }
 
     // Internal implementation methods
@@ -123,16 +125,17 @@ public class TestList extends AbstractModelTestBase {
 
     protected RDFList getListRoot(final Model m) {
         final Resource root = m.getResource(TestList.NS + "root");
-        Assert.assertNotNull("Root resource should not be null", root);
+        assertNotNull(root, "Root resource should not be null");
 
         final Resource listHead = root.getRequiredProperty(m.getProperty(TestList.NS + "p")).getResource();
 
         final RDFList l = listHead.as(RDFList.class);
-        Assert.assertNotNull("as(RDFList) should not return null for root", l);
+        assertNotNull(l, "as(RDFList) should not return null for root");
 
         return l;
     }
 
+    @Test
     public void testAdd() {
 
         final Resource root = model.createResource(TestList.NS + "root");
@@ -149,7 +152,7 @@ public class TestList extends AbstractModelTestBase {
             final RDFList list0 = list.with(element);
 
             checkValid("addTest0", list0, true);
-            Assert.assertTrue("added'ed lists should be equal", list.equals(nil) || list0.equals(list));
+            assertTrue(list.equals(nil) || list0.equals(list), "added'ed lists should be equal");
 
             list = list0;
         }
@@ -161,10 +164,11 @@ public class TestList extends AbstractModelTestBase {
         final Model m0 = ModelFactory.createDefaultModel();
         m0.read(getFileName("ontology/list5.rdf"));
 
-        Assert.assertTrue("Add'ed and read models should be the same", m0.isIsomorphicWith(model));
+        assertTrue(m0.isIsomorphicWith(model), "Add'ed and read models should be the same");
 
     }
 
+    @Test
     public void testAppend() {
         model.read(getFileName("ontology/list5.rdf"));
 
@@ -188,16 +192,17 @@ public class TestList extends AbstractModelTestBase {
 
         // original list should be unchanged
         checkValid("appendTest0", root, true);
-        Assert.assertEquals("Original list should be unchanged", rootLen, root.size());
+        assertEquals(rootLen, root.size(), "Original list should be unchanged");
 
         checkValid("appendTest1", list, true);
-        Assert.assertEquals("Original list should be unchanged", listLen, list.size());
+        assertEquals(listLen, list.size(), "Original list should be unchanged");
 
         // new list should be length of combined
         checkValid("appendTest2", appended, true);
-        Assert.assertEquals("Appended list not correct length", rootLen + listLen, appended.size());
+        assertEquals(rootLen + listLen, appended.size(), "Appended list not correct length");
     }
 
+    @Test
     public void testApply() {
         model.read(getFileName("ontology/list5.rdf"));
 
@@ -215,10 +220,11 @@ public class TestList extends AbstractModelTestBase {
         final MyApply f = new MyApply();
         root.apply(f);
 
-        Assert.assertEquals("Result of apply should be concatentation of local names", "abcde", f.collect);
+        assertEquals("abcde", f.collect, "Result of apply should be concatentation of local names");
 
     }
 
+    @Test
     public void testConcatenate() {
         model.read(getFileName("ontology/list5.rdf"));
 
@@ -241,13 +247,14 @@ public class TestList extends AbstractModelTestBase {
 
         // original list should be unchanged
         checkValid("concatTest0", list, true);
-        Assert.assertEquals("Original list should be unchanged", listLen, list.size());
+        assertEquals(listLen, list.size(), "Original list should be unchanged");
 
         // but lhs list has changed
         checkValid("concatTest1", root, true);
-        Assert.assertEquals("Root list should be new length", rootLen + listLen, root.size());
+        assertEquals(rootLen + listLen, root.size(), "Root list should be new length");
     }
 
+    @Test
     public void testConcatenate2() {
         model.read(getFileName("ontology/list5.rdf"));
 
@@ -265,9 +272,10 @@ public class TestList extends AbstractModelTestBase {
         checkValid("concatTest3", aList, true);
 
         final RDFList root = getListRoot(model);
-        Assert.assertTrue("Constructed and loaded lists should be the same", aList.sameListAs(root));
+        assertTrue(aList.sameListAs(root), "Constructed and loaded lists should be the same");
     }
 
+    @Test
     public void testCons() {
         final Resource root = model.createResource(TestList.NS + "root");
         final Property p = model.createProperty(TestList.NS, "p");
@@ -283,7 +291,7 @@ public class TestList extends AbstractModelTestBase {
             final RDFList list0 = list.cons(element);
 
             checkValid("constest1", list0, true);
-            Assert.assertTrue("cons'ed lists should not be equal", !list0.equals(list));
+            assertTrue(!list0.equals(list), "cons'ed lists should not be equal");
 
             list = list0;
         }
@@ -295,20 +303,22 @@ public class TestList extends AbstractModelTestBase {
         final Model m0 = ModelFactory.createDefaultModel();
         m0.read(getFileName("ontology/list5.rdf"));
 
-        Assert.assertTrue("Cons'ed and read models should be the same", m0.isIsomorphicWith(model));
+        assertTrue(m0.isIsomorphicWith(model), "Cons'ed and read models should be the same");
     }
 
+    @Test
     public void testCount() {
         for ( int i = 0 ; i <= 5 ; i++ ) {
             model.removeAll();
             model.read(getFileName("ontology/list" + i + ".rdf"));
 
             final RDFList l0 = getListRoot(model);
-            Assert.assertEquals("List size should be " + i, i, l0.size());
+            assertEquals(i, l0.size(), "List size should be " + i);
         }
 
     }
 
+    @Test
     public void testHead() {
         model.read(getFileName("ontology/list5.rdf"));
 
@@ -316,11 +326,12 @@ public class TestList extends AbstractModelTestBase {
 
         final String[] names = {"a", "b", "c", "d", "e"};
         for ( final String name : names ) {
-            Assert.assertEquals("head of list has incorrect URI", TestList.NS + name, ((Resource)l0.getHead()).getURI());
+            assertEquals(TestList.NS + name, ((Resource)l0.getHead()).getURI(), "head of list has incorrect URI");
             l0 = l0.getTail();
         }
     }
 
+    @Test
     public void testIndex1() {
         model.read(getFileName("ontology/list5.rdf"));
 
@@ -331,11 +342,12 @@ public class TestList extends AbstractModelTestBase {
 
         // check the indexes are correct
         for ( int i = 0 ; i < toGet.length ; i++ ) {
-            Assert.assertTrue("list should contain element " + i, l1.contains(toGet[i]));
-            Assert.assertEquals("list element " + i + " is not correct", i, l1.indexOf(toGet[i]));
+            assertTrue(l1.contains(toGet[i]), "list should contain element " + i);
+            assertEquals(i, l1.indexOf(toGet[i]), "list element " + i + " is not correct");
         }
     }
 
+    @Test
     public void testIndex2() {
 
         final Resource nil = model.getResource(RDF.nil.getURI());
@@ -350,11 +362,12 @@ public class TestList extends AbstractModelTestBase {
 
         // now index them back again
         for ( int j = 0 ; j < 10 ; j++ ) {
-            Assert.assertEquals("index of j'th item should be j", j, list.indexOf(r, j));
+            assertEquals(j, list.indexOf(r, j), "index of j'th item should be j");
         }
 
     }
 
+    @Test
     public void testListEquals() {
         final Resource nil = model.getResource(RDF.nil.getURI());
         final RDFList nilList = nil.as(RDFList.class);
@@ -387,11 +400,12 @@ public class TestList extends AbstractModelTestBase {
             final RDFList l1 = nilList.append(Arrays.asList((Resource[])testSpec[i][1]).iterator());
             final boolean expected = ((Boolean)testSpec[i][2]).booleanValue();
 
-            Assert.assertEquals("sameListAs testSpec[" + i + "] incorrect", expected, l0.sameListAs(l1));
-            Assert.assertEquals("sameListAs testSpec[" + i + "] (swapped) incorrect", expected, l1.sameListAs(l0));
+            assertEquals(expected, l0.sameListAs(l1), "sameListAs testSpec[" + i + "] incorrect");
+            assertEquals(expected, l1.sameListAs(l0), "sameListAs testSpec[" + i + "] (swapped) incorrect");
         }
     }
 
+    @Test
     public void testListGet() {
         model.read(getFileName("ontology/list5.rdf"));
 
@@ -402,7 +416,7 @@ public class TestList extends AbstractModelTestBase {
 
         // test normal gets
         for ( int i = 0 ; i < toGet.length ; i++ ) {
-            Assert.assertEquals("list element " + i + " is not correct", toGet[i], l1.get(i));
+            assertEquals(toGet[i], l1.get(i), "list element " + i + " is not correct");
         }
 
         // now test we get an exception for going beyong the end of the list
@@ -413,9 +427,10 @@ public class TestList extends AbstractModelTestBase {
             gotEx = true;
         }
 
-        Assert.assertTrue("Should see exception raised by accessing beyond end of list", gotEx);
+        assertTrue(gotEx, "Should see exception raised by accessing beyond end of list");
     }
 
+    @Test
     public void testMap1() {
         model.read(getFileName("ontology/list5.rdf"));
 
@@ -424,6 +439,7 @@ public class TestList extends AbstractModelTestBase {
 
     }
 
+    @Test
     public void testReduce() {
         model.read(getFileName("ontology/list5.rdf"));
 
@@ -436,9 +452,10 @@ public class TestList extends AbstractModelTestBase {
             }
         };
 
-        Assert.assertEquals("Result of reduce should be concatentation of local names", "abcde", root.reduce(f, ""));
+        assertEquals("abcde", root.reduce(f, ""), "Result of reduce should be concatentation of local names");
     }
 
+    @Test
     public void testRemove() {
 
         final Resource nil = model.getResource(RDF.nil.getURI());
@@ -464,32 +481,33 @@ public class TestList extends AbstractModelTestBase {
         list1.removeList();
 
         // model should now be empty
-        Assert.assertEquals("Model should be empty after deleting two lists", 0, model.size());
+        assertEquals(0, model.size(), "Model should be empty after deleting two lists");
 
         // selective remove
         RDFList list2 = (nil.as(RDFList.class)).cons(r2).cons(r1).cons(r0);
 
-        Assert.assertTrue("list should contain x ", list2.contains(r0));
-        Assert.assertTrue("list should contain y ", list2.contains(r1));
-        Assert.assertTrue("list should contain z ", list2.contains(r2));
+        assertTrue(list2.contains(r0), "list should contain x ");
+        assertTrue(list2.contains(r1), "list should contain y ");
+        assertTrue(list2.contains(r2), "list should contain z ");
 
         list2 = list2.remove(r1);
-        Assert.assertTrue("list should contain x ", list2.contains(r0));
-        Assert.assertTrue("list should contain y ", !list2.contains(r1));
-        Assert.assertTrue("list should contain z ", list2.contains(r2));
+        assertTrue(list2.contains(r0), "list should contain x ");
+        assertTrue(!list2.contains(r1), "list should contain y ");
+        assertTrue(list2.contains(r2), "list should contain z ");
 
         list2 = list2.remove(r0);
-        Assert.assertTrue("list should contain x ", !list2.contains(r0));
-        Assert.assertTrue("list should contain y ", !list2.contains(r1));
-        Assert.assertTrue("list should contain z ", list2.contains(r2));
+        assertTrue(!list2.contains(r0), "list should contain x ");
+        assertTrue(!list2.contains(r1), "list should contain y ");
+        assertTrue(list2.contains(r2), "list should contain z ");
 
         list2 = list2.remove(r2);
-        Assert.assertTrue("list should contain x ", !list2.contains(r0));
-        Assert.assertTrue("list should contain y ", !list2.contains(r1));
-        Assert.assertTrue("list should contain z ", !list2.contains(r2));
-        Assert.assertTrue("list should be empty", list2.isEmpty());
+        assertTrue(!list2.contains(r0), "list should contain x ");
+        assertTrue(!list2.contains(r1), "list should contain y ");
+        assertTrue(!list2.contains(r2), "list should contain z ");
+        assertTrue(list2.isEmpty(), "list should be empty");
     }
 
+    @Test
     public void testReplace() {
         model.read(getFileName("ontology/list5.rdf"));
 
@@ -505,7 +523,7 @@ public class TestList extends AbstractModelTestBase {
 
         // then check them
         for ( int i = 0 ; i < toSet.length ; i++ ) {
-            Assert.assertEquals("list element " + i + " is not correct", toSet[i], l1.get(i));
+            assertEquals(toSet[i], l1.get(i), "list element " + i + " is not correct");
         }
 
         // now test we get an exception for going beyong the end of the list
@@ -516,10 +534,11 @@ public class TestList extends AbstractModelTestBase {
             gotEx = true;
         }
 
-        Assert.assertTrue("Should see exception raised by accessing beyond end of list", gotEx);
+        assertTrue(gotEx, "Should see exception raised by accessing beyond end of list");
 
     }
 
+    @Test
     public void testSetHead() {
 
         final Resource root = model.createResource(TestList.NS + "root");
@@ -538,14 +557,15 @@ public class TestList extends AbstractModelTestBase {
         final RDFList l1 = getListRoot(model);
         checkValid("sethead1", l1, true);
 
-        Assert.assertEquals("List head should be 'fred'", "fred", ((Literal)l1.getHead()).getString());
+        assertEquals("fred", ((Literal)l1.getHead()).getString(), "List head should be 'fred'");
 
         l1.setHead(model.createTypedLiteral(42));
         checkValid("sethead2", l1, true);
-        Assert.assertEquals("List head should be '42'", 42, ((Literal)l1.getHead()).getInt());
+        assertEquals(42, ((Literal)l1.getHead()).getInt(), "List head should be '42'");
 
     }
 
+    @Test
     public void testSetTail() {
         final Model m = ModelFactory.createDefaultModel();
 
@@ -570,11 +590,11 @@ public class TestList extends AbstractModelTestBase {
         m.add(list1, RDF.rest, nil);
 
         final RDFList l2 = list1.as(RDFList.class);
-        Assert.assertNotNull("as(RDFList) should not return null for root", l2);
+        assertNotNull(l2, "as(RDFList) should not return null for root");
         checkValid("settail2", l2, true);
 
-        Assert.assertEquals("l1 should have length 1", 1, l1.size());
-        Assert.assertEquals("l2 should have length 1", 1, l2.size());
+        assertEquals(1, l1.size(), "l1 should have length 1");
+        assertEquals(1, l2.size(), "l2 should have length 1");
 
         // use set tail to join the lists together
         l1.setTail(l2);
@@ -582,11 +602,12 @@ public class TestList extends AbstractModelTestBase {
         checkValid("settail3", l1, true);
         checkValid("settail4", l2, true);
 
-        Assert.assertEquals("l1 should have length 2", 2, l1.size());
-        Assert.assertEquals("l2 should have length 1", 1, l2.size());
+        assertEquals(2, l1.size(), "l1 should have length 2");
+        assertEquals(1, l2.size(), "l2 should have length 1");
 
     }
 
+    @Test
     public void testTail() {
         for ( int i = 0 ; i <= 5 ; i++ ) {
             model.read(getFileName("ontology/list" + i + ".rdf"));
@@ -598,10 +619,11 @@ public class TestList extends AbstractModelTestBase {
                 l0 = l0.getTail();
             }
 
-            Assert.assertTrue("Should have reached the end of the list after " + i + " getTail()'s", l0.isEmpty());
+            assertTrue(l0.isEmpty(), "Should have reached the end of the list after " + i + " getTail()'s");
         }
     }
 
+    @Test
     public void testValidity() {
         final Resource root = model.createResource(TestList.NS + "root");
         final Property p = model.createProperty(TestList.NS, "p");
@@ -630,6 +652,7 @@ public class TestList extends AbstractModelTestBase {
         checkValid("valid5", l1, true);
     }
 
+    @Test
     public void testStmtGetList() {
         Resource root = model.createResource(TestList.NS + "root");
         Property p = model.createProperty(TestList.NS, "p");
@@ -645,9 +668,10 @@ public class TestList extends AbstractModelTestBase {
         RDFList list1 = model.getList(obj);
 
         boolean b = list0.sameListAs(list1);
-        assertTrue("Different lists: expected: " + list0 + " : got: " + list1, b);
+        assertTrue(b, "Different lists: expected: " + list0 + " : got: " + list1);
     }
 
+    @Test
     public void testModelGetList() {
         Resource root = model.createResource(TestList.NS + "root");
         Property p = model.createProperty(TestList.NS, "p");
@@ -661,9 +685,10 @@ public class TestList extends AbstractModelTestBase {
         RDFList list1 = model.listStatements(r, p, (Resource)null).next().getList();
 
         boolean b = list0.sameListAs(list1);
-        assertTrue("Different lists: expected: " + list0 + " : got: " + list1, b);
+        assertTrue(b, "Different lists: expected: " + list0 + " : got: " + list1);
     }
 
+    @Test
     public void testModelGetEmptyList() {
         Resource root = model.createResource(TestList.NS + "root");
         Property p = model.createProperty(TestList.NS, "p");
@@ -675,7 +700,7 @@ public class TestList extends AbstractModelTestBase {
         RDFList list1 = model.listStatements(r, p, (Resource)null).next().getList();
 
         boolean b = list0.sameListAs(list1);
-        assertTrue("Different lists: expected: " + list0 + " : got: " + list1, b);
+        assertTrue(b, "Different lists: expected: " + list0 + " : got: " + list1);
     }
 
 }

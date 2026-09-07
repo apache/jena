@@ -21,17 +21,18 @@
 
 package org.apache.jena.rdf.model;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
-import org.junit.Assert;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
-public class TestResourceFactory extends TestCase {
+public class TestResourceFactory {
 
     class TestFactory implements ResourceFactory.Interface {
 
@@ -96,76 +97,75 @@ public class TestResourceFactory extends TestCase {
 
     static final String uri2 = "http://example.org/example#a2";
 
-    public static TestSuite suite() {
-        return new TestSuite(TestResourceFactory.class);
-    }
-
-    public TestResourceFactory(final String name) {
-        super(name);
-    }
-
+    @Test
     public void testCreateLiteral() {
         final Literal l = ResourceFactory.createPlainLiteral("lex");
-        Assert.assertTrue(l.getLexicalForm().equals("lex"));
-        Assert.assertTrue(l.getLanguage().equals(""));
-        Assert.assertNull(l.getDatatype());
-        Assert.assertNull(l.getDatatypeURI());
+        assertTrue(l.getLexicalForm().equals("lex"));
+        assertTrue(l.getLanguage().equals(""));
+        assertNotNull(l.getDatatype());
+        assertNotNull(l.getDatatypeURI());
     }
 
+    @Test
     public void testCreateProperty() {
         final Property p1 = ResourceFactory.createProperty(TestResourceFactory.uri1);
-        Assert.assertTrue(p1.getURI().equals(TestResourceFactory.uri1));
+        assertTrue(p1.getURI().equals(TestResourceFactory.uri1));
         final Property p2 = ResourceFactory.createProperty(TestResourceFactory.uri1, "2");
-        Assert.assertTrue(p2.getURI().equals(TestResourceFactory.uri1 + "2"));
+        assertTrue(p2.getURI().equals(TestResourceFactory.uri1 + "2"));
     }
 
+    @Test
     public void testCreateResource() {
         Resource r1 = ResourceFactory.createResource();
-        Assert.assertTrue(r1.isAnon());
+        assertTrue(r1.isAnon());
         final Resource r2 = ResourceFactory.createResource();
-        Assert.assertTrue(r2.isAnon());
-        Assert.assertTrue(!r1.equals(r2));
+        assertTrue(r2.isAnon());
+        assertTrue(!r1.equals(r2));
 
         r1 = ResourceFactory.createResource(TestResourceFactory.uri1);
-        Assert.assertTrue(r1.getURI().equals(TestResourceFactory.uri1));
+        assertTrue(r1.getURI().equals(TestResourceFactory.uri1));
     }
 
+    @Test
     public void testCreateStatement() {
         final Resource s = ResourceFactory.createResource();
         final Property p = ResourceFactory.createProperty(TestResourceFactory.uri2);
         final Resource o = ResourceFactory.createResource();
         final Statement stmt = ResourceFactory.createStatement(s, p, o);
-        Assert.assertTrue(stmt.getSubject().equals(s));
-        Assert.assertTrue(stmt.getPredicate().equals(p));
-        Assert.assertTrue(stmt.getObject().equals(o));
+        assertTrue(stmt.getSubject().equals(s));
+        assertTrue(stmt.getPredicate().equals(p));
+        assertTrue(stmt.getObject().equals(o));
     }
 
+    @Test
     public void testCreateTypedLiteral() {
         final Literal l = ResourceFactory.createTypedLiteral("22", XSDDatatype.XSDinteger);
-        Assert.assertTrue(l.getLexicalForm().equals("22"));
-        Assert.assertTrue(l.getLanguage().equals(""));
-        Assert.assertTrue(l.getDatatype() == XSDDatatype.XSDinteger);
-        Assert.assertTrue(l.getDatatypeURI().equals(XSDDatatype.XSDinteger.getURI()));
+        assertTrue(l.getLexicalForm().equals("22"));
+        assertTrue(l.getLanguage().equals(""));
+        assertTrue(l.getDatatype() == XSDDatatype.XSDinteger);
+        assertTrue(l.getDatatypeURI().equals(XSDDatatype.XSDinteger.getURI()));
     }
 
+    @Test
     public void testCreateTypedLiteralObject() {
         final Literal l = ResourceFactory.createTypedLiteral(22);
-        Assert.assertEquals("22", l.getLexicalForm());
-        Assert.assertEquals("", l.getLanguage());
-        Assert.assertEquals(XSDDatatype.XSDint, l.getDatatype());
+        assertEquals("22", l.getLexicalForm());
+        assertEquals("", l.getLanguage());
+        assertEquals(XSDDatatype.XSDint, l.getDatatype());
     }
 
+    @Test
     public void testCreateTypedLiteralOverload() {
         final Calendar testCal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
         testCal.set(1999, 4, 30, 15, 9, 32);
         testCal.set(Calendar.MILLISECOND, 0); // ms field can be undefined on
         // Linux
         final Literal lc = ResourceFactory.createTypedLiteral(testCal);
-        Assert.assertEquals("calendar overloading test",
-                            ResourceFactory.createTypedLiteral("1999-05-30T15:09:32Z", XSDDatatype.XSDdateTime), lc);
+        assertEquals(ResourceFactory.createTypedLiteral("1999-05-30T15:09:32Z", XSDDatatype.XSDdateTime), lc, "calendar overloading test");
 
     }
 
+    @Test
     public void testCreateStatementTerm() {
         final Resource s = ResourceFactory.createResource();
         final Property p = ResourceFactory.createProperty(TestResourceFactory.uri2);
@@ -173,31 +173,33 @@ public class TestResourceFactory extends TestCase {
         final Statement stmt0 = ResourceFactory.createStatement(s, p, o);
 
         final StatementTerm stmtTerm = ResourceFactory.createStatementTerm(stmt0);
-        Assert.assertEquals(stmt0, stmtTerm.getStatement());
+        assertEquals(stmt0, stmtTerm.getStatement());
 
         final Statement stmt = stmtTerm.getStatement();
-        Assert.assertTrue(stmt.getSubject().equals(s));
-        Assert.assertTrue(stmt.getPredicate().equals(p));
-        Assert.assertTrue(stmt.getObject().equals(o));
+        assertTrue(stmt.getSubject().equals(s));
+        assertTrue(stmt.getPredicate().equals(p));
+        assertTrue(stmt.getObject().equals(o));
     }
 
+    @Test
     public void testGetInstance() {
         ResourceFactory.getInstance();
         final Resource r1 = ResourceFactory.createResource();
-        Assert.assertTrue(r1.isAnon());
+        assertTrue(r1.isAnon());
         final Resource r2 = ResourceFactory.createResource();
-        Assert.assertTrue(r2.isAnon());
-        Assert.assertTrue(!r1.equals(r2));
+        assertTrue(r2.isAnon());
+        assertTrue(!r1.equals(r2));
     }
 
+    @Test
     public void testSetInstance() {
         final Resource r = ResourceFactory.createResource();
         final ResourceFactory.Interface oldFactory = ResourceFactory.getInstance();
         final ResourceFactory.Interface factory = new TestFactory(r);
         try {
             ResourceFactory.setInstance(factory);
-            Assert.assertTrue(factory.equals(ResourceFactory.getInstance()));
-            Assert.assertTrue(ResourceFactory.createResource() == r);
+            assertTrue(factory.equals(ResourceFactory.getInstance()));
+            assertTrue(ResourceFactory.createResource() == r);
         } finally {
             ResourceFactory.setInstance(oldFactory);
         }

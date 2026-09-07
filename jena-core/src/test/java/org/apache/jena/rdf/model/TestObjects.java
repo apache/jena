@@ -21,17 +21,24 @@
 
 package org.apache.jena.rdf.model;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Assert;
-
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.rdf.model.helpers.ModelCreator;
 import org.apache.jena.rdf.model.helpers.ModelHelper;
 import org.apache.jena.vocabulary.RDF;
 
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestObjects extends AbstractModelTestBase {
 
     protected Resource S;
@@ -45,10 +52,6 @@ public class TestObjects extends AbstractModelTestBase {
 
     protected static final String predicatePrefix = "http://aldabaran/test6/";
 
-    public TestObjects(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
-
     protected Set<Statement> fill(final Model model) {
         final Set<Statement> statements = new HashSet<>();
         for ( int i = 0 ; i < TestObjects.numberSubjects ; i += 1 ) {
@@ -60,7 +63,7 @@ public class TestObjects extends AbstractModelTestBase {
                 statements.add(s);
             }
         }
-        Assert.assertEquals(TestObjects.numberSubjects * TestObjects.numberPredicates, model.size());
+        assertEquals(TestObjects.numberSubjects * TestObjects.numberPredicates, model.size());
         return statements;
     }
 
@@ -89,6 +92,7 @@ public class TestObjects extends AbstractModelTestBase {
     }
 
     @Override
+    @BeforeEach
     public void setUp() {
         super.setUp();
         S = model.createResource("http://nowhere.man/subject");
@@ -104,34 +108,39 @@ public class TestObjects extends AbstractModelTestBase {
     }
 
     @Override
+    @AfterEach
     public void tearDown() {
         S = null;
         P = null;
         super.tearDown();
     }
 
+    @Test
     public void testListNamespaces() {
         fill(model);
         final List<String> L = model.listNameSpaces().toList();
-        Assert.assertEquals(TestObjects.numberPredicates, L.size());
+        assertEquals(TestObjects.numberPredicates, L.size());
         final Set<String> wanted = predicateSet(TestObjects.numberPredicates);
-        Assert.assertEquals(wanted, new HashSet<>(L));
+        assertEquals(wanted, new HashSet<>(L));
     }
 
+    @Test
     public void testListObjects() {
         fill(model);
         final Set<Literal> wanted = literalsUpto(TestObjects.numberSubjects * TestObjects.numberPredicates);
-        Assert.assertEquals(wanted, Iter.toSet(model.listObjects()));
+        assertEquals(wanted, Iter.toSet(model.listObjects()));
     }
 
+    @Test
     public void testListObjectsOfPropertyByProperty() {
         fill(model);
         final List<RDFNode> L = Iter.toList(model.listObjectsOfProperty(ModelHelper.property(TestObjects.predicatePrefix + "0/p")));
-        Assert.assertEquals(TestObjects.numberSubjects, L.size());
+        assertEquals(TestObjects.numberSubjects, L.size());
         final Set<Literal> wanted = literalsFor(0);
-        Assert.assertEquals(wanted, new HashSet<>(L));
+        assertEquals(wanted, new HashSet<>(L));
     }
 
+    @Test
     public void testListObjectsOfPropertyBySubject() {
         final int size = 10;
         final Resource s = model.createResource();
@@ -139,24 +148,26 @@ public class TestObjects extends AbstractModelTestBase {
             model.addLiteral(s, RDF.value, i);
         }
         final List<RDFNode> L = Iter.toList(model.listObjectsOfProperty(s, RDF.value));
-        Assert.assertEquals(size, L.size());
+        assertEquals(size, L.size());
         final Set<Literal> wanted = literalsUpto(size);
-        Assert.assertEquals(wanted, new HashSet<>(L));
+        assertEquals(wanted, new HashSet<>(L));
     }
 
+    @Test
     public void testListStatements() {
         final Set<Statement> statements = fill(model);
         final List<Statement> L = model.listStatements().toList();
-        Assert.assertEquals(statements.size(), L.size());
-        Assert.assertEquals(statements, new HashSet<>(L));
+        assertEquals(statements.size(), L.size());
+        assertEquals(statements, new HashSet<>(L));
     }
 
+    @Test
     public void testListSubjects() {
         fill(model);
         final List<Resource> L = model.listSubjects().toList();
-        Assert.assertEquals(TestObjects.numberSubjects, L.size());
+        assertEquals(TestObjects.numberSubjects, L.size());
         final Set<Resource> wanted = subjectSet(TestObjects.numberSubjects);
-        Assert.assertEquals(wanted, Iter.toSet(L.iterator()));
+        assertEquals(wanted, Iter.toSet(L.iterator()));
     }
 
 }

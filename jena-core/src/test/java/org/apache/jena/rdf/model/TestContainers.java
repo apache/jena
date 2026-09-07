@@ -21,24 +21,25 @@
 
 package org.apache.jena.rdf.model;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.apache.jena.rdf.model.helpers.ModelCreator;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Tests for containers.
  */
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestContainers extends AbstractModelTestBase {
 
-    public TestContainers(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
-
+    @Test
     public void testCanAsContainer() {
         final String seqUri = "http://example.com/#seq";
         model.createSeq(seqUri);
         final Resource res = model.createResource(seqUri);
-        Assert.assertTrue(res.canAs(Seq.class));
-        Assert.assertTrue(res.canAs(Container.class));
+        assertTrue(res.canAs(Seq.class));
+        assertTrue(res.canAs(Container.class));
     }
 }

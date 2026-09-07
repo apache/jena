@@ -35,7 +35,7 @@ import org.apache.jena.rdf.model.impl.ModelCom;
 import org.apache.jena.shared.PropertyNotFoundException;
 import org.apache.jena.test.JenaTestLib;
 
-public class TestDefaultModel_JU6 {
+public class TestDefaultModel {
 
     static { JenaTestLib.setup(); }
 

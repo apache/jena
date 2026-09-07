@@ -21,20 +21,22 @@
 
 package org.apache.jena.rdf.model;
 
-import org.apache.jena.rdf.model.helpers.ModelCreator;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
 
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestCopyInOutOfModel extends AbstractModelTestBase {
     private Resource S;
     private Property P;
     private RDFNode O;
 
-    public TestCopyInOutOfModel(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
-
     @Override
+    @BeforeEach
     public void setUp() {
         super.setUp();
         S = ResourceFactory.createResource();
@@ -45,30 +47,31 @@ public class TestCopyInOutOfModel extends AbstractModelTestBase {
     /**
      * test moving things between models
      */
+    @Test
     public void testCopyStatement() {
         final Model model2 = createModel();
 
         final Statement stmt = model.createStatement(S, P, O);
-        Assert.assertEquals(model, stmt.getModel());
-        Assert.assertEquals(0, model.size());
-        Assert.assertEquals(model, stmt.getSubject().getModel());
-        Assert.assertEquals(model, stmt.getPredicate().getModel());
-        Assert.assertEquals(model, stmt.getObject().getModel());
+        assertEquals(model, stmt.getModel());
+        assertEquals(0, model.size());
+        assertEquals(model, stmt.getSubject().getModel());
+        assertEquals(model, stmt.getPredicate().getModel());
+        assertEquals(model, stmt.getObject().getModel());
         model.add(stmt);
-        Assert.assertEquals(1, model.size());
-        Assert.assertEquals(model, stmt.getSubject().getModel());
-        Assert.assertEquals(model, stmt.getPredicate().getModel());
-        Assert.assertEquals(model, stmt.getObject().getModel());
+        assertEquals(1, model.size());
+        assertEquals(model, stmt.getSubject().getModel());
+        assertEquals(model, stmt.getPredicate().getModel());
+        assertEquals(model, stmt.getObject().getModel());
         model2.add(stmt);
-        Assert.assertEquals(1, model.size());
-        Assert.assertEquals(model, stmt.getSubject().getModel());
-        Assert.assertEquals(model, stmt.getPredicate().getModel());
-        Assert.assertEquals(model, stmt.getObject().getModel());
-        Assert.assertEquals(1, model2.size());
+        assertEquals(1, model.size());
+        assertEquals(model, stmt.getSubject().getModel());
+        assertEquals(model, stmt.getPredicate().getModel());
+        assertEquals(model, stmt.getObject().getModel());
+        assertEquals(1, model2.size());
         final Statement stmt2 = model2.listStatements().next();
-        Assert.assertEquals(model2, stmt2.getSubject().getModel());
-        Assert.assertEquals(model2, stmt2.getPredicate().getModel());
-        Assert.assertEquals(model2, stmt2.getObject().getModel());
+        assertEquals(model2, stmt2.getSubject().getModel());
+        assertEquals(model2, stmt2.getPredicate().getModel());
+        assertEquals(model2, stmt2.getObject().getModel());
     }
     /* try { Statement stmt; StmtIterator sIter; // System.out.println("Beginning " +
      * test);

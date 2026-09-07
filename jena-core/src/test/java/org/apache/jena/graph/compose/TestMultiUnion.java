@@ -23,6 +23,9 @@
 ///////////////
 package org.apache.jena.graph.compose;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 // Imports
 ///////////////
@@ -31,31 +34,22 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import junit.framework.TestSuite;
-import org.apache.jena.graph.AbstractTestGraph;
+import org.apache.jena.graph.BaseTestGraph_JU6;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphTestLib;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-
 
 /**
  * <p>
  * Unit tests for multi-union graph.
  * </p>
  */
-public class TestMultiUnion extends AbstractTestGraph
+public class TestMultiUnion extends BaseTestGraph_JU6
 {
-
-    public TestMultiUnion( String s ) {
-        super( s );
-    }
 
     // External signature methods
     //////////////////////////////////
-
-    public static TestSuite suite()
-        { return new TestSuite( TestMultiUnion.class ); }
 
     @Override
     public Graph getNewGraph()
@@ -64,12 +58,13 @@ public class TestMultiUnion extends AbstractTestGraph
         return new MultiUnion( new Graph[] {gBase, g1} );
         }
 
-
+    @Test
     public void testEmptyGraph() {
         Graph m = new MultiUnion();
-        assertEquals( "Empty model should have size zero", 0, m.size() );
+        assertEquals(0, m.size(), "Empty model should have size zero");
     }
 
+    @Test
     public void testGraphSize1() {
         Graph g0 = GraphTestLib.graphWith( "x p y" );
         Graph g1 = GraphTestLib.graphWith( "x p z; z p zz" );        // disjoint with g0
@@ -88,19 +83,19 @@ public class TestMultiUnion extends AbstractTestGraph
         int s1 = g1.size();
         int s2 = g2.size();
 
-        assertEquals( "Size of union of g0 and g1 not correct", s0+s1, m01.size() );
-        assertEquals( "Size of union of g1 and g0 not correct", s0+s1, m10.size() );
+        assertEquals(s0+s1, m01.size(), "Size of union of g0 and g1 not correct");
+        assertEquals(s0+s1, m10.size(), "Size of union of g1 and g0 not correct");
 
-        assertEquals( "Size of union of g1 and g2 not correct", s1+s2, m12.size() );
-        assertEquals( "Size of union of g2 and g1 not correct", s1+s2, m21.size() );
+        assertEquals(s1+s2, m12.size(), "Size of union of g1 and g2 not correct");
+        assertEquals(s1+s2, m21.size(), "Size of union of g2 and g1 not correct");
 
-        assertEquals( "Size of union of g0 and g2 not correct", s0+s2 - 1, m02.size() );
-        assertEquals( "Size of union of g2 and g0 not correct", s0+s2 - 1, m20.size() );
+        assertEquals(s0+s2 - 1, m02.size(), "Size of union of g0 and g2 not correct");
+        assertEquals(s0+s2 - 1, m20.size(), "Size of union of g2 and g0 not correct");
 
-        assertEquals( "Size of union of g0 with itself not correct", s0, m00.size() );
+        assertEquals(s0, m00.size(), "Size of union of g0 with itself not correct");
     }
 
-
+    @Test
     public void testGraphSize2() {
         Graph g0 = GraphTestLib.graphWith( "x p y" );
         Graph g1 = GraphTestLib.graphWith( "x p z; z p zz" );        // disjoint with g0
@@ -119,19 +114,19 @@ public class TestMultiUnion extends AbstractTestGraph
         int s1 = g1.size();
         int s2 = g2.size();
 
-        assertEquals( "Size of union of g0 and g1 not correct", s0+s1, m01.size() );
-        assertEquals( "Size of union of g1 and g0 not correct", s0+s1, m10.size() );
+        assertEquals(s0+s1, m01.size(), "Size of union of g0 and g1 not correct");
+        assertEquals(s0+s1, m10.size(), "Size of union of g1 and g0 not correct");
 
-        assertEquals( "Size of union of g1 and g2 not correct", s1+s2, m12.size() );
-        assertEquals( "Size of union of g2 and g1 not correct", s1+s2, m21.size() );
+        assertEquals(s1+s2, m12.size(), "Size of union of g1 and g2 not correct");
+        assertEquals(s1+s2, m21.size(), "Size of union of g2 and g1 not correct");
 
-        assertEquals( "Size of union of g0 and g2 not correct", s0+s2 - 1, m02.size() );
-        assertEquals( "Size of union of g2 and g0 not correct", s0+s2 - 1, m20.size() );
+        assertEquals(s0+s2 - 1, m02.size(), "Size of union of g0 and g2 not correct");
+        assertEquals(s0+s2 - 1, m20.size(), "Size of union of g2 and g0 not correct");
 
-        assertEquals( "Size of union of g0 with itself not correct", s0, m00.size() );
+        assertEquals(s0, m00.size(), "Size of union of g0 with itself not correct");
     }
 
-
+    @Test
     public void testGraphAddSize() {
         Graph g0 = GraphTestLib.graphWith( "x p y" );
         Graph g1 = GraphTestLib.graphWith( "x p z; z p zz" );        // disjoint with g0
@@ -143,29 +138,29 @@ public class TestMultiUnion extends AbstractTestGraph
 
         MultiUnion m0 = new MultiUnion( new Graph[] {g0} );
 
-        assertEquals( "Size of union of g0 not correct", s0, m0.size() );
+        assertEquals(s0, m0.size(), "Size of union of g0 not correct");
         m0.addGraph( g1 );
-        assertEquals( "Size of union of g1 and g0 not correct", s0+s1, m0.size() );
+        assertEquals(s0+s1, m0.size(), "Size of union of g1 and g0 not correct");
 
         m0.addGraph( g2 );
-        assertEquals( "Size of union of g0, g1 and g2 not correct", s0+s1+s2 -1, m0.size() );
+        assertEquals(s0+s1+s2 -1, m0.size(), "Size of union of g0, g1 and g2 not correct");
 
         m0.removeGraph( g1 );
-        assertEquals( "Size of union of g0 and g2 not correct", s0+s2 -1, m0.size() );
+        assertEquals(s0+s2 -1, m0.size(), "Size of union of g0 and g2 not correct");
 
         m0.removeGraph( g0 );
-        assertEquals( "Size of union of g2 not correct", s2, m0.size() );
+        assertEquals(s2, m0.size(), "Size of union of g2 not correct");
 
         // remove again
         m0.removeGraph( g0 );
-        assertEquals( "Size of union of g2 not correct", s2, m0.size() );
+        assertEquals(s2, m0.size(), "Size of union of g2 not correct");
 
         m0.removeGraph( g2 );
-        assertEquals( "Size of empty union not correct", 0, m0.size() );
+        assertEquals(0, m0.size(), "Size of empty union not correct");
 
     }
 
-
+    @Test
     public void testAdd() {
         Graph g0 = GraphTestLib.graphWith( "x p y" );
         Graph g1 = GraphTestLib.graphWith( "x p z; z p zz" );        // disjoint with g0
@@ -181,9 +176,9 @@ public class TestMultiUnion extends AbstractTestGraph
         // add a triple to the union
         m.add( GraphTestLib.triple( "a q b" ) );
 
-        assertEquals( "m.size should have increased by one", m0 + 1, m.size() );
-        assertEquals( "g0.size should have increased by one", s0 + 1, g0.size() );
-        assertEquals( "g1 size should be constant", s1, g1.size() );
+        assertEquals(m0 + 1, m.size(), "m.size should have increased by one");
+        assertEquals(s0 + 1, g0.size(), "g0.size should have increased by one");
+        assertEquals(s1, g1.size(), "g1 size should be constant");
 
         // change the designated receiver and try again
         m.setBaseGraph( g1 );
@@ -195,9 +190,9 @@ public class TestMultiUnion extends AbstractTestGraph
 
         m.add( GraphTestLib.triple( "a1 q b1" ));
 
-        assertEquals( "m.size should have increased by one", m0 + 1, m.size() );
-        assertEquals( "g0 size should be constant", s0, g0.size() );
-        assertEquals( "g1.size should have increased by one", s1 + 1, g1.size() );
+        assertEquals(m0 + 1, m.size(), "m.size should have increased by one");
+        assertEquals(s0, g0.size(), "g0 size should be constant");
+        assertEquals(s1 + 1, g1.size(), "g1.size should have increased by one");
 
         // check that we can't make g2 the designated updater
         boolean expected = false;
@@ -207,10 +202,10 @@ public class TestMultiUnion extends AbstractTestGraph
         catch (IllegalArgumentException e) {
             expected = true;
         }
-        assertTrue( "Should not have been able to make g2 the updater", expected );
+        assertTrue(expected, "Should not have been able to make g2 the updater");
     }
 
-
+    @Test
     public void testDelete() {
         Graph g0 = GraphTestLib.graphWith( "x p y" );
         Graph g1 = GraphTestLib.graphWith( "x p z; z p zz" );        // disjoint with g0
@@ -234,50 +229,49 @@ public class TestMultiUnion extends AbstractTestGraph
         checkDeleteSizes( 0, 0, 0, g0, g1, m );
     }
 
-
+    @Test
     public void testContains() {
         Graph g0 = GraphTestLib.graphWith( "x p y" );
         Graph g1 = GraphTestLib.graphWith( "x p z; z p zz" );        // disjoint with g0
 
         MultiUnion m = new MultiUnion( new Graph[] {g0, g1} );
 
-        assertTrue( "m should contain triple", m.contains( GraphTestLib.triple( "x p y ")));
-        assertTrue( "m should contain triple", m.contains( GraphTestLib.triple( "x p z ")));
-        assertTrue( "m should contain triple", m.contains( GraphTestLib.triple( "z p zz ")));
+        assertTrue(m.contains( GraphTestLib.triple( "x p y ")), "m should contain triple");
+        assertTrue(m.contains( GraphTestLib.triple( "x p z ")), "m should contain triple");
+        assertTrue(m.contains( GraphTestLib.triple( "z p zz ")), "m should contain triple");
 
-        assertFalse( "m should not contain triple", m.contains( GraphTestLib.triple( "zz p z ")));
+        assertFalse(m.contains( GraphTestLib.triple( "zz p z ")), "m should not contain triple");
     }
 
-
     /* Test using a model to wrap a multi union */
+    @Test
     public void testModel()  {
         Graph g0 = GraphTestLib.graphWith( "x p y" );
         MultiUnion u = new MultiUnion( new Graph[] {g0} );
 
         Model m = ModelFactory.createModelForGraph( u );
 
-        assertEquals( "Model size not correct", 1, m.size() );
+        assertEquals(1, m.size(), "Model size not correct");
 
         Graph g1 = GraphTestLib.graphWith( "x p z; z p zz" );        // disjoint with g0
         u.addGraph( g1 );
 
-        assertEquals( "Model size not correct", 3, m.size() );
+        assertEquals(3, m.size(), "Model size not correct");
 
         // adds one more statement to the model
         m.read( GraphTestLib.getFileName("ontology/list0.rdf") );
-        assertEquals( "Model size not correct", 4, m.size() );
+        assertEquals(4, m.size(), "Model size not correct");
 
         // debug m.write( System.out );
     }
-
 
     // Internal implementation methods
     //////////////////////////////////
 
     protected void checkDeleteSizes( int s0, int s1, int m0, Graph g0, Graph g1, Graph m ) {
-        assertEquals( "Delete check: g0 size", s0, g0.size() );
-        assertEquals( "Delete check: g1 size", s1, g1.size() );
-        assertEquals( "Delete check: m size", m0, m.size() );
+        assertEquals(s0, g0.size(), "Delete check: g0 size");
+        assertEquals(s1, g1.size(), "Delete check: g1 size");
+        assertEquals(m0, m.size(), "Delete check: m size");
     }
 
     protected <T> Iterator<T> iterateOver( T x0 ) {
@@ -299,11 +293,8 @@ public class TestMultiUnion extends AbstractTestGraph
         return l.iterator();
     }
 
-
-
     //==============================================================================
     // Inner class definitions
     //==============================================================================
-
 
 }

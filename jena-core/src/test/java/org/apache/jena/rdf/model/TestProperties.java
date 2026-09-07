@@ -21,21 +21,21 @@
 
 package org.apache.jena.rdf.model;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
-import org.junit.Assert;
-import junit.framework.TestCase;
 
-public class TestProperties extends TestCase {
-    public TestProperties(final String name) {
-        super(name);
-    }
+public class TestProperties {
 
     protected Property createProperty(final String uri) {
         return new PropertyImpl(uri);
     }
 
+    @Test
     public void testNonOrdinalRDFURIs() {
         testRDFOrdinalValue(0, "x");
         testRDFOrdinalValue(0, "x1");
@@ -45,6 +45,7 @@ public class TestProperties extends TestCase {
         testRDFOrdinalValue(0, "_xff");
     }
 
+    @Test
     public void testNonRDFElementURIsHaveOrdinal0() {
         testOrdinalValue(0, "foo:bar");
         testOrdinalValue(0, "foo:bar1");
@@ -54,9 +55,10 @@ public class TestProperties extends TestCase {
 
     private void testOrdinalValue(final int i, final String URI) {
         final String message = "property should have expected ordinal value for " + URI;
-        Assert.assertEquals(message, i, createProperty(URI).getOrdinal());
+        assertEquals(i, createProperty(URI).getOrdinal(), message);
     }
 
+    @Test
     public void testOrdinalValues() {
         testRDFOrdinalValue(1, "_1");
         testRDFOrdinalValue(2, "_2");

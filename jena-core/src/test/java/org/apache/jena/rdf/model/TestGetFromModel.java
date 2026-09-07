@@ -21,20 +21,25 @@
 
 package org.apache.jena.rdf.model;
 
-import org.apache.jena.rdf.model.helpers.ModelCreator;
-import org.apache.jena.vocabulary.RDF;
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import org.apache.jena.vocabulary.RDF;
+
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestGetFromModel extends AbstractModelTestBase {
 
     protected Resource S;
     protected Property P;
 
-    public TestGetFromModel(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
-
     @Override
+    @BeforeEach
     public void setUp() {
         super.setUp();
         S = model.createResource("http://nowhere.man/subject");
@@ -42,58 +47,65 @@ public class TestGetFromModel extends AbstractModelTestBase {
     }
 
     @Override
+    @AfterEach
     public void tearDown() {
         S = null;
         P = null;
         super.tearDown();
     }
 
+    @Test
     public void testGetAlt() {
         final String uri = "http://aldabaran.hpl.hp.com/rdf/test4/" + 160;
         model.createAlt(uri);
         final Alt a = model.getAlt(uri);
-        Assert.assertEquals(uri, a.getURI());
-        Assert.assertTrue(model.contains(a, RDF.type, RDF.Alt));
+        assertEquals(uri, a.getURI());
+        assertTrue(model.contains(a, RDF.type, RDF.Alt));
     }
 
     // public void testGetResourceFactory()
     // {
     // String uri = "http://aldabaran.hpl.hp.com/rdf/test4/a" + 120;
     // Resource r = model.getResource( uri, new ResTestObjF() );
-    // assertEquals( uri, r.getURI() );
+    // assertEquals(uri, r.getURI() );
     // }
 
+    @Test
     public void testGetBag() {
         final String uri = "http://aldabaran.hpl.hp.com/rdf/test4/" + 150;
         model.createBag(uri);
         final Bag b = model.getBag(uri);
-        Assert.assertEquals(uri, b.getURI());
-        Assert.assertTrue(model.contains(b, RDF.type, RDF.Bag));
+        assertEquals(uri, b.getURI());
+        assertTrue(model.contains(b, RDF.type, RDF.Bag));
     }
 
+    @Test
     public void testGetPropertyOneArg() {
         final String uri = "http://aldabaran.hpl.hp.com/rdf/test4/a" + 130;
         final Property p = model.getProperty(uri);
-        Assert.assertEquals(uri, p.getURI());
+        assertEquals(uri, p.getURI());
     }
 
+    @Test
     public void testGetPropertyTwoArgs() {
         final String ns = "http://aldabaran.hpl.hp.com/rdf/test4/a" + 140 + "/";
         final Property p = model.getProperty(ns, "foo");
-        Assert.assertEquals(ns + "foo", p.getURI());
+        assertEquals(ns + "foo", p.getURI());
     }
 
+    @Test
     public void testGetResource() {
         final String uri = "http://aldabaran.hpl.hp.com/rdf/test4/a" + 110;
         final Resource r = model.getResource(uri);
-        Assert.assertEquals(uri, r.getURI());
+        assertEquals(uri, r.getURI());
     }
 
+    @Test
     public void testGetSeq() {
         final String uri = "http://aldabaran.hpl.hp.com/rdf/test4/" + 170;
         model.createSeq(uri);
         final Seq s = model.getSeq(uri);
-        Assert.assertEquals(uri, s.getURI());
-        Assert.assertTrue(model.contains(s, RDF.type, RDF.Seq));
+        assertEquals(uri, s.getURI());
+        assertTrue(model.contains(s, RDF.type, RDF.Seq));
     }
 }

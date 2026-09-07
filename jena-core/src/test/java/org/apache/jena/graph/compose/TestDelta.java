@@ -21,23 +21,18 @@
 
 package org.apache.jena.graph.compose;
 
-import junit.framework.TestSuite;
-import org.apache.jena.graph.AbstractTestGraph;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.graph.BaseTestGraph_JU6;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphTestLib;
 import org.apache.jena.graph.Triple;
 
-public class TestDelta extends AbstractTestGraph {
+public class TestDelta extends BaseTestGraph_JU6 {
 
     private static final String DEFAULT_TRIPLES = "x R y; p S q";
-
-    public TestDelta(String name) {
-        super(name);
-    }
-
-    public static TestSuite suite() {
-        return new TestSuite(TestDelta.class);
-    }
 
     @Override
     public Graph getNewGraph() {
@@ -45,12 +40,14 @@ public class TestDelta extends AbstractTestGraph {
         return new Delta(gBase);
     }
 
+    @Test
     public void testDeltaMirrorsBase() {
         Graph base = GraphTestLib.graphWith(DEFAULT_TRIPLES);
         Delta delta = new Delta(base);
         GraphTestLib.assertIsomorphic(base, delta);
     }
 
+    @Test
     public void testAddGoesToAdditions() {
         Graph base = GraphTestLib.graphWith(DEFAULT_TRIPLES);
         Delta delta = new Delta(base);
@@ -61,6 +58,7 @@ public class TestDelta extends AbstractTestGraph {
         GraphTestLib.assertIsomorphic(GraphTestLib.graphWith(DEFAULT_TRIPLES + "; x R z"), delta);
     }
 
+    @Test
     public void testDeleteGoesToDeletions() {
         Graph base = GraphTestLib.graphWith(DEFAULT_TRIPLES);
         Delta delta = new Delta(base);
@@ -70,6 +68,7 @@ public class TestDelta extends AbstractTestGraph {
         GraphTestLib.assertIsomorphic(GraphTestLib.graphWith("p S q"), delta);
     }
 
+    @Test
     public void testRedundantAddNoOp() {
         Graph base = GraphTestLib.graphWith(DEFAULT_TRIPLES);
         Delta delta = new Delta(base);
@@ -80,6 +79,7 @@ public class TestDelta extends AbstractTestGraph {
         GraphTestLib.assertIsomorphic(GraphTestLib.graphWith(DEFAULT_TRIPLES), delta);
     }
 
+    @Test
     public void testRedundantDeleteNoOp() {
         Graph base = GraphTestLib.graphWith(DEFAULT_TRIPLES);
         Delta delta = new Delta(base);
@@ -90,6 +90,7 @@ public class TestDelta extends AbstractTestGraph {
         GraphTestLib.assertIsomorphic(GraphTestLib.graphWith(DEFAULT_TRIPLES), delta);
     }
 
+    @Test
     public void testAddThenDelete() {
         Graph base = GraphTestLib.graphWith(DEFAULT_TRIPLES);
         Delta delta = new Delta(base);
@@ -101,6 +102,7 @@ public class TestDelta extends AbstractTestGraph {
         GraphTestLib.assertIsomorphic(GraphTestLib.graphWith(DEFAULT_TRIPLES), delta);
     }
 
+    @Test
     public void testDeleteThenAdd() {
         Graph base = GraphTestLib.graphWith(DEFAULT_TRIPLES);
         Delta delta = new Delta(base);
@@ -112,6 +114,7 @@ public class TestDelta extends AbstractTestGraph {
         GraphTestLib.assertIsomorphic(GraphTestLib.graphWith(DEFAULT_TRIPLES), delta);
     }
 
+    @Test
     public void testAddAndDelete() {
         Graph base = GraphTestLib.graphWith(DEFAULT_TRIPLES);
         Delta delta = new Delta(base);
@@ -125,6 +128,7 @@ public class TestDelta extends AbstractTestGraph {
         GraphTestLib.assertIsomorphic(GraphTestLib.graphWith("x R y; x R z; a T b"), delta);
     }
 
+    @Test
     public void testTerms1() {
         Triple t1 = GraphTestLib.triple("s p 1");
         Triple t01 = GraphTestLib.triple("s p 01");
@@ -140,6 +144,7 @@ public class TestDelta extends AbstractTestGraph {
         assertTrue(delta.contains(t01));
     }
 
+    @Test
     public void testTerms2() {
         Triple t1 = GraphTestLib.triple("s p 1");
         Triple t01 = GraphTestLib.triple("s p 01");
@@ -153,6 +158,7 @@ public class TestDelta extends AbstractTestGraph {
         assertFalse(delta.getAdditions().contains(GraphTestLib.triple("s p 1")));
     }
 
+    @Test
     public void testTerms3() {
         Triple t1 = GraphTestLib.triple("s p 1");
         Triple t01 = GraphTestLib.triple("s p 01");
@@ -170,6 +176,7 @@ public class TestDelta extends AbstractTestGraph {
         assertFalse(delta.getAdditions().contains(t01));
     }
 
+    @Test
     public void testTerms4() {
         Triple t1 = GraphTestLib.triple("s p 1");
         Triple t01 = GraphTestLib.triple("s p 01");

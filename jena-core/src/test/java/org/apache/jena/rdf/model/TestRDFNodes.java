@@ -21,120 +21,132 @@
 
 package org.apache.jena.rdf.model;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.jena.rdf.model.helpers.ModelCreator;
 import org.apache.jena.rdf.model.helpers.ModelHelper;
 import org.apache.jena.test.JenaTestLib;
-
-import org.junit.Assert;
 
 /**
  * This class tests various properties of RDFNodes.
  */
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestRDFNodes extends AbstractModelTestBase {
 
-    public TestRDFNodes(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
-
+    @Test
     public void testInModel() {
-        final Model m1 = ModelHelper.modelWithStatements(this, "");
-        final Model m2 = ModelHelper.modelWithStatements(this, "");
+        final Model m1 = modelWithStatements("");
+        final Model m2 = modelWithStatements("");
         final Resource r1 = ModelHelper.resource(m1, "r1");
         final Resource r2 = ModelHelper.resource(m1, "_r2");
         /* */
-        Assert.assertEquals(r1.getModel(), m1);
-        Assert.assertEquals(r2.getModel(), m1);
-        Assert.assertFalse(r1.isAnon());
-        Assert.assertTrue(r2.isAnon());
+        assertEquals(r1.getModel(), m1);
+        assertEquals(r2.getModel(), m1);
+        assertFalse(r1.isAnon());
+        assertTrue(r2.isAnon());
         /* */
-        Assert.assertEquals(r1.inModel(m2).getModel(), m2);
-        Assert.assertEquals(r2.inModel(m2).getModel(), m2);
+        assertEquals(r1.inModel(m2).getModel(), m2);
+        assertEquals(r2.inModel(m2).getModel(), m2);
         /* */
-        Assert.assertEquals(r1, r1.inModel(m2));
-        Assert.assertEquals(r2, r2.inModel(m2));
+        assertEquals(r1, r1.inModel(m2));
+        assertEquals(r2, r2.inModel(m2));
     }
 
+    @Test
     public void testIsAnon() {
-        final Model m = ModelHelper.modelWithStatements(this, "");
-        Assert.assertEquals(false, m.createResource("eh:/foo").isAnon());
-        Assert.assertEquals(true, m.createResource().isAnon());
-        Assert.assertEquals(false, m.createTypedLiteral(17).isAnon());
-        Assert.assertEquals(false, m.createTypedLiteral("hello").isAnon());
+        final Model m = modelWithStatements("");
+        assertEquals(false, m.createResource("eh:/foo").isAnon());
+        assertEquals(true, m.createResource().isAnon());
+        assertEquals(false, m.createTypedLiteral(17).isAnon());
+        assertEquals(false, m.createTypedLiteral("hello").isAnon());
     }
 
+    @Test
     public void testIsLiteral() {
-        final Model m = ModelHelper.modelWithStatements(this, "");
-        Assert.assertEquals(false, m.createResource("eh:/foo").isLiteral());
-        Assert.assertEquals(false, m.createResource().isLiteral());
-        Assert.assertEquals(true, m.createTypedLiteral(17).isLiteral());
-        Assert.assertEquals(true, m.createTypedLiteral("hello").isLiteral());
+        final Model m = modelWithStatements("");
+        assertEquals(false, m.createResource("eh:/foo").isLiteral());
+        assertEquals(false, m.createResource().isLiteral());
+        assertEquals(true, m.createTypedLiteral(17).isLiteral());
+        assertEquals(true, m.createTypedLiteral("hello").isLiteral());
     }
 
+    @Test
     public void testIsResource() {
-        final Model m = ModelHelper.modelWithStatements(this, "");
+        final Model m = modelWithStatements("");
         Statement stmt = ModelHelper.statement("S P O");
         StatementTerm tripleTerm = m.createStatementTerm(stmt);
-        Assert.assertEquals(true, m.createResource("eh:/foo").isResource());
-        Assert.assertEquals(true, m.createResource().isResource());
-        Assert.assertEquals(false, m.createTypedLiteral(17).isResource());
-        Assert.assertEquals(false, m.createTypedLiteral("hello").isResource());
-        Assert.assertEquals(false, tripleTerm.isResource());
+        assertEquals(true, m.createResource("eh:/foo").isResource());
+        assertEquals(true, m.createResource().isResource());
+        assertEquals(false, m.createTypedLiteral(17).isResource());
+        assertEquals(false, m.createTypedLiteral("hello").isResource());
+        assertEquals(false, tripleTerm.isResource());
     }
 
+    @Test
     public void testIsURIResource() {
-        final Model m = ModelHelper.modelWithStatements(this, "");
-        Assert.assertEquals(true, m.createResource("eh:/foo").isURIResource());
-        Assert.assertEquals(false, m.createResource().isURIResource());
-        Assert.assertEquals(false, m.createTypedLiteral(17).isURIResource());
-        Assert.assertEquals(false, m.createTypedLiteral("hello").isURIResource());
+        final Model m = modelWithStatements("");
+        assertEquals(true, m.createResource("eh:/foo").isURIResource());
+        assertEquals(false, m.createResource().isURIResource());
+        assertEquals(false, m.createTypedLiteral(17).isURIResource());
+        assertEquals(false, m.createTypedLiteral("hello").isURIResource());
     }
 
+    @Test
     public void testIsStatementTerm1() {
-        final Model m = ModelHelper.modelWithStatements(this, "");
+        final Model m = modelWithStatements("");
         Statement stmt = ModelHelper.statement("S P O");
         StatementTerm tripleTerm = m.createStatementTerm(stmt);
-        Assert.assertEquals(false, m.createResource("eh:/foo").isStatementTerm());
-        Assert.assertEquals(false, m.createResource().isStatementTerm());
-        Assert.assertEquals(false, m.createTypedLiteral(17).isStatementTerm());
-        Assert.assertEquals(false, m.createTypedLiteral("hello").isStatementTerm());
-        Assert.assertEquals(true, tripleTerm.isStatementTerm());
+        assertEquals(false, m.createResource("eh:/foo").isStatementTerm());
+        assertEquals(false, m.createResource().isStatementTerm());
+        assertEquals(false, m.createTypedLiteral(17).isStatementTerm());
+        assertEquals(false, m.createTypedLiteral("hello").isStatementTerm());
+        assertEquals(true, tripleTerm.isStatementTerm());
     }
 
+    @Test
     public void testIsStatementTerm2() {
-        final Model m = ModelHelper.modelWithStatements(this, "");
+        final Model m = modelWithStatements("");
         Statement stmt = ModelHelper.statement("S P O");
         StatementTerm tripleTerm = m.createStatementTerm(stmt);
-        Assert.assertEquals(false, tripleTerm.isAnon());
-        Assert.assertEquals(false, tripleTerm.isURIResource());
-        Assert.assertEquals(false, tripleTerm.isLiteral());
-        Assert.assertEquals(false, tripleTerm.isResource());
-        Assert.assertEquals(true, tripleTerm.isStatementTerm());
+        assertEquals(false, tripleTerm.isAnon());
+        assertEquals(false, tripleTerm.isURIResource());
+        assertEquals(false, tripleTerm.isLiteral());
+        assertEquals(false, tripleTerm.isResource());
+        assertEquals(true, tripleTerm.isStatementTerm());
     }
 
+    @Test
     public void testLiteralAsResourceThrows() {
-        final Model m = ModelHelper.modelWithStatements(this, "");
+        final Model m = modelWithStatements("");
         final Resource r = m.createResource("eh:/spoo");
         try {
             r.asLiteral();
-            Assert.fail("should not be able to do Resource.asLiteral()");
+            fail("should not be able to do Resource.asLiteral()");
         } catch (final LiteralRequiredException e) {}
     }
 
+    @Test
     public void testRDFNodeAsLiteral() {
-        final Model m = ModelHelper.modelWithStatements(this, "");
+        final Model m = modelWithStatements("");
         final Literal l = m.createLiteral("hello, world");
-        Assert.assertSame(l, l.asLiteral());
+        assertSame(l, l.asLiteral());
     }
 
+    @Test
     public void testRDFNodeAsResource() {
-        final Model m = ModelHelper.modelWithStatements(this, "");
+        final Model m = modelWithStatements("");
         final Resource r = m.createResource("eh:/spoo");
-        Assert.assertSame(r, r.asResource());
+        assertSame(r, r.asResource());
     }
 
+    @Test
     public void testRDFVisitor() {
         final List<String> history = new ArrayList<>();
         final Model m = ModelFactory.createDefaultModel();
@@ -149,23 +161,23 @@ public class TestRDFNodes extends AbstractModelTestBase {
             @Override
             public Object visitBlank(final Resource R, final AnonId id) {
                 history.add("blank");
-                Assert.assertTrue("must visit correct node", R == S);
-                Assert.assertEquals("must have correct field", R.getId(), id);
+                assertTrue(R == S, "must visit correct node");
+                assertEquals(R.getId(), id, "must have correct field");
                 return "blank result";
             }
 
             @Override
             public Object visitLiteral(final Literal L) {
                 history.add("literal");
-                Assert.assertTrue("must visit correct node", L == O);
+                assertTrue(L == O, "must visit correct node");
                 return "literal result";
             }
 
             @Override
             public Object visitURI(final Resource R, final String uri) {
                 history.add("uri");
-                Assert.assertTrue("must visit correct node", R == P);
-                Assert.assertEquals("must have correct field", R.getURI(), uri);
+                assertTrue(R == P, "must visit correct node");
+                assertEquals(R.getURI(), uri, "must have correct field");
                 return "uri result";
             }
 
@@ -176,36 +188,39 @@ public class TestRDFNodes extends AbstractModelTestBase {
             }
         };
         /* */
-        Assert.assertEquals("blank result", S.visitWith(rv));
-        Assert.assertEquals("uri result", P.visitWith(rv));
-        Assert.assertEquals("literal result", O.visitWith(rv));
-        Assert.assertEquals("statement term result", ST.visitWith(rv));
+        assertEquals("blank result", S.visitWith(rv));
+        assertEquals("uri result", P.visitWith(rv));
+        assertEquals("literal result", O.visitWith(rv));
+        assertEquals("statement term result", ST.visitWith(rv));
 
-        Assert.assertEquals(JenaTestLib.listOfStrings("blank uri literal statementTerm"), history);
+        assertEquals(JenaTestLib.listOfStrings("blank uri literal statementTerm"), history);
     }
 
+    @Test
     public void testRemoveAllBoring() {
-        final Model m1 = ModelHelper.modelWithStatements(this, "x P a; y Q b");
-        final Model m2 = ModelHelper.modelWithStatements(this, "x P a; y Q b");
+        final Model m1 = modelWithStatements("x P a; y Q b");
+        final Model m2 = modelWithStatements("x P a; y Q b");
         ModelHelper.resource(m2, "x").removeAll(ModelHelper.property(m2, "Z"));
         ModelHelper.assertIsoModels("m2 should be unchanged", m1, m2);
     }
 
+    @Test
     public void testRemoveAllRemoves() {
         final String ps = "x P a; x P b", rest = "x Q c; y P a; y Q b";
-        final Model m = ModelHelper.modelWithStatements(this, ps + "; " + rest);
+        final Model m = modelWithStatements(ps + "; " + rest);
         final Resource r = ModelHelper.resource(m, "x");
         final Resource r2 = r.removeAll(ModelHelper.property(m, "P"));
-        Assert.assertSame("removeAll should deliver its receiver", r, r2);
-        ModelHelper.assertIsoModels("x's P-values should go", ModelHelper.modelWithStatements(this, rest), m);
+        assertSame(r, r2, "removeAll should deliver its receiver");
+        ModelHelper.assertIsoModels("x's P-values should go", modelWithStatements(rest), m);
     }
 
+    @Test
     public void testResourceAsLiteralThrows() {
-        final Model m = ModelHelper.modelWithStatements(this, "");
+        final Model m = modelWithStatements("");
         final Literal l = m.createLiteral("hello, world");
         try {
             l.asResource();
-            Assert.fail("should not be able to do Literal.asResource()");
+            fail("should not be able to do Literal.asResource()");
         } catch (final ResourceRequiredException e) {}
     }
 }

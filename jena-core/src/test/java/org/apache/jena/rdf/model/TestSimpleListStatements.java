@@ -21,13 +21,20 @@
 
 package org.apache.jena.rdf.model;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import java.util.List;
 
-import org.apache.jena.rdf.model.helpers.ModelCreator;
 import org.apache.jena.rdf.model.helpers.ModelHelper;
 import org.apache.jena.vocabulary.RDF;
-import org.junit.Assert;
 
+@ParameterizedClass(name = "{0}")
+@MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")
 public class TestSimpleListStatements extends AbstractModelTestBase {
 
     static boolean booleanValue = true;
@@ -39,15 +46,11 @@ public class TestSimpleListStatements extends AbstractModelTestBase {
     static String stringValue = "stringValue";
     static String langValue = "en";
 
-    public TestSimpleListStatements(ModelCreator modelFactory, final String name) {
-        super(modelFactory, name);
-    }
-
     public void checkReturns(final String things, final StmtIterator it) {
-        final Model wanted = ModelHelper.modelWithStatements(this, things);
+        final Model wanted = modelWithStatements(things);
         final Model got = modelWithStatements(it);
         if ( wanted.isIsomorphicWith(got) == false ) {
-            Assert.fail("wanted " + wanted + " got " + got);
+            fail("wanted " + wanted + " got " + got);
         }
     }
 
@@ -60,6 +63,7 @@ public class TestSimpleListStatements extends AbstractModelTestBase {
     }
 
     @Override
+    @BeforeEach
     public void setUp() {
         super.setUp();
         model.createResource("http://example.org/boolean").addLiteral(RDF.value,        booleanValue);
@@ -71,6 +75,7 @@ public class TestSimpleListStatements extends AbstractModelTestBase {
         model.createResource("http://example.org/langString").addProperty(RDF.value,    stringValue, langValue);
     }
 
+    @Test
     public void testAll() {
         final StmtIterator iter = model.listStatements(null, null, (RDFNode)null);
         int i = 0;
@@ -78,9 +83,10 @@ public class TestSimpleListStatements extends AbstractModelTestBase {
             i++;
             iter.next();
         }
-        Assert.assertEquals(7, i);
+        assertEquals(7, i);
     }
 
+    @Test
     public void testAllString() {
         final StmtIterator iter = model.listStatements(null, null, (String)null);
         int i = 0;
@@ -88,52 +94,58 @@ public class TestSimpleListStatements extends AbstractModelTestBase {
             i++;
             iter.next();
         }
-        Assert.assertEquals(7, i);
+        assertEquals(7, i);
     }
 
+    @Test
     public void testBoolean() {
         final List<Statement> got = model.listLiteralStatements(null, null, TestSimpleListStatements.booleanValue).toList();
-        Assert.assertEquals(1, got.size());
+        assertEquals(1, got.size());
         final Statement it = got.get(0);
-        Assert.assertEquals(ModelHelper.resource("http://example.org/boolean"), it.getSubject());
-        Assert.assertEquals(model.createTypedLiteral(TestSimpleListStatements.booleanValue), it.getObject());
+        assertEquals(ModelHelper.resource("http://example.org/boolean"), it.getSubject());
+        assertEquals(model.createTypedLiteral(TestSimpleListStatements.booleanValue), it.getObject());
     }
 
+    @Test
     public void testChar() {
         final List<Statement> got = model.listLiteralStatements(null, null, TestSimpleListStatements.charValue).toList();
-        Assert.assertEquals(1, got.size());
+        assertEquals(1, got.size());
         final Statement it = got.get(0);
-        Assert.assertEquals(ModelHelper.resource("http://example.org/char"), it.getSubject());
-        Assert.assertEquals(model.createTypedLiteral(TestSimpleListStatements.charValue), it.getObject());
+        assertEquals(ModelHelper.resource("http://example.org/char"), it.getSubject());
+        assertEquals(model.createTypedLiteral(TestSimpleListStatements.charValue), it.getObject());
     }
 
+    @Test
     public void testDouble() {
         final List<Statement> got = model.listLiteralStatements(null, null, TestSimpleListStatements.doubleValue).toList();
-        Assert.assertEquals(1, got.size());
+        assertEquals(1, got.size());
         final Statement it = got.get(0);
-        Assert.assertEquals(ModelHelper.resource("http://example.org/double"), it.getSubject());
-        Assert.assertEquals(model.createTypedLiteral(TestSimpleListStatements.doubleValue), it.getObject());
+        assertEquals(ModelHelper.resource("http://example.org/double"), it.getSubject());
+        assertEquals(model.createTypedLiteral(TestSimpleListStatements.doubleValue), it.getObject());
     }
 
+    @Test
     public void testFloat() {
         final List<Statement> got = model.listLiteralStatements(null, null, TestSimpleListStatements.floatValue).toList();
-        Assert.assertEquals(1, got.size());
+        assertEquals(1, got.size());
         final Statement it = got.get(0);
-        Assert.assertEquals(ModelHelper.resource("http://example.org/float"), it.getSubject());
-        Assert.assertEquals(model.createTypedLiteral(TestSimpleListStatements.floatValue), it.getObject());
+        assertEquals(ModelHelper.resource("http://example.org/float"), it.getSubject());
+        assertEquals(model.createTypedLiteral(TestSimpleListStatements.floatValue), it.getObject());
     }
 
+    @Test
     public void testLangString() {
         final StmtIterator iter = model.listStatements(null, null, TestSimpleListStatements.stringValue,
                                                        TestSimpleListStatements.langValue);
         int i = 0;
         while (iter.hasNext()) {
             i++;
-            Assert.assertEquals(iter.nextStatement().getSubject().getURI(), "http://example.org/langString");
+            assertEquals(iter.nextStatement().getSubject().getURI(), "http://example.org/langString");
         }
-        Assert.assertEquals(1, i);
+        assertEquals(1, i);
     }
 
+    @Test
     public void testListStatementsSPO() {
 
         final Resource A = ModelHelper.resource(model, "A"), X = ModelHelper.resource(model, "X");
@@ -150,21 +162,23 @@ public class TestSimpleListStatements extends AbstractModelTestBase {
         checkReturns(S3, model.listStatements(X, null, Y));
     }
 
+    @Test
     public void testLong() {
         final List<Statement> got = model.listLiteralStatements(null, null, TestSimpleListStatements.longValue).toList();
-        Assert.assertEquals(1, got.size());
+        assertEquals(1, got.size());
         final Statement it = got.get(0);
-        Assert.assertEquals(ModelHelper.resource("http://example.org/long"), it.getSubject());
-        Assert.assertEquals(model.createTypedLiteral(TestSimpleListStatements.longValue), it.getObject());
+        assertEquals(ModelHelper.resource("http://example.org/long"), it.getSubject());
+        assertEquals(model.createTypedLiteral(TestSimpleListStatements.longValue), it.getObject());
     }
 
+    @Test
     public void testString() {
         final StmtIterator iter = model.listStatements(null, null, TestSimpleListStatements.stringValue);
         int i = 0;
         while (iter.hasNext()) {
             i++;
-            Assert.assertEquals(iter.nextStatement().getSubject().getURI(), "http://example.org/string");
+            assertEquals(iter.nextStatement().getSubject().getURI(), "http://example.org/string");
         }
-        Assert.assertEquals(1, i);
+        assertEquals(1, i);
     }
 }

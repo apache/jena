@@ -26,15 +26,72 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.Parameter;
+
 import org.apache.jena.rdf.model.helpers.ModelCreator;
+import org.apache.jena.rdf.model.helpers.ModelHelper;
+import org.apache.jena.shared.PrefixMapping;
 
 /**
- * Base for test cases about Models. All derived classes will use the getModel to get the
+ * Base for test cases about Models. All derived classes will use the model field for the
  * model created in the setUp method. createModel will create a model using the
- * TestingModelFactory methods.
+ * {@link ModelCreator} the class is parameterized with.
+ * <p>
+ * Derived classes are annotated {@code @ParameterizedClass} with
+ * {@code @MethodSource("org.apache.jena.rdf.model.helpers.ModelCreators#creators")},
+ * which supplies the modelFactory field.
  */
-public abstract class AbstractModelTestBase extends TestCase {
+public abstract class AbstractModelTestBase {
+
+    @Parameter
+    protected ModelCreator modelFactory;
+
+    protected Model model;
+
+    /**
+     * Create a new model.
+     *
+     * @return A new model from the modelFactory.
+     */
+    public final Model createModel() {
+        return modelFactory.create();
+    }
+
+    /**
+     * A new model, with the extended prefixes, containing the given facts.
+     * Replaces {@code ModelHelper.modelWithStatements(this, facts)}, which needed
+     * a {@code AbstractModelTestBase} to call back into.
+     */
+    protected Model modelWithStatements(final String facts) {
+        return ModelHelper.modelAdd(createExtendedModel(), facts);
+    }
+
+    /** A new model, with the extended prefixes. Replaces {@code ModelHelper.createModel(this)}. */
+    protected Model createExtendedModel() {
+        Model result = createModel();
+        result.setNsPrefixes(PrefixMapping.Extended);
+        return result;
+    }
+
+    /**
+     * sets the model instance variable
+     */
+    @BeforeEach
+    public void setUp() {
+        model = createModel();
+    }
+
+    /**
+     * Closes the model instance variable and shuts it down.
+     */
+    @AfterEach
+    public void tearDown() {
+        model.close();
+        model = null;
+    }
+
     protected static String getFileName(final String fn) {
         URL u = AbstractModelTestBase.class.getClassLoader().getResource(fn);
         if ( u == null ) {
@@ -98,37 +155,4 @@ public abstract class AbstractModelTestBase extends TestCase {
     protected static final double dDelta = 0.000000005;
 
     protected static final float fDelta = 0.000005f;
-    protected Model model;
-    private final ModelCreator modelFactory;
-
-    public AbstractModelTestBase(ModelCreator modelFactory, final String name) {
-        super(name);
-        this.modelFactory = modelFactory;
-    }
-
-    /**
-     * Create a new model.
-     *
-     * @return A new model from the modelFactory.
-     */
-    public final Model createModel() {
-        return modelFactory.create();
-    }
-
-    /**
-     * sets the model instance variable
-     */
-    @Override
-    public void setUp() {
-        model = createModel();
-    }
-
-    /**
-     * Closes the model instance variable and shuts it down.
-     */
-    @Override
-    public void tearDown() {
-        model.close();
-        model = null;
-    }
 }
