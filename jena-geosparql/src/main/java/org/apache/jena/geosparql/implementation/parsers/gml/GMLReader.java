@@ -698,6 +698,15 @@ public class GMLReader implements ParserReader {
     private static final String EMPTY_GML_TEXT = "<gml:Point xmlns:gml='http://www.opengis.net/gml/3.2' srsName=\"http://www.opengis.net/def/crs/OGC/1.3/CRS84\" />";
 
     public static GMLReader extract(String gmlText) throws JDOMException, IOException {
+        return new GMLReader(readRootElement(gmlText));
+    }
+
+    /** Returns the source GML element type before conversion to JTS geometry. */
+    public static String readGeometryType(String gmlText) throws JDOMException, IOException {
+        return readRootElement(gmlText).getName();
+    }
+
+    private static Element readRootElement(String gmlText) throws JDOMException, IOException {
 
         if (gmlText.isEmpty()) {
             gmlText = EMPTY_GML_TEXT;
@@ -706,8 +715,7 @@ public class GMLReader implements ParserReader {
         SAXBuilder jdomBuilder = newSAXBuilder();
         InputStream stream = new ByteArrayInputStream(gmlText.getBytes(StandardCharsets.UTF_8));
         Document xmlDoc = jdomBuilder.build(stream);
-        Element gmlElement = xmlDoc.getRootElement();
-        return new GMLReader(gmlElement);
+        return xmlDoc.getRootElement();
     }
 
     // ---- XXE safe SAXBuilder

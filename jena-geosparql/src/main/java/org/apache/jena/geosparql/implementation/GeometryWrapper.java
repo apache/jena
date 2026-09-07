@@ -20,6 +20,7 @@
  */
 package org.apache.jena.geosparql.implementation;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -35,9 +36,11 @@ import org.apache.jena.geosparql.implementation.index.GeometryTransformIndex;
 import org.apache.jena.geosparql.implementation.jts.CoordinateSequenceDimensions;
 import org.apache.jena.geosparql.implementation.jts.CustomCoordinateSequence;
 import org.apache.jena.geosparql.implementation.jts.CustomGeometryFactory;
+import org.apache.jena.geosparql.implementation.parsers.gml.GMLReader;
 import org.apache.jena.geosparql.implementation.registry.MathTransformRegistry;
 import org.apache.jena.geosparql.implementation.registry.SRSRegistry;
 import org.apache.jena.geosparql.implementation.registry.UnitsRegistry;
+import org.apache.jena.geosparql.implementation.vocabulary.GeoSPARQL_URI;
 import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
 import org.apache.jena.geosparql.implementation.vocabulary.Unit_URI;
 import org.apache.jena.graph.Node;
@@ -45,6 +48,7 @@ import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.sis.geometry.DirectPosition2D;
+import org.jdom2.JDOMException;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
@@ -385,6 +389,63 @@ public class GeometryWrapper implements Serializable {
      */
     public String getGeometryType() {
         return parsingGeometry.getGeometryType();
+    }
+
+    /**
+     * Returns the geometry subtype URI appropriate to this serialization,
+     * including for typed empty geometries. Specialized subtypes are not
+     * inferred from coordinates.
+     *
+     * @throws IllegalArgumentException if the geometry type has no Simple Features mapping.
+     * @throws DatatypeFormatException if the GML literal cannot be read.
+     */
+    public String getGeometryTypeURI() {
+        if (GMLDatatype.URI.equals(geometryDatatypeURI)) {
+            // Retained GML distinguishes source types such as Curve and Surface
+            // from their JTS approximations. Constructed geometries use generated GML.
+            try {
+                return GeoSPARQL_URI.GML_URI + GMLReader.readGeometryType(getLexicalForm());
+            } catch (JDOMException | IOException ex) {
+                throw new DatatypeFormatException("Unable to read GML geometry type", ex);
+            }
+        }
+        String type = getGeometryType();
+        return switch (type) {
+            case "Point", "LineString", "LinearRing", "Polygon", "MultiPoint", "MultiLineString",
+                 "MultiPolygon", "GeometryCollection" -> GeoSPARQL_URI.SF_URI + type;
+            default -> throw new IllegalArgumentException("Unsupported Simple Features geometry type: " + type);
+        };
+    }
+
+    /**
+     * Returns whether the coordinate layout includes Z, including for empty geometries.
+     * Uses the wrapper's dimension metadata without aggregating member layouts.
+     * A WKT collection without a Z/M marker has XY metadata even if members
+     * declare their own Z/M layouts.
+     */
+    public boolean is3D() {
+        CoordinateSequenceDimensions dimensions = getCoordinateSequenceDimensions();
+        return dimensions == CoordinateSequenceDimensions.XYZ || dimensions == CoordinateSequenceDimensions.XYZM;
+    }
+
+    /**
+     * Returns whether the coordinate layout includes M, including for empty geometries.
+     * Uses the wrapper's dimension metadata without aggregating member layouts.
+     * A WKT collection without a Z/M marker has XY metadata even if members
+     * declare their own Z/M layouts.
+     */
+    public boolean isMeasured() {
+        CoordinateSequenceDimensions dimensions = getCoordinateSequenceDimensions();
+        return dimensions == CoordinateSequenceDimensions.XYM || dimensions == CoordinateSequenceDimensions.XYZM;
+    }
+
+    /**
+     * Returns the number of direct members of a Multi-geometry or GeometryCollection.
+     * Atomic geometries count as one, including empty atomic geometries; nested
+     * collections are not flattened. A collection with no members counts as zero.
+     */
+    public int getNumGeometries() {
+        return parsingGeometry.getNumGeometries();
     }
 
     /**
