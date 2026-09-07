@@ -21,9 +21,10 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.Iterator;
 
-import junit.framework.TestCase;
 import org.apache.jena.rdf.model.InfModel;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -37,7 +38,12 @@ import org.apache.jena.util.FileManager;
  * Utility for checking OWL validation results.
  */
 
-public class OWLConsistencyTest extends TestCase {
+public class OWLConsistencyTest {
+
+    /** Name used when this test is reported. */
+    private String name = "OWLConsistencyTest";
+
+    public String getName() { return name; }
 
     /** The base directory for finding the datafiles */
     public static final String BASE_DIR = "file:testing/reasoners/owl/";
@@ -83,7 +89,7 @@ public class OWLConsistencyTest extends TestCase {
      */
     public OWLConsistencyTest(String tbox, String abox, int expected,
             Object culprit) {
-        super(abox);
+        this.name = abox;
         this.tbox = tbox;
         this.abox = abox;
         this.expected = expected;
@@ -95,7 +101,7 @@ public class OWLConsistencyTest extends TestCase {
      */
     public OWLConsistencyTest(OWLConsistencyTest base, String reasonerName,
             ReasonerFactory rf) {
-        super(reasonerName + ":" + base.abox);
+        this.name = reasonerName + ":" + base.abox;
         this.tbox = base.tbox;
         this.abox = base.abox;
         this.expected = base.expected;
@@ -124,20 +130,19 @@ public class OWLConsistencyTest extends TestCase {
         return im.validate();
     }
 
-    @Override
     public void runTest() {
         ValidityReport report = testResults();
         switch (expected) {
         case INCONSISTENT:
-            assertTrue("expected inconsistent", !report.isValid());
+            assertTrue(!report.isValid(), "expected inconsistent");
             break;
         case WARNINGS:
-            assertTrue("expected just warnings but reports not valid", report
-                    .isValid());
-            assertFalse("expected warnings but reports clean", report.isClean());
+            assertTrue(report
+                    .isValid(), "expected just warnings but reports not valid");
+            assertFalse(report.isClean(), "expected warnings but reports clean");
             break;
         case CLEAN:
-            assertTrue("expected clean", report.isClean());
+            assertTrue(report.isClean(), "expected clean");
         }
         if (culprit != null) {
             boolean foundit = false;
@@ -150,7 +155,7 @@ public class OWLConsistencyTest extends TestCase {
                 }
             }
             if (!foundit) {
-                assertTrue("Expcted to find a culprint " + culprit, false);
+                assertTrue(false, "Expcted to find a culprint " + culprit);
             }
         }
     }

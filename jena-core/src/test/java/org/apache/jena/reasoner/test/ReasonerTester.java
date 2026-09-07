@@ -28,7 +28,6 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import junit.framework.TestCase;
 import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
@@ -191,13 +190,13 @@ public class ReasonerTester {
     /**
      * Run all the tests in the manifest
      * @param reasonerF the factory for the reasoner to be tested
-     * @param testcase the JUnit test case which is requesting this test
+     * @param testcase non-null if the caller wants a failed test to assert
      * @param configuration optional configuration information
      * @return true if all the tests pass
      * @throws IOException if one of the test files can't be found
      * @throws JenaException if the test can't be found or fails internally
      */
-    public boolean runTests(ReasonerFactory reasonerF, TestCase testcase, Resource configuration) throws IOException {
+    public boolean runTests(ReasonerFactory reasonerF, Object testcase, Resource configuration) throws IOException {
         for ( String test : listTests() )
         {
             if ( !runTest( test, reasonerF, testcase, configuration ) )
@@ -211,12 +210,12 @@ public class ReasonerTester {
     /**
      * Run all the tests in the manifest
      * @param reasoner the reasoner to be tested
-     * @param testcase the JUnit test case which is requesting this test
+     * @param testcase non-null if the caller wants a failed test to assert
      * @return true if all the tests pass
      * @throws IOException if one of the test files can't be found
      * @throws JenaException if the test can't be found or fails internally
      */
-    public boolean runTests(Reasoner reasoner, TestCase testcase) throws IOException {
+    public boolean runTests(Reasoner reasoner, Object testcase) throws IOException {
         for ( String test : listTests() )
         {
             if ( !runTest( test, reasoner, testcase ) )
@@ -244,13 +243,13 @@ public class ReasonerTester {
      * Run a single designated test.
      * @param uri the uri of the test, as defined in the manifest file
      * @param reasonerF the factory for the reasoner to be tested
-     * @param testcase the JUnit test case which is requesting this test
+     * @param testcase non-null if the caller wants a failed test to assert
      * @param configuration optional configuration information
      * @return true if the test passes
      * @throws IOException if one of the test files can't be found
      * @throws JenaException if the test can't be found or fails internally
      */
-    public boolean runTest(String uri, ReasonerFactory reasonerF, TestCase testcase, Resource configuration) throws IOException {
+    public boolean runTest(String uri, ReasonerFactory reasonerF, Object testcase, Resource configuration) throws IOException {
         Reasoner reasoner = reasonerF.create(configuration);
         return runTest(uri, reasoner, testcase);
     }
@@ -259,12 +258,12 @@ public class ReasonerTester {
      * Run a single designated test.
      * @param uri the uri of the test, as defined in the manifest file
      * @param reasoner the reasoner to be tested
-     * @param testcase the JUnit test case which is requesting this test
+     * @param testcase non-null if the caller wants a failed test to assert
      * @return true if the test passes
      * @throws IOException if one of the test files can't be found
      * @throws JenaException if the test can't be found or fails internally
      */
-    public boolean runTest(String uri, Reasoner reasoner, TestCase testcase) throws IOException {
+    public boolean runTest(String uri, Reasoner reasoner, Object testcase) throws IOException {
         // Find the specification for the named test
         Resource test = testManifest.getResource(uri);
         if (!test.hasProperty(RDF.type, testClass)) {

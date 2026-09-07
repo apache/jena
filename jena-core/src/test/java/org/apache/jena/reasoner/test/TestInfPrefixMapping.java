@@ -21,8 +21,10 @@
 
 package org.apache.jena.reasoner.test;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.reasoner.InfGraph;
 
@@ -31,13 +33,7 @@ import org.apache.jena.reasoner.InfGraph;
      the Jena-provided base. Needs to be made into an abstract test and
      parametrised with the InfGraph being tested (hence getInfGraph).
 */
-public class TestInfPrefixMapping extends TestCase
-    {
-    public TestInfPrefixMapping( String name )
-        { super( name ); }
-
-    public static TestSuite suite()
-        { return new TestSuite( TestInfPrefixMapping.class ); }
+public class TestInfPrefixMapping {
 
     @SuppressWarnings("removal")
     private InfGraph getInfGraph()
@@ -45,9 +41,10 @@ public class TestInfPrefixMapping extends TestCase
         return (InfGraph) ModelFactory.createOntologyModel().getGraph();
         }
 
+    @Test
     public void testInfGraph()
         {
         InfGraph ig = getInfGraph();
-        assertSame( ig.getPrefixMapping(), ig.getRawGraph().getPrefixMapping() );
+        assertSame(ig.getPrefixMapping(), ig.getRawGraph().getPrefixMapping() );
         }
     }

@@ -21,8 +21,10 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.graph.Graph;
@@ -68,7 +70,7 @@ import java.util.List;
 /**
  * Unit tests for simple infrastructure pieces of the rule systems.
  */
-public class TestBasics extends TestCase  {
+public class TestBasics {
 
     // Maximum size of binding environment needed in the tests
     private static final int MAX_VARS = 10;
@@ -85,21 +87,14 @@ public class TestBasics extends TestCase  {
     Node n5 = NodeFactory.createURI("n5");
     Node res = NodeFactory.createURI("res");
 
-
     /**
      * Boilerplate for junit
      */
-    public TestBasics( String name ) {
-        super( name );
-    }
 
     /**
      * Boilerplate for junit.
      * This is its own test suite
      */
-    public static TestSuite suite() {
-        return new TestSuite( TestBasics.class );
-    }
 
     private static  Graph createGraphForTest() {
         return GraphMemFactory.createDefaultGraph();
@@ -108,10 +103,12 @@ public class TestBasics extends TestCase  {
     /**
      * Test the internal rule parser
      */
+    @Test
     public void testRuleParserBad01() {
         execTestBad("(foo(?A) eg:p ?B) <- (?a, eg:p, ?B).");
     }
 
+    @Test
     public void testRuleParserBad02() {
         execTestBad("(foo(?A) eg:p ?B) -> (?a, eg:p, ?B).");
     }
@@ -123,17 +120,20 @@ public class TestBasics extends TestCase  {
         } catch (Rule.ParserException e) {
             foundError = true;
         }
-        assertTrue("Failed to find illegal rule: " + ruleStr, foundError);
+        assertTrue(foundError, "Failed to find illegal rule: " + ruleStr);
     }
 
+    @Test
     public void testParser01() {
         execTest("(?a rdf:type ?_) -> (?a rdf:type ?b).", "[ (?a rdf:type ?_) -> (?a rdf:type ?b) ]");
     }
 
+    @Test
     public void testParser02() {
         execTest("(?a rdf:type ?_), (?a rdf:type ?_) -> (?a rdf:type ?b).", "[ (?a rdf:type ?_) (?a rdf:type ?_) -> (?a rdf:type ?b) ]");
     }
 
+    @Test
     public void testParser03() {
         // Register so that parsing the string form works.
         RDFDatatype dt = FunctorDatatype.theFunctorDatatype;
@@ -144,55 +144,68 @@ public class TestBasics extends TestCase  {
         TypeMapper.getInstance().unregisterDatatype(dt);
     }
 
+    @Test
     public void testParser04() {
         execTest("(?a rdf:type ?_) -> addOne(?a).", "[ (?a rdf:type ?_) -> addOne(?a) ]");
     }
 
+    @Test
     public void testParser05() {
         execTest("(?a rdf:type ?_) -> [(?a rdf:type ?_) -> addOne(?a)].", "[ (?a rdf:type ?_) -> [ (?a rdf:type ?_) -> addOne(?a) ] ]");
     }
 
+    @Test
     public void testParser06() {
         execTest("(?a rdf:type ?_) -> (?a rdf:type '42').", "[ (?a rdf:type ?_) -> (?a rdf:type '42') ]");
     }
 
+    @Test
     public void testParser07() {
         execTest("(?a rdf:type ?_) -> (?a rdf:type 4.2).",
                  "[ (?a rdf:type ?_) -> (?a rdf:type '4.2'^^http://www.w3.org/2001/XMLSchema#float) ]");
     }
 
+    @Test
     public void testParser08() {
         execTest("(?a rdf:type ?_) -> (?a rdf:type ' fool that,I(am)').", "[ (?a rdf:type ?_) -> (?a rdf:type ' fool that,I(am)') ]");
     }
 
+    @Test
     public void testParser09() {
         execTest("[rule1: (?a rdf:type ?_) -> (?a rdf:type a)]", "[ rule1: (?a rdf:type ?_) -> (?a rdf:type <a>) ]");
     }
 
+    @Test
     public void testParser10() {
         execTest("-> print(' ').", "[ -> print(' ') ]");
     }
 
+    @Test
     public void testParser11() {
         execTest("-> print(' literal with embedded \\' characters ').", "[ -> print(' literal with embedded \\' characters ') ]");
     }
 
+    @Test
     public void testParser12() {
         execTest("-> print(\" literal characters \").", "[ -> print(' literal characters ') ]");
     }
 
+    @Test
     public void testParser13() {
         execTest("-> print(42). ", "[ -> print('42'^^http://www.w3.org/2001/XMLSchema#int) ]");
     }
 
+    @Test
     public void testParser14() {
         execTest("-> print('42'^^xsd:byte). ", "[ -> print('42'^^http://www.w3.org/2001/XMLSchema#byte) ]");
     }
 
+    @Test
     public void testParser15() {
         execTest("-> print('42'^^http://www.w3.org/2001/XMLSchema#int). ", "[ -> print('42'^^http://www.w3.org/2001/XMLSchema#int) ]");
     }
 
+    @Test
     public void testParser16() {
         PrintUtil.registerPrefix("foobar", "http://foobar#");
         try {
@@ -202,63 +215,78 @@ public class TestBasics extends TestCase  {
         }
     }
 
+    @Test
     public void testParser17() {
         execTest("-> print(<foo://a/file>). ", "[ -> print(<foo://a/file>) ]");
     }
 
+    @Test
     public void testParser18() {
         execTest("-> print(\"(\").", "[ -> print('(') ]");
     }
 
+    @Test
     public void testParser19() {
         execTest("-> print(\",\").", "[ -> print(',') ]");
     }
 
+    @Test
     public void testParser20() {
         execTest("-> print(',').", "[ -> print(',') ]");
     }
 
+    @Test
     public void testParser21() {
         // Leading quote!
         execTest("-> print(\"\\\"\").", "[ -> print('\"') ]");
     }
 
+    @Test
     public void testParser22() {
         execTest("-> print('\"').", "[ -> print('\"') ]");
     }
 
+    @Test
     public void testParser23() {
         execTest("-> print(\"'\").", "[ -> print('\\'') ]");
     }
 
+    @Test
     public void testParser24() {
         execTest("-> print('\\'').", "[ -> print('\\'') ]");
     }
 
+    @Test
     public void testParser25() {
         execTest("-> print('(').", "[ -> print('(') ]");
     }
 
+    @Test
     public void testParser26() {
         execTest("-> print(')').", "[ -> print(')') ]");
     }
 
+    @Test
     public void testParser27() {
         execTest("-> print(']').", "[ -> print(']') ]");
     }
 
+    @Test
     public void testParser28() {
         execTest("-> print('[').", "[ -> print('[') ]");
     }
 
+    @Test
     public void testParser29() {
         execTest("-> print(123).", "[ -> print('123'^^http://www.w3.org/2001/XMLSchema#int) ]");
     }
 
+    @Test
     public void testParser30() {
         execTest("-> print(123, 'AB' 'CD').", "[ -> print('123'^^http://www.w3.org/2001/XMLSchema#int 'AB' 'CD') ]");
     }
 
+    @Test
     public void testParser31() {
         execTest("-> print(123) print('AB') print('CD').", "[ -> print('123'^^http://www.w3.org/2001/XMLSchema#int) print('AB') print('CD') ]");
     }
@@ -282,6 +310,7 @@ public class TestBasics extends TestCase  {
     /**
      * Test rule equality operations.
      */
+    @Test
     public void testRuleEquality() {
         Rule r1 = Rule.parseRule("(?a p ?b) -> (?a q ?b).");
         Rule r2 = Rule.parseRule("(?a p ?b) -> (?b q ?a).");
@@ -292,9 +321,9 @@ public class TestBasics extends TestCase  {
         Rule r5 = Rule.parseRule("(?a p ?b), addOne(?b) -> (?a q ?b).");
         Rule r6 = Rule.parseRule("(?a p ?b), addOne(p) -> (?a q ?b).");
         assertTrue(! r1.equals(r2));
-        assertTrue(  r1.equals(r1b));
+        assertTrue( r1.equals(r1b));
         assertTrue(! r1.equals(r3));
-        assertTrue(  r3.equals(r3b));
+        assertTrue( r3.equals(r3b));
         assertTrue(! r3.equals(r4));
         assertTrue(! r3.equals(r5));
         assertTrue(! r3.equals(r6));
@@ -303,6 +332,7 @@ public class TestBasics extends TestCase  {
     /**
      * Test the BindingEnvironment machinery
      */
+    @Test
     public void testBindingEnvironment() {
         BindingStack env = new BindingStack();
         env.reset(MAX_VARS);
@@ -335,7 +365,7 @@ public class TestBasics extends TestCase  {
         assertEquals(n3, env.getEnvironment()[1]);
         try {
             env.unwind();
-            assertTrue("Failed to catch end of stack", false);
+            assertTrue(false, "Failed to catch end of stack");
         } catch (IndexOutOfBoundsException e) {
         }
     }
@@ -343,6 +373,7 @@ public class TestBasics extends TestCase  {
     /**
      * Test simple single clause binding
      */
+    @Test
     public void testClauseMaching() {
         BindingStack env = new BindingStack();
         env.reset(MAX_VARS);
@@ -390,6 +421,7 @@ public class TestBasics extends TestCase  {
     /**
      * Minimal rule tester to check basic pattern match
      */
+    @Test
     public void testRuleMatcher() {
         String rules = "[r1: (?a p ?b), (?b q ?c) -> (?a, q, ?c)]" +
                        "[r2: (?a p ?b), (?b p ?c) -> (?a, p, ?c)]" +
@@ -403,7 +435,7 @@ public class TestBasics extends TestCase  {
         infgraph.add(Triple.create(n2, q, n3));
         infgraph.add(Triple.create(n4, p, n4));
 
-        TestUtil.assertIteratorValues(this, infgraph.find(null, null, null),
+        TestUtil.assertIteratorValues( infgraph.find(null, null, null),
             new Triple[] {
                 Triple.create(n1, p, n2),
                 Triple.create(n2, p, n3),
@@ -418,6 +450,7 @@ public class TestBasics extends TestCase  {
     /**
      * Test derivation machinery
      */
+    @Test
     public void testRuleDerivations() {
         String rules = "[testRule1: (n1 p ?a) -> (n2, p, ?a)]" +
                        "[testRule2: (n1 q ?a) -> (n2, q, ?a)]" +
@@ -430,7 +463,7 @@ public class TestBasics extends TestCase  {
         infgraph.add(Triple.create(n1, q, n4));
         infgraph.add(Triple.create(n1, q, n3));
 
-        TestUtil.assertIteratorValues(this, infgraph.find(null, null, null),
+        TestUtil.assertIteratorValues( infgraph.find(null, null, null),
             new Triple[] {
                 Triple.create(n1, p, n3),
                 Triple.create(n2, p, n3),
@@ -458,10 +491,10 @@ public class TestBasics extends TestCase  {
         assertEquals(testString, TestUtil.normalizeWhiteSpace(outString.getBuffer().toString()));
     }
 
-
     /**
      * Test axiom handling machinery
      */
+    @Test
     public void testAxiomHandling() {
         String rules = "[testRule1: (n1 p ?a) -> (n2, p, ?a)]" +
                        "[testRule2: (n1 q ?a) -> (n2, q, ?a)]" +
@@ -470,7 +503,7 @@ public class TestBasics extends TestCase  {
         List<Rule> ruleList = Rule.parseRules(rules);
 
         InfGraph infgraph = new BasicForwardRuleReasoner(ruleList).bind(createGraphForTest());
-        TestUtil.assertIteratorValues(this, infgraph.find(null, null, null),
+        TestUtil.assertIteratorValues( infgraph.find(null, null, null),
             new Triple[] {
                 Triple.create(n1, p, n3),
                 Triple.create(n2, p, n3),
@@ -479,7 +512,7 @@ public class TestBasics extends TestCase  {
         infgraph.add(Triple.create(n1, q, n4));
         infgraph.add(Triple.create(n1, q, n3));
 
-        TestUtil.assertIteratorValues(this, infgraph.find(null, null, null),
+        TestUtil.assertIteratorValues( infgraph.find(null, null, null),
             new Triple[] {
                 Triple.create(n1, p, n3),
                 Triple.create(n2, p, n3),
@@ -495,6 +528,7 @@ public class TestBasics extends TestCase  {
     /**
      * Test schema partial binding machinery
      */
+    @Test
     public void testSchemaBinding() {
         String rules = "[testRule1: (n1 p ?a) -> (n2, p, ?a)]" +
                        "[testRule2: (n1 q ?a) -> (n2, q, ?a)]" +
@@ -510,7 +544,7 @@ public class TestBasics extends TestCase  {
         Reasoner boundReasoner = reasoner.bindSchema(schema);
         InfGraph infgraph = boundReasoner.bind(data);
 
-        TestUtil.assertIteratorValues(this, infgraph.find(null, null, null),
+        TestUtil.assertIteratorValues( infgraph.find(null, null, null),
             new Triple[] {
                 Triple.create(n1, p, n3),
                 Triple.create(n2, p, n3),
@@ -525,6 +559,7 @@ public class TestBasics extends TestCase  {
     /**
      * Test functor handling
      */
+    @Test
     public void testEmbeddedFunctors() {
         String rules = "(?C owl:onProperty ?P), (?C owl:allValuesFrom ?D) -> (?C rb:restriction all(?P, ?D))." +
                        "(?C rb:restriction all(eg:p, eg:D)) -> (?C rb:restriction 'allOK')." +
@@ -563,6 +598,7 @@ public class TestBasics extends TestCase  {
     /**
      * The the minimal machinery for supporting builtins
      */
+    @Test
     public void testBuiltins() {
         String rules =  //"[testRule1: (n1 ?p ?a) -> print('rule1test', ?p, ?a)]" +
                        "[r1: (n1 p ?x), addOne(?x, ?y) -> (n1 q ?y)]" +
@@ -573,12 +609,12 @@ public class TestBasics extends TestCase  {
         List<Rule> ruleList = Rule.parseRules(rules);
 
         InfGraph infgraph = new BasicForwardRuleReasoner(ruleList).bind(createGraphForTest());
-        TestUtil.assertIteratorValues(this, infgraph.find(n1, q, null),
+        TestUtil.assertIteratorValues( infgraph.find(n1, q, null),
             new Triple[] {
                 Triple.create(n1, q, Util.makeIntNode(2)),
                 Triple.create(n1, q, Util.makeIntNode(5))
             });
-        TestUtil.assertIteratorValues(this, infgraph.find(n2, q, null),
+        TestUtil.assertIteratorValues( infgraph.find(n2, q, null),
             new Triple[] {
                 Triple.create(n2, q, Util.makeIntNode(1))
             });
@@ -588,6 +624,7 @@ public class TestBasics extends TestCase  {
     /**
      * The the "remove" builtin
      */
+    @Test
     public void testRemoveBuiltin() {
         String rules =
                        "[rule1: (?x p ?y), (?x q ?y) -> remove(0)]" +
@@ -599,7 +636,7 @@ public class TestBasics extends TestCase  {
         infgraph.add(Triple.create(n1, p, Util.makeIntNode(2)));
         infgraph.add(Triple.create(n1, q, Util.makeIntNode(2)));
 
-        TestUtil.assertIteratorValues(this, infgraph.find(n1, null, null),
+        TestUtil.assertIteratorValues( infgraph.find(n1, null, null),
             new Triple[] {
                 Triple.create(n1, p, Util.makeIntNode(1)),
                 Triple.create(n1, q, Util.makeIntNode(2))
@@ -610,6 +647,7 @@ public class TestBasics extends TestCase  {
     /**
      * The the "drop" builtin
      */
+    @Test
     public void testDropBuiltin() {
         String rules =
                        "[rule1: (?x p ?y) -> drop(0)]" +
@@ -621,7 +659,7 @@ public class TestBasics extends TestCase  {
         infgraph.add(Triple.create(n1, p, Util.makeIntNode(2)));
         infgraph.add(Triple.create(n1, q, Util.makeIntNode(2)));
 
-        TestUtil.assertIteratorValues(this, infgraph.find(n1, null, null),
+        TestUtil.assertIteratorValues( infgraph.find(n1, null, null),
             new Triple[] {
                 Triple.create(n1, q, Util.makeIntNode(2))
             });
@@ -631,13 +669,14 @@ public class TestBasics extends TestCase  {
     /**
      * Test the rebind operation.
      */
+    @Test
     public void testRebind() {
         String rules = "[rule1: (?x p ?y) -> (?x q ?y)]";
         List<Rule> ruleList = Rule.parseRules(rules);
         Graph data = createGraphForTest();
         data.add(Triple.create(n1, p, n2));
         InfGraph infgraph = new BasicForwardRuleReasoner(ruleList).bind(data);
-        TestUtil.assertIteratorValues(this, infgraph.find(n1, null, null),
+        TestUtil.assertIteratorValues( infgraph.find(n1, null, null),
             new Triple[] {
                 Triple.create(n1, p, n2),
                 Triple.create(n1, q, n2)
@@ -645,7 +684,7 @@ public class TestBasics extends TestCase  {
         Graph ndata = createGraphForTest();
         ndata.add(Triple.create(n1, p, n3));
         infgraph.rebind(ndata);
-        TestUtil.assertIteratorValues(this, infgraph.find(n1, null, null),
+        TestUtil.assertIteratorValues( infgraph.find(n1, null, null),
             new Triple[] {
                 Triple.create(n1, p, n3),
                 Triple.create(n1, q, n3)
@@ -655,6 +694,7 @@ public class TestBasics extends TestCase  {
     /**
      * Test size bug, used to blow up if size was called before any queries.
      */
+    @Test
     public void testSize() {
         String rules = "[rule1: (?x p ?y) -> (?x q ?y)]";
         List<Rule> ruleList = Rule.parseRules(rules);
@@ -667,30 +707,32 @@ public class TestBasics extends TestCase  {
     /**
      * Check validity report implementation, there had been a stupid bug here.
      */
+    @Test
     public void testValidityReport() {
         StandardValidityReport report = new StandardValidityReport();
         report.add(false, "dummy", "dummy1");
         report.add(false, "dummy", "dummy3");
         assertTrue(report.isValid());
         report.add(true,  "dummy", "dummy2");
-        assertTrue( ! report.isValid());
+        assertTrue(! report.isValid());
 
         report = new StandardValidityReport();
         report.add(false, "dummy", "dummy1");
         report.add(true,  "dummy", "dummy2");
         report.add(false, "dummy", "dummy3");
-        assertTrue( ! report.isValid());
+        assertTrue(! report.isValid());
 
         report = new StandardValidityReport();
         report.add(new ValidityReport.Report(false, "dummy", "dummy1"));
         report.add(new ValidityReport.Report(true, "dummy", "dummy2"));
         report.add(new ValidityReport.Report(false, "dummy", "dummy3"));
-        assertTrue( ! report.isValid());
+        assertTrue(! report.isValid());
     }
 
     /**
      * Test the list conversion utility that is used in some of the builtins.
      */
+    @Test
     public void testConvertList() {
         Graph data = createGraphForTest();
         Node first = RDF.Nodes.first;

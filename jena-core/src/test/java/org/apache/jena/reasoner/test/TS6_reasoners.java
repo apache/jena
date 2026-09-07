@@ -21,18 +21,26 @@
 
 package org.apache.jena.reasoner.test;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.BeforeSuite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
+import org.apache.jena.test.JenaTestLib;
+
+@Suite
+@SelectClasses({
     TestTransitiveGraphCache.class,
     TestReasoners.class,
     TestRDFSReasoners.class,
     TestInfPrefixMapping.class,
     TestInfGraph.class,
     TestInfModel.class,
-    TestSafeModel.class,
+    TestSafeModel.class
 })
 
-public class TS3_reasoners {}
+public class TS6_reasoners {
+    @BeforeSuite
+    public static void beforeSuite() {
+        JenaTestLib.setup();
+    }
+}

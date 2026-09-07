@@ -21,8 +21,10 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.Node;
@@ -53,7 +55,7 @@ import java.util.List;
  * To be moved to a test directory once the code is working.
  * </p>
  */
-public class TestBasicLP  extends TestCase {
+public class TestBasicLP {
 
     // Useful constants
     Node p = NodeFactory.createURI("p");
@@ -81,21 +83,11 @@ public class TestBasicLP  extends TestCase {
     /**
      * Boilerplate for junit
      */
-    public TestBasicLP( String name ) {
-        super( name );
-    }
 
     /**
      * Boilerplate for junit.
      * This is its own test suite
      */
-    public static TestSuite suite() {
-//        return new TestSuite( TestBasicLP.class );
-
-        TestSuite suite = new TestSuite();
-        suite.addTest(new TestBasicLP( "testCME" ));
-        return suite;
-    }
 
     private static  Graph createGraphForTest() {
         return GraphMemFactory.createDefaultGraph();
@@ -134,6 +126,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test basic rule operations - lookup, no matching rules
      */
+    @Test
     public void testBaseRules1() {
         doBasicTest("[r1: (?x r c) <- (?x p b)]",
                      Triple.create(Node.ANY, p, b),
@@ -145,6 +138,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test basic rule operations - simple chain rule
      */
+    @Test
     public void testBaseRules2() {
         doBasicTest("[r1: (?x r c) <- (?x p b)]",
                      Triple.create(Node.ANY, r, c),
@@ -156,6 +150,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test basic rule operations - chain rule with head unification
      */
+    @Test
     public void testBaseRules3() {
         doBasicTest("[r1: (?x r ?x) <- (?x p b)]",
                      Triple.create(Node.ANY, r, a),
@@ -167,6 +162,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test basic rule operations - rule with head unification, non-temp var
      */
+    @Test
     public void testBaseRules4() {
         doBasicTest("[r1: (?x r ?x) <- (?y p b), (?x p b)]",
                      Triple.create(Node.ANY, r, a),
@@ -178,6 +174,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test basic rule operations - simple cascade
      */
+    @Test
     public void testBaseRules5() {
         doBasicTest("[r1: (?x q ?y) <- (?x r ?y)(?y s ?x)]" +
                     "[r2: (?x r ?y) <- (?x p ?y)]" +
@@ -191,6 +188,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test basic rule operations - chain rule which will fail at head time
      */
+    @Test
     public void testBaseRules6() {
         doBasicTest("[r1: (?x r ?x) <- (?x p b)]",
                      Triple.create(a, r, b),
@@ -201,6 +199,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test basic rule operations - chain rule which will fail in search
      */
+    @Test
     public void testBaseRules7() {
         doBasicTest("[r1: (?x r ?y) <- (?x p c)]",
                      Triple.create(a, r, b),
@@ -211,6 +210,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test basic rule operations - simple chain
      */
+    @Test
     public void testBaseRules8() {
         doBasicTest("[r1: (?x q ?y) <- (?x r ?y)]" +
                     "[r2: (?x r ?y) <- (?x p ?y)]",
@@ -223,6 +223,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test basic rule operations - simple chain
      */
+    @Test
     public void testBaseRules9() {
         doBasicTest("[r1: (?x q ?y) <- (?x r ?y)]" +
                     "[r2: (?x r ?y) <- (?y p ?x)]",
@@ -235,6 +236,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test backtracking - simple triple query.
      */
+    @Test
     public void testBacktrack1() {
         doTest("[r1: (?x r ?y) <- (?x p ?y)]",
                 new Triple[] {
@@ -253,6 +255,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test backtracking - chain to simple triple query.
      */
+    @Test
     public void testBacktrack2() {
         doTest("[r1: (?x r ?y) <- (?x p ?y)]",
                 new Triple[] {
@@ -271,6 +274,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test backtracking - simple choice point
      */
+    @Test
     public void testBacktrack3() {
         doTest("[r1: (?x r C1) <- (?x p b)]" +
                "[r2: (?x r C2) <- (?x p b)]" +
@@ -289,6 +293,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test backtracking - nested choice point
      */
+    @Test
     public void testBacktrack4() {
         doTest("[r1: (?x r C1) <- (?x p b)]" +
                "[r2: (?x r C2) <- (?x p b)]" +
@@ -311,6 +316,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test backtracking - nested choice point with multiple triple matches
      */
+    @Test
     public void testBacktrack5() {
         doTest("[r1: (?x r C3) <- (C1 p ?x)]" +
                "[r2: (?x r C2) <- (C2 p ?x)]" +
@@ -334,6 +340,7 @@ public class TestBasicLP  extends TestCase {
      * Test backtracking - nested choice point with multiple triple matches, and
      * checking temp v. permanent variable usage
      */
+    @Test
     public void testBacktrack6() {
         doTest("[r1: (?x r C1) <- (?x p a)]" +
                "[r2: (?x r C2) <- (?x p b)]" +
@@ -356,6 +363,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test backtracking - nested choice point with simple triple matches
      */
+    @Test
     public void testBacktrack7() {
         doTest( "[r1: (?x r C1) <- (?x p b)]" +
                 "[r2: (?x r C2) <- (?x p b)]" +
@@ -382,6 +390,7 @@ public class TestBasicLP  extends TestCase {
      * Test backtracking - nested choice point with simple triple matches,
      * permanent vars but used just once in body
      */
+    @Test
     public void testBacktrack8() {
         doTest( "[r1: (?x r C1) <- (?x p b)]" +
                 "[r2: (?x r C2) <- (?x p b)]" +
@@ -408,6 +417,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test backtracking - multiple triple matches
      */
+    @Test
     public void testBacktrack9() {
         doTest("[r1: (?x s ?y) <- (?x r ?y) (?x q ?y)]",
                 new Triple[] {
@@ -429,6 +439,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test backtracking - multiple triple matches
      */
+    @Test
     public void testBacktrack10() {
         doTest("[r1: (?x s ?y) <- (?x r ?y) (?x q ?z), equal(?y, ?z)(?x, p, ?y)]" +
         "[(a p D1) <- ]" +
@@ -452,6 +463,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test clause order is right
      */
+    @Test
     public void testClauseOrder() {
         List<Rule> rules = Rule.parseRules(
             "[r1: (?x r C1) <- (?x p b)]" +
@@ -469,6 +481,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test axioms work.
      */
+    @Test
     public void testAxioms() {
         doTest("[a1: -> (a r C1) ]" +
                "[a2: -> (a r C2) ]" +
@@ -487,6 +500,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test nested invocation of rules with permanent vars
      */
+    @Test
     public void testNestedPvars() {
         doTest("[r1: (?x r ?y) <- (?x p ?z) (?z q ?y)]" +
                "[r1: (?y t ?x) <- (?x p ?z) (?z q ?y)]" +
@@ -509,6 +523,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test simple invocation of a builtin
      */
+    @Test
     public void testBuiltin1() {
         doTest("[r1: (?x r ?y) <- (?x p ?v), sum(?v 2 ?y)]",
                 new Triple[] {
@@ -522,10 +537,10 @@ public class TestBasicLP  extends TestCase {
                 } );
     }
 
-
     /**
      * Test simple invocation of a builtin
      */
+    @Test
     public void testBuiltin2() {
         doTest("[r1: (?x r C1) <- (?x p ?v), lessThan(?v 3)]",
                 new Triple[] {
@@ -544,6 +559,7 @@ public class TestBasicLP  extends TestCase {
      * Test wildcard predicate usage - simple triple search.
      * Rules look odd because we have to hack around the recursive loops.
      */
+    @Test
     public void testWildPredicate1() {
         doTest("[r1: (b r ?y) <- (a ?y ?v)]",
                 new Triple[] {
@@ -562,6 +578,7 @@ public class TestBasicLP  extends TestCase {
      * Test wildcard predicate usage - combind triple search and multiclause matching.
      * Rules look odd because we have to hack around the recursive loops.
      */
+    @Test
     public void testWildPredicate2() {
         doTest("[r1: (a r ?y) <- (b ?y ?v)]" +
                 "[r2: (?x q ?y) <- (?x p ?y)]" +
@@ -593,6 +610,7 @@ public class TestBasicLP  extends TestCase {
      * Test wildcard predicate usage - combined triple search and multiclause matching.
      * Rules look odd because we have to hack around the recursive loops.
      */
+    @Test
     public void testWildPredicate3() {
         String rules = "[r1: (a r ?y) <- (b ?y ?v)]" +
                 "[r2: (?x q ?y) <- (?x p ?y)]" +
@@ -633,6 +651,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test wildcard predicate usage - wildcard in head as well
      */
+    @Test
     public void testWildPredicate4() {
         doTest("[r1: (a ?p ?x) <- (b ?p ?x)]",
                 new Triple[] {
@@ -652,6 +671,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test functor usage.
      */
+    @Test
     public void testFunctors1() {
         String ruleSrc = "[r1: (?x s ?y) <- (?x p foo(?z, ?y))] ";
         Triple[] triples =
@@ -673,6 +693,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test functor usage.
      */
+    @Test
     public void testFunctors2() {
         String ruleSrc = "[r1: (?x r foo(?y,?z)) <- (?x p ?y), (?x q ?z)]" +
                "[r2: (?x s ?y) <- (?x r foo(?z, ?y))] ";
@@ -696,6 +717,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test functor usage.
      */
+    @Test
     public void testFunctors3() {
         String ruleSrc = "[r1: (?x r foo(p,?y)) <- (?x p ?y)]" +
                          "[r2: (?x r foo(q,?y)) <- (?x q ?y)]" +
@@ -721,6 +743,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test tabled predicates. Simple chain call case.
      */
+    @Test
     public void testTabled1() {
         doTest("[r1: (?a q ?b) <- (?a p ?b)]" +
                "[r2: (?x r ?y) <- (?x q ?y)]",
@@ -739,6 +762,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test tabled predicates. Simple transitive closure case.
      */
+    @Test
     public void testTabled2() {
         doTest("[r1: (?a p ?c) <- (?a p ?b)(?b p ?c)]",
                 new Node[] { p },
@@ -760,6 +784,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test tabled predicates. Simple transitive closure over normal predicates
      */
+    @Test
     public void testTabled3() {
         doTest("[r1: (?x p ?z) <- (?x p ?y), (?y p ?z)]" +
                "[r2: (?x p ?z) <- (?x e ?z), (?z q ?z)]",
@@ -783,6 +808,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test tabled predicates. Co-routining example.
      */
+    @Test
     public void testTabled4() {
         doTest("[r1: (?x a ?y) <- (?x c ?y)]" +
                "[r2: (?x a ?y) <- (?x b ?z), (?z c ?y)]" +
@@ -805,6 +831,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test tabled predicates. Simple transitive closure case.
      */
+    @Test
     public void testTabled5() {
         doTest("[r1: (?a p ?c) <- (?a p ?b)(?b p ?c)]" +
                "[r2: (?a r ?b) <- (?a q ?b)]",
@@ -828,6 +855,7 @@ public class TestBasicLP  extends TestCase {
      * Test tabled predicates. Simple transitive closure case, tabling set
      * by rule base.
      */
+    @Test
     public void testTabled6() {
         doTest("[-> table(p)] [r1: (?a p ?c) <- (?a p ?b)(?b p ?c)]",
                 new Triple[] {
@@ -848,6 +876,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test tabled calls with aliased local vars in the call.
      */
+    @Test
     public void testTabled7() {
         doTest("[r1: (?a q ?b) <- (?a p ?b)]" +
                "[r2: (?a q ?a) <- (?a s ?a)]" +
@@ -871,6 +900,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test RDFS example.
      */
+    @Test
     public void testRDFS1() {
         doTest(
     "[ (?a rdf:type C1) <- (?a rdf:type C2) ]" +
@@ -895,6 +925,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test RDFS example - branched version
      */
+    @Test
     public void testRDFS2() {
         doTest(
     "[ (?a rdf:type C1) <- (?a rdf:type C2) ]" +
@@ -920,6 +951,7 @@ public class TestBasicLP  extends TestCase {
      * A problem from the original backchainer tests - interaction
      * of tabling and functor expansion.
      */
+    @Test
     public void testProblem1() {
         doTest(
                "[r1: (a q f(?x,?y)) <- (a s ?x), (a t ?y)]" +
@@ -940,6 +972,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * A problem from the original backchainer tests - tabled closure operation.
      */
+    @Test
     public void testProblem2() {
         String ruleSrc =
         "[rdfs8:  (?a rdfs:subClassOf ?c) <- (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c)]" +
@@ -967,6 +1000,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * A problem from the original backchainer tests - bound/unbound primitives
      */
+    @Test
     public void testProblem3() {
         String rules =         "[r1: (?x r ?y ) <- bound(?x), (?x p ?y) ]" +
         "[r2: (?x r ?y) <- unbound(?x), (?x q ?y)]";
@@ -993,6 +1027,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * A problem from the original backchainer tests - head unification test
      */
+    @Test
     public void testProblem4() {
         String rules =   "[r1: (c r ?x) <- (?x p ?x)]" +
         "[r2: (?x p ?y) <- (a q ?x), (b q ?y)]";
@@ -1014,6 +1049,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * A problem from the original backchainer tests - RDFS example which threw an NPE
      */
+    @Test
     public void testProblem5() {
         String ruleSrc =
         "[rdfs8:  (?a rdfs:subClassOf ?c) <- (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c)]" +
@@ -1041,6 +1077,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * A problem from the original backchainer tests - RDFS example which threw an NPE
      */
+    @Test
     public void testProblem6() {
         String ruleSrc =
         "[rdfs9:   (?a rdf:type ?y) <- (?x rdfs:subClassOf ?y), (?a rdf:type ?x)]" +
@@ -1066,6 +1103,7 @@ public class TestBasicLP  extends TestCase {
      * A problem from the original backchainer tests - incorrect additional deduction.
      * Was due to interpeter setup failing to clone input variables.
      */
+    @Test
     public void testProblem7() {
         String ruleSrc =
         "[rdfs8:  (?a rdfs:subClassOf ?c) <- (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c)]" +
@@ -1093,7 +1131,7 @@ public class TestBasicLP  extends TestCase {
         assertEquals(result.getPredicate(), ty);
         it.close();
         // Make sure if we start again we get the full listing.
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
             infgraph.find(a, ty, null),
             new Object[] {
                 Triple.create(a, ty, C1),
@@ -1106,6 +1144,7 @@ public class TestBasicLP  extends TestCase {
      * A problem from the original backchainer tests - RDFS example which failed.
      * Was due to unsupported multi-head statement.
      */
+    @Test
     public void testProblem8() {
         String ruleSrc =
         "[rdfs9:   (?a rdf:type ?y) <- bound(?y) (?x rdfs:subClassOf ?y) (?a rdf:type ?x)]" +
@@ -1133,6 +1172,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test derivation machinery
      */
+    @Test
     public void testRuleDerivations() {
         String rules = "[testRule1: (C2, p, ?a) <- (C1 p ?a)]" +
                        "[testRule2: (C2, q, ?a) <- (C1 q ?a)]" +
@@ -1145,7 +1185,7 @@ public class TestBasicLP  extends TestCase {
         InfGraph infgraph = makeInfGraph(ruleList, data, new Node[]{p, q});
         infgraph.setDerivationLogging(true);
 
-        TestUtil.assertIteratorValues(this, infgraph.find(a, null, null),
+        TestUtil.assertIteratorValues( infgraph.find(a, null, null),
             new Triple[] {
                 Triple.create(a, p, C3)
             });
@@ -1159,11 +1199,14 @@ public class TestBasicLP  extends TestCase {
         }
         out.flush();
 
-        String testString = TestUtil.normalizeWhiteSpace("Rule testRule3 concluded (a p C3) <-\n" +
-                "    Rule testRule1 concluded (C2 p C3) <-\n" +
-                "        Fact (C1 p C3)\r\n" +
-                "    Rule testRule2 concluded (C2 q C3) <-\n" +
-                "        Fact (C1 q C3)\r\n");
+        // PrintUtil.print renders a URI node with no matching prefix as <uri>. This
+        // expectation predates that and had gone stale unnoticed: the class was not
+        // reached by the JUnit 3 suite, so these tests had not been running.
+        String testString = TestUtil.normalizeWhiteSpace("Rule testRule3 concluded (<a> <p> <C3>) <-\n" +
+                "    Rule testRule1 concluded (<C2> <p> <C3>) <-\n" +
+                "        Fact (<C1> <p> <C3>)\r\n" +
+                "    Rule testRule2 concluded (<C2> <q> <C3>) <-\n" +
+                "        Fact (<C1> <q> <C3>)\r\n");
         assertEquals(testString, TestUtil.normalizeWhiteSpace(outString.getBuffer().toString()));
     }
 
@@ -1171,6 +1214,7 @@ public class TestBasicLP  extends TestCase {
      * A suspect problem, originally derived from the OWL rules - risk of unbound variables escaping.
      * Not managed to isolate or reproduce the problem yet.
      */
+    @Test
     public void testProblem9() {
         String ruleSrc =
         "[test:   (?x owl:sameAs ?x) <- (?x rdf:type owl:Thing) ]" +
@@ -1199,6 +1243,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test 3-arg builtins such as arithmetic.
      */
+    @Test
     public void testArithBuiltins() {
         doBuiltinTest(
             "[(a,r,0) <- (a,p,?x), (a,q,?y), lessThan(?x,?y)]" +
@@ -1236,6 +1281,7 @@ public class TestBasicLP  extends TestCase {
     /**
      * Test the temporary list builtins
      */
+    @Test
     public void testListBuiltins() {
         String ruleSrc = "[(a r ?n) <- (a p ?l), listLength(?l, ?n)]" +
         "[(a s ?e) <- (a p ?l), listEntry(?l, 1, ?e)]";
@@ -1243,12 +1289,12 @@ public class TestBasicLP  extends TestCase {
         Graph data = createGraphForTest();
         data.add(Triple.create(a, p, Util.makeList(new Node[]{C1,C2,C3},data)));
         InfGraph infgraph =  makeInfGraph(rules, data);
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
                 infgraph.find(Triple.create(a, r, Node.ANY)),
                 new Triple[] {
                     Triple.create(a, r, Util.makeIntNode(3))
                 });
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
                 infgraph.find(Triple.create(a, s, Node.ANY)),
                 new Triple[] {
                     Triple.create(a, s, C2)
@@ -1268,7 +1314,7 @@ public class TestBasicLP  extends TestCase {
         data.add(Triple.create(a, r,
             Util.makeList( new Node[]{C3, C1, Util.makeLongNode(2)}, data) ));
         infgraph =  makeInfGraph(rules, data);
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
             infgraph.find(Triple.create(a, s, Node.ANY)),
             new Triple[] {
                 Triple.create(a, s, b),
@@ -1286,7 +1332,7 @@ public class TestBasicLP  extends TestCase {
         data.add(Triple.create(a, q, Util.makeLongNode(3)));
         data.add(Triple.create(a, q, C2));
         infgraph =  makeInfGraph(rules, data);
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
             infgraph.find(Triple.create(b, Node.ANY, Node.ANY)),
             new Triple[] {
                 Triple.create(b, r, C1),
@@ -1299,6 +1345,7 @@ public class TestBasicLP  extends TestCase {
      * Test that we detect concurrent modification of LP graphs with
      * non-closed iterators.
      */
+    @Test
     public void testCME() {
         String ruleSrc = "(?a p 1) <- (?a p 0). (?a p 2) <- (?a p 0).";
         List<Rule> rules = Rule.parseRules(ruleSrc);
@@ -1307,7 +1354,7 @@ public class TestBasicLP  extends TestCase {
         InfGraph infgraph =  makeInfGraph(rules, data);
 
         // Check the base case works
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
                 infgraph.find(Triple.create(a, p, Node.ANY)),
                 new Triple[] {
             Triple.create(a, p, Util.makeIntNode(0)),
@@ -1327,7 +1374,7 @@ public class TestBasicLP  extends TestCase {
         } finally {
             i.close();
         }
-        assertTrue("Expect CME on unclosed iterators", ok);
+        assertTrue(ok, "Expect CME on unclosed iterators");
     }
 
     /**
@@ -1345,7 +1392,7 @@ public class TestBasicLP  extends TestCase {
             data.add( triple );
         }
         InfGraph infgraph =  makeInfGraph(rules, data);
-        TestUtil.assertIteratorValues(this, infgraph.find(query), results);
+        TestUtil.assertIteratorValues( infgraph.find(query), results);
     }
 
     /**
@@ -1364,7 +1411,7 @@ public class TestBasicLP  extends TestCase {
             data.add( triple );
         }
         InfGraph infgraph =  makeInfGraph(rules, data, tabled);
-        TestUtil.assertIteratorValues(this, infgraph.find(query), results);
+        TestUtil.assertIteratorValues( infgraph.find(query), results);
 
     }
 

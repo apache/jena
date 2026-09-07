@@ -21,8 +21,10 @@
 
 package org.apache.jena.reasoner.test;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.rdf.model.*;
@@ -35,26 +37,21 @@ import org.apache.jena.vocabulary.RDFS;
  * particular reasoner.
  */
 
-public class TestInfModel extends TestCase {
+public class TestInfModel {
     /**
      * Boilerplate for junit
      */
-    public TestInfModel( String name ) {
-        super( name );
-    }
 
     /**
      * Boilerplate for junit.
      * This is its own test suite
      */
-    public static TestSuite suite() {
-        return new TestSuite(TestInfModel.class);
-    }
 
     /**
      * Check interface extensions which had an earlier bug with null handling
      */
     @SuppressWarnings("removal")
+    @Test
     public void testListWithPosits() {
         String NS = PrintUtil.egNS;
         Model data = ModelFactory.createDefaultModel();
@@ -65,7 +62,7 @@ public class TestInfModel extends TestCase {
         Model premise = ModelFactory.createDefaultModel();
         premise.add(c1, RDFS.subClassOf, c2);
         InfModel im = ModelFactory.createInfModel(ReasonerRegistry.getRDFSReasoner(), data);
-        TestUtil.assertIteratorValues(this, im.listStatements(c1, RDFS.subClassOf, null, premise),
+        TestUtil.assertIteratorValues( im.listStatements(c1, RDFS.subClassOf, null, premise),
                 new Object[] {
                     data.createStatement(c1, RDFS.subClassOf, c2),
                     data.createStatement(c1, RDFS.subClassOf, c3),
@@ -73,7 +70,7 @@ public class TestInfModel extends TestCase {
                 });
 
         OntModel om = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM_RDFS_INF, data);
-        TestUtil.assertIteratorValues(this, om.listStatements(c1, RDFS.subClassOf, null, premise),
+        TestUtil.assertIteratorValues( om.listStatements(c1, RDFS.subClassOf, null, premise),
                 new Object[] {
                     data.createStatement(c1, RDFS.subClassOf, c2),
                     data.createStatement(c1, RDFS.subClassOf, c3),

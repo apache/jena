@@ -21,10 +21,13 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.reasoner.*;
@@ -33,7 +36,7 @@ import org.apache.jena.reasoner.rulesys.*;
 /**
  * Version of the OWL unit tests used during development of the mini ruleset.
  */
-public class OWLUnitTest extends TestCase {
+public class OWLUnitTest {
 
 //  --------------  statics defining the whole test suite ---------------------
 
@@ -192,18 +195,29 @@ public class OWLUnitTest extends TestCase {
     /**
      * Boilerplate for junit
      */
-    public OWLUnitTest( String manifest, String rName, ReasonerFactory rf) {
-        super( rName + ":" + manifest );
-        this.manifest = manifest;
-        this.reasonerFactory = rf;
+    /** JUnit needs a no-arg constructor for the class holding the @TestFactory. */
+    public OWLUnitTest() {}
+
+    private String name = "OWLUnitTest";
+
+    public String getName() { return name; }
+
+    /** JUnit 5 requires a single constructor, so cases are built through this. */
+    private static OWLUnitTest make(String manifest, String rName, ReasonerFactory rf) {
+        OWLUnitTest t = new OWLUnitTest();
+        t.name = rName + ":" + manifest;
+        t.manifest = manifest;
+        t.reasonerFactory = rf;
+        return t;
     }
 
     /**
-     * Boilerplate for junit.
-     * This is its own test suite
+     * One dynamic test per (reasoner, test definition) pair that the definition
+     * declares itself applicable to. This was a hand-built {@code TestSuite}.
      */
-    public static TestSuite suite() {
-        TestSuite suite = new TestSuite();
+    @TestFactory
+    public Stream<DynamicTest> owlTests() {
+        List<DynamicTest> suite = new ArrayList<>();
         for (int i = 0; i < reasonerFactories.length; i++) {
             String rName = reasonerNames[i];
             ReasonerFactory rf = reasonerFactories[i];
@@ -213,24 +227,25 @@ public class OWLUnitTest extends TestCase {
                 {
                     if ( test.spec instanceof String )
                     {
-                        suite.addTest( new OWLUnitTest( (String) test.spec, rName, rf ) );
+                        OWLUnitTest t = make((String)test.spec, rName, rf);
+                        suite.add(DynamicTest.dynamicTest(t.getName(), ()->t.runTest()));
                     }
                     else if ( test.spec instanceof OWLConsistencyTest )
                     {
                         OWLConsistencyTest oct = (OWLConsistencyTest) test.spec;
-                        suite.addTest( new OWLConsistencyTest( oct, rName, rf ) );
+                        OWLConsistencyTest t = new OWLConsistencyTest( oct, rName, rf );
+                        suite.add(DynamicTest.dynamicTest(t.getName(), ()->t.runTest()));
                     }
                 }
             }
         }
-        return suite;
+        return suite.stream();
     }
 
     /**
      * The test runner
      */
-    @Override
-    protected void runTest() throws IOException {
+    public void runTest() throws IOException {
 //        System.out.println(" - " + manifest + " using " + reasonerFactory.getURI());
         OWLWGTester tester = new OWLWGTester(reasonerFactory, this, null);
         tester.runTests(manifest, false, false);

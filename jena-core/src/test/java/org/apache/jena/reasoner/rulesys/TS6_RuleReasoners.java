@@ -21,17 +21,19 @@
 
 package org.apache.jena.reasoner.rulesys;
 
+import org.junit.platform.suite.api.BeforeSuite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 import org.apache.jena.reasoner.rulesys.impl.TestLPBRuleCloseBug;
 import org.apache.jena.reasoner.rulesys.impl.TestLPBRuleEngine;
 import org.apache.jena.reasoner.rulesys.impl.TestLPBRuleEngineLeak;
 import org.apache.jena.reasoner.rulesys.impl.TestRestartableLBRule;
 import org.apache.jena.reasoner.rulesys.test.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.apache.jena.test.JenaTestLib;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
+@Suite
+@SelectClasses({
     TestConfigVocabulary.class,
     TestGenericRuleReasonerConfig.class,
     TestBasics.class,
@@ -59,4 +61,10 @@ import org.junit.runners.Suite;
     ConcurrencyTest.class,
     TestRestrictionsDontNeedTyping.class
 })
-public class TS3_RuleReasoners {}
+
+public class TS6_RuleReasoners {
+    @BeforeSuite
+    public static void beforeSuite() {
+        JenaTestLib.setup();
+    }
+}

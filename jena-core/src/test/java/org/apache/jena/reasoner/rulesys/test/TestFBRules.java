@@ -21,8 +21,10 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.datatypes.xsd.XSDDateTime;
 import org.apache.jena.graph.Graph;
@@ -70,7 +72,7 @@ import java.util.List;
 /**
  * Test suite for the hybrid forward/backward rule system.
  */
-public class TestFBRules extends TestCase {
+public class TestFBRules {
 
     protected static Logger logger = LoggerFactory.getLogger(TestFBRules.class);
 
@@ -104,20 +106,11 @@ public class TestFBRules extends TestCase {
     /**
      * Boilerplate for junit
      */
-    public TestFBRules( String name ) {
-        super( name );
-    }
 
     /**
      * Boilerplate for junit.
      * This is its own test suite
      */
-    public static TestSuite suite() {
-        return new TestSuite( TestFBRules.class );
-//        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestFBRules( "testNumericFunctors" ));
-//        return suite;
-    }
 
     private static  Graph createGraphForTest() {
         return GraphMemFactory.createDefaultGraph();
@@ -141,7 +134,6 @@ public class TestFBRules extends TestCase {
         return createReasoner( Rule.parseRules(rules) ).bind(data);
     }
 
-
     /**
      * Assemble a test infGraph from a rule source and empty data
      */
@@ -152,16 +144,18 @@ public class TestFBRules extends TestCase {
     /**
      * Check parser extension for f/b distinction.
      */
+    @Test
     public void testParser() {
         String rf = "(?a rdf:type ?t) -> (?t rdf:type rdfs:Class).";
         String rb = "(?t rdf:type rdfs:Class) <- (?a rdf:type ?t).";
-        assertTrue( ! Rule.parseRule(rf).isBackward() );
-        assertTrue(   Rule.parseRule(rb).isBackward() );
+        assertTrue(! Rule.parseRule(rf).isBackward() );
+        assertTrue(  Rule.parseRule(rb).isBackward() );
     }
 
     /**
      * Minimal rule tester to check basic pattern match, forward style.
      */
+    @Test
     public void testRuleMatcher() {
         String rules = "[r1: (?a p ?b), (?b q ?c) -> (?a, q, ?c)]" +
                        "[r2: (?a p ?b), (?b p ?c) -> (?a, p, ?c)]" +
@@ -174,7 +168,7 @@ public class TestFBRules extends TestCase {
         infgraph.add(Triple.create(n2, q, n3));
         infgraph.add(Triple.create(n4, p, n4));
 
-        TestUtil.assertIteratorValues(this, infgraph.find(null, null, null),
+        TestUtil.assertIteratorValues( infgraph.find(null, null, null),
             new Triple[] {
                 Triple.create(n1, p, n2),
                 Triple.create(n2, p, n3),
@@ -189,6 +183,7 @@ public class TestFBRules extends TestCase {
     /**
      * Test functor handling
      */
+    @Test
     public void testEmbeddedFunctors() {
         String rules = "(?C owl:onProperty ?P), (?C owl:allValuesFrom ?D) -> (?C rb:restriction all(?P, ?D))." +
                         "(?C rb:restriction all(eg:p, eg:D)) -> (?C rb:restriction 'allOK')." +
@@ -222,6 +217,7 @@ public class TestFBRules extends TestCase {
     /**
      * The the minimal machinery for supporting builtins
      */
+    @Test
     public void testBuiltins() {
         String rules =  //"[testRule1: (n1 ?p ?a) -> print('rule1test', ?p, ?a)]" +
                        "[r1: (n1 p ?x), addOne(?x, ?y) -> (n1 q ?y)]" +
@@ -231,12 +227,12 @@ public class TestFBRules extends TestCase {
                        "";
 
         InfGraph infgraph = createInfGraph(rules);
-        TestUtil.assertIteratorValues(this, infgraph.find(n1, q, null),
+        TestUtil.assertIteratorValues( infgraph.find(n1, q, null),
             new Triple[] {
                 Triple.create(n1, q, Util.makeIntNode(2)),
                 Triple.create(n1, q, Util.makeIntNode(5))
             });
-        TestUtil.assertIteratorValues(this, infgraph.find(n2, q, null),
+        TestUtil.assertIteratorValues( infgraph.find(n2, q, null),
             new Triple[] {
                 Triple.create(n2, q, Util.makeIntNode(1))
             });
@@ -246,6 +242,7 @@ public class TestFBRules extends TestCase {
     /**
      * Test schmea partial binding machinery, forward subset.
      */
+    @Test
     public void testSchemaBinding() {
         String rules = "[testRule1: (n1 p ?a) -> (n2, p, ?a)]" +
                        "[testRule2: (n1 q ?a) -> (n2, q, ?a)]" +
@@ -262,7 +259,7 @@ public class TestFBRules extends TestCase {
         Reasoner boundReasoner = reasoner.bindSchema(schema);
         InfGraph infgraph = boundReasoner.bind(data);
 
-        TestUtil.assertIteratorValues(this, infgraph.find(null, null, null),
+        TestUtil.assertIteratorValues( infgraph.find(null, null, null),
             new Triple[] {
                 Triple.create(n1, p, n3),
                 Triple.create(n2, p, n3),
@@ -278,6 +275,7 @@ public class TestFBRules extends TestCase {
     /**
      * The the "remove" builtin
      */
+    @Test
     public void testRemoveBuiltin() {
         String rules =
                        "[rule1: (?x p ?y), (?x q ?y) -> remove(0)]" +
@@ -288,7 +286,7 @@ public class TestFBRules extends TestCase {
         infgraph.add(Triple.create(n1, p, Util.makeIntNode(2)));
         infgraph.add(Triple.create(n1, q, Util.makeIntNode(2)));
 
-        TestUtil.assertIteratorValues(this, infgraph.find(n1, null, null),
+        TestUtil.assertIteratorValues( infgraph.find(n1, null, null),
             new Triple[] {
                 Triple.create(n1, p, Util.makeIntNode(1)),
                 Triple.create(n1, q, Util.makeIntNode(2))
@@ -299,12 +297,13 @@ public class TestFBRules extends TestCase {
     /**
      * Test the rebind operation.
      */
+    @Test
     public void testRebind() {
         String rules = "[rule1: (?x p ?y) -> (?x q ?y)]";
         Graph data = createGraphForTest();
         data.add(Triple.create(n1, p, n2));
         InfGraph infgraph = createInfGraph(rules, data);
-        TestUtil.assertIteratorValues(this, infgraph.find(n1, null, null),
+        TestUtil.assertIteratorValues( infgraph.find(n1, null, null),
             new Triple[] {
                 Triple.create(n1, p, n2),
                 Triple.create(n1, q, n2)
@@ -312,19 +311,19 @@ public class TestFBRules extends TestCase {
         Graph ndata = createGraphForTest();
         ndata.add(Triple.create(n1, p, n3));
         infgraph.rebind(ndata);
-        TestUtil.assertIteratorValues(this, infgraph.find(n1, null, null),
+        TestUtil.assertIteratorValues( infgraph.find(n1, null, null),
             new Triple[] {
                 Triple.create(n1, p, n3),
                 Triple.create(n1, q, n3)
             });
     }
 
-
     /**
      * Test that reset does actually clear out all the data.
      * We use the RDFS configuration because uses both TGC, forward and backward
      * rules and so is a good check.
      */
+    @Test
     public void testRebind2() {
         String NS = "http://jena.hpl.hp.com/test#";
         Model base = ModelFactory.createDefaultModel();
@@ -343,6 +342,7 @@ public class TestFBRules extends TestCase {
     /**
      * Test rebindAll reconsults a changed ruleset
      */
+    @Test
     public void testRebindAll() {
         String NS = "http://jena.hpl.hp.com/example#";
         List<Rule> rules1 = Rule.parseRules( "(?x http://jena.hpl.hp.com/example#p ?y) -> (?x http://jena.hpl.hp.com/example#q ?y)." );
@@ -360,22 +360,23 @@ public class TestFBRules extends TestCase {
         GenericRuleReasoner reasoner = new GenericRuleReasoner(rules1);
         InfModel infModel = ModelFactory.createInfModel(reasoner, m);
         reasoner.addRules(rules2);
-        TestUtil.assertIteratorValues(this, infModel.listStatements(a, null, (RDFNode)null),
+        TestUtil.assertIteratorValues( infModel.listStatements(a, null, (RDFNode)null),
                 new Object[] {s1, s2});
         ((FBRuleInfGraph)infModel.getGraph()).rebindAll();
-        TestUtil.assertIteratorValues(this, infModel.listStatements(a, null, (RDFNode)null),
+        TestUtil.assertIteratorValues( infModel.listStatements(a, null, (RDFNode)null),
                 new Object[] {s1, s2, s3});
     }
 
     /**
      * Test the close operation.
      */
+    @Test
     public void testClose() {
         String rules = "[rule1: (?x p ?y) -> (?x q ?y)]";
         Graph data = createGraphForTest();
         data.add(Triple.create(n1, p, n2));
         InfGraph infgraph = createInfGraph(rules, data);
-        TestUtil.assertIteratorValues(this, infgraph.find(n1, null, null),
+        TestUtil.assertIteratorValues( infgraph.find(n1, null, null),
             new Triple[] {
                 Triple.create(n1, p, n2),
                 Triple.create(n1, q, n2)
@@ -387,12 +388,13 @@ public class TestFBRules extends TestCase {
         } catch (ClosedException e) {
             foundException = true;
         }
-        assertTrue("Close detected", foundException);
+        assertTrue(foundException, "Close detected");
     }
 
     /**
      * Test example pure backchaining rules
      */
+    @Test
     public void testBackchain1() {
         Graph data = createGraphForTest();
         data.add(Triple.create(p, sP, q));
@@ -407,14 +409,14 @@ public class TestFBRules extends TestCase {
         "[rdfs3:  (?y rdf:type ?c) <- (?x ?p ?y), (?p rdfs:range ?c)]" +
         "[rdfs7:  (?a rdfs:subClassOf ?a) <- (?a rdf:type rdfs:Class)]";
         InfGraph infgraph = createInfGraph(rules, data);
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
             infgraph.find(a, ty, null),
             new Object[] {
                 Triple.create(a, ty, C1),
                 Triple.create(a, ty, C2),
                 Triple.create(a, ty, C3)
             } );
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
             infgraph.find(C1, sC, a),
             new Object[] {
             } );
@@ -423,6 +425,7 @@ public class TestFBRules extends TestCase {
     /**
      * Test complex rule head unification
      */
+    @Test
     public void testBackchain2() {
         Graph data = createGraphForTest();
         data.add(Triple.create(c, q, d));
@@ -430,7 +433,7 @@ public class TestFBRules extends TestCase {
             "[r1: (c r ?x) <- (?x p f(?x b))]" +
             "[r2: (?y p f(a ?y)) <- (c q ?y)]";
         InfGraph infgraph = createInfGraph(rules, data);
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
               infgraph.find(c, r, null), new Object[] { } );
 
         data.add(Triple.create(c, q, a));
@@ -438,7 +441,7 @@ public class TestFBRules extends TestCase {
         "[r1: (c r ?x) <- (?x p f(?x a))]" +
         "[r2: (?y p f(a ?y)) <- (c q ?y)]";
         infgraph = createInfGraph(rules, data);
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
               infgraph.find(c, r, null),
               new Object[] {
                   Triple.create(c, r, a)
@@ -454,7 +457,7 @@ public class TestFBRules extends TestCase {
           "[r1: (c r ?x) <- (?x p ?x)]" +
           "[r2: (?x p ?y) <- (a q ?x), (b q ?y)]";
         infgraph = createInfGraph(rules, data);
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
               infgraph.find(c, r, null),
               new Object[] {
                   Triple.create(c, r, b)
@@ -464,7 +467,7 @@ public class TestFBRules extends TestCase {
           "[r1: (c r ?x) <- (?x p ?x)]" +
           "[r2: (a p ?x) <- (a q ?x)]";
         infgraph = createInfGraph(rules, data);
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
               infgraph.find(c, r, null),
               new Object[] {
                   Triple.create(c, r, a)
@@ -474,6 +477,7 @@ public class TestFBRules extends TestCase {
     /**
      * Test restriction example
      */
+    @Test
     public void testBackchain3() {
         Graph data = createGraphForTest();
         data.add(Triple.create(a, ty, r));
@@ -488,7 +492,7 @@ public class TestFBRules extends TestCase {
     "[rs2: (?X rdf:type all(?P,?C)) <- (?D owl:equivalentClass all(?P,?C)), (?X rdf:type ?D)]" +
     "[rp4: (?Y rdf:type ?C) <- (?X rdf:type all(?P, ?C)), (?X ?P ?Y)]";
         InfGraph infgraph = createInfGraph(rules, data);
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
               infgraph.find(b, ty, c), new Object[] {
                   Triple.create(b, ty, c)
               } );
@@ -497,6 +501,7 @@ public class TestFBRules extends TestCase {
     /**
      * Test example hybrid rule.
      */
+    @Test
     public void testHybrid1() {
         Graph data = createGraphForTest();
         data.add(Triple.create(a, p, b));
@@ -504,7 +509,7 @@ public class TestFBRules extends TestCase {
         String rules =
         "[r1: (?p rdf:type s) -> [r1b: (?x ?p ?y) <- (?y ?p ?x)]]";
         InfGraph infgraph = createInfGraph(rules, data);
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
               infgraph.find(null, p, null), new Object[] {
                   Triple.create(a, p, b),
                   Triple.create(b, p, a)
@@ -514,6 +519,7 @@ public class TestFBRules extends TestCase {
     /**
      * Test example hybrid rule.
      */
+    @Test
     public void testHybrid2() {
         Graph data = createGraphForTest();
         data.add(Triple.create(a, r, b));
@@ -526,8 +532,8 @@ public class TestFBRules extends TestCase {
         FBRuleInfGraph infgraph = (FBRuleInfGraph) createInfGraph(rules, data);
         infgraph.setDerivationLogging(true);
         infgraph.prepare();
-        assertTrue("Forward rule count", infgraph.getNRulesFired() == 3);
-        TestUtil.assertIteratorValues(this,
+        assertTrue(infgraph.getNRulesFired() == 3, "Forward rule count");
+        TestUtil.assertIteratorValues(
               infgraph.find(null, p, null), new Object[] {
                   Triple.create(a, p, a),
                   Triple.create(a, p, b),
@@ -542,13 +548,14 @@ public class TestFBRules extends TestCase {
         assertTrue(di.hasNext());
         RuleDerivation d = (RuleDerivation)di.next();
         assertTrue(d.getRule().getName().equals("r1b"));
-        TestUtil.assertIteratorValues(this, d.getMatches().iterator(), new Object[] { Triple.create(a, p, b) });
+        TestUtil.assertIteratorValues( d.getMatches().iterator(), new Object[] { Triple.create(a, p, b) });
         assertTrue(! di.hasNext());
     }
 
     /**
      * Test example hybrid rules for rdfs.
      */
+    @Test
     public void testHybridRDFS() {
         Graph data = createGraphForTest();
         data.add(Triple.create(a, p, b));
@@ -564,7 +571,7 @@ public class TestFBRules extends TestCase {
     "[rdfs9:  (?x rdfs:subClassOf ?y) -> [ (?a rdf:type ?y) <- (?a rdf:type ?x)] ]";
         InfGraph infgraph = createInfGraph(rules, data);
 //        ((FBRuleInfGraph)infgraph).setTraceOn(true);
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
               infgraph.find(b, ty, null), new Object[] {
                   Triple.create(b, ty, C1)
               } );
@@ -573,6 +580,7 @@ public class TestFBRules extends TestCase {
     /**
      * Test example hybrid rules for rdfs.
      */
+    @Test
     public void testHybridRDFS2() {
         Graph data = createGraphForTest();
         data.add(Triple.create(a, p, b));
@@ -583,7 +591,7 @@ public class TestFBRules extends TestCase {
     "[rdfs6:  (?p rdfs:subPropertyOf ?q) -> [ (?a ?q ?b) <- (?a ?p ?b)] ]";
         InfGraph infgraph = createInfGraph(rules, data);
 //        ((FBRuleInfGraph)infgraph).setTraceOn(true);
-        TestUtil.assertIteratorValues(this,
+        TestUtil.assertIteratorValues(
               infgraph.find(b, ty, C1), new Object[] {
                   Triple.create(b, ty, C1)
               } );
@@ -592,6 +600,7 @@ public class TestFBRules extends TestCase {
     /**
      * Test access to makeInstance machinery from a Brule.
      */
+    @Test
     public void testMakeInstance() {
         Graph data = createGraphForTest();
         data.add(Triple.create(a, ty, C1));
@@ -611,6 +620,7 @@ public class TestFBRules extends TestCase {
     /**
      * Test access to makeInstance machinery from a Brule.
      */
+    @Test
     public void testMakeInstances() {
         Graph data = createGraphForTest();
         data.add(Triple.create(a, ty, C1));
@@ -627,6 +637,7 @@ public class TestFBRules extends TestCase {
     /**
      * Test case for makeInstance which failed during development.
      */
+    @Test
     public void testMakeInstanceBug() {
         Graph data = createGraphForTest();
         data.add(Triple.create(a, ty, r));
@@ -648,6 +659,7 @@ public class TestFBRules extends TestCase {
     /**
      * Test numeric functors
      */
+    @Test
     public void testNumericFunctors() {
         String rules =
         "[r1: (?x p f(a, ?x)) -> (?x q f(?x)) ]" +
@@ -661,7 +673,7 @@ public class TestFBRules extends TestCase {
                a, NodeFactory.createLiteralDT( "0", XSDDatatype.XSDnonNegativeInteger ) } )));
         InfGraph infgraph = createInfGraph(rules, data);
 
-        TestUtil.assertIteratorValues(this, infgraph.find(null, s, null),
+        TestUtil.assertIteratorValues( infgraph.find(null, s, null),
             new Triple[] {
                 Triple.create(n2, s, res),
                 Triple.create(n3, s, res),
@@ -671,6 +683,7 @@ public class TestFBRules extends TestCase {
     /**
      * Test the builtins themselves
      */
+    @Test
     public void testBuiltins2() {
         // Numeric comparisions
         Node lt = NodeFactory.createURI("lt");
@@ -693,19 +706,19 @@ public class TestFBRules extends TestCase {
         data.add(Triple.create(n3, q, Util.makeIntNode(3)) );
         InfGraph infgraph = createInfGraph(rules, data);
 
-        TestUtil.assertIteratorValues(this, infgraph.find(n1, null, n2),
+        TestUtil.assertIteratorValues( infgraph.find(n1, null, n2),
             new Triple[] {
                 Triple.create(n1, eq, n2),
                 Triple.create(n1, le, n2),
                 Triple.create(n1, ge, n2),
             });
-        TestUtil.assertIteratorValues(this, infgraph.find(n1, null, n3),
+        TestUtil.assertIteratorValues( infgraph.find(n1, null, n3),
             new Triple[] {
                 Triple.create(n1, ne, n3),
                 Triple.create(n1, lt, n3),
                 Triple.create(n1, le, n3),
             });
-        TestUtil.assertIteratorValues(this, infgraph.find(n3, null, n1),
+        TestUtil.assertIteratorValues( infgraph.find(n3, null, n1),
             new Triple[] {
                 Triple.create(n3, ne, n1),
                 Triple.create(n3, gt, n1),
@@ -719,13 +732,13 @@ public class TestFBRules extends TestCase {
         data.add(Triple.create(n3, q, Util.makeDoubleNode(2.3)) );
         infgraph = createInfGraph(rules, data);
 
-        TestUtil.assertIteratorValues(this, infgraph.find(n1, null, n2),
+        TestUtil.assertIteratorValues( infgraph.find(n1, null, n2),
             new Triple[] {
                 Triple.create(n1, ne, n2),
                 Triple.create(n1, le, n2),
                 Triple.create(n1, lt, n2),
             });
-        TestUtil.assertIteratorValues(this, infgraph.find(n2, null, n3),
+        TestUtil.assertIteratorValues( infgraph.find(n2, null, n3),
             new Triple[] {
                 Triple.create(n2, ne, n3),
                 Triple.create(n2, le, n3),
@@ -740,25 +753,25 @@ public class TestFBRules extends TestCase {
         data.add(Triple.create(n3, q, NodeFactory.createLiteralDT("2002-03-04T20:00:00Z", XSDDatatype.XSDdateTime)));
         infgraph = createInfGraph(rules, data);
 
-        TestUtil.assertIteratorValues(this, infgraph.find(n1, null, n2),
+        TestUtil.assertIteratorValues( infgraph.find(n1, null, n2),
             new Triple[] {
                 Triple.create(n1, ne, n2),
                 Triple.create(n1, le, n2),
                 Triple.create(n1, lt, n2),
             });
-        TestUtil.assertIteratorValues(this, infgraph.find(n2, null, n3),
+        TestUtil.assertIteratorValues( infgraph.find(n2, null, n3),
             new Triple[] {
                 Triple.create(n2, ne, n3),
                 Triple.create(n2, le, n3),
                 Triple.create(n2, lt, n3),
             });
-        TestUtil.assertIteratorValues(this, infgraph.find(n2, null, n1),
+        TestUtil.assertIteratorValues( infgraph.find(n2, null, n1),
             new Triple[] {
                 Triple.create(n2, ne, n1),
                 Triple.create(n2, ge, n1),
                 Triple.create(n2, gt, n1),
             });
-        TestUtil.assertIteratorValues(this, infgraph.find(n3, null, n2),
+        TestUtil.assertIteratorValues( infgraph.find(n3, null, n2),
             new Triple[] {
                 Triple.create(n3, ne, n2),
                 Triple.create(n3, ge, n2),
@@ -791,7 +804,7 @@ public class TestFBRules extends TestCase {
         data.add(Triple.create(n1, q, Util.makeIntNode(5)) );
         infgraph = createInfGraph(rules, data);
 
-        TestUtil.assertIteratorValues(this, infgraph.find(n1, null, null),
+        TestUtil.assertIteratorValues( infgraph.find(n1, null, null),
             new Triple[] {
                 Triple.create(n1, p, Util.makeIntNode(3)),
                 Triple.create(n1, q, Util.makeIntNode(5)),
@@ -816,17 +829,17 @@ public class TestFBRules extends TestCase {
         data.add(Triple.create(n3, p, NodeFactory.createBlankNode()));
         infgraph = createInfGraph(rules, data);
 
-        TestUtil.assertIteratorValues(this, infgraph.find(n1, s, null),
+        TestUtil.assertIteratorValues( infgraph.find(n1, s, null),
             new Triple[] {
                 Triple.create(n1, s, NodeFactory.createLiteralString("literal")),
                 Triple.create(n1, s, NodeFactory.createLiteralString("notBNode")),
             });
-        TestUtil.assertIteratorValues(this, infgraph.find(n2, s, null),
+        TestUtil.assertIteratorValues( infgraph.find(n2, s, null),
             new Triple[] {
                 Triple.create(n2, s, NodeFactory.createLiteralString("notLiteral")),
                 Triple.create(n2, s, NodeFactory.createLiteralString("notBNode")),
             });
-        TestUtil.assertIteratorValues(this, infgraph.find(n3, s, null),
+        TestUtil.assertIteratorValues( infgraph.find(n3, s, null),
             new Triple[] {
                 Triple.create(n3, s, NodeFactory.createLiteralString("notLiteral")),
                 Triple.create(n3, s, NodeFactory.createLiteralString("bNode")),
@@ -849,7 +862,7 @@ public class TestFBRules extends TestCase {
         data.add(Triple.create(n5, p, NodeFactory.createLiteralDT("-1", XSDDatatype.XSDnonNegativeInteger)) );
         infgraph = createInfGraph(rules, data);
 
-        TestUtil.assertIteratorValues(this, infgraph.find(null, s, null),
+        TestUtil.assertIteratorValues( infgraph.find(null, s, null),
             new Triple[] {
                 Triple.create(n1, s, NodeFactory.createLiteralString("isLiteral")),
                 Triple.create(n1, s, NodeFactory.createLiteralString("isXSDInt")),
@@ -880,7 +893,7 @@ public class TestFBRules extends TestCase {
         data.add(Triple.create(n1, p, Util.makeIntNode(3)) );
         data.add(Triple.create(n1, p, n2) );
         infgraph = createInfGraph(rules, data);
-        TestUtil.assertIteratorValues(this, infgraph.find(n1, s, null),
+        TestUtil.assertIteratorValues( infgraph.find(n1, s, null),
             new Triple[] {
                 Triple.create(n1, s, Util.makeIntNode(2)),
             });
@@ -891,7 +904,7 @@ public class TestFBRules extends TestCase {
         data = createGraphForTest();
         data.add(Triple.create(n1, p, Util.makeList(new Node[]{b, c, d}, data) ));
         infgraph = createInfGraph(rules, data);
-        TestUtil.assertIteratorValues(this, infgraph.find(null, q, null),
+        TestUtil.assertIteratorValues( infgraph.find(null, q, null),
             new Triple[] {
                 Triple.create(b, q, C1),
                 Triple.create(c, q, C1),
@@ -905,6 +918,7 @@ public class TestFBRules extends TestCase {
     /**
      * Check string manipulation builtins, new at 2.5.
      */
+    @Test
     public void testStringBuiltins() {
         String rules =
             "[r1: (?x p ?y) strConcat(?y, rdf:type, 'foo', ?z) -> (?x q ?z) ] \n" +
@@ -914,7 +928,7 @@ public class TestFBRules extends TestCase {
         data.add(Triple.create(n1, p, NodeFactory.createLiteralString("test")) );
         InfGraph infgraph = createInfGraph(rules, data);
 
-        TestUtil.assertIteratorValues(this, infgraph.find(null, q, null),
+        TestUtil.assertIteratorValues( infgraph.find(null, q, null),
             new Triple[] {
             Triple.create(n1, q, NodeFactory.createLiteralString("testhttp://www.w3.org/1999/02/22-rdf-syntax-ns#typefoo")),
             Triple.create(n1, q, NodeFactory.createLiteralString("")),
@@ -929,11 +943,11 @@ public class TestFBRules extends TestCase {
         data.add(Triple.create(n1, p, NodeFactory.createLiteralString("foo bar foo")) );
         data.add(Triple.create(n2, p, NodeFactory.createLiteralString("foo bar baz")) );
         infgraph = createInfGraph(rules, data);
-        TestUtil.assertIteratorValues(this, infgraph.find(null, q, null),
+        TestUtil.assertIteratorValues( infgraph.find(null, q, null),
                 new Triple[] {
                 Triple.create(n1, q, NodeFactory.createLiteralString("ok")),
                 });
-        TestUtil.assertIteratorValues(this, infgraph.find(null, r, null),
+        TestUtil.assertIteratorValues( infgraph.find(null, r, null),
                 new Triple[] {
                 Triple.create(n1, r, NodeFactory.createLiteralString("bar")),
                 });
@@ -942,6 +956,7 @@ public class TestFBRules extends TestCase {
     /**
      * Test regex handling of null groups
      */
+    @Test
     public void testRegexNulls() {
         String rules =
             "[r2: (?x p ?y) regex(?y, '((Boys)|(Girls))(.*)', ?m1, ?m2, ?m3, ?m4) ->  (?x q ?m2) (?x r ?m3) (?x s ?m4) ] \n" +
@@ -950,7 +965,7 @@ public class TestFBRules extends TestCase {
         data.add(Triple.create(n1, p, NodeFactory.createLiteralString("Girls44")) );
         InfGraph infgraph = createInfGraph(rules, data);
         infgraph.prepare();
-        TestUtil.assertIteratorValues(this, infgraph.getDeductionsGraph().find(null, null, null),
+        TestUtil.assertIteratorValues( infgraph.getDeductionsGraph().find(null, null, null),
                 new Triple[] {
             Triple.create(n1, q, NodeFactory.createLiteralString("")),
             Triple.create(n1, r, NodeFactory.createLiteralString("Girls")),
@@ -962,6 +977,7 @@ public class TestFBRules extends TestCase {
      * More extensive check of arithmetic which checks that binding to an
      * expected answer also works
      */
+    @Test
     public void testArithmetic() {
         doTestArithmetic("sum", 3, 5, 8);
         doTestArithmetic("difference", 5, 3, 2);
@@ -985,8 +1001,8 @@ public class TestFBRules extends TestCase {
         data.add(Triple.create(n1, r, Util.makeIntNode(expected)) );
         data.add(Triple.create(n1, t, Util.makeIntNode(expected+1)) );
         InfGraph infgraph = createInfGraph(rules, data);
-        assertTrue( infgraph.contains(n1, s, Util.makeIntNode(expected)));
-        assertFalse( infgraph.contains(n1, u, Node.ANY) );
+        assertTrue(infgraph.contains(n1, s, Util.makeIntNode(expected)));
+        assertFalse(infgraph.contains(n1, u, Node.ANY) );
     }
 
     /**
@@ -998,7 +1014,7 @@ public class TestFBRules extends TestCase {
         assertTrue(i.hasNext());
         Node result = i.next().getObject();
         if (i.hasNext()) {
-            assertTrue("multiple values not expected", false);
+            assertTrue(false, "multiple values not expected");
             i.close();
         }
         return result;
@@ -1008,6 +1024,7 @@ public class TestFBRules extends TestCase {
      * Investigate a suspicious case in the OWL ruleset, is the backchainer
      * returning duplicate values?
      */
+    @Test
     public void testDuplicatesEC4() {
         boolean prior = JenaParameters.enableFilteringOfHiddenInfNodes;
         try {
@@ -1042,23 +1059,24 @@ public class TestFBRules extends TestCase {
     /**
      * Test skolem constant generation
      */
+    @Test
     public void testSkolem() {
-        assertEquals( getSkolem(a, Util.makeIntNode(42)),
+        assertEquals(getSkolem(a, Util.makeIntNode(42)),
                       getSkolem(a, Util.makeIntNode(42)) );
 
-        assertNotSame( getSkolem(a, Util.makeIntNode(42)),
+        assertNotSame(getSkolem(a, Util.makeIntNode(42)),
                        getSkolem(b, Util.makeIntNode(42)) );
 
-        assertNotSame( getSkolem(a, Util.makeIntNode(42)),
+        assertNotSame(getSkolem(a, Util.makeIntNode(42)),
                        getSkolem(a, Util.makeIntNode(43)) );
 
-        assertNotSame( getSkolem(a, NodeFactory.createLiteralString("foo")),
+        assertNotSame(getSkolem(a, NodeFactory.createLiteralString("foo")),
                        getSkolem(a, NodeFactory.createLiteralLang("foo", "en")) );
 
-        assertEquals( getSkolem(NodeFactory.createLiteralString("foo")),
+        assertEquals(getSkolem(NodeFactory.createLiteralString("foo")),
                 getSkolem(NodeFactory.createLiteralString("foo")));
 
-        assertNotSame( getSkolem(NodeFactory.createLiteralString("foo")),
+        assertNotSame(getSkolem(NodeFactory.createLiteralString("foo")),
                        getSkolem(NodeFactory.createLiteralString("bar")));
     }
 

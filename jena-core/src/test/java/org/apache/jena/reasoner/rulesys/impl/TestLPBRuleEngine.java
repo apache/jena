@@ -21,12 +21,14 @@
 
 package org.apache.jena.reasoner.rulesys.impl;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import java.lang.reflect.Field;
 import java.util.List;
 
-import org.junit.Test;
 
-import junit.framework.TestCase;
 import org.apache.jena.graph.*;
 import org.apache.jena.reasoner.rulesys.FBRuleInfGraph;
 import org.apache.jena.reasoner.rulesys.FBRuleReasoner;
@@ -35,7 +37,7 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 
-public class TestLPBRuleEngine extends TestCase {
+public class TestLPBRuleEngine {
 	protected Node a = NodeFactory.createURI("a");
 	protected Node p = NodeFactory.createURI("p");
 	protected Node C1 = NodeFactory.createURI("C1");
@@ -112,7 +114,7 @@ public class TestLPBRuleEngine extends TestCase {
 		ExtendedIterator<Triple> it = infgraph.find(a, ty, C1);
 		it.close();
 		// how many were cached - in current configuration this will be zero because we retract the cache entry, in other settings might be one completed goal
-        assertTrue( engine.tabledGoals.size() <= 1 );
+        assertTrue(engine.tabledGoals.size() <= 1 );
 		// and no leaks of activeInterpreters
 		assertEquals(0, engine.activeInterpreters.size());
 
@@ -121,7 +123,7 @@ public class TestLPBRuleEngine extends TestCase {
 		it.close();
 
 		// if it was a cache hit, no change here:
-        assertTrue( engine.tabledGoals.size() <= 1 );
+        assertTrue(engine.tabledGoals.size() <= 1 );
 		assertEquals(0, engine.activeInterpreters.size());
 
 		//the cached generator should not have any consumingCP left

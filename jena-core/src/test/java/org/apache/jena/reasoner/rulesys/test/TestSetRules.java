@@ -21,10 +21,12 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import java.util.*;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.reasoner.*;
 import org.apache.jena.reasoner.rulesys.*;
@@ -33,25 +35,19 @@ import org.apache.jena.reasoner.rulesys.impl.WrappedReasonerFactory;
 /**
      TestSetRules - tests to bring setRules into existence on RuleReasonerFactory.
 */
-public class TestSetRules extends TestCase
-    {
-
-    public TestSetRules( String name )
-        { super( name ); }
-
-    public static TestSuite suite()
-        { return new TestSuite( TestSetRules.class ); }
+public class TestSetRules {
 
     static final List<Rule> rules = Rule.parseRules( "[name: (?s owl:foo ?p) -> (?s ?p ?a)]" );
 
+    @Test
     public void testRuleReasonerWrapper()
         {
         MockFactory mock = new MockFactory();
         ReasonerFactory wrapped = wrap( mock );
-        assertEquals( MockFactory.capabilities, wrapped.getCapabilities() );
-        assertEquals( MockFactory.uri, wrapped.getURI() );
-        assertEquals( MockFactory.reasoner, wrapped.create( null ) );
-        assertEquals( Arrays.asList( new Object[] {"capabilities", "uri", "create"} ),  mock.done );
+        assertEquals(MockFactory.capabilities, wrapped.getCapabilities() );
+        assertEquals(MockFactory.uri, wrapped.getURI() );
+        assertEquals(MockFactory.reasoner, wrapped.create( null ) );
+        assertEquals(Arrays.asList( new Object[] {"capabilities", "uri", "create"} ),  mock.done );
         }
 
     private static class MockFactory implements ReasonerFactory
@@ -62,7 +58,7 @@ public class TestSetRules extends TestCase
         static final Reasoner reasoner = new GenericRuleReasoner( rules );
 
         public void addRules( List<Rule> rules )
-            { assertEquals( TestSetRules.rules, rules );
+            { assertEquals(TestSetRules.rules, rules );
             done.add( "addRules" ); }
 
         @Override

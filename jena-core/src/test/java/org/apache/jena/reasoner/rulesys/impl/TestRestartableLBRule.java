@@ -21,11 +21,13 @@
 
 package org.apache.jena.reasoner.rulesys.impl;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import java.util.Iterator;
 
-import org.junit.Test;
 
-import junit.framework.TestCase;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.TransactionHandler;
@@ -40,7 +42,7 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.WrappedIterator;
 import org.apache.jena.vocabulary.RDF;
 
-public class TestRestartableLBRule extends TestCase {
+public class TestRestartableLBRule {
 
     private static  Graph createGraphForTest() {
         return GraphMemFactory.createDefaultGraph();
@@ -66,9 +68,9 @@ public class TestRestartableLBRule extends TestCase {
 
         InfModel infmodel = ModelFactory.createInfModel(reasoner, data);
 
-        assertTrue( queryN(infmodel, Person, 10) );
-        assertTrue( queryN(infmodel, Politician, 1000) );
-        assertTrue( queryN(infmodel, Person, 1000) );
+        assertTrue(queryN(infmodel, Person, 10) );
+        assertTrue(queryN(infmodel, Politician, 1000) );
+        assertTrue(queryN(infmodel, Person, 1000) );
     }
 
     private boolean queryN(Model model, Resource c, int n) {

@@ -21,8 +21,11 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Triple;
@@ -53,24 +56,17 @@ import java.util.Iterator;
  * have arisen from bug reports or user questions.
  */
 @SuppressWarnings("removal")
-public class TestOWLMisc extends TestCase  {
+public class TestOWLMisc {
 
     /**
      * Boilerplate for junit
      */
-    public TestOWLMisc( String name ) {
-        super( name );
-    }
 
     /**
      * Boilerplate for junit.
      * This is its own test suite
      */
-    public static TestSuite suite() {
-        return new TestSuite( TestOWLMisc.class );
-    }
-
-    @Override
+    @BeforeEach
     public void setUp() {
         // ensure the ont doc manager is in a consistent state
         OntDocumentManager.getInstance().reset( true );
@@ -79,6 +75,7 @@ public class TestOWLMisc extends TestCase  {
     /**
      * Test sameAs/differentFrom interaction
      */
+    @Test
     public void testSameAsDifferentFrom() {
         doTestSameAsDifferentFrom(OntModelSpec.OWL_MEM_MINI_RULE_INF);
         doTestSameAsDifferentFrom(OntModelSpec.OWL_MEM_RULE_INF);
@@ -96,8 +93,8 @@ public class TestOWLMisc extends TestCase  {
         Resource l4  = inf.getResource(NS + "limited4");
         Resource l2 = inf.getResource(NS + "limited2");
         Resource l3 = inf.getResource(NS + "limited3");
-        assertTrue( inf.contains(l4, OWL.differentFrom, l2) );
-        assertTrue( inf.contains(l4, OWL.differentFrom, l3) );
+        assertTrue(inf.contains(l4, OWL.differentFrom, l2) );
+        assertTrue(inf.contains(l4, OWL.differentFrom, l3) );
     }
 
     private void doTestDatatypeRangeValidation(RDFDatatype over12Type, OntModelSpec spec) {
@@ -124,6 +121,7 @@ public class TestOWLMisc extends TestCase  {
     /**
      * Test reported problem with OWL property axioms.
      */
+    @Test
     public void testOWLPropertyAxioms() {
         Model data = ModelFactory.createDefaultModel();
         Resource fp = data.createResource("urn:example:test/fp");
@@ -135,19 +133,20 @@ public class TestOWLMisc extends TestCase  {
         data.add(tp, RDF.type, OWL.TransitiveProperty);
         data.add(sp, RDF.type, OWL.SymmetricProperty);
         InfModel infmodel = ModelFactory.createInfModel(ReasonerRegistry.getOWLReasoner(), data);
-        assertTrue("property class axioms", infmodel.contains(fp, RDF.type, RDF.Property));
-        assertTrue("property class axioms", infmodel.contains(ifp, RDF.type, RDF.Property));
-        assertTrue("property class axioms", infmodel.contains(tp, RDF.type, RDF.Property));
-        assertTrue("property class axioms", infmodel.contains(sp, RDF.type, RDF.Property));
-        assertTrue("property class axioms", infmodel.contains(ifp, RDF.type, OWL.ObjectProperty));
-        assertTrue("property class axioms", infmodel.contains(tp, RDF.type,  OWL.ObjectProperty));
-        assertTrue("property class axioms", infmodel.contains(sp, RDF.type,  OWL.ObjectProperty));
+        assertTrue(infmodel.contains(fp, RDF.type, RDF.Property), "property class axioms");
+        assertTrue(infmodel.contains(ifp, RDF.type, RDF.Property), "property class axioms");
+        assertTrue(infmodel.contains(tp, RDF.type, RDF.Property), "property class axioms");
+        assertTrue(infmodel.contains(sp, RDF.type, RDF.Property), "property class axioms");
+        assertTrue(infmodel.contains(ifp, RDF.type, OWL.ObjectProperty), "property class axioms");
+        assertTrue(infmodel.contains(tp, RDF.type,  OWL.ObjectProperty), "property class axioms");
+        assertTrue(infmodel.contains(sp, RDF.type,  OWL.ObjectProperty), "property class axioms");
     }
 
     /**
      * Test  problems with inferring equivalence of some simple class definitions,
      * reported by Jeffrey Hau.
      */
+    @Test
     public void testEquivalentClass1() {
         Model base = ModelFactory.createDefaultModel();
         base.read("file:testing/reasoners/bugs/equivalentClassTest.owl");
@@ -155,7 +154,7 @@ public class TestOWLMisc extends TestCase  {
         String NAMESPACE = "urn:foo:abc#";
         Resource A = test.getResource(NAMESPACE + "A");
         Resource B = test.getResource(NAMESPACE + "B");
-        assertTrue("hasValue equiv deduction", test.contains(A, OWL.equivalentClass, B));
+        assertTrue(test.contains(A, OWL.equivalentClass, B), "hasValue equiv deduction");
     }
 
     /**
@@ -194,6 +193,7 @@ public class TestOWLMisc extends TestCase  {
     /**
      * Test bug with leaking variables which results in an incorrect "range = Nothing" deduction.
      */
+    @Test
     public void testRangeBug() {
         Model model = FileManager.getInternal().loadModelInternal("file:testing/reasoners/bugs/rangeBug.owl");
 //        Model m = ModelFactory.createDefaultModel();
@@ -209,6 +209,7 @@ public class TestOWLMisc extends TestCase  {
     /**
      * Test change of RDF specs to allow plain literals w/o lang and XSD string to be the same.
      */
+    @Test
     public void testLiteralBug() {
         Model model = FileManager.getInternal().loadModelInternal("file:testing/reasoners/bugs/dtValidation.owl");
 //        Model m = ModelFactory.createDefaultModel();
@@ -222,6 +223,7 @@ public class TestOWLMisc extends TestCase  {
      * Report of problems with cardinality v. maxCardinality usage in classification,
      * from Hugh Winkler.
      */
+    @Test
     public void testCardinality1() {
         Model base = ModelFactory.createDefaultModel();
         base.read("file:testing/reasoners/bugs/cardFPTest.owl");
@@ -229,7 +231,7 @@ public class TestOWLMisc extends TestCase  {
         String NAMESPACE = "urn:foo:abc#";
         Resource aDocument = test.getResource(NAMESPACE + "aDocument");
         Resource documentType = test.getResource(NAMESPACE + "Document");
-        assertTrue("Cardinality-based classification", test.contains(aDocument, RDF.type, documentType));
+        assertTrue(test.contains(aDocument, RDF.type, documentType), "Cardinality-based classification");
     }
 
     public static final String NS = "http://jena.hpl.hp.com/example#";
