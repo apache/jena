@@ -38,7 +38,7 @@ public class UnitsRegistry {
     private static final Map<String, Unit<?>> UNITS_REGISTRY = Collections.synchronizedMap(new HashMap<>());
     private static final Map<Unit<?>, String> UNITS_URI_REGISTRY = Collections.synchronizedMap(new HashMap<>());
 
-    private static final Unit<Length> YARD = Units.METRE.multiply(1.0936132983);
+    private static final Unit<Length> YARD = Units.METRE.multiply(0.9144);
 
     static {
 
