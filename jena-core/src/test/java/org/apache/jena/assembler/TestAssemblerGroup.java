@@ -21,6 +21,10 @@
 
 package org.apache.jena.assembler;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.assembler.assemblers.AssemblerBase;
 import org.apache.jena.assembler.assemblers.AssemblerGroup;
 import org.apache.jena.assembler.assemblers.AssemblerGroup.ExpandingAssemblerGroup;
@@ -36,15 +40,13 @@ import org.apache.jena.test.JenaTestLib;
 import org.apache.jena.vocabulary.RDFS;
 
 public class TestAssemblerGroup extends AssemblerTestBase {
-    public TestAssemblerGroup(String name) {
-        super(name);
-    }
 
     @Override
     protected Class<? extends Assembler> getAssemblerClass() {
         return AssemblerGroup.class;
     }
 
+    @Test
     public void testEmptyAssemblerGroup() {
         AssemblerGroup a = AssemblerGroup.create();
         JenaTestLib.assertInstanceOf(AssemblerGroup.class, a);
@@ -70,15 +72,16 @@ public class TestAssemblerGroup extends AssemblerTestBase {
         }
     }
 
+    @Test
     public void testLoadsClasses() {
         AssemblerGroup a = AssemblerGroup.create();
         a.implementWith(ModelTestLib.resource("T"), new MockAssembler());
         Resource root = resourceInModel("x rdf:type T; _c ja:loadClass '" + TestAssemblerGroup.class.getName() + "$Trivial'");
         // In case already loaded.
         loaded = false;
-        assertFalse("something has pre-loaded Trivial, so we can't test if it gets loaded", loaded);
+        assertFalse(loaded, "something has pre-loaded Trivial, so we can't test if it gets loaded");
         assertEquals("mockmockmock", a.open(root));
-        assertTrue("the assembler group did not obey the ja:loadClass directive", loaded);
+        assertTrue(loaded, "the assembler group did not obey the ja:loadClass directive");
     }
 
     static class MockAssembler extends AssemblerBase {
@@ -88,6 +91,7 @@ public class TestAssemblerGroup extends AssemblerTestBase {
         }
     }
 
+    @Test
     public void testSingletonAssemblerGroup() {
         AssemblerGroup a = AssemblerGroup.create();
         assertSame(a, a.implementWith(JA.InfModel, Assembler.infModel));
@@ -95,6 +99,7 @@ public class TestAssemblerGroup extends AssemblerTestBase {
         checkFailsType(a, "js:DefaultModel");
     }
 
+    @Test
     public void testMultipleAssemblerGroup() {
         AssemblerGroup a = AssemblerGroup.create();
         assertSame(a, a.implementWith(JA.InfModel, Assembler.infModel));
@@ -104,6 +109,7 @@ public class TestAssemblerGroup extends AssemblerTestBase {
         checkFailsType(a, "js:DefaultModel");
     }
 
+    @Test
     public void testImpliedType() {
         AssemblerGroup a = AssemblerGroup.create();
         Resource root = resourceInModel("x ja:reasoner y");
@@ -112,6 +118,7 @@ public class TestAssemblerGroup extends AssemblerTestBase {
         assertSame(expected, a.open(root));
     }
 
+    @Test
     public void testBuiltinGroup() {
         AssemblerGroup g = Assembler.general();
         JenaTestLib.assertInstanceOf(Model.class, g.open(resourceInModel("x rdf:type ja:DefaultModel")));
@@ -126,6 +133,7 @@ public class TestAssemblerGroup extends AssemblerTestBase {
         }
     };
 
+    @Test
     public void testAddingImplAddsSubclass() {
         final Model[] fullModel = new Model[1];
         AssemblerGroup g = new AssemblerGroup.ExpandingAssemblerGroup() {
@@ -149,6 +157,7 @@ public class TestAssemblerGroup extends AssemblerTestBase {
         }
     }
 
+    @Test
     public void testClassesLoadedBeforeAddingTypes() {
         String className = ImplementsSPOO.class.getName();
         Resource root = resourceInModel("_root rdf:type ja:MemoryModel; _x ja:loadClass '" + className + "'");
@@ -166,13 +175,14 @@ public class TestAssemblerGroup extends AssemblerTestBase {
             fail("expected a Model, but got a " + object.getClass());
     }
 
+    @Test
     public void testPassesSelfIn() {
         final AssemblerGroup group = AssemblerGroup.create();
         final Object result = new Object();
         Assembler fake = new AssemblerBase() {
             @Override
             public Object open(Assembler a, Resource root, Mode irrelevant) {
-                assertSame("nested call should pass in assembler group:", group, a);
+                assertSame(group, a, "nested call should pass in assembler group:");
                 return result;
             }
         };
@@ -180,6 +190,7 @@ public class TestAssemblerGroup extends AssemblerTestBase {
         assertSame(result, group.open(resourceInModel("x rdf:type ja:Object")));
     }
 
+    @Test
     public void testCopyPreservesMapping() {
         AssemblerGroup initial = AssemblerGroup.create().implementWith(JA.InfModel, new InfModelAssembler());
         AssemblerGroup copy = initial.copy();

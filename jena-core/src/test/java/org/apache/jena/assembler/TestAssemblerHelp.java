@@ -21,6 +21,10 @@
 
 package org.apache.jena.assembler;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import java.util.*;
 
 import org.apache.jena.assembler.assemblers.*;
@@ -31,15 +35,13 @@ import org.apache.jena.test.JenaTestLib;
 import org.apache.jena.vocabulary.RDF;
 
 public class TestAssemblerHelp extends AssemblerTestBase {
-    public TestAssemblerHelp(String name) {
-        super(name);
-    }
 
     @Override
     protected Class<? extends Assembler> getAssemblerClass() {
         throw new BrokenException("TestAssemblers does not need this method");
     }
 
+    @Test
     public void testClosureFootprint() {
         Resource root = resourceInModel("x ja:reasoner y");
         Statement footprint = root.getModel().createStatement(JA.This, RDF.type, JA.Expanded);
@@ -48,6 +50,7 @@ public class TestAssemblerHelp extends AssemblerTestBase {
         assertTrue(expanded.getModel().contains(footprint));
     }
 
+    @Test
     public void testFootprintPreventsClosure() {
         Resource root = resourceInModel("x ja:reasoner y; ja:this rdf:type ja:Expanded");
         Model original = model("").add(root.getModel());
@@ -56,11 +59,13 @@ public class TestAssemblerHelp extends AssemblerTestBase {
         ModelTestLib.assertIsoModels(original, expanded.getModel());
     }
 
+    @Test
     public void testSpecificType() {
         testSpecificType("ja:NamedModel", "x ja:modelName 'name'");
         testSpecificType("ja:NamedModel", "x ja:modelName 'name'; x rdf:type irrelevant");
     }
 
+    @Test
     public void testFindSpecificTypes() {
         testFindSpecificTypes("", "x rdf:type A", "Top");
         testFindSpecificTypes("", "x rdf:type A; x rdf:type B", "Top");
@@ -78,30 +83,35 @@ public class TestAssemblerHelp extends AssemblerTestBase {
         assertEquals(expected, answer);
     }
 
+    @Test
     public void testFindRootByExplicitType() {
         Model model = model("x rdf:type ja:Object; y rdf:type Irrelevant");
         Set<Resource> roots = AssemblerHelp.findAssemblerRoots(model);
         assertEquals(ModelTestLib.resourceSet("x"), roots);
     }
 
+    @Test
     public void testFindRootByImplicitType() {
         Model model = model("x ja:reificationMode ja:Standard");
         Set<Resource> roots = AssemblerHelp.findAssemblerRoots(model);
         assertEquals(ModelTestLib.resourceSet("x"), roots);
     }
 
+    @Test
     public void testFindMultipleRoots() {
         Model model = model("x rdf:type ja:Object; y ja:reificationMode ja:Minimal");
         Set<Resource> roots = AssemblerHelp.findAssemblerRoots(model);
         assertEquals(ModelTestLib.resourceSet("y x"), roots);
     }
 
+    @Test
     public void testFindRootsWithSpecifiedType() {
         Model model = model("x rdf:type ja:Model; y rdf:type ja:Object");
         Set<Resource> roots = AssemblerHelp.findAssemblerRoots(model, JA.Model);
         assertEquals(ModelTestLib.resourceSet("x"), roots);
     }
 
+    @Test
     public void testThrowsIfNoRoots() {
         try {
             AssemblerHelp.singleModelRoot(model(""));
@@ -111,6 +121,7 @@ public class TestAssemblerHelp extends AssemblerTestBase {
         }
     }
 
+    @Test
     public void testThrowsIfManyRoots() {
         try {
             AssemblerHelp.singleModelRoot(model("a rdf:type ja:Model; b rdf:type ja:Model"));
@@ -120,11 +131,13 @@ public class TestAssemblerHelp extends AssemblerTestBase {
         }
     }
 
+    @Test
     public void testExtractsSingleRoot() {
         Resource it = AssemblerHelp.singleModelRoot(model("a rdf:type ja:Model"));
         assertEquals(ModelTestLib.resource("a"), it);
     }
 
+    @Test
     public void testSpecificTypeFails() {
         try {
             testSpecificType("xxx", "x rdf:type ja:Model; x rdf:type ja:PrefixMapping");
@@ -191,6 +204,7 @@ public class TestAssemblerHelp extends AssemblerTestBase {
         }
     }
 
+    @Test
     public void testClassAssociation() {
         String className = "org.apache.jena.assembler.TestAssemblerHelp$Imp";
         AssemblerGroup group = AssemblerGroup.create();
@@ -204,6 +218,7 @@ public class TestAssemblerHelp extends AssemblerTestBase {
         assertEquals(className, group.assemblerFor(ModelTestLib.resource("eh:Wossname")).getClass().getName());
     }
 
+    @Test
     public void testClassResourceConstructor() {
         AssemblerGroup group = AssemblerGroup.create();
         Model m = model("eh:Wossname ja:assembler 'org.apache.jena.assembler.TestAssemblerHelp$Gremlin'");

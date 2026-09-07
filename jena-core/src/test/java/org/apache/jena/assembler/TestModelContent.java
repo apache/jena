@@ -21,41 +21,48 @@
 
 package org.apache.jena.assembler;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import java.util.*;
 
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.test.JenaTestLib;
 
 public class TestModelContent extends AssemblerTestBase {
-    public TestModelContent(String name) {
-        super(name);
-    }
 
     @Override
     protected Class<? extends Assembler> getAssemblerClass() {
         return null;
     }
 
+    @Test
     public void testMemoryModelLoadsSingleContent() {
         testModelLoadsSingleContent(Assembler.memoryModel, JA.MemoryModel);
     }
 
+    @Test
     public void testMemoryModelLoadsMultipleContent() {
         testModelLoadsMultipleContent(Assembler.memoryModel, JA.MemoryModel);
     }
 
+    @Test
     public void testDefaultModelLoadsSingleContent() {
         testModelLoadsSingleContent(Assembler.defaultModel, JA.DefaultModel);
     }
 
+    @Test
     public void testDefaultModelLoadsMultipleContent() {
         testModelLoadsMultipleContent(Assembler.defaultModel, JA.DefaultModel);
     }
 
+    @Test
     public void testInfModelLoadsContent() {
         testModelLoadsMultipleContent(Assembler.infModel, JA.InfModel);
     }
 
+    @Test
     public void testContentTransactionsNone() {
         final List<String> history = new ArrayList<>();
         final Model expected = model("_x rdf:value '17'xsd:integer");
@@ -66,6 +73,7 @@ public class TestModelContent extends AssemblerTestBase {
         } catch (RuntimeException e) {}
     }
 
+    @Test
     public void testContentTransactionsCommit() {
         final List<String> history = new ArrayList<>();
         final Model expected = model("_x rdf:value '17'xsd:integer");
@@ -76,6 +84,7 @@ public class TestModelContent extends AssemblerTestBase {
         ModelTestLib.assertIsoModels(expected, m);
     }
 
+    @Test
     public void testContentTransactionsAbort() {
         final List<String> history = new ArrayList<>();
         final Model expected = model("_x rdf:value '17'xsd:integer");

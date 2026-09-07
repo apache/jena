@@ -21,23 +21,26 @@
 
 package org.apache.jena.assembler;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.assembler.assemblers.MemoryModelAssembler;
 import org.apache.jena.rdf.model.Model;
 
 public class TestMemoryModelAssembler extends AssemblerTestBase {
-    public TestMemoryModelAssembler(String name) {
-        super(name);
-    }
 
     @Override
     protected Class<? extends Assembler> getAssemblerClass() {
         return MemoryModelAssembler.class;
     }
 
+    @Test
     public void testMemoryModelAssemblerType() {
         testDemandsMinimalType(new MemoryModelAssembler(), JA.MemoryModel);
     }
 
+    @Test
     public void testMemoryModelAssembler() {
         Assembler a = new MemoryModelAssembler();
         Model m = a.openModel(resourceInModel("x rdf:type ja:MemoryModel"));

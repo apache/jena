@@ -21,6 +21,10 @@
 
 package org.apache.jena.assembler;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.assembler.assemblers.ContentAssembler;
 import org.apache.jena.assembler.exceptions.UnknownEncodingException;
 import org.apache.jena.rdf.model.*;
@@ -29,25 +33,24 @@ import org.apache.jena.util.*;
 public class TestContentAssembler extends AssemblerTestBase {
     protected static String Testing = "testing/assemblers";
 
-    public TestContentAssembler(String name) {
-        super(name);
-    }
-
     @Override
     protected Class<? extends Assembler> getAssemblerClass() {
         return ContentAssembler.class;
     }
 
+    @Test
     public void testContentAssemblerType() {
         testDemandsMinimalType(new ContentAssembler(), JA.Content);
     }
 
+    @Test
     public void testContentVocabulary() {
         assertSubclassOf(JA.Content, JA.HasFileManager);
         assertSubclassOf(JA.ContentItem, JA.Content);
-        // assertSubclassOf( JA.LiteralContent, JA.Content );
+        // assertSubclassOf(JA.LiteralContent, JA.Content );
     }
 
+    @Test
     public void testContent() {
         Assembler a = new ContentAssembler();
         Content c = (Content)a.open(resourceInModel("x rdf:type ja:Content"));
@@ -57,6 +60,7 @@ public class TestContentAssembler extends AssemblerTestBase {
         assertEquals(0, m.size());
     }
 
+    @Test
     public void testMultipleLiteralsWorks() {
         Assembler a = new ContentAssembler();
         String A = "<eh:/A> a <eh:/Type>.".replaceAll(" ", "\\\\s");
@@ -67,6 +71,7 @@ public class TestContentAssembler extends AssemblerTestBase {
         ModelTestLib.assertIsoModels(model("Type rdf:type rdfs:Class; A rdf:type Type"), C.fill(model("")));
     }
 
+    @Test
     public void testN3StringContentSingleTriples() {
         testStringContent("_x rdf:value '17'xsd:integer", "_:x rdf:value 17 .");
         testStringContent("_x rdf:value '42'xsd:integer", "_:x rdf:value 42 .");
@@ -76,10 +81,12 @@ public class TestContentAssembler extends AssemblerTestBase {
         testStringContent("_x dc:title 'A\\sTitle'", "_:x dc:title 'A Title' .");
     }
 
+    @Test
     public void testN3StringContentMultipleTriples() {
         testStringContent("x rdf:value 5; y owl:sameAs x", "<eh:/x> rdf:value 5 . <eh:/y> owl:sameAs <eh:/x> .");
     }
 
+    @Test
     public void testRDFXMLContent() {
         Assembler a = new ContentAssembler();
         String Stuff = "<owl:Class></owl:Class>".replaceAll(" ", "\\\\s");
@@ -89,6 +96,7 @@ public class TestContentAssembler extends AssemblerTestBase {
         ModelTestLib.assertIsoModels(model("_x rdf:type owl:Class"), c.fill(model("")));
     }
 
+    @Test
     public void testSingleExternalContent() {
         Assembler a = new ContentAssembler();
         String source = Testing + "/schema.n3";
@@ -97,6 +105,7 @@ public class TestContentAssembler extends AssemblerTestBase {
         ModelTestLib.assertIsoModels(FileManager.getInternal().loadModelInternal("file:" + source), c.fill(model("")));
     }
 
+    @Test
     public void testMultipleExternalContent() {
         Assembler a = new ContentAssembler();
         String sourceA = Testing + "/schema.n3";
@@ -109,6 +118,7 @@ public class TestContentAssembler extends AssemblerTestBase {
         ModelTestLib.assertIsoModels(wanted, c.fill(model("")));
     }
 
+    @Test
     public void testIndirectContent() {
         Assembler a = new ContentAssembler();
         Resource root = resourceInModel("x rdf:type ja:Content; x ja:content y" + "; y rdf:type ja:Content; y ja:content z"
@@ -118,6 +128,7 @@ public class TestContentAssembler extends AssemblerTestBase {
         ModelTestLib.assertIsoModels(wanted, c.fill(model("")));
     }
 
+    @Test
     public void testTrapsBadEncodings() {
         Assembler a = new ContentAssembler();
         Resource root = resourceInModel("x rdf:type ja:Content; x ja:contentEncoding 'bogus'; x ja:literalContent 'sham'");
@@ -130,6 +141,7 @@ public class TestContentAssembler extends AssemblerTestBase {
         }
     }
 
+    @Test
     public void testContentTrapsBadObjects() {
         testContentTrapsBadObjects("ja:content", "17");
         // testContentTrapsBadObjects( "ja:externalContent", "17" );
@@ -152,6 +164,7 @@ public class TestContentAssembler extends AssemblerTestBase {
         }
     }
 
+    @Test
     public void testMixedContent() {
         Assembler a = new ContentAssembler();
         String source = Testing + "/schema.n3";
@@ -163,6 +176,7 @@ public class TestContentAssembler extends AssemblerTestBase {
         ModelTestLib.assertIsoModels(wanted, c.fill(model("")));
     }
 
+    @Test
     public void testSingleContentQuotation() {
         Assembler a = new ContentAssembler();
         Resource root = resourceInModel("c rdf:type ja:Content; c rdf:type ja:QuotedContent; c ja:quotedContent x; x P A; x Q B");
@@ -170,6 +184,7 @@ public class TestContentAssembler extends AssemblerTestBase {
         ModelTestLib.assertIsoModels(model("x P A; x Q B"), c.fill(model("")));
     }
 
+    @Test
     public void testMultipleContentQuotation() {
         Assembler a = new ContentAssembler();
         Resource root = resourceInModel("c rdf:type ja:Content; c rdf:type ja:QuotedContent; c ja:quotedContent x"
@@ -178,6 +193,7 @@ public class TestContentAssembler extends AssemblerTestBase {
         ModelTestLib.assertIsoModels(model("x P A; x Q B; y R C"), c.fill(model("")));
     }
 
+    @Test
     public void testContentLoadsPrefixMappings() {
         Assembler a = new ContentAssembler();
         String content = "@prefix foo: <eh:/foo#>. <eh:/eggs> rdf:type rdf:Property.".replaceAll(" ", "\\\\s");
@@ -200,16 +216,19 @@ public class TestContentAssembler extends AssemblerTestBase {
 
     /* -- ContentAssembler FileManager tests ---------------------------------- */
 
+    @Test
     public void testContentAssemblerHasNoDefaultFileManager() {
-        assertNull("by default, ContentAssemblers have no FileManager", new ContentAssembler().getFileManager());
+        assertNull(new ContentAssembler().getFileManager(), "by default, ContentAssemblers have no FileManager");
     }
 
+    @Test
     public void testContentAssemblerHasSuppliedFileManager() {
         @SuppressWarnings("deprecation")
         FileManager fm = FileManager.create();
         assertSame(fm, new ContentAssembler(fm).getFileManager());
     }
 
+    @Test
     public void testUsesSuppliedFileManager() {
         final boolean[] used = {false};
         FileManager fm = new FileManagerImpl() {
@@ -224,9 +243,10 @@ public class TestContentAssembler extends AssemblerTestBase {
         Resource root = resourceInModel("x rdf:type ja:Content; x rdf:type ja:ExternalContent; x ja:externalContent file:" + source);
         Content c = (Content)a.open(root);
         ModelTestLib.assertIsoModels(FileManager.getInternal().loadModelInternal("file:" + source), c.fill(model("")));
-        assertTrue("the supplied file manager must have been used", used[0]);
+        assertTrue(used[0], "the supplied file manager must have been used");
     }
 
+    @Test
     public void testContentAssemblerUsesFileManagerProperty() {
         Model expected = model("a P b");
         String fileName = "file:spoo";

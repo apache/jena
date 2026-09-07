@@ -21,6 +21,10 @@
 
 package org.apache.jena.assembler;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -39,24 +43,23 @@ import org.apache.jena.test.JenaTestLib;
 public class TestReasonerFactoryAssembler extends AssemblerTestBase {
     private final Assembler ASSEMBLER = new ReasonerFactoryAssembler();
 
-    public TestReasonerFactoryAssembler(String name) {
-        super(name);
-    }
-
     @Override
     protected Class<? extends Assembler> getAssemblerClass() {
         return ReasonerFactoryAssembler.class;
     }
 
+    @Test
     public void testReasonerFactoryAssemblerType() {
         testDemandsMinimalType(new ReasonerFactoryAssembler(), JA.ReasonerFactory);
     }
 
+    @Test
     public void testCreateReasonerFactory() {
         Resource root = resourceInModel("x rdf:type ja:ReasonerFactory");
         JenaTestLib.assertInstanceOf(GenericRuleReasonerFactory.class, ASSEMBLER.open(root));
     }
 
+    @Test
     public void testStandardReasonerURLs() {
         testReasonerURL(GenericRuleReasonerFactory.class, GenericRuleReasonerFactory.URI);
         testReasonerURL(TransitiveReasonerFactory.class, TransitiveReasonerFactory.URI);
@@ -66,6 +69,7 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase {
         testReasonerURL(OWLMiniReasonerFactory.class, OWLMiniReasonerFactory.URI);
     }
 
+    @Test
     public void testBadReasonerURLFails() {
         Resource root = resourceInModel("x rdf:type ja:ReasonerFactory; x ja:reasonerURL bad:URL");
         try {
@@ -101,6 +105,7 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase {
         }
     }
 
+    @Test
     public void testReasonerClassThrowsIfClassNotFound() {
         String description = "x rdf:type ja:ReasonerFactory; x ja:reasonerClass java:noSuchClass";
         Resource root = resourceInModel(description);
@@ -112,6 +117,7 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase {
         }
     }
 
+    @Test
     public void testReasonerClassThrowsIfClassNotFactory() {
         String description = "x rdf:type ja:ReasonerFactory; x ja:reasonerClass java:java.util.ArrayList";
         Resource root = resourceInModel(description);
@@ -125,6 +131,7 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase {
         }
     }
 
+    @Test
     public void testReasonerClassUsesTheInstance() {
         String description = "x rdf:type ja:ReasonerFactory; x ja:reasonerClass java:";
         String MockName = MockFactory.class.getName();
@@ -132,6 +139,7 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase {
         assertEquals(MockFactory.instance, ASSEMBLER.open(root));
     }
 
+    @Test
     public void testReasonerClassInstantiatesIfNoInstance() {
         String description = "x rdf:type ja:ReasonerFactory; x ja:reasonerClass java:";
         String MockName = MockBase.class.getName();
@@ -140,6 +148,7 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase {
         assertNotSame(MockFactory.instance, ASSEMBLER.open(root));
     }
 
+    @Test
     public void testMultipleURLsFails() {
         Resource root = resourceInModel("x rdf:type ja:ReasonerFactory; x ja:reasonerURL bad:URL; x ja:reasonerURL another:bad/URL");
         try {
@@ -151,6 +160,7 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase {
         }
     }
 
+    @Test
     public void testOnlyGenericReasonerCanHaveRules() {
         String url = TransitiveReasonerFactory.URI;
         Resource root = resourceInModel("x rdf:type ja:ReasonerFactory; x ja:rule '[->(a\\sP\\sb)]'; x ja:reasonerURL " + url);
@@ -162,6 +172,7 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase {
         } catch (CannotHaveRulesException e) {}
     }
 
+    @Test
     public void testSchema() {
         Model schema = model("P rdf:type owl:ObjectProperty");
         Resource root = resourceInModel("x rdf:type ja:ReasonerFactory; x ja:schema S");
@@ -171,6 +182,7 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase {
         GraphTestLib.assertIsomorphic(schema.getGraph(), ((FBRuleReasoner)r).getBoundSchema());
     }
 
+    @Test
     public void testSingleRules() {
         Resource root = resourceInModel("x rdf:type ja:ReasonerFactory; x ja:rules S");
         String ruleStringA = "[rdfs2:  (?x ?p ?y), (?p rdfs:domain ?c) -> (?x rdf:type ?c)]";
@@ -187,6 +199,7 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase {
         assertEquals(new HashSet<>(rules.getRules()), new HashSet<>(grr.getRules()));
     }
 
+    @Test
     public void testMultipleRules() {
         Resource root = resourceInModel("x rdf:type ja:ReasonerFactory; x ja:rules S; x ja:rules T");
         String ruleStringA = "[rdfs2:  (?x ?p ?y), (?p rdfs:domain ?c) -> (?x rdf:type ?c)]";

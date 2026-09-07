@@ -21,9 +21,18 @@
 
 package org.apache.jena.assembler;
 
-import java.lang.reflect.Field;
+import static org.junit.jupiter.api.Assertions.*;
 
-import junit.framework.*;
+import java.util.Arrays;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.assembler.assemblers.*;
 import org.apache.jena.assembler.exceptions.ReasonerClashException;
 import org.apache.jena.ontology.*;
@@ -36,41 +45,33 @@ import org.apache.jena.test.JenaTestLib;
 
 @SuppressWarnings("removal")
 public class TestOntModelSpecAssembler extends AssemblerTestBase {
-    public TestOntModelSpecAssembler(String name) {
-        super(name);
-    }
 
     @Override
     protected Class<? extends Assembler> getAssemblerClass() {
         return OntModelSpecAssembler.class;
     }
 
+    @Test
     public void testOntModelSpecAssemblerType() {
         testDemandsMinimalType(new OntModelSpecAssembler(), JA.OntModelSpec);
     }
 
-    public static TestSuite suite() {
-        TestSuite result = new TestSuite();
-        result.addTestSuite(TestOntModelSpecAssembler.class);
-        addParameterisedTests(result);
-        return result;
+    /** One case per public {@code OntModelSpec} constant - was addParameterisedTests(). */
+    static Stream<Arguments> builtinSpecs() {
+        return Arrays.stream(OntModelSpec.class.getFields())
+                     .filter(f->f.getType() == OntModelSpec.class)
+                     .map(f->{
+                         try {
+                             return Arguments.of(Named.of(f.getName(), (OntModelSpec)f.get(null)), f.getName());
+                         } catch (IllegalAccessException e) {
+                             throw new RuntimeException(e);
+                         }
+                     });
     }
 
-    protected static void addParameterisedTests(TestSuite result) {
-        Field[] fields = OntModelSpec.class.getFields();
-        for ( Field f : fields ) {
-            String name = f.getName();
-            if ( f.getType() == OntModelSpec.class ) {
-                try {
-                    result.addTest(createTest((OntModelSpec)f.get(null), name));
-                } catch (Exception e) {
-                    System.err.println("WARNING: failed to create test for OntModelSpec " + name);
-                }
-            }
-        }
-    }
-
-    protected void testBuiltinSpec(OntModelSpec ontModelSpec, String specName) {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("builtinSpecs")
+    public void testBuiltinSpec(OntModelSpec ontModelSpec, String specName) {
         testBuiltinSpecAsRootName(ontModelSpec, specName);
         testBuiltinSpecAsLikeTarget(ontModelSpec, specName);
     }
@@ -85,21 +86,14 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase {
         assertEquals(ontModelSpec, new OntModelSpecAssembler().open(root));
     }
 
-    protected static Test createTest(final OntModelSpec spec, final String name) {
-        return new TestOntModelSpecAssembler(name) {
-            @Override
-            public void runBare() {
-                testBuiltinSpec(spec, name);
-            }
-        };
-    }
-
+    @Test
     public void testOntModelSpecVocabulary() {
         assertDomain(JA.OntModelSpec, JA.ontLanguage);
         assertDomain(JA.OntModelSpec, JA.documentManager);
         assertDomain(JA.OntModelSpec, JA.likeBuiltinSpec);
     }
 
+    @Test
     public void testCreateFreshDocumentManager() {
         Assembler a = new OntModelSpecAssembler();
         Resource root = resourceInModel("x rdf:type ja:OntModelSpec; x ja:documentManager y");
@@ -109,6 +103,7 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase {
         assertSame(dm, om.getDocumentManager());
     }
 
+    @Test
     public void testUseSpecifiedReasoner() {
         Assembler a = new OntModelSpecAssembler();
         Resource root = resourceInModel("x rdf:type ja:OntModelSpec; x ja:reasonerFactory R");
@@ -118,6 +113,7 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase {
         assertSame(rf, om.getReasonerFactory());
     }
 
+    @Test
     public void testUseSpecifiedImpliedReasoner() {
         testUsedSpecifiedImpliedReasoner(OWLFBRuleReasonerFactory.URI);
         testUsedSpecifiedImpliedReasoner(RDFSRuleReasonerFactory.URI);
@@ -132,6 +128,7 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase {
         assertSame(rf, om.getReasonerFactory());
     }
 
+    @Test
     public void testDetectsClashingImpliedAndExplicitReasoners() {
         Assembler a = new OntModelSpecAssembler();
         Resource root = resourceInModel("x rdf:type ja:OntModelSpec; x ja:reasonerURL R; x ja:reasonerFactory F");
@@ -144,6 +141,7 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase {
         }
     }
 
+    @Test
     public void testUseSpecifiedLanguage() {
         testSpecifiedLanguage(ProfileRegistry.OWL_DL_LANG);
         testSpecifiedLanguage(ProfileRegistry.OWL_LANG);
@@ -158,6 +156,7 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase {
         assertEquals(lang, om.getLanguage());
     }
 
+    @Test
     public void testSpecifiedModelGetter() {
         Assembler a = new OntModelSpecAssembler();
         ModelGetter getter = new ModelGetter() {

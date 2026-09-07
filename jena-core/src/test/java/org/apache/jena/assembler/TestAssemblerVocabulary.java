@@ -21,18 +21,20 @@
 
 package org.apache.jena.assembler;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.rdf.model.*;
 
 public class TestAssemblerVocabulary extends AssemblerTestBase {
-    public TestAssemblerVocabulary(String name) {
-        super(name);
-    }
 
     @Override
     protected Class<? extends Assembler> getAssemblerClass() {
         return null;
     }
 
+    @Test
     public void testVocabulary() {
         assertEquals("http://jena.hpl.hp.com/2005/11/Assembler#", JA.getURI());
         assertEquals("http://jena.hpl.hp.com/2005/11/Assembler#", JA.uri);
@@ -88,6 +90,7 @@ public class TestAssemblerVocabulary extends AssemblerTestBase {
         assertEquals(JA.uri + local, resource.getURI());
     }
 
+    @Test
     public void testObjectTypes() {
         assertSubclassOf(JA.Model, JA.Object);
         assertSubclassOf(JA.PrefixMapping, JA.Object);
@@ -97,6 +100,7 @@ public class TestAssemblerVocabulary extends AssemblerTestBase {
         assertSubclassOf(JA.ReasonerFactory, JA.Object);
     }
 
+    @Test
     public void testModelTypes() {
         assertSubclassOf(JA.MemoryModel, JA.Model);
         assertSubclassOf(JA.DefaultModel, JA.Model);
@@ -104,16 +108,18 @@ public class TestAssemblerVocabulary extends AssemblerTestBase {
         assertSubclassOf(JA.OntModel, JA.InfModel);
         assertSubclassOf(JA.NamedModel, JA.Model);
         assertSubclassOf(JA.FileModel, JA.NamedModel);
-        // assertSubclassOf( JA.OntModelSpec, JA.ReasonerFactory );
+        // assertSubclassOf(JA.OntModelSpec, JA.ReasonerFactory );
     }
 
+    @Test
     public void testInfModelProperties() {
         assertDomain(JA.InfModel, JA.baseModel);
         assertDomain(JA.InfModel, JA.reasoner);
     }
 
+    @Test
     public void testOntModelProperties() {
         assertDomain(JA.OntModel, JA.ontModelSpec);
-        // assertRange( JA.ReasonerFactory, JA.reasonerURL );
+        // assertRange(JA.ReasonerFactory, JA.reasonerURL );
     }
 }

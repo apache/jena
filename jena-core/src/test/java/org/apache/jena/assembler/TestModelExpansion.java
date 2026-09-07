@@ -21,16 +21,18 @@
 
 package org.apache.jena.assembler;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import java.util.*;
 
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.test.JenaTestLib;
 
 public class TestModelExpansion extends AssemblerTestBase {
-    public TestModelExpansion(String name) {
-        super(name);
-    }
 
+    @Test
     public void testAddsSubclasses() {
         Model base = model("a R b");
         Model schema = model("x rdfs:subClassOf y; y P z");
@@ -38,6 +40,7 @@ public class TestModelExpansion extends AssemblerTestBase {
         ModelTestLib.assertIsoModels(model("a R b; x rdfs:subClassOf y"), answer);
     }
 
+    @Test
     public void testOmitsAnonynousSubclasses() {
         Model base = model("a R b");
         Model schema = model("x rdfs:subClassOf _y; z rdfs:subClassOf _a");
@@ -45,6 +48,7 @@ public class TestModelExpansion extends AssemblerTestBase {
         ModelTestLib.assertIsoModels(model("a R b"), answer);
     }
 
+    @Test
     public void testAddsDomainTypes() {
         Model base = model("a R b");
         Model schema = model("R rdfs:domain T");
@@ -52,6 +56,7 @@ public class TestModelExpansion extends AssemblerTestBase {
         ModelTestLib.assertIsoModels(model("a R b; a rdf:type T"), answer);
     }
 
+    @Test
     public void testAddsRangeTypes() {
         Model base = model("a R b");
         Model schema = model("R rdfs:range T");
@@ -59,12 +64,14 @@ public class TestModelExpansion extends AssemblerTestBase {
         ModelTestLib.assertIsoModels(model("a R b; b rdf:type T"), answer);
     }
 
+    @Test
     public void testLabelsDontCrashExpansion() {
         Model base = ModelFactory.createRDFSModel(model("a R b; a rdfs:label 'hello'"));
         Model schema = ModelFactory.createRDFSModel(model("R rdfs:range T"));
         Model answer = ModelExpansion.withSchema(base, schema);
     }
 
+    @Test
     public void testIntersection() {
         testIntersection("x rdf:type T; x rdf:type U", true, "T U");
         testIntersection("x rdf:type T; x rdf:type U", true, "T");
@@ -76,7 +83,7 @@ public class TestModelExpansion extends AssemblerTestBase {
         Model base = model(xTyped);
         Model schema = intersectionModel("I", intersectionTypes);
         Model answer = ModelExpansion.withSchema(base, schema);
-        assertEquals("should [not] infer (x rdf:type I)", infers, answer.contains(ModelTestLib.statement("x rdf:type I")));
+        assertEquals(infers, answer.contains(ModelTestLib.statement("x rdf:type I")), "should [not] infer (x rdf:type I)");
     }
 
     private Model intersectionModel(String inter, String types) {
@@ -96,6 +103,7 @@ public class TestModelExpansion extends AssemblerTestBase {
         return result.toString();
     }
 
+    @Test
     public void testAddsSupertypes() {
         Model base = model("a rdf:type T; T rdfs:subClassOf U");
         Model schema = model("T rdfs:subClassOf V");
@@ -103,18 +111,21 @@ public class TestModelExpansion extends AssemblerTestBase {
         ModelTestLib.assertIsoModels(model("a rdf:type T; a rdf:type U; a rdf:type V; T rdfs:subClassOf U; T rdfs:subClassOf V"), answer);
     }
 
+    @Test
     public void testSubclassClosureA() {
         Model m = model("A rdfs:subClassOf B; B rdfs:subClassOf C");
         subClassClosure(m);
         ModelTestLib.assertIsoModels(model("A rdfs:subClassOf B; B rdfs:subClassOf C; A rdfs:subClassOf C"), m);
     }
 
+    @Test
     public void testSubclassClosureB() {
         Model m = model("A rdfs:subClassOf B; B rdfs:subClassOf C; X rdfs:subClassOf C");
         subClassClosure(m);
         ModelTestLib.assertIsoModels(model("A rdfs:subClassOf B; B rdfs:subClassOf C; A rdfs:subClassOf C; X rdfs:subClassOf C"), m);
     }
 
+    @Test
     public void testSubclassClosureC() {
         Model m = model("A rdfs:subClassOf B; B rdfs:subClassOf C; X rdfs:subClassOf C; Y rdfs:subClassOf X");
         subClassClosure(m);
@@ -122,6 +133,7 @@ public class TestModelExpansion extends AssemblerTestBase {
                         m);
     }
 
+    @Test
     public void testSubclassClosureD() {
         Model m = model("A rdfs:subClassOf B; B rdfs:subClassOf C; X rdfs:subClassOf C; Y rdfs:subClassOf X; U rdfs:subClassOf A; U rdfs:subClassOf Y");
         subClassClosure(m);
@@ -129,6 +141,7 @@ public class TestModelExpansion extends AssemblerTestBase {
                         m);
     }
 
+    @Test
     public void testSubclassClosureE() {
         Model m = model("A rdfs:subClassOf B; B rdfs:subClassOf C");
         subClassClosure(m);

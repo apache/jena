@@ -21,6 +21,10 @@
 
 package org.apache.jena.assembler;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.assembler.assemblers.ContentAssembler;
 import org.apache.jena.assembler.assemblers.ModelAssembler;
 import org.apache.jena.rdf.model.Model;
@@ -37,21 +41,19 @@ public class TestModelAssembler extends AssemblerTestBase {
         }
     }
 
-    public TestModelAssembler(String name) {
-        super(name);
-    }
-
     @Override
     protected Class<? extends Assembler> getAssemblerClass() {
         return null;
     }
 
+    @Test
     public void testContent() {
         Resource root = resourceInModel("x rdf:type ja:DefaultModel; x ja:initialContent c; c ja:quotedContent A; A P B");
         Model m = (Model)new FakeModelAssembler().open(new ContentAssembler(), root, Mode.ANY);
         ModelTestLib.assertIsoModels(ModelTestLib.modelWithStatements("A P B"), m);
     }
 
+    @Test
     public void testGetsPrefixMappings() {
         Assembler a = new FakeModelAssembler();
         PrefixMapping wanted = PrefixMapping.Factory.create().setNsPrefix("my", "urn:secret:42/").setNsPrefix("your", "urn:public:17#");

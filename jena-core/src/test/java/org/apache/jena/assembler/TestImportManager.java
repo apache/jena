@@ -21,6 +21,10 @@
 
 package org.apache.jena.assembler;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import java.util.*;
 
 import org.apache.jena.graph.compose.MultiUnion;
@@ -31,9 +35,6 @@ import org.apache.jena.util.FileManager;
 import org.apache.jena.util.FileManagerImpl;
 
 public class TestImportManager extends AssemblerTestBase {
-    public TestImportManager(String name) {
-        super(name);
-    }
 
     static class FixedFileManager extends FileManagerImpl {
         Map<String, Model> map = new HashMap<>();
@@ -52,6 +53,7 @@ public class TestImportManager extends AssemblerTestBase {
         }
     }
 
+    @Test
     public void testFollowOwlImports() {
         final Model modelToLoad = model("this hasMarker B5");
         Model m = model("x ja:reasoner y; _x owl:imports eh:/loadMe");
@@ -61,6 +63,7 @@ public class TestImportManager extends AssemblerTestBase {
         ModelTestLib.assertIsoModels(modelToLoad.union(m), m2);
     }
 
+    @Test
     public void testFollowJAImports() {
         final Model modelToLoad = model("this hasMarker B5");
         Model m = model("x ja:reasoner y; _x ja:imports eh:/loadMe");
@@ -70,6 +73,7 @@ public class TestImportManager extends AssemblerTestBase {
         ModelTestLib.assertIsoModels(modelToLoad.union(m), m2);
     }
 
+    @Test
     public void testImportMayBeLiteral() {
         final Model modelToLoad = model("this hasMarker B5");
         Model m = model("x ja:reasoner y; _x ja:imports 'eh:/loadMe'");
@@ -79,6 +83,7 @@ public class TestImportManager extends AssemblerTestBase {
         ModelTestLib.assertIsoModels(modelToLoad.union(m), m2);
     }
 
+    @Test
     public void testBadImportObjectFails() {
         testBadImportObjectFails("_bnode");
         testBadImportObjectFails("17");
@@ -98,6 +103,7 @@ public class TestImportManager extends AssemblerTestBase {
         }
     }
 
+    @Test
     public void testFollowOwlImportsDeeply() {
         final Model m1 = model("this hasMarker M1; _x owl:imports M2"), m2 = model("this hasMarker M2");
         Model m = model("x ja:reasoner y; _x owl:imports M1");
@@ -107,6 +113,7 @@ public class TestImportManager extends AssemblerTestBase {
         ModelTestLib.assertIsoModels(m1.union(m2).union(m), result);
     }
 
+    @Test
     public void testCatchesCircularity() {
         final Model m1 = model("this hasMarker Mx; _x owl:imports My"), m2 = model("this hasMarker My; _x owl:imports Mx");
         FileManager fm = new FixedFileManager().add("eh:/Mx", m1).add("eh:/My", m2);
@@ -114,6 +121,7 @@ public class TestImportManager extends AssemblerTestBase {
         ModelTestLib.assertIsoModels(m1.union(m2), result);
     }
 
+    @Test
     public void testCacheModels() {
         ImportManager im = new ImportManager();
         Model spec = model("_x owl:imports M1");

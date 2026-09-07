@@ -21,6 +21,10 @@
 
 package org.apache.jena.assembler;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import java.util.*;
 
 import org.apache.jena.assembler.assemblers.DocumentManagerAssembler;
@@ -30,19 +34,18 @@ import org.apache.jena.test.JenaTestLib;
 import org.apache.jena.util.FileManager;
 
 public class TestDocumentManagerAssembler extends AssemblerTestBase {
-    public TestDocumentManagerAssembler(String name) {
-        super(name);
-    }
 
     @Override
     protected Class<? extends Assembler> getAssemblerClass() {
         return DocumentManagerAssembler.class;
     }
 
+    @Test
     public void testDocumentManagerAssemblerType() {
         testDemandsMinimalType(new DocumentManagerAssembler(), JA.DocumentManager);
     }
 
+    @Test
     public void testDocumentManagerVocabulary() {
         assertSubclassOf(JA.DocumentManager, JA.Object);
         assertSubclassOf(JA.DocumentManager, JA.HasFileManager);
@@ -50,6 +53,7 @@ public class TestDocumentManagerAssembler extends AssemblerTestBase {
         assertDomain(JA.DocumentManager, JA.policyPath);
     }
 
+    @Test
     public void testCreatesDocumentManager() {
         Resource root = resourceInModel("x rdf:type ja:DocumentManager");
         Assembler a = new DocumentManagerAssembler();
@@ -57,6 +61,7 @@ public class TestDocumentManagerAssembler extends AssemblerTestBase {
         JenaTestLib.assertInstanceOf(OntDocumentManager.class, x);
     }
 
+    @Test
     public void testUsesFileManager() {
         Resource root = resourceInModel("x rdf:type ja:DocumentManager; x ja:fileManager f");
         Assembler a = new DocumentManagerAssembler();
@@ -68,6 +73,7 @@ public class TestDocumentManagerAssembler extends AssemblerTestBase {
         assertSame(fm, ((OntDocumentManager)x).getFileManager());
     }
 
+    @Test
     public void testSetsPolicyPath() {
         Resource root = resourceInModel("x rdf:type ja:DocumentManager; x ja:policyPath 'somePath'");
         final List<String> history = new ArrayList<>();
@@ -88,6 +94,7 @@ public class TestDocumentManagerAssembler extends AssemblerTestBase {
         assertEquals(JenaTestLib.listOfOne("somePath"), history);
     }
 
+    @Test
     public void testTrapsPolicyPathNotString() {
         testTrapsBadPolicyPath("aResource");
         testTrapsBadPolicyPath("17");
@@ -107,6 +114,7 @@ public class TestDocumentManagerAssembler extends AssemblerTestBase {
         }
     }
 
+    @Test
     public void testSetsMetadata() { // we set policyPath to avoid Ont default models
                                      // being thrown at us
         Resource root = resourceInModel("x rdf:type ja:DocumentManager; x ja:policyPath ''; x P a; a Q b; y R z");
