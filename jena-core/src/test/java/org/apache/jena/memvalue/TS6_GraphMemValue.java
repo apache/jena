@@ -33,6 +33,8 @@ import org.apache.jena.test.JenaTestLib;
     TestGraphMemModel.class,
     TestGraphTripleStoreMem.class,
 
+    TestNodeToTriplesMapMem.class,
+
     TestConcurrentModificationException.TestArrayBunchCME.class,
     TestConcurrentModificationException.TestHashedBunchCME.class,
 
