@@ -34,6 +34,7 @@ import org.apache.jena.mem.TS6_GraphMem;
 import org.apache.jena.memvalue.TS6_GraphMemValue;
 import org.apache.jena.ontology.impl.TS6_ont;
 import org.apache.jena.ontology.makers.TS6_ModelMakers;
+import org.apache.jena.rdf.model.TS6_Model;
 import org.apache.jena.rdfxml.xmloutput.TS6_xmloutput;
 import org.apache.jena.shared.TS6_SharedPackage;
 import org.apache.jena.util.TS6_coreutil;
@@ -54,6 +55,8 @@ import org.apache.jena.vocabulary.TS6_Vocabularies;
 
     TS6_GraphMem.class,
     TS6_GraphMemValue.class,
+
+    TS6_Model.class,
 
     TS6_xmloutput.class,
 
