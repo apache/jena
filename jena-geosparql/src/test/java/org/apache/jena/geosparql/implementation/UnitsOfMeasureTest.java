@@ -109,6 +109,16 @@ public class UnitsOfMeasureTest {
         assertEquals(expResult, result, 0.0);
     }
 
+    @Test
+    public void testConversionYardToMetre() {
+        assertEquals(0.9144,
+                UnitsOfMeasure.conversion(1.0, Unit_URI.YARD_URL, Unit_URI.METRE_URL),
+                1e-12);
+        assertEquals(0.9144,
+                UnitsOfMeasure.conversion(1.0, Unit_URI.YARD_URN, Unit_URI.METRE_URL),
+                1e-12);
+    }
+
     /**
      * Test of conversion method, of class UnitsOfMeasure.
      *
