@@ -25,7 +25,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * Jena core test suite. JUnit3 remaining
+ * Jena core test suite. Any JUnit3 remaining.
  */
 public class JenaCoreTestAll_JU3 extends TestCase {
 
@@ -43,4 +43,16 @@ public class JenaCoreTestAll_JU3 extends TestCase {
             tc.setName(name);
         ts.addTest(tc);
     }
+
+//    // JUnit4 in a JUnit3 test runner.
+//    private static Test adaptJUnit4(Class<?> testClass) {
+//        return new JUnit4TestAdapter(testClass);
+//    }
+//
+//    private static void addTest(TestSuite ts, String name, Test test) {
+//        // Adds an extra level but does name the test suite.
+//        TestSuite ts2 = new TestSuite(name);
+//        ts2.addTest(test);
+//        ts.addTest(ts2);
+//    }
 }

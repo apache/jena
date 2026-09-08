@@ -23,6 +23,10 @@ package org.apache.jena.rdfxml.xmloutput;
 
 import java.io.IOException;
 
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.test.JenaTestLib;
+
 public class TestXMLAbbrev extends BaseTestXMLOutput
 {
     @Override
@@ -30,6 +34,9 @@ public class TestXMLAbbrev extends BaseTestXMLOutput
         return  "RDF/XML-ABBREV";
     }
 
+    static { JenaTestLib.setup(); }
+
+    @Test
     public void testNoPropAttr() throws IOException
     {
         checkY(BaseTestXMLFeatures.file1,
@@ -39,24 +46,27 @@ public class TestXMLAbbrev extends BaseTestXMLOutput
                 );
     }
 
+    @Test
     public void testNoRdfCollection() throws IOException
     {
         checkY("testing/abbreviated/collection.rdf",
-              null,
-              "[\"']Collection[\"']",
-              Change.blockRules( "parseTypeCollectionPropertyElt" )
+               null,
+               "[\"']Collection[\"']",
+               Change.blockRules( "parseTypeCollectionPropertyElt" )
                 );
     }
 
+    @Test
     public void testNoLi() throws IOException
     {
         checkY("testing/abbreviated/container.rdf",
-              null,
-              "rdf:li",
-              Change.blockRules( "section-List-Expand" )
+               null,
+               "rdf:li",
+               Change.blockRules( "section-List-Expand" )
                 );
     }
 
+    @Test
     public void testNoID() throws IOException
     {
         checkB("testing/abbreviated/container.rdf",
@@ -66,6 +76,7 @@ public class TestXMLAbbrev extends BaseTestXMLOutput
                 );
     }
 
+    @Test
     public void testNoID2() throws IOException
     {
         checkB("testing/abbreviated/container.rdf",
@@ -75,6 +86,7 @@ public class TestXMLAbbrev extends BaseTestXMLOutput
                 );
     }
 
+    @Test
     public void testNoID3() throws IOException {
         // Minimal version of testNoID2
         checkB("testing/abbreviated/rdf-id.rdf",
@@ -84,6 +96,7 @@ public class TestXMLAbbrev extends BaseTestXMLOutput
                 );
     }
 
+    @Test
     public void testNoResource() throws IOException
     {
         checkB("testing/abbreviated/container.rdf",
@@ -93,24 +106,27 @@ public class TestXMLAbbrev extends BaseTestXMLOutput
                 );
     }
 
+    @Test
     public void testPropAttrs() throws IOException
     {
         checkY("testing/abbreviated/namespaces.rdf",
-              ":prop0 *=",
-              null,
-              Change.blockRules( ""  )
+               ":prop0 *=",
+               null,
+               Change.blockRules( ""  )
                 );
     }
 
+    @Test
     public void testNoPropAttrs() throws IOException
     {
         checkY("testing/abbreviated/namespaces.rdf",
-              null,
-              ":prop0 *=",
-              Change.none()
+               null,
+               ":prop0 *=",
+               Change.none()
                 );
     }
 
+    @Test
     public void testNoReification() throws IOException
     {
         // System.err.println("WARNING: reification output tests suppressed.");
@@ -122,22 +138,23 @@ public class TestXMLAbbrev extends BaseTestXMLOutput
                 },base);
         /* */
         checkZ(filename,
-              null,
-              "rdf:subject",
-              null,
-              false,
-              Change.blockRules( "section-Reification" ),
-              base
+               null,
+               "rdf:subject",
+               null,
+               false,
+               Change.blockRules( "section-Reification" ),
+               base
                 );
     }
 
 
+    @Test
     public void testNoCookUp() throws IOException
     {
         checkY("testing/abbreviated/cookup.rdf",
-              null,
-              "(j\\.fixup|j\\.cook\\.up)",
-              Change.blockRules( "" )
+               null,
+               "(j\\.fixup|j\\.cook\\.up)",
+               Change.blockRules( "" )
                 );
     }
 }

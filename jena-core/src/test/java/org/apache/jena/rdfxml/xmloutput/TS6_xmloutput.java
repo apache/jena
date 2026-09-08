@@ -31,8 +31,8 @@ import org.apache.jena.test.JenaTestLib;
 @Suite
 @SelectClasses({
     TestPrettyWriter.class,
+    TestXMLAbbrev.class,
     TestXMLFeatures_XML_Basic.class,
-    TestXMLFeatures_XML_Abbrev.class,
     TestXMLFeatures_XML_Abbrev.class,
     TestWriterURIExceptions.class,
     TestEntityOutput.class,
