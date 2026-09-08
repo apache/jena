@@ -46,6 +46,7 @@ import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.sis.geometry.DirectPosition2D;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.CoordinateXY;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -683,6 +684,31 @@ public class GeometryWrapper implements Serializable {
         Geometry xyGeo = this.xyGeometry.convexHull();
         Geometry parsingGeo = GeometryReverse.check(xyGeo, srsInfo);
         return new GeometryWrapper(parsingGeo, xyGeo, srsInfo.getSrsURI(), geometryDatatypeURI, dimensionInfo);
+    }
+
+    /**
+     * Returns the planar, two-dimensional centroid in the source SRS and datatype.
+     * Geographic coordinates are treated as planar coordinates, without projection.
+     *
+     * @throws DatatypeFormatException if a non-empty XY centroid cannot be
+     * represented as GML in the source CRS
+     */
+    public GeometryWrapper centroid() {
+        Point centroid = xyGeometry.getCentroid();
+        GeometryFactory factory = CustomGeometryFactory.theInstance();
+        Point xyCentroid = centroid.isEmpty()
+            ? factory.createPoint(new CustomCoordinateSequence(CoordinateSequenceDimensions.XY))
+            : factory.createPoint(new CoordinateXY(centroid.getX(), centroid.getY()));
+        // GML derives its coordinate dimension from the CRS. It cannot encode
+        // this XY result in a three-dimensional CRS without inventing Z.
+        if (!xyCentroid.isEmpty()
+                && GMLDatatype.URI.equals(geometryDatatypeURI)
+                && srsInfo.getCrs().getCoordinateSystem().getDimension() != 2) {
+            throw new DatatypeFormatException(
+                "A two-dimensional centroid cannot be represented as GML in the source CRS.");
+        }
+        Geometry parsingCentroid = GeometryReverse.check(xyCentroid, srsInfo);
+        return new GeometryWrapper(parsingCentroid, xyCentroid, getSrsURI(), geometryDatatypeURI, DimensionInfo.XY_POINT);
     }
 
     /**
