@@ -20,8 +20,11 @@
  */
 package org.apache.jena.geosparql.implementation.parsers.gml;
 
+import java.util.List;
+
 import org.apache.jena.geosparql.implementation.DimensionInfo;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
+import org.apache.jena.geosparql.implementation.GeometryWrapperFactory;
 import org.apache.jena.geosparql.implementation.datatype.GMLDatatype;
 import org.apache.jena.geosparql.implementation.jts.CoordinateSequenceDimensions;
 import org.apache.jena.geosparql.implementation.jts.CustomCoordinateSequence;
@@ -67,6 +70,21 @@ public class GMLWriterTest {
     }
 
     private static final GeometryFactory GEOMETRY_FACTORY = CustomGeometryFactory.theInstance();
+
+    @Test
+    public void multiLineStringWritesLinearRingMemberAsLineString() {
+        LinearRing ring = GEOMETRY_FACTORY.createLinearRing(
+            new CustomCoordinateSequence(CoordinateSequenceDimensions.XY, "0 0,1 0,1 1,0 0"));
+        GeometryWrapper geometry = GeometryWrapperFactory.createMultiLineString(List.of(ring), GMLDatatype.URI);
+
+        String result = geometry.asLiteral().getLexicalForm();
+        String expected = "<gml:MultiCurve xmlns:gml=\"http://www.opengis.net/gml/3.2\" "
+            + "srsName=\"http://www.opengis.net/def/crs/OGC/1.3/CRS84\">"
+            + "<gml:curveMember><gml:LineString srsName=\"http://www.opengis.net/def/crs/OGC/1.3/CRS84\">"
+            + "<gml:posList>0 0 1 0 1 1 0 0</gml:posList>"
+            + "</gml:LineString></gml:curveMember></gml:MultiCurve>";
+        assertEquals(expected, result);
+    }
 
     @Test
     public void testWritePoint() {

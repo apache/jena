@@ -78,6 +78,8 @@ public class GeometryWrapper implements Serializable {
     private final String geometryDatatypeURI;
     private GeometryDatatype geometryDatatype;
     private String lexicalForm;
+    private final String sourceLexicalForm;
+    private String geometryTypeURI;
     private String utmURI = null;
     private Double latitude = null;
 
@@ -104,6 +106,26 @@ public class GeometryWrapper implements Serializable {
         this(geometry, GeometryReverse.check(geometry, srsURI.isEmpty() ? SRS_URI.DEFAULT_WKT_CRS84 : srsURI), srsURI.isEmpty() ? SRS_URI.DEFAULT_WKT_CRS84 : srsURI, geometryDatatypeURI, dimensionInfo, geometryLiteral);
     }
 
+    /**
+     * Constructs a wrapper for the supplied geometry, with optional serialized
+     * text and an optional geometry subtype URI.
+     *
+     * @param geometry In X/Y or Y/X coordinate order of the SRS URI.
+     * @param srsURI The spatial reference system URI; an empty string uses CRS84.
+     * @param geometryDatatypeURI The geometry serialization datatype URI.
+     * @param dimensionInfo The geometry's coordinate layout and spatial and topological dimensions.
+     * @param geometryLiteral The serialized text representing this geometry, such as WKT or GML,
+     *                        in the format identified by geometryDatatypeURI. If null, the text
+     *                        is generated from the supplied geometry when serialization is requested.
+     * @param geometryTypeURI The subtype URI for this geometry in the specified datatype.
+     *                        If null, the datatype determines it when getGeometryTypeURI() is first called.
+     */
+    public GeometryWrapper(Geometry geometry, String srsURI, String geometryDatatypeURI, DimensionInfo dimensionInfo,
+                           String geometryLiteral, String geometryTypeURI) {
+        this(geometry, srsURI, geometryDatatypeURI, dimensionInfo, geometryLiteral);
+        this.geometryTypeURI = geometryTypeURI;
+    }
+
     protected GeometryWrapper(Geometry parsingGeometry, Geometry xyGeometry, String srsURI, String geometryDatatypeURI, DimensionInfo dimensionInfo) {
         this(parsingGeometry, xyGeometry, srsURI, geometryDatatypeURI, dimensionInfo, null);
     }
@@ -126,6 +148,7 @@ public class GeometryWrapper implements Serializable {
 
         this.dimensionInfo = dimensionInfo;
         this.lexicalForm = lexicalForm; //If not Initialised then required by asLiteral() etc.
+        this.sourceLexicalForm = lexicalForm;
     }
 
     /**
@@ -190,6 +213,8 @@ public class GeometryWrapper implements Serializable {
         this.srsInfo = geometryWrapper.srsInfo;
         this.dimensionInfo = geometryWrapper.dimensionInfo;
         this.lexicalForm = geometryWrapper.lexicalForm;
+        this.sourceLexicalForm = geometryWrapper.sourceLexicalForm;
+        this.geometryTypeURI = geometryWrapper.geometryTypeURI;
     }
 
     /**
@@ -385,6 +410,54 @@ public class GeometryWrapper implements Serializable {
      */
     public String getGeometryType() {
         return parsingGeometry.getGeometryType();
+    }
+
+    /**
+     * Returns the geometry subtype URI defined by this wrapper's datatype,
+     * including for typed empty geometries. The URI is supplied at construction
+     * or resolved by the datatype and cached on the first successful lookup.
+     * Specialized subtypes are not inferred from the shape of the coordinates.
+     *
+     * @return The subtype URI as a string.
+     *
+     * @throws DatatypeFormatException if the datatype cannot resolve the geometry type.
+     */
+    public String getGeometryTypeURI() {
+        if (geometryTypeURI == null) {
+            geometryTypeURI = getGeometryDatatype().getGeometryTypeURI(this);
+        }
+        return geometryTypeURI;
+    }
+
+    /**
+     * Returns whether the coordinate layout includes Z, including for empty geometries.
+     * Uses the wrapper's dimension metadata without aggregating member layouts.
+     * A WKT collection without a Z/M marker has XY metadata even if members
+     * declare their own Z/M layouts.
+     */
+    public boolean is3D() {
+        CoordinateSequenceDimensions dimensions = getCoordinateSequenceDimensions();
+        return dimensions == CoordinateSequenceDimensions.XYZ || dimensions == CoordinateSequenceDimensions.XYZM;
+    }
+
+    /**
+     * Returns whether the coordinate layout includes M, including for empty geometries.
+     * Uses the wrapper's dimension metadata without aggregating member layouts.
+     * A WKT collection without a Z/M marker has XY metadata even if members
+     * declare their own Z/M layouts.
+     */
+    public boolean isMeasured() {
+        CoordinateSequenceDimensions dimensions = getCoordinateSequenceDimensions();
+        return dimensions == CoordinateSequenceDimensions.XYM || dimensions == CoordinateSequenceDimensions.XYZM;
+    }
+
+    /**
+     * Returns the number of direct members of a Multi-geometry or GeometryCollection.
+     * Atomic geometries count as one, including empty atomic geometries; nested
+     * collections are not flattened. A collection with no members counts as zero.
+     */
+    public int getNumGeometries() {
+        return parsingGeometry.getNumGeometries();
     }
 
     /**
@@ -1021,6 +1094,19 @@ public class GeometryWrapper implements Serializable {
      */
     public DimensionInfo getDimensionInfo() {
         return dimensionInfo;
+    }
+
+    /**
+     * Returns the serialized geometry text supplied to the constructor, such as
+     * WKT or GML. Unlike {@link #getLexicalForm()}, this method does not generate
+     * text when none was supplied. Calling serialization methods does not change
+     * the returned value.
+     *
+     * @return The supplied text, or null if none was supplied. An empty string
+     *         means that an empty literal was supplied; it is distinct from null.
+     */
+    public String getSourceLexicalForm() {
+        return sourceLexicalForm;
     }
 
     /**

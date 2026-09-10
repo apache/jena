@@ -25,9 +25,11 @@ import java.io.IOException;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.geosparql.implementation.DimensionInfo;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
+import org.apache.jena.geosparql.implementation.parsers.gml.GMLGeometryTypes;
 import org.apache.jena.geosparql.implementation.parsers.gml.GMLReader;
 import org.apache.jena.geosparql.implementation.parsers.gml.GMLWriter;
 import org.apache.jena.geosparql.implementation.vocabulary.Geo;
+import org.apache.jena.geosparql.implementation.vocabulary.GeoSPARQL_URI;
 import org.jdom2.JDOMException;
 import org.locationtech.jts.geom.Geometry;
 
@@ -85,10 +87,26 @@ public class GMLDatatype extends GeometryDatatype {
             String srsURI = gmlReader.getSrsURI();
             DimensionInfo dimensionInfo = gmlReader.getDimensionInfo();
 
-            return new GeometryWrapper(geometry, srsURI, URI, dimensionInfo, geometryLiteral);
+            String geometryTypeURI = GeoSPARQL_URI.GML_URI + gmlReader.getGmlGeometryType();
+            return new GeometryWrapper(geometry, srsURI, URI, dimensionInfo, geometryLiteral, geometryTypeURI);
         } catch (JDOMException | IOException ex) {
             throw new DatatypeFormatException("Illegal GML literal:" + geometryLiteral + ". " + ex.getMessage());
         }
+    }
+
+    @Override
+    public String getGeometryTypeURI(GeometryWrapper geometry) {
+        String source = geometry.getSourceLexicalForm();
+        if (source != null) {
+            // Constructors accepting source text without a type URI use this fallback.
+            // read() prepopulates the wrapper's type, so normal lookups skip this path.
+            try {
+                return GeoSPARQL_URI.GML_URI + GMLReader.readGeometryType(source);
+            } catch (JDOMException | IOException ex) {
+                throw new DatatypeFormatException("Unable to read GML geometry type", ex);
+            }
+        }
+        return GeoSPARQL_URI.GML_URI + GMLGeometryTypes.fromJts(geometry.getParsingGeometry());
     }
 
     @Override
