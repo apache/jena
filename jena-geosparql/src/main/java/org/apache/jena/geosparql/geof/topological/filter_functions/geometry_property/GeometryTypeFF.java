@@ -27,7 +27,7 @@ import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase1;
 
-/** Returns the serialization-specific geometry subtype as an xsd:anyURI literal. */
+/** Returns the geometry subtype URI for the input serialization as an xsd:anyURI literal. */
 public class GeometryTypeFF extends FunctionBase1 {
 
     @Override
