@@ -139,7 +139,7 @@ public class GMLWriter {
 
     private static Element buildPolygon(final Polygon polygon, final String srsName) {
 
-        Element gmlRoot = new Element(polygon.getGeometryType(), GML_NAMESPACE);
+        Element gmlRoot = new Element(GMLGeometryTypes.fromJts(polygon), GML_NAMESPACE);
         gmlRoot.setAttribute("srsName", srsName);
 
         if (!polygon.isEmpty()) {
@@ -179,7 +179,7 @@ public class GMLWriter {
 
     private static Element buildMultiPoint(final MultiPoint multiPoint, final String srsName) {
 
-        Element gmlRoot = new Element(multiPoint.getGeometryType(), GML_NAMESPACE);
+        Element gmlRoot = new Element(GMLGeometryTypes.fromJts(multiPoint), GML_NAMESPACE);
         gmlRoot.setAttribute("srsName", srsName);
 
         if (!multiPoint.isEmpty()) {
@@ -202,8 +202,7 @@ public class GMLWriter {
 
     private static Element buildMultiLineString(final MultiLineString multiLineString, final String srsName) {
 
-        //Element gmlRoot = new Element(multiLineString.getGeometryType(), GML_NAMESPACE);
-        Element gmlRoot = new Element("MultiCurve", GML_NAMESPACE);
+        Element gmlRoot = new Element(GMLGeometryTypes.fromJts(multiLineString), GML_NAMESPACE);
         gmlRoot.setAttribute("srsName", srsName);
 
         if (!multiLineString.isEmpty()) {
@@ -227,8 +226,7 @@ public class GMLWriter {
 
     private static Element buildMultiPolygon(final MultiPolygon multiPolygon, final String dimensionString, final String srsName) {
 
-        //Element gmlRoot = new Element(multiPolygon.getGeometryType(), GML_NAMESPACE);
-        Element gmlRoot = new Element("MultiSurface", GML_NAMESPACE);
+        Element gmlRoot = new Element(GMLGeometryTypes.fromJts(multiPolygon), GML_NAMESPACE);
         gmlRoot.setAttribute("srsName", srsName);
 
         if (!multiPolygon.isEmpty()) {
@@ -252,8 +250,7 @@ public class GMLWriter {
 
     private static Element buildMultiGeometry(final GeometryCollection geometryCollection, final CoordinateSequenceDimensions dimensions, final String srsName) {
 
-        //Element gmlRoot = new Element(geometryCollection.getGeometryType(), GML_NAMESPACE);
-        Element gmlRoot = new Element("MultiGeometry", GML_NAMESPACE);
+        Element gmlRoot = new Element(GMLGeometryTypes.fromJts(geometryCollection), GML_NAMESPACE);
         gmlRoot.setAttribute("srsName", srsName);
 
         if (!geometryCollection.isEmpty()) {

@@ -26,7 +26,7 @@ import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase1;
 
-/** Counts direct geometry members without flattening nested collections. */
+/** Implements geof:numGeometries. */
 public class NumGeometriesFF extends FunctionBase1 {
 
     @Override

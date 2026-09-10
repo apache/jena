@@ -26,7 +26,7 @@ import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase1;
 
-/** Reports whether the geometry coordinate layout includes M. */
+/** Implements geof:isMeasured. */
 public class IsMeasuredFF extends FunctionBase1 {
 
     @Override

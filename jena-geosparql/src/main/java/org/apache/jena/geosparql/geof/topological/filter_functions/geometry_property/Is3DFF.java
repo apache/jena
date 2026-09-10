@@ -26,7 +26,7 @@ import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase1;
 
-/** Reports whether the geometry coordinate layout includes Z. */
+/** Implements geof:is3D. */
 public class Is3DFF extends FunctionBase1 {
 
     @Override

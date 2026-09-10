@@ -20,7 +20,6 @@
  */
 package org.apache.jena.geosparql.implementation;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -36,11 +35,9 @@ import org.apache.jena.geosparql.implementation.index.GeometryTransformIndex;
 import org.apache.jena.geosparql.implementation.jts.CoordinateSequenceDimensions;
 import org.apache.jena.geosparql.implementation.jts.CustomCoordinateSequence;
 import org.apache.jena.geosparql.implementation.jts.CustomGeometryFactory;
-import org.apache.jena.geosparql.implementation.parsers.gml.GMLReader;
 import org.apache.jena.geosparql.implementation.registry.MathTransformRegistry;
 import org.apache.jena.geosparql.implementation.registry.SRSRegistry;
 import org.apache.jena.geosparql.implementation.registry.UnitsRegistry;
-import org.apache.jena.geosparql.implementation.vocabulary.GeoSPARQL_URI;
 import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
 import org.apache.jena.geosparql.implementation.vocabulary.Unit_URI;
 import org.apache.jena.graph.Node;
@@ -48,7 +45,6 @@ import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.sis.geometry.DirectPosition2D;
-import org.jdom2.JDOMException;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
@@ -82,6 +78,8 @@ public class GeometryWrapper implements Serializable {
     private final String geometryDatatypeURI;
     private GeometryDatatype geometryDatatype;
     private String lexicalForm;
+    private final String sourceLexicalForm;
+    private String geometryTypeURI;
     private String utmURI = null;
     private Double latitude = null;
 
@@ -108,6 +106,26 @@ public class GeometryWrapper implements Serializable {
         this(geometry, GeometryReverse.check(geometry, srsURI.isEmpty() ? SRS_URI.DEFAULT_WKT_CRS84 : srsURI), srsURI.isEmpty() ? SRS_URI.DEFAULT_WKT_CRS84 : srsURI, geometryDatatypeURI, dimensionInfo, geometryLiteral);
     }
 
+    /**
+     * Constructs a wrapper for the supplied geometry, with optional serialized
+     * text and an optional geometry subtype URI.
+     *
+     * @param geometry In X/Y or Y/X coordinate order of the SRS URI.
+     * @param srsURI The spatial reference system URI; an empty string uses CRS84.
+     * @param geometryDatatypeURI The geometry serialization datatype URI.
+     * @param dimensionInfo The geometry's coordinate layout and spatial and topological dimensions.
+     * @param geometryLiteral The serialized text representing this geometry, such as WKT or GML,
+     *                        in the format identified by geometryDatatypeURI. If null, the text
+     *                        is generated from the supplied geometry when serialization is requested.
+     * @param geometryTypeURI The subtype URI for this geometry in the specified datatype.
+     *                        If null, the datatype determines it when getGeometryTypeURI() is first called.
+     */
+    public GeometryWrapper(Geometry geometry, String srsURI, String geometryDatatypeURI, DimensionInfo dimensionInfo,
+                           String geometryLiteral, String geometryTypeURI) {
+        this(geometry, srsURI, geometryDatatypeURI, dimensionInfo, geometryLiteral);
+        this.geometryTypeURI = geometryTypeURI;
+    }
+
     protected GeometryWrapper(Geometry parsingGeometry, Geometry xyGeometry, String srsURI, String geometryDatatypeURI, DimensionInfo dimensionInfo) {
         this(parsingGeometry, xyGeometry, srsURI, geometryDatatypeURI, dimensionInfo, null);
     }
@@ -130,6 +148,7 @@ public class GeometryWrapper implements Serializable {
 
         this.dimensionInfo = dimensionInfo;
         this.lexicalForm = lexicalForm; //If not Initialised then required by asLiteral() etc.
+        this.sourceLexicalForm = lexicalForm;
     }
 
     /**
@@ -194,6 +213,8 @@ public class GeometryWrapper implements Serializable {
         this.srsInfo = geometryWrapper.srsInfo;
         this.dimensionInfo = geometryWrapper.dimensionInfo;
         this.lexicalForm = geometryWrapper.lexicalForm;
+        this.sourceLexicalForm = geometryWrapper.sourceLexicalForm;
+        this.geometryTypeURI = geometryWrapper.geometryTypeURI;
     }
 
     /**
@@ -392,29 +413,20 @@ public class GeometryWrapper implements Serializable {
     }
 
     /**
-     * Returns the geometry subtype URI appropriate to this serialization,
-     * including for typed empty geometries. Specialized subtypes are not
-     * inferred from coordinates.
+     * Returns the geometry subtype URI defined by this wrapper's datatype,
+     * including for typed empty geometries. The URI is supplied at construction
+     * or resolved by the datatype and cached on the first successful lookup.
+     * Specialized subtypes are not inferred from the shape of the coordinates.
      *
-     * @throws IllegalArgumentException if the geometry type has no Simple Features mapping.
-     * @throws DatatypeFormatException if the GML literal cannot be read.
+     * @return The subtype URI as a string.
+     *
+     * @throws DatatypeFormatException if the datatype cannot resolve the geometry type.
      */
     public String getGeometryTypeURI() {
-        if (GMLDatatype.URI.equals(geometryDatatypeURI)) {
-            // Retained GML distinguishes source types such as Curve and Surface
-            // from their JTS approximations. Constructed geometries use generated GML.
-            try {
-                return GeoSPARQL_URI.GML_URI + GMLReader.readGeometryType(getLexicalForm());
-            } catch (JDOMException | IOException ex) {
-                throw new DatatypeFormatException("Unable to read GML geometry type", ex);
-            }
+        if (geometryTypeURI == null) {
+            geometryTypeURI = getGeometryDatatype().getGeometryTypeURI(this);
         }
-        String type = getGeometryType();
-        return switch (type) {
-            case "Point", "LineString", "LinearRing", "Polygon", "MultiPoint", "MultiLineString",
-                 "MultiPolygon", "GeometryCollection" -> GeoSPARQL_URI.SF_URI + type;
-            default -> throw new IllegalArgumentException("Unsupported Simple Features geometry type: " + type);
-        };
+        return geometryTypeURI;
     }
 
     /**
@@ -1082,6 +1094,19 @@ public class GeometryWrapper implements Serializable {
      */
     public DimensionInfo getDimensionInfo() {
         return dimensionInfo;
+    }
+
+    /**
+     * Returns the serialized geometry text supplied to the constructor, such as
+     * WKT or GML. Unlike {@link #getLexicalForm()}, this method does not generate
+     * text when none was supplied. Calling serialization methods does not change
+     * the returned value.
+     *
+     * @return The supplied text, or null if none was supplied. An empty string
+     *         means that an empty literal was supplied; it is distinct from null.
+     */
+    public String getSourceLexicalForm() {
+        return sourceLexicalForm;
     }
 
     /**
