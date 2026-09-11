@@ -265,6 +265,11 @@ public abstract class ExecHTTPBuilder<X, Y> {
         return thisBuilder();
     }
 
+    public Y substitutions(Map<Var, Node> substitutions) {
+        substitutions.forEach(this::substitution);
+        return thisBuilder();
+    }
+
     /** Setting this header overrides any other header. */
     @SuppressWarnings("removal")
     public Y acceptHeader(String acceptHeader) {
