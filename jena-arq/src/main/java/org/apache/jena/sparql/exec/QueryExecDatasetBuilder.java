@@ -153,6 +153,13 @@ public class QueryExecDatasetBuilder implements QueryExecMod, QueryExecBuilder {
         return this;
     }
 
+    @Override
+    public QueryExecDatasetBuilder substitutions(Map<Var, Node> substitutions) {
+        ensureSubstitutionMap();
+        this.substitutionMap.putAll(substitutions);
+        return this;
+    }
+
     private void ensureSubstitutionMap() {
         if ( substitutionMap == null )
             substitutionMap = new HashMap<>();

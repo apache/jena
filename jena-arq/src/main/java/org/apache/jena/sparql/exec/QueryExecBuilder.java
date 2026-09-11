@@ -21,6 +21,7 @@
 
 package org.apache.jena.sparql.exec;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.graph.Graph;
@@ -132,5 +133,10 @@ public interface QueryExecBuilder extends QueryExecMod {
             result = TableFactory.create(rowSet);
         }
         return result;
+    }
+
+    public default QueryExecBuilder substitutions(Map<Var, Node> substitutions) {
+            substitutions.forEach(this::substitution);
+        return this;
     }
 }
