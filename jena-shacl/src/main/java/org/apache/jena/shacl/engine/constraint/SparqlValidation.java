@@ -32,11 +32,10 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.query.*;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QuerySolutionMap;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.out.NodeFmtLib;
 import org.apache.jena.shacl.engine.Parameter;
 import org.apache.jena.shacl.engine.ShaclPaths;
@@ -47,6 +46,8 @@ import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.validation.event.ConstraintEvaluatedOnSinglePathNodeEvent;
 import org.apache.jena.sparql.core.*;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.path.P_Link;
 import org.apache.jena.sparql.path.Path;
 import org.apache.jena.sparql.path.PathFactory;
@@ -57,8 +58,6 @@ import org.apache.jena.sparql.util.ModelUtils;
 
 /** The SPARQL validator algorithms. */
 /*package*/ class SparqlValidation {
-
-    private static final boolean USE_QueryTransformOps = false;
 
     public static void validate(ValidationContext vCxt, Graph data, Shape shape,
                                 Node focusNode, Path path, Node valueNode,
@@ -99,11 +98,10 @@ import org.apache.jena.sparql.util.ModelUtils;
 
     /** return true if the validation is "conforms" */
     private static boolean validateMap(ValidationContext vCxt, Graph data, Shape shape,
-                                        Node focusNode, Path path, Node valueNode,
-                                        Query _query, Map<Parameter, Node> parameterMap,
-                                        String violationTemplate, Constraint reportConstraint) {
-        Model model = ModelFactory.createModelForGraph(data);
-        QueryExecution qExec;
+                                       Node focusNode, Path path, Node valueNode,
+                                       Query _query, Map<Parameter, Node> parameterMap,
+                                       String violationTemplate, Constraint reportConstraint) {
+        // Ideally, convert code to the QueryExec level.
 
         Query query = _query;
         // If path is not a simple link, rewrite the query.
@@ -117,40 +115,24 @@ import org.apache.jena.sparql.util.ModelUtils;
         // "SPARQL queries MUST not use the syntax form ​​AS ?var for any potentially pre-bound variable"
         // "Furthermore, SPARQL queries SHOULD not contain a federated query (SERVICE)."
 
-        // VALUES and AS cause QueryScopeException happen during durign execution.
+        // VALUES and AS cause QueryScopeException to happen during during execution.
 
         checkQuerySyntaxPreBinding(query);
 
-        if ( USE_QueryTransformOps ) {
-            // Done with QueryTransformOps.transform
-            Map<Var, Node> substitutions = parameterMapToSyntaxSubstitutions(parameterMap, focusNode, path);
-            if ( query.isAskType() )
-                addSubstition(substitutions, "value", valueNode);
-            Query query2 = QueryTransformOps.replaceVars(query, substitutions);
-            qExec = QueryExecutionFactory.create(query2, model);
-        } else {
-            // Use QueryExecution substitute (not initialBinding)
-            // Done with pre-binding.
-            QuerySolutionMap qsm = parameterMapToPreBinding(parameterMap, focusNode, path, model);
-            if ( query.isAskType() )
-                qsm.add("value", ModelUtils.convertGraphNodeToRDFNode(valueNode, model));
-            // ---- Dataset needed for the shapes graph
-            Resource shapesGraphResource = model.createResource("foo");
-            qsm.add("currentShape", ModelUtils.convertGraphNodeToRDFNode(shape.getShapeNode(), model));
-            qsm.add("shapesGraph", shapesGraphResource);
-
-            // No copying of graphs.  Set the default graph on creation.
-            DatasetGraph dsg = DatasetGraphFactory.createGeneral(model.getGraph()); // Dataset by links.
-            dsg.addGraph(shapesGraphResource.asNode(), shape.getShapeGraph());
-            Dataset ds = DatasetFactory.wrap(dsg);
-            qExec = QueryExecution.create().query(query).dataset(ds).substitution(qsm).build();
-        }
+        Map<Var, Node> substitutions = parameterMapToSyntaxSubstitutions(parameterMap, focusNode, path);
+        if ( query.isAskType() )
+            substitutions.put(Var.alloc("value"), valueNode);
+        Node shapesGraphResource = NodeFactory.createURI("foo");
+        substitutions.put(Var.alloc("currentShape"), shape.getShapeNode());
+        substitutions.put(Var.alloc("shapesGraph"), shapesGraphResource);
+        // No copying of graphs.  Set the default graph on creation.
+        DatasetGraph dsg = DatasetGraphFactory.createGeneral(data); // Dataset by links.
+        dsg.addGraph(shapesGraphResource, shape.getShapeGraph());
+        QueryExec qExec = QueryExec.dataset(dsg).query(query).substitutions(substitutions).build();
 
         // ASK validator.
-        // XXX Wrap in query solution, with $this and ?value.
-
         if ( qExec.getQuery().isAskType() ) {
-            boolean askResult = qExec.execAsk();
+            boolean askResult = qExec.ask();
             if ( ! askResult ) {
                 String msg = ( violationTemplate == null )
                     ? "SPARQL ASK constraint for "+ShLib.displayStr(valueNode)+" returns false"
@@ -163,7 +145,7 @@ import org.apache.jena.sparql.util.ModelUtils;
         }
 
         // SELECT validator.
-        ResultSet rs = qExec.execSelect();
+        RowSet rs = qExec.select();
         if ( ! rs.hasNext() ) {
             vCxt.notifyValidationListener(() ->
                 new ConstraintEvaluatedOnSinglePathNodeEvent(vCxt, shape, focusNode, reportConstraint, path, valueNode, true));
@@ -171,7 +153,7 @@ import org.apache.jena.sparql.util.ModelUtils;
         }
 
         while(rs.hasNext()) {
-            Binding row = rs.nextBinding();
+            Binding row = rs.next();
             Node value = row.get(SparqlConstraint.varValue);
             if ( value == null )
                 value = valueNode;
