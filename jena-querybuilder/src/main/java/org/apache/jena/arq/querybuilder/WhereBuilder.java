@@ -162,7 +162,7 @@ public class WhereBuilder extends AbstractQueryBuilder<WhereBuilder> implements 
 
     @Override
     public WhereBuilder addOptional(AbstractQueryBuilder<?> t) {
-        getWhereHandler().addOptional(t.getWhereHandler());
+        getWhereHandler().addOptional(t);
         return this;
     }
 

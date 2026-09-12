@@ -292,7 +292,7 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 
     @Override
     public ConstructBuilder addOptional(AbstractQueryBuilder<?> t) {
-        getWhereHandler().addOptional(t.getWhereHandler());
+        getWhereHandler().addOptional(t);
         return this;
     }
 

@@ -287,6 +287,15 @@ public class WhereHandler implements Handler {
     }
 
     /**
+     * Add a query builder as an optional subquery pattern.
+     *
+     * @param subQuery The query builder to add as an optional subquery.
+     */
+    public void addOptional(AbstractQueryBuilder<?> subQuery) {
+        getClause().addElement(new ElementOptional(makeSubQuery(subQuery)));
+    }
+
+    /**
      * Add an expression string as a filter.
      *
      * @param expression The expression string to add.
