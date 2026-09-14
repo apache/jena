@@ -238,7 +238,12 @@ public class CustomCoordinateSequence implements CoordinateSequence, Serializabl
 
     @Override
     public CustomCoordinateSequence copy() {
-        return new CustomCoordinateSequence(x, y, z, m);
+        CustomCoordinateSequence copy = new CustomCoordinateSequence(size, dimensions);
+        System.arraycopy(x, 0, copy.x, 0, size);
+        System.arraycopy(y, 0, copy.y, 0, size);
+        System.arraycopy(z, 0, copy.z, 0, size);
+        System.arraycopy(m, 0, copy.m, 0, size);
+        return copy;
     }
 
     public int getSize() {
@@ -506,7 +511,7 @@ public class CustomCoordinateSequence implements CoordinateSequence, Serializabl
     @Override
     @Deprecated
     public CustomCoordinateSequence clone() {
-        return new CustomCoordinateSequence(x, y, z, m);
+        return copy();
     }
 
     @Override
