@@ -91,7 +91,9 @@ public class DimensionInfo implements Serializable {
     }
 
     public static DimensionInfo find(Coordinate coordinate, Geometry geometry) {
-        CoordinateSequenceDimensions coordDims = CoordinateSequenceDimensions.find(coordinate);
+        // Empty geometries have no coordinate; use the existing XY default.
+        CoordinateSequenceDimensions coordDims = CoordinateSequenceDimensions.find(
+                coordinate == null ? XY_COORDINATE : coordinate);
         return new DimensionInfo(coordDims, geometry.getDimension());
     }
 
