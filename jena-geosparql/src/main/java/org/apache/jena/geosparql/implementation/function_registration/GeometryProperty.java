@@ -31,6 +31,12 @@ import org.apache.jena.geosparql.geof.topological.filter_functions.geometry_prop
 import org.apache.jena.geosparql.geof.topological.filter_functions.geometry_property.IsEmptyFF;
 import org.apache.jena.geosparql.geof.topological.filter_functions.geometry_property.IsSimpleFF;
 import org.apache.jena.geosparql.geof.topological.filter_functions.geometry_property.IsValidFF;
+import org.apache.jena.geosparql.geof.topological.filter_functions.geometry_property.MaxXFF;
+import org.apache.jena.geosparql.geof.topological.filter_functions.geometry_property.MaxYFF;
+import org.apache.jena.geosparql.geof.topological.filter_functions.geometry_property.MaxZFF;
+import org.apache.jena.geosparql.geof.topological.filter_functions.geometry_property.MinXFF;
+import org.apache.jena.geosparql.geof.topological.filter_functions.geometry_property.MinYFF;
+import org.apache.jena.geosparql.geof.topological.filter_functions.geometry_property.MinZFF;
 import org.apache.jena.geosparql.geof.topological.filter_functions.geometry_property.SpatialDimensionFF;
 import org.apache.jena.geosparql.implementation.vocabulary.Geo;
 import org.apache.jena.geosparql.implementation.vocabulary.Geof;
@@ -59,9 +65,9 @@ public class GeometryProperty {
     }
 
     /**
-     * This method loads all the Geometry property filter functions.<br>
-     * N.B. These functions are not part of the GeoSPARQL standard but have been
-     * included for convenience using GeometryLiterals.
+     * Registers {@code geof:} geometry metadata expression functions for use in
+     * {@code FILTER}, {@code BIND}, and projection expressions.
+     * Includes GeoSPARQL 1.1 geometry metadata functions and the isValid extension.
      *
      * @param registry - the FunctionRegistry to be used
      */
@@ -73,6 +79,13 @@ public class GeometryProperty {
         registry.put(Geof.IS_SIMPLE, IsSimpleFF.class);
         registry.put(Geof.IS_EMPTY, IsEmptyFF.class);
         registry.put(Geof.IS_VALID, IsValidFF.class);
+
+        registry.put(Geof.MIN_X, MinXFF.class);
+        registry.put(Geof.MIN_Y, MinYFF.class);
+        registry.put(Geof.MIN_Z, MinZFF.class);
+        registry.put(Geof.MAX_X, MaxXFF.class);
+        registry.put(Geof.MAX_Y, MaxYFF.class);
+        registry.put(Geof.MAX_Z, MaxZFF.class);
     }
 
 }
