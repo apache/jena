@@ -29,6 +29,7 @@ import org.junit.platform.suite.api.Suite;
     TestExecEnvironment.class
     , TestQueryExecDataset.class
     , TestQueryExecution.class
+    , org.apache.jena.sparql.exec.http.TestServiceCancellation.class
 } )
 
 public class TS_ExecSPARQL {
