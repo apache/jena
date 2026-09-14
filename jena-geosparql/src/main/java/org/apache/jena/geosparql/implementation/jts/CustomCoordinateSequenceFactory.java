@@ -48,7 +48,21 @@ public class CustomCoordinateSequenceFactory implements CoordinateSequenceFactor
             CustomCoordinateSequence customCoordSeq = (CustomCoordinateSequence) coordSeq;
             copyCoordSeq = customCoordSeq.copy();
         } else {
-            copyCoordSeq = new CustomCoordinateSequence(coordSeq.toCoordinateArray());
+            CoordinateSequenceDimensions dimensions;
+            if (coordSeq.hasM()) {
+                dimensions = coordSeq.hasZ() ? CoordinateSequenceDimensions.XYZM : CoordinateSequenceDimensions.XYM;
+            } else {
+                dimensions = coordSeq.hasZ() ? CoordinateSequenceDimensions.XYZ : CoordinateSequenceDimensions.XY;
+            }
+            copyCoordSeq = new CustomCoordinateSequence(coordSeq.size(), dimensions);
+            for (int i = 0; i < coordSeq.size(); i++) {
+                copyCoordSeq.setOrdinate(i, CoordinateSequence.X, coordSeq.getX(i));
+                copyCoordSeq.setOrdinate(i, CoordinateSequence.Y, coordSeq.getY(i));
+                if (coordSeq.hasZ())
+                    copyCoordSeq.setOrdinate(i, CoordinateSequence.Z, coordSeq.getZ(i));
+                if (coordSeq.hasM())
+                    copyCoordSeq.setOrdinate(i, copyCoordSeq.getDimension() - copyCoordSeq.getMeasures(), coordSeq.getM(i));
+            }
         }
 
         return copyCoordSeq;
@@ -57,6 +71,15 @@ public class CustomCoordinateSequenceFactory implements CoordinateSequenceFactor
     @Override
     public CoordinateSequence create(int size, int dimension) {
         return new CustomCoordinateSequence(size, dimension);
+    }
+
+    @Override
+    public CoordinateSequence create(int size, int dimension, int measures) {
+        // Match JTS allocation limits: two or three spatial ordinates and at most one measure.
+        int spatialDimension = Math.max(2, Math.min(3, dimension - measures));
+        int measureDimension = Math.min(1, measures);
+        return new CustomCoordinateSequence(size, CustomCoordinateSequence.findCoordinateSequenceDimensions(
+                spatialDimension + measureDimension, spatialDimension));
     }
 
 }
