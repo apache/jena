@@ -388,6 +388,62 @@ public class GeometryWrapper implements Serializable {
     }
 
     /**
+     * Returns the minimum ordinate of the first SRS dimension (X)
+     * across all geometry members.
+     * @throws IllegalStateException if the geometry has no coordinates or the evaluated ordinate is NaN or infinite.
+     */
+    public double getMinX() {
+        return GeometryCoordinateExtrema.minX(this);
+    }
+
+    /**
+     * Returns the minimum ordinate of the second SRS dimension (Y)
+     * across all geometry members.
+     * @throws IllegalStateException if the geometry has no coordinates or the evaluated ordinate is NaN or infinite.
+     */
+    public double getMinY() {
+        return GeometryCoordinateExtrema.minY(this);
+    }
+
+    /**
+     * Returns the minimum finite Z ordinate from the original coordinates across all geometry members.
+     * Members without a Z ordinate are skipped; M is not treated as Z.
+     * NaN values are skipped as missing Z ordinates; infinite Z values are rejected.
+     * @throws IllegalStateException if no finite Z exists or a Z ordinate is infinite.
+     */
+    public double getMinZ() {
+        return GeometryCoordinateExtrema.minZ(this);
+    }
+
+    /**
+     * Returns the maximum ordinate of the first SRS dimension (X)
+     * across all geometry members.
+     * @throws IllegalStateException if the geometry has no coordinates or the evaluated ordinate is NaN or infinite.
+     */
+    public double getMaxX() {
+        return GeometryCoordinateExtrema.maxX(this);
+    }
+
+    /**
+     * Returns the maximum ordinate of the second SRS dimension (Y)
+     * across all geometry members.
+     * @throws IllegalStateException if the geometry has no coordinates or the evaluated ordinate is NaN or infinite.
+     */
+    public double getMaxY() {
+        return GeometryCoordinateExtrema.maxY(this);
+    }
+
+    /**
+     * Returns the maximum finite Z ordinate from the original coordinates across all geometry members.
+     * Members without a Z ordinate are skipped; M is not treated as Z.
+     * NaN values are skipped as missing Z ordinates; infinite Z values are rejected.
+     * @throws IllegalStateException if no finite Z exists or a Z ordinate is infinite.
+     */
+    public double getMaxZ() {
+        return GeometryCoordinateExtrema.maxZ(this);
+    }
+
+    /**
      *
      * @return GeometryDatatype of the literal.
      */

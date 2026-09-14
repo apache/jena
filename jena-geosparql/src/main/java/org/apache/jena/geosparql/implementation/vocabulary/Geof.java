@@ -83,6 +83,14 @@ public interface Geof {
     public static final String IS_SIMPLE = GEOF_URI + "isSimple";
     public static final String IS_VALID = GEOF_URI + "isValid";
 
+    //GeoSPARQL 1.1 coordinate extrema:
+    public static final String MIN_X = GEOF_URI + "minX";
+    public static final String MIN_Y = GEOF_URI + "minY";
+    public static final String MIN_Z = GEOF_URI + "minZ";
+    public static final String MAX_X = GEOF_URI + "maxX";
+    public static final String MAX_Y = GEOF_URI + "maxY";
+    public static final String MAX_Z = GEOF_URI + "maxZ";
+
     //upcoming GeoSPARQL 1.1 Datatype transformation functions:
     public static final String AS_GEOJSON = GEOF_URI + "asGeoJSON";
 }
