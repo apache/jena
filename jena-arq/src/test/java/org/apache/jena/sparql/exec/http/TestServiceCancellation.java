@@ -49,6 +49,8 @@ import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLSession;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.ARQ;
@@ -136,8 +138,25 @@ public class TestServiceCancellation {
     }
 
     @Test
-    public void successfulResultsAreDetached() {
+    public void cancelledAtEndOfResults() {
         Context context = context();
+        AtomicBoolean signal = Context.getOrSetCancelSignal(context);
+        String results = HEADER + ROW + "]}}";
+        // Raise cancellation as the parser reaches the closing bindings array.
+        ResponseBody body = new ResponseBody(results, signal, results.length() - 3);
+        context.set(ARQ.httpQueryClient, new ResponseClient(body));
+
+        assertThrows(QueryCancelledException.class, () -> Service.exec(op(), context));
+        assertTrue(signal.get());
+        assertTrue(body.closed);
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    public void successfulResultsAreDetached(boolean withCancelSignal) {
+        Context context = context();
+        if (withCancelSignal)
+            Context.getOrSetCancelSignal(context);
         ResponseBody body = new ResponseBody(RESULTS, new AtomicBoolean(), Integer.MAX_VALUE);
         context.set(ARQ.httpQueryClient, new ResponseClient(body));
 

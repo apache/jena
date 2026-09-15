@@ -246,20 +246,23 @@ public class Service {
                 .sendMode(querySendMode)
                 .build()) {
 
-            // Detach from the network stream, but stop consuming on outer query cancellation.
-            // This cannot interrupt a network read that is already in progress.
-            checkCancelled(cancelSignal, qExec);
-            RowSet rowSet = qExec.select();
-            List<Binding> rows = new ArrayList<>();
-            for (;;) {
+            QueryIterator qIter;
+            if ( cancelSignal == null ) {
+                // Detach from the network stream.
+                RowSet rowSet = qExec.select().materialize();
+                qIter = QueryIterPlainWrapper.create(rowSet);
+            } else {
                 checkCancelled(cancelSignal, qExec);
-                boolean hasNext = rowSet.hasNext();
+                RowSet rowSet = qExec.select();
+                List<Binding> rows = new ArrayList<>();
+                // Check around hasNext(), which may block on the network.
+                // This cannot interrupt a read that is already in progress.
+                while ( !cancelSignal.get() && rowSet.hasNext() && !cancelSignal.get() ) {
+                    rows.add(rowSet.next());
+                }
                 checkCancelled(cancelSignal, qExec);
-                if ( !hasNext )
-                    break;
-                rows.add(rowSet.next());
+                qIter = QueryIterPlainWrapper.create(rows.iterator());
             }
-            QueryIterator qIter = QueryIterPlainWrapper.create(rows.iterator());
             if (requiresRemapping)
                 qIter = QueryIter.map(qIter, varMapping);
             return qIter;
@@ -269,7 +272,7 @@ public class Service {
     }
 
     private static void checkCancelled(AtomicBoolean cancelSignal, QueryExecHTTP qExec) {
-        if ( cancelSignal != null && cancelSignal.get() ) {
+        if ( cancelSignal.get() ) {
             qExec.abort();
             throw new QueryCancelledException();
         }
