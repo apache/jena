@@ -26,6 +26,10 @@ pnpm-debug.log*
 *.sln
 *.sw?
 
+## https://vitest.dev/guide/migration/#generated-reports-and-artifacts-use-the-vitest-directory 
+
+.vitest
+
 ## Yarn : https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored
 .yarn/*
 !.yarn/cache

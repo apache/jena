@@ -57,7 +57,7 @@
     "@cypress/code-coverage": "^4.0.1",
     "@eslint/js": "^10.0.1",
     "@vitejs/plugin-vue": "^6.0.0",
-    "@vitest/coverage-v8": "^4.1.8",
+    "@vitest/coverage-v8": "^5.0.0",
     "@vue/compiler-sfc": "^3.5.26",
     "@vue/test-utils": "^2.4.1",
     "babel-loader": "^10",
@@ -76,7 +76,7 @@
     "typescript": "^7.0.2",
     "vite": "^8.0.10",
     "vite-plugin-istanbul": "^9.0.0",
-    "vitest": "^4.1.0",
+    "vitest": "^5.0.0",
     "vue-eslint-parser": "^10.4.0",
     "wait-on": "^9.0.0",
     "webpack": "^5.104.1"

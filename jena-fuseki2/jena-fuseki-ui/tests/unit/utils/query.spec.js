@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { createShareableLink } from '@/utils/query'
 
 describe('query', () => {
@@ -41,18 +41,20 @@ SELECT * WHERE {
         expected: `${prefix}%2B%2B%2B%2B%2B`
       }
     ]
-    const originalDocument = global.document
-    global.document = {
+    vi.stubGlobal('document', {
       location: {
         protocol: 'https:',
         host: 'host:1234',
         pathname: '/',
         search: ''
       }
-    }
-    tests.forEach(test => {
-      expect(createShareableLink(test.value, '/query/')).to.equal(test.expected)
     })
-    global.document = originalDocument
+    try {
+      tests.forEach(test => {
+        expect(createShareableLink(test.value, '/query/')).to.equal(test.expected)
+      })
+    } finally {
+      vi.unstubAllGlobals()
+    }
   })
 })
