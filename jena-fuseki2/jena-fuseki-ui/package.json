@@ -57,7 +57,7 @@
     "@cypress/code-coverage": "^4.0.1",
     "@eslint/js": "^10.0.1",
     "@vitejs/plugin-vue": "^6.0.0",
-    "@vitest/coverage-v8": "^4.1.8",
+    "@vitest/coverage-v8": "^5.0.0",
     "@vue/compiler-sfc": "^3.5.26",
     "@vue/test-utils": "^2.4.1",
     "babel-loader": "^10",
