@@ -1337,11 +1337,11 @@ __metadata:
   linkType: hard
 
 "@codemirror/legacy-modes@npm:^6.5.2":
-  version: 6.5.3
-  resolution: "@codemirror/legacy-modes@npm:6.5.3"
+  version: 6.5.4
+  resolution: "@codemirror/legacy-modes@npm:6.5.4"
   dependencies:
     "@codemirror/language": "npm:^6.0.0"
-  checksum: 10c0/ec962723422039a3e5ecbcfc1b661201e6e5b10918e821b90c12fac385ead8f61925e464adab6b8d6465fc6dbefc0a64bd3130d0dae6ba7d053ad785dd08eebe
+  checksum: 10c0/b6fb2304e6c4bf44205820f17d44bb10a3fe44bd085efdb67cc4a810252b59d3e6ee5b23fb73dd0b0c3fa41054d09d6840bb5e66889762c5974edf713ddacc46
   languageName: node
   linkType: hard
 
@@ -3115,7 +3115,7 @@ __metadata:
     cypress: "npm:^16.0.0"
     cypress-vite: "npm:^1.4.2"
     eslint: "npm:^10.0.1"
-    eslint-plugin-cypress: "npm:7.0.1"
+    eslint-plugin-cypress: "npm:7.0.2"
     eslint-plugin-vue: "npm:^10.8.0"
     globals: "npm:^17.4.0"
     jsdom: "npm:^30.0.0"
@@ -4486,18 +4486,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-cypress@npm:7.0.1":
-  version: 7.0.1
-  resolution: "eslint-plugin-cypress@npm:7.0.1"
+"eslint-plugin-cypress@npm:7.0.2":
+  version: 7.0.2
+  resolution: "eslint-plugin-cypress@npm:7.0.2"
   dependencies:
-    globals: "npm:^17.11.0"
+    globals: "npm:^17.12.0"
   peerDependencies:
     "@typescript-eslint/parser": ">=8"
     eslint: ">=10"
   peerDependenciesMeta:
     "@typescript-eslint/parser":
       optional: true
-  checksum: 10c0/4bef64cbb6f033bf7fafe274b34bca2403968e1cb784b27d998ccee044690b37d8f70aef857d300df3f05a4bb5fcb2aa0ccedf94eb879cccd6ae88a7022d6a7e
+  checksum: 10c0/4105404c3cfe42c72c2ab933759d77de8f7d52db048c44d4c37e1dd5727f9abfee9b4324fdc22e2c85edeccb5627cb4c51f17f44dae3dc166ea8c9af9e93072d
   languageName: node
   linkType: hard
 
@@ -5166,7 +5166,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"globals@npm:^17.11.0, globals@npm:^17.4.0":
+"globals@npm:^17.12.0, globals@npm:^17.4.0":
   version: 17.12.0
   resolution: "globals@npm:17.12.0"
   checksum: 10c0/8325cf8818c848871d17c32974c2c74e9c5f09c1b0e04421886f64f21e77c3e95f3ba25586743895a73acd860ada151132481d87d44a1f12993ae7758a694d03
@@ -8951,11 +8951,11 @@ __metadata:
   linkType: hard
 
 "vue-upload-component@npm:^3.1.8":
-  version: 3.2.1
-  resolution: "vue-upload-component@npm:3.2.1"
+  version: 3.2.2
+  resolution: "vue-upload-component@npm:3.2.2"
   peerDependencies:
     vue: ^3.5.41
-  checksum: 10c0/ad1ac941de38712becf493cc3413393f0dbf27544e828b145b40005fbd54670db132d6dd51332eee3551ac15ce9c108c60ea7b832765988823338d7e12ab84ca
+  checksum: 10c0/29f012bde664bb98fdaf1e7d585caced65f676f0fc4cc719e3a6c3b529436d8d0ba8aaaa1cd947a273f596d99b0fab8bc31414a9e188ea2df813d5e845fc6318
   languageName: node
   linkType: hard
 
