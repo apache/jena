@@ -182,7 +182,7 @@ public class GMLWriter {
         Element gmlRoot = new Element(multiPoint.getGeometryType(), GML_NAMESPACE);
         gmlRoot.setAttribute("srsName", srsName);
 
-        if (!multiPoint.isEmpty()) {
+        if (multiPoint.getNumGeometries() > 0) {
 
             int geomCount = multiPoint.getNumGeometries();
             for (int i = 0; i < geomCount; i++) {
@@ -206,7 +206,7 @@ public class GMLWriter {
         Element gmlRoot = new Element("MultiCurve", GML_NAMESPACE);
         gmlRoot.setAttribute("srsName", srsName);
 
-        if (!multiLineString.isEmpty()) {
+        if (multiLineString.getNumGeometries() > 0) {
 
             int geomCount = multiLineString.getNumGeometries();
             for (int i = 0; i < geomCount; i++) {
@@ -231,7 +231,7 @@ public class GMLWriter {
         Element gmlRoot = new Element("MultiSurface", GML_NAMESPACE);
         gmlRoot.setAttribute("srsName", srsName);
 
-        if (!multiPolygon.isEmpty()) {
+        if (multiPolygon.getNumGeometries() > 0) {
 
             int geomCount = multiPolygon.getNumGeometries();
             for (int i = 0; i < geomCount; i++) {
@@ -256,7 +256,7 @@ public class GMLWriter {
         Element gmlRoot = new Element("MultiGeometry", GML_NAMESPACE);
         gmlRoot.setAttribute("srsName", srsName);
 
-        if (!geometryCollection.isEmpty()) {
+        if (geometryCollection.getNumGeometries() > 0) {
 
             int geomCount = geometryCollection.getNumGeometries();
             for (int i = 0; i < geomCount; i++) {

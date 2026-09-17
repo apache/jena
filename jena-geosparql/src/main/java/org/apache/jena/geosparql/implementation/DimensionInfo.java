@@ -28,6 +28,11 @@ import java.util.Objects;
 
 import org.apache.jena.geosparql.implementation.jts.CoordinateSequenceDimensions;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.CoordinateSequence;
+import org.locationtech.jts.geom.GeometryCollection;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.CoordinateXY;
 import org.locationtech.jts.geom.Geometry;
 
@@ -88,6 +93,31 @@ public class DimensionInfo implements Serializable {
             default:
                 return 2;
         }
+    }
+
+    /**
+     * Finds dimension metadata from coordinate sequences, preserving Z/M layouts
+     * even when the sequence is empty. Collections use their first member's
+     * layout, layout retained on an empty aggregate, or the fallback when they
+     * have no members.
+     */
+    public static DimensionInfo find(Geometry geometry, CoordinateSequenceDimensions fallback) {
+        CoordinateSequence sequence = null;
+        if (geometry instanceof Point point) {
+            sequence = point.getCoordinateSequence();
+        } else if (geometry instanceof LineString line) {
+            sequence = line.getCoordinateSequence();
+        } else if (geometry instanceof Polygon polygon) {
+            sequence = polygon.getExteriorRing().getCoordinateSequence();
+        } else if (geometry instanceof GeometryCollection collection && collection.getNumGeometries() > 0) {
+            fallback = find(collection.getGeometryN(0), fallback).getDimensions();
+        } else if (geometry.getUserData() instanceof CoordinateSequenceDimensions retained) {
+            // WKTReader stores parsed layout here; empty aggregates have no sequence.
+            fallback = retained;
+        }
+        CoordinateSequenceDimensions dimensions = sequence == null ? fallback
+            : findCoordinateSequenceDimensions(sequence.getDimension(), sequence.getDimension() - sequence.getMeasures());
+        return new DimensionInfo(dimensions, geometry.getDimension());
     }
 
     public static DimensionInfo find(Coordinate coordinate, Geometry geometry) {
