@@ -481,7 +481,7 @@ public class GMLReader implements ParserReader {
             Element exteriorLinearRingElement = exteriorElement.getChild("LinearRing", GML_NAMESPACE);
             exteriorLinearRing = buildLinearRing(exteriorLinearRingElement, dims);
         } else {
-            exteriorLinearRing = GEOMETRY_FACTORY.createLinearRing();
+            exteriorLinearRing = GEOMETRY_FACTORY.createLinearRing(new CustomCoordinateSequence(dims));
         }
         //Interior shell - [0..*]
         List<Element> interiorElements = gmlElement.getChildren("interior", GML_NAMESPACE);
@@ -536,7 +536,7 @@ public class GMLReader implements ParserReader {
                 Geometry exteriorGeom = buildSurfacePatch(exteriorElement, dims, srsInfo);
                 exteriorLinearRing = GEOMETRY_FACTORY.createLinearRing(exteriorGeom.getCoordinates());
             } else {
-                exteriorLinearRing = GEOMETRY_FACTORY.createLinearRing();
+                exteriorLinearRing = GEOMETRY_FACTORY.createLinearRing(new CustomCoordinateSequence(dims));
             }
 
             //Interior shell - [0..*]

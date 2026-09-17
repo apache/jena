@@ -20,7 +20,9 @@
  */
 package org.apache.jena.geosparql.implementation.parsers.wkt;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.geosparql.implementation.DimensionInfo;
@@ -30,9 +32,11 @@ import org.apache.jena.geosparql.implementation.jts.CustomGeometryFactory;
 import org.apache.jena.geosparql.implementation.parsers.ParserReader;
 import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.LinearRing;
+import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 
 /**
@@ -51,6 +55,7 @@ public class WKTReader implements ParserReader {
     protected WKTReader(String geometryType, String dimensionString, String coordinates, String srsURI) {
         this.dims = convertDimensionString(dimensionString);
         this.geometry = buildGeometry(geometryType, coordinates);
+        retainEmptyAggregateLayout(geometry, dims);
         this.dimensionInfo = new DimensionInfo(dims, geometry.getDimension());
         this.srsURI = srsURI;
     }
@@ -125,8 +130,7 @@ public class WKTReader implements ParserReader {
                     geo = buildPolygon(coordinates);
                     break;
                 case "multipoint":
-                    CustomCoordinateSequence multiPointSequence = new CustomCoordinateSequence(dims, clean(coordinates));
-                    geo = GEOMETRY_FACTORY.createMultiPoint(multiPointSequence);
+                    geo = buildMultiPoint(coordinates);
                     break;
                 case "multilinestring":
                     geo = buildMultiLineString(coordinates);
@@ -146,55 +150,121 @@ public class WKTReader implements ParserReader {
         return geo;
     }
 
+    /** Empty Multi/collection has no sequence for Z/M/ZM; stash the parsed layout for DimensionInfo.find. */
+    private static void retainEmptyAggregateLayout(Geometry geometry, CoordinateSequenceDimensions dims) {
+        if (geometry instanceof GeometryCollection collection && collection.getNumGeometries() == 0) {
+            geometry.setUserData(dims);
+        }
+    }
+
     private String clean(String unclean) {
         return unclean.replace(")", "").replace("(", "").trim();
     }
 
     private Geometry buildGeometryCollection(String coordinates) throws DatatypeFormatException {
-
         if (coordinates.isEmpty()) {
             return GEOMETRY_FACTORY.createGeometryCollection(new Geometry[0]);
         }
-
-        //Split coordinates
-        String tidied = coordinates.substring(1, coordinates.length() - 1);
-        tidied = tidied.replaceAll("[\\ ]?,[\\ ]?", ","); //Remove spaces around commas
-        String[] partCoordinates = tidied.split("\\),(?=[^\\(])"); //Split whenever there is a ), but not ),(
-
-        Geometry[] geometries = new Geometry[partCoordinates.length];
-
-        for (int i = 0; i < partCoordinates.length; i++) {
-            WKTReader partWKTInfo = extract(partCoordinates[i]);
+        String[] members = splitMembers(coordinates);
+        Geometry[] geometries = new Geometry[members.length];
+        for (int i = 0; i < members.length; i++) {
+            WKTReader partWKTInfo = extract(members[i]);
             geometries[i] = partWKTInfo.geometry;
         }
         return GEOMETRY_FACTORY.createGeometryCollection(geometries);
     }
 
-    private Geometry buildMultiLineString(String coordinates) {
+    private Geometry buildMultiPoint(String coordinates) {
+        if (coordinates.isEmpty()) {
+            return GEOMETRY_FACTORY.createMultiPoint(new Point[0]);
+        }
+        String[] members = splitMembers(coordinates);
+        Point[] points = new Point[members.length];
+        for (int i = 0; i < members.length; i++) {
+            points[i] = GEOMETRY_FACTORY.createPoint(memberSequence(members[i]));
+        }
+        return GEOMETRY_FACTORY.createMultiPoint(points);
+    }
 
+    private Geometry buildMultiLineString(String coordinates) {
         if (coordinates.isEmpty()) {
             return GEOMETRY_FACTORY.createMultiLineString(new LineString[0]);
         }
-
-        String[] splitCoordinates = splitCoordinates(coordinates);
-        LineString[] lineStrings = splitLineStrings(splitCoordinates);
+        String[] members = splitMembers(coordinates);
+        LineString[] lineStrings = new LineString[members.length];
+        for (int i = 0; i < members.length; i++) {
+            lineStrings[i] = GEOMETRY_FACTORY.createLineString(memberSequence(members[i]));
+        }
         return GEOMETRY_FACTORY.createMultiLineString(lineStrings);
     }
 
     private Geometry buildMultiPolygon(String coordinates) {
-
         if (coordinates.isEmpty()) {
             return GEOMETRY_FACTORY.createMultiPolygon(new Polygon[0]);
         }
-
-        String trimmed = coordinates.replace(")) ,", ")),");
-        String[] multiCoordinates = trimmed.split("\\)\\),");
-        Polygon[] polygons = new Polygon[multiCoordinates.length];
-        for (int i = 0; i < multiCoordinates.length; i++) {
-            polygons[i] = buildPolygon(multiCoordinates[i]);
+        String[] members = splitMembers(coordinates);
+        Polygon[] polygons = new Polygon[members.length];
+        for (int i = 0; i < members.length; i++) {
+            polygons[i] = isEmptyMember(members[i])
+                    ? GEOMETRY_FACTORY.createPolygon(emptySequence())
+                    : buildPolygon(members[i]);
         }
-
         return GEOMETRY_FACTORY.createMultiPolygon(polygons);
+    }
+
+    private CustomCoordinateSequence memberSequence(String member) {
+        return isEmptyMember(member) ? emptySequence() : new CustomCoordinateSequence(dims, clean(member));
+    }
+
+    private CustomCoordinateSequence emptySequence() {
+        return new CustomCoordinateSequence(dims);
+    }
+
+    private static boolean isEmptyMember(String member) {
+        return "empty".equals(member.trim());
+    }
+
+    private static String[] splitMembers(String coordinates) {
+        String inner = coordinates.trim();
+        if (inner.startsWith("(") && inner.endsWith(")")) {
+            inner = inner.substring(1, inner.length() - 1);
+        }
+        List<String> parts = new ArrayList<>();
+        StringBuilder current = new StringBuilder();
+        int depth = 0;
+        for (int i = 0; i < inner.length(); i++) {
+            char c = inner.charAt(i);
+            if (c == '(') {
+                depth++;
+            } else if (c == ')') {
+                depth--;
+                if (depth < 0) {
+                    throw new DatatypeFormatException("Unbalanced parentheses in WKT: " + coordinates);
+                }
+            }
+            if (c == ',' && depth == 0) {
+                addMember(parts, current.toString());
+                current.setLength(0);
+            } else {
+                current.append(c);
+            }
+        }
+        if (depth != 0) {
+            throw new DatatypeFormatException("Unbalanced parentheses in WKT: " + coordinates);
+        }
+        String last = current.toString();
+        if (!last.isEmpty() || !parts.isEmpty()) {
+            addMember(parts, last);
+        }
+        return parts.toArray(String[]::new);
+    }
+
+    private static void addMember(List<String> parts, String raw) {
+        String member = raw.trim();
+        if (member.isEmpty()) {
+            throw new DatatypeFormatException("Missing WKT member; use EMPTY for an empty geometry.");
+        }
+        parts.add(member);
     }
 
     private Polygon buildPolygon(String coordinates) {
@@ -224,20 +294,6 @@ public class WKTReader implements ParserReader {
 
         String trimmed = coordinates.replace(") ,", "),");
         return trimmed.split("\\),");
-
-    }
-
-    private LineString[] splitLineStrings(String[] splitCoordinates) {
-
-        LineString[] lineStrings = new LineString[splitCoordinates.length];
-
-        for (int i = 0; i < splitCoordinates.length; i++) {
-            CustomCoordinateSequence sequence = new CustomCoordinateSequence(dims, clean(splitCoordinates[i]));
-            LineString lineString = GEOMETRY_FACTORY.createLineString(sequence);
-            lineStrings[i] = lineString;
-        }
-
-        return lineStrings;
 
     }
 
