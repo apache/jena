@@ -23,6 +23,7 @@ package org.apache.jena.geosparql.implementation.function_registration;
 import org.apache.jena.geosparql.geof.nontopological.filter_functions.AsGeoJSONFF;
 import org.apache.jena.geosparql.geof.nontopological.filter_functions.BoundaryFF;
 import org.apache.jena.geosparql.geof.nontopological.filter_functions.BufferFF;
+import org.apache.jena.geosparql.geof.nontopological.filter_functions.CentroidFF;
 import org.apache.jena.geosparql.geof.nontopological.filter_functions.ConvexHullFF;
 import org.apache.jena.geosparql.geof.nontopological.filter_functions.DifferenceFF;
 import org.apache.jena.geosparql.geof.nontopological.filter_functions.DistanceFF;
@@ -52,6 +53,7 @@ public class NonTopological {
         // Non Topological Filter Functions
         registry.put(Geof.BOUNDARY_NAME, BoundaryFF.class);
         registry.put(Geof.BUFFER_NAME, BufferFF.class);
+        registry.put(Geof.CENTROID_NAME, CentroidFF.class);
         registry.put(Geof.CONVEXHULL_NAME, ConvexHullFF.class);
         registry.put(Geof.DIFFERENCE_NAME, DifferenceFF.class);
         registry.put(Geof.DISTANCE_NAME, DistanceFF.class);
