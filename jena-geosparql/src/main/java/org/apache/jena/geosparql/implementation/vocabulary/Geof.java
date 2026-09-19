@@ -83,6 +83,9 @@ public interface Geof {
     public static final String IS_SIMPLE = GEOF_URI + "isSimple";
     public static final String IS_VALID = GEOF_URI + "isValid";
 
+    //GeoSPARQL 1.1 geometry member access:
+    public static final String GEOMETRY_N = GEOF_URI + "geometryN";
+
     //upcoming GeoSPARQL 1.1 Datatype transformation functions:
     public static final String AS_GEOJSON = GEOF_URI + "asGeoJSON";
 }
