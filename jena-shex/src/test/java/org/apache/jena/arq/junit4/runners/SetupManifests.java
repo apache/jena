@@ -29,7 +29,7 @@ import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runners.model.InitializationError;
 
-import org.apache.jena.arq.junit4.EarlReport;
+import org.apache.jena.arq.junit4.ShexEarlReport;
 import org.apache.jena.arq.junit4.manifest.Manifest;
 import org.apache.jena.arq.junit4.manifest.ManifestEntry;
 import org.apache.jena.arq.junit4.manifest.Manifests;
@@ -51,7 +51,7 @@ public class SetupManifests {
     /**
      * Do one level of tests. test are {@link Runnable Runnables} that each succeed or fail with an exception.
      */
-    public static RunnerOneManifest build(EarlReport report, Manifest manifest, Function<ManifestEntry, Runnable> maker, String prefix) {
+    public static RunnerOneManifest build(ShexEarlReport report, Manifest manifest, Function<ManifestEntry, Runnable> maker, String prefix) {
         ManifestStructure mStruct = new ManifestStructure();
         RunnerOneManifest top = buildForManifest(mStruct, report, manifest, maker, prefix);
         top.setManifestCount(mStruct.manifestCount);
@@ -62,7 +62,7 @@ public class SetupManifests {
      * Do one level of tests, recurse into sub-levels.
      * A test is a {@link Runnable} that succeeds or fails with an exception.
      */
-    private static RunnerOneManifest buildForManifest(ManifestStructure mStruct, EarlReport report, Manifest manifest, Function<ManifestEntry, Runnable> maker, String prefix) {
+    private static RunnerOneManifest buildForManifest(ManifestStructure mStruct, ShexEarlReport report, Manifest manifest, Function<ManifestEntry, Runnable> maker, String prefix) {
         Description description = Description.createSuiteDescription(manifest.getName());
         if ( PrintManifests )
             out.println(manifest.getFileName()+" :: "+manifest.getName());
@@ -98,7 +98,7 @@ public class SetupManifests {
         return thisLevel;
     }
 
-    public static void prepareTests(EarlReport report, RunnerOneManifest level, Manifest manifest, Function<ManifestEntry, Runnable> maker, String prefix) {
+    public static void prepareTests(ShexEarlReport report, RunnerOneManifest level, Manifest manifest, Function<ManifestEntry, Runnable> maker, String prefix) {
         manifest.entries().forEach(entry->{
             String label = prepareTestLabel(entry, prefix);
             Runnable runnable = maker.apply(entry);
