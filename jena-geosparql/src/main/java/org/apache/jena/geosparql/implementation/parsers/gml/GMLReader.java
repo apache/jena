@@ -63,6 +63,7 @@ public class GMLReader implements ParserReader {
 
     //Geometry attributes
     private final Geometry geometry;
+    private final String gmlGeometryType;
     private final String srsURI;
     private final CoordinateSequenceDimensions dims;
     private final DimensionInfo dimensionInfo;
@@ -109,6 +110,7 @@ public class GMLReader implements ParserReader {
         int srsDimension = crs.getCoordinateSystem().getDimension();
         this.dims = CoordinateSequenceDimensions.find(srsDimension);
         String geometryType = gmlElement.getName();
+        this.gmlGeometryType = geometryType;
 
         this.geometry = buildGeometry(geometryType, gmlElement, dims, srsInfo);
         this.dimensionInfo = new DimensionInfo(dims, geometry.getDimension());
@@ -117,12 +119,25 @@ public class GMLReader implements ParserReader {
     protected GMLReader(Geometry geometry, int srsDimension, String srsURI) {
         this.srsURI = srsURI;
         this.geometry = geometry;
+        this.gmlGeometryType = null;
         this.dims = CoordinateSequenceDimensions.find(srsDimension);
         this.dimensionInfo = new DimensionInfo(dims, geometry.getDimension());
     }
 
     protected GMLReader(Geometry geometry, int srsDimension) {
         this(geometry, srsDimension, SRS_URI.DEFAULT_WKT_CRS84);
+    }
+
+    /**
+     * Returns the local name of the root XML element read from the GML literal,
+     * such as {@code Curve}, without a namespace prefix or URI. An empty GML
+     * literal is interpreted as an empty Point and returns {@code Point}.
+     *
+     * @return The root element's local name, or null if this reader was created
+     *         directly from a JTS geometry rather than XML.
+     */
+    public String getGmlGeometryType() {
+        return gmlGeometryType;
     }
 
     @Override
@@ -698,6 +713,24 @@ public class GMLReader implements ParserReader {
     private static final String EMPTY_GML_TEXT = "<gml:Point xmlns:gml='http://www.opengis.net/gml/3.2' srsName=\"http://www.opengis.net/def/crs/OGC/1.3/CRS84\" />";
 
     public static GMLReader extract(String gmlText) throws JDOMException, IOException {
+        return new GMLReader(readRootElement(gmlText));
+    }
+
+    /**
+     * Parses the XML and returns its root element's local name, such as
+     * {@code Curve}, without a namespace prefix or URI. This method does not
+     * construct a JTS geometry or validate the XML against the GML schema.
+     *
+     * @param gmlText The serialized GML text; an empty string represents an empty Point.
+     * @return The root element's local name, or {@code Point} for an empty string.
+     * @throws JDOMException if the XML cannot be parsed.
+     * @throws IOException if an I/O error occurs while reading the XML.
+     */
+    public static String readGeometryType(String gmlText) throws JDOMException, IOException {
+        return readRootElement(gmlText).getName();
+    }
+
+    private static Element readRootElement(String gmlText) throws JDOMException, IOException {
 
         if (gmlText.isEmpty()) {
             gmlText = EMPTY_GML_TEXT;
@@ -706,8 +739,7 @@ public class GMLReader implements ParserReader {
         SAXBuilder jdomBuilder = newSAXBuilder();
         InputStream stream = new ByteArrayInputStream(gmlText.getBytes(StandardCharsets.UTF_8));
         Document xmlDoc = jdomBuilder.build(stream);
-        Element gmlElement = xmlDoc.getRootElement();
-        return new GMLReader(gmlElement);
+        return xmlDoc.getRootElement();
     }
 
     // ---- XXE safe SAXBuilder

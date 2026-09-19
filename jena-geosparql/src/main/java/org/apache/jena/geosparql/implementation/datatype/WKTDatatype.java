@@ -26,6 +26,7 @@ import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.parsers.wkt.WKTReader;
 import org.apache.jena.geosparql.implementation.parsers.wkt.WKTWriter;
 import org.apache.jena.geosparql.implementation.vocabulary.Geo;
+import org.apache.jena.geosparql.implementation.vocabulary.GeoSPARQL_URI;
 import org.locationtech.jts.geom.Geometry;
 
 /**
@@ -91,6 +92,16 @@ public class WKTDatatype extends GeometryDatatype {
         DimensionInfo dimensionInfo = wktReader.getDimensionInfo();
 
         return new GeometryWrapper(geometry, srsURI, URI, dimensionInfo, geometryLiteral);
+    }
+
+    @Override
+    public String getGeometryTypeURI(GeometryWrapper geometry) {
+        String type = geometry.getGeometryType();
+        return switch (type) {
+            case "Point", "LineString", "LinearRing", "Polygon", "MultiPoint", "MultiLineString",
+                 "MultiPolygon", "GeometryCollection" -> GeoSPARQL_URI.SF_URI + type;
+            default -> throw new DatatypeFormatException("Unsupported Simple Features geometry type: " + type);
+        };
     }
 
     @Override
