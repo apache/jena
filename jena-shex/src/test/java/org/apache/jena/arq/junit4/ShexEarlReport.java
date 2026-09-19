@@ -32,7 +32,7 @@ import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.XSD;
 
-public class EarlReport
+public class ShexEarlReport
 {
     // Ref: http://www.w3.org/TR/EARL10-Schema/
     // NB: This vocabulary has changed over time!
@@ -51,7 +51,7 @@ public class EarlReport
 
     private Resource system;
 
-    public EarlReport(String systemURI)
+    public ShexEarlReport(String systemURI)
     {
         earl = ModelFactory.createDefaultModel();
 
