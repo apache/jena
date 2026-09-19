@@ -76,7 +76,7 @@
     "typescript": "^7.0.2",
     "vite": "^8.0.10",
     "vite-plugin-istanbul": "^9.0.0",
-    "vitest": "^4.1.0",
+    "vitest": "^5.0.0",
     "vue-eslint-parser": "^10.4.0",
     "wait-on": "^9.0.0",
     "webpack": "^5.104.1"
