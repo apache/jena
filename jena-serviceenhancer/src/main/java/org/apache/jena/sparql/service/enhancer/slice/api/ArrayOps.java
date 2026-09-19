@@ -39,6 +39,9 @@ public interface ArrayOps<A> {
 
     void fill(A array, int offset, int length, Object value);
     void copy(A src, int srcPos, A dest, int destPos, int length);
+
+    String toString(A array);
+
     Object getDefaultValue();
 
     @SuppressWarnings("unchecked")
@@ -64,6 +67,11 @@ public interface ArrayOps<A> {
     @SuppressWarnings("unchecked")
     default void lengthRaw(Object array) {
         length((A)array);
+    }
+
+    @SuppressWarnings("unchecked")
+    default String toStringRaw(Object array) {
+        return toString((A)array);
     }
 
     // TODO Cache with a ClassInstanceMap?

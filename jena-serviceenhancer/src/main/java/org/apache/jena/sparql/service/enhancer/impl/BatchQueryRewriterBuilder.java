@@ -19,9 +19,11 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
+
 package org.apache.jena.sparql.service.enhancer.impl;
 
 import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.service.enhancer.impl.BatchQueryRewriter.SubstitutionStrategy;
 
 public class BatchQueryRewriterBuilder {
     protected OpServiceInfo serviceInfo;
@@ -29,6 +31,7 @@ public class BatchQueryRewriterBuilder {
     protected boolean sequentialUnion;
     protected boolean orderRetainingUnion;
     protected boolean omitEndMarker;
+    protected SubstitutionStrategy substitutionStrategy;
 
     public BatchQueryRewriterBuilder(OpServiceInfo serviceInfo, Var idxVar) {
         super();
@@ -63,11 +66,24 @@ public class BatchQueryRewriterBuilder {
         return this;
     }
 
+    public BatchQueryRewriterBuilder setSubstitutionStrategy(SubstitutionStrategy substitutionStrategy) {
+        this.substitutionStrategy = substitutionStrategy;
+        return this;
+    }
+
+    public SubstitutionStrategy getSubstitutionStrategy() {
+        return substitutionStrategy;
+    }
+
     public static BatchQueryRewriterBuilder from(OpServiceInfo serviceInfo, Var idxVar) {
         return new BatchQueryRewriterBuilder(serviceInfo, idxVar);
     }
 
     public BatchQueryRewriter build() {
-        return new BatchQueryRewriter(serviceInfo, idxVar, sequentialUnion, orderRetainingUnion, omitEndMarker);
+        SubstitutionStrategy finalSubstitutionStrategy = substitutionStrategy == null
+                ? SubstitutionStrategy.SUBSTITUTE
+                : substitutionStrategy;
+
+        return new BatchQueryRewriter(serviceInfo, idxVar, sequentialUnion, orderRetainingUnion, omitEndMarker, finalSubstitutionStrategy);
     }
 }

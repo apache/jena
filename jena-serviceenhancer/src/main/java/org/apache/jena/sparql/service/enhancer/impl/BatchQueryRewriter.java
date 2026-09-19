@@ -33,7 +33,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Query;
@@ -45,13 +44,17 @@ import org.apache.jena.sparql.algebra.op.OpExtend;
 import org.apache.jena.sparql.algebra.op.OpOrder;
 import org.apache.jena.sparql.algebra.op.OpSlice;
 import org.apache.jena.sparql.algebra.op.OpUnion;
+import org.apache.jena.sparql.core.Substitute;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.main.QC;
 import org.apache.jena.sparql.expr.ExprVar;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.graph.NodeTransformLib;
+import org.apache.jena.sparql.service.enhancer.impl.util.AssertionUtils;
 import org.apache.jena.sparql.service.enhancer.impl.util.BindingUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Rewriter for instantiating a query such that a list of initial bindings are injected.
@@ -68,6 +71,20 @@ import org.apache.jena.sparql.service.enhancer.impl.util.BindingUtils;
  * </ul>
  */
 public class BatchQueryRewriter {
+
+    public enum SubstitutionStrategy {
+        /** Approach using {@link QC#substitute(Op, Binding)}. */
+        SUBSTITUTE,
+
+        /**
+         * Experimental approach using {@link Substitute#inject(Op, Binding)}.
+         * Seems less reliable than SUBSTITUTE.
+         */
+        INJECT
+    }
+
+    private static final Logger logger = LoggerFactory.getLogger(BatchQueryRewriter.class);
+
     protected OpServiceInfo serviceInfo;
     protected Var idxVar;
 
@@ -82,9 +99,10 @@ public class BatchQueryRewriter {
      */
     protected boolean orderRetainingUnion;
 
-
     /** Whether to omit the end marker */
     protected boolean omitEndMarker;
+
+    protected SubstitutionStrategy substitutionStrategy;
 
     /** Constant to mark end of a batch (could also be dynamically set to one higher then the idx in a batch) */
     static int REMOTE_END_MARKER = 1000000000;
@@ -100,13 +118,15 @@ public class BatchQueryRewriter {
 
     public BatchQueryRewriter(OpServiceInfo serviceInfo, Var idxVar,
             boolean sequentialUnion, boolean orderRetainingUnion,
-            boolean omitEndMarker) {
+            boolean omitEndMarker, SubstitutionStrategy substitutionStrategy) {
         super();
         this.serviceInfo = serviceInfo;
         this.idxVar = idxVar;
         this.sequentialUnion = sequentialUnion;
         this.orderRetainingUnion = orderRetainingUnion;
         this.omitEndMarker = omitEndMarker;
+
+        this.substitutionStrategy = Objects.requireNonNull(substitutionStrategy);
     }
 
     /** The index var used by this rewriter */
@@ -116,7 +136,7 @@ public class BatchQueryRewriter {
 
     public static Set<Var> seenVars(Collection<PartitionRequest<Binding>> batchRequest) {
         Set<Var> result = new LinkedHashSet<>();
-        batchRequest.forEach(br -> BindingUtils.addAll(result, br.getPartitionKey()));
+        batchRequest.forEach(br -> BindingUtils.addAll(result, br.partitionKey()));
         return result;
     }
 
@@ -148,14 +168,14 @@ public class BatchQueryRewriter {
 
         if (!omitEndMarker) {
             Op endMarker = OpExtend.create(OpLib.unit(), idxVar, NV_REMOTE_END_MARKER);
-            newOp = newOp == null ? endMarker : OpUnion.create(newOp, endMarker);
+            newOp = endMarker;
         }
 
         for (Entry<Integer, PartitionRequest<Binding>> e : es) {
 
             PartitionRequest<Binding> req = e.getValue();
             long idx = e.getKey();
-            Binding scopedBinding = req.getPartitionKey();
+            Binding scopedBinding = req.partitionKey();
 
             Set<Var> scopedBindingVars = BindingUtils.varsMentioned(scopedBinding);
 
@@ -169,14 +189,17 @@ public class BatchQueryRewriter {
 
             // Note: QC.substitute does not remove variables being substituted from projections
             //   This may cause unbound variables to be projected
-
-            op = QC.substitute(op, normedBinding);
+            op = switch (substitutionStrategy) {
+                case SUBSTITUTE -> QC.substitute(op, normedBinding);
+                //case INJECT -> Transformer.transform(TransformAssignToExtend.get(), Substitute.inject(op, normedBinding));
+                case INJECT -> Substitute.inject(op, normedBinding);
+            };
 
             // Relabel any blank nodes
             op = NodeTransformLib.transform(node -> relabelBnode(node, idx), op);
 
-            long o = req.hasOffset() ? req.getOffset() : Query.NOLIMIT;
-            long l = req.hasLimit() ? req.getLimit() : Query.NOLIMIT;
+            long o = req.hasOffset() ? req.offset() : Query.NOLIMIT;
+            long l = req.hasLimit() ? req.limit() : Query.NOLIMIT;
 
             if (o != Query.NOLIMIT || l != Query.NOLIMIT) {
                 op = new OpSlice(op, o, l);
@@ -186,14 +209,25 @@ public class BatchQueryRewriter {
             newOp = newOp == null ? op : OpUnion.create(op, newOp);
         }
 
-
         if (orderNeeded) {
             newOp = new OpOrder(newOp, sortConditions);
         }
 
-        Query q = OpAsQuery.asQuery(newOp);
-
-        Log.info(BatchQueryRewriter.class, "Rewritten bulk query: " + q);
+        if (logger.isInfoEnabled()) {
+            Query q = OpAsQuery.asQuery(newOp);
+            String str = q.toString();
+            // Cut off strings unless assertions are enabled
+            String note = "";
+            int len = str.length();
+            if (!AssertionUtils.IS_ASSERT_ENABLED) {
+                int maxlen = 1024;
+                if (len > maxlen) {
+                    str = str.subSequence(0, maxlen) + " ...";
+                    note = " (enable assertions using the -ea jvm option to see the full query)";
+                }
+            }
+            logger.info("Rewritten bulk query has " + len + " characters" + note + ": " + str);
+        }
 
         // Add a rename for idxVar so that QueryIter.map does not omit it
         Map<Var, Var> renames = new HashMap<>(serviceInfo.getVisibleSubOpVarsNormedToScoped());
