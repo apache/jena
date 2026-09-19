@@ -24,11 +24,13 @@ package org.apache.jena.sparql.exec.http;
 //import static org.apache.jena.query.ARQ.*;
 
 import java.net.http.HttpClient;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.logging.Log;
@@ -45,6 +47,7 @@ import org.apache.jena.sparql.algebra.op.OpService ;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.Rename;
+import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.http.HttpParams;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.sparql.engine.iterator.QueryIter;
@@ -229,6 +232,8 @@ public class Service {
 
         // -- End setup
 
+        AtomicBoolean cancelSignal = Context.getCancelSignal(context);
+
         // Build the execution
         try (QueryExecHTTP qExec = QueryExecHTTP.newBuilder()
                 .endpoint(serviceURL)
@@ -241,14 +246,35 @@ public class Service {
                 .sendMode(querySendMode)
                 .build()) {
 
-            // Detach from the network stream.
-            RowSet rowSet = qExec.select().materialize();
-            QueryIterator qIter = QueryIterPlainWrapper.create(rowSet);
+            QueryIterator qIter;
+            if ( cancelSignal == null ) {
+                // Detach from the network stream.
+                RowSet rowSet = qExec.select().materialize();
+                qIter = QueryIterPlainWrapper.create(rowSet);
+            } else {
+                checkCancelled(cancelSignal, qExec);
+                RowSet rowSet = qExec.select();
+                List<Binding> rows = new ArrayList<>();
+                // Check around hasNext(), which may block on the network.
+                // This cannot interrupt a read that is already in progress.
+                while ( !cancelSignal.get() && rowSet.hasNext() && !cancelSignal.get() ) {
+                    rows.add(rowSet.next());
+                }
+                checkCancelled(cancelSignal, qExec);
+                qIter = QueryIterPlainWrapper.create(rows.iterator());
+            }
             if (requiresRemapping)
                 qIter = QueryIter.map(qIter, varMapping);
             return qIter;
         } catch (HttpException ex) {
             throw QueryExceptionHTTP.rewrap(ex);
+        }
+    }
+
+    private static void checkCancelled(AtomicBoolean cancelSignal, QueryExecHTTP qExec) {
+        if ( cancelSignal.get() ) {
+            qExec.abort();
+            throw new QueryCancelledException();
         }
     }
 
