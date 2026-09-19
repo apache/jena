@@ -27,6 +27,29 @@ import static org.junit.Assert.*;
 
 public class CustomCoordinateSequenceTest {
 
+    @Test
+    @SuppressWarnings("deprecation")
+    public void clonePreservesDeclaredLayoutAndValues() {
+        for (CustomCoordinateSequence source : new CustomCoordinateSequence[] {
+                new CustomCoordinateSequence(0, CoordinateSequenceDimensions.XYZM),
+                new CustomCoordinateSequence(CoordinateSequenceDimensions.XYZM, "100 10 NaN NaN,120 20 9 8") }) {
+            CustomCoordinateSequence clone = source.clone();
+            assertNotSame(source, clone);
+            assertEquals(CoordinateSequenceDimensions.XYZM, clone.getDimensions());
+            assertEquals(4, clone.getDimension());
+            assertEquals(1, clone.getMeasures());
+            assertEquals(source.size(), clone.size());
+            for (int i = 0; i < source.size(); i++) {
+                for (int ordinate = 0; ordinate < 4; ordinate++) {
+                    double original = source.getOrdinate(i, ordinate);
+                    assertEquals(original, clone.getOrdinate(i, ordinate), 0);
+                    clone.setOrdinate(i, ordinate, 42);
+                    assertEquals(original, source.getOrdinate(i, ordinate), 0);
+                }
+            }
+        }
+    }
+
     public CustomCoordinateSequenceTest() {
     }
 

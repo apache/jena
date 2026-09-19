@@ -238,7 +238,12 @@ public class CustomCoordinateSequence implements CoordinateSequence, Serializabl
 
     @Override
     public CustomCoordinateSequence copy() {
-        return new CustomCoordinateSequence(x, y, z, m);
+        CustomCoordinateSequence copy = new CustomCoordinateSequence(size, dimensions);
+        System.arraycopy(x, 0, copy.x, 0, size);
+        System.arraycopy(y, 0, copy.y, 0, size);
+        System.arraycopy(z, 0, copy.z, 0, size);
+        System.arraycopy(m, 0, copy.m, 0, size);
+        return copy;
     }
 
     public int getSize() {
@@ -445,7 +450,8 @@ public class CustomCoordinateSequence implements CoordinateSequence, Serializabl
             case Y:
                 return y[index];
             case Z:
-                return z[index];
+                // In XYM, ordinate 2 is M; the Z constant assumes an XYZ layout.
+                return dimensions == CoordinateSequenceDimensions.XYM ? m[index] : z[index];
             case M:
                 return m[index];
         }
@@ -468,7 +474,11 @@ public class CustomCoordinateSequence implements CoordinateSequence, Serializabl
                 y[index] = value;
                 break;
             case Z:
-                z[index] = value;
+                if (dimensions == CoordinateSequenceDimensions.XYM) {
+                    m[index] = value;
+                } else {
+                    z[index] = value;
+                }
                 break;
             case M:
                 m[index] = value;
@@ -506,7 +516,7 @@ public class CustomCoordinateSequence implements CoordinateSequence, Serializabl
     @Override
     @Deprecated
     public CustomCoordinateSequence clone() {
-        return new CustomCoordinateSequence(x, y, z, m);
+        return copy();
     }
 
     @Override

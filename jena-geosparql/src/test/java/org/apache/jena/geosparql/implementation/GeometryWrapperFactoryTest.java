@@ -23,6 +23,7 @@ package org.apache.jena.geosparql.implementation;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
+import org.apache.jena.geosparql.implementation.jts.CoordinateSequenceDimensions;
 import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -31,12 +32,52 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.impl.CoordinateArraySequence;
 
 /**
  *
  *
  */
 public class GeometryWrapperFactoryTest {
+
+    @Test
+    public void factoryHandlesEmptyGeometriesWithoutCoordinates() {
+        GeometryFactory factory = new GeometryFactory();
+        Geometry[] members = {
+            factory.createPoint(new CoordinateArraySequence(0, 3, 0)),
+            factory.createPoint(new CoordinateArraySequence(0, 3, 1))
+        };
+        for (Geometry empty : new Geometry[] {
+                factory.createPoint(),
+                factory.createLineString(),
+                factory.createPolygon(),
+                factory.createGeometryCollection(),
+                factory.createGeometryCollection(new Geometry[] { factory.createGeometryCollection() }),
+                factory.createGeometryCollection(members) }) {
+            GeometryWrapper geometry = GeometryWrapperFactory.createGeometry(empty,
+                    SRS_URI.DEFAULT_WKT_CRS84, WKTDatatype.URI);
+            assertEquals(true, geometry.getParsingGeometry().isEmpty());
+            assertEquals(CoordinateSequenceDimensions.XY, geometry.getCoordinateSequenceDimensions());
+            assertEquals(2, geometry.getCoordinateDimension());
+            assertEquals(2, geometry.getSpatialDimension());
+        }
+    }
+
+    @Test
+    public void factoryKeepsOrdinaryJts2DGeometriesXY() {
+        GeometryFactory factory = new GeometryFactory();
+        for (Geometry source : new Geometry[] {
+                factory.createPoint(new Coordinate(1, 2)),
+                factory.createLineString(new Coordinate[] { new Coordinate(1, 2), new Coordinate(3, 4) }) }) {
+            GeometryWrapper geometry = GeometryWrapperFactory.createGeometry(source,
+                    SRS_URI.DEFAULT_WKT_CRS84, WKTDatatype.URI);
+            assertEquals(CoordinateSequenceDimensions.XY, geometry.getCoordinateSequenceDimensions());
+            assertEquals(2, geometry.getCoordinateDimension());
+            assertEquals(2, geometry.getSpatialDimension());
+        }
+    }
 
     public GeometryWrapperFactoryTest() {
     }

@@ -21,13 +21,9 @@
 package org.apache.jena.geosparql.implementation;
 
 import org.apache.jena.geosparql.implementation.registry.SRSRegistry;
-import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.CoordinateSequence;
+import org.locationtech.jts.geom.CoordinateSequenceFilter;
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryCollection;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.LineString;
-import org.locationtech.jts.geom.LinearRing;
-import org.locationtech.jts.geom.Polygon;
 
 /**
  *
@@ -81,149 +77,32 @@ public class GeometryReverse {
     }
 
     /**
-     * Reverses coordinate order of the supplied geometry and produces a new
-     * geometry.
+     * Swaps X and Y in a copy of the supplied geometry, preserving Z, M,
+     * coordinate layouts, and collection structure. The input is not modified.
      *
      * @param geometry
-     * @return Geometry in x,y coordinate order.
+     * @return Geometry with X and Y exchanged.
      */
     public static Geometry reverseGeometry(Geometry geometry) {
-
-        if (geometry.isEmpty()) {
-            return geometry.copy();
-        }
-
-        GeometryFactory factory = geometry.getFactory();
-        Geometry finalGeometry;
-        Coordinate[] coordinates;
-
-        String type = geometry.getGeometryType();
-
-        switch (type) {
-            case "LineString":
-                coordinates = getReversedCoordinates(geometry);
-                finalGeometry = factory.createLineString(coordinates);
-                break;
-            case "LinearRing":
-                coordinates = getReversedCoordinates(geometry);
-                finalGeometry = factory.createLinearRing(coordinates);
-                break;
-            case "MultiPoint":
-                coordinates = getReversedCoordinates(geometry);
-                finalGeometry = factory.createMultiPointFromCoords(coordinates);
-                break;
-            case "Polygon":
-                finalGeometry = reversePolygon(geometry, factory);
-                break;
-            case "Point":
-                coordinates = getReversedCoordinates(geometry);
-                finalGeometry = factory.createPoint(coordinates[0]);
-                break;
-            case "MultiPolygon":
-                Polygon[] polygons = unpackPolygons((GeometryCollection) geometry);
-                finalGeometry = factory.createMultiPolygon(polygons);
-                break;
-            case "MultiLineString":
-                LineString[] lineString = unpackLineStrings((GeometryCollection) geometry);
-                finalGeometry = factory.createMultiLineString(lineString);
-                break;
-            case "GeometryCollection":
-                Geometry[] geometries = unpackGeometryCollection((GeometryCollection) geometry);
-                finalGeometry = factory.createGeometryCollection(geometries);
-                break;
-            default:
-                finalGeometry = geometry;
-                break;
-        }
-
-        return finalGeometry;
-    }
-
-    private static Coordinate[] getReversedCoordinates(Geometry geometry) {
-
-        Coordinate[] original = geometry.getCoordinates();
-        Coordinate[] reversed = new Coordinate[original.length];
-
-        for (int i = 0; i < original.length; i++) {
-            reversed[i] = new Coordinate(original[i].y, original[i].x);
-        }
-
-        return reversed;
-
-    }
-
-    private static Polygon reversePolygon(Geometry geometry, GeometryFactory factory) {
-
-        Polygon finalGeometry;
-        Polygon polygon = (Polygon) geometry;
-        if (polygon.getNumInteriorRing() == 0) {
-            //There are no interior rings so perform the standard reversal.
-            Coordinate[] coordinates = getReversedCoordinates(geometry);
-            finalGeometry = factory.createPolygon(coordinates);
-        } else {
-
-            LineString exteriorRing = polygon.getExteriorRing();
-            Coordinate[] reversedExteriorCoordinates = getReversedCoordinates(exteriorRing);
-            LinearRing reversedExteriorRing = factory.createLinearRing(reversedExteriorCoordinates);
-
-            LinearRing[] reversedInteriorRings = new LinearRing[polygon.getNumInteriorRing()];
-            for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
-                LineString interiorRing = polygon.getInteriorRingN(i);
-                Coordinate[] reversedInteriorCoordinates = getReversedCoordinates(interiorRing);
-                LinearRing reversedInteriorRing = factory.createLinearRing(reversedInteriorCoordinates);
-                reversedInteriorRings[i] = reversedInteriorRing;
+        Geometry reversed = geometry.copy();
+        reversed.apply(new CoordinateSequenceFilter() {
+            @Override
+            public void filter(CoordinateSequence sequence, int index) {
+                double x = sequence.getX(index);
+                sequence.setOrdinate(index, 0, sequence.getY(index));
+                sequence.setOrdinate(index, 1, x);
             }
 
-            finalGeometry = factory.createPolygon(reversedExteriorRing, reversedInteriorRings);
-        }
+            @Override
+            public boolean isDone() {
+                return false;
+            }
 
-        return finalGeometry;
+            @Override
+            public boolean isGeometryChanged() {
+                return true;
+            }
+        });
+        return reversed;
     }
-
-    private static Polygon[] unpackPolygons(GeometryCollection geoCollection) {
-
-        GeometryFactory factory = geoCollection.getFactory();
-
-        int count = geoCollection.getNumGeometries();
-        Polygon[] polygons = new Polygon[count];
-
-        for (int i = 0; i < count; i++) {
-            Geometry geometry = geoCollection.getGeometryN(i);
-            Polygon polygon = reversePolygon(geometry, factory);
-            polygons[i] = polygon;
-        }
-
-        return polygons;
-    }
-
-    private static LineString[] unpackLineStrings(GeometryCollection geoCollection) {
-
-        GeometryFactory factory = geoCollection.getFactory();
-
-        int count = geoCollection.getNumGeometries();
-        LineString[] lineStrings = new LineString[count];
-
-        for (int i = 0; i < count; i++) {
-            Geometry geometry = geoCollection.getGeometryN(i);
-            Coordinate[] coordinates = getReversedCoordinates(geometry);
-            LineString lineString = factory.createLineString(coordinates);
-            lineStrings[i] = lineString;
-        }
-
-        return lineStrings;
-    }
-
-    private static Geometry[] unpackGeometryCollection(GeometryCollection geoCollection) {
-
-        int count = geoCollection.getNumGeometries();
-        Geometry[] geometries = new Geometry[count];
-
-        for (int i = 0; i < count; i++) {
-            Geometry geometry = geoCollection.getGeometryN(i);
-            geometries[i] = reverseGeometry(geometry);
-        }
-
-        return geometries;
-    }
-
 }
