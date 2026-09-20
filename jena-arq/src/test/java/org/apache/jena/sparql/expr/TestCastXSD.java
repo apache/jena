@@ -90,6 +90,10 @@ public class TestCastXSD {
     @Test public void cast_to_boolean_04()  { testCast      ("xsd:boolean(0.0e0)",                  "false"); }
     @Test public void cast_to_boolean_05()  { testCast      ("xsd:boolean(-0.0e0)",                 "false"); }
     @Test public void cast_to_boolean_06()  { testCast      ("xsd:boolean('NaN'^^xsd:float)",       "false"); }
+    // GH-4239
+    @Test public void cast_to_boolean_06a() { testCast      ("xsd:boolean('NaN'^^xsd:double)",      "false"); }
+    @Test public void cast_to_boolean_06b() { testCast      ("xsd:boolean('INF'^^xsd:double)",      "true"); }
+    @Test public void cast_to_boolean_06c() { testCast      ("xsd:boolean('-INF'^^xsd:float)",      "true"); }
 
     @Test public void cast_to_boolean_07()  { testCast      ("xsd:boolean(1.0)",                    "true"); }
     @Test public void cast_to_boolean_08()  { testCast      ("xsd:boolean(0.0)",                    "false"); }
