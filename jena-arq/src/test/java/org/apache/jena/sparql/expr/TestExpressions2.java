@@ -79,6 +79,21 @@ public class TestExpressions2
     @Test public void gregorian_cmp_03()        { eval("'1999'^^xsd:gYear < '2001+01:00'^^xsd:gYear", true); }
     @Test public void gregorian_cmp_04()        { assertThrows(ExprEvalException.class, ()-> eval("'1999'^^xsd:gYear < '1999+05:00'^^xsd:gYear") ); }
 
+    // GH-4235: numeric comparison with NaN.
+    // XPath: every ordering comparison involving NaN is false; "=" is false and "!=" is true.
+    @Test public void nan_cmp_01()              { assertThrows(ExprEvalException.class, ()-> eval("'NaN'^^xsd:double > 1e0") ); }
+    @Test public void nan_cmp_02()              { assertThrows(ExprEvalException.class, ()-> eval("'NaN'^^xsd:double < 1e0") ); }
+    @Test public void nan_cmp_03()              { assertThrows(ExprEvalException.class, ()-> eval("1e0 >= 'NaN'^^xsd:double") ); }
+    @Test public void nan_cmp_04()              { assertThrows(ExprEvalException.class, ()-> eval("1 <= 'NaN'^^xsd:float") ); }
+    @Test public void nan_cmp_05()              { assertThrows(ExprEvalException.class, ()-> eval("'NaN'^^xsd:double >= 'NaN'^^xsd:double") ); }
+    @Test public void nan_cmp_06()              { assertThrows(ExprEvalException.class, ()-> eval("'NaN'^^xsd:float < 'NaN'^^xsd:double") ); }
+    @Test public void nan_cmp_07()              { eval("'NaN'^^xsd:double = 'NaN'^^xsd:double", false); }
+    @Test public void nan_cmp_08()              { eval("'NaN'^^xsd:double = 'NaN'^^xsd:float", false); }
+    @Test public void nan_cmp_09()              { eval("'NaN'^^xsd:double != 'NaN'^^xsd:double", true); }
+    @Test public void nan_cmp_10()              { eval("'NaN'^^xsd:double != 1e0", true); }
+    @Test public void nan_cmp_11()              { eval("'INF'^^xsd:double > 1e0", true); }
+    @Test public void nan_cmp_12()              { eval("2e0 > 1e0", true); }
+
     @Test public void gregorian_cast_01()       { eval("xsd:gYear('2010-03-22'^^xsd:date) = '2010'^^xsd:gYear", true ); }
 
     @Test public void coalesce_01()             { assertThrows(ExprEvalException.class, ()-> eval("COALESCE()") ); }
