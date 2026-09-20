@@ -142,6 +142,13 @@ public class TransformDistinctToReduced extends TransformCopy {
 
     /**
      * Determines whether a sort condition is valid in terms of this optimizer
+     * <p>
+     * A condition that is a projected variable makes solutions with the same
+     * value of that variable adjacent and is recorded in {@code seenVars}. A
+     * condition that is an expression over projected variables does not break
+     * the ordering but, unless the expression is injective (which is not
+     * known), equal projected values need not be adjacent after it, so it does
+     * not count towards the projected variables having been seen (GH-4242).
      *
      * @param cond
      *            Sort Condition
@@ -160,7 +167,6 @@ public class TransformDistinctToReduced extends TransformCopy {
             for (Var v : cond.getExpression().getVarsMentioned()) {
                 if (!projectVars.contains(v))
                     return false;
-                seenVars.add(v);
             }
             return true;
         }
