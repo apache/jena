@@ -24,6 +24,7 @@ package org.apache.jena.sparql.exec.http;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.InputStream;
+import java.lang.reflect.Proxy;
 import java.net.Authenticator;
 import java.net.CookieHandler;
 import java.net.ProxySelector;
@@ -57,7 +58,9 @@ import org.apache.jena.query.ARQ;
 import org.apache.jena.query.QueryCancelledException;
 import org.apache.jena.sparql.algebra.op.OpService;
 import org.apache.jena.sparql.core.DatasetGraphZero;
+import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.iterator.QueryIterThreadedSubExecution;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.Context;
@@ -138,6 +141,88 @@ public class TestServiceCancellation {
     }
 
     @Test
+    public void queryExecAbortReachesServiceBlockedBeforeFirstRow() throws Exception {
+        Context context = context();
+        CountDownLatch reading = new CountDownLatch(1);
+        CountDownLatch release = new CountDownLatch(1);
+        AtomicBoolean workerInterrupted = new AtomicBoolean();
+        ResponseBody body = new ResponseBody(RESULTS, new AtomicBoolean(), Integer.MAX_VALUE) {
+            @Override
+            public int read() {
+                if ( reading.getCount() != 0 ) {
+                    reading.countDown();
+                    try {
+                        release.await();
+                    } catch (InterruptedException ex) {
+                        workerInterrupted.set(true);
+                        Thread.currentThread().interrupt();
+                        return -1;
+                    }
+                }
+                return super.read();
+            }
+        };
+        context.set(ARQ.httpQueryClient, new ResponseClient(body));
+        var executor = Executors.newSingleThreadExecutor();
+        try (QueryExec exec = QueryExec.dataset(DatasetGraphZero.create()).context(context)
+                .query("SELECT * { SERVICE <" + ENDPOINT + "> { ?s ?p ?x } }").build()) {
+            var result = executor.submit(() -> assertThrows(QueryCancelledException.class,
+                    () -> exec.select().materialize()));
+            assertTrue(reading.await(5, TimeUnit.SECONDS));
+            exec.abort();
+            result.get(5, TimeUnit.SECONDS);
+            assertTrue(workerInterrupted.get(), "Abort must interrupt the active SERVICE worker");
+            assertTrue(body.closed);
+        } finally {
+            release.countDown();
+            executor.shutdownNow();
+            assertTrue(executor.awaitTermination(5, TimeUnit.SECONDS));
+        }
+    }
+
+    @Test
+    public void cancellationBeforeQueryExecPublicationAbortsBeforeSelect() throws Exception {
+        Context context = context();
+        ExecutionContext execCxt = ExecutionContext.create(context);
+        CountDownLatch creating = new CountDownLatch(1);
+        CompletableFuture<Void> release = new CompletableFuture<>();
+        AtomicBoolean aborted = new AtomicBoolean();
+        AtomicBoolean selected = new AtomicBoolean();
+        QueryExec queryExec = (QueryExec)Proxy.newProxyInstance(
+                QueryExec.class.getClassLoader(),
+                new Class<?>[] { QueryExec.class },
+                (proxy, method, args) -> {
+                    return switch (method.getName()) {
+                        case "abort" -> { aborted.set(true); yield null; }
+                        case "close" -> null;
+                        case "select" -> {
+                            selected.set(true);
+                            throw new AssertionError("select called after cancellation");
+                        }
+                        default -> null;
+                    };
+                });
+        QueryIterator iter = new QueryIterThreadedSubExecution(execCxt, () -> {
+            creating.countDown();
+            release.join();
+            return queryExec;
+        });
+        try {
+            assertTrue(creating.await(5, TimeUnit.SECONDS));
+            iter.cancel();
+            release.complete(null);
+            for (int i = 0; i < 100 && !aborted.get() && !selected.get(); i++)
+                Thread.sleep(10);
+            assertTrue(aborted.get(), "Cancellation must abort an execution published later");
+            assertFalse(selected.get(), "A cancelled execution must not start SELECT");
+            assertThrows(QueryCancelledException.class, iter::hasNext);
+        } finally {
+            release.complete(null);
+            iter.close();
+        }
+    }
+
+    @Test
     public void cancelledAtEndOfResults() {
         Context context = context();
         AtomicBoolean signal = Context.getOrSetCancelSignal(context);
@@ -161,9 +246,11 @@ public class TestServiceCancellation {
         context.set(ARQ.httpQueryClient, new ResponseClient(body));
 
         QueryIterator iter = Service.exec(op(), context);
-        assertTrue(body.closed);
         try {
-            int count = 0;
+            assertTrue(iter.hasNext());
+            assertEquals("value", iter.next().get("x").getLiteralLexicalForm());
+            assertTrue(body.closed);
+            int count = 1;
             while (iter.hasNext()) {
                 assertEquals("value", iter.next().get("x").getLiteralLexicalForm());
                 count++;
@@ -222,6 +309,52 @@ public class TestServiceCancellation {
     }
 
     @Test
+    public void silentServiceDiscardsPartialResultsOnDelayedTailError() throws Exception {
+        Context context = context();
+        CountDownLatch afterFirstRow = new CountDownLatch(1);
+        CountDownLatch release = new CountDownLatch(1);
+        int pauseAt = HEADER.length() + ROW.length() + 1;
+        ResponseBody body = new ResponseBody(HEADER + ROW + ",broken", new AtomicBoolean(), Integer.MAX_VALUE) {
+            @Override
+            public int read() {
+                if (position >= pauseAt && afterFirstRow.getCount() != 0) {
+                    afterFirstRow.countDown();
+                    try {
+                        assertTrue(release.await(10, TimeUnit.SECONDS));
+                    } catch (InterruptedException ex) {
+                        Thread.currentThread().interrupt();
+                        throw new AssertionError(ex);
+                    }
+                }
+                return super.read();
+            }
+        };
+        context.set(ARQ.httpQueryClient, new ResponseClient(body));
+        var executor = Executors.newSingleThreadExecutor();
+        try {
+            var result = executor.submit(() -> {
+                try (QueryExec exec = QueryExec.dataset(DatasetGraphZero.create()).context(context)
+                        .query("SELECT * { VALUES ?outer { 1 } SERVICE SILENT <" + ENDPOINT + "> { ?s ?p ?x } }").build()) {
+                    return exec.select().materialize();
+                }
+            });
+            assertTrue(afterFirstRow.await(5, TimeUnit.SECONDS));
+            release.countDown();
+            var rows = result.get(5, TimeUnit.SECONDS);
+            assertTrue(rows.hasNext());
+            var row = rows.next();
+            assertNotNull(row.get("outer"));
+            assertNull(row.get("x"));
+            assertFalse(rows.hasNext());
+            assertTrue(body.closed);
+        } finally {
+            release.countDown();
+            executor.shutdownNow();
+            assertTrue(executor.awaitTermination(5, TimeUnit.SECONDS));
+        }
+    }
+
+    @Test
     public void remapsScopedVariables() {
         Context context = context();
         ResponseBody body = new ResponseBody(HEADER + ROW + "]}}", new AtomicBoolean(), Integer.MAX_VALUE);
@@ -245,8 +378,12 @@ public class TestServiceCancellation {
         ResponseClient client = new ResponseClient(new ResponseBody(HEADER + "]}}", new AtomicBoolean(), Integer.MAX_VALUE));
         context.set(ARQ.httpQueryClient, client);
         QueryIterator iter = Service.exec(op(), context);
-        iter.close();
-        assertEquals(Duration.ofMillis(1234), client.lastRequest.timeout().orElseThrow());
+        try {
+            assertFalse(iter.hasNext());
+            assertEquals(Duration.ofMillis(1234), client.lastRequest.timeout().orElseThrow());
+        } finally {
+            iter.close();
+        }
     }
 
     private static Context context() {
@@ -261,7 +398,7 @@ public class TestServiceCancellation {
         private final byte[] bytes;
         private final AtomicBoolean signal;
         private final int cancelAt;
-        private int position;
+        protected int position;
         private boolean closed;
 
         ResponseBody(String text, AtomicBoolean signal, int cancelAt) {
