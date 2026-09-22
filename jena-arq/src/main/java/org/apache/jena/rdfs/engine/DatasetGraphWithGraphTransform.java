@@ -25,6 +25,7 @@ import static org.apache.jena.atlas.iterator.Iter.iter;
 
 import java.util.Iterator;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Graph;
@@ -36,8 +37,6 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.Context;
 
 public class DatasetGraphWithGraphTransform extends DatasetGraphWrapper implements DatasetGraphWrapperView {
-    // Do not unwrap for query execution.
-
     private Function<Graph, ? extends Graph> graphTransform;
 
     public DatasetGraphWithGraphTransform(DatasetGraph dsg, Function<Graph, ? extends Graph> graphTransform) {
@@ -75,6 +74,14 @@ public class DatasetGraphWithGraphTransform extends DatasetGraphWrapper implemen
             return null;
         return wrapGraph(base);
     }
+
+    @Override
+    public Stream<Quad> stream()
+    { return Iter.asStream(find()); }
+
+    @Override
+    public Stream<Quad> stream(Node g, Node s, Node p, Node o)
+    { return Iter.asStream(find(g, s, p, o)); }
 
     @Override
     public Iterator<Quad> find()

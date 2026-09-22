@@ -58,6 +58,4 @@ public abstract class AbstractTestGraphRDFS extends AbstractTestRDFS {
     protected String getReferenceLabel() {
         return "InfGraph";
     }
-
-
 }
