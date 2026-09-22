@@ -46,7 +46,6 @@
               @click="removeMessage(message.id)"
               type="button"
               class="me-2 mb-1 btn-close btn-close-white"
-              data-bs-dismiss="toast"
               aria-label="Close"
             >
             </button>
