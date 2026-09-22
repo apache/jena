@@ -33,8 +33,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -73,13 +73,36 @@ public class TestDatasetGraphRDFS {
         dsg = (DatasetGraphWrapper)RDFSFactory.datasetRDFS(dsgBase, schema);
     }
 
+    /** Test and validate access via find/stream with four arguments. */
     @Test public void dsg_access_1() {
-        Iterator<Quad> iter1  = dsg.find(null, node("a"), rdfType, null);
-        Iter.consume(iter1);
-        Iterator<Quad> iter2 = dsg.find(ANY, node("a"), rdfType, null);
-        Iter.consume(iter2);
-        Iterator<Quad> iter3  = dsg.getWrapped().find(null, node("a"), rdfType, null);
-        Iter.consume(iter3);
+        Set<Quad> expected = Iter.toSet(SSE.parseDatasetGraph("""
+            (dataset
+               (:g :a rdf:type :A)
+               (:g :a rdf:type :B)
+            )
+            """).find());
+
+        Set<Quad> set1 = Iter.toSet(dsg.find(null, node("a"), rdfType, null));
+        assertEquals(expected, set1);
+
+        Set<Quad> set2 = Iter.toSet(dsg.find(ANY, node("a"), rdfType, null));
+        assertEquals(expected, set2);
+
+        Set<Quad> set3 = Iter.toSet(dsg.getWrapped().find(null, node("a"), rdfType, null));
+        assertNotEquals(expected, set3);
+
+        Set<Quad> set4 = Iter.toSet(Iter.ofStream(dsg.stream(null, node("a"), rdfType, null)));
+        assertEquals(expected, set4);
+
+        Set<Quad> set5 = Iter.toSet(Iter.ofStream(dsg.stream(ANY, node("a"), rdfType, null)));
+        assertEquals(expected, set5);
+    }
+
+    /** Test and validate access via find/stream with no arguments. */
+    @Test public void dsg_access_2() {
+        Set<Quad> set1 = Iter.toSet(dsg.find());
+        Set<Quad> set2 = Iter.toSet(Iter.ofStream(dsg.stream()));
+        assertEquals(set1, set2);
     }
 
     @Test public void dsg_find_all() {
