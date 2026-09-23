@@ -28,25 +28,30 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NavigableMap;
 
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.binding.BindingFactory;
+import org.apache.jena.sparql.serializer.SerializationContext;
+import org.apache.jena.sparql.service.enhancer.claimingcache.RefFuture;
+import org.apache.jena.sparql.service.enhancer.concurrent.AutoLock;
+import org.apache.jena.sparql.service.enhancer.impl.util.BindingUtils;
+import org.apache.jena.sparql.service.enhancer.impl.util.IteratorUtils;
+import org.apache.jena.sparql.service.enhancer.impl.util.iterator.AbstractAbortableIterator;
+import org.apache.jena.sparql.service.enhancer.slice.api.Slice;
+import org.apache.jena.sparql.service.enhancer.slice.api.SliceAccessor;
+
 import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Table.Cell;
 import com.google.common.math.LongMath;
-import org.apache.jena.graph.Node;
-import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.engine.QueryIterator;
-import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.engine.binding.BindingFactory;
-import org.apache.jena.sparql.service.enhancer.claimingcache.RefFuture;
-import org.apache.jena.sparql.service.enhancer.impl.util.BindingUtils;
-import org.apache.jena.sparql.service.enhancer.impl.util.IteratorUtils;
-import org.apache.jena.sparql.service.enhancer.impl.util.QueryIterSlottedBase;
-import org.apache.jena.sparql.service.enhancer.slice.api.Slice;
-import org.apache.jena.sparql.service.enhancer.slice.api.SliceAccessor;
 
 public class QueryIterWrapperCache
-    extends QueryIterSlottedBase
+    extends AbstractAbortableIterator<Binding>
 {
     protected AbstractIterator<Cell<Integer, Integer, Iterator<Binding>>> mergeLeftJoin;
 
@@ -75,6 +80,7 @@ public class QueryIterWrapperCache
     protected AbstractIterator<Long> batchOutputIdIt;
 
     public QueryIterWrapperCache(
+            ExecutionContext execCxt,
             QueryIterator qIter,
             int batchSize,
             ServiceResponseCache cache,
@@ -85,6 +91,9 @@ public class QueryIterWrapperCache
             Var idxVar,
             Node serviceNode
             ) {
+        //super(qIter, execCxt);
+        super();
+        // this.execCxt = execCxt;
         this.inputIter = qIter;
         this.batchSize = batchSize;
         this.cache = cache;
@@ -93,10 +102,28 @@ public class QueryIterWrapperCache
         this.idxVar = idxVar;
         this.serviceNode = serviceNode;
         this.currentBatchIt = null;
+
+
+        // ArrayList<Integer> debug = new ArrayList<>(inputBatch.getItems().keySet());
+        // if (debug.size() == 1 && debug.get(0) == 0) {
+        //     System.err.println("debug point " + debug);
+        // }
+
+        // XXX Push abort down to the iterators of the join? Presently, abort is handled on this QueryIter.
+        /*
+        mergeLeftJoin = IteratorUtils.partialLeftMergeJoin(
+                AbortableIterators.concat(
+                        AbortableIterators.wrap(inputBatch.getItems().keySet()),
+                        AbortableIterators.wrap(Arrays.asList(BatchQueryRewriter.REMOTE_END_MARKER))),
+                AbortableIterators.adapt(qIter),
+                outputId -> outputId,
+                binding -> BindingUtils.getNumber(binding, idxVar).intValue()
+            );
+       */
         mergeLeftJoin = IteratorUtils.partialLeftMergeJoin(
                 Iterators.concat(
-                        inputBatch.getItems().keySet().iterator(),
-                        Arrays.asList(BatchQueryRewriter.REMOTE_END_MARKER).iterator()),
+                    inputBatch.getItems().keySet().iterator(),
+                    Arrays.asList(BatchQueryRewriter.REMOTE_END_MARKER).iterator()),
                 qIter,
                 outputId -> outputId,
                 binding -> BindingUtils.getNumber(binding, idxVar).intValue()
@@ -120,7 +147,7 @@ public class QueryIterWrapperCache
 
                 if (!currentBatchIt.hasNext()) {
                     closeCurrentCacheResources();
-                    result = null;
+                    result = endOfData();
                     break;
                 }
             }
@@ -140,7 +167,7 @@ public class QueryIterWrapperCache
             if (!BatchQueryRewriter.isRemoteEndMarker(outputId)) {
 
                 inputPart = inputs.get(outputId);
-                Binding inputBinding = inputPart.getPartitionKey();
+                Binding inputBinding = inputPart.partitionKey();
                 // System.out.println("Moving to inputBinding " + inputBinding);
 
                 ServiceCacheKey cacheKey = cacheKeyFactory.createCacheKey(inputBinding);
@@ -200,10 +227,11 @@ public class QueryIterWrapperCache
                     Binding rawOutputBinding = rhs.next();
                     clientBatch.add(rawOutputBinding);
 
-                    // Cut away the idx value for the binding in the cache
+                    // Cut away the idx value for the binding in the cache.
                     Binding outputBinding = BindingUtils.project(rawOutputBinding, rawOutputBinding.vars(), idxVar);
                     arr[arrLen++] = outputBinding;
                 }
+                // Update the following stats only once after the loop.
                 remainingBatchCapacity -= arrLen;
                 processedBindingCount += arrLen;
             }
@@ -211,19 +239,21 @@ public class QueryIterWrapperCache
             boolean isRhsExhausted = rhs == null || !rhs.hasNext();
 
             // Submit batch so far
-            long inputOffset = inputPart.getOffset();
-            long inputLimit = inputPart.getLimit();
+            long inputOffset = inputPart.offset();
+            long inputLimit = inputPart.limit();
             long start = inputOffset + currentOffset;
             long end = start + arrLen;
 
             currentOffset += arrLen;
             cacheDataAccessor.claimByOffsetRange(start, end);
 
-            cacheDataAccessor.lock();
-            try {
+            Slice<Binding[]> slice = cacheDataAccessor.getSlice();
+
+            // cacheDataAccessor.lock();
+            // Lock the whole slice to update data and metadata both atomically.
+            try (AutoLock sliceWriteLock = AutoLock.lock(slice.getReadWriteLock().writeLock())) {
                 cacheDataAccessor.write(start, arr, 0, arrLen);
 
-                Slice<Binding[]> slice = cacheDataAccessor.getSlice();
                 // If rhs is completely empty (without any data) then only update the slice metadata
 
                 if (isRhsExhausted) {
@@ -256,28 +286,29 @@ public class QueryIterWrapperCache
                     if (isKeyCompleted) {
                         if (isEndKnown) {
                             if (currentOffset > 0) {
-                                slice.mutateMetaData(metaData -> metaData.setKnownSize(end));
+                                slice.setKnownSize(end);
                             } else {
                                 // If we saw no binding we don't know at which point the data actually ended
                                 // but the start(=end) point is an upper limit
                                 // Note: Setting the maximum size to zero will make it a known size of 0
-                                slice.mutateMetaData(metaData -> metaData.setMaximumKnownSize(end));
+                                slice.setMaximumKnownSize(end);
                             }
                         } else {
                             // Data retrieval ended at a limit (e.g. we retrieved 10/10 items)
                             // We don't know whether there is more data - but it gives a lower bound
-                            slice.mutateMetaData(metaData -> metaData.setMinimumKnownSize(end));
+                            slice.updateMinimumKnownSize(end);
                         }
                     } else {
-                        slice.mutateMetaData(metaData -> metaData.setMinimumKnownSize(end));
+                        slice.updateMinimumKnownSize(end);
                     }
                     currentOffset = 0;
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e);
-            } finally {
-                cacheDataAccessor.unlock();
             }
+//            } finally {
+//                cacheDataAccessor.unlock();
+//            }
 
             if (isRhsExhausted) {
                 // Only initialize after unlocking the current cacheDataAccessor
@@ -301,10 +332,56 @@ public class QueryIterWrapperCache
     }
 
     @Override
-    protected void closeIterator() {
-        closeCurrentCacheResources();
-        inputIter.close();
+    public void output(IndentedWriter out, SerializationContext sCxt) {
+        // TODO Auto-generated method stub
 
-        super.closeIterator();
     }
+
+    @Override
+    protected void closeIteratorActual() {
+        inputIter.close();
+        closeCurrentCacheResources();
+    }
+
+    @Override
+    protected void requestCancel() {
+        inputIter.cancel();
+    }
+
+//	@Override
+//	public void output(IndentedWriter out, SerializationContext sCxt) {
+//		// TODO Auto-generated method stub
+//
+//	}
+
+//    @Override
+//    protected void closeIterator() {
+//        closeCurrentCacheResources();
+//        inputIter.close();
+//
+//        super.closeIterator();
+//    }
+//
+//    @Override
+//    protected void requestSubCancel() {
+//        // TODO Auto-generated method stub
+//
+//    }
+//
+//    @Override
+//    protected void closeSubIterator() {
+//        closeCurrentCacheResources();
+//    }
+//
+//    @Override
+//    protected boolean hasNextBinding() {
+//        // TODO Auto-generated method stub
+//        return false;
+//    }
+//
+//    @Override
+//    protected Binding moveToNextBinding() {
+//        // TODO Auto-generated method stub
+//        return null;
+//    }
 }

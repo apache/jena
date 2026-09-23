@@ -19,35 +19,44 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.sparql.service.enhancer.impl;
+package org.apache.jena.sparql.service.enhancer.concurrent;
 
-/**
- * Implementation that combines a batch with a group key.
- */
-public class GroupedBatchImpl<G, K extends Comparable<K>, V>
-    implements GroupedBatch<G, K, V>
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+
+public abstract class LockWrapper
+    implements Lock
 {
-    protected G groupKey;
-    protected Batch<K, V> batch;
+    protected abstract Lock getDelegate();
 
-    public GroupedBatchImpl(G groupKey, Batch<K, V> batch) {
-        super();
-        this.groupKey = groupKey;
-        this.batch = batch;
+    @Override
+    public void lock() {
+        getDelegate().lock();
     }
 
     @Override
-    public G getGroupKey() {
-        return groupKey;
+    public void lockInterruptibly() throws InterruptedException {
+        getDelegate().lockInterruptibly();
     }
 
     @Override
-    public Batch<K, V> getBatch() {
-        return batch;
+    public boolean tryLock() {
+        return getDelegate().tryLock();
     }
 
     @Override
-    public String toString() {
-        return "GroupedBatchImpl [groupKey=" + groupKey + ", batch=" + batch + "]";
+    public boolean tryLock(long time, TimeUnit unit) throws InterruptedException {
+        return getDelegate().tryLock();
+    }
+
+    @Override
+    public void unlock() {
+        getDelegate().unlock();
+    }
+
+    @Override
+    public Condition newCondition() {
+        return getDelegate().newCondition();
     }
 }
