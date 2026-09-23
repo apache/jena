@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { describe, expect, it } from 'vitest'
-import { validateGraphName } from '@/utils/validation'
+import { validateGraphName, validatePrefixName, validatePrefixUri } from '@/utils/validation'
 
 const VALID_GRAPH_NAMES = [
   // From issue GH-2370 discussion
@@ -62,6 +62,51 @@ const INVALID_GRAPH_NAMES = [
   'http%3A//www.example.com/other/graph'
 ]
 
+const VALID_PREFIX_NAMES = [
+  'a',
+  'Z',
+  'foaf',
+  'a1',
+  'a_',
+  'a_b',
+  'a-b',
+  'a.b',
+  'a..b',
+  'a1-2b',
+  'skos-xl'
+]
+
+const INVALID_PREFIX_NAMES = [
+  '',
+  ' ',
+  '1a',
+  '_a',
+  '-a',
+  '.a',
+  'a.',
+  'a-',
+  'a b',
+  ' a',
+  'a:b',
+  'a/b',
+  'préfix'
+]
+
+const VALID_PREFIX_URIS = [
+  'http://example.org/ns#',
+  'https://example.com/a?b=c',
+  'urn:example:ns',
+  'http://xmlns.com/foaf/0.1/'
+]
+
+const INVALID_PREFIX_URIS = [
+  '',
+  '   ',
+  'http://exa mple.com/',
+  'not a uri',
+  'example.org/ns'
+]
+
 describe('validation', () => {
   it('Should reject empty graph names', () => {
     expect(validateGraphName('')).to.equals(false)
@@ -79,6 +124,26 @@ describe('validation', () => {
   it('Should accept valid graph names', () => {
     for (let graphName of VALID_GRAPH_NAMES) {
       expect(validateGraphName(graphName), `Rejected valid graph name "${graphName}"`).to.equals(true)
+    }
+  })
+  it('Should accept valid prefix names', () => {
+    for (let prefix of VALID_PREFIX_NAMES) {
+      expect(validatePrefixName(prefix), `Rejected valid prefix name "${prefix}"`).to.equals(true)
+    }
+  })
+  it('Should reject invalid prefix names', () => {
+    for (let prefix of INVALID_PREFIX_NAMES) {
+      expect(validatePrefixName(prefix), `Accepted invalid prefix name "${prefix}"`).to.equals(false)
+    }
+  })
+  it('Should accept valid prefix URIs', () => {
+    for (let uri of VALID_PREFIX_URIS) {
+      expect(validatePrefixUri(uri), `Rejected valid prefix URI "${uri}"`).to.equals(true)
+    }
+  })
+  it('Should reject invalid prefix URIs', () => {
+    for (let uri of INVALID_PREFIX_URIS) {
+      expect(validatePrefixUri(uri), `Accepted invalid prefix URI "${uri}"`).to.equals(false)
     }
   })
 })
