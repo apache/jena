@@ -71,6 +71,9 @@ class NVCompare {
 
         switch (compType) {
             case VSPACE_NUM :
+                // NaN is not the same value as anything, including NaN of another numeric type.
+                if ( isNaN(nv1) || isNaN(nv2) )
+                    return false;
                 return XSDFuncOp.compareNumeric(nv1, nv2) == CMP_EQUAL;
 
             case VSPACE_DATETIME :
@@ -177,11 +180,16 @@ class NVCompare {
 
     // When nv1 and nv1 are known to be the sameTerm, including java ==
     private static boolean sameExceptNaN(NodeValue nv1, NodeValue nv2) {
-        if ( nv1.isDouble() && Double.isNaN(nv1.getDouble()) )
-            return false;
-        if ( nv1.isFloat() && Float.isNaN(nv1.getFloat()) )
-            return false;
-        return true;
+        return ! isNaN(nv1);
+    }
+
+    /** Whether the value is a float or double NaN. */
+    private static boolean isNaN(NodeValue nv) {
+        if ( nv.isDouble() )
+            return Double.isNaN(nv.getDouble());
+        if ( nv.isFloat() )
+            return Float.isNaN(nv.getFloat());
+        return false;
     }
 
     /** Worker for sameAs. */
@@ -236,8 +244,8 @@ class NVCompare {
              && nv2.hasNode()
              && compType != ValueSpace.VSPACE_CDT_LIST
              && compType != ValueSpace.VSPACE_CDT_MAP ) {
-            // Fast path - same RDF term => CMP_EQUAL
-            if ( nv1.getNode().equals(nv2.getNode()) )
+            // Fast path - same RDF term => CMP_EQUAL (except NaN, which is not comparable to itself by value)
+            if ( nv1.getNode().equals(nv2.getNode()) && ( sortOrderingCompare || ! isNaN(nv1) ) )
                 return CMP_EQUAL;
         }
 
@@ -285,6 +293,11 @@ class NVCompare {
             }
 
             case VSPACE_NUM:
+                // XPath numeric comparison: every ordering comparison involving NaN is false,
+                // so NaN is not comparable by value. Ordering (sorting) keeps the Java total
+                // order in which NaN sorts after every other number.
+                if ( ! sortOrderingCompare && ( isNaN(nv1) || isNaN(nv2) ) )
+                    return CMP_INDETERMINATE;
                 return XSDFuncOp.compareNumeric(nv1, nv2);
 
             case VSPACE_SORTKEY :
@@ -496,6 +509,11 @@ class NVCompare {
             return CMP_LESS;
         if ( vsOrder > 0 )
             return CMP_GREATER;
+
+        // NaN is not comparable by value (compareByValue) but it needs a fixed place in
+        // the ordering: after every other number, as Double.compare/Float.compare order it.
+        if ( vs1 == ValueSpace.VSPACE_NUM && vs2 == ValueSpace.VSPACE_NUM && ( isNaN(nv1) || isNaN(nv2) ) )
+            return XSDFuncOp.compareNumeric(nv1, nv2);
 
         // Compare by value. if equal (and we know nv1 and nv2 are not .equals), or indeterminate, compare by terms.
         try {
