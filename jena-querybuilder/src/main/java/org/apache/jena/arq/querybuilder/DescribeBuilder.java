@@ -298,7 +298,7 @@ public class DescribeBuilder extends AbstractQueryBuilder<DescribeBuilder> imple
 
     @Override
     public DescribeBuilder addOptional(AbstractQueryBuilder<?> t) {
-        getWhereHandler().addOptional(t.getWhereHandler());
+        getWhereHandler().addOptional(t);
         return this;
     }
 
