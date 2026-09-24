@@ -44,6 +44,13 @@
               qt:data   <data-count-distinct-expr.ttl> ] ;
         mf:result  <count-distinct-expr.srj>
       ]
+      [  mf:name    "group-concat-distinct-empty (GH-4240)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <group-concat-distinct-empty.rq> ;
+              qt:data   <data-empty.ttl> ] ;
+        mf:result  <group-concat-distinct-empty.srj>
+      ]
       [  mf:name    "expr-triple-term" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
