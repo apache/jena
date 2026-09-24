@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.jena.atlas.lib.Creator;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.HttpException;
@@ -43,13 +44,14 @@ import org.apache.jena.sparql.algebra.OpAsQuery ;
 import org.apache.jena.sparql.algebra.OpVars;
 import org.apache.jena.sparql.algebra.op.OpService ;
 import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.Rename;
 import org.apache.jena.sparql.engine.http.HttpParams;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.sparql.engine.iterator.QueryIter;
-import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper;
-import org.apache.jena.sparql.exec.RowSet;
+import org.apache.jena.sparql.engine.iterator.QueryIterThreadedSubExecution;
+import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.syntax.Element;
 import org.apache.jena.sparql.syntax.ElementSubQuery;
 import org.apache.jena.sparql.util.Context ;
@@ -146,12 +148,42 @@ public class Service {
     }
 
     /** Plain service execution. */
+    @Deprecated
     public static QueryIterator exec(OpService op, Context context) {
         checkServiceAllowed(context);
-        //checkForOldParameters(context);
-
         if ( context == null )
             context = emptyContext;
+        QueryIterator qIter = exec(op, context, ExecutionContext.create(context));
+        // Preserve the historical synchronous failure timing for this legacy API.
+        try {
+            qIter.hasNext();
+            return qIter;
+        } catch (HttpException ex) {
+            try {
+                qIter.close();
+            } finally {
+                throw QueryExceptionHTTP.rewrap(ex);
+            }
+        } catch (RuntimeException | Error ex) {
+            try {
+                qIter.close();
+            } finally {
+                throw ex;
+            }
+        }
+    }
+
+    /** Plain service execution. */
+    public static QueryIterator exec(OpService op, ExecutionContext execCxt) {
+        Context context = execCxt.getContext();
+        checkServiceAllowed(context);
+        if ( context == null )
+            context = emptyContext;
+        return exec(op, context, execCxt);
+    }
+
+    private static QueryIterator exec(OpService op, Context context, ExecutionContext execCxt) {
+        //checkForOldParameters(context);
 
         if (!op.getService().isURI())
             throw new QueryExecException("Service URI not bound: " + op.getService());
@@ -230,26 +262,23 @@ public class Service {
         // -- End setup
 
         // Build the execution
-        try (QueryExecHTTP qExec = QueryExecHTTP.newBuilder()
+        Context finalContext = context;
+        Query finalQuery = query;
+        Creator<? extends QueryExec> queryExecCreator = () -> QueryExecHTTP.newBuilder()
                 .endpoint(serviceURL)
                 .timeout(timeoutMillis, TimeUnit.MILLISECONDS)
                 .httpHeader(HttpNames.hUserAgent, HttpEnv.UserAgent)
-                .query(query)
+                .query(finalQuery)
                 .params(serviceParams)
-                .context(context)
+                .context(finalContext)
                 .httpClient(httpClient)
                 .sendMode(querySendMode)
-                .build()) {
+                .build();
 
-            // Detach from the network stream.
-            RowSet rowSet = qExec.select().materialize();
-            QueryIterator qIter = QueryIterPlainWrapper.create(rowSet);
-            if (requiresRemapping)
-                qIter = QueryIter.map(qIter, varMapping);
-            return qIter;
-        } catch (HttpException ex) {
-            throw QueryExceptionHTTP.rewrap(ex);
-        }
+        QueryIterator qIter = new QueryIterThreadedSubExecution(execCxt, queryExecCreator);
+        if (requiresRemapping)
+            qIter = QueryIter.map(qIter, varMapping);
+        return qIter;
     }
 
     private static HttpClient chooseHttpClient(String serviceURL, Context context) {
