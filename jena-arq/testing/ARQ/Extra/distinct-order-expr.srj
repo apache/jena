@@ -1,0 +1,11 @@
+{
+  "head": {
+    "vars": [ "v" ]
+  } ,
+  "results": {
+    "bindings": [
+      { "v": { "type": "literal" , "value": "a" } } ,
+      { "v": { "type": "literal" , "value": "b" } }
+    ]
+  }
+}
