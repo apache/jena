@@ -29,6 +29,7 @@ import org.apache.jena.geosparql.geo.topological.property_functions.geometry_pro
 import org.apache.jena.geosparql.geof.topological.filter_functions.geometry_property.CoordinateDimensionFF;
 import org.apache.jena.geosparql.geof.topological.filter_functions.geometry_property.DimensionFF;
 import org.apache.jena.geosparql.geof.topological.filter_functions.geometry_property.GeometryNFF;
+import org.apache.jena.geosparql.geof.topological.filter_functions.geometry_property.GeometryTypeFF;
 import org.apache.jena.geosparql.geof.topological.filter_functions.geometry_property.Is3DFF;
 import org.apache.jena.geosparql.geof.topological.filter_functions.geometry_property.IsEmptyFF;
 import org.apache.jena.geosparql.geof.topological.filter_functions.geometry_property.IsMeasuredFF;
@@ -75,6 +76,7 @@ public class GeometryProperty {
      */
     public static void loadFilterFunctions(FunctionRegistry registry) {
 
+        registry.put(Geof.GEOMETRY_TYPE, GeometryTypeFF.class);
         registry.put(Geof.IS_3D, Is3DFF.class);
         registry.put(Geof.IS_MEASURED, IsMeasuredFF.class);
         registry.put(Geof.NUM_GEOMETRIES, NumGeometriesFF.class);
