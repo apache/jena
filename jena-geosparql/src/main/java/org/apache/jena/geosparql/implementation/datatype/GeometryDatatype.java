@@ -38,6 +38,20 @@ public abstract class GeometryDatatype extends BaseDatatype {
     public abstract GeometryWrapper read(String geometryLiteral);
 
     /**
+     * Resolves a geometry subtype URI using this datatype's type system.
+     * Datatypes that support {@code geof:geometryType}, such as WKT and GML,
+     * override this method. The default throws so existing custom datatypes
+     * can remain unchanged and report that type resolution is unsupported.
+     *
+     * @param geometry A wrapper whose geometry datatype is this datatype.
+     * @return The subtype URI as a non-null string.
+     * @throws DatatypeFormatException if type resolution is unsupported for this datatype or geometry.
+     */
+    public String getGeometryTypeURI(GeometryWrapper geometry) {
+        throw new DatatypeFormatException("Geometry type resolution is not supported for datatype: " + getURI());
+    }
+
+    /**
      * This method Parses the Geometry Literal to the JTS Geometry
      *
      * @param lexicalForm - the Geometry Literal to be parsed
