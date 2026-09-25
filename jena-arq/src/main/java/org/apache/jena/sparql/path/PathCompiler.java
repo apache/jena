@@ -33,6 +33,21 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.core.VarAlloc;
 
 public class PathCompiler {
+    /**
+     * Default maximum length value used for the {@link #MAX_LENGTH_PATH_FOR_REDUCTION} control
+     */
+    public static final int DEFAULT_MAX_LENGTH = 10;
+    /**
+     * Specifies the maximum length (inclusive) of a path that will be reduced by expanding it into individual
+     * invocations of the path expression linked by intermediate variables.  Defaults to {@value #DEFAULT_MAX_LENGTH}.
+     * <p>
+     * This control prevents a query using a path like {@code :x :p{N} :y} with a large value of {@code N} being
+     * expanded into a massive algebra tree that yields no performance benefits.
+     * </p>
+     * @see #isReducibleLength(long)
+     */
+    public static int MAX_LENGTH_PATH_FOR_REDUCTION = DEFAULT_MAX_LENGTH;
+
     // Convert to work on OpPath.
     // Need pre (and post) BGPs.
 
@@ -126,16 +141,10 @@ public class PathCompiler {
 
         if ( path instanceof P_FixedLength pFixedLen ) {
             long N = pFixedLen.getCount();
-            if ( N > 0 ) {
+            if (isReducibleLength(N)) {
                 // Don't do {0}
-                Node stepStart = startNode;
-
-                for ( long i = 0 ; i < N - 1 ; i++ ) {
-                    Node v = varAlloc.allocVar();
-                    reduce(x, varAlloc, stepStart, pFixedLen.getSubPath(), v);
-                    stepStart = v;
-                }
-                reduce(x, varAlloc, stepStart, pFixedLen.getSubPath(), endNode);
+                // Also if the path is too long the reduction won't generate any performance benefits
+                reduceFixedLength(x, varAlloc, startNode, endNode, N, pFixedLen.getSubPath());
                 return;
             }
         }
@@ -143,15 +152,8 @@ public class PathCompiler {
         if ( path instanceof P_Mod pMod ) {
             if ( pMod.isFixedLength() && pMod.getFixedLength() > 0 ) {
                 long N = pMod.getFixedLength();
-                if ( N > 0 ) {
-                    Node stepStart = startNode;
-
-                    for ( long i = 0 ; i < N - 1 ; i++ ) {
-                        Node v = varAlloc.allocVar();
-                        reduce(x, varAlloc, stepStart, pMod.getSubPath(), v);
-                        stepStart = v;
-                    }
-                    reduce(x, varAlloc, stepStart, pMod.getSubPath(), endNode);
+                if (isReducibleLength(N)) {
+                    reduceFixedLength(x, varAlloc, startNode, endNode, N, pMod.getSubPath());
                     return;
                 }
             }
@@ -198,5 +200,42 @@ public class PathCompiler {
 
         // Nothing can be done.
         x.add(new TriplePath(startNode, path, endNode));
+    }
+
+    /**
+     * Checks whether a given length of path is considered reducible
+     * <p>
+     * Only paths that are non-zero length and less than, or equal to, the configured
+     * {@link #MAX_LENGTH_PATH_FOR_REDUCTION} (default 10) are considered reducible.  Anything else is left as-is
+     * as either reduction would change semantics (for zero-length paths), or could lead to very large algebra tree
+     * which would negatively impact performance.
+     * </p>
+     * @param N Path length
+     * @return True if reducible, false otherwise
+     */
+    public static boolean isReducibleLength(long N) {
+        return N > 0 && N <= MAX_LENGTH_PATH_FOR_REDUCTION;
+    }
+
+    /**
+     * Reduces a fixed length path by expanding the {@code n} steps into individual path invocations with intermediate
+     * variables.
+     * @param x             Path block to append into
+     * @param varAlloc      Variable allocator
+     * @param startNode     Start node
+     * @param endNode       End node
+     * @param n             Fixed path length
+     * @param subPath       Sub path to use in each expanded step
+     */
+    private static void reduceFixedLength(PathBlock x, VarAlloc varAlloc, Node startNode, Node endNode, long n,
+                                          Path subPath) {
+        Node stepStart = startNode;
+
+        for (long i = 0; i < n - 1 ; i++ ) {
+            Node v = varAlloc.allocVar();
+            reduce(x, varAlloc, stepStart, subPath, v);
+            stepStart = v;
+        }
+        reduce(x, varAlloc, stepStart, subPath, endNode);
     }
 }
