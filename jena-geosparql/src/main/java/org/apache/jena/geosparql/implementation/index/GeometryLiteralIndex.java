@@ -34,9 +34,11 @@ import org.apache.jena.geosparql.implementation.datatype.GeometryDatatype;
 public class GeometryLiteralIndex {
 
     private static boolean INDEX_ACTIVE = false;
-    private static Cache<String, GeometryWrapper>
+    private record GeometryLiteralKey(String datatypeURI, String lexicalForm) {}
+
+    private static Cache<GeometryLiteralKey, GeometryWrapper>
             PRIMARY_INDEX = CacheConfiguration.create(UNLIMITED_MAP, MAP_EXPIRY_INTERVAL);
-    private static Cache<String, GeometryWrapper> SECONDARY_INDEX = CacheConfiguration.create(UNLIMITED_MAP, MAP_EXPIRY_INTERVAL);
+    private static Cache<GeometryLiteralKey, GeometryWrapper> SECONDARY_INDEX = CacheConfiguration.create(UNLIMITED_MAP, MAP_EXPIRY_INTERVAL);
 
     public enum GeometryIndex {
         PRIMARY, SECONDARY
@@ -56,19 +58,19 @@ public class GeometryLiteralIndex {
         return geometryWrapper;
     }
 
-    private static GeometryWrapper retrieveMemoryIndex(String geometryLiteral, GeometryDatatype geometryDatatype, Cache<String, GeometryWrapper> index, Cache<String, GeometryWrapper> otherIndex) {
+    private static GeometryWrapper retrieveMemoryIndex(String geometryLiteral, GeometryDatatype geometryDatatype, Cache<GeometryLiteralKey, GeometryWrapper> index, Cache<GeometryLiteralKey, GeometryWrapper> otherIndex) {
 
         GeometryWrapper geometryWrapper;
 
         if (INDEX_ACTIVE) {
-
-            geometryWrapper = index.getIfPresent(geometryLiteral);
+            GeometryLiteralKey key = new GeometryLiteralKey(geometryDatatype.getURI(), geometryLiteral);
+            geometryWrapper = index.getIfPresent(key);
             if (geometryWrapper == null) {
-                geometryWrapper = otherIndex.getIfPresent(geometryLiteral);
+                geometryWrapper = otherIndex.getIfPresent(key);
                 if (geometryWrapper == null) {
                     geometryWrapper = geometryDatatype.read(geometryLiteral);
                 }
-                index.put(geometryLiteral, geometryWrapper);
+                index.put(key, geometryWrapper);
             }
 
             return geometryWrapper;

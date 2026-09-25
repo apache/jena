@@ -28,6 +28,7 @@ import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.parsers.gml.GMLReader;
 import org.apache.jena.geosparql.implementation.parsers.gml.GMLWriter;
 import org.apache.jena.geosparql.implementation.vocabulary.Geo;
+import org.apache.jena.geosparql.implementation.vocabulary.GeoSPARQL_URI;
 import org.jdom2.JDOMException;
 import org.locationtech.jts.geom.Geometry;
 
@@ -89,6 +90,28 @@ public class GMLDatatype extends GeometryDatatype {
         } catch (JDOMException | IOException ex) {
             throw new DatatypeFormatException("Illegal GML literal:" + geometryLiteral + ". " + ex.getMessage());
         }
+    }
+
+    @Override
+    public String getGeometryTypeURI(GeometryWrapper geometry) {
+        String type;
+        if (geometry.hasLexicalForm()) {
+            try {
+                type = GMLReader.readGeometryType(geometry.getLexicalForm());
+            } catch (JDOMException | IOException ex) {
+                throw new DatatypeFormatException("Unable to read GML geometry type", ex);
+            }
+        } else {
+            String jtsType = geometry.getParsingGeometry().getGeometryType();
+            type = switch (jtsType) {
+                case "Point", "LineString", "Polygon", "MultiPoint" -> jtsType;
+                case "MultiLineString" -> "MultiCurve";
+                case "MultiPolygon" -> "MultiSurface";
+                case "GeometryCollection" -> "MultiGeometry";
+                default -> throw new DatatypeFormatException("Geometry type not supported: " + jtsType);
+            };
+        }
+        return GeoSPARQL_URI.GML_URI + type;
     }
 
     @Override
