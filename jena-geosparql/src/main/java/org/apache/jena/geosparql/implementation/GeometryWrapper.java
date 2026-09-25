@@ -388,6 +388,37 @@ public class GeometryWrapper implements Serializable {
     }
 
     /**
+     * Returns whether the coordinate layout includes Z, including for empty geometries.
+     * Uses the wrapper's dimension metadata without aggregating member layouts.
+     * A WKT collection without a Z/M marker has XY metadata even if members
+     * declare their own Z/M layouts.
+     */
+    public boolean is3D() {
+        CoordinateSequenceDimensions dimensions = getCoordinateSequenceDimensions();
+        return dimensions == CoordinateSequenceDimensions.XYZ || dimensions == CoordinateSequenceDimensions.XYZM;
+    }
+
+    /**
+     * Returns whether the coordinate layout includes M, including for empty geometries.
+     * Uses the wrapper's dimension metadata without aggregating member layouts.
+     * A WKT collection without a Z/M marker has XY metadata even if members
+     * declare their own Z/M layouts.
+     */
+    public boolean isMeasured() {
+        CoordinateSequenceDimensions dimensions = getCoordinateSequenceDimensions();
+        return dimensions == CoordinateSequenceDimensions.XYM || dimensions == CoordinateSequenceDimensions.XYZM;
+    }
+
+    /**
+     * Returns the number of direct members of a Multi-geometry or GeometryCollection.
+     * Atomic geometries count as one, including empty atomic geometries; nested
+     * collections are not flattened. A collection with no members counts as zero.
+     */
+    public int getNumGeometries() {
+        return parsingGeometry.getNumGeometries();
+    }
+
+    /**
      * Returns the minimum ordinate of the first SRS dimension (X)
      * across all geometry members.
      * @throws IllegalStateException if the geometry has no coordinates or the evaluated ordinate is NaN or infinite.
