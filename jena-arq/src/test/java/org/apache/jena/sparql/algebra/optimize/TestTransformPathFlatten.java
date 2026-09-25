@@ -455,6 +455,157 @@ public class TestTransformPathFlatten {
         assertThrowsExactly(ARQException.class, ()->testAlgebraTransform(op1, null));
     }
 
+    @Test public void pathFlatten_n_to_m_10() {
+        Op op1 = path("?x", ":p{5}", ":T1");
+        Op expected = op("""
+                                 (bgp
+                                   (triple ?x <http://example/p> ??P0)
+                                   (triple ??P0 <http://example/p> ??P1)
+                                   (triple ??P1 <http://example/p> ??P2)
+                                   (triple ??P2 <http://example/p> ??P3)
+                                   (triple ??P3 <http://example/p> <http://example/T1>)
+                                 )
+                                 """
+        );
+        testDefaultTransform(op1, expected);
+    }
+
+    @Test public void pathFlatten_n_to_m_10_algebra() {
+        Op op1 = path("?x", ":p{5}", ":T1");
+        Op expected = op("""
+                                (join
+                                  (join
+                                    (join
+                                      (join
+                                        (triple ?x <http://example/p> ??Q0)
+                                        (triple ??Q0 <http://example/p> ??Q1))
+                                      (triple ??Q1 <http://example/p> ??Q2))
+                                    (triple ??Q2 <http://example/p> ??Q3))
+                                  (triple ??Q3 <http://example/p> <http://example/T1>))
+                                """
+        );
+        testAlgebraTransform(op1, expected);
+    }
+
+    @Test public void pathFlatten_n_to_m_11() {
+        Op op1 = path("?x", ":p{11}", ":T1");
+        testDefaultTransform(op1, null);
+    }
+
+    @Test public void pathFlatten_n_to_m_11_algebra() {
+        Op op1 = path("?x", ":p{11}", ":T1");
+        testAlgebraTransform(op1, null);
+    }
+
+    @Test public void pathFlatten_n_to_m_12() {
+        try {
+            // Reconfiguring the maximum permitted path length for reduction should prevent this query from being
+            // optimised
+            PathCompiler.MAX_LENGTH_PATH_FOR_REDUCTION = 3;
+            Op op1 = path("?x", ":p{5}", ":T1");
+            testDefaultTransform(op1, null);
+        } finally {
+            PathCompiler.MAX_LENGTH_PATH_FOR_REDUCTION = PathCompiler.DEFAULT_MAX_LENGTH;
+        }
+    }
+
+    @Test public void pathFlatten_n_to_m_12_algebra() {
+        try {
+            // Reconfiguring the maximum permitted path length for reduction should prevent this query from being
+            // optimised
+            PathCompiler.MAX_LENGTH_PATH_FOR_REDUCTION = 3;
+            Op op1 = path("?x", ":p{5}", ":T1");
+            testAlgebraTransform(op1, null);
+        } finally {
+            PathCompiler.MAX_LENGTH_PATH_FOR_REDUCTION = PathCompiler.DEFAULT_MAX_LENGTH;
+        }
+    }
+
+    @Test
+    public void pathFlatten_n_to_m_huge_01() {
+        Op op1 = path(":T1", ":p{1000000}", "?x");
+        testDefaultTransform(op1, null);
+    }
+
+    @Test
+    public void pathFlatten_n_to_m_huge_02() {
+        Op op1 = path(":T1", ":p{1, 1000000}", "?x");
+        Op expected = op("""
+                                 (sequence
+                                   (bgp (triple <http://example/T1> <http://example/p> ??P0))
+                                   (path ??P0 (mod 0 999999 <http://example/p>) ?x))
+                                 """);
+        testDefaultTransform(op1, expected);
+    }
+
+    @Test
+    public void pathFlatten_n_to_m_huge_03() {
+        Op op1 = path(":T1", ":p{100,1000000}", "?x");
+        Op expected = op("""
+                                 (sequence
+                                   (path <http://example/T1> (pathN 100 <http://example/p>) ??P0)
+                                   (path ??P0 (mod 0 999900 <http://example/p>) ?x))
+                                 """);
+        testDefaultTransform(op1, expected);
+    }
+
+    @Test
+    public void pathFlatten_n_to_m_huge_04() {
+        Op op1 = path(":T1", ":p{1000000,}", "?x");
+        Op expected = op("""
+                                 (sequence
+                                   (path <http://example/T1> (pathN 1000000 <http://example/p>) ??P0)
+                                   (path ??P0 (pathN* <http://example/p>) ?x))
+                                 """);
+        testDefaultTransform(op1, expected);
+    }
+
+    @Test
+    public void pathFlatten_n_to_m_huge_05() {
+        Op op1 = path(":T1", ":p{999999, 1000000}", "?x");
+        Op expected = op("""
+                                 (sequence
+                                   (path <http://example/T1> (pathN 999999 <http://example/p>) ??P0)
+                                   (path ??P0 (mod 0 1 <http://example/p>) ?x))
+                                 """);
+        testDefaultTransform(op1, expected);
+    }
+
+    @Test
+    public void pathFlatten_n_to_m_huge_01_algebra() {
+        Op op1 = path(":T1", ":p{1000000}", "?x");
+        testAlgebraTransform(op1, null);
+    }
+
+    @Test
+    public void pathFlatten_n_to_m_huge_02_algebra() {
+        Op op1 = path(":T1", ":p{1, 1000000}", "?x");
+        testAlgebraTransform(op1, null);
+    }
+
+    @Test
+    public void pathFlatten_n_to_m_huge_03_algebra() {
+        Op op1 = path(":T1", ":p{100,1000000}", "?x");
+        testAlgebraTransform(op1, null);
+    }
+
+    @Test
+    public void pathFlatten_n_to_m_huge_04_algebra() {
+        Op op1 = path(":T1", ":p{1000000,}", "?x");
+        Op expected = op("""
+                                 (sequence
+                                   (path <http://example/T1> (pathN 1000000 <http://example/p>) ??Q0)
+                                   (path ??Q0 (pathN* <http://example/p>) ?x))
+                                 """);
+        testAlgebraTransform(op1, expected);
+    }
+
+    @Test
+    public void pathFlatten_n_to_m_huge_05_algebra() {
+        Op op1 = path(":T1", ":p{999999, 1000000}", "?x");
+        testAlgebraTransform(op1, null);
+    }
+
     private static Op path(String s, String pathStr, String o) {
         Path path = PathParser.parse(pathStr, prologue);
         TriplePath tp = new TriplePath(SSE.parseNode(s), path, SSE.parseNode(o));
@@ -495,10 +646,10 @@ public class TestTransformPathFlatten {
         }
         if ( opExpected == null ) {
             // Expect no transformation to be applied so input should be same as transformation output
-            assertEquals(opInput, opTransformed);
+            assertEquals(opInput, opTransformed, "No transform expected but one occurred");
         } else {
             // Expect transformation to have been applied
-            assertEquals(opExpected, opTransformed);
+            assertEquals(opExpected, opTransformed, "Transform not as expected");
         }
     }
 
