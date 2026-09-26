@@ -46,6 +46,7 @@ import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.sis.geometry.DirectPosition2D;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.CoordinateXY;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -770,6 +771,40 @@ public class GeometryWrapper implements Serializable {
         Geometry xyGeo = this.xyGeometry.convexHull();
         Geometry parsingGeo = GeometryReverse.check(xyGeo, srsInfo);
         return new GeometryWrapper(parsingGeo, xyGeo, srsInfo.getSrsURI(), geometryDatatypeURI, dimensionInfo);
+    }
+
+    /**
+     * Returns the planar centroid in the source SRS and datatype. A result in a
+     * three-dimensional CRS has {@code Z=0}; {@code Z} and {@code M} are ignored
+     * in the calculation. Geographic coordinates are treated as planar
+     * coordinates, without reprojection.
+     *
+     * @throws DatatypeFormatException if a non-empty GML centroid has a source
+     * CRS coordinate dimension other than 2 or 3
+     */
+    public GeometryWrapper centroid() {
+        Point centroid = xyGeometry.getCentroid();
+        GeometryFactory factory = CustomGeometryFactory.theInstance();
+        int crsDimension = srsInfo.getCrs().getCoordinateSystem().getDimension();
+        Point xyCentroid;
+        if (centroid.isEmpty()) {
+            xyCentroid = factory.createPoint(new CustomCoordinateSequence(CoordinateSequenceDimensions.XY));
+        } else if (crsDimension == 3) {
+            xyCentroid = factory.createPoint(new Coordinate(centroid.getX(), centroid.getY(), 0));
+        } else {
+            xyCentroid = factory.createPoint(new CoordinateXY(centroid.getX(), centroid.getY()));
+        }
+        // GML positions follow the CRS dimension. The centroid supplies XY or
+        // XYZ with Z=0, but no additional ordinate.
+        if (!xyCentroid.isEmpty()
+                && GMLDatatype.URI.equals(geometryDatatypeURI)
+                && crsDimension != 2 && crsDimension != 3) {
+            throw new DatatypeFormatException(
+                "A centroid cannot be represented as GML in the source CRS.");
+        }
+        Geometry parsingCentroid = GeometryReverse.check(xyCentroid, srsInfo);
+        DimensionInfo centroidDimensions = DimensionInfo.find(xyCentroid.getCoordinate(), xyCentroid);
+        return new GeometryWrapper(parsingCentroid, xyCentroid, getSrsURI(), geometryDatatypeURI, centroidDimensions);
     }
 
     /**
