@@ -22,6 +22,10 @@ package org.apache.jena.geosparql.implementation;
 
 import java.util.Arrays;
 import java.util.List;
+import org.apache.jena.geosparql.implementation.jts.CoordinateSequenceDimensions;
+import org.apache.jena.geosparql.implementation.jts.CustomCoordinateSequence;
+import org.apache.jena.geosparql.implementation.jts.CustomGeometryFactory;
+import org.apache.jena.geosparql.implementation.parsers.wkt.WKTReader;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
@@ -100,6 +104,59 @@ public class DimensionInfoTest {
         DimensionInfo expResult = DimensionInfo.XY_POINT;
         DimensionInfo result = DimensionInfo.findCollection(points, geometry);
         assertEquals(expResult, result);
+    }
+
+    @Test
+    public void testFindGeometryPreservesEmptyCoordinateSequenceLayout() {
+        GeometryFactory factory = CustomGeometryFactory.theInstance();
+        Geometry[] geometries = {
+            factory.createPoint(new CustomCoordinateSequence(CoordinateSequenceDimensions.XYZ)),
+            factory.createLineString(new CustomCoordinateSequence(CoordinateSequenceDimensions.XYM)),
+            factory.createPolygon(new CustomCoordinateSequence(CoordinateSequenceDimensions.XYZM))
+        };
+        CoordinateSequenceDimensions[] expected = {
+            CoordinateSequenceDimensions.XYZ,
+            CoordinateSequenceDimensions.XYM,
+            CoordinateSequenceDimensions.XYZM
+        };
+
+        for (int i = 0; i < geometries.length; i++) {
+            assertEquals(geometries[i].getGeometryType(), expected[i],
+                    DimensionInfo.find(geometries[i], CoordinateSequenceDimensions.XY).getDimensions());
+        }
+    }
+
+    @Test
+    public void testFindGeometryUsesLayoutRetainedOnEmptyAggregate() {
+        String[] wkts = {
+            "MULTIPOINT Z EMPTY", "MULTILINESTRING M EMPTY",
+            "MULTIPOLYGON ZM EMPTY", "GEOMETRYCOLLECTION Z EMPTY"
+        };
+        CoordinateSequenceDimensions[] expected = {
+            CoordinateSequenceDimensions.XYZ,
+            CoordinateSequenceDimensions.XYM,
+            CoordinateSequenceDimensions.XYZM,
+            CoordinateSequenceDimensions.XYZ
+        };
+
+        for (int i = 0; i < wkts.length; i++) {
+            Geometry geometry = WKTReader.extract(wkts[i]).getGeometry();
+            assertEquals(wkts[i], expected[i],
+                    DimensionInfo.find(geometry, CoordinateSequenceDimensions.XY).getDimensions());
+        }
+    }
+
+    @Test
+    public void testFindGeometryUsesFirstCollectionMemberLayout() {
+        GeometryFactory factory = CustomGeometryFactory.theInstance();
+        Point measured = factory.createPoint(new CustomCoordinateSequence(CoordinateSequenceDimensions.XYM, "1 2 3"));
+        Point elevated = factory.createPoint(new CustomCoordinateSequence(CoordinateSequenceDimensions.XYZ, "4 5 6"));
+        Geometry collection = factory.createGeometryCollection(new Geometry[] { measured, elevated });
+
+        assertEquals(CoordinateSequenceDimensions.XYM,
+                DimensionInfo.find(collection, CoordinateSequenceDimensions.XY).getDimensions());
+        assertEquals(CoordinateSequenceDimensions.XYZ,
+                DimensionInfo.find(elevated, CoordinateSequenceDimensions.XY).getDimensions());
     }
 
 }

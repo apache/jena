@@ -37,6 +37,7 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.LinearRing;
+import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 
 /**
@@ -416,6 +417,105 @@ public class WKTWriterTest {
         //
         //
         assertEquals(expResult, result);
+    }
+
+    @Test
+    public void testWriteMultiGeometriesContainingOnlyEmptyMembers() {
+        Point emptyPoint = GEOMETRY_FACTORY.createPoint(new CustomCoordinateSequence(CoordinateSequenceDimensions.XY));
+        LineString emptyLine = GEOMETRY_FACTORY.createLineString(new CustomCoordinateSequence(CoordinateSequenceDimensions.XY));
+        Polygon emptyPolygon = GEOMETRY_FACTORY.createPolygon(new CustomCoordinateSequence(CoordinateSequenceDimensions.XY));
+        Geometry[] geometries = {
+            GEOMETRY_FACTORY.createMultiPoint(new Point[] { emptyPoint, emptyPoint }),
+            GEOMETRY_FACTORY.createMultiLineString(new LineString[] { emptyLine, emptyLine }),
+            GEOMETRY_FACTORY.createMultiPolygon(new Polygon[] { emptyPolygon, emptyPolygon }),
+            GEOMETRY_FACTORY.createGeometryCollection(new Geometry[] { emptyPoint, emptyLine })
+        };
+        String[] expected = {
+            "MULTIPOINT(EMPTY, EMPTY)",
+            "MULTILINESTRING(EMPTY, EMPTY)",
+            "MULTIPOLYGON(EMPTY, EMPTY)",
+            "GEOMETRYCOLLECTION(POINT EMPTY, LINESTRING EMPTY)"
+        };
+
+        for (int i = 0; i < geometries.length; i++) {
+            GeometryWrapper wrapper = new GeometryWrapper(geometries[i], SRS_URI.DEFAULT_WKT_CRS84,
+                    WKTDatatype.URI, new DimensionInfo(2, 2, geometries[i].getDimension()));
+            assertEquals(expected[i], WKTWriter.write(wrapper));
+        }
+    }
+
+    @Test
+    public void testWriteEmptyGeometryRetainsCoordinateMarker() {
+        Point emptyPoint = GEOMETRY_FACTORY.createPoint(new CustomCoordinateSequence(CoordinateSequenceDimensions.XYZM));
+        GeometryWrapper wrapper = new GeometryWrapper(emptyPoint, SRS_URI.DEFAULT_WKT_CRS84,
+                WKTDatatype.URI, new DimensionInfo(CoordinateSequenceDimensions.XYZM, 0));
+
+        assertEquals("POINT ZM EMPTY", WKTWriter.write(wrapper));
+    }
+
+    @Test
+    public void testWriteAllEmptyMultiGeometriesRetainsCoordinateMarkers() {
+        String[] markers = { "Z", "M", "ZM" };
+        CoordinateSequenceDimensions[] layouts = {
+            CoordinateSequenceDimensions.XYZ,
+            CoordinateSequenceDimensions.XYM,
+            CoordinateSequenceDimensions.XYZM
+        };
+        for (int i = 0; i < markers.length; i++) {
+            Point point = GEOMETRY_FACTORY.createPoint(new CustomCoordinateSequence(layouts[i]));
+            LineString line = GEOMETRY_FACTORY.createLineString(new CustomCoordinateSequence(layouts[i]));
+            Polygon polygon = GEOMETRY_FACTORY.createPolygon(new CustomCoordinateSequence(layouts[i]));
+            Geometry[] geometries = {
+                GEOMETRY_FACTORY.createMultiPoint(new Point[] { point, point }),
+                GEOMETRY_FACTORY.createMultiLineString(new LineString[] { line, line }),
+                GEOMETRY_FACTORY.createMultiPolygon(new Polygon[] { polygon, polygon })
+            };
+            String[] types = { "MULTIPOINT", "MULTILINESTRING", "MULTIPOLYGON" };
+            for (int j = 0; j < geometries.length; j++) {
+                Geometry geometry = geometries[j];
+                GeometryWrapper wrapper = new GeometryWrapper(geometry, SRS_URI.DEFAULT_WKT_CRS84,
+                        WKTDatatype.URI, new DimensionInfo(layouts[i], geometry.getDimension()));
+                assertEquals(types[j], types[j] + " " + markers[i] + "(EMPTY, EMPTY)", WKTWriter.write(wrapper));
+            }
+        }
+    }
+
+    @Test
+    public void testWriteMixedEmptyMultiGeometryMembers() {
+        Point emptyPoint = GEOMETRY_FACTORY.createPoint(new CustomCoordinateSequence(CoordinateSequenceDimensions.XY));
+        LineString emptyLine = GEOMETRY_FACTORY.createLineString(new CustomCoordinateSequence(CoordinateSequenceDimensions.XY));
+        Polygon emptyPolygon = GEOMETRY_FACTORY.createPolygon(new CustomCoordinateSequence(CoordinateSequenceDimensions.XY));
+        Geometry[] geometries = {
+            GEOMETRY_FACTORY.createMultiPoint(new Point[] {
+                GEOMETRY_FACTORY.createPoint(new CustomCoordinateSequence(CoordinateSequenceDimensions.XY, "1 2")), emptyPoint }),
+            GEOMETRY_FACTORY.createMultiLineString(new LineString[] {
+                GEOMETRY_FACTORY.createLineString(new CustomCoordinateSequence(CoordinateSequenceDimensions.XY, "0 0, 1 1")), emptyLine }),
+            GEOMETRY_FACTORY.createMultiPolygon(new Polygon[] {
+                GEOMETRY_FACTORY.createPolygon(new CustomCoordinateSequence(CoordinateSequenceDimensions.XY,
+                        "0 0, 1 0, 0 1, 0 0")), emptyPolygon })
+        };
+        String[] expected = {
+            "MULTIPOINT((1 2), EMPTY)",
+            "MULTILINESTRING((0 0, 1 1), EMPTY)",
+            "MULTIPOLYGON(((0 0, 1 0, 0 1, 0 0)), EMPTY)"
+        };
+        for (int i = 0; i < geometries.length; i++) {
+            GeometryWrapper wrapper = new GeometryWrapper(geometries[i], SRS_URI.DEFAULT_WKT_CRS84,
+                    WKTDatatype.URI, new DimensionInfo(2, 2, geometries[i].getDimension()));
+            assertEquals(expected[i], WKTWriter.write(wrapper));
+        }
+    }
+
+    @Test
+    public void testWriteCollectionRetainsMemberSpecificLayouts() {
+        Geometry emptyMeasuredMulti = WKTReader.extract("MULTILINESTRING M EMPTY").getGeometry();
+        Point elevated = GEOMETRY_FACTORY.createPoint(new CustomCoordinateSequence(
+                CoordinateSequenceDimensions.XYZ, "1 2 3"));
+        Geometry collection = GEOMETRY_FACTORY.createGeometryCollection(new Geometry[] { emptyMeasuredMulti, elevated });
+        GeometryWrapper wrapper = new GeometryWrapper(collection, SRS_URI.DEFAULT_WKT_CRS84,
+                WKTDatatype.URI, new DimensionInfo(CoordinateSequenceDimensions.XY, collection.getDimension()));
+
+        assertEquals("GEOMETRYCOLLECTION(MULTILINESTRING M EMPTY, POINT Z(1 2 3))", WKTWriter.write(wrapper));
     }
 
 }
