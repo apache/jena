@@ -22,6 +22,7 @@ package org.apache.jena.geosparql.implementation;
 
 import org.apache.jena.geosparql.implementation.datatype.GMLDatatype;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
+import org.apache.jena.geosparql.implementation.jts.CoordinateSequenceDimensions;
 import org.apache.jena.geosparql.implementation.jts.CustomGeometryFactory;
 import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
 import org.apache.jena.geosparql.implementation.vocabulary.Unit_URI;
@@ -32,12 +33,15 @@ import org.apache.sis.referencing.CRS;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
@@ -525,6 +529,89 @@ public class GeometryWrapperTest {
         String expResult = "http://www.opengis.net/def/crs/EPSG/0/32630";
         String result = instance.getUTMZoneURI();
         assertEquals(expResult, result);
+    }
+
+    @Test
+    public void testGetGeometryNOnAtomicGeometry() {
+        GeometryWrapper point = GeometryWrapper.extract("POINT Z EMPTY", WKTDatatype.URI);
+        GeometryWrapper selected = point.getGeometryN(1);
+
+        assertEquals(point.getGeometryDatatypeURI(), selected.getGeometryDatatypeURI());
+        assertEquals(point.getSrsURI(), selected.getSrsURI());
+        assertEquals(point.getCoordinateSequenceDimensions(), selected.getCoordinateSequenceDimensions());
+        assertEquals("Point", selected.getGeometryType());
+        assertTrue(selected.isEmpty());
+        assertThrows(IllegalArgumentException.class, () -> point.getGeometryN(0));
+        assertThrows(IllegalArgumentException.class, () -> point.getGeometryN(2));
+    }
+
+    @Test
+    public void testGetGeometryNSelectsDirectNestedMember() {
+        GeometryWrapper source = GeometryWrapper.extract(
+                "GEOMETRYCOLLECTION (POINT (9 9), GEOMETRYCOLLECTION (POINT (1 2), POINT (3 4)))",
+                WKTDatatype.URI);
+        GeometryWrapper selected = source.getGeometryN(2);
+
+        assertEquals("GeometryCollection", selected.getGeometryType());
+        assertEquals(2, selected.getParsingGeometry().getNumGeometries());
+        assertEquals(3.0, selected.getGeometryN(2).getParsingGeometry().getCoordinate().getX(), 0.0);
+        assertThrows(IllegalArgumentException.class, () -> source.getGeometryN(3));
+    }
+
+    @Test
+    public void testGetGeometryNUsesSelectedMemberLayoutAndTopology() {
+        GeometryWrapper source = GeometryWrapper.extract(
+                "GEOMETRYCOLLECTION (POINT Z (1 2 3), LINESTRING M (1 2 7, 3 4 9))",
+                WKTDatatype.URI);
+        GeometryWrapper point = source.getGeometryN(1);
+        GeometryWrapper line = source.getGeometryN(2);
+
+        assertEquals(CoordinateSequenceDimensions.XYZ, point.getCoordinateSequenceDimensions());
+        assertEquals(CoordinateSequenceDimensions.XYM, line.getCoordinateSequenceDimensions());
+        assertEquals(0, point.getTopologicalDimension());
+        assertEquals(1, line.getTopologicalDimension());
+        assertEquals(source.getGeometryDatatypeURI(), line.getGeometryDatatypeURI());
+        assertEquals(source.getSrsURI(), line.getSrsURI());
+    }
+
+    @Test
+    public void testGetGeometryNRetainsExplicitLayoutOfEmptyAggregate() {
+        String[] members = {
+            "MULTIPOINT Z EMPTY", "MULTILINESTRING M EMPTY",
+            "MULTIPOLYGON ZM EMPTY", "GEOMETRYCOLLECTION Z EMPTY"
+        };
+        for (String member : members) {
+            GeometryWrapper selected = GeometryWrapper.extract(
+                    "GEOMETRYCOLLECTION (" + member + ", POINT (1 2))", WKTDatatype.URI).getGeometryN(1);
+            GeometryWrapper expected = GeometryWrapper.extract(member, WKTDatatype.URI);
+            assertEquals(member, expected.getCoordinateSequenceDimensions(), selected.getCoordinateSequenceDimensions());
+            assertEquals(member, expected.getGeometryType(), selected.getGeometryType());
+        }
+    }
+
+    @Test
+    public void testGetGeometryNPreservesZWhenNormalizingAuthorityAxisOrder() {
+        GeometryWrapper selected = GeometryWrapper.extract(
+                "<http://www.opengis.net/def/crs/EPSG/0/4979> MULTIPOINT Z ((10 100 7), (20 120 9))",
+                WKTDatatype.URI).getGeometryN(2);
+        Point parsing = (Point) selected.getParsingGeometry();
+        Point normalized = (Point) selected.getXYGeometry();
+
+        assertEquals(CoordinateSequenceDimensions.XYZ, selected.getCoordinateSequenceDimensions());
+        assertEquals(20.0, parsing.getX(), 0.0);
+        assertEquals(120.0, parsing.getY(), 0.0);
+        assertEquals(9.0, parsing.getCoordinateSequence().getZ(0), 0.0);
+        assertEquals(120.0, normalized.getX(), 0.0);
+        assertEquals(20.0, normalized.getY(), 0.0);
+        assertEquals(9.0, normalized.getCoordinateSequence().getZ(0), 0.0);
+    }
+
+    @Test
+    public void testGetGeometryNRejectsIndicesForEmptyCollection() {
+        GeometryWrapper empty = GeometryWrapper.extract("GEOMETRYCOLLECTION EMPTY", WKTDatatype.URI);
+        assertThrows(IllegalArgumentException.class, () -> empty.getGeometryN(1));
+        assertThrows(IllegalArgumentException.class, () -> empty.getGeometryN(-1));
+        assertThrows(IllegalArgumentException.class, () -> empty.getGeometryN(Integer.MAX_VALUE));
     }
     
 }

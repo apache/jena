@@ -20,6 +20,7 @@
  */
 package org.apache.jena.geosparql.implementation.parsers.wkt;
 
+import org.apache.jena.geosparql.implementation.DimensionInfo;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.SRSInfo;
 import org.apache.jena.geosparql.implementation.jts.CoordinateSequenceDimensions;
@@ -121,10 +122,6 @@ public class WKTWriter {
         return sb.toString();
     }
 
-    private static String buildWKT(final String geometryType, final CoordinateSequence coordSeq) {
-        return buildWKT(geometryType, coordSeq, "");
-    }
-
     private static String buildWKT(final String geometryType, final CoordinateSequence coordSeq, final String dimensionString) {
 
         CustomCoordinateSequence coordSequence = (CustomCoordinateSequence) coordSeq;
@@ -132,9 +129,7 @@ public class WKTWriter {
 
         StringBuilder sb = new StringBuilder(geometryType);
 
-        if (!wktText.equals(" EMPTY")) {
-            sb.append(dimensionString);
-        }
+        sb.append(dimensionString);
 
         sb.append(wktText);
 
@@ -147,12 +142,10 @@ public class WKTWriter {
 
         if (isIncludeGeometryType) {
             sb.append("POLYGON");
+            sb.append(dimensionString);
         }
 
         if (!polygon.isEmpty()) {
-            if (isIncludeGeometryType) {
-                sb.append(dimensionString);
-            }
             sb.append("(");
 
             //Find exterior shell
@@ -172,31 +165,33 @@ public class WKTWriter {
 
             sb.append(")");
         } else {
-            sb.append(" EMPTY");
+            sb.append(isIncludeGeometryType ? " EMPTY" : "EMPTY");
         }
         return sb.toString();
+    }
+
+    private static String memberText(final CoordinateSequence coordSeq) {
+        CustomCoordinateSequence coordSequence = (CustomCoordinateSequence) coordSeq;
+        if (coordSequence.getSize() == 0) {
+            return "EMPTY";
+        }
+        return convertToWKTText(coordSequence);
     }
 
     private static String buildMultiPoint(final MultiPoint multiPoint, final String dimensionString) {
 
         StringBuilder sb = new StringBuilder("MULTIPOINT");
+        sb.append(dimensionString);
 
-        if (!multiPoint.isEmpty()) {
-
-            sb.append(dimensionString);
+        int geomCount = multiPoint.getNumGeometries();
+        if (geomCount > 0) {
             sb.append("(");
-            //Find first point
-            Point point = (Point) multiPoint.getGeometryN(0);
-            CustomCoordinateSequence coordSequence = (CustomCoordinateSequence) point.getCoordinateSequence();
-
-            sb.append(buildWKT("", coordSequence));
-            //Encode remaining points
-            int geomCount = multiPoint.getNumGeometries();
-            for (int i = 1; i < geomCount; i++) {
-                sb.append(", ");
-                point = (Point) multiPoint.getGeometryN(i);
-                coordSequence = (CustomCoordinateSequence) point.getCoordinateSequence();
-                sb.append(buildWKT("", coordSequence));
+            for (int i = 0; i < geomCount; i++) {
+                if (i > 0) {
+                    sb.append(", ");
+                }
+                Point point = (Point) multiPoint.getGeometryN(i);
+                sb.append(memberText(point.getCoordinateSequence()));
             }
             sb.append(")");
         } else {
@@ -209,23 +204,17 @@ public class WKTWriter {
     private static String buildMultiLineString(final MultiLineString multiLineString, final String dimensionString) {
 
         StringBuilder sb = new StringBuilder("MULTILINESTRING");
+        sb.append(dimensionString);
 
-        if (!multiLineString.isEmpty()) {
-            sb.append(dimensionString);
+        int geomCount = multiLineString.getNumGeometries();
+        if (geomCount > 0) {
             sb.append("(");
-
-            //Find first linestring
-            LineString lineString = (LineString) multiLineString.getGeometryN(0);
-            CustomCoordinateSequence coordSequence = (CustomCoordinateSequence) lineString.getCoordinateSequence();
-
-            sb.append(buildWKT("", coordSequence));
-            //Encode remaining points
-            int geomCount = multiLineString.getNumGeometries();
-            for (int i = 1; i < geomCount; i++) {
-                sb.append(", ");
-                lineString = (LineString) multiLineString.getGeometryN(i);
-                coordSequence = (CustomCoordinateSequence) lineString.getCoordinateSequence();
-                sb.append(buildWKT("", coordSequence));
+            for (int i = 0; i < geomCount; i++) {
+                if (i > 0) {
+                    sb.append(", ");
+                }
+                LineString lineString = (LineString) multiLineString.getGeometryN(i);
+                sb.append(memberText(lineString.getCoordinateSequence()));
             }
             sb.append(")");
         } else {
@@ -238,21 +227,16 @@ public class WKTWriter {
     private static String buildMultiPolygon(final MultiPolygon multiPolygon, final String dimensionString) {
 
         StringBuilder sb = new StringBuilder("MULTIPOLYGON");
+        sb.append(dimensionString);
 
-        if (!multiPolygon.isEmpty()) {
-            sb.append(dimensionString);
+        int geomCount = multiPolygon.getNumGeometries();
+        if (geomCount > 0) {
             sb.append("(");
-
-            //Find first polygon
-            Polygon polygon = (Polygon) multiPolygon.getGeometryN(0);
-
-            sb.append(buildPolygon(polygon, false, dimensionString));
-            //Encode remaining points
-            int geomCount = multiPolygon.getNumGeometries();
-            for (int i = 1; i < geomCount; i++) {
-                sb.append(", ");
-                polygon = (Polygon) multiPolygon.getGeometryN(i);
-
+            for (int i = 0; i < geomCount; i++) {
+                if (i > 0) {
+                    sb.append(", ");
+                }
+                Polygon polygon = (Polygon) multiPolygon.getGeometryN(i);
                 sb.append(buildPolygon(polygon, false, dimensionString));
             }
             sb.append(")");
@@ -266,21 +250,20 @@ public class WKTWriter {
     private static String buildGeometryCollection(final GeometryCollection geometryCollection, final CoordinateSequenceDimensions dimensions) {
 
         StringBuilder sb = new StringBuilder("GEOMETRYCOLLECTION");
+        sb.append(CoordinateSequenceDimensions.convertDimensions(dimensions));
 
-        if (!geometryCollection.isEmpty()) {
-            String dimensionString = CoordinateSequenceDimensions.convertDimensions(dimensions);
-            sb.append(dimensionString);
+        if (geometryCollection.getNumGeometries() > 0) {
 
             Geometry geometry = geometryCollection.getGeometryN(0);
 
             sb.append("(");
-            sb.append(expand(geometry, dimensions));
+            sb.append(expand(geometry, DimensionInfo.find(geometry, dimensions).getDimensions()));
 
             int geomCount = geometryCollection.getNumGeometries();
             for (int i = 1; i < geomCount; i++) {
                 sb.append(", ");
                 geometry = geometryCollection.getGeometryN(i);
-                sb.append(expand(geometry, dimensions));
+                sb.append(expand(geometry, DimensionInfo.find(geometry, dimensions).getDimensions()));
             }
             sb.append(")");
         } else {

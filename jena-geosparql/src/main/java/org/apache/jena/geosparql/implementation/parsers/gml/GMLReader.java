@@ -481,7 +481,7 @@ public class GMLReader implements ParserReader {
             Element exteriorLinearRingElement = exteriorElement.getChild("LinearRing", GML_NAMESPACE);
             exteriorLinearRing = buildLinearRing(exteriorLinearRingElement, dims);
         } else {
-            exteriorLinearRing = GEOMETRY_FACTORY.createLinearRing();
+            exteriorLinearRing = GEOMETRY_FACTORY.createLinearRing(new CustomCoordinateSequence(dims));
         }
         //Interior shell - [0..*]
         List<Element> interiorElements = gmlElement.getChildren("interior", GML_NAMESPACE);
@@ -536,7 +536,7 @@ public class GMLReader implements ParserReader {
                 Geometry exteriorGeom = buildSurfacePatch(exteriorElement, dims, srsInfo);
                 exteriorLinearRing = GEOMETRY_FACTORY.createLinearRing(exteriorGeom.getCoordinates());
             } else {
-                exteriorLinearRing = GEOMETRY_FACTORY.createLinearRing();
+                exteriorLinearRing = GEOMETRY_FACTORY.createLinearRing(new CustomCoordinateSequence(dims));
             }
 
             //Interior shell - [0..*]
@@ -557,6 +557,12 @@ public class GMLReader implements ParserReader {
                 polygon = GEOMETRY_FACTORY.createPolygon(exteriorLinearRing, interiorLinearRings);
             }
             polys.add(polygon);
+        }
+
+        // The union of empty patches is a GeometryCollection in JTS.
+        // Return an empty patch directly so its coordinate layout is retained.
+        if (polys.stream().allMatch(Polygon::isEmpty)) {
+            return polys.get(0);
         }
 
         //Unionise all the polygons on the surface together.

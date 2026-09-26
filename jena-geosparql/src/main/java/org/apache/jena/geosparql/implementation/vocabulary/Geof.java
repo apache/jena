@@ -91,6 +91,9 @@ public interface Geof {
     public static final String MAX_Y = GEOF_URI + "maxY";
     public static final String MAX_Z = GEOF_URI + "maxZ";
 
+    //GeoSPARQL 1.1 geometry member access:
+    public static final String GEOMETRY_N = GEOF_URI + "geometryN";
+
     //upcoming GeoSPARQL 1.1 Datatype transformation functions:
     public static final String AS_GEOJSON = GEOF_URI + "asGeoJSON";
 }
