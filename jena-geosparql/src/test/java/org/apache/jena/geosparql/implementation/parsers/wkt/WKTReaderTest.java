@@ -20,6 +20,7 @@
  */
 package org.apache.jena.geosparql.implementation.parsers.wkt;
 
+import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.geosparql.implementation.DimensionInfo;
 import org.apache.jena.geosparql.implementation.jts.CoordinateSequenceDimensions;
 import org.apache.jena.geosparql.implementation.jts.CustomCoordinateSequence;
@@ -27,6 +28,9 @@ import org.apache.jena.geosparql.implementation.jts.CustomGeometryFactory;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -361,6 +365,86 @@ public class WKTReaderTest {
         //
         //
         assertEquals(expResult, result);
+    }
+
+    @Test
+    public void testExtractMultiGeometriesWithEmptyMembers() {
+        String[] wkts = {
+            "MULTIPOINT ZM ((1 2 3 4), EMPTY, (5 6 7 8))",
+            "MULTILINESTRING ZM ((1 2 3 4, 2 3 4 5), EMPTY, (5 6 7 8, 6 7 8 9))",
+            "MULTIPOLYGON ZM (((1 2 3 4, 2 2 3 4, 1 3 3 4, 1 2 3 4)), EMPTY, ((5 6 7 8, 6 6 7 8, 5 7 7 8, 5 6 7 8)))"
+        };
+
+        for (String wkt : wkts) {
+            Geometry multi = WKTReader.extract(wkt).getGeometry();
+            assertEquals(wkt, 3, multi.getNumGeometries());
+            assertFalse(wkt, multi.getGeometryN(0).isEmpty());
+            assertTrue(wkt, multi.getGeometryN(1).isEmpty());
+            assertFalse(wkt, multi.getGeometryN(2).isEmpty());
+            assertEquals(wkt, 1.0, multi.getGeometryN(0).getCoordinate().getX(), 0.0);
+            assertEquals(wkt, 5.0, multi.getGeometryN(2).getCoordinate().getX(), 0.0);
+            assertEquals(wkt, CoordinateSequenceDimensions.XYZM,
+                    DimensionInfo.find(multi.getGeometryN(1), CoordinateSequenceDimensions.XY).getDimensions());
+        }
+    }
+
+    @Test
+    public void testExtractNestedCollectionWithoutFlatteningMembers() {
+        Geometry collection = WKTReader.extract(
+                "GEOMETRYCOLLECTION (MULTIPOINT (EMPTY, (1 2)), POINT (3 4))").getGeometry();
+
+        assertEquals(2, collection.getNumGeometries());
+        Geometry multi = collection.getGeometryN(0);
+        assertEquals("MultiPoint", multi.getGeometryType());
+        assertEquals(2, multi.getNumGeometries());
+        assertTrue(multi.getGeometryN(0).isEmpty());
+        assertEquals(1.0, multi.getGeometryN(1).getCoordinate().getX(), 0.0);
+        assertEquals(3.0, collection.getGeometryN(1).getCoordinate().getX(), 0.0);
+    }
+
+    @Test
+    public void testExtractAllEmptyMembersRetainsCoordinateMarkers() {
+        String[] markers = { "Z", "M", "ZM" };
+        CoordinateSequenceDimensions[] layouts = {
+            CoordinateSequenceDimensions.XYZ,
+            CoordinateSequenceDimensions.XYM,
+            CoordinateSequenceDimensions.XYZM
+        };
+        for (int i = 0; i < markers.length; i++) {
+            for (String type : new String[] { "MULTIPOINT", "MULTILINESTRING", "MULTIPOLYGON" }) {
+                Geometry multi = WKTReader.extract(type + " " + markers[i] + " (EMPTY, EMPTY)").getGeometry();
+                assertEquals(type, 2, multi.getNumGeometries());
+                for (int member = 0; member < 2; member++) {
+                    assertTrue(type, multi.getGeometryN(member).isEmpty());
+                    assertEquals(type, layouts[i], DimensionInfo.find(multi.getGeometryN(member),
+                            CoordinateSequenceDimensions.XY).getDimensions());
+                }
+            }
+        }
+    }
+
+    @Test
+    public void testRejectMissingMultiGeometryMembers() {
+        for (String wkt : new String[] {
+                "MULTIPOINT ((1 2),, (3 4))", "MULTIPOINT (, (1 2))", "MULTIPOINT ((1 2),)",
+                "MULTILINESTRING ((0 0, 1 1),, (2 2, 3 3))", "MULTILINESTRING (, (0 0, 1 1))",
+                "MULTILINESTRING ((0 0, 1 1),)",
+                "MULTIPOLYGON (((0 0, 1 0, 0 1, 0 0)),, ((2 2, 3 2, 2 3, 2 2)))",
+                "MULTIPOLYGON (, ((0 0, 1 0, 0 1, 0 0)))",
+                "MULTIPOLYGON (((0 0, 1 0, 0 1, 0 0)),)" }) {
+            assertThrows(wkt, DatatypeFormatException.class, () -> WKTReader.extract(wkt));
+        }
+    }
+
+    @Test
+    public void testRejectUnbalancedMultiGeometryParentheses() {
+        for (String wkt : new String[] {
+                "MULTIPOINT ((1 2)", "MULTIPOINT ((1 2)))",
+                "MULTILINESTRING ((0 0, 1 1)", "MULTILINESTRING ((0 0, 1 1)))",
+                "MULTIPOLYGON (((0 0, 1 0, 0 1, 0 0))",
+                "MULTIPOLYGON (((0 0, 1 0, 0 1, 0 0))))" }) {
+            assertThrows(wkt, DatatypeFormatException.class, () -> WKTReader.extract(wkt));
+        }
     }
 
     /**

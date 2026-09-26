@@ -559,6 +559,12 @@ public class GMLReader implements ParserReader {
             polys.add(polygon);
         }
 
+        // The union of empty patches is a GeometryCollection in JTS.
+        // Return an empty patch directly so its coordinate layout is retained.
+        if (polys.stream().allMatch(Polygon::isEmpty)) {
+            return polys.get(0);
+        }
+
         //Unionise all the polygons on the surface together.
         Geometry unionGeom = CascadedPolygonUnion.union(polys);
         Polygon unionPolygon;
