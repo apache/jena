@@ -18,14 +18,14 @@
  *
  *   SPDX-License-Identifier: Apache-2.0
  */
-package org.apache.jena.geosparql.implementation;
+package org.apache.jena.geosparql.implementation.index;
 
 import static org.junit.Assert.assertEquals;
 
 import org.apache.jena.geosparql.configuration.GeoSPARQLConfig;
+import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.datatype.GMLDatatype;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
-import org.apache.jena.geosparql.implementation.index.GeometryTransformIndex;
 import org.junit.Test;
 
 public class GeometryTransformIndexTest {

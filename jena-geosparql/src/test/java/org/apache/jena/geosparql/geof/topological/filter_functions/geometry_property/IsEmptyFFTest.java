@@ -20,6 +20,11 @@
  */
 package org.apache.jena.geosparql.geof.topological.filter_functions.geometry_property;
 
+import static org.apache.jena.geosparql.geof.topological.filter_functions.geometry_property.GeometryPropertyFFTestSupport.GML_2D_POINT;
+import static org.apache.jena.geosparql.geof.topological.filter_functions.geometry_property.GeometryPropertyFFTestSupport.GML_3D_POINT;
+import static org.apache.jena.geosparql.geof.topological.filter_functions.geometry_property.GeometryPropertyFFTestSupport.evaluate;
+
+import org.apache.jena.geosparql.configuration.GeoSPARQLConfig;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.junit.After;
@@ -40,6 +45,7 @@ public class IsEmptyFFTest {
 
     @BeforeClass
     public static void setUpClass() {
+        GeoSPARQLConfig.setupNoIndex();
     }
 
     @AfterClass
@@ -78,6 +84,12 @@ public class IsEmptyFFTest {
         NodeValue expResult = NodeValue.makeNodeBoolean(true);
         NodeValue result = instance.exec(geometryLiteral);
         assertEquals(expResult, result);
+    }
+
+    @Test
+    public void gmlPointsAreNotEmpty() {
+        assertEquals(NodeValue.makeBoolean(false).asNode(), evaluate("geof:isEmpty(" + GML_2D_POINT + ")"));
+        assertEquals(NodeValue.makeBoolean(false).asNode(), evaluate("geof:isEmpty(" + GML_3D_POINT + ")"));
     }
 
 }

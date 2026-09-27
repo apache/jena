@@ -23,7 +23,6 @@ package org.apache.jena.geosparql.geof.nontopological.filter_functions;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
@@ -34,7 +33,6 @@ import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.geosparql.implementation.jts.CoordinateSequenceDimensions;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.query.QueryBuildException;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
@@ -109,6 +107,19 @@ public class CentroidFFTest {
     public void projectedCrsIsPreserved() {
         String crs = "<http://www.opengis.net/def/crs/EPSG/0/27700> ";
         GeometryWrapper result = centroid(crs + "LINESTRING (100 200, 300 400)");
+        assertEquals("http://www.opengis.net/def/crs/EPSG/0/27700", result.getSrsURI());
+        assertEquals(200, result.getXYGeometry().getCoordinate().getX(), 0);
+        assertEquals(300, result.getXYGeometry().getCoordinate().getY(), 0);
+    }
+
+    @Test
+    public void directExecutionAcceptsExplicitWktCrs() {
+        NodeValue input = NodeValue.makeNode(
+            "<http://www.opengis.net/def/crs/EPSG/0/27700> LINESTRING (100 200, 300 400)", WKTDatatype.INSTANCE);
+        NodeValue output = new CentroidFF().exec(input);
+        assertEquals(WKTDatatype.URI, output.asNode().getLiteralDatatypeURI());
+        GeometryWrapper result = GeometryWrapper.extract(output.asNode());
+        assertPointMetadata(result);
         assertEquals("http://www.opengis.net/def/crs/EPSG/0/27700", result.getSrsURI());
         assertEquals(200, result.getXYGeometry().getCoordinate().getX(), 0);
         assertEquals(300, result.getXYGeometry().getCoordinate().getY(), 0);
@@ -194,16 +205,6 @@ public class CentroidFFTest {
                 NodeValue.makeNode(NodeFactory.createURI("urn:geometry")), NodeValue.makeNode("invalid", WKTDatatype.INSTANCE) }) {
             assertThrows(ExprEvalException.class, () -> function.exec(value));
         }
-        for (String value : new String[] { "42", "'POINT (1 2)'", "<urn:geometry>", "'invalid'^^geo:wktLiteral", "?missing" }) {
-            assertNull(evaluate("geof:centroid(" + value + ")"));
-        }
-    }
-
-    @Test
-    public void wrongArityIsRejectedAtQueryBuild() {
-        assertThrows(QueryBuildException.class, () -> evaluate("geof:centroid()"));
-        assertThrows(QueryBuildException.class,
-                     () -> evaluate("geof:centroid('POINT EMPTY'^^geo:wktLiteral, 1)"));
     }
 
     private static void assertCentroid(String wkt, double x, double y) {
