@@ -60,7 +60,8 @@ public class GeometryTransformIndex {
     public static final GeometryWrapper transform(GeometryWrapper sourceGeometryWrapper, String srsURI, Boolean storeSRSTransform) throws TransformException, FactoryException {
 
         GeometryWrapper transformedGeometryWrapper;
-        IndexKey key = new IndexKey(sourceGeometryWrapper.getLexicalForm(), srsURI);
+        IndexKey key = new IndexKey(sourceGeometryWrapper.getGeometryDatatypeURI(),
+                sourceGeometryWrapper.getLexicalForm(), srsURI);
 
         if (INDEX_ACTIVE && storeSRSTransform) {
 
@@ -137,10 +138,12 @@ public class GeometryTransformIndex {
 
     private static class IndexKey {
 
-         private final String sourceGeometryLiteral;
-         private final String srsURI;
+        private final String sourceDatatypeURI;
+        private final String sourceGeometryLiteral;
+        private final String srsURI;
 
-        public IndexKey(String sourceGeometryLiteral, String srsURI) {
+        public IndexKey(String sourceDatatypeURI, String sourceGeometryLiteral, String srsURI) {
+            this.sourceDatatypeURI = sourceDatatypeURI;
             this.sourceGeometryLiteral = sourceGeometryLiteral;
             this.srsURI = srsURI;
         }
@@ -148,6 +151,7 @@ public class GeometryTransformIndex {
         @Override
         public int hashCode() {
             int hash = 7;
+            hash = 47 * hash + Objects.hashCode(this.sourceDatatypeURI);
             hash = 47 * hash + Objects.hashCode(this.sourceGeometryLiteral);
             hash = 47 * hash + Objects.hashCode(this.srsURI);
             return hash;
@@ -165,6 +169,9 @@ public class GeometryTransformIndex {
                 return false;
             }
             final IndexKey other = (IndexKey) obj;
+            if (!Objects.equals(this.sourceDatatypeURI, other.sourceDatatypeURI)) {
+                return false;
+            }
             if (!Objects.equals(this.sourceGeometryLiteral, other.sourceGeometryLiteral)) {
                 return false;
             }

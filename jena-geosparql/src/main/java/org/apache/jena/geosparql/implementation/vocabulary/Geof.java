@@ -76,6 +76,7 @@ public interface Geof {
     public static final String GETSRID_NAME = GEOF_URI + "getSRID";
 
     // Geometry property function symbols:
+    public static final String GEOMETRY_TYPE = GEOF_URI + "geometryType";
     public static final String IS_3D = GEOF_URI + "is3D";
     public static final String IS_MEASURED = GEOF_URI + "isMeasured";
     public static final String NUM_GEOMETRIES = GEOF_URI + "numGeometries";
