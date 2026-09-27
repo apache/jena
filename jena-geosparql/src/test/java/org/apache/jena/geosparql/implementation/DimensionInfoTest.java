@@ -147,6 +147,17 @@ public class DimensionInfoTest {
     }
 
     @Test
+    public void testFindGeometryPrefersRetainedLayoutOverFirstCollectionMember() {
+        GeometryFactory factory = CustomGeometryFactory.theInstance();
+        Point elevated = factory.createPoint(new CustomCoordinateSequence(CoordinateSequenceDimensions.XYZ, "1 2 3"));
+        Geometry collection = factory.createGeometryCollection(new Geometry[] { elevated });
+        collection.setUserData(CoordinateSequenceDimensions.XYM);
+
+        assertEquals(CoordinateSequenceDimensions.XYM,
+                DimensionInfo.find(collection, CoordinateSequenceDimensions.XY).getDimensions());
+    }
+
+    @Test
     public void testFindGeometryUsesFirstCollectionMemberLayout() {
         GeometryFactory factory = CustomGeometryFactory.theInstance();
         Point measured = factory.createPoint(new CustomCoordinateSequence(CoordinateSequenceDimensions.XYM, "1 2 3"));
