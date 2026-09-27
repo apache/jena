@@ -559,6 +559,47 @@ public class GeometryWrapperTest {
     }
 
     @Test
+    public void testGetGeometryNPreservesNestedCollectionLayout() {
+        String[] members = {
+            "GEOMETRYCOLLECTION (POINT Z (1 2 3), POINT M (4 5 6))",
+            "GEOMETRYCOLLECTION M (POINT Z (1 2 3), POINT M (4 5 6))",
+            "GEOMETRYCOLLECTION Z (POINT M (1 2 3), POINT Z (4 5 6))",
+            "GEOMETRYCOLLECTION ZM (POINT Z (1 2 3), POINT M (4 5 6))"
+        };
+        CoordinateSequenceDimensions[] expected = {
+            CoordinateSequenceDimensions.XY,
+            CoordinateSequenceDimensions.XYM,
+            CoordinateSequenceDimensions.XYZ,
+            CoordinateSequenceDimensions.XYZM
+        };
+        CoordinateSequenceDimensions[] firstMembers = {
+            CoordinateSequenceDimensions.XYZ,
+            CoordinateSequenceDimensions.XYZ,
+            CoordinateSequenceDimensions.XYM,
+            CoordinateSequenceDimensions.XYZ
+        };
+        CoordinateSequenceDimensions[] secondMembers = {
+            CoordinateSequenceDimensions.XYM,
+            CoordinateSequenceDimensions.XYM,
+            CoordinateSequenceDimensions.XYZ,
+            CoordinateSequenceDimensions.XYM
+        };
+
+        for (int i = 0; i < members.length; i++) {
+            GeometryWrapper selected = GeometryWrapper.extract(
+                    "GEOMETRYCOLLECTION (" + members[i] + ")", WKTDatatype.URI).getGeometryN(1);
+
+            assertEquals(members[i], expected[i], selected.getCoordinateSequenceDimensions());
+            assertEquals(members[i], expected[i], GeometryWrapper.extract(
+                    selected.getLexicalForm(), WKTDatatype.URI).getCoordinateSequenceDimensions());
+            assertEquals(members[i], firstMembers[i],
+                    selected.getGeometryN(1).getCoordinateSequenceDimensions());
+            assertEquals(members[i], secondMembers[i],
+                    selected.getGeometryN(2).getCoordinateSequenceDimensions());
+        }
+    }
+
+    @Test
     public void testGetGeometryNUsesSelectedMemberLayoutAndTopology() {
         GeometryWrapper source = GeometryWrapper.extract(
                 "GEOMETRYCOLLECTION (POINT Z (1 2 3), LINESTRING M (1 2 7, 3 4 9))",

@@ -55,7 +55,7 @@ public class WKTReader implements ParserReader {
     protected WKTReader(String geometryType, String dimensionString, String coordinates, String srsURI) {
         this.dims = convertDimensionString(dimensionString);
         this.geometry = buildGeometry(geometryType, coordinates);
-        retainEmptyAggregateLayout(geometry, dims);
+        retainAggregateLayout(geometry, dims);
         this.dimensionInfo = new DimensionInfo(dims, geometry.getDimension());
         this.srsURI = srsURI;
     }
@@ -150,9 +150,12 @@ public class WKTReader implements ParserReader {
         return geo;
     }
 
-    /** Empty Multi/collection has no sequence for Z/M/ZM; stash the parsed layout for DimensionInfo.find. */
-    private static void retainEmptyAggregateLayout(Geometry geometry, CoordinateSequenceDimensions dims) {
-        if (geometry instanceof GeometryCollection collection && collection.getNumGeometries() == 0) {
+    /**
+     * Aggregates do not have their own coordinate sequence; retain their declared
+     * layout for DimensionInfo.find.
+     */
+    private static void retainAggregateLayout(Geometry geometry, CoordinateSequenceDimensions dims) {
+        if (geometry instanceof GeometryCollection) {
             geometry.setUserData(dims);
         }
     }

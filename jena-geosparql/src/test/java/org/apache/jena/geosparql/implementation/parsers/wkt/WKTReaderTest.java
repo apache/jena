@@ -368,6 +368,17 @@ public class WKTReaderTest {
     }
 
     @Test
+    public void testExtractNonEmptyCollectionRetainsDeclaredLayout() {
+        Geometry collection = WKTReader.extract(
+                "GEOMETRYCOLLECTION M (POINT Z (1 2 3))").getGeometry();
+
+        assertEquals(CoordinateSequenceDimensions.XYM,
+                DimensionInfo.find(collection, CoordinateSequenceDimensions.XY).getDimensions());
+        assertEquals(CoordinateSequenceDimensions.XYZ,
+                DimensionInfo.find(collection.getGeometryN(0), CoordinateSequenceDimensions.XY).getDimensions());
+    }
+
+    @Test
     public void testExtractMultiGeometriesWithEmptyMembers() {
         String[] wkts = {
             "MULTIPOINT ZM ((1 2 3 4), EMPTY, (5 6 7 8))",
