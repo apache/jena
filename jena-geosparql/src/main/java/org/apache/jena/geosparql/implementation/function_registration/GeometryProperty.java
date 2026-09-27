@@ -28,6 +28,7 @@ import org.apache.jena.geosparql.geo.topological.property_functions.geometry_pro
 import org.apache.jena.geosparql.geo.topological.property_functions.geometry_property.SpatialDimensionPF;
 import org.apache.jena.geosparql.geof.topological.filter_functions.geometry_property.CoordinateDimensionFF;
 import org.apache.jena.geosparql.geof.topological.filter_functions.geometry_property.DimensionFF;
+import org.apache.jena.geosparql.geof.topological.filter_functions.geometry_property.GeometryNFF;
 import org.apache.jena.geosparql.geof.topological.filter_functions.geometry_property.Is3DFF;
 import org.apache.jena.geosparql.geof.topological.filter_functions.geometry_property.IsEmptyFF;
 import org.apache.jena.geosparql.geof.topological.filter_functions.geometry_property.IsMeasuredFF;
@@ -70,7 +71,7 @@ public class GeometryProperty {
     /**
      * Registers {@code geof:} expression functions with the supplied registry.
      *
-     * @param registry - the FunctionRegistry to be used
+     * @param registry the FunctionRegistry to use
      */
     public static void loadFilterFunctions(FunctionRegistry registry) {
 
@@ -83,13 +84,14 @@ public class GeometryProperty {
         registry.put(Geof.IS_SIMPLE, IsSimpleFF.class);
         registry.put(Geof.IS_EMPTY, IsEmptyFF.class);
         registry.put(Geof.IS_VALID, IsValidFF.class);
-
         registry.put(Geof.MIN_X, MinXFF.class);
         registry.put(Geof.MIN_Y, MinYFF.class);
         registry.put(Geof.MIN_Z, MinZFF.class);
         registry.put(Geof.MAX_X, MaxXFF.class);
         registry.put(Geof.MAX_Y, MaxYFF.class);
         registry.put(Geof.MAX_Z, MaxZFF.class);
+
+        registry.put(Geof.GEOMETRY_N, GeometryNFF.class);
     }
 
 }

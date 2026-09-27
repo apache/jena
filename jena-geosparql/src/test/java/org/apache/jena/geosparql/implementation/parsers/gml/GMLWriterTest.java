@@ -20,6 +20,7 @@
  */
 package org.apache.jena.geosparql.implementation.parsers.gml;
 
+import java.io.IOException;
 import org.apache.jena.geosparql.implementation.DimensionInfo;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.datatype.GMLDatatype;
@@ -27,9 +28,12 @@ import org.apache.jena.geosparql.implementation.jts.CoordinateSequenceDimensions
 import org.apache.jena.geosparql.implementation.jts.CustomCoordinateSequence;
 import org.apache.jena.geosparql.implementation.jts.CustomGeometryFactory;
 import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
+import org.jdom2.JDOMException;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -37,6 +41,7 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.LinearRing;
+import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 
 /**
@@ -290,6 +295,55 @@ public class GMLWriterTest {
         String expResult = "<gml:MultiGeometry xmlns:gml=\"http://www.opengis.net/gml/3.2\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\" />";
 
         assertEquals(expResult, result);
+    }
+
+    @Test
+    public void testWriteMultiGeometriesContainingOnlyEmptyMembers() throws JDOMException, IOException {
+        Point emptyPoint = GEOMETRY_FACTORY.createPoint(new CustomCoordinateSequence(CoordinateSequenceDimensions.XY));
+        LineString emptyLine = GEOMETRY_FACTORY.createLineString(new CustomCoordinateSequence(CoordinateSequenceDimensions.XY));
+        Polygon emptyPolygon = GEOMETRY_FACTORY.createPolygon(new CustomCoordinateSequence(CoordinateSequenceDimensions.XY));
+        Geometry[] geometries = {
+            GEOMETRY_FACTORY.createMultiPoint(new Point[] { emptyPoint, emptyPoint }),
+            GEOMETRY_FACTORY.createMultiLineString(new LineString[] { emptyLine, emptyLine }),
+            GEOMETRY_FACTORY.createMultiPolygon(new Polygon[] { emptyPolygon, emptyPolygon }),
+            GEOMETRY_FACTORY.createGeometryCollection(new Geometry[] { emptyPoint, emptyLine })
+        };
+
+        for (Geometry geometry : geometries) {
+            GeometryWrapper wrapper = new GeometryWrapper(geometry, SRS_URI.WGS84_CRS, GMLDatatype.URI,
+                    new DimensionInfo(2, 2, geometry.getDimension()));
+            Geometry reparsed = GMLReader.extract(GMLWriter.write(wrapper)).getGeometry();
+            assertEquals(geometry.getGeometryType(), 2, reparsed.getNumGeometries());
+            assertEquals(geometry.getGeometryType(), geometry.getGeometryType(), reparsed.getGeometryType());
+            assertTrue(geometry.getGeometryType(), reparsed.getGeometryN(0).isEmpty());
+            assertTrue(geometry.getGeometryType(), reparsed.getGeometryN(1).isEmpty());
+        }
+    }
+
+    @Test
+    public void testWriteMultiGeometriesWithMixedEmptyMembers() throws JDOMException, IOException {
+        Point emptyPoint = GEOMETRY_FACTORY.createPoint(new CustomCoordinateSequence(CoordinateSequenceDimensions.XY));
+        LineString emptyLine = GEOMETRY_FACTORY.createLineString(new CustomCoordinateSequence(CoordinateSequenceDimensions.XY));
+        Polygon emptyPolygon = GEOMETRY_FACTORY.createPolygon(new CustomCoordinateSequence(CoordinateSequenceDimensions.XY));
+        Geometry[] geometries = {
+            GEOMETRY_FACTORY.createMultiPoint(new Point[] {
+                GEOMETRY_FACTORY.createPoint(new CustomCoordinateSequence(CoordinateSequenceDimensions.XY, "1 2")), emptyPoint }),
+            GEOMETRY_FACTORY.createMultiLineString(new LineString[] {
+                GEOMETRY_FACTORY.createLineString(new CustomCoordinateSequence(CoordinateSequenceDimensions.XY, "0 0, 1 1")), emptyLine }),
+            GEOMETRY_FACTORY.createMultiPolygon(new Polygon[] {
+                GEOMETRY_FACTORY.createPolygon(new CustomCoordinateSequence(CoordinateSequenceDimensions.XY,
+                        "0 0, 1 0, 0 1, 0 0")), emptyPolygon })
+        };
+
+        for (Geometry geometry : geometries) {
+            GeometryWrapper wrapper = new GeometryWrapper(geometry, SRS_URI.WGS84_CRS, GMLDatatype.URI,
+                    new DimensionInfo(2, 2, geometry.getDimension()));
+            Geometry reparsed = GMLReader.extract(GMLWriter.write(wrapper)).getGeometry();
+            assertEquals(geometry.getGeometryType(), 2, reparsed.getNumGeometries());
+            assertEquals(geometry.getGeometryType(), geometry.getGeometryType(), reparsed.getGeometryType());
+            assertFalse(geometry.getGeometryType(), reparsed.getGeometryN(0).isEmpty());
+            assertTrue(geometry.getGeometryType(), reparsed.getGeometryN(1).isEmpty());
+        }
     }
 
 }

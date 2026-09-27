@@ -49,6 +49,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateXY;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.IntersectionMatrix;
 import org.locationtech.jts.geom.Point;
@@ -473,6 +474,26 @@ public class GeometryWrapper implements Serializable {
      */
     public double getMaxZ() {
         return GeometryCoordinateExtrema.maxZ(this);
+    }
+
+    /**
+     * Selects a direct geometry member using a one-based index, without flattening
+     * nested collections. Index 1 selects an atomic geometry itself, including
+     * an empty atomic geometry. Retains the source datatype and SRS and uses the
+     * selected member's coordinate layout.
+     *
+     * @throws IllegalArgumentException if the index is outside the member range.
+     */
+    public GeometryWrapper getGeometryN(int index) {
+        if (index < 1 || index > parsingGeometry.getNumGeometries()) {
+            throw new IllegalArgumentException("Geometry member index is out of range: " + index);
+        }
+        if (!(parsingGeometry instanceof GeometryCollection)) {
+            return this;
+        }
+        Geometry member = parsingGeometry.getGeometryN(index - 1);
+        DimensionInfo dimensions = DimensionInfo.find(member, dimensionInfo.getDimensions());
+        return new GeometryWrapper(member, getSrsURI(), geometryDatatypeURI, dimensions);
     }
 
     /**

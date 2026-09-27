@@ -32,6 +32,7 @@ import org.jdom2.JDOMException;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -613,6 +614,23 @@ public class GMLReaderTest {
         //
         //
         assertEquals(expResult, result);
+    }
+
+    @Test
+    public void testEmptyPolygonRetainsThreeDimensionalCrsLayout() throws JDOMException, IOException {
+        String[] gml = {
+            "<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml/3.2\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4979\" />",
+            "<gml:Surface xmlns:gml=\"http://www.opengis.net/gml/3.2\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4979\"><gml:patches><gml:PolygonPatch /></gml:patches></gml:Surface>",
+            "<gml:Surface xmlns:gml=\"http://www.opengis.net/gml/3.2\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4979\"><gml:patches><gml:PolygonPatch /><gml:PolygonPatch /></gml:patches></gml:Surface>"
+        };
+
+        for (String literal : gml) {
+            Geometry geometry = GMLReader.extract(literal).getGeometry();
+            assertEquals(literal, "Polygon", geometry.getGeometryType());
+            assertTrue(literal, geometry.isEmpty());
+            assertEquals(literal, CoordinateSequenceDimensions.XYZ,
+                    DimensionInfo.find(geometry, CoordinateSequenceDimensions.XY).getDimensions());
+        }
     }
 
     /**
