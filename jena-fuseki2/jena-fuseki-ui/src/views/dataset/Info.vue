@@ -167,7 +167,7 @@ import Menu from '@/components/dataset/Menu.vue'
 import { displayError } from '@/utils'
 import currentDatasetMixin from '@/mixins/current-dataset'
 import currentDatasetMixinNavigationGuards from '@/mixins/current-dataset-navigation-guards'
-import { Popover } from 'bootstrap'
+import Popover from 'bootstrap/js/dist/popover'
 import JenaTable from '@/components/dataset/JenaTable.vue'
 import TableListing from "@/components/dataset/TableListing.vue";
 

@@ -56,12 +56,11 @@ export default defineConfig({
     },
   },
   build: {
-    // Our largest chunk: target/webapp/static/Query-CakHSd_3.js  1,172.48 kB │ gzip: 350.95 kB
-    chunkSizeWarningLimit: 1250,
-    // Change build paths to make them Maven compatible.
+    // Our largest chunk: target/webapp/static/Query-BUidELIM.js 1,333.10 kB │ gzip: 387.95 kB │ map: 3,607.46 kB
+    chunkSizeWarningLimit: 1350,
     outDir: 'target/webapp',
     assetsDir: 'static',
-    sourcemap: 'inline'
+    sourcemap: true
   },
   test: {
     globals: true,
