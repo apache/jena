@@ -448,6 +448,7 @@ public class Context {
     /** Set the current time in the context, overwriting any previous setting */
     public static void setCurrentDateTime(Context context) {
         context.set(ARQConstants.sysCurrentTime, NodeFactoryExtra.nowAsDateTime());
+        context.set(ARQConstants.sysCurrentTimeEpoch, System.currentTimeMillis());
     }
 
     /** Set the current time in the context if there is no setting */

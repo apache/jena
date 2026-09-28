@@ -266,6 +266,8 @@ public class ARQConstants
 
     /** Context key for the current time of query execution */
     public static final Symbol sysCurrentTime           = Symbol.create(systemVarNS+"now") ;
+    /** Context key for the current time of query execution expressed as epoch milliseconds */
+    public static final Symbol sysCurrentTimeEpoch      = Symbol.create(systemVarNS+"nowEpoch");
 
     /** Context key for ARQ version */
     public static final Symbol sysVersionARQ            = Symbol.create(systemVarNS+"version/ARQ") ;
