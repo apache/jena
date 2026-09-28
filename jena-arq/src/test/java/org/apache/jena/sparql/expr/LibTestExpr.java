@@ -21,9 +21,6 @@
 
 package org.apache.jena.sparql.expr;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.function.Predicate;
 
 import org.apache.jena.graph.Node;
@@ -38,6 +35,8 @@ import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.ExprUtils;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class LibTestExpr {
 
@@ -169,8 +168,8 @@ public class LibTestExpr {
     }
 
 
-    public static void testError(String exprString) {
+    public static <T extends Exception> T testError(String exprString, Class<T> expectedException) {
         Expr expr = ExprUtils.parse(exprString, pmap);
-        expr.eval(null, new FunctionEnvBase());
+        return assertThrows(expectedException, () -> expr.eval(null, new FunctionEnvBase()));
     }
 }

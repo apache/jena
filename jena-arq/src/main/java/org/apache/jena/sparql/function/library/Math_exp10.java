@@ -27,6 +27,7 @@ import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
 import org.apache.jena.sparql.function.FunctionBase1;
+import org.apache.jena.sparql.function.MathLimits;
 
 // Returns the value of natural log(x)
 public class Math_exp10 extends FunctionBase1 {
@@ -37,13 +38,16 @@ public class Math_exp10 extends FunctionBase1 {
         {
             case OP_INTEGER:
                 int x = v.getInteger().intValue();
-                if ( x >= 0 )
+                if ( x >= 0 ) {
+                    MathLimits.preValidateExponentCalculation(BigInteger.TEN, v.getInteger());
                     return NodeValue.makeInteger(BigInteger.TEN.pow(x));
+                }
                 // Anything else -> double
                 //$FALL-THROUGH$
             case OP_DECIMAL:
             case OP_FLOAT:
             case OP_DOUBLE:
+                MathLimits.preValidateExponentCalculation(10, v.getDouble());
                 return NodeValue.makeDouble(Math.pow(10, v.getDouble()));
             default:
                 throw new ARQInternalErrorException("Unrecognized numeric operation : "+ v);

@@ -26,6 +26,7 @@ import java.math.BigInteger;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase1;
+import org.apache.jena.sparql.function.MathLimits;
 
 public class factorial extends FunctionBase1 {
 
@@ -43,13 +44,14 @@ public class factorial extends FunctionBase1 {
         case 1:
             BigInteger res = i.add(BigInteger.ZERO);
             i = i.subtract(BigInteger.ONE);
+            MathLimits.preValidateFactorial(i);
             while (i.compareTo(BigInteger.ZERO) != 0) {
                 res = res.multiply(i);
                 i = i.subtract(BigInteger.ONE);
             }
             return NodeValue.makeInteger(res);
         default:
-            throw new ExprEvalException("Unexpecte comparison result");
+            throw new ExprEvalException("Unexpected comparison result");
         }
     }
 
