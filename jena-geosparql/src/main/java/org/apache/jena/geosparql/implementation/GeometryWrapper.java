@@ -810,6 +810,25 @@ public class GeometryWrapper implements Serializable {
         return new GeometryWrapper(parsingGeo, xyGeo, srsInfo.getSrsURI(), geometryDatatypeURI, dimensionInfo);
     }
 
+    /** Polygon or MultiPolygon area defaulting to square metres. */
+    public double area() {
+        return area(Unit_URI.SQUARE_METRE_QUDT);
+    }
+
+    /**
+     * Returns Polygon or MultiPolygon area in the requested area unit.
+     *
+     * Empty and non-polygonal geometries return zero. Nonempty polygons require
+     * a non-geographic horizontal CRS with equivalent linear units on both axes.
+     *
+     * @param unitsURI URI of an explicit area unit.
+     * @throws org.apache.jena.geosparql.implementation.registry.UnitsURIException if the unit URI is unknown.
+     * @throws UnitsConversionException if the source CRS or target units are unsupported.
+     */
+    public double area(String unitsURI) {
+        return GeometryArea.calculate(this, unitsURI);
+    }
+
     /**
      * Returns the planar centroid in the source SRS and datatype. A result in a
      * three-dimensional CRS has {@code Z=0}; {@code Z} and {@code M} are ignored
