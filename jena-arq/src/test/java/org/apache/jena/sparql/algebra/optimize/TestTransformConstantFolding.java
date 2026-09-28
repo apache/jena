@@ -174,4 +174,9 @@ public class TestTransformConstantFolding {
     public void constant_fold_leftjoin_01() {
         test("(leftjoin (table unit) (table unit) (+ 1 2))", "(leftjoin (table unit) (table unit) (exprlist 3))", transform);
     }
+
+    @Test
+    public void constant_fold_math_beyond_limits() {
+        testNoTransform("(extend (?x (math:pow 2 2000000000)) (table unit))", transform);
+    }
 }

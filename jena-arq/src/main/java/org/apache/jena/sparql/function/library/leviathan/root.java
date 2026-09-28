@@ -23,6 +23,7 @@ package org.apache.jena.sparql.function.library.leviathan;
 
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase2;
+import org.apache.jena.sparql.function.MathLimits;
 
 public class root extends FunctionBase2 {
 
@@ -31,6 +32,7 @@ public class root extends FunctionBase2 {
         double value = v1.getDouble();
         double root = v2.getDouble();
 
+        MathLimits.preValidateExponentCalculation(value, 1d / root);
         return NodeValue.makeDouble(Math.pow(value, 1d / root));
     }
 
