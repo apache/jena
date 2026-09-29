@@ -810,20 +810,30 @@ public class GeometryWrapper implements Serializable {
         return new GeometryWrapper(parsingGeo, xyGeo, srsInfo.getSrsURI(), geometryDatatypeURI, dimensionInfo);
     }
 
-    /** Polygon or MultiPolygon area defaulting to square metres. */
+    /** Area of a {@link org.locationtech.jts.geom.Polygon}, defaulting to square metres. */
     public double area() {
         return area(Unit_URI.SQUARE_METRE_QUDT);
     }
 
     /**
-     * Returns Polygon or MultiPolygon area in the requested area unit.
+     * Returns the area of a {@link org.locationtech.jts.geom.Polygon} in the requested area unit.
      *
-     * Empty and non-polygonal geometries return zero. Nonempty polygons require
-     * a non-geographic horizontal CRS with equivalent linear units on both axes.
+     * <p>Polygon holes are subtracted. Lines have zero area even when their
+     * coordinates close to form a ring.
+     *
+     * <p>Empty geometries and types other than Polygon return zero, including
+     * collections containing polygons. Geographic polygon edges follow shortest
+     * geodesics on the source ellipsoid; their area is approximated with a local
+     * equal-area projection. The geographic CRS must be recognised and the
+     * geometry SRS transformation setting must be enabled. Polygons too large
+     * for a reliable local projection produce an error. Other nonempty polygons
+     * require a Cartesian horizontal CRS with equivalent linear units on both axes.
+     * Nonempty geometries with non-finite X/Y coordinates produce an error.
      *
      * @param unitsURI URI of an explicit area unit.
      * @throws org.apache.jena.geosparql.implementation.registry.UnitsURIException if the unit URI is unknown.
-     * @throws UnitsConversionException if the source CRS or target units are unsupported.
+     * @throws UnitsConversionException if the source CRS or target units are unsupported,
+     * or the geometry's X/Y coordinates or calculated area are non-finite.
      */
     public double area(String unitsURI) {
         return GeometryArea.calculate(this, unitsURI);

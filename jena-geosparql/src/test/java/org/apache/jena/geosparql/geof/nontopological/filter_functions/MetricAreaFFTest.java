@@ -23,8 +23,10 @@ package org.apache.jena.geosparql.geof.nontopological.filter_functions;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.jena.geosparql.configuration.GeoSPARQLConfig;
+import org.apache.jena.geosparql.implementation.datatype.GMLDatatype;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -50,17 +52,20 @@ public class MetricAreaFFTest {
     }
 
     @Test
-    public void nonPolygonalAndEmptyGeometriesReturnZero() {
-        for (String wkt : new String[] { "POINT (1 2)", PROJECTED + "POLYGON EMPTY" }) {
+    public void nonPolygonAndEmptyGeometriesReturnZero() {
+        for (String wkt : new String[] { "POINT (1 2)", PROJECTED + "POLYGON EMPTY",
+                PROJECTED + "MULTIPOLYGON(((0 0,2 0,2 2,0 2,0 0)))",
+                "GEOMETRYCOLLECTION(POLYGON((0 0,2 0,2 2,0 2,0 0)))" }) {
             assertEquals(NodeValue.makeDouble(0).asNode(), evaluate("'" + wkt + "'^^geo:wktLiteral"));
         }
     }
 
     @Test
-    public void geographicPolygonRaisesExpressionError() {
-        String wkt = "POLYGON ((0 0, 1 0, 1 1, 0 0))";
-        assertNull(evaluate("'" + wkt + "'^^geo:wktLiteral"));
-        assertThrows(ExprEvalException.class, () -> exec(NodeValue.makeNode(wkt, WKTDatatype.INSTANCE)));
+    public void geographicPolygonReturnsSquareMetres() {
+        String wkt = "POLYGON ((0 0, 1 0, 1 1, 0 1, 0 0))";
+        Node result = evaluate("'" + wkt + "'^^geo:wktLiteral");
+        double area = ((Number) result.getLiteralValue()).doubleValue();
+        assertTrue(area > 12_000_000_000.0 && area < 12_500_000_000.0);
     }
 
     @Test
@@ -87,6 +92,28 @@ public class MetricAreaFFTest {
                 NodeValue.makeNode(NodeFactory.createURI("urn:geometry")), NodeValue.makeNode("invalid", WKTDatatype.INSTANCE) }) {
             assertThrows(ExprEvalException.class, () -> exec(value));
         }
+    }
+
+    @Test
+    public void nonFiniteCoordinatesAndAreaRaiseExpressionErrors() {
+        for (String wkt : new String[] {
+                PROJECTED + "LINESTRING(0 0,1e309 1)",
+                PROJECTED + "POLYGON((0 0,1 0,1e309 1,0 1,0 0))",
+                PROJECTED + "POLYGON((0 0,1e200 0,1e200 1e200,0 1e200,0 0))" }) {
+            assertThrows(wkt, ExprEvalException.class,
+                    () -> function.exec(NodeValue.makeNode(wkt, WKTDatatype.INSTANCE)));
+            assertNull(wkt, evaluate("'" + wkt + "'^^geo:wktLiteral"));
+        }
+
+        String gml = """
+            <gml:Polygon xmlns:gml="http://www.opengis.net/gml/3.2"
+                srsName="http://www.opengis.net/def/crs/EPSG/0/27700">
+              <gml:exterior><gml:LinearRing><gml:posList>0 0 1 0 NaN 1 0 1 0 0</gml:posList></gml:LinearRing></gml:exterior>
+            </gml:Polygon>
+            """.replace("\n", " ");
+        assertThrows(ExprEvalException.class,
+                () -> function.exec(NodeValue.makeNode(gml, GMLDatatype.INSTANCE)));
+        assertNull(evaluate("'" + gml + "'^^geo:gmlLiteral"));
     }
 
     @Test
