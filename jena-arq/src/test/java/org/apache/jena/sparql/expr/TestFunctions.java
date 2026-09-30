@@ -34,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
 import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
@@ -85,6 +86,27 @@ public class TestFunctions
     @Test public void exprSprintf_10()      { test("afn:sprintf('this number is equal to %.5f', '1.23456789'^^xsd:double)",NodeValue.makeString("this number is equal to "+String.format("%.5f",1.23456789))); }
     @Test public void exprSprintf_11()      { test("afn:sprintf('%.0f != %s', '12.23456789'^^xsd:double,'15')",NodeValue.makeString("12 != 15")); }
     @Test public void exprSprintf_12()      { test("afn:sprintf('(%.0f,%s,%d) %4$tm %4$te,%4$tY', '12.23456789'^^xsd:double,'12',11,'2016-03-17'^^xsd:date)",NodeValue.makeString("(12,12,11) 03 17,2016")); }
+    @Test public void exprSprintf_13()      { test("afn:sprintf('%20d', 1)",NodeValue.makeString("                   1")); }
+    @Test public void exprSprintf_14()      { test("afn:sprintf('%020d', 1)",NodeValue.makeString("00000000000000000001")); }
+    @Test public void exprSprintf_15()      { test("afn:sprintf('%200d', 1)",NodeValue.makeString(StringUtils.repeat(' ', 199) + "1")); }
+
+    public static Stream<Arguments> badSprintf() {
+        return Stream.of(
+                Arguments.of("afn:sprintf('%2000000000d', 1)", "too large"),
+                Arguments.of("afn:sprintf('%1000d %1000d %1000d %1000d %1000d', 1, 2, 3, 4, 5)", "too large"),
+                Arguments.of("afn:sprintf('%f', 17)", "invalid format string")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("badSprintf")
+    public void exprSprintf_bad(String expr, String expectedMessage)    {
+        // Given and When
+        ExprEvalException e = testEvalException(expr);
+
+        // Then
+        assertTrue(Strings.CI.contains(e.getMessage(), expectedMessage));
+    }
 
     // Timezone tests
 

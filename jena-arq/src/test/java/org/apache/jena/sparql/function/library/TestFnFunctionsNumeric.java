@@ -62,7 +62,6 @@ public class TestFnFunctionsNumeric {
     // counter-intuitive -- would fail if float/double not translated to decimal
     @Test public void exprRoundHalfEven_08()    { test("fn:round-half-to-even('150.015'^^xsd:float, 2)",     NodeValue.makeFloat((float)150.01)); }
 
-
     public static Stream<Arguments> outOfRangeInputs() {
         return Stream.of(Arguments.of("math:pow(2,2000000000)"),
                          Arguments.of("math:pow(2000000000, 16)"),
