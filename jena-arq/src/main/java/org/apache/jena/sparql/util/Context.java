@@ -445,8 +445,9 @@ public class Context {
         return context;
     }
 
-    /** Set the current time in the context, overwriting any previous setting */
+    /** Set the current time in the context, overwriting any previous setting. */
     public static void setCurrentDateTime(Context context) {
+        //context.set(ARQConstants.sysCurrentTime, NodeFactoryExtra.nowUTC());
         context.set(ARQConstants.sysCurrentTime, NodeFactoryExtra.nowAsDateTime());
     }
 
