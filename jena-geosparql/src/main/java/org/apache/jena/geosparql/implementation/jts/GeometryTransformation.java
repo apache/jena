@@ -211,10 +211,10 @@ public class GeometryTransformation {
         for (int i = 0; i < size; i++) {
             Coordinate coord = coordSeq.getCoordinate(i);
             int j = i * targetDims;
-            x[i] = cleanUpPrecision(targetPts[j]);
-            y[i] = cleanUpPrecision(targetPts[j + 1]);
+            x[i] = cleanUpTransformedOrdinate(targetPts[j]);
+            y[i] = cleanUpTransformedOrdinate(targetPts[j + 1]);
             if (isZTransformed) {
-                z[i] = cleanUpPrecision(targetPts[j + 2]);
+                z[i] = cleanUpTransformedOrdinate(targetPts[j + 2]);
             } else {
                 if (coordSeq.hasZ()) {
                     z[i] = cleanUpPrecision(coord.getZ());
@@ -231,6 +231,13 @@ public class GeometryTransformation {
         }
 
         return new CustomCoordinateSequence(x, y, z, m);
+    }
+
+    private static double cleanUpTransformedOrdinate(double ordinate) throws TransformException {
+        if (!Double.isFinite(ordinate)) {
+            throw new TransformException("Non-finite transformed ordinate: " + ordinate);
+        }
+        return cleanUpPrecision(ordinate);
     }
 
 }
