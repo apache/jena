@@ -227,9 +227,15 @@ public class NodeFactoryExtra {
         return NodeFactory.createLiteralDT(lex, XSDDatatype.XSDtime) ;
     }
 
-    /** Now, as xsd:dateTime Node */
+    /** Now(), as xsd:dateTime Node */
     public static Node nowAsDateTime() {
         String lex = DateTimeUtils.nowAsXSDDateTimeString() ;
+        return NodeFactory.createLiteralDT(lex, XSDDatatype.XSDdateTime) ;
+    }
+
+    /** Now(), in UTC, as xsd:dateTime Node */
+    public static Node nowUTC() {
+        String lex = DateTimeUtils.nowUTC();
         return NodeFactory.createLiteralDT(lex, XSDDatatype.XSDdateTime) ;
     }
 
