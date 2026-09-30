@@ -74,6 +74,7 @@ public interface Geof {
     public static final String CENTROID_NAME = GEOF_URI + "centroid";
     public static final String CONVEXHULL_NAME = GEOF_URI + "convexHull";
     public static final String GETSRID_NAME = GEOF_URI + "getSRID";
+    public static final String TRANSFORM_NAME = GEOF_URI + "transform";
 
     public static final String AREA_NAME = GEOF_URI + "area";
     public static final String METRIC_AREA_NAME = GEOF_URI + "metricArea";
