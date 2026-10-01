@@ -25,29 +25,25 @@ import java.util.Collection ;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.sparql.util.VarUtils;
 
-/** Useful operations involving Var */
+/** 
+ * Useful operations involving Var
+ * @deprecated use {@link VarUtils}. 
+ */
+@Deprecated(forRemoval = true)
 public class Vars {
-    
-    public static void addVarsFromTriple(Collection<Var> acc, Triple t) {
-        addVar(acc, t.getSubject()) ;
-        addVar(acc, t.getPredicate()) ;
-        addVar(acc, t.getObject()) ;
+
+    public static void addVarsFromTriple(Collection<Var> acc, Triple triple) {
+        VarUtils.addVarsFromTriple(acc, triple);
     }
 
-    public static void addVarsFromQuad(Collection<Var> acc, Quad q) {
-        addVar(acc, q.getSubject()) ;
-        addVar(acc, q.getPredicate()) ;
-        addVar(acc, q.getObject()) ;
-        addVar(acc, q.getGraph()) ;
+    public static void addVarsFromQuad(Collection<Var> acc, Quad quad) {
+        VarUtils.addVarsFromQuad(acc, quad);
     }
 
     public static void addVar(Collection<Var> acc, Node n) {
-        if (n == null)
-            return ;
-
-        if (n.isVariable())
-            acc.add(Var.alloc(n)) ;
+        VarUtils.addVar(acc, n);
     }
 
 }

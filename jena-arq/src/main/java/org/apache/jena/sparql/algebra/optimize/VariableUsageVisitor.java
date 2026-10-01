@@ -28,28 +28,12 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.SortCondition;
 import org.apache.jena.sparql.algebra.OpVisitorBase;
-import org.apache.jena.sparql.algebra.op.OpAssign;
-import org.apache.jena.sparql.algebra.op.OpBGP;
-import org.apache.jena.sparql.algebra.op.OpDatasetNames;
-import org.apache.jena.sparql.algebra.op.OpExtend;
-import org.apache.jena.sparql.algebra.op.OpFilter;
-import org.apache.jena.sparql.algebra.op.OpGraph;
-import org.apache.jena.sparql.algebra.op.OpGroup;
-import org.apache.jena.sparql.algebra.op.OpLeftJoin;
-import org.apache.jena.sparql.algebra.op.OpOrder;
-import org.apache.jena.sparql.algebra.op.OpPath;
-import org.apache.jena.sparql.algebra.op.OpProject;
-import org.apache.jena.sparql.algebra.op.OpPropFunc;
-import org.apache.jena.sparql.algebra.op.OpQuadBlock;
-import org.apache.jena.sparql.algebra.op.OpQuadPattern;
-import org.apache.jena.sparql.algebra.op.OpTable;
-import org.apache.jena.sparql.algebra.op.OpTopN;
-import org.apache.jena.sparql.algebra.op.OpUnfold;
+import org.apache.jena.sparql.algebra.op.*;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.core.Vars;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprVars;
+import org.apache.jena.sparql.util.VarUtils;
 
 /**
  * A visitor which tracks variable usage
@@ -73,7 +57,7 @@ public abstract class VariableUsageVisitor extends OpVisitorBase {
     public void visit(OpBGP opBGP) {
         Collection<Var> vars = new ArrayList<>();
         for (Triple t : opBGP.getPattern().getList()) {
-            Vars.addVarsFromTriple(vars, t);
+            VarUtils.addVarsFromTriple(vars, t);
         }
         action(vars);
     }
@@ -82,7 +66,7 @@ public abstract class VariableUsageVisitor extends OpVisitorBase {
     public void visit(OpQuadPattern quadPattern) {
         Collection<Var> vars = new ArrayList<>();
         for (Quad q : quadPattern.getPattern().getList()) {
-            Vars.addVarsFromQuad(vars, q);
+            VarUtils.addVarsFromQuad(vars, q);
         }
         action(vars);
     }
@@ -91,7 +75,7 @@ public abstract class VariableUsageVisitor extends OpVisitorBase {
     public void visit(OpQuadBlock quadBlock) {
         Collection<Var> vars = new ArrayList<>();
         for (Quad q : quadBlock.getPattern().getList()) {
-            Vars.addVarsFromQuad(vars, q);
+            VarUtils.addVarsFromQuad(vars, q);
         }
         action(vars);
     }
