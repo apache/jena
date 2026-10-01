@@ -20,6 +20,7 @@
  */
 package org.apache.jena.geosparql.implementation.function_registration;
 
+import org.apache.jena.geosparql.geof.nontopological.filter_functions.AreaFF;
 import org.apache.jena.geosparql.geof.nontopological.filter_functions.AsGeoJSONFF;
 import org.apache.jena.geosparql.geof.nontopological.filter_functions.BoundaryFF;
 import org.apache.jena.geosparql.geof.nontopological.filter_functions.BufferFF;
@@ -30,6 +31,7 @@ import org.apache.jena.geosparql.geof.nontopological.filter_functions.DistanceFF
 import org.apache.jena.geosparql.geof.nontopological.filter_functions.EnvelopFF;
 import org.apache.jena.geosparql.geof.nontopological.filter_functions.GetSRIDFF;
 import org.apache.jena.geosparql.geof.nontopological.filter_functions.IntersectionFF;
+import org.apache.jena.geosparql.geof.nontopological.filter_functions.MetricAreaFF;
 import org.apache.jena.geosparql.geof.nontopological.filter_functions.SymmetricDifferenceFF;
 import org.apache.jena.geosparql.geof.nontopological.filter_functions.UnionFF;
 import org.apache.jena.geosparql.implementation.vocabulary.Geof;
@@ -62,6 +64,8 @@ public class NonTopological {
         registry.put(Geof.INTERSECTION_NAME, IntersectionFF.class);
         registry.put(Geof.SYMDIFFERENCE_NAME, SymmetricDifferenceFF.class);
         registry.put(Geof.UNION_NAME, UnionFF.class);
+        registry.put(Geof.AREA_NAME, AreaFF.class);
+        registry.put(Geof.METRIC_AREA_NAME, MetricAreaFF.class);
         registry.put(Geof.AS_GEOJSON, AsGeoJSONFF.class);
     }
 }

@@ -810,6 +810,35 @@ public class GeometryWrapper implements Serializable {
         return new GeometryWrapper(parsingGeo, xyGeo, srsInfo.getSrsURI(), geometryDatatypeURI, dimensionInfo);
     }
 
+    /** Area of a {@link org.locationtech.jts.geom.Polygon}, defaulting to square metres. */
+    public double area() {
+        return area(Unit_URI.SQUARE_METRE_QUDT);
+    }
+
+    /**
+     * Returns the area of a {@link org.locationtech.jts.geom.Polygon} in the requested area unit.
+     *
+     * <p>Polygon holes are subtracted. Lines have zero area even when their
+     * coordinates close to form a ring.
+     *
+     * <p>Empty geometries and types other than Polygon return zero, including
+     * collections containing polygons. Geographic polygon edges follow shortest
+     * geodesics on the source ellipsoid; their area is approximated with a local
+     * equal-area projection. The geographic CRS must be recognised and the
+     * geometry SRS transformation setting must be enabled. Polygons too large
+     * for a reliable local projection produce an error. Other nonempty polygons
+     * require a Cartesian horizontal CRS with equivalent linear units on both axes.
+     * Nonempty geometries with non-finite X/Y coordinates produce an error.
+     *
+     * @param unitsURI URI of an explicit area unit.
+     * @throws org.apache.jena.geosparql.implementation.registry.UnitsURIException if the unit URI is unknown.
+     * @throws UnitsConversionException if the source CRS or target units are unsupported,
+     * or the geometry's X/Y coordinates or calculated area are non-finite.
+     */
+    public double area(String unitsURI) {
+        return GeometryArea.calculate(this, unitsURI);
+    }
+
     /**
      * Returns the planar centroid in the source SRS and datatype. A result in a
      * three-dimensional CRS has {@code Z=0}; {@code Z} and {@code M} are ignored
