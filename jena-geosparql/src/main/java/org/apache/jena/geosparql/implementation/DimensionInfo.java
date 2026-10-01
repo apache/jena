@@ -97,9 +97,8 @@ public class DimensionInfo implements Serializable {
 
     /**
      * Finds dimension metadata from coordinate sequences, preserving Z/M layouts
-     * even when the sequence is empty. Collections use their first member's
-     * layout, layout retained on an empty aggregate, or the fallback when they
-     * have no members.
+     * even when the sequence is empty. Collections use their retained layout
+     * when present, otherwise their first member's layout or the fallback.
      */
     public static DimensionInfo find(Geometry geometry, CoordinateSequenceDimensions fallback) {
         CoordinateSequence sequence = null;
@@ -109,11 +108,11 @@ public class DimensionInfo implements Serializable {
             sequence = line.getCoordinateSequence();
         } else if (geometry instanceof Polygon polygon) {
             sequence = polygon.getExteriorRing().getCoordinateSequence();
+        } else if (geometry.getUserData() instanceof CoordinateSequenceDimensions retained) {
+            // WKTReader stores the aggregate's declared layout here.
+            fallback = retained;
         } else if (geometry instanceof GeometryCollection collection && collection.getNumGeometries() > 0) {
             fallback = find(collection.getGeometryN(0), fallback).getDimensions();
-        } else if (geometry.getUserData() instanceof CoordinateSequenceDimensions retained) {
-            // WKTReader stores parsed layout here; empty aggregates have no sequence.
-            fallback = retained;
         }
         CoordinateSequenceDimensions dimensions = sequence == null ? fallback
             : findCoordinateSequenceDimensions(sequence.getDimension(), sequence.getDimension() - sequence.getMeasures());
