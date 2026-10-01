@@ -26,7 +26,8 @@ import org.junit.platform.suite.api.Suite;
 
 @Suite
 @SelectClasses({
-    TestNodeUtils.class
+    TestNodeUtils.class,
+    TestVarUtils.class
 })
 
 public class TS_UtilsARQ {}
