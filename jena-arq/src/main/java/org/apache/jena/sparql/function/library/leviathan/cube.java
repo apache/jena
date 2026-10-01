@@ -27,6 +27,7 @@ import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
 import org.apache.jena.sparql.function.FunctionBase1;
+import org.apache.jena.sparql.function.MathLimits;
 
 public class cube extends FunctionBase1 {
 
@@ -36,13 +37,15 @@ public class cube extends FunctionBase1 {
         {
             case OP_INTEGER:
                 BigInteger i = v.getInteger();
+                MathLimits.preValidateExponentCalculation(i, BigInteger.valueOf(3));
                 return NodeValue.makeInteger( i.pow(3) );
             case OP_DECIMAL:
                 double dec = v.getDecimal().doubleValue();
+                MathLimits.preValidateExponentCalculation(dec, 3d);
                 return NodeValue.makeDecimal( Math.pow(dec, 3d));
             case OP_FLOAT:
-                // TODO Should cubing a float keep it a float?
             case OP_DOUBLE:
+                MathLimits.preValidateExponentCalculation(v.getDouble(), 3d);
                 return NodeValue.makeDouble( Math.pow(v.getDouble(), 3d) );
             default:
                 throw new ARQInternalErrorException("Unrecognized numeric operation : "+v);

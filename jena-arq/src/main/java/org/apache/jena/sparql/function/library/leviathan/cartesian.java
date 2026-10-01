@@ -29,6 +29,7 @@ import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.ExprList;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionBase;
+import org.apache.jena.sparql.function.MathLimits;
 
 public class cartesian extends FunctionBase {
 
@@ -42,6 +43,8 @@ public class cartesian extends FunctionBase {
             double dX = args.get(0).getDouble() - args.get(2).getDouble();
             double dY = args.get(1).getDouble() - args.get(3).getDouble();
 
+            MathLimits.preValidateExponentCalculation(dX, 2);
+            MathLimits.preValidateExponentCalculation(dY, 2);
             return NodeValue.makeDouble(Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2)));
         }
         case 6: {
@@ -49,6 +52,9 @@ public class cartesian extends FunctionBase {
             double dY = args.get(1).getDouble() - args.get(4).getDouble();
             double dZ = args.get(2).getDouble() - args.get(5).getDouble();
 
+            MathLimits.preValidateExponentCalculation(dX, 2);
+            MathLimits.preValidateExponentCalculation(dY, 2);
+            MathLimits.preValidateExponentCalculation(dZ, 2);
             return NodeValue.makeDouble(Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2) + Math.pow(dZ, 2)));
         }
         default:

@@ -21,20 +21,40 @@
 
 package org.apache.jena.sparql.expr;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
+import org.apache.jena.atlas.lib.DateTimeUtils;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.sparql.engine.Timeouts;
+import org.apache.jena.sparql.function.FunctionEnv;
+import org.apache.jena.sparql.function.FunctionEnvBase;
+import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.NodeFactoryExtra;
+import org.apache.jena.vocabulary.XSD;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.util.ExprUtils;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestFunctions
 {
@@ -66,6 +86,27 @@ public class TestFunctions
     @Test public void exprSprintf_10()      { test("afn:sprintf('this number is equal to %.5f', '1.23456789'^^xsd:double)",NodeValue.makeString("this number is equal to "+String.format("%.5f",1.23456789))); }
     @Test public void exprSprintf_11()      { test("afn:sprintf('%.0f != %s', '12.23456789'^^xsd:double,'15')",NodeValue.makeString("12 != 15")); }
     @Test public void exprSprintf_12()      { test("afn:sprintf('(%.0f,%s,%d) %4$tm %4$te,%4$tY', '12.23456789'^^xsd:double,'12',11,'2016-03-17'^^xsd:date)",NodeValue.makeString("(12,12,11) 03 17,2016")); }
+    @Test public void exprSprintf_13()      { test("afn:sprintf('%20d', 1)",NodeValue.makeString("                   1")); }
+    @Test public void exprSprintf_14()      { test("afn:sprintf('%020d', 1)",NodeValue.makeString("00000000000000000001")); }
+    @Test public void exprSprintf_15()      { test("afn:sprintf('%200d', 1)",NodeValue.makeString(StringUtils.repeat(' ', 199) + "1")); }
+
+    public static Stream<Arguments> badSprintf() {
+        return Stream.of(
+                Arguments.of("afn:sprintf('%2000000000d', 1)", "too large"),
+                Arguments.of("afn:sprintf('%1000d %1000d %1000d %1000d %1000d', 1, 2, 3, 4, 5)", "too large"),
+                Arguments.of("afn:sprintf('%f', 17)", "invalid format string")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("badSprintf")
+    public void exprSprintf_bad(String expr, String expectedMessage)    {
+        // Given and When
+        ExprEvalException e = testEvalException(expr);
+
+        // Then
+        assertTrue(Strings.CI.contains(e.getMessage(), expectedMessage));
+    }
 
     // Timezone tests
 
@@ -129,6 +170,116 @@ public class TestFunctions
 
     @Test public void localDateTime_3() { test("afn:nowtz() = NOW()", NodeValue.TRUE); }
 
+    @Test
+    public void wait_1() {
+        test("afn:wait(100)", NodeValue.TRUE);
+    }
+
+    @Test
+    public void givenQueryTimeout_whenWaitExceedsInitialTimeout_thenEvalException() {
+        // Given
+        Context context = new Context();
+        Context.setCurrentDateTimeIfUndef(context);
+        Timeouts.setQueryTimeout(context, new Timeouts.Timeout(Timeouts.DurationWithUnit.of(100, TimeUnit.MILLISECONDS), Timeouts.DurationWithUnit.UNSET));
+        FunctionEnv env = new FunctionEnvBase(context);
+
+        // When
+        Expr expr = ExprUtils.parse("afn:wait(1000)");
+
+        // Then
+        ExprEvalException e = assertThrows(ExprEvalException.class, () -> expr.eval(null, env));
+        assertTrue(Strings.CI.contains(e.getMessage(), "longer than the query timeout"));
+    }
+
+    @Test
+    public void givenQueryTimeout_whenWaitExceedsOverallTimeout_thenEvalException() {
+        // Given
+        Context context = new Context();
+        Context.setCurrentDateTimeIfUndef(context);
+        Timeouts.setQueryTimeout(context, new Timeouts.Timeout(Timeouts.DurationWithUnit.UNSET, Timeouts.DurationWithUnit.of(100, TimeUnit.MILLISECONDS)));
+        FunctionEnv env = new FunctionEnvBase(context);
+
+        // When
+        Expr expr = ExprUtils.parse("afn:wait(1000)");
+
+        // Then
+        ExprEvalException e = assertThrows(ExprEvalException.class, () -> expr.eval(null, env));
+        assertTrue(Strings.CI.contains(e.getMessage(), "longer than the query timeout"));
+    }
+
+    @Test
+    public void givenQueryTimeout_whenWaitPlusElapsedExceedsOverallTimeout_thenEvalException() {
+        // Given
+        Context context = new Context();
+        context.set(ARQConstants.sysCurrentTime, NodeFactory.createLiteralDT(DateTimeUtils.asXSDDateTimeString(
+                ZonedDateTime.now().minus(4500, ChronoUnit.MILLIS)), XSDDatatype.XSDdateTime));
+        Timeouts.setQueryTimeout(context, new Timeouts.Timeout(Timeouts.DurationWithUnit.UNSET, Timeouts.DurationWithUnit.of(5, TimeUnit.SECONDS)));
+        FunctionEnv env = new FunctionEnvBase(context);
+
+        // When
+        Expr expr = ExprUtils.parse("afn:wait(1000)");
+
+        // Then
+        ExprEvalException e = assertThrows(ExprEvalException.class, () -> expr.eval(null, env));
+        assertTrue(Strings.CI.contains(e.getMessage(), "wait would exceed query timeout"));
+    }
+
+    @Test
+    public void givenQueryTimeout_whenWaitsEventuallyExceedRemainingTimeout_thenEvalException() {
+        // Given
+        Context context = new Context();
+        Context.setCurrentDateTimeIfUndef(context);
+        Timeouts.setQueryTimeout(context, new Timeouts.Timeout(Timeouts.DurationWithUnit.UNSET, Timeouts.DurationWithUnit.of(5, TimeUnit.SECONDS)));
+        FunctionEnv env = new FunctionEnvBase(context);
+
+        // When
+        Expr expr = ExprUtils.parse("afn:wait(1000)");
+
+        // Then
+        Awaitility.await("Repeatedly evaluating afn:wait should eventually throw ExprEvalException")
+                          .atMost(Duration.ofMillis(5500))
+                          .pollInterval(Duration.ZERO)
+                          .untilAsserted(() -> {
+                              ExprEvalException e = assertThrows(ExprEvalException.class, () -> expr.eval(null, env));
+                              assertTrue(Strings.CI.contains(e.getMessage(), "wait would exceed query timeout"));
+                          });
+    }
+
+    @Test
+    public void givenQueryCancelled_whenWait_thenEvalException() {
+        // Given
+        Context context = new Context();
+        Context.setCurrentDateTimeIfUndef(context);
+        Context.getOrSetCancelSignal(context).set(true);
+        FunctionEnv env = new FunctionEnvBase(context);
+
+        // When
+        Expr expr = ExprUtils.parse("afn:wait(10)");
+
+        // Then
+        ExprEvalException e = assertThrows(ExprEvalException.class, () -> expr.eval(null, env));
+        assertTrue(Strings.CI.contains(e.getMessage(), "query is cancelled"));
+    }
+
+    public static Stream<Arguments> badWaits() {
+        return Stream.of(Arguments.of("2.0e16", "not an integer"),
+                         Arguments.of("false", "not an integer"),
+                         Arguments.of("60000", "too large"),
+                         Arguments.of("-1", "zero/negative"),
+                         Arguments.of("?x", "not bound")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("badWaits")
+    public void wait_bad(String waitArg, String expectedMessage) {
+        // Given and When
+        ExprEvalException e = testEvalException("afn:wait(" + waitArg  +")");
+
+        // Then
+        assertTrue(Strings.CI.contains(e.getMessage(), expectedMessage));
+    }
+
     private void test(String exprStr, NodeValue result) {
         Expr expr = ExprUtils.parse(exprStr);
         NodeValue r = expr.eval(null, LibTestExpr.createTest());
@@ -147,12 +298,15 @@ public class TestFunctions
         test(exprStr, rExpected);
     }
 
-    private void testEvalException(String exprStr) {
+    private ExprEvalException testEvalException(String exprStr) {
         Expr expr = ExprUtils.parse(exprStr);
         try {
             NodeValue r = expr.eval(null, LibTestExpr.createTest());
             fail("No exception raised");
+            return null;
         }
-        catch (ExprEvalException ex) {}
+        catch (ExprEvalException ex) {
+            return ex;
+        }
     }
 }

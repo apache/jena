@@ -22,11 +22,18 @@
 package org.apache.jena.sparql.function.library;
 
 import static org.apache.jena.sparql.expr.LibTestExpr.test;
+import static org.apache.jena.sparql.expr.LibTestExpr.testError;
 
+import org.apache.jena.sparql.expr.ExprEvalException;
 import org.junit.jupiter.api.Test;
 
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sys.JenaSystem;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 public class TestFnFunctionsNumeric {
 
@@ -54,4 +61,19 @@ public class TestFnFunctionsNumeric {
     @Test public void exprRoundHalfEven_07()    { test("fn:round-half-to-even(35612.25, -2)",     NodeValue.makeDecimal(35600)); }
     // counter-intuitive -- would fail if float/double not translated to decimal
     @Test public void exprRoundHalfEven_08()    { test("fn:round-half-to-even('150.015'^^xsd:float, 2)",     NodeValue.makeFloat((float)150.01)); }
+
+    public static Stream<Arguments> outOfRangeInputs() {
+        return Stream.of(Arguments.of("math:pow(2,2000000000)"),
+                         Arguments.of("math:pow(2000000000, 16)"),
+                         Arguments.of("math:pow(100,100)"),
+                         Arguments.of("math:pow(2, 2.0e16)"),
+                         Arguments.of("math:exp10(2000000000)"),
+                         Arguments.of("math:exp(2000000000)"));
+    }
+
+    @ParameterizedTest
+    @MethodSource("outOfRangeInputs")
+    public void givenOutOfRangeInputsInExpr_whenExecuting_thenError(String expr) {
+        testError(expr, ExprEvalException.class);
+    }
 }

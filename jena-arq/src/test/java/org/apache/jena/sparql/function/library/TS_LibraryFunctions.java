@@ -38,6 +38,7 @@ import org.apache.jena.sparql.expr.NodeValue;
     , TestFnFunctionsOther.class
     , TestFnFunctionsFormat.class
     , TestFnFunctionsCollation.class
+    , TestMathLimits.class
 })
 public class TS_LibraryFunctions {
     // Expected warnings off.

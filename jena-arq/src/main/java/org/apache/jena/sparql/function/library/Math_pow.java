@@ -27,6 +27,7 @@ import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
 import org.apache.jena.sparql.function.FunctionBase2;
+import org.apache.jena.sparql.function.MathLimits;
 
 // math:pow($x as xs:double?, $y as xs:numeric) as xs:double?
 //    except pow(integer,+ve integer) is an integer 
@@ -34,13 +35,14 @@ public class Math_pow extends FunctionBase2 {
 
     @Override
     public NodeValue exec(NodeValue v1, NodeValue v2) {
-        switch (XSDFuncOp.classifyNumeric("pow", v1, v2))
-        {
+        switch (XSDFuncOp.classifyNumeric("pow", v1, v2)) {
             case OP_INTEGER:
                 BigInteger x = v1.getInteger();
                 int y = v2.getInteger().intValue();
-                if ( y >= 0 )
-                    return NodeValue.makeInteger( x.pow(y));
+                if (y >= 0) {
+                    MathLimits.preValidateExponentCalculation(x, v2.getInteger());
+                    return NodeValue.makeInteger(x.pow(y));
+                }
                 // Anything else -> double
                 //$FALL-THROUGH$
             case OP_DECIMAL:
@@ -48,15 +50,17 @@ public class Math_pow extends FunctionBase2 {
             case OP_DOUBLE:
                 double d1 = v1.getDouble();
                 double d2 = v2.getDouble();
-                if ( d1 == 1 && d2 == Double.POSITIVE_INFINITY ) {
-                    if ( v1.isInteger() )
+                if (d1 == 1 && d2 == Double.POSITIVE_INFINITY) {
+                    if (v1.isInteger()) {
                         return NodeValue.nvONE;
-                    else
+                    } else {
                         return NodeValue.makeDouble(1);
+                    }
                 }
-                return NodeValue.makeDouble( Math.pow(v1.getDouble(), v2.getDouble()) );
+                MathLimits.preValidateExponentCalculation(d1, d2);
+                return NodeValue.makeDouble(Math.pow(v1.getDouble(), v2.getDouble()));
             default:
-                throw new ARQInternalErrorException("Unrecognized numeric operation : "+ v1);
+                throw new ARQInternalErrorException("Unrecognized numeric operation : " + v1);
         }
     }
 
