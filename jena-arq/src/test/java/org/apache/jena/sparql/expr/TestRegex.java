@@ -27,10 +27,12 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -115,5 +117,21 @@ public class TestRegex
         assertThrows(ExprEvalException.class, ()->
             regexTest("ABC", "abc", "u", false)
                 );
+    }
+
+
+    public static Stream<Arguments> backtrackingRegex() {
+        return Stream.of(
+                Arguments.of("1,2,3,4,5,6,7,8,9,10,11,12,13", "^(.*?,){11}P", "m", false),
+                        Arguments.of(Strings.repeat("a", 4096) + "!", "(a+)+$", "m", false),
+                        Arguments.of(Strings.repeat("a", 32 * 1024) + "!", "(a+)+$", "m", false)
+                );
+    }
+
+    @ParameterizedTest(name = "{1}")
+    @MethodSource("backtrackingRegex")
+    public void givenBacktrackingRegex_whenEvaluatingRegex_thenOk(String input, String pattern, String flags, boolean shouldMatch) {
+        // Given, When and Then
+        regexTest(input, pattern, flags, shouldMatch);
     }
 }
