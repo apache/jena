@@ -25,13 +25,17 @@ import org.apache.jena.geosparql.implementation.parsers.wkt.WKTReader;
 import org.apache.jena.geosparql.implementation.registry.MathTransformRegistry;
 import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
 import org.apache.sis.referencing.CRS;
+import org.apache.sis.referencing.operation.matrix.Matrices;
+import org.apache.sis.referencing.operation.transform.MathTransforms;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Coordinate;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
@@ -107,6 +111,61 @@ public class GeometryTransformTest {
         //
         //
         assertEquals(expResult, result);
+    }
+
+    @Test
+    public void testTransformRejectsNonFiniteOrdinates() {
+        Geometry sourceGeometry = WKTReader.extract("LINESTRING Z(1 2 3, 4 5 6)").getGeometry();
+        for (double value : new double[] { Double.NaN, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY }) {
+            for (int ordinate = 0; ordinate < 3; ordinate++) {
+                double[] translation = new double[3];
+                translation[ordinate] = value;
+                MathTransform transform = MathTransforms.translation(translation);
+                assertThrows("Ordinate " + ordinate + ": " + value, TransformException.class,
+                        () -> GeometryTransformation.transform(sourceGeometry, transform));
+            }
+        }
+    }
+
+    @Test
+    public void testTransform2DPreservesZM() throws TransformException {
+        Geometry sourceGeometry = WKTReader.extract("POINT ZM(1 2 3 4)").getGeometry();
+        Geometry result = GeometryTransformation.transform(sourceGeometry, MathTransforms.translation(10, 20));
+        Coordinate coordinate = result.getCoordinate();
+        assertEquals(11, coordinate.getX(), 0);
+        assertEquals(22, coordinate.getY(), 0);
+        assertEquals(3, coordinate.getZ(), 0);
+        assertEquals(4, coordinate.getM(), 0);
+    }
+
+    @Test
+    public void testTransform3DPreservesM() throws TransformException {
+        Geometry sourceGeometry = WKTReader.extract("POINT ZM(1 2 3 4)").getGeometry();
+        Geometry result = GeometryTransformation.transform(sourceGeometry, MathTransforms.translation(10, 20, 30));
+        Coordinate coordinate = result.getCoordinate();
+        assertEquals(11, coordinate.getX(), 0);
+        assertEquals(22, coordinate.getY(), 0);
+        assertEquals(33, coordinate.getZ(), 0);
+        assertEquals(4, coordinate.getM(), 0);
+    }
+
+    @Test
+    public void testTransform2DTo3DIgnoresUnusedNaNAndPreservesZM() throws TransformException {
+        Geometry sourceGeometry = WKTReader.extract("POINT ZM(1 2 3 4)").getGeometry();
+        MathTransform transform = MathTransforms.linear(Matrices.create(4, 3, new double[] {
+                1, 0, 10,
+                0, 1, 20,
+                0, 0, Double.NaN,
+                0, 0, 1
+        }));
+        assertEquals(2, transform.getSourceDimensions());
+        assertEquals(3, transform.getTargetDimensions());
+        Geometry result = GeometryTransformation.transform(sourceGeometry, transform);
+        Coordinate coordinate = result.getCoordinate();
+        assertEquals(11, coordinate.getX(), 0);
+        assertEquals(22, coordinate.getY(), 0);
+        assertEquals(3, coordinate.getZ(), 0);
+        assertEquals(4, coordinate.getM(), 0);
     }
 
     //TODO - additional tests
