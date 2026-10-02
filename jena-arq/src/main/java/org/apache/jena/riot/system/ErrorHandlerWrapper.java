@@ -19,32 +19,35 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.sparql.core;
+package org.apache.jena.riot.system;
 
-import java.util.Collection ;
-
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.util.VarUtils;
-
-/** 
- * Useful operations involving Var
- * @deprecated use {@link VarUtils}. 
+/**
+ * An error handler that direct method calls to another error handler.
+ * <p>
+ * This can be used add functional or monitoring to an existing error handler.
  */
-@Deprecated(forRemoval = true)
-public class Vars {
-
-    public static void addVarsFromTriple(Collection<Var> acc, Triple triple) {
-        VarUtils.addVarsFromTriple(acc, triple);
+public class ErrorHandlerWrapper implements ErrorHandler {
+    private final ErrorHandler other;
+    public ErrorHandler get() {
+        return other;
     }
 
-    public static void addVarsFromQuad(Collection<Var> acc, Quad quad) {
-        VarUtils.addVarsFromQuad(acc, quad);
+    public ErrorHandlerWrapper(ErrorHandler other) {
+        this.other = other;
     }
 
-    public static void addVar(Collection<Var> acc, Node n) {
-        VarUtils.addVar(acc, n);
+    @Override
+    public void warning(String message, long line, long col) {
+        get().warning(message, line, col);
     }
 
+    @Override
+    public void error(String message, long line, long col) {
+        get().error(message, line, col);
+    }
+
+    @Override
+    public void fatal(String message, long line, long col) {
+        get().fatal(message, line, col);
+    }
 }
-

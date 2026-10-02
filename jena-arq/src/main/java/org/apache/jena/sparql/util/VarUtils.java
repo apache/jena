@@ -52,13 +52,14 @@ public class VarUtils {
 
     public static void addVarsFromTriplePath(Collection<Var> acc, TriplePath tpath) {
         addVar(acc, tpath.getSubject());
+        if ( tpath.isTriple() )
+            addVar(acc, tpath.getPredicate());
         addVar(acc, tpath.getObject());
     }
 
     public static void addVar(Collection<Var> acc, Node n) {
         if ( n == null )
             return;
-
         if ( n.isVariable() )
             acc.add(Var.alloc(n));
         else if ( n.isTripleTerm() ) {

@@ -23,7 +23,7 @@ There is also a package of libraries for offline installation.
 
 ## Source
 
-Building Jena requires a Java8 JDK, Maven 3, and a network connection.
+Building Jena requires a Java 21 JDK, Maven, and a network connection.
 
 ### Obtain the source
 

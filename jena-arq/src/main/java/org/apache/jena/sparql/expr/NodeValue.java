@@ -461,19 +461,24 @@ public abstract class NodeValue extends ExprNode
     // ----------------------------------------------------------------
     // ---- Node operations
 
-    public static Node toNode(NodeValue nv)
-    {
+    /**
+     * Return the RDFterm for the NodeValue; return null for a null argument.
+     */
+    public static Node toNode(NodeValue nv) {
         if ( nv == null )
             return null;
         return nv.asNode();
     }
 
-    public final Node asNode()
-    {
+    /**
+     * Return the RDFterm for the NodeValue; create the node if necessary.
+     */
+    public final Node asNode() {
         if ( node == null )
             node = makeNode();
         return node;
     }
+
     protected abstract Node makeNode();
 
     /** getNode - return the node form - may be null (use .asNode() to force to a node) */

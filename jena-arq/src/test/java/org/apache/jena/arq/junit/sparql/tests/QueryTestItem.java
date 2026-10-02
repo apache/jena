@@ -34,6 +34,7 @@ import org.apache.jena.query.ResultSetFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.out.NodeFmtLib;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.sparql.resultset.SPARQLResult;
 import org.apache.jena.sparql.vocabulary.TestManifestX;
@@ -64,11 +65,11 @@ public class QueryTestItem
 
     private final String       name;
 
-    private boolean      buildLuceneIndex = false;
+    private boolean            buildLuceneIndex = false;
     private final String       resultFile;
-    private final String       comment;
-    private List<String> defaultGraphURIs;
-    private List<String> namedGraphURIs;
+    private final List<String> comments;
+    private List<String>       defaultGraphURIs;
+    private List<String>       namedGraphURIs;
     private final Node         testType;
     private final String       queryFile;
 
@@ -98,7 +99,7 @@ public class QueryTestItem
         testType = _testType;
 
         resultFile = _getResultFile();
-        comment = _getComment();
+        comments = _getComments();
 
         defaultGraphURIs = _getDefaultGraphURIs();
         namedGraphURIs = _getNamedGraphsURIs();
@@ -165,8 +166,8 @@ public class QueryTestItem
         return fakeURI();
     }
 
-    public String getComment() {
-        return comment;
+    public List<String> getComments() {
+        return comments;
     }
 
     public ManifestEntry getManifestEntry() {
@@ -206,11 +207,11 @@ public class QueryTestItem
         return SparqlTestLib.getStringOrURI(x, "result file");
     }
 
-    private String _getComment() {
-        Node c = G.getZeroOrOneSP(graph, testResource, RDFS.Nodes.comment);
-        if ( c == null )
+    private List<String> _getComments() {
+        List<Node> comments = G.listSP(graph, testResource, RDFS.Nodes.comment);
+        if ( comments.isEmpty() )
             return null;
-        return c.getLiteralLexicalForm();
+        return comments.stream().map(n->n.isLiteral() ? n.getLiteralLexicalForm() : NodeFmtLib.displayStr(n)).toList();
     }
 
     // ----------------------------------------------------
@@ -272,11 +273,9 @@ public class QueryTestItem
         StringBuilder sbuff = new StringBuilder();
         String name = getName();
         // String actionStr = FmtUtils.stringForRDFNode(_getAction());
-
         sbuff.append("Name: " + name);
-
-        if ( getComment() != null )
-            sbuff.append("    Comment: " + getComment());
+        if ( getComments() != null )
+            getComments().forEach(str->sbuff.append("    Comment: " + str));
         return sbuff.toString();
     }
 }
