@@ -302,4 +302,32 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
         assertFalse(query.isReduced());
     }
 
+    @Test
+    public void testAddOptionalNestedSelectBuilder() {
+        Var uriVar = Var.alloc("uri");
+        Var siteAddressVar = Var.alloc("siteAddress");
+        Var cityVar = Var.alloc("city");
+
+        SelectBuilder select = new SelectBuilder();
+        select.addVar(uriVar);
+
+        SelectBuilder selectOptional = new SelectBuilder();
+        selectOptional.addVar(uriVar).addVar(cityVar);
+        selectOptional.addWhere("?uri", "<http://www.w3.org/ns/org#siteAddress>", "?siteAddress");
+        selectOptional.addWhere("?siteAddress", "<http://www.w3.org/2006/vcard/ns#locality>", "?city");
+
+        select.addOptional(selectOptional);
+
+        String query = select.buildString();
+        assertContainsRegex(SELECT + var("uri") + SPACE + WHERE + OPEN_CURLY + OPTIONAL, query);
+        assertContainsRegex(
+                OPTIONAL + OPEN_CURLY + SELECT + var("uri") + SPACE + var("city") + SPACE + WHERE + OPEN_CURLY
+                        + var("uri") + SPACE + uri("http://www.w3.org/ns/org#siteAddress") + SPACE + var("siteAddress"),
+                query);
+        assertContainsRegex(
+                var("siteAddress") + SPACE + uri("http://www.w3.org/2006/vcard/ns#locality") + SPACE + var("city"),
+                query);
+    }
+
+
 }
