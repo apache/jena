@@ -766,7 +766,8 @@ public class QueryExecHTTP implements QueryExec {
                 // as HTTP client will consume the remaining response so it can re-use the
                 // connection. If we're closing when we're not at the end of the stream then
                 // issue a warning to the logs
-                if (retainedConnection.read() != -1)
+                // Do not start another potentially blocking read after cancellation.
+                if (!isAborted && retainedConnection.read() != -1)
                     Log.warn(this, "HTTP response not fully consumed, if HTTP Client is reusing connections (its default behaviour) then it will consume the remaining response data which may take a long time and cause this application to become unresponsive");
                 retainedConnection.close();
             } catch (RuntimeIOException | java.io.IOException e) {
