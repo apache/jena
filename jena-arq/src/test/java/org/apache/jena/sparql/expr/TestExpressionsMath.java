@@ -73,6 +73,14 @@ public class TestExpressionsMath
     @Test public void pow_15()          { testDoubleIsNaN("math:pow('NaN'^^xsd:double, 1)"); }
     @Test public void pow_16()          { testDoubleIsNaN("math:pow(1, 'NaN'^^xsd:double)"); }
 
+    @Test public void pow_17()          { test("math:pow(0e0, -3)", "'INF'^^xsd:double"); }
+    @Test public void pow_18()          { test("math:pow(-0e0, -3)", "'-INF'^^xsd:double"); }
+    @Test public void pow_19()          { test("math:pow(01, 'INF'^^xsd:double)", "1"); }
+    @Test public void pow_20()          { test("math:pow(-1e0, '-INF'^^xsd:double)", "'1.0e0'^^xsd:double"); }
+    @Test public void pow_21()          { testDoubleIsNaN("math:pow(-2.5e0, 2.00000001e0)"); }
+    @Test public void pow_22()          { test("math:pow(0e0, 3.0e0)", "0e0"); }
+    @Test public void pow_23()          { test("math:pow(-0e0, 3.0e0)", "-0e0"); }
+
     @Test public void sqrt_01()         { test("math:sqrt(1)", "'1.0e0'^^xsd:double"); }
     @Test public void sqrt_02()         { testDouble("math:sqrt(2)", Math.sqrt(2), 0.000001); }
     @Test public void sqrt_03()         { testDoubleIsNaN("math:sqrt(-2)"); }

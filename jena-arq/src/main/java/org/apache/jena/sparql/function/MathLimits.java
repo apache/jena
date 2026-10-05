@@ -77,7 +77,7 @@ public class MathLimits {
     }
 
     private static ExprEvalException exponentOutOfRange() {
-        return new ExprEvalException("Cannot calculate exponent when base is outside double range");
+        return new ExprEvalException("Cannot calculate exponent when exponent is outside double range");
     }
 
     private static boolean infiniteOrNaN(double aDbl) {
@@ -97,11 +97,16 @@ public class MathLimits {
      * @throws ExprEvalException Thrown if the calculation would require too many digits
      */
     public static void preValidateExponentCalculation(double a, double b) {
-        double logA = Math.log10(a);
+        // Raising zero to the power anything will always be zero so is always safe
+        if (a == 0) {
+            return;
+        }
+
+        double logA = Math.log10(Math.abs(a));
         if (infiniteOrNaN(logA)) {
             throw exponentOutOfRange();
         }
-        double numDigits = Math.floor(b * Math.log10(a)) + 1.0d;
+        double numDigits = Math.floor(b * logA) + 1.0d;
         if (numDigits > MAX_EXPONENT_DIGITS) {
             throw tooManyExponentDigits();
         }

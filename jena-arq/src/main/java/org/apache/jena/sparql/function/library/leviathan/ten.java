@@ -21,16 +21,8 @@
 
 package org.apache.jena.sparql.function.library.leviathan;
 
-import org.apache.jena.sparql.expr.NodeValue;
-import org.apache.jena.sparql.function.FunctionBase1;
-import org.apache.jena.sparql.function.MathLimits;
+import org.apache.jena.sparql.function.library.Math_exp10;
 
-public class ten extends FunctionBase1 {
-
-    @Override
-    public NodeValue exec(NodeValue v) {
-        MathLimits.preValidateExponentCalculation(10, v.getDouble());
-        return NodeValue.makeDouble(Math.pow(10d, v.getDouble()));
-    }
+public class ten extends Math_exp10 {
 
 }

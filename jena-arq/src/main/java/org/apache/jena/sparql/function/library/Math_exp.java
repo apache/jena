@@ -30,8 +30,20 @@ public class Math_exp extends FunctionBase1 {
 
     @Override
     public NodeValue exec(NodeValue v) {
-        MathLimits.preValidateExponentCalculation(Math.E, v.getDouble());
-        return NodeValue.makeDouble(Math.exp(v.getDouble()));
+        double d = v.getDouble();
+
+        // Special case, raising e to power INF is either 0 for negative infinity or INF for positive infinity
+        if (Double.isInfinite(d)) {
+            if (d < 0) {
+                return NodeValue.makeDouble(0);
+            } else {
+                return NodeValue.makeDouble(d);
+            }
+        }
+
+        // Otherwise pre-validate exponent calculation before proceeding to calculate it
+        MathLimits.preValidateExponentCalculation(Math.E, d);
+        return NodeValue.makeDouble(Math.exp(d));
     }
 
 }

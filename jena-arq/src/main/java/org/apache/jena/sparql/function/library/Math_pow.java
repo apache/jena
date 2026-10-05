@@ -50,13 +50,33 @@ public class Math_pow extends FunctionBase2 {
             case OP_DOUBLE:
                 double d1 = v1.getDouble();
                 double d2 = v2.getDouble();
-                if (d1 == 1 && d2 == Double.POSITIVE_INFINITY) {
+
+                // Various special cases short circuit actual evaluation
+                if (Double.isNaN(d1)) {
+                    // NaN raised to a power is either 1 if power 0 or NaN otherwise
+                    if (d2 == 0) {
+                        return NodeValue.makeDouble(1);
+                    } else {
+                        return NodeValue.nvDoubleNaN;
+                    }
+                } else if (Math.abs(d1) == 1 && Double.isInfinite(d2)) {
+                    // 1 raised to INF is always 1
                     if (v1.isInteger()) {
                         return NodeValue.nvONE;
                     } else {
                         return NodeValue.makeDouble(1);
                     }
+                } else if (Double.isInfinite(d1)) {
+                    // INF raised to a power is 1 if the power is zero or itself if the power is 1
+                    if (d2 == 0) {
+                        return NodeValue.makeDouble(1);
+                    } else if (d2 == 1) {
+                        return NodeValue.makeDouble(d1);
+                    }
                 }
+
+                // If we get this far pre-validate that calculating the power won't require too many digits and if not
+                // actually calculate
                 MathLimits.preValidateExponentCalculation(d1, d2);
                 return NodeValue.makeDouble(Math.pow(v1.getDouble(), v2.getDouble()));
             default:
