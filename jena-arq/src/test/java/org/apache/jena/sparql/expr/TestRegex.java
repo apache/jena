@@ -122,7 +122,7 @@ public class TestRegex
 
     public static Stream<Arguments> backtrackingRegex() {
         return Stream.of(
-                Arguments.of("1,2,3,4,5,6,7,8,9,10,11,12,13", "^(.*?,){11}P", "m", false),
+                Arguments.of("a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,z,y,z", "^(.*?,){11}P", "m", false),
                         Arguments.of(Strings.repeat("a", 4096) + "!", "(a+)+$", "m", false),
                         Arguments.of(Strings.repeat("a", 32 * 1024) + "!", "(a+)+$", "m", false)
                 );
@@ -130,8 +130,30 @@ public class TestRegex
 
     @ParameterizedTest(name = "{1}")
     @MethodSource("backtrackingRegex")
-    public void givenBacktrackingRegex_whenEvaluatingRegex_thenOk(String input, String pattern, String flags, boolean shouldMatch) {
+    public void givenBacktrackingRegex_whenEvaluatingRegexWithoutTimeLimit_thenEventuallyCompletes(String input, String pattern, String flags, boolean shouldMatch) {
         // Given, When and Then
-        regexTest(input, pattern, flags, shouldMatch);
+        long existingMax = RegexEngine.MAX_REGEX_EVALUATION_TIME;
+        try {
+            RegexEngine.MAX_REGEX_EVALUATION_TIME = -1;
+            regexTest(input, pattern, flags, shouldMatch);
+        } finally {
+            RegexEngine.MAX_REGEX_EVALUATION_TIME = existingMax;
+        }
+    }
+
+    @ParameterizedTest(name = "{1}")
+    @MethodSource("backtrackingRegex")
+    public void givenBacktrackingRegex_whenEvaluatingRegexWithTimeLimit_thenFails(String input, String pattern, String flags, boolean shouldMatch) {
+        // Given, When and Then
+        long existingMax = RegexEngine.MAX_REGEX_EVALUATION_TIME;
+        try {
+            // Intentionally minimal evaluation time so should fail near immediately, while we could set a more
+            // realistic limit for the test the reality is that the different regex engines evaluate at different speed
+            // so it's hard to pick a limit that reliably fails other than a trivially small one
+            RegexEngine.MAX_REGEX_EVALUATION_TIME = 1;
+            assertThrows(ExprEvalException.class, () -> regexTest(input, pattern, flags, shouldMatch));
+        } finally {
+            RegexEngine.MAX_REGEX_EVALUATION_TIME = existingMax;
+        }
     }
 }
