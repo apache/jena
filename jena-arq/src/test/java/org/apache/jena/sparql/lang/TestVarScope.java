@@ -155,7 +155,7 @@ public class TestVarScope
     @Test
     public void scope_66() {
 		assertThrows(QueryException.class,
-					 ()->  scope("SELECT ( (?x+1) AS ?y)  (2 AS ?x) {}"));
+					 ()->scope("SELECT ( (?x+1) AS ?y)  (2 AS ?x) {}"));
     }
 
     // GH-3164
@@ -165,10 +165,12 @@ public class TestVarScope
                 GROUP BY ?s
                 VALUES ?min { 2 5 }
                 """;
-        scope(qsVarScope);
+        assertThrows(QueryException.class,
+                     ()->scope(qsVarScope));
     }
 
     @Test public void scope_71() {
-        scope("SELECT (MIN(?v) as ?min) WHERE {} VALUES ?min { 2 5 }");
+        assertThrows(QueryException.class,
+                     ()->scope("SELECT (MIN(?v) as ?min) WHERE {} VALUES ?min { 2 5 }"));
     }
 }

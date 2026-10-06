@@ -147,6 +147,12 @@ public class SyntaxVarScope {
             VarExprList groupKey = query.getGroupBy();
             // Mutated so copy.
             List<Var> inScopeVars = new ArrayList<>(groupKey.getVars());
+            // and trailing VALUES
+            if ( query.hasValues() ) {
+                List<Var> x = query.getValuesVariables();
+                inScopeVars.addAll(x);
+            }
+
             VarExprList exprList = query.getProject();
 
             // Look in the SELECT expressions
