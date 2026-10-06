@@ -506,7 +506,8 @@ public class AlgebraGenerator
             op = OpGroup.create(op, query.getGroupBy(), query.getAggregators());
         }
 
-        // ---- Assignments from SELECT and other places (so available to ORDER and
+        // ---- Assignments from SELECT and other places
+        //    (so available to ORDER and
         // HAVING)
         // Now do assignments from expressions
         // Must be after "group by" has introduced it's variables.
@@ -529,8 +530,17 @@ public class AlgebraGenerator
             }
         }
 
-        // ---- Assignments from SELECT and other places (so available to ORDER and
-        // HAVING)
+        // ---- VALUES
+        if ( query.hasValues() ) {
+            Table table = TableFactory.create(query.getValuesVariables());
+            for ( Binding binding : query.getValuesData() )
+                table.addBinding(binding);
+            OpTable opTable = OpTable.create(table);
+            op = OpJoin.create(op, opTable);
+        }
+
+        // ---- Assignments from SELECT and other places
+        //     (so available to ORDER and HAVING)
         for ( Var v : exprs.getVars() ) {
             Expr e = exprs.getExpr(v);
             op = OpExtend.create(op, v, e);
@@ -544,15 +554,6 @@ public class AlgebraGenerator
                 op = OpFilter.filter(expr2, op);
             }
         }
-        // ---- VALUES
-        if ( query.hasValues() ) {
-            Table table = TableFactory.create(query.getValuesVariables());
-            for ( Binding binding : query.getValuesData() )
-                table.addBinding(binding);
-            OpTable opTable = OpTable.create(table);
-            op = OpJoin.create(op, opTable);
-        }
-
         // ---- ToList
         if ( context.isTrue(ARQ.generateToList) )
             // Listify it.
