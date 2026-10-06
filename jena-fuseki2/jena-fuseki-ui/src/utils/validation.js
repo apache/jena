@@ -46,3 +46,26 @@ export function validateGraphName (graphName) {
   // If it reached this part, then it's a valid graph name.
   return true
 }
+
+const PREFIX_NAME_PATTERN = /^[A-Za-z]([\w.-]*\w)?$/
+
+/**
+ * Validates a prefix name for the Fuseki prefixes service.
+ *
+ * @param {string} prefix - The prefix name, e.g. "foaf".
+ * @return {boolean} - true iff the prefix name is valid.
+ */
+export function validatePrefixName (prefix) {
+  return prefix !== '' && PREFIX_NAME_PATTERN.test(prefix)
+}
+
+/**
+ * Validates a prefix namespace URI for the Fuseki prefixes service.
+ *
+ * @param {string} uri - The namespace URI the prefix expands to.
+ * @return {boolean} - true iff the URI looks valid.
+ */
+export function validatePrefixUri (uri) {
+  // Same rules as graph names: a non-empty, space-free, parseable URI.
+  return validateGraphName(uri)
+}
