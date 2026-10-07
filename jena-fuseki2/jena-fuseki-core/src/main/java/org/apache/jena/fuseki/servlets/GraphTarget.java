@@ -77,21 +77,21 @@ public class GraphTarget {
                 ServletOps.errorBadRequest("Direct name does not have the dataset name as a prefix: "+requestURI);
 
             Node gn = NodeFactory.createURI(directName);
-            return createNamed(dsg, gn);
+            return createTargetNamed(dsg, gn);
         }
 
         if ( dftGraph )
-            return createDefault(dsg);
+            return createTargetDefault(dsg);
         // Named graph as default
         if ( uri.equals(HttpNames.graphTargetDefault) )
             // But "named" default
-            return createDefault(dsg);
+            return createTargetDefault(dsg);
         // Named graph - union
         if ( uri.equals(HttpNames.graphTargetUnion) )
-            return createUnion(dsg);
+            return createTargetUnion(dsg);
         // This logs bad URIs.
         String absUri = resolve0(uri, action);
-        return createNamed(dsg, absUri);
+        return createTargetNamed(dsg, absUri);
     }
 
     // Resolving a relative URI in ?graph= is a bit murky.
@@ -157,19 +157,19 @@ public class GraphTarget {
     final private DatasetGraph dsg;
     final private Node         graphName;
 
-    static GraphTarget createNamed(DatasetGraph dsg, String graphName) {
-        return createNamed(dsg, NodeFactory.createURI(graphName));
+    static GraphTarget createTargetNamed(DatasetGraph dsg, String graphName) {
+        return createTargetNamed(dsg, NodeFactory.createURI(graphName));
     }
 
-    static GraphTarget createNamed(DatasetGraph dsg, Node graphName) {
+    static GraphTarget createTargetNamed(DatasetGraph dsg, Node graphName) {
         return new GraphTarget(false, false, dsg, graphName);
     }
 
-    static GraphTarget createDefault(DatasetGraph dsg) {
+    static GraphTarget createTargetDefault(DatasetGraph dsg) {
         return new GraphTarget(true, false, dsg, null);
     }
 
-    static GraphTarget createUnion(DatasetGraph dsg) {
+    static GraphTarget createTargetUnion(DatasetGraph dsg) {
         return new GraphTarget(false, true, dsg, null);
     }
 
@@ -211,7 +211,7 @@ public class GraphTarget {
     public Node graphName()       { return graphName; }
 
     /**
-     * Get a graph for the action -  this is not a test for graph existence.
+     * Get a graph for the action - this is not a test for graph existence.
      * May return null or an empty graph.
      */
     public Graph graph() {
@@ -225,8 +225,9 @@ public class GraphTarget {
     public boolean exists() {
         if ( isDefault || isUnion )
             return true;
-        Graph g = graph();
-        return g != null && ! g.isEmpty();
+        return dsg.containsGraph(graphName);
+//        Graph g = graph();
+//        return g != null && ! g.isEmpty();
     }
 
     public String label() {

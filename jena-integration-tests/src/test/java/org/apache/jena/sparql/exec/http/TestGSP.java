@@ -72,7 +72,6 @@ public class TestGSP {
             server.stop();
     }
 
-
     private String url(String path) {
         return server.datasetURL(path);
     }

@@ -44,7 +44,7 @@ import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.test.conn.EnvTest;
 
-// From TestModelStore - these tests are ones that occassionaly fail.
+// From TestModelStore - these tests are ones that occasional fail.
 public class TestModelStore2 {
 
     static String DIR = "testing/RDFLink/";
