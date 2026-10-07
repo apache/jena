@@ -27,6 +27,7 @@ import org.junit.platform.suite.api.Suite;
 @Suite
 @SelectClasses({
     TestGSP.class
+    , TestGSP2.class
     , TestDSP.class
     , TestGSPDirect.class
     , TestModelStore.class
