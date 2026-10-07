@@ -21,9 +21,6 @@
 
 package org.apache.jena.sparql.function.library.leviathan;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
 import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
