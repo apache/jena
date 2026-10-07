@@ -616,10 +616,10 @@ public class XSDFuncOp
                      = new ThresholdingOutputStream(MAX_SPRINTF_OUTPUT_LENGTH,
                              stream -> { throw new ExprEvalException("Formatted output too large");},
                              stream -> output)) {
-            Formatter formatter =
-                    new Formatter(boundedOutput, StandardCharsets.UTF_8, Locale.getDefault(Locale.Category.FORMAT));
-            formatter.format(formatStr, args);
-            formatter.flush();
+            try ( Formatter formatter = new Formatter(boundedOutput, StandardCharsets.UTF_8, Locale.ROOT) ) {
+                formatter.format(formatStr, args);
+                formatter.flush();
+            }
             return output.toString(StandardCharsets.UTF_8);
         } catch (IllegalFormatException e) {
             throw new ExprEvalException("Invalid format string", e);
