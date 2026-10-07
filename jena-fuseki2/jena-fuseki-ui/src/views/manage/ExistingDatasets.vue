@@ -159,7 +159,7 @@ import TableListing from '@/components/dataset/TableListing.vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faTimesCircle, faDownload, faTachometerAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { Popover } from 'bootstrap'
+import Popover from 'bootstrap/js/dist/popover'
 import { displayNotification } from '@/utils'
 
 library.add(faTimesCircle, faDownload, faTachometerAlt)
