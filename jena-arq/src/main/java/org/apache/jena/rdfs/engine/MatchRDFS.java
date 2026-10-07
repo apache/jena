@@ -376,7 +376,7 @@ public abstract class MatchRDFS<X, T> extends CxtInf<X, T> implements Match<X,T>
 
     private void accInstancesDomain(Set<T> tuples, Set<X> types, X requestedType) {
         for ( X type : types ) {
-            Set<X> predicates = setup.getPropertiesByDomain(type);
+            Set<X> predicates = getPropertiesByDomainInc(type);
             if ( isEmpty(predicates) )
                 continue;
             predicates.forEach(p -> {
@@ -388,7 +388,7 @@ public abstract class MatchRDFS<X, T> extends CxtInf<X, T> implements Match<X,T>
 
     private void accInstancesRange(Set<T> tuples, Set<X> types, X requestedType) {
         for ( X type : types ) {
-            Set<X> predicates = setup.getPropertiesByRange(type);
+            Set<X> predicates = getPropertiesByRangeInc(type);
             if ( isEmpty(predicates) )
                 continue;
             predicates.forEach(p -> {
@@ -407,7 +407,7 @@ public abstract class MatchRDFS<X, T> extends CxtInf<X, T> implements Match<X,T>
         Stream<T> stream = sourceFind(X, ANY, ANY);
         stream.forEach(triple -> {
             X p = predicate(triple);
-            Set<X> x = setup.getDomain(p);
+            Set<X> x = getDomainInc(p);
             types.addAll(x);
         });
     }
@@ -416,7 +416,7 @@ public abstract class MatchRDFS<X, T> extends CxtInf<X, T> implements Match<X,T>
         Stream<T> stream = sourceFind(ANY, ANY, X);
         stream.forEach(triple -> {
             X p = predicate(triple);
-            Set<X> x = setup.getRange(p);
+            Set<X> x = getRangeInc(p);
             types.addAll(x);
         });
     }

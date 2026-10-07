@@ -92,6 +92,31 @@ public class TestMiscRDFS {
         assertEquals(5, count(rdfs, ANY, ANY, ANY));
     }
 
+    // The domain of a super-property, with no rdfs:subClassOf in the vocabulary.
+    @Test public void subPropertyDomain() {
+        Graph vocab = SSE.parseGraph("(graph (:p rdfs:subPropertyOf :q) (:q rdfs:domain :D) )");
+        Graph data = SSE.parseGraph("(graph (:x :p :y))");
+        Graph rdfs = RDFSFactory.graphRDFS(data, vocab);
+        exactlyOne(rdfs, node(":x"), node(":q"), node(":y"));
+        exactlyOne(rdfs, node(":x"), rdfType, node(":D"));
+        exactlyOne(rdfs, node(":x"), rdfType, ANY);
+        exactlyOne(rdfs, ANY, rdfType, node(":D"));
+        exactlyOne(rdfs, ANY, rdfType, ANY);
+        assertEquals(3, count(rdfs, ANY, ANY, ANY));
+        assertEquals(3, count(rdfs, node(":x"), ANY, ANY));
+    }
+
+    // The range of a super-property, with no rdfs:subClassOf in the vocabulary.
+    @Test public void subPropertyRange() {
+        Graph vocab = SSE.parseGraph("(graph (:p rdfs:subPropertyOf :q) (:q rdfs:range :R) )");
+        Graph data = SSE.parseGraph("(graph (:x :p :y))");
+        Graph rdfs = RDFSFactory.graphRDFS(data, vocab);
+        exactlyOne(rdfs, node(":y"), rdfType, node(":R"));
+        exactlyOne(rdfs, node(":y"), rdfType, ANY);
+        exactlyOne(rdfs, ANY, rdfType, node(":R"));
+        assertEquals(3, count(rdfs, ANY, ANY, ANY));
+    }
+
     @Test public void dataset() {
         Graph vocab = SSE.parseGraph("(graph (:S rdfs:subClassOf :T))");
         DatasetGraph dsg0 = DatasetGraphFactory.createTxnMem();
