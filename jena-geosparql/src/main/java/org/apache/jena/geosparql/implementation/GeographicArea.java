@@ -84,7 +84,7 @@ final class GeographicArea {
             parameters.parameter("longitude_of_center").setValue(center[0]);
             DefaultConversion conversion = new DefaultConversion(Map.of("name", "Local equal-area conversion"),
                     method, null, parameters);
-            CartesianCS cartesian = (CartesianCS) CommonCRS.WGS84.universal(0, 0).getCoordinateSystem();
+            CartesianCS cartesian = CommonCRS.WGS84.universal(0, 0).getCoordinateSystem();
             DefaultProjectedCRS projectedCrs = new DefaultProjectedCRS(Map.of("name", "Local equal-area CRS"),
                     sourceCrs, conversion, cartesian);
             MathTransform projection = CRS.findOperation(sourceCrs, projectedCrs, null).getMathTransform();
