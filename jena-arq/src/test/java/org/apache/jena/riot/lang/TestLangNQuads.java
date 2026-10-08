@@ -59,6 +59,30 @@ public class TestLangNQuads extends AbstractTestLangNTuples
     }
 
     @Test
+    public void nq_version_1() {
+        parseCheck("""
+                VERSION "1.2"
+                <http://example/s> <http://example/p> <http://example/o>  <http://example/g> .
+                VERSION "1.2"
+                """);
+    }
+
+    @Test
+    public void nq_version_2() {
+        parseCheck("""
+                VERSION "1.2"
+                """);
+    }
+
+    @Test
+    public void nq_version_3() {
+        parseCheck("""
+                VERSION "1.2"
+                VERSION "1.2"
+                """);
+    }
+
+    @Test
     public void nq_only_1_no_tuples() {
         parseException(ExFatal.class, "<http://example/x> <http://example/p> <http://example/s> <http://example/g> <http://example/c> .");
     }

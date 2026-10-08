@@ -69,11 +69,14 @@ public abstract class LangNTuple<X> extends LangBase implements Iterator<X>
 
     @Override
     public final X next() {
-        return parseOne();
+        return parseOneStatement();
     }
 
-    /** Parse one tuple - return object to be sent to the sink or null for none */
-    protected abstract X parseOne() ;
+    /**
+     * Parse one tuple - return object to be sent to the sink or null for none.
+     * null is returned for VERSION
+     */
+    protected abstract X parseOneStatement() ;
 
     /** Note a tuple not being output */
     protected void skipOne(X object, String printForm, long line, long col) {
@@ -82,9 +85,44 @@ public abstract class LangNTuple<X> extends LangBase implements Iterator<X>
 
     protected abstract Node tokenAsNode(Token token) ;
 
+    // NT and NQ VERSION keyword. It must be upper case.
+    protected static String kwVERSION = "VERSION";
+
+    /**
+     * Parse a possible VERSION directive.
+     * Return true for seen keyword,
+     * false for not a keyword, including EOF.
+     * Throw error on bad directive.
+     */
+    protected final boolean parsePossibleVersion() {
+        Token token = peekToken();
+        // Parse version lines.
+        if ( token .isEOF() || ! token.hasType(TokenType.KEYWORD) )
+            return false;
+
+        // Keywords
+        nextToken();
+        String KW = token.getImage();
+        if ( ! KW.equals(kwVERSION) )
+            exception(token, "Keyword at start of triple: %s", token);
+
+        // VERSION
+        Token token2 = peekToken();
+        if ( token2.isEOF() )
+            exception(token, "Expected version string after VERSION keyword");
+        expect("Expected string for VERSION", token2.getType());
+
+        StringType stringType = token2.getStringType();
+        if ( stringType != StringType.STRING2 )
+            exception(token, "Expected \"-quoted string for the version");
+        String versionStr = token2.getImage();
+        dest.version(versionStr);
+        return true;
+    }
+
     // One triple, not including terminator.
     protected final Triple parseTriple() {
-        Token token = peekToken();
+        Token token = peekToken();      // Remember for line/column
         Node s = parseSubject();
         Node p = parsePredicate();
         Node o = parseObject();

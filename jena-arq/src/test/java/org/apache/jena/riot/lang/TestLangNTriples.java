@@ -91,6 +91,30 @@ public class TestLangNTriples extends AbstractTestLangNTuples
     }
 
     @Test
+    public void nt_version_1() {
+        parseCheck("""
+                VERSION "1.2"
+                <http://example/s> <http://example/p> <http://example/o> .
+                VERSION "1.2"
+                """);
+    }
+
+    @Test
+    public void nt_version_2() {
+        parseCheck("""
+                VERSION "1.2"
+                """);
+    }
+
+    @Test
+    public void nt_version_3() {
+        parseCheck("""
+                VERSION "1.2"
+                VERSION "1.2"
+                """);
+    }
+
+    @Test
     public void nt_only_no_quads() {
         parseException(ExFatal.class, "<http://example/x> <http://example/p> <http://example/s> <http://example/g> .");
     }
