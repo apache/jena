@@ -53,14 +53,20 @@ public class LangNQuads extends LangNTuple<Quad> {
     @Override
     protected final void runParser() {
         while (hasNext()) {
-            Quad x = parseOne();
+            Quad x = parseOneStatement();
             if ( x != null )
                 dest.quad(x);
         }
     }
 
     @Override
-    protected final Quad parseOne() {
+    protected final Quad parseOneStatement() {
+        if ( parsePossibleVersion() )
+            return null;
+        return parseQuad();
+    }
+
+    protected final Quad parseQuad() {
         Token token = peekToken();
         Node s = parseSubject();
         Node p = parsePredicate();
