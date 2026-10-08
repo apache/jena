@@ -95,4 +95,12 @@ public class TestNodeValueSortKey {
         assertEquals(1, nv.compareTo(new NodeValueSortKey("Bonita", "es")));
         assertEquals(0, nv.compareTo(new NodeValueSortKey("Bonito", "es")));
     }
+
+    @Test
+    public void testCompareToUnicodeCodePointOrder() {
+        NodeValueSortKey bmp = new NodeValueSortKey(Character.toString(0xFFFD), null);
+        NodeValueSortKey astral = new NodeValueSortKey(Character.toString(0x1D11E), null);
+        assertTrue(bmp.compareTo(astral) < 0);
+        assertTrue(astral.compareTo(bmp) > 0);
+    }
 }
