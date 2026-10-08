@@ -44,6 +44,8 @@ import org.apache.jena.sparql.engine.binding.BindingFactory;
 public class TestRegex
 {
 
+    protected static final String ALPHABET_CSV = "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,z,";
+
     private static Stream<Arguments> provideArgs() {
          List<Arguments> x = List.of(
                 Arguments.of( "Java Regex", RegexEngine.RegexImpl.Java),
@@ -122,7 +124,9 @@ public class TestRegex
 
     public static Stream<Arguments> backtrackingRegex() {
         return Stream.of(
-                Arguments.of("a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,z,y,z", "^(.*?,){11}P", "m", false),
+                        // While this is a nice example it behaves very different using Java vs Xerces regex so isn't
+                        // a stable test
+                        /*Arguments.of(ALPHABET_CSV, "^(.*?,){11}P", "m", false),*/
                         Arguments.of(Strings.repeat("a", 4096) + "!", "(a+)+$", "m", false),
                         Arguments.of(Strings.repeat("a", 32 * 1024) + "!", "(a+)+$", "m", false)
                 );
