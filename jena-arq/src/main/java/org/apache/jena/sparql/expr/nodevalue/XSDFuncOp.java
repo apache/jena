@@ -592,9 +592,7 @@ public class XSDFuncOp
     public static NodeValue strReplace(NodeValue nvStr, Pattern pattern, NodeValue nvReplacement) {
         String n = NodeValueOps.checkAndGetStringLiteral("replace", nvStr).getLiteralLexicalForm();
         String rep = NodeValueOps.checkAndGetStringLiteral("replace", nvReplacement).getLiteralLexicalForm();
-        CharSequence matchSource = RegexEngine.MAX_REGEX_EVALUATION_TIME > 0 ?
-                             new RegexEngine.TimeBoundedCharSequence(n, RegexEngine.MAX_REGEX_EVALUATION_TIME) : n;
-        String x = replaceAll(pattern.matcher(matchSource), rep);
+        String x = replaceAll(pattern.matcher(RegexEngine.timeBounded(n)), rep);
         if ( x == null )
             // No replacement.
             return nvStr;

@@ -70,7 +70,7 @@ public class StrRegexConstraint extends NodeConstraintComponent {
             return new ReportItem(msg, n);
         }
         String str = NodeFunctions.str(n);
-        boolean b = pattern.matcher(str).find();
+        boolean b = pattern.matcher(RegexEngine.timeBounded(str)).find();
         if ( b )
             return null;
         String msg = toString()+": Does not match: '"+str+"'";
