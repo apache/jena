@@ -1162,6 +1162,7 @@ public class XSDFuncOp
             i1 += Character.charCount(cp1);
             i2 += Character.charCount(cp2);
         }
+        // A remaining suffix sorts after its matching prefix.
         return calcReturn(Integer.compare(s1.length() - i1, s2.length() - i2));
     }
 

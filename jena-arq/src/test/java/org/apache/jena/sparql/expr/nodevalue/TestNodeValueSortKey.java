@@ -103,4 +103,19 @@ public class TestNodeValueSortKey {
         assertTrue(bmp.compareTo(astral) < 0);
         assertTrue(astral.compareTo(bmp) > 0);
     }
+
+    @Test
+    public void testCompareToUnicodeCodePointPrefix() {
+        String astral = Character.toString(0x1D11E);
+        NodeValueSortKey prefix = new NodeValueSortKey(astral, null);
+        NodeValueSortKey longer = new NodeValueSortKey(astral + "a", null);
+        NodeValueSortKey equal = new NodeValueSortKey(astral, null);
+        NodeValueSortKey empty = new NodeValueSortKey("", null);
+
+        assertTrue(prefix.compareTo(longer) < 0);
+        assertTrue(longer.compareTo(prefix) > 0);
+        assertEquals(0, prefix.compareTo(equal));
+        assertTrue(empty.compareTo(prefix) < 0);
+        assertTrue(prefix.compareTo(empty) > 0);
+    }
 }
