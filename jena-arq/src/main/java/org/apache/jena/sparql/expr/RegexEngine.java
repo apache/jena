@@ -156,7 +156,7 @@ public abstract class RegexEngine {
 
         @Override
         public boolean match(String s) {
-            Matcher m = MAX_REGEX_EVALUATION_TIME >= 0 ? regexPattern.matcher(new TimeBoundedCharSequence(s, MAX_REGEX_EVALUATION_TIME)) : regexPattern.matcher(s);
+            Matcher m = regexPattern.matcher(RegexEngine.timeBounded(s));
             return m.find();
         }
     }
@@ -204,17 +204,38 @@ public abstract class RegexEngine {
     }
 
     /**
+     * Returns a potentially time-bounded character sequence
+     * <p>
+     * If {@link #MAX_REGEX_EVALUATION_TIME} is set to a positive non-zero value then a time-bounded
+     * {@link CharSequence} is returned to prevent regular expression evaluation taking too long.  If it's set to
+     * anything else then the original character sequence is returned.
+     * </p>
+     * @param charSequence Original character sequence to time bound
+     * @return Possible time-bounded Character Sequence, or {@code null} if the input was {@code null}
+     */
+    public static CharSequence timeBounded(CharSequence charSequence) {
+        if (charSequence == null) {
+            return null;
+        }
+        if (RegexEngine.MAX_REGEX_EVALUATION_TIME > 0) {
+            return new TimeBoundedCharSequence(charSequence, RegexEngine.MAX_REGEX_EVALUATION_TIME);
+        } else {
+            return charSequence;
+        }
+    }
+
+    /**
      * A {@link CharSequence} and {@link CharacterIterator} that time bounds operations so that if too much time is
      * spent accessing it {@link ExprEvalException}'s will be thrown.  This is used to protect the regular expression
      * evaluation against catastrophic backtracking.
      */
-    public static final class TimeBoundedCharSequence implements CharSequence, CharacterIterator {
+    static final class TimeBoundedCharSequence implements CharSequence, CharacterIterator {
 
         private final CharSequence data;
         private final long timeLimit;
         private int iterIndex = 0;
 
-        public TimeBoundedCharSequence(CharSequence characters, long timeLimitMillis) {
+        TimeBoundedCharSequence(CharSequence characters, long timeLimitMillis) {
             this.data = characters;
             this.timeLimit = timeLimitMillis < System.currentTimeMillis() ? System.currentTimeMillis() + timeLimitMillis : timeLimitMillis;
             // Note always make an immediate time limit check as if we've been constructed as a sub-sequence then

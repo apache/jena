@@ -79,8 +79,7 @@ public class strSplit extends PFuncSimpleAndList
         List<String> tokens;
         if (RegexEngine.MAX_REGEX_EVALUATION_TIME > 0) {
             Pattern pattern = Pattern.compile(regex);
-            tokens = Arrays.stream(
-                                pattern.split(new RegexEngine.TimeBoundedCharSequence(s, RegexEngine.MAX_REGEX_EVALUATION_TIME), 0))
+            tokens = Arrays.stream(pattern.split(RegexEngine.timeBounded(s), 0))
                            .map(String::trim)
                            .toList();
         } else {
