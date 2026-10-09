@@ -337,4 +337,27 @@ public class TestDatabaseCompact
         assertFalse(Files.exists(pathFile2));
         assertFalse(Files.exists(pathTmp2));
     }
+
+    @Test public void compact_recovery_2() throws IOException {
+        DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(dir);
+        Txn.executeWrite(dsg, ()->dsg.add(quad1));
+
+        DatasetGraphSwitchable dsgs = (DatasetGraphSwitchable)dsg;
+        Path containerPath = dsgs.getContainerPath();
+        Path storagePath = DatabaseOps.findStorageLocation(containerPath);
+        assertNotNull(storagePath);
+
+        // Mock an incomplete compaction.
+        Path pathTmp = containerPath.resolve("Data-0002-tmp");
+        Files.createDirectory(pathTmp);
+        TDBInternal.expel(dsg);
+
+        // Before reconnecting (which cleans up) - e.g. Fuseki checking the database.
+        assertEquals(storagePath, DatabaseOps.findStorageLocation(containerPath));
+        assertEquals(storagePath, DatabaseOps.findStorageLocation(dir));
+
+        DatasetGraph dsg2 = DatabaseMgr.connectDatasetGraph(dir);
+        Txn.executeRead(dsg2, ()->assertTrue(dsg2.contains(quad1)));
+        assertFalse(Files.exists(pathTmp));
+    }
 }

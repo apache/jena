@@ -101,6 +101,8 @@ public class DatabaseOps {
     // while initializing the area for TDB2 usage in this JVM.
     /*package*/ static final String incompleteWIP    = "jena-tdb-temp-files";
 
+    // EXACT: error on any other "Data*" name except for compaction temporary directories.
+    // SKIP: ignore other names.
     private enum ScanAccept { EXACT, SKIP }
 
     /**
@@ -531,11 +533,17 @@ public class DatabaseOps {
         Pattern pattern = Pattern.compile(Pattern.quote(namebase)+
                                           Pattern.quote(nameSep)+
                                           trailerPattern);
+        // Left behind by an incomplete compaction; removed when the database is next connected.
+        Pattern tmpPattern = Pattern.compile(Pattern.quote(namebase)+
+                                             Pattern.quote(nameSep)+
+                                             dbTmpPattern);
         List<Path> paths = new ArrayList<>();
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory, namebase + "*")) {
             for ( Path entry : stream ) {
                 String filename = entry.getFileName().toString();
                 if ( !pattern.matcher(filename).matches() ) {
+                    if ( tmpPattern.matcher(filename).matches() )
+                        continue;
                     switch ( skipOthers ) {
                         case EXACT: throw new DBOpEnvException("Invalid filename for matching: "+entry.getFileName());
                         case SKIP:  continue;
