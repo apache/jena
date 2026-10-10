@@ -58,7 +58,7 @@ public class DatasetGraphTxnCtl extends DatasetGraphWrapper implements Transacti
      * Use {@link #beginMultiMode}/{@link #endMultiMode} (normal
      * operation), {@link #beingSingleMode}/{@link #endSingleMode} (exclusive mode)
      **/
-    private ReadWriteLock exclusivitylock = new ReentrantReadWriteLock();
+    private ReadWriteLock exclusivityLock = new ReentrantReadWriteLock();
 
     /**
      * Lock to guarantee only readers are present. Writers and promote transaction
@@ -257,19 +257,19 @@ public class DatasetGraphTxnCtl extends DatasetGraphWrapper implements Transacti
 
     @Override
     public void startNonExclusiveMode() {
-        boolean b = beginMultiMode(exclusivitylock, true);
+        boolean b = beginMultiMode(exclusivityLock, true);
         if ( !b )
             throw new TransactionException("Can't start transaction at the moment.");
     }
 
     @Override
     public boolean tryNonExclusiveMode(boolean canBlock) {
-        return beginMultiMode(exclusivitylock, canBlock);
+        return beginMultiMode(exclusivityLock, canBlock);
     }
 
     @Override
     public void finishNonExclusiveMode() {
-        endMultiMode(exclusivitylock);
+        endMultiMode(exclusivityLock);
     }
 
     /**
@@ -295,10 +295,10 @@ public class DatasetGraphTxnCtl extends DatasetGraphWrapper implements Transacti
      */
     private boolean startExclusiveMode(boolean canBlock) {
         if ( canBlock ) {
-            exclusivitylock.writeLock().lock();
+            exclusivityLock.writeLock().lock();
             return true;
         }
-        return exclusivitylock.writeLock().tryLock();
+        return exclusivityLock.writeLock().tryLock();
     }
 
     /**
@@ -336,7 +336,7 @@ public class DatasetGraphTxnCtl extends DatasetGraphWrapper implements Transacti
      */
     @Override
     public void finishExclusiveMode() {
-        exclusivitylock.writeLock().unlock();
+        exclusivityLock.writeLock().unlock();
     }
 
     // Lock abstraction.
