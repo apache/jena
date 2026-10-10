@@ -1149,7 +1149,21 @@ public class XSDFuncOp
     // langMatch
 
     public static int compareString(NodeValue nv1, NodeValue nv2) {
-        return calcReturn(nv1.getString().compareTo(nv2.getString()));
+        String s1 = nv1.getString();
+        String s2 = nv2.getString();
+        int i1 = 0;
+        int i2 = 0;
+        // SPARQL uses Unicode code point order, not UTF-16 code unit order.
+        while ( i1 < s1.length() && i2 < s2.length() ) {
+            int cp1 = s1.codePointAt(i1);
+            int cp2 = s2.codePointAt(i2);
+            if ( cp1 != cp2 )
+                return calcReturn(Integer.compare(cp1, cp2));
+            i1 += Character.charCount(cp1);
+            i2 += Character.charCount(cp2);
+        }
+        // A remaining suffix sorts after its matching prefix.
+        return calcReturn(Integer.compare(s1.length() - i1, s2.length() - i2));
     }
 
     // --------------------------------
