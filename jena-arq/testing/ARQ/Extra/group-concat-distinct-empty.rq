@@ -1,0 +1,6 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+# GH-4240: GROUP_CONCAT(DISTINCT ...) over an empty group is the empty string,
+# the same as GROUP_CONCAT(...).
+SELECT (GROUP_CONCAT(DISTINCT ?v) AS ?distinct) (GROUP_CONCAT(?v) AS ?plain)
+WHERE { ?s <urn:p> ?v . ?s <urn:q> ?tag . }
