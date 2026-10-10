@@ -21,16 +21,22 @@
 
 package org.apache.jena.riot.lang;
 
+import static org.apache.jena.riot.lang.ParserTests.runWithNestingDepth;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 
+import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExError;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RiotException;
+import org.apache.jena.riot.SysRIOT;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.sse.SSE;
 
@@ -113,6 +119,33 @@ public class TestLangTrig
 
     private static DatasetGraph parse(String string) {
         return ParserTests.parser().fromString(string).lang(Lang.TRIG).toDatasetGraph();
+    }
+
+    @Test
+    public void trig_nesting_depth_1() {
+        String x = """
+                PREFIX : <http://example/>
+                :s :p <<( :s :q <<( :a :b :c )>> )>> .
+                """;
+        LogCtl.withLevel(SysRIOT.getLogger(), "FATAL", ()->{
+            runWithNestingDepth(x, Optional.of(2), Lang.TRIG);
+            assertThrows(RiotException.class, ()->runWithNestingDepth(x, Optional.of(1), Lang.TRIG)) ;
+            runWithNestingDepth(x, Optional.empty(), Lang.TRIG);
+        });
+    }
+
+    @Test
+    public void trig_nesting_depth_2() {
+        // Mixed recursion.
+        String x = """
+                PREFIX : <http://example/>
+                :s :p [ :q ( << :s :q <<( :a :b :c )>> >> ) ].
+                """;
+        LogCtl.withLevel(SysRIOT.getLogger(), "FATAL", ()->{
+            runWithNestingDepth(x, Optional.of(4), Lang.TRIG);
+            assertThrows(RiotException.class, ()->runWithNestingDepth(x, Optional.of(3), Lang.TRIG)) ;
+            runWithNestingDepth(x, Optional.empty(), Lang.TRIG);
+        });
     }
 
 }

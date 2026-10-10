@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RIOT;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.tokens.Tokenizer;
@@ -44,9 +45,8 @@ public class TestLangNQuads extends AbstractTestLangNTuples
 
     @Override
     protected LangRIOT createLangRIOT(Tokenizer tokenizer, StreamRDF sink, ParserProfile profile) {
-        return IteratorParsers.createParserNQuads(tokenizer, sink, profile);
+        return IteratorParsers.createParserNQuads(tokenizer, sink, profile, RIOT.getContext());
     }
-
 
     @Test
     public void quad_1() {

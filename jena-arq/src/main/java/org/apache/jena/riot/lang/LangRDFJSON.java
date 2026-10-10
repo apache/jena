@@ -27,11 +27,13 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RIOT;
 import org.apache.jena.riot.system.ParserProfile ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
+import org.apache.jena.sparql.util.Context;
 
 /**
  * RDF-JSON.
@@ -42,9 +44,17 @@ import org.apache.jena.riot.tokens.Tokenizer ;
  */
 public class LangRDFJSON extends LangBase
 {
-	public LangRDFJSON(Tokenizer tokenizer, ParserProfile profile, StreamRDF dest)
+
+    /** Use {@link #LangRDFJSON(Tokenizer, ParserProfile, StreamRDF, Context)} */
+
+    @Deprecated(forRemoval = true)
+    public LangRDFJSON(Tokenizer tokens, ParserProfile profile, StreamRDF dest) {
+        this(tokens, profile, dest, RIOT.getContext());
+    }
+
+	public LangRDFJSON(Tokenizer tokenizer, ParserProfile profile, StreamRDF dest, Context context)
 	{
-		super(tokenizer, profile, dest) ;
+		super(tokenizer, profile, dest, context) ;
 		if (!(tokenizer instanceof TokenizerJSON))
 			throw new IllegalArgumentException("Tokenizer for the RDF/JSON parser must be an instance of "+TokenizerJSON.class.getName()) ;
 	}

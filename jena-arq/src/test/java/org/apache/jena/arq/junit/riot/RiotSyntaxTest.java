@@ -88,7 +88,19 @@ public class RiotSyntaxTest extends AbstractManifestTest {
         }
 
         try {
-            parser.accept(stream);
+            try {
+                parser.accept(stream);
+            } catch(RiotException ex) {
+                throw ex;
+            } catch(Throwable ex) {
+                String reason = "Unexpected throwable. "+ex.getClass().getSimpleName();
+                if ( ex.getMessage() != null )
+                    reason = reason + " : "+ex.getMessage();
+
+                outputFailure(reason, fn, ex);
+                fail(reason+" : "+ex.getMessage());
+            }
+
             if (! expectLegalSyntax ) {
                 String reason = "Parsing succeeded in a bad syntax test: "+actionURI;
                 outputFailure(reason, fn, null);
@@ -119,6 +131,8 @@ public class RiotSyntaxTest extends AbstractManifestTest {
     }
 
     private void outputFailure(String reason, String fn, Throwable th) {
+        String n = super.manifestEntry.getName();
+        System.out.println(n+" : "+reason);
         fail("Parsing succeeded in a bad syntax test: "+fn);
     }
 }

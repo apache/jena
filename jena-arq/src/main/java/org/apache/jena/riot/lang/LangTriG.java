@@ -30,6 +30,7 @@ import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.util.Context;
 
 /** TriG.
  *
@@ -37,8 +38,8 @@ import org.apache.jena.sparql.core.Quad ;
  */
 public class LangTriG extends LangTurtleBase {
 
-    public LangTriG(Tokenizer tokens, ParserProfile profile, StreamRDF dest) {
-        super(tokens, profile, dest) ;
+    public LangTriG(Tokenizer tokens, ParserProfile profile, StreamRDF dest, Context context) {
+        super(tokens, profile, dest, context) ;
     }
 
     @Override

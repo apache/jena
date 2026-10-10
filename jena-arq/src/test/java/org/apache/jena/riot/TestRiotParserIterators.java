@@ -42,20 +42,20 @@ import org.apache.jena.riot.system.AsyncParser;
 public class TestRiotParserIterators {
     @Test
     public void testCreateIteratorTriples_01() {
-        Iterator<Triple> it = IteratorParsers.createIteratorNTriples(new ByteArrayInputStream(new byte[0]));
+        Iterator<Triple> it = IteratorParsers.createIteratorNTriples(new ByteArrayInputStream(new byte[0]), RIOT.getContext());
         assertFalse(it.hasNext());
     }
 
     @Test
     public void testEncodedUTF8() {
-        Iterator<Triple> it = IteratorParsers.createIteratorNTriples(new ByteArrayInputStream(Bytes.asUTF8bytes("<a> <b> \"\\u263A\" .")));
+        Iterator<Triple> it = IteratorParsers.createIteratorNTriples(new ByteArrayInputStream(Bytes.asUTF8bytes("<a> <b> \"\\u263A\" .")), RIOT.getContext());
         assertTrue(it.hasNext());
         assertEquals("☺", it.next().getObject().getLiteralLexicalForm());
     }
 
     @Test
     public void testRawUTF8() {
-        Iterator<Triple> it = IteratorParsers.createIteratorNTriples(new ByteArrayInputStream(Bytes.asUTF8bytes("<a> <b> \"☺\" .")));
+        Iterator<Triple> it = IteratorParsers.createIteratorNTriples(new ByteArrayInputStream(Bytes.asUTF8bytes("<a> <b> \"☺\" .")), RIOT.getContext());
         assertTrue(it.hasNext());
         assertEquals("☺", it.next().getObject().getLiteralLexicalForm());
     }

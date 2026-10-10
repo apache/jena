@@ -32,6 +32,7 @@ import org.apache.jena.riot.tokens.StringType;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
+import org.apache.jena.sparql.util.Context;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -57,8 +58,17 @@ public abstract class LangNTuple<X> extends LangBase implements Iterator<X>
 
     protected boolean skipOnBadTerm = false ;
 
-    protected LangNTuple(Tokenizer tokens, ParserProfile profile, StreamRDF dest) {
-        super(tokens, profile, dest);
+    // The depth of nested structure
+    //  * triple terms <<()>>
+    //
+    // These all consume stack so we have one limit to stop stack overflow
+    private final int recursionLimit;
+    private final static int defaultRecursionLimit = 500;
+    private int nestingDepth = 0;
+
+    protected LangNTuple(Tokenizer tokens, ParserProfile profile, StreamRDF dest, Context context) {
+        super(tokens, profile, dest, context);
+        recursionLimit = chooseRecursionLimit(context, defaultRecursionLimit);
     }
 
     // Assumes no syntax errors.
@@ -163,9 +173,14 @@ public abstract class LangNTuple<X> extends LangBase implements Iterator<X>
         if ( token.isEOF() )
             exception(token, "Premature end of file: %s", token);
         Node term;
-        if ( token.hasType(TokenType.L_TRIPLE) )
-            term = parseTripleTerm();
-        else {
+        if ( token.hasType(TokenType.L_TRIPLE) ) {
+            if ( nestingDepth >= recursionLimit )
+                exception(peekToken(), "Recursion limit exceeded for triple terms ("+nestingDepth+")");
+            nestingDepth++;
+            try {
+                term = parseTripleTerm();
+            } finally { nestingDepth-- ; }
+        } else {
             checkRDFTerm(posn, token);
             term = tokenAsNode(token);
         }
