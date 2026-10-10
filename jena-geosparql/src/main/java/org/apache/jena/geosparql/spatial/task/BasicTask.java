@@ -56,7 +56,7 @@ public interface BasicTask extends Abortable {
     /**
      * Whether the task has terminated.
      *
-     * @implNote The original name {@code isTerminated} collided with the package−private method in {@link Thread}.
+     * @implNote The original name {@code isTerminated} collided with the package-private method in {@link Thread}.
      */
     default boolean hasTerminated() {
         TaskState state = getTaskState();
