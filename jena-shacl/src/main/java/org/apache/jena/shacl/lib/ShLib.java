@@ -338,7 +338,7 @@ public class ShLib {
             else if ( nNamespace.isURI() )
                 ns = nNamespace.getURI();
             else
-                throw new ShaclParseException("sh:namespace is not  a literal or URI");
+                throw new ShaclParseException("sh:namespace is not a literal or URI");
             if ( seen.containsKey(prefix) ) {
                 if ( seen.get(prefix).equals(ns) )
                     continue;

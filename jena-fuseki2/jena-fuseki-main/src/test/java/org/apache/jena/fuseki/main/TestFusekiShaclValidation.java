@@ -177,13 +177,15 @@ public class TestFusekiShaclValidation {
         withServer((datasetURL)->{
             try ( RDFConnection conn = RDFConnection.connect(datasetURL)) {
                 conn.put(DIR+"data1.ttl");
-                try {
-                    FusekiTestLib.expect404(()->{
-                        ValidationReport report = validateReport(datasetURL+"/shacl?graph=urn:abc:noGraph", DIR+"shapes1.ttl");
-                    });
-                } finally {
-                    conn.update("CLEAR ALL");
-                }
+                LogCtl.withLevel(Fuseki.actionLog, "FATAL", ()->{
+                    try {
+                        FusekiTestLib.expect404(()->{
+                            ValidationReport report = validateReport(datasetURL+"/shacl?graph=urn:abc:noGraph", DIR+"shapes1.ttl");
+                        });
+                    } finally {
+                        conn.update("CLEAR ALL");
+                    }
+                });
             }
         });
     }
@@ -196,6 +198,25 @@ public class TestFusekiShaclValidation {
                     validateReport(datasetURL+"/shacl?default", DIR+"shapes-imports.ttl");
                 });
             });
+        });
+    }
+
+    @Test
+    public void shacl_SERVICE_not_included() {
+        LogCtl.withLevel(Fuseki.actionLog, "FATAL", ()->{
+            withServer((datasetURL)->{
+                FusekiTestLib.expect400(()->{
+                    validateReport(datasetURL+"/shacl?default", DIR+"shapes-service.ttl");
+                });
+            });
+        });
+    }
+
+    @Test
+    public void shacl_no_SERVICE() {
+        // allowed
+        withServer((datasetURL)->{
+                validateReport(datasetURL+"/shacl?default", DIR+"shapes-no-service.ttl");
         });
     }
 

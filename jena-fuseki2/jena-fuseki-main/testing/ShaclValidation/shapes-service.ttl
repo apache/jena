@@ -1,0 +1,21 @@
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:     <http://www.w3.org/2002/07/owl#>
+PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
+PREFIX sh:      <http://www.w3.org/ns/shacl#>
+
+PREFIX :        <http://example/>
+
+:NS
+     sh:declare [
+     sh:prefix "" ;
+     sh:namespace "http://example/"^^xsd:anyURI;
+] .
+
+[ ] rdf:type sh:NodeShape ;
+    sh:target [
+        a sh:SPARQLTarget ;
+        sh:prefixes :NS ;
+        sh:select "SELECT ?this { SERVICE :remote { } }"
+    ];
+    .
