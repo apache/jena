@@ -1,0 +1,133 @@
+#!/usr/bin/bash
+
+function genNestedTripleTerm() {
+    local NUM=$1
+    
+    echo "PREFIX : <http://example/>"
+    echo
+    echo ":x :q "
+    
+    for ((i = 0 ; i < NUM ; i++ ))
+    do
+	echo "<<( :s :p "
+    done
+    
+    echo ":o"
+    for ((i = 0 ; i < NUM ; i++ ))
+    do
+	echo -n " )>> "
+    done
+    echo
+    echo "."
+}
+
+function genNestedReifiedTriple() {
+    local NUM=$1
+    
+    echo "PREFIX : <http://example/>"
+    echo
+    
+    for ((i = 0 ; i < NUM ; i++ ))
+    do
+	echo -n "<< :s :p "
+    done
+    
+    echo ":o"
+    for ((i = 0 ; i < NUM ; i++ ))
+    do
+	echo -n " >> "
+    done
+    echo
+    echo "."
+}
+
+function genNestedCollection() {
+    local NUM=$1
+
+    echo "PREFIX : <http://example/>"
+    echo
+    
+    echo ":x :q " 
+    
+    for ((i = 0 ; i < NUM ; i++ ))
+    do
+	echo -n "( "
+    done
+    
+    echo "1"
+    for ((i = 0 ; i < NUM ; i++ ))
+    do
+	echo -n " )"
+    done
+    echo
+    echo " ."
+}
+
+function genNestedPredObjList() {
+    local NUM=$1
+
+    echo "PREFIX : <http://example/>"
+    echo
+
+    echo ":s :q"
+    
+    for ((i = 0 ; i < NUM ; i++ ))
+    do
+	echo -n "[ :p "
+    done
+
+    echo -n ":o"
+    
+    for ((i = 0 ; i < NUM ; i++ ))
+    do
+	echo -n " ] "
+    done
+    echo
+    echo "."
+}
+
+function genNestedAnnotations() {
+    local NUM=$1
+
+    echo "PREFIX : <http://example/>"
+    echo
+
+    echo ":s :p :o "
+    
+    for ((i = 0 ; i < NUM ; i++ ))
+    do
+	echo -n "{| :q :o"
+    done
+
+    for ((i = 0 ; i < NUM ; i++ ))
+    do
+	echo -n " |}"
+    done
+    echo
+    echo " ."
+}
+
+## Before recursion counting, stackoverflow happened.
+##   reified triple -- good at 2000, bad at 3000
+##   triple-term    -- good at 2000, bad at 3000
+##   collection     -- good at 2000, bad at 3000
+##   predicate-object-list  -- good at 1000, bad at 1200
+##   annotations    -- good at 2000, bad at 2500
+
+for N in 500 1000 3000 
+do
+    echo "== NestedTripleTerm-$N"
+    genNestedTripleTerm N    > nested-$N-triple-term.ttl
+
+    echo "== NestedReifiedTriple-$N"
+    genNestedReifiedTriple N > nested-$N-reified-triple.ttl
+
+    echo "== NestedCollection-$N"
+    genNestedCollection N    > nested-$N-collection.ttl
+    
+    echo "== NestedPredObjList-$N"
+    genNestedPredObjList N   > nested-$N-pred-obj-list.ttl
+    
+    echo "== NestedAnnotations-$N"
+    genNestedAnnotations N   > nested-$N-annotations.ttl
+done

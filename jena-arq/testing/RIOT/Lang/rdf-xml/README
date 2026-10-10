@@ -1,8 +1,7 @@
-RFD/XML tests which differ from the W3C test suite.
+RDF/XML tests that differ from the W3C test suite.
 
 == xml-canon
 
-Jena RDF/XML parsing of XMLLIterals includes namespaces only if necessary.
+Jena RDF/XML parsing of XMLLiterals includes namespaces only if necessary.
 
-The W3C tests iclude the surrounding unused namespace, which makes for less portablity of
-data.
+The W3C tests may include tests that include the surrounding unused namespace.

@@ -28,14 +28,15 @@ import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.system.ParserProfile ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.tokens.Tokenizer ;
+import org.apache.jena.sparql.util.Context;
 
 /** Turtle.
  *
  * @see <a href="http://www.w3.org/TR/turtle/">http://www.w3.org/TR/turtle/</a>
  **/
 public class LangTurtle extends LangTurtleBase {
-    public LangTurtle(Tokenizer tokens, ParserProfile profile, StreamRDF dest) {
-        super(tokens, profile, dest) ;
+    public LangTurtle(Tokenizer tokens, ParserProfile profile, StreamRDF dest, Context context) {
+        super(tokens, profile, dest, context);
         setCurrentGraph(null) ;
     }
 

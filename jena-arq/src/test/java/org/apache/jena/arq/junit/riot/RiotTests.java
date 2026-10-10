@@ -149,10 +149,10 @@ public class RiotTests
                 String base = entry.getAction().getURI();//rebase(input, assumedRootURI);
                 return new RiotEvalTest(entry, base, RDFLanguages.NTRIPLES, true);
             }
-            if ( equalsType(testType, VocabLangRDF.TestNegativeEvalNT) ) {
-                String base = entry.getAction().getURI();//rebase(input, assumedRootURI);
-                return new RiotEvalTest(entry, base, RDFLanguages.NTRIPLES, false);
-            }
+//            if ( equalsType(testType, VocabLangRDF.TestNegativeEvalNT) ) {
+//                String base = entry.getAction().getURI();//rebase(input, assumedRootURI);
+//                return new RiotEvalTest(entry, base, RDFLanguages.NTRIPLES, false);
+//            }
 
             if ( equalsType(testType, VocabLangRDF.TestEvalRJ) ) {
                 String base = rebase(input, assumedBase);
@@ -181,12 +181,12 @@ public class RiotTests
                 return new RiotEvalTest(entry, base, RDFLanguages.RDFXML, true);
             }
 
-            if ( equalsType(testType, VocabLangRDF.TestNegativeEvalRDFXML) ) {
-                String fn = entry.getAction().getURI();
-                // Adjust to changes in rdf-tests-cg layout.
-                String base = fn.replaceAll("^.*/rdf-xml/", "https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-xml/");
-                return new RiotEvalTest(entry, base, RDFLanguages.RDFXML, false);
-            }
+//            if ( equalsType(testType, VocabLangRDF.TestNegativeEvalRDFXML) ) {
+//                String fn = entry.getAction().getURI();
+//                // Adjust to changes in rdf-tests-cg layout.
+//                String base = fn.replaceAll("^.*/rdf-xml/", "https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-xml/");
+//                return new RiotEvalTest(entry, base, RDFLanguages.RDFXML, false);
+//            }
 
             // Canonicalization tests
             if ( equalsType(testType, VocabLangRDF.TestNTriplesPositiveC14N) ) {

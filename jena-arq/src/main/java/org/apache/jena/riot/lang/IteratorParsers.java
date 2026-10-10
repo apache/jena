@@ -28,6 +28,7 @@ import java.util.Objects;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.RIOT;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.system.AsyncParser;
 import org.apache.jena.riot.system.ParserProfile;
@@ -36,6 +37,7 @@ import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.tokens.Tokenizer;
 import org.apache.jena.riot.tokens.TokenizerText;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.util.Context;
 
 /**
  * Parsers that support the iterator pattern for receiving the results of parsing.
@@ -43,13 +45,23 @@ import org.apache.jena.sparql.core.Quad;
 public class IteratorParsers {
 
     /**
+     * Creates an iterator over parsing of triples.
+     * This function creates a thread unless the Lang is N-Triples.
+     * @deprecated Use {@link #createIteratorTriples(InputStream, Lang, String, Context)}
+     */
+    @Deprecated(forRemoval = true)
+    public static Iterator<Triple> createIteratorTriples(InputStream input, Lang lang, String baseURI) {
+		return createIteratorTriples(input, lang, baseURI, RIOT.getContext());
+	}
+
+	/**
      * Creates an iterator over parsing of quads.
      * This function creates a thread unless the Lang is N-Triples.
      */
-    public static Iterator<Triple> createIteratorTriples(InputStream input, Lang lang, String baseURI) {
+    public static Iterator<Triple> createIteratorTriples(InputStream input, Lang lang, String baseURI, Context context) {
         Objects.requireNonNull(lang);
         if ( Lang.NTRIPLES.equals(lang) )
-            return createIteratorNTriples(input);
+            return createIteratorNTriples(input, context);
         if ( ! RDFLanguages.isTriples(lang) )
             throw new RiotException("Not a triples syntax: "+lang.getName());
         // For all other languages, we need to do the parsing asynchronously
@@ -59,49 +71,94 @@ public class IteratorParsers {
     /**
      * Create an iterator over parsing of triples.
      * This function creates a thread unless the Lang is N-Quads.
+     * @deprecated Use {@link #createIteratorQuads(InputStream, Lang, String, Context)}
      */
+    @Deprecated(forRemoval = true)
     public static Iterator<Quad> createIteratorQuads(InputStream input, Lang lang, String baseURI) {
+		return createIteratorQuads( input, lang, baseURI, RIOT.getContext());
+	}
+
+	/**
+     * Create an iterator over parsing of triples.
+     * This function creates a thread unless the Lang is N-Quads.
+     */
+    public static Iterator<Quad> createIteratorQuads(InputStream input, Lang lang, String baseURI, Context context) {
         Objects.requireNonNull(lang);
         if ( Lang.NQUADS.equals(lang) )
-            return createIteratorNQuads(input);
+            return createIteratorNQuads(input, context);
         // For all other languages, we need to do the parsing asynchronously
         return AsyncParser.asyncParseQuads(input, lang, baseURI);
     }
 
-    /** Create an iterator for parsing N-Triples. */
+    /**
+     * Create an iterator for parsing N-Triples.
+     * @deprecated Use {@link #createIteratorNTriples(InputStream, Context)}
+     */
+    @Deprecated(forRemoval = true)
     public static Iterator<Triple> createIteratorNTriples(InputStream input) {
-        return createIteratorNTriples(input, RiotLib.dftProfile());
+		return createIteratorNTriples(input, RIOT.getContext());
+	}
+
+	/** Create an iterator for parsing N-Triples. */
+    public static Iterator<Triple> createIteratorNTriples(InputStream input, Context context) {
+        return createIteratorNTriples(input, RiotLib.dftProfile(), context);
     }
 
-    /** Create an iterator for parsing N-Triples. */
+    /**
+     * Create an iterator for parsing N-Triples.
+     * @deprecated Use {@link #createIteratorNTriples(InputStream, ParserProfile, Context)}
+     */
+    @Deprecated(forRemoval = true)
     public static Iterator<Triple> createIteratorNTriples(InputStream input, ParserProfile profile) {
+		return createIteratorNTriples(input, profile, RIOT.getContext());
+	}
+
+	/** Create an iterator for parsing N-Triples. */
+    public static Iterator<Triple> createIteratorNTriples(InputStream input, ParserProfile profile, Context context) {
         // LangNTriples supports iterator use.
         Tokenizer tokenizer = TokenizerText.create().source(input).errorHandler(profile.getErrorHandler()).build();
-        return createParserNTriples(tokenizer, null, profile);
+        return createParserNTriples(tokenizer, null, profile, context);
     }
 
-    /*package*/ static LangNTriples createParserNTriples(Tokenizer tokenizer, StreamRDF dest, ParserProfile profile) {
-        LangNTriples parser = new LangNTriples(tokenizer, profile, dest);
+    /*package*/ static LangNTriples createParserNTriples(Tokenizer tokenizer, StreamRDF dest, ParserProfile profile, Context context) {
+        LangNTriples parser = new LangNTriples(tokenizer, profile, dest, context);
         return parser;
-    }
-
-    /** Create an iterator for parsing N-Quads. */
-    public static Iterator<Quad> createIteratorNQuads(InputStream input) {
-        return createIteratorNQuads(input, RiotLib.dftProfile());
     }
 
     /**
      * Create an iterator for parsing N-Quads.
+     * @deprecated Use {@link #createIteratorNQuads(InputStream, Context)}
      */
+    @Deprecated(forRemoval = true)
+    public static Iterator<Quad> createIteratorNQuads(InputStream input) {
+		return createIteratorNQuads(input, RIOT.getContext());
+	}
+
+	/** Create an iterator for parsing N-Quads. */
+    public static Iterator<Quad> createIteratorNQuads(InputStream input, Context context) {
+        return createIteratorNQuads(input, RiotLib.dftProfile(), context);
+    }
+
+    /**
+     * Create an iterator for parsing N-Quads.
+     * @deprecated Use {@link #createIteratorNQuads(InputStream, ParserProfile, Context)}
+     */
+    @Deprecated(forRemoval = true)
     public static Iterator<Quad> createIteratorNQuads(InputStream input, ParserProfile profile) {
+		return createIteratorNQuads(input, profile, RIOT.getContext());
+	}
+
+	/**
+     * Create an iterator for parsing N-Quads.
+     */
+    public static Iterator<Quad> createIteratorNQuads(InputStream input, ParserProfile profile, Context context) {
         // LangNQuads supports iterator use.
         Tokenizer tokenizer = TokenizerText.create().source(input).errorHandler(profile.getErrorHandler()).build();
-        return createParserNQuads(tokenizer, null,  profile);
+        return createParserNQuads(tokenizer, null,  profile, context);
     }
 
-    /*package*/ static LangNQuads createParserNQuads(Tokenizer tokenizer, StreamRDF dest, ParserProfile profile) {
-        LangNQuads parser = new LangNQuads(tokenizer, profile, dest);
+    /*package*/ static LangNQuads createParserNQuads(Tokenizer tokenizer, StreamRDF dest, ParserProfile profile, Context context) {
+        LangNQuads parser = new LangNQuads(tokenizer, profile, dest, context);
         return parser;
     }
-
 }

@@ -24,12 +24,14 @@ package org.apache.jena.riot.lang;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.RIOT;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.tokens.Token;
 import org.apache.jena.riot.tokens.TokenType;
 import org.apache.jena.riot.tokens.Tokenizer;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.util.Context;
 
 /**
  * N-Quads.
@@ -40,8 +42,14 @@ public class LangNQuads extends LangNTuple<Quad> {
     // Null for no graph.
     private Node currentGraph = null;
 
+    /** Use {@link #LangNQuads(Tokenizer, ParserProfile, StreamRDF, Context)} */
+    @Deprecated(forRemoval = true)
     public LangNQuads(Tokenizer tokens, ParserProfile profile, StreamRDF dest) {
-        super(tokens, profile, dest);
+        super(tokens, profile, dest, RIOT.getContext());
+    }
+
+    public LangNQuads(Tokenizer tokens, ParserProfile profile, StreamRDF dest, Context context) {
+        super(tokens, profile, dest, context);
     }
 
     @Override

@@ -1,0 +1,28 @@
+#!/usr/bin/bash
+
+function genNestedTripleTerm() {
+    local NUM=$1
+    echo "<http://example/x> <http://example/q> "
+    
+    for ((i = 0 ; i < NUM ; i++ ))
+    do
+	echo -n "<<( <http://example/s> <http://example/p> "
+    done
+    
+    echo -n "<http://example/o>"
+    for ((i = 0 ; i < NUM ; i++ ))
+    do
+	echo -n " )>> "
+    done
+    echo -n "."
+    echo
+}
+
+## Before recursion counting, stackoverflow happened.
+##   triple-term    -- good at 2000, bad at 3000
+
+for N in 500 1000 3000 
+do
+    echo "== NestedTripleTerm-$N"
+    genNestedTripleTerm N    > nested-$N-triple-term.nt
+done
