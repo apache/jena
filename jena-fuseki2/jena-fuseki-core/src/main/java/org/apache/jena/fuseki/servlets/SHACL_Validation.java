@@ -24,18 +24,28 @@ package org.apache.jena.fuseki.servlets;
 import static java.lang.String.format;
 import static org.apache.jena.fuseki.servlets.GraphTarget.determineTarget;
 
+import java.util.List;
+
 import org.apache.jena.atlas.web.MediaType;
 import org.apache.jena.fuseki.DEF;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.query.Query;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.web.HttpNames;
+import org.apache.jena.shacl.ShaclException;
 import org.apache.jena.shacl.ShaclValidator;
 import org.apache.jena.shacl.Shapes;
 import org.apache.jena.shacl.ValidationReport;
+import org.apache.jena.shacl.lib.ShLib;
+import org.apache.jena.shacl.vocabulary.SHACL;
+import org.apache.jena.sparql.syntax.ElementService;
+import org.apache.jena.sparql.syntax.ElementVisitor;
+import org.apache.jena.sparql.syntax.ElementVisitorBase;
+import org.apache.jena.sparql.syntax.ElementWalker;
 import org.apache.jena.system.G;
 import org.apache.jena.vocabulary.OWL1;
 import org.apache.jena.web.HttpSC;
@@ -68,16 +78,13 @@ public class SHACL_Validation extends BaseActionREST { //ActionREST {
         Graph shapesGraph;
         try {
             shapesGraph = ActionLib.readFromRequest(action, Lang.TTL);
-            if ( G.contains(shapesGraph, null, owlImports, null) ) {
-                action.log.error(format("[%d] shacl: owl:imports not supported for remote validation", action.id));
-                // Does not return.
-                ServletOps.errorBadRequest("owl:imports not allowed");
-            }
         } catch (RiotException ex) {
             shapesGraph = null;
             // Does not return.
             ServletOps.errorBadRequest(ex.getMessage());
         }
+
+        checkShapes(action, shapesGraph);
 
         action.beginRead();
         try {
@@ -95,13 +102,20 @@ public class SHACL_Validation extends BaseActionREST { //ActionREST {
                 targetNode = NodeFactory.createURI(x);
             }
 
-            // This does not resolve owl:imports.
-            // Doing so would lead to SSRF (server-side request forgery)
-            // with the server making a URL access on the users behalf.
-            Shapes shapes = Shapes.parse(shapesGraph);
-            ValidationReport report = ( targetNode == null )
-                ? ShaclValidator.get().validate(shapesGraph, data)
-                : ShaclValidator.get().validate(shapesGraph, data, targetNode);
+            ValidationReport report;
+            try {
+                // This does not resolve owl:imports.
+                // Doing so would lead to SSRF (server-side request forgery)
+                // with the server making a URL access on the users behalf.
+                Shapes shapes = Shapes.parse(shapesGraph);
+                report = ( targetNode == null )
+                        ? ShaclValidator.get().validate(shapesGraph, data)
+                        : ShaclValidator.get().validate(shapesGraph, data, targetNode);
+            } catch (Throwable th) {
+                // General catch-all.
+                ServletOps.errorBadRequest("SHACL Validation request error: "+th.getMessage());
+                throw th;
+            }
 
             if ( report.conforms() )
                 action.log.info(format("[%d] shacl: conforms", action.id));
@@ -114,4 +128,61 @@ public class SHACL_Validation extends BaseActionREST { //ActionREST {
             action.endRead();
         }
     }
+
+    // Check the graph in the request.
+    private static void checkShapes(HttpAction action, Graph shapesGraph) {
+        try {
+            checkForOwlImports(action, shapesGraph);
+            checkForService(shapesGraph);
+        } catch (ActionErrorException ex) {
+            throw ex;
+        } catch (ShaclException ex) {
+            action.log.error(format("[%d] shacl: bad request: %s", action.id, ex.getMessage()));
+            ServletOps.errorBadRequest("Bad SHACL validation request: " + ex.getMessage());
+        }
+    }
+
+    private static void checkForOwlImports(HttpAction action, Graph shapesGraph) {
+        if ( G.contains(shapesGraph, null, owlImports, null) ) {
+            action.log.error(format("[%d] shacl: owl:imports not supported for remote validation", action.id));
+            // Does not return.
+            ServletOps.errorBadRequest("owl:imports not allowed");
+        }
+    }
+
+    // The SHACL vocabulary that is used to give executable queries.
+    static Node[] predicates = { SHACL.select, SHACL.ask, SHACL.construct };
+    public static void checkForService(Graph shapesGraph) {
+        for ( Node p : predicates ) {
+            checkForService(shapesGraph, p);
+        }
+    }
+
+    /**
+     * Check a shapes graph for use of SERVICE in SPARQ-based extensions such as
+     * {@code sh:target [ sh:select ... ]}.
+     * This checking is regardless of the use of the query
+     * (e.g. it is not only applying to forms that do not allow SERVICE
+     * such as pre-binding rules).
+     */
+    private static void checkForService(Graph shapesGraph, Node predicate) {
+            List<Node> queryNodes = G.listPO(shapesGraph, predicate, null);
+            G.iterSubjectsOfPredicate(shapesGraph, predicate).forEachRemaining(qNode->{
+                Query q = ShLib.extractSPARQLQuery(shapesGraph, qNode);
+                checkForService(q);
+            });
+    }
+
+    static void checkForService(Query query) {
+        //private static
+        ElementWalker.walk(query.getQueryPattern(), eltCheckServiceVisitor);
+    }
+
+    private static ElementVisitor eltCheckServiceVisitor = new ElementVisitorBase() {
+        @Override
+        public void visit(ElementService el) {
+            throw new ShaclException("SERVICE found in query");
+        }
+    };
+
 }
