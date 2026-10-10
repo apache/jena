@@ -1,0 +1,33 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0v../TURTLE
+
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
+
+PREFIX rdft:   <http://www.w3.org/ns/rdftest#>
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "N-Triples tests (Additional tests)" ;
+    mf:entries
+    (
+       <#ntriples-nested-500-triple-term>
+       <#ntriples-nested-1000-triple-term>
+       <#ntriples-nested-3000-triple-term>
+    ) .
+
+## Nested structures
+
+<#ntriples-nested-500-triple-term>  rdf:type rdft:TestNTriplesPositiveSyntax ;
+   mf:name    "nested-500-triple-term.nt" ;
+   mf:action  <nested-500-triple-term.nt> ;
+   .
+
+<#ntriples-nested-1000-triple-term>  rdf:type rdft:TestNTriplesNegativeSyntax ;
+   mf:name    "nested-1000-triple-term.nt" ;
+   mf:action  <nested-1000-triple-term.nt> ;
+   .
+
+<#ntriples-nested-3000-triple-term>  rdf:type rdft:TestNTriplesNegativeSyntax ;
+   mf:name    "nested-3000-triple-term.nt" ;
+   mf:action  <nested-3000-triple-term.nt> ;
+   .

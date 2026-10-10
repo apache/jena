@@ -21,10 +21,14 @@
 
 package org.apache.jena.riot.lang;
 
+import java.util.Optional;
+
 import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RDFParserBuilder;
+import org.apache.jena.riot.RIOT;
+import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
 
 /** Helper code for RIOT language parsing tests. */
@@ -46,6 +50,19 @@ class ParserTests {
         StreamRDFCounting dest = StreamRDFLib.count();
         parser().fromString(string).lang(lang).parse(dest);
         return dest.count();
+    }
+
+    /**
+     * Run with the nesting depth set.
+     * If the depth is given as -1, don't the depth and pick up the system default.
+     *
+     */
+    static void runWithNestingDepth(String text, Optional<Integer> N, Lang lang) {
+        StreamRDF destination = StreamRDFLib.sinkNull();
+        RDFParserBuilder builder = RDFParser.fromString(text, lang);
+        if ( N.isPresent() )
+            builder.set(RIOT.symTurtleParserRecursionDepth, N.get());
+        builder.build().parse(destination);
     }
 }
 

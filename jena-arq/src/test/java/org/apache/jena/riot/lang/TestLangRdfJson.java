@@ -39,6 +39,7 @@ import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.RIOT;
 import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.riot.tokens.Tokenizer;
@@ -463,7 +464,7 @@ public class TestLangRdfJson {
         Tokenizer tokenizer = TokenizerText.create().source(in).build();
         StreamRDFCounting sink = StreamRDFLib.count();
         // IllegalArgumentException - not a TokenizerJSON.
-        assertThrows(IllegalArgumentException.class, ()->new LangRDFJSON(tokenizer, RiotLib.dftProfile(), sink));
+        assertThrows(IllegalArgumentException.class, ()->new LangRDFJSON(tokenizer, RiotLib.dftProfile(), sink, RIOT.getContext()));
     }
 
     private <T extends Throwable> T parseException(Class<T> exClass, Executable action) {

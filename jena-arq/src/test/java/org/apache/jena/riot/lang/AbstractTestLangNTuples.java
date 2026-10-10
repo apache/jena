@@ -21,6 +21,7 @@
 
 package org.apache.jena.riot.lang;
 
+import static org.apache.jena.riot.lang.ParserTests.runWithNestingDepth;
 import static org.apache.jena.riot.system.ErrorHandlerFactory.errorHandlerNoLogging;
 import static org.apache.jena.riot.system.ErrorHandlerFactory.getDefaultErrorHandler;
 import static org.apache.jena.riot.system.ErrorHandlerFactory.setDefaultErrorHandler;
@@ -28,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayInputStream;
+import java.util.Optional;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -35,13 +37,13 @@ import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.CharSpace;
 import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.irix.IRIs;
+import org.apache.jena.riot.*;
 import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExError;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RIOT;
 import org.apache.jena.riot.system.*;
 import org.apache.jena.riot.tokens.Tokenizer;
 import org.apache.jena.riot.tokens.TokenizerText;
@@ -99,6 +101,26 @@ abstract public class AbstractTestLangNTuples
     public void tuple_5() {
         long count = parseCount("<http://example/x> <http://example/y> \"123\"@lang.");
         assertEquals(1, count);
+    }
+
+    @Test
+    public void tuple_nesting_depth() {
+        String x = """
+                <http://example/s> <http://example/p> <<( <http://example/s> <http://example/q> <<( <http://example/a> <http://example/b> <http://example/c> )>> )>> .
+                """;
+        LogCtl.withLevel(SysRIOT.getLogger(), "FATAL", ()->{
+            runWithNestingDepth(x, Optional.of(2), getLang());
+            assertThrows(RiotException.class, ()->runWithNestingDepth(x, Optional.of(1), getLang())) ;
+            runWithNestingDepth(x, Optional.empty(), getLang());
+
+            // TODO
+//            // Having changed the nesting depth, check the default still behaves as expected.
+//            String fn500 = "testing/RIOT/Lang/Turtle/nested-500-triple-term.ttl";
+//            String fn1000 = "testing/RIOT/Lang/Turtle/nested-1000-triple-term.ttl";
+//            // Check the default limit applies after parser-run specific manipulation
+//            RDFParser.source(fn500).toGraph();
+//            assertThrows(RiotException.class, ()-> RDFParser.source(fn1000).toGraph());
+        });
     }
 
     // Test parse errors interface.

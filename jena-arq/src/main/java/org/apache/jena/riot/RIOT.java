@@ -123,6 +123,13 @@ public class RIOT {
     private static String RDFXML_SYMBOL_BASE = "http://jena.apache.org/riot/rdfxml#";
 
     /**
+     * Maximum depth for nested predicate-objectlist, collections, triple terms and reified triples.
+     * This stops potential stack overflow.
+     */
+    public static final Symbol symTurtleParserRecursionDepth = SystemARQ.allocSymbol(TURTLE_SYMBOL_BASE, "recursionLimit");
+
+
+    /**
      * Printing style - {@code PREFIX} or {@code @prefix}
      *  - {@link DirectiveStyle}, one of {@code AT} or {@code KEYWORD}.
      * <p>

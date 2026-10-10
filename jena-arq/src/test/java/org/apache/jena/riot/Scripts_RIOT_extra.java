@@ -32,9 +32,6 @@ import org.apache.jena.arq.junit.Scripts;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class Scripts_RIOT_extra {
 
-    // Turtle2
-    // RDF/JSON
-
     @Order(1)
     @TestFactory
     @DisplayName("RIOT - RDF/JSON")
@@ -44,8 +41,16 @@ public class Scripts_RIOT_extra {
 
     @Order(2)
     @TestFactory
-    @DisplayName("RIOT - Turtle2")
-    public Stream<DynamicNode> testFactory_turtle2() {
-        return Scripts.manifestTestFactory(TestConsts.RIOT_TESTS_DIR+"Turtle2/manifest.ttl");
+    @DisplayName("RIOT - Turtle (extra)")
+    public Stream<DynamicNode> testFactory_turtle_extra() {
+        return Scripts.manifestTestFactory(TestConsts.RIOT_TESTS_DIR+"Turtle/manifest.ttl");
     }
+
+    @Order(3)
+    @TestFactory
+    @DisplayName("RIOT - N-triples (extra)")
+    public Stream<DynamicNode> testFactory_ntriples_extra() {
+        return Scripts.manifestTestFactory(TestConsts.RIOT_TESTS_DIR+"N-Triples/manifest.ttl");
+    }
+
 }

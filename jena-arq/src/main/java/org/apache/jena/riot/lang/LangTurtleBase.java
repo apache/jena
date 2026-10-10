@@ -33,6 +33,7 @@ import org.apache.jena.riot.tokens.Token;
 import org.apache.jena.riot.tokens.TokenType;
 import org.apache.jena.riot.tokens.Tokenizer;
 import org.apache.jena.sparql.graph.NodeConst;
+import org.apache.jena.sparql.util.Context;
 
 /**
  * The main engine for all things Turtle-ish (Turtle, TriG).
@@ -58,6 +59,20 @@ public abstract class LangTurtleBase extends LangBase {
     private Node                   currentGraph   = null;
 
     protected final PrefixMap prefixMap;
+    // The depth of nested structure
+    //  * lists ()
+    //  * predicate object lists []
+    //  * triple terms <<()>>
+    //  * reified triples
+    //  * annotations {| |}
+    //
+    // These all consume stack so we have one limit to stop stack overflow
+    // which throw a more meaningful exception and leaves the thread in a
+    // usable state.
+    private final int recursionLimit;
+    private static final int defaultRecursionLimit = 500;
+
+    private int nestingDepth = 0;
 
     protected final Node getCurrentGraph() {
         return currentGraph;
@@ -67,9 +82,10 @@ public abstract class LangTurtleBase extends LangBase {
         this.currentGraph = graph;
     }
 
-    protected LangTurtleBase(Tokenizer tokens, ParserProfile profile, StreamRDF dest) {
-        super(tokens, profile, dest);
+    protected LangTurtleBase(Tokenizer tokens, ParserProfile profile, StreamRDF dest, Context context) {
+        super(tokens, profile, dest,context);
         prefixMap = profile.getPrefixMap();
+        recursionLimit = chooseRecursionLimit(context, defaultRecursionLimit);
     }
 
     @Override
@@ -324,24 +340,29 @@ public abstract class LangTurtleBase extends LangBase {
     // [26]  reifiedTriple ::= '<<' rtSubject verb rtObject reifier? '>>'
     // Assumes looking at << (LT2) on entry
     private Node parseReifiedTriple() {
-        Token startToken = nextToken(); // LT2
-        long startLine = startToken.getLine();
-        long startColumn = startToken.getColumn();
+        if ( nestingDepth >= recursionLimit )
+            exception(peekToken(), "Recursion limit exceeded for triple terms ("+nestingDepth+")");
+        nestingDepth++;
+        try {
+            Token startToken = nextToken(); // LT2
+            long startLine = startToken.getLine();
+            long startColumn = startToken.getColumn();
 
-        Node s = rtSubject(startToken);
-        Node p = predicate();
-        // rtObject - no blankPredicateObjectList or collection.
-        Node o = rtObject(startToken);
+            Node s = rtSubject(startToken);
+            Node p = predicate();
+            // rtObject - no blankPredicateObjectList or collection.
+            Node o = rtObject(startToken);
 
-        Node reif = possibleReifier(s, p, o, startLine, startColumn);
+            Node reif = possibleReifier(s, p, o, startLine, startColumn);
 
-        if ( ! lookingAt(GT2) )
-            exception(peekToken(), "Expected >>, found %s", peekToken().text());
-        nextToken();
+            if ( ! lookingAt(GT2) )
+                exception(peekToken(), "Expected >>, found %s", peekToken().text());
+            nextToken();
 
-        Node tripleTerm = profile.createTripleTerm(s, p, o, startLine, startColumn);
-        emitTriple(reif, NodeConst.nodeReifies, tripleTerm);
-        return reif;
+            Node tripleTerm = profile.createTripleTerm(s, p, o, startLine, startColumn);
+            emitTriple(reif, NodeConst.nodeReifies, tripleTerm);
+            return reif;
+        } finally { nestingDepth-- ; }
     }
 
     // -- rtSubject rules
@@ -392,16 +413,22 @@ public abstract class LangTurtleBase extends LangBase {
     }
 
     private Node parseTripleTerm() {
-        Token entryToken = nextToken();
-        Node s = ttSubject();
-        if ( s.isTripleTerm() )
-            exception(entryToken, "Subject of a triple term is a triple term");
-        Node p = predicate();
-        Node o = ttObject();
-        if ( ! lookingAt(R_TRIPLE) )
-            exception(peekToken(), "Expected )>>, found %s", peekToken().text());
-        nextToken();
-        return profile.createTripleTerm(s, p, o, entryToken.getLine(), entryToken.getColumn());
+        if ( nestingDepth >= recursionLimit )
+            exception(peekToken(), "Recursion limit exceeded for triple terms ("+nestingDepth+")");
+        nestingDepth++;
+
+        try {
+            Token entryToken = nextToken();
+            Node s = ttSubject();
+            if ( s.isTripleTerm() )
+                exception(entryToken, "Subject of a triple term is a triple term");
+            Node p = predicate();
+            Node o = ttObject();
+            if ( ! lookingAt(R_TRIPLE) )
+                exception(peekToken(), "Expected )>>, found %s", peekToken().text());
+            nextToken();
+            return profile.createTripleTerm(s, p, o, entryToken.getLine(), entryToken.getColumn());
+        } finally { nestingDepth--; }
     }
 
     protected Node possibleReifier(Node s, Node p, Node o, long line, long column) {
@@ -699,14 +726,20 @@ public abstract class LangTurtleBase extends LangBase {
                 Token tNext = nextToken();
                 if ( lookingAt(R_ANN) )
                     exception(tNext, "Empty annotation");
-                predicateObjectList(reif);
+                if ( nestingDepth >= recursionLimit )
+                    exception(peekToken(), "Recursion limit exceeded for annotation ("+nestingDepth+")");
+                nestingDepth++;
+                try {
+                    predicateObjectList(reif);
+                } finally { nestingDepth--; }
                 expect("Missing end annotation", R_ANN);
             }
         }
     }
 
     // A structure of triples that itself generates a node.
-    // Special checks for [] and ().
+    // Special checks for [], ().
+    // Handles << and <<(.
 
     // XXX Use object()
     protected final Node triplesNode() { // == [12] object in the grammar.
@@ -714,10 +747,13 @@ public abstract class LangTurtleBase extends LangBase {
             Node n = node();
             return n;
         }
+
         if ( lookingAt(LT2) )
             return parseReifiedTriple();
         if ( lookingAt(L_TRIPLE) )
+            // triple depth
             return parseTripleTerm();
+        // Keywords true and false.
         Node n = possibleBooleanLiteral();
         if ( n != null )
             return n;
@@ -727,22 +763,32 @@ public abstract class LangTurtleBase extends LangBase {
     protected final boolean peekTriplesNodeCompound() {
         if ( lookingAt(LBRACKET) )
             return true;
-        if ( lookingAt(LBRACE) )
-            return true;
         if ( lookingAt(LPAREN) )
+            return true;
+        if ( lookingAt(LBRACE) )
+            // Extensions point for N3-style {} graph literals.
             return true;
         return false;
     }
 
     protected final Node triplesNodeCompound() {
-        if ( lookingAt(LBRACKET) )
-            return triplesBlankNode();
-        if ( lookingAt(LBRACE) )
-            return triplesFormula();
-        if ( lookingAt(LPAREN) )
-            return triplesList();
+
+        if ( nestingDepth >= recursionLimit )
+            exception(peekToken(), "Recursion limit exceeded for nested structures("+nestingDepth+")");
+
+        try {
+            nestingDepth++;
+            if ( lookingAt(LBRACKET) )
+                return triplesBlankNode();
+            if ( lookingAt(LPAREN) )
+                return triplesList();
+            if ( lookingAt(LBRACE) )
+                return triplesFormula();
+        } finally { nestingDepth--; }
+
         exception(peekToken(), "Unrecognized (expected an RDF Term): " + peekToken());
         return null;
+
     }
 
     protected final Node triplesBlankNode() {

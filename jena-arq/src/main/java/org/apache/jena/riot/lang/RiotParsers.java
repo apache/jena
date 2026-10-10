@@ -146,7 +146,7 @@ public class RiotParsers {
 
         @Override
         protected LangRIOT create(Tokenizer tokenizer, StreamRDF output, Context context) {
-            return new LangTurtle(tokenizer, super.parserProfile, output);
+            return new LangTurtle(tokenizer, super.parserProfile, output, context);
         }
     }
 
@@ -157,7 +157,7 @@ public class RiotParsers {
 
         @Override
         protected LangRIOT create(Tokenizer tokenizer, StreamRDF output, Context context) {
-            return new LangTriG(tokenizer, super.parserProfile, output);
+            return new LangTriG(tokenizer, super.parserProfile, output, context);
         }
     }
 
@@ -168,7 +168,7 @@ public class RiotParsers {
 
         @Override
         protected LangRIOT create(Tokenizer tokenizer, StreamRDF output, Context context) {
-            return new LangNTriples(tokenizer, super.parserProfile, output);
+            return new LangNTriples(tokenizer, super.parserProfile, output, context);
         }
     }
 
@@ -179,10 +179,9 @@ public class RiotParsers {
 
         @Override
         protected LangRIOT create(Tokenizer tokenizer, StreamRDF output, Context context) {
-            return new LangNQuads(tokenizer, super.parserProfile, output);
+            return new LangNQuads(tokenizer, super.parserProfile, output, context);
         }
     }
-
 
     private static class ReaderRIOT_RDFJSON implements ReaderRIOT {
 
@@ -195,14 +194,14 @@ public class RiotParsers {
         @Override
         public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
             Tokenizer tokenizer = new TokenizerJSON(PeekReader.makeUTF8(in));
-            LangRDFJSON parser = new LangRDFJSON(tokenizer, parserProfile, output);
+            LangRDFJSON parser = new LangRDFJSON(tokenizer, parserProfile, output, context);
             parser.parse();
         }
 
         @Override
         public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
             Tokenizer tokenizer = new TokenizerJSON(PeekReader.make(reader));
-            LangRDFJSON parser = new LangRDFJSON(tokenizer, parserProfile, output);
+            LangRDFJSON parser = new LangRDFJSON(tokenizer, parserProfile, output, context);
             parser.parse();
         }
     }

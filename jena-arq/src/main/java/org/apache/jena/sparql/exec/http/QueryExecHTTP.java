@@ -403,7 +403,7 @@ public class QueryExecHTTP implements QueryExec {
         InputStream input = p.getLeft();
         Lang lang = p.getRight();
         // Base URI?
-        Iterator<Triple> iter = IteratorParsers.createIteratorTriples(input, lang, null);
+        Iterator<Triple> iter = IteratorParsers.createIteratorTriples(input, lang, null, getContext());
         return Iter.onCloseIO(iter, input);
     }
 
@@ -412,7 +412,7 @@ public class QueryExecHTTP implements QueryExec {
         Pair<InputStream, Lang> p = execRdfWorker(datasetAcceptHeader, WebContent.contentTypeNQuads);
         InputStream input = p.getLeft();
         Lang lang = p.getRight();
-        Iterator<Quad> iter = IteratorParsers.createIteratorQuads(input, lang, null);
+        Iterator<Quad> iter = IteratorParsers.createIteratorQuads(input, lang, null, getContext());
         return Iter.onCloseIO(iter, input);
     }
 

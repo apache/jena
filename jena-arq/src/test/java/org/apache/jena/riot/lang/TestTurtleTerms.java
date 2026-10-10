@@ -254,7 +254,7 @@ public class TestTurtleTerms
     public static void parse(String testString) {
         Tokenizer tokenizer = TokenizerText.create().fromString(prefixMap+"\n"+testString).build();
         StreamRDF sink = StreamRDFLib.sinkNull();
-        LangTurtle parser = new LangTurtle(tokenizer, RiotLib.dftProfile(), sink);
+        LangTurtle parser = new LangTurtle(tokenizer, RiotLib.dftProfile(), sink, null);
         parser.parse();
         tokenizer.close();
     }

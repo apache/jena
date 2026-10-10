@@ -21,16 +21,14 @@
 
 package org.apache.jena.riot.lang;
 
+import static org.apache.jena.riot.lang.ParserTests.runWithNestingDepth;
 import static org.apache.jena.riot.system.ErrorHandlerFactory.errorHandlerNoLogging;
 import static org.apache.jena.riot.system.ErrorHandlerFactory.getDefaultErrorHandler;
 import static org.apache.jena.riot.system.ErrorHandlerFactory.setDefaultErrorHandler;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.StringReader;
+import java.util.Optional;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -43,12 +41,10 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.riot.*;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExError;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.system.ErrorHandler;
 import org.apache.jena.sparql.sse.SSE;
 
@@ -292,6 +288,42 @@ public class TestLangTurtle
         parseException(ExFatal.class, ()->parseOneTriple("@version \"\"\"1.2\"\"\" <x:s> <x:p> 123 . "));
     }
 
+    // Nest structures.
+    // Most of the testing by manifest in RIOT/Lang/Turtle2 .
+    // Here, we test that the context setting works.
+
+    @Test
+    public void turtle_nesting_depth_1() {
+        String x = """
+                PREFIX : <http://example/>
+                :s :p <<( :s :q <<( :a :b :c )>> )>> .
+                """;
+        runWithNestingDepth(x, Optional.of(2), Lang.TURTLE);
+        assertThrows(RiotException.class, ()->runWithNestingDepth(x, Optional.of(1), Lang.TURTLE)) ;
+        runWithNestingDepth(x, Optional.empty(), Lang.TURTLE);
+
+        // Having changed the nesting depth, check the default still behaves as expected.
+        String fn500 = "testing/RIOT/Lang/Turtle/nested-500-triple-term.ttl";
+        String fn1000 = "testing/RIOT/Lang/Turtle/nested-1000-triple-term.ttl";
+        // Check the default limit applies after parser-run specific manipulation
+        RDFParser.source(fn500).toGraph();
+        assertThrows(RiotException.class, ()-> RDFParser.source(fn1000).toGraph());
+    }
+
+    @Test
+    public void turtle_nesting_depth_2() {
+        // Mixed recursion.
+        String x = """
+                PREFIX : <http://example/>
+                :s :p [ :q ( << :s :q <<( :a :b :c )>> >> ) ].
+                """;
+        runWithNestingDepth(x, Optional.of(4), Lang.TURTLE);
+        assertThrows(RiotException.class, ()->runWithNestingDepth(x, Optional.of(3), Lang.TURTLE)) ;
+        runWithNestingDepth(x, Optional.empty(), Lang.TURTLE);
+    }
+
+    // Surrogates.
+
     // U+D800-U+DBFF is a high surrogate (first part of a pair)
     // U+DC00-U+DFFF is a low surrogate (second part of a pair)
     // so D800-DC00 is legal.
@@ -348,7 +380,7 @@ public class TestLangTurtle
         parseException(ExFatal.class, ()->parseOneTriple("<x:s> <x:p> '\\udc00\\ud800' . "));
     }
 
-    // Compilation failure. Can't write \ud800
+//    // Compilation failure. Can't write \ud800
 //    @Test
 //    public void turtle_bad_surrogate_6() {
 //        // raw low - escaped high
@@ -361,10 +393,10 @@ public class TestLangTurtle
         parseException(ExFatal.class, ()->parseOneTriple("<x:s> <x:p> '\\ud800\ud800' . "));
     }
 
-    // No Formulae. Not trig.
+    // Not TriG and no formula (N3-style)
     @Test
-    public void turtle_50()     { parseException(ExFatal.class, "@prefix ex:  <http://example/> .  { ex:s ex:p 123 . } "); }
+    public void turtle_no_blocks_1()     { parseException(ExFatal.class, "@prefix ex:  <http://example/> .  { ex:s ex:p 123 . } "); }
 
     @Test
-    public void turtle_60()     { parseException(ExWarning.class, "@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> . <x> <p> 'number'^^xsd:byte }"); }
+    public void turtle_invalid_lexical()     { parseException(ExWarning.class, "@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> . <x> <p> 'number'^^xsd:byte }"); }
 }
