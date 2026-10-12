@@ -118,7 +118,7 @@
     <ver.org.openjdk.jmh>1.37</ver.org.openjdk.jmh>
 
     <!-- GeoSPARQL related -->
-    <ver.kryo>5.6.2</ver.kryo>
+    <ver.kryo>5.7.0</ver.kryo>
     <!-- Used in jena-fuseki-geosparql -->
     <ver.jcommander>1.82</ver.jcommander>
     <ver.sis>1.6</ver.sis>
