@@ -88,13 +88,6 @@ public class TReadAppendFileTransport extends TTransport {
         file.sync();
     }
 
-//    // libthrift 0.14.0
-//    @Override
-//    public TConfiguration getConfiguration() {
-//        throw new NotImplementedException("TReadAppendFileTransport.getConfiguration");
-//    }
-
-    // libthrift 0.24.0
     @Override
     public TConfiguration getConfiguration() {
         return new TConfiguration();
@@ -107,5 +100,8 @@ public class TReadAppendFileTransport extends TTransport {
     @Override
     public void checkReadBytesAvailable(long numBytes) throws TTransportException {
     }
+
+    @Override
+    public void resetMessageSizeAndConsumedBytes(long newSize) throws TTransportException {}
 }
 
