@@ -100,7 +100,7 @@ public class ApplyRDFS<X, T> extends CxtInf<X,T>{
      * [rdfs6: (?a ?p ?b), (?p rdfs:subPropertyOf ?q) -> (?a ?q ?b)]
      */
     private void subProperty(X s, X p, X o, Output<X> out) {
-        if ( SHORT_CIRCUIT && ! setup.hasClassDeclarations() )
+        if ( SHORT_CIRCUIT && ! setup.hasPropertyDeclarations() )
             return;
         Set<X> x = setup.getSuperProperties(p);
         x.forEach(p2 -> derive(s, p2, o, out));
@@ -115,7 +115,7 @@ public class ApplyRDFS<X, T> extends CxtInf<X,T>{
             if ( ! setup.hasDomainDeclarations() )
                 return;
         }
-        Set<X> x = setup.getDomain(p);
+        Set<X> x = getDomainInc(p);
         x.forEach(c -> {
             derive(s, rdfType, c, out);
             subClass(s, rdfType, c, out);
@@ -131,7 +131,7 @@ public class ApplyRDFS<X, T> extends CxtInf<X,T>{
             if ( ! setup.hasRangeDeclarations() )
                 return;
         }
-        Set<X> x = setup.getRange(p);
+        Set<X> x = getRangeInc(p);
         if (!mapper.isLiteral(o)) {
             x.forEach(c -> {
                 derive(o, rdfType, c, out);
