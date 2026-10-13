@@ -309,7 +309,7 @@ class NVCompare {
                 }
 
                 // same lang tag (case insensitive)
-                x = strcompare(node1.getLiteralLexicalForm(), node2.getLiteralLexicalForm());
+                x = XSDFuncOp.compareString(nv1, nv2);
                 if ( x != CMP_EQUAL )
                     return x;
                 // Same lexical forms, same lang tag by value

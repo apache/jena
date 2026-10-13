@@ -34,6 +34,7 @@ import org.apache.jena.sparql.expr.nodevalue.TestNodeValueSortKey;
     , TestNodeValue.class
     , TestExpressions.class
     , TestExpressions2.class
+    , TestGH4300LangString.class
     , TestExpressions3.class
     , TestExpressions4.class
     , TestCastXSD.class
