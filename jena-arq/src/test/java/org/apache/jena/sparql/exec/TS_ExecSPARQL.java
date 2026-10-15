@@ -24,11 +24,14 @@ package org.apache.jena.sparql.exec;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
+import org.apache.jena.sparql.exec.http.TestServiceCancellation;
+
 @Suite
 @SelectClasses({
     TestExecEnvironment.class
     , TestQueryExecDataset.class
     , TestQueryExecution.class
+    , TestServiceCancellation.class
 } )
 
 public class TS_ExecSPARQL {

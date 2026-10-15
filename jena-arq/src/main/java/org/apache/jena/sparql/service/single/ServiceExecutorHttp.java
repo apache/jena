@@ -29,10 +29,10 @@ import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.iterator.QueryIter;
+import org.apache.jena.sparql.engine.iterator.QueryIter1;
 import org.apache.jena.sparql.engine.iterator.QueryIterCommonParent;
 import org.apache.jena.sparql.engine.iterator.QueryIterSingleton;
 import org.apache.jena.sparql.exec.http.Service;
-import org.apache.jena.sparql.util.Context;
 
 /** The default HTTP service executor implementation */
 public class ServiceExecutorHttp
@@ -41,11 +41,10 @@ public class ServiceExecutorHttp
     @Override
     public QueryIterator createExecution(OpService opExecute, OpService opOriginal,
                                          Binding binding, ExecutionContext execCxt) {
-        Context context = execCxt.getContext();
         boolean silent = opExecute.getSilent();
 
         try {
-            QueryIterator qIter = Service.exec(opExecute, context);
+            QueryIterator qIter = Service.exec(opExecute, execCxt);
 
             // ---- Execute
             if ( qIter == null )
@@ -54,7 +53,8 @@ public class ServiceExecutorHttp
             qIter = QueryIter.makeTracked(qIter, execCxt);
             // Need to put the outerBinding as parent to every binding of the service call.
             // There should be no variables in common because of the OpSubstitute.substitute
-            return new QueryIterCommonParent(qIter, binding, execCxt);
+            qIter = new QueryIterCommonParent(qIter, binding, execCxt);
+            return silent ? new QueryIterServiceSilent(qIter, binding, opExecute, execCxt) : qIter;
         } catch (RuntimeException ex) {
             if ( silent ) {
                 Log.warn(this, "SERVICE " + NodeFmtLib.strTTL(opExecute.getService()) + " : " + ex.getMessage());
@@ -64,5 +64,65 @@ public class ServiceExecutorHttp
             }
             throw ex;
         }
+    }
+
+    private static class QueryIterServiceSilent extends QueryIter1 {
+        private final Binding fallback;
+        private final OpService service;
+        private boolean fallbackPending = false;
+        private boolean fallbackReturned = false;
+
+        QueryIterServiceSilent(QueryIterator input, Binding fallback, OpService service, ExecutionContext execCxt) {
+            super(input, execCxt);
+            this.fallback = fallback;
+            this.service = service;
+        }
+
+        @Override
+        protected boolean hasNextBinding() {
+            if ( fallbackPending )
+                return true;
+            if ( fallbackReturned )
+                return false;
+            try {
+                return getInput().hasNext();
+            } catch (RuntimeException ex) {
+                handleFailure(ex);
+                return true;
+            }
+        }
+
+        @Override
+        protected Binding moveToNextBinding() {
+            if ( fallbackPending ) {
+                fallbackPending = false;
+                fallbackReturned = true;
+                return fallback;
+            }
+            try {
+                return getInput().next();
+            } catch (RuntimeException ex) {
+                handleFailure(ex);
+                fallbackPending = false;
+                fallbackReturned = true;
+                return fallback;
+            }
+        }
+
+        private void handleFailure(RuntimeException ex) {
+            Log.warn(this, "SERVICE " + NodeFmtLib.strTTL(service.getService()) + " : " + ex.getMessage());
+            try {
+                getInput().close();
+            } catch (RuntimeException closeException) {
+                ex.addSuppressed(closeException);
+            }
+            fallbackPending = true;
+        }
+
+        @Override
+        protected void requestSubCancel() {}
+
+        @Override
+        protected void closeSubIterator() {}
     }
 }
