@@ -41,6 +41,7 @@ import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.tdb2.TDB2;
 import org.apache.jena.tdb2.TDBException;
+import org.apache.jena.tdb2.solver.OpExecutorTDB2;
 import org.apache.jena.tdb2.store.NodeId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -122,6 +123,10 @@ public class SystemTDB
 
     /** Experimental : triple and quad filtering at scan level */
     public static final Symbol symTupleFilter       = allocSymbol("tupleFilter");
+
+    /** Allow skip scans for {@code OpDistinct} and {@code OpGroup} operators.
+     *  Absent value is treated as allowed. See {@link OpExecutorTDB2}. */
+    public static final Symbol symSkipScan          = allocSymbol("skipScan");
 
     private static final String PropertyFileKey1    = tdbPropertyRoot+".settings";
     private static final String PropertyFileKey2    = tdbSymbolPrefix+":settings";
