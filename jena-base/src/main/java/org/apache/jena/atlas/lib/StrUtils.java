@@ -103,7 +103,7 @@ public class StrUtils //extends StringUtils
         return Objects.toString(x, "<null>");
     }
 
-    /** Split but also trim whiespace. */
+    /** Split but also trim whitespace. */
     public static String[] split(String s, String splitStr) {
         return stream(s.split(splitStr)).map(String::trim).toArray(String[]::new) ;
     }
