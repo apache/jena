@@ -1,0 +1,13 @@
+{
+  "head": {
+    "vars": [ "distinct" , "plain" ]
+  } ,
+  "results": {
+    "bindings": [
+      {
+        "distinct": { "type": "literal" , "value": "" } ,
+        "plain": { "type": "literal" , "value": "" }
+      }
+    ]
+  }
+}
