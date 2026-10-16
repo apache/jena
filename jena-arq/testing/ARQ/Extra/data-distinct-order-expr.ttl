@@ -1,0 +1,5 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+<urn:s0> <urn:p> "a" ; <urn:q> 1 .
+<urn:s1> <urn:p> "b" ; <urn:q> 1 .
+<urn:s2> <urn:p> "a" ; <urn:q> 2 .
