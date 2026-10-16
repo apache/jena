@@ -1095,7 +1095,7 @@ public class UpdateBuilder {
      * @return The Builder for chaining.
      */
     public UpdateBuilder addOptional(AbstractQueryBuilder<?> t) {
-        whereProcessor.addOptional(t.getWhereHandler());
+        whereProcessor.addOptional(t);
         return this;
     }
 
