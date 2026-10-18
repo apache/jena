@@ -21,7 +21,7 @@
 
 package org.apache.jena.riot.lang;
 
-import org.apache.jena.atlas.json.io.parser.TokenizerJSON ;
+import org.apache.jena.atlas.json.io.TokenizerJSON;
 import org.apache.jena.datatypes.TypeMapper ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;

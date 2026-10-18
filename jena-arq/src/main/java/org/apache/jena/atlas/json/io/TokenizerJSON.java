@@ -19,7 +19,7 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.atlas.json.io.parser;
+package org.apache.jena.atlas.json.io;
 
 import static org.apache.jena.atlas.lib.Chars.CH_COLON;
 import static org.apache.jena.atlas.lib.Chars.CH_COMMA;

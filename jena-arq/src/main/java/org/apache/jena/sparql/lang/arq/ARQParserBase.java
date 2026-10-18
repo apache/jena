@@ -37,15 +37,15 @@ import org.apache.jena.sparql.lang.SPARQLParserBase ;
 public class ARQParserBase extends SPARQLParserBase
 {
     // JSON
-    JSONHandler handler = new JSONHandlerBase() ;
+    private final JSONHandler handler = new JSONHandlerBase() ;
 
-    public void setHandler(JSONHandler handler)
-    {
-        if ( handler == null )
-            this.handler = new JSONHandlerBase() ;
-        else
-            this.handler = handler ;
-    }
+//    public void setHandler(JSONHandler handler)
+//    {
+//        if ( handler == null )
+//            this.handler = new JSONHandlerBase() ;
+//        else
+//            this.handler = handler ;
+//    }
 
     // All the signals from the parsing process.
     protected void jsonStartParse(long currLine, long currCol)                 { handler.startParse(currLine, currCol) ; }
@@ -62,11 +62,10 @@ public class ARQParserBase extends SPARQLParserBase
     protected void jsonElement(long currLine, long currCol)                    { handler.element(currLine, currCol) ; }
     protected void jsonFinishArray(long currLine, long currCol)                { handler.finishArray(currLine, currCol) ; }
 
-    protected void jsonValueString(String image, long currLine, long currCol)
-    {
+    protected void jsonValueString(String image, long currLine, long currCol) {
         // Strip quotes
-        image = image.substring(1,image.length()-1) ;
-        handler.valueString(image, currLine, currCol) ;
+        image = image.substring(1, image.length() - 1);
+        handler.valueString(image, currLine, currCol);
     }
 
     protected void jsonValueKeyString(String image, long currLine, long currCol) { handler.valueString(image, currLine, currCol) ; }
