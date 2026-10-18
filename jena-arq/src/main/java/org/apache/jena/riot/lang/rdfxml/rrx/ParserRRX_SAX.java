@@ -763,9 +763,17 @@ class ParserRRX_SAX
     @Override
     public void endElement(String namespaceURI, String localName, String qName) {
         if ( qNameMatches(rdfNS, rdfRDF, namespaceURI, localName) ) {
-            decIndent();
-            parserMode(ParserMode.TOP);
-            return;
+            if ( ! xmlLiteralCollecting() ) {
+                // </rdf:RDF> matches an opening <rdf:RDF>.
+                // We are not in an XML literal.
+                // Therefore, this is the close of the document <rdf:RDF>.
+                // <rdf:RDF> is not accepted anywhere else.
+                decIndent();
+                parserMode(ParserMode.TOP);
+                if ( TRACE )
+                    trace.println("Element /rdf:RDF");
+                return;
+            }
         }
 
         if ( TRACE ) {
