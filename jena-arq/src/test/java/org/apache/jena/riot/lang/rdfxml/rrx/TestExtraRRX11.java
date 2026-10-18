@@ -213,6 +213,16 @@ public class TestExtraRRX11 {
         checkForError("bad-object-type-3.rdf", false);
     }
 
+    // GH-4334 rdf:RDF inside an rdf:XMLLiteral.
+
+    @Test public void rdfRDF_in_rdfXMLLiteral_1() {
+        goodTest("xmlliteral-rdfRDF1.rdf");
+    }
+
+    @Test public void rdfRDF_in_rdfXMLLiteral_2() {
+        goodTest("xmlliteral-rdfRDF2.rdf");
+    }
+
     /** Parse with no base set by the parser */
     private void noBase(String filename) {
         trackFilename(filename);

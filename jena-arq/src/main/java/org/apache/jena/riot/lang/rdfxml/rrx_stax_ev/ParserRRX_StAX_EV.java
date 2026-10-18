@@ -60,6 +60,7 @@ import org.apache.jena.vocabulary.RDF;
 
 /** StAX events */
 class ParserRRX_StAX_EV {
+    // The StAX SR parser is faster than the StAX EV parser.
     private static int IRI_CACHE_SIZE = 8192;
     private static boolean EVENTS = false;
     public static boolean TRACE = false;
