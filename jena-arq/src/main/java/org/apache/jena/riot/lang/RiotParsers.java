@@ -26,7 +26,7 @@ import java.io.InputStream;
 import java.io.Reader;
 
 import org.apache.jena.atlas.io.PeekReader;
-import org.apache.jena.atlas.json.io.parser.TokenizerJSON;
+import org.apache.jena.atlas.json.io.TokenizerJSON;
 import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.riot.*;

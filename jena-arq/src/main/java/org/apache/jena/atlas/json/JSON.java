@@ -23,23 +23,27 @@ package org.apache.jena.atlas.json;
 
 import java.io.* ;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.google.gson.Strictness;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.MalformedJsonException;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.json.io.JSONMaker ;
+import org.apache.jena.atlas.io.PeekReader;
+import org.apache.jena.atlas.json.io.JsonGson;
 import org.apache.jena.atlas.json.io.JsonWriter ;
-import org.apache.jena.atlas.json.io.parser.JSONParser ;
-import org.apache.jena.atlas.json.io.parserjavacc.JSONParserJavaCC ;
 
 /** A class that is the front door to the JSON subsystem */
 public class JSON
 {
     /** Parse a complete JSON object */
     public static JsonObject parse(InputStream input) {
-        JSONMaker maker = new JSONMaker() ;
-        _parse(input, maker) ;
-        return (JsonObject)maker.jsonValue() ;
+        return _parse(input) ;
     }
 
     /** Parse a complete JSON object */
@@ -49,9 +53,7 @@ public class JSON
 
     /** Parse any JSON value, not just an object, from an input stream */
     public static JsonValue parseAny(InputStream input) {
-        JSONMaker maker = new JSONMaker() ;
-        _parseAny(input, maker) ;
-        return maker.jsonValue() ;
+        return _parseAny(input) ;
     }
 
     /** Parse any JSON value, not just an object, from a file */
@@ -89,51 +91,86 @@ public class JSON
             return null ;
         }
     }
-    
-    // Hide the reader versions - not encouraged due to charset problems.
+
+    private static JsonObject _parse(InputStream input) {
+        // PeekReader.makeUTF8: UTF-8 and skip a BOM if present.
+        return _parse(PeekReader.makeUTF8(input));
+    }
+
+    private static JsonValue _parseAny(InputStream input) {
+        return _parseAny(PeekReader.makeUTF8(input));
+    }
 
     private static JsonObject _parse(Reader r) {
-        JSONMaker maker = new JSONMaker() ;
-        _parse(r, maker) ;
-        return (JsonObject)maker.jsonValue() ;
+        // With an object required, the result is a JsonObject.
+        return (JsonObject)_parse(r, true);
     }
 
     private static JsonValue _parseAny(Reader r) {
-        JSONMaker maker = new JSONMaker() ;
-        _parseAny(r, maker) ;
-        return maker.jsonValue() ;
+        return _parse(r, false);
     }
 
-    // PARSER CHOICES
-    // Switch on parser choice.
-    private static final boolean useJavaCC = false ;
-
-    private static void _parse(Reader r, JSONMaker maker) {
-        if ( useJavaCC )
-            JSONParserJavaCC.parse(r, maker) ;
-        else
-            JSONParser.parse(r, maker) ;
+    /**
+     * Parse with gson, which maps the token stream directly onto the Jena JSON
+     * object model ({@link JsonGson}). {@code objectExpected} for "a complete JSON object".
+     */
+    private static JsonValue _parse(Reader r, boolean objectExpected) {
+        // The JsonReader is not closed - the caller owns the stream or reader.
+        JsonReader jsonReader = new JsonReader(r);
+        // Jena JSON has always been more liberal than strict JSON:
+        // keys do not need quotes, strings can use '' and comments are allowed.
+        jsonReader.setStrictness(Strictness.LENIENT);
+        try {
+            if ( jsonReader.peek() == JsonToken.END_DOCUMENT )
+                throw parseException("Empty input", jsonReader.toString());
+            JsonValue jValue = JsonGson.read(jsonReader);
+            if ( objectExpected && ! jValue.isObject() )
+                throw parseException("JSON object expected", jsonReader.toString());
+            if ( jsonReader.peek() != JsonToken.END_DOCUMENT )
+                throw parseException("Content after the JSON value", jsonReader.toString());
+            return jValue;
+        }
+        catch (EOFException ex) {
+            throw parseException("Empty input", jsonReader.toString());
+        }
+        catch (MalformedJsonException ex) {
+            throw parseException(null, ex.getMessage());
+        }
+        catch (com.google.gson.JsonParseException ex) {
+            // Includes JsonSyntaxException and JsonIOException.
+            Throwable reported = ( ex.getCause() != null ) ? ex.getCause() : ex;
+            throw parseException(null, reported.getMessage());
+        }
+        catch (IOException ex) {
+            IO.exception(ex);
+            return null;
+        }
     }
 
-    private static void _parseAny(Reader r, JSONMaker maker) {
-        if ( useJavaCC )
-            JSONParserJavaCC.parseAny(r, maker) ;
-        else
-            JSONParser.parseAny(r, maker) ;
-    }
+    // gson reports the location of an error in text, both in exception messages and
+    // in JsonReader.toString(), in the form "... at line L column C path $...".
+    private static final Pattern patternGsonLocation = Pattern.compile(" at line (\\d{1,9}) column (\\d{1,9})");
 
-    private static void _parse(InputStream r, JSONMaker maker) {
-        if ( useJavaCC )
-            JSONParserJavaCC.parse(r, maker) ;
-        else
-            JSONParser.parse(r, maker) ;
-    }
-
-    private static void _parseAny(InputStream r, JSONMaker maker) {
-        if ( useJavaCC )
-            JSONParserJavaCC.parseAny(r, maker) ;
-        else
-            JSONParser.parseAny(r, maker) ;
+    /**
+     * Create a {@link JsonParseException}, recovering the line and column from the
+     * location gson reports in {@code gsonText}. A null {@code message} means "use the
+     * text of {@code gsonText}, up to the location".
+     */
+    private static JsonParseException parseException(String message, String gsonText) {
+        int line = -1;
+        int column = -1;
+        if ( gsonText != null ) {
+            Matcher matcher = patternGsonLocation.matcher(gsonText);
+            if ( matcher.find() ) {
+                line = Integer.parseInt(matcher.group(1));
+                column = Integer.parseInt(matcher.group(2));
+                if ( message == null )
+                    message = gsonText.substring(0, matcher.start());
+            }
+        }
+        if ( message == null )
+            message = gsonText;
+        return new org.apache.jena.atlas.json.JsonParseException(message, line, column);
     }
 
     /** JsonValue to a formatted, multiline string */
@@ -143,7 +180,7 @@ public class JSON
             return b.asString() ;
         }
     }
-    
+
     /** JsonValue to a string with no newlines */
     public static String toStringFlat(JsonValue jValue) {
         try ( IndentedLineBuffer b = new IndentedLineBuffer() ) {
@@ -152,7 +189,7 @@ public class JSON
             return b.asString() ;
         }
     }
-    
+
     /** Write out a JSON value - pass a JSON Object to get legal exchangeable JSON */
     public static void write(OutputStream output, JsonValue jValue) {
         IndentedWriter iOut = new IndentedWriter(output) ;
@@ -176,15 +213,15 @@ public class JSON
     public static void write(JsonValue jValue) {
         write(IndentedWriter.stdout, jValue) ;
     }
-    
-    // General functions for working with JSON 
-    
+
+    // General functions for working with JSON
+
     /** Create a safe copy of a {@link JsonValue}.
      *  <p>
      *  If the JsonValue is a structure (object or array), copy the structure recursively.
      *  <p>
      *  If the JsonValue is a primitive (string, number, boolean or null),
-     *  it is immutable so return the same object.  
+     *  it is immutable so return the same object.
      */
     public static JsonValue copy(JsonValue arg) {
         return JsonBuilder.copy(arg);
@@ -196,7 +233,7 @@ public class JSON
      *     builder.pair("key", 1234);
      * });
      * </pre>
-     * 
+     *
      * @param setup
      * @return JsonObject
      */
