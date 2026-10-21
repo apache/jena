@@ -16,6 +16,7 @@
  */
 
 import jsonServer from 'json-server'
+import { DEFAULT_PREFIXES } from '../../utils/prefixes.js'
 
 const PORT = process.env.FUSEKI_PORT || 3030
 
@@ -96,6 +97,16 @@ server.post('/\\$/datasets', (req, res) => {
         'srv.type': 'upload',
         'srv.description': 'File Upload',
         'srv.endpoints': ['upload']
+      },
+      {
+        'srv.type': 'prefixes-r',
+        'srv.description': 'Read prefixes',
+        'srv.endpoints': ['prefixes']
+      },
+      {
+        'srv.type': 'prefixes-rw',
+        'srv.description': 'Read-write prefixes',
+        'srv.endpoints': ['updatePrefixes']
       }
     ]
   }
@@ -267,6 +278,49 @@ server.post('/:datasetName/data', (req, res) => {
     .send()
 })
 
+// PREFIXES
+// In-memory prefix store per dataset, mirroring the Fuseki prefixes
+// service semantics.
+const PREFIXES = {}
+const PREFIX_PATTERN = /^[A-Za-z]([\w.-]*\w)?$/
+
+const prefixesFor = (datasetName) => {
+  if (!PREFIXES[datasetName]) {
+    PREFIXES[datasetName] = Object.fromEntries(
+      DEFAULT_PREFIXES.map(p => [p.prefix, p.uri]))
+  }
+  return PREFIXES[datasetName]
+}
+
+const listPrefixes = (req, res) => {
+  res.jsonp(
+    Object.entries(prefixesFor(req.params.datasetName))
+      .map(([prefix, uri]) => ({ prefix, uri }))
+  )
+}
+server.get('/:datasetName/prefixes', listPrefixes)
+// The UI reads via the rw endpoint when the dataset declares one.
+server.get('/:datasetName/updatePrefixes', listPrefixes)
+
+server.post('/:datasetName/updatePrefixes', (req, res) => {
+  const { prefix, uri } = req.body
+  if (!prefix || !PREFIX_PATTERN.test(prefix)) {
+    res.status(400).send(`Invalid prefix name: '${prefix}'`)
+    return
+  }
+  if (!uri || /\s/.test(uri)) {
+    res.status(400).send(`Invalid prefix URI: '${uri}'`)
+    return
+  }
+  prefixesFor(req.params.datasetName)[prefix] = uri
+  res.sendStatus(200)
+})
+
+server.delete('/:datasetName/updatePrefixes', (req, res) => {
+  delete prefixesFor(req.params.datasetName)[req.query.prefix]
+  res.sendStatus(200)
+})
+
 // PING
 // GET PING STATUS
 server.get('/\\$/ping', (req, res) => {
@@ -285,6 +339,9 @@ server.get('/tests/reset', (req, res) => {
     try {
       for (const dataset in DATASETS) {
         delete DATASETS[dataset]
+      }
+      for (const dataset in PREFIXES) {
+        delete PREFIXES[dataset]
       }
     } catch (e) {
       console.log(e)
