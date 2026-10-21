@@ -1,0 +1,3722 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+<http://linkedgeodata.org/ontology/Boutique>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1029199049>
+        rdf:type  <http://linkedgeodata.org/ontology/Boutique> .
+
+<http://linkedgeodata.org/ontology/Boutique>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2374767776>
+        rdf:type  <http://linkedgeodata.org/ontology/Boutique> .
+
+<http://linkedgeodata.org/ontology/CaravanSite>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1032921826>
+        rdf:type  <http://linkedgeodata.org/ontology/CaravanSite> .
+
+<http://linkedgeodata.org/ontology/CaravanSite>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1048678683>
+        rdf:type  <http://linkedgeodata.org/ontology/CaravanSite> .
+
+<http://linkedgeodata.org/ontology/Charity>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1029366080>
+        rdf:type  <http://linkedgeodata.org/ontology/Charity> .
+
+<http://linkedgeodata.org/ontology/Charity>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1196599851>
+        rdf:type  <http://linkedgeodata.org/ontology/Charity> .
+
+<http://linkedgeodata.org/ontology/ConferenceCentre>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1029129965>
+        rdf:type  <http://linkedgeodata.org/ontology/ConferenceCentre> .
+
+<http://linkedgeodata.org/ontology/ConferenceCentre>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1292374544>
+        rdf:type  <http://linkedgeodata.org/ontology/ConferenceCentre> .
+
+<http://linkedgeodata.org/ontology/Copyshop>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1033057292>
+        rdf:type  <http://linkedgeodata.org/ontology/Copyshop> .
+
+<http://linkedgeodata.org/ontology/Copyshop>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1050204757>
+        rdf:type  <http://linkedgeodata.org/ontology/Copyshop> .
+
+<http://linkedgeodata.org/ontology/CoveredReservoir>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1026234561>
+        rdf:type  <http://linkedgeodata.org/ontology/CoveredReservoir> .
+
+<http://linkedgeodata.org/ontology/CoveredReservoir>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1026236166>
+        rdf:type  <http://linkedgeodata.org/ontology/CoveredReservoir> .
+
+<http://linkedgeodata.org/ontology/Dance>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1025669692>
+        rdf:type  <http://linkedgeodata.org/ontology/Dance> .
+
+<http://linkedgeodata.org/ontology/Dance>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1035932971>
+        rdf:type  <http://linkedgeodata.org/ontology/Dance> .
+
+<http://linkedgeodata.org/ontology/FarmShop>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1033327641>
+        rdf:type  <http://linkedgeodata.org/ontology/FarmShop> .
+
+<http://linkedgeodata.org/ontology/FarmShop>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1191548164>
+        rdf:type  <http://linkedgeodata.org/ontology/FarmShop> .
+
+<http://linkedgeodata.org/ontology/GalleryShop>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1025703041>
+        rdf:type  <http://linkedgeodata.org/ontology/GalleryShop> .
+
+<http://linkedgeodata.org/ontology/GalleryShop>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1187324667>
+        rdf:type  <http://linkedgeodata.org/ontology/GalleryShop> .
+
+<http://linkedgeodata.org/ontology/Garages>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024818217>
+        rdf:type  <http://linkedgeodata.org/ontology/Garages> .
+
+<http://linkedgeodata.org/ontology/Garages>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024818253>
+        rdf:type  <http://linkedgeodata.org/ontology/Garages> .
+
+<http://linkedgeodata.org/ontology/Hackerspace>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1029845599>
+        rdf:type  <http://linkedgeodata.org/ontology/Hackerspace> .
+
+<http://linkedgeodata.org/ontology/Hackerspace>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1040816938>
+        rdf:type  <http://linkedgeodata.org/ontology/Hackerspace> .
+
+<http://linkedgeodata.org/ontology/HairdresserShop>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1031691120>
+        rdf:type  <http://linkedgeodata.org/ontology/HairdresserShop> .
+
+<http://linkedgeodata.org/ontology/HairdresserShop>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1391523573>
+        rdf:type  <http://linkedgeodata.org/ontology/HairdresserShop> .
+
+<http://linkedgeodata.org/ontology/HealthAndBeauty>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1026886386>
+        rdf:type  <http://linkedgeodata.org/ontology/HealthAndBeauty> .
+
+<http://linkedgeodata.org/ontology/HealthAndBeauty>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1049966688>
+        rdf:type  <http://linkedgeodata.org/ontology/HealthAndBeauty> .
+
+<http://linkedgeodata.org/ontology/Laundry>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1025789829>
+        rdf:type  <http://linkedgeodata.org/ontology/Laundry> .
+
+<http://linkedgeodata.org/ontology/Laundry>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1825747804>
+        rdf:type  <http://linkedgeodata.org/ontology/Laundry> .
+
+<http://linkedgeodata.org/ontology/Monastery>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1026968675>
+        rdf:type  <http://linkedgeodata.org/ontology/Monastery> .
+
+<http://linkedgeodata.org/ontology/Monastery>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1430347359>
+        rdf:type  <http://linkedgeodata.org/ontology/Monastery> .
+
+<http://linkedgeodata.org/ontology/PicnicTable>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1034657236>
+        rdf:type  <http://linkedgeodata.org/ontology/PicnicTable> .
+
+<http://linkedgeodata.org/ontology/PicnicTable>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1034657266>
+        rdf:type  <http://linkedgeodata.org/ontology/PicnicTable> .
+
+<http://linkedgeodata.org/ontology/RailwaySwitch>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1035657711>
+        rdf:type  <http://linkedgeodata.org/ontology/RailwaySwitch> .
+
+<http://linkedgeodata.org/ontology/RailwaySwitch>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2303924240>
+        rdf:type  <http://linkedgeodata.org/ontology/RailwaySwitch> .
+
+<http://linkedgeodata.org/ontology/RegisterOffice>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1027880746>
+        rdf:type  <http://linkedgeodata.org/ontology/RegisterOffice> .
+
+<http://linkedgeodata.org/ontology/RegisterOffice>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1029498443>
+        rdf:type  <http://linkedgeodata.org/ontology/RegisterOffice> .
+
+<http://linkedgeodata.org/ontology/SocialCentre>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1034064306>
+        rdf:type  <http://linkedgeodata.org/ontology/SocialCentre> .
+
+<http://linkedgeodata.org/ontology/SocialCentre>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1191877828>
+        rdf:type  <http://linkedgeodata.org/ontology/SocialCentre> .
+
+<http://linkedgeodata.org/ontology/Storage>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1029738228>
+        rdf:type  <http://linkedgeodata.org/ontology/Storage> .
+
+<http://linkedgeodata.org/ontology/Storage>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2062323592>
+        rdf:type  <http://linkedgeodata.org/ontology/Storage> .
+
+<http://linkedgeodata.org/ontology/TrafficSignals>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1029133737>
+        rdf:type  <http://linkedgeodata.org/ontology/TrafficSignals> .
+
+<http://linkedgeodata.org/ontology/TrafficSignals>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node104844001>
+        rdf:type  <http://linkedgeodata.org/ontology/TrafficSignals> .
+
+<http://linkedgeodata.org/ontology/Vacant>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1029750186>
+        rdf:type  <http://linkedgeodata.org/ontology/Vacant> .
+
+<http://linkedgeodata.org/ontology/Vacant>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1277308462>
+        rdf:type  <http://linkedgeodata.org/ontology/Vacant> .
+
+<http://linkedgeodata.org/ontology/Winery>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1026040774>
+        rdf:type  <http://linkedgeodata.org/ontology/Winery> .
+
+<http://linkedgeodata.org/ontology/Winery>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1278483776>
+        rdf:type  <http://linkedgeodata.org/ontology/Winery> .
+
+<http://linkedgeodata.org/ontology/Advertising>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1048437810>
+        rdf:type  <http://linkedgeodata.org/ontology/Advertising> .
+
+<http://linkedgeodata.org/ontology/Advertising>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1051891687>
+        rdf:type  <http://linkedgeodata.org/ontology/Advertising> .
+
+<http://linkedgeodata.org/ontology/AlcoholShop>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1039162285>
+        rdf:type  <http://linkedgeodata.org/ontology/AlcoholShop> .
+
+<http://linkedgeodata.org/ontology/AlcoholShop>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1199265493>
+        rdf:type  <http://linkedgeodata.org/ontology/AlcoholShop> .
+
+<http://linkedgeodata.org/ontology/BookmakerShop>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1053698451>
+        rdf:type  <http://linkedgeodata.org/ontology/BookmakerShop> .
+
+<http://linkedgeodata.org/ontology/BookmakerShop>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1273685897>
+        rdf:type  <http://linkedgeodata.org/ontology/BookmakerShop> .
+
+<http://linkedgeodata.org/ontology/CarParts>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1044190752>
+        rdf:type  <http://linkedgeodata.org/ontology/CarParts> .
+
+<http://linkedgeodata.org/ontology/CarParts>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1546698526>
+        rdf:type  <http://linkedgeodata.org/ontology/CarParts> .
+
+<http://linkedgeodata.org/ontology/CarShop>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1042029858>
+        rdf:type  <http://linkedgeodata.org/ontology/CarShop> .
+
+<http://linkedgeodata.org/ontology/CarShop>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1044782412>
+        rdf:type  <http://linkedgeodata.org/ontology/CarShop> .
+
+<http://linkedgeodata.org/ontology/CareHome>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1052602471>
+        rdf:type  <http://linkedgeodata.org/ontology/CareHome> .
+
+<http://linkedgeodata.org/ontology/CareHome>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1266049000>
+        rdf:type  <http://linkedgeodata.org/ontology/CareHome> .
+
+<http://linkedgeodata.org/ontology/EstateAgentOffice>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1048635095>
+        rdf:type  <http://linkedgeodata.org/ontology/EstateAgentOffice> .
+
+<http://linkedgeodata.org/ontology/EstateAgentOffice>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2346959043>
+        rdf:type  <http://linkedgeodata.org/ontology/EstateAgentOffice> .
+
+<http://linkedgeodata.org/ontology/HistoricChurch>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node104218840>
+        rdf:type  <http://linkedgeodata.org/ontology/HistoricChurch> .
+
+<http://linkedgeodata.org/ontology/HistoricChurch>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1068962494>
+        rdf:type  <http://linkedgeodata.org/ontology/HistoricChurch> .
+
+<http://linkedgeodata.org/ontology/Internet>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1053297958>
+        rdf:type  <http://linkedgeodata.org/ontology/Internet> .
+
+<http://linkedgeodata.org/ontology/Internet>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1298680440>
+        rdf:type  <http://linkedgeodata.org/ontology/Internet> .
+
+<http://linkedgeodata.org/ontology/InternetCafe>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1054718670>
+        rdf:type  <http://linkedgeodata.org/ontology/InternetCafe> .
+
+<http://linkedgeodata.org/ontology/InternetCafe>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1289827559>
+        rdf:type  <http://linkedgeodata.org/ontology/InternetCafe> .
+
+<http://linkedgeodata.org/ontology/Jewelry>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node104843968>
+        rdf:type  <http://linkedgeodata.org/ontology/Jewelry> .
+
+<http://linkedgeodata.org/ontology/Jewelry>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1271394403>
+        rdf:type  <http://linkedgeodata.org/ontology/Jewelry> .
+
+<http://linkedgeodata.org/ontology/Parking%3Bfuel>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1041157566>
+        rdf:type  <http://linkedgeodata.org/ontology/Parking%3Bfuel> .
+
+<http://linkedgeodata.org/ontology/Parking%3Bfuel>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2066379042>
+        rdf:type  <http://linkedgeodata.org/ontology/Parking%3Bfuel> .
+
+<http://linkedgeodata.org/ontology/ReceptionArea>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1039036534>
+        rdf:type  <http://linkedgeodata.org/ontology/ReceptionArea> .
+
+<http://linkedgeodata.org/ontology/ReceptionArea>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1365370805>
+        rdf:type  <http://linkedgeodata.org/ontology/ReceptionArea> .
+
+<http://linkedgeodata.org/ontology/SnowPark>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1049755066>
+        rdf:type  <http://linkedgeodata.org/ontology/SnowPark> .
+
+<http://linkedgeodata.org/ontology/SnowPark>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node633762113>
+        rdf:type  <http://linkedgeodata.org/ontology/SnowPark> .
+
+<http://linkedgeodata.org/ontology/Stationery>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1039297435>
+        rdf:type  <http://linkedgeodata.org/ontology/Stationery> .
+
+<http://linkedgeodata.org/ontology/Stationery>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1198109055>
+        rdf:type  <http://linkedgeodata.org/ontology/Stationery> .
+
+<http://linkedgeodata.org/ontology/Toys>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1039019123>
+        rdf:type  <http://linkedgeodata.org/ontology/Toys> .
+
+<http://linkedgeodata.org/ontology/Toys>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1233281092>
+        rdf:type  <http://linkedgeodata.org/ontology/Toys> .
+
+<http://linkedgeodata.org/ontology/TricycleStation>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1044486340>
+        rdf:type  <http://linkedgeodata.org/ontology/TricycleStation> .
+
+<http://linkedgeodata.org/ontology/TricycleStation>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1273990188>
+        rdf:type  <http://linkedgeodata.org/ontology/TricycleStation> .
+
+<http://linkedgeodata.org/ontology/Tyres>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1050348945>
+        rdf:type  <http://linkedgeodata.org/ontology/Tyres> .
+
+<http://linkedgeodata.org/ontology/Tyres>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1058851387>
+        rdf:type  <http://linkedgeodata.org/ontology/Tyres> .
+
+<http://linkedgeodata.org/ontology/WaterTower>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1038189730>
+        rdf:type  <http://linkedgeodata.org/ontology/WaterTower> .
+
+<http://linkedgeodata.org/ontology/WaterTower>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1809764829>
+        rdf:type  <http://linkedgeodata.org/ontology/WaterTower> .
+
+<http://linkedgeodata.org/ontology/WateringPlace>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1040009009>
+        rdf:type  <http://linkedgeodata.org/ontology/WateringPlace> .
+
+<http://linkedgeodata.org/ontology/WateringPlace>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1040009023>
+        rdf:type  <http://linkedgeodata.org/ontology/WateringPlace> .
+
+<http://linkedgeodata.org/ontology/Windmill>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1041501467>
+        rdf:type  <http://linkedgeodata.org/ontology/Windmill> .
+
+<http://linkedgeodata.org/ontology/Windmill>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node130073354>
+        rdf:type  <http://linkedgeodata.org/ontology/Windmill> .
+
+<http://linkedgeodata.org/ontology/Agrarian>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1066847210>
+        rdf:type  <http://linkedgeodata.org/ontology/Agrarian> .
+
+<http://linkedgeodata.org/ontology/Agrarian>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way231623106>
+        rdf:type  <http://linkedgeodata.org/ontology/Agrarian> .
+
+<http://linkedgeodata.org/ontology/BedAndBreakfast>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1061974497>
+        rdf:type  <http://linkedgeodata.org/ontology/BedAndBreakfast> .
+
+<http://linkedgeodata.org/ontology/BedAndBreakfast>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1292373108>
+        rdf:type  <http://linkedgeodata.org/ontology/BedAndBreakfast> .
+
+<http://linkedgeodata.org/ontology/Castle>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1061411831>
+        rdf:type  <http://linkedgeodata.org/ontology/Castle> .
+
+<http://linkedgeodata.org/ontology/Castle>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1367950739>
+        rdf:type  <http://linkedgeodata.org/ontology/Castle> .
+
+<http://linkedgeodata.org/ontology/Chalet>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1066409809>
+        rdf:type  <http://linkedgeodata.org/ontology/Chalet> .
+
+<http://linkedgeodata.org/ontology/Chalet>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1193795196>
+        rdf:type  <http://linkedgeodata.org/ontology/Chalet> .
+
+<http://linkedgeodata.org/ontology/Deli>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1068474971>
+        rdf:type  <http://linkedgeodata.org/ontology/Deli> .
+
+<http://linkedgeodata.org/ontology/Deli>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1191041678>
+        rdf:type  <http://linkedgeodata.org/ontology/Deli> .
+
+<http://linkedgeodata.org/ontology/Farmland>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node105952761>
+        rdf:type  <http://linkedgeodata.org/ontology/Farmland> .
+
+<http://linkedgeodata.org/ontology/Farmland>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way199479655>
+        rdf:type  <http://linkedgeodata.org/ontology/Farmland> .
+
+<http://linkedgeodata.org/ontology/Garage>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1058879584>
+        rdf:type  <http://linkedgeodata.org/ontology/Garage> .
+
+<http://linkedgeodata.org/ontology/Garage>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1234062812>
+        rdf:type  <http://linkedgeodata.org/ontology/Garage> .
+
+<http://linkedgeodata.org/ontology/GolfCourse>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1063036941>
+        rdf:type  <http://linkedgeodata.org/ontology/GolfCourse> .
+
+<http://linkedgeodata.org/ontology/GolfCourse>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node407824903>
+        rdf:type  <http://linkedgeodata.org/ontology/GolfCourse> .
+
+<http://linkedgeodata.org/ontology/LifeRing>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1069117597>
+        rdf:type  <http://linkedgeodata.org/ontology/LifeRing> .
+
+<http://linkedgeodata.org/ontology/LifeRing>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1069117599>
+        rdf:type  <http://linkedgeodata.org/ontology/LifeRing> .
+
+<http://linkedgeodata.org/ontology/LitterBin>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1068540273>
+        rdf:type  <http://linkedgeodata.org/ontology/LitterBin> .
+
+<http://linkedgeodata.org/ontology/LitterBin>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1068540355>
+        rdf:type  <http://linkedgeodata.org/ontology/LitterBin> .
+
+<http://linkedgeodata.org/ontology/ManMadeHut>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1059891800>
+        rdf:type  <http://linkedgeodata.org/ontology/ManMadeHut> .
+
+<http://linkedgeodata.org/ontology/ManMadeHut>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1898073978>
+        rdf:type  <http://linkedgeodata.org/ontology/ManMadeHut> .
+
+<http://linkedgeodata.org/ontology/MobilePhone>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1067410150>
+        rdf:type  <http://linkedgeodata.org/ontology/MobilePhone> .
+
+<http://linkedgeodata.org/ontology/MobilePhone>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1436616438>
+        rdf:type  <http://linkedgeodata.org/ontology/MobilePhone> .
+
+<http://linkedgeodata.org/ontology/RailwayMilestone>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node105952761>
+        rdf:type  <http://linkedgeodata.org/ontology/RailwayMilestone> .
+
+<http://linkedgeodata.org/ontology/RailwayMilestone>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1054985384>
+        rdf:type  <http://linkedgeodata.org/ontology/RailwayMilestone> .
+
+<http://linkedgeodata.org/ontology/RescueService>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1065536685>
+        rdf:type  <http://linkedgeodata.org/ontology/RescueService> .
+
+<http://linkedgeodata.org/ontology/RescueService>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1673210941>
+        rdf:type  <http://linkedgeodata.org/ontology/RescueService> .
+
+<http://linkedgeodata.org/ontology/State>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node573226686>
+        rdf:type  <http://linkedgeodata.org/ontology/State> .
+
+<http://linkedgeodata.org/ontology/State>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node573226688>
+        rdf:type  <http://linkedgeodata.org/ontology/State> .
+
+<http://linkedgeodata.org/ontology/StopSign>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1064260097>
+        rdf:type  <http://linkedgeodata.org/ontology/StopSign> .
+
+<http://linkedgeodata.org/ontology/StopSign>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1198696358>
+        rdf:type  <http://linkedgeodata.org/ontology/StopSign> .
+
+<http://linkedgeodata.org/ontology/ThemePark>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1057863497>
+        rdf:type  <http://linkedgeodata.org/ontology/ThemePark> .
+
+<http://linkedgeodata.org/ontology/ThemePark>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2195069512>
+        rdf:type  <http://linkedgeodata.org/ontology/ThemePark> .
+
+<http://linkedgeodata.org/ontology/TravelAgency>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1056702150>
+        rdf:type  <http://linkedgeodata.org/ontology/TravelAgency> .
+
+<http://linkedgeodata.org/ontology/TravelAgency>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1290675609>
+        rdf:type  <http://linkedgeodata.org/ontology/TravelAgency> .
+
+<http://linkedgeodata.org/ontology/BuildingMonastery>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1194433993>
+        rdf:type  <http://linkedgeodata.org/ontology/BuildingMonastery> .
+
+<http://linkedgeodata.org/ontology/BuildingMonastery>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1391216054>
+        rdf:type  <http://linkedgeodata.org/ontology/BuildingMonastery> .
+
+<http://linkedgeodata.org/ontology/Common>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1191165165>
+        rdf:type  <http://linkedgeodata.org/ontology/Common> .
+
+<http://linkedgeodata.org/ontology/Common>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2089042954>
+        rdf:type  <http://linkedgeodata.org/ontology/Common> .
+
+<http://linkedgeodata.org/ontology/Company>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1192556626>
+        rdf:type  <http://linkedgeodata.org/ontology/Company> .
+
+<http://linkedgeodata.org/ontology/Company>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1709622136>
+        rdf:type  <http://linkedgeodata.org/ontology/Company> .
+
+<http://linkedgeodata.org/ontology/Garbage>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1193471743>
+        rdf:type  <http://linkedgeodata.org/ontology/Garbage> .
+
+<http://linkedgeodata.org/ontology/Garbage>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node269658856>
+        rdf:type  <http://linkedgeodata.org/ontology/Garbage> .
+
+<http://linkedgeodata.org/ontology/Music>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1197505171>
+        rdf:type  <http://linkedgeodata.org/ontology/Music> .
+
+<http://linkedgeodata.org/ontology/Music>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1271370350>
+        rdf:type  <http://linkedgeodata.org/ontology/Music> .
+
+<http://linkedgeodata.org/ontology/Video>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1198461284>
+        rdf:type  <http://linkedgeodata.org/ontology/Video> .
+
+<http://linkedgeodata.org/ontology/Video>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1300589411>
+        rdf:type  <http://linkedgeodata.org/ontology/Video> .
+
+<http://linkedgeodata.org/ontology/EducationalInstitutionOffice>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1234138482>
+        rdf:type  <http://linkedgeodata.org/ontology/EducationalInstitutionOffice> .
+
+<http://linkedgeodata.org/ontology/EducationalInstitutionOffice>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2517826951>
+        rdf:type  <http://linkedgeodata.org/ontology/EducationalInstitutionOffice> .
+
+<http://linkedgeodata.org/ontology/Hut>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1235071476>
+        rdf:type  <http://linkedgeodata.org/ontology/Hut> .
+
+<http://linkedgeodata.org/ontology/Hut>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1655882852>
+        rdf:type  <http://linkedgeodata.org/ontology/Hut> .
+
+<http://linkedgeodata.org/ontology/DeadPub>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node127048054>
+        rdf:type  <http://linkedgeodata.org/ontology/DeadPub> .
+
+<http://linkedgeodata.org/ontology/DeadPub>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node247329983>
+        rdf:type  <http://linkedgeodata.org/ontology/DeadPub> .
+
+<http://linkedgeodata.org/ontology/QuangoOffice>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1268247284>
+        rdf:type  <http://linkedgeodata.org/ontology/QuangoOffice> .
+
+<http://linkedgeodata.org/ontology/QuangoOffice>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1509782385>
+        rdf:type  <http://linkedgeodata.org/ontology/QuangoOffice> .
+
+<http://linkedgeodata.org/ontology/HotSpring>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1273176022>
+        rdf:type  <http://linkedgeodata.org/ontology/HotSpring> .
+
+<http://linkedgeodata.org/ontology/HotSpring>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1428581267>
+        rdf:type  <http://linkedgeodata.org/ontology/HotSpring> .
+
+<http://linkedgeodata.org/ontology/RelayBox>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1274034067>
+        rdf:type  <http://linkedgeodata.org/ontology/RelayBox> .
+
+<http://linkedgeodata.org/ontology/RelayBox>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1274038744>
+        rdf:type  <http://linkedgeodata.org/ontology/RelayBox> .
+
+<http://linkedgeodata.org/ontology/Tea>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1278254651>
+        rdf:type  <http://linkedgeodata.org/ontology/Tea> .
+
+<http://linkedgeodata.org/ontology/Tea>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1644192136>
+        rdf:type  <http://linkedgeodata.org/ontology/Tea> .
+
+<http://linkedgeodata.org/ontology/Cosmetics>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1271394455>
+        rdf:type  <http://linkedgeodata.org/ontology/Cosmetics> .
+
+<http://linkedgeodata.org/ontology/Cosmetics>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1312364769>
+        rdf:type  <http://linkedgeodata.org/ontology/Cosmetics> .
+
+<http://linkedgeodata.org/ontology/Hifi>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1271394493>
+        rdf:type  <http://linkedgeodata.org/ontology/Hifi> .
+
+<http://linkedgeodata.org/ontology/Hifi>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2623414549>
+        rdf:type  <http://linkedgeodata.org/ontology/Hifi> .
+
+<http://linkedgeodata.org/ontology/BabyGoodsShop>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1292129589>
+        rdf:type  <http://linkedgeodata.org/ontology/BabyGoodsShop> .
+
+<http://linkedgeodata.org/ontology/BabyGoodsShop>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node3365984212>
+        rdf:type  <http://linkedgeodata.org/ontology/BabyGoodsShop> .
+
+<http://linkedgeodata.org/ontology/Block>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1287982081>
+        rdf:type  <http://linkedgeodata.org/ontology/Block> .
+
+<http://linkedgeodata.org/ontology/Block>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1966242300>
+        rdf:type  <http://linkedgeodata.org/ontology/Block> .
+
+<http://linkedgeodata.org/ontology/GiveWaySign>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1297128584>
+        rdf:type  <http://linkedgeodata.org/ontology/GiveWaySign> .
+
+<http://linkedgeodata.org/ontology/GiveWaySign>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1642869277>
+        rdf:type  <http://linkedgeodata.org/ontology/GiveWaySign> .
+
+<http://linkedgeodata.org/ontology/Intermittent>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1296574404>
+        rdf:type  <http://linkedgeodata.org/ontology/Intermittent> .
+
+<http://linkedgeodata.org/ontology/Intermittent>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1296854894>
+        rdf:type  <http://linkedgeodata.org/ontology/Intermittent> .
+
+<http://linkedgeodata.org/ontology/Farmyard>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1314456486>
+        rdf:type  <http://linkedgeodata.org/ontology/Farmyard> .
+
+<http://linkedgeodata.org/ontology/Farmyard>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2670678314>
+        rdf:type  <http://linkedgeodata.org/ontology/Farmyard> .
+
+<http://linkedgeodata.org/ontology/Wood>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1313205870>
+        rdf:type  <http://linkedgeodata.org/ontology/Wood> .
+
+<http://linkedgeodata.org/ontology/Wood>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1692785313>
+        rdf:type  <http://linkedgeodata.org/ontology/Wood> .
+
+<http://linkedgeodata.org/ontology/Watermill>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1311749751>
+        rdf:type  <http://linkedgeodata.org/ontology/Watermill> .
+
+<http://linkedgeodata.org/ontology/Watermill>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1593914527>
+        rdf:type  <http://linkedgeodata.org/ontology/Watermill> .
+
+<http://linkedgeodata.org/ontology/BuildingKiosk>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1336102521>
+        rdf:type  <http://linkedgeodata.org/ontology/BuildingKiosk> .
+
+<http://linkedgeodata.org/ontology/BuildingKiosk>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1336824410>
+        rdf:type  <http://linkedgeodata.org/ontology/BuildingKiosk> .
+
+<http://linkedgeodata.org/ontology/TravelAgentOffice>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1329411495>
+        rdf:type  <http://linkedgeodata.org/ontology/TravelAgentOffice> .
+
+<http://linkedgeodata.org/ontology/TravelAgentOffice>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1966386252>
+        rdf:type  <http://linkedgeodata.org/ontology/TravelAgentOffice> .
+
+<http://linkedgeodata.org/ontology/ZooShop>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1335770238>
+        rdf:type  <http://linkedgeodata.org/ontology/ZooShop> .
+
+<http://linkedgeodata.org/ontology/ZooShop>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node3014352833>
+        rdf:type  <http://linkedgeodata.org/ontology/ZooShop> .
+
+<http://linkedgeodata.org/ontology/EvCharging>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1351257284>
+        rdf:type  <http://linkedgeodata.org/ontology/EvCharging> .
+
+<http://linkedgeodata.org/ontology/EvCharging>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1392606509>
+        rdf:type  <http://linkedgeodata.org/ontology/EvCharging> .
+
+<http://linkedgeodata.org/ontology/ManMadeWell>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1350470415>
+        rdf:type  <http://linkedgeodata.org/ontology/ManMadeWell> .
+
+<http://linkedgeodata.org/ontology/ManMadeWell>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1546291777>
+        rdf:type  <http://linkedgeodata.org/ontology/ManMadeWell> .
+
+<http://linkedgeodata.org/ontology/RailwayPhone>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1347290309>
+        rdf:type  <http://linkedgeodata.org/ontology/RailwayPhone> .
+
+<http://linkedgeodata.org/ontology/RailwayPhone>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1419408622>
+        rdf:type  <http://linkedgeodata.org/ontology/RailwayPhone> .
+
+<http://linkedgeodata.org/ontology/SubwayEntrance>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1350216389>
+        rdf:type  <http://linkedgeodata.org/ontology/SubwayEntrance> .
+
+<http://linkedgeodata.org/ontology/SubwayEntrance>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1929136771>
+        rdf:type  <http://linkedgeodata.org/ontology/SubwayEntrance> .
+
+<http://linkedgeodata.org/ontology/WaterTank>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1346580148>
+        rdf:type  <http://linkedgeodata.org/ontology/WaterTank> .
+
+<http://linkedgeodata.org/ontology/WaterTank>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1874567023>
+        rdf:type  <http://linkedgeodata.org/ontology/WaterTank> .
+
+<http://linkedgeodata.org/ontology/ArchitectOffice>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1366562639>
+        rdf:type  <http://linkedgeodata.org/ontology/ArchitectOffice> .
+
+<http://linkedgeodata.org/ontology/ArchitectOffice>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2096543521>
+        rdf:type  <http://linkedgeodata.org/ontology/ArchitectOffice> .
+
+<http://linkedgeodata.org/ontology/Hide>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1369454212>
+        rdf:type  <http://linkedgeodata.org/ontology/Hide> .
+
+<http://linkedgeodata.org/ontology/Hide>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2612527365>
+        rdf:type  <http://linkedgeodata.org/ontology/Hide> .
+
+<http://linkedgeodata.org/ontology/VillagePump>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1369766974>
+        rdf:type  <http://linkedgeodata.org/ontology/VillagePump> .
+
+<http://linkedgeodata.org/ontology/VillagePump>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1676614087>
+        rdf:type  <http://linkedgeodata.org/ontology/VillagePump> .
+
+<http://linkedgeodata.org/ontology/Biwak>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1429350357>
+        rdf:type  <http://linkedgeodata.org/ontology/Biwak> .
+
+<http://linkedgeodata.org/ontology/Biwak>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1429352768>
+        rdf:type  <http://linkedgeodata.org/ontology/Biwak> .
+
+<http://linkedgeodata.org/ontology/OpticianCraft>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1431531374>
+        rdf:type  <http://linkedgeodata.org/ontology/OpticianCraft> .
+
+<http://linkedgeodata.org/ontology/OpticianCraft>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2158750510>
+        rdf:type  <http://linkedgeodata.org/ontology/OpticianCraft> .
+
+<http://linkedgeodata.org/ontology/Phone>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1438964798>
+        rdf:type  <http://linkedgeodata.org/ontology/Phone> .
+
+<http://linkedgeodata.org/ontology/Phone>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node3459867623>
+        rdf:type  <http://linkedgeodata.org/ontology/Phone> .
+
+<http://linkedgeodata.org/ontology/Surgery>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node146406329>
+        rdf:type  <http://linkedgeodata.org/ontology/Surgery> .
+
+<http://linkedgeodata.org/ontology/Surgery>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node281578831>
+        rdf:type  <http://linkedgeodata.org/ontology/Surgery> .
+
+<http://linkedgeodata.org/ontology/Grocery>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1548218676>
+        rdf:type  <http://linkedgeodata.org/ontology/Grocery> .
+
+<http://linkedgeodata.org/ontology/Grocery>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1865956856>
+        rdf:type  <http://linkedgeodata.org/ontology/Grocery> .
+
+<http://linkedgeodata.org/ontology/Information>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1550861853>
+        rdf:type  <http://linkedgeodata.org/ontology/Information> .
+
+<http://linkedgeodata.org/ontology/Information>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1857590792>
+        rdf:type  <http://linkedgeodata.org/ontology/Information> .
+
+<http://linkedgeodata.org/ontology/Observatory>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1590483540>
+        rdf:type  <http://linkedgeodata.org/ontology/Observatory> .
+
+<http://linkedgeodata.org/ontology/Observatory>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1763652859>
+        rdf:type  <http://linkedgeodata.org/ontology/Observatory> .
+
+<http://linkedgeodata.org/ontology/Palace>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1590850339>
+        rdf:type  <http://linkedgeodata.org/ontology/Palace> .
+
+<http://linkedgeodata.org/ontology/Palace>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way168640444>
+        rdf:type  <http://linkedgeodata.org/ontology/Palace> .
+
+<http://linkedgeodata.org/ontology/ItOffice>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1708249596>
+        rdf:type  <http://linkedgeodata.org/ontology/ItOffice> .
+
+<http://linkedgeodata.org/ontology/ItOffice>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2149147625>
+        rdf:type  <http://linkedgeodata.org/ontology/ItOffice> .
+
+<http://linkedgeodata.org/ontology/Centre>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1736726367>
+        rdf:type  <http://linkedgeodata.org/ontology/Centre> .
+
+<http://linkedgeodata.org/ontology/Centre>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1930858024>
+        rdf:type  <http://linkedgeodata.org/ontology/Centre> .
+
+<http://linkedgeodata.org/ontology/FootShower>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1736557832>
+        rdf:type  <http://linkedgeodata.org/ontology/FootShower> .
+
+<http://linkedgeodata.org/ontology/FootShower>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1892808345>
+        rdf:type  <http://linkedgeodata.org/ontology/FootShower> .
+
+<http://linkedgeodata.org/ontology/Telescope>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1763652859>
+        rdf:type  <http://linkedgeodata.org/ontology/Telescope> .
+
+<http://linkedgeodata.org/ontology/Telescope>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2624976659>
+        rdf:type  <http://linkedgeodata.org/ontology/Telescope> .
+
+<http://linkedgeodata.org/ontology/BathroomFurnishingShop>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1777412574>
+        rdf:type  <http://linkedgeodata.org/ontology/BathroomFurnishingShop> .
+
+<http://linkedgeodata.org/ontology/BathroomFurnishingShop>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node3447490058>
+        rdf:type  <http://linkedgeodata.org/ontology/BathroomFurnishingShop> .
+
+<http://linkedgeodata.org/ontology/Financial>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1895219673>
+        rdf:type  <http://linkedgeodata.org/ontology/Financial> .
+
+<http://linkedgeodata.org/ontology/Financial>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2104074450>
+        rdf:type  <http://linkedgeodata.org/ontology/Financial> .
+
+<http://linkedgeodata.org/ontology/ShelteredHousing>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node18968698>
+        rdf:type  <http://linkedgeodata.org/ontology/ShelteredHousing> .
+
+<http://linkedgeodata.org/ontology/ShelteredHousing>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node252024238>
+        rdf:type  <http://linkedgeodata.org/ontology/ShelteredHousing> .
+
+<http://linkedgeodata.org/ontology/Tobacconist>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1933649995>
+        rdf:type  <http://linkedgeodata.org/ontology/Tobacconist> .
+
+<http://linkedgeodata.org/ontology/Tobacconist>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1933669191>
+        rdf:type  <http://linkedgeodata.org/ontology/Tobacconist> .
+
+<http://linkedgeodata.org/ontology/PhotographicLaboratory>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2113940792>
+        rdf:type  <http://linkedgeodata.org/ontology/PhotographicLaboratory> .
+
+<http://linkedgeodata.org/ontology/PhotographicLaboratory>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way324346436>
+        rdf:type  <http://linkedgeodata.org/ontology/PhotographicLaboratory> .
+
+<http://linkedgeodata.org/ontology/Wholesale>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2107884476>
+        rdf:type  <http://linkedgeodata.org/ontology/Wholesale> .
+
+<http://linkedgeodata.org/ontology/Wholesale>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node262731218>
+        rdf:type  <http://linkedgeodata.org/ontology/Wholesale> .
+
+<http://linkedgeodata.org/ontology/BuildingBarn>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2147432697>
+        rdf:type  <http://linkedgeodata.org/ontology/BuildingBarn> .
+
+<http://linkedgeodata.org/ontology/BuildingBarn>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2407699873>
+        rdf:type  <http://linkedgeodata.org/ontology/BuildingBarn> .
+
+<http://linkedgeodata.org/ontology/DogPark>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2147926629>
+        rdf:type  <http://linkedgeodata.org/ontology/DogPark> .
+
+<http://linkedgeodata.org/ontology/DogPark>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2628087569>
+        rdf:type  <http://linkedgeodata.org/ontology/DogPark> .
+
+<http://linkedgeodata.org/ontology/HistoricMine>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2250605124>
+        rdf:type  <http://linkedgeodata.org/ontology/HistoricMine> .
+
+<http://linkedgeodata.org/ontology/HistoricMine>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2329030834>
+        rdf:type  <http://linkedgeodata.org/ontology/HistoricMine> .
+
+<http://linkedgeodata.org/ontology/NestBox>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2283361508>
+        rdf:type  <http://linkedgeodata.org/ontology/NestBox> .
+
+<http://linkedgeodata.org/ontology/NestBox>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2283370971>
+        rdf:type  <http://linkedgeodata.org/ontology/NestBox> .
+
+<http://linkedgeodata.org/ontology/Barfusspfad>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2515174186>
+        rdf:type  <http://linkedgeodata.org/ontology/Barfusspfad> .
+
+<http://linkedgeodata.org/ontology/Barfusspfad>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2929422820>
+        rdf:type  <http://linkedgeodata.org/ontology/Barfusspfad> .
+
+<http://linkedgeodata.org/ontology/ManMadeBillboard>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2518899678>
+        rdf:type  <http://linkedgeodata.org/ontology/ManMadeBillboard> .
+
+<http://linkedgeodata.org/ontology/ManMadeBillboard>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2697582712>
+        rdf:type  <http://linkedgeodata.org/ontology/ManMadeBillboard> .
+
+<http://linkedgeodata.org/ontology/Lighting>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node257518670>
+        rdf:type  <http://linkedgeodata.org/ontology/Lighting> .
+
+<http://linkedgeodata.org/ontology/Lighting>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1665847282>
+        rdf:type  <http://linkedgeodata.org/ontology/Lighting> .
+
+<http://linkedgeodata.org/ontology/Sento>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node257072555>
+        rdf:type  <http://linkedgeodata.org/ontology/Sento> .
+
+<http://linkedgeodata.org/ontology/Sento>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node260114631>
+        rdf:type  <http://linkedgeodata.org/ontology/Sento> .
+
+<http://linkedgeodata.org/ontology/TelephoneShop>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2598459891>
+        rdf:type  <http://linkedgeodata.org/ontology/TelephoneShop> .
+
+<http://linkedgeodata.org/ontology/TelephoneShop>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node273160798>
+        rdf:type  <http://linkedgeodata.org/ontology/TelephoneShop> .
+
+<http://linkedgeodata.org/ontology/Detached>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node281690707>
+        rdf:type  <http://linkedgeodata.org/ontology/Detached> .
+
+<http://linkedgeodata.org/ontology/Detached>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2833206591>
+        rdf:type  <http://linkedgeodata.org/ontology/Detached> .
+
+<http://linkedgeodata.org/ontology/AbandonedRailway>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way10054658>
+        rdf:type  <http://linkedgeodata.org/ontology/AbandonedRailway> .
+
+<http://linkedgeodata.org/ontology/AbandonedRailway>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way118899379>
+        rdf:type  <http://linkedgeodata.org/ontology/AbandonedRailway> .
+
+<http://linkedgeodata.org/ontology/Abutters>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way1000>
+        rdf:type  <http://linkedgeodata.org/ontology/Abutters> .
+
+<http://linkedgeodata.org/ontology/Abutters>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way100005420>
+        rdf:type  <http://linkedgeodata.org/ontology/Abutters> .
+
+<http://linkedgeodata.org/ontology/AdministrativeBoundary>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way108457386>
+        rdf:type  <http://linkedgeodata.org/ontology/AdministrativeBoundary> .
+
+<http://linkedgeodata.org/ontology/AdministrativeBoundary>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way169666667>
+        rdf:type  <http://linkedgeodata.org/ontology/AdministrativeBoundary> .
+
+<http://linkedgeodata.org/ontology/Alley>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way120516991>
+        rdf:type  <http://linkedgeodata.org/ontology/Alley> .
+
+<http://linkedgeodata.org/ontology/Alley>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way120520000>
+        rdf:type  <http://linkedgeodata.org/ontology/Alley> .
+
+<http://linkedgeodata.org/ontology/Amenity>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024801805>
+        rdf:type  <http://linkedgeodata.org/ontology/Amenity> .
+
+<http://linkedgeodata.org/ontology/Amenity>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024801814>
+        rdf:type  <http://linkedgeodata.org/ontology/Amenity> .
+
+<http://linkedgeodata.org/ontology/BicycleRoute>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way116246719>
+        rdf:type  <http://linkedgeodata.org/ontology/BicycleRoute> .
+
+<http://linkedgeodata.org/ontology/BicycleRoute>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way32891451>
+        rdf:type  <http://linkedgeodata.org/ontology/BicycleRoute> .
+
+<http://linkedgeodata.org/ontology/Boundary>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way101295547>
+        rdf:type  <http://linkedgeodata.org/ontology/Boundary> .
+
+<http://linkedgeodata.org/ontology/Boundary>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way108457386>
+        rdf:type  <http://linkedgeodata.org/ontology/Boundary> .
+
+<http://linkedgeodata.org/ontology/Bridleway>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way10054658>
+        rdf:type  <http://linkedgeodata.org/ontology/Bridleway> .
+
+<http://linkedgeodata.org/ontology/Bridleway>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way10317995>
+        rdf:type  <http://linkedgeodata.org/ontology/Bridleway> .
+
+<http://linkedgeodata.org/ontology/Building>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1026472308>
+        rdf:type  <http://linkedgeodata.org/ontology/Building> .
+
+<http://linkedgeodata.org/ontology/Building>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1026703443>
+        rdf:type  <http://linkedgeodata.org/ontology/Building> .
+
+<http://linkedgeodata.org/ontology/BuildingResidential>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1764312997>
+        rdf:type  <http://linkedgeodata.org/ontology/BuildingResidential> .
+
+<http://linkedgeodata.org/ontology/BuildingResidential>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2009032074>
+        rdf:type  <http://linkedgeodata.org/ontology/BuildingResidential> .
+
+<http://linkedgeodata.org/ontology/BuildingRetail>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1027200498>
+        rdf:type  <http://linkedgeodata.org/ontology/BuildingRetail> .
+
+<http://linkedgeodata.org/ontology/BuildingRetail>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1037312836>
+        rdf:type  <http://linkedgeodata.org/ontology/BuildingRetail> .
+
+<http://linkedgeodata.org/ontology/BuildingSchool>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1038274604>
+        rdf:type  <http://linkedgeodata.org/ontology/BuildingSchool> .
+
+<http://linkedgeodata.org/ontology/BuildingSchool>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1062237003>
+        rdf:type  <http://linkedgeodata.org/ontology/BuildingSchool> .
+
+<http://linkedgeodata.org/ontology/BuildingUniversity>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1934487139>
+        rdf:type  <http://linkedgeodata.org/ontology/BuildingUniversity> .
+
+<http://linkedgeodata.org/ontology/BuildingUniversity>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1934495438>
+        rdf:type  <http://linkedgeodata.org/ontology/BuildingUniversity> .
+
+<http://linkedgeodata.org/ontology/BusRoute>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1811581741>
+        rdf:type  <http://linkedgeodata.org/ontology/BusRoute> .
+
+<http://linkedgeodata.org/ontology/BusRoute>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way118664425>
+        rdf:type  <http://linkedgeodata.org/ontology/BusRoute> .
+
+<http://linkedgeodata.org/ontology/BusStation>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024819516>
+        rdf:type  <http://linkedgeodata.org/ontology/BusStation> .
+
+<http://linkedgeodata.org/ontology/BusStation>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024950957>
+        rdf:type  <http://linkedgeodata.org/ontology/BusStation> .
+
+<http://linkedgeodata.org/ontology/CivilBoundary>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way101295547>
+        rdf:type  <http://linkedgeodata.org/ontology/CivilBoundary> .
+
+<http://linkedgeodata.org/ontology/CivilBoundary>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way20492920>
+        rdf:type  <http://linkedgeodata.org/ontology/CivilBoundary> .
+
+<http://linkedgeodata.org/ontology/CommercialLanduse>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1065824760>
+        rdf:type  <http://linkedgeodata.org/ontology/CommercialLanduse> .
+
+<http://linkedgeodata.org/ontology/CommercialLanduse>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way117424333>
+        rdf:type  <http://linkedgeodata.org/ontology/CommercialLanduse> .
+
+<http://linkedgeodata.org/ontology/Convenience>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1025882054>
+        rdf:type  <http://linkedgeodata.org/ontology/Convenience> .
+
+<http://linkedgeodata.org/ontology/Convenience>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1026751611>
+        rdf:type  <http://linkedgeodata.org/ontology/Convenience> .
+
+<http://linkedgeodata.org/ontology/Cushion>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way117019091>
+        rdf:type  <http://linkedgeodata.org/ontology/Cushion> .
+
+<http://linkedgeodata.org/ontology/Cushion>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way129901552>
+        rdf:type  <http://linkedgeodata.org/ontology/Cushion> .
+
+<http://linkedgeodata.org/ontology/Cycleway>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way10712904>
+        rdf:type  <http://linkedgeodata.org/ontology/Cycleway> .
+
+<http://linkedgeodata.org/ontology/Cycleway>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way116237946>
+        rdf:type  <http://linkedgeodata.org/ontology/Cycleway> .
+
+<http://linkedgeodata.org/ontology/CyclewayLane>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way100514384>
+        rdf:type  <http://linkedgeodata.org/ontology/CyclewayLane> .
+
+<http://linkedgeodata.org/ontology/CyclewayLane>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way100514387>
+        rdf:type  <http://linkedgeodata.org/ontology/CyclewayLane> .
+
+<http://linkedgeodata.org/ontology/CyclewayOpposite>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way101417332>
+        rdf:type  <http://linkedgeodata.org/ontology/CyclewayOpposite> .
+
+<http://linkedgeodata.org/ontology/CyclewayOpposite>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way102847229>
+        rdf:type  <http://linkedgeodata.org/ontology/CyclewayOpposite> .
+
+<http://linkedgeodata.org/ontology/CyclewayOppositeLane>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way10712777>
+        rdf:type  <http://linkedgeodata.org/ontology/CyclewayOppositeLane> .
+
+<http://linkedgeodata.org/ontology/CyclewayOppositeLane>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way116021454>
+        rdf:type  <http://linkedgeodata.org/ontology/CyclewayOppositeLane> .
+
+<http://linkedgeodata.org/ontology/CyclewayThing>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1298233798>
+        rdf:type  <http://linkedgeodata.org/ontology/CyclewayThing> .
+
+<http://linkedgeodata.org/ontology/CyclewayThing>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way100514384>
+        rdf:type  <http://linkedgeodata.org/ontology/CyclewayThing> .
+
+<http://linkedgeodata.org/ontology/CyclewayTrack>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way116246708>
+        rdf:type  <http://linkedgeodata.org/ontology/CyclewayTrack> .
+
+<http://linkedgeodata.org/ontology/CyclewayTrack>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way116544983>
+        rdf:type  <http://linkedgeodata.org/ontology/CyclewayTrack> .
+
+<http://linkedgeodata.org/ontology/Doityourself>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1032580018>
+        rdf:type  <http://linkedgeodata.org/ontology/Doityourself> .
+
+<http://linkedgeodata.org/ontology/Doityourself>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1054557660>
+        rdf:type  <http://linkedgeodata.org/ontology/Doityourself> .
+
+<http://linkedgeodata.org/ontology/DriveWay>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way10739805>
+        rdf:type  <http://linkedgeodata.org/ontology/DriveWay> .
+
+<http://linkedgeodata.org/ontology/DriveWay>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way111449024>
+        rdf:type  <http://linkedgeodata.org/ontology/DriveWay> .
+
+<http://linkedgeodata.org/ontology/EmergencyThing>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1026932691>
+        rdf:type  <http://linkedgeodata.org/ontology/EmergencyThing> .
+
+<http://linkedgeodata.org/ontology/EmergencyThing>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1027418734>
+        rdf:type  <http://linkedgeodata.org/ontology/EmergencyThing> .
+
+<http://linkedgeodata.org/ontology/FoodCourt>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1029727149>
+        rdf:type  <http://linkedgeodata.org/ontology/FoodCourt> .
+
+<http://linkedgeodata.org/ontology/FoodCourt>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1032733726>
+        rdf:type  <http://linkedgeodata.org/ontology/FoodCourt> .
+
+<http://linkedgeodata.org/ontology/Footway>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1897831529>
+        rdf:type  <http://linkedgeodata.org/ontology/Footway> .
+
+<http://linkedgeodata.org/ontology/Footway>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way103028967>
+        rdf:type  <http://linkedgeodata.org/ontology/Footway> .
+
+<http://linkedgeodata.org/ontology/Fountain>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024848094>
+        rdf:type  <http://linkedgeodata.org/ontology/Fountain> .
+
+<http://linkedgeodata.org/ontology/Fountain>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1025273697>
+        rdf:type  <http://linkedgeodata.org/ontology/Fountain> .
+
+<http://linkedgeodata.org/ontology/Garden>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1049868433>
+        rdf:type  <http://linkedgeodata.org/ontology/Garden> .
+
+<http://linkedgeodata.org/ontology/Garden>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1270948343>
+        rdf:type  <http://linkedgeodata.org/ontology/Garden> .
+
+<http://linkedgeodata.org/ontology/GrassLanduse>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way10769584>
+        rdf:type  <http://linkedgeodata.org/ontology/GrassLanduse> .
+
+<http://linkedgeodata.org/ontology/GrassLanduse>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way134879561>
+        rdf:type  <http://linkedgeodata.org/ontology/GrassLanduse> .
+
+<http://linkedgeodata.org/ontology/HighwayConstruction>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way109283611>
+        rdf:type  <http://linkedgeodata.org/ontology/HighwayConstruction> .
+
+<http://linkedgeodata.org/ontology/HighwayConstruction>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way341508867>
+        rdf:type  <http://linkedgeodata.org/ontology/HighwayConstruction> .
+
+<http://linkedgeodata.org/ontology/HighwayPrimaryLink>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way100159293>
+        rdf:type  <http://linkedgeodata.org/ontology/HighwayPrimaryLink> .
+
+<http://linkedgeodata.org/ontology/HighwayPrimaryLink>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way101363981>
+        rdf:type  <http://linkedgeodata.org/ontology/HighwayPrimaryLink> .
+
+<http://linkedgeodata.org/ontology/HighwayService>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1333869131>
+        rdf:type  <http://linkedgeodata.org/ontology/HighwayService> .
+
+<http://linkedgeodata.org/ontology/HighwayService>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way1002289>
+        rdf:type  <http://linkedgeodata.org/ontology/HighwayService> .
+
+<http://linkedgeodata.org/ontology/HighwayTertiaryLink>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way103324014>
+        rdf:type  <http://linkedgeodata.org/ontology/HighwayTertiaryLink> .
+
+<http://linkedgeodata.org/ontology/HighwayTertiaryLink>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way111692257>
+        rdf:type  <http://linkedgeodata.org/ontology/HighwayTertiaryLink> .
+
+<http://linkedgeodata.org/ontology/HighwayThing>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1025242401>
+        rdf:type  <http://linkedgeodata.org/ontology/HighwayThing> .
+
+<http://linkedgeodata.org/ontology/HighwayThing>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1025250738>
+        rdf:type  <http://linkedgeodata.org/ontology/HighwayThing> .
+
+<http://linkedgeodata.org/ontology/HikingRoute>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way138629903>
+        rdf:type  <http://linkedgeodata.org/ontology/HikingRoute> .
+
+<http://linkedgeodata.org/ontology/HikingRoute>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way226452193>
+        rdf:type  <http://linkedgeodata.org/ontology/HikingRoute> .
+
+<http://linkedgeodata.org/ontology/HistoricThing>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024964674>
+        rdf:type  <http://linkedgeodata.org/ontology/HistoricThing> .
+
+<http://linkedgeodata.org/ontology/HistoricThing>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1027160680>
+        rdf:type  <http://linkedgeodata.org/ontology/HistoricThing> .
+
+<http://linkedgeodata.org/ontology/Hotel>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1025111658>
+        rdf:type  <http://linkedgeodata.org/ontology/Hotel> .
+
+<http://linkedgeodata.org/ontology/Hotel>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1025436216>
+        rdf:type  <http://linkedgeodata.org/ontology/Hotel> .
+
+<http://linkedgeodata.org/ontology/Landuse>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024818217>
+        rdf:type  <http://linkedgeodata.org/ontology/Landuse> .
+
+<http://linkedgeodata.org/ontology/Landuse>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024818253>
+        rdf:type  <http://linkedgeodata.org/ontology/Landuse> .
+
+<http://linkedgeodata.org/ontology/Leisure>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1025669692>
+        rdf:type  <http://linkedgeodata.org/ontology/Leisure> .
+
+<http://linkedgeodata.org/ontology/Leisure>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1025884179>
+        rdf:type  <http://linkedgeodata.org/ontology/Leisure> .
+
+<http://linkedgeodata.org/ontology/LivingStreet>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way10644656>
+        rdf:type  <http://linkedgeodata.org/ontology/LivingStreet> .
+
+<http://linkedgeodata.org/ontology/LivingStreet>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way111850144>
+        rdf:type  <http://linkedgeodata.org/ontology/LivingStreet> .
+
+<http://linkedgeodata.org/ontology/Mall>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1263452633>
+        rdf:type  <http://linkedgeodata.org/ontology/Mall> .
+
+<http://linkedgeodata.org/ontology/Mall>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1271394474>
+        rdf:type  <http://linkedgeodata.org/ontology/Mall> .
+
+<http://linkedgeodata.org/ontology/Monument>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1028268430>
+        rdf:type  <http://linkedgeodata.org/ontology/Monument> .
+
+<http://linkedgeodata.org/ontology/Monument>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1028757169>
+        rdf:type  <http://linkedgeodata.org/ontology/Monument> .
+
+<http://linkedgeodata.org/ontology/Motorway>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way12081393>
+        rdf:type  <http://linkedgeodata.org/ontology/Motorway> .
+
+<http://linkedgeodata.org/ontology/Motorway>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way12081394>
+        rdf:type  <http://linkedgeodata.org/ontology/Motorway> .
+
+<http://linkedgeodata.org/ontology/MotorwayLink>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way10607707>
+        rdf:type  <http://linkedgeodata.org/ontology/MotorwayLink> .
+
+<http://linkedgeodata.org/ontology/MotorwayLink>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way125347693>
+        rdf:type  <http://linkedgeodata.org/ontology/MotorwayLink> .
+
+<http://linkedgeodata.org/ontology/NaturalThing>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1026183136>
+        rdf:type  <http://linkedgeodata.org/ontology/NaturalThing> .
+
+<http://linkedgeodata.org/ontology/NaturalThing>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1026602663>
+        rdf:type  <http://linkedgeodata.org/ontology/NaturalThing> .
+
+<http://linkedgeodata.org/ontology/Office>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1027888091>
+        rdf:type  <http://linkedgeodata.org/ontology/Office> .
+
+<http://linkedgeodata.org/ontology/Office>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1030580186>
+        rdf:type  <http://linkedgeodata.org/ontology/Office> .
+
+<http://linkedgeodata.org/ontology/Park>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1025884179>
+        rdf:type  <http://linkedgeodata.org/ontology/Park> .
+
+<http://linkedgeodata.org/ontology/Park>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1026149714>
+        rdf:type  <http://linkedgeodata.org/ontology/Park> .
+
+<http://linkedgeodata.org/ontology/Parking>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024818217>
+        rdf:type  <http://linkedgeodata.org/ontology/Parking> .
+
+<http://linkedgeodata.org/ontology/Parking>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024818253>
+        rdf:type  <http://linkedgeodata.org/ontology/Parking> .
+
+<http://linkedgeodata.org/ontology/ParkingAisle>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1706061968>
+        rdf:type  <http://linkedgeodata.org/ontology/ParkingAisle> .
+
+<http://linkedgeodata.org/ontology/ParkingAisle>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2148332952>
+        rdf:type  <http://linkedgeodata.org/ontology/ParkingAisle> .
+
+<http://linkedgeodata.org/ontology/Path>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way112663132>
+        rdf:type  <http://linkedgeodata.org/ontology/Path> .
+
+<http://linkedgeodata.org/ontology/Path>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way112782073>
+        rdf:type  <http://linkedgeodata.org/ontology/Path> .
+
+<http://linkedgeodata.org/ontology/PedestrianUse>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2377709618>
+        rdf:type  <http://linkedgeodata.org/ontology/PedestrianUse> .
+
+<http://linkedgeodata.org/ontology/PedestrianUse>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way100160585>
+        rdf:type  <http://linkedgeodata.org/ontology/PedestrianUse> .
+
+<http://linkedgeodata.org/ontology/Pitch>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1590650625>
+        rdf:type  <http://linkedgeodata.org/ontology/Pitch> .
+
+<http://linkedgeodata.org/ontology/Pitch>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2195364663>
+        rdf:type  <http://linkedgeodata.org/ontology/Pitch> .
+
+<http://linkedgeodata.org/ontology/PlaceOfWorship>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024883937>
+        rdf:type  <http://linkedgeodata.org/ontology/PlaceOfWorship> .
+
+<http://linkedgeodata.org/ontology/PlaceOfWorship>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024916140>
+        rdf:type  <http://linkedgeodata.org/ontology/PlaceOfWorship> .
+
+<http://linkedgeodata.org/ontology/PrimaryHighway>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way100267261>
+        rdf:type  <http://linkedgeodata.org/ontology/PrimaryHighway> .
+
+<http://linkedgeodata.org/ontology/PrimaryHighway>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way100270147>
+        rdf:type  <http://linkedgeodata.org/ontology/PrimaryHighway> .
+
+<http://linkedgeodata.org/ontology/PublicBuilding>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1025342925>
+        rdf:type  <http://linkedgeodata.org/ontology/PublicBuilding> .
+
+<http://linkedgeodata.org/ontology/PublicBuilding>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1026378056>
+        rdf:type  <http://linkedgeodata.org/ontology/PublicBuilding> .
+
+<http://linkedgeodata.org/ontology/Rail>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way12081380>
+        rdf:type  <http://linkedgeodata.org/ontology/Rail> .
+
+<http://linkedgeodata.org/ontology/Rail>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way12081382>
+        rdf:type  <http://linkedgeodata.org/ontology/Rail> .
+
+<http://linkedgeodata.org/ontology/RailwayThing>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1035657711>
+        rdf:type  <http://linkedgeodata.org/ontology/RailwayThing> .
+
+<http://linkedgeodata.org/ontology/RailwayThing>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node105952761>
+        rdf:type  <http://linkedgeodata.org/ontology/RailwayThing> .
+
+<http://linkedgeodata.org/ontology/ResearchOffice>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1433616901>
+        rdf:type  <http://linkedgeodata.org/ontology/ResearchOffice> .
+
+<http://linkedgeodata.org/ontology/ResearchOffice>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2004974888>
+        rdf:type  <http://linkedgeodata.org/ontology/ResearchOffice> .
+
+<http://linkedgeodata.org/ontology/Reservoir>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way10769579>
+        rdf:type  <http://linkedgeodata.org/ontology/Reservoir> .
+
+<http://linkedgeodata.org/ontology/Reservoir>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way10769581>
+        rdf:type  <http://linkedgeodata.org/ontology/Reservoir> .
+
+<http://linkedgeodata.org/ontology/ResidentialHighway>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1735987086>
+        rdf:type  <http://linkedgeodata.org/ontology/ResidentialHighway> .
+
+<http://linkedgeodata.org/ontology/ResidentialHighway>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way1000>
+        rdf:type  <http://linkedgeodata.org/ontology/ResidentialHighway> .
+
+<http://linkedgeodata.org/ontology/ResidentialLanduse>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1029614792>
+        rdf:type  <http://linkedgeodata.org/ontology/ResidentialLanduse> .
+
+<http://linkedgeodata.org/ontology/ResidentialLanduse>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1068330158>
+        rdf:type  <http://linkedgeodata.org/ontology/ResidentialLanduse> .
+
+<http://linkedgeodata.org/ontology/Road>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way121995200>
+        rdf:type  <http://linkedgeodata.org/ontology/Road> .
+
+<http://linkedgeodata.org/ontology/Road>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way121995809>
+        rdf:type  <http://linkedgeodata.org/ontology/Road> .
+
+<http://linkedgeodata.org/ontology/Roundabout>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way101226248>
+        rdf:type  <http://linkedgeodata.org/ontology/Roundabout> .
+
+<http://linkedgeodata.org/ontology/Roundabout>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way103003485>
+        rdf:type  <http://linkedgeodata.org/ontology/Roundabout> .
+
+<http://linkedgeodata.org/ontology/Route>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way138629903>
+        rdf:type  <http://linkedgeodata.org/ontology/Route> .
+
+<http://linkedgeodata.org/ontology/Route>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way157551332>
+        rdf:type  <http://linkedgeodata.org/ontology/Route> .
+
+<http://linkedgeodata.org/ontology/RouteThing>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1271283133>
+        rdf:type  <http://linkedgeodata.org/ontology/RouteThing> .
+
+<http://linkedgeodata.org/ontology/RouteThing>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1271283134>
+        rdf:type  <http://linkedgeodata.org/ontology/RouteThing> .
+
+<http://linkedgeodata.org/ontology/Shop>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1025201129>
+        rdf:type  <http://linkedgeodata.org/ontology/Shop> .
+
+<http://linkedgeodata.org/ontology/Shop>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1025219952>
+        rdf:type  <http://linkedgeodata.org/ontology/Shop> .
+
+<http://linkedgeodata.org/ontology/SportThing>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1025262598>
+        rdf:type  <http://linkedgeodata.org/ontology/SportThing> .
+
+<http://linkedgeodata.org/ontology/SportThing>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1026441558>
+        rdf:type  <http://linkedgeodata.org/ontology/SportThing> .
+
+<http://linkedgeodata.org/ontology/SportsCentre>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1027846185>
+        rdf:type  <http://linkedgeodata.org/ontology/SportsCentre> .
+
+<http://linkedgeodata.org/ontology/SportsCentre>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1036516903>
+        rdf:type  <http://linkedgeodata.org/ontology/SportsCentre> .
+
+<http://linkedgeodata.org/ontology/Steps>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way12087857>
+        rdf:type  <http://linkedgeodata.org/ontology/Steps> .
+
+<http://linkedgeodata.org/ontology/Steps>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way12087886>
+        rdf:type  <http://linkedgeodata.org/ontology/Steps> .
+
+<http://linkedgeodata.org/ontology/Supermarket>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1064725191>
+        rdf:type  <http://linkedgeodata.org/ontology/Supermarket> .
+
+<http://linkedgeodata.org/ontology/Supermarket>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1191712118>
+        rdf:type  <http://linkedgeodata.org/ontology/Supermarket> .
+
+<http://linkedgeodata.org/ontology/TertiaryHighway>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node105952761>
+        rdf:type  <http://linkedgeodata.org/ontology/TertiaryHighway> .
+
+<http://linkedgeodata.org/ontology/TertiaryHighway>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way100007871>
+        rdf:type  <http://linkedgeodata.org/ontology/TertiaryHighway> .
+
+<http://linkedgeodata.org/ontology/TourismThing>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1025111300>
+        rdf:type  <http://linkedgeodata.org/ontology/TourismThing> .
+
+<http://linkedgeodata.org/ontology/TourismThing>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1025111658>
+        rdf:type  <http://linkedgeodata.org/ontology/TourismThing> .
+
+<http://linkedgeodata.org/ontology/Track>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1054715378>
+        rdf:type  <http://linkedgeodata.org/ontology/Track> .
+
+<http://linkedgeodata.org/ontology/Track>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1234966522>
+        rdf:type  <http://linkedgeodata.org/ontology/Track> .
+
+<http://linkedgeodata.org/ontology/TrackType2>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way10131121>
+        rdf:type  <http://linkedgeodata.org/ontology/TrackType2> .
+
+<http://linkedgeodata.org/ontology/TrackType2>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way10131126>
+        rdf:type  <http://linkedgeodata.org/ontology/TrackType2> .
+
+<http://linkedgeodata.org/ontology/TrackType3>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way126514382>
+        rdf:type  <http://linkedgeodata.org/ontology/TrackType3> .
+
+<http://linkedgeodata.org/ontology/TrackType3>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way134551804>
+        rdf:type  <http://linkedgeodata.org/ontology/TrackType3> .
+
+<http://linkedgeodata.org/ontology/TrackType4>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way134551925>
+        rdf:type  <http://linkedgeodata.org/ontology/TrackType4> .
+
+<http://linkedgeodata.org/ontology/TrackType4>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way304095167>
+        rdf:type  <http://linkedgeodata.org/ontology/TrackType4> .
+
+<http://linkedgeodata.org/ontology/TrackType5>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way115430751>
+        rdf:type  <http://linkedgeodata.org/ontology/TrackType5> .
+
+<http://linkedgeodata.org/ontology/TrackType5>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way218366330>
+        rdf:type  <http://linkedgeodata.org/ontology/TrackType5> .
+
+<http://linkedgeodata.org/ontology/Trunk>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1969452829>
+        rdf:type  <http://linkedgeodata.org/ontology/Trunk> .
+
+<http://linkedgeodata.org/ontology/Trunk>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way101564936>
+        rdf:type  <http://linkedgeodata.org/ontology/Trunk> .
+
+<http://linkedgeodata.org/ontology/TrunkLink>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way10499224>
+        rdf:type  <http://linkedgeodata.org/ontology/TrunkLink> .
+
+<http://linkedgeodata.org/ontology/TrunkLink>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way10644339>
+        rdf:type  <http://linkedgeodata.org/ontology/TrunkLink> .
+
+<http://linkedgeodata.org/ontology/UnclassifiedHighway>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way100005420>
+        rdf:type  <http://linkedgeodata.org/ontology/UnclassifiedHighway> .
+
+<http://linkedgeodata.org/ontology/UnclassifiedHighway>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way100198914>
+        rdf:type  <http://linkedgeodata.org/ontology/UnclassifiedHighway> .
+
+<http://linkedgeodata.org/ontology/University>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024932162>
+        rdf:type  <http://linkedgeodata.org/ontology/University> .
+
+<http://linkedgeodata.org/ontology/University>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024959491>
+        rdf:type  <http://linkedgeodata.org/ontology/University> .
+
+<http://linkedgeodata.org/ontology/Water>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1189351531>
+        rdf:type  <http://linkedgeodata.org/ontology/Water> .
+
+<http://linkedgeodata.org/ontology/Water>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1192868523>
+        rdf:type  <http://linkedgeodata.org/ontology/Water> .
+
+<http://linkedgeodata.org/ontology/AerialwayGoods>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1260593034>
+        rdf:type  <http://linkedgeodata.org/ontology/AerialwayGoods> .
+
+<http://linkedgeodata.org/ontology/AerialwayGoods>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1277217423>
+        rdf:type  <http://linkedgeodata.org/ontology/AerialwayGoods> .
+
+<http://linkedgeodata.org/ontology/AerialwayStation>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1001057378>
+        rdf:type  <http://linkedgeodata.org/ontology/AerialwayStation> .
+
+<http://linkedgeodata.org/ontology/AerialwayStation>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1001057513>
+        rdf:type  <http://linkedgeodata.org/ontology/AerialwayStation> .
+
+<http://linkedgeodata.org/ontology/AerialwayThing>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1001057378>
+        rdf:type  <http://linkedgeodata.org/ontology/AerialwayThing> .
+
+<http://linkedgeodata.org/ontology/AerialwayThing>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1001057513>
+        rdf:type  <http://linkedgeodata.org/ontology/AerialwayThing> .
+
+<http://linkedgeodata.org/ontology/Attraction>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1026602734>
+        rdf:type  <http://linkedgeodata.org/ontology/Attraction> .
+
+<http://linkedgeodata.org/ontology/Attraction>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1028424169>
+        rdf:type  <http://linkedgeodata.org/ontology/Attraction> .
+
+<http://linkedgeodata.org/ontology/BuildingHut>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1346846628>
+        rdf:type  <http://linkedgeodata.org/ontology/BuildingHut> .
+
+<http://linkedgeodata.org/ontology/BuildingHut>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1346885998>
+        rdf:type  <http://linkedgeodata.org/ontology/BuildingHut> .
+
+<http://linkedgeodata.org/ontology/BusStop>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1025242401>
+        rdf:type  <http://linkedgeodata.org/ontology/BusStop> .
+
+<http://linkedgeodata.org/ontology/BusStop>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1025250738>
+        rdf:type  <http://linkedgeodata.org/ontology/BusStop> .
+
+<http://linkedgeodata.org/ontology/CableCar>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1694631577>
+        rdf:type  <http://linkedgeodata.org/ontology/CableCar> .
+
+<http://linkedgeodata.org/ontology/CableCar>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1694728433>
+        rdf:type  <http://linkedgeodata.org/ontology/CableCar> .
+
+<http://linkedgeodata.org/ontology/ChairLift>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1065030413>
+        rdf:type  <http://linkedgeodata.org/ontology/ChairLift> .
+
+<http://linkedgeodata.org/ontology/ChairLift>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1194072945>
+        rdf:type  <http://linkedgeodata.org/ontology/ChairLift> .
+
+<http://linkedgeodata.org/ontology/DragLift>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1028748000>
+        rdf:type  <http://linkedgeodata.org/ontology/DragLift> .
+
+<http://linkedgeodata.org/ontology/DragLift>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1190997916>
+        rdf:type  <http://linkedgeodata.org/ontology/DragLift> .
+
+<http://linkedgeodata.org/ontology/FuelStation>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024807717>
+        rdf:type  <http://linkedgeodata.org/ontology/FuelStation> .
+
+<http://linkedgeodata.org/ontology/FuelStation>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024807726>
+        rdf:type  <http://linkedgeodata.org/ontology/FuelStation> .
+
+<http://linkedgeodata.org/ontology/Gondola>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1357396420>
+        rdf:type  <http://linkedgeodata.org/ontology/Gondola> .
+
+<http://linkedgeodata.org/ontology/Gondola>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way21482324>
+        rdf:type  <http://linkedgeodata.org/ontology/Gondola> .
+
+<http://linkedgeodata.org/ontology/Hamlet>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1046599231>
+        rdf:type  <http://linkedgeodata.org/ontology/Hamlet> .
+
+<http://linkedgeodata.org/ontology/Hamlet>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1333669340>
+        rdf:type  <http://linkedgeodata.org/ontology/Hamlet> .
+
+<http://linkedgeodata.org/ontology/PowerPole>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1057007182>
+        rdf:type  <http://linkedgeodata.org/ontology/PowerPole> .
+
+<http://linkedgeodata.org/ontology/PowerPole>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1969053542>
+        rdf:type  <http://linkedgeodata.org/ontology/PowerPole> .
+
+<http://linkedgeodata.org/ontology/PowerTower>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1043897429>
+        rdf:type  <http://linkedgeodata.org/ontology/PowerTower> .
+
+<http://linkedgeodata.org/ontology/PowerTower>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1288032790>
+        rdf:type  <http://linkedgeodata.org/ontology/PowerTower> .
+
+<http://linkedgeodata.org/ontology/Pylon>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1002019144>
+        rdf:type  <http://linkedgeodata.org/ontology/Pylon> .
+
+<http://linkedgeodata.org/ontology/Pylon>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1002019504>
+        rdf:type  <http://linkedgeodata.org/ontology/Pylon> .
+
+<http://linkedgeodata.org/ontology/RailwayStation>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1548558505>
+        rdf:type  <http://linkedgeodata.org/ontology/RailwayStation> .
+
+<http://linkedgeodata.org/ontology/RailwayStation>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1793029880>
+        rdf:type  <http://linkedgeodata.org/ontology/RailwayStation> .
+
+<http://linkedgeodata.org/ontology/Station>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1037953345>
+        rdf:type  <http://linkedgeodata.org/ontology/Station> .
+
+<http://linkedgeodata.org/ontology/Station>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1189069812>
+        rdf:type  <http://linkedgeodata.org/ontology/Station> .
+
+<http://linkedgeodata.org/ontology/StopPosition>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1025632571>
+        rdf:type  <http://linkedgeodata.org/ontology/StopPosition> .
+
+<http://linkedgeodata.org/ontology/StopPosition>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1027972639>
+        rdf:type  <http://linkedgeodata.org/ontology/StopPosition> .
+
+<http://linkedgeodata.org/ontology/Tower>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1041493096>
+        rdf:type  <http://linkedgeodata.org/ontology/Tower> .
+
+<http://linkedgeodata.org/ontology/Tower>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1043956941>
+        rdf:type  <http://linkedgeodata.org/ontology/Tower> .
+
+<http://linkedgeodata.org/ontology/Tree>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1026183136>
+        rdf:type  <http://linkedgeodata.org/ontology/Tree> .
+
+<http://linkedgeodata.org/ontology/Tree>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1274434708>
+        rdf:type  <http://linkedgeodata.org/ontology/Tree> .
+
+<http://linkedgeodata.org/ontology/Turnstile>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1156293571>
+        rdf:type  <http://linkedgeodata.org/ontology/Turnstile> .
+
+<http://linkedgeodata.org/ontology/Turnstile>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1585167073>
+        rdf:type  <http://linkedgeodata.org/ontology/Turnstile> .
+
+<http://linkedgeodata.org/ontology/Beacon>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1970760422>
+        rdf:type  <http://linkedgeodata.org/ontology/Beacon> .
+
+<http://linkedgeodata.org/ontology/Beacon>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1094028472>
+        rdf:type  <http://linkedgeodata.org/ontology/Beacon> .
+
+<http://linkedgeodata.org/ontology/Restaurant>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024801805>
+        rdf:type  <http://linkedgeodata.org/ontology/Restaurant> .
+
+<http://linkedgeodata.org/ontology/Restaurant>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024801814>
+        rdf:type  <http://linkedgeodata.org/ontology/Restaurant> .
+
+<http://linkedgeodata.org/ontology/SkiSchool>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1044943574>
+        rdf:type  <http://linkedgeodata.org/ontology/SkiSchool> .
+
+<http://linkedgeodata.org/ontology/SkiSchool>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1231562261>
+        rdf:type  <http://linkedgeodata.org/ontology/SkiSchool> .
+
+<http://linkedgeodata.org/ontology/Ticket>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1314445038>
+        rdf:type  <http://linkedgeodata.org/ontology/Ticket> .
+
+<http://linkedgeodata.org/ontology/Ticket>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1336684617>
+        rdf:type  <http://linkedgeodata.org/ontology/Ticket> .
+
+<http://linkedgeodata.org/ontology/FirstAid>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1346730056>
+        rdf:type  <http://linkedgeodata.org/ontology/FirstAid> .
+
+<http://linkedgeodata.org/ontology/FirstAid>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1346731821>
+        rdf:type  <http://linkedgeodata.org/ontology/FirstAid> .
+
+<http://linkedgeodata.org/ontology/Hostel>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1025606349>
+        rdf:type  <http://linkedgeodata.org/ontology/Hostel> .
+
+<http://linkedgeodata.org/ontology/Hostel>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1025630188>
+        rdf:type  <http://linkedgeodata.org/ontology/Hostel> .
+
+<http://linkedgeodata.org/ontology/Peak>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node102931249>
+        rdf:type  <http://linkedgeodata.org/ontology/Peak> .
+
+<http://linkedgeodata.org/ontology/Peak>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1033100643>
+        rdf:type  <http://linkedgeodata.org/ontology/Peak> .
+
+<http://linkedgeodata.org/ontology/RailwayPlatform>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node265924933>
+        rdf:type  <http://linkedgeodata.org/ontology/RailwayPlatform> .
+
+<http://linkedgeodata.org/ontology/RailwayPlatform>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node3067867621>
+        rdf:type  <http://linkedgeodata.org/ontology/RailwayPlatform> .
+
+<http://linkedgeodata.org/ontology/Surveillance>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node103803344>
+        rdf:type  <http://linkedgeodata.org/ontology/Surveillance> .
+
+<http://linkedgeodata.org/ontology/Surveillance>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1196970915>
+        rdf:type  <http://linkedgeodata.org/ontology/Surveillance> .
+
+<http://linkedgeodata.org/ontology/TourismInformation>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1026391172>
+        rdf:type  <http://linkedgeodata.org/ontology/TourismInformation> .
+
+<http://linkedgeodata.org/ontology/TourismInformation>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1027607621>
+        rdf:type  <http://linkedgeodata.org/ontology/TourismInformation> .
+
+<http://linkedgeodata.org/ontology/Viewpoint>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1025111300>
+        rdf:type  <http://linkedgeodata.org/ontology/Viewpoint> .
+
+<http://linkedgeodata.org/ontology/Viewpoint>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1025307716>
+        rdf:type  <http://linkedgeodata.org/ontology/Viewpoint> .
+
+<http://linkedgeodata.org/ontology/DrinkingWater>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024881830>
+        rdf:type  <http://linkedgeodata.org/ontology/DrinkingWater> .
+
+<http://linkedgeodata.org/ontology/DrinkingWater>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024900285>
+        rdf:type  <http://linkedgeodata.org/ontology/DrinkingWater> .
+
+<http://linkedgeodata.org/ontology/FastFood>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024814957>
+        rdf:type  <http://linkedgeodata.org/ontology/FastFood> .
+
+<http://linkedgeodata.org/ontology/FastFood>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024815494>
+        rdf:type  <http://linkedgeodata.org/ontology/FastFood> .
+
+<http://linkedgeodata.org/ontology/HistoricPointOfInterest>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1029261748>
+        rdf:type  <http://linkedgeodata.org/ontology/HistoricPointOfInterest> .
+
+<http://linkedgeodata.org/ontology/HistoricPointOfInterest>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1198172225>
+        rdf:type  <http://linkedgeodata.org/ontology/HistoricPointOfInterest> .
+
+<http://linkedgeodata.org/ontology/IsolatedDwelling>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1371604058>
+        rdf:type  <http://linkedgeodata.org/ontology/IsolatedDwelling> .
+
+<http://linkedgeodata.org/ontology/IsolatedDwelling>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1433079662>
+        rdf:type  <http://linkedgeodata.org/ontology/IsolatedDwelling> .
+
+<http://linkedgeodata.org/ontology/MixedLift>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node3651067038>
+        rdf:type  <http://linkedgeodata.org/ontology/MixedLift> .
+
+<http://linkedgeodata.org/ontology/MixedLift>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node3757612195>
+        rdf:type  <http://linkedgeodata.org/ontology/MixedLift> .
+
+<http://linkedgeodata.org/ontology/PointOfInterest>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1197707030>
+        rdf:type  <http://linkedgeodata.org/ontology/PointOfInterest> .
+
+<http://linkedgeodata.org/ontology/PointOfInterest>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1391237488>
+        rdf:type  <http://linkedgeodata.org/ontology/PointOfInterest> .
+
+<http://linkedgeodata.org/ontology/Sports>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1366358571>
+        rdf:type  <http://linkedgeodata.org/ontology/Sports> .
+
+<http://linkedgeodata.org/ontology/Sports>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1708176160>
+        rdf:type  <http://linkedgeodata.org/ontology/Sports> .
+
+<http://linkedgeodata.org/ontology/Stadium>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1711500611>
+        rdf:type  <http://linkedgeodata.org/ontology/Stadium> .
+
+<http://linkedgeodata.org/ontology/Stadium>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2149965226>
+        rdf:type  <http://linkedgeodata.org/ontology/Stadium> .
+
+<http://linkedgeodata.org/ontology/StreetLamp>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1272499419>
+        rdf:type  <http://linkedgeodata.org/ontology/StreetLamp> .
+
+<http://linkedgeodata.org/ontology/StreetLamp>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1274820905>
+        rdf:type  <http://linkedgeodata.org/ontology/StreetLamp> .
+
+<http://linkedgeodata.org/ontology/Toilets>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024826540>
+        rdf:type  <http://linkedgeodata.org/ontology/Toilets> .
+
+<http://linkedgeodata.org/ontology/Toilets>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024934061>
+        rdf:type  <http://linkedgeodata.org/ontology/Toilets> .
+
+<http://linkedgeodata.org/ontology/Bank>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024808403>
+        rdf:type  <http://linkedgeodata.org/ontology/Bank> .
+
+<http://linkedgeodata.org/ontology/Bank>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024847154>
+        rdf:type  <http://linkedgeodata.org/ontology/Bank> .
+
+<http://linkedgeodata.org/ontology/BuildingCabin>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1931992523>
+        rdf:type  <http://linkedgeodata.org/ontology/BuildingCabin> .
+
+<http://linkedgeodata.org/ontology/BuildingCabin>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2494316951>
+        rdf:type  <http://linkedgeodata.org/ontology/BuildingCabin> .
+
+<http://linkedgeodata.org/ontology/Cutline>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way227216176>
+        rdf:type  <http://linkedgeodata.org/ontology/Cutline> .
+
+<http://linkedgeodata.org/ontology/Cutline>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way274888534>
+        rdf:type  <http://linkedgeodata.org/ontology/Cutline> .
+
+<http://linkedgeodata.org/ontology/DisusedRailway>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way35166810>
+        rdf:type  <http://linkedgeodata.org/ontology/DisusedRailway> .
+
+<http://linkedgeodata.org/ontology/DisusedRailway>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way42404342>
+        rdf:type  <http://linkedgeodata.org/ontology/DisusedRailway> .
+
+<http://linkedgeodata.org/ontology/LightRail>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way277332933>
+        rdf:type  <http://linkedgeodata.org/ontology/LightRail> .
+
+<http://linkedgeodata.org/ontology/LightRail>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way341937044>
+        rdf:type  <http://linkedgeodata.org/ontology/LightRail> .
+
+<http://linkedgeodata.org/ontology/MilitaryLanduse>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way227002167>
+        rdf:type  <http://linkedgeodata.org/ontology/MilitaryLanduse> .
+
+<http://linkedgeodata.org/ontology/MilitaryLanduse>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node27080773>
+        rdf:type  <http://linkedgeodata.org/ontology/MilitaryLanduse> .
+
+<http://linkedgeodata.org/ontology/RailwayHalt>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way29916213>
+        rdf:type  <http://linkedgeodata.org/ontology/RailwayHalt> .
+
+<http://linkedgeodata.org/ontology/RailwayHalt>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1624955265>
+        rdf:type  <http://linkedgeodata.org/ontology/RailwayHalt> .
+
+<http://linkedgeodata.org/ontology/TrainStation>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2107224382>
+        rdf:type  <http://linkedgeodata.org/ontology/TrainStation> .
+
+<http://linkedgeodata.org/ontology/TrainStation>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way226984251>
+        rdf:type  <http://linkedgeodata.org/ontology/TrainStation> .
+
+<http://linkedgeodata.org/ontology/TunnelCulvert>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way232258688>
+        rdf:type  <http://linkedgeodata.org/ontology/TunnelCulvert> .
+
+<http://linkedgeodata.org/ontology/TunnelCulvert>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way297208113>
+        rdf:type  <http://linkedgeodata.org/ontology/TunnelCulvert> .
+
+<http://linkedgeodata.org/ontology/FireStation>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024909873>
+        rdf:type  <http://linkedgeodata.org/ontology/FireStation> .
+
+<http://linkedgeodata.org/ontology/FireStation>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1025024055>
+        rdf:type  <http://linkedgeodata.org/ontology/FireStation> .
+
+<http://linkedgeodata.org/ontology/Hospital>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024844008>
+        rdf:type  <http://linkedgeodata.org/ontology/Hospital> .
+
+<http://linkedgeodata.org/ontology/Hospital>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024844812>
+        rdf:type  <http://linkedgeodata.org/ontology/Hospital> .
+
+<http://linkedgeodata.org/ontology/TurningCircle>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node102661909>
+        rdf:type  <http://linkedgeodata.org/ontology/TurningCircle> .
+
+<http://linkedgeodata.org/ontology/TurningCircle>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node102708997>
+        rdf:type  <http://linkedgeodata.org/ontology/TurningCircle> .
+
+<http://linkedgeodata.org/ontology/Antenna>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1708444660>
+        rdf:type  <http://linkedgeodata.org/ontology/Antenna> .
+
+<http://linkedgeodata.org/ontology/Antenna>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2387223224>
+        rdf:type  <http://linkedgeodata.org/ontology/Antenna> .
+
+<http://linkedgeodata.org/ontology/CarRental>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1026750606>
+        rdf:type  <http://linkedgeodata.org/ontology/CarRental> .
+
+<http://linkedgeodata.org/ontology/CarRental>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1027191652>
+        rdf:type  <http://linkedgeodata.org/ontology/CarRental> .
+
+<http://linkedgeodata.org/ontology/CarWash>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024923037>
+        rdf:type  <http://linkedgeodata.org/ontology/CarWash> .
+
+<http://linkedgeodata.org/ontology/CarWash>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1025052356>
+        rdf:type  <http://linkedgeodata.org/ontology/CarWash> .
+
+<http://linkedgeodata.org/ontology/CommunicationsTransponder>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1257770624>
+        rdf:type  <http://linkedgeodata.org/ontology/CommunicationsTransponder> .
+
+<http://linkedgeodata.org/ontology/CommunicationsTransponder>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way61922321>
+        rdf:type  <http://linkedgeodata.org/ontology/CommunicationsTransponder> .
+
+<http://linkedgeodata.org/ontology/Flagpole>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1390630887>
+        rdf:type  <http://linkedgeodata.org/ontology/Flagpole> .
+
+<http://linkedgeodata.org/ontology/Flagpole>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2954974034>
+        rdf:type  <http://linkedgeodata.org/ontology/Flagpole> .
+
+<http://linkedgeodata.org/ontology/Locality>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1049849526>
+        rdf:type  <http://linkedgeodata.org/ontology/Locality> .
+
+<http://linkedgeodata.org/ontology/Locality>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1049849556>
+        rdf:type  <http://linkedgeodata.org/ontology/Locality> .
+
+<http://linkedgeodata.org/ontology/ManMadePole>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1701819857>
+        rdf:type  <http://linkedgeodata.org/ontology/ManMadePole> .
+
+<http://linkedgeodata.org/ontology/ManMadePole>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2338977645>
+        rdf:type  <http://linkedgeodata.org/ontology/ManMadePole> .
+
+<http://linkedgeodata.org/ontology/Mast>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1033800061>
+        rdf:type  <http://linkedgeodata.org/ontology/Mast> .
+
+<http://linkedgeodata.org/ontology/Mast>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1043897429>
+        rdf:type  <http://linkedgeodata.org/ontology/Mast> .
+
+<http://linkedgeodata.org/ontology/Apron>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1193794325>
+        rdf:type  <http://linkedgeodata.org/ontology/Apron> .
+
+<http://linkedgeodata.org/ontology/Apron>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1235887763>
+        rdf:type  <http://linkedgeodata.org/ontology/Apron> .
+
+<http://linkedgeodata.org/ontology/AmbulanceStation>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1274012061>
+        rdf:type  <http://linkedgeodata.org/ontology/AmbulanceStation> .
+
+<http://linkedgeodata.org/ontology/AmbulanceStation>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1271726874>
+        rdf:type  <http://linkedgeodata.org/ontology/AmbulanceStation> .
+
+<http://linkedgeodata.org/ontology/Fence>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1296374599>
+        rdf:type  <http://linkedgeodata.org/ontology/Fence> .
+
+<http://linkedgeodata.org/ontology/Fence>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node242864603>
+        rdf:type  <http://linkedgeodata.org/ontology/Fence> .
+
+<http://linkedgeodata.org/ontology/Heliport>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2177236442>
+        rdf:type  <http://linkedgeodata.org/ontology/Heliport> .
+
+<http://linkedgeodata.org/ontology/Heliport>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way142289859>
+        rdf:type  <http://linkedgeodata.org/ontology/Heliport> .
+
+<http://linkedgeodata.org/ontology/HoldingPoint>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node206233578>
+        rdf:type  <http://linkedgeodata.org/ontology/HoldingPoint> .
+
+<http://linkedgeodata.org/ontology/HoldingPoint>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node206233586>
+        rdf:type  <http://linkedgeodata.org/ontology/HoldingPoint> .
+
+<http://linkedgeodata.org/ontology/MiniRoundabout>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1193961366>
+        rdf:type  <http://linkedgeodata.org/ontology/MiniRoundabout> .
+
+<http://linkedgeodata.org/ontology/MiniRoundabout>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1469183113>
+        rdf:type  <http://linkedgeodata.org/ontology/MiniRoundabout> .
+
+<http://linkedgeodata.org/ontology/Shelter>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024834774>
+        rdf:type  <http://linkedgeodata.org/ontology/Shelter> .
+
+<http://linkedgeodata.org/ontology/Shelter>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1025111594>
+        rdf:type  <http://linkedgeodata.org/ontology/Shelter> .
+
+<http://linkedgeodata.org/ontology/CattleGrid>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1799639303>
+        rdf:type  <http://linkedgeodata.org/ontology/CattleGrid> .
+
+<http://linkedgeodata.org/ontology/CattleGrid>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1799639304>
+        rdf:type  <http://linkedgeodata.org/ontology/CattleGrid> .
+
+<http://linkedgeodata.org/ontology/BuildingEntrance>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1034543952>
+        rdf:type  <http://linkedgeodata.org/ontology/BuildingEntrance> .
+
+<http://linkedgeodata.org/ontology/BuildingEntrance>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1035331171>
+        rdf:type  <http://linkedgeodata.org/ontology/BuildingEntrance> .
+
+<http://linkedgeodata.org/ontology/CampSite>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1042108855>
+        rdf:type  <http://linkedgeodata.org/ontology/CampSite> .
+
+<http://linkedgeodata.org/ontology/CampSite>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1045612647>
+        rdf:type  <http://linkedgeodata.org/ontology/CampSite> .
+
+<http://linkedgeodata.org/ontology/Customs>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1037599678>
+        rdf:type  <http://linkedgeodata.org/ontology/Customs> .
+
+<http://linkedgeodata.org/ontology/Customs>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1197641309>
+        rdf:type  <http://linkedgeodata.org/ontology/Customs> .
+
+<http://linkedgeodata.org/ontology/Gate>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1032431807>
+        rdf:type  <http://linkedgeodata.org/ontology/Gate> .
+
+<http://linkedgeodata.org/ontology/Gate>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1233520881>
+        rdf:type  <http://linkedgeodata.org/ontology/Gate> .
+
+<http://linkedgeodata.org/ontology/HighwayCrossing>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1064719824>
+        rdf:type  <http://linkedgeodata.org/ontology/HighwayCrossing> .
+
+<http://linkedgeodata.org/ontology/HighwayCrossing>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1191079055>
+        rdf:type  <http://linkedgeodata.org/ontology/HighwayCrossing> .
+
+<http://linkedgeodata.org/ontology/ManMadeBuilding>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node255058518>
+        rdf:type  <http://linkedgeodata.org/ontology/ManMadeBuilding> .
+
+<http://linkedgeodata.org/ontology/ManMadeBuilding>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node945859476>
+        rdf:type  <http://linkedgeodata.org/ontology/ManMadeBuilding> .
+
+<http://linkedgeodata.org/ontology/ManMadeLamp>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2377831981>
+        rdf:type  <http://linkedgeodata.org/ontology/ManMadeLamp> .
+
+<http://linkedgeodata.org/ontology/ManMadeLamp>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node3178511641>
+        rdf:type  <http://linkedgeodata.org/ontology/ManMadeLamp> .
+
+<http://linkedgeodata.org/ontology/MultiPolygon>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2464069643>
+        rdf:type  <http://linkedgeodata.org/ontology/MultiPolygon> .
+
+<http://linkedgeodata.org/ontology/MultiPolygon>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2464069644>
+        rdf:type  <http://linkedgeodata.org/ontology/MultiPolygon> .
+
+<http://linkedgeodata.org/ontology/WaterwayFuel>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1349421989>
+        rdf:type  <http://linkedgeodata.org/ontology/WaterwayFuel> .
+
+<http://linkedgeodata.org/ontology/WaterwayFuel>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1544996256>
+        rdf:type  <http://linkedgeodata.org/ontology/WaterwayFuel> .
+
+<http://linkedgeodata.org/ontology/Chimney>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1809524164>
+        rdf:type  <http://linkedgeodata.org/ontology/Chimney> .
+
+<http://linkedgeodata.org/ontology/Chimney>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node3234018686>
+        rdf:type  <http://linkedgeodata.org/ontology/Chimney> .
+
+<http://linkedgeodata.org/ontology/EmergencyAccessPoint>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1291389658>
+        rdf:type  <http://linkedgeodata.org/ontology/EmergencyAccessPoint> .
+
+<http://linkedgeodata.org/ontology/EmergencyAccessPoint>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1291389660>
+        rdf:type  <http://linkedgeodata.org/ontology/EmergencyAccessPoint> .
+
+<http://linkedgeodata.org/ontology/Heritage>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1703128378>
+        rdf:type  <http://linkedgeodata.org/ontology/Heritage> .
+
+<http://linkedgeodata.org/ontology/Heritage>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1930248976>
+        rdf:type  <http://linkedgeodata.org/ontology/Heritage> .
+
+<http://linkedgeodata.org/ontology/Police>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024818714>
+        rdf:type  <http://linkedgeodata.org/ontology/Police> .
+
+<http://linkedgeodata.org/ontology/Police>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1024978555>
+        rdf:type  <http://linkedgeodata.org/ontology/Police> .
+
+<http://linkedgeodata.org/ontology/Reportingpoint>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node410331229>
+        rdf:type  <http://linkedgeodata.org/ontology/Reportingpoint> .
+
+<http://linkedgeodata.org/ontology/Reportingpoint>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node410331230>
+        rdf:type  <http://linkedgeodata.org/ontology/Reportingpoint> .
+
+<http://linkedgeodata.org/ontology/BuildingNo>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1192781599>
+        rdf:type  <http://linkedgeodata.org/ontology/BuildingNo> .
+
+<http://linkedgeodata.org/ontology/BuildingNo>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1234359980>
+        rdf:type  <http://linkedgeodata.org/ontology/BuildingNo> .
+
+<http://linkedgeodata.org/ontology/Greenfield>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way157937140>
+        rdf:type  <http://linkedgeodata.org/ontology/Greenfield> .
+
+<http://linkedgeodata.org/ontology/Greenfield>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way157937159>
+        rdf:type  <http://linkedgeodata.org/ontology/Greenfield> .
+
+<http://linkedgeodata.org/ontology/ParkingSpace>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1036170681>
+        rdf:type  <http://linkedgeodata.org/ontology/ParkingSpace> .
+
+<http://linkedgeodata.org/ontology/ParkingSpace>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1059503162>
+        rdf:type  <http://linkedgeodata.org/ontology/ParkingSpace> .
+
+<http://linkedgeodata.org/ontology/PowerMinorLine>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way142724022>
+        rdf:type  <http://linkedgeodata.org/ontology/PowerMinorLine> .
+
+<http://linkedgeodata.org/ontology/PowerMinorLine>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1104514982>
+        rdf:type  <http://linkedgeodata.org/ontology/PowerMinorLine> .
+
+<http://linkedgeodata.org/ontology/Brownfield>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way172914256>
+        rdf:type  <http://linkedgeodata.org/ontology/Brownfield> .
+
+<http://linkedgeodata.org/ontology/Brownfield>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way106166502>
+        rdf:type  <http://linkedgeodata.org/ontology/Brownfield> .
+
+<http://linkedgeodata.org/ontology/BuildingBunker>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way190833097>
+        rdf:type  <http://linkedgeodata.org/ontology/BuildingBunker> .
+
+<http://linkedgeodata.org/ontology/BuildingBunker>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way190833098>
+        rdf:type  <http://linkedgeodata.org/ontology/BuildingBunker> .
+
+<http://linkedgeodata.org/ontology/Sand>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way200256985>
+        rdf:type  <http://linkedgeodata.org/ontology/Sand> .
+
+<http://linkedgeodata.org/ontology/Sand>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way200256990>
+        rdf:type  <http://linkedgeodata.org/ontology/Sand> .
+
+<http://linkedgeodata.org/ontology/BuildingHospital>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node2147427762>
+        rdf:type  <http://linkedgeodata.org/ontology/BuildingHospital> .
+
+<http://linkedgeodata.org/ontology/BuildingHospital>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node249332560>
+        rdf:type  <http://linkedgeodata.org/ontology/BuildingHospital> .
+
+<http://linkedgeodata.org/ontology/Farm>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1197412358>
+        rdf:type  <http://linkedgeodata.org/ontology/Farm> .
+
+<http://linkedgeodata.org/ontology/Farm>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1270789550>
+        rdf:type  <http://linkedgeodata.org/ontology/Farm> .
+
+<http://linkedgeodata.org/ontology/RestArea>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1029784750>
+        rdf:type  <http://linkedgeodata.org/ontology/RestArea> .
+
+<http://linkedgeodata.org/ontology/RestArea>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1195168786>
+        rdf:type  <http://linkedgeodata.org/ontology/RestArea> .
+
+<http://linkedgeodata.org/ontology/BuildingHall>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way234964378>
+        rdf:type  <http://linkedgeodata.org/ontology/BuildingHall> .
+
+<http://linkedgeodata.org/ontology/BuildingHall>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way234965204>
+        rdf:type  <http://linkedgeodata.org/ontology/BuildingHall> .
+
+<http://linkedgeodata.org/ontology/DitchBarrier>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way242890128>
+        rdf:type  <http://linkedgeodata.org/ontology/DitchBarrier> .
+
+<http://linkedgeodata.org/ontology/DitchBarrier>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way77628692>
+        rdf:type  <http://linkedgeodata.org/ontology/DitchBarrier> .
+
+<http://linkedgeodata.org/ontology/Orchard>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way231646275>
+        rdf:type  <http://linkedgeodata.org/ontology/Orchard> .
+
+<http://linkedgeodata.org/ontology/Orchard>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way204545137>
+        rdf:type  <http://linkedgeodata.org/ontology/Orchard> .
+
+<http://linkedgeodata.org/ontology/MilitaryBunker>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way258991372>
+        rdf:type  <http://linkedgeodata.org/ontology/MilitaryBunker> .
+
+<http://linkedgeodata.org/ontology/MilitaryBunker>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way270163752>
+        rdf:type  <http://linkedgeodata.org/ontology/MilitaryBunker> .
+
+<http://linkedgeodata.org/ontology/Silo>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way252874342>
+        rdf:type  <http://linkedgeodata.org/ontology/Silo> .
+
+<http://linkedgeodata.org/ontology/Silo>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node1324559549>
+        rdf:type  <http://linkedgeodata.org/ontology/Silo> .
+
+<http://linkedgeodata.org/ontology/Wetland>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way267542255>
+        rdf:type  <http://linkedgeodata.org/ontology/Wetland> .
+
+<http://linkedgeodata.org/ontology/Wetland>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/node340187123>
+        rdf:type  <http://linkedgeodata.org/ontology/Wetland> .
+
+<http://linkedgeodata.org/ontology/Forest>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way31115765>
+        rdf:type  <http://linkedgeodata.org/ontology/Forest> .
+
+<http://linkedgeodata.org/ontology/Forest>
+        rdf:type  owl:Class .
+
+<http://linkedgeodata.org/triplify/way134894989>
+        rdf:type  <http://linkedgeodata.org/ontology/Forest> .
