@@ -111,7 +111,7 @@ public enum ResultsFormat {
 //            return null;
         ResultsFormat[] enums = ResultsFormat.values();
         for ( ResultsFormat rsFmt : enums ) {
-            if ( rsFmt.resultSetLang().equals(rsLang) )
+            if ( rsLang.equals(rsFmt.resultSetLang()) )
                 return rsFmt;
         }
         return null;
