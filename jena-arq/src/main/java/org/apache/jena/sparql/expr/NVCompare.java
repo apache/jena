@@ -89,7 +89,7 @@ class NVCompare {
             }
 
             case VSPACE_STRING :
-                return XSDFuncOp.compareString(nv1, nv2) == CMP_EQUAL;
+                return nv1.getString().equals(nv2.getString());
             case VSPACE_BOOLEAN :
                 return XSDFuncOp.compareBoolean(nv1, nv2) == CMP_EQUAL;
 
@@ -309,7 +309,7 @@ class NVCompare {
                 }
 
                 // same lang tag (case insensitive)
-                x = strcompare(node1.getLiteralLexicalForm(), node2.getLiteralLexicalForm());
+                x = XSDFuncOp.compareString(nv1, nv2);
                 if ( x != CMP_EQUAL )
                     return x;
                 // Same lexical forms, same lang tag by value
