@@ -260,7 +260,7 @@ public class TestExpressions2
     @Test public void xsd_cast_13()             { assertThrows(ExprEvalException.class, ()-> eval("xsd:double(' 1.0e0')") ); }
 
     @Test public void string_codepoint_order_01() {
-        String bmp = Character.toString(0xFFFD);
+        String bmp = Character.toString(0xFFE0);
         String astral = Character.toString(0x1D11E);
         eval("'"+bmp+"' < '"+astral+"'", true);
         eval("'"+bmp+"'^^xsd:string < '"+astral+"'^^xsd:string", true);

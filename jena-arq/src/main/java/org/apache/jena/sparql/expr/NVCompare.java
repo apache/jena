@@ -89,7 +89,7 @@ class NVCompare {
             }
 
             case VSPACE_STRING :
-                return XSDFuncOp.compareString(nv1, nv2) == CMP_EQUAL;
+                return nv1.getString().equals(nv2.getString());
             case VSPACE_BOOLEAN :
                 return XSDFuncOp.compareBoolean(nv1, nv2) == CMP_EQUAL;
 

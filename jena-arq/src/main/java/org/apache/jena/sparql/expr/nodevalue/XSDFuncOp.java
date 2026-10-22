@@ -1151,6 +1151,32 @@ public class XSDFuncOp
     public static int compareString(NodeValue nv1, NodeValue nv2) {
         String s1 = nv1.getString();
         String s2 = nv2.getString();
+        int len1 = s1.length();
+        int len2 = s2.length();
+        int probeLimit = Math.min(Math.min(len1, len2), 4);
+        // Most unequal strings differ near the start. Decode only at that difference.
+        for ( int i = 0; i < probeLimit; i++ ) {
+            char c1 = s1.charAt(i);
+            char c2 = s2.charAt(i);
+            if ( c1 != c2 ) {
+                int j = i;
+                // A shared high surrogate may combine with only one of these chars.
+                if ( i > 0 && Character.isHighSurrogate(s1.charAt(i - 1))
+                     && (Character.isLowSurrogate(c1) || Character.isLowSurrogate(c2)) )
+                    j = i - 1;
+                return calcReturn(Integer.compare(s1.codePointAt(j), s2.codePointAt(j)));
+            }
+        }
+        if ( Math.min(len1, len2) <= probeLimit )
+            return calcReturn(Integer.compare(len1, len2));
+
+        int utf16Order = s1.compareTo(s2);
+        // Without surrogate pairs, UTF-16 order is code point order. String comparison
+        // can handle a long common prefix more efficiently than decoding each code point.
+        if ( utf16Order == 0 || (s1.codePointCount(0, len1) == len1
+                                && s2.codePointCount(0, len2) == len2) )
+            return calcReturn(utf16Order);
+
         int i1 = 0;
         int i2 = 0;
         // SPARQL uses Unicode code point order, not UTF-16 code unit order.

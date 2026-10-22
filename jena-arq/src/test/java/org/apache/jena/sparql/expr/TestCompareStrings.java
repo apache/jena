@@ -22,7 +22,9 @@
 package org.apache.jena.sparql.expr;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -32,7 +34,7 @@ import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
 
 /** Comparisons of RDF strings in Unicode code point order. */
 public class TestCompareStrings {
-    private static final String BMP = Character.toString(0xFFFD);
+    private static final String BMP = Character.toString(0xFFE0);
     private static final String SUPPLEMENTARY = Character.toString(0x1D11E);
     private static final String LATER_SUPPLEMENTARY = Character.toString(0x1F600);
 
@@ -50,13 +52,28 @@ public class TestCompareStrings {
 
     @Test public void equalStrings() {
         compare("", "", Expr.CMP_EQUAL);
-        compare(SUPPLEMENTARY + BMP, new String(SUPPLEMENTARY + BMP), Expr.CMP_EQUAL);
+        compare(SUPPLEMENTARY + BMP, SUPPLEMENTARY + BMP, Expr.CMP_EQUAL);
     }
 
     @Test public void prefixesAndEmptyStrings() {
         compare("", SUPPLEMENTARY, Expr.CMP_LESS);
         compare(SUPPLEMENTARY, SUPPLEMENTARY + BMP, Expr.CMP_LESS);
         compare("a" + SUPPLEMENTARY, "a" + SUPPLEMENTARY + "b", Expr.CMP_LESS);
+    }
+
+    @Test public void longCommonPrefix() {
+        String prefix = "http://example.org/resource/with/a/long/shared/prefix/";
+        compare(prefix + "a", prefix + "b", Expr.CMP_LESS);
+        compare(prefix + BMP, prefix + SUPPLEMENTARY, Expr.CMP_LESS);
+    }
+
+    @Test public void stringValueEquality() {
+        String prefix = "http://example.org/resource/with/a/long/shared/prefix/";
+        NodeValue bmp = NodeValue.makeString(prefix + BMP);
+        NodeValue supplementary = NodeValue.makeString(prefix + SUPPLEMENTARY);
+        assertFalse(NodeValue.sameValueAs(bmp, supplementary));
+        assertTrue(NodeValue.sameValueAs(bmp, NodeValue.makeNode(
+                NodeFactory.createLiteralDT(prefix + BMP, XSDDatatype.XSDstring))));
     }
 
     @Test public void plainAndXsdStringValues() {
