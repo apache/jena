@@ -34,8 +34,8 @@ import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.ResultSet;
 
-public class TestGH4300LangString {
-    private static final String BMP = Character.toString(0xFFFD);
+public class TestCompareLangString {
+    private static final String BMP = Character.toString(0xFFE0);
     private static final String ASTRAL = Character.toString(0x1D11E);
 
     private static String literal(String value, String tag) {

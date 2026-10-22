@@ -98,7 +98,7 @@ public class TestNodeValueSortKey {
 
     @Test
     public void testCompareToUnicodeCodePointOrder() {
-        NodeValueSortKey bmp = new NodeValueSortKey(Character.toString(0xFFFD), null);
+        NodeValueSortKey bmp = new NodeValueSortKey(Character.toString(0xFFE0), null);
         NodeValueSortKey astral = new NodeValueSortKey(Character.toString(0x1D11E), null);
         assertTrue(bmp.compareTo(astral) < 0);
         assertTrue(astral.compareTo(bmp) > 0);
