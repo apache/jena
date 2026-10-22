@@ -29,8 +29,11 @@ import org.junit.jupiter.api.Test;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.resultset.ResultSetLang;
+import org.apache.jena.sys.JenaSystem;
 
 public class TestResultsFormat {
+
+    static { JenaSystem.init(); }
 
     @Test public void entry_srj()       { test("srj", ResultsFormat.JSON, ResultSetLang.RS_JSON, RDFFormat.JSONLD, RDFFormat.JSONLD); }
     @Test public void entry_srx()       { test("srx", ResultsFormat.XML, ResultSetLang.RS_XML, RDFFormat.RDFXML, null); }
@@ -58,12 +61,23 @@ public class TestResultsFormat {
 
     @Test public void entry_bad() { testBad("SHACL"); }
 
+    @Test public void guess_srj()       { testGuess("results.srj", ResultsFormat.JSON); }
+    @Test public void guess_srx()       { testGuess("results.srx", ResultsFormat.XML); }
+    @Test public void guess_none()      { testGuess("results.unknown", null); }
+    @Test public void guess_ttl()       { testGuess("results.ttl", null); }
+    @Test public void guess_nt()        { testGuess("results.nt", null); }
+
     private void test(String string, ResultsFormat expected, Lang rsLang, RDFFormat triplesFormat, RDFFormat quadsFormat) {
         ResultsFormat rFmt = ResultsFormat.lookup(string);
         assertEquals(expected, rFmt);
         assertEquals(rsLang, rFmt.resultSetLang());
         assertEquals(triplesFormat, rFmt.triplesFormat());
         assertEquals(quadsFormat, rFmt.quadsFormat());
+    }
+
+    private void testGuess(String filename, ResultsFormat expected) {
+        ResultsFormat rFmt = ResultsFormat.guessSyntax(filename);
+        assertEquals(expected, rFmt);
     }
 
     private void testBad(String string) {
