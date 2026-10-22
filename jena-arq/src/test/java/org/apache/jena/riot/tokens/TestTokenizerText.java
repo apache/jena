@@ -1071,11 +1071,13 @@ public class TestTokenizerText {
         });
     }
 
+    @Test
     public void token_replacementChar_uri_1() {
         Tokenizer tokenizer = tokenizer("<a\uFFFDz>");
         testNextToken(tokenizer, TokenType.IRI);
     }
 
+    @Test
     public void token_replacementChar_uri_2() {
         Tokenizer tokenizer = tokenizer("<a\\uFFFDz>");
         testNextToken(tokenizer, TokenType.IRI);

@@ -475,8 +475,6 @@ public class TestExpressions
     // Not strict
     @Test
     public void string_24()         { assertThrows(ExprEvalException.class, ()-> testString("'a'+12") ); }
-    public void string_25()         { testString("12+'a'"); }
-    public void string_26()         { testString("<uri>+'a'"); }
 
     static String dateTime1 = "'2005-02-25T12:03:34Z'^^<"+XSDDatatype.XSDdateTime.getURI()+">";
     static String dateTime2 = "'2005-02-25T12:03:34Z'^^<"+XSDDatatype.XSDdateTime.getURI()+">";
