@@ -1062,6 +1062,7 @@ public class TestTokenizerText {
         });
     }
 
+    @Test
     public void tokenizer_charset_uri_1() {
         assertThrows(RiotParseException.class, ()->{
             Tokenizer tokenizer = tokenizerASCII("<http://example/abcdé>");
