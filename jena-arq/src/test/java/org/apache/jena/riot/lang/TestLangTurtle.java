@@ -237,7 +237,15 @@ public class TestLangTurtle
         assertEquals(1, graph.size());
     }
 
+    @Test
     public void turtle_rdf12_05() {
+        Graph graph = parse(PREFIXES, "<< :s :p false >> .");
+        assertEquals(1, graph.size());
+    }
+
+    // Non-strict
+    @Test
+    public void turtle_rdf12_06() {
         Graph graph = parse(PREFIXES, "<< :s :p false >>");
         assertEquals(1, graph.size());
     }
