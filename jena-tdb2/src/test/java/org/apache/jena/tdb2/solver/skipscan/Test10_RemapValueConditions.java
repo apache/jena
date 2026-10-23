@@ -75,9 +75,8 @@ public class Test10_RemapValueConditions {
             for ( TupleIndex index : tripleTable(dsg).getTupleTable().getIndexes() ) {
                 TupleMap tupleMap = index.getMapping();
                 for ( int column = 0; column < tupleMap.length(); column++ ) {
-                    @SuppressWarnings("unchecked")
                     ValueFilter<NodeId>[] mapped = OpExecutorTDB2SkipScan.remapValueConditions(
-                        new ValueFilter[] {new ValueFilter<>(column, o1)}, tupleMap, nodeTable);
+                        new int[] {column}, new Node[] {o1, o1, o1}, nodeTable);
                     assertNotNull(mapped);
                     final int expected = column;
                     assertEquals(expected, mapped[0].idx(),
@@ -94,12 +93,10 @@ public class Test10_RemapValueConditions {
         DatasetGraphTDB dsg = tdb2(DATA);
         NodeTable nodeTable = tripleTable(dsg).getNodeTable();
         Node absent = NodeFactory.createURI("http://example/not-in-the-database");
-        TupleMap tupleMap = tripleTable(dsg).getTupleTable().getIndexes()[0].getMapping();
 
         Txn.executeRead(dsg, () -> {
-            @SuppressWarnings("unchecked")
             ValueFilter<NodeId>[] mapped = OpExecutorTDB2SkipScan.remapValueConditions(
-                new ValueFilter[] {new ValueFilter<>(0, absent)}, tupleMap, nodeTable);
+                new int[] {0}, new Node[] {absent}, nodeTable);
             assertNull(mapped,
                        "remapValueConditions must return null for a constant with no NodeId; "
                      + "getNodeIdForNode returns NodeId.NodeDoesNotExist, never null");

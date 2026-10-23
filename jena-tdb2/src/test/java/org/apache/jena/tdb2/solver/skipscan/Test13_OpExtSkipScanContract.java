@@ -79,4 +79,15 @@ public class Test13_OpExtSkipScanContract {
                    () -> "The OpExecutor is stored under an un-namespaced context symbol: "
                        + symbol.getSymbol());
     }
+    @Test
+    public void equivalentEffectiveProjectionsHaveEqualHashes() {
+        var s = Var.alloc("s");
+        var o = Var.alloc("o");
+        Node[] tuple = {s, p, o};
+        var a = new OpExtSkipScan(new PatternQuery(true, List.of(s, o), tuple));
+        var b = new OpExtSkipScan(new PatternQuery(true, List.of(o, s), tuple));
+        assertTrue(a.equalTo(b, new NodeIsomorphismMap()));
+        assertEquals(a.hashCode(), b.hashCode());
+        assertEquals(1, new java.util.HashSet<>(List.of(a, b)).size());
+    }
 }

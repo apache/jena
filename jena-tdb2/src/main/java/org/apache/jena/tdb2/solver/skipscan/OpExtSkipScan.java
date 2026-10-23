@@ -83,7 +83,7 @@ public class OpExtSkipScan
 
     @Override
     public int hashCode() {
-        return 31 * patternQuery.hashCode();
+        return effectiveOp().hashCode();
     }
 
     @Override

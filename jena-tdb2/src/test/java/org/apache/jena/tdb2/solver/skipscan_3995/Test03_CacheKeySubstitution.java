@@ -24,9 +24,15 @@ package org.apache.jena.tdb2.solver.skipscan_3995;
 import static org.apache.jena.tdb2.solver.skipscan_3995.SkipScanTestLib.assertSkipScanAgrees;
 import static org.apache.jena.tdb2.solver.skipscan_3995.SkipScanTestLib.tdb2;
 
-import org.junit.jupiter.api.Test;
-
+import org.apache.jena.dboe.base.file.Location;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFParser;
+import org.apache.jena.sparql.engine.optimizer.reorder.ReorderLib;
+import org.apache.jena.system.Txn;
+import org.apache.jena.tdb2.params.StoreParams;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
+import org.apache.jena.tdb2.store.TDB2StorageBuilder;
+import org.junit.jupiter.api.Test;
 
 /**
  * Finding 3 - {@code OpExecutorTDB2SkipScan:138}.
@@ -73,5 +79,27 @@ public class Test03_CacheKeySubstitution {
         assertSkipScanAgrees(dsg, """
             SELECT * { VALUES ?s { :s1 :s2 } { SELECT DISTINCT ?s ?p { ?s ?p ?o } } }
             """);
+    }
+    @Test
+    public void cachedResidualColumnsUseCurrentConstants() {
+        var params = StoreParams.builder("residual-cache-test")
+                .tripleIndexes(new String[] {"SPO", "OSP"}).build();
+        var dsg = TDB2StorageBuilder.build(
+                Location.mem(), params,
+                ReorderLib.identity());
+        try {
+            Txn.executeWrite(dsg, () -> RDFParser.fromString(
+                    SkipScanTestLib.PREFIXES + ":s1 :p1 :o1 . :s2 :p2 :o2 .",
+                    Lang.TRIG).parse(dsg));
+            assertSkipScanAgrees(dsg, """
+                SELECT * {
+                    { SELECT DISTINCT ?s { ?s :p1 ?o } }
+                    UNION { SELECT DISTINCT ?s { ?s :p2 ?o } }
+                    UNION { SELECT DISTINCT ?s { ?s :absent ?o } }
+                }
+                """);
+        } finally {
+            dsg.close();
+        }
     }
 }

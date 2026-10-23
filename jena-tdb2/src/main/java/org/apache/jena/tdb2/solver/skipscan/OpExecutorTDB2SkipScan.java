@@ -201,7 +201,6 @@ public class OpExecutorTDB2SkipScan {
     }
 
     /** Must only be called if hasNeededColumns returned true. */
-    @SuppressWarnings("unchecked")
     public static IndexMatch computeIndexMatch(TupleMap tm, TuplePatternSpec patternSpec) {
         Node[] quad = patternSpec.tuple();
         boolean canDoDirectDistinct = true;
@@ -210,7 +209,7 @@ public class OpExecutorTDB2SkipScan {
         // Start with marking all slots as not-covered.
         int uncoveredSlotsMask = patternSpec.neededSlotsMask();
 
-        ValueFilter<Node>[] residualConditions = null;
+        int[] residualColumns = null;
         int numResidualConditions = 0;
 
         int i;
@@ -251,12 +250,12 @@ public class OpExecutorTDB2SkipScan {
                     canDoDirectDistinct = false;
                 }
             } else {
-                if (residualConditions == null) {
-                    residualConditions = new ValueFilter[idxLen - j];
+                if (residualColumns == null) {
+                    residualColumns = new int[idxLen - j];
                 }
 
-                // Add the constant node as a filter condition.
-                residualConditions[numResidualConditions++] = new ValueFilter<>(j, node);
+                // Cache only the column; the constant may differ on the next cache hit.
+                residualColumns[numResidualConditions++] = j;
 
                 // The residual condition on the index column (j) effectively covers the corresponding slot.
                 uncoveredSlotsMask &= ~(1 << tupleSlot);
@@ -268,12 +267,12 @@ public class OpExecutorTDB2SkipScan {
             return null;
         }
 
-        // If there were residual conditions then strip trailing null values.
-        if (residualConditions != null && residualConditions.length != numResidualConditions) {
-            residualConditions = Arrays.copyOf(residualConditions, numResidualConditions);
+        // Trim unused residual-column capacity.
+        if (residualColumns != null && residualColumns.length != numResidualConditions) {
+            residualColumns = Arrays.copyOf(residualColumns, numResidualConditions);
         }
 
-        return new IndexMatch(canDoDirectDistinct, residualConditions, keyLen, valLen);
+        return new IndexMatch(canDoDirectDistinct, residualColumns, keyLen, valLen);
     }
 
     /** Resolve the {@link NodeTupleTable} for a pattern of the given tuple length. */
@@ -517,7 +516,7 @@ public class OpExecutorTDB2SkipScan {
         EqualityLink[] mappedLinks = null;
 
         if (match.numResidualConditions() > 0) {
-            mappedConditions = remapValueConditions(match.residualConditions(), tm, nodeTable);
+            mappedConditions = remapValueConditions(match.residualColumns(), nodeTuple, nodeTable);
 
             // If mappedConditions is null then some nodes could not be mapped
             if (mappedConditions == null) {
@@ -574,18 +573,16 @@ public class OpExecutorTDB2SkipScan {
     }
 
     /**
-     * Remap indices w.r.t. the tupleMap and map Nodes to NodeIds.
+     * Bind cached index-space columns to values from the current index-ordered tuple.
      * Returns null if any condition could not be mapped.
      */
-    public static ValueFilter<NodeId>[] remapValueConditions(ValueFilter<Node>[] conditions, TupleMap tupleMap, NodeTable nodeTable) {
-        int n = conditions.length;
+    public static ValueFilter<NodeId>[] remapValueConditions(int[] columns, Node[] nodeTuple, NodeTable nodeTable) {
+        int n = columns.length;
         @SuppressWarnings("unchecked")
         ValueFilter<NodeId>[] result = new ValueFilter[n];
         for (int i = 0; i < n; ++i) {
-            ValueFilter<Node> condition = conditions[i];
-            // int slot = tupleMap.unmapIdx(condition.idx());
-            int idx = condition.idx();
-            NodeId nodeId = nodeTable.getNodeIdForNode(condition.value());
+            int idx = columns[i];
+            NodeId nodeId = nodeTable.getNodeIdForNode(nodeTuple[idx]);
             if (NodeId.isDoesNotExist(nodeId)) {
                 return null;
             }

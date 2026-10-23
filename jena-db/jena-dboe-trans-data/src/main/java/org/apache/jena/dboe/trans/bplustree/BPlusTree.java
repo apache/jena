@@ -325,6 +325,12 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
         return distinctByKeyPrefix(keyPrefixLength, null, null);
     }
 
+    /**
+     * Return one record per distinct prefix in [fromRecInclusive, toRecExclusive).
+     * Only the first keyPrefixLength bytes of each bound are significant; bounds
+     * must contain at least that many bytes. Null bounds are unbounded. Prefix
+     * lengths from zero through the full key length are supported.
+     */
     public Iterator<Record> distinctByKeyPrefix(int keyPrefixLength, Record fromRecInclusive, Record toRecExclusive) {
         startReadBlkMgr();
         BPTreeNode root = getRootRead();

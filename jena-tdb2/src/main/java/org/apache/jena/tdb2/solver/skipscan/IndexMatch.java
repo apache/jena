@@ -23,12 +23,10 @@ package org.apache.jena.tdb2.solver.skipscan;
 
 import java.util.Comparator;
 
-import org.apache.jena.graph.Node;
-
 record IndexMatch(
     boolean canDoDirectDistinct,
-    /** Residual conditions are in index space, so (idx=1) w.r.t. a POS index refers to the O slot. */
-    ValueFilter<Node>[] residualConditions,
+    /** Index-space columns to filter; values come from the current query, not the cached plan. */
+    int[] residualColumns,
     int keyLen,
     int valLen)
 {
@@ -37,7 +35,7 @@ record IndexMatch(
     }
 
     public int numResidualConditions() {
-        return (residualConditions == null) ? 0 : residualConditions.length;
+        return (residualColumns == null) ? 0 : residualColumns.length;
     }
 
     public static final Comparator<IndexMatch> COMPARATOR = Comparator.nullsLast(Comparator
