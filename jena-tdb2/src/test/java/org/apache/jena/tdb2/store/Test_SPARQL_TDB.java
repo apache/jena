@@ -21,6 +21,8 @@
 
 package org.apache.jena.tdb2.store;
 
+import static org.apache.jena.tdb2.solver.skipscan_3995.SkipScanTestLib.rows;
+import static org.apache.jena.tdb2.solver.skipscan_3995.SkipScanTestLib.tdb2;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
@@ -230,8 +232,12 @@ public class Test_SPARQL_TDB {
                   BIND(rand() AS ?x)
                 }
             """).table());
+        // 0 rows are always be unexpected.
+        int numRows = actualTable.size();
+        assertNotEquals(numRows, 0);
+
         // Extremely unlikely that rand() would return the same value n times!
-        assertNotEquals(actualTable.size(), 1);
+        assertNotEquals(numRows, 1);
     }
 
     private static void add(Dataset dataset, String graphName, Triple triple) {

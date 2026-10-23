@@ -32,20 +32,17 @@ import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.NodeIsomorphismMap;
 import org.apache.jena.sparql.util.Symbol;
+import org.apache.jena.tdb2.sys.SystemTDB;
 
 public class OpExtSkipScan
     extends OpExt
 {
     protected PatternQuery patternQuery;
 
-    private static Symbol symOpExecutor = Symbol.create("opExecutor");
+    static final Symbol symOpExecutor = SystemTDB.allocSymbol("opExecutor");
 
     public static void setOpExecutorIfAbsent(Context cxt, OpExecutor opExecutor) {
         cxt.computeIfAbsent(symOpExecutor, x -> opExecutor);
-    }
-
-    public static void setOpExecutor(Context cxt, OpExecutor opExecutor) {
-        cxt.set(symOpExecutor, opExecutor);
     }
 
     public static OpExecutor getOpExecutor(Context cxt) {

@@ -312,29 +312,25 @@ public class BPlusTree extends TransactionalComponentLifecycle<BptTxnState> impl
     }
 
     @Override
-    public Iterator<Record> iterator(Record fromRec, Record toRec) {
+    public Iterator<Record> iterator(Record fromRecInclusive, Record toRecExclusive) {
         startReadBlkMgr();
         BPTreeNode root = getRootRead();
         releaseRootRead(root);
         finishReadBlkMgr();
-        return BPTreeRangeIterator.create(root, fromRec, toRec);
+        return BPTreeRangeIterator.create(root, fromRecInclusive, toRecExclusive);
         //return iterator(fromRec, toRec, RecordFactory.mapperRecord);
     }
 
     public Iterator<Record> distinctByKeyPrefix(int keyPrefixLength) {
-        startReadBlkMgr();
-        BPTreeNode root = getRootRead();
-        releaseRootRead(root);
-        finishReadBlkMgr();
-        return BPTreeDistinctKeyPrefixIterator.create(root, keyPrefixLength);
+        return distinctByKeyPrefix(keyPrefixLength, null, null);
     }
 
-    public Iterator<Record> distinctByKeyPrefix(int keyPrefixLength, Record fromRecInclusive, Record toRecInclusive) {
+    public Iterator<Record> distinctByKeyPrefix(int keyPrefixLength, Record fromRecInclusive, Record toRecExclusive) {
         startReadBlkMgr();
         BPTreeNode root = getRootRead();
         releaseRootRead(root);
         finishReadBlkMgr();
-        return BPTreeDistinctKeyPrefixIterator.create(root, keyPrefixLength, fromRecInclusive, toRecInclusive);
+        return BPTreeDistinctKeyPrefixIterator.create(root, keyPrefixLength, fromRecInclusive, toRecExclusive);
     }
 
     /*

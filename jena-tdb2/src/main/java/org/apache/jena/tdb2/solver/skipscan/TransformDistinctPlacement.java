@@ -133,7 +133,7 @@ public class TransformDistinctPlacement
                 List<Var> extendVars = opExtend.getVarExprList().getVars();
                 boolean reapplyProject = !projectVars.containsAll(extendVars);
                 if (reapplyProject) {
-                    result = new OpProject(result, new ArrayList<>(extendVars));
+                    result = new OpProject(result, new ArrayList<>(projectVars));
                 }
             }
         }

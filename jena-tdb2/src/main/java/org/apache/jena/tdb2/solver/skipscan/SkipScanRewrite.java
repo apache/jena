@@ -24,12 +24,9 @@ package org.apache.jena.tdb2.solver.skipscan;
 import java.util.List;
 
 import org.apache.jena.sparql.algebra.Op;
-import org.apache.jena.sparql.algebra.OpVisitorByTypeBase;
-import org.apache.jena.sparql.algebra.OpWalker;
 import org.apache.jena.sparql.algebra.Transformer;
 import org.apache.jena.sparql.algebra.op.OpBGP;
 import org.apache.jena.sparql.algebra.op.OpDistinct;
-import org.apache.jena.sparql.algebra.op.OpExt;
 import org.apache.jena.sparql.algebra.op.OpExtend;
 import org.apache.jena.sparql.algebra.op.OpFilter;
 import org.apache.jena.sparql.algebra.op.OpGroup;
@@ -227,27 +224,6 @@ public class SkipScanRewrite {
         }
         Expr e = el.get(0);
         return e.isVariable() ? e.asVar() : null;
-    }
-
-    private static class AbortEarlyException extends RuntimeException {
-        private static final long serialVersionUID = 1L;
-        @Override public synchronized Throwable fillInStackTrace() { return this; }
-    }
-
-    public static boolean usesSkipScan(Op op) {
-        boolean[] result = {false};
-        try {
-            OpWalker.walk(op, new OpVisitorByTypeBase() {
-                @Override
-                public void visit(OpExt opExt) {
-                    if (opExt instanceof OpExtSkipScan) {
-                        result[0] = true;
-                        throw new AbortEarlyException();
-                    }
-                }
-            });
-        } catch (AbortEarlyException e) {}
-        return result[0];
     }
 }
 

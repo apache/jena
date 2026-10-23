@@ -27,10 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.DynamicNode;
-import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.TestFactory;
-
 import org.apache.commons.collections4.iterators.PermutationIterator;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Node;
@@ -43,7 +39,6 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.core.Vars;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprVar;
@@ -52,6 +47,7 @@ import org.apache.jena.sparql.expr.aggregate.AggCountVarDistinct;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.syntax.ElementNamedGraph;
 import org.apache.jena.sparql.syntax.ElementTriplesBlock;
+import org.apache.jena.sparql.util.VarUtils;
 import org.apache.jena.system.AutoTxn;
 import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.TDB2Factory;
@@ -60,6 +56,9 @@ import org.apache.jena.tdb2.sys.TDBInternal;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.jspecify.annotations.NonNull;
+import org.junit.jupiter.api.DynamicNode;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 
 public class TestOpExecutorTDB2SkipScan
     extends AbstractDatasetGraphCompare
@@ -147,6 +146,7 @@ public class TestOpExecutorTDB2SkipScan
                 .toList();
             extra.forEach(dataDsg::add);
         }
+        referenceDsg.addAll(dataDsg);
     }
 
     /** Sub classes can use this method to generate dynamic tests. */
@@ -170,7 +170,7 @@ public class TestOpExecutorTDB2SkipScan
         List<@NonNull DynamicTest> tests = findQuads.stream().flatMap(rawQuad -> {
             Quad quad = anyToVar(rawQuad);
             List<Var> vars = new ArrayList<>(4);
-            Vars.addVarsFromQuad(vars, quad);
+            VarUtils.addVarsFromQuad(vars, quad);
 
             if (vars.isEmpty()) {
                 // Skip test cases with empty vars because they don't hit OpExecutorTDB2Index.tryExec(opGroup, input, execCxt)

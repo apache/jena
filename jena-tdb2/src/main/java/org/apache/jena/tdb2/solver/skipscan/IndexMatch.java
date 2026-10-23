@@ -27,6 +27,7 @@ import org.apache.jena.graph.Node;
 
 record IndexMatch(
     boolean canDoDirectDistinct,
+    /** Residual conditions are in index space, so (idx=1) w.r.t. a POS index refers to the O slot. */
     ValueFilter<Node>[] residualConditions,
     int keyLen,
     int valLen)

@@ -38,20 +38,6 @@ record TuplePatternSpec(
         EqualityLink[] equalityLinks,
         int neededSlotsMask) { // Omits the indices of unconstrained, undistinguished var.
 
-    public Var getVar(int varId) {
-        return varMaps[varId].var();
-    }
-
-    /** Get the index of the variable or -1 if absent. */
-    public int getIdxVar(Var var) {
-        for (VarMap e : varMaps) {
-            if (e.var().equals(var)) {
-                return e.idx();
-            }
-        }
-        return -1;
-    }
-
     @Override
     public String toString() {
         return "IndexQuerySpec [tuple=" + Arrays.toString(tuple) + ", varMaps=" + Arrays.toString(varMaps) + ", projs="
@@ -89,7 +75,7 @@ record TuplePatternSpec(
                         }
                         equalityLinks[numEqualityLinks++] = new EqualityLink(i, j);
 
-                        // Add i as needed
+                        // Declare i as a needed slot
                         neededSlots[numNeededSlots++] = i;
                         alreadySeen = true;
 
@@ -100,6 +86,7 @@ record TuplePatternSpec(
                                 neededSlots[numNeededSlots++] = j;
                             }
                         }
+                        break;
                     }
                 }
 

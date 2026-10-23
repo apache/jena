@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.jena.graph.Node;
@@ -44,12 +45,12 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.Substitute;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.core.VarAlloc;
-import org.apache.jena.sparql.core.Vars;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.join.ImmutableUniqueList;
 import org.apache.jena.sparql.engine.join.ImmutableUniqueList.Builder;
 import org.apache.jena.sparql.graph.NodeTransform;
 import org.apache.jena.sparql.graph.NodeTransformLib;
+import org.apache.jena.sparql.util.VarUtils;
 
 /**
  * Single tuple access pattern.
@@ -117,7 +118,7 @@ public record PatternQuery(boolean distinct, List<Var> project, Node[] tuple) {
 
             if (projectVars == null) {
                 Set<Var> varSet = new LinkedHashSet<>();
-                Vars.addVarsFromTriple(varSet, t);
+                VarUtils.addVarsFromTriple(varSet, t);
                 if (g != null && g.isVariable()) {
                     varSet.add(Var.alloc(g));
                 }
@@ -229,5 +230,27 @@ public record PatternQuery(boolean distinct, List<Var> project, Node[] tuple) {
         }
 
         return new PatternQuery(patternQuery.distinct(), newProject, newTuple);
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Arrays.hashCode(tuple);
+        result = prime * result + Objects.hash(distinct, project);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        PatternQuery other = (PatternQuery) obj;
+        return distinct == other.distinct && Objects.equals(project, other.project)
+                && Arrays.equals(tuple, other.tuple);
     }
 }

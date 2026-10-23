@@ -48,6 +48,7 @@ import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.iterator.QueryIter;
+import org.apache.jena.sparql.engine.iterator.QueryIterCommonParent;
 import org.apache.jena.sparql.engine.iterator.QueryIterDistinct;
 import org.apache.jena.sparql.engine.iterator.QueryIterFilterExpr;
 import org.apache.jena.sparql.engine.iterator.QueryIterNullIterator;
@@ -135,7 +136,7 @@ public class OpExecutorTDB2SkipScan {
         PatternQuery cacheKey = PatternQuery.toCacheKey(subst);
         SkipScanCandidate bestCandidate = indexCache.computeIfAbsent(cacheKey, cq -> {
             // System.err.println("NO CACHE HIT: " + canonicalQuery);
-            SkipScanCandidate r = findBestCandidate(patternQuery, execCxt);
+            SkipScanCandidate r = findBestCandidate(subst, execCxt);
             return r;
         });
 
@@ -162,7 +163,13 @@ public class OpExecutorTDB2SkipScan {
                 innerIter = new QueryIterDistinct(innerIter, null, execCxt);
             }
         }
-        return innerIter;
+
+        // FIXME Ugly but just for testing
+        // innerIter = QueryIterPlainWrapper.create(Iter.iter(innerIter).filter(b -> Algebra.compatible(b, binding)));
+        // innerIter = QueryIter.flatMap(innerIter, b -> Algebra.compatible(b, binding) ? QueryIterSingleton.create(binding, execCxt) : QueryIt, execCxt);
+
+        QueryIter result = new QueryIterCommonParent(innerIter, binding, execCxt);
+        return result;
     }
 
     public static SkipScanCandidate findBestCandidate(PatternQuery patternQuery, ExecutionContext execCxt) {
@@ -250,6 +257,9 @@ public class OpExecutorTDB2SkipScan {
 
                 // Add the constant node as a filter condition.
                 residualConditions[numResidualConditions++] = new ValueFilter<>(j, node);
+
+                // The residual condition on the index column (j) effectively covers the corresponding slot.
+                uncoveredSlotsMask &= ~(1 << tupleSlot);
             }
         }
         int valLen = j - keyLen;
@@ -301,14 +311,10 @@ public class OpExecutorTDB2SkipScan {
         return candidates;
     }
 
-    private static SkipScanCandidate planCandidate(TuplePatternSpec lookup, TupleIndex tupleIndex) {
+    static SkipScanCandidate planCandidate(TuplePatternSpec lookup, TupleIndex tupleIndex) {
         // Only consider indexes backed by a BPlusTree
-        if (tupleIndex instanceof TupleIndexRecord recordIdx) {
-            RangeIndex rangeIndex = recordIdx.getRangeIndex();
-            if (!(rangeIndex instanceof BPlusTree)) {
-                return null;
-            }
-        }
+        if (!(tupleIndex instanceof TupleIndexRecord r) || !(r.getRangeIndex() instanceof BPlusTree))
+            return null;
 
         TupleMap tm = tupleIndex.getMapping();
         IndexMatch match = computeIndexMatch(tm, lookup);
@@ -374,12 +380,9 @@ public class OpExecutorTDB2SkipScan {
         int n = map.tuple().length;
         Tuple<NodeId> pattern = TupleFactory.create(map.tuple());
 
-        Tuple<NodeId> minPattern = NodeIdUtils.anyToMin(pattern);
-        Tuple<NodeId> maxPattern = NodeIdUtils.anyToMax(pattern);
-
         RecordFactory rf = rangeIndex.getRecordFactory();
-        Record minRecord = record(rf, minPattern);
-        Record maxRecord = record(rf, maxPattern);
+        Record minRecord = record(rf, pattern, false);
+        Record maxRecord = record(rf, pattern, true);
 
         // VarMap[] proj = map.proj;
         ValueFilter<NodeId>[] residualConditions = map.residualConditions();
@@ -424,7 +427,8 @@ public class OpExecutorTDB2SkipScan {
             finalProj = Arrays.copyOf(finalProjTmp, i);
         }
 
-        Iterator<Record> recordIt = bpt.distinctByKeyPrefix(n * NodeId.SIZE, minRecord, maxRecord);
+        Record maxRecordExclusive = Record.incrementKeyOrNull(maxRecord);
+        Iterator<Record> recordIt = bpt.distinctByKeyPrefix(n * NodeId.SIZE, minRecord, maxRecordExclusive);
 
         // Filter by recheck conditions first.
         if (residualConditions != null) {
@@ -579,22 +583,36 @@ public class OpExecutorTDB2SkipScan {
         ValueFilter<NodeId>[] result = new ValueFilter[n];
         for (int i = 0; i < n; ++i) {
             ValueFilter<Node> condition = conditions[i];
-            int slot = tupleMap.unmapIdx(condition.idx());
+            // int slot = tupleMap.unmapIdx(condition.idx());
+            int idx = condition.idx();
             NodeId nodeId = nodeTable.getNodeIdForNode(condition.value());
-            if (nodeId == null) {
+            if (NodeId.isDoesNotExist(nodeId)) {
                 return null;
             }
-            result[i] = new ValueFilter<>(slot, nodeId);
+            result[i] = new ValueFilter<>(idx, nodeId);
         }
         return result;
     }
 
-    /** Create a record directly from the tuple (without a tuple map) */
-    private static Record record(RecordFactory factory, Tuple<NodeId> tuple) {
+    /**
+     * Create a record directly from the tuple (without a tuple map).
+     * @param anyToMax If false then Node.ANY becomes a sequence of 0x00 bytes.
+     *                 If true then Node.ANY becomes a sequence of 0xff bytes.
+     */
+    private static Record record(RecordFactory factory, Tuple<NodeId> tuple, boolean anyToMax) {
         int n = tuple.len();
         byte[] b = new byte[n * NodeId.SIZE];
         for (int i = 0; i < n ; i++) {
-            NodeIdFactory.set(tuple.get(i), b, i * NodeId.SIZE);
+            NodeId nodeId = tuple.get(i);
+            if (NodeId.isAny(nodeId)) {
+                // If anyToMax is false then just leave the bytes zero.
+                if (anyToMax) {
+                    int offset = i * NodeId.SIZE;
+                    Arrays.fill(b, offset, offset + NodeId.SIZE, (byte)0xFF);
+                }
+            } else {
+                NodeIdFactory.set(tuple.get(i), b, i * NodeId.SIZE);
+            }
         }
         return factory.create(b);
     }

@@ -24,6 +24,7 @@ package org.apache.jena.dboe.base.record;
 import static java.lang.String.format;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.dboe.sys.SystemIndex;
@@ -170,10 +171,12 @@ public class Record //implements Comparable<Record>
 
     /**
      * Return a new record with the key increased by 1.
-     * Returned record shares the value array of the argument record.
+     * In case of overflow, the result is null.
      */
-    public static Record incrementKey(Record record) {
-        return new Record(incrementByteArray(record.getKey().clone()), record.getValue());
+    public static Record incrementKeyOrNull(Record record) {
+        Objects.requireNonNull(record);
+        byte[] keyBytes = incrementByteArray(record.getKey().clone());
+        return keyBytes == null ? null : new Record(keyBytes, record.getValue());
     }
 
     private static byte[] incrementByteArray(byte[] array) {
@@ -186,7 +189,7 @@ public class Record //implements Comparable<Record>
             }
         }
         // If we reach here, the entire array overflowed (e.g., [255, 255] -> [0, 0])
-        throw new ArithmeticException("Byte array overflowed its maximum value");
+        return null;
     }
 
     /**
@@ -196,24 +199,27 @@ public class Record //implements Comparable<Record>
      * If no padding is needed then {@code record} is returned.
      * Otherwise, a new record is created.
      */
-    public static Record padRight(Record record, Record prototype) {
+    public static Record padRight(Record record, Record prototype, byte padValue) {
         byte[] rkey = record.getKey();
         byte[] rval = record.getValue();
 
         byte[] pkey = prototype.getKey();
         byte[] pval = prototype.getValue();
 
-        byte[] key = pkey == null ? rkey : padRight(rkey, pkey.length);
-        byte[] val = pval == null ? rval : padRight(rval, pval.length);
+        byte[] key = pkey == null ? rkey : padRight(rkey, pkey.length, padValue);
+        byte[] val = pval == null ? rval : padRight(rval, pval.length, padValue);
         return (key == rkey && val == rval) ? record : new Record(key, val);
     }
 
-    private static byte[] padRight(byte[] arr, int length) {
-        if (length == arr.length) {
+    private static byte[] padRight(byte[] arr, int length, byte padValue) {
+        if (length <= arr.length) {
             return arr;
-        } else if (length < arr.length) {
-            return Arrays.copyOf(arr, arr.length);
         }
-        return Arrays.copyOf(arr, length);
+        byte[] r = Arrays.copyOf(arr, length); // Implicitly pads with 0 bytes
+        if (padValue != 0) {
+            // Pad with non-zero bytes.
+            Arrays.fill(r, arr.length, length, padValue);
+        }
+        return r;
     }
 }
