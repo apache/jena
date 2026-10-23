@@ -37,39 +37,71 @@ class BPTreeDistinctKeyPrefixIterator implements Iterator<Record> {
     static Logger log = LoggerFactory.getLogger(BPTreeDistinctKeyPrefixIterator.class);
 
     public static Iterator<Record> create(BPTreeNode node, int keyPrefixLength) {
-        if (keyPrefixLength < 1) {
-            throw new IllegalArgumentException("keyPrefixLength must be >= 1");
-        } else if (keyPrefixLength > node.params.recordFactory.keyLength()) {
-            throw new IllegalArgumentException(
-                    "Maximum keyPrefixLength for this B+Tree is " + node.params.recordFactory.keyLength());
+        return create(node, keyPrefixLength, null, null);
+    }
+
+    /**
+     * Iterate distinct key prefixes in the half-open range [min, max).
+     * Only the first keyPrefixLength bytes of either bound are significant; each
+     * bound must contain at least that many bytes. Null denotes an unbounded end.
+     * A zero-length prefix represents a single distinct value on a non-empty tree.
+     */
+    public static Iterator<Record> create(BPTreeNode node, int keyPrefixLength, Record minRecordInclusive, Record maxRecordExclusive) {
+        int keyLength = node.params.recordFactory.keyLength();
+        if (keyPrefixLength < 0 || keyPrefixLength > keyLength) {
+            throw new IllegalArgumentException("keyPrefixLength must be between 0 and " + keyLength);
         }
-        Record minRecord = node.minRecord();
-        Record maxRecord = node.maxRecord();
-        // If there's no records just return a null iterator
-        if (minRecord == null) {
+
+        // Tree traversal and record-buffer scans compare whole keys. Map prefix
+        // bounds to the first full key of each prefix, including the exclusive max.
+        Record min = normalizeBound(minRecordInclusive, keyPrefixLength, keyLength);
+        Record max = normalizeBound(maxRecordExclusive, keyPrefixLength, keyLength);
+        if (min != null && max != null && Record.keyGE(min, max)) {
             return Iter.nullIter();
         }
-        // If there's only a single distinct prefix then just return a singleton
-        if (Arrays.compare(minRecord.getKey(), 0, keyPrefixLength, maxRecord.getKey(), 0, keyPrefixLength) == 0) {
-            return Iter.singletonIterator(minRecord);
+
+        Record nodeMinRecord = node.minRecord();
+        Record nodeMaxRecord = node.maxRecord();
+        if (nodeMinRecord == null) {
+            return Iter.nullIter();
         }
-        // Otherwise need the full iterator
-        return new BPTreeDistinctKeyPrefixIterator(node, keyPrefixLength, minRecord, maxRecord);
+
+        if (haveSamePrefix(nodeMinRecord, nodeMaxRecord, keyPrefixLength)) {
+            return isPrefixInRequestRange(nodeMinRecord, keyPrefixLength, min, max)
+                    ? Iter.singletonIterator(nodeMinRecord) : Iter.nullIter();
+        }
+
+        // The downstream search requires a non-null lower bound.
+        return new BPTreeDistinctKeyPrefixIterator(node, keyPrefixLength,
+                min == null ? nodeMinRecord : min, max);
+    }
+
+    private static Record normalizeBound(Record bound, int keyPrefixLength, int keyLength) {
+        if (bound == null) {
+            return null;
+        }
+        if (bound.getKey().length < keyPrefixLength) {
+            throw new IllegalArgumentException("Range bound is shorter than keyPrefixLength");
+        }
+        byte[] key = new byte[keyLength];
+        System.arraycopy(bound.getKey(), 0, key, 0, keyPrefixLength);
+        return new Record(key, null);
     }
 
     // Convert path to a stack of iterators
     private final Deque<Iterator<BPTreePage>> stack = new ArrayDeque<>();
     private Iterator<Record> current;
-    private Record slot = null, minRecord, maxRecord;
+    private Record slot = null;
+    private final Record minRecordInclusive, maxRecordExclusive;
     private byte[] lastPrefix = null;
     private boolean finished = false;
 
     private final int keyPrefixLength;
 
-    BPTreeDistinctKeyPrefixIterator(BPTreeNode node, int keyPrefixLength, Record minRecord, Record maxRecord) {
+    BPTreeDistinctKeyPrefixIterator(BPTreeNode node, int keyPrefixLength, Record minRecordInclusive, Record maxRecordExclusive) {
         this.keyPrefixLength = keyPrefixLength;
-        this.minRecord = minRecord;
-        this.maxRecord = maxRecord;
+        this.minRecordInclusive = Objects.requireNonNull(minRecordInclusive);
+        this.maxRecordExclusive = maxRecordExclusive;
 
         BPTreeRecords r = loadStack(node);
         current = getRecordsIterator(r);
@@ -133,8 +165,16 @@ class BPTreeDistinctKeyPrefixIterator implements Iterator<Record> {
             // iterator for this entire subtree and skip further recursion
             Record subtreeMin = n.minRecord();
             Record subtreeMax = n.maxRecord();
-            if (haveSamePrefix(subtreeMin, subtreeMax)) {
-                return Iter.singletonIterator(subtreeMin);
+            if (haveSamePrefix(subtreeMin, subtreeMax, keyPrefixLength)) {
+                Iterator<Record> recordIter;
+                // Check that the prefix is in range
+                if (isPrefixInRequestRange(subtreeMin, keyPrefixLength, minRecordInclusive, maxRecordExclusive)) {
+                    // If the low and high keys for this page have the same prefix then just return a singleton iterator
+                    recordIter = Iter.singletonIterator(subtreeMin);
+                } else {
+                    recordIter = Iter.nullIterator();
+                }
+                return recordIter;
             }
             r = loadStack(n);
         } else {
@@ -143,8 +183,20 @@ class BPTreeDistinctKeyPrefixIterator implements Iterator<Record> {
         return getRecordsIterator(r);
     }
 
-    protected final boolean haveSamePrefix(Record a, Record b) {
-        return Arrays.compare(a.getKey(), 0, this.keyPrefixLength, b.getKey(), 0, this.keyPrefixLength) == 0;
+    private static int comparePrefix(Record a, Record b, int keyPrefixLength) {
+        // Need to compare unsigned in general:
+        // E.g. [0, 5] is less than [0, -1] because the latter must be treated as [0, 255].
+        return Arrays.compareUnsigned(a.getKey(), 0, keyPrefixLength, b.getKey(), 0, keyPrefixLength);
+    }
+
+    private static boolean haveSamePrefix(Record a, Record b, int keyPrefixLength) {
+        return comparePrefix(a, b, keyPrefixLength) == 0;
+    }
+
+    protected static boolean isPrefixInRequestRange(Record record, int keyPrefixLength, Record minRecordInclusive, Record maxRecordExclusive) {
+        return
+            (minRecordInclusive == null || comparePrefix(record, minRecordInclusive, keyPrefixLength) >= 0) &&
+            (maxRecordExclusive == null || comparePrefix(record, maxRecordExclusive, keyPrefixLength) < 0);
     }
 
     // ---- Places we touch blocks.
@@ -157,12 +209,19 @@ class BPTreeDistinctKeyPrefixIterator implements Iterator<Record> {
         } else {
             // Check whether we need to scan the whole page or can process it by skipping or singleton yield
             Record lowRecord = records.getLowRecord();
-            if (haveSamePrefix(lowRecord, records.getHighRecord())) {
-                // If the low and high keys for this page have the same prefix then just return a singleton iterator
-                iter = Iter.singletonIterator(lowRecord);
+            Record highRecord = records.getHighRecord();
+            if (haveSamePrefix(lowRecord, highRecord, keyPrefixLength)) {
+                // Check that the prefix is in range
+                if (isPrefixInRequestRange(lowRecord, keyPrefixLength, minRecordInclusive, maxRecordExclusive)) {
+                    // If the low and high keys for this page have the same prefix then just return a singleton iterator
+                    iter = Iter.singletonIterator(lowRecord);
+                } else {
+                    iter = Iter.nullIterator();
+                }
             } else {
                 // Otherwise need to scan the whole page
-                iter = records.getRecordBuffer().iterator();
+                // Note: Adjacent records with the same prefix are filtered out in this class's hasNext() method
+                iter = records.getRecordBuffer().iterator(minRecordInclusive, maxRecordExclusive);
             }
         }
         records.bpTree.finishReadBlkMgr();
@@ -173,11 +232,11 @@ class BPTreeDistinctKeyPrefixIterator implements Iterator<Record> {
         AccessPath path = new AccessPath(null);
         node.bpTree.startReadBlkMgr();
 
-        node.internalMinRecord(path);
+        node.internalSearch(path, minRecordInclusive);
         List<AccessStep> steps = path.getPath();
         for (AccessStep step : steps) {
             BPTreeNode n = step.node;
-            Iterator<BPTreePage> it = n.iterator(this.minRecord, this.maxRecord);
+            Iterator<BPTreePage> it = n.iterator(minRecordInclusive, maxRecordExclusive);
             if (it == null || !it.hasNext()) {
                 continue;
             }
