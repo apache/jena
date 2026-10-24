@@ -381,6 +381,7 @@ public abstract class AbstractTestTransactionLifecycle
     // test : abort
     // Permit explain .end() - the case of "end" when not sure:  begin...end.end.
 
+    @Test
     public void transaction_err_nontxn_commit_1() {
         Dataset ds = create();
         assertThrows(JenaTransactionException.class, () -> {
