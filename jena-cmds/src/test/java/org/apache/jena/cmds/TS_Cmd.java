@@ -21,9 +21,9 @@
 
 package org.apache.jena.cmds;
 
+import arq.Test_rdfdiff;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
-
 import jena.Test_schemagen;
 import org.apache.jena.atlas.logging.LogCtl ;
 
@@ -32,6 +32,7 @@ import org.apache.jena.atlas.logging.LogCtl ;
     TestCmdLine.class
     , Test_schemagen.class
     , TestCmdExt.class
+    , Test_rdfdiff.class
 })
 
 public class TS_Cmd
