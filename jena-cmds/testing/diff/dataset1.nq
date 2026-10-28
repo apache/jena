@@ -1,0 +1,6 @@
+<ex:s1> <ex:p1> <ex:o1> <urn:x-arq:DefaultGraph> .
+<ex:s2> <ex:p2> <ex:o2> <urn:x-arq:DefaultGraph> .
+<ex:s3> <ex:p3> <ex:o3> <urn:x-arq:DefaultGraph> .
+_:b1 <ex:p4> <ex:o4> _:g1 .
+_:b1 <ex:p5> <ex:o5> <urn:x-arq:DefaultGraph> .
+_:b1 <ex:p6> <ex:o6> _:g1 .
