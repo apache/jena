@@ -33,6 +33,7 @@ import java.io.*;
 import java.util.*;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedClass;
 import org.junit.jupiter.params.provider.Arguments;
@@ -128,6 +129,7 @@ public class TestBPTreeDistinctKeys extends TestBPTreeModes {
     }
 
     @Test
+    @Disabled("SELECT DISTINCT ?zz { ?s ?p ?o } can result in 0 length prefixes")
     public void bptree_distinct_by_key_bad_01() {
         BPlusTree bpt = makeRangeIndex(this.treeOrder, 0);
         assertThrows(IllegalArgumentException.class, ()->bpt.distinctByKeyPrefix(0));
