@@ -24,10 +24,15 @@ package org.apache.jena.sparql.service.enhancer.impl.util;
 import java.util.Iterator;
 import java.util.Objects;
 
+import org.apache.jena.atlas.iterator.PeekIterator;
+
 import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.PeekingIterator;
 
-/** The atlas version does active read ahead; this one only fetches data when needed */
+/**
+ * An iterator with support for peeking the next item.
+ * The {@link PeekIterator} in jena-atlas uses active read ahead whereas this class only fetches data when needed.
+ */
 public class PeekIteratorLazy<T>
     extends AbstractIterator<T> // AbstractIterator already has a public peek method
     implements PeekingIterator<T>

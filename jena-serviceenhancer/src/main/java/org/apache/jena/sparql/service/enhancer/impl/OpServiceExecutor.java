@@ -22,10 +22,11 @@
 package org.apache.jena.sparql.service.enhancer.impl;
 
 import org.apache.jena.sparql.algebra.op.OpService;
+import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
 
 /** Interface for directly executing {@link OpService} instances */
 @FunctionalInterface
 public interface OpServiceExecutor {
-    QueryIterator exec(OpService opService);
+    QueryIterator exec(OpService opService, ExecutionContext execCxt);
 }

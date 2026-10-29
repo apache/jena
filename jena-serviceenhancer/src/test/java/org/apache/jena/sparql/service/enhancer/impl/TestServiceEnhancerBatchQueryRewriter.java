@@ -7,24 +7,25 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- *
- *   SPDX-License-Identifier: Apache-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.apache.jena.sparql.service.enhancer.impl;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -39,9 +40,8 @@ import org.apache.jena.sparql.algebra.op.OpService;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
+import org.apache.jena.sparql.service.enhancer.impl.BatchQueryRewriter.SubstitutionStrategy;
 import org.apache.jena.sparql.syntax.syntaxtransform.QueryTransformOps;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class TestServiceEnhancerBatchQueryRewriter {
 
@@ -91,7 +91,7 @@ public class TestServiceEnhancerBatchQueryRewriter {
             "   }",
             "ORDER BY ASC(?idx) ?s"));
 
-        Assert.assertEquals(expectedQuery, actualQuery);
+        assertEquals(expectedQuery, actualQuery);
     }
 
     /** GH-2992: Blank nodes must be relabeled wher building batch unions. */
@@ -129,11 +129,17 @@ public class TestServiceEnhancerBatchQueryRewriter {
             ORDER BY ASC(?idx)
             """));
 
-        Assert.assertEquals(expectedQuery, actualQuery);
+        assertEquals(expectedQuery, actualQuery);
     }
 
     private static Query defaultRewrite(OpService op , Batch<Integer, PartitionRequest<Binding>> batch) {
-        BatchQueryRewriter rewriter = new BatchQueryRewriter(new OpServiceInfo(op), Var.alloc("idx"), false, false, false);
+        BatchQueryRewriter rewriter = BatchQueryRewriterBuilder.from(new OpServiceInfo(op), Var.alloc("idx"))
+                .setSequentialUnion(false)
+                .setOrderRetainingUnion(false)
+                .setOmitEndMarker(false)
+                .setSubstitutionStrategy(SubstitutionStrategy.SUBSTITUTE)
+                .build();
+
         BatchQueryRewriteResult rewrite = rewriter.rewrite(batch);
         Op resultOp = rewrite.getOp();
         Query result = harmonizeBnodes(OpAsQuery.asQuery(resultOp));
