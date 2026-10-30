@@ -44,6 +44,13 @@
               qt:data   <data-count-distinct-expr.ttl> ] ;
         mf:result  <count-distinct-expr.srj>
       ]
+      [  mf:name    "distinct-order-expr (GH-4242)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <distinct-order-expr.rq> ;
+              qt:data   <data-distinct-order-expr.ttl> ] ;
+        mf:result  <distinct-order-expr.srj>
+      ]
       [  mf:name    "expr-triple-term" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
