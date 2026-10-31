@@ -56,7 +56,7 @@ public class NodeCmp {
         //-- Variables
         if ( node1.isVariable() ) {
             if ( node2.isVariable() ) {
-                return StrUtils.strCompare(node1.getName(), node2.getName());
+                return StrUtils.strCompareCodePoint(node1.getName(), node2.getName());
             }
             // Variables before anything else
             return Expr.CMP_LESS;
@@ -72,7 +72,7 @@ public class NodeCmp {
             if ( node2.isBlank() ) {
                 String s1 = node1.getBlankNodeLabel();
                 String s2 = node2.getBlankNodeLabel();
-                return StrUtils.strCompare(s1, s2);
+                return StrUtils.strCompareCodePoint(s1, s2);
             }
             // bNodes before anything but variables
             return Expr.CMP_LESS;
@@ -89,7 +89,7 @@ public class NodeCmp {
             if ( node2.isURI() ) {
                 String s1 = node1.getURI();
                 String s2 = node2.getURI();
-                return StrUtils.strCompare(s1, s2);
+                return StrUtils.strCompareCodePoint(s1, s2);
             }
             return Expr.CMP_LESS;
         }
@@ -156,13 +156,13 @@ public class NodeCmp {
             return Expr.CMP_EQUAL;
 
         // ** Rewrite as a classifier.??
-        // simple < lang < datatype
+        // simple < lang < langdir < datatype
 
         // Both simple? (xsd:string in RDF 1.1)
         if ( isSimpleString(node1) && isSimpleString(node2) ) {
             String lex1 = node1.getLiteralLexicalForm();
             String lex2 = node2.getLiteralLexicalForm();
-            return StrUtils.strCompare(lex1, lex2);
+            return StrUtils.strCompareCodePoint(lex1, lex2);
         }
 
         // Any simple string?
@@ -171,39 +171,24 @@ public class NodeCmp {
         if ( isSimpleString(node2) )
             return Expr.CMP_GREATER;
 
-        // No simple string from here on.
-
+        // No simple strings from here on.
         {
-            int x = compareRDFLangTerms(node1, node2);
-            if ( x != Expr.CMP_INDETERMINATE )
-                return x;
+            int x1 = compareRDFDirLangTerms(node1, node2);
+            if ( x1 != Expr.CMP_INDETERMINATE )
+                return x1;
+            // No simple string, no dirlang from here on.
+            int x2 = compareRDFLangOnlyTerms(node1, node2);
+            if ( x2 != Expr.CMP_INDETERMINATE )
+                return x2;
         }
 
-        // No simple strings, no lang strings.
-        // Compare by datatype then lexical form.
+        // No simple strings, no lang strings, no langdir strings
 
-        // Switch for old world (Jena 4.5.0 and before)
-        // Affects ordering for datatypes (not simple or lang strings).
-        // false - old world.
-        final boolean byDatatype = false;
-        if ( byDatatype ) {
-            String dt1 = node1.getLiteralDatatypeURI();
-            String dt2 = node2.getLiteralDatatypeURI();
-
-            int x = StrUtils.strCompare(dt1, dt2);
-            if ( x != Expr.CMP_EQUAL )
-                return x;
-            // Same datatype
-            String lex1 = node1.getLiteralLexicalForm();
-            String lex2 = node2.getLiteralLexicalForm();
-            return StrUtils.strCompare(lex1, lex2);
-        }
-
-        // Old Jena 4.5.0 : lexical form before datatype.
+        // Compare lexical form before datatype (the long-time choice).
         String lex1 = node1.getLiteralLexicalForm();
         String lex2 = node2.getLiteralLexicalForm();
 
-        int x = StrUtils.strCompare(lex1, lex2);
+        int x = StrUtils.strCompareCodePoint(lex1, lex2);
         if ( x != Expr.CMP_EQUAL )
             return x;
 
@@ -211,39 +196,111 @@ public class NodeCmp {
         String dt1 = node1.getLiteralDatatypeURI();
         String dt2 = node2.getLiteralDatatypeURI();
         // Two datatypes.
-        return StrUtils.strCompare(dt1, dt2);
+        return StrUtils.strCompareCodePoint(dt1, dt2);
+
+//        // Compare by datatype then lexical form.
+//        String dt1 = node1.getLiteralDatatypeURI();
+//        String dt2 = node2.getLiteralDatatypeURI();
+//
+//        int x = StrUtils.strCompareCodePoint(dt1, dt2);
+//        if ( x != Expr.CMP_EQUAL )
+//            return x;
+//        // Same datatype
+//        String lex1 = node1.getLiteralLexicalForm();
+//        String lex2 = node2.getLiteralLexicalForm();
+//        return StrUtils.strCompareCodePoint(lex1, lex2);
     }
 
-    /** May return {@link Expr#CMP_INDETERMINATE} */
-    private static int compareRDFLangTerms(Node node1, Node node2) {
+    /** Compare by language direction only - may return {@link Expr#CMP_INDETERMINATE} */
+    private static int compareRDFDirLangTerms(Node node1, Node node2) {
+        if ( isDirLangString(node1) && isDirLangString(node2) ) {
+            String dir1 = node1.getLiteralBaseDirection().direction();
+            String dir2 = node2.getLiteralBaseDirection().direction();
+            int x1 = StrUtils.strCompareIgnoreCase(dir1, dir2);
+            if ( x1 != Expr.CMP_EQUAL )
+                return x1;
+            // Same direction.
+            return compareByLangThenLex(node1, node2);
+        }
+
+        // Any language direction?
+        // lang < dirlang < datatype
+
+        if ( isDirLangString(node1) ) {
+            if ( isLangString(node2) )
+                // dirLang > lang
+                return Expr.CMP_GREATER;
+            // dirLAng < lang or datatype.
+            return Expr.CMP_LESS;
+        }
+        if ( isDirLangString(node2) ) {
+            if ( isLangString(node1) )
+                // lang < dirLang
+                return Expr.CMP_LESS;
+            // datatype > dirLang
+            return Expr.CMP_GREATER;
+        }
+        return Expr.CMP_INDETERMINATE;
+    }
+
+    /**
+     * Compare by language only - may return {@link Expr#CMP_INDETERMINATE}.
+     * DirLang checking has been done.
+     */
+    private static int compareRDFLangOnlyTerms(Node node1, Node node2) {
         if ( isLangString(node1) && isLangString(node2) ) {
             String lang1 = node1.getLiteralLanguage();
             String lang2 = node2.getLiteralLanguage();
             int x = StrUtils.strCompareIgnoreCase(lang1, lang2);
             if ( x != Expr.CMP_EQUAL )
                 return x;
+
             // Two langs, same lang tag => lexical form.
             String lex1 = node1.getLiteralLexicalForm();
             String lex2 = node2.getLiteralLexicalForm();
-            x = StrUtils.strCompare(lex1, lex2);
+            x = StrUtils.strCompareCodePoint(lex1, lex2);
             if ( x != Expr.CMP_EQUAL )
                 return x;
 
             // Same (case insensitive) lang, same lexical for - can be split them?
+            // ASCII comparision.
             x = StrUtils.strCompare(lang1, lang2);
             if ( x != Expr.CMP_EQUAL )
                 return x;
             throw new ARQInternalErrorException("Same lang tag (inc case, same lexical form but not node.equals");
         }
-
         // Any lang string?
         if ( isLangString(node1) )
-            // lang < datatype
+            // lang < dirlang < datatype
             return Expr.CMP_LESS;
 
         if ( isLangString(node2) )
             return Expr.CMP_GREATER;
 
+
+
+
+
         return Expr.CMP_INDETERMINATE;
+    }
+
+
+    // Compare two nodes that are known to have a language tag and are the same kind (both rdf:langsString or both rdf:dirLangString)
+    // Do not mix rdf:langsString and rdf:dirLangString
+    private static int compareByLangThenLex(Node node1, Node node2) {
+        String lang1 = node1.getLiteralLanguage();
+        String lang2 = node2.getLiteralLanguage();
+        int x = StrUtils.strCompareIgnoreCase(lang1, lang2);
+        if ( x != Expr.CMP_EQUAL )
+            return x;
+        // Two langs, same lang tag => lexical form.
+        String lex1 = node1.getLiteralLexicalForm();
+        String lex2 = node2.getLiteralLexicalForm();
+        x = StrUtils.strCompareCodePoint(lex1, lex2);
+        if ( x != Expr.CMP_EQUAL )
+            return x;
+        // Same except by language case (which should have been canicalized)
+        x = StrUtils.strCompare(lang1, lang2);
+        return x;
     }
 }
