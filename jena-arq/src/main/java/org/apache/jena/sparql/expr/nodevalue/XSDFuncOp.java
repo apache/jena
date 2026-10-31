@@ -44,6 +44,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.xml.datatype.DatatypeConstants;
+import javax.xml.datatype.DatatypeConstants.Field;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -1110,27 +1111,18 @@ public class XSDFuncOp
     // --------------------------------
     // Comparisons operations
     // Do not confuse with sameValueAs/notSamevalueAs
-
-    private static int calcReturn(int x) {
-        if ( x < 0 )
-            return Expr.CMP_LESS;
-        if ( x > 0 )
-            return Expr.CMP_GREATER;
-        return Expr.CMP_EQUAL;
-    }
-
     public static int compareNumeric(NodeValue nv1, NodeValue nv2) {
         NumericType opType = classifyNumeric("compareNumeric", nv1, nv2);
 
         switch (opType) {
             case OP_INTEGER :
-                return calcReturn(nv1.getInteger().compareTo(nv2.getInteger()));
+                return nv1.getInteger().compareTo(nv2.getInteger());
             case OP_DECIMAL :
-                return calcReturn(nv1.getDecimal().compareTo(nv2.getDecimal()));
+                return nv1.getDecimal().compareTo(nv2.getDecimal());
             case OP_FLOAT :
-                return calcReturn(Float.compare(nv1.getFloat(), nv2.getFloat()));
+                return Float.compare(nv1.getFloat(), nv2.getFloat());
             case OP_DOUBLE :
-                return calcReturn(Double.compare(nv1.getDouble(), nv2.getDouble()));
+                return Double.compare(nv1.getDouble(), nv2.getDouble());
             default :
                 throw new ARQInternalErrorException("Unrecognized numeric operation : (" + nv1 + " ," + nv2 + ")");
         }
@@ -1151,45 +1143,16 @@ public class XSDFuncOp
     public static int compareString(NodeValue nv1, NodeValue nv2) {
         String s1 = nv1.getString();
         String s2 = nv2.getString();
-        int len1 = s1.length();
-        int len2 = s2.length();
-        int probeLimit = Math.min(Math.min(len1, len2), 4);
-        // Most unequal strings differ near the start. Decode only at that difference.
-        for ( int i = 0; i < probeLimit; i++ ) {
-            char c1 = s1.charAt(i);
-            char c2 = s2.charAt(i);
-            if ( c1 != c2 ) {
-                int j = i;
-                // A shared high surrogate may combine with only one of these chars.
-                if ( i > 0 && Character.isHighSurrogate(s1.charAt(i - 1))
-                     && (Character.isLowSurrogate(c1) || Character.isLowSurrogate(c2)) )
-                    j = i - 1;
-                return calcReturn(Integer.compare(s1.codePointAt(j), s2.codePointAt(j)));
-            }
-        }
-        if ( Math.min(len1, len2) <= probeLimit )
-            return calcReturn(Integer.compare(len1, len2));
+        return compareString(s1, s2);
+    }
 
-        int utf16Order = s1.compareTo(s2);
-        // Without surrogate pairs, UTF-16 order is code point order. String comparison
-        // can handle a long common prefix more efficiently than decoding each code point.
-        if ( utf16Order == 0 || (s1.codePointCount(0, len1) == len1
-                                && s2.codePointCount(0, len2) == len2) )
-            return calcReturn(utf16Order);
-
-        int i1 = 0;
-        int i2 = 0;
-        // SPARQL uses Unicode code point order, not UTF-16 code unit order.
-        while ( i1 < s1.length() && i2 < s2.length() ) {
-            int cp1 = s1.codePointAt(i1);
-            int cp2 = s2.codePointAt(i2);
-            if ( cp1 != cp2 )
-                return calcReturn(Integer.compare(cp1, cp2));
-            i1 += Character.charCount(cp1);
-            i2 += Character.charCount(cp2);
-        }
-        // A remaining suffix sorts after its matching prefix.
-        return calcReturn(Integer.compare(s1.length() - i1, s2.length() - i2));
+    /*
+     * Do a codepoint compare of two strings.
+     * This is not a duplicate of {@code String.compateTo} which compares
+     * UTF-16 code units (i.e. surrogates as characters).
+     */
+    public static int compareString(String s1, String s2) {
+        return StrUtils.strCompareCodePoint(s1, s2);
     }
 
     // --------------------------------
