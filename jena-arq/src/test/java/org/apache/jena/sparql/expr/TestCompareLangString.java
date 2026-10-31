@@ -20,6 +20,7 @@
 
 package org.apache.jena.sparql.expr;
 
+import static org.apache.jena.graph.TextDirection.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -29,11 +30,15 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import org.apache.jena.graph.TextDirection;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.ResultSet;
 
+/**
+ * Codepoint comparision: rdf:langString and rdf:dirLangString
+ */
 public class TestCompareLangString {
     private static final String BMP = Character.toString(0xFFE0);
     private static final String ASTRAL = Character.toString(0x1D11E);
@@ -41,6 +46,11 @@ public class TestCompareLangString {
     private static String literal(String value, String tag) {
         return "'" + value + "'@" + tag;
     }
+
+    private static String literal(String value, String tag, TextDirection textDir) {
+        return "'" + value + "'@" + tag + "--" + textDir.direction();
+    }
+
 
     private static boolean expression(String expression) {
         String query = "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> SELECT (" + expression + " AS ?result) WHERE {}";
@@ -57,8 +67,35 @@ public class TestCompareLangString {
         assertTrue(expression(literal(ASTRAL, "en") + " > " + literal(BMP, "en")));
     }
 
+    @Test public void sameLangDirLessThan() {
+        assertTrue(expression(literal(BMP, "en", LTR) + " < " + literal(ASTRAL, "en", LTR)));
+    }
+
+    @Test public void sameLangDirGreaterThan() {
+        assertTrue(expression(literal(ASTRAL, "en", LTR) + " > " + literal(BMP, "en", LTR)));
+    }
+
+    @Test public void differentLangDir() {
+        assertTrue(expression(literal("AAAA", "en", LTR) + " != " + literal("AAAA", "en", RTL)));
+    }
+
+    @Test public void differentLangSameLangDir() {
+        assertTrue(expression(literal("AAAA", "fr", LTR) + " != " + literal("AAAA", "en", LTR)));
+    }
+
     @Test public void sameLanguageOrderBy() {
         String query = "SELECT ?v WHERE { VALUES ?v { " + literal(ASTRAL, "en") + " " + literal(BMP, "en") + " } } ORDER BY ?v";
+        List<String> actual = new ArrayList<>();
+        try (QueryExecution exec = QueryExecutionFactory.create(query, DatasetFactory.empty())) {
+            ResultSet results = exec.execSelect();
+            while (results.hasNext())
+                actual.add(results.next().getLiteral("v").getLexicalForm());
+        }
+        assertEquals(List.of(BMP, ASTRAL), actual);
+    }
+
+    @Test public void sameDirLangOrderBy() {
+        String query = "SELECT ?v WHERE { VALUES ?v { " + literal(ASTRAL, "en", LTR) + " " + literal(BMP, "en", LTR) + " } } ORDER BY ?v";
         List<String> actual = new ArrayList<>();
         try (QueryExecution exec = QueryExecutionFactory.create(query, DatasetFactory.empty())) {
             ResultSet results = exec.execSelect();

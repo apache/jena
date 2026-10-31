@@ -21,6 +21,7 @@
 
 package org.apache.jena.sparql.expr;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -28,39 +29,47 @@ import org.junit.jupiter.api.Test;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.TextDirection;
 import org.apache.jena.sparql.sse.SSE;
+//import org.apache.jena.sparql.util.NodeCmp;
 import org.apache.jena.sparql.util.NodeCmp;
 
 /**
  * See also {@link TestComparison} and {@link TestSortOrdering}.
  */
 public class TestOrdering {
-    private NodeValue nvInt2 = NodeValue.makeNodeInteger(2);
-    private NodeValue nvInt3 = NodeValue.makeNodeInteger("3");
-    private NodeValue nvInt03 = NodeValue.makeNodeInteger("03");
-    private NodeValue nvStr3 = NodeValue.makeNodeString("3");
-    private NodeValue nvStr03 = NodeValue.makeNodeString("03");
+    private static NodeValue nvInt2 = NodeValue.makeNodeInteger(2);
+    private static NodeValue nvInt3 = NodeValue.makeNodeInteger("3");
+    private static NodeValue nvInt03 = NodeValue.makeNodeInteger("03");
+    private static NodeValue nvStr3 = NodeValue.makeNodeString("3");
+    private static NodeValue nvStr03 = NodeValue.makeNodeString("03");
 
-    private NodeValue nvInt9 = NodeValue.makeNodeInteger(9);
-    private NodeValue nvPosInt9 = NodeValue.makeNode("9", XSDDatatype.XSDpositiveInteger);
-    private NodeValue nvInt10 = NodeValue.makeNodeInteger(10);
-    private NodeValue nvDouble9 = NodeValue.makeNodeDouble(9.0);
-    private NodeValue nvFloat8 = NodeValue.makeNode("8.0", XSDDatatype.XSDfloat);
+    private static NodeValue nvInt9 = NodeValue.makeNodeInteger(9);
+    private static NodeValue nvPosInt9 = NodeValue.makeNode("9", XSDDatatype.XSDpositiveInteger);
+    private static NodeValue nvInt10 = NodeValue.makeNodeInteger(10);
+    private static NodeValue nvDouble9 = NodeValue.makeNodeDouble(9.0);
+    private static NodeValue nvFloat8 = NodeValue.makeNode("8.0", XSDDatatype.XSDfloat);
 
-    private NodeValue nvByte10 = NodeValue.makeNode("10", XSDDatatype.XSDbyte);
+    private static NodeValue nvByte10 = NodeValue.makeNode("10", XSDDatatype.XSDbyte);
 
-    private Node nInt2 = nvInt2.getNode();
-    private Node nInt3 = nvInt3.getNode();
-    private Node nInt03 = nvInt03.getNode();
-    private Node nStr3 = nvStr3.getNode();
-    private Node nStr03 = nvStr03.getNode();
+    private static Node nInt2 = nvInt2.getNode();
+    private static Node nInt3 = nvInt3.getNode();
+    private static Node nInt03 = nvInt03.getNode();
+    private static Node nStr3 = nvStr3.getNode();
+    private static Node nStr03 = nvStr03.getNode();
 
-    private Node nInt9 = nvInt9.getNode();
-    private Node nPosInt9 = nvPosInt9.getNode();
-    private Node nInt10 = nvInt10.getNode();
-    private Node nDouble9 = nvDouble9.getNode();
-    private Node nFloat8 = nvFloat8.getNode();
-    private Node nByte10 = nvByte10.getNode();
+    private static Node nInt9 = nvInt9.getNode();
+    private static Node nPosInt9 = nvPosInt9.getNode();
+    private static Node nInt10 = nvInt10.getNode();
+    private static Node nDouble9 = nvDouble9.getNode();
+    private static Node nFloat8 = nvFloat8.getNode();
+    private static Node nByte10 = nvByte10.getNode();
+
+    private static Node nStrDirLang = NodeFactory.createLiteralDirLang("ABCD", "en", TextDirection.LTR);
+    private static Node nStrLang    = NodeFactory.createLiteralLang("ABCD", "en");
+    private static Node nStr        = NodeFactory.createLiteralString("ABCD");
+
+    // Syntax and value tests
 
     @Test
     public void testComp_2_3() {
@@ -86,6 +95,25 @@ public class TestOrdering {
 
         assertTrue(Expr.CMP_GREATER == x, ()->"03 (typed) comes after string \"3\" (simple string)");
         assertTrue(Expr.CMP_GREATER == y, ()->"03 should be syntactic-less than to \"3\"");
+    }
+
+    // Syntax: string, lang  and dirlang
+    @Test
+    public void testComp_string_types_01() {
+        int x = NodeCmp.compareRDFTerms(nStr, nStrDirLang);
+        assertEquals(Expr.CMP_LESS, x, "string is not less than rdf:strDirLang");
+    }
+
+    @Test
+    public void testComp_string_types_02() {
+        int x = NodeCmp.compareRDFTerms(nStr, nStrLang);
+        assertEquals(Expr.CMP_LESS, x, "string is not less than rdf:strLang");
+    }
+
+    @Test
+    public void testComp_string_types_03() {
+        int x = NodeCmp.compareRDFTerms(nStrLang, nStrDirLang);
+        assertEquals(Expr.CMP_LESS, x, "rdf:strLang is not less than rdf:strDirLang");
     }
 
     // Compare things of different types.
