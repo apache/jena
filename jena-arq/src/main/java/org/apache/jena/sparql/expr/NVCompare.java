@@ -307,18 +307,31 @@ class NVCompare {
                     // Different lang tags - sorting
                     return x;
                 }
-
                 // same lang tag (case insensitive)
+                // Check BaseDirection. If different,
+                if ( ! Objects.equals(node1.getLiteralBaseDirection(), node2.getLiteralBaseDirection()) ) {
+                    if ( !sortOrderingCompare )
+                        raise(new ExprNotComparableException("Can't compare (different base direction) " + nv1 + " and " + nv2));
+                    if ( node1.getLiteralBaseDirection() == null )
+                         return CMP_LESS;
+                    if ( node2.getLiteralBaseDirection() == null )
+                            return CMP_GREATER;
+                    // ASCII compare.
+                    return StrUtils.strCompare(node1.getLiteralBaseDirection().direction(),
+                                               node2.getLiteralBaseDirection().direction());
+                }
+                // same lang tag (case insensitive) and same base direction.
                 x = XSDFuncOp.compareString(nv1, nv2);
                 if ( x != CMP_EQUAL )
                     return x;
                 // Same lexical forms, same lang tag by value
                 // Try to split by syntactic lang tags.
+                // Language tags are ASCII.
                 x = StrUtils.strCompare(node1.getLiteralLanguage(), node2.getLiteralLanguage());
                 // Maybe they are the same after all!
                 // Should be node.equals by now.
                 if ( x == CMP_EQUAL  && ! NodeFunctions.sameTerm(node1, node2) )
-                    throw new ARQInternalErrorException("Looks like the same (lang tags) but not node equals");
+                    throw new ARQInternalErrorException("Looks like the same term but not node equals");
                 return x;
             }
 
@@ -427,7 +440,8 @@ class NVCompare {
      */
     private static int compareRepresentations(String string1, String string2, boolean sortOrderingCompare) {
         if ( sortOrderingCompare )
-            return strcompare(string1, string2);
+            return XSDFuncOp.compareString(string1, string2);
+        // Not for sorting.
         if ( string1.equals(string2) )
             return Expr.CMP_EQUAL;
         return Expr.CMP_UNEQUAL;
@@ -523,18 +537,5 @@ class NVCompare {
             return compareWithOrdering(nv1, nv2);
         else
             return compareByValue(nv1, nv2);
-    }
-
-    private static int strcompare(String string1, String string2) {
-        // StrUtils.strCompare(string1, string2);
-        return result(string1.compareTo(string2));
-    }
-
-    /**
-     * Return of comparision - always -1,0 or +1
-     */
-    private static int result(int x) {
-        return ( x == 0 ) ? Expr.CMP_EQUAL
-            : ( ( x > 0 ) ? Expr.CMP_GREATER : Expr.CMP_LESS );
     }
 }
