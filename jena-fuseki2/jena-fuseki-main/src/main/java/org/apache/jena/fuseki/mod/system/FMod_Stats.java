@@ -35,6 +35,11 @@ public class FMod_Stats implements FusekiModule {
         return new FMod_Stats();
     }
 
+    private FMod_Stats() {}
+
+    @Override
+    public String name() { return "FMod Stats"; }
+
     @Override
     public void serverArgsModify(CmdGeneral fusekiCmd, ServerArgs serverArgs) {
         serverArgs.withStats = true;

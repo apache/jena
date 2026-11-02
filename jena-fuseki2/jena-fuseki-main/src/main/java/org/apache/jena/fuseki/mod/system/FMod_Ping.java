@@ -36,6 +36,11 @@ public class FMod_Ping implements FusekiModule {
         return new FMod_Ping();
     }
 
+    private FMod_Ping() {}
+
+    @Override
+    public String name() { return "FMod Ping"; }
+
     @Override
     public void serverArgsModify(CmdGeneral fusekiCmd, ServerArgs serverArgs) {
         // Initial setting.
