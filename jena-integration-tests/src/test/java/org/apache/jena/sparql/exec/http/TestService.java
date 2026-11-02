@@ -505,6 +505,29 @@ public class TestService {
         assertTrue(row.contains("temp"));
     }
 
+    @Test public void service_check_URL_1() {
+        expectQueryExecExceptionFromURL("http:///path");
+    }
+
+    @Test public void service_check_URL_2() {
+        expectQueryExecExceptionFromURL("http://:80/path");
+    }
+
+    @Test public void service_check_URL_3() {
+        expectQueryExecExceptionFromURL("ftp://host/path");
+    }
+
+    @Test public void service_check_URL_4() {
+        expectQueryExecExceptionFromURL("http://localhost:3030/$/action");
+    }
+
+    private void expectQueryExecExceptionFromURL(String string) {
+        String queryString = "SELECT * { SERVICE <"+string+"> { } }";
+        assertThrows(QueryExecException.class, ()->{
+            QueryExec.dataset(localDataset()).query(queryString).select().next();
+        });
+    }
+
     private static void runWithModifier(String key, HttpRequestModifier modifier, Runnable action) {
         RegistryRequestModifier.get().add(SERVICE, modifier);
         try {

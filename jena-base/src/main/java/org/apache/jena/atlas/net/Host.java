@@ -22,14 +22,12 @@
 package org.apache.jena.atlas.net;
 
 import java.io.IOException;
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.Enumeration;
 
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IOX;
+import org.apache.jena.atlas.lib.Lib;
 
 public class Host {
     /**
@@ -140,4 +138,65 @@ public class Host {
             throw unknownHostException;
         }
     }
+
+    /**
+     * Test whether a hostname from a URL refers to the localhost.
+     * "hostname" is the format in URIs; IPv6 addresses have "[...]".
+     * This function does not return 'true' for the host name of the DNS
+     */
+    public static boolean isLocalhostLoopback(String urlHostName) {
+        if (urlHostName == null || urlHostName.isEmpty())
+            return false;
+        String host = Lib.lowercase(urlHostName);
+
+        // Do some checking for common ways to write "localhost"
+
+        // String-based checks for standard loopback DNS names / IP addresses.
+        if (host.equalsIgnoreCase("localhost") ||
+                host.endsWith(".localhost") ||
+                host.equals("127.0.0.1") ||
+                host.equals("0.0.0.0") ||
+                // There are lot of ways to write ::1 in IPv6. This is only some of them
+                host.equals("[::1]") ||
+                // IPv6 with IPv4 address
+                host.equals("[::ffff:127.0.0.1]") ||
+                host.equals("[0:0:0:0:0:0:0:1]") ||
+                host.endsWith(".localhost") ||
+                // De facto aliases (Debian, Ubuntu)
+                host.equalsIgnoreCase("ip6-localhost") ||
+                host.equalsIgnoreCase("ip6-loopback")) {
+            return true;
+        }
+
+        // If it isn't one of the fastpath forms, lookup the name.
+        try {
+            // Check ALL addresses: a name may resolve to several InetAddr
+            for (InetAddress addr : InetAddress.getAllByName(host)) {
+                if (isLocal(addr)) {
+                    return true;
+                }
+            }
+        } catch (UnknownHostException ex) {
+            return false;
+        } catch (SocketException ioException) {
+            // Something broken.
+            throw IOX.exception(ioException);
+        }
+        return false;
+
+    }
+
+    /**
+     * Test whether an {@code InetAddress} is going to use the loopback interface.
+     */
+    private static boolean isLocal(InetAddress addr) throws SocketException {
+        return
+                // 127.0.0.0/8, ::1
+                addr.isLoopbackAddress()
+                // Connects to localhost on most OSes
+                || addr.isAnyLocalAddress()
+                // DNS name of the machine.
+                || NetworkInterface.getByInetAddress(addr) != null;
+    }
+
 }

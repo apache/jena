@@ -21,10 +21,13 @@
 
 package org.apache.jena.atlas.net;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.net.InetAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 
 import org.junit.jupiter.api.Test;
@@ -58,6 +61,37 @@ public class TestHost {
             if ( x instanceof UnknownHostException )
                 return;
             throw ex;
+        }
+    }
+
+    @Test public void isLocalhost_01() { isLocalhost("http://localhost:3030/api", true); }
+    @Test public void isLocalhost_02() { isLocalhost("http://localhost/api", true); }
+    @Test public void isLocalhost_03() { isLocalhost("http://here.localhost/api", true); }
+    @Test public void isLocalhost_04() { isLocalhost("http://127.0.0.1/index.html", true); }
+    @Test public void isLocalhost_05() { isLocalhost("http://127.0.0.5/", true); }
+    @Test public void isLocalhost_06() { isLocalhost("http://0.0.0.0/", true); }
+    @Test public void isLocalhost_07() { isLocalhost("http://[::1]:3000/", true); }
+    @Test public void isLocalhost_08() { isLocalhost("http://[::1]/", true); }
+    // IPv6 carrying an IPv4 address
+    @Test public void isLocalhost_09() { isLocalhost("http://[::ffff:127.0.0.1]/", true); }
+
+    @Test public void isLocalhost_20() { isLocalhost("https://example.com", false); }
+    @Test public void isLocalhost_21() { isLocalhost("https://example:3030/", false); }
+    @Test public void isLocalhost_22() { isLocalhost("https://unknown/", false); }
+
+    private static void isLocalhost(String urlString, boolean expected) {
+        String host = getHost(urlString);
+        boolean b = Host.isLocalhostLoopback(host);
+        assertEquals(expected, b, ()->urlString);
+    }
+
+    private static String getHost(String url)  {
+        // IRI3986 parser is not available here.
+        try {
+            URI uri = new URI(url);
+            return uri.getHost();
+        } catch (URISyntaxException ex) {
+            throw new RuntimeException(ex);
         }
     }
 }
