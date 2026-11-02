@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.atlas.logging.FmtLog;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.net.Host;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.http.HttpEnv;
@@ -81,32 +82,33 @@ public class Service {
 
     // Old names.
     /** @deprecated Do not use. */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static final String baseOld = "http://jena.hpl.hp.com/Service#";
 
     /** @deprecated Do not use. */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static final Symbol oldQueryClient       = SystemARQ.allocSymbol(baseOld, "queryClient");
 
     /** @deprecated Do not use. */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static final Symbol oldServiceContext    = SystemARQ.allocSymbol(baseOld, "serviceContext");
 
     /** @deprecated Do not use. */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static final Symbol oldServiceAllowed    = SystemARQ.allocSymbol(baseOld, "serviceAllowed");
 
     /** @deprecated Use {@link #httpQueryTimeout} */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static final Symbol oldQueryTimeout      = SystemARQ.allocSymbol(baseOld, "queryTimeout");
 
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static final Symbol oldQueryCompression  = SystemARQ.allocSymbol(baseOld, "queryCompression");
 
     // Compatibility with old AHC (Apache HttpClient) version
     /** @deprecated Do not use. */
-    @Deprecated
-    public static final Symbol serviceAllowed    = SystemARQ.allocSymbol(baseOld, "serviceAllowed");
+    @Deprecated(forRemoval = true)
+    // Switched to the preferred symbol.
+    public static final Symbol serviceAllowed = httpServiceAllowed;
 
     /** Test whether SERVICE calls out of this JVM are allowed. */
     public static void checkServiceAllowed(Context context) {
@@ -116,18 +118,27 @@ public class Service {
         if ( context == null )
             context = ARQ.getContext();
 
+        // -- To be removed
+        Boolean b2 = getBoolean(context, oldServiceAllowed);
+        if ( b2 != null) {
+            Log.warn(LOGGER, "Use of deprecated 'serviceAllowed'. Use 'httpServiceAllowed'");
+
+            System.out.println(context.toString());
+
+            b2 = getBoolean(context, oldServiceAllowed);
+            if ( ! b2 )
+                serviceNotEnabled();
+        }
+        // --
+
         Boolean b1 = getBoolean(context, httpServiceAllowed);
         if ( b1 != null) {
             if ( b1 )
                 return;
-            serviceNotEnabled();
+            else
+                serviceNotEnabled();
         }
-        Boolean b2 = getBoolean(context, oldServiceAllowed);
-        if ( b2 != null) {
-            if ( b2 )
-                return;
-            serviceNotEnabled();
-        }
+
         // Not set.
         if ( ! ARQ.allowServiceDefault )
             serviceNotEnabled();
@@ -179,7 +190,9 @@ public class Service {
 
         boolean silent = op.getSilent();
         String serviceURL = op.getService().getURI();
+
         checkServiceURL(serviceURL);
+
         Op opRemote = op.getSubOp();
         Query query;
         if ( false ) {
@@ -404,7 +417,7 @@ public class Service {
 
     private static Boolean getBoolean(Context context, Symbol symbol) {
         try {
-             return context.getTrueOrFalse(httpServiceAllowed);
+             return context.getTrueOrFalse(symbol);
         } catch (Throwable ex) {
             throw new QueryException("Failed to read content setting  "+symbol.getSymbol());
         }
