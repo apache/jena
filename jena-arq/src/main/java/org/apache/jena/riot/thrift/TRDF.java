@@ -31,6 +31,7 @@ import org.apache.jena.riot.thrift.wire.RDF_ANY;
 import org.apache.jena.riot.thrift.wire.RDF_StreamRow;
 import org.apache.jena.riot.thrift.wire.RDF_Term;
 import org.apache.jena.riot.thrift.wire.RDF_UNDEF;
+import org.apache.thrift.TConfiguration;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TCompactProtocol;
 import org.apache.thrift.protocol.TJSONProtocol;
@@ -42,7 +43,17 @@ import org.apache.thrift.transport.TTransport;
 /** Support operations for RDF Thrift */
 public class TRDF {
     private static final int BUFSIZE_IN   = 128*1024;
-    private static final int BUFSIZE_OUT  = 128*1024;;
+    private static final int BUFSIZE_OUT  = 128*1024;
+
+    // Default values in TConfiguration : 100Mb, 16Mb, 64
+
+    // Max size of a read unit - an RDF Triple/Quad or result row.
+    private static final int maxMessageSize = 100_000;
+    // Only affects TFramedTransport, which we don't use.
+    private static final int maxFrameSize = 100_000;
+    private static final int recursionLimit = 16;
+
+    private static final TConfiguration thriftConfiguration = new TConfiguration(maxMessageSize, maxFrameSize, recursionLimit);
 
     public static InputStream ensureBuffered(InputStream input) {
         if ( input instanceof BufferedInputStream )
@@ -67,7 +78,7 @@ public class TRDF {
     public static TProtocol protocol(InputStream in) {
         in = ensureBuffered(in);
         try {
-            TTransport transport = new TIOStreamTransport(in);
+            TTransport transport = new TIOStreamTransport(thriftConfiguration, in);
             transport.open();
             TProtocol protocol = protocol(transport);
             return protocol;
@@ -140,11 +151,12 @@ public class TRDF {
         } else if ( row.isSetPrefixDecl() ) {
             visitor.visit(row.getPrefixDecl());
         } else {
-            Log.warn(ThriftConvert.class, "visit: Unrecognized: "+row);
+            // Broken input or version mis-alignment.
+            Log.error(ThriftConvert.class, "visit: Unrecognized: "+row);
+            TRDF.exception("Unrecognized: RDF_StreamRow");
         }
     }
 
     public static void exception(TException ex) { throw new RiotThriftException(ex); }
-
+    private static void exception(String msg) { throw new RiotThriftException(msg); }
 }
-
