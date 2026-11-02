@@ -30,7 +30,7 @@ import org.apache.jena.fuseki.main.runner.ServerArgs;
 import org.apache.jena.rdf.model.Model;
 
 /**
- * Interface to implement for extending the CLI argument parsing portion of a
+ * Interface to extend the CLI argument parsing portion of a
  * {@link FusekiServer} which task place in {@link FusekiArgs}
  * <p>
  * This is one of several interfaces combined into the extension mechanism of {@link FusekiModule}.

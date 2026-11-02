@@ -190,9 +190,7 @@ public class Service {
 
         boolean silent = op.getSilent();
         String serviceURL = op.getService().getURI();
-
         checkServiceURL(serviceURL);
-
         Op opRemote = op.getSubOp();
         Query query;
         if ( false ) {

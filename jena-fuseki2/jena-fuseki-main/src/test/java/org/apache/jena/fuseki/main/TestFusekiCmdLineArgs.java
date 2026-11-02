@@ -24,6 +24,7 @@ package org.apache.jena.fuseki.main;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -35,10 +36,13 @@ import org.junit.jupiter.api.Test;
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.web.TypedInputStream;
+import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.main.runner.FusekiRunner;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.http.HttpOp;
 import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.rdfconnection.RDFConnection;
+import org.apache.jena.sparql.util.Symbol;
 
 /**
  * Test Fuseki command line.
@@ -129,5 +133,17 @@ public class TestFusekiCmdLineArgs {
         String x1 = HttpOp.httpGetString(serverURL+"/$/tasks");
         assertNotNull(x1);
         // Leaves "DB-compact" behind.
+    }
+
+    @Test public void set_01() throws IOException {
+        Symbol testSymbol = Symbol.create("TEST");
+
+        // Not started but command line parsed and setup done.
+        FusekiRunner.serverMain().construct("--set", testSymbol.getSymbol()+"=998", "--mem", "/ds");
+
+        assertTrue(Fuseki.getContext().isDefined(testSymbol));
+        assertEquals("998", Fuseki.getContext().getAsString(testSymbol));
+        // Command line - only strings.
+        assertEquals("998", Fuseki.getContext().get(testSymbol));
     }
 }

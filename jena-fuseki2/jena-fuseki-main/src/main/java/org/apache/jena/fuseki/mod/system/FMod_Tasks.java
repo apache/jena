@@ -33,6 +33,12 @@ public class FMod_Tasks implements FusekiModule {
         // Not in ServerArgs
         throw new NotImplemented();
     }
+
+    private FMod_Tasks() {}
+
+    @Override
+    public String name() { return "FMod Tasks"; }
+
 //
 //    public static FusekiModule create() {
 //        return new FMod_Tasks();
