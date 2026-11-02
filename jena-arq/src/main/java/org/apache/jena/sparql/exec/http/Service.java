@@ -31,10 +31,12 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.atlas.logging.FmtLog;
+import org.apache.jena.atlas.net.Host;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.http.RegistryHttpClient;
 import org.apache.jena.query.*;
+import org.apache.jena.rfc3986.IRI3986;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.algebra.Op ;
@@ -139,6 +141,32 @@ public class Service {
         throw new QueryDeniedException("SERVICE execution disabled") ;
     }
 
+    /**
+     * Perform checks on the SERVICE URL to give better error messages.
+     */
+    private static void checkServiceURL(String serviceURL) {
+        // The URL should been resolved
+        IRI3986 iri = IRI3986.create(serviceURL);
+
+        // Bad (unsupported) scheme names turn into IllegalArgumentException
+        // from HttpRequestBuidler later.
+
+        // Scheme and host required
+        if ( ! iri.hasScheme() )
+            throw new QueryExecException("Service URL does not have a scheme");
+        if ( ! iri.hasHost() )
+            throw new QueryExecException("Service URL does not have a host");
+
+        // Path must start with "/" because there is a host (authority)
+        String path = iri.path();
+        // Catch the mistake of the URL being a Fuseki server operation.
+        if ( path.equals("/$") || path.startsWith("/$/") ) {
+            // Check that this is not a localhost call.
+            if ( Host.isLocalhostLoopback(iri.host()) )
+                throw new QueryExecException("Unacceptable service URL");
+        }
+    }
+
     /** Plain service execution. */
     public static QueryIterator exec(OpService op, Context context) {
         checkServiceAllowed(context);
@@ -151,6 +179,7 @@ public class Service {
 
         boolean silent = op.getSilent();
         String serviceURL = op.getService().getURI();
+        checkServiceURL(serviceURL);
         Op opRemote = op.getSubOp();
         Query query;
         if ( false ) {
@@ -236,6 +265,9 @@ public class Service {
             if (requiresRemapping)
                 qIter = QueryIter.map(qIter, varMapping);
             return qIter;
+        } catch (IllegalArgumentException ex) {
+            // Various problems from JDK HttpRequestBuilder
+            throw new QueryExecException(ex);
         } catch (HttpException ex) {
             throw QueryExceptionHTTP.rewrap(ex);
         }
