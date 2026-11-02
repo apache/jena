@@ -31,7 +31,6 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.atlas.logging.FmtLog;
-import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.http.RegistryHttpClient;
@@ -79,30 +78,33 @@ public class Service {
     private static Context emptyContext = Context.emptyContext();
 
     // Old names.
+    /** @deprecated Do not use. */
+    @Deprecated
     public static final String baseOld = "http://jena.hpl.hp.com/Service#";
+
+    /** @deprecated Do not use. */
+    @Deprecated
     public static final Symbol oldQueryClient       = SystemARQ.allocSymbol(baseOld, "queryClient");
+
+    /** @deprecated Do not use. */
+    @Deprecated
     public static final Symbol oldServiceContext    = SystemARQ.allocSymbol(baseOld, "serviceContext");
+
+    /** @deprecated Do not use. */
+    @Deprecated
     public static final Symbol oldServiceAllowed    = SystemARQ.allocSymbol(baseOld, "serviceAllowed");
+
+    /** @deprecated Use {@link #httpQueryTimeout} */
+    @Deprecated
     public static final Symbol oldQueryTimeout      = SystemARQ.allocSymbol(baseOld, "queryTimeout");
+
+    @Deprecated
     public static final Symbol oldQueryCompression  = SystemARQ.allocSymbol(baseOld, "queryCompression");
 
     // Compatibility with old AHC (Apache HttpClient) version
+    /** @deprecated Do not use. */
+    @Deprecated
     public static final Symbol serviceAllowed    = SystemARQ.allocSymbol(baseOld, "serviceAllowed");
-
-    private static void checkForOldParameters(Context context) {
-        if ( context == null )
-            return ;
-        checkForOldParameter(context, oldQueryClient);
-        checkForOldParameter(context, oldServiceContext);
-        checkForOldParameter(context, oldServiceAllowed);
-        checkForOldParameter(context, oldQueryTimeout);
-        checkForOldParameter(context, oldQueryCompression);
-    }
-
-    private static void checkForOldParameter(Context context, Symbol oldSymbol) {
-        if ( context.isDefined(oldSymbol) )
-            Log.warnOnce(LOGGER, "Service context parameter '"+oldSymbol.getSymbol()+"' no longer used - see ARQ constants for replacements.", oldSymbol);
-    }
 
     /** Test whether SERVICE calls out of this JVM are allowed. */
     public static void checkServiceAllowed(Context context) {
@@ -129,14 +131,6 @@ public class Service {
             serviceNotEnabled();
     }
 
-    private static Boolean getBoolean(Context context, Symbol symbol) {
-        try {
-             return context.getTrueOrFalse(httpServiceAllowed);
-        } catch (Throwable ex) {
-            throw new QueryException("Failed to read content setting  "+symbol.getSymbol());
-        }
-    }
-
     private static void serviceNotEnabled() {
         throw new QueryDeniedException("SERVICE execution disabled - enable with "+httpServiceAllowed) ;
     }
@@ -148,7 +142,6 @@ public class Service {
     /** Plain service execution. */
     public static QueryIterator exec(OpService op, Context context) {
         checkServiceAllowed(context);
-        //checkForOldParameters(context);
 
         if ( context == null )
             context = emptyContext;
@@ -157,11 +150,7 @@ public class Service {
             throw new QueryExecException("Service URI not bound: " + op.getService());
 
         boolean silent = op.getSilent();
-        // [QExec] Add getSubOpUnmodified();
-        if (!op.getService().isURI())
-            throw new QueryExecException("Service URI not bound: " + op.getService());
         String serviceURL = op.getService().getURI();
-
         Op opRemote = op.getSubOp();
         Query query;
         if ( false ) {
@@ -378,6 +367,14 @@ public class Service {
         } catch(Throwable ex) {
             LOGGER.warn("Failed to process "+obj+" : context value of ARQ.serviceParams");
             return null;
+        }
+    }
+
+    private static Boolean getBoolean(Context context, Symbol symbol) {
+        try {
+             return context.getTrueOrFalse(httpServiceAllowed);
+        } catch (Throwable ex) {
+            throw new QueryException("Failed to read content setting  "+symbol.getSymbol());
         }
     }
 }
