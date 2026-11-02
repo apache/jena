@@ -22,6 +22,7 @@
 package org.apache.jena.riot.thrift;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -31,8 +32,11 @@ import java.util.Iterator;
 
 import org.junit.jupiter.api.Test;
 
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
@@ -48,6 +52,10 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.IsoMatcher;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.thrift.protocol.TProtocol;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TestThriftStreamRDF {
 
@@ -110,7 +118,6 @@ public class TestThriftStreamRDF {
         byte[] bytes = out.toByteArray();
         ByteArrayInputStream in = new ByteArrayInputStream(bytes);
 
-
         Graph g2 = GraphFactory.createGraphMem();
         RDFDataMgr.read(g2, in, Lang.RDFTHRIFT);
         boolean b = IsoMatcher.isomorphic(graph, g2);
@@ -162,14 +169,31 @@ public class TestThriftStreamRDF {
         termAsObject(dsg1, obj);
     }
 
+    // Fake it.
+    // bytes.fromhex("2c1c1c180575726e3a7300001c1c180575726e3a7000001c3c1880c2d72f"))
+    // "... 80 c2 d7 2f" is the declared string length of 100,000,000 bytes.
+
+    @Test public void faked_allocation() throws DecoderException {
+        byte[] bytes = Hex.decodeHex("2c1c1c180575726e3a7300001c1c180575726e3a7000001c3c1880c2d72f");
+        TProtocol protocol = TRDF.protocol(new ByteArrayInputStream(bytes));
+        StreamRDF s = StreamRDFLib.sinkNull();
+        // ERROR  ThriftConvert :: visit: Unrecognized: <RDF_StreamRow >
+        //    then exception
+        Logger logger = LoggerFactory.getLogger(ThriftConvert.class);
+        LogCtl.withLevel(logger, "FATAL", ()->{
+            assertThrows(RiotThriftException.class, ()->{
+                ThriftRDF.protocolToStream(protocol,s);
+            });
+        });
+    }
+
     static void sameTerms(Graph g1, Graph g2) {
         assertEquals(g1.size() , g2.size() );
-        // ** Java8
-        //g1.find(null, null, null).forEachRemaining(t -> assertTrue(g2.contains(t)));
-        Iterator<Triple> iter = g1.find(null, null, null);
-        while(iter.hasNext()) {
-            Triple t = iter.next();
-            g2.contains(t);
+        ExtendedIterator<Triple> iter = g1.find(null, null, null);
+        try {
+            iter.forEach(t -> assertTrue(g2.contains(t)));
+        } finally {
+            iter.close();
         }
     }
 
@@ -182,11 +206,5 @@ public class TestThriftStreamRDF {
         }
         fail("Failed to find "+term);
     }
-
-    // ** Java8
-//    public static <T> Stream<T> stream(Iterator<? extends T> iterator) {
-//        int characteristics = Spliterator.ORDERED | Spliterator.IMMUTABLE;
-//        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, characteristics), false);
-//    }
 }
 

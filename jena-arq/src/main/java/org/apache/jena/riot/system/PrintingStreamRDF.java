@@ -72,7 +72,7 @@ public class PrintingStreamRDF extends WriterStreamRDFPlain
      */
     public PrintingStreamRDF(OutputStream out, PrefixMap prefixes) {
         super(IO.wrapUTF8(out));
-        if ( prefixMap != null )
+        if ( prefixes != null )
             prefixMap.putAll(prefixes);
     }
 
