@@ -34,7 +34,7 @@ import org.apache.jena.reasoner.rulesys.Node_RuleVariable ;
  */
 public class BindingStack implements BindingEnvironment {
     
-    // We used to have a strange implmentation that avoided GC overheads
+    // We used to have a strange implementation that avoided GC overheads
     // by doing copying up a fixed-width stack. The interface to this object
     // is weird because of this, though the current implementation is a little
     // more normal
