@@ -52,6 +52,51 @@ public class TestStrUtils
         assertEquals(expected, x2);
     }
 
+    // -- Codepoints
+
+    // For codepoint comparision testing.
+    private static final String BMP = Character.toString(0xFFE0);
+    private static final String SUPPLEMENTARY = Character.toString(0x1D11E);
+    private static final String LATER_SUPPLEMENTARY = Character.toString(0x1F600);
+
+    private static void compareByCodepoint(String left, String right, int expected) {
+        assertEquals(expected, StrUtils.strCompareCodePoint(left, right));
+        assertEquals(-expected, StrUtils.strCompareCodePoint(right, left));
+    }
+
+    @Test public void codepoint_bmpBeforeSupplementary() {
+        // UTF-16 code unit order gives the opposite result to Java for this pair.
+        compareByCodepoint(BMP, SUPPLEMENTARY, -1);
+        compareByCodepoint(SUPPLEMENTARY, BMP, +1);
+        compareByCodepoint("a" + BMP, "a" + SUPPLEMENTARY, -1);
+        // Cross-check: Java UTF-16/surrogates
+        assertEquals(+1, Integer.signum(BMP.compareTo(SUPPLEMENTARY)));
+    }
+
+    @Test public void codepoint_supplementaryCodePoints() {
+        compareByCodepoint(SUPPLEMENTARY, LATER_SUPPLEMENTARY, -1);
+        compareByCodepoint("a" + SUPPLEMENTARY + "a", "a" + SUPPLEMENTARY + "b", -1);
+    }
+
+    @Test public void codepoint_equalStrings() {
+        compareByCodepoint("", "", 0);
+        compareByCodepoint(SUPPLEMENTARY + BMP, SUPPLEMENTARY + BMP, 0);
+    }
+
+    @Test public void codepoint_prefixesAndEmptyStrings() {
+        compareByCodepoint("", SUPPLEMENTARY, -1);
+        compareByCodepoint(SUPPLEMENTARY, SUPPLEMENTARY + BMP, -1);
+        compareByCodepoint("a" + SUPPLEMENTARY, "a" + SUPPLEMENTARY + "b", -1);
+    }
+
+    @Test public void codepoint_longCommonPrefix() {
+        String prefix = "http://example.org/resource/with/a/long/shared/prefix/";
+        compareByCodepoint(prefix + "a", prefix + "b", -1);
+        compareByCodepoint(prefix + BMP, prefix + SUPPLEMENTARY, -1);
+    }
+
+    // -- Codepoints
+
     @Test public void enc01() { testEnc("abc") ; }
     @Test public void enc02() { testEnc("") ; }
     @Test public void enc03() { testEnc("_", "_5F" ) ; }

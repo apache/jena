@@ -320,6 +320,14 @@ public abstract class LangTurtleBase extends LangBase {
                 nextToken();
                 return;
             }
+            if ( ! isStrictMode() ) {
+                // End of triples. Trailing DOT required in strict mode.
+                if ( eof() )
+                    return;
+                // End of {} in TriG
+                if ( lookingAt(TokenType.RBRACE) )
+                    return;
+            }
             predicateObjectList(subject);
             expectEndOfTriples();
             return;

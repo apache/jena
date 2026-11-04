@@ -44,6 +44,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.xml.datatype.DatatypeConstants;
+import javax.xml.datatype.DatatypeConstants.Field;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -1110,27 +1111,18 @@ public class XSDFuncOp
     // --------------------------------
     // Comparisons operations
     // Do not confuse with sameValueAs/notSamevalueAs
-
-    private static int calcReturn(int x) {
-        if ( x < 0 )
-            return Expr.CMP_LESS;
-        if ( x > 0 )
-            return Expr.CMP_GREATER;
-        return Expr.CMP_EQUAL;
-    }
-
     public static int compareNumeric(NodeValue nv1, NodeValue nv2) {
         NumericType opType = classifyNumeric("compareNumeric", nv1, nv2);
 
         switch (opType) {
             case OP_INTEGER :
-                return calcReturn(nv1.getInteger().compareTo(nv2.getInteger()));
+                return nv1.getInteger().compareTo(nv2.getInteger());
             case OP_DECIMAL :
-                return calcReturn(nv1.getDecimal().compareTo(nv2.getDecimal()));
+                return nv1.getDecimal().compareTo(nv2.getDecimal());
             case OP_FLOAT :
-                return calcReturn(Float.compare(nv1.getFloat(), nv2.getFloat()));
+                return Float.compare(nv1.getFloat(), nv2.getFloat());
             case OP_DOUBLE :
-                return calcReturn(Double.compare(nv1.getDouble(), nv2.getDouble()));
+                return Double.compare(nv1.getDouble(), nv2.getDouble());
             default :
                 throw new ARQInternalErrorException("Unrecognized numeric operation : (" + nv1 + " ," + nv2 + ")");
         }
@@ -1149,7 +1141,18 @@ public class XSDFuncOp
     // langMatch
 
     public static int compareString(NodeValue nv1, NodeValue nv2) {
-        return calcReturn(nv1.getString().compareTo(nv2.getString()));
+        String s1 = nv1.getString();
+        String s2 = nv2.getString();
+        return compareString(s1, s2);
+    }
+
+    /*
+     * Do a codepoint compare of two strings.
+     * This is not a duplicate of {@code String.compateTo} which compares
+     * UTF-16 code units (i.e. surrogates as characters).
+     */
+    public static int compareString(String s1, String s2) {
+        return StrUtils.strCompareCodePoint(s1, s2);
     }
 
     // --------------------------------

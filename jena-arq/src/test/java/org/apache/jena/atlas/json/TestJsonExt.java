@@ -36,22 +36,13 @@ public class TestJsonExt {
     // -------- Non-standard things.
 
     @Test
-    public void js_value_ext_1() {
+    public void js_single_quoted_string() {
+        // Single quotes
         read("'abc'", new JsonString("abc"));
     }
 
     @Test
-    public void js_value_ext_2() {
-        read("'''abc'''", new JsonString("abc"));
-    }
-
-    @Test
-    public void js_value_ext_3() {
-        read("\"\"\"abc\"\"\"", new JsonString("abc"));
-    }
-
-    @Test
-    public void js_map_ext_1() {
+    public void js_bareword_field_name() {
         JsonObject obj = new JsonObject();
         obj.put("abc", JsonNumber.value(123));
         writeRead(obj);

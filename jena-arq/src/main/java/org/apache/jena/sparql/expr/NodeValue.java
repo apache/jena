@@ -497,7 +497,7 @@ public abstract class NodeValue extends ExprNode
 
     public boolean isBoolean()      { return false; }
     public boolean isString()       { return false; }
-    public boolean isLangString()   { return false; }  // xsd:rdfLangString and rdf:dirLangString
+    public boolean isLangString()   { return false; }  // rdf:langString and rdf:dirLangString
     public boolean isSortKey()      { return false; }
 
     public boolean isNumber()       { return false; }

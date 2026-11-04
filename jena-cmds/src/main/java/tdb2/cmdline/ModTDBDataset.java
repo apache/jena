@@ -73,7 +73,7 @@ public class ModTDBDataset extends ModDataset {
     public Dataset createDataset() {
         if ( inMemFile != null ) {
             Dataset ds = TDB2Factory.createDataset();
-            RDFDataMgr.read(ds, inMemFile);
+            ds.executeWrite(()->RDFDataMgr.read(ds, inMemFile));
             return ds;
         }
 

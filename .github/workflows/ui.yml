@@ -30,13 +30,13 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Setup Node
-        uses: actions/setup-node@v7.0.0
+        uses: actions/setup-node@v7.1.0
         with:
           working-directory: jena-fuseki2/jena-fuseki-ui
           node-version: 'lts/*'
 
       - name: Set up JDK ${{ matrix.java_version }}
-        uses: actions/setup-java@v6.0.1
+        uses: actions/setup-java@v6.1.0
         with:
           distribution: 'temurin'
           java-version: ${{ matrix.java_version }}
@@ -72,13 +72,13 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Setup Node
-        uses: actions/setup-node@v7.0.0
+        uses: actions/setup-node@v7.1.0
         with:
           working-directory: jena-fuseki2/jena-fuseki-ui
           node-version: 'lts/*'
 
       - name: Test (E2E)
-        uses: cypress-io/github-action@v7.4.4
+        uses: cypress-io/github-action@v7.4.7
         env:
           BASE_URL: http://localhost:8080/
           FUSEKI_URL: http://localhost:3030/

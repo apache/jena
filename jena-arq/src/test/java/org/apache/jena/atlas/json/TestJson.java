@@ -100,4 +100,11 @@ public class TestJson {
     public void js_value_13() {
         read("\"abc\\bd\"", new JsonString("abc\bd"));
     }
+
+    @Test
+    public void js_value_14() {
+        assertThrows(JsonParseException.class, ()->JSON.parse("}"));
+        assertThrows(JsonParseException.class, ()->JSON.parse("{\"a\":1} }"));
+        assertThrows(JsonParseException.class, ()->JSON.parse("{\"a\":1},"));
+    }
 }

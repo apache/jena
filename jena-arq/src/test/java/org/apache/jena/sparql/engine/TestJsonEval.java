@@ -33,6 +33,8 @@ import org.apache.jena.sparql.core.DatasetGraphZero;
 
 public class TestJsonEval {
 
+    // Use of single quotes - easier to script in Java.
+
     @Test public void json_eval_01() {
         test("JSON { 'x' : ?var1 , 'y' : ?var2 } WHERE { VALUES (?var1 ?var2) { ('X' 'Y') } }",
              "[ { 'x' : 'X' , 'y' : 'Y' } ]");
