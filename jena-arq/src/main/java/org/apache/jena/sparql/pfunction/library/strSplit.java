@@ -24,6 +24,7 @@ package org.apache.jena.sparql.pfunction.library ;
 import java.util.Arrays ;
 import java.util.Iterator ;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.StrUtils ;
@@ -37,6 +38,8 @@ import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
 import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.RegexEngine;
 import org.apache.jena.sparql.pfunction.PFuncSimpleAndList ;
 import org.apache.jena.sparql.pfunction.PropFuncArg ;
 import org.apache.jena.sparql.util.IterLib;
@@ -73,7 +76,15 @@ public class strSplit extends PFuncSimpleAndList
         String regex = object.getArg(1).getLiteralLexicalForm() ;
 
         // StrUtils will also trim whitespace
-        List<String> tokens = Arrays.asList(StrUtils.split(s, regex));
+        List<String> tokens;
+        if (RegexEngine.MAX_REGEX_EVALUATION_TIME > 0) {
+            Pattern pattern = Pattern.compile(regex);
+            tokens = Arrays.stream(pattern.split(RegexEngine.timeBounded(s), 0))
+                           .map(String::trim)
+                           .toList();
+        } else {
+            tokens = Arrays.asList(StrUtils.split(s, regex));
+        }
 
         if (Var.isVar(subject)) {
 
