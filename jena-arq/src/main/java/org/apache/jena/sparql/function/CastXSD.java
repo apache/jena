@@ -34,8 +34,6 @@ import javax.xml.datatype.Duration;
 
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
-import org.apache.jena.datatypes.xsd.impl.XSDAbstractDateTimeType;
-import org.apache.jena.datatypes.xsd.impl.XSDBaseNumericType;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.expr.ExprEvalException;
@@ -284,17 +282,8 @@ public class CastXSD {
             return NodeValue.TRUE;
         }
         if ( nv.isString() ) {
-            String str = nv.getString();
-            switch (str) {
-                case "0":
-                case "false":
-                    return NodeValue.FALSE;
-                case "1":
-                case "true":
-                    return NodeValue.TRUE;
-                default:
-                    throw exception(nv, castType);
-            }
+            boolean b = castByLex(nv, castType).getBoolean();
+            return b ? NodeValue.TRUE : NodeValue.FALSE;
         }
         return castByLex(nv, castType);
     }
@@ -442,16 +431,6 @@ public class CastXSD {
     private static NodeValue castByLex(String lex, XSDDatatype castType) {
         if ( ! castType.isValid(lex) )
             throw exception("Invalid lexical form: '"+lex+"' for "+castType.getURI());
-        if ( castType instanceof XSDBaseNumericType ||
-            castType.equals(XSDDatatype.XSDfloat) ||
-            castType.equals(XSDDatatype.XSDdouble) ||
-            castType.equals(XSDDatatype.XSDboolean) ||
-            castType instanceof XSDAbstractDateTimeType )   // Includes durations, and Gregorian
-        {
-            // More helpful error message.
-            if ( lex.startsWith(" ") || lex.endsWith(" ") )
-                throw exception("Not a valid literal form (has whitespace): '"+lex+"'");
-        }
         NodeValue nv2 = NodeValue.makeNode(lex, castType);
         RDFDatatype dt = nv2.getNode().getLiteralDatatype();
         if ( castType.equals(dt) )
