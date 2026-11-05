@@ -1,0 +1,13 @@
+@prefix ex: <http://example.org/> .
+
+# Default graph
+ex:s1 ex:p1 ex:o1 .
+ex:s2 ex:p2 ex:o2 .
+
+# Named graph with blank nodes
+GRAPH <http://example.org/graph1> {
+    ex:s3 ex:p3 ex:o3 .
+    _:b1 ex:p4 ex:o4 .
+    _:b1 ex:p5 _:b2 .
+    _:b2 ex:p6 ex:o6 .
+}
