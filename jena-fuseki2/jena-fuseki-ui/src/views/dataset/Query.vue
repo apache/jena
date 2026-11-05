@@ -59,12 +59,101 @@
                     <div>
                       <span
                         v-for="prefix of prefixes"
-                        :key="prefix.uri"
-                        :class="`badge text-bg-${getPrefixBadgeVariant(prefix)} p-2 me-2`"
-                        @click.capture="togglePrefix(prefix)"
-                        href="#"
-                      >{{ prefix.text }}</span>
+                        :key="prefix.text"
+                        class="d-inline-block me-2"
+                      >
+                        <!-- content for the remove prefix popover -->
+                        <div class="popover" role="popover" hidden>
+                          <div :ref="`remove-prefix-${prefix.text}-content`">
+                            <div>Confirm</div>
+                            <div class="text-center">
+                              <div class="alert alert-danger">
+                                Are you sure you want to remove prefix: <b>{{ prefix.text }}</b> from this dataset?
+                              </div>
+                              <button
+                                @click="hidePopover();removePrefix(prefix)"
+                                class="btn btn-primary me-2"
+                              >Yes</button>
+                              <button
+                                @click="hidePopover()"
+                                type="button"
+                                class="btn btn-secondary"
+                              >Cancel</button>
+                            </div>
+                          </div>
+                        </div>
+                        <span
+                          :class="`badge text-bg-${getPrefixBadgeVariant(prefix)} p-2`"
+                          @click.capture.self="togglePrefix(prefix)"
+                          href="#"
+                        >{{ prefix.text }}<button
+                          v-if="prefixesWritable"
+                          :id="`remove-prefix-${prefix.text}-button`"
+                          :ref="`remove-prefix-${prefix.text}-button`"
+                          @click.stop="showPopover(`remove-prefix-${prefix.text}`)"
+                          type="button"
+                          class="btn-close ms-1 remove-prefix"
+                          :aria-label="`Remove prefix ${prefix.text}`"
+                        ></button></span>
+                      </span>
+                      <span
+                        v-if="prefixesWritable && !showAddPrefixForm"
+                        id="add-prefix-pill"
+                        class="badge add-prefix-pill p-2"
+                        role="button"
+                        tabindex="0"
+                        aria-label="Add a prefix"
+                        @click="openAddPrefixForm"
+                        @keyup.enter="openAddPrefixForm"
+                      >+</span>
                     </div>
+                    <form
+                      v-if="prefixesWritable && showAddPrefixForm"
+                      @submit.prevent="addPrefix"
+                      @keyup.esc="closeAddPrefixForm"
+                      id="add-prefix-form"
+                      class="mt-2"
+                    >
+                      <div class="input-group input-group-sm has-validation">
+                        <input
+                          v-model.trim="newPrefix.prefix"
+                          id="add-prefix-name"
+                          type="text"
+                          :class="['form-control', addPrefixNameClass]"
+                          placeholder="prefix"
+                          aria-label="new prefix name"
+                        />
+                        <input
+                          v-model.trim="newPrefix.uri"
+                          id="add-prefix-uri"
+                          type="text"
+                          :class="['form-control', addPrefixUriClass]"
+                          placeholder="URI"
+                          aria-label="new prefix URI"
+                        />
+                        <button
+                          type="submit"
+                          class="btn btn-primary"
+                          :disabled="addingPrefix"
+                        >
+                          add
+                        </button>
+                        <button
+                          type="button"
+                          id="add-prefix-cancel"
+                          class="btn btn-outline-secondary"
+                          @click="closeAddPrefixForm"
+                        >
+                          cancel
+                        </button>
+                        <div :class="['invalid-feedback', addPrefixNameClass === 'is-invalid' ? 'd-block' : 'd-none']">
+                          Please enter a valid prefix.
+                        </div>
+                        <div :class="['invalid-feedback', addPrefixUriClass === 'is-invalid' ? 'd-block' : 'd-none']">
+                          Please enter a valid URI.
+                        </div>
+                      </div>
+                    </form>
                   </fieldset>
                 </div>
               </div>
@@ -184,7 +273,11 @@ import Yasqe from '@zazuko/yasqe'
 import Yasr from '@zazuko/yasr'
 import GeoPlugin from 'yasgui-geo-tg'
 import { createShareableLink } from '@/utils/query'
+import { displayError, displayNotification } from '@/utils'
+import { DEFAULT_PREFIXES } from '@/utils/prefixes'
+import { validatePrefixName, validatePrefixUri } from '@/utils/validation'
 import { nextTick } from 'vue'
+import { Popover } from 'bootstrap'
 import currentDatasetMixin from '@/mixins/current-dataset'
 import currentDatasetMixinNavigationGuards from '@/mixins/current-dataset-navigation-guards'
 
@@ -206,6 +299,9 @@ WHERE {
   OPTIONAL { ?class rdfs:comment ?description}
 }
 LIMIT 25`
+
+// The shared defaults in the {text, uri} shape the badge template uses.
+const defaultPrefixes = () => DEFAULT_PREFIXES.map(p => ({ text: p.prefix, uri: p.uri }))
 
 export default {
   name: 'DatasetQuery',
@@ -247,14 +343,18 @@ export default {
           text: 'Selection of classes'
         }
       ],
-      prefixes: [
-        { uri: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#', text: 'rdf' },
-        { uri: 'http://www.w3.org/2000/01/rdf-schema#', text: 'rdfs' },
-        { uri: 'http://www.w3.org/2002/07/owl#', text: 'owl' },
-        { uri: 'http://www.w3.org/2001/XMLSchema#', text: 'xsd' }
-      ],
+      prefixes: defaultPrefixes(),
       currentQueryPrefixes: [],
-      currentDatasetUrl: ''
+      currentDatasetUrl: '',
+      currentPopover: null,
+      addingPrefix: false,
+      showAddPrefixForm: false,
+      newPrefix: {
+        prefix: '',
+        uri: ''
+      },
+      // Validation state is only displayed after the first submit attempt.
+      addPrefixValidated: false
     }
   },
 
@@ -264,6 +364,53 @@ export default {
         return ''
       }
       return `/${this.datasetName}/${this.services.query['srv.endpoints'][0]}`
+    },
+
+    /**
+     * The current dataset's prefixes service, or null if it does not declare one.
+     *
+     * @returns {{endpoint: string, writable: boolean}|null}
+     */
+    prefixesService () {
+      if (!this.services) {
+        return null
+      }
+      const svc = this.services['prefixes-rw'] || this.services['prefixes-r'] || null
+      return svc
+        ? {
+            endpoint: svc['srv.endpoints'][0],
+            writable: !!this.services['prefixes-rw']
+          }
+        : null
+    },
+
+    /**
+     * True iff the current dataset's prefixes can be edited from the UI.
+     */
+    prefixesWritable () {
+      return !!(this.prefixesService && this.prefixesService.writable)
+    },
+
+    /**
+     * Bootstrap validation class for the new-prefix name input; empty
+     * until the first submit attempt, live-updating afterwards.
+     */
+    addPrefixNameClass () {
+      if (!this.addPrefixValidated) {
+        return ''
+      }
+      return validatePrefixName(this.newPrefix.prefix) ? 'is-valid' : 'is-invalid'
+    },
+
+    /**
+     * Bootstrap validation class for the new-prefix URI input; empty
+     * until the first submit attempt, live-updating afterwards.
+     */
+    addPrefixUriClass () {
+      if (!this.addPrefixValidated) {
+        return ''
+      }
+      return validatePrefixUri(this.newPrefix.uri) ? 'is-valid' : 'is-invalid'
     }
   },
 
@@ -342,6 +489,10 @@ export default {
         this.yasqe.options.requestConfig.endpoint = this.$fusekiService.getFusekiUrl(val)
       }
     },
+    prefixesService: function (val, oldVal) {
+      this.closeAddPrefixForm()
+      this.loadPrefixes()
+    },
     contentTypeSelect: function (val, oldVal) {
       if (this.yasqe) {
         this.yasqe.options.requestConfig.acceptHeaderSelect = this.contentTypeSelect
@@ -389,7 +540,151 @@ export default {
         this.yasqe.addPrefixes(newPrefix)
         this.currentQueryPrefixes.push(prefix.uri)
       }
+    },
+    /**
+     * Replaces the default prefix list with the prefixes of the current
+     * dataset. The defaults are restored when the dataset has no prefixes
+     * service, when its prefix store is empty, and when fetching fails.
+     */
+    async loadPrefixes () {
+      this.hidePopover()
+      if (!this.prefixesService) {
+        this.prefixes = defaultPrefixes()
+        return
+      }
+      try {
+        const res = await this.$fusekiService
+          .getPrefixes(this.datasetName, this.prefixesService.endpoint)
+        this.prefixes = res.data.length !== 0
+          ? res.data.map(p => ({ text: p.prefix, uri: p.uri }))
+          : defaultPrefixes()
+      } catch (error) {
+        this.prefixes = defaultPrefixes()
+        displayError(this, error)
+      }
+    },
+    /**
+     * Validates both form fields for adding a prefix, turning on the
+     * live validation display.
+     *
+     * @returns {boolean} true iff both fields are valid
+     */
+    validateAddPrefixForm () {
+      this.addPrefixValidated = true
+      return validatePrefixName(this.newPrefix.prefix) && validatePrefixUri(this.newPrefix.uri)
+    },
+    /**
+     * Clears the add-prefix form fields and their validation state.
+     */
+    resetAddPrefixForm () {
+      this.newPrefix = {
+        prefix: '',
+        uri: ''
+      }
+      this.addPrefixValidated = false
+    },
+    /**
+     * Shows the add-prefix form (replacing the "+" pill) and focuses
+     * its first input.
+     */
+    openAddPrefixForm () {
+      this.showAddPrefixForm = true
+      this.$nextTick(() => {
+        const input = document.getElementById('add-prefix-name')
+        if (input) {
+          input.focus()
+        }
+      })
+    },
+    /**
+     * Hides the add-prefix form (restoring the "+" pill) and resets it.
+     */
+    closeAddPrefixForm () {
+      this.showAddPrefixForm = false
+      this.resetAddPrefixForm()
+    },
+    /**
+     * Adds or replaces a prefix mapping on the dataset via its
+     * read-write prefixes endpoint, then refetches the list.
+     */
+    async addPrefix () {
+      if (this.addingPrefix || !this.prefixesWritable) {
+        return
+      }
+      if (!this.validateAddPrefixForm()) {
+        return
+      }
+      this.addingPrefix = true
+      try {
+        await this.$fusekiService
+          .updatePrefix(this.datasetName, this.prefixesService.endpoint, this.newPrefix.prefix, this.newPrefix.uri)
+        displayNotification(this, `Prefix ${this.newPrefix.prefix} added`)
+        this.closeAddPrefixForm()
+        await this.loadPrefixes()
+      } catch (error) {
+        // Surface the server's validation message
+        displayError(this, (error.response && error.response.data) || error)
+      } finally {
+        this.addingPrefix = false
+      }
+    },
+    /**
+     * Removes a prefix mapping from the dataset via its read-write
+     * prefixes endpoint, then refetches the list.
+     *
+     * @param {{text: string, uri: string}} prefix - The prefix badge entry to remove.
+     */
+    async removePrefix (prefix) {
+      try {
+        await this.$fusekiService
+          .removePrefix(this.datasetName, this.prefixesService.endpoint, prefix.text)
+        displayNotification(this, `Prefix ${prefix.text} removed`)
+        await this.loadPrefixes()
+      } catch (error) {
+        displayError(this, (error.response && error.response.data) || error)
+      }
+    },
+    /**
+     * Opens the confirmation popover for the given element id prefix,
+     * closing any other popover first.
+     *
+     * @param {string} id - Id prefix shared by the popover's trigger button.
+     */
+    showPopover (id) {
+      if (this.currentPopover !== null) {
+        if (this.currentPopover.__id === id) {
+          return
+        }
+        this.hidePopover()
+      }
+      const unwrap = ref => Array.isArray(ref) ? ref[0] : ref
+      const content = unwrap(this.$refs[`${id}-content`])
+      const trigger = unwrap(this.$refs[`${id}-button`])
+      const popover = new Popover(trigger, {
+        html: true,
+        content,
+        trigger: 'manual',
+        placement: 'auto'
+      })
+      popover.__id = id
+      popover.show()
+      this.currentPopover = popover
+    },
+    /**
+     * Closes the currently open confirmation popover, if any.
+     */
+    hidePopover () {
+      if (this.currentPopover === null) {
+        return
+      }
+      this.currentPopover.hide()
+      this.currentPopover.dispose()
+      this.currentPopover = null
     }
+  },
+
+  beforeUnmount () {
+    this.hidePopover()
   }
 }
 </script>
@@ -424,5 +719,20 @@ export default {
 }
 .yasr .yasr_btnGroup .select_geo .plugin_icon {
   margin-bottom: 20%;
+}
+.badge .btn-close.remove-prefix {
+  font-size: .65em;
+}
+.badge.add-prefix-pill {
+  cursor: pointer;
+  color: #6c757d;
+  background-color: transparent;
+  border: 1px dashed #adb5bd;
+  opacity: .45;
+  transition: opacity .15s ease-in-out;
+}
+.badge.add-prefix-pill:hover,
+.badge.add-prefix-pill:focus {
+  opacity: 1;
 }
 </style>

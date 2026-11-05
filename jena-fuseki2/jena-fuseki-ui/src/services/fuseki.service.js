@@ -240,6 +240,41 @@ class FusekiService {
         throw new Error(error.response.data)
       })
   }
+
+  /**
+   * Fetch all prefix mappings of a dataset from its prefixes service.
+   * @param {string} datasetName - The name of the dataset with the prefix mappings
+   * @param {string} endpointName - name of the dataset's prefixes-r or prefixes-rw endpoint
+   * @returns {Promise<AxiosResponse<{prefix: string, uri: string}[]>>} all prefix mappings of the dataset
+   */
+  async getPrefixes (datasetName, endpointName) {
+    return axios.get(this.getFusekiUrl(`/${datasetName}/${endpointName}`))
+  }
+
+  /**
+   * Add a prefix mapping to a dataset or replace an existing mapping.
+   * @param {string} datasetName - The name of the dataset with the prefix mappings
+   * @param {string} endpointName - name of the dataset's prefixes-rw endpoint
+   * @param {string} prefix - The prefix name to add or update
+   * @param {string} uri - The namespace URI the prefix expands to
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  async updatePrefix (datasetName, endpointName, prefix, uri) {
+    const params = new URLSearchParams({ prefix, uri })
+    return axios.post(this.getFusekiUrl(`/${datasetName}/${endpointName}`), params)
+  }
+
+  /**
+   * Deletes a saved prefix from a dataset.
+   * @param {string} datasetName - The name of the dataset with the prefix mappings
+   * @param {string} endpointName - The name of the dataset's prefixes-rw endpoint
+   * @param {string} prefix - The prefix to remove
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  async removePrefix (datasetName, endpointName, prefix) {
+    return axios.delete(this.getFusekiUrl(`/${datasetName}/${endpointName}`),
+      { params: { prefix } })
+  }
 }
 
 export default FusekiService
