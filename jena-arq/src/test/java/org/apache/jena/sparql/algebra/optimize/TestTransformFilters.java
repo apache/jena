@@ -23,14 +23,33 @@ package org.apache.jena.sparql.algebra.optimize;
 
 import static org.apache.jena.sparql.algebra.optimize.TransformTests.check;
 import static org.apache.jena.sparql.algebra.optimize.TransformTests.testOp;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QueryFactory;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.Transform;
 import org.apache.jena.sparql.algebra.TransformCopy;
 import org.apache.jena.sparql.algebra.op.OpTable;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.expr.E_Equals;
+import org.apache.jena.sparql.expr.E_SameTerm;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprVar;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.sse.SSE;
 
 /** Tests of transforms related to filters */
 public class TestTransformFilters
@@ -272,23 +291,18 @@ public class TestTransformFilters
             ")");
     }
 
+    // A solution with ?x = <x> satisfies both disjuncts, so expanding would return
+    // it from both branches where the filter returns it once. Not transformed.
     @Test public void disjunction02() {
         testOp("(filter (|| (= ?x <x>) (!= ?x <y>)) (bgp ( ?s ?p ?x)) )",
                t_disjunction,
-               "(disjunction ",
-               "(assign ((?x <x>)) (bgp ( ?s ?p <x>)))",
-               "(filter (!= ?x <y>) (bgp ( ?s ?p ?x)))",
-            ")");
+               (String[])null);
     }
 
     @Test public void disjunction03() {
         testOp("(filter (|| (!= ?x <x>) (= ?x <y>)) (bgp ( ?s ?p ?x)) )",
                t_disjunction,
-               // Note - reordering of disjunction terms.
-               "(disjunction ",
-               "(assign ((?x <y>)) (bgp ( ?s ?p <y>)))",
-               "(filter (!= ?x <x>) (bgp ( ?s ?p ?x)))",
-            ")");
+               (String[])null);
     }
 
     @Test public void disjunction04() {
@@ -300,33 +314,187 @@ public class TestTransformFilters
     @Test public void disjunction05() {
         testOp("(filter (exprlist (|| (= ?x <y>) (!= ?x <x>)))    (bgp ( ?s ?p ?x)) )",
                t_disjunction,
-               "  (disjunction",
-               "    (assign ((?x <y>)) (bgp ( ?s ?p <y>)))",
-               "    (filter (!= ?x <x>) (bgp ( ?s ?p ?x)))",
-               ")"
-            );
+               (String[])null);
     }
 
     @Test public void disjunction06() {
         testOp("(filter (exprlist (lang ?x) (|| (= ?x <y>) (!= ?x <x>)))    (bgp ( ?s ?p ?x)) )",
                t_disjunction,
-               "(filter (lang ?x)",
-               "  (disjunction",
-               "    (assign ((?x <y>)) (bgp ( ?s ?p <y>)))",
-               "    (filter (!= ?x <x>) (bgp ( ?s ?p ?x)))",
-               "))"
-            );
+               (String[])null);
     }
 
     @Test public void disjunction07() {
         testOp("(filter (exprlist (|| (= ?x <y>) (!= ?x <x>)) (lang ?x) )    (bgp ( ?s ?p ?x)) )",
                t_disjunction,
-               "(filter (lang ?x)",
-               "  (disjunction",
-               "    (assign ((?x <y>)) (bgp ( ?s ?p <y>)))",
-               "    (filter (!= ?x <x>) (bgp ( ?s ?p ?x)))",
-               "))"
-            );
+               (String[])null);
+    }
+
+    // (A || A) is A: the repeated disjunct is dropped — two identical branches would
+    // return every solution twice — and the single equality then grounds the pattern.
+    @Test public void disjunction08() {
+        testOp("(filter (|| (= ?x <x>) (= ?x <x>)) (bgp ( ?s ?p ?x)) )",
+               t_disjunction,
+               "(assign ((?x <x>)) (bgp ( ?s ?p <x>)))");
+    }
+
+    // The same, for a disjunct shape the transform cannot ground: deduplicated to a
+    // single disjunct, there is nothing to expand and the filter is left alone.
+    @Test public void disjunction08a() {
+        testOp("(filter (|| (!= ?x <x>) (!= ?x <x>)) (bgp ( ?s ?p ?x)) )",
+               t_disjunction,
+               (String[])null);
+    }
+
+    // Different terms, same value: a solution with ?x = 1 satisfies both disjuncts.
+    @Test public void disjunction09() {
+        testOp("(filter (|| (= ?x 1) (= ?x \"01\"^^<http://www.w3.org/2001/XMLSchema#integer>)) (bgp ( ?s ?p ?x)) )",
+               t_disjunction,
+               (String[])null);
+    }
+
+    // Different variables: a solution can satisfy both disjuncts.
+    @Test public void disjunction10() {
+        testOp("(filter (|| (= ?x <x>) (= ?y <y>)) (bgp ( ?s ?p ?x) (?s ?q ?y)) )",
+               t_disjunction,
+               (String[])null);
+    }
+
+    // Simple literals are pairwise distinct values, so the expansion is sound.
+    @Test public void disjunction11() {
+        testOp("(filter (|| (= ?x \"a\") (= ?x \"b\")) (bgp ( ?s ?p ?x)) )",
+               t_disjunction,
+               "(disjunction ",
+               "(assign ((?x \"a\")) (bgp ( ?s ?p \"a\")))",
+               "(assign ((?x \"b\")) (bgp ( ?s ?p \"b\")))",
+            ")");
+    }
+
+    // An IRI and a number are distinct values, so the ?x IN (<x> 2) shape keeps its
+    // expansion; the numeric equality is not substitutable and stays a filter branch.
+    @Test public void disjunction12() {
+        testOp("(filter (|| (= ?x <x>) (= ?x 2)) (bgp ( ?s ?p ?x)) )",
+               t_disjunction,
+               "(disjunction ",
+               "(assign ((?x <x>)) (bgp ( ?s ?p <x>)))",
+               "(filter (= ?x 2) (bgp ( ?s ?p ?x)))",
+            ")");
+    }
+
+    // The expansion must not change the number of results: each solution once,
+    // however many disjuncts it satisfies. Executed, not matched on plan shape,
+    // with the default optimizer.
+    @Test public void disjunctionMultiplicity01() {
+        checkDisjunctionRowCount("FILTER(?x = <http://example/a> || ?x = <http://example/a>)", 1);
+    }
+
+    // Only s1 qualifies (x=a passes both disjuncts; x=b passes neither) — and it must
+    // come back once. The unsound expansion returned it from both branches.
+    @Test public void disjunctionMultiplicity02() {
+        checkDisjunctionRowCount("FILTER(?x = <http://example/a> || ?x != <http://example/b>)", 1);
+    }
+
+    @Test public void disjunctionMultiplicity03() {
+        checkDisjunctionRowCount("FILTER(?x = <http://example/a> || ?x = <http://example/b>)", 2);
+    }
+
+    private static void checkDisjunctionRowCount(String filter, int expected) {
+        Graph graph = SSE.parseGraph(StrUtils.strjoinNL
+            ("(graph"
+            ,"  (triple <http://example/s1> <http://example/p> <http://example/a>)"
+            ,"  (triple <http://example/s2> <http://example/p> <http://example/b>)"
+            ,")"));
+        String queryString = "SELECT * { ?s <http://example/p> ?x " + filter + " }";
+        Query query = QueryFactory.create(queryString);
+        try ( QueryExecution qExec = QueryExecutionFactory.create(query, ModelFactory.createModelForGraph(graph)) ) {
+            long count = Iter.count(qExec.execSelect());
+            assertEquals(expected, count, ()->"Row count differs from filter semantics: "+filter);
+        }
+    }
+
+    // GH-4160: the exclusivity test must not judge sameTerm disjuncts by value
+    // distinctness. NaN is not value-equal to itself, so the two symmetric writings of
+    // one sameTerm test were taken to be mutually exclusive and the row came back twice.
+    @Test public void disjunctionMultiplicity04() {
+        checkRowCount(numericGraph(),
+                      "FILTER( sameTerm(?x, \"NaN\"^^xsd:double) || sameTerm(\"NaN\"^^xsd:double, ?x) )",
+                      1);
+    }
+
+    // The mixed IRI/literal case still expands - the IRI branch grounds the pattern and
+    // the double is left as a filter - and returns each solution once.
+    @Test public void disjunctionMultiplicity05() {
+        checkRowCount(numericGraph(),
+                      "FILTER( ?x = \"1.5\"^^xsd:double || ?x = <http://example/nope> )",
+                      1);
+    }
+
+    private static Graph numericGraph() {
+        return SSE.parseGraph(StrUtils.strjoinNL
+            ("(graph"
+            ,"  (triple <http://example/obs1> <http://example/reading> \"NaN\"^^xsd:double)"
+            ,"  (triple <http://example/obs2> <http://example/reading> \"1.5\"^^xsd:double)"
+            ,")"));
+    }
+
+    private static void checkRowCount(Graph graph, String filter, int expected) {
+        String queryString = "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n"
+                           + "SELECT * { ?s <http://example/reading> ?x " + filter + " }";
+        Query query = QueryFactory.create(queryString);
+        try ( QueryExecution qExec = QueryExecutionFactory.create(query, ModelFactory.createModelForGraph(graph)) ) {
+            long count = Iter.count(qExec.execSelect());
+            assertEquals(expected, count, ()->"Row count differs from filter semantics: "+filter);
+        }
+    }
+
+    private static NodeValue nvDouble(String lex)   { return NodeValue.makeNode(NodeFactory.createLiteralDT(lex, XSDDatatype.XSDdouble)); }
+    private static NodeValue nvInteger(String lex)  { return NodeValue.makeNode(NodeFactory.createLiteralDT(lex, XSDDatatype.XSDinteger)); }
+    private static NodeValue nvDateTime(String lex) { return NodeValue.makeNode(NodeFactory.createLiteralDT(lex, XSDDatatype.XSDdateTime)); }
+    private static NodeValue nvIRI(String uri)      { return NodeValue.makeNode(NodeFactory.createURI(uri)); }
+
+    // provablyDistinctValues is value distinctness. NaN is not value-equal to itself -
+    // the reason sameTerm disjuncts may not be judged by it.
+    @Test public void provablyDistinctValuesNaN() {
+        assertTrue(TransformFilterDisjunction.provablyDistinctValues(nvDouble("NaN"), nvDouble("NaN")));
+    }
+
+    // Value-equal constants with different terms: not distinct, so not exclusive.
+    @Test public void provablyDistinctValuesSameValue() {
+        assertFalse(TransformFilterDisjunction.provablyDistinctValues(nvInteger("1"), nvInteger("01")));
+        assertFalse(TransformFilterDisjunction.provablyDistinctValues(nvInteger("1"), nvDouble("1.0")));
+    }
+
+    @Test public void provablyDistinctValuesIRIs() {
+        assertTrue(TransformFilterDisjunction.provablyDistinctValues(nvIRI("http://example/a"), nvIRI("http://example/b")));
+        assertFalse(TransformFilterDisjunction.provablyDistinctValues(nvIRI("http://example/a"), nvIRI("http://example/a")));
+    }
+
+    // A timezone-less dateTime against one with a timezone is indeterminate, so the
+    // constants can not be proved different.
+    @Test public void provablyDistinctValuesIndeterminate() {
+        assertFalse(TransformFilterDisjunction.provablyDistinctValues(nvDateTime("2000-01-01T00:00:00"),
+                                                                     nvDateTime("2000-01-01T00:00:00Z")));
+    }
+
+    // sameTerm matches by term: identical terms are never exclusive, and differing
+    // terms always are, whatever the value comparison says.
+    @Test public void provablyExclusiveSameTerm() {
+        Expr vx = new ExprVar(Var.alloc("x"));
+        NodeValue nan = nvDouble("NaN");
+        assertFalse(TransformFilterDisjunction.provablyExclusive(new E_SameTerm(vx, nan), nan,
+                                                                 new E_SameTerm(nan, vx), nan));
+        NodeValue i1 = nvInteger("1"), i01 = nvInteger("01");
+        assertTrue(TransformFilterDisjunction.provablyExclusive(new E_SameTerm(vx, i1), i1,
+                                                                new E_SameTerm(vx, i01), i01));
+    }
+
+    // Where a disjunct is "=", value distinctness is the right test.
+    @Test public void provablyExclusiveEquals() {
+        Expr vx = new ExprVar(Var.alloc("x"));
+        NodeValue i1 = nvInteger("1"), i01 = nvInteger("01");
+        assertFalse(TransformFilterDisjunction.provablyExclusive(new E_Equals(vx, i1), i1,
+                                                                 new E_Equals(vx, i01), i01));
+        assertTrue(TransformFilterDisjunction.provablyExclusive(new E_Equals(vx, nvIRI("http://example/a")), nvIRI("http://example/a"),
+                                                                new E_SameTerm(vx, nvIRI("http://example/b")), nvIRI("http://example/b")));
     }
 
     @Test public void oneOf1() {
