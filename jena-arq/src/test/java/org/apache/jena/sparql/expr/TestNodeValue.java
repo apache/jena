@@ -1180,6 +1180,30 @@ public class TestNodeValue
         assertTrue(nv1.equals(nv2));
     }
 
+    // GH-4235: NaN is not comparable by value but keeps its place in the ordering.
+    @Test
+    public void testCompareNaN_value() {
+        NodeValue nan = NodeValue.makeDouble(Double.NaN);
+        NodeValue one = NodeValue.makeDouble(1.0);
+        assertThrows(ExprNotComparableException.class, ()-> NodeValue.compare(nan, one));
+        assertThrows(ExprNotComparableException.class, ()-> NodeValue.compare(one, nan));
+        assertThrows(ExprNotComparableException.class, ()-> NodeValue.compare(nan, nan));
+        assertThrows(ExprNotComparableException.class, ()-> NodeValue.compare(nan, NodeValue.makeFloat(Float.NaN)));
+    }
+
+    @Test
+    public void testCompareNaN_ordering() {
+        NodeValue nan = NodeValue.makeDouble(Double.NaN);
+        NodeValue one = NodeValue.makeDouble(1.0);
+        NodeValue inf = NodeValue.makeDouble(Double.POSITIVE_INFINITY);
+        // Same as Double.compare: NaN after every other number.
+        assertEquals(Expr.CMP_GREATER, NodeValue.compareAlways(nan, one));
+        assertEquals(Expr.CMP_LESS,    NodeValue.compareAlways(one, nan));
+        assertEquals(Expr.CMP_GREATER, NodeValue.compareAlways(nan, inf));
+        assertEquals(Expr.CMP_EQUAL,   NodeValue.compareAlways(nan, nan));
+        assertEquals(Expr.CMP_EQUAL,   NodeValue.compareAlways(nan, NodeValue.makeDouble(Double.NaN)));
+    }
+
     //Compare value first and then language tag
     @Test
     public void testLangCompareAlways1() {
