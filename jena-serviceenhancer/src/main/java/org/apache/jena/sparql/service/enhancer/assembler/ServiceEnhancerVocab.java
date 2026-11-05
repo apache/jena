@@ -27,6 +27,7 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab;
 
 /** Vocabulary for assembler-based configuration of the service enhancer plugin */
 public class ServiceEnhancerVocab {
@@ -42,8 +43,10 @@ public class ServiceEnhancerVocab {
     /** Enable privileged management functions; creates a wrapped dataset with a copied context */
     public static final Property enableMgmt = ResourceFactory.createProperty(NS + "enableMgmt");
 
-    /** The term "baseDataset" is not officially in ja but it seems reasonable to eventually add it there.
-     * So far ja only defines baseModel */
+    /**
+     * Deprecated in favor of {@link DatasetAssemblerVocab#pDataset}.
+     */
+    @Deprecated
     public static final Property baseDataset = ResourceFactory.createProperty(JA.getURI() + "baseDataset");
 
     /** Maximum number of entries the service cache can hold */
@@ -70,7 +73,7 @@ public class ServiceEnhancerVocab {
      *   <tr><td>se</td><td>{@value #NS}</td></tr>
      * </table>
      */
-    public PrefixMap addPrefixes(PrefixMap pm) {
+    public static PrefixMap addPrefixes(PrefixMap pm) {
         pm.add("ja", JA.getURI());
         pm.add("se", ServiceEnhancerVocab.getURI());
         return pm;
@@ -83,7 +86,7 @@ public class ServiceEnhancerVocab {
      *   <tr><td>se</td><td>{@value #NS}</td></tr>
      * </table>
      */
-    public PrefixMapping addPrefixes(PrefixMapping pm) {
+    public static PrefixMapping addPrefixes(PrefixMapping pm) {
         pm.setNsPrefix("ja", JA.getURI());
         pm.setNsPrefix("se", ServiceEnhancerVocab.getURI());
         return pm;

@@ -31,7 +31,7 @@ import java.util.concurrent.Callable;
  *
  * Usage:
  * <pre>{@code
- * FinallyAll.run(
+ * FinallyRunAll.run(
  *   () -> action1(),
  *   () -> action2(),
  *   () -> actionN()
