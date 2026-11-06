@@ -29,6 +29,11 @@ import org.apache.jena.fuseki.main.sys.FusekiModule;
  * (May be disabled from a Fuseki server builder.)
  */
 public class FMod_Tasks implements FusekiModule {
+
+    @Override
+    public String name() {
+        return "FMod Tasks";
+    }
     public static FusekiModule create() {
         // Not in ServerArgs
         throw new NotImplemented();

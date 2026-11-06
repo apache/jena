@@ -31,6 +31,11 @@ import org.apache.jena.fuseki.main.sys.FusekiModule;
  */
 public class FMod_Stats implements FusekiModule {
 
+    @Override
+    public String name() {
+        return "FMod Stats";
+    }
+
     public static FusekiModule create() {
         return new FMod_Stats();
     }
