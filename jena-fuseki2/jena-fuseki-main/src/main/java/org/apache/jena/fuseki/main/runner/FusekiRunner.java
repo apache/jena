@@ -34,6 +34,7 @@ import org.apache.jena.fuseki.mod.admin.FMod_Admin;
 import org.apache.jena.fuseki.mod.prometheus.FMod_Prometheus;
 import org.apache.jena.fuseki.mod.shiro.FMod_Shiro;
 import org.apache.jena.fuseki.mod.system.FMod_Ping;
+import org.apache.jena.fuseki.mod.system.FMod_Set;
 import org.apache.jena.fuseki.mod.ui.FMod_UI;
 import org.apache.jena.sys.JenaSystem;
 
@@ -191,13 +192,16 @@ public class FusekiRunner {
 
     // RDF publishing. No on-disk. No auto loaded modules.
     public static FusekiModules fmodsMain() {
-        return fmods0(FMod_Ping.create(),
+        return fmods0(FMod_Set.create(),
+                      FMod_Ping.create(),
                       FMod_Shiro.create(),
                       FMod_Prometheus.create());
     }
 
+    // Fuseki server with auto loading. No UI.
     public static FusekiModules fmodsServerPlain() {
-        return fmods(FMod_Ping.create(),
+        return fmods(FMod_Set.create(),
+                     FMod_Ping.create(),
                      FMod_Shiro.create(),
                      FMod_Prometheus.create()
                      );

@@ -32,6 +32,11 @@ import org.apache.jena.fuseki.main.sys.FusekiModule;
  */
 public class FMod_Ping implements FusekiModule {
 
+    @Override
+    public String name() {
+        return "FMod Ping";
+    }
+
     public static FusekiModule create() {
         return new FMod_Ping();
     }
