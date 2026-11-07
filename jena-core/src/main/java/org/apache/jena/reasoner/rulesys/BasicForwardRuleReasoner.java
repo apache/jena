@@ -189,7 +189,7 @@ public class BasicForwardRuleReasoner implements Reasoner {
     }
 
     /**
-     * Set a configuration paramter for the reasoner. The supported parameters
+     * Set a configuration parameter for the reasoner. The supported parameters
      * are:
      * <ul>
      * <li>BasicForwardedRuleReasoner.PROPderivationLogging - set to true to enable recording all rule derivations</li>
