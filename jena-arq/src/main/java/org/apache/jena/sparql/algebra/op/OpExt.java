@@ -48,7 +48,7 @@ public abstract class OpExt extends OpBase
     public abstract Op effectiveOp();
 
     /** Evaluate the op, given a stream of bindings as input
-     *  Throw UnsupportedOperationException if this OpExt is not executeable.
+     *  Throw UnsupportedOperationException if this OpExt is not executable.
      */
     public abstract QueryIterator eval(QueryIterator input, ExecutionContext execCxt);
 

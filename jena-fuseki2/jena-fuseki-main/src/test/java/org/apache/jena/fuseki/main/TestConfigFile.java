@@ -26,19 +26,33 @@ import static org.apache.jena.fuseki.test.HttpTest.expect404;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
+import java.util.List;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.base.Sys;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
 import org.apache.jena.http.HttpOp;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionRemote;
 import org.apache.jena.rdfconnection.RDFConnectionRemoteBuilder;
+import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase;
+import org.apache.jena.sparql.function.FunctionEnv;
+import org.apache.jena.sparql.function.FunctionRegistry;
+import org.apache.jena.sparql.util.Symbol;
 
 /** Test server configuration by configuration file */
 public class TestConfigFile {
@@ -60,6 +74,17 @@ public class TestConfigFile {
             .updateEndpoint("update")
             .gspEndpoint("data")
             .build();
+    }
+
+    // Register SPARQL extension function.
+    @BeforeAll public static void setup() {
+        FunctionRegistry registry = FunctionRegistry.get();
+        registry.put(ReadContext.uri, uri->new ReadContext());
+    }
+
+    @AfterAll public static void teardown() {
+        FunctionRegistry registry = FunctionRegistry.get();
+        registry.remove(ReadContext.uri);
     }
 
     @Test public void basic () {
@@ -406,5 +431,47 @@ public class TestConfigFile {
             .port(0)
             .build();
         return server;
+    }
+
+    private static class ReadContext extends FunctionBase {
+
+        static String uri = ARQConstants.ARQFunctionLibraryURI+"context";
+
+        // This function exists for testing context get setup correctly.
+        public ReadContext() {}
+
+        @Override
+        public void checkBuild(String uri, ExprList args) {
+            if ( args.size() != 1 )
+                throw new ExprEvalException("Wrong number of arguments");
+        }
+
+        @Override
+        public NodeValue exec(List<NodeValue> args, FunctionEnv env) {
+            NodeValue v = args.get(0);
+            if ( ! v.isString() )
+                throw new ExprEvalException("Not a string: function afn:context("+v+")");
+            Symbol symbol = Symbol.create(v.getString());
+            return get(symbol, env);
+        }
+
+        private static NodeValue get(Symbol symbol, FunctionEnv env) {
+            Object obj = env.getContext().get(symbol);
+            if ( obj == null )
+                return NodeValue.nvEmptyString;
+            if ( obj instanceof String )
+                return NodeValue.makeString((String)obj);
+
+            if ( !(obj instanceof Node) )
+                throw new ExprEvalException("Not a Node: " + Lib.className(obj));
+            Node n = (Node)obj;
+            NodeValue nv = NodeValue.makeNode(n);
+            return nv;
+        }
+
+        @Override
+        public NodeValue exec(List<NodeValue> args) {
+            throw new InternalErrorException("afn:context.exec(args) called");
+        }
     }
 }

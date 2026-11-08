@@ -323,8 +323,7 @@ public class Context {
     /**
      * Is the value true or false, either as a Boolean or a string.
      * If undefined, return null.
-     * Exception if not a boolean or a string.
-     *
+     * Throw an exception if the value is not a boolean or a string "true"/"false".
      */
     public Boolean getTrueOrFalse(Symbol property) {
         Object x = get(property);
