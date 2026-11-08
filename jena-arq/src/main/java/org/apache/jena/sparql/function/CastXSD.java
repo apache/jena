@@ -34,6 +34,8 @@ import javax.xml.datatype.Duration;
 
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.datatypes.xsd.impl.XSDAbstractDateTimeType;
+import org.apache.jena.datatypes.xsd.impl.XSDBaseNumericType;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.expr.ExprEvalException;
@@ -429,6 +431,12 @@ public class CastXSD {
 
     // Cast by lexical form with checking.
     private static NodeValue castByLex(String lex, XSDDatatype castType) {
+        if ( isWhitespaceCollapsed(castType) )
+            // These datatypes have the whitespace facet "collapse" so leading
+            // and trailing XML whitespace is not part of the value.
+            // https://www.w3.org/TR/xpath-functions/#casting-from-strings
+            // Remove it so the result has a clean lexical form.
+            lex = trimXMLWhitespace(lex);
         if ( ! castType.isValid(lex) )
             throw exception("Invalid lexical form: '"+lex+"' for "+castType.getURI());
         NodeValue nv2 = NodeValue.makeNode(lex, castType);
@@ -436,6 +444,29 @@ public class CastXSD {
         if ( castType.equals(dt) )
             return nv2;
         throw exception("Can not cast '"+lex+"' to a "+castType);
+    }
+
+    private static boolean isWhitespaceCollapsed(XSDDatatype castType) {
+        return castType instanceof XSDBaseNumericType ||
+               castType.equals(XSDDatatype.XSDfloat) ||
+               castType.equals(XSDDatatype.XSDdouble) ||
+               castType.equals(XSDDatatype.XSDboolean) ||
+               castType instanceof XSDAbstractDateTimeType;   // Includes durations, and Gregorian
+    }
+
+    private static boolean isXMLWhitespace(char ch) {
+        return ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r';
+    }
+
+    /** Remove leading and trailing XML whitespace (#x9, #xA, #xD, #x20). */
+    private static String trimXMLWhitespace(String lex) {
+        int start = 0;
+        int end = lex.length();
+        while ( start < end && isXMLWhitespace(lex.charAt(start)) )
+            start++;
+        while ( end > start && isXMLWhitespace(lex.charAt(end-1)) )
+            end--;
+        return lex.substring(start, end);
     }
 
     // Known to work casts.  No checking.

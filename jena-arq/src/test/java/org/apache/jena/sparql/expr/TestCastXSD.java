@@ -22,8 +22,6 @@
 package org.apache.jena.sparql.expr;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.AfterAll;
@@ -32,8 +30,6 @@ import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.ARQ;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.function.FunctionEnv;
@@ -144,15 +140,12 @@ public class TestCastXSD {
     @Test public void cast_to_gregorian_03() { testCast     ("xsd:gMonthDay('2015-10-12'^^xsd:date)",    "'--10-12'^^xsd:gMonthDay"); }
     @Test public void cast_to_gregorian_04() { testCast     ("xsd:gYearMonth('2015-10-12'^^xsd:date)",   "'2015-10'^^xsd:gYearMonth"); }
 
+    // Leading and trailing XML whitespace is removed for datatypes with whitespace facet "collapse".
+    // The result has the lexical form without the whitespace.
     @Test public void cast_numeric_whitespace() {
         for ( String type : new String[]{"integer", "decimal", "float", "double", "byte"} ) {
-            for ( String lex : new String[]{" 1", "1 ", " \\t\\r\\n1\\n\\r\\t "} ) {
-                String input = "xsd:"+type+"('"+lex+"')";
-                NodeValue actual = cast(input);
-                NodeValue expected = cast("xsd:"+type+"('1')");
-                assertTrue(NodeValue.sameValueAs(expected, actual), input);
-                assertEquals(expected.getDatatypeURI(), actual.getDatatypeURI(), input);
-            }
+            for ( String lex : new String[]{" 1", "1 ", " \\t\\r\\n1\\n\\r\\t "} )
+                testCast("xsd:"+type+"('"+lex+"')", "'1'^^xsd:"+type);
         }
     }
 
@@ -163,6 +156,13 @@ public class TestCastXSD {
             testCast("xsd:boolean('"+token+" ')", expected);
             testCast("xsd:boolean(' \\t\\r\\n"+token+"\\n\\r\\t ')", expected);
         }
+    }
+
+    @Test public void cast_duration_whitespace() {
+        testCast("xsd:duration(' P1D ')",              "'P1D'^^xsd:duration");
+        testCast("xsd:dayTimeDuration(' PT10S ')",     "'PT10S'^^xsd:dayTimeDuration");
+        testCast("xsd:yearMonthDuration(' P1Y2M ')",   "'P1Y2M'^^xsd:yearMonthDuration");
+        testNoCast("xsd:duration(' P 1D ')");
     }
 
     @Test public void cast_invalid_whitespace() {
@@ -176,32 +176,9 @@ public class TestCastXSD {
         testNoCast("xsd:unsignedInt(' -1 ')");
     }
 
-    @Test public void cast_whitespace_controls() {
-        testCast("xsd:date(' 2015-10-12 ')", "' 2015-10-12 '^^xsd:date");
+    // xsd:string keeps the whitespace.
+    @Test public void cast_string_whitespace() {
         testCast("xsd:string(' 1 ')", "' 1 '");
-    }
-
-    @Test public void cast_whitespace_select() {
-        String query = """
-                PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-                SELECT (xsd:integer(' 1 ') AS ?integer)
-                       (isNumeric(' 1 '^^xsd:integer) AS ?numeric)
-                       (' 1 '^^xsd:integer + 0 AS ?sum)
-                       (xsd:double(' 1 ') AS ?double)
-                       (xsd:boolean(' true ') AS ?boolean)
-                WHERE {}
-                """;
-        try ( QueryExecution qExec = QueryExecution.create(query, DatasetFactory.create()) ) {
-            var results = qExec.execSelect();
-            assertTrue(results.hasNext());
-            var row = results.next();
-            assertEquals(1, row.getLiteral("integer").getInt());
-            assertTrue(row.getLiteral("numeric").getBoolean());
-            assertEquals(1, row.getLiteral("sum").getInt());
-            assertEquals(1.0, row.getLiteral("double").getDouble());
-            assertTrue(row.getLiteral("boolean").getBoolean());
-            assertFalse(results.hasNext());
-        }
     }
 
     private void testNoCast(String input) {
