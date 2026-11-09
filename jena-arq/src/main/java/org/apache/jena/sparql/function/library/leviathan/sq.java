@@ -27,7 +27,7 @@ import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
 import org.apache.jena.sparql.function.FunctionBase1;
-import org.apache.jena.sparql.function.MathLimits;
+import org.apache.jena.sparql.SparqlLimits;
 
 public class sq extends FunctionBase1 {
 
@@ -37,15 +37,15 @@ public class sq extends FunctionBase1 {
         {
             case OP_INTEGER:
                 BigInteger i = v.getInteger();
-                MathLimits.preValidateExponentCalculation(i, BigInteger.valueOf(2));
+                SparqlLimits.preValidateExponentCalculation(i, BigInteger.valueOf(2));
                 return NodeValue.makeInteger( i.pow(2) );
             case OP_DECIMAL:
                 double dec = v.getDecimal().doubleValue();
-                MathLimits.preValidateExponentCalculation(dec, 2d);
+                SparqlLimits.preValidateExponentCalculation(dec, 2d);
                 return NodeValue.makeDecimal( Math.pow(dec, 2d));
             case OP_FLOAT:
             case OP_DOUBLE:
-                MathLimits.preValidateExponentCalculation(v.getDouble(), 2d);
+                SparqlLimits.preValidateExponentCalculation(v.getDouble(), 2d);
                 return NodeValue.makeDouble( Math.pow(v.getDouble(), 2d) );
             default:
                 throw new ARQInternalErrorException("Unrecognized numeric operation : "+v);   

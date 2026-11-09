@@ -25,6 +25,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.ARQException;
+import org.apache.jena.sparql.SparqlLimits;
 import org.apache.jena.sparql.algebra.optimize.TransformPathFlattenAlgebra;
 import org.apache.jena.sparql.algebra.optimize.TransformPathFlatten;
 import org.apache.jena.sparql.core.PathBlock;
@@ -33,20 +34,6 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.core.VarAlloc;
 
 public class PathCompiler {
-    /**
-     * Default maximum length value used for the {@link #MAX_LENGTH_PATH_FOR_REDUCTION} control
-     */
-    public static final int DEFAULT_MAX_LENGTH = 5;
-    /**
-     * Specifies the maximum length (inclusive) of a path that will be reduced by expanding it into individual
-     * invocations of the path expression linked by intermediate variables.  Defaults to {@value #DEFAULT_MAX_LENGTH}.
-     * <p>
-     * This control prevents a query using a path like {@code :x :p{N} :y} with a large value of {@code N} being
-     * expanded into a massive algebra tree that yields no performance benefits.
-     * </p>
-     * @see #isReducibleLength(long)
-     */
-    public static int MAX_LENGTH_PATH_FOR_REDUCTION = DEFAULT_MAX_LENGTH;
 
     // Convert to work on OpPath.
     // Need pre (and post) BGPs.
@@ -141,7 +128,7 @@ public class PathCompiler {
 
         if ( path instanceof P_FixedLength pFixedLen ) {
             long N = pFixedLen.getCount();
-            if (isReducibleLength(N)) {
+            if (SparqlLimits.isReducibleLength(N)) {
                 // Don't do {0}
                 // Also if the path is too long the reduction won't generate any performance benefits
                 reduceFixedLength(x, varAlloc, startNode, endNode, N, pFixedLen.getSubPath());
@@ -152,7 +139,7 @@ public class PathCompiler {
         if ( path instanceof P_Mod pMod ) {
             if ( pMod.isFixedLength() && pMod.getFixedLength() > 0 ) {
                 long N = pMod.getFixedLength();
-                if (isReducibleLength(N)) {
+                if (SparqlLimits.isReducibleLength(N)) {
                     reduceFixedLength(x, varAlloc, startNode, endNode, N, pMod.getSubPath());
                     return;
                 }
@@ -203,21 +190,6 @@ public class PathCompiler {
     }
 
     /**
-     * Checks whether a given length of path is considered reducible
-     * <p>
-     * Only paths that are non-zero length and less than, or equal to, the configured
-     * {@link #MAX_LENGTH_PATH_FOR_REDUCTION} (default {@value #DEFAULT_MAX_LENGTH}) are considered reducible.  Anything
-     * else is left as-is as either reduction would change semantics (for zero-length paths), or could lead to very
-     * large algebra tree which would negatively impact performance.
-     * </p>
-     * @param N Path length
-     * @return True if reducible, false otherwise
-     */
-    public static boolean isReducibleLength(long N) {
-        return N > 0 && N <= MAX_LENGTH_PATH_FOR_REDUCTION;
-    }
-
-    /**
      * Reduces a fixed length path by expanding the {@code n} steps into individual path invocations with intermediate
      * variables.
      * @param x             Path block to append into
@@ -226,6 +198,7 @@ public class PathCompiler {
      * @param endNode       End node
      * @param n             Fixed path length
      * @param subPath       Sub path to use in each expanded step
+     * @see SparqlLimits#isReducibleLength(long)
      */
     private static void reduceFixedLength(PathBlock x, VarAlloc varAlloc, Node startNode, Node endNode, long n,
                                           Path subPath) {

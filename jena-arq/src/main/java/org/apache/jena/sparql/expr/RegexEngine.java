@@ -33,6 +33,7 @@ import org.apache.jena.ext.xerces_regex.RegexParseException;
 import org.apache.jena.ext.xerces_regex.RegularExpression;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.ARQConstants;
+import org.apache.jena.sparql.SparqlLimits;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
 
@@ -48,28 +49,6 @@ import org.apache.jena.sparql.util.Symbol;
  *
  */
 public abstract class RegexEngine {
-
-    /**
-     * Default maximum permitted regular expression evaluation time
-     * @see #MAX_REGEX_EVALUATION_TIME
-     */
-    public static final long DEFAULT_MAX_REGEX_EVALUATION_TIME = 250;
-    /**
-     * Maximum permitted regular expression evaluation time, defaults to {@link #DEFAULT_MAX_REGEX_EVALUATION_TIME}
-     * <p>
-     * For some regular expression patterns the evaluation time can be excessive, especially if a pattern, or the
-     * pattern combined with the data leads to catastrophic backtracking.  Therefore, we bound the evaluation time by
-     * using a special {@link CharSequence}/{@link CharacterIterator} wrapper that enforces a time limit.  If the limit
-     * is exceeded then an {@link ExprEvalException} is thrown.  This does impose a small performance penalty though
-     * this generally should be negligible.
-     * </p>
-     * <p>
-     * If an application makes extensive use of complex regular expressions, and you are certain that those are not
-     * subject to catastrophic backtracking you can either increase the limit appropriately.  Or you can set to a
-     * zero/negative value to disable the limit entirely.
-     * </p>
-     */
-    public static long MAX_REGEX_EVALUATION_TIME = DEFAULT_MAX_REGEX_EVALUATION_TIME;
 
     public abstract boolean match(String string);
 
@@ -174,8 +153,8 @@ public abstract class RegexEngine {
 
         @Override
         public boolean match(String s) {
-            if (MAX_REGEX_EVALUATION_TIME > 0) {
-                return regexPattern.matches(new TimeBoundedCharSequence(s, MAX_REGEX_EVALUATION_TIME));
+            if (SparqlLimits.MAX_REGEX_EVALUATION_TIME > 0) {
+                return regexPattern.matches(new TimeBoundedCharSequence(s, SparqlLimits.MAX_REGEX_EVALUATION_TIME));
             } else {
                 return regexPattern.matches(s);
             }
@@ -206,7 +185,7 @@ public abstract class RegexEngine {
     /**
      * Returns a potentially time-bounded character sequence
      * <p>
-     * If {@link #MAX_REGEX_EVALUATION_TIME} is set to a positive non-zero value then a time-bounded
+     * If {@link SparqlLimits#MAX_REGEX_EVALUATION_TIME} is set to a positive non-zero value then a time-bounded
      * {@link CharSequence} is returned to prevent regular expression evaluation taking too long.  If it's set to
      * anything else then the original character sequence is returned.
      * </p>
@@ -217,8 +196,8 @@ public abstract class RegexEngine {
         if (charSequence == null) {
             return null;
         }
-        if (RegexEngine.MAX_REGEX_EVALUATION_TIME > 0) {
-            return new TimeBoundedCharSequence(charSequence, RegexEngine.MAX_REGEX_EVALUATION_TIME);
+        if (SparqlLimits.MAX_REGEX_EVALUATION_TIME > 0) {
+            return new TimeBoundedCharSequence(charSequence, SparqlLimits.MAX_REGEX_EVALUATION_TIME);
         } else {
             return charSequence;
         }

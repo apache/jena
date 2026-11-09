@@ -85,6 +85,9 @@ import org.apache.jena.sparql.syntax.TS_Syntax;
     , TS_Update.class
     , TS_SparqlLib.class
 
+    // SPARQL Limits
+    , TestSparqlLimits.class
+
     // Outside org.apache.jena.sparql
     , TS_Query.class
 

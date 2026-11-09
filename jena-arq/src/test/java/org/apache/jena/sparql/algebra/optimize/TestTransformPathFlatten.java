@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 
+import org.apache.jena.sparql.SparqlLimits;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -501,11 +502,11 @@ public class TestTransformPathFlatten {
         try {
             // Reconfiguring the maximum permitted path length for reduction should prevent this query from being
             // optimised
-            PathCompiler.MAX_LENGTH_PATH_FOR_REDUCTION = 3;
+            SparqlLimits.MAX_LENGTH_PATH_FOR_REDUCTION = 3;
             Op op1 = path("?x", ":p{5}", ":T1");
             testDefaultTransform(op1, null);
         } finally {
-            PathCompiler.MAX_LENGTH_PATH_FOR_REDUCTION = PathCompiler.DEFAULT_MAX_LENGTH;
+            SparqlLimits.MAX_LENGTH_PATH_FOR_REDUCTION = SparqlLimits.DEFAULT_MAX_PATH_REDUCTION_LENGTH;
         }
     }
 
@@ -513,11 +514,11 @@ public class TestTransformPathFlatten {
         try {
             // Reconfiguring the maximum permitted path length for reduction should prevent this query from being
             // optimised
-            PathCompiler.MAX_LENGTH_PATH_FOR_REDUCTION = 3;
+            SparqlLimits.MAX_LENGTH_PATH_FOR_REDUCTION = 3;
             Op op1 = path("?x", ":p{5}", ":T1");
             testAlgebraTransform(op1, null);
         } finally {
-            PathCompiler.MAX_LENGTH_PATH_FOR_REDUCTION = PathCompiler.DEFAULT_MAX_LENGTH;
+            SparqlLimits.MAX_LENGTH_PATH_FOR_REDUCTION = SparqlLimits.DEFAULT_MAX_PATH_REDUCTION_LENGTH;
         }
     }
 

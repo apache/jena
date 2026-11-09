@@ -32,13 +32,13 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.QueryBuildException;
 import org.apache.jena.rdf.model.impl.Util ;
+import org.apache.jena.sparql.SparqlLimits;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
 import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
-import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.RegexEngine;
 import org.apache.jena.sparql.pfunction.PFuncSimpleAndList ;
 import org.apache.jena.sparql.pfunction.PropFuncArg ;
@@ -77,7 +77,7 @@ public class strSplit extends PFuncSimpleAndList
 
         // StrUtils will also trim whitespace
         List<String> tokens;
-        if (RegexEngine.MAX_REGEX_EVALUATION_TIME > 0) {
+        if (SparqlLimits.MAX_REGEX_EVALUATION_TIME > 0) {
             Pattern pattern = Pattern.compile(regex);
             tokens = Arrays.stream(pattern.split(RegexEngine.timeBounded(s), 0))
                            .map(String::trim)

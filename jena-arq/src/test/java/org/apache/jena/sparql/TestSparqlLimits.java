@@ -19,10 +19,9 @@
  *   SPDX-License-Identifier: Apache-2.0
  */
 
-package org.apache.jena.sparql.function.library;
+package org.apache.jena.sparql;
 
 import org.apache.jena.sparql.expr.ExprEvalException;
-import org.apache.jena.sparql.function.MathLimits;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -32,7 +31,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class TestMathLimits {
+public class TestSparqlLimits {
 
     public static Stream<Arguments> bigIntegerExponents() {
         return Stream.of(Arguments.of(BigInteger.valueOf(2), BigInteger.valueOf(16), true),
@@ -45,9 +44,9 @@ public class TestMathLimits {
     @MethodSource("bigIntegerExponents")
     public void givenBigIntegers_whenPreValidatingExponent_thenAsExpected(BigInteger a, BigInteger b, boolean valid) {
         if (valid) {
-            MathLimits.preValidateExponentCalculation(a, b);
+            SparqlLimits.preValidateExponentCalculation(a, b);
         } else {
-            assertThrows(ExprEvalException.class, () -> MathLimits.preValidateExponentCalculation(a, b));
+            assertThrows(ExprEvalException.class, () -> SparqlLimits.preValidateExponentCalculation(a, b));
         }
     }
 
@@ -61,9 +60,9 @@ public class TestMathLimits {
     @MethodSource("factorials")
     public void givenFactorialInputs_whenPreValidating_thenAsExpected(BigInteger n, boolean valid) {
         if (valid) {
-            MathLimits.preValidateFactorial(n);
+            SparqlLimits.preValidateFactorial(n);
         } else {
-            assertThrows(ExprEvalException.class, () -> MathLimits.preValidateFactorial(n));
+            assertThrows(ExprEvalException.class, () -> SparqlLimits.preValidateFactorial(n));
         }
     }
 }
