@@ -21,6 +21,7 @@
 
 package org.apache.jena.sparql.function.library;
 
+import org.apache.jena.sparql.TestSparqlLimits;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.platform.suite.api.SelectClasses;
@@ -38,7 +39,6 @@ import org.apache.jena.sparql.expr.NodeValue;
     , TestFnFunctionsOther.class
     , TestFnFunctionsFormat.class
     , TestFnFunctionsCollation.class
-    , TestMathLimits.class
 })
 public class TS_LibraryFunctions {
     // Expected warnings off.

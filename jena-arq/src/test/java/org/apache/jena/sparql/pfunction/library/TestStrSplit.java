@@ -28,8 +28,8 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
 import org.apache.jena.query.*;
+import org.apache.jena.sparql.SparqlLimits;
 import org.apache.jena.sparql.expr.ExprEvalException;
-import org.apache.jena.sparql.expr.RegexEngine;
 import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Node;
@@ -130,10 +130,10 @@ public class TestStrSplit {
 
     @ParameterizedTest(name = "{1}")
     @MethodSource("slowSplits")
-    public void givenSlowRegex_whenSplittingWithTimeLimit_thenFails(String data, String pattern, int expectedResultCount) {
-        long existingLimit = RegexEngine.MAX_REGEX_EVALUATION_TIME;
+    public void slowRegexWithTimeLimitShouldFail(String data, String pattern, int expectedResultCount) {
+        long existingLimit = SparqlLimits.MAX_REGEX_EVALUATION_TIME;
         try {
-            RegexEngine.MAX_REGEX_EVALUATION_TIME = 1;
+            SparqlLimits.MAX_REGEX_EVALUATION_TIME = 1;
             query("SELECT ?x WHERE { ?x apf:strSplit ('" + data + "' '" + pattern + "') }");
             long start = System.currentTimeMillis();
             ExprEvalException e = assertThrows(ExprEvalException.class, () -> qe.execSelect().hasNext());
@@ -141,23 +141,23 @@ public class TestStrSplit {
             assertTrue(elapsed <= 250, "Elapsed time was " + elapsed);
             assertTrue(Strings.CI.contains(e.getMessage(), "time limit exceeded"));
         } finally {
-            RegexEngine.MAX_REGEX_EVALUATION_TIME = existingLimit;
+            SparqlLimits.MAX_REGEX_EVALUATION_TIME = existingLimit;
         }
     }
 
     @ParameterizedTest(name = "{1}")
     @MethodSource("slowSplits")
-    public void givenSlowRegex_whenSplittingWithNoTimeLimit_thenEventuallySucceeds(String data, String pattern, int expectedResultCount) {
-        long existingLimit = RegexEngine.MAX_REGEX_EVALUATION_TIME;
+    public void slowRegexWithDisabledTimeLimitEventuallySucceeds(String data, String pattern, int expectedResultCount) {
+        long existingLimit = SparqlLimits.MAX_REGEX_EVALUATION_TIME;
         try {
             // Given
             query("SELECT ?x WHERE { ?x apf:strSplit ('" + data + "' '" + pattern + "') }");
 
             // When and Then
-            RegexEngine.MAX_REGEX_EVALUATION_TIME = -1;
+            SparqlLimits.MAX_REGEX_EVALUATION_TIME = -1;
             assertEquals(expectedResultCount, ResultSetFormatter.consume(qe.execSelect()));
         } finally {
-            RegexEngine.MAX_REGEX_EVALUATION_TIME = existingLimit;
+            SparqlLimits.MAX_REGEX_EVALUATION_TIME = existingLimit;
         }
     }
 

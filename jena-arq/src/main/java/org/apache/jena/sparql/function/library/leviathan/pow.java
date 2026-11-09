@@ -25,7 +25,7 @@ import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
 import org.apache.jena.sparql.function.FunctionBase2;
-import org.apache.jena.sparql.function.MathLimits;
+import org.apache.jena.sparql.SparqlLimits;
 import org.apache.jena.sparql.function.library.Math_pow;
 
 public class pow extends FunctionBase2 {
@@ -38,7 +38,7 @@ public class pow extends FunctionBase2 {
         {
             case OP_DECIMAL:
                 double dec = v1.getDecimal().doubleValue();
-                MathLimits.preValidateExponentCalculation(dec, v2.getDouble());
+                SparqlLimits.preValidateExponentCalculation(dec, v2.getDouble());
                 return NodeValue.makeDecimal( Math.pow(dec, v2.getDouble()));
             case OP_INTEGER:
             case OP_FLOAT:
