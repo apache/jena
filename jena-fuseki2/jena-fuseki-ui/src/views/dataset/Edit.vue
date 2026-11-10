@@ -36,7 +36,7 @@
                 <div class="col-sm-12 col-md-4">
                   <div class="mb-2">
                     <button
-                      :disabled="loadingGraphs"
+                      :disabled="loadingGraphs || services === null"
                       @click="listCurrentGraphs()"
                       type="button"
                       class="btn btn-primary"
