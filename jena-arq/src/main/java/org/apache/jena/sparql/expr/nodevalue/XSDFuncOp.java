@@ -1119,10 +1119,21 @@ public class XSDFuncOp
                 return nv1.getInteger().compareTo(nv2.getInteger());
             case OP_DECIMAL :
                 return nv1.getDecimal().compareTo(nv2.getDecimal());
-            case OP_FLOAT :
-                return Float.compare(nv1.getFloat(), nv2.getFloat());
-            case OP_DOUBLE :
-                return Double.compare(nv1.getDouble(), nv2.getDouble());
+            case OP_FLOAT : {
+                float x = nv1.getFloat();
+                float y = nv2.getFloat();
+                // Positive and negative zero have the same numeric value.
+                if ( x == y )
+                    return Expr.CMP_EQUAL;
+                return Float.compare(x, y);
+            }
+            case OP_DOUBLE : {
+                double x = nv1.getDouble();
+                double y = nv2.getDouble();
+                if ( x == y )
+                    return Expr.CMP_EQUAL;
+                return Double.compare(x, y);
+            }
             default :
                 throw new ARQInternalErrorException("Unrecognized numeric operation : (" + nv1 + " ," + nv2 + ")");
         }
