@@ -16,8 +16,9 @@ jobs:
       matrix:
         os: [windows-latest]
 
-    # "windows" takes up a lot of diskspace due a longstanding JDK issue
-    # Running on c: seems to work.
+    defaults:
+      run:
+        shell: bash
     steps:
     - uses: actions/checkout@v7
 
@@ -27,9 +28,5 @@ jobs:
         distribution: 'temurin'
         java-version: '21'
 
-    - name: copy checked out dir to /c/jena for windows-latest
-      run: bash -c "cp -r /d/a/jena/jena /c/jena"
-
-    - name: Build with Maven for windows-latest
-      run: bash -c "mvn -B --file pom.xml -Dmaven.javadoc.skip=true install"
-      working-directory: c:\jena
+    - name: Build with Maven
+      run: mvn -B --file pom.xml -Dmaven.javadoc.skip=true install
