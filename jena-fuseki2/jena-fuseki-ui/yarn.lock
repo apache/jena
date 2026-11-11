@@ -2770,40 +2770,40 @@ __metadata:
   linkType: hard
 
 "@vitest/coverage-v8@npm:^5.0.1":
-  version: 5.0.5
-  resolution: "@vitest/coverage-v8@npm:5.0.5"
+  version: 5.1.0
+  resolution: "@vitest/coverage-v8@npm:5.1.0"
   dependencies:
     "@bcoe/v8-coverage": "npm:^1.0.2"
-    "@vitest/istanbul-lib-coverage": "npm:^1.0.2"
-    "@vitest/istanbul-lib-report": "npm:^1.0.2"
+    "@vitest/istanbul-lib-coverage": "npm:^2.1.0"
+    "@vitest/istanbul-lib-report": "npm:^2.1.0"
     ast-v8-to-istanbul: "npm:^1.0.7"
     magicast: "npm:^0.5.5"
     obug: "npm:^3.0.0"
     std-env: "npm:^4.3.0"
     tinyrainbow: "npm:^3.2.0"
   peerDependencies:
-    "@vitest/browser": 5.0.5
-    vitest: 5.0.5
+    "@vitest/browser": 5.1.0
+    vitest: 5.1.0
   peerDependenciesMeta:
     "@vitest/browser":
       optional: true
-  checksum: 10c0/cb4b32ddcc0a90229b95b182cdc846bbba44a5c47fa954cf016b591595dbe534f35d6a522be4e287e57bd63a11c82c7b6b0df6bcf539721ab9634f92f745d2eb
+  checksum: 10c0/dc6f680a9bed5dca4eb64259b7195db77cedf8c01fc47e47529c9590a9d6ab3b0165ea60ca663b2dd7a44bcd5b4d1e01fd3285f2efab3f2697b3d4823a5527a7
   languageName: node
   linkType: hard
 
-"@vitest/istanbul-lib-coverage@npm:1.0.2, @vitest/istanbul-lib-coverage@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "@vitest/istanbul-lib-coverage@npm:1.0.2"
-  checksum: 10c0/c839315f8c54fb1eb7d51c61cd908f78c2909bbd17ee0d3d8824764f7eed2785471c40ab29f065eee18b577b8275ece8d4100f0ca6c7a05a39a4128683c57292
+"@vitest/istanbul-lib-coverage@npm:2.1.0, @vitest/istanbul-lib-coverage@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@vitest/istanbul-lib-coverage@npm:2.1.0"
+  checksum: 10c0/5ee41ea52c9ef724f3f4a7f40a3bd5d5aaf7743103ffc72b15ff0a77fe74fc0badc31ba16611a5a21a12fd2749a059145822d317fd3e9e32c4b1eb2356d304fb
   languageName: node
   linkType: hard
 
-"@vitest/istanbul-lib-report@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "@vitest/istanbul-lib-report@npm:1.0.2"
+"@vitest/istanbul-lib-report@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@vitest/istanbul-lib-report@npm:2.1.0"
   dependencies:
-    "@vitest/istanbul-lib-coverage": "npm:1.0.2"
-  checksum: 10c0/9b0b3c898448dfe99a51a51238fd564efb1efdfd3dc46570ad6b51a592c9f26811de7be6d07756782d4d0ee71d2431b0592c63be0921f7776bf213a22d87f4d3
+    "@vitest/istanbul-lib-coverage": "npm:2.1.0"
+  checksum: 10c0/83be0a6b13753acb256cf87da89af597d6d610ed5e06df5ee45d1b577c5dddcf6d240a118183bf698f0c399c13e9b3d4ddb5bf9c0909e6284a8b0262c2c3fa81
   languageName: node
   linkType: hard
 
