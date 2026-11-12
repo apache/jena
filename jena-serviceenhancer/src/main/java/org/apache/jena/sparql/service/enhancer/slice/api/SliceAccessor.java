@@ -53,7 +53,7 @@ public interface SliceAccessor<A>
      *
      * This method must be called after acquiring a read lock on the slice's metadata.
      *
-     * @param ranges The set of ranges which to protected from eviction
+     * @param ranges The set of ranges which to protect from eviction.
      */
      void addEvictionGuard(RangeSet<Long> ranges);
 
@@ -63,10 +63,9 @@ public interface SliceAccessor<A>
 
     /**
      * Set or update the claimed range - this will immediately request references to any pages providing the data for that range.
-     * Pages outside of that range are considered as no longer needed pages will immediately be released.
+     * Pages outside of that range will be immediately be released.
      *
      * This method prepares the pages which can be subsequently locked.
-     * Calling this method while the page range is locked ({@link #lock()}) raises an {@link IllegalStateException}.
      *
      * @param startOffset
      * @param endOffset
@@ -74,13 +73,11 @@ public interface SliceAccessor<A>
     void claimByOffsetRange(long startOffset, long endOffset);
 
     /**
-     * Lock the range for writing
-     */
-    void lock();
-
-    /**
-     * Put a sequence of items into the claimed range
-     * Attempts to put items outside of the claimed range raises an {@link IndexOutOfBoundsException}
+     * Put a sequence of data items into the claimed range.
+     * Any attempts to put items outside of the claimed range raises an {@link IndexOutOfBoundsException}.
+     *
+     * A write typically requires updating the slice metadata, so before calling this method,
+     * the slice itself should be write-locked using {@link #getSlice()} and {@link Slice#getReadWriteLock()}.
      *
      * The page range should be locked when calling this method.
      */
@@ -91,11 +88,6 @@ public interface SliceAccessor<A>
      * Only use this method after locking.
      */
     int unsafeRead(A tgt, int tgtOffset, long srcOffset, int length) throws IOException;
-
-    /**
-     * Unlock the range
-     */
-    void unlock();
 
     /**
      * Releases all currently held pages.
