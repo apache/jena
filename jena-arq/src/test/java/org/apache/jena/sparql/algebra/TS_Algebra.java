@@ -27,6 +27,7 @@ import org.junit.platform.suite.api.Suite;
 @Suite
 @SelectClasses({
     TestTable.class
+    , TestTableBuilder.class
     , TestAlgebraTranslate.class
     , TestClassify.class
     , TestNodeTransform.class

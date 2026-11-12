@@ -37,6 +37,7 @@ import org.junit.platform.suite.api.Suite;
     , TestG_Classes.class
 
     , TestGCopy.class
+    , TestGList.class
 
     , TestTxn.class
     , TestThreadAction.class

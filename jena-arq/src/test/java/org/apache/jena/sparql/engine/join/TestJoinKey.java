@@ -33,6 +33,7 @@ import org.apache.jena.sparql.core.Var;
 
 public class TestJoinKey {
 
+    @Test
     public void testEmptyKey() {
         assertEquals(JoinKey.create(), JoinKey.empty());
         assertTrue(JoinKey.create() == JoinKey.empty());
