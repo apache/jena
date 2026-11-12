@@ -254,10 +254,12 @@ public class TestExpressions2
     @Test public void xsd_cast_03()             { eval("sameTerm(xsd:double('1.0e0'),1.0e0)", true); }
     @Test public void xsd_cast_04()             { eval("xsd:double('1') = 1", true); }
 
-    @Test public void xsd_cast_10()             { assertThrows(ExprEvalException.class, ()-> eval("xsd:integer(' 1')") ); }
-    @Test public void xsd_cast_11()             { assertThrows(ExprEvalException.class, ()-> eval("xsd:boolean(' 1')") ); }
-    @Test public void xsd_cast_12()             { assertThrows(ExprEvalException.class, ()-> eval("xsd:double(' 1.0e0')") ); }
-    @Test public void xsd_cast_13()             { assertThrows(ExprEvalException.class, ()-> eval("xsd:double(' 1.0e0')") ); }
+    // Leading and trailing whitespace is removed (whitespace facet "collapse").
+    @Test public void xsd_cast_10()             { eval("xsd:integer(' 1') = 1", true); }
+    @Test public void xsd_cast_11()             { eval("xsd:boolean(' 1') = true", true); }
+    @Test public void xsd_cast_12()             { eval("sameTerm(xsd:double(' 1.0e0'), 1.0e0)", true); }
+    @Test public void xsd_cast_13()             { eval("sameTerm(xsd:integer(' 1 '), 1)", true); }
+    @Test public void xsd_cast_14()             { assertThrows(ExprEvalException.class, ()-> eval("xsd:integer('1 2')") ); }
 
     @Test public void string_codepoint_order_01() {
         String bmp = Character.toString(0xFFE0);
