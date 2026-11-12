@@ -1,0 +1,4 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+# GH-4242: DISTINCT must hold when ORDER BY is on a non-injective expression.
+SELECT DISTINCT ?v WHERE { ?s <urn:p> ?v . ?s <urn:q> ?tag . } ORDER BY STRLEN(?v) ?tag
