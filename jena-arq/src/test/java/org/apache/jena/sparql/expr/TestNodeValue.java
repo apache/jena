@@ -1200,6 +1200,7 @@ public class TestNodeValue
         assertEquals(Expr.CMP_GREATER, NodeValue.compareAlways(nv1, nv2));
     }
 
+    @Test
     public void testLangCompareAlways3() {
         // @FR after @en. => "'abc'@en" < "'abc'@FR" => -1
         NodeValue nv1 = parse("'abc'@en");

@@ -37,6 +37,10 @@ import org.junit.platform.suite.api.Suite;
     , TestHashLeftJoin_Left.class           // Left hash, stream right
     , TestHashLeftJoin_Right.class          // Normal implementation.
     , TestTableJoin.class
+
+    , TestJoinKey.class
+    , TestBitSetMapper.class
+    , TestMultiHashProbeTable.class
 })
 
 public class TS_Join { }
