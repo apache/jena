@@ -21,7 +21,10 @@
 
 package org.apache.jena.rdfs.engine;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+import java.util.function.Function;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.rdfs.setup.ConfigRDFS;
@@ -63,5 +66,46 @@ public class CxtInf<X,T> {
 
     protected boolean isTerm(X x) {
         return !isANY(x);
+    }
+
+    // A triple using a property also uses each of its super-properties
+    // (rdfs:subPropertyOf), so the domains and ranges of the super-properties
+    // apply to it as well.
+
+    /** The domains of a property and of its super-properties. */
+    protected Set<X> getDomainInc(X property) {
+        return withSuperProperties(property, setup::getDomain);
+    }
+
+    /** The ranges of a property and of its super-properties. */
+    protected Set<X> getRangeInc(X property) {
+        return withSuperProperties(property, setup::getRange);
+    }
+
+    /** The properties with a given domain, and their sub-properties. */
+    protected Set<X> getPropertiesByDomainInc(X type) {
+        return withSubProperties(setup.getPropertiesByDomain(type));
+    }
+
+    /** The properties with a given range, and their sub-properties. */
+    protected Set<X> getPropertiesByRangeInc(X type) {
+        return withSubProperties(setup.getPropertiesByRange(type));
+    }
+
+    private Set<X> withSuperProperties(X property, Function<X, Set<X>> lookup) {
+        Set<X> superProperties = setup.getSuperProperties(property);
+        if ( superProperties.isEmpty() )
+            return lookup.apply(property);
+        Set<X> acc = new HashSet<>(lookup.apply(property));
+        superProperties.forEach(p -> acc.addAll(lookup.apply(p)));
+        return acc;
+    }
+
+    private Set<X> withSubProperties(Set<X> properties) {
+        if ( properties.isEmpty() || ! setup.hasPropertyDeclarations() )
+            return properties;
+        Set<X> acc = new HashSet<>(properties);
+        properties.forEach(p -> acc.addAll(setup.getSubProperties(p)));
+        return acc;
     }
 }
