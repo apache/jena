@@ -21,24 +21,27 @@
 
 package org.apache.jena.sparql.pfunction.library;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
+import org.apache.jena.query.*;
+import org.apache.jena.sparql.SparqlLimits;
+import org.apache.jena.sparql.expr.ExprEvalException;
 import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.query.QueryBuildException;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.sparql.core.Var;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestStrSplit {
 	private final static String prologue =
@@ -120,6 +123,43 @@ public class TestStrSplit {
 		query("ASK { 'zzz' apf:strSplit ('foo;bar' ';') }");
 		assertAsk(false);
 	}
+
+    public static Stream<Arguments> slowSplits() {
+        return Stream.of(Arguments.of(StringUtils.repeat("abc,", 1_000_000), ",", 1_000_000));
+    }
+
+    @ParameterizedTest(name = "{1}")
+    @MethodSource("slowSplits")
+    public void slowRegexWithTimeLimitShouldFail(String data, String pattern, int expectedResultCount) {
+        long existingLimit = SparqlLimits.MAX_REGEX_EVALUATION_TIME;
+        try {
+            SparqlLimits.MAX_REGEX_EVALUATION_TIME = 1;
+            query("SELECT ?x WHERE { ?x apf:strSplit ('" + data + "' '" + pattern + "') }");
+            long start = System.currentTimeMillis();
+            ExprEvalException e = assertThrows(ExprEvalException.class, () -> qe.execSelect().hasNext());
+            long elapsed = System.currentTimeMillis() - start;
+            assertTrue(elapsed <= 250, "Elapsed time was " + elapsed);
+            assertTrue(Strings.CI.contains(e.getMessage(), "time limit exceeded"));
+        } finally {
+            SparqlLimits.MAX_REGEX_EVALUATION_TIME = existingLimit;
+        }
+    }
+
+    @ParameterizedTest(name = "{1}")
+    @MethodSource("slowSplits")
+    public void slowRegexWithDisabledTimeLimitEventuallySucceeds(String data, String pattern, int expectedResultCount) {
+        long existingLimit = SparqlLimits.MAX_REGEX_EVALUATION_TIME;
+        try {
+            // Given
+            query("SELECT ?x WHERE { ?x apf:strSplit ('" + data + "' '" + pattern + "') }");
+
+            // When and Then
+            SparqlLimits.MAX_REGEX_EVALUATION_TIME = -1;
+            assertEquals(expectedResultCount, ResultSetFormatter.consume(qe.execSelect()));
+        } finally {
+            SparqlLimits.MAX_REGEX_EVALUATION_TIME = existingLimit;
+        }
+    }
 
 	private void assertQueryBuildException(String selectQueryString) {
 		try {

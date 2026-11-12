@@ -27,7 +27,7 @@ import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
 import org.apache.jena.sparql.function.FunctionBase2;
-import org.apache.jena.sparql.function.MathLimits;
+import org.apache.jena.sparql.SparqlLimits;
 
 // math:pow($x as xs:double?, $y as xs:numeric) as xs:double?
 //    except pow(integer,+ve integer) is an integer 
@@ -40,7 +40,7 @@ public class Math_pow extends FunctionBase2 {
                 BigInteger x = v1.getInteger();
                 int y = v2.getInteger().intValue();
                 if (y >= 0) {
-                    MathLimits.preValidateExponentCalculation(x, v2.getInteger());
+                    SparqlLimits.preValidateExponentCalculation(x, v2.getInteger());
                     return NodeValue.makeInteger(x.pow(y));
                 }
                 // Anything else -> double
@@ -77,7 +77,7 @@ public class Math_pow extends FunctionBase2 {
 
                 // If we get this far pre-validate that calculating the power won't require too many digits and if not
                 // actually calculate
-                MathLimits.preValidateExponentCalculation(d1, d2);
+                SparqlLimits.preValidateExponentCalculation(d1, d2);
                 return NodeValue.makeDouble(Math.pow(v1.getDouble(), v2.getDouble()));
             default:
                 throw new ARQInternalErrorException("Unrecognized numeric operation : " + v1);

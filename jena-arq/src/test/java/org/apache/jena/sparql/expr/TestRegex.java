@@ -27,10 +27,13 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.apache.jena.sparql.SparqlLimits;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -41,6 +44,13 @@ import org.apache.jena.sparql.engine.binding.BindingFactory;
 @MethodSource("provideArgs")
 public class TestRegex
 {
+
+    /**
+     * Example data used for some early catastrophic backtracking testing, unfortunately this example exhibited very
+     * different runtime characteristics on the different regex engines making it unusable as a reliable test case
+     */
+    @SuppressWarnings("unused")
+    protected static final String ALPHABET_CSV = "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,z,";
 
     private static Stream<Arguments> provideArgs() {
          List<Arguments> x = List.of(
@@ -115,5 +125,45 @@ public class TestRegex
         assertThrows(ExprEvalException.class, ()->
             regexTest("ABC", "abc", "u", false)
                 );
+    }
+
+
+    public static Stream<Arguments> backtrackingRegex() {
+        return Stream.of(
+                        // While this is a nice example it behaves very different using Java vs Xerces regex so isn't
+                        // a stable test
+                        /*Arguments.of(ALPHABET_CSV, "^(.*?,){11}P", "m", false),*/
+                        Arguments.of(Strings.repeat("a", 4096) + "!", "(a+)+$", "m", false),
+                        Arguments.of(Strings.repeat("a", 32 * 1024) + "!", "(a+)+$", "m", false)
+                );
+    }
+
+    @ParameterizedTest(name = "{1}")
+    @MethodSource("backtrackingRegex")
+    public void backtrackingRegexWithTimeLimitDisabledEventuallyCompletes(String input, String pattern, String flags, boolean shouldMatch) {
+        // Given, When and Then
+        long existingMax = SparqlLimits.MAX_REGEX_EVALUATION_TIME;
+        try {
+            SparqlLimits.MAX_REGEX_EVALUATION_TIME = -1;
+            regexTest(input, pattern, flags, shouldMatch);
+        } finally {
+            SparqlLimits.MAX_REGEX_EVALUATION_TIME = existingMax;
+        }
+    }
+
+    @ParameterizedTest(name = "{1}")
+    @MethodSource("backtrackingRegex")
+    public void backtrackingRegexWithTimeLimitFails(String input, String pattern, String flags, boolean shouldMatch) {
+        // Given, When and Then
+        long existingMax = SparqlLimits.MAX_REGEX_EVALUATION_TIME;
+        try {
+            // Intentionally minimal evaluation time so should fail near immediately, while we could set a more
+            // realistic limit for the test the reality is that the different regex engines evaluate at different speed
+            // so it's hard to pick a limit that reliably fails other than a trivially small one
+            SparqlLimits.MAX_REGEX_EVALUATION_TIME = 1;
+            assertThrows(ExprEvalException.class, () -> regexTest(input, pattern, flags, shouldMatch));
+        } finally {
+            SparqlLimits.MAX_REGEX_EVALUATION_TIME = existingMax;
+        }
     }
 }
