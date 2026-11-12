@@ -31,11 +31,11 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.query.QueryExecException;
 import org.apache.jena.query.SortCondition;
-import org.apache.jena.sparql.ARQNotImplemented;
 import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.OpVars;
 import org.apache.jena.sparql.algebra.op.*;
 import org.apache.jena.sparql.core.BasicPattern;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
@@ -48,6 +48,7 @@ import org.apache.jena.sparql.engine.main.iterator.QueryIterOptionalIndex;
 import org.apache.jena.sparql.engine.main.iterator.QueryIterUnion;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.graph.GraphOps;
 import org.apache.jena.sparql.procedure.ProcEval;
 import org.apache.jena.sparql.procedure.Procedure;
 import org.apache.jena.sparql.service.ServiceExec;
@@ -322,14 +323,31 @@ public class OpExecutor {
         return ServiceExec.exec(opService, input, execCxt);
     }
 
-    // Quad form, "GRAPH ?g {}" Flip back to OpGraph.
-    // Normally quad stores override this.
+    /**
+     * Evaluate {@link OpDatasetNames} (quad form of {@code GRAPH ?g {}} or {@code GRAPH <iri> {}})
+     * against the active dataset in {@link #execCxt}.
+     */
     protected QueryIterator execute(OpDatasetNames dsNames, QueryIterator input) {
-        if ( false ) {
-            OpGraph op = new OpGraph(dsNames.getGraphNode(), new OpBGP());
-            return execute(op, input);
+        DatasetGraph ds = execCxt.getDataset();
+        Node graphNode = dsNames.getGraphNode();
+        if ( !Var.isVar(graphNode) ) {
+            if ( (graphNode.isURI() || graphNode.isBlank()) && GraphOps.containsGraph(ds, graphNode) )
+                return input;
+            input.close();
+            return QueryIterNullIterator.create(execCxt);
         }
-        throw new ARQNotImplemented("execute/OpDatasetNames");
+        Var var = Var.alloc(graphNode);
+        return new QueryIterRepeatApply(input, execCxt) {
+            @Override
+            protected QueryIterator nextStage(Binding binding) {
+                Node gn = Var.lookup(binding, var);
+                if ( Var.isVar(gn) )
+                    return new QueryIterExtendByVar(binding, var, ds.listGraphNodes(), getExecContext());
+                if ( (gn.isURI() || gn.isBlank()) && GraphOps.containsGraph(ds, gn) )
+                    return QueryIterSingleton.create(binding, getExecContext());
+                return QueryIterNullIterator.create(getExecContext());
+            }
+        };
     }
 
     protected QueryIterator execute(OpTable opTable, QueryIterator input) {

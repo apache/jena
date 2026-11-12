@@ -50,6 +50,7 @@ import org.apache.jena.sparql.mgt.Explain;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
 import org.apache.jena.tdb2.store.GraphTDB;
 import org.apache.jena.tdb2.store.NodeId;
+import org.apache.jena.tdb2.sys.TDBInternal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -324,9 +325,16 @@ public class OpExecutorTDB2 extends OpExecutor
         return false;
     }
 
+    /**
+     * Evaluate {@link OpDatasetNames} against the underlying {@link DatasetGraphTDB},
+     * or delegate to {@link OpExecutor#execute(OpDatasetNames, QueryIterator)} when
+     * the execution dataset is a non-TDB wrapper or view.
+     */
     @Override
     protected QueryIterator execute(OpDatasetNames dsNames, QueryIterator input) {
-        DatasetGraphTDB ds = (DatasetGraphTDB)execCxt.getDataset();
+        DatasetGraphTDB ds = TDBInternal.getDatasetGraphTDB(execCxt.getDataset());
+        if ( ds == null )
+            return super.execute(dsNames, input);
         Predicate<Tuple<NodeId>> filter = QC2.getFilter(execCxt.getContext());
         Node gn = dsNames.getGraphNode();
         if ( Var.isVar(gn) )
