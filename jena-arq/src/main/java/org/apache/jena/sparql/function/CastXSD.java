@@ -432,10 +432,7 @@ public class CastXSD {
     // Cast by lexical form with checking.
     private static NodeValue castByLex(String lex, XSDDatatype castType) {
         if ( isWhitespaceCollapsed(castType) )
-            // These datatypes have the whitespace facet "collapse" so leading
-            // and trailing XML whitespace is not part of the value.
-            // https://www.w3.org/TR/xpath-functions/#casting-from-strings
-            // Remove it so the result has a clean lexical form.
+            // Remove empty white space around values
             lex = trimXMLWhitespace(lex);
         if ( ! castType.isValid(lex) )
             throw exception("Invalid lexical form: '"+lex+"' for "+castType.getURI());
