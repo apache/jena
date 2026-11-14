@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.sparql.expr.NodeValue;
 
 /**
@@ -199,7 +200,8 @@ public class SPARQLDispatch {
         register(map, "contains", SPARQLFuncOp::sparql_contains);
         register(map, "datatype", SPARQLFuncOp::sparql_datatype);
 
-        register(map, "encode", SPARQLFuncOp::sparql_encode);
+        register(map, "encode", deprecated(SPARQLFuncOp::sparql_encode, "Use 'sparql:encode-for-uri'"));
+        register(map, "encode-for-uri", SPARQLFuncOp::sparql_encode);
         register(map, "floor", SPARQLFuncOp::sparql_floor);
         register(map, "haslang", SPARQLFuncOp::sparql_haslang);
         register(map, "haslangdir", SPARQLFuncOp::sparql_haslangdir);
@@ -270,6 +272,14 @@ public class SPARQLDispatch {
 
         return Map.copyOf(map);
      }
+
+    // Log deprecation notice.
+    private static Function1 deprecated(Function1 object, String deprecatedMsg) {
+        return (NodeValue nv) -> {
+            Log.warnOnce(SPARQLDispatch.class, deprecatedMsg, object);
+            return object.exec(nv);
+        };
+    }
 
     interface Call { NodeValue exec(NodeValue... nv); }
     interface Function0 { NodeValue exec(); }
