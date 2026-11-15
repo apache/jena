@@ -45,12 +45,11 @@ import org.apache.jena.sparql.engine.binding.BindingFactory;
 public class TestRegex
 {
 
-    /**
+    /*
      * Example data used for some early catastrophic backtracking testing, unfortunately this example exhibited very
      * different runtime characteristics on the different regex engines making it unusable as a reliable test case
      */
-    @SuppressWarnings("unused")
-    protected static final String ALPHABET_CSV = "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,z,";
+    //protected static final String ALPHABET_CSV = "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,z,";
 
     private static Stream<Arguments> provideArgs() {
          List<Arguments> x = List.of(
