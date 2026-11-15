@@ -63,6 +63,7 @@ import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.expr.*;
 import org.apache.jena.sparql.util.DateTimeStruct;
 import org.apache.jena.sparql.util.XSDNumUtils;
+
 /**
  * Implementation of XQuery/XPath functions and operators.
  * http://www.w3.org/TR/xpath-functions/
@@ -662,11 +663,10 @@ public class XSDFuncOp
     // Java:  ("", ".*", "x") --> "x" and ("notEmpty", ".*", "x") --> "xx"
     // F&O: [err:FORX0003] (in F&O, a global error; SPARQL does not have global execution errors)
     // http://www.w3.org/TR/xpath-functions/#func-replace
-    // ARQ
 
-    private static String replaceAll(Matcher matcher, String rep) {
+    private static String replaceAll(Matcher matcher, String replacement) {
+        StringBuilder sb = null;
         try {
-            StringBuilder sb = null;   // Delay until needed
             while(matcher.find()) {
                 if ( sb == null )
                     sb = new StringBuilder();
@@ -675,7 +675,11 @@ public class XSDFuncOp
                     if (matcher.start() == matcher.end() )
                         continue;
                 }
-                matcher.appendReplacement(sb, rep);
+                try {
+                    matcher.appendReplacement(sb, replacement);
+                } catch (IllegalArgumentException ex) {
+                    throw new ExprEvalException("Bad replacement: '"+replacement+"'");
+                }
             }
             if ( sb == null )
                 return null;
