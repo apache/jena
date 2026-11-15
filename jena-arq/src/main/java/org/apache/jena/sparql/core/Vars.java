@@ -27,9 +27,9 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.util.VarUtils;
 
-/** 
+/**
  * Useful operations involving Var
- * @deprecated use {@link VarUtils}. 
+ * @deprecated use {@link VarUtils}.
  */
 @Deprecated(forRemoval = true)
 public class Vars {
@@ -45,6 +45,5 @@ public class Vars {
     public static void addVar(Collection<Var> acc, Node n) {
         VarUtils.addVar(acc, n);
     }
-
 }
 
