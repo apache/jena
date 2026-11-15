@@ -21,7 +21,6 @@
 
 package org.apache.jena.sparql.function.library;
 
-import org.apache.jena.sparql.TestSparqlLimits;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.platform.suite.api.SelectClasses;

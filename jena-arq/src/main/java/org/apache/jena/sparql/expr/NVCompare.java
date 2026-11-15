@@ -58,8 +58,6 @@ class NVCompare {
         if ( nv1 == null || nv2 == null )
             throw new ARQInternalErrorException("Attempt to sameValueAs on a null");
 
-        ValueSpace compType = NodeValue.classifyValueOp(nv1, nv2);
-
         if ( nv1.equals(nv2) ) {
             // Fast path - same RDF term => sameValue (except NaN).
             if ( nv1.getNode() != null && nv2.getNode() != null && nv1.getNode().equals(nv2.asNode()) )
@@ -68,7 +66,7 @@ class NVCompare {
 
         // Special case - date/dateTime comparison is affected by timezones and may
         // be indeterminate based on the value of the dateTime/date.
-
+        ValueSpace compType = NodeValue.classifyValueOp(nv1, nv2);
         switch (compType) {
             case VSPACE_NUM :
                 return XSDFuncOp.compareNumeric(nv1, nv2) == CMP_EQUAL;
