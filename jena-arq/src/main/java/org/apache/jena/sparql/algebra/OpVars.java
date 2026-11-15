@@ -21,7 +21,8 @@
 
 package org.apache.jena.sparql.algebra;
 
-import static org.apache.jena.sparql.core.Vars.addVar;
+import static org.apache.jena.sparql.util.VarUtils.addVar;
+import static org.apache.jena.sparql.util.VarUtils.addVars;
 
 import java.util.*;
 
@@ -244,7 +245,7 @@ public class OpVars
 
         @Override
         public void visit(OpBGP opBGP) {
-            VarUtils.addVars(acc, opBGP.getPattern());
+            addVars(acc, opBGP.getPattern());
         }
 
         @Override
@@ -256,12 +257,12 @@ public class OpVars
         @Override
         public void visit(OpQuadPattern quadPattern) {
             addVar(acc, quadPattern.getGraphNode());
-            VarUtils.addVars(acc, quadPattern.getBasicPattern());
+            addVars(acc, quadPattern.getBasicPattern());
         }
 
         @Override
         public void visit(OpQuadBlock quadBlock) {
-            VarUtils.addVars(acc, quadBlock.getPattern());
+            addVars(acc, quadBlock.getPattern());
         }
 
         @Override
