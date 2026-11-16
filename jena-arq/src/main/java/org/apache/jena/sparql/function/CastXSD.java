@@ -44,6 +44,7 @@ import org.apache.jena.sparql.expr.ExprException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
 import org.apache.jena.sparql.util.XSDNumUtils;
+import org.apache.jena.util.XML10Char;
 
 /**
  * Code for all casting between XSD datatypes.
@@ -433,7 +434,7 @@ public class CastXSD {
     private static NodeValue castByLex(String lex, XSDDatatype castType) {
         if ( isWhitespaceCollapsed(castType) )
             // Remove empty white space around values
-            lex = trimXMLWhitespace(lex);
+            lex = XML10Char.trim(lex);
         if ( ! castType.isValid(lex) )
             throw exception("Invalid lexical form: '"+lex+"' for "+castType.getURI());
         NodeValue nv2 = NodeValue.makeNode(lex, castType);
@@ -449,21 +450,6 @@ public class CastXSD {
                castType.equals(XSDDatatype.XSDdouble) ||
                castType.equals(XSDDatatype.XSDboolean) ||
                castType instanceof XSDAbstractDateTimeType;   // Includes durations, and Gregorian
-    }
-
-    private static boolean isXMLWhitespace(char ch) {
-        return ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r';
-    }
-
-    /** Remove leading and trailing XML whitespace (#x9, #xA, #xD, #x20). */
-    private static String trimXMLWhitespace(String lex) {
-        int start = 0;
-        int end = lex.length();
-        while ( start < end && isXMLWhitespace(lex.charAt(start)) )
-            start++;
-        while ( end > start && isXMLWhitespace(lex.charAt(end-1)) )
-            end--;
-        return lex.substring(start, end);
     }
 
     // Known to work casts.  No checking.
