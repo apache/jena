@@ -2201,18 +2201,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ldforge/core@npm:1.0.0, @ldforge/core@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@ldforge/core@npm:1.0.0"
+"@ldforge/core@npm:1.0.1, @ldforge/core@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@ldforge/core@npm:1.0.1"
   dependencies:
     n3: "npm:^2.13.12"
-  checksum: 10c0/b765b2f13bca6fad524b55c2828dbb27b32d991941d23e6ec7a06ab16775f9a498a19f053eae0b04b37b2085bead034763f43676d2834d846cc281147a35728f
+  checksum: 10c0/bfda3980e0c7abdf6abc96d55ccf74037d4220a0d533e0091a0c5cc6e8103fcef03719dc75f362869c44d08d4d3689edfe36e8cdd83ab06fb6d033800e4bc637
   languageName: node
   linkType: hard
 
-"@ldforge/editor@npm:1.1.0":
-  version: 1.1.0
-  resolution: "@ldforge/editor@npm:1.1.0"
+"@ldforge/editor@npm:1.2.1":
+  version: 1.2.1
+  resolution: "@ldforge/editor@npm:1.2.1"
   dependencies:
     "@codemirror/autocomplete": "npm:^6.20.4"
     "@codemirror/commands": "npm:^6.11.1"
@@ -2220,41 +2220,41 @@ __metadata:
     "@codemirror/lint": "npm:^6.9.8"
     "@codemirror/state": "npm:^6.7.6"
     "@codemirror/view": "npm:^6.43.15"
-    "@ldforge/core": "npm:^1.0.0"
-    "@ldforge/prefixes": "npm:^1.0.0"
+    "@ldforge/core": "npm:^1.0.1"
+    "@ldforge/prefixes": "npm:^1.0.1"
     "@lezer/common": "npm:^1.5.5"
     codemirror-lang-sparql: "npm:^2.1.0"
     sparql-formatter: "npm:^1.0.2"
-  checksum: 10c0/5668bad4e4af6a9cfe5b12ffd077b8394726464a746599df6c59ce6c78550d05cb8d9af1ed72b880fa8c14649c0b6b24ce339261a44439949941d235a8e527b8
+  checksum: 10c0/8b60db5b8cff33012db0be084a988febfafbd774d4b449a3e38641e2f1b20ea70a5a275b5bc908ce29acb1db05ea2b4c16691d26d300ef410b05e3e15523fae7
   languageName: node
   linkType: hard
 
-"@ldforge/geo@npm:1.0.0":
-  version: 1.0.0
-  resolution: "@ldforge/geo@npm:1.0.0"
+"@ldforge/geo@npm:1.1.1":
+  version: 1.1.1
+  resolution: "@ldforge/geo@npm:1.1.1"
   dependencies:
-    "@ldforge/core": "npm:^1.0.0"
-  checksum: 10c0/98bdddbcd3278fe7ad32e14de25bdc1b11b22f46d338ae09b66bf9f5d137dfde4c5e74e3a022504e69243805dbaf1afa581d0a8d090494140937ee4bd7f0e7cc
+    "@ldforge/core": "npm:^1.0.1"
+  checksum: 10c0/f6c54384aa89e18f57ca51d5ef9d87a10349252ba811c13df9d996a8ca1583bcc09c188d7eaeb1f59241158d6ae577d13a7f3e6629f1971a5cb0acfa81882f7c
   languageName: node
   linkType: hard
 
-"@ldforge/prefixes@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@ldforge/prefixes@npm:1.0.0"
-  checksum: 10c0/03f8aa0ba5f11ab8b46f1f9a5eb8298ab1bbed6a3584e074ca563fab10d5ce2a16bcd90ce2ca8beecc6b415ffbd3bf6942bd8bae13f032e939891175951449ce
+"@ldforge/prefixes@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@ldforge/prefixes@npm:1.0.1"
+  checksum: 10c0/eee467d377fb55bb858eddc6e185dfcbb06c6ba2fd02e0b4f1e72f07aebff9751577872c470d9d6098fd93963e2f8597d111a5054f521b5b600711101df7c499
   languageName: node
   linkType: hard
 
-"@ldforge/renderers@npm:1.0.0":
-  version: 1.0.0
-  resolution: "@ldforge/renderers@npm:1.0.0"
+"@ldforge/renderers@npm:1.1.1":
+  version: 1.1.1
+  resolution: "@ldforge/renderers@npm:1.1.1"
   dependencies:
     "@codemirror/lang-json": "npm:^6.0.2"
     "@codemirror/language": "npm:^6.13.1"
     "@codemirror/state": "npm:^6.7.6"
     "@codemirror/view": "npm:^6.43.15"
-    "@ldforge/core": "npm:^1.0.0"
-  checksum: 10c0/70aea903a4c7e3b805bd65d99f10ce3472e3177135e46651493e5c5b4dcc3430f02eee2981483b689733b1e09e6c8738efa4cf9b61c0c7e253847d8a2d4a8915
+    "@ldforge/core": "npm:^1.0.1"
+  checksum: 10c0/ce91dd8a1bc4e4ae5deab8554db375dab74788021e641c0b3d6a410b1b9d2b5047ade40ba98a5e38a58aa38623fcd50aefd633c3c3cb71f5cb59d4e6c54aa2c0
   languageName: node
   linkType: hard
 
@@ -3434,10 +3434,10 @@ __metadata:
     "@fortawesome/fontawesome-svg-core": "npm:^7.0.0"
     "@fortawesome/free-solid-svg-icons": "npm:^7.0.0"
     "@fortawesome/vue-fontawesome": "npm:^3.0.3"
-    "@ldforge/core": "npm:1.0.0"
-    "@ldforge/editor": "npm:1.1.0"
-    "@ldforge/geo": "npm:1.0.0"
-    "@ldforge/renderers": "npm:1.0.0"
+    "@ldforge/core": "npm:1.0.1"
+    "@ldforge/editor": "npm:1.2.1"
+    "@ldforge/geo": "npm:1.1.1"
+    "@ldforge/renderers": "npm:1.1.1"
     "@popperjs/core": "npm:^2.11.8"
     "@vitejs/plugin-vue": "npm:^6.0.0"
     "@vitest/coverage-v8": "npm:^5.0.1"
