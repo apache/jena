@@ -50,6 +50,7 @@ import org.apache.jena.tdb2.sys.SystemTDB;
     , TestTransactions.class
     , TestTransactionLifecycleTDB.class
     , TestTransPromoteTDB.class
+    , TestDatasetGraphSwitchable.class
     , TestQuadFilter.class
     , TestGraphView_Prefixes.class
 } )
