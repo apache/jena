@@ -51,8 +51,6 @@ export default defineConfig({
     alias: {
       "@": path.resolve(import.meta.dirname, "./src"),
       "~codemirror": "codemirror",
-      "~@triply/yasqe": "@triply/yasqe",
-      "~@triply/yasr": "@triply/yasr",
     },
   },
   build: {
@@ -70,7 +68,6 @@ export default defineConfig({
     server: {
       deps: {
         inline: [
-          /yasgui-geo-tg/,
           /leaflet/,
         ]
       }

@@ -16,7 +16,7 @@
  */
 
 /**
- * Tests the Query view and YASGUI & family components.
+ * Tests the Query view and embedded LDForge editor.
  */
 describe('Query', function() {
   beforeEach(function() {
@@ -85,32 +85,49 @@ describe('Query', function() {
 
   it('Can resize the query editor', function() {
     cy.visit('/#/dataset/skosmos/query')
-    // TODO: The .then(() => {}) is a bug/regression in Cypress 12 - https://github.com/cypress-io/cypress/issues/25173#issuecomment-1358017970
-    cy
-      .get('div.CodeMirror')
+    cy.get('.cm-content').invoke('text').as('queryBeforeResize', { type: 'static' })
+    cy.get('.cm-editor').should('be.visible').invoke('height').as('beforeHeight', { type: 'static' })
+    cy.get('[role="separator"][aria-label="Resize query editor"]')
+      .scrollIntoView()
       .should('be.visible')
-      .invoke('css', 'height')
-      .then(() => {})
-      .as('beforeHeight')
-    cy
-      .get('div.resizeChip')
-      .should('exist')
-      .trigger('mousedown', {
-        which: 1, force: true
+      .then($handle => {
+        // Synthetic Cypress pointer events cannot acquire native pointer capture.
+        // Dispatch the drag directly to the handle while exercising its real resize logic.
+        cy.stub($handle[0], 'setPointerCapture')
+        cy.wrap($handle)
+          .trigger('pointerdown', { eventConstructor: 'PointerEvent', pointerId: 1, button: 0, clientY: 100 })
+          .trigger('pointermove', { eventConstructor: 'PointerEvent', pointerId: 1, clientY: 220, force: true })
+          .trigger('pointerup', { eventConstructor: 'PointerEvent', pointerId: 1, clientY: 220, force: true })
       })
-      .trigger('mousemove', { which: 1, force: true, x: 0, y: 150 })
-      .trigger('mouseup', {
-        force: true
-      });
-    cy
-      .get('div.CodeMirror')
-      .invoke('css', 'height')
-      .then(() => {})
-      .as('afterHeight')
     cy.get('@beforeHeight').then(beforeHeight => {
-      cy.get('@afterHeight').then(afterHeight => {
-        expect(afterHeight).to.not.equal(beforeHeight)
-      })
+      cy.get('.cm-editor').invoke('height').should('be.greaterThan', beforeHeight + 80)
     })
+    cy.get('@queryBeforeResize').then(query => {
+      cy.get('.cm-content').invoke('text').should('equal', query)
+    })
+  })
+
+  it('Toggles prefix badges without accumulating blank lines', function() {
+    cy.visit('/#/dataset/skosmos/query')
+    cy.contains('button', 'Selection of triples').click()
+    cy.get('.cm-content').invoke('text').then(original => {
+      for (let i = 0; i < 3; i++) {
+        cy.contains('button.fuseki-prefix', /^rdf$/).click().should('have.attr', 'aria-pressed', 'true')
+        cy.get('.cm-content').should('contain.text', 'PREFIX rdf:')
+        cy.contains('button.fuseki-prefix', /^rdf$/).click().should('have.attr', 'aria-pressed', 'false')
+        cy.get('.cm-content').invoke('text').should('equal', original)
+      }
+    })
+    cy.contains('button', 'Selection of classes').click()
+    cy.contains('button.fuseki-prefix', /^owl$/).should('have.attr', 'aria-pressed', 'true')
+    cy.contains('button.fuseki-prefix', /^rdfs$/).should('have.attr', 'aria-pressed', 'true')
+  })
+
+  it('Renders query results with LDForge', function() {
+    cy.visit('/#/dataset/skosmos/query')
+    cy.get('#sparql-endpoint').should('have.value', '/skosmos/sparql')
+    cy.get('button[aria-label="Run query"]').click()
+    cy.get('.ldforge-results').should('contain.text', 'Semantic Web')
+    cy.get('button[aria-label="Download CSV"]').should('be.visible')
   })
 })

@@ -27,150 +27,53 @@
           <div class="card-body">
             <h3>SPARQL Query</h3>
             <p>To try out some SPARQL queries against the selected dataset, enter your query here.</p>
-            <div>
-              <div class="row">
-                <div class="col">
-                  <fieldset
-                    class="form-group"
-                  >
-                    <label
-                      tabindex="-1"
-                      class="col-form-label pt-0"
-                    >Example Queries</label>
-                    <div>
-                      <span
-                        v-for="query of queries"
-                        :key="query.text"
-                        @click="setQuery(query.value)"
-                        href="#"
-                        class="badge text-bg-info p-2 me-2"
-                      >{{ query.text }}</span>
-                    </div>
-                  </fieldset>
-                </div>
-                <div class="col">
-                  <fieldset
-                    class="form-group"
-                  >
-                    <label
-                      tabindex="-1"
-                      class="col-form-label pt-0"
-                    >Prefixes</label>
-                    <div>
-                      <span
-                        v-for="prefix of prefixes"
-                        :key="prefix.uri"
-                        :class="`badge text-bg-${getPrefixBadgeVariant(prefix)} p-2 me-2`"
-                        @click.capture="togglePrefix(prefix)"
-                        href="#"
-                      >{{ prefix.text }}</span>
-                    </div>
-                  </fieldset>
-                </div>
+            <div class="row mb-3">
+              <div class="col">
+                <fieldset class="form-group">
+                  <label tabindex="-1" class="col-form-label pt-0">Example Queries</label>
+                  <div>
+                    <button
+                      v-for="query of queries"
+                      :key="query.text"
+                      type="button"
+                      class="badge text-bg-info p-2 me-2 border-0"
+                      @click="setQuery(query.value)"
+                    >
+                      {{ query.text }}
+                    </button>
+                  </div>
+                </fieldset>
               </div>
-              <div class="row">
-                <div class="col-sm-12 col-md-4">
-                  <fieldset
-                    class="form-group"
-                    aria-labelledby="sparql-endpoint-label"
-                  >
-                    <div class="form-row">
-                      <label
-                        tabindex="-1"
-                        for="sparql-endpoint"
-                        class="col-6 col-form-label"
-                        id="sparql-endpoint-label"
-                      >SPARQL Endpoint</label>
-                      <div class="col">
-                        <input
-                          v-model="currentDatasetUrl"
-                          id="sparql-endpoint"
-                          type="text"
-                          class="form-control"
-                        />
-                      </div>
-                    </div>
-                  </fieldset>
-                </div>
-                <div class="col-sm-12 col-md-4">
-                  <fieldset
-                    class="form-group"
-                    aria-labelledby="content-type-label"
-                  >
-                    <div class="form-row">
-                      <label
-                        tabindex="-1"
-                        for="content-type-select"
-                        class="col-6 col-form-label"
-                        id="content-type-select-label"
-                      >Content Type (SELECT)</label>
-                      <div class="col">
-                        <select
-                          v-model="contentTypeSelect"
-                          id="content-type-select"
-                          class="form-select"
-                          aria-label="Content Type select"
-                        >
-                          <option
-                            v-for="contentTypeSelectOption of contentTypeSelectOptions"
-                            :key="contentTypeSelectOption.value"
-                            :value="contentTypeSelectOption.value"
-                          >
-                            {{ contentTypeSelectOption.text }}
-                          </option>
-                        </select>
-                      </div>
-                    </div>
-                  </fieldset>
-                </div>
-                <div class="col-sm-12 col-md-4">
-                  <fieldset
-                    class="form-group"
-                    aria-labelledby="content-type-graph-label"
-                  >
-                    <div class="form-row">
-                      <label
-                        tabindex="-1"
-                        for="content-type-graph"
-                        class="col-6 col-form-label"
-                        id="content-type-graph-label"
-                      >Content Type (GRAPH)</label>
-                      <div class="col">
-                        <select
-                          v-model="contentTypeGraph"
-                          id="content-type-graph"
-                          class="form-select"
-                          aria-label="Content Type select"
-                        >
-                          <option
-                            v-for="contentTypeGraphOption of contentTypeGraphOptions"
-                            :key="contentTypeGraphOption.value"
-                            :value="contentTypeGraphOption.value"
-                          >
-                            {{ contentTypeGraphOption.text }}
-                          </option>
-                        </select>
-                      </div>
-                    </div>
-                  </fieldset>
-                </div>
+              <div class="col">
+                <fieldset class="form-group">
+                  <label tabindex="-1" class="col-form-label pt-0">Prefixes</label>
+                  <div>
+                    <button
+                      v-for="prefix of prefixes"
+                      :key="prefix.uri"
+                      type="button"
+                      class="fuseki-prefix"
+                      :class="`badge text-bg-${isPrefixActive(prefix) ? 'primary' : 'light'} p-2 me-2 border-0`"
+                      :aria-pressed="isPrefixActive(prefix)"
+                      @mousedown.prevent
+                      @click="togglePrefix(prefix)"
+                    >
+                      {{ prefix.text }}
+                    </button>
+                  </div>
+                </fieldset>
               </div>
             </div>
-            <!-- This div cannot use v-if or v-show, as YASQE/YASR seem to fail to calculate the margins and
-                 paddings if the element is not already rendered/existing in the DOM? -->
-            <div>
-              <div class="spinner-border align-middle" role="status" v-if="loading">
-                <span class="visually-hidden">Loading...</span>
-              </div>
-              <div class="row">
-                <div class="col-sm-12">
-                  <div id="yasqe"></div>
-                </div>
-                <div class="col-sm-12">
-                  <div id="yasr"></div>
-                </div>
-              </div>
+            <div class="mb-3">
+              <label for="sparql-endpoint" class="form-label">SPARQL Endpoint</label>
+              <input
+                v-model="currentDatasetUrl"
+                id="sparql-endpoint"
+                type="text"
+                class="form-control"
+              />
             </div>
+            <div ref="editorContainer" class="fuseki-ldforge"></div>
           </div>
         </div>
       </div>
@@ -180,15 +83,13 @@
 
 <script>
 import Menu from '@/components/dataset/Menu.vue'
-import Yasqe from '@zazuko/yasqe'
-import Yasr from '@zazuko/yasr'
-import GeoPlugin from 'yasgui-geo-tg'
-import { createShareableLink } from '@/utils/query'
-import { nextTick } from 'vue'
+import { createEditor } from '@ldforge/editor'
+import { createHttpExecutor, createQueryEndpointExecutor } from '@ldforge/core'
+import { createTableRenderer, createBooleanRenderer, createJsonRenderer } from '@ldforge/renderers'
+import { createGeoRenderer } from '@ldforge/geo'
+import '@ldforge/editor/styles.css'
 import currentDatasetMixin from '@/mixins/current-dataset'
 import currentDatasetMixinNavigationGuards from '@/mixins/current-dataset-navigation-guards'
-
-Yasr.registerPlugin('geo', GeoPlugin)
 
 const SELECT_TRIPLES_QUERY = `SELECT ?subject ?predicate ?object
 WHERE {
@@ -209,220 +110,146 @@ LIMIT 25`
 
 export default {
   name: 'DatasetQuery',
-
-  components: {
-    Menu
-  },
-
-  mixins: [
-    currentDatasetMixin
-  ],
-
+  components: { Menu },
+  mixins: [currentDatasetMixin],
   ...currentDatasetMixinNavigationGuards,
 
   data () {
     return {
-      loading: true,
-      contentTypeSelect: 'application/sparql-results+json',
-      contentTypeSelectOptions: [
-        { value: 'application/sparql-results+json', text: 'JSON' },
-        { value: 'application/sparql-results+xml', text: 'XML' },
-        { value: 'text/csv', text: 'CSV' },
-        { value: 'text/tab-separated-values', text: 'TSV' }
-      ],
-      contentTypeGraph: 'text/turtle',
-      contentTypeGraphOptions: [
-        { value: 'text/turtle', text: 'Turtle' },
-        { value: 'application/ld+json', text: 'JSON-LD' },
-        { value: 'application/n-triples', text: 'N-Triples' },
-        { value: 'application/rdf+xml', text: 'XML' }
-      ],
-      queries: [
-        {
-          value: SELECT_TRIPLES_QUERY,
-          text: 'Selection of triples'
-        },
-        {
-          value: SELECT_CLASSES_QUERY,
-          text: 'Selection of classes'
-        }
-      ],
+      currentDatasetUrl: `/${this.datasetName}/sparql`,
+      currentQueryPrefixes: {},
       prefixes: [
         { uri: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#', text: 'rdf' },
         { uri: 'http://www.w3.org/2000/01/rdf-schema#', text: 'rdfs' },
         { uri: 'http://www.w3.org/2002/07/owl#', text: 'owl' },
         { uri: 'http://www.w3.org/2001/XMLSchema#', text: 'xsd' }
       ],
-      currentQueryPrefixes: [],
-      currentDatasetUrl: ''
+      queries: [
+        { value: SELECT_TRIPLES_QUERY, text: 'Selection of triples' },
+        { value: SELECT_CLASSES_QUERY, text: 'Selection of classes' }
+      ]
     }
   },
 
   computed: {
     datasetUrl () {
-      if (!this.datasetName || this.services === null || !this.services.query || !this.services.query['srv.endpoints'] || this.services.query['srv.endpoints'].length === 0) {
-        return ''
-      }
-      return `/${this.datasetName}/${this.services.query['srv.endpoints'][0]}`
+      const endpoints = this.services?.query?.['srv.endpoints']
+      return endpoints?.length ? `/${this.datasetName}/${endpoints[0]}` : `/${this.datasetName}/sparql`
     }
   },
 
   created () {
-    this.yasqe = null
-    this.yasr = null
-    this.$nextTick(() => {
-      setTimeout(() => {
-        const vm = this
-
-        document.getElementById('yasr').innerHTML = ''
-        document.getElementById('yasqe').innerHTML = ''
-
-        // results area
-        vm.yasr = new Yasr(
-          document.getElementById('yasr'),
-          {
-            // we do not want to save the results, otherwise we will have query results showing in different
-            // dataset views
-            persistenceId: null,
-            // Enable geo plugin alongside default table
-            pluginOrder: ['table', 'response', 'geo'],
-          }
-        )
-        // Curried function to create shareable links. YASQE expects a function
-        // that accepts only an instance of YASQE.
-        const curriedCreateShareableLink = yasqe => {
-          return createShareableLink(yasqe.getValue(), vm.$route.path)
-        }
-        // query editor
-        // NOTE: the full screen functionality was removed from YASQE: https://github.com/Triply-Dev/YASGUI.YASQE-deprecated/issues/139#issuecomment-573656137
-        vm.yasqe = new Yasqe(
-          document.getElementById('yasqe'),
-          {
-            showQueryButton: true,
-            resizeable: true,
-            requestConfig: {
-              acceptHeaderGraph: this.contentTypeGraph,
-              endpoint: this.$fusekiService.getFusekiUrl(this.currentDatasetUrl)
-            },
-            createShareableLink: curriedCreateShareableLink
-          }
-        )
-        vm.yasqe.on('queryResponse', (yasqe, response, duration) => {
-          vm.yasqe.saveQuery()
-          vm.yasr.setResponse(response, duration)
-        })
-        if (this.$route.query.query !== undefined) {
-          vm.setQuery(this.$route.query.query)
-        }
-        this.syncYasqePrefixes()
-        this.loading = false
-      }, 300)
-    })
+    // Keep the imperative editor outside Vue's reactive state.
+    this.editor = null
   },
 
-  beforeRouteUpdate (from, to, next) {
-    nextTick(() => {
-      if (this.$route.query.query !== undefined) {
-        // N.B: a blank value, like query=, will clear the query editor. Not sure if
-        //      desirable, but this can be easily modified later if necessary.
-        this.setQuery(this.$route.query.query)
-      }
-    })
-    const mixinBeforeRouteUpdate = currentDatasetMixinNavigationGuards.beforeRouteEnter
-    mixinBeforeRouteUpdate(from, to, next)
+  mounted () {
+    this.mountEditor()
+  },
+
+  beforeUnmount () {
+    this.editor?.destroy()
+    this.editor = null
   },
 
   watch: {
-    /* eslint-disable no-unused-vars */
-    datasetUrl: function (val, oldVal) {
-      this.currentDatasetUrl = val
+    datasetUrl (value) {
+      this.currentDatasetUrl = value
     },
-    currentDatasetUrl: function (val, oldVal) {
-      if (this.yasqe) {
-        this.yasqe.options.requestConfig.endpoint = this.$fusekiService.getFusekiUrl(val)
-      }
+    currentDatasetUrl () {
+      // A response from the previous endpoint must not appear for the new one.
+      this.editor?.cancel()
     },
-    contentTypeSelect: function (val, oldVal) {
-      if (this.yasqe) {
-        this.yasqe.options.requestConfig.acceptHeaderSelect = this.contentTypeSelect
-      }
+    datasetName () {
+      this.currentDatasetUrl = this.datasetUrl
+      this.mountEditor()
     },
-    contentTypeGraph: function (val, oldVal) {
-      if (this.yasqe) {
-        this.yasqe.options.requestConfig.acceptHeaderGraph = this.contentTypeGraph
-      }
+    '$route.query.query' (query) {
+      if (typeof query === 'string') this.setQuery(query)
     }
-    /* eslint-enable no-unused-vars */
   },
 
   methods: {
-    setQuery (query) {
-      // Passing this query value through queryString.stringify(.parse) creates an
-      // invalid query. Tested some XSS values with Chrome and FFox, and couldn't
-      // trigger a popup/alert by modifying the query passed, looks like YASQE does
-      // the query cleaning before displaying it.
-      // See: https://github.com/payloadbox/xss-payload-list
-      this.yasqe.setValue(query)
-      this.syncYasqePrefixes()
-    },
-    getPrefixBadgeVariant (prefix) {
-      if (this.currentQueryPrefixes.includes(prefix.uri)) {
-        return 'primary'
+    mountEditor () {
+      if (!this.$refs.editorContainer) return
+      this.editor?.destroy()
+      this.editor = null
+      const storageKey = `fuseki:ldforge:query:${this.datasetName}`
+      let query = SELECT_TRIPLES_QUERY
+      try {
+        query = localStorage.getItem(storageKey) ?? query
+      } catch {
+        // Editing remains available when browser storage is disabled.
       }
-      return 'light'
+      const sharedQuery = new URL(window.location.href).searchParams.get('query') ?? this.$route.query.query
+      if (typeof sharedQuery === 'string') query = sharedQuery
+      this.editor = createEditor(this.$refs.editorContainer, {
+        locale: 'en',
+        // Main blue from src/assets/logo.svg; LDForge derives the complete UI theme.
+        themeMainColor: '#1a80b9',
+        query,
+        shareBaseUrl: new URL(this.$router.resolve({ path: this.$route.path }).href, document.baseURI).href,
+        shareEndpoint: () => this.getEndpointUrl(),
+        executor: createQueryEndpointExecutor({ executor: {
+          execute: request => {
+            if (!this.currentDatasetUrl.trim()) throw new Error('Choose a SPARQL endpoint first.')
+            const endpoint = this.getEndpointUrl()
+            return createHttpExecutor({ endpoint }).execute(request)
+          }
+        } }),
+        renderers: [
+          createTableRenderer(), createBooleanRenderer(), createJsonRenderer(), createGeoRenderer()
+        ],
+        onQueryChange: value => {
+          this.syncPrefixes()
+          try {
+            localStorage.setItem(storageKey, value)
+          } catch {
+            // Storage failure must not interrupt editing.
+          }
+        }
+      })
+      this.syncPrefixes()
     },
-    syncYasqePrefixes () {
-      const prefixes = this.yasqe.getPrefixesFromQuery()
-      this.currentQueryPrefixes = []
-      for (const uri of Object.values(prefixes)) {
-        this.currentQueryPrefixes.push(uri)
-      }
+    syncPrefixes () {
+      this.currentQueryPrefixes = this.editor?.getPrefixes() ?? {}
+    },
+    isPrefixActive (prefix) {
+      return Object.values(this.currentQueryPrefixes).includes(prefix.uri)
     },
     togglePrefix (prefix) {
-      const newPrefix = {
-        [prefix.text]: prefix.uri
-      }
-      if (this.currentQueryPrefixes.includes(prefix.uri)) {
-        this.yasqe.removePrefixes(newPrefix)
-        this.currentQueryPrefixes.splice(this.currentQueryPrefixes.indexOf(prefix.uri), 1)
+      if (this.isPrefixActive(prefix)) {
+        // Remove declarations by alias, including aliases typed by the user.
+        for (const [alias, uri] of Object.entries(this.currentQueryPrefixes)) {
+          if (uri === prefix.uri) this.editor.removePrefix(alias)
+        }
       } else {
-        this.yasqe.addPrefixes(newPrefix)
-        this.currentQueryPrefixes.push(prefix.uri)
+        this.editor.addPrefix(prefix.text, prefix.uri)
       }
+      this.syncPrefixes()
+    },
+    setQuery (query) {
+      this.editor?.setQuery(query)
+    },
+    getEndpointUrl () {
+      return new URL(
+        this.$fusekiService.getFusekiUrl(this.currentDatasetUrl),
+        document.baseURI
+      ).href
     }
   }
 }
 </script>
 
-<style lang="scss">
-@import '@zazuko/yasqe/build/yasqe.min.css';
-@import '@zazuko/yasr/build/yasr.min.css';
-
-// N.B: these were copied from an old release of YASR due to this
-//      change: https://github.com/TriplyDB/Yasgui/commit/19521998f035e718d3f1d5cfa6073ce2e34242e7
-//      for more: https://github.com/apache/jena/pull/1153
-.yasr table.dataTable {
-  border: 1px solid rgb(217, 217, 217);
-  border-image-source: initial;
-  border-image-slice: initial;
-  border-image-repeat: initial;
-  tbody {
-    tr {
-      td {
-        border-top: 1px solid #ddd;
-      }
-      &:last-of-type {
-        td {
-          border-bottom: 1px solid #ddd;
-        }
-      }
-      &:nth-child(even) {
-        background-color: #f9f9f9;
-      }
-    }
-  }
+<style>
+.fuseki-ldforge {
+  margin-top: 1rem;
+  min-width: 0;
 }
-.yasr .yasr_btnGroup .select_geo .plugin_icon {
-  margin-bottom: 20%;
+.fuseki-prefix.text-bg-primary {
+  background-color: #1a80b9 !important;
+}
+.fuseki-ldforge .ldforge-button-group[data-button-group='query'] > button:first-child {
+  color: #fff;
 }
 </style>

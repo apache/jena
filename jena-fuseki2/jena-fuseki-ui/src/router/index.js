@@ -32,7 +32,7 @@ const routes = [
     props: true
   },
   {
-    // JENA-2295: we expand the pattern of this path with an `*` to allow for the YASGUI
+    // JENA-2295: we expand the pattern of this path with an `*` to allow for the shared SPARQL
     //            query parameter, e.g. /#/dataset/abc/query?query=SELECT...
     path: '/dataset/:datasetName/query*',
     name: 'DatasetQueryParameters',

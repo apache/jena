@@ -14,121 +14,125 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { flushPromises, mount } from '@vue/test-utils'
-import { nextTick } from 'vue'
+import { mount } from '@vue/test-utils'
+import { vi } from 'vitest'
 import Query from '@/views/dataset/Query.vue'
-import {  vi } from 'vitest'
 
-const FAKE_FUSEKI_URL = 'https://localhost:1234/fuseki/'
+const { createEditor, createHttpExecutor, execute } = vi.hoisted(() => ({
+  createEditor: vi.fn(), createHttpExecutor: vi.fn(), execute: vi.fn()
+}))
+vi.mock('@ldforge/editor', () => ({ createEditor }))
+vi.mock('@ldforge/core', () => ({ createHttpExecutor, createQueryEndpointExecutor: ({ executor }) => executor }))
 
-const $routeMock = {
-  query: {}
-}
-
-const mountFunction = options => {
-  const mountOptions = Object.assign(options || {}, {
+function mountQuery (query) {
+  return mount(Query, {
     shallow: true,
+    props: { datasetName: 'demo' },
     global: {
       mocks: {
-        $route: $routeMock,
-        $fusekiService: {
-          getFusekiUrl () {
-            return FAKE_FUSEKI_URL
-          }
-        }
+        $router: { resolve: ({ path }) => ({ href: `#${path}` }) },
+        $route: { path: '/dataset/demo/query', query: query === undefined ? {} : { query } },
+        $fusekiService: { getFusekiUrl: path => `/fuseki/${path.replace(/^\//, '')}` }
       }
     }
-  })
-  return mount(Query, {
-    ...mountOptions
   })
 }
 
-describe('Query view', () => {
-  let yasrDiv
-  let yasqeDiv
+describe('LDForge query view', () => {
+  let editor
+  let wrapper
   beforeEach(() => {
-    // DOM elements required by YASQE/YASR.
-    yasrDiv = document.createElement('div')
-    yasrDiv.setAttribute('id', 'yasr')
-    yasqeDiv = document.createElement('div')
-    yasqeDiv.setAttribute('id', 'yasqe')
-    document.body.append(yasrDiv)
-    document.body.append(yasqeDiv)
-    // we will have to mock setTimeout and nextTick at least, for the component with DOM
-    vi.useFakeTimers({
-      toFake: [
-        'Date',
-        'nextTick',
-        'setTimeout'
-      ],
-      shouldAdvanceTime: true
-    })
-    // jsdom doesn't have getBoundingClientRect
-    document.createRange = () => {
-      const range = new Range();
-
-      range.getBoundingClientRect = () => {
-        return {
-          x: 0,
-          y: 0,
-          bottom: 0,
-          height: 0,
-          left: 0,
-          right: 0,
-          top: 0,
-          width: 0,
-          toJSON: () => {}
-        };
-      };
-
-      range.getClientRects = () => {
-        return {
-          // eslint-disable-next-line no-unused-vars
-          item: (index) => null,
-          length: 0,
-          *[Symbol.iterator](){}
-        };
-      };
-
-      return range;
-    }
+    localStorage.clear()
+    editor = { destroy: vi.fn(), cancel: vi.fn(), setQuery: vi.fn(), getQuery: vi.fn(() => 'ASK {}'),
+      getPrefixes: vi.fn(() => ({})), addPrefix: vi.fn(), removePrefix: vi.fn() }
+    createEditor.mockReturnValue(editor)
+    createHttpExecutor.mockReturnValue({ execute })
   })
-  afterEach(() => {
-    vi.restoreAllMocks()
-    vi.useRealTimers()
+  afterEach(() => wrapper?.unmount())
+
+  it('uses a shared query verbatim, including an empty query', () => {
+    wrapper = mountQuery('')
+    expect(createEditor.mock.calls[0][1].query).toBe('')
+    expect(createEditor.mock.calls[0][1].themeMainColor).toBe('#1a80b9')
   })
-  it('is created with the correct initial values', async () => {
-    expect(vi.isFakeTimers()).equals(true)
-    const datasetName = 'test'
-    const wrapper = mountFunction({
-      props: {
-        datasetName: datasetName
-      }
+
+  it('resolves the current endpoint under the Fuseki deployment prefix and forwards cancellation', async () => {
+    wrapper = mountQuery()
+    expect(wrapper.find('#sparql-endpoint').element.value).toBe('/demo/sparql')
+    const request = { query: 'ASK {}', signal: new AbortController().signal }
+    createEditor.mock.calls[0][1].executor.execute(request)
+    expect(createHttpExecutor).toHaveBeenCalledWith({
+      endpoint: new URL('/fuseki/demo/sparql', document.baseURI).href
     })
+    expect(execute).toHaveBeenCalledWith(request)
+    await wrapper.setData({ currentDatasetUrl: '/demo/query' })
+    expect(editor.cancel).toHaveBeenCalled()
+    createEditor.mock.calls[0][1].executor.execute(request)
+    expect(createHttpExecutor).toHaveBeenLastCalledWith({
+      endpoint: new URL('/fuseki/demo/query', document.baseURI).href
+    })
+  })
 
-    // Test the prop value.
-    expect(wrapper.vm.$props.datasetName).equals(datasetName)
+  it('saves query edits per dataset and restores them on a later visit', () => {
+    wrapper = mountQuery()
+    createEditor.mock.calls[0][1].onQueryChange('ASK {}')
+    wrapper.unmount()
+    wrapper = mountQuery()
+    expect(createEditor.mock.calls[1][1].query).toBe('ASK {}')
+  })
 
-    // The component needs to interface with DOM due to YASQE, and it contains
-    // a `nextTick`, that calls `setTimeout` (this is what worked in the end,
-    // although probably a `Teleport` could replace it...). So we need to mock
-    // that here. The timeout is of `300ms`, so we move the clock by `400ms`.
-    await nextTick()
-    await vi.advanceTimersByTime(400)
-    await flushPromises()
+  it('destroys the editor on navigation and isolates another dataset', async () => {
+    wrapper = mountQuery()
+    createEditor.mock.calls[0][1].onQueryChange('ASK {}')
+    await wrapper.setProps({ datasetName: 'other' })
+    expect(wrapper.find('#sparql-endpoint').element.value).toBe('/other/sparql')
+    expect(editor.destroy).toHaveBeenCalledOnce()
+    expect(createEditor.mock.calls[1][1].query).toContain('SELECT ?subject')
+    wrapper.unmount()
+    expect(editor.destroy).toHaveBeenCalledTimes(2)
+  })
 
-    // Now YASQE and YASR must have been initialized.
-    expect(wrapper.vm.yasqe).not.equals(null)
+  it('toggles prefix declarations through the public API and updates badge state', async () => {
+    wrapper = mountQuery()
+    await wrapper.vm.$nextTick()
+    const rdf = wrapper.findAll('button').find(button => button.text() === 'rdf')
+    expect(rdf.classes()).toContain('text-bg-light')
+    editor.getPrefixes.mockReturnValue({ rdf: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' })
+    await rdf.trigger('click')
+    expect(editor.addPrefix).toHaveBeenCalledWith('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#')
+    expect(rdf.attributes('aria-pressed')).toBe('true')
+    expect(rdf.classes()).toContain('text-bg-primary')
+    editor.getPrefixes.mockReturnValue({})
+    await rdf.trigger('click')
+    expect(editor.removePrefix).toHaveBeenCalledWith('rdf')
+    expect(rdf.attributes('aria-pressed')).toBe('false')
+  })
 
-    // Test the initial values.
-    const yasqeOptions = wrapper.vm.yasqe.options
-    expect(yasqeOptions.showQueryButton).true
-    expect(yasqeOptions.resizeable).true
+  it('synchronizes prefixes after manual edits and query tab changes, including alternate aliases', async () => {
+    wrapper = mountQuery()
+    editor.getPrefixes.mockReturnValue({ custom: 'http://www.w3.org/2000/01/rdf-schema#' })
+    createEditor.mock.calls[0][1].onQueryChange('PREFIX custom: <http://www.w3.org/2000/01/rdf-schema#> ASK {}')
+    await wrapper.vm.$nextTick()
+    const rdfs = wrapper.findAll('button').find(button => button.text() === 'rdfs')
+    expect(rdfs.attributes('aria-pressed')).toBe('true')
+    await rdfs.trigger('click')
+    expect(editor.removePrefix).toHaveBeenCalledWith('custom')
+    editor.getPrefixes.mockReturnValue({})
+    createEditor.mock.calls[0][1].onQueryChange('ASK {}')
+    await wrapper.vm.$nextTick()
+    expect(rdfs.attributes('aria-pressed')).toBe('false')
+  })
 
-    const requestConfig = yasqeOptions.requestConfig
-    expect(await requestConfig.endpoint).equals(FAKE_FUSEKI_URL)
-    // See issue https://github.com/apache/jena/issues/1611
-    expect(requestConfig.acceptHeaderGraph).equals(wrapper.vm.$data.contentTypeGraph)
+  it('uses the toolbar share action with the Fuseki route and active endpoint', async () => {
+    wrapper = mountQuery()
+    await wrapper.find('button').trigger('click')
+    expect(editor.setQuery).toHaveBeenCalledWith(expect.stringContaining('SELECT ?subject'))
+    expect(wrapper.text()).not.toContain('Share query')
+    expect(wrapper.find('#share-query-url').exists()).toBe(false)
+    const options = createEditor.mock.calls[0][1]
+    expect(options.shareBaseUrl).toContain('#/dataset/demo/query')
+    expect(options.shareEndpoint()).toBe(new URL('/fuseki/demo/sparql', document.baseURI).href)
+    await wrapper.setData({ currentDatasetUrl: '/other/sparql' })
+    expect(options.shareEndpoint()).toBe(new URL('/fuseki/other/sparql', document.baseURI).href)
   })
 })

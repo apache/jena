@@ -2,11 +2,11 @@
 
 Jena Fuseki UI is a Vue 3 application built with Vue Router, Vite, Bootstrap 5 (and Popper),
 Vue components (Vue Upload component and custom components for Jena), FontAwesome (icons),
-Axios (HTTP client), and YASGUI (YASQE and YASR) for SPARQL query editor with code syntax
+Axios (HTTP client), and LDForge for the SPARQL query editor and result views, with syntax
 highlighting and auto-complete.
 
 It interfaces with the backend application, Jena Fuseki servlets, via HTTP requests with
-YASGUI and Axios.
+LDForge and Axios.
 
 ## Build
 
@@ -64,3 +64,47 @@ $ npx vitest --ui --coverage.enabled=true
 > you must still use `yarn run coverage:e2e`, as it uses Cypress
 > with Istanbul to measure the coverage, instead of vitest only.
 
+
+## SPARQL editor
+
+The query view bundles the npm packages `@ldforge/editor`, `@ldforge/core`,
+`@ldforge/renderers` and `@ldforge/geo`. The editor is pinned to 1.1.0 and the
+other packages to 1.0.0 in `package.json` and `yarn.lock`. Development and
+production use the same installed packages.
+Vite includes their JavaScript and editor CSS in the application build.
+
+Fuseki provides the dataset endpoint, example queries and prefix badges. LDForge
+provides query tabs, completion, formatting, prefix editing, cancellation, result
+views and the toolbar share action. Shared links carry the query and endpoint;
+existing `#/dataset/<name>/query?query=...` links are still accepted. The active
+query text is saved per dataset under `fuseki:ldforge:query:<dataset>`; query tabs
+and results are session-only. Editor resources are released on navigation.
+
+The editor uses the blue from the Fuseki logo through `themeMainColor`. Table,
+Boolean, JSON and Geo result renderers are registered. The JSON view displays the
+normalized result model. SELECT/ASK use SPARQL Results JSON by default, and graph
+queries request Turtle/N-Triples. Geo uses LDForge geometry bindings and loads
+external map assets only when needed. The editor height can be adjusted with the
+resize handle or its keyboard controls. The previous response-format dropdowns are not part of this integration.
+
+### Preview without Java
+
+Run these commands in two terminals in this directory:
+
+```sh
+corepack yarn install --immutable
+FUSEKI_PORT=3030 corepack yarn run serve:fuseki
+```
+
+```sh
+PORT=8081 FUSEKI_PORT=3030 corepack yarn run dev
+```
+
+Open http://localhost:8081, create a dataset under Manage, then open Query.
+The mock server returns fixtures; it does not evaluate SPARQL or store RDF.
+For real queries, omit `serve:fuseki` and set `FUSEKI_PORT` to the port of a running
+Fuseki server. Real-server ASK/graph execution and map rendering require separate
+integration validation.
+
+The LDForge packages declare EUPL-1.2. Dependency license/NOTICE review remains
+necessary before proposing upstream distribution.
