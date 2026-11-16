@@ -85,6 +85,14 @@ public class DatasetGraphTxnCtl extends DatasetGraphWrapper implements Transacti
         Objects.nonNull(txnType);
         checkNotActive();
         enterTransaction(txnType, true);
+        beginTransaction(txnType);
+    }
+
+    /**
+     * Start the underlying transaction after admission control has succeeded.
+     * Subclasses may override to select or record the target dataset at this point.
+     */
+    protected void beginTransaction(TxnType txnType) {
         super.begin(txnType);
     }
 
@@ -104,6 +112,12 @@ public class DatasetGraphTxnCtl extends DatasetGraphWrapper implements Transacti
         // Check no transaction on this thread.
         if ( ! isInTransaction() )
             throw new TransactionException(label("Not in an active transaction"));
+    }
+
+    // DatasetGraphWrapper.begin() goes straight to the wrapped dataset, which would skip admission control.
+    @Override
+    public void begin() {
+        begin(TxnType.READ_PROMOTE);
     }
 
     @Override

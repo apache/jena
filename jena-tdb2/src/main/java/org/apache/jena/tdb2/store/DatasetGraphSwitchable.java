@@ -30,6 +30,7 @@ import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.storage.system.DatasetGraphTxnCtl;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
@@ -53,13 +54,74 @@ public class DatasetGraphSwitchable extends DatasetGraphTxnCtl
     }
 
     /**
-     * The dataset to use for redirection - this can be overridden.
-     * It is also guaranteed that this is called only once per
-     * delegated call.  Changes to the wrapped object can be
-     * made based on that contract.
+     * The dataset to use for redirection.
+     * <p>
+     * Outside a transaction this is the current database. Inside a transaction it is the
+     * database the transaction began on, even if the container has been switched since.
+     * It is also guaranteed that this is called only once per delegated call.
+     * Changes to the wrapped object can be made based on that contract.
      */
     @Override
-    public DatasetGraph get() { return dsgx.get(); }
+    public DatasetGraph get() {
+        DatasetGraph dsg = pinned();
+        return dsg != null ? dsg : dsgx.get();
+    }
+
+    /**
+     * Transactions on this thread run against the database that was current when the
+     * transaction began. {@link #set} and {@link #change} (TDB2 compaction) can switch the
+     * container while a transaction is active. Without this, the delegated
+     * {@code commit}/{@code abort}/{@code end} would go to the <em>new</em> database, so the
+     * transaction on the old one would never finish and compaction, waiting for the old
+     * database to become idle, would never complete.
+     */
+    private final ThreadLocal<DatasetGraph> txnDsg = new ThreadLocal<>();
+
+    /** The database of this thread's active transaction, or null if there is none. */
+    private DatasetGraph pinned() {
+        DatasetGraph dsg = txnDsg.get();
+        if ( dsg == null )
+            return null;
+        if ( dsg.isInTransaction() )
+            return dsg;
+        // The transaction has finished (commit/abort without end()): forget it.
+        txnDsg.remove();
+        return null;
+    }
+
+    @Override
+    protected void beginTransaction(TxnType txnType) {
+        // Pin at the point the transaction is actually started, after admission control
+        // (for example, after a writer held up while compaction copies and switches the database).
+        DatasetGraph dsg = dsgx.get();
+        dsg.begin(txnType);
+        txnDsg.set(dsg);
+    }
+
+    @Override
+    public void commit() {
+        super.commit();
+        // The transaction is complete. If commit fails, the transaction is still to be ended
+        // or aborted and that must go to the same database, so the pin stays.
+        txnDsg.remove();
+    }
+
+    @Override
+    public void abort() {
+        super.abort();
+        // The transaction is complete. If abort fails, a subsequent end() must still go to
+        // the same database, so the pin stays.
+        txnDsg.remove();
+    }
+
+    @Override
+    public void end() {
+        try {
+            super.end();
+        } finally {
+            txnDsg.remove();
+        }
+    }
 
     /** Is this {@code DatasetGraphSwitchable} just a holder for a {@code DatasetGraph}?
      *  If so, it does not have a location on disk.
