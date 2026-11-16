@@ -34,10 +34,10 @@ import org.slf4j.LoggerFactory;
 class BPTreeRangeIterator implements Iterator<Record> {
     static Logger log = LoggerFactory.getLogger(BPTreeRangeIterator.class);
 
-    public static Iterator<Record> create(BPTreeNode node, Record minRec, Record maxRec) {
-        if ( minRec != null && maxRec != null && Record.keyGE(minRec, maxRec) )
+    public static Iterator<Record> create(BPTreeNode node, Record minRecInclusive, Record maxRecExclusive) {
+        if ( minRecInclusive != null && maxRecExclusive != null && Record.keyGE(minRecInclusive, maxRecExclusive) )
             return Iter.nullIter();
-        return new BPTreeRangeIterator(node, minRec, maxRec);
+        return new BPTreeRangeIterator(node, minRecInclusive, maxRecExclusive);
     }
 
     // Convert path to a stack of iterators
