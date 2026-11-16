@@ -148,7 +148,7 @@ public class DefaultDataBag<E> extends AbstractDataBag<E> {
         closeWriter();
 
         // Create a new reader
-        if ( policy.isThresholdExceeded() ) {
+        if ( spilled ) {
             File spillFile = getSpillFiles().get(0);
 
             InputStream in;
