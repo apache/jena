@@ -628,7 +628,7 @@ public class UpdateEngineWorker implements UpdateVisitor {
             } else {
                 long currentTimeMillis = System.currentTimeMillis();
                 long elapsedMillis = currentTimeMillis - startTimeMillis;
-                remainingOverallTimeoutMillis -= elapsedMillis;
+                remainingOverallTimeoutMillis = timeout.overallTimeoutMillis() - elapsedMillis;
                 if ( remainingOverallTimeoutMillis < 0 ) {
                     remainingOverallTimeoutMillis = 0;
                 }
