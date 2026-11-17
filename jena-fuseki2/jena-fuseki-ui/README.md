@@ -2,11 +2,11 @@
 
 Jena Fuseki UI is a Vue 3 application built with Vue Router, Vite, Bootstrap 5 (and Popper),
 Vue components (Vue Upload component and custom components for Jena), FontAwesome (icons),
-Axios (HTTP client), and YASGUI (YASQE and YASR) for SPARQL query editor with code syntax
+Axios (HTTP client), and LDForge for the SPARQL query editor and result views, with syntax
 highlighting and auto-complete.
 
 It interfaces with the backend application, Jena Fuseki servlets, via HTTP requests with
-YASGUI and Axios.
+LDForge and Axios.
 
 ## Build
 
@@ -63,4 +63,3 @@ $ npx vitest --ui --coverage.enabled=true
 > This command is only available for the unit tests. For e2e tests
 > you must still use `yarn run coverage:e2e`, as it uses Cypress
 > with Istanbul to measure the coverage, instead of vitest only.
-

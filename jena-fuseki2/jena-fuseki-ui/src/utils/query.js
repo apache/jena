@@ -26,13 +26,12 @@ import qs from 'qs'
 
 /**
  * Create a shareable link using the value of the SPARQL query in the
- * YASQE editor and compose a safe link to be used in the browser.
+ * editor and compose a safe link to be used in the browser.
  *
- * Based on YASGUI code, but modified to avoid parsing the Vue Route query
- * hash. Note that we cannot use `document.location.hash` since it could
- * contain the ?query=... too. Instead, we must use Vue Route path value.
+ * Uses the Vue Route path instead of `document.location.hash`, which may
+ * already contain a ?query=... parameter.
  *
- * The query is escaped with the same code as YASGUI.
+ * Query parameters are encoded with qs.
  *
  * @param {string} query
  * @param {string} path
@@ -48,7 +47,7 @@ export function createShareableLink (query, path) {
     '#' +
     path +
     '?' +
-    // Same as YASGUI does, good idea to avoid security problems...
+    // Encode the query as a URL parameter.
     qs.stringify({ query })
   )
 }
