@@ -24,7 +24,6 @@ package org.apache.jena.query;
 import java.util.Objects;
 
 import org.apache.jena.sparql.JenaTransactionException;
-import org.apache.jena.sparql.core.Transactional;
 
 public enum TxnType {
     /** Transaction mode:
@@ -55,8 +54,8 @@ public enum TxnType {
     /** Convert a {@link ReadWrite} mode to {@code TxnType} */
     public static TxnType convert(ReadWrite rw) {
         switch(rw) {
-            case READ: return READ;
-            case WRITE: return WRITE;
+            case ReadWrite.READ: return READ;
+            case ReadWrite.WRITE: return WRITE;
             default: throw new NullPointerException();
         }
     }
@@ -76,11 +75,5 @@ public enum TxnType {
     public static ReadWrite initial(TxnType txnType) {
         Objects.requireNonNull(txnType);
         return (txnType == TxnType.WRITE) ? ReadWrite.WRITE : ReadWrite.READ;
-    }
-
-    /** Convert a {@code TxnType} mode to {@link ReadWrite} : "promote" not supported.  */
-    public static TxnType promote(Transactional.Promote promoteMode) {
-        Objects.requireNonNull(promoteMode);
-        return (promoteMode == Transactional.Promote.ISOLATED) ? READ_PROMOTE : READ_COMMITTED_PROMOTE;
     }
 }
