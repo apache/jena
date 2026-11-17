@@ -29,6 +29,9 @@ import org.apache.jena.sparql.exec.UpdateExec;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class TestUpdateTimeoutMultiOp {
     private static final String TWO_OPS =
             "DELETE { ?s ?p ?o } WHERE { ?s ?p ?o } ;"
@@ -38,13 +41,20 @@ public class TestUpdateTimeoutMultiOp {
     public void update_timeout_two_operations() {
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
 
-        Txn.executeWrite(dsg, () ->
-                dsg.add(SSE.parseQuad("(<http://example/g> :s :p :o)")));
+        Txn.executeWrite(dsg, () -> {
+            dsg.add(SSE.parseQuad("(<http://example/g> :s :p :o)"));
+            dsg.getDefaultGraph().add(SSE.parseTriple("(:old :p :o)"));
+        });
 
         Txn.executeWrite(dsg, () ->
                 UpdateExec.dataset(dsg)
                         .update(TWO_OPS)
                         .timeout(600, TimeUnit.SECONDS)
                         .execute());
+
+        Txn.executeRead(dsg, () -> {
+            assertTrue(dsg.getDefaultGraph().contains(SSE.parseTriple("(:s :p :o)")));
+            assertFalse(dsg.getDefaultGraph().contains(SSE.parseTriple("(:old :p :o)")));
+        });
     }
 }
