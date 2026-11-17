@@ -178,7 +178,7 @@ public class DatasetGraphTxnCtl extends DatasetGraphWrapper implements Transacti
     }
 
     /**
-     * Block until no writers or promote transactions present are present.
+     * Block until no writers or promote transactions are present.
      */
     @Override
     public void startReadOnlyDatabase()  {
