@@ -52,12 +52,12 @@ describe('upload', function () {
     // Wait for the create dataset request to be processed and have a return status, then continue.
     cy.wait('@createDataset')
 
-    cy.intercept('/$/server').as('server')
-    // We wait until the route navigation guard is called, so that the
-    // view has the dataset information loaded.
     cy.visit('/#/dataset/skosmos/upload')
-    cy.wait('@server')
-    cy.intercept('/$/server').as('server')
+    // A file takes the upload URL when it is picked, and the view only knows the
+    // URL once it has loaded the dataset. Wait until the heading shows it.
+    cy
+      .contains('h3', 'Upload files')
+      .should('contain', '/skosmos/data')
   })
   afterEach(function () {
     // Special endpoint that clears the datasets data.
