@@ -75,7 +75,9 @@ public class ParserSPARQL10 extends SPARQLParser
             parser.setQuery(query);
             action.exec(parser);
         } catch (org.apache.jena.sparql.lang.sparql_10.javacc.ParseException ex) {
-            throw new QueryParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn);
+            // The error is at the token after the last successfully consumed token.
+            var errorToken = ex.currentToken.next != null ? ex.currentToken.next : ex.currentToken;
+            throw new QueryParseException(ex.getMessage(), errorToken.beginLine, errorToken.beginColumn);
         } catch (org.apache.jena.sparql.lang.sparql_10.javacc.TokenMgrError tErr) {
             // Last valid token : not the same as token error message - but this
             // should not happen
