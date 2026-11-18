@@ -68,7 +68,7 @@
     "eslint-plugin-cypress": "7.0.4",
     "eslint-plugin-vue": "^10.8.0",
     "globals": "^17.4.0",
-    "jsdom": "^30.0.0",
+    "jsdom": "^31.0.0",
     "json-server": "^0.17.4",
     "nodemon": "^3.0.1",
     "sass-embedded": "^1.97.1",
