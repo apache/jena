@@ -22,6 +22,7 @@
 package org.apache.jena.sparql.algebra.optimize;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -30,8 +31,10 @@ import org.junit.jupiter.api.Test;
 
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.Syntax;
 import org.apache.jena.sparql.algebra.Algebra;
 import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpAsQuery;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.Rename;
 import org.apache.jena.sparql.expr.Expr;
@@ -98,6 +101,26 @@ public class TestVarRename
     @Test public void rename_reverse_02() { reverse("(assign ((?/x (+ ?//a ?///b))) (table unit))",
                                                     "(assign ((?x (+ ?a ?b))) (table unit))",
                                                     true ); }
+
+    // Empty VALUES tables still have a schema. Reverse renaming must restore
+    // their declared variables even when there are no row bindings to transform.
+    @Test public void rename_reverse_table_empty_repeatedly() {
+        reverse("(table (vars ?//s))",
+                "(table (vars ?s))", true);
+    }
+
+    @Test public void rename_reverse_table_empty_serialization() {
+        // As in an outgoing SERVICE body: the BGP and VALUES header must use
+        // the same restored variable, and the resulting query must be SPARQL.
+        Op original = SSE.parseOp("""
+            (join
+              (table (vars ?//s))
+              (bgp (?//s ?p ?o)))
+            """);
+        Op restored = Rename.reverseVarRename(original, true);
+        String queryString = OpAsQuery.asQuery(restored).toString();
+        assertDoesNotThrow(() -> QueryFactory.create(queryString), queryString);
+    }
 
     @Test public void query_rename_01()
     {
