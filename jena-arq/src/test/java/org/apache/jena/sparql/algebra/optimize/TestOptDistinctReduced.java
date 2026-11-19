@@ -212,6 +212,55 @@ public class TestOptDistinctReduced
         testQuery(queryString, tDistinctToReduced, opExpectedString);
     }
 
+    @Test public void distinct_to_reduced_14()
+    {
+        // GH-4242: unsafe. ORDER BY an expression over the projected variable does
+        // not make equal values of ?v adjacent (STRLEN is not injective), and the
+        // non-projected ?tag then separates them.
+        assertTrue(ARQ.isTrueOrUndef(ARQ.optDistinctToReduced));
+        String queryString = "SELECT DISTINCT ?v { ?s <urn:p> ?v . ?s <urn:q> ?tag } ORDER BY STRLEN(?v) ?tag";
+        String opExpectedString =
+            "(distinct\n" +
+            "  (project (?v)\n" +
+            "    (order ((strlen ?v) ?tag)\n" +
+            "      (bgp\n" +
+            "        (triple ?s <urn:p> ?v)\n" +
+            "        (triple ?s <urn:q> ?tag)\n" +
+            "      ))))";
+        testQuery(queryString, tDistinctToReduced, opExpectedString);
+    }
+
+    @Test public void distinct_to_reduced_15()
+    {
+        // GH-4242: unsafe for the same reason even without a non-projected variable:
+        // rows with equal ?v need not be adjacent within a group of equal STRLEN(?v).
+        assertTrue(ARQ.isTrueOrUndef(ARQ.optDistinctToReduced));
+        String queryString = "SELECT DISTINCT ?v { ?s <urn:p> ?v } ORDER BY STRLEN(?v)";
+        String opExpectedString =
+            "(distinct\n" +
+            "  (project (?v)\n" +
+            "    (order ((strlen ?v))\n" +
+            "      (bgp (triple ?s <urn:p> ?v)))))";
+        testQuery(queryString, tDistinctToReduced, opExpectedString);
+    }
+
+    @Test public void distinct_to_reduced_16()
+    {
+        // GH-4242: safe. The expression comes first but the projected variable
+        // itself is ordered on before any non-projected variable.
+        assertTrue(ARQ.isTrueOrUndef(ARQ.optDistinctToReduced));
+        String queryString = "SELECT DISTINCT ?v { ?s <urn:p> ?v . ?s <urn:q> ?tag } ORDER BY STRLEN(?v) ?v ?tag";
+        String opExpectedString =
+            "(reduced\n" +
+            "  (project (?v)\n" +
+            "    (order ((strlen ?v) ?v ?tag)\n" +
+            "      (bgp\n" +
+            "        (triple ?s <urn:p> ?v)\n" +
+            "        (triple ?s <urn:q> ?tag)\n" +
+            "      ))))";
+        testQuery(queryString, tDistinctToReduced, opExpectedString);
+    }
+
     @Test public void distinct_order_by_application_01()
     {
         assertTrue(ARQ.isTrueOrUndef(ARQ.optOrderByDistinctApplication));
