@@ -361,4 +361,39 @@ describe('FusekiService', () => {
     }
     fusekiService.pathname = originalPathname
   })
+  it('gets the prefixes of a dataset', async () => {
+    const stub = sinon.stub(axios, 'get')
+    const mappings = [
+      { prefix: 'rdf', uri: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' },
+      { prefix: 'foaf', uri: 'http://xmlns.com/foaf/0.1/' }
+    ]
+    stub.resolves(Promise.resolve({
+      data: mappings
+    }))
+    const response = await fusekiService.getPrefixes('jena', 'prefixes')
+    expect(stub.calledWith('/jena/prefixes')).to.equal(true)
+    expect(response.data).to.deep.equal(mappings)
+    stub.restore()
+  })
+  it('updates a prefix', async () => {
+    const stub = sinon.stub(axios, 'post')
+    stub.resolves(Promise.resolve({}))
+    await fusekiService.updatePrefix('jena', 'prefixes-rw', 'foaf', 'http://xmlns.com/foaf/0.1/')
+    expect(stub.called).to.equal(true)
+    const [url, params] = stub.getCall(0).args
+    expect(url).to.equal('/jena/prefixes-rw')
+    expect(params.get('prefix')).to.equal('foaf')
+    expect(params.get('uri')).to.equal('http://xmlns.com/foaf/0.1/')
+    stub.restore()
+  })
+  it('removes a prefix', async () => {
+    const stub = sinon.stub(axios, 'delete')
+    stub.resolves(Promise.resolve({}))
+    await fusekiService.removePrefix('jena', 'prefixes-rw', 'foaf')
+    expect(stub.called).to.equal(true)
+    const [url, config] = stub.getCall(0).args
+    expect(url).to.equal('/jena/prefixes-rw')
+    expect(config.params.prefix).to.equal('foaf')
+    stub.restore()
+  })
 })
