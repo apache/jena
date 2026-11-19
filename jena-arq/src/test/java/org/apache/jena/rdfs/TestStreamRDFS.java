@@ -98,6 +98,83 @@ public class TestStreamRDFS {
         assertTrue(listContains(results, "(:X rdf:type :U)"));
     }
 
+    // A sub-property of a property with a domain, in the shared test vocabulary.
+    @Test public void infer_3() {
+        Triple t = SSE.parseTriple("(:c :pp :x)");
+        List<Triple> results = infOutput(x->x.triple(t));
+
+        Set<Triple> resultSet = new HashSet<>(results);
+        assertEquals(5, resultSet.size());
+        assertTrue(listContains(results, "(:c :pp :x)"));
+        assertTrue(listContains(results, "(:c :p :x)"));
+        assertTrue(listContains(results, "(:c :pTop :x)"));
+        assertTrue(listContains(results, "(:c rdf:type :Q)"));
+        assertTrue(listContains(results, "(:c rdf:type :Q2)"));
+    }
+
+    // rdfs:subPropertyOf in a vocabulary with no rdfs:subClassOf.
+    @Test public void subProperty_1() {
+        Graph vocab = SSE.parseGraph("(graph (:p rdfs:subPropertyOf :q))");
+        List<Triple> results = infOutput(vocab, "(:x :p :y)");
+
+        assertEquals(2, results.size());
+        assertTrue(listContains(results, "(:x :p :y)"));
+        assertTrue(listContains(results, "(:x :q :y)"));
+    }
+
+    @Test public void subProperty_2() {
+        Graph vocab = SSE.parseGraph("(graph (:p rdfs:subPropertyOf :q) (:q rdfs:subPropertyOf :r))");
+        List<Triple> results = infOutput(vocab, "(:x :p :y)");
+
+        assertEquals(3, results.size());
+        assertTrue(listContains(results, "(:x :q :y)"));
+        assertTrue(listContains(results, "(:x :r :y)"));
+    }
+
+    // The domain of a super-property.
+    @Test public void subPropertyDomain_1() {
+        Graph vocab = SSE.parseGraph("(graph (:p rdfs:subPropertyOf :q) (:q rdfs:domain :D))");
+        List<Triple> results = infOutput(vocab, "(:x :p :y)");
+
+        assertEquals(3, results.size());
+        assertTrue(listContains(results, "(:x :q :y)"));
+        assertTrue(listContains(results, "(:x rdf:type :D)"));
+    }
+
+    // The range of a super-property.
+    @Test public void subPropertyRange_1() {
+        Graph vocab = SSE.parseGraph("(graph (:p rdfs:subPropertyOf :q) (:q rdfs:range :R))");
+        List<Triple> results = infOutput(vocab, "(:x :p :y)");
+
+        assertEquals(3, results.size());
+        assertTrue(listContains(results, "(:x :q :y)"));
+        assertTrue(listContains(results, "(:y rdf:type :R)"));
+    }
+
+    // The domain of a super-property of a super-property, then its super-class.
+    @Test public void subPropertyDomain_2() {
+        Graph vocab = SSE.parseGraph("""
+            (graph (:p rdfs:subPropertyOf :q) (:q rdfs:subPropertyOf :r)
+                   (:r rdfs:domain :D) (:D rdfs:subClassOf :E))
+            """);
+        List<Triple> results = infOutput(vocab, "(:x :p :y)");
+
+        assertEquals(5, results.size());
+        assertTrue(listContains(results, "(:x :q :y)"));
+        assertTrue(listContains(results, "(:x :r :y)"));
+        assertTrue(listContains(results, "(:x rdf:type :D)"));
+        assertTrue(listContains(results, "(:x rdf:type :E)"));
+    }
+
+    // The same domain on a property and its super-property is inferred once.
+    @Test public void subPropertyDomain_3() {
+        Graph vocab = SSE.parseGraph("(graph (:p rdfs:subPropertyOf :q) (:p rdfs:domain :D) (:q rdfs:domain :D))");
+        List<Triple> results = infOutput(vocab, "(:x :p :y)");
+
+        assertEquals(3, results.size());
+        assertTrue(listContains(results, "(:x rdf:type :D)"));
+    }
+
     private static boolean listContains(List<Triple> list, String strTriple) {
         Triple triple = SSE.parseTriple(strTriple);
         return list.stream().anyMatch(t->triple.equals(t));
@@ -112,6 +189,15 @@ public class TestStreamRDFS {
         CollectorStreamRDF dest = new CollectorStreamRDF();
         StreamRDF stream = RDFSFactory.streamRDFS(dest, vocab);
         exec(stream, action);
+        return dest.getTriples();
+    }
+
+    // Inference of one triple, with a given vocabulary, to a list
+    private static List<Triple> infOutput(Graph vocabulary, String strTriple) {
+        Triple t = SSE.parseTriple(strTriple);
+        CollectorStreamRDF dest = new CollectorStreamRDF();
+        StreamRDF stream = RDFSFactory.streamRDFS(dest, vocabulary);
+        exec(stream, x->x.triple(t));
         return dest.getTriples();
     }
 
