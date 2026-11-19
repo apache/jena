@@ -7,19 +7,19 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- *
- *   SPDX-License-Identifier: Apache-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.apache.jena.sparql.service.enhancer.impl;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +28,12 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.stream.Stream;
 
-import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.atlas.iterator.IteratorCloseable;
 import com.google.common.collect.Streams;
-import org.junit.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
+
+import org.apache.jena.atlas.iterator.IteratorCloseable;
+import org.apache.jena.sparql.service.enhancer.impl.util.iterator.AbortableIterators;
 
 public class TestServiceEnhancerBatcher {
 
@@ -97,7 +98,7 @@ public class TestServiceEnhancerBatcher {
             int maxOutOfBandItemCount,
             List<List<Integer>> expectedBatchIds) {
         IteratorCloseable<GroupedBatch<String, Long, Entry<String, Integer>>> it = new Batcher<String, Entry<String, Integer>>
-            (Entry::getKey, maxBatchSize, maxOutOfBandItemCount).batch(Iter.iter(input.iterator()));
+            (Entry::getKey, maxBatchSize, maxOutOfBandItemCount).batch(AbortableIterators.wrap(input.iterator()));
         // it.forEachRemaining(System.err::println);
 
         // For each obtained batch extract the list of values
@@ -105,7 +106,7 @@ public class TestServiceEnhancerBatcher {
                 .map(groupedBatch -> groupedBatch.getBatch().getItems().values().stream().map(Entry::getValue).toList())
                 .toList();
 
-        Assert.assertEquals(expectedBatchIds, actualBatchIds);
+        assertEquals(expectedBatchIds, actualBatchIds);
     }
 
     /** This test creates random input, batches it and checks that the number of batched items matches that of the input */
@@ -129,15 +130,15 @@ public class TestServiceEnhancerBatcher {
         }
 
         Stream<GroupedBatch<String, Long, Entry<String, Integer>>> stream = Streams.stream(
-                new Batcher<String, Entry<String, Integer>>(Entry::getKey, 4, 4).batch(Iter.iter(testData.iterator())));
+                new Batcher<String, Entry<String, Integer>>(Entry::getKey, 4, 4).batch(AbortableIterators.wrap(testData.iterator())));
 
         int actualItemCount = stream.mapToInt(groupedBatch -> {
             int r = groupedBatch.getBatch().getItems().size();
             // Sanity check that batches are not larger than the allowed maximum size
-            Assert.assertTrue("Batch exceeded maximum size", r <= maxBatchSize);
+            assertTrue(r <= maxBatchSize, "Batch exceeded maximum size");
             return r;
         }).sum();
 
-        Assert.assertEquals(actualItemCount, expectedItemCount);
+        assertEquals(actualItemCount, expectedItemCount);
     }
 }

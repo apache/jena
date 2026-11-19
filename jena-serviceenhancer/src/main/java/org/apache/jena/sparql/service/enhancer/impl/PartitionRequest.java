@@ -22,45 +22,12 @@
 package org.apache.jena.sparql.service.enhancer.impl;
 
 /**
- * Helper class to capture a range of data (specified by limit + offset)
+ * Helper record to capture a range of data (specified by limit + offset)
  * w.r.t. a partition key (typically a {@link org.apache.jena.sparql.engine.binding.Binding}
  * and give that information an id.
  */
-public class PartitionRequest<I>
+public record PartitionRequest<I>(long outputId, I partitionKey, long offset, long limit)
 {
-    protected long outputId;
-    protected I partitionKey;
-    protected long offset;
-    protected long limit;
-
-    public PartitionRequest(
-            long outputId,
-            I partition,
-            long offset,
-            long limit) {
-        super();
-        this.outputId = outputId;
-        this.partitionKey = partition;
-        this.offset = offset;
-        this.limit = limit;
-    }
-
-    public long getOutputId() {
-        return outputId;
-    }
-
-    public I getPartitionKey() {
-        return partitionKey;
-    }
-
-    public long getOffset() {
-        return offset;
-    }
-
-    public long getLimit() {
-        return limit;
-    }
-
     public boolean hasOffset() {
         return offset > 0;
     }

@@ -23,12 +23,9 @@ package org.apache.jena.sparql.service.enhancer.assembler;
 
 import java.util.Objects;
 
-import com.google.common.base.Preconditions;
-
 import org.apache.commons.lang3.function.TriFunction;
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.assembler.exceptions.AssemblerException;
-import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.query.Dataset;
@@ -39,14 +36,20 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphWrapper;
 import org.apache.jena.sparql.core.assembler.DatasetAssembler;
+import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab;
 import org.apache.jena.sparql.service.enhancer.impl.ChainingServiceExecutorBulkCache;
 import org.apache.jena.sparql.service.enhancer.impl.ServiceResponseCache;
 import org.apache.jena.sparql.service.enhancer.impl.util.GraphUtilsExtra;
+import org.apache.jena.sparql.service.enhancer.impl.util.Lazy;
 import org.apache.jena.sparql.service.enhancer.init.ServiceEnhancerConstants;
 import org.apache.jena.sparql.service.enhancer.init.ServiceEnhancerInit;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.sparql.util.graph.GraphUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Preconditions;
 
 /**
  * Assembler that sets up a base dataset's context with the service enhancer machinery.
@@ -55,9 +58,26 @@ import org.apache.jena.sparql.util.graph.GraphUtils;
 public class DatasetAssemblerServiceEnhancer
     extends DatasetAssembler
 {
+    private static final Logger logger = LoggerFactory.getLogger(DatasetAssemblerServiceEnhancer.class);
+
+    @SuppressWarnings("deprecation")
     @Override
     public DatasetGraph createDataset(Assembler a, Resource root) {
         Resource baseDatasetRes = GraphUtils.getResourceValue(root, ServiceEnhancerVocab.baseDataset);
+        if (baseDatasetRes != null) {
+            if (logger.isWarnEnabled()) {
+                logger.warn("Use of {} is deprecated. Please use {} instead.", ServiceEnhancerVocab.baseDataset.getURI(), DatasetAssemblerVocab.pDataset.getURI() );
+            }
+        }
+
+        Resource tmp = GraphUtils.getResourceValue(root, DatasetAssemblerVocab.pDataset);
+        if (tmp != null) {
+            if (baseDatasetRes != null) {
+                throw new AssemblerException(root, "Both " + DatasetAssemblerVocab.pDataset.getURI() + " and " + ServiceEnhancerVocab.baseDataset.getURI() + " specified. Please only use the former.");
+            }
+            baseDatasetRes = tmp;
+        }
+
         Objects.requireNonNull(baseDatasetRes, "No ja:baseDataset specified on " + root);
         Object obj = a.open(baseDatasetRes);
 
@@ -92,7 +112,7 @@ public class DatasetAssemblerServiceEnhancer
                 Preconditions.checkArgument(maxPageCount > 0, ServiceEnhancerVocab.cacheMaxPageCount.getURI() + " requires a value greater than 0");
 
                 ServiceResponseCache cache = new ServiceResponseCache(maxEntryCount, pageSize, maxPageCount);
-                ServiceResponseCache.set(cxt, cache);
+                ServiceResponseCache.set(cxt, Lazy.ofInstance(cache));
             }
 
             // Transfer values from the RDF model to the context
@@ -113,7 +133,9 @@ public class DatasetAssemblerServiceEnhancer
                 result = DatasetFactory.wrap(new DatasetGraphWrapper(result.asDatasetGraph(), cxt));
             }
 
-            Log.info(DatasetAssemblerServiceEnhancer.class, "Dataset self id set to " + selfId);
+            if (logger.isInfoEnabled()) {
+                logger.info("Dataset self id set to {}", selfId);
+            }
         } else {
             Class<?> cls = obj == null ? null : obj.getClass();
             throw new AssemblerException(root, "Expected ja:baseDataset to be a Dataset but instead got " + Objects.toString(cls));
@@ -121,7 +143,6 @@ public class DatasetAssemblerServiceEnhancer
 
         return result.asDatasetGraph();
     }
-
 
     /** Transfer a resource's property value to a context symbol's value */
     private static <T> void configureCxt(Resource root, Property property, Context cxt, Symbol symbol, boolean applyDefaultValueIfPropertyAbsent, T defaultValue, TriFunction<Resource, Property, T, T> getValue) {
