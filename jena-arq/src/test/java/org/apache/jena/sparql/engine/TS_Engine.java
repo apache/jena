@@ -29,6 +29,7 @@ import org.junit.platform.suite.api.Suite;
         TestQueryEngineMultiThreaded.class
       , TestQueryEngineFromContext.class
       , TestQueryEngine.class
+      , TestOpDatasetNames.class
       , TestJsonEval.class
 })
 

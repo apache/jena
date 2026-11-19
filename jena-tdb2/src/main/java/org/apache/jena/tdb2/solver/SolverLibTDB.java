@@ -125,6 +125,17 @@ public class SolverLibTDB
     /** Find whether a specific graph name is in the quads table. */
     static QueryIterator testForGraphName(DatasetGraphTDB ds, Node graphNode, QueryIterator input,
                                                  Predicate<Tuple<NodeId>> filter, ExecutionContext execCxt) {
+        boolean exists = hasGraphName(ds, graphNode, filter);
+        if ( exists )
+            return input;
+        else {
+            input.close();
+            return QueryIterNullIterator.create(execCxt);
+        }
+    }
+
+    /** Return {@code true} if {@code graphNode} is present as a graph name in the quads table. */
+    private static boolean hasGraphName(DatasetGraphTDB ds, Node graphNode, Predicate<Tuple<NodeId>> filter) {
         NodeId nid = TDBInternal.getNodeId(ds, graphNode);
         boolean exists = !NodeId.isDoesNotExist(nid);
         if ( exists ) {
@@ -139,13 +150,7 @@ public class SolverLibTDB
                 iter1 = Iter.filter(iter1, filter);
             exists = iter1.hasNext();
         }
-
-        if ( exists )
-            return input;
-        else {
-            input.close();
-            return QueryIterNullIterator.create(execCxt);
-        }
+        return exists;
     }
 
     private static Tuple<NodeId> TupleANY = TupleFactory.create4(NodeId.NodeIdAny, NodeId.NodeIdAny, NodeId.NodeIdAny, NodeId.NodeIdAny);
@@ -158,6 +163,23 @@ public class SolverLibTDB
     static QueryIterator graphNames(DatasetGraphTDB ds, Node graphNode, QueryIterator input,
                                     Predicate<Tuple<NodeId>> filter, ExecutionContext execCxt) {
         List<Abortable> killList = new ArrayList<>();
+        final Var var = Var.alloc(graphNode);
+        Iterator<Binding> iterBinding = Iter.flatMap(input, binding -> {
+            Node gn = Var.lookup(binding, var);
+            if ( !Var.isVar(gn) ) {
+                if ( hasGraphName(ds, gn, filter) )
+                    return Iter.singletonIterator(binding);
+                return Iter.nullIterator();
+            }
+            Iterator<Node> iterNodes = listGraphNodes(ds, killList, filter, execCxt);
+            return Iter.map(iterNodes, node -> BindingFactory.binding(binding, var, node));
+        });
+        return new QueryIterAbortable(iterBinding, killList, input, execCxt);
+    }
+
+    /** Return an iterator of distinct graph nodes from the quads table. */
+    private static Iterator<Node> listGraphNodes(DatasetGraphTDB ds, List<Abortable> killList,
+                                                 Predicate<Tuple<NodeId>> filter, ExecutionContext execCxt) {
         NodeTupleTable ntt = ds.getQuadTable().getNodeTupleTable();
 
         // Select a graph based index for use, if a suitable one is available
@@ -211,11 +233,7 @@ public class SolverLibTDB
             default -> iter2;
         };
 
-        Iterator<Node> iter4 = NodeLib.nodes(ds.getQuadTable().getNodeTupleTable().getNodeTable(), iter3);
-
-        final Var var = Var.alloc(graphNode);
-        Iterator<Binding> iterBinding = Iter.map(iter4, node -> BindingFactory.binding(var, node));
-        return new QueryIterAbortable(iterBinding, killList, input, execCxt);
+        return NodeLib.nodes(ds.getQuadTable().getNodeTupleTable().getNodeTable(), iter3);
     }
 
     static Set<NodeId> convertToNodeIds(Collection<Node> nodes, DatasetGraphTDB dataset)
