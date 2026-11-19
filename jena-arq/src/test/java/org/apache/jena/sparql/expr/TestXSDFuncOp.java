@@ -714,6 +714,45 @@ public class TestXSDFuncOp {
         testCompare("'P13M'^^xsd:yearMonthDuration", "'P1Y'^^xsd:yearMonthDuration", Expr.CMP_GREATER);
     }
 
+    // GH-4236: a written-but-zero year does not make "P0Y1D" a different value space from "P1D".
+    @Test public void testCompareDuration_07() {
+        testCompare("'P0Y1D'^^xsd:duration", "'P1D'^^xsd:dayTimeDuration", Expr.CMP_EQUAL);
+    }
+
+    @Test public void testCompareDuration_08() {
+        testCompare("'P0Y1D'^^xsd:duration", "'P2D'^^xsd:dayTimeDuration", Expr.CMP_LESS);
+    }
+
+    @Test public void testCompareDuration_09() {
+        testCompare("'P1YT0S'^^xsd:duration", "'P12M'^^xsd:yearMonthDuration", Expr.CMP_EQUAL);
+    }
+
+    // GH-4237: "PT0.5S" is not a zero duration, so it is not equal to "P0M" (a zero duration compares in either space).
+    @Test public void testCompareDuration_10() {
+        testCompare("'PT0.5S'^^xsd:dayTimeDuration", "'P0M'^^xsd:yearMonthDuration", Expr.CMP_GREATER);
+        testCompare("'PT0.5S'^^xsd:dayTimeDuration", "'PT0.25S'^^xsd:dayTimeDuration", Expr.CMP_GREATER);
+    }
+
+    @Test public void testSameValueDuration_01() {
+        assertTrue(NodeValue.sameValueAs(parse("'P0Y1D'^^xsd:duration"), parse("'P1D'^^xsd:dayTimeDuration")));
+    }
+
+    @Test public void testSameValueDuration_02() {
+        assertFalse(NodeValue.sameValueAs(parse("'PT0.5S'^^xsd:dayTimeDuration"), parse("'P0M'^^xsd:yearMonthDuration")));
+    }
+
+    @Test public void testSameValueDuration_03() {
+        // Zero durations of the two value spaces are equal.
+        assertTrue(NodeValue.sameValueAs(parse("'PT0S'^^xsd:dayTimeDuration"), parse("'P0M'^^xsd:yearMonthDuration")));
+    }
+
+    @Test public void testCompareDuration_11() {
+        // A zero duration is comparable with a duration of either value space.
+        testCompare("'PT0S'^^xsd:dayTimeDuration", "'P1M'^^xsd:yearMonthDuration", Expr.CMP_LESS);
+        testCompare("'P0M'^^xsd:yearMonthDuration", "'PT1H'^^xsd:dayTimeDuration", Expr.CMP_LESS);
+        testCompare("'-PT1H'^^xsd:duration", "'PT0H0M0S'^^xsd:duration", Expr.CMP_LESS);
+    }
+
     // -------
 
     private static void testCompare(String s1, String s2, int correct) {
