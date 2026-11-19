@@ -1262,6 +1262,14 @@ public class XSDFuncOp
     /** Return a XMLGregorianCalendar appropriate for XSD comparision */
     private static XMLGregorianCalendar getXMLGregorianCalendarXSD(NodeValue nv) {
         XMLGregorianCalendar dt = nv.getDateTime();
+        if ( nv.isDate()) {
+            // Force time so that the starting instants are compared.
+            // Without a time, the timezone normalization compares the UTC calendar day.
+            dt.setHour(0);
+            dt.setMinute(0);
+            dt.setSecond(0);
+            return dt;
+        }
         if ( nv.isTime()) {
             if ( dt.getHour() == 24 )
                 // Normalize "24:00:00"
