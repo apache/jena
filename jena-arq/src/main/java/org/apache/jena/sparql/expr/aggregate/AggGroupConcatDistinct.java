@@ -30,6 +30,7 @@ import org.apache.jena.sparql.expr.ExprList;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionEnv;
 import org.apache.jena.sparql.serializer.SerializationContext;
+import org.apache.jena.sparql.graph.NodeConst;
 
 public class AggGroupConcatDistinct extends AggregatorBase
 {
@@ -71,8 +72,9 @@ public class AggGroupConcatDistinct extends AggregatorBase
 
     public String getSeparator() { return separator; }
 
+    // GROUP_CONCAT over an empty group is the empty string, DISTINCT or not.
     @Override
-    public Node getValueEmpty()     { return null; } 
+    public Node getValueEmpty()     { return NodeConst.emptyString; }
 
     @Override
     public int hashCode()   { return HC_AggCountVar ^ getExpr().hashCode(); }
