@@ -27,7 +27,8 @@ import org.junit.platform.suite.api.Suite;
 @Suite
 @SelectClasses({
     TestUnescape.class ,
-    TestVarScope.class
+    TestVarScope.class ,
+    TestARQCharStream.class
 })
 
 public class TS_LangSPARQL

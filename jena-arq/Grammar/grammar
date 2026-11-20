@@ -32,7 +32,9 @@ function grammar
     
     DIR="../src/main/java/org/apache/jena/sparql/lang/$PKG/javacc"
 
-    (cd "$DIR" ; rm -f TokenMgrError.java ParseException.java Token.java JavaCharStream.java )
+    ## javacc does not overwrite existing support files, so remove them to have them regenerated.
+    ## CharStream.java: ARQ only (USER_CHAR_STREAM in main.jj).
+    (cd "$DIR" ; rm -f TokenMgrError.java ParseException.java Token.java JavaCharStream.java CharStream.java )
 
     echo "---- Process grammar -- $1"
     javacc -OUTPUT_DIRECTORY=$DIR  -JDK_VERSION=1.8 "${FILE}"
