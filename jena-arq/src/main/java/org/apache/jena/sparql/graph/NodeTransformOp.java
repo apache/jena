@@ -134,8 +134,6 @@ class NodeTransformOp extends TransformCopy {
         if ( opTable.isJoinIdentity() )
             return opTable;
         Table table = opTable.getTable();
-        if ( table.isEmpty() )
-            return opTable;
         if ( TableUnit.isTableUnit(table) )
             return opTable;
         if ( table.getVars().size() == 0 )
