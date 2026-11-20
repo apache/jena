@@ -540,7 +540,7 @@ public class GMLReader implements ParserReader {
             }
 
             //Interior shell - [0..*]
-            List<Element> interiorElements = gmlElement.getChildren("interior", GML_NAMESPACE);
+            List<Element> interiorElements = patch.getChildren("interior", GML_NAMESPACE);
             List<LinearRing> interiorList = new ArrayList<>();
             for (Element interiorElement : interiorElements) {
                 Geometry interiorGeom = buildSurfacePatch(interiorElement, dims, srsInfo);
