@@ -27,7 +27,12 @@ import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -106,6 +111,65 @@ public class TestDatabaseCompact
         Txn.executeWrite(dsgOld, ()->dsgOld.delete(quad2));
         Txn.executeRead(dsg,     ()->assertTrue(dsg.contains(quad2)) );
         Txn.executeRead(dsg2,    ()->assertTrue(dsg2.contains(quad2)) );
+    }
+
+    // A read transaction that begins before compaction switches databases and ends after must
+    // neither hang compaction nor lose its view of the data.
+    @Test public void compact_read_transaction_across_switch() throws Exception {
+        DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(dir);
+        DatasetGraphSwitchable dsgs = (DatasetGraphSwitchable)dsg;
+        Txn.executeWrite(dsg, ()-> {
+            dsg.add(quad2);
+            dsg.add(quad1);
+        });
+        DatasetGraph dsg1 = dsgs.get();
+
+        CountDownLatch readerOpen = new CountDownLatch(1);
+        CountDownLatch switched = new CountDownLatch(1);
+        AtomicReference<Throwable> readerFailure = new AtomicReference<>();
+        CompletableFuture<Void> reader = CompletableFuture.runAsync(()->{
+            try {
+                Txn.executeRead(dsg, ()-> {
+                    readerOpen.countDown();
+                    await(switched);
+                    // After the switch the transaction still reads the database it began on.
+                    assertTrue(dsg.contains(quad1));
+                    assertEquals(2, dsg.getDefaultGraph().size());
+                });
+            } catch (Throwable th) {
+                readerFailure.set(th);
+                throw th;
+            }
+        });
+        assertTrue(readerOpen.await(10, TimeUnit.SECONDS));
+
+        CompletableFuture<Void> compact = CompletableFuture.runAsync(()->DatabaseMgr.compact(dsg, false));
+        // The test thread is not in a transaction so get() is the current database.
+        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(30);
+        while ( dsgs.get() == dsg1 && System.nanoTime() < deadline ) {
+            Thread.sleep(5);
+        }
+        assertNotSame(dsg1, dsgs.get(), "compaction did not switch the database");
+        switched.countDown();
+
+        // The reader has ended; the compaction can now finish.
+        assertTimeoutPreemptively(Duration.ofSeconds(30), ()-> compact.get(), "compaction did not complete");
+        reader.get(10, TimeUnit.SECONDS);
+        assertNull(readerFailure.get());
+
+        // The container is usable: new transactions use the new database.
+        Txn.executeWrite(dsg, ()->dsg.add(SSE.parseQuad("(_ <s> <p> 3)")));
+        Txn.executeRead(dsg, ()->assertEquals(3, dsg.getDefaultGraph().size()));
+        assertFalse(dsgs.isInTransaction());
+    }
+
+    private static void await(CountDownLatch latch) {
+        try {
+            assertTrue(latch.await(30, TimeUnit.SECONDS));
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException(ex);
+        }
     }
 
     @Test public void compact_graph_2() {
