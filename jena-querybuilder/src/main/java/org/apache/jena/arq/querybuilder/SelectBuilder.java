@@ -397,7 +397,7 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 
     @Override
     public SelectBuilder addOptional(AbstractQueryBuilder<?> t) {
-        getWhereHandler().addOptional(t.getWhereHandler());
+        getWhereHandler().addOptional(t);
         return this;
     }
 
