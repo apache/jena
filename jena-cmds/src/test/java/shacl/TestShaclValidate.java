@@ -25,13 +25,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
-import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -40,35 +36,25 @@ import org.apache.jena.riot.RDFParser;
 import org.apache.jena.shacl.ValidationReport;
 
 public class TestShaclValidate {
-    @TempDir
-    Path tempDir;
-
     @ParameterizedTest
     @ValueSource(booleans = { false, true })
-    public void conforming(boolean textOutput) throws IOException {
+    public void conforming(boolean textOutput) {
         validate(true, textOutput);
     }
 
     @ParameterizedTest
     @ValueSource(booleans = { false, true })
-    public void nonConforming(boolean textOutput) throws IOException {
+    public void nonConforming(boolean textOutput) {
         validate(false, textOutput);
     }
 
-    private void validate(boolean conforms, boolean textOutput) throws IOException {
-        Path input = tempDir.resolve("input.ttl");
-        Files.writeString(input, """
-            @prefix sh: <http://www.w3.org/ns/shacl#> .
-            @prefix ex: <http://example.org/> .
-
-            ex:Shape a sh:NodeShape ;
-                sh:targetNode ex:subject ;
-                sh:property [ sh:path ex:value ; sh:minCount 1 ] .
-            """ + (conforms ? "ex:subject ex:value 1 ." : ""));
+    private void validate(boolean conforms, boolean textOutput) {
+        String input = "testing/cmd/" +
+            (conforms ? "shacl-conforming.ttl" : "shacl-nonconforming.ttl");
 
         String[] args = textOutput
-            ? new String[] { "--text", input.toString() }
-            : new String[] { input.toString() };
+            ? new String[] { "--text", input }
+            : new String[] { input };
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         PrintStream originalOut = System.out;
         try ( PrintStream out = new PrintStream(output, true, StandardCharsets.UTF_8) ) {
