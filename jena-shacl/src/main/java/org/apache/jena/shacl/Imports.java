@@ -26,9 +26,11 @@ import static org.apache.jena.sparql.graph.NodeConst.nodeOwlImports;
 import static org.apache.jena.sparql.graph.NodeConst.nodeOwlOntology;
 import static org.apache.jena.sparql.graph.NodeConst.nodeRDFType;
 
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.web.HttpException;
@@ -103,9 +105,23 @@ public class Imports {
         GraphUtil.addInto(acc, graph);
         Set<String> visited = new HashSet<>();
         if ( url != null )
-            visited.add(url);
+            visited.add(documentKey(url));
         processImports(visited, graph, acc);
         return acc;
+    }
+
+    /**
+     * The key for the document an import refers to: for a file: IRI, the file it
+     * names, so that spellings that differ only in percent-encoding (e.g.
+     * shapes(v2).ttl and shapes%28v2%29.ttl) are the same document.
+     */
+    private static String documentKey(String uri) {
+        if ( IRILib.isFilename(uri) ) {
+            try {
+                return Path.of(IRILib.IRIToFilename(uri)).normalize().toString();
+            } catch (RuntimeException ex) { /* Not a usable file name: compare the IRI. */ }
+        }
+        return uri;
     }
 
     /** Carefully traverse the imports, loading graphs. */
@@ -120,12 +136,13 @@ public class Imports {
                 importsLogger.debug("Import: " + uri);
 
             // FmtLog.info(Imports.class, "Import: %s", uri);
-            if ( visited.contains(uri) ) {
+            String key = documentKey(uri);
+            if ( visited.contains(key) ) {
                 if ( importsLogger.isDebugEnabled() )
                     importsLogger.debug("Skipped: " + uri);
                 continue;
             }
-            visited.add(uri);
+            visited.add(key);
             // Read into a temporary graph to isolate errors.
             Graph g2 = loadOneGraph(uri);
             GraphUtil.addInto(acc, g2);

@@ -1,0 +1,7 @@
+PREFIX :        <http://example/>
+PREFIX owl:     <http://www.w3.org/2002/07/owl#>
+
+<> a owl:Ontology ;
+   owl:imports <other%28v3%29.ttl> .
+
+:graph2 :p [] .

@@ -144,6 +144,25 @@ public class TestImports {
         }
     }
 
+    // An import cycle back to the start file is found however the import spells the
+    // file name: IRIs.toBase writes "shapes(v2).ttl" as "shapes%28v2%29.ttl".
+    // common.ttl imports <shapes(v2).ttl>; common-encoded.ttl imports <other%28v3%29.ttl>.
+    @Test public void testImportsCycleSpelling() {
+        for ( String start : List.of("shapes(v2).ttl", "other(v3).ttl") ) {
+            String relPath = "src/test/files/imports/cycle/" + start;
+            String absPath = Path.of(relPath).toAbsolutePath().toString();
+            for ( String pathStr : List.of(relPath, absPath) ) {
+                Graph loaded = Imports.loadWithImports(pathStr);
+                assertTrue(G.containsOne(loaded, g1, predicate, null), "Start graph loaded more than once: " + pathStr);
+                assertTrue(G.containsOne(loaded, g2, predicate, null), "Imported graph not loaded once: " + pathStr);
+
+                Graph withImports = Imports.withImports(pathStr, RDFDataMgr.loadGraph(pathStr));
+                assertTrue(G.containsOne(withImports, g1, predicate, null), "Start graph loaded more than once: " + pathStr);
+                assertTrue(G.containsOne(withImports, g2, predicate, null), "Imported graph not loaded once: " + pathStr);
+            }
+        }
+    }
+
     @Test public void testWithImportsBackslashPath() {
         Graph graph = GraphFactory.createDefaultGraph();
         graph.add(g1, predicate, g2);
