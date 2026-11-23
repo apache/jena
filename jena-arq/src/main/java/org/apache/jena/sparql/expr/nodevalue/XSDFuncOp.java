@@ -1699,21 +1699,45 @@ public class XSDFuncOp
         return NodeValue.makeInteger(x);
     }
 
+    // F&O 3.1 section 8.2: the component of the canonical form of the duration, with the sign of the duration.
+    // Year/month and day/time parts are normalised separately.
     private static NodeValue accessDuration(NodeValue nv, Field field) {
         Duration dur = nv.getDuration();
-        // if ( ! nv.isDuration() )
-        // throw new ExprEvalException("Not a duration: "+nv);
-        Number x = dur.getField(field);
-        if ( x == null ) {
-            x =  field.equals(DatatypeConstants.SECONDS)
-                ? BigDecimal.ZERO
-                : BigInteger.ZERO;
+        boolean negative = dur.getSign() < 0;
+
+        if ( field.equals(YEARS) || field.equals(MONTHS) ) {
+            BigInteger totalMonths = durFieldInteger(dur, YEARS).multiply(BigInteger.valueOf(12)).add(durFieldInteger(dur, MONTHS));
+            BigInteger[] yearsMonths = totalMonths.divideAndRemainder(BigInteger.valueOf(12));
+            BigInteger x = field.equals(YEARS) ? yearsMonths[0] : yearsMonths[1];
+            return NodeValue.makeInteger(negative ? x.negate() : x);
         }
 
-        if ( field.equals(DatatypeConstants.SECONDS) )
-            return NodeValue.makeDecimal((BigDecimal)x);
+        BigDecimal seconds = (BigDecimal)dur.getField(SECONDS);
+        if ( seconds == null )
+            seconds = BigDecimal.ZERO;
+        BigInteger totalMinutes = durFieldInteger(dur, DAYS).multiply(BigInteger.valueOf(24 * 60))
+                .add(durFieldInteger(dur, HOURS).multiply(BigInteger.valueOf(60)))
+                .add(durFieldInteger(dur, MINUTES));
+        BigDecimal sixty = BigDecimal.valueOf(60);
+        totalMinutes = totalMinutes.add(seconds.divideToIntegralValue(sixty).toBigInteger());
+        seconds = seconds.remainder(sixty);
 
-        return NodeValue.makeInteger((BigInteger)x);
+        if ( field.equals(SECONDS) )
+            return NodeValue.makeDecimal(negative ? seconds.negate() : seconds);
+
+        BigInteger x;
+        if ( field.equals(MINUTES) )
+            x = totalMinutes.mod(BigInteger.valueOf(60));
+        else if ( field.equals(HOURS) )
+            x = totalMinutes.divide(BigInteger.valueOf(60)).mod(BigInteger.valueOf(24));
+        else
+            x = totalMinutes.divide(BigInteger.valueOf(24 * 60));
+        return NodeValue.makeInteger(negative ? x.negate() : x);
+    }
+
+    private static BigInteger durFieldInteger(Duration dur, Field field) {
+        Number x = dur.getField(field);
+        return x == null ? BigInteger.ZERO : (BigInteger)x;
     }
 
     /** One day */
