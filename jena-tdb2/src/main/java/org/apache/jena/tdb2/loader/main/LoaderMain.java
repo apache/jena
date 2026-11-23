@@ -304,9 +304,13 @@ public class LoaderMain extends LoaderBase implements DataLoader {
         Transaction transaction = coordinator.begin(TxnType.READ);
         // Add to processes - we can wait later if we do not touched indexes being built.
         processes.add(indexer);
-        PhasedOps.ReplayResult result = PhasedOps.replay(srcIdx, dest, output);
-        // End read transaction on srcIdx
-        transaction.end();
+        PhasedOps.ReplayResult result;
+        try {
+            result = PhasedOps.replay(srcIdx, dest, output);
+        } finally {
+            // End read transaction on srcIdx
+            transaction.end();
+        }
 
         String timeStr = "---";
         if ( result.elapsed != 0 ) {
