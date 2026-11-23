@@ -1,3 +1,114 @@
+==== Apache Jena 6.3.0
+Released: 2026-11-22
+Issues: https://s.apache.org/jena-6.3.0-issues
+Announcement:
+https://lists.apache.org/thread/?????
+
+== Jena 6.3.0
+
+The fuseki command line scripts "fuseki-server" ans "fuseki-plain" now take a setting for disabling/enabling handling of SERVICE.
+
+   fuseki --set arq:httpServiceAllowed=false ....
+
+will disable SERVICE.
+
+At Jena7, the default will become "false" for Fuseki.
+
+It can be set in a configuration file:
+
+At the server level:
+
+[] rdf:type fuseki:Server ;
+    ja:context [
+       ja:cxtName "arq:httpServiceAllowed" ;
+       ja:cxtValue false ] ;
+    ...
+
+Context setting can also be applied to endpoint and to datasets/
+If there are multiple declarations, the priority order is
+  dataset > endpoint > server.
+
+For an embedded server, or running as a library, use ARQ constant
+ARQ.httpServiceAllowed in Java code.
+
+== Contributions
+
+@linhongyu510 -- hylin
+Triple terms:
+https://github.com/apache/jena/pull/4182
+
+Thomas Thelen:
+  Fix for 'uploading all' when loading into the default graph
+https://github.com/apache/jena/pull/4104
+
+Thomas Thelen:
+  Migrate jena-fuseki-geosparql tests to JUnit 5
+https://github.com/apache/jena/pull/4131
+
+Thomas Thelen:
+  Remove the server-per-testsuite switch from Fuseki tests
+https://github.com/apache/jena/pull/4133
+
+Aditya Nikam / @adityaanikam
+  Fix for pre-bound variables is inside an RDF 1.2 annotation
+https://github.com/apache/jena/pull/4134
+
+Aniruthan Ramadoss / @AniRamadoss
+divyank sameer shah / @divyankshah
+  Fix use of Jetty ByteBufferPool
+https://github.com/apache/jena/issues/4084
+https://github.com/apache/jena/pull/4088
+
+Claus Stadler / @Aklakan
+  GH-4107: jena-bom altered to include jena artifacts using flatten-maven-plugin
+https://github.com/apache/jena/pull/4114
+https://github.com/apache/jena/issue/4107
+
+@shin4141
+  Compare string by codepoint.
+https://github.com/apache/jena/pull/4314
+
+Sharang Gupta / @sharanggupta
+  Test fixes
+https://github.com/apache/jena/pull/4406/
+
+@mhatipog GH-4297: Fix signed-zero numeric comparisons
+  https://github.com/apache/jena/pull/4356
+
+Piotr Sowiński / @Ostrzycie
+  NPE in format guess in rset command- #4350⁠
+https://github.com/apache/jena/pull/4350
+https://github.com/apache/jena/issues/4349
+
+@Duansg
+  Ignore incomplete compaction directories when finding TDB2
+https://github.com/apache/jena/pull/4257
+
+== GeoSPARQL
+
+This release has significantly enlarged coverage of GeoSPARQL 1.1.
+
+From Edmond Chuc / @edmondchuc
+
+GH-4204: Add four GeoSPARQL 1.1 geometry metadata functions
+https://github.com/apache/jena/pull/4205
+
+GH-4202: Fix GeoSPARQL yard conversion factor- #4203
+https://github.com/apache/jena/pull/4203
+
+GH-4221: Add six GeoSPARQL 1.1 coordinate extrema functions
+https://github.com/apache/jena/pull/4222
+
+GH-4230: Add GeoSPARQL 1.1 geometryN function
+https://github.com/apache/jena/pull/4231
+
+GH-4233: Add GeoSPARQL 1.1 centroid function
+https://github.com/apache/jena/pull/4234
+
+GH-4259: Add GeoSPARQL geometryType function
+https://github.com/apache/jena/pull/4260
+
+
 ==== Apache Jena 6.2.0
 Released: 2026-07-31
 Issues: https://s.apache.org/jena-6.2.0-issues
