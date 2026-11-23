@@ -66,9 +66,9 @@ public class Imports {
      * Load a graph and process owl:imports to create a new, single graph.
      */
     public static Graph loadWithImports(String url) {
-        url = IRIs.resolve(url);
         Graph graph = RDFDataMgr.loadGraph(url);
-        return withImportsWorker(url, graph);
+        String base = IRIs.toBase(url);
+        return withImportsWorker(base, graph);
     }
 
     /**
@@ -85,8 +85,8 @@ public class Imports {
      * in the results.
      */
     public static Graph withImports(String url, Graph graph) {
-        url = IRIs.resolve(url);
-        return withImportsWorker(url, graph);
+        String base = IRIs.toBase(url);
+        return withImportsWorker(base, graph);
     }
 
     private static Graph withImportsWorker(String url, Graph graph) {

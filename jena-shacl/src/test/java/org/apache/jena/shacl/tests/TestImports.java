@@ -24,6 +24,7 @@ package org.apache.jena.shacl.tests;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.nio.file.Path;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,7 @@ import org.apache.jena.irix.IRIs;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shacl.Imports;
 import org.apache.jena.shacl.Shapes;
+import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.system.G;
 
 public class TestImports {
@@ -117,6 +119,36 @@ public class TestImports {
 
     @Test public void testShapesImports1() {
         Shapes.parse(FILES+"/graph1.ttl", true);
+    }
+
+    @Test public void testImportsWithSpacesInPath() {
+        String relPath = "src/test/files/imports/dir with space/my shapes.ttl";
+        String absPath = Path.of(relPath).toAbsolutePath().toString();
+
+        for ( String pathStr : List.of(relPath, absPath) ) {
+            // loadWithImports and cyclic import back to the start graph (loaded once).
+            Graph loaded = Imports.loadWithImports(pathStr);
+            assertTrue(G.containsOne(loaded, g1, predicate, null));
+            assertTrue(G.containsOne(loaded, g2, predicate, null));
+
+            // withImports(String, Graph) as called by shacl validate.
+            Graph raw = RDFDataMgr.loadGraph(pathStr);
+            Graph withImports = Imports.withImports(pathStr, raw);
+            assertTrue(G.containsOne(withImports, g1, predicate, null));
+            assertTrue(G.containsOne(withImports, g2, predicate, null));
+
+            // Shapes.parse(fileOrURL, true).
+            Shapes shapes = Shapes.parse(pathStr, true);
+            assertTrue(G.containsOne(shapes.getGraph(), g1, predicate, null));
+            assertTrue(G.containsOne(shapes.getGraph(), g2, predicate, null));
+        }
+    }
+
+    @Test public void testWithImportsBackslashPath() {
+        Graph graph = GraphFactory.createDefaultGraph();
+        graph.add(g1, predicate, g2);
+        Graph result = Imports.withImports("data\\shapes.ttl", graph);
+        assertTrue(G.containsOne(result, g1, predicate, g2));
     }
 }
 
