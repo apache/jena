@@ -14,6 +14,10 @@ Note:
 cpp (the C Preprocessor) must be installed.
 The grammar script runs cpp over main.jj to produce arq.jj and sparql.jj.
 
+For ARQ, main.jj sets the javacc option USER_CHAR_STREAM: the ARQ parser
+reads with ARQCharStream (org.apache.jena.sparql.lang.arq), which is not
+generated, instead of a generated SimpleCharStream.
+
 ==== HTML
 
 To produce the HTML for the SPARQL Grammar for the W3C spec:
