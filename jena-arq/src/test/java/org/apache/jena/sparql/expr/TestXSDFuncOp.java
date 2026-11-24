@@ -517,6 +517,21 @@ public class TestXSDFuncOp {
         assertThrows(ExprNotComparableException.class, ()->NodeValue.compare(nv1, nv2));
     }
 
+    @Test public void testCompare24() {
+        // GH-4299 : Dates compare by their starting instants.
+        // Same calendar day after normalization to UTC, starting instants one hour apart.
+        NodeValue nv1 = NodeValue.makeDate("2026-01-01+01:00");
+        NodeValue nv2 = NodeValue.makeDate("2026-01-01+02:00");
+        assertEquals(NodeValue.CMP_GREATER, NodeValue.compare(nv1, nv2), "Does not compare " + nv1 + " & " + nv2);
+    }
+
+    @Test public void testCompare25() {
+        // GH-4299 : Dates compare by their starting instants.
+        NodeValue nv1 = NodeValue.makeDate("2026-01-02+14:00");
+        NodeValue nv2 = NodeValue.makeDate("2026-01-01-14:00");
+        assertEquals(NodeValue.CMP_LESS, NodeValue.compare(nv1, nv2), "Does not compare " + nv1 + " & " + nv2);
+    }
+
     @Test public void testSameUnknown_1() {
         NodeValue nv1 = NodeValue.makeNode(NodeFactory.createURI("test:abc"));
         NodeValue nv2 = NodeValue.makeNode(NodeFactory.createURI("test:abc"));
@@ -622,6 +637,15 @@ public class TestXSDFuncOp {
 
         assertTrue(NodeValue.sameValueAs(nv1, nv2));
         assertFalse(NodeValue.notSameValueAs(nv1, nv2));
+    }
+
+    @Test public void testSameDate_4() {
+        // GH-4299 : Same calendar day after normalization to UTC, different starting instants.
+        NodeValue nv1 = NodeValue.makeDate("2026-01-01+01:00");
+        NodeValue nv2 = NodeValue.makeDate("2026-01-01+02:00");
+
+        assertFalse(NodeValue.sameValueAs(nv1, nv2));
+        assertTrue(NodeValue.notSameValueAs(nv1, nv2));
     }
 
     @Test public void testSameDate_3() {
