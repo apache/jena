@@ -42,7 +42,7 @@ public class RDFChangesManagedOutput extends RDFChangesWriterText {
     private final ManagedOutput managedOutput;
     private final ThreadLocal<Boolean> pendingTxnBegin = new ThreadLocal<>();
     private OutputStream currentStream = null;
-    private Thread ownerThread = null;
+    private volatile Thread ownerThread = null;
     private Node previous = null;
 
     public RDFChangesManagedOutput(ManagedOutput output) {
@@ -56,43 +56,43 @@ public class RDFChangesManagedOutput extends RDFChangesWriterText {
     }
 
     @Override
-    public synchronized void header(String field, Node value) {
+    public void header(String field, Node value) {
         ensureOutput();
         super.header(field, value);
     }
 
     @Override
-    public synchronized void add(Node g, Node s, Node p, Node o) {
+    public void add(Node g, Node s, Node p, Node o) {
         ensureOutput();
         super.add(g, s, p, o);
     }
 
     @Override
-    public synchronized void delete(Node g, Node s, Node p, Node o) {
+    public void delete(Node g, Node s, Node p, Node o) {
         ensureOutput();
         super.delete(g, s, p, o);
     }
 
     @Override
-    public synchronized void addPrefix(Node gn, String prefix, String uriStr) {
+    public void addPrefix(Node gn, String prefix, String uriStr) {
         ensureOutput();
         super.addPrefix(gn, prefix, uriStr);
     }
 
     @Override
-    public synchronized void deletePrefix(Node gn, String prefix) {
+    public void deletePrefix(Node gn, String prefix) {
         ensureOutput();
         super.deletePrefix(gn, prefix);
     }
 
     @Override
-    public synchronized void segment() {
+    public void segment() {
         ensureOutput();
         super.segment();
     }
 
     @Override
-    public synchronized void txnCommit() {
+    public void txnCommit() {
         try {
             ensureOutput();
             super.txnCommit();
@@ -104,7 +104,7 @@ public class RDFChangesManagedOutput extends RDFChangesWriterText {
     }
 
     @Override
-    public synchronized void txnAbort() {
+    public void txnAbort() {
         try {
             ensureOutput();
             super.txnAbort();
@@ -116,42 +116,37 @@ public class RDFChangesManagedOutput extends RDFChangesWriterText {
     }
 
     @Override
-    public synchronized void finish() {
+    public void finish() {
+        checkOwner(Thread.currentThread());
         if ( currentStream == null )
             return;
-        if ( ownerThread != Thread.currentThread() )
-            throw new PatchException("Concurrent write to managed output: section active on thread " + ownerThread.getName());
         super.finish();
     }
 
     @Override
-    public synchronized void close() {
-        if ( currentStream == null ) {
-            pendingTxnBegin.remove();
-            return;
-        }
-        if ( ownerThread != Thread.currentThread() )
-            throw new PatchException("Concurrent write to managed output: section active on thread " + ownerThread.getName());
+    public void close() {
+        checkOwner(Thread.currentThread());
         pendingTxnBegin.remove();
+        if ( currentStream == null )
+            return;
         finishOutput();
     }
 
     private void ensureOutput() {
         Thread current = Thread.currentThread();
-        if ( currentStream != null ) {
-            if ( ownerThread != current )
-                throw new PatchException("Concurrent write to managed output: section active on thread " + ownerThread.getName());
-            if ( Boolean.TRUE.equals(pendingTxnBegin.get()) ) {
-                pendingTxnBegin.remove();
-                super.txnBegin();
-            }
-            return;
-        }
-        startOutput(current);
+        checkOwner(current);
+        if ( currentStream == null )
+            startOutput(current);
         if ( Boolean.TRUE.equals(pendingTxnBegin.get()) ) {
             pendingTxnBegin.remove();
             super.txnBegin();
         }
+    }
+
+    private void checkOwner(Thread current) {
+        Thread owner = ownerThread;
+        if ( owner != null && owner != current )
+            throw new PatchException("Concurrent write to managed output: section active on thread " + owner.getName());
     }
 
     private void startOutput(Thread current) {

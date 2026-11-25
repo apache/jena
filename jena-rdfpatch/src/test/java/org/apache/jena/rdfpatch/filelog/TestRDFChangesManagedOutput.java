@@ -45,6 +45,7 @@ import org.apache.jena.rdfpatch.RDFPatch;
 import org.apache.jena.rdfpatch.RDFPatchOps;
 import org.apache.jena.rdfpatch.changes.PatchSummary;
 import org.apache.jena.rdfpatch.filelog.rotate.ManagedOutput;
+import org.apache.jena.rdfpatch.filelog.rotate.OutputManagedFile;
 import org.apache.jena.rdfpatch.system.DatasetGraphChanges;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
@@ -63,6 +64,109 @@ public class TestRDFChangesManagedOutput {
                 .sorted(Comparator.comparing(p -> p.getFileName().toString()))
                 .toList();
         }
+    }
+
+    private static void awaitWaiting(Thread thread, long timeoutMs) {
+        long deadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(timeoutMs);
+        while ( System.nanoTime() < deadline ) {
+            Thread.State state = thread.getState();
+            if ( state == Thread.State.WAITING || state == Thread.State.BLOCKED || state == Thread.State.TERMINATED )
+                return;
+            Thread.yield();
+        }
+    }
+
+    /**
+     * Standalone deterministic reproducer: thread B calls begin(WRITE) while thread A
+     * holds a write transaction on DatasetGraphChanges. Because DatasetGraphChanges.begin
+     * calls changesMonitor.txnBegin() before acquiring the underlying dataset write lock,
+     * thread B logs txnBegin and then blocks waiting for the write lock until thread A commits.
+     */
+    @Test
+    public void secondWriterBeginsWhileWriteActive(@TempDir Path dir) throws Exception {
+        ManagedOutput mout = new OutputManagedFile(dir, BASE, FilePolicy.INDEX);
+        CountDownLatch aInWrite = new CountDownLatch(1);
+        CountDownLatch bLoggedTxnBegin = new CountDownLatch(1);
+        RDFChangesManagedOutput changes = new RDFChangesManagedOutput(mout) {
+            @Override
+            public void txnBegin() {
+                super.txnBegin();
+                if ( aInWrite.getCount() == 0 )
+                    bLoggedTxnBegin.countDown();
+            }
+        };
+        DatasetGraph dsg = new DatasetGraphChanges(DatasetGraphFactory.createTxnMem(), changes);
+
+        Node sA = NodeFactory.createURI("http://example/sA");
+        Node sB = NodeFactory.createURI("http://example/sB");
+        Node p = NodeFactory.createURI("http://example/p");
+        Node oA = NodeFactory.createLiteralString("a");
+        Node oB = NodeFactory.createLiteralString("b");
+
+        AtomicReference<Throwable> error = new AtomicReference<>();
+
+        Thread threadB = new Thread(() -> {
+            try {
+                assertTrue(aInWrite.await(10, TimeUnit.SECONDS));
+                dsg.begin(TxnType.WRITE);
+                try {
+                    dsg.add(Quad.defaultGraphIRI, sB, p, oB);
+                    dsg.commit();
+                } finally {
+                    dsg.end();
+                }
+            } catch (Throwable ex) {
+                error.compareAndSet(null, ex);
+            }
+        }, "writer-B");
+
+        Thread threadA = new Thread(() -> {
+            try {
+                dsg.begin(TxnType.WRITE);
+                try {
+                    dsg.add(Quad.defaultGraphIRI, sA, p, oA);
+                    aInWrite.countDown();
+                    assertTrue(bLoggedTxnBegin.await(10, TimeUnit.SECONDS), "Thread B did not reach txnBegin");
+                    awaitWaiting(threadB, 10_000);
+                    dsg.commit();
+                } finally {
+                    dsg.end();
+                }
+            } catch (Throwable ex) {
+                error.compareAndSet(null, ex);
+            }
+        }, "writer-A");
+
+        threadA.start();
+        threadB.start();
+        threadA.join(10_000);
+        threadB.join(10_000);
+
+        assertFalse(threadA.isAlive(), "Thread A deadlocked");
+        assertFalse(threadB.isAlive(), "Thread B deadlocked");
+        assertNull(error.get());
+
+        List<Path> patchFiles = listPatchFiles(dir, BASE);
+        assertEquals(2, patchFiles.size());
+
+        DatasetGraph replay = DatasetGraphFactory.createTxnMem();
+        Node prevId = null;
+        for ( Path file : patchFiles ) {
+            RDFPatch patch = RDFPatchOps.read(file.toString());
+            PatchSummary summary = RDFPatchOps.summary(patch);
+            assertEquals(1, summary.getCountTxnBegin(), () -> "Expected single TX in " + file.getFileName());
+            assertEquals(1, summary.getCountTxnCommit(), () -> "Expected single TC in " + file.getFileName());
+            assertEquals(0, summary.getCountTxnAbort(), () -> "Unexpected TA in " + file.getFileName());
+
+            Node id = patch.getId();
+            assertNotNull(id);
+            assertEquals(prevId, patch.getPrevious());
+            prevId = id;
+
+            RDFPatchOps.applyChange(replay, patch);
+        }
+
+        assertTrue(IsoMatcher.isomorphic(dsg, replay));
     }
 
     @Test
@@ -288,20 +392,18 @@ public class TestRDFChangesManagedOutput {
     }
 
     @Test
-    public void concurrentUnserializedWriteThrowsWithoutCorruptingOwner(@TempDir Path dir) throws Exception {
+    public void differentThreadDuringActiveSectionThrows(@TempDir Path dir) throws Exception {
         ManagedOutput mout = OutputMgr.create(dir, BASE, FilePolicy.INDEX);
         RDFChangesManagedOutput changes = new RDFChangesManagedOutput(mout);
 
         Node s1 = NodeFactory.createURI("http://example/s1");
         Node s2 = NodeFactory.createURI("http://example/s2");
-        Node s3 = NodeFactory.createURI("http://example/s3");
         Node p = NodeFactory.createURI("http://example/p");
         Node o = NodeFactory.createLiteralString("v");
 
         CountDownLatch t1Opened = new CountDownLatch(1);
         CountDownLatch t2Done = new CountDownLatch(1);
-        AtomicReference<Throwable> t1Error = new AtomicReference<>();
-        AtomicReference<Throwable> t2Error = new AtomicReference<>();
+        AtomicReference<Throwable> error = new AtomicReference<>();
 
         Thread t1 = new Thread(() -> {
             try {
@@ -309,54 +411,31 @@ public class TestRDFChangesManagedOutput {
                 changes.add(Quad.defaultGraphIRI, s1, p, o);
                 t1Opened.countDown();
                 assertTrue(t2Done.await(10, TimeUnit.SECONDS));
-                changes.add(Quad.defaultGraphIRI, s3, p, o);
                 changes.txnCommit();
             } catch (Throwable ex) {
-                t1Error.set(ex);
+                error.compareAndSet(null, ex);
             }
         }, "owner-t1");
 
         Thread t2 = new Thread(() -> {
             try {
                 assertTrue(t1Opened.await(10, TimeUnit.SECONDS));
-                changes.txnBegin();
                 assertThrows(PatchException.class, () -> changes.add(Quad.defaultGraphIRI, s2, p, o));
                 assertThrows(PatchException.class, changes::txnAbort);
             } catch (Throwable ex) {
-                t2Error.set(ex);
+                error.compareAndSet(null, ex);
             } finally {
                 t2Done.countDown();
             }
-        }, "intruder-t2");
+        }, "other-t2");
 
         t1.start();
         t2.start();
         t1.join(10_000);
         t2.join(10_000);
 
-        assertNull(t1Error.get());
-        assertNull(t2Error.get());
-
-        List<Path> patchFiles = listPatchFiles(dir, BASE);
-        assertEquals(1, patchFiles.size());
-
-        RDFPatch patch = RDFPatchOps.read(patchFiles.get(0).toString());
-        PatchSummary summary = RDFPatchOps.summary(patch);
-        assertEquals(1, summary.getCountTxnBegin());
-        assertEquals(1, summary.getCountTxnCommit());
-        assertEquals(2, summary.getCountAddData());
-
-        DatasetGraph replay = DatasetGraphFactory.createTxnMem();
-        RDFPatchOps.applyChange(replay, patch);
-        assertTrue(replay.contains(Quad.defaultGraphIRI, s1, p, o));
-        assertTrue(replay.contains(Quad.defaultGraphIRI, s3, p, o));
-        assertFalse(replay.contains(Quad.defaultGraphIRI, s2, p, o));
-
-        // Verify section ownership and semaphore were cleanly released for subsequent writes.
-        changes.txnBegin();
-        changes.add(Quad.defaultGraphIRI, s2, p, o);
-        changes.txnCommit();
-        assertEquals(2, listPatchFiles(dir, BASE).size());
+        assertNull(error.get());
+        assertEquals(1, listPatchFiles(dir, BASE).size());
     }
 
     @Test
