@@ -19,6 +19,14 @@ limitations under the License.
 This file is read by automated agents (security scanners, code
 analyzers, AI assistants) operating on this repository.
 
+## Contributing
+
+Contribution guidelines: [CONTRIBUTING.md](./CONTRIBUTING.md)
+
+Agents that write code, issues, or pull requests for this repository
+MUST read `CONTRIBUTING.md` before starting. Follow the coding, testing, issue,
+and pull request conventions outlined there.
+
 ## Security
 
 Security model: [SECURITY.md](./SECURITY.md)
