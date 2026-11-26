@@ -295,6 +295,7 @@ public class TestQuery extends AbstractFusekiTest {
         }
     }
 
+    @Test
     public void query_json_01() throws IOException {
         Query query = QueryFactory.create("""
                 JSON { "s": ?s , "p": ?p , "o" : ?o }

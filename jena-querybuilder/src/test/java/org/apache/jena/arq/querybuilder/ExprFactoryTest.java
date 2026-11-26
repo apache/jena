@@ -668,6 +668,7 @@ public class ExprFactoryTest {
         assertEquals("\"http://example.com/foo\"", n.asNode().toString());
     }
 
+    @Test
     public void asExprTest_Varnode() {
         Expr e = factory.asExpr(NodeFactory.createVariable("hello"));
         assertTrue(e instanceof ExprVar);

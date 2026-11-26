@@ -469,6 +469,7 @@ public abstract class AbstractTestRDFConnection {
     }
 
     /** Non-standard query syntax on local connection is expected to fail (regardless of syntax checking hint) */
+    @Test
     public void non_standard_syntax_query_local_1b() {
         assertThrows(QueryParseException.class, ()->{
             try ( RDFConnection conn = RDFConnection.connect(DatasetFactory.empty()) ) {
@@ -486,6 +487,7 @@ public abstract class AbstractTestRDFConnection {
     }
 
     /** Non-standard update syntax on local connection is expected to fail (regardless of syntax checking hint) */
+    @Test
     public void non_standard_syntax_update_local_1b() {
         assertThrows(QueryParseException.class, ()->{
             try ( RDFConnection conn = RDFConnection.connect(DatasetFactory.empty()) ) {

@@ -30,6 +30,7 @@ import static org.apache.jena.http.HttpOp.httpPostRtnJSON;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -47,6 +48,7 @@ import org.apache.jena.fuseki.server.ServerConst;
 import org.apache.jena.fuseki.test.HttpTest;
 import org.apache.jena.web.HttpSC;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.AssertionFailedError;
 
 /**
  *  Tests of the admin functionality using a pre-configured dataset.
@@ -113,10 +115,8 @@ public class TestAdmin extends FusekiServerPerTestClass {
         String x = "NoSuchTask";
         String url = urlRoot()+"$/tasks/"+x;
         HttpTest.expect404(()->httpGetJson(url) );
-        try {
-            checkInTasks(x);
-            fail("No failure!");
-        } catch (AssertionError ex) {}
+        AssertionFailedError ex = assertThrows(AssertionFailedError.class, ()->checkInTasks(x));
+        assertTrue(ex.getMessage().contains("Occurrence of taskId count"), ex.getMessage());
     }
 
 
