@@ -21,6 +21,7 @@
 
 package org.apache.jena.shex;
 
+import org.apache.jena.shex.parser.TestShexAnnotations;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -30,7 +31,9 @@ import org.junit.runners.Suite;
     TestShexSyntaxBad.class,
     TestShexValidation.class,
     TestShexShapeMapSyntax.class,
-    TestShexPrintShexC.class
+    TestShexPrintShexC.class,
+    TestShexAnnotations.class,
+    TestShexValidationAnnotation.class
 })
 
 public class TS_Shex {

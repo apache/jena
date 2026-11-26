@@ -27,18 +27,24 @@ import org.apache.jena.shex.sys.ValidationContext;
 import java.util.List;
 import java.util.Set;
 
-public abstract class   TripleExpression implements ShexPrintable {
+public abstract class TripleExpression implements ShexPrintable, ShexAnnotated {
 
     // tripleExpr = EachOf | OneOf | TripleConstraint | tripleExprRef
 
     //cardinality, semActs, annotation.
 
-    // [shex] annotations
     // [shex] semanticActions
+    // [shex] annotations
     private List<SemAct> semActs;
+    private List<ShexAnnotation> annotations = List.of();
 
     protected TripleExpression(List<SemAct> semActs) {
+        this(semActs, List.of());
+    }
+
+    protected TripleExpression(List<SemAct> semActs, List<ShexAnnotation> annotations) {
         this.semActs = semActs;
+        setAnnotations(annotations);
     }
 
     public List<SemAct> getSemActs() {
@@ -47,6 +53,14 @@ public abstract class   TripleExpression implements ShexPrintable {
 
     public void setSemActs(List<SemAct> semActs) { // needed for ShExC parser's late binding of SemActs to EachOf
         this.semActs = semActs;
+    }
+
+    public List<ShexAnnotation> getAnnotations() {
+        return annotations;
+    }
+
+    public void setAnnotations(List<ShexAnnotation> annotations) {
+        this.annotations = annotations == null ? List.of() : List.copyOf(annotations);
     }
 
     public boolean testSemanticActions(ValidationContext v, Set<Triple> matchables) {

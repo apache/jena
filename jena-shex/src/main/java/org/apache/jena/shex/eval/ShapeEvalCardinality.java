@@ -45,6 +45,9 @@ public class ShapeEvalCardinality {
         if ( min == 0 )
             return true;
 
+        // Checkpoint for tracing of annotated expressions
+        int checkpoint = vCxt.reportCheckpoint();
+
         // Partition
         List<List<Set<Triple>>> partitions = cardinalityPartition(matchables, min, max);
 
@@ -73,8 +76,11 @@ public class ShapeEvalCardinality {
                     break;
                 }
             }
-            if ( OK )
+            if ( OK ) {
+                // A partition succeeded. Discard diagnostics from unsuccessful partitions.
+                vCxt.rollbackReportItems(checkpoint);
                 return true;
+            }
         }
         return false;
     }

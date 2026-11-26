@@ -28,9 +28,10 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shex.eval.ShapeEval;
 import org.apache.jena.shex.sys.ValidationContext;
+import org.apache.jena.shex.sys.ValidationTrace;
 
 // Shape
-public class ShapeExprTripleExpr extends ShapeExpression {
+public class ShapeExprTripleExpr extends ShapeExpression implements ShexAnnotated {
     // [shex] This is the inlineShapeDefinition
     // Can we combine with a top-level ShexShape?
 
@@ -51,9 +52,11 @@ public class ShapeExprTripleExpr extends ShapeExpression {
     private TripleExpression tripleExpr;
     //semActs:[SemAct+]?
     //annotations:[Annotation+]?
+    private List<ShexAnnotation> annotations = List.of();
+
     public static Builder newBuilder() { return new Builder(); }
 
-    private ShapeExprTripleExpr(Node label, Set<Node> extras, boolean closed, TripleExpression tripleExpr, List<SemAct> semActs) {
+    private ShapeExprTripleExpr(Node label, Set<Node> extras, boolean closed, TripleExpression tripleExpr, List<SemAct> semActs, List<ShexAnnotation> annotations) {
         super(semActs);
         this.label = label;
         if ( extras == null || extras.isEmpty() )
@@ -62,6 +65,7 @@ public class ShapeExprTripleExpr extends ShapeExpression {
             this.extras = extras;
         this.closed = closed;
         this.tripleExpr = tripleExpr;
+        this.annotations = annotations == null ? List.of() : List.copyOf(annotations);
     }
 
     public TripleExpression getTripleExpr() { return tripleExpr; }
@@ -78,10 +82,34 @@ public class ShapeExprTripleExpr extends ShapeExpression {
         return closed;
     }
 
+    public List<ShexAnnotation> getAnnotations() {
+        return annotations;
+    }
+
     @Override
     public boolean satisfies(ValidationContext vCxt, Node node) {
-        // Pass extras
-        return ShapeEval.matchesTripleExpr(vCxt, tripleExpr, node, extras, closed);
+        ValidationTrace previousFailureTrace = vCxt.clearLastFailureTrace();
+        vCxt.enterExpression(this);
+
+        boolean result;
+        try {
+            result = ShapeEval.matchesTripleExpr(
+                vCxt, tripleExpr, node, extras, closed
+            );
+            if ( !result && vCxt.getLastFailureTrace() == null ) {
+                vCxt.setLastFailureTrace(vCxt.getValidationTrace());
+            }
+        } catch (RuntimeException | Error ex) {
+            vCxt.setLastFailureTrace(previousFailureTrace);
+            throw ex;
+        } finally {
+            vCxt.leaveExpression(this);
+        }
+
+        if ( result )
+            vCxt.setLastFailureTrace(previousFailureTrace);
+
+        return result;
     }
 
     @Override
@@ -141,6 +169,7 @@ public class ShapeExprTripleExpr extends ShapeExpression {
         private TripleExpression tripleExpr = null;
         //semActs:[SemAct+]?
         //annotations:[Annotation+]?
+        private List<ShexAnnotation> annotations;
 
         Builder() {}
 
@@ -165,9 +194,18 @@ public class ShapeExprTripleExpr extends ShapeExpression {
 
         public Builder shapeExpr(TripleExpression tripleExpr) { this.tripleExpr = tripleExpr; return this; }
 
+        public Builder annotations(List<ShexAnnotation> annotationsList) {
+            if ( annotationsList != null && !annotationsList.isEmpty() ) {
+                if ( annotations == null )
+                    annotations = new ArrayList<>();
+                annotations.addAll(annotationsList);
+            }
+            return this;
+        }
+
         public ShapeExprTripleExpr build() {
             boolean isClosed = (closed == null) ? false : closed.orElseThrow();
-            return new ShapeExprTripleExpr(label, extras, isClosed, tripleExpr, semActs);
+            return new ShapeExprTripleExpr(label, extras, isClosed, tripleExpr, semActs, annotations);
         }
     }
 }

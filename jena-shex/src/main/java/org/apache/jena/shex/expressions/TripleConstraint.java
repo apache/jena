@@ -58,7 +58,11 @@ public class TripleConstraint extends TripleExpression {
     private final int max;
 
     public TripleConstraint(Node label, Node predicate, boolean reverse, ShapeExpression valueExpr, Cardinality cardinality, List<SemAct> semActs) {
-        super(semActs);
+        this(label, predicate, reverse, valueExpr, cardinality, semActs, List.of());
+    }
+
+    public TripleConstraint(Node label, Node predicate, boolean reverse, ShapeExpression valueExpr, Cardinality cardinality, List<SemAct> semActs, List<ShexAnnotation> annotations) {
+        super(semActs, annotations);
         this.label = label;
         this.predicate = predicate;
         this.reverse = reverse;

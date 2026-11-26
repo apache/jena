@@ -36,6 +36,7 @@ import org.apache.jena.shex.ShexSchema;
 import org.apache.jena.shex.expressions.*;
 import org.apache.jena.shex.sys.ReportItem;
 import org.apache.jena.shex.sys.ValidationContext;
+import org.apache.jena.shex.sys.ValidationTrace;
 import org.apache.jena.system.G;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
@@ -89,25 +90,48 @@ public class ShapeEval {
   }
 
     private static boolean matchesExpr(ValidationContext vCxt, Set<Triple> T, Node node, TripleExpression tripleExpr, Set<Node> extras) {
-        if ( tripleExpr instanceof TripleExprEachOf eachOf ) {
-            return ShapeEvalEachOf.matchesEachOf(vCxt, T, node, eachOf, extras);
+        ValidationTrace previousFailureTrace = vCxt.clearLastFailureTrace();
+        vCxt.enterExpression(tripleExpr);
+
+        boolean result;
+        try {
+            if ( tripleExpr instanceof TripleExprEachOf eachOf ) {
+                result = ShapeEvalEachOf.matchesEachOf(vCxt, T, node, eachOf, extras);
+            }
+            else if ( tripleExpr instanceof TripleExprOneOf oneOf ) {
+                result = ShapeEvalOneOf.matchesOneOf(vCxt, T, node, oneOf, extras);
+            }
+            else if ( tripleExpr instanceof TripleExprRef ref ) {
+                result = matchesTripleExprRef(vCxt, T, node, ref, extras);
+            }
+            else if ( tripleExpr instanceof TripleExprCardinality card) {
+                result = ShapeEvalCardinality.matchesCardinality(vCxt, T, node, card, extras);
+            }
+            else if ( tripleExpr instanceof TripleConstraint constraint) {
+                result = ShapeEvalTripleConstraint.matchesCardinalityTC(vCxt, T, node, constraint, extras);
+            }
+            else if ( tripleExpr instanceof TripleExprNone ) {
+                result = true;
+            } else {
+                throw new NotImplemented(tripleExpr.getClass().getSimpleName());
+            }
+            // If no nested expression recorded a failure,
+            // this expression is the origin of the failure.
+            if ( !result && vCxt.getLastFailureTrace() == null ) {
+                vCxt.setLastFailureTrace(vCxt.getValidationTrace());
+            }
+        } catch (RuntimeException | Error ex) {
+            vCxt.setLastFailureTrace(previousFailureTrace);
+            throw ex;
+        } finally {
+            vCxt.leaveExpression(tripleExpr);
         }
-        else if ( tripleExpr instanceof TripleExprOneOf oneOf ) {
-            return ShapeEvalOneOf.matchesOneOf(vCxt, T, node, oneOf, extras);
-        }
-        else if ( tripleExpr instanceof TripleExprRef ref ) {
-            return matchesTripleExprRef(vCxt, T, node, ref, extras);
-        }
-        else if ( tripleExpr instanceof TripleExprCardinality card) {
-            return ShapeEvalCardinality.matchesCardinality(vCxt, T, node, card, extras);
-        }
-        else if ( tripleExpr instanceof TripleConstraint constraint) {
-            return ShapeEvalTripleConstraint.matchesCardinalityTC(vCxt, T, node, constraint, extras);
-        }
-        else if ( tripleExpr instanceof TripleExprNone ) {
-            return true;
-        }
-        throw new NotImplemented(tripleExpr.getClass().getSimpleName());
+        // Discard failures from unsuccessful alternative evaluations
+        // if this expression ultimately succeeded.
+        if ( result )
+            vCxt.setLastFailureTrace(previousFailureTrace);
+
+        return result;
     }
 
     private static boolean matchesTripleExprRef(ValidationContext vCxt, Set<Triple> matchables, Node node, TripleExprRef ref, Set<Node> extras) {

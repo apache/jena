@@ -30,6 +30,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.shex.*;
 import org.apache.jena.shex.expressions.ShapeExpression;
+import org.apache.jena.shex.expressions.ShexAnnotated;
 import org.apache.jena.shex.expressions.TripleExpression;
 import org.apache.jena.shex.semact.SemanticActionPlugin;
 
@@ -45,6 +46,9 @@ public class ValidationContext {
     private Map<String, SemanticActionPlugin> semActPluginIndex;
     // <data node, shape>
     private Deque<Pair<Node, ShexShape>> inProgress = new ArrayDeque<>();
+    // Annotation-bearing expressions currently being evaluated.
+    private final List<ShexAnnotated> expressionPath = new ArrayList<>();
+    private ValidationTrace lastFailureTrace;
 
     private final ShexReport.Builder reportBuilder = ShexReport.create();
 
@@ -72,6 +76,8 @@ public class ValidationContext {
         this.semActPluginIndex = semActPluginIndex;
         if (progress != null)
             this.inProgress.addAll(progress);
+        if (parentCtx != null)
+            this.expressionPath.addAll(parentCtx.expressionPath);
     }
 
     public ValidationContext getParent() {
@@ -165,6 +171,72 @@ public class ValidationContext {
         throw new InternalErrorException("Eval stack error");
     }
 
+    /**
+     * Enter an annotated expression during validation.
+     */
+    public void enterExpression(ShexAnnotated expression) {
+        expressionPath.add(Objects.requireNonNull(expression));
+    }
+
+    /**
+     * Leave an annotated expression after validation.
+     * Expressions must be left in reverse order of entry.
+     */
+    public void leaveExpression(ShexAnnotated expression) {
+        int lastIndex = expressionPath.size() - 1;
+        if (lastIndex < 0 || expressionPath.get(lastIndex) != expression)
+            throw new InternalErrorException("Validation expression stack error");
+        expressionPath.remove(lastIndex);
+    }
+
+    /**
+     * Capture the current expression path.
+     * The returned trace is an immutable snapshot.
+     */
+    public ValidationTrace getValidationTrace() {
+        return new ValidationTrace(expressionPath);
+    }
+
+    /**
+     * Get the trace associated with the most recent validation failure.
+     */
+    public ValidationTrace getLastFailureTrace() {
+        return lastFailureTrace;
+    }
+
+    /**
+     * Set the trace associated with a validation failure.
+     */
+    public void setLastFailureTrace(ValidationTrace trace) {
+        this.lastFailureTrace = trace;
+    }
+
+    /**
+     * Clear the current failure trace and return its previous value.
+     */
+    public ValidationTrace clearLastFailureTrace() {
+        ValidationTrace previous = lastFailureTrace;
+        lastFailureTrace = null;
+        return previous;
+    }
+
+    /**
+     * Create a checkpoint for the current report entries.
+     */
+    public int reportCheckpoint() {
+        return reportBuilder.getItems().size();
+    }
+
+    /**
+     * Discard report entries created after the given checkpoint.
+     */
+    public void rollbackReportItems(int checkpoint) {
+        List<ReportItem> items = reportBuilder.getItems();
+        if (checkpoint < 0 || checkpoint > items.size())
+            throw new IllegalArgumentException("Invalid report checkpoint: " + checkpoint);
+        items.subList(checkpoint, items.size()).clear();
+    }
+
     // In ShEx "satisfies" returns a boolean.
     //    public boolean conforms() { return validationReportBuilder.isEmpty(); }
 
@@ -199,6 +271,10 @@ public class ValidationContext {
     }
 
     public void reportEntry(ReportItem item) {
+        Objects.requireNonNull(item);
+        if (item.getValidationTrace() == null && !expressionPath.isEmpty()) {
+            item = item.withValidationTrace(getValidationTrace());
+        }
         reportBuilder.addReportItem(item);
     }
 
