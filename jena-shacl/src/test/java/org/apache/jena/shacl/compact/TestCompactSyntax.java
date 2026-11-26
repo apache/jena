@@ -51,7 +51,7 @@ public class TestCompactSyntax {
         rttTest("propertyParams.shc");
     }
 
-    public void badSyntax_01() {
+    @Test public void badSyntax_01() {
         assertThrows(ShaclcParseException.class, ()->badSyntax("nodeParam-bad-01.shc"));
     }
 
