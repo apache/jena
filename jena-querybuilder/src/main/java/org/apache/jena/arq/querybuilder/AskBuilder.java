@@ -188,7 +188,7 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
 
     @Override
     public AskBuilder addOptional(AbstractQueryBuilder<?> t) {
-        getWhereHandler().addOptional(t.getWhereHandler());
+        getWhereHandler().addOptional(t);
         return this;
     }
 
