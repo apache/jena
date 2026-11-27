@@ -99,35 +99,51 @@ public abstract class LangNTuple<X> extends LangBase implements Iterator<X>
     protected static String kwVERSION = "VERSION";
 
     /**
-     * Parse a possible VERSION directive.
-     * Return true for seen keyword,
-     * false for not a keyword, including EOF.
+     * Parse a possible VERSION directive or other keyword directive.
+     * Return true for seen keyword, false for not a keyword, including EOF.
+     * Throw error on bad directive.
+     * @deprecated Renamed as {@link #parsePossibleKeywordDirective}
+     */
+    @Deprecated(forRemoval = true)
+    protected final boolean parsePossibleVersion() {
+        return parsePossibleKeywordDirective();
+    }
+
+    /**
+     * Parse a possible VERSION directive or other keyword directive.
+     * Return true for seen keyword, false for not a keyword, including EOF.
      * Throw error on bad directive.
      */
-    protected final boolean parsePossibleVersion() {
+    protected final boolean parsePossibleKeywordDirective() {
         Token token = peekToken();
         // Parse version lines.
-        if ( token .isEOF() || ! token.hasType(TokenType.KEYWORD) )
+        if ( token.isEOF() || ! token.hasType(TokenType.KEYWORD) )
             return false;
 
-        // Keywords
+        // Move over keyword
         nextToken();
         String KW = token.getImage();
-        if ( ! KW.equals(kwVERSION) )
-            exception(token, "Keyword at start of triple: %s", token);
+        if ( KW.equals(kwVERSION) ) {
+            // VERSION
+            Token token2 = peekToken();
+            if ( token2.isEOF() )
+                exception(token, "Expected version string after VERSION keyword");
+            expect("Expected string for VERSION", token2.getType());
 
-        // VERSION
-        Token token2 = peekToken();
-        if ( token2.isEOF() )
-            exception(token, "Expected version string after VERSION keyword");
-        expect("Expected string for VERSION", token2.getType());
-
-        StringType stringType = token2.getStringType();
-        if ( stringType != StringType.STRING2 )
-            exception(token, "Expected \"-quoted string for the version");
-        String versionStr = token2.getImage();
-        dest.version(versionStr);
+            StringType stringType = token2.getStringType();
+            if ( stringType != StringType.STRING2 )
+                exception(token, "Expected \"-quoted string for the version");
+            String versionStr = token2.getImage();
+            dest.version(versionStr);
+            return true;
+        }
+        handleUnrecognizedKeywordDirective(token, KW);
+        // We saw a keyword directive.
         return true;
+    }
+
+    protected void handleUnrecognizedKeywordDirective(Token token, String directive) {
+        exception(token, "Unrecognized keyword for directive: %s", directive);
     }
 
     // One triple, not including terminator.

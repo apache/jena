@@ -132,6 +132,9 @@ public class LangEngine {
         expect(msg, tokenType);
     }
 
+    /**
+     * Call {@code nextToken} if currently looking at a token of the given type.
+     */
     protected final void skipIf(TokenType ttype) {
         if ( lookingAt(ttype) )
             nextToken();

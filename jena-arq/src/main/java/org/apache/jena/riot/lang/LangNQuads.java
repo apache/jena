@@ -69,7 +69,7 @@ public class LangNQuads extends LangNTuple<Quad> {
 
     @Override
     protected final Quad parseOneStatement() {
-        if ( parsePossibleVersion() )
+        if ( parsePossibleKeywordDirective() )
             return null;
         return parseQuad();
     }
