@@ -38,6 +38,7 @@ import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.main.runner.FusekiRunner;
+import org.apache.jena.fuseki.main.runner.Runner;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.http.HttpOp;
 import org.apache.jena.query.ResultSetFormatter;
@@ -136,10 +137,17 @@ public class TestFusekiCmdLineArgs {
     }
 
     @Test public void set_01() throws IOException {
-        Symbol testSymbol = Symbol.create("TEST");
+        test_set(FusekiRunner.serverMain());
+    }
 
+    @Test public void set_02() throws IOException {
+        test_set(FusekiRunner.serverUI());
+    }
+
+    private void test_set(Runner fusekiRunner) {
+        Symbol testSymbol = Symbol.create("TEST");
         // Not started but command line parsed and setup done.
-        FusekiRunner.serverMain().construct("--set", testSymbol.getSymbol()+"=998", "--mem", "/ds");
+        fusekiRunner.construct("--set", testSymbol.getSymbol()+"=998", "--mem", "/ds");
 
         assertTrue(Fuseki.getContext().isDefined(testSymbol));
         assertEquals("998", Fuseki.getContext().getAsString(testSymbol));

@@ -209,7 +209,7 @@ public class FusekiRunner {
 
     // Fuseki Server. Includes admin - needs on-disk server space.
     public static FusekiModules fmodsServerUI() {
-        return fmods(
+        return fmods(FMod_Set.create(),
                      // Enables /$/ping, /$/compact, /$/tasks
                      FMod_Admin.create(),
                      // Enables /$/stats
