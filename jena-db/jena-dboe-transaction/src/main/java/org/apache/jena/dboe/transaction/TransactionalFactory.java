@@ -28,7 +28,8 @@ import org.apache.jena.dboe.transaction.txn.TransactionalComponent;
 import org.apache.jena.dboe.transaction.txn.TransactionalSystem;
 import org.apache.jena.dboe.transaction.txn.journal.Journal;
 
-/** Helper operations for creating a {@link Transactional}.
+/**
+ * Helper operations for creating a {@link Transactional}.
  * The operations capture some common patterns.
  */
 public class TransactionalFactory {

@@ -61,8 +61,9 @@ public class DatasetGraphSwitchable extends DatasetGraphTxnCtl
     @Override
     public DatasetGraph get() { return dsgx.get(); }
 
-    /** Is this {@code DatasetGraphSwitchable} just a holder for a {@code DatasetGraph}?
-     *  If so, it does not have a location on disk.
+    /**
+     * Is this {@code DatasetGraphSwitchable} just a holder for a {@code DatasetGraph}?
+     * If so, it does not have a location on disk.
      */
     public boolean hasContainerPath() { return basePath != null; }
 

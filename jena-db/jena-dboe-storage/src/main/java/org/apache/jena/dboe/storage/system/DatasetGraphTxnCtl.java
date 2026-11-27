@@ -80,6 +80,23 @@ public class DatasetGraphTxnCtl extends DatasetGraphWrapper implements Transacti
         super(dsg, context);
     }
 
+    private String label(String msg) {
+        // Optional labelling
+        return msg;
+    }
+
+    // DatasetGraphWrapper.begin() goes straight to the wrapped dataset, which would skip admission control.
+    @Override
+    public void begin() {
+        begin(TxnType.READ_PROMOTE);
+    }
+
+    @Override
+    public void begin(ReadWrite readWrite) {
+        Objects.nonNull(readWrite);
+        begin(TxnType.convert(readWrite));
+    }
+
     @Override
     public void begin(TxnType txnType) {
         Objects.nonNull(txnType);
@@ -88,28 +105,15 @@ public class DatasetGraphTxnCtl extends DatasetGraphWrapper implements Transacti
         super.begin(txnType);
     }
 
-    final
-    protected void checkNotActive() {
-        if ( isInTransaction() )
-            throw new TransactionException(label("Currently in an active transaction"));
-    }
-
-    private String label(String msg) {
-        // Optional labelling
-        return msg;
-    }
-
-    final
-    protected void checkActive() {
+    protected final void checkActive() {
         // Check no transaction on this thread.
-        if ( ! isInTransaction() )
+        if ( !isInTransaction() )
             throw new TransactionException(label("Not in an active transaction"));
     }
 
-    @Override
-    public void begin(ReadWrite readWrite) {
-        Objects.nonNull(readWrite);
-        begin(TxnType.convert(readWrite));
+    protected final void checkNotActive() {
+        if ( isInTransaction() )
+            throw new TransactionException(label("Currently in an active transaction"));
     }
 
     /*
@@ -152,6 +156,12 @@ public class DatasetGraphTxnCtl extends DatasetGraphWrapper implements Transacti
         }
         finishNonExclusiveMode();
     }
+
+    // Called BEFORE the transaction starts on the current thread
+    protected void notifyEnterTransaction(TxnType txnType, boolean canBlock) {}
+
+    // Called AFTER the transaction finishes on the current thread
+    protected void notifyExitTransaction() {}
 
     @Override
     public void commit() {

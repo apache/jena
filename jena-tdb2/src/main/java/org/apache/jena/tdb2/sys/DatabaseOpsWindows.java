@@ -161,10 +161,9 @@ class DatabaseOpsWindows {
         // -- Stop updates.
         // On exit there are no writers and none will start until switched over.
         // Readers can start on the old database.
-
-        // Block writers on the container (DatasetGraphSwitchable)
+        // Block writers on the container (in DatasetGraphTxnCtl, above DatasetGraphSwitchable)
         // while we copy the database to the new location.
-        // These writer wait output the TransactionCoordinator (old and new)
+        // These writers wait outside the TransactionCoordinator (old and new)
         // until the switchover has happened.
 
         container.execReadOnlyDatabase(()->{

@@ -212,8 +212,11 @@ public class TDBInternal {
 
     private static DatasetGraphTDB unwrap(DatasetGraph datasetGraph) {
         DatasetGraph dsg = datasetGraph;
-        if ( dsg instanceof DatasetGraphSwitchable dsgx )
+        if ( dsg instanceof DatasetGraphSwitchable dsgx ) {
             dsg = dsgx.get();
+            if ( dsg instanceof DatasetGraphTDB dsgt )
+                return dsgt ;
+        }
         if ( dsg instanceof DatasetGraphTDB dsgt )
             return dsgt ;
         return null;

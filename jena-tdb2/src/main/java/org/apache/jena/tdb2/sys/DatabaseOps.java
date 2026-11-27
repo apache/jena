@@ -348,7 +348,7 @@ public class DatabaseOps {
             LOG.debug(String.format("Compact %s -> %s\n", db1.getFileName(), db2.getFileName()));
             if ( Files.exists(db2) )
                 throw new TDBException("Inconsistent : "+db2+" already exists");
-            // End checks
+            // -- End checks
 
             // Location of the storage area for the compacted database.
             // This is a temporary directory that is atomically moved into place when complete.
@@ -403,27 +403,31 @@ public class DatabaseOps {
         if ( ! ( container.get() instanceof DatasetGraphTDB ) )
             throw new TDBException("Not a TDB2 database in DatasetGraphSwitchable");
 
-        DatasetGraphTDB dsgCurrent = (DatasetGraphTDB)container.get();
-        if ( ! dsgCurrent.getLocation().equals(loc1) )
-            throw new TDBException("Inconsistent locations for base : "+dsgCurrent.getLocation()+" , "+dsgCurrent.getLocation());
-
         DatasetGraphTDB dsgBase = srcConn.getDatasetGraphTDB();
-        if ( dsgBase != dsgCurrent )
-            throw new TDBException("Inconsistent datasets : "+dsgCurrent.getLocation()+" , "+dsgBase.getLocation());
+        if ( ! dsgBase.getLocation().equals(loc1) )
+            throw new TDBException("Inconsistent locations for base : "+dsgBase.getLocation()+" , "+dsgBase.getLocation());
+
+        {
+            // Consistency check
+            DatasetGraphTDB dsgCurrent = (DatasetGraphTDB)container.get();
+            if ( dsgBase != dsgCurrent )
+                throw new TDBException("Inconsistent datasets : "+dsgCurrent.getLocation()+" , "+dsgBase.getLocation());
+        }
 
         TransactionCoordinator txnMgr1 = dsgBase.getTxnSystem().getTxnMgr();
 
         // -- Stop updates.
-        // On exit there are no writers and none will start until switched over.
+        // Inside this block, there are no writers and none will start until switched over.
         // Readers can start on the old database.
-
-        // Block writers on the container (DatasetGraphSwitchable)
+        // "Writers" includes promotable transactions.
+        //
+        // Writers block on the container (DatasetGraphSwitchable)
         // while we copy the database to the new location.
-        // These writer wait output the TransactionCoordinator (old and new)
+        // These writer wait in the TransactionCoordinator (old and new)
         // until the switchover has happened.
 
         container.execReadOnlyDatabase(()->{
-            // No active writers or promote transactions on the current database.
+            // No active writers or promote transactions on the current database (txnMgr1).
             // These are held up on a lock in the switchable container.
 
             // -- Copy the current state to the new area.
@@ -448,7 +452,7 @@ public class DatabaseOps {
             // Update TransactionCoordinator and switch over.
             TransactionCoordinator txnMgr2 = dsgCompact.getTxnSystem().getTxnMgr();
             txnMgr2.execExclusive(()->{
-                // No active transactions in either database.
+                // No active writer/promote transactions in either database.
                 txnMgr2.takeOverFrom(txnMgr1);
 
                 // Copy over external transaction components.
@@ -462,8 +466,8 @@ public class DatabaseOps {
                 // No writers or promote transactions on database 1.
                 // Maybe old readers on database 1.
                 // -- Switch.
-                if ( ! container.change(dsgCurrent, dsgCompact) ) {
-                    Log.warn(DatabaseOps.class, "Inconsistent: old datasetgraph not as expected");
+                if ( ! container.change(dsgBase, dsgCompact) ) {
+                    Log.warn(DatabaseOps.class, "Inconsistent: old DatasetGraph not as expected");
                     container.set(dsgCompact);
                 }
                 // The compacted database is now active

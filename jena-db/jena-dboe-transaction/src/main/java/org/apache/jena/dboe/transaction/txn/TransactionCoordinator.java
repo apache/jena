@@ -29,6 +29,7 @@ import java.nio.channels.ClosedByInterruptException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -76,7 +77,7 @@ public class TransactionCoordinator implements TransactionalSystemControl {
 
     private final Journal journal;
     // Lock on configuration changes.
-    private boolean configurable = true;
+    private AtomicBoolean configurable = new AtomicBoolean(true);
 
     private final ComponentGroup components = new ComponentGroup();
     private final ComponentGroup persistentComponents = new ComponentGroup();
@@ -93,10 +94,12 @@ public class TransactionCoordinator implements TransactionalSystemControl {
     // This is not reentrant.
     private Semaphore writersWaiting = new Semaphore(1, true);
 
-    // All transaction need a "read" lock through out their lifetime.
-    // Do not confuse with read/write transactions.  We need a
-    // "one exclusive, or many other" lock which happens to be called ReadWriteLock
-    // See also {@code lock} which protects the datastructures during transaction management.
+    // All transactions need a "read" lock throughout their lifetime.
+    // Do not confuse this with read/write transactions.
+    //
+    // We need a "one exclusive, or many other" lock which happens to be called
+    // ReadWriteLock. See also {@code lock} which protects the datastructures during
+    // transaction management.
     private ReadWriteLock exclusivitylock = new ReentrantReadWriteLock();
 
     // The version is the serialization point for a transaction.
@@ -106,10 +109,10 @@ public class TransactionCoordinator implements TransactionalSystemControl {
     // This TransactionCoordinator provides Serializable, Read-lock-free
     // execution. With no item locking, a read can only be promoted
     // if no writer started since the reader started or if it is "read committed",
-    // seeing changes made since it started and comitted at the poiont of promotion.
+    // seeing changes made since it started and committed at the point of promotion.
 
     /* The version of the data - incremented when transaction commits.
-     * This is the version with respect to the last commited transaction.
+     * This is the version with respect to the last committed transaction.
      * Aborts do not cause the data version to advance.
      * This counter never goes backwards.
      */
@@ -242,18 +245,16 @@ public class TransactionCoordinator implements TransactionalSystemControl {
      * Perform modification of this {@code TransactionCoordiator}.
      * <p>
      * The caller must use exclusive mode (e.g. {@code #execExclusive(Runnable)}).
-     * <p>
-     * Do not call inside a transaction, it may cause a deadlock.
+     * See {@link #modifyConfig(Runnable)}.
      * <p>
      * Use with care!
      */
     public void modifyConfigDirect(Runnable action) {
-        boolean currentSetting = configurable;
+        boolean currentSetting = configurable.getAndSet(true);
         try {
-            configurable = true;
             action.run();
         } finally {
-            configurable = currentSetting;
+            configurable.getAndSet(currentSetting);
         }
     }
 
@@ -285,7 +286,7 @@ public class TransactionCoordinator implements TransactionalSystemControl {
     public void start() {
         checkAllowModification();
         recovery();
-        configurable = false;
+        configurable.set(false);
     }
 
     private /*public*/ void recovery() {
@@ -433,6 +434,7 @@ public class TransactionCoordinator implements TransactionalSystemControl {
         return coordLock;
     }
 
+    // "Read only" happens via DatasetsGraphSwitchable in DatasetsGrapTxnCtl.
     @Override
     public void startReadOnlyDatabase() {
         throw new UnsupportedOperationException();
@@ -445,13 +447,13 @@ public class TransactionCoordinator implements TransactionalSystemControl {
 
     // Can modifications be made?
     private void checkAllowModification() {
-        if ( ! configurable )
+        if ( ! configurable.get() )
             throw new TransactionException("TransactionCoordinator configuration is locked");
     }
 
     // Is this TransactionCoordinator up and running?
     private void checkActive() {
-        if ( configurable )
+        if ( configurable.get() )
             throw new TransactionException("TransactionCoordinator has not been started");
         checkNotShutdown();
     }
