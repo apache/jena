@@ -24,11 +24,14 @@ package org.apache.jena.tdb2.loader;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
+import org.apache.jena.tdb2.loader.main.TestLoaderMainFailures;
+
 @Suite
 @SelectClasses({
 
     TestLoaderStdSetups.class ,
-    TestLoaderMainPlan.class
+    TestLoaderMainPlan.class ,
+    TestLoaderMainFailures.class
 })
 
 public class TS_Loader {}

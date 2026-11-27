@@ -109,6 +109,8 @@ public class DataToTuples implements BulkStartFinish {
 
     /** Semaphore for the other thread to indicate it has finished. */
     private final Semaphore termination = new Semaphore(0);
+    // Failure of the data thread; rethrown by finishBulk() so the caller sees it.
+    private volatile Throwable failure = null;
 
     @Override
     public void startBulk() {
@@ -119,48 +121,108 @@ public class DataToTuples implements BulkStartFinish {
     @Override
     public void finishBulk() {
         acquire(termination);
+        if ( failure != null )
+            throw new BulkLoaderException("Data loading failed", failure);
     }
 
     // Triples.
     private void action() {
-        coordinator = CoLib.newCoordinator();
-        CoLib.add(coordinator, nodeTable);
-        CoLib.start(coordinator);
-        transaction = coordinator.begin(TxnType.WRITE);
-
+        boolean started = false;
+        boolean endOfInput = false;
+        boolean end3Sent = false;
+        boolean end4Sent = false;
         try {
-            for (;;) {
+            try {
+                coordinator = CoLib.newCoordinator();
+                CoLib.add(coordinator, nodeTable);
+                CoLib.start(coordinator);
+                started = true;
+                transaction = coordinator.begin(TxnType.WRITE);
 
-                DataBlock data = input.take();
-                if ( data == DataBlock.END )
-                    break;
-                if ( data.triples != null ) {
-                    List<Tuple<NodeId>> tuples = new ArrayList<>(data.triples.size());
-                    for ( Triple t : data.triples ) {
-                        countTriples++;
-                        accTuples(t, nodeTable, tuples);
+                for (;;) {
+
+                    DataBlock data = input.take();
+                    if ( data == DataBlock.END ) {
+                        endOfInput = true;
+                        break;
                     }
-                    dispatchTuples3(tuples);
+                    if ( data.triples != null ) {
+                        List<Tuple<NodeId>> tuples = new ArrayList<>(data.triples.size());
+                        for ( Triple t : data.triples ) {
+                            countTriples++;
+                            accTuples(t, nodeTable, tuples);
+                        }
+                        dispatchTuples3(tuples);
+                    }
+                    if ( data.quads != null ) {
+                        List<Tuple<NodeId>> tuples = new ArrayList<>(data.quads.size());
+                        for ( Quad q : data.quads ) {
+                            countQuads++;
+                            accTuples(q, nodeTable, tuples);
+                        }
+                        dispatchTuples4(tuples);
+                    }
                 }
-                if ( data.quads != null ) {
-                    List<Tuple<NodeId>> tuples = new ArrayList<>(data.quads.size());
-                    for ( Quad q : data.quads ) {
-                        countQuads++;
-                        accTuples(q, nodeTable, tuples);
-                    }
-                    dispatchTuples4(tuples);
+                dispatchTuples3(LoaderConst.END_TUPLES);
+                end3Sent = true;
+                dispatchTuples4(LoaderConst.END_TUPLES);
+                end4Sent = true;
+                transaction.commit();
+            } catch (Throwable th) {
+                // Catch Errors too, record the failure for finishBulk(), and still let the stages on both sides finish:
+                // drain the input (the parser side must not block on a full queue) and send the end markers
+                // downstream (the indexers would otherwise wait for them forever).
+                failure = th;
+                Log.error(this, "Exception during data loading", th);
+                if ( transaction != null ) {
+                    try { transaction.abort(); } catch (Throwable th2) { if ( th2 != th ) th.addSuppressed(th2); }
+                }
+                if ( ! endOfInput )
+                    drainInput();
+                if ( ! end3Sent ) {
+                    try { dispatchTuples3(LoaderConst.END_TUPLES); } catch (Throwable th2) { if ( th2 != th ) th.addSuppressed(th2); }
+                }
+                if ( ! end4Sent ) {
+                    try { dispatchTuples4(LoaderConst.END_TUPLES); } catch (Throwable th2) { if ( th2 != th ) th.addSuppressed(th2); }
                 }
             }
-            dispatchTuples3(LoaderConst.END_TUPLES);
-            dispatchTuples4(LoaderConst.END_TUPLES);
-            transaction.commit();
-        } catch (Exception ex) {
-            Log.error(this, "Exception during data loading", ex);
-            transaction.abort();
+            if ( transaction != null ) {
+                try {
+                    transaction.end();
+                } catch (Throwable th) {
+                    recordCleanupFailure(th);
+                }
+            }
+            if ( started ) {
+                try {
+                    CoLib.finish(coordinator);
+                } catch (Throwable th) {
+                    recordCleanupFailure(th);
+                }
+            }
+        } finally {
+            termination.release();
         }
-        transaction.end();
-        CoLib.finish(coordinator);
-        termination.release();
+    }
+
+    private void recordCleanupFailure(Throwable th) {
+        if ( failure == null ) {
+            failure = th;
+            Log.error(this, "Exception during data loading cleanup", th);
+        } else if ( th != failure ) {
+            failure.addSuppressed(th);
+        }
+    }
+
+    private void drainInput() {
+        try {
+            for (;;) {
+                if ( input.take() == DataBlock.END )
+                    return;
+            }
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     //@Override

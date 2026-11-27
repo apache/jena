@@ -22,8 +22,9 @@
 package org.apache.jena.tdb2.loader.main;
 
 import java.util.List;
+import java.util.ListIterator;
 
-import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.tdb2.loader.BulkLoaderException;
 import org.apache.jena.tdb2.loader.base.BulkStartFinish;
 
 public class BulkProcesses {
@@ -32,7 +33,29 @@ public class BulkProcesses {
         list.forEach(x->x.startBulk());
     }
 
+    /**
+     * Finish every process, in reverse order, even if one of them fails, so that no process is still running
+     * when this returns. The first failure is rethrown, later ones are added to it as suppressed.
+     */
     public static void finish(List<BulkStartFinish> list) {
-        Iter.reverseIterate(list, item -> item.finishBulk());
+        Throwable failure = null;
+        for ( ListIterator<BulkStartFinish> iter = list.listIterator(list.size()) ; iter.hasPrevious() ; ) {
+            BulkStartFinish item = iter.previous();
+            try {
+                item.finishBulk();
+            } catch (Throwable th) {
+                if ( failure == null )
+                    failure = th;
+                else if ( th != failure )
+                    failure.addSuppressed(th);
+            }
+        }
+        if ( failure != null ) {
+            if ( failure instanceof RuntimeException ex )
+                throw ex;
+            if ( failure instanceof Error err )
+                throw err;
+            throw new BulkLoaderException(failure);
+        }
     }
 }

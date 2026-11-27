@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.jena.atlas.lib.ArrayUtils;
 import org.apache.jena.atlas.lib.tuple.Tuple;
@@ -38,6 +39,7 @@ import org.apache.jena.query.TxnType;
 import org.apache.jena.tdb2.loader.base.BulkStartFinish;
 import org.apache.jena.tdb2.loader.base.CoLib;
 import org.apache.jena.system.progress.MonitorOutput;
+import org.apache.jena.tdb2.loader.BulkLoaderException;
 import org.apache.jena.tdb2.store.NodeId;
 import org.apache.jena.tdb2.store.tupletable.TupleIndex;
 
@@ -56,6 +58,8 @@ public class Indexer implements BulkStartFinish {
     private final MonitorOutput output;
     private TupleIndex[] indexes;
     private final Semaphore termination = new Semaphore(0);
+    // First failure of any index thread; rethrown by finishBulk() so the caller sees it.
+    private final AtomicReference<Throwable> failure = new AtomicReference<>();
 
     @SuppressWarnings("unchecked")
     public Indexer(MonitorOutput output, TupleIndex... idxTriples) {
@@ -102,33 +106,96 @@ public class Indexer implements BulkStartFinish {
     public void finishBulk() {
         //output.print("Wait for %d indexers", N);
         acquire(termination, N);
+        Throwable th = failure.get();
+        if ( th != null )
+            throw new BulkLoaderException("Index build failed", th);
     }
 
     private void stageIndex(BlockingQueue<List<Tuple<NodeId>>> pipe, TupleIndex idx) {
-        TransactionCoordinator coordinator = CoLib.newCoordinator();
-        CoLib.add(coordinator, idx);
-        CoLib.start(coordinator);
-        Transaction transaction = coordinator.begin(TxnType.WRITE);
-        boolean workHasBeenDone;
+        TransactionCoordinator coordinator = null;
+        Transaction transaction = null;
+        boolean started = false;
+        boolean workHasBeenDone = false;
+        boolean endOfInput = false;
+        Throwable threadFailure = null;
         try {
-            Destination<Tuple<NodeId>> loader = loadTuples(idx);
-            for (;;) {
-                List<Tuple<NodeId>> tuples = pipe.take();
-                if ( tuples.isEmpty() )
-                    break;
-                loader.deliver(tuples);
+            try {
+                coordinator = CoLib.newCoordinator();
+                CoLib.add(coordinator, idx);
+                CoLib.start(coordinator);
+                started = true;
+                transaction = coordinator.begin(TxnType.WRITE);
+
+                Destination<Tuple<NodeId>> loader = loadTuples(idx);
+                for (;;) {
+                    List<Tuple<NodeId>> tuples = pipe.take();
+                    if ( tuples.isEmpty() ) {
+                        endOfInput = true;
+                        break;
+                    }
+                    loader.deliver(tuples);
+                }
+                workHasBeenDone = ! idx.isEmpty();
+                transaction.commit();
+            } catch (Throwable th) {
+                // Catch Errors too (e.g. OutOfMemoryError): otherwise termination is never released and
+                // finishBulk() waits forever.
+                threadFailure = th;
+                recordFailure(idx, th);
+                if ( transaction != null ) {
+                    try { transaction.abort(); } catch (Throwable th2) { if ( th2 != th ) th.addSuppressed(th2); }
+                }
+                workHasBeenDone = false;
+                // Keep consuming, so the producer is not blocked on a full queue, until the end marker.
+                if ( ! endOfInput )
+                    drain(pipe);
             }
-            workHasBeenDone = ! idx.isEmpty();
-            transaction.commit();
-        } catch (Exception ex) {
-            Log.error(this, "Interrupted", ex);
-            transaction.abort();
-            workHasBeenDone = false;
+            if ( transaction != null ) {
+                try {
+                    transaction.end();
+                } catch (Throwable th) {
+                    threadFailure = recordCleanupFailure(idx, threadFailure, th);
+                }
+            }
+            if ( started ) {
+                try {
+                    CoLib.finish(coordinator);
+                } catch (Throwable th) {
+                    threadFailure = recordCleanupFailure(idx, threadFailure, th);
+                }
+            }
+            if ( workHasBeenDone && threadFailure == null )
+                output.print("Finish - index %s", idx.getName());
+        } finally {
+            termination.release();
         }
-        CoLib.finish(coordinator);
-        if ( workHasBeenDone )
-            output.print("Finish - index %s", idx.getName());
-        termination.release();
+    }
+
+    private void recordFailure(TupleIndex idx, Throwable th) {
+        failure.compareAndSet(null, th);
+        Log.error(this, "Index "+idx.getName()+" failed", th);
+    }
+
+    private Throwable recordCleanupFailure(TupleIndex idx, Throwable threadFailure, Throwable th) {
+        if ( threadFailure == null ) {
+            failure.compareAndSet(null, th);
+            Log.error(this, "Index "+idx.getName()+" cleanup failed", th);
+            return th;
+        }
+        if ( th != threadFailure )
+            threadFailure.addSuppressed(th);
+        return threadFailure;
+    }
+
+    private static void drain(BlockingQueue<List<Tuple<NodeId>>> pipe) {
+        try {
+            for (;;) {
+                if ( pipe.take().isEmpty() )
+                    return;
+            }
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     private static Destination<Tuple<NodeId>> loadTuples(TupleIndex index) {
