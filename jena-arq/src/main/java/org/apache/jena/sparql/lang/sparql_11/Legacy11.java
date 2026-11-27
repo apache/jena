@@ -63,7 +63,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-/** Copies of classes so that the SPARQL 1.0 parser is isolated from later SPARQL parser development. */
+/** Copies of classes so that the SPARQL 1.1 parser is isolated from later SPARQL parser development. */
 class Legacy11 {
     /** Base class parsers, mainly SPARQL related */
     static class QueryParserBase {

@@ -253,15 +253,16 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
     }
 
     @Override
-    public void begin() { getT().begin(); }
-
-    @Override
     public ReadWrite transactionMode()
     { return getT().transactionMode(); }
 
     @Override
     public  TxnType transactionType()
     { return getT().transactionType(); }
+
+    @Override
+    public void begin()
+    { getT().begin(); }
 
     @Override
     public void begin(TxnType type)

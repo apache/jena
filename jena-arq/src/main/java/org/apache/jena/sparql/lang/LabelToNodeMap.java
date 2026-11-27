@@ -52,7 +52,6 @@ public class LabelToNodeMap
      * Use {@link LabelToNode} for RIOT.
      *
      * @return LabelToNodeMap
-     *
      */
     public static LabelToNodeMap createBNodeMap()
     { return new LabelToNodeMap(false, null); }
