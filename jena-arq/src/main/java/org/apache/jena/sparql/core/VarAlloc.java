@@ -28,7 +28,7 @@ import org.apache.jena.sparql.util.Symbol ;
 
 public class VarAlloc
 {
-    private String baseMarker ;
+    private final String baseMarker ;
     private long counter = 0 ;
 
     // Globals
@@ -46,7 +46,7 @@ public class VarAlloc
     }
 
     public Var allocVar()
-    { return alloc(baseMarker, counter ++) ; }
+    { return alloc(baseMarker, counter++) ; }
 
     static private Var alloc(String base, long number)
     { return Var.alloc(base+number) ; }
