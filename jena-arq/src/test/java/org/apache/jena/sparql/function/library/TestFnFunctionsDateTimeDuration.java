@@ -115,6 +115,30 @@ public class TestFnFunctionsDateTimeDuration {
         test("fn:seconds-from-duration("+s+")",  "6.7");
     }
 
+    // GH-4437
+    @Test public void fromDurationNegative() {
+        test("fn:days-from-duration('-P3DT10H'^^xsd:dayTimeDuration)",          "-3");
+        test("fn:hours-from-duration('-P3DT10H'^^xsd:dayTimeDuration)",         "-10");
+        test("fn:minutes-from-duration('-P5DT12H30M'^^xsd:dayTimeDuration)",    "-30");
+        test("fn:seconds-from-duration('-PT256S'^^xsd:dayTimeDuration)",        "-16.0");
+        test("fn:years-from-duration('-P15M'^^xsd:yearMonthDuration)",          "-1");
+        test("fn:months-from-duration('-P2Y15M'^^xsd:yearMonthDuration)",       "-3");
+        test("fn:days-from-duration('2026-01-01T00:00:00Z'^^xsd:dateTime - '2026-01-04T00:00:00Z'^^xsd:dateTime)", "-3");
+    }
+
+    // GH-4437
+    @Test public void fromDurationNormalized() {
+        test("fn:days-from-duration('P3DT55H'^^xsd:dayTimeDuration)",           "5");
+        test("fn:hours-from-duration('P3DT55H'^^xsd:dayTimeDuration)",          "7");
+        test("fn:hours-from-duration('PT123H'^^xsd:dayTimeDuration)",           "3");
+        test("fn:minutes-from-duration('PT90M'^^xsd:dayTimeDuration)",          "30");
+        test("fn:seconds-from-duration('PT150.5S'^^xsd:dayTimeDuration)",       "30.5");
+        test("fn:minutes-from-duration('PT150.5S'^^xsd:dayTimeDuration)",       "2");
+        test("fn:years-from-duration('P20M'^^xsd:yearMonthDuration)",           "1");
+        test("fn:months-from-duration('P20M'^^xsd:yearMonthDuration)",          "8");
+        test("fn:seconds-from-duration('-P3D'^^xsd:dayTimeDuration)",           "0.0");
+    }
+
     @Test public void fromMisc() {
         test("fn:hours-from-time('17:01:02'^^xsd:time)",   "17");
         test("fn:minutes-from-time('17:01:02'^^xsd:time)", "01");
