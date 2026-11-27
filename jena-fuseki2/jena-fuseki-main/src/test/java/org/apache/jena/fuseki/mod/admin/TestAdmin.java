@@ -30,13 +30,14 @@ import static org.apache.jena.http.HttpOp.httpPostRtnJSON;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.json.JsonObject;
@@ -47,8 +48,6 @@ import org.apache.jena.fuseki.mgt.ServerMgtConst;
 import org.apache.jena.fuseki.server.ServerConst;
 import org.apache.jena.fuseki.test.HttpTest;
 import org.apache.jena.web.HttpSC;
-import org.junit.jupiter.api.Test;
-import org.opentest4j.AssertionFailedError;
 
 /**
  *  Tests of the admin functionality using a pre-configured dataset.
@@ -115,10 +114,8 @@ public class TestAdmin extends FusekiServerPerTestClass {
         String x = "NoSuchTask";
         String url = urlRoot()+"$/tasks/"+x;
         HttpTest.expect404(()->httpGetJson(url) );
-        AssertionFailedError ex = assertThrows(AssertionFailedError.class, ()->checkInTasks(x));
-        assertTrue(ex.getMessage().contains("Occurrence of taskId count"), ex.getMessage());
+        checkNotInTasks(x);
     }
-
 
     @Test public void task_3() {
         // Timing dependent.
@@ -217,22 +214,37 @@ public class TestAdmin extends FusekiServerPerTestClass {
         }
     }
 
-   private void checkInTasks(String x) {
-       String url = urlRoot()+"$/tasks";
-       JsonValue v = httpGetJson(url);
-       assertTrue(v.isArray());
-       JsonArray array = v.getAsArray();
-       int found = 0;
-       for ( int i = 0; i < array.size(); i++ ) {
-           JsonValue jv = array.get(i);
-           assertTrue(jv.isObject());
-           JsonObject obj = jv.getAsObject();
-           checkTask(obj);
-           if ( obj.getString("taskId").equals(x) ) {
-               found++;
-           }
+    /** Ensure that a task is valid and in the list of tasks. */
+    private void checkInTasks(String x) {
+        String url = urlRoot()+"$/tasks";
+        JsonValue v = httpGetJson(url);
+        assertTrue(v.isArray());
+        JsonArray array = v.getAsArray();
+        int found = 0;
+        for ( int i = 0; i < array.size(); i++ ) {
+            JsonValue jv = array.get(i);
+            assertTrue(jv.isObject());
+            JsonObject obj = jv.getAsObject();
+            checkTask(obj);
+            if ( obj.getString("taskId").equals(x) ) {
+                found++;
+            }
         }
-       assertEquals(1, found, "Occurrence of taskId count");
+        assertEquals(1, found, "Occurrence of taskId count");
+    }
+
+    /** Ensure that a task is not found in the list of tasks. */
+    private void checkNotInTasks(String x) {
+        String url = urlRoot()+"$/tasks";
+        JsonValue v = httpGetJson(url);
+        JsonArray array = v.getAsArray();
+        for ( int i = 0; i < array.size(); i++ ) {
+            JsonValue jv = array.get(i);
+            JsonObject obj = jv.getAsObject();
+            if ( obj.getString("taskId").equals(x) ) {
+                fail("Found in task list");
+            }
+        }
     }
 
    private List<String> runningTasks(String... x) {
