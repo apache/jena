@@ -26,6 +26,8 @@ options
   JAVA_UNICODE_ESCAPE = false ;
   UNICODE_INPUT = true ;
   STATIC = false ;
+// ARQCharStream is the user supplied class
+  USER_CHAR_STREAM = true ;
 //  DEBUG_PARSER          = true ;
 //  DEBUG_TOKEN_MANAGER   = true ;
 }
@@ -64,8 +66,22 @@ import org.apache.jena.sparql.modify.request.* ;
 import org.apache.jena.sparql.core.Quad ;
 import java.util.List;
 import java.util.ArrayList;
+import org.apache.jena.sparql.lang.arq.ARQCharStream ;
 public class ARQParser extends org.apache.jena.sparql.lang.arq.ARQParserBase
-{}
+{
+  // USER_CHAR_STREAM leaves out the InputStream and Reader constructors and
+  // ReInit operations: these are the ones javacc would generate, with ARQCharStream.
+  public ARQParser(java.io.InputStream stream) { this(stream, null); }
+  public ARQParser(java.io.InputStream stream, String encoding) { this(newCharStream(stream, encoding)); }
+  public ARQParser(java.io.Reader stream) { this(new ARQCharStream(stream, 1, 1)); }
+  public void ReInit(java.io.InputStream stream) { ReInit(stream, null); }
+  public void ReInit(java.io.InputStream stream, String encoding) { ReInit(newCharStream(stream, encoding)); }
+  public void ReInit(java.io.Reader stream) { ReInit(new ARQCharStream(stream, 1, 1)); }
+  private static ARQCharStream newCharStream(java.io.InputStream stream, String encoding) {
+    try { return new ARQCharStream(stream, encoding, 1, 1); }
+    catch (java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
+  }
+}
 PARSER_END(ARQParser)
 // // Common top for single entry point.
 // void Top(): {}

@@ -94,11 +94,15 @@ public class ParserARQ extends SPARQLParser {
         } catch (org.apache.jena.sparql.lang.arq.javacc.ParseException ex) {
             throw new QueryParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn);
         } catch (org.apache.jena.sparql.lang.arq.javacc.TokenMgrError tErr) {
+            // The cause is set when reading the input failed (see ARQCharStream).
+            // An unchecked exception, such as a cancellation, is not a parse error.
+            if ( tErr.getCause() instanceof RuntimeException ex )
+                throw ex;
             // Last valid token : not the same as token error message - but this
             // should not happen
             int col = parser.token.endColumn;
             int line = parser.token.endLine;
-            throw new QueryParseException(tErr.getMessage(), line, col);
+            throw new QueryParseException(tErr.getMessage(), tErr.getCause(), line, col);
         }
 
         catch (QueryException ex) {

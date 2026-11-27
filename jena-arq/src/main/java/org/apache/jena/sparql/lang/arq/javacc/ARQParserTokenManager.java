@@ -34,6 +34,7 @@ import org.apache.jena.sparql.modify.request.* ;
 import org.apache.jena.sparql.core.Quad ;
 import java.util.List;
 import java.util.ArrayList;
+import org.apache.jena.sparql.lang.arq.ARQCharStream ;
 
 /** Token Manager. */
 @SuppressWarnings ("unused")
@@ -5057,23 +5058,21 @@ private void jjCheckNAddStates(int start, int end)
 }
 
     /** Constructor. */
-    public ARQParserTokenManager(SimpleCharStream stream){
+    public ARQParserTokenManager(CharStream stream){
 
-      if (SimpleCharStream.staticFlag)
-            throw new Error("ERROR: Cannot use a static CharStream class with a non-static lexical analyzer.");
 
     input_stream = stream;
   }
 
   /** Constructor. */
-  public ARQParserTokenManager (SimpleCharStream stream, int lexState){
+  public ARQParserTokenManager (CharStream stream, int lexState){
     ReInit(stream);
     SwitchTo(lexState);
   }
 
   /** Reinitialise parser. */
   
-  public void ReInit(SimpleCharStream stream)
+  public void ReInit(CharStream stream)
   {
 
 
@@ -5094,7 +5093,7 @@ private void jjCheckNAddStates(int start, int end)
   }
 
   /** Reinitialise parser. */
-  public void ReInit(SimpleCharStream stream, int lexState)
+  public void ReInit(CharStream stream, int lexState)
   
   {
     ReInit(stream);
@@ -5141,7 +5140,7 @@ static final long[] jjtoSpecial = {
 static final long[] jjtoMore = {
    0x0L, 0x0L, 0x0L, 0x0L, 
 };
-    protected SimpleCharStream  input_stream;
+    protected CharStream  input_stream;
 
     private final int[] jjrounds = new int[296];
     private final int[] jjstateSet = new int[2 * 296];
