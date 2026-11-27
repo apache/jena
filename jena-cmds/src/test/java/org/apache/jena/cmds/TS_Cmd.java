@@ -25,6 +25,7 @@ import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
 import jena.Test_schemagen;
+import shacl.TestShaclValidate;
 import org.apache.jena.atlas.logging.LogCtl ;
 
 @Suite
@@ -32,6 +33,7 @@ import org.apache.jena.atlas.logging.LogCtl ;
     TestCmdLine.class
     , Test_schemagen.class
     , TestCmdExt.class
+    , TestShaclValidate.class
 })
 
 public class TS_Cmd

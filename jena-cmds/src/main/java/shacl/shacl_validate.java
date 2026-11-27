@@ -27,6 +27,7 @@ import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.cmd.CmdMain;
+import org.apache.jena.cmd.TerminationException;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -142,6 +143,9 @@ public class shacl_validate extends CmdMain {
             ShLib.printReport(report);
         else
             RDFDataMgr.write(System.out, report.getGraph(), Lang.TTL);
+
+        if ( !report.conforms() )
+            throw new TerminationException(1);
     }
 
     private Graph load(List<String> files) {
