@@ -369,13 +369,24 @@ public class ParserShExC extends LangParserBase {
     }
 
     protected void finishShapeDefinition(TripleExpression tripleExpr, List<Node> extras, boolean closed, List<SemAct> semActs) {
-        if ( tripleExpr == null )
-            return;
+        finishShapeDefinition(tripleExpr, extras, closed, semActs, List.of());
+    }
+    protected void finishShapeDefinition(TripleExpression tripleExpr, List<Node> extras, boolean closed, List<SemAct> semActs, List<ShexAnnotation> annotations) {
+        boolean hasMetadata = closed ||
+            (extras != null && !extras.isEmpty()) ||
+            (semActs != null && !semActs.isEmpty()) ||
+            (annotations != null && !annotations.isEmpty());
+        if ( tripleExpr == null ) {
+            if ( !hasMetadata )
+                return;
+            tripleExpr = TripleExprNone.get();
+        }
         ShapeExprTripleExpr shape = ShapeExprTripleExpr.newBuilder()
                 //.label(???)
                 .closed(closed)
                 .extras(extras)
                 .semActs(semActs)
+                .annotations(annotations)
                 .shapeExpr(tripleExpr).build();
         push(shapeExprStack, shape);
         finish("ShapeDefinition");
@@ -419,11 +430,22 @@ public class ParserShExC extends LangParserBase {
     }
 
     protected void finishBracketedTripleExpr(Node label, TripleExpression tripleExpr, Cardinality cardinality, List<SemAct> semActs) {
+        finishBracketedTripleExpr(label, tripleExpr, cardinality, semActs, List.of());
+    }
+
+    protected void finishBracketedTripleExpr(Node label, TripleExpression tripleExpr, Cardinality cardinality, List<SemAct> semActs, List<ShexAnnotation> annotations) {
         TripleExpression tripleExpr2 = tripleExpr;
-        if ( cardinality != null )
+        if ( cardinality != null ) {
             tripleExpr2 = new TripleExprCardinality(tripleExpr, cardinality, semActs);
-        else
+            tripleExpr2.setAnnotations(annotations);
+        } else {
             tripleExpr2.setSemActs(semActs);
+            if ( annotations != null && !annotations.isEmpty() ) {
+                List<ShexAnnotation> combined = new ArrayList<>(tripleExpr2.getAnnotations());
+                combined.addAll(annotations);
+                tripleExpr2.setAnnotations(combined);
+            }
+        }
         push(tripleExprStack, tripleExpr2);
         if ( label != null )
             tripleExprRefs.put(label, tripleExpr2);
@@ -436,6 +458,10 @@ public class ParserShExC extends LangParserBase {
     }
 
     protected void finishTripleConstraint(Node label, int idx, Node predicate, boolean reverse, Cardinality cardinality, List<SemAct> semActs) {
+        finishTripleConstraint(label, idx, predicate, reverse, cardinality, semActs, List.of());
+    }
+
+    protected void finishTripleConstraint(Node label, int idx, Node predicate, boolean reverse, Cardinality cardinality, List<SemAct> semActs, List<ShexAnnotation> annotations) {
         List<ShapeExpression> args = finishShapeOp(idx);
         if ( args == null )
             throw new InternalErrorException("TripleConstraint with null argument ShapeExpression.");
@@ -444,7 +470,7 @@ public class ParserShExC extends LangParserBase {
 
         ShapeExpression arg = args.get(0);
         // Cardinality as argument.
-        TripleExpression tripleExpr = new TripleConstraint(label, predicate, reverse, arg, cardinality, semActs);
+        TripleExpression tripleExpr = new TripleConstraint(label, predicate, reverse, arg, cardinality, semActs, annotations);
         push(tripleExprStack, tripleExpr);
         if ( label != null )
             tripleExprRefs.put(label, tripleExpr);

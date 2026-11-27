@@ -200,7 +200,9 @@ class ShexValidatorImpl implements ShexValidator{
     private static void atLeastOneReportItem(ValidationContext vCxt, Node focus) {
         // Ensure at least one entry.
         if ( vCxt.getReportItems().isEmpty() ) {
-            ReportItem reportItem = new ReportItem("Failed", focus);
+            ReportItem reportItem = new ReportItem(
+                "Failed", focus, vCxt.getLastFailureTrace()
+            );
             vCxt.reportEntry(reportItem);
         }
     }

@@ -363,14 +363,15 @@ void shapeDefinition() :
 { boolean closed = false; TripleExpression tripleExpr = null;
   List<Node> extras = new ArrayList<Node>();
   List<SemAct> semActs;
+  List<ShexAnnotation> annotations = new ArrayList<>(); ShexAnnotation ann;
 }
 {
     { startShapeDefinition(); }
  	(extraPropertySet(extras) | <CLOSED> { closed = true; } )*
     <LBRACE> (tripleExpr = tripleExpression())? <RBRACE>
-    (annotation())*
+    (ann = annotation() { annotations.add(ann); })*
     semActs = semanticActions()
-    { finishShapeDefinition(tripleExpr, extras, closed, semActs); }
+    { finishShapeDefinition(tripleExpr, extras, closed, semActs, annotations); }
 }
 
 void inlineShapeDefinition() :
@@ -472,26 +473,26 @@ void unaryTripleExpr() : { Node n = null; }
     { finishUnaryTripleExpr(); }
 }
 
-void bracketedTripleExpr(Node label): { TripleExpression tripleExpr = null; Cardinality cardinality = null; List<SemAct> semActs; }
+void bracketedTripleExpr(Node label): { TripleExpression tripleExpr = null; Cardinality cardinality = null; List<SemAct> semActs; List<ShexAnnotation> annotations = new ArrayList<>(); ShexAnnotation ann; }
 {
     { startBracketedTripleExpr(); }
    	<LPAREN> tripleExpr = tripleExpression() <RPAREN>
     (cardinality = cardinality())?
-    (annotation())*
+    (ann = annotation() { annotations.add(ann); })*
     semActs = semanticActions()
-    { finishBracketedTripleExpr(label, tripleExpr, cardinality, semActs); }
+    { finishBracketedTripleExpr(label, tripleExpr, cardinality, semActs, annotations); }
 }
 
-void tripleConstraint(Node label) : { Node p; int idx; boolean reverse = false; Cardinality cardinality = null; List<SemAct> semActs; }
+void tripleConstraint(Node label) : { Node p; int idx; boolean reverse = false; Cardinality cardinality = null; List<SemAct> semActs; List<ShexAnnotation> annotations = new ArrayList<>(); ShexAnnotation ann; }
 {
     { idx = startTripleConstraint(); }
   	( reverse = senseFlags() )?
     p = predicate()
     inlineShapeExpression()
     (cardinality = cardinality())?
-    (annotation())*
+    (ann = annotation() { annotations.add(ann); })*
     semActs = semanticActions()
-    { finishTripleConstraint(label, idx, p, reverse, cardinality, semActs); }
+    { finishTripleConstraint(label, idx, p, reverse, cardinality, semActs, annotations); }
 }
 
 Cardinality cardinality() : {}
@@ -670,9 +671,29 @@ void include() : { Node n = null; }
 
 }
 
-void annotation() : {}
+ShexAnnotation annotation() : {
+    Node predicateNode;
+    Node valueNode = null;
+    String iriValue;
+}
 {
-    "//" predicate() (iri() | literal())
+    "//"
+    predicateNode = predicate()
+    (
+        iriValue = iri()
+        {
+            valueNode = createURI(
+                iriValue,
+                token.beginLine,
+                token.beginColumn
+            );
+        }
+      |
+        valueNode = literal()
+    )
+    {
+        return new ShexAnnotation(predicateNode, valueNode);
+    }
 }
 
 List<SemAct> semanticActions() : {

@@ -30,6 +30,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shex.sys.ReportItem;
 import org.apache.jena.shex.sys.ValidationContext;
+import org.apache.jena.shex.sys.ValidationTrace;
 
 public class ShapeExprOR extends ShapeExpression {
 
@@ -52,17 +53,46 @@ public class ShapeExprOR extends ShapeExpression {
         return shapeExpressions;
     }
 
-
     @Override
     public boolean satisfies(ValidationContext vCxt, Node data) {
-        // We need to ignore validation failures from expressions - we need to find one success.
-        for ( ShapeExpression shExpr : shapeExpressions ) {
+        ValidationTrace lastFailedTrace = null;
+        ValidationContext lastFailedContext = null;
+        ValidationContext lastFailedContextWithReportItems = null;
+        for (ShapeExpression shExpr : shapeExpressions) {
             ValidationContext vCxt2 = vCxt.create();
             boolean innerSatisfies = shExpr.satisfies(vCxt2, data);
-            if ( innerSatisfies )
+            if (innerSatisfies) {
+                // One successful alternative makes the OR expression succeed.
+                // Do not propagate diagnostics from failed alternatives.
                 return true;
+            }
+            // Remember the most recently failed alternative.
+            lastFailedContext = vCxt2;
+            // Preserve the last available failure trace.
+            ValidationTrace failureTrace = vCxt2.getLastFailureTrace();
+            if (failureTrace != null)
+                lastFailedTrace = failureTrace;
+            // Remember the most recent alternative that produced diagnostics.
+            if (!vCxt2.getReportItems().isEmpty())
+                lastFailedContextWithReportItems = vCxt2;
         }
-        ReportItem item = new ReportItem("OR expression not satisfied:", data);
+        // All alternatives failed. Prefer diagnostics from the last alternative.
+        ValidationContext diagnosticsContext = lastFailedContext;
+        if (diagnosticsContext != null
+                && diagnosticsContext.getReportItems().isEmpty()) {
+            diagnosticsContext = lastFailedContextWithReportItems;
+        }
+        // Transfer the selected alternative's detailed diagnostics.
+        if (diagnosticsContext != null) {
+            diagnosticsContext.getReportItems().forEach(vCxt::reportEntry);
+        }
+        // Propagate the last available failure trace.
+        vCxt.setLastFailureTrace(lastFailedTrace);
+        ReportItem item = new ReportItem(
+            "OR expression not satisfied:",
+            data,
+            lastFailedTrace
+        );
         vCxt.reportEntry(item);
         return false;
     }

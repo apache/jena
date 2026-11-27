@@ -32,6 +32,8 @@ import org.apache.jena.shex.sys.ValidationContext;
 /*package*/ class ShapeEvalOneOf {
 
     static boolean matchesOneOf(ValidationContext vCxt, Set<Triple> matchables, Node node, TripleExprOneOf oneOf, Set<Node> extras) {
+        int checkpoint = vCxt.reportCheckpoint();
+
         //XOR semantics
         //        int matchCount = 0;
         //        for ( TripleExpression tripleExpr : oneOf.expressions() ) {
@@ -49,6 +51,8 @@ import org.apache.jena.shex.sys.ValidationContext;
         // OR semantics
         for ( TripleExpression tripleExpr : oneOf.expressions() ) {
             if ( ShapeEval.matches(vCxt, matchables, node, tripleExpr, extras) ) {
+                // An alternative succeeded. Discard diagnostics from unsuccessful alternatives.
+                vCxt.rollbackReportItems(checkpoint);
                 return true;
             }
         }

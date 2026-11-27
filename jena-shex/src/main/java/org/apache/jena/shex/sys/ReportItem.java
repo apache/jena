@@ -21,7 +21,11 @@
 
 package org.apache.jena.shex.sys;
 
+import java.util.List;
+
 import org.apache.jena.graph.Node;
+import org.apache.jena.shex.expressions.ShexAnnotated;
+import org.apache.jena.shex.expressions.ShexAnnotation;
 
 /**
  * Result of validation of a constraint.
@@ -29,10 +33,16 @@ import org.apache.jena.graph.Node;
 public class ReportItem {
     private final String message;
     private final Node value;
+    private final ValidationTrace validationTrace;
 
     public ReportItem(String message, Node value) {
+        this(message, value, null);
+    }
+
+    public ReportItem(String message, Node value, ValidationTrace validationTrace) {
         this.message = message;
         this.value = value;
+        this.validationTrace = validationTrace;
     }
 
     public String getMessage() {
@@ -41,6 +51,46 @@ public class ReportItem {
 
     public Node getValue() {
         return value;
+    }
+
+    /**
+     * Get the validation trace associated with this report item.
+     * May be null if no annotated expression was active.
+     */
+    public ValidationTrace getValidationTrace() {
+        return validationTrace;
+    }
+
+    /**
+     * Return a copy with the given validation trace, unless one
+     * is already present.
+     */
+    ReportItem withValidationTrace(ValidationTrace trace) {
+        if (validationTrace != null)
+            return this;
+        return new ReportItem(message, value, trace);
+    }
+
+    /**
+     * Get annotations associated with this validation failure.
+     *
+     * Annotations are resolved from the innermost expression
+     * carrying annotations in the validation trace.
+     * @return annotations, or an empty list if none are available.
+     */
+    public List<ShexAnnotation> getAnnotations() {
+        return validationTrace == null ?
+            List.of() : validationTrace.getAnnotations();
+    }
+
+    /**
+     * Get the expression from which the annotations originate.
+     *
+     * @return annotation source, or null if none exists.
+     */
+    public ShexAnnotated getAnnotationSource() {
+        return validationTrace == null ?
+            null : validationTrace.getAnnotationSource();
     }
 
     @Override

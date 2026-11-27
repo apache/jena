@@ -80,7 +80,10 @@ public class ShexReport {
         reports.forEach(action);
     }
 
-//    public Collection<ReportItem> getEntries()     { return entries; }
+    public Collection<ReportItem> getEntries() {
+        return List.copyOf(entries);
+    }
+
 //    public List<ShexShapeAssociation> getReports() { return reports; }
 
     public Resource getResource() { return resultResource; }
