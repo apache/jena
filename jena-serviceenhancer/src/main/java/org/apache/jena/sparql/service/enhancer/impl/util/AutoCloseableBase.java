@@ -26,33 +26,47 @@ public class AutoCloseableBase
 {
     protected volatile boolean isClosed = false;
 
-    /**
-     * To be called within synchronized functions
-     */
+    protected boolean enableCloseStackTrace;
+    protected StackTraceElement[] closeStackTrace = null;
+
+    public AutoCloseableBase() {
+        this(true);
+    }
+
+    public AutoCloseableBase(boolean enableCloseStackTrace) {
+        this.enableCloseStackTrace = enableCloseStackTrace;
+    }
+
+    /** To be called within synchronized functions */
     protected void ensureOpen() {
         if (isClosed) {
-            throw new RuntimeException("Object already closed");
+            String str = StackTraceUtils.toString(closeStackTrace);
+            throwClosedException("Object already closed at: " + str);
         }
     }
 
-    protected void closeActual() throws Exception {
-        // Nothing to do here; override if needed
+    protected void throwClosedException(String msg) {
+        throw new RuntimeException(msg);
     }
+
+    protected void closeActual() throws Exception { /* nothing to do */ }
 
     @Override
     public final void close() {
         if (!isClosed) {
             synchronized (this) {
                 if (!isClosed) {
-                    isClosed = true;
-
+                    closeStackTrace = enableCloseStackTrace ? StackTraceUtils.getStackTraceIfEnabled() : null;
                     try {
                         closeActual();
                     } catch (Exception e) {
                         throw new RuntimeException(e);
+                    } finally {
+                        isClosed = true;
                     }
                 }
             }
         }
     }
 }
+

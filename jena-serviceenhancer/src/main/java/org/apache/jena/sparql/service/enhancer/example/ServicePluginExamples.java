@@ -36,13 +36,18 @@ public class ServicePluginExamples {
         customLinearJoin(DatasetFactory.empty());
     }
 
+    /**
+     * This example shows how to programmatically enable
+     * {@code SERVICE <loop:>} using
+     * {@link ServiceEnhancerInit#wrapOptimizer(Context)}.
+     */
     public static void customLinearJoin(Dataset dataset) {
         Context cxt = ARQ.getContext().copy();
         ServiceEnhancerInit.wrapOptimizer(cxt);
 
         String queryStr = "SELECT * {\n"
                 + "  BIND(<urn:foo> AS ?s)\n"
-                + "  SERVICE <loop:urn:arq:self> {\n"
+                + "  SERVICE <loop:urn:x-arq:self> {\n"
                 + "      { BIND(?s AS ?x) } UNION { BIND(?s AS ?y) }\n"
                 + "  }\n"
                 + "}";

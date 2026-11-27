@@ -7,19 +7,18 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- *
- *   SPDX-License-Identifier: Apache-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.apache.jena.sparql.service.enhancer.impl;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,14 +27,16 @@ import java.util.Random;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 
 import org.apache.jena.atlas.logging.Log;
-import org.apache.jena.query.*;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.ResultSetFactory;
+import org.apache.jena.query.ResultSetFormatter;
+import org.apache.jena.query.ResultSetRewindable;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.engine.iterator.QueryIterSlice;
 import org.apache.jena.sparql.resultset.ResultsCompare;
@@ -50,70 +51,12 @@ import org.apache.jena.sparql.util.Context;
  * Furthermore, requests with / without use of 'bulk:' and 'loop:' (with an empty input binding) can also be compared.
  * Query results should be the same regardless of whether these options are present or absent.
  */
-@RunWith(Parameterized.class)
 public class TestServiceEnhancerCachedVsUncached {
 
-    protected String name;
-    protected String queryStrA;
-    protected String queryStrB;
-    protected Model model;
-    protected Consumer<Context> cxtMutator;
-
-    public TestServiceEnhancerCachedVsUncached(String name, String queryStrA, String queryStrB, Model model, Consumer<Context> cxtMutator) {
-        super();
-        this.name = name;
-        this.queryStrA = queryStrA;
-        this.queryStrB = queryStrB;
-        this.model = model;
-        this.cxtMutator = cxtMutator;
-    }
-
-    @Test
-    public void test() {
-        Log.debug(TestServiceEnhancerCachedVsUncached.class, "Query A: " + queryStrA);
-        Log.debug(TestServiceEnhancerCachedVsUncached.class, "Query B: " + queryStrB);
-
-        // Debug flag: If onlyA is true then no comparison with queryB is made
-        boolean onlyA = false;
-
-        Query queryA = QueryFactory.create(queryStrA);
-        ResultSetRewindable rsA;
-        try (QueryExecution qeA = QueryExecution.create(queryA, model)) {
-            cxtMutator.accept(qeA.getContext());
-            rsA = ResultSetFactory.makeRewindable(qeA.execSelect());
-
-            if (!onlyA) {
-                Query queryB = QueryFactory.create(queryStrB);
-                ResultSetRewindable rsB;
-                try (QueryExecution qeB = QueryExecution.create(queryB, model)) {
-                    cxtMutator.accept(qeB.getContext());
-                    rsB = ResultSetFactory.makeRewindable(qeB.execSelect());
-
-                    boolean isEqual = ResultsCompare.equalsByValue(rsA, rsB);
-                    if (!isEqual) {
-                        rsA.reset();
-                        ResultSetFormatter.out(System.out, rsA);
-
-                        rsB.reset();
-                        ResultSetFormatter.out(System.out, rsB);
-                    }
-                    Assert.assertTrue(isEqual);
-                }
-            } else {
-                rsA.reset();
-                System.out.println("Got " + ResultSetFormatter.consume(rsA) + " results");
-            }
-
-        }
-    }
-
-
-
-
-    @Parameters(name = "SPARQL Cache Test {index}: {0}")
-    public static Collection<Object[]> data()
+    // @Parameters(name = "SPARQL Cache Test {index}: {0}")
+    @TestFactory
+    public Collection<DynamicTest> generateTests()
             throws Exception
-
     {
         int randomSeed = 42;
         Random random = new Random(randomSeed);
@@ -136,7 +79,7 @@ public class TestServiceEnhancerCachedVsUncached {
                 );
 
 
-        List<Object[]> pool = new ArrayList<>();
+        List<DynamicTest> dynamicTests = new ArrayList<>();
 
         for (int i = 0; i < 1000; ++i) {
             int bulkSizeA = random.nextInt(9) + 1;
@@ -154,7 +97,6 @@ public class TestServiceEnhancerCachedVsUncached {
             String strA = strBase
                     .replaceAll(Pattern.quote("${mode}"), "cache:loop:bulk+" + bulkSizeA + ":");
 
-
             String strB = strBase
                     .replaceAll(Pattern.quote("${mode}"), "loop:bulk+" + bulkSizeB + ":");
 
@@ -165,10 +107,66 @@ public class TestServiceEnhancerCachedVsUncached {
                 ServiceExecutorRegistry.set(cxt, reg);
             };
 
-            pool.add(new Object[] { "test" + i, strA, strB, model, cxtMutator });
+            String testName = String.format("SPARQL Cache Test %d: %s", i, info);
+            DynamicTest dynamicTest = DynamicTest.dynamicTest(testName,
+                () -> new TestCase(testName, strA, strB, model, cxtMutator).test());
+            dynamicTests.add(dynamicTest);
         }
 
-        return pool;
+        return dynamicTests;
     }
 
+    private static class TestCase {
+        protected String name;
+        protected String queryStrA;
+        protected String queryStrB;
+        protected Model model;
+        protected Consumer<Context> cxtMutator;
+
+        public TestCase(String name, String queryStrA, String queryStrB, Model model, Consumer<Context> cxtMutator) {
+            super();
+            this.name = name;
+            this.queryStrA = queryStrA;
+            this.queryStrB = queryStrB;
+            this.model = model;
+            this.cxtMutator = cxtMutator;
+        }
+
+        public void test() {
+            Log.debug(TestServiceEnhancerCachedVsUncached.class, "Query A: " + queryStrA);
+            Log.debug(TestServiceEnhancerCachedVsUncached.class, "Query B: " + queryStrB);
+
+            // Debug flag: If onlyA is true then no comparison with queryB is made
+            boolean onlyA = false;
+
+            Query queryA = QueryFactory.create(queryStrA);
+            ResultSetRewindable rsA;
+            try (QueryExecution qeA = QueryExecution.create(queryA, model)) {
+                cxtMutator.accept(qeA.getContext());
+                rsA = ResultSetFactory.makeRewindable(qeA.execSelect());
+
+                if (!onlyA) {
+                    Query queryB = QueryFactory.create(queryStrB);
+                    ResultSetRewindable rsB;
+                    try (QueryExecution qeB = QueryExecution.create(queryB, model)) {
+                        cxtMutator.accept(qeB.getContext());
+                        rsB = ResultSetFactory.makeRewindable(qeB.execSelect());
+
+                        boolean isEqual = ResultsCompare.equalsByValue(rsA, rsB);
+                        if (!isEqual) {
+                            rsA.reset();
+                            ResultSetFormatter.out(System.out, rsA);
+
+                            rsB.reset();
+                            ResultSetFormatter.out(System.out, rsB);
+                        }
+                        assertTrue(isEqual);
+                    }
+                } else {
+                    rsA.reset();
+                    System.out.println("Got " + ResultSetFormatter.consume(rsA) + " results");
+                }
+            }
+        }
+    }
 }

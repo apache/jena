@@ -44,4 +44,9 @@ public class ServiceCacheValue {
     public Slice<Binding[]> getSlice() {
         return slice;
     }
+
+    @Override
+    public String toString() {
+        return "ServiceCacheValue [id=" + id + ", slice=" + slice + "]";
+    }
 }
